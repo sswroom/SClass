@@ -32,7 +32,7 @@ namespace Data
 		Bool IsDictionary() const;
 		void Release();
 		MacString *CopyTypeDesc() const;
-		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
 
 	class MacString : public MacType
@@ -42,7 +42,7 @@ namespace Data
 		virtual ~MacString();
 
 		const UTF8Char *Ptr() const;
-		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
 
 	class MacNumber : public MacType
@@ -55,7 +55,7 @@ namespace Data
 		Double GetDouble() const;
 		Int32 GetInt32() const;
 		Int64 GetInt64() const;
-		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
 
 	class MacBoolean : public MacType
@@ -65,7 +65,7 @@ namespace Data
 		virtual ~MacBoolean();
 
 		Bool GetValue() const;
-		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
 
 	class MacData : public MacType
@@ -77,7 +77,7 @@ namespace Data
 		const UInt8 *Ptr() const;
 		UOSInt GetSize() const;
 		Data::ByteArrayR GetArray() const;
-		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
 
 	class MacArray : public MacType
@@ -88,7 +88,7 @@ namespace Data
 
 		CFTypeRef GetItem(UOSInt i) const;
 		UOSInt GetCount() const;
-		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
 
 	class MacDictionary : public MacType
@@ -100,7 +100,7 @@ namespace Data
 		CFTypeRef Get(Text::CString name) const;
 		CFTypeRef Get(CFStringRef name) const;
 		UOSInt GetCount() const;
-		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
 }
 #endif

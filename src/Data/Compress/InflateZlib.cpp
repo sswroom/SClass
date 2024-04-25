@@ -56,7 +56,7 @@ Bool Data::Compress::Inflate::Decompress(Data::ByteArray destBuff, OutParam<UOSI
 	return false;
 }
 
-Bool Data::Compress::Inflate::Decompress(NotNullPtr<IO::Stream> destStm, NotNullPtr<IO::StreamData> srcData)
+Bool Data::Compress::Inflate::Decompress(NN<IO::Stream> destStm, NN<IO::StreamData> srcData)
 {
 	UInt64 srcOfst = 0;
 	UInt64 srcLen = srcData->GetDataSize();

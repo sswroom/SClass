@@ -23,10 +23,10 @@ namespace IO
 		static FileCheck *CreateCheck(Text::CStringNN path, Crypto::Hash::HashType chkType, Optional<IO::ProgressHandler> progress, Bool skipError);
 	private:
 		static void __stdcall CheckData(const UInt8 *buff, UOSInt buffSize, AnyType userData);
-		static Bool CheckDir(NotNullPtr<IO::ActiveStreamReader> reader, UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Hash::IHash *hash, IO::FileCheck *fchk, Optional<IO::ProgressHandler> progress, Bool skipError); //true = error
+		static Bool CheckDir(NN<IO::ActiveStreamReader> reader, UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Hash::IHash *hash, IO::FileCheck *fchk, Optional<IO::ProgressHandler> progress, Bool skipError); //true = error
 
 	public:
-		FileCheck(NotNullPtr<Text::String> name, Crypto::Hash::HashType chkType);
+		FileCheck(NN<Text::String> name, Crypto::Hash::HashType chkType);
 		FileCheck(Text::CStringNN name, Crypto::Hash::HashType chkType);
 		virtual ~FileCheck();
 
@@ -37,7 +37,7 @@ namespace IO
 		Bool GetEntryHash(UOSInt index, UInt8 *hashVal) const;
 		void AddEntry(Text::CStringNN fileName, UInt8 *hashVal);
 		Bool CheckEntryHash(UOSInt index, UInt8 *hashVal) const;
-		Bool MergeFrom(NotNullPtr<FileCheck> chk);
+		Bool MergeFrom(NN<FileCheck> chk);
 
 		virtual IO::ParserType GetParserType() const;
 	};

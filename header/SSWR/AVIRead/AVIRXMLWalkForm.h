@@ -15,20 +15,20 @@ namespace SSWR
 		class AVIRXMLWalkForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUIPanel> pnlFile;
-			NotNullPtr<UI::GUILabel> lblFile;
-			NotNullPtr<UI::GUITextBox> txtFile;
-			NotNullPtr<UI::GUIButton> btnBrowse;
-			NotNullPtr<UI::GUIListView> lvXML;
+			NN<UI::GUIPanel> pnlFile;
+			NN<UI::GUILabel> lblFile;
+			NN<UI::GUITextBox> txtFile;
+			NN<UI::GUIButton> btnBrowse;
+			NN<UI::GUIListView> lvXML;
 
 			static void __stdcall OnBrowseClick(AnyType userObj);
-			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> fileNames);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> fileNames);
 
 			void LoadFile(Text::CStringNN fileName);
 		public:
-			AVIRXMLWalkForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRXMLWalkForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRXMLWalkForm();
 
 			virtual void OnMonitorChanged();

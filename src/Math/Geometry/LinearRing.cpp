@@ -18,9 +18,9 @@ Math::Geometry::Vector2D::VectorType Math::Geometry::LinearRing::GetVectorType()
 	return Math::Geometry::Vector2D::VectorType::LinearRing;
 }
 
-NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::LinearRing::Clone() const
+NN<Math::Geometry::Vector2D> Math::Geometry::LinearRing::Clone() const
 {
-	NotNullPtr<Math::Geometry::LinearRing> lr;
+	NN<Math::Geometry::LinearRing> lr;
 	NEW_CLASSNN(lr, Math::Geometry::LinearRing(this->srid, this->nPoint, this->zArr != 0, this->mArr != 0));
 	MemCopyNO(lr->pointArr, this->pointArr, sizeof(Math::Coord2DDbl) * this->nPoint);
 	if (this->zArr)
@@ -113,9 +113,9 @@ Bool Math::Geometry::LinearRing::IsClose() const
 	return this->pointArr[0] == this->pointArr[this->nPoint - 1];
 }
 
-NotNullPtr<Math::Geometry::LinearRing> Math::Geometry::LinearRing::CreateFromCircle(UInt32 srid, Math::Coord2DDbl center, Double radiusX, Double radiusY, UOSInt nPoints)
+NN<Math::Geometry::LinearRing> Math::Geometry::LinearRing::CreateFromCircle(UInt32 srid, Math::Coord2DDbl center, Double radiusX, Double radiusY, UOSInt nPoints)
 {
-	NotNullPtr<Math::Geometry::LinearRing> lr;
+	NN<Math::Geometry::LinearRing> lr;
 	NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, nPoints + 1, false, false));
 	Double ratio = 2 * Math::PI / UOSInt2Double(nPoints);
 	UOSInt i;

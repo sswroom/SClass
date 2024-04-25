@@ -14,26 +14,26 @@ namespace SSWR
 		class AVIRWellFormatForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIPanel> pnlFile;
-			NotNullPtr<UI::GUILabel> lblFile;
-			NotNullPtr<UI::GUITextBox> txtFile;
-			NotNullPtr<UI::GUIButton> btnBrowse;
-			NotNullPtr<UI::GUIButton> btnParseToText;
-			NotNullPtr<UI::GUIButton> btnParseToFile;
-			NotNullPtr<UI::GUITextBox> txtOutput;
+			NN<UI::GUIPanel> pnlFile;
+			NN<UI::GUILabel> lblFile;
+			NN<UI::GUITextBox> txtFile;
+			NN<UI::GUIButton> btnBrowse;
+			NN<UI::GUIButton> btnParseToText;
+			NN<UI::GUIButton> btnParseToFile;
+			NN<UI::GUITextBox> txtOutput;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			static void AddFilters(NotNullPtr<IO::FileSelector> selector);
-			Bool ParseFile(Text::CStringNN fileName, NotNullPtr<Text::StringBuilderUTF8> output);
+			static void AddFilters(NN<IO::FileSelector> selector);
+			Bool ParseFile(Text::CStringNN fileName, NN<Text::StringBuilderUTF8> output);
 
 			static void __stdcall OnBrowseClicked(AnyType userObj);
-			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnParseToTextClicked(AnyType userObj);
 			static void __stdcall OnParseToFileClicked(AnyType userObj);
 
 		public:
-			AVIRWellFormatForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRWellFormatForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWellFormatForm();
 
 			virtual void OnMonitorChanged();

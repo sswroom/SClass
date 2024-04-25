@@ -63,15 +63,15 @@ namespace Media
 		Double thermoBKGTemp;
 		ThermoType thermoType;
 
-		ImageList(NotNullPtr<Text::String> name);
+		ImageList(NN<Text::String> name);
 		ImageList(Text::CStringNN name);
 		virtual ~ImageList();
 
 		virtual IO::ParserType GetParserType() const;
 
-		UOSInt AddImage(NotNullPtr<Media::RasterImage> img, UInt32 imageDelay);
+		UOSInt AddImage(NN<Media::RasterImage> img, UInt32 imageDelay);
 		UOSInt AddImage(Media::RasterImage *img, UInt32 imageDelay);
-		void ReplaceImage(UOSInt index, NotNullPtr<Media::RasterImage> img);
+		void ReplaceImage(UOSInt index, NN<Media::RasterImage> img);
 		void ReplaceImage(UOSInt index, Media::RasterImage *img);
 		Bool RemoveImage(UOSInt index, Bool toRelease);
 		UOSInt GetCount() const;
@@ -90,9 +90,9 @@ namespace Media
 		void SetValueInt32(ValueType valType, Int32 val);
 		void SetValueInt64(ValueType valType, Int64 val);
 		void SetValueStr(ValueType valType, Text::CString val);
-		Bool ToValueString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		Bool ToValueString(NN<Text::StringBuilderUTF8> sb) const;
 
-		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		void ToString(NN<Text::StringBuilderUTF8> sb) const;
 		static Text::CString GetValueTypeName(ValueType valType);
 	};
 }

@@ -9,18 +9,18 @@ namespace Text
 		class WorkbookDataSource
 		{
 		private:
-			NotNullPtr<Worksheet> sheet;
+			NN<Worksheet> sheet;
 			UOSInt firstRow;
 			UOSInt lastRow;
 			UOSInt firstCol;
 			UOSInt lastCol;
 
 		public:
-			WorkbookDataSource(NotNullPtr<Worksheet> sheet, UOSInt firstRow, UOSInt lastRow, UOSInt firstCol, UOSInt lastCol);
+			WorkbookDataSource(NN<Worksheet> sheet, UOSInt firstRow, UOSInt lastRow, UOSInt firstCol, UOSInt lastCol);
 			~WorkbookDataSource();
 
 			UTF8Char *ToCodeRange(UTF8Char *sbuff) const;
-			NotNullPtr<Worksheet> GetSheet() const;
+			NN<Worksheet> GetSheet() const;
 			UOSInt GetFirstRow() const;
 			UOSInt GetLastRow() const;
 			UOSInt GetFirstCol() const;

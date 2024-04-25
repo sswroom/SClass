@@ -13,22 +13,22 @@ namespace SSWR
 		class AVIRODBCDSNForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblDSN;
-			NotNullPtr<UI::GUITextBox> txtDSN;
-			NotNullPtr<UI::GUILabel> lblUID;
-			NotNullPtr<UI::GUITextBox> txtUID;
-			NotNullPtr<UI::GUILabel> lblPWD;
-			NotNullPtr<UI::GUITextBox> txtPWD;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUILabel> lblDSN;
+			NN<UI::GUITextBox> txtDSN;
+			NN<UI::GUILabel> lblUID;
+			NN<UI::GUITextBox> txtUID;
+			NN<UI::GUILabel> lblPWD;
+			NN<UI::GUITextBox> txtPWD;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			DB::DBConn *conn;
 
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			AVIRODBCDSNForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRODBCDSNForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRODBCDSNForm();
 
 			virtual void OnMonitorChanged();

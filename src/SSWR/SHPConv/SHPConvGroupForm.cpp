@@ -3,17 +3,17 @@
 
 void __stdcall SSWR::SHPConv::SHPConvGroupForm::OnOkClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::SHPConv::SHPConvGroupForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvGroupForm>();
+	NN<SSWR::SHPConv::SHPConvGroupForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvGroupForm>();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
 void __stdcall SSWR::SHPConv::SHPConvGroupForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::SHPConv::SHPConvGroupForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvGroupForm>();
+	NN<SSWR::SHPConv::SHPConvGroupForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvGroupForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::SHPConv::SHPConvGroupForm::SHPConvGroupForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui) : UI::GUIForm(parent, 300, 216, ui)
+SSWR::SHPConv::SHPConvGroupForm::SHPConvGroupForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui) : UI::GUIForm(parent, 300, 216, ui)
 {
 	this->SetText(CSTR("Group"));
 	this->SetFont(0, 0, 8.25, false);

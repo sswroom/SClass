@@ -6,9 +6,9 @@
 #include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall IO::FileAnalyse::PCapFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::FileAnalyse::PCapFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::FileAnalyse::PCapFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::PCapFileAnalyse>();
+	NN<IO::FileAnalyse::PCapFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::PCapFileAnalyse>();
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt32 thisSize;
@@ -40,7 +40,7 @@ void __stdcall IO::FileAnalyse::PCapFileAnalyse::ParseThread(NotNullPtr<Sync::Th
 	}
 }
 
-IO::FileAnalyse::PCapFileAnalyse::PCapFileAnalyse(NotNullPtr<IO::StreamData> fd) : packetBuff(65536), thread(ParseThread, this, CSTR("PCapFileAnalyse"))
+IO::FileAnalyse::PCapFileAnalyse::PCapFileAnalyse(NN<IO::StreamData> fd) : packetBuff(65536), thread(ParseThread, this, CSTR("PCapFileAnalyse"))
 {
 	UInt8 buff[24];
 	this->fd = 0;
@@ -85,7 +85,7 @@ UOSInt IO::FileAnalyse::PCapFileAnalyse::GetFrameCount()
 	return 1 + this->ofstList.GetCount();
 }
 
-Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	if (index == 0)
 	{
@@ -123,7 +123,7 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Tex
 	return true;
 }
 
-Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	if (index == 0)
 	{
@@ -249,7 +249,7 @@ UOSInt IO::FileAnalyse::PCapFileAnalyse::GetFrameIndex(UInt64 ofst)
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	if (index == 0)

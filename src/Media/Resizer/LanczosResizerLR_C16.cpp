@@ -239,7 +239,7 @@ void Media::Resizer::LanczosResizerLR_C16::UpdateRGBTable()
 
 void __stdcall Media::Resizer::LanczosResizerLR_C16::DoTask(AnyType obj)
 {
-	NotNullPtr<TaskParam> ts = obj.GetNN<TaskParam>();
+	NN<TaskParam> ts = obj.GetNN<TaskParam>();
 	if (ts->funcType == 3)
 	{
 		LanczosResizerLR_C16_horizontal_filter(ts->inPt, ts->outPt, ts->width, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep, ts->me->rgbTable);
@@ -285,7 +285,7 @@ void Media::Resizer::LanczosResizerLR_C16::DestoryVert()
 	vsStep = 0;
 }
 
-Media::Resizer::LanczosResizerLR_C16::LanczosResizerLR_C16(UOSInt hnTap, UOSInt vnTap, NotNullPtr<const Media::ColorProfile> destColor, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance) : Media::IImgResizer(srcAlphaType), destColor(destColor)
+Media::Resizer::LanczosResizerLR_C16::LanczosResizerLR_C16(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> destColor, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance) : Media::IImgResizer(srcAlphaType), destColor(destColor)
 {
 	UOSInt i;
 	nThread = Sync::ThreadUtil::GetThreadCnt();
@@ -532,11 +532,11 @@ void Media::Resizer::LanczosResizerLR_C16::Resize(const UInt8 *src, OSInt sbpl, 
 	}
 }
 
-void Media::Resizer::LanczosResizerLR_C16::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
+void Media::Resizer::LanczosResizerLR_C16::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void Media::Resizer::LanczosResizerLR_C16::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void Media::Resizer::LanczosResizerLR_C16::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	this->rgbChanged = true;
 }
@@ -547,14 +547,14 @@ void Media::Resizer::LanczosResizerLR_C16::SetSrcRefLuminance(Double srcRefLumin
 	this->rgbChanged = true;
 }
 
-Bool Media::Resizer::LanczosResizerLR_C16::IsSupported(NotNullPtr<const Media::FrameInfo> srcInfo)
+Bool Media::Resizer::LanczosResizerLR_C16::IsSupported(NN<const Media::FrameInfo> srcInfo)
 {
 	if (srcInfo->fourcc != *(UInt32*)"LRGB")
 		return false;
 	return true;
 }
 
-Media::StaticImage *Media::Resizer::LanczosResizerLR_C16::ProcessToNewPartial(NotNullPtr<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
+Media::StaticImage *Media::Resizer::LanczosResizerLR_C16::ProcessToNewPartial(NN<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
 {
 	Media::FrameInfo destInfo;
 	Media::StaticImage *img;
@@ -576,9 +576,9 @@ Media::StaticImage *Media::Resizer::LanczosResizerLR_C16::ProcessToNewPartial(No
 	destInfo.color.GetPrimaries()->Set(srcImage->info.color.GetPrimariesRead());
 	if (this->destColor.GetRTranParam()->GetTranType() != Media::CS::TRANT_VUNKNOWN && this->destColor.GetRTranParam()->GetTranType() != Media::CS::TRANT_PUNKNOWN)
 	{
-		destInfo.color.GetRTranParam()->Set(NotNullPtr<const Media::CS::TransferParam>(this->destColor.GetRTranParam()));
-		destInfo.color.GetGTranParam()->Set(NotNullPtr<const Media::CS::TransferParam>(this->destColor.GetGTranParam()));
-		destInfo.color.GetBTranParam()->Set(NotNullPtr<const Media::CS::TransferParam>(this->destColor.GetBTranParam()));
+		destInfo.color.GetRTranParam()->Set(NN<const Media::CS::TransferParam>(this->destColor.GetRTranParam()));
+		destInfo.color.GetGTranParam()->Set(NN<const Media::CS::TransferParam>(this->destColor.GetGTranParam()));
+		destInfo.color.GetBTranParam()->Set(NN<const Media::CS::TransferParam>(this->destColor.GetBTranParam()));
 	}
 	NEW_CLASS(img, Media::StaticImage(destInfo));
 	Int32 tlx = (Int32)srcTL.x;

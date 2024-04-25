@@ -48,7 +48,7 @@ UTF8Char *Math::SRESRIWKTWriter::WriteUnit(UTF8Char *buff, Math::CoordinateSyste
 	return buff;
 }
 
-UTF8Char *Math::SRESRIWKTWriter::WriteProjExtra(UTF8Char *buff, NotNullPtr<Math::CoordinateSystem> pcsys, UOSInt lev, Text::LineBreakType lbt)
+UTF8Char *Math::SRESRIWKTWriter::WriteProjExtra(UTF8Char *buff, NN<Math::CoordinateSystem> pcsys, UOSInt lev, Text::LineBreakType lbt)
 {
 	return buff;
 }

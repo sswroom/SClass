@@ -20,23 +20,23 @@ namespace SSWR
 		class AVIRRSSReaderForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIPanel> pnlURL;
-			NotNullPtr<UI::GUILabel> lblRecent;
-			NotNullPtr<UI::GUIComboBox> cboRecent;
-			NotNullPtr<UI::GUILabel> lblURL;
-			NotNullPtr<UI::GUITextBox> txtURL;
-			NotNullPtr<UI::GUIButton> btnRequest;
-			NotNullPtr<UI::GUITabControl> tcRSS;
+			NN<UI::GUIPanel> pnlURL;
+			NN<UI::GUILabel> lblRecent;
+			NN<UI::GUIComboBox> cboRecent;
+			NN<UI::GUILabel> lblURL;
+			NN<UI::GUITextBox> txtURL;
+			NN<UI::GUIButton> btnRequest;
+			NN<UI::GUITabControl> tcRSS;
 
-			NotNullPtr<UI::GUITabPage> tpInfo;
-			NotNullPtr<UI::GUIListView> lvInfo;
+			NN<UI::GUITabPage> tpInfo;
+			NN<UI::GUIListView> lvInfo;
 
-			NotNullPtr<UI::GUITabPage> tpItems;
-			NotNullPtr<UI::GUIListView> lvItems;
+			NN<UI::GUITabPage> tpItems;
+			NN<UI::GUIListView> lvItems;
 
 			Net::RSS *rss;
 			Data::ArrayListStringNN rssList;
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
 			static void __stdcall OnRequestClicked(AnyType userObj);
@@ -46,7 +46,7 @@ namespace SSWR
 			void RSSListLoad();
 			void RSSListStore();
 		public:
-			AVIRRSSReaderForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRRSSReaderForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRRSSReaderForm();
 
 			virtual void OnMonitorChanged();

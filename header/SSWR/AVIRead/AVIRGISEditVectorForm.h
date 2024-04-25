@@ -19,10 +19,10 @@ namespace SSWR
 		class AVIRGISEditVectorForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIListBox> lbObjects;
+			NN<UI::GUIListBox> lbObjects;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Map::VectorLayer> lyr;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Map::VectorLayer> lyr;
 			IMapNavigator *navi;
 
 			static Bool __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
@@ -30,7 +30,7 @@ namespace SSWR
 			static Bool __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static void __stdcall OnObjectsDblClk(AnyType userObj);
 		public:
-			AVIRGISEditVectorForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::VectorLayer> lyr, IMapNavigator *navi);
+			AVIRGISEditVectorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::VectorLayer> lyr, IMapNavigator *navi);
 			virtual ~AVIRGISEditVectorForm();
 
 			virtual void OnMonitorChanged();

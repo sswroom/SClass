@@ -18,54 +18,54 @@ namespace SSWR
 		class AVIRMySQLClientForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Net::MySQLTCPClient *cli;
 			Bool cliConnected;
 
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpControl;
-			NotNullPtr<UI::GUILabel> lblHost;
-			NotNullPtr<UI::GUITextBox> txtHost;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUILabel> lblUserName;
-			NotNullPtr<UI::GUITextBox> txtUserName;
-			NotNullPtr<UI::GUILabel> lblPassword;
-			NotNullPtr<UI::GUITextBox> txtPassword;
-			NotNullPtr<UI::GUILabel> lblDatabase;
-			NotNullPtr<UI::GUITextBox> txtDatabase;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUILabel> lblStatus;
-			NotNullPtr<UI::GUITextBox> txtStatus;
+			NN<UI::GUITabPage> tpControl;
+			NN<UI::GUILabel> lblHost;
+			NN<UI::GUITextBox> txtHost;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUILabel> lblUserName;
+			NN<UI::GUITextBox> txtUserName;
+			NN<UI::GUILabel> lblPassword;
+			NN<UI::GUITextBox> txtPassword;
+			NN<UI::GUILabel> lblDatabase;
+			NN<UI::GUITextBox> txtDatabase;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUILabel> lblStatus;
+			NN<UI::GUITextBox> txtStatus;
 
-			NotNullPtr<UI::GUITabPage> tpInfo;
-			NotNullPtr<UI::GUILabel> lblServerVer;
-			NotNullPtr<UI::GUITextBox> txtServerVer;
-			NotNullPtr<UI::GUILabel> lblConnId;
-			NotNullPtr<UI::GUITextBox> txtConnId;
-			NotNullPtr<UI::GUILabel> lblAuthPluginData;
-			NotNullPtr<UI::GUITextBox> txtAuthPluginData;
-			NotNullPtr<UI::GUILabel> lblServerCap;
-			NotNullPtr<UI::GUITextBox> txtServerCap;
-			NotNullPtr<UI::GUILabel> lblServerCS;
-			NotNullPtr<UI::GUITextBox> txtServerCS;
+			NN<UI::GUITabPage> tpInfo;
+			NN<UI::GUILabel> lblServerVer;
+			NN<UI::GUITextBox> txtServerVer;
+			NN<UI::GUILabel> lblConnId;
+			NN<UI::GUITextBox> txtConnId;
+			NN<UI::GUILabel> lblAuthPluginData;
+			NN<UI::GUITextBox> txtAuthPluginData;
+			NN<UI::GUILabel> lblServerCap;
+			NN<UI::GUITextBox> txtServerCap;
+			NN<UI::GUILabel> lblServerCS;
+			NN<UI::GUITextBox> txtServerCS;
 
-			NotNullPtr<UI::GUITabPage> tpQuery;
-			NotNullPtr<UI::GUIPanel> pnlQuery;
-			NotNullPtr<UI::GUIButton> btnQuery;
-			NotNullPtr<UI::GUITextBox> txtQuery;
-			NotNullPtr<UI::GUITextBox> txtQueryStatus;
-			NotNullPtr<UI::GUIVSplitter> vspQuery;
-			NotNullPtr<UI::GUIListView> lvQueryResult;
+			NN<UI::GUITabPage> tpQuery;
+			NN<UI::GUIPanel> pnlQuery;
+			NN<UI::GUIButton> btnQuery;
+			NN<UI::GUITextBox> txtQuery;
+			NN<UI::GUITextBox> txtQueryStatus;
+			NN<UI::GUIVSplitter> vspQuery;
+			NN<UI::GUIListView> lvQueryResult;
 
 		private:
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnQueryClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
-			void UpdateResult(NotNullPtr<DB::DBReader> r);
+			void UpdateResult(NN<DB::DBReader> r);
 		public:
-			AVIRMySQLClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRMySQLClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMySQLClientForm();
 
 			virtual void OnMonitorChanged();

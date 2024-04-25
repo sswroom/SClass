@@ -8,7 +8,7 @@ namespace Media
 	class VFAudioStream : public IAudioSource
 	{
 	private:
-		NotNullPtr<Media::VFMediaFile> mfile;
+		NN<Media::VFMediaFile> mfile;
 
 		Media::AudioFormat fmt;
 		UInt64 sampleCnt;
@@ -16,7 +16,7 @@ namespace Media
 		Sync::Event *readEvt;
 
 	public:
-		VFAudioStream(NotNullPtr<Media::VFMediaFile> mfile);
+		VFAudioStream(NN<Media::VFMediaFile> mfile);
 		~VFAudioStream();
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);
@@ -25,7 +25,7 @@ namespace Media
 		virtual Data::Duration SeekToTime(Data::Duration time);
 		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 
-		virtual void GetFormat(NotNullPtr<AudioFormat> format);
+		virtual void GetFormat(NN<AudioFormat> format);
 
 		virtual Bool Start(Sync::Event *evt, UOSInt blkSize);
 		virtual void Stop();

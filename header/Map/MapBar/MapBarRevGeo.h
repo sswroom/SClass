@@ -12,14 +12,14 @@ namespace Map
 		class MapBarRevGeo : public Map::IReverseGeocoder
 		{
 		private:
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			IO::Writer *errWriter;
 			Map::MapBar::MapBarAdjuster *adjuster;
 			Int32 imgWidth;
 			Int32 imgHeight;
 
 		public:
-			MapBarRevGeo(NotNullPtr<Net::SocketFactory> sockf, IO::Writer *errWriter, Map::MapBar::MapBarAdjuster *adjuster, Int32 imgWidth, Int32 imgHeight);
+			MapBarRevGeo(NN<Net::SocketFactory> sockf, IO::Writer *errWriter, Map::MapBar::MapBarAdjuster *adjuster, Int32 imgWidth, Int32 imgHeight);
 			virtual ~MapBarRevGeo();
 
 			virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid);

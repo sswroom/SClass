@@ -26,7 +26,7 @@
 
 struct IO::Path::FindFileSession
 {
-	NotNullPtr<Text::String> searchPattern;
+	NN<Text::String> searchPattern;
 	DIR *dirObj;
 	UTF8Char pathBuff[512];
 	UTF8Char *pathEnd;
@@ -78,7 +78,7 @@ Bool IO::Path::CreateDirectoryW(const WChar *dirInput)
 	if (i != INVALID_INDEX && i > 0)
 	{
 		const WChar *wptr = Text::StrCopyNewC(dirInput, (UOSInt)i);
-		NotNullPtr<Text::String> s = Text::String::NewNotNull(wptr);
+		NN<Text::String> s = Text::String::NewNotNull(wptr);
 		if (GetPathType(s->ToCString()) == PathType::Unknown)
 		{
 			CreateDirectory(s->ToCString());
@@ -190,7 +190,7 @@ WChar *IO::Path::GetProcessFileNameW(WChar *buff)
 	return Text::StrUTF8_WCharC(buff, (UInt8*)sbuff, (UOSInt)size, 0);
 }
 
-Bool IO::Path::GetProcessFileName(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::Path::GetProcessFileName(NN<Text::StringBuilderUTF8> sb)
 {
 	Char sbuff[512];
 	ssize_t size = readlink("/proc/self/exe", sbuff, 512);
@@ -355,7 +355,7 @@ WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
 	return Text::StrConcat(&path[j + 1], toAppend);
 }
 
-Bool IO::Path::AppendPath(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *toAppend, UOSInt toAppendLen)
+Bool IO::Path::AppendPath(NN<Text::StringBuilderUTF8> sb, const UTF8Char *toAppend, UOSInt toAppendLen)
 {
 	if (toAppend[0] == '/')
 	{
@@ -435,7 +435,7 @@ IO::Path::FindFileSession *IO::Path::FindFile(Text::CString path)
 IO::Path::FindFileSession *IO::Path::FindFileW(const WChar *path)
 {
 	FindFileSession *sess = 0;
-	NotNullPtr<Text::String> utfPath = Text::String::NewNotNull(path);
+	NN<Text::String> utfPath = Text::String::NewNotNull(path);
 	Text::CString searchPattern;
 	Text::CString searchDir;
 	UOSInt i = Text::StrLastIndexOfCharC(utfPath->v, utfPath->leng, '/');
@@ -621,7 +621,7 @@ IO::Path::PathType IO::Path::GetPathType(Text::CStringNN path)
 
 IO::Path::PathType IO::Path::GetPathTypeW(const WChar *path)
 {
-	NotNullPtr<Text::String> utfPath = Text::String::NewNotNull(path);
+	NN<Text::String> utfPath = Text::String::NewNotNull(path);
 	IO::Path::PathType pt = IO::Path::GetPathType(utfPath->ToCString());
 	utfPath->Release();
 	return pt;
@@ -641,7 +641,7 @@ Bool IO::Path::PathExists(const UTF8Char *path, UOSInt pathLen)
 
 Bool IO::Path::PathExistsW(const WChar *path)
 {
-	NotNullPtr<Text::String> utfPath = Text::String::NewNotNull(path);
+	NN<Text::String> utfPath = Text::String::NewNotNull(path);
 	Bool ret = IO::Path::PathExists(utfPath->v, utfPath->leng);
 	utfPath->Release();
 	return ret;
@@ -650,7 +650,7 @@ Bool IO::Path::PathExistsW(const WChar *path)
 WChar *IO::Path::GetFullPathW(WChar *buff, const WChar *path)
 {
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<Text::String> str = Text::String::NewNotNull(path);
+	NN<Text::String> str = Text::String::NewNotNull(path);
 	sb.Append(str);
 	str->Release();
 	sb.AllocLeng(512);

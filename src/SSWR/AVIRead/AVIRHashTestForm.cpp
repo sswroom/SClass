@@ -24,7 +24,7 @@ Double __stdcall SSWR::AVIRead::AVIRHashTestForm::HashTestSpeed(Crypto::Hash::IH
 
 void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnCompareClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHashTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHashTestForm>();
+	NN<SSWR::AVIRead::AVIRHashTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHashTestForm>();
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	Crypto::Hash::HashType i = Crypto::Hash::HashType::First;
@@ -51,7 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnCompareClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnSpeedClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHashTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHashTestForm>();
+	NN<SSWR::AVIRead::AVIRHashTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHashTestForm>();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UOSInt i = me->cboAlgorithm->GetSelectedIndex();
@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnSpeedClicked(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)
+SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetText(CSTR("Hash Test"));
 	this->SetFont(0, 0, 8.25, false);

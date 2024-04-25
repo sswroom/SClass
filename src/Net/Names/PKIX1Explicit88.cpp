@@ -5,60 +5,60 @@
 #include "Net/Names/PKIX1Implicit88.h"
 #include "Net/Names/RFC2459.h"
 
-void Net::Names::PKIX1Explicit88::AddAttributeTypeAndValue(NotNullPtr<ASN1Names> names, Text::CStringNN name)
+void Net::Names::PKIX1Explicit88::AddAttributeTypeAndValue(NN<ASN1Names> names, Text::CStringNN name)
 {
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(name, AttributeTypeAndValueCont);
 }
 
-void Net::Names::PKIX1Explicit88::AttributeTypeAndValueCont(NotNullPtr<ASN1Names> names)
+void Net::Names::PKIX1Explicit88::AttributeTypeAndValueCont(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_OID)->NextValue(CSTR("type"));
 	names->NextValue(CSTR("value"));
 }
 
-void Net::Names::PKIX1Explicit88::AddName(NotNullPtr<ASN1Names> names, Text::CStringNN name)
+void Net::Names::PKIX1Explicit88::AddName(NN<ASN1Names> names, Text::CStringNN name)
 {
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(name, RDNSequenceCont);
 }
 
-void Net::Names::PKIX1Explicit88::Name(NotNullPtr<ASN1Names> names)
+void Net::Names::PKIX1Explicit88::Name(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("Name"), RDNSequenceCont);
 }
 
-void Net::Names::PKIX1Explicit88::RDNSequenceCont(NotNullPtr<ASN1Names> names)
+void Net::Names::PKIX1Explicit88::RDNSequenceCont(NN<ASN1Names> names)
 {
 	names->RepeatIfTypeIs(Net::ASN1Util::IT_SET)->Container(CSTR("rdnSequence"), RelativeDistinguishedNameCont);
 }
 
-void Net::Names::PKIX1Explicit88::RelativeDistinguishedName(NotNullPtr<ASN1Names> names)
+void Net::Names::PKIX1Explicit88::RelativeDistinguishedName(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_SET)->Container(CSTR("RelativeDistinguishedName"), RelativeDistinguishedNameCont);
 }
 
-void Net::Names::PKIX1Explicit88::RelativeDistinguishedNameCont(NotNullPtr<ASN1Names> names)
+void Net::Names::PKIX1Explicit88::RelativeDistinguishedNameCont(NN<ASN1Names> names)
 {
 	AddAttributeTypeAndValue(names, CSTR("AttributeTypeAndValue"));
 }
 
-void Net::Names::PKIX1Explicit88::Certificate(NotNullPtr<ASN1Names> names)
+void Net::Names::PKIX1Explicit88::Certificate(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("Certificate"), CertificateCont);
 }
 
-void Net::Names::PKIX1Explicit88::CertificateCont(NotNullPtr<ASN1Names> names)
+void Net::Names::PKIX1Explicit88::CertificateCont(NN<ASN1Names> names)
 {
 	AddTBSCertificate(names, CSTR("tbsCertificate"));
 	AddAlgorithmIdentifier(names, CSTR("signatureAlgorithm"));
 	names->TypeIs(Net::ASN1Util::IT_BIT_STRING)->NextValue(CSTR("signature"));
 }
 
-void Net::Names::PKIX1Explicit88::AddTBSCertificate(NotNullPtr<ASN1Names> names, Text::CStringNN name)
+void Net::Names::PKIX1Explicit88::AddTBSCertificate(NN<ASN1Names> names, Text::CStringNN name)
 {
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(name, TBSCertificateCont);
 }
 
-void Net::Names::PKIX1Explicit88::TBSCertificateCont(NotNullPtr<ASN1Names> names)
+void Net::Names::PKIX1Explicit88::TBSCertificateCont(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("version"), Version);
 	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("serialNumber"));
@@ -72,51 +72,51 @@ void Net::Names::PKIX1Explicit88::TBSCertificateCont(NotNullPtr<ASN1Names> names
 	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_3)->Container(CSTR("extensions"), Extensions);
 }
 
-void Net::Names::PKIX1Explicit88::Version(NotNullPtr<ASN1Names> names)
+void Net::Names::PKIX1Explicit88::Version(NN<ASN1Names> names)
 {
 	static Text::CStringNN Version[] = {CSTR("v1"), CSTR("v2"), CSTR("v3")};
 	names->TypeIs(Net::ASN1Util::IT_INTEGER)->Enum(CSTR("Version"), Version, 3);
 }
 
-void Net::Names::PKIX1Explicit88::AddValidity(NotNullPtr<ASN1Names> names, Text::CStringNN name)
+void Net::Names::PKIX1Explicit88::AddValidity(NN<ASN1Names> names, Text::CStringNN name)
 {
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(name, ValidityCont);
 }
 
-void Net::Names::PKIX1Explicit88::ValidityCont(NotNullPtr<ASN1Names> names)
+void Net::Names::PKIX1Explicit88::ValidityCont(NN<ASN1Names> names)
 {
 	names->TypeIsTime()->NextValue(CSTR("notBefore"));
 	names->TypeIsTime()->NextValue(CSTR("notAfter"));
 }
 
-void Net::Names::PKIX1Explicit88::AddSubjectPublicKeyInfo(NotNullPtr<ASN1Names> names, Text::CStringNN name)
+void Net::Names::PKIX1Explicit88::AddSubjectPublicKeyInfo(NN<ASN1Names> names, Text::CStringNN name)
 {
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(name, SubjectPublicKeyInfoCont);
 }
 
-void Net::Names::PKIX1Explicit88::SubjectPublicKeyInfoCont(NotNullPtr<ASN1Names> names)
+void Net::Names::PKIX1Explicit88::SubjectPublicKeyInfoCont(NN<ASN1Names> names)
 {
 	AddAlgorithmIdentifier(names, CSTR("algorithm"));
 	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.1.1"), Net::ASN1Util::IT_BIT_STRING)->Container(CSTR("subjectPublicKey"), PKCS1::RSAPublicKey);
 	names->TypeIs(Net::ASN1Util::IT_BIT_STRING)->NextValue(CSTR("subjectPublicKey"));
 }
 
-void Net::Names::PKIX1Explicit88::AddExtensions(NotNullPtr<ASN1Names> names, Text::CStringNN name)
+void Net::Names::PKIX1Explicit88::AddExtensions(NN<ASN1Names> names, Text::CStringNN name)
 {
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(name, ExtensionsCont);
 }
 
-void Net::Names::PKIX1Explicit88::Extensions(NotNullPtr<ASN1Names> names)
+void Net::Names::PKIX1Explicit88::Extensions(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("Extensions"), ExtensionsCont);
 }
 
-void Net::Names::PKIX1Explicit88::ExtensionsCont(NotNullPtr<ASN1Names> names)
+void Net::Names::PKIX1Explicit88::ExtensionsCont(NN<ASN1Names> names)
 {
 	names->RepeatIfTypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("Extension"), ExtensionCont);
 }
 
-void Net::Names::PKIX1Explicit88::ExtensionCont(NotNullPtr<ASN1Names> names)
+void Net::Names::PKIX1Explicit88::ExtensionCont(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_OID)->NextValue(CSTR("extnID"));
 	names->TypeIs(Net::ASN1Util::IT_BOOLEAN)->NextValue(CSTR("critical"));
@@ -133,24 +133,24 @@ void Net::Names::PKIX1Explicit88::ExtensionCont(NotNullPtr<ASN1Names> names)
 	names->NextValue(CSTR("extnValue"));//////////////////////////////
 }
 
-void Net::Names::PKIX1Explicit88::CertificateList(NotNullPtr<ASN1Names> names)
+void Net::Names::PKIX1Explicit88::CertificateList(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("CertificateList"), CertificateListCont);
 }
 
-void Net::Names::PKIX1Explicit88::CertificateListCont(NotNullPtr<ASN1Names> names)
+void Net::Names::PKIX1Explicit88::CertificateListCont(NN<ASN1Names> names)
 {
 	AddTBSCertList(names, CSTR("tbsCertList"));
 	AddAlgorithmIdentifier(names, CSTR("signatureAlgorithm"));
 	names->TypeIs(Net::ASN1Util::IT_BIT_STRING)->NextValue(CSTR("signature"));
 }
 
-void Net::Names::PKIX1Explicit88::AddTBSCertList(NotNullPtr<ASN1Names> names, Text::CStringNN name)
+void Net::Names::PKIX1Explicit88::AddTBSCertList(NN<ASN1Names> names, Text::CStringNN name)
 {
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(name, TBSCertListCont);
 }
 
-void Net::Names::PKIX1Explicit88::TBSCertListCont(NotNullPtr<ASN1Names> names)
+void Net::Names::PKIX1Explicit88::TBSCertListCont(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("Version"));
 	AddAlgorithmIdentifier(names, CSTR("signature"));
@@ -161,24 +161,24 @@ void Net::Names::PKIX1Explicit88::TBSCertListCont(NotNullPtr<ASN1Names> names)
 	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("crlExtensions"), Extensions);
 }
 
-void Net::Names::PKIX1Explicit88::RevokedCertificates(NotNullPtr<ASN1Names> names)
+void Net::Names::PKIX1Explicit88::RevokedCertificates(NN<ASN1Names> names)
 {
 	names->RepeatIfTypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("revokedCertificate"), RevokedCertificateCont);
 }
 
-void Net::Names::PKIX1Explicit88::RevokedCertificateCont(NotNullPtr<ASN1Names> names)
+void Net::Names::PKIX1Explicit88::RevokedCertificateCont(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("userCertificate"));
 	names->TypeIsTime()->NextValue(CSTR("revocationDate"));
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("crlEntryExtensions"), ExtensionsCont);
 }
 
-void Net::Names::PKIX1Explicit88::AddAlgorithmIdentifier(NotNullPtr<ASN1Names> names, Text::CStringNN name)
+void Net::Names::PKIX1Explicit88::AddAlgorithmIdentifier(NN<ASN1Names> names, Text::CStringNN name)
 {
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(name, AlgorithmIdentifierCont);
 }
 
-void Net::Names::PKIX1Explicit88::AlgorithmIdentifierCont(NotNullPtr<ASN1Names> names)
+void Net::Names::PKIX1Explicit88::AlgorithmIdentifierCont(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_OID)->NextValue(CSTR("algorithm"));
 	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.12.1.3"), Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("parameters"), General::PBEParam); //pbeWithSHAAnd3-KeyTripleDES-CBC

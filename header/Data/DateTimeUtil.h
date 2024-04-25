@@ -45,22 +45,22 @@ namespace Data
 		static Int8 localTzQhr;
 		static Bool localTzValid;
 
-		static void DateValueSetDate(NotNullPtr<Data::DateTimeUtil::DateValue> t, Text::PString *dateStrs);
-		static void TimeValueSetTime(NotNullPtr<Data::DateTimeUtil::TimeValue> t, Text::PString *timeStrs, OutParam<UInt32> nanosec);
+		static void DateValueSetDate(NN<Data::DateTimeUtil::DateValue> t, Text::PString *dateStrs);
+		static void TimeValueSetTime(NN<Data::DateTimeUtil::TimeValue> t, Text::PString *timeStrs, OutParam<UInt32> nanosec);
 	public:
 		static Int64 Date2TotalDays(Int32 year, Int32 month, Int32 day);
-		static Int64 DateValue2TotalDays(NotNullPtr<const DateValue> d);
-		static Int64 TimeValue2Secs(NotNullPtr<const TimeValue> t, Int8 tzQhr);
-		static Int64 TimeValue2Ticks(NotNullPtr<const TimeValue> t, UInt32 ns, Int8 tzQhr);
-		static void Ticks2TimeValue(Int64 ticks, NotNullPtr<TimeValue> t, Int8 tzQhr);
-		static void Secs2TimeValue(Int64 secs, NotNullPtr<TimeValue> t, Int8 tzQhr);
-		static void TotalDays2DateValue(Int64 totalDays, NotNullPtr<DateValue> d);
-		static void Instant2TimeValue(Int64 secs, UInt32 nanosec, NotNullPtr<TimeValue> t, Int8 tzQhr);
+		static Int64 DateValue2TotalDays(NN<const DateValue> d);
+		static Int64 TimeValue2Secs(NN<const TimeValue> t, Int8 tzQhr);
+		static Int64 TimeValue2Ticks(NN<const TimeValue> t, UInt32 ns, Int8 tzQhr);
+		static void Ticks2TimeValue(Int64 ticks, NN<TimeValue> t, Int8 tzQhr);
+		static void Secs2TimeValue(Int64 secs, NN<TimeValue> t, Int8 tzQhr);
+		static void TotalDays2DateValue(Int64 totalDays, NN<DateValue> d);
+		static void Instant2TimeValue(Int64 secs, UInt32 nanosec, NN<TimeValue> t, Int8 tzQhr);
 		static Weekday Ticks2Weekday(Int64 ticks, Int8 tzQhr);
 		static Weekday Instant2Weekday(Data::TimeInstant inst, Int8 tzQhr);
-		static UTF8Char *ToString(UTF8Char *sbuff, NotNullPtr<const TimeValue> tval, Int8 tzQhr, UInt32 nanosec, const UTF8Char *pattern);
-		static Bool String2TimeValue(Text::CStringNN dateStr, NotNullPtr<TimeValue> tval, Int8 defTzQhr, OutParam<Int8> outTzQhr, OutParam<UInt32> nanosec);
-		static Bool TimeValueFromYMDHMS(Int64 ymdhms, NotNullPtr<TimeValue> tval);
+		static UTF8Char *ToString(UTF8Char *sbuff, NN<const TimeValue> tval, Int8 tzQhr, UInt32 nanosec, const UTF8Char *pattern);
+		static Bool String2TimeValue(Text::CStringNN dateStr, NN<TimeValue> tval, Int8 defTzQhr, OutParam<Int8> outTzQhr, OutParam<UInt32> nanosec);
+		static Bool TimeValueFromYMDHMS(Int64 ymdhms, NN<TimeValue> tval);
 
 		static Bool IsYearLeap(OSInt year);
 		static Int32 ParseYearStr(Text::CStringNN year);

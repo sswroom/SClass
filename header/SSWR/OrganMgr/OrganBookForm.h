@@ -32,40 +32,40 @@ namespace SSWR
 		class OrganBookForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<OrganEnv> env;
+			NN<OrganEnv> env;
 
-			NotNullPtr<UI::GUIPanel> pnlBook;
-			NotNullPtr<UI::GUIPanel> pnlBookDet;
-			NotNullPtr<UI::GUIListView> lvBook;
-			NotNullPtr<UI::GUIHSplitter> hspBook;
-			NotNullPtr<UI::GUIButton> btnBookPaste;
-			NotNullPtr<UI::GUILabel> lblBookPublish;
-			NotNullPtr<UI::GUIDateTimePicker> dtpBookPublish;
-			NotNullPtr<UI::GUILabel> lblBookAuthor;
-			NotNullPtr<UI::GUITextBox> txtBookAuthor;
-			NotNullPtr<UI::GUILabel> lblBookTitle;
-			NotNullPtr<UI::GUITextBox> txtBookTitle;
-			NotNullPtr<UI::GUILabel> lblBookSource;
-			NotNullPtr<UI::GUITextBox> txtBookSource;
-			NotNullPtr<UI::GUILabel> lblBookURL;
-			NotNullPtr<UI::GUITextBox> txtBookURL;
-			NotNullPtr<UI::GUILabel> lblBookGroup;
-			NotNullPtr<UI::GUITextBox> txtBookGroup;
-			NotNullPtr<UI::GUIButton> btnBookAdd;
-			NotNullPtr<UI::GUITabControl> tcBook;
-			NotNullPtr<UI::GUITabPage> tpBookRef;
-			NotNullPtr<UI::GUITabPage> tpBookAuthor;
+			NN<UI::GUIPanel> pnlBook;
+			NN<UI::GUIPanel> pnlBookDet;
+			NN<UI::GUIListView> lvBook;
+			NN<UI::GUIHSplitter> hspBook;
+			NN<UI::GUIButton> btnBookPaste;
+			NN<UI::GUILabel> lblBookPublish;
+			NN<UI::GUIDateTimePicker> dtpBookPublish;
+			NN<UI::GUILabel> lblBookAuthor;
+			NN<UI::GUITextBox> txtBookAuthor;
+			NN<UI::GUILabel> lblBookTitle;
+			NN<UI::GUITextBox> txtBookTitle;
+			NN<UI::GUILabel> lblBookSource;
+			NN<UI::GUITextBox> txtBookSource;
+			NN<UI::GUILabel> lblBookURL;
+			NN<UI::GUITextBox> txtBookURL;
+			NN<UI::GUILabel> lblBookGroup;
+			NN<UI::GUITextBox> txtBookGroup;
+			NN<UI::GUIButton> btnBookAdd;
+			NN<UI::GUITabControl> tcBook;
+			NN<UI::GUITabPage> tpBookRef;
+			NN<UI::GUITabPage> tpBookAuthor;
 
 			BookArrayList bookList;
 			Bool changed;
 
-			static void __stdcall OnBookPublishChg(AnyType userObj, NotNullPtr<Data::DateTime> newDate);
+			static void __stdcall OnBookPublishChg(AnyType userObj, NN<Data::DateTime> newDate);
 			static void __stdcall OnBookAddClicked(AnyType userObj);
 			static void __stdcall OnBookPasteClicked(AnyType userObj);
 
 			void UpdateBookList();
 		public:
-			OrganBookForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env);
+			OrganBookForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<OrganEnv> env);
 			virtual ~OrganBookForm();
 
 			virtual void OnMonitorChanged();

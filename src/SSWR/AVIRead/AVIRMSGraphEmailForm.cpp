@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRMSGraphEmailForm::OnReadClicked(AnyType userOb
 
     Net::MSGraphClient cli(me->core->GetSocketFactory(), me->ssl);
 	cli.SetLog(me->log);
-    NotNullPtr<Net::MSGraphAccessToken> token;
+    NN<Net::MSGraphAccessToken> token;
     if (cli.AccessTokenGet(sbTenantId.ToCString(), sbClientId.ToCString(), sbClientSecret.ToCString(), CSTR_NULL).SetTo(token))
     {
         Data::ArrayListNN<Net::MSGraphEventMessageRequest> msgList;
@@ -54,10 +54,10 @@ void __stdcall SSWR::AVIRead::AVIRMSGraphEmailForm::OnReadClicked(AnyType userOb
         {
 			Text::StringBuilderUTF8 sb;
             console.WriteLineCStr(CSTR("Mail folders Get:"));
-			Data::ArrayIterator<NotNullPtr<Net::MSGraphMailFolder>> it = folderList.Iterator();
+			Data::ArrayIterator<NN<Net::MSGraphMailFolder>> it = folderList.Iterator();
 			while (it.HasNext())
 			{
-				NotNullPtr<Net::MSGraphMailFolder> folder = it.Next();
+				NN<Net::MSGraphMailFolder> folder = it.Next();
 				sb.ClearStr();
 				sb.AppendOpt(folder->GetDisplayName());
 				sb.AppendC(UTF8STRC(" ("));

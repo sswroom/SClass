@@ -4,9 +4,9 @@
 #include "Text/UTF8Writer.h"
 #include "Text/XML.h"
 
-Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookView(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookView(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NotNullPtr<SSWR::OrganWeb::OrganWebBookController> me = NotNullPtr<SSWR::OrganWeb::OrganWebBookController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebBookController> me = NN<SSWR::OrganWeb::OrganWebBookController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 
@@ -68,9 +68,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookView(NotNullPtr<Ne
 	}
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NotNullPtr<SSWR::OrganWeb::OrganWebBookController> me = NotNullPtr<SSWR::OrganWeb::OrganWebBookController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebBookController> me = NN<SSWR::OrganWeb::OrganWebBookController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 
@@ -82,7 +82,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NotNullPtr<N
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		BookInfo *book;
-		NotNullPtr<CategoryInfo> cate;
+		NN<CategoryInfo> cate;
 		Sync::RWMutexUsage mutUsage;
 		book = me->env->BookGet(mutUsage, id);
 		if (env.user == 0 || env.user->userType != UserType::Admin)
@@ -112,8 +112,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NotNullPtr<N
 		}
 		IO::MemoryStream mstm;
 		Text::UTF8Writer writer(mstm);
-		NotNullPtr<Text::String> s;
-		NotNullPtr<Text::String> s2;
+		NN<Text::String> s;
+		NN<Text::String> s2;
 
 		sb.ClearStr();
 		sb.Append(cate->chiName);
@@ -131,7 +131,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NotNullPtr<N
 			UserFileInfo *userFile = me->env->UserfileGet(mutUsage, book->userfileId);
 			if (userFile)
 			{
-				NotNullPtr<SpeciesInfo> sp;
+				NN<SpeciesInfo> sp;
 				if (me->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(sp))
 				{
 					writer.WriteStrC(UTF8STRC("<img src="));
@@ -230,7 +230,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NotNullPtr<N
 				writer.WriteLineC(sb.ToString(), sb.GetLength());
 
 				writer.WriteStrC(UTF8STRC("<img src="));
-				NotNullPtr<SpeciesInfo> sp;
+				NN<SpeciesInfo> sp;
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("photo.html?id="));
 				sb.AppendI32(userFile->speciesId);
@@ -297,9 +297,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NotNullPtr<N
 	}
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NotNullPtr<SSWR::OrganWeb::OrganWebBookController> me = NotNullPtr<SSWR::OrganWeb::OrganWebBookController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebBookController> me = NN<SSWR::OrganWeb::OrganWebBookController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 
@@ -308,7 +308,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NotNullPtr<Net
 	{
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
-		NotNullPtr<CategoryInfo> cate;
+		NN<CategoryInfo> cate;
 		Sync::RWMutexUsage mutUsage;
 		if (env.user == 0 || env.user->userType != UserType::Admin)
 		{
@@ -322,11 +322,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NotNullPtr<Net
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 			return true;
 		}
-		NotNullPtr<Text::String> title = Text::String::NewEmpty();
-		NotNullPtr<Text::String> author = title;
-		NotNullPtr<Text::String> press = title;
-		NotNullPtr<Text::String> pubDate = title;
-		NotNullPtr<Text::String> url = title;
+		NN<Text::String> title = Text::String::NewEmpty();
+		NN<Text::String> author = title;
+		NN<Text::String> press = title;
+		NN<Text::String> pubDate = title;
+		NN<Text::String> url = title;
 		Text::CString errMsg = CSTR_NULL;
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 		{
@@ -378,7 +378,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NotNullPtr<Net
 		}
 		IO::MemoryStream mstm;
 		Text::UTF8Writer writer(mstm);
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 
 		me->WriteHeader(&writer, cate->chiName->v, env.user, env.isMobile);
 		writer.WriteStrC(UTF8STRC("<center><h1>New Book"));

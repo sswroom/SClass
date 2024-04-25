@@ -7,7 +7,7 @@ namespace UI
 	class GUICheckedListBox : public GUIListView
 	{
 	public:
-		GUICheckedListBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
+		GUICheckedListBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 		virtual ~GUICheckedListBox();
 
 		virtual Text::CStringNN GetObjectClass() const;

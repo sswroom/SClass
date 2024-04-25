@@ -14,7 +14,7 @@ namespace UI
 		Data::ArrayList<Data::CallbackStorage<SelectedChangeHandler>> selectedChangeHdlrs;
 
 	public:
-		GUIRadioButton(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
+		GUIRadioButton(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 		virtual ~GUIRadioButton();
 
 		virtual Text::CStringNN GetObjectClass() const;

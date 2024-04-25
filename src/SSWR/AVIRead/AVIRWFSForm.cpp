@@ -3,7 +3,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRWFSForm::OnLoadClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWFSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWFSForm>();
+	NN<SSWR::AVIRead::AVIRWFSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWFSForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtWFSURL->GetText(sb);
 	SDEL_CLASS(me->wfs);
@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRWFSForm::OnLoadClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRWFSForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWFSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWFSForm>();
+	NN<SSWR::AVIRead::AVIRWFSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWFSForm>();
 	if (me->wfs && !me->wfs->IsError())
 	{
 		me->SetDialogResult(UI::GUIForm::DR_OK);
@@ -42,14 +42,14 @@ void __stdcall SSWR::AVIRead::AVIRWFSForm::OnOKClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRWFSForm::OnFeatureSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWFSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWFSForm>();
+	NN<SSWR::AVIRead::AVIRWFSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWFSForm>();
 	if (me->wfs && !me->wfs->IsError())
 	{
 		me->wfs->SetFeature(me->cboFeature->GetSelectedIndex());
 	}
 }
 
-SSWR::AVIRead::AVIRWFSForm::AVIRWFSForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 240, ui)
+SSWR::AVIRead::AVIRWFSForm::AVIRWFSForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 240, ui)
 {
 	this->core = core;
 	this->wfs = 0;

@@ -28,7 +28,7 @@ namespace IO
 	private:
 		void InitStream(const WChar *fileName, FileMode mode, FileShare share, BufferType buffType);
 	public:
-		FileStream(NotNullPtr<Text::String> fileName, FileMode mode, FileShare share, BufferType buffType);
+		FileStream(NN<Text::String> fileName, FileMode mode, FileShare share, BufferType buffType);
 		FileStream(Text::CStringNN fileName, FileMode mode, FileShare share, BufferType buffType);
 		virtual ~FileStream();
 

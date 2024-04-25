@@ -8,7 +8,7 @@
 #include "Net/PushServer.h"
 #include "Net/SSLEngineFactory.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Manage::ExceptionRecorder exHdlr(CSTR("PushServer.err"), Manage::ExceptionRecorder::EA_RESTART);
 	IO::ConsoleWriter console;
@@ -18,8 +18,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		console.WriteLineC(UTF8STRC("Config file not found"));
 		return 1;
 	}
-	NotNullPtr<Text::String> sPort;
-	NotNullPtr<Text::String> fcmKey;
+	NN<Text::String> sPort;
+	NN<Text::String> fcmKey;
 	if (!cfg->GetValue(CSTR("Port")).SetTo(sPort))
 	{
 		DEL_CLASS(cfg);

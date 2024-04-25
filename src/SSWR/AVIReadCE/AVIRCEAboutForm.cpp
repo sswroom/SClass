@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIReadCE::AVIRCEAboutForm::OKClicked(void *userObj)
 	me->Close();
 }
 
-SSWR::AVIReadCE::AVIRCEAboutForm::AVIRCEAboutForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui) : UI::GUIForm(parent, 240, 120, ui)
+SSWR::AVIReadCE::AVIRCEAboutForm::AVIRCEAboutForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui) : UI::GUIForm(parent, 240, 120, ui)
 {
 	this->SetText(CSTR("About");
 	this->SetFont(0, 0, 8.25, false);

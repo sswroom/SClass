@@ -20,33 +20,33 @@ namespace SSWR
 			typedef struct
 			{
 				UOSInt colIndex;
-				NotNullPtr<DB::ColDef> colDef;
+				NN<DB::ColDef> colDef;
 				void *datas;
 			} ColInfo;
 		private:
-			NotNullPtr<UI::GUIPanel> pnlStrCols;
-			NotNullPtr<UI::GUILabel> lblStrCols;
-			NotNullPtr<UI::GUIListBox> lbStrCols;
-			NotNullPtr<UI::GUIButton> btnStrColsDbl;
-			NotNullPtr<UI::GUIButton> btnStrColsInt32;
-			NotNullPtr<UI::GUIPanel> pnlXAxis;
-			NotNullPtr<UI::GUILabel> lblXAxis;
-			NotNullPtr<UI::GUIComboBox> cboXAxis;
-			NotNullPtr<UI::GUIGroupBox> grpYAxis;
-			NotNullPtr<UI::GUIPanel> pnlYAxis;
-			NotNullPtr<UI::GUILabel> lblYAxis;
-			NotNullPtr<UI::GUIComboBox> cboYAxis;
-			NotNullPtr<UI::GUIButton> btnYAxis;
-			NotNullPtr<UI::GUIListBox> lbYAxis;
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUIButton> btnPlot;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUIPanel> pnlStrCols;
+			NN<UI::GUILabel> lblStrCols;
+			NN<UI::GUIListBox> lbStrCols;
+			NN<UI::GUIButton> btnStrColsDbl;
+			NN<UI::GUIButton> btnStrColsInt32;
+			NN<UI::GUIPanel> pnlXAxis;
+			NN<UI::GUILabel> lblXAxis;
+			NN<UI::GUIComboBox> cboXAxis;
+			NN<UI::GUIGroupBox> grpYAxis;
+			NN<UI::GUIPanel> pnlYAxis;
+			NN<UI::GUILabel> lblYAxis;
+			NN<UI::GUIComboBox> cboYAxis;
+			NN<UI::GUIButton> btnYAxis;
+			NN<UI::GUIListBox> lbYAxis;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUIButton> btnPlot;
+			NN<UI::GUIButton> btnCancel;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			DB::ReadingDB *db;
 			Data::Chart *chart;
 			Data::ArrayList<UInt32> *yCols;
-			NotNullPtr<Text::String> tableName;
+			NN<Text::String> tableName;
 			Optional<Text::String> schemaName;
 			DB::DBUtil::ColType *strTypes;
 
@@ -56,7 +56,7 @@ namespace SSWR
 			static void __stdcall OnStrColsDblClicked(AnyType userObj);
 			static void __stdcall OnStrColsInt32Clicked(AnyType userObj);
 		public:
-			AVIRLineChartForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, DB::ReadingDB *db, Text::CString schemaName, Text::CString tableName);
+			AVIRLineChartForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, DB::ReadingDB *db, Text::CString schemaName, Text::CString tableName);
 			virtual ~AVIRLineChartForm();
 
 			virtual void OnMonitorChanged();

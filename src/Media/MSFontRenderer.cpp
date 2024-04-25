@@ -3,7 +3,7 @@
 #include "Media/MSFontRenderer.h"
 #include "Media/StaticImage.h"
 
-Media::MSFontRenderer::MSFontRenderer(NotNullPtr<Text::String> sourceName, const UInt8 *fontBuff, UOSInt buffSize) : Media::FontRenderer(sourceName)
+Media::MSFontRenderer::MSFontRenderer(NN<Text::String> sourceName, const UInt8 *fontBuff, UOSInt buffSize) : Media::FontRenderer(sourceName)
 {
 	this->fontBuff = 0;
 	UOSInt ver = ReadUInt16(&fontBuff[0]);
@@ -81,7 +81,7 @@ Optional<Media::StaticImage> Media::MSFontRenderer::CreateImage(UTF32Char charCo
 		return 0;
 	}
 	UOSInt imgSize = fntH * ((fntW + 7) >> 3);
-	NotNullPtr<Media::StaticImage> simg;
+	NN<Media::StaticImage> simg;
 	Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
 	NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UOSInt>(fntW, fntH), 0, 1, Media::PF_PAL_W1, imgSize, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_PREMUL_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	simg->info.hdpi = ReadUInt16(&this->fontBuff[72]);

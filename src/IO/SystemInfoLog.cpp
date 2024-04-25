@@ -2,14 +2,14 @@
 #include "IO/SystemInfoLog.h"
 #include "Text/MyString.h"
 
-void IO::SystemInfoLog::FreeServerRole(NotNullPtr<ServerRole> serverRole)
+void IO::SystemInfoLog::FreeServerRole(NN<ServerRole> serverRole)
 {
 	SDEL_TEXT(serverRole->name);
 	SDEL_TEXT(serverRole->data);
 	MemFreeNN(serverRole);
 }
 
-void IO::SystemInfoLog::FreeDeviceInfo(NotNullPtr<DeviceInfo> deviceInfo)
+void IO::SystemInfoLog::FreeDeviceInfo(NN<DeviceInfo> deviceInfo)
 {
 	deviceInfo->desc->Release();
 	deviceInfo->hwId->Release();
@@ -18,7 +18,7 @@ void IO::SystemInfoLog::FreeDeviceInfo(NotNullPtr<DeviceInfo> deviceInfo)
 	MemFreeNN(deviceInfo);
 }
 
-void IO::SystemInfoLog::FreeDriverInfo(NotNullPtr<DriverInfo> driverInfo)
+void IO::SystemInfoLog::FreeDriverInfo(NN<DriverInfo> driverInfo)
 {
 	driverInfo->fileName->Release();
 	OPTSTR_DEL(driverInfo->creationDate);
@@ -106,20 +106,20 @@ UInt32 IO::SystemInfoLog::GetProductType() const
 
 void IO::SystemInfoLog::AddServerRole(const UTF8Char *name, const UTF8Char *data)
 {
-	NotNullPtr<ServerRole> role = MemAllocNN(ServerRole);
+	NN<ServerRole> role = MemAllocNN(ServerRole);
 	role->name = SCOPY_TEXT(name);
 	role->data = SCOPY_TEXT(data);
 	this->serverRoles.Add(role);
 }
 
-NotNullPtr<const Data::ArrayListNN<IO::SystemInfoLog::ServerRole>> IO::SystemInfoLog::GetServerRoles() const
+NN<const Data::ArrayListNN<IO::SystemInfoLog::ServerRole>> IO::SystemInfoLog::GetServerRoles() const
 {
 	return this->serverRoles;
 }
 
 void IO::SystemInfoLog::AddDeviceInfo(const UTF8Char *desc, const UTF8Char *hwId, const UTF8Char *service, const UTF8Char *driver)
 {
-	NotNullPtr<DeviceInfo> dev = MemAllocNN(DeviceInfo);
+	NN<DeviceInfo> dev = MemAllocNN(DeviceInfo);
 	dev->desc = Text::String::NewNotNullSlow(desc);
 	dev->hwId = Text::String::NewNotNullSlow(hwId);
 	dev->service = Text::String::NewOrNullSlow(service);
@@ -127,14 +127,14 @@ void IO::SystemInfoLog::AddDeviceInfo(const UTF8Char *desc, const UTF8Char *hwId
 	this->deviceInfos.Add(dev);
 }
 
-NotNullPtr<const Data::ArrayListNN<IO::SystemInfoLog::DeviceInfo>> IO::SystemInfoLog::GetDeviceInfos() const
+NN<const Data::ArrayListNN<IO::SystemInfoLog::DeviceInfo>> IO::SystemInfoLog::GetDeviceInfos() const
 {
 	return this->deviceInfos;
 }
 
 void IO::SystemInfoLog::AddDriverInfo(const UTF8Char *fileName, UInt64 fileSize, const UTF8Char *creationDate, const UTF8Char *version, const UTF8Char *manufacturer, const UTF8Char *productName, const UTF8Char *group, UInt32 altitude)
 {
-	NotNullPtr<DriverInfo> driver = MemAllocNN(DriverInfo);
+	NN<DriverInfo> driver = MemAllocNN(DriverInfo);
 	driver->fileName = Text::String::NewNotNullSlow(fileName);
 	driver->fileSize = fileSize;
 	driver->creationDate = Text::String::NewOrNullSlow(creationDate);
@@ -146,7 +146,7 @@ void IO::SystemInfoLog::AddDriverInfo(const UTF8Char *fileName, UInt64 fileSize,
 	this->driverInfos.Add(driver);
 }
 
-NotNullPtr<const Data::ArrayListNN<IO::SystemInfoLog::DriverInfo>> IO::SystemInfoLog::GetDriverInfos() const
+NN<const Data::ArrayListNN<IO::SystemInfoLog::DriverInfo>> IO::SystemInfoLog::GetDriverInfos() const
 {
 	return this->driverInfos;
 }

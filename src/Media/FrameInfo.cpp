@@ -37,7 +37,7 @@ void Media::FrameInfo::Clear()
 	this->rotateType = Media::RotateType::None;
 }
 
-void Media::FrameInfo::Set(NotNullPtr<const FrameInfo> info)
+void Media::FrameInfo::Set(NN<const FrameInfo> info)
 {
 	this->storeSize = info->storeSize;
 	this->dispSize = info->dispSize;
@@ -56,7 +56,7 @@ void Media::FrameInfo::Set(NotNullPtr<const FrameInfo> info)
 	this->ycOfst = info->ycOfst;
 }
 
-void Media::FrameInfo::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Media::FrameInfo::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	sb->AppendC(UTF8STRC("FourCC = "));
 	if (this->fourcc < 1024)

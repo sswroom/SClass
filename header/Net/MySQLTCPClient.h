@@ -35,15 +35,15 @@ namespace Net
 			Data
 		};
 	private:
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Net::SocketUtil::AddressInfo addr;
 		UInt16 port;
 		Net::TCPClient *cli;
 		Sync::Mutex cliMut;
 		Bool recvRunning;
 		Bool recvStarted;
-		NotNullPtr<Text::String> userName;
-		NotNullPtr<Text::String> password;
+		NN<Text::String> userName;
+		NN<Text::String> password;
 		Optional<Text::String> database;
 		ClientMode mode;
 		Text::String *svrVer;
@@ -70,8 +70,8 @@ namespace Net
 		void SendExecuteStmt(UInt32 stmtId);
 		void SendStmtClose(UInt32 stmtId);
 	public:
-		MySQLTCPClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NotNullPtr<Text::String> userName, NotNullPtr<Text::String> password, Optional<Text::String> database);
-		MySQLTCPClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Text::CString userName, Text::CString password, Text::CString database);
+		MySQLTCPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NN<Text::String> userName, NN<Text::String> password, Optional<Text::String> database);
+		MySQLTCPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Text::CString userName, Text::CString password, Text::CString database);
 		virtual ~MySQLTCPClient();
 
 		virtual DB::SQLType GetSQLType() const;
@@ -79,23 +79,23 @@ namespace Net
 		virtual DB::DBConn::ConnType GetConnType() const;
 		virtual Int8 GetTzQhr() const;
 		virtual void ForceTz(Int8 tzQhr);
-		virtual void GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual void GetConnName(NN<Text::StringBuilderUTF8> sb);
 		virtual void Close();
 		virtual void Dispose();
 		virtual OSInt ExecuteNonQuery(Text::CStringNN sql);
 		virtual Optional<DB::DBReader> ExecuteReader(Text::CStringNN sql);
 		Optional<DB::DBReader> ExecuteReaderText(Text::CStringNN sql);
 		Optional<DB::DBReader> ExecuteReaderBinary(Text::CStringNN sql);
-		virtual void CloseReader(NotNullPtr<DB::DBReader> r);
-		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
+		virtual void CloseReader(NN<DB::DBReader> r);
+		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual Bool IsLastDataError();
 		virtual void Reconnect();
 
 		virtual Optional<DB::DBTransaction> BeginTransaction();
-		virtual void Commit(NotNullPtr<DB::DBTransaction> tran);
-		virtual void Rollback(NotNullPtr<DB::DBTransaction> tran);
+		virtual void Commit(NN<DB::DBTransaction> tran);
+		virtual void Rollback(NN<DB::DBTransaction> tran);
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
 		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		Bool ChangeSchema(const UTF8Char *schemaName);
 
@@ -108,15 +108,15 @@ namespace Net
 		UInt32 GetServerCap() const;
 		UInt16 GetServerCS() const;
 
-		NotNullPtr<const Net::SocketUtil::AddressInfo> GetConnAddr() const;
+		NN<const Net::SocketUtil::AddressInfo> GetConnAddr() const;
 		UInt16 GetConnPort() const;
 		Optional<Text::String> GetConnDB() const;
-		NotNullPtr<Text::String> GetConnUID() const;
-		NotNullPtr<Text::String> GetConnPWD() const;
+		NN<Text::String> GetConnUID() const;
+		NN<Text::String> GetConnPWD() const;
 
 		static UInt16 GetDefaultPort();
-		static DB::DBTool *CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Text::String> serverName, Optional<Text::String> dbName, NotNullPtr<Text::String> uid, NotNullPtr<Text::String> pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
-		static DB::DBTool *CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
+		static DB::DBTool *CreateDBTool(NN<Net::SocketFactory> sockf, NN<Text::String> serverName, Optional<Text::String> dbName, NN<Text::String> uid, NN<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix);
+		static DB::DBTool *CreateDBTool(NN<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix);
 	};
 }
 #endif

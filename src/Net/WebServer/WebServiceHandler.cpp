@@ -15,7 +15,7 @@ Net::WebServer::WebServiceHandler::~WebServiceHandler()
 	}
 }
 
-Bool Net::WebServer::WebServiceHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Net::WebServer::WebServiceHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	Net::WebServer::WebServiceHandler::ServiceInfo *service;
 	service = this->services.GetC(subReq);

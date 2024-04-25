@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Net/SSHManager.h"
 
-Net::SSHManager::SSHManager(NotNullPtr<Net::SocketFactory> sockf)
+Net::SSHManager::SSHManager(NN<Net::SocketFactory> sockf)
 {
 	this->sockf = sockf;
 	this->error = 1;

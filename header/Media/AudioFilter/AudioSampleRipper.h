@@ -20,7 +20,7 @@ namespace Media
 		private:
 			void ResetStatus();
 		public:
-			AudioSampleRipper(NotNullPtr<IAudioSource> sourceAudio, UInt32 sampleCount);
+			AudioSampleRipper(NN<IAudioSource> sourceAudio, UInt32 sampleCount);
 			virtual ~AudioSampleRipper();
 
 			virtual Data::Duration SeekToTime(Data::Duration time);

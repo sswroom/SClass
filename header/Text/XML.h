@@ -27,23 +27,23 @@ namespace Text
 		static WChar *ToHTMLBodyText(WChar *buff, const WChar *text);
 		static UTF8Char *ToAttrText(UTF8Char *buff, const UTF8Char *text);
 		static WChar *ToAttrText(WChar *buff, const WChar *text);
-		static NotNullPtr<Text::String> ToNewXMLText(const UTF8Char *text);
+		static NN<Text::String> ToNewXMLText(const UTF8Char *text);
 		static const WChar *ToNewXMLText(const WChar *text);
-		static NotNullPtr<Text::String> ToNewXMLTextLite(const UTF8Char *text);
+		static NN<Text::String> ToNewXMLTextLite(const UTF8Char *text);
 		static const WChar *ToNewXMLTextLite(const WChar *text);
-		static NotNullPtr<Text::String> ToNewHTMLBodyText(const UTF8Char *text);
-		static NotNullPtr<Text::String> ToNewHTMLElementText(const UTF8Char *text);
+		static NN<Text::String> ToNewHTMLBodyText(const UTF8Char *text);
+		static NN<Text::String> ToNewHTMLElementText(const UTF8Char *text);
 		static const WChar *ToNewHTMLBodyText(const WChar *text);
-		static NotNullPtr<Text::String> ToNewAttrText(const UTF8Char *text);
+		static NN<Text::String> ToNewAttrText(const UTF8Char *text);
 		static const WChar *ToNewAttrText(const WChar *text);
-		static NotNullPtr<Text::String> ToNewHTMLTextXMLColor(const UTF8Char *text);
+		static NN<Text::String> ToNewHTMLTextXMLColor(const UTF8Char *text);
 		static void FreeNewText(const WChar *text);
 		static void ParseStr(Text::String *out, const UTF8Char *xmlStart, const UTF8Char *xmlEnd);
 		static void ParseStr(UTF8Char *out, const UTF8Char *xmlStart, const UTF8Char *xmlEnd);
 		static void ParseStr(WChar *out, const WChar *xmlStart, const WChar *xmlEnd);
 
 		static Bool HTMLAppendCharRef(const UTF8Char *chrRef, UOSInt refSize, IO::Stream *stm);
-		static Bool HTMLAppendCharRef(const UTF8Char *chrRef, UOSInt refSize, NotNullPtr<Text::StringBuilderUTF8> sb);
+		static Bool HTMLAppendCharRef(const UTF8Char *chrRef, UOSInt refSize, NN<Text::StringBuilderUTF8> sb);
 	};
 }
 #endif

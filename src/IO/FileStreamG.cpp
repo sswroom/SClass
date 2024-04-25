@@ -10,7 +10,7 @@
 #include <share.h>
 #endif
 
-IO::FileStream::FileStream(NotNullPtr<Text::String> fileName, FileMode mode, FileShare share, IO::FileStream::BufferType buffType) : IO::SeekableStream(fileName)
+IO::FileStream::FileStream(NN<Text::String> fileName, FileMode mode, FileShare share, IO::FileStream::BufferType buffType) : IO::SeekableStream(fileName)
 {
 	handle = 0;
 #ifndef SUPPORT_SHARE

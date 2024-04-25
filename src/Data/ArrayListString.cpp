@@ -11,9 +11,9 @@ Data::ArrayListString::ArrayListString(UOSInt capacity) : Data::SortableArrayLis
 {
 }
 
-NotNullPtr<Data::ArrayList<Text::String*>> Data::ArrayListString::Clone() const
+NN<Data::ArrayList<Text::String*>> Data::ArrayListString::Clone() const
 {
-	NotNullPtr<Data::ArrayListString> newArr;
+	NN<Data::ArrayListString> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListString(this->capacity));
 	newArr->AddAll(*this);
 	return newArr;
@@ -23,8 +23,8 @@ OSInt Data::ArrayListString::Compare(Text::String* obj1, Text::String* obj2) con
 {
 	if (obj1 == obj2)
 		return 0;
-	NotNullPtr<Text::String> s1;
-	NotNullPtr<Text::String> s2;
+	NN<Text::String> s1;
+	NN<Text::String> s2;
 	if (!s1.Set(obj1))
 		return -1;
 	if (!s2.Set(obj2))
@@ -61,9 +61,9 @@ OSInt Data::ArrayListString::SortedIndexOfPtr(const UTF8Char *val, UOSInt len) c
 
 }
 
-NotNullPtr<Text::String> Data::ArrayListString::JoinString() const
+NN<Text::String> Data::ArrayListString::JoinString() const
 {
-	NotNullPtr<Text::String> newStr;
+	NN<Text::String> newStr;
 	UOSInt newStrLeng = 0;
 	UOSInt j;
 	UOSInt i;

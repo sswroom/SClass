@@ -19,33 +19,33 @@ namespace SSWR
 		class AVIRCoordConvForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIPanel> pnlSrc;
-			NotNullPtr<UI::GUILabel> lblSrc;
-			NotNullPtr<UI::GUIRadioButton> radSrcGeo;
-			NotNullPtr<UI::GUIRadioButton> radSrcProj;
-			NotNullPtr<UI::GUIComboBox> cboSrc;
-			NotNullPtr<UI::GUIPanel> pnlDest;
-			NotNullPtr<UI::GUILabel> lblDest;
-			NotNullPtr<UI::GUIRadioButton> radDestGeo;
-			NotNullPtr<UI::GUIRadioButton> radDestProj;
-			NotNullPtr<UI::GUIComboBox> cboDest;
-			NotNullPtr<UI::GUIButton> btnConvFile;
-			NotNullPtr<UI::GUIPanel> pnlCoord;
-			NotNullPtr<UI::GUILabel> lblName;
-			NotNullPtr<UI::GUITextBox> txtName;
-			NotNullPtr<UI::GUILabel> lblEasting;
-			NotNullPtr<UI::GUITextBox> txtEasting;
-			NotNullPtr<UI::GUILabel> lblNorthing;
-			NotNullPtr<UI::GUITextBox> txtNorthing;
-			NotNullPtr<UI::GUILabel> lblHeight;
-			NotNullPtr<UI::GUITextBox> txtHeight;
-			NotNullPtr<UI::GUIButton> btnAdd;
-			NotNullPtr<UI::GUIButton> btnClear;
-			NotNullPtr<UI::GUIButton> btnCopyAll;
-			NotNullPtr<UI::GUIListView> lvCoord;
-			NotNullPtr<UI::GUITextBox> txtStatus;
+			NN<UI::GUIPanel> pnlSrc;
+			NN<UI::GUILabel> lblSrc;
+			NN<UI::GUIRadioButton> radSrcGeo;
+			NN<UI::GUIRadioButton> radSrcProj;
+			NN<UI::GUIComboBox> cboSrc;
+			NN<UI::GUIPanel> pnlDest;
+			NN<UI::GUILabel> lblDest;
+			NN<UI::GUIRadioButton> radDestGeo;
+			NN<UI::GUIRadioButton> radDestProj;
+			NN<UI::GUIComboBox> cboDest;
+			NN<UI::GUIButton> btnConvFile;
+			NN<UI::GUIPanel> pnlCoord;
+			NN<UI::GUILabel> lblName;
+			NN<UI::GUITextBox> txtName;
+			NN<UI::GUILabel> lblEasting;
+			NN<UI::GUITextBox> txtEasting;
+			NN<UI::GUILabel> lblNorthing;
+			NN<UI::GUITextBox> txtNorthing;
+			NN<UI::GUILabel> lblHeight;
+			NN<UI::GUITextBox> txtHeight;
+			NN<UI::GUIButton> btnAdd;
+			NN<UI::GUIButton> btnClear;
+			NN<UI::GUIButton> btnCopyAll;
+			NN<UI::GUIListView> lvCoord;
+			NN<UI::GUITextBox> txtStatus;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayListStringNN nameList;
 			Data::ArrayList<Double> xList;
 			Data::ArrayList<Double> yList;
@@ -61,14 +61,14 @@ namespace SSWR
 			static void __stdcall OnCopyAllClicked(AnyType userObj);
 			static void __stdcall OnConvFileClicked(AnyType userObj);
 			static void __stdcall OnCoordDblClk(AnyType userObj, UOSInt itemIndex);
-			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 
 			void ClearItems(Bool updateList);
 			void UpdateList();
-			void FillCoordGeo(NotNullPtr<UI::GUIComboBox> cbo);
-			void FillCoordProj(NotNullPtr<UI::GUIComboBox> cbo);
+			void FillCoordGeo(NN<UI::GUIComboBox> cbo);
+			void FillCoordProj(NN<UI::GUIComboBox> cbo);
 		public:
-			AVIRCoordConvForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRCoordConvForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCoordConvForm();
 
 			virtual void OnMonitorChanged();

@@ -15,27 +15,27 @@ namespace SSWR
 		class AVIRWMSForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblWMSURL;
-			NotNullPtr<UI::GUITextBox> txtWMSURL;
-			NotNullPtr<UI::GUILabel> lblWMSVersion;
-			NotNullPtr<UI::GUIComboBox> cboWMSVersion;
-			NotNullPtr<UI::GUIButton> btnLoad;
-			NotNullPtr<UI::GUILabel> lblStatus;
-			NotNullPtr<UI::GUITextBox> txtStatus;
-			NotNullPtr<UI::GUILabel> lblLayer;
-			NotNullPtr<UI::GUIComboBox> cboLayer;
-			NotNullPtr<UI::GUILabel> lblLayerCRS;
-			NotNullPtr<UI::GUIComboBox> cboLayerCRS;
-			NotNullPtr<UI::GUILabel> lblMapImageType;
-			NotNullPtr<UI::GUIComboBox> cboMapImageType;
-			NotNullPtr<UI::GUILabel> lblInfoType;
-			NotNullPtr<UI::GUIComboBox> cboInfoType;
-			NotNullPtr<UI::GUIButton> btnOK;
+			NN<UI::GUILabel> lblWMSURL;
+			NN<UI::GUITextBox> txtWMSURL;
+			NN<UI::GUILabel> lblWMSVersion;
+			NN<UI::GUIComboBox> cboWMSVersion;
+			NN<UI::GUIButton> btnLoad;
+			NN<UI::GUILabel> lblStatus;
+			NN<UI::GUITextBox> txtStatus;
+			NN<UI::GUILabel> lblLayer;
+			NN<UI::GUIComboBox> cboLayer;
+			NN<UI::GUILabel> lblLayerCRS;
+			NN<UI::GUIComboBox> cboLayerCRS;
+			NN<UI::GUILabel> lblMapImageType;
+			NN<UI::GUIComboBox> cboMapImageType;
+			NN<UI::GUILabel> lblInfoType;
+			NN<UI::GUIComboBox> cboInfoType;
+			NN<UI::GUIButton> btnOK;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 			Map::WebMapService *wms;
-			NotNullPtr<Math::CoordinateSystem> envCsys;
+			NN<Math::CoordinateSystem> envCsys;
 
 			static void __stdcall OnLoadClicked(AnyType userObj);
 			static void __stdcall OnOKClicked(AnyType userObj);
@@ -44,7 +44,7 @@ namespace SSWR
 			static void __stdcall OnMapImageTypeSelChg(AnyType userObj);
 			static void __stdcall OnInfoTypeSelChg(AnyType userObj);
 		public:
-			AVIRWMSForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, NotNullPtr<Math::CoordinateSystem> envCsys);
+			AVIRWMSForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, NN<Math::CoordinateSystem> envCsys);
 			virtual ~AVIRWMSForm();
 
 			virtual void OnMonitorChanged();

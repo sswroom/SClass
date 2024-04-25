@@ -14,18 +14,18 @@ namespace SSWR
 		class AVIRGooglePolylineForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUILabel> lblPolylineText;
-			NotNullPtr<UI::GUITextBox> txtPolylineText;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUILabel> lblPolylineText;
+			NN<UI::GUITextBox> txtPolylineText;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 			Math::Geometry::LineString *polyline;
 
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			AVIRGooglePolylineForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRGooglePolylineForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRGooglePolylineForm();
 
 			virtual void OnMonitorChanged();

@@ -70,7 +70,7 @@ namespace Media
 			static UInt32 __stdcall WorkerThread(AnyType obj);
 			void WaitForWorker(Int32 jobStatus);
 		public:
-			CSYV12_RGB8(NotNullPtr<const Media::ColorProfile> srcColor, NotNullPtr<const Media::ColorProfile> destColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess);
+			CSYV12_RGB8(NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess);
 			virtual ~CSYV12_RGB8();
 			virtual void ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, OSInt dispWidth, OSInt dispHeight, OSInt srcStoreWidth, OSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
 			virtual Int32 GetSrcFrameSize(Int32 width, Int32 height);

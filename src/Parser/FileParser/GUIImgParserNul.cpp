@@ -31,7 +31,7 @@ void Parser::FileParser::GUIImgParser::SetParserList(Parser::ParserList *parsers
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::GUIImgParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::GUIImgParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 }
 
@@ -40,7 +40,7 @@ IO::ParserType Parser::FileParser::GUIImgParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	return 0;
 }

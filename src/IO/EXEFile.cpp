@@ -9,7 +9,7 @@
 #include "Text/Locale.h"
 #include "Text/MyString.h"
 
-IO::EXEFile::EXEFile(NotNullPtr<Text::String> fileName) : IO::ParsedObject(fileName)
+IO::EXEFile::EXEFile(NN<Text::String> fileName) : IO::ParsedObject(fileName)
 {
 	this->envDOS = 0;
 }
@@ -362,7 +362,7 @@ Text::CString IO::EXEFile::GetResourceTypeName(ResourceType rt)
 	}
 }
 
-void IO::EXEFile::GetResourceDesc(NotNullPtr<const ResourceInfo> res, NotNullPtr<Text::StringBuilderUTF8> sb)
+void IO::EXEFile::GetResourceDesc(NN<const ResourceInfo> res, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

@@ -4,7 +4,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSelIOPinForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelIOPinForm>();
+	NN<SSWR::AVIRead::AVIRSelIOPinForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelIOPinForm>();
 	SSWR::AVIRead::AVIRCore::IOPinType iopt = (SSWR::AVIRead::AVIRCore::IOPinType)me->cboPinType->GetSelectedItem().GetOSInt();
 
 	if (iopt == SSWR::AVIRead::AVIRCore::IOPT_GPIO)
@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(AnyType userObj)
 			me->ui->ShowMsgOK(CSTR("Please select a GPIO"), CSTR("Select GPIO"), me);
 			return;
 		}
-		NotNullPtr<IO::GPIOControl> gpioPin;
+		NN<IO::GPIOControl> gpioPin;
 		if (!gpioPin.Set(me->gpioPin))
 		{
 			me->ui->ShowMsgOK(CSTR("System does not have GPIO"), CSTR("Select GPIO"), me);
@@ -58,13 +58,13 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnCancelClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSelIOPinForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelIOPinForm>();
+	NN<SSWR::AVIRead::AVIRSelIOPinForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelIOPinForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
 void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnPinTypeChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSelIOPinForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelIOPinForm>();
+	NN<SSWR::AVIRead::AVIRSelIOPinForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelIOPinForm>();
 	UOSInt i = me->cboPinType->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
@@ -80,7 +80,7 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnPinTypeChg(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;

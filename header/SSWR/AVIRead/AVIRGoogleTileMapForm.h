@@ -15,18 +15,18 @@ namespace SSWR
 		class AVIRGoogleTileMapForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
-			NotNullPtr<UI::GUILabel> lblMapType;
-			NotNullPtr<UI::GUIComboBox> cboMapType;
-			NotNullPtr<UI::GUITextBox> txtDeclare;
-			NotNullPtr<UI::GUIButton> btnOK;
+			NN<UI::GUILabel> lblMapType;
+			NN<UI::GUIComboBox> cboMapType;
+			NN<UI::GUITextBox> txtDeclare;
+			NN<UI::GUIButton> btnOK;
 			Map::MapDrawLayer *layer;
 
 			static void __stdcall OnOKClicked(AnyType userObj);
 		public:
-			AVIRGoogleTileMapForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl);
+			AVIRGoogleTileMapForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl);
 			virtual ~AVIRGoogleTileMapForm();
 
 			virtual void OnMonitorChanged();

@@ -18,7 +18,7 @@ Int32 Parser::FileParser::COMParser::GetName()
 	return *(Int32*)"COMP";
 }
 
-void Parser::FileParser::COMParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::COMParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::EXEFile)
 	{
@@ -31,7 +31,7 @@ IO::ParserType Parser::FileParser::COMParser::GetParserType()
 	return IO::ParserType::EXEFile;
 }
 
-IO::ParsedObject *Parser::FileParser::COMParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::COMParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".COM")))
 	{

@@ -24,7 +24,7 @@ Int32 Parser::FileParser::OZF2Parser::GetName()
 	return *(Int32*)"OZF2";
 }
 
-void Parser::FileParser::OZF2Parser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::OZF2Parser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
@@ -37,7 +37,7 @@ IO::ParserType Parser::FileParser::OZF2Parser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt8 tmpBuff[1036];
 	UOSInt i;

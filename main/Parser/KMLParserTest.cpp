@@ -7,7 +7,7 @@
 #include "Text/EncodingFactory.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Text::CStringNN path = CSTR("/home/sswroom/Progs/Temp/Lantau Island.kml");
 //	Text::CStringNN path = CSTR("/mnt/raid2_3/GPS/KML/HKPath/Lantau Island.kml");

@@ -4,7 +4,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRServiceCreateForm::OnCreateClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRServiceCreateForm> me = userObj.GetNN<SSWR::AVIRead::AVIRServiceCreateForm>();
+	NN<SSWR::AVIRead::AVIRServiceCreateForm> me = userObj.GetNN<SSWR::AVIRead::AVIRServiceCreateForm>();
 	Text::StringBuilderUTF8 sbName;
 	Text::StringBuilderUTF8 sbDesc;
 	Text::StringBuilderUTF8 sbCmdLine;
@@ -45,11 +45,11 @@ void __stdcall SSWR::AVIRead::AVIRServiceCreateForm::OnCreateClicked(AnyType use
 
 void __stdcall SSWR::AVIRead::AVIRServiceCreateForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRServiceCreateForm> me = userObj.GetNN<SSWR::AVIRead::AVIRServiceCreateForm>();
+	NN<SSWR::AVIRead::AVIRServiceCreateForm> me = userObj.GetNN<SSWR::AVIRead::AVIRServiceCreateForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRServiceCreateForm::AVIRServiceCreateForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 200, ui)
+SSWR::AVIRead::AVIRServiceCreateForm::AVIRServiceCreateForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 200, ui)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

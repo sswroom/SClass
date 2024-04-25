@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/HuaweiGSMModemController.h"
 
-IO::HuaweiGSMModemController::HuaweiGSMModemController(NotNullPtr<IO::ATCommandChannel> channel, Bool needRelease) : IO::GSMModemController(channel, needRelease)
+IO::HuaweiGSMModemController::HuaweiGSMModemController(NN<IO::ATCommandChannel> channel, Bool needRelease) : IO::GSMModemController(channel, needRelease)
 {
 }
 

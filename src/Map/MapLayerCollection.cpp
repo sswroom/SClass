@@ -5,7 +5,7 @@
 
 void __stdcall Map::MapLayerCollection::InnerUpdated(AnyType userObj)
 {
-	NotNullPtr<Map::MapLayerCollection> me = userObj.GetNN<Map::MapLayerCollection>();
+	NN<Map::MapLayerCollection> me = userObj.GetNN<Map::MapLayerCollection>();
 	UOSInt i;
 	Sync::RWMutexUsage mutUsage(me->mut, false);
 	i = me->updHdlrs.GetCount();
@@ -16,7 +16,7 @@ void __stdcall Map::MapLayerCollection::InnerUpdated(AnyType userObj)
 	}
 }
 
-Map::MapLayerCollection::MapLayerCollection(NotNullPtr<Text::String> sourceName, Text::String *layerName) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CoordinateSystemManager::CreateDefaultCsys())
+Map::MapLayerCollection::MapLayerCollection(NN<Text::String> sourceName, Text::String *layerName) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CoordinateSystemManager::CreateDefaultCsys())
 {
 }
 
@@ -29,7 +29,7 @@ Map::MapLayerCollection::~MapLayerCollection()
 	this->ReleaseAll();
 }
 
-UOSInt Map::MapLayerCollection::Add(NotNullPtr<Map::MapDrawLayer> val)
+UOSInt Map::MapLayerCollection::Add(NN<Map::MapDrawLayer> val)
 {
 	val->AddUpdatedHandler(InnerUpdated, this);
 	if (this->layerList.GetCount() == 0)
@@ -42,7 +42,7 @@ UOSInt Map::MapLayerCollection::Add(NotNullPtr<Map::MapDrawLayer> val)
 
 Optional<Map::MapDrawLayer> Map::MapLayerCollection::RemoveAt(UOSInt index)
 {
-	NotNullPtr<Map::MapDrawLayer> lyr;
+	NN<Map::MapDrawLayer> lyr;
 	Sync::RWMutexUsage mutUsage(this->mut, true);
 	if (this->layerList.RemoveAt(index).SetTo(lyr))
 	{
@@ -55,7 +55,7 @@ Optional<Map::MapDrawLayer> Map::MapLayerCollection::RemoveAt(UOSInt index)
 void Map::MapLayerCollection::Clear()
 {
 	Sync::RWMutexUsage mutUsage(this->mut, true);
-	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	Data::ArrayIterator<NN<MapDrawLayer>> it = this->layerList.Iterator();
 	while (it.HasNext())
 	{
 		it.Next()->RemoveUpdatedHandler(InnerUpdated, this);
@@ -74,13 +74,13 @@ Optional<Map::MapDrawLayer> Map::MapLayerCollection::GetItem(UOSInt Index) const
 	return this->layerList.GetItem(Index);
 }
 
-Data::ArrayIterator<NotNullPtr<Map::MapDrawLayer>> Map::MapLayerCollection::Iterator(NotNullPtr<Sync::RWMutexUsage> mutUsage) const
+Data::ArrayIterator<NN<Map::MapDrawLayer>> Map::MapLayerCollection::Iterator(NN<Sync::RWMutexUsage> mutUsage) const
 {
 	mutUsage->ReplaceMutex(this->mut, false);
 	return this->layerList.Iterator();
 }
 
-void Map::MapLayerCollection::SetItem(UOSInt Index, NotNullPtr<Map::MapDrawLayer> val)
+void Map::MapLayerCollection::SetItem(UOSInt Index, NN<Map::MapDrawLayer> val)
 {
 	Sync::RWMutexUsage mutUsage(this->mut, true);
 	this->layerList.SetItem(Index, val);
@@ -89,7 +89,7 @@ void Map::MapLayerCollection::SetItem(UOSInt Index, NotNullPtr<Map::MapDrawLayer
 void Map::MapLayerCollection::SetCurrScale(Double scale)
 {
 	Sync::RWMutexUsage mutUsage(this->mut, false);
-	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	Data::ArrayIterator<NN<MapDrawLayer>> it = this->layerList.Iterator();
 	while (it.HasNext())
 	{
 		it.Next()->SetCurrScale(scale);
@@ -99,7 +99,7 @@ void Map::MapLayerCollection::SetCurrScale(Double scale)
 void Map::MapLayerCollection::SetCurrTimeTS(Int64 timeStamp)
 {
 	Sync::RWMutexUsage mutUsage(this->mut, false);
-	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	Data::ArrayIterator<NN<MapDrawLayer>> it = this->layerList.Iterator();
 	while (it.HasNext())
 	{
 		it.Next()->SetCurrTimeTS(timeStamp);
@@ -111,7 +111,7 @@ Int64 Map::MapLayerCollection::GetTimeStartTS() const
 	Int64 timeStart = 0;
 	Int64 v;
 	Sync::RWMutexUsage mutUsage(this->mut, false);
-	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	Data::ArrayIterator<NN<MapDrawLayer>> it = this->layerList.Iterator();
 	while (it.HasNext())
 	{
 		v = it.Next()->GetTimeStartTS();
@@ -132,7 +132,7 @@ Int64 Map::MapLayerCollection::GetTimeEndTS() const
 	Int64 timeEnd = 0;
 	Int64 v;
 	Sync::RWMutexUsage mutUsage(this->mut, false);
-	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	Data::ArrayIterator<NN<MapDrawLayer>> it = this->layerList.Iterator();
 	while (it.HasNext())
 	{
 		v = it.Next()->GetTimeEndTS();
@@ -152,10 +152,10 @@ Map::DrawLayerType Map::MapLayerCollection::GetLayerType() const
 {
 	Map::DrawLayerType lyrType = Map::DRAW_LAYER_UNKNOWN;
 	Sync::RWMutexUsage mutUsage(this->mut, false);
-	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	Data::ArrayIterator<NN<MapDrawLayer>> it = this->layerList.Iterator();
 	while (it.HasNext())
 	{
-		NotNullPtr<MapDrawLayer> layer = it.Next();
+		NN<MapDrawLayer> layer = it.Next();
 		if (lyrType == Map::DRAW_LAYER_UNKNOWN)
 		{
 			lyrType = layer->GetLayerType();
@@ -168,9 +168,9 @@ Map::DrawLayerType Map::MapLayerCollection::GetLayerType() const
 	return lyrType;
 }
 
-UOSInt Map::MapLayerCollection::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::MapLayerCollection::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
-	NotNullPtr<Map::MapDrawLayer> lyr;
+	NN<Map::MapDrawLayer> lyr;
 	Data::ArrayListInt64 tmpArr;
 	UOSInt m1;
 	UOSInt m2;
@@ -179,7 +179,7 @@ UOSInt Map::MapLayerCollection::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64>
 	Int64 maxId;
 	Sync::RWMutexUsage mutUsage(this->mut, false);
 	ret = 0;
-	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	Data::ArrayIterator<NN<MapDrawLayer>> it = this->layerList.Iterator();
 	while (it.HasNext())
 	{
 		lyr = it.Next();
@@ -198,9 +198,9 @@ UOSInt Map::MapLayerCollection::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64>
 	return ret;
 }
 
-UOSInt Map::MapLayerCollection::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::MapLayerCollection::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
-	NotNullPtr<Map::MapDrawLayer> lyr;
+	NN<Map::MapDrawLayer> lyr;
 	Data::ArrayListInt64 tmpArr;
 	UOSInt m1;
 	UOSInt m2;
@@ -208,7 +208,7 @@ UOSInt Map::MapLayerCollection::GetObjectIds(NotNullPtr<Data::ArrayListInt64> ou
 	Int64 currId = 0;
 	Int64 maxId;
 	Sync::RWMutexUsage mutUsage(this->mut, false);
-	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	Data::ArrayIterator<NN<MapDrawLayer>> it = this->layerList.Iterator();
 	while (it.HasNext())
 	{
 		lyr = it.Next();
@@ -227,9 +227,9 @@ UOSInt Map::MapLayerCollection::GetObjectIds(NotNullPtr<Data::ArrayListInt64> ou
 	return ret;
 }
 
-UOSInt Map::MapLayerCollection::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::MapLayerCollection::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
-	NotNullPtr<Map::MapDrawLayer> lyr;
+	NN<Map::MapDrawLayer> lyr;
 	Data::ArrayListInt64 tmpArr;
 	UOSInt m1;
 	UOSInt m2;
@@ -237,7 +237,7 @@ UOSInt Map::MapLayerCollection::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt6
 	Int64 currId = 0;
 	Int64 maxId;
 	Sync::RWMutexUsage mutUsage(this->mut, false);
-	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	Data::ArrayIterator<NN<MapDrawLayer>> it = this->layerList.Iterator();
 	while (it.HasNext())
 	{
 		lyr = it.Next();
@@ -258,11 +258,11 @@ UOSInt Map::MapLayerCollection::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt6
 
 Int64 Map::MapLayerCollection::GetObjectIdMax() const
 {
-	NotNullPtr<Map::MapDrawLayer> lyr;
+	NN<Map::MapDrawLayer> lyr;
 	Int64 maxId;
 	Int64 currId = 0;
 	Sync::RWMutexUsage mutUsage(this->mut, false);
-	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	Data::ArrayIterator<NN<MapDrawLayer>> it = this->layerList.Iterator();
 	while (it.HasNext())
 	{
 		lyr = it.Next();
@@ -276,12 +276,12 @@ void Map::MapLayerCollection::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-Bool Map::MapLayerCollection::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::MapLayerCollection::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	Int64 currId = 0;
 	Int64 maxId;
-	NotNullPtr<Map::MapDrawLayer> lyr;
-	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	NN<Map::MapDrawLayer> lyr;
+	Data::ArrayIterator<NN<MapDrawLayer>> it = this->layerList.Iterator();
 	while (it.HasNext())
 	{
 		lyr = it.Next();
@@ -310,7 +310,7 @@ DB::DBUtil::ColType Map::MapLayerCollection::GetColumnType(UOSInt colIndex, OptO
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::MapLayerCollection::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Map::MapLayerCollection::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	return false;
 }
@@ -326,9 +326,9 @@ Bool Map::MapLayerCollection::GetBounds(OutParam<Math::RectAreaDbl> bounds) cons
 	Math::RectAreaDbl minMax;
 	Math::RectAreaDbl thisBounds;
 
-	Sync::RWMutexUsage mutUsage(NotNullPtr<Sync::RWMutex>::ConvertFrom(NotNullPtr<const Sync::RWMutex>(this->mut)), false);
-	NotNullPtr<Map::MapDrawLayer> lyr;
-	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	Sync::RWMutexUsage mutUsage(NN<Sync::RWMutex>::ConvertFrom(NN<const Sync::RWMutex>(this->mut)), false);
+	NN<Map::MapDrawLayer> lyr;
+	Data::ArrayIterator<NN<MapDrawLayer>> it = this->layerList.Iterator();
 	while (it.HasNext())
 	{
 		lyr = it.Next();
@@ -372,10 +372,10 @@ Math::Geometry::Vector2D *Map::MapLayerCollection::GetNewVectorById(GetObjectSes
 {
 	Int64 currId = 0;
 	Int64 maxId;
-	NotNullPtr<Map::MapDrawLayer> lyr;
+	NN<Map::MapDrawLayer> lyr;
 	Math::Geometry::Vector2D *vec = 0;
 	Sync::RWMutexUsage mutUsage(this->mut, false);
-	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	Data::ArrayIterator<NN<MapDrawLayer>> it = this->layerList.Iterator();
 	while (it.HasNext())
 	{
 		lyr = it.Next();
@@ -419,19 +419,19 @@ Map::MapDrawLayer::ObjectClass Map::MapLayerCollection::GetObjectClass() const
 	return Map::MapDrawLayer::OC_MAP_LAYER_COLL;
 }
 
-NotNullPtr<Math::CoordinateSystem> Map::MapLayerCollection::GetCoordinateSystem()
+NN<Math::CoordinateSystem> Map::MapLayerCollection::GetCoordinateSystem()
 {
-	NotNullPtr<MapDrawLayer> lyr;
+	NN<MapDrawLayer> lyr;
 	if (this->layerList.GetItem(0).SetTo(lyr))
 		return lyr->GetCoordinateSystem();
 	else
 		return this->csys;
 }
 
-void Map::MapLayerCollection::SetCoordinateSystem(NotNullPtr<Math::CoordinateSystem> csys)
+void Map::MapLayerCollection::SetCoordinateSystem(NN<Math::CoordinateSystem> csys)
 {
 	Sync::RWMutexUsage mutUsage(this->mut, false);
-	Data::ArrayIterator<NotNullPtr<MapDrawLayer>> it = this->layerList.Iterator();
+	Data::ArrayIterator<NN<MapDrawLayer>> it = this->layerList.Iterator();
 	while (it.HasNext())
 	{
 		it.Next()->SetCoordinateSystem(csys->Clone());

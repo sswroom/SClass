@@ -9,8 +9,8 @@ namespace Net
 	class GoogleFCM
 	{
 	public:
-		static Bool SendMessage(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString apiKey, Text::CString devToken, Text::CString message, Text::StringBuilderUTF8 *sbResult);
-		static Bool SendMessages(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString apiKey, Data::ArrayList<Text::String*> *devTokens, Text::CString message, Text::StringBuilderUTF8 *sbResult);
+		static Bool SendMessage(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString apiKey, Text::CString devToken, Text::CString message, Text::StringBuilderUTF8 *sbResult);
+		static Bool SendMessages(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString apiKey, Data::ArrayList<Text::String*> *devTokens, Text::CString message, Text::StringBuilderUTF8 *sbResult);
 	};
 }
 #endif

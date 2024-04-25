@@ -19,12 +19,12 @@ namespace Net
 		public:
 			typedef void (__stdcall *SendLogger)(AnyType userObj, UOSInt buffSize);
 		private:
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
-			NotNullPtr<Net::TCPClient> cli;
+			NN<Net::TCPClient> cli;
 			IO::BufferedOutputStream *cstm;
-			NotNullPtr<Net::WebServer::WebListener> svr;
-			NotNullPtr<Net::WebServer::IWebHandler> hdlr;
+			NN<Net::WebServer::WebListener> svr;
+			NN<Net::WebServer::IWebHandler> hdlr;
 			ProtocolHandler *protoHdlr;
 			UInt8 *dataBuff;
 			UOSInt dataBuffSize;
@@ -53,7 +53,7 @@ namespace Net
 
 			UOSInt SendData(const UInt8 *buff, UOSInt buffSize);
 		public:
-			WebConnection(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<Net::TCPClient> cli, NotNullPtr<WebListener> svr, NotNullPtr<IWebHandler> hdlr, Bool allowProxy, KeepAlive KeepAlive);
+			WebConnection(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Net::TCPClient> cli, NN<WebListener> svr, NN<IWebHandler> hdlr, Bool allowProxy, KeepAlive KeepAlive);
 			virtual ~WebConnection();
 
 			void ReceivedData(const Data::ByteArrayR &buff);
@@ -72,7 +72,7 @@ namespace Net
 			virtual Bool SetStatusCode(Net::WebStatus::StatusCode code);
 			virtual Int32 GetStatusCode();
 			virtual Bool AddHeader(Text::CStringNN name, Text::CStringNN value);
-			virtual Bool AddDefHeaders(NotNullPtr<Net::WebServer::IWebRequest> req);
+			virtual Bool AddDefHeaders(NN<Net::WebServer::IWebRequest> req);
 			virtual UInt64 GetRespLength();
 			virtual void ShutdownSend();
 			virtual Bool ResponseSSE(Data::Duration timeout, SSEDisconnectHandler hdlr, AnyType userObj);

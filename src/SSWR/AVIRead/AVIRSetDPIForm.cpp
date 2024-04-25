@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
+	NN<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
 	Text::StringBuilderUTF8 sb;
 	Double hdpi;
 	Double ddpi;
@@ -35,19 +35,19 @@ void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnOKClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
+	NN<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
 void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnPreviewChanged(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
+	NN<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
 	me->UpdatePreview();
 }
 
 void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnDPIChanged(AnyType userObj, UOSInt newVal)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
+	NN<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	sptr = Text::StrDouble(sbuff, UOSInt2Double(newVal) * 0.1);
@@ -57,13 +57,13 @@ void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnDPIChanged(AnyType userObj, UOSI
 
 void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnStandardClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
+	NN<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
 	me->txtDesktopDPI->SetText(CSTR("96.0"));
 }
 
 void __stdcall SSWR::AVIRead::AVIRSetDPIForm::On1xClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
+	NN<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	sptr = me->lblDPIV->GetText(sbuff);
@@ -72,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIRSetDPIForm::On1xClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnLaptopClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
+	NN<SSWR::AVIRead::AVIRSetDPIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDPIForm>();
 	me->txtDesktopDPI->SetText(CSTR("144.0"));
 }
 
@@ -87,11 +87,11 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 	UTF8Char sbuff[10];
 	UTF8Char *sptr;
 	Math::Size2DDbl sz;
-	NotNullPtr<Media::DrawEngine> eng;
-	NotNullPtr<Media::DrawImage> gimg;
-	NotNullPtr<Media::DrawBrush> b;
-	NotNullPtr<Media::DrawFont> f;
-	NotNullPtr<Media::DrawPen> p;
+	NN<Media::DrawEngine> eng;
+	NN<Media::DrawImage> gimg;
+	NN<Media::DrawBrush> b;
+	NN<Media::DrawFont> f;
+	NN<Media::DrawPen> p;
 	this->pbPreview->SetImage(0);
 	SDEL_CLASS(this->pimg);
 	usz = this->pbPreview->GetSizeP();
@@ -141,7 +141,7 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 	}	
 }
 
-SSWR::AVIRead::AVIRSetDPIForm::AVIRSetDPIForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 174, ui)
+SSWR::AVIRead::AVIRSetDPIForm::AVIRSetDPIForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 174, ui)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;

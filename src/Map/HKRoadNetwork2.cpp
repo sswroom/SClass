@@ -36,9 +36,9 @@ DB::ReadingDB *Map::HKRoadNetwork2::GetDB()
 	return this->fgdb;
 }
 
-NotNullPtr<Math::CoordinateSystem> Map::HKRoadNetwork2::CreateCoordinateSystem()
+NN<Math::CoordinateSystem> Map::HKRoadNetwork2::CreateCoordinateSystem()
 {
-	NotNullPtr<Math::CoordinateSystem> csys;
+	NN<Math::CoordinateSystem> csys;
 	if (csys.Set(Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80)))
 		return csys;
 	else
@@ -69,7 +69,7 @@ Map::MapDrawLayer *Map::HKRoadNetwork2::CreateTonnesSignLayer()
 	Map::VectorLayer *lyr = 0;
 	NEW_CLASS(lyr, Map::VectorLayer(layerType, CSTR("HKRoadNetwork2"), 3, colNames, this->CreateCoordinateSystem(), colTypes, colSize, colDP, 0, CSTR("VehRestrict")));
 	
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (this->fgdb->QueryTableData(CSTR_NULL, CSTR("VEHICLE_RESTRICTION"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		UTF8Char sbuff[256];
@@ -119,7 +119,7 @@ Map::MapDrawLayer *Map::HKRoadNetwork2::CreateTonnesSignLayer()
 				if (maxWeight != 0)
 				{
 					Int32 vrId = r->GetInt32((UOSInt)vrIdCol);
-					NotNullPtr<Math::Geometry::Vector2D> vec;
+					NN<Math::Geometry::Vector2D> vec;
 					if (r->GetVector((UOSInt)shapeCol).SetTo(vec))
 					{
 						sbuff[0] = 0;
@@ -148,7 +148,7 @@ Map::MapDrawLayer *Map::HKRoadNetwork2::CreateTonnesSignLayer()
 	return lyr;
 }
 
-Map::HKTrafficLayer2 *Map::HKRoadNetwork2::CreateTrafficLayer(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact)
+Map::HKTrafficLayer2 *Map::HKRoadNetwork2::CreateTrafficLayer(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact)
 {
 	if (this->fgdb)
 	{

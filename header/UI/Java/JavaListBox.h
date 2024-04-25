@@ -9,10 +9,10 @@ namespace UI
 		class JavaListBox : public UI::GUIListBox
 		{
 		public:
-			JavaListBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool multiSelect);
+			JavaListBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Bool multiSelect);
 			virtual ~JavaListBox();
 
-			virtual UOSInt AddItem(NotNullPtr<Text::String> itemText, void *itemObj);
+			virtual UOSInt AddItem(NN<Text::String> itemText, void *itemObj);
 			virtual UOSInt AddItem(Text::CStringNN itemText, void *itemObj);
 			virtual UOSInt InsertItem(UOSInt index, Text::String *itemText, void *itemObj);
 			virtual UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj);

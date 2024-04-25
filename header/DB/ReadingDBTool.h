@@ -35,8 +35,8 @@ namespace DB
 		typedef Int32 (__stdcall * SQLFailedFunc)(Text::CString sqlCmd, TriggerType trigType);
 
 	protected:
-		NotNullPtr<DB::DBConn> db;
-		NotNullPtr<IO::LogTool> log;
+		NN<DB::DBConn> db;
+		NN<IO::LogTool> log;
 		Optional<DB::DBReader> lastReader;
 		UInt32 readerCnt;
 		UInt32 readerFail;
@@ -58,7 +58,7 @@ namespace DB
 		Bool axisAware;
 
 	public:
-		static ReadingDBTool *MongoDBSource(const UTF8Char *url, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
+		static ReadingDBTool *MongoDBSource(const UTF8Char *url, NN<IO::LogTool> log, Text::CString logPrefix);
 
 	protected:
 		void AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::LogHandler::LogLevel logLev);
@@ -67,17 +67,17 @@ namespace DB
 		UOSInt SplitMSSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr);
 		UOSInt SplitUnkSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr);
 	public:
-		ReadingDBTool(NotNullPtr<DB::DBConn> db, Bool needRelease, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
+		ReadingDBTool(NN<DB::DBConn> db, Bool needRelease, NN<IO::LogTool> log, Text::CString logPrefix);
 		virtual ~ReadingDBTool();
 
 		void SetFailTrigger(SQLFailedFunc trig);
 		Optional<DB::DBReader> ExecuteReader(Text::CStringNN sqlCmd);
-		virtual void CloseReader(NotNullPtr<DB::DBReader> r);
+		virtual void CloseReader(NN<DB::DBReader> r);
 		DB::SQLType GetSQLType() const;
 		Bool IsAxisAware() const;
 		Bool IsDataError(const UTF8Char *errCode);
-		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> sb);
-		NotNullPtr<DB::DBConn> GetDBConn();
+		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> sb);
+		NN<DB::DBConn> GetDBConn();
 		Int8 GetTzQhr() const;
 		virtual void Reconnect();
 
@@ -99,21 +99,21 @@ namespace DB
 		UInt32 GetDataCnt();
 
 		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> arr);
-		virtual UOSInt QuerySchemaNames(NotNullPtr<Data::ArrayListStringNN> arr);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> arr);
+		virtual UOSInt QuerySchemaNames(NN<Data::ArrayListStringNN> arr);
 		virtual DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
 
-		virtual UOSInt GetDatabaseNames(NotNullPtr<Data::ArrayListStringNN> arr);
-		virtual void ReleaseDatabaseNames(NotNullPtr<Data::ArrayListStringNN> arr);
+		virtual UOSInt GetDatabaseNames(NN<Data::ArrayListStringNN> arr);
+		virtual void ReleaseDatabaseNames(NN<Data::ArrayListStringNN> arr);
 		virtual Bool ChangeDatabase(Text::CString databaseName);
 		virtual Text::String *GetCurrDBName();
 		Bool GetDBCollation(Text::CString databaseName, Collation *collation);
 
-		UOSInt GetVariables(NotNullPtr<Data::ArrayList<Data::TwinItem<Optional<Text::String>, Optional<Text::String>>>> vars);
-		void FreeVariables(NotNullPtr<Data::ArrayList<Data::TwinItem<Optional<Text::String>, Optional<Text::String>>>> vars);
+		UOSInt GetVariables(NN<Data::ArrayList<Data::TwinItem<Optional<Text::String>, Optional<Text::String>>>> vars);
+		void FreeVariables(NN<Data::ArrayList<Data::TwinItem<Optional<Text::String>, Optional<Text::String>>>> vars);
 
-		UOSInt GetConnectionInfo(NotNullPtr<Data::ArrayListNN<ConnectionInfo>> conns);
-		void FreeConnectionInfo(NotNullPtr<Data::ArrayListNN<ConnectionInfo>> conns);
+		UOSInt GetConnectionInfo(NN<Data::ArrayListNN<ConnectionInfo>> conns);
+		void FreeConnectionInfo(NN<Data::ArrayListNN<ConnectionInfo>> conns);
 
 		UOSInt SplitSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr);
 

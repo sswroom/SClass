@@ -21,7 +21,7 @@ namespace Map
 			MapType mapType;
 
 		public:
-			GoogleTileMap(Text::CString cacheDir, MapType mapType, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
+			GoogleTileMap(Text::CString cacheDir, MapType mapType, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
 			virtual ~GoogleTileMap();
 
 			virtual Text::CStringNN GetName() const;
@@ -29,7 +29,7 @@ namespace Map
 			virtual ImageType GetImageType() const;
 			virtual UOSInt GetConcurrentCount() const;
 			virtual UTF8Char *GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId);
-			virtual Bool GetTileImageURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId);
+			virtual Bool GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId);
 		};
 	}
 }

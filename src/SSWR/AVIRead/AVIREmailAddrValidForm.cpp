@@ -3,14 +3,14 @@
 
 void __stdcall SSWR::AVIRead::AVIREmailAddrValidForm::OnValidateClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIREmailAddrValidForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailAddrValidForm>();
+	NN<SSWR::AVIRead::AVIREmailAddrValidForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailAddrValidForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtAddr->GetText(sb);
 	Net::Email::EmailValidator::Status status = me->validator->Validate(sb.ToCString());
 	me->txtStatus->SetText(Net::Email::EmailValidator::StatusGetName(status));
 }
 
-SSWR::AVIRead::AVIREmailAddrValidForm::AVIREmailAddrValidForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 240, ui)
+SSWR::AVIRead::AVIREmailAddrValidForm::AVIREmailAddrValidForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 240, ui)
 {
 	this->SetText(CSTR("Email Address Valid"));
 	this->SetFont(0, 0, 8.25, false);

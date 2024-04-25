@@ -37,11 +37,11 @@ void DB::MySQLConn::Connect()
 		log->LogMessage(CSTR("Driver is libmysql"), IO::LogHandler::LogLevel::Action);
 		mysql_set_character_set((MYSQL*)this->mysql, "utf8");
 
-		NotNullPtr<DB::DBReader> r;
+		NN<DB::DBReader> r;
 		if (this->ExecuteReader(CSTR("SELECT VERSION()")).SetTo(r))
 		{
 			r->ReadNext();
-			NotNullPtr<Text::String> s;
+			NN<Text::String> s;
 			if (r->GetNewStr(0).SetTo(s))
 			{
 				this->axisAware = Net::MySQLUtil::IsAxisAware(s->ToCString());
@@ -52,7 +52,7 @@ void DB::MySQLConn::Connect()
 	}
 }
 
-DB::MySQLConn::MySQLConn(NotNullPtr<Text::String> server, Text::String *uid, Text::String *pwd, Text::String *database, NotNullPtr<IO::LogTool> log) : DB::DBConn(CSTR("MySQLConn"))
+DB::MySQLConn::MySQLConn(NN<Text::String> server, Text::String *uid, Text::String *pwd, Text::String *database, NN<IO::LogTool> log) : DB::DBConn(CSTR("MySQLConn"))
 {
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
@@ -68,7 +68,7 @@ DB::MySQLConn::MySQLConn(NotNullPtr<Text::String> server, Text::String *uid, Tex
 	Connect();
 }
 
-DB::MySQLConn::MySQLConn(Text::CStringNN server, Text::CString uid, Text::CString pwd, Text::CString database, NotNullPtr<IO::LogTool> log) : DB::DBConn(CSTR("MySQLConn"))
+DB::MySQLConn::MySQLConn(Text::CStringNN server, Text::CString uid, Text::CString pwd, Text::CString database, NN<IO::LogTool> log) : DB::DBConn(CSTR("MySQLConn"))
 {
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
@@ -84,7 +84,7 @@ DB::MySQLConn::MySQLConn(Text::CStringNN server, Text::CString uid, Text::CStrin
 	Connect();
 }
 
-DB::MySQLConn::MySQLConn(const WChar *server, const WChar *uid, const WChar *pwd, const WChar *database, NotNullPtr<IO::LogTool> log) : DB::DBConn(CSTR("MySQLConn"))
+DB::MySQLConn::MySQLConn(const WChar *server, const WChar *uid, const WChar *pwd, const WChar *database, NN<IO::LogTool> log) : DB::DBConn(CSTR("MySQLConn"))
 {
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
@@ -137,11 +137,11 @@ void DB::MySQLConn::ForceTz(Int8 tzQhr)
 {
 }
 
-void DB::MySQLConn::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
+void DB::MySQLConn::GetConnName(NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("MySQL:"));
 	sb->Append(this->server);
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (this->database.SetTo(s))
 	{
 		sb->AppendUTF8Char('/');
@@ -238,7 +238,7 @@ Optional<DB::DBReader> DB::MySQLConn::ExecuteReader(Text::CStringNN sql)
 		result = mysql_use_result((MYSQL*)this->mysql);
 		if (result)
 		{
-			NotNullPtr<DB::DBReader> r;
+			NN<DB::DBReader> r;
 			this->lastDataError = DE_NO_ERROR;
 			NEW_CLASSNN(r, DB::MySQLReader((OSInt)mysql_affected_rows((MYSQL*)this->mysql), result));
 			return r;
@@ -256,13 +256,13 @@ Optional<DB::DBReader> DB::MySQLConn::ExecuteReader(Text::CStringNN sql)
 	}
 }
 
-void DB::MySQLConn::CloseReader(NotNullPtr<DB::DBReader> r)
+void DB::MySQLConn::CloseReader(NN<DB::DBReader> r)
 {
 	DB::MySQLReader *rdr = (DB::MySQLReader*)r.Ptr();
 	DEL_CLASS(rdr);
 }
 
-void DB::MySQLConn::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void DB::MySQLConn::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 	UTF8Char *errMsg = (UTF8Char *)mysql_error((MYSQL*)this->mysql);
 	str->AppendSlow(errMsg);
@@ -284,15 +284,15 @@ Optional<DB::DBTransaction> DB::MySQLConn::BeginTransaction()
 	return (DB::DBTransaction*)1;
 }
 
-void DB::MySQLConn::Commit(NotNullPtr<DB::DBTransaction> tran)
+void DB::MySQLConn::Commit(NN<DB::DBTransaction> tran)
 {
 }
 
-void DB::MySQLConn::Rollback(NotNullPtr<DB::DBTransaction> tran)
+void DB::MySQLConn::Rollback(NN<DB::DBTransaction> tran)
 {
 }
 
-UOSInt DB::MySQLConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt DB::MySQLConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -300,7 +300,7 @@ UOSInt DB::MySQLConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data:
 	UTF8Char *sptr;
 	UOSInt len;
 	UOSInt initCnt = names->GetCount();
-	NotNullPtr<DB::DBReader> rdr;
+	NN<DB::DBReader> rdr;
 	if (this->ExecuteReader(CSTR("show tables")).SetTo(rdr))
 	{
 		while (rdr->ReadNext())
@@ -319,7 +319,7 @@ Optional<DB::DBReader> DB::MySQLConn::QueryTableData(Text::CString schemaName, T
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayIterator<NotNullPtr<Text::String>> it;
+	Data::ArrayIterator<NN<Text::String>> it;
 	sb.AppendC(UTF8STRC("select "));
 	if (columnNames != 0 && (it = columnNames->Iterator()).HasNext())
 	{
@@ -369,7 +369,7 @@ Bool DB::MySQLConn::IsConnError()
 	return this->mysql == 0;
 }
 
-NotNullPtr<Text::String> DB::MySQLConn::GetConnServer()
+NN<Text::String> DB::MySQLConn::GetConnServer()
 {
 	return this->server;
 }
@@ -406,9 +406,9 @@ Optional<Text::String> DB::MySQLConn::GetConnPWD()
 	}
 }*/
 
-DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Text::String> serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
+DB::DBTool *DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, NN<Text::String> serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
-	NotNullPtr<DB::MySQLConn> conn;
+	NN<DB::MySQLConn> conn;
 	DB::DBTool *db;
 	NEW_CLASSNN(conn, DB::MySQLConn(serverName, uid, pwd, dbName, log));
 	if (!conn->IsConnError())
@@ -423,9 +423,9 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, No
 	}
 }
 
-DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
+DB::DBTool *DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
-	NotNullPtr<DB::MySQLConn> conn;
+	NN<DB::MySQLConn> conn;
 	DB::DBTool *db;
 	NEW_CLASSNN(conn, DB::MySQLConn(serverName, uid, pwd, dbName, log));
 	if (!conn->IsConnError())
@@ -554,7 +554,7 @@ WChar *DB::MySQLReader::GetStr(UOSInt colIndex, WChar *buff)
 	}
 }
 
-Bool DB::MySQLReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool DB::MySQLReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	if (this->row == 0)
 		return 0;
@@ -680,7 +680,7 @@ Optional<Math::Geometry::Vector2D> DB::MySQLReader::GetVector(UOSInt colIndex)
 	return 0;
 }
 
-Bool DB::MySQLReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
+Bool DB::MySQLReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 {
 	return false;
 }
@@ -726,7 +726,7 @@ DB::DBUtil::ColType DB::MySQLReader::GetColType(UOSInt colIndex, OptOut<UOSInt> 
 	return ToColType(field->type, field->flags, field->length);
 }
 
-Bool DB::MySQLReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool DB::MySQLReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	if (this->row == 0)
 		return false;

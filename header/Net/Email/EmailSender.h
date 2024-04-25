@@ -11,7 +11,7 @@ namespace Net
 		public:
 			virtual ~EmailSender(){};
 
-			virtual Bool Send(NotNullPtr<Net::Email::EmailMessage> message) = 0;
+			virtual Bool Send(NN<Net::Email::EmailMessage> message) = 0;
 		};
 	}
 }

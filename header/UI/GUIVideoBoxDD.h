@@ -32,21 +32,21 @@ namespace UI
 
 	protected:
 		//void UpdateFromBuff(VideoBuff *vbuff);
-		virtual void LockUpdateSize(NotNullPtr<Sync::MutexUsage> mutUsage);
-		virtual void DrawFromSurface(NotNullPtr<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn);
+		virtual void LockUpdateSize(NN<Sync::MutexUsage> mutUsage);
+		virtual void DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn);
 
 		virtual void BeginUpdateSize();
 		virtual void EndUpdateSize();
 	public:
-		GUIVideoBoxDD(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::ColorManagerSess> colorSess, UOSInt buffCnt, UOSInt threadCnt);
+		GUIVideoBoxDD(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::ColorManagerSess> colorSess, UOSInt buffCnt, UOSInt threadCnt);
 		virtual ~GUIVideoBoxDD();
 
 		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		virtual void OnSizeChanged(Bool updateScn);
 
-		virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
-		virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);
+		virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
+		virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
 
 		virtual void OnMonitorChanged();
 

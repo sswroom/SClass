@@ -10,7 +10,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 
-Math::TSPFile::TSPFile(NotNullPtr<IO::StreamData> fd) : DB::ReadingDB(fd->GetFullName())
+Math::TSPFile::TSPFile(NN<IO::StreamData> fd) : DB::ReadingDB(fd->GetFullName())
 {
 	UInt8 hdr[8];
 	fd->GetRealData(0, 8, BYTEARR(hdr));
@@ -56,7 +56,7 @@ Math::TSPFile::~TSPFile()
 {
 }
 
-UOSInt Math::TSPFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt Math::TSPFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -81,7 +81,7 @@ UOSInt Math::TSPFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Data:
 
 Optional<DB::DBReader> Math::TSPFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
-	NotNullPtr<DB::DBReader> reader;
+	NN<DB::DBReader> reader;
 	if (tableName.v != 0 && tableName.Equals(UTF8STRC("StationSetup")))
 	{
 		NEW_CLASSNN(reader, Math::TSPHReader(this));
@@ -98,7 +98,7 @@ DB::TableDef *Math::TSPFile::GetTableDef(Text::CString schemaName, Text::CString
 	UOSInt i;
 	UOSInt j;
 	DB::TableDef *tab;
-	NotNullPtr<DB::ColDef> col;
+	NN<DB::ColDef> col;
 	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
 	if (tableName.v != 0 && tableName.Equals(UTF8STRC("StationSetup")))
 	{
@@ -134,13 +134,13 @@ DB::TableDef *Math::TSPFile::GetTableDef(Text::CString schemaName, Text::CString
 	return tab;
 }
 
-void Math::TSPFile::CloseReader(NotNullPtr<DB::DBReader> r)
+void Math::TSPFile::CloseReader(NN<DB::DBReader> r)
 {
 	Math::TSPReader *reader = (Math::TSPReader*)r.Ptr();
 	DEL_CLASS(reader);
 }
 
-void Math::TSPFile::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void Math::TSPFile::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 }
 
@@ -299,7 +299,7 @@ WChar *Math::TSPReader::GetStr(UOSInt colIndex, WChar *buff)
 	return 0;
 }
 
-Bool Math::TSPReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Math::TSPReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -477,7 +477,7 @@ Optional<Math::Geometry::Vector2D> Math::TSPReader::GetVector(UOSInt colIndex)
 	return pt;
 }
 
-Bool Math::TSPReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
+Bool Math::TSPReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 {
 	return false;
 }
@@ -524,7 +524,7 @@ DB::DBUtil::ColType Math::TSPReader::GetColType(UOSInt colIndex, OptOut<UOSInt> 
 	}
 }
 
-Bool Math::TSPReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Math::TSPReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	return GetColDefV(colIndex, colDef, this->rowSize);
 }
@@ -571,7 +571,7 @@ Text::CString Math::TSPReader::GetName(UOSInt colIndex, UOSInt rowSize)
 	}
 }
 
-Bool Math::TSPReader::GetColDefV(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef, UOSInt rowSize)
+Bool Math::TSPReader::GetColDefV(UOSInt colIndex, NN<DB::ColDef> colDef, UOSInt rowSize)
 {
 	switch (colIndex)
 	{
@@ -661,7 +661,7 @@ WChar *Math::TSPHReader::GetStr(UOSInt colIndex, WChar *buff)
 	return Text::StrDouble(buff, GetDbl(colIndex));
 }
 
-Bool Math::TSPHReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Math::TSPHReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	if (this->currRow != 0)
 		return false;
@@ -725,7 +725,7 @@ Optional<Math::Geometry::Vector2D> Math::TSPHReader::GetVector(UOSInt colIndex)
 	return 0;
 }
 
-Bool Math::TSPHReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
+Bool Math::TSPHReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 {
 	return false;
 }
@@ -762,7 +762,7 @@ DB::DBUtil::ColType Math::TSPHReader::GetColType(UOSInt colIndex, OptOut<UOSInt>
 	}
 }
 
-Bool Math::TSPHReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Math::TSPHReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	return GetColDefV(colIndex, colDef);
 }
@@ -792,7 +792,7 @@ Text::CString Math::TSPHReader::GetName(UOSInt colIndex)
 	}
 }
 
-Bool Math::TSPHReader::GetColDefV(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Math::TSPHReader::GetColDefV(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	switch (colIndex)
 	{

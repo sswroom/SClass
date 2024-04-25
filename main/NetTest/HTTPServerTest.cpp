@@ -21,17 +21,17 @@ private:
 	Data::ArrayListNN<Net::WebServer::IWebResponse> sseConns;
 	Sync::Mutex sseMut;
 
-	static void __stdcall SSEDisconnect(NotNullPtr<Net::WebServer::IWebResponse> resp, AnyType userObj)
+	static void __stdcall SSEDisconnect(NN<Net::WebServer::IWebResponse> resp, AnyType userObj)
 	{
-		NotNullPtr<MyHandler> me = userObj.GetNN<MyHandler>();
+		NN<MyHandler> me = userObj.GetNN<MyHandler>();
 		Sync::MutexUsage mutUsage(me->sseMut);
 		me->sseConns.Remove(resp);
 		console->WriteLineC(UTF8STRC("Disconnected"));
 	}
 
-	static Bool __stdcall SSEHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> me)
+	static Bool __stdcall SSEHandler(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me)
 	{
-		NotNullPtr<MyHandler> myHdlr = NotNullPtr<MyHandler>::ConvertFrom(me);
+		NN<MyHandler> myHdlr = NN<MyHandler>::ConvertFrom(me);
 		resp->AddDefHeaders(req);
 		if (resp->ResponseSSE(30000, SSEDisconnect, myHdlr))
 		{
@@ -55,7 +55,7 @@ public:
 	}
 };
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -89,7 +89,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Net::OSSocketFactory sockf(true);
 #if defined(USESSL)
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
-	NotNullPtr<Net::SSLEngine> nnssl;
+	NN<Net::SSLEngine> nnssl;
 	if (!ssl.SetTo(nnssl))
 	{
 		console->WriteLineC(UTF8STRC("Error in initializing SSL engine"));
@@ -112,8 +112,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		sb.AppendC(UTF8STRC("Listening to port "));
 		sb.AppendU16(port);
 		console->WriteLineC(sb.ToString(), sb.GetLength());
-		NotNullPtr<Net::WebServer::WebStandardHandler> hdlr;
-		NotNullPtr<MyHandler> myHdlr;
+		NN<Net::WebServer::WebStandardHandler> hdlr;
+		NN<MyHandler> myHdlr;
 		NEW_CLASSNN(hdlr, Net::WebServer::HTTPDirectoryHandler(CSTR("wwwroot"), true, 0, true));
 		NEW_CLASSNN(myHdlr, MyHandler());
 		hdlr->HandlePath(CSTR("/api"), myHdlr, true);

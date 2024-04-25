@@ -16,7 +16,7 @@ typedef enum
 
 void __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
+	NN<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF32Char v;
 	me->txtChar->GetText(sb);
@@ -32,9 +32,9 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharChg(AnyType userObj)
 
 Bool __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
-	NotNullPtr<UI::GUIFontDialog> dlg = me->ui->NewFontDialog(me->currFont, 12, false, false);
-	NotNullPtr<Text::String> s;
+	NN<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
+	NN<UI::GUIFontDialog> dlg = me->ui->NewFontDialog(me->currFont, 12, false, false);
+	NN<Text::String> s;
 	if (dlg->ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK && dlg->GetFontName().SetTo(s))
 	{
 		me->currFont->Release();
@@ -47,7 +47,7 @@ Bool __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharMouseDown(AnyType userObj, 
 
 void __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharPrevClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
+	NN<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
 	if (me->currChar > 0)
 	{
 		me->UpdateChar(me->currChar - 1);
@@ -56,13 +56,13 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharPrevClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharNextClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
+	NN<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
 	me->UpdateChar(me->currChar + 1);
 }
 
 void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRadicalChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
+	NN<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[7];
 	UTF8Char *sptr;
@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRadicalChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedAddChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
+	NN<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -146,7 +146,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedAddChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedGoClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
+	NN<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
 	Data::ArrayList<UInt32> relatedChars;
 	me->chinese->GetRelatedChars(me->currChar, &relatedChars);
 	if (relatedChars.GetCount() > 0)
@@ -155,9 +155,9 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedGoClicked(AnyType userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRChineseForm::OnFormClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm)
+void __stdcall SSWR::AVIRead::AVIRChineseForm::OnFormClosed(AnyType userObj, NN<UI::GUIForm> frm)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
+	NN<SSWR::AVIRead::AVIRChineseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChineseForm>();
 	me->SaveChar();
 }
 
@@ -318,7 +318,7 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateChar(UInt32 charCode)
 void SSWR::AVIRead::AVIRChineseForm::UpdateImg()
 {
 	Math::Size2D<UOSInt> newSize = this->pbChar->GetSizeP();
-	NotNullPtr<Media::DrawImage> dimg;
+	NN<Media::DrawImage> dimg;
 	if (!dimg.Set(this->charImg))
 	{
 		this->charImg = this->deng->CreateImage32(newSize, Media::AT_NO_ALPHA);
@@ -332,8 +332,8 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateImg()
 	if (this->charImg)
 	{
 		UTF8Char sbuff[7];
-		NotNullPtr<Media::DrawBrush> b;
-		NotNullPtr<Media::DrawFont> f;
+		NN<Media::DrawBrush> b;
+		NN<Media::DrawFont> f;
 		b = this->charImg->NewBrushARGB(0xffffffff);
 		this->charImg->DrawRect(Math::Coord2DDbl(0, 0), newSize.ToDouble(), 0, b);
 		this->charImg->DelBrush(b);
@@ -382,7 +382,7 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateRelation()
 	}
 }
 
-SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Chinese"));
 	this->SetFont(0, 0, 8.25, false);
@@ -396,7 +396,7 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(Optional<UI::GUIClientControl> p
 	this->currRadical = 0;
 	NEW_CLASS(this->chinese, Text::ChineseInfo());
 
-	NotNullPtr<UI::GUIMenu> mnu;
+	NN<UI::GUIMenu> mnu;
 	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Goto"));
 	mnu->AddItem(CSTR("Char Code"), MNU_CHARCODE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
@@ -488,7 +488,7 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(Optional<UI::GUIClientControl> p
 
 SSWR::AVIRead::AVIRChineseForm::~AVIRChineseForm()
 {
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->charImg))
 	{
 		this->deng->DeleteImage(img);

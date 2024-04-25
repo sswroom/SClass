@@ -9,7 +9,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	NotNullPtr<DecodeStatus> status = userData.GetNN<DecodeStatus>();
+	NN<DecodeStatus> status = userData.GetNN<DecodeStatus>();
 
 	if (frameType != Media::FT_DISCARD)
 	{
@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnVideoFrame(Data::Duration fra
 
 void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnVideoChange(Media::IVideoSource::FrameChange frChg, AnyType userData)
 {
-	NotNullPtr<DecodeStatus> status = userData.GetNN<DecodeStatus>();
+	NN<DecodeStatus> status = userData.GetNN<DecodeStatus>();
 	if (frChg == Media::IVideoSource::FC_ENDPLAY)
 	{
 		status->isEnd = true;
@@ -30,14 +30,14 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnVideoChange(Media::IVideoSour
 
 void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnAudioEnd(AnyType userData)
 {
-	NotNullPtr<DecodeStatus> status = userData.GetNN<DecodeStatus>();
+	NN<DecodeStatus> status = userData.GetNN<DecodeStatus>();
 	status->isEnd = true;
 	status->evt->Set();
 }
 
-void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnFileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnFileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRVideoInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoInfoForm>();
+	NN<SSWR::AVIRead::AVIRVideoInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoInfoForm>();
 	UOSInt i = 0;
 	Bool succ;
 	UOSInt nFiles = files.GetCount();
@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnFileHandler(AnyType userObj, 
 
 void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRVideoInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoInfoForm>();
+	NN<SSWR::AVIRead::AVIRVideoInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoInfoForm>();
 	UOSInt i = me->lbStream->GetSelectedIndex();
 	SSWR::AVIRead::AVIRVideoInfoForm::DecodeStatus *decStatus;
 	if (me->currFile == 0)
@@ -149,13 +149,13 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRVideoInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoInfoForm>();
+	NN<SSWR::AVIRead::AVIRVideoInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoInfoForm>();
 	if (me->decStatus->GetCount() > 0 || me->currFile == 0)
 	{
 		return;
 	}
 	SSWR::AVIRead::AVIRVideoInfoForm::DecodeStatus *status;
-	NotNullPtr<Media::IMediaSource> msrc;
+	NN<Media::IMediaSource> msrc;
 	
 	Sync::Event *evt;
 	Media::Decoder::VideoDecoderFinder *vdecoders;
@@ -182,7 +182,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(AnyType userObj
 		status->evt = evt;
 		if (msrc->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 		{
-			status->vdecoder = vdecoders->DecodeVideo(NotNullPtr<Media::IVideoSource>::ConvertFrom(msrc));
+			status->vdecoder = vdecoders->DecodeVideo(NN<Media::IVideoSource>::ConvertFrom(msrc));
 			if (status->vdecoder)
 			{
 				status->vdecoder->Init(OnVideoFrame, OnVideoChange, status);
@@ -194,7 +194,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(AnyType userObj
 		}
 		else if (msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 		{
-			status->adecoder = adecoders->DecodeAudio(NotNullPtr<Media::IAudioSource>::ConvertFrom(msrc));
+			status->adecoder = adecoders->DecodeAudio(NN<Media::IAudioSource>::ConvertFrom(msrc));
 			if (status->adecoder)
 			{
 				NEW_CLASS(status->renderer, Media::NullRenderer());
@@ -322,7 +322,7 @@ void SSWR::AVIRead::AVIRVideoInfoForm::ClearDecode()
 	this->lblDecode->SetText(CSTR(""));
 }
 
-SSWR::AVIRead::AVIRVideoInfoForm::AVIRVideoInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRVideoInfoForm::AVIRVideoInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Video Info"));

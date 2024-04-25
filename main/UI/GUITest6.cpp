@@ -13,14 +13,14 @@ void __stdcall OnTVDblClick(void *userObj)
 	me->GetUI()->ShowMsgOK(CSTR("Test"), CSTR("GUI Test 6 TV DblClick"), me);
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	NotNullPtr<UI::GUICore> core;
+	NN<UI::GUICore> core;
 	if (progCtrl->CreateGUICore(progCtrl).SetTo(core))
 	{
-		NotNullPtr<UI::GUITreeView::TreeItem> item1;
-		NotNullPtr<UI::GUITreeView::TreeItem> item2;
-		NotNullPtr<UI::GUIForm> frm;
+		NN<UI::GUITreeView::TreeItem> item1;
+		NN<UI::GUITreeView::TreeItem> item2;
+		NN<UI::GUIForm> frm;
 		NEW_CLASSNN(frm, UI::GUIForm(0, 640, 480, core));
 		frm->SetText(CSTR("Test 6 - TreeView"));
 		NEW_CLASS(tv, UI::GUITreeView(core, frm));

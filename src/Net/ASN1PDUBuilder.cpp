@@ -254,7 +254,7 @@ void Net::ASN1PDUBuilder::AppendOctetString(Text::String *s)
 	this->AppendOther(4, s->v, s->leng);
 }
 
-void Net::ASN1PDUBuilder::AppendOctetString(NotNullPtr<Text::String> s)
+void Net::ASN1PDUBuilder::AppendOctetString(NN<Text::String> s)
 {
 	this->AppendOther(4, s->v, s->leng);
 }
@@ -332,22 +332,22 @@ void Net::ASN1PDUBuilder::AppendChoice(UInt32 v)
 	}
 }
 
-void Net::ASN1PDUBuilder::AppendPrintableString(NotNullPtr<Text::String> s)
+void Net::ASN1PDUBuilder::AppendPrintableString(NN<Text::String> s)
 {
 	this->AppendOther(0x13, s->v, s->leng);
 }
 
-void Net::ASN1PDUBuilder::AppendUTF8String(NotNullPtr<Text::String> s)
+void Net::ASN1PDUBuilder::AppendUTF8String(NN<Text::String> s)
 {
 	this->AppendOther(0x0C, s->v, s->leng);
 }
 
-void Net::ASN1PDUBuilder::AppendIA5String(NotNullPtr<Text::String> s)
+void Net::ASN1PDUBuilder::AppendIA5String(NN<Text::String> s)
 {
 	this->AppendOther(0x16, s->v, s->leng);
 }
 
-void Net::ASN1PDUBuilder::AppendUTCTime(NotNullPtr<Data::DateTime> t)
+void Net::ASN1PDUBuilder::AppendUTCTime(NN<Data::DateTime> t)
 {
 	UTF8Char sbuff[13];
 	UTF8Char *sptr;

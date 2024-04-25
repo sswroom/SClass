@@ -22,13 +22,13 @@ Int32 Exporter::GPXExporter::GetName()
 	return *(Int32*)"GPXE";
 }
 
-IO::FileExporter::SupportType Exporter::GPXExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
+IO::FileExporter::SupportType Exporter::GPXExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
-	NotNullPtr<Map::MapDrawLayer> layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj);
+	NN<Map::MapDrawLayer> layer = NN<Map::MapDrawLayer>::ConvertFrom(pobj);
 	if (layer->GetObjectClass() != Map::MapDrawLayer::OC_GPS_TRACK)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
@@ -52,16 +52,16 @@ void Exporter::GPXExporter::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-Bool Exporter::GPXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::GPXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return false;
 	}
-	NotNullPtr<Map::MapDrawLayer> layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj);
+	NN<Map::MapDrawLayer> layer = NN<Map::MapDrawLayer>::ConvertFrom(pobj);
 	if (layer->GetObjectClass() != Map::MapDrawLayer::OC_GPS_TRACK)
 		return false;
-	NotNullPtr<Map::GPSTrack> track = NotNullPtr<Map::GPSTrack>::ConvertFrom(layer);
+	NN<Map::GPSTrack> track = NN<Map::GPSTrack>::ConvertFrom(layer);
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 

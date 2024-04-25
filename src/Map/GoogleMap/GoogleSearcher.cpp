@@ -19,7 +19,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Map::GoogleMap::GoogleSearcher::GoogleSearcher(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey, IO::Writer *errWriter)
+Map::GoogleMap::GoogleSearcher::GoogleSearcher(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey, IO::Writer *errWriter)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -44,7 +44,7 @@ Map::GoogleMap::GoogleSearcher::GoogleSearcher(NotNullPtr<Net::SocketFactory> so
 	this->lastSrchDate.SetCurrTimeUTC();
 }
 
-Map::GoogleMap::GoogleSearcher::GoogleSearcher(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey, IO::Writer *errWriter)
+Map::GoogleMap::GoogleSearcher::GoogleSearcher(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey, IO::Writer *errWriter)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -103,8 +103,8 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 		}
 	}
 
-	NotNullPtr<Text::String> s;
-	NotNullPtr<Net::HTTPClient> cli;
+	NN<Text::String> s;
+	NN<Net::HTTPClient> cli;
 	urlStart = sptr = Text::StrConcatC(url, UTF8STRC("http://maps.google.com"));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/maps/geo?q="));
 	sptr = Text::StrDouble(sptr, pos.GetLat());

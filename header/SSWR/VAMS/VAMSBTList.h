@@ -13,7 +13,7 @@ namespace SSWR
 		public:
 			struct AvlBleItem
 			{
-    			NotNullPtr<Text::String> avlNo;
+    			NN<Text::String> avlNo;
 				Int32 progId;
     			Int64 lastDevTS;
     			Int16 rssi;
@@ -28,12 +28,12 @@ namespace SSWR
 			VAMSBTList();
 			~VAMSBTList();
 
-			void AddItem(NotNullPtr<Text::String> avlNo, Int32 progId, Int64 ts, Int16 rssi);
+			void AddItem(NN<Text::String> avlNo, Int32 progId, Int64 ts, Int16 rssi);
 			UOSInt QueryByProgId(Data::ArrayList<AvlBleItem *> *itemList, Int32 progId, Int32 timeoutIntervalMs);
 			void KARecv(Int32 progId);
 			Int64 GetLastKeepAlive(Int32 progId);
 			Bool HasProg(Int32 progId);
-			UOSInt GetProgList(NotNullPtr<Data::ArrayList<Int32>> progList);
+			UOSInt GetProgList(NN<Data::ArrayList<Int32>> progList);
 		};
 	}
 }

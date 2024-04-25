@@ -11,10 +11,10 @@ namespace Net
 	class TCPBoardcastStream : public IO::Stream
 	{
 	public:
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Net::TCPServer *svr;
 		Net::TCPClientMgr *cliMgr;
-		NotNullPtr<IO::LogTool> log;
+		NN<IO::LogTool> log;
 		Sync::Mutex readMut;
 		UInt32 readCnt;
 		UInt8 *readBuff;
@@ -24,11 +24,11 @@ namespace Net
 		UOSInt writeBuffSize;
 
 		static void __stdcall ConnHandler(Socket *s, AnyType userObj);
-		static void __stdcall ClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
-		static void __stdcall ClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
-		static void __stdcall ClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
+		static void __stdcall ClientEvent(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
+		static void __stdcall ClientData(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
+		static void __stdcall ClientTimeout(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
 	public:
-		TCPBoardcastStream(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log);
+		TCPBoardcastStream(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log);
 		~TCPBoardcastStream();
 
 		virtual Bool IsDown() const;

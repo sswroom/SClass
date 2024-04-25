@@ -49,7 +49,7 @@ IO::StmData::FileData::FileData(const IO::StmData::FileData *fd, UInt64 offset, 
 	}
 }
 
-IO::StmData::FileData::FileData(NotNullPtr<Text::String> fname, Bool deleteOnClose)
+IO::StmData::FileData::FileData(NN<Text::String> fname, Bool deleteOnClose)
 {
 	fdh = 0;
 	IO::FileStream *fs;
@@ -162,7 +162,7 @@ Text::CString IO::StmData::FileData::GetShortName()
 	return CSTR_NULL;
 }
 
-NotNullPtr<Text::String> IO::StmData::FileData::GetFullName()
+NN<Text::String> IO::StmData::FileData::GetFullName()
 {
 	if (this->fdn)
 		return this->fdn->fullName;
@@ -199,9 +199,9 @@ const UInt8 *IO::StmData::FileData::GetPointer()
 	return 0;
 }
 
-NotNullPtr<IO::StreamData> IO::StmData::FileData::GetPartialData(UInt64 offset, UInt64 length)
+NN<IO::StreamData> IO::StmData::FileData::GetPartialData(UInt64 offset, UInt64 length)
 {
-	NotNullPtr<IO::StmData::FileData> data;
+	NN<IO::StmData::FileData> data;
 	NEW_CLASSNN(data, IO::StmData::FileData(this, offset, length));
 	return data;
 }
@@ -211,7 +211,7 @@ Bool IO::StmData::FileData::IsFullFile()
 	return this->dataOffset == 0;
 }
 
-NotNullPtr<Text::String> IO::StmData::FileData::GetFullFileName()
+NN<Text::String> IO::StmData::FileData::GetFullFileName()
 {
 	if (this->fdh)
 		return this->fdh->fullName;

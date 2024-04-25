@@ -12,11 +12,11 @@
 
 UInt32 __stdcall SSWR::DataSync::SyncClient::RecvThread(AnyType userObj)
 {
-	NotNullPtr<SSWR::DataSync::SyncClient> me = userObj.GetNN<SSWR::DataSync::SyncClient>();
+	NN<SSWR::DataSync::SyncClient> me = userObj.GetNN<SSWR::DataSync::SyncClient>();
 	UOSInt recvSize;
 	UInt8 *buff;
 	UOSInt buffSize;
-	NotNullPtr<Net::TCPClient> cli;
+	NN<Net::TCPClient> cli;
 	me->recvRunning = true;
 	buff = MemAlloc(UInt8, 8192);
 	buffSize = 0;
@@ -80,7 +80,7 @@ UInt32 __stdcall SSWR::DataSync::SyncClient::RecvThread(AnyType userObj)
 
 UInt32 __stdcall SSWR::DataSync::SyncClient::KAThread(AnyType userObj)
 {
-	NotNullPtr<SSWR::DataSync::SyncClient> me = userObj.GetNN<SSWR::DataSync::SyncClient>();
+	NN<SSWR::DataSync::SyncClient> me = userObj.GetNN<SSWR::DataSync::SyncClient>();
 	UOSInt i;
 	UOSInt j;
 	me->kaRunning = true;
@@ -200,7 +200,7 @@ Bool SSWR::DataSync::SyncClient::SendUserData(const UInt8 *data, UOSInt dataSize
 	return succ;
 }
 
-SSWR::DataSync::SyncClient::SyncClient(NotNullPtr<Net::SocketFactory> sockf, Int32 serverId, Text::CString serverName, Text::CString clientHost, UInt16 cliPort, Data::Duration timeout) : protoHdlr(*this)
+SSWR::DataSync::SyncClient::SyncClient(NN<Net::SocketFactory> sockf, Int32 serverId, Text::CString serverName, Text::CString clientHost, UInt16 cliPort, Data::Duration timeout) : protoHdlr(*this)
 {
 	this->sockf = sockf;
 	this->serverId = serverId;
@@ -241,11 +241,11 @@ SSWR::DataSync::SyncClient::~SyncClient()
 	this->serverName->Release();
 }
 
-void SSWR::DataSync::SyncClient::DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void SSWR::DataSync::SyncClient::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 }
 
-void SSWR::DataSync::SyncClient::DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
+void SSWR::DataSync::SyncClient::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 }
 

@@ -10,7 +10,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/TextBinEnc/URIEncoding.h"
 
-Net::HTTPOSClient::HTTPOSClient(NotNullPtr<Net::SocketFactory> sockf, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn)
+Net::HTTPOSClient::HTTPOSClient(NN<Net::SocketFactory> sockf, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn)
 {
 	this->clsData = 0;
 	this->cliHost = 0;
@@ -94,7 +94,7 @@ Bool Net::HTTPOSClient::IsSecureConn() const
 	return false;
 }
 
-Bool Net::HTTPOSClient::SetClientCert(NotNullPtr<Crypto::Cert::X509Cert> cert, NotNullPtr<Crypto::Cert::X509File> key)
+Bool Net::HTTPOSClient::SetClientCert(NN<Crypto::Cert::X509Cert> cert, NN<Crypto::Cert::X509File> key)
 {
 	return false;
 }

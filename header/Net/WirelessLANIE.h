@@ -16,7 +16,7 @@ namespace Net
 
 		const UInt8 *GetIEBuff();
 
-		static void ToString(const UInt8 *ieBuff, NotNullPtr<Text::StringBuilderUTF8> sb);
+		static void ToString(const UInt8 *ieBuff, NN<Text::StringBuilderUTF8> sb);
 		static void GetWPSInfo(const UInt8 *iebuff, UOSInt ieLen, Text::String **manuf, Text::String **model, Text::String **serialNum);
 	};
 }

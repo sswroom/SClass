@@ -33,33 +33,33 @@ namespace SSWR
 				Double resultRate;
 			} TestResult;
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayList<TestResult*> *resultList;
 			Bool processing;
 
-			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUIButton> btnQuick;
-			NotNullPtr<UI::GUIButton> btnSave;
-			NotNullPtr<UI::GUIProgressBar> pbMain;
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUIButton> btnQuick;
+			NN<UI::GUIButton> btnSave;
+			NN<UI::GUIProgressBar> pbMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpCopy;
-			NotNullPtr<UI::GUIListView> lvCopy;
+			NN<UI::GUITabPage> tpCopy;
+			NN<UI::GUIListView> lvCopy;
 
-			NotNullPtr<UI::GUITabPage> tpRead;
-			NotNullPtr<UI::GUIListView> lvRead;
+			NN<UI::GUITabPage> tpRead;
+			NN<UI::GUIListView> lvRead;
 
-			NotNullPtr<UI::GUITabPage> tpWrite;
-			NotNullPtr<UI::GUIListView> lvWrite;
+			NN<UI::GUITabPage> tpWrite;
+			NN<UI::GUIListView> lvWrite;
 
-			NotNullPtr<UI::GUITabPage> tpInfo;
-			NotNullPtr<UI::GUIPanel> pnlInfo;
-			NotNullPtr<UI::GUILabel> lblPlatform;
-			NotNullPtr<UI::GUITextBox> txtPlatform;
-			NotNullPtr<UI::GUILabel> lblCPU;
-			NotNullPtr<UI::GUITextBox> txtCPU;
-			NotNullPtr<UI::GUIListView> lvRAM;
+			NN<UI::GUITabPage> tpInfo;
+			NN<UI::GUIPanel> pnlInfo;
+			NN<UI::GUILabel> lblPlatform;
+			NN<UI::GUITextBox> txtPlatform;
+			NN<UI::GUILabel> lblCPU;
+			NN<UI::GUITextBox> txtCPU;
+			NN<UI::GUIListView> lvRAM;
 
 			static UTF8Char *ByteDisp(UTF8Char *sbuff, UOSInt byteSize);
 			void StartTest(UOSInt startSize, UOSInt buffSize);
@@ -68,7 +68,7 @@ namespace SSWR
 			static void __stdcall OnQuickClicked(AnyType userObj);
 			static void __stdcall OnSaveClicked(AnyType userObj);
 		public:
-			AVIRBenchmarkForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRBenchmarkForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRBenchmarkForm();
 
 			virtual void OnMonitorChanged();

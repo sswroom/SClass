@@ -36,7 +36,7 @@ SSWR::OrganMgr::UserFileComparator::~UserFileComparator()
 {
 }
 
-OSInt SSWR::OrganMgr::UserFileComparator::Compare(NotNullPtr<UserFileInfo> a, NotNullPtr<UserFileInfo> b) const
+OSInt SSWR::OrganMgr::UserFileComparator::Compare(NN<UserFileInfo> a, NN<UserFileInfo> b) const
 {
 	if (a->id > b->id)
 	{
@@ -56,7 +56,7 @@ SSWR::OrganMgr::UserFileTimeComparator::~UserFileTimeComparator()
 {
 }
 
-OSInt SSWR::OrganMgr::UserFileTimeComparator::Compare(NotNullPtr<UserFileInfo> a, NotNullPtr<UserFileInfo> b) const
+OSInt SSWR::OrganMgr::UserFileTimeComparator::Compare(NN<UserFileInfo> a, NN<UserFileInfo> b) const
 {
 	if (a->fileTime > b->fileTime)
 	{
@@ -84,7 +84,7 @@ SSWR::OrganMgr::UserFileSpeciesComparator::~UserFileSpeciesComparator()
 {
 }
 
-OSInt SSWR::OrganMgr::UserFileSpeciesComparator::Compare(NotNullPtr<UserFileInfo> a, NotNullPtr<UserFileInfo> b) const
+OSInt SSWR::OrganMgr::UserFileSpeciesComparator::Compare(NN<UserFileInfo> a, NN<UserFileInfo> b) const
 {
 	if (a->speciesId > b->speciesId)
 	{
@@ -112,7 +112,7 @@ SSWR::OrganMgr::WebFileSpeciesComparator::~WebFileSpeciesComparator()
 {
 }
 
-OSInt SSWR::OrganMgr::WebFileSpeciesComparator::Compare(NotNullPtr<WebFileInfo> a, NotNullPtr<WebFileInfo> b) const
+OSInt SSWR::OrganMgr::WebFileSpeciesComparator::Compare(NN<WebFileInfo> a, NN<WebFileInfo> b) const
 {
 	if (a->speciesId > b->speciesId)
 	{
@@ -164,7 +164,7 @@ SSWR::OrganMgr::OrganEnv::~OrganEnv()
 	this->categories.FreeAll(FreeCategory);
 	this->grpTypes.DeleteAll();
 	this->BooksDeinit();
-	NotNullPtr<DataFileInfo> dataFile;
+	NN<DataFileInfo> dataFile;
 	i = this->dataFiles.GetCount();
 	while (i-- > 0)
 	{
@@ -182,17 +182,17 @@ SSWR::OrganMgr::OrganEnv::~OrganEnv()
 	this->sockf.Delete();
 }
 
-NotNullPtr<Media::DrawEngine> SSWR::OrganMgr::OrganEnv::GetDrawEngine()
+NN<Media::DrawEngine> SSWR::OrganMgr::OrganEnv::GetDrawEngine()
 {
 	return this->drawEng;
 }
 
-NotNullPtr<Parser::ParserList> SSWR::OrganMgr::OrganEnv::GetParserList()
+NN<Parser::ParserList> SSWR::OrganMgr::OrganEnv::GetParserList()
 {
 	return this->parsers;
 }
 
-NotNullPtr<Net::SocketFactory> SSWR::OrganMgr::OrganEnv::GetSocketFactory()
+NN<Net::SocketFactory> SSWR::OrganMgr::OrganEnv::GetSocketFactory()
 {
 	return this->sockf;
 }
@@ -221,24 +221,24 @@ Text::CStringNN SSWR::OrganMgr::OrganEnv::GetLang(Text::CStringNN name)
 {
 	if (this->langFile == 0)
 		return name;
-	NotNullPtr<Text::String> ret;
+	NN<Text::String> ret;
 	if (!this->langFile->GetValue(name).SetTo(ret))
 		return name;
 	return ret->ToCString();
 }
 
-UOSInt SSWR::OrganMgr::OrganEnv::GetCategories(NotNullPtr<Data::ArrayListNN<Category>> categories)
+UOSInt SSWR::OrganMgr::OrganEnv::GetCategories(NN<Data::ArrayListNN<Category>> categories)
 {
 	categories->AddAll(this->categories);
 	return this->categories.GetCount();
 }
 
-NotNullPtr<Data::ArrayListNN<SSWR::OrganMgr::OrganGroupType>> SSWR::OrganMgr::OrganEnv::GetGroupTypes()
+NN<Data::ArrayListNN<SSWR::OrganMgr::OrganGroupType>> SSWR::OrganMgr::OrganEnv::GetGroupTypes()
 {
 	return this->grpTypes;
 }
 
-Bool SSWR::OrganMgr::OrganEnv::SetSpeciesImg(NotNullPtr<OrganSpecies> sp, NotNullPtr<OrganImageItem> img)
+Bool SSWR::OrganMgr::OrganEnv::SetSpeciesImg(NN<OrganSpecies> sp, NN<OrganImageItem> img)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -272,16 +272,16 @@ Bool SSWR::OrganMgr::OrganEnv::SetSpeciesImg(NotNullPtr<OrganSpecies> sp, NotNul
 	return true;
 }
 
-Bool SSWR::OrganMgr::OrganEnv::SetSpeciesMapColor(NotNullPtr<OrganSpecies> sp, UInt32 mapColor)
+Bool SSWR::OrganMgr::OrganEnv::SetSpeciesMapColor(NN<OrganSpecies> sp, UInt32 mapColor)
 {
 	sp->SetMapColor(mapColor);
 	SaveSpecies(sp);
 	return true;
 }
 
-UOSInt SSWR::OrganMgr::OrganEnv::GetBooksAll(NotNullPtr<Data::ArrayListNN<OrganBook>> items)
+UOSInt SSWR::OrganMgr::OrganEnv::GetBooksAll(NN<Data::ArrayListNN<OrganBook>> items)
 {
-	NotNullPtr<Data::ArrayListNN<OrganBook>> books;
+	NN<Data::ArrayListNN<OrganBook>> books;
 	if (books.Set(this->bookObjs))
 	{
 		items->AddAll(books);
@@ -290,12 +290,12 @@ UOSInt SSWR::OrganMgr::OrganEnv::GetBooksAll(NotNullPtr<Data::ArrayListNN<OrganB
 	return 0;
 }
 
-UOSInt SSWR::OrganMgr::OrganEnv::GetBooksOfYear(NotNullPtr<Data::ArrayListNN<OrganBook>> items, Int32 year)
+UOSInt SSWR::OrganMgr::OrganEnv::GetBooksOfYear(NN<Data::ArrayListNN<OrganBook>> items, Int32 year)
 {
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	NotNullPtr<OrganBook> book;
+	NN<OrganBook> book;
 	k = 0;
 	i = 0;
 	j = this->bookObjs->GetCount();
@@ -324,23 +324,23 @@ NN<SSWR::OrganMgr::WebUserInfo> SSWR::OrganMgr::OrganEnv::GetWebUser(Int32 userI
 	return webUser;
 }
 
-NotNullPtr<Data::ArrayListNN<SSWR::OrganMgr::DataFileInfo>> SSWR::OrganMgr::OrganEnv::GetDataFiles()
+NN<Data::ArrayListNN<SSWR::OrganMgr::DataFileInfo>> SSWR::OrganMgr::OrganEnv::GetDataFiles()
 {
 	return this->dataFiles;
 }
 
-void SSWR::OrganMgr::OrganEnv::ReleaseDataFile(NotNullPtr<DataFileInfo> dataFile)
+void SSWR::OrganMgr::OrganEnv::ReleaseDataFile(NN<DataFileInfo> dataFile)
 {
 	dataFile->oriFileName->Release();
 	dataFile->fileName->Release();
 	MemFreeNN(dataFile);
 }
 
-void SSWR::OrganMgr::OrganEnv::ReleaseSpecies(NotNullPtr<SpeciesInfo> species)
+void SSWR::OrganMgr::OrganEnv::ReleaseSpecies(NN<SpeciesInfo> species)
 {
 	UOSInt i;
 	UOSInt j;
-	NotNullPtr<WebFileInfo> webFile;
+	NN<WebFileInfo> webFile;
 	i = 0;
 	j = species->wfileMap.GetCount();
 	while (i < j)
@@ -355,7 +355,7 @@ void SSWR::OrganMgr::OrganEnv::ReleaseSpecies(NotNullPtr<SpeciesInfo> species)
 	species.Delete();
 }
 
-void SSWR::OrganMgr::OrganEnv::ReleaseUserFile(NotNullPtr<UserFileInfo> userFile)
+void SSWR::OrganMgr::OrganEnv::ReleaseUserFile(NN<UserFileInfo> userFile)
 {
 	userFile->oriFileName->Release();
 	userFile->dataFileName->Release();
@@ -397,7 +397,7 @@ OSInt SSWR::OrganMgr::OrganEnv::TripGetIndex(const Data::Timestamp &ts)
 	OSInt i = 0;
 	OSInt j = (OSInt)this->trips.GetCount() - 1;
 	OSInt k;
-	NotNullPtr<Trip> t;
+	NN<Trip> t;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -467,9 +467,9 @@ Optional<SSWR::OrganMgr::Location> SSWR::OrganMgr::OrganEnv::LocationGet(Int32 l
 		return this->locs.GetItem((UOSInt)i);
 }
 
-NotNullPtr<Data::ArrayListNN<SSWR::OrganMgr::Location>> SSWR::OrganMgr::OrganEnv::LocationGetSub(Int32 locId)
+NN<Data::ArrayListNN<SSWR::OrganMgr::Location>> SSWR::OrganMgr::OrganEnv::LocationGetSub(Int32 locId)
 {
-	NotNullPtr<Data::ArrayListNN<Location>> outArr;
+	NN<Data::ArrayListNN<Location>> outArr;
 	NEW_CLASSNN(outArr, Data::ArrayListNN<Location>());
 	UOSInt i = 0;
 	UOSInt j = this->locs.GetCount();
@@ -539,7 +539,7 @@ void SSWR::OrganMgr::OrganEnv::BooksDeinit()
 	}
 }
 
-Optional<Text::String> SSWR::OrganMgr::OrganEnv::GetLocName(Int32 userId, const Data::Timestamp &ts, UI::GUIForm *ownerFrm, NotNullPtr<UI::GUICore> ui)
+Optional<Text::String> SSWR::OrganMgr::OrganEnv::GetLocName(Int32 userId, const Data::Timestamp &ts, UI::GUIForm *ownerFrm, NN<UI::GUICore> ui)
 {
 	NN<Trip> tr;
 	NN<Location> loc;
@@ -575,7 +575,7 @@ Optional<Text::String> SSWR::OrganMgr::OrganEnv::GetLocName(Int32 userId, const 
 	}
 }
 
-void SSWR::OrganMgr::OrganEnv::SetCurrCategory(NotNullPtr<Category> currCate)
+void SSWR::OrganMgr::OrganEnv::SetCurrCategory(NN<Category> currCate)
 {
 	this->currCate = currCate.Ptr();
 	this->cateIsFullDir = Text::String::OrEmpty(this->currCate->srcDir)->IndexOf(UTF8STRC(":\\")) != INVALID_INDEX;
@@ -584,7 +584,7 @@ void SSWR::OrganMgr::OrganEnv::SetCurrCategory(NotNullPtr<Category> currCate)
 }
 
 
-void SSWR::OrganMgr::OrganEnv::FreeCategory(NotNullPtr<Category> cate)
+void SSWR::OrganMgr::OrganEnv::FreeCategory(NN<Category> cate)
 {
 	cate->chiName->Release();
 	cate->dirName->Release();
@@ -721,9 +721,9 @@ void SSWR::OrganMgr::OrganEnv::FreeSpeciesTree(NN<Data::FastMapNN<Int32, Data::A
 	spTree.Delete();
 }
 
-void SSWR::OrganMgr::OrganEnv::ExportBeginPage(NotNullPtr<IO::Writer> writer, const UTF8Char *title)
+void SSWR::OrganMgr::OrganEnv::ExportBeginPage(NN<IO::Writer> writer, const UTF8Char *title)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	writer->WriteLineC(UTF8STRC("<HTML>"));
 	writer->WriteLineC(UTF8STRC("<HEAD>"));
 	writer->WriteLineC(UTF8STRC("<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf8\">"));
@@ -792,7 +792,7 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(NN<OrganGroup> grp, NN<Data::FastMapN
 					IO::Path::CreateDirectory(CSTRP(fullPath, sptr));
 					sptr = Text::StrConcatC(sptr, UTF8STRC("\\index.html"));
 
-					NotNullPtr<IO::FileStream> nnfs;
+					NN<IO::FileStream> nnfs;
 					NEW_CLASSNN(nnfs, IO::FileStream({fullPath, (UOSInt)(sptr - fullPath)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					fs = nnfs.Ptr();
 					NEW_CLASSNN(nnwriter, Text::UTF8Writer(nnfs));
@@ -850,7 +850,7 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(NN<OrganGroup> grp, NN<Data::FastMapN
 					IO::Path::CreateDirectory(CSTRP(fullPath, sptr));
 					sptr = Text::StrConcatC(sptr, UTF8STRC("\\index.html"));
 
-					NotNullPtr<IO::FileStream> nnfs;
+					NN<IO::FileStream> nnfs;
 					NEW_CLASSNN(nnfs, IO::FileStream({fullPath, (UOSInt)(sptr - fullPath)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					fs = nnfs.Ptr();
 					NEW_CLASSNN(nnwriter, Text::UTF8Writer(nnfs));
@@ -864,7 +864,7 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(NN<OrganGroup> grp, NN<Data::FastMapN
 					ExportBeginPage(nnwriter, sb.ToString());
 				}
 				
-				NotNullPtr<Text::String> str = Text::String::OrEmpty(sp->GetDirName());
+				NN<Text::String> str = Text::String::OrEmpty(sp->GetDirName());
 				sptr = pathAppend;
 				*sptr++ = str->v[0];
 				*sptr++ = str->v[1];
@@ -932,7 +932,7 @@ Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(NN<OrganSpecies> sp, const UTF8Char
 	OrganImageItem::FileType ft;
 	Data::ArrayListNN<OrganImageItem> items;
 	Bool myPhotoExist = false;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UTF8Char *sptr;
 	GetSpeciesImages(items, sp);
 
@@ -965,7 +965,7 @@ Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(NN<OrganSpecies> sp, const UTF8Char
 		return false;
 	}
 
-	NotNullPtr<Text::String> str = Text::String::OrEmpty(sp->GetDirName());
+	NN<Text::String> str = Text::String::OrEmpty(sp->GetDirName());
 	sptr = pathAppend;
 	*sptr++ = str->v[0];
 	*sptr++ = str->v[1];

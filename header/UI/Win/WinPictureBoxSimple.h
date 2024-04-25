@@ -21,7 +21,7 @@ namespace UI
 			void Deinit(InstanceHandle *hInst);
 			void UpdatePreview();
 		public:
-			WinPictureBoxSimple(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder);
+			WinPictureBoxSimple(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder);
 			virtual ~WinPictureBoxSimple();
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);

@@ -14,13 +14,13 @@ namespace Math
 			virtual ~LinearRing();
 
 			virtual VectorType GetVectorType() const;
-			virtual NotNullPtr<Math::Geometry::Vector2D> Clone() const;
+			virtual NN<Math::Geometry::Vector2D> Clone() const;
 			virtual Bool InsideOrTouch(Math::Coord2DDbl coord) const;
 			virtual Double CalArea() const;
 			Bool IsOpen() const;
 			Bool IsClose() const;
 
-			static NotNullPtr<LinearRing> CreateFromCircle(UInt32 srid, Math::Coord2DDbl center, Double radiusX, Double radiusY, UOSInt nPoints);
+			static NN<LinearRing> CreateFromCircle(UInt32 srid, Math::Coord2DDbl center, Double radiusX, Double radiusY, UOSInt nPoints);
 		};
 	}
 }

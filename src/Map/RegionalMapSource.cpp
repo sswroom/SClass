@@ -278,14 +278,14 @@ const Map::RegionalMapSource::MapInfo *Map::RegionalMapSource::GetMapInfos(UOSIn
 	return maps;
 }
 
-Map::MapDrawLayer *Map::RegionalMapSource::OpenMap(NotNullPtr<const MapInfo> map, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NotNullPtr<Parser::ParserList> parsers, Net::WebBrowser *browser, NotNullPtr<Math::CoordinateSystem> envCSys)
+Map::MapDrawLayer *Map::RegionalMapSource::OpenMap(NN<const MapInfo> map, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NN<Parser::ParserList> parsers, Net::WebBrowser *browser, NN<Math::CoordinateSystem> envCSys)
 {
 	Map::MapDrawLayer *layer;
 	switch (map->mapType)
 	{
 	case MapType::TMS:
 	{
-		NotNullPtr<Map::TileMapServiceSource> tms;
+		NN<Map::TileMapServiceSource> tms;
 		NEW_CLASSNN(tms, Map::TileMapServiceSource(sockf, ssl, encFact, Text::CString(map->url, map->urlLen)));
 		if (tms->IsError())
 		{
@@ -301,7 +301,7 @@ Map::MapDrawLayer *Map::RegionalMapSource::OpenMap(NotNullPtr<const MapInfo> map
 	}
 	case MapType::File:
 	{
-		NotNullPtr<IO::StreamData> fd;
+		NN<IO::StreamData> fd;
 		if (fd.Set(browser->GetData(Text::CStringNN(map->url, map->urlLen), false, 0)))
 		{
 			IO::ParsedObject *pobj = parsers->ParseFile(fd);
@@ -321,7 +321,7 @@ Map::MapDrawLayer *Map::RegionalMapSource::OpenMap(NotNullPtr<const MapInfo> map
 	{
 		UTF8Char *sptr;
 		UTF8Char sbuff[512];
-		NotNullPtr<Map::CustomTileMap> tileMap;
+		NN<Map::CustomTileMap> tileMap;
 		sptr = IO::Path::GetProcessFileName(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("TileMap"));
 		*sptr++ = IO::Path::PATH_SEPERATOR;

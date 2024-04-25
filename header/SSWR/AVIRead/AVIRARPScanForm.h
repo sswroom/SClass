@@ -31,13 +31,13 @@ namespace SSWR
 			} IPMapInfo;
 			
 		private:
-			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			NotNullPtr<UI::GUILabel> lblAdapter;
-			NotNullPtr<UI::GUIComboBox> cboAdapter;
-			NotNullPtr<UI::GUIButton> btnScan;
-			NotNullPtr<UI::GUIListView> lvARP;
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUILabel> lblAdapter;
+			NN<UI::GUIComboBox> cboAdapter;
+			NN<UI::GUIButton> btnScan;
+			NN<UI::GUIListView> lvARP;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
 			Data::ArrayListNN<AdapterInfo> adapters;
 			Sync::Mutex arpMut;
@@ -50,7 +50,7 @@ namespace SSWR
 
 			void UpdateARPList();
 		public:
-			AVIRARPScanForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRARPScanForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRARPScanForm();
 
 			virtual void OnMonitorChanged();

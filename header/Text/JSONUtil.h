@@ -8,7 +8,7 @@ namespace Text
 	class JSONUtil
 	{
 	public:
-		static void ArrayGPSTrack(NotNullPtr<JSONBuilder> json, NotNullPtr<Map::GPSTrack> trk);
+		static void ArrayGPSTrack(NN<JSONBuilder> json, NN<Map::GPSTrack> trk);
 	};
 }
 #endif

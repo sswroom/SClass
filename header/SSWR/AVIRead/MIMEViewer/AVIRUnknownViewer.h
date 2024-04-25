@@ -14,12 +14,12 @@ namespace SSWR
 			class AVIRUnknownViewer : public AVIRMIMEViewer
 			{
 			private:
-				NotNullPtr<UI::GUILabel> lblMessage;
+				NN<UI::GUILabel> lblMessage;
 
 				Text::IMIMEObj *obj;
 
 			public:
-				AVIRUnknownViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::IMIMEObj *obj);
+				AVIRUnknownViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, Text::IMIMEObj *obj);
 				virtual ~AVIRUnknownViewer();
 			};
 		}

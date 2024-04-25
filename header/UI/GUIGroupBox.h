@@ -7,7 +7,7 @@ namespace UI
 	class GUIGroupBox : public GUIClientControl
 	{
 	public:
-		GUIGroupBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
+		GUIGroupBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 		virtual ~GUIGroupBox();
 
 		virtual Math::Coord2DDbl GetClientOfst() = 0;

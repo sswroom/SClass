@@ -8,7 +8,7 @@ Sync::RWMutexUsage::RWMutexUsage()
 	this->writing = false;
 }
 
-Sync::RWMutexUsage::RWMutexUsage(NotNullPtr<const Sync::RWMutex> mut, Bool writing)
+Sync::RWMutexUsage::RWMutexUsage(NN<const Sync::RWMutex> mut, Bool writing)
 {
 	this->mut = mut.Ptr();
 	this->writing = writing;
@@ -57,7 +57,7 @@ void Sync::RWMutexUsage::EndUse()
 	}
 }
 
-void Sync::RWMutexUsage::ReplaceMutex(NotNullPtr<const Sync::RWMutex> mut, Bool writing)
+void Sync::RWMutexUsage::ReplaceMutex(NN<const Sync::RWMutex> mut, Bool writing)
 {
 	if (!this->used)
 	{

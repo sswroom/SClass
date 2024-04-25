@@ -26,7 +26,7 @@ Bool BFTest(UInt64 key, UInt64 plainText, UInt64 cipherText)
 	return true;
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	if (!BFTest(0x0000000000000000, 0x0000000000000000, 0x4EF997456198DD78)) return 1;
 	if (!BFTest(0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF, 0x51866FD5B85ECB8A)) return 1;

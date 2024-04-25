@@ -15,7 +15,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Bool Net::PacketAnalyzerEthernet::PacketNullGetName(const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Net::PacketAnalyzerEthernet::PacketNullGetName(const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	UInt32 packetType = ReadMUInt32(packet);
 	switch (packetType)
@@ -30,17 +30,17 @@ Bool Net::PacketAnalyzerEthernet::PacketNullGetName(const UInt8 *packet, UOSInt 
 	return false;
 }
 
-Bool Net::PacketAnalyzerEthernet::PacketEthernetGetName(const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Net::PacketAnalyzerEthernet::PacketEthernetGetName(const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	return PacketEthernetDataGetName(ReadMUInt16(&packet[12]), &packet[14], packetSize - 14, sb);
 }
 
-Bool Net::PacketAnalyzerEthernet::PacketLinuxGetName(const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Net::PacketAnalyzerEthernet::PacketLinuxGetName(const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	return PacketEthernetDataGetName(ReadMUInt16(&packet[14]), &packet[16], packetSize - 16, sb);
 }
 
-Bool Net::PacketAnalyzerEthernet::PacketEthernetDataGetName(UInt16 etherType, const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Net::PacketAnalyzerEthernet::PacketEthernetDataGetName(UInt16 etherType, const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	switch (etherType)
 	{
@@ -65,7 +65,7 @@ Bool Net::PacketAnalyzerEthernet::PacketEthernetDataGetName(UInt16 etherType, co
 	}
 }
 
-Bool Net::PacketAnalyzerEthernet::PacketIPv4GetName(const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Net::PacketAnalyzerEthernet::PacketIPv4GetName(const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -99,7 +99,7 @@ Bool Net::PacketAnalyzerEthernet::PacketIPv4GetName(const UInt8 *packet, UOSInt 
 	return PacketIPDataGetName(packet[9], ipData, ipDataSize, sb);
 }
 
-Bool Net::PacketAnalyzerEthernet::PacketIPv6GetName(const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Net::PacketAnalyzerEthernet::PacketIPv6GetName(const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -121,7 +121,7 @@ Bool Net::PacketAnalyzerEthernet::PacketIPv6GetName(const UInt8 *packet, UOSInt 
 	return PacketIPDataGetName(packet[6], &packet[40], packetSize - 40, sb);
 }
 
-Bool Net::PacketAnalyzerEthernet::PacketIPDataGetName(UInt8 protocol, const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Net::PacketAnalyzerEthernet::PacketIPDataGetName(UInt8 protocol, const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	switch (protocol)
 	{
@@ -175,79 +175,79 @@ Bool Net::PacketAnalyzerEthernet::PacketIPDataGetName(UInt8 protocol, const UInt
 	}
 }
 
-void Net::PacketAnalyzerEthernet::PacketNullGetDetail(const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Net::PacketAnalyzerEthernet::PacketNullGetDetail(const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketNullGetDetail(packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketEthernetGetDetail(const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Net::PacketAnalyzerEthernet::PacketEthernetGetDetail(const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketNullGetDetail(packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketLinuxGetDetail(const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Net::PacketAnalyzerEthernet::PacketLinuxGetDetail(const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketNullGetDetail(packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(UInt16 etherType, const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(UInt16 etherType, const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketEthernetDataGetDetail(etherType, packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketIEEE802_2LLCGetDetail(const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Net::PacketAnalyzerEthernet::PacketIEEE802_2LLCGetDetail(const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketIEEE802_2LLCGetDetail(packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketIPv4GetDetail(const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Net::PacketAnalyzerEthernet::PacketIPv4GetDetail(const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketIPv4GetDetail(packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketIPv6GetDetail(const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Net::PacketAnalyzerEthernet::PacketIPv6GetDetail(const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketIPv6GetDetail(packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketIPDataGetDetail(protocol, packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketUDPGetDetail(srcPort, destPort, packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketDNSGetDetail(packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketLoRaMACGetDetail(const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Net::PacketAnalyzerEthernet::PacketLoRaMACGetDetail(const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketLoRaMACGetDetail(packet, packetSize, 0, frame);
 }
 
-UOSInt Net::PacketAnalyzerEthernet::HeaderIPv4GetDetail(const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+UOSInt Net::PacketAnalyzerEthernet::HeaderIPv4GetDetail(const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	return HeaderIPv4GetDetail(packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketNullGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerEthernet::PacketNullGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	UInt32 packetType = ReadMUInt32(packet);
 	frame->AddUInt(frameOfst, 4, CSTR("Packet Type"), packetType);
@@ -264,7 +264,7 @@ void Net::PacketAnalyzerEthernet::PacketNullGetDetail(const UInt8 *packet, UOSIn
 	}
 }
 
-void Net::PacketAnalyzerEthernet::PacketEthernetGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerEthernet::PacketEthernetGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	frame->AddMACAddr(frameOfst + 0, CSTR("DestMAC"), &packet[0], true);
 	frame->AddMACAddr(frameOfst + 6, CSTR("SrcMAC"), &packet[6], true);
@@ -273,7 +273,7 @@ void Net::PacketAnalyzerEthernet::PacketEthernetGetDetail(const UInt8 *packet, U
 	PacketEthernetDataGetDetail(etherType, &packet[14], packetSize - 14, frameOfst + 14, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketLinuxGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerEthernet::PacketLinuxGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	Text::CString vName;
 	UInt16 v;
@@ -338,7 +338,7 @@ void Net::PacketAnalyzerEthernet::PacketLinuxGetDetail(const UInt8 *packet, UOSI
 	PacketEthernetDataGetDetail(etherType, &packet[16], packetSize - 16, frameOfst + 16, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(UInt16 etherType, const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(UInt16 etherType, const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	switch (etherType)
 	{
@@ -372,7 +372,7 @@ void Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(UInt16 etherType, 
 	}
 }
 
-void Net::PacketAnalyzerEthernet::PacketIEEE802_2LLCGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerEthernet::PacketIEEE802_2LLCGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	Text::CString vName;
 	UTF8Char sbuff[32];
@@ -465,7 +465,7 @@ void Net::PacketAnalyzerEthernet::PacketIEEE802_2LLCGetDetail(const UInt8 *packe
 
 }
 
-void Net::PacketAnalyzerEthernet::PacketARPGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerEthernet::PacketARPGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	if (packetSize < 22)
 	{
@@ -514,7 +514,7 @@ void Net::PacketAnalyzerEthernet::PacketARPGetDetail(const UInt8 *packet, UOSInt
 	}
 }
 
-void Net::PacketAnalyzerEthernet::PacketIPv4GetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerEthernet::PacketIPv4GetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	if ((packet[0] & 0xf0) != 0x40 || packetSize < 20)
 	{
@@ -533,7 +533,7 @@ void Net::PacketAnalyzerEthernet::PacketIPv4GetDetail(const UInt8 *packet, UOSIn
 	PacketIPDataGetDetail(packet[9], ipData, ipDataSize, frameOfst, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketIPv6GetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerEthernet::PacketIPv6GetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -560,7 +560,7 @@ void Net::PacketAnalyzerEthernet::PacketIPv6GetDetail(const UInt8 *packet, UOSIn
 	PacketIPDataGetDetail(packet[6], &packet[40], packetSize - 40, frameOfst + 40, frame);
 }
 
-void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -1330,7 +1330,7 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 	}
 }
 
-void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	Text::CString vName;
 	UTF8Char sbuff[64];
@@ -2181,7 +2181,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 											Text::JSONString *jstr = (Text::JSONString*)jbase;
 											UOSInt dataLen;
 											UInt8 *dataBuff;
-											NotNullPtr<Text::String> dataStr = jstr->GetValue();
+											NN<Text::String> dataStr = jstr->GetValue();
 											sb.ClearStr();
 											sb.AppendC(UTF8STRC("\r\n"));
 											sb.Append(dataStr);
@@ -2261,14 +2261,14 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 	else if (destPort == 1900)
 	{
 		frame->AddText(frameOfst, CSTR("SSDP Request:"));
-		NotNullPtr<Text::String> s = Text::String::New(packet, packetSize);
+		NN<Text::String> s = Text::String::New(packet, packetSize);
 		frame->AddField(frameOfst, (UInt32)packetSize, s->ToCString(), CSTR_NULL);
 		s->Release();
 	}
 	else if (srcPort == 1900)
 	{
 		frame->AddText(frameOfst, CSTR("SSDP Reply:"));
-		NotNullPtr<Text::String> s = Text::String::New(packet, packetSize);
+		NN<Text::String> s = Text::String::New(packet, packetSize);
 		frame->AddField(frameOfst, (UInt32)packetSize, s->ToCString(), CSTR_NULL);
 		s->Release();
 	}
@@ -2316,7 +2316,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 	}
 }
 
-void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -2592,7 +2592,7 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt
 	}
 }
 
-void Net::PacketAnalyzerEthernet::PacketLoRaMACGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzerEthernet::PacketLoRaMACGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	Text::CString vName = CSTR_NULL;
 	switch (packet[0] >> 5)
@@ -2664,7 +2664,7 @@ void Net::PacketAnalyzerEthernet::PacketLoRaMACGetDetail(const UInt8 *packet, UO
 }
 
 
-UOSInt Net::PacketAnalyzerEthernet::HeaderIPv4GetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame)
+UOSInt Net::PacketAnalyzerEthernet::HeaderIPv4GetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	frame->AddField(frameOfst + 0, 1, CSTR("Version"), CSTR("4"));
 	frame->AddUInt(frameOfst + 0, 1, CSTR("Internet Header Length"), (UInt16)packet[0] & 0xf);

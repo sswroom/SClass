@@ -9,8 +9,8 @@
 
 void __stdcall SSWR::AVIRead::AVIRBTScanLogDevForm::OnCSVClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRBTScanLogDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBTScanLogDevForm>();
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"BTScanLogDev", true);
+	NN<SSWR::AVIRead::AVIRBTScanLogDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBTScanLogDevForm>();
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"BTScanLogDev", true);
 	dlg->AddFilter(CSTR("*.csv"), CSTR("CSV File"));
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogDevForm::OnCSVClicked(AnyType userObj
 		{
 			IO::BufferedOutputStream stm(fs, 8192);
 			Data::DateTime dt;
-			NotNullPtr<IO::BTScanLog::LogEntry> log;
+			NN<IO::BTScanLog::LogEntry> log;
 			Int64 lastTick;
 			UOSInt i = 0;
 			UOSInt j = me->entry->logs->GetCount();
@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogDevForm::OnCSVClicked(AnyType userObj
 	dlg.Delete();
 }
 
-SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<const IO::BTScanLog::DevEntry> entry) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<const IO::BTScanLog::DevEntry> entry) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -102,7 +102,7 @@ SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(Optional<UI::GUIClient
 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	Data::DateTime dt;
-	NotNullPtr<IO::BTScanLog::LogEntry> log;
+	NN<IO::BTScanLog::LogEntry> log;
 	Int64 lastTick;
 	UOSInt i = 0;
 	UOSInt j = entry->logs->GetCount();

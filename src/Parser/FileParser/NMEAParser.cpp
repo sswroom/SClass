@@ -17,7 +17,7 @@ Int32 Parser::FileParser::NMEAParser::GetName()
 	return *(Int32*)"NMEA";
 }
 
-void Parser::FileParser::NMEAParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::NMEAParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
@@ -31,7 +31,7 @@ IO::ParserType Parser::FileParser::NMEAParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::NMEAParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::NMEAParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (fd->GetFullName()->EndsWithICase(UTF8STRC(".LOG")))
 	{

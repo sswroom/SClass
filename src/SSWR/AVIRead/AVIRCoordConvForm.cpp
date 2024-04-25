@@ -16,7 +16,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnSrcRadChanged(AnyType userObj, Bool newValue)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
+	NN<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
 	if (me->inited)
 	{
 		me->ClearItems(true);
@@ -33,13 +33,13 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnSrcRadChanged(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnSrcCboChanged(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
+	NN<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
 	me->ClearItems(true);
 }
 
 void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnDestRadChanged(AnyType userObj, Bool newValue)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
+	NN<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
 	if (me->inited)
 	{
 		if (newValue)
@@ -55,13 +55,13 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnDestRadChanged(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnDestCboChanged(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
+	NN<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
 	me->UpdateList();
 }
 
 void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnAddClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
+	NN<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
 	Text::StringBuilderUTF8 sb;
 	Double x;
 	Double y;
@@ -90,13 +90,13 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnAddClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnClearClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
+	NN<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
 	me->ClearItems(true);
 }
 
 void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnCopyAllClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
+	NN<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
 	UOSInt i = 0;
 	UOSInt j = me->lvCoord->GetCount();
 	if (j == 0)
@@ -137,16 +137,16 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnCopyAllClicked(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
+	NN<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
 	UTF8Char sbuff[256];
 	UTF8Char *strBuff;
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
-	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
+	NN<Parser::ParserList> parsers = me->core->GetParserList();
 	Math::CoordinateSystem *srcCoord;
 	Math::CoordinateSystem *destCoord;
-	NotNullPtr<Math::CoordinateSystem> srcCsys;
-	NotNullPtr<Math::CoordinateSystem> destCsys;
+	NN<Math::CoordinateSystem> srcCsys;
+	NN<Math::CoordinateSystem> destCsys;
 	UOSInt i;
 
 	i = me->cboSrc->GetSelectedIndex();
@@ -168,7 +168,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 	UOSInt colCnt;
 	DB::ReadingDB *db = 0;
 	{
-		NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"CoordConvFile", false);
+		NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"CoordConvFile", false);
 		parsers->PrepareSelector(dlg, IO::ParserType::ReadingDB);
 		if (!dlg->ShowDialog(me->GetHandle()))
 		{
@@ -191,7 +191,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 				return;
 			}
 		}
-		NotNullPtr<DB::DBReader> reader;
+		NN<DB::DBReader> reader;
 		if (!db->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(reader))
 		{
 			me->ui->ShowMsgOK(CSTR("Unsupported database format"), CSTR("Error"), me);
@@ -226,7 +226,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 		dlg.Delete();
 	}
 
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"CoordConvSave", true);
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"CoordConvSave", true);
 	dlg->AddFilter(CSTR("*.csv"), CSTR("CSV File"));
 	if (!dlg->ShowDialog(me->GetHandle()))
 	{
@@ -247,7 +247,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 	const UTF8Char **sarr;
 	sarr = MemAlloc(const UTF8Char *, colCnt + 2);
 	i = 0;
-	NotNullPtr<DB::DBReader> reader;
+	NN<DB::DBReader> reader;
 	if (!db->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(reader))
 	{
 		MemFree(sarr);
@@ -352,7 +352,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnCoordDblClk(AnyType userObj, UOSInt itemIndex)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
+	NN<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	me->lvCoord->GetSubItem(itemIndex, 0, sb);
@@ -376,10 +376,10 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnCoordDblClk(AnyType userObj, 
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
-	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
+	NN<SSWR::AVIRead::AVIRCoordConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordConvForm>();
+	NN<Parser::ParserList> parsers = me->core->GetParserList();
 	Bool listUpdated = false;
 	Text::StringBuilderUTF8 sb;
 	Double lat;
@@ -396,7 +396,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnFileDrop(AnyType userObj, Dat
 		if (imgList)
 		{
 			Media::RasterImage *img = imgList->GetImage(0, 0);
-			NotNullPtr<Media::EXIFData> exif;
+			NN<Media::EXIFData> exif;
 			if (img && img->exif.SetTo(exif) && exif->GetPhotoLocation(lat, lon, altitude, gpsTimeTick))
 			{
 				sb.ClearStr();
@@ -447,8 +447,8 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 	Math::Vector3 destPos;
 	Math::CoordinateSystem *srcCoord;
 	Math::CoordinateSystem *destCoord;
-	NotNullPtr<Math::CoordinateSystem> srcCsys;
-	NotNullPtr<Math::CoordinateSystem> destCsys;
+	NN<Math::CoordinateSystem> srcCsys;
+	NN<Math::CoordinateSystem> destCsys;
 
 	i = this->cboSrc->GetSelectedIndex();
 	if (i == INVALID_INDEX)
@@ -519,7 +519,7 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 	SDEL_CLASS(destCoord);
 }
 
-void SSWR::AVIRead::AVIRCoordConvForm::FillCoordGeo(NotNullPtr<UI::GUIComboBox> cbo)
+void SSWR::AVIRead::AVIRCoordConvForm::FillCoordGeo(NN<UI::GUIComboBox> cbo)
 {
 	cbo->ClearItems();
 	Math::CoordinateSystemManager::GeoCoordSysType gcst = Math::CoordinateSystemManager::GCST_FIRST;
@@ -530,7 +530,7 @@ void SSWR::AVIRead::AVIRCoordConvForm::FillCoordGeo(NotNullPtr<UI::GUIComboBox> 
 	}
 }
 
-void SSWR::AVIRead::AVIRCoordConvForm::FillCoordProj(NotNullPtr<UI::GUIComboBox> cbo)
+void SSWR::AVIRead::AVIRCoordConvForm::FillCoordProj(NN<UI::GUIComboBox> cbo)
 {
 	cbo->ClearItems();
 	Math::CoordinateSystemManager::ProjCoordSysType pcst = Math::CoordinateSystemManager::PCST_FIRST;
@@ -541,7 +541,7 @@ void SSWR::AVIRead::AVIRCoordConvForm::FillCoordProj(NotNullPtr<UI::GUIComboBox>
 	}
 }
 
-SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Coordinate Converter"));
 	this->SetFont(0, 0, 8.25, false);

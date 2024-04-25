@@ -14,28 +14,28 @@ namespace DB
 	private:
 		typedef struct
 		{
-			NotNullPtr<Text::String> tableName;
-			NotNullPtr<TableDef> def;
+			NN<Text::String> tableName;
+			NN<TableDef> def;
 			UOSInt dataCnt;
 		} TableInfo;
 	private:
-		NotNullPtr<DB::DBTool> db;
-		NotNullPtr<DB::DBModel> model;
+		NN<DB::DBTool> db;
+		NN<DB::DBModel> model;
 		Sync::Mutex tableMut;
 		Data::ICaseStringMap<TableInfo*> tableMap;
 		UOSInt cacheCnt;
 
 		TableInfo *GetTableInfo(Text::CString tableName);
-		TableInfo *GetTableInfo(NotNullPtr<TableDef> tableDef);
+		TableInfo *GetTableInfo(NN<TableDef> tableDef);
 	public:
-        DBCache(NotNullPtr<DB::DBModel> model, NotNullPtr<DB::DBTool> db);
+        DBCache(NN<DB::DBModel> model, NN<DB::DBTool> db);
         ~DBCache();
 
 		OSInt GetRowCount(Text::CString tableName); //-1 = table not found
-		UOSInt QueryTableData(NotNullPtr<Data::ArrayListNN<DB::DBRow>> outRows, Text::CString tableName, DB::PageRequest *page);
+		UOSInt QueryTableData(NN<Data::ArrayListNN<DB::DBRow>> outRows, Text::CString tableName, DB::PageRequest *page);
 		DB::DBRow *GetTableItem(Text::CString tableName, Int64 pk);
-		void FreeTableData(NotNullPtr<Data::ArrayListNN<DB::DBRow>> rows);
-		void FreeTableItem(NotNullPtr<DB::DBRow> row);
+		void FreeTableData(NN<Data::ArrayListNN<DB::DBRow>> rows);
+		void FreeTableItem(NN<DB::DBRow> row);
 
 		Bool IsTableExist(Text::CString tableName);
 	};

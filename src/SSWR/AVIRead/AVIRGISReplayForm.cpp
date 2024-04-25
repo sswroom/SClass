@@ -19,7 +19,7 @@ typedef enum
 
 UInt32 __stdcall SSWR::AVIRead::AVIRGISReplayForm::AddressThread(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISReplayForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISReplayForm>();
+	NN<SSWR::AVIRead::AVIRGISReplayForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISReplayForm>();
 	Math::Coord2DDbl *latLon;
 	UOSInt recCnt;
 	UOSInt i;
@@ -52,7 +52,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISReplayForm::AddressThread(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnCboNameChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISReplayForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISReplayForm>();
+	NN<SSWR::AVIRead::AVIRGISReplayForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISReplayForm>();
 	me->StopThread();
 	me->currTrackId = (UOSInt)me->cboName->GetSelectedIndex();
 	me->UpdateRecList();
@@ -60,7 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnCboNameChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISReplayForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISReplayForm>();
+	NN<SSWR::AVIRead::AVIRGISReplayForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISReplayForm>();
 	UOSInt i = me->lbRecord->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
@@ -145,7 +145,7 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(AnyType userObj)
 
 Bool __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordRClick(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISReplayForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISReplayForm>();
+	NN<SSWR::AVIRead::AVIRGISReplayForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISReplayForm>();
 	me->mnuRecord->ShowMenu(me, scnPos);
 	return false;
 }
@@ -168,7 +168,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::FreeNames()
 	}
 }
 
-SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::GPSTrack> track, IMapNavigator *navi) : UI::GUIForm(parent, 416, 560, ui)
+SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::GPSTrack> track, IMapNavigator *navi) : UI::GUIForm(parent, 416, 560, ui)
 {
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
@@ -183,10 +183,10 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(Optional<UI::GUIClientContro
 	this->SetText(CSTR("Replay"));
 	this->SetFont(0, 0, 8.25, false);
 
-	NotNullPtr<UI::GUIPanel> pnl;
-	NotNullPtr<UI::GUIPanel> pnl2;
-	NotNullPtr<UI::GUILabel> lbl;
-	NotNullPtr<UI::GUIHSplitter> splitter;
+	NN<UI::GUIPanel> pnl;
+	NN<UI::GUIPanel> pnl2;
+	NN<UI::GUILabel> lbl;
+	NN<UI::GUIHSplitter> splitter;
 
 	pnl = ui->NewPanel(*this);
 	pnl->SetRect(0, 0, 408, 24, false);
@@ -296,7 +296,7 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(Optional<UI::GUIClientContro
 	Data::ArrayListString *nameArr;
 	NEW_CLASS(nameArr, Data::ArrayListString());
 	this->track->GetTrackNames(nameArr);
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UOSInt i = 0;
 	UOSInt j = nameArr->GetCount();
 	while (i < j)
@@ -354,9 +354,9 @@ void SSWR::AVIRead::AVIRGISReplayForm::EventMenuClicked(UInt16 cmdId)
 			}
 			UOSInt recCnt;
 			UOSInt i;
-			NotNullPtr<Map::GPSTrack> newTrack;
+			NN<Map::GPSTrack> newTrack;
 			NEW_CLASSNN(newTrack, Map::GPSTrack(this->track->GetSourceNameObj(), this->track->GetHasAltitude(), this->track->GetCodePage(), this->track->GetName().Ptr()));
-			NotNullPtr<Text::String> trackName;
+			NN<Text::String> trackName;
 			if (track->GetTrackName(this->currTrackId).SetTo(trackName))
 				newTrack->SetTrackName(trackName->ToCString());
 			Map::GPSTrack::GPSRecord3 *recs = track->GetTrack(this->currTrackId, recCnt);
@@ -404,11 +404,11 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 	if (recs)
 	{
 		Double dist = 0;
-		NotNullPtr<Math::CoordinateSystem> coord = this->track->GetCoordinateSystem();
-		NotNullPtr<Math::Geometry::LineString> pl;
+		NN<Math::CoordinateSystem> coord = this->track->GetCoordinateSystem();
+		NN<Math::Geometry::LineString> pl;
 		if (pl.Set((Math::Geometry::LineString*)this->track->GetNewVectorById(0, (Int64)this->currTrackId)))
 		{
-			NotNullPtr<Math::Geometry::Polyline> pl2 = pl->CreatePolyline();
+			NN<Math::Geometry::Polyline> pl2 = pl->CreatePolyline();
 			dist = coord->CalDistance(pl2, pl->HasZ(), Math::Unit::Distance::DU_METER);
 			pl2.Delete();
 			pl.Delete();

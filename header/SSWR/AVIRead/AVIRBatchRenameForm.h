@@ -13,17 +13,17 @@ namespace SSWR
 		class AVIRBatchRenameForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUILabel> lblDirectory;
-			NotNullPtr<UI::GUITextBox> txtDirectory;
-			NotNullPtr<UI::GUIButton> btnRenameExtUpper;
-			NotNullPtr<UI::GUIButton> btnRenameExtLower;
+			NN<UI::GUILabel> lblDirectory;
+			NN<UI::GUITextBox> txtDirectory;
+			NN<UI::GUIButton> btnRenameExtUpper;
+			NN<UI::GUIButton> btnRenameExtLower;
 
 			static void __stdcall OnRenameExtUpperClicked(AnyType userObj);
 			static void __stdcall OnRenameExtLowerClicked(AnyType userObj);
 		public:
-			AVIRBatchRenameForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRBatchRenameForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRBatchRenameForm();
 
 			virtual void OnMonitorChanged();

@@ -25,7 +25,7 @@ void Text::Cpp::CppCodeParser::LogError(Text::Cpp::CppParseStatus *status, const
 {
 	Text::StringBuilderUTF8 sb;
 	Text::Cpp::CppParseStatus::FileParseStatus *fileStatus = status->GetFileStatus();
-	NotNullPtr<Text::String> fname = fileStatus->fileName;
+	NN<Text::String> fname = fileStatus->fileName;
 	UOSInt i = fname->LastIndexOf('\\');
 	sb.AppendC(&fname->v[i + 1], fname->leng - i - 1);
 	sb.AppendC(UTF8STRC(" ("));
@@ -219,9 +219,9 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayListStringNN *codePhase
 
 	Text::StringBuilderUTF8 debugSB;
 	UOSInt i;
-	NotNullPtr<Text::String> phase;
-	NotNullPtr<Text::String> phase1;
-	NotNullPtr<Text::String> phase2;
+	NN<Text::String> phase;
+	NN<Text::String> phase1;
+	NN<Text::String> phase2;
 	debugSB.AppendJoin(codePhases->Iterator(), ' ');
 	Int32 val = 0;
 	if (!codePhases->RemoveAt(cpIndex).SetTo(phase))

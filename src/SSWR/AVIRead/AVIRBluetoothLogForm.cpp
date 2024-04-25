@@ -15,8 +15,8 @@
 
 void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnFileClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRBluetoothLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothLogForm>();
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"BluetoothLogFile", false);
+	NN<SSWR::AVIRead::AVIRBluetoothLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothLogForm>();
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"BluetoothLogFile", false);
 	dlg->SetAllowMultiSel(true);
 	dlg->AddFilter(CSTR("*.txt"), CSTR("Log File"));
 	if (dlg->ShowDialog(me->GetHandle()))
@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnFileClicked(AnyType userOb
 		UOSInt j = dlg->GetFileNameCount();
 		while (i < j)
 		{
-			NotNullPtr<Text::String> name;
+			NN<Text::String> name;
 			if (dlg->GetFileNames(i).SetTo(name))
 			{
 				me->btLog.LoadFile(name->ToCString());
@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnFileClicked(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnStoreClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRBluetoothLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothLogForm>();
+	NN<SSWR::AVIRead::AVIRBluetoothLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothLogForm>();
 	if (me->macList.Store())
 	{
 		me->ui->ShowMsgOK(CSTR("Data Stored"), CSTR("MAC Manager"), me);
@@ -53,8 +53,8 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnStoreClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(AnyType userObj, UOSInt index)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRBluetoothLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothLogForm>();
-	NotNullPtr<const IO::BTDevLog::DevEntry> log;
+	NN<SSWR::AVIRead::AVIRBluetoothLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothLogForm>();
+	NN<const IO::BTDevLog::DevEntry> log;
 	if (!me->lvContent->GetItem(index).GetOpt<const IO::BTDevLog::DevEntry>().SetTo(log))
 		return;
 	const Net::MACInfo::MACEntry *entry = me->macList.GetEntry(log->macInt);
@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(AnyType 
 	SSWR::AVIRead::AVIRMACManagerEntryForm frm(0, me->ui, me->core, log->mac, name);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
-		NotNullPtr<Text::String> name = frm.GetNameNew();
+		NN<Text::String> name = frm.GetNameNew();
 		UOSInt i = me->macList.SetEntry(log->macInt, name->ToCString());
 		name->Release();
 		entry = me->macList.GetItem(i);
@@ -89,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentSelChg(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnUnkOnlyChkChg(AnyType userObj, Bool checked)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRBluetoothLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothLogForm>();
+	NN<SSWR::AVIRead::AVIRBluetoothLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothLogForm>();
 	me->LogUIUpdate();	
 }
 
@@ -105,14 +105,14 @@ Bool SSWR::AVIRead::AVIRBluetoothLogForm::LogFileStore()
 void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 {
 	const Net::MACInfo::MACEntry *entry;
-	NotNullPtr<IO::BTDevLog::DevEntry> log;
+	NN<IO::BTDevLog::DevEntry> log;
 	Data::ArrayListNN<IO::BTDevLog::DevEntry> logList;
 	logList.AddAll(this->btLog.GetPublicList());
 	logList.AddAll(this->btLog.GetRandomList());
 	Bool unkOnly = this->chkUnkOnly->IsChecked();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UOSInt i;
 	UOSInt j;
 	UOSInt l;
@@ -198,7 +198,7 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::UpdateStatus()
 	this->lblInfo->SetText(sb.ToCString());
 }
 
-SSWR::AVIRead::AVIRBluetoothLogForm::AVIRBluetoothLogForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRBluetoothLogForm::AVIRBluetoothLogForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Bluetooth Log"));

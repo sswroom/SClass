@@ -20,7 +20,7 @@ namespace Net
 
 		struct DeviceInfo2
 		{
-			NotNullPtr<Text::String> token;
+			NN<Text::String> token;
 			Text::String *userName;
 			DeviceType devType;
 			Net::SocketUtil::AddressInfo subscribeAddr;
@@ -32,14 +32,14 @@ namespace Net
 
 		struct UserInfo
 		{
-			NotNullPtr<Text::String> userName;
+			NN<Text::String> userName;
 			Data::FastStringMap<DeviceInfo2*> devMap;
 		};
 
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;
-		NotNullPtr<Text::String> fcmKey;
-		NotNullPtr<IO::LogTool> log;
+		NN<Text::String> fcmKey;
+		NN<IO::LogTool> log;
 
 		Sync::Mutex dataMut;
 		Bool loading;
@@ -50,14 +50,14 @@ namespace Net
 		void LoadData();
 		void SaveData();
 	public:
-		PushManager(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString fcmKey, NotNullPtr<IO::LogTool> log);
+		PushManager(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString fcmKey, NN<IO::LogTool> log);
 		~PushManager();
 
-		Bool Subscribe(Text::CStringNN token, Text::CStringNN userName, DeviceType devType, NotNullPtr<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CString devModel);
+		Bool Subscribe(Text::CStringNN token, Text::CStringNN userName, DeviceType devType, NN<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CString devModel);
 		Bool Unsubscribe(Text::CStringNN token);
-		Bool Send(Data::ArrayListStringNN *userNames, NotNullPtr<Text::String> message);
-		UOSInt GetUsers(Data::ArrayListStringNN *users, NotNullPtr<Sync::MutexUsage> mutUsage);
-		NotNullPtr<const Data::ReadingList<DeviceInfo2*>> GetDevices(NotNullPtr<Sync::MutexUsage> mutUsage);
+		Bool Send(Data::ArrayListStringNN *userNames, NN<Text::String> message);
+		UOSInt GetUsers(Data::ArrayListStringNN *users, NN<Sync::MutexUsage> mutUsage);
+		NN<const Data::ReadingList<DeviceInfo2*>> GetDevices(NN<Sync::MutexUsage> mutUsage);
 		void LogMessage(Text::CStringNN msg, IO::LogHandler::LogLevel logLev);
 
 		static Text::CString DeviceTypeGetName(DeviceType devType);

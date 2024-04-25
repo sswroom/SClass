@@ -48,7 +48,7 @@ void Parser::FileParser::TIFFParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::TIFFParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::TIFFParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
@@ -62,9 +62,9 @@ IO::ParserType Parser::FileParser::TIFFParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	NotNullPtr<Data::ByteOrder> bo;
+	NN<Data::ByteOrder> bo;
 
 	UInt64 nextOfst;
 	UOSInt i;
@@ -81,10 +81,10 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 	{
 		return 0;
 	}
-	NotNullPtr<Media::ImageList> imgList;
+	NN<Media::ImageList> imgList;
 	Media::StaticImage *img;
 	Optional<Media::EXIFData> exif;
-	NotNullPtr<Media::EXIFData> nnexif;
+	NN<Media::EXIFData> nnexif;
 	UInt16 fmt = bo->GetUInt16(&hdr[2]);
 	if (fmt == 42)
 	{
@@ -156,7 +156,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 		planarConfiguration = GetUInt(nnexif, 284);
 		rowsPerStrip = GetUInt(nnexif, 278);
 		storeBPP = bpp;
-		NotNullPtr<Media::EXIFData::EXIFItem> item;
+		NN<Media::EXIFData::EXIFItem> item;
 		Media::PixelFormat pf = Media::PixelFormatGetDef(0, bpp);
 		if (!nnexif->GetExifItem(0x111).SetTo(item))
 		{
@@ -257,7 +257,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 			if (nStrip == 1)
 			{
 				Media::ImageList *innerImgList = 0;
-				NotNullPtr<IO::StreamData> jpgFd = fd->GetPartialData(stripOfst, stripLeng);
+				NN<IO::StreamData> jpgFd = fd->GetPartialData(stripOfst, stripLeng);
 				if (this->parsers)
 				{
 					innerImgList = (Media::ImageList*)this->parsers->ParseFileType(jpgFd, IO::ParserType::ImageList); 
@@ -266,7 +266,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 				if (innerImgList)
 				{
 					Media::RasterImage *innerImg;
-					NotNullPtr<Media::StaticImage> innerSImg;
+					NN<Media::StaticImage> innerSImg;
 					UInt32 imgDelay;
 					i = 0;
 					j = innerImgList->GetCount();
@@ -407,7 +407,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 			Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
 			if (nnexif->GetExifItem(34675).SetTo(item))
 			{
-				NotNullPtr<Media::ICCProfile> icc;
+				NN<Media::ICCProfile> icc;
 				if (Media::ICCProfile::Parse(Data::ByteArrayR(item->dataBuff.GetOpt<UInt8>().OrNull(), item->cnt)).SetTo(icc))
 				{
 					icc->GetRedTransferParam(color.GetRTranParam());
@@ -1521,10 +1521,10 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 		if (img->exif.SetTo(nnexif) && nnexif->GetGeoBounds(img->info.dispSize, srid, minX, minY, maxX, maxY))
 		{
 			Map::VectorLayer *lyr;
-			NotNullPtr<Math::Geometry::VectorImage> vimg;
-			NotNullPtr<Media::SharedImage> simg;
+			NN<Math::Geometry::VectorImage> vimg;
+			NN<Media::SharedImage> simg;
 			
-			NotNullPtr<Math::CoordinateSystem> csys;
+			NN<Math::CoordinateSystem> csys;
 			if (srid == 0)
 			{
 				csys = Math::CoordinateSystemManager::CreateDefaultCsys();
@@ -1597,9 +1597,9 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 				if (valid && rotX == 0 && rotY == 0)
 				{
 					Map::VectorLayer *lyr;
-					NotNullPtr<Math::Geometry::VectorImage> vimg;
-					NotNullPtr<Media::SharedImage> simg;
-					NotNullPtr<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+					NN<Math::Geometry::VectorImage> vimg;
+					NN<Media::SharedImage> simg;
+					NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 					
 					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, csys, 0, 0, 0, 0, 0));
 					img->To32bpp();
@@ -1618,9 +1618,9 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NotNullPtr<IO::St
 	return imgList.Ptr();
 }
 
-UInt32 Parser::FileParser::TIFFParser::GetUInt(NotNullPtr<Media::EXIFData> exif, UInt32 id)
+UInt32 Parser::FileParser::TIFFParser::GetUInt(NN<Media::EXIFData> exif, UInt32 id)
 {
-	NotNullPtr<Media::EXIFData::EXIFItem> item;
+	NN<Media::EXIFData::EXIFItem> item;
 	if (!exif->GetExifItem(id).SetTo(item))
 		return 0;
 	if (item->cnt != 1)
@@ -1632,9 +1632,9 @@ UInt32 Parser::FileParser::TIFFParser::GetUInt(NotNullPtr<Media::EXIFData> exif,
 	return 0;
 }
 
-UInt32 Parser::FileParser::TIFFParser::GetUInt0(NotNullPtr<Media::EXIFData> exif, UInt32 id)
+UInt32 Parser::FileParser::TIFFParser::GetUInt0(NN<Media::EXIFData> exif, UInt32 id)
 {
-	NotNullPtr<Media::EXIFData::EXIFItem> item;
+	NN<Media::EXIFData::EXIFItem> item;
 	if (!exif->GetExifItem(id).SetTo(item))
 		return 0;
 	if (item->type == Media::EXIFData::ET_UINT16)
@@ -1644,9 +1644,9 @@ UInt32 Parser::FileParser::TIFFParser::GetUInt0(NotNullPtr<Media::EXIFData> exif
 	return 0;
 }
 
-UInt32 Parser::FileParser::TIFFParser::GetUIntSum(NotNullPtr<Media::EXIFData> exif, UInt32 id, OptOut<UOSInt> nChannels)
+UInt32 Parser::FileParser::TIFFParser::GetUIntSum(NN<Media::EXIFData> exif, UInt32 id, OptOut<UOSInt> nChannels)
 {
-	NotNullPtr<Media::EXIFData::EXIFItem> item;
+	NN<Media::EXIFData::EXIFItem> item;
 	if (!exif->GetExifItem(id).SetTo(item))
 		return 0;
 	UInt32 sum = 0;

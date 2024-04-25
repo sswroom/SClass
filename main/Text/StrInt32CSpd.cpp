@@ -7,7 +7,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	WChar wbuff[256];
 	UTF8Char sbuff[256];

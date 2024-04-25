@@ -8,7 +8,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRCodePageForm::OKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCodePageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCodePageForm>();
+	NN<SSWR::AVIRead::AVIRCodePageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCodePageForm>();
 	UOSInt selInd = me->lbCodePages->GetSelectedIndex();
 	if (selInd != INVALID_INDEX)
 	{
@@ -19,11 +19,11 @@ void __stdcall SSWR::AVIRead::AVIRCodePageForm::OKClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRCodePageForm::CancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCodePageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCodePageForm>();
+	NN<SSWR::AVIRead::AVIRCodePageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCodePageForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRCodePageForm::AVIRCodePageForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 260, 664, ui)
+SSWR::AVIRead::AVIRCodePageForm::AVIRCodePageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 260, 664, ui)
 {
 	this->SetText(CSTR("Select Code Page"));
 	this->SetFont(0, 0, 8.25, false);
@@ -33,7 +33,7 @@ SSWR::AVIRead::AVIRCodePageForm::AVIRCodePageForm(Optional<UI::GUIClientControl>
 	
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	NotNullPtr<UI::GUILabel> lbl;
+	NN<UI::GUILabel> lbl;
 	
 	lbl = ui->NewLabel(*this, CSTR("Code Pages"));
 	lbl->SetRect(8, 8, 120, 23, false);

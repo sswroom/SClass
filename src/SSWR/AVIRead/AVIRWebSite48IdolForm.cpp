@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnRequestPageClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWebSite48IdolForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWebSite48IdolForm>();
+	NN<SSWR::AVIRead::AVIRWebSite48IdolForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWebSite48IdolForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnRequestPageClicked(AnyTyp
 
 void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnDownloadLinkClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWebSite48IdolForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWebSite48IdolForm>();
+	NN<SSWR::AVIRead::AVIRWebSite48IdolForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWebSite48IdolForm>();
 	Text::StringBuilderUTF8 sb;
 	Int32 videoId = 0;
 	me->txtVideoId->GetText(sb);
@@ -63,7 +63,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnDownloadLinkClicked(AnyTy
 
 void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnVideoNameClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWebSite48IdolForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWebSite48IdolForm>();
+	NN<SSWR::AVIRead::AVIRWebSite48IdolForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWebSite48IdolForm>();
 	Text::StringBuilderUTF8 sb;
 	Int32 videoId = 0;
 	me->txtNameVideoId->GetText(sb);
@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnVideoNameClicked(AnyType 
 	}
 }
 
-SSWR::AVIRead::AVIRWebSite48IdolForm::AVIRWebSite48IdolForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRWebSite48IdolForm::AVIRWebSite48IdolForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("48idol"));
 	this->SetFont(UTF8STRC("MingLiu"), 8.25, false);
@@ -90,7 +90,7 @@ SSWR::AVIRead::AVIRWebSite48IdolForm::AVIRWebSite48IdolForm(Optional<UI::GUIClie
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	Text::CString userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-	NotNullPtr<Text::String> ua = Text::String::New(userAgent);
+	NN<Text::String> ua = Text::String::New(userAgent);
 	NEW_CLASS(this->ctrl, Net::WebSite::WebSite48IdolControl(core->GetSocketFactory(), this->ssl, core->GetEncFactory(), ua.Ptr()));
 	ua->Release();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

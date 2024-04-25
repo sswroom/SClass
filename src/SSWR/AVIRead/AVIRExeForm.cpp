@@ -200,11 +200,11 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 
 void __stdcall SSWR::AVIRead::AVIRExeForm::On16BitFuncsChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRExeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRExeForm>();
+	NN<SSWR::AVIRead::AVIRExeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRExeForm>();
 	AnyType item = me->lb16BitFuncs->GetSelectedItem();
 	if (item.NotNull())
 	{
-		NotNullPtr<ExeB16Addr> addr = item.GetNN<ExeB16Addr>();
+		NN<ExeB16Addr> addr = item.GetNN<ExeB16Addr>();
 		UOSInt i;
 		UOSInt j;
 		me->lb16BitCont->ClearItems();
@@ -224,7 +224,7 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::On16BitFuncsChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRExeForm::OnImportSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRExeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRExeForm>();
+	NN<SSWR::AVIRead::AVIRExeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRExeForm>();
 	UOSInt modIndex = (UOSInt)me->lbImport->GetSelectedItem().p;
 	me->lvImport->ClearItems();
 	UOSInt i;
@@ -240,8 +240,8 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnImportSelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRExeForm::OnExportDblClk(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRExeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRExeForm>();
-	NotNullPtr<Text::String> s;
+	NN<SSWR::AVIRead::AVIRExeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRExeForm>();
+	NN<Text::String> s;
 	if (me->lbExport->GetSelectedItemTextNew().SetTo(s))
 	{
 		UI::Clipboard::SetString(me->GetHandle(), s->ToCString());
@@ -251,11 +251,11 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnExportDblClk(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRExeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRExeForm>();
+	NN<SSWR::AVIRead::AVIRExeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRExeForm>();
 	AnyType item = me->lbResource->GetSelectedItem();
 	if (item.NotNull())
 	{
-		NotNullPtr<const IO::EXEFile::ResourceInfo> res = item.GetNN<const IO::EXEFile::ResourceInfo>();
+		NN<const IO::EXEFile::ResourceInfo> res = item.GetNN<const IO::EXEFile::ResourceInfo>();
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Size = "));
 		sb.AppendUOSInt(res->dataSize);
@@ -275,17 +275,17 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceSelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceDblClk(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRExeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRExeForm>();
+	NN<SSWR::AVIRead::AVIRExeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRExeForm>();
 	AnyType item = me->lbResource->GetSelectedItem();
 	if (item.NotNull())
 	{
-		NotNullPtr<const IO::EXEFile::ResourceInfo> res = item.GetNN<const IO::EXEFile::ResourceInfo>();
+		NN<const IO::EXEFile::ResourceInfo> res = item.GetNN<const IO::EXEFile::ResourceInfo>();
 		if (res->rt == IO::EXEFile::RT_BITMAP)
 		{
 			Media::StaticImage *simg = Media::BitmapUtil::ParseDIBBuffer(res->data, res->dataSize);
 			if (simg)
 			{
-				NotNullPtr<Media::ImageList> imgList;
+				NN<Media::ImageList> imgList;
 				NEW_CLASSNN(imgList, Media::ImageList(res->name));
 				imgList->AddImage(simg, 0);
 				me->core->OpenObject(imgList);
@@ -298,7 +298,7 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceDblClk(AnyType userObj)
 		}
 		else if (res->rt == IO::EXEFile::RT_FONT)
 		{
-			NotNullPtr<Media::FontRenderer> font;
+			NN<Media::FontRenderer> font;
 			if (font.Set(Parser::FileParser::FNTParser::ParseFontBuff(me->exeFile->GetSourceNameObj(), res->data, res->dataSize)))
 			{
 				me->core->OpenObject(font);
@@ -307,7 +307,7 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceDblClk(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRExeForm::AVIRExeForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::EXEFile *exeFile) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRExeForm::AVIRExeForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::EXEFile *exeFile) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

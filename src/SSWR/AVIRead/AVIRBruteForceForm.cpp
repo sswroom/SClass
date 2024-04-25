@@ -15,7 +15,7 @@ CB8E9D52EB0C2DFB39B5D82A5315E433
 
 void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRBruteForceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBruteForceForm>();
+	NN<SSWR::AVIRead::AVIRBruteForceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBruteForceForm>();
 	Crypto::Hash::IHash *hash;
 	Text::StringBuilderUTF8 sb;
 	UInt32 minLeng;
@@ -81,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRBruteForceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBruteForceForm>();
+	NN<SSWR::AVIRead::AVIRBruteForceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBruteForceForm>();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	if (me->bforce)
@@ -112,7 +112,7 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 480, 240, ui)
+SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 480, 240, ui)
 {
 	this->SetText(CSTR("Brute Force"));
 	this->SetFont(0, 0, 8.25, false);

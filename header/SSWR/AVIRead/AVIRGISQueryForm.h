@@ -21,42 +21,42 @@ namespace SSWR
 		class AVIRGISQueryForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIPanel> pnlObj;
-			NotNullPtr<UI::GUIComboBox> cboObj;
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUIPanel> pnlObj;
+			NN<UI::GUIComboBox> cboObj;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpInfo;
-			NotNullPtr<UI::GUIListView> lvInfo;
+			NN<UI::GUITabPage> tpInfo;
+			NN<UI::GUIListView> lvInfo;
 
-			NotNullPtr<UI::GUITabPage> tpShape;
-			NotNullPtr<UI::GUIPanel> pnlShape;
-			NotNullPtr<UI::GUILabel> lblShapeLength;
-			NotNullPtr<UI::GUITextBox> txtShapeLength;
-			NotNullPtr<UI::GUILabel> lblShapeArea;
-			NotNullPtr<UI::GUITextBox> txtShapeArea;
-			NotNullPtr<UI::GUILabel> lblShapeFmt;
-			NotNullPtr<UI::GUIComboBox> cboShapeFmt;
-			NotNullPtr<UI::GUITextBox> txtShape;
+			NN<UI::GUITabPage> tpShape;
+			NN<UI::GUIPanel> pnlShape;
+			NN<UI::GUILabel> lblShapeLength;
+			NN<UI::GUITextBox> txtShapeLength;
+			NN<UI::GUILabel> lblShapeArea;
+			NN<UI::GUITextBox> txtShapeArea;
+			NN<UI::GUILabel> lblShapeFmt;
+			NN<UI::GUIComboBox> cboShapeFmt;
+			NN<UI::GUITextBox> txtShape;
 
-			NotNullPtr<UI::GUITabPage> tpBounds;
-			NotNullPtr<UI::GUILabel> lblMinX;
-			NotNullPtr<UI::GUITextBox> txtMinX;
-			NotNullPtr<UI::GUILabel> lblMinY;
-			NotNullPtr<UI::GUITextBox> txtMinY;
-			NotNullPtr<UI::GUILabel> lblMaxX;
-			NotNullPtr<UI::GUITextBox> txtMaxX;
-			NotNullPtr<UI::GUILabel> lblMaxY;
-			NotNullPtr<UI::GUITextBox> txtMaxY;
+			NN<UI::GUITabPage> tpBounds;
+			NN<UI::GUILabel> lblMinX;
+			NN<UI::GUITextBox> txtMinX;
+			NN<UI::GUILabel> lblMinY;
+			NN<UI::GUITextBox> txtMinY;
+			NN<UI::GUILabel> lblMaxX;
+			NN<UI::GUITextBox> txtMaxX;
+			NN<UI::GUILabel> lblMaxY;
+			NN<UI::GUITextBox> txtMaxY;
 
-			NotNullPtr<UI::GUITabPage> tpDist;
-			NotNullPtr<UI::GUILabel> lblDist;
-			NotNullPtr<UI::GUITextBox> txtDist;
-			NotNullPtr<UI::GUILabel> lblInside;
-			NotNullPtr<UI::GUITextBox> txtInside;
+			NN<UI::GUITabPage> tpDist;
+			NN<UI::GUILabel> lblDist;
+			NN<UI::GUITextBox> txtDist;
+			NN<UI::GUILabel> lblInside;
+			NN<UI::GUITextBox> txtInside;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IMapNavigator *navi;
-			NotNullPtr<Map::MapDrawLayer> lyr;
+			NN<Map::MapDrawLayer> lyr;
 			Math::Coord2D<OSInt> downPos;
 			Math::Geometry::Vector2D *currVec;
 			Math::VectorTextWriterList writerList;
@@ -78,7 +78,7 @@ namespace SSWR
 			void ClearQueryResults();
 			void SetQueryItem(UOSInt index);
 		public:
-			AVIRGISQueryForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapDrawLayer> lyr, IMapNavigator *navi);
+			AVIRGISQueryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapDrawLayer> lyr, IMapNavigator *navi);
 			virtual ~AVIRGISQueryForm();
 
 			virtual void OnMonitorChanged();

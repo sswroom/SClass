@@ -20,30 +20,30 @@ namespace SSWR
 		class AVIRTFTPServerForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Net::TFTPServer *svr;
 			IO::LogTool log;
-			NotNullPtr<UI::ListBoxLogger> logger;
+			NN<UI::ListBoxLogger> logger;
 
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpControl;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUILabel> lblFilePath;
-			NotNullPtr<UI::GUITextBox> txtFilePath;
-			NotNullPtr<UI::GUIButton> btnStart;
+			NN<UI::GUITabPage> tpControl;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUILabel> lblFilePath;
+			NN<UI::GUITextBox> txtFilePath;
+			NN<UI::GUIButton> btnStart;
 
-			NotNullPtr<UI::GUITabPage> tpLog;
-			NotNullPtr<UI::GUIListBox> lbLog;
-			NotNullPtr<UI::GUITextBox> txtLog;
+			NN<UI::GUITabPage> tpLog;
+			NN<UI::GUIListBox> lbLog;
+			NN<UI::GUITextBox> txtLog;
 
 		private:
 			static void __stdcall OnStartClick(AnyType userObj);
 			static void __stdcall OnLogSel(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
-			AVIRTFTPServerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRTFTPServerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTFTPServerForm();
 
 			virtual void OnMonitorChanged();

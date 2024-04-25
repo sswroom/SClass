@@ -12,9 +12,9 @@
 #include "Text/UTF8Reader.h"
 #include "Text/TextBinEnc/Punycode.h"
 
-Bool Net::SocketFactory::GetEffectiveDNS(NotNullPtr<Net::SocketUtil::AddressInfo> addr)
+Bool Net::SocketFactory::GetEffectiveDNS(NN<Net::SocketUtil::AddressInfo> addr)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (this->forceDNS.SetTo(s))
 	{
 		if (Net::SocketUtil::SetAddrInfo(addr, s->ToCString()))
@@ -67,7 +67,7 @@ Bool Net::SocketFactory::ForceDNSServer(Text::CStringNN ip)
 	return false;
 }
 
-Bool Net::SocketFactory::DNSResolveIP(Text::CStringNN host, NotNullPtr<Net::SocketUtil::AddressInfo> addr)
+Bool Net::SocketFactory::DNSResolveIP(Text::CStringNN host, NN<Net::SocketUtil::AddressInfo> addr)
 {
 	UTF8Char sbuff[256];
 

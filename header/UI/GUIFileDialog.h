@@ -30,7 +30,7 @@ namespace UI
 		void AddFilter(Text::CStringNN pattern, Text::CStringNN name);
 		UOSInt GetFilterIndex();
 		void SetFileName(Text::CString fileName);
-		NotNullPtr<Text::String> GetFileName() const;
+		NN<Text::String> GetFileName() const;
 		UOSInt GetFileNameCount();
 		Optional<Text::String> GetFileNames(UOSInt index);
 		void SetAllowMultiSel(Bool allowMulti);

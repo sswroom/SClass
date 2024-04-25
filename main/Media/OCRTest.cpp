@@ -92,7 +92,7 @@ void TestFile(Text::CString imgPath, Parser::ParserList *parsers, Media::OCREngi
 	}
 }*/
 
-void __stdcall OnNumberPlate(AnyType userObj, NotNullPtr<Media::StaticImage> simg, Math::RectArea<UOSInt> area, NotNullPtr<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, NotNullPtr<Media::StaticImage> plateImg)
+void __stdcall OnNumberPlate(AnyType userObj, NN<Media::StaticImage> simg, Math::RectArea<UOSInt> area, NN<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, NN<Media::StaticImage> plateImg)
 {
 	printf("Parsed Number Plate: %s\r\n", result->v);
 }
@@ -106,14 +106,14 @@ void TestFile2(Text::CString imgPath, Parser::ParserList *parsers, Media::ANPR *
 	Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
 	if (imgList)
 	{
-		NotNullPtr<Media::StaticImage> img;
+		NN<Media::StaticImage> img;
 		if (img.Set((Media::StaticImage*)imgList->GetImage(0, 0)))
 			apnr->ParseImage(img);
 		DEL_CLASS(imgList);
 	}
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Parser::FullParserList parsers;
 /*	Media::OCREngine ocr(Media::OCREngine::Language::English);

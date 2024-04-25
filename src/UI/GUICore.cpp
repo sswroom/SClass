@@ -8,23 +8,23 @@ UI::GUICore::~GUICore()
 {
 }
 
-NotNullPtr<UI::GUIListView> UI::GUICore::NewListView(NotNullPtr<UI::GUIClientControl> parent, ListViewStyle lvstyle, UOSInt colCount)
+NN<UI::GUIListView> UI::GUICore::NewListView(NN<UI::GUIClientControl> parent, ListViewStyle lvstyle, UOSInt colCount)
 {
-	NotNullPtr<UI::GUIListView> ctrl;
+	NN<UI::GUIListView> ctrl;
 	NEW_CLASSNN(ctrl, UI::GUIListView(*this, parent, lvstyle, colCount));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIPanel> UI::GUICore::NewPanel(NotNullPtr<UI::GUIClientControl> parent)
+NN<UI::GUIPanel> UI::GUICore::NewPanel(NN<UI::GUIClientControl> parent)
 {
-	NotNullPtr<UI::GUIPanel> ctrl;
+	NN<UI::GUIPanel> ctrl;
 	NEW_CLASSNN(ctrl, UI::GUIPanel(*this, parent));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIPictureBoxDD> UI::GUICore::NewPictureBoxDD(NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::ColorManagerSess> colorSess, Bool allowEnlarge, Bool directMode)
+NN<UI::GUIPictureBoxDD> UI::GUICore::NewPictureBoxDD(NN<UI::GUIClientControl> parent, NN<Media::ColorManagerSess> colorSess, Bool allowEnlarge, Bool directMode)
 {
-	NotNullPtr<UI::GUIPictureBoxDD> ctrl;
+	NN<UI::GUIPictureBoxDD> ctrl;
 	NEW_CLASSNN(ctrl, UI::GUIPictureBoxDD(*this, parent, colorSess, allowEnlarge, directMode));
 	return ctrl;
 }

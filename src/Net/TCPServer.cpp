@@ -21,7 +21,7 @@ void Net::TCPServer::AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::LogHandl
 {
 	if (this->log->HasHandler())
 	{
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		if (logPrefix.SetTo(s))
 		{
 			UTF8Char buff[1024];
@@ -38,7 +38,7 @@ void Net::TCPServer::AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::LogHandl
 
 UInt32 __stdcall Net::TCPServer::Svrv4Subthread(AnyType o)
 {
-	NotNullPtr<SubthreadStatus> status = o.GetNN<SubthreadStatus>();
+	NN<SubthreadStatus> status = o.GetNN<SubthreadStatus>();
 	Sync::ThreadUtil::SetName(CSTR("TCPSvrv4Sub"));
 	status->threadRunning = true;
 	status->threadEvt->Set();
@@ -53,7 +53,7 @@ UInt32 __stdcall Net::TCPServer::Svrv4Subthread(AnyType o)
 
 UInt32 __stdcall Net::TCPServer::Svrv4Thread(AnyType o)
 {
-	NotNullPtr<Net::TCPServer> svr = o.GetNN<Net::TCPServer>();
+	NN<Net::TCPServer> svr = o.GetNN<Net::TCPServer>();
 	UTF8Char buff[1024];
 	UTF8Char *str;
 	UOSInt sthreadCnt = 0;
@@ -146,7 +146,7 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(AnyType o)
 
 UInt32 __stdcall Net::TCPServer::Svrv6Subthread(AnyType o)
 {
-	NotNullPtr<SubthreadStatus> status = o.GetNN<SubthreadStatus>();
+	NN<SubthreadStatus> status = o.GetNN<SubthreadStatus>();
 	Sync::ThreadUtil::SetName(CSTR("TCPSvrv6Sub"));
 	status->threadRunning = true;
 	status->threadEvt->Set();
@@ -161,7 +161,7 @@ UInt32 __stdcall Net::TCPServer::Svrv6Subthread(AnyType o)
 
 UInt32 __stdcall Net::TCPServer::Svrv6Thread(AnyType o)
 {
-	NotNullPtr<Net::TCPServer> svr = o.GetNN<Net::TCPServer>();
+	NN<Net::TCPServer> svr = o.GetNN<Net::TCPServer>();
 	UTF8Char buff[1024];
 	UTF8Char *str;
 	UOSInt sthreadCnt = 0;
@@ -254,7 +254,7 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(AnyType o)
 
 UInt32 __stdcall Net::TCPServer::WorkerThread(AnyType o)
 {
-	NotNullPtr<Net::TCPServer> svr = o.GetNN<Net::TCPServer>();
+	NN<Net::TCPServer> svr = o.GetNN<Net::TCPServer>();
 	UTF8Char buff[256];
 	UTF8Char *str;
 
@@ -310,10 +310,10 @@ void Net::TCPServer::AcceptSocket(Socket *svrSoc)
 		this->hdlr((UInt32*)s, this->userObj);*/
 	}	
 }
-Net::TCPServer::TCPServer(NotNullPtr<SocketFactory> socf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, NotNullPtr<IO::LogTool> log, TCPServerConn hdlr, AnyType userObj, Text::CString logPrefix, Bool autoStart)
+Net::TCPServer::TCPServer(NN<SocketFactory> socf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, NN<IO::LogTool> log, TCPServerConn hdlr, AnyType userObj, Text::CString logPrefix, Bool autoStart)
 {
 	Net::SocketUtil::AddressInfo addrTmp;
-	NotNullPtr<Net::SocketUtil::AddressInfo> addr;
+	NN<Net::SocketUtil::AddressInfo> addr;
 	UTF8Char buff[1024];
 	UTF8Char *str;
 	this->socf = socf;

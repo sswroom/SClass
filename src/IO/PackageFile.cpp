@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/PackageFile.h"
 
-IO::PackageFile::PackageFile(NotNullPtr<Text::String> fileName) : IO::ParsedObject(fileName)
+IO::PackageFile::PackageFile(NN<Text::String> fileName) : IO::ParsedObject(fileName)
 {
 }
 
@@ -67,7 +67,7 @@ Optional<IO::PackageFile> IO::PackageFile::GetItemPack(Text::CStringNN path, Out
 	if (j == INVALID_INDEX)
 		return 0;
 	Bool thisNeedRelease;
-	NotNullPtr<IO::PackageFile> pkg;
+	NN<IO::PackageFile> pkg;
 	if (GetItemPack(j, thisNeedRelease).SetTo(pkg))
 	{
 		Optional<IO::PackageFile> ret = pkg->GetItemPack(path, needRelease);

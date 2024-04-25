@@ -18,26 +18,26 @@ namespace SSWR
 		class AVIRGISFontForm : public UI::GUIForm, public Media::IColorHandler
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Media::ColorManagerSess> colorSess;
-			NotNullPtr<Media::ColorConv> colorConv;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Media::ColorManagerSess> colorSess;
+			NN<Media::ColorConv> colorConv;
 			Bool changed;
-			NotNullPtr<Media::DrawEngine> eng;
+			NN<Media::DrawEngine> eng;
 
-			NotNullPtr<Text::String> fontName;
+			NN<Text::String> fontName;
 			Double fontSizePt;
 			UInt32 fontColor;
 			Media::StaticImage *previewImage;
 
-			NotNullPtr<UI::GUIPictureBox> pbPreview;
-			NotNullPtr<UI::GUIPanel> pnlMain;
-			NotNullPtr<UI::GUILabel> lblFont;
-			NotNullPtr<UI::GUITextBox> txtFont;
-			NotNullPtr<UI::GUIButton> btnFont;
-			NotNullPtr<UI::GUILabel> lblColor;
-			NotNullPtr<UI::GUIPictureBox> pbColor;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUIPictureBox> pbPreview;
+			NN<UI::GUIPanel> pnlMain;
+			NN<UI::GUILabel> lblFont;
+			NN<UI::GUITextBox> txtFont;
+			NN<UI::GUIButton> btnFont;
+			NN<UI::GUILabel> lblColor;
+			NN<UI::GUIPictureBox> pbColor;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
 			static void __stdcall OnFontClicked(AnyType userObj);
 			static Bool __stdcall OnColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
@@ -47,15 +47,15 @@ namespace SSWR
 			void UpdateFontText();
 			void UpdateFontPreview();
 		public:
-			AVIRGISFontForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::DrawEngine> eng, Text::String *fontName, Double fontSizePt, UInt32 fontColor);
+			AVIRGISFontForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::DrawEngine> eng, Text::String *fontName, Double fontSizePt, UInt32 fontColor);
 			virtual ~AVIRGISFontForm();
 
 			virtual void OnMonitorChanged();
 
-			virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
-			virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);
+			virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
+			virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
 
-			NotNullPtr<Text::String> GetFontName() const;
+			NN<Text::String> GetFontName() const;
 			Double GetFontSizePt();
 			UInt32 GetFontColor();
 

@@ -1245,7 +1245,7 @@ void Media::VideoFilter::IVTCFilter::StartIVTC(Data::Duration frameTime, UInt32 
 
 UInt32 __stdcall Media::VideoFilter::IVTCFilter::IVTCThread(AnyType userObj)
 {
-	NotNullPtr<Media::VideoFilter::IVTCFilter> me = userObj.GetNN<Media::VideoFilter::IVTCFilter>();
+	NN<Media::VideoFilter::IVTCFilter> me = userObj.GetNN<Media::VideoFilter::IVTCFilter>();
 	Sync::ThreadUtil::SetName(CSTR("IVTCFilterIVTC"));
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_HIGHEST);
 	me->ivtcTStatus = 1;
@@ -1279,7 +1279,7 @@ UInt32 __stdcall Media::VideoFilter::IVTCFilter::IVTCThread(AnyType userObj)
 
 UInt32 __stdcall Media::VideoFilter::IVTCFilter::CalcThread(AnyType userObj)
 {
-	NotNullPtr<ThreadStat> tStat = userObj.GetNN<ThreadStat>();
+	NN<ThreadStat> tStat = userObj.GetNN<ThreadStat>();
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("IVTCFilterC")), tStat->index);
@@ -1961,7 +1961,7 @@ Media::VideoFilter::IVTCFilter::IVTCFilter(Media::IVideoSource *srcVideo) : Medi
 	this->ivtcLastExist = false;
 	this->ivtcLastFieldUsed = false;
 #ifdef _DEBUG
-	NotNullPtr<IO::FileStream> debugFS;
+	NN<IO::FileStream> debugFS;
 	NEW_CLASSNN(debugFS, IO::FileStream(CSTR("IVTC.log"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	this->debugFS = debugFS.Ptr();
 	NEW_CLASS(this->debugLog, Text::UTF8Writer(debugFS));

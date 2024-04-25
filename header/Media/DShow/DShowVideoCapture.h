@@ -43,7 +43,7 @@ namespace Media
 			virtual UTF8Char *GetSourceName(UTF8Char *buff);
 			virtual Text::CStringNN GetFilterName();
 
-			virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
+			virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
 			virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData);
 			virtual Bool Start();
 			virtual void Stop();
@@ -58,7 +58,7 @@ namespace Media
 
 			virtual void SetPreferSize(Math::Size2D<UOSInt> size, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 fraemRateDenom);
 			virtual UOSInt GetSupportedFormats(VideoFormat *fmtArr, UOSInt maxCnt);
-			virtual void GetInfo(NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual void GetInfo(NN<Text::StringBuilderUTF8> sb);
 		};
 
 		class DShowVideoCaptureMgr

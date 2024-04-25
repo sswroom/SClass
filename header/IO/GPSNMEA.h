@@ -31,7 +31,7 @@ namespace IO
 			SateStatus sates[32];
 		};
 	protected:
-		NotNullPtr<IO::Stream> stm;
+		NN<IO::Stream> stm;
 	private:
 		Bool relStm;
 		Data::ArrayList<Data::CallbackStorage<LocationHandler>> hdlrList;
@@ -43,10 +43,10 @@ namespace IO
 		Bool threadToStop;
 	private:
 		virtual void ParseUnknownCmd(const UTF8Char *cmd, UOSInt cmdLen);
-		static ParseStatus ParseNMEALine(UTF8Char *line, UOSInt lineLen, NotNullPtr<Map::GPSTrack::GPSRecord3> record, SateRecord *sateRec);
+		static ParseStatus ParseNMEALine(UTF8Char *line, UOSInt lineLen, NN<Map::GPSTrack::GPSRecord3> record, SateRecord *sateRec);
 		static UInt32 __stdcall NMEAThread(AnyType userObj);
 	public:
-		GPSNMEA(NotNullPtr<IO::Stream> stm, Bool relStm);
+		GPSNMEA(NN<IO::Stream> stm, Bool relStm);
 		virtual ~GPSNMEA();
 
 		virtual Bool IsDown();
@@ -58,7 +58,7 @@ namespace IO
 		void HandleCommand(CommandHandler cmdHdlr, AnyType userObj);
 
 		static UOSInt GenNMEACommand(const UTF8Char *cmd, UOSInt cmdLen, UInt8 *buff);
-		static NotNullPtr<Map::GPSTrack> NMEA2Track(NotNullPtr<IO::Stream> stm, Text::CStringNN sourceName);
+		static NN<Map::GPSTrack> NMEA2Track(NN<IO::Stream> stm, Text::CStringNN sourceName);
 	};
 }
 #endif

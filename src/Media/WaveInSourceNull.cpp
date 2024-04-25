@@ -83,7 +83,7 @@ Bool Media::WaveInSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, I
 	return false;
 }
 
-void Media::WaveInSource::GetFormat(NotNullPtr<AudioFormat> format)
+void Media::WaveInSource::GetFormat(NN<AudioFormat> format)
 {
 	format->formatId = 1;
 	format->bitpersample = this->nbits;

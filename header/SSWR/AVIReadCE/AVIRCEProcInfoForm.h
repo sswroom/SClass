@@ -30,65 +30,65 @@ namespace SSWR
 			typedef struct
 			{
 				UInt32 procId;
-				NotNullPtr<Text::String> procName;
+				NN<Text::String> procName;
 				UInt32 parentProcId;
 				Bool found;
 			} ProcessInfo;
 		private:
-			NotNullPtr<UI::GUITabControl> tcMain;
-			NotNullPtr<UI::GUITabPage> tpSummary;
-			NotNullPtr<UI::GUITabPage> tpDetail;
+			NN<UI::GUITabControl> tcMain;
+			NN<UI::GUITabPage> tpSummary;
+			NN<UI::GUITabPage> tpDetail;
 
-			NotNullPtr<UI::GUIPanel> pnlSummary;
-			NotNullPtr<UI::GUIListView> lvSummary;
+			NN<UI::GUIPanel> pnlSummary;
+			NN<UI::GUIListView> lvSummary;
 
-			NotNullPtr<UI::GUIListBox> lbDetail;
-			NotNullPtr<UI::GUIHSplitter> hspDetail;
-			NotNullPtr<UI::GUITabControl> tcDetail;
-			NotNullPtr<UI::GUITabPage> tpDetInfo;
-			NotNullPtr<UI::GUITabPage> tpDetModule;
-			NotNullPtr<UI::GUITabPage> tpDetThread;
-			NotNullPtr<UI::GUITabPage> tpDetHeap;
-			NotNullPtr<UI::GUITabPage> tpDetChart;
+			NN<UI::GUIListBox> lbDetail;
+			NN<UI::GUIHSplitter> hspDetail;
+			NN<UI::GUITabControl> tcDetail;
+			NN<UI::GUITabPage> tpDetInfo;
+			NN<UI::GUITabPage> tpDetModule;
+			NN<UI::GUITabPage> tpDetThread;
+			NN<UI::GUITabPage> tpDetHeap;
+			NN<UI::GUITabPage> tpDetChart;
 
-			NotNullPtr<UI::GUILabel> lblDetProcId;
-			NotNullPtr<UI::GUITextBox> txtDetProcId;
-			NotNullPtr<UI::GUILabel> lblDetParentId;
-			NotNullPtr<UI::GUITextBox> txtDetParentId;
-			NotNullPtr<UI::GUILabel> lblDetName;
-			NotNullPtr<UI::GUITextBox> txtDetName;
-			NotNullPtr<UI::GUILabel> lblDetPath;
-			NotNullPtr<UI::GUITextBox> txtDetPath;
-			NotNullPtr<UI::GUILabel> lblDetPriority;
-			NotNullPtr<UI::GUITextBox> txtDetPriority;
+			NN<UI::GUILabel> lblDetProcId;
+			NN<UI::GUITextBox> txtDetProcId;
+			NN<UI::GUILabel> lblDetParentId;
+			NN<UI::GUITextBox> txtDetParentId;
+			NN<UI::GUILabel> lblDetName;
+			NN<UI::GUITextBox> txtDetName;
+			NN<UI::GUILabel> lblDetPath;
+			NN<UI::GUITextBox> txtDetPath;
+			NN<UI::GUILabel> lblDetPriority;
+			NN<UI::GUITextBox> txtDetPriority;
 			
-			NotNullPtr<UI::GUIPanel> pnlDetModule;
-			NotNullPtr<UI::GUIButton> btnDetModule;
-			NotNullPtr<UI::GUIListView> lvDetModule;
+			NN<UI::GUIPanel> pnlDetModule;
+			NN<UI::GUIButton> btnDetModule;
+			NN<UI::GUIListView> lvDetModule;
 
-			NotNullPtr<UI::GUIPanel> pnlDetThread;
-			NotNullPtr<UI::GUIButton> btnDetThread;
-			NotNullPtr<UI::GUIListView> lvDetThread;
+			NN<UI::GUIPanel> pnlDetThread;
+			NN<UI::GUIButton> btnDetThread;
+			NN<UI::GUIListView> lvDetThread;
 
-			NotNullPtr<UI::GUIPanel> pnlDetHeap;
-			NotNullPtr<UI::GUIButton> btnDetHeap;
-			NotNullPtr<UI::GUIListBox> lbDetHeap;
-			NotNullPtr<UI::GUIHSplitter> hspDetHeap;
-			NotNullPtr<UI::GUIListView> lvDetHeap;
+			NN<UI::GUIPanel> pnlDetHeap;
+			NN<UI::GUIButton> btnDetHeap;
+			NN<UI::GUIListBox> lbDetHeap;
+			NN<UI::GUIHSplitter> hspDetHeap;
+			NN<UI::GUIListView> lvDetHeap;
 
-			NotNullPtr<UI::GUIGroupBox> grpDetChartCPU;
-			NotNullPtr<UI::GUIRealtimeLineChart> rlcDetChartCPU;
-			NotNullPtr<UI::GUIVSplitter> vspDetChartCPU;
-			NotNullPtr<UI::GUIGroupBox> grpDetChartPage;
-			NotNullPtr<UI::GUIRealtimeLineChart> rlcDetChartPage;
-			NotNullPtr<UI::GUIVSplitter> vspDetChartPage;
-			NotNullPtr<UI::GUIGroupBox> grpDetChartCount;
-			NotNullPtr<UI::GUIRealtimeLineChart> rlcDetChartCount;
-			NotNullPtr<UI::GUIVSplitter> vspDetChartCount;
-			NotNullPtr<UI::GUIGroupBox> grpDetChartWS;
-			NotNullPtr<UI::GUIRealtimeLineChart> rlcDetChartWS;
+			NN<UI::GUIGroupBox> grpDetChartCPU;
+			NN<UI::GUIRealtimeLineChart> rlcDetChartCPU;
+			NN<UI::GUIVSplitter> vspDetChartCPU;
+			NN<UI::GUIGroupBox> grpDetChartPage;
+			NN<UI::GUIRealtimeLineChart> rlcDetChartPage;
+			NN<UI::GUIVSplitter> vspDetChartPage;
+			NN<UI::GUIGroupBox> grpDetChartCount;
+			NN<UI::GUIRealtimeLineChart> rlcDetChartCount;
+			NN<UI::GUIVSplitter> vspDetChartCount;
+			NN<UI::GUIGroupBox> grpDetChartWS;
+			NN<UI::GUIRealtimeLineChart> rlcDetChartWS;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
 			Data::ArrayListInt32 *procIds;
 			Data::ArrayList<ProcessInfo*> *procList;
@@ -116,7 +116,7 @@ namespace SSWR
 			void UpdateProcHeaps();
 			void UpdateProcHeapDetail(Int32 heapId);
 		public:
-			AVIRCEProcInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRCEProcInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCEProcInfoForm();
 		};
 	}

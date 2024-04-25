@@ -6,7 +6,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/Clipboard.h"
 
-void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(Text::CString userAgent, NotNullPtr<Text::StringBuilderUTF8> outSb)
+void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(Text::CString userAgent, NN<Text::StringBuilderUTF8> outSb)
 {
 	Text::StringBuilderUTF8 sb;
 	Net::UserAgentDB::UAEntry ent;
@@ -66,7 +66,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(Text::CString userA
 	sb.AppendUTF8Char(',');
 	j = sb.GetLength();
 	if (j < 140) sb.AppendChar(' ', 140 - j);
-	NotNullPtr<Text::String> s = Text::JSText::ToNewJSTextDQuote((const UTF8Char*)ent.userAgent);
+	NN<Text::String> s = Text::JSText::ToNewJSTextDQuote((const UTF8Char*)ent.userAgent);
 	sb.AppendC(UTF8STRC("UTF8STRC("));
 	sb.Append(s);
 	s->Release();
@@ -80,7 +80,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(Text::CString userA
 
 void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnParseClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRUserAgentBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentBatchForm>();
+	NN<SSWR::AVIRead::AVIRUserAgentBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentBatchForm>();
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb3;
 	Text::PString sarr[2];
@@ -112,7 +112,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnParseClicked(AnyType use
 
 void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnUpdateClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRUserAgentBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentBatchForm>();
+	NN<SSWR::AVIRead::AVIRUserAgentBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentBatchForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtSource->GetText(sb);
 	me->UpdateByText(sb);
@@ -120,7 +120,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnUpdateClicked(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnUpdateCBClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRUserAgentBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentBatchForm>();
+	NN<SSWR::AVIRead::AVIRUserAgentBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentBatchForm>();
 	Text::StringBuilderUTF8 sb;
 	UI::Clipboard::GetString(me->GetHandle(), sb);
 	if (sb.GetLength() > 0)
@@ -177,7 +177,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(Text::PString txt)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.ClearStr();
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = uaList.Iterator();
+		Data::ArrayIterator<NN<Text::String>> it = uaList.Iterator();
 		while (it.HasNext())
 		{
 			UserAgent2Output(it.Next()->ToCString(), sb);
@@ -194,7 +194,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(Text::PString txt)
 	uaList.FreeAll();
 }
 
-SSWR::AVIRead::AVIRUserAgentBatchForm::AVIRUserAgentBatchForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRUserAgentBatchForm::AVIRUserAgentBatchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("User Agent Batch"));

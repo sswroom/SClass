@@ -20,7 +20,7 @@ Int32 Parser::FileParser::SPREDParser::GetName()
 	return *(Int32*)"SRED";
 }
 
-void Parser::FileParser::SPREDParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::SPREDParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
@@ -33,12 +33,12 @@ IO::ParserType Parser::FileParser::SPREDParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	Data::ArrayListNN<Map::GPSTrack::GPSRecord3> *currDev = 0;
 	Int32 currDevId = -1;
 	Int32 devId;
-	NotNullPtr<Map::GPSTrack::GPSRecord3> rec;
+	NN<Map::GPSTrack::GPSRecord3> rec;
 	UInt8 buff[384];
 	Bool error = false;
 	UTF8Char sbuff[256];
@@ -77,7 +77,7 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFileHdr(NotNullPtr<IO::S
 		return 0;
 	}
 
-	NotNullPtr<Text::String> s = fd->GetFullName();
+	NN<Text::String> s = fd->GetFullName();
 	i = Text::StrLastIndexOfCharC(s->v, s->leng, IO::Path::PATH_SEPERATOR);
 	sptr = Text::StrConcatC(sbuff, &s->v[i + 1], s->leng - i - 1);
 	if (!Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("RED")))
@@ -200,7 +200,7 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFileHdr(NotNullPtr<IO::S
 		while (i-- > 0)
 		{
 			currDev = devRecs.GetItem(i);
-			Data::ArrayIterator<NotNullPtr<Map::GPSTrack::GPSRecord3>> it = currDev->Iterator();
+			Data::ArrayIterator<NN<Map::GPSTrack::GPSRecord3>> it = currDev->Iterator();
 			while (it.HasNext())
 			{
 				MemFreeA(it.Next().Ptr());
@@ -220,7 +220,7 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFileHdr(NotNullPtr<IO::S
 		track->SetTrackName(CSTRP(sbuff, sptr));
 
 		currDev = devRecs.Get(devId);
-		Data::ArrayIterator<NotNullPtr<Map::GPSTrack::GPSRecord3>> it = currDev->Iterator();
+		Data::ArrayIterator<NN<Map::GPSTrack::GPSRecord3>> it = currDev->Iterator();
 		while (it.HasNext())
 		{
 			track->AddRecord(rec = it.Next());

@@ -11,9 +11,9 @@ Data::ArrayListInt64::ArrayListInt64(UOSInt capacity) : Data::SortableArrayListN
 {
 }
 
-NotNullPtr<Data::ArrayList<Int64>> Data::ArrayListInt64::Clone() const
+NN<Data::ArrayList<Int64>> Data::ArrayListInt64::Clone() const
 {
-	NotNullPtr<Data::ArrayListInt64> newArr;
+	NN<Data::ArrayListInt64> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListInt64(this->capacity));
 	newArr->AddAll(*this);
 	return newArr;

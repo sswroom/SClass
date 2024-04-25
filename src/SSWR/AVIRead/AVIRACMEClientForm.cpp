@@ -4,7 +4,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRACMEClientForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRACMEClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRACMEClientForm>();
+	NN<SSWR::AVIRead::AVIRACMEClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRACMEClientForm>();
 	if (me->client)
 	{
 		DEL_CLASS(me->client);
@@ -78,7 +78,7 @@ void __stdcall SSWR::AVIRead::AVIRACMEClientForm::OnStartClicked(AnyType userObj
 	}
 }
 
-SSWR::AVIRead::AVIRACMEClientForm::AVIRACMEClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRACMEClientForm::AVIRACMEClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("ACME Client"));

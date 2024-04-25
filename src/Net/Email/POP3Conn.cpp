@@ -16,7 +16,7 @@
 
 UInt32 __stdcall Net::Email::POP3Conn::RecvThread(AnyType userObj)
 {
-	NotNullPtr<Net::Email::POP3Conn> me = userObj.GetNN<Net::Email::POP3Conn>();
+	NN<Net::Email::POP3Conn> me = userObj.GetNN<Net::Email::POP3Conn>();
 	UTF8Char sbuff[2048];
 	UTF8Char *sptr;
 	UOSInt i;
@@ -54,7 +54,7 @@ UInt32 __stdcall Net::Email::POP3Conn::RecvThread(AnyType userObj)
 					me->statusChg = true;
 					me->evt.Set();
 				}
-				NotNullPtr<Text::StringBuilderUTF8> sb;
+				NN<Text::StringBuilderUTF8> sb;
 				if (sb.Set(me->msgData))
 				{
 					me->msgData->AppendP(sbuff, sptr);
@@ -132,7 +132,7 @@ Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::WaitForResult(UTF8Char 
 		return ResultStatus::TimedOut;
 }
 
-Net::Email::POP3Conn::POP3Conn(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, ConnType connType, IO::Writer *logWriter, Data::Duration timeout)
+Net::Email::POP3Conn::POP3Conn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, ConnType connType, IO::Writer *logWriter, Data::Duration timeout)
 {
 	this->threadStarted = false;
 	this->threadRunning = false;
@@ -147,7 +147,7 @@ Net::Email::POP3Conn::POP3Conn(NotNullPtr<Net::SocketFactory> sockf, Optional<Ne
 	addr.addrType = Net::AddrType::Unknown;
 	sockf->DNSResolveIP(host, addr);
 	this->logWriter = logWriter;
-	NotNullPtr<Net::SSLEngine> nnssl;
+	NN<Net::SSLEngine> nnssl;
 	if (connType == CT_SSL && ssl.SetTo(nnssl))
 	{
 		if (!this->cli.Set(nnssl->ClientConnect(host, port, 0, timeout)))
@@ -185,7 +185,7 @@ Net::Email::POP3Conn::POP3Conn(NotNullPtr<Net::SocketFactory> sockf, Optional<Ne
 					this->logWriter->WriteLineC(UTF8STRC("SSL Handshake begin"));
 				}
 				Socket *s = this->cli->RemoveSocket();
-				NotNullPtr<Net::TCPClient> cli;
+				NN<Net::TCPClient> cli;
 				if (cli.Set(nnssl->ClientInit(s, host, 0)))
 				{
 					if (this->logWriter)
@@ -336,7 +336,7 @@ Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendStat(UOSInt *msgCou
 	return status;
 }
 
-Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendRetr(UOSInt msgIndex, NotNullPtr<Text::StringBuilderUTF8> msgBuff)
+Net::Email::POP3Conn::ResultStatus Net::Email::POP3Conn::SendRetr(UOSInt msgIndex, NN<Text::StringBuilderUTF8> msgBuff)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

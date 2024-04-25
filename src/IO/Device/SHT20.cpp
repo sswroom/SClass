@@ -2,7 +2,7 @@
 #include "Data/ByteTool.h"
 #include "IO/Device/SHT20.h"
 
-IO::Device::SHT20::SHT20(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr) : IO::MODBUSDevice(modbus, addr)
+IO::Device::SHT20::SHT20(NN<IO::MODBUSMaster> modbus, UInt8 addr) : IO::MODBUSDevice(modbus, addr)
 {
 }
 

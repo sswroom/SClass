@@ -39,13 +39,13 @@ void SSWR::AVIRead::AVIRLogFileForm::UpdateLogMessages()
 
 void __stdcall SSWR::AVIRead::AVIRLogFileForm::OnLogsDblClk(AnyType userObj, UOSInt itemIndex)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLogFileForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogFileForm>();
+	NN<SSWR::AVIRead::AVIRLogFileForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogFileForm>();
 	Text::StringBuilderUTF8 sb;
 	me->logFile->GetLogDescription(me->logLevel, itemIndex, sb);
 	me->ui->ShowMsgOK(sb.ToCString(), CSTR("Log Detail"), me);
 }
 
-SSWR::AVIRead::AVIRLogFileForm::AVIRLogFileForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::LogFile *logFile) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRLogFileForm::AVIRLogFileForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::LogFile *logFile) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -65,7 +65,7 @@ SSWR::AVIRead::AVIRLogFileForm::AVIRLogFileForm(Optional<UI::GUIClientControl> p
 	this->lvLogs->AddColumn(CSTR("Message"), 812);
 	this->lvLogs->HandleDblClk(OnLogsDblClk, this);
 
-	NotNullPtr<UI::GUIMenu> mnu;
+	NN<UI::GUIMenu> mnu;
 	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(CSTR("&File"));
 	mnu->AddItem(CSTR("&Save As..."), MNU_LOG_SAVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -87,7 +87,7 @@ void SSWR::AVIRead::AVIRLogFileForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_LOG_SAVE:
 		{
-			NotNullPtr<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"LogFileSave", true);
+			NN<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"LogFileSave", true);
 			dlg->AddFilter(CSTR("*.txt"), CSTR("Log Text file"));
 			if (dlg->ShowDialog(this->hwnd))
 			{

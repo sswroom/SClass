@@ -20,7 +20,7 @@ namespace Net
 	class HTTPClient : public IO::Stream
 	{
 	protected:
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Manage::HiResClock clk;
 
 		Net::SocketUtil::AddressInfo svrAddr;
@@ -34,12 +34,12 @@ namespace Net
 		UOSInt hdrLen;
 
 		Bool kaConn;
-		NotNullPtr<Text::String> url;
+		NN<Text::String> url;
 		Optional<Text::String> forceHost;
 		UInt64 totalUpload;
 		UInt64 totalDownload;
 
-		HTTPClient(NotNullPtr<Net::SocketFactory> sockf, Bool kaConn);
+		HTTPClient(NN<Net::SocketFactory> sockf, Bool kaConn);
 	public:
 		virtual ~HTTPClient();
 
@@ -53,12 +53,12 @@ namespace Net
 		virtual IO::StreamType GetStreamType() const;
 
 		virtual Bool IsSecureConn() const = 0;
-		virtual Bool SetClientCert(NotNullPtr<Crypto::Cert::X509Cert> cert, NotNullPtr<Crypto::Cert::X509File> key) = 0;
+		virtual Bool SetClientCert(NN<Crypto::Cert::X509Cert> cert, NN<Crypto::Cert::X509File> key) = 0;
 		virtual Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> GetServerCerts() = 0;
 
 		Bool FormBegin();
 		Bool FormAdd(Text::CStringNN name, Text::CString value);
-		void AddTimeHeader(Text::CStringNN name, NotNullPtr<Data::DateTime> dt);
+		void AddTimeHeader(Text::CStringNN name, NN<Data::DateTime> dt);
 		void AddTimeHeader(Text::CStringNN name, Data::Timestamp ts);
 		void AddContentType(Text::CStringNN contType);
 		void AddContentLength(UInt64 leng);
@@ -68,15 +68,15 @@ namespace Net
 		UOSInt GetRespHeaderCnt() const;
 		UTF8Char *GetRespHeader(UOSInt index, UTF8Char *buff);
 		UTF8Char *GetRespHeader(Text::CStringNN name, UTF8Char *valueBuff);
-		Bool GetRespHeader(Text::CStringNN name, NotNullPtr<Text::StringBuilderUTF8> sb);
+		Bool GetRespHeader(Text::CStringNN name, NN<Text::StringBuilderUTF8> sb);
 		Text::CString GetRespHeader(Text::CStringNN name);
 		Optional<Text::String> GetRespHeader(UOSInt index) const;
-		Data::ArrayIterator<NotNullPtr<Text::String>> RespHeaderIterator() const;
+		Data::ArrayIterator<NN<Text::String>> RespHeaderIterator() const;
 		UInt64 GetContentLength();
 		UInt32 GetContentCodePage();
-		Bool GetLastModified(NotNullPtr<Data::DateTime> dt);
+		Bool GetLastModified(NN<Data::DateTime> dt);
 		Bool GetLastModified(OutParam<Data::Timestamp> ts);
-		Bool GetServerDate(NotNullPtr<Data::DateTime> dt);
+		Bool GetServerDate(NN<Data::DateTime> dt);
 		Text::CString GetTransferEncoding();
 		Text::CString GetContentType();
 
@@ -87,18 +87,18 @@ namespace Net
 		UOSInt GetHdrLen();
 		UInt64 GetTotalUpload();
 		UInt64 GetTotalDownload();
-		Bool ReadAllContent(NotNullPtr<IO::Stream> outStm, UOSInt buffSize, UInt64 maxSize);
-		Bool ReadAllContent(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt buffSize, UInt64 maxSize);
+		Bool ReadAllContent(NN<IO::Stream> outStm, UOSInt buffSize, UInt64 maxSize);
+		Bool ReadAllContent(NN<Text::StringBuilderUTF8> sb, UOSInt buffSize, UInt64 maxSize);
 
-		static void ParseDateStr(NotNullPtr<Data::DateTime> dt, Text::CStringNN dateStr);
+		static void ParseDateStr(NN<Data::DateTime> dt, Text::CStringNN dateStr);
 		static Data::Timestamp ParseDateStr(Text::CStringNN dateStr);
-		static NotNullPtr<Net::HTTPClient> CreateClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString userAgent, Bool kaConn, Bool isSecure);
-		static NotNullPtr<Net::HTTPClient> CreateConnect(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, Net::WebUtil::RequestMethod method, Bool kaConn);
-		static NotNullPtr<Net::HTTPClient> CreateGet(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, Bool kaConn);
+		static NN<Net::HTTPClient> CreateClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString userAgent, Bool kaConn, Bool isSecure);
+		static NN<Net::HTTPClient> CreateConnect(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, Net::WebUtil::RequestMethod method, Bool kaConn);
+		static NN<Net::HTTPClient> CreateGet(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, Bool kaConn);
 		static Bool IsHTTPURL(Text::CStringNN url);
 		static void PrepareSSL(Optional<Net::SSLEngine> ssl);
-		static Bool LoadContent(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, NotNullPtr<IO::Stream> stm, UInt64 maxSize);
-		static Bool LoadContent(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, NotNullPtr<Text::StringBuilderUTF8> sb, UInt64 maxSize);
+		static Bool LoadContent(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, NN<IO::Stream> stm, UInt64 maxSize);
+		static Bool LoadContent(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, NN<Text::StringBuilderUTF8> sb, UInt64 maxSize);
 	};
 }
 #endif

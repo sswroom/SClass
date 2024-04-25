@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::OrganMgr::OrganImageDetailForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<OrganImageDetailForm> me = userObj.GetNN<OrganImageDetailForm>();
+	NN<OrganImageDetailForm> me = userObj.GetNN<OrganImageDetailForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtDescript->GetText(sb);
 	SDEL_TEXT(me->descript);
@@ -15,7 +15,7 @@ void __stdcall SSWR::OrganMgr::OrganImageDetailForm::OnOKClicked(AnyType userObj
 
 void __stdcall SSWR::OrganMgr::OrganImageDetailForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<OrganImageDetailForm> me = userObj.GetNN<OrganImageDetailForm>();
+	NN<OrganImageDetailForm> me = userObj.GetNN<OrganImageDetailForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 

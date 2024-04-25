@@ -6,7 +6,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTraceRouteForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTraceRouteForm>();
+	NN<SSWR::AVIRead::AVIRTraceRouteForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTraceRouteForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt32 targetIP;
 	UTF8Char sbuff[32];
@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnIPSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTraceRouteForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTraceRouteForm>();
+	NN<SSWR::AVIRead::AVIRTraceRouteForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTraceRouteForm>();
 	UInt32 ip = (UInt32)(UOSInt)me->lbIP->GetSelectedItem().p;
 	if (ip)
 	{
@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnIPSelChg(AnyType userObj)
 }
 
 
-SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui), whois(core->GetSocketFactory(), 15000)
+SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui), whois(core->GetSocketFactory(), 15000)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Trace Route"));
@@ -109,7 +109,7 @@ SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(Optional<UI::GUIClientCont
 	this->txtIPWhois->SetReadOnly(true);
 
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
-	NotNullPtr<Net::ConnectionInfo> connInfo;
+	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UOSInt i;

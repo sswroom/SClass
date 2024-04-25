@@ -42,7 +42,7 @@ UOSInt Net::WebServer::WebConnection::SendData(const UInt8 *buff, UOSInt buffSiz
 	return buffSize;
 }
 
-Net::WebServer::WebConnection::WebConnection(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<Net::TCPClient> cli, NotNullPtr<WebListener> svr, NotNullPtr<IWebHandler> hdlr, Bool allowProxy, KeepAlive keepAlive) : Net::WebServer::IWebResponse(CSTR("WebConnection"))
+Net::WebServer::WebConnection::WebConnection(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Net::TCPClient> cli, NN<WebListener> svr, NN<IWebHandler> hdlr, Bool allowProxy, KeepAlive keepAlive) : Net::WebServer::IWebResponse(CSTR("WebConnection"))
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -370,7 +370,7 @@ void Net::WebServer::WebConnection::ProcessTimeout()
 	sb.AppendC(UTF8STRC(" "));
 	if (this->currReq)
 	{
-		NotNullPtr<Text::String> uri = this->currReq->GetRequestURI();
+		NN<Text::String> uri = this->currReq->GetRequestURI();
 		sb.Append(uri);
 		sb.AppendUTF8Char(' ');
 	}
@@ -429,15 +429,15 @@ void Net::WebServer::WebConnection::ProcessResponse()
 	this->respStatus = Net::WebStatus::SC_OK;
 	this->respDataEnd = false;
 	this->respHeaders.ClearStr();
-	NotNullPtr<Net::WebServer::WebRequest> currReq;
+	NN<Net::WebServer::WebRequest> currReq;
 	if (currReq.Set(this->currReq))
 	{
 
-		NotNullPtr<Text::String> reqURI = currReq->GetRequestURI();
+		NN<Text::String> reqURI = currReq->GetRequestURI();
 		Net::WebUtil::RequestMethod reqMeth = currReq->GetReqMethod();
 		if (reqMeth == Net::WebUtil::RequestMethod::HTTP_CONNECT && this->allowProxy)
 		{
-			NotNullPtr<Net::TCPClient> proxyCli;
+			NN<Net::TCPClient> proxyCli;
 			UTF8Char sbuff[512];
 			UTF8Char *sptr;
 			UOSInt i;
@@ -484,7 +484,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 		{
 			Manage::HiResClock clk;
 			Double t;
-			NotNullPtr<Net::HTTPClient> httpCli;
+			NN<Net::HTTPClient> httpCli;
 			Text::StringBuilderUTF8 sb;
 
 			clk.Start();
@@ -689,7 +689,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 				}
 				else if (currReq->GetProtocol() == Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0)
 				{
-					NotNullPtr<Text::String> connHdr;
+					NN<Text::String> connHdr;
 					if (currReq->GetSHeader(CSTR("Connection")).SetTo(connHdr) && connHdr->EqualsICase(UTF8STRC("keep-alive")))
 					{
 					}
@@ -700,7 +700,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 				}
 				else
 				{
-					NotNullPtr<Text::String> connHdr;
+					NN<Text::String> connHdr;
 					if (currReq->GetSHeader(CSTR("Connection")).SetTo(connHdr) && connHdr->EqualsICase(UTF8STRC("close")))
 					{
 						this->cli->ShutdownSend();
@@ -759,13 +759,13 @@ Bool Net::WebServer::WebConnection::AddHeader(Text::CStringNN name, Text::CStrin
 	return true;
 }
 
-Bool Net::WebServer::WebConnection::AddDefHeaders(NotNullPtr<Net::WebServer::IWebRequest> req)
+Bool Net::WebServer::WebConnection::AddDefHeaders(NN<Net::WebServer::IWebRequest> req)
 {
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	AddTimeHeader(CSTR("Date"), dt);
 	AddHeaderS(CSTR("Server"), this->svr->GetServerName());
-	NotNullPtr<Text::String> connHdr;
+	NN<Text::String> connHdr;
 	if (req->GetSHeader(CSTR("Connection")).SetTo(connHdr) && connHdr->Equals(UTF8STRC("keep-alive")) && (this->keepAlive == KeepAlive::Always || (this->keepAlive == KeepAlive::Default && Net::WebServer::HTTPServerUtil::AllowKA(req->GetBrowser()))))
 	{
 		AddHeader(CSTR("Connection"), CSTR("keep-alive"));

@@ -18,7 +18,7 @@ extern "C" Int32 UseAVX;
 extern "C" Int32 CPUBrand;
 #endif
 
-void Data::Sort::ArtificialQuickSort::DoSortInt32(NotNullPtr<ThreadStat> stat, Int32 *arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::ArtificialQuickSort::DoSortInt32(NN<ThreadStat> stat, Int32 *arr, OSInt firstIndex, OSInt lastIndex)
 {
 	OSInt i;
 	OSInt j;
@@ -139,7 +139,7 @@ void Data::Sort::ArtificialQuickSort::DoSortInt32(NotNullPtr<ThreadStat> stat, I
 	}
 }
 
-void Data::Sort::ArtificialQuickSort::DoSortUInt32(NotNullPtr<ThreadStat> stat, UInt32 *arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::ArtificialQuickSort::DoSortUInt32(NN<ThreadStat> stat, UInt32 *arr, OSInt firstIndex, OSInt lastIndex)
 {
 	OSInt i;
 	OSInt j;
@@ -258,7 +258,7 @@ void Data::Sort::ArtificialQuickSort::DoSortUInt32(NotNullPtr<ThreadStat> stat, 
 	}
 }
 
-void Data::Sort::ArtificialQuickSort::DoSortStr(NotNullPtr<ThreadStat> stat, UTF8Char **arr, OSInt firstIndex, OSInt lastIndex)
+void Data::Sort::ArtificialQuickSort::DoSortStr(NN<ThreadStat> stat, UTF8Char **arr, OSInt firstIndex, OSInt lastIndex)
 {
 	OSInt i;
 	OSInt left;
@@ -355,7 +355,7 @@ void Data::Sort::ArtificialQuickSort::DoSortStr(NotNullPtr<ThreadStat> stat, UTF
 
 UInt32 __stdcall Data::Sort::ArtificialQuickSort::ProcessThread(AnyType userObj)
 {
-	NotNullPtr<ThreadStat> stat = userObj.GetNN<ThreadStat>();
+	NN<ThreadStat> stat = userObj.GetNN<ThreadStat>();
 	Bool found;
 	OSInt firstIndex;
 	OSInt lastIndex;

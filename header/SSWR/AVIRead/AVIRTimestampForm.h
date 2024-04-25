@@ -16,35 +16,35 @@ namespace SSWR
 		class AVIRTimestampForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpValue;
-			NotNullPtr<UI::GUILabel> lblValue;
-			NotNullPtr<UI::GUITextBox> txtValue;
-			NotNullPtr<UI::GUIButton> btnEpochSec;
-			NotNullPtr<UI::GUIButton> btnEpochMS;
-			NotNullPtr<UI::GUIButton> btnEpochUS;
-			NotNullPtr<UI::GUIButton> btnEpochNS;
-			NotNullPtr<UI::GUIButton> btnDotNetTicks;
-			NotNullPtr<UI::GUILabel> lblUTCTime;
-			NotNullPtr<UI::GUITextBox> txtUTCTime;
-			NotNullPtr<UI::GUILabel> lblLocalTime;
-			NotNullPtr<UI::GUITextBox> txtLocalTime;
+			NN<UI::GUITabPage> tpValue;
+			NN<UI::GUILabel> lblValue;
+			NN<UI::GUITextBox> txtValue;
+			NN<UI::GUIButton> btnEpochSec;
+			NN<UI::GUIButton> btnEpochMS;
+			NN<UI::GUIButton> btnEpochUS;
+			NN<UI::GUIButton> btnEpochNS;
+			NN<UI::GUIButton> btnDotNetTicks;
+			NN<UI::GUILabel> lblUTCTime;
+			NN<UI::GUITextBox> txtUTCTime;
+			NN<UI::GUILabel> lblLocalTime;
+			NN<UI::GUITextBox> txtLocalTime;
 			
-			NotNullPtr<UI::GUITabPage> tpStr;
-			NotNullPtr<UI::GUILabel> lblStr;
-			NotNullPtr<UI::GUITextBox> txtStr;
-			NotNullPtr<UI::GUIButton> btnStrConv;
-			NotNullPtr<UI::GUILabel> lblStrEpochSec;
-			NotNullPtr<UI::GUITextBox> txtStrEpochSec;
-			NotNullPtr<UI::GUILabel> lblStrEpochMS;
-			NotNullPtr<UI::GUITextBox> txtStrEpochMS;
-			NotNullPtr<UI::GUILabel> lblStrEpochNS;
-			NotNullPtr<UI::GUITextBox> txtStrEpochNS;
-			NotNullPtr<UI::GUILabel> lblStrDotNetTicks;
-			NotNullPtr<UI::GUITextBox> txtStrDotNetTicks;
+			NN<UI::GUITabPage> tpStr;
+			NN<UI::GUILabel> lblStr;
+			NN<UI::GUITextBox> txtStr;
+			NN<UI::GUIButton> btnStrConv;
+			NN<UI::GUILabel> lblStrEpochSec;
+			NN<UI::GUITextBox> txtStrEpochSec;
+			NN<UI::GUILabel> lblStrEpochMS;
+			NN<UI::GUITextBox> txtStrEpochMS;
+			NN<UI::GUILabel> lblStrEpochNS;
+			NN<UI::GUITextBox> txtStrEpochNS;
+			NN<UI::GUILabel> lblStrDotNetTicks;
+			NN<UI::GUITextBox> txtStrDotNetTicks;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
 			static void __stdcall OnEpochSecClicked(AnyType userObj);
 			static void __stdcall OnEpochMSClicked(AnyType userObj);
@@ -54,7 +54,7 @@ namespace SSWR
 			static void __stdcall OnStrConvClicked(AnyType userObj);
 			void DisplayTime(const Data::Timestamp &ts);
 		public:
-			AVIRTimestampForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRTimestampForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTimestampForm();
 
 			virtual void OnMonitorChanged();

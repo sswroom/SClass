@@ -3,7 +3,7 @@
 #include "Media/DrawEngine.h"
 #include "UI/DObj/DownButtonDObj.h"
 
-UI::DObj::DownButtonDObj::DownButtonDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, UI::UIEvent clkHdlr, AnyType clkUserObj) : DirectObject(tl)
+UI::DObj::DownButtonDObj::DownButtonDObj(NN<Media::DrawEngine> deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, UI::UIEvent clkHdlr, AnyType clkUserObj) : DirectObject(tl)
 {
 	this->deng = deng;
 	if (fileNameUnclick.leng == 0)
@@ -31,7 +31,7 @@ UI::DObj::DownButtonDObj::DownButtonDObj(NotNullPtr<Media::DrawEngine> deng, Tex
 
 UI::DObj::DownButtonDObj::~DownButtonDObj()
 {
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->bmpUnclick))
 	{
 		this->deng->DeleteImage(img);
@@ -61,12 +61,12 @@ Bool UI::DObj::DownButtonDObj::DoEvents()
 	return false;
 }
 
-void UI::DObj::DownButtonDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
+void UI::DObj::DownButtonDObj::DrawObject(NN<Media::DrawImage> dimg)
 {
 	Math::Coord2D<OSInt> tl = this->GetCurrPos();
 	this->dispTL = tl;
-	NotNullPtr<Media::DrawImage> bmpUnclick;
-	NotNullPtr<Media::DrawImage> bmpClicked;
+	NN<Media::DrawImage> bmpUnclick;
+	NN<Media::DrawImage> bmpClicked;
 	if (bmpUnclick.Set(this->bmpUnclick) && bmpClicked.Set(this->bmpClicked))
 	{
 		if (this->isMouseDown)

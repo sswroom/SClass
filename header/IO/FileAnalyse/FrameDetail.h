@@ -27,8 +27,8 @@ namespace IO
 			{
 				UInt64 ofst;
 				UInt64 size;
-				NotNullPtr<Text::String> name;
-				NotNullPtr<Text::String> value;
+				NN<Text::String> name;
+				NN<Text::String> value;
 				FieldType fieldType;
 			};
 		private:
@@ -46,8 +46,8 @@ namespace IO
 
 			UInt64 GetOffset() const;
 			UInt64 GetSize() const;
-			UOSInt GetFieldInfos(UInt64 ofst, NotNullPtr<Data::ArrayListNN<const FieldInfo>> fieldList) const;
-			UOSInt GetAreaInfos(UInt64 ofst, NotNullPtr<Data::ArrayListNN<const FieldInfo>> areaList) const;
+			UOSInt GetFieldInfos(UInt64 ofst, NN<Data::ArrayListNN<const FieldInfo>> fieldList) const;
+			UOSInt GetAreaInfos(UInt64 ofst, NN<Data::ArrayListNN<const FieldInfo>> areaList) const;
 
 			virtual void AddHeader(Text::CStringNN header);
 			virtual void AddField(UInt64 ofst, UInt64 size, Text::CStringNN name, Text::CString value);
@@ -57,7 +57,7 @@ namespace IO
 			virtual void AddSubframe(UInt64 ofst, UInt64 size);
 			void AddArea(UInt64 ofst, UOSInt size, Text::CStringNN name);
 
-			void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+			void ToString(NN<Text::StringBuilderUTF8> sb) const;
 		};
 	}
 }

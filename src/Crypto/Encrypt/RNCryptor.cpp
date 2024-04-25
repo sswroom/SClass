@@ -24,7 +24,7 @@ UOSInt Crypto::Encrypt::RNCryptor::RemovePadding(UInt8 *buff, UOSInt buffSize)
 	return buffSize;
 }
 
-Bool Crypto::Encrypt::RNCryptor::Decrypt(NotNullPtr<IO::SeekableStream> srcStream, NotNullPtr<IO::Stream> destStream, Text::CStringNN password)
+Bool Crypto::Encrypt::RNCryptor::Decrypt(NN<IO::SeekableStream> srcStream, NN<IO::Stream> destStream, Text::CStringNN password)
 {
 	UInt8 header[34];
 	UInt64 fileLength = srcStream->GetLength();
@@ -132,7 +132,7 @@ Bool Crypto::Encrypt::RNCryptor::Decrypt(NotNullPtr<IO::SeekableStream> srcStrea
 	return false;
 }
 
-Bool Crypto::Encrypt::RNCryptor::Encrypt(NotNullPtr<IO::SeekableStream> srcStream, NotNullPtr<IO::Stream> destStream, Text::CStringNN password)
+Bool Crypto::Encrypt::RNCryptor::Encrypt(NN<IO::SeekableStream> srcStream, NN<IO::Stream> destStream, Text::CStringNN password)
 {
 	UInt8 header[34];
 	UInt64 fileLength = srcStream->GetLength();

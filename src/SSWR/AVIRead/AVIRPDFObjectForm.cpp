@@ -12,16 +12,16 @@ typedef enum
 
 void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPDFObjectForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPDFObjectForm>();
+	NN<SSWR::AVIRead::AVIRPDFObjectForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPDFObjectForm>();
 	me->lvParameter->ClearItems();
-	NotNullPtr<Media::PDFObject> obj;
+	NN<Media::PDFObject> obj;
 	if (me->lbObject->GetSelectedItem().GetOpt<Media::PDFObject>().SetTo(obj))
 	{
 		Media::PDFParameter *param = obj->GetParameter();
 		if (param)
 		{
 			Media::PDFParameter::ParamEntry *entry;
-			NotNullPtr<Text::String> s;
+			NN<Text::String> s;
 			UOSInt i = 0;
 			UOSInt j = param->GetCount();
 			while (i < j)
@@ -38,17 +38,17 @@ void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectSelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectDblClk(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPDFObjectForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPDFObjectForm>();
-	NotNullPtr<Media::PDFObject> obj;
+	NN<SSWR::AVIRead::AVIRPDFObjectForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPDFObjectForm>();
+	NN<Media::PDFObject> obj;
 	if (me->lbObject->GetSelectedItem().GetOpt<Media::PDFObject>().SetTo(obj) && obj->IsImage())
 	{
-		NotNullPtr<Media::ImageList> imgList;
+		NN<Media::ImageList> imgList;
 		if (imgList.Set(me->doc->CreateImage(obj->GetId(), me->core->GetParserList())))
 			me->core->OpenObject(imgList);
 	}
 }
 
-SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::PDFDocument *doc) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::PDFDocument *doc) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetText(CSTR("PDF Objects"));
 	this->SetFont(0, 0, 8.25, false);
@@ -75,14 +75,14 @@ SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(Optional<UI::GUIClientContro
 	this->lvParameter->AddColumn(CSTR("Value"), 400);
 
 	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
-	NotNullPtr<UI::GUIMenu> mnu = this->mnuMain->AddSubMenu(CSTR("Objects"));
+	NN<UI::GUIMenu> mnu = this->mnuMain->AddSubMenu(CSTR("Objects"));
 	mnu->AddItem(CSTR("Save all images..."), MNU_SAVE_ALL_IMAGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Save Selected"), MNU_SAVE_SELECTED, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->SetMenu(this->mnuMain);
 	
 	Media::PDFObject *obj;
 	Optional<Text::String> type;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	UOSInt i = 0;
@@ -117,10 +117,10 @@ void SSWR::AVIRead::AVIRPDFObjectForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_SAVE_ALL_IMAGE:
 	{
-		NotNullPtr<UI::GUIFolderDialog> dlg = this->ui->NewFolderDialog();
+		NN<UI::GUIFolderDialog> dlg = this->ui->NewFolderDialog();
 		if (dlg->ShowDialog(this->GetHandle()))
 		{
-			NotNullPtr<Text::String> folder = dlg->GetFolder();
+			NN<Text::String> folder = dlg->GetFolder();
 			Text::CString fileName = this->doc->GetSourceNameObj()->ToCString();
 			UOSInt i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 			if (i != INVALID_INDEX)
@@ -134,7 +134,7 @@ void SSWR::AVIRead::AVIRPDFObjectForm::EventMenuClicked(UInt16 cmdId)
 				obj = this->doc->GetItem(i);
 				if (obj->IsImage())
 				{
-					NotNullPtr<Text::String> filter;
+					NN<Text::String> filter;
 					if (obj->GetFilter().SetTo(filter))
 					{
 						if (filter->Equals(UTF8STRC("DCTDecode")))
@@ -161,7 +161,7 @@ void SSWR::AVIRead::AVIRPDFObjectForm::EventMenuClicked(UInt16 cmdId)
 		Media::PDFObject *obj = (Media::PDFObject*)this->lbObject->GetSelectedItem().p;
 		if (obj == 0)
 			break;
-		NotNullPtr<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"PDFObjectSelected", true);
+		NN<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"PDFObjectSelected", true);
 		dlg->AddFilter(CSTR("*.dat"), CSTR("Data File"));
 		Text::StringBuilderUTF8 sb;
 		sb.Append(doc->GetSourceNameObj());

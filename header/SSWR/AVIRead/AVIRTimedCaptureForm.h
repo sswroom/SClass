@@ -33,7 +33,7 @@ namespace SSWR
 				UInt32 frameRateDenom;
 			} CaptureFormat;
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Media::VideoCaptureMgr *captureMgr;
 			Media::IVideoCapture *currCapture;
 			Data::ArrayList<Media::VideoCaptureMgr::DeviceInfo*> *devInfoList;
@@ -49,27 +49,27 @@ namespace SSWR
 			UInt32 saveCnt;
 			Media::TimedImageList *timedImageList;
 
-			NotNullPtr<UI::GUIListBox> lbDevice;
-			NotNullPtr<UI::GUIHSplitter> hspMain;
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUIListBox> lbDevice;
+			NN<UI::GUIHSplitter> hspMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpControl;
-			NotNullPtr<UI::GUILabel> lblFormat;
-			NotNullPtr<UI::GUIComboBox> cboFormat;
-			NotNullPtr<UI::GUILabel> lblInterval;
-			NotNullPtr<UI::GUITextBox> txtInterval;
-			NotNullPtr<UI::GUILabel> lblJPGQuality;
-			NotNullPtr<UI::GUITextBox> txtJPGQuality;
-			NotNullPtr<UI::GUILabel> lblFileName;
-			NotNullPtr<UI::GUITextBox> txtFileName;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUITextBox> txtDeviceInfo;
+			NN<UI::GUITabPage> tpControl;
+			NN<UI::GUILabel> lblFormat;
+			NN<UI::GUIComboBox> cboFormat;
+			NN<UI::GUILabel> lblInterval;
+			NN<UI::GUITextBox> txtInterval;
+			NN<UI::GUILabel> lblJPGQuality;
+			NN<UI::GUITextBox> txtJPGQuality;
+			NN<UI::GUILabel> lblFileName;
+			NN<UI::GUITextBox> txtFileName;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUITextBox> txtDeviceInfo;
 
-			NotNullPtr<UI::GUITabPage> tpStatus;
-			NotNullPtr<UI::GUILabel> lblFrameCnt;
-			NotNullPtr<UI::GUITextBox> txtFrameCnt;
-			NotNullPtr<UI::GUILabel> lblSaveCnt;
-			NotNullPtr<UI::GUITextBox> txtSaveCnt;
+			NN<UI::GUITabPage> tpStatus;
+			NN<UI::GUILabel> lblFrameCnt;
+			NN<UI::GUITextBox> txtFrameCnt;
+			NN<UI::GUILabel> lblSaveCnt;
+			NN<UI::GUITextBox> txtSaveCnt;
 
 			static void __stdcall OnDevChg(AnyType userObj);
 			static void __stdcall OnStartClicked(AnyType userObj);
@@ -80,7 +80,7 @@ namespace SSWR
 			void StopCapture();
 			void ReleaseFormats();
 		public:
-			AVIRTimedCaptureForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRTimedCaptureForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTimedCaptureForm();
 
 			virtual void OnMonitorChanged();

@@ -18,8 +18,8 @@ namespace Media
 
 	private:
 		Media::AudioFormat format;
-		NotNullPtr<IO::StreamData> data;
-		NotNullPtr<Text::String> name;
+		NN<IO::StreamData> data;
+		NN<Text::String> name;
 
 		UInt32 readBlock;
 		Sync::Event *readEvt;
@@ -30,7 +30,7 @@ namespace Media
 		UInt32 samplePerBlock;
 		UOSInt maxBlockSize;
 	public:
-		AudioBlockSource(NotNullPtr<IO::StreamData> fd, NotNullPtr<const Media::AudioFormat> format, NotNullPtr<Text::String> name, UInt32 samplePerBlock);
+		AudioBlockSource(NN<IO::StreamData> fd, NN<const Media::AudioFormat> format, NN<Text::String> name, UInt32 samplePerBlock);
 		virtual ~AudioBlockSource();
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);
@@ -39,7 +39,7 @@ namespace Media
 		virtual Data::Duration SeekToTime(Data::Duration time);
 		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 
-		virtual void GetFormat(NotNullPtr<AudioFormat> format);
+		virtual void GetFormat(NN<AudioFormat> format);
 
 		virtual Bool Start(Sync::Event *evt, UOSInt blkSize);
 		virtual void Stop();

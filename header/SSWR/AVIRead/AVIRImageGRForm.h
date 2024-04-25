@@ -21,37 +21,37 @@ namespace SSWR
 		class AVIRImageGRForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<Media::StaticImage> srcImg;
-			NotNullPtr<Media::StaticImage> destImg;
-			NotNullPtr<Media::StaticImage> srcPrevImg;
-			NotNullPtr<Media::StaticImage> destPrevImg;
-			NotNullPtr<UI::GUIPictureBoxDD> previewCtrl;
+			NN<Media::StaticImage> srcImg;
+			NN<Media::StaticImage> destImg;
+			NN<Media::StaticImage> srcPrevImg;
+			NN<Media::StaticImage> destPrevImg;
+			NN<UI::GUIPictureBoxDD> previewCtrl;
 			Media::GRFilter *grFilter;
 			UOSInt currLayer;
 			Bool modifying;
 
-			NotNullPtr<UI::GUIPanel> pnlLayers;
-			NotNullPtr<UI::GUIListBox> lbLayers;
-			NotNullPtr<UI::GUIHSplitter> hspLayers;
-			NotNullPtr<UI::GUIPanel> pnlSetting;
-			NotNullPtr<UI::GUILabel> lblHOfst;
-			NotNullPtr<UI::GUIHScrollBar> hsbHOfst;
-			NotNullPtr<UI::GUITextBox> txtHOfst;
-			NotNullPtr<UI::GUILabel> lblVOfst;
-			NotNullPtr<UI::GUIHScrollBar> hsbVOfst;
-			NotNullPtr<UI::GUITextBox> txtVOfst;
-			NotNullPtr<UI::GUILabel> lblLevel;
-			NotNullPtr<UI::GUIHScrollBar> hsbLevel;
-			NotNullPtr<UI::GUITextBox> txtLevel;
-			NotNullPtr<UI::GUILabel> lblType;
-			NotNullPtr<UI::GUIComboBox> cboType;
-			NotNullPtr<UI::GUICheckBox> chkEnable;
-			NotNullPtr<UI::GUIButton> btnAddLayer;
-			NotNullPtr<UI::GUIButton> btnRemoveLayer;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUIPanel> pnlLayers;
+			NN<UI::GUIListBox> lbLayers;
+			NN<UI::GUIHSplitter> hspLayers;
+			NN<UI::GUIPanel> pnlSetting;
+			NN<UI::GUILabel> lblHOfst;
+			NN<UI::GUIHScrollBar> hsbHOfst;
+			NN<UI::GUITextBox> txtHOfst;
+			NN<UI::GUILabel> lblVOfst;
+			NN<UI::GUIHScrollBar> hsbVOfst;
+			NN<UI::GUITextBox> txtVOfst;
+			NN<UI::GUILabel> lblLevel;
+			NN<UI::GUIHScrollBar> hsbLevel;
+			NN<UI::GUITextBox> txtLevel;
+			NN<UI::GUILabel> lblType;
+			NN<UI::GUIComboBox> cboType;
+			NN<UI::GUICheckBox> chkEnable;
+			NN<UI::GUIButton> btnAddLayer;
+			NN<UI::GUIButton> btnRemoveLayer;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
 			static void __stdcall OnHOfstChanged(AnyType userObj, UOSInt newPos);
 			static void __stdcall OnVOfstChanged(AnyType userObj, UOSInt newPos);
@@ -67,7 +67,7 @@ namespace SSWR
 			void UpdatePreview();
 			void UpdateLayers();
 		public:
-			AVIRImageGRForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg, NotNullPtr<UI::GUIPictureBoxDD> previewCtrl);
+			AVIRImageGRForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::StaticImage> srcImg, NN<Media::StaticImage> destImg, NN<UI::GUIPictureBoxDD> previewCtrl);
 			virtual ~AVIRImageGRForm();
 
 			virtual void OnMonitorChanged();

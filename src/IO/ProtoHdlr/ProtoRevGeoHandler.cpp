@@ -4,10 +4,10 @@
 #include "Data/ByteTool.h"
 #include "IO/ProtoHdlr/ProtoRevGeoHandler.h"
 
-IO::ProtoHdlr::ProtoRevGeoHandler::ProtoRevGeoHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener)
+IO::ProtoHdlr::ProtoRevGeoHandler::ProtoRevGeoHandler(NN<IO::IProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
-	NotNullPtr<Crypto::Hash::CRC32R> crc;
+	NN<Crypto::Hash::CRC32R> crc;
 	NEW_CLASSNN(crc, Crypto::Hash::CRC32R());
 	NEW_CLASSNN(this->crc, Crypto::Hash::HashCalc(crc));
 }
@@ -17,16 +17,16 @@ IO::ProtoHdlr::ProtoRevGeoHandler::~ProtoRevGeoHandler()
 	this->crc.Delete();
 }
 
-AnyType IO::ProtoHdlr::ProtoRevGeoHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
+AnyType IO::ProtoHdlr::ProtoRevGeoHandler::CreateStreamData(NN<IO::Stream> stm)
 {
 	return 0;
 }
 
-void IO::ProtoHdlr::ProtoRevGeoHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, AnyType stmData)
+void IO::ProtoHdlr::ProtoRevGeoHandler::DeleteStreamData(NN<IO::Stream> stm, AnyType stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoRevGeoHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
+UOSInt IO::ProtoHdlr::ProtoRevGeoHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
 {
 	Bool found;
 	UInt8 crcVal[4];

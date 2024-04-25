@@ -139,7 +139,7 @@ void Media::CS::CSP016_RGB32C::SetupInterpolationParameter(UOSInt source_length,
 
 UInt32 Media::CS::CSP016_RGB32C::WorkerThread(AnyType obj)
 {
-	NotNullPtr<CSP016_RGB32C> converter = obj.GetNN<CSP016_RGB32C>();
+	NN<CSP016_RGB32C> converter = obj.GetNN<CSP016_RGB32C>();
 	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 
@@ -204,7 +204,7 @@ void Media::CS::CSP016_RGB32C::WaitForWorker(Int32 jobStatus)
 	}
 }
 
-Media::CS::CSP016_RGB32C::CSP016_RGB32C(NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess, Media::PixelFormat destPF) : Media::CS::CSYUV16_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF)
+Media::CS::CSP016_RGB32C::CSP016_RGB32C(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess, Media::PixelFormat destPF) : Media::CS::CSYUV16_RGB32C(srcProfile, destProfile, yuvType, colorSess, destPF)
 {
 	UOSInt i;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();

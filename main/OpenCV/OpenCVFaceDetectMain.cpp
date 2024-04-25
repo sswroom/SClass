@@ -159,9 +159,9 @@ Media::IVideoCapture *OpenCapture(UOSInt defIndex)
 	return capture;
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	NotNullPtr<Media::IVideoCapture> capture;
+	NN<Media::IVideoCapture> capture;
 	IO::ConsoleWriter *console;
 	UOSInt defIndex;
 	lastCnt = 0;
@@ -195,7 +195,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg)
 	{
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		if (cfg->GetValue(CSTR("FrameSkip")).SetTo(s))
 		{
 			frameSkip = s->ToOSInt();

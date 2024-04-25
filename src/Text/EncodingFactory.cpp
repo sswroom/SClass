@@ -199,7 +199,7 @@ Text::EncodingFactory::EncodingFactory()
 {
 	UOSInt i = (sizeof(encInfo) / sizeof(encInfo[0]));
 	UOSInt j;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UOSInt len;
 	while (i-- > 0)
 	{

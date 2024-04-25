@@ -18,13 +18,13 @@ namespace SSWR
 		class AVIRBTScanLogForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUIButton> btnFile;
-			NotNullPtr<UI::GUIButton> btnStore;
-			NotNullPtr<UI::GUILabel> lblInfo;
-			NotNullPtr<UI::GUIListView> lvContent;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUIButton> btnFile;
+			NN<UI::GUIButton> btnStore;
+			NN<UI::GUILabel> lblInfo;
+			NN<UI::GUIListView> lvContent;
 
 			IO::BTScanLog *btLog;
 			Net::MACInfoList *macList;
@@ -38,7 +38,7 @@ namespace SSWR
 
 			void UpdateStatus();
 		public:
-			AVIRBTScanLogForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::BTScanLog *btLog);
+			AVIRBTScanLogForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::BTScanLog *btLog);
 			virtual ~AVIRBTScanLogForm();
 
 			virtual void OnMonitorChanged();

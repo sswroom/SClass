@@ -22,20 +22,20 @@ namespace IO
 	private:
 		typedef struct
 		{
-			NotNullPtr<Text::String> cmd;
+			NN<Text::String> cmd;
 			SMake *me;
 		} CompileReq;
 	public:
 		typedef struct
 		{
-			NotNullPtr<Text::String> name;
-			NotNullPtr<Text::String> value;
+			NN<Text::String> name;
+			NN<Text::String> value;
 		} ConfigItem;
 
 		class ProgramItem
 		{
 		public:
-			NotNullPtr<Text::String> name;
+			NN<Text::String> name;
 			Text::String *srcFile;
 			Text::String *compileCfg;
 			Data::ArrayListStringNN subItems;
@@ -49,7 +49,7 @@ namespace IO
 		Data::FastStringMap<Int64> fileTimeMap;
 		Sync::Mutex errorMsgMut;
 		Text::String *errorMsg;
-		NotNullPtr<Text::String> basePath;
+		NN<Text::String> basePath;
 		IO::Writer *messageWriter;
 		IO::Writer *cmdWriter;
 		Text::String *debugObj;
@@ -59,24 +59,24 @@ namespace IO
 		Data::ArrayListStringNN linkCmds;
 		Data::ArrayListNN<const ProgramItem> testProgs;
 
-		void AppendCfgItem(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStringNN val);
-		void AppendCfgPath(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString path);
-		void AppendCfg(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString compileCfg);
+		void AppendCfgItem(NN<Text::StringBuilderUTF8> sb, Text::CStringNN val);
+		void AppendCfgPath(NN<Text::StringBuilderUTF8> sb, Text::CString path);
+		void AppendCfg(NN<Text::StringBuilderUTF8> sb, Text::CString compileCfg);
 
 		Bool ExecuteCmd(Text::CString cmd);
 		Bool LoadConfigFile(Text::CStringNN cfgFile);
 
 		Text::PString ParseCond(Text::PString str1, OutParam<Bool> valid);
-		Bool ParseSource(NotNullPtr<Data::FastStringMap<Int32>> objList, NotNullPtr<Data::FastStringMap<Int32>> libList, NotNullPtr<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, Text::CStringNN sourceFile, NotNullPtr<Text::StringBuilderUTF8> tmpSb);
-		Bool ParseHeader(NotNullPtr<Data::FastStringMap<Int32>> objList, NotNullPtr<Data::FastStringMap<Int32>> libList, NotNullPtr<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, NotNullPtr<Text::String> headerFile, Text::CStringNN sourceFile, NotNullPtr<Text::StringBuilderUTF8> tmpSb);
-		Bool ParseObject(NotNullPtr<Data::FastStringMap<Int32>> objList, NotNullPtr<Data::FastStringMap<Int32>> libList, NotNullPtr<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, NotNullPtr<Text::String> objectFile, Text::CStringNN sourceFile, NotNullPtr<Text::StringBuilderUTF8> tmpSb);
-		Bool ParseProgInternal(NotNullPtr<Data::FastStringMap<Int32>> objList, NotNullPtr<Data::FastStringMap<Int32>> libList, NotNullPtr<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, OutParam<Bool> progGroup, NotNullPtr<const ProgramItem> prog, NotNullPtr<Text::StringBuilderUTF8> tmpSb);
+		Bool ParseSource(NN<Data::FastStringMap<Int32>> objList, NN<Data::FastStringMap<Int32>> libList, NN<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, Text::CStringNN sourceFile, NN<Text::StringBuilderUTF8> tmpSb);
+		Bool ParseHeader(NN<Data::FastStringMap<Int32>> objList, NN<Data::FastStringMap<Int32>> libList, NN<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, NN<Text::String> headerFile, Text::CStringNN sourceFile, NN<Text::StringBuilderUTF8> tmpSb);
+		Bool ParseObject(NN<Data::FastStringMap<Int32>> objList, NN<Data::FastStringMap<Int32>> libList, NN<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, NN<Text::String> objectFile, Text::CStringNN sourceFile, NN<Text::StringBuilderUTF8> tmpSb);
+		Bool ParseProgInternal(NN<Data::FastStringMap<Int32>> objList, NN<Data::FastStringMap<Int32>> libList, NN<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, OutParam<Bool> progGroup, NN<const ProgramItem> prog, NN<Text::StringBuilderUTF8> tmpSb);
 
 		static void __stdcall CompileTask(AnyType userObj);
 		void CompileObject(Text::CStringNN cmd);
-		void CompileObject(NotNullPtr<Text::String> cmd);
-		Bool CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asmListing, Bool enableTest);
-		Bool TestProg(NotNullPtr<const ProgramItem> prog, NotNullPtr<Text::StringBuilderUTF8> sb);
+		void CompileObject(NN<Text::String> cmd);
+		Bool CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing, Bool enableTest);
+		Bool TestProg(NN<const ProgramItem> prog, NN<Text::StringBuilderUTF8> sb);
 
 		void SetErrorMsg(Text::CString msg);
 	public:
@@ -89,7 +89,7 @@ namespace IO
 		void ClearStatus();
 		Bool IsLoadFailed() const;
 		Bool HasError() const;
-		Bool GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		Bool GetLastErrorMsg(NN<Text::StringBuilderUTF8> sb) const;
 		void SetMessageWriter(IO::Writer *messageWriter);
 		void SetCommandWriter(IO::Writer *cmdWriter);
 		void SetDebugObj(Text::CString debugObj);
@@ -98,14 +98,14 @@ namespace IO
 
 		void AsyncPostCompile();
 
-		NotNullPtr<const Data::ArrayListNN<ConfigItem>> GetConfigList() const;
+		NN<const Data::ArrayListNN<ConfigItem>> GetConfigList() const;
 		Bool HasProg(Text::CStringNN progName) const;
 		Bool CompileProg(Text::CStringNN progName, Bool asmListing);
-		Bool ParseProg(NotNullPtr<Data::FastStringMap<Int32>> objList, NotNullPtr<Data::FastStringMap<Int32>> libList, NotNullPtr<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, OutParam<Bool> progGroup, NotNullPtr<Text::String> progName);
+		Bool ParseProg(NN<Data::FastStringMap<Int32>> objList, NN<Data::FastStringMap<Int32>> libList, NN<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, OutParam<Bool> progGroup, NN<Text::String> progName);
 
 		void CleanFiles();
 
-		UOSInt GetProgList(NotNullPtr<Data::ArrayListNN<Text::String>> progList); //No release
+		UOSInt GetProgList(NN<Data::ArrayListNN<Text::String>> progList); //No release
 		Bool IsProgGroup(Text::CStringNN progName) const;
 		Optional<const ProgramItem> GetProgItem(Text::CStringNN progName) const;
 	};

@@ -9,30 +9,30 @@
 #define MNU_EDIT_GOTO 102
 #define MNU_EDIT_SEARCH 103
 
-void __stdcall UtilUI::TextViewerForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall UtilUI::TextViewerForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<UtilUI::TextViewerForm> me = userObj.GetNN<UtilUI::TextViewerForm>();
+	NN<UtilUI::TextViewerForm> me = userObj.GetNN<UtilUI::TextViewerForm>();
 	me->LoadFile(files[0]);
 }
 
 void __stdcall UtilUI::TextViewerForm::OnTextPosUpd(AnyType userObj, UInt32 textPosX, UOSInt textPosY)
 {
-	NotNullPtr<UtilUI::TextViewerForm> me = userObj.GetNN<UtilUI::TextViewerForm>();
+	NN<UtilUI::TextViewerForm> me = userObj.GetNN<UtilUI::TextViewerForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	sptr = Text::StrUInt32(Text::StrConcatC(Text::StrUOSInt(sbuff, (textPosY + 1)), UTF8STRC(" : ")), textPosX + 1);
 	me->txtStatus->SetText(CSTRP(sbuff, sptr));
 }
 
-void __stdcall UtilUI::TextViewerForm::OnSearchClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm)
+void __stdcall UtilUI::TextViewerForm::OnSearchClosed(AnyType userObj, NN<UI::GUIForm> frm)
 {
-	NotNullPtr<UtilUI::TextViewerForm> me = userObj.GetNN<UtilUI::TextViewerForm>();
+	NN<UtilUI::TextViewerForm> me = userObj.GetNN<UtilUI::TextViewerForm>();
 	me->srchFrm = 0;
 }
 
-UtilUI::TextViewerForm::TextViewerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, Media::MonitorMgr *monMgr, NotNullPtr<Media::DrawEngine> deng, UInt32 codePage) : UI::GUIForm(parent, 1024, 768, ui)
+UtilUI::TextViewerForm::TextViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, Media::MonitorMgr *monMgr, NN<Media::DrawEngine> deng, UInt32 codePage) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	NotNullPtr<UI::GUIMenu> mnu;
+	NN<UI::GUIMenu> mnu;
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Text Viewer"));
 
@@ -72,12 +72,12 @@ void UtilUI::TextViewerForm::EventMenuClicked(UInt16 cmdId)
 {
 	UTF8Char sbuff[530];
 	UTF8Char *sptr;
-	NotNullPtr<Text::String> fileName;
+	NN<Text::String> fileName;
 	switch (cmdId)
 	{
 	case MNU_FILE_OPEN:
 		{
-			NotNullPtr<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"TextViewer", L"Open", false);
+			NN<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"TextViewer", L"Open", false);
 			dlg->AddFilter(CSTR("*.txt"), CSTR("Text File"));
 			dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
 			dlg->AddFilter(CSTR("*.cfg"), CSTR("Config File"));
@@ -126,7 +126,7 @@ Bool UtilUI::TextViewerForm::SearchText(Text::CString txt)
 	return true;
 }
 
-Bool UtilUI::TextViewerForm::LoadFile(NotNullPtr<Text::String> filePath)
+Bool UtilUI::TextViewerForm::LoadFile(NN<Text::String> filePath)
 {
 	UTF8Char sbuff[530];
 	UTF8Char *sptr;
@@ -139,7 +139,7 @@ Bool UtilUI::TextViewerForm::LoadFile(NotNullPtr<Text::String> filePath)
 	return false;
 }
 
-Bool UtilUI::TextViewerForm::LoadStreamData(NotNullPtr<IO::StreamData> data)
+Bool UtilUI::TextViewerForm::LoadStreamData(NN<IO::StreamData> data)
 {
 	UTF8Char sbuff[530];
 	UTF8Char *sptr;

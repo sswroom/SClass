@@ -18,7 +18,7 @@ namespace UI
 			static gboolean SignalMouseDown(GtkWidget *widget, GdkEvent *event, gpointer data);
 			static gboolean SignalMouseUp(GtkWidget *widget, GdkEvent *event, gpointer data);
 		public:
-			GTKHSplitter(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Int32 width, Bool isRight);
+			GTKHSplitter(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Int32 width, Bool isRight);
 			virtual ~GTKHSplitter();
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);

@@ -20,22 +20,22 @@ namespace SSWR
 		class AVIRLoRaJSONForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUIPanel> pnlJSON;
-			NotNullPtr<UI::GUILabel> lblJSON;
-			NotNullPtr<UI::GUITextBox> txtJSON;
-			NotNullPtr<UI::GUIPanel> pnlJSONCtrl;
-			NotNullPtr<UI::GUIButton> btnJSONParse;
-			NotNullPtr<UI::GUILabel> lblInfo;
-			NotNullPtr<UI::GUITextBox> txtInfo;
+			NN<UI::GUIPanel> pnlJSON;
+			NN<UI::GUILabel> lblJSON;
+			NN<UI::GUITextBox> txtJSON;
+			NN<UI::GUIPanel> pnlJSONCtrl;
+			NN<UI::GUIButton> btnJSONParse;
+			NN<UI::GUILabel> lblInfo;
+			NN<UI::GUITextBox> txtInfo;
 
 		private:
 			static void __stdcall OnJSONParseClick(AnyType userObj);
-			static void PHYPayloadDetail(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *buff, UOSInt buffSize);
-			static void MACPayloadDetail(NotNullPtr<Text::StringBuilderUTF8> sb, Bool downLink, const UInt8 *buff, UOSInt buffSize);
+			static void PHYPayloadDetail(NN<Text::StringBuilderUTF8> sb, const UInt8 *buff, UOSInt buffSize);
+			static void MACPayloadDetail(NN<Text::StringBuilderUTF8> sb, Bool downLink, const UInt8 *buff, UOSInt buffSize);
 		public:
-			AVIRLoRaJSONForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRLoRaJSONForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLoRaJSONForm();
 
 			virtual void OnMonitorChanged();

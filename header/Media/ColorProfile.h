@@ -142,22 +142,22 @@ namespace Media
 			ColorPrimaries();
 			~ColorPrimaries();
 
-			void Set(NotNullPtr<const ColorPrimaries> primaries);
+			void Set(NN<const ColorPrimaries> primaries);
 			void SetColorType(ColorType colorType);
 			Math::Double2D GetWhitexy() const;
-			void GetConvMatrix(NotNullPtr<Math::Matrix3> matrix) const;
-			void SetConvMatrix(NotNullPtr<const Math::Matrix3> matrix);
+			void GetConvMatrix(NN<Math::Matrix3> matrix) const;
+			void SetConvMatrix(NN<const Math::Matrix3> matrix);
 
-			Bool Equals(NotNullPtr<const ColorPrimaries> primaries) const;
+			Bool Equals(NN<const ColorPrimaries> primaries) const;
 
 			static Math::Double2D GetWhitePointXY(WhitePointType wpType);
 			static Math::Double2D GetWhitePointXY(Double colorTemp);
 			static Math::Vector3 GetWhitePointXYZ(WhitePointType wpType);
-			static void GetMatrixBradford(NotNullPtr<Math::Matrix3> mat);
-			static void GetMatrixVonKries(NotNullPtr<Math::Matrix3> mat);
+			static void GetMatrixBradford(NN<Math::Matrix3> mat);
+			static void GetMatrixVonKries(NN<Math::Matrix3> mat);
 			static Math::Vector3 xyYToXYZ(const Math::Vector3 &xyY);
 			static Math::Vector3 XYZToxyY(const Math::Vector3 &XYZ);
-			static void GetAdaptationMatrix(NotNullPtr<Math::Matrix3> mat, WhitePointType srcWP, WhitePointType destWP);
+			static void GetAdaptationMatrix(NN<Math::Matrix3> mat, WhitePointType srcWP, WhitePointType destWP);
 		};
 
 		Media::CS::TransferParam rtransfer;
@@ -168,26 +168,26 @@ namespace Media
 
 	public:
 		ColorProfile();
-		ColorProfile(NotNullPtr<const ColorProfile> profile);
+		ColorProfile(NN<const ColorProfile> profile);
 		ColorProfile(CommonProfileType cpt);
 		ColorProfile(const ColorProfile&);
 		~ColorProfile();
 
-		void Set(NotNullPtr<const ColorProfile> profile);
+		void Set(NN<const ColorProfile> profile);
 		void SetCommonProfile(CommonProfileType cpt);
 		void RGB32ToXYZ(Int32 rgb, OutParam<Double> X, OutParam<Double> Y, OutParam<Double> Z) const;
 		Int32 XYZToRGB32(Double a, Double X, Double Y, Double Z) const;
 		static void XYZWPTransform(WhitePointType srcWP, Double srcX, Double srcY, Double srcZ, WhitePointType destWP, OutParam<Double> outX, OutParam<Double> outY, OutParam<Double> outZ);
-		Bool Equals(NotNullPtr<const ColorProfile> profile) const;
-		NotNullPtr<Media::CS::TransferParam> GetRTranParam();
-		NotNullPtr<Media::CS::TransferParam> GetGTranParam();
-		NotNullPtr<Media::CS::TransferParam> GetBTranParam();
-		NotNullPtr<const Media::CS::TransferParam> GetRTranParamRead() const;
-		NotNullPtr<const Media::CS::TransferParam> GetGTranParamRead() const;
-		NotNullPtr<const Media::CS::TransferParam> GetBTranParamRead() const;
-		NotNullPtr<Media::ColorProfile::ColorPrimaries> GetPrimaries();
-		NotNullPtr<const Media::ColorProfile::ColorPrimaries> GetPrimariesRead() const;
-		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		Bool Equals(NN<const ColorProfile> profile) const;
+		NN<Media::CS::TransferParam> GetRTranParam();
+		NN<Media::CS::TransferParam> GetGTranParam();
+		NN<Media::CS::TransferParam> GetBTranParam();
+		NN<const Media::CS::TransferParam> GetRTranParamRead() const;
+		NN<const Media::CS::TransferParam> GetGTranParamRead() const;
+		NN<const Media::CS::TransferParam> GetBTranParamRead() const;
+		NN<Media::ColorProfile::ColorPrimaries> GetPrimaries();
+		NN<const Media::ColorProfile::ColorPrimaries> GetPrimariesRead() const;
+		void ToString(NN<Text::StringBuilderUTF8> sb) const;
 
 		void SetRAWICC(const UInt8 *iccData);
 		const UInt8 *GetRAWICC() const;
@@ -198,7 +198,7 @@ namespace Media
 		static void GetYUVConstants(YUVType yuvType, Double *kr, Double *kb);
 		static void YUV2RGB(YUVType yuvType, Double y, Double u, Double v, Double *r, Double *g, Double *b);
 		static void RGB2RGB(Media::ColorProfile *srcColor, Media::ColorProfile *destColor, Double srcR, Double srcG, Double srcB, Double *destR, Double *destG, Double *destB);
-		static void GetConvMatrix(NotNullPtr<Math::Matrix3> mat, NotNullPtr<const ColorProfile::ColorPrimaries> srcColor, NotNullPtr<const ColorProfile::ColorPrimaries> destColor);
+		static void GetConvMatrix(NN<Math::Matrix3> mat, NN<const ColorProfile::ColorPrimaries> srcColor, NN<const ColorProfile::ColorPrimaries> destColor);
 	};
 }
 #endif

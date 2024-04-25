@@ -21,7 +21,7 @@ Int32 Parser::FileParser::ICOParser::GetName()
 	return *(Int32*)"ICOP";
 }
 
-void Parser::FileParser::ICOParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::ICOParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
@@ -35,7 +35,7 @@ IO::ParserType Parser::FileParser::ICOParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt8 icoImageHdr[16];
 	UInt32 icoCnt;

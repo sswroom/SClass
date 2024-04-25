@@ -425,7 +425,7 @@ void Data::LineChart::SetYRangeDbl(Double yVal)
 
 void Data::LineChart::SetTitle(Text::CString title)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	OPTSTR_DEL(this->title);
 	this->title = Text::String::NewOrNull(title);
 
@@ -525,7 +525,7 @@ Data::Chart::DataType Data::LineChart::GetYType(UOSInt index) const
 	return data->dataType;
 }
 
-void Data::LineChart::Plot(NotNullPtr<Media::DrawImage> img, Double x, Double y, Double width, Double height) const
+void Data::LineChart::Plot(NN<Media::DrawImage> img, Double x, Double y, Double width, Double height) const
 {
 	if (height == 0 || width == 0)
 		return;
@@ -543,7 +543,7 @@ void Data::LineChart::Plot(NotNullPtr<Media::DrawImage> img, Double x, Double y,
 			return;
 	}
 
-	NotNullPtr<Media::DrawFont> fnt;
+	NN<Media::DrawFont> fnt;
 	Double fntH;
 	Bool customX = false;
 
@@ -579,18 +579,18 @@ void Data::LineChart::Plot(NotNullPtr<Media::DrawImage> img, Double x, Double y,
 	Bool y2show;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 
 	UOSInt i;
 	UOSInt j;
 	Data::DateTime dt1;
 	Data::DateTime dt2;
 
-	NotNullPtr<Media::DrawBrush> bgBrush = img->NewBrushARGB(bgColor);
-	NotNullPtr<Media::DrawPen> boundPen = img->NewPenARGB(boundColor, this->lineThick, 0, 0);
-	NotNullPtr<Media::DrawBrush> fontBrush = img->NewBrushARGB(fontColor);
-	NotNullPtr<Media::DrawPen> gridPen = img->NewPenARGB(gridColor, this->lineThick, 0, 0);
-	NotNullPtr<Media::DrawPen> refLinePen = img->NewPenARGB(refLineColor, this->lineThick, 0, 0);
+	NN<Media::DrawBrush> bgBrush = img->NewBrushARGB(bgColor);
+	NN<Media::DrawPen> boundPen = img->NewPenARGB(boundColor, this->lineThick, 0, 0);
+	NN<Media::DrawBrush> fontBrush = img->NewBrushARGB(fontColor);
+	NN<Media::DrawPen> gridPen = img->NewPenARGB(gridColor, this->lineThick, 0, 0);
+	NN<Media::DrawPen> refLinePen = img->NewPenARGB(refLineColor, this->lineThick, 0, 0);
 
 	fnt = img->NewFontPt(fntName->ToCString(), (Double)fntSizePt, Media::DrawEngine::DFS_ANTIALIAS, 0);
 	img->DrawRect(Math::Coord2DDbl(x, y), Math::Size2DDbl(width, height), 0, bgBrush);
@@ -1476,8 +1476,8 @@ void Data::LineChart::Plot(NotNullPtr<Media::DrawImage> img, Double x, Double y,
 				currPos[j - 2].y = (Double)(y + height - xLeng);
 				currPos[j - 1].x = currPos[0].x;
 				currPos[j - 1].y = (Double)(y + height - xLeng);
-				NotNullPtr<Media::DrawPen> p = img->NewPenARGB(((Data::LineChart::ChartData*)yCharts->GetItem(i))->lineColor, 1, 0, 0);
-				NotNullPtr<Media::DrawBrush> b = img->NewBrushARGB(((Data::LineChart::ChartData*)yCharts->GetItem(i))->lineColor);
+				NN<Media::DrawPen> p = img->NewPenARGB(((Data::LineChart::ChartData*)yCharts->GetItem(i))->lineColor, 1, 0, 0);
+				NN<Media::DrawBrush> b = img->NewBrushARGB(((Data::LineChart::ChartData*)yCharts->GetItem(i))->lineColor);
 				img->DrawPolygon(currPos, currPosLen, p, b);
 				img->DelBrush(b);
 				img->DelPen(p);
@@ -1487,13 +1487,13 @@ void Data::LineChart::Plot(NotNullPtr<Media::DrawImage> img, Double x, Double y,
 		{
 			if (currPosLen >= 2)
 			{
-				NotNullPtr<Media::DrawPen> pen = img->NewPenARGB(((Data::LineChart::ChartData*)yCharts->GetItem(i))->lineColor, this->lineThick, 0, 0);
+				NN<Media::DrawPen> pen = img->NewPenARGB(((Data::LineChart::ChartData*)yCharts->GetItem(i))->lineColor, this->lineThick, 0, 0);
 				img->DrawPolyline(currPos, currPosLen, pen);
 				img->DelPen(pen);
 
 				if (this->pointType == PT_CIRCLE && this->pointSize > 0)
 				{
-					NotNullPtr<Media::DrawBrush> b = img->NewBrushARGB(((Data::LineChart::ChartData*)yCharts->GetItem(i))->lineColor);
+					NN<Media::DrawBrush> b = img->NewBrushARGB(((Data::LineChart::ChartData*)yCharts->GetItem(i))->lineColor);
 					j = currPosLen;
 					while (j-- > 0)
 					{

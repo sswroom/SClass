@@ -12,8 +12,8 @@
 
 void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnARPHandler(const UInt8 *hwAddr, UInt32 ipAddr, AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPScanForm>();
-	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo> ipInfo;
+	NN<SSWR::AVIRead::AVIRARPScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPScanForm>();
+	NN<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo> ipInfo;
 	Sync::MutexUsage mutUsage(me->arpMut);
 	if (!me->arpMap.Get(ipAddr).SetTo(ipInfo))
 	{
@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnARPHandler(const UInt8 *hwAddr,
 
 void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPScanForm>();
+	NN<SSWR::AVIRead::AVIRARPScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPScanForm>();
 	if (me->arpUpdated)
 	{
 		me->arpUpdated = false;
@@ -48,9 +48,9 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnTimerTick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnScanClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPScanForm>();
-	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm::AdapterInfo> adapter;
-	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo> ipInfo;
+	NN<SSWR::AVIRead::AVIRARPScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPScanForm>();
+	NN<SSWR::AVIRead::AVIRARPScanForm::AdapterInfo> adapter;
+	NN<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo> ipInfo;
 	if (me->cboAdapter->GetSelectedItem().GetOpt<SSWR::AVIRead::AVIRARPScanForm::AdapterInfo>().SetTo(adapter))
 	{
 		UInt8 buff[4];
@@ -97,7 +97,7 @@ void SSWR::AVIRead::AVIRARPScanForm::UpdateARPList()
 	UTF8Char *sptr;
 
 	const Net::MACInfo::MACEntry *macEntry;
-	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo> ipInfo;
+	NN<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo> ipInfo;
 	Sync::MutexUsage mutUsage(this->arpMut);
 	this->lvARP->ClearItems();
 	i = 0;
@@ -119,7 +119,7 @@ void SSWR::AVIRead::AVIRARPScanForm::UpdateARPList()
 	mutUsage.EndUse();
 }
 
-SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("ARP Scan"));
@@ -149,7 +149,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(Optional<UI::GUIClientControl> p
 
 	UOSInt i;
 	UOSInt j;
-	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo> ipInfo;
+	NN<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo> ipInfo;
 	Data::ArrayList<Net::ARPInfo *> arpList;
 	Net::ARPInfo::ARPType arpType;
 	Net::ARPInfo *arp;
@@ -177,8 +177,8 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(Optional<UI::GUIClientControl> p
 	this->UpdateARPList();
 
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
-	NotNullPtr<Net::ConnectionInfo> connInfo;
-	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm::AdapterInfo> adapter;
+	NN<Net::ConnectionInfo> connInfo;
+	NN<SSWR::AVIRead::AVIRARPScanForm::AdapterInfo> adapter;
 	Net::IPType ipType;
 	UInt8 hwAddr[32];
 	UTF8Char sbuff[128];
@@ -229,8 +229,8 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(Optional<UI::GUIClientControl> p
 SSWR::AVIRead::AVIRARPScanForm::~AVIRARPScanForm()
 {
 	UOSInt i;
-	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm::AdapterInfo> adapter;
-	NotNullPtr<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo> ipInfo;
+	NN<SSWR::AVIRead::AVIRARPScanForm::AdapterInfo> adapter;
+	NN<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo> ipInfo;
 	i = this->adapters.GetCount();
 	while (i-- > 0)
 	{

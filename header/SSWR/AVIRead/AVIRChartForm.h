@@ -12,14 +12,14 @@ namespace SSWR
 		class AVIRChartForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIPictureBoxSimple> pbMain;
+			NN<UI::GUIPictureBoxSimple> pbMain;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Data::Chart *chart;
 
 			static void __stdcall OnSizeChanged(AnyType userObj);
 		public:
-			AVIRChartForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Data::Chart *chart);
+			AVIRChartForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Data::Chart *chart);
 			virtual ~AVIRChartForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

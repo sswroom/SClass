@@ -7,7 +7,7 @@
 
 void UI::DObj::RollingTextDObj::UpdateBGImg()
 {
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->dimg))
 	{
 		this->deng->DeleteImage(img);
@@ -16,11 +16,11 @@ void UI::DObj::RollingTextDObj::UpdateBGImg()
 
 	if (this->txt)
 	{
-		NotNullPtr<Media::DrawImage> dimg;
-		NotNullPtr<Media::DrawFont> f;
-		NotNullPtr<Media::DrawBrush> b;
+		NN<Media::DrawImage> dimg;
+		NN<Media::DrawFont> f;
+		NN<Media::DrawBrush> b;
 		Data::ArrayListStringNN lines;
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		Double currY;
 		if (dimg.Set(this->deng->CreateImage32(this->size, Media::AT_NO_ALPHA)))
 		{
@@ -37,7 +37,7 @@ void UI::DObj::RollingTextDObj::UpdateBGImg()
 			f = this->dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, Media::DrawEngine::DFS_ANTIALIAS, this->codePage);
 			b = this->dimg->NewBrushARGB(0xffffffff);
 			currY = 0;
-			Data::ArrayIterator<NotNullPtr<Text::String>> it = lines.Iterator();
+			Data::ArrayIterator<NN<Text::String>> it = lines.Iterator();
 			while (it.HasNext())
 			{
 				s = it.Next();
@@ -197,7 +197,7 @@ void UI::DObj::RollingTextDObj::UpdateBGImg()
 	}
 }
 
-UI::DObj::RollingTextDObj::RollingTextDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSize, UInt32 fontColor, UInt32 codePage, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, Double rollSpeed) : DirectObject(tl)
+UI::DObj::RollingTextDObj::RollingTextDObj(NN<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSize, UInt32 fontColor, UInt32 codePage, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, Double rollSpeed) : DirectObject(tl)
 {
 	this->deng = deng;
 	if (txt.leng > 0)
@@ -234,7 +234,7 @@ UI::DObj::RollingTextDObj::~RollingTextDObj()
 	SDEL_STRING(this->txt);
 	this->fontName->Release();
 
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->dimg))
 	{
 		this->deng->DeleteImage(img);
@@ -270,10 +270,10 @@ Bool UI::DObj::RollingTextDObj::DoEvents()
 	return false;
 }
 
-void UI::DObj::RollingTextDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
+void UI::DObj::RollingTextDObj::DrawObject(NN<Media::DrawImage> dimg)
 {
 	Math::Coord2D<OSInt> tl = this->GetCurrPos();
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (!img.Set(this->dimg))
 	{
 		return;

@@ -2,14 +2,14 @@
 #include "IO/VirtualPackageFileFast.h"
 #include "Sync/Interlocked.h"
 
-IO::VirtualPackageFileFast::VirtualPackageFileFast(NotNullPtr<const VirtualPackageFileFast> pkg) : VirtualPackageFile(pkg->GetSourceNameObj())
+IO::VirtualPackageFileFast::VirtualPackageFileFast(NN<const VirtualPackageFileFast> pkg) : VirtualPackageFile(pkg->GetSourceNameObj())
 {
 	this->pkgFiles.PutAll(pkg->pkgFiles);
 	this->parent = pkg->parent;
 	this->items.AddAll(pkg->items);
 	this->namedItems.PutAll(pkg->namedItems);
-	NotNullPtr<IO::PackFileItem> item;
-	Data::ArrayIterator<NotNullPtr<IO::PackFileItem>> it = this->items.Iterator();
+	NN<IO::PackFileItem> item;
+	Data::ArrayIterator<NN<IO::PackFileItem>> it = this->items.Iterator();
 	while (it.HasNext())
 	{
 		item = it.Next();
@@ -17,7 +17,7 @@ IO::VirtualPackageFileFast::VirtualPackageFileFast(NotNullPtr<const VirtualPacka
 	}
 }
 
-IO::VirtualPackageFileFast::VirtualPackageFileFast(NotNullPtr<Text::String> fileName) : VirtualPackageFile(fileName)
+IO::VirtualPackageFileFast::VirtualPackageFileFast(NN<Text::String> fileName) : VirtualPackageFile(fileName)
 {
 }
 
@@ -34,19 +34,19 @@ Optional<const IO::PackFileItem> IO::VirtualPackageFileFast::GetItemByName(Text:
 	return this->namedItems.GetC(name);
 }
 
-void IO::VirtualPackageFileFast::PutItem(NotNullPtr<Text::String> name, NotNullPtr<PackFileItem> item)
+void IO::VirtualPackageFileFast::PutItem(NN<Text::String> name, NN<PackFileItem> item)
 {
 	this->namedItems.PutNN(name, item.Ptr());
 }
 
-void IO::VirtualPackageFileFast::RemoveItem(NotNullPtr<Text::String> name)
+void IO::VirtualPackageFileFast::RemoveItem(NN<Text::String> name)
 {
 	this->namedItems.RemoveNN(name);
 }
 
-NotNullPtr<IO::PackageFile> IO::VirtualPackageFileFast::Clone() const
+NN<IO::PackageFile> IO::VirtualPackageFileFast::Clone() const
 {
-	NotNullPtr<IO::VirtualPackageFileFast> pkg;
-	NEW_CLASSNN(pkg, VirtualPackageFileFast(NotNullPtr<const VirtualPackageFileFast>(*this)));
+	NN<IO::VirtualPackageFileFast> pkg;
+	NEW_CLASSNN(pkg, VirtualPackageFileFast(NN<const VirtualPackageFileFast>(*this)));
 	return pkg;
 }

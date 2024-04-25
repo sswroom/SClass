@@ -5,7 +5,7 @@
 #include "IO/ConsoleWriter.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Text::CString username = CSTR("abc");
 	Text::CString password = CSTR("abc");
@@ -25,7 +25,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	
 	Data::ArrayListStringNN tableList;
 	Data::ArrayListStringNN dbList;
-	Data::ArrayIterator<NotNullPtr<Text::String>> it;
+	Data::ArrayIterator<NN<Text::String>> it;
 	UOSInt j;
 	j = mongoDB->GetDatabaseNames(dbList);
 	if (j <= 0)

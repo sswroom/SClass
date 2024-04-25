@@ -7,8 +7,8 @@
 
 void __stdcall Net::TCPBoardcastStream::ConnHandler(Socket *s, AnyType userObj)
 {
-	NotNullPtr<Net::TCPBoardcastStream> me = userObj.GetNN<Net::TCPBoardcastStream>();
-	NotNullPtr<Net::TCPClient> cli;
+	NN<Net::TCPBoardcastStream> me = userObj.GetNN<Net::TCPBoardcastStream>();
+	NN<Net::TCPClient> cli;
 	NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
 	me->cliMgr->AddClient(cli, 0);
 	if (me->writeBuffSize > 0)
@@ -31,7 +31,7 @@ void __stdcall Net::TCPBoardcastStream::ConnHandler(Socket *s, AnyType userObj)
 	}
 }
 
-void __stdcall Net::TCPBoardcastStream::ClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::TCPBoardcastStream::ClientEvent(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
 	switch (evtType)
 	{
@@ -46,9 +46,9 @@ void __stdcall Net::TCPBoardcastStream::ClientEvent(NotNullPtr<Net::TCPClient> c
 	}
 }
 
-void __stdcall Net::TCPBoardcastStream::ClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
+void __stdcall Net::TCPBoardcastStream::ClientData(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
 {
-	NotNullPtr<Net::TCPBoardcastStream> me = userObj.GetNN<Net::TCPBoardcastStream>();
+	NN<Net::TCPBoardcastStream> me = userObj.GetNN<Net::TCPBoardcastStream>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -101,9 +101,9 @@ void __stdcall Net::TCPBoardcastStream::ClientData(NotNullPtr<Net::TCPClient> cl
 	}
 }
 
-void __stdcall Net::TCPBoardcastStream::ClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
+void __stdcall Net::TCPBoardcastStream::ClientTimeout(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
 {
-	NotNullPtr<Net::TCPBoardcastStream> me = userObj.GetNN<Net::TCPBoardcastStream>();
+	NN<Net::TCPBoardcastStream> me = userObj.GetNN<Net::TCPBoardcastStream>();
 	if (me->log->HasHandler())
 	{
 		Text::StringBuilderUTF8 sb;
@@ -116,7 +116,7 @@ void __stdcall Net::TCPBoardcastStream::ClientTimeout(NotNullPtr<Net::TCPClient>
 	}
 }
 
-Net::TCPBoardcastStream::TCPBoardcastStream(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log) : IO::Stream(CSTR("Net.TCPBoardcastSream"))
+Net::TCPBoardcastStream::TCPBoardcastStream(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log) : IO::Stream(CSTR("Net.TCPBoardcastSream"))
 {
 	this->sockf = sockf;
 	this->log = log;

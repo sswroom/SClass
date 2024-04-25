@@ -31,17 +31,24 @@ namespace DB
 		virtual UOSInt ColCount() = 0;
 		virtual OSInt GetRowChanged() = 0; //-1 = error
 		virtual Int32 GetInt32(UOSInt colIndex) = 0;
+		NInt32 GetNInt32(UOSInt colIndex)
+		{
+			if (IsNull(colIndex))
+				return nullptr;
+			else
+				return GetInt32(colIndex);
+		}
 		virtual Int64 GetInt64(UOSInt colIndex) = 0;
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff) = 0;
-		virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
-		Bool GetStrN(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb) { sb->ClearStr(); return GetStr(colIndex, sb); }
+		virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb) = 0;
+		Bool GetStrN(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb) { sb->ClearStr(); return GetStr(colIndex, sb); }
 		virtual Optional<Text::String> GetNewStr(UOSInt colIndex) = 0;
-		NotNullPtr<Text::String> GetNewStrNN(UOSInt colIndex)
+		NN<Text::String> GetNewStrNN(UOSInt colIndex)
 		{
 			return Text::String::OrEmpty(GetNewStr(colIndex));
 		}
 		
-		Optional<Text::String> GetNewStrB(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> tmpBuff)
+		Optional<Text::String> GetNewStrB(UOSInt colIndex, NN<Text::StringBuilderUTF8> tmpBuff)
 		{
 			tmpBuff->ClearStr();
 			if (GetStr(colIndex, tmpBuff))
@@ -50,7 +57,7 @@ namespace DB
 				return 0;
 		}
 
-		NotNullPtr<Text::String> GetNewStrBNN(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> tmpBuff)
+		NN<Text::String> GetNewStrBNN(UOSInt colIndex, NN<Text::StringBuilderUTF8> tmpBuff)
 		{
 			tmpBuff->ClearStr();
 			if (GetStr(colIndex, tmpBuff))
@@ -65,7 +72,7 @@ namespace DB
 			return GetTimestamp(colIndex).ToDate();
 		}
 
-		DateErrType GetAsDateTime(UOSInt colIndex, NotNullPtr<Data::DateTime> outVal)
+		DateErrType GetAsDateTime(UOSInt colIndex, NN<Data::DateTime> outVal)
 		{
 			if (IsNull(colIndex))
 				return DateErrType::Null;
@@ -90,26 +97,26 @@ namespace DB
 			if (IsNull(colIndex))
 				return 0;
 			UOSInt byteSize = GetBinarySize(colIndex);
-			NotNullPtr<Data::ByteBuffer> buff;
+			NN<Data::ByteBuffer> buff;
 			NEW_CLASSNN(buff, Data::ByteBuffer(byteSize));
 			if (GetBinary(byteSize, buff->Ptr()) == byteSize)
 				return buff;
 			buff.Delete();
 			return 0;
 		}
-		
+
 		virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex) = 0;
-		virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid) = 0;
-		virtual Bool GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item);
+		virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid) = 0;
+		virtual Bool GetVariItem(UOSInt colIndex, NN<Data::VariItem> item);
 
 		virtual Bool IsNull(UOSInt colIndex) = 0;
 		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff) = 0;
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize) = 0;
-		virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef) = 0;
+		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef) = 0;
 
 		TableDef *GenTableDef(Text::CString schemaName, Text::CString tableName);
 		Data::VariObject *CreateVariObject();
-		NotNullPtr<Data::Class> CreateClass();
+		NN<Data::Class> CreateClass();
 	};
 }
 #endif

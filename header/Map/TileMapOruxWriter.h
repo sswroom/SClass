@@ -15,7 +15,7 @@ namespace Map
 			Int32 minY;
 		};
 	private:
-		NotNullPtr<DB::SQLiteFile> db;
+		NN<DB::SQLiteFile> db;
 		Optional<DB::DBTransaction> sess;
 		UOSInt imgCount;
 		Sync::Mutex mut;

@@ -51,12 +51,12 @@ Bool Crypto::Token::JWSignature::CalcHash(const UInt8 *buff, UOSInt buffSize)
 	case Algorithm::RS384:
 	case Algorithm::RS512:
 		{
-			NotNullPtr<Net::SSLEngine> ssl;
+			NN<Net::SSLEngine> ssl;
 			if (!this->ssl.SetTo(ssl) || this->keyType != Crypto::Cert::X509Key::KeyType::RSA)
 			{
 				return false;
 			}
-			NotNullPtr<Crypto::Cert::X509Key> key;
+			NN<Crypto::Cert::X509Key> key;
 			Bool succ = false;
 			NEW_CLASSNN(key, Crypto::Cert::X509Key(CSTR("rsakey"), Data::ByteArray(this->privateKey, this->privateKeyLeng), Crypto::Cert::X509Key::KeyType::RSA));
 			if (alg == Algorithm::RS256)
@@ -116,12 +116,12 @@ Bool Crypto::Token::JWSignature::VerifyHash(const UInt8 *buff, UOSInt buffSize, 
 	case Algorithm::RS384:
 	case Algorithm::RS512:
 		{
-			NotNullPtr<Net::SSLEngine> ssl;
+			NN<Net::SSLEngine> ssl;
 			if (!this->ssl.SetTo(ssl) || (this->keyType != Crypto::Cert::X509Key::KeyType::RSA && this->keyType != Crypto::Cert::X509Key::KeyType::RSAPublic))
 			{
 				return false;
 			}
-			NotNullPtr<Crypto::Cert::X509Key> key;
+			NN<Crypto::Cert::X509Key> key;
 			Bool succ = false;
 			NEW_CLASSNN(key, Crypto::Cert::X509Key(CSTR("rsakey"), Data::ByteArray(this->privateKey, this->privateKeyLeng), this->keyType));
 			if (alg == Algorithm::RS256)
@@ -159,7 +159,7 @@ Bool Crypto::Token::JWSignature::VerifyHash(const UInt8 *buff, UOSInt buffSize, 
 	return Text::StrEqualsC(hashVal, signatureSize, signature, signatureSize);
 }
 
-Bool Crypto::Token::JWSignature::GetHashB64(NotNullPtr<Text::StringBuilderUTF8> sb) const
+Bool Crypto::Token::JWSignature::GetHashB64(NN<Text::StringBuilderUTF8> sb) const
 {
 	if (this->hashValSize == 0)
 	{

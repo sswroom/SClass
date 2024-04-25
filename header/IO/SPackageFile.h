@@ -21,7 +21,7 @@ namespace IO
 		} FileInfo;
 	private:
 		Data::BTreeUTF8Map<FileInfo*> fileMap;
-		NotNullPtr<IO::SeekableStream> stm;
+		NN<IO::SeekableStream> stm;
 		Bool writeMode;
 		Sync::Mutex mut;
 		Bool toRelease;
@@ -34,17 +34,17 @@ namespace IO
 		Data::ByteBuffer customBuff;
 
 		void ReadV2DirEnt(UInt64 ofst, UInt64 size);
-		void AddPackageInner(NotNullPtr<IO::PackageFile> pkg, UTF8Char pathSeperator, UTF8Char *pathStart, UTF8Char *pathEnd);
+		void AddPackageInner(NN<IO::PackageFile> pkg, UTF8Char pathSeperator, UTF8Char *pathStart, UTF8Char *pathEnd);
 		Bool OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOfst, UInt64 dirSize);
 	public:
-		SPackageFile(NotNullPtr<IO::SeekableStream> stm, Bool toRelease);
-		SPackageFile(NotNullPtr<IO::SeekableStream> stm, Bool toRelease, Int32 customType, UOSInt customSize, Data::ByteArrayR customBuff);
+		SPackageFile(NN<IO::SeekableStream> stm, Bool toRelease);
+		SPackageFile(NN<IO::SeekableStream> stm, Bool toRelease, Int32 customType, UOSInt customSize, Data::ByteArrayR customBuff);
 		SPackageFile(Text::CStringNN fileName);
 		~SPackageFile();
 
-		Bool AddFile(NotNullPtr<IO::StreamData> fd, Text::CString fileName, const Data::Timestamp &modTime);
+		Bool AddFile(NN<IO::StreamData> fd, Text::CString fileName, const Data::Timestamp &modTime);
 		Bool AddFile(const UInt8 *fileBuff, UOSInt fileSize, Text::CString fileName, const Data::Timestamp &modTime);
-		Bool AddPackage(NotNullPtr<IO::PackageFile> pkg, UTF8Char pathSeperator);
+		Bool AddPackage(NN<IO::PackageFile> pkg, UTF8Char pathSeperator);
 		Bool Commit();
 		Bool OptimizeFile(Text::CStringNN newFile);
 		void PauseCommit(Bool pauseCommit);

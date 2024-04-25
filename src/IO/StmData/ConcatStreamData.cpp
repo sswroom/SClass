@@ -13,7 +13,7 @@ IO::StmData::ConcatStreamData::ConcatStreamData(IO::StmData::ConcatStreamData::C
 	this->cdb->objectCnt++;
 }
 
-IO::StmData::ConcatStreamData::ConcatStreamData(NotNullPtr<Text::String> fileName)
+IO::StmData::ConcatStreamData::ConcatStreamData(NN<Text::String> fileName)
 {
 	NEW_CLASS(this->cdb, CONCATDATABASE());
 	this->cdb->fileName = fileName->Clone();
@@ -61,7 +61,7 @@ UOSInt IO::StmData::ConcatStreamData::GetRealData(UInt64 offset, UOSInt length, 
 	UInt64 endOfst = length + offset;
 	UInt64 thisSize = this->dataLength;
 	UOSInt readTotal = 0;
-	NotNullPtr<IO::StreamData> data;
+	NN<IO::StreamData> data;
 	if ((Int64)thisSize == -1)
 	{
 		thisSize = this->cdb->totalSize;
@@ -104,7 +104,7 @@ UOSInt IO::StmData::ConcatStreamData::GetRealData(UInt64 offset, UOSInt length, 
 	return readTotal;
 }
 
-NotNullPtr<Text::String> IO::StmData::ConcatStreamData::GetFullName()
+NN<Text::String> IO::StmData::ConcatStreamData::GetFullName()
 {
 	return this->cdb->fileName;
 }
@@ -131,9 +131,9 @@ const UInt8 *IO::StmData::ConcatStreamData::GetPointer()
 	return 0;
 }
 
-NotNullPtr<IO::StreamData> IO::StmData::ConcatStreamData::GetPartialData(UInt64 offset, UInt64 length)
+NN<IO::StreamData> IO::StmData::ConcatStreamData::GetPartialData(UInt64 offset, UInt64 length)
 {
-	NotNullPtr<IO::StreamData> data;
+	NN<IO::StreamData> data;
 
 	UInt64 endOfst = length + offset;
 	UInt64 thisSize = this->dataLength;
@@ -170,7 +170,7 @@ Bool IO::StmData::ConcatStreamData::IsLoading()
 UOSInt IO::StmData::ConcatStreamData::GetSeekCount()
 {
 	UOSInt ret = 0;
-	NotNullPtr<IO::StreamData> data;
+	NN<IO::StreamData> data;
 	UOSInt i;
 	i = this->cdb->dataList.GetCount();
 	while (i-- > 0)
@@ -181,7 +181,7 @@ UOSInt IO::StmData::ConcatStreamData::GetSeekCount()
 	return ret;
 }
 
-void IO::StmData::ConcatStreamData::AddData(NotNullPtr<IO::StreamData> data)
+void IO::StmData::ConcatStreamData::AddData(NN<IO::StreamData> data)
 {
 	Sync::MutexUsage mutUsage(this->cdb->mut);
 	this->cdb->dataList.Add(data);

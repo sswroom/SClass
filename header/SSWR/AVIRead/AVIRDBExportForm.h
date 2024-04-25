@@ -18,26 +18,26 @@ namespace SSWR
 		class AVIRDBExportForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIPanel> pnlMain;
-			NotNullPtr<UI::GUIListView> lvTables;
-			NotNullPtr<UI::GUILabel> lblDBType;
-			NotNullPtr<UI::GUIComboBox> cboDBType;
-			NotNullPtr<UI::GUICheckBox> chkAxisAware;
-			NotNullPtr<UI::GUILabel> lblSchema;
-			NotNullPtr<UI::GUITextBox> txtSchema;
-			NotNullPtr<UI::GUILabel> lblTable;
-			NotNullPtr<UI::GUITextBox> txtTable;
-			NotNullPtr<UI::GUIButton> btnExport;
+			NN<UI::GUIPanel> pnlMain;
+			NN<UI::GUIListView> lvTables;
+			NN<UI::GUILabel> lblDBType;
+			NN<UI::GUIComboBox> cboDBType;
+			NN<UI::GUICheckBox> chkAxisAware;
+			NN<UI::GUILabel> lblSchema;
+			NN<UI::GUITextBox> txtSchema;
+			NN<UI::GUILabel> lblTable;
+			NN<UI::GUITextBox> txtTable;
+			NN<UI::GUIButton> btnExport;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<DB::ReadingDB> db;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<DB::ReadingDB> db;
 			Text::CString schema;
 			Text::CStringNN table;
 
 			static void __stdcall OnTablesDblClk(AnyType userObj, UOSInt itemIndex);
 			static void __stdcall OnExportClicked(AnyType userObj);
 		public:
-			AVIRDBExportForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN table);
+			AVIRDBExportForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN table);
 			virtual ~AVIRDBExportForm();
 
 			virtual void OnMonitorChanged();

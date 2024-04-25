@@ -19,13 +19,13 @@ namespace IO
 			Bool hasTime;
 
 		public:
-			TSFileAnalyse(NotNullPtr<IO::StreamData> fd);
+			TSFileAnalyse(NN<IO::StreamData> fd);
 			virtual ~TSFileAnalyse();
 
 			virtual Text::CStringNN GetFormatName();
 			virtual UOSInt GetFrameCount();
-			virtual Bool GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
-			virtual Bool GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual Bool GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
+			virtual Bool GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst);
 			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index);
 

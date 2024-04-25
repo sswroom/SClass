@@ -36,13 +36,13 @@ OSInt Map::AssistedReverseGeocoderPL::AddressComparator::Compare(AddressEntry *a
 	}
 }
 
-Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(NotNullPtr<DB::DBTool> db, IO::Writer *errWriter)
+Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(NN<DB::DBTool> db, IO::Writer *errWriter)
 {
 	this->conn = db;
 	this->errWriter = errWriter;
 	this->nextCoder = 0;
 
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	Manage::HiResClock clk;
 	Double t1 = clk.GetTimeDiff();
 	if (this->conn->ExecuteReader(CSTR("select lcid, keyx, keyy, address from addrdb")).SetTo(r))// order by lcid, keyx, keyy
@@ -63,7 +63,7 @@ Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(NotNullPtr<DB::DBTool>
 			addr = this->strMap.Get(sb.ToCString());
 			if (addr == 0)
 			{
-				NotNullPtr<Text::String> s = Text::String::New(sb.ToCString());
+				NN<Text::String> s = Text::String::New(sb.ToCString());
 				addr = s.Ptr();
 				this->strMap.Put(s, addr);
 			}
@@ -188,7 +188,7 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 		addr = this->strMap.Get(CSTRP(buff, sptr));
 		if (addr == 0)
 		{
-			NotNullPtr<Text::String> s = Text::String::New(buff, (UOSInt)(sptr - buff));
+			NN<Text::String> s = Text::String::New(buff, (UOSInt)(sptr - buff));
 			addr = s.Ptr();
 			this->strMap.Put(s, addr);
 		}

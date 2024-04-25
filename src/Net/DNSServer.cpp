@@ -3,9 +3,9 @@
 #include "Net/DNSServer.h"
 #include "Text/StringBuilder.h"
 
-void __stdcall Net::DNSServer::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::DNSServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	NotNullPtr<Net::DNSServer> me = userData.GetNN<Net::DNSServer>();
+	NN<Net::DNSServer> me = userData.GetNN<Net::DNSServer>();
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	UOSInt i;
@@ -39,7 +39,7 @@ void __stdcall Net::DNSServer::PacketHdlr(NotNullPtr<const Net::SocketUtil::Addr
 	}
 }
 
-void Net::DNSServer::InitServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log)
+void Net::DNSServer::InitServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log)
 {
 	this->sockf = sockf;
 	this->reqHdlr = 0;
@@ -49,12 +49,12 @@ void Net::DNSServer::InitServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 por
 	this->svr->SetBuffSize(65536);
 }
 
-Net::DNSServer::DNSServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log)
+Net::DNSServer::DNSServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log)
 {
 	InitServer(sockf, port, log);
 }
 
-Net::DNSServer::DNSServer(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log)
+Net::DNSServer::DNSServer(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log)
 {
 	InitServer(sockf, 53, log);
 }
@@ -75,7 +75,7 @@ void Net::DNSServer::HandleRequest(DNSRequest hdlr, AnyType userObj)
 	this->reqObj = userObj;
 }
 
-void Net::DNSServer::ReplyRequest(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize)
+void Net::DNSServer::ReplyRequest(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize)
 {
 	this->svr->SendTo(addr, port, buff, dataSize);
 }

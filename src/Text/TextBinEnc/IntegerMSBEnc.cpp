@@ -11,7 +11,7 @@ Text::TextBinEnc::IntegerMSBEnc::~IntegerMSBEnc()
 {
 }
 
-UOSInt Text::TextBinEnc::IntegerMSBEnc::EncodeBin(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
+UOSInt Text::TextBinEnc::IntegerMSBEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
 {
 	Math::BigIntLSB bint(buffSize);
 	bint.FromBytesMSB(dataBuff, buffSize);

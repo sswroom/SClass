@@ -13,7 +13,7 @@ Math::Geometry::CurvePolygon::~CurvePolygon()
 {
 }
 
-void Math::Geometry::CurvePolygon::AddGeometry(NotNullPtr<Vector2D> geometry)
+void Math::Geometry::CurvePolygon::AddGeometry(NN<Vector2D> geometry)
 {
 	VectorType t = geometry->GetVectorType();
 	if (t == VectorType::CircularString || t == VectorType::CompoundCurve || t == VectorType::LineString)
@@ -31,11 +31,11 @@ Math::Geometry::Vector2D::VectorType Math::Geometry::CurvePolygon::GetVectorType
 	return Math::Geometry::Vector2D::VectorType::CurvePolygon;
 }
 
-NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::CurvePolygon::Clone() const
+NN<Math::Geometry::Vector2D> Math::Geometry::CurvePolygon::Clone() const
 {
-	NotNullPtr<Math::Geometry::CurvePolygon> newObj;
+	NN<Math::Geometry::CurvePolygon> newObj;
 	NEW_CLASSNN(newObj, Math::Geometry::CurvePolygon(this->srid));
-	Data::ArrayIterator<NotNullPtr<Math::Geometry::Vector2D>> it = this->geometries.Iterator();
+	Data::ArrayIterator<NN<Math::Geometry::Vector2D>> it = this->geometries.Iterator();
 	while (it.HasNext())
 	{
 		newObj->AddGeometry(it.Next()->Clone());
@@ -43,29 +43,29 @@ NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::CurvePolygon::Clone() const
 	return newObj;
 }
 
-NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::CurvePolygon::CurveToLine() const
+NN<Math::Geometry::Vector2D> Math::Geometry::CurvePolygon::CurveToLine() const
 {
-	NotNullPtr<Math::Geometry::Polygon> pg;
+	NN<Math::Geometry::Polygon> pg;
 	NEW_CLASSNN(pg, Math::Geometry::Polygon(this->srid));
-	NotNullPtr<Math::Geometry::LinearRing> lr;
+	NN<Math::Geometry::LinearRing> lr;
 	Data::ArrayList<UInt32> ptOfst;
 	Data::ArrayListA<Math::Coord2DDbl> ptList;
 	UOSInt nPoint;
-	NotNullPtr<Math::Geometry::Vector2D> vec;
-	Data::ArrayIterator<NotNullPtr<Math::Geometry::Vector2D>> it = this->Iterator();
+	NN<Math::Geometry::Vector2D> vec;
+	Data::ArrayIterator<NN<Math::Geometry::Vector2D>> it = this->Iterator();
 	while (it.HasNext())
 	{
 		vec = it.Next();
 		if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::CompoundCurve)
 		{
 			ptList.Clear();
-			NotNullPtr<Math::Geometry::CompoundCurve>::ConvertFrom(vec)->GetDrawPoints(ptList);
+			NN<Math::Geometry::CompoundCurve>::ConvertFrom(vec)->GetDrawPoints(ptList);
 			NEW_CLASSNN(lr, LinearRing(this->srid, ptList.Ptr(), ptList.GetCount(), 0, 0));
 			pg->AddGeometry(lr);
 		}
 		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::LineString)
 		{
-			const Math::Coord2DDbl *ptArr = NotNullPtr<Math::Geometry::LineString>::ConvertFrom(vec)->GetPointListRead(nPoint);
+			const Math::Coord2DDbl *ptArr = NN<Math::Geometry::LineString>::ConvertFrom(vec)->GetPointListRead(nPoint);
 			NEW_CLASSNN(lr, LinearRing(this->srid, ptArr, nPoint, 0, 0));
 			pg->AddGeometry(lr);
 		}
@@ -79,7 +79,7 @@ NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::CurvePolygon::CurveToLine()
 
 Bool Math::Geometry::CurvePolygon::InsideOrTouch(Math::Coord2DDbl coord) const
 {
-	NotNullPtr<Vector2D> vec = this->CurveToLine();
+	NN<Vector2D> vec = this->CurveToLine();
 	Bool inside = vec->InsideOrTouch(coord);
 	vec.Delete();
 	return inside;

@@ -40,7 +40,7 @@ mcclop:
 #endif
 }
 
-IO::ProtoHdlr::ProtoMapSvrHandler::ProtoMapSvrHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener)
+IO::ProtoHdlr::ProtoMapSvrHandler::ProtoMapSvrHandler(NN<IO::IProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
 }
@@ -49,16 +49,16 @@ IO::ProtoHdlr::ProtoMapSvrHandler::~ProtoMapSvrHandler()
 {
 }
 
-void *IO::ProtoHdlr::ProtoMapSvrHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
+void *IO::ProtoHdlr::ProtoMapSvrHandler::CreateStreamData(NN<IO::Stream> stm)
 {
 	return 0;
 }
 
-void IO::ProtoHdlr::ProtoMapSvrHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, void *stmData)
+void IO::ProtoHdlr::ProtoMapSvrHandler::DeleteStreamData(NN<IO::Stream> stm, void *stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &srcBuff)
+UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::ParseProtocol(NN<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &srcBuff)
 {
 	Bool found;
 	UInt32 crcVal;

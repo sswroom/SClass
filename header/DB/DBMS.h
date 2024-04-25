@@ -68,7 +68,7 @@ namespace DB
 		
 		typedef struct
 		{
-			NotNullPtr<Text::String> login;
+			NN<Text::String> login;
 			Data::ArrayList<UserInfo*> *userList;
 		} LoginInfo;
 		
@@ -103,8 +103,8 @@ namespace DB
 	private:
 		static const Char *sysVarList[];
 
-		NotNullPtr<Text::String> versionStr;
-		NotNullPtr<IO::LogTool> log;
+		NN<Text::String> versionStr;
+		NN<IO::LogTool> log;
 		Sync::Mutex loginMut;
 		Crypto::Hash::SHA1 loginSHA1;
 		Data::FastStringMap<LoginInfo*> loginMap;
@@ -115,24 +115,24 @@ namespace DB
 		static Bool StrLike(const UTF8Char *val, const UTF8Char *likeStr);
 
 		Bool SysVarExist(SessionInfo *sess, const UTF8Char *varName, AccessType atype);
-		const UTF8Char *SysVarGet(NotNullPtr<Text::StringBuilderUTF8> sb, SessionInfo *sess, const UTF8Char *varName, UOSInt nameLen);
+		const UTF8Char *SysVarGet(NN<Text::StringBuilderUTF8> sb, SessionInfo *sess, const UTF8Char *varName, UOSInt nameLen);
 		void SysVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8Char *varName, Text::CString colName);
 		Bool SysVarSet(SessionInfo *sess, Bool isGlobal, const UTF8Char *varName, Text::String *val);
 
-		const UTF8Char *UserVarGet(NotNullPtr<Text::StringBuilderUTF8> sb, SessionInfo *sess, const UTF8Char *varName);
+		const UTF8Char *UserVarGet(NN<Text::StringBuilderUTF8> sb, SessionInfo *sess, const UTF8Char *varName);
 		void UserVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8Char *varName, Text::CString colName);
 		Bool UserVarSet(SessionInfo *sess, const UTF8Char *varName, Text::String *val);
 
 		Text::String *Evals(const UTF8Char **valPtr, SessionInfo *sess, DB::DBMSReader *reader, UOSInt colIndex, Text::CString colName, Bool *valid);
 	public:
-		DBMS(Text::CString versionStr, NotNullPtr<IO::LogTool> log);
+		DBMS(Text::CString versionStr, NN<IO::LogTool> log);
 		virtual ~DBMS();
 
-		NotNullPtr<Text::String> GetVersion() const;
-		NotNullPtr<IO::LogTool> GetLogTool();
+		NN<Text::String> GetVersion() const;
+		NN<IO::LogTool> GetLogTool();
 
 		Bool UserAdd(Int32 userId, Text::CStringNN userName, Text::CString password, Text::CString host);
-		Int32 UserLoginMySQL(Int32 sessId, Text::CStringNN userName, const UInt8 *randomData, const UInt8 *passHash, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, const SessionParam *param, const UTF8Char *database);
+		Int32 UserLoginMySQL(Int32 sessId, Text::CStringNN userName, const UInt8 *randomData, const UInt8 *passHash, NN<const Net::SocketUtil::AddressInfo> addr, const SessionParam *param, const UTF8Char *database);
 
 		DB::DBReader *ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt sqlLen);
 		void CloseReader(DB::DBReader *r);

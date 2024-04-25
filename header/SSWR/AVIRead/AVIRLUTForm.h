@@ -18,26 +18,26 @@ namespace SSWR
 		class AVIRLUTForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpInfo;
-			NotNullPtr<UI::GUIPanel> pnlInfo;
-			NotNullPtr<UI::GUILabel> lblFileName;
-			NotNullPtr<UI::GUITextBox> txtFileName;
-			NotNullPtr<UI::GUITextBox> txtRemark;
+			NN<UI::GUITabPage> tpInfo;
+			NN<UI::GUIPanel> pnlInfo;
+			NN<UI::GUILabel> lblFileName;
+			NN<UI::GUITextBox> txtFileName;
+			NN<UI::GUITextBox> txtRemark;
 
-			NotNullPtr<UI::GUITabPage> tpValues;
-			NotNullPtr<UI::GUIPanel> pnlValues;
-			NotNullPtr<UI::GUIComboBox> cboChannels;
-			NotNullPtr<UI::GUIListView> lvValues;
+			NN<UI::GUITabPage> tpValues;
+			NN<UI::GUIPanel> pnlValues;
+			NN<UI::GUIComboBox> cboChannels;
+			NN<UI::GUIListView> lvValues;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Media::LUT *lut;
 
 			static void __stdcall OnChannelChg(AnyType userObj);
 			void UpdateValues();
 		public:
-			AVIRLUTForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::LUT *lut);
+			AVIRLUTForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::LUT *lut);
 			virtual ~AVIRLUTForm();
 
 			virtual void OnMonitorChanged();

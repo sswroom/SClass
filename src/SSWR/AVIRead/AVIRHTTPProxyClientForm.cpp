@@ -10,7 +10,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPProxyClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPProxyClientForm>();
+	NN<SSWR::AVIRead::AVIRHTTPProxyClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPProxyClientForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt32 ip;
 	UInt16 port;
@@ -51,9 +51,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(AnyType 
 
 UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPProxyClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPProxyClientForm>();
+	NN<SSWR::AVIRead::AVIRHTTPProxyClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPProxyClientForm>();
 	Text::String *currURL;
-	NotNullPtr<Net::HTTPClient> cli;
+	NN<Net::HTTPClient> cli;
 	UInt8 buff[4096];
 	UTF8Char *sbuff;
 	UTF8Char *sptr;
@@ -103,7 +103,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(AnyType u
 
 void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPProxyClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPProxyClientForm>();
+	NN<SSWR::AVIRead::AVIRHTTPProxyClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPProxyClientForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UOSInt i;
@@ -180,7 +180,7 @@ void SSWR::AVIRead::AVIRHTTPProxyClientForm::ClearHeaders()
 	}
 }
 
-SSWR::AVIRead::AVIRHTTPProxyClientForm::AVIRHTTPProxyClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRHTTPProxyClientForm::AVIRHTTPProxyClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("HTTP Proxy Client"));

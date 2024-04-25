@@ -102,9 +102,9 @@ Text::CString IO::FileAnalyse::JPGFileAnalyse::GetTagName(UInt8 tagType)
 	return CSTR_NULL;
 }
 
-void __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::FileAnalyse::JPGFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::JPGFileAnalyse>();
+	NN<IO::FileAnalyse::JPGFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::JPGFileAnalyse>();
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt32 lastSize;
@@ -178,7 +178,7 @@ void __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	}
 }
 
-IO::FileAnalyse::JPGFileAnalyse::JPGFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("JPGFileAnalyse"))
+IO::FileAnalyse::JPGFileAnalyse::JPGFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("JPGFileAnalyse"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -209,7 +209,7 @@ UOSInt IO::FileAnalyse::JPGFileAnalyse::GetFrameCount()
 	return this->tags.GetCount();
 }
 
-Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::JPGFileAnalyse::JPGTag> tag;
 	Text::CString name;
@@ -230,7 +230,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text
 	return true;
 }
 
-Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	UOSInt i;
 	UOSInt j;
@@ -464,7 +464,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Te
 		sb->AppendSlow((UTF8Char*)&tagData[4]);
 		if (tagData[4] == 'E' && tagData[5] == 'x' && tagData[6] == 'i' && tagData[7] == 'f' && tagData[8] == 0)
 		{
-			NotNullPtr<Media::EXIFData> exif;
+			NN<Media::EXIFData> exif;
 			if (Media::EXIFData::ParseExif(tagData.Ptr(), tag->size).SetTo(exif))
 			{
 				sb->AppendC(UTF8STRC("\r\n"));
@@ -486,7 +486,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Te
 		sb->AppendSlow((UTF8Char*)&tagData[4]);
 		if (Text::StrStartsWithC(&tagData[4], tag->size, UTF8STRC("ICC_PROFILE")))
 		{
-			NotNullPtr<Media::ICCProfile> icc;
+			NN<Media::ICCProfile> icc;
 			if (Media::ICCProfile::Parse(tagData.SubArray(18, tag->size - 18)).SetTo(icc))
 			{
 				sb->AppendC(UTF8STRC("\r\n\r\n"));
@@ -540,7 +540,7 @@ UOSInt IO::FileAnalyse::JPGFileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	UOSInt i;
@@ -548,7 +548,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JPGFileAnalyse::GetFrame
 	UOSInt k;
 	Int32 v;
 	NN<IO::FileAnalyse::JPGFileAnalyse::JPGTag> tag;
-	NotNullPtr<IO::StreamData> fd;
+	NN<IO::StreamData> fd;
 	if (!this->tags.GetItem(index).SetTo(tag) || !fd.Set(this->fd))
 		return 0;
 	

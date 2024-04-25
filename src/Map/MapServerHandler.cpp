@@ -15,9 +15,9 @@
 #include "Text/JSText.h"
 #include "Text/XML.h"
 
-Bool __stdcall Map::MapServerHandler::GetLayersFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> myObj)
+Bool __stdcall Map::MapServerHandler::GetLayersFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> myObj)
 {
-	NotNullPtr<Map::MapServerHandler> me = NotNullPtr<Map::MapServerHandler>::ConvertFrom(myObj);
+	NN<Map::MapServerHandler> me = NN<Map::MapServerHandler>::ConvertFrom(myObj);
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	UOSInt j;
@@ -42,11 +42,11 @@ Bool __stdcall Map::MapServerHandler::GetLayersFunc(NotNullPtr<Net::WebServer::I
 	return true;
 }
 
-Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> myObj)
+Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> myObj)
 {
-	NotNullPtr<Map::MapServerHandler> me = NotNullPtr<Map::MapServerHandler>::ConvertFrom(myObj);
-	NotNullPtr<Text::String> name;
-	NotNullPtr<Text::String> fmt;
+	NN<Map::MapServerHandler> me = NN<Map::MapServerHandler>::ConvertFrom(myObj);
+	NN<Text::String> name;
+	NN<Text::String> fmt;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Map::MapDrawLayer *layer;
@@ -73,14 +73,14 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 			UOSInt l;
 			Data::ArrayListInt64 objIds;
 			Int64 objId;
-			NotNullPtr<Text::String> s;
+			NN<Text::String> s;
 			Map::NameArray *nameArr;
 			Text::StringBuilderUTF8 sb;
 			layer->GetAllObjectIds(objIds, &nameArr);
 			if (objIds.GetCount() > 0)
 			{
 				Text::StringBuilderUTF8 sbTmp;
-				NotNullPtr<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
+				NN<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
 				Map::GetObjectSess *sess = layer->BeginGetObject();
 				i = 0;
 				j = objIds.GetCount();
@@ -173,8 +173,8 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 			layer->GetAllObjectIds(objIds, &nameArr);
 			if (objIds.GetCount() > 0)
 			{
-				NotNullPtr<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
-				NotNullPtr<Math::CoordinateSystem> wgs84 = Math::CoordinateSystemManager::CreateDefaultCsys();
+				NN<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
+				NN<Math::CoordinateSystem> wgs84 = Math::CoordinateSystemManager::CreateDefaultCsys();
 				Bool needConv = !wgs84->Equals(csys);
 				Math::CoordinateSystemConverter converter(csys, wgs84);
 				Text::StringBuilderUTF8 sbTmp;
@@ -209,7 +209,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 						k++;
 					}
 					json.ObjectEnd();
-					NotNullPtr<Math::Geometry::Vector2D> vec;
+					NN<Math::Geometry::Vector2D> vec;
 					if (vec.Set(layer->GetNewVectorById(sess, objId)))
 					{
 						json.ObjectBeginObject(CSTR("geometry"));
@@ -243,10 +243,10 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NotNullPtr<Net::WebServer
 	}
 }
 
-Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> myObj)
+Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> myObj)
 {
-	NotNullPtr<Map::MapServerHandler> me = NotNullPtr<Map::MapServerHandler>::ConvertFrom(myObj);
-	NotNullPtr<Text::String> file;
+	NN<Map::MapServerHandler> me = NN<Map::MapServerHandler>::ConvertFrom(myObj);
+	NN<Text::String> file;
 	Optional<Text::String> range = req->GetQueryValue(CSTR("range"));
 	Double minErr;
 	if (!req->GetQueryValueF64(CSTR("minErr"), minErr))
@@ -263,7 +263,7 @@ Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NotNullPtr<Net::WebServer::
 	Double y1;
 	Double x2;
 	Double y2;
-	NotNullPtr<Text::String> nnrange;
+	NN<Text::String> nnrange;
 	if (!range.SetTo(nnrange))
 	{
 		x1 = -180;
@@ -354,10 +354,10 @@ Bool __stdcall Map::MapServerHandler::CesiumDataFunc(NotNullPtr<Net::WebServer::
 	return true;
 }
 
-Bool __stdcall Map::MapServerHandler::CesiumB3DMFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> myObj)
+Bool __stdcall Map::MapServerHandler::CesiumB3DMFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> myObj)
 {
-	NotNullPtr<Map::MapServerHandler> me = NotNullPtr<Map::MapServerHandler>::ConvertFrom(myObj);
-	NotNullPtr<Text::String> file;
+	NN<Map::MapServerHandler> me = NN<Map::MapServerHandler>::ConvertFrom(myObj);
+	NN<Text::String> file;
 	Text::StringBuilderUTF8 sb;
 	if (!req->GetQueryValue(CSTR("file")).SetTo(file))
 	{
@@ -383,14 +383,14 @@ Bool __stdcall Map::MapServerHandler::CesiumB3DMFunc(NotNullPtr<Net::WebServer::
 	return Net::WebServer::HTTPServerUtil::ResponseFile(req, resp, sb.ToCString(), -2);
 }
 
-void Map::MapServerHandler::CheckObject(Text::JSONBase *obj, Double x1, Double y1, Double x2, Double y2, Double minErr, NotNullPtr<Text::String> fileName, NotNullPtr<Text::StringBuilderUTF8> tmpSb)
+void Map::MapServerHandler::CheckObject(Text::JSONBase *obj, Double x1, Double y1, Double x2, Double y2, Double minErr, NN<Text::String> fileName, NN<Text::StringBuilderUTF8> tmpSb)
 {
 	if (obj->GetType() != Text::JSONType::Object)
 	{
 		return;
 	}
 	UOSInt i;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	Text::JSONObject *jobj = (Text::JSONObject*)obj;
 	obj = jobj->GetObjectValue(CSTR("content"));
 	if (obj && obj->GetType() == Text::JSONType::Object)
@@ -535,16 +535,16 @@ Bool Map::MapServerHandler::InSphereRange(Text::JSONBase *sphere, Double x1, Dou
 	return true;
 }
 
-void Map::MapServerHandler::AddLayer(NotNullPtr<Map::MapDrawLayer> layer)
+void Map::MapServerHandler::AddLayer(NN<Map::MapDrawLayer> layer)
 {
 	if (layer->GetObjectClass() == Map::MapDrawLayer::OC_MAP_LAYER_COLL)
 	{
-		NotNullPtr<Map::MapLayerCollection> layerColl = NotNullPtr<Map::MapLayerCollection>::ConvertFrom(layer);
+		NN<Map::MapLayerCollection> layerColl = NN<Map::MapLayerCollection>::ConvertFrom(layer);
 		UOSInt i = 0;
 		UOSInt j = layerColl->GetCount();
 		while (i < j)
 		{
-			NotNullPtr<Map::MapDrawLayer> sublayer;
+			NN<Map::MapDrawLayer> sublayer;
 			if (layerColl->GetItem(i).SetTo(sublayer))
 			{
 				this->AddLayer(sublayer);
@@ -558,7 +558,7 @@ void Map::MapServerHandler::AddLayer(NotNullPtr<Map::MapDrawLayer> layer)
 	}
 }
 
-Map::MapServerHandler::MapServerHandler(NotNullPtr<Parser::ParserList> parsers)
+Map::MapServerHandler::MapServerHandler(NN<Parser::ParserList> parsers)
 {
 	this->parsers = parsers;
 	this->cesiumScenePath = 0;
@@ -581,7 +581,7 @@ Bool Map::MapServerHandler::AddAsset(Text::CStringNN filePath)
 {
 	IO::Path::PathType pt = IO::Path::GetPathType(filePath);
 	Optional<IO::ParsedObject> pobj;
-	NotNullPtr<IO::ParsedObject> nnpobj;
+	NN<IO::ParsedObject> nnpobj;
 	if (pt == IO::Path::PathType::File)
 	{
 		IO::StmData::FileData fd(filePath, false);
@@ -603,7 +603,7 @@ Bool Map::MapServerHandler::AddAsset(Text::CStringNN filePath)
 
 	if (nnpobj->GetParserType() == IO::ParserType::MapLayer)
 	{
-		NotNullPtr<Map::MapDrawLayer> layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(nnpobj);
+		NN<Map::MapDrawLayer> layer = NN<Map::MapDrawLayer>::ConvertFrom(nnpobj);
 		this->AddLayer(layer);
 		this->assets.Add(nnpobj);
 		return true;

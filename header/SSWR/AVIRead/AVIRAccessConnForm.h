@@ -13,20 +13,20 @@ namespace SSWR
 		class AVIRAccessConnForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblFileName;
-			NotNullPtr<UI::GUITextBox> txtFileName;
-			NotNullPtr<UI::GUIButton> btnBrowse;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUILabel> lblFileName;
+			NN<UI::GUITextBox> txtFileName;
+			NN<UI::GUIButton> btnBrowse;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			DB::DBConn *conn;
 
 			static void __stdcall OnBrowseClicked(AnyType userObj);
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			AVIRAccessConnForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRAccessConnForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRAccessConnForm();
 
 			virtual void OnMonitorChanged();

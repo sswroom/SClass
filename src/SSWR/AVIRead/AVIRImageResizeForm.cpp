@@ -9,7 +9,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageResizeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageResizeForm>();
+	NN<SSWR::AVIRead::AVIRImageResizeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageResizeForm>();
 	Text::StringBuilderUTF8 sb;
 	Math::Size2D<UOSInt> outSize = Math::Size2D<UOSInt>(0, 0);
 	UOSInt nTap = 0;
@@ -51,11 +51,11 @@ void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnOKClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageResizeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageResizeForm>();
+	NN<SSWR::AVIRead::AVIRImageResizeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageResizeForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRImageResizeForm::AVIRImageResizeForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::RasterImage *srcImg) : UI::GUIForm(parent, 480, 240, ui)
+SSWR::AVIRead::AVIRImageResizeForm::AVIRImageResizeForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::RasterImage *srcImg) : UI::GUIForm(parent, 480, 240, ui)
 {
 	this->SetText(CSTR("Image Resize"));
 	this->SetFont(0, 0, 8.25, false);

@@ -8,13 +8,13 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XMLDOM.h"
 
-void Net::HKTrafficImage::Init(NotNullPtr<Text::EncodingFactory> encFact, const UInt8 *buff, UOSInt buffSize)
+void Net::HKTrafficImage::Init(NN<Text::EncodingFactory> encFact, const UInt8 *buff, UOSInt buffSize)
 {
 	Text::XMLNode *node1;
 	Text::XMLNode *node2;
 	Text::XMLNode *node3;
-	NotNullPtr<GroupInfo> grp;
-	NotNullPtr<ImageInfo> img;
+	NN<GroupInfo> grp;
+	NN<ImageInfo> img;
 	Text::XMLDocument doc;
 	if (doc.ParseBuff(encFact, buff, buffSize))
 	{
@@ -112,12 +112,12 @@ void Net::HKTrafficImage::Init(NotNullPtr<Text::EncodingFactory> encFact, const 
 	}
 }
 
-Net::HKTrafficImage::HKTrafficImage(NotNullPtr<Text::EncodingFactory> encFact, const UInt8 *buff, UOSInt buffSize)
+Net::HKTrafficImage::HKTrafficImage(NN<Text::EncodingFactory> encFact, const UInt8 *buff, UOSInt buffSize)
 {
 	this->Init(encFact, buff, buffSize);
 }
 
-Net::HKTrafficImage::HKTrafficImage(NotNullPtr<Text::EncodingFactory> encFact, Text::CStringNN fileName)
+Net::HKTrafficImage::HKTrafficImage(NN<Text::EncodingFactory> encFact, Text::CStringNN fileName)
 {
 	UInt64 fileSize;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -134,8 +134,8 @@ Net::HKTrafficImage::HKTrafficImage(NotNullPtr<Text::EncodingFactory> encFact, T
 
 Net::HKTrafficImage::~HKTrafficImage()
 {
-	NotNullPtr<GroupInfo> grp;
-	NotNullPtr<ImageInfo> img;
+	NN<GroupInfo> grp;
+	NN<ImageInfo> img;
 	UOSInt i;
 	UOSInt j;
 	i = this->groupMap.GetCount();
@@ -157,7 +157,7 @@ Net::HKTrafficImage::~HKTrafficImage()
 	}
 }
 
-UOSInt Net::HKTrafficImage::GetGroups(NotNullPtr<Data::ArrayListNN<Net::HKTrafficImage::GroupInfo>> groups)
+UOSInt Net::HKTrafficImage::GetGroups(NN<Data::ArrayListNN<Net::HKTrafficImage::GroupInfo>> groups)
 {
 	return groups->AddAll(this->groupMap);
 }

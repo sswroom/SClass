@@ -17,10 +17,10 @@ typedef enum
 
 void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
+	NN<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
 	Text::String *path;
 	path = me->icMain->GetFolder();
-	NotNullPtr<UI::GUIFolderDialog> dlg = me->ui->NewFolderDialog();
+	NN<UI::GUIFolderDialog> dlg = me->ui->NewFolderDialog();
 	if (path)
 	{
 		dlg->SetFolder(path->ToCString());
@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(AnyType userObj, Text::CString fileName, const SSWR::AVIRead::AVIRImageControl::ImageSetting *setting)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
+	NN<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
 	if (fileName.leng == 0)
 	{
 		SDEL_CLASS(me->dispImage);
@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(AnyType userObj
 		SDEL_CLASS(me->previewImage);
 		SDEL_CLASS(me->filteredImage);
 		me->dispImage = img;
-		NotNullPtr<Media::StaticImage> simg;
+		NN<Media::StaticImage> simg;
 		if (simg.Set(img))
 		{
 			simg->To32bpp();
@@ -72,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnColorChg(AnyType userObj, UOSInt newPos)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
+	NN<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 
@@ -103,7 +103,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnColorChg(AnyType userObj, UO
 
 Bool __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFormClosing(AnyType userObj, CloseReason reason)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
+	NN<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
 	if (me->icMain->IsLoadingDir())
 	{
 		return !me->ui->ShowMsgYesNo(CSTR("Still loading directory, setting will be lost. Continue?"), CSTR("Question"), me);
@@ -113,7 +113,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFormClosing(AnyType userObj,
 
 void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnProgressUpdated(AnyType userObj, UOSInt finCnt)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
+	NN<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
 	me->prgMain->ProgressUpdate(finCnt, me->selCnt);
 	if (finCnt >= me->selCnt)
 	{
@@ -123,7 +123,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnProgressUpdated(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnKeyDown(AnyType userObj, UI::GUIControl::GUIKey key)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
+	NN<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
 	if (key == UI::GUIControl::GK_LEFT)
 	{
 		UOSInt currPos = me->hsbContr->GetPos();
@@ -166,26 +166,26 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnKeyDown(AnyType userObj, UI:
 
 void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnBrightResetClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
+	NN<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
 	me->hsbBright->SetPos(1000);
 }
 
 void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnGammaResetClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
+	NN<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
 	me->hsbGamma->SetPos(100);
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFilesDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFilesDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
+	NN<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
 	if (files.GetCount() == 1 && IO::Path::GetPathType(files[0]->ToCString()) == IO::Path::PathType::Directory)
 	{
 		me->OpenFolder(files[0]);
 	}
 }
 
-void SSWR::AVIRead::AVIRImageBatchForm::OpenFolder(NotNullPtr<Text::String> folder)
+void SSWR::AVIRead::AVIRImageBatchForm::OpenFolder(NN<Text::String> folder)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -222,8 +222,8 @@ void SSWR::AVIRead::AVIRImageBatchForm::OpenFolder(NotNullPtr<Text::String> fold
 
 void SSWR::AVIRead::AVIRImageBatchForm::UpdatePreview()
 {
-	NotNullPtr<Media::StaticImage> filteredImage;
-	NotNullPtr<Media::StaticImage> previewImage;
+	NN<Media::StaticImage> filteredImage;
+	NN<Media::StaticImage> previewImage;
 	if (filteredImage.Set(this->filteredImage) && previewImage.Set(this->previewImage))
 	{
 		SSWR::AVIRead::AVIRImageControl::ImageSetting setting;
@@ -237,7 +237,7 @@ void SSWR::AVIRead::AVIRImageBatchForm::UpdatePreview()
 	}
 }
 
-SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Image batch tool"));
@@ -326,8 +326,8 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(Optional<UI::GUIClientCont
 /*	this->btnCrop = ui->NewButton(this->pnlImage, L"Crop");
 	this->btnCrop->SetRect(632, 72, 75, 23, false);*/
 
-	NotNullPtr<UI::GUIMainMenu> mmnu;
-	NotNullPtr<UI::GUIMenu> mnu;
+	NN<UI::GUIMainMenu> mmnu;
+	NN<UI::GUIMenu> mnu;
 	NEW_CLASSNN(mmnu, UI::GUIMainMenu());
 	mnu = mmnu->AddSubMenu(CSTR("&Export"));
 	mnu->AddItem(CSTR("Export Selected"), MNU_EXPORT_SEL, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);

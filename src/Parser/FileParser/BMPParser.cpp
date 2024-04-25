@@ -13,7 +13,7 @@
 #include "Parser/ParserList.h"
 #include "Parser/FileParser/BMPParser.h"
 
-void BMPParser_ReadPal(Media::StaticImage *img, NotNullPtr<IO::StreamData> fd, UOSInt palStart, Int32 palType, UOSInt colorUsed)
+void BMPParser_ReadPal(Media::StaticImage *img, NN<IO::StreamData> fd, UOSInt palStart, Int32 palType, UOSInt colorUsed)
 {
 	UOSInt maxColor = (UOSInt)1 << img->info.storeBPP;
 	if (palType == 0)
@@ -74,7 +74,7 @@ void Parser::FileParser::BMPParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::BMPParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::BMPParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
@@ -88,7 +88,7 @@ IO::ParserType Parser::FileParser::BMPParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt32 imgWidth;
 	Int32 imgHeight;
@@ -381,7 +381,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(NotNullPtr<IO::Str
 		if (this->parsers)
 		{
 			UInt32 currOfst = ReadUInt32(&hdr[10]);
-			NotNullPtr<IO::StreamData> innerFd = fd->GetPartialData(currOfst, fd->GetDataSize() - currOfst);
+			NN<IO::StreamData> innerFd = fd->GetPartialData(currOfst, fd->GetDataSize() - currOfst);
 			pobj = this->parsers->ParseFile(innerFd);
 			innerFd.Delete();
 			return pobj;
@@ -403,7 +403,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(NotNullPtr<IO::Str
 				fd->GetRealData(imgDataSize + 14, iccSize, iccBuff);
 				if (iccSize == ReadMUInt32(&iccBuff[0]))
 				{
-					NotNullPtr<Media::ICCProfile> icc;
+					NN<Media::ICCProfile> icc;
 					if (Media::ICCProfile::Parse(iccBuff.WithSize(iccSize)).SetTo(icc))
 					{
 						icc->SetToColorProfile(outImg->info.color);

@@ -53,7 +53,7 @@ OSInt Map::WebImageLayer::GetImageStatIndex(Int32 id)
 	OSInt i;
 	OSInt j;
 	OSInt k;
-	NotNullPtr<Map::WebImageLayer::ImageStat> stat;
+	NN<Map::WebImageLayer::ImageStat> stat;
 	i = 0;
 	j = (OSInt)this->loadedList.GetCount() - 1;
 	while (i <= j)
@@ -89,13 +89,13 @@ Optional<Map::WebImageLayer::ImageStat> Map::WebImageLayer::GetImageStat(Int32 i
 	return stat;
 }
 
-void Map::WebImageLayer::LoadImage(NotNullPtr<Map::WebImageLayer::ImageStat> stat)
+void Map::WebImageLayer::LoadImage(NN<Map::WebImageLayer::ImageStat> stat)
 {
 #if defined(VERBOSE)
 	printf("WebImageLayer: loading %s\r\n", stat->url->v);
 #endif
 	stat->data = this->browser->GetData(stat->url->ToCString(), false, 0);
-	NotNullPtr<IO::StreamData> fd;
+	NN<IO::StreamData> fd;
 	if (!fd.Set(stat->data))
 	{
 		SDEL_STRING(stat->name);
@@ -110,7 +110,7 @@ void Map::WebImageLayer::LoadImage(NotNullPtr<Map::WebImageLayer::ImageStat> sta
 	else
 	{
 		Optional<IO::ParsedObject> pobj;
-		NotNullPtr<IO::ParsedObject> nnpobj;
+		NN<IO::ParsedObject> nnpobj;
 		{
 			IO::StmData::BufferedStreamData buffFd(fd);
 			pobj = this->parsers->ParseFile(buffFd);
@@ -124,7 +124,7 @@ void Map::WebImageLayer::LoadImage(NotNullPtr<Map::WebImageLayer::ImageStat> sta
 		}
 		else
 		{
-			NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(nnpobj);
+			NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(nnpobj);
 			imgList->ToStaticImage(0);
 			Media::StaticImage *simg = (Media::StaticImage*)imgList->GetImage(0, 0);
 			if (stat->alpha > 0 && stat->alpha != 1)
@@ -150,12 +150,12 @@ void Map::WebImageLayer::LoadImage(NotNullPtr<Map::WebImageLayer::ImageStat> sta
 
 UInt32 __stdcall Map::WebImageLayer::LoadThread(AnyType userObj)
 {
-	NotNullPtr<Map::WebImageLayer> me = userObj.GetNN<Map::WebImageLayer>();
-	NotNullPtr<ImageStat> stat;
+	NN<Map::WebImageLayer> me = userObj.GetNN<Map::WebImageLayer>();
+	NN<ImageStat> stat;
 	UOSInt i;
 	Optional<IO::ParsedObject> pobj;
-	NotNullPtr<IO::ParsedObject> nnpobj;
-	NotNullPtr<IO::StreamData> fd;
+	NN<IO::ParsedObject> nnpobj;
+	NN<IO::StreamData> fd;
 
 	me->threadRunning = true;
 	while (!me->threadToStop)
@@ -179,7 +179,7 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(AnyType userObj)
 				}
 				else
 				{
-					NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(nnpobj);
+					NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(nnpobj);
 					imgList->ToStaticImage(0);
 					Media::StaticImage *simg = (Media::StaticImage*)imgList->GetImage(0, 0);
 					if (stat->alpha > 0 && stat->alpha != 1)
@@ -218,7 +218,7 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(AnyType userObj)
 	return 0;
 }
 
-Map::WebImageLayer::WebImageLayer(Net::WebBrowser *browser, Parser::ParserList *parsers, Text::CStringNN sourceName, NotNullPtr<Math::CoordinateSystem> csys, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName, csys)
+Map::WebImageLayer::WebImageLayer(Net::WebBrowser *browser, Parser::ParserList *parsers, Text::CStringNN sourceName, NN<Math::CoordinateSystem> csys, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName, csys)
 {
 	this->browser = browser;
 	this->parsers = parsers;
@@ -237,7 +237,7 @@ Map::WebImageLayer::WebImageLayer(Net::WebBrowser *browser, Parser::ParserList *
 Map::WebImageLayer::~WebImageLayer()
 {
 	UOSInt i;
-	NotNullPtr<ImageStat> stat;
+	NN<ImageStat> stat;
 	Sync::MutexUsage mutUsage(this->updMut);
 	this->updHdlrs.Clear();
 	mutUsage.EndUse();
@@ -295,7 +295,7 @@ void Map::WebImageLayer::SetCurrTimeTS(Int64 timeStamp)
 	Bool currValid;
 	Bool changed = false;
 	UOSInt i;
-	NotNullPtr<ImageStat> stat;
+	NN<ImageStat> stat;
 	oldTime = this->currTime;
 	this->currTime = timeStamp;
 
@@ -356,12 +356,12 @@ Map::DrawLayerType Map::WebImageLayer::GetLayerType() const
 	return Map::DRAW_LAYER_IMAGE;
 }
 
-UOSInt Map::WebImageLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::WebImageLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	UOSInt retCnt = 0;
 	UOSInt i;
-	NotNullPtr<ImageStat> stat;
-	NotNullPtr<ImageStat> *imgArr;
+	NN<ImageStat> stat;
+	NN<ImageStat> *imgArr;
 	Data::ArrayListNN<ImageStat> imgList;
 	Sync::RWMutexUsage loadedMutUsage(this->loadedMut, false);
 	imgList.AddAll(this->loadedList);
@@ -380,16 +380,16 @@ UOSInt Map::WebImageLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outA
 	return retCnt;
 }
 
-UOSInt Map::WebImageLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::WebImageLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::WebImageLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::WebImageLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt retCnt = 0;
-	NotNullPtr<ImageStat> stat;
-	NotNullPtr<ImageStat> *imgArr;
+	NN<ImageStat> stat;
+	NN<ImageStat> *imgArr;
 	Data::ArrayListNN<ImageStat> imgList;
 	UOSInt i;
 	Bool valid;
@@ -466,7 +466,7 @@ Int64 Map::WebImageLayer::GetObjectIdMax() const
 {
 	Int64 maxId = -1;
 	Sync::RWMutexUsage loadedMutUsage(this->loadedMut, false);
-	NotNullPtr<Map::WebImageLayer::ImageStat> stat;
+	NN<Map::WebImageLayer::ImageStat> stat;
 	if (this->loadedList.GetItem(this->loadedList.GetCount() - 1).SetTo(stat))
 	{
 		maxId = stat->id;
@@ -478,11 +478,11 @@ void Map::WebImageLayer::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-Bool Map::WebImageLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt colIndex)
+Bool Map::WebImageLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt colIndex)
 {
 	if (colIndex != 0)
 		return false;
-	NotNullPtr<Map::WebImageLayer::ImageStat> stat;
+	NN<Map::WebImageLayer::ImageStat> stat;
 	if (GetImageStat((Int32)id).SetTo(stat))
 	{
 		sb->Append(stat->name);
@@ -516,7 +516,7 @@ DB::DBUtil::ColType Map::WebImageLayer::GetColumnType(UOSInt colIndex, OptOut<UO
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::WebImageLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Map::WebImageLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	if (colIndex == 0)
 	{
@@ -552,8 +552,8 @@ void Map::WebImageLayer::EndGetObject(GetObjectSess *session)
 
 Math::Geometry::Vector2D *Map::WebImageLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
-	NotNullPtr<ImageStat> stat;
-	NotNullPtr<Media::SharedImage> shimg;
+	NN<ImageStat> stat;
+	NN<Media::SharedImage> shimg;
 	if (this->GetImageStat((Int32)id).SetTo(stat) && shimg.Set(stat->simg))
 	{
 		Math::Geometry::VectorImage *img;
@@ -603,7 +603,7 @@ void Map::WebImageLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 
 void Map::WebImageLayer::AddImage(Text::CString name, Text::CString url, Int32 zIndex, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool isScreen, Int64 timeStart, Int64 timeEnd, Double alpha, Bool hasAltitude, Double altitude)
 {
-	NotNullPtr<ImageStat> stat;
+	NN<ImageStat> stat;
 	NEW_CLASSNN(stat, ImageStat());
 	stat->id = this->nextId++;
 	stat->url = Text::String::New(url);

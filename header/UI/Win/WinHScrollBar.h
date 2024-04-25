@@ -22,7 +22,7 @@ namespace UI
 			static void Init(InstanceHandle *hInst);
 			static void Deinit(InstanceHandle *hInst);
 		public:
-			WinHScrollBar(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Int32 width);
+			WinHScrollBar(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Int32 width);
 			virtual ~WinHScrollBar();
 
 			virtual void InitScrollBar(UOSInt minVal, UOSInt maxVal, UOSInt currVal, UOSInt largeChg);

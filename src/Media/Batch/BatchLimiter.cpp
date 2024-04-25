@@ -19,7 +19,7 @@ void Media::Batch::BatchLimiter::SetHandler(Media::Batch::BatchHandler *hdlr)
 	this->hdlr = hdlr;
 }
 
-void Media::Batch::BatchLimiter::ImageOutput(NotNullPtr<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId)
+void Media::Batch::BatchLimiter::ImageOutput(NN<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId)
 {
 	UOSInt j;
 	UOSInt k;

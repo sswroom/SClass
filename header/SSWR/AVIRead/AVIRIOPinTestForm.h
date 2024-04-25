@@ -14,18 +14,18 @@ namespace SSWR
 		class AVIRIOPinTestForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblPullType;
-			NotNullPtr<UI::GUIButton> btnPullUp;
-			NotNullPtr<UI::GUIButton> btnPullDown;
-			NotNullPtr<UI::GUILabel> lblPinMode;
-			NotNullPtr<UI::GUIButton> btnPinModeInput;
-			NotNullPtr<UI::GUIButton> btnPinModeOutput;
-			NotNullPtr<UI::GUILabel> lblPinState;
-			NotNullPtr<UI::GUITextBox> txtPinState;
-			NotNullPtr<UI::GUIButton> btnPinHigh;
-			NotNullPtr<UI::GUIButton> btnPinLow;
+			NN<UI::GUILabel> lblPullType;
+			NN<UI::GUIButton> btnPullUp;
+			NN<UI::GUIButton> btnPullDown;
+			NN<UI::GUILabel> lblPinMode;
+			NN<UI::GUIButton> btnPinModeInput;
+			NN<UI::GUIButton> btnPinModeOutput;
+			NN<UI::GUILabel> lblPinState;
+			NN<UI::GUITextBox> txtPinState;
+			NN<UI::GUIButton> btnPinHigh;
+			NN<UI::GUIButton> btnPinLow;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::IOPin *pin;
 			Bool isOutput;
 
@@ -37,7 +37,7 @@ namespace SSWR
 			static void __stdcall OnPinLowClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
-			AVIRIOPinTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::IOPin *pin);
+			AVIRIOPinTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::IOPin *pin);
 			virtual ~AVIRIOPinTestForm();
 
 			virtual void OnMonitorChanged();

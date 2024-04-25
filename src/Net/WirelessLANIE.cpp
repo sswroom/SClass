@@ -24,7 +24,7 @@ const UInt8 *Net::WirelessLANIE::GetIEBuff()
 	return this->ieBuff;
 }
 
-void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, NN<Text::StringBuilderUTF8> sb)
 {
 	UInt8 cmd = ieBuff[0];
 	UOSInt size = ieBuff[1];

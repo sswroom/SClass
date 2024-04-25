@@ -26,7 +26,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				NotNullPtr<Text::String> topic;
+				NN<Text::String> topic;
 				UTF8Char *currValue;
 				UOSInt currValueLen;
 				Bool updated;
@@ -37,50 +37,50 @@ namespace SSWR
 			} TopicStatus;
 			
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Net::MQTTConn *client;
 			IO::LogTool log;
-			NotNullPtr<UI::ListBoxLogger> logger;
+			NN<UI::ListBoxLogger> logger;
 			Sync::Mutex topicMut;
 			Data::StringMapNN<TopicStatus> topicMap;
 			Bool topicListChanged;
 			Optional<TopicStatus> currTopic;
 			Media::DrawImage *dispImg;
 
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpStatus;
-			NotNullPtr<UI::GUILabel> lblHost;
-			NotNullPtr<UI::GUITextBox> txtHost;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUILabel> lblUsername;
-			NotNullPtr<UI::GUITextBox> txtUsername;
-			NotNullPtr<UI::GUILabel> lblPassword;
-			NotNullPtr<UI::GUITextBox> txtPassword;
-			NotNullPtr<UI::GUIButton> btnStart;
+			NN<UI::GUITabPage> tpStatus;
+			NN<UI::GUILabel> lblHost;
+			NN<UI::GUITextBox> txtHost;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUILabel> lblUsername;
+			NN<UI::GUITextBox> txtUsername;
+			NN<UI::GUILabel> lblPassword;
+			NN<UI::GUITextBox> txtPassword;
+			NN<UI::GUIButton> btnStart;
 
-			NotNullPtr<UI::GUITabPage> tpSTopic;
-			NotNullPtr<UI::GUILabel> lblSTopic;
-			NotNullPtr<UI::GUITextBox> txtSTopic;
-			NotNullPtr<UI::GUIButton> btnSTopic;
-			NotNullPtr<UI::GUIListBox> lbSTopic;
+			NN<UI::GUITabPage> tpSTopic;
+			NN<UI::GUILabel> lblSTopic;
+			NN<UI::GUITextBox> txtSTopic;
+			NN<UI::GUIButton> btnSTopic;
+			NN<UI::GUIListBox> lbSTopic;
 
-			NotNullPtr<UI::GUITabPage> tpPublish;
-			NotNullPtr<UI::GUILabel> lblPublishTopic;
-			NotNullPtr<UI::GUITextBox> txtPublishTopic;
-			NotNullPtr<UI::GUILabel> lblPublishMessage;
-			NotNullPtr<UI::GUITextBox> txtPublishMessage;
-			NotNullPtr<UI::GUIButton> btnPublish;
+			NN<UI::GUITabPage> tpPublish;
+			NN<UI::GUILabel> lblPublishTopic;
+			NN<UI::GUITextBox> txtPublishTopic;
+			NN<UI::GUILabel> lblPublishMessage;
+			NN<UI::GUITextBox> txtPublishMessage;
+			NN<UI::GUIButton> btnPublish;
 
-			NotNullPtr<UI::GUITabPage> tpTopic;
-			NotNullPtr<UI::GUIListView> lvTopic;
-			NotNullPtr<UI::GUIVSplitter> vspTopic;
-			NotNullPtr<UI::GUIPictureBoxSimple> pbTopic;
+			NN<UI::GUITabPage> tpTopic;
+			NN<UI::GUIListView> lvTopic;
+			NN<UI::GUIVSplitter> vspTopic;
+			NN<UI::GUIPictureBoxSimple> pbTopic;
 
-			NotNullPtr<UI::GUITabPage> tpLog;
-			NotNullPtr<UI::GUIListBox> lbLog;
-			NotNullPtr<UI::GUITextBox> txtLog;
+			NN<UI::GUITabPage> tpLog;
+			NN<UI::GUIListBox> lbLog;
+			NN<UI::GUITextBox> txtLog;
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnSTopicClicked(AnyType userObj);
@@ -94,7 +94,7 @@ namespace SSWR
 			void UpdateTopicChart();
 			void ServerStop();
 		public:
-			AVIRMQTTSubscribeForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRMQTTSubscribeForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMQTTSubscribeForm();
 
 			virtual void OnMonitorChanged();

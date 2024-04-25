@@ -18,12 +18,12 @@ namespace Net
 			{
 				UOSInt ofst;
 				UOSInt leng;
-				NotNullPtr<Text::String> formName;
-				NotNullPtr<Text::String> fileName;
+				NN<Text::String> formName;
+				NN<Text::String> fileName;
 			} FormFileInfo;
 
 		private:
-			NotNullPtr<Text::String> requestURI;
+			NN<Text::String> requestURI;
 			Net::WebUtil::RequestMethod reqMeth;
 			Data::FastStringMapNN<Text::String> headers;
 			Data::FastStringMapNN<Text::String> *queryMap;
@@ -31,7 +31,7 @@ namespace Net
 			UInt16 cliPort;
 			UInt16 svrPort;
 			RequestProtocol reqProto;
-			NotNullPtr<Net::TCPClient> cli;
+			NN<Net::TCPClient> cli;
 			Data::FastStringMapNN<Text::String> *formMap;
 			Data::ArrayListNN<FormFileInfo> *formFileList;
 
@@ -43,23 +43,23 @@ namespace Net
 
 		private:
 			void ParseQuery();
-			void ParseFormStr(NotNullPtr<Data::FastStringMapNN<Text::String>> formMap, const UInt8 *buff, UOSInt buffSize);
+			void ParseFormStr(NN<Data::FastStringMapNN<Text::String>> formMap, const UInt8 *buff, UOSInt buffSize);
 			void ParseFormPart(UInt8 *data, UOSInt dataSize, UOSInt startOfst);
 			Text::CString ParseHeaderVal(UTF8Char *headerData, UOSInt dataLen);
 		public:
-			WebRequest(Text::CStringNN requestURI, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, NotNullPtr<Net::TCPClient> cli, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort);
+			WebRequest(Text::CStringNN requestURI, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, NN<Net::TCPClient> cli, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort);
 			virtual ~WebRequest();
 
 			void AddHeader(Text::CStringNN name, Text::CStringNN value);
 			virtual Optional<Text::String> GetSHeader(Text::CStringNN name) const;
 			virtual UTF8Char *GetHeader(UTF8Char *sbuff, Text::CStringNN name, UOSInt buffLen) const;
-			virtual Bool GetHeaderC(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStringNN name) const;
-			virtual UOSInt GetHeaderNames(NotNullPtr<Data::ArrayListStringNN> names) const;
+			virtual Bool GetHeaderC(NN<Text::StringBuilderUTF8> sb, Text::CStringNN name) const;
+			virtual UOSInt GetHeaderNames(NN<Data::ArrayListStringNN> names) const;
 			UOSInt GetHeaderCnt() const;
 			Text::String *GetHeaderName(UOSInt index) const;
 			Optional<Text::String> GetHeaderValue(UOSInt index) const;
 
-			virtual NotNullPtr<Text::String> GetRequestURI() const;
+			virtual NN<Text::String> GetRequestURI() const;
 			virtual RequestProtocol GetProtocol() const;
 			virtual Optional<Text::String> GetQueryValue(Text::CStringNN name);
 			virtual Bool HasQuery(Text::CStringNN name);
@@ -67,10 +67,10 @@ namespace Net
 			virtual void ParseHTTPForm();
 			virtual Optional<Text::String> GetHTTPFormStr(Text::CStringNN name);
 			virtual const UInt8 *GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, OptOut<UTF8Char*> fileNameEnd, OptOut<UOSInt> fileSize);
-			virtual void GetRequestURLBase(NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual void GetRequestURLBase(NN<Text::StringBuilderUTF8> sb);
 
-			virtual NotNullPtr<const Net::SocketUtil::AddressInfo> GetClientAddr() const;
-			virtual NotNullPtr<Net::NetConnection> GetNetConn() const;
+			virtual NN<const Net::SocketUtil::AddressInfo> GetClientAddr() const;
+			virtual NN<Net::NetConnection> GetNetConn() const;
 			virtual UInt16 GetClientPort() const;
 			virtual Bool IsSecure() const;
 			virtual Optional<Crypto::Cert::X509Cert> GetClientCert();

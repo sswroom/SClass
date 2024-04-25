@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Math/CoordinateSystemConverter.h"
 
-Math::CoordinateSystemConverter::CoordinateSystemConverter(NotNullPtr<const Math::CoordinateSystem> srcCsys, NotNullPtr<const Math::CoordinateSystem> destCsys)
+Math::CoordinateSystemConverter::CoordinateSystemConverter(NN<const Math::CoordinateSystem> srcCsys, NN<const Math::CoordinateSystem> destCsys)
 {
 	this->srcCsys = srcCsys;
 	this->destCsys = destCsys;

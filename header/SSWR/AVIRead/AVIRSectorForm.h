@@ -13,18 +13,18 @@ namespace SSWR
 		class AVIRSectorForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			NotNullPtr<UI::GUIButton> btnParse;
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUIButton> btnParse;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<IO::ISectorData> data;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<IO::ISectorData> data;
 
 			UInt8 *sectorData;
 			UOSInt sectorSize;
 
 			static void __stdcall OnParseClicked(AnyType userObj);
 		public:
-			AVIRSectorForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::ISectorData> data);
+			AVIRSectorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::ISectorData> data);
 			virtual ~AVIRSectorForm();
 
 			virtual void OnMonitorChanged();

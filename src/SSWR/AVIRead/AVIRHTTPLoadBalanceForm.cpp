@@ -12,7 +12,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
+	NN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
 	if (me->svr)
 	{
 		return;
@@ -33,15 +33,15 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(AnyType user
 
 	if (me->chkSSL->IsChecked())
 	{
-		NotNullPtr<Crypto::Cert::X509Cert> sslCert;
-		NotNullPtr<Crypto::Cert::X509File> sslKey;
+		NN<Crypto::Cert::X509Cert> sslCert;
+		NN<Crypto::Cert::X509File> sslKey;
 		if (!sslCert.Set(me->sslCert) || !sslKey.Set(me->sslKey))
 		{
 			me->ui->ShowMsgOK(CSTR("Please select SSL Cert/Key First"), CSTR("HTTP Load Balance"), me);
 			return;
 		}
 		ssl = me->ssl;
-		NotNullPtr<Net::SSLEngine> nnssl;
+		NN<Net::SSLEngine> nnssl;
 		if (ssl.SetTo(nnssl))
 		{
 			nnssl->ServerSetCertsASN1(sslCert, sslKey, me->caCerts);
@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(AnyType user
 	}
 	if (port > 0 && port < 65535)
 	{
-		NotNullPtr<Net::WebServer::HTTPForwardHandler> fwdHdlr;
+		NN<Net::WebServer::HTTPForwardHandler> fwdHdlr;
 		NEW_CLASSNN(fwdHdlr, Net::WebServer::HTTPForwardHandler(me->core->GetSocketFactory(), me->ssl, sb.ToCString(), (Net::WebServer::HTTPForwardHandler::ForwardType)me->cboFwdType->GetSelectedItem().GetOSInt()));
 		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, fwdHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()?Net::WebServer::KeepAlive::Always:Net::WebServer::KeepAlive::Default, false));
 		if (me->svr->IsError())
@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(AnyType user
 				me->log->AddFileLog(sb.ToCString(), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
 				me->svr->SetAccessLog(me->log, IO::LogHandler::LogLevel::Raw);
 				me->svr->SetRequestLog(me->reqLog);
-				NotNullPtr<UI::ListBoxLogger> logger;
+				NN<UI::ListBoxLogger> logger;
 				NEW_CLASSNN(logger, UI::ListBoxLogger(me, me->lbLog, 500, true));
 				me->logger = logger.Ptr();
 				me->log->AddLogHandler(logger, IO::LogHandler::LogLevel::Raw);
@@ -109,7 +109,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStopClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
+	NN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
 	if (me->svr == 0)
 	{
 		return;
@@ -130,8 +130,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStopClick(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnLogSel(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
-	NotNullPtr<Text::String> s;
+	NN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
+	NN<Text::String> s;
 	if (me->lbLog->GetSelectedItemTextNew().SetTo(s))
 	{
 		me->txtLog->SetText(s->ToCString());
@@ -141,7 +141,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnLogSel(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
+	NN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[128];
@@ -222,7 +222,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnTimerTick(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnAccessSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
+	NN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
 	Text::StringBuilderUTF8 sb;
 	Sync::MutexUsage mutUsage;
 	UTF8Char sbuff[128];
@@ -254,7 +254,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnAccessSelChg(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnSSLCertClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
+	NN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPLoadBalanceForm>();
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
@@ -282,7 +282,7 @@ void SSWR::AVIRead::AVIRHTTPLoadBalanceForm::ClearCACerts()
 	this->caCerts.Clear();
 }
 
-SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

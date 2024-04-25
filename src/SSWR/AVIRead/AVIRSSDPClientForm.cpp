@@ -6,7 +6,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSSDPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSDPClientForm>();
+	NN<SSWR::AVIRead::AVIRSSDPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSDPClientForm>();
 	Sync::MutexUsage mutUsage;
 	const Data::ReadingList<Net::SSDPClient::SSDPDevice*> *devList = me->ssdp->GetDevices(mutUsage);
 	UInt8 sbuff[128];
@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnTimerTick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnDeviceSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSSDPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSDPClientForm>();
+	NN<SSWR::AVIRead::AVIRSSDPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSDPClientForm>();
 	Sync::MutexUsage mutUsage;
 	me->ssdp->GetDevices(mutUsage);
 	Net::SSDPClient::SSDPDevice *dev = (Net::SSDPClient::SSDPDevice*)me->lbDevice->GetSelectedItem().p;
@@ -51,11 +51,11 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnDeviceSelChg(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnServiceSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSSDPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSDPClientForm>();
+	NN<SSWR::AVIRead::AVIRSSDPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSDPClientForm>();
 	Sync::MutexUsage mutUsage;
 	me->ssdp->GetDevices(mutUsage);
 	Net::SSDPClient::SSDPService *svc = (Net::SSDPClient::SSDPService*)me->lbService->GetSelectedItem().p;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (svc)
 	{
 		UTF8Char sbuff[128];
@@ -84,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnServiceSelChg(AnyType userOb
 			Net::SSDPClient::SSDPRoot *root = me->rootMap->GetNN(s);
 			if (root == 0)
 			{
-				NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(me->sockf, me->ssl, s->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+				NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(me->sockf, me->ssl, s->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 				if (cli->IsError())
 				{
 					root = MemAlloc(Net::SSDPClient::SSDPRoot, 1);
@@ -150,7 +150,7 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnServiceSelChg(AnyType userOb
 	}
 }
 
-SSWR::AVIRead::AVIRSSDPClientForm::AVIRSSDPClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRSSDPClientForm::AVIRSSDPClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("SSDP Client"));
 	this->SetFont(0, 0, 8.25, false);

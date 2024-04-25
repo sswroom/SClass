@@ -16,24 +16,24 @@ namespace SSWR
 		class AVIRMSSQLConnForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblDriver;
-			NotNullPtr<UI::GUITextBox> txtDriver;
-			NotNullPtr<UI::GUILabel> lblServer;
-			NotNullPtr<UI::GUITextBox> txtServer;
-			NotNullPtr<UI::GUIButton> btnPasteJDBC;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUICheckBox> chkEncrypt;
-			NotNullPtr<UI::GUILabel> lblDatabase;
-			NotNullPtr<UI::GUITextBox> txtDatabase;
-			NotNullPtr<UI::GUILabel> lblUser;
-			NotNullPtr<UI::GUITextBox> txtUser;
-			NotNullPtr<UI::GUILabel> lblPassword;
-			NotNullPtr<UI::GUITextBox> txtPassword;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUILabel> lblDriver;
+			NN<UI::GUITextBox> txtDriver;
+			NN<UI::GUILabel> lblServer;
+			NN<UI::GUITextBox> txtServer;
+			NN<UI::GUIButton> btnPasteJDBC;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUICheckBox> chkEncrypt;
+			NN<UI::GUILabel> lblDatabase;
+			NN<UI::GUITextBox> txtDatabase;
+			NN<UI::GUILabel> lblUser;
+			NN<UI::GUITextBox> txtUser;
+			NN<UI::GUILabel> lblPassword;
+			NN<UI::GUITextBox> txtPassword;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<DB::DBConn> conn;
 			Bool isError;
 
@@ -41,7 +41,7 @@ namespace SSWR
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			AVIRMSSQLConnForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRMSSQLConnForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMSSQLConnForm();
 
 			virtual void OnMonitorChanged();

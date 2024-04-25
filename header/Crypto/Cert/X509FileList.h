@@ -14,24 +14,24 @@ namespace Crypto
 			Data::ArrayListNN<Crypto::Cert::X509File> fileList;
 
 		public:
-			X509FileList(NotNullPtr<Text::String> sourceName, NotNullPtr<Crypto::Cert::X509Cert> cert);
-			X509FileList(Text::CStringNN sourceName, NotNullPtr<Crypto::Cert::X509Cert> cert);
+			X509FileList(NN<Text::String> sourceName, NN<Crypto::Cert::X509Cert> cert);
+			X509FileList(Text::CStringNN sourceName, NN<Crypto::Cert::X509Cert> cert);
 			virtual ~X509FileList();
 
 			virtual FileType GetFileType() const;
-			virtual void ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+			virtual void ToShortName(NN<Text::StringBuilderUTF8> sb) const;
 
 			virtual UOSInt GetCertCount();
-			virtual Bool GetCertName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual Bool GetCertName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
 			virtual Optional<X509Cert> GetNewCert(UOSInt index);
-			virtual ValidStatus IsValid(NotNullPtr<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const;
+			virtual ValidStatus IsValid(NN<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const;
 
-			virtual NotNullPtr<ASN1Data> Clone() const;
+			virtual NN<ASN1Data> Clone() const;
 			virtual Optional<X509Cert> CreateX509Cert() const;
-			virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
-			virtual NotNullPtr<Net::ASN1Names> CreateNames() const;
+			virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+			virtual NN<Net::ASN1Names> CreateNames() const;
 
-			void AddFile(NotNullPtr<Crypto::Cert::X509File> file);
+			void AddFile(NN<Crypto::Cert::X509File> file);
 			UOSInt GetFileCount() const;
 			Optional<Crypto::Cert::X509File> GetFile(UOSInt index) const;
 			void SetDefaultSourceName();

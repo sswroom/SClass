@@ -5,7 +5,7 @@
 #include "Media/StaticImage.h"
 #include "Media/Batch/BatchWatermarker.h"
 
-Media::Batch::BatchWatermarker::BatchWatermarker(NotNullPtr<Media::DrawEngine> deng, Media::Batch::BatchHandler *hdlr)
+Media::Batch::BatchWatermarker::BatchWatermarker(NN<Media::DrawEngine> deng, Media::Batch::BatchHandler *hdlr)
 {
 	this->deng = deng;
 	this->hdlr = hdlr;
@@ -31,7 +31,7 @@ void Media::Batch::BatchWatermarker::SetHandler(Media::Batch::BatchHandler *hdlr
 	this->hdlr = hdlr;
 }
 
-void Media::Batch::BatchWatermarker::ImageOutput(NotNullPtr<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId)
+void Media::Batch::BatchWatermarker::ImageOutput(NN<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId)
 {
 	if (this->hdlr == 0)
 		return;
@@ -40,13 +40,13 @@ void Media::Batch::BatchWatermarker::ImageOutput(NotNullPtr<Media::ImageList> im
 		this->hdlr->ImageOutput(imgList, fileId, subId);
 		return;
 	}
-	NotNullPtr<Text::String> watermark;
+	NN<Text::String> watermark;
 	if (!watermark.Set(this->watermark))
 		return;
 	UOSInt i;
 	UOSInt j;
 	Media::StaticImage *simg;
-	NotNullPtr<Media::DrawImage> tmpImg;
+	NN<Media::DrawImage> tmpImg;
 	if (tmpImg.Set(this->deng->CreateImage32(Math::Size2D<UOSInt>(16, 16), Media::AT_NO_ALPHA)))
 	{
 		i = 0;
@@ -59,9 +59,9 @@ void Media::Batch::BatchWatermarker::ImageOutput(NotNullPtr<Media::ImageList> im
 			Math::Size2DDbl sz;
 			UInt32 iWidth;
 			UInt32 iHeight;
-			NotNullPtr<Media::DrawImage> gimg2;
-			NotNullPtr<Media::DrawBrush> b = tmpImg->NewBrushARGB(0xffffffff);
-			NotNullPtr<Media::DrawFont> f;
+			NN<Media::DrawImage> gimg2;
+			NN<Media::DrawBrush> b = tmpImg->NewBrushARGB(0xffffffff);
+			NN<Media::DrawFont> f;
 
 			simg = (Media::StaticImage*)imgList->GetImage(i, 0);
 			fontSizePx = UOSInt2Double(simg->info.dispSize.x) / 12.0;

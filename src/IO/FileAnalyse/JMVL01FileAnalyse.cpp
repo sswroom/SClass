@@ -43,9 +43,9 @@ Text::CString IO::FileAnalyse::JMVL01FileAnalyse::GetTagName(UInt8 tagType)
 	return CSTR_NULL;
 }
 
-void __stdcall IO::FileAnalyse::JMVL01FileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::FileAnalyse::JMVL01FileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::FileAnalyse::JMVL01FileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::JMVL01FileAnalyse>();
+	NN<IO::FileAnalyse::JMVL01FileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::JMVL01FileAnalyse>();
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt8 tagHdr[5];
@@ -83,7 +83,7 @@ void __stdcall IO::FileAnalyse::JMVL01FileAnalyse::ParseThread(NotNullPtr<Sync::
 	}
 }
 
-IO::FileAnalyse::JMVL01FileAnalyse::JMVL01FileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("JMVL01FileAnaly"))
+IO::FileAnalyse::JMVL01FileAnalyse::JMVL01FileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("JMVL01FileAnaly"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -120,7 +120,7 @@ UOSInt IO::FileAnalyse::JMVL01FileAnalyse::GetFrameCount()
 	return this->tags.GetCount();
 }
 
-Bool IO::FileAnalyse::JMVL01FileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::JMVL01FileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::JMVL01FileAnalyse::JMVL01Tag> tag;
 	Text::CString name;
@@ -170,7 +170,7 @@ UOSInt IO::FileAnalyse::JMVL01FileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JMVL01FileAnalyse::GetFrameDetail(UOSInt index)
 {
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	NN<IO::FileAnalyse::JMVL01FileAnalyse::JMVL01Tag> tag;

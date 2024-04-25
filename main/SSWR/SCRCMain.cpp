@@ -35,7 +35,7 @@ private:
 
 	static UInt32 __stdcall CheckThread(AnyType userObj)
 	{
-		NotNullPtr<ProgressHandler> me = userObj.GetNN<ProgressHandler>();
+		NN<ProgressHandler> me = userObj.GetNN<ProgressHandler>();
 		UInt64 lastDispCount = 0;
 		Double lastDispTime = 0;
 		UInt64 currCount;
@@ -137,7 +137,7 @@ public:
 	}
 };
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Bool showHelp = true;
 	UOSInt cmdCnt;
@@ -183,7 +183,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			else
 			{
 				IO::FileCheck *fileChk;
-				NotNullPtr<IO::FileCheck> nnfileChk;
+				NN<IO::FileCheck> nnfileChk;
 				{
 					ProgressHandler progress;
 					fileChk = IO::FileCheck::CreateCheck({cmdLines[1], cmdLen}, Crypto::Hash::HashType::CRC32, &progress, false);

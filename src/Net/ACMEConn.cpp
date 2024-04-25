@@ -22,7 +22,7 @@ Production:
 https://acme-v02.api.letsencrypt.org/directory
 */
 
-Optional<Text::String> Net::ACMEConn::JWK(NotNullPtr<Crypto::Cert::X509Key> key, OutParam<Crypto::Token::JWSignature::Algorithm> alg)
+Optional<Text::String> Net::ACMEConn::JWK(NN<Crypto::Cert::X509Key> key, OutParam<Crypto::Token::JWSignature::Algorithm> alg)
 {
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
 	switch (key->GetKeyType())
@@ -58,9 +58,9 @@ Optional<Text::String> Net::ACMEConn::JWK(NotNullPtr<Crypto::Cert::X509Key> key,
 	}
 }
 
-Text::String *Net::ACMEConn::ProtectedJWK(Text::String *nonce, NotNullPtr<Text::String> url, NotNullPtr<Crypto::Cert::X509Key> key, OutParam<Crypto::Token::JWSignature::Algorithm> alg, Text::String *accountId)
+Text::String *Net::ACMEConn::ProtectedJWK(Text::String *nonce, NN<Text::String> url, NN<Crypto::Cert::X509Key> key, OutParam<Crypto::Token::JWSignature::Algorithm> alg, Text::String *accountId)
 {
-	NotNullPtr<Text::String> jwk;
+	NN<Text::String> jwk;
 	Crypto::Token::JWSignature::Algorithm palg;
 	if (!JWK(key, palg).SetTo(jwk))
 	{
@@ -90,7 +90,7 @@ Text::String *Net::ACMEConn::ProtectedJWK(Text::String *nonce, NotNullPtr<Text::
 	return Text::String::New(sb.ToCString()).Ptr();
 }
 
-NotNullPtr<Text::String> Net::ACMEConn::EncodeJWS(Optional<Net::SSLEngine> ssl, Text::CString protStr, Text::CString data, NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Token::JWSignature::Algorithm alg)
+NN<Text::String> Net::ACMEConn::EncodeJWS(Optional<Net::SSLEngine> ssl, Text::CString protStr, Text::CString data, NN<Crypto::Cert::X509Key> key, Crypto::Token::JWSignature::Algorithm alg)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
@@ -116,10 +116,10 @@ NotNullPtr<Text::String> Net::ACMEConn::EncodeJWS(Optional<Net::SSLEngine> ssl, 
 	return Text::String::New(sb.ToString(), sb.GetLength());
 }
 
-Bool Net::ACMEConn::KeyHash(NotNullPtr<Crypto::Cert::X509Key> key, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Net::ACMEConn::KeyHash(NN<Crypto::Cert::X509Key> key, NN<Text::StringBuilderUTF8> sb)
 {
 	Crypto::Token::JWSignature::Algorithm alg;
-	NotNullPtr<Text::String> jwk;
+	NN<Text::String> jwk;
 	if (!JWK(key, alg).SetTo(jwk))
 	{
 		return false;
@@ -134,9 +134,9 @@ Bool Net::ACMEConn::KeyHash(NotNullPtr<Crypto::Cert::X509Key> key, NotNullPtr<Te
 	return true;
 }
 
-Net::HTTPClient *Net::ACMEConn::ACMEPost(NotNullPtr<Text::String> url, Text::CString data)
+Net::HTTPClient *Net::ACMEConn::ACMEPost(NN<Text::String> url, Text::CString data)
 {
-	NotNullPtr<Crypto::Cert::X509Key> key;
+	NN<Crypto::Cert::X509Key> key;
 	if (this->nonce == 0 || !this->key.SetTo(key))
 	{
 		return 0;
@@ -148,11 +148,11 @@ Net::HTTPClient *Net::ACMEConn::ACMEPost(NotNullPtr<Text::String> url, Text::CSt
 	{
 		return 0;
 	}
-	NotNullPtr<Text::String> jws;
+	NN<Text::String> jws;
 	jws = EncodeJWS(ssl, protStr->ToCString(), data, key, alg);
 	protStr->Release();
 	UOSInt jwsLen = jws->leng;
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url->ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url->ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, true);
 	cli->AddContentType(CSTR("application/jose+json"));
 	cli->AddContentLength(jwsLen);
 	cli->Write(jws->v, jwsLen);
@@ -173,7 +173,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderParse(const UInt8 *buff, UOSInt buffSi
 	Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(buff, buffSize);
 	if (json)
 	{
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		Order *order = 0;
 		if (json->GetType() == Text::JSONType::Object)
 		{
@@ -214,10 +214,10 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderParse(const UInt8 *buff, UOSInt buffSi
 
 Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeJSON(Text::JSONBase *json)
 {
-	NotNullPtr<Text::String> type;
-	NotNullPtr<Text::String> status;
-	NotNullPtr<Text::String> url;
-	NotNullPtr<Text::String> token;
+	NN<Text::String> type;
+	NN<Text::String> status;
+	NN<Text::String> url;
+	NN<Text::String> token;
 
 	if (json->GetValueString(CSTR("type")).SetTo(type) &&
 		json->GetValueString(CSTR("status")).SetTo(status) &&
@@ -246,7 +246,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeParse(const UInt8 *buff, UOSIn
 	return chall;
 }
 
-Net::ACMEConn::ACMEConn(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN serverHost, UInt16 port)
+Net::ACMEConn::ACMEConn(NN<Net::SocketFactory> sockf, Text::CStringNN serverHost, UInt16 port)
 {
 	UInt8 buff[2048];
 	UOSInt recvSize;
@@ -274,7 +274,7 @@ Net::ACMEConn::ACMEConn(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN se
 		sb.AppendU16(port);
 	}
 	sb.AppendC(UTF8STRC("/directory"));
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 	{
 		IO::MemoryStream mstm;
@@ -290,7 +290,7 @@ Net::ACMEConn::ACMEConn(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN se
 		if (mstm.GetLength() > 32)
 		{
 			UInt8 *jsonBuff = mstm.GetBuff(recvSize);
-			NotNullPtr<Text::String> s;
+			NN<Text::String> s;
 			Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(jsonBuff, recvSize);
 			if (json)
 			{
@@ -393,7 +393,7 @@ Bool Net::ACMEConn::NewNonce()
 	{
 		return false;
 	}
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, this->urlNewNonce->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, this->urlNewNonce->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->IsError())
 	{
 		cli.Delete();
@@ -416,7 +416,7 @@ Bool Net::ACMEConn::NewNonce()
 
 Bool Net::ACMEConn::AccountNew()
 {
-	NotNullPtr<Text::String> url;
+	NN<Text::String> url;
 	if (!url.Set(this->urlNewAccount))
 	{
 		return false;
@@ -440,7 +440,7 @@ Bool Net::ACMEConn::AccountNew()
 			if (base->GetType() == Text::JSONType::Object)
 			{
 				Text::JSONObject *o = (Text::JSONObject*)base;
-				NotNullPtr<Text::String> s;
+				NN<Text::String> s;
 				if (o->GetObjectString(CSTR("type")).SetTo(s) && s->Equals(UTF8STRC("urn:ietf:params:acme:error:accountDoesNotExist")))
 				{
 					Text::StringBuilderUTF8 sb;
@@ -476,7 +476,7 @@ Bool Net::ACMEConn::AccountNew()
 
 Bool Net::ACMEConn::AccountRetr()
 {
-	NotNullPtr<Text::String> url;
+	NN<Text::String> url;
 	if (!url.Set(this->urlNewAccount))
 	{
 		return false;
@@ -508,7 +508,7 @@ Bool Net::ACMEConn::AccountRetr()
 
 Net::ACMEConn::Order *Net::ACMEConn::OrderNew(const UTF8Char *domainNames, UOSInt namesLen)
 {
-	NotNullPtr<Text::String> url;
+	NN<Text::String> url;
 	if (!url.Set(this->urlNewOrder))
 	{
 		return 0;
@@ -567,7 +567,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderNew(const UTF8Char *domainNames, UOSIn
 	}
 }
 
-Net::ACMEConn::Challenge *Net::ACMEConn::OrderAuthorize(NotNullPtr<Text::String> authorizeURL, AuthorizeType authType)
+Net::ACMEConn::Challenge *Net::ACMEConn::OrderAuthorize(NN<Text::String> authorizeURL, AuthorizeType authType)
 {
 	Net::HTTPClient *cli = this->ACMEPost(authorizeURL, CSTR(""));
 	if (cli)
@@ -584,7 +584,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::OrderAuthorize(NotNullPtr<Text::String>
 		}
 		UOSInt i;
 		UOSInt j;
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		const UInt8 *authBuff = mstm.GetBuff(i);
 		Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(authBuff, i);
 		if (json == 0)
@@ -647,7 +647,7 @@ void Net::ACMEConn::OrderFree(Order *order)
 	MemFree(order);
 }
 
-Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeBegin(NotNullPtr<Text::String> challURL)
+Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeBegin(NN<Text::String> challURL)
 {
 	Net::HTTPClient *cli = this->ACMEPost(challURL, CSTR("{}"));
 	if (cli)
@@ -670,7 +670,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeBegin(NotNullPtr<Text::String>
 	return 0;
 }
 
-Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeGetStatus(NotNullPtr<Text::String> challURL)
+Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeGetStatus(NN<Text::String> challURL)
 {
 	Net::HTTPClient *cli = this->ACMEPost(challURL, CSTR(""));
 	if (cli)
@@ -702,10 +702,10 @@ void Net::ACMEConn::ChallengeFree(Challenge *chall)
 
 Bool Net::ACMEConn::NewKey()
 {
-	NotNullPtr<Net::SSLEngine> ssl;
+	NN<Net::SSLEngine> ssl;
 	if (this->ssl.SetTo(ssl))
 	{
-		NotNullPtr<Crypto::Cert::X509Key> key;
+		NN<Crypto::Cert::X509Key> key;
 		if (ssl->GenerateRSAKey().SetTo(key))
 		{
 			this->key.Delete();
@@ -721,7 +721,7 @@ Bool Net::ACMEConn::SetKey(Crypto::Cert::X509Key *key)
 	if (key && key->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSA)
 	{
 		this->key.Delete();
-		this->key =	NotNullPtr<Crypto::Cert::X509Key>::ConvertFrom(key->Clone());
+		this->key =	NN<Crypto::Cert::X509Key>::ConvertFrom(key->Clone());
 		return true;
 	}
 	return false;
@@ -735,7 +735,7 @@ Bool Net::ACMEConn::LoadKey(Text::CStringNN fileName)
 	{
 		return false;
 	}
-	NotNullPtr<Text::String> s = Text::String::New(fileName.v, fileName.leng);
+	NN<Text::String> s = Text::String::New(fileName.v, fileName.leng);
 	Crypto::Cert::X509File *x509 = Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR(keyPEM, keyPEMSize), s);
 	s->Release();
 	if (x509 == 0)
@@ -754,7 +754,7 @@ Bool Net::ACMEConn::LoadKey(Text::CStringNN fileName)
 
 Bool Net::ACMEConn::SaveKey(Text::CStringNN fileName)
 {
-	NotNullPtr<Crypto::Cert::X509Key> key;
+	NN<Crypto::Cert::X509Key> key;
 	if (!this->key.SetTo(key))
 	{
 		return false;
@@ -764,7 +764,7 @@ Bool Net::ACMEConn::SaveKey(Text::CStringNN fileName)
 
 Net::ACMEConn::ACMEStatus Net::ACMEConn::ACMEStatusFromString(Optional<Text::String> status)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (!status.SetTo(s))
 	{
 		return ACMEStatus::Unknown;
@@ -808,7 +808,7 @@ Text::CString Net::ACMEConn::AuthorizeTypeGetName(AuthorizeType authType)
 	}
 }
 
-Net::ACMEConn::AuthorizeType Net::ACMEConn::AuthorizeTypeFromString(NotNullPtr<Text::String> s)
+Net::ACMEConn::AuthorizeType Net::ACMEConn::AuthorizeTypeFromString(NN<Text::String> s)
 {
 	if (s->EqualsICase(UTF8STRC("http-01")))
 	{

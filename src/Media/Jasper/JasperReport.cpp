@@ -20,7 +20,7 @@ void Media::Jasper::JasperReport::InitValues()
 	this->marginBottom = 0;
 }
 
-Media::Jasper::JasperReport::JasperReport(NotNullPtr<Text::String> sourceName) : IO::ParsedObject(sourceName)
+Media::Jasper::JasperReport::JasperReport(NN<Text::String> sourceName) : IO::ParsedObject(sourceName)
 {
 	this->InitValues();
 }
@@ -155,7 +155,7 @@ void Media::Jasper::JasperReport::SetQueryString(Optional<Text::String> str)
 	this->queryString = Text::String::CopyOrNull(str);
 }
 
-void Media::Jasper::JasperReport::SetProperty(NotNullPtr<Text::String> name, NotNullPtr<Text::String> value)
+void Media::Jasper::JasperReport::SetProperty(NN<Text::String> name, NN<Text::String> value)
 {
 	NN<JasperProperty> property = MemAllocNN(JasperProperty);
 	property->name = name->Clone();
@@ -163,7 +163,7 @@ void Media::Jasper::JasperReport::SetProperty(NotNullPtr<Text::String> name, Not
 	this->properties.Add(property);
 }
 
-void Media::Jasper::JasperReport::AddImport(NotNullPtr<Text::String> value)
+void Media::Jasper::JasperReport::AddImport(NN<Text::String> value)
 {
 	this->importList.Add(value->Clone());
 }

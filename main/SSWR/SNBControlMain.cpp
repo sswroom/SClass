@@ -8,9 +8,9 @@
 #include "SSWR/AVIRead/AVIRSelStreamForm.h"
 #include "SSWR/AVIRead/AVIRSNBDongleForm.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	NotNullPtr<UI::GUICore> ui;
+	NN<UI::GUICore> ui;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 

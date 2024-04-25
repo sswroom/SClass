@@ -7,7 +7,7 @@
 
 UInt32 __stdcall IO::TVCtrl::MDT701STVControl::RecvThread(AnyType userObj)
 {
-	NotNullPtr<IO::TVCtrl::MDT701STVControl> me = userObj.GetNN<IO::TVCtrl::MDT701STVControl>();
+	NN<IO::TVCtrl::MDT701STVControl> me = userObj.GetNN<IO::TVCtrl::MDT701STVControl>();
 	UInt8 buff[256];
 	UOSInt recvSize;
 	me->recvRunning = true;

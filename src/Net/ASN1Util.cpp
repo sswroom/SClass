@@ -146,7 +146,7 @@ const UInt8 *Net::ASN1Util::PDUParseUInt32(const UInt8 *pdu, const UInt8 *pduEnd
 	}
 }
 
-const UInt8 *Net::ASN1Util::PDUParseString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb)
+const UInt8 *Net::ASN1Util::PDUParseString(const UInt8 *pdu, const UInt8 *pduEnd, NN<Text::StringBuilderUTF8> sb)
 {
 	UOSInt len;
 	if (pduEnd - pdu < 2)
@@ -222,7 +222,7 @@ const UInt8 *Net::ASN1Util::PDUParseChoice(const UInt8 *pdu, const UInt8 *pduEnd
 	}
 }
 
-Bool Net::ASN1Util::PDUParseUTCTimeCont(const UInt8 *pdu, UOSInt len, NotNullPtr<Data::DateTime> dt)
+Bool Net::ASN1Util::PDUParseUTCTimeCont(const UInt8 *pdu, UOSInt len, NN<Data::DateTime> dt)
 {
 	if (len == 13 && pdu[12] == 'Z')
 	{
@@ -247,17 +247,17 @@ Bool Net::ASN1Util::PDUParseUTCTimeCont(const UInt8 *pdu, UOSInt len, NotNullPtr
 }
 
 
-Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level)
+Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NN<Text::StringBuilderUTF8> sb, UOSInt level)
 {
 	return PDUToString(pdu, pduEnd, sb, level, 0, 0);
 }
 
-Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, const UInt8 **pduNext)
+Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NN<Text::StringBuilderUTF8> sb, UOSInt level, const UInt8 **pduNext)
 {
 	return PDUToString(pdu, pduEnd, sb, level, pduNext, 0);
 }
 
-Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, const UInt8 **pduNext, Optional<ASN1Names> names)
+Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NN<Text::StringBuilderUTF8> sb, UOSInt level, const UInt8 **pduNext, Optional<ASN1Names> names)
 {
 	while (pdu < pduEnd)
 	{
@@ -279,7 +279,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NotNullPt
 		}
 
 		Text::CString name;
-		NotNullPtr<ASN1Names> nnnames;
+		NN<ASN1Names> nnnames;
 		if (!names.SetTo(nnnames))
 			name = CSTR_NULL;
 		else
@@ -1039,7 +1039,7 @@ Bool Net::ASN1Util::PDUIsValid(const UInt8 *pdu, const UInt8 *pduEnd)
 	return true;
 }
 
-void Net::ASN1Util::PDUAnalyse(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UOSInt pduOfst, UOSInt pduEndOfst, Optional<Net::ASN1Names> names)
+void Net::ASN1Util::PDUAnalyse(NN<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UOSInt pduOfst, UOSInt pduEndOfst, Optional<Net::ASN1Names> names)
 {
 	UInt8 itemType;
 	UInt32 len;
@@ -1088,7 +1088,7 @@ void Net::ASN1Util::PDUAnalyse(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, D
 		if (pduOfst + len > pduEndOfst)
 			return;
 		Text::CStringNN itemName;
-		NotNullPtr<ASN1Names> nnnames;
+		NN<ASN1Names> nnnames;
 		if (names.SetTo(nnnames))
 			itemName = nnnames->ReadName((Net::ASN1Util::ItemType)itemType, len, &buff[pduOfst]);
 		else
@@ -1288,7 +1288,7 @@ Bool Net::ASN1Util::OIDEqualsText(const UInt8 *oidPDU, UOSInt oidPDULen, const U
 	return OIDCompare(oidPDU, oidPDULen, oid2, oidLen2) == 0;
 }
 
-void Net::ASN1Util::OIDToString(const UInt8 *pdu, UOSInt pduSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Net::ASN1Util::OIDToString(const UInt8 *pdu, UOSInt pduSize, NN<Text::StringBuilderUTF8> sb)
 {
 	UInt32 v = 0;
 	UOSInt i = 1;
@@ -1427,7 +1427,7 @@ UOSInt Net::ASN1Util::OIDText2PDU(const UTF8Char *oidText, UOSInt oidTextLen, UI
 	return retSize;
 }
 
-void Net::ASN1Util::OIDToCPPCode(const UInt8 *oid, UOSInt oidLen, const UTF8Char *objectName, UOSInt nameLen, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Net::ASN1Util::OIDToCPPCode(const UInt8 *oid, UOSInt oidLen, const UTF8Char *objectName, UOSInt nameLen, NN<Text::StringBuilderUTF8> sb)
 {
 	OSInt k;
 	sb->AppendUTF8Char('\t');
@@ -1465,7 +1465,7 @@ void Net::ASN1Util::OIDToCPPCode(const UInt8 *oid, UOSInt oidLen, const UTF8Char
 	sb->AppendC(UTF8STRC("\r\n"));
 }
 
-void Net::ASN1Util::BooleanToString(const UInt8 *data, UOSInt dataLen, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Net::ASN1Util::BooleanToString(const UInt8 *data, UOSInt dataLen, NN<Text::StringBuilderUTF8> sb)
 {
 	if (dataLen == 1)
 	{
@@ -1489,7 +1489,7 @@ void Net::ASN1Util::BooleanToString(const UInt8 *data, UOSInt dataLen, NotNullPt
 	}
 }
 
-void Net::ASN1Util::IntegerToString(const UInt8 *data, UOSInt dataLen, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Net::ASN1Util::IntegerToString(const UInt8 *data, UOSInt dataLen, NN<Text::StringBuilderUTF8> sb)
 {
 	switch (dataLen)
 	{
@@ -1511,7 +1511,7 @@ void Net::ASN1Util::IntegerToString(const UInt8 *data, UOSInt dataLen, NotNullPt
 	}
 }
 
-void Net::ASN1Util::UTCTimeToString(const UInt8 *data, UOSInt dataLen, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Net::ASN1Util::UTCTimeToString(const UInt8 *data, UOSInt dataLen, NN<Text::StringBuilderUTF8> sb)
 {
 	Data::DateTime dt;
 	if (PDUParseUTCTimeCont(data, dataLen, dt))

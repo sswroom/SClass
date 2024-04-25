@@ -51,37 +51,37 @@ namespace UtilUI
 			CCT_PHOTO
 		} ColorCorrType;
 	private:
-		NotNullPtr<UI::GUIPictureBox> pbMain;
-		NotNullPtr<UI::GUIPictureBox> pbSub;
-		NotNullPtr<UI::GUIPictureBox> pbColor;
-		NotNullPtr<UI::GUILabel> lblTrans;
-		NotNullPtr<UI::GUITextBox> txtTrans;
-		NotNullPtr<UI::GUILabel> lblPrimaries;
-		NotNullPtr<UI::GUITextBox> txtPrimaries;
-		NotNullPtr<UI::GUIRadioButton> radR;
-		NotNullPtr<UI::GUIRadioButton> radG;
-		NotNullPtr<UI::GUIRadioButton> radB;
-		NotNullPtr<UI::GUIRadioButton> radYIQY;
-		NotNullPtr<UI::GUIRadioButton> radYIQI;
-		NotNullPtr<UI::GUIRadioButton> radYIQQ;
-		NotNullPtr<UI::GUIRadioButton> radHSVH;
-		NotNullPtr<UI::GUIRadioButton> radHSVS;
-		NotNullPtr<UI::GUIRadioButton> radHSVV;
+		NN<UI::GUIPictureBox> pbMain;
+		NN<UI::GUIPictureBox> pbSub;
+		NN<UI::GUIPictureBox> pbColor;
+		NN<UI::GUILabel> lblTrans;
+		NN<UI::GUITextBox> txtTrans;
+		NN<UI::GUILabel> lblPrimaries;
+		NN<UI::GUITextBox> txtPrimaries;
+		NN<UI::GUIRadioButton> radR;
+		NN<UI::GUIRadioButton> radG;
+		NN<UI::GUIRadioButton> radB;
+		NN<UI::GUIRadioButton> radYIQY;
+		NN<UI::GUIRadioButton> radYIQI;
+		NN<UI::GUIRadioButton> radYIQQ;
+		NN<UI::GUIRadioButton> radHSVH;
+		NN<UI::GUIRadioButton> radHSVS;
+		NN<UI::GUIRadioButton> radHSVV;
 
-		NotNullPtr<UI::GUITextBox> txtR;
-		NotNullPtr<UI::GUITextBox> txtG;
-		NotNullPtr<UI::GUITextBox> txtB;
-		NotNullPtr<UI::GUITextBox> txtYIQY;
-		NotNullPtr<UI::GUITextBox> txtYIQI;
-		NotNullPtr<UI::GUITextBox> txtYIQQ;
-		NotNullPtr<UI::GUITextBox> txtHSVH;
-		NotNullPtr<UI::GUITextBox> txtHSVS;
-		NotNullPtr<UI::GUITextBox> txtHSVV;
-		NotNullPtr<UI::GUILabel> lblAlpha;
-		NotNullPtr<UI::GUITextBox> txtAlpha;
+		NN<UI::GUITextBox> txtR;
+		NN<UI::GUITextBox> txtG;
+		NN<UI::GUITextBox> txtB;
+		NN<UI::GUITextBox> txtYIQY;
+		NN<UI::GUITextBox> txtYIQI;
+		NN<UI::GUITextBox> txtYIQQ;
+		NN<UI::GUITextBox> txtHSVH;
+		NN<UI::GUITextBox> txtHSVS;
+		NN<UI::GUITextBox> txtHSVV;
+		NN<UI::GUILabel> lblAlpha;
+		NN<UI::GUITextBox> txtAlpha;
 
-		NotNullPtr<UI::GUIButton> btnOk;
-		NotNullPtr<UI::GUIButton> btnCancel;
+		NN<UI::GUIButton> btnOk;
+		NN<UI::GUIButton> btnCancel;
 
 		ColorType colorType;
 		Double rVal;
@@ -100,7 +100,7 @@ namespace UtilUI
 		Media::StaticImage *mainImg;
 		Media::StaticImage *subImg;
 		Media::ColorManager *colorMgr;
-		NotNullPtr<Media::ColorManagerSess> colorSess;
+		NN<Media::ColorManagerSess> colorSess;
 		Media::MonitorMgr *monMgr;
 		Bool subDowned;
 		Bool mainDowned;
@@ -153,7 +153,7 @@ namespace UtilUI
 		void LoadColor();
 		void UpdateColor();
 	public:
-		ColorDialog(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, Media::ColorManager *colorMgr, NotNullPtr<Media::DrawEngine> eng, ColorCorrType colorCorr, NotNullPtr<const Media::ColorProfile> colorProfile, Media::MonitorMgr *monMgr);
+		ColorDialog(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, Media::ColorManager *colorMgr, NN<Media::DrawEngine> eng, ColorCorrType colorCorr, NN<const Media::ColorProfile> colorProfile, Media::MonitorMgr *monMgr);
 		virtual ~ColorDialog();
 
 		void SetColor32(UInt32 color);
@@ -163,8 +163,8 @@ namespace UtilUI
 		virtual void OnMonitorChanged();
 		virtual void OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight);
 
-		virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
-		virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);
+		virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
+		virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
 	};
 }
 #endif

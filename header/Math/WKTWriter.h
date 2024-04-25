@@ -18,20 +18,20 @@ namespace Math
 		Bool reverseAxis;
 
 		void SetLastError(Text::CString lastError);
-		static void AppendLineString(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Math::Geometry::LineString> pl, Bool reverseAxis);
-		static void AppendPolygon(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Math::Geometry::Polygon> pg, Bool reverseAxis);
-		static void AppendPolyline(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Math::Geometry::Polyline> pl, Bool reverseAxis);
-		static void AppendCompoundCurve(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Math::Geometry::CompoundCurve> cc, Bool reverseAxis);
-		static void AppendCurvePolygon(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Math::Geometry::CurvePolygon> cpg, Bool reverseAxis);
-		static void AppendMultiPolygon(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Math::Geometry::MultiPolygon> mpg, Bool reverseAxis);
-		static void AppendMultiSurface(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Math::Geometry::MultiSurface> ms, Bool reverseAxis);
-		Bool AppendGeometryCollection(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Math::Geometry::GeometryCollection> geoColl);
+		static void AppendLineString(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::LineString> pl, Bool reverseAxis);
+		static void AppendPolygon(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::Polygon> pg, Bool reverseAxis);
+		static void AppendPolyline(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::Polyline> pl, Bool reverseAxis);
+		static void AppendCompoundCurve(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::CompoundCurve> cc, Bool reverseAxis);
+		static void AppendCurvePolygon(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::CurvePolygon> cpg, Bool reverseAxis);
+		static void AppendMultiPolygon(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::MultiPolygon> mpg, Bool reverseAxis);
+		static void AppendMultiSurface(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::MultiSurface> ms, Bool reverseAxis);
+		Bool AppendGeometryCollection(NN<Text::StringBuilderUTF8> sb, NN<Math::Geometry::GeometryCollection> geoColl);
 	public:
 		WKTWriter();
 		virtual ~WKTWriter();
 
 		virtual Text::CStringNN GetWriterName() const;
-		virtual Bool ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<const Math::Geometry::Vector2D> vec);
+		virtual Bool ToText(NN<Text::StringBuilderUTF8> sb, NN<const Math::Geometry::Vector2D> vec);
 		virtual Text::String *GetLastError();
 
 		void SetReverseAxis(Bool reverseAxis);

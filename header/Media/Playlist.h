@@ -12,15 +12,15 @@ namespace Media
 	private:
 		typedef struct
 		{
-			NotNullPtr<Text::String> title;
+			NN<Text::String> title;
 			Text::String *artist;
-			NotNullPtr<Text::String> fileName;
+			NN<Text::String> fileName;
 			Data::Duration timeStart;
 			Data::Duration timeEnd;
 		} PlaylistEntry;
 
 		Data::ArrayList<PlaylistEntry*> entries;
-		NotNullPtr<Parser::ParserList> parsers;
+		NN<Parser::ParserList> parsers;
 		Media::IMediaPlayer *player;
 		Media::MediaFile *currFile;
 		Bool playing;
@@ -28,7 +28,7 @@ namespace Media
 		static void __stdcall OnPBEnd(AnyType userObj);
 		void FreeEntry(PlaylistEntry* ent);
 	public:
-		Playlist(Text::CStringNN sourceName, NotNullPtr<Parser::ParserList> parsers);
+		Playlist(Text::CStringNN sourceName, NN<Parser::ParserList> parsers);
 		virtual ~Playlist();
 
 		virtual IO::ParserType GetParserType() const;

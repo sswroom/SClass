@@ -14,7 +14,7 @@ typedef BOOL (WINAPI *BoolFunc)();
 typedef HRESULT (WINAPI *AwareFunc)(OSInt val);
 typedef BOOL (WINAPI *AwareFunc2)(OSInt val);
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> ctrl);
+Int32 MyMain(NN<Core::IProgControl> ctrl);
 
 struct WinProgControl : public Core::IProgControl
 {
@@ -23,7 +23,7 @@ struct WinProgControl : public Core::IProgControl
 	UTF8Char **argv;
 };
 
-void __stdcall WinProgControl_WaitForExit(NotNullPtr<Core::IProgControl> progCtrl)
+void __stdcall WinProgControl_WaitForExit(NN<Core::IProgControl> progCtrl)
 {
 }
 
@@ -108,7 +108,7 @@ WChar **CommandLineToArgvW(const WChar *cmdLine, Int32 *argc)
 }
 #endif
 
-UTF8Char **__stdcall WinProgControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
+UTF8Char **__stdcall WinProgControl_GetCommandLines(NN<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
 {
 	WinProgControl *ctrl = (WinProgControl*)progCtrl.Ptr();
 	if (ctrl->argv == 0)
@@ -129,18 +129,18 @@ UTF8Char **__stdcall WinProgControl_GetCommandLines(NotNullPtr<Core::IProgContro
 	return ctrl->argv;
 }
 
-void __stdcall WinProgControl_SignalExit(NotNullPtr<Core::IProgControl> progCtrl)
+void __stdcall WinProgControl_SignalExit(NN<Core::IProgControl> progCtrl)
 {
 
 }
 
-void __stdcall WinProgControl_SignalRestart(NotNullPtr<Core::IProgControl> progCtrl)
+void __stdcall WinProgControl_SignalRestart(NN<Core::IProgControl> progCtrl)
 {
 
 }
 
 
-void WinProgControl_Create(NotNullPtr<WinProgControl> ctrl, UI::InstanceHandle *hInst)
+void WinProgControl_Create(NN<WinProgControl> ctrl, UI::InstanceHandle *hInst)
 {
 	ctrl->argc = 0;
 	ctrl->argv = 0;
@@ -151,7 +151,7 @@ void WinProgControl_Create(NotNullPtr<WinProgControl> ctrl, UI::InstanceHandle *
 	ctrl->GetCommandLines = WinProgControl_GetCommandLines;
 }
 
-void WinProgControl_Destroy(NotNullPtr<WinProgControl> ctrl)
+void WinProgControl_Destroy(NN<WinProgControl> ctrl)
 {
 	if (ctrl->argv)
 	{
@@ -165,7 +165,7 @@ void WinProgControl_Destroy(NotNullPtr<WinProgControl> ctrl)
 	}
 }
 
-Optional<UI::GUICore> Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
+Optional<UI::GUICore> Core::IProgControl::CreateGUICore(NN<Core::IProgControl> progCtrl)
 {
 	WinProgControl *ctrl = (WinProgControl*)progCtrl.Ptr();
 	UI::Win::WinCore *ui;

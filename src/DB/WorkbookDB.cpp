@@ -7,13 +7,13 @@
 class WorkbookReader : public DB::DBReader
 {
 private:
-	NotNullPtr<Text::SpreadSheet::Worksheet> sheet;
+	NN<Text::SpreadSheet::Worksheet> sheet;
 	DB::TableDef *tabDef;
 	Text::SpreadSheet::Worksheet::RowData *row;
 	UOSInt currIndex;
 	UOSInt maxIndex;
 public:
-	WorkbookReader(NotNullPtr<Text::SpreadSheet::Worksheet> sheet, DB::TableDef *tabDef, UOSInt initOfst, UOSInt maxOfst)
+	WorkbookReader(NN<Text::SpreadSheet::Worksheet> sheet, DB::TableDef *tabDef, UOSInt initOfst, UOSInt maxOfst)
 	{
 		this->sheet = sheet;
 		this->tabDef = tabDef;
@@ -79,7 +79,7 @@ public:
 		return Text::StrUTF8_WChar(buff, cell->cellValue->v, 0);
 	}
 
-	virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+	virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 	{
 		const Text::SpreadSheet::Worksheet::CellData *cell = this->sheet->GetCellDataRead(this->currIndex, colIndex);
 		return this->sheet->GetCellString(cell, sb);
@@ -161,15 +161,15 @@ public:
 		return 0;
 	}
 
-	virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
+	virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 	{
 		return false;
 	}
 
-	virtual Bool GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item)
+	virtual Bool GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
 	{
 		const Text::SpreadSheet::Worksheet::CellData *cell = this->sheet->GetCellDataRead(this->currIndex, colIndex);
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		if (cell == 0 || !s.Set(cell->cellValue))
 		{
 			return false;
@@ -190,7 +190,7 @@ public:
 
 	virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff)
 	{
-		NotNullPtr<DB::ColDef> col;
+		NN<DB::ColDef> col;
 		if (this->tabDef->GetCol(colIndex).SetTo(col))
 		{
 			return col->GetColName()->ConcatTo(buff);
@@ -200,7 +200,7 @@ public:
 
 	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 	{
-		NotNullPtr<DB::ColDef> col;
+		NN<DB::ColDef> col;
 		if (this->tabDef->GetCol(colIndex).SetTo(col))
 		{
 			colSize.Set(col->GetColSize());
@@ -209,9 +209,9 @@ public:
 		return DB::DBUtil::ColType::CT_Unknown;
 	}
 
-	virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+	virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 	{
-		NotNullPtr<DB::ColDef> col;
+		NN<DB::ColDef> col;
 		if (this->tabDef->GetCol(colIndex).SetTo(col))
 		{
 			colDef->Set(col);
@@ -222,7 +222,7 @@ public:
 	}
 };
 
-DB::WorkbookDB::WorkbookDB(NotNullPtr<Text::SpreadSheet::Workbook> wb) : DB::ReadingDB(wb->GetSourceNameObj())
+DB::WorkbookDB::WorkbookDB(NN<Text::SpreadSheet::Workbook> wb) : DB::ReadingDB(wb->GetSourceNameObj())
 {
 	this->wb = wb;
 }
@@ -232,13 +232,13 @@ DB::WorkbookDB::~WorkbookDB()
 	this->wb.Delete();
 }
 
-UOSInt DB::WorkbookDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt DB::WorkbookDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 	{
 		return 0;
 	}
-	Data::ArrayIterator<NotNullPtr<Text::SpreadSheet::Worksheet>> it = this->wb->Iterator();
+	Data::ArrayIterator<NN<Text::SpreadSheet::Worksheet>> it = this->wb->Iterator();
 	while (it.HasNext())
 	{
 		names->Add(it.Next()->GetName()->Clone());
@@ -248,12 +248,12 @@ UOSInt DB::WorkbookDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data
 
 Optional<DB::DBReader> DB::WorkbookDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
-	NotNullPtr<Text::SpreadSheet::Worksheet> sheet;
+	NN<Text::SpreadSheet::Worksheet> sheet;
 	if (!this->wb->GetWorksheetByName(tableName).SetTo(sheet))
 	{
 		return 0;
 	}
-	NotNullPtr<WorkbookReader> r;
+	NN<WorkbookReader> r;
 	UOSInt endOfst;
 	if (maxCnt == 0)
 	{
@@ -273,13 +273,13 @@ Optional<DB::DBReader> DB::WorkbookDB::QueryTableData(Text::CString schemaName, 
 
 DB::TableDef *DB::WorkbookDB::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
-	NotNullPtr<Text::SpreadSheet::Worksheet> sheet;
+	NN<Text::SpreadSheet::Worksheet> sheet;
 	if (!this->wb->GetWorksheetByName(tableName).SetTo(sheet))
 	{
 		return 0;
 	}
 	DB::TableDef *tabDef;
-	NotNullPtr<DB::ColDef> col;
+	NN<DB::ColDef> col;
 	NEW_CLASS(tabDef, DB::TableDef(schemaName, sheet->GetName()->ToCString()));
 	Text::SpreadSheet::Worksheet::RowData *row = sheet->GetItem(0);
 	Text::SpreadSheet::Worksheet::CellData *cell;
@@ -297,13 +297,13 @@ DB::TableDef *DB::WorkbookDB::GetTableDef(Text::CString schemaName, Text::CStrin
 	return tabDef;
 }
 
-void DB::WorkbookDB::CloseReader(NotNullPtr<DBReader> r)
+void DB::WorkbookDB::CloseReader(NN<DBReader> r)
 {
 	WorkbookReader *reader = (WorkbookReader*)r.Ptr();
 	DEL_CLASS(reader);
 }
 
-void DB::WorkbookDB::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void DB::WorkbookDB::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 
 }

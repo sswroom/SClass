@@ -86,7 +86,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 							}
 							sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 							Bool err = false;
-							Data::ArrayIterator<NotNullPtr<DB::ColDef>> it;
+							Data::ArrayIterator<NN<DB::ColDef>> it;
 							while (true)
 							{
 								if (sb.GetLength() == 0 || IsPunctuation(sb.ToString()))
@@ -98,7 +98,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 								it = tab->ColIterator();
 								while (it.HasNext())
 								{
-									NotNullPtr<DB::ColDef> col;
+									NN<DB::ColDef> col;
 									col = it.Next();
 									if (sb.Equals(col->GetColName()))
 									{
@@ -180,7 +180,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 						{
 							UOSInt colSize;
 							UOSInt colDP;
-							NotNullPtr<DB::ColDef> col;
+							NN<DB::ColDef> col;
 							if (sqlType == DB::SQLType::SQLite && sb.StartsWith('\"') && sb.EndsWith('\"'))
 							{
 								sb.RemoveChars(1);

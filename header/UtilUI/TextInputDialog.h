@@ -11,24 +11,24 @@ namespace UtilUI
 	class TextInputDialog : public UI::GUIForm
 	{
 	private:
-		NotNullPtr<UI::GUILabel> lblMessage;
-		NotNullPtr<UI::GUITextBox> txtInput;
-		NotNullPtr<UI::GUIButton> btnOk;
-		NotNullPtr<UI::GUIButton> btnCancel;
+		NN<UI::GUILabel> lblMessage;
+		NN<UI::GUITextBox> txtInput;
+		NN<UI::GUIButton> btnOk;
+		NN<UI::GUIButton> btnCancel;
 		Media::MonitorMgr *monMgr;
 		Text::String *retInput;
 
 		static void __stdcall OnOKClicked(AnyType userObj);
 		static void __stdcall OnCancelClicked(AnyType userObj);
 	public:
-		TextInputDialog(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, Media::MonitorMgr *monMgr, Text::CStringNN title, Text::CStringNN message);
+		TextInputDialog(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, Media::MonitorMgr *monMgr, Text::CStringNN title, Text::CStringNN message);
 		virtual ~TextInputDialog();
 
 		virtual void OnShow();
 		virtual void OnMonitorChanged();
 
 		void SetInputString(Text::CStringNN s);
-		Bool GetInputString(NotNullPtr<Text::StringBuilderUTF8> sb);
+		Bool GetInputString(NN<Text::StringBuilderUTF8> sb);
 	};
 }
 #endif

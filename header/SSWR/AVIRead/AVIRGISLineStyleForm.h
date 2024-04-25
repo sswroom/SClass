@@ -19,24 +19,24 @@ namespace SSWR
 		class AVIRGISLineStyleForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Media::ColorManagerSess> colorSess;
-			NotNullPtr<Map::MapEnv> env;
-			NotNullPtr<Media::DrawEngine> eng;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Media::ColorManagerSess> colorSess;
+			NN<Map::MapEnv> env;
+			NN<Media::DrawEngine> eng;
 			UOSInt lineStyle;
 			Bool changed;
 
-			NotNullPtr<UI::GUIGroupBox> grpStyle;
+			NN<UI::GUIGroupBox> grpStyle;
 			SSWR::AVIRead::AVIRLineSelector *lineSelector;
-			NotNullPtr<UI::GUIPanel> pnlStyle;
-			NotNullPtr<UI::GUIPanel> pnlButtons;
+			NN<UI::GUIPanel> pnlStyle;
+			NN<UI::GUIPanel> pnlButtons;
 
-			NotNullPtr<UI::GUIButton> btnAddStyle;
-			NotNullPtr<UI::GUIButton> btnRemoveStyle;
-			NotNullPtr<UI::GUIButton> btnEditStyle;
+			NN<UI::GUIButton> btnAddStyle;
+			NN<UI::GUIButton> btnRemoveStyle;
+			NN<UI::GUIButton> btnEditStyle;
             
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
 			UI::GUIPopupMenu *mnuLayer;
 
@@ -48,7 +48,7 @@ namespace SSWR
 			static void __stdcall OKClicked(AnyType userObj);
 			static void __stdcall CancelClicked(AnyType userObj);
 		public:
-			AVIRGISLineStyleForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, NotNullPtr<Media::DrawEngine> eng, UOSInt lineStyle);
+			AVIRGISLineStyleForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Media::DrawEngine> eng, UOSInt lineStyle);
 			virtual ~AVIRGISLineStyleForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

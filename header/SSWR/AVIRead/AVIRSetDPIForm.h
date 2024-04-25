@@ -17,23 +17,23 @@ namespace SSWR
 		class AVIRSetDPIForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIPictureBoxSimple> pbPreview;
-			NotNullPtr<UI::GUIPanel> pnlDPI;
-			NotNullPtr<UI::GUIPanel> pnlBtn;
-			NotNullPtr<UI::GUILabel> lblDPI;
-			NotNullPtr<UI::GUIHScrollBar> hsbDPI;
-			NotNullPtr<UI::GUILabel> lblDPIV;
-			NotNullPtr<UI::GUILabel> lblMagnifyRatio;
-			NotNullPtr<UI::GUITextBox> txtMagnifyRatio;
-			NotNullPtr<UI::GUILabel> lblDesktopDPI;
-			NotNullPtr<UI::GUITextBox> txtDesktopDPI;
-			NotNullPtr<UI::GUIButton> btnStandard;
-			NotNullPtr<UI::GUIButton> btn1x;
-			NotNullPtr<UI::GUIButton> btnLaptop;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUIPictureBoxSimple> pbPreview;
+			NN<UI::GUIPanel> pnlDPI;
+			NN<UI::GUIPanel> pnlBtn;
+			NN<UI::GUILabel> lblDPI;
+			NN<UI::GUIHScrollBar> hsbDPI;
+			NN<UI::GUILabel> lblDPIV;
+			NN<UI::GUILabel> lblMagnifyRatio;
+			NN<UI::GUITextBox> txtMagnifyRatio;
+			NN<UI::GUILabel> lblDesktopDPI;
+			NN<UI::GUITextBox> txtDesktopDPI;
+			NN<UI::GUIButton> btnStandard;
+			NN<UI::GUIButton> btn1x;
+			NN<UI::GUIButton> btnLaptop;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Media::StaticImage *pimg;
 
 			static void __stdcall OnOKClicked(AnyType userObj);
@@ -45,7 +45,7 @@ namespace SSWR
 			static void __stdcall OnLaptopClicked(AnyType userObj);
 			void UpdatePreview();
 		public:
-			AVIRSetDPIForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRSetDPIForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSetDPIForm();
 
 			virtual void OnMonitorChanged();

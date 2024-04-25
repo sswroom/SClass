@@ -141,7 +141,7 @@ namespace IO
 			SlewRate slewRate;
 		};
 	private:
-		NotNullPtr<IO::Stream> stm;
+		NN<IO::Stream> stm;
 		Bool stmRelease;
 		Sync::Event cmdEvt;
 		Sync::Mutex cmdResMut;
@@ -153,10 +153,10 @@ namespace IO
 	private:
 		static UInt32 __stdcall CmdThread(AnyType userObj);
 	public:
-		AdvantechASCIIChannel(NotNullPtr<IO::Stream> stm, Bool needRelease);
+		AdvantechASCIIChannel(NN<IO::Stream> stm, Bool needRelease);
 		~AdvantechASCIIChannel();
 
-		NotNullPtr<IO::Stream> GetStream() const;
+		NN<IO::Stream> GetStream() const;
 		
 		UTF8Char *SendCommand(UTF8Char *replyBuff, const UTF8Char *cmd, UOSInt cmdLen);
 

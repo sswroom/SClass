@@ -7,7 +7,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnColorChg(AnyType userObj, UOSInt newPos)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageColorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageColorForm>();
+	NN<SSWR::AVIRead::AVIRImageColorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageColorForm>();
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 
@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnColorChg(AnyType userObj, UO
 	sptr = Text::StrConcatC(Text::StrDouble(sbuff, gvalue), UTF8STRC("%"));
 	me->lblGammaV->SetText(CSTRP(sbuff, sptr));
 
-	NotNullPtr<const Media::ColorProfile> color;
+	NN<const Media::ColorProfile> color;
 	color = me->srcImg->info.color;
 	if (color->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{
@@ -41,8 +41,8 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnColorChg(AnyType userObj, UO
 
 void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnOKClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageColorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageColorForm>();
-	NotNullPtr<const Media::ColorProfile> color;
+	NN<SSWR::AVIRead::AVIRImageColorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageColorForm>();
+	NN<const Media::ColorProfile> color;
 	color = me->srcImg->info.color;
 	if (color->GetRTranParamRead()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{
@@ -69,13 +69,13 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnOKClick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnCancelClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageColorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageColorForm>();
+	NN<SSWR::AVIRead::AVIRImageColorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageColorForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
 void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnLastValueClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageColorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageColorForm>();
+	NN<SSWR::AVIRead::AVIRImageColorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageColorForm>();
 	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead");
 	if (reg)
 	{
@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnLastValueClick(AnyType userO
 	}
 }
 
-SSWR::AVIRead::AVIRImageColorForm::AVIRImageColorForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<const Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg, NotNullPtr<UI::GUIPictureBoxDD> previewCtrl) : UI::GUIForm(parent, 640, 140, ui)
+SSWR::AVIRead::AVIRImageColorForm::AVIRImageColorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<const Media::StaticImage> srcImg, NN<Media::StaticImage> destImg, NN<UI::GUIPictureBoxDD> previewCtrl) : UI::GUIForm(parent, 640, 140, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Image Color"));

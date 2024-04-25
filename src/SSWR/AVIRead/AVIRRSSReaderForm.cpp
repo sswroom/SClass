@@ -11,7 +11,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRRSSReaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRSSReaderForm>();
+	NN<SSWR::AVIRead::AVIRRSSReaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRSSReaderForm>();
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(AnyType userOb
 		Net::RSS *rss;
 		Net::RSSItem *item;
 		Text::CString userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-		NotNullPtr<Text::String> ua = Text::String::New(userAgent);
+		NN<Text::String> ua = Text::String::New(userAgent);
 		NEW_CLASS(rss, Net::RSS(sb.ToCString(), ua.Ptr(), me->core->GetSocketFactory(), me->ssl, 30000, me->core->GetLog()));
 		ua->Release();
 		if (!rss->IsError())
@@ -131,8 +131,8 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRecentSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRRSSReaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRSSReaderForm>();
-	NotNullPtr<Text::String> s;
+	NN<SSWR::AVIRead::AVIRRSSReaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRSSReaderForm>();
+	NN<Text::String> s;
 	UOSInt i = me->cboRecent->GetSelectedIndex();
 	if (i != INVALID_INDEX && me->rssList.GetItem(i).SetTo(s))
 	{
@@ -142,8 +142,8 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRecentSelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnItemsDblClick(AnyType userObj, UOSInt index)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRRSSReaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRSSReaderForm>();
-	NotNullPtr<Net::RSSItem> item;
+	NN<SSWR::AVIRead::AVIRRSSReaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRSSReaderForm>();
+	NN<Net::RSSItem> item;
 	if (me->lvItems->GetItem(index).GetOpt<Net::RSSItem>().SetTo(item))
 	{
 		SSWR::AVIRead::AVIRRSSItemForm frm(0, me->ui, me->core, item);
@@ -182,7 +182,7 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListStore()
 	if (!fs.IsError())
 	{
 		Text::UTF8Writer writer(fs);
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = this->rssList.Iterator();
+		Data::ArrayIterator<NN<Text::String>> it = this->rssList.Iterator();
 		while (it.HasNext())
 		{
 			writer.WriteLineCStr(it.Next()->ToCString());
@@ -190,7 +190,7 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListStore()
 	}
 }
 
-SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("RSS Reader"));
 	this->SetFont(UTF8STRC("MingLiu"), 8.25, false);

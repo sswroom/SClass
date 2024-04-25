@@ -30,13 +30,13 @@ public:
 	}
 };
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Net::LogServer *svr;
-	NotNullPtr<Net::SocketFactory> sockf;
+	NN<Net::SocketFactory> sockf;
 	IO::LogTool log;
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<MyLogHandler> logHdlr;
+	NN<MyLogHandler> logHdlr;
 	NEW_CLASS(console, IO::ConsoleWriter());
 	UInt16 port = 1234;
 

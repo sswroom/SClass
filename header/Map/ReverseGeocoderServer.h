@@ -34,18 +34,18 @@ namespace Map
 
 		Net::TCPClient *GetLatestClient(UOSInt retryCnt);
 	public:
-		ReverseGeocoderServer(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log, UInt16 port);
+		ReverseGeocoderServer(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log, UInt16 port);
 		virtual ~ReverseGeocoderServer();
 
 		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
 		virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
 
-		virtual AnyType NewConn(NotNullPtr<Net::TCPClient> cli);
-		virtual void EndConn(NotNullPtr<Net::TCPClient> cli, AnyType cliObj);
-		virtual UOSInt ReceivedData(NotNullPtr<Net::TCPClient> cli, AnyType cliObj, const Data::ByteArrayR &buff); //Return buff size unprocessed
+		virtual AnyType NewConn(NN<Net::TCPClient> cli);
+		virtual void EndConn(NN<Net::TCPClient> cli, AnyType cliObj);
+		virtual UOSInt ReceivedData(NN<Net::TCPClient> cli, AnyType cliObj, const Data::ByteArrayR &buff); //Return buff size unprocessed
 
-		virtual void DataParsed(NotNullPtr<IO::Stream> stm, AnyType cliObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-		virtual void DataSkipped(NotNullPtr<IO::Stream> stm, AnyType cliObj, const UInt8 *buff, UOSInt buffSize);
+		virtual void DataParsed(NN<IO::Stream> stm, AnyType cliObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
+		virtual void DataSkipped(NN<IO::Stream> stm, AnyType cliObj, const UInt8 *buff, UOSInt buffSize);
 		Bool IsError();
 	};
 }

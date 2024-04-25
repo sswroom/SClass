@@ -12,7 +12,7 @@
 
 void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
+	NN<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
 	SSWR::DownloadMonitor::DownMonCore::CheckStatus status = me->core->GetCurrStatus();
 	if (status != me->currStatus)
 	{
@@ -99,7 +99,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnTimerTick(AnyType userO
 
 void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
+	NN<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
 	Text::StringBuilderUTF8 sb;
 	UI::Clipboard::GetString(me->GetHandle(), sb);
 	UTF8Char sbuff[32];
@@ -121,7 +121,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(AnyTy
 
 			if (id != 0)
 			{
-				NotNullPtr<Text::String> s = Text::String::New(sarr2[1].v, sarr2[1].leng);
+				NN<Text::String> s = Text::String::New(sarr2[1].v, sarr2[1].leng);
 				if (me->core->FileAdd(id, webType, s))
 				{
 					Sync::MutexUsage mutUsage;
@@ -149,7 +149,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(AnyTy
 
 void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
+	NN<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
 	Data::ArrayList<UInt32> formats;
 	UOSInt i;
 	UOSInt j;
@@ -247,7 +247,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(AnyTyp
 
 					if (id != 0)
 					{
-						NotNullPtr<Text::String> s = Text::String::NewNotNullSlow(desc);
+						NN<Text::String> s = Text::String::NewNotNullSlow(desc);
 						if (me->core->FileAdd(id, webType, s))
 						{
 							Sync::MutexUsage mutUsage;
@@ -275,7 +275,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(AnyTyp
 
 void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnCopyTableClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
+	NN<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	UOSInt j;
@@ -317,7 +317,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnCopyTableClicked(AnyTyp
 
 void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFilesDblClick(AnyType userObj, UOSInt itemIndex)
 {
-	NotNullPtr<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
+	NN<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
 	Int32 id = (Int32)me->lvFiles->GetItem(itemIndex).GetOSInt();
 	if (id)
 	{
@@ -327,7 +327,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFilesDblClick(AnyType u
 
 void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFileEndClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
+	NN<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
 	Int32 id = (Int32)me->lvFiles->GetSelectedItem().GetOSInt();
 	if (id > 0)
 	{
@@ -343,7 +343,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFileEndClicked(AnyType 
 
 void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
+	NN<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
 	Int32 webType = 4;
 	Int32 maxId = me->core->FileGetMaxId(webType);
 	OSInt currPage = 1;
@@ -354,9 +354,9 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(AnyTyp
 	Data::ArrayList<Net::WebSite::WebSite48IdolControl::ItemData*> totalList;
 	Net::WebSite::WebSite48IdolControl::ItemData *item;
 	Net::WebSite::WebSite48IdolControl *ctrl;
-	NotNullPtr<Text::EncodingFactory> encFact;
+	NN<Text::EncodingFactory> encFact;
 	Text::CString userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-	NotNullPtr<Text::String> ua = Text::String::New(userAgent);
+	NN<Text::String> ua = Text::String::New(userAgent);
 	NEW_CLASSNN(encFact, Text::EncodingFactory());
 	NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(me->core->GetSocketFactory(), me->core->GetSSLEngine(), encFact, ua.Ptr()));
 	ua->Release();
@@ -419,7 +419,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(AnyTyp
 
 void __stdcall SSWR::DownloadMonitor::DownMonMainForm::On30MinutesClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
+	NN<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	Data::DateTime dt;
@@ -433,7 +433,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::On30MinutesClicked(AnyTyp
 
 void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFileEnd(AnyType userObj, Int32 fileId, Int32 webType)
 {
-	NotNullPtr<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
+	NN<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
 	Sync::MutexUsage mutUsage(me->endedMut);
 	me->endedList.Add((webType << 24) | fileId);
 	mutUsage.EndUse();
@@ -477,7 +477,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 	Net::WebSite::WebSite48IdolControl *ctrl = 0;
 	Text::EncodingFactory *encFact = 0;
 	Text::CString userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-	NotNullPtr<Text::String> ua = Text::String::New(userAgent);
+	NN<Text::String> ua = Text::String::New(userAgent);
 	Text::StringBuilderUTF8 sb2;
 	Bool updated = false;
 
@@ -485,7 +485,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 	UTF8Char *sptr;
 	Text::PString sarr[2];
 	UOSInt i;
-	NotNullPtr<Text::String> listFile;
+	NN<Text::String> listFile;
 	if (listFile.Set(this->core->GetListFile()))
 	{
 		IO::FileStream fs(listFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -516,7 +516,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 							updated = true;
 						}
 					}
-					NotNullPtr<Text::String> s = Text::String::New(sarr[1].v, sarr[1].leng);
+					NN<Text::String> s = Text::String::New(sarr[1].v, sarr[1].leng);
 					if (this->core->FileAdd(id, webType, s))
 					{
 						Sync::MutexUsage mutUsage;
@@ -551,7 +551,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::SaveList()
 	UOSInt i;
 	UOSInt j;
 
-	NotNullPtr<Text::String> listFile;
+	NN<Text::String> listFile;
 	if (!listFile.Set(this->core->GetListFile()))
 		return;
 	IO::FileStream fs(listFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -592,7 +592,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::SaveList()
 	}
 }
 
-SSWR::DownloadMonitor::DownMonMainForm::DownMonMainForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, SSWR::DownloadMonitor::DownMonCore *core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::DownloadMonitor::DownMonMainForm::DownMonMainForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, SSWR::DownloadMonitor::DownMonCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
 	this->SetText(CSTR("Download Monitor"));

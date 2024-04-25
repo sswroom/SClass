@@ -348,7 +348,7 @@ Bool Net::SDPFile::BuildBuff()
 	sb.Append(this->sessName);
 	writer.WriteLineC(sb.ToString(), sb.GetLength());
 
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = this->sessDesc.Iterator();
+	Data::ArrayIterator<NN<Text::String>> it = this->sessDesc.Iterator();
 	i = 0;
 	while (it.HasNext())
 	{
@@ -485,7 +485,7 @@ Bool Net::SDPFile::BuildBuff()
 	return true;
 }
 
-Bool Net::SDPFile::WriteToStream(NotNullPtr<IO::Stream> stm)
+Bool Net::SDPFile::WriteToStream(NN<IO::Stream> stm)
 {
 	return stm->Write(this->buff, this->buffSize) == this->buffSize;
 }

@@ -5,13 +5,13 @@
 #include "IO/FileStream.h"
 #include "Text/SpreadSheet/Workbook.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Exporter::ExcelXMLExporter exporterXML;
 	Exporter::XLSXExporter exporterXLSX;
 	Text::CStringNN fileName;
 	Text::SpreadSheet::Workbook workbook;
-	NotNullPtr<Text::SpreadSheet::Worksheet> sheet = workbook.AddWorksheet(CSTR("Sheet"));
+	NN<Text::SpreadSheet::Worksheet> sheet = workbook.AddWorksheet(CSTR("Sheet"));
 	Text::SpreadSheet::CellStyle style(0);
 	style.SetDataFormat(CSTR("0.0"));
 	sheet->SetCellDouble(0, 0, workbook.FindOrCreateStyle(style).Ptr(), 0.123456);

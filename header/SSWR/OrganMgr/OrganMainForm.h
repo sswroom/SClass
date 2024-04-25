@@ -40,86 +40,86 @@ namespace SSWR
 			} InputMode;
 
 		private:
-			NotNullPtr<UI::GUIPanel> pnlLeft;
-			NotNullPtr<UI::GUILabel> lblLeft;
-			NotNullPtr<UI::GUIListBox> lbDir;
-			NotNullPtr<UI::GUIHSplitter> hsbLeft;
+			NN<UI::GUIPanel> pnlLeft;
+			NN<UI::GUILabel> lblLeft;
+			NN<UI::GUIListBox> lbDir;
+			NN<UI::GUIHSplitter> hsbLeft;
 
-			NotNullPtr<UI::GUIPanel> pnlMid;
-			NotNullPtr<UI::GUILabel> lblMid;
-			NotNullPtr<UI::GUIListBox> lbObj;
-			NotNullPtr<UI::GUIPanel> pnlMidBottom;
-			NotNullPtr<UI::GUILabel> lblPickMsg;
-			NotNullPtr<UI::GUIButton> btnObjPick;
-			NotNullPtr<UI::GUIButton> btnObjPlace;
-			NotNullPtr<UI::GUIButton> btnObjCombine;
-			NotNullPtr<UI::GUIHSplitter> hsbMid;
+			NN<UI::GUIPanel> pnlMid;
+			NN<UI::GUILabel> lblMid;
+			NN<UI::GUIListBox> lbObj;
+			NN<UI::GUIPanel> pnlMidBottom;
+			NN<UI::GUILabel> lblPickMsg;
+			NN<UI::GUIButton> btnObjPick;
+			NN<UI::GUIButton> btnObjPlace;
+			NN<UI::GUIButton> btnObjCombine;
+			NN<UI::GUIHSplitter> hsbMid;
 
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpGroup;
-			NotNullPtr<UI::GUITextBox> txtGroupId;
-			NotNullPtr<UI::GUIComboBox> cboGroupType;
-			NotNullPtr<UI::GUITextBox> txtGroupEName;
-			NotNullPtr<UI::GUITextBox> txtGroupCName;
-			NotNullPtr<UI::GUICheckBox> chkGroupAdmin;
-			NotNullPtr<UI::GUITextBox> txtGroupDesc;
-			NotNullPtr<UI::GUITextBox> txtGroupKey;
-			NotNullPtr<UI::GUIButton> btnGroupRemove;
-			NotNullPtr<UI::GUIButton> btnGroupAdd;
-			NotNullPtr<UI::GUIButton> btnGroupEnter;
+			NN<UI::GUITabPage> tpGroup;
+			NN<UI::GUITextBox> txtGroupId;
+			NN<UI::GUIComboBox> cboGroupType;
+			NN<UI::GUITextBox> txtGroupEName;
+			NN<UI::GUITextBox> txtGroupCName;
+			NN<UI::GUICheckBox> chkGroupAdmin;
+			NN<UI::GUITextBox> txtGroupDesc;
+			NN<UI::GUITextBox> txtGroupKey;
+			NN<UI::GUIButton> btnGroupRemove;
+			NN<UI::GUIButton> btnGroupAdd;
+			NN<UI::GUIButton> btnGroupEnter;
 
-			NotNullPtr<UI::GUITabPage> tpSpecies;
-			NotNullPtr<UI::GUIPanel> pnlSpecies;
-			NotNullPtr<UI::GUITextBox> txtSpeciesId;
-			NotNullPtr<UI::GUITextBox> txtSpeciesCName;
-			NotNullPtr<UI::GUITextBox> txtSpeciesSName;
-			NotNullPtr<UI::GUITextBox> txtSpeciesEName;
-			NotNullPtr<UI::GUITextBox> txtSpeciesDName;
-			NotNullPtr<UI::GUITextBox> txtSpeciesDesc;
-			NotNullPtr<UI::GUITextBox> txtSpeciesKey;
-			NotNullPtr<UI::GUIButton> btnSpeciesRemove;
-			NotNullPtr<UI::GUIButton> btnSpeciesAdd;
-			NotNullPtr<UI::GUIButton> btnSpeciesPasteSName;
-			NotNullPtr<UI::GUIButton> btnSpeciesColor;
-			NotNullPtr<UI::GUIGroupBox> grpSpBook;
-			NotNullPtr<UI::GUIPanel> pnlSpBook;
-			NotNullPtr<UI::GUITextBox> txtSpBook;
-			NotNullPtr<UI::GUITextBox> txtSpBookYear;
-			NotNullPtr<UI::GUIComboBox> cboSpBook;
-			NotNullPtr<UI::GUIButton> btnSpBookAdd;
-			NotNullPtr<UI::GUIPanel> pnlSpBookCtrl;
-			NotNullPtr<UI::GUIButton> btnSpBookDel;
-			NotNullPtr<UI::GUIListView> lvSpBook;
+			NN<UI::GUITabPage> tpSpecies;
+			NN<UI::GUIPanel> pnlSpecies;
+			NN<UI::GUITextBox> txtSpeciesId;
+			NN<UI::GUITextBox> txtSpeciesCName;
+			NN<UI::GUITextBox> txtSpeciesSName;
+			NN<UI::GUITextBox> txtSpeciesEName;
+			NN<UI::GUITextBox> txtSpeciesDName;
+			NN<UI::GUITextBox> txtSpeciesDesc;
+			NN<UI::GUITextBox> txtSpeciesKey;
+			NN<UI::GUIButton> btnSpeciesRemove;
+			NN<UI::GUIButton> btnSpeciesAdd;
+			NN<UI::GUIButton> btnSpeciesPasteSName;
+			NN<UI::GUIButton> btnSpeciesColor;
+			NN<UI::GUIGroupBox> grpSpBook;
+			NN<UI::GUIPanel> pnlSpBook;
+			NN<UI::GUITextBox> txtSpBook;
+			NN<UI::GUITextBox> txtSpBookYear;
+			NN<UI::GUIComboBox> cboSpBook;
+			NN<UI::GUIButton> btnSpBookAdd;
+			NN<UI::GUIPanel> pnlSpBookCtrl;
+			NN<UI::GUIButton> btnSpBookDel;
+			NN<UI::GUIListView> lvSpBook;
 
-			NotNullPtr<UI::GUITabPage> tpImage;
-			NotNullPtr<UI::GUIPictureBoxDD> pbImg;
-			NotNullPtr<UI::GUIVSplitter> vsbImg;
-			NotNullPtr<UI::GUIListBox> lbImage;
-			NotNullPtr<UI::GUIPanel> pnlImage;
-			NotNullPtr<UI::GUIButton> btnImageSaveAll;
-			NotNullPtr<UI::GUIButton> btnImageSave;
-			NotNullPtr<UI::GUIButton> btnImagePick;
-			NotNullPtr<UI::GUIButton> btnImagePickAdd;
-			NotNullPtr<UI::GUIButton> btnImagePickAll;
-			NotNullPtr<UI::GUIButton> btnImageDir;
-			NotNullPtr<UI::GUIButton> btnImageRotate;
-			NotNullPtr<UI::GUIButton> btnImageCrop;
-			NotNullPtr<UI::GUIButton> btnImageClipboard;
+			NN<UI::GUITabPage> tpImage;
+			NN<UI::GUIPictureBoxDD> pbImg;
+			NN<UI::GUIVSplitter> vsbImg;
+			NN<UI::GUIListBox> lbImage;
+			NN<UI::GUIPanel> pnlImage;
+			NN<UI::GUIButton> btnImageSaveAll;
+			NN<UI::GUIButton> btnImageSave;
+			NN<UI::GUIButton> btnImagePick;
+			NN<UI::GUIButton> btnImagePickAdd;
+			NN<UI::GUIButton> btnImagePickAll;
+			NN<UI::GUIButton> btnImageDir;
+			NN<UI::GUIButton> btnImageRotate;
+			NN<UI::GUIButton> btnImageCrop;
+			NN<UI::GUIButton> btnImageClipboard;
 
-			NotNullPtr<UI::GUITabPage> tpMap;
-			NotNullPtr<UI::GUIPanel> pnlMapCtrl;
-			NotNullPtr<UI::GUIPanel> pnlMapStatus;
-			NotNullPtr<UI::GUITrackBar> tbMapScale;
-			NotNullPtr<UI::GUITextBox> txtMapPos;
-			NotNullPtr<UI::GUITextBox> txtMapScale;
+			NN<UI::GUITabPage> tpMap;
+			NN<UI::GUIPanel> pnlMapCtrl;
+			NN<UI::GUIPanel> pnlMapStatus;
+			NN<UI::GUITrackBar> tbMapScale;
+			NN<UI::GUITextBox> txtMapPos;
+			NN<UI::GUITextBox> txtMapScale;
 			UI::GUIMapControl *mcMap;
 
-			NotNullPtr<UI::GUIMainMenu> mnuMain;
+			NN<UI::GUIMainMenu> mnuMain;
 
 			Media::ColorManager *colorMgr;
-			NotNullPtr<Media::ColorManagerSess> colorSess;
-			NotNullPtr<OrganEnv> env;
+			NN<Media::ColorManagerSess> colorSess;
+			NN<OrganEnv> env;
 			NN<OrganGroup> rootGroup;
 			UOSInt lastDirIndex;
 			UOSInt lastObjIndex;
@@ -144,10 +144,10 @@ namespace SSWR
 			Math::Coord2D<OSInt> dispImageCurrPos;
 
 			Map::DrawMapRenderer *mapRenderer;
-			NotNullPtr<Map::MapView> mapView;
-			NotNullPtr<Map::MapEnv> mapEnv;
-			NotNullPtr<Map::TileMapLayer> mapTileLyr;
-			NotNullPtr<Map::TileMap> mapTile;
+			NN<Map::MapView> mapView;
+			NN<Map::MapEnv> mapEnv;
+			NN<Map::TileMapLayer> mapTileLyr;
+			NN<Map::TileMap> mapTile;
 			Bool mapUpdated;
 			Data::FastMapNN<UInt32, OrganSpImgLayer> mapImgLyrs;
 			UOSInt imgFontStyle;
@@ -202,7 +202,7 @@ namespace SSWR
 			static void __stdcall OnMapScaleScroll(AnyType userObj, UOSInt newVal);
 			static void __stdcall OnTileUpdated(AnyType userObj);
 			static void __stdcall OnMapMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-			static void __stdcall OnMapDraw(AnyType userObj, NotNullPtr<Media::DrawImage> dimg, OSInt xOfst, OSInt yOfst);
+			static void __stdcall OnMapDraw(AnyType userObj, NN<Media::DrawImage> dimg, OSInt xOfst, OSInt yOfst);
 
 			static OSInt __stdcall GroupCompare(NN<OrganGroupItem> group1, NN<OrganGroupItem> group2);
 
@@ -224,13 +224,13 @@ namespace SSWR
 			void ClearGroupForm();
 			void FillGroupCboBox();
 			void InitCategory();
-			void SelectGroup(NotNullPtr<UI::GUIComboBox> cbo, Int32 groupType);
+			void SelectGroup(NN<UI::GUIComboBox> cbo, Int32 groupType);
 			void GoToDir(NN<OrganGroup> grp, Int32 parentId);
 
 			void ClearImgLayers();
-			NotNullPtr<OrganSpImgLayer> GetImgLayer(UInt32 mapColor);
+			NN<OrganSpImgLayer> GetImgLayer(UInt32 mapColor);
 		public:
-			OrganMainForm(NotNullPtr<UI::GUICore> ui, Optional<UI::GUIClientControl> parent, NotNullPtr<OrganEnv> env);
+			OrganMainForm(NN<UI::GUICore> ui, Optional<UI::GUIClientControl> parent, NN<OrganEnv> env);
 			virtual ~OrganMainForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

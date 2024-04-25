@@ -79,7 +79,7 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CurlCert::CreateX509Cert() const
 		if (Text::StrStartsWith(slist->data, "Cert:"))
 		{
 			UOSInt len = Text::StrCharCnt(slist->data);
-			NotNullPtr<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.crt"));
+			NN<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.crt"));
 			pobjCert = (Crypto::Cert::X509Cert*)Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR((const UInt8*)slist->data + 5, (UOSInt)len - 5), fileName);
 			if (pobjCert)
 			{
@@ -93,7 +93,7 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CurlCert::CreateX509Cert() const
 	return 0;
 }
 
-void Crypto::Cert::CurlCert::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Crypto::Cert::CurlCert::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	curl_slist *slist = (curl_slist*)this->certinfo;
 	while (slist)

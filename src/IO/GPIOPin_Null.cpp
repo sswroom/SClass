@@ -3,7 +3,7 @@
 #include "IO/GPIOPin.h"
 #include "Text/MyString.h"
 
-IO::GPIOPin::GPIOPin(NotNullPtr<IO::GPIOControl> gpio, UInt16 pinNum)
+IO::GPIOPin::GPIOPin(NN<IO::GPIOControl> gpio, UInt16 pinNum)
 {
 	this->gpio = gpio;
 	this->pinNum = pinNum;

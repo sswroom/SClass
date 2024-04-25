@@ -46,9 +46,9 @@ namespace Net
 			Sync::Event finEvt;
 		} CliRequestStatus;
 	public:
-		typedef void (__stdcall *DNSProxyRequest)(AnyType userObj, Text::CStringNN reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
+		typedef void (__stdcall *DNSProxyRequest)(AnyType userObj, Text::CStringNN reqName, Int32 reqType, Int32 reqClass, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
 	private:
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Net::UDPServer *cli;
 		Net::DNSServer *svr;
 
@@ -90,16 +90,16 @@ namespace Net
 //		Sync::Mutex *whiteListMut;
 //		Data::ArrayListNN<const UTF8Char> *whiteList;
 
-		static void __stdcall ClientPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
-		static void __stdcall OnDNSRequest(AnyType userObj, Text::CStringNN reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId);
-		void RequestDNS(const UTF8Char *reqName, Int32 reqType, Int32 reqClass, NotNullPtr<RequestResult> req);
+		static void __stdcall ClientPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+		static void __stdcall OnDNSRequest(AnyType userObj, Text::CStringNN reqName, Int32 reqType, Int32 reqClass, NN<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId);
+		void RequestDNS(const UTF8Char *reqName, Int32 reqType, Int32 reqClass, NN<RequestResult> req);
 		UInt32 NextId();
-		NotNullPtr<CliRequestStatus> NewCliReq(UInt32 id);
+		NN<CliRequestStatus> NewCliReq(UInt32 id);
 		void DelCliReq(UInt32 id);
 		static UOSInt BuildEmptyReply(UInt8 *buff, UInt32 id, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, Bool disableV6);
 		static UOSInt BuildAddressReply(UInt8 *buff, UInt32 id, const UTF8Char *reqName, Int32 reqClass, const Net::SocketUtil::AddressInfo *addr);
 	public:
-		DNSProxy(NotNullPtr<Net::SocketFactory> sockf, Bool analyzeTarget, NotNullPtr<IO::LogTool> log);
+		DNSProxy(NN<Net::SocketFactory> sockf, Bool analyzeTarget, NN<IO::LogTool> log);
 		~DNSProxy();
 
 		Bool IsError();
@@ -107,27 +107,27 @@ namespace Net
 		Bool IsReqListv6Chg();
 		Bool IsReqListOthChg();
 		Bool IsTargetChg();
-		UOSInt GetReqv4List(NotNullPtr<Data::ArrayListNN<Text::String>> reqList); //no need release
-		UOSInt GetReqv6List(NotNullPtr<Data::ArrayListNN<Text::String>> reqList); //no need release
-		UOSInt GetReqOthList(NotNullPtr<Data::ArrayListNN<Text::String>> reqList); //no need release
-		UOSInt GetTargetList(NotNullPtr<Data::ArrayListNN<TargetInfo>> targetList); //no need release
-		UOSInt SearchIPv4(NotNullPtr<Data::ArrayListNN<Text::String>> reqList, UInt32 ip, UInt32 mask); //no need release
-		Bool GetRequestInfov4(Text::CStringNN req, NotNullPtr<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NotNullPtr<Data::DateTime> reqTime, OutParam<UInt32> ttl);
-		Bool GetRequestInfov6(Text::CStringNN req, NotNullPtr<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NotNullPtr<Data::DateTime> reqTime, OutParam<UInt32> ttl);
-		Bool GetRequestInfoOth(Text::CStringNN req, NotNullPtr<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NotNullPtr<Data::DateTime> reqTime, OutParam<UInt32> ttl);
+		UOSInt GetReqv4List(NN<Data::ArrayListNN<Text::String>> reqList); //no need release
+		UOSInt GetReqv6List(NN<Data::ArrayListNN<Text::String>> reqList); //no need release
+		UOSInt GetReqOthList(NN<Data::ArrayListNN<Text::String>> reqList); //no need release
+		UOSInt GetTargetList(NN<Data::ArrayListNN<TargetInfo>> targetList); //no need release
+		UOSInt SearchIPv4(NN<Data::ArrayListNN<Text::String>> reqList, UInt32 ip, UInt32 mask); //no need release
+		Bool GetRequestInfov4(Text::CStringNN req, NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NN<Data::DateTime> reqTime, OutParam<UInt32> ttl);
+		Bool GetRequestInfov6(Text::CStringNN req, NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NN<Data::DateTime> reqTime, OutParam<UInt32> ttl);
+		Bool GetRequestInfoOth(Text::CStringNN req, NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NN<Data::DateTime> reqTime, OutParam<UInt32> ttl);
 		UInt32 GetServerIP();
 		void SetServerIP(UInt32 serverIP);
-		void GetDNSList(NotNullPtr<Data::ArrayList<UInt32>> dnsList);
+		void GetDNSList(NN<Data::ArrayList<UInt32>> dnsList);
 		void AddDNSIP(UInt32 serverIP);
 		void SwitchDNS();
 		Bool IsDisableV6();
 		void SetDisableV6(Bool disableV6);
-		UOSInt GetBlackList(NotNullPtr<Data::ArrayListNN<Text::String>> blackList);
-		Bool AddBlackList(NotNullPtr<Text::String> blackList);
+		UOSInt GetBlackList(NN<Data::ArrayListNN<Text::String>> blackList);
+		Bool AddBlackList(NN<Text::String> blackList);
 		Bool AddBlackList(Text::CStringNN blackList);
 		void HandleDNSRequest(DNSProxyRequest hdlr, AnyType userObj);
-		void SetCustomAnswer(Text::CStringNN name, NotNullPtr<const Net::SocketUtil::AddressInfo> addr);
-		void SetWebProxyAutoDiscovery(NotNullPtr<const Net::SocketUtil::AddressInfo> addr);
+		void SetCustomAnswer(Text::CStringNN name, NN<const Net::SocketUtil::AddressInfo> addr);
+		void SetWebProxyAutoDiscovery(NN<const Net::SocketUtil::AddressInfo> addr);
 	};
 }
 #endif

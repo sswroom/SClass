@@ -79,9 +79,9 @@ namespace Math
 		~EarthEllipsoid();
 
 		Double CalSurfaceDistance(Double dLat1, Double dLon1, Double dLat2, Double dLon2, Math::Unit::Distance::DistanceUnit unit) const;
-		Double CalLineStringDistance(NotNullPtr<Math::Geometry::LineString> lineString, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const;
-		Double CalPLDistance(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const;
-		Double CalPLDistance3D(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const;
+		Double CalLineStringDistance(NN<Math::Geometry::LineString> lineString, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const;
+		Double CalPLDistance(NN<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const;
+		Double CalPLDistance3D(NN<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const;
 
 		Double GetSemiMajorAxis() const { return this->semiMajorAxis; }
 		Double GetSemiMinorAxis() const { return this->semiMinorAxis; }
@@ -91,20 +91,20 @@ namespace Math
 		Double CalLatByDist(Double dLat, Double distM) const;
 		Double CalRadiusAtLat(Double lat) const { return CalRadiusAtRLat(lat * Math::PI / 180.0); }
 		Double CalRadiusAtRLat(Double rlat) const { Double ec = Math_Cos(rlat) * this->eccentricity; return this->semiMajorAxis / Math_Sqrt(1.0 - ec * ec); }
-		Bool Equals(NotNullPtr<const EarthEllipsoid> ellipsoid) const { return ellipsoid->semiMajorAxis == this->semiMajorAxis && ellipsoid->inverseFlattening == this->inverseFlattening; }
+		Bool Equals(NN<const EarthEllipsoid> ellipsoid) const { return ellipsoid->semiMajorAxis == this->semiMajorAxis && ellipsoid->inverseFlattening == this->inverseFlattening; }
 		Text::CStringNN GetName() const;
-		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		void ToString(NN<Text::StringBuilderUTF8> sb) const;
 
 		void operator=(const EarthEllipsoid &ellipsoid);
 		void operator=(const EarthEllipsoid *ellipsoid);
-		NotNullPtr<EarthEllipsoid> Clone() const;
+		NN<EarthEllipsoid> Clone() const;
 
 		Math::Vector3 ToCartesianCoordRad(Math::Vector3 lonLatH) const;
 		Math::Vector3 FromCartesianCoordRad(Math::Vector3 coord) const;
 		Math::Vector3 ToCartesianCoordDeg(Math::Vector3 lonLatH) const { return ToCartesianCoordRad(lonLatH.MulXY(Math::PI / 180.0)); }
 		Math::Vector3 FromCartesianCoordDeg(Math::Vector3 coord) const { return FromCartesianCoordRad(coord).MulXY(180.0 / Math::PI); }
 
-		static NotNullPtr<const EarthEllipsoidInfo> GetEarthInfo(EarthEllipsoidType eet);
+		static NN<const EarthEllipsoidInfo> GetEarthInfo(EarthEllipsoidType eet);
 	};
 }
 #endif

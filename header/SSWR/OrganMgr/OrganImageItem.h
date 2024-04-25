@@ -72,7 +72,7 @@ namespace SSWR
 			void SetWebFile(Optional<WebFileInfo> webFile);
 			Optional<WebFileInfo> GetWebFile() const;
 
-			NotNullPtr<OrganImageItem> Clone() const;
+			NN<OrganImageItem> Clone() const;
 		};
 	}
 }

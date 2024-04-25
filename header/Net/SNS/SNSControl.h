@@ -25,10 +25,10 @@ namespace Net
 
 			typedef struct
 			{
-				NotNullPtr<Text::String> id;
+				NN<Text::String> id;
 				Int64 msgTime;
 				Text::String *title;
-				NotNullPtr<Text::String> message;
+				NN<Text::String> message;
 				Text::String *msgLink;
 				Text::String *imgURL;
 				Text::String *videoURL;
@@ -39,10 +39,10 @@ namespace Net
 
 			virtual Bool IsError() = 0;
 			virtual SNSType GetSNSType() = 0;
-			virtual NotNullPtr<Text::String> GetChannelId() const = 0;
-			virtual NotNullPtr<Text::String> GetName() const = 0;
+			virtual NN<Text::String> GetChannelId() const = 0;
+			virtual NN<Text::String> GetName() const = 0;
 			virtual UTF8Char *GetDirName(UTF8Char *dirName) = 0;
-			virtual UOSInt GetCurrItems(NotNullPtr<Data::ArrayList<SNSItem*>> itemList) = 0;
+			virtual UOSInt GetCurrItems(NN<Data::ArrayList<SNSItem*>> itemList) = 0;
 			virtual UTF8Char *GetItemShortId(UTF8Char *buff, SNSItem *item) = 0;
 			virtual Int32 GetMinIntevalMS() = 0;
 			virtual Bool Reload() = 0;
@@ -50,7 +50,7 @@ namespace Net
 			static Text::CStringNN SNSTypeGetName(SNSType snsType);
 			static SNSType SNSTypeFromName(Text::CStringNN name);
 
-			static SNSItem *CreateItem(NotNullPtr<Text::String> id, Int64 msgTime, Text::String *title, NotNullPtr<Text::String> message, Text::String *msgLink, Text::String *imgURL, Text::String *videoURL);
+			static SNSItem *CreateItem(NN<Text::String> id, Int64 msgTime, Text::String *title, NN<Text::String> message, Text::String *msgLink, Text::String *imgURL, Text::String *videoURL);
 			static void FreeItem(SNSItem *item);
 		};
 	}

@@ -6,12 +6,12 @@
 #include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
 
-void Net::EthernetWebHandler::AppendHeader(NotNullPtr<Text::StringBuilderUTF8> sbOut)
+void Net::EthernetWebHandler::AppendHeader(NN<Text::StringBuilderUTF8> sbOut)
 {
 	sbOut->AppendC(UTF8STRC("<html><head><title>NetRAWCapture</title></head><body>\r\n"));
 }
 
-void Net::EthernetWebHandler::AppendMenu(NotNullPtr<Text::StringBuilderUTF8> sbOut)
+void Net::EthernetWebHandler::AppendMenu(NN<Text::StringBuilderUTF8> sbOut)
 {
 	Net::EthernetAnalyzer::AnalyzeType atype = this->analyzer->GetAnalyzeType();
 	sbOut->AppendC(UTF8STRC("<table border=\"1\"><tr>"));
@@ -36,12 +36,12 @@ void Net::EthernetWebHandler::AppendMenu(NotNullPtr<Text::StringBuilderUTF8> sbO
 	sbOut->AppendC(UTF8STRC("</tr></table>\r\n"));
 }
 
-void Net::EthernetWebHandler::AppendFooter(NotNullPtr<Text::StringBuilderUTF8> sbOut)
+void Net::EthernetWebHandler::AppendFooter(NN<Text::StringBuilderUTF8> sbOut)
 {
 	sbOut->AppendC(UTF8STRC("</body></html>"));
 }
 
-Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
+Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -49,8 +49,8 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, NotNul
 	{
 		UOSInt i;
 		UOSInt j;
-		NotNullPtr<const Data::ReadingListNN<Net::EthernetAnalyzer::MACStatus>> macList;
-		NotNullPtr<Net::EthernetAnalyzer::MACStatus> mac;
+		NN<const Data::ReadingListNN<Net::EthernetAnalyzer::MACStatus>> macList;
+		NN<Net::EthernetAnalyzer::MACStatus> mac;
 		const Net::MACInfo::MACEntry *macInfo;
 		Text::StringBuilderUTF8 sb;
 		AppendHeader(sb);
@@ -167,7 +167,7 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, NotNul
 	return true;
 }
 
-Bool __stdcall Net::EthernetWebHandler::IPTransferReq(EthernetWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
+Bool __stdcall Net::EthernetWebHandler::IPTransferReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -175,8 +175,8 @@ Bool __stdcall Net::EthernetWebHandler::IPTransferReq(EthernetWebHandler *me, No
 	{
 		UOSInt i;
 		UOSInt j;
-		NotNullPtr<const Data::ReadingListNN<Net::EthernetAnalyzer::IPTranStatus>> ipTranList;
-		NotNullPtr<Net::EthernetAnalyzer::IPTranStatus> ipTran;
+		NN<const Data::ReadingListNN<Net::EthernetAnalyzer::IPTranStatus>> ipTranList;
+		NN<Net::EthernetAnalyzer::IPTranStatus> ipTran;
 		Text::StringBuilderUTF8 sb;
 		AppendHeader(sb);
 		me->AppendMenu(sb);
@@ -230,7 +230,7 @@ Bool __stdcall Net::EthernetWebHandler::IPTransferReq(EthernetWebHandler *me, No
 	return true;
 }
 
-Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(EthernetWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
+Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -240,7 +240,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(EthernetWebHandler *me, NotN
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
 		Data::ArrayListNN<Text::String> nameList;
-		NotNullPtr<Text::String> name;
+		NN<Text::String> name;
 		UOSInt nameLen;
 
 		AppendHeader(sb);
@@ -277,7 +277,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(EthernetWebHandler *me, NotN
 		if ((sptr = req->GetQueryValueStr(CSTR("qry"), sbuff, 128)) != 0)
 		{
 			Data::ArrayListNN<Net::DNSClient::RequestAnswer> ansList;
-			NotNullPtr<Net::DNSClient::RequestAnswer> ans;
+			NN<Net::DNSClient::RequestAnswer> ans;
 			Data::DateTime reqTime;
 			UInt32 ttl;
 			if (me->analyzer->DNSReqv4GetInfo(CSTRP(sbuff, sptr), ansList, reqTime, ttl))
@@ -343,7 +343,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(EthernetWebHandler *me, NotN
 	return true;
 }
 
-Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
+Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -353,7 +353,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, NotN
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
 		Data::ArrayListNN<Text::String> nameList;
-		NotNullPtr<Text::String> name;
+		NN<Text::String> name;
 		UOSInt nameLen;
 
 		AppendHeader(sb);
@@ -390,7 +390,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, NotN
 		if ((sptr = req->GetQueryValueStr(CSTR("qry"), sbuff, 128)) != 0)
 		{
 			Data::ArrayListNN<Net::DNSClient::RequestAnswer> ansList;
-			NotNullPtr<Net::DNSClient::RequestAnswer> ans;
+			NN<Net::DNSClient::RequestAnswer> ans;
 			Data::DateTime reqTime;
 			UInt32 ttl;
 			if (me->analyzer->DNSReqv6GetInfo(CSTRP(sbuff, sptr), ansList, reqTime, ttl))
@@ -456,7 +456,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, NotN
 	return true;
 }
 
-Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(EthernetWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
+Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -466,7 +466,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(EthernetWebHandler *me, Not
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
 		Data::ArrayListNN<Text::String> nameList;
-		NotNullPtr<Text::String> name;
+		NN<Text::String> name;
 		UOSInt nameLen;
 
 		AppendHeader(sb);
@@ -503,7 +503,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(EthernetWebHandler *me, Not
 		if ((sptr = req->GetQueryValueStr(CSTR("qry"), sbuff, 128)) != 0)
 		{
 			Data::ArrayListNN<Net::DNSClient::RequestAnswer> ansList;
-			NotNullPtr<Net::DNSClient::RequestAnswer> ans;
+			NN<Net::DNSClient::RequestAnswer> ans;
 			Data::DateTime reqTime;
 			UInt32 ttl;
 			if (me->analyzer->DNSReqOthGetInfo(CSTRP(sbuff, sptr), ansList, reqTime, ttl))
@@ -569,7 +569,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(EthernetWebHandler *me, Not
 	return true;
 }
 
-Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(EthernetWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
+Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -579,7 +579,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(EthernetWebHandler *me, Not
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
 		Data::ArrayListNN<Net::EthernetAnalyzer::DNSTargetInfo> targetList;
-		NotNullPtr<Net::EthernetAnalyzer::DNSTargetInfo> target;
+		NN<Net::EthernetAnalyzer::DNSTargetInfo> target;
 		UInt32 targetIP = 0;
 		OSInt targetIndex = -1;
 
@@ -659,7 +659,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(EthernetWebHandler *me, Not
 	return true;
 }
 
-Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
+Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -669,8 +669,8 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, Not
 		UOSInt j;
 		OSInt dnsCliInd = -1;
 		UInt32 qryVal = 0;
-		NotNullPtr<const Data::ReadingListNN<Net::EthernetAnalyzer::DNSClientInfo>> dnsCliList;
-		NotNullPtr<Net::EthernetAnalyzer::DNSClientInfo> dnsCli;
+		NN<const Data::ReadingListNN<Net::EthernetAnalyzer::DNSClientInfo>> dnsCliList;
+		NN<Net::EthernetAnalyzer::DNSClientInfo> dnsCli;
 		Text::StringBuilderUTF8 sb;
 		AppendHeader(sb);
 		me->AppendMenu(sb);
@@ -711,7 +711,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, Not
 		sb.AppendC(UTF8STRC("</td><td>\r\n"));
 		if (dnsCliInd != -1)
 		{
-			NotNullPtr<Net::EthernetAnalyzer::DNSCliHourInfo> hourInfo;
+			NN<Net::EthernetAnalyzer::DNSCliHourInfo> hourInfo;
 			dnsCli = dnsCliList->GetItemNoCheck((UOSInt)dnsCliInd);
 			sptr = Net::SocketUtil::GetAddrName(sbuff, dnsCli->addr);
 			sb.AppendP(sbuff, sptr);
@@ -756,7 +756,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, Not
 	return true;
 }
 
-Bool __stdcall Net::EthernetWebHandler::DHCPReq(EthernetWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
+Bool __stdcall Net::EthernetWebHandler::DHCPReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -765,8 +765,8 @@ Bool __stdcall Net::EthernetWebHandler::DHCPReq(EthernetWebHandler *me, NotNullP
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
-		NotNullPtr<const Data::ReadingListNN<Net::EthernetAnalyzer::DHCPInfo>> dhcpList;
-		NotNullPtr<Net::EthernetAnalyzer::DHCPInfo> dhcp;
+		NN<const Data::ReadingListNN<Net::EthernetAnalyzer::DHCPInfo>> dhcpList;
+		NN<Net::EthernetAnalyzer::DHCPInfo> dhcp;
 		const Net::MACInfo::MACEntry *macInfo;
 		Text::StringBuilderUTF8 sb;
 		AppendHeader(sb);
@@ -868,7 +868,7 @@ Bool __stdcall Net::EthernetWebHandler::DHCPReq(EthernetWebHandler *me, NotNullP
 	return true;
 }
 
-Bool __stdcall Net::EthernetWebHandler::IPLogReq(EthernetWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
+Bool __stdcall Net::EthernetWebHandler::IPLogReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -878,8 +878,8 @@ Bool __stdcall Net::EthernetWebHandler::IPLogReq(EthernetWebHandler *me, NotNull
 		UOSInt j;
 		OSInt ipLogInd = -1;
 		UInt32 qryVal = 0;
-		NotNullPtr<const Data::ReadingListNN<Net::EthernetAnalyzer::IPLogInfo>> ipLogList;
-		NotNullPtr<Net::EthernetAnalyzer::IPLogInfo> ipLog;
+		NN<const Data::ReadingListNN<Net::EthernetAnalyzer::IPLogInfo>> ipLogList;
+		NN<Net::EthernetAnalyzer::IPLogInfo> ipLog;
 		Text::StringBuilderUTF8 sb;
 		AppendHeader(sb);
 		me->AppendMenu(sb);
@@ -924,7 +924,7 @@ Bool __stdcall Net::EthernetWebHandler::IPLogReq(EthernetWebHandler *me, NotNull
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipLog->ip);
 			sb.AppendP(sbuff, sptr);
 			Sync::MutexUsage mutUsage(ipLog->mut);
-			Data::ArrayIterator<NotNullPtr<Text::String>> it = ipLog->logList.Iterator();
+			Data::ArrayIterator<NN<Text::String>> it = ipLog->logList.Iterator();
 			while (it.HasNext())
 			{
 				sb.AppendC(UTF8STRC("<br/>"));
@@ -949,7 +949,7 @@ Bool __stdcall Net::EthernetWebHandler::IPLogReq(EthernetWebHandler *me, NotNull
 	return true;
 }
 
-Bool Net::EthernetWebHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Net::EthernetWebHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	if (this->DoRequest(req, resp, subReq))
 	{

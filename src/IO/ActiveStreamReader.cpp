@@ -5,7 +5,7 @@
 
 UInt32 __stdcall IO::ActiveStreamReader::ReadThread(AnyType obj)
 {
-	NotNullPtr<IO::ActiveStreamReader> me = obj.GetNN<IO::ActiveStreamReader>();
+	NN<IO::ActiveStreamReader> me = obj.GetNN<IO::ActiveStreamReader>();
 	Int32 i = 0;
 	OptOut<BottleNeckType> bnt;
 	me->started = true;
@@ -72,7 +72,7 @@ void IO::ActiveStreamReader::SetUserData(AnyType userData)
 	this->userData = userData;
 }
 
-void IO::ActiveStreamReader::ReadStream(NotNullPtr<IO::Stream> stm, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
+void IO::ActiveStreamReader::ReadStream(NN<IO::Stream> stm, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt)
 {
 	Int32 i = this->currIndex;
 	UOSInt readSize = this->buffSize;
@@ -104,7 +104,7 @@ void IO::ActiveStreamReader::ReadStream(NotNullPtr<IO::Stream> stm, OptOut<IO::A
 	this->currIndex = (i + 1) % ACTIVESTREAMREADER_BUFFCNT;
 }
 
-void IO::ActiveStreamReader::ReadStreamData(NotNullPtr<IO::StreamData> stmData, OptOut<BottleNeckType> bnt)
+void IO::ActiveStreamReader::ReadStreamData(NN<IO::StreamData> stmData, OptOut<BottleNeckType> bnt)
 {
 	Int32 i = this->currIndex;
 	UInt64 currOfst = 0;

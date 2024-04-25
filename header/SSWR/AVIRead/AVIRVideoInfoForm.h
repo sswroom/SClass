@@ -30,29 +30,29 @@ namespace SSWR
 				Sync::Event *evt;
 			} DecodeStatus;
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Media::MediaFile *currFile;
 			Data::ArrayList<DecodeStatus*> *decStatus;
 
-			NotNullPtr<UI::GUIPanel> pnlFile;
-			NotNullPtr<UI::GUILabel> lblFile;
-			NotNullPtr<UI::GUITextBox> txtFile;
-			NotNullPtr<UI::GUIButton> btnDecode;
-			NotNullPtr<UI::GUILabel> lblDecode;
-			NotNullPtr<UI::GUIListBox> lbStream;
-			NotNullPtr<UI::GUIHSplitter> hspStream;
-			NotNullPtr<UI::GUITextBox> txtStream;
+			NN<UI::GUIPanel> pnlFile;
+			NN<UI::GUILabel> lblFile;
+			NN<UI::GUITextBox> txtFile;
+			NN<UI::GUIButton> btnDecode;
+			NN<UI::GUILabel> lblDecode;
+			NN<UI::GUIListBox> lbStream;
+			NN<UI::GUIHSplitter> hspStream;
+			NN<UI::GUITextBox> txtStream;
 
 			static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 			static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange frChg, AnyType userData);
 			static void __stdcall OnAudioEnd(AnyType userData);
-			static void __stdcall OnFileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnStreamChg(AnyType userObj);
 			static void __stdcall OnDecodeClicked(AnyType userObj);
 			Bool OpenFile(Text::CStringNN fileName);
 			void ClearDecode();
 		public:
-			AVIRVideoInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRVideoInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRVideoInfoForm();
 
 			virtual void OnMonitorChanged();

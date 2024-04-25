@@ -63,7 +63,7 @@ Media::StaticImage *Media::ScreenCapturer::CaptureScreen(MonitorHandle *hMon)
     XImage *image = XGetImage(dis, drawable, 0, 0, (UInt32)scr->width, (UInt32)scr->height, AllPlanes, ZPixmap);
 	if (image)
 	{
-		NotNullPtr<Media::MonitorColorManager> monColor = this->colorMgr->GetMonColorManager(hMon);
+		NN<Media::MonitorColorManager> monColor = this->colorMgr->GetMonColorManager(hMon);
 		Bool valid = true;
 		Media::FrameInfo info;
 		info.fourcc = 0;
@@ -83,7 +83,7 @@ Media::StaticImage *Media::ScreenCapturer::CaptureScreen(MonitorHandle *hMon)
 		info.par2 = 1.0;
 		info.hdpi = this->monMgr->GetMonitorHDPI(hMon);;
 		info.vdpi = info.hdpi;
-		NotNullPtr<const Media::IColorHandler::RGBPARAM2> params = monColor->GetRGBParam();
+		NN<const Media::IColorHandler::RGBPARAM2> params = monColor->GetRGBParam();
 		info.color.Set(params->monProfile);
 		info.rotateType = Media::RotateType::None;
 		

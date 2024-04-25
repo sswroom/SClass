@@ -4,7 +4,7 @@
 #include "Math/Geometry/VectorString.h"
 #include "Text/MyString.h"
 
-Math::Geometry::VectorString::VectorString(UInt32 srid, NotNullPtr<Text::String> s, Math::Coord2DDbl pos, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align) : Vector2D(srid)
+Math::Geometry::VectorString::VectorString(UInt32 srid, NN<Text::String> s, Math::Coord2DDbl pos, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align) : Vector2D(srid)
 {
 	this->s = s->Clone();
 	this->pos = pos;
@@ -37,9 +37,9 @@ Math::Coord2DDbl Math::Geometry::VectorString::GetCenter() const
 	return this->pos;
 }
 
-NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::VectorString::Clone() const
+NN<Math::Geometry::Vector2D> Math::Geometry::VectorString::Clone() const
 {
-	NotNullPtr<Math::Geometry::VectorString> vstr;
+	NN<Math::Geometry::VectorString> vstr;
 	NEW_CLASSNN(vstr, Math::Geometry::VectorString(this->srid, this->s, this->pos, this->angleDegree, this->buffSize, this->align));
 	return vstr;
 }
@@ -62,7 +62,7 @@ Double Math::Geometry::VectorString::CalArea() const
 	return 0;
 }
 
-Bool Math::Geometry::VectorString::JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec)
+Bool Math::Geometry::VectorString::JoinVector(NN<const Math::Geometry::Vector2D> vec)
 {
 	return false;
 }
@@ -82,13 +82,13 @@ Bool Math::Geometry::VectorString::GetMBounds(OutParam<Double> min, OutParam<Dou
 	return false;
 }
 
-void Math::Geometry::VectorString::Convert(NotNullPtr<Math::CoordinateConverter> converter)
+void Math::Geometry::VectorString::Convert(NN<Math::CoordinateConverter> converter)
 {
 	this->pos = converter->Convert2D(this->pos);
 	this->srid = converter->GetOutputSRID();
 }
 
-Bool Math::Geometry::VectorString::Equals(NotNullPtr<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
+Bool Math::Geometry::VectorString::Equals(NN<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
 {
 	if (vec->GetVectorType() != VectorType::String)
 	{
@@ -111,7 +111,7 @@ Bool Math::Geometry::VectorString::Equals(NotNullPtr<const Math::Geometry::Vecto
 			this->s->Equals(vstr->s);
 }
 
-UOSInt Math::Geometry::VectorString::GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
+UOSInt Math::Geometry::VectorString::GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
 {
 	coordList->Add(this->pos);
 	return 1;
@@ -137,7 +137,7 @@ UOSInt Math::Geometry::VectorString::GetPointCount() const
 	return 1;
 }
 
-NotNullPtr<Text::String> Math::Geometry::VectorString::GetString() const
+NN<Text::String> Math::Geometry::VectorString::GetString() const
 {
 	return this->s;
 }

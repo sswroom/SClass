@@ -9,9 +9,9 @@ namespace Text
 		class IStyleCtrl
 		{
 		public:
-			virtual OSInt GetStyleIndex(NotNullPtr<CellStyle> style) const = 0;
+			virtual OSInt GetStyleIndex(NN<CellStyle> style) const = 0;
 			virtual Optional<CellStyle> GetStyle(UOSInt index) const = 0;
-			virtual NotNullPtr<CellStyle> FindOrCreateStyle(NotNullPtr<const CellStyle> tmpStyle) = 0;
+			virtual NN<CellStyle> FindOrCreateStyle(NN<const CellStyle> tmpStyle) = 0;
 		};
 	}
 }

@@ -9,11 +9,11 @@ typedef enum
 
 void __stdcall SSWR::AVIRead::AVIRChartForm::OnSizeChanged(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChartForm>();
+	NN<SSWR::AVIRead::AVIRChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRChartForm>();
 	Math::Size2D<UOSInt> sz = me->pbMain->GetSizeP();
 	if (sz.x == 0 || sz.y == 0)
 		return;
-	NotNullPtr<Media::DrawImage> gimg;
+	NN<Media::DrawImage> gimg;
 	if (gimg.Set(me->core->GetDrawEngine()->CreateImage32(sz, Media::AT_NO_ALPHA)))
 	{
 		Double dpi = me->core->GetMonitorHDPI(me->GetHMonitor());
@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRChartForm::OnSizeChanged(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRChartForm::AVIRChartForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Data::Chart *chart) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRChartForm::AVIRChartForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Data::Chart *chart) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Chart Form"));
 	this->SetFont(0, 0, 8.25, false);

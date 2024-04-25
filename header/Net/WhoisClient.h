@@ -10,11 +10,11 @@ namespace Net
 	{
 	protected:
 		UInt32 whoisIP;
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Text::String *prefix;
 
 	public:
-		WhoisClient(NotNullPtr<Net::SocketFactory> sockf, UInt32 whoisIP, Text::CString prefix);
+		WhoisClient(NN<Net::SocketFactory> sockf, UInt32 whoisIP, Text::CString prefix);
 		virtual ~WhoisClient();
 
 		virtual WhoisRecord *RequestIP(UInt32 ip, Data::Duration timeout);

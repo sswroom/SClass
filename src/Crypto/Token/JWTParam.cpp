@@ -50,7 +50,7 @@ Optional<Text::String> Crypto::Token::JWTParam::GetIssuer() const
 
 Bool Crypto::Token::JWTParam::IsIssuerValid(const UTF8Char *issuer, UOSInt issuerLen) const
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	return !this->iss.SetTo(s) || s->Equals(issuer, issuerLen);
 }
 
@@ -123,9 +123,9 @@ Bool Crypto::Token::JWTParam::IsExpired(Data::Timestamp ts) const
 	return t < this->nbf || t >= this->exp;
 }
 
-void Crypto::Token::JWTParam::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Crypto::Token::JWTParam::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	Bool found = false;
 	sb->AppendC(UTF8STRC("Params ["));
 	if (this->iss.SetTo(s))

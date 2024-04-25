@@ -11,8 +11,8 @@ namespace DB
 	class DBQueue
 	{
 	public:
-		typedef void (__stdcall *DBReadHdlr)(AnyType userData, AnyType userData2, NotNullPtr<DB::DBTool> db, Optional<DB::DBReader> r);
-		typedef Bool (__stdcall *DBToolHdlr)(AnyType userData, AnyType userData2, NotNullPtr<DB::DBTool> db);
+		typedef void (__stdcall *DBReadHdlr)(AnyType userData, AnyType userData2, NN<DB::DBTool> db, Optional<DB::DBReader> r);
+		typedef Bool (__stdcall *DBToolHdlr)(AnyType userData, AnyType userData2, NN<DB::DBTool> db);
 
 		enum class Priority
 		{
@@ -51,7 +51,7 @@ namespace DB
 		class SQLCmd : public IDBCmd
 		{
 		public:
-			NotNullPtr<Text::String> str;
+			NN<Text::String> str;
 			DBReadHdlr hdlr;
 
 			Int32 progId;
@@ -63,7 +63,7 @@ namespace DB
 			virtual ~SQLCmd();			
 			virtual CmdType GetCmdType() const;
 			virtual Int32 GetProgId() const;
-			NotNullPtr<Text::String> GetSQL() const;
+			NN<Text::String> GetSQL() const;
 		};
 
 		class SQLGroup : public IDBCmd
@@ -120,7 +120,7 @@ namespace DB
 	public:
 		UInt64 sqlCnt;
 		UInt64 lostCnt;
-		NotNullPtr<Text::String> name;
+		NN<Text::String> name;
 
 	public:
 		IO::LogTool *log;
@@ -132,12 +132,12 @@ namespace DB
 		UOSInt nextDB;
 
 	public:
-		DBQueue(NotNullPtr<DBTool> db, IO::LogTool *log, Text::CString name, UOSInt dbSize);
-		DBQueue(NotNullPtr<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, NotNullPtr<Text::String> name, UOSInt dbSize);
-		DBQueue(NotNullPtr<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, Text::CString name, UOSInt dbSize);
+		DBQueue(NN<DBTool> db, IO::LogTool *log, Text::CString name, UOSInt dbSize);
+		DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, NN<Text::String> name, UOSInt dbSize);
+		DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, Text::CString name, UOSInt dbSize);
 		~DBQueue();
 
-		void AddDB(NotNullPtr<DB::DBTool> db);
+		void AddDB(NN<DB::DBTool> db);
 
 		void ToStop();
 		void AddSQL(const UTF8Char *sql, UOSInt sqlLen);
@@ -166,7 +166,7 @@ namespace DB
 	{
 	private:
 		DBQueue *dbQ;
-		NotNullPtr<DBTool> db;
+		NN<DBTool> db;
 		Sync::Event evt;
 		Sync::Mutex mut;
 		Bool running;
@@ -174,14 +174,14 @@ namespace DB
 		Data::DateTime procTime;
 
 	public:
-		DBHandler(DBQueue *dbQ, NotNullPtr<DBTool> db);
+		DBHandler(DBQueue *dbQ, NN<DBTool> db);
 		~DBHandler();
 
 	public:
 		UInt32 GetDataCnt();
 
 	private:
-		void WriteError(const UTF8Char *errMsg, NotNullPtr<Text::String> sqlCmd);
+		void WriteError(const UTF8Char *errMsg, NN<Text::String> sqlCmd);
 		static UInt32 __stdcall ProcessSQL(AnyType userObj);
 
 	public:

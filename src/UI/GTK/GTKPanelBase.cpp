@@ -4,13 +4,13 @@
 #include "UI/GTK/GTKPanelBase.h"
 #include <gtk/gtk.h>
 
-UI::GTK::GTKPanelBase::GTKPanelBase(NotNullPtr<UI::GUIPanel> master, NotNullPtr<UI::GUICore> ui, ControlHandle *parentHWnd)
+UI::GTK::GTKPanelBase::GTKPanelBase(NN<UI::GUIPanel> master, NN<UI::GUICore> ui, ControlHandle *parentHWnd)
 {
 	this->master = master;
 	this->master->SetHandle((ControlHandle*)gtk_fixed_new());
 }
 
-UI::GTK::GTKPanelBase::GTKPanelBase(NotNullPtr<UI::GUIPanel> master, NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent)
+UI::GTK::GTKPanelBase::GTKPanelBase(NN<UI::GUIPanel> master, NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent)
 {
 	this->master = master;
 	this->master->SetHandle((ControlHandle*)gtk_fixed_new());

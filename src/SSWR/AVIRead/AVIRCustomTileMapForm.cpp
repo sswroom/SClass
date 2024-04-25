@@ -6,7 +6,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRCustomTileMapForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCustomTileMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCustomTileMapForm>();
+	NN<SSWR::AVIRead::AVIRCustomTileMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCustomTileMapForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Int32 minLevel;
@@ -60,7 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRCustomTileMapForm::OnOKClicked(AnyType userObj
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-SSWR::AVIRead::AVIRCustomTileMapForm::AVIRCustomTileMapForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl) : UI::GUIForm(parent, 1024, 120, ui)
+SSWR::AVIRead::AVIRCustomTileMapForm::AVIRCustomTileMapForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl) : UI::GUIForm(parent, 1024, 120, ui)
 {
 	this->SetText(CSTR("Custom Tile Map"));
 	this->SetFont(0, 0, 8.25, false);

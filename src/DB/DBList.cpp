@@ -14,8 +14,8 @@ DB::DBList::~DBList()
 
 void DB::DBList::Close()
 {
-	NotNullPtr<DBInfo> db;
-	Data::ArrayIterator<NotNullPtr<DBInfo>> it = this->dbList.Iterator();
+	NN<DBInfo> db;
+	Data::ArrayIterator<NN<DBInfo>> it = this->dbList.Iterator();
 	while (it.HasNext())
 	{
 		db = it.Next();
@@ -25,9 +25,9 @@ void DB::DBList::Close()
 	this->dbList.Clear();
 }
 
-void DB::DBList::AddDB(NotNullPtr<DB::DBTool> db)
+void DB::DBList::AddDB(NN<DB::DBTool> db)
 {
-	NotNullPtr<DBInfo> dbInfo;
+	NN<DBInfo> dbInfo;
 	Sync::MutexUsage mutUsage(this->dbMut);
 	dbInfo = MemAllocNN(DBInfo);
 	dbInfo->db = db;
@@ -38,7 +38,7 @@ void DB::DBList::AddDB(NotNullPtr<DB::DBTool> db)
 Optional<DB::DBTool> DB::DBList::UseDB()
 {
 	Optional<DBInfo> dbInfo;
-	NotNullPtr<DBInfo> nndbInfo;
+	NN<DBInfo> nndbInfo;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -73,10 +73,10 @@ Optional<DB::DBTool> DB::DBList::UseDB()
 	}
 }
 
-void DB::DBList::UnuseDB(NotNullPtr<DB::DBTool> db)
+void DB::DBList::UnuseDB(NN<DB::DBTool> db)
 {
 	UOSInt i;
-	NotNullPtr<DBInfo> dbInfo;
+	NN<DBInfo> dbInfo;
 	Sync::MutexUsage mutUsage(this->dbMut);
 	i = this->dbList.GetCount();
 	while (i-- > 0)

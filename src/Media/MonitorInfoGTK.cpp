@@ -106,7 +106,7 @@ Media::MonitorInfo::~MonitorInfo()
 	SDEL_STRING(this->monId);
 }
 
-NotNullPtr<Text::String> Media::MonitorInfo::GetName() const
+NN<Text::String> Media::MonitorInfo::GetName() const
 {
 	return this->name;
 }

@@ -8,7 +8,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 
-UTF8Char *IO::FileLog::GetNewName(UTF8Char *buff, NotNullPtr<Data::DateTimeUtil::TimeValue> time, UInt32 nanosec)
+UTF8Char *IO::FileLog::GetNewName(UTF8Char *buff, NN<Data::DateTimeUtil::TimeValue> time, UInt32 nanosec)
 {
 	UTF8Char *currName;
 
@@ -127,7 +127,7 @@ void IO::FileLog::Init(LogType style, LogGroup groupStyle, const Char *dateForma
 	log->WriteSignature();
 }
 
-IO::FileLog::FileLog(NotNullPtr<Text::String> fileName, LogType style, LogGroup groupStyle, const Char *dateFormat)
+IO::FileLog::FileLog(NN<Text::String> fileName, LogType style, LogGroup groupStyle, const Char *dateFormat)
 {
 	this->fileName = fileName->Clone();
 	this->Init(style, groupStyle, dateFormat);

@@ -8,11 +8,11 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	IO::Device::BME280 *bme280;
 	IO::ConsoleWriter console;
-	NotNullPtr<IO::I2CChannel> channel;
+	NN<IO::I2CChannel> channel;
 	if (!channel.Set(IO::Device::BME280::CreateDefChannel(1)))
 	{
 		console.WriteLineC(UTF8STRC("I2C bus not found"));

@@ -101,7 +101,7 @@ UOSInt Data::CircularByteBuff::GetBytes(UInt8 *buff)
 	}
 }
 
-void Data::CircularByteBuff::ToString(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Data::CircularByteBuff::ToString(NN<Text::StringBuilderUTF8> sb)
 {
 	if (this->indexBegin <= this->indexEnd)
 	{

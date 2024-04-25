@@ -16,23 +16,23 @@ namespace SSWR
 		class AVIRSelCANForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<IO::CANHandler> hdlr;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<IO::CANHandler> hdlr;
 			IO::CANListener *listener;
 			Optional<Net::SSLEngine> ssl;
 
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpAXCAN;
-			NotNullPtr<UI::GUILabel> lblAXCANBitRate;
-			NotNullPtr<UI::GUIComboBox> cboAXCANBitRate;
-			NotNullPtr<UI::GUIButton> btnAXCANSerial;
-			NotNullPtr<UI::GUIButton> btnAXCANFile;
+			NN<UI::GUITabPage> tpAXCAN;
+			NN<UI::GUILabel> lblAXCANBitRate;
+			NN<UI::GUIComboBox> cboAXCANBitRate;
+			NN<UI::GUIButton> btnAXCANSerial;
+			NN<UI::GUIButton> btnAXCANFile;
 
 			static void __stdcall OnAXCANSerialClicked(AnyType userObj);
 			static void __stdcall OnAXCANFileClicked(AnyType userObj);
 		public:
-			AVIRSelCANForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, NotNullPtr<IO::CANHandler> hdlr);
+			AVIRSelCANForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, NN<IO::CANHandler> hdlr);
 			virtual ~AVIRSelCANForm();
 
 			virtual void OnMonitorChanged();

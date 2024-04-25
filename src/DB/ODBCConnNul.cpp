@@ -86,7 +86,7 @@ DB::ODBCConn::ODBCConn(Text::CStringNN dsn, Text::CString uid, Text::CString pwd
 	this->Connect(this->dsn, this->uid, this->pwd, this->schema);
 }
 
-DB::ODBCConn::ODBCConn(NotNullPtr<Text::String> dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log) : DB::DBConn(dsn)
+DB::ODBCConn::ODBCConn(NN<Text::String> dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log) : DB::DBConn(dsn)
 {
 	this->log = log;
 	this->connStr = 0;
@@ -164,7 +164,7 @@ void DB::ODBCConn::ForceTz(Int8 tzQhr)
 	this->tzQhr = tzQhr;
 }
 
-void DB::ODBCConn::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
+void DB::ODBCConn::GetConnName(NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("ODBC:"));
 	if (this->connStr)
@@ -219,7 +219,7 @@ void DB::ODBCConn::CloseReader(DB::DBReader *r)
 {
 }
 
-void DB::ODBCConn::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void DB::ODBCConn::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 }
 
@@ -284,7 +284,7 @@ void DB::ODBCConn::ShowSQLError(const UTF16Char *state, const UTF16Char *errMsg)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("ODBC Error: ["));
-	NotNullPtr<Text::String> s = Text::String::NewNotNull(state);
+	NN<Text::String> s = Text::String::NewNotNull(state);
 	sb.Append(s);
 	s->Release();
 	sb.AppendC(UTF8STRC("] "));
@@ -333,7 +333,7 @@ IO::ConfigFile *DB::ODBCConn::GetDriverInfo(Text::CString driverName)
 	return 0;
 }
 
-DB::DBTool *DB::ODBCConn::CreateDBTool(NotNullPtr<Text::String> dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *DB::ODBCConn::CreateDBTool(NN<Text::String> dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log, Text::CString logPrefix)
 {
 	return 0;
 }

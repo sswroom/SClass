@@ -11,7 +11,7 @@ namespace IO
 		private:
 			static Bool __stdcall CheckATCommand(void *userObj, const UTF8Char *cmd, UOSInt cmdLen);
 		public:
-			TelitLE910(NotNullPtr<IO::ATCommandChannel> channel, Bool needRelease);
+			TelitLE910(NN<IO::ATCommandChannel> channel, Bool needRelease);
 			virtual ~TelitLE910();
 
 			Bool GPSIsPowerUp(OutParam<Bool> result); //AT$GPSP?

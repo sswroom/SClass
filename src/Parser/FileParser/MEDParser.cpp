@@ -20,7 +20,7 @@ Int32 Parser::FileParser::MEDParser::GetName()
 	return *(Int32*)"MEDP";
 }
 
-void Parser::FileParser::MEDParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::MEDParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
@@ -33,7 +33,7 @@ IO::ParserType Parser::FileParser::MEDParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::MEDParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::MEDParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt32 recCnt;
 	UInt32 recSize;

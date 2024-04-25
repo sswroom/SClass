@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTVControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTVControlForm>();
+	NN<SSWR::AVIRead::AVIRTVControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTVControlForm>();
 	if (me->port)
 	{
 		me->port->Close();
@@ -80,14 +80,14 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTVControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTVControlForm>();
+	NN<SSWR::AVIRead::AVIRTVControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTVControlForm>();
 	if (me->tvCtrl)
 	{
 		Text::StringBuilderUTF8 sb;
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
 		Int32 cmdValue;
-		NotNullPtr<CommandInfo> cmdInfo;
+		NN<CommandInfo> cmdInfo;
 		if (!me->cboCommand->GetSelectedItem().GetOpt<CommandInfo>().SetTo(cmdInfo))
 			return;
 		sb.AppendC(UTF8STRC("Sending "));
@@ -165,10 +165,10 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnCmdChanged(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTVControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTVControlForm>();
+	NN<SSWR::AVIRead::AVIRTVControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTVControlForm>();
 	if (me->tvCtrl)
 	{
-		NotNullPtr<CommandInfo> cmdInfo;
+		NN<CommandInfo> cmdInfo;
 		if (!me->cboCommand->GetSelectedItem().GetOpt<CommandInfo>().SetTo(cmdInfo))
 		{
 			me->txtCommand->SetReadOnly(true);
@@ -184,7 +184,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnCmdChanged(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;

@@ -550,7 +550,7 @@ void Media::Resizer::LanczosResizerH13_8::mt_collapse(UInt8 *inPt, UInt8 *outPt,
 
 UInt32 Media::Resizer::LanczosResizerH13_8::WorkerThread(AnyType obj)
 {
-	NotNullPtr<LanczosResizerH13_8> lr = obj.GetNN<LanczosResizerH13_8>();
+	NN<LanczosResizerH13_8> lr = obj.GetNN<LanczosResizerH13_8>();
 	Int32 threadId = lr->currId;
 	LRH13THREADSTAT *ts = &lr->stats[threadId];
 

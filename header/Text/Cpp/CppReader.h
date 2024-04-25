@@ -22,16 +22,16 @@ namespace Text
 			UOSInt currOfst;
 			EscapeType escapeType;
 
-			Bool ReadLineInner(NotNullPtr<Text::StringBuilderUTF8> sb);
-			Bool ReadWord(NotNullPtr<Text::StringBuilderUTF8> sb, Bool move);
+			Bool ReadLineInner(NN<Text::StringBuilderUTF8> sb);
+			Bool ReadWord(NN<Text::StringBuilderUTF8> sb, Bool move);
 		public:
-			CppReader(NotNullPtr<IO::Stream> stm);
+			CppReader(NN<IO::Stream> stm);
 			~CppReader();
 
-			Bool PeekWord(NotNullPtr<Text::StringBuilderUTF8> sb);
-			Bool NextWord(NotNullPtr<Text::StringBuilderUTF8> sb);
-			Bool ReadLine(NotNullPtr<Text::StringBuilderUTF8> sb);
-			Bool GetLastLineBreak(NotNullPtr<Text::StringBuilderUTF8> sb);
+			Bool PeekWord(NN<Text::StringBuilderUTF8> sb);
+			Bool NextWord(NN<Text::StringBuilderUTF8> sb);
+			Bool ReadLine(NN<Text::StringBuilderUTF8> sb);
+			Bool GetLastLineBreak(NN<Text::StringBuilderUTF8> sb);
 		};
 	}
 }

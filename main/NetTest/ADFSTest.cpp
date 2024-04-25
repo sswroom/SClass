@@ -17,7 +17,7 @@
 
 Optional<Net::SSLEngine> ssl;
 Bool initSucc;
-NotNullPtr<Net::WebServer::PrintLogWebHandler> logHdlr;
+NN<Net::WebServer::PrintLogWebHandler> logHdlr;
 
 class MyADFSService : public Net::WebServer::WebServiceHandler
 {
@@ -33,7 +33,7 @@ public:
 	}
 };
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff1[512];
 	UTF8Char sbuff2[512];
@@ -53,7 +53,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	sptr3 = IO::Path::AppendPath(sbuff3, sptr3, CSTR("SAMLCert.crt"));
 	sptr4 = IO::Path::GetProcessFileName(sbuff4);
 	sptr4 = IO::Path::AppendPath(sbuff4, sptr4, CSTR("SAMLCert.key"));
-	NotNullPtr<Net::SSLEngine> nnssl;
+	NN<Net::SSLEngine> nnssl;
 	if (ssl.SetTo(nnssl))
 	{
 		sptr1 = IO::Path::GetProcessFileName(sbuff1);
@@ -115,7 +115,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	if (initSucc)
 	{
 		MyADFSService *svcHdlr;
-		NotNullPtr<Net::WebServer::SAMLHandler> samlHdlr;
+		NN<Net::WebServer::SAMLHandler> samlHdlr;
 		Net::WebServer::SAMLConfig cfg;
 		cfg.serverHost = CSTRP(sbuff5, sptr5);
 		cfg.metadataPath = CSTR("/saml/metadata");

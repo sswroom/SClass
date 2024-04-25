@@ -3,16 +3,16 @@
 
 void __stdcall SSWR::AVIRead::AVIRSectorForm::OnParseClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSectorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSectorForm>();
-	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
-	NotNullPtr<IO::ParsedObject> pobj;
+	NN<SSWR::AVIRead::AVIRSectorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSectorForm>();
+	NN<Parser::ParserList> parsers = me->core->GetParserList();
+	NN<IO::ParsedObject> pobj;
 	if (pobj.Set(parsers->ParseObject(me->data)))
 	{
 		me->core->OpenObject(pobj);
 	}
 }
 
-SSWR::AVIRead::AVIRSectorForm::AVIRSectorForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::ISectorData> data) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRSectorForm::AVIRSectorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::ISectorData> data) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

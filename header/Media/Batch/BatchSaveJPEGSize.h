@@ -18,7 +18,7 @@ namespace Media
 			BatchSaveJPEGSize(UInt32 sizePercent);
 			virtual ~BatchSaveJPEGSize();
 			
-			virtual void ImageOutput(NotNullPtr<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN targetId);
+			virtual void ImageOutput(NN<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN targetId);
 		};
 	}
 }

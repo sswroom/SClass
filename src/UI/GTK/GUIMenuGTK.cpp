@@ -524,9 +524,9 @@ void UI::GUIMenu::AddSeperator()
 	gtk_widget_show(menuItem);
 }
 
-NotNullPtr<UI::GUIMenu> UI::GUIMenu::AddSubMenu(Text::CString name)
+NN<UI::GUIMenu> UI::GUIMenu::AddSubMenu(Text::CString name)
 {
-	NotNullPtr<UI::GUIMenu> subMenu;
+	NN<UI::GUIMenu> subMenu;
 	NEW_CLASSNN(subMenu, UI::GUIMenu(true));
 	this->subMenus.Add(subMenu);
 
@@ -570,11 +570,11 @@ void *UI::GUIMenu::GetHMenu()
 	return this->hMenu;
 }
 
-UOSInt UI::GUIMenu::GetAllKeys(NotNullPtr<Data::ArrayList<ShortcutKey*>> keys)
+UOSInt UI::GUIMenu::GetAllKeys(NN<Data::ArrayList<ShortcutKey*>> keys)
 {
 	UOSInt keyCnt = this->keys.GetCount();
 	keys->AddAll(this->keys);
-	NotNullPtr<GUIMenu> menu;
+	NN<GUIMenu> menu;
 	UOSInt j = this->subMenus.GetCount();
 	UOSInt i = 0;
 	while (i < j)
@@ -622,7 +622,7 @@ void UI::GUIMenu::SetDPI(Double hdpi, Double ddpi)
 
 void UI::GUIMenu::SetMenuForm(Optional<GUIForm> mnuForm)
 {
-	NotNullPtr<UI::GUIMenu> item;
+	NN<UI::GUIMenu> item;
 	UOSInt i;
 	this->mnuForm = mnuForm;
 	i = this->subMenus.GetCount();
@@ -637,7 +637,7 @@ void UI::GUIMenu::SetMenuForm(Optional<GUIForm> mnuForm)
 
 void UI::GUIMenu::EventMenuClick(UInt16 cmdId)
 {
-	NotNullPtr<GUIForm> frm;
+	NN<GUIForm> frm;
 	if (this->mnuForm.SetTo(frm))
 	{
 		frm->EventMenuClicked(cmdId);

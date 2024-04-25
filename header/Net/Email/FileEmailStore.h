@@ -14,7 +14,7 @@ namespace Net
 			{
 				Int64 id;
 				Data::ArrayListStringNN rcptList;
-				NotNullPtr<Text::String> fileName;
+				NN<Text::String> fileName;
 				const UTF8Char *uid;
 			};
 		private:
@@ -31,11 +31,11 @@ namespace Net
 			virtual ~FileEmailStore();
 
 			virtual Int64 NextEmailId();
-			virtual Bool NewEmail(Int64 id, NotNullPtr<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CStringNN serverName, NotNullPtr<const Net::Email::SMTPServer::MailStatus> mail);
-			virtual Bool NewEmail(Int64 id, NotNullPtr<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CStringNN serverName, NotNullPtr<const Text::MIMEObj::MailMessage> mail);
+			virtual Bool NewEmail(Int64 id, NN<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CStringNN serverName, NN<const Net::Email::SMTPServer::MailStatus> mail);
+			virtual Bool NewEmail(Int64 id, NN<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CStringNN serverName, NN<const Text::MIMEObj::MailMessage> mail);
 			virtual IO::StreamData *OpenEmailData(Int64 id);
 			virtual const UTF8Char *GetEmailUid(Int64 id);
-			virtual UOSInt GetRcptList(Int64 id, NotNullPtr<Data::ArrayListStringNN> rcptList);
+			virtual UOSInt GetRcptList(Int64 id, NN<Data::ArrayListStringNN> rcptList);
 			virtual Net::Email::MailController::RemoveStatus RemoveMessage(Text::CString userName, UOSInt msgIndex);
 			virtual Net::Email::EmailStore::EmailInfo *GetEmailByIndex(Text::CString userName, UOSInt msgIndex);
 			virtual void GetMessageStat(Text::CString userName, MessageStat *stat);

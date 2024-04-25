@@ -18,8 +18,8 @@ namespace Text
 		Data::ArrayList<Text::IMIMEObj *> attachObj;
 		Data::ArrayListStringNN attachName;
 
-		void AppendStr(NotNullPtr<Text::StringBuilderUTF8> sbc, Text::CString s);
-		void AppendStr(NotNullPtr<Text::StringBuilderUTF8> sbc, const WChar *s);
+		void AppendStr(NN<Text::StringBuilderUTF8> sbc, Text::CString s);
+		void AppendStr(NN<Text::StringBuilderUTF8> sbc, const WChar *s);
 		static Text::IMIMEObj *ParseContentHTML(const UInt8 *buff, UOSInt buffSize, UInt32 codePage, Text::CString htmlPath);
 	public:
 		MailCreator();
@@ -29,22 +29,22 @@ namespace Text
 		void SetFrom(Text::CString name, Text::CString address);
 		void SetReplyTo(const WChar *name, const WChar *address);
 		void ToAdd(const WChar *name, const WChar *address);
-		void ToAdd(Text::String *name, NotNullPtr<Text::String> address);
+		void ToAdd(Text::String *name, NN<Text::String> address);
 		void ToClear();
 		void CCAdd(const WChar *name, const WChar *address);
-		void CCAdd(Text::String *name, NotNullPtr<Text::String> address);
+		void CCAdd(Text::String *name, NN<Text::String> address);
 		void CCClear();
 		void SetSubject(const WChar *subj);
-		void SetSubject(NotNullPtr<Text::String> subj);
+		void SetSubject(NN<Text::String> subj);
 
 		void SetContentHTML(const WChar *content, Text::CString htmlPath);
-		void SetContentHTML(NotNullPtr<Text::String> content, Text::CString htmlPath);
+		void SetContentHTML(NN<Text::String> content, Text::CString htmlPath);
 		void SetContentText(const WChar *content, UInt32 codePage);
-		void SetContentText(NotNullPtr<Text::String> content);
+		void SetContentText(NN<Text::String> content);
 		Bool SetContentFile(Text::CStringNN filePath);
 		void AddAttachment(Text::CStringNN fileName);
 
-		NotNullPtr<Text::MIMEObj::MailMessage> CreateMail();
+		NN<Text::MIMEObj::MailMessage> CreateMail();
 	};
 }
 #endif

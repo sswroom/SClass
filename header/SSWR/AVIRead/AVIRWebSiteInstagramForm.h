@@ -19,30 +19,30 @@ namespace SSWR
 		class AVIRWebSiteInstagramForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpUser;
-			NotNullPtr<UI::GUIPanel> pnlRequest;
-			NotNullPtr<UI::GUILabel> lblChannelId;
-			NotNullPtr<UI::GUITextBox> txtChannelId;
-			NotNullPtr<UI::GUIButton> btnRequestUser;
-			NotNullPtr<UI::GUIListView> lvItems;
+			NN<UI::GUITabPage> tpUser;
+			NN<UI::GUIPanel> pnlRequest;
+			NN<UI::GUILabel> lblChannelId;
+			NN<UI::GUITextBox> txtChannelId;
+			NN<UI::GUIButton> btnRequestUser;
+			NN<UI::GUIListView> lvItems;
 
-			NotNullPtr<UI::GUITabPage> tpPage;
-			NotNullPtr<UI::GUIPanel> pnlPage;
-			NotNullPtr<UI::GUILabel> lblShortCode;
-			NotNullPtr<UI::GUITextBox> txtShortCode;
-			NotNullPtr<UI::GUIButton> btnPage;
-			NotNullPtr<UI::GUIListBox> lbImageURL;
+			NN<UI::GUITabPage> tpPage;
+			NN<UI::GUIPanel> pnlPage;
+			NN<UI::GUILabel> lblShortCode;
+			NN<UI::GUITextBox> txtShortCode;
+			NN<UI::GUIButton> btnPage;
+			NN<UI::GUIListBox> lbImageURL;
 
 			Net::WebSite::WebSiteInstagramControl *ctrl;
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
 			static void __stdcall OnRequestUserClicked(AnyType userObj);
 			static void __stdcall OnPageClicked(AnyType userObj);
 		public:
-			AVIRWebSiteInstagramForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRWebSiteInstagramForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWebSiteInstagramForm();
 
 			virtual void OnMonitorChanged();

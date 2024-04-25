@@ -4,7 +4,7 @@
 #include "DB/TDSConn.h"
 #include "Text/MyString.h"
 
-Optional<DB::DBConn> DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NotNullPtr<IO::LogTool> log, Text::StringBuilderUTF8 *errMsg)
+Optional<DB::DBConn> DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NN<IO::LogTool> log, Text::StringBuilderUTF8 *errMsg)
 {
 	if (IsNative())
 	{
@@ -18,7 +18,7 @@ Optional<DB::DBConn> DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt
 	else
 	{
 		DB::ODBCConn *conn;
-		NotNullPtr<Text::String> driverName;
+		NN<Text::String> driverName;
 		if (!GetDriverNameNew().SetTo(driverName))
 		{
 			return 0;
@@ -92,7 +92,7 @@ Optional<DB::DBConn> DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt
 		}
 		else
 		{
-			NotNullPtr<Text::StringBuilderUTF8> sb;
+			NN<Text::StringBuilderUTF8> sb;
 			if (sb.Set(errMsg))
 			{
 				conn->GetLastErrorMsg(sb);
@@ -103,13 +103,13 @@ Optional<DB::DBConn> DB::MSSQLConn::OpenConnTCP(Text::CStringNN serverHost, UInt
 	}
 }
 
-Optional<DB::DBTool> DB::MSSQLConn::CreateDBToolTCP(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::MSSQLConn::CreateDBToolTCP(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.Append(logPrefix);
 	sb.AppendC(UTF8STRC("Error in connecting to database: "));
-	NotNullPtr<DB::DBTool> db;
-	NotNullPtr<DB::DBConn> conn;
+	NN<DB::DBTool> db;
+	NN<DB::DBConn> conn;
 	if (OpenConnTCP(serverHost, port, encrypt, database, userName, password, log, &sb).SetTo(conn))
 	{
 		NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
@@ -129,10 +129,10 @@ Optional<Text::String> DB::MSSQLConn::GetDriverNameNew()
 		return Text::String::New(UTF8STRC("FreeTDS (Native)"));
 	}
 	Optional<Text::String> driverName = 0;
-	NotNullPtr<Text::String> driver;
+	NN<Text::String> driver;
 	Data::ArrayListStringNN driverList;
 	DB::ODBCConn::GetDriverList(driverList);
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = driverList.Iterator();
+	Data::ArrayIterator<NN<Text::String>> it = driverList.Iterator();
 	while (it.HasNext())
 	{
 		driver = it.Next();

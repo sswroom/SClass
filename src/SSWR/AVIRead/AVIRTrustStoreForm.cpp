@@ -3,10 +3,10 @@
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRTrustStoreForm.h"
 
-class CertComparator : public Data::Comparator<NotNullPtr<SSWR::AVIRead::AVIRTrustStoreForm::CertEntry>>
+class CertComparator : public Data::Comparator<NN<SSWR::AVIRead::AVIRTrustStoreForm::CertEntry>>
 {
 public:
-	virtual OSInt Compare(NotNullPtr<SSWR::AVIRead::AVIRTrustStoreForm::CertEntry> a, NotNullPtr<SSWR::AVIRead::AVIRTrustStoreForm::CertEntry> b) const
+	virtual OSInt Compare(NN<SSWR::AVIRead::AVIRTrustStoreForm::CertEntry> a, NN<SSWR::AVIRead::AVIRTrustStoreForm::CertEntry> b) const
 	{
 		return a->subjectCN->CompareToFast(b->subjectCN->ToCString());
 	}
@@ -14,19 +14,19 @@ public:
 
 void __stdcall SSWR::AVIRead::AVIRTrustStoreForm::OnTrustCertDblClicked(AnyType userObj, UOSInt index)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTrustStoreForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTrustStoreForm>();
-	NotNullPtr<Crypto::Cert::X509Cert> cert;
+	NN<SSWR::AVIRead::AVIRTrustStoreForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTrustStoreForm>();
+	NN<Crypto::Cert::X509Cert> cert;
 	if (me->lvTrustCert->GetItem(index).GetOpt<Crypto::Cert::X509Cert>().SetTo(cert))
 	{
 		me->core->OpenObject(cert->Clone());
 	}
 }
 
-SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Crypto::Cert::CertStore> store) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Crypto::Cert::CertStore> store) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	Text::StringBuilderUTF8 sb;
 	this->SetFont(0, 0, 8.25, false);
-	NotNullPtr<Crypto::Cert::CertStore> trusts;
+	NN<Crypto::Cert::CertStore> trusts;
 	if (store.SetTo(trusts))
 	{
 		sb.AppendC(UTF8STRC("Trust Store - "));
@@ -54,14 +54,14 @@ SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(Optional<UI::GUIClientCont
 	this->lvTrustCert->AddColumn(CSTR("NotValidAfter"), 150);
 	this->lvTrustCert->AddColumn(CSTR("Valid Status"), 150);
 
-	NotNullPtr<Net::SSLEngine> ssl;
+	NN<Net::SSLEngine> ssl;
 	if (!this->store.SetTo(trusts) && this->ssl.SetTo(ssl))
 	{
 		this->store = ssl->GetTrustStore();
 	}
 	Data::ArrayListNN<CertEntry> certs;
-	NotNullPtr<Crypto::Cert::X509Cert> cert;
-	NotNullPtr<CertEntry> entry;
+	NN<Crypto::Cert::X509Cert> cert;
+	NN<CertEntry> entry;
 	UOSInt i;
 	UOSInt j;
 	if (this->store.SetTo(trusts))
@@ -81,7 +81,7 @@ SSWR::AVIRead::AVIRTrustStoreForm::AVIRTrustStoreForm(Optional<UI::GUIClientCont
 		}
 	}
 	CertComparator comp;
-	Data::Sort::ArtificialQuickSort::Sort<NotNullPtr<CertEntry>>(&certs, comp);
+	Data::Sort::ArtificialQuickSort::Sort<NN<CertEntry>>(&certs, comp);
 
 	Data::DateTime dt;
 	UTF8Char sbuff[64];

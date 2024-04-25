@@ -20,7 +20,7 @@ namespace SSWR
 		class AVIRHTTPForwarderForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 			Net::WebServer::WebListener *svr;
 			Net::WebServer::HTTPForwardHandler *fwdHdlr;
@@ -29,21 +29,21 @@ namespace SSWR
 			Crypto::Cert::X509File *sslKey;
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUILabel> lblFwdURL;
-			NotNullPtr<UI::GUITextBox> txtFwdURL;
-			NotNullPtr<UI::GUILabel> lblLog;
-			NotNullPtr<UI::GUICheckBox> chkLog;
-			NotNullPtr<UI::GUICheckBox> chkLogContent;
-			NotNullPtr<UI::GUILabel> lblSSL;
-			NotNullPtr<UI::GUICheckBox> chkSSL;
-			NotNullPtr<UI::GUIButton> btnSSLCert;
-			NotNullPtr<UI::GUILabel> lblSSLCert;
-			NotNullPtr<UI::GUILabel> lblAllowKA;
-			NotNullPtr<UI::GUICheckBox> chkAllowKA;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUIButton> btnStop;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUILabel> lblFwdURL;
+			NN<UI::GUITextBox> txtFwdURL;
+			NN<UI::GUILabel> lblLog;
+			NN<UI::GUICheckBox> chkLog;
+			NN<UI::GUICheckBox> chkLogContent;
+			NN<UI::GUILabel> lblSSL;
+			NN<UI::GUICheckBox> chkSSL;
+			NN<UI::GUIButton> btnSSLCert;
+			NN<UI::GUILabel> lblSSLCert;
+			NN<UI::GUILabel> lblAllowKA;
+			NN<UI::GUICheckBox> chkAllowKA;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUIButton> btnStop;
 
 		private:
 			static void __stdcall OnStartClick(AnyType userObj);
@@ -51,7 +51,7 @@ namespace SSWR
 			static void __stdcall OnSSLCertClicked(AnyType userObj);
 			void ClearCACerts();
 		public:
-			AVIRHTTPForwarderForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRHTTPForwarderForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHTTPForwarderForm();
 
 			virtual void OnMonitorChanged();

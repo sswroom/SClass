@@ -4,7 +4,7 @@
 #include "Media/DrawEngine.h"
 #include "UI/DObj/DynamicOverlayDObj.h"
 
-UI::DObj::DynamicOverlayDObj::DynamicOverlayDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString fileName1, Text::CString fileName2, Math::Coord2D<OSInt> tl) : DirectObject(tl)
+UI::DObj::DynamicOverlayDObj::DynamicOverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName1, Text::CString fileName2, Math::Coord2D<OSInt> tl) : DirectObject(tl)
 {
 	this->deng = deng;
 	if (fileName1.leng == 0)
@@ -31,7 +31,7 @@ UI::DObj::DynamicOverlayDObj::DynamicOverlayDObj(NotNullPtr<Media::DrawEngine> d
 
 UI::DObj::DynamicOverlayDObj::~DynamicOverlayDObj()
 {
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->bmp1))
 	{
 		this->deng->DeleteImage(img);
@@ -64,8 +64,8 @@ Bool UI::DObj::DynamicOverlayDObj::DoEvents()
 void UI::DObj::DynamicOverlayDObj::DrawObject(Media::DrawImage *dimg)
 {
 	Math::Coord2DDbl tl = this->GetCurrPos().ToDouble();
-	NotNullPtr<Media::DrawImage> bmp1;
-	NotNullPtr<Media::DrawImage> bmp2;
+	NN<Media::DrawImage> bmp1;
+	NN<Media::DrawImage> bmp2;
 	if (bmp1.Set(this->bmp1) && bmp2.Set(this->bmp2))
 	{
 		if (bmp1->GetWidth() == bmp2->GetWidth() && bmp1->GetHeight() == bmp2->GetHeight())
@@ -82,7 +82,7 @@ void UI::DObj::DynamicOverlayDObj::DrawObject(Media::DrawImage *dimg)
 				this->alpha = 0;
 				this->a = 0;
 			}
-			NotNullPtr<Media::DrawImage> bmpTmp;
+			NN<Media::DrawImage> bmpTmp;
 			if (bmpTmp.Set(this->deng->CreateImage32(bmp1->GetSize(), Media::AT_NO_ALPHA)))
 			{
 				bmpTmp->SetAlphaType(bmp1->GetAlphaType());

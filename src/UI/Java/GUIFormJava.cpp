@@ -148,7 +148,7 @@ JNIEXPORT void JNICALL Java_JFrameWindowListener_windowOpened(JNIEnv *env, jobje
 	}
 }*/
 
-UI::GUIForm::GUIForm(Optional<GUIClientControl> parent, Double initW, Double initH, NotNullPtr<GUICore> ui) : UI::GUIClientControl(ui, parent)
+UI::GUIForm::GUIForm(Optional<GUIClientControl> parent, Double initW, Double initH, NN<GUICore> ui) : UI::GUIClientControl(ui, parent)
 {
 	this->exitOnClose = false;
 	this->isDialog = false;
@@ -191,7 +191,7 @@ UI::GUIForm::GUIForm(Optional<GUIClientControl> parent, Double initW, Double ini
 	Double h;
 	Double initX;
 	Double initY;
-	NotNullPtr<GUIClientControl> nnparent;
+	NN<GUIClientControl> nnparent;
 	if (parent.SetTo(nnparent))
 	{
 		Math::Size2DDbl size = nnparent->GetClientSize();
@@ -360,15 +360,15 @@ void UI::GUIForm::SetNoResize(Bool noResize)
 	}
 }
 
-NotNullPtr<UI::GUITimer> UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, void *userObj)
+NN<UI::GUITimer> UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, void *userObj)
 {
-	NotNullPtr<UI::Java::JavaTimer> tmr;
+	NN<UI::Java::JavaTimer> tmr;
 	NEW_CLASSNN(tmr, UI::Java::JavaTimer((JNIEnv*)jniEnv, interval, handler, userObj));
 	this->timers.Add(tmr);
 	return tmr;
 }
 
-void UI::GUIForm::RemoveTimer(NotNullPtr<UI::GUITimer> tmr)
+void UI::GUIForm::RemoveTimer(NN<UI::GUITimer> tmr)
 {
 	UOSInt i;
 	i = this->timers.GetCount();	
@@ -624,7 +624,7 @@ void UI::GUIForm::OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight)
 {
 }
 
-void UI::GUIForm::OnFileDrop(NotNullPtr<Text::String> *files, UOSInt nFiles)
+void UI::GUIForm::OnFileDrop(NN<Text::String> *files, UOSInt nFiles)
 {
 	OSInt i;
 	i = this->dropFileHandlers.GetCount();
@@ -644,7 +644,7 @@ void UI::GUIForm::FromFullScn()
 //	gtk_window_unfullscreen((GtkWindow*)this->hwnd);
 }
 
-NotNullPtr<UI::GUICore> UI::GUIForm::GetUI()
+NN<UI::GUICore> UI::GUIForm::GetUI()
 {
 	return this->ui;
 }

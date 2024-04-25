@@ -25,7 +25,7 @@
 
 typedef struct
 {
-	NotNullPtr<Text::String> fileName;
+	NN<Text::String> fileName;
 	UInt64 fileSize;
 	Data::Timestamp modTime;
 	IO::Path::PathType pt;
@@ -94,7 +94,7 @@ OSInt __stdcall HTTPDirectoryHandler_CompareFuncCount(DirectoryEntry *obj1, Dire
 	}
 }
 
-void Net::WebServer::HTTPDirectoryHandler::AddCacheHeader(NotNullPtr<Net::WebServer::IWebResponse> resp)
+void Net::WebServer::HTTPDirectoryHandler::AddCacheHeader(NN<Net::WebServer::IWebResponse> resp)
 {
 	switch (this->ctype)
 	{
@@ -121,7 +121,7 @@ void Net::WebServer::HTTPDirectoryHandler::AddCacheHeader(NotNullPtr<Net::WebSer
 	}
 }
 
-void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<IO::PackageFile> packageFile)
+void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<IO::PackageFile> packageFile)
 {
 	if (!this->allowBrowsing)
 	{
@@ -177,7 +177,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NotNullPtr<Net::W
 	AddCacheHeader(resp);
 
 	UTF8Char sbuff[512];
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 
 	sbOut.AppendNE(UTF8STRC("<html><head><title>Index of "));
 	Text::TextBinEnc::URIEncoding::URIDecode(sbuff, sptr);
@@ -251,7 +251,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NotNullPtr<Net::W
 	return ;
 }
 
-Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, NotNullPtr<IO::VirtualPackageFile> packageFile, NotNullPtr<const IO::PackFileItem> pitem)
+Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, NN<IO::VirtualPackageFile> packageFile, NN<const IO::PackFileItem> pitem)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -263,7 +263,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NotNullPtr<Ne
 	{
 		Net::BrowserInfo::BrowserType browser = req->GetBrowser();
 		Manage::OSInfo::OSType os = req->GetOS();
-		NotNullPtr<Text::String> enc;
+		NN<Text::String> enc;
 		if (pitem->compInfo->checkMethod == Crypto::Hash::HashType::CRC32R_IEEE && req->GetSHeader(CSTR("Accept-Encoding")).SetTo(enc) && enc->IndexOf(UTF8STRC("gzip")) != INVALID_INDEX && Net::WebServer::HTTPServerUtil::AllowGZip(browser, os))
 		{
 			resp->EnableWriteBuffer();
@@ -361,7 +361,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NotNullPtr<Ne
 			return true;
 		}
 	}
-	NotNullPtr<IO::StreamData> stmData;
+	NN<IO::StreamData> stmData;
 	if (packageFile->GetPItemStmDataNew(pitem).SetTo(stmData))
 	{
 		UOSInt dataLen = (UOSInt)stmData->GetDataSize();
@@ -426,7 +426,7 @@ void Net::WebServer::HTTPDirectoryHandler::StatSave(Net::WebServer::HTTPDirector
 	}
 }
 
-Net::WebServer::HTTPDirectoryHandler::HTTPDirectoryHandler(NotNullPtr<Text::String> rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload)
+Net::WebServer::HTTPDirectoryHandler::HTTPDirectoryHandler(NN<Text::String> rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload)
 {
 	this->rootDir = rootDir->Clone();
 	this->allowBrowsing = allowBrowsing;
@@ -506,7 +506,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::FileValid(Text::CStringNN subReq)
 	return true;
 }
 
-Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	if (this->DoRequest(req, resp, subReq))
 	{
@@ -515,7 +515,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(NotNullPtr<Net::WebSer
 	return this->DoFileRequest(req, resp, subReq);
 }
 
-Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	UInt8 buff[2048];
 	Text::StringBuilderUTF8 sb;
@@ -527,7 +527,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 	UTF8Char *sptr4;
 	//Data::DateTime t;
 	Text::CStringNN mime;
-	NotNullPtr<Sync::RWMutex> packageMut;
+	NN<Sync::RWMutex> packageMut;
 	UOSInt i;
 	Bool dirPath;
 	if (req->GetProtocol() != Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0 && req->GetProtocol() != Net::WebServer::IWebRequest::RequestProtocol::HTTP1_1)
@@ -581,7 +581,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 		packageMutUsage.EndUse();
 		if (package)
 		{
-			NotNullPtr<IO::PackageFile> packageFile = package->packageFile;
+			NN<IO::PackageFile> packageFile = package->packageFile;
 			Bool needRelease = false;
 			if (packageFile->GetCount() == 1 && packageFile->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFileType)
 			{
@@ -595,12 +595,12 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 			sptr = &sb.v[i + 2];
 			if (packageFile->GetFileType() == IO::PackageFileType::Virtual)
 			{
-				NotNullPtr<IO::VirtualPackageFile> vpackageFile = NotNullPtr<IO::VirtualPackageFile>::ConvertFrom(packageFile);
+				NN<IO::VirtualPackageFile> vpackageFile = NN<IO::VirtualPackageFile>::ConvertFrom(packageFile);
 				if (i == INVALID_INDEX || sptr[0] == 0)
 				{
 					if (dirPath)
 					{
-						NotNullPtr<const IO::PackFileItem> pitem2;
+						NN<const IO::PackFileItem> pitem2;
 						if (vpackageFile->GetPackFileItem((const UTF8Char*)"index.html").SetTo(pitem2) && vpackageFile->GetPItemType(pitem2) == IO::PackageFile::PackObjectType::StreamData)
 						{
 							if (!ResponsePackageFileItem(req,resp, vpackageFile, pitem2))
@@ -640,7 +640,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 						return resp->RedirectURL(req, sb.ToCString(), 0);
 					}
 				}
-				NotNullPtr<const IO::PackFileItem> pitem;
+				NN<const IO::PackFileItem> pitem;
 				if (vpackageFile->GetPackFileItem(sptr).SetTo(pitem))
 				{
 					IO::PackageFile::PackObjectType pot = vpackageFile->GetPItemType(pitem);
@@ -658,7 +658,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 					else if (pot == IO::PackageFile::PackObjectType::PackageFileType)
 					{
 						Bool innerNeedRelease;
-						NotNullPtr<IO::PackageFile> innerPF;
+						NN<IO::PackageFile> innerPF;
 						if (vpackageFile->GetPItemPack(pitem, innerNeedRelease).SetTo(innerPF))
 						{
 							if (dirPath)
@@ -666,7 +666,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 								UOSInt index2 = innerPF->GetItemIndex(CSTR("index.html"));
 								if (index2 != INVALID_INDEX && innerPF->GetItemType(index2) == IO::PackageFile::PackObjectType::StreamData)
 								{
-									NotNullPtr<IO::StreamData> stmData;
+									NN<IO::StreamData> stmData;
 									if (innerPF->GetItemStmDataNew(index2).SetTo(stmData))
 									{
 										UOSInt dataLen = (UOSInt)stmData->GetDataSize();
@@ -742,7 +742,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 	{
 		Sync::Interlocked::IncrementI32(this->fileCacheUsing);
 		mutUsage.EndUse();
-		NotNullPtr<Sync::Mutex> statMut;
+		NN<Sync::Mutex> statMut;
 		if (this->statMap && statMut.Set(this->statMut))
 		{
 			Net::WebServer::HTTPDirectoryHandler::StatInfo *stat;
@@ -877,7 +877,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 			sptr = sb.v;
 			sptrLen = sb.GetLength();
 			UInt64 sizeLeft;
-			NotNullPtr<Text::String> hdrVal;
+			NN<Text::String> hdrVal;
 
 			sptr3 = IO::Path::GetFileExt(sbuff, sptr, sptrLen);
 			IO::FileStream fs({sptr, sptrLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
@@ -995,8 +995,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 				AddCacheHeader(resp);
 
 				Bool isRoot = false;
-				NotNullPtr<Text::String> s;
-				NotNullPtr<Text::String> s2;
+				NN<Text::String> s;
+				NN<Text::String> s2;
 				sbOut.AppendNE(UTF8STRC("<html><head><title>Index of "));
 				Text::TextBinEnc::URIEncoding::URIDecode(sbuff, sb2.ToString());
 				s = Text::XML::ToNewHTMLElementText(sbuff);
@@ -1081,7 +1081,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 
 				if (isRoot)
 				{
-					NotNullPtr<Sync::RWMutex> packageMut;
+					NN<Sync::RWMutex> packageMut;
 					if (this->packageMap && packageMut.Set(this->packageMut))
 					{
 						PackageInfo *package;
@@ -1120,7 +1120,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 				IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptr3));
 				if (sess)
 				{
-					NotNullPtr<Sync::Mutex> statMut;
+					NN<Sync::Mutex> statMut;
 					Sync::MutexUsage mutUsage;
 					if (this->statMap && statMut.Set(this->statMut))
 					{
@@ -1326,8 +1326,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NotNullPtr<Net::WebServ
 	{
 		Text::StringBuilderUTF8 sb2;
 		UInt64 sizeLeft;
-		NotNullPtr<Text::String> hdrVal;
-		NotNullPtr<Sync::Mutex> statMut;
+		NN<Text::String> hdrVal;
+		NN<Sync::Mutex> statMut;
 
 		IO::FileStream fs({sptr, sptrLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 		Data::Timestamp ts = fs.GetModifyTime();
@@ -1555,7 +1555,7 @@ Optional<IO::PackageFile> Net::WebServer::HTTPDirectoryHandler::GetPackageFile(T
 		path = path.Substring(1);
 	}
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<Sync::RWMutex> packageMut;
+	NN<Sync::RWMutex> packageMut;
 	if (this->packageMap && packageMut.Set(this->packageMut))
 	{
 		Text::CStringNN subPath;
@@ -1582,7 +1582,7 @@ Optional<IO::PackageFile> Net::WebServer::HTTPDirectoryHandler::GetPackageFile(T
 		if (pkgInfo)
 		{
 			Bool thisNeedRelease = false;
-			NotNullPtr<IO::PackageFile> packageFile = pkgInfo->packageFile;
+			NN<IO::PackageFile> packageFile = pkgInfo->packageFile;
 			if (packageFile->GetCount() == 1 && packageFile->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFileType)
 			{
 				sptr = packageFile->GetItemName(sbuff, 0);
@@ -1634,7 +1634,7 @@ Optional<IO::PackageFile> Net::WebServer::HTTPDirectoryHandler::GetPackageFile(T
 	return 0;
 }
 
-void Net::WebServer::HTTPDirectoryHandler::SetRootDir(NotNullPtr<Text::String> rootDir)
+void Net::WebServer::HTTPDirectoryHandler::SetRootDir(NN<Text::String> rootDir)
 {
 	Sync::MutexUsage mutUsage(this->fileCacheMut);
 	this->rootDir->Release();
@@ -1676,13 +1676,13 @@ void Net::WebServer::HTTPDirectoryHandler::ClearFileCache()
 	this->fileCache.Clear();
 }
 
-void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(NotNullPtr<Parser::ParserList> parsers, Text::CStringNN searchPattern)
+void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(NN<Parser::ParserList> parsers, Text::CStringNN searchPattern)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	IO::Path::FindFileSession *sess;
-	NotNullPtr<Sync::RWMutex> packageMut;
+	NN<Sync::RWMutex> packageMut;
 	Sync::RWMutexUsage packageMutUsage;
 	if (!packageMut.Set(this->packageMut) || this->packageMap == 0)
 	{
@@ -1710,7 +1710,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(NotNullPtr<Parser:
 		Data::Timestamp ts;
 		IO::Path::PathType pt;
 		IO::PackageFile *pf;
-		NotNullPtr<IO::PackageFile> nnpf;
+		NN<IO::PackageFile> nnpf;
 		UOSInt i;
 		PackageInfo *package;
 
@@ -1758,7 +1758,7 @@ void Net::WebServer::HTTPDirectoryHandler::EnableStats()
 
 void Net::WebServer::HTTPDirectoryHandler::SaveStats()
 {
-	NotNullPtr<Sync::Mutex> mut;
+	NN<Sync::Mutex> mut;
 	if (this->statMap && mut.Set(this->statMut))
 	{
 		Net::WebServer::HTTPDirectoryHandler::StatInfo *stat;

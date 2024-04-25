@@ -22,9 +22,9 @@ UTF8Char *Crypto::Hash::DJB2::GetName(UTF8Char *sbuff) const
 	return Text::StrConcatC(sbuff, UTF8STRC("DJB2"));
 }
 
-NotNullPtr<Crypto::Hash::IHash> Crypto::Hash::DJB2::Clone() const
+NN<Crypto::Hash::IHash> Crypto::Hash::DJB2::Clone() const
 {
-	NotNullPtr<Crypto::Hash::DJB2> djb2;
+	NN<Crypto::Hash::DJB2> djb2;
 	NEW_CLASSNN(djb2, Crypto::Hash::DJB2());
 	djb2->currVal = this->currVal;
 	return djb2;

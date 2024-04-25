@@ -832,7 +832,7 @@ void Media::Resizer::LanczosResizerH8_8::mt_copy(const UInt8 *inPt, UInt8 *outPt
 
 void __stdcall Media::Resizer::LanczosResizerH8_8::DoTask(AnyType obj)
 {
-	NotNullPtr<TaskParam> ts = obj.GetNN<TaskParam>();
+	NN<TaskParam> ts = obj.GetNN<TaskParam>();
 	if (ts->funcType == 3)
 	{
 		LanczosResizerH8_8_horizontal_filter(ts->inPt, ts->outPt, ts->width, ts->height, ts->tap, ts->index, ts->weight, ts->sstep, ts->dstep);
@@ -1128,7 +1128,7 @@ void Media::Resizer::LanczosResizerH8_8::Resize(const UInt8 *src, OSInt sbpl, Do
 	}
 }
 
-Bool Media::Resizer::LanczosResizerH8_8::Resize(NotNullPtr<const Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg)
+Bool Media::Resizer::LanczosResizerH8_8::Resize(NN<const Media::StaticImage> srcImg, NN<Media::StaticImage> destImg)
 {
 	if (srcImg->info.fourcc != 0 && srcImg->info.fourcc != *(UInt32*)"DIB")
 		return false;
@@ -1149,7 +1149,7 @@ Bool Media::Resizer::LanczosResizerH8_8::Resize(NotNullPtr<const Media::StaticIm
 	}
 }
 
-Bool Media::Resizer::LanczosResizerH8_8::IsSupported(NotNullPtr<const Media::FrameInfo> srcInfo)
+Bool Media::Resizer::LanczosResizerH8_8::IsSupported(NN<const Media::FrameInfo> srcInfo)
 {
 	if (srcInfo->fourcc != 0)
 		return false;
@@ -1158,7 +1158,7 @@ Bool Media::Resizer::LanczosResizerH8_8::IsSupported(NotNullPtr<const Media::Fra
 	return true;
 }
 
-Media::StaticImage *Media::Resizer::LanczosResizerH8_8::ProcessToNewPartial(NotNullPtr<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
+Media::StaticImage *Media::Resizer::LanczosResizerH8_8::ProcessToNewPartial(NN<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
 {
 	Media::FrameInfo destInfo;
 	Media::StaticImage *img;
@@ -1175,7 +1175,7 @@ Media::StaticImage *Media::Resizer::LanczosResizerH8_8::ProcessToNewPartial(NotN
 	}
 	CalOutputSize(srcImage->info, targetSize, destInfo, rar);
 	NEW_CLASS(img, Media::StaticImage(destInfo));
-	NotNullPtr<Media::EXIFData> exif;
+	NN<Media::EXIFData> exif;
 	if (srcImage->exif.SetTo(exif))
 	{
 		img->exif = exif->Clone();

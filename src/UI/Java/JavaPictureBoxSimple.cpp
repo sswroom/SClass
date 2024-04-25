@@ -6,7 +6,7 @@
 #include "UI/GUIClientControl.h"
 #include "UI/Java/JavaPictureBoxSimple.h"
 
-UI::Java::JavaPictureBoxSimple::JavaPictureBoxSimple(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder) : UI::GUIPictureBoxSimple(ui, parent, eng, hasBorder)
+UI::Java::JavaPictureBoxSimple::JavaPictureBoxSimple(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder) : UI::GUIPictureBoxSimple(ui, parent, eng, hasBorder)
 {
 }
 

@@ -11,7 +11,7 @@ namespace UI
 		Data::ArrayList<Data::CallbackStorage<UI::KeyEvent>> keyDownHdlrs;
 
 	public:
-		GUITextBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
+		GUITextBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 		virtual ~GUITextBox();
 
 		virtual Text::CStringNN GetObjectClass() const;
@@ -25,7 +25,7 @@ namespace UI
 
 		virtual void SetText(Text::CStringNN text) = 0;
 		virtual UTF8Char *GetText(UTF8Char *buff) = 0;
-		virtual Bool GetText(NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
+		virtual Bool GetText(NN<Text::StringBuilderUTF8> sb) = 0;
 		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;
 
 		virtual void SetWordWrap(Bool wordWrap) = 0;

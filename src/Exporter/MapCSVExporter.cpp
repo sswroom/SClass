@@ -23,13 +23,13 @@ Int32 Exporter::MapCSVExporter::GetName()
 	return *(Int32*)"MCSV";
 }
 
-IO::FileExporter::SupportType Exporter::MapCSVExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
+IO::FileExporter::SupportType Exporter::MapCSVExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
-	NotNullPtr<Map::MapDrawLayer> layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj);
+	NN<Map::MapDrawLayer> layer = NN<Map::MapDrawLayer>::ConvertFrom(pobj);
 	if (layer->GetLayerType() != Map::DRAW_LAYER_POLYLINE && layer->GetLayerType() != Map::DRAW_LAYER_POLYLINE3D)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
@@ -53,13 +53,13 @@ void Exporter::MapCSVExporter::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-Bool Exporter::MapCSVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::MapCSVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return false;
 	}
-	NotNullPtr<Map::MapDrawLayer> layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj);
+	NN<Map::MapDrawLayer> layer = NN<Map::MapDrawLayer>::ConvertFrom(pobj);
 	if (layer->GetLayerType() != Map::DRAW_LAYER_POLYLINE && layer->GetLayerType() != Map::DRAW_LAYER_POLYLINE3D)
 	{
 		return false;
@@ -73,7 +73,7 @@ Bool Exporter::MapCSVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 	
 	if (layer->GetObjectClass() == Map::MapDrawLayer::OC_GPS_TRACK)
 	{
-		NotNullPtr<Map::GPSTrack> track = NotNullPtr<Map::GPSTrack>::ConvertFrom(layer);
+		NN<Map::GPSTrack> track = NN<Map::GPSTrack>::ConvertFrom(layer);
 		Map::GPSTrack::GPSRecord3 *rec;
 		UOSInt recCnt;
 		Double v;

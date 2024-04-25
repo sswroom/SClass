@@ -29,7 +29,7 @@ namespace Media
 
 			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:
-			MP2GDecoder(NotNullPtr<IVideoSource> sourceVideo, Bool toRelease);
+			MP2GDecoder(NN<IVideoSource> sourceVideo, Bool toRelease);
 			virtual ~MP2GDecoder();
 
 			virtual Text::CStringNN GetFilterName();
@@ -39,7 +39,7 @@ namespace Media
 			virtual Data::Duration GetFrameTime(UOSInt frameIndex);
 			virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
 
-			virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
+			virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
 		};
 	}
 }

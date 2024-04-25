@@ -6,7 +6,7 @@
 #include "Text/Encoding.h"
 #include "Text/MyStringFloat.h"
 
-Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NotNullPtr<Text::StringBuilderUTF8> sb, Bool detail) const
+Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NN<Text::StringBuilderUTF8> sb, Bool detail) const
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -926,7 +926,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NotNullPtr<Text::Str
 	return true;
 }
 
-IO::UDPLog::UDPLog(NotNullPtr<Text::String> sourceName) : IO::LogFile(sourceName)
+IO::UDPLog::UDPLog(NN<Text::String> sourceName) : IO::LogFile(sourceName)
 {
 }
 

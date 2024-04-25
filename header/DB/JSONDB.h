@@ -8,17 +8,17 @@ namespace DB
 	class JSONDB : public DB::ReadingDB
 	{
 	private:
-		NotNullPtr<Text::String> layerName;
+		NN<Text::String> layerName;
 		Text::JSONArray *data;
 	public:
-		JSONDB(NotNullPtr<Text::String> sourceName, Text::CString layerName, Text::JSONArray *data);
+		JSONDB(NN<Text::String> sourceName, Text::CString layerName, Text::JSONArray *data);
 		virtual ~JSONDB();
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
 		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
-		virtual void CloseReader(NotNullPtr<DBReader> r);
-		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
+		virtual void CloseReader(NN<DBReader> r);
+		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
 	};
 }

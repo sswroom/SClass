@@ -16,7 +16,7 @@ namespace UI
 		Data::ArrayList<Data::CallbackStorage<UI::GUIControl::MouseEventHandler>> rightClickHdlrs;
 
 	public:
-		GUIListBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
+		GUIListBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 		virtual ~GUIListBox();
 
 		virtual Text::CStringNN GetObjectClass() const;
@@ -28,7 +28,7 @@ namespace UI
 		virtual void HandleDoubleClicked(UI::UIEvent hdlr, AnyType userObj);
 		virtual void HandleRightClicked(UI::GUIControl::MouseEventHandler hdlr, AnyType userObj);
 
-		virtual UOSInt AddItem(NotNullPtr<Text::String> itemText, AnyType itemObj) = 0;
+		virtual UOSInt AddItem(NN<Text::String> itemText, AnyType itemObj) = 0;
 		virtual UOSInt AddItem(Text::CStringNN itemText, AnyType itemObj) = 0;
 		virtual UOSInt InsertItem(UOSInt index, Text::String *itemText, AnyType itemObj) = 0;
 		virtual UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj) = 0;

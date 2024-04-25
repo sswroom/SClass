@@ -19,32 +19,32 @@ namespace SSWR
 		class AVIRASN1MIBForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Net::ASN1MIB mib;
 
-			NotNullPtr<UI::GUIPanel> pnlRequest;
-			NotNullPtr<UI::GUILabel> lblFile;
-			NotNullPtr<UI::GUITextBox> txtFile;
-			NotNullPtr<UI::GUIButton> btnBrowse;
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUIPanel> pnlRequest;
+			NN<UI::GUILabel> lblFile;
+			NN<UI::GUITextBox> txtFile;
+			NN<UI::GUIButton> btnBrowse;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpObjects;
-			NotNullPtr<UI::GUIListView> lvObjects;
-			NotNullPtr<UI::GUIVSplitter> vspObjects;
-			NotNullPtr<UI::GUIListView> lvObjectsVal;
+			NN<UI::GUITabPage> tpObjects;
+			NN<UI::GUIListView> lvObjects;
+			NN<UI::GUIVSplitter> vspObjects;
+			NN<UI::GUIListView> lvObjectsVal;
 
-			NotNullPtr<UI::GUITabPage> tpOID;
-			NotNullPtr<UI::GUIListView> lvOID;
+			NN<UI::GUITabPage> tpOID;
+			NN<UI::GUIListView> lvOID;
 
-			NotNullPtr<UI::GUITabPage> tpOIDText;
-			NotNullPtr<UI::GUITextBox> txtOIDText;
+			NN<UI::GUITabPage> tpOIDText;
+			NN<UI::GUITextBox> txtOIDText;
 
-			static void __stdcall OnFileDroped(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFileDroped(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnBrowseClicked(AnyType userObj);
 			static void __stdcall OnObjectsSelChg(AnyType userObj);
 			void LoadFile(Text::CStringNN fileName);
 		public:
-			AVIRASN1MIBForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRASN1MIBForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRASN1MIBForm();
 
 			virtual void OnMonitorChanged();

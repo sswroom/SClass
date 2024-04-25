@@ -77,7 +77,7 @@ void Win32::WindowsBTScanner::ReceivedHandler(winrt::Windows::Devices::Bluetooth
 	const WChar *wptr = hstr.c_str();
 	if (wptr[0] != 0)
 	{
-		NotNullPtr<Text::String> s = Text::String::NewNotNull(wptr);
+		NN<Text::String> s = Text::String::NewNotNull(wptr);
 		if (rec->name == 0 || !Text::StrEqualsC(s->v, s->leng, rec->name->v, rec->name->leng))
 		{
 			SDEL_STRING(rec->name);
@@ -321,13 +321,13 @@ Bool Win32::WindowsBTScanner::SetScanMode(ScanMode scanMode)
 	return false;
 }
 
-NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> Win32::WindowsBTScanner::GetPublicMap(NotNullPtr<Sync::MutexUsage> mutUsage)
+NN<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> Win32::WindowsBTScanner::GetPublicMap(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->devMut);
 	return this->pubDevMap;
 }
 
-NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> Win32::WindowsBTScanner::GetRandomMap(NotNullPtr<Sync::MutexUsage> mutUsage)
+NN<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> Win32::WindowsBTScanner::GetRandomMap(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->devMut);
 	return this->randDevMap;

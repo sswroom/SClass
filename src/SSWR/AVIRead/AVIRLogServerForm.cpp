@@ -7,7 +7,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnStartClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLogServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogServerForm>();
+	NN<SSWR::AVIRead::AVIRLogServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogServerForm>();
 	if (me->svr)
 	{
 		DEL_CLASS(me->svr);
@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnStartClick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnClientSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLogServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogServerForm>();
+	NN<SSWR::AVIRead::AVIRLogServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogServerForm>();
 	me->currIP = (UInt32)(UOSInt)me->lbClient->GetSelectedItem().p;
 	me->lbLog->ClearItems();
 	me->msgListUpd = true;
@@ -64,15 +64,15 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnClientSelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnLogSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLogServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogServerForm>();
-	NotNullPtr<Text::String> txt = Text::String::OrEmpty(me->lbLog->GetSelectedItemTextNew());
+	NN<SSWR::AVIRead::AVIRLogServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogServerForm>();
+	NN<Text::String> txt = Text::String::OrEmpty(me->lbLog->GetSelectedItemTextNew());
 	me->txtLog->SetText(txt->ToCString());
 	txt->Release();
 }
 
 void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnClientLog(AnyType userObj, UInt32 ip, Text::CString message)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLogServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogServerForm>();
+	NN<SSWR::AVIRead::AVIRLogServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogServerForm>();
 	IPLog *ipLog;
 	Sync::MutexUsage mutUsage(me->ipMut);
 	ipLog = me->ipMap.Get(ip);
@@ -97,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnClientLog(AnyType userObj, UI
 
 void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLogServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogServerForm>();
+	NN<SSWR::AVIRead::AVIRLogServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogServerForm>();
 	UTF8Char sbuff[20];
 	UTF8Char *sptr;
 	UOSInt i;
@@ -136,7 +136,7 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRLogServerForm::AVIRLogServerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRLogServerForm::AVIRLogServerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
 	this->SetText(CSTR("Log Server"));

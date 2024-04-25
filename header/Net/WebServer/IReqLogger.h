@@ -11,7 +11,7 @@ namespace Net
 		public:
 			virtual ~IReqLogger(){};
 
-			virtual void LogRequest(NotNullPtr<IWebRequest> req) = 0;
+			virtual void LogRequest(NN<IWebRequest> req) = 0;
 		};
 	}
 }

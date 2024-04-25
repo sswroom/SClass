@@ -9,7 +9,7 @@ namespace DB
 	class SharedDBConn
 	{
 	private:
-		NotNullPtr<DB::DBConn> conn;
+		NN<DB::DBConn> conn;
 		Sync::Mutex mutConn;
 		Sync::Mutex mutObj;
 		OSInt useCnt;
@@ -17,14 +17,14 @@ namespace DB
 	private:
 		~SharedDBConn();
 	public:
-		SharedDBConn(NotNullPtr<DB::DBConn> conn);
+		SharedDBConn(NN<DB::DBConn> conn);
 
 		DB::SQLType GetSQLType();
 		void Reconnect();
 		void UseObject();
 		void UnuseObject();
 
-		NotNullPtr<DB::DBConn> UseConn(NotNullPtr<Sync::MutexUsage> mutUsage);
+		NN<DB::DBConn> UseConn(NN<Sync::MutexUsage> mutUsage);
 	};
 }
 #endif

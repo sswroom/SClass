@@ -13,15 +13,15 @@ namespace IO
 			UOSInt blockCnt;
 			IO::StreamData *fd;
 
-			static void ParseDescriptor(NotNullPtr<FrameDetail> frame, const UInt8 *buff, UOSInt ofst);
+			static void ParseDescriptor(NN<FrameDetail> frame, const UInt8 *buff, UOSInt ofst);
 			static void RemoveNonASCII(UTF8Char *sbuff, UTF8Char *sbuffEnd);
 		public:
-			EDIDFileAnalyse(NotNullPtr<IO::StreamData> fd);
+			EDIDFileAnalyse(NN<IO::StreamData> fd);
 			virtual ~EDIDFileAnalyse();
 
 			virtual Text::CStringNN GetFormatName();
 			virtual UOSInt GetFrameCount();
-			virtual Bool GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual Bool GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst);
 			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index);
 

@@ -19,7 +19,7 @@ namespace Data
 		Data::StringUTF8Map<Data::VariItem*> items;
 		NameType nameType;
 
-		void SetItem(const UTF8Char *name, NotNullPtr<Data::VariItem> item);
+		void SetItem(const UTF8Char *name, NN<Data::VariItem> item);
 	public:
 		VariObject(NameType nameType);
 		~VariObject();
@@ -49,7 +49,7 @@ namespace Data
 		void SetItemVectorDirect(const UTF8Char *name, Optional<Math::Geometry::Vector2D> vec);
 		void SetItemUUIDDirect(const UTF8Char *name, Data::UUID *uuid);
 
-		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		void ToString(NN<Text::StringBuilderUTF8> sb) const;
 		Class *CreateClass() const;
 	};
 }

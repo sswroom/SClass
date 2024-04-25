@@ -9,7 +9,7 @@ namespace UI
 		class WinTrackBar : public GUITrackBar
 		{
 		public:
-			WinTrackBar(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal);
+			WinTrackBar(NN<GUICore> ui, NN<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal);
 			virtual ~WinTrackBar();
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);

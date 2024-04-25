@@ -26,15 +26,15 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				NotNullPtr<Text::String> name;
-				NotNullPtr<Text::String> value;
+				NN<Text::String> name;
+				NN<Text::String> value;
 			} ParamValue;
 
 			typedef struct
 			{
-				NotNullPtr<Text::String> name;
-				NotNullPtr<Text::String> value;
-				NotNullPtr<Text::String> domain;
+				NN<Text::String> name;
+				NN<Text::String> value;
+				NN<Text::String> domain;
 				Text::String *path;
 				Int64 expireTime;
 				Bool secure;
@@ -42,84 +42,84 @@ namespace SSWR
 			
 			
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpRequest;
-			NotNullPtr<UI::GUIPanel> pnlRequest;
-			NotNullPtr<UI::GUILabel> lblURL;
-			NotNullPtr<UI::GUITextBox> txtURL;
-			NotNullPtr<UI::GUICheckBox> chkNoShutdown;
-			NotNullPtr<UI::GUILabel> lblMethod;
-			NotNullPtr<UI::GUIComboBox> cboMethod;
-			NotNullPtr<UI::GUICheckBox> chkOSClient;
-			NotNullPtr<UI::GUICheckBox> chkAllowComp;
-			NotNullPtr<UI::GUIButton> btnUserAgent;
-			NotNullPtr<UI::GUILabel> lblUserAgent;
-			NotNullPtr<UI::GUIButton> btnClientCert;
-			NotNullPtr<UI::GUILabel> lblClientCert;
-			NotNullPtr<UI::GUILabel> lblUserName;
-			NotNullPtr<UI::GUITextBox> txtUserName;
-			NotNullPtr<UI::GUILabel> lblPassword;
-			NotNullPtr<UI::GUITextBox> txtPassword;
-			NotNullPtr<UI::GUILabel> lblFileUpload;
-			NotNullPtr<UI::GUITextBox> txtFileFormName;
-			NotNullPtr<UI::GUIButton> btnFileSelect;
-			NotNullPtr<UI::GUIButton> btnFileClear;
-			NotNullPtr<UI::GUILabel> lblFileStatus;
-			NotNullPtr<UI::GUILabel> lblDataStr;
-			NotNullPtr<UI::GUITextBox> txtDataStr;
-			NotNullPtr<UI::GUIButton> btnDataStr;
-			NotNullPtr<UI::GUILabel> lblPostFormat;
-			NotNullPtr<UI::GUIComboBox> cboPostFormat;
-			NotNullPtr<UI::GUILabel> lblHeaders;
-			NotNullPtr<UI::GUITextBox> txtHeaders;
-			NotNullPtr<UI::GUIButton> btnRequest;
-			NotNullPtr<UI::GUIListView> lvReqData;
+			NN<UI::GUITabPage> tpRequest;
+			NN<UI::GUIPanel> pnlRequest;
+			NN<UI::GUILabel> lblURL;
+			NN<UI::GUITextBox> txtURL;
+			NN<UI::GUICheckBox> chkNoShutdown;
+			NN<UI::GUILabel> lblMethod;
+			NN<UI::GUIComboBox> cboMethod;
+			NN<UI::GUICheckBox> chkOSClient;
+			NN<UI::GUICheckBox> chkAllowComp;
+			NN<UI::GUIButton> btnUserAgent;
+			NN<UI::GUILabel> lblUserAgent;
+			NN<UI::GUIButton> btnClientCert;
+			NN<UI::GUILabel> lblClientCert;
+			NN<UI::GUILabel> lblUserName;
+			NN<UI::GUITextBox> txtUserName;
+			NN<UI::GUILabel> lblPassword;
+			NN<UI::GUITextBox> txtPassword;
+			NN<UI::GUILabel> lblFileUpload;
+			NN<UI::GUITextBox> txtFileFormName;
+			NN<UI::GUIButton> btnFileSelect;
+			NN<UI::GUIButton> btnFileClear;
+			NN<UI::GUILabel> lblFileStatus;
+			NN<UI::GUILabel> lblDataStr;
+			NN<UI::GUITextBox> txtDataStr;
+			NN<UI::GUIButton> btnDataStr;
+			NN<UI::GUILabel> lblPostFormat;
+			NN<UI::GUIComboBox> cboPostFormat;
+			NN<UI::GUILabel> lblHeaders;
+			NN<UI::GUITextBox> txtHeaders;
+			NN<UI::GUIButton> btnRequest;
+			NN<UI::GUIListView> lvReqData;
 
-			NotNullPtr<UI::GUITabPage> tpResponse;
-			NotNullPtr<UI::GUIPanel> pnlResponse;
-			NotNullPtr<UI::GUILabel> lblReqURL;
-			NotNullPtr<UI::GUITextBox> txtReqURL;
-			NotNullPtr<UI::GUILabel> lblSvrIP;
-			NotNullPtr<UI::GUITextBox> txtSvrIP;
-			NotNullPtr<UI::GUILabel> lblStartTime;
-			NotNullPtr<UI::GUITextBox> txtStartTime;
-			NotNullPtr<UI::GUILabel> lblTimeDNS;
-			NotNullPtr<UI::GUITextBox> txtTimeDNS;
-			NotNullPtr<UI::GUILabel> lblTimeConn;
-			NotNullPtr<UI::GUITextBox> txtTimeConn;
-			NotNullPtr<UI::GUILabel> lblTimeSendHdr;
-			NotNullPtr<UI::GUITextBox> txtTimeSendHdr;
-			NotNullPtr<UI::GUILabel> lblTimeResp;
-			NotNullPtr<UI::GUITextBox> txtTimeResp;
-			NotNullPtr<UI::GUILabel> lblTimeTotal;
-			NotNullPtr<UI::GUITextBox> txtTimeTotal;
-			NotNullPtr<UI::GUILabel> lblRespStatus;
-			NotNullPtr<UI::GUITextBox> txtRespStatus;
-			NotNullPtr<UI::GUILabel> lblRespDLSize;
-			NotNullPtr<UI::GUITextBox> txtRespDLSize;
-			NotNullPtr<UI::GUILabel> lblRespULSize;
-			NotNullPtr<UI::GUITextBox> txtRespULSize;
-			NotNullPtr<UI::GUILabel> lblRespTransfSize;
-			NotNullPtr<UI::GUITextBox> txtRespTransfSize;
-			NotNullPtr<UI::GUILabel> lblRespContSize;
-			NotNullPtr<UI::GUITextBox> txtRespContSize;
-			NotNullPtr<UI::GUIListView> lvHeaders;
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUIButton> btnSave;
-			NotNullPtr<UI::GUIButton> btnView;
+			NN<UI::GUITabPage> tpResponse;
+			NN<UI::GUIPanel> pnlResponse;
+			NN<UI::GUILabel> lblReqURL;
+			NN<UI::GUITextBox> txtReqURL;
+			NN<UI::GUILabel> lblSvrIP;
+			NN<UI::GUITextBox> txtSvrIP;
+			NN<UI::GUILabel> lblStartTime;
+			NN<UI::GUITextBox> txtStartTime;
+			NN<UI::GUILabel> lblTimeDNS;
+			NN<UI::GUITextBox> txtTimeDNS;
+			NN<UI::GUILabel> lblTimeConn;
+			NN<UI::GUITextBox> txtTimeConn;
+			NN<UI::GUILabel> lblTimeSendHdr;
+			NN<UI::GUITextBox> txtTimeSendHdr;
+			NN<UI::GUILabel> lblTimeResp;
+			NN<UI::GUITextBox> txtTimeResp;
+			NN<UI::GUILabel> lblTimeTotal;
+			NN<UI::GUITextBox> txtTimeTotal;
+			NN<UI::GUILabel> lblRespStatus;
+			NN<UI::GUITextBox> txtRespStatus;
+			NN<UI::GUILabel> lblRespDLSize;
+			NN<UI::GUITextBox> txtRespDLSize;
+			NN<UI::GUILabel> lblRespULSize;
+			NN<UI::GUITextBox> txtRespULSize;
+			NN<UI::GUILabel> lblRespTransfSize;
+			NN<UI::GUITextBox> txtRespTransfSize;
+			NN<UI::GUILabel> lblRespContSize;
+			NN<UI::GUITextBox> txtRespContSize;
+			NN<UI::GUIListView> lvHeaders;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUIButton> btnSave;
+			NN<UI::GUIButton> btnView;
 
-			NotNullPtr<UI::GUITabPage> tpCert;
-			NotNullPtr<UI::GUIPanel> pnlCert;
-			NotNullPtr<UI::GUIButton> btnCert;
-			NotNullPtr<UI::GUITextBox> txtCert;
+			NN<UI::GUITabPage> tpCert;
+			NN<UI::GUIPanel> pnlCert;
+			NN<UI::GUIButton> btnCert;
+			NN<UI::GUITextBox> txtCert;
 
-			NotNullPtr<UI::GUITabPage> tpCookie;
-			NotNullPtr<UI::GUIListView> lvCookie;
+			NN<UI::GUITabPage> tpCookie;
+			NN<UI::GUIListView> lvCookie;
 
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 			Text::String *reqURL;
 			const UTF8Char *reqBody;
@@ -132,7 +132,7 @@ namespace SSWR
 			Bool reqOSClient;
 			Bool reqAllowComp;
 			Bool noShutdown;
-			NotNullPtr<Text::String> userAgent;
+			NN<Text::String> userAgent;
 			Crypto::Cert::X509Cert *cliCert;
 			Crypto::Cert::X509File *cliKey;
 
@@ -170,7 +170,7 @@ namespace SSWR
 			static void __stdcall OnFileClearClicked(AnyType userObj);
 			static void __stdcall OnCertClicked(AnyType userObj);
 			static void __stdcall OnClientCertClicked(AnyType userObj);
-			static void __stdcall ProcessThread(NotNullPtr<Sync::Thread> thread);
+			static void __stdcall ProcessThread(NN<Sync::Thread> thread);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			void ClearHeaders();
 			void ClearParams();
@@ -179,7 +179,7 @@ namespace SSWR
 			Optional<HTTPCookie> SetCookie(Text::CStringNN cookieStr, Text::CStringNN reqURL);
 			UTF8Char *AppendCookie(UTF8Char *sbuff, Text::CStringNN reqURL);
 		public:
-			AVIRHTTPClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRHTTPClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHTTPClientForm();
 
 			virtual void OnMonitorChanged();

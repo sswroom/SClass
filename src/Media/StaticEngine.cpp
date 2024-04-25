@@ -55,7 +55,7 @@ Media::DrawImage *Media::StaticEngine::LoadImage(Text::CStringNN fileName)
 Media::DrawImage *Media::StaticEngine::LoadImageW(const WChar *fileName)
 {
 	Media::ImageList *imgList = 0;
-	NotNullPtr<Text::String> s = Text::String::NewNotNull(fileName);
+	NN<Text::String> s = Text::String::NewNotNull(fileName);
 	{
 		IO::StmData::FileData fd(s, false);
 		s->Release();
@@ -74,7 +74,7 @@ Media::DrawImage *Media::StaticEngine::LoadImageW(const WChar *fileName)
 	return simg;
 }
 
-Media::DrawImage *Media::StaticEngine::LoadImageStream(NotNullPtr<IO::SeekableStream> stm)
+Media::DrawImage *Media::StaticEngine::LoadImageStream(NN<IO::SeekableStream> stm)
 {
 	return 0;
 }
@@ -87,12 +87,12 @@ Media::DrawImage *Media::StaticEngine::ConvImage(Media::Image *img)
 	return 0;
 }
 
-Media::DrawImage *Media::StaticEngine::CloneImage(NotNullPtr<DrawImage> img)
+Media::DrawImage *Media::StaticEngine::CloneImage(NN<DrawImage> img)
 {
 	return this->ConvImage((Media::StaticDrawImage*)img.Ptr());
 }
 
-Bool Media::StaticEngine::DeleteImage(NotNullPtr<DrawImage> img)
+Bool Media::StaticEngine::DeleteImage(NN<DrawImage> img)
 {
 	Media::StaticDrawImage *simg = (Media::StaticDrawImage*)img.Ptr();
 	DEL_CLASS(simg);
@@ -138,7 +138,7 @@ Double Media::StaticPen::GetThick()
 	return this->thick;
 }
 
-Media::StaticDrawImage::StaticDrawImage(StaticEngine *eng, Math::Size2D<UOSInt> dispSize, Int32 fourcc, Int32 bpp, Media::PixelFormat pf, OSInt maxSize, NotNullPtr<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst) : Media::StaticImage(dispSize, fourcc, bpp, pf, maxSize, color, yuvType, atype, ycOfst)
+Media::StaticDrawImage::StaticDrawImage(StaticEngine *eng, Math::Size2D<UOSInt> dispSize, Int32 fourcc, Int32 bpp, Media::PixelFormat pf, OSInt maxSize, NN<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst) : Media::StaticImage(dispSize, fourcc, bpp, pf, maxSize, color, yuvType, atype, ycOfst)
 {
 	this->eng = eng;
 }
@@ -163,7 +163,7 @@ UInt32 Media::StaticDrawImage::GetBitCount() const
 	return this->info.storeBPP;
 }
 
-NotNullPtr<const Media::ColorProfile> Media::StaticDrawImage::GetColorProfile() const
+NN<const Media::ColorProfile> Media::StaticDrawImage::GetColorProfile() const
 {
 	return this->info.color;
 }
@@ -205,12 +205,12 @@ UInt8 *Media::StaticDrawImage::GetImgBits(OutParam<Bool> revOrder)
 	return this->data;
 }
 
-Bool Media::StaticDrawImage::DrawImagePt(NotNullPtr<DrawImage> img, Math::Coord2DDbl tl)
+Bool Media::StaticDrawImage::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 {
-	return this->DrawImagePt2(NotNullPtr<Media::StaticImage>::ConvertFrom(img), tl);
+	return this->DrawImagePt2(NN<Media::StaticImage>::ConvertFrom(img), tl);
 }
 
-Bool Media::StaticDrawImage::DrawImagePt2(NotNullPtr<Media::StaticImage> img, Math::Coord2DDbl tl)
+Bool Media::StaticDrawImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl tl)
 {
 	if (this->info.fourcc != 0)
 	{
@@ -296,7 +296,7 @@ Bool Media::StaticDrawImage::DrawImagePt2(NotNullPtr<Media::StaticImage> img, Ma
 	return false;
 }
 
-Bool Media::StaticDrawImage::DrawImagePt3(NotNullPtr<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
+Bool Media::StaticDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
 {
 	Media::StaticDrawImage *simg = (Media::StaticDrawImage *)img.Ptr();
 	if (this->info.fourcc != 0)
@@ -393,9 +393,9 @@ Media::DrawPen *Media::StaticDrawImage::NewPenARGB(UInt32 color, Double thick, U
 	return p;
 }
 
-NotNullPtr<Media::DrawBrush> Media::StaticDrawImage::NewBrushARGB(UInt32 color)
+NN<Media::DrawBrush> Media::StaticDrawImage::NewBrushARGB(UInt32 color)
 {
-	NotNullPtr<Media::StaticBrush> b;
+	NN<Media::StaticBrush> b;
 	NEW_CLASSNN(b, Media::StaticBrush(color));
 	return b;
 }
@@ -417,7 +417,7 @@ Media::StaticImage *Media::StaticDrawImage::ToStaticImage() const
 	return (Media::StaticImage*)this->Clone();
 }
 
-UOSInt Media::StaticDrawImage::SaveGIF(NotNullPtr<IO::SeekableStream> stm)
+UOSInt Media::StaticDrawImage::SaveGIF(NN<IO::SeekableStream> stm)
 {
 	Media::StaticImage *simg = (Media::StaticImage*)this->Clone();
 	if (!simg->ToPal8())
@@ -426,7 +426,7 @@ UOSInt Media::StaticDrawImage::SaveGIF(NotNullPtr<IO::SeekableStream> stm)
 		return -1;
 	}
 	Exporter::GIFExporter exporter;
-	NotNullPtr<Media::ImageList> imgList;
+	NN<Media::ImageList> imgList;
 	NEW_CLASSNN(imgList, Media::ImageList(CSTR("GIFTemp")));
 	imgList->AddImage(simg, 0);
 	Bool succ = exporter.ExportFile(stm, CSTR("Temp"), imgList, 0);

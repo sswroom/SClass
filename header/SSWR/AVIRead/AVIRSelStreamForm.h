@@ -25,82 +25,82 @@ namespace SSWR
 			IO::Stream *stm;
 			IO::StreamType stmType;
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<IO::LogTool> log;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<IO::LogTool> log;
 			IO::SiLabDriver *siLabDriver;
 			Optional<Net::SSLEngine> ssl;
 			IO::DeviceManager devMgr;
 			Data::ArrayList<IO::DeviceInfo*> devList;
 
-			NotNullPtr<UI::GUIPanel> pnlStreamType;
-			NotNullPtr<UI::GUILabel> lblStreamType;
-			NotNullPtr<UI::GUIComboBox> cboStreamType;
-			NotNullPtr<UI::GUITabControl> tcConfig;
+			NN<UI::GUIPanel> pnlStreamType;
+			NN<UI::GUILabel> lblStreamType;
+			NN<UI::GUIComboBox> cboStreamType;
+			NN<UI::GUITabControl> tcConfig;
 
-			NotNullPtr<UI::GUITabPage> tpSerialPort;
-			NotNullPtr<UI::GUILabel> lblSerialPort;
-			NotNullPtr<UI::GUIComboBox> cboSerialPort;
-			NotNullPtr<UI::GUILabel> lblBaudRate;
-			NotNullPtr<UI::GUITextBox> txtBaudRate;
-			NotNullPtr<UI::GUILabel> lblParity;
-			NotNullPtr<UI::GUIComboBox> cboParity;
+			NN<UI::GUITabPage> tpSerialPort;
+			NN<UI::GUILabel> lblSerialPort;
+			NN<UI::GUIComboBox> cboSerialPort;
+			NN<UI::GUILabel> lblBaudRate;
+			NN<UI::GUITextBox> txtBaudRate;
+			NN<UI::GUILabel> lblParity;
+			NN<UI::GUIComboBox> cboParity;
 
-			NotNullPtr<UI::GUITabPage> tpSiLabPort;
-			NotNullPtr<UI::GUIPanel> pnlSLInfo;
-			NotNullPtr<UI::GUILabel> lblDLLVer;
-			NotNullPtr<UI::GUITextBox> txtDLLVer;
-			NotNullPtr<UI::GUILabel> lblDriverVer;
-			NotNullPtr<UI::GUITextBox> txtDriverVer;
-			NotNullPtr<UI::GUIPanel> pnlSLControl;
-			NotNullPtr<UI::GUILabel> lblSLBaudRate;
-			NotNullPtr<UI::GUITextBox> txtSLBaudRate;
-			NotNullPtr<UI::GUIListView> lvSLPort;
+			NN<UI::GUITabPage> tpSiLabPort;
+			NN<UI::GUIPanel> pnlSLInfo;
+			NN<UI::GUILabel> lblDLLVer;
+			NN<UI::GUITextBox> txtDLLVer;
+			NN<UI::GUILabel> lblDriverVer;
+			NN<UI::GUITextBox> txtDriverVer;
+			NN<UI::GUIPanel> pnlSLControl;
+			NN<UI::GUILabel> lblSLBaudRate;
+			NN<UI::GUITextBox> txtSLBaudRate;
+			NN<UI::GUIListView> lvSLPort;
 
-			NotNullPtr<UI::GUITabPage> tpTCPSvr;
-			NotNullPtr<UI::GUILabel> lblTCPSvrPort;
-			NotNullPtr<UI::GUITextBox> txtTCPSvrPort;
-			NotNullPtr<UI::GUICheckBox> chkBoardcast;
+			NN<UI::GUITabPage> tpTCPSvr;
+			NN<UI::GUILabel> lblTCPSvrPort;
+			NN<UI::GUITextBox> txtTCPSvrPort;
+			NN<UI::GUICheckBox> chkBoardcast;
 
-			NotNullPtr<UI::GUITabPage> tpTCPCli;
-			NotNullPtr<UI::GUILabel> lblTCPCliHost;
-			NotNullPtr<UI::GUITextBox> txtTCPCliHost;
-			NotNullPtr<UI::GUILabel> lblTCPCliPort;
-			NotNullPtr<UI::GUITextBox> txtTCPCliPort;
+			NN<UI::GUITabPage> tpTCPCli;
+			NN<UI::GUILabel> lblTCPCliHost;
+			NN<UI::GUITextBox> txtTCPCliHost;
+			NN<UI::GUILabel> lblTCPCliPort;
+			NN<UI::GUITextBox> txtTCPCliPort;
 
-			NotNullPtr<UI::GUITabPage> tpSSLCli;
-			NotNullPtr<UI::GUILabel> lblSSLCliHost;
-			NotNullPtr<UI::GUITextBox> txtSSLCliHost;
-			NotNullPtr<UI::GUILabel> lblSSLCliPort;
-			NotNullPtr<UI::GUITextBox> txtSSLCliPort;
+			NN<UI::GUITabPage> tpSSLCli;
+			NN<UI::GUILabel> lblSSLCliHost;
+			NN<UI::GUITextBox> txtSSLCliHost;
+			NN<UI::GUILabel> lblSSLCliPort;
+			NN<UI::GUITextBox> txtSSLCliPort;
 
-			NotNullPtr<UI::GUITabPage> tpUDPSvr;
-			NotNullPtr<UI::GUILabel> lblUDPSvrPort;
-			NotNullPtr<UI::GUITextBox> txtUDPSvrPort;
+			NN<UI::GUITabPage> tpUDPSvr;
+			NN<UI::GUILabel> lblUDPSvrPort;
+			NN<UI::GUITextBox> txtUDPSvrPort;
 
-			NotNullPtr<UI::GUITabPage> tpUDPCli;
-			NotNullPtr<UI::GUILabel> lblUDPCliHost;
-			NotNullPtr<UI::GUITextBox> txtUDPCliHost;
-			NotNullPtr<UI::GUILabel> lblUDPCliPort;
-			NotNullPtr<UI::GUITextBox> txtUDPCliPort;
+			NN<UI::GUITabPage> tpUDPCli;
+			NN<UI::GUILabel> lblUDPCliHost;
+			NN<UI::GUITextBox> txtUDPCliHost;
+			NN<UI::GUILabel> lblUDPCliPort;
+			NN<UI::GUITextBox> txtUDPCliPort;
 
-			NotNullPtr<UI::GUITabPage> tpFile;
-			NotNullPtr<UI::GUILabel> lblFileName;
-			NotNullPtr<UI::GUITextBox> txtFileName;
-			NotNullPtr<UI::GUIButton> btnFileBrowse;
+			NN<UI::GUITabPage> tpFile;
+			NN<UI::GUILabel> lblFileName;
+			NN<UI::GUITextBox> txtFileName;
+			NN<UI::GUIButton> btnFileBrowse;
 
-			NotNullPtr<UI::GUITabPage> tpHID;
-			NotNullPtr<UI::GUIListBox> lbHIDDevice;
+			NN<UI::GUITabPage> tpHID;
+			NN<UI::GUIListBox> lbHIDDevice;
 
-			NotNullPtr<UI::GUIPanel> pnlButtons;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUIPanel> pnlButtons;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
 			static void __stdcall OnOKClick(AnyType userObj);
 			static void __stdcall OnCancelClick(AnyType userObj);
 			static void __stdcall OnFileBrowseClick(AnyType userObj);
 			static void __stdcall OnStmTypeChg(AnyType userObj);
 		public:
-			AVIRSelStreamForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Bool allowReadOnly, Optional<Net::SSLEngine> ssl, NotNullPtr<IO::LogTool> log);
+			AVIRSelStreamForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Bool allowReadOnly, Optional<Net::SSLEngine> ssl, NN<IO::LogTool> log);
 			virtual ~AVIRSelStreamForm();
 
 			virtual void OnMonitorChanged();
@@ -109,7 +109,7 @@ namespace SSWR
 			void SetInitSerialPort(UOSInt port);
 			void SetInitBaudRate(Int32 baudRate);
 
-			NotNullPtr<IO::Stream> GetStream() const;
+			NN<IO::Stream> GetStream() const;
 			IO::StreamType GetStreamType() const;
 		};
 	}

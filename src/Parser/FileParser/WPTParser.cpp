@@ -24,7 +24,7 @@ Int32 Parser::FileParser::WPTParser::GetName()
 	return *(Int32*)"WPTP";
 }
 
-void Parser::FileParser::WPTParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::WPTParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
@@ -37,13 +37,13 @@ IO::ParserType Parser::FileParser::WPTParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::WPTParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::WPTParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;
 	UTF8Char *tmpArr[16];
 	Map::VectorLayer *lyr = 0;
-	NotNullPtr<Math::Geometry::PointZ> pt;
+	NN<Math::Geometry::PointZ> pt;
 	Bool valid;
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC("WPT")))

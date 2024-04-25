@@ -15,7 +15,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/TextBinEnc/URIEncoding.h"
 
-Net::HTTPClient::HTTPClient(NotNullPtr<Net::SocketFactory> sockf, Bool kaConn) : IO::Stream(CSTR("HTTPClient"))
+Net::HTTPClient::HTTPClient(NN<Net::SocketFactory> sockf, Bool kaConn) : IO::Stream(CSTR("HTTPClient"))
 {
 	this->sockf = sockf;
 	this->canWrite = false;
@@ -82,7 +82,7 @@ Bool Net::HTTPClient::FormAdd(Text::CStringNN name, Text::CString value)
 	return true;
 }
 
-void Net::HTTPClient::AddTimeHeader(Text::CStringNN name, NotNullPtr<Data::DateTime> dt)
+void Net::HTTPClient::AddTimeHeader(Text::CStringNN name, NN<Data::DateTime> dt)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -132,7 +132,7 @@ UOSInt Net::HTTPClient::GetRespHeaderCnt() const
 
 UTF8Char *Net::HTTPClient::GetRespHeader(UOSInt index, UTF8Char *buff)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (this->headers.GetItem(index).SetTo(s))
 		return s->ConcatTo(buff);
 	else
@@ -149,7 +149,7 @@ UTF8Char *Net::HTTPClient::GetRespHeader(Text::CStringNN name, UTF8Char *valueBu
 	return 0;
 }
 
-Bool Net::HTTPClient::GetRespHeader(Text::CStringNN name, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Net::HTTPClient::GetRespHeader(Text::CStringNN name, NN<Text::StringBuilderUTF8> sb)
 {
 	Text::CString v = GetRespHeader(name);
 	if (v.v)
@@ -164,9 +164,9 @@ Text::CString Net::HTTPClient::GetRespHeader(Text::CStringNN name)
 {
 	UTF8Char buff[256];
 	UTF8Char *s2;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	s2 = Text::StrConcatC(name.ConcatTo(buff), UTF8STRC(": "));
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = this->headers.Iterator();
+	Data::ArrayIterator<NN<Text::String>> it = this->headers.Iterator();
 	while (it.HasNext())
 	{
 		s = it.Next();
@@ -183,7 +183,7 @@ Optional<Text::String> Net::HTTPClient::GetRespHeader(UOSInt index) const
 	return this->headers.GetItem(index);
 }
 
-Data::ArrayIterator<NotNullPtr<Text::String>> Net::HTTPClient::RespHeaderIterator() const
+Data::ArrayIterator<NN<Text::String>> Net::HTTPClient::RespHeaderIterator() const
 {
 	return this->headers.Iterator();
 }
@@ -219,7 +219,7 @@ UInt32 Net::HTTPClient::GetContentCodePage()
 	return 0;
 }
 
-Bool Net::HTTPClient::GetLastModified(NotNullPtr<Data::DateTime> dt)
+Bool Net::HTTPClient::GetLastModified(NN<Data::DateTime> dt)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -245,7 +245,7 @@ Bool Net::HTTPClient::GetLastModified(OutParam<Data::Timestamp> ts)
 	return false;
 }
 
-Bool Net::HTTPClient::GetServerDate(NotNullPtr<Data::DateTime> dt)
+Bool Net::HTTPClient::GetServerDate(NN<Data::DateTime> dt)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -299,7 +299,7 @@ UInt64 Net::HTTPClient::GetTotalDownload()
 	return this->totalDownload;
 }
 
-Bool Net::HTTPClient::ReadAllContent(NotNullPtr<IO::Stream> outStm, UOSInt buffSize, UInt64 maxSize)
+Bool Net::HTTPClient::ReadAllContent(NN<IO::Stream> outStm, UOSInt buffSize, UInt64 maxSize)
 {
 	UInt64 contLeng = this->GetContentLength();
 	UOSInt currPos = 0;
@@ -343,7 +343,7 @@ Bool Net::HTTPClient::ReadAllContent(NotNullPtr<IO::Stream> outStm, UOSInt buffS
 	return false;
 }
 
-Bool Net::HTTPClient::ReadAllContent(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt buffSize, UInt64 maxSize)
+Bool Net::HTTPClient::ReadAllContent(NN<Text::StringBuilderUTF8> sb, UOSInt buffSize, UInt64 maxSize)
 {
 	UInt64 contLeng = this->GetContentLength();
 	UOSInt currPos = 0;
@@ -392,7 +392,7 @@ const Net::SocketUtil::AddressInfo *Net::HTTPClient::GetSvrAddr()
 	return &this->svrAddr;
 }
 
-void Net::HTTPClient::ParseDateStr(NotNullPtr<Data::DateTime> dt, Text::CStringNN dateStr)
+void Net::HTTPClient::ParseDateStr(NN<Data::DateTime> dt, Text::CStringNN dateStr)
 {
 	UTF8Char *tmps;
 	Text::PString ptrs[6];
@@ -497,9 +497,9 @@ Data::Timestamp Net::HTTPClient::ParseDateStr(Text::CStringNN dateStr)
 	return 0;
 }
 
-NotNullPtr<Net::HTTPClient> Net::HTTPClient::CreateClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString userAgent, Bool kaConn, Bool isSecure)
+NN<Net::HTTPClient> Net::HTTPClient::CreateClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString userAgent, Bool kaConn, Bool isSecure)
 {
-	NotNullPtr<Net::HTTPClient> cli;
+	NN<Net::HTTPClient> cli;
 	if (isSecure && ssl.IsNull())
 	{
 		NEW_CLASSNN(cli, Net::HTTPOSClient(sockf, userAgent, kaConn));
@@ -511,19 +511,19 @@ NotNullPtr<Net::HTTPClient> Net::HTTPClient::CreateClient(NotNullPtr<Net::Socket
 	return cli;
 }
 
-NotNullPtr<Net::HTTPClient> Net::HTTPClient::CreateConnect(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, Net::WebUtil::RequestMethod method, Bool kaConn)
+NN<Net::HTTPClient> Net::HTTPClient::CreateConnect(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, Net::WebUtil::RequestMethod method, Bool kaConn)
 {
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, kaConn, url.StartsWithICase(UTF8STRC("HTTPS://")));
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, kaConn, url.StartsWithICase(UTF8STRC("HTTPS://")));
 	cli->Connect(url, method, 0, 0, true);
 	return cli;
 }
 
-NotNullPtr<Net::HTTPClient> Net::HTTPClient::CreateGet(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, Bool kaConn)
+NN<Net::HTTPClient> Net::HTTPClient::CreateGet(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, Bool kaConn)
 {
 	Data::ArrayListStringNN urlList;
 	while (true)
 	{
-		NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, kaConn, url.StartsWithICase(UTF8STRC("HTTPS://")));
+		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, kaConn, url.StartsWithICase(UTF8STRC("HTTPS://")));
 		cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 		Net::WebStatus::StatusCode status = cli->GetRespStatus();
 		if (status != Net::WebStatus::SC_MOVED_TEMPORARILY && status != Net::WebStatus::SC_MOVED_PERMANENTLY)
@@ -551,9 +551,9 @@ void Net::HTTPClient::PrepareSSL(Optional<Net::SSLEngine> ssl)
 {
 }
 
-Bool Net::HTTPClient::LoadContent(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, NotNullPtr<IO::Stream> stm, UInt64 maxSize)
+Bool Net::HTTPClient::LoadContent(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, NN<IO::Stream> stm, UInt64 maxSize)
 {
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->GetRespStatus() != Net::WebStatus::SC_OK)
 	{
 		cli.Delete();
@@ -575,9 +575,9 @@ Bool Net::HTTPClient::LoadContent(NotNullPtr<Net::SocketFactory> sockf, Optional
 	return true;
 }
 
-Bool Net::HTTPClient::LoadContent(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, NotNullPtr<Text::StringBuilderUTF8> sb, UInt64 maxSize)
+Bool Net::HTTPClient::LoadContent(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url, NN<Text::StringBuilderUTF8> sb, UInt64 maxSize)
 {
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->GetRespStatus() != Net::WebStatus::SC_OK)
 	{
 		cli.Delete();

@@ -68,7 +68,7 @@ Text::CStringNN IO::ParserTypeGetName(ParserType pt)
 	}
 }
 
-IO::ParsedObject::ParsedObject(NotNullPtr<Text::String> sourceName)
+IO::ParsedObject::ParsedObject(NN<Text::String> sourceName)
 {
 	this->sourceName = sourceName->Clone();
 }
@@ -88,7 +88,7 @@ UTF8Char *IO::ParsedObject::GetSourceName(UTF8Char *oriStr) const
 	return this->sourceName->ConcatTo(oriStr);
 }
 
-void IO::ParsedObject::SetSourceName(NotNullPtr<Text::String> sourceName)
+void IO::ParsedObject::SetSourceName(NN<Text::String> sourceName)
 {
 	this->sourceName->Release();
 	this->sourceName = sourceName->Clone();

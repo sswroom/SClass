@@ -24,7 +24,7 @@ Bool UI::Win::WinFontDialog::ShowDialog(ControlHandle *ownerHandle)
 {
 	LOGFONTW lf;
 	CHOOSEFONTW cfont;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	ZeroMemory(&cfont, sizeof(cfont));
 	cfont.lStructSize = sizeof(CHOOSEFONT);
 	cfont.hwndOwner = (HWND)ownerHandle;

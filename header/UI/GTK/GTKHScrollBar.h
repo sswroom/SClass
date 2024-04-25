@@ -12,7 +12,7 @@ namespace UI
 		private:
 			static gboolean SignalValueChanged(void *window, void *userObj);
 		public:
-			GTKHScrollBar(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Double width);
+			GTKHScrollBar(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Double width);
 			virtual ~GTKHScrollBar();
 
 			virtual void InitScrollBar(UOSInt minVal, UOSInt maxVal, UOSInt currVal, UOSInt largeChg);

@@ -5,7 +5,7 @@
 void __stdcall UtilUI::TextGotoDialog::OnOKClicked(AnyType userObj)
 {
 	UTF8Char sbuff[20];
-	NotNullPtr<UtilUI::TextGotoDialog> me = userObj.GetNN<UtilUI::TextGotoDialog>();
+	NN<UtilUI::TextGotoDialog> me = userObj.GetNN<UtilUI::TextGotoDialog>();
 
 	UOSInt lineNum;
 	me->txtLine->GetText(sbuff);
@@ -21,11 +21,11 @@ void __stdcall UtilUI::TextGotoDialog::OnOKClicked(AnyType userObj)
 
 void __stdcall UtilUI::TextGotoDialog::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<UtilUI::TextGotoDialog> me = userObj.GetNN<UtilUI::TextGotoDialog>();
+	NN<UtilUI::TextGotoDialog> me = userObj.GetNN<UtilUI::TextGotoDialog>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-UtilUI::TextGotoDialog::TextGotoDialog(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, Media::MonitorMgr *monMgr) : UI::GUIForm(parent, 320, 120, ui)
+UtilUI::TextGotoDialog::TextGotoDialog(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, Media::MonitorMgr *monMgr) : UI::GUIForm(parent, 320, 120, ui)
 {
 	this->currLine = 0;
 	this->SetFont(0, 0, 8.25, false);

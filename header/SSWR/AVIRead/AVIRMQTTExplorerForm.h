@@ -27,7 +27,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				NotNullPtr<Text::String> topic;
+				NN<Text::String> topic;
 				UTF8Char *currValue;
 				UOSInt currValueLen;
 				Bool updated;
@@ -38,11 +38,11 @@ namespace SSWR
 			} TopicStatus;
 			
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 			Net::MQTTConn *client;
 			IO::LogTool log;
-			NotNullPtr<UI::ListBoxLogger> logger;
+			NN<UI::ListBoxLogger> logger;
 			Sync::Mutex topicMut;
 			Data::StringMapNN<TopicStatus> topicMap;
 			Bool topicListChanged;
@@ -51,39 +51,39 @@ namespace SSWR
 			Crypto::Cert::X509Cert *cliCert;
 			Crypto::Cert::X509File *cliKey;
 
-			NotNullPtr<UI::GUIPanel> pnlConnect;
-			NotNullPtr<UI::GUILabel> lblHost;
-			NotNullPtr<UI::GUITextBox> txtHost;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUILabel> lblUsername;
-			NotNullPtr<UI::GUITextBox> txtUsername;
-			NotNullPtr<UI::GUILabel> lblPassword;
-			NotNullPtr<UI::GUITextBox> txtPassword;
-			NotNullPtr<UI::GUICheckBox> chkSSL;
-			NotNullPtr<UI::GUICheckBox> chkWebSocket;
-			NotNullPtr<UI::GUIButton> btnCliCert;
-			NotNullPtr<UI::GUILabel> lblCliCert;
-			NotNullPtr<UI::GUIButton> btnCliKey;
-			NotNullPtr<UI::GUILabel> lblCliKey;
-			NotNullPtr<UI::GUILabel> lblStatus;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUITabControl> tcDetail;
+			NN<UI::GUIPanel> pnlConnect;
+			NN<UI::GUILabel> lblHost;
+			NN<UI::GUITextBox> txtHost;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUILabel> lblUsername;
+			NN<UI::GUITextBox> txtUsername;
+			NN<UI::GUILabel> lblPassword;
+			NN<UI::GUITextBox> txtPassword;
+			NN<UI::GUICheckBox> chkSSL;
+			NN<UI::GUICheckBox> chkWebSocket;
+			NN<UI::GUIButton> btnCliCert;
+			NN<UI::GUILabel> lblCliCert;
+			NN<UI::GUIButton> btnCliKey;
+			NN<UI::GUILabel> lblCliKey;
+			NN<UI::GUILabel> lblStatus;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUITabControl> tcDetail;
 
-			NotNullPtr<UI::GUITabPage> tpRecv;
-			NotNullPtr<UI::GUIListView> lvRecvTopic;
-			NotNullPtr<UI::GUIVSplitter> vspRecvTopic;
-			NotNullPtr<UI::GUIPictureBoxSimple> pbRecvTopic;
+			NN<UI::GUITabPage> tpRecv;
+			NN<UI::GUIListView> lvRecvTopic;
+			NN<UI::GUIVSplitter> vspRecvTopic;
+			NN<UI::GUIPictureBoxSimple> pbRecvTopic;
 
-			NotNullPtr<UI::GUITabPage> tpPublish;
-			NotNullPtr<UI::GUIPanel> pnlPubTopic;
-			NotNullPtr<UI::GUILabel> lblPubTopic;
-			NotNullPtr<UI::GUITextBox> txtPubTopic;
-			NotNullPtr<UI::GUIPanel> pnlPubCtrl;
-			NotNullPtr<UI::GUIButton> btnPublish;
-			NotNullPtr<UI::GUITextBox> txtPubContent;
+			NN<UI::GUITabPage> tpPublish;
+			NN<UI::GUIPanel> pnlPubTopic;
+			NN<UI::GUILabel> lblPubTopic;
+			NN<UI::GUITextBox> txtPubTopic;
+			NN<UI::GUIPanel> pnlPubCtrl;
+			NN<UI::GUIButton> btnPublish;
+			NN<UI::GUITextBox> txtPubContent;
 
-			NotNullPtr<UI::GUITabPage> tpLog;
+			NN<UI::GUITabPage> tpLog;
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnCliCertClicked(AnyType userObj);
@@ -98,7 +98,7 @@ namespace SSWR
 			void ServerStop();
 			void ClearTopics();
 		public:
-			AVIRMQTTExplorerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRMQTTExplorerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMQTTExplorerForm();
 
 			virtual void OnMonitorChanged();

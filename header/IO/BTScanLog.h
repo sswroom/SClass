@@ -81,32 +81,32 @@ namespace IO
 			Int8 measurePower;
 			AdvType lastAdvType;
 			Text::String *name;
-			NotNullPtr<Data::ArrayListNN<LogEntry>> logs;
+			NN<Data::ArrayListNN<LogEntry>> logs;
 		};
 	private:
 		Data::FastMapNN<UInt64, DevEntry> pubDevs;
 		Data::FastMapNN<UInt64, DevEntry> randDevs;
 		Data::ArrayListNN<LogEntry> logs;
 
-		static void FreeDev(NotNullPtr<DevEntry> dev);
+		static void FreeDev(NN<DevEntry> dev);
 	public:
-		BTScanLog(NotNullPtr<Text::String> sourceName);
+		BTScanLog(NN<Text::String> sourceName);
 		virtual ~BTScanLog();
 
 		virtual IO::ParserType GetParserType() const;
 
-		NotNullPtr<LogEntry> AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, Text::String *name, Int8 rssi, Int8 txPower, Int8 measurePower, AdvType advType);
-		NotNullPtr<LogEntry> AddScanRec(NotNullPtr<const ScanRecord3> rec);
+		NN<LogEntry> AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, Text::String *name, Int8 rssi, Int8 txPower, Int8 measurePower, AdvType advType);
+		NN<LogEntry> AddScanRec(NN<const ScanRecord3> rec);
 		void AddBTRAWPacket(Int64 timeTicks, Data::ByteArrayR buff);
 		void ClearList();
-		NotNullPtr<const Data::ReadingListNN<IO::BTScanLog::DevEntry>> GetPublicList() const;
-		NotNullPtr<const Data::ReadingListNN<IO::BTScanLog::DevEntry>> GetRandomList() const;
+		NN<const Data::ReadingListNN<IO::BTScanLog::DevEntry>> GetPublicList() const;
+		NN<const Data::ReadingListNN<IO::BTScanLog::DevEntry>> GetRandomList() const;
 
 		static Text::CStringNN RadioTypeGetName(RadioType radioType);
 		static Text::CStringNN AddressTypeGetName(AddressType addrType);
 		static Text::CStringNN AdvTypeGetName(AdvType advType);
-		static Bool ParseBTRAWPacket(NotNullPtr<ScanRecord3> rec, Int64 timeTicks, Data::ByteArrayR buff);
-		static void ParseAdvisement(NotNullPtr<ScanRecord3> rec, UnsafeArray<const UInt8> buff, UOSInt ofst, UOSInt endOfst);
+		static Bool ParseBTRAWPacket(NN<ScanRecord3> rec, Int64 timeTicks, Data::ByteArrayR buff);
+		static void ParseAdvisement(NN<ScanRecord3> rec, UnsafeArray<const UInt8> buff, UOSInt ofst, UOSInt endOfst);
 	};
 }
 #endif

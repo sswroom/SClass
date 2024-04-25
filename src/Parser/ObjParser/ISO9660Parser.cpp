@@ -22,7 +22,7 @@ Int32 Parser::ObjParser::ISO9660Parser::GetName()
 	return *(Int32*)"ISO9";
 }
 
-void Parser::ObjParser::ISO9660Parser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::ObjParser::ISO9660Parser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::PackageFile)
 	{
@@ -36,9 +36,9 @@ IO::ParserType Parser::ObjParser::ISO9660Parser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::ObjParser::ISO9660Parser::ParseObject(NotNullPtr<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::ObjParser::ISO9660Parser::ParseObject(NN<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	NotNullPtr<IO::ISectorData> data;
+	NN<IO::ISectorData> data;
 	IO::ISectorData *cdData;
 	UInt8 sector[2048];
 	UOSInt sectorSize;
@@ -46,14 +46,14 @@ IO::ParsedObject *Parser::ObjParser::ISO9660Parser::ParseObject(NotNullPtr<IO::P
 		return 0;
 
 	cdData = 0;
-	data = NotNullPtr<IO::ISectorData>::ConvertFrom(pobj);
+	data = NN<IO::ISectorData>::ConvertFrom(pobj);
 	sectorSize = data->GetBytesPerSector();
 	if (sectorSize == 2048)
 	{
 	}
 	else if (sectorSize == 2352)
 	{
-		NotNullPtr<IO::CDSectorData> cd;
+		NN<IO::CDSectorData> cd;
 		NEW_CLASSNN(cd, IO::CDSectorData(data, 16, 2048));
 		cdData = cd.Ptr();
 		data = cd;
@@ -101,12 +101,12 @@ IO::ParsedObject *Parser::ObjParser::ISO9660Parser::ParseObject(NotNullPtr<IO::P
 	return pf;
 }
 
-NotNullPtr<IO::PackageFile> Parser::ObjParser::ISO9660Parser::ParseVol(NotNullPtr<IO::ISectorData> sectorData, UInt32 sectorNum, UInt32 codePage)
+NN<IO::PackageFile> Parser::ObjParser::ISO9660Parser::ParseVol(NN<IO::ISectorData> sectorData, UInt32 sectorNum, UInt32 codePage)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UInt8 sector[2048];
-	NotNullPtr<IO::VirtualPackageFile> pkgFile;
+	NN<IO::VirtualPackageFile> pkgFile;
 	Text::Encoding enc(codePage);
 
 	sectorData->ReadSector(sectorNum, BYTEARR(sector));
@@ -181,7 +181,7 @@ NotNullPtr<IO::PackageFile> Parser::ObjParser::ISO9660Parser::ParseVol(NotNullPt
 	return pkgFile;
 }
 
-void Parser::ObjParser::ISO9660Parser::ParseDir(NotNullPtr<IO::VirtualPackageFile> pkgFile, NotNullPtr<IO::ISectorData> sectorData, UInt32 sectorNum, UInt32 recSize, UTF8Char *fileName, UTF8Char *fileNameEnd, UInt32 codePage)
+void Parser::ObjParser::ISO9660Parser::ParseDir(NN<IO::VirtualPackageFile> pkgFile, NN<IO::ISectorData> sectorData, UInt32 sectorNum, UInt32 recSize, UTF8Char *fileName, UTF8Char *fileNameEnd, UInt32 codePage)
 {
 	Data::ByteBuffer dataBuff(recSize + 2048);
 	Data::ByteArray recBuff = dataBuff.SubArray(2048);
@@ -214,7 +214,7 @@ void Parser::ObjParser::ISO9660Parser::ParseDir(NotNullPtr<IO::VirtualPackageFil
 		UOSInt fileRecSize;
 		UInt32 sectorNum;
 		UInt32 fileSize;
-		NotNullPtr<IO::StreamData> fd;
+		NN<IO::StreamData> fd;
 		UTF8Char *sptr;
 		Text::Encoding enc(codePage);
 
@@ -238,7 +238,7 @@ void Parser::ObjParser::ISO9660Parser::ParseDir(NotNullPtr<IO::VirtualPackageFil
 				}
 				else
 				{
-					NotNullPtr<IO::VirtualPackageFile> pf2;
+					NN<IO::VirtualPackageFile> pf2;
 					sptr = fileNameEnd;
 					*sptr++ = IO::Path::PATH_SEPERATOR;
 					sptr = enc.UTF8FromBytes(sptr, &recBuff[33], recBuff[32], 0);

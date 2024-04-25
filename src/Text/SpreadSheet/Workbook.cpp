@@ -76,7 +76,7 @@ Text::SpreadSheet::Workbook *Text::SpreadSheet::Workbook::Clone() const
 	newWB->author = SCOPY_TEXT(this->author);
 	newWB->lastAuthor = SCOPY_TEXT(this->lastAuthor);
 	newWB->company = SCOPY_TEXT(this->company);
-	NotNullPtr<Data::DateTime> dt;
+	NN<Data::DateTime> dt;
 	if (dt.Set(this->createTime))
 	{
 		NEW_CLASS(newWB->createTime, Data::DateTime(dt));
@@ -93,13 +93,13 @@ Text::SpreadSheet::Workbook *Text::SpreadSheet::Workbook::Clone() const
 	newWB->activeSheet = this->activeSheet;
 	MemCopyNO(newWB->palette, this->palette, sizeof(defPalette));
 
-	Data::ArrayIterator<NotNullPtr<CellStyle>> itStyle = this->styles.Iterator();
+	Data::ArrayIterator<NN<CellStyle>> itStyle = this->styles.Iterator();
 	while (itStyle.HasNext())
 	{
 		newWB->styles.Add(itStyle.Next()->Clone());
 		i++;
 	}
-	Data::ArrayIterator<NotNullPtr<Worksheet>> itSheet = this->sheets.Iterator();
+	Data::ArrayIterator<NN<Worksheet>> itSheet = this->sheets.Iterator();
 	while (itSheet.HasNext())
 	{
 		newWB->sheets.Add(itSheet.Next()->Clone(this, newWB));
@@ -117,7 +117,7 @@ Text::SpreadSheet::Workbook *Text::SpreadSheet::Workbook::Clone() const
 
 void Text::SpreadSheet::Workbook::AddDefaultStyles()
 {
-	NotNullPtr<Text::SpreadSheet::CellStyle> style;
+	NN<Text::SpreadSheet::CellStyle> style;
 	while (this->styles.GetCount() < 21)
 	{
 		NEW_CLASSNN(style, Text::SpreadSheet::CellStyle(this->styles.GetCount()));
@@ -176,7 +176,7 @@ void Text::SpreadSheet::Workbook::SetCompany(const UTF8Char *company)
 void Text::SpreadSheet::Workbook::SetCreateTime(Data::DateTime *createTime)
 {
 	SDEL_CLASS(this->createTime);
-	NotNullPtr<Data::DateTime> dt;
+	NN<Data::DateTime> dt;
 	if (dt.Set(createTime))
 	{
 		NEW_CLASS(this->createTime, Data::DateTime(dt));
@@ -205,7 +205,7 @@ void Text::SpreadSheet::Workbook::SetCreateTime(Data::Timestamp createTime)
 void Text::SpreadSheet::Workbook::SetModifyTime(Data::DateTime *modifyTime)
 {
 	SDEL_CLASS(this->modifyTime);
-	NotNullPtr<Data::DateTime> dt;
+	NN<Data::DateTime> dt;
 	if (dt.Set(modifyTime))
 	{
 		NEW_CLASS(this->modifyTime, Data::DateTime(dt));
@@ -346,17 +346,17 @@ Bool Text::SpreadSheet::Workbook::HasCellStyle()
 	return false;
 }
 
-NotNullPtr<Text::SpreadSheet::CellStyle> Text::SpreadSheet::Workbook::NewCellStyle()
+NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::Workbook::NewCellStyle()
 {
-	NotNullPtr<CellStyle> style;
+	NN<CellStyle> style;
 	NEW_CLASSNN(style, CellStyle(this->styles.GetCount()));
 	this->styles.Add(style);
 	return style;
 }
 
-NotNullPtr<Text::SpreadSheet::CellStyle> Text::SpreadSheet::Workbook::NewCellStyle(WorkbookFont *font, HAlignment halign, VAlignment valign, Text::CString dataFormat)
+NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::Workbook::NewCellStyle(WorkbookFont *font, HAlignment halign, VAlignment valign, Text::CString dataFormat)
 {
-	NotNullPtr<CellStyle> style;
+	NN<CellStyle> style;
 	NEW_CLASSNN(style, CellStyle(this->styles.GetCount()));
 	style->SetFont(font);
 	style->SetHAlign(halign);
@@ -371,7 +371,7 @@ UOSInt Text::SpreadSheet::Workbook::GetStyleCount() const
 	return this->styles.GetCount();
 }
 
-OSInt Text::SpreadSheet::Workbook::GetStyleIndex(NotNullPtr<CellStyle> style) const
+OSInt Text::SpreadSheet::Workbook::GetStyleIndex(NN<CellStyle> style) const
 {
 	UOSInt i = this->styles.GetCount();
 	while (i-- > 0)
@@ -387,9 +387,9 @@ Optional<Text::SpreadSheet::CellStyle> Text::SpreadSheet::Workbook::GetStyle(UOS
 	return this->styles.GetItem(index);
 }
 
-NotNullPtr<Text::SpreadSheet::CellStyle> Text::SpreadSheet::Workbook::FindOrCreateStyle(NotNullPtr<const CellStyle> tmpStyle)
+NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::Workbook::FindOrCreateStyle(NN<const CellStyle> tmpStyle)
 {
-	NotNullPtr<CellStyle> style;
+	NN<CellStyle> style;
 	UOSInt i = this->styles.GetCount();
 	while (i-- > 0)
 	{
@@ -407,7 +407,7 @@ NotNullPtr<Text::SpreadSheet::CellStyle> Text::SpreadSheet::Workbook::FindOrCrea
 	return style;
 }
 
-Data::ArrayIterator<NotNullPtr<Text::SpreadSheet::CellStyle>> Text::SpreadSheet::Workbook::StyleIterator() const
+Data::ArrayIterator<NN<Text::SpreadSheet::CellStyle>> Text::SpreadSheet::Workbook::StyleIterator() const
 {
 	return this->styles.Iterator();
 }
@@ -427,36 +427,36 @@ void Text::SpreadSheet::Workbook::SetPalette(UInt32 *palette)
 	MemCopyNO(this->palette, palette, sizeof(UInt32) * 56);
 }
 
-NotNullPtr<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::AddWorksheet()
+NN<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::AddWorksheet()
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<Text::SpreadSheet::Worksheet> ws;
+	NN<Text::SpreadSheet::Worksheet> ws;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Sheet")), this->sheets.GetCount());
 	NEW_CLASSNN(ws, Text::SpreadSheet::Worksheet(CSTRP(sbuff, sptr)));
 	this->sheets.Add(ws);
 	return ws;
 }
 
-NotNullPtr<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::AddWorksheet(NotNullPtr<Text::String> name)
+NN<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::AddWorksheet(NN<Text::String> name)
 {
-	NotNullPtr<Text::SpreadSheet::Worksheet> ws;
+	NN<Text::SpreadSheet::Worksheet> ws;
 	NEW_CLASSNN(ws, Text::SpreadSheet::Worksheet(name));
 	this->sheets.Add(ws);
 	return ws;
 }
 
-NotNullPtr<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::AddWorksheet(Text::CStringNN name)
+NN<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::AddWorksheet(Text::CStringNN name)
 {
-	NotNullPtr<Text::SpreadSheet::Worksheet> ws;
+	NN<Text::SpreadSheet::Worksheet> ws;
 	NEW_CLASSNN(ws, Text::SpreadSheet::Worksheet(name));
 	this->sheets.Add(ws);
 	return ws;
 }
 
-NotNullPtr<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::InsertWorksheet(UOSInt index, Text::CStringNN name)
+NN<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::InsertWorksheet(UOSInt index, Text::CStringNN name)
 {
-	NotNullPtr<Text::SpreadSheet::Worksheet> ws;
+	NN<Text::SpreadSheet::Worksheet> ws;
 	NEW_CLASSNN(ws, Text::SpreadSheet::Worksheet(name));
 	this->sheets.Insert(index, ws);
 	return ws;
@@ -472,7 +472,7 @@ Optional<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::GetItem(UOSI
 	return this->sheets.GetItem(index);
 }
 
-Data::ArrayIterator<NotNullPtr<Text::SpreadSheet::Worksheet>> Text::SpreadSheet::Workbook::Iterator() const
+Data::ArrayIterator<NN<Text::SpreadSheet::Worksheet>> Text::SpreadSheet::Workbook::Iterator() const
 {
 	return this->sheets.Iterator();
 }
@@ -484,8 +484,8 @@ void Text::SpreadSheet::Workbook::RemoveAt(UOSInt index)
 
 Optional<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::GetWorksheetByName(Text::CString name)
 {
-	Data::ArrayIterator<NotNullPtr<Worksheet>> it = this->sheets.Iterator();
-	NotNullPtr<Worksheet> sheet;
+	Data::ArrayIterator<NN<Worksheet>> it = this->sheets.Iterator();
+	NN<Worksheet> sheet;
 	while (it.HasNext())
 	{
 		sheet = it.Next();

@@ -123,7 +123,7 @@ void Manage::MonConn::ParsePacket(UInt8 *buff, UInt16 *cmdSize, UInt16 *cmdType,
 
 UInt32 __stdcall Manage::MonConn::ConnRThread(AnyType conn)
 {
-	NotNullPtr<Manage::MonConn> me = conn.GetNN<Manage::MonConn>();
+	NN<Manage::MonConn> me = conn.GetNN<Manage::MonConn>();
 	UOSInt buffSize;
 	me->ConnRRunning = true;
 	{
@@ -222,7 +222,7 @@ UInt32 __stdcall Manage::MonConn::ConnRThread(AnyType conn)
 
 UInt32 __stdcall Manage::MonConn::ConnTThread(AnyType conn)
 {
-	NotNullPtr<Manage::MonConn> me = conn.GetNN<Manage::MonConn>();
+	NN<Manage::MonConn> me = conn.GetNN<Manage::MonConn>();
 	UInt8 *data;
 	me->ConnTRunning = true;
 	while (true)
@@ -285,7 +285,7 @@ void Manage::MonConn::AddCommand(UInt8 *data, UOSInt dataSize, UInt16 cmdType)
 	connTEvt->Set();
 }
 
-Manage::MonConn::MonConn(EventHandler hdlr, AnyType userObj, NotNullPtr<Net::SocketFactory> sockf, IO::Writer *msgWriter, Data::Duration timeout)
+Manage::MonConn::MonConn(EventHandler hdlr, AnyType userObj, NN<Net::SocketFactory> sockf, IO::Writer *msgWriter, Data::Duration timeout)
 {
 	UTF8Char buff[256];
 	UTF8Char *sptr;

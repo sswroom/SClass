@@ -16,7 +16,7 @@ UInt32 __stdcall Map::ReverseGeocoderClient::ClientThread(void *userObj)
 	UInt8 *recvBuff;
 	OSInt buffSize = 0;
 	OSInt readSize;
-	NotNullPtr<Net::TCPClient> cli;
+	NN<Net::TCPClient> cli;
 
 	me->cliRunning = true;
 	recvBuff = MemAlloc(UInt8, 4096);
@@ -116,7 +116,7 @@ UInt32 __stdcall Map::ReverseGeocoderClient::MonThread(void *userObj)
 	return 0;
 }
 
-Map::ReverseGeocoderClient::ReverseGeocoderClient(NotNullPtr<Net::SocketFactory> sockf, Text::CString host, UInt16 port, Map::IReverseGeocoder *revGeo, IO::Writer *errWriter) : protocol(this)
+Map::ReverseGeocoderClient::ReverseGeocoderClient(NN<Net::SocketFactory> sockf, Text::CString host, UInt16 port, Map::IReverseGeocoder *revGeo, IO::Writer *errWriter) : protocol(this)
 {
 	this->sockf = sockf;
 	this->host = Text::String::New(host);
@@ -155,7 +155,7 @@ Map::ReverseGeocoderClient::~ReverseGeocoderClient()
 	this->host->Release();
 }
 
-void Map::ReverseGeocoderClient::DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void Map::ReverseGeocoderClient::DataParsed(NN<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 	UInt8 buff[512];
 	UInt8 buff2[512];
@@ -229,6 +229,6 @@ void Map::ReverseGeocoderClient::DataParsed(NotNullPtr<IO::Stream> stm, void *st
 	}
 }
 
-void Map::ReverseGeocoderClient::DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
+void Map::ReverseGeocoderClient::DataSkipped(NN<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 }

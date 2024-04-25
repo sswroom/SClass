@@ -18,7 +18,7 @@ namespace Net
 		};
 
 	private:
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Net::TCPClient *cli;
 		void *cliData;
 		Sync::Mutex cliMut;
@@ -35,7 +35,7 @@ namespace Net
 
 		static UInt32 __stdcall ProtoThread(void *userObj);
 	public:
-		ProtoClient(NotNullPtr<Net::SocketFactory> sockf, Text::CString cliAddr, UInt16 cliPort, IO::IProtocolHandler *proto, IProtoClientHandler *cliHdlr);
+		ProtoClient(NN<Net::SocketFactory> sockf, Text::CString cliAddr, UInt16 cliPort, IO::IProtocolHandler *proto, IProtoClientHandler *cliHdlr);
 		~ProtoClient();
 
 		void Start();

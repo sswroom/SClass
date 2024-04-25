@@ -74,7 +74,7 @@ Text::CStringNN Manage::OSInfo::GetDefName(OSType osType)
 	}
 }
 
-void Manage::OSInfo::GetCommonName(NotNullPtr<Text::StringBuilderUTF8> sb, OSType osType, Text::CString osVer)
+void Manage::OSInfo::GetCommonName(NN<Text::StringBuilderUTF8> sb, OSType osType, Text::CString osVer)
 {
 	if (osType == Manage::OSInfo::OT_DARWIN)
 	{

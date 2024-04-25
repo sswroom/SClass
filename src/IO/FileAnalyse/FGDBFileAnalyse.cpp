@@ -12,9 +12,9 @@
 #define HAS_M_FLAG 4
 #define HAS_Z_FLAG 2
 
-void __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::FileAnalyse::FGDBFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::FGDBFileAnalyse>();
+	NN<IO::FileAnalyse::FGDBFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::FGDBFileAnalyse>();
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt32 lastSize;
@@ -42,7 +42,7 @@ void __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(NotNullPtr<Sync::Th
 		me->fd->GetRealData(40, tag->size, fieldBuff);
 		me->tableInfo = Map::ESRI::FileGDBUtil::ParseFieldDesc(fieldBuff, me->prjParser);
 	}
-	NotNullPtr<Map::ESRI::FileGDBTableInfo> tableInfo;
+	NN<Map::ESRI::FileGDBTableInfo> tableInfo;
 	if (me->tableInfo.SetTo(tableInfo))
 	{
 		ofst = 40 + tag->size;
@@ -91,7 +91,7 @@ void __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(NotNullPtr<Sync::Th
 	}
 }
 
-IO::FileAnalyse::FGDBFileAnalyse::FGDBFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("FGDBFileAnalyse"))
+IO::FileAnalyse::FGDBFileAnalyse::FGDBFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("FGDBFileAnalyse"))
 {
 	UInt8 buff[40];
 	this->fd = 0;
@@ -110,7 +110,7 @@ IO::FileAnalyse::FGDBFileAnalyse::FGDBFileAnalyse(NotNullPtr<IO::StreamData> fd)
 IO::FileAnalyse::FGDBFileAnalyse::~FGDBFileAnalyse()
 {
 	this->thread.Stop();
-	NotNullPtr<Map::ESRI::FileGDBTableInfo> tableInfo;
+	NN<Map::ESRI::FileGDBTableInfo> tableInfo;
 	if (this->tableInfo.SetTo(tableInfo))
 	{
 		Map::ESRI::FileGDBUtil::FreeTableInfo(tableInfo);
@@ -130,7 +130,7 @@ UOSInt IO::FileAnalyse::FGDBFileAnalyse::GetFrameCount()
 	return this->tags.GetCount();
 }
 
-Bool IO::FileAnalyse::FGDBFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::FGDBFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::FGDBFileAnalyse::TagInfo> tag;
 	if (!this->tags.GetItem(index).SetTo(tag))
@@ -171,13 +171,13 @@ UOSInt IO::FileAnalyse::FGDBFileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;
 	NN<IO::FileAnalyse::FGDBFileAnalyse::TagInfo> tag;
 	if (!this->tags.GetItem(index).SetTo(tag))
 		return 0;
-	NotNullPtr<Map::ESRI::FileGDBTableInfo> tableInfo;
+	NN<Map::ESRI::FileGDBTableInfo> tableInfo;
 	
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
 	sptr = TagTypeGetName(tag->tagType).ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Type=")));

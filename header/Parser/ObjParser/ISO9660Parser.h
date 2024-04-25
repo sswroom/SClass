@@ -15,12 +15,12 @@ namespace Parser
 			virtual ~ISO9660Parser();
 
 			virtual Int32 GetName();
-			virtual void PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t);
+			virtual void PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
-			virtual IO::ParsedObject *ParseObject(NotNullPtr<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType);
+			virtual IO::ParsedObject *ParseObject(NN<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType);
 
-			NotNullPtr<IO::PackageFile> ParseVol(NotNullPtr<IO::ISectorData> sectorData, UInt32 sectorNum, UInt32 codePage);
-			void ParseDir(NotNullPtr<IO::VirtualPackageFile> pkgFile, NotNullPtr<IO::ISectorData> sectorData, UInt32 sectorNum, UInt32 recSize, UTF8Char *fileNameBuff, UTF8Char *fileNameEnd, UInt32 codePage);
+			NN<IO::PackageFile> ParseVol(NN<IO::ISectorData> sectorData, UInt32 sectorNum, UInt32 codePage);
+			void ParseDir(NN<IO::VirtualPackageFile> pkgFile, NN<IO::ISectorData> sectorData, UInt32 sectorNum, UInt32 recSize, UTF8Char *fileNameBuff, UTF8Char *fileNameEnd, UInt32 codePage);
 		};
 	}
 }

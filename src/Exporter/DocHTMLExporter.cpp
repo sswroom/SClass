@@ -23,7 +23,7 @@ Int32 Exporter::DocHTMLExporter::GetName()
 	return *(Int32*)"DOHT";
 }
 
-IO::FileExporter::SupportType Exporter::DocHTMLExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
+IO::FileExporter::SupportType Exporter::DocHTMLExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::TextDocument)
 	{
@@ -48,14 +48,14 @@ void Exporter::DocHTMLExporter::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-Bool Exporter::DocHTMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::DocHTMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	if (pobj->GetParserType() != IO::ParserType::TextDocument)
 	{
 		return false;
 	}
 
-	NotNullPtr<Text::Doc::TextDocument> doc = NotNullPtr<Text::Doc::TextDocument>::ConvertFrom(pobj);
+	NN<Text::Doc::TextDocument> doc = NN<Text::Doc::TextDocument>::ConvertFrom(pobj);
 	IO::StreamWriter *writer;
 	UTF8Char *lineBuff1;
 	UTF8Char *lineBuff2;
@@ -154,7 +154,7 @@ void Exporter::DocHTMLExporter::WriteItems(IO::Writer *writer, Data::ReadingList
 	Text::Doc::DocItem *item;
 	UOSInt i = 0;
 	UOSInt j = items->GetCount();
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	Text::Doc::DocItem::HorizontalAlign halign;
 	Text::Doc::DocHeading *heading;
 	while (i < j)

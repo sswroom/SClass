@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "UI/GUITabControl.h"
 
-UI::GUITabControl::GUITabControl(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : GUIControl(ui, parent)
+UI::GUITabControl::GUITabControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent) : GUIControl(ui, parent)
 {
 }
 

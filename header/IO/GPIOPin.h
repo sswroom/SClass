@@ -10,9 +10,9 @@ namespace IO
 	{
 	private:
 		UInt16 pinNum;
-		NotNullPtr<IO::GPIOControl> gpio;
+		NN<IO::GPIOControl> gpio;
 	public:
-		GPIOPin(NotNullPtr<IO::GPIOControl> gpio, UInt16 pinNum);
+		GPIOPin(NN<IO::GPIOControl> gpio, UInt16 pinNum);
 		virtual ~GPIOPin();
 
 		virtual Bool IsError();

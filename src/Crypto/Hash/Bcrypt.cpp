@@ -72,7 +72,7 @@ Bool Crypto::Hash::Bcrypt::Matches(Text::CStringNN hash, Text::CStringNN passwor
 	}
 }
 
-Bool Crypto::Hash::Bcrypt::GenHash(NotNullPtr<Text::StringBuilderUTF8> sb, UInt32 cost, Text::CStringNN password)
+Bool Crypto::Hash::Bcrypt::GenHash(NN<Text::StringBuilderUTF8> sb, UInt32 cost, Text::CStringNN password)
 {
 	if (cost < 4 || cost > 31)
 	{
@@ -84,7 +84,7 @@ Bool Crypto::Hash::Bcrypt::GenHash(NotNullPtr<Text::StringBuilderUTF8> sb, UInt3
 	return this->GenHash(sb, cost, salt, password);
 }
 
-Bool Crypto::Hash::Bcrypt::GenHash(NotNullPtr<Text::StringBuilderUTF8> sb, UInt32 cost, const UInt8 *salt, Text::CStringNN password)
+Bool Crypto::Hash::Bcrypt::GenHash(NN<Text::StringBuilderUTF8> sb, UInt32 cost, const UInt8 *salt, Text::CStringNN password)
 {
 	if (cost < 4 || cost > 31)
 	{

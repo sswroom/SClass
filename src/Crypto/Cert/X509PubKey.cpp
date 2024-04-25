@@ -3,7 +3,7 @@
 #include "Net/ASN1PDUBuilder.h"
 #include "Net/ASN1Util.h"
 
-Crypto::Cert::X509PubKey::X509PubKey(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
+Crypto::Cert::X509PubKey::X509PubKey(NN<Text::String> sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
 {
 
 }
@@ -23,7 +23,7 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509PubKey::GetFileType() const
 	return FileType::PublicKey;
 }
 
-void Crypto::Cert::X509PubKey::ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Crypto::Cert::X509PubKey::ToShortName(NN<Text::StringBuilderUTF8> sb) const
 {
 	UOSInt oidLen;
 	Net::ASN1Util::ItemType itemType;
@@ -44,19 +44,19 @@ void Crypto::Cert::X509PubKey::ToShortName(NotNullPtr<Text::StringBuilderUTF8> s
 	}
 }
 
-Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PubKey::IsValid(NotNullPtr<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PubKey::IsValid(NN<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const
 {
 	return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
 }
 
-NotNullPtr<Net::ASN1Data> Crypto::Cert::X509PubKey::Clone() const
+NN<Net::ASN1Data> Crypto::Cert::X509PubKey::Clone() const
 {
-	NotNullPtr<Crypto::Cert::X509PubKey> asn1;
+	NN<Crypto::Cert::X509PubKey> asn1;
 	NEW_CLASSNN(asn1, Crypto::Cert::X509PubKey(this->GetSourceNameObj(), this->buff));
 	return asn1;
 }
 
-void Crypto::Cert::X509PubKey::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Crypto::Cert::X509PubKey::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	if (IsPublicKeyInfo(this->buff.Ptr(), this->buff.PtrEnd(), "1"))
 	{
@@ -64,9 +64,9 @@ void Crypto::Cert::X509PubKey::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) 
 	}
 }
 
-NotNullPtr<Net::ASN1Names> Crypto::Cert::X509PubKey::CreateNames() const
+NN<Net::ASN1Names> Crypto::Cert::X509PubKey::CreateNames() const
 {
-	NotNullPtr<Net::ASN1Names> names;
+	NN<Net::ASN1Names> names;
 	NEW_CLASSNN(names, Net::ASN1Names());
 	return names;
 }
@@ -80,7 +80,7 @@ Optional<Crypto::Cert::X509Key> Crypto::Cert::X509PubKey::CreateKey() const
 	const UInt8 *keyData = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.2", keyDataLen, itemType);
 	if (keyTypeOID != 0 && keyData != 0)
 	{
-		NotNullPtr<Crypto::Cert::X509Key> key;
+		NN<Crypto::Cert::X509Key> key;
 		if (keyData[0] == 0)
 		{
 			keyData++;
@@ -92,7 +92,7 @@ Optional<Crypto::Cert::X509Key> Crypto::Cert::X509PubKey::CreateKey() const
 	return 0;
 }
 
-NotNullPtr<Crypto::Cert::X509PubKey> Crypto::Cert::X509PubKey::CreateFromKeyBuff(KeyType keyType, const UInt8 *buff, UOSInt buffSize, NotNullPtr<Text::String> sourceName)
+NN<Crypto::Cert::X509PubKey> Crypto::Cert::X509PubKey::CreateFromKeyBuff(KeyType keyType, const UInt8 *buff, UOSInt buffSize, NN<Text::String> sourceName)
 {
 	Net::ASN1PDUBuilder keyPDU;
 	keyPDU.BeginSequence();
@@ -110,12 +110,12 @@ NotNullPtr<Crypto::Cert::X509PubKey> Crypto::Cert::X509PubKey::CreateFromKeyBuff
 		keyPDU.AppendBitString(0, buff, buffSize);
 	}
 	keyPDU.EndLevel();
-	NotNullPtr<Crypto::Cert::X509PubKey> key;
+	NN<Crypto::Cert::X509PubKey> key;
 	NEW_CLASSNN(key, Crypto::Cert::X509PubKey(sourceName, keyPDU.GetArray()));
 	return key;
 }
 
-NotNullPtr<Crypto::Cert::X509PubKey> Crypto::Cert::X509PubKey::CreateFromKey(NotNullPtr<Crypto::Cert::X509Key> key)
+NN<Crypto::Cert::X509PubKey> Crypto::Cert::X509PubKey::CreateFromKey(NN<Crypto::Cert::X509Key> key)
 {
 	return CreateFromKeyBuff(key->GetKeyType(), key->GetASN1Buff(), key->GetASN1BuffSize(), key->GetSourceNameObj());
 }

@@ -29,7 +29,7 @@ namespace SSWR
 			{
 				UInt8 mac[6];
 				Double freq;
-				NotNullPtr<Text::String> ssid;
+				NN<Text::String> ssid;
 				Int32 phyType;
 				Int32 bssType;
 			} BSSStatus;
@@ -37,7 +37,7 @@ namespace SSWR
 			typedef struct
 			{
 				UInt8 mac[6];
-				NotNullPtr<Text::String> ssid;
+				NN<Text::String> ssid;
 				Int32 phyType;
 				Double freq;
 				Text::String *manuf;
@@ -48,7 +48,7 @@ namespace SSWR
 				UInt64 neighbour[20];
 			} WifiLog;
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::SensorManager sensorMgr;
 			IO::MotionDetectorAccelerometer *motion;
 			Net::WirelessLAN *wlan;
@@ -69,40 +69,40 @@ namespace SSWR
 			Sync::Mutex captureMut;
 			Int64 lastTimeTick;
 
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpStatus;
-			NotNullPtr<UI::GUILabel> lblMotion;
-			NotNullPtr<UI::GUITextBox> txtMotion;
-			NotNullPtr<UI::GUILabel> lblGPS;
-			NotNullPtr<UI::GUITextBox> txtGPS;
-			NotNullPtr<UI::GUIButton> btnGPS;
-			NotNullPtr<UI::GUILabel> lblGPSTime;
-			NotNullPtr<UI::GUITextBox> txtGPSTime;
-			NotNullPtr<UI::GUILabel> lblGPSLat;
-			NotNullPtr<UI::GUITextBox> txtGPSLat;
-			NotNullPtr<UI::GUILabel> lblGPSLon;
-			NotNullPtr<UI::GUITextBox> txtGPSLon;
-			NotNullPtr<UI::GUILabel> lblGPSAlt;
-			NotNullPtr<UI::GUITextBox> txtGPSAlt;
-			NotNullPtr<UI::GUILabel> lblGPSActive;
-			NotNullPtr<UI::GUITextBox> txtGPSActive;
-			NotNullPtr<UI::GUILabel> lblBattery;
-			NotNullPtr<UI::GUITextBox> txtBattery;
-			NotNullPtr<UI::GUILabel> lblCurrWifiCnt;
-			NotNullPtr<UI::GUITextBox> txtCurrWifiCnt;
-			NotNullPtr<UI::GUILabel> lblBSSCount;
-			NotNullPtr<UI::GUITextBox> txtBSSCount;
-			NotNullPtr<UI::GUIButton> btnCapture;
+			NN<UI::GUITabPage> tpStatus;
+			NN<UI::GUILabel> lblMotion;
+			NN<UI::GUITextBox> txtMotion;
+			NN<UI::GUILabel> lblGPS;
+			NN<UI::GUITextBox> txtGPS;
+			NN<UI::GUIButton> btnGPS;
+			NN<UI::GUILabel> lblGPSTime;
+			NN<UI::GUITextBox> txtGPSTime;
+			NN<UI::GUILabel> lblGPSLat;
+			NN<UI::GUITextBox> txtGPSLat;
+			NN<UI::GUILabel> lblGPSLon;
+			NN<UI::GUITextBox> txtGPSLon;
+			NN<UI::GUILabel> lblGPSAlt;
+			NN<UI::GUITextBox> txtGPSAlt;
+			NN<UI::GUILabel> lblGPSActive;
+			NN<UI::GUITextBox> txtGPSActive;
+			NN<UI::GUILabel> lblBattery;
+			NN<UI::GUITextBox> txtBattery;
+			NN<UI::GUILabel> lblCurrWifiCnt;
+			NN<UI::GUITextBox> txtCurrWifiCnt;
+			NN<UI::GUILabel> lblBSSCount;
+			NN<UI::GUITextBox> txtBSSCount;
+			NN<UI::GUIButton> btnCapture;
 
-			NotNullPtr<UI::GUITabPage> tpCurr;
-			NotNullPtr<UI::GUIListView> lvCurrWifi;
+			NN<UI::GUITabPage> tpCurr;
+			NN<UI::GUIListView> lvCurrWifi;
 
-			NotNullPtr<UI::GUITabPage> tpLogWifi;
-			NotNullPtr<UI::GUIListView> lvLogWifi;
-			NotNullPtr<UI::GUIPanel> pnlLogWifi;
-			NotNullPtr<UI::GUIButton> btnLogWifiSave;
-			NotNullPtr<UI::GUIButton> btnLogWifiSaveF;
+			NN<UI::GUITabPage> tpLogWifi;
+			NN<UI::GUIListView> lvLogWifi;
+			NN<UI::GUIPanel> pnlLogWifi;
+			NN<UI::GUIButton> btnLogWifiSave;
+			NN<UI::GUIButton> btnLogWifiSaveF;
 
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnGPSClicked(AnyType userObj);
@@ -111,9 +111,9 @@ namespace SSWR
 			static void __stdcall OnLogWifiSaveClicked(AnyType userObj);
 			static void __stdcall OnLogWifiSaveFClicked(AnyType userObj);
 			static Bool __stdcall OnFormClosing(AnyType userObj, CloseReason reason);
-			static void __stdcall OnGPSData(AnyType userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates);
+			static void __stdcall OnGPSData(AnyType userObj, NN<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates);
 		public:
-			AVIRWifiCaptureForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRWifiCaptureForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWifiCaptureForm();
 
 			virtual void OnMonitorChanged();

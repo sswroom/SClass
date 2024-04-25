@@ -27,41 +27,41 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				NotNullPtr<Text::String> ifName;
+				NN<Text::String> ifName;
 				UInt32 ipAddr;
 				UInt8 hwAddr[6];
 			} AdapterInfo;
 			
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Net::SocketFactory> sockf;
 			Net::ARPHandler *arpHdlr;
 			Net::SocketUtil::AddressInfo targetAddr;
 			Manage::HiResClock *clk;
 			Bool requested;
 			Sync::Event *reqEvt;
 			IO::LogTool *log;
-			NotNullPtr<UI::ListBoxLogger> logger;
+			NN<UI::ListBoxLogger> logger;
 			Data::ArrayList<AdapterInfo*> *adapters;
 
-			NotNullPtr<UI::GUIPanel> pnlRequest;
-			NotNullPtr<UI::GUIVSplitter> vspRequest;
-			NotNullPtr<UI::GUILabel> lblAdapter;
-			NotNullPtr<UI::GUIComboBox> cboAdapter;
-			NotNullPtr<UI::GUILabel> lblTarget;
-			NotNullPtr<UI::GUITextBox> txtTarget;
-			NotNullPtr<UI::GUILabel> lblRepeat;
-			NotNullPtr<UI::GUICheckBox> chkRepeat;
-			NotNullPtr<UI::GUIButton> btnPing;
-			NotNullPtr<UI::GUIRealtimeLineChart> rlcPing;
-			NotNullPtr<UI::GUIVSplitter> vspPing;
-			NotNullPtr<UI::GUIListBox> lbLog;
+			NN<UI::GUIPanel> pnlRequest;
+			NN<UI::GUIVSplitter> vspRequest;
+			NN<UI::GUILabel> lblAdapter;
+			NN<UI::GUIComboBox> cboAdapter;
+			NN<UI::GUILabel> lblTarget;
+			NN<UI::GUITextBox> txtTarget;
+			NN<UI::GUILabel> lblRepeat;
+			NN<UI::GUICheckBox> chkRepeat;
+			NN<UI::GUIButton> btnPing;
+			NN<UI::GUIRealtimeLineChart> rlcPing;
+			NN<UI::GUIVSplitter> vspPing;
+			NN<UI::GUIListBox> lbLog;
 
 			static void __stdcall OnARPHandler(const UInt8 *hwAddr, UInt32 ipAddr, AnyType userObj);
 			static void __stdcall OnPingClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
-			AVIRARPPingForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRARPPingForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRARPPingForm();
 
 			virtual void OnMonitorChanged();

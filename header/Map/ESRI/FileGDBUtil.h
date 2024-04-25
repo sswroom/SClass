@@ -14,7 +14,7 @@ namespace Map
 	{
 		struct FileGDBFieldInfo
 		{
-			NotNullPtr<Text::String> name;
+			NN<Text::String> name;
 			Text::String *alias;
 			UInt8 fieldType;
 			UInt32 fieldSize;
@@ -59,11 +59,11 @@ namespace Map
 		class FileGDBUtil
 		{
 		public:
-			static Optional<FileGDBTableInfo> ParseFieldDesc(Data::ByteArray fieldDesc, NotNullPtr<Math::ArcGISPRJParser> prjParser);
+			static Optional<FileGDBTableInfo> ParseFieldDesc(Data::ByteArray fieldDesc, NN<Math::ArcGISPRJParser> prjParser);
 			static void FreeFieldInfo(FileGDBFieldInfo *fieldInfo);
-			static void FreeTableInfo(NotNullPtr<FileGDBTableInfo> tableInfo);
+			static void FreeTableInfo(NN<FileGDBTableInfo> tableInfo);
 			static FileGDBFieldInfo *FieldInfoClone(FileGDBFieldInfo *tableInfo);
-			static NotNullPtr<FileGDBTableInfo> TableInfoClone(NotNullPtr<FileGDBTableInfo> tableInfo);
+			static NN<FileGDBTableInfo> TableInfoClone(NN<FileGDBTableInfo> tableInfo);
 			static UOSInt ReadVarUInt(const UInt8 *buff, UOSInt ofst, OutParam<UInt64> val);
 			static UOSInt ReadVarInt(const UInt8 *buff, UOSInt ofst, OutParam<Int64> val);
 			static UOSInt ReadVarUInt(Data::ByteArrayR buff, UOSInt ofst, OutParam<UInt64> val);

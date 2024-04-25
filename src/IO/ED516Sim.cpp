@@ -98,7 +98,7 @@ Text::CString IO::ED516Sim::GetValueName(UOSInt index)
 	}
 }
 
-Bool IO::ED516Sim::GetValue(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::ED516Sim::GetValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	if (index < 16)
 	{

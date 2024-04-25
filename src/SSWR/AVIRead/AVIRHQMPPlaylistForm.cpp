@@ -10,9 +10,9 @@
 #include "UI/GUIFileDialog.h"
 #include "UI/GUIFolderDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHQMPPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPPlaylistForm>();
+	NN<SSWR::AVIRead::AVIRHQMPPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPPlaylistForm>();
 	Bool changed = false;
 	UOSInt i;
 	UOSInt nFiles = files.GetCount();
@@ -34,11 +34,11 @@ void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnFileDrop(AnyType userObj, 
 
 void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnAddClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHQMPPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPPlaylistForm>();
+	NN<SSWR::AVIRead::AVIRHQMPPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPPlaylistForm>();
 	Bool changed = false;
 	UOSInt i;
 	UOSInt j;
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HQMPPlaylist", false);
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HQMPPlaylist", false);
 	dlg->SetAllowMultiSel(true);
 	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::MediaFile);
 	if (dlg->ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK)
@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnAddClicked(AnyType userObj
 		j = dlg->GetFileNameCount();
 		while (i < j)
 		{
-			NotNullPtr<Text::String> fileName;
+			NN<Text::String> fileName;
 			if (dlg->GetFileNames(i).SetTo(fileName) && me->playlist->AddFile(fileName->ToCString()))
 			{
 				changed = true;
@@ -65,12 +65,12 @@ void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnAddClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnAddDirClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHQMPPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPPlaylistForm>();
+	NN<SSWR::AVIRead::AVIRHQMPPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPPlaylistForm>();
 	UTF8Char sbuff[512];
-	NotNullPtr<UI::GUIFolderDialog> dlg = me->ui->NewFolderDialog();
+	NN<UI::GUIFolderDialog> dlg = me->ui->NewFolderDialog();
 	if (dlg->ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK)
 	{
-		NotNullPtr<Text::String> folder = dlg->GetFolder();
+		NN<Text::String> folder = dlg->GetFolder();
 		if (me->AddFolder(sbuff, folder->ConcatTo(sbuff)))
 		{
 			me->UpdatePlaylist();
@@ -81,14 +81,14 @@ void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnAddDirClicked(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnClearClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHQMPPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPPlaylistForm>();
+	NN<SSWR::AVIRead::AVIRHQMPPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPPlaylistForm>();
 	me->playlist->ClearFiles();
 	me->UpdatePlaylist();
 }
 
 void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHQMPPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPPlaylistForm>();
+	NN<SSWR::AVIRead::AVIRHQMPPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPPlaylistForm>();
 	if (me->playlist->GetCount() > 0)
 	{
 		me->SetDialogResult(UI::GUIForm::DR_OK);
@@ -97,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnOKClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHQMPPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPPlaylistForm>();
+	NN<SSWR::AVIRead::AVIRHQMPPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPPlaylistForm>();
 	SDEL_CLASS(me->playlist);
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
@@ -170,7 +170,7 @@ void SSWR::AVIRead::AVIRHQMPPlaylistForm::UpdatePlaylist()
 	}
 }
 
-SSWR::AVIRead::AVIRHQMPPlaylistForm::AVIRHQMPPlaylistForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::Playlist *playlist) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRHQMPPlaylistForm::AVIRHQMPPlaylistForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::Playlist *playlist) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Create Playlist"));

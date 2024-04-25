@@ -105,7 +105,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 					return 0;
 				}
 				Math::Geometry::Polyline *pl;
-				NotNullPtr<Math::Geometry::LineString> lineString;
+				NN<Math::Geometry::LineString> lineString;
 				UOSInt i;
 				UOSInt j;
 				UOSInt k;
@@ -161,7 +161,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 					return 0;
 				}
 				Math::Geometry::Polygon *pg;
-				NotNullPtr<Math::Geometry::LinearRing> lr;
+				NN<Math::Geometry::LinearRing> lr;
 				UOSInt i;
 				UOSInt j;
 				UOSInt k;
@@ -192,7 +192,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 			else if (shapePtr[8] == 5) //Multilinestring
 			{
 				Math::Geometry::Polyline *pl;
-				NotNullPtr<Math::Geometry::LineString> lineString;
+				NN<Math::Geometry::LineString> lineString;
 				UOSInt i;
 				UOSInt j;
 				UOSInt k;
@@ -243,8 +243,8 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 			else if (shapePtr[8] == 6) //MultiPolygon
 			{
 				Math::Geometry::MultiPolygon *mpg;
-				NotNullPtr<Math::Geometry::Polygon> pg;
-				NotNullPtr<Math::Geometry::LinearRing> lr;
+				NN<Math::Geometry::Polygon> pg;
+				NN<Math::Geometry::LinearRing> lr;
 				UOSInt i;
 				UOSInt j;
 				UOSInt k;
@@ -372,7 +372,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 					return 0;
 				}
 				Math::Geometry::Polygon *pg;
-				NotNullPtr<Math::Geometry::LinearRing> lr;
+				NN<Math::Geometry::LinearRing> lr;
 				UOSInt i;
 				UOSInt j;
 				UOSInt k;
@@ -409,7 +409,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 			{
 				const UInt8 *zPtr = pointPtr + nPoints * 16;
 				Math::Geometry::Polyline *pl;
-				NotNullPtr<Math::Geometry::LineString> lineString;
+				NN<Math::Geometry::LineString> lineString;
 				UOSInt i;
 				UOSInt j;
 				UOSInt k;
@@ -490,8 +490,8 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 						nextFigure = ReadUInt32(&shapePtr[13]);
 						nextPtOfst = ReadUInt32(&figurePtr[nextFigure * 5 + 1]);
 					}
-					NotNullPtr<Math::Geometry::Polygon> pg;
-					NotNullPtr<Math::Geometry::LinearRing> lr;
+					NN<Math::Geometry::Polygon> pg;
+					NN<Math::Geometry::LinearRing> lr;
 					UOSInt k;
 					UOSInt l;
 					UOSInt m = thisFigure;
@@ -647,7 +647,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 				const UInt8 *zPtr = pointPtr + nPoints * 16;
 				const UInt8 *mPtr = zPtr + nPoints * 8;
 				Math::Geometry::Polyline *pl;
-				NotNullPtr<Math::Geometry::LineString> lineString;
+				NN<Math::Geometry::LineString> lineString;
 				UOSInt i;
 				UOSInt j;
 				UOSInt k;

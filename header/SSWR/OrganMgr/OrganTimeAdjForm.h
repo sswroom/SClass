@@ -22,17 +22,17 @@ namespace SSWR
 		class OrganTimeAdjForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<OrganEnv> env;
-			NotNullPtr<DataFileInfo> dataFile;
-			NotNullPtr<Map::GPSTrack> gpsTrk;
+			NN<OrganEnv> env;
+			NN<DataFileInfo> dataFile;
+			NN<Map::GPSTrack> gpsTrk;
 			Bool mapUpdated;
-			NotNullPtr<Map::MapEnv> mapEnv;
-			NotNullPtr<Map::MapView> mapView;
-			NotNullPtr<Map::TileMapLayer> mapTileLyr;
-			NotNullPtr<OrganTimeAdjLayer> adjLyr;
-			NotNullPtr<Map::TileMap> mapTile;
+			NN<Map::MapEnv> mapEnv;
+			NN<Map::MapView> mapView;
+			NN<Map::TileMapLayer> mapTileLyr;
+			NN<OrganTimeAdjLayer> adjLyr;
+			NN<Map::TileMap> mapTile;
 			Map::DrawMapRenderer *mapRenderer;
-			NotNullPtr<Media::ColorManagerSess> colorSess;
+			NN<Media::ColorManagerSess> colorSess;
 			Data::ArrayListNN<UserFileInfo> userFileList;
 			Data::ArrayListNN<UserFileInfo> currFileList;
 			Media::ImageList *dispImg;
@@ -40,21 +40,21 @@ namespace SSWR
 			Text::String *selImgCamera;
 			Data::Timestamp selImgTime;
 
-			NotNullPtr<UI::GUIPanel> pnlLeft;
-			NotNullPtr<UI::GUIPictureBoxDD> pbPreview;
-			NotNullPtr<UI::GUIListBox> lbTrack;
-			NotNullPtr<UI::GUIComboBox> cboSpecies;
-			NotNullPtr<UI::GUIListBox> lbPictures;
-			NotNullPtr<UI::GUIPanel> pnlMapCtrl;
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUITrackBar> tbMapScale;
+			NN<UI::GUIPanel> pnlLeft;
+			NN<UI::GUIPictureBoxDD> pbPreview;
+			NN<UI::GUIListBox> lbTrack;
+			NN<UI::GUIComboBox> cboSpecies;
+			NN<UI::GUIListBox> lbPictures;
+			NN<UI::GUIPanel> pnlMapCtrl;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUITrackBar> tbMapScale;
 			UI::GUIMapControl *mapMain;
-			NotNullPtr<UI::GUIComboBox> cboCamera;
-			NotNullPtr<UI::GUITextBox> txtTimeAdj;
-			NotNullPtr<UI::GUIButton> btnPaste;
-			NotNullPtr<UI::GUIButton> btnTimeSub;
-			NotNullPtr<UI::GUIButton> btnTimeAdd;
-			NotNullPtr<UI::GUIButton> btnTimeApply;
+			NN<UI::GUIComboBox> cboCamera;
+			NN<UI::GUITextBox> txtTimeAdj;
+			NN<UI::GUIButton> btnPaste;
+			NN<UI::GUIButton> btnTimeSub;
+			NN<UI::GUIButton> btnTimeAdd;
+			NN<UI::GUIButton> btnTimeApply;
 
 			static void __stdcall OnSpeciesChg(AnyType userObj);
 			static void __stdcall OnTileUpdated(AnyType userObj);
@@ -69,7 +69,7 @@ namespace SSWR
 			static void __stdcall OnTimeApplyClicked(AnyType userObj);
 			void UpdateSelTime(const UTF8Char *camera, UOSInt cameraLen, Int32 timeAdj);
 		public:
-			OrganTimeAdjForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env, NotNullPtr<DataFileInfo> dataFile);
+			OrganTimeAdjForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<OrganEnv> env, NN<DataFileInfo> dataFile);
 			virtual ~OrganTimeAdjForm();
 
 			virtual void OnMonitorChanged();

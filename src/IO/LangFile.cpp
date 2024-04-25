@@ -16,7 +16,7 @@ Text::CStringNN IO::LangFile::GetValue(Text::CStringNN name)
 {
 	if (this->cfg)
 	{
-		NotNullPtr<Text::String> ret;
+		NN<Text::String> ret;
 		if (this->cfg->GetValue(name).SetTo(ret))
 			return ret->ToCString();
 	}
@@ -27,7 +27,7 @@ Text::CStringNN IO::LangFile::GetValue(Text::CStringNN category, Text::CStringNN
 {
 	if (this->cfg)
 	{
-		NotNullPtr<Text::String> ret;
+		NN<Text::String> ret;
 		if (this->cfg->GetCateValue(category, name).SetTo(ret))
 			return ret->ToCString();
 	}

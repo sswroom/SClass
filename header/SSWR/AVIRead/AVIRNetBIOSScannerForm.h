@@ -17,18 +17,18 @@ namespace SSWR
 		class AVIRNetBIOSScannerForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Net::NetBIOSScanner *netbios;
 			Bool tableUpdated;
 
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUILabel> lblTargetAddr;
-			NotNullPtr<UI::GUITextBox> txtTargetAddr;
-			NotNullPtr<UI::GUICheckBox> chkTargetScan;
-			NotNullPtr<UI::GUIButton> btnRequest;
-			NotNullPtr<UI::GUIListView> lvAnswers;
-			NotNullPtr<UI::GUIVSplitter> vspAnswers;
-			NotNullPtr<UI::GUIListView> lvEntries;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUILabel> lblTargetAddr;
+			NN<UI::GUITextBox> txtTargetAddr;
+			NN<UI::GUICheckBox> chkTargetScan;
+			NN<UI::GUIButton> btnRequest;
+			NN<UI::GUIListView> lvAnswers;
+			NN<UI::GUIVSplitter> vspAnswers;
+			NN<UI::GUIListView> lvEntries;
 
 			static void __stdcall OnRequestClicked(AnyType userObj);
 			static void __stdcall OnAnswerSelChg(AnyType userObj);
@@ -36,7 +36,7 @@ namespace SSWR
 			static void __stdcall OnAnswerUpdated(AnyType userObj, UInt32 sortableIP);
 
 		public:
-			AVIRNetBIOSScannerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRNetBIOSScannerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRNetBIOSScannerForm();
 
 			virtual void OnMonitorChanged();

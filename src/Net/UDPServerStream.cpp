@@ -7,9 +7,9 @@
 
 #define BUFFSIZE 2048
 
-void __stdcall Net::UDPServerStream::OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::UDPServerStream::OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	NotNullPtr<Net::UDPServerStream> me = userData.GetNN<Net::UDPServerStream>();
+	NN<Net::UDPServerStream> me = userData.GetNN<Net::UDPServerStream>();
 	Sync::MutexUsage mutUsage(me->dataMut);
 	me->lastAddr = addr.Ptr()[0];
 	me->lastPort = port;
@@ -32,7 +32,7 @@ void __stdcall Net::UDPServerStream::OnUDPPacket(NotNullPtr<const Net::SocketUti
 	me->readEvt.Set();
 }
 
-Net::UDPServerStream::UDPServerStream(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log) : IO::Stream(CSTR("Net.UDPServerSream"))
+Net::UDPServerStream::UDPServerStream(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log) : IO::Stream(CSTR("Net.UDPServerSream"))
 {
 	this->sockf = sockf;
 	this->log = log;

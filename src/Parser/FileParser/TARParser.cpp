@@ -25,7 +25,7 @@ void Parser::FileParser::TARParser::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-void Parser::FileParser::TARParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::TARParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
@@ -38,7 +38,7 @@ IO::ParserType Parser::FileParser::TARParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::TARParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::TARParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -62,7 +62,7 @@ IO::ParsedObject *Parser::FileParser::TARParser::ParseFileHdr(NotNullPtr<IO::Str
 	currOfst = 0;
 	IO::VirtualPackageFile *pf;
 	IO::VirtualPackageFile *pf2;
-	NotNullPtr<IO::PackageFile> pf3;
+	NN<IO::PackageFile> pf3;
 	Text::StringBuilderUTF8 sb;
 	Text::Encoding enc(this->codePage);
 	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));

@@ -14,21 +14,21 @@ namespace SSWR
 		class AVIRNTPClientForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblServer;
-			NotNullPtr<UI::GUIComboBox> cboServer;
-			NotNullPtr<UI::GUILabel> lblServerTime;
-			NotNullPtr<UI::GUITextBox> txtServerTime;
-			NotNullPtr<UI::GUILabel> lblStatus;
-			NotNullPtr<UI::GUITextBox> txtStatus;
-			NotNullPtr<UI::GUIButton> btnGetTime;
-			NotNullPtr<UI::GUIButton> btnSyncTime;
+			NN<UI::GUILabel> lblServer;
+			NN<UI::GUIComboBox> cboServer;
+			NN<UI::GUILabel> lblServerTime;
+			NN<UI::GUITextBox> txtServerTime;
+			NN<UI::GUILabel> lblStatus;
+			NN<UI::GUITextBox> txtStatus;
+			NN<UI::GUIButton> btnGetTime;
+			NN<UI::GUIButton> btnSyncTime;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
 			static void __stdcall OnGetTimeClicked(AnyType userObj);
 			static void __stdcall OnSyncTimeClicked(AnyType userObj);
 		public:
-			AVIRNTPClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRNTPClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRNTPClientForm();
 
 			virtual void OnMonitorChanged();

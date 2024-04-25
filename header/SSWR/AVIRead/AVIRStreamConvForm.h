@@ -21,25 +21,25 @@ namespace SSWR
 		class AVIRStreamConvForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::SiLabDriver *siLabDriver;
 
-			NotNullPtr<UI::GUIGroupBox> grpStream1;
-			NotNullPtr<UI::GUIPanel> pnlStream1;
-			NotNullPtr<UI::GUILabel> lblStream1;
-			NotNullPtr<UI::GUITextBox> txtStream1;
-			NotNullPtr<UI::GUICheckBox> chkStreamLog1;
-			NotNullPtr<UI::GUIButton> btnStream1;
-			NotNullPtr<UI::GUIRealtimeLineChart> rlcStream1;
-			NotNullPtr<UI::GUIHSplitter> hspStream;
+			NN<UI::GUIGroupBox> grpStream1;
+			NN<UI::GUIPanel> pnlStream1;
+			NN<UI::GUILabel> lblStream1;
+			NN<UI::GUITextBox> txtStream1;
+			NN<UI::GUICheckBox> chkStreamLog1;
+			NN<UI::GUIButton> btnStream1;
+			NN<UI::GUIRealtimeLineChart> rlcStream1;
+			NN<UI::GUIHSplitter> hspStream;
 
-			NotNullPtr<UI::GUIGroupBox> grpStream2;
-			NotNullPtr<UI::GUIPanel> pnlStream2;
-			NotNullPtr<UI::GUILabel> lblStream2;
-			NotNullPtr<UI::GUITextBox> txtStream2;
-			NotNullPtr<UI::GUICheckBox> chkStreamLog2;
-			NotNullPtr<UI::GUIButton> btnStream2;
-			NotNullPtr<UI::GUIRealtimeLineChart> rlcStream2;
+			NN<UI::GUIGroupBox> grpStream2;
+			NN<UI::GUIPanel> pnlStream2;
+			NN<UI::GUILabel> lblStream2;
+			NN<UI::GUITextBox> txtStream2;
+			NN<UI::GUICheckBox> chkStreamLog2;
+			NN<UI::GUIButton> btnStream2;
+			NN<UI::GUIRealtimeLineChart> rlcStream2;
 
 			Sync::Mutex mut1;
 			IO::Stream *stm1;
@@ -68,7 +68,7 @@ namespace SSWR
 			void StopStream1();
 			void StopStream2();
 		public:
-			AVIRStreamConvForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRStreamConvForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRStreamConvForm();
 
 			virtual void OnMonitorChanged();

@@ -8,14 +8,14 @@ namespace Net
 	class GoogleQRCode
 	{
 	private:
-		NotNullPtr<Text::String> dataStr;
+		NN<Text::String> dataStr;
 		UOSInt width;
 		UOSInt height;		
 	public:
 		GoogleQRCode(UOSInt width, UOSInt height, Text::CString dataStr);
 		~GoogleQRCode();
 
-		void GetImageURL(NotNullPtr<Text::StringBuilderUTF8> sb);
+		void GetImageURL(NN<Text::StringBuilderUTF8> sb);
 	};
 }
 #endif

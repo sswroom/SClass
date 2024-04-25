@@ -14,10 +14,10 @@
 
 void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnBrowseClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageBatchConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchConvForm>();
+	NN<SSWR::AVIRead::AVIRImageBatchConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchConvForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtDir->GetText(sb);
-	NotNullPtr<UI::GUIFolderDialog> dlg = me->ui->NewFolderDialog();
+	NN<UI::GUIFolderDialog> dlg = me->ui->NewFolderDialog();
 	if (sb.GetLength() > 0)
 	{
 		dlg->SetFolder(sb.ToCString());
@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnBrowseClicked(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageBatchConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchConvForm>();
+	NN<SSWR::AVIRead::AVIRImageBatchConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchConvForm>();
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
 	UTF8Char *sptr;
@@ -118,7 +118,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(AnyType u
 
 UInt32 __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::ThreadFunc(AnyType userObj)
 {
-	NotNullPtr<ThreadState> state = userObj.GetNN<ThreadState>();
+	NN<ThreadState> state = userObj.GetNN<ThreadState>();
 	{
 		Sync::Event evt;
 		state->evt = &evt;
@@ -235,7 +235,7 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::MTConvertFile(ConvertSess *sess, Tex
 void SSWR::AVIRead::AVIRImageBatchConvForm::ConvertFile(ConvertSess *sess, Text::CStringNN srcFile, Text::CStringNN destFile)
 {
 	Media::ImageList *imgList;
-	NotNullPtr<Media::ImageList> nnimgList;
+	NN<Media::ImageList> nnimgList;
 	Optional<IO::FileExporter::ParamData> param;
 	{
 		IO::StmData::FileData fd(srcFile, false);
@@ -281,7 +281,7 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::ConvertFile(ConvertSess *sess, Text:
 	}
 }
 
-SSWR::AVIRead::AVIRImageBatchConvForm::AVIRImageBatchConvForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 184, ui)
+SSWR::AVIRead::AVIRImageBatchConvForm::AVIRImageBatchConvForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 184, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Image Batch Convert"));

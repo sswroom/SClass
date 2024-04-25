@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRLUTForm::OnChannelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLUTForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLUTForm>();
+	NN<SSWR::AVIRead::AVIRLUTForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLUTForm>();
 	me->UpdateValues();
 }
 
@@ -162,7 +162,7 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 	}
 }
 
-SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::LUT *lut) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::LUT *lut) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

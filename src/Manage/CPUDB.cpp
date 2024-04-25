@@ -889,7 +889,7 @@ Text::CString Manage::CPUDB::X86CPUNameToModel(Text::CString x86CPUName)
 	return CSTR_NULL;
 }
 
-Text::CString Manage::CPUDB::ParseCPUInfo(NotNullPtr<IO::Stream> stm)
+Text::CString Manage::CPUDB::ParseCPUInfo(NN<IO::Stream> stm)
 {
 	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;

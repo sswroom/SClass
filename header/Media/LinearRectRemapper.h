@@ -8,7 +8,7 @@ namespace Media
 	class LinearRectRemapper
 	{
 	public:
-		static NotNullPtr<Media::StaticImage> RemapW8(const UInt8 *imgPtr, Math::Size2D<UOSInt> imgSize, OSInt imgBpl, Math::Size2D<UOSInt> outputSize, Math::Quadrilateral quad, NotNullPtr<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::YCOffset ycOfst);
+		static NN<Media::StaticImage> RemapW8(const UInt8 *imgPtr, Math::Size2D<UOSInt> imgSize, OSInt imgBpl, Math::Size2D<UOSInt> outputSize, Math::Quadrilateral quad, NN<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::YCOffset ycOfst);
 	};
 }
 #endif

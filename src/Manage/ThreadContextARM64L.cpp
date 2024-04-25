@@ -313,7 +313,7 @@ UTF8Char *Manage::ThreadContextARM64::GetRegister(UOSInt index, UTF8Char *buff, 
 #endif
 }
 
-void Manage::ThreadContextARM64::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Manage::ThreadContextARM64::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -418,9 +418,9 @@ void Manage::ThreadContextARM64::SetFrameAddr(UOSInt frameAddr)
 }
 #endif
 
-NotNullPtr<Manage::ThreadContext> Manage::ThreadContextARM64::Clone() const
+NN<Manage::ThreadContext> Manage::ThreadContextARM64::Clone() const
 {
-	NotNullPtr<Manage::ThreadContextARM64> cont;
+	NN<Manage::ThreadContextARM64> cont;
 	NEW_CLASSNN(cont, Manage::ThreadContextARM64(this->procId, this->threadId, this->context));
 	return cont;
 }

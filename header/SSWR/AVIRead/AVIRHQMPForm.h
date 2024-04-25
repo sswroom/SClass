@@ -31,9 +31,9 @@ namespace SSWR
 			} QualityMode;
 
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			NotNullPtr<Media::ColorManagerSess> colorSess;
+			NN<Media::ColorManagerSess> colorSess;
 			Media::Playlist *playlist;
 			Media::ChapterInfo *currChapInfo;
 			Int32 uOfst;
@@ -46,15 +46,15 @@ namespace SSWR
 			Media::ImageFilter::BGImgFilter *bgFilter;
 
 			UI::GUIVideoBoxDD *vbox;
-			NotNullPtr<UI::GUIMainMenu> mnu;
-			NotNullPtr<UI::GUIMenu> mnuChapters;
+			NN<UI::GUIMainMenu> mnu;
+			NN<UI::GUIMenu> mnuChapters;
 
 			UI::GUIForm *dbgFrm;
-			NotNullPtr<UI::GUITextBox> txtDebug;
+			NN<UI::GUITextBox> txtDebug;
 
-			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnTimerTick(AnyType userObj);
-			static void __stdcall OnDebugClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm);
+			static void __stdcall OnDebugClosed(AnyType userObj, NN<UI::GUIForm> frm);
 			static void __stdcall OnVideoEnd(AnyType userObj);
 			static void __stdcall OnMouseAction(AnyType userObj, UI::GUIVideoBoxDD::MouseAction ma, Math::Coord2D<OSInt> scnPos);
 
@@ -64,7 +64,7 @@ namespace SSWR
 			void SwitchAudio(OSInt audIndex);
 
 		public:
-			AVIRHQMPForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, QualityMode qMode);
+			AVIRHQMPForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, QualityMode qMode);
 			virtual ~AVIRHQMPForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

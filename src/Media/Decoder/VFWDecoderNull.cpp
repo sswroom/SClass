@@ -20,7 +20,7 @@ void Media::Decoder::VFWDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32
 
 }
 
-Media::Decoder::VFWDecoder::VFWDecoder(NotNullPtr<Media::IVideoSource> sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
+Media::Decoder::VFWDecoder::VFWDecoder(NN<Media::IVideoSource> sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
 {
 	this->sourceVideo = 0;
 	this->frameRateNorm = 0;
@@ -65,7 +65,7 @@ Text::CStringNN Media::Decoder::VFWDecoder::GetFilterName()
 	return CSTR("VFWDecoder");
 }
 
-Bool Media::Decoder::VFWDecoder::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::Decoder::VFWDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	if (this->sourceVideo == 0)
 		return false;

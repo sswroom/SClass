@@ -9,7 +9,7 @@ namespace UI
 		class JavaTextBox : public GUITextBox
 		{
 		public:
-			JavaTextBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool isMultiline);
+			JavaTextBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool isMultiline);
 			virtual ~JavaTextBox();
 
 			virtual void SetReadOnly(Bool isReadOnly);
@@ -17,7 +17,7 @@ namespace UI
 
 			virtual void SetText(Text::CStringNN text);
 			virtual UTF8Char *GetText(UTF8Char *buff);
-			virtual Bool GetText(NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual Bool GetText(NN<Text::StringBuilderUTF8> sb);
 			virtual Text::CStringNN GetObjectClass() const;
 			virtual OSInt OnNotify(UInt32 code, void *lParam);
 

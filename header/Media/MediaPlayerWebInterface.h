@@ -11,7 +11,7 @@ namespace Media
 	private:
 		struct VideoFileInfo
 		{
-			NotNullPtr<Text::String> fileName;
+			NN<Text::String> fileName;
 			UInt64 fileSize;
 		};
 
@@ -24,8 +24,8 @@ namespace Media
 		MediaPlayerWebInterface(Media::MediaPlayerInterface *iface, Bool autoRelease);
 		virtual ~MediaPlayerWebInterface();
 
-		void BrowseRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-		virtual void WebRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
+		void BrowseRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+		virtual void WebRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
 		virtual void Release();
 	};
 }

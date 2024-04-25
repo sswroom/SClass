@@ -16,7 +16,7 @@
 
 Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
+	NN<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
 	if (!me->selecting)
 		return false;
 	me->isDown = true;
@@ -27,7 +27,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseDown(AnyType userO
 
 Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
+	NN<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
 	if (me->isDown)
 	{
 		me->isDown = false;
@@ -67,7 +67,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(AnyType userObj
 
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
-		NotNullPtr<Map::TileMap> tileMap = me->lyr->GetTileMap();
+		NN<Map::TileMap> tileMap = me->lyr->GetTileMap();
 		UOSInt maxLevel = tileMap->GetMaxLevel();
 		UOSInt currLyr = tileMap->GetMinLevel();
 		Data::ArrayList<Math::Coord2D<Int32>> imgIdList;
@@ -89,7 +89,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseUp(AnyType userObj
 
 Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
+	NN<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
 	if (me->isDown)
 	{
 		Double tmpV;
@@ -130,20 +130,20 @@ Bool __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnMouseMove(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnAreaClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
+	NN<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
 	me->selecting = true;
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveDirClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
+	NN<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
 	UOSInt minLevel;
 	UOSInt maxLevel;
 	if (!me->GetLevels(minLevel, maxLevel))
 		return;
 	if (me->sel1.x != 0 || me->sel1.y != 0 || me->sel2.x != 0 || me->sel2.y != 0)
 	{
-		NotNullPtr<UI::GUIFolderDialog> dlg = me->ui->NewFolderDialog();
+		NN<UI::GUIFolderDialog> dlg = me->ui->NewFolderDialog();
 		if (dlg->ShowDialog(me->GetHandle()))
 		{
 			me->SaveTilesDir(dlg->GetFolder()->ToCString(), minLevel, maxLevel);
@@ -154,14 +154,14 @@ void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveDirClicked(AnyType 
 
 void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveFileClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
+	NN<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
 	UOSInt minLevel;
 	UOSInt maxLevel;
 	if (!me->GetLevels(minLevel, maxLevel))
 		return;
 	if (me->sel1.x != 0 || me->sel1.y != 0 || me->sel2.x != 0 || me->sel2.y != 0)
 	{
-		NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"GISTileDownFile", true);
+		NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"GISTileDownFile", true);
 		dlg->AddFilter(CSTR("*.spk"), CSTR("SPackage File"));
 		dlg->AddFilter(CSTR("*.zip"), CSTR("ZIP File"));
 		dlg->AddFilter(CSTR("*.otrk2.xml"), CSTR("Orux Map Tile"));
@@ -175,13 +175,13 @@ void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveFileClicked(AnyType
 
 void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnStopClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
+	NN<SSWR::AVIRead::AVIRGISTileDownloadForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISTileDownloadForm>();
 	me->stopDownload = true;
 }
 
 void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(Text::CStringNN folderName, UOSInt userMinLevel, UOSInt userMaxLevel)
 {
-	NotNullPtr<Map::TileMap> tileMap = this->lyr->GetTileMap();
+	NN<Map::TileMap> tileMap = this->lyr->GetTileMap();
 	UOSInt tileMinLevel = tileMap->GetMinLevel();
 	UOSInt tileMaxLevel = tileMap->GetMaxLevel();
 	if (userMinLevel > tileMaxLevel || userMaxLevel < tileMinLevel)
@@ -196,7 +196,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(Text::CStringNN folder
 
 void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CStringNN fileName, UOSInt fileType, UOSInt userMinLevel, UOSInt userMaxLevel)
 {
-	NotNullPtr<Map::TileMap> tileMap = this->lyr->GetTileMap();
+	NN<Map::TileMap> tileMap = this->lyr->GetTileMap();
 	UOSInt tileMinLevel = tileMap->GetMinLevel();
 	UOSInt tileMaxLevel = tileMap->GetMaxLevel();
 	if (userMinLevel > tileMaxLevel || userMaxLevel < tileMinLevel)
@@ -205,7 +205,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CStringNN fileN
 		userMinLevel = tileMinLevel;
 	if (userMaxLevel > tileMaxLevel)
 		userMaxLevel = tileMaxLevel;
-	NotNullPtr<Map::TileMapWriter> writer;
+	NN<Map::TileMapWriter> writer;
 	if (fileType == 1)
 	{
 		NEW_CLASSNN(writer, Map::TileMapZipWriter(fileName, tileMap->GetImageType(), userMinLevel, userMaxLevel, Math::RectAreaDbl(this->sel1, this->sel2)));
@@ -222,9 +222,9 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CStringNN fileN
 	writer.Delete();
 }
 
-void SSWR::AVIRead::AVIRGISTileDownloadForm::WriteTiles(NotNullPtr<Map::TileMapWriter> writer, UOSInt userMinLevel, UOSInt userMaxLevel)
+void SSWR::AVIRead::AVIRGISTileDownloadForm::WriteTiles(NN<Map::TileMapWriter> writer, UOSInt userMinLevel, UOSInt userMaxLevel)
 {
-	NotNullPtr<Map::TileMap> tileMap = this->lyr->GetTileMap();
+	NN<Map::TileMap> tileMap = this->lyr->GetTileMap();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UOSInt currLyr;
@@ -312,7 +312,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::WriteTiles(NotNullPtr<Map::TileMapW
 
 Bool SSWR::AVIRead::AVIRGISTileDownloadForm::GetLevels(OutParam<UOSInt> minLevel, OutParam<UOSInt> maxLevel)
 {
-	NotNullPtr<Map::TileMap> tileMap = this->lyr->GetTileMap();
+	NN<Map::TileMap> tileMap = this->lyr->GetTileMap();
 	UInt32 userMinLevel;
 	UInt32 userMaxLevel;
 	Text::StringBuilderUTF8 sb;
@@ -342,7 +342,7 @@ Bool SSWR::AVIRead::AVIRGISTileDownloadForm::GetLevels(OutParam<UOSInt> minLevel
 
 UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(AnyType userObj)
 {
-	NotNullPtr<ThreadStat> stat = userObj.GetNN<ThreadStat>();
+	NN<ThreadStat> stat = userObj.GetNN<ThreadStat>();
 	Map::TileMap::ImageType it;
 	IO::StreamData *fd;
 	Math::RectAreaDbl bounds;
@@ -398,7 +398,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(AnyType user
 	return 0;
 }
 
-SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::TileMapLayer> lyr, IMapNavigator *navi) : UI::GUIForm(parent, 360, 216, ui)
+SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::TileMapLayer> lyr, IMapNavigator *navi) : UI::GUIForm(parent, 360, 216, ui)
 {
 	Text::StringBuilderUTF8 sb;
 	this->core = core;

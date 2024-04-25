@@ -7,7 +7,7 @@
 
 void __stdcall IO::MODBUSDevice::ReadResult(AnyType userObj, UInt8 funcCode, const UInt8 *result, UOSInt resultSize)
 {
-	NotNullPtr<IO::MODBUSDevice> me = userObj.GetNN<IO::MODBUSDevice>();
+	NN<IO::MODBUSDevice> me = userObj.GetNN<IO::MODBUSDevice>();
 	if (funcCode == 4)
 	{
 		if (me->reqBResult)
@@ -138,7 +138,7 @@ void __stdcall IO::MODBUSDevice::ReadResult(AnyType userObj, UInt8 funcCode, con
 
 void __stdcall IO::MODBUSDevice::SetResult(AnyType userObj, UInt8 funcCode, UInt16 startAddr, UInt16 cnt)
 {
-	NotNullPtr<IO::MODBUSDevice> me = userObj.GetNN<IO::MODBUSDevice>();
+	NN<IO::MODBUSDevice> me = userObj.GetNN<IO::MODBUSDevice>();
 	if (funcCode == 5 || funcCode == 6 || funcCode == 15 || funcCode == 16)
 	{
 		if (me->reqSetStartAddr == startAddr)
@@ -352,7 +352,7 @@ Bool IO::MODBUSDevice::WriteDOutput(UInt16 addr, Bool isHigh)
 	return this->reqHasResult;
 }
 
-IO::MODBUSDevice::MODBUSDevice(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr)
+IO::MODBUSDevice::MODBUSDevice(NN<IO::MODBUSMaster> modbus, UInt8 addr)
 {
 	this->modbus = modbus;
 	this->addr = addr;

@@ -15,7 +15,7 @@
 #include "Text/StringBuilderUTF8.h"
 #endif
 
-Net::TCPClient::TCPClient(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN name, UInt16 port, Data::Duration timeout) : IO::Stream(name)
+Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, Text::CStringNN name, UInt16 port, Data::Duration timeout) : IO::Stream(name)
 {
 	this->currCnt = 0;
 	this->flags = 0;
@@ -64,7 +64,7 @@ Net::TCPClient::TCPClient(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN 
 	this->cliId = sockf->GenSocketId(s);
 }
 
-Net::TCPClient::TCPClient(NotNullPtr<Net::SocketFactory> sockf, UInt32 ip, UInt16 port, Data::Duration timeout) : IO::Stream(CSTR(""))
+Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, UInt32 ip, UInt16 port, Data::Duration timeout) : IO::Stream(CSTR(""))
 {
 	this->currCnt = 0;
 	this->s = 0;
@@ -99,7 +99,7 @@ Net::TCPClient::TCPClient(NotNullPtr<Net::SocketFactory> sockf, UInt32 ip, UInt1
 	this->cliId = sockf->GenSocketId(s);
 }
 
-Net::TCPClient::TCPClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Duration timeout) : IO::Stream(CSTR(""))
+Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Duration timeout) : IO::Stream(CSTR(""))
 {
 	this->currCnt = 0;
 	this->s = 0;
@@ -161,7 +161,7 @@ Net::TCPClient::TCPClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const
 	this->cliId = sockf->GenSocketId(s);
 }
 
-Net::TCPClient::TCPClient(NotNullPtr<Net::SocketFactory> sockf, Socket *s) : IO::Stream(CSTR(""))
+Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, Socket *s) : IO::Stream(CSTR(""))
 {
 	this->sockf = sockf;
 	this->s = s;
@@ -448,7 +448,7 @@ UTF8Char *Net::TCPClient::GetLocalName(UTF8Char *buff) const
 	return this->sockf->GetLocalName(buff, this->s);
 }
 
-Bool Net::TCPClient::GetRemoteAddr(NotNullPtr<Net::SocketUtil::AddressInfo> addr) const
+Bool Net::TCPClient::GetRemoteAddr(NN<Net::SocketUtil::AddressInfo> addr) const
 {
 	if (this->s)
 	{

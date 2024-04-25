@@ -44,7 +44,7 @@ Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::ReadVInt(Data::ByteArray buffP
 	return buffPtr;
 }
 
-const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVInt(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, const UInt8 *buffPtr)
+const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVInt(NN<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, const UInt8 *buffPtr)
 {
 	UInt64 iVal;
 	const UInt8 *nextPtr = ReadVInt(buffPtr, &iVal);
@@ -52,7 +52,7 @@ const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVInt(NotNullPtr<IO::FileAnalys
 	return nextPtr;
 }
 
-const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVInt(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, const UInt8 *buffPtr, OptOut<UInt64> val)
+const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVInt(NN<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, const UInt8 *buffPtr, OptOut<UInt64> val)
 {
 	UInt64 iVal;
 	const UInt8 *nextPtr = ReadVInt(buffPtr, &iVal);
@@ -61,7 +61,7 @@ const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVInt(NotNullPtr<IO::FileAnalys
 	return nextPtr;
 }
 
-Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVInt(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, Data::ByteArray buffPtr)
+Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVInt(NN<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, Data::ByteArray buffPtr)
 {
 	UInt64 iVal;
 	Data::ByteArray nextPtr = ReadVInt(buffPtr, &iVal);
@@ -69,7 +69,7 @@ Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVInt(NotNullPtr<IO::FileAna
 	return nextPtr;
 }
 
-Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVInt(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, Data::ByteArray buffPtr, OptOut<UInt64> val)
+Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVInt(NN<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, Data::ByteArray buffPtr, OptOut<UInt64> val)
 {
 	UInt64 iVal;
 	Data::ByteArray nextPtr = ReadVInt(buffPtr, &iVal);
@@ -78,7 +78,7 @@ Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVInt(NotNullPtr<IO::FileAna
 	return nextPtr;
 }
 
-const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVHex(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, const UInt8 *buffPtr, OptOut<UInt64> val)
+const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVHex(NN<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, const UInt8 *buffPtr, OptOut<UInt64> val)
 {
 	UInt64 iVal;
 	const UInt8 *nextPtr = ReadVInt(buffPtr, &iVal);
@@ -87,7 +87,7 @@ const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVHex(NotNullPtr<IO::FileAnalys
 	return nextPtr;
 }
 
-Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVHex(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, Data::ByteArray buffPtr, OptOut<UInt64> val)
+Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVHex(NN<IO::FileAnalyse::FrameDetail> frame, UOSInt ofst, Text::CStringNN name, Data::ByteArray buffPtr, OptOut<UInt64> val)
 {
 	UInt64 iVal;
 	Data::ByteArray nextPtr = ReadVInt(buffPtr, &iVal);
@@ -96,9 +96,9 @@ Data::ByteArray IO::FileAnalyse::RAR5FileAnalyse::AddVHex(NotNullPtr<IO::FileAna
 	return nextPtr;
 }
 
-void __stdcall IO::FileAnalyse::RAR5FileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::FileAnalyse::RAR5FileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::FileAnalyse::RAR5FileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::RAR5FileAnalyse>();
+	NN<IO::FileAnalyse::RAR5FileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::RAR5FileAnalyse>();
 	UInt8 buff[128];
 	const UInt8 *buffPtr;
 	UInt64 iVal;
@@ -146,7 +146,7 @@ void __stdcall IO::FileAnalyse::RAR5FileAnalyse::ParseThread(NotNullPtr<Sync::Th
 	}
 }
 
-IO::FileAnalyse::RAR5FileAnalyse::RAR5FileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("RAR5FileAnalyse"))
+IO::FileAnalyse::RAR5FileAnalyse::RAR5FileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("RAR5FileAnalyse"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -177,7 +177,7 @@ UOSInt IO::FileAnalyse::RAR5FileAnalyse::GetFrameCount()
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::RAR5FileAnalyse::BlockInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
@@ -192,7 +192,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Tex
 	return true;
 }
 
-Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::RAR5FileAnalyse::BlockInfo> pack;
 	UInt64 iVal;
@@ -540,7 +540,7 @@ UOSInt IO::FileAnalyse::RAR5FileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index)
 {
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<IO::FileAnalyse::RAR5FileAnalyse::BlockInfo> pack;
 	UInt64 iVal;
 	UInt64 headerFlags;

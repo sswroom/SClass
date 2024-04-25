@@ -15,7 +15,7 @@ Earth�fs gravitational constant: GM=3.986004418 * 10^14 m^3/s^2
 Angular velocity of the Earth: ��=7.292115 * 10^-5 rad/s
 */
 
-Math::GeographicCoordinateSystem::GeographicCoordinateSystem(NotNullPtr<Text::String> sourceName, UInt32 srid, Text::CString csysName, const DatumData1 *datum, PrimemType primem, UnitType unit) : Math::CoordinateSystem(sourceName, srid, csysName)
+Math::GeographicCoordinateSystem::GeographicCoordinateSystem(NN<Text::String> sourceName, UInt32 srid, Text::CString csysName, const DatumData1 *datum, PrimemType primem, UnitType unit) : Math::CoordinateSystem(sourceName, srid, csysName)
 {
 	this->datum.spheroid.srid = datum->spheroid.srid;
 	this->datum.spheroid.ellipsoid = datum->spheroid.ellipsoid->Clone();
@@ -77,14 +77,14 @@ Double Math::GeographicCoordinateSystem::CalSurfaceDistance(Math::Coord2DDbl pos
 	return this->datum.spheroid.ellipsoid->CalSurfaceDistance(pos1.GetLat(), pos1.GetLon(), pos2.GetLat(), pos2.GetLon(), unit);
 }
 
-Double Math::GeographicCoordinateSystem::CalLineStringDistance(NotNullPtr<Math::Geometry::LineString> lineString, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::GeographicCoordinateSystem::CalLineStringDistance(NN<Math::Geometry::LineString> lineString, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const
 {
 	return this->datum.spheroid.ellipsoid->CalLineStringDistance(lineString, include3D, unit);
 }
 
-NotNullPtr<Math::CoordinateSystem> Math::GeographicCoordinateSystem::Clone() const
+NN<Math::CoordinateSystem> Math::GeographicCoordinateSystem::Clone() const
 {
-	NotNullPtr<Math::CoordinateSystem> csys;
+	NN<Math::CoordinateSystem> csys;
 	NEW_CLASSNN(csys, Math::GeographicCoordinateSystem(this->sourceName, this->srid, this->csysName->ToCString(), &this->datum, this->primem, this->unit));
 	return csys;
 }
@@ -99,7 +99,7 @@ Bool Math::GeographicCoordinateSystem::IsProjected() const
 	return false;
 }
 
-void Math::GeographicCoordinateSystem::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Math::GeographicCoordinateSystem::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	sb->AppendC(UTF8STRC("Geographic File Name: "));
 	sb->Append(this->sourceName);
@@ -116,7 +116,7 @@ Text::CString Math::GeographicCoordinateSystem::GetDatumName() const
 	return Text::CString(this->datum.name, this->datum.nameLen);
 }
 
-NotNullPtr<const Math::GeographicCoordinateSystem::DatumData1> Math::GeographicCoordinateSystem::GetDatum() const
+NN<const Math::GeographicCoordinateSystem::DatumData1> Math::GeographicCoordinateSystem::GetDatum() const
 {
 	return this->datum;
 }

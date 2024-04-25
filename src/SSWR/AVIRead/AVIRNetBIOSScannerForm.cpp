@@ -8,7 +8,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnRequestClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRNetBIOSScannerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetBIOSScannerForm>();
+	NN<SSWR::AVIRead::AVIRNetBIOSScannerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetBIOSScannerForm>();
 	Text::StringBuilderUTF8 sb;
 	Net::SocketUtil::AddressInfo addr;
 	me->txtTargetAddr->GetText(sb);
@@ -38,10 +38,10 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnRequestClicked(AnyType u
 
 void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnAnswerSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRNetBIOSScannerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetBIOSScannerForm>();
+	NN<SSWR::AVIRead::AVIRNetBIOSScannerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetBIOSScannerForm>();
 	Sync::MutexUsage mutUsage;
 	me->netbios->GetAnswers(mutUsage);
-	NotNullPtr<Net::NetBIOSScanner::NameAnswer> ans;
+	NN<Net::NetBIOSScanner::NameAnswer> ans;
 	me->lvEntries->ClearItems();
 	if (me->lvAnswers->GetSelectedItem().GetOpt<Net::NetBIOSScanner::NameAnswer>().SetTo(ans))
 	{
@@ -64,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnAnswerSelChg(AnyType use
 
 void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRNetBIOSScannerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetBIOSScannerForm>();
+	NN<SSWR::AVIRead::AVIRNetBIOSScannerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetBIOSScannerForm>();
 	if (me->tableUpdated)
 	{
 		UTF8Char sbuff[32];
@@ -72,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnTimerTick(AnyType userOb
 		me->tableUpdated = false;
 		me->lvAnswers->ClearItems();
 		Sync::MutexUsage mutUsage;
-		NotNullPtr<const Data::ReadingList<Net::NetBIOSScanner::NameAnswer*>> ansList = me->netbios->GetAnswers(mutUsage);
+		NN<const Data::ReadingList<Net::NetBIOSScanner::NameAnswer*>> ansList = me->netbios->GetAnswers(mutUsage);
 		Net::NetBIOSScanner::NameAnswer *ans;
 		UOSInt i = 0;
 		UOSInt j = ansList->GetCount();
@@ -108,11 +108,11 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnTimerTick(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnAnswerUpdated(AnyType userObj, UInt32 sortableIP)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRNetBIOSScannerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetBIOSScannerForm>();
+	NN<SSWR::AVIRead::AVIRNetBIOSScannerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetBIOSScannerForm>();
 	me->tableUpdated = true;
 }
 
-SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("NetBIOS Scanner"));
@@ -155,7 +155,7 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(Optional<UI::GUICl
 	this->lvEntries->AddColumn(CSTR("TypeName"), 150);
 	this->lvEntries->AddColumn(CSTR("Flags"), 80);
 
-	NotNullPtr<Net::SocketFactory> sockf = this->core->GetSocketFactory();
+	NN<Net::SocketFactory> sockf = this->core->GetSocketFactory();
 	NEW_CLASS(this->netbios, Net::NetBIOSScanner(sockf, this->core->GetLog()));
 	if (this->netbios->IsError())
 	{
@@ -164,7 +164,7 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(Optional<UI::GUICl
 	this->netbios->SetAnswerHandler(OnAnswerUpdated, this);
 
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
-	NotNullPtr<Net::ConnectionInfo> connInfo;
+	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UOSInt i;

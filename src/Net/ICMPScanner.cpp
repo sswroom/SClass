@@ -41,7 +41,7 @@ void Net::ICMPScanner::ICMPChecksum(UInt8 *buff, OSInt buffSize)
 
 UInt32 __stdcall Net::ICMPScanner::Ping1Thread(AnyType userObj)
 {
-	NotNullPtr<PingStatus> status = userObj.GetNN<PingStatus>();
+	NN<PingStatus> status = userObj.GetNN<PingStatus>();
 	UInt8 buff1[4];
 	UInt8 buff2[4];
 	ScanResult *result;
@@ -85,7 +85,7 @@ UInt32 __stdcall Net::ICMPScanner::Ping1Thread(AnyType userObj)
 
 UInt32 __stdcall Net::ICMPScanner::Ping2Thread(AnyType userObj)
 {
-	NotNullPtr<Net::ICMPScanner> me = userObj.GetNN<Net::ICMPScanner>();
+	NN<Net::ICMPScanner> me = userObj.GetNN<Net::ICMPScanner>();
 	UInt8 *readBuff;
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
@@ -169,7 +169,7 @@ void Net::ICMPScanner::AppendMACs(UInt32 ip)
 	}
 
 	Data::ArrayListNN<Net::ConnectionInfo> connList;
-	NotNullPtr<Net::ConnectionInfo> conn;
+	NN<Net::ConnectionInfo> conn;
 	this->sockf->GetConnInfoList(connList);
 	i = connList.GetCount();
 	while (i-- > 0)
@@ -201,7 +201,7 @@ void Net::ICMPScanner::AppendMACs(UInt32 ip)
 	}
 }
 
-Net::ICMPScanner::ICMPScanner(NotNullPtr<Net::SocketFactory> sockf)
+Net::ICMPScanner::ICMPScanner(NN<Net::SocketFactory> sockf)
 {
 	this->sockf = sockf;
 }

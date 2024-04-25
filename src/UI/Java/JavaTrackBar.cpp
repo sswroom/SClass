@@ -4,7 +4,7 @@
 #include "Math/Math.h"
 #include "UI/Java/JavaTrackBar.h"
 
-UI::Java::JavaTrackBar::JavaTrackBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal) : UI::GUITrackBar(ui, parent)
+UI::Java::JavaTrackBar::JavaTrackBar(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal) : UI::GUITrackBar(ui, parent)
 {
 }
 

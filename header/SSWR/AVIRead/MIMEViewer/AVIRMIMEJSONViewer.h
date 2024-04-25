@@ -14,12 +14,12 @@ namespace SSWR
 			class AVIRMIMEJSONViewer : public AVIRMIMEViewer
 			{
 			private:
-				NotNullPtr<UI::GUITextBox> txtJSON;
+				NN<UI::GUITextBox> txtJSON;
 
 				Text::MIMEObj::UnknownMIMEObj *obj;
 
 			public:
-				AVIRMIMEJSONViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::MIMEObj::UnknownMIMEObj *obj);
+				AVIRMIMEJSONViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, Text::MIMEObj::UnknownMIMEObj *obj);
 				virtual ~AVIRMIMEJSONViewer();
 			};
 		}

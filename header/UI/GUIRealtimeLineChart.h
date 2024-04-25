@@ -9,7 +9,7 @@ namespace UI
 	class GUIRealtimeLineChart : public GUIControl
 	{
 	protected:
-		NotNullPtr<Media::DrawEngine> eng;
+		NN<Media::DrawEngine> eng;
 		const UTF8Char *unit;
 		UOSInt lineCnt;
 		UOSInt sampleCnt;
@@ -26,9 +26,9 @@ namespace UI
 		Sync::Mutex chartMut;
 		void *clsData;
 
-		void OnPaint(NotNullPtr<Media::DrawImage> dimg);
+		void OnPaint(NN<Media::DrawImage> dimg);
 	public:
-		GUIRealtimeLineChart(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt);
+		GUIRealtimeLineChart(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt);
 		virtual ~GUIRealtimeLineChart();
 
 		virtual Text::CStringNN GetObjectClass() const;

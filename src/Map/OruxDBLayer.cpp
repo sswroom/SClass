@@ -13,7 +13,7 @@
 #include "Math/Geometry/VectorImage.h"
 #include "Media/SharedImage.h"
 
-Map::OruxDBLayer::OruxDBLayer(Text::CStringNN sourceName, Text::CString layerName, NotNullPtr<Parser::ParserList> parsers) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CoordinateSystemManager::CreateDefaultCsys())
+Map::OruxDBLayer::OruxDBLayer(Text::CStringNN sourceName, Text::CString layerName, NN<Parser::ParserList> parsers) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CoordinateSystemManager::CreateDefaultCsys())
 {
 	this->parsers = parsers;
 	this->currLayer = (UInt32)-1;
@@ -99,9 +99,9 @@ void Map::OruxDBLayer::SetCurrScale(Double scale)
 	this->currLayer = (UInt32)level;
 }
 
-NotNullPtr<Map::MapView> Map::OruxDBLayer::CreateMapView(Math::Size2DDbl scnSize)
+NN<Map::MapView> Map::OruxDBLayer::CreateMapView(Math::Size2DDbl scnSize)
 {
-	NotNullPtr<Map::MapView> view;
+	NN<Map::MapView> view;
 	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(this->currLayer);
 	if (lyr)
 	{
@@ -120,7 +120,7 @@ Map::DrawLayerType Map::OruxDBLayer::GetLayerType() const
 	return Map::DRAW_LAYER_IMAGE;
 }
 
-UOSInt Map::OruxDBLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::OruxDBLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap.Get(this->currLayer);
 	if (lyr)
@@ -146,12 +146,12 @@ UOSInt Map::OruxDBLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr
 	}
 }
 
-UOSInt Map::OruxDBLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::OruxDBLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::OruxDBLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::OruxDBLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	Int32 minX;
 	Int32 minY;
@@ -221,7 +221,7 @@ void Map::OruxDBLayer::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-Bool Map::OruxDBLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::OruxDBLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	return false;
 }
@@ -241,7 +241,7 @@ DB::DBUtil::ColType Map::OruxDBLayer::GetColumnType(UOSInt colIndex, OptOut<UOSI
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::OruxDBLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Map::OruxDBLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	return false;
 }
@@ -293,7 +293,7 @@ Math::Geometry::Vector2D *Map::OruxDBLayer::GetNewVectorById(GetObjectSess *sess
 	sql.AppendInt32(y);
 	sql.AppendCmdC(CSTR(" and z = "));
 	sql.AppendInt32((Int32)this->currLayer);
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (!this->db->ExecuteReader(sql.ToCString()).SetTo(r))
 		return 0;
 	Media::ImageList *imgList = 0;
@@ -307,10 +307,10 @@ Math::Geometry::Vector2D *Map::OruxDBLayer::GetNewVectorById(GetObjectSess *sess
 		MemFree(buff);
 	}
 	this->db->CloseReader(r);
-	NotNullPtr<Media::ImageList> nnimgList;
+	NN<Media::ImageList> nnimgList;
 	if (nnimgList.Set(imgList))
 	{
-		NotNullPtr<Media::SharedImage> shImg;
+		NN<Media::SharedImage> shImg;
 		Math::Geometry::VectorImage *vimg;
 		Double x1;
 		Double y1;
@@ -336,7 +336,7 @@ Math::Geometry::Vector2D *Map::OruxDBLayer::GetNewVectorById(GetObjectSess *sess
 	}
 }
 
-UOSInt Map::OruxDBLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt Map::OruxDBLayer::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	return this->db->QueryTableNames(schemaName, names);
 }
@@ -351,12 +351,12 @@ DB::TableDef *Map::OruxDBLayer::GetTableDef(Text::CString schemaName, Text::CStr
 	return this->db->GetTableDef(schemaName, tableName);
 }
 
-void Map::OruxDBLayer::CloseReader(NotNullPtr<DB::DBReader> r)
+void Map::OruxDBLayer::CloseReader(NN<DB::DBReader> r)
 {
 	return this->db->CloseReader(r);
 }
 
-void Map::OruxDBLayer::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void Map::OruxDBLayer::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 	this->db->GetLastErrorMsg(str);
 }
@@ -387,7 +387,7 @@ Bool Map::OruxDBLayer::GetObjectData(Int64 objectId, IO::Stream *stm, Int32 *til
 	sql.AppendInt32(y);
 	sql.AppendCmdC(CSTR(" and z = "));
 	sql.AppendInt32((Int32)this->currLayer);
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (!this->db->ExecuteReader(sql.ToCString()).SetTo(r))
 		return false;
 	Bool succ = false;

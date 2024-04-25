@@ -21,17 +21,17 @@ namespace SSWR
 		class AVIRMediaForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIListBox> lbFiles;
-			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			NotNullPtr<UI::GUIHSplitter> hsplit;
+			NN<UI::GUIListBox> lbFiles;
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUIHSplitter> hsplit;
 			UI::GUIVideoBoxDD *vbdMain;
-			NotNullPtr<UI::GUIMainMenu> mnu;
-			NotNullPtr<UI::GUIMenu> mnuChapters;
-			NotNullPtr<UI::GUIPopupMenu> mnuAudio;
-			NotNullPtr<UI::GUIPopupMenu> mnuVideo;
+			NN<UI::GUIMainMenu> mnu;
+			NN<UI::GUIMenu> mnuChapters;
+			NN<UI::GUIPopupMenu> mnuAudio;
+			NN<UI::GUIPopupMenu> mnuVideo;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Media::ColorManagerSess> colorSess;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Media::ColorManagerSess> colorSess;
 			Data::ArrayList<Media::MediaFile *> *files;
 			Media::IMediaSource *popMedia;
 
@@ -50,19 +50,19 @@ namespace SSWR
 
 			void UpdateStreamList();
 			void UpdateChapters();
-			void SetActiveVideo(NotNullPtr<Media::IVideoSource> video);
-			void SetActiveAudio(NotNullPtr<Media::IAudioSource> audio, Int32 timeDelay);
+			void SetActiveVideo(NN<Media::IVideoSource> video);
+			void SetActiveAudio(NN<Media::IAudioSource> audio, Int32 timeDelay);
 		private:
 			static Bool __stdcall OnFileRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn);
 			static void __stdcall OnFileDblClicked(AnyType userObj);
-			static void __stdcall VideoCropImage(AnyType userObj, Data::Duration frameTime, UInt32 frameNum, NotNullPtr<Media::StaticImage> img);
+			static void __stdcall VideoCropImage(AnyType userObj, Data::Duration frameTime, UInt32 frameNum, NN<Media::StaticImage> img);
 			static Bool __stdcall OnFrameTime(Data::Duration frameTime, UOSInt frameNum, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, AnyType userData, Media::YCOffset ycOfst);
 
 			void PBStart(Data::Duration startTime);
 			void PBStop();
 			Bool PBIsPlaying();
 		public:
-			AVIRMediaForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::MediaFile *mediaFile);
+			AVIRMediaForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::MediaFile *mediaFile);
 			virtual ~AVIRMediaForm();
 		
 			virtual void EventMenuClicked(UInt16 cmdId);

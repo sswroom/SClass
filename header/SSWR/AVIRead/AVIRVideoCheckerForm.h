@@ -19,7 +19,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				NotNullPtr<Text::String> fileName;
+				NN<Text::String> fileName;
 				UOSInt index;
 			} FileQueue;
 
@@ -30,11 +30,11 @@ namespace SSWR
 				Double t;
 			} UpdateQueue;
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			NotNullPtr<UI::GUIButton> btnCancel;
-			NotNullPtr<UI::GUICheckBox> chkAllowTimeSkip;
-			NotNullPtr<UI::GUIListView> lvFiles;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUIButton> btnCancel;
+			NN<UI::GUICheckBox> chkAllowTimeSkip;
+			NN<UI::GUIListView> lvFiles;
 
 			Data::ArrayList<FileQueue*> fileList;
 			Sync::Mutex fileMut;
@@ -45,14 +45,14 @@ namespace SSWR
 			Bool threadToStop;
 			Sync::Event threadEvt;
 
-			static void __stdcall OnFileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> filesj);
+			static void __stdcall OnFileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> filesj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 			static void __stdcall OnAllowTimeSkipChange(AnyType userObj, Bool newVal);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static UInt32 __stdcall ProcessThread(AnyType userObj);
 			void CancelQueues();
 		public:
-			AVIRVideoCheckerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRVideoCheckerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRVideoCheckerForm();
 
 			virtual void OnMonitorChanged();

@@ -5,7 +5,7 @@
 #include "Text/MyStringW.h"
 #include "Text/Cpp/CppReader.h"
 
-void Text::CPPText::ToCPPString(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *str)
+void Text::CPPText::ToCPPString(NN<Text::StringBuilderUTF8> sb, const UTF8Char *str)
 {
 	UTF32Char c;
 	sb->AppendUTF8Char('\"');
@@ -97,7 +97,7 @@ void Text::CPPText::ToCPPString(NotNullPtr<Text::StringBuilderUTF8> sb, const UT
 	sb->AppendUTF8Char('\"');
 }
 
-void Text::CPPText::ToCPPString(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *str, UOSInt leng)
+void Text::CPPText::ToCPPString(NN<Text::StringBuilderUTF8> sb, const UTF8Char *str, UOSInt leng)
 {
 	const UTF8Char *strEnd = str + leng;
 	UTF32Char c;
@@ -199,7 +199,7 @@ void Text::CPPText::ToCPPString(NotNullPtr<Text::StringBuilderUTF8> sb, const UT
 	sb->AppendUTF8Char('\"');
 }
 
-void Text::CPPText::FromCPPString(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *str)
+void Text::CPPText::FromCPPString(NN<Text::StringBuilderUTF8> sb, const UTF8Char *str)
 {
 	Bool quoted = false;
 	UTF32Char c;
@@ -295,7 +295,7 @@ void Text::CPPText::FromCPPString(NotNullPtr<Text::StringBuilderUTF8> sb, const 
 	}
 }
 
-Bool Text::CPPText::ParseEnum(Data::ArrayListStringNN *enumEntries, Text::CString cppEnumStr, NotNullPtr<Text::StringBuilderUTF8> sbPrefix)
+Bool Text::CPPText::ParseEnum(Data::ArrayListStringNN *enumEntries, Text::CString cppEnumStr, NN<Text::StringBuilderUTF8> sbPrefix)
 {
 	IO::MemoryReadingStream mstm(cppEnumStr.v, cppEnumStr.leng);
 	Text::Cpp::CppReader reader(mstm);
@@ -416,7 +416,10 @@ Text::CStringNN Text::CPPText::GetCppType(Data::VariItem::ItemType itemType, Boo
 	case Data::VariItem::ItemType::U16:
 		return CSTR("UInt16");
 	case Data::VariItem::ItemType::I32:
-		return CSTR("Int32");
+		if (notNull)
+			return CSTR("Int32");
+		else
+			return CSTR("NInt32");
 	case Data::VariItem::ItemType::U32:
 		return CSTR("UInt32");
 	case Data::VariItem::ItemType::I64:
@@ -427,7 +430,7 @@ Text::CStringNN Text::CPPText::GetCppType(Data::VariItem::ItemType itemType, Boo
 		return CSTR("Bool");
 	case Data::VariItem::ItemType::Str:
 		if (notNull)
-			return CSTR("NotNullPtr<Text::String>");
+			return CSTR("NN<Text::String>");
 		else
 			return CSTR("Optional<Text::String>");
 	case Data::VariItem::ItemType::CStr:

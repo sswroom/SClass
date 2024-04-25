@@ -27,22 +27,22 @@ namespace Map
 		void ClearDB();
 		void *InitNameArr();
 	public:
-		DBMapLayer(NotNullPtr<Text::String> layerName);
+		DBMapLayer(NN<Text::String> layerName);
 		DBMapLayer(Text::CStringNN layerName);
 		virtual ~DBMapLayer();
 
 		virtual DrawLayerType GetLayerType() const;
 		virtual void SetMixedData(MixedData mixedData);
-		virtual UOSInt GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr);
-		virtual UOSInt GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
-		virtual UOSInt GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
+		virtual UOSInt GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr);
+		virtual UOSInt GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
+		virtual UOSInt GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
 		virtual Int64 GetObjectIdMax() const;
 		virtual void ReleaseNameArr(NameArray *nameArr);
-		virtual Bool GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex);
+		virtual Bool GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex);
 		virtual UOSInt GetColumnCnt() const;
 		virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize);
-		virtual Bool GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
+		virtual Bool GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef);
 		virtual UInt32 GetCodePage() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> rect) const;
 
@@ -50,16 +50,16 @@ namespace Map
 		virtual void EndGetObject(GetObjectSess *session);
 		virtual Math::Geometry::Vector2D *GetNewVectorById(GetObjectSess *session, Int64 id);
 		
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
 		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
-		virtual void CloseReader(NotNullPtr<DB::DBReader> r);
-		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
+		virtual void CloseReader(NN<DB::DBReader> r);
+		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
 
 		virtual ObjectClass GetObjectClass() const;
 
-		Bool SetDatabase(NotNullPtr<DB::ReadingDB> db, Text::CString schemaName, Text::CStringNN tableName, Bool releaseDB);
+		Bool SetDatabase(NN<DB::ReadingDB> db, Text::CString schemaName, Text::CStringNN tableName, Bool releaseDB);
 	};
 }
 #endif

@@ -11,8 +11,8 @@ namespace IO
 	public:
 		virtual ~FileParser(){};
 
-		virtual IO::ParsedObject *ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr) = 0;
-		IO::ParsedObject *ParseFile(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType);
+		virtual IO::ParsedObject *ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr) = 0;
+		IO::ParsedObject *ParseFile(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType);
 
 		IO::ParsedObject *ParseFilePath(Text::CStringNN filePath);
 

@@ -19,7 +19,7 @@ Map::ESRI::FileGDBTable *Map::ESRI::FileGDBDir::GetTable(Text::CString name)
 	return 0;
 }
 
-Map::ESRI::FileGDBDir::FileGDBDir(NotNullPtr<Text::String> sourceName) : DB::ReadingDB(sourceName)
+Map::ESRI::FileGDBDir::FileGDBDir(NN<Text::String> sourceName) : DB::ReadingDB(sourceName)
 {
 }
 
@@ -28,7 +28,7 @@ Map::ESRI::FileGDBDir::~FileGDBDir()
 	LIST_FREE_FUNC(&this->tables, DEL_CLASS);
 }
 
-UOSInt Map::ESRI::FileGDBDir::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt Map::ESRI::FileGDBDir::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	UOSInt i = 0;
 	UOSInt j = this->tables.GetCount();
@@ -65,7 +65,7 @@ DB::TableDef *Map::ESRI::FileGDBDir::GetTableDef(Text::CString schemaName, Text:
 		return 0;
 	}
 	DB::TableDef *tab;
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
 	if (table->OpenReader(0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
@@ -79,13 +79,13 @@ DB::TableDef *Map::ESRI::FileGDBDir::GetTableDef(Text::CString schemaName, Text:
 	}
 }
 
-void Map::ESRI::FileGDBDir::CloseReader(NotNullPtr<DB::DBReader> r)
+void Map::ESRI::FileGDBDir::CloseReader(NN<DB::DBReader> r)
 {
 	Map::ESRI::FileGDBReader *reader = (Map::ESRI::FileGDBReader*)r.Ptr();
 	DEL_CLASS(reader);
 }
 
-void Map::ESRI::FileGDBDir::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void Map::ESRI::FileGDBDir::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 }
 
@@ -98,11 +98,11 @@ void Map::ESRI::FileGDBDir::AddTable(FileGDBTable *table)
 	this->tables.Add(table);
 }
 
-Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(NotNullPtr<IO::PackageFile> pkg, NotNullPtr<Math::ArcGISPRJParser> prjParser)
+Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(NN<IO::PackageFile> pkg, NN<Math::ArcGISPRJParser> prjParser)
 {
 	FileGDBTable *table;
 	IO::StreamData *indexFD = pkg->GetItemStmDataNew(CSTR("a00000001.gdbtablx")).OrNull();
-	NotNullPtr<IO::StreamData> tableFD;;
+	NN<IO::StreamData> tableFD;;
 	if (!pkg->GetItemStmDataNew(CSTR("a00000001.gdbtable")).SetTo(tableFD))
 	{
 		SDEL_CLASS(indexFD);
@@ -116,7 +116,7 @@ Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(NotNullPtr<IO::PackageFile
 		DEL_CLASS(table);
 		return 0;
 	}
-	NotNullPtr<FileGDBReader> reader;
+	NN<FileGDBReader> reader;
 	if (!Optional<FileGDBReader>::ConvertFrom(table->OpenReader(0, 0, 0, CSTR_NULL, 0)).SetTo(reader))
 	{
 		DEL_CLASS(table);

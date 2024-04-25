@@ -59,7 +59,7 @@ OSInt __stdcall UI::Win::WinHSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSIn
 			GetCursorPos(&pt);
 #endif
 
-			NotNullPtr<GUIClientControl> nnparent;
+			NN<GUIClientControl> nnparent;
 			if (me->parent.SetTo(nnparent))
 			{
 				hdc = GetDC((HWND)nnparent->GetHandle());
@@ -145,10 +145,10 @@ void UI::Win::WinHSplitter::CalDragRange()
 	Bool foundLeft = false;
 	Bool foundRight = false;
 	Bool foundThis = false;
-	NotNullPtr<UI::GUIControl> ctrl;
+	NN<UI::GUIControl> ctrl;
 	UI::GUIControl::DockType dockType;
 	min = 0;
-	NotNullPtr<GUIClientControl> nnparent;
+	NN<GUIClientControl> nnparent;
 	if (this->parent.SetTo(nnparent))
 	{
 		Double maxD = nnparent->GetClientSize().x;
@@ -228,7 +228,7 @@ void UI::Win::WinHSplitter::CalDragRange()
 	}
 }
 
-UI::Win::WinHSplitter::WinHSplitter(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Int32 width, Bool isRight) : UI::GUIHSplitter(ui, parent)
+UI::Win::WinHSplitter::WinHSplitter(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Int32 width, Bool isRight) : UI::GUIHSplitter(ui, parent)
 {
 	this->dragMode = false;
 	this->isRight = isRight;
@@ -272,7 +272,7 @@ void UI::Win::WinHSplitter::EventMouseDown(GUIControl::MouseButton btn, Math::Co
 		this->CalDragRange();
 		this->SetCapture();
 		
-		NotNullPtr<GUIClientControl> nnparent;
+		NN<GUIClientControl> nnparent;
 		if (this->parent.SetTo(nnparent))
 		{
 			HDC hdc = GetDC((HWND)nnparent->GetHandle());
@@ -295,7 +295,7 @@ void UI::Win::WinHSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::
 		this->dragMode = false;
 		this->ReleaseCapture();
 
-		NotNullPtr<GUIClientControl> nnparent;
+		NN<GUIClientControl> nnparent;
 		if (this->parent.SetTo(nnparent))
 		{
 			HDC hdc = GetDC((HWND)nnparent->GetHandle());
@@ -319,7 +319,7 @@ void UI::Win::WinHSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::
 			UOSInt i = nnparent->GetChildCount();
 			while (i-- > 0)
 			{
-				NotNullPtr<UI::GUIControl> ctrl;
+				NN<UI::GUIControl> ctrl;
 				if (nnparent->GetChild(i).SetTo(ctrl))
 				{
 					if (ctrl.Ptr() == this)

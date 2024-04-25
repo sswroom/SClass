@@ -41,7 +41,7 @@ void DB::SQLiteFile::Init()
 	}
 }
 
-DB::SQLiteFile::SQLiteFile(NotNullPtr<Text::String> fileName) : DB::DBConn(fileName)
+DB::SQLiteFile::SQLiteFile(NN<Text::String> fileName) : DB::DBConn(fileName)
 {
 	this->fileName = fileName->Clone();
 	this->Init();
@@ -89,7 +89,7 @@ void DB::SQLiteFile::ForceTz(Int8 tzQhr)
 	
 }
 
-void DB::SQLiteFile::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
+void DB::SQLiteFile::GetConnName(NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("SQLite:"));
 	sb->Append(this->fileName);
@@ -152,7 +152,7 @@ Optional<DB::DBReader> DB::SQLiteFile::ExecuteReader(Text::CStringNN sql)
 		if (sqlite3_prepare_v2((sqlite3*)this->db, (const Char*)sql.v, (Int32)sql.leng + 1, &stmt, &tmp) == SQLITE_OK)
 		{
 			this->lastDataError = DE_NO_ERROR;
-			NotNullPtr<DB::SQLiteReader> r;
+			NN<DB::SQLiteReader> r;
 			NEW_CLASSNN(r, DB::SQLiteReader(this, stmt));
 			return r;
 		}
@@ -171,13 +171,13 @@ Optional<DB::DBReader> DB::SQLiteFile::ExecuteReader(Text::CStringNN sql)
 	}
 }
 
-void DB::SQLiteFile::CloseReader(NotNullPtr<DBReader> r)
+void DB::SQLiteFile::CloseReader(NN<DBReader> r)
 {
 	DB::SQLiteReader *rdr = (DB::SQLiteReader*)r.Ptr();
 	DEL_CLASS(rdr);
 }
 
-void DB::SQLiteFile::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void DB::SQLiteFile::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 	if (this->lastErrMsg)
 	{
@@ -216,26 +216,26 @@ Optional<DB::DBTransaction> DB::SQLiteFile::BeginTransaction()
 	return 0;
 }
 
-void DB::SQLiteFile::Commit(NotNullPtr<DB::DBTransaction> tran)
+void DB::SQLiteFile::Commit(NN<DB::DBTransaction> tran)
 {
 	ExecuteNonQuery(CSTR("end"));
 }
 
-void DB::SQLiteFile::Rollback(NotNullPtr<DB::DBTransaction> tran)
+void DB::SQLiteFile::Rollback(NN<DB::DBTransaction> tran)
 {
 	ExecuteNonQuery(CSTR("rollback"));
 }
 
-UOSInt DB::SQLiteFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt DB::SQLiteFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng > 0)
 		return 0;
 	UOSInt initCnt = names->GetCount();
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (ExecuteReader(CSTR("SELECT name FROM sqlite_master WHERE type='table'")).SetTo(r))
 	{
 		Text::StringBuilderUTF8 sb;
-		NotNullPtr<Text::String> name;
+		NN<Text::String> name;
 		while (r->ReadNext())
 		{
 			name = r->GetNewStrBNN(0, sb);
@@ -259,7 +259,7 @@ Optional<DB::DBReader> DB::SQLiteFile::QueryTableData(Text::CString schemaName, 
 	else
 	{
 		Bool found = false;
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = columnNames->Iterator();
+		Data::ArrayIterator<NN<Text::String>> it = columnNames->Iterator();
 		while (it.HasNext())
 		{
 			if (found) sb.AppendC(UTF8STRC(","));
@@ -289,7 +289,7 @@ Bool DB::SQLiteFile::IsError()
 	return this->db == 0;
 }
 
-NotNullPtr<Text::String> DB::SQLiteFile::GetFileName()
+NN<Text::String> DB::SQLiteFile::GetFileName()
 {
 	return this->fileName;
 }
@@ -377,30 +377,30 @@ Optional<Math::Geometry::Vector2D> DB::SQLiteFile::GPGeometryParse(const UInt8 *
 	return reader.ParseWKB(buff + ofst, buffSize - ofst, 0);
 }
 
-Optional<DB::DBTool> DB::SQLiteFile::CreateDBTool(NotNullPtr<Text::String> fileName, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::SQLiteFile::CreateDBTool(NN<Text::String> fileName, NN<IO::LogTool> log, Text::CString logPrefix)
 {
-	NotNullPtr<DB::SQLiteFile> conn;
+	NN<DB::SQLiteFile> conn;
 	NEW_CLASSNN(conn, DB::SQLiteFile(fileName));
 	if (conn->IsError())
 	{
 		conn.Delete();
 		return 0;
 	}
-	NotNullPtr<DB::DBTool> db;
+	NN<DB::DBTool> db;
 	NEW_CLASSNN(db, DBTool(conn, true, log, logPrefix));
 	return db;
 }
 
-Optional<DB::DBTool> DB::SQLiteFile::CreateDBTool(Text::CStringNN fileName, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::SQLiteFile::CreateDBTool(Text::CStringNN fileName, NN<IO::LogTool> log, Text::CString logPrefix)
 {
-	NotNullPtr<DB::SQLiteFile> conn;
+	NN<DB::SQLiteFile> conn;
 	NEW_CLASSNN(conn, DB::SQLiteFile(fileName));
 	if (conn->IsError())
 	{
 		conn.Delete();
 		return 0;
 	}
-	NotNullPtr<DB::DBTool> db;
+	NN<DB::DBTool> db;
 	NEW_CLASSNN(db, DBTool(conn, true, log, logPrefix));
 	return db;
 }
@@ -492,7 +492,7 @@ Optional<Text::String> DB::SQLiteReader::GetNewStr(UOSInt colIndex)
 	return Text::String::New(sb.ToCString());
 }
 
-Bool DB::SQLiteReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool DB::SQLiteReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	if (colIndex >= this->colCnt)
 		return false;
@@ -504,7 +504,7 @@ Bool DB::SQLiteReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF
 			const void *data = sqlite3_column_blob((sqlite3_stmt*)this->hStmt, (int)colIndex);
 			if (data)
 			{
-				NotNullPtr<Math::Geometry::Vector2D> vec;
+				NN<Math::Geometry::Vector2D> vec;
 				if (DB::SQLiteFile::GPGeometryParse((const UInt8 *)data, len).SetTo(vec))
 				{
 					Math::WKTWriter wkt;
@@ -535,7 +535,7 @@ Bool DB::SQLiteReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF
 			return false;
 		else
 		{
-			NotNullPtr<Text::String> s = Text::String::NewNotNull((const UTF16Char*)outp);
+			NN<Text::String> s = Text::String::NewNotNull((const UTF16Char*)outp);
 			sb->Append(s);
 			s->Release();
 			return true;
@@ -626,7 +626,7 @@ UOSInt DB::SQLiteReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	}
 }
 
-Bool DB::SQLiteReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
+Bool DB::SQLiteReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 {
 	return false;
 }
@@ -675,12 +675,12 @@ DB::DBUtil::ColType DB::SQLiteReader::GetColType(UOSInt colIndex, OptOut<UOSInt>
 	}
 }
 
-Bool DB::SQLiteReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool DB::SQLiteReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	const Char *name = sqlite3_column_name((sqlite3_stmt*)this->hStmt, (int)colIndex);
 	UOSInt colSize;
 	DB::DBUtil::ColType colType;
-	NotNullPtr<const UTF8Char> colName;
+	NN<const UTF8Char> colName;
 	if (!colName.Set((const UTF8Char*)name))
 		return false;
 	colDef->SetColName(colName);

@@ -96,7 +96,7 @@ void SSWR::AVIRead::AVIREDIDViewerForm::UpdateEDIDDisp()
 
 void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnSaveClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIREDIDViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREDIDViewerForm>();
+	NN<SSWR::AVIRead::AVIREDIDViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREDIDViewerForm>();
 	if (me->edid == 0)
 	{
 		return;
@@ -117,7 +117,7 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnSaveClicked(AnyType userObj)
 		}
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".dat"));
 
-		NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"EDIDSave", true);
+		NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"EDIDSave", true);
 		dlg->SetFileName(CSTRP(sbuff, sptr));
 		if (dlg->ShowDialog(me->GetHandle()))
 		{
@@ -130,7 +130,7 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnSaveClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnHexClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIREDIDViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREDIDViewerForm>();
+	NN<SSWR::AVIRead::AVIREDIDViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREDIDViewerForm>();
 	if (me->edid == 0)
 	{
 		return;
@@ -139,9 +139,9 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnHexClicked(AnyType userObj)
 	me->core->OpenHex(fd, 0);
 }
 
-void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> fileNames)
+void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> fileNames)
 {
-	NotNullPtr<SSWR::AVIRead::AVIREDIDViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREDIDViewerForm>();
+	NN<SSWR::AVIRead::AVIREDIDViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREDIDViewerForm>();
 	UOSInt fileSize;
 	UOSInt i;
 	UOSInt fileCnt = fileNames.GetCount();
@@ -180,7 +180,7 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(AnyType userObj, Da
 	}
 }
 
-SSWR::AVIRead::AVIREDIDViewerForm::AVIREDIDViewerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIREDIDViewerForm::AVIREDIDViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
 	this->SetText(CSTR("EDID Viewer"));

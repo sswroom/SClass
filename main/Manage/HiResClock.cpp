@@ -11,7 +11,7 @@
 #include <sys/time.h>
 #endif
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Manage::HiResClock clk;
 	IO::ConsoleWriter console;

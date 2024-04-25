@@ -27,18 +27,18 @@ namespace SSWR
 			} MapServer;
 		private:
 			static MapServer mapSvrs[];
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
-			NotNullPtr<UI::GUIRadioButton> radPredefine;
-			NotNullPtr<UI::GUIRadioButton> radOther;
-			NotNullPtr<UI::GUIComboBox> cboPredefine;
-			NotNullPtr<UI::GUITextBox> txtOther;
-			NotNullPtr<UI::GUICheckBox> chkNoResource;
-			NotNullPtr<UI::GUILabel> lblSRID;
-			NotNullPtr<UI::GUITextBox> txtSRID;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUIRadioButton> radPredefine;
+			NN<UI::GUIRadioButton> radOther;
+			NN<UI::GUIComboBox> cboPredefine;
+			NN<UI::GUITextBox> txtOther;
+			NN<UI::GUICheckBox> chkNoResource;
+			NN<UI::GUILabel> lblSRID;
+			NN<UI::GUITextBox> txtSRID;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 			Map::ESRI::ESRIMapServer *esriMap;
 
 			static void __stdcall OKClicked(AnyType userObj);
@@ -46,7 +46,7 @@ namespace SSWR
 			static void __stdcall OnOtherChanged(AnyType userObj);
 			static void __stdcall OnNoResourceChg(AnyType userObj, Bool newValue);
 		public:
-			AVIRESRIMapForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl);
+			AVIRESRIMapForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl);
 			virtual ~AVIRESRIMapForm();
 
 			virtual void OnMonitorChanged();

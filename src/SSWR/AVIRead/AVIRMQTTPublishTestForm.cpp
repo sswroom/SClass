@@ -21,7 +21,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTPublishTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTPublishTestForm>();
+	NN<SSWR::AVIRead::AVIRMQTTPublishTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTPublishTestForm>();
 	if (me->client)
 	{
 		me->ServerStop();
@@ -76,11 +76,11 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(AnyType us
 			return;
 		}
 		Optional<Net::SSLEngine> ssl = me->ssl;
-		NotNullPtr<Net::SSLEngine> nnssl;
+		NN<Net::SSLEngine> nnssl;
 		if (useSSL && ssl.SetTo(nnssl))
 		{
-			NotNullPtr<Crypto::Cert::X509Cert> cliCert;
-			NotNullPtr<Crypto::Cert::X509File> cliKey;
+			NN<Crypto::Cert::X509Cert> cliCert;
+			NN<Crypto::Cert::X509File> cliKey;
 			if (cliCert.Set(me->cliCert) && cliKey.Set(me->cliKey))
 			{
 				nnssl->ClientSetCertASN1(cliCert, cliKey);
@@ -88,7 +88,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(AnyType us
 		}
 		if (useWS)
 		{
-			NotNullPtr<Net::WebSocketClient> ws;
+			NN<Net::WebSocketClient> ws;
 			NEW_CLASSNN(ws, Net::WebSocketClient(me->core->GetSocketFactory(), useSSL?ssl:0, sb.ToCString(), port, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT, 10000));
 			if (ws->IsDown())
 			{
@@ -174,8 +174,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnCliCertClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTPublishTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTPublishTestForm>();
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliCert", false);
+	NN<SSWR::AVIRead::AVIRMQTTPublishTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTPublishTestForm>();
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliCert", false);
 	dlg->AddFilter(CSTR("*.crt"), CSTR("Cert file"));
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
@@ -208,7 +208,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnCliCertClicked(AnyType 
 		}
 		SDEL_CLASS(me->cliCert);
 		me->cliCert = (Crypto::Cert::X509Cert*)x509;
-		NotNullPtr<Text::String> s = dlg->GetFileName();
+		NN<Text::String> s = dlg->GetFileName();
 		UOSInt i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		me->lblCliCert->SetText(s->ToCString().Substring(i + 1));
 	}
@@ -217,8 +217,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnCliCertClicked(AnyType 
 
 void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnCliKeyClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTPublishTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTPublishTestForm>();
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliKey", false);
+	NN<SSWR::AVIRead::AVIRMQTTPublishTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTPublishTestForm>();
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliKey", false);
 	dlg->AddFilter(CSTR("*.key"), CSTR("Key file"));
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
@@ -243,7 +243,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnCliKeyClicked(AnyType u
 		}
 		SDEL_CLASS(me->cliKey);
 		me->cliKey = (Crypto::Cert::X509File*)asn1;
-		NotNullPtr<Text::String> s = dlg->GetFileName();
+		NN<Text::String> s = dlg->GetFileName();
 		UOSInt i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		me->lblCliKey->SetText(s->ToCString().Substring(i + 1));
 	}
@@ -252,7 +252,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnCliKeyClicked(AnyType u
 
 void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnPingTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTPublishTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTPublishTestForm>();
+	NN<SSWR::AVIRead::AVIRMQTTPublishTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTPublishTestForm>();
 	if (me->client)
 	{
 		if (me->client->IsError())
@@ -279,7 +279,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnPingTimerTick(AnyType u
 
 void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTPublishTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTPublishTestForm>();
+	NN<SSWR::AVIRead::AVIRMQTTPublishTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTPublishTestForm>();
 	Data::DateTime dt;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -336,7 +336,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnPublishMessage(AnyType 
 
 UInt32 __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::SendThread(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTPublishTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTPublishTestForm>();
+	NN<SSWR::AVIRead::AVIRMQTTPublishTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTPublishTestForm>();
 	me->threadRunning = true;
 	while (!me->threadToStop)
 	{
@@ -366,7 +366,7 @@ void SSWR::AVIRead::AVIRMQTTPublishTestForm::ServerStop()
 	}
 }
 
-SSWR::AVIRead::AVIRMQTTPublishTestForm::AVIRMQTTPublishTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 200, ui)
+SSWR::AVIRead::AVIRMQTTPublishTestForm::AVIRMQTTPublishTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 200, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("MQTT Publish Test"));

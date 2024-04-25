@@ -60,12 +60,12 @@
 	
 }*/
 
-void UI::GUIVideoBoxDD::LockUpdateSize(NotNullPtr<Sync::MutexUsage> mutUsage)
+void UI::GUIVideoBoxDD::LockUpdateSize(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->surfaceMut);
 }
 
-void UI::GUIVideoBoxDD::DrawFromSurface(NotNullPtr<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn)
+void UI::GUIVideoBoxDD::DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn)
 {
 	this->DisplayFromSurface(surface, destTL, buffSize, clearScn);
 }
@@ -82,7 +82,7 @@ void UI::GUIVideoBoxDD::EndUpdateSize()
 	this->switching = false;
 }
 
-UI::GUIVideoBoxDD::GUIVideoBoxDD(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::ColorManagerSess> colorSess, UOSInt buffCnt, UOSInt threadCnt) : UI::GUIDDrawControl(ui, parent, false, colorSess), Media::VideoRenderer(colorSess.Ptr(), this->UI::GUIDDrawControl::surfaceMgr, buffCnt, threadCnt)
+UI::GUIVideoBoxDD::GUIVideoBoxDD(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::ColorManagerSess> colorSess, UOSInt buffCnt, UOSInt threadCnt) : UI::GUIDDrawControl(ui, parent, false, colorSess), Media::VideoRenderer(colorSess.Ptr(), this->UI::GUIDDrawControl::surfaceMgr, buffCnt, threadCnt)
 {
 	this->UpdateRefreshRate(this->GetRefreshRate());
 	this->debugLog = 0;
@@ -98,7 +98,7 @@ UI::GUIVideoBoxDD::GUIVideoBoxDD(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIC
 	this->maDownTime = 0;
 
 #ifdef _DEBUG
-	NotNullPtr<IO::FileStream> fs;
+	NN<IO::FileStream> fs;
 	NEW_CLASSNN(fs, IO::FileStream(CSTR("videoProc.log"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	this->debugFS = fs.Ptr();
 	NEW_CLASS(this->debugLog, Text::UTF8Writer(fs));
@@ -151,7 +151,7 @@ void UI::GUIVideoBoxDD::OnSizeChanged(Bool updateScn)
 	}
 }
 
-void UI::GUIVideoBoxDD::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
+void UI::GUIVideoBoxDD::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 	if (this->video && this->tstats[0].csconv)
 	{
@@ -163,7 +163,7 @@ void UI::GUIVideoBoxDD::YUVParamChanged(NotNullPtr<const Media::IColorHandler::Y
 	}
 }
 
-void UI::GUIVideoBoxDD::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void UI::GUIVideoBoxDD::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	if (this->video && this->tstats[0].csconv)
 	{

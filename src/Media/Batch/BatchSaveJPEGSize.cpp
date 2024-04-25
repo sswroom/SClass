@@ -20,7 +20,7 @@ Media::Batch::BatchSaveJPEGSize::~BatchSaveJPEGSize()
 {
 }
 
-void Media::Batch::BatchSaveJPEGSize::ImageOutput(NotNullPtr<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN targetId)
+void Media::Batch::BatchSaveJPEGSize::ImageOutput(NN<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN targetId)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

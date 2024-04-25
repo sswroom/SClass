@@ -62,7 +62,7 @@ Data::MacString *Data::MacType::CopyTypeDesc() const
 	return 0;
 }
 
-void Data::MacType::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Data::MacType::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	if (IsNull())
 	{
@@ -130,7 +130,7 @@ const UTF8Char *Data::MacString::Ptr() const
 	}
 }
 
-void Data::MacString::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Data::MacString::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	const UTF8Char *s = this->Ptr();
 	if (s)
@@ -195,7 +195,7 @@ Int64 Data::MacNumber::GetInt64() const
 	return 0;
 }
 
-void Data::MacNumber::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Data::MacNumber::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	if (this->IsFloat())
 	{
@@ -220,7 +220,7 @@ Bool Data::MacBoolean::GetValue() const
 	return CFBooleanGetValue((CFBooleanRef)this->val);
 }
 
-void Data::MacBoolean::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Data::MacBoolean::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	sb->Append(this->GetValue()?CSTR("true"):CSTR("false"));
 }
@@ -248,7 +248,7 @@ Data::ByteArrayR Data::MacData::GetArray() const
 	return Data::ByteArrayR(this->Ptr(), this->GetSize());
 }
 
-void Data::MacData::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Data::MacData::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	sb->AppendHexBuff(this->GetArray(), ' ', Text::LineBreakType::CRLF);
 }
@@ -271,7 +271,7 @@ UOSInt Data::MacArray::GetCount() const
 	return (UOSInt)CFArrayGetCount((CFArrayRef)this->val);
 }
 
-void Data::MacArray::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Data::MacArray::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	UOSInt i = 0;
 	UOSInt j = this->GetCount();
@@ -314,7 +314,7 @@ UOSInt Data::MacDictionary::GetCount() const
 	return (UOSInt)CFDictionaryGetCount((CFDictionaryRef)this->val); 
 }
 
-void Data::MacDictionary::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Data::MacDictionary::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	UOSInt i = 0;
 	UOSInt cnt = this->GetCount();

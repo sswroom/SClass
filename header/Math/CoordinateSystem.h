@@ -46,7 +46,7 @@ namespace Math
 			UInt32 srid;
 			const UTF8Char *name;
 			UOSInt nameLen;
-			NotNullPtr<Math::EarthEllipsoid> ellipsoid;
+			NN<Math::EarthEllipsoid> ellipsoid;
 		};
 		
 		typedef struct
@@ -69,33 +69,33 @@ namespace Math
 		} DatumData1;
 		
 	protected:
-		NotNullPtr<Text::String> csysName;
+		NN<Text::String> csysName;
 		UInt32 srid;
 
-		CoordinateSystem(NotNullPtr<Text::String> sourceName, UInt32 srid, Text::CString csysName);
+		CoordinateSystem(NN<Text::String> sourceName, UInt32 srid, Text::CString csysName);
 		CoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CString csysName);
 	public:
 		virtual ~CoordinateSystem();
 
 		virtual Double CalSurfaceDistance(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const = 0;
-		virtual Double CalLineStringDistance(NotNullPtr<Math::Geometry::LineString> lineString, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const = 0;
-		Double CalDistance(NotNullPtr<Math::Geometry::Vector2D> vec, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const;
-		virtual NotNullPtr<CoordinateSystem> Clone() const = 0;
+		virtual Double CalLineStringDistance(NN<Math::Geometry::LineString> lineString, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const = 0;
+		Double CalDistance(NN<Math::Geometry::Vector2D> vec, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual NN<CoordinateSystem> Clone() const = 0;
 		virtual CoordinateSystemType GetCoordSysType() const = 0;
 		virtual Bool IsProjected() const = 0;
-		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const = 0;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const = 0;
 
 		virtual IO::ParserType GetParserType() const;
 
-		virtual Bool Equals(NotNullPtr<const CoordinateSystem> csys) const;
-		NotNullPtr<Text::String> GetCSysName() const { return this->csysName; }
+		virtual Bool Equals(NN<const CoordinateSystem> csys) const;
+		NN<Text::String> GetCSysName() const { return this->csysName; }
 		UInt32 GetSRID() const { return this->srid; }
  
-		static Math::Coord2DDbl Convert(NotNullPtr<const Math::CoordinateSystem> srcCoord, NotNullPtr<const Math::CoordinateSystem> destCoord, Math::Coord2DDbl coord);
-		static Math::Vector3 Convert3D(NotNullPtr<const Math::CoordinateSystem> srcCoord, NotNullPtr<const Math::CoordinateSystem> destCoord, Math::Vector3 srcPos);
-		static void ConvertArray(NotNullPtr<const Math::CoordinateSystem> srcCoord, NotNullPtr<const Math::CoordinateSystem> destCoord, const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints);
-		static Math::Vector3 ConvertToCartesianCoord(NotNullPtr<const Math::CoordinateSystem> srcCoord, Math::Vector3 srcPos);
-		static void DatumData1ToString(NotNullPtr<const DatumData1> datum, NotNullPtr<Text::StringBuilderUTF8> sb);
+		static Math::Coord2DDbl Convert(NN<const Math::CoordinateSystem> srcCoord, NN<const Math::CoordinateSystem> destCoord, Math::Coord2DDbl coord);
+		static Math::Vector3 Convert3D(NN<const Math::CoordinateSystem> srcCoord, NN<const Math::CoordinateSystem> destCoord, Math::Vector3 srcPos);
+		static void ConvertArray(NN<const Math::CoordinateSystem> srcCoord, NN<const Math::CoordinateSystem> destCoord, const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints);
+		static Math::Vector3 ConvertToCartesianCoord(NN<const Math::CoordinateSystem> srcCoord, Math::Vector3 srcPos);
+		static void DatumData1ToString(NN<const DatumData1> datum, NN<Text::StringBuilderUTF8> sb);
 		static Text::CStringNN CoordinateSystemTypeGetName(CoordinateSystemType csysType);
 	};
 }

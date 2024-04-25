@@ -18,9 +18,9 @@
 
 #include <stdio.h>
 
-void __stdcall Net::RTPCliChannel::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::RTPCliChannel::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	NotNullPtr<ChannelData> chData = userData.GetNN<ChannelData>();
+	NN<ChannelData> chData = userData.GetNN<ChannelData>();
 //	WChar wbuff[32];
 
 	if (dataSize < 12)
@@ -114,9 +114,9 @@ void __stdcall Net::RTPCliChannel::PacketHdlr(NotNullPtr<const Net::SocketUtil::
 	mutUsage.EndUse();
 }
 
-void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	NotNullPtr<ChannelData> chData = userData.GetNN<ChannelData>();
+	NN<ChannelData> chData = userData.GetNN<ChannelData>();
 	UInt8 tmpBuff[100];
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -274,7 +274,7 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(NotNullPtr<const Net::SocketUt
 
 UInt32 __stdcall Net::RTPCliChannel::PlayThread(AnyType userObj)
 {
-	NotNullPtr<Net::RTPCliChannel> me = userObj.GetNN<Net::RTPCliChannel>();
+	NN<Net::RTPCliChannel> me = userObj.GetNN<Net::RTPCliChannel>();
 	{
 		Data::DateTime dt;
 		Data::DateTime lastDt;
@@ -315,7 +315,7 @@ void Net::RTPCliChannel::SetPlayControl(Net::IRTPController *playCtrl)
 	this->chData->playCtrl = playCtrl;
 }
 
-Net::RTPCliChannel::RTPCliChannel(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log)
+Net::RTPCliChannel::RTPCliChannel(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log)
 {
 	NEW_CLASS(this->chData, ChannelData());
 	this->chData->useCnt = 1;
@@ -445,13 +445,13 @@ Media::IVideoSource *Net::RTPCliChannel::CreateShadowVideo(UOSInt index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_VIDEO)
 		return 0;
-	NotNullPtr<Net::RTPVPLHandler> hdlr;
+	NN<Net::RTPVPLHandler> hdlr;
 	if (!hdlr.Set((Net::RTPVPLHandler*)this->chData->payloadMap.GetItem(index)))
 	{
 		return 0;
 	}
 	Net::RTPVSource *vSrc;
-	NotNullPtr<Net::RTPCliChannel> ch;
+	NN<Net::RTPCliChannel> ch;
 	NEW_CLASSNN(ch, Net::RTPCliChannel(this));
 	NEW_CLASS(vSrc, Net::RTPVSource(ch, hdlr));
 	return vSrc;
@@ -461,13 +461,13 @@ Media::IAudioSource *Net::RTPCliChannel::CreateShadowAudio(UOSInt index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_AUDIO)
 		return 0;
-	NotNullPtr<Net::RTPAPLHandler> hdlr;
+	NN<Net::RTPAPLHandler> hdlr;
 	if (!hdlr.Set((Net::RTPAPLHandler*)this->chData->payloadMap.GetItem(index)))
 	{
 		return 0;
 	}
 	Net::RTPASource *aSrc;
-	NotNullPtr<Net::RTPCliChannel> ch;
+	NN<Net::RTPCliChannel> ch;
 	NEW_CLASSNN(ch, Net::RTPCliChannel(*this));
 	NEW_CLASS(aSrc, Net::RTPASource(ch, hdlr));
 	return aSrc;
@@ -564,7 +564,7 @@ Bool Net::RTPCliChannel::SetPayloadFormat(Int32 payloadType, const UTF8Char *for
 	return false;
 }
 
-Net::RTPCliChannel *Net::RTPCliChannel::CreateChannel(NotNullPtr<Net::SocketFactory> sockf, Data::ArrayList<const UTF8Char *> *sdpDesc, Text::CString ctrlURL, Net::IRTPController *playCtrl, NotNullPtr<IO::LogTool> log)
+Net::RTPCliChannel *Net::RTPCliChannel::CreateChannel(NN<Net::SocketFactory> sockf, Data::ArrayList<const UTF8Char *> *sdpDesc, Text::CString ctrlURL, Net::IRTPController *playCtrl, NN<IO::LogTool> log)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

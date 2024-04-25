@@ -12,7 +12,7 @@
 
 UInt32 __stdcall Media::MPGFile::PlayThread(AnyType userData)
 {
-	NotNullPtr<Media::MPGFile> me = userData.GetNN<Media::MPGFile>();
+	NN<Media::MPGFile> me = userData.GetNN<Media::MPGFile>();
 	UOSInt buffSize;
 	UOSInt readSize;
 	UOSInt i;
@@ -417,7 +417,7 @@ Bool Media::MPGFile::StopPlay()
 	return true;
 }
 
-Media::MPGFile::MPGFile(NotNullPtr<IO::StreamData> stmData) : Media::MediaFile(stmData->GetFullName()), readBuff(1048576)
+Media::MPGFile::MPGFile(NN<IO::StreamData> stmData) : Media::MediaFile(stmData->GetFullName()), readBuff(1048576)
 {
 	this->stmData = stmData->GetPartialData(0, this->fleng = stmData->GetDataSize());
 	this->bitRate = 0;

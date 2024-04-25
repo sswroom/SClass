@@ -61,7 +61,7 @@ Double IO::Device::BME280::CalcPressureRAW(Int32 tRAW, Int32 pressureRAW)
 	return (Double)rslt / 256.0;
 }
 
-IO::Device::BME280::BME280(NotNullPtr<IO::I2CChannel> channel, Bool toRelease) : i2c(channel, 0)
+IO::Device::BME280::BME280(NN<IO::I2CChannel> channel, Bool toRelease) : i2c(channel, 0)
 {
 	this->channel = channel;
 	this->toRelease = toRelease;

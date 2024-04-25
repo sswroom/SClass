@@ -11,7 +11,7 @@
 
 UInt32 __stdcall Media::VCDMPGFile::PlayThread(AnyType userData)
 {
-	NotNullPtr<Media::VCDMPGFile> me = userData.GetNN<Media::VCDMPGFile>();
+	NN<Media::VCDMPGFile> me = userData.GetNN<Media::VCDMPGFile>();
 	Bool succ;
 	UOSInt currOfst;
 	UOSInt i;
@@ -231,7 +231,7 @@ Bool Media::VCDMPGFile::StopPlay()
 	return true;
 }
 
-Media::VCDMPGFile::VCDMPGFile(NotNullPtr<IO::ISectorData> data, UInt64 startSector, UInt64 endSector) : Media::MediaFile(data->GetSourceNameObj()), readBuff(2352)
+Media::VCDMPGFile::VCDMPGFile(NN<IO::ISectorData> data, UInt64 startSector, UInt64 endSector) : Media::MediaFile(data->GetSourceNameObj()), readBuff(2352)
 {
 	this->data = data->GetPartialData(startSector, endSector - startSector);
 	this->readOfst = 0;

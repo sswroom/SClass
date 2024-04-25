@@ -2,7 +2,7 @@
 #include "Crypto/Cert/X509PKCS12.h"
 #include "Net/ASN1Util.h"
 
-Crypto::Cert::X509PKCS12::X509PKCS12(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
+Crypto::Cert::X509PKCS12::X509PKCS12(NN<Text::String> sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
 {
 
 }
@@ -22,7 +22,7 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509PKCS12::GetFileType() const
 	return FileType::PKCS12;
 }
 
-void Crypto::Cert::X509PKCS12::ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Crypto::Cert::X509PKCS12::ToShortName(NN<Text::StringBuilderUTF8> sb) const
 {
 /*	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
@@ -38,7 +38,7 @@ UOSInt Crypto::Cert::X509PKCS12::GetCertCount()
 	return 0;
 }
 
-Bool Crypto::Cert::X509PKCS12::GetCertName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Crypto::Cert::X509PKCS12::GetCertName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	return false;
 }
@@ -48,19 +48,19 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::X509PKCS12::GetNewCert(UOSInt ind
 	return 0;
 }
 
-Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PKCS12::IsValid(NotNullPtr<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PKCS12::IsValid(NN<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const
 {
 	return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
 }
 
-NotNullPtr<Net::ASN1Data> Crypto::Cert::X509PKCS12::Clone() const
+NN<Net::ASN1Data> Crypto::Cert::X509PKCS12::Clone() const
 {
-	NotNullPtr<Crypto::Cert::X509PKCS12> asn1;
+	NN<Crypto::Cert::X509PKCS12> asn1;
 	NEW_CLASSNN(asn1, Crypto::Cert::X509PKCS12(this->GetSourceNameObj(), this->buff));
 	return asn1;
 }
 
-void Crypto::Cert::X509PKCS12::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Crypto::Cert::X509PKCS12::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	if (IsPFX(this->buff.Ptr(), this->buff.PtrEnd(), "1"))
 	{
@@ -68,9 +68,9 @@ void Crypto::Cert::X509PKCS12::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) 
 	}
 }
 
-NotNullPtr<Net::ASN1Names> Crypto::Cert::X509PKCS12::CreateNames() const
+NN<Net::ASN1Names> Crypto::Cert::X509PKCS12::CreateNames() const
 {
-	NotNullPtr<Net::ASN1Names> names;
+	NN<Net::ASN1Names> names;
 	NEW_CLASSNN(names, Net::ASN1Names());
 	return names->SetPFX();
 }

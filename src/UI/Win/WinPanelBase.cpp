@@ -25,7 +25,7 @@ OSInt __stdcall UI::Win::WinPanelBase::PnlWndProc(void *hWnd, UInt32 msg, UOSInt
 	UI::GUIPanel *pnl = (UI::GUIPanel*)UI::Win::WinCore::MSGetWindowObj((ControlHandle*)hWnd, GWL_USERDATA);
 	if (pnl == 0)
 		return DefWindowProc((HWND)hWnd, msg, wParam, lParam);
-	NotNullPtr<UI::Win::WinPanelBase> me = NotNullPtr<UI::Win::WinPanelBase>::ConvertFrom(pnl->GetBase());
+	NN<UI::Win::WinPanelBase> me = NN<UI::Win::WinPanelBase>::ConvertFrom(pnl->GetBase());
 	UI::GUIControl *ctrl;
 	SCROLLINFO si;
 	Bool upd;
@@ -316,10 +316,10 @@ void UI::Win::WinPanelBase::UpdateScrollBars()
 	}
 }
 
-UI::Win::WinPanelBase::WinPanelBase(NotNullPtr<GUIPanel> master, NotNullPtr<UI::GUICore> ui, ControlHandle *parentHWnd)
+UI::Win::WinPanelBase::WinPanelBase(NN<GUIPanel> master, NN<UI::GUICore> ui, ControlHandle *parentHWnd)
 {
 	this->master = master;
-	this->ui = NotNullPtr<WinCore>::ConvertFrom(ui);
+	this->ui = NN<WinCore>::ConvertFrom(ui);
 	this->minW = 0;
 	this->minH = 0;
 	this->scrollH = false;
@@ -339,10 +339,10 @@ UI::Win::WinPanelBase::WinPanelBase(NotNullPtr<GUIPanel> master, NotNullPtr<UI::
 #endif
 }
 
-UI::Win::WinPanelBase::WinPanelBase(NotNullPtr<GUIPanel> master, NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent)
+UI::Win::WinPanelBase::WinPanelBase(NN<GUIPanel> master, NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent)
 {
 	this->master = master;
-	this->ui = NotNullPtr<WinCore>::ConvertFrom(ui);
+	this->ui = NN<WinCore>::ConvertFrom(ui);
 	this->minW = 0;
 	this->minH = 0;
 	this->scrollH = false;

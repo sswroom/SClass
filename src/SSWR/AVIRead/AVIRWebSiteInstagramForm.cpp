@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnRequestUserClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWebSiteInstagramForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWebSiteInstagramForm>();
+	NN<SSWR::AVIRead::AVIRWebSiteInstagramForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWebSiteInstagramForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnRequestUserClicked(Any
 		MemClear(&chInfo, sizeof(chInfo));
 		Data::ArrayList<Net::WebSite::WebSiteInstagramControl::ItemData*> itemList;
 		Net::WebSite::WebSiteInstagramControl::ItemData *item;
-		NotNullPtr<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
+		NN<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
 		me->ctrl->GetChannelItems(s, 0, &itemList, &chInfo);
 		s->Release();
 		i = 0;
@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnRequestUserClicked(Any
 
 void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnPageClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWebSiteInstagramForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWebSiteInstagramForm>();
+	NN<SSWR::AVIRead::AVIRWebSiteInstagramForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWebSiteInstagramForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtShortCode->GetText(sb);
 	me->lbImageURL->ClearItems();
@@ -64,13 +64,13 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnPageClicked(AnyType us
 	{
 		Data::ArrayListStringNN imageList;
 		Data::ArrayListStringNN videoList;
-		NotNullPtr<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
+		NN<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
 		me->ctrl->GetPageImages(s, &imageList, &videoList);
 		s->Release();
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = imageList.Iterator();
+		Data::ArrayIterator<NN<Text::String>> it = imageList.Iterator();
 		while (it.HasNext())
 		{
-			NotNullPtr<Text::String> s = it.Next();
+			NN<Text::String> s = it.Next();
 			me->lbImageURL->AddItem(s, 0);
 			s->Release();
 		}
@@ -78,14 +78,14 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnPageClicked(AnyType us
 		it = videoList.Iterator();
 		while (it.HasNext())
 		{
-			NotNullPtr<Text::String> s = it.Next();
+			NN<Text::String> s = it.Next();
 			me->lbImageURL->AddItem(s, 0);
 			s->Release();
 		}
 	}
 }
 
-SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Instagram"));
 	this->SetFont(UTF8STRC("MingLiu"), 8.25, false);
@@ -93,7 +93,7 @@ SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(Optional<UI::G
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	Text::CString userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-	NotNullPtr<Text::String> ua = Text::String::New(userAgent);
+	NN<Text::String> ua = Text::String::New(userAgent);
 	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteInstagramControl(core->GetSocketFactory(), this->ssl, core->GetEncFactory(), ua.Ptr()));
 	ua->Release();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

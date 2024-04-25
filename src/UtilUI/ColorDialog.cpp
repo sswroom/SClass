@@ -9,20 +9,20 @@
 
 void __stdcall UtilUI::ColorDialog::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	me->StoreColor();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
 void __stdcall UtilUI::ColorDialog::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
 Bool __stdcall UtilUI::ColorDialog::OnSubDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
 		Math::Size2D<UOSInt> sz;
@@ -51,7 +51,7 @@ Bool __stdcall UtilUI::ColorDialog::OnSubDown(AnyType userObj, Math::Coord2D<OSI
 
 Bool __stdcall UtilUI::ColorDialog::OnSubMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->subDowned)
 	{
 		Math::Size2D<UOSInt> sz;
@@ -78,7 +78,7 @@ Bool __stdcall UtilUI::ColorDialog::OnSubMove(AnyType userObj, Math::Coord2D<OSI
 
 Bool __stdcall UtilUI::ColorDialog::OnSubUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
 		me->pbSub->ReleaseCapture();
@@ -110,7 +110,7 @@ Bool __stdcall UtilUI::ColorDialog::OnSubUp(AnyType userObj, Math::Coord2D<OSInt
 
 Bool __stdcall UtilUI::ColorDialog::OnMainDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
 		me->subDowned = true;
@@ -151,7 +151,7 @@ Bool __stdcall UtilUI::ColorDialog::OnMainDown(AnyType userObj, Math::Coord2D<OS
 
 Bool __stdcall UtilUI::ColorDialog::OnMainMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->subDowned)
 	{
 		Math::Size2D<UOSInt> sz;
@@ -189,7 +189,7 @@ Bool __stdcall UtilUI::ColorDialog::OnMainMove(AnyType userObj, Math::Coord2D<OS
 
 Bool __stdcall UtilUI::ColorDialog::OnMainUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
 		me->pbMain->ReleaseCapture();
@@ -232,7 +232,7 @@ Bool __stdcall UtilUI::ColorDialog::OnMainUp(AnyType userObj, Math::Coord2D<OSIn
 
 void __stdcall UtilUI::ColorDialog::OnRedChange(AnyType userObj, Bool newState)
 {
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (newState)
 	{
 		me->StoreColor();
@@ -244,7 +244,7 @@ void __stdcall UtilUI::ColorDialog::OnRedChange(AnyType userObj, Bool newState)
 
 void __stdcall UtilUI::ColorDialog::OnGreenChange(AnyType userObj, Bool newState)
 {
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (newState)
 	{
 		me->StoreColor();
@@ -255,7 +255,7 @@ void __stdcall UtilUI::ColorDialog::OnGreenChange(AnyType userObj, Bool newState
 
 void __stdcall UtilUI::ColorDialog::OnBlueChange(AnyType userObj, Bool newState)
 {
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (newState)
 	{
 		me->StoreColor();
@@ -266,7 +266,7 @@ void __stdcall UtilUI::ColorDialog::OnBlueChange(AnyType userObj, Bool newState)
 
 void __stdcall UtilUI::ColorDialog::OnYIQYChange(AnyType userObj, Bool newState)
 {
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (newState)
 	{
 		me->StoreColor();
@@ -277,7 +277,7 @@ void __stdcall UtilUI::ColorDialog::OnYIQYChange(AnyType userObj, Bool newState)
 
 void __stdcall UtilUI::ColorDialog::OnYIQIChange(AnyType userObj, Bool newState)
 {
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (newState)
 	{
 		me->StoreColor();
@@ -288,7 +288,7 @@ void __stdcall UtilUI::ColorDialog::OnYIQIChange(AnyType userObj, Bool newState)
 
 void __stdcall UtilUI::ColorDialog::OnYIQQChange(AnyType userObj, Bool newState)
 {
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (newState)
 	{
 		me->StoreColor();
@@ -299,7 +299,7 @@ void __stdcall UtilUI::ColorDialog::OnYIQQChange(AnyType userObj, Bool newState)
 
 void __stdcall UtilUI::ColorDialog::OnHSVHChange(AnyType userObj, Bool newState)
 {
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (newState)
 	{
 		me->StoreColor();
@@ -310,7 +310,7 @@ void __stdcall UtilUI::ColorDialog::OnHSVHChange(AnyType userObj, Bool newState)
 
 void __stdcall UtilUI::ColorDialog::OnHSVSChange(AnyType userObj, Bool newState)
 {
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (newState)
 	{
 		me->StoreColor();
@@ -321,7 +321,7 @@ void __stdcall UtilUI::ColorDialog::OnHSVSChange(AnyType userObj, Bool newState)
 
 void __stdcall UtilUI::ColorDialog::OnHSVVChange(AnyType userObj, Bool newState)
 {
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (newState)
 	{
 		me->StoreColor();
@@ -333,7 +333,7 @@ void __stdcall UtilUI::ColorDialog::OnHSVVChange(AnyType userObj, Bool newState)
 void __stdcall UtilUI::ColorDialog::OnRedTChange(AnyType userObj)
 {
 	UTF8Char sbuff[16];
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->autoTextUpdate)
 		return;
 	me->textUpdating = CT_RED;
@@ -355,7 +355,7 @@ void __stdcall UtilUI::ColorDialog::OnRedTChange(AnyType userObj)
 void __stdcall UtilUI::ColorDialog::OnGreenTChange(AnyType userObj)
 {
 	UTF8Char sbuff[16];
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->autoTextUpdate)
 		return;
 	me->textUpdating = CT_GREEN;
@@ -377,7 +377,7 @@ void __stdcall UtilUI::ColorDialog::OnGreenTChange(AnyType userObj)
 void __stdcall UtilUI::ColorDialog::OnBlueTChange(AnyType userObj)
 {
 	UTF8Char sbuff[16];
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->autoTextUpdate)
 		return;
 	me->textUpdating = CT_BLUE;
@@ -399,7 +399,7 @@ void __stdcall UtilUI::ColorDialog::OnBlueTChange(AnyType userObj)
 void __stdcall UtilUI::ColorDialog::OnYIQYTChange(AnyType userObj)
 {
 	UTF8Char sbuff[16];
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->autoTextUpdate)
 		return;
 	me->textUpdating = CT_YIQY;
@@ -421,7 +421,7 @@ void __stdcall UtilUI::ColorDialog::OnYIQYTChange(AnyType userObj)
 void __stdcall UtilUI::ColorDialog::OnYIQITChange(AnyType userObj)
 {
 	UTF8Char sbuff[16];
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->autoTextUpdate)
 		return;
 	me->textUpdating = CT_YIQI;
@@ -443,7 +443,7 @@ void __stdcall UtilUI::ColorDialog::OnYIQITChange(AnyType userObj)
 void __stdcall UtilUI::ColorDialog::OnYIQQTChange(AnyType userObj)
 {
 	UTF8Char sbuff[16];
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->autoTextUpdate)
 		return;
 	me->textUpdating = CT_YIQQ;
@@ -465,7 +465,7 @@ void __stdcall UtilUI::ColorDialog::OnYIQQTChange(AnyType userObj)
 void __stdcall UtilUI::ColorDialog::OnHSVHTChange(AnyType userObj)
 {
 	UTF8Char sbuff[16];
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->autoTextUpdate)
 		return;
 	me->textUpdating = CT_HSVH;
@@ -487,7 +487,7 @@ void __stdcall UtilUI::ColorDialog::OnHSVHTChange(AnyType userObj)
 void __stdcall UtilUI::ColorDialog::OnHSVSTChange(AnyType userObj)
 {
 	UTF8Char sbuff[16];
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->autoTextUpdate)
 		return;
 	me->textUpdating = CT_HSVS;
@@ -509,7 +509,7 @@ void __stdcall UtilUI::ColorDialog::OnHSVSTChange(AnyType userObj)
 void __stdcall UtilUI::ColorDialog::OnHSVVTChange(AnyType userObj)
 {
 	UTF8Char sbuff[16];
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	if (me->autoTextUpdate)
 		return;
 	me->textUpdating = CT_HSVV;
@@ -531,14 +531,14 @@ void __stdcall UtilUI::ColorDialog::OnHSVVTChange(AnyType userObj)
 void __stdcall UtilUI::ColorDialog::OnAlphaChange(AnyType userObj)
 {
 	UTF8Char sbuff[16];
-	NotNullPtr<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
+	NN<UtilUI::ColorDialog> me = userObj.GetNN<UtilUI::ColorDialog>();
 	me->txtAlpha->GetText(sbuff);
 	me->aVal = Text::StrToDouble(sbuff) / 255.0;
 }
 
 UInt32 __stdcall UtilUI::ColorDialog::GenThread(AnyType userObj)
 {
-	NotNullPtr<UtilUI::ColorDialog::ThreadStat> stat = userObj.GetNN<UtilUI::ColorDialog::ThreadStat>();
+	NN<UtilUI::ColorDialog::ThreadStat> stat = userObj.GetNN<UtilUI::ColorDialog::ThreadStat>();
 	stat->status = 1;
 	stat->me->genEvt->Set();
 	while (true)
@@ -786,7 +786,7 @@ void UtilUI::ColorDialog::GenMainImageInner(UInt8 *imgPtr, UOSInt startIndex, UO
 	Math::Vector3 rgbv2;
 	Math::Vector3 rgbv3;
 
-	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
+	NN<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
 	Double rGammaVal;
 	Double gGammaVal;
 	Double bGammaVal;
@@ -801,12 +801,12 @@ void UtilUI::ColorDialog::GenMainImageInner(UInt8 *imgPtr, UOSInt startIndex, UO
 	Double gMul;
 	Double bMul;
 
-	NotNullPtr<Media::CS::TransferFunc> dispRTran;
-	NotNullPtr<Media::CS::TransferFunc> dispGTran;
-	NotNullPtr<Media::CS::TransferFunc> dispBTran;
-	NotNullPtr<Media::CS::TransferFunc> srcRTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetRTranParam());
-	NotNullPtr<Media::CS::TransferFunc> srcGTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetGTranParam());
-	NotNullPtr<Media::CS::TransferFunc> srcBTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetBTranParam());
+	NN<Media::CS::TransferFunc> dispRTran;
+	NN<Media::CS::TransferFunc> dispGTran;
+	NN<Media::CS::TransferFunc> dispBTran;
+	NN<Media::CS::TransferFunc> srcRTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetRTranParam());
+	NN<Media::CS::TransferFunc> srcGTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetGTranParam());
+	NN<Media::CS::TransferFunc> srcBTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetBTranParam());
 	if (this->colorCorr == CCT_VIDEO)
 	{
 		rGammaVal = rgbParam->MonRGamma;
@@ -987,7 +987,7 @@ void UtilUI::ColorDialog::GenSubImage()
 	UInt8 *imgPtr = this->subImg->data;
 	UOSInt w = this->subImg->info.dispSize.x;
 	UOSInt h = this->subImg->info.dispSize.y;
-	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
+	NN<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
 	Double rGammaVal;
 	Double gGammaVal;
 	Double bGammaVal;
@@ -1002,12 +1002,12 @@ void UtilUI::ColorDialog::GenSubImage()
 	Double gMul;
 	Double bMul;
 
-	NotNullPtr<Media::CS::TransferFunc> dispRTran;
-	NotNullPtr<Media::CS::TransferFunc> dispGTran;
-	NotNullPtr<Media::CS::TransferFunc> dispBTran;
-	NotNullPtr<Media::CS::TransferFunc> srcRTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetRTranParam());
-	NotNullPtr<Media::CS::TransferFunc> srcGTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetGTranParam());
-	NotNullPtr<Media::CS::TransferFunc> srcBTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetBTranParam());
+	NN<Media::CS::TransferFunc> dispRTran;
+	NN<Media::CS::TransferFunc> dispGTran;
+	NN<Media::CS::TransferFunc> dispBTran;
+	NN<Media::CS::TransferFunc> srcRTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetRTranParam());
+	NN<Media::CS::TransferFunc> srcGTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetGTranParam());
+	NN<Media::CS::TransferFunc> srcBTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetBTranParam());
 	if (this->colorCorr == CCT_VIDEO)
 	{
 		rGammaVal = rgbParam->MonRGamma;
@@ -1173,7 +1173,7 @@ void UtilUI::ColorDialog::UpdateColor()
 	Math::Vector3 rgbv3;
 
 	UInt8 c[4];
-	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
+	NN<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
 	Double rGammaVal;
 	Double gGammaVal;
 	Double bGammaVal;
@@ -1188,12 +1188,12 @@ void UtilUI::ColorDialog::UpdateColor()
 	Double gMul;
 	Double bMul;
 
-	NotNullPtr<Media::CS::TransferFunc> dispRTran;
-	NotNullPtr<Media::CS::TransferFunc> dispGTran;
-	NotNullPtr<Media::CS::TransferFunc> dispBTran;
-	NotNullPtr<Media::CS::TransferFunc> srcRTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetRTranParam());
-	NotNullPtr<Media::CS::TransferFunc> srcGTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetGTranParam());
-	NotNullPtr<Media::CS::TransferFunc> srcBTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetBTranParam());
+	NN<Media::CS::TransferFunc> dispRTran;
+	NN<Media::CS::TransferFunc> dispGTran;
+	NN<Media::CS::TransferFunc> dispBTran;
+	NN<Media::CS::TransferFunc> srcRTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetRTranParam());
+	NN<Media::CS::TransferFunc> srcGTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetGTranParam());
+	NN<Media::CS::TransferFunc> srcBTran = Media::CS::TransferFunc::CreateFunc(this->colorProfile->GetBTranParam());
 	if (this->colorCorr == CCT_VIDEO)
 	{
 		rGammaVal = rgbParam->MonRGamma;
@@ -1425,7 +1425,7 @@ void UtilUI::ColorDialog::UpdateColor()
 	srcBTran.Delete();
 }
 
-UtilUI::ColorDialog::ColorDialog(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, Media::ColorManager *colorMgr, NotNullPtr<Media::DrawEngine> eng, ColorCorrType colorCorr, NotNullPtr<const Media::ColorProfile> colorProfile, Media::MonitorMgr *monMgr) : UI::GUIForm(parent, 756, 640, ui)
+UtilUI::ColorDialog::ColorDialog(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, Media::ColorManager *colorMgr, NN<Media::DrawEngine> eng, ColorCorrType colorCorr, NN<const Media::ColorProfile> colorProfile, Media::MonitorMgr *monMgr) : UI::GUIForm(parent, 756, 640, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Color Setting"));
@@ -1778,11 +1778,11 @@ void UtilUI::ColorDialog::OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeigh
 	}
 }
 
-void UtilUI::ColorDialog::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
+void UtilUI::ColorDialog::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void UtilUI::ColorDialog::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void UtilUI::ColorDialog::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	this->UpdateColor();
 	this->GenMainImage();

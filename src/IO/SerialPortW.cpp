@@ -139,7 +139,7 @@ Bool IO::SerialPort::InitStream()
 	return true;
 }
 
-Bool IO::SerialPort::GetAvailablePorts(NotNullPtr<Data::ArrayList<UOSInt>> ports, Data::ArrayList<SerialPortType> *portTypes)
+Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayList<UOSInt>> ports, Data::ArrayList<SerialPortType> *portTypes)
 {
 	IO::Registry *reg;
 	IO::Registry *comreg;

@@ -44,9 +44,9 @@ namespace SSWR
 			AVIRHTTPLog(UOSInt logCnt);
 			virtual ~AVIRHTTPLog();
 
-			virtual void LogRequest(NotNullPtr<Net::WebServer::IWebRequest> req);
+			virtual void LogRequest(NN<Net::WebServer::IWebRequest> req);
 			UOSInt GetNextIndex();
-			void Use(NotNullPtr<Sync::MutexUsage> mutUsage);
+			void Use(NN<Sync::MutexUsage> mutUsage);
 			void GetEntries(Data::ArrayList<LogEntry*> *logs, Data::ArrayList<UOSInt> *logIndex);
 			LogEntry *GetEntry(UOSInt index);
 		};
@@ -54,7 +54,7 @@ namespace SSWR
 		class AVIRHTTPSvrForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 			Net::WebServer::WebListener *svr;
 			IO::LogTool *log;
@@ -67,69 +67,69 @@ namespace SSWR
 			Crypto::Cert::X509File *sslKey;
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 
-			NotNullPtr<UI::GUITabControl> tcMain;
-			NotNullPtr<UI::GUITabPage> tpControl;
-			NotNullPtr<UI::GUITabPage> tpStatus;
-			NotNullPtr<UI::GUITabPage> tpAccess;
-			NotNullPtr<UI::GUITabPage> tpLog;
+			NN<UI::GUITabControl> tcMain;
+			NN<UI::GUITabPage> tpControl;
+			NN<UI::GUITabPage> tpStatus;
+			NN<UI::GUITabPage> tpAccess;
+			NN<UI::GUITabPage> tpLog;
 
-			NotNullPtr<UI::GUIGroupBox> grpParam;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUILabel> lblDocDir;
-			NotNullPtr<UI::GUITextBox> txtDocDir;
-			NotNullPtr<UI::GUILabel> lblLogDir;
-			NotNullPtr<UI::GUITextBox> txtLogDir;
-			NotNullPtr<UI::GUILabel> lblSSL;
-			NotNullPtr<UI::GUICheckBox> chkSSL;
-			NotNullPtr<UI::GUIButton> btnSSLCert;
-			NotNullPtr<UI::GUILabel> lblSSLCert;
-			NotNullPtr<UI::GUILabel> lblWorkerCnt;
-			NotNullPtr<UI::GUITextBox> txtWorkerCnt;
-			NotNullPtr<UI::GUILabel> lblAllowBrowse;
-			NotNullPtr<UI::GUICheckBox> chkAllowBrowse;
-			NotNullPtr<UI::GUILabel> lblAllowProxy;
-			NotNullPtr<UI::GUICheckBox> chkAllowProxy;
-			NotNullPtr<UI::GUILabel> lblCacheFile;
-			NotNullPtr<UI::GUICheckBox> chkCacheFile;
-			NotNullPtr<UI::GUILabel> lblSPKPackageFile;
-			NotNullPtr<UI::GUICheckBox> chkSPKPackageFile;
-			NotNullPtr<UI::GUILabel> lblZIPPackageFile;
-			NotNullPtr<UI::GUICheckBox> chkZIPPackageFile;
-			NotNullPtr<UI::GUILabel> lblSkipLog;
-			NotNullPtr<UI::GUICheckBox> chkSkipLog;
-			NotNullPtr<UI::GUILabel> lblKeepAlive;
-			NotNullPtr<UI::GUIComboBox> cboKeepAlive;
-			NotNullPtr<UI::GUILabel> lblCrossOrigin;
-			NotNullPtr<UI::GUICheckBox> chkCrossOrigin;
-			NotNullPtr<UI::GUILabel> lblDownloadCnt;
-			NotNullPtr<UI::GUICheckBox> chkDownloadCnt;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUIButton> btnStop;
+			NN<UI::GUIGroupBox> grpParam;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUILabel> lblDocDir;
+			NN<UI::GUITextBox> txtDocDir;
+			NN<UI::GUILabel> lblLogDir;
+			NN<UI::GUITextBox> txtLogDir;
+			NN<UI::GUILabel> lblSSL;
+			NN<UI::GUICheckBox> chkSSL;
+			NN<UI::GUIButton> btnSSLCert;
+			NN<UI::GUILabel> lblSSLCert;
+			NN<UI::GUILabel> lblWorkerCnt;
+			NN<UI::GUITextBox> txtWorkerCnt;
+			NN<UI::GUILabel> lblAllowBrowse;
+			NN<UI::GUICheckBox> chkAllowBrowse;
+			NN<UI::GUILabel> lblAllowProxy;
+			NN<UI::GUICheckBox> chkAllowProxy;
+			NN<UI::GUILabel> lblCacheFile;
+			NN<UI::GUICheckBox> chkCacheFile;
+			NN<UI::GUILabel> lblSPKPackageFile;
+			NN<UI::GUICheckBox> chkSPKPackageFile;
+			NN<UI::GUILabel> lblZIPPackageFile;
+			NN<UI::GUICheckBox> chkZIPPackageFile;
+			NN<UI::GUILabel> lblSkipLog;
+			NN<UI::GUICheckBox> chkSkipLog;
+			NN<UI::GUILabel> lblKeepAlive;
+			NN<UI::GUIComboBox> cboKeepAlive;
+			NN<UI::GUILabel> lblCrossOrigin;
+			NN<UI::GUICheckBox> chkCrossOrigin;
+			NN<UI::GUILabel> lblDownloadCnt;
+			NN<UI::GUICheckBox> chkDownloadCnt;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUIButton> btnStop;
 
-			NotNullPtr<UI::GUILabel> lblConnCurr;
-			NotNullPtr<UI::GUITextBox> txtConnCurr;
-			NotNullPtr<UI::GUILabel> lblConnTotal;
-			NotNullPtr<UI::GUITextBox> txtConnTotal;
-			NotNullPtr<UI::GUILabel> lblDataRateR;
-			NotNullPtr<UI::GUITextBox> txtDataRateR;
-			NotNullPtr<UI::GUILabel> lblDataRateW;
-			NotNullPtr<UI::GUITextBox> txtDataRateW;
-			NotNullPtr<UI::GUILabel> lblDataTotalR;
-			NotNullPtr<UI::GUITextBox> txtDataTotalR;
-			NotNullPtr<UI::GUILabel> lblDataTotalW;
-			NotNullPtr<UI::GUITextBox> txtDataTotalW;
-			NotNullPtr<UI::GUILabel> lblReqRate;
-			NotNullPtr<UI::GUITextBox> txtReqRate;
-			NotNullPtr<UI::GUILabel> lblReqTotal;
-			NotNullPtr<UI::GUITextBox> txtReqTotal;
+			NN<UI::GUILabel> lblConnCurr;
+			NN<UI::GUITextBox> txtConnCurr;
+			NN<UI::GUILabel> lblConnTotal;
+			NN<UI::GUITextBox> txtConnTotal;
+			NN<UI::GUILabel> lblDataRateR;
+			NN<UI::GUITextBox> txtDataRateR;
+			NN<UI::GUILabel> lblDataRateW;
+			NN<UI::GUITextBox> txtDataRateW;
+			NN<UI::GUILabel> lblDataTotalR;
+			NN<UI::GUITextBox> txtDataTotalR;
+			NN<UI::GUILabel> lblDataTotalW;
+			NN<UI::GUITextBox> txtDataTotalW;
+			NN<UI::GUILabel> lblReqRate;
+			NN<UI::GUITextBox> txtReqRate;
+			NN<UI::GUILabel> lblReqTotal;
+			NN<UI::GUITextBox> txtReqTotal;
 
-			NotNullPtr<UI::GUIListBox> lbAccess;
-			NotNullPtr<UI::GUIHSplitter> hspAccess;
-			NotNullPtr<UI::GUITextBox> txtAccess;
+			NN<UI::GUIListBox> lbAccess;
+			NN<UI::GUIHSplitter> hspAccess;
+			NN<UI::GUITextBox> txtAccess;
 
-			NotNullPtr<UI::GUIListBox> lbLog;
-			NotNullPtr<UI::GUITextBox> txtLog;
+			NN<UI::GUIListBox> lbLog;
+			NN<UI::GUITextBox> txtLog;
 
 		private:
 			static void __stdcall OnStartClick(AnyType userObj);
@@ -140,7 +140,7 @@ namespace SSWR
 			static void __stdcall OnSSLCertClicked(AnyType userObj);
 			void ClearCACerts();
 		public:
-			AVIRHTTPSvrForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRHTTPSvrForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHTTPSvrForm();
 
 			virtual void OnMonitorChanged();

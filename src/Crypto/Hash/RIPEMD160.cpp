@@ -26,9 +26,9 @@ UTF8Char *Crypto::Hash::RIPEMD160::GetName(UTF8Char *sbuff) const
 	return Text::StrConcatC(sbuff, UTF8STRC("RIPEMD-160"));
 }
 
-NotNullPtr<Crypto::Hash::IHash> Crypto::Hash::RIPEMD160::Clone() const
+NN<Crypto::Hash::IHash> Crypto::Hash::RIPEMD160::Clone() const
 {
-	NotNullPtr<Crypto::Hash::RIPEMD160> rmd160;
+	NN<Crypto::Hash::RIPEMD160> rmd160;
 	NEW_CLASSNN(rmd160, Crypto::Hash::RIPEMD160());
 	rmd160->msgLeng = this->msgLeng;
 	rmd160->h0 = this->h0;

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/StringLogFile.h"
 
-IO::StringLogFile::StringLogFile(NotNullPtr<Text::String> sourceName) : IO::LogFile(sourceName)
+IO::StringLogFile::StringLogFile(NN<Text::String> sourceName) : IO::LogFile(sourceName)
 {
 }
 
@@ -23,7 +23,7 @@ UOSInt IO::StringLogFile::GetCount(IO::LogHandler::LogLevel logLevel) const
 	return this->items.GetCount();
 }
 
-Bool IO::StringLogFile::GetLogMessage(IO::LogHandler::LogLevel logLevel, UOSInt index, Data::Timestamp *ts, NotNullPtr<Text::StringBuilderUTF8> sb, Text::LineBreakType lineBreak) const
+Bool IO::StringLogFile::GetLogMessage(IO::LogHandler::LogLevel logLevel, UOSInt index, Data::Timestamp *ts, NN<Text::StringBuilderUTF8> sb, Text::LineBreakType lineBreak) const
 {
 	LogItem *item = this->items.GetItem(index);
 	if (item == 0)
@@ -31,7 +31,7 @@ Bool IO::StringLogFile::GetLogMessage(IO::LogHandler::LogLevel logLevel, UOSInt 
 		return false;
 	}
 	*ts = item->ts;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (item->message.SetTo(s))
 	{
 		sb->Append(s);
@@ -39,14 +39,14 @@ Bool IO::StringLogFile::GetLogMessage(IO::LogHandler::LogLevel logLevel, UOSInt 
 	return true;
 }
 
-Bool IO::StringLogFile::GetLogDescription(IO::LogHandler::LogLevel logLevel, UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb) const
+Bool IO::StringLogFile::GetLogDescription(IO::LogHandler::LogLevel logLevel, UOSInt index, NN<Text::StringBuilderUTF8> sb) const
 {
 	LogItem *item = this->items.GetItem(index);
 	if (item == 0)
 	{
 		return false;
 	}
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (item->desc.SetTo(s))
 	{
 		sb->Append(s);

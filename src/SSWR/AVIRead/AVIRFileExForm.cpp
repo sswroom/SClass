@@ -8,7 +8,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRFileExForm::OnSrcChanged(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFileExForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileExForm>();
+	NN<SSWR::AVIRead::AVIRFileExForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileExForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt64 fileSize;
 	IO::Path::PathType pt;
@@ -30,9 +30,9 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnSrcChanged(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRFileExForm::OnSrcClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFileExForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileExForm>();
+	NN<SSWR::AVIRead::AVIRFileExForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileExForm>();
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<UI::GUIFileDialog> ofd = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"FileExSrc", false);
+	NN<UI::GUIFileDialog> ofd = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"FileExSrc", false);
 	me->txtSrc->GetText(sb);
 	ofd->SetFileName(sb.ToCString());
 	if (ofd->ShowDialog(me->GetHandle()))
@@ -44,9 +44,9 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnSrcClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRFileExForm::OnDestClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFileExForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileExForm>();
+	NN<SSWR::AVIRead::AVIRFileExForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileExForm>();
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<UI::GUIFileDialog> ofd = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"FileExDest", true);
+	NN<UI::GUIFileDialog> ofd = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"FileExDest", true);
 	me->txtDest->GetText(sb);
 	ofd->SetFileName(sb.ToCString());
 	if (ofd->ShowDialog(me->GetHandle()))
@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnDestClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFileExForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileExForm>();
+	NN<SSWR::AVIRead::AVIRFileExForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileExForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt64 startOfst;
 	UInt64 endOfst;
@@ -132,13 +132,13 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(AnyType userObj)
 	DEL_CLASS(srcFS);
 }
 
-void __stdcall SSWR::AVIRead::AVIRFileExForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRFileExForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFileExForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileExForm>();
+	NN<SSWR::AVIRead::AVIRFileExForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileExForm>();
 	me->txtSrc->SetText(files[0]->ToCString());
 }
 
-SSWR::AVIRead::AVIRFileExForm::AVIRFileExForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 156, ui)
+SSWR::AVIRead::AVIRFileExForm::AVIRFileExForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 156, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("File Extractor"));

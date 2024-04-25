@@ -8,10 +8,10 @@
 
 Data::VariItem *DB::SortableDBReader::GetItem(UOSInt colIndex)
 {
-	NotNullPtr<Data::VariObject> obj;
+	NN<Data::VariObject> obj;
 	if (!this->objList.GetItem(this->currIndex).SetTo(obj))
 		return 0;
-	NotNullPtr<DB::ColDef> col;
+	NN<DB::ColDef> col;
 	if (!this->cols.GetItem(colIndex).SetTo(col))
 		return 0;
 	return obj->GetItem(col->GetColName()->v);
@@ -23,10 +23,10 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 	UOSInt i;
 	UOSInt j;
 	DB::ColDef colDef(CSTR_NULL);
-	NotNullPtr<Data::VariObject> obj;
+	NN<Data::VariObject> obj;
 	if (colNames == 0 || colNames->GetCount() == 0)
 	{
-		NotNullPtr<DB::DBReader> r;
+		NN<DB::DBReader> r;
 		if (!db->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			return;
@@ -65,7 +65,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 		j = colNames->GetCount();
 		while (i < j)
 		{
-			NotNullPtr<Text::String> colName;
+			NN<Text::String> colName;
 			if (colNames->GetItem(i).SetTo(colName) && dbColNames.SortedIndexOf(colName) < 0)
 			{
 				dbColNames.SortedInsert(colName);
@@ -80,7 +80,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 			j = condColNames.GetCount();
 			while (i < j)
 			{
-				NotNullPtr<Text::String> colName;
+				NN<Text::String> colName;
 				if (condColNames.GetItem(i).SetTo(colName) && dbColNames.SortedIndexOf(colName) < 0)
 				{
 					dbColNames.SortedInsert(colName);
@@ -88,7 +88,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 				i++;
 			}
 		}
-		NotNullPtr<DB::DBReader> r;
+		NN<DB::DBReader> r;
 		if (!db->QueryTableData(schemaName, tableName, &dbColNames, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			return;
@@ -122,7 +122,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 		db->CloseReader(r);
 
 		DB::ColDef *col;
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = colNames->Iterator();
+		Data::ArrayIterator<NN<Text::String>> it = colNames->Iterator();
 		while (it.HasNext())
 		{
 			col = tmpCols.GetNN(it.Next());
@@ -133,7 +133,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 			i++;
 		}
 
-		NotNullPtr<const Data::ArrayList<DB::ColDef *>> colList = tmpCols.GetValues();
+		NN<const Data::ArrayList<DB::ColDef *>> colList = tmpCols.GetValues();
 		i = colList->GetCount();
 		while (i-- > 0)
 		{
@@ -145,7 +145,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 	if (ordering.leng > 0)
 	{
 		Data::FieldComparator comparator(ordering);
-		Data::Sort::ArtificialQuickSort::Sort<NotNullPtr<Data::VariObject>>(&this->objList, comparator);
+		Data::Sort::ArtificialQuickSort::Sort<NN<Data::VariObject>>(&this->objList, comparator);
 	}
 	if (dataOfst > 0)
 	{
@@ -319,7 +319,7 @@ WChar *DB::SortableDBReader::GetStr(UOSInt colIndex, WChar *buff)
 	}
 	return 0;
 }
-Bool DB::SortableDBReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool DB::SortableDBReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	Data::VariItem *item = this->GetItem(colIndex);
 	if (item == 0)
@@ -446,7 +446,7 @@ Optional<Math::Geometry::Vector2D> DB::SortableDBReader::GetVector(UOSInt colInd
 	return 0;
 }
 
-Bool DB::SortableDBReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
+Bool DB::SortableDBReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 {
 	Data::VariItem *item = this->GetItem(colIndex);
 	if (item && item->GetItemType() == Data::VariItem::ItemType::UUID)
@@ -457,7 +457,7 @@ Bool DB::SortableDBReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
 	return false;
 }
 
-Bool DB::SortableDBReader::GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item)
+Bool DB::SortableDBReader::GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
 {
 	Data::VariItem *dataItem = this->GetItem(colIndex);
 	if (dataItem)
@@ -480,10 +480,10 @@ Bool DB::SortableDBReader::IsNull(UOSInt colIndex)
 
 UTF8Char *DB::SortableDBReader::GetName(UOSInt colIndex, UTF8Char *buff)
 {
-	NotNullPtr<DB::ColDef> col;
+	NN<DB::ColDef> col;
 	if (this->cols.GetItem(colIndex).SetTo(col))
 	{
-		NotNullPtr<Text::String> colName = col->GetColName();
+		NN<Text::String> colName = col->GetColName();
 		return Text::StrConcatC(buff, colName->v, colName->leng);
 	}
 	return 0;
@@ -491,7 +491,7 @@ UTF8Char *DB::SortableDBReader::GetName(UOSInt colIndex, UTF8Char *buff)
 
 DB::DBUtil::ColType DB::SortableDBReader::GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
-	NotNullPtr<DB::ColDef> col;
+	NN<DB::ColDef> col;
 	if (this->cols.GetItem(colIndex).SetTo(col))
 	{
 		colSize.Set(col->GetColSize());
@@ -500,9 +500,9 @@ DB::DBUtil::ColType DB::SortableDBReader::GetColType(UOSInt colIndex, OptOut<UOS
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool DB::SortableDBReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool DB::SortableDBReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
-	NotNullPtr<DB::ColDef> c;
+	NN<DB::ColDef> c;
 	if (!this->cols.GetItem(colIndex).SetTo(c))
 	{
 		return false;

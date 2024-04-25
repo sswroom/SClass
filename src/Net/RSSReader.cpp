@@ -5,7 +5,7 @@
 
 UInt32 __stdcall Net::RSSReader::RSSThread(AnyType userObj)
 {
-	NotNullPtr<Net::RSSReader> me = userObj.GetNN<Net::RSSReader>();
+	NN<Net::RSSReader> me = userObj.GetNN<Net::RSSReader>();
 	Net::RSS *rss;
 	RSSStatus *status;
 	Data::DateTime *dt;
@@ -88,7 +88,7 @@ UInt32 __stdcall Net::RSSReader::RSSThread(AnyType userObj)
 	return false;
 }
 
-Net::RSSReader::RSSReader(Text::CString url, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt32 refreshSecond, Net::RSSHandler *hdlr, Data::Duration timeout, NotNullPtr<IO::LogTool> log)
+Net::RSSReader::RSSReader(Text::CString url, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt32 refreshSecond, Net::RSSHandler *hdlr, Data::Duration timeout, NN<IO::LogTool> log)
 {
 	this->url = Text::String::New(url);
 	this->timeout = timeout;

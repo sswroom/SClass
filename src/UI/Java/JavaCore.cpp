@@ -98,9 +98,9 @@ void UI::Java::JavaCore::Exit()
 	this->waitEvt.Set();
 }
 
-NotNullPtr<Media::DrawEngine> UI::Java::JavaCore::CreateDrawEngine()
+NN<Media::DrawEngine> UI::Java::JavaCore::CreateDrawEngine()
 {
-//	NotNullPtr<Media::DrawEngine> deng = 0;
+//	NN<Media::DrawEngine> deng = 0;
 //	NEW_CLASS(deng, Media::GTKDrawEngine());
 	return Media::DrawEngineFactory::CreateDrawEngine();
 }
@@ -223,184 +223,184 @@ Bool UI::Java::JavaCore::ShowMsgYesNo(Text::CStringNN message, Text::CStringNN t
 	return UI::Java::JavaMessageDialog::ShowYesNo((JNIEnv*)jniEnv, message, title, ctrl);
 }
 
-NotNullPtr<UI::GUIButton> UI::Java::JavaCore::NewButton(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
+NN<UI::GUIButton> UI::Java::JavaCore::NewButton(NN<GUIClientControl> parent, Text::CStringNN text)
 {
-	NotNullPtr<UI::Java::JavaButton> ctrl;
+	NN<UI::Java::JavaButton> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaButton(*this, parent, text));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUICheckBox> UI::Java::JavaCore::NewCheckBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text, Bool checked)
+NN<UI::GUICheckBox> UI::Java::JavaCore::NewCheckBox(NN<GUIClientControl> parent, Text::CStringNN text, Bool checked)
 {
-	NotNullPtr<UI::Java::JavaCheckBox> ctrl;
+	NN<UI::Java::JavaCheckBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaCheckBox(*this, parent, text, checked));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUICheckedListBox> UI::Java::JavaCore::NewCheckedListBox(NotNullPtr<GUIClientControl> parent)
+NN<UI::GUICheckedListBox> UI::Java::JavaCore::NewCheckedListBox(NN<GUIClientControl> parent)
 {
-	NotNullPtr<UI::Java::JavaCheckedListBox> ctrl;
+	NN<UI::Java::JavaCheckedListBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaCheckedListBox(*this, parent));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIComboBox> UI::Java::JavaCore::NewComboBox(NotNullPtr<GUIClientControl> parent, Bool allowEdit)
+NN<UI::GUIComboBox> UI::Java::JavaCore::NewComboBox(NN<GUIClientControl> parent, Bool allowEdit)
 {
-	NotNullPtr<UI::Java::JavaComboBox> ctrl;
+	NN<UI::Java::JavaComboBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaComboBox(*this, parent, allowEdit));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIDateTimePicker> UI::Java::JavaCore::NewDateTimePicker(NotNullPtr<GUIClientControl> parent, Bool calendarSelect)
+NN<UI::GUIDateTimePicker> UI::Java::JavaCore::NewDateTimePicker(NN<GUIClientControl> parent, Bool calendarSelect)
 {
-	NotNullPtr<UI::Java::JavaDateTimePicker> ctrl;
+	NN<UI::Java::JavaDateTimePicker> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaDateTimePicker(*this, parent));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIGroupBox> UI::Java::JavaCore::NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
+NN<UI::GUIGroupBox> UI::Java::JavaCore::NewGroupBox(NN<GUIClientControl> parent, Text::CStringNN text)
 {
-	NotNullPtr<UI::Java::JavaGroupBox> ctrl;
+	NN<UI::Java::JavaGroupBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaGroupBox(*this, parent, text));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIHScrollBar> UI::Java::JavaCore::NewHScrollBar(NotNullPtr<GUIClientControl> parent, Double width)
+NN<UI::GUIHScrollBar> UI::Java::JavaCore::NewHScrollBar(NN<GUIClientControl> parent, Double width)
 {
-	NotNullPtr<UI::Java::JavaHScrollBar> ctrl;
+	NN<UI::Java::JavaHScrollBar> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaHScrollBar(*this, parent, width));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUILabel> UI::Java::JavaCore::NewLabel(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
+NN<UI::GUILabel> UI::Java::JavaCore::NewLabel(NN<GUIClientControl> parent, Text::CStringNN text)
 {
-	NotNullPtr<UI::Java::JavaLabel> ctrl;
+	NN<UI::Java::JavaLabel> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaLabel(*this, parent, text));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIListBox> UI::Java::JavaCore::NewListBox(NotNullPtr<GUIClientControl> parent, Bool multiSelect)
+NN<UI::GUIListBox> UI::Java::JavaCore::NewListBox(NN<GUIClientControl> parent, Bool multiSelect)
 {
-	NotNullPtr<UI::Java::JavaListBox> ctrl;
+	NN<UI::Java::JavaListBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaListBox(*this, parent, multiSelect));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIPictureBox> UI::Java::JavaCore::NewPictureBox(NotNullPtr<GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize)
+NN<UI::GUIPictureBox> UI::Java::JavaCore::NewPictureBox(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize)
 {
-	NotNullPtr<UI::Java::JavaPictureBox> ctrl;
+	NN<UI::Java::JavaPictureBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaPictureBox(*this, parent, eng, hasBorder, allowResize));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIPictureBoxSimple> UI::Java::JavaCore::NewPictureBoxSimple(NotNullPtr<GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder)
+NN<UI::GUIPictureBoxSimple> UI::Java::JavaCore::NewPictureBoxSimple(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder)
 {
-	NotNullPtr<UI::Java::JavaPictureBoxSimple> ctrl;
+	NN<UI::Java::JavaPictureBoxSimple> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaPictureBoxSimple(*this, parent, eng, hasBorder));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIProgressBar> UI::Java::JavaCore::NewProgressBar(NotNullPtr<GUIClientControl> parent, UInt64 totalCnt)
+NN<UI::GUIProgressBar> UI::Java::JavaCore::NewProgressBar(NN<GUIClientControl> parent, UInt64 totalCnt)
 {
-	NotNullPtr<UI::Java::JavaProgressBar> ctrl;
+	NN<UI::Java::JavaProgressBar> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaProgressBar(*this, parent, totalCnt));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIRadioButton> UI::Java::JavaCore::NewRadioButton(NotNullPtr<GUIClientControl> parent, Text::CStringNN initText, Bool selected)
+NN<UI::GUIRadioButton> UI::Java::JavaCore::NewRadioButton(NN<GUIClientControl> parent, Text::CStringNN initText, Bool selected)
 {
-	NotNullPtr<UI::Java::JavaRadioButton> ctrl;
+	NN<UI::Java::JavaRadioButton> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaRadioButton(*this, parent, initText, selected));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIRealtimeLineChart> UI::Java::JavaCore::NewRealtimeLineChart(NotNullPtr<GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS)
+NN<UI::GUIRealtimeLineChart> UI::Java::JavaCore::NewRealtimeLineChart(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS)
 {
-	NotNullPtr<UI::Java::JavaRealtimeLineChart> ctrl;
+	NN<UI::Java::JavaRealtimeLineChart> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaRealtimeLineChart(*this, parent, eng, lineCnt, sampleCnt, updateIntervalMS));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUITabControl> UI::Java::JavaCore::NewTabControl(NotNullPtr<GUIClientControl> parent)
+NN<UI::GUITabControl> UI::Java::JavaCore::NewTabControl(NN<GUIClientControl> parent)
 {
-	NotNullPtr<UI::Java::JavaTabControl> ctrl;
+	NN<UI::Java::JavaTabControl> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaTabControl(*this, parent));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUITextBox> UI::Java::JavaCore::NewTextBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN initText)
+NN<UI::GUITextBox> UI::Java::JavaCore::NewTextBox(NN<GUIClientControl> parent, Text::CStringNN initText)
 {
-	NotNullPtr<UI::Java::JavaTextBox> ctrl;
+	NN<UI::Java::JavaTextBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaTextBox(*this, parent, initText, false));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUITextBox> UI::Java::JavaCore::NewTextBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN initText, Bool multiLine)
+NN<UI::GUITextBox> UI::Java::JavaCore::NewTextBox(NN<GUIClientControl> parent, Text::CStringNN initText, Bool multiLine)
 {
-	NotNullPtr<UI::Java::JavaTextBox> ctrl;
+	NN<UI::Java::JavaTextBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaTextBox(*this, parent, initText, multiLine));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUITrackBar> UI::Java::JavaCore::NewTrackBar(NotNullPtr<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal)
+NN<UI::GUITrackBar> UI::Java::JavaCore::NewTrackBar(NN<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal)
 {
-	NotNullPtr<UI::Java::JavaTrackBar> ctrl;
+	NN<UI::Java::JavaTrackBar> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaTrackBar(*this, parent, minVal, maxVal, currVal));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIHSplitter> UI::Java::JavaCore::NewHSplitter(NotNullPtr<GUIClientControl> parent, Int32 width, Bool isRight)
+NN<UI::GUIHSplitter> UI::Java::JavaCore::NewHSplitter(NN<GUIClientControl> parent, Int32 width, Bool isRight)
 {
-	NotNullPtr<UI::Java::JavaHSplitter> ctrl;
+	NN<UI::Java::JavaHSplitter> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaHSplitter(*this, parent, width, isRight));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIVSplitter> UI::Java::JavaCore::NewVSplitter(NotNullPtr<GUIClientControl> parent, Int32 height, Bool isBottom)
+NN<UI::GUIVSplitter> UI::Java::JavaCore::NewVSplitter(NN<GUIClientControl> parent, Int32 height, Bool isBottom)
 {
-	NotNullPtr<UI::Java::JavaVSplitter> ctrl;
+	NN<UI::Java::JavaVSplitter> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaVSplitter(*this, parent, height, isBottom));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIFileDialog> UI::Java::JavaCore::NewFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave)
+NN<UI::GUIFileDialog> UI::Java::JavaCore::NewFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave)
 {
-	NotNullPtr<UI::Java::JavaFileDialog> ctrl;
+	NN<UI::Java::JavaFileDialog> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaFileDialog(compName, appName, dialogName, isSave));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIFolderDialog> UI::Java::JavaCore::NewFolderDialog()
+NN<UI::GUIFolderDialog> UI::Java::JavaCore::NewFolderDialog()
 {
-	NotNullPtr<UI::Java::JavaFolderDialog> ctrl;
+	NN<UI::Java::JavaFolderDialog> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaFolderDialog());
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIFontDialog> UI::Java::JavaCore::NewFontDialog(Optional<Text::String> fontName, Double fontSizePt, Bool isBold, Bool isItalic)
+NN<UI::GUIFontDialog> UI::Java::JavaCore::NewFontDialog(Optional<Text::String> fontName, Double fontSizePt, Bool isBold, Bool isItalic)
 {
-	NotNullPtr<UI::Java::JavaFontDialog> ctrl;
+	NN<UI::Java::JavaFontDialog> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaFontDialog(fontName, fontSizePt, isBold, isItalic));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIFontDialog> UI::Java::JavaCore::NewFontDialog(Text::CString fontName, Double fontSizePt, Bool isBold, Bool isItalic)
+NN<UI::GUIFontDialog> UI::Java::JavaCore::NewFontDialog(Text::CString fontName, Double fontSizePt, Bool isBold, Bool isItalic)
 {
-	NotNullPtr<UI::Java::JavaFontDialog> ctrl;
+	NN<UI::Java::JavaFontDialog> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaFontDialog(fontName, fontSizePt, isBold, isItalic));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIPanelBase> UI::Java::JavaCore::NewPanelBase(NotNullPtr<UI::GUIPanel> master, ControlHandle *parentHWnd)
+NN<UI::GUIPanelBase> UI::Java::JavaCore::NewPanelBase(NN<UI::GUIPanel> master, ControlHandle *parentHWnd)
 {
-	NotNullPtr<UI::Java::JavaPanelBase> ctrl;
+	NN<UI::Java::JavaPanelBase> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaPanelBase(master, *this, parentHWnd));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIPanelBase> UI::Java::JavaCore::NewPanelBase(NotNullPtr<UI::GUIPanel> master, NotNullPtr<UI::GUIClientControl> parent)
+NN<UI::GUIPanelBase> UI::Java::JavaCore::NewPanelBase(NN<UI::GUIPanel> master, NN<UI::GUIClientControl> parent)
 {
-	NotNullPtr<UI::Java::JavaPanelBase> ctrl;
+	NN<UI::Java::JavaPanelBase> ctrl;
 	NEW_CLASSNN(ctrl, UI::Java::JavaPanelBase(master, *this, parent));
 	return ctrl;
 }

@@ -91,7 +91,7 @@ void Win32::WMIQuery::ForceTz(Int8 tzQhr)
 {
 }
 
-void Win32::WMIQuery::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Win32::WMIQuery::GetConnName(NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("WMI:"));
 	sb->AppendW(this->ns);
@@ -141,7 +141,7 @@ Optional<DB::DBReader> Win32::WMIQuery::ExecuteReaderW(const WChar *sqlCmd)
 	if (SUCCEEDED(hr))
 	{
 		this->lastDataError = DE_NO_ERROR;
-		NotNullPtr<Win32::WMIReader> reader;
+		NN<Win32::WMIReader> reader;
 		NEW_CLASSNN(reader, Win32::WMIReader(pEnum));
 		return reader;
 	}
@@ -162,15 +162,15 @@ Optional<DB::DBTransaction> Win32::WMIQuery::BeginTransaction()
 	return 0;
 }
 
-void Win32::WMIQuery::Commit(NotNullPtr<DB::DBTransaction> tran)
+void Win32::WMIQuery::Commit(NN<DB::DBTransaction> tran)
 {
 }
 
-void Win32::WMIQuery::Rollback(NotNullPtr<DB::DBTransaction> tran)
+void Win32::WMIQuery::Rollback(NN<DB::DBTransaction> tran)
 {
 }
 
-UOSInt Win32::WMIQuery::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt Win32::WMIQuery::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -220,13 +220,13 @@ Optional<DB::DBReader> Win32::WMIQuery::QueryTableData(Text::CString schemaName,
 	return this->ExecuteReaderW(wbuff);
 }
 
-void Win32::WMIQuery::CloseReader(NotNullPtr<DB::DBReader> reader)
+void Win32::WMIQuery::CloseReader(NN<DB::DBReader> reader)
 {
 	Win32::WMIReader *r = (Win32::WMIReader*)reader.Ptr();
 	DEL_CLASS(r);
 }
 
-void Win32::WMIQuery::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void Win32::WMIQuery::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 }
 
@@ -245,7 +245,7 @@ UOSInt Win32::WMIQuery::GetNSList(Data::ArrayList<const WChar *> *nsList)
 {
 	UOSInt ret = 0;
 	Win32::WMIQuery *query;
-	NotNullPtr<Win32::WMIReader> reader;
+	NN<Win32::WMIReader> reader;
 	WChar wbuff[256];
 	WChar *wptr = Text::StrConcat(wbuff, L"ROOT\\");
 

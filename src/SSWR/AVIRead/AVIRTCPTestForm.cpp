@@ -10,7 +10,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTCPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPTestForm>();
+	NN<SSWR::AVIRead::AVIRTCPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPTestForm>();
 	if (me->threadCurrCnt > 0)
 	{
 		me->StopThreads();
@@ -66,9 +66,9 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnStartClicked(AnyType userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRTCPTestForm::ProcessThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall SSWR::AVIRead::AVIRTCPTestForm::ProcessThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTCPTestForm> me = thread->GetUserObj().GetNN<SSWR::AVIRead::AVIRTCPTestForm>();
+	NN<SSWR::AVIRead::AVIRTCPTestForm> me = thread->GetUserObj().GetNN<SSWR::AVIRead::AVIRTCPTestForm>();
 	Net::TCPClient *cli = 0;
 //	UInt8 buff[2048];
 //	AnyType reqData;
@@ -117,7 +117,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::ProcessThread(NotNullPtr<Sync::Th
 
 void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTCPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPTestForm>();
+	NN<SSWR::AVIRead::AVIRTCPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPTestForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	sptr = Text::StrUInt32(sbuff, me->connLeftCnt);
@@ -157,7 +157,7 @@ void SSWR::AVIRead::AVIRTCPTestForm::StopThreads()
 	}
 }
 
-SSWR::AVIRead::AVIRTCPTestForm::AVIRTCPTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRTCPTestForm::AVIRTCPTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("TCP Conn Test"));

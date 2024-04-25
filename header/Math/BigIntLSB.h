@@ -55,7 +55,7 @@ namespace Math
 		UTF8Char *ToString(UTF8Char *buff) const;
 		UTF8Char *ToHex(UTF8Char *buff);
 		UTF8Char *ToByteStr(UTF8Char *buff);
-		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
 }
 #endif

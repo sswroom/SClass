@@ -23,40 +23,40 @@ namespace SSWR
 		class AVIRJTT808ServerForm : public UI::GUIForm, public IO::IProtocolHandler::DataListener
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::LogTool log;
 			Net::TCPServer *svr;
 			Net::TCPClientMgr *cliMgr;
 			IO::ProtoHdlr::ProtoJTT808Handler *protoHdlr;
-			NotNullPtr<UI::ListBoxLogger> logger;
+			NN<UI::ListBoxLogger> logger;
 
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpStatus;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUIButton> btnStart;
+			NN<UI::GUITabPage> tpStatus;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUIButton> btnStart;
 
-			NotNullPtr<UI::GUITabPage> tpLog;
-			NotNullPtr<UI::GUIListBox> lbLog;
-			NotNullPtr<UI::GUITextBox> txtLog;
+			NN<UI::GUITabPage> tpLog;
+			NN<UI::GUIListBox> lbLog;
+			NN<UI::GUITextBox> txtLog;
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnLogSelChg(AnyType userObj);
-			static void __stdcall OnClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
-			static void __stdcall OnClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
-			static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
+			static void __stdcall OnClientEvent(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
+			static void __stdcall OnClientData(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
+			static void __stdcall OnClientTimeout(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
 			static void __stdcall OnClientConn(Socket *s, AnyType userObj);
 
 			void ServerStop();
 		public:
-			AVIRJTT808ServerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRJTT808ServerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRJTT808ServerForm();
 
 			virtual void OnMonitorChanged();
 
-			virtual void DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-			virtual void DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize);
+			virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
+			virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize);
 		};
 	}
 }

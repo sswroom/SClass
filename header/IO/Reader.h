@@ -11,11 +11,11 @@ namespace IO
 
 		virtual void Close() = 0;
 		virtual UTF8Char *ReadLine(UTF8Char *buff, UOSInt maxCharCnt) = 0;
-		virtual Bool ReadLine(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt maxCharCnt) = 0;
+		virtual Bool ReadLine(NN<Text::StringBuilderUTF8> sb, UOSInt maxCharCnt) = 0;
 		virtual UTF8Char *GetLastLineBreak(UTF8Char *buff) = 0;
-		virtual Bool GetLastLineBreak(NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
+		virtual Bool GetLastLineBreak(NN<Text::StringBuilderUTF8> sb) = 0;
 		virtual Bool IsLineBreak() = 0;
-		virtual Bool ReadToEnd(NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
+		virtual Bool ReadToEnd(NN<Text::StringBuilderUTF8> sb) = 0;
 	};
 }
 #endif

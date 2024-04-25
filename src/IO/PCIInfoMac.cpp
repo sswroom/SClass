@@ -50,7 +50,7 @@ Text::CString IO::PCIInfo::GetDispName()
 	return this->clsData->dispName;
 }
 
-UOSInt PCIInfo_AppendDevices(NotNullPtr<Data::ArrayList<IO::PCIInfo*>> pciList, const Char *clsName)
+UOSInt PCIInfo_AppendDevices(NN<Data::ArrayList<IO::PCIInfo*>> pciList, const Char *clsName)
 {
 	IO::PCIInfo::ClassData clsData;
 	IO::PCIInfo *pci;
@@ -111,7 +111,7 @@ UOSInt PCIInfo_AppendDevices(NotNullPtr<Data::ArrayList<IO::PCIInfo*>> pciList, 
 	return ret;
 }
 
-UOSInt IO::PCIInfo::GetPCIList(NotNullPtr<Data::ArrayList<PCIInfo*>> pciList)
+UOSInt IO::PCIInfo::GetPCIList(NN<Data::ArrayList<PCIInfo*>> pciList)
 {
 	UOSInt ret = 0;
 	ret += PCIInfo_AppendDevices(pciList, "IOPCIDevice");

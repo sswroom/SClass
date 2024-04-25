@@ -66,7 +66,7 @@ Text::StringBuilderC *Text::StringBuilderC::AppendChar(Char c, UOSInt repeatCnt)
 
 Text::StringBuilderC *Text::StringBuilderC::AppendCSV(const Char **sarr, UOSInt nStr)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UOSInt i;
 	i = 0;
 	while (i < nStr)

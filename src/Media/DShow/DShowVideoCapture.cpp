@@ -109,7 +109,7 @@ Text::CStringNN Media::DShow::DShowVideoCapture::GetFilterName()
 	return CSTR("DShowVideoCapture");
 }
 
-Bool Media::DShow::DShowVideoCapture::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::DShow::DShowVideoCapture::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	if (captureFilter == 0)
 	{
@@ -478,7 +478,7 @@ UOSInt Media::DShow::DShowVideoCapture::GetSupportedFormats(VideoFormat *fmtArr,
 	return outCnt;
 }
 
-void Media::DShow::DShowVideoCapture::GetInfo(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Media::DShow::DShowVideoCapture::GetInfo(NN<Text::StringBuilderUTF8> sb)
 {
 	if (this->baseFilter)
 	{

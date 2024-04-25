@@ -15,19 +15,19 @@ namespace SSWR
 		class AVIRCertTextForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUIPanel> pnlButton;
-			NotNullPtr<UI::GUIPanel> pnlLabel;
-			NotNullPtr<UI::GUILabel> lblEncType;
-			NotNullPtr<UI::GUIComboBox> cboEncType;
-			NotNullPtr<UI::GUILabel> lblText;
-			NotNullPtr<UI::GUITextBox> txtText;
-			NotNullPtr<UI::GUIButton> btnLoad;
+			NN<UI::GUIPanel> pnlButton;
+			NN<UI::GUIPanel> pnlLabel;
+			NN<UI::GUILabel> lblEncType;
+			NN<UI::GUIComboBox> cboEncType;
+			NN<UI::GUILabel> lblText;
+			NN<UI::GUITextBox> txtText;
+			NN<UI::GUIButton> btnLoad;
 
 			static void __stdcall OnLoadClicked(AnyType userObj);
 		public:
-			AVIRCertTextForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRCertTextForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCertTextForm();
 
 			virtual void OnMonitorChanged();

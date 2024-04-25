@@ -9,7 +9,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnStreamClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRStreamLatencyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamLatencyForm>();
+	NN<SSWR::AVIRead::AVIRStreamLatencyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamLatencyForm>();
 	if (me->stm)
 	{
 		me->StopStream();
@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnStreamClicked(AnyType use
 
 void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRStreamLatencyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamLatencyForm>();
+	NN<SSWR::AVIRead::AVIRStreamLatencyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamLatencyForm>();
 	if (me->remoteClosed)
 	{
 		me->remoteClosed = false;
@@ -86,7 +86,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnTimerTick(AnyType userObj
 
 UInt32 __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::RecvThread(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRStreamLatencyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamLatencyForm>();
+	NN<SSWR::AVIRead::AVIRStreamLatencyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamLatencyForm>();
 	UInt8 buff[2060];
 	UOSInt buffSize = 0;
 	UOSInt recvSize;
@@ -170,7 +170,7 @@ void SSWR::AVIRead::AVIRStreamLatencyForm::StopStream()
 	}
 }
 
-SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 200, ui)
+SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 200, ui)
 {
 	this->SetText(CSTR("Stream Latency"));
 	this->SetFont(0, 0, 8.25, false);

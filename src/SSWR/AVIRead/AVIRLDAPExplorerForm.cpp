@@ -4,7 +4,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLDAPExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPExplorerForm>();
+	NN<SSWR::AVIRead::AVIRLDAPExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPExplorerForm>();
 	if (me->cli)
 	{
 		Net::LDAPClient::SearchResultsFree(me->dispResults);
@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(AnyType use
 	Text::StringBuilderUTF8 sb;
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
-	NotNullPtr<Net::SocketFactory> sockf = me->core->GetSocketFactory();
+	NN<Net::SocketFactory> sockf = me->core->GetSocketFactory();
 	me->txtHost->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
@@ -124,7 +124,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(AnyType use
 
 void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnPathSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLDAPExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPExplorerForm>();
+	NN<SSWR::AVIRead::AVIRLDAPExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPExplorerForm>();
 	UOSInt i = me->lbPath->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 	{
@@ -233,7 +233,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnPathSelChg(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnObjectsSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLDAPExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPExplorerForm>();
+	NN<SSWR::AVIRead::AVIRLDAPExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPExplorerForm>();
 	Net::LDAPClient::SearchResObject *obj = (Net::LDAPClient::SearchResObject*)me->lbObjects->GetSelectedItem().p;
 	me->lvValues->ClearItems();
 	if (obj && obj->items)
@@ -259,7 +259,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnObjectsSelChg(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnObjectsDblClk(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLDAPExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPExplorerForm>();
+	NN<SSWR::AVIRead::AVIRLDAPExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPExplorerForm>();
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	UOSInt i = me->lbObjects->GetSelectedIndex();
@@ -281,7 +281,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnObjectsDblClk(AnyType user
 	}
 }
 
-SSWR::AVIRead::AVIRLDAPExplorerForm::AVIRLDAPExplorerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRLDAPExplorerForm::AVIRLDAPExplorerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("LDAP Explorer"));

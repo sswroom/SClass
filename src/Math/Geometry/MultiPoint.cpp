@@ -15,14 +15,14 @@ Math::Geometry::Vector2D::VectorType Math::Geometry::MultiPoint::GetVectorType()
 	return Math::Geometry::Vector2D::VectorType::MultiPoint;
 }
 
-NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::MultiPoint::Clone() const
+NN<Math::Geometry::Vector2D> Math::Geometry::MultiPoint::Clone() const
 {
-	NotNullPtr<Math::Geometry::MultiPoint> newObj;
+	NN<Math::Geometry::MultiPoint> newObj;
 	NEW_CLASSNN(newObj, Math::Geometry::MultiPoint(this->srid));
-	Data::ArrayIterator<NotNullPtr<Point>> it = this->geometries.Iterator();
+	Data::ArrayIterator<NN<Point>> it = this->geometries.Iterator();
 	while (it.HasNext())
 	{
-		newObj->AddGeometry(NotNullPtr<Math::Geometry::Point>::ConvertFrom(it.Next()->Clone()));
+		newObj->AddGeometry(NN<Math::Geometry::Point>::ConvertFrom(it.Next()->Clone()));
 	}
 	return newObj;
 }

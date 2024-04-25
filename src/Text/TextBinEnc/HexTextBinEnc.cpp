@@ -10,7 +10,7 @@ Text::TextBinEnc::HexTextBinEnc::~HexTextBinEnc()
 {
 }
 
-UOSInt Text::TextBinEnc::HexTextBinEnc::EncodeBin(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
+UOSInt Text::TextBinEnc::HexTextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
 {
 	UOSInt size = sb->GetCharCnt();
 	sb->AppendHexBuff(dataBuff, buffSize, ' ', Text::LineBreakType::CRLF);

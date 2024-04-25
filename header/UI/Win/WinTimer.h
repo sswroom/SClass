@@ -9,12 +9,12 @@ namespace UI
 		class WinTimer : public GUITimer
 		{
 		private:
-			NotNullPtr<UI::GUIForm> parent;
+			NN<UI::GUIForm> parent;
 			UOSInt id;
 			UInt32 interval;
 
 		public:
-			WinTimer(NotNullPtr<UI::GUIForm> parent, UOSInt id, UInt32 interval, UI::UIEvent handler, AnyType userObj);
+			WinTimer(NN<UI::GUIForm> parent, UOSInt id, UInt32 interval, UI::UIEvent handler, AnyType userObj);
 			virtual ~WinTimer();
 
 			UOSInt GetId();

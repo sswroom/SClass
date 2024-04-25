@@ -39,7 +39,7 @@ namespace Map
 		virtual Bool IMapXYToScnXY(Double mapRate, const Math::Coord2D<Int32> *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const; // return inScreen
 		virtual Math::Coord2DDbl MapXYToScnXY(Math::Coord2DDbl mapPos) const;
 		virtual Math::Coord2DDbl ScnXYToMapXY(Math::Coord2DDbl scnPos) const;
-		virtual NotNullPtr<Map::MapView> Clone() const;
+		virtual NN<Map::MapView> Clone() const;
 
 		static Double CalcScale(Math::RectAreaDbl bounds, Math::Size2DDbl scnSize, Double dpi, Bool projected);
 	};

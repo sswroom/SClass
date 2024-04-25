@@ -33,7 +33,7 @@ UOSInt Map::ESRI::FileGDBReader::GetFieldIndex(UOSInt colIndex)
 	}
 }
 
-Map::ESRI::FileGDBReader::FileGDBReader(NotNullPtr<IO::StreamData> fd, UInt64 ofst, NotNullPtr<FileGDBTableInfo> tableInfo, Data::ArrayListStringNN *columnNames, UOSInt dataOfst, UOSInt maxCnt, Data::QueryConditions *conditions, UInt32 maxRowSize)
+Map::ESRI::FileGDBReader::FileGDBReader(NN<IO::StreamData> fd, UInt64 ofst, NN<FileGDBTableInfo> tableInfo, Data::ArrayListStringNN *columnNames, UOSInt dataOfst, UOSInt maxCnt, Data::QueryConditions *conditions, UInt32 maxRowSize)
 {
 	this->indexCnt = 0;
 	this->indexNext = 0;
@@ -65,7 +65,7 @@ Map::ESRI::FileGDBReader::FileGDBReader(NotNullPtr<IO::StreamData> fd, UInt64 of
 		while (i < j)
 		{
 			Bool found = false;
-			NotNullPtr<Text::String> name;
+			NN<Text::String> name;
 			if (columnNames->GetItem(i).SetTo(name))
 			{
 				k = this->tableInfo->fields->GetCount();
@@ -388,7 +388,7 @@ WChar *Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, WChar *buff)
 	return 0;
 }
 
-Bool Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData.IsNull())
@@ -431,7 +431,7 @@ Bool Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBu
 		return true;
 	case 7:
 		{
-			NotNullPtr<Math::Geometry::Vector2D> vec;;
+			NN<Math::Geometry::Vector2D> vec;;
 			if (this->GetVector(colIndex).SetTo(vec))
 			{
 				Math::WKTWriter writer;
@@ -505,7 +505,7 @@ Optional<Text::String> Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
 		return Text::String::NewP(sbuff, sptr);
 	case 7:
 		{
-			NotNullPtr<Math::Geometry::Vector2D> vec;
+			NN<Math::Geometry::Vector2D> vec;
 			if (this->GetVector(colIndex).SetTo(vec))
 			{
 				Text::StringBuilderUTF8 sb;
@@ -846,7 +846,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			UOSInt i;
 			UOSInt j;
 			UOSInt k;
-			NotNullPtr<Math::Geometry::LineString> lineString;
+			NN<Math::Geometry::LineString> lineString;
 			UInt32 *ptOfstList;
 			Math::Coord2DDbl *points;
 			Double *zArr;
@@ -1027,7 +1027,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 				MemFree(zArr);
 			MemFreeA(points);
 			MemFree(parts);
-			NotNullPtr<Math::Geometry::MultiPolygon> mpg = pg->CreateMultiPolygon();
+			NN<Math::Geometry::MultiPolygon> mpg = pg->CreateMultiPolygon();
 			DEL_CLASS(pg);
 			return mpg.Ptr();
 		}
@@ -1062,7 +1062,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			UOSInt i;
 			UOSInt j;
 			UOSInt k;
-			NotNullPtr<Math::Geometry::LineString> lineString;
+			NN<Math::Geometry::LineString> lineString;
 			UInt32 *ptOfstList;
 			Math::Coord2DDbl *points;
 			Double *zArr;
@@ -1262,7 +1262,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 				MemFree(zArr);
 			MemFreeA(points);
 			MemFree(parts);
-			NotNullPtr<Math::Geometry::MultiPolygon> mpg = pg->CreateMultiPolygon();
+			NN<Math::Geometry::MultiPolygon> mpg = pg->CreateMultiPolygon();
 			DEL_CLASS(pg);
 			return mpg.Ptr();
 		}
@@ -1271,7 +1271,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 	return 0;
 }
 
-Bool Map::ESRI::FileGDBReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
+Bool Map::ESRI::FileGDBReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData.IsNull())
@@ -1293,7 +1293,7 @@ Bool Map::ESRI::FileGDBReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> u
 	return false;
 }
 
-Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item)
+Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData.IsNull())
@@ -1330,7 +1330,7 @@ Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, NotNullPtr<Data::Var
 	case 4:
 		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], v);
 		{
-			NotNullPtr<Text::String> s = Text::String::New(&this->rowData[ofst], (UOSInt)v);
+			NN<Text::String> s = Text::String::New(&this->rowData[ofst], (UOSInt)v);
 			item->SetStr(s);
 			s->Release();
 			return true;
@@ -1345,7 +1345,7 @@ Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, NotNullPtr<Data::Var
 		return true;
 	case 7:
 		{
-			NotNullPtr<Math::Geometry::Vector2D> vec;
+			NN<Math::Geometry::Vector2D> vec;
 			if (this->GetVector(colIndex).SetTo(vec))
 			{
 				item->SetVectorDirect(vec);
@@ -1363,7 +1363,7 @@ Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, NotNullPtr<Data::Var
 	case 10:
 	case 11:
 		{
-			NotNullPtr<Data::UUID> uuid;
+			NN<Data::UUID> uuid;
 			NEW_CLASSNN(uuid, Data::UUID(&this->rowData[this->fieldOfst[fieldIndex]]));
 			item->SetUUIDDirect(uuid);
 			return true;
@@ -1373,7 +1373,7 @@ Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, NotNullPtr<Data::Var
 	return true;
 }
 
-NotNullPtr<Data::VariItem> Map::ESRI::FileGDBReader::GetNewItem(Text::CStringNN name)
+NN<Data::VariItem> Map::ESRI::FileGDBReader::GetNewItem(Text::CStringNN name)
 {
 	UOSInt colIndex = INVALID_INDEX;
 	UOSInt fieldIndex = INVALID_INDEX;
@@ -1441,10 +1441,10 @@ NotNullPtr<Data::VariItem> Map::ESRI::FileGDBReader::GetNewItem(Text::CStringNN 
 		return Data::VariItem::NewI32(this->objectId);
 	case 7:
 		{
-			NotNullPtr<Math::Geometry::Vector2D> vec;
+			NN<Math::Geometry::Vector2D> vec;
 			if (this->GetVector(colIndex).SetTo(vec))
 			{
-				NotNullPtr<Data::VariItem> item = Data::VariItem::NewVector(vec);
+				NN<Data::VariItem> item = Data::VariItem::NewVector(vec);
 				vec.Delete();
 				return item;
 			}
@@ -1455,7 +1455,7 @@ NotNullPtr<Data::VariItem> Map::ESRI::FileGDBReader::GetNewItem(Text::CStringNN 
 			UOSInt size = this->GetBinarySize(colIndex);
 			UInt8 *binBuff = MemAlloc(UInt8, size);
 			this->GetBinary(colIndex, binBuff);
-			NotNullPtr<Data::VariItem> item = Data::VariItem::NewByteArr(binBuff, size);
+			NN<Data::VariItem> item = Data::VariItem::NewByteArr(binBuff, size);
 			MemFree(binBuff);
 			return item;
 		}
@@ -1533,7 +1533,7 @@ DB::DBUtil::ColType Map::ESRI::FileGDBReader::GetColType(UOSInt colIndex, OptOut
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::ESRI::FileGDBReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Map::ESRI::FileGDBReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
 	Map::ESRI::FileGDBFieldInfo *field = this->tableInfo->fields->GetItem(fieldIndex);
@@ -1704,7 +1704,7 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef>
 	return true;
 }
 
-void Map::ESRI::FileGDBReader::SetIndex(NotNullPtr<IO::StreamData> fd, UOSInt indexCnt)
+void Map::ESRI::FileGDBReader::SetIndex(NN<IO::StreamData> fd, UOSInt indexCnt)
 {
 	if (this->indexBuff.IsNull())
 	{

@@ -48,14 +48,14 @@ namespace Net
 		{
 			ACMEStatus status;
 			AuthorizeType type;
-			NotNullPtr<Text::String> url;
-			NotNullPtr<Text::String> token;
+			NN<Text::String> url;
+			NN<Text::String> token;
 		};
 	private:
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;
 		Optional<Crypto::Cert::X509Key> key;
-		NotNullPtr<Text::String> serverHost;
+		NN<Text::String> serverHost;
 		UInt16 port;
 		Text::String *urlNewNonce;
 		Text::String *urlNewAccount;
@@ -68,16 +68,16 @@ namespace Net
 		Text::String *nonce;
 		Text::String *accountId;
 
-		static Optional<Text::String> JWK(NotNullPtr<Crypto::Cert::X509Key> key, OutParam<Crypto::Token::JWSignature::Algorithm> alg);
-		static Text::String *ProtectedJWK(Text::String *nonce, NotNullPtr<Text::String> url, NotNullPtr<Crypto::Cert::X509Key> key, OutParam<Crypto::Token::JWSignature::Algorithm> alg, Text::String *accountId);
-		static NotNullPtr<Text::String> EncodeJWS(Optional<Net::SSLEngine> ssl, Text::CString protStr, Text::CString data, NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Token::JWSignature::Algorithm alg);
-		static Bool KeyHash(NotNullPtr<Crypto::Cert::X509Key> key, NotNullPtr<Text::StringBuilderUTF8> sb);
-		Net::HTTPClient *ACMEPost(NotNullPtr<Text::String> url, Text::CString data);
+		static Optional<Text::String> JWK(NN<Crypto::Cert::X509Key> key, OutParam<Crypto::Token::JWSignature::Algorithm> alg);
+		static Text::String *ProtectedJWK(Text::String *nonce, NN<Text::String> url, NN<Crypto::Cert::X509Key> key, OutParam<Crypto::Token::JWSignature::Algorithm> alg, Text::String *accountId);
+		static NN<Text::String> EncodeJWS(Optional<Net::SSLEngine> ssl, Text::CString protStr, Text::CString data, NN<Crypto::Cert::X509Key> key, Crypto::Token::JWSignature::Algorithm alg);
+		static Bool KeyHash(NN<Crypto::Cert::X509Key> key, NN<Text::StringBuilderUTF8> sb);
+		Net::HTTPClient *ACMEPost(NN<Text::String> url, Text::CString data);
 		Order *OrderParse(const UInt8 *buff, UOSInt buffSize);
 		Challenge *ChallengeJSON(Text::JSONBase *json);
 		Challenge *ChallengeParse(const UInt8 *buff, UOSInt buffSize);
 	public:
-		ACMEConn(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN serverHost, UInt16 port);
+		ACMEConn(NN<Net::SocketFactory> sockf, Text::CStringNN serverHost, UInt16 port);
 		~ACMEConn();
 
 		Bool IsError();
@@ -90,13 +90,13 @@ namespace Net
 		Bool AccountRetr();
 
 		Order *OrderNew(const UTF8Char *domainNames, UOSInt namesLen); //comma seperated
-		Challenge *OrderAuthorize(NotNullPtr<Text::String> authorizeURL, AuthorizeType authType);
+		Challenge *OrderAuthorize(NN<Text::String> authorizeURL, AuthorizeType authType);
 		Order *OrderGetStatus(const UTF8Char *orderURL);
 		Order *OrderFinalize(const UTF8Char *finalizeURL, Crypto::Cert::X509CertReq *csr);
 		void OrderFree(Order *order);
 
-		Challenge *ChallengeBegin(NotNullPtr<Text::String> challURL);
-		Challenge *ChallengeGetStatus(NotNullPtr<Text::String> challURL);
+		Challenge *ChallengeBegin(NN<Text::String> challURL);
+		Challenge *ChallengeGetStatus(NN<Text::String> challURL);
 		void ChallengeFree(Challenge *chall);
 
 		Bool NewKey();
@@ -106,7 +106,7 @@ namespace Net
 
 		static ACMEStatus ACMEStatusFromString(Optional<Text::String> status);
 		static Text::CString AuthorizeTypeGetName(AuthorizeType authType);
-		static AuthorizeType AuthorizeTypeFromString(NotNullPtr<Text::String> s);
+		static AuthorizeType AuthorizeTypeFromString(NN<Text::String> s);
 	};
 }
 #endif

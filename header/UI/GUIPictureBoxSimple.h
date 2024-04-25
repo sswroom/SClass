@@ -11,7 +11,7 @@ namespace UI
 	protected:
 		Bool hasBorder;
 		Bool noBGColor;
-		NotNullPtr<Media::DrawEngine> eng;
+		NN<Media::DrawEngine> eng;
 		Data::ArrayList<MouseEventHandler> mouseDownHdlrs;
 		Data::ArrayList<void *> mouseDownObjs;
 		Data::ArrayList<MouseEventHandler> mouseMoveHdlrs;
@@ -20,7 +20,7 @@ namespace UI
 		Data::ArrayList<void *> mouseUpObjs;
 
 	public:
-		GUIPictureBoxSimple(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder);
+		GUIPictureBoxSimple(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder);
 		virtual ~GUIPictureBoxSimple();
 
 		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;

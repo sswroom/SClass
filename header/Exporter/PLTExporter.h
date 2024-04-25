@@ -11,9 +11,9 @@ namespace Exporter
 		virtual ~PLTExporter();
 
 		virtual Int32 GetName();
-		virtual SupportType IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj);
+		virtual SupportType IsObjectSupported(NN<IO::ParsedObject> pobj);
 		virtual Bool GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff);
-		virtual Bool ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param);
+		virtual Bool ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param);
 
 		static UTF8Char *FixDouble(UTF8Char *sbuff, Double val, const Char *format, Int32 colSize);
 	};

@@ -73,7 +73,7 @@ void Text::UTF8Reader::CheckHeader()
 	}
 }
 
-Text::UTF8Reader::UTF8Reader(NotNullPtr<IO::Stream> stm)
+Text::UTF8Reader::UTF8Reader(NN<IO::Stream> stm)
 {
 	this->stm = stm;
 	this->buffSize = 0;
@@ -318,7 +318,7 @@ UTF32Char Text::UTF8Reader::Read()
 	return 0;
 }
 
-Bool Text::UTF8Reader::ReadLine(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt maxCharCnt)
+Bool Text::UTF8Reader::ReadLine(NN<Text::StringBuilderUTF8> sb, UOSInt maxCharCnt)
 {
 #if defined(VERBOSE)
 	printf("UTF8Reader.RLS: ofst = %d, size = %d\r\n", (UInt32)this->currOfst, (UInt32)this->buffSize);
@@ -641,7 +641,7 @@ UTF8Char *Text::UTF8Reader::GetLastLineBreak(UTF8Char *buff)
 	return buff;
 }
 
-Bool Text::UTF8Reader::GetLastLineBreak(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Text::UTF8Reader::GetLastLineBreak(NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendLB(this->lineBreak);
 	return true;
@@ -652,7 +652,7 @@ Bool Text::UTF8Reader::IsLineBreak()
 	return this->lineBreak != Text::LineBreakType::None;
 }
 
-Bool Text::UTF8Reader::ReadToEnd(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Text::UTF8Reader::ReadToEnd(NN<Text::StringBuilderUTF8> sb)
 {
 	Bool succ = false;
 	while (this->ReadLine(sb, UTF8READER_BUFFSIZE))

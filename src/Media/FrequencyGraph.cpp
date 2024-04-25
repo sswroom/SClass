@@ -10,7 +10,7 @@
 #include "Media/CS/TransferFunc.h"
 #include "Text/MyString.h"
 
-Media::DrawImage *Media::FrequencyGraph::CreateGraph(NotNullPtr<Media::DrawEngine> eng, Media::IAudioSource *audio, UOSInt fftSize, UOSInt timeRes, Math::FFTCalc::WindowType wtype, Double fontSizePx)
+Media::DrawImage *Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngine> eng, Media::IAudioSource *audio, UOSInt fftSize, UOSInt timeRes, Math::FFTCalc::WindowType wtype, Double fontSizePx)
 {
 	if (!audio->SupportSampleRead())
 	{
@@ -19,10 +19,10 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(NotNullPtr<Media::DrawEngin
 
 	UTF8Char sbuff[32];
 	Media::DrawImage *retImg = 0;
-	NotNullPtr<Media::DrawImage> tmpImg;
-	NotNullPtr<Media::DrawPen> p;
-	NotNullPtr<Media::DrawBrush> b;
-	NotNullPtr<Media::DrawFont> f;
+	NN<Media::DrawImage> tmpImg;
+	NN<Media::DrawPen> p;
+	NN<Media::DrawBrush> b;
+	NN<Media::DrawFont> f;
 	Data::ArrayListDbl chartPos;
 	Data::ArrayListStringNN chartLabels;
 	UInt32 ihFontSize = (UInt32)Double2Int32(fontSizePx * 0.5);
@@ -42,8 +42,8 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(NotNullPtr<Media::DrawEngin
 	Double dfftSize = UOSInt2Double(fftSize);
 	Media::AudioFormat fmt;
 	Math::FFTCalc fft(fftSize, wtype);
-	Data::ArrayIterator<NotNullPtr<Text::String>> it;
-	NotNullPtr<Text::String> s;
+	Data::ArrayIterator<NN<Text::String>> it;
+	NN<Text::String> s;
 	audio->GetFormat(fmt);
 	if (fmt.formatId == 1)
 	{
@@ -146,7 +146,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(NotNullPtr<Media::DrawEngin
 		Double maxVal;
 		Double thisMin;
 		Media::CS::TransferParam tranParam(Media::CS::TRANT_sRGB, 2.2);
-		NotNullPtr<Media::CS::TransferFunc> trans = Media::CS::TransferFunc::CreateFunc(tranParam);
+		NN<Media::CS::TransferFunc> trans = Media::CS::TransferFunc::CreateFunc(tranParam);
 		UOSInt sbpl;
 		UInt8 *imgPtr;
 		UInt8 v;

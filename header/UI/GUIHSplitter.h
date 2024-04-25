@@ -7,7 +7,7 @@ namespace UI
 	class GUIHSplitter : public GUIControl
 	{
 	public:
-		GUIHSplitter(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
+		GUIHSplitter(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 		virtual ~GUIHSplitter();
 
 		virtual Text::CStringNN GetObjectClass() const;

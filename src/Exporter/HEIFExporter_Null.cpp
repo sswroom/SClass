@@ -14,7 +14,7 @@ Int32 Exporter::HEIFExporter::GetName()
 	return *(Int32*)"HIEF";
 }
 
-IO::FileExporter::SupportType Exporter::HEIFExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
+IO::FileExporter::SupportType Exporter::HEIFExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
 	return IO::FileExporter::SupportType::NotSupported;
 }
@@ -30,7 +30,7 @@ Bool Exporter::HEIFExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF
 	return false;
 }
 
-Bool Exporter::HEIFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::HEIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	return false;
 }
@@ -40,7 +40,7 @@ UOSInt Exporter::HEIFExporter::GetParamCnt()
 	return 1;
 }
 
-Optional<IO::FileExporter::ParamData> Exporter::HEIFExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
+Optional<IO::FileExporter::ParamData> Exporter::HEIFExporter::CreateParam(NN<IO::ParsedObject> pobj)
 {
 	Int32 *val = MemAlloc(Int32, 1);
 	*val = 100;
@@ -49,14 +49,14 @@ Optional<IO::FileExporter::ParamData> Exporter::HEIFExporter::CreateParam(NotNul
 
 void Exporter::HEIFExporter::DeleteParam(Optional<ParamData> param)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (param.SetTo(para))
 	{
 		MemFree(para.Ptr());
 	}
 }
 
-Bool Exporter::HEIFExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> info)
+Bool Exporter::HEIFExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
 {
 	if (index == 0)
 	{
@@ -70,7 +70,7 @@ Bool Exporter::HEIFExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> in
 
 Bool Exporter::HEIFExporter::SetParamInt32(Optional<ParamData> param, UOSInt index, Int32 val)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
 	{
 		if (val >= 0 && val <= 100)
@@ -85,7 +85,7 @@ Bool Exporter::HEIFExporter::SetParamInt32(Optional<ParamData> param, UOSInt ind
 
 Int32 Exporter::HEIFExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
 	{
 		return *(Int32*)para.Ptr();

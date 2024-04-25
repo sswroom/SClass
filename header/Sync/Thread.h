@@ -9,12 +9,12 @@ namespace Sync
 	class Thread
 	{
 	public:
-		typedef void (__stdcall *ThreadFunc)(NotNullPtr<Thread> thread);
+		typedef void (__stdcall *ThreadFunc)(NN<Thread> thread);
 	private:
 		UInt32 running;
 		UInt8 stopping;
 		UInt8 waiting;
-		NotNullPtr<Text::String> name;
+		NN<Text::String> name;
 		Sync::Event evt;
 		ThreadFunc func;
 		AnyType userObj;

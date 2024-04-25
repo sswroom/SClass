@@ -17,7 +17,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey)
+Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -37,7 +37,7 @@ Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NotNullPtr<Net::SocketFactory> 
 	}
 }
 
-Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey)
+Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -149,13 +149,13 @@ UInt32 Map::GoogleMap::GoogleStaticMap::Scale2Level(UInt32 scale)
 
 UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double lon, UInt32 scale, Math::Size2D<UOSInt> imgSize, Text::CString lang, Int32 format, Double marker_lat, Double marker_lon)
 {
-	NotNullPtr<Net::HTTPClient> cli;
+	NN<Net::HTTPClient> cli;
 	UTF8Char url[512];
 	UTF8Char *sptr;
 	UTF8Char *urlStart;
 	UOSInt retSize = 0;
 	UOSInt thisSize;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	urlStart = sptr = Text::StrConcatC(url, UTF8STRC("http://maps.google.com"));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/maps/api/staticmap?format="));
 	if (format == 1)

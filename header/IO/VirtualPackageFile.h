@@ -42,7 +42,7 @@ namespace IO
 			UInt8 checkBytes[32];
 		};
 
-		NotNullPtr<Text::String> name;
+		NN<Text::String> name;
 		IO::StreamData *fullFd;
 		UInt64 fileOfst;
 		UInt64 dataLength;
@@ -79,34 +79,34 @@ namespace IO
 		Data::FastMap<Int32, const UTF8Char *> infoMap;
 		Optional<PackageFile> parent;
 
-		void ReusePackFileItem(NotNullPtr<IO::PackFileItem> item);
-		VirtualPackageFile(NotNullPtr<Text::String> fileName);
+		void ReusePackFileItem(NN<IO::PackFileItem> item);
+		VirtualPackageFile(NN<Text::String> fileName);
 		VirtualPackageFile(Text::CStringNN fileName);
 
 		virtual Optional<const PackFileItem> GetItemByName(Text::CStringNN name) const = 0;
-		virtual void PutItem(NotNullPtr<Text::String> name, NotNullPtr<PackFileItem> item) = 0;
-		virtual void RemoveItem(NotNullPtr<Text::String> name) = 0;
+		virtual void PutItem(NN<Text::String> name, NN<PackFileItem> item) = 0;
+		virtual void RemoveItem(NN<Text::String> name) = 0;
 	public:
 		virtual ~VirtualPackageFile();
 
-		Bool AddData(NotNullPtr<StreamData> fd, UInt64 ofst, UInt64 dataLength, PackFileItem::HeaderType headerType, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
+		Bool AddData(NN<StreamData> fd, UInt64 ofst, UInt64 dataLength, PackFileItem::HeaderType headerType, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
 		Bool AddObject(IO::ParsedObject *pobj, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
-		Bool AddCompData(NotNullPtr<StreamData> fd, UInt64 ofst, UInt64 dataLength, PackFileItem::HeaderType headerType, PackFileItem::CompressInfo *compInfo, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
-		Bool AddPack(NotNullPtr<IO::PackageFile> pkg, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
-		Bool AddOrReplaceData(NotNullPtr<StreamData> fd, UInt64 ofst, UInt64 dataLength, PackFileItem::HeaderType headerType, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
+		Bool AddCompData(NN<StreamData> fd, UInt64 ofst, UInt64 dataLength, PackFileItem::HeaderType headerType, PackFileItem::CompressInfo *compInfo, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
+		Bool AddPack(NN<IO::PackageFile> pkg, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
+		Bool AddOrReplaceData(NN<StreamData> fd, UInt64 ofst, UInt64 dataLength, PackFileItem::HeaderType headerType, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
 		Bool AddOrReplaceObject(IO::ParsedObject *pobj, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
-		Bool AddOrReplaceCompData(NotNullPtr<StreamData> fd, UInt64 ofst, UInt64 dataLength, PackFileItem::HeaderType headerType, PackFileItem::CompressInfo *compInfo, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
-		Bool AddOrReplacePack(NotNullPtr<IO::PackageFile> pkg, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
+		Bool AddOrReplaceCompData(NN<StreamData> fd, UInt64 ofst, UInt64 dataLength, PackFileItem::HeaderType headerType, PackFileItem::CompressInfo *compInfo, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
+		Bool AddOrReplacePack(NN<IO::PackageFile> pkg, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr);
 		Optional<IO::PackageFile> GetPackFile(Text::CStringNN name) const;
-		Bool MergePackage(NotNullPtr<IO::PackageFile> pkg);
+		Bool MergePackage(NN<IO::PackageFile> pkg);
 
 		Optional<const PackFileItem> GetPackFileItem(const UTF8Char *name) const;
 		Optional<const PackFileItem> GetPackFileItem(UOSInt index) const;
-		PackObjectType GetPItemType(NotNullPtr<const PackFileItem> itemObj) const;
-		UInt64 GetPItemDataOfst(NotNullPtr<const PackFileItem> itemObj) const;
-		Optional<IO::StreamData> GetPItemStmDataNew(NotNullPtr<const PackFileItem> itemObj) const;
-		Optional<IO::PackageFile> GetPItemPack(NotNullPtr<const PackFileItem> itemObj, OutParam<Bool> needRelease) const;
-		Data::ArrayIterator<NotNullPtr<PackFileItem>> PackFileIterator() const;
+		PackObjectType GetPItemType(NN<const PackFileItem> itemObj) const;
+		UInt64 GetPItemDataOfst(NN<const PackFileItem> itemObj) const;
+		Optional<IO::StreamData> GetPItemStmDataNew(NN<const PackFileItem> itemObj) const;
+		Optional<IO::PackageFile> GetPItemPack(NN<const PackFileItem> itemObj, OutParam<Bool> needRelease) const;
+		Data::ArrayIterator<NN<PackFileItem>> PackFileIterator() const;
 
 		virtual UOSInt GetCount() const;
 		virtual PackObjectType GetItemType(UOSInt index) const;
@@ -137,7 +137,7 @@ namespace IO
 		virtual void SetParent(Optional<IO::PackageFile> pkg);
 
 		void SetInfo(InfoType infoType, const UTF8Char *val);
-		void GetInfoText(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		void GetInfoText(NN<Text::StringBuilderUTF8> sb) const;
 		static Text::CString GetInfoTypeName(InfoType infoType);
 	};
 }

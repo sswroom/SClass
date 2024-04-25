@@ -12,12 +12,12 @@ namespace SSWR
 		{
 		private:
 			SSWR::DiscDB::DiscDBEnv *env;
-			NotNullPtr<UI::GUIMainMenu> mnuMain;
+			NN<UI::GUIMainMenu> mnuMain;
 
-			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 
 		public:
-			DiscDBMainForm(NotNullPtr<UI::GUICore> ui, Optional<UI::GUIClientControl> parent, SSWR::DiscDB::DiscDBEnv *env);
+			DiscDBMainForm(NN<UI::GUICore> ui, Optional<UI::GUIClientControl> parent, SSWR::DiscDB::DiscDBEnv *env);
 			virtual ~DiscDBMainForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

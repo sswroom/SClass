@@ -51,7 +51,7 @@ public:
 	{
 	}
 
-	virtual Bool BeginPrint(NotNullPtr<Media::IPrintDocument> doc)
+	virtual Bool BeginPrint(NN<Media::IPrintDocument> doc)
 	{
 		Media::PaperSize psize(Media::PaperSize::PT_A4);
 		this->pageId = 0;
@@ -62,17 +62,17 @@ public:
 		return true;
 	}
 
-	virtual Bool PrintPage(NotNullPtr<Media::DrawImage> printPage) //return has more pages
+	virtual Bool PrintPage(NN<Media::DrawImage> printPage) //return has more pages
 	{
 		UOSInt w = printPage->GetWidth();
 		UOSInt h = printPage->GetHeight();
 		Double hdpi = printPage->GetHDPI();
 		Double vdpi = printPage->GetVDPI();
-		NotNullPtr<Media::DrawPen> p = printPage->NewPenARGB(0xff000000, 1, 0, 0);
+		NN<Media::DrawPen> p = printPage->NewPenARGB(0xff000000, 1, 0, 0);
 		printPage->DrawRect(Math::Coord2DDbl(hdpi * 0.5, vdpi * 0.5), Math::Size2DDbl(UOSInt2Double(w) - hdpi, UOSInt2Double(h) - vdpi), p, 0);
 		printPage->DelPen(p);
 
-		NotNullPtr<Media::IPrintDocument> doc;
+		NN<Media::IPrintDocument> doc;
 		if (this->pageId == 0 && this->doc.SetTo(doc))
 		{
 			this->pageId = 1;
@@ -85,7 +85,7 @@ public:
 		}
 	}
 
-	virtual Bool EndPrint(NotNullPtr<Media::IPrintDocument> doc)
+	virtual Bool EndPrint(NN<Media::IPrintDocument> doc)
 	{
 		return true;
 	}
@@ -111,12 +111,12 @@ UTF8Char *ByteDisp(UTF8Char *sbuff, UInt64 byteSize)
 	}
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Manage::ExceptionRecorder *exHdlr;
 	IO::ConsoleWriter *console;
 
-	NotNullPtr<IO::FileStream> fs;
+	NN<IO::FileStream> fs;
 	Text::UTF8Writer *writer;
 	UInt64 memSize;
 	UTF8Char sbuff[512];
@@ -560,10 +560,10 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		i = printerList.GetCount();
 		if (i > 0)
 		{
-			NotNullPtr<Text::String> s;
+			NN<Text::String> s;
 			Media::Printer *printer;
-			NotNullPtr<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
-			Data::ArrayIterator<NotNullPtr<Text::String>> it = printerList.Iterator();
+			NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
+			Data::ArrayIterator<NN<Text::String>> it = printerList.Iterator();
 			while (it.HasNext())
 			{
 				s = it.Next();
@@ -582,9 +582,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				}
 				else
 				{
-					NotNullPtr<PrintTest> test;
+					NN<PrintTest> test;
 					NEW_CLASSNN(test, PrintTest());
-					NotNullPtr<Media::IPrintDocument> doc;
+					NN<Media::IPrintDocument> doc;
 					if (printer->StartPrint(test, deng).SetTo(doc))
 					{
 						printer->EndPrint(doc);
@@ -686,9 +686,9 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		UInt32 ipv4;
 		UInt8 mac[16];
 		Data::Timestamp ts;
-		NotNullPtr<Net::ConnectionInfo> connInfo;
+		NN<Net::ConnectionInfo> connInfo;
 		Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		NEW_CLASSNN(sockf, Net::OSSocketFactory(true));
 		sockf->GetConnInfoList(connInfoList);
 		console->WriteLine();
@@ -1083,7 +1083,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		IO::SensorManager sensorMgr;
 		Text::CString cstr;
-		NotNullPtr<IO::Sensor> sensor;
+		NN<IO::Sensor> sensor;
 		console->WriteLine();
 		writer->WriteLine();
 		console->WriteLineC(UTF8STRC("Sensors:"));
@@ -1118,10 +1118,10 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				console->WriteLineC(sb.ToString(), sb.GetLength());
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 
-				NotNullPtr<IO::SensorAccelerometer> sensorAcc;
-				NotNullPtr<IO::SensorPressure> sensorPres;
-				NotNullPtr<IO::SensorMagnetometer> sensorMag;
-				NotNullPtr<IO::SensorLight> sensorLight;
+				NN<IO::SensorAccelerometer> sensorAcc;
+				NN<IO::SensorPressure> sensorPres;
+				NN<IO::SensorMagnetometer> sensorMag;
+				NN<IO::SensorLight> sensorLight;
 				switch (sensor->GetSensorType())
 				{
 				case IO::Sensor::SensorType::Accelerometer:

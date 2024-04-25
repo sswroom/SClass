@@ -13,18 +13,18 @@ namespace UI
 			Bool allowEdit;
 
 		public:
-			JavaComboBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool allowEditing);
+			JavaComboBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Bool allowEditing);
 			virtual ~JavaComboBox();
 
 			virtual void SetText(Text::CStringNN text);
 			virtual UTF8Char *GetText(UTF8Char *buff);
-			virtual Bool GetText(NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual Bool GetText(NN<Text::StringBuilderUTF8> sb);
 
 			virtual void BeginUpdate();
 			virtual void EndUpdate();
-			virtual UOSInt AddItem(NotNullPtr<Text::String> itemText, void *itemObj);
+			virtual UOSInt AddItem(NN<Text::String> itemText, void *itemObj);
 			virtual UOSInt AddItem(Text::CStringNN itemText, void *itemObj);
-			virtual UOSInt InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, void *itemObj);
+			virtual UOSInt InsertItem(UOSInt index, NN<Text::String> itemText, void *itemObj);
 			virtual UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj);
 			virtual void *RemoveItem(UOSInt index);
 			virtual void ClearItems();

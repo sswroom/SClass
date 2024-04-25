@@ -14,24 +14,24 @@ namespace SSWR
 		class AVIROSMCacheForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Net::WebServer::WebListener> listener;
-			NotNullPtr<Map::OSM::OSMCacheHandler> hdlr;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Net::WebServer::WebListener> listener;
+			NN<Map::OSM::OSMCacheHandler> hdlr;
 
-			NotNullPtr<UI::GUILabel> lblReqCnt;
-			NotNullPtr<UI::GUITextBox> txtReqCnt;
-			NotNullPtr<UI::GUILabel> lblRemoteSuccCnt;
-			NotNullPtr<UI::GUITextBox> txtRemoteSuccCnt;
-			NotNullPtr<UI::GUILabel> lblRemoteErrCnt;
-			NotNullPtr<UI::GUITextBox> txtRemoteErrCnt;
-			NotNullPtr<UI::GUILabel> lblLocalCnt;
-			NotNullPtr<UI::GUITextBox> txtLocalCnt;
-			NotNullPtr<UI::GUILabel> lblCacheCnt;
-			NotNullPtr<UI::GUITextBox> txtCacheCnt;
+			NN<UI::GUILabel> lblReqCnt;
+			NN<UI::GUITextBox> txtReqCnt;
+			NN<UI::GUILabel> lblRemoteSuccCnt;
+			NN<UI::GUITextBox> txtRemoteSuccCnt;
+			NN<UI::GUILabel> lblRemoteErrCnt;
+			NN<UI::GUITextBox> txtRemoteErrCnt;
+			NN<UI::GUILabel> lblLocalCnt;
+			NN<UI::GUITextBox> txtLocalCnt;
+			NN<UI::GUILabel> lblCacheCnt;
+			NN<UI::GUITextBox> txtCacheCnt;
 
 			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
-			AVIROSMCacheForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Net::WebServer::WebListener> listener, NotNullPtr<Map::OSM::OSMCacheHandler> hdlr);
+			AVIROSMCacheForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Net::WebServer::WebListener> listener, NN<Map::OSM::OSMCacheHandler> hdlr);
 			virtual ~AVIROSMCacheForm();
 
 			virtual void OnMonitorChanged();

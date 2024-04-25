@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRWIADevForm::OnOKClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWIADevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWIADevForm>();
+	NN<SSWR::AVIRead::AVIRWIADevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWIADevForm>();
 /*	if (me->currCapture == 0)
 	{
 		me->ui->ShowMsgOK(L"Please select a device", L"Select Capture Device");
@@ -27,11 +27,11 @@ void __stdcall SSWR::AVIRead::AVIRWIADevForm::OnOKClick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRWIADevForm::OnCancelClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWIADevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWIADevForm>();
+	NN<SSWR::AVIRead::AVIRWIADevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWIADevForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRWIADevForm::AVIRWIADevForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 200, ui)
+SSWR::AVIRead::AVIRWIADevForm::AVIRWIADevForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 200, ui)
 {
 	this->SetText(CSTR("Select WIA Device"));
 	this->SetFont(0, 0, 8.25, false);

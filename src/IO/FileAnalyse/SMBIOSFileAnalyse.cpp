@@ -8,7 +8,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-IO::FileAnalyse::SMBIOSFileAnalyse::SMBIOSFileAnalyse(NotNullPtr<IO::StreamData> fd)
+IO::FileAnalyse::SMBIOSFileAnalyse::SMBIOSFileAnalyse(NN<IO::StreamData> fd)
 {
 	UOSInt leng = (UOSInt)fd->GetDataSize();
 	this->fd = 0;
@@ -68,7 +68,7 @@ UOSInt IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameCount()
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::SMBIOSFileAnalyse::PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
@@ -111,7 +111,7 @@ UOSInt IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<PackInfo> pack;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -1720,7 +1720,7 @@ Text::CString IO::FileAnalyse::SMBIOSFileAnalyse::SlotTypeGetName(UInt8 v)
 	}
 }
 
-void IO::FileAnalyse::SMBIOSFileAnalyse::AddString(NotNullPtr<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name)
+void IO::FileAnalyse::SMBIOSFileAnalyse::AddString(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name)
 {
 	if (ofst >= packBuff[1])
 		return;
@@ -1744,63 +1744,63 @@ void IO::FileAnalyse::SMBIOSFileAnalyse::AddString(NotNullPtr<FrameDetail> frame
 	}
 }
 
-void IO::FileAnalyse::SMBIOSFileAnalyse::AddHex8(NotNullPtr<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name)
+void IO::FileAnalyse::SMBIOSFileAnalyse::AddHex8(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name)
 {
 	if (ofst >= packBuff[1])
 		return;
 	frame->AddHex8(ofst, name, packBuff[ofst]);
 }
 
-void IO::FileAnalyse::SMBIOSFileAnalyse::AddHex16(NotNullPtr<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name)
+void IO::FileAnalyse::SMBIOSFileAnalyse::AddHex16(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name)
 {
 	if (ofst + 1 >= packBuff[1])
 		return;
 	frame->AddHex16(ofst, name, ReadUInt16(&packBuff[ofst]));
 }
 
-void IO::FileAnalyse::SMBIOSFileAnalyse::AddHex32(NotNullPtr<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name)
+void IO::FileAnalyse::SMBIOSFileAnalyse::AddHex32(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name)
 {
 	if (ofst + 3 >= packBuff[1])
 		return;
 	frame->AddHex32(ofst, name, ReadUInt32(&packBuff[ofst]));
 }
 
-void IO::FileAnalyse::SMBIOSFileAnalyse::AddHex64(NotNullPtr<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name)
+void IO::FileAnalyse::SMBIOSFileAnalyse::AddHex64(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name)
 {
 	if (ofst + 7 >= packBuff[1])
 		return;
 	frame->AddHex64(ofst, name, ReadUInt64(&packBuff[ofst]));
 }
 
-void IO::FileAnalyse::SMBIOSFileAnalyse::AddUInt8(NotNullPtr<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name)
+void IO::FileAnalyse::SMBIOSFileAnalyse::AddUInt8(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name)
 {
 	if (ofst >= packBuff[1])
 		return;
 	frame->AddUInt(ofst, 1, name, packBuff[ofst]);
 }
 
-void IO::FileAnalyse::SMBIOSFileAnalyse::AddUInt16(NotNullPtr<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name)
+void IO::FileAnalyse::SMBIOSFileAnalyse::AddUInt16(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name)
 {
 	if (ofst + 1 >= packBuff[1])
 		return;
 	frame->AddUInt(ofst, 2, name, ReadUInt16(&packBuff[ofst]));
 }
 
-void IO::FileAnalyse::SMBIOSFileAnalyse::AddUInt32(NotNullPtr<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name)
+void IO::FileAnalyse::SMBIOSFileAnalyse::AddUInt32(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name)
 {
 	if (ofst + 3 >= packBuff[1])
 		return;
 	frame->AddUInt(ofst, 4, name, ReadUInt32(&packBuff[ofst]));
 }
 
-void IO::FileAnalyse::SMBIOSFileAnalyse::AddUInt64(NotNullPtr<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name)
+void IO::FileAnalyse::SMBIOSFileAnalyse::AddUInt64(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name)
 {
 	if (ofst + 7 >= packBuff[1])
 		return;
 	frame->AddUInt64(ofst, name, ReadUInt64(&packBuff[ofst]));
 }
 
-void IO::FileAnalyse::SMBIOSFileAnalyse::AddUUID(NotNullPtr<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name)
+void IO::FileAnalyse::SMBIOSFileAnalyse::AddUUID(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name)
 {
 	if (ofst + 15 >= packBuff[1])
 		return;
@@ -1811,7 +1811,7 @@ void IO::FileAnalyse::SMBIOSFileAnalyse::AddUUID(NotNullPtr<FrameDetail> frame, 
 	frame->AddField(ofst, 16, name, CSTRP(sbuff, sptr));
 }
 
-void IO::FileAnalyse::SMBIOSFileAnalyse::AddDate(NotNullPtr<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name)
+void IO::FileAnalyse::SMBIOSFileAnalyse::AddDate(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name)
 {
 	if (ofst + 1 >= packBuff[1])
 		return;
@@ -1833,7 +1833,7 @@ void IO::FileAnalyse::SMBIOSFileAnalyse::AddDate(NotNullPtr<FrameDetail> frame, 
 	}
 }
 			
-void IO::FileAnalyse::SMBIOSFileAnalyse::AddBits(NotNullPtr<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, const Char *bitNames[])
+void IO::FileAnalyse::SMBIOSFileAnalyse::AddBits(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, const Char *bitNames[])
 {
 	if (ofst >= packBuff[1])
 		return;
@@ -1846,14 +1846,14 @@ void IO::FileAnalyse::SMBIOSFileAnalyse::AddBits(NotNullPtr<FrameDetail> frame, 
 	}
 }
 
-void IO::FileAnalyse::SMBIOSFileAnalyse::AddEnum(NotNullPtr<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name, const Char *names[], UOSInt namesCnt)
+void IO::FileAnalyse::SMBIOSFileAnalyse::AddEnum(NN<FrameDetail> frame, UOSInt ofst, Data::ByteArrayR packBuff, Text::CString *carr, Text::CStringNN name, const Char *names[], UOSInt namesCnt)
 {
 	if (ofst >= packBuff[1])
 		return;
 	AddEnum(frame, ofst, packBuff[ofst], carr, name, names, namesCnt);
 }
 
-void IO::FileAnalyse::SMBIOSFileAnalyse::AddEnum(NotNullPtr<FrameDetail> frame, UOSInt ofst, UInt8 val, Text::CString *carr, Text::CStringNN name, const Char *names[], UOSInt namesCnt)
+void IO::FileAnalyse::SMBIOSFileAnalyse::AddEnum(NN<FrameDetail> frame, UOSInt ofst, UInt8 val, Text::CString *carr, Text::CStringNN name, const Char *names[], UOSInt namesCnt)
 {
 	if (val >= namesCnt)
 	{

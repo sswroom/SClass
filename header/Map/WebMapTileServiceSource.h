@@ -22,7 +22,7 @@ namespace Map
 
 		struct TileMatrix
 		{
-			NotNullPtr<Text::String> id;
+			NN<Text::String> id;
 			Int32 minRow;
 			Int32 maxRow;
 			Int32 minCol;
@@ -31,24 +31,24 @@ namespace Map
 
 		struct ResourceURL
 		{
-			NotNullPtr<Text::String> templateURL;
+			NN<Text::String> templateURL;
 			ResourceType resourceType;
-			NotNullPtr<Text::String> format;
+			NN<Text::String> format;
 			Map::TileMap::ImageType imgType;
 		};
 
 		struct TileMatrixSet
 		{
 			Math::RectAreaDbl bounds;
-			NotNullPtr<Text::String> id;
-			NotNullPtr<Math::CoordinateSystem> csys;
+			NN<Text::String> id;
+			NN<Math::CoordinateSystem> csys;
 			Data::ArrayListNN<TileMatrix> tiles;
 		};
 
 		struct TileMatrixDef
 		{
 			Math::Coord2DDbl origin;
-			NotNullPtr<Text::String> id;
+			NN<Text::String> id;
 			Double scaleDenom;
 			Double unitPerPixel;
 			UInt32 tileWidth;
@@ -60,7 +60,7 @@ namespace Map
 		struct TileMatrixDefSet
 		{
 			Text::String *id;
-			NotNullPtr<Math::CoordinateSystem> csys;
+			NN<Math::CoordinateSystem> csys;
 			Data::ArrayListNN<TileMatrixDef> tiles;
 		};
 
@@ -76,9 +76,9 @@ namespace Map
 		};
 	private:
 		Optional<Text::EncodingFactory> encFact;
-		NotNullPtr<Text::String> wmtsURL;
-		NotNullPtr<Text::String> cacheDir;
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Text::String> wmtsURL;
+		NN<Text::String> cacheDir;
+		NN<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;
 		Data::FastStringMapNN<TileLayer> layers;
 		Optional<TileLayer> currLayer;
@@ -86,22 +86,22 @@ namespace Map
 		Optional<TileMatrixDefSet> currDef;
 		Optional<ResourceURL> currResource;
 		Optional<ResourceURL> currResourceInfo;
-		NotNullPtr<Math::CoordinateSystem> wgs84;
+		NN<Math::CoordinateSystem> wgs84;
 		Data::FastStringMapNN<TileMatrixDefSet> matrixDef;
 
 		void LoadXML();
-		void ReadLayer(NotNullPtr<Text::XMLReader> reader);
-		Optional<TileMatrixSet> ReadTileMatrixSetLink(NotNullPtr<Text::XMLReader> reader);
-		Optional<TileMatrixDefSet> ReadTileMatrixSet(NotNullPtr<Text::XMLReader> reader);
+		void ReadLayer(NN<Text::XMLReader> reader);
+		Optional<TileMatrixSet> ReadTileMatrixSetLink(NN<Text::XMLReader> reader);
+		Optional<TileMatrixDefSet> ReadTileMatrixSet(NN<Text::XMLReader> reader);
 		Optional<TileMatrix> GetTileMatrix(UOSInt level) const;
-		static void ReleaseLayer(NotNullPtr<TileLayer> layer);
-		static void ReleaseTileMatrix(NotNullPtr<TileMatrix> tileMatrix);
-		static void ReleaseTileMatrixSet(NotNullPtr<TileMatrixSet> set);
-		static void ReleaseTileMatrixDef(NotNullPtr<TileMatrixDef> tileMatrix);
-		static void ReleaseTileMatrixDefSet(NotNullPtr<TileMatrixDefSet> set);
-		static void ReleaseResourceURL(NotNullPtr<ResourceURL> resourceURL);
+		static void ReleaseLayer(NN<TileLayer> layer);
+		static void ReleaseTileMatrix(NN<TileMatrix> tileMatrix);
+		static void ReleaseTileMatrixSet(NN<TileMatrixSet> set);
+		static void ReleaseTileMatrixDef(NN<TileMatrixDef> tileMatrix);
+		static void ReleaseTileMatrixDefSet(NN<TileMatrixDefSet> set);
+		static void ReleaseResourceURL(NN<ResourceURL> resourceURL);
 	public:
-		WebMapTileServiceSource(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString wmtsURL);
+		WebMapTileServiceSource(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString wmtsURL);
 		virtual ~WebMapTileServiceSource();
 
 		virtual Text::CStringNN GetName() const;
@@ -113,17 +113,17 @@ namespace Map
 		virtual UOSInt GetNearestLevel(Double scale) const;
 		virtual UOSInt GetConcurrentCount() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
-		virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem() const;
+		virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const;
 		virtual Bool IsMercatorProj() const;
 		virtual UOSInt GetTileSize() const;
 		virtual ImageType GetImageType() const;
 		virtual Bool CanQuery() const;
-		virtual Bool QueryInfos(Math::Coord2DDbl coord, UOSInt level, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NotNullPtr<Data::ArrayList<UOSInt>> valueOfstList, NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListNN<Text::String>> valueList) const;
+		virtual Bool QueryInfos(Math::Coord2DDbl coord, UOSInt level, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayList<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList) const;
 
 		virtual UOSInt GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids);
-		virtual Media::ImageList *LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NotNullPtr<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly);
+		virtual Media::ImageList *LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly);
 		virtual UTF8Char *GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId);
-		virtual Bool GetTileImageURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId);
+		virtual Bool GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId);
 		virtual Optional<IO::StreamData> LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it);
 
 		Bool SetLayer(UOSInt index);
@@ -132,10 +132,10 @@ namespace Map
 		Bool SetResourceInfoType(UOSInt index);
 		Bool SetResourceInfoType(Text::CString name);
 		UOSInt GetResourceInfoType();
-		UOSInt GetLayerNames(NotNullPtr<Data::ArrayListNN<Text::String>> layerNames);
-		UOSInt GetMatrixSetNames(NotNullPtr<Data::ArrayListStringNN> matrixSetNames);
-		UOSInt GetResourceTileTypeNames(NotNullPtr<Data::ArrayListStringNN> resourceTypeNames);
-		UOSInt GetResourceInfoTypeNames(NotNullPtr<Data::ArrayListStringNN> resourceTypeNames);
+		UOSInt GetLayerNames(NN<Data::ArrayListNN<Text::String>> layerNames);
+		UOSInt GetMatrixSetNames(NN<Data::ArrayListStringNN> matrixSetNames);
+		UOSInt GetResourceTileTypeNames(NN<Data::ArrayListStringNN> resourceTypeNames);
+		UOSInt GetResourceInfoTypeNames(NN<Data::ArrayListStringNN> resourceTypeNames);
 		static Text::CString GetExt(Map::TileMap::ImageType imgType);
 	};
 }

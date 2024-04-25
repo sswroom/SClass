@@ -6,7 +6,7 @@
 #include "Net/Names/PKCS12.h"
 #include "Net/Names/PKIX1Explicit88.h"
 
-void Net::ASN1Names::AddRule(NotNullPtr<NameRule> rule)
+void Net::ASN1Names::AddRule(NN<NameRule> rule)
 {
 	if (this->readContainer)
 		this->readContainer->rules.Add(rule);
@@ -21,9 +21,9 @@ void Net::ASN1Names::FreeContainer(RuleContainer *container)
 	DEL_CLASS(container);
 }
 	
-void Net::ASN1Names::ClearRules(NotNullPtr<Data::ArrayListNN<NameRule>> rules)
+void Net::ASN1Names::ClearRules(NN<Data::ArrayListNN<NameRule>> rules)
 {
-	NotNullPtr<NameRule> rule;
+	NN<NameRule> rule;
 	UOSInt i = rules->GetCount();
 	while (i-- > 0)
 	{
@@ -82,7 +82,7 @@ Text::CString Net::ASN1Names::ReadNameNoDef(Net::ASN1Util::ItemType itemType, UO
 		return CSTR_NULL;
 	}
 	Optional<NameRule> rule;
-	NotNullPtr<NameRule> nnrule;
+	NN<NameRule> nnrule;
 	while (true)
 	{
 		if (this->readContainer)
@@ -151,7 +151,7 @@ Text::CString Net::ASN1Names::ReadNameNoDef(Net::ASN1Util::ItemType itemType, UO
 void Net::ASN1Names::ReadContainerBegin()
 {
 	Optional<NameRule> rule;
-	NotNullPtr<NameRule> nnrule;
+	NN<NameRule> nnrule;
 	if (this->readIndex == INVALID_INDEX)
 	{
 		this->readLev.Add(INVALID_INDEX);
@@ -208,7 +208,7 @@ void Net::ASN1Names::ReadContainerEnd()
 }
 
 
-NotNullPtr<Net::ASN1Names> Net::ASN1Names::AnyCond()
+NN<Net::ASN1Names> Net::ASN1Names::AnyCond()
 {
 	this->currCond = RuleCond::Any;
 	this->currItemType = Net::ASN1Util::IT_UNKNOWN;
@@ -216,7 +216,7 @@ NotNullPtr<Net::ASN1Names> Net::ASN1Names::AnyCond()
 	return *this;
 }
 
-NotNullPtr<Net::ASN1Names> Net::ASN1Names::TypeIs(Net::ASN1Util::ItemType itemType)
+NN<Net::ASN1Names> Net::ASN1Names::TypeIs(Net::ASN1Util::ItemType itemType)
 {
 	this->currCond = RuleCond::TypeIsItemType;
 	this->currItemType = itemType;
@@ -224,7 +224,7 @@ NotNullPtr<Net::ASN1Names> Net::ASN1Names::TypeIs(Net::ASN1Util::ItemType itemTy
 	return *this;
 }
 
-NotNullPtr<Net::ASN1Names> Net::ASN1Names::TypeIsTime()
+NN<Net::ASN1Names> Net::ASN1Names::TypeIsTime()
 {
 	this->currCond = RuleCond::TypeIsTime;
 	this->currItemType = Net::ASN1Util::IT_UNKNOWN;
@@ -232,7 +232,7 @@ NotNullPtr<Net::ASN1Names> Net::ASN1Names::TypeIsTime()
 	return *this;
 }
 
-NotNullPtr<Net::ASN1Names> Net::ASN1Names::TypeIsString()
+NN<Net::ASN1Names> Net::ASN1Names::TypeIsString()
 {
 	this->currCond = RuleCond::TypeIsString;
 	this->currItemType = Net::ASN1Util::IT_UNKNOWN;
@@ -240,7 +240,7 @@ NotNullPtr<Net::ASN1Names> Net::ASN1Names::TypeIsString()
 	return *this;
 }
 
-NotNullPtr<Net::ASN1Names> Net::ASN1Names::TypeIsOpt(UInt8 index)
+NN<Net::ASN1Names> Net::ASN1Names::TypeIsOpt(UInt8 index)
 {
 	this->currCond = RuleCond::TypeIsOpt;
 	this->currItemType = (Net::ASN1Util::ItemType)index;
@@ -248,7 +248,7 @@ NotNullPtr<Net::ASN1Names> Net::ASN1Names::TypeIsOpt(UInt8 index)
 	return *this;
 }
 
-NotNullPtr<Net::ASN1Names> Net::ASN1Names::RepeatIfTypeIs(Net::ASN1Util::ItemType itemType)
+NN<Net::ASN1Names> Net::ASN1Names::RepeatIfTypeIs(Net::ASN1Util::ItemType itemType)
 {
 	this->currCond = RuleCond::RepeatIfTypeIs;
 	this->currItemType = itemType;
@@ -256,7 +256,7 @@ NotNullPtr<Net::ASN1Names> Net::ASN1Names::RepeatIfTypeIs(Net::ASN1Util::ItemTyp
 	return *this;
 }
 
-NotNullPtr<Net::ASN1Names> Net::ASN1Names::LastOIDAndTypeIs(Text::CStringNN oidText, Net::ASN1Util::ItemType itemType)
+NN<Net::ASN1Names> Net::ASN1Names::LastOIDAndTypeIs(Text::CStringNN oidText, Net::ASN1Util::ItemType itemType)
 {
 	this->currCond = RuleCond::LastOIDAndTypeIs;
 	this->currItemType = itemType;
@@ -264,7 +264,7 @@ NotNullPtr<Net::ASN1Names> Net::ASN1Names::LastOIDAndTypeIs(Text::CStringNN oidT
 	return *this;
 }
 
-NotNullPtr<Net::ASN1Names> Net::ASN1Names::AllNotMatch()
+NN<Net::ASN1Names> Net::ASN1Names::AllNotMatch()
 {
 	this->currCond = RuleCond::AllNotMatch;
 	this->currItemType = Net::ASN1Util::IT_UNKNOWN;
@@ -272,9 +272,9 @@ NotNullPtr<Net::ASN1Names> Net::ASN1Names::AllNotMatch()
 	return *this;
 }
 
-NotNullPtr<Net::ASN1Names> Net::ASN1Names::Container(Text::CStringNN name, ContentFunc func)
+NN<Net::ASN1Names> Net::ASN1Names::Container(Text::CStringNN name, ContentFunc func)
 {
-	NotNullPtr<NameRule> rule = MemAllocNN(NameRule);
+	NN<NameRule> rule = MemAllocNN(NameRule);
 	rule->cond = this->currCond;
 	rule->itemType = this->currItemType;
 	rule->condParam = this->currCondParam;
@@ -286,9 +286,9 @@ NotNullPtr<Net::ASN1Names> Net::ASN1Names::Container(Text::CStringNN name, Conte
 	return *this;
 }
 
-NotNullPtr<Net::ASN1Names> Net::ASN1Names::NextValue(Text::CStringNN name)
+NN<Net::ASN1Names> Net::ASN1Names::NextValue(Text::CStringNN name)
 {
-	NotNullPtr<NameRule> rule = MemAllocNN(NameRule);
+	NN<NameRule> rule = MemAllocNN(NameRule);
 	rule->cond = this->currCond;
 	rule->itemType = this->currItemType;
 	rule->condParam = this->currCondParam;
@@ -300,9 +300,9 @@ NotNullPtr<Net::ASN1Names> Net::ASN1Names::NextValue(Text::CStringNN name)
 	return *this;
 }
 
-NotNullPtr<Net::ASN1Names> Net::ASN1Names::Enum(Text::CStringNN name, Text::CStringNN *enumVals, UOSInt enumCnt)
+NN<Net::ASN1Names> Net::ASN1Names::Enum(Text::CStringNN name, Text::CStringNN *enumVals, UOSInt enumCnt)
 {
-	NotNullPtr<NameRule> rule = MemAllocNN(NameRule);
+	NN<NameRule> rule = MemAllocNN(NameRule);
 	rule->cond = this->currCond;
 	rule->itemType = this->currItemType;
 	rule->condParam = this->currCondParam;
@@ -314,43 +314,43 @@ NotNullPtr<Net::ASN1Names> Net::ASN1Names::Enum(Text::CStringNN name, Text::CStr
 	return *this;
 }
 
-NotNullPtr<Net::ASN1Names> Net::ASN1Names::SetCertificate()
+NN<Net::ASN1Names> Net::ASN1Names::SetCertificate()
 {
 	Names::PKIX1Explicit88::Certificate(*this);
 	return *this;
 }
 
-NotNullPtr<Net::ASN1Names> Net::ASN1Names::SetRSAPublicKey()
+NN<Net::ASN1Names> Net::ASN1Names::SetRSAPublicKey()
 {
 	Names::PKCS1::RSAPublicKey(*this);
 	return *this;
 }
 
-NotNullPtr<Net::ASN1Names> Net::ASN1Names::SetRSAPrivateKey()
+NN<Net::ASN1Names> Net::ASN1Names::SetRSAPrivateKey()
 {
 	Names::PKCS1::RSAPrivateKey(*this);
 	return *this;
 }
 
-NotNullPtr<Net::ASN1Names> Net::ASN1Names::SetPKCS7ContentInfo()
+NN<Net::ASN1Names> Net::ASN1Names::SetPKCS7ContentInfo()
 {
 	Names::PKCS7::ContentInfo(*this);
 	return *this;
 }
 
-NotNullPtr<Net::ASN1Names> Net::ASN1Names::SetCertificationRequest()
+NN<Net::ASN1Names> Net::ASN1Names::SetCertificationRequest()
 {
 	Names::PKCS10::CertificationRequest(*this);
 	return *this;
 }
 
-NotNullPtr<Net::ASN1Names> Net::ASN1Names::SetCertificationList()
+NN<Net::ASN1Names> Net::ASN1Names::SetCertificationList()
 {
 	Names::PKIX1Explicit88::CertificateList(*this);
 	return *this;
 }
 
-NotNullPtr<Net::ASN1Names> Net::ASN1Names::SetPFX()
+NN<Net::ASN1Names> Net::ASN1Names::SetPFX()
 {
 	Names::PKCS12::PFX(*this);
 	return *this;

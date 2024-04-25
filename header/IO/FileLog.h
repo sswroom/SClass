@@ -14,17 +14,17 @@ namespace IO
 		IO::LogHandler::LogType logStyle;
 		IO::LogHandler::LogGroup groupStyle;
 		Int32 lastVal;
-		NotNullPtr<Text::UTF8Writer> log;
-		NotNullPtr<IO::FileStream> fileStm;
+		NN<Text::UTF8Writer> log;
+		NN<IO::FileStream> fileStm;
 		const Char *dateFormat;
-		NotNullPtr<Text::String> fileName;
+		NN<Text::String> fileName;
 		const UTF8Char *extName;
 		Bool closed;
 
-		UTF8Char *GetNewName(UTF8Char *buff, NotNullPtr<Data::DateTimeUtil::TimeValue> logTime, UInt32 nanosec);
+		UTF8Char *GetNewName(UTF8Char *buff, NN<Data::DateTimeUtil::TimeValue> logTime, UInt32 nanosec);
 		void Init(LogType style, LogGroup groupStyle, const Char *dateFormat);
 	public:
-		FileLog(NotNullPtr<Text::String> fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
+		FileLog(NN<Text::String> fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
 		FileLog(Text::CStringNN fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
 		virtual ~FileLog();
 		virtual void LogClosed();

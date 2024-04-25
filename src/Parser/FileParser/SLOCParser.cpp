@@ -46,7 +46,7 @@ public:
 		return 18;
 	}
 
-	virtual Bool GetExtraName(const UInt8 *buff, UOSInt buffSize, UOSInt extIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+	virtual Bool GetExtraName(const UInt8 *buff, UOSInt buffSize, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb)
 	{
 		switch (extIndex)
 		{
@@ -108,7 +108,7 @@ public:
 		return false;
 	}
 
-	virtual Bool GetExtraValueStr(const UInt8 *buff, UOSInt buffSize, UOSInt extIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+	virtual Bool GetExtraValueStr(const UInt8 *buff, UOSInt buffSize, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb)
 	{
 		if (buffSize != sizeof(ExtraInfo))
 			return false;
@@ -196,7 +196,7 @@ Int32 Parser::FileParser::SLOCParser::GetName()
 	return *(Int32*)"SLOC";
 }
 
-void Parser::FileParser::SLOCParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::SLOCParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
@@ -209,7 +209,7 @@ IO::ParserType Parser::FileParser::SLOCParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::SLOCParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::SLOCParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	Map::GPSTrack::GPSRecord3 rec;
 	UInt8 buff[384];
@@ -219,7 +219,7 @@ IO::ParsedObject *Parser::FileParser::SLOCParser::ParseFileHdr(NotNullPtr<IO::St
 	UOSInt currPos;
 	UInt64 fileSize;
 	Int64 devId;
-	NotNullPtr<Text::String> s = fd->GetFullName();
+	NN<Text::String> s = fd->GetFullName();
 	i = Text::StrLastIndexOfCharC(s->v, s->leng, IO::Path::PATH_SEPERATOR);
 	sptr = Text::StrConcatC(sbuff, &s->v[i + 1], s->leng - i - 1);
 	if (!Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("LOC")))

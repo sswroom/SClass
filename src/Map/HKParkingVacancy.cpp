@@ -24,7 +24,7 @@ void Map::HKParkingVacancy::LoadParkingInfo()
 	}
 	mstm.SeekFromBeginning(0);
 	DB::CSVFile csv(mstm, 65001);
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (csv.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		UOSInt colInd[15];
@@ -166,7 +166,7 @@ void Map::HKParkingVacancy::LoadVacancy()
 		}
 		mstm.SeekFromBeginning(0);
 		DB::CSVFile csv(mstm, 65001);
-		NotNullPtr<DB::DBReader> r;
+		NN<DB::DBReader> r;
 		if (csv.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			UOSInt colInd[3];
@@ -241,7 +241,7 @@ void Map::HKParkingVacancy::ParkingInfoFree(NN<ParkingInfo> parking)
 	MemFreeNN(parking);
 }
 
-Map::HKParkingVacancy::HKParkingVacancy(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl) : Map::MapDrawLayer(CSTR("HKParkingVacancy"), 16, CSTR("HKParkingVacancy"), Math::CoordinateSystemManager::CreateDefaultCsys())
+Map::HKParkingVacancy::HKParkingVacancy(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl) : Map::MapDrawLayer(CSTR("HKParkingVacancy"), 16, CSTR("HKParkingVacancy"), Math::CoordinateSystemManager::CreateDefaultCsys())
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -249,10 +249,10 @@ Map::HKParkingVacancy::HKParkingVacancy(NotNullPtr<Net::SocketFactory> sockf, Op
 	this->LoadParkingInfo();
 	this->LoadVacancy();
 	Media::StaticImage *simg = Map::MapPOI::CreateParkingPOI();
-	NotNullPtr<Media::ImageList> imgList;
+	NN<Media::ImageList> imgList;
 	NEW_CLASSNN(imgList, Media::ImageList(CSTR("ParkingPOI")));
 	imgList->AddImage(simg, 0);
-	NotNullPtr<Media::SharedImage> shimg;
+	NN<Media::SharedImage> shimg;
 	NEW_CLASSNN(shimg, Media::SharedImage(imgList, false));
 	this->SetIconStyle(shimg, 8, 8);
 	shimg.Delete();
@@ -268,7 +268,7 @@ Map::DrawLayerType Map::HKParkingVacancy::GetLayerType() const
 	return Map::DRAW_LAYER_POINT;
 }
 
-UOSInt Map::HKParkingVacancy::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::HKParkingVacancy::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	UOSInt i = 0;
 	UOSInt j = this->parkingMap.GetCount();
@@ -280,12 +280,12 @@ UOSInt Map::HKParkingVacancy::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> o
 	return j;
 }
 
-UOSInt Map::HKParkingVacancy::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::HKParkingVacancy::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() * mapRate, keepEmpty);
 }
 
-UOSInt Map::HKParkingVacancy::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::HKParkingVacancy::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	NN<ParkingInfo> parking;
 	UOSInt i = 0;
@@ -311,7 +311,7 @@ void Map::HKParkingVacancy::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-Bool Map::HKParkingVacancy::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::HKParkingVacancy::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	Sync::MutexUsage mutUsage(this->parkingMut);
 	NN<ParkingInfo> parking;
@@ -319,7 +319,7 @@ Bool Map::HKParkingVacancy::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, Na
 	{
 		return false;
 	}
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	switch (strIndex)
 	{
 	case 0:
@@ -482,7 +482,7 @@ DB::DBUtil::ColType Map::HKParkingVacancy::GetColumnType(UOSInt colIndex, OptOut
 	}
 	return DB::DBUtil::CT_Unknown;
 }
-Bool Map::HKParkingVacancy::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Map::HKParkingVacancy::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

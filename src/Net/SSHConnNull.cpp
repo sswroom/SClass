@@ -8,7 +8,7 @@ struct Net::SSHConn::ClassData
 {
 };
 
-Net::SSHConn::SSHConn(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN host, UInt16 port, Data::Duration timeout)
+Net::SSHConn::SSHConn(NN<Net::SocketFactory> sockf, Text::CStringNN host, UInt16 port, Data::Duration timeout)
 {
 	this->sockf = sockf;
 	this->clsData = MemAllocNN(ClassData);
@@ -25,7 +25,7 @@ Bool Net::SSHConn::IsError() const
 	return true;
 }
 
-NotNullPtr<Net::SocketFactory> Net::SSHConn::GetSocketFactory() const
+NN<Net::SocketFactory> Net::SSHConn::GetSocketFactory() const
 {
 	return this->sockf;
 }
@@ -50,7 +50,7 @@ const UTF8Char *Net::SSHConn::GetActiveAlgorithm(SSHMethodType method)
 	return 0;
 }
 
-Bool Net::SSHConn::GetAuthMethods(Text::CStringNN userName, NotNullPtr<Data::ArrayListStringNN> authMeth)
+Bool Net::SSHConn::GetAuthMethods(Text::CStringNN userName, NN<Data::ArrayListStringNN> authMeth)
 {
 	return false;
 }

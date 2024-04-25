@@ -752,7 +752,7 @@ NN<Data::NamedClass<LamppostData>> LamppostData::CreateClass()
 	return cls;
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Text::CString key = CSTR("WEBnAPI");
 	UTF8Char sbuff[512];
@@ -760,13 +760,13 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	IO::ConsoleWriter console;
 	IO::LogTool log;
 	Net::OSSocketFactory sockf(false);
-	NotNullPtr<IO::ConfigFile> cfg;
+	NN<IO::ConfigFile> cfg;
 	Text::StringBuilderUTF8 sb;
 	if (IO::JavaProperties::ParseAppProp().SetTo(cfg))
 	{
 		Crypto::Encrypt::JasyptEncryptor jasypt(Crypto::Encrypt::JasyptEncryptor::KA_PBEWITHHMACSHA512, Crypto::Encrypt::JasyptEncryptor::CA_AES256, key.ToByteArray());
 		jasypt.Decrypt(cfg);
-		NotNullPtr<DB::DBTool> db;
+		NN<DB::DBTool> db;
 //		console.WriteLine(Text::String::OrEmpty(cfg->GetValue(UTF8STRC("spring.datasource.url")))->v);
 //		console.WriteLine(Text::String::OrEmpty(cfg->GetValue(UTF8STRC("spring.datasource.username")))->v);
 //		console.WriteLine(Text::String::OrEmpty(cfg->GetValue(UTF8STRC("spring.datasource.password")))->v);
@@ -778,7 +778,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			Data::ArrayListNN<LamppostData> dataList;
 			Data::ArrayListNN<LamppostData> dataList2;
 			NN<Data::NamedClass<LamppostData>> cls = LamppostData().CreateClass();
-			NotNullPtr<DB::DBReader> r;
+			NN<DB::DBReader> r;
 			if (db->QueryTableData(CSTR("dbo"), CSTR("lamppost_data"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 			{
 				{

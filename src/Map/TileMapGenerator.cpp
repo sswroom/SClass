@@ -83,7 +83,7 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Map::MapConfig2TGen::DrawParam params;
-	NotNullPtr<Media::DrawImage> dimg2;
+	NN<Media::DrawImage> dimg2;
 	Bool isLayerEmpty;
 	sptr = GenFileName(sbuff, x, y, scale, CSTR(".db"));
 
@@ -128,7 +128,7 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::
 	}
 }
 
-Map::TileMapGenerator::TileMapGenerator(Map::MapConfig2TGen *mcfg, NotNullPtr<Media::DrawEngine> geng, const UTF8Char *tileDir, UOSInt osSize)
+Map::TileMapGenerator::TileMapGenerator(Map::MapConfig2TGen *mcfg, NN<Media::DrawEngine> geng, const UTF8Char *tileDir, UOSInt osSize)
 {
 	this->imgSize = 512;
 	this->geng = geng;
@@ -184,8 +184,8 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 	}
 	mstm.SeekFromBeginning(0);
 	
-	NotNullPtr<Media::DrawImage> dimg;
-	NotNullPtr<Media::DrawImage> dimg2;
+	NN<Media::DrawImage> dimg;
+	NN<Media::DrawImage> dimg2;
 	Bool isLayerEmpty;
 	Map::MapConfig2TGen::DrawParam params;
 	params.tileX = x;

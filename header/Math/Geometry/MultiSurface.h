@@ -12,9 +12,9 @@ namespace Math
 			MultiSurface(UInt32 srid);
 			virtual ~MultiSurface();
 
-			virtual void AddGeometry(NotNullPtr<Vector2D> geometry);
+			virtual void AddGeometry(NN<Vector2D> geometry);
 			virtual Vector2D::VectorType GetVectorType() const;
-			virtual NotNullPtr<Vector2D> Clone() const;
+			virtual NN<Vector2D> Clone() const;
 		};
 	}
 }

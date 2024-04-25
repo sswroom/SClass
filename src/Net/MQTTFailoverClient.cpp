@@ -8,7 +8,7 @@ void Net::MQTTFailoverClient::FreeClient(ClientInfo *cliInfo)
 
 void __stdcall Net::MQTTFailoverClient::OnMessage(AnyType userObj, Text::CStringNN topic, const Data::ByteArrayR &buff)
 {
-	NotNullPtr<ClientInfo> cliInfo = userObj.GetNN<ClientInfo>();
+	NN<ClientInfo> cliInfo = userObj.GetNN<ClientInfo>();
 	if (cliInfo->me->foHdlr.GetCurrChannel() == cliInfo->client)
 	{
 		Sync::MutexUsage mutUsage(cliInfo->me->hdlrMut);
@@ -21,7 +21,7 @@ void __stdcall Net::MQTTFailoverClient::OnMessage(AnyType userObj, Text::CString
 	}
 }
 
-Net::MQTTFailoverClient::MQTTFailoverClient(Net::FailoverType foType, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt16 kaSeconds) : foHdlr(foType)
+Net::MQTTFailoverClient::MQTTFailoverClient(Net::FailoverType foType, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt16 kaSeconds) : foHdlr(foType)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

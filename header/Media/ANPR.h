@@ -11,7 +11,7 @@ namespace Media
 	class ANPR
 	{
 	public:
-		typedef void (__stdcall *NumPlateResult)(AnyType userObj, NotNullPtr<Media::StaticImage> simg, Math::RectArea<UOSInt> area, NotNullPtr<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, NotNullPtr<Media::StaticImage> plateImg);
+		typedef void (__stdcall *NumPlateResult)(AnyType userObj, NN<Media::StaticImage> simg, Math::RectArea<UOSInt> area, NN<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, NN<Media::StaticImage> plateImg);
 	private:
 		Media::OCREngine ocr;
 		Media::OpenCV::OCVNumPlateFinder finder;
@@ -20,16 +20,16 @@ namespace Media
 		AnyType hdlrObj;
 
 		static void NumPlateArea(AnyType userObj, Media::OpenCV::OCVFrame *filteredFrame, Math::Coord2D<UOSInt> *rect, Double maxTileAngle, Double pxArea, Media::OpenCV::OCVNumPlateFinder::PlateSize psize);
-		static NotNullPtr<Media::StaticImage> CreatePlainImage(UInt8 *sptr, Math::Size2D<UOSInt> sSize, UOSInt sbpl, Math::Coord2D<UOSInt> *rect, Media::OpenCV::OCVNumPlateFinder::PlateSize psize);
-		static NotNullPtr<Media::StaticImage> CreatePlainImage(UInt8 *sptr, Math::Size2D<UOSInt> sSize, UOSInt sbpl, Math::Quadrilateral quad, Media::OpenCV::OCVNumPlateFinder::PlateSize psize);
+		static NN<Media::StaticImage> CreatePlainImage(UInt8 *sptr, Math::Size2D<UOSInt> sSize, UOSInt sbpl, Math::Coord2D<UOSInt> *rect, Media::OpenCV::OCVNumPlateFinder::PlateSize psize);
+		static NN<Media::StaticImage> CreatePlainImage(UInt8 *sptr, Math::Size2D<UOSInt> sSize, UOSInt sbpl, Math::Quadrilateral quad, Media::OpenCV::OCVNumPlateFinder::PlateSize psize);
 	public:
 		ANPR();
 		~ANPR();
 
 		void SetResultHandler(NumPlateResult hdlr, AnyType userObj);
-		Bool ParseImage(NotNullPtr<Media::StaticImage> simg);
-		Bool ParseImageQuad(NotNullPtr<Media::StaticImage> simg, Math::Quadrilateral quad);
-		Bool ParseImagePlatePoint(NotNullPtr<Media::StaticImage> simg, Math::Coord2D<UOSInt> coord);
+		Bool ParseImage(NN<Media::StaticImage> simg);
+		Bool ParseImageQuad(NN<Media::StaticImage> simg, Math::Quadrilateral quad);
+		Bool ParseImagePlatePoint(NN<Media::StaticImage> simg, Math::Coord2D<UOSInt> coord);
 	};
 }
 #endif

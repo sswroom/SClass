@@ -33,7 +33,7 @@ Bool UI::Win::WinFileDialog::ShowDialog(ControlHandle *ownerHandle)
 	Text::StringBuilderUTF16 sb;
 	UOSInt i = 0;
 	UOSInt filterCnt = this->names.GetCount();
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 
 	OPENFILENAMEW ofn;
 	ZeroMemory(&ofn, sizeof(ofn));
@@ -170,8 +170,8 @@ Bool UI::Win::WinFileDialog::ShowDialog(ControlHandle *ownerHandle)
 		{
 			Bool found = false;
 			UOSInt foundIndexLeng = 0;
-			NotNullPtr<Text::String> u8fname = Text::String::NewNotNull(fnameBuff);
-			NotNullPtr<Text::String> pattern;
+			NN<Text::String> u8fname = Text::String::NewNotNull(fnameBuff);
+			NN<Text::String> pattern;
 			i = 0;
 			while (i < filterCnt)
 			{
@@ -239,7 +239,7 @@ Bool UI::Win::WinFileDialog::ShowDialog(ControlHandle *ownerHandle)
 		this->filterIndex = ofn.nFilterIndex - 1;
 		if (isSave && ofn.nFileExtension == 0)
 		{
-			NotNullPtr<Text::String> pattern;
+			NN<Text::String> pattern;
 			if (this->patterns.GetItem(this->filterIndex).SetTo(pattern) && Text::StrStartsWithC(pattern->v, pattern->leng, UTF8STRC("*.")))
 			{
 				Text::StrUTF8_WChar(&fnameBuff[Text::StrCharCnt(fnameBuff)], &pattern->v[1], 0);
@@ -248,7 +248,7 @@ Bool UI::Win::WinFileDialog::ShowDialog(ControlHandle *ownerHandle)
 		}
 		else if (!isSave && this->allowMulti)
 		{
-			NotNullPtr<Text::String> s = Text::String::NewNotNull(fnameBuff);
+			NN<Text::String> s = Text::String::NewNotNull(fnameBuff);
 			IO::Path::PathType pt = IO::Path::GetPathType(s->ToCString());
 			s->Release();
 			if (pt == IO::Path::PathType::Directory)

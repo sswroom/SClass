@@ -12,10 +12,10 @@
 
 UInt32 __stdcall SSWR::AVIRead::AVIRGPSDevForm::ClientThread(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGPSDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSDevForm>();
+	NN<SSWR::AVIRead::AVIRGPSDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSDevForm>();
 	UOSInt recvBuffSize;
 	UOSInt readSize;
-	NotNullPtr<Net::TCPClient> cli;
+	NN<Net::TCPClient> cli;
 	{
 		Data::ByteBuffer recvBuff(16384);
 		recvBuffSize = 0;
@@ -63,7 +63,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGPSDevForm::ClientThread(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnConnClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGPSDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSDevForm>();
+	NN<SSWR::AVIRead::AVIRGPSDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSDevForm>();
 	if (me->cli)
 	{
 		me->ToStop();
@@ -104,26 +104,26 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnConnClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnDeviceRClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGPSDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSDevForm>();
+	NN<SSWR::AVIRead::AVIRGPSDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSDevForm>();
 	me->SendGetDevices();
 }
 
 void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnUserRClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGPSDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSDevForm>();
+	NN<SSWR::AVIRead::AVIRGPSDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSDevForm>();
 	me->SendGetUsers();
 }
 
 void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnAlertRClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGPSDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSDevForm>();
+	NN<SSWR::AVIRead::AVIRGPSDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSDevForm>();
 	me->SendGetAlerts();
 }
 
 void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnDeviceSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGPSDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSDevForm>();
-	NotNullPtr<Text::String> s;
+	NN<SSWR::AVIRead::AVIRGPSDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSDevForm>();
+	NN<Text::String> s;
 	if (me->lbDevice->GetSelectedItemTextNew().SetTo(s))
 	{
 		me->SendGetDevice(s->ToInt64());
@@ -133,8 +133,8 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnDeviceSelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnAlertSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGPSDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSDevForm>();
-	NotNullPtr<Text::String> s;
+	NN<SSWR::AVIRead::AVIRGPSDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSDevForm>();
+	NN<Text::String> s;
 	if (me->lbAlert->GetSelectedItemTextNew().SetTo(s))
 	{
 		me->SendGetAlert(s->ToInt32());
@@ -144,8 +144,8 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnAlertSelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnUserSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGPSDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSDevForm>();
-	NotNullPtr<Text::String> s;
+	NN<SSWR::AVIRead::AVIRGPSDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSDevForm>();
+	NN<Text::String> s;
 	if (me->lbUser->GetSelectedItemTextNew().SetTo(s))
 	{
 		me->SendGetUser(s->ToInt32());
@@ -155,7 +155,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnUserSelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGPSDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSDevForm>();
+	NN<SSWR::AVIRead::AVIRGPSDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSDevForm>();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UOSInt i;
@@ -439,7 +439,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::SendGetUser(Int32 userId)
 	}
 }
 
-SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui), protoHdlr(*this)
+SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui), protoHdlr(*this)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("GPSDev Viewer"));
@@ -613,7 +613,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 	switch (cmdType)
 	{
@@ -1003,6 +1003,6 @@ void SSWR::AVIRead::AVIRGPSDevForm::DataParsed(NotNullPtr<IO::Stream> stm, AnyTy
 	}
 }
 
-void SSWR::AVIRead::AVIRGPSDevForm::DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
+void SSWR::AVIRead::AVIRGPSDevForm::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 }

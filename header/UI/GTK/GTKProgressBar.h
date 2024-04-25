@@ -18,7 +18,7 @@ namespace UI
 
 			static Int32 SignalTick(void *userObj);
 		public:
-			GTKProgressBar(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, UInt64 totalCnt);
+			GTKProgressBar(NN<GUICore> ui, NN<UI::GUIClientControl> parent, UInt64 totalCnt);
 			virtual ~GTKProgressBar();
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);

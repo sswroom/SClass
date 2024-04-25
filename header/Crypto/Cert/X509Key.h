@@ -12,17 +12,17 @@ namespace Crypto
 		private:
 			KeyType keyType;
 		public:
-			X509Key(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff, KeyType keyType);
+			X509Key(NN<Text::String> sourceName, Data::ByteArrayR buff, KeyType keyType);
 			X509Key(Text::CStringNN sourceName, Data::ByteArrayR buff, KeyType keyType);
 			virtual ~X509Key();
 
 			virtual FileType GetFileType() const;
-			virtual void ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) const;
-			virtual ValidStatus IsValid(NotNullPtr<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const;
+			virtual void ToShortName(NN<Text::StringBuilderUTF8> sb) const;
+			virtual ValidStatus IsValid(NN<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const;
 			
-			virtual NotNullPtr<ASN1Data> Clone() const;
-			virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
-			virtual NotNullPtr<Net::ASN1Names> CreateNames() const;
+			virtual NN<ASN1Data> Clone() const;
+			virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+			virtual NN<Net::ASN1Names> CreateNames() const;
 
 			KeyType GetKeyType() const;
 			UOSInt GetKeySizeBits() const;

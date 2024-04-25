@@ -5,7 +5,7 @@
 #include "Media/IAudioFilter.h"
 #include "Text/MyString.h"
 
-Media::IAudioFilter::IAudioFilter(NotNullPtr<IAudioSource> sourceAudio)
+Media::IAudioFilter::IAudioFilter(NN<IAudioSource> sourceAudio)
 {
 	this->sourceAudio = sourceAudio;
 }
@@ -39,7 +39,7 @@ Bool Media::IAudioFilter::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, I
 	return this->sourceAudio->TrimStream(trimTimeStart, trimTimeEnd, syncTime);
 }
 
-void Media::IAudioFilter::GetFormat(NotNullPtr<AudioFormat> format)
+void Media::IAudioFilter::GetFormat(NN<AudioFormat> format)
 {
 	this->sourceAudio->GetFormat(format);
 }

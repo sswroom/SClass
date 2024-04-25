@@ -116,7 +116,7 @@ UInt8 Text::SMSMessage::ParseIBCD(UInt8 byte)
 	return (UInt8)((byte & 0xf) * 10 + (byte >> 4));
 }
 
-void Text::SMSMessage::ParseTimestamp(const UInt8 *buff, NotNullPtr<Data::DateTime> time)
+void Text::SMSMessage::ParseTimestamp(const UInt8 *buff, NN<Data::DateTime> time)
 {
 	if ((buff[6] & 0x8) != 0)
 	{
@@ -209,7 +209,7 @@ Text::SMSMessage::~SMSMessage()
 	}
 }
 
-void Text::SMSMessage::SetMessageTime(NotNullPtr<Data::DateTime> msgTime)
+void Text::SMSMessage::SetMessageTime(NN<Data::DateTime> msgTime)
 {
 	this->msgTime.SetValue(msgTime);
 }
@@ -239,7 +239,7 @@ void Text::SMSMessage::SetMessageRef(UInt8 msgRef)
 	this->msgRef = msgRef;
 }
 
-void Text::SMSMessage::GetMessageTime(NotNullPtr<Data::DateTime> msgTime)
+void Text::SMSMessage::GetMessageTime(NN<Data::DateTime> msgTime)
 {
 	msgTime->SetValue(this->msgTime);
 }

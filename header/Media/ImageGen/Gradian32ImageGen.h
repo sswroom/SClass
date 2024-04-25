@@ -13,7 +13,7 @@ namespace Media
 			virtual ~Gradian32ImageGen();
 
 			virtual Text::CStringNN GetName() const;
-			virtual Media::RasterImage *GenerateImage(NotNullPtr<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size);
+			virtual Media::RasterImage *GenerateImage(NN<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size);
 		};
 	}
 }

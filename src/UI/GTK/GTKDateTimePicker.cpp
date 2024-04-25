@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "UI/GTK/GTKDateTimePicker.h"
 
-UI::GTK::GTKDateTimePicker::GTKDateTimePicker(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : UI::GUIDateTimePicker(ui, parent)
+UI::GTK::GTKDateTimePicker::GTKDateTimePicker(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent) : UI::GUIDateTimePicker(ui, parent)
 {
 	this->format = 0;
 	this->widget = gtk_entry_new();
@@ -25,7 +25,7 @@ OSInt UI::GTK::GTKDateTimePicker::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-void UI::GTK::GTKDateTimePicker::SetValue(NotNullPtr<Data::DateTime> dt)
+void UI::GTK::GTKDateTimePicker::SetValue(NN<Data::DateTime> dt)
 {
 	if (this->format)
 	{
@@ -49,7 +49,7 @@ void UI::GTK::GTKDateTimePicker::SetValue(const Data::Timestamp &ts)
 	}
 }
 
-void UI::GTK::GTKDateTimePicker::GetSelectedTime(NotNullPtr<Data::DateTime> dt)
+void UI::GTK::GTKDateTimePicker::GetSelectedTime(NN<Data::DateTime> dt)
 {
 	GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)this->widget);
 	const UTF8Char *s = (const UTF8Char*)gtk_entry_buffer_get_text(buff);

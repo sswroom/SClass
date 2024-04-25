@@ -31,7 +31,7 @@ Media::SilentSource::~SilentSource()
 
 UTF8Char *Media::SilentSource::GetSourceName(UTF8Char *buff)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (!this->name.SetTo(s))
 		return 0;
 	return s->ConcatTo(buff);
@@ -77,7 +77,7 @@ Bool Media::SilentSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, I
 	return true;
 }
 
-void Media::SilentSource::GetFormat(NotNullPtr<AudioFormat> format)
+void Media::SilentSource::GetFormat(NN<AudioFormat> format)
 {
 	format->FromAudioFormat(this->format);
 }

@@ -26,7 +26,7 @@ void UI::GTK::GTKRadioButton::ChangeSelected(Bool selVal)
 	this->EventSelectedChange(selVal);
 }
 
-UI::GTK::GTKRadioButton::GTKRadioButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool selected) : UI::GUIRadioButton(ui, parent)
+UI::GTK::GTKRadioButton::GTKRadioButton(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool selected) : UI::GUIRadioButton(ui, parent)
 {
 	this->selected = selected;
 
@@ -35,7 +35,7 @@ UI::GTK::GTKRadioButton::GTKRadioButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<U
 	UOSInt j = parent->GetChildCount();
 	while (i < j)
 	{
-		NotNullPtr<UI::GUIControl> ctrl;
+		NN<UI::GUIControl> ctrl;
 		if (parent->GetChild(i).SetTo(ctrl) && ctrl.Ptr() != this)
 		{
 			if (ctrl->GetObjectClass().Equals(UTF8STRC("RadioButton")))

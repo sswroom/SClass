@@ -7,14 +7,14 @@
 #include "Text/MyString.h"
 #include "Text/URLString.h"
 
-IO::ParsedObject *Net::URL::OpenObject(Text::CStringNN url, Text::CString userAgent, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Data::Duration timeout, NotNullPtr<IO::LogTool> log)
+IO::ParsedObject *Net::URL::OpenObject(Text::CStringNN url, Text::CString userAgent, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Data::Duration timeout, NN<IO::LogTool> log)
 {
 	IO::ParsedObject *pobj;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	if (url.StartsWithICase(UTF8STRC("http://")))
 	{
-		NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, true, false);
+		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, true, false);
 		cli->SetTimeout(timeout);
 		cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 		if (cli->GetRespStatus() == Net::WebStatus::SC_MOVED_TEMPORARILY || cli->GetRespStatus() == Net::WebStatus::SC_MOVED_PERMANENTLY)
@@ -31,7 +31,7 @@ IO::ParsedObject *Net::URL::OpenObject(Text::CStringNN url, Text::CString userAg
 	}
 	else if (url.StartsWithICase(UTF8STRC("https://")))
 	{
-		NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, true, true);
+		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, true, true);
 		cli->SetTimeout(timeout);
 		cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 		if (cli->GetRespStatus() == Net::WebStatus::SC_MOVED_TEMPORARILY || cli->GetRespStatus() == Net::WebStatus::SC_MOVED_PERMANENTLY)

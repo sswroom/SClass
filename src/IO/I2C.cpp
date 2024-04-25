@@ -6,7 +6,7 @@
 #include "Text/MyString.h"
 #include <stdio.h>
 
-IO::I2C::I2C(NotNullPtr<IO::I2CChannel> channel, UOSInt delayMS)
+IO::I2C::I2C(NN<IO::I2CChannel> channel, UOSInt delayMS)
 {
 	this->channel = channel;
 	this->delayMS = delayMS;

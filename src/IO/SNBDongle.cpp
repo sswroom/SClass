@@ -5,7 +5,7 @@
 
 void __stdcall IO::SNBDongle::OnProtocolRecv(AnyType userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd)
 {
-	NotNullPtr<IO::SNBDongle> me = userObj.GetNN<IO::SNBDongle>();
+	NN<IO::SNBDongle> me = userObj.GetNN<IO::SNBDongle>();
 	DeviceInfo *dev;
 	UOSInt i;
 	UOSInt j;
@@ -426,7 +426,7 @@ IO::SNBDongle::DeviceInfo *IO::SNBDongle::GetDevice(UInt64 devId)
 	return dev;
 }
 
-IO::SNBDongle::SNBDongle(NotNullPtr<IO::Stream> stm, SNBHandler *hdlr)
+IO::SNBDongle::SNBDongle(NN<IO::Stream> stm, SNBHandler *hdlr)
 {
 	this->protoHdlr = 0;
 	this->protoObj = 0;

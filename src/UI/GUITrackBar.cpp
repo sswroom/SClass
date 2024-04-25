@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "UI/GUITrackBar.h"
 
-UI::GUITrackBar::GUITrackBar(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : GUIControl(ui, parent)
+UI::GUITrackBar::GUITrackBar(NN<GUICore> ui, NN<UI::GUIClientControl> parent) : GUIControl(ui, parent)
 {
 }
 

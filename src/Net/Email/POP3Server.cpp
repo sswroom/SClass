@@ -13,9 +13,9 @@
 #include <stdio.h>
 #endif
 
-void __stdcall Net::Email::POP3Server::ConnReady(NotNullPtr<Net::TCPClient> cli, AnyType userObj)
+void __stdcall Net::Email::POP3Server::ConnReady(NN<Net::TCPClient> cli, AnyType userObj)
 {
-	NotNullPtr<Net::Email::POP3Server> me = userObj.GetNN<Net::Email::POP3Server>();
+	NN<Net::Email::POP3Server> me = userObj.GetNN<Net::Email::POP3Server>();
 #if defined(VERBOSE)
 	printf("POP3Server: %lld, ConnReady\r\n", cli->GetCliId());
 #endif
@@ -34,25 +34,25 @@ void __stdcall Net::Email::POP3Server::ConnReady(NotNullPtr<Net::TCPClient> cli,
 
 void __stdcall Net::Email::POP3Server::ConnHdlr(Socket *s, AnyType userObj)
 {
-	NotNullPtr<Net::Email::POP3Server> me = userObj.GetNN<Net::Email::POP3Server>();
-	NotNullPtr<Net::SSLEngine> ssl;
+	NN<Net::Email::POP3Server> me = userObj.GetNN<Net::Email::POP3Server>();
+	NN<Net::SSLEngine> ssl;
 	if (me->sslConn && me->ssl.SetTo(ssl))
 	{
 		ssl->ServerInit(s, ConnReady, me);
 	}
 	else
 	{
-		NotNullPtr<Net::TCPClient> cli;
+		NN<Net::TCPClient> cli;
 		NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
 		ConnReady(cli, me);
 	}
 }
 
-void __stdcall Net::Email::POP3Server::ClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::Email::POP3Server::ClientEvent(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
-		NotNullPtr<MailStatus> cliStatus = cliData.GetNN<MailStatus>();
+		NN<MailStatus> cliStatus = cliData.GetNN<MailStatus>();
 		UOSInt i;
 		if (cliStatus->cliName)
 		{
@@ -76,10 +76,10 @@ void __stdcall Net::Email::POP3Server::ClientEvent(NotNullPtr<Net::TCPClient> cl
 	}
 }
 
-void __stdcall Net::Email::POP3Server::ClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
+void __stdcall Net::Email::POP3Server::ClientData(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
 {
-	NotNullPtr<Net::Email::POP3Server> me = userObj.GetNN<Net::Email::POP3Server>();
-	NotNullPtr<MailStatus> cliStatus = cliData.GetNN<MailStatus>();
+	NN<Net::Email::POP3Server> me = userObj.GetNN<Net::Email::POP3Server>();
+	NN<MailStatus> cliStatus = cliData.GetNN<MailStatus>();
 	if (me->rawLog)
 	{
 		me->rawLog->Write(buff.Ptr(), buff.GetSize());
@@ -130,11 +130,11 @@ void __stdcall Net::Email::POP3Server::ClientData(NotNullPtr<Net::TCPClient> cli
 	}
 }
 
-void __stdcall Net::Email::POP3Server::ClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
+void __stdcall Net::Email::POP3Server::ClientTimeout(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
 {
 }
 
-UOSInt Net::Email::POP3Server::WriteMessage(NotNullPtr<Net::TCPClient> cli, Bool success, Text::CString msg)
+UOSInt Net::Email::POP3Server::WriteMessage(NN<Net::TCPClient> cli, Bool success, Text::CString msg)
 {
 	Text::StringBuilderUTF8 sb;
 	if (success)
@@ -164,7 +164,7 @@ UOSInt Net::Email::POP3Server::WriteMessage(NotNullPtr<Net::TCPClient> cli, Bool
 	return buffSize;
 }
 
-UOSInt Net::Email::POP3Server::WriteRAW(NotNullPtr<Net::TCPClient> cli, const UTF8Char *msg, UOSInt msgLen)
+UOSInt Net::Email::POP3Server::WriteRAW(NN<Net::TCPClient> cli, const UTF8Char *msg, UOSInt msgLen)
 {
 	UOSInt buffSize;
 	buffSize = cli->Write(msg, msgLen);
@@ -175,7 +175,7 @@ UOSInt Net::Email::POP3Server::WriteRAW(NotNullPtr<Net::TCPClient> cli, const UT
 	return buffSize;
 }
 
-void Net::Email::POP3Server::ParseCmd(NotNullPtr<Net::TCPClient> cli, NotNullPtr<MailStatus> cliStatus, const UTF8Char *cmd, UOSInt cmdLen)
+void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cliStatus, const UTF8Char *cmd, UOSInt cmdLen)
 {
 #if defined(VERBOSE)
 	printf("%s\r\n", cmd);
@@ -209,7 +209,7 @@ void Net::Email::POP3Server::ParseCmd(NotNullPtr<Net::TCPClient> cli, NotNullPtr
 	}
 	else if (Text::StrEqualsC(cmd, cmdLen, UTF8STRC("STLS")))
 	{
-		NotNullPtr<Net::SSLEngine> ssl;
+		NN<Net::SSLEngine> ssl;
 		if (this->sslConn || cli->IsSSL())
 		{
 			WriteMessage(cli, false, CSTR("Command not permitted when TLS active"));
@@ -562,7 +562,7 @@ void Net::Email::POP3Server::ParseCmd(NotNullPtr<Net::TCPClient> cli, NotNullPtr
 	}
 }
 
-Net::Email::POP3Server::POP3Server(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Bool sslConn, UInt16 port, NotNullPtr<IO::LogTool> log, Text::CString greeting, NotNullPtr<Net::Email::MailController> mailCtrl, Bool autoStart) : cliMgr(60, ClientEvent, ClientData, this, 4, ClientTimeout)
+Net::Email::POP3Server::POP3Server(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Bool sslConn, UInt16 port, NN<IO::LogTool> log, Text::CString greeting, NN<Net::Email::MailController> mailCtrl, Bool autoStart) : cliMgr(60, ClientEvent, ClientData, this, 4, ClientTimeout)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

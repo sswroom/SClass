@@ -12,7 +12,7 @@ namespace Data
 	template <class T> struct FastStringItem
 	{
 		UInt32 hash;
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		T val;
 	};
 
@@ -33,10 +33,10 @@ namespace Data
 			return this->cnt > 0;
 		}
 
-		NotNullPtr<Text::String> Next()
+		NN<Text::String> Next()
 		{
 			this->cnt--;
-			NotNullPtr<Text::String> ret = arr->s;
+			NN<Text::String> ret = arr->s;
 			this->arr++;
 			return ret;
 		}
@@ -50,7 +50,7 @@ namespace Data
 		FastStringItem<T> *items;
 		Crypto::Hash::CRC32RC crc;
 
-		void Insert(UOSInt index, UInt32 hash, NotNullPtr<Text::String> s, T val);
+		void Insert(UOSInt index, UInt32 hash, NN<Text::String> s, T val);
 	public:
 		FastStringMap();
 		FastStringMap(const FastStringMap<T> *map);
@@ -60,17 +60,17 @@ namespace Data
 		virtual T GetItem(UOSInt index) const;
 		virtual Text::String *GetKey(UOSInt index) const;
 		virtual OSInt IndexOf(UInt32 hash, const UTF8Char *s, UOSInt len) const;
-		OSInt IndexOf(NotNullPtr<Text::String> s) const;
+		OSInt IndexOf(NN<Text::String> s) const;
 		OSInt IndexOfC(Text::CStringNN s) const;
 
 		virtual T Put(Text::String *key, T val);
-		T PutNN(NotNullPtr<Text::String> key, T val);
+		T PutNN(NN<Text::String> key, T val);
 		T PutC(Text::CStringNN key, T val);
 		virtual T Get(Text::String *key) const;
-		T GetNN(NotNullPtr<Text::String> key) const;
+		T GetNN(NN<Text::String> key) const;
 		T GetC(Text::CStringNN key) const;
 		virtual T Remove(Text::String *key);
-		T RemoveNN(NotNullPtr<Text::String> key);
+		T RemoveNN(NN<Text::String> key);
 		T RemoveC(Text::CStringNN key);
 		T RemoveAt(UOSInt index);
 		virtual Bool IsEmpty() const;
@@ -80,7 +80,7 @@ namespace Data
 		UInt32 CalcHash(const UTF8Char *s, UOSInt len) const;
 	};
 
-	template <class T> void FastStringMap<T>::Insert(UOSInt index, UInt32 hash, NotNullPtr<Text::String> s, T val)
+	template <class T> void FastStringMap<T>::Insert(UOSInt index, UInt32 hash, NN<Text::String> s, T val)
 	{
 		if (index > this->cnt)
 		{
@@ -249,7 +249,7 @@ namespace Data
 		return -i - 1;
 	}
 
-	template <class T> OSInt FastStringMap<T>::IndexOf(NotNullPtr<Text::String> s) const
+	template <class T> OSInt FastStringMap<T>::IndexOf(NN<Text::String> s) const
 	{
 		UInt32 hash = this->crc.CalcDirect(s->v, s->leng);
 		return IndexOf(hash, s->v, s->leng);
@@ -263,10 +263,10 @@ namespace Data
 
 	template <class T> T FastStringMap<T>::Put(Text::String *key, T val)
 	{
-		return PutNN(NotNullPtr<Text::String>::FromPtr(key), val);
+		return PutNN(NN<Text::String>::FromPtr(key), val);
 	}
 
-	template <class T> T FastStringMap<T>::PutNN(NotNullPtr<Text::String> key, T val)
+	template <class T> T FastStringMap<T>::PutNN(NN<Text::String> key, T val)
 	{
 		UInt32 hash = this->crc.CalcDirect(key->v, key->leng);
 		OSInt index = this->IndexOf(hash, key->v, key->leng);
@@ -302,10 +302,10 @@ namespace Data
 
 	template <class T> T FastStringMap<T>::Get(Text::String *key) const
 	{
-		return GetNN(NotNullPtr<Text::String>::FromPtr(key));
+		return GetNN(NN<Text::String>::FromPtr(key));
 	}
 
-	template <class T> T FastStringMap<T>::GetNN(NotNullPtr<Text::String> key) const
+	template <class T> T FastStringMap<T>::GetNN(NN<Text::String> key) const
 	{
 		UInt32 hash = this->crc.CalcDirect(key->v, key->leng);
 		OSInt index = this->IndexOf(hash, key->v, key->leng);
@@ -329,10 +329,10 @@ namespace Data
 
 	template <class T> T FastStringMap<T>::Remove(Text::String *key)
 	{
-		return RemoveNN(NotNullPtr<Text::String>::FromPtr(key));
+		return RemoveNN(NN<Text::String>::FromPtr(key));
 	}
 
-	template <class T> T FastStringMap<T>::RemoveNN(NotNullPtr<Text::String> key)
+	template <class T> T FastStringMap<T>::RemoveNN(NN<Text::String> key)
 	{
 		UInt32 hash = this->crc.CalcDirect(key->v, key->leng);
 		OSInt index = this->IndexOf(hash, key->v, key->leng);

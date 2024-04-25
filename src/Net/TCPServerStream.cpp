@@ -7,7 +7,7 @@
 
 void __stdcall Net::TCPServerStream::ConnHandler(Socket *s, AnyType userObj)
 {
-	NotNullPtr<Net::TCPServerStream> me = userObj.GetNN<Net::TCPServerStream>();
+	NN<Net::TCPServerStream> me = userObj.GetNN<Net::TCPServerStream>();
 	Net::TCPClient *cli;
 	NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
 	Sync::MutexUsage connMutUsage(me->connMut);
@@ -27,7 +27,7 @@ void __stdcall Net::TCPServerStream::ConnHandler(Socket *s, AnyType userObj)
 	me->readEvt.Set();
 }
 
-Net::TCPServerStream::TCPServerStream(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log) : IO::Stream(CSTR("Net.TCPBoardcastSream"))
+Net::TCPServerStream::TCPServerStream(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log) : IO::Stream(CSTR("Net.TCPBoardcastSream"))
 {
 	this->sockf = sockf;
 	this->log = log;

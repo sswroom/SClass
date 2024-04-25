@@ -8,7 +8,7 @@
 
 UInt32 __stdcall Net::RAWAnalyzer::RecvThread(AnyType userObj)
 {
-	NotNullPtr<Net::RAWAnalyzer> me = userObj.GetNN<Net::RAWAnalyzer>();
+	NN<Net::RAWAnalyzer> me = userObj.GetNN<Net::RAWAnalyzer>();
 	UInt8 packetBuff[10240];
 	UOSInt packetSize;
 	Net::SocketUtil::AddressInfo addr;
@@ -26,7 +26,7 @@ UInt32 __stdcall Net::RAWAnalyzer::RecvThread(AnyType userObj)
 	return 0;
 }
 
-Net::RAWAnalyzer::RAWAnalyzer(NotNullPtr<Net::SocketFactory> sockf, UInt16 infoPort, IO::Writer *errWriter, Net::EthernetAnalyzer::AnalyzeType atype)
+Net::RAWAnalyzer::RAWAnalyzer(NN<Net::SocketFactory> sockf, UInt16 infoPort, IO::Writer *errWriter, Net::EthernetAnalyzer::AnalyzeType atype)
 {
 	this->sockf = sockf;
 	NEW_CLASS(this->analyzer, Net::EthernetAnalyzer(errWriter, atype, CSTR("RAWAnalyzer"))); 

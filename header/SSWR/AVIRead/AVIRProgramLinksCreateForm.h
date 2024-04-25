@@ -19,26 +19,26 @@ namespace SSWR
 		{
 		private:
 			IO::ProgramLinkManager *progMgr;
-			NotNullPtr<UI::GUICheckBox> chkThisUser;
-			NotNullPtr<UI::GUILabel> lblShortName;
-			NotNullPtr<UI::GUITextBox> txtShortName;
-			NotNullPtr<UI::GUILabel> lblName;
-			NotNullPtr<UI::GUITextBox> txtName;
-			NotNullPtr<UI::GUILabel> lblComment;
-			NotNullPtr<UI::GUITextBox> txtComment;
-			NotNullPtr<UI::GUILabel> lblCategories;
-			NotNullPtr<UI::GUITextBox> txtCategories;
-			NotNullPtr<UI::GUILabel> lblCmdLine;
-			NotNullPtr<UI::GUITextBox> txtCmdLine;
-			NotNullPtr<UI::GUIButton> btnCreate;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUICheckBox> chkThisUser;
+			NN<UI::GUILabel> lblShortName;
+			NN<UI::GUITextBox> txtShortName;
+			NN<UI::GUILabel> lblName;
+			NN<UI::GUITextBox> txtName;
+			NN<UI::GUILabel> lblComment;
+			NN<UI::GUITextBox> txtComment;
+			NN<UI::GUILabel> lblCategories;
+			NN<UI::GUITextBox> txtCategories;
+			NN<UI::GUILabel> lblCmdLine;
+			NN<UI::GUITextBox> txtCmdLine;
+			NN<UI::GUIButton> btnCreate;
+			NN<UI::GUIButton> btnCancel;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
 			static void __stdcall OnCreateClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			AVIRProgramLinksCreateForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::ProgramLinkManager *progMgr);
+			AVIRProgramLinksCreateForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::ProgramLinkManager *progMgr);
 			virtual ~AVIRProgramLinksCreateForm();
 
 			virtual void OnMonitorChanged();

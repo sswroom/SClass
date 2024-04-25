@@ -6,7 +6,7 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-Media::AudioFilter::DTMFGenerator::DTMFGenerator(NotNullPtr<IAudioSource> sourceAudio) : Media::IAudioFilter(sourceAudio)
+Media::AudioFilter::DTMFGenerator::DTMFGenerator(NN<IAudioSource> sourceAudio) : Media::IAudioFilter(sourceAudio)
 {
 	sourceAudio->GetFormat(this->format);
 
@@ -25,7 +25,7 @@ Media::AudioFilter::DTMFGenerator::~DTMFGenerator()
 	SDEL_STRING(this->tonesVals);
 }
 
-void Media::AudioFilter::DTMFGenerator::GetFormat(NotNullPtr<AudioFormat> format)
+void Media::AudioFilter::DTMFGenerator::GetFormat(NN<AudioFormat> format)
 {
 	format->FromAudioFormat(this->format);
 }

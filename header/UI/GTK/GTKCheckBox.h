@@ -12,7 +12,7 @@ namespace UI
 		private:
 			static void SignalToggled(GtkToggleButton *btn, gpointer data);
 		public:
-			GTKCheckBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool checked);
+			GTKCheckBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool checked);
 			virtual ~GTKCheckBox();
 
 			virtual void SetText(Text::CStringNN text);

@@ -9,7 +9,7 @@ namespace Data
 		DataMapNN();
 		virtual ~DataMapNN();
 
-		virtual Optional<V> Put(T key, NotNullPtr<V> val) = 0;
+		virtual Optional<V> Put(T key, NN<V> val) = 0;
 		virtual Optional<V> Get(T key) const = 0;
 		virtual Optional<V> Remove(T key) = 0;
 		virtual Bool IsEmpty() const = 0;

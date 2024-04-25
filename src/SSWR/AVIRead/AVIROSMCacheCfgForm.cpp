@@ -9,7 +9,7 @@
 
 void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnOKClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIROSMCacheCfgForm> me = userObj.GetNN<SSWR::AVIRead::AVIROSMCacheCfgForm>();
+	NN<SSWR::AVIRead::AVIROSMCacheCfgForm> me = userObj.GetNN<SSWR::AVIRead::AVIROSMCacheCfgForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UInt16 port;
@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnOKClick(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Please enter valid HTTP port number"), CSTR("Error"), me);
 		return;
 	}
-	NotNullPtr<Map::OSM::OSMCacheHandler> hdlr;
+	NN<Map::OSM::OSMCacheHandler> hdlr;
 	UOSInt selItem = me->cboMapType->GetSelectedIndex();
 	switch (selItem)
 	{
@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnOKClick(AnyType userObj)
 		hdlr->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/spinal-map/"));
 		break;
 	}
-	NotNullPtr<Net::WebServer::WebListener> listener;
+	NN<Net::WebServer::WebListener> listener;
 	NEW_CLASSNN(listener, Net::WebServer::WebListener(me->core->GetSocketFactory(), 0, hdlr, port, 120, 1, 8, CSTR("SSWR_OSM_Cache/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (listener->IsError())
 	{
@@ -93,7 +93,7 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnOKClick(AnyType userObj)
 		return;
 	}
 
-	NotNullPtr<SSWR::AVIRead::AVIROSMCacheForm> frm;
+	NN<SSWR::AVIRead::AVIROSMCacheForm> frm;
 	NEW_CLASSNN(frm, SSWR::AVIRead::AVIROSMCacheForm(0, me->ui, me->core, listener, hdlr));
 	me->core->ShowForm(frm);
 	me->Close();
@@ -101,11 +101,11 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnOKClick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnCancelClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIROSMCacheCfgForm> me = userObj.GetNN<SSWR::AVIRead::AVIROSMCacheCfgForm>();
+	NN<SSWR::AVIRead::AVIROSMCacheCfgForm> me = userObj.GetNN<SSWR::AVIRead::AVIROSMCacheCfgForm>();
 	me->Close();
 }
 
-SSWR::AVIRead::AVIROSMCacheCfgForm::AVIROSMCacheCfgForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 256, 128, ui)
+SSWR::AVIRead::AVIROSMCacheCfgForm::AVIROSMCacheCfgForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 256, 128, ui)
 {
 	this->SetText(CSTR("OSM Cache Setting"));
 	this->SetFont(0, 0, 8.25, false);

@@ -14,7 +14,7 @@ Math::SRWKTWriter::~SRWKTWriter()
 
 }
 
-UTF8Char *Math::SRWKTWriter::WriteCSys(NotNullPtr<Math::CoordinateSystem> csys, UTF8Char *buff, UOSInt lev, Text::LineBreakType lbt)
+UTF8Char *Math::SRWKTWriter::WriteCSys(NN<Math::CoordinateSystem> csys, UTF8Char *buff, UOSInt lev, Text::LineBreakType lbt)
 {
 	if (csys->IsProjected())
 	{
@@ -75,7 +75,7 @@ UTF8Char *Math::SRWKTWriter::WriteCSys(NotNullPtr<Math::CoordinateSystem> csys, 
 		buff = gcsys->GetCSysName()->ConcatTo(buff);
 		buff = Text::StrConcatC(buff, UTF8STRC("\","));
 		buff = WriteNextLine(buff, lev + 1, lbt);
-		NotNullPtr<const Math::GeographicCoordinateSystem::DatumData1> datum = gcsys->GetDatum();
+		NN<const Math::GeographicCoordinateSystem::DatumData1> datum = gcsys->GetDatum();
 		buff = WriteDatum(datum, buff, lev + 1, lbt);
 		buff = WritePrimem(buff, gcsys->GetPrimem(), lev + 1, lbt);
 		buff = WriteUnit(buff, gcsys->GetUnit(), lev + 1, lbt);
@@ -85,7 +85,7 @@ UTF8Char *Math::SRWKTWriter::WriteCSys(NotNullPtr<Math::CoordinateSystem> csys, 
 	return buff;
 }
 
-UTF8Char *Math::SRWKTWriter::WriteDatum(NotNullPtr<const Math::CoordinateSystem::DatumData1> datum, UTF8Char *buff, UOSInt lev, Text::LineBreakType lbt)
+UTF8Char *Math::SRWKTWriter::WriteDatum(NN<const Math::CoordinateSystem::DatumData1> datum, UTF8Char *buff, UOSInt lev, Text::LineBreakType lbt)
 {
 	buff = Text::StrConcatC(buff, UTF8STRC("DATUM[\""));
 	buff = Text::StrConcatC(buff, datum->name, datum->nameLen);

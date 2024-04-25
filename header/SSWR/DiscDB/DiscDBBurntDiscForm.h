@@ -19,7 +19,7 @@ namespace SSWR
 			typedef struct
 			{
 				const UTF8Char *mainTitle;
-				NotNullPtr<Text::String> type;
+				NN<Text::String> type;
 				const UTF8Char *chapter;
 				const UTF8Char *chapterTitle;
 				Text::CString videoFormat;
@@ -36,7 +36,7 @@ namespace SSWR
 
 			typedef struct
 			{
-				NotNullPtr<Text::String> fname;
+				NN<Text::String> fname;
 				UInt64 fSize;
 				Text::CString cate;
 				Int32 videoId;
@@ -49,39 +49,39 @@ namespace SSWR
 			BurntFile *selectedFile;
 			Data::ArrayList<BurntFile*> *fileList;
 
-			NotNullPtr<UI::GUIPanel> pnlTop;
-			NotNullPtr<UI::GUIPanel> pnlBurntDisc;
-			NotNullPtr<UI::GUIButton> btnBrowse;
-			NotNullPtr<UI::GUIButton> btnFinish;
-			NotNullPtr<UI::GUIButton> btnNewDisc;
-			NotNullPtr<UI::GUILabel> lblDiscId;
-			NotNullPtr<UI::GUITextBox> txtDiscId;
-			NotNullPtr<UI::GUILabel> lblDiscType;
-			NotNullPtr<UI::GUITextBox> txtDiscType;
-			NotNullPtr<UI::GUILabel> lblDate;
-			NotNullPtr<UI::GUITextBox> txtDate;
-			NotNullPtr<UI::GUIListBox> lbDiscId;
-			NotNullPtr<UI::GUIListBox> lbBrand;
-			NotNullPtr<UI::GUIListBox> lbDVDName;
-			NotNullPtr<UI::GUIPanel> pnlFile;
-			NotNullPtr<UI::GUILabel> lblCategory;
-			NotNullPtr<UI::GUIComboBox> cboCategory;
-			NotNullPtr<UI::GUIPanel> pnlDVDV;
-			NotNullPtr<UI::GUILabel> lblDVDName;
-			NotNullPtr<UI::GUIComboBox> cboDVDName;
-			NotNullPtr<UI::GUILabel> lblSeries;
-			NotNullPtr<UI::GUIComboBox> cboSeries;
-			NotNullPtr<UI::GUILabel> lblVolume;
-			NotNullPtr<UI::GUIComboBox> cboVolume;
-			NotNullPtr<UI::GUILabel> lblDVDType;
-			NotNullPtr<UI::GUIComboBox> cboDVDType;
-			NotNullPtr<UI::GUIButton> btnAllFile;
-			NotNullPtr<UI::GUIButton> btnRemoveFile;
-			NotNullPtr<UI::GUIButton> btnBuildMovie;
-			NotNullPtr<UI::GUILabel> lblSectorSize;
-			NotNullPtr<UI::GUITextBox> txtSectorSize;
-			NotNullPtr<UI::GUIButton> btnSectorSize;
-			NotNullPtr<UI::GUIListBox> lbFileName;
+			NN<UI::GUIPanel> pnlTop;
+			NN<UI::GUIPanel> pnlBurntDisc;
+			NN<UI::GUIButton> btnBrowse;
+			NN<UI::GUIButton> btnFinish;
+			NN<UI::GUIButton> btnNewDisc;
+			NN<UI::GUILabel> lblDiscId;
+			NN<UI::GUITextBox> txtDiscId;
+			NN<UI::GUILabel> lblDiscType;
+			NN<UI::GUITextBox> txtDiscType;
+			NN<UI::GUILabel> lblDate;
+			NN<UI::GUITextBox> txtDate;
+			NN<UI::GUIListBox> lbDiscId;
+			NN<UI::GUIListBox> lbBrand;
+			NN<UI::GUIListBox> lbDVDName;
+			NN<UI::GUIPanel> pnlFile;
+			NN<UI::GUILabel> lblCategory;
+			NN<UI::GUIComboBox> cboCategory;
+			NN<UI::GUIPanel> pnlDVDV;
+			NN<UI::GUILabel> lblDVDName;
+			NN<UI::GUIComboBox> cboDVDName;
+			NN<UI::GUILabel> lblSeries;
+			NN<UI::GUIComboBox> cboSeries;
+			NN<UI::GUILabel> lblVolume;
+			NN<UI::GUIComboBox> cboVolume;
+			NN<UI::GUILabel> lblDVDType;
+			NN<UI::GUIComboBox> cboDVDType;
+			NN<UI::GUIButton> btnAllFile;
+			NN<UI::GUIButton> btnRemoveFile;
+			NN<UI::GUIButton> btnBuildMovie;
+			NN<UI::GUILabel> lblSectorSize;
+			NN<UI::GUITextBox> txtSectorSize;
+			NN<UI::GUIButton> btnSectorSize;
+			NN<UI::GUIListBox> lbFileName;
 
 			void UpdateDiscId();
 			void UpdateBrand();
@@ -116,7 +116,7 @@ namespace SSWR
 			static void __stdcall OnAllFileClicked(AnyType userObj);
 
 		public:
-			DiscDBBurntDiscForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, SSWR::DiscDB::DiscDBEnv *env);
+			DiscDBBurntDiscForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, SSWR::DiscDB::DiscDBEnv *env);
 			virtual ~DiscDBBurntDiscForm();
 
 			virtual void OnMonitorChanged();

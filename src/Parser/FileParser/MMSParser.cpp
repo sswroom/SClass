@@ -18,7 +18,7 @@ Int32 Parser::FileParser::MMSParser::GetName()
 	return *(Int32*)"MMSP";
 }
 
-void Parser::FileParser::MMSParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::MMSParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
@@ -31,7 +31,7 @@ IO::ParserType Parser::FileParser::MMSParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::MMSParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::MMSParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	IO::VirtualPackageFile *pf;
 	UInt32 fileCnt;

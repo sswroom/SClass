@@ -18,7 +18,7 @@ void Text::Cpp::CppParseStatus::FreeFileStatus(FileParseStatus *fileStatus)
 	MemFree(fileStatus);
 }
 
-Text::Cpp::CppParseStatus::CppParseStatus(NotNullPtr<Text::String> rootFile)
+Text::Cpp::CppParseStatus::CppParseStatus(NN<Text::String> rootFile)
 {
 	this->fileName = rootFile->Clone();
 }
@@ -56,7 +56,7 @@ Text::Cpp::CppParseStatus::FileParseStatus *Text::Cpp::CppParseStatus::GetFileSt
 
 Bool Text::Cpp::CppParseStatus::BeginParseFile(Text::CString fileName)
 {
-	NotNullPtr<Text::String> fname;
+	NN<Text::String> fname;
 	OSInt i = this->fileNames.SortedIndexOfPtr(fileName.v, fileName.leng);
 	if (i >= 0)
 	{
@@ -258,7 +258,7 @@ Bool Text::Cpp::CppParseStatus::Undefine(Text::CStringNN defName)
 	return false;
 }
 
-Bool Text::Cpp::CppParseStatus::GetDefineVal(Text::CStringNN defName, Text::CString defParam, NotNullPtr<Text::StringBuilderUTF8> sbOut)
+Bool Text::Cpp::CppParseStatus::GetDefineVal(Text::CStringNN defName, Text::CString defParam, NN<Text::StringBuilderUTF8> sbOut)
 {
 	DefineInfo *defInfo = this->defines.GetC(defName);
 	if (defInfo)
@@ -344,7 +344,7 @@ Text::String *Text::Cpp::CppParseStatus::GetFileName(UOSInt index)
 	return this->fileNames.GetItem(index);
 }
 
-NotNullPtr<Text::String> Text::Cpp::CppParseStatus::GetCurrCodeFile() const
+NN<Text::String> Text::Cpp::CppParseStatus::GetCurrCodeFile() const
 {
 	UOSInt i = this->statuses.GetCount();
 	if (i > 0)

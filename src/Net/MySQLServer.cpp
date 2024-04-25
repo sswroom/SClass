@@ -272,10 +272,10 @@ Net::MySQLServer::CharsetInfo Net::MySQLServer::charsets[] = {
 {738, "utf32_thai_520_w2",            "utf32"},
 };
 
-void __stdcall Net::MySQLServer::OnClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::MySQLServer::OnClientEvent(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
-	NotNullPtr<Net::MySQLServer> me = userObj.GetNN<Net::MySQLServer>();
-	NotNullPtr<ClientData> data = cliData.GetNN<ClientData>();
+	NN<Net::MySQLServer> me = userObj.GetNN<Net::MySQLServer>();
+	NN<ClientData> data = cliData.GetNN<ClientData>();
 	UOSInt i;
 
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
@@ -293,7 +293,7 @@ void __stdcall Net::MySQLServer::OnClientEvent(NotNullPtr<Net::TCPClient> cli, A
 		#if defined(VERBOSE)
 		printf("Client disconnected\r\n");
 		#endif
-		NotNullPtr<const Data::ArrayList<const UTF8Char*>> attrList = data->attrMap->GetValues();
+		NN<const Data::ArrayList<const UTF8Char*>> attrList = data->attrMap->GetValues();
 		i = attrList->GetCount();
 		while (i-- > 0)
 		{
@@ -306,10 +306,10 @@ void __stdcall Net::MySQLServer::OnClientEvent(NotNullPtr<Net::TCPClient> cli, A
 	}
 }
 
-void __stdcall Net::MySQLServer::OnClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
+void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
 {
-	NotNullPtr<Net::MySQLServer> me = userObj.GetNN<Net::MySQLServer>();
-	NotNullPtr<ClientData> data = cliData.GetNN<ClientData>();
+	NN<Net::MySQLServer> me = userObj.GetNN<Net::MySQLServer>();
+	NN<ClientData> data = cliData.GetNN<ClientData>();
 
 	#if defined(VERBOSE)
 	{
@@ -550,7 +550,7 @@ void __stdcall Net::MySQLServer::OnClientData(NotNullPtr<Net::TCPClient> cli, An
 				{
 				case 3:
 					{
-						NotNullPtr<Text::String> sql = Text::String::New(&data->buff[i + 5], packetSize - 1);
+						NN<Text::String> sql = Text::String::New(&data->buff[i + 5], packetSize - 1);
 					#if defined(VERBOSE)
 						printf("COM_QUERY: query_text = %s\r\n", sql->v);
 					#endif
@@ -766,17 +766,17 @@ void __stdcall Net::MySQLServer::OnClientData(NotNullPtr<Net::TCPClient> cli, An
 	}
 }
 
-void __stdcall Net::MySQLServer::OnClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
+void __stdcall Net::MySQLServer::OnClientTimeout(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
 {
 }
 
 void __stdcall Net::MySQLServer::OnClientConn(Socket *s, AnyType userObj)
 {
-	NotNullPtr<Net::MySQLServer> me = userObj.GetNN<Net::MySQLServer>();
+	NN<Net::MySQLServer> me = userObj.GetNN<Net::MySQLServer>();
 	UInt8 buff[128];
 	UInt8 *bptr;
 	OSInt i;
-	NotNullPtr<Net::TCPClient> cli;
+	NN<Net::TCPClient> cli;
 	ClientData *data;
 	NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
 	data = MemAlloc(ClientData, 1);
@@ -824,7 +824,7 @@ void __stdcall Net::MySQLServer::OnClientConn(Socket *s, AnyType userObj)
 }
 
 
-Net::MySQLServer::MySQLServer(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, DB::DBMS *dbms, Bool autoStart) : rand((UInt32)(Data::DateTimeUtil::GetCurrTimeMillis() & 0xffffffff))
+Net::MySQLServer::MySQLServer(NN<Net::SocketFactory> sockf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, DB::DBMS *dbms, Bool autoStart) : rand((UInt32)(Data::DateTimeUtil::GetCurrTimeMillis() & 0xffffffff))
 {
 	this->sockf = sockf;
 	this->dbms = dbms;

@@ -131,7 +131,7 @@ void Net::PushManager::SaveData()
 	}
 }
 
-Net::PushManager::PushManager(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString fcmKey, NotNullPtr<IO::LogTool> log)
+Net::PushManager::PushManager(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString fcmKey, NN<IO::LogTool> log)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -163,7 +163,7 @@ Net::PushManager::~PushManager()
 	this->fcmKey->Release();
 }
 
-Bool Net::PushManager::Subscribe(Text::CStringNN token, Text::CStringNN userName, DeviceType devType, NotNullPtr<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CString devModel)
+Bool Net::PushManager::Subscribe(Text::CStringNN token, Text::CStringNN userName, DeviceType devType, NN<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CString devModel)
 {
 	Sync::MutexUsage mutUsage(this->dataMut);
 	DeviceInfo2 *dev = this->devMap.GetC(token);
@@ -253,12 +253,12 @@ Bool Net::PushManager::Unsubscribe(Text::CStringNN token)
 	}
 }
 
-Bool Net::PushManager::Send(Data::ArrayListStringNN *userNames, NotNullPtr<Text::String> message)
+Bool Net::PushManager::Send(Data::ArrayListStringNN *userNames, NN<Text::String> message)
 {
 	Sync::MutexUsage mutUsage(this->dataMut);
 	UserInfo *user;
 	Data::ArrayListStringNN tokenList;
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = userNames->Iterator();
+	Data::ArrayIterator<NN<Text::String>> it = userNames->Iterator();
 	while (it.HasNext())
 	{
 		user = this->userMap.GetNN(it.Next());
@@ -292,7 +292,7 @@ Bool Net::PushManager::Send(Data::ArrayListStringNN *userNames, NotNullPtr<Text:
 	}
 }
 
-UOSInt Net::PushManager::GetUsers(Data::ArrayListStringNN *users, NotNullPtr<Sync::MutexUsage> mutUsage)
+UOSInt Net::PushManager::GetUsers(Data::ArrayListStringNN *users, NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->dataMut);
 	UOSInt i = 0;
@@ -312,7 +312,7 @@ UOSInt Net::PushManager::GetUsers(Data::ArrayListStringNN *users, NotNullPtr<Syn
 	return ret;
 }
 
-NotNullPtr<const Data::ReadingList<Net::PushManager::DeviceInfo2*>> Net::PushManager::GetDevices(NotNullPtr<Sync::MutexUsage> mutUsage)
+NN<const Data::ReadingList<Net::PushManager::DeviceInfo2*>> Net::PushManager::GetDevices(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->dataMut);
 	return this->devMap;

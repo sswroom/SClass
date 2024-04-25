@@ -19,15 +19,15 @@ namespace SSWR
 			} PinState;
 			
 		private:
-			NotNullPtr<UI::GUIListView> lvStatus;
+			NN<UI::GUIListView> lvStatus;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::GPIOControl *ctrl;
 			PinState *states;
 
 			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
-			AVIRGPIOStatusForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRGPIOStatusForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRGPIOStatusForm();
 
 			virtual void OnMonitorChanged();

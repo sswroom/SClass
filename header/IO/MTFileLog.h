@@ -24,22 +24,22 @@ namespace IO
 		IO::LogHandler::LogType logStyle;
 		IO::LogHandler::LogGroup groupStyle;
 		Int32 lastVal;
-		NotNullPtr<Text::UTF8Writer> log;
-		NotNullPtr<IO::BufferedOutputStream> cstm;
-		NotNullPtr<IO::FileStream> fileStm;
+		NN<Text::UTF8Writer> log;
+		NN<IO::BufferedOutputStream> cstm;
+		NN<IO::FileStream> fileStm;
 		const UTF8Char *dateFormat;
-		NotNullPtr<Text::String> fileName;
+		NN<Text::String> fileName;
 		Text::String *extName;
 		Bool closed;
 		Bool running;
 		Bool hasNewFile;
 
-		UTF8Char *GetNewName(UTF8Char *buff, NotNullPtr<Data::DateTimeUtil::TimeValue> logTime, UInt32 nanosec, Int32 *lastVal);
-		void WriteArr(NotNullPtr<Text::String> *msgArr, Data::Timestamp *dateArr, UOSInt arrCnt);
+		UTF8Char *GetNewName(UTF8Char *buff, NN<Data::DateTimeUtil::TimeValue> logTime, UInt32 nanosec, Int32 *lastVal);
+		void WriteArr(NN<Text::String> *msgArr, Data::Timestamp *dateArr, UOSInt arrCnt);
 		static UInt32 __stdcall FileThread(AnyType userObj);
 		void Init(LogType style, LogGroup groupStyle, const Char *dateFormat);
 	public:
-		MTFileLog(NotNullPtr<Text::String> fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
+		MTFileLog(NN<Text::String> fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
 		MTFileLog(Text::CStringNN fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
 		virtual ~MTFileLog();
 		virtual void LogClosed();

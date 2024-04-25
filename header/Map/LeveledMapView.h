@@ -22,7 +22,7 @@ namespace Map
 		void UpdateVals();
 
 	public:
-		LeveledMapView(Bool projected, Math::Size2DDbl scnSize, Math::Coord2DDbl center, NotNullPtr<const Data::ArrayListDbl> scales);
+		LeveledMapView(Bool projected, Math::Size2DDbl scnSize, Math::Coord2DDbl center, NN<const Data::ArrayListDbl> scales);
 		virtual ~LeveledMapView();
 
 		virtual void ChangeViewXY(Math::Size2DDbl scnSize, Math::Coord2DDbl centMap, Double scale);
@@ -45,7 +45,7 @@ namespace Map
 		virtual Bool IMapXYToScnXY(Double mapRate, const Math::Coord2D<Int32> *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const; // return inScreen
 		virtual Math::Coord2DDbl MapXYToScnXY(Math::Coord2DDbl mapPos) const;
 		virtual Math::Coord2DDbl ScnXYToMapXY(Math::Coord2DDbl scnPos) const;
-		virtual NotNullPtr<Map::MapView> Clone() const;
+		virtual NN<Map::MapView> Clone() const;
 	};
 }
 #endif

@@ -18,7 +18,7 @@ namespace Text
 		~SearchIndexer();
 
 		void IndexString(const UTF8Char *str, Int64 key);
-		UOSInt SearchString(NotNullPtr<Data::ArrayListInt64> outArr, const UTF8Char *searchStr, UOSInt maxResults);
+		UOSInt SearchString(NN<Data::ArrayListInt64> outArr, const UTF8Char *searchStr, UOSInt maxResults);
 	};
 }
 #endif

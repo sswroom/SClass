@@ -138,8 +138,8 @@ void UI::Win::WinPictureBox::Deinit(InstanceHandle *hInst)
 
 void UI::Win::WinPictureBox::UpdatePreview()
 {
-	NotNullPtr<Media::DrawImage> img;
-	NotNullPtr<Media::StaticImage> simg;
+	NN<Media::DrawImage> img;
+	NN<Media::StaticImage> simg;
 	if (img.Set(this->prevImageD))
 	{
 		this->eng->DeleteImage(img);
@@ -150,7 +150,7 @@ void UI::Win::WinPictureBox::UpdatePreview()
 	{
 		if (this->allowResize)
 		{
-			NotNullPtr<Media::StaticImage> tmpImage;
+			NN<Media::StaticImage> tmpImage;
 			if (tmpImage.Set(resizer->ProcessToNew(simg)))
 			{
 				this->prevImageD = this->eng->ConvImage(tmpImage);
@@ -169,7 +169,7 @@ void UI::Win::WinPictureBox::UpdatePreview()
 	this->Redraw();
 }
 
-UI::Win::WinPictureBox::WinPictureBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize) : UI::GUIPictureBox(ui, parent, eng, hasBorder, allowResize)
+UI::Win::WinPictureBox::WinPictureBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize) : UI::GUIPictureBox(ui, parent, eng, hasBorder, allowResize)
 {
 	this->prevImageD = 0;
 
@@ -188,7 +188,7 @@ UI::Win::WinPictureBox::WinPictureBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI:
 
 UI::Win::WinPictureBox::~WinPictureBox()
 {
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->prevImageD))
 	{
 		this->eng->DeleteImage(img);

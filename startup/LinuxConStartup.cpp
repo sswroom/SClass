@@ -12,7 +12,7 @@
 #define printf(fmt, ...) {Char sbuff[512]; sprintf(sbuff, fmt, __VA_ARGS__); syslog(LOG_DEBUG, sbuff);}
 #endif
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl);
+Int32 MyMain(NN<Core::IProgControl> progCtrl);
 
 struct LinuxProgControl : public Core::IProgControl
 {
@@ -27,7 +27,7 @@ void LinuxProgControl_OnSignal(Int32 sigNum)
 #endif
 }
 
-void __stdcall LinuxProgControl_WaitForExit(NotNullPtr<Core::IProgControl> progCtrl)
+void __stdcall LinuxProgControl_WaitForExit(NN<Core::IProgControl> progCtrl)
 {
 	signal(SIGINT, LinuxProgControl_OnSignal);
 	signal(SIGPIPE, LinuxProgControl_OnSignal);
@@ -36,24 +36,24 @@ void __stdcall LinuxProgControl_WaitForExit(NotNullPtr<Core::IProgControl> progC
 //	getchar();
 }
 
-void __stdcall LinuxProgControl_SignalExit(NotNullPtr<Core::IProgControl> progCtrl)
+void __stdcall LinuxProgControl_SignalExit(NN<Core::IProgControl> progCtrl)
 {
 	raise(SIGINT);
 }
 
-Optional<UI::GUICore> __stdcall Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
+Optional<UI::GUICore> __stdcall Core::IProgControl::CreateGUICore(NN<Core::IProgControl> progCtrl)
 {
 	return 0;
 }
 
-UTF8Char **__stdcall LinuxProgControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
+UTF8Char **__stdcall LinuxProgControl_GetCommandLines(NN<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
 {
 	LinuxProgControl *ctrl = (LinuxProgControl*)progCtrl.Ptr();
 	cmdCnt.Set(ctrl->argc);
 	return ctrl->argv;
 }
 
-void LinuxProgControl_Create(NotNullPtr<LinuxProgControl> ctrl, UOSInt argc, Char **argv)
+void LinuxProgControl_Create(NN<LinuxProgControl> ctrl, UOSInt argc, Char **argv)
 {
 	ctrl->argv = (UTF8Char**)argv;
 	ctrl->argc = argc;
@@ -64,7 +64,7 @@ void LinuxProgControl_Create(NotNullPtr<LinuxProgControl> ctrl, UOSInt argc, Cha
 	ctrl->SignalRestart = LinuxProgControl_SignalExit;
 }
 
-void LinuxProgControl_Destroy(NotNullPtr<LinuxProgControl> ctrl)
+void LinuxProgControl_Destroy(NN<LinuxProgControl> ctrl)
 {
 }
 

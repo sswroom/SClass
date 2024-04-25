@@ -31,9 +31,9 @@ void Net::EthernetAnalyzer::NetBIOSDecName(UTF8Char *nameBuff, UOSInt nameSize)
 	*destPtr = 0;
 }
 
-NotNullPtr<Net::EthernetAnalyzer::MACStatus> Net::EthernetAnalyzer::MACGet(UInt64 macAddr)
+NN<Net::EthernetAnalyzer::MACStatus> Net::EthernetAnalyzer::MACGet(UInt64 macAddr)
 {
-	NotNullPtr<MACStatus> mac;
+	NN<MACStatus> mac;
 	if (this->macMap.Get(macAddr).SetTo(mac))
 		return mac;
 	mac = MemAllocNN(MACStatus);
@@ -43,10 +43,10 @@ NotNullPtr<Net::EthernetAnalyzer::MACStatus> Net::EthernetAnalyzer::MACGet(UInt6
 	return mac;
 }
 
-void Net::EthernetAnalyzer::MDNSAdd(NotNullPtr<Net::DNSClient::RequestAnswer> ans)
+void Net::EthernetAnalyzer::MDNSAdd(NN<Net::DNSClient::RequestAnswer> ans)
 {
 	Sync::MutexUsage mutUsage(this->mdnsMut);
-	NotNullPtr<Net::DNSClient::RequestAnswer> rans;
+	NN<Net::DNSClient::RequestAnswer> rans;
 	OSInt i = 0;
 	OSInt j = (OSInt)this->mdnsList.GetCount() - 1;
 	OSInt k;
@@ -81,7 +81,7 @@ void Net::EthernetAnalyzer::MDNSAdd(NotNullPtr<Net::DNSClient::RequestAnswer> an
 	this->mdnsList.Insert((UOSInt)i, ans);
 }
 
-Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType, NotNullPtr<Text::String> name) : IO::ParsedObject(name), tcp4synList(128)
+Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType, NN<Text::String> name) : IO::ParsedObject(name), tcp4synList(128)
 {
 	this->atype = aType;
 	this->packetCnt = 0;
@@ -105,7 +105,7 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 {
 	UOSInt i;
 	UOSInt j;
-	NotNullPtr<MACStatus> mac;
+	NN<MACStatus> mac;
 	i = this->macMap.GetCount();
 	while (i-- > 0)
 	{
@@ -120,7 +120,7 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 		MemFreeNN(mac);
 	}
 
-	NotNullPtr<IPTranStatus> ipTran;
+	NN<IPTranStatus> ipTran;
 	i = this->ipTranMap.GetCount();
 	while (i-- > 0)
 	{
@@ -128,7 +128,7 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 		MemFreeNN(ipTran);
 	}
 
-	NotNullPtr<DNSClientInfo> dnsCli;
+	NN<DNSClientInfo> dnsCli;
 	i = this->dnsCliInfos.GetCount();
 	while (i-- > 0)
 	{
@@ -141,8 +141,8 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 		dnsCli.Delete();
 	}
 
-	NotNullPtr<const Data::ArrayListNN<Net::EthernetAnalyzer::DNSRequestResult>> dnsReqList;
-	NotNullPtr<Net::EthernetAnalyzer::DNSRequestResult> req;
+	NN<const Data::ArrayListNN<Net::EthernetAnalyzer::DNSRequestResult>> dnsReqList;
+	NN<Net::EthernetAnalyzer::DNSRequestResult> req;
 	dnsReqList = this->dnsReqv4Map.GetValues();
 	i = dnsReqList->GetCount();
 	while (i-- > 0)
@@ -167,7 +167,7 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 		req.Delete();
 	}
 	
-	NotNullPtr<Net::EthernetAnalyzer::DNSTargetInfo> target;
+	NN<Net::EthernetAnalyzer::DNSTargetInfo> target;
 	i = this->dnsTargetMap.GetCount();
 	while (i-- > 0)
 	{
@@ -176,7 +176,7 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 		target.Delete();
 	}
 
-	NotNullPtr<Net::EthernetAnalyzer::IPLogInfo> ipLog;
+	NN<Net::EthernetAnalyzer::IPLogInfo> ipLog;
 	i = this->ipLogMap.GetCount();
 	while (i-- > 0)
 	{
@@ -189,7 +189,7 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 		ipLog.Delete();
 	}
 
-	NotNullPtr<DHCPInfo> dhcp;
+	NN<DHCPInfo> dhcp;
 	i = this->dhcpMap.GetCount();
 	while (i-- > 0)
 	{
@@ -216,12 +216,12 @@ UInt64 Net::EthernetAnalyzer::GetPacketTotalSize() const
 	return this->packetTotalSize;
 }
 
-void Net::EthernetAnalyzer::UseIPTran(NotNullPtr<Sync::MutexUsage> mutUsage)
+void Net::EthernetAnalyzer::UseIPTran(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->ipTranMut);
 }
 
-NotNullPtr<const Data::ReadingListNN<Net::EthernetAnalyzer::IPTranStatus>> Net::EthernetAnalyzer::IPTranGetList() const
+NN<const Data::ReadingListNN<Net::EthernetAnalyzer::IPTranStatus>> Net::EthernetAnalyzer::IPTranGetList() const
 {
 	return this->ipTranMap;
 }
@@ -231,22 +231,22 @@ UOSInt Net::EthernetAnalyzer::IPTranGetCount() const
 	return this->ipTranMap.GetCount();
 }
 
-void Net::EthernetAnalyzer::UseMAC(NotNullPtr<Sync::MutexUsage> mutUsage)
+void Net::EthernetAnalyzer::UseMAC(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->macMut);
 }
 
-NotNullPtr<const Data::ReadingListNN<Net::EthernetAnalyzer::MACStatus>> Net::EthernetAnalyzer::MACGetList() const
+NN<const Data::ReadingListNN<Net::EthernetAnalyzer::MACStatus>> Net::EthernetAnalyzer::MACGetList() const
 {
 	return this->macMap;
 }
 
-void Net::EthernetAnalyzer::UseDNSCli(NotNullPtr<Sync::MutexUsage> mutUsage)
+void Net::EthernetAnalyzer::UseDNSCli(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->dnsCliInfoMut);
 }
 
-NotNullPtr<const Data::ReadingListNN<Net::EthernetAnalyzer::DNSClientInfo>> Net::EthernetAnalyzer::DNSCliGetList() const
+NN<const Data::ReadingListNN<Net::EthernetAnalyzer::DNSClientInfo>> Net::EthernetAnalyzer::DNSCliGetList() const
 {
 	return this->dnsCliInfos;
 }
@@ -256,7 +256,7 @@ UOSInt Net::EthernetAnalyzer::DNSCliGetCount()
 	return this->dnsCliInfos.GetCount();
 }
 
-UOSInt Net::EthernetAnalyzer::DNSReqv4GetList(NotNullPtr<Data::ArrayListNN<Text::String>> reqList)
+UOSInt Net::EthernetAnalyzer::DNSReqv4GetList(NN<Data::ArrayListNN<Text::String>> reqList)
 {
 	Sync::MutexUsage mutUsage(this->dnsReqv4Mut);
 	return reqList->AddAllOpt(this->dnsReqv4Map.GetKeys());
@@ -267,9 +267,9 @@ UOSInt Net::EthernetAnalyzer::DNSReqv4GetCount()
 	return this->dnsReqv4Map.GetCount();
 }
 
-Bool Net::EthernetAnalyzer::DNSReqv4GetInfo(Text::CStringNN req, NotNullPtr<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NotNullPtr<Data::DateTime> reqTime, OutParam<UInt32> ttl)
+Bool Net::EthernetAnalyzer::DNSReqv4GetInfo(Text::CStringNN req, NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NN<Data::DateTime> reqTime, OutParam<UInt32> ttl)
 {
-	NotNullPtr<Net::EthernetAnalyzer::DNSRequestResult> result;
+	NN<Net::EthernetAnalyzer::DNSRequestResult> result;
 	Sync::MutexUsage mutUsage(this->dnsReqv4Mut);
 	if (this->dnsReqv4Map.Get(req).SetTo(result))
 	{
@@ -286,7 +286,7 @@ Bool Net::EthernetAnalyzer::DNSReqv4GetInfo(Text::CStringNN req, NotNullPtr<Data
 	}
 }
 
-UOSInt Net::EthernetAnalyzer::DNSReqv6GetList(NotNullPtr<Data::ArrayListNN<Text::String>> reqList)
+UOSInt Net::EthernetAnalyzer::DNSReqv6GetList(NN<Data::ArrayListNN<Text::String>> reqList)
 {
 	Sync::MutexUsage mutUsage(this->dnsReqv6Mut);
 	return reqList->AddAllOpt(this->dnsReqv6Map.GetKeys());
@@ -297,9 +297,9 @@ UOSInt Net::EthernetAnalyzer::DNSReqv6GetCount()
 	return this->dnsReqv6Map.GetCount();
 }
 
-Bool Net::EthernetAnalyzer::DNSReqv6GetInfo(Text::CStringNN req, NotNullPtr<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NotNullPtr<Data::DateTime> reqTime, OutParam<UInt32> ttl)
+Bool Net::EthernetAnalyzer::DNSReqv6GetInfo(Text::CStringNN req, NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NN<Data::DateTime> reqTime, OutParam<UInt32> ttl)
 {
-	NotNullPtr<Net::EthernetAnalyzer::DNSRequestResult> result;
+	NN<Net::EthernetAnalyzer::DNSRequestResult> result;
 	Sync::MutexUsage mutUsage(this->dnsReqv6Mut);
 	if (this->dnsReqv6Map.Get(req).SetTo(result))
 	{
@@ -316,7 +316,7 @@ Bool Net::EthernetAnalyzer::DNSReqv6GetInfo(Text::CStringNN req, NotNullPtr<Data
 	}
 }
 
-UOSInt Net::EthernetAnalyzer::DNSReqOthGetList(NotNullPtr<Data::ArrayListNN<Text::String>> reqList)
+UOSInt Net::EthernetAnalyzer::DNSReqOthGetList(NN<Data::ArrayListNN<Text::String>> reqList)
 {
 	Sync::MutexUsage mutUsage(this->dnsReqOthMut);
 	return reqList->AddAllOpt(this->dnsReqOthMap.GetKeys());
@@ -327,9 +327,9 @@ UOSInt Net::EthernetAnalyzer::DNSReqOthGetCount()
 	return this->dnsReqOthMap.GetCount();
 }
 
-Bool Net::EthernetAnalyzer::DNSReqOthGetInfo(Text::CStringNN req, NotNullPtr<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NotNullPtr<Data::DateTime> reqTime, OutParam<UInt32> ttl)
+Bool Net::EthernetAnalyzer::DNSReqOthGetInfo(Text::CStringNN req, NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NN<Data::DateTime> reqTime, OutParam<UInt32> ttl)
 {
-	NotNullPtr<Net::EthernetAnalyzer::DNSRequestResult> result;
+	NN<Net::EthernetAnalyzer::DNSRequestResult> result;
 	Sync::MutexUsage mutUsage(this->dnsReqOthMut);
 	if (this->dnsReqOthMap.Get(req).SetTo(result))
 	{
@@ -346,7 +346,7 @@ Bool Net::EthernetAnalyzer::DNSReqOthGetInfo(Text::CStringNN req, NotNullPtr<Dat
 	}
 }
 
-UOSInt Net::EthernetAnalyzer::DNSTargetGetList(NotNullPtr<Data::ArrayListNN<Net::EthernetAnalyzer::DNSTargetInfo>> targetList)
+UOSInt Net::EthernetAnalyzer::DNSTargetGetList(NN<Data::ArrayListNN<Net::EthernetAnalyzer::DNSTargetInfo>> targetList)
 {
 	Sync::MutexUsage mutUsage(this->dnsTargetMut);
 	return targetList->AddAll(this->dnsTargetMap);
@@ -357,7 +357,7 @@ UOSInt Net::EthernetAnalyzer::DNSTargetGetCount()
 	return this->dnsTargetMap.GetCount();
 }
 
-UOSInt Net::EthernetAnalyzer::MDNSGetList(NotNullPtr<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> mdnsList)
+UOSInt Net::EthernetAnalyzer::MDNSGetList(NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> mdnsList)
 {
 	Sync::MutexUsage mutUsage(this->mdnsMut);
 	return mdnsList->AddAll(this->mdnsList);
@@ -368,22 +368,22 @@ UOSInt Net::EthernetAnalyzer::MDNSGetCount()
 	return this->mdnsList.GetCount();
 }
 
-void Net::EthernetAnalyzer::UseDHCP(NotNullPtr<Sync::MutexUsage> mutUsage)
+void Net::EthernetAnalyzer::UseDHCP(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->dhcpMut);
 }
 
-NotNullPtr<const Data::ReadingListNN<Net::EthernetAnalyzer::DHCPInfo>> Net::EthernetAnalyzer::DHCPGetList() const
+NN<const Data::ReadingListNN<Net::EthernetAnalyzer::DHCPInfo>> Net::EthernetAnalyzer::DHCPGetList() const
 {
 	return this->dhcpMap;
 }
 
-void Net::EthernetAnalyzer::UseIPLog(NotNullPtr<Sync::MutexUsage> mutUsage)
+void Net::EthernetAnalyzer::UseIPLog(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->ipLogMut);
 }
 
-NotNullPtr<const Data::ReadingListNN<Net::EthernetAnalyzer::IPLogInfo>> Net::EthernetAnalyzer::IPLogGetList() const
+NN<const Data::ReadingListNN<Net::EthernetAnalyzer::IPLogInfo>> Net::EthernetAnalyzer::IPLogGetList() const
 {
 	return this->ipLogMap;
 }
@@ -547,7 +547,7 @@ Bool Net::EthernetAnalyzer::PacketLinux(const UInt8 *packet, UOSInt packetSize)
 
 Bool Net::EthernetAnalyzer::PacketEthernetData(const UInt8 *packet, UOSInt packetSize, UInt16 etherType, UInt64 srcMAC, UInt64 destMAC)
 {
-	NotNullPtr<MACStatus> mac;
+	NN<MACStatus> mac;
 	Bool valid = true;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
@@ -709,7 +709,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 //	UInt8 tmpBuff[8];
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<MACStatus> mac;
+	NN<MACStatus> mac;
 	UOSInt i;
 	Bool valid = true;
 	if ((packet[0] & 0xf0) == 0x40)
@@ -757,7 +757,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 			mutUsage.EndUse();
 		}
 
-		NotNullPtr<IPTranStatus> ip;
+		NN<IPTranStatus> ip;
 		Int64 addr = ReadMInt64(&packet[12]);
 		Sync::MutexUsage ipTranMutUsage(this->ipTranMut);
 		if (!this->ipTranMap.Get(addr).SetTo(ip))
@@ -795,7 +795,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 			if (this->atype & AT_IPLOG)
 			{
 				Text::StringBuilderUTF8 sb;
-				NotNullPtr<IPLogInfo> ipLog;
+				NN<IPLogInfo> ipLog;
 				Optional<IPLogInfo> optipLog = 0;
 				Data::Timestamp ts = Data::Timestamp::Now();
 				UInt32 sortableIP = ReadMUInt32(&packet[12]);
@@ -1074,12 +1074,12 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 						if (this->atype & (AT_DNSREQ | AT_DNSTARGET))
 						{
 							Data::ArrayListNN<Net::DNSClient::RequestAnswer> answers;
-							NotNullPtr<Net::DNSClient::RequestAnswer> answer;
+							NN<Net::DNSClient::RequestAnswer> answer;
 							Net::DNSClient::ParseAnswers(&ipData[8], ipDataSize - 8, answers);
 							if (answers.GetCount() > 0)
 							{
-								NotNullPtr<DNSRequestResult> req;
-								NotNullPtr<Text::String> reqName;
+								NN<DNSRequestResult> req;
+								NN<Text::String> reqName;
 								Data::Timestamp currTime = Data::Timestamp::UtcNow();
 								reqName = answers.GetItemNoCheck(0)->name;
 								answer = answers.GetItemNoCheck(answers.GetCount() - 1);
@@ -1114,7 +1114,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 										UOSInt j;
 										UInt32 resIP;
 										UInt32 sortIP;
-										NotNullPtr<DNSTargetInfo> dnsTarget;
+										NN<DNSTargetInfo> dnsTarget;
 										i = answers.GetCount();
 										while (i-- > 0)
 										{
@@ -1214,7 +1214,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 					{
 						if (this->atype & AT_DNSCLI)
 						{
-							NotNullPtr<DNSClientInfo> dnsCli;
+							NN<DNSClientInfo> dnsCli;
 							UInt32 cliId = ReadMUInt32(&packet[12]);
 							Sync::MutexUsage dnsCliInfoMutUsage(this->dnsCliInfoMut);
 							if (!this->dnsCliInfos.Get(cliId).SetTo(dnsCli))
@@ -1227,7 +1227,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 							}
 							dnsCliInfoMutUsage.EndUse();
 							Data::DateTime dt;
-							NotNullPtr<DNSCliHourInfo> hInfo;
+							NN<DNSCliHourInfo> hInfo;
 							dt.SetCurrTimeUTC();
 							Sync::MutexUsage mutUsage(dnsCli->mut);
 							if (dnsCli->hourInfos.GetItem(0).SetTo(hInfo) && hInfo->year == dt.GetYear() && hInfo->month == dt.GetMonth() && hInfo->day == dt.GetDay() && hInfo->hour == dt.GetHour())
@@ -1258,7 +1258,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 					{
 						UInt8 macBuff[8];
 						UInt64 iMAC;
-						NotNullPtr<DHCPInfo> dhcp;
+						NN<DHCPInfo> dhcp;
 						if (ipDataSize >= 248 && ReadMUInt32(&ipData[244]) == 0x63825363)
 						{
 							macBuff[0] = 0;
@@ -1390,7 +1390,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 								if ((ipData[8] & 7) == 3) //client
 								{
 									Text::StringBuilderUTF8 sb;
-									NotNullPtr<IPLogInfo> ipLog;
+									NN<IPLogInfo> ipLog;
 									UInt32 sortableIP = ReadMUInt32(&packet[12]);
 									Sync::MutexUsage ipLogMutUsage(this->ipLogMut);
 									if (!this->ipLogMap.Get(sortableIP).SetTo(ipLog))
@@ -1420,7 +1420,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 								if ((ipData[8] & 7) == 4) //server
 								{
 									Text::StringBuilderUTF8 sb;
-									NotNullPtr<IPLogInfo> ipLog;
+									NN<IPLogInfo> ipLog;
 									UInt32 sortableIP = ReadMUInt32(&packet[16]);
 									Sync::MutexUsage ipLogMutUsage(this->ipLogMut);
 									if (!this->ipLogMap.Get(sortableIP).SetTo(ipLog))
@@ -1597,7 +1597,7 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 						if (this->atype & AT_IPLOG)
 						{
 							Text::StringBuilderUTF8 sb;
-							NotNullPtr<IPLogInfo> ipLog;
+							NN<IPLogInfo> ipLog;
 							UInt32 sortableIP = ReadMUInt32(&packet[12]);
 							Sync::MutexUsage ipLogMutUsage(this->ipLogMut);
 							if (!this->ipLogMap.Get(sortableIP).SetTo(ipLog))
@@ -1661,7 +1661,7 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 							UInt16 nAns = ReadMUInt16(&ipData[14]);
 							UOSInt i = 12;
 							UOSInt j = 0;
-							NotNullPtr<Net::DNSClient::RequestAnswer> ans;
+							NN<Net::DNSClient::RequestAnswer> ans;
 							while (j < nAns)
 							{
 								ans = Net::DNSClient::ParseAnswer(&ipData[8], ipDataSize - 8, i);
@@ -1726,7 +1726,7 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 
 Bool Net::EthernetAnalyzer::PacketIPv6(const UInt8 *packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC)
 {
-	NotNullPtr<MACStatus> mac;
+	NN<MACStatus> mac;
 	Bool valid = true;
 	if ((packet[0] & 0xf0) == 0x60 && packetSize >= 40)
 	{
@@ -1761,7 +1761,7 @@ Bool Net::EthernetAnalyzer::PacketIPv6(const UInt8 *packet, UOSInt packetSize, U
 Bool Net::EthernetAnalyzer::PacketARP(const UInt8 *packet, UOSInt packetSize, UInt64 srcMAC, UInt64 destMAC)
 {
 	Bool valid = true;
-	NotNullPtr<MACStatus> mac;
+	NN<MACStatus> mac;
 	UOSInt i;
 	if (packetSize >= 28)
 	{

@@ -8,7 +8,7 @@
 #include "Sync/Event.h"
 #include "Text/MyString.h"
 
-Media::LPCMSource::LPCMSource(NotNullPtr<Text::String> name)
+Media::LPCMSource::LPCMSource(NN<Text::String> name)
 {
 	this->format.Clear();
 	this->data = 0;
@@ -26,7 +26,7 @@ Media::LPCMSource::LPCMSource(Text::CString name)
 	this->readOfst = 0;
 }
 
-void Media::LPCMSource::SetData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, NotNullPtr<const Media::AudioFormat> format)
+void Media::LPCMSource::SetData(NN<IO::StreamData> fd, UInt64 ofst, UInt64 length, NN<const Media::AudioFormat> format)
 {
 	if (this->data)
 	{
@@ -37,7 +37,7 @@ void Media::LPCMSource::SetData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt
 	this->data = fd->GetPartialData(ofst, length).Ptr();
 }
 
-Media::LPCMSource::LPCMSource(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, NotNullPtr<const Media::AudioFormat> format, NotNullPtr<Text::String> name)
+Media::LPCMSource::LPCMSource(NN<IO::StreamData> fd, UInt64 ofst, UInt64 length, NN<const Media::AudioFormat> format, NN<Text::String> name)
 {
 	this->format.FromAudioFormat(format);
 	this->data = fd->GetPartialData(ofst, length).Ptr();
@@ -46,7 +46,7 @@ Media::LPCMSource::LPCMSource(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64
 	this->readOfst = 0;
 }
 
-Media::LPCMSource::LPCMSource(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, NotNullPtr<const Media::AudioFormat> format, Text::CStringNN name)
+Media::LPCMSource::LPCMSource(NN<IO::StreamData> fd, UInt64 ofst, UInt64 length, NN<const Media::AudioFormat> format, Text::CStringNN name)
 {
 	this->format.FromAudioFormat(format);
 	this->data = fd->GetPartialData(ofst, length).Ptr();
@@ -92,7 +92,7 @@ Bool Media::LPCMSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int
 		if (trimTimeStart >= 0)
 		{
 			UInt64 ofst = trimTimeStart * (UInt64)this->format.frequency / 1000 * blk;
-			NotNullPtr<IO::StreamData> newData = this->data->GetPartialData(ofst, this->data->GetDataSize() - ofst);
+			NN<IO::StreamData> newData = this->data->GetPartialData(ofst, this->data->GetDataSize() - ofst);
 			DEL_CLASS(this->data);
 			this->data = newData.Ptr();
 			if (syncTime)
@@ -117,7 +117,7 @@ Bool Media::LPCMSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int
 			ofst2 = dataSize;
 		if (trimTimeStart >= 0)
 		{
-			NotNullPtr<IO::StreamData> newData = this->data->GetPartialData(ofst1, ofst2 - ofst1);
+			NN<IO::StreamData> newData = this->data->GetPartialData(ofst1, ofst2 - ofst1);
 			DEL_CLASS(this->data);
 			this->data = newData.Ptr();
 			if (syncTime)
@@ -127,7 +127,7 @@ Bool Media::LPCMSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int
 		}
 		else
 		{
-			NotNullPtr<IO::StreamData> newData = this->data->GetPartialData(0, ofst2);
+			NN<IO::StreamData> newData = this->data->GetPartialData(0, ofst2);
 			DEL_CLASS(this->data);
 			this->data = newData.Ptr();
 			if (syncTime)
@@ -139,7 +139,7 @@ Bool Media::LPCMSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int
 	return true;
 }
 
-void Media::LPCMSource::GetFormat(NotNullPtr<AudioFormat> format)
+void Media::LPCMSource::GetFormat(NN<AudioFormat> format)
 {
 	format->FromAudioFormat(this->format);
 }

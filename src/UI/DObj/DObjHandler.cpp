@@ -7,7 +7,7 @@ void UI::DObj::DObjHandler::OnObjectClear()
 {
 }
 
-UI::DObj::DObjHandler::DObjHandler(NotNullPtr<Media::DrawEngine> deng)
+UI::DObj::DObjHandler::DObjHandler(NN<Media::DrawEngine> deng)
 {
 	this->shown = false;
 	this->deng = deng;
@@ -37,18 +37,18 @@ void UI::DObj::DObjHandler::ClearObjects()
 	this->OnObjectClear();
 }
 
-void UI::DObj::DObjHandler::AddObject(NotNullPtr<DirectObject> obj)
+void UI::DObj::DObjHandler::AddObject(NN<DirectObject> obj)
 {
 	Sync::MutexUsage mutUsage(this->objMut);
 	this->objList.Add(obj);
 	this->shown = false;
 }
 
-Bool UI::DObj::DObjHandler::Check(NotNullPtr<Media::DrawImage> dimg)
+Bool UI::DObj::DObjHandler::Check(NN<Media::DrawImage> dimg)
 {
 	Bool isChanged = !this->shown;
 	Sync::MutexUsage mutUsage(this->objMut);
-	Data::ArrayIterator<NotNullPtr<DirectObject>> it = this->objList.Iterator();
+	Data::ArrayIterator<NN<DirectObject>> it = this->objList.Iterator();
 	while (it.HasNext())
 	{
 		if (it.Next()->IsChanged())
@@ -73,14 +73,14 @@ Bool UI::DObj::DObjHandler::Check(NotNullPtr<Media::DrawImage> dimg)
 	return isChanged;
 }
 
-void UI::DObj::DObjHandler::DrawAll(NotNullPtr<Media::DrawImage> dimg)
+void UI::DObj::DObjHandler::DrawAll(NN<Media::DrawImage> dimg)
 {
 	this->shown = true;
 	Sync::MutexUsage updMutUsage(this->updMut);
 	this->DrawBkg(dimg);
 
 	Sync::MutexUsage mutUsage(this->objMut);
-	Data::ArrayIterator<NotNullPtr<DirectObject>> it = this->objList.Iterator();
+	Data::ArrayIterator<NN<DirectObject>> it = this->objList.Iterator();
 	while (it.HasNext())
 	{
 		it.Next()->DrawObject(dimg);
@@ -102,7 +102,7 @@ void UI::DObj::DObjHandler::OnMouseDown(Math::Coord2D<OSInt> scnPos, UI::GUICont
 	if (button == UI::GUIControl::MBTN_LEFT)
 	{
 		UOSInt i;
-		NotNullPtr<DirectObject> obj;
+		NN<DirectObject> obj;
 		Sync::MutexUsage mutUsage(this->objMut);
 		i = this->objList.GetCount();
 		while (i-- > 0)
@@ -139,7 +139,7 @@ void UI::DObj::DObjHandler::OnMouseMove(Math::Coord2D<OSInt> scnPos)
 	DirectObject *mouseObj = 0;
 	
 	UOSInt i;
-	NotNullPtr<DirectObject> obj;
+	NN<DirectObject> obj;
 	Sync::MutexUsage mutUsage(this->objMut);
 	i = this->objList.GetCount();
 	while (i-- > 0)

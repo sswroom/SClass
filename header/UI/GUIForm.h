@@ -13,7 +13,7 @@ namespace UI
 	class GUIButton;
 	class GUIIcon;
 
-	typedef void (__stdcall *FileEvent)(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+	typedef void (__stdcall *FileEvent)(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 	typedef void (__stdcall *MenuEvent)(AnyType userObj, UInt16 cmdId);
 
 	class GUIForm : public GUIClientControl
@@ -38,7 +38,7 @@ namespace UI
 			CR_USER
 		} CloseReason;
 		typedef Bool (__stdcall *FormClosingEvent)(AnyType userObj, CloseReason reason); //true to cancel
-		typedef void (__stdcall *FormClosedEvent)(AnyType userObj, NotNullPtr<UI::GUIForm> frm);
+		typedef void (__stdcall *FormClosedEvent)(AnyType userObj, NN<UI::GUIForm> frm);
 		typedef void (__stdcall *KeyEvent)(AnyType userObj, UOSInt keyCode, Bool extendedKey);
 
 	private:
@@ -76,12 +76,12 @@ namespace UI
 		static void Deinit(InstanceHandle *hInst);
 
 		void UpdateHAcc();
-		GUIForm(NotNullPtr<UI::GUICore> ui, ControlHandle *hWnd);
+		GUIForm(NN<UI::GUICore> ui, ControlHandle *hWnd);
 	public:
-		static GUIForm *FindForm(NotNullPtr<UI::GUICore> ui, const UTF8Char *formName);
+		static GUIForm *FindForm(NN<UI::GUICore> ui, const UTF8Char *formName);
 
 	public:
-		GUIForm(Optional<UI::GUIClientControl> parent, Double initW, Double initH, NotNullPtr<UI::GUICore> ui);
+		GUIForm(Optional<UI::GUIClientControl> parent, Double initW, Double initH, NN<UI::GUICore> ui);
 		virtual ~GUIForm();
 
 		void SetFormState(FormState fs);
@@ -97,13 +97,13 @@ namespace UI
 		virtual Math::Size2D<UOSInt> GetSizeP();
 		virtual void SetExitOnClose(Bool exitOnClose);
 		virtual void SetNoResize(Bool noResize);
-		virtual NotNullPtr<UI::GUITimer> AddTimer(UInt32 interval, UI::UIEvent handler, AnyType userObj);
-		virtual void RemoveTimer(NotNullPtr<UI::GUITimer> tmr);
-		virtual void SetMenu(NotNullPtr<UI::GUIMainMenu> menu);
+		virtual NN<UI::GUITimer> AddTimer(UInt32 interval, UI::UIEvent handler, AnyType userObj);
+		virtual void RemoveTimer(NN<UI::GUITimer> tmr);
+		virtual void SetMenu(NN<UI::GUIMainMenu> menu);
 		virtual Optional<UI::GUIMainMenu> GetMenu();
 		virtual void UpdateMenu();
-		virtual void SetDefaultButton(NotNullPtr<UI::GUIButton> btn);
-		virtual void SetCancelButton(NotNullPtr<UI::GUIButton> btn);
+		virtual void SetDefaultButton(NN<UI::GUIButton> btn);
+		virtual void SetCancelButton(NN<UI::GUIButton> btn);
 		Optional<UI::GUIButton> GetDefaultButton();
 		Optional<UI::GUIButton> GetCancelButton();
 
@@ -133,11 +133,11 @@ namespace UI
 		virtual void OnFocus();
 		virtual void OnFocusLost();
 		virtual void OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight);
-		void OnFileDrop(Data::DataArray<NotNullPtr<Text::String>> files);
+		void OnFileDrop(Data::DataArray<NN<Text::String>> files);
 
 		void ToFullScn();
 		void FromFullScn();
-		NotNullPtr<UI::GUICore> GetUI();
+		NN<UI::GUICore> GetUI();
 	};
 }
 #endif

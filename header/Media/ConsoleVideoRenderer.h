@@ -12,12 +12,12 @@ namespace Media
 	class ConsoleVideoRenderer : public Media::VideoRenderer
 	{
 	private:
-		NotNullPtr<Media::MonitorSurfaceMgr> surfaceMgr;
+		NN<Media::MonitorSurfaceMgr> surfaceMgr;
 		Media::MonitorSurface *primarySurface;
 		Sync::Mutex mut;
 
 	public:
-		ConsoleVideoRenderer(NotNullPtr<Media::MonitorSurfaceMgr> surfaceMgr, Media::ColorManagerSess *colorSess);
+		ConsoleVideoRenderer(NN<Media::MonitorSurfaceMgr> surfaceMgr, Media::ColorManagerSess *colorSess);
 		virtual ~ConsoleVideoRenderer();
 
 		Bool IsError();
@@ -26,8 +26,8 @@ namespace Media
 		void SetSurfaceBugMode(Bool surfaceBugMode);
 
 		virtual Bool IsUpdatingSize();
-		virtual void LockUpdateSize(NotNullPtr<Sync::MutexUsage> mutUsage);
-		virtual void DrawFromSurface(NotNullPtr<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn);
+		virtual void LockUpdateSize(NN<Sync::MutexUsage> mutUsage);
+		virtual void DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn);
 
 	};
 }

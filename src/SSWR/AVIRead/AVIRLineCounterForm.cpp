@@ -10,12 +10,12 @@
 
 void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsAddClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLineCounterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineCounterForm>();
+	NN<SSWR::AVIRead::AVIRLineCounterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineCounterForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtExtensions->GetText(sb);
 	if (sb.GetLength() == 0)
 		return;
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = me->extList.Iterator();
+	Data::ArrayIterator<NN<Text::String>> it = me->extList.Iterator();
 	while (it.HasNext())
 	{
 		if (it.Next()->EqualsICase(sb.ToString(), sb.GetLength()))
@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsAddClicked(AnyTyp
 
 void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsRemoveClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLineCounterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineCounterForm>();
+	NN<SSWR::AVIRead::AVIRLineCounterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineCounterForm>();
 	UOSInt i = me->lbExtensions->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
@@ -40,13 +40,13 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsRemoveClicked(Any
 
 void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsClearClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLineCounterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineCounterForm>();
+	NN<SSWR::AVIRead::AVIRLineCounterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineCounterForm>();
 	me->ClearExts(true);
 }
 
 void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnCalcClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLineCounterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineCounterForm>();
+	NN<SSWR::AVIRead::AVIRLineCounterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineCounterForm>();
 	UTF8Char sbuff[512];
 	Text::StringBuilderUTF8 sb;
 	if (me->extList.GetCount() <= 0)
@@ -101,11 +101,11 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnCalcClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnResultSaveClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLineCounterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineCounterForm>();
+	NN<SSWR::AVIRead::AVIRLineCounterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineCounterForm>();
 	if (me->resList.GetCount() == 0)
 		return;
 
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"LineCounterSave", true);
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"LineCounterSave", true);
 	dlg->AddFilter(CSTR("*.txt"), CSTR("Result file"));
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
@@ -166,7 +166,7 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 			{
 				found = false;
 				i = Text::StrLastIndexOfCharC(pathBuffEnd, (UOSInt)(sptr - pathBuffEnd), '.') + 1;
-				Data::ArrayIterator<NotNullPtr<Text::String>> it = this->extList.Iterator();
+				Data::ArrayIterator<NN<Text::String>> it = this->extList.Iterator();
 				while (it.HasNext())
 				{
 					if (it.Next()->EqualsICase(&pathBuffEnd[i], (UOSInt)(sptr - &pathBuffEnd[i])))
@@ -240,7 +240,7 @@ void SSWR::AVIRead::AVIRLineCounterForm::ClearResult(Bool inclDisp)
 	this->resList.Clear();
 }
 
-SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

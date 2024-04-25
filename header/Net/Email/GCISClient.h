@@ -12,22 +12,22 @@ namespace Net
 		class GCISClient
 		{
 		private:
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
-			NotNullPtr<Text::String> notifyURL;
-			NotNullPtr<Crypto::Cert::X509Cert> cert;
-			NotNullPtr<Crypto::Cert::X509File> key;
+			NN<Text::String> notifyURL;
+			NN<Crypto::Cert::X509Cert> cert;
+			NN<Crypto::Cert::X509File> key;
 			Optional<Crypto::Cert::X509File> svrCert;
 
 		public:
-			GCISClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN notifyURL, NotNullPtr<Crypto::Cert::X509Cert> cert, NotNullPtr<Crypto::Cert::X509File> key);
+			GCISClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN notifyURL, NN<Crypto::Cert::X509Cert> cert, NN<Crypto::Cert::X509File> key);
 			~GCISClient();
 
 			Bool SendMessage(Bool intranetChannel, Text::CString charset, Text::CStringNN contentType, Text::CStringNN subject, Text::CStringNN content, Text::CStringNN toList, Text::CString ccList, Text::CString bccList, Text::StringBuilderUTF8 *sbError);
 
 			Optional<Crypto::Cert::X509File> GetServerCertChain() const;
 		private:
-			static void ParseEmailAddresses(NotNullPtr<Text::JSONBuilder> builder, Text::CStringNN toList, Text::CString ccList, Text::CString bccList);
+			static void ParseEmailAddresses(NN<Text::JSONBuilder> builder, Text::CStringNN toList, Text::CString ccList, Text::CString bccList);
 		};
 	}
 }

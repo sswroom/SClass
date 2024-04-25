@@ -13,10 +13,10 @@
 UInt32 __stdcall Map::DrawMapServiceLayer::TaskThread(AnyType userObj)
 {
 	Math::RectAreaDbl bounds;
-	NotNullPtr<Media::ImageList> imgList;
+	NN<Media::ImageList> imgList;
 	Math::Size2DDbl size;
 	Double dpi;
-	NotNullPtr<Map::DrawMapServiceLayer> me = userObj.GetNN<Map::DrawMapServiceLayer>();
+	NN<Map::DrawMapServiceLayer> me = userObj.GetNN<Map::DrawMapServiceLayer>();
 	Int64 thisId = 0;
 	{
 		Text::StringBuilderUTF8 sb;
@@ -140,9 +140,9 @@ void Map::DrawMapServiceLayer::SetCurrScale(Double scale)
 {
 }
 
-NotNullPtr<Map::MapView> Map::DrawMapServiceLayer::CreateMapView(Math::Size2DDbl scnSize)
+NN<Map::MapView> Map::DrawMapServiceLayer::CreateMapView(Math::Size2DDbl scnSize)
 {
-	NotNullPtr<Map::MapView> view;
+	NN<Map::MapView> view;
 	NEW_CLASSNN(view, Map::ScaledMapView(this->dispSize, this->dispBounds.GetCenter(), Map::ScaledMapView::CalcScale(this->dispBounds, this->dispSize, this->dispDPI, this->csys->IsProjected()), this->csys->IsProjected()));
 	return view;
 }
@@ -152,17 +152,17 @@ Map::DrawLayerType Map::DrawMapServiceLayer::GetLayerType() const
 	return Map::DRAW_LAYER_IMAGE;
 }
 
-UOSInt Map::DrawMapServiceLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::DrawMapServiceLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	return 0;
 }
 
-UOSInt Map::DrawMapServiceLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::DrawMapServiceLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return this->GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::DrawMapServiceLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::DrawMapServiceLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	Sync::MutexUsage mutUsage(this->dispMut);
 	if (this->dispBounds == rect)
@@ -205,7 +205,7 @@ void Map::DrawMapServiceLayer::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-Bool Map::DrawMapServiceLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::DrawMapServiceLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	switch (strIndex)
 	{
@@ -242,7 +242,7 @@ DB::DBUtil::ColType Map::DrawMapServiceLayer::GetColumnType(UOSInt colIndex, Opt
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::DrawMapServiceLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Map::DrawMapServiceLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -297,7 +297,7 @@ void Map::DrawMapServiceLayer::EndGetObject(GetObjectSess *session)
 Math::Geometry::Vector2D *Map::DrawMapServiceLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
 	Sync::MutexUsage mutUsage(this->dispMut);
-	NotNullPtr<Media::SharedImage> shimg;
+	NN<Media::SharedImage> shimg;
 	if (this->dispId == id && shimg.Set(this->dispImage))
 	{
 		Math::Geometry::Vector2D *vec;
@@ -323,7 +323,7 @@ Bool Map::DrawMapServiceLayer::CanQuery()
 	return this->mapService->CanQuery();
 }
 
-Bool Map::DrawMapServiceLayer::QueryInfos(Math::Coord2DDbl coord, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NotNullPtr<Data::ArrayList<UOSInt>> valueOfstList, NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListNN<Text::String>> valueList)
+Bool Map::DrawMapServiceLayer::QueryInfos(Math::Coord2DDbl coord, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayList<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
 {
 	return this->mapService->QueryInfos(coord, this->dispBounds, (UInt32)Double2Int32(this->dispSize.x), (UInt32)Double2Int32(this->dispSize.y), this->dispDPI, vecList, valueOfstList, nameList, valueList);
 }

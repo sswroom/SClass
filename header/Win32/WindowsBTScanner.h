@@ -43,8 +43,8 @@ namespace Win32
 		virtual void Close();
 		virtual Bool SetScanMode(ScanMode scanMode);
 
-		virtual NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> GetPublicMap(NotNullPtr<Sync::MutexUsage> mutUsage);
-		virtual NotNullPtr<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> GetRandomMap(NotNullPtr<Sync::MutexUsage> mutUsage);
+		virtual NN<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> GetPublicMap(NN<Sync::MutexUsage> mutUsage);
+		virtual NN<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> GetRandomMap(NN<Sync::MutexUsage> mutUsage);
 	};
 }
 #endif

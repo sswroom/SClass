@@ -14,36 +14,36 @@ namespace SSWR
 		class AVIRGCISClientForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 			Data::ArrayListNN<Crypto::Cert::X509Cert> cliCACerts;
 			Crypto::Cert::X509Cert *cliCert;
 			Crypto::Cert::X509File *cliKey;
 			Crypto::Cert::X509File *svrCert;
 
-			NotNullPtr<UI::GUILabel> lblURL;
-			NotNullPtr<UI::GUITextBox> txtURL;
-			NotNullPtr<UI::GUILabel> lblClientCert;
-			NotNullPtr<UI::GUIButton> btnClientCert;
-			NotNullPtr<UI::GUILabel> lblClientCertDisp;
-			NotNullPtr<UI::GUILabel> lblTo;
-			NotNullPtr<UI::GUITextBox> txtTo;
-			NotNullPtr<UI::GUILabel> lblCC;
-			NotNullPtr<UI::GUITextBox> txtCC;
-			NotNullPtr<UI::GUILabel> lblBCC;
-			NotNullPtr<UI::GUITextBox> txtBCC;
-			NotNullPtr<UI::GUILabel> lblSubject;
-			NotNullPtr<UI::GUITextBox> txtSubject;
-			NotNullPtr<UI::GUILabel> lblContent;
-			NotNullPtr<UI::GUITextBox> txtContent;
-			NotNullPtr<UI::GUILabel> lblContentType;
-			NotNullPtr<UI::GUITextBox> txtContentType;
-			NotNullPtr<UI::GUIButton> btnSend;
-			NotNullPtr<UI::GUILabel> lblResponseStatus;
-			NotNullPtr<UI::GUITextBox> txtResponseStatus;
-			NotNullPtr<UI::GUILabel> lblServerCert;
-			NotNullPtr<UI::GUITextBox> txtServerCert;
-			NotNullPtr<UI::GUIButton> btnServerCert;
+			NN<UI::GUILabel> lblURL;
+			NN<UI::GUITextBox> txtURL;
+			NN<UI::GUILabel> lblClientCert;
+			NN<UI::GUIButton> btnClientCert;
+			NN<UI::GUILabel> lblClientCertDisp;
+			NN<UI::GUILabel> lblTo;
+			NN<UI::GUITextBox> txtTo;
+			NN<UI::GUILabel> lblCC;
+			NN<UI::GUITextBox> txtCC;
+			NN<UI::GUILabel> lblBCC;
+			NN<UI::GUITextBox> txtBCC;
+			NN<UI::GUILabel> lblSubject;
+			NN<UI::GUITextBox> txtSubject;
+			NN<UI::GUILabel> lblContent;
+			NN<UI::GUITextBox> txtContent;
+			NN<UI::GUILabel> lblContentType;
+			NN<UI::GUITextBox> txtContentType;
+			NN<UI::GUIButton> btnSend;
+			NN<UI::GUILabel> lblResponseStatus;
+			NN<UI::GUITextBox> txtResponseStatus;
+			NN<UI::GUILabel> lblServerCert;
+			NN<UI::GUITextBox> txtServerCert;
+			NN<UI::GUIButton> btnServerCert;
 
 			static void __stdcall OnClientCertClicked(AnyType userObj);
 			static void __stdcall OnSendClicked(AnyType userObj);
@@ -51,7 +51,7 @@ namespace SSWR
 			void ClearCliCACerts();
 
 		public:
-			AVIRGCISClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRGCISClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRGCISClientForm();
 
 			virtual void OnMonitorChanged();

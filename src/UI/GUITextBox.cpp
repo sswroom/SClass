@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "UI/GUITextBox.h"
 
-UI::GUITextBox::GUITextBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
+UI::GUITextBox::GUITextBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
 {
 }
 

@@ -17,32 +17,32 @@ namespace SSWR
 		class AVIRDHCPServerForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Net::SocketFactory> sockf;
 			Net::DHCPServer *svr;
 
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUILabel> lblIP;
-			NotNullPtr<UI::GUIComboBox> cboIP;
-			NotNullPtr<UI::GUILabel> lblSubnet;
-			NotNullPtr<UI::GUITextBox> txtSubnet;
-			NotNullPtr<UI::GUILabel> lblFirstIP;
-			NotNullPtr<UI::GUITextBox> txtFirstIP;
-			NotNullPtr<UI::GUILabel> lblDevCount;
-			NotNullPtr<UI::GUITextBox> txtDevCount;
-			NotNullPtr<UI::GUILabel> lblGateway;
-			NotNullPtr<UI::GUITextBox> txtGateway;
-			NotNullPtr<UI::GUILabel> lblDNS1;
-			NotNullPtr<UI::GUITextBox> txtDNS1;
-			NotNullPtr<UI::GUILabel> lblDNS2;
-			NotNullPtr<UI::GUITextBox> txtDNS2;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUIListView> lvDevices;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUILabel> lblIP;
+			NN<UI::GUIComboBox> cboIP;
+			NN<UI::GUILabel> lblSubnet;
+			NN<UI::GUITextBox> txtSubnet;
+			NN<UI::GUILabel> lblFirstIP;
+			NN<UI::GUITextBox> txtFirstIP;
+			NN<UI::GUILabel> lblDevCount;
+			NN<UI::GUITextBox> txtDevCount;
+			NN<UI::GUILabel> lblGateway;
+			NN<UI::GUITextBox> txtGateway;
+			NN<UI::GUILabel> lblDNS1;
+			NN<UI::GUITextBox> txtDNS1;
+			NN<UI::GUILabel> lblDNS2;
+			NN<UI::GUITextBox> txtDNS2;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUIListView> lvDevices;
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
-			AVIRDHCPServerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRDHCPServerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRDHCPServerForm();
 
 			virtual void OnMonitorChanged();

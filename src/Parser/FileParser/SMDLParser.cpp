@@ -25,7 +25,7 @@ public:
 		return 18 + 2 * analogCnt;
 	}
 
-	virtual Bool GetExtraName(const UInt8 *buff, UOSInt buffSize, UOSInt extIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+	virtual Bool GetExtraName(const UInt8 *buff, UOSInt buffSize, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb)
 	{
 		if (extIndex < 18)
 		{
@@ -105,7 +105,7 @@ public:
 		return false;
 	}
 
-	virtual Bool GetExtraValueStr(const UInt8 *buff, UOSInt buffSize, UOSInt extIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+	virtual Bool GetExtraValueStr(const UInt8 *buff, UOSInt buffSize, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb)
 	{
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
@@ -204,7 +204,7 @@ Int32 Parser::FileParser::SMDLParser::GetName()
 	return *(Int32*)"SMDL";
 }
 
-void Parser::FileParser::SMDLParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::SMDLParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
@@ -217,13 +217,13 @@ IO::ParserType Parser::FileParser::SMDLParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	Map::GPSTrack::GPSRecord3 rec;
 	UInt8 buff[384];
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UOSInt i;
 	UOSInt ui;
 	UOSInt currPos;

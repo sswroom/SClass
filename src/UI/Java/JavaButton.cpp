@@ -7,7 +7,7 @@
 #include "UI/GUIClientControl.h"
 #include "UI/Java/JavaButton.h"
 
-UI::Java::JavaButton::JavaButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN label) : UI::GUIButton(ui, parent)
+UI::Java::JavaButton::JavaButton(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN label) : UI::GUIButton(ui, parent)
 {
 }
 

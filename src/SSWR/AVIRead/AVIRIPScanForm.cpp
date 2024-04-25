@@ -11,7 +11,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRIPScanForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRIPScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIPScanForm>();
+	NN<SSWR::AVIRead::AVIRIPScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIPScanForm>();
 	UInt8 buff[8];
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -55,10 +55,10 @@ void __stdcall SSWR::AVIRead::AVIRIPScanForm::OnStartClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRIPScanForm::OnTimerTick(AnyType userObj)
 {
-//	NotNullPtr<SSWR::AVIRead::AVIRIPScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIPScanForm>();
+//	NN<SSWR::AVIRead::AVIRIPScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIPScanForm>();
 }
 
-SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("IP Scan"));
@@ -88,7 +88,7 @@ SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(Optional<UI::GUIClientControl> par
 	this->lvIP->AddColumn(CSTR("Resp"), 80);
 	
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
-	NotNullPtr<Net::ConnectionInfo> connInfo;
+	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UOSInt i;

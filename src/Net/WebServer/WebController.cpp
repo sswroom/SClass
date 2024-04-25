@@ -10,7 +10,7 @@ Net::WebServer::WebController::WebController(Text::CString svcPath)
 
 Net::WebServer::WebController::~WebController()
 {
-	NotNullPtr<ServiceInfo> service;
+	NN<ServiceInfo> service;
 	UOSInt i = this->services.GetCount();
 	while (i-- > 0)
 	{
@@ -21,10 +21,10 @@ Net::WebServer::WebController::~WebController()
 	this->svcPath->Release();
 }
 
-Bool Net::WebServer::WebController::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Net::WebServer::WebController::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	Optional<ServiceInfo> service;
-	NotNullPtr<ServiceInfo> nnservice;
+	NN<ServiceInfo> nnservice;
 	service = this->services.GetC(subReq);
 	if (service.IsNull() && (subReq.Equals(UTF8STRC("/")) || (subReq.leng == 0)))
 	{
@@ -67,7 +67,7 @@ Bool Net::WebServer::WebController::ProcessRequest(NotNullPtr<Net::WebServer::IW
 
 void Net::WebServer::WebController::AddService(Text::CString svcPath, Net::WebUtil::RequestMethod reqMeth, ServiceFunc func)
 {
-	NotNullPtr<ServiceInfo> service;
+	NN<ServiceInfo> service;
 	Text::StringBuilderUTF8 sb;
 	sb.Append(this->svcPath);
 	sb.Append(svcPath);

@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "UI/GUIGroupBox.h"
 
-UI::GUIGroupBox::GUIGroupBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : UI::GUIClientControl(ui, parent)
+UI::GUIGroupBox::GUIGroupBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent) : UI::GUIClientControl(ui, parent)
 {
 }
 

@@ -9,7 +9,7 @@ namespace IO
 		class AMGU4241 : public IO::MODBUSDevice
 		{
 		public:
-			AMGU4241(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr);
+			AMGU4241(NN<IO::MODBUSMaster> modbus, UInt8 addr);
 			virtual ~AMGU4241();
 
 			Bool ReadPeopleCount(OutParam<Int32> count);

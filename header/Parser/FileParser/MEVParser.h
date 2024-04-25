@@ -26,12 +26,12 @@ namespace Parser
 			virtual Int32 GetName();
 			virtual void SetParserList(Parser::ParserList *parsers);
 			virtual void SetMapManager(Map::MapManager *mapMgr);
-			virtual void PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t);
+			virtual void PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
-			virtual IO::ParsedObject *ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
+			virtual IO::ParsedObject *ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
 
 		private:
-			void ReadItems(NotNullPtr<IO::StreamData> fd, Map::MapEnv *env, UInt32 itemCnt, InOutParam<UInt32> currPos, Optional<Map::MapEnv::GroupItem> group, const WChar **dirArr, MEVImageInfo *imgInfos);
+			void ReadItems(NN<IO::StreamData> fd, Map::MapEnv *env, UInt32 itemCnt, InOutParam<UInt32> currPos, Optional<Map::MapEnv::GroupItem> group, const WChar **dirArr, MEVImageInfo *imgInfos);
 		};
 	}
 }

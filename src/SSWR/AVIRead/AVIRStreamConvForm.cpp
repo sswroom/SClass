@@ -7,7 +7,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream1Clicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRStreamConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamConvForm>();
+	NN<SSWR::AVIRead::AVIRStreamConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamConvForm>();
 	if (me->stm1)
 	{
 		me->StopStream1();
@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream1Clicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream2Clicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRStreamConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamConvForm>();
+	NN<SSWR::AVIRead::AVIRStreamConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamConvForm>();
 	if (me->stm2)
 	{
 		me->StopStream2();
@@ -73,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream2Clicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRStreamConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamConvForm>();
+	NN<SSWR::AVIRead::AVIRStreamConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamConvForm>();
 	if (me->remoteClosed1)
 	{
 		me->remoteClosed1 = false;
@@ -96,7 +96,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnTimerTick(AnyType userObj)
 
 UInt32 __stdcall SSWR::AVIRead::AVIRStreamConvForm::Stream1Thread(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRStreamConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamConvForm>();
+	NN<SSWR::AVIRead::AVIRStreamConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamConvForm>();
 	UInt8 buff[2048];
 	UOSInt recvSize;
 	me->thread1Running = true;
@@ -128,7 +128,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamConvForm::Stream1Thread(AnyType userOb
 
 UInt32 __stdcall SSWR::AVIRead::AVIRStreamConvForm::Stream2Thread(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRStreamConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamConvForm>();
+	NN<SSWR::AVIRead::AVIRStreamConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamConvForm>();
 	UInt8 buff[2048];
 	UOSInt recvSize;
 	me->thread2Running = true;
@@ -202,7 +202,7 @@ void SSWR::AVIRead::AVIRStreamConvForm::StopStream2()
 	}
 }
 
-SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 200, ui)
+SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 200, ui)
 {
 	this->SetText(CSTR("Stream Converter"));
 	this->SetFont(0, 0, 8.25, false);

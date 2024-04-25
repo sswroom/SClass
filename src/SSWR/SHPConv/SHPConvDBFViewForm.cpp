@@ -2,7 +2,7 @@
 #include "SSWR/SHPConv/SHPConvDBFViewForm.h"
 #include "Text/HKSCSFix.h"
 
-SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf, SSWR::SHPConv::IMapEng *eng, Text::CString lbl) : UI::GUIForm(parent, 424, 300, ui)
+SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, DB::DBFFile *dbf, SSWR::SHPConv::IMapEng *eng, Text::CString lbl) : UI::GUIForm(parent, 424, 300, ui)
 {
 	this->SetText(CSTR("DBFView"));
 	this->SetFont(0, 0, 8.25, false);
@@ -41,7 +41,7 @@ SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(Optional<UI::GUIClientCont
 		j = 300;
 	}
 	Text::HKSCSFix hkscs;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	while (i < j)
 	{
 		s = eng->GetNewDBFName(dbf, &dbCols, i, dbCols2);

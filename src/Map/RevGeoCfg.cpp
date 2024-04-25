@@ -88,7 +88,7 @@ UTF8Char *Map::RevGeoCfg::GetStreetName(UTF8Char *buff, UOSInt buffSize, Math::C
 	return 0;
 }
 
-Bool Map::RevGeoCfg::GetStreetName(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Coord2DDbl pos)
+Bool Map::RevGeoCfg::GetStreetName(NN<Text::StringBuilderUTF8> sb, Math::Coord2DDbl pos)
 {
 	Text::StringBuilderUTF8 sbTmp;
 	UOSInt lastStrPos = 0;

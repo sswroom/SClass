@@ -8,20 +8,20 @@ namespace Data
 	template <class T, class V> class ListMapNN : public DataMapNN<T, V>, public ReadingListNN<V>
 	{
 	public:
-		typedef void (*FreeFunc)(NotNullPtr<V> v);
+		typedef void (*FreeFunc)(NN<V> v);
 	public:
 		virtual ~ListMapNN() {};
 
 		virtual T GetKey(UOSInt index) const = 0;
-		void PutAll(NotNullPtr<const ListMapNN<T,V>> map);
+		void PutAll(NN<const ListMapNN<T,V>> map);
 		void FreeAll(FreeFunc freeFunc);
 	};
 
-	template <class T, class V> void ListMapNN<T, V>::PutAll(NotNullPtr<const ListMapNN<T,V>> map)
+	template <class T, class V> void ListMapNN<T, V>::PutAll(NN<const ListMapNN<T,V>> map)
 	{
 		UOSInt i;
 		UOSInt j;
-		NotNullPtr<V> v;
+		NN<V> v;
 		i = 0;
 		j = map->GetCount();
 		while (i < j)

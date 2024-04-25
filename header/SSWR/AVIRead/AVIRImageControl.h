@@ -39,8 +39,8 @@ namespace SSWR
 			typedef struct
 			{
 				Text::CString fileName;
-				NotNullPtr<Text::String> filePath;
-				NotNullPtr<Text::String> cacheFile;
+				NN<Text::String> filePath;
+				NN<Text::String> cacheFile;
 				ImageSetting setting;
 				Media::DrawImage *previewImg;
 				Media::DrawImage *previewImg2;
@@ -57,8 +57,8 @@ namespace SSWR
 			typedef void (__stdcall *ProgressUpdated)(AnyType userObj, UOSInt finCnt);
 			typedef void (__stdcall *KeyDownHandler)(AnyType userObj, UI::GUIControl::GUIKey key);
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Media::ColorManagerSess> colorSess;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Media::ColorManagerSess> colorSess;
 			Media::Resizer::LanczosResizer8_C8 *dispResizer;
 
 			Sync::Mutex ioMut;
@@ -102,21 +102,21 @@ namespace SSWR
 
 			void ThreadCancelTasks();
 			void EndFolder();
-			Bool GetCameraName(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Media::EXIFData> exif);
+			Bool GetCameraName(NN<Text::StringBuilderUTF8> sb, NN<Media::EXIFData> exif);
 			Double *GetCameraGamma(Text::CStringNN cameraName, OutParam<UInt32> gammaCnt);
 		public:
-			AVIRImageControl(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<SSWR::AVIRead::AVIRCore> core, UI::GUIForm *frm, NotNullPtr<Media::ColorManagerSess> colorSess);
+			AVIRImageControl(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<SSWR::AVIRead::AVIRCore> core, UI::GUIForm *frm, NN<Media::ColorManagerSess> colorSess);
 			virtual ~AVIRImageControl();
 
 			virtual Text::CStringNN GetObjectClass() const;
 			virtual OSInt OnNotify(UInt32 code, void *lParam);
 
-			virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
-			virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);
+			virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
+			virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
 
 			virtual void SetDPI(Double hdpi, Double ddpi);
 
-			virtual void OnDraw(NotNullPtr<Media::DrawImage> img);
+			virtual void OnDraw(NN<Media::DrawImage> img);
 			virtual void OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys);
 			virtual void OnKeyDown(UInt32 keyCode);
 
@@ -127,7 +127,7 @@ namespace SSWR
 			void SetProgressHandler(ProgressUpdated hdlr, AnyType userObj);
 			Media::StaticImage *LoadImage(const UTF8Char *fileName);
 			Media::StaticImage *LoadOriImage(const UTF8Char *fileName);
-			void ApplySetting(NotNullPtr<Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg, NotNullPtr<ImageSetting> setting);
+			void ApplySetting(NN<Media::StaticImage> srcImg, NN<Media::StaticImage> destImg, NN<ImageSetting> setting);
 			void UpdateImgPreview(ImageStatus *img);
 			void UpdateImgSetting(ImageSetting *setting);
 			Bool IsLoadingDir();

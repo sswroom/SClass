@@ -33,21 +33,21 @@ namespace Net
 
 			typedef struct
 			{
-				NotNullPtr<Text::String> fileName;
+				NN<Text::String> fileName;
 				Data::Timestamp modTime;
-				NotNullPtr<IO::PackageFile> packageFile;
+				NN<IO::PackageFile> packageFile;
 			} PackageInfo;
 
 			typedef struct
 			{
-				NotNullPtr<Text::String> reqPath;
-				NotNullPtr<Text::String> statFileName;
+				NN<Text::String> reqPath;
+				NN<Text::String> statFileName;
 				Data::FastStringMap<UInt32> *cntMap;
 				Bool updated;
 			} StatInfo;
 			
 		protected:
-			NotNullPtr<Text::String> rootDir;
+			NN<Text::String> rootDir;
 		private:
 			Bool allowBrowsing;
 			Bool allowUpload;
@@ -62,31 +62,31 @@ namespace Net
 			Sync::RWMutex *packageMut;
 			Data::FastStringMap<PackageInfo*> *packageMap;
 
-			void AddCacheHeader(NotNullPtr<Net::WebServer::IWebResponse> resp);
-			void ResponsePackageFile(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<IO::PackageFile> packageFile);
-			Bool ResponsePackageFileItem(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, NotNullPtr<IO::VirtualPackageFile> packageFile, NotNullPtr<const IO::PackFileItem> pitem);
+			void AddCacheHeader(NN<Net::WebServer::IWebResponse> resp);
+			void ResponsePackageFile(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<IO::PackageFile> packageFile);
+			Bool ResponsePackageFileItem(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, NN<IO::VirtualPackageFile> packageFile, NN<const IO::PackFileItem> pitem);
 
 			void StatLoad(StatInfo *stat);
 			void StatSave(StatInfo *stat);
 		public:
-			HTTPDirectoryHandler(NotNullPtr<Text::String> rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload);
+			HTTPDirectoryHandler(NN<Text::String> rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload);
 			HTTPDirectoryHandler(Text::CStringNN rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload);
 			virtual ~HTTPDirectoryHandler();
 
 		protected:
 			virtual Bool FileValid(Text::CStringNN subReq);
 		public:
-			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
+			virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 
-			Bool DoFileRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
+			Bool DoFileRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 			Optional<IO::PackageFile> GetPackageFile(Text::CStringNN path, OutParam<Bool> needRelease);
 
-			void SetRootDir(NotNullPtr<Text::String> rootDir);
+			void SetRootDir(NN<Text::String> rootDir);
 			void SetRootDir(Text::CStringNN rootDir);
 			void SetCacheType(CacheType ctype);
 			void SetExpirePeriod(Int32 periodSec);
 			void ClearFileCache();
-			void ExpandPackageFiles(NotNullPtr<Parser::ParserList> parsers, Text::CStringNN searchPattern);
+			void ExpandPackageFiles(NN<Parser::ParserList> parsers, Text::CStringNN searchPattern);
 			void EnableStats();
 			void SaveStats();
 		};

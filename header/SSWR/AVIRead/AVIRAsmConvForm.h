@@ -14,20 +14,20 @@ namespace SSWR
 		class AVIRAsmConvForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			NotNullPtr<UI::GUIButton> btnConv;
-			NotNullPtr<UI::GUIButton> btnConv2;
-			NotNullPtr<UI::GUITextBox> txtIntelAsm;
-			NotNullPtr<UI::GUIHSplitter> hspAsm;
-			NotNullPtr<UI::GUITextBox> txtGNUAsm;
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUIButton> btnConv;
+			NN<UI::GUIButton> btnConv2;
+			NN<UI::GUITextBox> txtIntelAsm;
+			NN<UI::GUIHSplitter> hspAsm;
+			NN<UI::GUITextBox> txtGNUAsm;
 
 			static void __stdcall OnConvClicked(AnyType userObj);
 			static void __stdcall OnConv2Clicked(AnyType userObj);
 			void ConvAsm();
 		public:
-			AVIRAsmConvForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRAsmConvForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRAsmConvForm();
 
 			virtual void OnMonitorChanged();

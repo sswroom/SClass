@@ -6,11 +6,11 @@
 
 void __stdcall SSWR::AVIRead::AVIRFontSelector::OnResized(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFontSelector> me = userObj.GetNN<SSWR::AVIRead::AVIRFontSelector>();
+	NN<SSWR::AVIRead::AVIRFontSelector> me = userObj.GetNN<SSWR::AVIRead::AVIRFontSelector>();
 	me->UpdateFontStyles();
 }
 
-void SSWR::AVIRead::AVIRFontSelector::OnDraw(NotNullPtr<Media::DrawImage> img)
+void SSWR::AVIRead::AVIRFontSelector::OnDraw(NN<Media::DrawImage> img)
 {
 	UOSInt defVal = this->env->GetDefFontStyle();
 	UOSInt currPos = (UOSInt)this->GetVScrollPos();
@@ -26,8 +26,8 @@ void SSWR::AVIRead::AVIRFontSelector::OnDraw(NotNullPtr<Media::DrawImage> img)
 	UInt32 itemTH = (UInt32)Double2Int32(80 * hdpi / ddpi);
 	w = img->GetWidth();
 	h = img->GetHeight();
-	NotNullPtr<Media::DrawEngine> deng = this->core->GetDrawEngine();
-	NotNullPtr<Media::DrawImage> tmpBmp;
+	NN<Media::DrawEngine> deng = this->core->GetDrawEngine();
+	NN<Media::DrawImage> tmpBmp;
 	if (UOSInt2Double(w) >= (138 * hdpi / ddpi))
 	{
 		if (!tmpBmp.Set(deng->CreateImage32(Math::Size2D<UOSInt>((UInt32)Double2Int32(128 * hdpi / ddpi), itemH), Media::AT_NO_ALPHA)))
@@ -46,13 +46,13 @@ void SSWR::AVIRead::AVIRFontSelector::OnDraw(NotNullPtr<Media::DrawImage> img)
 	tmpBmp->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	tmpBmp->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 
-	NotNullPtr<Media::DrawBrush> bWhite = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffffffff));
-	NotNullPtr<Media::DrawBrush> bBlack = img->NewBrushARGB(this->colorConv->ConvRGB8(0xff000000));
+	NN<Media::DrawBrush> bWhite = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffffffff));
+	NN<Media::DrawBrush> bBlack = img->NewBrushARGB(this->colorConv->ConvRGB8(0xff000000));
 	while (currPos < j && i < h)
 	{
 		if (currPos == defVal)
 		{
-			NotNullPtr<Media::DrawBrush> bDef = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffffffc0));
+			NN<Media::DrawBrush> bDef = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffffffc0));
 			img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(UOSInt2Double(w), itemTH), 0, bDef);
 			img->DelBrush(bDef);
 		}
@@ -63,7 +63,7 @@ void SSWR::AVIRead::AVIRFontSelector::OnDraw(NotNullPtr<Media::DrawImage> img)
 		this->core->GenFontStylePreview(tmpBmp, deng, this->env, currPos, this->colorConv);
 		if (currPos == this->currFontStyle)
 		{
-			NotNullPtr<Media::DrawBrush> bRed = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffff0000));
+			NN<Media::DrawBrush> bRed = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffff0000));
 			img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(UOSInt2Double(w), itemTH), 0, bRed);
 			img->DelBrush(bRed);
 		}
@@ -77,7 +77,7 @@ void SSWR::AVIRead::AVIRFontSelector::OnDraw(NotNullPtr<Media::DrawImage> img)
 		if (sbuff[0])
 		{
 			Math::Size2DDbl sz;
-			NotNullPtr<Media::DrawFont> fnt;
+			NN<Media::DrawFont> fnt;
 			if (fnt.Set(this->CreateDrawFont(img)))
 			{
 				sz = img->GetTextSize(fnt, CSTRP(sbuff, sptr));
@@ -323,7 +323,7 @@ void SSWR::AVIRead::AVIRFontSelector::OnKeyDown(UInt32 keyCode)
 	}
 }
 
-SSWR::AVIRead::AVIRFontSelector::AVIRFontSelector(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, UOSInt initFontStyle, NotNullPtr<Media::ColorManagerSess> colorSess) : UI::GUICustomDrawVScroll(ui, parent, core->GetDrawEngine())
+SSWR::AVIRead::AVIRFontSelector::AVIRFontSelector(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, UOSInt initFontStyle, NN<Media::ColorManagerSess> colorSess) : UI::GUICustomDrawVScroll(ui, parent, core->GetDrawEngine())
 {
 	this->core = core;
 	this->env = env;
@@ -346,11 +346,11 @@ SSWR::AVIRead::AVIRFontSelector::~AVIRFontSelector()
 	this->colorSess->RemoveHandler(*this);
 }
 
-void SSWR::AVIRead::AVIRFontSelector::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
+void SSWR::AVIRead::AVIRFontSelector::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void SSWR::AVIRead::AVIRFontSelector::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void SSWR::AVIRead::AVIRFontSelector::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	this->colorConv->RGBParamChanged(rgbParam);
 	this->Redraw();

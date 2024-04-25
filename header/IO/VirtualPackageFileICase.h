@@ -10,16 +10,16 @@ namespace IO
 	private:
 		Data::ICaseStringMap<PackFileItem *> namedItems;
 
-		VirtualPackageFileICase(NotNullPtr<const VirtualPackageFileICase> pkg);
+		VirtualPackageFileICase(NN<const VirtualPackageFileICase> pkg);
 	public:
-		VirtualPackageFileICase(NotNullPtr<Text::String> fileName);
+		VirtualPackageFileICase(NN<Text::String> fileName);
 		VirtualPackageFileICase(Text::CStringNN fileName);
 		virtual ~VirtualPackageFileICase();
 
 		virtual Optional<const PackFileItem> GetItemByName(Text::CStringNN name) const;
-		virtual void PutItem(NotNullPtr<Text::String> name, NotNullPtr<PackFileItem> item);
-		virtual void RemoveItem(NotNullPtr<Text::String> name);
-		virtual NotNullPtr<PackageFile> Clone() const;
+		virtual void PutItem(NN<Text::String> name, NN<PackFileItem> item);
+		virtual void RemoveItem(NN<Text::String> name);
+		virtual NN<PackageFile> Clone() const;
 	};
 }
 #endif

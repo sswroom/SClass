@@ -2,10 +2,10 @@
 #include "IO/StmData/FileData.h"
 #include "SSWR/AVIRead/AVIROCRForm.h"
 
-void __stdcall SSWR::AVIRead::AVIROCRForm::OnFileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIROCRForm::OnFileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIROCRForm> me = userObj.GetNN<SSWR::AVIRead::AVIROCRForm>();
-	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
+	NN<SSWR::AVIRead::AVIROCRForm> me = userObj.GetNN<SSWR::AVIRead::AVIROCRForm>();
+	NN<Parser::ParserList> parsers = me->core->GetParserList();
 	UOSInt i = 0;
 	UOSInt nFiles = files.GetCount();
 	while (i < nFiles)
@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIROCRForm::OnFileHandler(AnyType userObj, Data::
 		if (imgList)
 		{
 			imgList->ToStaticImage(0);
-			NotNullPtr<Media::StaticImage> img;
+			NN<Media::StaticImage> img;
 			if (img.Set((Media::StaticImage*)imgList->GetImage(0, 0)))
 			{
 				SDEL_CLASS(me->currImg);
@@ -37,22 +37,22 @@ void __stdcall SSWR::AVIRead::AVIROCRForm::OnFileHandler(AnyType userObj, Data::
 
 void __stdcall SSWR::AVIRead::AVIROCRForm::OnTextSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIROCRForm> me = userObj.GetNN<SSWR::AVIRead::AVIROCRForm>();
-	NotNullPtr<ResultInfo> res;
+	NN<SSWR::AVIRead::AVIROCRForm> me = userObj.GetNN<SSWR::AVIRead::AVIROCRForm>();
+	NN<ResultInfo> res;
 	if (me->lvText->GetSelectedItem().GetOpt<ResultInfo>().SetTo(res))
 	{
 		me->pbResult->SetImage(res->resImg);
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIROCRForm::OnOCRResult(AnyType userObj, NotNullPtr<Text::String> txt, Double confidence, Math::RectArea<OSInt> boundary)
+void __stdcall SSWR::AVIRead::AVIROCRForm::OnOCRResult(AnyType userObj, NN<Text::String> txt, Double confidence, Math::RectArea<OSInt> boundary)
 {
-	NotNullPtr<SSWR::AVIRead::AVIROCRForm> me = userObj.GetNN<SSWR::AVIRead::AVIROCRForm>();
+	NN<SSWR::AVIRead::AVIROCRForm> me = userObj.GetNN<SSWR::AVIRead::AVIROCRForm>();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	if (boundary.GetArea() >= 1000)
 	{
-		NotNullPtr<ResultInfo> res = MemAllocNN(ResultInfo);
+		NN<ResultInfo> res = MemAllocNN(ResultInfo);
 		res->result = txt->Clone();
 		res->confidence = confidence;
 		res->area = boundary;
@@ -70,8 +70,8 @@ void __stdcall SSWR::AVIRead::AVIROCRForm::OnOCRResult(AnyType userObj, NotNullP
 
 void SSWR::AVIRead::AVIROCRForm::ClearResults()
 {
-	NotNullPtr<ResultInfo> res;
-	Data::ArrayIterator<NotNullPtr<ResultInfo>> it = this->results.Iterator();
+	NN<ResultInfo> res;
+	Data::ArrayIterator<NN<ResultInfo>> it = this->results.Iterator();
 	while (it.HasNext())
 	{
 		res = it.Next();
@@ -82,7 +82,7 @@ void SSWR::AVIRead::AVIROCRForm::ClearResults()
 	this->results.Clear();
 }
 
-SSWR::AVIRead::AVIROCRForm::AVIROCRForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui), ocr(Media::OCREngine::Language::English)
+SSWR::AVIRead::AVIROCRForm::AVIROCRForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui), ocr(Media::OCREngine::Language::English)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("OCR"));

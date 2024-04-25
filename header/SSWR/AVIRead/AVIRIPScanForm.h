@@ -18,20 +18,20 @@ namespace SSWR
 		{
 
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Net::SocketFactory> sockf;
 			Net::ICMPScanner *scanner;
 
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUILabel> lblIP;
-			NotNullPtr<UI::GUIComboBox> cboIP;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUIListView> lvIP;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUILabel> lblIP;
+			NN<UI::GUIComboBox> cboIP;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUIListView> lvIP;
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
-			AVIRIPScanForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRIPScanForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRIPScanForm();
 
 			virtual void OnMonitorChanged();

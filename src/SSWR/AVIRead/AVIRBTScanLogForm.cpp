@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnFileClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnStoreClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRBTScanLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBTScanLogForm>();
+	NN<SSWR::AVIRead::AVIRBTScanLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBTScanLogForm>();
 	if (me->macList->Store())
 	{
 		me->ui->ShowMsgOK(CSTR("Data Stored"), CSTR("MAC Manager"), me);
@@ -47,8 +47,8 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnStoreClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnContentDblClicked(AnyType userObj, UOSInt index)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRBTScanLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBTScanLogForm>();
-	NotNullPtr<const IO::BTScanLog::DevEntry> log;
+	NN<SSWR::AVIRead::AVIRBTScanLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBTScanLogForm>();
+	NN<const IO::BTScanLog::DevEntry> log;
 	if (!me->lvContent->GetItem(index).GetOpt<const IO::BTScanLog::DevEntry>().SetTo(log))
 		return;
 	{
@@ -109,7 +109,7 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 {
 	const Net::MACInfo::MACEntry *entry;
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<IO::BTScanLog::DevEntry> log;
+	NN<IO::BTScanLog::DevEntry> log;
 	Data::ArrayListNN<IO::BTScanLog::DevEntry> logList;
 	logList.AddAll(this->btLog->GetPublicList());
 	logList.AddAll(this->btLog->GetRandomList());
@@ -117,7 +117,7 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 	UTF8Char *sptr;
 	Text::CString cstr;
 	UInt8 mac[8];
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UOSInt i;
 	UOSInt j;
 	UOSInt l;
@@ -199,7 +199,7 @@ void SSWR::AVIRead::AVIRBTScanLogForm::UpdateStatus()
 	this->lblInfo->SetText(sb.ToCString());
 }
 
-SSWR::AVIRead::AVIRBTScanLogForm::AVIRBTScanLogForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::BTScanLog *btLog) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRBTScanLogForm::AVIRBTScanLogForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::BTScanLog *btLog) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Bluetooth Scan Log"));

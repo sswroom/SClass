@@ -23,7 +23,7 @@ namespace Net
 		} DeviceStatus;
 		
 	private:
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Net::UDPServer *svr;
 		UInt32 infIndex;
 		UInt32 infIP;
@@ -38,14 +38,14 @@ namespace Net
 		UInt8 *devUsed;
 		Data::FastMap<UInt64, DeviceStatus*> devMap;
 
-		static void __stdcall PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+		static void __stdcall PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
 	public:
-		DHCPServer(NotNullPtr<Net::SocketFactory> sockf, UInt32 infIP, UInt32 subnet, UInt32 firstIP, UInt32 devCount, UInt32 gateway, NotNullPtr<Data::ArrayList<UInt32>> dnsList, NotNullPtr<IO::LogTool> log);
+		DHCPServer(NN<Net::SocketFactory> sockf, UInt32 infIP, UInt32 subnet, UInt32 firstIP, UInt32 devCount, UInt32 gateway, NN<Data::ArrayList<UInt32>> dnsList, NN<IO::LogTool> log);
 		~DHCPServer();
 
 		Bool IsError() const;
 
-		void UseStatus(NotNullPtr<Sync::MutexUsage> mutUsage) const;
+		void UseStatus(NN<Sync::MutexUsage> mutUsage) const;
 		const Data::ReadingList<DeviceStatus*> *StatusGetList() const;
 		UInt32 GetIPLeaseTime() const;
 	};

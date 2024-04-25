@@ -12,8 +12,8 @@ namespace Media
 			AC3BlockParser();
 			virtual ~AC3BlockParser();
 
-			virtual Media::AudioBlockSource *ParseStreamData(NotNullPtr<IO::StreamData> stmData);
-			Bool ParseStreamFormat(UInt8 *buff, UOSInt buffSize, NotNullPtr<Media::AudioFormat> fmt);
+			virtual Media::AudioBlockSource *ParseStreamData(NN<IO::StreamData> stmData);
+			Bool ParseStreamFormat(UInt8 *buff, UOSInt buffSize, NN<Media::AudioFormat> fmt);
 		};
 	}
 }

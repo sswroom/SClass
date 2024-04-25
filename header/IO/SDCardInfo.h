@@ -11,7 +11,7 @@ namespace IO
 		Bool isEMMC;
 		UInt8 cid[16];
 		UInt8 csd[16];
-		NotNullPtr<Text::String> name;
+		NN<Text::String> name;
 
 	public:
 		SDCardInfo(Text::CString name, const UInt8 *cid, const UInt8 *csd);
@@ -20,7 +20,7 @@ namespace IO
 		OSInt GetCID(UInt8 *cid);
 		OSInt GetCSD(UInt8 *csd);
 
-		NotNullPtr<Text::String> GetName() const;
+		NN<Text::String> GetName() const;
 		// CID
 		UInt8 GetManufacturerID();
 		UInt16 GetOEMID();

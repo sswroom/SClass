@@ -10,8 +10,8 @@ namespace UI
 		class WinPanelBase : public UI::GUIPanelBase
 		{
 		protected:
-			NotNullPtr<GUIPanel> master;
-			NotNullPtr<WinCore> ui;
+			NN<GUIPanel> master;
+			NN<WinCore> ui;
 			Int32 minW;
 			Int32 minH;
 			Bool scrollH;
@@ -25,8 +25,8 @@ namespace UI
 			static void Deinit(InstanceHandle *hInst);
 			void UpdateScrollBars();
 		public:
-			WinPanelBase(NotNullPtr<GUIPanel> master, NotNullPtr<GUICore> ui, ControlHandle *parentHWnd);
-			WinPanelBase(NotNullPtr<GUIPanel> master, NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
+			WinPanelBase(NN<GUIPanel> master, NN<GUICore> ui, ControlHandle *parentHWnd);
+			WinPanelBase(NN<GUIPanel> master, NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 			virtual ~WinPanelBase();
 
 			virtual Math::Coord2DDbl GetClientOfst();

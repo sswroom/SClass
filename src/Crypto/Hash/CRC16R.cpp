@@ -34,9 +34,9 @@ UTF8Char *Crypto::Hash::CRC16R::GetName(UTF8Char *sbuff) const
 	return Text::StrConcatC(sbuff, UTF8STRC("CRC (16-bit Reversed)"));
 }
 
-NotNullPtr<Crypto::Hash::IHash> Crypto::Hash::CRC16R::Clone() const
+NN<Crypto::Hash::IHash> Crypto::Hash::CRC16R::Clone() const
 {
-	NotNullPtr<Crypto::Hash::CRC16R> crc;
+	NN<Crypto::Hash::CRC16R> crc;
 	NEW_CLASSNN(crc, Crypto::Hash::CRC16R(this->polynomial));
 	return crc;
 }

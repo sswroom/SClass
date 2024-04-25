@@ -6,7 +6,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISCSysForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISCSysForm>();
+	NN<SSWR::AVIRead::AVIRGISCSysForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISCSysForm>();
 	if (me->radGeo->IsSelected())
 	{
 		UOSInt i = me->cboGeo->GetSelectedIndex();
@@ -33,23 +33,23 @@ void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnOKClicked(AnyType userObj)
 }
 void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISCSysForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISCSysForm>();
+	NN<SSWR::AVIRead::AVIRGISCSysForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISCSysForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnGeoSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISCSysForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISCSysForm>();
+	NN<SSWR::AVIRead::AVIRGISCSysForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISCSysForm>();
 	me->radGeo->Select();
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnProjSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISCSysForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISCSysForm>();
+	NN<SSWR::AVIRead::AVIRGISCSysForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISCSysForm>();
 	me->radProj->Select();
 }
 
-SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Math::CoordinateSystem *csys) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Math::CoordinateSystem *csys) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetText(CSTR("Coordinate System"));
 	this->SetFont(0, 0, 8.25, false);

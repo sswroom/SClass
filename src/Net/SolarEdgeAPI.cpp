@@ -10,7 +10,7 @@
 
 #define API_LINK CSTR("https://monitoringapi.solaredge.com")
 
-void Net::SolarEdgeAPI::BuildURL(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString path)
+void Net::SolarEdgeAPI::BuildURL(NN<Text::StringBuilderUTF8> sb, Text::CString path)
 {
 	sb->Append(API_LINK);
 	sb->Append(path);
@@ -23,7 +23,7 @@ Text::JSONBase *Net::SolarEdgeAPI::GetJSON(Text::CStringNN url)
 #if defined(VERBOSE)
 	printf("SolarEdgeAPI requesting: %s\r\n", url.v);
 #endif
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	Text::StringBuilderUTF8 sb;
 	if (!cli->ReadAllContent(sb, 8192, 1048576))
 	{
@@ -37,7 +37,7 @@ Text::JSONBase *Net::SolarEdgeAPI::GetJSON(Text::CStringNN url)
 	return Text::JSONBase::ParseJSONStr(sb.ToCString());
 }
 
-Net::SolarEdgeAPI::SolarEdgeAPI(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString apikey)
+Net::SolarEdgeAPI::SolarEdgeAPI(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString apikey)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -82,7 +82,7 @@ Bool Net::SolarEdgeAPI::GetSupportedVersions(Data::ArrayListStringNN *versions)
 		while (i < j)
 		{
 			Text::JSONBase *obj = arr->GetArrayValue(i);
-			NotNullPtr<Text::String> s;
+			NN<Text::String> s;
 			if (obj->GetType() == Text::JSONType::String)
 			{
 				versions->Add(((Text::JSONString*)obj)->GetValue()->Clone());
@@ -130,7 +130,7 @@ Bool Net::SolarEdgeAPI::GetSiteList(Data::ArrayList<Site*> *siteList, UOSInt max
 		{
 			Text::JSONObject *siteObj = (Text::JSONObject*)siteArr->GetArrayValue(i);
 			Site *site;
-			NotNullPtr<Text::String> s;
+			NN<Text::String> s;
 			if (siteObj->GetType() == Text::JSONType::Object)
 			{
 				site = MemAlloc(Site, 1);
@@ -214,7 +214,7 @@ Bool Net::SolarEdgeAPI::GetSiteOverview(Int32 siteId, SiteOverview *overview)
 	Text::JSONBase *json = this->GetJSON(sbURL.ToCString());
 	if (json == 0)
 		return false;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (json->GetValueString(CSTR("overview.lastUpdateTime")).SetTo(s))
 		overview->lastUpdateTime = Data::Timestamp::FromStr(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 	else
@@ -313,7 +313,7 @@ Bool Net::SolarEdgeAPI::GetSitePower(Int32 siteId, Data::Timestamp startTime, Da
 	return succ;
 }
 
-void Net::SolarEdgeAPI::AppendFormDate(NotNullPtr<Text::StringBuilderUTF8> sb, Data::Timestamp ts, Bool hasTime)
+void Net::SolarEdgeAPI::AppendFormDate(NN<Text::StringBuilderUTF8> sb, Data::Timestamp ts, Bool hasTime)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;

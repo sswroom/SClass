@@ -10,8 +10,8 @@ namespace IO
 		class AM2315GPIO
 		{
 		private:
-			NotNullPtr<IO::IOPin> sdaPin;
-			NotNullPtr<IO::IOPin> sclPin;
+			NN<IO::IOPin> sdaPin;
+			NN<IO::IOPin> sclPin;
 			Crypto::Hash::CRC16R crc;
 			Bool error;
 
@@ -25,7 +25,7 @@ namespace IO
 			void Wait();
 			Bool ReadWord(UInt8 regAddr, UInt8 *data);
 		public:
-			AM2315GPIO(NotNullPtr<IO::IOPin> sdaPin, NotNullPtr<IO::IOPin> sclPin);
+			AM2315GPIO(NN<IO::IOPin> sdaPin, NN<IO::IOPin> sclPin);
 			~AM2315GPIO();
 
 			Bool IsError();

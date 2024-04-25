@@ -3,11 +3,11 @@
 #include "Data/ByteTool.h"
 #include "Net/WOLClient.h"
 
-void __stdcall Net::WOLClient::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::WOLClient::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
 }
 
-Net::WOLClient::WOLClient(NotNullPtr<Net::SocketFactory> sockf, UInt32 adapterIP, NotNullPtr<IO::LogTool> log)
+Net::WOLClient::WOLClient(NN<Net::SocketFactory> sockf, UInt32 adapterIP, NN<IO::LogTool> log)
 {
 	this->sockf = sockf;
 	this->adapterIP = Net::SocketUtil::IPv4ToBroadcast(adapterIP);

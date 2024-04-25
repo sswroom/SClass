@@ -16,8 +16,8 @@ namespace Net
 		virtual ~WLANWindowsInterface();
 
 		virtual Bool Scan();
-		virtual UOSInt GetNetworks(NotNullPtr<Data::ArrayListNN<Net::WirelessLAN::Network>> networkList);
-		virtual UOSInt GetBSSList(NotNullPtr<Data::ArrayListNN<Net::WirelessLAN::BSSInfo>> bssList);
+		virtual UOSInt GetNetworks(NN<Data::ArrayListNN<Net::WirelessLAN::Network>> networkList);
+		virtual UOSInt GetBSSList(NN<Data::ArrayListNN<Net::WirelessLAN::BSSInfo>> bssList);
 	};
 }
 #endif

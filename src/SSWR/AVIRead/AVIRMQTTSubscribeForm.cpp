@@ -12,7 +12,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
+	NN<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
 	if (me->client)
 	{
 		me->ServerStop();
@@ -106,7 +106,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnSTopicClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
+	NN<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
 	if (me->client)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -127,8 +127,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnSTopicClicked(AnyType use
 
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnLogSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
-	NotNullPtr<Text::String> s;
+	NN<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
+	NN<Text::String> s;
 	if (me->lbLog->GetSelectedItemTextNew().SetTo(s))
 	{
 		me->txtLog->SetText(s->ToCString());
@@ -138,14 +138,14 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnLogSelChg(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnTopicSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
+	NN<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
 	me->currTopic = me->lvTopic->GetSelectedItem().GetOpt<TopicStatus>();
 	me->UpdateTopicChart();
 }
 
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
+	NN<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
 	if (me->client)
 	{
 		Text::StringBuilderUTF8 sbTopic;
@@ -164,7 +164,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishClicked(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPingTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
+	NN<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
 	if (me->client)
 	{
 		if (me->client->IsError())
@@ -185,12 +185,12 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPingTimerTick(AnyType use
 
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
-	NotNullPtr<const Data::ArrayListNN<TopicStatus>> topicList;
+	NN<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
+	NN<const Data::ArrayListNN<TopicStatus>> topicList;
 	Data::DateTime dt;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<TopicStatus> topicSt;
+	NN<TopicStatus> topicSt;
 	UOSInt i;
 	UOSInt j;
 	Sync::MutexUsage mutUsage(me->topicMut);
@@ -252,7 +252,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnTimerTick(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(AnyType userObj, Text::CStringNN topic, const Data::ByteArrayR &message)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
+	NN<SSWR::AVIRead::AVIRMQTTSubscribeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeForm>();
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Received message, topic = "));
 	sb.Append(topic);
@@ -262,7 +262,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(AnyType us
 
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
-	NotNullPtr<TopicStatus> topicSt;
+	NN<TopicStatus> topicSt;
 	Sync::MutexUsage mutUsage(me->topicMut);
 	if (!me->topicMap.Get(topic).SetTo(topicSt))
 	{
@@ -312,9 +312,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(AnyType us
 void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 {
 	Media::DrawImage *dimg;
-	NotNullPtr<Media::DrawEngine> deng = this->core->GetDrawEngine();
+	NN<Media::DrawEngine> deng = this->core->GetDrawEngine();
 	Math::Size2D<UOSInt> sz = this->pbTopic->GetSizeP();
-	NotNullPtr<Media::DrawImage> gimg;
+	NN<Media::DrawImage> gimg;
 	if (sz.x > 0 && sz.y > 0)
 	{
 		if (this->dispImg == 0 || this->dispImg->GetSize() != sz)
@@ -328,10 +328,10 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 		}
 		if (gimg.Set(this->dispImg))
 		{
-			NotNullPtr<TopicStatus> currTopic;
+			NN<TopicStatus> currTopic;
 			if (!this->currTopic.SetTo(currTopic) || currTopic->recvCnt <= 1)
 			{
-				NotNullPtr<Media::DrawBrush> b;
+				NN<Media::DrawBrush> b;
 				b = gimg->NewBrushARGB(0xffffffff);
 				gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
 				gimg->DelBrush(b);
@@ -391,7 +391,7 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::ServerStop()
 	}
 }
 
-SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("MQTT Subsribe"));
@@ -487,9 +487,9 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::~AVIRMQTTSubscribeForm()
 {
 	this->ServerStop();
 	UOSInt i;
-	NotNullPtr<TopicStatus> topicSt;
-	NotNullPtr<const Data::ArrayListNN<TopicStatus>> topicList;
-	NotNullPtr<Media::DrawImage> img;
+	NN<TopicStatus> topicSt;
+	NN<const Data::ArrayListNN<TopicStatus>> topicList;
+	NN<Media::DrawImage> img;
 	topicList = this->topicMap.GetValues();
 	i = topicList->GetCount();
 	while (i-- > 0)

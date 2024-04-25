@@ -8,10 +8,10 @@
 
 void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSSLInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSLInfoForm>();
+	NN<SSWR::AVIRead::AVIRSSLInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSLInfoForm>();
 	Text::StringBuilderUTF8 sb;
 	Text::PString hostName;
-	NotNullPtr<Text::String> sslHost;
+	NN<Text::String> sslHost;
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
 	me->txtHost->GetText(sb);
@@ -178,7 +178,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 			MemCopyNO(me->packetBuff, &packetBuff[8], retSize - 8);
 			me->packetSize = retSize - 8;
 			me->txtStatus->SetText(sb.ToCString());
-			NotNullPtr<Crypto::Cert::X509File> cert;
+			NN<Crypto::Cert::X509File> cert;
 			if (me->currCerts.SetTo(cert))
 			{
 				Text::StringBuilderUTF8 sb;
@@ -228,7 +228,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 		MemCopyNO(me->packetBuff, packetBuff, retSize);
 		me->packetSize = retSize;
 		me->txtStatus->SetText(sb.ToCString());
-		NotNullPtr<Crypto::Cert::X509File> cert;
+		NN<Crypto::Cert::X509File> cert;
 		if (me->currCerts.SetTo(cert))
 		{
 			Text::StringBuilderUTF8 sb;
@@ -241,8 +241,8 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCertClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSSLInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSLInfoForm>();
-	NotNullPtr<Crypto::Cert::X509File> cert;
+	NN<SSWR::AVIRead::AVIRSSLInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSLInfoForm>();
+	NN<Crypto::Cert::X509File> cert;
 	if (me->currCerts.SetTo(cert))
 	{
 		me->core->OpenObject(cert->Clone());
@@ -251,7 +251,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCertClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnRAWClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSSLInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSLInfoForm>();
+	NN<SSWR::AVIRead::AVIRSSLInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSLInfoForm>();
 	if (me->packetBuff && me->packetSize > 0)
 	{
 		IO::StmData::MemoryDataCopy md(Data::ByteArrayR(me->packetBuff, me->packetSize));
@@ -261,7 +261,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnRAWClicked(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRSSLInfoForm::AVIRSSLInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)
+SSWR::AVIRead::AVIRSSLInfoForm::AVIRSSLInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetText(CSTR("SSL Info"));
 	this->SetFont(0, 0, 8.25, false);

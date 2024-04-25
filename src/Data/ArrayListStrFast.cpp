@@ -11,9 +11,9 @@ Data::ArrayListStrFast::ArrayListStrFast(UOSInt capacity) : Data::SortableArrayL
 {
 }
 
-NotNullPtr<Data::ArrayList<Text::String*>> Data::ArrayListStrFast::Clone() const
+NN<Data::ArrayList<Text::String*>> Data::ArrayListStrFast::Clone() const
 {
-	NotNullPtr<Data::ArrayList<Text::String*>> newArr;
+	NN<Data::ArrayList<Text::String*>> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListStrFast(this->capacity));
 	newArr->AddAll(*this);
 	return newArr;

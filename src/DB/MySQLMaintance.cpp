@@ -16,7 +16,7 @@ DB::MySQLMaintance::~MySQLMaintance()
 	}
 }
 
-void DB::MySQLMaintance::RepairSchema(const UTF8Char *schema, NotNullPtr<Text::StringBuilderUTF8> sb)
+void DB::MySQLMaintance::RepairSchema(const UTF8Char *schema, NN<Text::StringBuilderUTF8> sb)
 {
 	Data::ArrayListStringNN tableNames;
 	if (!this->cli->ChangeSchema(schema))
@@ -36,12 +36,12 @@ void DB::MySQLMaintance::RepairSchema(const UTF8Char *schema, NotNullPtr<Text::S
 	}
 }
 
-void DB::MySQLMaintance::RepairTable(NotNullPtr<Text::String> tableName, NotNullPtr<Text::StringBuilderUTF8> sb)
+void DB::MySQLMaintance::RepairTable(NN<Text::String> tableName, NN<Text::StringBuilderUTF8> sb)
 {
 	DB::SQLBuilder sql(this->cli->GetSQLType(), this->cli->IsAxisAware(), this->cli->GetTzQhr());
 	sql.AppendCmdC(CSTR("check table "));
 	sql.AppendCol(tableName->v);
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (this->cli->ExecuteReader(sql.ToCString()).SetTo(r))
 	{
 		UOSInt i;

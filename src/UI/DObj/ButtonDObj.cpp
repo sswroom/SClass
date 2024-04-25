@@ -6,12 +6,12 @@
 
 UInt32 __stdcall UI::DObj::ButtonDObj::ClickThread(AnyType userObj)
 {
-	NotNullPtr<UI::DObj::ButtonDObj> me = userObj.GetNN<UI::DObj::ButtonDObj>();
+	NN<UI::DObj::ButtonDObj> me = userObj.GetNN<UI::DObj::ButtonDObj>();
 	me->clkHdlr(me->clkUserObj);
 	return 0;
 }
 
-UI::DObj::ButtonDObj::ButtonDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, Bool rectMode, UI::UIEvent clkHdlr, AnyType clkUserObj) : DirectObject(tl)
+UI::DObj::ButtonDObj::ButtonDObj(NN<Media::DrawEngine> deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, Bool rectMode, UI::UIEvent clkHdlr, AnyType clkUserObj) : DirectObject(tl)
 {
 	this->deng = deng;
 	if (fileNameUnclick.leng == 0)
@@ -44,7 +44,7 @@ UI::DObj::ButtonDObj::ButtonDObj(NotNullPtr<Media::DrawEngine> deng, Text::CStri
 
 UI::DObj::ButtonDObj::~ButtonDObj()
 {
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->bmpUnclick))
 	{
 		this->deng->DeleteImage(img);
@@ -105,15 +105,15 @@ Bool UI::DObj::ButtonDObj::DoEvents()
 	return false;
 }
 
-void UI::DObj::ButtonDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
+void UI::DObj::ButtonDObj::DrawObject(NN<Media::DrawImage> dimg)
 {
 	if (!this->isVisible)
 		return;
 
 	Math::Coord2D<OSInt> tl = this->GetCurrPos();
 	this->dispTL = tl;
-	NotNullPtr<Media::DrawImage> bmpUnclick;
-	NotNullPtr<Media::DrawImage> bmpClicked;
+	NN<Media::DrawImage> bmpUnclick;
+	NN<Media::DrawImage> bmpClicked;
 	if (bmpUnclick.Set(this->bmpUnclick) && bmpClicked.Set(this->bmpClicked))
 	{
 		if (this->bmpUnclick->GetWidth() == this->bmpClicked->GetWidth() && this->bmpUnclick->GetHeight() == this->bmpClicked->GetHeight())
@@ -149,7 +149,7 @@ void UI::DObj::ButtonDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
 			}
 			Media::DrawImage *bmpS1 = this->bmpUnclick;
 			Media::DrawImage *bmpS2 = this->bmpClicked;
-			NotNullPtr<Media::DrawImage> bmpTmp;
+			NN<Media::DrawImage> bmpTmp;
 			if (bmpTmp.Set(this->deng->CreateImage32(bmpS1->GetSize(), Media::AT_NO_ALPHA)))
 			{
 				bmpTmp->SetAlphaType(bmpS1->GetAlphaType());

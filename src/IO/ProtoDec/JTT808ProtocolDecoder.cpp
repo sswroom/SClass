@@ -166,7 +166,7 @@ UOSInt IO::ProtoDec::JTT808ProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, Any
 	return buffSize;
 }
 
-Bool IO::ProtoDec::JTT808ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buffSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::ProtoDec::JTT808ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buffSize, NN<Text::StringBuilderUTF8> sb)
 {
 	UInt8 proto[1024];
 	UOSInt protoSize;
@@ -370,7 +370,7 @@ UOSInt IO::ProtoDec::JTT808ProtocolDecoder::Unpack(UInt8 *buff, const UInt8 *pro
 	return retSize;
 }
 
-Bool IO::ProtoDec::JTT808ProtocolDecoder::ParseLocation(const UTF8Char *loc, UOSInt locSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::ProtoDec::JTT808ProtocolDecoder::ParseLocation(const UTF8Char *loc, UOSInt locSize, NN<Text::StringBuilderUTF8> sb)
 {
 	UInt32 uVal;
 	UOSInt i;

@@ -18,7 +18,7 @@ Int32 Parser::FileParser::MP2Parser::GetName()
 	return *(Int32*)"MP2P";
 }
 
-void Parser::FileParser::MP2Parser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::MP2Parser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
@@ -31,7 +31,7 @@ IO::ParserType Parser::FileParser::MP2Parser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::MP2Parser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::MP2Parser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (hdr[0] != 0xff || (hdr[1] & 0xfe) != 0xfc)
 	{

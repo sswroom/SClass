@@ -73,7 +73,7 @@ gboolean UI::GTK::GTKVSplitter::SignalMouseUp(GtkWidget *widget, GdkEvent *event
 	return false;
 }
 
-UI::GTK::GTKVSplitter::GTKVSplitter(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Int32 height, Bool isBottom) : UI::GUIVSplitter(ui, parent)
+UI::GTK::GTKVSplitter::GTKVSplitter(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Int32 height, Bool isBottom) : UI::GUIVSplitter(ui, parent)
 {
 	this->dragMode = false;
 	this->isBottom = isBottom;
@@ -112,10 +112,10 @@ void UI::GTK::GTKVSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::
 {
 	if (btn == UI::GUIControl::MBTN_LEFT)
 	{
-		NotNullPtr<UI::GUIClientControl> nnparent;
+		NN<UI::GUIClientControl> nnparent;
 		if (this->dragMode && this->parent.SetTo(nnparent))
 		{
-			NotNullPtr<UI::GUIControl> ctrl;
+			NN<UI::GUIControl> ctrl;
 			Bool foundThis = false;
 			OSInt drawY = pos.y - this->dragY;
 			pos = this->GetPositionP();

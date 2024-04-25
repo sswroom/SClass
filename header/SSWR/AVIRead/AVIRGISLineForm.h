@@ -19,24 +19,24 @@ namespace SSWR
 		class AVIRGISLineForm : public UI::GUIForm, public Media::IColorHandler
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Media::ColorManagerSess> colorSess;
-			NotNullPtr<Media::ColorConv> colorConv;
-			NotNullPtr<Media::DrawEngine> eng;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Media::ColorManagerSess> colorSess;
+			NN<Media::ColorConv> colorConv;
+			NN<Media::DrawEngine> eng;
 			Double lineThick;
 			UInt32 lineColor;
 			Media::StaticImage *prevImg;
 
-			NotNullPtr<UI::GUIPictureBox> pbPreview;
-			NotNullPtr<UI::GUIPanel> pnlMain;
-			NotNullPtr<UI::GUILabel> lblThick;
-			NotNullPtr<UI::GUIHScrollBar> hsbThick;
-			NotNullPtr<UI::GUILabel> lblThickV;
-			NotNullPtr<UI::GUILabel> lblColor;
-			NotNullPtr<UI::GUIPictureBox> pbColor;
+			NN<UI::GUIPictureBox> pbPreview;
+			NN<UI::GUIPanel> pnlMain;
+			NN<UI::GUILabel> lblThick;
+			NN<UI::GUIHScrollBar> hsbThick;
+			NN<UI::GUILabel> lblThickV;
+			NN<UI::GUILabel> lblColor;
+			NN<UI::GUIPictureBox> pbColor;
             
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
 			static void __stdcall OnThickChanged(AnyType userObj, UOSInt newPos);
 			static Bool __stdcall OnColorDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
@@ -44,13 +44,13 @@ namespace SSWR
 			static void __stdcall OnCancelClicked(AnyType userObj);
 			void UpdatePreview();
 		public:
-			AVIRGISLineForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::DrawEngine> eng, Double lineThick, UInt32 lineColor);
+			AVIRGISLineForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::DrawEngine> eng, Double lineThick, UInt32 lineColor);
 			virtual ~AVIRGISLineForm();
 
 			virtual void OnMonitorChanged();
 
-			virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
-			virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);
+			virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
+			virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
 
 			Double GetLineThick();
 			UInt32 GetLineColor();

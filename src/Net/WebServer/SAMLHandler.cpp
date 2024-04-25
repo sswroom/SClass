@@ -20,12 +20,12 @@ Net::WebServer::SAMLHandler::~SAMLHandler()
 	this->signKey.Delete();
 }
 
-Bool Net::WebServer::SAMLHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Net::WebServer::SAMLHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	NotNullPtr<Crypto::Cert::X509Cert> cert;
-	NotNullPtr<Crypto::Cert::X509PrivKey> privKey;
+	NN<Crypto::Cert::X509Cert> cert;
+	NN<Crypto::Cert::X509PrivKey> privKey;
 	if (this->initErr == SAMLError::None && this->signCert.SetTo(cert) && this->signKey.SetTo(privKey))
 	{
 		if (this->metadataPath->Equals(subReq.v, subReq.leng))
@@ -109,7 +109,7 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWeb
 			if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 			{
 				req->ParseHTTPForm();
-				NotNullPtr<Text::String> s;
+				NN<Text::String> s;
 				if (req->GetHTTPFormStr(CSTR("SAMLResponse")).SetTo(s))
 				{
 					Text::TextBinEnc::Base64Enc b64;
@@ -155,7 +155,7 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWeb
 	return false;
 }
 
-Net::WebServer::SAMLHandler::SAMLHandler(NotNullPtr<SAMLConfig> cfg, Optional<Net::SSLEngine> ssl, WebStandardHandler *defHdlr)
+Net::WebServer::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEngine> ssl, WebStandardHandler *defHdlr)
 {
 	this->defHdlr = defHdlr;
 	this->ssl = ssl;
@@ -199,19 +199,19 @@ Net::WebServer::SAMLHandler::SAMLHandler(NotNullPtr<SAMLConfig> cfg, Optional<Ne
 		this->initErr = SAMLError::SignCert;
 		return;
 	}
-	NotNullPtr<IO::ParsedObject> pobj;
+	NN<IO::ParsedObject> pobj;
 	if (!pobj.Set(parser.ParseFilePath(cfg->signCertPath)))
 	{
 		this->initErr = SAMLError::SignCert;
 		return;
 	}
-	NotNullPtr<Crypto::Cert::X509File> x509;
+	NN<Crypto::Cert::X509File> x509;
 	if (!Parser::FileParser::X509Parser::ToType(pobj, Crypto::Cert::X509File::FileType::Cert).SetTo(x509))
 	{
 		this->initErr = SAMLError::SignCert;
 		return;
 	}
-	this->signCert = NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(x509);
+	this->signCert = NN<Crypto::Cert::X509Cert>::ConvertFrom(x509);
 
 	if (cfg->signKeyPath.leng == 0)
 	{
@@ -228,7 +228,7 @@ Net::WebServer::SAMLHandler::SAMLHandler(NotNullPtr<SAMLConfig> cfg, Optional<Ne
 		this->initErr = SAMLError::SignKey;
 		return;
 	}
-	this->signKey = NotNullPtr<Crypto::Cert::X509PrivKey>::ConvertFrom(x509);
+	this->signKey = NN<Crypto::Cert::X509PrivKey>::ConvertFrom(x509);
 
 	this->initErr = SAMLError::None;
 }
@@ -238,7 +238,7 @@ Net::WebServer::SAMLError Net::WebServer::SAMLHandler::GetInitError()
 	return this->initErr;
 }
 
-Bool Net::WebServer::SAMLHandler::GetLogoutURL(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Net::WebServer::SAMLHandler::GetLogoutURL(NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("https://"));
 	sb->Append(this->serverHost);
@@ -246,7 +246,7 @@ Bool Net::WebServer::SAMLHandler::GetLogoutURL(NotNullPtr<Text::StringBuilderUTF
 	return true;
 }
 
-Bool Net::WebServer::SAMLHandler::GetMetadataURL(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Net::WebServer::SAMLHandler::GetMetadataURL(NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("https://"));
 	sb->Append(this->serverHost);
@@ -254,7 +254,7 @@ Bool Net::WebServer::SAMLHandler::GetMetadataURL(NotNullPtr<Text::StringBuilderU
 	return true;
 }
 
-Bool Net::WebServer::SAMLHandler::GetSSOURL(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Net::WebServer::SAMLHandler::GetSSOURL(NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("https://"));
 	sb->Append(this->serverHost);

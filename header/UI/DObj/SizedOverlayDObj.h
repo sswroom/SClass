@@ -14,7 +14,7 @@ namespace UI
 		class SizedOverlayDObj : public DirectObject
 		{
 		private:
-			NotNullPtr<Media::DrawEngine> deng;
+			NN<Media::DrawEngine> deng;
 			Sync::Mutex imgMut;
 			Media::ImageList *imgList;
 			Bool noRelease;
@@ -30,12 +30,12 @@ namespace UI
 			Math::Coord2DDbl drawOfst;
 
 		public:
-			SizedOverlayDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, Parser::ParserList *parsers, Media::Resizer::LanczosResizer8_C8 *resizer);
+			SizedOverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, Parser::ParserList *parsers, Media::Resizer::LanczosResizer8_C8 *resizer);
 			virtual ~SizedOverlayDObj();
 
 			virtual Bool IsChanged();
 			virtual Bool DoEvents();
-			virtual void DrawObject(NotNullPtr<Media::DrawImage> dimg);
+			virtual void DrawObject(NN<Media::DrawImage> dimg);
 
 			virtual Bool IsObject(Math::Coord2D<OSInt> scnPos);
 			virtual void OnMouseDown();

@@ -5,13 +5,13 @@
 #include "Net/SSLEngineFactory.h"
 #include <stdio.h>
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Text::CStringNN url = CSTR("https://resource.data.one.gov.hk/td/speedmap.xml");
 	UInt8 buff[2048];
 	UOSInt readSize;
 	Optional<Net::SSLEngine> ssl;
-	NotNullPtr<Net::HTTPClient> cli;
+	NN<Net::HTTPClient> cli;
 	Net::OSSocketFactory sockf(false);
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
 	cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, true, url.StartsWith(UTF8STRC("https://")));

@@ -35,7 +35,7 @@ namespace Data
 		class ChartData
 		{
 		public:
-			NotNullPtr<Text::String> name;
+			NN<Text::String> name;
 			void *data;
 			Data::Chart::DataType dataType;
 			UInt32 lineColor;
@@ -78,7 +78,7 @@ namespace Data
 		Double lineThick;
 		Double barLength;
 
-		NotNullPtr<Text::String> fntName;
+		NN<Text::String> fntName;
 		Double fntSizePt;
 
 		Bool hasXRangeDate;
@@ -135,7 +135,7 @@ namespace Data
 		virtual Text::String *GetYName(UOSInt index) const;
 		virtual DataType GetYType(UOSInt index) const;
 
-		virtual void Plot(NotNullPtr<Media::DrawImage> img, Double x, Double y, Double width, Double height) const;
+		virtual void Plot(NN<Media::DrawImage> img, Double x, Double y, Double width, Double height) const;
 		virtual UOSInt GetLegendCount() const;
 		virtual UTF8Char *GetLegend(UTF8Char *sbuff, UInt32 *color, UOSInt index) const;
 

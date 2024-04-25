@@ -34,7 +34,7 @@ namespace Media
 
 			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:
-			RAVCDecoder(NotNullPtr<IVideoSource> sourceVideo, Bool toRelease, Bool skipHeader);
+			RAVCDecoder(NN<IVideoSource> sourceVideo, Bool toRelease, Bool skipHeader);
 			virtual ~RAVCDecoder();
 
 			virtual Text::CStringNN GetFilterName();
@@ -46,7 +46,7 @@ namespace Media
 			virtual UOSInt GetFrameSize(UOSInt frameIndex);
 			virtual UOSInt ReadFrame(UOSInt frameIndex, UInt8 *buff);
 
-			virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
+			virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
 		private:
 			UOSInt BuildIFrameHeader(UInt8 *buff, Bool forceBuild);
 		};

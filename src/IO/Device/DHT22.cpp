@@ -6,7 +6,7 @@
 //#include <wchar.h>
 //#include <stdio.h>
 
-IO::Device::DHT22::DHT22(NotNullPtr<IO::IOPin> pin)
+IO::Device::DHT22::DHT22(NN<IO::IOPin> pin)
 {
 	this->pin = pin;
 }

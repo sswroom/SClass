@@ -9,7 +9,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTFTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTFTPClientForm>();
+	NN<SSWR::AVIRead::AVIRTFTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTFTPClientForm>();
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
 	Text::StringBuilderUTF8 sb;
@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTFTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTFTPClientForm>();
+	NN<SSWR::AVIRead::AVIRTFTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTFTPClientForm>();
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
 	Text::StringBuilderUTF8 sb;
@@ -109,11 +109,11 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(AnyType userObj)
 		me->txtPort->Focus();
 		return;
 	}
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"TFTPClient", false);
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"TFTPClient", false);
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		NotNullPtr<Text::String> fileName = dlg->GetFileName();
+		NN<Text::String> fileName = dlg->GetFileName();
 		UOSInt i = fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		Net::TFTPClient cli(me->core->GetSocketFactory(), addr, port, me->core->GetLog());
 		if (cli.IsError())
@@ -140,7 +140,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(AnyType userObj)
 	dlg.Delete();
 }
 
-SSWR::AVIRead::AVIRTFTPClientForm::AVIRTFTPClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 240, ui)
+SSWR::AVIRead::AVIRTFTPClientForm::AVIRTFTPClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 240, ui)
 {
 	this->core = core;
 	this->SetText(CSTR("TFTP Client"));

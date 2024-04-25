@@ -65,16 +65,16 @@ namespace SSWR
 		{
 			Int32 bookId;
 			Int32 speciesId;
-			NotNullPtr<Text::String> dispName;
+			NN<Text::String> dispName;
 		} BookSpInfo;
 
 		class BookInfo
 		{
 		public:
 			Int32 id;
-			NotNullPtr<Text::String> title;
-			NotNullPtr<Text::String> author;
-			NotNullPtr<Text::String> press;
+			NN<Text::String> title;
+			NN<Text::String> author;
+			NN<Text::String> press;
 			Int64 publishDate;
 			Optional<Text::String> url;
 			Int32 userfileId;
@@ -106,14 +106,14 @@ namespace SSWR
 		{
 			Int32 id;
 			FileType fileType;
-			NotNullPtr<Text::String> oriFileName;
+			NN<Text::String> oriFileName;
 			Int64 fileTimeTicks;
 			Double lat;
 			Double lon;
 			Int32 webuserId;
 			Int32 speciesId;
 			Int64 captureTimeTicks;
-			NotNullPtr<Text::String> dataFileName;
+			NN<Text::String> dataFileName;
 			UInt32 crcVal;
 			Int32 rotType;
 			Int32 prevUpdated;
@@ -131,9 +131,9 @@ namespace SSWR
 		{
 			Int32 id;
 			Int32 crcVal;
-			NotNullPtr<Text::String> imgUrl;
-			NotNullPtr<Text::String> srcUrl;
-			NotNullPtr<Text::String> location;
+			NN<Text::String> imgUrl;
+			NN<Text::String> srcUrl;
+			NN<Text::String> location;
 			Int32 prevUpdated;
 			Double cropLeft;
 			Double cropTop;
@@ -147,17 +147,17 @@ namespace SSWR
 			DataFileType fileType;
 			Data::Timestamp startTime;
 			Data::Timestamp endTime;
-			NotNullPtr<Text::String> oriFileName;
-			NotNullPtr<Text::String> dataFileName;
+			NN<Text::String> oriFileName;
+			NN<Text::String> dataFileName;
 			Int32 webuserId;
 		};
 
 		typedef struct
 		{
 			Int32 id;
-			NotNullPtr<Text::String> userName;
+			NN<Text::String> userName;
 			Optional<Text::String> pwd;
-			NotNullPtr<Text::String> watermark;
+			NN<Text::String> watermark;
 			UserType userType;
 			Data::ArrayListInt64 userFileIndex;
 			Data::ArrayList<UserFileInfo*> userFileObj;
@@ -171,15 +171,15 @@ namespace SSWR
 		{
 		public:
 			Int32 speciesId;
-			NotNullPtr<Text::String> engName;
-			NotNullPtr<Text::String> chiName;
-			NotNullPtr<Text::String> sciName;
+			NN<Text::String> engName;
+			NN<Text::String> chiName;
+			NN<Text::String> sciName;
 			UInt32 sciNameHash;
 			Int32 groupId;
-			NotNullPtr<Text::String> descript;
-			NotNullPtr<Text::String> dirName;
+			NN<Text::String> descript;
+			NN<Text::String> dirName;
 			Optional<Text::String> photo;
-			NotNullPtr<Text::String> idKey;
+			NN<Text::String> idKey;
 			Int32 cateId;
 			SpeciesFlags flags;
 			Int32 photoId;
@@ -196,9 +196,9 @@ namespace SSWR
 		public:
 			Int32 id;
 			Int32 groupType;
-			NotNullPtr<Text::String> engName;
-			NotNullPtr<Text::String> chiName;
-			NotNullPtr<Text::String> descript;
+			NN<Text::String> engName;
+			NN<Text::String> chiName;
+			NN<Text::String> descript;
 			Int32 parentId;
 			Int32 photoGroup;
 			Int32 photoSpecies;
@@ -217,16 +217,16 @@ namespace SSWR
 		typedef struct
 		{
 			Int32 id;
-			NotNullPtr<Text::String> chiName;
-			NotNullPtr<Text::String> engName;
+			NN<Text::String> chiName;
+			NN<Text::String> engName;
 		} GroupTypeInfo;
 
 		struct CategoryInfo
 		{
 			Int32 cateId;
-			NotNullPtr<Text::String> chiName;
-			NotNullPtr<Text::String> dirName;
-			NotNullPtr<Text::String> srcDir;
+			NN<Text::String> chiName;
+			NN<Text::String> dirName;
+			NN<Text::String> srcDir;
 			Int32 flags;
 			Data::FastMap<Int32, GroupTypeInfo *> groupTypes;
 			Data::ArrayList<GroupInfo*> groups;
@@ -244,8 +244,8 @@ namespace SSWR
 		struct PeakInfo
 		{
 			Int32 id;
-			NotNullPtr<Text::String> refId;
-			NotNullPtr<Text::String> district;
+			NN<Text::String> refId;
+			NN<Text::String> district;
 			Double mapX;
 			Double mapY;
 			Double markedHeight;
@@ -320,8 +320,8 @@ namespace SSWR
 			{
 				Bool aDesc = false;
 				Bool bDesc = false;
-				NotNullPtr<Text::String> aStr;
-				NotNullPtr<Text::String> bStr;
+				NN<Text::String> aStr;
+				NN<Text::String> bStr;
 				if (env->user != 0)
 				{
 					if (a->descript.SetTo(aStr) && aStr->leng > 0 && (env->user->userType == UserType::Admin || a->webuserId == env->user->id))

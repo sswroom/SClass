@@ -35,7 +35,7 @@ void Parser::FileParser::OziMapParser::SetParserList(Parser::ParserList *parsers
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::OziMapParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::OziMapParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
@@ -48,7 +48,7 @@ IO::ParserType Parser::FileParser::OziMapParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;
@@ -177,7 +177,7 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFileHdr(NotNullPtr<IO::
 		if (valid)
 		{
 			Optional<Media::ImageList> imgList = 0;
-			NotNullPtr<Media::ImageList> nnimgList;
+			NN<Media::ImageList> nnimgList;
 			sptr = fd->GetFullFileName()->ConcatTo(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, fileName->ToCString());
 			{
@@ -187,10 +187,10 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFileHdr(NotNullPtr<IO::
 
 			if (imgList.SetTo(nnimgList))
 			{
-				NotNullPtr<Math::PointMappingCoordinateSystem> csys;
-				NotNullPtr<Math::Geometry::VectorImage> vimg;
-				NotNullPtr<Media::SharedImage> shimg;
-				NotNullPtr<Math::GeographicCoordinateSystem> gcs;
+				NN<Math::PointMappingCoordinateSystem> csys;
+				NN<Math::Geometry::VectorImage> vimg;
+				NN<Media::SharedImage> shimg;
+				NN<Math::GeographicCoordinateSystem> gcs;
 				if (gcs.Set(Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84)))
 				{
 					NEW_CLASSNN(csys, Math::PointMappingCoordinateSystem(fd->GetFullName(), 4326, CSTR("PointMapping"), gcs));
@@ -203,7 +203,7 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFileHdr(NotNullPtr<IO::
 					NEW_CLASSNN(shimg, Media::SharedImage(nnimgList, true));
 					NEW_CLASSNN(vimg, Math::Geometry::VectorImage(csys->GetSRID(), shimg, Math::Coord2DDbl(0, 0), Math::Coord2DDbl(imgW, imgH), false, CSTRP(sbuff, sptr), 0, 0));
 					UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
-					NotNullPtr<Text::String> s = Text::String::New(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]));
+					NN<Text::String> s = Text::String::New(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]));
 					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, (const UTF8Char**)0, csys, 0, s.Ptr()));
 					s->Release();
 					lyr->AddVector(vimg, (const UTF8Char**)0);

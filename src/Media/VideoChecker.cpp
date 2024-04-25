@@ -4,7 +4,7 @@
 
 void __stdcall Media::VideoChecker::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	NotNullPtr<DecodeStatus> status = userData.GetNN<DecodeStatus>();
+	NN<DecodeStatus> status = userData.GetNN<DecodeStatus>();
 	if (frameType != Media::FT_DISCARD)
 	{
 		status->sampleCnt++;
@@ -14,7 +14,7 @@ void __stdcall Media::VideoChecker::OnVideoFrame(Data::Duration frameTime, UInt3
 
 void __stdcall Media::VideoChecker::OnVideoChange(Media::IVideoSource::FrameChange frChg, AnyType userData)
 {
-	NotNullPtr<DecodeStatus> status = userData.GetNN<DecodeStatus>();
+	NN<DecodeStatus> status = userData.GetNN<DecodeStatus>();
 	if (frChg == Media::IVideoSource::FC_ENDPLAY)
 	{
 		status->isEnd = true;
@@ -24,7 +24,7 @@ void __stdcall Media::VideoChecker::OnVideoChange(Media::IVideoSource::FrameChan
 
 void __stdcall Media::VideoChecker::OnAudioEnd(AnyType userData)
 {
-	NotNullPtr<DecodeStatus> status = userData.GetNN<DecodeStatus>();
+	NN<DecodeStatus> status = userData.GetNN<DecodeStatus>();
 	status->isEnd = true;
 	status->evt->Set();
 }
@@ -46,7 +46,7 @@ void Media::VideoChecker::SetAllowTimeSkip(Bool allowTimeSkip)
 Bool Media::VideoChecker::IsValid(Media::MediaFile *mediaFile)
 {
 	DecodeStatus *status;
-	NotNullPtr<Media::IMediaSource> msrc;
+	NN<Media::IMediaSource> msrc;
 	Data::ArrayList<DecodeStatus*> statusList;
 	Bool isEnd;
 	UOSInt i = 0;
@@ -69,7 +69,7 @@ Bool Media::VideoChecker::IsValid(Media::MediaFile *mediaFile)
 		status->evt = evt;
 		if (msrc->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 		{
-			status->vdecoder = vdecoders.DecodeVideo(NotNullPtr<Media::IVideoSource>::ConvertFrom(msrc));
+			status->vdecoder = vdecoders.DecodeVideo(NN<Media::IVideoSource>::ConvertFrom(msrc));
 			if (status->vdecoder)
 			{
 				status->vdecoder->Init(OnVideoFrame, OnVideoChange, status);
@@ -81,7 +81,7 @@ Bool Media::VideoChecker::IsValid(Media::MediaFile *mediaFile)
 		}
 		else if (msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 		{
-			status->adecoder = adecoders.DecodeAudio(NotNullPtr<Media::IAudioSource>::ConvertFrom(msrc));
+			status->adecoder = adecoders.DecodeAudio(NN<Media::IAudioSource>::ConvertFrom(msrc));
 			if (status->adecoder)
 			{
 				NEW_CLASS(status->renderer, Media::NullRenderer());

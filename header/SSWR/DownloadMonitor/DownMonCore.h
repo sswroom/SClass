@@ -40,15 +40,15 @@ namespace SSWR
 			{
 				Int32 id;
 				Int32 webType;
-				NotNullPtr<Text::String> dbName;
-				NotNullPtr<Text::String> fileName;
+				NN<Text::String> dbName;
+				NN<Text::String> fileName;
 				FileStatus status;
 				Sync::Mutex mut;
 			};
 
 			typedef void (__stdcall *FileEndHandler)(AnyType userObj, Int32 fileId, Int32 webType);
 		private:
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 			Sync::Thread thread;
 			CheckStatus chkStatus;
@@ -74,22 +74,22 @@ namespace SSWR
 			Bool ExtractZIP(Text::CStringNN zipFile, Text::CString mp4File);
 			Bool VideoValid(Text::CStringNN fileName);
 			void ProcessDir(Text::String *downPath, Text::String *succPath, Text::String *errPath);
-			static void __stdcall CheckThread(NotNullPtr<Sync::Thread> thread);
+			static void __stdcall CheckThread(NN<Sync::Thread> thread);
 
 		public:
 			DownMonCore();
 			~DownMonCore();
 
 			Bool IsError();
-			NotNullPtr<Net::SocketFactory> GetSocketFactory();
+			NN<Net::SocketFactory> GetSocketFactory();
 			Optional<Net::SSLEngine> GetSSLEngine();
 			CheckStatus GetCurrStatus();
 			void SetFileEndHandler(FileEndHandler hdlr, void *userObj);
 			Text::String *GetListFile();
 
 			void FileFree(FileInfo *file);
-			Bool FileAdd(Int32 id, Int32 webType, NotNullPtr<Text::String> dbName);
-			FileInfo *FileGet(Int32 id, Int32 webType, NotNullPtr<Sync::MutexUsage> mutUsage);
+			Bool FileAdd(Int32 id, Int32 webType, NN<Text::String> dbName);
+			FileInfo *FileGet(Int32 id, Int32 webType, NN<Sync::MutexUsage> mutUsage);
 			Int32 FileGetByName(Text::CStringNN fileName, Int32 *webType);
 			Bool FileEnd(Int32 id, Int32 webType);
 			Bool FileStart(Int32 id, Int32 webType, ControlHandle *formHand);

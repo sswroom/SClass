@@ -26,7 +26,7 @@ void Parser::FileParser::LOGParser::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-void Parser::FileParser::LOGParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::LOGParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::LogFile)
 	{
@@ -39,7 +39,7 @@ IO::ParserType Parser::FileParser::LOGParser::GetParserType()
 	return IO::ParserType::LogFile;
 }
 
-IO::ParsedObject *Parser::FileParser::LOGParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::LOGParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

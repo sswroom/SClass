@@ -53,12 +53,12 @@ Exporter::GUIExporter::~GUIExporter()
 	MemFree(data);
 }
 
-IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
+IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
-	NotNullPtr<Media::ImageList> imgList;
+	NN<Media::ImageList> imgList;
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
-	imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
+	imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
 	Media::RasterImage *img = imgList->GetImage(0, 0);
@@ -107,13 +107,13 @@ IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(NotNullPt
 	}
 }
 
-void *Exporter::GUIExporter::ToImage(NotNullPtr<IO::ParsedObject> pobj, UInt8 **relBuff)
+void *Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, UInt8 **relBuff)
 {
 	*relBuff = 0;
-	NotNullPtr<Media::ImageList> imgList;
+	NN<Media::ImageList> imgList;
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return 0;
-	imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
+	imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return 0;
 	Media::RasterImage *img = imgList->GetImage(0, 0);

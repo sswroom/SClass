@@ -22,10 +22,10 @@ namespace UI
 			static gboolean SignalButtonPress(GtkWidget *widget, GdkEvent *event, gpointer data);
 			static void SignalShow(GtkWidget *widget, gpointer user_data);
 		public:
-			GTKListBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool multiSelect);
+			GTKListBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Bool multiSelect);
 			virtual ~GTKListBox();
 
-			virtual UOSInt AddItem(NotNullPtr<Text::String> itemText, AnyType itemObj);
+			virtual UOSInt AddItem(NN<Text::String> itemText, AnyType itemObj);
 			virtual UOSInt AddItem(Text::CStringNN itemText, AnyType itemObj);
 			virtual UOSInt InsertItem(UOSInt index, Text::String *itemText, AnyType itemObj);
 			virtual UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj);

@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRWebSite7gogoForm::OnRequestPageClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWebSite7gogoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWebSite7gogoForm>();
+	NN<SSWR::AVIRead::AVIRWebSite7gogoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWebSite7gogoForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSite7gogoForm::OnRequestPageClicked(AnyType
 		MemClear(&chInfo, sizeof(chInfo));
 		Data::ArrayList<Net::WebSite::WebSite7gogoControl::ItemData*> itemList;
 		Net::WebSite::WebSite7gogoControl::ItemData *item;
-		NotNullPtr<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
+		NN<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
 		me->ctrl->GetChannelItems(s, 0, &itemList, &chInfo);
 		s->Release();
 		i = 0;
@@ -53,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSite7gogoForm::OnRequestPageClicked(AnyType
 	}
 }
 
-SSWR::AVIRead::AVIRWebSite7gogoForm::AVIRWebSite7gogoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRWebSite7gogoForm::AVIRWebSite7gogoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("755"));
 	this->SetFont(UTF8STRC("MingLiu"), 8.25, false);

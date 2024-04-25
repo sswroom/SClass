@@ -32,16 +32,16 @@ Int32 Exporter::OruxMapExporter::GetName()
 	return *(Int32*)"ORUX";
 }
 
-IO::FileExporter::SupportType Exporter::OruxMapExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
+IO::FileExporter::SupportType Exporter::OruxMapExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
-	NotNullPtr<Map::MapDrawLayer> layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj);
+	NN<Map::MapDrawLayer> layer = NN<Map::MapDrawLayer>::ConvertFrom(pobj);
 	if (layer->GetObjectClass() == Map::MapDrawLayer::OC_TILE_MAP_LAYER)
 	{
-		NotNullPtr<Map::TileMap> tileMap = NotNullPtr<Map::TileMapLayer>::ConvertFrom(layer)->GetTileMap();
+		NN<Map::TileMap> tileMap = NN<Map::TileMapLayer>::ConvertFrom(layer)->GetTileMap();
 		Map::TileMap::TileType ttype = tileMap->GetTileType();
 		if (ttype == Map::TileMap::TT_OSMLOCAL)
 		{
@@ -49,7 +49,7 @@ IO::FileExporter::SupportType Exporter::OruxMapExporter::IsObjectSupported(NotNu
 		}
 		else if (ttype == Map::TileMap::TT_OSM)
 		{
-			NotNullPtr<Map::OSM::OSMTileMap> osm = NotNullPtr<Map::OSM::OSMTileMap>::ConvertFrom(tileMap);
+			NN<Map::OSM::OSMTileMap> osm = NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap);
 			if (osm->HasSPackageFile())
 			{
 				return IO::FileExporter::SupportType::MultiFiles;
@@ -70,7 +70,7 @@ Bool Exporter::OruxMapExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, 
 	return false;
 }
 
-Bool Exporter::OruxMapExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::OruxMapExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	UTF8Char fileName2[512];
 	UTF8Char u8fileName[512];
@@ -80,18 +80,18 @@ Bool Exporter::OruxMapExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, T
 	{
 		return false;
 	}
-	NotNullPtr<Map::MapDrawLayer> layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj);
+	NN<Map::MapDrawLayer> layer = NN<Map::MapDrawLayer>::ConvertFrom(pobj);
 	if (layer->GetObjectClass() != Map::MapDrawLayer::OC_TILE_MAP_LAYER)
 	{
 		return false;
 	}
-	NotNullPtr<Map::TileMap> tileMap = NotNullPtr<Map::TileMapLayer>::ConvertFrom(layer)->GetTileMap();
+	NN<Map::TileMap> tileMap = NN<Map::TileMapLayer>::ConvertFrom(layer)->GetTileMap();
 	Map::TileMap::TileType ttype = tileMap->GetTileType();
 	Text::UTF8Writer *writer;
 	UOSInt i;
 	UOSInt j;
 	UOSInt level;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 //	const UTF8Char *csptr;
 	Int32 minX;
 	Int32 minY;
@@ -130,7 +130,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, T
 		{
 			Data::ArrayList<Math::Coord2D<Int32>> imgIds;
 			Map::TileMap::ImageType it;
-			NotNullPtr<IO::StreamData> fd;
+			NN<IO::StreamData> fd;
 			DB::SQLBuilder sql(db->GetSQLType(), db->IsAxisAware(), db->GetTzQhr());
 			db->ExecuteNonQuery(CSTR("CREATE TABLE android_metadata (locale TEXT)"));
 			db->ExecuteNonQuery(CSTR("CREATE TABLE tiles (x int, y int, z int, image blob, PRIMARY KEY (x,y,z))"));
@@ -146,7 +146,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, T
 				db->ExecuteNonQuery(sql.ToCString());
 			}
 			succ = true;
-			NotNullPtr<Map::OSM::OSMLocalTileMap> osm = NotNullPtr<Map::OSM::OSMLocalTileMap>::ConvertFrom(tileMap);
+			NN<Map::OSM::OSMLocalTileMap> osm = NN<Map::OSM::OSMLocalTileMap>::ConvertFrom(tileMap);
 			NEW_CLASS(writer, Text::UTF8Writer(stm));
 			writer->WriteStrC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"));
 			writer->WriteStrC(UTF8STRC("<OruxTracker xmlns=\"http://oruxtracker.com/app/res/calibration\"\n"));
@@ -248,7 +248,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, T
 					imgIds.Clear();
 					osm->GetTileImageIDs(level, Math::RectAreaDbl(Math::Coord2DDbl(minLon, minLat), Math::Coord2DDbl(maxLon, maxLat)), &imgIds);
 					Optional<DB::DBTransaction> sess = db->BeginTransaction();
-					NotNullPtr<DB::DBTransaction> thisSess;
+					NN<DB::DBTransaction> thisSess;
 					j = imgIds.GetCount();
 					while (j-- > 0)
 					{
@@ -298,7 +298,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, T
 	}
 	else if (ttype == Map::TileMap::TT_OSM)
 	{
-		NotNullPtr<Map::OSM::OSMTileMap> osm = NotNullPtr<Map::OSM::OSMTileMap>::ConvertFrom(tileMap);
+		NN<Map::OSM::OSMTileMap> osm = NN<Map::OSM::OSMTileMap>::ConvertFrom(tileMap);
 		if (!osm->HasSPackageFile())
 		{
 			return false;

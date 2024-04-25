@@ -13,7 +13,7 @@ namespace Map
 	public:
 		typedef struct
 		{
-			NotNullPtr<Text::String> layerName;
+			NN<Text::String> layerName;
 			Int32 searchType;
 			Int32 usedCnt;
 			Map::MapSearchLayer *data;
@@ -28,7 +28,7 @@ namespace Map
 		~RevGeoCfg();
 
 		UTF8Char *GetStreetName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos);
-		Bool GetStreetName(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Coord2DDbl pos);
+		Bool GetStreetName(NN<Text::StringBuilderUTF8> sb, Math::Coord2DDbl pos);
 	};
 }
 #endif

@@ -27,14 +27,14 @@ namespace Media
 			virtual Double GetThick();
 			Bool IsSame(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern);
 			UOSInt GetIndex();
-			NotNullPtr<Media::DrawPen> CreateDrawPen(Double oriDPI, NotNullPtr<Media::DrawImage> dimg);
+			NN<Media::DrawPen> CreateDrawPen(Double oriDPI, NN<Media::DrawImage> dimg);
 		};
 
 		class VectorFontStyle : public Media::DrawFont
 		{
 		private:
 			UOSInt index;
-			NotNullPtr<Text::String> name;
+			NN<Text::String> name;
 			Double heightPt;
 			Media::DrawEngine::DrawFontStyle fontStyle;
 			UInt32 codePage;
@@ -46,10 +46,10 @@ namespace Media
 			Bool IsSame(Text::CString name, Double heightPt, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
 			UOSInt GetIndex();
 			Double GetHeightPt();
-			NotNullPtr<Text::String> GetName() const;
+			NN<Text::String> GetName() const;
 			Media::DrawEngine::DrawFontStyle GetStyle();
 			UInt32 GetCodePage();
-			NotNullPtr<Media::DrawFont> CreateDrawFont(Double oriDPI, NotNullPtr<Media::DrawImage> dimg);
+			NN<Media::DrawFont> CreateDrawFont(Double oriDPI, NN<Media::DrawImage> dimg);
 		};
 
 		class VectorBrushStyle : public Media::DrawBrush
@@ -64,7 +64,7 @@ namespace Media
 
 			Bool IsSame(UInt32 color);
 			UOSInt GetIndex();
-			NotNullPtr<Media::DrawBrush> CreateDrawBrush(Double oriDPI, NotNullPtr<Media::DrawImage> dimg);
+			NN<Media::DrawBrush> CreateDrawBrush(Double oriDPI, NN<Media::DrawImage> dimg);
 		};
 
 		typedef struct
@@ -75,7 +75,7 @@ namespace Media
 		} VectorStyles;
 
 	private:
-		NotNullPtr<Media::DrawEngine> refEng;
+		NN<Media::DrawEngine> refEng;
 		Media::ColorProfile colorProfile;
 		UInt32 srid;
 		Math::Size2DDbl size;
@@ -89,7 +89,7 @@ namespace Media
 		Media::DrawEngine::DrawPos align;
 		
 	public:
-		VectorGraph(UInt32 srid, Double visibleWidth, Double visibleHeight, Math::Unit::Distance::DistanceUnit unit, NotNullPtr<Media::DrawEngine> refEng, NotNullPtr<const Media::ColorProfile> colorProfile);
+		VectorGraph(UInt32 srid, Double visibleWidth, Double visibleHeight, Math::Unit::Distance::DistanceUnit unit, NN<Media::DrawEngine> refEng, NN<const Media::ColorProfile> colorProfile);
 		virtual ~VectorGraph();
 
 		Math::Size2DDbl GetSizeDbl() const;
@@ -97,8 +97,8 @@ namespace Media
 		virtual UOSInt GetHeight() const;
 		virtual Math::Size2D<UOSInt> GetSize() const;
 		virtual UInt32 GetBitCount() const;
-		virtual NotNullPtr<const ColorProfile> GetColorProfile() const;
-		virtual void SetColorProfile(NotNullPtr<const ColorProfile> color);
+		virtual NN<const ColorProfile> GetColorProfile() const;
+		virtual void SetColorProfile(NN<const ColorProfile> color);
 		virtual Media::AlphaType GetAlphaType() const;
 		virtual void SetAlphaType(Media::AlphaType atype);
 		virtual Double GetHDPI() const;
@@ -111,50 +111,50 @@ namespace Media
 		virtual Optional<Media::EXIFData> GetEXIF() const;
 		virtual Media::PixelFormat GetPixelFormat() const;
 
-		virtual Bool DrawLine(Double x1, Double y1, Double x2, Double y2, NotNullPtr<DrawPen> p);
-		virtual Bool DrawPolylineI(const Int32 *points, UOSInt nPoints, NotNullPtr<DrawPen> p);
+		virtual Bool DrawLine(Double x1, Double y1, Double x2, Double y2, NN<DrawPen> p);
+		virtual Bool DrawPolylineI(const Int32 *points, UOSInt nPoints, NN<DrawPen> p);
 		virtual Bool DrawPolygonI(const Int32 *points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b);
 		virtual Bool DrawPolyPolygonI(const Int32 *points, const UInt32 *pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b);
-		virtual Bool DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPoints, NotNullPtr<DrawPen> p);
+		virtual Bool DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPoints, NN<DrawPen> p);
 		virtual Bool DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b);
 		virtual Bool DrawPolyPolygon(const Math::Coord2DDbl *points, const UInt32 *pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b);
 		virtual Bool DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> p, Optional<DrawBrush> b);
 		virtual Bool DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> p, Optional<DrawBrush> b);
-		virtual Bool DrawString(Math::Coord2DDbl tl, NotNullPtr<Text::String> str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b);
-		virtual Bool DrawString(Math::Coord2DDbl tl, Text::CStringNN str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b);
-		virtual Bool DrawStringRot(Math::Coord2DDbl center, NotNullPtr<Text::String> str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> p, Double angleDegree);
-		virtual Bool DrawStringRot(Math::Coord2DDbl center, Text::CStringNN str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> p, Double angleDegree);
-		virtual Bool DrawStringB(Math::Coord2DDbl tl, NotNullPtr<Text::String> str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> p, UOSInt buffSize);
-		virtual Bool DrawStringB(Math::Coord2DDbl tl, Text::CStringNN str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> p, UOSInt buffSize);
-		virtual Bool DrawStringRotB(Math::Coord2DDbl center, NotNullPtr<Text::String> str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> p, Double angleDegree, UOSInt buffSize);
-		virtual Bool DrawStringRotB(Math::Coord2DDbl center, Text::CStringNN str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> p, Double angleDegree, UOSInt buffSize);
-		virtual Bool DrawImagePt(NotNullPtr<DrawImage> img, Math::Coord2DDbl tl);
-		virtual Bool DrawImagePt2(NotNullPtr<Media::StaticImage> img, Math::Coord2DDbl tl);
-		virtual Bool DrawImagePt3(NotNullPtr<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize); /////////////////////////////
+		virtual Bool DrawString(Math::Coord2DDbl tl, NN<Text::String> str, NN<DrawFont> f, NN<DrawBrush> b);
+		virtual Bool DrawString(Math::Coord2DDbl tl, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b);
+		virtual Bool DrawStringRot(Math::Coord2DDbl center, NN<Text::String> str, NN<DrawFont> f, NN<DrawBrush> p, Double angleDegree);
+		virtual Bool DrawStringRot(Math::Coord2DDbl center, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> p, Double angleDegree);
+		virtual Bool DrawStringB(Math::Coord2DDbl tl, NN<Text::String> str, NN<DrawFont> f, NN<DrawBrush> p, UOSInt buffSize);
+		virtual Bool DrawStringB(Math::Coord2DDbl tl, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> p, UOSInt buffSize);
+		virtual Bool DrawStringRotB(Math::Coord2DDbl center, NN<Text::String> str, NN<DrawFont> f, NN<DrawBrush> p, Double angleDegree, UOSInt buffSize);
+		virtual Bool DrawStringRotB(Math::Coord2DDbl center, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> p, Double angleDegree, UOSInt buffSize);
+		virtual Bool DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl);
+		virtual Bool DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl tl);
+		virtual Bool DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize); /////////////////////////////
 
-		virtual NotNullPtr<DrawPen> NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern);
-		virtual NotNullPtr<DrawBrush> NewBrushARGB(UInt32 color);
-		virtual NotNullPtr<DrawFont> NewFontPt(Text::CString name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
-		virtual NotNullPtr<DrawFont> NewFontPx(Text::CString name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
-		virtual NotNullPtr<DrawFont> CloneFont(NotNullPtr<Media::DrawFont> f);
-		virtual void DelPen(NotNullPtr<DrawPen> p);
-		virtual void DelBrush(NotNullPtr<DrawBrush> b);
-		virtual void DelFont(NotNullPtr<DrawFont> f);
+		virtual NN<DrawPen> NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern);
+		virtual NN<DrawBrush> NewBrushARGB(UInt32 color);
+		virtual NN<DrawFont> NewFontPt(Text::CString name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
+		virtual NN<DrawFont> NewFontPx(Text::CString name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
+		virtual NN<DrawFont> CloneFont(NN<Media::DrawFont> f);
+		virtual void DelPen(NN<DrawPen> p);
+		virtual void DelBrush(NN<DrawBrush> b);
+		virtual void DelFont(NN<DrawFont> f);
 
-		virtual Math::Size2DDbl GetTextSize(NotNullPtr<DrawFont> fnt, Text::CStringNN txt);
+		virtual Math::Size2DDbl GetTextSize(NN<DrawFont> fnt, Text::CStringNN txt);
 		virtual void SetTextAlign(Media::DrawEngine::DrawPos pos);
-		virtual void GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const UTF8Char *str, NotNullPtr<DrawFont> f, OutParam<OSInt> drawX, OutParam<OSInt> drawY);
-		virtual void GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, NotNullPtr<DrawFont> f, Double angleDegree, OutParam<OSInt> drawX, OutParam<OSInt> drawY);
+		virtual void GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const UTF8Char *str, NN<DrawFont> f, OutParam<OSInt> drawX, OutParam<OSInt> drawY);
+		virtual void GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, NN<DrawFont> f, Double angleDegree, OutParam<OSInt> drawX, OutParam<OSInt> drawY);
 		virtual void CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown) const;
 
 		virtual Media::StaticImage *ToStaticImage() const;
-		virtual UOSInt SavePng(NotNullPtr<IO::SeekableStream> stm);
-		virtual UOSInt SaveGIF(NotNullPtr<IO::SeekableStream> stm);
-		virtual UOSInt SaveJPG(NotNullPtr<IO::SeekableStream> stm);
+		virtual UOSInt SavePng(NN<IO::SeekableStream> stm);
+		virtual UOSInt SaveGIF(NN<IO::SeekableStream> stm);
+		virtual UOSInt SaveJPG(NN<IO::SeekableStream> stm);
 
 		Double GetVisibleWidthMM() const;
 		Double GetVisibleHeightMM() const;
-		void DrawTo(NotNullPtr<Media::DrawImage> dimg, OptOut<UInt32> imgDurMS);
+		void DrawTo(NN<Media::DrawImage> dimg, OptOut<UInt32> imgDurMS);
 	};
 }
 #endif

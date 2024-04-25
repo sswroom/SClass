@@ -34,7 +34,7 @@ UTF8Char *ByteDisp(UTF8Char *sbuff, UInt64 byteSize)
 }
 
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Manage::ExceptionRecorder *exHdlr;
 	IO::ConsoleWriter *console;
@@ -45,7 +45,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 	IO::SystemInfo sysInfo;
 	Manage::CPUInfo cpuInfo;
-	NotNullPtr<IO::FileStream> fs;
+	NN<IO::FileStream> fs;
 	IO::StreamWriter *writer;
 	UInt64 memSize;
 	Text::StringBuilderUTF8 sb;

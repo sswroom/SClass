@@ -29,19 +29,19 @@ namespace SSWR
 			} BTDevice;
 			
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::BTManager btMgr;
 			Data::ArrayListNN<IO::BTController> btList;
 			Optional<IO::BTController> btCtrl;
 			Sync::Mutex devMut;
 			Data::FastMapNN<UInt64, BTDevice> devMap;
 
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUILabel> lblInterface;
-			NotNullPtr<UI::GUIComboBox> cboInterface;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUIButton> btnStoreList;
-			NotNullPtr<UI::GUIListView> lvDevices;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUILabel> lblInterface;
+			NN<UI::GUIComboBox> cboInterface;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUIButton> btnStoreList;
+			NN<UI::GUIListView> lvDevices;
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnStoreListClicked(AnyType userObj);
@@ -50,7 +50,7 @@ namespace SSWR
 			static void __stdcall OnLEScanItem(AnyType userObj, UInt64 mac, Int32 rssi, Text::CString name);
 			void ClearDevices();
 		public:
-			AVIRBluetoothLEForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRBluetoothLEForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRBluetoothLEForm();
 
 			virtual void OnMonitorChanged();

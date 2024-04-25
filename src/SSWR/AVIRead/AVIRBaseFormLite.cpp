@@ -271,7 +271,7 @@ typedef enum
 	MNU_BRUTEFORCE
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
 	SSWR::AVIRead::AVIRBaseForm *me = (AVIRead::AVIRBaseForm*)userObj;
 	IO::Path::PathType pt;
@@ -348,7 +348,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::D
 	}
 }
 
-SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 480, ui)
+SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 480, ui)
 {
 	this->core = core;
 #if defined(CPU_X86_32)

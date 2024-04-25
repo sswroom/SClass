@@ -527,7 +527,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UIn
 
 }
 
-Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(NotNullPtr<IVideoSource> sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
+Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(NN<IVideoSource> sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
 {
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;
@@ -553,7 +553,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(NotNullPtr<IVideoSource> sourceVide
 	data->colorTrc = AVCOL_TRC_UNSPECIFIED;
 	data->yuvColor = AVCOL_SPC_UNSPECIFIED;
 #ifdef _DEBUG
-	NotNullPtr<IO::FileStream> dbgStm;
+	NN<IO::FileStream> dbgStm;
 	NEW_CLASSNN(dbgStm, IO::FileStream(CSTR("FFMPEGDebug.txt"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	data->dbgStm = dbgStm.Ptr();
 	NEW_CLASS(data->dbgWriter, Text::UTF8Writer(dbgStm));
@@ -894,7 +894,7 @@ Text::CStringNN Media::Decoder::FFMPEGDecoder::GetFilterName()
 	return CSTR("FFMPEGDecoder");
 }
 
-Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	ClassData *data = this->clsData;
 	if (this->sourceVideo == 0)
@@ -1196,9 +1196,9 @@ Bool Media::Decoder::FFMPEGDecoder::IsError()
 	return !data->inited || data->frameSize == 0;
 }
 
-Media::IVideoSource *__stdcall FFMPEGDecoder_DecodeVideo(NotNullPtr<Media::IVideoSource> sourceVideo)
+Media::IVideoSource *__stdcall FFMPEGDecoder_DecodeVideo(NN<Media::IVideoSource> sourceVideo)
 {
-	NotNullPtr<Media::Decoder::FFMPEGDecoder> decoder;
+	NN<Media::Decoder::FFMPEGDecoder> decoder;
 	Media::FrameInfo frameInfo;
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
@@ -1209,7 +1209,7 @@ Media::IVideoSource *__stdcall FFMPEGDecoder_DecodeVideo(NotNullPtr<Media::IVide
 
 	if (frameInfo.fourcc == *(UInt32*)"ravc")
 	{
-		NotNullPtr<Media::Decoder::RAVCDecoder> ravc;
+		NN<Media::Decoder::RAVCDecoder> ravc;
 		Media::Decoder::VDecoderChain *decChain;
 
 		NEW_CLASSNN(ravc, Media::Decoder::RAVCDecoder(sourceVideo, false, true));
@@ -1226,7 +1226,7 @@ Media::IVideoSource *__stdcall FFMPEGDecoder_DecodeVideo(NotNullPtr<Media::IVide
 	}
 	else if (frameInfo.fourcc == *(UInt32*)"rhvc")
 	{
-		NotNullPtr<Media::Decoder::RHVCDecoder> rhvc;
+		NN<Media::Decoder::RHVCDecoder> rhvc;
 		Media::Decoder::VDecoderChain *decChain;
 
 		NEW_CLASSNN(rhvc, Media::Decoder::RHVCDecoder(sourceVideo, false));
@@ -1243,7 +1243,7 @@ Media::IVideoSource *__stdcall FFMPEGDecoder_DecodeVideo(NotNullPtr<Media::IVide
 	}
 	else if (frameInfo.fourcc == *(UInt32*)"m2v1")
 	{
-		NotNullPtr<Media::Decoder::M2VDecoder> m2vd;
+		NN<Media::Decoder::M2VDecoder> m2vd;
 		Media::Decoder::VDecoderChain *decChain;
 
 		NEW_CLASSNN(m2vd, Media::Decoder::M2VDecoder(sourceVideo, false));
@@ -1260,7 +1260,7 @@ Media::IVideoSource *__stdcall FFMPEGDecoder_DecodeVideo(NotNullPtr<Media::IVide
 	}
 	else if (frameInfo.fourcc == *(UInt32*)"vp09")
 	{
-		NotNullPtr<Media::Decoder::VP09Decoder> vp09;
+		NN<Media::Decoder::VP09Decoder> vp09;
 		Media::Decoder::VDecoderChain *decChain;
 
 		NEW_CLASSNN(vp09, Media::Decoder::VP09Decoder(sourceVideo, false));
@@ -1315,7 +1315,7 @@ private:
 	}
 
 public:
-	FFMPEGADecoder(NotNullPtr<IAudioSource> sourceAudio)
+	FFMPEGADecoder(NN<IAudioSource> sourceAudio)
 	{
 		Media::AudioFormat fmt;
 		Int32 ret;
@@ -1512,9 +1512,9 @@ public:
 		}
 	}
 
-	virtual void GetFormat(NotNullPtr<Media::AudioFormat> format)
+	virtual void GetFormat(NN<Media::AudioFormat> format)
 	{
-		NotNullPtr<const Media::AudioFormat> fmt;
+		NN<const Media::AudioFormat> fmt;
 		if (fmt.Set(this->decFmt))
 		{
 			format->FromAudioFormat(fmt);
@@ -1909,7 +1909,7 @@ public:
 
 
 
-Media::IAudioSource *__stdcall FFMPEGDecoder_DecodeAudio(NotNullPtr<Media::IAudioSource> sourceAudio)
+Media::IAudioSource *__stdcall FFMPEGDecoder_DecodeAudio(NN<Media::IAudioSource> sourceAudio)
 {
 	FFMPEGADecoder *decoder;
 	NEW_CLASS(decoder, FFMPEGADecoder(sourceAudio));

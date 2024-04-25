@@ -13,7 +13,7 @@ Text::TextBinEnc::UTF16BETextBinEnc::~UTF16BETextBinEnc()
 {
 }
 
-UOSInt Text::TextBinEnc::UTF16BETextBinEnc::EncodeBin(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
+UOSInt Text::TextBinEnc::UTF16BETextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
 {
 	buffSize = buffSize & (UOSInt)~1;
 	UOSInt initSize = sb->leng;

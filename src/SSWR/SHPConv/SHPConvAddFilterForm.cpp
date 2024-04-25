@@ -6,7 +6,7 @@
 
 void __stdcall SSWR::SHPConv::SHPConvAddFilterForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::SHPConv::SHPConvAddFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvAddFilterForm>();
+	NN<SSWR::SHPConv::SHPConvAddFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvAddFilterForm>();
 	UOSInt i = me->cboFilter->GetSelectedIndex();
 	if (i == 0)
 	{
@@ -39,11 +39,11 @@ void __stdcall SSWR::SHPConv::SHPConvAddFilterForm::OnOKClicked(AnyType userObj)
 
 void __stdcall SSWR::SHPConv::SHPConvAddFilterForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::SHPConv::SHPConvAddFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvAddFilterForm>();
+	NN<SSWR::SHPConv::SHPConvAddFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvAddFilterForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::SHPConv::SHPConvAddFilterForm::SHPConvAddFilterForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf, NotNullPtr<Media::DrawEngine> deng) : UI::GUIForm(parent, 222, 118, ui)
+SSWR::SHPConv::SHPConvAddFilterForm::SHPConvAddFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, DB::DBFFile *dbf, NN<Media::DrawEngine> deng) : UI::GUIForm(parent, 222, 118, ui)
 {
 	this->SetText(CSTR("Add Filter"));
 	this->SetFont(0, 0, 8.25, false);

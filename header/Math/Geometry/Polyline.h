@@ -17,9 +17,9 @@ namespace Math
 			virtual ~Polyline();
 
 			virtual VectorType GetVectorType() const;
-			virtual NotNullPtr<Math::Geometry::Vector2D> Clone() const;
+			virtual NN<Math::Geometry::Vector2D> Clone() const;
 			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const;
-			virtual Bool JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec);
+			virtual Bool JoinVector(NN<const Math::Geometry::Vector2D> vec);
 
 			void AddFromPtOfst(UInt32 *ptOfstList, UOSInt nPtOfst, Math::Coord2DDbl *pointList, UOSInt nPoint, Double *zList, Double *mList);
 			Double CalcLength() const;

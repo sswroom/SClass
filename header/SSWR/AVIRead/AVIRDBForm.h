@@ -23,27 +23,27 @@ namespace SSWR
 		class AVIRDBForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUITabControl> tcDB;
-			NotNullPtr<UI::GUIVSplitter> vspDB;
-			NotNullPtr<UI::GUIListView> lvResult;
+			NN<UI::GUITabControl> tcDB;
+			NN<UI::GUIVSplitter> vspDB;
+			NN<UI::GUIListView> lvResult;
 
-			NotNullPtr<UI::GUITabPage> tpTable;
-			NotNullPtr<UI::GUIListBox> lbSchema;
-			NotNullPtr<UI::GUIHSplitter> hspSchema;
-			NotNullPtr<UI::GUIListBox> lbTable;
-			NotNullPtr<UI::GUIHSplitter> hspTable;
-			NotNullPtr<UI::GUIListView> lvTable;
+			NN<UI::GUITabPage> tpTable;
+			NN<UI::GUIListBox> lbSchema;
+			NN<UI::GUIHSplitter> hspSchema;
+			NN<UI::GUIListBox> lbTable;
+			NN<UI::GUIHSplitter> hspTable;
+			NN<UI::GUIListView> lvTable;
 
-			NotNullPtr<UI::GUITabPage> tpSQL;
-			NotNullPtr<UI::GUIPanel> pnlSQLCtrl;
-			NotNullPtr<UI::GUIButton> btnSQL;
-			NotNullPtr<UI::GUITextBox> txtSQL;
+			NN<UI::GUITabPage> tpSQL;
+			NN<UI::GUIPanel> pnlSQLCtrl;
+			NN<UI::GUIButton> btnSQL;
+			NN<UI::GUITextBox> txtSQL;
 
-			NotNullPtr<UI::GUIMainMenu> mnuMain;
+			NN<UI::GUIMainMenu> mnuMain;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayListStringNN dbNames;
-			NotNullPtr<DB::ReadingDB> db;
+			NN<DB::ReadingDB> db;
 			Bool needRelease;
 			DB::ReadingDBTool *dbt;
 			IO::LogTool log;
@@ -56,7 +56,7 @@ namespace SSWR
 			static void __stdcall OnTableSelChg(AnyType userObj);
 			static void __stdcall OnSQLClicked(AnyType userObj);
 
-			void UpdateResult(NotNullPtr<DB::DBReader> r);
+			void UpdateResult(NN<DB::DBReader> r);
 			void CopyTableCreate(DB::SQLType sqlType, Bool axisAware);
 			void ExportTableData(DB::SQLType sqlType, Bool axisAware);
 			void ExportTableCSV();
@@ -66,7 +66,7 @@ namespace SSWR
 			void ExportTableXLSX();
 			void ExportTableExcelXML();
 		public:
-			AVIRDBForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<DB::ReadingDB> db, Bool needRelease);
+			AVIRDBForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::ReadingDB> db, Bool needRelease);
 			virtual ~AVIRDBForm();
 
 			void UpdateSchemas();

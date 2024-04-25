@@ -10,7 +10,7 @@ namespace Math
 		class VectorImage : public Math::Geometry::Vector2D
 		{
 		private:
-			NotNullPtr<Media::SharedImage> img;
+			NN<Media::SharedImage> img;
 			Text::String *srcAddr;
 			Math::Coord2DDbl tl;
 			Math::Coord2DDbl br;
@@ -25,26 +25,26 @@ namespace Math
 			Int32 zIndex;
 			
 		public:
-			VectorImage(UInt32 srid, NotNullPtr<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd);
-			VectorImage(UInt32 srid, NotNullPtr<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd);
-			VectorImage(UInt32 srid, NotNullPtr<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd);
-			VectorImage(UInt32 srid, NotNullPtr<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd);
+			VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd);
+			VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd);
+			VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd);
+			VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd);
 			virtual ~VectorImage();
 
 			virtual VectorType GetVectorType() const;
 			virtual Math::Coord2DDbl GetCenter() const;
-			virtual NotNullPtr<Math::Geometry::Vector2D> Clone() const;
+			virtual NN<Math::Geometry::Vector2D> Clone() const;
 			virtual Math::RectAreaDbl GetBounds() const;
 			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const;
 			virtual Double CalSqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const;
 			virtual Double CalArea() const;
-			virtual Bool JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec);
+			virtual Bool JoinVector(NN<const Math::Geometry::Vector2D> vec);
 			virtual Bool HasZ() const;
 			virtual Bool GetZBounds(OutParam<Double> min, OutParam<Double> max) const;
 			virtual Bool GetMBounds(OutParam<Double> min, OutParam<Double> max) const;
-			virtual void Convert(NotNullPtr<Math::CoordinateConverter> converter);
-			virtual Bool Equals(NotNullPtr<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const;
-			virtual UOSInt GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const;
+			virtual void Convert(NN<Math::CoordinateConverter> converter);
+			virtual Bool Equals(NN<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const;
+			virtual UOSInt GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const;
 			virtual Bool InsideOrTouch(Math::Coord2DDbl coord) const;
 			virtual void SwapXY();
 			virtual void MultiplyCoordinatesXY(Double v);
@@ -68,7 +68,7 @@ namespace Math
 			Media::StaticImage *GetImage(OptOut<UInt32> imgTimeMS) const;
 			Optional<Media::StaticImage> GetImage(Double width, Double height, OptOut<UInt32> imgTimeMS) const;
 
-			static NotNullPtr<Math::Geometry::VectorImage> CreateScreenImage(UInt32 srid, NotNullPtr<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl size, Text::CString srcAddr);
+			static NN<Math::Geometry::VectorImage> CreateScreenImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl size, Text::CString srcAddr);
 		};
 	}
 }

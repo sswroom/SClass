@@ -4,7 +4,7 @@
 
 void __stdcall UtilUI::TextInputDialog::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<UtilUI::TextInputDialog> me = userObj.GetNN<UtilUI::TextInputDialog>();
+	NN<UtilUI::TextInputDialog> me = userObj.GetNN<UtilUI::TextInputDialog>();
 	Text::StringBuilderUTF8 sb;
 	if (me->txtInput->GetText(sb) && sb.GetLength() > 0)
 	{
@@ -15,11 +15,11 @@ void __stdcall UtilUI::TextInputDialog::OnOKClicked(AnyType userObj)
 
 void __stdcall UtilUI::TextInputDialog::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<UtilUI::TextInputDialog> me = userObj.GetNN<UtilUI::TextInputDialog>();
+	NN<UtilUI::TextInputDialog> me = userObj.GetNN<UtilUI::TextInputDialog>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-UtilUI::TextInputDialog::TextInputDialog(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, Media::MonitorMgr *monMgr, Text::CStringNN title, Text::CStringNN message) : UI::GUIForm(parent, 320, 120, ui)
+UtilUI::TextInputDialog::TextInputDialog(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, Media::MonitorMgr *monMgr, Text::CStringNN title, Text::CStringNN message) : UI::GUIForm(parent, 320, 120, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(title);
@@ -62,7 +62,7 @@ void UtilUI::TextInputDialog::SetInputString(Text::CStringNN s)
 	this->txtInput->SetText(s);
 }
 
-Bool UtilUI::TextInputDialog::GetInputString(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool UtilUI::TextInputDialog::GetInputString(NN<Text::StringBuilderUTF8> sb)
 {
 	if (this->retInput == 0)
 		return false;

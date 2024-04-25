@@ -30,9 +30,9 @@ namespace IO
 		~WPDManager();
 
 		OSInt GetDevices(Data::ArrayList<WPDeviceInfo*> *devList);
-		Bool GetDevName(const WChar *devId, NotNullPtr<Text::StringBuilderUTF8> sb);
-		Bool GetDevDesc(const WChar *devId, NotNullPtr<Text::StringBuilderUTF8> sb);
-		Bool GetDevManu(const WChar *devId, NotNullPtr<Text::StringBuilderUTF8> sb);
+		Bool GetDevName(const WChar *devId, NN<Text::StringBuilderUTF8> sb);
+		Bool GetDevDesc(const WChar *devId, NN<Text::StringBuilderUTF8> sb);
+		Bool GetDevManu(const WChar *devId, NN<Text::StringBuilderUTF8> sb);
 	};
 };
 #endif

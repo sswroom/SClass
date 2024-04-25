@@ -30,8 +30,8 @@ void Media::CS::CSRGB8_RGB8::UpdateRGBTable()
 	{
 		this->rgbTable = MemAlloc(UInt8, 768);
 	}
-	NotNullPtr<Media::ColorProfile> srcProfile;
-	NotNullPtr<Media::ColorProfile> destProfile;
+	NN<Media::ColorProfile> srcProfile;
+	NN<Media::ColorProfile> destProfile;
 	if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{
 		srcProfile = this->colorSess->GetDefVProfile();
@@ -106,12 +106,12 @@ void Media::CS::CSRGB8_RGB8::UpdateRGBTable()
 			destProfile = this->destColor;
 		}
 	}
-	NotNullPtr<Media::CS::TransferFunc> irFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetRTranParam());
-	NotNullPtr<Media::CS::TransferFunc> igFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetGTranParam());
-	NotNullPtr<Media::CS::TransferFunc> ibFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetBTranParam());
-	NotNullPtr<Media::CS::TransferFunc> frFunc = Media::CS::TransferFunc::CreateFunc(destProfile->GetRTranParam());
-	NotNullPtr<Media::CS::TransferFunc> fgFunc = Media::CS::TransferFunc::CreateFunc(destProfile->GetGTranParam());
-	NotNullPtr<Media::CS::TransferFunc> fbFunc = Media::CS::TransferFunc::CreateFunc(destProfile->GetBTranParam());
+	NN<Media::CS::TransferFunc> irFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetRTranParam());
+	NN<Media::CS::TransferFunc> igFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetGTranParam());
+	NN<Media::CS::TransferFunc> ibFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetBTranParam());
+	NN<Media::CS::TransferFunc> frFunc = Media::CS::TransferFunc::CreateFunc(destProfile->GetRTranParam());
+	NN<Media::CS::TransferFunc> fgFunc = Media::CS::TransferFunc::CreateFunc(destProfile->GetGTranParam());
+	NN<Media::CS::TransferFunc> fbFunc = Media::CS::TransferFunc::CreateFunc(destProfile->GetBTranParam());
 	OSInt i;
 
 
@@ -139,7 +139,7 @@ void Media::CS::CSRGB8_RGB8::UpdateRGBTable()
 	}
 }
 
-Media::CS::CSRGB8_RGB8::CSRGB8_RGB8(UOSInt srcNBits, Media::PixelFormat srcPF, UOSInt destNBits, Media::PixelFormat destPF, Bool invert, NotNullPtr<const Media::ColorProfile> srcColor, NotNullPtr<const Media::ColorProfile> destColor, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcColor(srcColor), destColor(destColor)
+Media::CS::CSRGB8_RGB8::CSRGB8_RGB8(UOSInt srcNBits, Media::PixelFormat srcPF, UOSInt destNBits, Media::PixelFormat destPF, Bool invert, NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcColor(srcColor), destColor(destColor)
 {
 	this->srcNBits = srcNBits;
 	this->destNBits = destNBits;
@@ -212,11 +212,11 @@ void Media::CS::CSRGB8_RGB8::SetPalette(UInt8 *pal)
 	}
 }
 
-void Media::CS::CSRGB8_RGB8::YUVParamChanged(NotNullPtr<const YUVPARAM> yuv)
+void Media::CS::CSRGB8_RGB8::YUVParamChanged(NN<const YUVPARAM> yuv)
 {
 }
 
-void Media::CS::CSRGB8_RGB8::RGBParamChanged(NotNullPtr<const RGBPARAM2> rgb)
+void Media::CS::CSRGB8_RGB8::RGBParamChanged(NN<const RGBPARAM2> rgb)
 {
 	this->rgbParam.Set(rgb);
 	this->rgbUpdated = true;

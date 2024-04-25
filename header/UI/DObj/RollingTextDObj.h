@@ -10,9 +10,9 @@ namespace UI
 		class RollingTextDObj : public DirectObject
 		{
 		private:
-			NotNullPtr<Media::DrawEngine> deng;
+			NN<Media::DrawEngine> deng;
 			Text::String *txt;
-			NotNullPtr<Text::String> fontName;
+			NN<Text::String> fontName;
 			Double fontSize;
 			UInt32 fontColor;
 			UInt32 codePage;
@@ -25,12 +25,12 @@ namespace UI
 
 			void UpdateBGImg();
 		public:
-			RollingTextDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSize, UInt32 fontColor, UInt32 codePage, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, Double rollSpeed);
+			RollingTextDObj(NN<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSize, UInt32 fontColor, UInt32 codePage, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, Double rollSpeed);
 			virtual ~RollingTextDObj();
 
 			virtual Bool IsChanged();
 			virtual Bool DoEvents();
-			virtual void DrawObject(NotNullPtr<Media::DrawImage> dimg);
+			virtual void DrawObject(NN<Media::DrawImage> dimg);
 
 			virtual Bool IsObject(Math::Coord2D<OSInt> scnPos);
 			//virtual System::Windows::Forms::Cursor ^GetCursor() override;

@@ -19,7 +19,7 @@ void UI::Java::JavaRadioButton::ChangeSelected(Bool selVal)
 	this->EventSelectedChange(selVal);
 }
 
-UI::Java::JavaRadioButton::JavaRadioButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool selected) : UI::GUIRadioButton(ui, parent)
+UI::Java::JavaRadioButton::JavaRadioButton(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool selected) : UI::GUIRadioButton(ui, parent)
 {
 	this->selected = selected;
 }

@@ -4,7 +4,7 @@
 #include "Text/StringBuilder.h"
 #include "UI/DObj/TextDObj.h"
 
-UI::DObj::TextDObj::TextDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, UInt32 codePage, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size) : DirectObject(tl)
+UI::DObj::TextDObj::TextDObj(NN<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, UInt32 codePage, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size) : DirectObject(tl)
 {
 	this->deng = deng;
 	if (txt.leng > 0)
@@ -35,10 +35,10 @@ UI::DObj::TextDObj::TextDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString t
 
 	if (this->txt)
 	{
-		NotNullPtr<Media::DrawImage> dimg;
+		NN<Media::DrawImage> dimg;
 		if (dimg.Set(this->deng->CreateImage32(this->size, Media::AT_NO_ALPHA)))
 		{
-			NotNullPtr<Media::DrawFont> f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, (Media::DrawEngine::DrawFontStyle)(fontStyle | Media::DrawEngine::DFS_ANTIALIAS), codePage);
+			NN<Media::DrawFont> f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, (Media::DrawEngine::DrawFontStyle)(fontStyle | Media::DrawEngine::DFS_ANTIALIAS), codePage);
 			Media::DrawImageTool::SplitString(dimg, this->txt->ToCString(), this->lines, f, OSInt2Double(this->size.x));
 			dimg->DelFont(f);
 			this->deng->DeleteImage(dimg);
@@ -63,12 +63,12 @@ Bool UI::DObj::TextDObj::DoEvents()
 	return false;
 }
 
-void UI::DObj::TextDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
+void UI::DObj::TextDObj::DrawObject(NN<Media::DrawImage> dimg)
 {
 	this->pageChg = false;
 	Math::Size2DDbl sz;
-	NotNullPtr<Media::DrawFont> f;
-	NotNullPtr<Media::DrawBrush> b;
+	NN<Media::DrawFont> f;
+	NN<Media::DrawBrush> b;
 	f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, (Media::DrawEngine::DrawFontStyle)(this->fontStyle | Media::DrawEngine::DFS_ANTIALIAS), this->codePage);
 	b = dimg->NewBrushARGB(this->fontColor);
 	Math::Coord2D<OSInt> tl = this->GetCurrPos();

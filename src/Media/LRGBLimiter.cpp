@@ -6,7 +6,7 @@
 
 void Media::LRGBLimiter::TaskFunc(AnyType userObj)
 {
-	NotNullPtr<ThreadStatus> status = userObj.GetNN<ThreadStatus>();
+	NN<ThreadStatus> status = userObj.GetNN<ThreadStatus>();
 	LRGBLimiter_LimitImageLRGB(status->imgPtr, status->w, status->h);
 }
 

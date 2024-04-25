@@ -42,7 +42,7 @@ void Parser::FileParser::MDBParser::SetLogTool(IO::LogTool *log)
 	this->log = log;
 }
 
-void Parser::FileParser::MDBParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::MDBParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ReadingDB || t == IO::ParserType::MapLayer)
 	{
@@ -55,7 +55,7 @@ IO::ParserType Parser::FileParser::MDBParser::GetParserType()
 	return IO::ParserType::ReadingDB;
 }
 
-IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (!fd->IsFullFile())
 		return 0;
@@ -76,8 +76,8 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NotNullPtr<IO::Str
 		return 0;
 	}
 #ifndef _WIN32_WCE
-	NotNullPtr<DB::MDBFileConn> mdb;
-	NotNullPtr<IO::LogTool> log;
+	NN<DB::MDBFileConn> mdb;
+	NN<IO::LogTool> log;
 	if (!log.Set(this->log))
 	{
 		return 0;
@@ -100,8 +100,8 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NotNullPtr<IO::Str
 	UOSInt i = tableNames.GetCount();
 	while (i-- > 0)
 	{
-		NotNullPtr<Text::String> tableName;
-		NotNullPtr<DB::DBReader> rdr;
+		NN<Text::String> tableName;
+		NN<DB::DBReader> rdr;
 		if (tableNames.GetItem(i).SetTo(tableName))
 		{
 			if (tableName->leng > 0 && tableName->EqualsICase(UTF8STRC("GDB_SpatialRefs")))
@@ -141,12 +141,12 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NotNullPtr<IO::Str
 		Map::MapLayerCollection *lyrColl;
 		Math::CoordinateSystem *csys = 0;
 		DB::SharedDBConn *conn;
-		NotNullPtr<Map::ESRI::ESRIMDBLayer> lyr;
+		NN<Map::ESRI::ESRIMDBLayer> lyr;
 		UInt32 srid = 0;
 
 		if (hasSpRef)
 		{
-			NotNullPtr<DB::DBReader> rdr;
+			NN<DB::DBReader> rdr;
 			if (mdb->QueryTableData(CSTR_NULL, CSTR("GDB_SpatialRefs"), 0, 0, 0, CSTR_NULL, 0).SetTo(rdr))
 			{
 				if (rdr->ColCount() >= 2)
@@ -187,7 +187,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NotNullPtr<IO::Str
 		SDEL_CLASS(csys);
 		conn->UnuseObject();
 		tableNames.FreeAll();
-		NotNullPtr<Map::MapDrawLayer> lyr1;
+		NN<Map::MapDrawLayer> lyr1;
 		if (lyrColl->GetCount() == 1 && lyrColl->GetItem(0).SetTo(lyr1))
 		{
 			lyrColl->RemoveAt(0);

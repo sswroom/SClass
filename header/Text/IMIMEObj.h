@@ -21,7 +21,7 @@ namespace Text
 
 		virtual IO::ParserType GetParserType() const;
 
-		static Text::IMIMEObj *ParseFromData(NotNullPtr<IO::StreamData> data, Text::CStringNN contentType);
+		static Text::IMIMEObj *ParseFromData(NN<IO::StreamData> data, Text::CStringNN contentType);
 		static Text::IMIMEObj *ParseFromFile(Text::CStringNN fileName);
 	};
 }

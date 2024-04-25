@@ -20,7 +20,7 @@ Int32 Exporter::HEIFExporter::GetName()
 	return *(Int32*)"HIEF";
 }
 
-IO::FileExporter::SupportType Exporter::HEIFExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
+IO::FileExporter::SupportType Exporter::HEIFExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
@@ -121,7 +121,7 @@ heif_image *HEIFExporter_CreateImage(Media::RasterImage *img)
 		return 0;
 	int stride;
 	uint8_t *data;
-	NotNullPtr<Media::StaticImage> simg;
+	NN<Media::StaticImage> simg;
 	switch (img->info.pf)
 	{
 	case Media::PF_PAL_1:
@@ -215,12 +215,12 @@ heif_image *HEIFExporter_CreateImage(Media::RasterImage *img)
 	return image;
 }
 
-Bool Exporter::HEIFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::HEIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return false;
 	Int32 quality;
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (param.SetTo(para))
 	{
 		quality = *(Int32*)para.Ptr();
@@ -229,7 +229,7 @@ Bool Exporter::HEIFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 	{
 		quality = 90;
 	}
-	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
+	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	heif_context *ctx = heif_context_alloc();
 	heif_encoder* encoder;
 	heif_context_get_encoder_for_format(ctx, heif_compression_HEVC, &encoder);
@@ -262,7 +262,7 @@ UOSInt Exporter::HEIFExporter::GetParamCnt()
 	return 1;
 }
 
-Optional<IO::FileExporter::ParamData> Exporter::HEIFExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
+Optional<IO::FileExporter::ParamData> Exporter::HEIFExporter::CreateParam(NN<IO::ParsedObject> pobj)
 {
 	Int32 *val = MemAlloc(Int32, 1);
 	*val = 100;
@@ -271,14 +271,14 @@ Optional<IO::FileExporter::ParamData> Exporter::HEIFExporter::CreateParam(NotNul
 
 void Exporter::HEIFExporter::DeleteParam(Optional<ParamData> param)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (param.SetTo(para))
 	{
 		MemFree(para.Ptr());
 	}
 }
 
-Bool Exporter::HEIFExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> info)
+Bool Exporter::HEIFExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
 {
 	if (index == 0)
 	{
@@ -292,7 +292,7 @@ Bool Exporter::HEIFExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> in
 
 Bool Exporter::HEIFExporter::SetParamInt32(Optional<ParamData> param, UOSInt index, Int32 val)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
 	{
 		if (val >= 0 && val <= 100)
@@ -307,7 +307,7 @@ Bool Exporter::HEIFExporter::SetParamInt32(Optional<ParamData> param, UOSInt ind
 
 Int32 Exporter::HEIFExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
 	{
 		return *(Int32*)para.Ptr();

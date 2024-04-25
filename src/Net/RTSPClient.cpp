@@ -15,7 +15,7 @@
 
 UInt32 __stdcall Net::RTSPClient::ControlThread(AnyType userObj)
 {
-	NotNullPtr<ClientData> cliData = userObj.GetNN<ClientData>();
+	NN<ClientData> cliData = userObj.GetNN<ClientData>();
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;
 	UTF8Char *sarr[3];
@@ -237,7 +237,7 @@ Net::RTSPClient::RTSPClient(const Net::RTSPClient *cli)
 	this->cliData->useCnt++;
 }
 
-Net::RTSPClient::RTSPClient(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN host, UInt16 port, Data::Duration timeout)
+Net::RTSPClient::RTSPClient(NN<Net::SocketFactory> sockf, Text::CStringNN host, UInt16 port, Data::Duration timeout)
 {
 	NEW_CLASS(this->cliData, ClientData());
 	this->cliData->useCnt = 1;
@@ -370,7 +370,7 @@ Net::SDPFile *Net::RTSPClient::GetMediaInfo(Text::CString url)
 	return sdp;
 }
 
-UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, Text::CString url, NotNullPtr<Net::RTPCliChannel> rtpChannel)
+UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, Text::CString url, NN<Net::RTPCliChannel> rtpChannel)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -410,7 +410,7 @@ UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, Text::CString url, NotN
 	return ret;
 }
 
-IO::ParsedObject *Net::RTSPClient::ParseURL(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN url, Data::Duration timeout, NotNullPtr<IO::LogTool> log)
+IO::ParsedObject *Net::RTSPClient::ParseURL(NN<Net::SocketFactory> sockf, Text::CStringNN url, Data::Duration timeout, NN<IO::LogTool> log)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -573,7 +573,7 @@ Bool Net::RTSPClient::Close(Text::CString url, Text::CString sessId)
 	return ret;
 }
 
-Bool Net::RTSPClient::Init(NotNullPtr<Net::RTPCliChannel> rtpChannel)
+Bool Net::RTSPClient::Init(NN<Net::RTPCliChannel> rtpChannel)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -585,25 +585,25 @@ Bool Net::RTSPClient::Init(NotNullPtr<Net::RTPCliChannel> rtpChannel)
 	return false;
 }
 
-Bool Net::RTSPClient::Play(NotNullPtr<Net::RTPCliChannel> rtpChannel)
+Bool Net::RTSPClient::Play(NN<Net::RTPCliChannel> rtpChannel)
 {
 	return this->Play(rtpChannel->GetControlURL()->ToCString(), rtpChannel->GetUserData().GetNN<Text::String>()->ToCString());
 }
 
-Bool Net::RTSPClient::KeepAlive(NotNullPtr<Net::RTPCliChannel> rtpChannel)
+Bool Net::RTSPClient::KeepAlive(NN<Net::RTPCliChannel> rtpChannel)
 {
 //	return this->Play(rtpChannel->GetControlURL(), (Text::String*)rtpChannel->GetUserData());
 	return true;
 }
 
-Bool Net::RTSPClient::StopPlay(NotNullPtr<Net::RTPCliChannel> rtpChannel)
+Bool Net::RTSPClient::StopPlay(NN<Net::RTPCliChannel> rtpChannel)
 {
 	return this->Close(rtpChannel->GetControlURL()->ToCString(), rtpChannel->GetUserData().GetNN<Text::String>()->ToCString());
 }
 
-Bool Net::RTSPClient::Deinit(NotNullPtr<Net::RTPCliChannel> rtpChannel)
+Bool Net::RTSPClient::Deinit(NN<Net::RTPCliChannel> rtpChannel)
 {
-	NotNullPtr<Text::String> sessId;
+	NN<Text::String> sessId;
 	if (rtpChannel->GetUserData().GetOpt<Text::String>().SetTo(sessId))
 	{
 		sessId->Release();

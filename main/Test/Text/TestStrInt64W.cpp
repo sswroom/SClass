@@ -4,7 +4,7 @@
 #include "Text/MyStringW.h"
 #include <stdio.h>
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	WChar wbuff[32];
 	Int64 i;

@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Media/Decoder/G711muLawDecoder.h"
 
-Media::Decoder::G711muLawDecoder::G711muLawDecoder(NotNullPtr<Media::IAudioSource> sourceAudio)
+Media::Decoder::G711muLawDecoder::G711muLawDecoder(NN<Media::IAudioSource> sourceAudio)
 {
 	Media::AudioFormat fmt;
 	this->sourceAudio = 0;
@@ -27,7 +27,7 @@ Media::Decoder::G711muLawDecoder::~G711muLawDecoder()
 	}
 }
 
-void Media::Decoder::G711muLawDecoder::GetFormat(NotNullPtr<AudioFormat> format)
+void Media::Decoder::G711muLawDecoder::GetFormat(NN<AudioFormat> format)
 {
 	if (this->sourceAudio)
 	{

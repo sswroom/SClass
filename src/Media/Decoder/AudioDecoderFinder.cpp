@@ -17,7 +17,7 @@ Media::Decoder::AudioDecoderFinder::~AudioDecoderFinder()
 {
 }
 
-Media::IAudioSource *Media::Decoder::AudioDecoderFinder::DecodeAudio(NotNullPtr<Media::IAudioSource> asrc)
+Media::IAudioSource *Media::Decoder::AudioDecoderFinder::DecodeAudio(NN<Media::IAudioSource> asrc)
 {
 	AudioFormat afmt;
 	Media::IAudioSource *decoder;

@@ -24,19 +24,19 @@ namespace SSWR
 
 			static UOSInt GetPreviewSize();
 			static UOSInt GetPerPage(Bool isMobile);
-			Net::WebServer::IWebSession *ParseRequestEnv(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, NotNullPtr<RequestEnv> env, Bool keepSess);
+			Net::WebServer::IWebSession *ParseRequestEnv(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, NN<RequestEnv> env, Bool keepSess);
 
-			static void ResponseMstm(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, NotNullPtr<IO::MemoryStream> mstm, Text::CStringNN contType);
+			static void ResponseMstm(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, NN<IO::MemoryStream> mstm, Text::CStringNN contType);
 
 			void WriteHeaderPart1(IO::Writer *writer, const UTF8Char *title, Bool isMobile);
 			void WriteHeaderPart2(IO::Writer *writer, WebUserInfo *user, const UTF8Char *onLoadFunc);
 			void WriteHeader(IO::Writer *writer, const UTF8Char *title, WebUserInfo *user, Bool isMobile);
 			void WriteFooter(IO::Writer *writer);
-			void WriteLocator(NotNullPtr<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NotNullPtr<GroupInfo> group, NotNullPtr<CategoryInfo> cate);
-			void WriteLocatorText(NotNullPtr<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NotNullPtr<GroupInfo> group, NotNullPtr<CategoryInfo> cate);
-			void WriteGroupTable(NotNullPtr<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NotNullPtr<const Data::ReadingList<Optional<GroupInfo>>> groupList, UInt32 scnWidth, Bool showSelect, Bool showAll);
-			void WriteSpeciesTable(NotNullPtr<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NotNullPtr<const Data::ReadingList<Optional<SpeciesInfo>>> spList, UInt32 scnWidth, Int32 cateId, Bool showSelect, Bool showModify);
-			void WritePickObjs(NotNullPtr<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, RequestEnv *env, const UTF8Char *url, Bool allowMerge);
+			void WriteLocator(NN<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NN<GroupInfo> group, NN<CategoryInfo> cate);
+			void WriteLocatorText(NN<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NN<GroupInfo> group, NN<CategoryInfo> cate);
+			void WriteGroupTable(NN<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NN<const Data::ReadingList<Optional<GroupInfo>>> groupList, UInt32 scnWidth, Bool showSelect, Bool showAll);
+			void WriteSpeciesTable(NN<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NN<const Data::ReadingList<Optional<SpeciesInfo>>> spList, UInt32 scnWidth, Int32 cateId, Bool showSelect, Bool showModify);
+			void WritePickObjs(NN<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, RequestEnv *env, const UTF8Char *url, Bool allowMerge);
 			void WriteDataFiles(IO::Writer *writer, Data::FastMap<Data::Timestamp, DataFileInfo*> *fileMap, Int64 startTimeTicks, Int64 endTimeTicks);
 
 			static Text::CStringNN LangGetValue(IO::ConfigFile *lang, Text::CStringNN name);

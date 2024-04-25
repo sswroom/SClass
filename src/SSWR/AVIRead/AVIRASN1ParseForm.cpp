@@ -7,7 +7,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRASN1ParseForm::OnParseClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRASN1ParseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1ParseForm>();
+	NN<SSWR::AVIRead::AVIRASN1ParseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1ParseForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtData->GetText(sb);
 	if (sb.GetLength() == 0)
@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1ParseForm::OnParseClicked(AnyType userObj)
 	if (ofst + baseLen == len)
 	{
 		Crypto::Cert::X509File *x509 = 0;
-		NotNullPtr<Crypto::Cert::X509File> pobj;
+		NN<Crypto::Cert::X509File> pobj;
 		switch (me->cboType->GetSelectedIndex())
 		{
 		case 0:
@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1ParseForm::OnParseClicked(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRASN1ParseForm::AVIRASN1ParseForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRASN1ParseForm::AVIRASN1ParseForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("ASN.1 Parse"));

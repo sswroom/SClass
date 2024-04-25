@@ -13,11 +13,11 @@
 
 #undef CreateService
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl);
+Int32 MyMain(NN<Core::IProgControl> progCtrl);
 
 SERVICE_STATUS          gSvcStatus; 
 SERVICE_STATUS_HANDLE   gSvcStatusHandle; 
-NotNullPtr<Win32::ServiceControl> progCtrl;
+NN<Win32::ServiceControl> progCtrl;
 WChar svcName[256];
 
 void SvcReportEvent(const WChar *svcName, const WChar *szFunction) 
@@ -53,7 +53,7 @@ VOID ReportSvcStatus( DWORD dwCurrentState,
 void SvcUninstall(const WChar *svcName)
 {
 	IO::ServiceManager svcMgr;
-	NotNullPtr<Text::String> s = Text::String::NewNotNull(svcName);
+	NN<Text::String> s = Text::String::NewNotNull(svcName);
 	if (svcMgr.ServiceDelete(s->ToCString()))
 	{
 		printf("Service deleted successfully\n");
@@ -70,8 +70,8 @@ void SvcInstall(const WChar *svcName, const WChar *svcDesc)
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	IO::ServiceManager svcMgr;
-	NotNullPtr<Text::String> s = Text::String::NewNotNull(svcName);
-	NotNullPtr<Text::String> sDesc = Text::String::NewNotNull(svcDesc);
+	NN<Text::String> s = Text::String::NewNotNull(svcName);
+	NN<Text::String> sDesc = Text::String::NewNotNull(svcDesc);
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	if (svcMgr.ServiceCreate(s->ToCString(), sDesc->ToCString(), CSTRP(sbuff, sptr), IO::ServiceInfo::ServiceState::Active))
 	{
@@ -228,7 +228,7 @@ int main(int argc, char *argv[])
 	return 0;
 } 
 
-Optional<UI::GUICore> Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
+Optional<UI::GUICore> Core::IProgControl::CreateGUICore(NN<Core::IProgControl> progCtrl)
 {
 	return 0;
 }

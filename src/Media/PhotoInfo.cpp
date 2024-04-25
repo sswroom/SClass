@@ -8,7 +8,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-void Media::PhotoInfo::ParseXMF(NotNullPtr<Text::XMLDocument> xmf)
+void Media::PhotoInfo::ParseXMF(NN<Text::XMLDocument> xmf)
 {
 	Text::XMLNode *node;
 	if ((node = xmf->SearchFirstNode(CSTR("//@exif:ExposureTime"))) != 0)
@@ -58,13 +58,13 @@ Double Media::PhotoInfo::ParseFraction(Text::String *s)
 	}
 }
 
-Media::PhotoInfo::PhotoInfo(NotNullPtr<IO::StreamData> fd)
+Media::PhotoInfo::PhotoInfo(NN<IO::StreamData> fd)
 {
 	Optional<Media::EXIFData> exif;
 	Optional<Text::XMLDocument> xmf;
 	Optional<Media::ICCProfile> icc;
-	NotNullPtr<Media::EXIFData> nnexif;
-	NotNullPtr<Text::XMLDocument> nnxmf;
+	NN<Media::EXIFData> nnexif;
+	NN<Text::XMLDocument> nnxmf;
 	UInt32 width;
 	UInt32 height;
 	this->make = 0;
@@ -107,12 +107,12 @@ Media::PhotoInfo::PhotoInfo(NotNullPtr<IO::StreamData> fd)
 				NEW_CLASS(this->photoDate, Data::DateTime(dt));
 			}
 
-			NotNullPtr<Media::EXIFData::EXIFItem> item;
+			NN<Media::EXIFData::EXIFItem> item;
 			if (nnexif->GetExifItem(34665).SetTo(item))
 			{
 				if (item->type == Media::EXIFData::ET_SUBEXIF)
 				{
-					NotNullPtr<Media::EXIFData> exif2 = item->dataBuff.GetNN<Media::EXIFData>();
+					NN<Media::EXIFData> exif2 = item->dataBuff.GetNN<Media::EXIFData>();
 					if (exif2->GetExifItem(37500).SetTo(item))
 					{
 						UnsafeArray<UInt8> valBuff;
@@ -124,7 +124,7 @@ Media::PhotoInfo::PhotoInfo(NotNullPtr<IO::StreamData> fd)
 						{
 							valBuff = item->dataBuff.GetArray<UInt8>();
 						}
-						NotNullPtr<Media::EXIFData> innerExif;
+						NN<Media::EXIFData> innerExif;
 						if (nnexif->ParseMakerNote(valBuff, item->cnt).SetTo(innerExif))
 						{
 							if (innerExif->GetPhotoExpTime())
@@ -181,9 +181,9 @@ Bool Media::PhotoInfo::HasInfo() const
 	return this->succ;
 }
 
-Bool Media::PhotoInfo::GetPhotoDate(NotNullPtr<Data::DateTime> dt) const
+Bool Media::PhotoInfo::GetPhotoDate(NN<Data::DateTime> dt) const
 {
-	NotNullPtr<Data::DateTime> photoDate;
+	NN<Data::DateTime> photoDate;
 	if (photoDate.Set(this->photoDate))
 	{
 		dt->SetValue(photoDate);
@@ -202,12 +202,12 @@ UInt32 Media::PhotoInfo::GetHeight() const
 	return this->height;
 }
 
-void Media::PhotoInfo::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Media::PhotoInfo::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<Text::String> make;
-	NotNullPtr<Text::String> model;
+	NN<Text::String> make;
+	NN<Text::String> model;
 	if (!this->make.SetTo(make))
 	{
 		if (!this->model.SetTo(model))

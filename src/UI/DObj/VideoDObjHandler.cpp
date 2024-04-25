@@ -14,7 +14,7 @@
 
 void __stdcall UI::DObj::VideoDObjHandler::OnTimerTick(AnyType userObj)
 {
-/*	NotNullPtr<UI::DObj::VideoDObjHandler> me = userObj.GetNN<UI::DObj::VideoDObjHandler>();
+/*	NN<UI::DObj::VideoDObjHandler> me = userObj.GetNN<UI::DObj::VideoDObjHandler>();
 	me->graph->CheckStatus();
 	if (me->graph->IsCompleted())
 	{
@@ -24,20 +24,20 @@ void __stdcall UI::DObj::VideoDObjHandler::OnTimerTick(AnyType userObj)
 
 void __stdcall UI::DObj::VideoDObjHandler::OnPBEnd(AnyType userObj)
 {
-	NotNullPtr<UI::DObj::VideoDObjHandler> me = userObj.GetNN<UI::DObj::VideoDObjHandler>();
+	NN<UI::DObj::VideoDObjHandler> me = userObj.GetNN<UI::DObj::VideoDObjHandler>();
 	me->player->SeekTo(0);
 	me->player->StartPlayback();
 }
 
-void UI::DObj::VideoDObjHandler::DrawBkg(NotNullPtr<Media::DrawImage> dimg)
+void UI::DObj::VideoDObjHandler::DrawBkg(NN<Media::DrawImage> dimg)
 {
 	ImageDObjHandler::DrawBkg(dimg);
 	this->DrawVideo(dimg);
 }
 
-void UI::DObj::VideoDObjHandler::DrawVideo(NotNullPtr<Media::DrawImage> dimg)
+void UI::DObj::VideoDObjHandler::DrawVideo(NN<Media::DrawImage> dimg)
 {
-	NotNullPtr<Media::DrawImage> frameImg;
+	NN<Media::DrawImage> frameImg;
 	if (frameImg.Set(this->frameImg))
 	{
 		Sync::MutexUsage mutUsage(this->frameMut);
@@ -45,12 +45,12 @@ void UI::DObj::VideoDObjHandler::DrawVideo(NotNullPtr<Media::DrawImage> dimg)
 	}
 }
 
-void UI::DObj::VideoDObjHandler::LockUpdateSize(NotNullPtr<Sync::MutexUsage> mutUsage)
+void UI::DObj::VideoDObjHandler::LockUpdateSize(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->frameMut);
 }
 
-void UI::DObj::VideoDObjHandler::DrawFromSurface(NotNullPtr<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn)
+void UI::DObj::VideoDObjHandler::DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn)
 {
 #if defined(VERBOSE)
 	printf("VideoDObjHandler DrawFromSurface\r\n");
@@ -69,7 +69,7 @@ void UI::DObj::VideoDObjHandler::DrawFromSurface(NotNullPtr<Media::MonitorSurfac
 	}
 }
 
-UI::DObj::VideoDObjHandler::VideoDObjHandler(UI::GUIForm *ownerFrm, NotNullPtr<Media::DrawEngine> deng, NotNullPtr<Media::ColorManagerSess> colorSess, NotNullPtr<Media::MonitorSurfaceMgr> surfaceMgr, Parser::ParserList *parsers, Text::CStringNN imageFileName, Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize, Text::CStringNN videoFileName) : UI::DObj::ImageDObjHandler(deng, imageFileName), Media::VideoRenderer(colorSess.Ptr(), surfaceMgr, 4, 4)
+UI::DObj::VideoDObjHandler::VideoDObjHandler(UI::GUIForm *ownerFrm, NN<Media::DrawEngine> deng, NN<Media::ColorManagerSess> colorSess, NN<Media::MonitorSurfaceMgr> surfaceMgr, Parser::ParserList *parsers, Text::CStringNN imageFileName, Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize, Text::CStringNN videoFileName) : UI::DObj::ImageDObjHandler(deng, imageFileName), Media::VideoRenderer(colorSess.Ptr(), surfaceMgr, 4, 4)
 {
 #if defined(VERBOSE)
 	printf("VideoDObjHandler init: w = %d, h = %d\r\n", (UInt32)videoSize.x, (UInt32)videoSize.y);
@@ -108,7 +108,7 @@ UI::DObj::VideoDObjHandler::~VideoDObjHandler()
 		DEL_CLASS(this->player);
 	}
 	this->ownerFrm->RemoveTimer(this->tmr);
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->frameImg))
 	{
 		this->deng->DeleteImage(img);
@@ -120,7 +120,7 @@ UI::DObj::VideoDObjHandler::~VideoDObjHandler()
 void UI::DObj::VideoDObjHandler::UpdateVideoArea(Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize)
 {
 	Sync::MutexUsage mutUsage(this->frameMut);
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->frameImg))
 	{
 		this->deng->DeleteImage(img);

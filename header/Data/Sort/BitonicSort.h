@@ -44,9 +44,9 @@ namespace Data
 			ThreadStat mainThread;
 			Data::SyncArrayList<TaskInfo*> tasks;
 
-			static void DoMergeInt32(NotNullPtr<ThreadStat> stat, Int32 *arr, OSInt n, Bool dir, OSInt m);
-			static void DoMergeUInt32(NotNullPtr<ThreadStat> stat, UInt32 *arr, OSInt n, Bool dir, OSInt m);
-			Bool DoTask(NotNullPtr<ThreadStat> stat);
+			static void DoMergeInt32(NN<ThreadStat> stat, Int32 *arr, OSInt n, Bool dir, OSInt m);
+			static void DoMergeUInt32(NN<ThreadStat> stat, UInt32 *arr, OSInt n, Bool dir, OSInt m);
+			Bool DoTask(NN<ThreadStat> stat);
 			void SortInnerInt32(Int32 *arr, OSInt n, Bool dir, OSInt pw2);
 			void SortInnerUInt32(UInt32 *arr, OSInt n, Bool dir, OSInt pw2);
 			static UInt32 __stdcall ProcessThread(AnyType userObj);

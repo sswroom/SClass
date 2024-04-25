@@ -57,7 +57,7 @@ WChar *Manage::Process::GetFilename(WChar *buff)
 	return buff;
 }
 
-Bool Manage::Process::GetFilename(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Manage::Process::GetFilename(NN<Text::StringBuilderUTF8> sb)
 {
 	return false;
 }
@@ -88,7 +88,7 @@ UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modLis
 	return 0;
 }
 
-UOSInt Manage::Process::GetThreads(NotNullPtr<Data::ArrayList<Manage::ThreadInfo *>> threadList)
+UOSInt Manage::Process::GetThreads(NN<Data::ArrayList<Manage::ThreadInfo *>> threadList)
 {
 	return 0;
 }
@@ -231,12 +231,12 @@ void Manage::Process::FindProcessClose(FindProcSess *sess)
 {
 }
 
-Int32 Manage::Process::ExecuteProcess(Text::CString cmd, NotNullPtr<Text::StringBuilderUTF8> result)
+Int32 Manage::Process::ExecuteProcess(Text::CString cmd, NN<Text::StringBuilderUTF8> result)
 {
 	return -1;
 }
 
-Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, NotNullPtr<Text::StringBuilderUTF8> result)
+Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, NN<Text::StringBuilderUTF8> result)
 {
 	return -1;
 }

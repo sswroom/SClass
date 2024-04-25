@@ -8,7 +8,7 @@ Media::MediaType Media::IAudioSource::GetMediaType()
 	return Media::MEDIA_TYPE_AUDIO;
 }
 
-UOSInt Media::IAudioSource::ReadBlockLPCM(Data::ByteArray blk, NotNullPtr<const AudioFormat> format)
+UOSInt Media::IAudioSource::ReadBlockLPCM(Data::ByteArray blk, NN<const AudioFormat> format)
 {
 	UOSInt ret;
 	UOSInt i;

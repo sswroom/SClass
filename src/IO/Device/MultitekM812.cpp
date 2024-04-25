@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/Device/MultitekM812.h"
 
-IO::Device::MultitekM812::MultitekM812(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr) : IO::MODBUSDevice(modbus, addr)
+IO::Device::MultitekM812::MultitekM812(NN<IO::MODBUSMaster> modbus, UInt8 addr) : IO::MODBUSDevice(modbus, addr)
 {
 }
 

@@ -11,9 +11,9 @@ Data::ArrayListCmp::ArrayListCmp(UOSInt capacity) : Data::SortableArrayList<Data
 {
 }
 
-NotNullPtr<Data::ArrayList<Data::IComparable*>> Data::ArrayListCmp::Clone() const
+NN<Data::ArrayList<Data::IComparable*>> Data::ArrayListCmp::Clone() const
 {
-	NotNullPtr<Data::ArrayList<Data::IComparable*>> newArr;
+	NN<Data::ArrayList<Data::IComparable*>> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListCmp(this->capacity));
 	newArr->AddAll(*this);
 	return newArr;

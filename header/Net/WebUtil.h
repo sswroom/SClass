@@ -37,9 +37,9 @@ namespace Net
 	public:
 		static RequestMethod Str2RequestMethod(const UTF8Char *s, UOSInt len);
 		static Text::CString RequestMethodGetName(RequestMethod reqMeth);
-		static UTF8Char *Date2Str(UTF8Char *sbuff, NotNullPtr<Data::DateTime> dt);
+		static UTF8Char *Date2Str(UTF8Char *sbuff, NN<Data::DateTime> dt);
 		static UTF8Char *Date2Str(UTF8Char *sbuff, const Data::Timestamp &ts);
-		static void Date2Str(NotNullPtr<Text::StringBuilderUTF8> sb, const Data::Timestamp &ts);
+		static void Date2Str(NN<Text::StringBuilderUTF8> sb, const Data::Timestamp &ts);
 	};
 }
 #endif

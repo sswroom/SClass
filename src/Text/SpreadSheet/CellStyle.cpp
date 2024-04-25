@@ -51,9 +51,9 @@ Text::SpreadSheet::CellStyle::~CellStyle()
 	OPTSTR_DEL(this->dataFormat);
 }
 
-NotNullPtr<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::Clone() const
+NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::Clone() const
 {
-	NotNullPtr<Text::SpreadSheet::CellStyle> style;
+	NN<Text::SpreadSheet::CellStyle> style;
 	NEW_CLASSNN(style, Text::SpreadSheet::CellStyle(this->index));
 	style->id = SCOPY_TEXT(this->id);
 	style->halign = this->halign;
@@ -91,7 +91,7 @@ void Text::SpreadSheet::CellStyle::CopyFrom(CellStyle *style)
 	this->protection = style->protection;
 }
 
-Bool Text::SpreadSheet::CellStyle::Equals(NotNullPtr<const CellStyle> style) const
+Bool Text::SpreadSheet::CellStyle::Equals(NN<const CellStyle> style) const
 {
 	if (style->halign != this->halign)
 		return false;

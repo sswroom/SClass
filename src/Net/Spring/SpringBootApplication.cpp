@@ -11,10 +11,10 @@ Net::Spring::SpringBootApplication::SpringBootApplication(Text::CString appName)
 	this->log.AddLogHandler(this->consoleLog, IO::LogHandler::LogLevel::Raw);
 	this->cfg = IO::JavaProperties::ParseAppProp();
 	this->activeProfile = Text::String::New(UTF8STRC("default"));
-	NotNullPtr<IO::ConfigFile> cfg;
+	NN<IO::ConfigFile> cfg;
 	if (this->cfg.SetTo(cfg))
 	{
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		if (cfg->GetValue(CSTR("spring.profiles.active")).SetTo(s))
 		{
 			this->activeProfile->Release();
@@ -37,7 +37,7 @@ Net::Spring::SpringBootApplication::SpringBootApplication(Text::CString appName)
 		i = Text::StrSplitTrimP(sarr, 2, sarr[1], ',');
 		sptr2 = sarr[0].ConcatTo(sptr);
 		sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".properties"));
-		NotNullPtr<IO::ConfigFile> nncfg;
+		NN<IO::ConfigFile> nncfg;
 		if (this->cfg.SetTo(nncfg) && IO::JavaProperties::Parse(CSTRP(sbuff, sptr2)).SetTo(cfg))
 		{
 			nncfg->MergeConfig(cfg);

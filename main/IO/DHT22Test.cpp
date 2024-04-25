@@ -10,9 +10,9 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	NotNullPtr<IO::GPIOPin> pin;
+	NN<IO::GPIOPin> pin;
 	IO::Device::DHT22 *dht22;
 	IO::ConsoleWriter console;
 	Double temp;

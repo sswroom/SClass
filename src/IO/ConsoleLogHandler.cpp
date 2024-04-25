@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/ConsoleLogHandler.h"
 
-IO::ConsoleLogHandler::ConsoleLogHandler(NotNullPtr<IO::ConsoleWriter> console)
+IO::ConsoleLogHandler::ConsoleLogHandler(NN<IO::ConsoleWriter> console)
 {
 	this->console = console;
 }

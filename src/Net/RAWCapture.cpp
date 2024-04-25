@@ -12,7 +12,7 @@
 
 void __stdcall Net::RAWCapture::DataHandler(AnyType userData, const UInt8 *packetData, UOSInt packetSize)
 {
-	NotNullPtr<Net::RAWCapture> me = userData.GetNN<Net::RAWCapture>();
+	NN<Net::RAWCapture> me = userData.GetNN<Net::RAWCapture>();
 	{
 		Sync::MutexUsage mutUsage(me->mut);
 		me->packetCnt++;
@@ -24,7 +24,7 @@ void __stdcall Net::RAWCapture::DataHandler(AnyType userData, const UInt8 *packe
 	}
 }
 
-Net::RAWCapture::RAWCapture(NotNullPtr<Net::SocketFactory> sockf, UInt32 adapterIP, CaptureType type, FileFormat format, Text::CStringNN fileName, Text::CString appName)
+Net::RAWCapture::RAWCapture(NN<Net::SocketFactory> sockf, UInt32 adapterIP, CaptureType type, FileFormat format, Text::CStringNN fileName, Text::CString appName)
 {
 	if (appName.leng == 0)
 	{
@@ -150,7 +150,7 @@ Text::CStringNN Net::RAWCapture::FileFormatGetExt(FileFormat format)
 	return CSTR("");
 }
 
-void Net::RAWCapture::AddFilters(NotNullPtr<IO::FileSelector> selector)
+void Net::RAWCapture::AddFilters(NN<IO::FileSelector> selector)
 {
 	selector->AddFilter(CSTR("*.pcap"), CSTR("pcap"));
 	selector->AddFilter(CSTR("*.pcapng"), CSTR("pcapng"));

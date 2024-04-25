@@ -12,7 +12,7 @@
 
 UInt32 __stdcall IO::Device::DensoWaveQK30U::RecvThread(AnyType userObj)
 {
-	NotNullPtr<IO::Device::DensoWaveQK30U> me = userObj.GetNN<IO::Device::DensoWaveQK30U>();
+	NN<IO::Device::DensoWaveQK30U> me = userObj.GetNN<IO::Device::DensoWaveQK30U>();
 	UInt8 buff[256];
 	UTF8Char *sbuff;
 	UOSInt recvSize;
@@ -244,7 +244,7 @@ Bool IO::Device::DensoWaveQK30U::WriteCommand(const Char *cmdStr, UOSInt cmdLen)
 	return succ;
 }
 
-IO::Device::DensoWaveQK30U::DensoWaveQK30U(NotNullPtr<IO::Stream> stm) : IO::CodeScanner(CSTR("Denso Wave QK30-U"))
+IO::Device::DensoWaveQK30U::DensoWaveQK30U(NN<IO::Stream> stm) : IO::CodeScanner(CSTR("Denso Wave QK30-U"))
 {
 	this->stm = stm;
 	this->scanDelay = 1000;

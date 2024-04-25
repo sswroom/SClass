@@ -21,29 +21,29 @@ namespace SSWR
 		class AVIRStreamTermForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::SiLabDriver *siLabDriver;
 
-			NotNullPtr<UI::GUIGroupBox> grpStream;
-			NotNullPtr<UI::GUILabel> lblStream;
-			NotNullPtr<UI::GUITextBox> txtStream;
-			NotNullPtr<UI::GUIButton> btnStream;
+			NN<UI::GUIGroupBox> grpStream;
+			NN<UI::GUILabel> lblStream;
+			NN<UI::GUITextBox> txtStream;
+			NN<UI::GUIButton> btnStream;
 
-			NotNullPtr<UI::GUIHSplitter> hspMain;
-			NotNullPtr<UI::GUIGroupBox> grpSend;
-			NotNullPtr<UI::GUIComboBox> cboSendType;
-			NotNullPtr<UI::GUITextBox> txtSendDisp;
-			NotNullPtr<UI::GUIPanel> pnlSend;
-			NotNullPtr<UI::GUITextBox> txtSendValue;
-			NotNullPtr<UI::GUIButton> btnSend;
-			NotNullPtr<UI::GUIGroupBox> grpRecv;
-			NotNullPtr<UI::GUIComboBox> cboRecvType;
-			NotNullPtr<UI::GUITextBox> txtRecvDisp;
-			NotNullPtr<UI::GUIPanel> pnlSendOption;
-			NotNullPtr<UI::GUILabel> lblSendLBreak;
-			NotNullPtr<UI::GUIComboBox> cboSendLBreak;
-			NotNullPtr<UI::GUIRadioButton> radSendText;
-			NotNullPtr<UI::GUIRadioButton> radSendHex;
+			NN<UI::GUIHSplitter> hspMain;
+			NN<UI::GUIGroupBox> grpSend;
+			NN<UI::GUIComboBox> cboSendType;
+			NN<UI::GUITextBox> txtSendDisp;
+			NN<UI::GUIPanel> pnlSend;
+			NN<UI::GUITextBox> txtSendValue;
+			NN<UI::GUIButton> btnSend;
+			NN<UI::GUIGroupBox> grpRecv;
+			NN<UI::GUIComboBox> cboRecvType;
+			NN<UI::GUITextBox> txtRecvDisp;
+			NN<UI::GUIPanel> pnlSendOption;
+			NN<UI::GUILabel> lblSendLBreak;
+			NN<UI::GUIComboBox> cboSendLBreak;
+			NN<UI::GUIRadioButton> radSendText;
+			NN<UI::GUIRadioButton> radSendHex;
 
 			IO::MemoryStream recvBuff;
 			IO::MemoryStream sendBuff;
@@ -68,7 +68,7 @@ namespace SSWR
 			void UpdateSendDisp();
 
 		public:
-			AVIRStreamTermForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRStreamTermForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRStreamTermForm();
 
 			virtual void OnMonitorChanged();

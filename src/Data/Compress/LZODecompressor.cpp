@@ -16,7 +16,7 @@ Bool Data::Compress::LZODecompressor::Decompress(Data::ByteArray destBuff, OutPa
 	return LZODecompressor_Decompress(srcBuff.Ptr(), srcBuff.GetSize(), destBuff.Ptr(), outDestBuffSize.Ptr());
 }
 
-Bool Data::Compress::LZODecompressor::Decompress(NotNullPtr<IO::Stream> destStm, NotNullPtr<IO::StreamData> srcData)
+Bool Data::Compress::LZODecompressor::Decompress(NN<IO::Stream> destStm, NN<IO::StreamData> srcData)
 {
 	UInt64 srcSize = srcData->GetDataSize();
 	Data::ByteBuffer srcBuff((UOSInt)srcSize);

@@ -15,10 +15,10 @@ namespace Media
 			UOSInt readBuffSize;
 			Sync::Event *readEvt;
 		public:
-			G711muLawDecoder(NotNullPtr<IAudioSource> sourceAudio);
+			G711muLawDecoder(NN<IAudioSource> sourceAudio);
 			virtual ~G711muLawDecoder();
 
-			virtual void GetFormat(NotNullPtr<AudioFormat> format);
+			virtual void GetFormat(NN<AudioFormat> format);
 
 			virtual Data::Duration SeekToTime(Data::Duration time);
 			virtual Bool Start(Sync::Event *evt, UOSInt blkSize);

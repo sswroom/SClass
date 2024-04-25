@@ -9,11 +9,11 @@
 
 struct DB::OLEDBConn::ClassData
 {
-	NotNullPtr<IO::LogTool> log;
+	NN<IO::LogTool> log;
 	const WChar *connStr;
 };
 
-DB::OLEDBConn::OLEDBConn(NotNullPtr<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
+DB::OLEDBConn::OLEDBConn(NN<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
 {
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;
@@ -28,7 +28,7 @@ void DB::OLEDBConn::Init(const WChar *connStr)
 	this->connErr = CE_COCREATE;
 }
 
-DB::OLEDBConn::OLEDBConn(const WChar *connStr, NotNullPtr<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
+DB::OLEDBConn::OLEDBConn(const WChar *connStr, NN<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
 {
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;
@@ -62,12 +62,12 @@ void DB::OLEDBConn::ForceTz(Int8 tzQhr)
 {
 }
 
-void DB::OLEDBConn::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
+void DB::OLEDBConn::GetConnName(NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("OLEDB:"));
 	if (this->clsData->connStr)
 	{
-		NotNullPtr<Text::String> s = Text::String::NewNotNull(this->clsData->connStr);
+		NN<Text::String> s = Text::String::NewNotNull(this->clsData->connStr);
 		sb->Append(s);
 		s->Release();
 	}
@@ -160,7 +160,7 @@ OSInt DB::OLEDBConn::ExecuteNonQuery(Text::CStringNN sql)
 	return ret;
 }*/
 
-void DB::OLEDBConn::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void DB::OLEDBConn::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 }
 
@@ -173,7 +173,7 @@ void DB::OLEDBConn::Reconnect()
 {
 }
 
-UOSInt DB::OLEDBConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt DB::OLEDBConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	return 0;
 }
@@ -271,7 +271,7 @@ Optional<DB::DBReader> DB::OLEDBConn::ExecuteReader(Text::CStringNN sql)
 	return r;
 }*/
 
-void DB::OLEDBConn::CloseReader(NotNullPtr<DBReader> r)
+void DB::OLEDBConn::CloseReader(NN<DBReader> r)
 {
 	DB::OLEDBReader *reader = (DB::OLEDBReader*)r.Ptr();
 	DEL_CLASS(reader);
@@ -282,11 +282,11 @@ Optional<DB::DBTransaction> DB::OLEDBConn::BeginTransaction()
 	return 0;
 }
 
-void DB::OLEDBConn::Commit(NotNullPtr<DB::DBTransaction> tran)
+void DB::OLEDBConn::Commit(NN<DB::DBTransaction> tran)
 {
 }
 
-void DB::OLEDBConn::Rollback(NotNullPtr<DB::DBTransaction> tran)
+void DB::OLEDBConn::Rollback(NN<DB::DBTransaction> tran)
 {
 }
 

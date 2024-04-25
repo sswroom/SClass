@@ -18,7 +18,7 @@ namespace IO
 
 			virtual UOSInt GetCount() const;
 			virtual Optional<IProtocolDecoder> GetItem(UOSInt index) const;
-			virtual NotNullPtr<IProtocolDecoder> GetItemNoCheck(UOSInt index) const;
+			virtual NN<IProtocolDecoder> GetItemNoCheck(UOSInt index) const;
 		};
 	}
 }

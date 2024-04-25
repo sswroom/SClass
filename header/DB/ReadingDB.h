@@ -16,21 +16,21 @@ namespace DB
 	class ReadingDB : public IO::ParsedObject
 	{
 	public:
-		ReadingDB(NotNullPtr<Text::String> sourceName);
+		ReadingDB(NN<Text::String> sourceName);
 		ReadingDB(Text::CStringNN sourceName);
 		virtual ~ReadingDB();
 
-		virtual UOSInt QuerySchemaNames(NotNullPtr<Data::ArrayListStringNN> names);
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names) = 0; //Need Release
+		virtual UOSInt QuerySchemaNames(NN<Data::ArrayListStringNN> names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names) = 0; //Need Release
 		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition) = 0;
 		virtual TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName) = 0;
-		virtual void CloseReader(NotNullPtr<DBReader> r) = 0;
-		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str) = 0;
+		virtual void CloseReader(NN<DBReader> r) = 0;
+		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str) = 0;
 		virtual void Reconnect() = 0;
 		virtual Int8 GetTzQhr() const;
 
-		virtual UOSInt GetDatabaseNames(NotNullPtr<Data::ArrayListStringNN> arr);
-		virtual void ReleaseDatabaseNames(NotNullPtr<Data::ArrayListStringNN> arr);
+		virtual UOSInt GetDatabaseNames(NN<Data::ArrayListStringNN> arr);
+		virtual void ReleaseDatabaseNames(NN<Data::ArrayListStringNN> arr);
 		virtual Bool ChangeDatabase(Text::CString databaseName);
 		virtual Text::String *GetCurrDBName();
 
@@ -39,7 +39,7 @@ namespace DB
 		virtual Bool IsFullConn() const; //false = read only, true = DBConn
 		virtual Bool IsDBTool() const; //true = ReadingDBTool
 
-		static Bool IsDBObj(NotNullPtr<IO::ParsedObject> pobj);
+		static Bool IsDBObj(NN<IO::ParsedObject> pobj);
 	};
 }
 #endif

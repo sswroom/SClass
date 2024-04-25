@@ -17,26 +17,26 @@ namespace SSWR
 		class AVIRWifiScanForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Net::WirelessLAN *wlan;
 			Optional<Net::WirelessLAN::Interface> wlanInterf;
 
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUIButton> btnScan;
-			NotNullPtr<UI::GUILabel> lblScanTime;
-			NotNullPtr<UI::GUITextBox> txtScanTime;
-			NotNullPtr<UI::GUILabel> lblResultTime;
-			NotNullPtr<UI::GUITextBox> txtResultTime;
-			NotNullPtr<UI::GUIListView> lvWifi;
-			NotNullPtr<UI::GUIVSplitter> vspWifi;
-			NotNullPtr<UI::GUITextBox> txtWifi;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUIButton> btnScan;
+			NN<UI::GUILabel> lblScanTime;
+			NN<UI::GUITextBox> txtScanTime;
+			NN<UI::GUILabel> lblResultTime;
+			NN<UI::GUITextBox> txtResultTime;
+			NN<UI::GUIListView> lvWifi;
+			NN<UI::GUIVSplitter> vspWifi;
+			NN<UI::GUITextBox> txtWifi;
 
 			static void __stdcall OnScanClicked(AnyType userObj);
 			static void __stdcall OnWifiSelChg(AnyType userObj);
 			void WifiScan();
 			void WifiClear();
 		public:
-			AVIRWifiScanForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRWifiScanForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWifiScanForm();
 
 			virtual void OnMonitorChanged();

@@ -12,7 +12,7 @@
 
 UInt32 __stdcall IO::ATCommandChannel::CmdThread(AnyType userObj)
 {
-	NotNullPtr<IO::ATCommandChannel> me = userObj.GetNN<IO::ATCommandChannel>();
+	NN<IO::ATCommandChannel> me = userObj.GetNN<IO::ATCommandChannel>();
 #if defined(DEBUG)
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(CSTR("Received.dat"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -22,7 +22,7 @@ UInt32 __stdcall IO::ATCommandChannel::CmdThread(AnyType userObj)
 	UOSInt buffSize = 0;
 	UOSInt i;
 	UOSInt cmdStart;
-	NotNullPtr<Text::String> cmdResult;
+	NN<Text::String> cmdResult;
 	me->threadRunning = true;
 	me->cmdEvt.Set();
 	while (!me->threadToStop)
@@ -113,7 +113,7 @@ void IO::ATCommandChannel::ClearResults()
 	}
 }
 
-IO::ATCommandChannel::ATCommandChannel(NotNullPtr<IO::Stream> stm, Bool needRelease)
+IO::ATCommandChannel::ATCommandChannel(NN<IO::Stream> stm, Bool needRelease)
 {
 	this->stm = stm;
 	this->stmRelease = needRelease;
@@ -147,19 +147,19 @@ IO::ATCommandChannel::~ATCommandChannel()
 	}
 }
 
-NotNullPtr<IO::Stream> IO::ATCommandChannel::GetStream() const
+NN<IO::Stream> IO::ATCommandChannel::GetStream() const
 {
 	return this->stm;
 }
 
-UOSInt IO::ATCommandChannel::SendATCommand(NotNullPtr<Data::ArrayListStringNN> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout)
+UOSInt IO::ATCommandChannel::SendATCommand(NN<Data::ArrayListStringNN> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout)
 {
 	Data::DateTime dt;
 	Data::DateTime dt2;
 	UOSInt retSize = 0;
 //	Bool cmdBegin = false;
 	Bool cmdEnd = false;
-	NotNullPtr<Text::String> cmdRes;
+	NN<Text::String> cmdRes;
 	Sync::MutexUsage mutUsage;
 	if (!this->UseCmd(mutUsage))
 		return 0;
@@ -200,14 +200,14 @@ UOSInt IO::ATCommandChannel::SendATCommand(NotNullPtr<Data::ArrayListStringNN> r
 	return retSize;
 }
 
-UOSInt IO::ATCommandChannel::SendATCommands(NotNullPtr<Data::ArrayListStringNN> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, const UTF8Char *atCmdSub, Data::Duration timeout)
+UOSInt IO::ATCommandChannel::SendATCommands(NN<Data::ArrayListStringNN> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, const UTF8Char *atCmdSub, Data::Duration timeout)
 {
 	Data::DateTime dt;
 	Data::DateTime dt2;
 	UOSInt retSize = 0;
 //	Bool cmdBegin = false;
 	Bool cmdEnd = false;
-	NotNullPtr<Text::String> cmdRes;
+	NN<Text::String> cmdRes;
 	Sync::MutexUsage mutUsage;
 	if (!this->UseCmd(mutUsage))
 		return 0;
@@ -250,14 +250,14 @@ UOSInt IO::ATCommandChannel::SendATCommands(NotNullPtr<Data::ArrayListStringNN> 
 	return retSize;
 }
 
-UOSInt IO::ATCommandChannel::SendDialCommand(NotNullPtr<Data::ArrayListStringNN> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout)
+UOSInt IO::ATCommandChannel::SendDialCommand(NN<Data::ArrayListStringNN> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout)
 {
 	Data::DateTime dt;
 	Data::DateTime dt2;
 	UOSInt retSize = 0;
 //	Bool cmdBegin = false;
 	Bool cmdEnd = false;
-	NotNullPtr<Text::String> cmdRes;
+	NN<Text::String> cmdRes;
 	Sync::MutexUsage mutUsage;
 	if (!this->UseCmd(mutUsage))
 		return 0;
@@ -317,7 +317,7 @@ UOSInt IO::ATCommandChannel::SendDialCommand(NotNullPtr<Data::ArrayListStringNN>
 	return retSize;
 }
 
-Bool IO::ATCommandChannel::UseCmd(NotNullPtr<Sync::MutexUsage> mutUsage)
+Bool IO::ATCommandChannel::UseCmd(NN<Sync::MutexUsage> mutUsage)
 {
 	if (!this->threadRunning)
 		return false;

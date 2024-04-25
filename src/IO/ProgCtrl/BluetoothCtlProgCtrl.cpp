@@ -8,14 +8,14 @@
 
 #include <stdio.h>
 
-void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::ProgCtrl::BluetoothCtlProgCtrl> me = thread->GetUserObj().GetNN<IO::ProgCtrl::BluetoothCtlProgCtrl>();
+	NN<IO::ProgCtrl::BluetoothCtlProgCtrl> me = thread->GetUserObj().GetNN<IO::ProgCtrl::BluetoothCtlProgCtrl>();
 	UInt8 buff[512];
 	UOSInt readSize;
 	Text::PString sarr[2];
 	UOSInt i;
-	NotNullPtr<IO::BTScanLog::ScanRecord3> dev;
+	NN<IO::BTScanLog::ScanRecord3> dev;
 
 	{
 		Text::StringBuilderUTF8 sb;
@@ -359,7 +359,7 @@ Optional<IO::BTScanLog::ScanRecord3> IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceG
 	macBuff[6] = Text::StrHex2UInt8C(sarr[4]);
 	macBuff[7] = Text::StrHex2UInt8C(sarr[5]);
 	UInt64 macInt = ReadMUInt64(macBuff);
-	NotNullPtr<IO::BTScanLog::ScanRecord3> dev;
+	NN<IO::BTScanLog::ScanRecord3> dev;
 	Sync::MutexUsage mutUsage(this->devMut);
 	if (this->devMap.Get(macInt).SetTo(dev))
 		return dev;
@@ -381,7 +381,7 @@ Optional<IO::BTScanLog::ScanRecord3> IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceG
 	return dev;
 }
 
-void IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceFree(NotNullPtr<IO::BTScanLog::ScanRecord3> dev)
+void IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceFree(NN<IO::BTScanLog::ScanRecord3> dev)
 {
 	SDEL_STRING(dev->name);
 	MemFreeNN(dev);
@@ -481,13 +481,13 @@ Bool IO::ProgCtrl::BluetoothCtlProgCtrl::WaitForCmdReady()
 	return this->cmdReady;
 }
 
-NotNullPtr<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> IO::ProgCtrl::BluetoothCtlProgCtrl::GetPublicMap(NotNullPtr<Sync::MutexUsage> mutUsage)
+NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> IO::ProgCtrl::BluetoothCtlProgCtrl::GetPublicMap(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->devMut);
 	return this->devMap;
 }
 
-NotNullPtr<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> IO::ProgCtrl::BluetoothCtlProgCtrl::GetRandomMap(NotNullPtr<Sync::MutexUsage> mutUsage)
+NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> IO::ProgCtrl::BluetoothCtlProgCtrl::GetRandomMap(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->devMut);
 	return this->devMap;

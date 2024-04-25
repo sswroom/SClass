@@ -15,7 +15,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-NotNullPtr<Net::SocketFactory> sockf;
+NN<Net::SocketFactory> sockf;
 Manage::HiResClock *clk;
 IO::ConsoleWriter *console;
 Bool toStop;
@@ -26,7 +26,7 @@ Sync::Event *mainEvt;
 Sync::Event *procEvt;
 Sync::Event *recvEvt;
 Sync::Event *dispEvt;
-NotNullPtr<Sync::Mutex> cliMut;
+NN<Sync::Mutex> cliMut;
 Net::TCPClient *cli;
 UInt64 totalRecvSize;
 UInt64 totalSendSize;
@@ -137,7 +137,7 @@ UInt32 __stdcall RecvThread(AnyType userObj)
 	return 0;
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UOSInt argc;
 	UTF8Char **argv;

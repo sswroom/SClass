@@ -24,7 +24,7 @@ namespace SSWR
 		class AVIRRESTfulForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Net::WebServer::WebListener *svr;
 			Net::WebServer::RESTfulHandler *restHdlr;
 			IO::LogTool log;
@@ -34,33 +34,33 @@ namespace SSWR
 			DB::DBCache *dbCache;
 			DB::DBModel *dbModel;
 
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpControl;
-			NotNullPtr<UI::GUIGroupBox> grpParam;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUILabel> lblLogDir;
-			NotNullPtr<UI::GUITextBox> txtLogDir;
-			NotNullPtr<UI::GUILabel> lblAllowProxy;
-			NotNullPtr<UI::GUICheckBox> chkAllowProxy;
-			NotNullPtr<UI::GUILabel> lblSkipLog;
-			NotNullPtr<UI::GUICheckBox> chkSkipLog;
-			NotNullPtr<UI::GUILabel> lblAllowKA;
-			NotNullPtr<UI::GUICheckBox> chkAllowKA;
-			NotNullPtr<UI::GUILabel> lblDatabase;
-			NotNullPtr<UI::GUITextBox> txtDatabase;
-			NotNullPtr<UI::GUIButton> btnDatabaseMySQL;
-			NotNullPtr<UI::GUIButton> btnDatabaseODBCDSN;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUIButton> btnStop;
+			NN<UI::GUITabPage> tpControl;
+			NN<UI::GUIGroupBox> grpParam;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUILabel> lblLogDir;
+			NN<UI::GUITextBox> txtLogDir;
+			NN<UI::GUILabel> lblAllowProxy;
+			NN<UI::GUICheckBox> chkAllowProxy;
+			NN<UI::GUILabel> lblSkipLog;
+			NN<UI::GUICheckBox> chkSkipLog;
+			NN<UI::GUILabel> lblAllowKA;
+			NN<UI::GUICheckBox> chkAllowKA;
+			NN<UI::GUILabel> lblDatabase;
+			NN<UI::GUITextBox> txtDatabase;
+			NN<UI::GUIButton> btnDatabaseMySQL;
+			NN<UI::GUIButton> btnDatabaseODBCDSN;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUIButton> btnStop;
 
-			NotNullPtr<UI::GUITabPage> tpTable;
-			NotNullPtr<UI::GUIListView> lvTable;
+			NN<UI::GUITabPage> tpTable;
+			NN<UI::GUIListView> lvTable;
 
-			NotNullPtr<UI::GUITabPage> tpLog;
-			NotNullPtr<UI::GUIListBox> lbLog;
-			NotNullPtr<UI::GUITextBox> txtLog;
+			NN<UI::GUITabPage> tpLog;
+			NN<UI::GUIListBox> lbLog;
+			NN<UI::GUITextBox> txtLog;
 
 		private:
 			static void __stdcall OnDatabaseMySQLClicked(AnyType userObj);
@@ -71,7 +71,7 @@ namespace SSWR
 			
 			void InitDB();
 		public:
-			AVIRRESTfulForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRRESTfulForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRRESTfulForm();
 
 			virtual void OnMonitorChanged();

@@ -9,7 +9,7 @@ namespace IO
 		class TH10SB : public IO::MODBUSDevice
 		{
 		public:
-			TH10SB(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr);
+			TH10SB(NN<IO::MODBUSMaster> modbus, UInt8 addr);
 			virtual ~TH10SB();
 
 			Bool ReadTempRH(OutParam<Double> temp, OutParam<Double> rh);

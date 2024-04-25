@@ -5,13 +5,13 @@
 
 void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnOKClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCaptureDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCaptureDevForm>();
+	NN<SSWR::AVIRead::AVIRCaptureDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCaptureDevForm>();
 	if (me->currCapture == 0)
 	{
 		me->ui->ShowMsgOK(CSTR("Please select a device"), CSTR("Select Capture Device"), me);
 		return;
 	}
-	NotNullPtr<CaptureFormat> fmt;
+	NN<CaptureFormat> fmt;
 	if (!me->cboFormat->GetItem((UOSInt)me->cboFormat->GetSelectedIndex()).GetOpt<CaptureFormat>().SetTo(fmt))
 	{
 		me->ui->ShowMsgOK(CSTR("Please select a format"), CSTR("Select Capture Device"), me);
@@ -27,13 +27,13 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnOKClick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnCancelClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCaptureDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCaptureDevForm>();
+	NN<SSWR::AVIRead::AVIRCaptureDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCaptureDevForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
 void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCaptureDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCaptureDevForm>();
+	NN<SSWR::AVIRead::AVIRCaptureDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCaptureDevForm>();
 	if (me->currCapture)
 	{
 		DEL_CLASS(me->currCapture);
@@ -170,7 +170,7 @@ void SSWR::AVIRead::AVIRCaptureDevForm::ReleaseFormats()
 	}
 }
 
-SSWR::AVIRead::AVIRCaptureDevForm::AVIRCaptureDevForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 768, 200, ui)
+SSWR::AVIRead::AVIRCaptureDevForm::AVIRCaptureDevForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 768, 200, ui)
 {
 	this->SetText(CSTR("Select Capture Device"));
 	this->SetFont(0, 0, 8.25, false);

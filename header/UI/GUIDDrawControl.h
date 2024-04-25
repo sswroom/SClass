@@ -43,7 +43,7 @@ namespace UI
 	protected:
 		Math::Size2D<UOSInt> bkBuffSize;
 		Math::Size2D<UOSInt> dispSize;
-		NotNullPtr<Media::MonitorSurfaceMgr> surfaceMgr;
+		NN<Media::MonitorSurfaceMgr> surfaceMgr;
 		Sync::Mutex surfaceMut;
 		UInt32 bitDepth;
 		OSInt scnX;
@@ -82,12 +82,12 @@ namespace UI
 		virtual void EndUpdateSize();
 
 	public:
-		GUIDDrawControl(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool directMode, NotNullPtr<Media::ColorManagerSess> colorSess);
+		GUIDDrawControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Bool directMode, NN<Media::ColorManagerSess> colorSess);
 		virtual ~GUIDDrawControl();
 
 		void SetUserFSMode(ScreenMode fullScnMode);
 		void DrawToScreen();
-		void DisplayFromSurface(NotNullPtr<Media::MonitorSurface> surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn);
+		void DisplayFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn);
 		void SwitchFullScreen(Bool fullScn, Bool vfs);
 		Bool IsFullScreen();
 		virtual void ChangeMonitor(MonitorHandle *hMon);
@@ -110,8 +110,8 @@ namespace UI
 		virtual void OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt axis4);
 
 		void *GetPixBuf();
-		void UseDrawSurface(NotNullPtr<Sync::MutexUsage> mut);
-		void UnuseDrawSurface(NotNullPtr<Sync::MutexUsage> mut);
+		void UseDrawSurface(NN<Sync::MutexUsage> mut);
+		void UnuseDrawSurface(NN<Sync::MutexUsage> mut);
 	};
 }
 #endif

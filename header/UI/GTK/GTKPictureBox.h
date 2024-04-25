@@ -20,7 +20,7 @@ namespace UI
 			static gboolean SignalMotionNotify(GtkWidget *widget, GdkEvent *event, gpointer data);
 			virtual void UpdatePreview();
 		public:
-			GTKPictureBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize);
+			GTKPictureBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize);
 			virtual ~GTKPictureBox();
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);

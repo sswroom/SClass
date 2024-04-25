@@ -24,7 +24,7 @@ namespace UI
 		UInt32 fieldColor;
 
 	public:
-		GUIHexFileView(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> deng);
+		GUIHexFileView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng);
 		virtual ~GUIHexFileView();
 
 		virtual void EventLineUp();
@@ -42,11 +42,11 @@ namespace UI
 		virtual void EventMouseUp(OSInt scnX, OSInt scnY, MouseButton btn);
 		virtual void EventMouseMove(OSInt scnX, OSInt scnY);
 		virtual void EventTimerTick();
-		virtual void DrawImage(NotNullPtr<Media::DrawImage> dimg);
+		virtual void DrawImage(NN<Media::DrawImage> dimg);
 		virtual void UpdateCaretPos();
 
 		Bool LoadFile(Text::CStringNN fileName, Bool dynamicSize);
-		Bool LoadData(NotNullPtr<IO::StreamData> data, Optional<IO::FileAnalyse::IFileAnalyse> fileAnalyse);
+		Bool LoadData(NN<IO::StreamData> data, Optional<IO::FileAnalyse::IFileAnalyse> fileAnalyse);
 		void GetTextPos(Double scnPosX, Double scnPosY, UInt64 *byteOfst);
 		void GoToOffset(UInt64 ofst);
 		UInt64 GetCurrOfst();
@@ -56,9 +56,9 @@ namespace UI
 		void HandleOffsetChg(OffsetChgHandler hdlr, AnyType hdlrObj);
 
 		Text::CString GetAnalyzerName();
-		Bool GetFrameName(NotNullPtr<Text::StringBuilderUTF8> sb);
-		UOSInt GetFieldInfos(NotNullPtr<Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo>> fieldList);
-		UOSInt GetAreaInfos(NotNullPtr<Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo>> areaList);
+		Bool GetFrameName(NN<Text::StringBuilderUTF8> sb);
+		UOSInt GetFieldInfos(NN<Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo>> fieldList);
+		UOSInt GetAreaInfos(NN<Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo>> areaList);
 		Bool GoToNextUnkField();
 	};
 }

@@ -25,11 +25,11 @@ namespace Media
 	public:
 		UInt8 *data;
 	
-		StaticImage(Math::Size2D<UOSInt> dispSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, NotNullPtr<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst);
-		StaticImage(NotNullPtr<const Media::FrameInfo> imgInfo);
+		StaticImage(Math::Size2D<UOSInt> dispSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, NN<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst);
+		StaticImage(NN<const Media::FrameInfo> imgInfo);
 		virtual ~StaticImage();
 
-		virtual NotNullPtr<Media::RasterImage> Clone() const;
+		virtual NN<Media::RasterImage> Clone() const;
 		virtual Media::RasterImage::ImageType GetImageType() const;
 		virtual void GetRasterData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const;
 

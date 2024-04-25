@@ -16,18 +16,18 @@ namespace SSWR
 		class AVIRMACGenForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUILabel> lblVendor;
-			NotNullPtr<UI::GUIComboBox> cboVendor;
-			NotNullPtr<UI::GUIButton> btnGenerate;
-			NotNullPtr<UI::GUILabel> lblColonFormat;
-			NotNullPtr<UI::GUITextBox> txtColonFormat;
-			NotNullPtr<UI::GUILabel> lblPlainFormat;
-			NotNullPtr<UI::GUITextBox> txtPlainFormat;
-			NotNullPtr<UI::GUILabel> lblAdapter;
-			NotNullPtr<UI::GUIComboBox> cboAdapter;
-			NotNullPtr<UI::GUIButton> btnAdapterSet;
+			NN<UI::GUILabel> lblVendor;
+			NN<UI::GUIComboBox> cboVendor;
+			NN<UI::GUIButton> btnGenerate;
+			NN<UI::GUILabel> lblColonFormat;
+			NN<UI::GUITextBox> txtColonFormat;
+			NN<UI::GUILabel> lblPlainFormat;
+			NN<UI::GUITextBox> txtPlainFormat;
+			NN<UI::GUILabel> lblAdapter;
+			NN<UI::GUIComboBox> cboAdapter;
+			NN<UI::GUIButton> btnAdapterSet;
 
 			Data::BTreeUTF8Map<Data::ArrayList<Net::MACInfo::MACEntry*>*> *macMap;
 
@@ -35,7 +35,7 @@ namespace SSWR
 			static void __stdcall OnAdapterSetClicked(AnyType userObj);
 			static OSInt __stdcall ListCompare(Data::ArrayList<Net::MACInfo::MACEntry*> *list1, Data::ArrayList<Net::MACInfo::MACEntry*> *list2);
 		public:
-			AVIRMACGenForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRMACGenForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMACGenForm();
 
 			virtual void OnMonitorChanged();

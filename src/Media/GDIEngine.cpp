@@ -202,7 +202,7 @@ Media::DrawImage *Media::GDIEngine::CreateImageScn(void *hdc, OSInt left, OSInt 
 
 Media::DrawImage *Media::GDIEngine::LoadImage(Text::CStringNN fileName)
 {
-	NotNullPtr<IO::FileStream> fstm;
+	NN<IO::FileStream> fstm;
 
 	NEW_CLASSNN(fstm, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fstm->IsError())
@@ -217,7 +217,7 @@ Media::DrawImage *Media::GDIEngine::LoadImage(Text::CStringNN fileName)
 }
 
 
-Media::DrawImage *Media::GDIEngine::LoadImageStream(NotNullPtr<IO::SeekableStream> fstm)
+Media::DrawImage *Media::GDIEngine::LoadImageStream(NN<IO::SeekableStream> fstm)
 {
 	UInt8 hdr[54];
 	UInt8 pal[1024];
@@ -465,7 +465,7 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(NotNullPtr<IO::SeekableStrea
 	return img;
 }
 
-Media::DrawImage *Media::GDIEngine::ConvImage(NotNullPtr<Media::RasterImage> img)
+Media::DrawImage *Media::GDIEngine::ConvImage(NN<Media::RasterImage> img)
 {
 	if (img->info.fourcc != 0)
 	{
@@ -478,7 +478,7 @@ Media::DrawImage *Media::GDIEngine::ConvImage(NotNullPtr<Media::RasterImage> img
 	gimg->SetVDPI(img->info.vdpi);
 	if (img->GetImageType() == Media::RasterImage::ImageType::Static)
 	{
-		NotNullPtr<Media::StaticImage> simg = NotNullPtr<Media::StaticImage>::ConvertFrom(img);
+		NN<Media::StaticImage> simg = NN<Media::StaticImage>::ConvertFrom(img);
 		if (simg->To32bpp())
 		{
 			UInt8 *sptr = (UInt8*)simg->data;
@@ -490,7 +490,7 @@ Media::DrawImage *Media::GDIEngine::ConvImage(NotNullPtr<Media::RasterImage> img
 	}
 	else
 	{
-		NotNullPtr<Media::StaticImage> simg = img->CreateStaticImage();
+		NN<Media::StaticImage> simg = img->CreateStaticImage();
 		if (simg->To32bpp())
 		{
 			UInt8 *sptr = (UInt8*)simg->data;
@@ -504,7 +504,7 @@ Media::DrawImage *Media::GDIEngine::ConvImage(NotNullPtr<Media::RasterImage> img
 	return gimg;
 }
 
-Media::DrawImage *Media::GDIEngine::CloneImage(NotNullPtr<Media::DrawImage> img)
+Media::DrawImage *Media::GDIEngine::CloneImage(NN<Media::DrawImage> img)
 {
 	Media::GDIImage *newImg = (Media::GDIImage*)this->CreateImage32(img->GetSize(), img->GetAlphaType());
 	if (newImg)
@@ -522,7 +522,7 @@ Media::DrawImage *Media::GDIEngine::CloneImage(NotNullPtr<Media::DrawImage> img)
 	return newImg;
 }
 
-Bool Media::GDIEngine::DeleteImage(NotNullPtr<DrawImage> img)
+Bool Media::GDIEngine::DeleteImage(NN<DrawImage> img)
 {
 	GDIImage *image = (GDIImage *)img.Ptr();
 	if (image->hBmp)
@@ -582,7 +582,7 @@ Double Media::GDIPen::GetThick()
 	return 0;
 }*/
 
-Media::GDIFont::GDIFont(void *hdc, const Char *fontName, Double ptSize, Media::DrawEngine::DrawFontStyle style, NotNullPtr<DrawImage> img, Int32 codePage)
+Media::GDIFont::GDIFont(void *hdc, const Char *fontName, Double ptSize, Media::DrawEngine::DrawFontStyle style, NN<DrawImage> img, Int32 codePage)
 {
 	this->fontName = Text::StrToWCharNew((const UTF8Char*)fontName);
 	this->hdc = hdc;
@@ -630,7 +630,7 @@ Media::GDIFont::GDIFont(void *hdc, const Char *fontName, Double ptSize, Media::D
 	this->hfont = CreateFontIndirectW(&lf);
 }
 
-Media::GDIFont::GDIFont(void *hdc, const WChar *fontName, Double ptSize, Media::DrawEngine::DrawFontStyle style, NotNullPtr<DrawImage> img, Int32 codePage)
+Media::GDIFont::GDIFont(void *hdc, const WChar *fontName, Double ptSize, Media::DrawEngine::DrawFontStyle style, NN<DrawImage> img, Int32 codePage)
 {
 	this->hdc = hdc;
 	this->ptSize = ptSize;
@@ -746,12 +746,12 @@ UInt32 Media::GDIImage::GetBitCount() const
 	return this->bitCount;	
 }
 
-NotNullPtr<const Media::ColorProfile> Media::GDIImage::GetColorProfile() const
+NN<const Media::ColorProfile> Media::GDIImage::GetColorProfile() const
 {
 	return this->info.color;
 }
 
-void Media::GDIImage::SetColorProfile(NotNullPtr<const Media::ColorProfile> color)
+void Media::GDIImage::SetColorProfile(NN<const Media::ColorProfile> color)
 {
 	return this->info.color.Set(color);
 }
@@ -817,7 +817,7 @@ Media::PixelFormat Media::GDIImage::GetPixelFormat() const
 	return this->info.pf;
 }
 
-Bool Media::GDIImage::DrawLine(Double x1, Double y1, Double x2, Double y2, NotNullPtr<DrawPen> p)
+Bool Media::GDIImage::DrawLine(Double x1, Double y1, Double x2, Double y2, NN<DrawPen> p)
 {
 	if (this->currPen != p.Ptr())
 	{
@@ -832,7 +832,7 @@ Bool Media::GDIImage::DrawLine(Double x1, Double y1, Double x2, Double y2, NotNu
 	return true;
 }
 
-Bool Media::GDIImage::DrawPolylineI(const Int32 *points, UOSInt nPoints, NotNullPtr<DrawPen> p)
+Bool Media::GDIImage::DrawPolylineI(const Int32 *points, UOSInt nPoints, NN<DrawPen> p)
 {
 	if (this->currPen != p.Ptr())
 	{
@@ -848,7 +848,7 @@ Bool Media::GDIImage::DrawPolylineI(const Int32 *points, UOSInt nPoints, NotNull
 
 Bool Media::GDIImage::DrawPolygonI(const Int32 *points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
-	NotNullPtr<DrawPen> nnp;
+	NN<DrawPen> nnp;
 	if (p.SetTo(nnp))
 	{
 		if (this->currPen != nnp.Ptr())
@@ -858,7 +858,7 @@ Bool Media::GDIImage::DrawPolygonI(const Int32 *points, UOSInt nPoints, Optional
 		}
 	}
 
-	NotNullPtr<DrawBrush> nnb;
+	NN<DrawBrush> nnb;
 	if (!b.SetTo(nnb))
 	{
 #ifdef _WIN32_WCE
@@ -885,7 +885,7 @@ Bool Media::GDIImage::DrawPolygonI(const Int32 *points, UOSInt nPoints, Optional
 		if (this->currBrush != nnb.Ptr())
 		{
 			this->currBrush = nnb.Ptr();
-			NotNullPtr<GDIBrush> brush = NotNullPtr<GDIBrush>::ConvertFrom(nnb);
+			NN<GDIBrush> brush = NN<GDIBrush>::ConvertFrom(nnb);
 			SelectObject((HDC)this->hdcBmp, (HBRUSH)brush->hbrush);
 		}
 		
@@ -910,7 +910,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointC
 //	if (j == 1709)
 //		return true;
 
-	NotNullPtr<DrawPen> nnp;
+	NN<DrawPen> nnp;
 	if (p.SetTo(nnp))
 	{
 		if (this->currPen != nnp.Ptr())
@@ -922,7 +922,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointC
 			penWidth = 1;
 	}
 
-	NotNullPtr<DrawBrush> nnb;
+	NN<DrawBrush> nnb;
 	if (!b.SetTo(nnb))
 	{
 		const Int32 *pts = points;
@@ -954,12 +954,12 @@ Bool Media::GDIImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointC
 	}
 	else
 	{
-		if (this->info.atype == Media::AT_NO_ALPHA && (NotNullPtr<GDIBrush>::ConvertFrom(nnb)->oriColor & 0xff000000) == 0xff000000)
+		if (this->info.atype == Media::AT_NO_ALPHA && (NN<GDIBrush>::ConvertFrom(nnb)->oriColor & 0xff000000) == 0xff000000)
 		{
 			if (this->currBrush != nnb.Ptr())
 			{
 				this->currBrush = nnb.Ptr();
-				NotNullPtr<GDIBrush> brush = NotNullPtr<GDIBrush>::ConvertFrom(nnb);
+				NN<GDIBrush> brush = NN<GDIBrush>::ConvertFrom(nnb);
 				SelectObject((HDC)this->hdcBmp, (HBRUSH)brush->hbrush);
 			}
 #ifdef _WIN32_WCE
@@ -977,9 +977,9 @@ Bool Media::GDIImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointC
 			PolyPolygonAccel((HDC)this->hdcBmp, points, pointCnt, nPointCnt, this->tl.x, this->tl.y, (OSInt)this->size.x, (OSInt)this->size.y, Double2Int32(penWidth));
 #endif
 		}
-		else if (this->bmpBits && (NotNullPtr<GDIBrush>::ConvertFrom(nnb)->oriColor & 0xff000000) == 0xff000000)
+		else if (this->bmpBits && (NN<GDIBrush>::ConvertFrom(nnb)->oriColor & 0xff000000) == 0xff000000)
 		{
-			UInt32 bCol = NotNullPtr<GDIBrush>::ConvertFrom(nnb)->oriColor;
+			UInt32 bCol = NN<GDIBrush>::ConvertFrom(nnb)->oriColor;
 			BITMAPINFOHEADER bmih;
 			bmih.biSize = sizeof(bmih);
 			bmih.biWidth = (LONG)this->info.dispSize.x;
@@ -1027,7 +1027,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointC
 		}
 		else
 		{
-			UInt32 bCol = NotNullPtr<GDIBrush>::ConvertFrom(nnb)->oriColor;
+			UInt32 bCol = NN<GDIBrush>::ConvertFrom(nnb)->oriColor;
 			BITMAPINFOHEADER bmih;
 			bmih.biSize = sizeof(bmih);
 			bmih.biWidth = (LONG)this->info.dispSize.x;
@@ -1084,7 +1084,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *pointC
 	return true;
 }
 
-Bool Media::GDIImage::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPoints, NotNullPtr<DrawPen> p)
+Bool Media::GDIImage::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPoints, NN<DrawPen> p)
 {
 	UOSInt i = nPoints;
 	Bool ret;
@@ -1136,10 +1136,10 @@ Bool Media::GDIImage::DrawPolyPolygon(const Math::Coord2DDbl *points, const UInt
 
 Bool Media::GDIImage::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
-	NotNullPtr<DrawBrush> nnb;
+	NN<DrawBrush> nnb;
 	if (b.SetTo(nnb))
 	{
-		NotNullPtr<GDIBrush> brush = NotNullPtr<GDIBrush>::ConvertFrom(nnb);
+		NN<GDIBrush> brush = NN<GDIBrush>::ConvertFrom(nnb);
 		if (this->bmpBits)
 		{
 			OSInt ix = Double2Int32(tl.x);
@@ -1199,7 +1199,7 @@ Bool Media::GDIImage::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Option
 		}
 	}
 
-	NotNullPtr<DrawPen> nnp;
+	NN<DrawPen> nnp;
 	if (p.SetTo(nnp))
 	{
 		GDIPen *pen = (GDIPen*)nnp.Ptr();
@@ -1249,10 +1249,10 @@ Bool Media::GDIImage::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Option
 
 Bool Media::GDIImage::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
-	NotNullPtr<DrawPen> nnp;
+	NN<DrawPen> nnp;
 	if (this->info.atype == Media::AT_NO_ALPHA)
 	{
-		NotNullPtr<DrawBrush> nnb;
+		NN<DrawBrush> nnb;
 		if (!b.SetTo(nnb))
 		{
 			if (p.SetTo(nnp))
@@ -1285,7 +1285,7 @@ Bool Media::GDIImage::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, Opt
 			}
 			if (this->currBrush != nnb.Ptr())
 			{
-				NotNullPtr<GDIBrush> brush = NotNullPtr<GDIBrush>::ConvertFrom(nnb);
+				NN<GDIBrush> brush = NN<GDIBrush>::ConvertFrom(nnb);
 				SelectObject((HDC)this->hdcBmp, brush->hbrush);
 			}
 			Ellipse((HDC)this->hdcBmp, Double2Int32(tl.x), Double2Int32(tl.y), Double2Int32(tl.x + size.x), Double2Int32(tl.y + size.y));
@@ -1293,7 +1293,7 @@ Bool Media::GDIImage::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, Opt
 	}
 	else
 	{
-		NotNullPtr<Media::GDIImage> tmpImg;
+		NN<Media::GDIImage> tmpImg;
 		if (!tmpImg.Set((Media::GDIImage*)eng->CreateImage32(this->size, Media::AT_NO_ALPHA)))
 			return false;
 		UInt8 *imgPtr = (UInt8*)tmpImg->bmpBits;
@@ -1312,11 +1312,11 @@ Bool Media::GDIImage::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, Opt
 		{
 			SelectObject((HDC)tmpImg->hdcBmp, GetStockObject(NULL_PEN));
 		}
-		NotNullPtr<DrawBrush> nnb;
+		NN<DrawBrush> nnb;
 		if (b.SetTo(nnb))
 		{
 			SelectObject((HDC)tmpImg->hdcBmp, (HBRUSH)eng->GetWhiteBrush());
-			c2 = NotNullPtr<Media::GDIBrush>::ConvertFrom(nnb)->oriColor;
+			c2 = NN<Media::GDIBrush>::ConvertFrom(nnb)->oriColor;
 		}
 		else
 		{
@@ -1330,7 +1330,7 @@ Bool Media::GDIImage::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, Opt
 	return true;
 }
 
-Bool Media::GDIImage::DrawString(Math::Coord2DDbl tl, NotNullPtr<Text::String> str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b)
+Bool Media::GDIImage::DrawString(Math::Coord2DDbl tl, NN<Text::String> str, NN<DrawFont> f, NN<DrawBrush> b)
 {
 	const WChar *wptr = Text::StrToWCharNew(str->v);
 	Bool ret = this->DrawStringW(tl, wptr, f, b);
@@ -1338,7 +1338,7 @@ Bool Media::GDIImage::DrawString(Math::Coord2DDbl tl, NotNullPtr<Text::String> s
 	return ret;
 }
 
-Bool Media::GDIImage::DrawString(Math::Coord2DDbl tl, Text::CStringNN str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b)
+Bool Media::GDIImage::DrawString(Math::Coord2DDbl tl, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b)
 {
 	const WChar *wptr = Text::StrToWCharNew(str.v);
 	Bool ret = this->DrawStringW(tl, wptr, f, b);
@@ -1346,9 +1346,9 @@ Bool Media::GDIImage::DrawString(Math::Coord2DDbl tl, Text::CStringNN str, NotNu
 	return ret;
 }
 
-Bool Media::GDIImage::DrawStringW(Math::Coord2DDbl tl, const WChar *str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b)
+Bool Media::GDIImage::DrawStringW(Math::Coord2DDbl tl, const WChar *str, NN<DrawFont> f, NN<DrawBrush> b)
 {
-	NotNullPtr<GDIBrush> brush = NotNullPtr<GDIBrush>::ConvertFrom(b);
+	NN<GDIBrush> brush = NN<GDIBrush>::ConvertFrom(b);
 	const WChar *src = str;
 	while (*src++);
 	if (this->bmpBits == 0 || (this->info.atype == Media::AT_NO_ALPHA && (brush->oriColor & 0xff000000) == 0xff000000))
@@ -1357,7 +1357,7 @@ Bool Media::GDIImage::DrawStringW(Math::Coord2DDbl tl, const WChar *str, NotNull
 		if (this->currFont != f.Ptr())
 		{
 			this->currFont = f.Ptr();
-			NotNullPtr<GDIFont> font = NotNullPtr<GDIFont>::ConvertFrom(f);
+			NN<GDIFont> font = NN<GDIFont>::ConvertFrom(f);
 			SelectObject((HDC)this->hdcBmp, (HFONT)font->hfont);
 		}
 		Math::Size2DDbl sz;
@@ -1378,13 +1378,13 @@ Bool Media::GDIImage::DrawStringW(Math::Coord2DDbl tl, const WChar *str, NotNull
 	else
 	{
 		Math::Size2DDbl sz = GetTextSize(f, str, src - str - 1);
-		NotNullPtr<Media::GDIImage> tmpImg;
+		NN<Media::GDIImage> tmpImg;
 		if (tmpImg.Set((Media::GDIImage*)this->eng->CreateImage32(Math::Size2D<UOSInt>((UOSInt)sz.x + 1, (UOSInt)sz.y + 1), Media::AT_NO_ALPHA)))
 		{
-			NotNullPtr<Media::DrawBrush> b2 = tmpImg->NewBrushARGB(0xffffffff);
+			NN<Media::DrawBrush> b2 = tmpImg->NewBrushARGB(0xffffffff);
 			tmpImg->DrawStringW(Math::Coord2DDbl(0, 0), str, f, b2);
 			tmpImg->DelBrush(b2);
-			Media::ImageUtil::ColorReplaceAlpha32((UInt8*)tmpImg->bmpBits, tmpImg->info.storeSize.x, tmpImg->info.storeSize.y, NotNullPtr<GDIBrush>::ConvertFrom(b)->oriColor);
+			Media::ImageUtil::ColorReplaceAlpha32((UInt8*)tmpImg->bmpBits, tmpImg->info.storeSize.x, tmpImg->info.storeSize.y, NN<GDIBrush>::ConvertFrom(b)->oriColor);
 			tmpImg->info.atype = Media::AT_ALPHA;
 			Double x;
 			Double y;
@@ -1419,7 +1419,7 @@ Bool Media::GDIImage::DrawStringW(Math::Coord2DDbl tl, const WChar *str, NotNull
 	return true;
 }
 
-Bool Media::GDIImage::DrawStringRot(Math::Coord2DDbl center, NotNullPtr<Text::String> str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b, Double angleDegree)
+Bool Media::GDIImage::DrawStringRot(Math::Coord2DDbl center, NN<Text::String> str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegree)
 {
 	const WChar *wptr = Text::StrToWCharNew(str->v);
 	Bool ret = this->DrawStringRotW(center, wptr, f, b, angleDegree);
@@ -1427,7 +1427,7 @@ Bool Media::GDIImage::DrawStringRot(Math::Coord2DDbl center, NotNullPtr<Text::St
 	return ret;
 }
 
-Bool Media::GDIImage::DrawStringRot(Math::Coord2DDbl center, Text::CStringNN str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b, Double angleDegree)
+Bool Media::GDIImage::DrawStringRot(Math::Coord2DDbl center, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegree)
 {
 	const WChar *wptr = Text::StrToWCharNew(str.v);
 	Bool ret = this->DrawStringRotW(center, wptr, f, b, angleDegree);
@@ -1435,10 +1435,10 @@ Bool Media::GDIImage::DrawStringRot(Math::Coord2DDbl center, Text::CStringNN str
 	return ret;
 }
 
-Bool Media::GDIImage::DrawStringRotW(Math::Coord2DDbl center, const WChar *str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b, Double angleDegree)
+Bool Media::GDIImage::DrawStringRotW(Math::Coord2DDbl center, const WChar *str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegree)
 {
-	NotNullPtr<GDIBrush> brush = NotNullPtr<GDIBrush>::ConvertFrom(b);
-	NotNullPtr<GDIFont> font = NotNullPtr<GDIFont>::ConvertFrom(f);
+	NN<GDIBrush> brush = NN<GDIBrush>::ConvertFrom(b);
+	NN<GDIFont> font = NN<GDIFont>::ConvertFrom(f);
 	const WChar *src = str;
 	while (*src++);
 
@@ -1480,7 +1480,7 @@ Bool Media::GDIImage::DrawStringRotW(Math::Coord2DDbl center, const WChar *str, 
 	return true;
 }
 
-Bool Media::GDIImage::DrawStringB(Math::Coord2DDbl tl, NotNullPtr<Text::String> str1, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b, UOSInt buffSize)
+Bool Media::GDIImage::DrawStringB(Math::Coord2DDbl tl, NN<Text::String> str1, NN<DrawFont> f, NN<DrawBrush> b, UOSInt buffSize)
 {
 	const WChar *wptr = Text::StrToWCharNew(str1->v);
 	Bool ret = DrawStringBW(tl, wptr, f, b, buffSize);
@@ -1488,7 +1488,7 @@ Bool Media::GDIImage::DrawStringB(Math::Coord2DDbl tl, NotNullPtr<Text::String> 
 	return ret;
 }
 
-Bool Media::GDIImage::DrawStringB(Math::Coord2DDbl tl, Text::CStringNN str1, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b, UOSInt buffSize)
+Bool Media::GDIImage::DrawStringB(Math::Coord2DDbl tl, Text::CStringNN str1, NN<DrawFont> f, NN<DrawBrush> b, UOSInt buffSize)
 {
 	const WChar *wptr = Text::StrToWCharNew(str1.v);
 	Bool ret = DrawStringBW(tl, wptr, f, b, buffSize);
@@ -1496,11 +1496,11 @@ Bool Media::GDIImage::DrawStringB(Math::Coord2DDbl tl, Text::CStringNN str1, Not
 	return ret;
 }
 
-Bool Media::GDIImage::DrawStringBW(Math::Coord2DDbl tl, const WChar *str1, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b, UOSInt buffSize)
+Bool Media::GDIImage::DrawStringBW(Math::Coord2DDbl tl, const WChar *str1, NN<DrawFont> f, NN<DrawBrush> b, UOSInt buffSize)
 {
 	OSInt px = Double2Int32(tl.x);
 	OSInt py = Double2Int32(tl.y);
-	NotNullPtr<GDIBrush> brush = NotNullPtr<GDIBrush>::ConvertFrom(b);
+	NN<GDIBrush> brush = NN<GDIBrush>::ConvertFrom(b);
 	const WChar *src = str1;
 	while (*src++);
 
@@ -1508,7 +1508,7 @@ Bool Media::GDIImage::DrawStringBW(Math::Coord2DDbl tl, const WChar *str1, NotNu
 	OSInt drawY;
 	Int32 sz[2];
 	Int32 bnds[8];
-	NotNullPtr<Media::GDIImage> gimg;
+	NN<Media::GDIImage> gimg;
 	OSInt swidth;
 	OSInt sheight;
 	OSInt sx;
@@ -1616,7 +1616,7 @@ Bool Media::GDIImage::DrawStringBW(Math::Coord2DDbl tl, const WChar *str1, NotNu
 			if (gimg->currFont != f.Ptr())
 			{
 				gimg->currFont = f.Ptr();
-				NotNullPtr<GDIFont> font = NotNullPtr<GDIFont>::ConvertFrom(f);
+				NN<GDIFont> font = NN<GDIFont>::ConvertFrom(f);
 				SelectObject((HDC)gimg->hdcBmp, (HFONT)font->hfont);
 			}
 #ifdef _WIN32_WCE
@@ -1673,7 +1673,7 @@ Bool Media::GDIImage::DrawStringBW(Math::Coord2DDbl tl, const WChar *str1, NotNu
 	return true;
 }
 
-Bool Media::GDIImage::DrawStringRotB(Math::Coord2DDbl center, NotNullPtr<Text::String> str1, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b, Double angleDegree, UOSInt buffSize)
+Bool Media::GDIImage::DrawStringRotB(Math::Coord2DDbl center, NN<Text::String> str1, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegree, UOSInt buffSize)
 {
 	const WChar *wptr = Text::StrToWCharNew(str1->v);
 	Bool ret = this->DrawStringRotBW(center, wptr, f, b, angleDegree, buffSize);
@@ -1681,7 +1681,7 @@ Bool Media::GDIImage::DrawStringRotB(Math::Coord2DDbl center, NotNullPtr<Text::S
 	return ret;
 }
 
-Bool Media::GDIImage::DrawStringRotB(Math::Coord2DDbl center, Text::CStringNN str1, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b, Double angleDegree, UOSInt buffSize)
+Bool Media::GDIImage::DrawStringRotB(Math::Coord2DDbl center, Text::CStringNN str1, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegree, UOSInt buffSize)
 {
 	const WChar *wptr = Text::StrToWCharNew(str1.v);
 	Bool ret = this->DrawStringRotBW(center, wptr, f, b, angleDegree, buffSize);
@@ -1689,11 +1689,11 @@ Bool Media::GDIImage::DrawStringRotB(Math::Coord2DDbl center, Text::CStringNN st
 	return ret;
 }
 
-Bool Media::GDIImage::DrawStringRotBW(Math::Coord2DDbl center, const WChar *str1, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b, Double angleDegree, UOSInt buffSize)
+Bool Media::GDIImage::DrawStringRotBW(Math::Coord2DDbl center, const WChar *str1, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegree, UOSInt buffSize)
 {
 	OSInt px = Double2Int32(center.x);
 	OSInt py = Double2Int32(center.y);
-	NotNullPtr<GDIBrush> brush = NotNullPtr<GDIBrush>::ConvertFrom(b);
+	NN<GDIBrush> brush = NN<GDIBrush>::ConvertFrom(b);
 	const WChar *src = str1;
 	while (*src++);
 
@@ -1701,7 +1701,7 @@ Bool Media::GDIImage::DrawStringRotBW(Math::Coord2DDbl center, const WChar *str1
 	OSInt drawY;
 	Int32 sz[2];
 	Int32 bnds[8];
-	NotNullPtr<Media::GDIImage> gimg;
+	NN<Media::GDIImage> gimg;
 	OSInt swidth;
 	OSInt sheight;
 	OSInt sx;
@@ -1804,7 +1804,7 @@ Bool Media::GDIImage::DrawStringRotBW(Math::Coord2DDbl center, const WChar *str1
 			SetTextColor((HDC)gimg->hdcBmp, 0xffffff);
 			HFONT hfont;
 			LOGFONTW lf;
-			NotNullPtr<GDIFont> font = NotNullPtr<GDIFont>::ConvertFrom(f);
+			NN<GDIFont> font = NN<GDIFont>::ConvertFrom(f);
 			gimg->SetTextAlign(this->strAlign);
 
 			ZeroMemory(&lf, sizeof(lf));
@@ -1865,7 +1865,7 @@ Bool Media::GDIImage::DrawStringRotBW(Math::Coord2DDbl center, const WChar *str1
 	return true;
 }
 
-Bool Media::GDIImage::DrawImagePt(NotNullPtr<DrawImage> img, Math::Coord2DDbl tl)
+Bool Media::GDIImage::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 {
 	GDIImage *image = (GDIImage *)img.Ptr();
 	if (this->hBmp == 0)
@@ -2001,7 +2001,7 @@ Bool Media::GDIImage::DrawImagePt(NotNullPtr<DrawImage> img, Math::Coord2DDbl tl
 	return true;
 }
 
-Bool Media::GDIImage::DrawImagePt2(NotNullPtr<Media::StaticImage> img, Math::Coord2DDbl tl)
+Bool Media::GDIImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl tl)
 {
 	if (this->IsOffScreen() && img->GetImageType() == Media::RasterImage::ImageType::Static)
 	{
@@ -2083,7 +2083,7 @@ Bool Media::GDIImage::DrawImagePt2(NotNullPtr<Media::StaticImage> img, Math::Coo
 	}
 	else
 	{
-		NotNullPtr<Media::DrawImage> dimg;
+		NN<Media::DrawImage> dimg;
 		if (dimg.Set(this->eng->ConvImage(img)))
 		{
 			DrawImagePt(dimg, tl);
@@ -2094,7 +2094,7 @@ Bool Media::GDIImage::DrawImagePt2(NotNullPtr<Media::StaticImage> img, Math::Coo
 	}
 }
 
-Bool Media::GDIImage::DrawImagePt3(NotNullPtr<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
+Bool Media::GDIImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
 {
 	GDIImage *image = (GDIImage *)img.Ptr();
 	if (this->hBmp == 0)
@@ -2234,14 +2234,14 @@ Bool Media::GDIImage::DrawImagePt3(NotNullPtr<DrawImage> img, Math::Coord2DDbl d
 	return true;
 }
 
-Bool Media::GDIImage::DrawImageRect(NotNullPtr<DrawImage> img, OSInt tlx, OSInt tly, OSInt brx, OSInt bry)
+Bool Media::GDIImage::DrawImageRect(NN<DrawImage> img, OSInt tlx, OSInt tly, OSInt brx, OSInt bry)
 {
 	GDIImage *image = (GDIImage *)img.Ptr();
 	StretchBlt((HDC)this->hdcBmp, (int)tlx, (int)tly, (int)(brx - tlx), (int)(bry - tly), (HDC)image->hdcBmp, 0, 0, (int)img->GetWidth(), (int)img->GetHeight(), SRCCOPY);
 	return true;
 }
 
-NotNullPtr<Media::DrawPen> Media::GDIImage::NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern)
+NN<Media::DrawPen> Media::GDIImage::NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern)
 {
 	if (thick < 1)
 		thick = 1;
@@ -2274,59 +2274,59 @@ NotNullPtr<Media::DrawPen> Media::GDIImage::NewPenARGB(UInt32 color, Double thic
 		hpen = ExtCreatePen(PS_GEOMETRIC | PS_USERSTYLE | PS_ENDCAP_ROUND, Double2Int32(thick), &lb, (UInt32)nPattern, dwPattern);
 #endif
 	}
-	NotNullPtr<GDIPen> pen;
+	NN<GDIPen> pen;
 	NEW_CLASSNN(pen, GDIPen(hpen, (UInt32*)dwPattern, nPattern, this, thick, color));
 	return pen;
 }
 
-NotNullPtr<Media::DrawBrush> Media::GDIImage::NewBrushARGB(UInt32 color)
+NN<Media::DrawBrush> Media::GDIImage::NewBrushARGB(UInt32 color)
 {
 	HBRUSH hbrush = CreateSolidBrush(GDIEGetCol(color));
-	NotNullPtr<GDIBrush> brush;
+	NN<GDIBrush> brush;
 	NEW_CLASSNN(brush, GDIBrush(hbrush, color, this));
 	return brush;
 }
 
-NotNullPtr<Media::DrawFont> Media::GDIImage::NewFontPt(Text::CString name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
+NN<Media::DrawFont> Media::GDIImage::NewFontPt(Text::CString name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
-	NotNullPtr<GDIFont> f;
+	NN<GDIFont> f;
 	const WChar *wptr = Text::StrToWCharNew(name.v);
 	NEW_CLASSNN(f, GDIFont(this->hdcBmp, wptr, ptSize, fontStyle, *this, codePage));
 	Text::StrDelNew(wptr);
 	return f;
 }
 
-NotNullPtr<Media::DrawFont> Media::GDIImage::NewFontPtW(const WChar *name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
+NN<Media::DrawFont> Media::GDIImage::NewFontPtW(const WChar *name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
-	NotNullPtr<GDIFont> f;
+	NN<GDIFont> f;
 	NEW_CLASSNN(f, GDIFont(this->hdcBmp, name, ptSize, fontStyle, *this, codePage));
 	return f;
 }
 
-NotNullPtr<Media::DrawFont> Media::GDIImage::NewFontPx(Text::CString name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
+NN<Media::DrawFont> Media::GDIImage::NewFontPx(Text::CString name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
-	NotNullPtr<GDIFont> f;
+	NN<GDIFont> f;
 	const WChar *wptr = Text::StrToWCharNew(name.v);
 	NEW_CLASSNN(f, GDIFont(this->hdcBmp, wptr, pxSize * 72.0 / this->info.hdpi, fontStyle, *this, codePage));
 	Text::StrDelNew(wptr);
 	return f;
 }
 
-NotNullPtr<Media::DrawFont> Media::GDIImage::NewFontPxW(const WChar *name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
+NN<Media::DrawFont> Media::GDIImage::NewFontPxW(const WChar *name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
-	NotNullPtr<GDIFont> f;
+	NN<GDIFont> f;
 	NEW_CLASSNN(f, GDIFont(this->hdcBmp, name, pxSize * 72.0 / this->info.hdpi, fontStyle, *this, codePage));
 	return f;
 }
 
-NotNullPtr<Media::DrawFont> Media::GDIImage::CloneFont(NotNullPtr<Media::DrawFont> f)
+NN<Media::DrawFont> Media::GDIImage::CloneFont(NN<Media::DrawFont> f)
 {
-	NotNullPtr<GDIFont> oldF = NotNullPtr<Media::GDIFont>::ConvertFrom(f);
+	NN<GDIFont> oldF = NN<Media::GDIFont>::ConvertFrom(f);
 	NEW_CLASSNN(f, GDIFont(this->hdcBmp, oldF->GetNameW(), oldF->GetPointSize(), oldF->GetFontStyle(), *this, oldF->GetCodePage()));
 	return f;
 }
 
-void Media::GDIImage::DelPen(NotNullPtr<DrawPen> p)
+void Media::GDIImage::DelPen(NN<DrawPen> p)
 {
 	if (this->currPen == p.Ptr())
 		this->currPen = 0;
@@ -2337,24 +2337,24 @@ void Media::GDIImage::DelPen(NotNullPtr<DrawPen> p)
 	DEL_CLASS(pen);
 }
 
-void Media::GDIImage::DelBrush(NotNullPtr<DrawBrush> b)
+void Media::GDIImage::DelBrush(NN<DrawBrush> b)
 {
 	if (this->currBrush == b.Ptr())
 		this->currBrush = 0;
-	NotNullPtr<GDIBrush> brush = NotNullPtr<GDIBrush>::ConvertFrom(b);
+	NN<GDIBrush> brush = NN<GDIBrush>::ConvertFrom(b);
 	DeleteObject((HBRUSH)brush->hbrush);
 	brush.Delete();
 }
 
-void Media::GDIImage::DelFont(NotNullPtr<DrawFont> f)
+void Media::GDIImage::DelFont(NN<DrawFont> f)
 {
 	if (this->currFont == f.Ptr())
 		this->currFont = 0;
-	NotNullPtr<GDIFont> font = NotNullPtr<GDIFont>::ConvertFrom(f);
+	NN<GDIFont> font = NN<GDIFont>::ConvertFrom(f);
 	font.Delete();
 }
 
-Math::Size2DDbl Media::GDIImage::GetTextSize(NotNullPtr<DrawFont> fnt, Text::CStringNN txt)
+Math::Size2DDbl Media::GDIImage::GetTextSize(NN<DrawFont> fnt, Text::CStringNN txt)
 {
 	UOSInt strLen;
 	strLen = Text::StrUTF8_WCharCntC(txt.v, txt.leng);
@@ -2365,7 +2365,7 @@ Math::Size2DDbl Media::GDIImage::GetTextSize(NotNullPtr<DrawFont> fnt, Text::CSt
 	return ret;
 }
 
-Math::Size2DDbl Media::GDIImage::GetTextSize(NotNullPtr<DrawFont> fnt, const WChar *txt, OSInt txtLen)
+Math::Size2DDbl Media::GDIImage::GetTextSize(NN<DrawFont> fnt, const WChar *txt, OSInt txtLen)
 {
 	Bool isCJK = true;
 	if (txtLen == -1)
@@ -2383,7 +2383,7 @@ Math::Size2DDbl Media::GDIImage::GetTextSize(NotNullPtr<DrawFont> fnt, const WCh
 
 	if (isCJK)
 	{
-		return Math::Size2DDbl(OSInt2Double((NotNullPtr<GDIFont>::ConvertFrom(fnt)->pxSize + 1) * txtLen), NotNullPtr<GDIFont>::ConvertFrom(fnt)->pxSize + 2);
+		return Math::Size2DDbl(OSInt2Double((NN<GDIFont>::ConvertFrom(fnt)->pxSize + 1) * txtLen), NN<GDIFont>::ConvertFrom(fnt)->pxSize + 2);
 	}
 	else
 	{
@@ -2392,7 +2392,7 @@ Math::Size2DDbl Media::GDIImage::GetTextSize(NotNullPtr<DrawFont> fnt, const WCh
 		if (this->currFont != fnt.Ptr())
 		{
 			this->currFont = fnt.Ptr();
-			NotNullPtr<GDIFont> f = NotNullPtr<GDIFont>::ConvertFrom(fnt);
+			NN<GDIFont> f = NN<GDIFont>::ConvertFrom(fnt);
 			SelectObject((HDC)this->hdcBmp, (HFONT)f->hfont);
 		}
 		while (GetTextExtentExPointW((HDC)this->hdcBmp, txt, (int)txtLen, (int)this->size.x, 0, 0, &size) == 0)
@@ -2409,7 +2409,7 @@ Math::Size2DDbl Media::GDIImage::GetTextSize(NotNullPtr<DrawFont> fnt, const WCh
 			else
 			{
 				this->currFont = fnt.Ptr();
-				NotNullPtr<GDIFont> f = NotNullPtr<GDIFont>::ConvertFrom(fnt);
+				NN<GDIFont> f = NN<GDIFont>::ConvertFrom(fnt);
 				SelectObject((HDC)this->hdcBmp, (HFONT)f->hfont);
 				Sync::SimpleThread::Sleep(10);
 			}
@@ -2425,14 +2425,14 @@ void Media::GDIImage::SetTextAlign(Media::DrawEngine::DrawPos pos)
 	::SetTextAlign((HDC)this->hdcBmp, textAlign[pos]);
 }
 
-void Media::GDIImage::GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const UTF8Char *str, NotNullPtr<DrawFont> f, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
+void Media::GDIImage::GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const UTF8Char *str, NN<DrawFont> f, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
 {
 	const WChar *wptr = Text::StrToWCharNew(str);
 	GetStringBoundW(pos, centX, centY, wptr, f, drawX, drawY);
 	Text::StrDelNew(wptr);
 }
 
-void Media::GDIImage::GetStringBoundW(Int32 *pos, OSInt centX, OSInt centY, const WChar *str, NotNullPtr<DrawFont> f, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
+void Media::GDIImage::GetStringBoundW(Int32 *pos, OSInt centX, OSInt centY, const WChar *str, NN<DrawFont> f, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
 {
 	Math::Size2DDbl sz = GetTextSize(f, str, (OSInt)Text::StrCharCnt(str));
 	Bool isCenter = false;
@@ -2502,14 +2502,14 @@ void Media::GDIImage::GetStringBoundW(Int32 *pos, OSInt centX, OSInt centY, cons
 	}
 }
 
-void Media::GDIImage::GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, NotNullPtr<DrawFont> f, Double angleDegree, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
+void Media::GDIImage::GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, NN<DrawFont> f, Double angleDegree, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
 {
 	const WChar *wptr = Text::StrToWCharNew(str);
 	this->GetStringBoundRotW(pos, centX, centY, wptr, f, angleDegree, drawX, drawY);
 	Text::StrDelNew(wptr);
 }
 
-void Media::GDIImage::GetStringBoundRotW(Int32 *pos, Double centX, Double centY, const WChar *str, NotNullPtr<DrawFont> f, Double angleDegree, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
+void Media::GDIImage::GetStringBoundRotW(Int32 *pos, Double centX, Double centY, const WChar *str, NN<DrawFont> f, Double angleDegree, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
 {
 	Math::Size2DDbl sz = GetTextSize(f, str, (OSInt)Text::StrCharCnt(str));
 	Double pts[10];
@@ -2660,7 +2660,7 @@ Media::StaticImage *Media::GDIImage::ToStaticImage() const
 	return CreateStaticImage().Ptr();
 }
 
-UOSInt Media::GDIImage::SavePng(NotNullPtr<IO::SeekableStream> stm)
+UOSInt Media::GDIImage::SavePng(NN<IO::SeekableStream> stm)
 {
 #ifdef HAS_GDIPLUS
 	CLSID   encoderClsid;
@@ -2697,7 +2697,7 @@ UOSInt Media::GDIImage::SavePng(NotNullPtr<IO::SeekableStream> stm)
 #endif
 }
 
-UOSInt Media::GDIImage::SaveGIF(NotNullPtr<IO::SeekableStream> stm)
+UOSInt Media::GDIImage::SaveGIF(NN<IO::SeekableStream> stm)
 {
 #ifdef HAS_GDIPLUS
 	CLSID   encoderClsid;
@@ -2776,7 +2776,7 @@ UOSInt Media::GDIImage::SaveGIF(NotNullPtr<IO::SeekableStream> stm)
 #endif
 }
 
-UOSInt Media::GDIImage::SaveJPG(NotNullPtr<IO::SeekableStream> stm)
+UOSInt Media::GDIImage::SaveJPG(NN<IO::SeekableStream> stm)
 {
 #ifdef HAS_GDIPLUS
 	CLSID   encoderClsid;
@@ -2814,7 +2814,7 @@ UOSInt Media::GDIImage::SaveJPG(NotNullPtr<IO::SeekableStream> stm)
 #endif
 }
 
-NotNullPtr<Media::RasterImage> Media::GDIImage::Clone() const
+NN<Media::RasterImage> Media::GDIImage::Clone() const
 {
 	return CreateStaticImage();
 }
@@ -2977,8 +2977,8 @@ Bool Media::GDIImage::IsOffScreen()
 
 Bool Media::GDIImage::DrawRectN(OSInt oriX, OSInt oriY, OSInt oriW, OSInt oriH, DrawPen *p, Optional<DrawBrush> b)
 {
-	NotNullPtr<DrawBrush> nnb;
-	NotNullPtr<Media::GDIBrush> gb;
+	NN<DrawBrush> nnb;
+	NN<Media::GDIBrush> gb;
 
 	if (!b.SetTo(nnb))
 	{
@@ -2988,7 +2988,7 @@ Bool Media::GDIImage::DrawRectN(OSInt oriX, OSInt oriY, OSInt oriW, OSInt oriH, 
 		}
 		return true;
 	}
-	gb = NotNullPtr<GDIBrush>::ConvertFrom(nnb);
+	gb = NN<GDIBrush>::ConvertFrom(nnb);
 
 	OSInt x = oriX;
 	OSInt y = oriY;

@@ -23,7 +23,7 @@ Int32 Parser::FileParser::PCXParser::GetName()
 	return *(Int32*)"PCXP";
 }
 
-void Parser::FileParser::PCXParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::PCXParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
@@ -36,7 +36,7 @@ IO::ParserType Parser::FileParser::PCXParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::PCXParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::PCXParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt8 *lineBuff;
 //	UInt8 pal[1024];

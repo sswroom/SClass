@@ -4,7 +4,7 @@
 
 #define GMAPURL "http://mt1.google.com/vt/"
 
-Map::GoogleMap::GoogleTileMap::GoogleTileMap(Text::CString cacheDir, MapType mapType, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl) : Map::MercatorTileMap(cacheDir, 0, 18, sockf, ssl)
+Map::GoogleMap::GoogleTileMap::GoogleTileMap(Text::CString cacheDir, MapType mapType, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl) : Map::MercatorTileMap(cacheDir, 0, 18, sockf, ssl)
 {
 	this->mapType = mapType;
 }
@@ -48,7 +48,7 @@ UTF8Char *Map::GoogleMap::GoogleTileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt
 	return sptr;
 }
 
-Bool Map::GoogleMap::GoogleTileMap::GetTileImageURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
+Bool Map::GoogleMap::GoogleTileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
 {
 	sb->AppendC(UTF8STRC(GMAPURL));
 	sb->AppendC(UTF8STRC("lyrs="));

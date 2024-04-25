@@ -544,11 +544,11 @@ HCRYPTPROV WinSSLEngine_CreateProv(Crypto::Cert::X509File::KeyType keyType, cons
 	return 0;
 }
 
-HCRYPTKEY WinSSLEngine_ImportKey(HCRYPTPROV hProv, NotNullPtr<Crypto::Cert::X509Key> key, Bool privateKeyOnly, Bool signature)
+HCRYPTKEY WinSSLEngine_ImportKey(HCRYPTPROV hProv, NN<Crypto::Cert::X509Key> key, Bool privateKeyOnly, Bool signature)
 {
 	HCRYPTKEY hKey;
 	Crypto::Cert::X509File::KeyType keyType = key->GetKeyType();
-	NotNullPtr<Crypto::Cert::X509PrivKey> privKey;
+	NN<Crypto::Cert::X509PrivKey> privKey;
 	if (keyType == Crypto::Cert::X509File::KeyType::RSA && Crypto::Cert::X509PrivKey::CreateFromKey(key).SetTo(privKey))
 	{
 		if (WinSSLEngine_CryptImportRSAPrivateKey(&hKey, hProv, privKey->GetASN1Buff(), (ULONG)privKey->GetASN1BuffSize(), signature))
@@ -568,7 +568,7 @@ HCRYPTKEY WinSSLEngine_ImportKey(HCRYPTPROV hProv, NotNullPtr<Crypto::Cert::X509
 	}
 	else if (keyType == Crypto::Cert::X509File::KeyType::RSAPublic)
 	{
-		NotNullPtr<Crypto::Cert::X509PubKey> pubKey = Crypto::Cert::X509PubKey::CreateFromKey(key);
+		NN<Crypto::Cert::X509PubKey> pubKey = Crypto::Cert::X509PubKey::CreateFromKey(key);
 		if (WinSSLEngine_CryptImportPublicKey(&hKey, hProv, pubKey->GetASN1Buff(), (ULONG)pubKey->GetASN1BuffSize(), true))
 		{
 			pubKey.Delete();
@@ -584,7 +584,7 @@ HCRYPTKEY WinSSLEngine_ImportKey(HCRYPTPROV hProv, NotNullPtr<Crypto::Cert::X509
 }
 
 
-HCRYPTKEY WinSSLEngine_ImportPrivKey(HCRYPTPROV hProv, NotNullPtr<Crypto::Cert::X509PrivKey> key, Bool signature)
+HCRYPTKEY WinSSLEngine_ImportPrivKey(HCRYPTPROV hProv, NN<Crypto::Cert::X509PrivKey> key, Bool signature)
 {
 	HCRYPTKEY hKey;
 	Crypto::Cert::X509File::KeyType keyType = key->GetKeyType();
@@ -599,13 +599,13 @@ HCRYPTKEY WinSSLEngine_ImportPrivKey(HCRYPTPROV hProv, NotNullPtr<Crypto::Cert::
 	return 0;
 }
 
-Bool WinSSLEngine_InitKey(HCRYPTPROV *hProvOut, HCRYPTKEY *hKeyOut, NotNullPtr<Crypto::Cert::X509File> keyASN1, const WChar *containerName, Bool signature, CRYPT_KEY_PROV_INFO *keyProvInfo)
+Bool WinSSLEngine_InitKey(HCRYPTPROV *hProvOut, HCRYPTKEY *hKeyOut, NN<Crypto::Cert::X509File> keyASN1, const WChar *containerName, Bool signature, CRYPT_KEY_PROV_INFO *keyProvInfo)
 {
 	HCRYPTPROV hProv;
 	HCRYPTKEY hKey;
 	if (keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::Key)
 	{
-		NotNullPtr<Crypto::Cert::X509Key> key = NotNullPtr<Crypto::Cert::X509Key>::ConvertFrom(keyASN1);
+		NN<Crypto::Cert::X509Key> key = NN<Crypto::Cert::X509Key>::ConvertFrom(keyASN1);
 		hProv = WinSSLEngine_CreateProv(key->GetKeyType(), containerName, keyProvInfo);
 		if (hProv == 0)
 		{
@@ -620,7 +620,7 @@ Bool WinSSLEngine_InitKey(HCRYPTPROV *hProvOut, HCRYPTKEY *hKeyOut, NotNullPtr<C
 	}
 	else if (keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey)
 	{
-		NotNullPtr<Crypto::Cert::X509PrivKey> key = NotNullPtr<Crypto::Cert::X509PrivKey>::ConvertFrom(keyASN1);
+		NN<Crypto::Cert::X509PrivKey> key = NN<Crypto::Cert::X509PrivKey>::ConvertFrom(keyASN1);
 		hProv = WinSSLEngine_CreateProv(key->GetKeyType(), containerName, keyProvInfo);
 		if (hProv == 0)
 		{
@@ -722,7 +722,7 @@ BCRYPT_ALG_HANDLE WinSSLEngine_BCryptOpenECDSA(Crypto::Cert::X509File::ECName ec
 	return 0;
 }
 
-Bool WinSSLEngine_NCryptInitKey(NCRYPT_PROV_HANDLE *hProvOut, NCRYPT_KEY_HANDLE *hKeyOut, NotNullPtr<Crypto::Cert::X509Key> key, Bool privateKeyOnly)
+Bool WinSSLEngine_NCryptInitKey(NCRYPT_PROV_HANDLE *hProvOut, NCRYPT_KEY_HANDLE *hKeyOut, NN<Crypto::Cert::X509Key> key, Bool privateKeyOnly)
 {
 	const WChar *algName = WinSSLEngine_BCryptGetECDSAAlg(key->GetECName());
 	if (algName == 0)
@@ -732,7 +732,7 @@ Bool WinSSLEngine_NCryptInitKey(NCRYPT_PROV_HANDLE *hProvOut, NCRYPT_KEY_HANDLE 
 	NTSTATUS status;
 	NCRYPT_PROV_HANDLE hProv;
 	NCRYPT_KEY_HANDLE hKey;
-	NotNullPtr<Crypto::Cert::X509PrivKey> privKey;
+	NN<Crypto::Cert::X509PrivKey> privKey;
 	if((status = NCryptOpenStorageProvider(&hProv, MS_KEY_STORAGE_PROVIDER, 0)) != 0)
 	{
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
@@ -1256,7 +1256,7 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 	return cli;
 }
 
-Net::WinSSLEngine::WinSSLEngine(NotNullPtr<Net::SocketFactory> sockf, Method method) : Net::SSLEngine(sockf)
+Net::WinSSLEngine::WinSSLEngine(NN<Net::SocketFactory> sockf, Method method) : Net::SSLEngine(sockf)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	MemClear(this->clsData, sizeof(ClassData));
@@ -1284,7 +1284,7 @@ Bool Net::WinSSLEngine::IsError()
 	return false;
 }
 
-Bool Net::WinSSLEngine::ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1, NotNullPtr<Data::ArrayListNN<Crypto::Cert::X509Cert>> cacerts)
+Bool Net::WinSSLEngine::ServerSetCertsASN1(NN<Crypto::Cert::X509Cert> certASN1, NN<Crypto::Cert::X509File> keyASN1, NN<Data::ArrayListNN<Crypto::Cert::X509Cert>> cacerts)
 {
 	if (this->clsData->svrInit)
 	{
@@ -1328,10 +1328,10 @@ Bool Net::WinSSLEngine::ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> ce
 	if (cacerts->GetCount() > 0)
 	{
 		certStore = CertOpenStore(CERT_STORE_PROV_MEMORY, 0, 0, 0, 0);
-		Data::ArrayIterator<NotNullPtr<Crypto::Cert::X509Cert>> it = cacerts->Iterator();
+		Data::ArrayIterator<NN<Crypto::Cert::X509Cert>> it = cacerts->Iterator();
 		while (it.HasNext())
 		{
-			NotNullPtr<Crypto::Cert::X509Cert> caCert = it.Next();
+			NN<Crypto::Cert::X509Cert> caCert = it.Next();
 			CertAddCertificateContextToStore(certStore, CertCreateCertificateContext(X509_ASN_ENCODING, caCert->GetASN1Buff(), (DWORD)caCert->GetASN1BuffSize()), CERT_STORE_ADD_NEW, 0);
 		}
 	}
@@ -1372,7 +1372,7 @@ void Net::WinSSLEngine::ClientSetSkipCertCheck(Bool skipCertCheck)
 	this->skipCertCheck = skipCertCheck;
 }
 
-Bool Net::WinSSLEngine::ClientSetCertASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1)
+Bool Net::WinSSLEngine::ClientSetCertASN1(NN<Crypto::Cert::X509Cert> certASN1, NN<Crypto::Cert::X509File> keyASN1)
 {
 	const WChar *containerName = L"ClientCert";
 	HCRYPTKEY hKey;
@@ -1601,7 +1601,7 @@ Bool Net::WinSSLEngine::GenerateCert(Text::CString country, Text::CString compan
 	sb2.ClearStr();
 	sb2.Append(commonName);
 	sb2.AppendC(UTF8STRC(".key"));
-	NotNullPtr<Text::String> s = Text::String::New(sb2.ToString(), sb2.GetLength());
+	NN<Text::String> s = Text::String::New(sb2.ToString(), sb2.GetLength());
 	keyASN1.Set(Crypto::Cert::X509PrivKey::CreateFromKeyBuff(Crypto::Cert::X509File::KeyType::RSA, certBuff, certBuffSize, s.Ptr()).Ptr());
 	s->Release();
 	CertFreeCertificateContext(pCertContext);
@@ -1650,7 +1650,7 @@ Optional<Crypto::Cert::X509Key> Net::WinSSLEngine::GenerateRSAKey()
 	return key;
 }
 
-Bool Net::WinSSLEngine::Signature(NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, OutParam<UOSInt> signLen)
+Bool Net::WinSSLEngine::Signature(NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, OutParam<UOSInt> signLen)
 {
 	Crypto::Cert::X509File::KeyType keyType = key->GetKeyType();
 	if (keyType == Crypto::Cert::X509File::KeyType::RSA)
@@ -1768,7 +1768,7 @@ Bool Net::WinSSLEngine::Signature(NotNullPtr<Crypto::Cert::X509Key> key, Crypto:
 	return false;
 }
 
-Bool Net::WinSSLEngine::SignatureVerify(NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, const UInt8 *signData, UOSInt signLen)
+Bool Net::WinSSLEngine::SignatureVerify(NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, const UInt8 *signData, UOSInt signLen)
 {
 	ALG_ID alg = WinSSLEngine_CryptGetHashAlg(hashType);
 	if (alg == 0)
@@ -1846,7 +1846,7 @@ Bool Net::WinSSLEngine::SignatureVerify(NotNullPtr<Crypto::Cert::X509Key> key, C
 	return true;
 }
 
-UOSInt Net::WinSSLEngine::Encrypt(NotNullPtr<Crypto::Cert::X509Key> key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
+UOSInt Net::WinSSLEngine::Encrypt(NN<Crypto::Cert::X509Key> key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	HCRYPTPROV hProv = WinSSLEngine_CreateProv(key->GetKeyType(), 0, 0);
 	if (hProv == 0)
@@ -1890,7 +1890,7 @@ UOSInt Net::WinSSLEngine::Encrypt(NotNullPtr<Crypto::Cert::X509Key> key, UInt8 *
 	return dataSize;
 }
 
-UOSInt Net::WinSSLEngine::Decrypt(NotNullPtr<Crypto::Cert::X509Key> key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
+UOSInt Net::WinSSLEngine::Decrypt(NN<Crypto::Cert::X509Key> key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	if (payloadLen > 512)
 	{

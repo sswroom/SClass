@@ -39,14 +39,14 @@ namespace Net
 
 		Bool SendPacket(UInt8 opcode, const UInt8 *buff, UOSInt buffSize);
 		const UInt8 *NextPacket(UInt8 *opcode, UOSInt *packetSize);
-		const UInt8 *NextPacket(NotNullPtr<Sync::MutexUsage> mutUsage, UOSInt *packetSize);
+		const UInt8 *NextPacket(NN<Sync::MutexUsage> mutUsage, UOSInt *packetSize);
 	public:
-		WebSocketClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString path, Text::CString origin, Protocol protocol, Data::Duration timeout);
+		WebSocketClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString path, Text::CString origin, Protocol protocol, Data::Duration timeout);
 		virtual ~WebSocketClient();
 
 		virtual UTF8Char *GetRemoteName(UTF8Char *buff) const;
 		virtual UTF8Char *GetLocalName(UTF8Char *buff) const;
-		virtual Bool GetRemoteAddr(NotNullPtr<Net::SocketUtil::AddressInfo> addr) const;
+		virtual Bool GetRemoteAddr(NN<Net::SocketUtil::AddressInfo> addr) const;
 		virtual UInt16 GetRemotePort() const;
 		virtual UInt16 GetLocalPort() const;
 

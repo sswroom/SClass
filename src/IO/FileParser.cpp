@@ -7,7 +7,7 @@
 
 #define HDRSIZE 512
 
-IO::ParsedObject *IO::FileParser::ParseFile(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *IO::FileParser::ParseFile(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdr[HDRSIZE];
 	fd->GetRealData(0, HDRSIZE, BYTEARR(hdr));
@@ -20,7 +20,7 @@ IO::ParsedObject *IO::FileParser::ParseFilePath(Text::CStringNN filePath)
 	UOSInt i = filePath.LastIndexOf(IO::Path::PATH_SEPERATOR);
 	if (i != INVALID_INDEX)
 	{
-		NotNullPtr<Text::String> dir = Text::String::New(filePath.v, i);
+		NN<Text::String> dir = Text::String::New(filePath.v, i);
 		NEW_CLASS(pkg, IO::DirectoryPackage(dir));
 		dir->Release();
 	}

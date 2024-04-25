@@ -79,7 +79,7 @@ Text::CString IO::ED538Sim::GetValueName(UOSInt index)
 	}
 }
 
-Bool IO::ED538Sim::GetValue(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::ED538Sim::GetValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	if (index < 8)
 	{

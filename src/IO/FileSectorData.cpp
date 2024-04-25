@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/FileSectorData.h"
 
-IO::FileSectorData::FileSectorData(NotNullPtr<IO::StreamData> data, UInt64 ofst, UInt64 dataSize, UInt32 sectorSize) : IO::ISectorData(data->GetFullName())
+IO::FileSectorData::FileSectorData(NN<IO::StreamData> data, UInt64 ofst, UInt64 dataSize, UInt32 sectorSize) : IO::ISectorData(data->GetFullName())
 {
 	this->data = data->GetPartialData(ofst, dataSize);
 	this->sectorSize = sectorSize;
@@ -28,14 +28,14 @@ Bool IO::FileSectorData::ReadSector(UInt64 sectorNum, Data::ByteArray sectorBuff
 	return this->data->GetRealData(sectorNum * sectorSize, sectorSize, sectorBuff) == sectorSize;
 }
 
-NotNullPtr<IO::ISectorData> IO::FileSectorData::GetPartialData(UInt64 startSector, UInt64 sectorCount) const
+NN<IO::ISectorData> IO::FileSectorData::GetPartialData(UInt64 startSector, UInt64 sectorCount) const
 {
-	NotNullPtr<IO::ISectorData> data;
+	NN<IO::ISectorData> data;
 	NEW_CLASSNN(data, IO::FileSectorData(this->data, startSector * sectorSize, sectorCount * sectorSize, sectorSize));
 	return data;
 }
 
-NotNullPtr<IO::StreamData> IO::FileSectorData::GetStreamData(UInt64 startSector, UInt64 dataSize) const
+NN<IO::StreamData> IO::FileSectorData::GetStreamData(UInt64 startSector, UInt64 dataSize) const
 {
 	return this->data->GetPartialData(startSector * sectorSize, dataSize);
 }

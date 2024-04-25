@@ -16,9 +16,9 @@ namespace Math
 
 		void Inverse();
 		void Transposition();
-		void Set(NotNullPtr<const Matrix3> matrix);
-		void Multiply(NotNullPtr<const Matrix3> matrix);
-		void MultiplyBA(NotNullPtr<const Matrix3> matrix);
+		void Set(NN<const Matrix3> matrix);
+		void Multiply(NN<const Matrix3> matrix);
+		void MultiplyBA(NN<const Matrix3> matrix);
 		void Multiply(Double x, Double y, Double z, OutParam<Double> outX, OutParam<Double> outY, OutParam<Double> outZ);
 		Vector3 Multiply(const Vector3 &srcVec) const;
 		void SetIdentity();

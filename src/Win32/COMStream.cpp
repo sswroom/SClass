@@ -15,7 +15,7 @@
 #define DebugMsg(msg)
 //#define DebugMsg(msg) printf("%s\n", msg);
 
-Win32::COMStream::COMStream(NotNullPtr<IO::SeekableStream> stm)
+Win32::COMStream::COMStream(NN<IO::SeekableStream> stm)
 {
 	this->stm = stm;
 	this->cnt = 0;

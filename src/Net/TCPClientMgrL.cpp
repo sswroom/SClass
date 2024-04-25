@@ -31,7 +31,7 @@ struct Net::TCPClientMgr::ClassData
 	Bool hasData;
 };
 
-void TCPClientMgr_RemoveCliStat(NotNullPtr<Data::UInt64FastMap<Net::TCPClientMgr::TCPClientStatus*>> cliMap, NotNullPtr<Net::TCPClientMgr::TCPClientStatus> cliStat)
+void TCPClientMgr_RemoveCliStat(NN<Data::UInt64FastMap<Net::TCPClientMgr::TCPClientStatus*>> cliMap, NN<Net::TCPClientMgr::TCPClientStatus> cliStat)
 {
 	UInt64 cliId = cliStat->cli->GetCliId();
 //	printf("Removing CliId: %lld\r\n", cliId); //////////
@@ -43,14 +43,14 @@ void TCPClientMgr_RemoveCliStat(NotNullPtr<Data::UInt64FastMap<Net::TCPClientMgr
 
 UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 {
-	NotNullPtr<Net::TCPClientMgr> me = o.GetNN<Net::TCPClientMgr>();
+	NN<Net::TCPClientMgr> me = o.GetNN<Net::TCPClientMgr>();
 	ClassData *clsData = me->clsData;
 	Data::Timestamp currTime;
 	OSInt pollRet;
 	UOSInt i;
 	UOSInt readSize;
 	UInt8 tmpBuff[16];
-	NotNullPtr<Net::TCPClientMgr::TCPClientStatus> cliStat;
+	NN<Net::TCPClientMgr::TCPClientStatus> cliStat;
 	UOSInt pollfdCap = 16;
 	struct pollfd *pollfds = MemAlloc(struct pollfd, pollfdCap);
 	Net::TCPClientMgr::TCPClientStatus **pollCli = MemAlloc(Net::TCPClientMgr::TCPClientStatus*, pollfdCap);
@@ -246,7 +246,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 
 UInt32 __stdcall Net::TCPClientMgr::WorkerThread(AnyType o)
 {
-	NotNullPtr<Net::TCPClientMgr::WorkerStatus> stat = o.GetNN<Net::TCPClientMgr::WorkerStatus>();
+	NN<Net::TCPClientMgr::WorkerStatus> stat = o.GetNN<Net::TCPClientMgr::WorkerStatus>();
 	Net::TCPClientMgr *me = stat->me;
 	ClassData *clsData = me->clsData;
 	Data::Timestamp currTime;
@@ -317,7 +317,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(AnyType o)
 	return 0;
 }
 
-void Net::TCPClientMgr::ProcessClient(NotNullPtr<Net::TCPClientMgr::TCPClientStatus> cliStat)
+void Net::TCPClientMgr::ProcessClient(NN<Net::TCPClientMgr::TCPClientStatus> cliStat)
 {
 	if (!Text::StrEqualsC(cliStat->debug, 5, UTF8STRC("debug")))
 	{
@@ -462,7 +462,7 @@ void Net::TCPClientMgr::SetLogFile(Text::CStringNN logFile)
 	NEW_CLASS(this->logWriter, IO::SMTCWriter(logFile));
 }
 
-void Net::TCPClientMgr::AddClient(NotNullPtr<TCPClient> cli, AnyType cliData)
+void Net::TCPClientMgr::AddClient(NN<TCPClient> cli, AnyType cliData)
 {
 #if defined(VERBOSE)
 	printf("Cli %d added and set timeout to %lld\r\n", cli->GetRemotePort(), this->timeout.GetSeconds());
@@ -548,7 +548,7 @@ void Net::TCPClientMgr::CloseAll()
 	mutUsage.EndUse();
 }
 
-void Net::TCPClientMgr::UseGetClient(NotNullPtr<Sync::MutexUsage> mutUsage)
+void Net::TCPClientMgr::UseGetClient(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->cliMut);
 }
@@ -558,7 +558,7 @@ UOSInt Net::TCPClientMgr::GetClientCount() const
 	return this->cliMap.GetCount();
 }
 
-void Net::TCPClientMgr::ExtendTimeout(NotNullPtr<Net::TCPClient> cli)
+void Net::TCPClientMgr::ExtendTimeout(NN<Net::TCPClient> cli)
 {
 	Sync::MutexUsage mutUsage(this->cliMut);
 	Net::TCPClientMgr::TCPClientStatus *cliStat = this->cliMap.Get(cli->GetCliId());

@@ -2,7 +2,7 @@
 #include "Text/XML.h"
 #include "Text/Builder/HTMLBodyBuilder.h"
 
-Text::Builder::HTMLBodyBuilder::HTMLBodyBuilder(NotNullPtr<Text::StringBuilderUTF8> sb) : HTMLBuilder(sb, true)
+Text::Builder::HTMLBodyBuilder::HTMLBodyBuilder(NN<Text::StringBuilderUTF8> sb) : HTMLBuilder(sb, true)
 {
 }
 
@@ -20,7 +20,7 @@ Text::Builder::HTMLBodyBuilder::~HTMLBodyBuilder()
 void Text::Builder::HTMLBodyBuilder::BeginLink(Text::CString url)
 {
 	this->sb->AppendC(UTF8STRC("<a href="));
-	NotNullPtr<Text::String> s = Text::XML::ToNewAttrText(url.v);
+	NN<Text::String> s = Text::XML::ToNewAttrText(url.v);
 	this->sb->Append(s);
 	s->Release();
 	sb->AppendUTF8Char('>');
@@ -165,7 +165,7 @@ void Text::Builder::HTMLBodyBuilder::AddTableData(Text::CString content, UOSInt 
 
 void Text::Builder::HTMLBodyBuilder::AddInputText(Text::CString id, Text::CString name, Text::CString value)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	this->sb->AppendC(UTF8STRC("<input type=\"text\""));
 	if (id.leng > 0)
 	{
@@ -193,7 +193,7 @@ void Text::Builder::HTMLBodyBuilder::AddInputText(Text::CString id, Text::CStrin
 
 void Text::Builder::HTMLBodyBuilder::AddInputButton(Text::CString id, Text::CString label, Text::CString onClick)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	this->sb->AppendC(UTF8STRC("<input type=\"button\""));
 	if (id.leng > 0)
 	{

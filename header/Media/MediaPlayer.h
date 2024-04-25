@@ -37,10 +37,10 @@ namespace Media
 		void PlayTime(Data::Duration time);
 		static void __stdcall OnVideoEnd(AnyType userObj);
 		static void __stdcall OnAudioEnd(AnyType userObj);
-		static void __stdcall VideoCropImage(AnyType userObj, Data::Duration frameTime, UInt32 frameNum, NotNullPtr<Media::StaticImage> img);
+		static void __stdcall VideoCropImage(AnyType userObj, Data::Duration frameTime, UInt32 frameNum, NN<Media::StaticImage> img);
 
 		void ReleaseAudio();
-		Bool SwitchAudioSource(NotNullPtr<Media::IAudioSource> asrc, Int32 syncTime);
+		Bool SwitchAudioSource(NN<Media::IAudioSource> asrc, Int32 syncTime);
 	public:
 		MediaPlayer(Media::VideoRenderer *vrenderer, Media::AudioDevice *audioDev);
 		virtual ~MediaPlayer();

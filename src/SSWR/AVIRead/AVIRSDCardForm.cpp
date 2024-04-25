@@ -9,7 +9,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRSDCardForm::OnDevicesSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSDCardForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSDCardForm>();
+	NN<SSWR::AVIRead::AVIRSDCardForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSDCardForm>();
 	IO::SDCardInfo *sdCard;
 	sdCard = (IO::SDCardInfo*)me->lbDevices->GetSelectedItem().p;
 	if (sdCard == 0)
@@ -82,7 +82,7 @@ OSInt __stdcall SSWR::AVIRead::AVIRSDCardForm::ItemCompare(IO::SDCardInfo *item1
 	return item1->GetName()->CompareTo(item1->GetName());
 }
 
-SSWR::AVIRead::AVIRSDCardForm::AVIRSDCardForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRSDCardForm::AVIRSDCardForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
 	this->SetText(CSTR("SD Cards"));

@@ -9,7 +9,7 @@ namespace IO
 		class BME280
 		{
 		private:
-			NotNullPtr<IO::I2CChannel> channel;
+			NN<IO::I2CChannel> channel;
 			Bool toRelease;
 			IO::I2C i2c;
 			Bool valid;
@@ -36,7 +36,7 @@ namespace IO
 			Double CalcRHRAW(Int32 tRAW, Int32 rhRAW);
 			Double CalcPressureRAW(Int32 tRAW, Int32 pressureRAW);
 		public:
-			BME280(NotNullPtr<IO::I2CChannel> channel, Bool toRelease);
+			BME280(NN<IO::I2CChannel> channel, Bool toRelease);
 			~BME280();
 
 			Bool IsError();

@@ -18,7 +18,7 @@ Int32 Parser::FileParser::AUIParser::GetName()
 	return *(Int32*)"AUIP";
 }
 
-void Parser::FileParser::AUIParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::AUIParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
@@ -31,7 +31,7 @@ IO::ParserType Parser::FileParser::AUIParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::AUIParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::AUIParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (!fd->IsFullFile())
 		return 0;

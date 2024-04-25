@@ -5,7 +5,7 @@
 
 UInt32 Net::SSHManager::useCnt = 0;
 
-Net::SSHManager::SSHManager(NotNullPtr<Net::SocketFactory> sockf)
+Net::SSHManager::SSHManager(NN<Net::SocketFactory> sockf)
 {
 	this->sockf = sockf;
 	if (Sync::Interlocked::IncrementU32(useCnt) == 1)
@@ -40,7 +40,7 @@ Optional<Net::SSHClient> Net::SSHManager::CreateClient(Text::CStringNN host, UIn
 {
 	if (this->error != 0)
 		return 0;
-	NotNullPtr<Net::SSHConn> conn;
+	NN<Net::SSHConn> conn;
 	NEW_CLASSNN(conn, Net::SSHConn(this->sockf, host, port, 5000));
 	if (conn->IsError())
 	{
@@ -71,7 +71,7 @@ Optional<Net::SSHClient> Net::SSHManager::CreateClient(Text::CStringNN host, UIn
 		conn.Delete();
 		return 0;
 	}
-	NotNullPtr<Net::SSHClient> cli;
+	NN<Net::SSHClient> cli;
 	NEW_CLASSNN(cli, Net::SSHClient(conn));
 	return cli;
 }
@@ -80,7 +80,7 @@ Optional<Net::SSHConn> Net::SSHManager::CreateConn(Text::CStringNN host, UInt16 
 {
 	if (this->error != 0)
 		return 0;
-	NotNullPtr<Net::SSHConn> conn;
+	NN<Net::SSHConn> conn;
 	NEW_CLASSNN(conn, Net::SSHConn(this->sockf, host, port, timeout));
 	return conn;
 }

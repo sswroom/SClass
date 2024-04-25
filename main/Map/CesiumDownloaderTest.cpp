@@ -21,7 +21,7 @@ class CesiumDownloader
 public:
 	struct FileEntry
 	{
-		NotNullPtr<Text::String> url;
+		NN<Text::String> url;
 		UInt64 downloadSize;
 		UInt64 contentSize;
 	};
@@ -47,7 +47,7 @@ private:
 		Text::String *currURL;
 	};
 private:
-	NotNullPtr<Net::SocketFactory> sockf;
+	NN<Net::SocketFactory> sockf;
 	Optional<Net::SSLEngine> ssl;
 	UOSInt threadCount;
 	Bool threadToStop;
@@ -58,7 +58,7 @@ private:
 	Sync::Mutex filesMut;
 	Data::ArrayList<FileEntry*> filesList;
 
-	static void ParseJSONObj(NotNullPtr<ThreadStatus> stat, Text::String *url, Text::JSONBase *obj, NotNullPtr<Text::StringBuilderUTF8> tmpSb)
+	static void ParseJSONObj(NN<ThreadStatus> stat, Text::String *url, Text::JSONBase *obj, NN<Text::StringBuilderUTF8> tmpSb)
 	{
 		if (obj == 0 || obj->GetType() != Text::JSONType::Object)
 		{
@@ -66,7 +66,7 @@ private:
 		}
 		Text::JSONObject *jobj = (Text::JSONObject*)obj;
 		UOSInt i;
-		NotNullPtr<Text::String> contURL;
+		NN<Text::String> contURL;
 		if (jobj->GetValueString(CSTR("content.url")).SetTo(contURL))
 		{
 			tmpSb->ClearStr();
@@ -94,7 +94,7 @@ private:
 		}
 	}
 
-	static void ParseJSON(NotNullPtr<ThreadStatus> stat, Text::String *url, IO::MemoryStream *mstm, NotNullPtr<Text::StringBuilderUTF8> tmpSb)
+	static void ParseJSON(NN<ThreadStatus> stat, Text::String *url, IO::MemoryStream *mstm, NN<Text::StringBuilderUTF8> tmpSb)
 	{
 		mstm->Write((const UInt8*)"", 1);
 		UOSInt i;
@@ -107,11 +107,11 @@ private:
 		}
 	}
 
-	static void ProcURL(NotNullPtr<ThreadStatus> stat, Text::String *url, NotNullPtr<Text::StringBuilderUTF8> tmpSb)
+	static void ProcURL(NN<ThreadStatus> stat, Text::String *url, NN<Text::StringBuilderUTF8> tmpSb)
 	{
 		UInt8 buff[4096];
 		stat->reqCnt++;
-		NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(stat->me->sockf, stat->me->ssl, url->ToCString(), true, url->StartsWithICase(UTF8STRC("HTTPS://")));
+		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(stat->me->sockf, stat->me->ssl, url->ToCString(), true, url->StartsWithICase(UTF8STRC("HTTPS://")));
 		if (cli->Connect(url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, false))
 		{
 			cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
@@ -143,7 +143,7 @@ private:
 					const UInt8 *respData = mstm->GetBuff(respSize);
 					if (respSize > 16 && respData[0] == 0x1F && respData[1] == 0x8B && respData[2] == 0x8)
 					{
-						NotNullPtr<IO::MemoryStream> mstm2;
+						NN<IO::MemoryStream> mstm2;
 						Data::Compress::Inflate inflate(false);
 						thisRead = 10;
 						IO::StmData::MemoryDataRef mdata(&respData[thisRead], respSize - thisRead - 8);
@@ -189,7 +189,7 @@ private:
 
 	static UInt32 __stdcall ProcThread(AnyType userObj)
 	{
-		NotNullPtr<ThreadStatus> stat = userObj.GetNN<ThreadStatus>();
+		NN<ThreadStatus> stat = userObj.GetNN<ThreadStatus>();
 		Text::String *nextURL;
 		{
 			Text::StringBuilderUTF8 sb;
@@ -222,7 +222,7 @@ private:
 	}
 
 public:
-	CesiumDownloader(NotNullPtr<Net::SocketFactory> sockf, UOSInt threadCount, Bool useComp)
+	CesiumDownloader(NN<Net::SocketFactory> sockf, UOSInt threadCount, Bool useComp)
 	{
 		this->sockf = sockf;
 		this->ssl = Net::SSLEngineFactory::Create(sockf, true);
@@ -417,7 +417,7 @@ public:
 		this->filesList.Clear();
 	}
 
-	NotNullPtr<const Data::ArrayList<FileEntry*>> GetFilesList()
+	NN<const Data::ArrayList<FileEntry*>> GetFilesList()
 	{
 		return this->filesList;
 	}
@@ -479,7 +479,7 @@ void TestURL(IO::Writer *console, CesiumDownloader *downloader, Text::CString ur
 	downloader->ClearFiles();
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Net::OSSocketFactory sockf(true);
 	IO::ConsoleWriter console;

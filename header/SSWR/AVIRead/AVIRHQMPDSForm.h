@@ -24,9 +24,9 @@ namespace SSWR
 				QM_UQ
 			} QualityMode;
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			NotNullPtr<Media::ColorManagerSess> colorSess;
+			NN<Media::ColorManagerSess> colorSess;
 			Media::MediaPlayer *player;
 			Media::MediaFile *currFile;
 			Media::Playlist *playlist;
@@ -38,15 +38,15 @@ namespace SSWR
 			QualityMode qMode;
 
 			UI::GUIVideoBoxDD *vbox;
-			NotNullPtr<UI::GUIMainMenu> mnu;
-			NotNullPtr<UI::GUIMenu> mnuChapters;
+			NN<UI::GUIMainMenu> mnu;
+			NN<UI::GUIMenu> mnuChapters;
 
 			UI::GUIForm *dbgFrm;
-			NotNullPtr<UI::GUITextBox> txtDebug;
+			NN<UI::GUITextBox> txtDebug;
 
-			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnTimerTick(AnyType userObj);
-			static void __stdcall OnDebugClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm);
+			static void __stdcall OnDebugClosed(AnyType userObj, NN<UI::GUIForm> frm);
 		public:
 			Bool OpenFile(Text::CStringNN fileName, IO::ParserType targetType);
 			Bool OpenVideo(Media::MediaFile *mf);
@@ -55,7 +55,7 @@ namespace SSWR
 			void CloseFile();
 
 		public:
-			AVIRHQMPDSForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, QualityMode qMode);
+			AVIRHQMPDSForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, QualityMode qMode);
 			virtual ~AVIRHQMPDSForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

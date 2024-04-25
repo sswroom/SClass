@@ -8,7 +8,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -16,7 +16,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UOSInt i;
 	UOSInt j;
 	Data::ArrayListStringNN *strs;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	
 	NEW_CLASS(clk, Manage::HiResClock());
 	clk->Start();
@@ -30,7 +30,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			s = Text::String::New(sbuff, (UOSInt)(Text::StrInt32(sbuff, (Int32)j) - sbuff));
 			strs->Add(s);
 		}
-		NotNullPtr<Text::String> str = strs->JoinString();
+		NN<Text::String> str = strs->JoinString();
 		str->Release();
 		j = strs->GetCount();
 		while (j-- > 0)

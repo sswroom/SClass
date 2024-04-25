@@ -36,15 +36,15 @@ namespace IO
 
 			void ParseV1Directory(UInt64 dirOfst, UInt64 dirSize);
 			void ParseV2Directory(UInt64 dirOfst, UInt64 dirSize);
-			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> thread);
+			static void __stdcall ParseThread(NN<Sync::Thread> thread);
 			static void FreePackInfo(NN<PackInfo> pack);
 		public:
-			SPKFileAnalyse(NotNullPtr<IO::StreamData> fd);
+			SPKFileAnalyse(NN<IO::StreamData> fd);
 			virtual ~SPKFileAnalyse();
 
 			virtual Text::CStringNN GetFormatName();
 			virtual UOSInt GetFrameCount();
-			virtual Bool GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual Bool GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst);
 			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index);
 
@@ -52,7 +52,7 @@ namespace IO
 			virtual Bool IsParsing();
 			virtual Bool TrimPadding(Text::CStringNN outputFile);
 
-			void GetDetailDirs(const UInt8 *dirBuff, UOSInt dirSize, UOSInt frameOfst, NotNullPtr<IO::FileAnalyse::FrameDetail> frame);
+			void GetDetailDirs(const UInt8 *dirBuff, UOSInt dirSize, UOSInt frameOfst, NN<IO::FileAnalyse::FrameDetail> frame);
 		};
 	}
 }

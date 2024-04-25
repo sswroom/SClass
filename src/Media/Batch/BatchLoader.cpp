@@ -15,9 +15,9 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(AnyType userObj)
 	Bool found;
 	UOSInt i;
 	IO::ParsedObject *pobj;
-	NotNullPtr<IO::ParsedObject> nnpobj;
+	NN<IO::ParsedObject> nnpobj;
 
-	NotNullPtr<ThreadState> state = userObj.GetNN<ThreadState>();
+	NN<ThreadState> state = userObj.GetNN<ThreadState>();
 	state->running = true;
 	state->me->mainEvt.Set();
 	while (!state->toStop)
@@ -47,7 +47,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(AnyType userObj)
 			if (!found)
 				break;
 
-			NotNullPtr<Text::String> fileNameStr;
+			NN<Text::String> fileNameStr;
 			if (fileNameStr.Set(fileName))
 			{
 				Sync::MutexUsage mutUsage(state->me->ioMut);
@@ -59,7 +59,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(AnyType userObj)
 				{
 					if (nnpobj->GetParserType() == IO::ParserType::ImageList)
 					{
-						NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(nnpobj);
+						NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(nnpobj);
 						i = imgList->GetCount();
 						while (i-- > 0)
 						{
@@ -97,7 +97,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(AnyType userObj)
 				{
 					if (nnpobj->GetParserType() == IO::ParserType::ImageList)
 					{
-						NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(nnpobj);
+						NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(nnpobj);
 						i = imgList->GetCount();
 						while (i-- > 0)
 						{
@@ -130,7 +130,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(AnyType userObj)
 	return 0;
 }
 
-Media::Batch::BatchLoader::BatchLoader(NotNullPtr<Parser::ParserList> parsers, Media::Batch::BatchHandler *hdlr)
+Media::Batch::BatchLoader::BatchLoader(NN<Parser::ParserList> parsers, Media::Batch::BatchHandler *hdlr)
 {
 	UOSInt i;
 	Bool started;
@@ -232,7 +232,7 @@ void Media::Batch::BatchLoader::AddFileName(Text::CString fileName)
 	mutUsage.EndUse();
 }
 
-void Media::Batch::BatchLoader::AddImageData(NotNullPtr<IO::StreamData> data, Text::CStringNN fileId)
+void Media::Batch::BatchLoader::AddImageData(NN<IO::StreamData> data, Text::CStringNN fileId)
 {
 	DataInfo *info;
 	info = MemAlloc(DataInfo, 1);

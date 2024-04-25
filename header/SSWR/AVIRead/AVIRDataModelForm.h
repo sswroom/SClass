@@ -17,18 +17,18 @@ namespace SSWR
 		class AVIRDataModelForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUIListView> lvColumns;
-			NotNullPtr<UI::GUILabel> lblClassName;
-			NotNullPtr<UI::GUITextBox> txtClassName;
-			NotNullPtr<UI::GUILabel> lblPrefix;
-			NotNullPtr<UI::GUITextBox> txtPrefix;
-			NotNullPtr<UI::GUIButton> btnPasteData;
-			NotNullPtr<UI::GUIComboBox> cboType;
-			NotNullPtr<UI::GUIButton> btnGenerate;
-			NotNullPtr<UI::GUILabel> lblStatus;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUIListView> lvColumns;
+			NN<UI::GUILabel> lblClassName;
+			NN<UI::GUITextBox> txtClassName;
+			NN<UI::GUILabel> lblPrefix;
+			NN<UI::GUITextBox> txtPrefix;
+			NN<UI::GUIButton> btnPasteData;
+			NN<UI::GUIComboBox> cboType;
+			NN<UI::GUIButton> btnGenerate;
+			NN<UI::GUILabel> lblStatus;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Data::Class> cls;
 
 			static void __stdcall OnPasteDataClicked(AnyType userObj);
@@ -38,7 +38,7 @@ namespace SSWR
 			void UpdateClassDisp();
 			void PasteData(Bool showError);
 		public:
-			AVIRDataModelForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRDataModelForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRDataModelForm();
 
 			virtual void OnMonitorChanged();

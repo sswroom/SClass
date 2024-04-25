@@ -99,7 +99,7 @@ Bool IO::Device::AXCAN::SendCommand(Text::CString cmd, UOSInt timeout)
 	printf("AXCAN Send: %s\r\n", buff);
 #endif
 	buff[cmd.leng] = 13;
-	NotNullPtr<IO::Stream> stm;
+	NN<IO::Stream> stm;
 	if (!this->stm.SetTo(stm))
 		return false;
 	if (timeout == 0)
@@ -113,10 +113,10 @@ Bool IO::Device::AXCAN::SendCommand(Text::CString cmd, UOSInt timeout)
 	return this->cmdResultCode == 0;
 }
 
-void __stdcall IO::Device::AXCAN::SerialThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::Device::AXCAN::SerialThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::Device::AXCAN> me = thread->GetUserObj().GetNN<IO::Device::AXCAN>();
-	NotNullPtr<IO::Stream> stm;
+	NN<IO::Device::AXCAN> me = thread->GetUserObj().GetNN<IO::Device::AXCAN>();
+	NN<IO::Stream> stm;
 	if (me->stm.SetTo(stm)) 
 	{
 		Text::UTF8Reader reader(stm);
@@ -124,7 +124,7 @@ void __stdcall IO::Device::AXCAN::SerialThread(NotNullPtr<Sync::Thread> thread)
 	}
 }
 
-IO::Device::AXCAN::AXCAN(NotNullPtr<CANHandler> hdlr) : cmdEvent(false), serialThread(SerialThread, this, CSTR("AXCAN"))
+IO::Device::AXCAN::AXCAN(NN<CANHandler> hdlr) : cmdEvent(false), serialThread(SerialThread, this, CSTR("AXCAN"))
 {
 	this->hdlr = hdlr;
 	this->stm = 0;
@@ -139,7 +139,7 @@ IO::Device::AXCAN::~AXCAN()
 Bool IO::Device::AXCAN::OpenSerialPort(UOSInt portNum, UInt32 serialBaudRate, CANBitRate bitRate)
 {
 	this->CloseSerialPort(false);
-	NotNullPtr<IO::SerialPort> port;
+	NN<IO::SerialPort> port;
 	NEW_CLASSNN(port, IO::SerialPort(portNum, serialBaudRate, IO::SerialPort::PARITY_NONE, false));
 	if (port->IsError())
 	{
@@ -149,7 +149,7 @@ Bool IO::Device::AXCAN::OpenSerialPort(UOSInt portNum, UInt32 serialBaudRate, CA
 	return this->OpenStream(port, bitRate);
 }
 
-Bool IO::Device::AXCAN::OpenStream(NotNullPtr<IO::Stream> stm, CANBitRate bitRate)
+Bool IO::Device::AXCAN::OpenStream(NN<IO::Stream> stm, CANBitRate bitRate)
 {
 	if (this->stm.NotNull())
 		return false;
@@ -190,9 +190,9 @@ void IO::Device::AXCAN::CANStop()
 	this->CloseSerialPort(false);
 }
 
-void IO::Device::AXCAN::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void IO::Device::AXCAN::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
-	NotNullPtr<IO::Stream> stm;
+	NN<IO::Stream> stm;
 	if (this->stm.SetTo(stm))
 	{
 		sb->AppendC(UTF8STRC("AXCAN - "));
@@ -204,7 +204,7 @@ void IO::Device::AXCAN::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 	}
 }
 
-void IO::Device::AXCAN::ParseReader(NotNullPtr<IO::Reader> reader)
+void IO::Device::AXCAN::ParseReader(NN<IO::Reader> reader)
 {
 	Text::StringBuilderUTF8 sb;
 	UInt8 buff[16];

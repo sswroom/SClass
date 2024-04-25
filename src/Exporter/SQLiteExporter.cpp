@@ -25,7 +25,7 @@ Int32 Exporter::SQLiteExporter::GetName()
 	return *(Int32*)"SQLI";
 }
 
-IO::FileExporter::SupportType Exporter::SQLiteExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
+IO::FileExporter::SupportType Exporter::SQLiteExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::ReadingDB && pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
@@ -45,21 +45,21 @@ Bool Exporter::SQLiteExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 	return false;
 }
 
-Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::SQLiteExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	if (pobj->GetParserType() != IO::ParserType::ReadingDB)
 	{
 		return false;
 	}
 	IO::Path::DeleteFile(fileName.v);
-	NotNullPtr<DB::DBTool> destDB;
+	NN<DB::DBTool> destDB;
 	IO::LogTool log;
-	NotNullPtr<DB::ReadingDB> sDB;
+	NN<DB::ReadingDB> sDB;
 	DB::ReadingDBTool *srcDB;
 	Optional<DB::DBReader> r;
-	NotNullPtr<DB::DBReader> nnr;
+	NN<DB::DBReader> nnr;
 	DB::TableDef *tabDef;
-	NotNullPtr<DB::TableDef> nntabDef;
+	NN<DB::TableDef> nntabDef;
 	Data::ArrayListStringNN tables;
 	OSInt k;
 	if (!DB::SQLiteFile::CreateDBTool(fileName.OrEmpty(), log, CSTR("DB: ")).SetTo(destDB))
@@ -67,18 +67,18 @@ Bool Exporter::SQLiteExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 	Bool succ = true;
 	DB::SQLBuilder sql(destDB);
 	Text::StringBuilderUTF8 sb;
-	sDB = NotNullPtr<DB::ReadingDB>::ConvertFrom(pobj);
+	sDB = NN<DB::ReadingDB>::ConvertFrom(pobj);
 	sDB->QueryTableNames(CSTR_NULL, tables);
 	if (sDB->IsFullConn())
 	{
-		NEW_CLASS(srcDB, DB::ReadingDBTool(NotNullPtr<DB::DBConn>::ConvertFrom(sDB), false, log, CSTR("SDB: ")));
+		NEW_CLASS(srcDB, DB::ReadingDBTool(NN<DB::DBConn>::ConvertFrom(sDB), false, log, CSTR("SDB: ")));
 	}
 	else
 	{
 		srcDB = 0;
 	}
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = tables.Iterator();
-	NotNullPtr<Text::String> tabName;
+	Data::ArrayIterator<NN<Text::String>> it = tables.Iterator();
+	NN<Text::String> tabName;
 	while (it.HasNext())
 	{
 		tabName = it.Next();

@@ -135,9 +135,9 @@ Text::String *Crypto::Token::JWToken::GetPayload() const
 	return this->payload;
 }
 
-Crypto::Token::JWToken::VerifyType Crypto::Token::JWToken::GetVerifyType(NotNullPtr<JWTParam> param) const
+Crypto::Token::JWToken::VerifyType Crypto::Token::JWToken::GetVerifyType(NN<JWTParam> param) const
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (param->GetIssuer().SetTo(s) && s->StartsWith(UTF8STRC("https://login.microsoftonline.com/")))
 	{
 		return VerifyType::Azure;
@@ -181,7 +181,7 @@ Bool Crypto::Token::JWToken::SignatureValid(Optional<Net::SSLEngine> ssl, const 
 	return sign.VerifyHash(sb.v, sb.leng, this->sign, this->signSize);
 }
 
-Data::StringMap<Text::String*> *Crypto::Token::JWToken::ParsePayload(NotNullPtr<JWTParam> param, Bool keepDefault, Text::StringBuilderUTF8 *sbErr)
+Data::StringMap<Text::String*> *Crypto::Token::JWToken::ParsePayload(NN<JWTParam> param, Bool keepDefault, Text::StringBuilderUTF8 *sbErr)
 {
 	param->Clear();
 	Text::JSONBase *payloadJson = Text::JSONBase::ParseJSONStr(this->payload->ToCString());
@@ -203,9 +203,9 @@ Data::StringMap<Text::String*> *Crypto::Token::JWToken::ParsePayload(NotNullPtr<
 	Text::JSONBase *json;
 	Data::ArrayListNN<Text::String> objNames;
 	payloadObj->GetObjectNames(objNames);
-	NotNullPtr<Text::String> name;
+	NN<Text::String> name;
 	Bool isDefault;
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = objNames.Iterator();
+	Data::ArrayIterator<NN<Text::String>> it = objNames.Iterator();
 	while (it.HasNext())
 	{
 		name = it.Next();
@@ -291,13 +291,13 @@ void Crypto::Token::JWToken::FreeResult(Data::StringMap<Text::String*> *result)
 {
 	if (result)
 	{
-		NotNullPtr<const Data::ArrayList<Text::String*>> vals = result->GetValues();
+		NN<const Data::ArrayList<Text::String*>> vals = result->GetValues();
 		LIST_FREE_STRING_NO_CLEAR(vals);
 		DEL_CLASS(result);
 	}
 }
 
-void Crypto::Token::JWToken::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Crypto::Token::JWToken::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
 	b64.EncodeBin(sb, this->header->v, this->header->leng);
@@ -383,7 +383,7 @@ Crypto::Token::JWToken *Crypto::Token::JWToken::Parse(Text::CStringNN token, Tex
 		MemFree(signBuff);
 		return 0;
 	}
-	NotNullPtr<Text::String> sAlg;
+	NN<Text::String> sAlg;
 	if (!json->GetValueString(CSTR("alg")).SetTo(sAlg))
 	{
 		if (sbErr) sbErr->AppendC(UTF8STRC("Token format error: alg is not found"));

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/MIMEViewer/AVIRMailViewer.h"
 
-SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::MIMEObj::MailMessage *mail) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, mail)
+SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, Text::MIMEObj::MailMessage *mail) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, mail)
 {
 	this->mail = mail;
 
@@ -75,7 +75,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NotNullPtr<SSWR::AVIRe
 	}
 	Data::ArrayList<Text::MIMEObj::MailMessage::MailAddress *> addrList;
 	Text::MIMEObj::MailMessage::MailAddress *addr;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;

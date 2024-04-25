@@ -15,8 +15,8 @@
 
 void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnFileClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCOVID19Form> me = userObj.GetNN<SSWR::AVIRead::AVIRCOVID19Form>();
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"COVID19", false);
+	NN<SSWR::AVIRead::AVIRCOVID19Form> me = userObj.GetNN<SSWR::AVIRead::AVIRCOVID19Form>();
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"COVID19", false);
 	dlg->AddFilter(CSTR("*.csv"), CSTR("CSV File"));
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
@@ -29,10 +29,10 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnFileClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnDownloadClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCOVID19Form> me = userObj.GetNN<SSWR::AVIRead::AVIRCOVID19Form>();
+	NN<SSWR::AVIRead::AVIRCOVID19Form> me = userObj.GetNN<SSWR::AVIRead::AVIRCOVID19Form>();
 	UInt8 buff[2048];
 	UOSInt i;
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(me->sockf, me->ssl, CSTR("https://covid.ourworldindata.org/data/owid-covid-data.csv"), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(me->sockf, me->ssl, CSTR("https://covid.ourworldindata.org/data/owid-covid-data.csv"), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	IO::MemoryStream mstm(1024);
 	while (true)
 	{
@@ -57,13 +57,13 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnCountrySelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCOVID19Form> me = userObj.GetNN<SSWR::AVIRead::AVIRCOVID19Form>();
-	NotNullPtr<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo> country;
+	NN<SSWR::AVIRead::AVIRCOVID19Form> me = userObj.GetNN<SSWR::AVIRead::AVIRCOVID19Form>();
+	NN<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo> country;
 	if (!me->lvCountry->GetSelectedItem().GetOpt<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo>().SetTo(country))
 		return;
-	NotNullPtr<Media::DrawEngine> deng = me->core->GetDrawEngine();
+	NN<Media::DrawEngine> deng = me->core->GetDrawEngine();
 	Math::Size2D<UOSInt> sz = me->pbNewCases->GetSizeP();
-	NotNullPtr<Media::DrawImage> dimg;
+	NN<Media::DrawImage> dimg;
 	if (dimg.Set(deng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 	{
 		SSWR::AVIRead::AVIRCOVID19Form::DailyRecord *record;
@@ -105,7 +105,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(AnyType use
 void SSWR::AVIRead::AVIRCOVID19Form::ClearRecords()
 {
 	SSWR::AVIRead::AVIRCOVID19Form::CountryInfo *country;
-	NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo*>> countryList = this->countries.GetValues();
+	NN<const Data::ArrayList<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo*>> countryList = this->countries.GetValues();
 	UOSInt i = countryList->GetCount();
 	UOSInt j;
 	while (i-- > 0)
@@ -125,7 +125,7 @@ void SSWR::AVIRead::AVIRCOVID19Form::ClearRecords()
 	this->lvCountry->ClearItems();
 }
 
-Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(NotNullPtr<IO::SeekableStream> stm)
+Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(NN<IO::SeekableStream> stm)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -143,7 +143,7 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(NotNullPtr<IO::SeekableStream> stm)
 	this->ClearRecords();
 	{
 		DB::CSVFile csv(stm, 65001);
-		NotNullPtr<DB::DBReader> r;
+		NN<DB::DBReader> r;
 		if (!csv.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			return false;
@@ -216,7 +216,7 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(NotNullPtr<IO::SeekableStream> stm)
 		}
 		csv.CloseReader(r);
 	}
-	NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo *>> countryList;
+	NN<const Data::ArrayList<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo *>> countryList;
 	countryList = this->countries.GetValues();
 	i = 0;
 	j = countryList->GetCount();
@@ -238,7 +238,7 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(NotNullPtr<IO::SeekableStream> stm)
 	return true;
 }
 
-SSWR::AVIRead::AVIRCOVID19Form::AVIRCOVID19Form(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRCOVID19Form::AVIRCOVID19Form(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("COVID-19"));

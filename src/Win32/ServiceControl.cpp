@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "Win32/ServiceControl.h"
 
-void __stdcall ServiceControl_WaitForExit(NotNullPtr<Core::IProgControl> progCtrl)
+void __stdcall ServiceControl_WaitForExit(NN<Core::IProgControl> progCtrl)
 {
 	Win32::ServiceControl *me = (Win32::ServiceControl*)progCtrl.Ptr();
 	while (!me->exited)
@@ -12,14 +12,14 @@ void __stdcall ServiceControl_WaitForExit(NotNullPtr<Core::IProgControl> progCtr
 	}
 }
 
-UTF8Char **__stdcall ServiceControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
+UTF8Char **__stdcall ServiceControl_GetCommandLines(NN<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
 {
 	Win32::ServiceControl *me = (Win32::ServiceControl*)progCtrl.Ptr();
 	cmdCnt.Set(1);
 	return &me->argv;
 }
 
-void Win32::ServiceControl_Create(NotNullPtr<Core::IProgControl> progCtrl)
+void Win32::ServiceControl_Create(NN<Core::IProgControl> progCtrl)
 {
 	Win32::ServiceControl *me = (Win32::ServiceControl*)progCtrl.Ptr();
 	NEW_CLASS(me->evt, Sync::Event(true));
@@ -33,7 +33,7 @@ void Win32::ServiceControl_Create(NotNullPtr<Core::IProgControl> progCtrl)
 	me->SignalRestart = ServiceControl_SignalRestart;
 }
 
-void Win32::ServiceControl_Destroy(NotNullPtr<Core::IProgControl> progCtrl)
+void Win32::ServiceControl_Destroy(NN<Core::IProgControl> progCtrl)
 {
 	Win32::ServiceControl *me = (Win32::ServiceControl*)progCtrl.Ptr();
 	Text::StrDelNew(me->argv);
@@ -41,14 +41,14 @@ void Win32::ServiceControl_Destroy(NotNullPtr<Core::IProgControl> progCtrl)
 }
 
 
-void Win32::ServiceControl_SignalExit(NotNullPtr<Core::IProgControl> progCtrl)
+void Win32::ServiceControl_SignalExit(NN<Core::IProgControl> progCtrl)
 {
 	Win32::ServiceControl *me = (Win32::ServiceControl*)progCtrl.Ptr();
 	me->exited = true;
 	me->evt->Set();
 }
 
-void Win32::ServiceControl_SignalRestart(NotNullPtr<Core::IProgControl> progCtrl)
+void Win32::ServiceControl_SignalRestart(NN<Core::IProgControl> progCtrl)
 {
 	Win32::ServiceControl* me = (Win32::ServiceControl*)progCtrl.Ptr();
 	me->exited = true;

@@ -12,17 +12,17 @@ namespace UtilUI
 	class TextSearchForm : public UI::GUIForm
 	{
 	private:
-		NotNullPtr<UI::GUILabel> lblSearch;
-		NotNullPtr<UI::GUITextBox> txtSearch;
-		NotNullPtr<UI::GUIButton> btnSearch;
-		NotNullPtr<UI::GUIButton> btnClose;
+		NN<UI::GUILabel> lblSearch;
+		NN<UI::GUITextBox> txtSearch;
+		NN<UI::GUIButton> btnSearch;
+		NN<UI::GUIButton> btnClose;
 		Media::MonitorMgr *monMgr;
 		UtilUI::TextViewerForm *mainFrm;
 
 		static void __stdcall OnSearchClicked(AnyType userObj);
 		static void __stdcall OnCloseClicked(AnyType userObj);
 	public:
-		TextSearchForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, Media::MonitorMgr *monMgr, UtilUI::TextViewerForm *mainFrm);
+		TextSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, Media::MonitorMgr *monMgr, UtilUI::TextViewerForm *mainFrm);
 		virtual ~TextSearchForm();
 
 		virtual void OnShow();

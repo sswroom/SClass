@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "UI/GUIRadioButton.h"
 
-UI::GUIRadioButton::GUIRadioButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
+UI::GUIRadioButton::GUIRadioButton(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
 {
 }
 

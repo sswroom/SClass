@@ -19,22 +19,22 @@ namespace SSWR
 		class AVIRGISFontStyleForm : public UI::GUIForm, public Media::IColorHandler
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Media::ColorManagerSess> colorSess;
-			NotNullPtr<Map::MapEnv> env;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Media::ColorManagerSess> colorSess;
+			NN<Map::MapEnv> env;
 			UOSInt fontStyle;
 			Bool changed;
-			NotNullPtr<Media::DrawEngine> eng;
+			NN<Media::DrawEngine> eng;
 
-			NotNullPtr<UI::GUIPanel> pnlBtn;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUIPanel> pnlBtn;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
-			NotNullPtr<UI::GUIGroupBox> grpStyle;
-			NotNullPtr<UI::GUIPanel> pnlStyle;
-			NotNullPtr<UI::GUIButton> btnAddStyle;
-			NotNullPtr<UI::GUIButton> btnRemoveStyle;
-			NotNullPtr<UI::GUIButton> btnEditStyle;
+			NN<UI::GUIGroupBox> grpStyle;
+			NN<UI::GUIPanel> pnlStyle;
+			NN<UI::GUIButton> btnAddStyle;
+			NN<UI::GUIButton> btnRemoveStyle;
+			NN<UI::GUIButton> btnEditStyle;
 			SSWR::AVIRead::AVIRFontSelector *fsFonts;
 
 			static void __stdcall AddStyleClicked(AnyType userObj);
@@ -47,13 +47,13 @@ namespace SSWR
 
 			void UpdatePreview();
 		public:
-			AVIRGISFontStyleForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, NotNullPtr<Media::DrawEngine> eng, UOSInt fontStyle);
+			AVIRGISFontStyleForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Media::DrawEngine> eng, UOSInt fontStyle);
 			virtual ~AVIRGISFontStyleForm();
 
 			virtual void OnMonitorChanged();
 
-			virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
-			virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);
+			virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
+			virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
 
 			UOSInt GetFontStyle();
 			Bool IsChanged();

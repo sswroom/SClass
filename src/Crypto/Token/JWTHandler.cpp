@@ -28,13 +28,13 @@ Crypto::Token::JWTHandler::~JWTHandler()
 		MemFree(this->key);
 }
 
-Bool Crypto::Token::JWTHandler::Generate(NotNullPtr<Text::StringBuilderUTF8> sb, Data::StringMap<const UTF8Char*> *payload, JWTParam *param)
+Bool Crypto::Token::JWTHandler::Generate(NN<Text::StringBuilderUTF8> sb, Data::StringMap<const UTF8Char*> *payload, JWTParam *param)
 {
-	NotNullPtr<Data::ArrayList<Text::String*>> keys = payload->GetKeys();
+	NN<Data::ArrayList<Text::String*>> keys = payload->GetKeys();
 	Text::String *key;
 	UOSInt i;
 	UOSInt j;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 	i = 0;
 	j = keys->GetCount();

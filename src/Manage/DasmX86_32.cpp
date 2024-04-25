@@ -19188,7 +19188,7 @@ Text::CString Manage::DasmX86_32::GetHeader(Bool fullRegs) const
 	}
 }
 
-Bool Manage::DasmX86_32::Disasm32(NotNullPtr<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt32 *currEip, UInt32 *currEsp, UInt32 *currEbp, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs)
+Bool Manage::DasmX86_32::Disasm32(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt32 *currEip, UInt32 *currEsp, UInt32 *currEbp, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs)
 {
 	UTF8Char sbuff[512];
 	DasmX86_32_Sess sess;
@@ -19303,7 +19303,7 @@ Bool Manage::DasmX86_32::Disasm32(NotNullPtr<IO::Writer> writer, Manage::Address
 	}
 }
 
-Bool Manage::DasmX86_32::Disasm32In(NotNullPtr<Text::StringBuilderUTF8> outStr, Manage::AddressResolver *addrResol, UInt32 *currEip, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::IMemoryReader *memReader)
+Bool Manage::DasmX86_32::Disasm32In(NN<Text::StringBuilderUTF8> outStr, Manage::AddressResolver *addrResol, UInt32 *currEip, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::IMemoryReader *memReader)
 {
 	UTF8Char sbuff[256];
 	UInt32 initIP = *currEip;

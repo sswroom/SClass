@@ -18,8 +18,8 @@ namespace UI
 			Math::Size2D<UOSInt> videoSize;
 
 			UI::GUIForm *ownerFrm;
-			NotNullPtr<UI::GUITimer> tmr;
-			NotNullPtr<Text::String> videoFileName;
+			NN<UI::GUITimer> tmr;
+			NN<Text::String> videoFileName;
 			Sync::Mutex frameMut;
 			Media::DrawImage *frameImg;
 			Parser::ParserList *parsers;
@@ -29,13 +29,13 @@ namespace UI
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnPBEnd(AnyType userObj);
 		protected:
-			virtual void DrawBkg(NotNullPtr<Media::DrawImage> dimg);
-			void DrawVideo(NotNullPtr<Media::DrawImage> dimg);
+			virtual void DrawBkg(NN<Media::DrawImage> dimg);
+			void DrawVideo(NN<Media::DrawImage> dimg);
 
-			virtual void LockUpdateSize(NotNullPtr<Sync::MutexUsage> mutUsage);
-			virtual void DrawFromSurface(NotNullPtr<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn);
+			virtual void LockUpdateSize(NN<Sync::MutexUsage> mutUsage);
+			virtual void DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn);
 		public:
-			VideoDObjHandler(UI::GUIForm *ownerFrm, NotNullPtr<Media::DrawEngine> deng, NotNullPtr<Media::ColorManagerSess> colorSess, NotNullPtr<Media::MonitorSurfaceMgr> surfaceMgr, Parser::ParserList *parsers, Text::CStringNN imageFileName, Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize, Text::CStringNN videoFileName);
+			VideoDObjHandler(UI::GUIForm *ownerFrm, NN<Media::DrawEngine> deng, NN<Media::ColorManagerSess> colorSess, NN<Media::MonitorSurfaceMgr> surfaceMgr, Parser::ParserList *parsers, Text::CStringNN imageFileName, Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize, Text::CStringNN videoFileName);
 			virtual ~VideoDObjHandler();
 
 			void UpdateVideoArea(Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize);

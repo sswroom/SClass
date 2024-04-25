@@ -5,17 +5,17 @@
 
 namespace Data
 {
-	template <class T> class SortableArrayListNN : public Data::ArrayListNN<T>, public Comparator<NotNullPtr<T>>
+	template <class T> class SortableArrayListNN : public Data::ArrayListNN<T>, public Comparator<NN<T>>
 	{
 	public:
 		SortableArrayListNN() : ArrayListNN<T>() {};
 		SortableArrayListNN(UOSInt capacity) : ArrayListNN<T>() {};
 
-		UOSInt SortedInsert(NotNullPtr<T> val);
-		OSInt SortedIndexOf(NotNullPtr<T> val) const;
+		UOSInt SortedInsert(NN<T> val);
+		OSInt SortedIndexOf(NN<T> val) const;
 	};
 
-	template <class T> UOSInt Data::SortableArrayListNN<T>::SortedInsert(NotNullPtr<T> val)
+	template <class T> UOSInt Data::SortableArrayListNN<T>::SortedInsert(NN<T> val)
 	{
 		OSInt i;
 		OSInt j;
@@ -45,7 +45,7 @@ namespace Data
 		return (UOSInt)i;
 	}
 
-	template <class T> OSInt Data::SortableArrayListNN<T>::SortedIndexOf(NotNullPtr<T> val) const
+	template <class T> OSInt Data::SortableArrayListNN<T>::SortedIndexOf(NN<T> val) const
 	{
 		OSInt i;
 		OSInt j;

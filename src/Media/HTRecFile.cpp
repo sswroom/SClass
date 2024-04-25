@@ -149,7 +149,7 @@ WChar *Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, WChar *buff)
 	return Text::StrUTF8_WChar(buff, sbuff, 0);
 }
 
-Bool Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[40];
 	UTF8Char *sptr;
@@ -427,7 +427,7 @@ Optional<Math::Geometry::Vector2D> Media::HTRecFile::HTRecReader::GetVector(UOSI
 	return 0;
 }
 
-Bool Media::HTRecFile::HTRecReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
+Bool Media::HTRecFile::HTRecReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 {
 	return false;
 }
@@ -480,7 +480,7 @@ DB::DBUtil::ColType Media::HTRecFile::HTRecReader::GetColType(UOSInt colIndex, O
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Media::HTRecFile::HTRecReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Media::HTRecFile::HTRecReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	return GetColDefV(colIndex, colDef, this->setting);
 }
@@ -514,7 +514,7 @@ Text::CString Media::HTRecFile::HTRecReader::GetName(UOSInt colIndex, Bool setti
 	return CSTR_NULL;
 }
 
-Bool Media::HTRecFile::HTRecReader::GetColDefV(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef, Bool setting)
+Bool Media::HTRecFile::HTRecReader::GetColDefV(UOSInt colIndex, NN<DB::ColDef> colDef, Bool setting)
 {
 	colDef->SetNotNull(true);
 	colDef->SetPK(colIndex == 0);
@@ -573,7 +573,7 @@ Bool Media::HTRecFile::HTRecReader::GetColDefV(UOSInt colIndex, NotNullPtr<DB::C
 	return false;
 }
 
-Media::HTRecFile::HTRecFile(NotNullPtr<IO::StreamData> stmData) : DB::ReadingDB(stmData->GetFullName())
+Media::HTRecFile::HTRecFile(NN<IO::StreamData> stmData) : DB::ReadingDB(stmData->GetFullName())
 {
 	UInt8 buff[96];
 	this->time1TS = 0;
@@ -651,7 +651,7 @@ Media::HTRecFile::~HTRecFile()
 	SDEL_TEXT(this->testName);
 }
 
-UOSInt Media::HTRecFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt Media::HTRecFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (this->recBuff.IsNull() || schemaName.leng != 0)
 	{
@@ -669,13 +669,13 @@ Optional<DB::DBReader> Media::HTRecFile::QueryTableData(Text::CString schemaName
 {
 	if (tableName.Equals(UTF8STRC("Setting")))
 	{
-		NotNullPtr<HTRecReader> reader;
+		NN<HTRecReader> reader;
 		NEW_CLASSNN(reader, HTRecReader(this, true));
 		return reader;
 	}
 	else if (tableName.Equals(UTF8STRC("Records")))
 	{
-		NotNullPtr<HTRecReader> reader;
+		NN<HTRecReader> reader;
 		NEW_CLASSNN(reader, HTRecReader(this, false));
 		return reader;
 	}
@@ -686,7 +686,7 @@ DB::TableDef *Media::HTRecFile::GetTableDef(Text::CString schemaName, Text::CStr
 {
 	UOSInt i = 0;
 	UOSInt j;
-	NotNullPtr<DB::ColDef> col;
+	NN<DB::ColDef> col;
 	DB::TableDef *tab = 0;
 	if (tableName.Equals(UTF8STRC("Setting")))
 	{
@@ -715,13 +715,13 @@ DB::TableDef *Media::HTRecFile::GetTableDef(Text::CString schemaName, Text::CStr
 	return tab;
 }
 
-void Media::HTRecFile::CloseReader(NotNullPtr<DB::DBReader> r)
+void Media::HTRecFile::CloseReader(NN<DB::DBReader> r)
 {
 	HTRecReader *reader = (HTRecReader*)r.Ptr();
 	DEL_CLASS(reader);
 }
 
-void Media::HTRecFile::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void Media::HTRecFile::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 }
 

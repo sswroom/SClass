@@ -46,7 +46,7 @@ namespace Crypto
 
 			Bool CalcHash(const UInt8 *buff, UOSInt buffSize);
 			Bool VerifyHash(const UInt8 *buff, UOSInt buffSize, const UInt8 *signature, UOSInt signatureSize);
-			Bool GetHashB64(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+			Bool GetHashB64(NN<Text::StringBuilderUTF8> sb) const;
 			const UInt8 *GetSignature() const;
 			UOSInt GetSignatureLen() const;
 

@@ -18,14 +18,14 @@ Math::Geometry::Vector2D::VectorType Math::Geometry::Polygon::GetVectorType() co
 	return Math::Geometry::Vector2D::VectorType::Polygon;
 }
 
-NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::Polygon::Clone() const
+NN<Math::Geometry::Vector2D> Math::Geometry::Polygon::Clone() const
 {
-	NotNullPtr<Math::Geometry::Polygon> pg;
+	NN<Math::Geometry::Polygon> pg;
 	NEW_CLASSNN(pg, Math::Geometry::Polygon(this->srid));
-	Data::ArrayIterator<NotNullPtr<Math::Geometry::LinearRing>> it = this->geometries.Iterator();
+	Data::ArrayIterator<NN<Math::Geometry::LinearRing>> it = this->geometries.Iterator();
 	while (it.HasNext())
 	{
-		pg->AddGeometry(NotNullPtr<LinearRing>::ConvertFrom(it.Next()->Clone()));
+		pg->AddGeometry(NN<LinearRing>::ConvertFrom(it.Next()->Clone()));
 	}
 	return pg;
 }
@@ -36,7 +36,7 @@ Double Math::Geometry::Polygon::CalBoundarySqrDistance(Math::Coord2DDbl pt, OutP
 	Math::Coord2DDbl minPt = Math::Coord2DDbl(0, 0);
 	Math::Coord2DDbl thisPt;
 	Double thisDist;
-	Data::ArrayIterator<NotNullPtr<Math::Geometry::LinearRing>> it = this->geometries.Iterator();
+	Data::ArrayIterator<NN<Math::Geometry::LinearRing>> it = this->geometries.Iterator();
 	while (it.HasNext())
 	{
 		thisDist = it.Next()->CalBoundarySqrDistance(pt, thisPt);
@@ -50,15 +50,15 @@ Double Math::Geometry::Polygon::CalBoundarySqrDistance(Math::Coord2DDbl pt, OutP
 	return minDist;
 }
 
-Bool Math::Geometry::Polygon::JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec)
+Bool Math::Geometry::Polygon::JoinVector(NN<const Math::Geometry::Vector2D> vec)
 {
 	if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::Polygon || this->srid != vec->GetSRID())
 		return false;
-	NotNullPtr<Math::Geometry::Polygon> pg = NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(vec);
-	Data::ArrayIterator<NotNullPtr<Math::Geometry::LinearRing>> it = pg->geometries.Iterator();
+	NN<Math::Geometry::Polygon> pg = NN<Math::Geometry::Polygon>::ConvertFrom(vec);
+	Data::ArrayIterator<NN<Math::Geometry::LinearRing>> it = pg->geometries.Iterator();
 	while (it.HasNext())
 	{
-		this->AddGeometry(NotNullPtr<LinearRing>::ConvertFrom(it.Next()->Clone()));
+		this->AddGeometry(NN<LinearRing>::ConvertFrom(it.Next()->Clone()));
 	}
 	return true;
 }
@@ -66,7 +66,7 @@ Bool Math::Geometry::Polygon::JoinVector(NotNullPtr<const Math::Geometry::Vector
 Bool Math::Geometry::Polygon::InsideOrTouch(Math::Coord2DDbl coord) const
 {
 	UOSInt insideCnt = 0;
-	Data::ArrayIterator<NotNullPtr<Math::Geometry::LinearRing>> it = this->geometries.Iterator();
+	Data::ArrayIterator<NN<Math::Geometry::LinearRing>> it = this->geometries.Iterator();
 	while (it.HasNext())
 	{
 		if (it.Next()->InsideOrTouch(coord))
@@ -340,19 +340,19 @@ void Math::Geometry::Polygon::SplitByJunction(Data::ArrayList<Math::Geometry::Po
 	results->Add(this);
 }*/
 
-NotNullPtr<Math::Geometry::MultiPolygon> Math::Geometry::Polygon::CreateMultiPolygon() const
+NN<Math::Geometry::MultiPolygon> Math::Geometry::Polygon::CreateMultiPolygon() const
 {
-	NotNullPtr<Math::Geometry::MultiPolygon> mpg;
+	NN<Math::Geometry::MultiPolygon> mpg;
 	NEW_CLASSNN(mpg, Math::Geometry::MultiPolygon(this->srid));
 	if (this->geometries.GetCount() <= 1)
 	{
-		mpg->AddGeometry(NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(this->Clone()));
+		mpg->AddGeometry(NN<Math::Geometry::Polygon>::ConvertFrom(this->Clone()));
 		return mpg;
 	}
 	Data::ArrayListNN<Math::Geometry::Polygon> pgList;
-	NotNullPtr<Math::Geometry::Polygon> pg;
-	NotNullPtr<Math::Geometry::LinearRing> lr;
-	Data::ArrayIterator<NotNullPtr<Math::Geometry::LinearRing>> it = this->geometries.Iterator();
+	NN<Math::Geometry::Polygon> pg;
+	NN<Math::Geometry::LinearRing> lr;
+	Data::ArrayIterator<NN<Math::Geometry::LinearRing>> it = this->geometries.Iterator();
 	UOSInt k;
 	Bool found;
 	while (it.HasNext())
@@ -365,18 +365,18 @@ NotNullPtr<Math::Geometry::MultiPolygon> Math::Geometry::Polygon::CreateMultiPol
 			if (pgList.GetItem(k).SetTo(pg) && pg->InsideOrTouch(lr->GetPoint(0)))
 			{
 				found = true;
-				pg->AddGeometry(NotNullPtr<LinearRing>::ConvertFrom(lr->Clone()));
+				pg->AddGeometry(NN<LinearRing>::ConvertFrom(lr->Clone()));
 				break;
 			}
 		}
 		if (!found)
 		{
 			NEW_CLASSNN(pg, Math::Geometry::Polygon(this->srid));
-			pg->AddGeometry(NotNullPtr<LinearRing>::ConvertFrom(lr->Clone()));
+			pg->AddGeometry(NN<LinearRing>::ConvertFrom(lr->Clone()));
 			pgList.Add(pg);
 		}
 	}
-	Data::ArrayIterator<NotNullPtr<Math::Geometry::Polygon>> itPG = pgList.Iterator();
+	Data::ArrayIterator<NN<Math::Geometry::Polygon>> itPG = pgList.Iterator();
 	while (itPG.HasNext())
 	{
 		mpg->AddGeometry(itPG.Next());
@@ -386,7 +386,7 @@ NotNullPtr<Math::Geometry::MultiPolygon> Math::Geometry::Polygon::CreateMultiPol
 
 void Math::Geometry::Polygon::AddFromPtOfst(UInt32 *ptOfstList, UOSInt nPtOfst, Math::Coord2DDbl *pointList, UOSInt nPoint, Double *zList, Double *mList)
 {
-	NotNullPtr<LinearRing> linearRing;
+	NN<LinearRing> linearRing;
 	UOSInt i = 0;
 	UOSInt j;
 	UOSInt k;
@@ -423,11 +423,11 @@ UOSInt Math::Geometry::Polygon::FillPointOfstList(Math::Coord2DDbl *pointList, U
 {
 	UOSInt totalCnt = 0;
 	UOSInt nPoint;
-	NotNullPtr<LineString> lineString;
+	NN<LineString> lineString;
 	Math::Coord2DDbl *thisPtList;
 	Double *dList;
 	UOSInt k;
-	Data::ArrayIterator<NotNullPtr<Math::Geometry::LinearRing>> it = this->geometries.Iterator();
+	Data::ArrayIterator<NN<Math::Geometry::LinearRing>> it = this->geometries.Iterator();
 	UOSInt i = 0;
 	while (it.HasNext())
 	{

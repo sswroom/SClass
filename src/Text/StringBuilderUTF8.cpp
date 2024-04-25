@@ -7,7 +7,7 @@
 
 #define STRINGBUILDER_ALLOCLENG(leng) this->AllocLeng(leng)
 
-NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(Text::StringBase<UTF8Char> *s)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(Text::StringBase<UTF8Char> *s)
 {
 	if (s == 0)
 	{
@@ -22,7 +22,7 @@ NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(Text::String
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(NotNullPtr<Text::String> s)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(NN<Text::String> s)
 {
 	STRINGBUILDER_ALLOCLENG(s->leng);
 	MemCopyNO(&this->v[this->leng], s->v, s->leng + 1);
@@ -30,7 +30,7 @@ NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(NotNullPtr<T
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(Text::StringBase<const UTF8Char> *s)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(Text::StringBase<const UTF8Char> *s)
 {
 	if (s == 0)
 	{
@@ -45,7 +45,7 @@ NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(Text::String
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(const Text::StringBase<UTF8Char> &s)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(const Text::StringBase<UTF8Char> &s)
 {
 	if (s.leng > 0)
 	{
@@ -56,7 +56,7 @@ NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(const Text::
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(const Text::StringBase<const UTF8Char> &s)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(const Text::StringBase<const UTF8Char> &s)
 {
 	if (s.leng > 0)
 	{
@@ -67,9 +67,9 @@ NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(const Text::
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendOpt(Optional<Text::String> s)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendOpt(Optional<Text::String> s)
 {
-	NotNullPtr<Text::String> ns;
+	NN<Text::String> ns;
 	if (!s.SetTo(ns))
 	{
 		return *this;
@@ -84,7 +84,7 @@ NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendOpt(Optional<
 
 }
 
-NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendW(const WChar *s)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendW(const WChar *s)
 {
 	UOSInt charCnt = Text::StrWChar_UTF8Cnt(s);
 	STRINGBUILDER_ALLOCLENG(charCnt);
@@ -93,7 +93,7 @@ NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendW(const WChar
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendW(const WChar *s, UOSInt len)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendW(const WChar *s, UOSInt len)
 {
 	UOSInt charCnt = Text::StrWChar_UTF8CntC(s, len);
 	STRINGBUILDER_ALLOCLENG(charCnt);
@@ -103,7 +103,7 @@ NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendW(const WChar
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16(const UTF16Char *s)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16(const UTF16Char *s)
 {
 	UOSInt charCnt = Text::StrUTF16_UTF8Cnt(s);
 	STRINGBUILDER_ALLOCLENG(charCnt);
@@ -112,7 +112,7 @@ NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16(const U
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16(const UTF16Char *s, UOSInt utf16Cnt)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16(const UTF16Char *s, UOSInt utf16Cnt)
 {
 	UOSInt charCnt = Text::StrUTF16_UTF8CntC(s, utf16Cnt);
 	STRINGBUILDER_ALLOCLENG(charCnt);
@@ -122,7 +122,7 @@ NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16(const U
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16BE(const UInt8 *s, UOSInt utf16Cnt)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16BE(const UInt8 *s, UOSInt utf16Cnt)
 {
 	UOSInt charCnt = Text::StrUTF16BE_UTF8CntC(s, utf16Cnt);
 	STRINGBUILDER_ALLOCLENG(charCnt);
@@ -132,7 +132,7 @@ NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16BE(const
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF32(const UTF32Char *s)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF32(const UTF32Char *s)
 {
 	UOSInt charCnt = Text::StrUTF32_UTF8Cnt(s);
 	STRINGBUILDER_ALLOCLENG(charCnt);
@@ -141,7 +141,7 @@ NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF32(const U
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF32(const UTF32Char *s, UOSInt utf32Cnt)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF32(const UTF32Char *s, UOSInt utf32Cnt)
 {
 	UOSInt charCnt = Text::StrUTF32_UTF8CntC(s, utf32Cnt);
 	STRINGBUILDER_ALLOCLENG(charCnt);
@@ -151,7 +151,7 @@ NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF32(const U
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendSlow(const UTF8Char *s)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendSlow(const UTF8Char *s)
 {
 	if (s == 0)
 	{
@@ -166,7 +166,7 @@ NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendSlow(const UT
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendS(const UTF8Char *s, UOSInt maxLen)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendS(const UTF8Char *s, UOSInt maxLen)
 {
 	if (maxLen > 0)
 	{
@@ -176,7 +176,7 @@ NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendS(const UTF8C
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendChar(UTF32Char c, UOSInt repCnt)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendChar(UTF32Char c, UOSInt repCnt)
 {
 	UTF8Char oc[6];
 	UTF8Char *buffEnd;
@@ -275,9 +275,9 @@ NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendChar(UTF32Cha
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendCSV(const UTF8Char **sarr, UOSInt nStr)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendCSV(const UTF8Char **sarr, UOSInt nStr)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UOSInt i;
 	i = 0;
 	while (i < nStr)
@@ -292,21 +292,21 @@ NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendCSV(const UTF
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendToUpper(const UTF8Char *s, UOSInt len)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendToUpper(const UTF8Char *s, UOSInt len)
 {
 	STRINGBUILDER_ALLOCLENG(len);
 	this->leng = (UOSInt)(Text::StrToUpperC(&this->v[this->leng], s, len) - this->v);
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendToLower(const UTF8Char *s, UOSInt len)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendToLower(const UTF8Char *s, UOSInt len)
 {
 	STRINGBUILDER_ALLOCLENG(len);
 	this->leng = (UOSInt)(Text::StrToLowerC(&this->v[this->leng], s, len) - this->v);
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF8> Text::StringBuilderUTF8::RemoveANSIEscapes()
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::RemoveANSIEscapes()
 {
 	this->leng = (UOSInt)(Text::StrRemoveANSIEscapes(this->v) - this->v);
 	return *this;

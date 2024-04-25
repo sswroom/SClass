@@ -8,12 +8,12 @@
 #include "Math/Geometry/Point.h"
 #include "Math/Geometry/PointZ.h"
 
-Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NotNullPtr<Text::XMLReader> reader, Text::CStringNN fileName)
+Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NN<Text::XMLReader> reader, Text::CStringNN fileName)
 {
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element || !reader->GetNodeTextNN()->EndsWith(UTF8STRC(":FeatureCollection")))
 		return 0;
 	
-	NotNullPtr<Text::String> nodeText;
+	NN<Text::String> nodeText;
 	ParseEnv env;
 	env.csys = 0;
 	env.srid = 0;
@@ -39,7 +39,7 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NotNullPtr<Text::XMLReade
 					tableName = Text::String::New(nodeText->ToCString().Substring(i + 1)).Ptr();
 				}
 				Math::Geometry::Vector2D *vec = 0;
-				NotNullPtr<Math::Geometry::Vector2D> nnvec;
+				NN<Math::Geometry::Vector2D> nnvec;
 				while (reader->NextElementName().SetTo(nodeText))
 				{
 					if (nodeText->Equals(UTF8STRC("gml:pointProperty")))
@@ -139,7 +139,7 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NotNullPtr<Text::XMLReade
 					{
 						colCnt = nameList.GetCount();
 						ccols = nameList.Ptr();
-						NotNullPtr<Math::CoordinateSystem> csys;
+						NN<Math::CoordinateSystem> csys;
 						if (!csys.Set(env.csys))
 						{
 							csys = Math::CoordinateSystemManager::CreateDefaultCsys();
@@ -190,7 +190,7 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NotNullPtr<Text::XMLReade
 	return lyr;
 }
 
-Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NotNullPtr<Text::XMLReader> reader, NotNullPtr<ParseEnv> env)
+Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NN<Text::XMLReader> reader, NN<ParseEnv> env)
 {
 	UTF8Char *sarr[4];
 	UTF8Char *sarr2[4];
@@ -218,7 +218,7 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NotNullPtr<Text::XMLReader>
 		}
 	}
 
-	NotNullPtr<Text::String> nodeName = reader->GetNodeTextNN();
+	NN<Text::String> nodeName = reader->GetNodeTextNN();
 	if (nodeName->Equals(UTF8STRC("gml:Point")))
 	{
 		Double x;
@@ -287,7 +287,7 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NotNullPtr<Text::XMLReader>
 		Data::ArrayListDbl yPts;
 		Data::ArrayListDbl zPts;
 		Math::Geometry::Polygon *pg;
-		NotNullPtr<Math::Geometry::LinearRing> lr;
+		NN<Math::Geometry::LinearRing> lr;
 		Math::Coord2DDbl *ptList;
 		Text::StringBuilderUTF8 sb;
 		while (reader->NextElementName().SetTo(nodeName))
@@ -433,7 +433,7 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NotNullPtr<Text::XMLReader>
 	else if (nodeName->Equals(UTF8STRC("gml:MultiPolygon")))
 	{
 		Math::Geometry::MultiPolygon *mpg = 0;
-		NotNullPtr<Math::Geometry::Vector2D> newVec;
+		NN<Math::Geometry::Vector2D> newVec;
 		while (reader->NextElementName().SetTo(nodeName))
 		{
 			if (nodeName->Equals(UTF8STRC("gml:polygonMember")))
@@ -450,7 +450,7 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NotNullPtr<Text::XMLReader>
 								SDEL_CLASS(vec);
 								vec = mpg;
 							}
-							mpg->AddGeometry(NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(newVec));
+							mpg->AddGeometry(NN<Math::Geometry::Polygon>::ConvertFrom(newVec));
 						}
 						else
 						{
@@ -471,7 +471,7 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NotNullPtr<Text::XMLReader>
 		Data::ArrayListDbl yPts;
 		Data::ArrayListDbl zPts;
 		Math::Geometry::Polygon *pg;
-		NotNullPtr<Math::Geometry::LinearRing> lr;
+		NN<Math::Geometry::LinearRing> lr;
 		Math::Coord2DDbl *ptList;
 		Text::StringBuilderUTF8 sb;
 		NEW_CLASS(pg, Math::Geometry::Polygon(env->srid));

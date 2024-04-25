@@ -19,20 +19,20 @@ namespace SSWR
 		class AVIRWiFiLogManagerForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUIButton> btnFile;
-			NotNullPtr<UI::GUICheckBox> chkUnkOnly;
-			NotNullPtr<UI::GUITextBox> txtFilter;
-			NotNullPtr<UI::GUIButton> btnFilter;
-			NotNullPtr<UI::GUIButton> btnStore;
-			NotNullPtr<UI::GUILabel> lblInfo;
-			NotNullPtr<UI::GUILabel> lblDblClk;
-			NotNullPtr<UI::GUIComboBox> cboDblClk;
-			NotNullPtr<UI::GUITextBox> txtFileIE;
-			NotNullPtr<UI::GUIVSplitter> vspFile;
-			NotNullPtr<UI::GUIListView> lvContent;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUIButton> btnFile;
+			NN<UI::GUICheckBox> chkUnkOnly;
+			NN<UI::GUITextBox> txtFilter;
+			NN<UI::GUIButton> btnFilter;
+			NN<UI::GUIButton> btnStore;
+			NN<UI::GUILabel> lblInfo;
+			NN<UI::GUILabel> lblDblClk;
+			NN<UI::GUIComboBox> cboDblClk;
+			NN<UI::GUITextBox> txtFileIE;
+			NN<UI::GUIVSplitter> vspFile;
+			NN<UI::GUIListView> lvContent;
 
 			Net::WiFiLogFile *wifiLogFile;
 			Net::MACInfoList *macList;
@@ -50,7 +50,7 @@ namespace SSWR
 
 			void UpdateStatus();
 		public:
-			AVIRWiFiLogManagerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRWiFiLogManagerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWiFiLogManagerForm();
 
 			virtual void OnMonitorChanged();

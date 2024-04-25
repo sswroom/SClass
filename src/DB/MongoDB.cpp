@@ -56,7 +56,7 @@ DB::MongoDB::~MongoDB()
 	}
 }
 
-UOSInt DB::MongoDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt DB::MongoDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (this->database == 0 || this->client == 0 || schemaName.leng != 0)
 		return 0;
@@ -92,7 +92,7 @@ Optional<DB::DBReader> DB::MongoDB::QueryTableData(Text::CString schemaName, Tex
 		mongoc_collection_t *coll = mongoc_client_get_collection((mongoc_client_t*)this->client, (const Char*)this->database->v, (const Char*)tableName.v);
 		if (coll)
 		{
-			NotNullPtr<DB::MongoDBReader> reader;
+			NN<DB::MongoDBReader> reader;
 			NEW_CLASSNN(reader, DB::MongoDBReader(this, coll));
 			return reader;
 		}
@@ -102,7 +102,7 @@ Optional<DB::DBReader> DB::MongoDB::QueryTableData(Text::CString schemaName, Tex
 
 DB::TableDef *DB::MongoDB::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
-	NotNullPtr<DB::ColDef> colDef;
+	NN<DB::ColDef> colDef;
 	DB::TableDef *tab;
 	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
 	NEW_CLASSNN(colDef, DB::ColDef(CSTR("Data")));
@@ -118,13 +118,13 @@ DB::TableDef *DB::MongoDB::GetTableDef(Text::CString schemaName, Text::CString t
 	return tab;
 }
 
-void DB::MongoDB::CloseReader(NotNullPtr<DBReader> r)
+void DB::MongoDB::CloseReader(NN<DBReader> r)
 {
 	DB::MongoDBReader *reader = (DB::MongoDBReader*)r.Ptr();
 	DEL_CLASS(reader);
 }
 
-void DB::MongoDB::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void DB::MongoDB::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 	if (this->errorMsg)
 	{
@@ -137,7 +137,7 @@ void DB::MongoDB::Reconnect()
 
 }
 
-UOSInt DB::MongoDB::GetDatabaseNames(NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt DB::MongoDB::GetDatabaseNames(NN<Data::ArrayListStringNN> names)
 {
 	bson_error_t error;
 	SDEL_STRING(this->errorMsg);
@@ -162,7 +162,7 @@ UOSInt DB::MongoDB::GetDatabaseNames(NotNullPtr<Data::ArrayListStringNN> names)
 	}
 }
 
-void DB::MongoDB::FreeDatabaseNames(NotNullPtr<Data::ArrayListStringNN> names)
+void DB::MongoDB::FreeDatabaseNames(NN<Data::ArrayListStringNN> names)
 {
 	UOSInt i = names->GetCount();
 	while (i-- > 0)
@@ -172,7 +172,7 @@ void DB::MongoDB::FreeDatabaseNames(NotNullPtr<Data::ArrayListStringNN> names)
 	names->Clear();
 }
 
-void DB::MongoDB::BuildURL(NotNullPtr<Text::StringBuilderUTF8> out, Text::CString userName, Text::CString password, Text::CString host, UInt16 port)
+void DB::MongoDB::BuildURL(NN<Text::StringBuilderUTF8> out, Text::CString userName, Text::CString password, Text::CString host, UInt16 port)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -259,7 +259,7 @@ WChar *DB::MongoDBReader::GetStr(UOSInt colIndex, WChar *buff)
 	}
 }
 
-Bool DB::MongoDBReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool DB::MongoDBReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	if (colIndex != 0)
 		return false;
@@ -283,7 +283,7 @@ Optional<Text::String> DB::MongoDBReader::GetNewStr(UOSInt colIndex)
 	if (this->doc)
 	{
 		char *str = bson_as_canonical_extended_json((const bson_t*)this->doc, 0);
-		NotNullPtr<Text::String> ret = Text::String::NewNotNullSlow((const UTF8Char*)str);
+		NN<Text::String> ret = Text::String::NewNotNullSlow((const UTF8Char*)str);
 		bson_free(str);
 		return ret;
 	}
@@ -340,7 +340,7 @@ Optional<Math::Geometry::Vector2D> DB::MongoDBReader::GetVector(UOSInt colIndex)
 	return 0;
 }
 
-Bool DB::MongoDBReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
+Bool DB::MongoDBReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 {
 	return false;
 }
@@ -377,7 +377,7 @@ DB::DBUtil::ColType DB::MongoDBReader::GetColType(UOSInt colIndex, OptOut<UOSInt
 	return DB::DBUtil::CT_VarUTF8Char;
 }
 
-Bool DB::MongoDBReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool DB::MongoDBReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	if (colIndex != 0)
 		return false;

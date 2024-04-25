@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Map/ESRI/ESRIFeatureServer.h"
 
-Map::ESRI::ESRIFeatureServer::ESRIFeatureServer(Text::CStringNN url, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl)
+Map::ESRI::ESRIFeatureServer::ESRIFeatureServer(Text::CStringNN url, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -43,12 +43,12 @@ Optional<Map::ESRI::ESRIFeatureServer::LayerInfo> Map::ESRI::ESRIFeatureServer::
 	JSONREQ_RET(this->sockf, this->ssl, sb.ToCString(), LayerInfo)
 }
 
-NotNullPtr<Text::String> Map::ESRI::ESRIFeatureServer::GetURL() const
+NN<Text::String> Map::ESRI::ESRIFeatureServer::GetURL() const
 {
 	return this->url;
 }
 
-NotNullPtr<Text::String> Map::ESRI::ESRIFeatureServer::GetName() const
+NN<Text::String> Map::ESRI::ESRIFeatureServer::GetName() const
 {
 	return this->name;
 }

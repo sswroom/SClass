@@ -28,13 +28,13 @@ namespace Media
 			void SetupYUV14_RGB13();
 
 		protected:
-			CSYUV_LRGBC(NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess);
+			CSYUV_LRGBC(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess);
 			virtual ~CSYUV_LRGBC();
 			virtual void UpdateTable();
 
 		public:
-			virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuv);
-			virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgb);
+			virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuv);
+			virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgb);
 			virtual UOSInt GetDestFrameSize(UOSInt width, UOSInt height);
 		};
 	}

@@ -13,7 +13,7 @@ namespace Math
 		WKBWriter(Bool isoMode);
 		~WKBWriter();
 
-		Bool Write(NotNullPtr<IO::Stream> stm, NotNullPtr<Math::Geometry::Vector2D> vec);
+		Bool Write(NN<IO::Stream> stm, NN<Math::Geometry::Vector2D> vec);
 	};
 }
 #endif

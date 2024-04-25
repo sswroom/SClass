@@ -11,15 +11,15 @@ Data::ArrayListStringNN::ArrayListStringNN(UOSInt capacity) : Data::SortableArra
 {
 }
 
-NotNullPtr<Data::ArrayListNN<Text::String>> Data::ArrayListStringNN::Clone() const
+NN<Data::ArrayListNN<Text::String>> Data::ArrayListStringNN::Clone() const
 {
-	NotNullPtr<Data::ArrayListStringNN> newArr;
+	NN<Data::ArrayListStringNN> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListStringNN(this->capacity));
 	newArr->AddAll(*this);
 	return newArr;
 }
 
-OSInt Data::ArrayListStringNN::Compare(NotNullPtr<Text::String> obj1, NotNullPtr<Text::String> obj2) const
+OSInt Data::ArrayListStringNN::Compare(NN<Text::String> obj1, NN<Text::String> obj2) const
 {
 	return obj1->CompareTo(obj2->ToCString());
 }
@@ -64,9 +64,9 @@ UOSInt Data::ArrayListStringNN::IndexOfC(Text::CStringNN val) const
 	return INVALID_INDEX;
 }
 
-NotNullPtr<Text::String> Data::ArrayListStringNN::JoinString() const
+NN<Text::String> Data::ArrayListStringNN::JoinString() const
 {
-	NotNullPtr<Text::String> newStr;
+	NN<Text::String> newStr;
 	UOSInt newStrLeng = 0;
 	UOSInt j;
 	UOSInt i;

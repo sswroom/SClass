@@ -210,7 +210,7 @@ Map::DrawLayerType Map::CIPLayer2::GetLayerType() const
 	return lyrType;
 }
 
-UOSInt Map::CIPLayer2::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::CIPLayer2::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	UOSInt textSize;
 	UOSInt i;
@@ -305,7 +305,7 @@ UOSInt Map::CIPLayer2::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, 
 	return l;
 }
 
-UOSInt Map::CIPLayer2::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::CIPLayer2::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	rect.min.x = Double2Int32(rect.min.x * 200000.0 / mapRate);
 	rect.min.y = Double2Int32(rect.min.y * 200000.0 / mapRate);
@@ -473,7 +473,7 @@ UOSInt Map::CIPLayer2::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, Nam
 	return l;
 }
 
-UOSInt Map::CIPLayer2::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::CIPLayer2::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	rect = rect * 200000;
 	return GetObjectIds(outArr, nameArr, 200000.0, Math::RectArea<Int32>(Math::Coord2D<Int32>(Double2Int32(rect.min.x), Double2Int32(rect.min.y)),
@@ -496,7 +496,7 @@ void Map::CIPLayer2::ReleaseNameArr(NameArray *nameArr)
 	DEL_CLASS(tmpMap);
 }
 
-Bool Map::CIPLayer2::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::CIPLayer2::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	Data::FastMap<Int32, UTF16Char*> *tmpMap = (Data::FastMap<Int32, UTF16Char*>*)nameArr;
 	if (strIndex != 0)
@@ -547,7 +547,7 @@ DB::DBUtil::ColType Map::CIPLayer2::GetColumnType(UOSInt colIndex, OptOut<UOSInt
 	}
 }
 
-Bool Map::CIPLayer2::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Map::CIPLayer2::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	if (colIndex != 0)
 		return false;
@@ -731,7 +731,7 @@ Math::Geometry::Vector2D *Map::CIPLayer2::GetNewVectorById(GetObjectSess *sessio
 	else if (this->lyrType == Map::DRAW_LAYER_POLYLINE)
 	{
 		Math::Geometry::Polyline *pl;
-		NotNullPtr<Math::Geometry::LineString> lineString;
+		NN<Math::Geometry::LineString> lineString;
 		NEW_CLASS(pl, Math::Geometry::Polyline(4326));
 		UOSInt i = 0;
 		UOSInt j;
@@ -763,7 +763,7 @@ Math::Geometry::Vector2D *Map::CIPLayer2::GetNewVectorById(GetObjectSess *sessio
 	else if (this->lyrType == Map::DRAW_LAYER_POLYGON)
 	{
 		Math::Geometry::Polygon *pg = 0;
-		NotNullPtr<Math::Geometry::LinearRing> lr;
+		NN<Math::Geometry::LinearRing> lr;
 		Math::Coord2DDbl *tmpPoints;
 		UOSInt i;
 		UOSInt j;

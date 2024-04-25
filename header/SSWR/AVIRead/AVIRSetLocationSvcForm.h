@@ -14,24 +14,24 @@ namespace SSWR
 		class AVIRSetLocationSvcForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUILabel> lblGPS;
-			NotNullPtr<UI::GUICheckBox> chkGPS;
-			NotNullPtr<UI::GUIButton> btnGPS;
-			NotNullPtr<UI::GUITextBox> txtGPS;
+			NN<UI::GUILabel> lblGPS;
+			NN<UI::GUICheckBox> chkGPS;
+			NN<UI::GUIButton> btnGPS;
+			NN<UI::GUITextBox> txtGPS;
 
-			NotNullPtr<UI::GUILabel> lblWifi;
-			NotNullPtr<UI::GUICheckBox> chkWifi;
+			NN<UI::GUILabel> lblWifi;
+			NN<UI::GUICheckBox> chkWifi;
 
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
 			static void __stdcall OnOKClick(AnyType userObj);
 			static void __stdcall OnCancelClick(AnyType userObj);
 			static void __stdcall OnGPSClick(AnyType userObj);
 		public:
-			AVIRSetLocationSvcForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRSetLocationSvcForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSetLocationSvcForm();
 
 			virtual void OnMonitorChanged();

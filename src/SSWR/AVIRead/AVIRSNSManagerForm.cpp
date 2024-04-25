@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelAddClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNSManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNSManagerForm>();
+	NN<SSWR::AVIRead::AVIRSNSManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNSManagerForm>();
 	Net::SNS::SNSControl::SNSType typ = (Net::SNS::SNSControl::SNSType)me->cboChannel->GetSelectedItem().GetOSInt();
 	Text::StringBuilderUTF8 sb;
 	me->txtChannelId->GetText(sb);
@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelAddClicked(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelsSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNSManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNSManagerForm>();
+	NN<SSWR::AVIRead::AVIRSNSManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNSManagerForm>();
 	Net::SNS::SNSControl *ctrl = (Net::SNS::SNSControl*)me->lbChannels->GetSelectedItem().p;
 	me->lvCurrItems->ClearItems();
 	if (ctrl)
@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelsSelChg(AnyType userO
 		UOSInt i;
 		UOSInt j;
 		Data::DateTime dt;
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
 		Sync::MutexUsage mutUsage;
@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelsSelChg(AnyType userO
 	}
 }
 
-SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("SNS Manager"));
 	this->SetFont(UTF8STRC("MingLiu"), 8.25, false);

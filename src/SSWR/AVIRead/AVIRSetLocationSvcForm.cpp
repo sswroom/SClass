@@ -4,13 +4,13 @@
 
 void __stdcall SSWR::AVIRead::AVIRSetLocationSvcForm::OnOKClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSetLocationSvcForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetLocationSvcForm>();
+	NN<SSWR::AVIRead::AVIRSetLocationSvcForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetLocationSvcForm>();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
 void __stdcall SSWR::AVIRead::AVIRSetLocationSvcForm::OnCancelClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSetLocationSvcForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetLocationSvcForm>();
+	NN<SSWR::AVIRead::AVIRSetLocationSvcForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetLocationSvcForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRSetLocationSvcForm::OnGPSClick(AnyType userObj
 //	SSWR::AVIRead::AVIRSetLocationSvcForm *me = (SSWR::AVIRead::AVIRSetLocationSvcForm*)userObj;
 }
 
-SSWR::AVIRead::AVIRSetLocationSvcForm::AVIRSetLocationSvcForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 272, ui)
+SSWR::AVIRead::AVIRSetLocationSvcForm::AVIRSetLocationSvcForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 272, ui)
 {
 	this->SetText(CSTR("Set Location Service"));
 	this->SetFont(0, 0, 8.25, false);

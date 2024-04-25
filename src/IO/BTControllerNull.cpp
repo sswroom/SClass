@@ -12,7 +12,7 @@ IO::BTController::BTDevice::~BTDevice()
 {
 }
 
-NotNullPtr<Text::String> IO::BTController::BTDevice::GetName() const
+NN<Text::String> IO::BTController::BTDevice::GetName() const
 {
 	return Text::String::NewEmpty();
 }
@@ -110,7 +110,7 @@ UInt8 *IO::BTController::GetAddress()
 	return this->addr;
 }
 
-NotNullPtr<Text::String> IO::BTController::GetName() const
+NN<Text::String> IO::BTController::GetName() const
 {
 	return this->name;
 }

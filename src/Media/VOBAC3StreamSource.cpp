@@ -6,7 +6,7 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
 
-Media::VOBAC3StreamSource::VOBAC3StreamSource(NotNullPtr<Media::IStreamControl> pbc)
+Media::VOBAC3StreamSource::VOBAC3StreamSource(NN<Media::IStreamControl> pbc)
 {
 	this->pbc = pbc;
 	this->fmt.formatId = 0x2000;
@@ -81,7 +81,7 @@ Bool Media::VOBAC3StreamSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTime
 	return false;
 }
 
-void Media::VOBAC3StreamSource::GetFormat(NotNullPtr<Media::AudioFormat> format)
+void Media::VOBAC3StreamSource::GetFormat(NN<Media::AudioFormat> format)
 {
 	format->FromAudioFormat(this->fmt);
 }

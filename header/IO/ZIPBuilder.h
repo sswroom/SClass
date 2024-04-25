@@ -39,7 +39,7 @@ namespace IO
 	private:
 		typedef struct
 		{
-			NotNullPtr<Text::String> fileName;
+			NN<Text::String> fileName;
 			UInt64 fileOfst;
 			Data::Timestamp fileModTime;
 			Data::Timestamp fileCreateTime;
@@ -69,7 +69,7 @@ TTTTsstrwxrwxrwx0000000000ADVSHR
 		
 	private:
 		IO::BufferedOutputStream stm;
-		NotNullPtr<IO::SeekableStream> outStm;
+		NN<IO::SeekableStream> outStm;
 		Crypto::Hash::CRC32RIEEE crc;
 		UInt64 baseOfst;
 		UInt64 currOfst;
@@ -78,7 +78,7 @@ TTTTsstrwxrwxrwx0000000000ADVSHR
 		ZIPOS osType;
 
 	public:
-		ZIPBuilder(NotNullPtr<IO::SeekableStream> stm, ZIPOS os);
+		ZIPBuilder(NN<IO::SeekableStream> stm, ZIPOS os);
 		~ZIPBuilder();
 
 		Bool AddFile(Text::CStringNN fileName, const UInt8 *fileContent, UOSInt fileSize, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel, UInt32 unixAttr);

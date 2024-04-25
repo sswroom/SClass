@@ -18,11 +18,11 @@ namespace UI
 		typedef void (__stdcall *MapUpdatedHandler)(AnyType userObj, Math::Coord2DDbl center, Double drawTime);
 		typedef void (__stdcall *ScaleChangedHandler)(AnyType userObj, Double newScale);
 		typedef void (__stdcall *MouseMoveHandler)(AnyType userObj, Math::Coord2D<OSInt> scnPos);
-		typedef void (__stdcall *DrawHandler)(AnyType userObj, NotNullPtr<Media::DrawImage> dimg, OSInt xOfst, OSInt yOfst);
+		typedef void (__stdcall *DrawHandler)(AnyType userObj, NN<Media::DrawImage> dimg, OSInt xOfst, OSInt yOfst);
 	private:
 		Media::DrawImage *bgImg;
-		NotNullPtr<Media::ColorManagerSess> colorSess;
-		NotNullPtr<Map::MapView> view;
+		NN<Media::ColorManagerSess> colorSess;
+		NN<Map::MapView> view;
 		Map::MapEnv *mapEnv;
 		Map::DrawMapRenderer *renderer;
 		Bool releaseRenderer;
@@ -73,21 +73,21 @@ namespace UI
 		virtual void OnJSAxis(OSInt axis1, OSInt axis2, OSInt axis3, OSInt axis4);
 
 		virtual void OnTimerTick();
-		virtual void OnDraw(NotNullPtr<Media::DrawImage> img);
-		void DrawScnObjects(NotNullPtr<Media::DrawImage> img, Math::Coord2DDbl ofst);
+		virtual void OnDraw(NN<Media::DrawImage> img);
+		void DrawScnObjects(NN<Media::DrawImage> img, Math::Coord2DDbl ofst);
 		void ReleaseSelVecList();
 	public:
 		/*
 		view - will release
 		*/
-		GUIMapControl(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, UInt32 bgColor, Map::DrawMapRenderer *renderer, NotNullPtr<Map::MapView> view, NotNullPtr<Media::ColorManagerSess> colorSess);
-		GUIMapControl(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, NotNullPtr<Map::MapEnv> mapEnv, NotNullPtr<Media::ColorManagerSess> colorSess);
+		GUIMapControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, UInt32 bgColor, Map::DrawMapRenderer *renderer, NN<Map::MapView> view, NN<Media::ColorManagerSess> colorSess);
+		GUIMapControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, NN<Map::MapEnv> mapEnv, NN<Media::ColorManagerSess> colorSess);
 		virtual ~GUIMapControl();
 
 		virtual void OnSizeChanged(Bool updateScn);
 
-		virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
-		virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);
+		virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
+		virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
 
 		virtual void SetDPI(Double hdpi, Double ddpi);
 
@@ -109,7 +109,7 @@ namespace UI
 		void ShowMarkerMapXYDir(Math::Coord2DDbl mapPos, Double dir, Math::Unit::Angle::AngleUnit unit);
 		void HideMarker();
 		void SetSelectedVector(Math::Geometry::Vector2D *vec);
-		void SetSelectedVectors(NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList);
+		void SetSelectedVectors(NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList);
 		void SetVAngle(Double angleRad);
 
 		void HandleScaleChanged(ScaleChangedHandler hdlr, AnyType userObj);
@@ -119,8 +119,8 @@ namespace UI
 		void HandleMouseDown(MouseEventHandler hdlr, AnyType userObj);
 		void HandleCustomDraw(DrawHandler hdlr, AnyType userObj);
 		void SetMapUpdated();
-		void UpdateMapView(NotNullPtr<Map::MapView> view);
-		NotNullPtr<Map::MapView> CloneMapView();
+		void UpdateMapView(NN<Map::MapView> view);
+		NN<Map::MapView> CloneMapView();
 		void PauseUpdate(Bool pauseUpdate);
 	};
 };

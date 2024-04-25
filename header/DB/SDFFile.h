@@ -14,7 +14,7 @@ namespace DB
 			VER_40
 		} Version;
 	public:
-		SDFFile(const UTF8Char *fileName, Version ver, NotNullPtr<IO::LogTool> log, const UTF8Char *passowrd);
+		SDFFile(const UTF8Char *fileName, Version ver, NN<IO::LogTool> log, const UTF8Char *passowrd);
 	};
 }
 #endif

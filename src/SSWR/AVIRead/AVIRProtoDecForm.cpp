@@ -7,9 +7,9 @@
 
 void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLogSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProtoDecForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProtoDecForm>();
-	NotNullPtr<ProtocolItem> item;
-	NotNullPtr<IO::ProtoDec::IProtocolDecoder> currDec;
+	NN<SSWR::AVIRead::AVIRProtoDecForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProtoDecForm>();
+	NN<ProtocolItem> item;
+	NN<IO::ProtoDec::IProtocolDecoder> currDec;
 	if (me->lvLogs->GetSelectedItem().GetOpt<ProtocolItem>().SetTo(item) && me->currFile && me->currDec.SetTo(currDec))
 	{
 		Text::StringBuilderUTF8 sb;
@@ -29,10 +29,10 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLogSelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnFileClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProtoDecForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProtoDecForm>();
+	NN<SSWR::AVIRead::AVIRProtoDecForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProtoDecForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtFile->GetText(sb);
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"ProtoDec", false);
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"ProtoDec", false);
 	dlg->AddFilter(CSTR("*.dat"), CSTR("RAW data file"));
 	if (sb.GetLength() > 0)
 	{
@@ -47,9 +47,9 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnFileClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProtoDecForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProtoDecForm>();
+	NN<SSWR::AVIRead::AVIRProtoDecForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProtoDecForm>();
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<IO::ProtoDec::IProtocolDecoder> protoDec;
+	NN<IO::ProtoDec::IProtocolDecoder> protoDec;
 	me->txtFile->GetText(sb);
 	if (sb.GetLength() > 0 && me->cboDecoder->GetSelectedItem().GetOpt<IO::ProtoDec::IProtocolDecoder>().SetTo(protoDec))
 	{
@@ -96,8 +96,8 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnProtocolEntry(AnyType userObj, UInt64 fileOfst, UOSInt size, Text::CStringNN typeName)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProtoDecForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProtoDecForm>();
-	NotNullPtr<ProtocolItem> item;
+	NN<SSWR::AVIRead::AVIRProtoDecForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProtoDecForm>();
+	NN<ProtocolItem> item;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UOSInt i;
@@ -123,7 +123,7 @@ void SSWR::AVIRead::AVIRProtoDecForm::ClearList()
 	this->lvLogs->ClearItems();
 }
 
-SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Protocol Decoder"));
 	this->SetFont(0, 0, 8.25, false);
@@ -167,7 +167,7 @@ SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(Optional<UI::GUIClientControl>
 
 	UOSInt i;
 	UOSInt j;
-	NotNullPtr<IO::ProtoDec::IProtocolDecoder> protoDec;
+	NN<IO::ProtoDec::IProtocolDecoder> protoDec;
 	i = 0;
 	j = this->decList.GetCount();
 	while (i < j)

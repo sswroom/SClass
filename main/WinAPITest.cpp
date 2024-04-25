@@ -11,7 +11,7 @@ void GetFileInfo(const WChar* fileName)
 	CloseHandle(handle);
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	WIN32_FILE_ATTRIBUTE_DATA attr;
 	GetFileAttributesA("C:\\Progs\\SClass\\build\\Windows_x64\\smake.exe");

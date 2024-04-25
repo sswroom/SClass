@@ -29,41 +29,41 @@ namespace SSWR
 			typedef struct
 			{
 				Math::RectArea<UOSInt> area;
-				NotNullPtr<Text::String> result;
+				NN<Text::String> result;
 				Double maxTileAngle;
 				Double pxArea;
 				UOSInt confidence;
-				NotNullPtr<Media::StaticImage> plateImg;
+				NN<Media::StaticImage> plateImg;
 			} ResultInfo;
 			
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Media::ANPR anpr;
-			NotNullPtr<Media::ColorManagerSess> colorSess;
+			NN<Media::ColorManagerSess> colorSess;
 			Data::ArrayList<ResultInfo*> results;
 			Media::StaticImage *currImg;
 			ActionType selectMode;
 			Data::ArrayListA<Math::Coord2DDbl> points;
 
-			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			NotNullPtr<UI::GUIButton> btnSelPlate;
-			NotNullPtr<UI::GUIButton> btnSelCorners;
-			NotNullPtr<UI::GUILabel> lblSelStatus;
-			NotNullPtr<UI::GUIPanel> pnlPlate;
-			NotNullPtr<UI::GUIPictureBoxSimple> pbPlate;
-			NotNullPtr<UI::GUIListView> lvPlate;
-			NotNullPtr<UI::GUIHSplitter> hspPlate;
-			NotNullPtr<UI::GUIPictureBoxDD> pbImg;
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUIButton> btnSelPlate;
+			NN<UI::GUIButton> btnSelCorners;
+			NN<UI::GUILabel> lblSelStatus;
+			NN<UI::GUIPanel> pnlPlate;
+			NN<UI::GUIPictureBoxSimple> pbPlate;
+			NN<UI::GUIListView> lvPlate;
+			NN<UI::GUIHSplitter> hspPlate;
+			NN<UI::GUIPictureBoxDD> pbImg;
 
-			static void __stdcall OnFileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnPlateSelChg(AnyType userObj);
 			static void __stdcall OnSelPlateClicked(AnyType userObj);
 			static void __stdcall OnSelCornersClicked(AnyType userObj);
 			static Bool __stdcall OnImgDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
-			static void __stdcall OnANPRResult(AnyType userObj, NotNullPtr<Media::StaticImage> simg, Math::RectArea<UOSInt> area, NotNullPtr<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, NotNullPtr<Media::StaticImage> plateImg);
+			static void __stdcall OnANPRResult(AnyType userObj, NN<Media::StaticImage> simg, Math::RectArea<UOSInt> area, NN<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, NN<Media::StaticImage> plateImg);
 			void ClearResults();
 		public:
-			AVIRANPRForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRANPRForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRANPRForm();
 
 			virtual void OnMonitorChanged();

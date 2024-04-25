@@ -20,9 +20,9 @@ namespace Net
 		IO::Stream *recvStm;
 		Sync::Event *evt;
 
-		static void __stdcall OnDataPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+		static void __stdcall OnDataPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
 	public:
-		TFTPClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NotNullPtr<IO::LogTool> log);
+		TFTPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NN<IO::LogTool> log);
 		~TFTPClient();
 
 		Bool IsError();

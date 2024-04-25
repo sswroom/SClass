@@ -3,7 +3,7 @@
 #include "Math/Math.h"
 #include "Math/Unit/Count.h"
 
-IO::Device::ED588::ED588(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr) : IO::MODBUSDevice(modbus, addr)
+IO::Device::ED588::ED588(NN<IO::MODBUSMaster> modbus, UInt8 addr) : IO::MODBUSDevice(modbus, addr)
 {
 }
 

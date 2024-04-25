@@ -20,7 +20,7 @@ namespace Media
 
 			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst) = 0;
 		public:
-			VDecoderBase(NotNullPtr<IVideoSource> sourceVideo);
+			VDecoderBase(NN<IVideoSource> sourceVideo);
 			virtual ~VDecoderBase();
 
 			virtual void SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, UOSInt cropRight, UOSInt cropBottom);
@@ -28,7 +28,7 @@ namespace Media
 
 			virtual UTF8Char *GetSourceName(UTF8Char *buff);
 
-			virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize) = 0;
+			virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize) = 0;
 
 			virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData);
 			virtual Bool Start();

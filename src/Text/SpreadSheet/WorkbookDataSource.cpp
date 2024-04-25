@@ -5,7 +5,7 @@
 #include "Text/SpreadSheet/Worksheet.h"
 
 
-Text::SpreadSheet::WorkbookDataSource::WorkbookDataSource(NotNullPtr<Worksheet> sheet, UOSInt firstRow, UOSInt lastRow, UOSInt firstCol, UOSInt lastCol)
+Text::SpreadSheet::WorkbookDataSource::WorkbookDataSource(NN<Worksheet> sheet, UOSInt firstRow, UOSInt lastRow, UOSInt firstCol, UOSInt lastCol)
 {
 	this->sheet = sheet;
 	this->firstRow = firstRow;
@@ -35,7 +35,7 @@ UTF8Char *Text::SpreadSheet::WorkbookDataSource::ToCodeRange(UTF8Char *sbuff) co
 	return sbuff;
 }
 
-NotNullPtr<Text::SpreadSheet::Worksheet> Text::SpreadSheet::WorkbookDataSource::GetSheet() const
+NN<Text::SpreadSheet::Worksheet> Text::SpreadSheet::WorkbookDataSource::GetSheet() const
 {
 	return this->sheet;
 }

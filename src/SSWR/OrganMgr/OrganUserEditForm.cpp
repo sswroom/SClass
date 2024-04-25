@@ -3,7 +3,7 @@
 
 void __stdcall SSWR::OrganMgr::OrganUserEditForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<OrganUserEditForm> me = userObj.GetNN<OrganUserEditForm>();
+	NN<OrganUserEditForm> me = userObj.GetNN<OrganUserEditForm>();
 	Text::StringBuilderUTF8 sb1;
 	Text::StringBuilderUTF8 sb2;
 	Text::StringBuilderUTF8 sb3;
@@ -27,7 +27,7 @@ void __stdcall SSWR::OrganMgr::OrganUserEditForm::OnOKClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Please enter watermark"), CSTR("Error"), me);
 		return;
 	}
-	NotNullPtr<OrganWebUser> user;
+	NN<OrganWebUser> user;
 	if (!me->user.SetTo(user))
 	{
 		if (sb2.GetLength() == 0)
@@ -61,11 +61,11 @@ void __stdcall SSWR::OrganMgr::OrganUserEditForm::OnOKClicked(AnyType userObj)
 
 void __stdcall SSWR::OrganMgr::OrganUserEditForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<OrganUserEditForm> me = userObj.GetNN<OrganUserEditForm>();
+	NN<OrganUserEditForm> me = userObj.GetNN<OrganUserEditForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::OrganMgr::OrganUserEditForm::OrganUserEditForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env, Optional<OrganWebUser> user) : UI::GUIForm(parent, 480, 160, ui)
+SSWR::OrganMgr::OrganUserEditForm::OrganUserEditForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<OrganEnv> env, Optional<OrganWebUser> user) : UI::GUIForm(parent, 480, 160, ui)
 {
 	this->SetFont(0, 0, 10.5, false);
 	this->SetNoResize(true);
@@ -107,7 +107,7 @@ SSWR::OrganMgr::OrganUserEditForm::OrganUserEditForm(Optional<UI::GUIClientContr
 	this->btnCancel->SetRect(244, 108, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 
-	NotNullPtr<OrganWebUser> nnuser;
+	NN<OrganWebUser> nnuser;
 	if (this->user.SetTo(nnuser))
 	{
 		this->txtUserName->SetText(nnuser->userName->ToCString());

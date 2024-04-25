@@ -14,7 +14,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnProtocolReceived(AnyType userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
+	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Received cmd 0x"));
 	sb.AppendHex8(cmdType);
@@ -28,45 +28,45 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnProtocolReceived(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDongleInfoClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
+	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
 	me->snb->SendGetDongleInfo();
 }
 
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnCheckDongleClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
+	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
 	me->snb->SendCheckDongle();
 }
 
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnCheckDevicesClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
+	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
 	me->snb->SendCheckDevices();
 }
 
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnResetNetworkClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
+	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
 	me->snb->SendResetNetwork();
 }
 
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnAddDeviceClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
+	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
 	me->snb->SendAddDevice(10);
 }
 
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnLogClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
-	NotNullPtr<Text::String> s = Text::String::OrEmpty(me->lbLog->GetSelectedItemTextNew());
+	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
+	NN<Text::String> s = Text::String::OrEmpty(me->lbLog->GetSelectedItemTextNew());
 	me->txtLog->SetText(s->ToCString());
 	s->Release();
 }
 
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
+	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
 	Data::ArrayList<DeviceInfo*> devList;
 	DeviceInfo *dev;
 	UTF8Char sbuff[64];
@@ -200,7 +200,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnCopyDevIdClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
+	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
 	Text::String *s = me->lvDevice->GetSelectedItemTextNew();
 	if (s)
 	{
@@ -211,7 +211,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnCopyDevIdClicked(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevReportTimeClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
+	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
 	Text::String *s = me->lvDevice->GetSelectedItemTextNew();
 	if (s)
 	{
@@ -223,7 +223,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevReportTimeClicked(AnyType 
 
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevSetReportTimeClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
+	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
 	Text::String *s = me->lvDevice->GetSelectedItemTextNew();
 	if (s)
 	{
@@ -235,7 +235,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevSetReportTimeClicked(AnyTy
 
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevOnClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
+	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
 	Text::String *s = me->lvDevice->GetSelectedItemTextNew();
 	if (s)
 	{
@@ -247,7 +247,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevOnClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevOffClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
+	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
 	Text::String *s = me->lvDevice->GetSelectedItemTextNew();
 	if (s)
 	{
@@ -259,7 +259,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevOffClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevStatusClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
+	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
 	Text::String *s = me->lvDevice->GetSelectedItemTextNew();
 	if (s)
 	{
@@ -271,7 +271,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevStatusClicked(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDeviceDblClk(AnyType userObj, UOSInt index)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
+	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
 	Text::String *s = me->lvDevice->GetItemTextNew(index);
 	if (s)
 	{
@@ -302,7 +302,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDeviceDblClk(AnyType userObj,
 
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
+	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
 	UInt64 dongleId = me->snb->GetDongleId();
 	UInt32 baudRate = me->snb->GetBaudRate();
 	if (dongleId == 0 || baudRate == 0)
@@ -375,7 +375,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(AnyType userObj
 
 
 	Int32 status = 0;
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, CSTR_NULL, false, url.StartsWith(UTF8STRC("https://")));
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, CSTR_NULL, false, url.StartsWith(UTF8STRC("https://")));
 	cli->Connect(url.ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, 0, 0, false);
 	cli->AddHeaderC(CSTR("Iot-Program"), CSTR("margorpnomis"));
 	if (cli->IsError())
@@ -468,7 +468,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::SaveFile()
 	MemFree(dataBuff);
 }
 
-SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::Stream> stm) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::Stream> stm) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("SnB Dongle"));
 	this->SetFont(0, 0, 8.25, false);

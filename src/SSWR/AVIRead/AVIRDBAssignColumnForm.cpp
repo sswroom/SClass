@@ -3,7 +3,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRDBAssignColumnForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDBAssignColumnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBAssignColumnForm>();
+	NN<SSWR::AVIRead::AVIRDBAssignColumnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBAssignColumnForm>();
 	if (me->colsCbo == 0 || me->dbTable->GetColCnt() != me->colInd->GetCount() || me->colInd->GetCount() == 0)
 	{
 		me->ui->ShowMsgOK(CSTR("Database is not valid"), CSTR("DB Assign Column"), me);
@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRDBAssignColumnForm::OnOKClicked(AnyType userOb
 	{
 		if (me->colsCbo[i]->GetSelectedItem() == (void*)-2)
 		{
-			NotNullPtr<DB::ColDef> col;
+			NN<DB::ColDef> col;
 			Text::StringBuilderUTF8 sb;
 			sb.Append(CSTR("Column "));
 			if (me->dbTable->GetCol(i).SetTo(col))
@@ -43,11 +43,11 @@ void __stdcall SSWR::AVIRead::AVIRDBAssignColumnForm::OnOKClicked(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRDBAssignColumnForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDBAssignColumnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBAssignColumnForm>();
+	NN<SSWR::AVIRead::AVIRDBAssignColumnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBAssignColumnForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRDBAssignColumnForm::AVIRDBAssignColumnForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<DB::TableDef> dbTable, NotNullPtr<DB::ReadingDB> dataFile, Text::CString schema, Text::CStringNN table, Bool noHeader, Int8 dataFileTz, NotNullPtr<Data::ArrayList<UOSInt>> colInd) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRDBAssignColumnForm::AVIRDBAssignColumnForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::TableDef> dbTable, NN<DB::ReadingDB> dataFile, Text::CString schema, Text::CStringNN table, Bool noHeader, Int8 dataFileTz, NN<Data::ArrayList<UOSInt>> colInd) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("DB Assign Column"));
@@ -84,12 +84,12 @@ SSWR::AVIRead::AVIRDBAssignColumnForm::AVIRDBAssignColumnForm(Optional<UI::GUICl
 	UOSInt j = dbTable->GetColCnt();
 	UOSInt k;
 	UOSInt l;
-	NotNullPtr<DB::ColDef> col;
-	NotNullPtr<DB::DBReader> r;
-	NotNullPtr<UI::GUILabel> lbl;
+	NN<DB::ColDef> col;
+	NN<DB::DBReader> r;
+	NN<UI::GUILabel> lbl;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	this->colsCbo = MemAlloc(NotNullPtr<UI::GUIComboBox>, j);
+	this->colsCbo = MemAlloc(NN<UI::GUIComboBox>, j);
 	while (i < j)
 	{
 		if (dbTable->GetCol(i).SetTo(col))

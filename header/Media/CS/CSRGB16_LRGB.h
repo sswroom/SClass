@@ -28,8 +28,8 @@ namespace Media
 			virtual UOSInt GetDestFrameSize(UOSInt width, UOSInt height);
 			virtual void SetPalette(UInt8 *pal);
 
-			virtual void YUVParamChanged(NotNullPtr<const YUVPARAM> yuv);
-			virtual void RGBParamChanged(NotNullPtr<const RGBPARAM2> rgb);
+			virtual void YUVParamChanged(NN<const YUVPARAM> yuv);
+			virtual void RGBParamChanged(NN<const RGBPARAM2> rgb);
 		};
 	}
 }

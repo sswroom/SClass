@@ -6,7 +6,7 @@
 
 Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISRandomLocForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISRandomLocForm>();
+	NN<SSWR::AVIRead::AVIRGISRandomLocForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISRandomLocForm>();
 	if (!me->selecting)
 		return false;
 	me->isDown = true;
@@ -17,7 +17,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseDown(AnyType userObj,
 
 Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISRandomLocForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISRandomLocForm>();
+	NN<SSWR::AVIRead::AVIRGISRandomLocForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISRandomLocForm>();
 	if (me->isDown)
 	{
 		me->isDown = false;
@@ -42,7 +42,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseUp(AnyType userObj, M
 		me->selPt2 = mapPt2;
 
 		Math::Geometry::Polygon *pg;
-		NotNullPtr<Math::Geometry::LinearRing> lr;
+		NN<Math::Geometry::LinearRing> lr;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false));
 		UOSInt nPoints;
@@ -63,7 +63,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseUp(AnyType userObj, M
 
 Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISRandomLocForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISRandomLocForm>();
+	NN<SSWR::AVIRead::AVIRGISRandomLocForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISRandomLocForm>();
 	if (me->isDown)
 	{
 		Math::Coord2DDbl mapPt1;
@@ -85,7 +85,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseMove(AnyType userObj,
 		}
 
 		Math::Geometry::Polygon *pg;
-		NotNullPtr<Math::Geometry::LinearRing> lr;
+		NN<Math::Geometry::LinearRing> lr;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
 		NEW_CLASSNN(lr, Math::Geometry::LinearRing(me->navi->GetSRID(), 5, false, false));
 		UOSInt nPoints;
@@ -106,13 +106,13 @@ Bool __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnMouseMove(AnyType userObj,
 
 void __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnAreaClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISRandomLocForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISRandomLocForm>();
+	NN<SSWR::AVIRead::AVIRGISRandomLocForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISRandomLocForm>();
 	me->selecting = true;
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnRandomClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISRandomLocForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISRandomLocForm>();
+	NN<SSWR::AVIRead::AVIRGISRandomLocForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISRandomLocForm>();
 	if (me->selPt1 != me->selPt2)
 	{
 		Data::DateTime dt;
@@ -127,7 +127,7 @@ void __stdcall SSWR::AVIRead::AVIRGISRandomLocForm::OnRandomClicked(AnyType user
 	}
 }
 
-SSWR::AVIRead::AVIRGISRandomLocForm::AVIRGISRandomLocForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi) : UI::GUIForm(parent, 240, 72, ui)
+SSWR::AVIRead::AVIRGISRandomLocForm::AVIRGISRandomLocForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi) : UI::GUIForm(parent, 240, 72, ui)
 {
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

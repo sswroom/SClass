@@ -5,10 +5,10 @@
 
 #include <stdio.h>
 
-Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> hdlr)
+Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> hdlr)
 {
-	NotNullPtr<GCISNotifyHandler> me = NotNullPtr<GCISNotifyHandler>::ConvertFrom(hdlr);
-	NotNullPtr<Crypto::Cert::X509Cert> cert;
+	NN<GCISNotifyHandler> me = NN<GCISNotifyHandler>::ConvertFrom(hdlr);
+	NN<Crypto::Cert::X509Cert> cert;
 	Text::StringBuilderUTF8 sb2;
 	Text::JSONBuilder builder(Text::JSONBuilder::OT_OBJECT);
 	if (!req->GetClientCert().SetTo(cert))
@@ -46,7 +46,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::Web
 			cert->GetSubjectCN(sb2);
 			mail.SetFrom(0, sb2.ToCString());
 			Text::JSONObject *msgObj = (Text::JSONObject*)json;
-			NotNullPtr<Text::String> s;
+			NN<Text::String> s;
 			if (msgObj->GetObjectString(CSTR("ChanType")).SetTo(s) && !s->Equals(UTF8STRC("EM")) && !s->Equals(UTF8STRC("BD")))
 			{
 				failed = true;
@@ -108,7 +108,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::Web
 			if (!failed)
 			{
 				Text::JSONObject *contentDetail = msgObj->GetObjectObject(CSTR("ContentDetail"));
-				NotNullPtr<Text::String> content;
+				NN<Text::String> content;
 				if (contentDetail == 0)
 				{
 					failed = true;
@@ -165,7 +165,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::Web
 			}
 			if (!failed)
 			{
-				NotNullPtr<Text::MIMEObj::MailMessage> msg = mail.CreateMail();
+				NN<Text::MIMEObj::MailMessage> msg = mail.CreateMail();
 				me->hdlr(me->hdlrObj, req->GetNetConn(), msg);
 				msg.Delete();
 				me->log->LogMessage(CSTR("Message created"), IO::LogHandler::LogLevel::Action);
@@ -175,11 +175,11 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::Web
 
 		builder.ObjectAddStr(CSTR("Status"), failed?CSTR("F"):CSTR("S"));
 		builder.ObjectBeginObject(CSTR("NotificationStatus"));
-		NotNullPtr<Text::JSONBase> nnjson;
+		NN<Text::JSONBase> nnjson;
 		if (nnjson.Set(json))
 		{
 			if (nnjson->GetType() == Text::JSONType::Object)
-				builder.ObjectAdd(NotNullPtr<Text::JSONObject>::ConvertFrom(nnjson));
+				builder.ObjectAdd(NN<Text::JSONObject>::ConvertFrom(nnjson));
 			nnjson->EndUse();
 		}
 		if (!failed)
@@ -200,9 +200,9 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::NotifyFunc(NotNullPtr<Net::Web
 	return me->ResponseJSONStr(req, resp, 0, builder.Build());
 }
 
-Bool __stdcall Net::WebServer::GCISNotifyHandler::BatchUplFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svcHdlr)
+Bool __stdcall Net::WebServer::GCISNotifyHandler::BatchUplFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr)
 {
-	NotNullPtr<GCISNotifyHandler> me = NotNullPtr<GCISNotifyHandler>::ConvertFrom(svcHdlr);
+	NN<GCISNotifyHandler> me = NN<GCISNotifyHandler>::ConvertFrom(svcHdlr);
 	UOSInt size;
 	const UInt8 *data = req->GetReqData(size);
 	Text::StringBuilderUTF8 sb;
@@ -218,7 +218,7 @@ Bool __stdcall Net::WebServer::GCISNotifyHandler::BatchUplFunc(NotNullPtr<Net::W
 	return me->ResponseJSONStr(req, resp, 0, builder.Build());
 }
 
-Net::WebServer::GCISNotifyHandler::GCISNotifyHandler(Text::CStringNN notifyPath, Text::CStringNN batchUplPath, MailHandler hdlr, AnyType userObj, NotNullPtr<IO::LogTool> log)
+Net::WebServer::GCISNotifyHandler::GCISNotifyHandler(Text::CStringNN notifyPath, Text::CStringNN batchUplPath, MailHandler hdlr, AnyType userObj, NN<IO::LogTool> log)
 {
 	this->hdlr = hdlr;
 	this->hdlrObj = userObj;

@@ -167,7 +167,7 @@ Map::DrawLayerType Map::SPDLayer::GetLayerType() const
 	return lyrType;
 }
 
-UOSInt Map::SPDLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::SPDLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	UOSInt textSize;
 	UOSInt i;
@@ -234,7 +234,7 @@ UOSInt Map::SPDLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, N
 	return l;
 }
 
-UOSInt Map::SPDLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	rect.min.x = Double2Int32(rect.min.x * 200000.0 / mapRate);
 	rect.min.y = Double2Int32(rect.min.y * 200000.0 / mapRate);
@@ -370,7 +370,7 @@ UOSInt Map::SPDLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, Name
 	return l;
 }
 
-UOSInt Map::SPDLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::SPDLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	rect = rect * 200000;
 	return GetObjectIds(outArr, nameArr, 200000.0, Math::RectArea<Int32>(Math::Coord2D<Int32>(Double2Int32(rect.min.x), Double2Int32(rect.min.y)),
@@ -393,7 +393,7 @@ void Map::SPDLayer::ReleaseNameArr(NameArray *nameArr)
 	DEL_CLASS(tmpArr);
 }
 
-Bool Map::SPDLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::SPDLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	Data::ArrayList<WChar*> *tmpArr = (Data::ArrayList<WChar*>*)nameArr;
 	if (strIndex != 0)
@@ -443,7 +443,7 @@ DB::DBUtil::ColType Map::SPDLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt>
 	}
 }
 
-Bool Map::SPDLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Map::SPDLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	if (colIndex != 0)
 		return false;
@@ -568,7 +568,7 @@ Math::Geometry::Vector2D *Map::SPDLayer::GetNewVectorById(Map::GetObjectSess *se
 	else if (this->lyrType == Map::DRAW_LAYER_POLYLINE)
 	{
 		Math::Geometry::Polyline *pl;
-		NotNullPtr<Math::Geometry::LineString> lineString;
+		NN<Math::Geometry::LineString> lineString;
 		NEW_CLASS(pl, Math::Geometry::Polyline(4326));
 		UOSInt i = 0;
 		UOSInt j;
@@ -602,7 +602,7 @@ Math::Geometry::Vector2D *Map::SPDLayer::GetNewVectorById(Map::GetObjectSess *se
 	else if (this->lyrType == Map::DRAW_LAYER_POLYGON)
 	{
 		Math::Geometry::Polygon *pg;
-		NotNullPtr<Math::Geometry::LinearRing> lr;
+		NN<Math::Geometry::LinearRing> lr;
 		NEW_CLASS(pg, Math::Geometry::Polygon(4326));
 		UOSInt i = 0;
 		UOSInt j;

@@ -10,11 +10,11 @@ namespace UI
 		class JavaPanelBase : public UI::GUIPanelBase
 		{
 		protected:
-			NotNullPtr<GUIPanel> master;
+			NN<GUIPanel> master;
 
 		public:
-			JavaPanelBase(NotNullPtr<GUIPanel> master, NotNullPtr<GUICore> ui, ControlHandle *parentHWnd);
-			JavaPanelBase(NotNullPtr<GUIPanel> master, NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
+			JavaPanelBase(NN<GUIPanel> master, NN<GUICore> ui, ControlHandle *parentHWnd);
+			JavaPanelBase(NN<GUIPanel> master, NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 			virtual ~JavaPanelBase();
 
 			virtual Math::Coord2DDbl GetClientOfst();

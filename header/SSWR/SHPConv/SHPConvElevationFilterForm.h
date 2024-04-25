@@ -16,12 +16,12 @@ namespace SSWR
 		class SHPConvElevationFilterForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblCol;
-			NotNullPtr<UI::GUIComboBox> cboCol;
-			NotNullPtr<UI::GUILabel> lblHeight;
-			NotNullPtr<UI::GUITextBox> txtHeight;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUILabel> lblCol;
+			NN<UI::GUIComboBox> cboCol;
+			NN<UI::GUILabel> lblHeight;
+			NN<UI::GUITextBox> txtHeight;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 			DB::DBFFile *dbf;
 			Media::MonitorMgr *monMgr;
 			MapFilter *filter;
@@ -29,7 +29,7 @@ namespace SSWR
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			SHPConvElevationFilterForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf);
+			SHPConvElevationFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, DB::DBFFile *dbf);
 			virtual ~SHPConvElevationFilterForm();
 
 			virtual void OnMonitorChanged();

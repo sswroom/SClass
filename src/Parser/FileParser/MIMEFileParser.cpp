@@ -19,7 +19,7 @@ Int32 Parser::FileParser::MIMEFileParser::GetName()
 	return *(Int32*)"MIME";
 }
 
-void Parser::FileParser::MIMEFileParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::MIMEFileParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MIMEObject)
 	{
@@ -32,9 +32,9 @@ IO::ParserType Parser::FileParser::MIMEFileParser::GetParserType()
 	return IO::ParserType::MIMEObject;
 }
 
-IO::ParsedObject *Parser::FileParser::MIMEFileParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::MIMEFileParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	NotNullPtr<Text::String> name = fd->GetFullName();
+	NN<Text::String> name = fd->GetFullName();
 	Text::IMIMEObj *obj;
 	if (name->EndsWithICase(UTF8STRC(".eml")))
 	{

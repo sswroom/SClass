@@ -11,7 +11,7 @@ gboolean UI::GTK::GTKTrackBar::SignalValueChanged(void *window, void *userObj)
 	return FALSE;
 }
 
-UI::GTK::GTKTrackBar::GTKTrackBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal) : UI::GUITrackBar(ui, parent)
+UI::GTK::GTKTrackBar::GTKTrackBar(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal) : UI::GUITrackBar(ui, parent)
 {
 	if (minVal >= maxVal)
 	{

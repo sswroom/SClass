@@ -15,13 +15,13 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UOSInt sWidth = 1920;
 	UOSInt sHeight = 1080;
 	UOSInt dWidth = 3840;
 	UOSInt dHeight = 2160;
-	NotNullPtr<Media::StaticImage> simg;
+	NN<Media::StaticImage> simg;
 	Media::StaticImage *simg2;
 	Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
 	IO::ConsoleWriter console;
@@ -58,7 +58,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		if (simg2)
 		{
 			Exporter::TIFFExporter exporter;
-			NotNullPtr<Media::ImageList> imgList;
+			NN<Media::ImageList> imgList;
 			NEW_CLASSNN(imgList, Media::ImageList(CSTR("Test.tif")));
 			imgList->AddImage(simg2, 0);
 			sptr = IO::Path::GetProcessFileName(sbuff);

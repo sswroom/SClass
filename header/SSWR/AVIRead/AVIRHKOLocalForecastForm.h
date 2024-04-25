@@ -15,33 +15,33 @@ namespace SSWR
 		class AVIRHKOLocalForecastForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
-			NotNullPtr<UI::GUILabel> lblLang;
-			NotNullPtr<UI::GUIComboBox> cboLang;
-			NotNullPtr<UI::GUIButton> btnReload;
-			NotNullPtr<UI::GUILabel> lblReqTime;
-			NotNullPtr<UI::GUITextBox> txtReqTime;
-			NotNullPtr<UI::GUILabel> lblUpdateTime;
-			NotNullPtr<UI::GUITextBox> txtUpdateTime;
-			NotNullPtr<UI::GUILabel> lblGeneralSituation;
-			NotNullPtr<UI::GUITextBox> txtGeneralSituation;
-			NotNullPtr<UI::GUILabel> lblTCInfo;
-			NotNullPtr<UI::GUITextBox> txtTCInfo;
-			NotNullPtr<UI::GUILabel> lblFireDangerWarning;
-			NotNullPtr<UI::GUITextBox> txtFireDangerWarning;
-			NotNullPtr<UI::GUILabel> lblForecastPeriod;
-			NotNullPtr<UI::GUITextBox> txtForecastPeriod;
-			NotNullPtr<UI::GUILabel> lblForecastDesc;
-			NotNullPtr<UI::GUITextBox> txtForecastDesc;
-			NotNullPtr<UI::GUILabel> lblOutlook;
-			NotNullPtr<UI::GUITextBox> txtOutlook;
+			NN<UI::GUILabel> lblLang;
+			NN<UI::GUIComboBox> cboLang;
+			NN<UI::GUIButton> btnReload;
+			NN<UI::GUILabel> lblReqTime;
+			NN<UI::GUITextBox> txtReqTime;
+			NN<UI::GUILabel> lblUpdateTime;
+			NN<UI::GUITextBox> txtUpdateTime;
+			NN<UI::GUILabel> lblGeneralSituation;
+			NN<UI::GUITextBox> txtGeneralSituation;
+			NN<UI::GUILabel> lblTCInfo;
+			NN<UI::GUITextBox> txtTCInfo;
+			NN<UI::GUILabel> lblFireDangerWarning;
+			NN<UI::GUITextBox> txtFireDangerWarning;
+			NN<UI::GUILabel> lblForecastPeriod;
+			NN<UI::GUITextBox> txtForecastPeriod;
+			NN<UI::GUILabel> lblForecastDesc;
+			NN<UI::GUITextBox> txtForecastDesc;
+			NN<UI::GUILabel> lblOutlook;
+			NN<UI::GUITextBox> txtOutlook;
 
 			static void __stdcall OnReloadClicked(AnyType userObj);
 			void Reload(Net::HKOWeather::Language lang);
 		public:
-			AVIRHKOLocalForecastForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRHKOLocalForecastForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHKOLocalForecastForm();
 
 			virtual void OnMonitorChanged();

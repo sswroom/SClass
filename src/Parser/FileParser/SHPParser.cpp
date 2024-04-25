@@ -28,7 +28,7 @@ void Parser::FileParser::SHPParser::SetArcGISPRJParser(Math::ArcGISPRJParser *pr
 	this->prjParser = prjParser;
 }
 
-void Parser::FileParser::SHPParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::SHPParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
@@ -41,7 +41,7 @@ IO::ParserType Parser::FileParser::SHPParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::SHPParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::SHPParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (!fd->IsFullFile())
 		return 0;

@@ -6,7 +6,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
+	NN<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
 	if (me->svr)
 	{
 		DEL_CLASS(me->svr);
@@ -45,8 +45,8 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnStartClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnLogSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
-	NotNullPtr<Text::String> s;
+	NN<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
+	NN<Text::String> s;
 	if (me->lbLog->GetSelectedItemTextNew().SetTo(s))
 	{
 		me->txtLog->SetText(s->ToCString());
@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnLogSelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
+	NN<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	if (me->packetsChg)
@@ -92,7 +92,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnTimerTick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
+	NN<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
 	UOSInt i;
 	i = me->lbData->GetSelectedIndex();
 	if (i == INVALID_INDEX)
@@ -126,7 +126,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnPortsDblClk(AnyType userObj, UOSInt index)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
+	NN<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
 	if (me->svr)
 		return;
 	UTF8Char sbuff[16];
@@ -139,9 +139,9 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnPortsDblClk(AnyType userObj,
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRUDPCaptureForm> me = userData.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
+	NN<SSWR::AVIRead::AVIRUDPCaptureForm> me = userData.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	Sync::MutexUsage mutUsage(me->packetMut);
@@ -162,7 +162,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnUDPPacket(NotNullPtr<const N
 
 void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnMulticastClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
+	NN<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
 	if (me->svr)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -178,7 +178,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnMulticastClicked(AnyType use
 
 void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnMulticastDoubleClk(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
+	NN<SSWR::AVIRead::AVIRUDPCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPCaptureForm>();
 	const UTF8Char *ip = (const UTF8Char*)me->lbMulticastCommon->GetSelectedItem().p;
 	if (ip)
 	{
@@ -187,7 +187,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnMulticastDoubleClk(AnyType u
 }
 
 
-SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("UDP Capture"));
 	this->SetFont(0, 0, 8.25, false);

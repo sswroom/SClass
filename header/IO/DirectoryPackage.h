@@ -14,7 +14,7 @@ namespace IO
 	public:
 		struct FileItem
 		{
-			NotNullPtr<Text::String> fileName;
+			NN<Text::String> fileName;
 			UInt64 fileSize;
 			Data::Timestamp modTime;
 			Data::Timestamp accTime;
@@ -45,13 +45,13 @@ namespace IO
 		};
 	private:
 		Data::ArrayList<FileItem> files;
-		NotNullPtr<Text::String> dirName;
+		NN<Text::String> dirName;
 		Optional<IO::PackageFile> parent;
 
 		void AddFile(Text::CStringNN fileName);
 		void Init();
 	public:
-		DirectoryPackage(NotNullPtr<Text::String> dirName);
+		DirectoryPackage(NN<Text::String> dirName);
 		DirectoryPackage(Text::CStringNN dirName);
 		virtual ~DirectoryPackage();
 
@@ -70,7 +70,7 @@ namespace IO
 		virtual UOSInt GetItemIndex(Text::CStringNN name) const;
 		virtual Bool IsCompressed(UOSInt index) const;
 		virtual Data::Compress::Decompressor::CompressMethod GetItemComp(UOSInt index) const;
-		virtual NotNullPtr<PackageFile> Clone() const;
+		virtual NN<PackageFile> Clone() const;
 		virtual PackageFileType GetFileType() const;
 		virtual Bool CopyFrom(Text::CStringNN fileName, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
 		virtual Bool MoveFrom(Text::CStringNN fileName, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);

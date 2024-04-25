@@ -29,8 +29,8 @@ namespace Math
 		static void CalcHVAngleRad(Math::Coord2DDbl ptCurr, Math::Coord2DDbl ptNext, Double heightCurr, Double heightNext, Double *hAngle, Double *vAngle);
 		static void CalcHVAngleDeg(Math::Coord2DDbl ptCurr, Math::Coord2DDbl ptNext, Double heightCurr, Double heightNext, Double *hAngle, Double *vAngle);
 		static Math::Geometry::Polygon *CreateCircularPolygonWGS84(Math::Coord2DDbl pt, Double radiusMeter, UOSInt nPoints);
-		static UOSInt ArcToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, Math::Coord2DDbl pt3, Double minDist, NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> ptOut);
-//		static UOSInt CurveToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, Math::Coord2DDbl pt3, Double minDist, NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> ptOut);
+		static UOSInt ArcToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, Math::Coord2DDbl pt3, Double minDist, NN<Data::ArrayListA<Math::Coord2DDbl>> ptOut);
+//		static UOSInt CurveToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, Math::Coord2DDbl pt3, Double minDist, NN<Data::ArrayListA<Math::Coord2DDbl>> ptOut);
 	};
 }
 #endif

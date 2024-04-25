@@ -459,9 +459,9 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 	}
 }
 
-void __stdcall SSWR::DownloadMonitor::DownMonCore::CheckThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall SSWR::DownloadMonitor::DownMonCore::CheckThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<SSWR::DownloadMonitor::DownMonCore> me = thread->GetUserObj().GetNN<SSWR::DownloadMonitor::DownMonCore>();
+	NN<SSWR::DownloadMonitor::DownMonCore> me = thread->GetUserObj().GetNN<SSWR::DownloadMonitor::DownMonCore>();
 	while (!thread->IsStopping())
 	{
 		me->ProcessDir(me->downPath, me->succPath, me->errPath);
@@ -488,7 +488,7 @@ SSWR::DownloadMonitor::DownMonCore::DownMonCore() : thread(CheckThread, this, CS
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg)
 	{
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		if (cfg->GetValue(CSTR("DownPath")).SetTo(s))
 			this->downPath = s->Clone().Ptr();
 		if (cfg->GetValue(CSTR("SuccPath")).SetTo(s))
@@ -535,7 +535,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::IsError()
 	return !this->thread.IsRunning();
 }
 
-NotNullPtr<Net::SocketFactory> SSWR::DownloadMonitor::DownMonCore::GetSocketFactory()
+NN<Net::SocketFactory> SSWR::DownloadMonitor::DownMonCore::GetSocketFactory()
 {
 	return this->sockf;
 }
@@ -568,7 +568,7 @@ void SSWR::DownloadMonitor::DownMonCore::FileFree(SSWR::DownloadMonitor::DownMon
 	DEL_CLASS(file);
 }
 
-Bool SSWR::DownloadMonitor::DownMonCore::FileAdd(Int32 id, Int32 webType, NotNullPtr<Text::String> dbName)
+Bool SSWR::DownloadMonitor::DownMonCore::FileAdd(Int32 id, Int32 webType, NN<Text::String> dbName)
 {
 	SSWR::DownloadMonitor::DownMonCore::FileInfo *file;
 	Text::StringBuilderUTF8 sb;
@@ -593,7 +593,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileAdd(Int32 id, Int32 webType, NotNul
 	return true;
 }
 
-SSWR::DownloadMonitor::DownMonCore::FileInfo *SSWR::DownloadMonitor::DownMonCore::FileGet(Int32 id, Int32 webType, NotNullPtr<Sync::MutexUsage> mutUsage)
+SSWR::DownloadMonitor::DownMonCore::FileInfo *SSWR::DownloadMonitor::DownMonCore::FileGet(Int32 id, Int32 webType, NN<Sync::MutexUsage> mutUsage)
 {
 	SSWR::DownloadMonitor::DownMonCore::FileInfo *file;
 	mutUsage->ReplaceMutex(this->fileMut);

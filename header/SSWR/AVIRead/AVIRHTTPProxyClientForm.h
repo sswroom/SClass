@@ -19,33 +19,33 @@ namespace SSWR
 		class AVIRHTTPProxyClientForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUIPanel> pnlRequest;
-			NotNullPtr<UI::GUILabel> lblURL;
-			NotNullPtr<UI::GUITextBox> txtURL;
-			NotNullPtr<UI::GUILabel> lblProxySvr;
-			NotNullPtr<UI::GUITextBox> txtProxySvr;
-			NotNullPtr<UI::GUILabel> lblProxyPort;
-			NotNullPtr<UI::GUITextBox> txtProxyPort;
-			NotNullPtr<UI::GUIButton> btnRequest;
-			NotNullPtr<UI::GUIGroupBox> grpResponse;
-			NotNullPtr<UI::GUIPanel> pnlResponse;
-			NotNullPtr<UI::GUILabel> lblSvrIP;
-			NotNullPtr<UI::GUITextBox> txtSvrIP;
-			NotNullPtr<UI::GUILabel> lblTimeDNS;
-			NotNullPtr<UI::GUITextBox> txtTimeDNS;
-			NotNullPtr<UI::GUILabel> lblTimeConn;
-			NotNullPtr<UI::GUITextBox> txtTimeConn;
-			NotNullPtr<UI::GUILabel> lblTimeSendHdr;
-			NotNullPtr<UI::GUITextBox> txtTimeSendHdr;
-			NotNullPtr<UI::GUILabel> lblTimeResp;
-			NotNullPtr<UI::GUITextBox> txtTimeResp;
-			NotNullPtr<UI::GUILabel> lblTimeTotal;
-			NotNullPtr<UI::GUITextBox> txtTimeTotal;
-			NotNullPtr<UI::GUIListView> lvHeaders;
+			NN<UI::GUIPanel> pnlRequest;
+			NN<UI::GUILabel> lblURL;
+			NN<UI::GUITextBox> txtURL;
+			NN<UI::GUILabel> lblProxySvr;
+			NN<UI::GUITextBox> txtProxySvr;
+			NN<UI::GUILabel> lblProxyPort;
+			NN<UI::GUITextBox> txtProxyPort;
+			NN<UI::GUIButton> btnRequest;
+			NN<UI::GUIGroupBox> grpResponse;
+			NN<UI::GUIPanel> pnlResponse;
+			NN<UI::GUILabel> lblSvrIP;
+			NN<UI::GUITextBox> txtSvrIP;
+			NN<UI::GUILabel> lblTimeDNS;
+			NN<UI::GUITextBox> txtTimeDNS;
+			NN<UI::GUILabel> lblTimeConn;
+			NN<UI::GUITextBox> txtTimeConn;
+			NN<UI::GUILabel> lblTimeSendHdr;
+			NN<UI::GUITextBox> txtTimeSendHdr;
+			NN<UI::GUILabel> lblTimeResp;
+			NN<UI::GUITextBox> txtTimeResp;
+			NN<UI::GUILabel> lblTimeTotal;
+			NN<UI::GUITextBox> txtTimeTotal;
+			NN<UI::GUIListView> lvHeaders;
 
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			Bool threadRunning;
 			Bool threadToStop;
 			Sync::Event *threadEvt;
@@ -67,7 +67,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(AnyType userObj);
 			void ClearHeaders();
 		public:
-			AVIRHTTPProxyClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRHTTPProxyClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHTTPProxyClientForm();
 
 			virtual void OnMonitorChanged();

@@ -28,7 +28,7 @@ public:
 		this->p = &p;
 	}
 
-	OptOut(NotNullPtr<T> p)
+	OptOut(NN<T> p)
 	{
 		this->p = p.Ptr();
 	}

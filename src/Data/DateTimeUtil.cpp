@@ -30,7 +30,7 @@ const Char *Data::DateTimeUtil::monthString[] = {"January", "February", "March",
 Int8 Data::DateTimeUtil::localTzQhr = 0;
 Bool Data::DateTimeUtil::localTzValid = false;
 
-void Data::DateTimeUtil::DateValueSetDate(NotNullPtr<Data::DateTimeUtil::DateValue> t, Text::PString *dateStrs)
+void Data::DateTimeUtil::DateValueSetDate(NN<Data::DateTimeUtil::DateValue> t, Text::PString *dateStrs)
 {
 	UInt32 vals[3];
 	vals[0] = 0;
@@ -76,7 +76,7 @@ void Data::DateTimeUtil::DateValueSetDate(NotNullPtr<Data::DateTimeUtil::DateVal
 	}
 }
 
-void Data::DateTimeUtil::TimeValueSetTime(NotNullPtr<Data::DateTimeUtil::TimeValue> t, Text::PString *timeStrs, OutParam<UInt32> nanosec)
+void Data::DateTimeUtil::TimeValueSetTime(NN<Data::DateTimeUtil::TimeValue> t, Text::PString *timeStrs, OutParam<UInt32> nanosec)
 {
 	Text::PString strs[2];
 	UOSInt valTmp;
@@ -200,27 +200,27 @@ Int64 Data::DateTimeUtil::Date2TotalDays(Int32 year, Int32 month, Int32 day)
 	return totalDays;
 }
 
-Int64 Data::DateTimeUtil::DateValue2TotalDays(NotNullPtr<const DateValue> d)
+Int64 Data::DateTimeUtil::DateValue2TotalDays(NN<const DateValue> d)
 {
 	return Date2TotalDays(d->year, d->month, d->day);
 }
 
-Int64 Data::DateTimeUtil::TimeValue2Secs(NotNullPtr<const TimeValue> t, Int8 tzQhr)
+Int64 Data::DateTimeUtil::TimeValue2Secs(NN<const TimeValue> t, Int8 tzQhr)
 {
 	return DateValue2TotalDays(t) * 86400LL + (t->second + t->minute * 60 + t->hour * 3600 - tzQhr * 900);
 }
 
-Int64 Data::DateTimeUtil::TimeValue2Ticks(NotNullPtr<const TimeValue> t, UInt32 ns, Int8 tzQhr)
+Int64 Data::DateTimeUtil::TimeValue2Ticks(NN<const TimeValue> t, UInt32 ns, Int8 tzQhr)
 {
 	return TimeValue2Secs(t, tzQhr) * 1000LL + (ns / 1000000);
 }
 
-void Data::DateTimeUtil::Ticks2TimeValue(Int64 ticks, NotNullPtr<TimeValue> t, Int8 tzQhr)
+void Data::DateTimeUtil::Ticks2TimeValue(Int64 ticks, NN<TimeValue> t, Int8 tzQhr)
 {
 	Secs2TimeValue(ticks / 1000, t, tzQhr);
 }
 
-void Data::DateTimeUtil::Secs2TimeValue(Int64 secs, NotNullPtr<TimeValue> t, Int8 tzQhr)
+void Data::DateTimeUtil::Secs2TimeValue(Int64 secs, NN<TimeValue> t, Int8 tzQhr)
 {
 	secs = secs + tzQhr * 900;
 	Int32 totalDays = (Int32)(secs / 86400LL);
@@ -496,7 +496,7 @@ void Data::DateTimeUtil::Secs2TimeValue(Int64 secs, NotNullPtr<TimeValue> t, Int
 	}
 }
 
-void Data::DateTimeUtil::TotalDays2DateValue(Int64 totalDays, NotNullPtr<DateValue> d)
+void Data::DateTimeUtil::TotalDays2DateValue(Int64 totalDays, NN<DateValue> d)
 {
 	if (totalDays < 0)
 	{
@@ -749,7 +749,7 @@ void Data::DateTimeUtil::TotalDays2DateValue(Int64 totalDays, NotNullPtr<DateVal
 	}
 }
 
-void Data::DateTimeUtil::Instant2TimeValue(Int64 secs, UInt32 nanosec, NotNullPtr<TimeValue> t, Int8 tzQhr)
+void Data::DateTimeUtil::Instant2TimeValue(Int64 secs, UInt32 nanosec, NN<TimeValue> t, Int8 tzQhr)
 {
 	secs = secs + tzQhr * 900;
 	Int32 totalDays = (Int32)(secs / 86400LL);
@@ -794,7 +794,7 @@ Data::DateTimeUtil::Weekday Data::DateTimeUtil::Instant2Weekday(Data::TimeInstan
 	return (Data::DateTimeUtil::Weekday)(((inst.sec + tzQhr * 900) / 86400 + 4) % 7);
 }
 
-UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, NotNullPtr<const TimeValue> tval, Int8 tzQhr, UInt32 nanosec, const UTF8Char *pattern)
+UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, NN<const TimeValue> tval, Int8 tzQhr, UInt32 nanosec, const UTF8Char *pattern)
 {
 	while (*pattern)
 	{
@@ -1396,7 +1396,7 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, NotNullPtr<const TimeVal
 	return sbuff;
 }
 
-Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NotNullPtr<TimeValue> tval, Int8 defTzQhr, OutParam<Int8> outTzQhr, OutParam<UInt32> nanosec)
+Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue> tval, Int8 defTzQhr, OutParam<Int8> outTzQhr, OutParam<UInt32> nanosec)
 {
 	UTF8Char buff[64];
 	UTF8Char *longBuff = 0;
@@ -1730,7 +1730,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NotNullPtr<Ti
 	return succ;
 }
 
-Bool Data::DateTimeUtil::TimeValueFromYMDHMS(Int64 ymdhms, NotNullPtr<TimeValue> tval)
+Bool Data::DateTimeUtil::TimeValueFromYMDHMS(Int64 ymdhms, NN<TimeValue> tval)
 {
 	if (ymdhms < 0)
 		return false;

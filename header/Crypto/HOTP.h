@@ -19,7 +19,7 @@ namespace Crypto
 		virtual UInt64 GetCounter();
 		virtual UInt32 NextCode();
 		virtual Bool IsValid(UInt32 code);
-		virtual void GenURI(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *name);
+		virtual void GenURI(NN<Text::StringBuilderUTF8> sb, const UTF8Char *name);
 
 		static UInt32 CalcCode(const UInt8 *key, UOSInt keySize, UInt64 counter, UInt32 nDigits);
 	};

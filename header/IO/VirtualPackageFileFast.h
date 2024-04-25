@@ -10,16 +10,16 @@ namespace IO
 	private:
 		Data::FastStringMap<PackFileItem *> namedItems;
 
-		VirtualPackageFileFast(NotNullPtr<const VirtualPackageFileFast> pkg);
+		VirtualPackageFileFast(NN<const VirtualPackageFileFast> pkg);
 	public:
-		VirtualPackageFileFast(NotNullPtr<Text::String> fileName);
+		VirtualPackageFileFast(NN<Text::String> fileName);
 		VirtualPackageFileFast(Text::CStringNN fileName);
 		virtual ~VirtualPackageFileFast();
 
 		virtual Optional<const PackFileItem> GetItemByName(Text::CStringNN name) const;
-		virtual void PutItem(NotNullPtr<Text::String> name, NotNullPtr<PackFileItem> item);
-		virtual void RemoveItem(NotNullPtr<Text::String> name);
-		virtual NotNullPtr<PackageFile> Clone() const;
+		virtual void PutItem(NN<Text::String> name, NN<PackFileItem> item);
+		virtual void RemoveItem(NN<Text::String> name);
+		virtual NN<PackageFile> Clone() const;
 	};
 }
 #endif

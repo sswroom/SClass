@@ -15,7 +15,7 @@ namespace UI
 		Data::ArrayList<Data::CallbackStorage<ScrollEvent>> scrollHandlers;
 
 	public:
-		GUITrackBar(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
+		GUITrackBar(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 		virtual ~GUITrackBar();
 
 		virtual Text::CStringNN GetObjectClass() const;

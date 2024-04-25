@@ -4,9 +4,9 @@
 #include "SSWR/ProcMonForm.h"
 #include "UI/GUICore.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	NotNullPtr<UI::GUICore> ui;
+	NN<UI::GUICore> ui;
 	SSWR::ProcMonForm *frm;
 	if (progCtrl->CreateGUICore(progCtrl).SetTo(ui))
 	{

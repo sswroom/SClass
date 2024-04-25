@@ -17,26 +17,26 @@ namespace SSWR
 		class AVIRGISCSysForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Math::CoordinateSystem *oriCSys;
 			Math::CoordinateSystem *outCSys;
 
-			NotNullPtr<UI::GUITextBox> txtCurrCSys;
-			NotNullPtr<UI::GUIPanel> pnlSel;
-			NotNullPtr<UI::GUIRadioButton> radGeo;
-			NotNullPtr<UI::GUIComboBox> cboGeo;
-			NotNullPtr<UI::GUIRadioButton> radProj;
-			NotNullPtr<UI::GUIComboBox> cboProj;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
-			NotNullPtr<UI::GUIPanel> pnlInfo;
+			NN<UI::GUITextBox> txtCurrCSys;
+			NN<UI::GUIPanel> pnlSel;
+			NN<UI::GUIRadioButton> radGeo;
+			NN<UI::GUIComboBox> cboGeo;
+			NN<UI::GUIRadioButton> radProj;
+			NN<UI::GUIComboBox> cboProj;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
+			NN<UI::GUIPanel> pnlInfo;
 
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 			static void __stdcall OnGeoSelChg(AnyType userObj);
 			static void __stdcall OnProjSelChg(AnyType userObj);
 		public:
-			AVIRGISCSysForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Math::CoordinateSystem *csys);
+			AVIRGISCSysForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Math::CoordinateSystem *csys);
 			virtual ~AVIRGISCSysForm();
 
 			virtual void OnMonitorChanged();

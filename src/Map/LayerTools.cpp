@@ -6,7 +6,7 @@
 #include "DB/ColDef.h"
 #include "Map/LayerTools.h"
 
-Map::VectorLayer *Map::LayerTools::CombineLayers(NotNullPtr<Data::ArrayListNN<Map::MapDrawLayer>> layers, Text::String *lyrName)
+Map::VectorLayer *Map::LayerTools::CombineLayers(NN<Data::ArrayListNN<Map::MapDrawLayer>> layers, Text::String *lyrName)
 {
 	UOSInt layerCnt = layers->GetCount();
 	UOSInt i;
@@ -14,16 +14,16 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(NotNullPtr<Data::ArrayListNN<Ma
 	UOSInt k;
 	UOSInt l;
 	OSInt si;
-	NotNullPtr<Map::MapDrawLayer> lyr;
+	NN<Map::MapDrawLayer> lyr;
 	UTF8Char sbuff[512];
-	NotNullPtr<Text::String> sourceName;
+	NN<Text::String> sourceName;
 
 	if (layerCnt <= 0 || !layers->GetItem(0).SetTo(lyr))
 		return 0;
 
 	Map::DrawLayerType lyrType = lyr->GetLayerType();
 	sourceName = lyr->GetSourceNameObj();
-	NotNullPtr<Math::CoordinateSystem> csys = lyr->GetCoordinateSystem();
+	NN<Math::CoordinateSystem> csys = lyr->GetCoordinateSystem();
 	i = layerCnt;
 	while (i-- > 0)
 	{
@@ -37,7 +37,7 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(NotNullPtr<Data::ArrayListNN<Ma
 	Data::ArrayList<UOSInt> nameSizes;
 	Data::ArrayList<UOSInt> nameDPs;
 	DB::ColDef colDef(CSTR_NULL);
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 
 	i = 0;
 	while (i < layerCnt)
@@ -101,7 +101,7 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(NotNullPtr<Data::ArrayListNN<Ma
 	MemFree(colSizes);
 
 	Data::ArrayListInt64 objIds;
-	Data::ArrayIterator<NotNullPtr<Map::MapDrawLayer>> it = layers->Iterator();
+	Data::ArrayIterator<NN<Map::MapDrawLayer>> it = layers->Iterator();
 	while (it.HasNext())
 	{
 		lyr = it.Next();
@@ -158,7 +158,7 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(NotNullPtr<Data::ArrayListNN<Ma
 
 				j++;
 			}
-			NotNullPtr<Math::Geometry::Vector2D> vec;
+			NN<Math::Geometry::Vector2D> vec;
 			if (vec.Set(lyr->GetNewVectorById(sess, id)))
 			{
 				j = names.GetCount();

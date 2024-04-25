@@ -5,7 +5,7 @@
 
 UInt32 __stdcall Sync::ParallelTask::WorkerThread(AnyType userObj)
 {
-	NotNullPtr<ThreadStatus> stat = userObj.GetNN<ThreadStatus>();
+	NN<ThreadStatus> stat = userObj.GetNN<ThreadStatus>();
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("ParallelTask")), stat->index);

@@ -8,8 +8,8 @@
 
 void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnSearchClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFileSearchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileSearchForm>();
-	NotNullPtr<Text::TextBinEnc::ITextBinEnc> enc;
+	NN<SSWR::AVIRead::AVIRFileSearchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileSearchForm>();
+	NN<Text::TextBinEnc::ITextBinEnc> enc;
 	Text::StringBuilderUTF8 sbText;
 	Text::StringBuilderUTF8 sbDir;
 	UInt8 dataBuff[256];
@@ -54,9 +54,9 @@ void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnSearchClicked(AnyType userOb
 	me->FindDir(sbuff, sptr, dataBuff, dataSize);
 }
 
-void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnDirectoryDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnDirectoryDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFileSearchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileSearchForm>();
+	NN<SSWR::AVIRead::AVIRFileSearchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileSearchForm>();
 	UOSInt i = 0;
 	UOSInt nFiles = files.GetCount();
 	while (i < nFiles)
@@ -72,11 +72,11 @@ void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnDirectoryDrop(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnFilesDblClk(AnyType userObj, UOSInt itemIndex)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFileSearchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileSearchForm>();
-	NotNullPtr<Text::String> filePath;
+	NN<SSWR::AVIRead::AVIRFileSearchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileSearchForm>();
+	NN<Text::String> filePath;
 	if (!me->lvFiles->GetItem(itemIndex).GetOpt<Text::String>().SetTo(filePath))
 		return;
-	NotNullPtr<UtilUI::TextViewerForm> frm;
+	NN<UtilUI::TextViewerForm> frm;
 	NEW_CLASSNN(frm, UtilUI::TextViewerForm(0, me->ui, me->core->GetMonitorMgr(), me->core->GetDrawEngine(), me->core->GetCurrCodePage()));
 	me->core->ShowForm(frm);
 	if (frm->LoadFile(filePath))
@@ -160,7 +160,7 @@ void SSWR::AVIRead::AVIRFileSearchForm::FindDir(UTF8Char *dir, UTF8Char *dirEnd,
 			}
 			if (matchCount > 0)
 			{
-				NotNullPtr<Text::String> s = Text::String::NewP(dir, sptr);
+				NN<Text::String> s = Text::String::NewP(dir, sptr);
 				i = this->lvFiles->AddItem(s, s.Ptr());
 				sptr = Text::StrUOSInt(dirEnd, matchCount);
 				this->lvFiles->SetSubItem(i, 1, CSTRP(dirEnd, sptr));
@@ -176,7 +176,7 @@ void SSWR::AVIRead::AVIRFileSearchForm::FindDir(UTF8Char *dir, UTF8Char *dirEnd,
 	}
 }
 
-SSWR::AVIRead::AVIRFileSearchForm::AVIRFileSearchForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 750, 344, ui)
+SSWR::AVIRead::AVIRFileSearchForm::AVIRFileSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 750, 344, ui)
 {
 	this->SetText(CSTR("File Search"));
 	this->SetFont(0, 0, 8.25, false);

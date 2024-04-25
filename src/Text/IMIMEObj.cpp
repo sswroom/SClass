@@ -23,7 +23,7 @@ IO::ParserType Text::IMIMEObj::GetParserType() const
 	return IO::ParserType::MIMEObject;
 }
 
-Text::IMIMEObj *Text::IMIMEObj::ParseFromData(NotNullPtr<IO::StreamData> data, Text::CStringNN contentType)
+Text::IMIMEObj *Text::IMIMEObj::ParseFromData(NN<IO::StreamData> data, Text::CStringNN contentType)
 {
 	Text::IMIMEObj *obj;
 	UOSInt buffSize;

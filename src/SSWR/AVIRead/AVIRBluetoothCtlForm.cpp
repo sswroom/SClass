@@ -13,8 +13,8 @@
 
 void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRBluetoothCtlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothCtlForm>();
-	NotNullPtr<IO::BTScanner> bt;
+	NN<SSWR::AVIRead::AVIRBluetoothCtlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothCtlForm>();
+	NN<IO::BTScanner> bt;
 	if (me->bt.SetTo(bt))
 	{
 		if (bt->IsScanOn())
@@ -29,8 +29,8 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStartClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStoreListClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRBluetoothCtlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothCtlForm>();
-	NotNullPtr<IO::BTScanner> bt;
+	NN<SSWR::AVIRead::AVIRBluetoothCtlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothCtlForm>();
+	NN<IO::BTScanner> bt;
 	if (me->bt.SetTo(bt))
 	{
 		UTF8Char sbuff[128];
@@ -60,10 +60,10 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStoreListClicked(AnyType u
 
 void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDevicesDblClick(AnyType userObj, UOSInt index)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRBluetoothCtlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothCtlForm>();
+	NN<SSWR::AVIRead::AVIRBluetoothCtlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothCtlForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<IO::BTScanLog::ScanRecord3> dev;
+	NN<IO::BTScanLog::ScanRecord3> dev;
 	if (me->lvDevices->GetItem(index).GetOpt<IO::BTScanLog::ScanRecord3>().SetTo(dev))
 	{
 		sptr = Text::StrHexBytes(sbuff, dev->mac, 6, ':');
@@ -73,8 +73,8 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDevicesDblClick(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRBluetoothCtlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothCtlForm>();
-	NotNullPtr<IO::BTScanner> bt;
+	NN<SSWR::AVIRead::AVIRBluetoothCtlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothCtlForm>();
+	NN<IO::BTScanner> bt;
 	if (me->bt.SetTo(bt))
 	{
 		Sync::MutexUsage mutUsage;
@@ -83,9 +83,9 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(NotNullPtr<IO::BTScanLog::ScanRecord3> dev, IO::BTScanner::UpdateType updateType, AnyType userObj)
+void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(NN<IO::BTScanLog::ScanRecord3> dev, IO::BTScanner::UpdateType updateType, AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRBluetoothCtlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothCtlForm>();
+	NN<SSWR::AVIRead::AVIRBluetoothCtlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBluetoothCtlForm>();
 	Sync::MutexUsage mutUsage(me->devMut);
 	if (dev->addrType == IO::BTScanLog::AT_RANDOM)
 	{
@@ -103,7 +103,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDeviceUpdated(NotNullPtr<I
 	}
 }
 
-UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NotNullPtr<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> devMap, Data::FastMap<UInt64, UInt32> *statusMap, UOSInt baseIndex)
+UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> devMap, Data::FastMap<UInt64, UInt32> *statusMap, UOSInt baseIndex)
 {
 	UOSInt i;
 	UOSInt j;
@@ -111,9 +111,9 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NotNullPtr<Data::FastMapN
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Data::DateTime dt;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	Sync::MutexUsage mutUsage;
-	NotNullPtr<IO::BTScanLog::ScanRecord3> dev;
+	NN<IO::BTScanLog::ScanRecord3> dev;
 
 	j = 0;
 	k = devMap->GetCount();
@@ -193,7 +193,7 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(NotNullPtr<Data::FastMapN
 	return k;
 }
 
-SSWR::AVIRead::AVIRBluetoothCtlForm::AVIRBluetoothCtlForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRBluetoothCtlForm::AVIRBluetoothCtlForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Bluetooth Ctrl"));
@@ -229,7 +229,7 @@ SSWR::AVIRead::AVIRBluetoothCtlForm::AVIRBluetoothCtlForm(Optional<UI::GUIClient
 	this->lvDevices->AddColumn(CSTR("Company"), 200);
 	this->lvDevices->AddColumn(CSTR("AdvType"), 80);
 
-	NotNullPtr<IO::BTScanner> bt;
+	NN<IO::BTScanner> bt;
 	if (this->bt.SetTo(bt))
 	{
 		bt->HandleRecordUpdate(OnDeviceUpdated, this);
@@ -244,7 +244,7 @@ SSWR::AVIRead::AVIRBluetoothCtlForm::AVIRBluetoothCtlForm(Optional<UI::GUIClient
 
 SSWR::AVIRead::AVIRBluetoothCtlForm::~AVIRBluetoothCtlForm()
 {
-	NotNullPtr<IO::BTScanner> bt;
+	NN<IO::BTScanner> bt;
 	if (this->bt.SetTo(bt))
 	{
 		bt->ScanOff();

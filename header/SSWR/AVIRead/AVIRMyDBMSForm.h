@@ -20,30 +20,30 @@ namespace SSWR
 		class AVIRMyDBMSForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Net::MySQLServer *svr;
 			IO::LogTool *log;
-			NotNullPtr<UI::ListBoxLogger> logger;
+			NN<UI::ListBoxLogger> logger;
 
-			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpUser;
-			NotNullPtr<UI::GUIListBox> lbUser;
-			NotNullPtr<UI::GUIHSplitter> hspUser;
-			NotNullPtr<UI::GUIPanel> pnlUser;
-			NotNullPtr<UI::GUILabel> lblUserName;
-			NotNullPtr<UI::GUITextBox> txtUserName;
-			NotNullPtr<UI::GUILabel> lblPassword;
-			NotNullPtr<UI::GUITextBox> txtPassword;
-			NotNullPtr<UI::GUIButton> btnUserAdd;
+			NN<UI::GUITabPage> tpUser;
+			NN<UI::GUIListBox> lbUser;
+			NN<UI::GUIHSplitter> hspUser;
+			NN<UI::GUIPanel> pnlUser;
+			NN<UI::GUILabel> lblUserName;
+			NN<UI::GUITextBox> txtUserName;
+			NN<UI::GUILabel> lblPassword;
+			NN<UI::GUITextBox> txtPassword;
+			NN<UI::GUIButton> btnUserAdd;
 
-			NotNullPtr<UI::GUITabPage> tpLog;
-			NotNullPtr<UI::GUIListBox> lbLog;
-			NotNullPtr<UI::GUITextBox> txtLog;
+			NN<UI::GUITabPage> tpLog;
+			NN<UI::GUIListBox> lbLog;
+			NN<UI::GUITextBox> txtLog;
 
 		private:
 			static void __stdcall OnStartClicked(void *userObj);
@@ -51,7 +51,7 @@ namespace SSWR
 			static void __stdcall OnLogSel(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
 		public:
-			AVIRMyDBMSForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRMyDBMSForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMyDBMSForm();
 
 			virtual void OnMonitorChanged();

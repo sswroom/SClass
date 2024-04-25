@@ -22,7 +22,7 @@ namespace SSWR
 		class AVIRSAMLTestForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 			Net::WebServer::SAMLHandler *samlHdlr;
 			Net::WebServer::WebListener *svr;
@@ -30,63 +30,63 @@ namespace SSWR
 			Crypto::Cert::X509File *sslKey;
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 			IO::LogTool log;
-			NotNullPtr<UI::ListBoxLogger> logger;
+			NN<UI::ListBoxLogger> logger;
 			Sync::Mutex respMut;
 			Text::String *respNew;
 
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpControl;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUILabel> lblSSL;
-			NotNullPtr<UI::GUIButton> btnSSLCert;
-			NotNullPtr<UI::GUILabel> lblSSLCert;
-			NotNullPtr<UI::GUILabel> lblHost;
-			NotNullPtr<UI::GUITextBox> txtHost;
-			NotNullPtr<UI::GUILabel> lblSignCert;
-			NotNullPtr<UI::GUITextBox> txtSignCert;
-			NotNullPtr<UI::GUILabel> lblSignKey;
-			NotNullPtr<UI::GUITextBox> txtSignKey;
-			NotNullPtr<UI::GUILabel> lblSSOPath;
-			NotNullPtr<UI::GUITextBox> txtSSOPath;
-			NotNullPtr<UI::GUILabel> lblMetadataPath;
-			NotNullPtr<UI::GUITextBox> txtMetadataPath;
-			NotNullPtr<UI::GUILabel> lblLogoutPath;
-			NotNullPtr<UI::GUITextBox> txtLogoutPath;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUILabel> lblSSOURL;
-			NotNullPtr<UI::GUITextBox> txtSSOURL;
-			NotNullPtr<UI::GUILabel> lblMetadataURL;
-			NotNullPtr<UI::GUITextBox> txtMetadataURL;
-			NotNullPtr<UI::GUILabel> lblLogoutURL;
-			NotNullPtr<UI::GUITextBox> txtLogoutURL;
+			NN<UI::GUITabPage> tpControl;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUILabel> lblSSL;
+			NN<UI::GUIButton> btnSSLCert;
+			NN<UI::GUILabel> lblSSLCert;
+			NN<UI::GUILabel> lblHost;
+			NN<UI::GUITextBox> txtHost;
+			NN<UI::GUILabel> lblSignCert;
+			NN<UI::GUITextBox> txtSignCert;
+			NN<UI::GUILabel> lblSignKey;
+			NN<UI::GUITextBox> txtSignKey;
+			NN<UI::GUILabel> lblSSOPath;
+			NN<UI::GUITextBox> txtSSOPath;
+			NN<UI::GUILabel> lblMetadataPath;
+			NN<UI::GUITextBox> txtMetadataPath;
+			NN<UI::GUILabel> lblLogoutPath;
+			NN<UI::GUITextBox> txtLogoutPath;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUILabel> lblSSOURL;
+			NN<UI::GUITextBox> txtSSOURL;
+			NN<UI::GUILabel> lblMetadataURL;
+			NN<UI::GUITextBox> txtMetadataURL;
+			NN<UI::GUILabel> lblLogoutURL;
+			NN<UI::GUITextBox> txtLogoutURL;
 
-			NotNullPtr<UI::GUITabPage> tpSAMLResp;
-			NotNullPtr<UI::GUITextBox> txtSAMLResp;
+			NN<UI::GUITabPage> tpSAMLResp;
+			NN<UI::GUITextBox> txtSAMLResp;
 
-			NotNullPtr<UI::GUITabPage> tpSAMLRespWF;
-			NotNullPtr<UI::GUITextBox> txtSAMLRespWF;
+			NN<UI::GUITabPage> tpSAMLRespWF;
+			NN<UI::GUITextBox> txtSAMLRespWF;
 
-			NotNullPtr<UI::GUITabPage> tpSAMLDecrypt;
-			NotNullPtr<UI::GUITextBox> txtSAMLDecrypt;
+			NN<UI::GUITabPage> tpSAMLDecrypt;
+			NN<UI::GUITextBox> txtSAMLDecrypt;
 
-			NotNullPtr<UI::GUITabPage> tpLog;
-			NotNullPtr<UI::GUIListBox> lbLog;
-			NotNullPtr<UI::GUITextBox> txtLog;
+			NN<UI::GUITabPage> tpLog;
+			NN<UI::GUIListBox> lbLog;
+			NN<UI::GUITextBox> txtLog;
 
 		private:
-			static void __stdcall OnFormFiles(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFormFiles(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnLogSel(AnyType userObj);
 			static void __stdcall OnSSLCertClicked(AnyType userObj);
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnSAMLResponse(AnyType userObj, Text::CString msg);
-			static Bool __stdcall OnLoginRequest(AnyType userObj, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, const Net::WebServer::SAMLMessage *msg);
+			static Bool __stdcall OnLoginRequest(AnyType userObj, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, const Net::WebServer::SAMLMessage *msg);
 			void ClearCACerts();
 			Optional<Crypto::Cert::X509Key> CreateSAMLKey();
 		public:
-			AVIRSAMLTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRSAMLTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSAMLTestForm();
 
 			virtual void OnMonitorChanged();

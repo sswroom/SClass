@@ -17,41 +17,41 @@ namespace SSWR
 		class AVIRProgramLinksForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIListBox> lbItems;
-			NotNullPtr<UI::GUIHSplitter> hspItems;
-			NotNullPtr<UI::GUIPanel> pnlItem;
-			NotNullPtr<UI::GUIButton> btnDelete;
-			NotNullPtr<UI::GUIButton> btnCreate;
-			NotNullPtr<UI::GUILabel> lblLinkName;
-			NotNullPtr<UI::GUITextBox> txtLinkName;
-			NotNullPtr<UI::GUILabel> lblType;
-			NotNullPtr<UI::GUITextBox> txtType;
-			NotNullPtr<UI::GUILabel> lblName;
-			NotNullPtr<UI::GUITextBox> txtName;
-			NotNullPtr<UI::GUILabel> lblGenericName;
-			NotNullPtr<UI::GUITextBox> txtGenericName;
-			NotNullPtr<UI::GUILabel> lblVersion;
-			NotNullPtr<UI::GUITextBox> txtVersion;
-			NotNullPtr<UI::GUILabel> lblComment;
-			NotNullPtr<UI::GUITextBox> txtComment;
-			NotNullPtr<UI::GUILabel> lblMimeTypes;
-			NotNullPtr<UI::GUITextBox> txtMimeTypes;
-			NotNullPtr<UI::GUILabel> lblCategories;
-			NotNullPtr<UI::GUITextBox> txtCategories;
-			NotNullPtr<UI::GUILabel> lblKeywords;
-			NotNullPtr<UI::GUITextBox> txtKeywords;
-			NotNullPtr<UI::GUILabel> lblCmdLine;
-			NotNullPtr<UI::GUITextBox> txtCmdLine;
-			NotNullPtr<UI::GUILabel> lblNoDisplay;
-			NotNullPtr<UI::GUITextBox> txtNoDisplay;
-			NotNullPtr<UI::GUILabel> lblStartupNotify;
-			NotNullPtr<UI::GUITextBox> txtStartupNotify;
-			NotNullPtr<UI::GUILabel> lblTerminal;
-			NotNullPtr<UI::GUITextBox> txtTerminal;
-			NotNullPtr<UI::GUILabel> lblIcon;
-			NotNullPtr<UI::GUITextBox> txtIcon;
+			NN<UI::GUIListBox> lbItems;
+			NN<UI::GUIHSplitter> hspItems;
+			NN<UI::GUIPanel> pnlItem;
+			NN<UI::GUIButton> btnDelete;
+			NN<UI::GUIButton> btnCreate;
+			NN<UI::GUILabel> lblLinkName;
+			NN<UI::GUITextBox> txtLinkName;
+			NN<UI::GUILabel> lblType;
+			NN<UI::GUITextBox> txtType;
+			NN<UI::GUILabel> lblName;
+			NN<UI::GUITextBox> txtName;
+			NN<UI::GUILabel> lblGenericName;
+			NN<UI::GUITextBox> txtGenericName;
+			NN<UI::GUILabel> lblVersion;
+			NN<UI::GUITextBox> txtVersion;
+			NN<UI::GUILabel> lblComment;
+			NN<UI::GUITextBox> txtComment;
+			NN<UI::GUILabel> lblMimeTypes;
+			NN<UI::GUITextBox> txtMimeTypes;
+			NN<UI::GUILabel> lblCategories;
+			NN<UI::GUITextBox> txtCategories;
+			NN<UI::GUILabel> lblKeywords;
+			NN<UI::GUITextBox> txtKeywords;
+			NN<UI::GUILabel> lblCmdLine;
+			NN<UI::GUITextBox> txtCmdLine;
+			NN<UI::GUILabel> lblNoDisplay;
+			NN<UI::GUITextBox> txtNoDisplay;
+			NN<UI::GUILabel> lblStartupNotify;
+			NN<UI::GUITextBox> txtStartupNotify;
+			NN<UI::GUILabel> lblTerminal;
+			NN<UI::GUITextBox> txtTerminal;
+			NN<UI::GUILabel> lblIcon;
+			NN<UI::GUITextBox> txtIcon;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::ProgramLinkManager progMgr;
 
 			static void __stdcall OnItemsSelChg(AnyType userObj);
@@ -60,7 +60,7 @@ namespace SSWR
 
 			void UpdateLinkList();
 		public:
-			AVIRProgramLinksForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRProgramLinksForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRProgramLinksForm();
 
 			virtual void OnMonitorChanged();

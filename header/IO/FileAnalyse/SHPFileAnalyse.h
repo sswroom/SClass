@@ -26,14 +26,14 @@ namespace IO
 			Sync::Thread thread;
 
 			static Text::CString ShapeTypeGetName(UInt32 shapeType);
-			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> thread);
+			static void __stdcall ParseThread(NN<Sync::Thread> thread);
 		public:
-			SHPFileAnalyse(NotNullPtr<IO::StreamData> fd);
+			SHPFileAnalyse(NN<IO::StreamData> fd);
 			virtual ~SHPFileAnalyse();
 
 			virtual Text::CStringNN GetFormatName();
 			virtual UOSInt GetFrameCount();
-			virtual Bool GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual Bool GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst);
 			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index);
 

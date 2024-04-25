@@ -18,12 +18,12 @@ namespace UI
 		Data::ArrayList<void *> numInputObj;
 
 	public:
-		GUISudokuViewer(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Game::Sudoku::SudokuBoard *board);
+		GUISudokuViewer(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Game::Sudoku::SudokuBoard *board);
 		virtual ~GUISudokuViewer();
 
 		virtual Bool OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton btn);
 		virtual Bool OnKeyDown(UI::GUIControl::GUIKey key);
-		virtual void OnDraw(NotNullPtr<Media::DrawImage> img);
+		virtual void OnDraw(NN<Media::DrawImage> img);
 
 		void HandleNumberInput(NumberInputEvent hdlr, void *userObj);
 

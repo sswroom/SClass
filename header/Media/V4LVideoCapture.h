@@ -21,14 +21,14 @@ namespace Media
 		AnyType userData;
 		Sync::Thread thread;
 
-		static void __stdcall PlayThread(NotNullPtr<Sync::Thread> thread);
+		static void __stdcall PlayThread(NN<Sync::Thread> thread);
 	public:
 		V4LVideoCapture(UOSInt devId);
 		virtual ~V4LVideoCapture();
 		
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);
 		virtual Text::CStringNN GetFilterName();
-		virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
+		virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
 		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData);
 		virtual Bool Start();
 		virtual void Stop();
@@ -36,7 +36,7 @@ namespace Media
 
 		virtual void SetPreferSize(Math::Size2D<UOSInt> size, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 frameRateDenom);
 		virtual UOSInt GetSupportedFormats(VideoFormat *fmtArr, UOSInt maxCnt);
-		virtual void GetInfo(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual void GetInfo(NN<Text::StringBuilderUTF8> sb);
 		virtual UOSInt GetDataSeekCount();
 
 		virtual UOSInt ReadFrame(UOSInt frameIndex, UInt8 *buff);

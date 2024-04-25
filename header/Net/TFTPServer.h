@@ -21,26 +21,26 @@ namespace Net
 			Bool isWrite;
 			Bool isLast;
 			UInt16 currBlock;
-			NotNullPtr<Text::String> fileName;
+			NN<Text::String> fileName;
 		} SessionInfo;
 		
 	private:
-		NotNullPtr<IO::LogTool> log;
+		NN<IO::LogTool> log;
 		Net::UDPServer *svr;
 		Net::UDPServer *dataSvr;
-		NotNullPtr<Text::String> path;
+		NN<Text::String> path;
 		Sync::Mutex mut;
 		Data::FastMap<UInt64, SessionInfo*> sessMap;
 		Bool threadToStop;
 		Bool threadRunning;
 		Sync::Event chkEvt;
 
-		static void __stdcall OnCommandPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
-		static void __stdcall OnDataPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+		static void __stdcall OnCommandPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+		static void __stdcall OnDataPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
 		static UInt32 __stdcall CheckThread(AnyType userObj);
 		void ReleaseSess(SessionInfo *sess);
 	public:
-		TFTPServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log, Text::CString path);
+		TFTPServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log, Text::CString path);
 		~TFTPServer();
 
 		Bool IsError();

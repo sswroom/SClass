@@ -22,7 +22,7 @@ namespace Map
 		struct LinkInfo
 		{
 			Optional<Text::String> layerName;
-			NotNullPtr<Text::String> url;
+			NN<Text::String> url;
 			Optional<Text::String> viewFormat;
 			RefreshMode mode;
 			Int32 reloadInterval;
@@ -69,16 +69,16 @@ namespace Map
 		virtual Int64 GetTimeEndTS() const;
 
 		virtual DrawLayerType GetLayerType() const;
-		virtual UOSInt GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr);
-		virtual UOSInt GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
-		virtual UOSInt GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
+		virtual UOSInt GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr);
+		virtual UOSInt GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
+		virtual UOSInt GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
 		virtual Int64 GetObjectIdMax() const;
 		virtual void ReleaseNameArr(NameArray *nameArr);
-		virtual Bool GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex);
+		virtual Bool GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex);
 		virtual UOSInt GetColumnCnt() const;
 		virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize);
-		virtual Bool GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
+		virtual Bool GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef);
 		virtual UInt32 GetCodePage() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 		virtual void SetDispSize(Math::Size2DDbl size, Double dpi);
@@ -90,8 +90,8 @@ namespace Map
 		virtual void SetNameCol(UOSInt nameCol);
 
 		virtual ObjectClass GetObjectClass() const;
-		virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem();
-		virtual void SetCoordinateSystem(NotNullPtr<Math::CoordinateSystem> csys);
+		virtual NN<Math::CoordinateSystem> GetCoordinateSystem();
+		virtual void SetCoordinateSystem(NN<Math::CoordinateSystem> csys);
 
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj);

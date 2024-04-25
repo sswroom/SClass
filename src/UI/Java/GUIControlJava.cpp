@@ -11,7 +11,7 @@ extern "C"
 	extern void *jniEnv;
 }
 
-UI::GUIControl::GUIControl(NotNullPtr<UI::GUICore> ui, Optional<GUIClientControl> parent)
+UI::GUIControl::GUIControl(NN<UI::GUICore> ui, Optional<GUIClientControl> parent)
 {
 	this->ui = ui;
 	this->parent = parent;
@@ -72,7 +72,7 @@ UTF8Char *UI::GUIControl::GetText(UTF8Char *buff)
 	return 0;
 }
 
-Bool UI::GUIControl::GetText(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool UI::GUIControl::GetText(NN<Text::StringBuilderUTF8> sb)
 {
 	///////////////////////////////
 	return false;
@@ -122,7 +122,7 @@ void UI::GUIControl::SetArea(Double left, Double top, Double right, Double botto
 	if (left == this->lxPos && top == this->lyPos && right == this->lxPos2 && bottom == this->lyPos2)
 		return;
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
-	NotNullPtr<GUIClientControl> parent;
+	NN<GUIClientControl> parent;
 	if (this->parent.SetTo(parent))
 	{
 		ofst = parent->GetClientOfst();
@@ -166,7 +166,7 @@ void UI::GUIControl::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, 
 	if (left == this->lxPos && top == this->lyPos && right == this->lxPos2 && bottom == this->lyPos2)
 		return;
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
-	NotNullPtr<GUIClientControl> parent;
+	NN<GUIClientControl> parent;
 	if (this->parent.SetTo(parent))
 	{
 		ofst = parent->GetClientOfst();
@@ -234,7 +234,7 @@ void UI::GUIControl::SetDockType(UI::GUIControl::DockType dockType)
 	if (this->dockType != dockType)
 	{
 		this->dockType = dockType;
-		NotNullPtr<GUIClientControl> parent;
+		NN<GUIClientControl> parent;
 		if (this->parent.SetTo(parent))
 		{
 			parent->UpdateChildrenSize(true);
@@ -406,7 +406,7 @@ Optional<UI::GUIClientControl> UI::GUIControl::GetParent()
 
 UI::GUIForm *UI::GUIControl::GetRootForm()
 {
-	NotNullPtr<UI::GUIControl> ctrl = *this;
+	NN<UI::GUIControl> ctrl = *this;
 	Text::CString objCls;
 	while (true)
 	{
@@ -506,9 +506,9 @@ Double UI::GUIControl::GetDDPI()
 	return this->ddpi;
 }
 
-Media::DrawFont *UI::GUIControl::CreateDrawFont(NotNullPtr<Media::DrawImage> img)
+Media::DrawFont *UI::GUIControl::CreateDrawFont(NN<Media::DrawImage> img)
 {
-	NotNullPtr<Media::DrawFont> fnt;
+	NN<Media::DrawFont> fnt;
 	if (!fnt.Set((Media::DrawFont*)this->GetFont()))
 		return 0;
 	if (this->fontName == 0)

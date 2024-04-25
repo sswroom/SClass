@@ -98,7 +98,7 @@ Text::CString IO::StmData::FileViewData::GetShortName()
 	return fdh->fileName;
 }
 
-NotNullPtr<Text::String> IO::StmData::FileViewData::GetFullName()
+NN<Text::String> IO::StmData::FileViewData::GetFullName()
 {
 	if (fdh == 0)
 		return Text::String::NewEmpty();
@@ -112,9 +112,9 @@ const UInt8 *IO::StmData::FileViewData::GetPointer()
 	return &fdh->fptr[this->dataOffset];
 }
 
-NotNullPtr<IO::StreamData> IO::StmData::FileViewData::GetPartialData(UInt64 offset, UInt64 length)
+NN<IO::StreamData> IO::StmData::FileViewData::GetPartialData(UInt64 offset, UInt64 length)
 {
-	NotNullPtr<IO::StmData::FileViewData> data;
+	NN<IO::StmData::FileViewData> data;
 	NEW_CLASSNN(data, IO::StmData::FileViewData(this, offset, length));
 	return data;
 }

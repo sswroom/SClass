@@ -4,7 +4,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRTMSForm::OnLoadClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTMSForm>();
+	NN<SSWR::AVIRead::AVIRTMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTMSForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtTMSURL->GetText(sb);
 	SDEL_CLASS(me->tms);
@@ -21,14 +21,14 @@ void __stdcall SSWR::AVIRead::AVIRTMSForm::OnLoadClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRTMSForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTMSForm>();
+	NN<SSWR::AVIRead::AVIRTMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTMSForm>();
 	if (me->tms && !me->tms->IsError())
 	{
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
 }
 
-SSWR::AVIRead::AVIRTMSForm::AVIRTMSForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl) : UI::GUIForm(parent, 640, 120, ui)
+SSWR::AVIRead::AVIRTMSForm::AVIRTMSForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl) : UI::GUIForm(parent, 640, 120, ui)
 {
 	this->core = core;
 	this->ssl = ssl;

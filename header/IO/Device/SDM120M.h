@@ -9,7 +9,7 @@ namespace IO
 		class SDM120M : public IO::MODBUSDevice
 		{
 		public:
-			SDM120M(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr);
+			SDM120M(NN<IO::MODBUSMaster> modbus, UInt8 addr);
 			virtual ~SDM120M();
 
 			Bool ReadVoltage(OutParam<Double> volt);

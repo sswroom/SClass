@@ -737,7 +737,7 @@ void Media::Resizer::LanczosResizer8_C8::UpdateRGBTable()
 
 void __stdcall Media::Resizer::LanczosResizer8_C8::DoTask(AnyType obj)
 {
-	NotNullPtr<TaskParam> ts = obj.GetNN<TaskParam>();
+	NN<TaskParam> ts = obj.GetNN<TaskParam>();
 	switch (ts->funcType)
 	{
 	case FuncType::HFilter:
@@ -815,7 +815,7 @@ void Media::Resizer::LanczosResizer8_C8::DestoryVert()
 	vsStep = 0;
 }
 
-Media::Resizer::LanczosResizer8_C8::LanczosResizer8_C8(UOSInt hnTap, UOSInt vnTap, NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType) : Media::IImgResizer(srcAlphaType), srcProfile(srcProfile), destProfile(destProfile)
+Media::Resizer::LanczosResizer8_C8::LanczosResizer8_C8(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType) : Media::IImgResizer(srcAlphaType), srcProfile(srcProfile), destProfile(destProfile)
 {
 	UOSInt i;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();
@@ -1111,7 +1111,7 @@ void Media::Resizer::LanczosResizer8_C8::Resize(const UInt8 *src, OSInt sbpl, Do
 	}
 }
 
-Bool Media::Resizer::LanczosResizer8_C8::Resize(NotNullPtr<const Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg)
+Bool Media::Resizer::LanczosResizer8_C8::Resize(NN<const Media::StaticImage> srcImg, NN<Media::StaticImage> destImg)
 {
 	if (srcImg->info.fourcc != 0 && srcImg->info.fourcc != *(UInt32*)"DIB")
 		return false;
@@ -1135,16 +1135,16 @@ Bool Media::Resizer::LanczosResizer8_C8::Resize(NotNullPtr<const Media::StaticIm
 	}
 }
 
-void Media::Resizer::LanczosResizer8_C8::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
+void Media::Resizer::LanczosResizer8_C8::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void Media::Resizer::LanczosResizer8_C8::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void Media::Resizer::LanczosResizer8_C8::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	this->rgbChanged = true;
 }
 
-void Media::Resizer::LanczosResizer8_C8::SetSrcProfile(NotNullPtr<const Media::ColorProfile> srcProfile)
+void Media::Resizer::LanczosResizer8_C8::SetSrcProfile(NN<const Media::ColorProfile> srcProfile)
 {
 	if (!this->srcProfile.Equals(srcProfile))
 	{
@@ -1153,7 +1153,7 @@ void Media::Resizer::LanczosResizer8_C8::SetSrcProfile(NotNullPtr<const Media::C
 	}
 }
 
-void Media::Resizer::LanczosResizer8_C8::SetDestProfile(NotNullPtr<const Media::ColorProfile> destProfile)
+void Media::Resizer::LanczosResizer8_C8::SetDestProfile(NN<const Media::ColorProfile> destProfile)
 {
 	if (!this->destProfile.Equals(destProfile))
 	{
@@ -1174,7 +1174,7 @@ Media::AlphaType Media::Resizer::LanczosResizer8_C8::GetDestAlphaType()
 	}
 }
 
-Bool Media::Resizer::LanczosResizer8_C8::IsSupported(NotNullPtr<const Media::FrameInfo> srcInfo)
+Bool Media::Resizer::LanczosResizer8_C8::IsSupported(NN<const Media::FrameInfo> srcInfo)
 {
 	if (srcInfo->fourcc != 0)
 		return false;
@@ -1183,7 +1183,7 @@ Bool Media::Resizer::LanczosResizer8_C8::IsSupported(NotNullPtr<const Media::Fra
 	return true;
 }
 
-Media::StaticImage *Media::Resizer::LanczosResizer8_C8::ProcessToNewPartial(NotNullPtr<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
+Media::StaticImage *Media::Resizer::LanczosResizer8_C8::ProcessToNewPartial(NN<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
 {
 	Media::FrameInfo destInfo;
 	Media::StaticImage *newImage;
@@ -1205,9 +1205,9 @@ Media::StaticImage *Media::Resizer::LanczosResizer8_C8::ProcessToNewPartial(NotN
 	this->SetSrcAlphaType(srcImage->info.atype);
 	if (this->destProfile.GetRTranParam()->GetTranType() != Media::CS::TRANT_VUNKNOWN && this->destProfile.GetRTranParam()->GetTranType() != Media::CS::TRANT_PUNKNOWN)
 	{
-		destInfo.color.GetRTranParam()->Set(NotNullPtr<const Media::CS::TransferParam>(this->destProfile.GetRTranParam()));
-		destInfo.color.GetGTranParam()->Set(NotNullPtr<const Media::CS::TransferParam>(this->destProfile.GetGTranParam()));
-		destInfo.color.GetBTranParam()->Set(NotNullPtr<const Media::CS::TransferParam>(this->destProfile.GetBTranParam()));
+		destInfo.color.GetRTranParam()->Set(NN<const Media::CS::TransferParam>(this->destProfile.GetRTranParam()));
+		destInfo.color.GetGTranParam()->Set(NN<const Media::CS::TransferParam>(this->destProfile.GetGTranParam()));
+		destInfo.color.GetBTranParam()->Set(NN<const Media::CS::TransferParam>(this->destProfile.GetBTranParam()));
 	}
 	destInfo.color.GetPrimaries()->Set(this->destProfile.GetPrimaries());
 	destInfo.atype = this->GetDestAlphaType();

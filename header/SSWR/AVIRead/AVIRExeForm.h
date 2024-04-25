@@ -28,31 +28,31 @@ namespace SSWR
 				Data::ArrayListStringNN *codeList;
 			} ExeB16Addr;
 		private:
-			NotNullPtr<UI::GUITabControl> tcEXE;
+			NN<UI::GUITabControl> tcEXE;
 
-			NotNullPtr<UI::GUITabPage> tpProp;
-			NotNullPtr<UI::GUIListView> lvProp;
+			NN<UI::GUITabPage> tpProp;
+			NN<UI::GUIListView> lvProp;
 
-			NotNullPtr<UI::GUITabPage> tpImport;
-			NotNullPtr<UI::GUIListBox> lbImport;
-			NotNullPtr<UI::GUIHSplitter> hspImport;
-			NotNullPtr<UI::GUIListView> lvImport;
+			NN<UI::GUITabPage> tpImport;
+			NN<UI::GUIListBox> lbImport;
+			NN<UI::GUIHSplitter> hspImport;
+			NN<UI::GUIListView> lvImport;
 
-			NotNullPtr<UI::GUITabPage> tpExport;
-			NotNullPtr<UI::GUIListBox> lbExport;
+			NN<UI::GUITabPage> tpExport;
+			NN<UI::GUIListBox> lbExport;
 
-			NotNullPtr<UI::GUITabPage> tpResource;
-			NotNullPtr<UI::GUIListBox> lbResource;
-			NotNullPtr<UI::GUIHSplitter> hspResource;
-			NotNullPtr<UI::GUITextBox> txtResource;
+			NN<UI::GUITabPage> tpResource;
+			NN<UI::GUIListBox> lbResource;
+			NN<UI::GUIHSplitter> hspResource;
+			NN<UI::GUITextBox> txtResource;
 
-			NotNullPtr<UI::GUITabPage> tp16Bit;
-			NotNullPtr<UI::GUIPanel> pnl16BitInfo;
-			NotNullPtr<UI::GUIListBox> lb16BitFuncs;
-			NotNullPtr<UI::GUIHSplitter> hsp16Bit;
-			NotNullPtr<UI::GUIListBox> lb16BitCont;
+			NN<UI::GUITabPage> tp16Bit;
+			NN<UI::GUIPanel> pnl16BitInfo;
+			NN<UI::GUIListBox> lb16BitFuncs;
+			NN<UI::GUIHSplitter> hsp16Bit;
+			NN<UI::GUIListBox> lb16BitCont;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::EXEFile *exeFile;
 			Data::ArrayList<ExeB16Addr*> *parts;
 			Data::ArrayList<Data::ArrayListStringNN*> *codesList;
@@ -65,7 +65,7 @@ namespace SSWR
 			static void __stdcall OnResourceSelChg(AnyType userObj);
 			static void __stdcall OnResourceDblClk(AnyType userObj);
 		public:
-			AVIRExeForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::EXEFile *exeFile);
+			AVIRExeForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::EXEFile *exeFile);
 			virtual ~AVIRExeForm();
 
 			virtual void OnMonitorChanged();

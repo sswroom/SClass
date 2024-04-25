@@ -10,7 +10,7 @@
 #include "Net/SSLEngineFactory.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter *console;
 	UOSInt argc;
@@ -66,7 +66,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			UOSInt totalSize = 0;
 			UOSInt writeSize;
 			Optional<Net::SSLEngine> ssl;
-			NotNullPtr<Net::HTTPClient> cli;
+			NN<Net::HTTPClient> cli;
 			Net::OSSocketFactory sockf(true);
 			ssl = Net::SSLEngineFactory::Create(sockf, true);
 			cli = Net::HTTPClient::CreateConnect(sockf, ssl, {url, urlLen}, Net::WebUtil::RequestMethod::HTTP_POST, false);
@@ -115,7 +115,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				}
 				else
 				{
-					NotNullPtr<Text::String> fileName;
+					NN<Text::String> fileName;
 					sb.ClearStr();
 					sb.AppendC(url, urlLen);
 					j = sb.IndexOf('?');

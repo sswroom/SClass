@@ -5,9 +5,9 @@
 #include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::FileAnalyse::EXEFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::EXEFileAnalyse>();
+	NN<IO::FileAnalyse::EXEFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::EXEFileAnalyse>();
 	UInt8 buff[256];
 	NN<IO::FileAnalyse::EXEFileAnalyse::PackInfo> pack;
 	UInt32 val;
@@ -256,7 +256,7 @@ void __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	}
 }
 
-IO::FileAnalyse::EXEFileAnalyse::EXEFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("EXEFileAnalyse"))
+IO::FileAnalyse::EXEFileAnalyse::EXEFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("EXEFileAnalyse"))
 {
 	UInt8 buff[8];
 	this->fd = 0;
@@ -288,7 +288,7 @@ UOSInt IO::FileAnalyse::EXEFileAnalyse::GetFrameCount()
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::EXEFileAnalyse::PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
@@ -301,7 +301,7 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text
 	return true;
 }
 
-Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::EXEFileAnalyse::PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
@@ -818,7 +818,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EXEFileAnalyse::GetFrame
 	if (!this->packs.GetItem(index).SetTo(pack))
 		return 0;
 
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 	sptr = PackTypeGetName(pack->packType).ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Type=")));
 	frame->AddText(0, CSTRP(sbuff, sptr));

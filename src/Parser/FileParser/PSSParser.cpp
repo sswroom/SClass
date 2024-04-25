@@ -29,7 +29,7 @@ Int32 Parser::FileParser::PSSParser::GetName()
 	return *(Int32*)"PSSP";
 }
 
-void Parser::FileParser::PSSParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::PSSParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
@@ -42,7 +42,7 @@ IO::ParserType Parser::FileParser::PSSParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr2;
@@ -64,7 +64,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(NotNullPtr<IO::Str
 	}
 	UTF8Char *sptr;
 	Bool valid = true;
-	NotNullPtr<Media::AudioFormat> formats[4];
+	NN<Media::AudioFormat> formats[4];
 	Int32 audDelay[4];
 	Media::FileVideoSource *vstm = 0;
 	IO::StmData::BlockStreamData *stmData[4];
@@ -103,12 +103,12 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(NotNullPtr<IO::Str
 	{
 		if (fd->IsFullFile())
 		{
-			NotNullPtr<IO::StmData::ConcatStreamData> data;
+			NN<IO::StmData::ConcatStreamData> data;
 			stmId = 2;
 			NEW_CLASSNN(data, IO::StmData::ConcatStreamData(fd->GetFullName()));
 			data->AddData(fd->GetPartialData(0, fd->GetDataSize()));
 			
-			NotNullPtr<Text::String> s = fd->GetFullFileName();
+			NN<Text::String> s = fd->GetFullFileName();
 			sptr = Text::StrConcatC(sbuff, s->v, s->leng - 5);
 			while (true)
 			{
@@ -686,7 +686,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(NotNullPtr<IO::Str
 	}
 	Media::MediaFile *file;
 	NEW_CLASS(file, Media::MediaFile(fd->GetFullName()));
-	NotNullPtr<Media::IVideoSource> nnvstm;
+	NN<Media::IVideoSource> nnvstm;
 	if (nnvstm.Set(vstm))
 	{
 		Media::Decoder::MP2GDecoder *mp2g;
@@ -697,7 +697,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(NotNullPtr<IO::Str
 	i = 0;
 	while (i < 4)
 	{
-		NotNullPtr<IO::StreamData> stmFD;
+		NN<IO::StreamData> stmFD;
 		if (formats[i]->formatId && stmFD.Set(stmData[i]))
 		{
 			if (formats[i]->formatId == 1)

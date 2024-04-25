@@ -18,40 +18,40 @@ namespace SSWR
 		class AVIRGISPropForm : public UI::GUIForm, public Media::IColorHandler
 		{
 		private:
-			NotNullPtr<UI::GUITextBox> txtMinScale;
-			NotNullPtr<UI::GUITextBox> txtMaxScale;
-			NotNullPtr<UI::GUICheckBox> chkHide;
-			NotNullPtr<UI::GUIPictureBox> pbFontStyle;
-			NotNullPtr<UI::GUIButton> btnFontModify;
-			NotNullPtr<UI::GUIButton> btnFontStyle;
-			NotNullPtr<UI::GUILabel> lblLineStyle;
-			NotNullPtr<UI::GUIPictureBox> pbLineStyle;
-			NotNullPtr<UI::GUIButton> btnLineModify;
-			NotNullPtr<UI::GUIButton> btnLineStyle;
-			NotNullPtr<UI::GUILabel> lblFillStyle;
-			NotNullPtr<UI::GUIPictureBox> pbFillStyle;
-			NotNullPtr<UI::GUIComboBox> cboColName;
-			NotNullPtr<UI::GUICheckBox> chkShowLabel;
-			NotNullPtr<UI::GUITextBox> txtPriority;
-			NotNullPtr<UI::GUILabel> lblIcon;
-			NotNullPtr<UI::GUIPictureBox> pbIcon;
+			NN<UI::GUITextBox> txtMinScale;
+			NN<UI::GUITextBox> txtMaxScale;
+			NN<UI::GUICheckBox> chkHide;
+			NN<UI::GUIPictureBox> pbFontStyle;
+			NN<UI::GUIButton> btnFontModify;
+			NN<UI::GUIButton> btnFontStyle;
+			NN<UI::GUILabel> lblLineStyle;
+			NN<UI::GUIPictureBox> pbLineStyle;
+			NN<UI::GUIButton> btnLineModify;
+			NN<UI::GUIButton> btnLineStyle;
+			NN<UI::GUILabel> lblFillStyle;
+			NN<UI::GUIPictureBox> pbFillStyle;
+			NN<UI::GUIComboBox> cboColName;
+			NN<UI::GUICheckBox> chkShowLabel;
+			NN<UI::GUITextBox> txtPriority;
+			NN<UI::GUILabel> lblIcon;
+			NN<UI::GUIPictureBox> pbIcon;
 
-			NotNullPtr<UI::GUIGroupBox> grpLabel;
-			NotNullPtr<UI::GUICheckBox> chkSmart;
-			NotNullPtr<UI::GUICheckBox> chkRotate;
-			NotNullPtr<UI::GUICheckBox> chkAlign;
-			NotNullPtr<UI::GUICheckBox> chkTrim;
-			NotNullPtr<UI::GUICheckBox> chkCapital;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUIGroupBox> grpLabel;
+			NN<UI::GUICheckBox> chkSmart;
+			NN<UI::GUICheckBox> chkRotate;
+			NN<UI::GUICheckBox> chkAlign;
+			NN<UI::GUICheckBox> chkTrim;
+			NN<UI::GUICheckBox> chkCapital;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
-			NotNullPtr<Media::DrawEngine> eng;
+			NN<Media::DrawEngine> eng;
 			Media::StaticImage *imgLine;
 			Media::StaticImage *imgFont;
-			NotNullPtr<Map::MapEnv> env;
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Media::ColorManagerSess> colorSess;
-			NotNullPtr<Media::ColorConv> colorConv;
+			NN<Map::MapEnv> env;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Media::ColorManagerSess> colorSess;
+			NN<Media::ColorConv> colorConv;
 			Optional<Map::MapEnv::GroupItem> group;
 			UOSInt index;
 			Int32 lineType;
@@ -84,13 +84,13 @@ namespace SSWR
 */
 
 		public:
-			AVIRGISPropForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group, UOSInt index);
+			AVIRGISPropForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group, UOSInt index);
 			virtual ~AVIRGISPropForm();
 
 			virtual void OnMonitorChanged();
 
-			virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
-			virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);
+			virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
+			virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
 		};
 	}
 }

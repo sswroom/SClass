@@ -16,31 +16,31 @@ namespace SSWR
 		class AVIRSystemInfoLogForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpSystem;
-			NotNullPtr<UI::GUILabel> lblOSName;
-			NotNullPtr<UI::GUITextBox> txtOSName;
-			NotNullPtr<UI::GUILabel> lblOSVer;
-			NotNullPtr<UI::GUITextBox> txtOSVer;
-			NotNullPtr<UI::GUILabel> lblOSLocale;
-			NotNullPtr<UI::GUITextBox> txtOSLocale;
-			NotNullPtr<UI::GUILabel> lblArchitecture;
-			NotNullPtr<UI::GUITextBox> txtArchitecture;
-			NotNullPtr<UI::GUILabel> lblProductType;
-			NotNullPtr<UI::GUITextBox> txtProductType;
+			NN<UI::GUITabPage> tpSystem;
+			NN<UI::GUILabel> lblOSName;
+			NN<UI::GUITextBox> txtOSName;
+			NN<UI::GUILabel> lblOSVer;
+			NN<UI::GUITextBox> txtOSVer;
+			NN<UI::GUILabel> lblOSLocale;
+			NN<UI::GUITextBox> txtOSLocale;
+			NN<UI::GUILabel> lblArchitecture;
+			NN<UI::GUITextBox> txtArchitecture;
+			NN<UI::GUILabel> lblProductType;
+			NN<UI::GUITextBox> txtProductType;
 
-			NotNullPtr<UI::GUITabPage> tpDevices;
-			NotNullPtr<UI::GUIListView> lvDevices;
+			NN<UI::GUITabPage> tpDevices;
+			NN<UI::GUIListView> lvDevices;
 
-			NotNullPtr<UI::GUITabPage> tpDrivers;
-			NotNullPtr<UI::GUIListView> lvDrivers;
+			NN<UI::GUITabPage> tpDrivers;
+			NN<UI::GUIListView> lvDrivers;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::SystemInfoLog *sysInfo;
 
 		public:
-			AVIRSystemInfoLogForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::SystemInfoLog *sysInfo);
+			AVIRSystemInfoLogForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::SystemInfoLog *sysInfo);
 			virtual ~AVIRSystemInfoLogForm();
 
 			virtual void OnMonitorChanged();

@@ -7,7 +7,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRNTPServerForm::OnStartClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRNTPServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNTPServerForm>();
+	NN<SSWR::AVIRead::AVIRNTPServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNTPServerForm>();
 	if (me->svr)
 	{
 		DEL_CLASS(me->svr);
@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPServerForm::OnStartClick(AnyType userObj)
 	sb.ClearStr();
 	me->txtTimeServer->GetText(sb);
 	Net::SocketUtil::AddressInfo addr;
-	NotNullPtr<Net::SocketFactory> sockf = me->core->GetSocketFactory();
+	NN<Net::SocketFactory> sockf = me->core->GetSocketFactory();
 	if (!sockf->DNSResolveIP(sb.ToCString(), addr))
 	{
 		me->ui->ShowMsgOK(CSTR("Cannot resolve the time server"), CSTR("Resolve"), me);
@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPServerForm::OnStartClick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRNTPServerForm::OnLogSel(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRNTPServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNTPServerForm>();
+	NN<SSWR::AVIRead::AVIRNTPServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNTPServerForm>();
 	Optional<Text::String> s = me->lbLog->GetSelectedItemTextNew();
 	me->txtLog->SetText(Text::String::OrEmpty(s)->ToCString());
 	OPTSTR_DEL(s);
@@ -57,10 +57,10 @@ void __stdcall SSWR::AVIRead::AVIRNTPServerForm::OnLogSel(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRNTPServerForm::OnTimerTick(AnyType userObj)
 {
-//	NotNullPtr<SSWR::AVIRead::AVIRNTPServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNTPServerForm>();
+//	NN<SSWR::AVIRead::AVIRNTPServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNTPServerForm>();
 }
 
-SSWR::AVIRead::AVIRNTPServerForm::AVIRNTPServerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRNTPServerForm::AVIRNTPServerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
 	this->SetText(CSTR("NTP Server"));

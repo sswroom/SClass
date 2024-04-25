@@ -5,7 +5,7 @@
 #include "Sync/SimpleThread.h"
 #include "Text/MyString.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Net::MQTTFailoverClient *cli;
 	Net::OSSocketFactory sockf(true);

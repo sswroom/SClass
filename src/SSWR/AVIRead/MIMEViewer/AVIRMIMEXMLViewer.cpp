@@ -4,7 +4,7 @@
 #include "Text/XML.h"
 #include "Text/XMLReader.h"
 
-SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::MIMEObj::UnknownMIMEObj *obj) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, obj)
+SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, Text::MIMEObj::UnknownMIMEObj *obj) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, obj)
 {
 	this->obj = obj;
 
@@ -21,7 +21,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(NotNullPtr<SSWR:
 	Text::StringBuilderUTF8 sbPath;
 	Text::StringBuilderUTF8 sbCont;
 	Text::XMLAttrib *attr;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UOSInt i;
 	UOSInt j;
 	IO::MemoryReadingStream mstm(buff, size);

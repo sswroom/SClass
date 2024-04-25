@@ -6,8 +6,8 @@
 
 void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontNameClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
-	NotNullPtr<UI::GUIFontDialog> dlg;
+	NN<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
+	NN<UI::GUIFontDialog> dlg;
 	if (me->currFontName == 0)
 	{
 		dlg = me->ui->NewFontDialog(CSTR_NULL, 0, me->isBold, false);
@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontNameClicked(AnyType userO
 	{
 		dlg = me->ui->NewFontDialog(me->currFontName, me->currFontSizePt, me->isBold, false);
 	}
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (dlg->ShowDialog(me->hwnd) && dlg->GetFontName().SetTo(s))
 	{
 		SDEL_STRING(me->currFontName);
@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontNameClicked(AnyType userO
 
 Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
+	NN<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
 	if (mouseBtn == UI::GUIControl::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
@@ -50,14 +50,14 @@ Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontColorClicked(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferSizeChanged(AnyType userObj, UOSInt scrollPos)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
+	NN<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
 	me->currBuffSize = scrollPos;
 	me->UpdateFontPreview();
 }
 
 Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
+	NN<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
 	if (mouseBtn == UI::GUIControl::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
@@ -76,7 +76,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISFontEditForm::BufferColorClicked(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontsDoubleClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
+	NN<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
 	if (me->fontStyle < 0)
 		return;
 	me->SetDialogResult(UI::GUIForm::DR_OK);
@@ -84,10 +84,10 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontsDoubleClicked(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::OKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
+	NN<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	NotNullPtr<Text::String> currFontName;
+	NN<Text::String> currFontName;
 	if (me->fontStyle < 0 || !currFontName.Set(me->currFontName))
 		return;
 	if ((sptr = me->txtStyleName->GetText(sbuff)) != 0 && sbuff[0] != 0)
@@ -101,7 +101,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::OKClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::CancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
+	NN<SSWR::AVIRead::AVIRGISFontEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontEditForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
@@ -111,9 +111,9 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateFontPreview()
 	UTF8Char *sptr;
 	Math::Size2DDbl sz;
 	Math::Size2D<UOSInt> usz;
-	NotNullPtr<Media::DrawImage> dimg;
-	NotNullPtr<Media::DrawFont> f;
-	NotNullPtr<Media::DrawBrush> b;
+	NN<Media::DrawImage> dimg;
+	NN<Media::DrawFont> f;
+	NN<Media::DrawBrush> b;
 	usz = this->pbFontPreview->GetSizeP();
 	if (dimg.Set(this->eng->CreateImage32(usz, Media::AT_NO_ALPHA)))
 	{
@@ -160,7 +160,7 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateDisplay()
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	NotNullPtr<Text::String> fontName;
+	NN<Text::String> fontName;
 	if ((sptr = env->GetFontStyleName(this->fontStyle, sbuff)) != 0)
 	{
 		this->txtStyleName->SetText(CSTRP(sbuff, sptr));
@@ -185,7 +185,7 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateDisplay()
 	this->pbBufferColor->SetBGColor(this->colorConv->ConvRGB8(this->currBuffColor));
 }
 
-SSWR::AVIRead::AVIRGISFontEditForm::AVIRGISFontEditForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, NotNullPtr<Media::DrawEngine> eng, UOSInt fontStyle) : UI::GUIForm(parent, 480, 306, ui)
+SSWR::AVIRead::AVIRGISFontEditForm::AVIRGISFontEditForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Media::DrawEngine> eng, UOSInt fontStyle) : UI::GUIForm(parent, 480, 306, ui)
 {
 	this->core = core;
 	this->env = env;
@@ -270,11 +270,11 @@ void SSWR::AVIRead::AVIRGISFontEditForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRGISFontEditForm::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
+void SSWR::AVIRead::AVIRGISFontEditForm::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void SSWR::AVIRead::AVIRGISFontEditForm::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void SSWR::AVIRead::AVIRGISFontEditForm::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	this->colorConv->RGBParamChanged(rgbParam);
 	this->pbFontColor->SetBGColor(this->colorConv->ConvRGB8(this->currColor));

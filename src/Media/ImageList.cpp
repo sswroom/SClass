@@ -6,7 +6,7 @@
 #include "Media/StaticImage.h"
 #include "Text/MyString.h"
 
-Media::ImageList::ImageList(NotNullPtr<Text::String> name) : IO::ParsedObject(name)
+Media::ImageList::ImageList(NN<Text::String> name) : IO::ParsedObject(name)
 {
 	this->author = 0;
 	this->imgName = 0;
@@ -46,7 +46,7 @@ IO::ParserType Media::ImageList::GetParserType() const
 	return IO::ParserType::ImageList;
 }
 
-UOSInt Media::ImageList::AddImage(NotNullPtr<Media::RasterImage> img, UInt32 imageDelay)
+UOSInt Media::ImageList::AddImage(NN<Media::RasterImage> img, UInt32 imageDelay)
 {
 	this->imgTimes.Add(imageDelay);
 	this->imgTypeList.Add(Media::ImageList::IT_UNKNOWN);
@@ -60,7 +60,7 @@ UOSInt Media::ImageList::AddImage(Media::RasterImage *img, UInt32 imageDelay)
 	return this->imgList.Add(img);
 }
 
-void Media::ImageList::ReplaceImage(UOSInt index, NotNullPtr<Media::RasterImage> img)
+void Media::ImageList::ReplaceImage(UOSInt index, NN<Media::RasterImage> img)
 {
 	Media::RasterImage *oldImg = this->imgList.GetItem(index);
 	this->imgList.SetItem(index, img.Ptr());
@@ -121,7 +121,7 @@ void Media::ImageList::ToStaticImage(UOSInt index)
 	Media::RasterImage *img = this->imgList.GetItem(index);
 	if (img == 0 || img->GetImageType() == Media::RasterImage::ImageType::Static)
 		return;
-	NotNullPtr<Media::StaticImage> simg = img->CreateStaticImage();
+	NN<Media::StaticImage> simg = img->CreateStaticImage();
 	this->imgList.SetItem(index, simg.Ptr());
 	DEL_CLASS(img);
 }
@@ -244,13 +244,13 @@ void Media::ImageList::SetValueStr(Media::ImageList::ValueType valType, Text::CS
 	this->valTypeStr.Add(valType);
 }
 
-Bool Media::ImageList::ToValueString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+Bool Media::ImageList::ToValueString(NN<Text::StringBuilderUTF8> sb) const
 {
 	UOSInt i;
 	UOSInt j;
 	Bool found = false;
 	ValueType vt;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if ((j = this->valStr.GetCount()) != 0)
 	{
 		i = 0;
@@ -332,7 +332,7 @@ Bool Media::ImageList::ToValueString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 	return found;
 }
 
-void Media::ImageList::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Media::ImageList::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	Bool hasData = this->ToValueString(sb);
 	Media::RasterImage *img;

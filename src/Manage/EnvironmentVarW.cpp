@@ -16,7 +16,7 @@ Manage::EnvironmentVar::EnvironmentVar()
 	this->envs = (void*)(envs = (const WChar *)GetEnvironmentStringsW());
 	if (envs)
 	{
-		NotNullPtr<Text::String> name;
+		NN<Text::String> name;
 		const UTF8Char *val;
 
 		currPtr = envs;
@@ -48,7 +48,7 @@ Manage::EnvironmentVar::EnvironmentVar()
 Manage::EnvironmentVar::~EnvironmentVar()
 {
 	UOSInt i;
-	NotNullPtr<const Data::ArrayList<const UTF8Char*>> nameList = this->names.GetValues();
+	NN<const Data::ArrayList<const UTF8Char*>> nameList = this->names.GetValues();
 	i = nameList->GetCount();
 	while (i-- > 0)
 	{

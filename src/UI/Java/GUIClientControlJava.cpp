@@ -10,7 +10,7 @@ void UI::GUIClientControl::InitContainer()
 	this->container = 0;
 }
 
-UI::GUIClientControl::GUIClientControl(NotNullPtr<UI::GUICore> ui, Optional<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
+UI::GUIClientControl::GUIClientControl(NN<UI::GUICore> ui, Optional<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
 {
 	this->container = 0;
 }
@@ -99,7 +99,7 @@ UI::GUIControl *UI::GUIClientControl::GetChild(UOSInt index)
 
 void UI::GUIClientControl::FocusChild(GUIControl *child)
 {
-	NotNullPtr<GUIClientControl> parent;
+	NN<GUIClientControl> parent;
 	if (this->parent.SetTo(parent))
 	{
 		parent->FocusChild(child);

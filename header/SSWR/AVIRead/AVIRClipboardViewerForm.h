@@ -14,16 +14,16 @@ namespace SSWR
 		class AVIRClipboardViewerForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			UI::Clipboard *clipboard;
 
-			NotNullPtr<UI::GUIListBox> lbType;
-			NotNullPtr<UI::GUIHSplitter> hspMain;
-			NotNullPtr<UI::GUITextBox> txtMain;
+			NN<UI::GUIListBox> lbType;
+			NN<UI::GUIHSplitter> hspMain;
+			NN<UI::GUITextBox> txtMain;
 
 			static void __stdcall OnTypeSelChg(AnyType userObj);
 		public:
-			AVIRClipboardViewerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRClipboardViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRClipboardViewerForm();
 
 			virtual void OnMonitorChanged();

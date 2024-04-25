@@ -3,7 +3,7 @@
 #include "Net/WebServer/WellKnownHandler.h"
 #include "Sync/MutexUsage.h"
 
-Bool Net::WebServer::WellKnownHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Net::WebServer::WellKnownHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	if (subReq.StartsWith(UTF8STRC("/acme-challenge/")))
 	{
@@ -19,12 +19,12 @@ Bool Net::WebServer::WellKnownHandler::ProcessRequest(NotNullPtr<Net::WebServer:
 	return WebServiceHandler::ProcessRequest(req, resp, subReq);
 }
 
-Bool __stdcall Net::WebServer::WellKnownHandler::AddFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svc)
+Bool __stdcall Net::WebServer::WellKnownHandler::AddFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
 {
-	NotNullPtr<Net::WebServer::WellKnownHandler> me = NotNullPtr<Net::WebServer::WellKnownHandler>::ConvertFrom(svc);
-	NotNullPtr<Text::String> t;
-	NotNullPtr<Text::String> name;
-	NotNullPtr<Text::String> val;
+	NN<Net::WebServer::WellKnownHandler> me = NN<Net::WebServer::WellKnownHandler>::ConvertFrom(svc);
+	NN<Text::String> t;
+	NN<Text::String> name;
+	NN<Text::String> val;
 	if (req->GetQueryValue(CSTR("t")).SetTo(t) && req->GetQueryValue(CSTR("name")).SetTo(name) && req->GetQueryValue(CSTR("val")).SetTo(val))
 	{
 		if (t->Equals(UTF8STRC("acme")))

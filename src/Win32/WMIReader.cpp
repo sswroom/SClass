@@ -353,7 +353,7 @@ WChar *Win32::WMIReader::GetStr(UOSInt colIndex, WChar *buff)
 	return ret;
 }
 
-Bool Win32::WMIReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Win32::WMIReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0 || this->pObject == 0)
@@ -486,7 +486,7 @@ Optional<Text::String> Win32::WMIReader::GetNewStr(UOSInt colIndex)
 			case CIM_UINT8 | CIM_FLAG_ARRAY:
 				{
 					SAFEARRAY * arr = V_ARRAY(&v);
-					NotNullPtr<Text::String> tmpV = Text::String::New(2 + (arr->cbElements << 1));
+					NN<Text::String> tmpV = Text::String::New(2 + (arr->cbElements << 1));
 					ret = tmpV;
 					Text::StrHexBytes(Text::StrConcatC(tmpV->v, UTF8STRC("0x")), (UInt8*)arr->pvData, arr->rgsabound[0].cElements, 0);
 				}
@@ -816,7 +816,7 @@ Optional<Math::Geometry::Vector2D> Win32::WMIReader::GetVector(UOSInt colIndex)
 	return 0;
 }
 
-Bool Win32::WMIReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
+Bool Win32::WMIReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 {
 	return false;
 }
@@ -898,13 +898,13 @@ DB::DBUtil::ColType Win32::WMIReader::GetColType(UOSInt colIndex, OptOut<UOSInt>
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Win32::WMIReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Win32::WMIReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);
 	if (col == 0)
 		return false;
 
-	NotNullPtr<Text::String> s = Text::String::NewNotNull(col->name);
+	NN<Text::String> s = Text::String::NewNotNull(col->name);
 	colDef->SetColName(s);
 	s->Release();
 	switch (col->colType)

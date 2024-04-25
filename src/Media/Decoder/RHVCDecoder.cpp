@@ -159,7 +159,7 @@ void Media::Decoder::RHVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 	mutUsage.EndUse();
 }
 
-Media::Decoder::RHVCDecoder::RHVCDecoder(NotNullPtr<IVideoSource> sourceVideo, Bool toRelease) : Media::Decoder::VDecoderBase(sourceVideo)
+Media::Decoder::RHVCDecoder::RHVCDecoder(NN<IVideoSource> sourceVideo, Bool toRelease) : Media::Decoder::VDecoderBase(sourceVideo)
 {
 	Media::FrameInfo info;
 	UOSInt size;
@@ -394,7 +394,7 @@ UOSInt Media::Decoder::RHVCDecoder::ReadFrame(UOSInt frameIndex, UInt8 *buff)
 	return outSize;
 }
 
-Bool Media::Decoder::RHVCDecoder::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::Decoder::RHVCDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	if (this->pps == 0 || this->sps == 0)
 		return false;

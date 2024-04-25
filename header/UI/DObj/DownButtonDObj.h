@@ -11,7 +11,7 @@ namespace UI
 		class DownButtonDObj : public DirectObject
 		{
 		private:
-			NotNullPtr<Media::DrawEngine> deng;
+			NN<Media::DrawEngine> deng;
 			Media::DrawImage *bmpUnclick;
 			Media::DrawImage *bmpClicked;
 			Bool isMouseDown;
@@ -21,12 +21,12 @@ namespace UI
 			Bool updated;
 
 		public:
-			DownButtonDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, UI::UIEvent clkHdlr, AnyType clkUserObj);
+			DownButtonDObj(NN<Media::DrawEngine> deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, UI::UIEvent clkHdlr, AnyType clkUserObj);
 			virtual ~DownButtonDObj();
 
 			virtual Bool IsChanged();
 			virtual Bool DoEvents();
-			virtual void DrawObject(NotNullPtr<Media::DrawImage> dimg);
+			virtual void DrawObject(NN<Media::DrawImage> dimg);
 
 			virtual Bool IsObject(Math::Coord2D<OSInt> scnPos);
 			//virtual System::Windows::Forms::Cursor ^GetCursor() override;

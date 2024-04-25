@@ -22,7 +22,7 @@ namespace Map
 		struct LayerInfo
 		{
 			Data::ArrayListNN<LayerCRS> crsList;
-			NotNullPtr<Text::String> name;
+			NN<Text::String> name;
 			Text::String *title;
 			Bool queryable;
 		};
@@ -36,10 +36,10 @@ namespace Map
 		};
 	private:
 		Optional<Text::EncodingFactory> encFact;
-		NotNullPtr<Text::String> wmsURL;
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Text::String> wmsURL;
+		NN<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;
-		NotNullPtr<Math::CoordinateSystem> envCsys;
+		NN<Math::CoordinateSystem> envCsys;
 
 		Text::String *version;
 		Data::ArrayListNN<LayerInfo> layers;
@@ -50,22 +50,22 @@ namespace Map
 		UOSInt infoType;
 
 		Optional<LayerCRS> currCRS;
-		NotNullPtr<Math::CoordinateSystem> csys;
+		NN<Math::CoordinateSystem> csys;
 
 		void LoadXML(Version version);
-		void LoadXMLRequest(NotNullPtr<Text::XMLReader> reader);
-		void LoadXMLLayers(NotNullPtr<Text::XMLReader> reader);
+		void LoadXMLRequest(NN<Text::XMLReader> reader);
+		void LoadXMLLayers(NN<Text::XMLReader> reader);
 
 	public:
-		WebMapService(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString wmsURL, Version version, NotNullPtr<Math::CoordinateSystem> envCsys);
+		WebMapService(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString wmsURL, Version version, NN<Math::CoordinateSystem> envCsys);
 		virtual ~WebMapService();
 
-		virtual NotNullPtr<Text::String> GetName() const;
-		virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem() const;
+		virtual NN<Text::String> GetName() const;
+		virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const;
 		virtual Math::RectAreaDbl GetInitBounds() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 		virtual Bool CanQuery() const;
-		virtual Bool QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NotNullPtr<Data::ArrayList<UOSInt>> valueOfstList, NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListNN<Text::String>> valueList);
+		virtual Bool QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayList<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList);
 		virtual Optional<Media::ImageList> DrawMap(Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Optional<Text::StringBuilderUTF8> sbUrl);
 
 		Bool IsError() const;
@@ -75,10 +75,10 @@ namespace Map
 		void SetLayer(UOSInt index);
 		void SetMapImageType(UOSInt index);
 		void SetLayerCRS(UOSInt index);
-		UOSInt GetLayerNames(NotNullPtr<Data::ArrayListStringNN> nameList) const;
-		UOSInt GetMapImageTypeNames(NotNullPtr<Data::ArrayListStringNN> nameList) const;
-		UOSInt GetInfoTypeNames(NotNullPtr<Data::ArrayListStringNN> nameList) const;
-		UOSInt GetLayerCRSNames(NotNullPtr<Data::ArrayListNN<Text::String>> nameList) const;
+		UOSInt GetLayerNames(NN<Data::ArrayListStringNN> nameList) const;
+		UOSInt GetMapImageTypeNames(NN<Data::ArrayListStringNN> nameList) const;
+		UOSInt GetInfoTypeNames(NN<Data::ArrayListStringNN> nameList) const;
+		UOSInt GetLayerCRSNames(NN<Data::ArrayListNN<Text::String>> nameList) const;
 	};
 }
 #endif

@@ -6,7 +6,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRDS18B20Form::OnSNClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDS18B20Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDS18B20Form>();
+	NN<SSWR::AVIRead::AVIRDS18B20Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDS18B20Form>();
 	UInt8 buff[8];
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -19,13 +19,13 @@ void __stdcall SSWR::AVIRead::AVIRDS18B20Form::OnSNClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRDS18B20Form::OnReadClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDS18B20Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDS18B20Form>();
+	NN<SSWR::AVIRead::AVIRDS18B20Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDS18B20Form>();
 	me->ReadData();
 }
 
 void __stdcall SSWR::AVIRead::AVIRDS18B20Form::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDS18B20Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDS18B20Form>();
+	NN<SSWR::AVIRead::AVIRDS18B20Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDS18B20Form>();
 	if (me->chkAutoRead->IsChecked())
 	{
 		me->ReadData();
@@ -49,7 +49,7 @@ void SSWR::AVIRead::AVIRDS18B20Form::ReadData()
 	}
 }
 
-SSWR::AVIRead::AVIRDS18B20Form::AVIRDS18B20Form(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::IOPin> pin) : UI::GUIForm(parent, 480, 160, ui)
+SSWR::AVIRead::AVIRDS18B20Form::AVIRDS18B20Form(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::IOPin> pin) : UI::GUIForm(parent, 480, 160, ui)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

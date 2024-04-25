@@ -14,7 +14,7 @@ void IO::GPSNMEA::ParseUnknownCmd(const UTF8Char *cmd, UOSInt cmdLen)
 {
 }
 
-IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineLen, NotNullPtr<Map::GPSTrack::GPSRecord3> record, SateRecord *sateRec)
+IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineLen, NN<Map::GPSTrack::GPSRecord3> record, SateRecord *sateRec)
 {
 	UTF8Char *sarr[32];
 	UOSInt scnt;
@@ -255,7 +255,7 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineL
 
 UInt32 __stdcall IO::GPSNMEA::NMEAThread(AnyType userObj)
 {
-	NotNullPtr<IO::GPSNMEA> me = userObj.GetNN<IO::GPSNMEA>();
+	NN<IO::GPSNMEA> me = userObj.GetNN<IO::GPSNMEA>();
 	UTF8Char sbuff[8200];
 	UTF8Char *sptr;
 	Map::GPSTrack::GPSRecord3 record;
@@ -313,7 +313,7 @@ UInt32 __stdcall IO::GPSNMEA::NMEAThread(AnyType userObj)
 	return 0;
 }
 
-IO::GPSNMEA::GPSNMEA(NotNullPtr<IO::Stream> stm, Bool relStm)
+IO::GPSNMEA::GPSNMEA(NN<IO::Stream> stm, Bool relStm)
 {
 	this->stm = stm;
 	this->relStm = relStm;
@@ -407,9 +407,9 @@ UOSInt IO::GPSNMEA::GenNMEACommand(const UTF8Char *cmd, UOSInt cmdLen, UInt8 *bu
 	return size + 5;
 }
 
-NotNullPtr<Map::GPSTrack> IO::GPSNMEA::NMEA2Track(NotNullPtr<IO::Stream> stm, Text::CStringNN sourceName)
+NN<Map::GPSTrack> IO::GPSNMEA::NMEA2Track(NN<IO::Stream> stm, Text::CStringNN sourceName)
 {
-	NotNullPtr<Map::GPSTrack> trk;
+	NN<Map::GPSTrack> trk;
 	Map::GPSTrack::GPSRecord3 record;
 	SateRecord sateRec;
 	Text::StringBuilderUTF8 sb;

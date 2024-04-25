@@ -7,7 +7,7 @@
 void __stdcall SSWR::AVIRead::AVIROLEDBForm::OnOKClicked(AnyType userObj)
 {
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<SSWR::AVIRead::AVIROLEDBForm> me = userObj.GetNN<SSWR::AVIRead::AVIROLEDBForm>();
+	NN<SSWR::AVIRead::AVIROLEDBForm> me = userObj.GetNN<SSWR::AVIRead::AVIROLEDBForm>();
 	me->txtConnStr->GetText(sb);
 
 	DB::OLEDBConn *conn;
@@ -26,11 +26,11 @@ void __stdcall SSWR::AVIRead::AVIROLEDBForm::OnOKClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIROLEDBForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIROLEDBForm> me = userObj.GetNN<SSWR::AVIRead::AVIROLEDBForm>();
+	NN<SSWR::AVIRead::AVIROLEDBForm> me = userObj.GetNN<SSWR::AVIRead::AVIROLEDBForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIROLEDBForm::AVIROLEDBForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 92, ui)
+SSWR::AVIRead::AVIROLEDBForm::AVIROLEDBForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 92, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("OLEDB Connection"));

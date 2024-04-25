@@ -12,13 +12,13 @@
 struct ParseStatus
 {
 	Media::ANPR *me;
-	NotNullPtr<Media::StaticImage> simg;
+	NN<Media::StaticImage> simg;
 	Data::ArrayList<UOSInt> *pastPos;
 };
 
 void Media::ANPR::NumPlateArea(AnyType userObj, Media::OpenCV::OCVFrame *filteredFrame, Math::Coord2D<UOSInt> *rect, Double maxTiltAngle, Double pxArea, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
 {
-	NotNullPtr<ParseStatus> status = userObj.GetNN<ParseStatus>();
+	NN<ParseStatus> status = userObj.GetNN<ParseStatus>();
 	Math::RectArea<UOSInt> area;
 	Math::RectArea<UOSInt>::GetRectArea(&area, rect, 4);
 	UOSInt confidence;
@@ -31,13 +31,13 @@ void Media::ANPR::NumPlateArea(AnyType userObj, Media::OpenCV::OCVFrame *filtere
 			return;
 		}
 	}
-	NotNullPtr<Media::StaticImage> plainImg = CreatePlainImage(filteredFrame->GetDataPtr(), filteredFrame->GetSize(), (UOSInt)filteredFrame->GetBpl(), rect, psize);
-	NotNullPtr<Media::OpenCV::OCVFrame> croppedFrame;
+	NN<Media::StaticImage> plainImg = CreatePlainImage(filteredFrame->GetDataPtr(), filteredFrame->GetSize(), (UOSInt)filteredFrame->GetBpl(), rect, psize);
+	NN<Media::OpenCV::OCVFrame> croppedFrame;
 	if (Media::OpenCV::OCVFrame::CreateYFrame(plainImg).SetTo(croppedFrame))
 	{
 		croppedFrame->Normalize();
 		status->me->ocr.SetOCVFrame(croppedFrame);
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		if (status->me->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, 0, plainImg->info.dispSize.x, plainImg->info.dispSize.y), confidence).SetTo(s))
 		{
 			s->RemoveWS();
@@ -78,12 +78,12 @@ void Media::ANPR::NumPlateArea(AnyType userObj, Media::OpenCV::OCVFrame *filtere
 	plainImg.Delete();
 }
 
-NotNullPtr<Media::StaticImage> Media::ANPR::CreatePlainImage(UInt8 *sptr, Math::Size2D<UOSInt> sSize, UOSInt sbpl, Math::Coord2D<UOSInt> *rect, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
+NN<Media::StaticImage> Media::ANPR::CreatePlainImage(UInt8 *sptr, Math::Size2D<UOSInt> sSize, UOSInt sbpl, Math::Coord2D<UOSInt> *rect, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
 {
 	return CreatePlainImage(sptr, sSize, sbpl, Math::Quadrilateral::FromPolygon(rect), psize);
 }
 
-NotNullPtr<Media::StaticImage> Media::ANPR::CreatePlainImage(UInt8 *sptr, Math::Size2D<UOSInt> sSize, UOSInt sbpl, Math::Quadrilateral quad, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
+NN<Media::StaticImage> Media::ANPR::CreatePlainImage(UInt8 *sptr, Math::Size2D<UOSInt> sSize, UOSInt sbpl, Math::Quadrilateral quad, Media::OpenCV::OCVNumPlateFinder::PlateSize psize)
 {
 	Math::Size2D<UOSInt> imgSize;
 
@@ -120,13 +120,13 @@ void Media::ANPR::SetResultHandler(NumPlateResult hdlr, AnyType userObj)
 	this->hdlrObj = userObj;
 }
 
-Bool Media::ANPR::ParseImage(NotNullPtr<Media::StaticImage> simg)
+Bool Media::ANPR::ParseImage(NN<Media::StaticImage> simg)
 {
-	NotNullPtr<Media::StaticImage> bwImg = NotNullPtr<Media::StaticImage>::ConvertFrom(simg->Clone());
+	NN<Media::StaticImage> bwImg = NN<Media::StaticImage>::ConvertFrom(simg->Clone());
 	Bool found = false;
 	bwImg->ToW8();
 	this->ocr.SetParsingImage(bwImg);
-	NotNullPtr<Media::OpenCV::OCVFrame> frame;
+	NN<Media::OpenCV::OCVFrame> frame;
 	if (Media::OpenCV::OCVFrame::CreateYFrame(bwImg).SetTo(frame))
 	{
 		Data::ArrayList<UOSInt> pastPos;
@@ -142,11 +142,11 @@ Bool Media::ANPR::ParseImage(NotNullPtr<Media::StaticImage> simg)
 	return found;
 }
 
-Bool Media::ANPR::ParseImageQuad(NotNullPtr<Media::StaticImage> simg, Math::Quadrilateral quad)
+Bool Media::ANPR::ParseImageQuad(NN<Media::StaticImage> simg, Math::Quadrilateral quad)
 {
 	Bool found = false;
 	UOSInt confidence;
-	NotNullPtr<Media::StaticImage> bwImg = NotNullPtr<Media::StaticImage>::ConvertFrom(simg->Clone());
+	NN<Media::StaticImage> bwImg = NN<Media::StaticImage>::ConvertFrom(simg->Clone());
 	bwImg->ToW8();
 	Media::OpenCV::OCVNumPlateFinder::PlateSize psize;
 	Double ratio = quad.CalcLenTop() / quad.CalcLenLeft();
@@ -159,17 +159,17 @@ Bool Media::ANPR::ParseImageQuad(NotNullPtr<Media::StaticImage> simg, Math::Quad
 		psize = Media::OpenCV::OCVNumPlateFinder::PlateSize::SingleRow;
 	}
 
-	NotNullPtr<Media::StaticImage> plainImg = CreatePlainImage(bwImg->data, bwImg->info.dispSize, bwImg->GetDataBpl(), quad, psize);
-	NotNullPtr<Media::OpenCV::OCVFrame> croppedFrame;
+	NN<Media::StaticImage> plainImg = CreatePlainImage(bwImg->data, bwImg->info.dispSize, bwImg->GetDataBpl(), quad, psize);
+	NN<Media::OpenCV::OCVFrame> croppedFrame;
 	if (Media::OpenCV::OCVFrame::CreateYFrame(plainImg).SetTo(croppedFrame))
 	{
-		NotNullPtr<Media::OpenCV::OCVFrame> filteredFrame = croppedFrame->BilateralFilter(11, 17, 17);
+		NN<Media::OpenCV::OCVFrame> filteredFrame = croppedFrame->BilateralFilter(11, 17, 17);
 		filteredFrame->Normalize();
 		this->ocr.SetOCVFrame(filteredFrame);
 		if (false)//psize == Media::OpenCV::OCVNumPlateFinder::PlateSize::DoubleRow)
 		{
-			NotNullPtr<Text::String> s1 = Text::String::OrEmpty(this->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, 0, plainImg->info.dispSize.x, plainImg->info.dispSize.y >> 1), confidence));
-			NotNullPtr<Text::String> s2 = Text::String::OrEmpty(this->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, plainImg->info.dispSize.y >> 1, plainImg->info.dispSize.x, (plainImg->info.dispSize.y >> 1) + (plainImg->info.dispSize.y & 1)), confidence));
+			NN<Text::String> s1 = Text::String::OrEmpty(this->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, 0, plainImg->info.dispSize.x, plainImg->info.dispSize.y >> 1), confidence));
+			NN<Text::String> s2 = Text::String::OrEmpty(this->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, plainImg->info.dispSize.y >> 1, plainImg->info.dispSize.x, (plainImg->info.dispSize.y >> 1) + (plainImg->info.dispSize.y & 1)), confidence));
 			s1->RemoveWS();
 			s2->RemoveWS();
 			if ((s1->leng + s2->leng) == 0 || (s1->leng + s2->leng) > 10)
@@ -200,7 +200,7 @@ Bool Media::ANPR::ParseImageQuad(NotNullPtr<Media::StaticImage> simg, Math::Quad
 		}
 		else
 		{
-			NotNullPtr<Text::String> s;
+			NN<Text::String> s;
 			if (this->ocr.ParseInsideImage(Math::RectArea<UOSInt>(0, 0, plainImg->info.dispSize.x, plainImg->info.dispSize.y), confidence).SetTo(s))
 			{
 				s->RemoveWS();
@@ -235,7 +235,7 @@ Bool Media::ANPR::ParseImageQuad(NotNullPtr<Media::StaticImage> simg, Math::Quad
 	return found;
 }
 
-Bool Media::ANPR::ParseImagePlatePoint(NotNullPtr<Media::StaticImage> simg, Math::Coord2D<UOSInt> coord)
+Bool Media::ANPR::ParseImagePlatePoint(NN<Media::StaticImage> simg, Math::Coord2D<UOSInt> coord)
 {
 	Int32 rate = 16;
 	Math::RectArea<UOSInt> rect;

@@ -5,9 +5,9 @@
 #include "IO/FileAnalyse/MPEGFileAnalyse.h"
 #include "Sync/SimpleThread.h"
 
-void __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::FileAnalyse::MPEGFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::MPEGFileAnalyse>();
+	NN<IO::FileAnalyse::MPEGFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::MPEGFileAnalyse>();
 	UInt8 readBuff[256];
 	UInt64 currOfst;
 	UInt64 readOfst;
@@ -108,7 +108,7 @@ void __stdcall IO::FileAnalyse::MPEGFileAnalyse::ParseThread(NotNullPtr<Sync::Th
 	}
 }
 
-IO::FileAnalyse::MPEGFileAnalyse::MPEGFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("MPEGFileAnalyse"))
+IO::FileAnalyse::MPEGFileAnalyse::MPEGFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("MPEGFileAnalyse"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -151,7 +151,7 @@ UOSInt IO::FileAnalyse::MPEGFileAnalyse::GetFrameCount()
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::MPEGFileAnalyse::PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
@@ -194,7 +194,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Tex
 	return true;
 }
 
-Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::MPEGFileAnalyse::PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
@@ -757,7 +757,7 @@ UOSInt IO::FileAnalyse::MPEGFileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<IO::FileAnalyse::MPEGFileAnalyse::PackInfo> pack;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;

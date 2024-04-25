@@ -15,7 +15,7 @@ namespace DB
 	public:
 		typedef struct
 		{
-			NotNullPtr<Text::String> name;
+			NN<Text::String> name;
 			Int32 type;
 			UOSInt colOfst;
 			UOSInt colSize;
@@ -24,7 +24,7 @@ namespace DB
 
 	private:
 		//IO::SeekableStream *stm;
-		NotNullPtr<IO::StreamData> stmData;
+		NN<IO::StreamData> stmData;
 		Text::Encoding enc;
 //		Sync::Mutex *mut;
 		UInt64 refPos;
@@ -32,17 +32,17 @@ namespace DB
 		UOSInt colCnt;
 		UOSInt rowCnt;
 		DBFCol *cols;
-		NotNullPtr<Text::String> name;
+		NN<Text::String> name;
 
 	public:
-		DBFFile(NotNullPtr<IO::StreamData> stmData, UInt32 codePage);
+		DBFFile(NN<IO::StreamData> stmData, UInt32 codePage);
 		virtual ~DBFFile();
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
 		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
-		virtual void CloseReader(NotNullPtr<DB::DBReader> r);
-		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
+		virtual void CloseReader(NN<DB::DBReader> r);
+		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
 
 		Bool IsError();
@@ -51,12 +51,12 @@ namespace DB
 		OSInt GetColIndex(const UTF8Char *name);
 		WChar *GetRecord(WChar *buff, UOSInt row, UOSInt col);
 		UTF8Char *GetRecord(UTF8Char *buff, UOSInt row, UOSInt col);
-		Bool GetRecord(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt row, UOSInt col);
+		Bool GetRecord(NN<Text::StringBuilderUTF8> sb, UOSInt row, UOSInt col);
 		UOSInt GetColCount();
 		UOSInt GetRowCnt();
 		UTF8Char *GetColumnName(UOSInt colIndex, UTF8Char *buff);
 		DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize);
-		Bool GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
+		Bool GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef);
 		Bool ReadRowData(UOSInt row, UInt8 *recordBuff);
 
 		static Int32 GetCodePage(UInt8 langDriver);
@@ -86,7 +86,7 @@ namespace DB
 		virtual Int32 GetInt32(UOSInt colIndex);
 		virtual Int64 GetInt64(UOSInt colIndex);
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
-		virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb);
 		virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
 		virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
@@ -95,13 +95,13 @@ namespace DB
 		virtual UOSInt GetBinarySize(UOSInt colIndex);
 		virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff);
 		virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex);
-		virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid);
+		virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid);
 
 		virtual Bool IsNull(UOSInt colIndex);
 //		virtual WChar *GetName(UOSInt colIndex);
 		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
-		virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
+		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);
 	};
 }
 #endif

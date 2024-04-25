@@ -10,7 +10,7 @@ Media::BlockParser::MP3BlockParser::~MP3BlockParser()
 {
 }
 
-Media::AudioBlockSource *Media::BlockParser::MP3BlockParser::ParseStreamData(NotNullPtr<IO::StreamData> stmData)
+Media::AudioBlockSource *Media::BlockParser::MP3BlockParser::ParseStreamData(NN<IO::StreamData> stmData)
 {
 	static UInt32 bitrateL3[] = {0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320};
 	UInt64 leng = stmData->GetDataSize();
@@ -112,7 +112,7 @@ Media::AudioBlockSource *Media::BlockParser::MP3BlockParser::ParseStreamData(Not
 	return audio;
 }
 
-Bool Media::BlockParser::MP3BlockParser::ParseStreamFormat(UInt8 *buff, UOSInt buffSize, NotNullPtr<Media::AudioFormat> fmt)
+Bool Media::BlockParser::MP3BlockParser::ParseStreamFormat(UInt8 *buff, UOSInt buffSize, NN<Media::AudioFormat> fmt)
 {
 	if (buff[0] != 0xff || (buff[1] & 0xfe) != 0xfa)
 	{

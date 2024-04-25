@@ -57,7 +57,7 @@ void *Map::DBMapLayer::InitNameArr()
 	return 0;
 }
 
-Map::DBMapLayer::DBMapLayer(NotNullPtr<Text::String> layerName) : Map::MapDrawLayer(layerName, 0, layerName.Ptr(), Math::CoordinateSystemManager::CreateDefaultCsys())
+Map::DBMapLayer::DBMapLayer(NN<Text::String> layerName) : Map::MapDrawLayer(layerName, 0, layerName.Ptr(), Math::CoordinateSystemManager::CreateDefaultCsys())
 {
 	this->releaseDB = false;
 	this->db = 0;
@@ -123,7 +123,7 @@ void Map::DBMapLayer::SetMixedData(MixedData mixedData)
 	}
 }
 
-UOSInt Map::DBMapLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::DBMapLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	UOSInt initCnt = outArr->GetCount();
 	if (this->mixedData != MixedData::AllData)
@@ -150,12 +150,12 @@ UOSInt Map::DBMapLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr,
 	return outArr->GetCount() - initCnt;
 }
 
-UOSInt Map::DBMapLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::DBMapLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::DBMapLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::DBMapLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt initCnt = outArr->GetCount();
 	Math::Geometry::Vector2D *vec;
@@ -216,7 +216,7 @@ void Map::DBMapLayer::ReleaseNameArr(NameArray *nameArr)
 	}
 }
 
-Bool Map::DBMapLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::DBMapLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	if (nameArr)
 	{
@@ -229,11 +229,11 @@ Bool Map::DBMapLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArra
 		if (narr->currId != id)
 		{
 			Optional<DB::DBReader> r;
-			NotNullPtr<DB::DBReader> nnr;
+			NN<DB::DBReader> nnr;
 			if (this->idCol != INVALID_INDEX)
 			{
 				Data::QueryConditions cond;
-				NotNullPtr<DB::ColDef> idCol;
+				NN<DB::ColDef> idCol;
 				if (this->tabDef->GetCol(this->idCol).SetTo(idCol))
 				{
 					cond.Int64Equals(idCol->GetColName()->ToCString(), id);
@@ -289,7 +289,7 @@ UTF8Char *Map::DBMapLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 {
 	if (this->tabDef)
 	{
-		NotNullPtr<DB::ColDef> col;
+		NN<DB::ColDef> col;
 		if (this->tabDef->GetCol(colIndex).SetTo(col))
 		{
 			return col->GetColName()->ConcatTo(buff);
@@ -302,7 +302,7 @@ DB::DBUtil::ColType Map::DBMapLayer::GetColumnType(UOSInt colIndex, OptOut<UOSIn
 {
 	if (this->tabDef)
 	{
-		NotNullPtr<DB::ColDef> col;
+		NN<DB::ColDef> col;
 		if (this->tabDef->GetCol(colIndex).SetTo(col))
 		{
 			colSize.Set(col->GetColSize());
@@ -312,11 +312,11 @@ DB::DBUtil::ColType Map::DBMapLayer::GetColumnType(UOSInt colIndex, OptOut<UOSIn
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::DBMapLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Map::DBMapLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	if (this->tabDef)
 	{
-		NotNullPtr<DB::ColDef> col;
+		NN<DB::ColDef> col;
 		if (this->tabDef->GetCol(colIndex).SetTo(col))
 		{
 			colDef->Set(col);
@@ -356,7 +356,7 @@ Math::Geometry::Vector2D *Map::DBMapLayer::GetNewVectorById(GetObjectSess *sessi
 	return 0;
 }
 
-UOSInt Map::DBMapLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt Map::DBMapLayer::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (this->db == 0)
 	{
@@ -383,7 +383,7 @@ DB::TableDef *Map::DBMapLayer::GetTableDef(Text::CString schemaName, Text::CStri
 	return 0;
 }
 
-void Map::DBMapLayer::CloseReader(NotNullPtr<DB::DBReader> r)
+void Map::DBMapLayer::CloseReader(NN<DB::DBReader> r)
 {
 	if (this->db)
 	{
@@ -391,7 +391,7 @@ void Map::DBMapLayer::CloseReader(NotNullPtr<DB::DBReader> r)
 	}
 }
 
-void Map::DBMapLayer::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void Map::DBMapLayer::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 	if (this->db)
 	{
@@ -409,7 +409,7 @@ Map::MapDrawLayer::ObjectClass Map::DBMapLayer::GetObjectClass() const
 	return OC_DB_MAP_LAYER;
 }
 
-Bool Map::DBMapLayer::SetDatabase(NotNullPtr<DB::ReadingDB> db, Text::CString schemaName, Text::CStringNN tableName, Bool releaseDB)
+Bool Map::DBMapLayer::SetDatabase(NN<DB::ReadingDB> db, Text::CString schemaName, Text::CStringNN tableName, Bool releaseDB)
 {
 	this->ClearDB();
 	this->releaseDB = false;
@@ -422,7 +422,7 @@ Bool Map::DBMapLayer::SetDatabase(NotNullPtr<DB::ReadingDB> db, Text::CString sc
 	UOSInt yCol = INVALID_INDEX;
 	UOSInt zCol = INVALID_INDEX;
 	UInt32 layerSrid = 0;
-	NotNullPtr<DB::ColDef> col;
+	NN<DB::ColDef> col;
 	UOSInt i = 0;
 	UOSInt j = this->tabDef->GetColCnt();
 	while (i < j)
@@ -454,7 +454,7 @@ Bool Map::DBMapLayer::SetDatabase(NotNullPtr<DB::ReadingDB> db, Text::CString sc
 			}
 			else
 			{
-				NotNullPtr<Text::String> colName = col->GetColName();
+				NN<Text::String> colName = col->GetColName();
 				if (colName->EqualsICase(UTF8STRC("LATITUDE")))
 				{
 					yCol = i;
@@ -489,7 +489,7 @@ Bool Map::DBMapLayer::SetDatabase(NotNullPtr<DB::ReadingDB> db, Text::CString sc
 		return false;
 	}
 
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (!this->db->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		return false;
@@ -497,7 +497,7 @@ Bool Map::DBMapLayer::SetDatabase(NotNullPtr<DB::ReadingDB> db, Text::CString sc
 	Int64 index = 0;
 	Int64 id;
 	Math::RectAreaDbl bounds;
-	NotNullPtr<Math::Geometry::Vector2D> vec;
+	NN<Math::Geometry::Vector2D> vec;
 	UInt32 vecSrid;
 	while (r->ReadNext())
 	{
@@ -569,7 +569,7 @@ Bool Map::DBMapLayer::SetDatabase(NotNullPtr<DB::ReadingDB> db, Text::CString sc
 	{
 		if (this->csys->GetSRID() != layerSrid)
 		{
-			NotNullPtr<Math::CoordinateSystem> csys;
+			NN<Math::CoordinateSystem> csys;
 			if (csys.Set(Math::CoordinateSystemManager::SRCreateCSys(layerSrid)))
 			{
 				this->SetCoordinateSystem(csys);

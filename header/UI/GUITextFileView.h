@@ -31,7 +31,7 @@ namespace UI
 //		AnyType drawFont;
 		UOSInt lastLineCnt;
 
-		NotNullPtr<Text::String> fileName;
+		NN<Text::String> fileName;
 		IO::StreamData *fileData;
 		Data::ByteBuffer readBuff;
 		UInt64 readBuffOfst;
@@ -73,7 +73,7 @@ namespace UI
 		void EventTextPosUpdated();
 		void ClearFileStatus();
 	public:
-		GUITextFileView(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> deng);
+		GUITextFileView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng);
 		virtual ~GUITextFileView();
 
 		virtual void EventLineUp();
@@ -91,15 +91,15 @@ namespace UI
 		virtual void EventMouseUp(OSInt scnX, OSInt scnY, MouseButton btn);
 		virtual void EventMouseMove(OSInt scnX, OSInt scnY);
 		virtual void EventTimerTick();
-		virtual void DrawImage(NotNullPtr<Media::DrawImage> dimg);
+		virtual void DrawImage(NN<Media::DrawImage> dimg);
 		virtual void UpdateCaretPos();
 
 		Bool IsLoading();
 		UOSInt GetLineCount();
 		void SetCodePage(UInt32 codePage);
-		Bool LoadFile(NotNullPtr<Text::String> fileName);
-		Bool LoadStreamData(NotNullPtr<IO::StreamData> fd);
-		NotNullPtr<Text::String> GetFileName() const;
+		Bool LoadFile(NN<Text::String> fileName);
+		Bool LoadStreamData(NN<IO::StreamData> fd);
+		NN<Text::String> GetFileName() const;
 		void GetTextPos(OSInt scnPosX, OSInt scnPosY, OutParam<UInt32> textPosX, OutParam<UOSInt> textPosY);
 		UOSInt GetTextPosY();
 		UInt32 GetTextPosX();

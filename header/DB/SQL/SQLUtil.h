@@ -10,7 +10,7 @@ namespace DB
 		class SQLUtil
 		{
 		public:
-			static const UTF8Char *ParseNextWord(const UTF8Char *sql, NotNullPtr<Text::StringBuilderUTF8> sb, DB::SQLType sqlType);
+			static const UTF8Char *ParseNextWord(const UTF8Char *sql, NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType);
 			static Data::VariItem *ParseValue(Text::CStringNN val, DB::SQLType sqlType);
 		};
 	}

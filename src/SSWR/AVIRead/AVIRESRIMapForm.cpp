@@ -33,12 +33,12 @@ SSWR::AVIRead::AVIRESRIMapForm::MapServer SSWR::AVIRead::AVIRESRIMapForm::mapSvr
 
 void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRESRIMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRESRIMapForm>();
+	NN<SSWR::AVIRead::AVIRESRIMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRESRIMapForm>();
 	Map::ESRI::ESRIMapServer *esriMap = 0;
 	if (me->radPredefine->IsSelected())
 	{
 		UOSInt i = me->cboPredefine->GetSelectedIndex();
-		NotNullPtr<MapServer> v;
+		NN<MapServer> v;
 		if (me->cboPredefine->GetItem(i).GetOpt<MapServer>().SetTo(v))
 		{
 			NEW_CLASS(esriMap, Map::ESRI::ESRIMapServer(Text::CStringNN(v->url, v->urlLen), me->core->GetSocketFactory(), me->ssl, false));
@@ -93,24 +93,24 @@ void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OKClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRESRIMapForm::CancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRESRIMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRESRIMapForm>();
+	NN<SSWR::AVIRead::AVIRESRIMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRESRIMapForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
 void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OnOtherChanged(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRESRIMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRESRIMapForm>();
+	NN<SSWR::AVIRead::AVIRESRIMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRESRIMapForm>();
 	me->radOther->Select();
 }
 
 void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OnNoResourceChg(AnyType userObj, Bool newValue)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRESRIMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRESRIMapForm>();
+	NN<SSWR::AVIRead::AVIRESRIMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRESRIMapForm>();
 	me->radOther->Select();
 	me->txtSRID->SetReadOnly(!newValue);
 }
 
-SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl) : UI::GUIForm(parent, 640, 144, ui)
+SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl) : UI::GUIForm(parent, 640, 144, ui)
 {
 	this->SetText(CSTR("Add ESRI Map"));
 	this->SetFont(0, 0, 8.25, false);

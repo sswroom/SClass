@@ -82,7 +82,7 @@ Media::FBSurface::FBSurface(MonitorHandle *hMon, const Media::ColorProfile *colo
 	this->info.hdpi = dpi;
 	this->info.vdpi = dpi;
 	this->info.rotateType = rotateType;
-	NotNullPtr<const Media::ColorProfile> colornn;
+	NN<const Media::ColorProfile> colornn;
 	if (colornn.Set(color))
 	{
 		this->info.color.Set(colornn);
@@ -119,9 +119,9 @@ Bool Media::FBSurface::IsError() const
 	return this->clsData->fd < 0;
 }
 
-NotNullPtr<Media::RasterImage> Media::FBSurface::Clone() const
+NN<Media::RasterImage> Media::FBSurface::Clone() const
 {
-	NotNullPtr<Media::FBSurface> surface;
+	NN<Media::FBSurface> surface;
 	NEW_CLASSNN(surface, Media::FBSurface(this->clsData->hMon, &this->info.color, this->info.hdpi, this->info.rotateType));
 	return surface;
 }
@@ -265,7 +265,7 @@ Bool Media::FBSurface::DrawFromBuff()
 	return false;
 }
 
-Bool Media::FBSurface::DrawFromSurface(NotNullPtr<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn, Bool waitForVBlank)
+Bool Media::FBSurface::DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn, Bool waitForVBlank)
 {
 	if (surface->info.storeBPP == this->info.storeBPP)
 	{

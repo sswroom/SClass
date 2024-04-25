@@ -2,12 +2,12 @@
 #include "MyMemory.h"
 #include "Data/Compress/InflateStream.h"
 
-Data::Compress::InflateStream::InflateStream(NotNullPtr<IO::Stream> outStm, UOSInt headerSize, Bool zlibHeader) : IO::Stream(CSTR("InflateStream"))
+Data::Compress::InflateStream::InflateStream(NN<IO::Stream> outStm, UOSInt headerSize, Bool zlibHeader) : IO::Stream(CSTR("InflateStream"))
 {
 	this->outStm = outStm;
 }
 
-Data::Compress::InflateStream::InflateStream(NotNullPtr<IO::Stream> outStm, Bool zlibHeader) : IO::Stream(CSTR("InflateStream"))
+Data::Compress::InflateStream::InflateStream(NN<IO::Stream> outStm, Bool zlibHeader) : IO::Stream(CSTR("InflateStream"))
 {
 	this->outStm = outStm;
 }

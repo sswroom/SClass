@@ -44,7 +44,7 @@ const UInt8 BruteForceAttack_LimitWebPassword[] = {
 
 UInt32 __stdcall Crypto::Hash::BruteForceAttack::ProcessThread(AnyType userObj)
 {
-	NotNullPtr<Crypto::Hash::BruteForceAttack> me = userObj.GetNN<Crypto::Hash::BruteForceAttack>();
+	NN<Crypto::Hash::BruteForceAttack> me = userObj.GetNN<Crypto::Hash::BruteForceAttack>();
 	UInt8 keyBuff[256];
 	UTF8Char result[64];
 	UOSInt keySize;

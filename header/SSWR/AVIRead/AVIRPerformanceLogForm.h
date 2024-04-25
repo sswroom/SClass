@@ -22,17 +22,17 @@ namespace SSWR
 		class AVIRPerformanceLogForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::Writer *writer;
 			IO::FileStream *logStream;
 			UInt8 *testBuff;
 			Data::Timestamp testTime;
 
-			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUILabel> lblCurrWRate;
-			NotNullPtr<UI::GUITextBox> txtCurrWRate;
-			NotNullPtr<UI::GUIRealtimeLineChart> rlcWRate;
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUILabel> lblCurrWRate;
+			NN<UI::GUITextBox> txtCurrWRate;
+			NN<UI::GUIRealtimeLineChart> rlcWRate;
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
@@ -40,7 +40,7 @@ namespace SSWR
 			void Stop();
 			void TestSpeed();
 		public:
-			AVIRPerformanceLogForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRPerformanceLogForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRPerformanceLogForm();
 
 			virtual void OnMonitorChanged();

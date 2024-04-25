@@ -14,24 +14,24 @@ namespace SSWR
 		class OrganUserEditForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<OrganEnv> env;
+			NN<OrganEnv> env;
 			Optional<OrganWebUser> user;
-			NotNullPtr<UI::GUILabel> lblUserName;
-			NotNullPtr<UI::GUITextBox> txtUserName;
-			NotNullPtr<UI::GUILabel> lblPassword;
-			NotNullPtr<UI::GUITextBox> txtPassword;
-			NotNullPtr<UI::GUILabel> lblRetype;
-			NotNullPtr<UI::GUITextBox> txtRetype;
-			NotNullPtr<UI::GUILabel> lblWatermark;
-			NotNullPtr<UI::GUITextBox> txtWatermark;
+			NN<UI::GUILabel> lblUserName;
+			NN<UI::GUITextBox> txtUserName;
+			NN<UI::GUILabel> lblPassword;
+			NN<UI::GUITextBox> txtPassword;
+			NN<UI::GUILabel> lblRetype;
+			NN<UI::GUITextBox> txtRetype;
+			NN<UI::GUILabel> lblWatermark;
+			NN<UI::GUITextBox> txtWatermark;
 
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			OrganUserEditForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env, Optional<OrganWebUser> user);
+			OrganUserEditForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<OrganEnv> env, Optional<OrganWebUser> user);
 			virtual ~OrganUserEditForm();
 
 			virtual void OnMonitorChanged();

@@ -202,7 +202,7 @@ namespace DB
 			return Text::StrUTF8_WCharC(buff, row[colIndex]->v, row[colIndex]->leng, 0);
 		}
 
-		virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+		virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return false;
@@ -292,7 +292,7 @@ namespace DB
 			return 0;
 		}
 
-		virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
+		virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 		{
 			return false;
 		}
@@ -334,7 +334,7 @@ namespace DB
 			return this->colTypes[colIndex];
 		}
 
-		virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 		{
 			UTF8Char sbuff[256];
 			UTF8Char *sptr;
@@ -344,7 +344,7 @@ namespace DB
 				return false;
 			if (this->colNames[colIndex])
 			{
-				colDef->SetColName(NotNullPtr<const UTF8Char>::FromPtr(this->colNames[colIndex]));
+				colDef->SetColName(NN<const UTF8Char>::FromPtr(this->colNames[colIndex]));
 			}
 			else
 			{
@@ -737,7 +737,7 @@ Bool DB::DBMS::SysVarExist(DB::DBMS::SessionInfo *sess, const UTF8Char *varName,
 	return false;
 }
 
-const UTF8Char *DB::DBMS::SysVarGet(NotNullPtr<Text::StringBuilderUTF8> sb, DB::DBMS::SessionInfo *sess, const UTF8Char *varName, UOSInt nameLen)
+const UTF8Char *DB::DBMS::SysVarGet(NN<Text::StringBuilderUTF8> sb, DB::DBMS::SessionInfo *sess, const UTF8Char *varName, UOSInt nameLen)
 {
 //	Bool isGlobal = false;
 	if (Text::StrStartsWithICaseC(varName, nameLen, UTF8STRC("GLOBAL.")))
@@ -1151,7 +1151,7 @@ Bool DB::DBMS::SysVarSet(DB::DBMS::SessionInfo *sess, Bool isGlobal, const UTF8C
 
 }
 
-const UTF8Char *DB::DBMS::UserVarGet(NotNullPtr<Text::StringBuilderUTF8> sb, DB::DBMS::SessionInfo *sess, const UTF8Char *varName)
+const UTF8Char *DB::DBMS::UserVarGet(NN<Text::StringBuilderUTF8> sb, DB::DBMS::SessionInfo *sess, const UTF8Char *varName)
 {
 	Text::String *val = sess->userVars->Get(varName);
 	UOSInt i = Text::StrCharCnt(varName);
@@ -1763,7 +1763,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 	}
 }
 
-DB::DBMS::DBMS(Text::CString versionStr, NotNullPtr<IO::LogTool> log)
+DB::DBMS::DBMS(Text::CString versionStr, NN<IO::LogTool> log)
 {
 	this->versionStr = Text::String::New(versionStr);
 	this->log = log;
@@ -1797,12 +1797,12 @@ DB::DBMS::~DBMS()
 	}
 }
 
-NotNullPtr<Text::String> DB::DBMS::GetVersion() const
+NN<Text::String> DB::DBMS::GetVersion() const
 {
 	return this->versionStr;
 }
 
-NotNullPtr<IO::LogTool> DB::DBMS::GetLogTool()
+NN<IO::LogTool> DB::DBMS::GetLogTool()
 {
 	return this->log;
 }
@@ -1862,7 +1862,7 @@ Bool DB::DBMS::UserAdd(Int32 userId, Text::CStringNN userName, Text::CString pas
 	return succ;
 }
 
-Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, Text::CStringNN userName, const UInt8 *randomData, const UInt8 *passHash, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, const DB::DBMS::SessionParam *param, const UTF8Char *database)
+Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, Text::CStringNN userName, const UInt8 *randomData, const UInt8 *passHash, NN<const Net::SocketUtil::AddressInfo> addr, const DB::DBMS::SessionParam *param, const UTF8Char *database)
 {
 	DB::DBMS::LoginInfo *login;
 	DB::DBMS::UserInfo *user;
@@ -3042,7 +3042,7 @@ void DB::DBMS::SessEnd(Int32 sessId)
 
 void DB::DBMS::SessDelete(DB::DBMS::SessionInfo *sess)
 {
-	NotNullPtr<const Data::ArrayList<Text::String*>> varList = sess->userVars->GetValues();
+	NN<const Data::ArrayList<Text::String*>> varList = sess->userVars->GetValues();
 	UOSInt i = varList->GetCount();
 	Text::String *var;
 	while (i-- > 0)

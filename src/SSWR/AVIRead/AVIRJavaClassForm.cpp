@@ -3,13 +3,13 @@
 
 void __stdcall SSWR::AVIRead::AVIRJavaClassForm::OnMethodsSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRJavaClassForm> me = userObj.GetNN<SSWR::AVIRead::AVIRJavaClassForm>();
+	NN<SSWR::AVIRead::AVIRJavaClassForm> me = userObj.GetNN<SSWR::AVIRead::AVIRJavaClassForm>();
 	Text::StringBuilderUTF8 sb;
 	me->clsFile->MethodsGetDetail((UOSInt)me->lbMethods->GetSelectedIndex(), 0, true, sb);
 	me->txtMethods->SetText(sb.ToCString());
 }
 
-SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::JavaClass *clsFile) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::JavaClass *clsFile) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	Text::StringBuilderUTF8 sb;
 	this->SetFont(0, 0, 8.25, false);

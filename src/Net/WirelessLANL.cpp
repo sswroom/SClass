@@ -83,7 +83,7 @@ typedef struct
 
 
 
-Net::WirelessLAN::Network::Network(NotNullPtr<Text::String> ssid, Double rssi)
+Net::WirelessLAN::Network::Network(NN<Text::String> ssid, Double rssi)
 {
 	this->ssid = ssid->Clone();
 	this->rssi = rssi;
@@ -105,7 +105,7 @@ Double Net::WirelessLAN::Network::GetRSSI() const
 	return this->rssi;
 }
 
-NotNullPtr<Text::String> Net::WirelessLAN::Network::GetSSID() const
+NN<Text::String> Net::WirelessLAN::Network::GetSSID() const
 {
 	return this->ssid;
 }
@@ -146,7 +146,7 @@ Net::WirelessLAN::BSSInfo::~BSSInfo()
 	SDEL_STRING(this->devSN);
 }
 
-NotNullPtr<Text::String> Net::WirelessLAN::BSSInfo::GetSSID() const
+NN<Text::String> Net::WirelessLAN::BSSInfo::GetSSID() const
 {
 	return this->ssid;
 }
@@ -238,7 +238,7 @@ Net::WirelessLAN::Interface::~Interface()
 	this->name->Release();
 }
 
-NotNullPtr<Text::String> Net::WirelessLAN::Interface::GetName() const
+NN<Text::String> Net::WirelessLAN::Interface::GetName() const
 {
 	return this->name;
 }
@@ -268,11 +268,11 @@ Bool Net::WirelessLAN::IsError()
 	return thisData->fd == 0;
 }
 
-UOSInt Net::WirelessLAN::GetInterfaces(NotNullPtr<Data::ArrayListNN<Net::WirelessLAN::Interface>> outArr)
+UOSInt Net::WirelessLAN::GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::Interface>> outArr)
 {
 	WirelessLANData *thisData = (WirelessLANData*)this->clsData;
 	UOSInt ret = 0;
-	NotNullPtr<Net::WirelessLAN::Interface> interf;
+	NN<Net::WirelessLAN::Interface> interf;
 /*	NEW_CLASS(fs, IO::FileStream(CSTR("/proc/net/wireless"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{

@@ -160,7 +160,7 @@ Text::Doc::DocSection *Text::Doc::TextDocument::GetItem(UOSInt index) const
 	return this->items->GetItem(index);
 }
 
-Bool Text::Doc::TextDocument::BeginPrint(NotNullPtr<Media::IPrintDocument> doc)
+Bool Text::Doc::TextDocument::BeginPrint(NN<Media::IPrintDocument> doc)
 {
 	Text::Doc::DocSection *section;
 	Media::PaperSize *paper;
@@ -176,13 +176,13 @@ Bool Text::Doc::TextDocument::BeginPrint(NotNullPtr<Media::IPrintDocument> doc)
 	return true;
 }
 
-Bool Text::Doc::TextDocument::PrintPage(NotNullPtr<Media::DrawImage> printPage)
+Bool Text::Doc::TextDocument::PrintPage(NN<Media::DrawImage> printPage)
 {
 	/////////////////////////
 	return false;
 }
 
-Bool Text::Doc::TextDocument::EndPrint(NotNullPtr<Media::IPrintDocument> doc)
+Bool Text::Doc::TextDocument::EndPrint(NN<Media::IPrintDocument> doc)
 {
 	/////////////////////////
 	return true;

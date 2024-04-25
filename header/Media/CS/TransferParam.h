@@ -49,20 +49,20 @@ namespace Media
 
 		public:
 			TransferParam();
-			TransferParam(NotNullPtr<const TransferParam> tran);
+			TransferParam(NN<const TransferParam> tran);
 			TransferParam(TransferType tranType, Double gamma);
-			TransferParam(NotNullPtr<const Media::LUT> lut);
+			TransferParam(NN<const Media::LUT> lut);
 			~TransferParam();
 
 			void Set(TransferType tranType, Double gamma);
 			void Set(TransferType tranType, Double *params, UOSInt paramCnt);
-			void Set(NotNullPtr<Media::LUT> lut);
-			void Set(NotNullPtr<const TransferParam> tran);
+			void Set(NN<Media::LUT> lut);
+			void Set(NN<const TransferParam> tran);
 			TransferType GetTranType() const { return this->tranType; }
 			Double GetGamma() const { return this->gamma; }
 			Media::LUT *GetLUT() { return this->lut; }
 			const Media::LUT *GetLUTRead() const { return this->lut; }
-			Bool Equals(NotNullPtr<const TransferParam> tran) const;
+			Bool Equals(NN<const TransferParam> tran) const;
 		};
 
 		Text::CStringNN TransferTypeGetName(Media::CS::TransferType ttype);

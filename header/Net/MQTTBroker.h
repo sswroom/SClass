@@ -42,15 +42,15 @@ namespace Net
 
 		struct TopicInfo
 		{
-			NotNullPtr<Text::String> topic;
+			NN<Text::String> topic;
 			UInt8 *message;
 			UOSInt msgSize;
 		};
 		
 		struct SubscribeInfo
 		{
-			NotNullPtr<Text::String> topic;
-			NotNullPtr<IO::Stream> stm;
+			NN<Text::String> topic;
+			NN<IO::Stream> stm;
 			AnyType cliData;
 		};
 		
@@ -60,8 +60,8 @@ namespace Net
 		typedef ConnectStatus (__stdcall *SubscribeHandler)(AnyType userObj, Text::String *clientId, Text::CString topic);
 		typedef void (__stdcall *TopicUpdateHandler)(AnyType userObj, Text::CString topic, const UInt8 *message, UOSInt msgSize);
 	private:
-		NotNullPtr<Net::SocketFactory> sockf;
-		NotNullPtr<IO::LogTool> log;
+		NN<Net::SocketFactory> sockf;
+		NN<IO::LogTool> log;
 		Data::ArrayList<Listener*> listeners;
 		IO::ProtoHdlr::ProtoMQTTHandler protoHdlr;
 		Net::WebServer::WebSocketHandler wsHdlr;
@@ -92,24 +92,24 @@ namespace Net
 		TopicUpdateHandler topicUpdHdlr;
 		AnyType topicUpdObj;
 
-		static void __stdcall OnClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
-		static void __stdcall OnClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
-		static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
-		static void __stdcall OnClientReady(NotNullPtr<Net::TCPClient> cli, AnyType userObj);
+		static void __stdcall OnClientEvent(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
+		static void __stdcall OnClientData(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
+		static void __stdcall OnClientTimeout(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
+		static void __stdcall OnClientReady(NN<Net::TCPClient> cli, AnyType userObj);
 		static void __stdcall OnClientConn(Socket *s, AnyType userObj);
 		
 		static UInt32 __stdcall SysInfoThread(AnyType userObj);
 
-		virtual void DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-		virtual void DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize);
+		virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
+		virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize);
 		void UpdateTopic(Text::CStringNN topic, const UInt8 *message, UOSInt msgSize, Bool suppressUnchg);
-		Bool TopicSend(NotNullPtr<IO::Stream> stm, AnyType stmData, const TopicInfo *topic);
+		Bool TopicSend(NN<IO::Stream> stm, AnyType stmData, const TopicInfo *topic);
 
-		virtual AnyType StreamCreated(NotNullPtr<IO::Stream> stm);
-		virtual void StreamData(NotNullPtr<IO::Stream> stm, AnyType stmData, const Data::ByteArrayR &buff);
-		virtual void StreamClosed(NotNullPtr<IO::Stream> stm, AnyType stmData);
+		virtual AnyType StreamCreated(NN<IO::Stream> stm);
+		virtual void StreamData(NN<IO::Stream> stm, AnyType stmData, const Data::ByteArrayR &buff);
+		virtual void StreamClosed(NN<IO::Stream> stm, AnyType stmData);
 	public:
-		MQTTBroker(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt16 port, NotNullPtr<IO::LogTool> log, Bool sysInfo, Bool autoStart);
+		MQTTBroker(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt16 port, NN<IO::LogTool> log, Bool sysInfo, Bool autoStart);
 		virtual ~MQTTBroker();
 
 		Bool AddListener(Optional<Net::SSLEngine> ssl, UInt16 port, Bool autoStart);

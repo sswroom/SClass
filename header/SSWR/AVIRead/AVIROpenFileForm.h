@@ -15,29 +15,29 @@ namespace SSWR
 		class AVIROpenFileForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblName;
-			NotNullPtr<UI::GUITextBox> txtName;
-			NotNullPtr<UI::GUIButton> btnBrowse;
-			NotNullPtr<UI::GUILabel> lblType;
-			NotNullPtr<UI::GUIComboBox> cboType;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUILabel> lblName;
+			NN<UI::GUITextBox> txtName;
+			NN<UI::GUIButton> btnBrowse;
+			NN<UI::GUILabel> lblType;
+			NN<UI::GUIComboBox> cboType;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 			Text::String *fileName;
 			IO::ParserType parserType;
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::ParserType t;
 
 			static void __stdcall OnBrowseClicked(AnyType userObj);
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
-			static void __stdcall FileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 		public:
-			AVIROpenFileForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::ParserType t);
+			AVIROpenFileForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::ParserType t);
 			virtual ~AVIROpenFileForm();
 
 			virtual void OnMonitorChanged();
 
-			NotNullPtr<Text::String> GetFileName() const;
+			NN<Text::String> GetFileName() const;
 			IO::ParserType GetParserType();
 		};
 	}

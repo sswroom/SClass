@@ -5,7 +5,7 @@
 #include "Math/Math.h"
 #include "Sync/MutexUsage.h"
 
-Map::AssistedReverseGeocoder::AssistedReverseGeocoder(NotNullPtr<DB::DBTool> db, IO::Writer *errWriter)
+Map::AssistedReverseGeocoder::AssistedReverseGeocoder(NN<DB::DBTool> db, IO::Writer *errWriter)
 {
 	this->conn = db;
 	this->errWriter = errWriter;
@@ -26,7 +26,7 @@ Map::AssistedReverseGeocoder::~AssistedReverseGeocoder()
 
 UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	UTF8Char *sptr = 0;
 	Int32 keyx = Double2Int32(pos.GetLon() * 5000);
 	Int32 keyy = Double2Int32(pos.GetLat() * 5000);
@@ -93,7 +93,7 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 
 UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	UTF8Char *sptr = 0;
 	Int32 keyx = Double2Int32(pos.GetLon() * 5000);
 	Int32 keyy = Double2Int32(pos.GetLat() * 5000);

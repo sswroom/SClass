@@ -3,7 +3,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLoadClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMSForm>();
+	NN<SSWR::AVIRead::AVIRWMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMSForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtWMSURL->GetText(sb);
 	SDEL_CLASS(me->wms);
@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLoadClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRWMSForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMSForm>();
+	NN<SSWR::AVIRead::AVIRWMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMSForm>();
 	if (me->wms && !me->wms->IsError())
 	{
 		me->SetDialogResult(UI::GUIForm::DR_OK);
@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnOKClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLayerSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMSForm>();
+	NN<SSWR::AVIRead::AVIRWMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMSForm>();
 	if (me->wms && !me->wms->IsError())
 	{
 		me->wms->SetLayer(me->cboLayer->GetSelectedIndex());
@@ -97,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLayerSelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLayerCRSSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMSForm>();
+	NN<SSWR::AVIRead::AVIRWMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMSForm>();
 	if (me->wms && !me->wms->IsError())
 	{
 		me->wms->SetLayerCRS(me->cboLayerCRS->GetSelectedIndex());
@@ -106,7 +106,7 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnLayerCRSSelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRWMSForm::OnMapImageTypeSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMSForm>();
+	NN<SSWR::AVIRead::AVIRWMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMSForm>();
 	if (me->wms && !me->wms->IsError())
 	{
 		me->wms->SetMapImageType(me->cboMapImageType->GetSelectedIndex());
@@ -115,14 +115,14 @@ void __stdcall SSWR::AVIRead::AVIRWMSForm::OnMapImageTypeSelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRWMSForm::OnInfoTypeSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMSForm>();
+	NN<SSWR::AVIRead::AVIRWMSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMSForm>();
 	if (me->wms && !me->wms->IsError())
 	{
 		me->wms->SetInfoType(me->cboInfoType->GetSelectedIndex());
 	}
 }
 
-SSWR::AVIRead::AVIRWMSForm::AVIRWMSForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, NotNullPtr<Math::CoordinateSystem> envCsys) : UI::GUIForm(parent, 640, 240, ui)
+SSWR::AVIRead::AVIRWMSForm::AVIRWMSForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, NN<Math::CoordinateSystem> envCsys) : UI::GUIForm(parent, 640, 240, ui)
 {
 	this->core = core;
 	this->ssl = ssl;

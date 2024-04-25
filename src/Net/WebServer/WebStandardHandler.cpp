@@ -8,7 +8,7 @@
 #include "Net/WebServer/HTTPServerUtil.h"
 #include "Net/WebServer/WebStandardHandler.h"
 
-Bool Net::WebServer::WebStandardHandler::DoRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Net::WebServer::WebStandardHandler::DoRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	if (subReq.v[0] != '/')
 		return false;
@@ -63,24 +63,24 @@ Bool Net::WebServer::WebStandardHandler::DoRequest(NotNullPtr<Net::WebServer::IW
 	return false;
 }
 
-void Net::WebServer::WebStandardHandler::AddResponseHeaders(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
+void Net::WebServer::WebStandardHandler::AddResponseHeaders(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	resp->AddDefHeaders(req);
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (this->allowOrigin.SetTo(s))
 	{
 		resp->AddHeader(CSTR("Access-Control-Allow-Origin"), s->ToCString());
 	}
 }
 
-Bool Net::WebServer::WebStandardHandler::ResponseJSONStr(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, OSInt cacheAge, Text::CStringNN json)
+Bool Net::WebServer::WebStandardHandler::ResponseJSONStr(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, OSInt cacheAge, Text::CStringNN json)
 {
 	this->AddResponseHeaders(req, resp);
 	resp->AddCacheControl(cacheAge);
 	return resp->ResponseText(json, CSTR("application/json"));
 }
 
-Bool Net::WebServer::WebStandardHandler::ResponseAllowOptions(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, UOSInt maxAge, Text::CStringNN options)
+Bool Net::WebServer::WebStandardHandler::ResponseAllowOptions(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, UOSInt maxAge, Text::CStringNN options)
 {
 	Text::StringBuilderUTF8 sb;
 	if (req->GetHeaderC(sb, CSTR("Access-Control-Request-Method")) && !this->allowOrigin.IsNull())
@@ -130,9 +130,9 @@ Net::WebServer::WebStandardHandler::~WebStandardHandler()
 	OPTSTR_DEL(this->allowOrigin);
 }
 
-void Net::WebServer::WebStandardHandler::WebRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
+void Net::WebServer::WebStandardHandler::WebRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
-	NotNullPtr<Text::String> reqURL = req->GetRequestURI();
+	NN<Text::String> reqURL = req->GetRequestURI();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	sptr = Text::URLString::GetURLPathSvr(sbuff, reqURL->v, reqURL->leng);
@@ -161,14 +161,14 @@ void Net::WebServer::WebStandardHandler::WebRequest(NotNullPtr<Net::WebServer::I
 	}
 }
 
-Bool Net::WebServer::WebStandardHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Net::WebServer::WebStandardHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	return DoRequest(req, resp, subReq);
 }
 
-void Net::WebServer::WebStandardHandler::HandlePath(Text::CStringNN relativePath, NotNullPtr<Net::WebServer::WebStandardHandler> hdlr, Bool needRelease)
+void Net::WebServer::WebStandardHandler::HandlePath(Text::CStringNN relativePath, NN<Net::WebServer::WebStandardHandler> hdlr, Bool needRelease)
 {
-	NotNullPtr<Net::WebServer::WebStandardHandler> subHdlr;
+	NN<Net::WebServer::WebStandardHandler> subHdlr;
 	if (relativePath.v[0] != '/')
 	{
 		if (needRelease)

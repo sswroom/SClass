@@ -15,7 +15,7 @@ namespace UI
 			OSInt dragY;
 
 		public:
-			JavaHSplitter(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Int32 width, Bool isRight);
+			JavaHSplitter(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Int32 width, Bool isRight);
 			virtual ~JavaHSplitter();
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);

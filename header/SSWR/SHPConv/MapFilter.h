@@ -11,7 +11,7 @@ namespace SSWR
 		public:
 			virtual ~MapFilter() {};
 
-			virtual Bool IsValid(Double left, Double top, Double right, Double bottom, NotNullPtr<DB::DBReader> dbf) const = 0;
+			virtual Bool IsValid(Double left, Double top, Double right, Double bottom, NN<DB::DBReader> dbf) const = 0;
 			virtual UTF8Char *ToString(UTF8Char *buff) const = 0;
 			virtual MapFilter *Clone() const = 0;
 		};

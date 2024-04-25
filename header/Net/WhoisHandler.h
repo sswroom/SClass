@@ -14,7 +14,7 @@ namespace Net
 		Data::Duration timeout;
 
 	public:
-		WhoisHandler(NotNullPtr<Net::SocketFactory> sockf, Data::Duration timeout);
+		WhoisHandler(NN<Net::SocketFactory> sockf, Data::Duration timeout);
 		~WhoisHandler();
 
 		WhoisRecord *RequestIP(UInt32 ip);

@@ -5,7 +5,7 @@
 #include "IO/StmData/FileData.h"
 #include "Text/MyString.h"
 
-void Media::ClockSpeechCh::AppendWAV(NotNullPtr<Media::AudioConcatSource> source, NotNullPtr<Parser::FileParser::WAVParser> parser, Text::CStringNN fileName)
+void Media::ClockSpeechCh::AppendWAV(NN<Media::AudioConcatSource> source, NN<Parser::FileParser::WAVParser> parser, Text::CStringNN fileName)
 {
 	IO::ParsedObject *pobj;
 	{
@@ -18,14 +18,14 @@ void Media::ClockSpeechCh::AppendWAV(NotNullPtr<Media::AudioConcatSource> source
 	if (pobj->GetParserType() == IO::ParserType::MediaFile)
 	{
 		Media::MediaFile *file = (Media::MediaFile *)pobj;
-		NotNullPtr<Media::IMediaSource> msrc;
+		NN<Media::IMediaSource> msrc;
 		Int32 syncTime;
 		UOSInt i = 0;
 		while (msrc.Set(file->GetStream(i++, &syncTime)))
 		{
 			if (msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 			{
-				NotNullPtr<Media::IAudioSource> asrc = NotNullPtr<Media::IAudioSource>::ConvertFrom(msrc);
+				NN<Media::IAudioSource> asrc = NN<Media::IAudioSource>::ConvertFrom(msrc);
 				if (source->AppendAudio(asrc))
 				{
 					file->KeepStream(i - 1, true);
@@ -41,7 +41,7 @@ void Media::ClockSpeechCh::AppendWAV(NotNullPtr<Media::AudioConcatSource> source
 	}
 }
 
-Media::IAudioSource *Media::ClockSpeechCh::GetSpeech(NotNullPtr<Data::DateTime> time)
+Media::IAudioSource *Media::ClockSpeechCh::GetSpeech(NN<Data::DateTime> time)
 {
 	Int32 hour = time->GetHour();
 	Int32 minute = time->GetMinute();
@@ -49,7 +49,7 @@ Media::IAudioSource *Media::ClockSpeechCh::GetSpeech(NotNullPtr<Data::DateTime> 
 	UTF8Char *sptr;
 
 	Parser::FileParser::WAVParser parser;
-	NotNullPtr<Media::AudioConcatSource> source;
+	NN<Media::AudioConcatSource> source;
 
 	NEW_CLASSNN(source, Media::AudioConcatSource());
 	

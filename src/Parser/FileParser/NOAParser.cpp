@@ -20,7 +20,7 @@ Int32 Parser::FileParser::NOAParser::GetName()
 	return *(Int32*)"NOAP";
 }
 
-void Parser::FileParser::NOAParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::NOAParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
@@ -33,7 +33,7 @@ IO::ParserType Parser::FileParser::NOAParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::NOAParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::NOAParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt8 tagBuff[16];
 	UInt32 tagSize;

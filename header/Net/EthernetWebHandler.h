@@ -9,28 +9,28 @@ namespace Net
 	class EthernetWebHandler : public Net::WebServer::WebStandardHandler
 	{
 	private:
-		typedef Bool (__stdcall *RequestHandler)(EthernetWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
+		typedef Bool (__stdcall *RequestHandler)(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
 
 	private:
 		Net::EthernetAnalyzer *analyzer;
 		Data::FastStringMap<RequestHandler> *reqMap;
 
-		static void AppendHeader(NotNullPtr<Text::StringBuilderUTF8> sbOut);
-		void AppendMenu(NotNullPtr<Text::StringBuilderUTF8> sbOut);
-		static void AppendFooter(NotNullPtr<Text::StringBuilderUTF8> sbOut);
+		static void AppendHeader(NN<Text::StringBuilderUTF8> sbOut);
+		void AppendMenu(NN<Text::StringBuilderUTF8> sbOut);
+		static void AppendFooter(NN<Text::StringBuilderUTF8> sbOut);
 
-		static Bool __stdcall DeviceReq(EthernetWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-		static Bool __stdcall IPTransferReq(EthernetWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-		static Bool __stdcall DNSReqv4Req(EthernetWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-		static Bool __stdcall DNSReqv6Req(EthernetWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-		static Bool __stdcall DNSReqOthReq(EthernetWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-		static Bool __stdcall DNSTargetReq(EthernetWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-		static Bool __stdcall DNSClientReq(EthernetWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-		static Bool __stdcall DHCPReq(EthernetWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-		static Bool __stdcall IPLogReq(EthernetWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
+		static Bool __stdcall DeviceReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+		static Bool __stdcall IPTransferReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+		static Bool __stdcall DNSReqv4Req(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+		static Bool __stdcall DNSReqv6Req(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+		static Bool __stdcall DNSReqOthReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+		static Bool __stdcall DNSTargetReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+		static Bool __stdcall DNSClientReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+		static Bool __stdcall DHCPReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+		static Bool __stdcall IPLogReq(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
 
 	private:
-		virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
+		virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 
 	public:
 		EthernetWebHandler(Net::EthernetAnalyzer *analyzer);

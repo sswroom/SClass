@@ -186,7 +186,7 @@ SSWR::OrganMgr::OrganGroupItem::ItemType SSWR::OrganMgr::OrganSpecies::GetItemTy
 
 UTF8Char *SSWR::OrganMgr::OrganSpecies::GetItemName(UTF8Char *buff) const
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UTF8Char *sptr = buff;
 	if (this->isDefault)
 	{

@@ -14,16 +14,16 @@ namespace Net
 	class MSGraphAccessToken
 	{
 	private:
-		NotNullPtr<Text::String> type;
+		NN<Text::String> type;
 		Data::Timestamp expiresIn;
 		Data::Timestamp extExpiresIn;
-		NotNullPtr<Text::String> accessToken;
+		NN<Text::String> accessToken;
 
 	public:
-		MSGraphAccessToken(NotNullPtr<Text::String> type, Int32 expiresIn, Int32 extExpiresIn, NotNullPtr<Text::String> accessToken);
+		MSGraphAccessToken(NN<Text::String> type, Int32 expiresIn, Int32 extExpiresIn, NN<Text::String> accessToken);
 		virtual ~MSGraphAccessToken();
 
-		virtual void InitClient(NotNullPtr<Net::HTTPClient> cli);
+		virtual void InitClient(NN<Net::HTTPClient> cli);
 	};
 
 	JSONRESP_BEGIN(MSGraphEntity)
@@ -211,19 +211,19 @@ namespace Net
 
 		Optional<MSGraphAccessToken> AccessTokenParse(Net::WebStatus::StatusCode status, Text::CStringNN content);
 
-		template<class T> Bool GetList(NotNullPtr<MSGraphAccessToken> token, Text::CStringNN url, Text::CStringNN funcName, NotNullPtr<Data::ArrayListNN<T>> dataList);
+		template<class T> Bool GetList(NN<MSGraphAccessToken> token, Text::CStringNN url, Text::CStringNN funcName, NN<Data::ArrayListNN<T>> dataList);
 	public:
-		MSGraphClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
+		MSGraphClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
 		~MSGraphClient();
 
 		void SetLog(NN<IO::LogTool> log);
 
 		Optional<MSGraphAccessToken> AccessTokenGet(Text::CStringNN tenantId, Text::CStringNN clientId, Text::CStringNN clientSecret, Text::CString scope);
-		Optional<MSGraphEntity> EntityGet(NotNullPtr<MSGraphAccessToken> token, Text::CString userName);
-		Bool MailMessagesGet(NotNullPtr<MSGraphAccessToken> token, Text::CString userName, UOSInt top, UOSInt skip, NotNullPtr<Data::ArrayListNN<MSGraphEventMessageRequest>> msgList, OutParam<Bool> hasNext);
-		Bool MailFoldersGet(NotNullPtr<MSGraphAccessToken> token, Text::CString userName, Bool includeHidden, NotNullPtr<Data::ArrayListNN<MSGraphMailFolder>> folderList);
+		Optional<MSGraphEntity> EntityGet(NN<MSGraphAccessToken> token, Text::CString userName);
+		Bool MailMessagesGet(NN<MSGraphAccessToken> token, Text::CString userName, UOSInt top, UOSInt skip, NN<Data::ArrayListNN<MSGraphEventMessageRequest>> msgList, OutParam<Bool> hasNext);
+		Bool MailFoldersGet(NN<MSGraphAccessToken> token, Text::CString userName, Bool includeHidden, NN<Data::ArrayListNN<MSGraphMailFolder>> folderList);
 
-		static Bool HasUnknownTypes(NotNullPtr<Text::JSONObject> obj, IsKnownTypeFunc isKnownType, Text::CStringNN typeName);
+		static Bool HasUnknownTypes(NN<Text::JSONObject> obj, IsKnownTypeFunc isKnownType, Text::CStringNN typeName);
 	};
 }
 #endif

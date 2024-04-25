@@ -15,19 +15,19 @@ namespace SSWR
 		class AVIRASN1ParseForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUIPanel> pnlOptions;
-			NotNullPtr<UI::GUILabel> lblType;
-			NotNullPtr<UI::GUIComboBox> cboType;
-			NotNullPtr<UI::GUILabel> lblData;
-			NotNullPtr<UI::GUITextBox> txtData;
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUIButton> btnParse;
+			NN<UI::GUIPanel> pnlOptions;
+			NN<UI::GUILabel> lblType;
+			NN<UI::GUIComboBox> cboType;
+			NN<UI::GUILabel> lblData;
+			NN<UI::GUITextBox> txtData;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUIButton> btnParse;
 
 			static void __stdcall OnParseClicked(AnyType userObj);
 		public:
-			AVIRASN1ParseForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRASN1ParseForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRASN1ParseForm();
 
 			virtual void OnMonitorChanged();

@@ -11,7 +11,7 @@ namespace Data
 		ArrayListCmp();
 		ArrayListCmp(UOSInt Capacity);
 
-		virtual NotNullPtr<Data::ArrayList<Data::IComparable*>> Clone() const;
+		virtual NN<Data::ArrayList<Data::IComparable*>> Clone() const;
 		virtual OSInt Compare(Data::IComparable* obj1, Data::IComparable* obj2) const;
 	};
 }

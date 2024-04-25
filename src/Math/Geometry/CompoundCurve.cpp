@@ -11,7 +11,7 @@ Math::Geometry::CompoundCurve::~CompoundCurve()
 {
 }
 
-void Math::Geometry::CompoundCurve::AddGeometry(NotNullPtr<LineString> geometry)
+void Math::Geometry::CompoundCurve::AddGeometry(NN<LineString> geometry)
 {
 	VectorType t = geometry->GetVectorType();
 	if (t == VectorType::CircularString || t == VectorType::LineString)
@@ -29,25 +29,25 @@ Math::Geometry::Vector2D::VectorType Math::Geometry::CompoundCurve::GetVectorTyp
 	return Math::Geometry::Vector2D::VectorType::CompoundCurve;
 }
 
-NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::CompoundCurve::Clone() const
+NN<Math::Geometry::Vector2D> Math::Geometry::CompoundCurve::Clone() const
 {
-	NotNullPtr<Math::Geometry::CompoundCurve> newObj;
+	NN<Math::Geometry::CompoundCurve> newObj;
 	NEW_CLASSNN(newObj, Math::Geometry::CompoundCurve(this->srid));
-	Data::ArrayIterator<NotNullPtr<Math::Geometry::LineString>> it = this->Iterator();
+	Data::ArrayIterator<NN<Math::Geometry::LineString>> it = this->Iterator();
 	while (it.HasNext())
 	{
-		newObj->AddGeometry(NotNullPtr<LineString>::ConvertFrom(it.Next()->Clone()));
+		newObj->AddGeometry(NN<LineString>::ConvertFrom(it.Next()->Clone()));
 	}
 	return newObj;
 }
 
-UOSInt Math::Geometry::CompoundCurve::GetDrawPoints(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> ptList)
+UOSInt Math::Geometry::CompoundCurve::GetDrawPoints(NN<Data::ArrayListA<Math::Coord2DDbl>> ptList)
 {
 	UOSInt ret = 0;
-	NotNullPtr<LineString> ls;
+	NN<LineString> ls;
 	UOSInt nPoint;
 	const Math::Coord2DDbl *ptArr;
-	Data::ArrayIterator<NotNullPtr<LineString>> it = this->Iterator();
+	Data::ArrayIterator<NN<LineString>> it = this->Iterator();
 	while (it.HasNext())
 	{
 		ls = it.Next();

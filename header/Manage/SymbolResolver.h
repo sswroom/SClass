@@ -13,10 +13,10 @@ namespace Manage
 		Data::ArrayListStringNN modNames;
 		Data::ArrayListUInt64 modBaseAddrs;
 		Data::ArrayListUInt64 modSizes;
-		NotNullPtr<Manage::Process> proc;
+		NN<Manage::Process> proc;
 
 	public:
-		SymbolResolver(NotNullPtr<Manage::Process> proc);
+		SymbolResolver(NN<Manage::Process> proc);
 		virtual ~SymbolResolver();
 
 		virtual UTF8Char *ResolveName(UTF8Char *buff, UInt64 address);

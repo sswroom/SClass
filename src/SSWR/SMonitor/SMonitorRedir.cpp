@@ -3,9 +3,9 @@
 #include "SSWR/SMonitor/SMonitorRedir.h"
 #include "Sync/MutexUsage.h"
 
-void __stdcall SSWR::SMonitor::SMonitorRedir::OnDataUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall SSWR::SMonitor::SMonitorRedir::OnDataUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	NotNullPtr<SSWR::SMonitor::SMonitorRedir> me = userData.GetNN<SSWR::SMonitor::SMonitorRedir>();
+	NN<SSWR::SMonitor::SMonitorRedir> me = userData.GetNN<SSWR::SMonitor::SMonitorRedir>();
 	if (dataSize >= 6 && buff[0] == 'S' && buff[1] == 'm')
 	{
 		UInt8 calcVal[2];
@@ -60,7 +60,7 @@ void SSWR::SMonitor::SMonitorRedir::CalcCRC(const UInt8 *buff, UOSInt size, UInt
 	this->dataCRC.GetValue(crcVal);
 }
 
-SSWR::SMonitor::SMonitorRedir::SMonitorRedir(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log) : dataCRC(Crypto::Hash::CRC16::GetPolynomialCCITT())
+SSWR::SMonitor::SMonitorRedir::SMonitorRedir(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log) : dataCRC(Crypto::Hash::CRC16::GetPolynomialCCITT())
 {
 	this->sockf = sockf;
 	this->hostName = Text::String::New(UTF8STRC("sswroom.no-ip.org"));
@@ -70,7 +70,7 @@ SSWR::SMonitor::SMonitorRedir::SMonitorRedir(NotNullPtr<Net::SocketFactory> sock
 	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, 0, 0, CSTR_NULL, OnDataUDPPacket, this, log, CSTR_NULL, 2, false));
 }
 
-SSWR::SMonitor::SMonitorRedir::SMonitorRedir(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Text::String> hostName, UInt16 port, NotNullPtr<IO::LogTool> log) : dataCRC(Crypto::Hash::CRC16::GetPolynomialCCITT())
+SSWR::SMonitor::SMonitorRedir::SMonitorRedir(NN<Net::SocketFactory> sockf, NN<Text::String> hostName, UInt16 port, NN<IO::LogTool> log) : dataCRC(Crypto::Hash::CRC16::GetPolynomialCCITT())
 {
 	this->sockf = sockf;
 	this->hostName = hostName->Clone();

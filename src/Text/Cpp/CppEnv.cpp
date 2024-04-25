@@ -70,7 +70,7 @@ Bool Text::Cpp::CppEnv::InitVSEnv(Text::VSProject::VisualStudioVersion vsv)
 	 
 	if (cfg == 0)
 		return false;
-	NotNullPtr<Text::String> paths;
+	NN<Text::String> paths;
 	if (cfg->GetCateValue(CSTR("VC\\VC_OBJECTS_PLATFORM_INFO\\Win32\\Directories"), CSTR("Include Dirs")).SetTo(paths))
 	{
 		csptr = paths->v;
@@ -151,10 +151,10 @@ Text::Cpp::CppEnv::CppEnv(Text::CodeProject *proj, Optional<IO::ConfigFile> cfg)
 	if (this->pt == Text::CodeProject::PROJT_VSPROJECT)
 	{
 		this->vsv = ((Text::VSProject*)proj)->GetVSVersion();
-		NotNullPtr<IO::ConfigFile> nncfg;
+		NN<IO::ConfigFile> nncfg;
 		if (cfg.SetTo(nncfg))
 		{
-			NotNullPtr<Text::String> inclDir;
+			NN<Text::String> inclDir;
 			if (nncfg->GetValue(CSTR("AdditionalIncludeDirectories")).SetTo(inclDir))
 			{
 				Text::PString sarr[2];
@@ -207,8 +207,8 @@ UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, Text::CString in
 		if (IO::Path::GetPathType(CSTRP(buff, sptr2)) == IO::Path::PathType::File)
 			return sptr2;
 	}
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = this->includePaths.Iterator();
-	NotNullPtr<Text::String> s;
+	Data::ArrayIterator<NN<Text::String>> it = this->includePaths.Iterator();
+	NN<Text::String> s;
 	while (it.HasNext())
 	{
 		s = it.Next();
@@ -351,7 +351,7 @@ Text::Cpp::CppEnv *Text::Cpp::CppEnv::LoadVSEnv(Text::VSProject::VisualStudioVer
 	if (cfg == 0)
 		return 0;
 	Text::Cpp::CppEnv *env = 0;
-	NotNullPtr<Text::String> paths;
+	NN<Text::String> paths;
 	if (cfg->GetCateValue(CSTR("VC\\VC_OBJECTS_PLATFORM_INFO\\Win32\\Directories"), CSTR("Include Dirs")).SetTo(paths))
 	{
 		NEW_CLASS(env, Text::Cpp::CppEnv(vsv));

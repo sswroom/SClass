@@ -9,7 +9,7 @@
 
 void __stdcall UI::ListBoxLogger::TimerTick(AnyType userObj)
 {
-	NotNullPtr<UI::ListBoxLogger> me = userObj.GetNN<UI::ListBoxLogger>();
+	NN<UI::ListBoxLogger> me = userObj.GetNN<UI::ListBoxLogger>();
 
 	if (me->logCnt > 0)
 	{
@@ -88,11 +88,11 @@ void __stdcall UI::ListBoxLogger::TimerTick(AnyType userObj)
 
 void __stdcall UI::ListBoxLogger::OnListBoxSelChg(AnyType userObj)
 {
-	NotNullPtr<UI::ListBoxLogger> me = userObj.GetNN<UI::ListBoxLogger>();
-	NotNullPtr<UI::GUITextBox> txt;
+	NN<UI::ListBoxLogger> me = userObj.GetNN<UI::ListBoxLogger>();
+	NN<UI::GUITextBox> txt;
 	if (me->txt.SetTo(txt))
 	{
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		if (me->lb->GetSelectedItemTextNew().SetTo(s))
 		{
 			txt->SetText(s->ToCString());
@@ -101,7 +101,7 @@ void __stdcall UI::ListBoxLogger::OnListBoxSelChg(AnyType userObj)
 	}
 }
 
-UI::ListBoxLogger::ListBoxLogger(NotNullPtr<UI::GUIForm> frm, NotNullPtr<UI::GUIListBox> lb, UOSInt maxLog, Bool reverse)
+UI::ListBoxLogger::ListBoxLogger(NN<UI::GUIForm> frm, NN<UI::GUIListBox> lb, UOSInt maxLog, Bool reverse)
 {
 	UOSInt i;
 	this->lb = lb;
@@ -181,11 +181,11 @@ void UI::ListBoxLogger::SetTimeFormat(const Char *timeFormat)
 	mutUsage.EndUse();
 }
 
-NotNullPtr<UI::ListBoxLogger> UI::ListBoxLogger::CreateUI(NotNullPtr<UI::GUIForm> frm, NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> ctrl, UOSInt maxLog, Bool reverse)
+NN<UI::ListBoxLogger> UI::ListBoxLogger::CreateUI(NN<UI::GUIForm> frm, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, UOSInt maxLog, Bool reverse)
 {
-	NotNullPtr<UI::GUITextBox> txt;
-	NotNullPtr<UI::GUIListBox> lb;
-	NotNullPtr<UI::ListBoxLogger> logger;
+	NN<UI::GUITextBox> txt;
+	NN<UI::GUIListBox> lb;
+	NN<UI::ListBoxLogger> logger;
 	txt = ui->NewTextBox(ctrl, CSTR(""));
 	txt->SetReadOnly(true);
 	txt->SetRect(0, 0, 100, 23, false);

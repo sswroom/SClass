@@ -14,20 +14,20 @@ namespace SSWR
 		class AVIROSMCacheCfgForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			NotNullPtr<UI::GUILabel> lblMapType;
-			NotNullPtr<UI::GUIComboBox> cboMapType;
-			NotNullPtr<UI::GUILabel> lblHTTPPort;
-			NotNullPtr<UI::GUITextBox> txtHTTPPort;
+			NN<UI::GUILabel> lblMapType;
+			NN<UI::GUIComboBox> cboMapType;
+			NN<UI::GUILabel> lblHTTPPort;
+			NN<UI::GUITextBox> txtHTTPPort;
 
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
 			static void __stdcall OnOKClick(AnyType userObj);
 			static void __stdcall OnCancelClick(AnyType userObj);
 		public:
-			AVIROSMCacheCfgForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIROSMCacheCfgForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIROSMCacheCfgForm();
 
 			virtual void OnMonitorChanged();

@@ -9,18 +9,18 @@ namespace DB
 	class JavaDBUtil
 	{
 	private:
-		static NotNullPtr<Text::String> AppendFieldAnno(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<DB::ColDef> col, NotNullPtr<Data::StringMap<Bool>> importMap); //return colName, need release
-		static void AppendFieldDef(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<DB::ColDef> col, NotNullPtr<Text::String> colName, NotNullPtr<Data::StringMap<Bool>> importMap);
-		static void AppendConstrHdr(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<DB::ColDef> col, NotNullPtr<Text::String> colName, Bool isLast);
-		static void AppendConstrItem(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Text::String> colName);
-		static void AppendGetterSetter(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<DB::ColDef> col, NotNullPtr<Text::String> colName);
-		static void AppendEqualsItem(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<DB::ColDef> col, NotNullPtr<Text::String> colName, NotNullPtr<Text::String> clsName, Bool isLast);
-		static void AppendHashCodeItem(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Text::String> colName, Bool isLast);
-		static void AppendFieldOrderItem(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Text::String> colName, Bool isLast);
+		static NN<Text::String> AppendFieldAnno(NN<Text::StringBuilderUTF8> sb, NN<DB::ColDef> col, NN<Data::StringMap<Bool>> importMap); //return colName, need release
+		static void AppendFieldDef(NN<Text::StringBuilderUTF8> sb, NN<DB::ColDef> col, NN<Text::String> colName, NN<Data::StringMap<Bool>> importMap);
+		static void AppendConstrHdr(NN<Text::StringBuilderUTF8> sb, NN<DB::ColDef> col, NN<Text::String> colName, Bool isLast);
+		static void AppendConstrItem(NN<Text::StringBuilderUTF8> sb, NN<Text::String> colName);
+		static void AppendGetterSetter(NN<Text::StringBuilderUTF8> sb, NN<DB::ColDef> col, NN<Text::String> colName);
+		static void AppendEqualsItem(NN<Text::StringBuilderUTF8> sb, NN<DB::ColDef> col, NN<Text::String> colName, NN<Text::String> clsName, Bool isLast);
+		static void AppendHashCodeItem(NN<Text::StringBuilderUTF8> sb, NN<Text::String> colName, Bool isLast);
+		static void AppendFieldOrderItem(NN<Text::StringBuilderUTF8> sb, NN<Text::String> colName, Bool isLast);
 		
 	public:
-		static Optional<DB::DBTool> OpenJDBC(Text::String *url, Text::String *username, Text::String *password, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf);
-		static Bool ToJavaEntity(NotNullPtr<Text::StringBuilderUTF8> sb, Optional<Text::String> schemaName, NotNullPtr<Text::String> tableName, Optional<Text::String> databaseName, NotNullPtr<DB::ReadingDB> db);
+		static Optional<DB::DBTool> OpenJDBC(Text::String *url, Text::String *username, Text::String *password, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf);
+		static Bool ToJavaEntity(NN<Text::StringBuilderUTF8> sb, Optional<Text::String> schemaName, NN<Text::String> tableName, Optional<Text::String> databaseName, NN<DB::ReadingDB> db);
 	};
 }
 #endif

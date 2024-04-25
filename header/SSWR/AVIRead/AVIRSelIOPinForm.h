@@ -20,32 +20,32 @@ namespace SSWR
 			IO::IOPin *ioPin;
 			SSWR::AVIRead::AVIRCore::IOPinType ioPinType;
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::VirtualIOPinMgr *vioPinMgr;
 			IO::GPIOControl *gpioPin;
 
-			NotNullPtr<UI::GUIPanel> pnlPinType;
-			NotNullPtr<UI::GUILabel> lblPinType;
-			NotNullPtr<UI::GUIComboBox> cboPinType;
-			NotNullPtr<UI::GUITabControl> tcConfig;
+			NN<UI::GUIPanel> pnlPinType;
+			NN<UI::GUILabel> lblPinType;
+			NN<UI::GUIComboBox> cboPinType;
+			NN<UI::GUITabControl> tcConfig;
 
-			NotNullPtr<UI::GUITabPage> tpGPIO;
-			NotNullPtr<UI::GUILabel> lblGPIO;
-			NotNullPtr<UI::GUIComboBox> cboGPIO;
+			NN<UI::GUITabPage> tpGPIO;
+			NN<UI::GUILabel> lblGPIO;
+			NN<UI::GUIComboBox> cboGPIO;
 
-			NotNullPtr<UI::GUITabPage> tpVirtualPin;
-			NotNullPtr<UI::GUILabel> lblVirtualPin;
-			NotNullPtr<UI::GUIComboBox> cboVirtualPin;
+			NN<UI::GUITabPage> tpVirtualPin;
+			NN<UI::GUILabel> lblVirtualPin;
+			NN<UI::GUIComboBox> cboVirtualPin;
 
-			NotNullPtr<UI::GUIPanel> pnlButtons;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUIPanel> pnlButtons;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
 			static void __stdcall OnOKClick(AnyType userObj);
 			static void __stdcall OnCancelClick(AnyType userObj);
 			static void __stdcall OnPinTypeChg(AnyType userObj);
 		public:
-			AVIRSelIOPinForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRSelIOPinForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSelIOPinForm();
 
 			virtual void OnMonitorChanged();

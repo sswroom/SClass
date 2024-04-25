@@ -36,20 +36,20 @@ namespace Net
 		class Network
 		{
 		private:
-			NotNullPtr<Text::String> ssid;
+			NN<Text::String> ssid;
 			Double rssi;
 		public:
-			Network(NotNullPtr<Text::String> ssid, Double rssi);
+			Network(NN<Text::String> ssid, Double rssi);
 			Network(Text::CString ssid, Double rssi);
 			~Network();
 			Double GetRSSI() const;
-			NotNullPtr<Text::String> GetSSID() const;
+			NN<Text::String> GetSSID() const;
 		};
 
 		class BSSInfo
 		{
 		private:
-			NotNullPtr<Text::String> ssid;
+			NN<Text::String> ssid;
 			UInt32 phyId;
 			UInt8 mac[6];
 			BSSType bssType;
@@ -66,7 +66,7 @@ namespace Net
 		public:
 			BSSInfo(Text::CString ssid, const void *bssEntry);
 			~BSSInfo();
-			NotNullPtr<Text::String> GetSSID() const;
+			NN<Text::String> GetSSID() const;
 			UInt32 GetPHYId();
 			const UInt8 *GetMAC();
 			BSSType GetBSSType();
@@ -86,16 +86,16 @@ namespace Net
 		class Interface
 		{
 		protected:
-			NotNullPtr<Text::String> name;
+			NN<Text::String> name;
 
 		public:
 			Interface();
 			virtual ~Interface();
 
-			NotNullPtr<Text::String> GetName() const;
+			NN<Text::String> GetName() const;
 			virtual Bool Scan() = 0;
-			virtual UOSInt GetNetworks(NotNullPtr<Data::ArrayListNN<Net::WirelessLAN::Network>> networkList) = 0;
-			virtual UOSInt GetBSSList(NotNullPtr<Data::ArrayListNN<Net::WirelessLAN::BSSInfo>> bssList) = 0;
+			virtual UOSInt GetNetworks(NN<Data::ArrayListNN<Net::WirelessLAN::Network>> networkList) = 0;
+			virtual UOSInt GetBSSList(NN<Data::ArrayListNN<Net::WirelessLAN::BSSInfo>> bssList) = 0;
 		};
 
 	public:
@@ -103,7 +103,7 @@ namespace Net
 		~WirelessLAN();
 
 		Bool IsError();
-		UOSInt GetInterfaces(NotNullPtr<Data::ArrayListNN<Net::WirelessLAN::Interface>> outArr);
+		UOSInt GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::Interface>> outArr);
 	};
 }
 #endif

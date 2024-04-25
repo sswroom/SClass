@@ -27,7 +27,7 @@ Int32 Parser::FileParser::SQLiteParser::GetName()
 	return *(Int32*)"SQLI";
 }
 
-void Parser::FileParser::SQLiteParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::SQLiteParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ReadingDB)
 	{
@@ -40,7 +40,7 @@ IO::ParserType Parser::FileParser::SQLiteParser::GetParserType()
 	return IO::ParserType::ReadingDB;
 }
 
-IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (!Text::StrStartsWithC(hdr, 32, UTF8STRC("SQLite format 3")))
 		return 0;
@@ -112,7 +112,7 @@ IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseAsMap(DB::DBConn *conn)
 {
 	Data::ArrayListStringNN tableNames;
 	conn->QueryTableNames(CSTR_NULL, tableNames);
-	Data::Sort::ArtificialQuickSort::Sort(&tableNames, NotNullPtr<Data::Comparator<NotNullPtr<Text::String>>>(tableNames));
+	Data::Sort::ArtificialQuickSort::Sort(&tableNames, NN<Data::Comparator<NN<Text::String>>>(tableNames));
 	if (tableNames.SortedIndexOfC(CSTR("gpkg_spatial_ref_sys")) < 0 ||
 		tableNames.SortedIndexOfC(CSTR("gpkg_contents")) < 0 ||
 		tableNames.SortedIndexOfC(CSTR("gpkg_geometry_columns")) < 0 ||

@@ -20,7 +20,7 @@ Int32 Parser::FileParser::TsuyoshiArcParser::GetName()
 	return *(Int32*)"TARC";
 }
 
-void Parser::FileParser::TsuyoshiArcParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::TsuyoshiArcParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
@@ -33,7 +33,7 @@ IO::ParserType Parser::FileParser::TsuyoshiArcParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::TsuyoshiArcParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::TsuyoshiArcParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt32 recCnt;
 

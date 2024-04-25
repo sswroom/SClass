@@ -10,9 +10,9 @@
 #include "Media/EXIFData.h"
 #include "Net/SocketFactory.h"
 
-void __stdcall IO::FileAnalyse::TIFFFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::FileAnalyse::TIFFFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::FileAnalyse::TIFFFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::TIFFFileAnalyse>();
+	NN<IO::FileAnalyse::TIFFFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::TIFFFileAnalyse>();
 	UInt8 buff[256];
 	NN<PackInfo> pack;
 
@@ -79,7 +79,7 @@ void IO::FileAnalyse::TIFFFileAnalyse::FreePackInfo(NN<PackInfo> pack)
 	MemFreeNN(pack);
 }
 
-IO::FileAnalyse::TIFFFileAnalyse::TIFFFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("TIFFFileAnalyse"))
+IO::FileAnalyse::TIFFFileAnalyse::TIFFFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("TIFFFileAnalyse"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -132,7 +132,7 @@ UOSInt IO::FileAnalyse::TIFFFileAnalyse::GetFrameCount()
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::TIFFFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::TIFFFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
@@ -187,7 +187,7 @@ UOSInt IO::FileAnalyse::TIFFFileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TIFFFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<PackInfo> pack;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;

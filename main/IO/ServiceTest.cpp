@@ -20,7 +20,7 @@ void PrintSvcDetail(IO::ServiceManager *svcMgr, Text::CString svcName)
 	}
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Text::CString svcName = CSTR("mariadb");
 	IO::ServiceManager svcMgr;

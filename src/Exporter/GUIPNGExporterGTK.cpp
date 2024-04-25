@@ -33,7 +33,7 @@ Bool Exporter::GUIPNGExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 	return false;
 }
 
-Bool Exporter::GUIPNGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	UInt8 *tmpBuff;
 	GdkPixbuf *image = (GdkPixbuf*)ToImage(pobj, &tmpBuff);
@@ -129,7 +129,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 							stm->Write(tmpBuff, 13);
 						}
 
-						NotNullPtr<const Media::ColorProfile::ColorPrimaries> prim = srcImg->info.color.GetPrimariesRead();
+						NN<const Media::ColorProfile::ColorPrimaries> prim = srcImg->info.color.GetPrimariesRead();
 						WriteMUInt32(&tmpBuff[0], 32);
 						WriteInt32(&tmpBuff[4], ReadInt32("cHRM"));
 						WriteMInt32(&tmpBuff[8], Double2Int32(prim->w.x * 100000));

@@ -18,7 +18,7 @@
 #include <windows.h>
 #endif
 
-void Media::MonitorColorManager::SetDefaultYUV(NotNullPtr<Media::IColorHandler::YUVPARAM> yuv)
+void Media::MonitorColorManager::SetDefaultYUV(NN<Media::IColorHandler::YUVPARAM> yuv)
 {
 	yuv->Brightness = 1;
 	yuv->Contrast = 1;
@@ -36,7 +36,7 @@ void Media::MonitorColorManager::SetDefaultYUV(NotNullPtr<Media::IColorHandler::
 	yuv->BMul = 1;
 }
 
-void Media::MonitorColorManager::SetDefaultRGB(NotNullPtr<Media::IColorHandler::RGBPARAM2> rgb)
+void Media::MonitorColorManager::SetDefaultRGB(NN<Media::IColorHandler::RGBPARAM2> rgb)
 {
 	rgb->MonRBright = 1;
 	rgb->MonRContr = 1;
@@ -99,7 +99,7 @@ Bool Media::MonitorColorManager::Load()
 	IO::Registry *regBase;
 	IO::Registry *reg2;
 	IO::Registry *reg;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	WChar wbuff[512];
 
 	regBase = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"Color");
@@ -188,7 +188,7 @@ Bool Media::MonitorColorManager::Load()
 		if (reg->GetValueI32(L"MonProfileType", tmpVal))
 		{
 			this->rgb.monProfileType = (Media::ColorProfile::CommonProfileType)tmpVal;
-			NotNullPtr<Text::String> fileName;
+			NN<Text::String> fileName;
 			if (this->rgb.monProfileType == Media::ColorProfile::CPT_FILE && fileName.Set(this->monProfileFile))
 			{
 				if (!SetFromProfileFile(fileName))
@@ -243,7 +243,7 @@ Bool Media::MonitorColorManager::Save()
 	IO::Registry *regBase;
 	IO::Registry *reg2;
 	IO::Registry *reg;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 
 	regBase = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"Color");
 	if (regBase)
@@ -336,12 +336,12 @@ void Media::MonitorColorManager::SetDefault()
 	}
 }
 
-NotNullPtr<const Media::IColorHandler::YUVPARAM> Media::MonitorColorManager::GetYUVParam()
+NN<const Media::IColorHandler::YUVPARAM> Media::MonitorColorManager::GetYUVParam()
 {
 	return this->yuv;
 }
 
-NotNullPtr<const Media::IColorHandler::RGBPARAM2> Media::MonitorColorManager::GetRGBParam()
+NN<const Media::IColorHandler::RGBPARAM2> Media::MonitorColorManager::GetRGBParam()
 {
 	return this->rgb;
 }
@@ -522,7 +522,7 @@ void Media::MonitorColorManager::SetMonProfileType(Media::ColorProfile::CommonPr
 	if (newVal != this->rgb.monProfileType)
 	{
 		this->rgb.monProfileType = newVal;
-		NotNullPtr<Text::String> fileName;
+		NN<Text::String> fileName;
 		if (this->rgb.monProfileType == Media::ColorProfile::CPT_FILE && fileName.Set(this->monProfileFile))
 		{
 			if (SetFromProfileFile(fileName))
@@ -548,7 +548,7 @@ void Media::MonitorColorManager::SetMonProfileType(Media::ColorProfile::CommonPr
 	}
 }
 
-Bool Media::MonitorColorManager::SetMonProfileFile(NotNullPtr<Text::String> fileName)
+Bool Media::MonitorColorManager::SetMonProfileFile(NN<Text::String> fileName)
 {
 	if (SetFromProfileFile(fileName))
 	{
@@ -564,7 +564,7 @@ Bool Media::MonitorColorManager::SetMonProfileFile(NotNullPtr<Text::String> file
 	}
 }
 
-void Media::MonitorColorManager::SetMonProfile(NotNullPtr<const Media::ColorProfile> color)
+void Media::MonitorColorManager::SetMonProfile(NN<const Media::ColorProfile> color)
 {
 	this->rgb.monProfileType = Media::ColorProfile::CPT_CUSTOM;
 	this->rgb.monProfile.Set(color);
@@ -595,13 +595,13 @@ void Media::MonitorColorManager::Set10BitColor(Bool color10Bit)
 	this->color10Bit = color10Bit;
 }
 
-void Media::MonitorColorManager::AddSess(NotNullPtr<Media::ColorManagerSess> colorSess)
+void Media::MonitorColorManager::AddSess(NN<Media::ColorManagerSess> colorSess)
 {
 	Sync::MutexUsage mutUsage(this->sessMut);
 	this->sessList.Add(colorSess);
 }
 
-void Media::MonitorColorManager::RemoveSess(NotNullPtr<Media::ColorManagerSess> colorSess)
+void Media::MonitorColorManager::RemoveSess(NN<Media::ColorManagerSess> colorSess)
 {
 	UOSInt i;
 	Sync::MutexUsage mutUsage(this->sessMut);
@@ -612,14 +612,14 @@ void Media::MonitorColorManager::RemoveSess(NotNullPtr<Media::ColorManagerSess> 
 	}
 }
 
-Bool Media::MonitorColorManager::SetFromProfileFile(NotNullPtr<Text::String> fileName)
+Bool Media::MonitorColorManager::SetFromProfileFile(NN<Text::String> fileName)
 {
 	Bool succ = false;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	UInt64 fileSize = fs.GetLength();
 	if (fileSize > 0 && fileSize < 1048576)
 	{
-		NotNullPtr<Media::ICCProfile> profile;
+		NN<Media::ICCProfile> profile;
 		Data::ByteBuffer fileBuff((UOSInt)fileSize);
 		if (fs.Read(fileBuff) == fileSize)
 		{
@@ -646,7 +646,7 @@ void Media::MonitorColorManager::SetOSProfile()
 	WChar wbuff2[512];
 	Bool succ = false;
 	DISPLAY_DEVICEW dev;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UInt32 i = 0;
 	UOSInt j;
 	dev.cb = sizeof(DISPLAY_DEVICEW);
@@ -668,7 +668,7 @@ void Media::MonitorColorManager::SetOSProfile()
 						size = 512;
 						if (GetICMProfileW(hdc, &size, wbuff) != 0)
 						{
-							NotNullPtr<Text::String> s = Text::String::NewNotNull(wbuff);
+							NN<Text::String> s = Text::String::NewNotNull(wbuff);
 							succ = SetFromProfileFile(s);
 							s->Release();
 						}
@@ -694,7 +694,7 @@ void Media::MonitorColorManager::SetOSProfile()
 void Media::MonitorColorManager::SetEDIDProfile()
 {
 	Bool succ = false;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (this->profileName.SetTo(s))
 	{
 		Media::DDCReader ddc(s->v);
@@ -721,7 +721,7 @@ void Media::MonitorColorManager::SetEDIDProfile()
 void Media::MonitorColorManager::RGBUpdated()
 {
 	Sync::MutexUsage mutUsage(this->sessMut);
-	Data::ArrayIterator<NotNullPtr<Media::ColorManagerSess>> it = this->sessList.Iterator();
+	Data::ArrayIterator<NN<Media::ColorManagerSess>> it = this->sessList.Iterator();
 	while (it.HasNext())
 	{
 		it.Next()->RGBUpdated(this->rgb);
@@ -731,7 +731,7 @@ void Media::MonitorColorManager::RGBUpdated()
 void Media::MonitorColorManager::YUVUpdated()
 {
 	Sync::MutexUsage mutUsage(this->sessMut);
-	Data::ArrayIterator<NotNullPtr<Media::ColorManagerSess>> it = this->sessList.Iterator();
+	Data::ArrayIterator<NN<Media::ColorManagerSess>> it = this->sessList.Iterator();
 	while (it.HasNext())
 	{
 		it.Next()->YUVUpdated(this->yuv);
@@ -833,12 +833,12 @@ void Media::ColorManager::SetDefPProfile(Media::ColorProfile::CommonProfileType 
 	}
 }
 
-NotNullPtr<Media::ColorProfile> Media::ColorManager::GetDefVProfile()
+NN<Media::ColorProfile> Media::ColorManager::GetDefVProfile()
 {
 	return this->defVProfile;
 }
 
-NotNullPtr<Media::ColorProfile> Media::ColorManager::GetDefPProfile()
+NN<Media::ColorProfile> Media::ColorManager::GetDefPProfile()
 {
 	return this->defPProfile;
 }
@@ -866,10 +866,10 @@ Media::ColorProfile::YUVType Media::ColorManager::GetDefYUVType()
 	return this->defYUVType;
 }
 
-NotNullPtr<Media::MonitorColorManager> Media::ColorManager::GetMonColorManager(Text::String *profileName)
+NN<Media::MonitorColorManager> Media::ColorManager::GetMonColorManager(Text::String *profileName)
 {
 	Media::MonitorColorManager *monColor;
-	NotNullPtr<Media::MonitorColorManager> nnmonColor;
+	NN<Media::MonitorColorManager> nnmonColor;
 	Sync::MutexUsage mutUsage(this->mut);
 	if (profileName == 0)
 	{
@@ -898,27 +898,27 @@ NotNullPtr<Media::MonitorColorManager> Media::ColorManager::GetMonColorManager(T
 	}
 }
 
-NotNullPtr<Media::MonitorColorManager> Media::ColorManager::GetMonColorManager(MonitorHandle *hMon)
+NN<Media::MonitorColorManager> Media::ColorManager::GetMonColorManager(MonitorHandle *hMon)
 {
 	Media::MonitorInfo monInfo(hMon);
 	return GetMonColorManager(monInfo.GetMonitorID());
 }
 
-NotNullPtr<Media::ColorManagerSess> Media::ColorManager::CreateSess(MonitorHandle *hMon)
+NN<Media::ColorManagerSess> Media::ColorManager::CreateSess(MonitorHandle *hMon)
 {
-	NotNullPtr<Media::MonitorColorManager> monColor;
+	NN<Media::MonitorColorManager> monColor;
 	monColor = this->GetMonColorManager(hMon);
-	NotNullPtr<Media::ColorManagerSess> colorSess;
+	NN<Media::ColorManagerSess> colorSess;
 	NEW_CLASSNN(colorSess, Media::ColorManagerSess(*this, monColor));
 	return colorSess;
 }
 
-void Media::ColorManager::DeleteSess(NotNullPtr<ColorManagerSess> sess)
+void Media::ColorManager::DeleteSess(NN<ColorManagerSess> sess)
 {
 	sess.Delete();
 }
 
-Media::ColorManagerSess::ColorManagerSess(NotNullPtr<ColorManager> colorMgr, NotNullPtr<MonitorColorManager> monColor)
+Media::ColorManagerSess::ColorManagerSess(NN<ColorManager> colorMgr, NN<MonitorColorManager> monColor)
 {
 	this->colorMgr = colorMgr;
 	this->monColor = monColor;
@@ -930,13 +930,13 @@ Media::ColorManagerSess::~ColorManagerSess()
 	this->monColor->RemoveSess(*this);
 }
 
-void Media::ColorManagerSess::AddHandler(NotNullPtr<Media::IColorHandler> hdlr)
+void Media::ColorManagerSess::AddHandler(NN<Media::IColorHandler> hdlr)
 {
 	Sync::MutexUsage mutUsage(this->hdlrMut);
 	this->hdlrs.Add(hdlr);
 }
 
-void Media::ColorManagerSess::RemoveHandler(NotNullPtr<Media::IColorHandler> hdlr)
+void Media::ColorManagerSess::RemoveHandler(NN<Media::IColorHandler> hdlr)
 {
 	Sync::MutexUsage mutUsage(this->hdlrMut);
 	UOSInt index = this->hdlrs.IndexOf(hdlr);
@@ -946,24 +946,24 @@ void Media::ColorManagerSess::RemoveHandler(NotNullPtr<Media::IColorHandler> hdl
 	}
 }
 
-NotNullPtr<const Media::IColorHandler::YUVPARAM> Media::ColorManagerSess::GetYUVParam()
+NN<const Media::IColorHandler::YUVPARAM> Media::ColorManagerSess::GetYUVParam()
 {
 	Sync::RWMutexUsage mutUsage(this->mut, false);
 	return this->monColor->GetYUVParam();
 }
 
-NotNullPtr<const Media::IColorHandler::RGBPARAM2> Media::ColorManagerSess::GetRGBParam()
+NN<const Media::IColorHandler::RGBPARAM2> Media::ColorManagerSess::GetRGBParam()
 {
 	Sync::RWMutexUsage mutUsage(this->mut, false);
 	return this->monColor->GetRGBParam();
 }
 
-NotNullPtr<Media::ColorProfile> Media::ColorManagerSess::GetDefVProfile()
+NN<Media::ColorProfile> Media::ColorManagerSess::GetDefVProfile()
 {
 	return this->colorMgr->GetDefVProfile();
 }
 
-NotNullPtr<Media::ColorProfile> Media::ColorManagerSess::GetDefPProfile()
+NN<Media::ColorProfile> Media::ColorManagerSess::GetDefPProfile()
 {
 	return this->colorMgr->GetDefPProfile();
 }
@@ -998,20 +998,20 @@ void Media::ColorManagerSess::ChangeMonitor(MonitorHandle *hMon)
 	this->YUVUpdated(this->GetYUVParam());
 }
 
-void Media::ColorManagerSess::RGBUpdated(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void Media::ColorManagerSess::RGBUpdated(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	Sync::MutexUsage mutUsage(this->hdlrMut);
-	Data::ArrayIterator<NotNullPtr<Media::IColorHandler>> it = this->hdlrs.Iterator();
+	Data::ArrayIterator<NN<Media::IColorHandler>> it = this->hdlrs.Iterator();
 	while (it.HasNext())
 	{
 		it.Next()->RGBParamChanged(rgbParam);
 	}
 }
 
-void Media::ColorManagerSess::YUVUpdated(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
+void Media::ColorManagerSess::YUVUpdated(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 	Sync::MutexUsage mutUsage(this->hdlrMut);
-	Data::ArrayIterator<NotNullPtr<Media::IColorHandler>> it = this->hdlrs.Iterator();
+	Data::ArrayIterator<NN<Media::IColorHandler>> it = this->hdlrs.Iterator();
 	while (it.HasNext())
 	{
 		it.Next()->YUVParamChanged(yuvParam);

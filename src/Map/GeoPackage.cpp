@@ -24,9 +24,9 @@ Map::GeoPackage::GeoPackage(DB::DBConn *conn)
 {
 	this->conn = conn;
 	this->useCnt = 1;
-	NotNullPtr<Text::String> tableName;
+	NN<Text::String> tableName;
 	Data::ArrayListStringNN colList;
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	Text::StringTool::SplitAsNewString(CSTR("table_name,data_type,min_x,min_y,max_x,max_y,srs_id"), ',', colList);
 	if (!this->conn->QueryTableData(CSTR_NULL, CSTR("gpkg_contents"), &colList, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
@@ -92,14 +92,14 @@ void Map::GeoPackage::Release()
 	}
 }
 
-NotNullPtr<Text::String> Map::GeoPackage::GetSourceNameObj()
+NN<Text::String> Map::GeoPackage::GetSourceNameObj()
 {
 	return this->conn->GetSourceNameObj();
 }
 
-UOSInt Map::GeoPackage::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt Map::GeoPackage::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = this->allTables.Iterator();
+	Data::ArrayIterator<NN<Text::String>> it = this->allTables.Iterator();
 	while (it.HasNext())
 	{
 		names->Add(it.Next()->Clone());
@@ -120,10 +120,10 @@ DB::TableDef *Map::GeoPackage::GetTableDef(Text::CString schemaName, Text::CStri
 		ContentInfo *cont = this->tableList.GetC(tableName.OrEmpty());
 		if (cont)
 		{
-			Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = tabDef->ColIterator();
+			Data::ArrayIterator<NN<DB::ColDef>> it = tabDef->ColIterator();
 			while (it.HasNext())
 			{
-				NotNullPtr<DB::ColDef> col = it.Next();
+				NN<DB::ColDef> col = it.Next();
 				if (col->GetColType() == DB::DBUtil::CT_Vector)
 				{
 					col->SetColSize((UOSInt)DB::ColDef::GeometryTypeAdjust((DB::ColDef::GeometryType)col->GetColSize(), cont->hasZ, cont->hasM));
@@ -135,12 +135,12 @@ DB::TableDef *Map::GeoPackage::GetTableDef(Text::CString schemaName, Text::CStri
 	return tabDef;
 }
 
-void Map::GeoPackage::CloseReader(NotNullPtr<DB::DBReader> r)
+void Map::GeoPackage::CloseReader(NN<DB::DBReader> r)
 {
 	this->conn->CloseReader(r);
 }
 
-void Map::GeoPackage::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void Map::GeoPackage::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 	this->conn->GetLastErrorMsg(str);
 }
@@ -153,11 +153,11 @@ void Map::GeoPackage::Reconnect()
 Map::MapLayerCollection *Map::GeoPackage::CreateLayerCollection()
 {
 	Map::MapLayerCollection *layerColl;
-	NotNullPtr<Text::String> sourceName = this->conn->GetSourceNameObj();
+	NN<Text::String> sourceName = this->conn->GetSourceNameObj();
 	UOSInt i = sourceName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 	UOSInt j;
-	NotNullPtr<Map::GeoPackageLayer> layer;
-	NotNullPtr<Map::GeoPackage::ContentInfo> contentInfo;
+	NN<Map::GeoPackageLayer> layer;
+	NN<Map::GeoPackage::ContentInfo> contentInfo;
 	NEW_CLASS(layerColl, Map::MapLayerCollection(sourceName->ToCString(), sourceName->ToCString().Substring(i + 1)));
 	i = 0;
 	j = this->tableList.GetCount();

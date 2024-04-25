@@ -5,7 +5,7 @@
 #include "Net/LoRaGWUtil.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-void Net::LoRaGWUtil::ParseGWMPMessage(NotNullPtr<Text::StringBuilderUTF8> sb, Bool toServer, UInt8 ver, UInt16 token, UInt8 msgType, const UInt8 *msg, UOSInt msgSize)
+void Net::LoRaGWUtil::ParseGWMPMessage(NN<Text::StringBuilderUTF8> sb, Bool toServer, UInt8 ver, UInt16 token, UInt8 msgType, const UInt8 *msg, UOSInt msgSize)
 {
 	if (toServer)
 	{
@@ -81,7 +81,7 @@ void Net::LoRaGWUtil::ParseGWMPMessage(NotNullPtr<Text::StringBuilderUTF8> sb, B
 	}
 }
 
-void Net::LoRaGWUtil::ParseUDPMessage(NotNullPtr<Text::StringBuilderUTF8> sb, Bool toServer, const UInt8 *msg, UOSInt msgSize)
+void Net::LoRaGWUtil::ParseUDPMessage(NN<Text::StringBuilderUTF8> sb, Bool toServer, const UInt8 *msg, UOSInt msgSize)
 {
 	ParseGWMPMessage(sb, toServer, msg[0], ReadMUInt16(&msg[1]), msg[3], msg + 4, msgSize - 4);
 }
@@ -165,7 +165,7 @@ UOSInt Net::LoRaGWUtil::GenUpPayload(UInt8 *buff, Bool needConfirm, UInt32 devAd
 	return index + 4;
 }
 
-void Net::LoRaGWUtil::GenRxpkJSON(NotNullPtr<Text::StringBuilderUTF8> sb, UInt32 freq, UInt32 chan, UInt32 rfch, UInt32 codrk, Int32 rssi, Int32 lsnr, const UInt8 *data, UOSInt dataSize)
+void Net::LoRaGWUtil::GenRxpkJSON(NN<Text::StringBuilderUTF8> sb, UInt32 freq, UInt32 chan, UInt32 rfch, UInt32 codrk, Int32 rssi, Int32 lsnr, const UInt8 *data, UOSInt dataSize)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -201,7 +201,7 @@ void Net::LoRaGWUtil::GenRxpkJSON(NotNullPtr<Text::StringBuilderUTF8> sb, UInt32
 	sb->AppendC(UTF8STRC("\"}]}"));
 }
 
-void Net::LoRaGWUtil::GenStatJSON(NotNullPtr<Text::StringBuilderUTF8> sb, const Data::Timestamp &ts, UInt32 rxnb, UInt32 rxok, UInt32 rwfw, Double ackr, UInt32 dwnb, UInt32 txnb)
+void Net::LoRaGWUtil::GenStatJSON(NN<Text::StringBuilderUTF8> sb, const Data::Timestamp &ts, UInt32 rxnb, UInt32 rxok, UInt32 rwfw, Double ackr, UInt32 dwnb, UInt32 txnb)
 {
 	UTF8Char sbuff[40];
 	UTF8Char *sptr;
@@ -223,7 +223,7 @@ void Net::LoRaGWUtil::GenStatJSON(NotNullPtr<Text::StringBuilderUTF8> sb, const 
 	sb->AppendC(UTF8STRC("}}"));
 }
 
-void Net::LoRaGWUtil::GenStatJSON(NotNullPtr<Text::StringBuilderUTF8> sb, const Data::Timestamp &ts, UInt32 rxnb, UInt32 rxok, UInt32 rwfw, Double ackr, UInt32 dwnb, UInt32 txnb, Double lat, Double lon, Int32 altitude)
+void Net::LoRaGWUtil::GenStatJSON(NN<Text::StringBuilderUTF8> sb, const Data::Timestamp &ts, UInt32 rxnb, UInt32 rxok, UInt32 rwfw, Double ackr, UInt32 dwnb, UInt32 txnb, Double lat, Double lon, Int32 altitude)
 {
 	UTF8Char sbuff[40];
 	UTF8Char *sptr;

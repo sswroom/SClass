@@ -9,11 +9,11 @@ namespace SSWR
 		class AVIRCoreWin : public AVIRCore
 		{
 		public:
-			AVIRCoreWin(NotNullPtr<UI::GUICore> ui);
+			AVIRCoreWin(NN<UI::GUICore> ui);
 			virtual ~AVIRCoreWin();
 
-			virtual void OpenObject(NotNullPtr<IO::ParsedObject> pobj);
-			virtual void SaveData(UI::GUIForm *ownerForm, NotNullPtr<IO::ParsedObject> pobj, const WChar *dialogName);
+			virtual void OpenObject(NN<IO::ParsedObject> pobj);
+			virtual void SaveData(UI::GUIForm *ownerForm, NN<IO::ParsedObject> pobj, const WChar *dialogName);
 			virtual Media::Printer *SelectPrinter(UI::GUIForm *frm);
 		};
 	}

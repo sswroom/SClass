@@ -10,9 +10,9 @@ namespace IO
 	public:
 		virtual ~StreamHandler() {};
 
-		virtual AnyType StreamCreated(NotNullPtr<IO::Stream> stm) = 0;
-		virtual void StreamData(NotNullPtr<IO::Stream> stm, AnyType stmData, const Data::ByteArrayR &buff) = 0;
-		virtual void StreamClosed(NotNullPtr<IO::Stream> stm, AnyType stmData) = 0;
+		virtual AnyType StreamCreated(NN<IO::Stream> stm) = 0;
+		virtual void StreamData(NN<IO::Stream> stm, AnyType stmData, const Data::ByteArrayR &buff) = 0;
+		virtual void StreamClosed(NN<IO::Stream> stm, AnyType stmData) = 0;
 	};
 }
 #endif

@@ -15,17 +15,17 @@ namespace Data
 		virtual ~StringMap();
 
 		virtual T Put(Text::String *key, T val);
-		T PutNN(NotNullPtr<Text::String> key, T val);
+		T PutNN(NN<Text::String> key, T val);
 		T Put(Text::CString key, T val);
 		virtual T Get(Text::String *key) const;
-		T GetNN(NotNullPtr<Text::String> key) const;
+		T GetNN(NN<Text::String> key) const;
 		T Get(Text::CString key) const;
 		virtual T Remove(Text::String *key);
-		T RemoveNN(NotNullPtr<Text::String> key);
+		T RemoveNN(NN<Text::String> key);
 		T Remove(Text::CString key);
 		virtual Text::String *GetKey(UOSInt index) const;
 		virtual void Clear();
-		virtual NotNullPtr<StringMap<T>> Clone() const;
+		virtual NN<StringMap<T>> Clone() const;
 	};
 
 
@@ -75,7 +75,7 @@ namespace Data
 		}
 	}
 
-	template <class T> T StringMap<T>::PutNN(NotNullPtr<Text::String> key, T val)
+	template <class T> T StringMap<T>::PutNN(NN<Text::String> key, T val)
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key.Ptr());
@@ -125,7 +125,7 @@ namespace Data
 		}
 	}
 
-	template <class T> T StringMap<T>::GetNN(NotNullPtr<Text::String> key) const
+	template <class T> T StringMap<T>::GetNN(NN<Text::String> key) const
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key.Ptr());
@@ -168,7 +168,7 @@ namespace Data
 		}
 	}
 
-	template <class T> T StringMap<T>::RemoveNN(NotNullPtr<Text::String> key)
+	template <class T> T StringMap<T>::RemoveNN(NN<Text::String> key)
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key.Ptr());
@@ -214,9 +214,9 @@ namespace Data
 		this->vals.Clear();
 	}
 
-	template <class T> NotNullPtr<StringMap<T>> StringMap<T>::Clone() const
+	template <class T> NN<StringMap<T>> StringMap<T>::Clone() const
 	{
-		NotNullPtr<StringMap<T>> ret;
+		NN<StringMap<T>> ret;
 		NEW_CLASSNN(ret, StringMap<T>(this));
 		return ret;
 	}

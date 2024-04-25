@@ -32,7 +32,7 @@ OSInt __stdcall UI::Win::WinListBox::LBWndProc(void *hWnd, UInt32 msg, UOSInt wP
 	return 0;
 }
 
-UI::Win::WinListBox::WinListBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool multiSelect) : UI::GUIListBox(ui, parent)
+UI::Win::WinListBox::WinListBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Bool multiSelect) : UI::GUIListBox(ui, parent)
 {
 	this->mulSel = multiSelect;
 
@@ -56,7 +56,7 @@ UI::Win::WinListBox::~WinListBox()
 }
 
 
-UOSInt UI::Win::WinListBox::AddItem(NotNullPtr<Text::String> itemText, AnyType itemObj)
+UOSInt UI::Win::WinListBox::AddItem(NN<Text::String> itemText, AnyType itemObj)
 {
 	UOSInt i = Text::StrUTF8_WCharCntC(itemText->v, itemText->leng);
 	WChar *s = MemAlloc(WChar, i + 1);
@@ -234,7 +234,7 @@ Optional<Text::String> UI::Win::WinListBox::GetSelectedItemTextNew()
 
 UTF8Char *UI::Win::WinListBox::GetItemText(UTF8Char *buff, UOSInt index)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (!this->GetItemTextNew(index).SetTo(s))
 	{
 		return 0;
@@ -278,7 +278,7 @@ Optional<Text::String> UI::Win::WinListBox::GetItemTextNew(UOSInt index)
 	}
 	else
 	{
-		NotNullPtr<Text::String> ret = Text::String::NewNotNull(sbuff);
+		NN<Text::String> ret = Text::String::NewNotNull(sbuff);
 		MemFree(sbuff);
 		return ret.Ptr();
 	}

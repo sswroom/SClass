@@ -7,7 +7,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTimedFileCopyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimedFileCopyForm>();
+	NN<SSWR::AVIRead::AVIRTimedFileCopyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimedFileCopyForm>();
 	Data::DateTime dt1;
 	Data::DateTime dt2;
 	Text::StringBuilderUTF8 sb;
@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(AnyType user
 		return;
 	}
 
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"TimedFileCopy", true);
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"TimedFileCopy", true);
 	dlg->AddFilter(CSTR("*.zip"), CSTR("Zip file"));
 	if (dt1.GetYear() == dt2.GetYear() && dt1.GetMonth() == dt2.GetMonth() && dt1.GetDay() == dt2.GetDay())
 	{
@@ -85,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(AnyType user
 	dlg.Delete();
 }
 
-Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPMTBuilder *zip, const UTF8Char *buffStart, const UTF8Char *pathBase, UTF8Char *pathEnd, NotNullPtr<Data::DateTime> startTime, NotNullPtr<Data::DateTime> endTime, Bool monthDir)
+Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPMTBuilder *zip, const UTF8Char *buffStart, const UTF8Char *pathBase, UTF8Char *pathEnd, NN<Data::DateTime> startTime, NN<Data::DateTime> endTime, Bool monthDir)
 {
 	UTF8Char *sptr;
 	IO::Path::FindFileSession *sess;
@@ -220,7 +220,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPMTBuilder *zip, cons
 	return true;
 }
 
-SSWR::AVIRead::AVIRTimedFileCopyForm::AVIRTimedFileCopyForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 652, 180, ui)
+SSWR::AVIRead::AVIRTimedFileCopyForm::AVIRTimedFileCopyForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 652, 180, ui)
 {
 	this->SetText(this->GetFormName());
 	this->SetFont(0, 0, 8.25, false);

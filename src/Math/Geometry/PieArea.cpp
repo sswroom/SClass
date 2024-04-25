@@ -27,9 +27,9 @@ Math::Coord2DDbl Math::Geometry::PieArea::GetCenter() const
 	return Math::Coord2DDbl(this->center.x + r * Math_Sin(a) * 0.5, this->center.y - r * Math_Cos(a) * 0.5);
 }
 
-NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::PieArea::Clone() const
+NN<Math::Geometry::Vector2D> Math::Geometry::PieArea::Clone() const
 {
-	NotNullPtr<Math::Geometry::PieArea> pie;
+	NN<Math::Geometry::PieArea> pie;
 	NEW_CLASSNN(pie, Math::Geometry::PieArea(this->srid, this->center, this->r, this->arcAngle1, this->arcAngle2));
 	return pie;
 }
@@ -52,7 +52,7 @@ Double Math::Geometry::PieArea::CalArea() const
 	return 0;
 }
 
-Bool Math::Geometry::PieArea::JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec)
+Bool Math::Geometry::PieArea::JoinVector(NN<const Math::Geometry::Vector2D> vec)
 {
 	return false;
 }
@@ -72,13 +72,13 @@ Bool Math::Geometry::PieArea::GetMBounds(OutParam<Double> min, OutParam<Double> 
 	return false;
 }
 
-void Math::Geometry::PieArea::Convert(NotNullPtr<Math::CoordinateConverter> converter)
+void Math::Geometry::PieArea::Convert(NN<Math::CoordinateConverter> converter)
 {
 	this->center = converter->Convert2D(this->center);
 	this->srid = converter->GetOutputSRID();
 }
 
-Bool Math::Geometry::PieArea::Equals(NotNullPtr<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
+Bool Math::Geometry::PieArea::Equals(NN<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
 {
 	if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::PieArea)
 		return false;
@@ -99,7 +99,7 @@ Bool Math::Geometry::PieArea::Equals(NotNullPtr<const Vector2D> vec, Bool sameTy
 	}
 }
 
-UOSInt Math::Geometry::PieArea::GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
+UOSInt Math::Geometry::PieArea::GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
 {
 	coordList->Add(this->center);
 	coordList->Add(Math::Coord2DDbl(this->center.x + Math_Cos(this->arcAngle1) * r, this->center.y + Math_Sin(this->arcAngle1) * r));

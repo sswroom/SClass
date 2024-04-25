@@ -275,7 +275,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(const UInt8 *wkb, U
 					return 0;
 				}
 				UOSInt tmp;
-				NotNullPtr<Math::Geometry::LinearRing> lr;
+				NN<Math::Geometry::LinearRing> lr;
 				NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, numPoints, false, false));
 				Math::Coord2DDbl *points = lr->GetPointList(tmp);
 				j = 0;
@@ -323,7 +323,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(const UInt8 *wkb, U
 					return 0;
 				}
 				UOSInt tmp;
-				NotNullPtr<Math::Geometry::LinearRing> lr;
+				NN<Math::Geometry::LinearRing> lr;
 				NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, numPoints, true, false));
 				Math::Coord2DDbl *points = lr->GetPointList(tmp);
 				Double *zList = lr->GetZList(tmp);
@@ -373,7 +373,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(const UInt8 *wkb, U
 					return 0;
 				}
 				UOSInt tmp;
-				NotNullPtr<Math::Geometry::LinearRing> lr;
+				NN<Math::Geometry::LinearRing> lr;
 				NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, numPoints, false, true));
 				Math::Coord2DDbl *points = lr->GetPointList(tmp);
 				Double *mList = lr->GetMList(tmp);
@@ -423,7 +423,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(const UInt8 *wkb, U
 					return 0;
 				}
 				UOSInt tmp;
-				NotNullPtr<Math::Geometry::LinearRing> lr;
+				NN<Math::Geometry::LinearRing> lr;
 				NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, numPoints, true, true))
 				Math::Coord2DDbl *points = lr->GetPointList(tmp);
 				Double *zList = lr->GetZList(tmp);
@@ -458,7 +458,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(const UInt8 *wkb, U
 			ofst += 4;
 			UOSInt thisSize;
 			UOSInt i;
-			NotNullPtr<Math::Geometry::Vector2D> vec;
+			NN<Math::Geometry::Vector2D> vec;
 			Math::Geometry::MultiPolygon *mpg;
 /*			Bool hasZ;
 			Bool hasM;
@@ -491,7 +491,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(const UInt8 *wkb, U
 				}
 				else
 				{
-					mpg->AddGeometry(NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(vec));
+					mpg->AddGeometry(NN<Math::Geometry::Polygon>::ConvertFrom(vec));
 					ofst += thisSize;
 				}
 				i++;
@@ -514,7 +514,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(const UInt8 *wkb, U
 			ofst += 4;
 			UOSInt thisSize;
 			UOSInt i;
-			NotNullPtr<Math::Geometry::Vector2D> vec;
+			NN<Math::Geometry::Vector2D> vec;
 			Math::Geometry::GeometryCollection *mpg;
 /*			Bool hasZ;
 			Bool hasM;
@@ -666,7 +666,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(const UInt8 *wkb, U
 			ofst += 4;
 			UOSInt thisSize;
 			UOSInt i;
-			NotNullPtr<Math::Geometry::Vector2D> vec;
+			NN<Math::Geometry::Vector2D> vec;
 			Math::Geometry::CompoundCurve *cpl;
 /*			Bool hasZ;
 			Bool hasM;
@@ -695,7 +695,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(const UInt8 *wkb, U
 					Math::Geometry::Vector2D::VectorType t = vec->GetVectorType();
 					if (t == Math::Geometry::Vector2D::VectorType::CircularString || t == Math::Geometry::Vector2D::VectorType::LineString)
 					{
-						cpl->AddGeometry(NotNullPtr<Math::Geometry::LineString>::ConvertFrom(vec));
+						cpl->AddGeometry(NN<Math::Geometry::LineString>::ConvertFrom(vec));
 						ofst += thisSize;
 					}
 					else
@@ -726,7 +726,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(const UInt8 *wkb, U
 			ofst += 4;
 			UOSInt thisSize;
 			UOSInt i;
-			NotNullPtr<Math::Geometry::Vector2D> vec;
+			NN<Math::Geometry::Vector2D> vec;
 			Math::Geometry::CurvePolygon *cpg;
 /*			Bool hasZ;
 			Bool hasM;
@@ -786,7 +786,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(const UInt8 *wkb, U
 			ofst += 4;
 			UOSInt thisSize;
 			UOSInt i;
-			NotNullPtr<Math::Geometry::Vector2D> vec;
+			NN<Math::Geometry::Vector2D> vec;
 			Math::Geometry::MultiSurface *cpg;
 /*			Bool hasZ;
 			Bool hasM;

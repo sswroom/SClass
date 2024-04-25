@@ -21,53 +21,53 @@ namespace SSWR
 		class AVIRProfiledResizerForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpMain;
-			NotNullPtr<UI::GUIButton> btnChgProfile;
-			NotNullPtr<UI::GUILabel> lblProfile;
+			NN<UI::GUITabPage> tpMain;
+			NN<UI::GUIButton> btnChgProfile;
+			NN<UI::GUILabel> lblProfile;
 			
-			NotNullPtr<UI::GUITabPage> tpProfile;
-			NotNullPtr<UI::GUIPanel> pnlProfile1;
-			NotNullPtr<UI::GUIListBox> lbProfile;
-			NotNullPtr<UI::GUIButton> btnProfileDel;
-		//	NotNullPtr<UI::GUIHSplitter> hspProfile;
-			NotNullPtr<UI::GUIPanel> pnlProfile2;
-			NotNullPtr<UI::GUITextBox> txtProfileName;
-			NotNullPtr<UI::GUITextBox> txtSuffix;
+			NN<UI::GUITabPage> tpProfile;
+			NN<UI::GUIPanel> pnlProfile1;
+			NN<UI::GUIListBox> lbProfile;
+			NN<UI::GUIButton> btnProfileDel;
+		//	NN<UI::GUIHSplitter> hspProfile;
+			NN<UI::GUIPanel> pnlProfile2;
+			NN<UI::GUITextBox> txtProfileName;
+			NN<UI::GUITextBox> txtSuffix;
 
-			NotNullPtr<UI::GUIGroupBox> grpSize;
-			NotNullPtr<UI::GUIRadioButton> radSize;
-			NotNullPtr<UI::GUITextBox> txtWidth;
-			NotNullPtr<UI::GUITextBox> txtHeight;
-			NotNullPtr<UI::GUIRadioButton> radDPI;
-			NotNullPtr<UI::GUITextBox> txtHDPI;
-			NotNullPtr<UI::GUITextBox> txtVDPI;
+			NN<UI::GUIGroupBox> grpSize;
+			NN<UI::GUIRadioButton> radSize;
+			NN<UI::GUITextBox> txtWidth;
+			NN<UI::GUITextBox> txtHeight;
+			NN<UI::GUIRadioButton> radDPI;
+			NN<UI::GUITextBox> txtHDPI;
+			NN<UI::GUITextBox> txtVDPI;
 
-			NotNullPtr<UI::GUITextBox> txtWatermark;
-			NotNullPtr<UI::GUIRadioButton> radTIFF;
-			NotNullPtr<UI::GUIRadioButton> radJPEGQ;
-			NotNullPtr<UI::GUIRadioButton> radJPEGSize;
-			NotNullPtr<UI::GUIRadioButton> radPNG;
-			NotNullPtr<UI::GUIRadioButton> radWEBPQ;
-			NotNullPtr<UI::GUITextBox> txtJPEGQuality;
-			NotNullPtr<UI::GUITextBox> txtJPEGSize;
-			NotNullPtr<UI::GUITextBox> txtWEBPQuality;
-			NotNullPtr<UI::GUIButton> btnProfileAdd;
+			NN<UI::GUITextBox> txtWatermark;
+			NN<UI::GUIRadioButton> radTIFF;
+			NN<UI::GUIRadioButton> radJPEGQ;
+			NN<UI::GUIRadioButton> radJPEGSize;
+			NN<UI::GUIRadioButton> radPNG;
+			NN<UI::GUIRadioButton> radWEBPQ;
+			NN<UI::GUITextBox> txtJPEGQuality;
+			NN<UI::GUITextBox> txtJPEGSize;
+			NN<UI::GUITextBox> txtWEBPQuality;
+			NN<UI::GUIButton> btnProfileAdd;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Media::ColorManagerSess> colorSess;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Media::ColorManagerSess> colorSess;
 			Media::ProfiledResizer *resizer;
 
 			static void __stdcall OnChgClicked(AnyType userObj);
-			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnClickedDelProfile(AnyType userObj);
 			static void __stdcall OnClickedAddProfile(AnyType userObj);
 			void ChangeProfile();
 			void UpdateProfileDisp();
 			void UpdateProfileList();
 		public:
-			AVIRProfiledResizerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRProfiledResizerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRProfiledResizerForm();
 
 			virtual void OnMonitorChanged();

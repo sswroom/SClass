@@ -12,7 +12,7 @@
 
 UInt32 __stdcall IO::Device::QQZMSerialCamera::RecvThread(AnyType userObj)
 {
-	NotNullPtr<IO::Device::QQZMSerialCamera> me = userObj.GetNN<IO::Device::QQZMSerialCamera>();
+	NN<IO::Device::QQZMSerialCamera> me = userObj.GetNN<IO::Device::QQZMSerialCamera>();
 	Data::DateTime *dt;
 	UInt8 cmdBuff[10];
 	UInt8 buff[2048];

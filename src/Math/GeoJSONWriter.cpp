@@ -29,7 +29,7 @@ Text::CStringNN Math::GeoJSONWriter::GetWriterName() const
 	return CSTR("GeoJSON");
 }
 
-Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<const Math::Geometry::Vector2D> vec)
+Bool Math::GeoJSONWriter::ToText(NN<Text::StringBuilderUTF8> sb, NN<const Math::Geometry::Vector2D> vec)
 {
 	sb->AppendC(UTF8STRC("{\r\n"));
 	sb->AppendC(UTF8STRC("\t\"type\": \"Feature\",\r\n"));
@@ -67,12 +67,12 @@ Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNull
 		sb->AppendC(UTF8STRC("\t\t\"coordinates\": [\r\n"));
 		{
 			Math::Geometry::Polygon *pg = (Math::Geometry::Polygon*)vec.Ptr();
-			NotNullPtr<Math::Geometry::LinearRing> lr;
+			NN<Math::Geometry::LinearRing> lr;
 			UOSInt nPoint;
 			Math::Coord2DDbl *pointList;
 			Math::Coord2DDbl initPt;
 			UOSInt j;
-			Data::ArrayIterator<NotNullPtr<Math::Geometry::LinearRing>> it = pg->Iterator();
+			Data::ArrayIterator<NN<Math::Geometry::LinearRing>> it = pg->Iterator();
 			Bool found = false;
 			while (it.HasNext())
 			{
@@ -119,7 +119,7 @@ Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNull
 		break;
 	case Math::Geometry::Vector2D::VectorType::LineString:
 		{
-			NotNullPtr<Math::Geometry::LineString> lineString = NotNullPtr<Math::Geometry::LineString>::ConvertFrom(vec);
+			NN<Math::Geometry::LineString> lineString = NN<Math::Geometry::LineString>::ConvertFrom(vec);
 			sb->AppendC(UTF8STRC("\t\"geometry\": {\r\n"));
 			sb->AppendC(UTF8STRC("\t\t\"type\": \"LineString\",\r\n"));
 			sb->AppendC(UTF8STRC("\t\t\"coordinates\": [\r\n"));
@@ -147,15 +147,15 @@ Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNull
 		break;
 	case Math::Geometry::Vector2D::VectorType::Polyline:
 		{
-			NotNullPtr<Math::Geometry::Polyline> pl = NotNullPtr<Math::Geometry::Polyline>::ConvertFrom(vec);
+			NN<Math::Geometry::Polyline> pl = NN<Math::Geometry::Polyline>::ConvertFrom(vec);
 			sb->AppendC(UTF8STRC("\t\"geometry\": {\r\n"));
 			sb->AppendC(UTF8STRC("\t\t\"type\": \"MultiLineString\",\r\n"));
 			sb->AppendC(UTF8STRC("\t\t\"coordinates\": [\r\n"));
-			Data::ArrayIterator<NotNullPtr<Math::Geometry::LineString>> it = pl->Iterator();
+			Data::ArrayIterator<NN<Math::Geometry::LineString>> it = pl->Iterator();
 			Bool found = false;
 			while (it.HasNext())
 			{
-				NotNullPtr<Math::Geometry::LineString> lineString = it.Next();
+				NN<Math::Geometry::LineString> lineString = it.Next();
 				UOSInt nPoint;
 				Math::Coord2DDbl *pointList = lineString->GetPointList(nPoint);
 				Math::Coord2DDbl initPt;
@@ -206,7 +206,7 @@ Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNull
 		sb->AppendC(UTF8STRC("\t\t\"coordinates\": [\r\n"));
 		{
 			Math::Geometry::MultiPolygon *mpg = (Math::Geometry::MultiPolygon*)vec.Ptr();
-			Data::ArrayIterator<NotNullPtr<Math::Geometry::Polygon>> itPG = mpg->Iterator();
+			Data::ArrayIterator<NN<Math::Geometry::Polygon>> itPG = mpg->Iterator();
 			Bool found = false;
 			while (itPG.HasNext())
 			{
@@ -218,12 +218,12 @@ Bool Math::GeoJSONWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNull
 				{
 					sb->AppendC(UTF8STRC(",\r\n\t\t\t[\r\n"));
 				}
-				NotNullPtr<Math::Geometry::Polygon> pg = itPG.Next();
+				NN<Math::Geometry::Polygon> pg = itPG.Next();
 				UOSInt nPoint;
 				Math::Coord2DDbl *pointList;
 				Math::Coord2DDbl initPt;
-				NotNullPtr<Math::Geometry::LinearRing> lr;
-				Data::ArrayIterator<NotNullPtr<Math::Geometry::LinearRing>> itLR = pg->Iterator();
+				NN<Math::Geometry::LinearRing> lr;
+				Data::ArrayIterator<NN<Math::Geometry::LinearRing>> itLR = pg->Iterator();
 				Bool foundLR = false;
 				UOSInt j = 0;
 				while (itLR.HasNext())
@@ -303,7 +303,7 @@ Text::String *Math::GeoJSONWriter::GetLastError()
 	return this->lastError;
 }
 
-Bool Math::GeoJSONWriter::ToGeometry(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<const Math::Geometry::Vector2D> vec)
+Bool Math::GeoJSONWriter::ToGeometry(NN<Text::JSONBuilder> json, NN<const Math::Geometry::Vector2D> vec)
 {
 	switch (vec->GetVectorType())
 	{
@@ -324,13 +324,13 @@ Bool Math::GeoJSONWriter::ToGeometry(NotNullPtr<Text::JSONBuilder> json, NotNull
 		json->ObjectAddStr(CSTR("type"), CSTR("Polygon"));
 		json->ObjectBeginArray(CSTR("coordinates"));
 		{
-			NotNullPtr<Math::Geometry::Polygon> pg = NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(vec);
+			NN<Math::Geometry::Polygon> pg = NN<Math::Geometry::Polygon>::ConvertFrom(vec);
 			UOSInt nPoint;
 			UOSInt j;
 			Math::Coord2DDbl *pointList;
 			Math::Coord2DDbl initPt;
-			NotNullPtr<Math::Geometry::LinearRing> lr;
-			Data::ArrayIterator<NotNullPtr<Math::Geometry::LinearRing>> it = pg->Iterator();
+			NN<Math::Geometry::LinearRing> lr;
+			Data::ArrayIterator<NN<Math::Geometry::LinearRing>> it = pg->Iterator();
 			while (it.HasNext())
 			{
 				lr = it.Next();
@@ -357,7 +357,7 @@ Bool Math::GeoJSONWriter::ToGeometry(NotNullPtr<Text::JSONBuilder> json, NotNull
 		json->ObjectAddStr(CSTR("type"), CSTR("LineString"));
 		json->ObjectBeginArray(CSTR("coordinates"));
 		{
-			NotNullPtr<Math::Geometry::LineString> lineString = NotNullPtr<Math::Geometry::LineString>::ConvertFrom(vec);
+			NN<Math::Geometry::LineString> lineString = NN<Math::Geometry::LineString>::ConvertFrom(vec);
 			UOSInt nPoint;
 			Math::Coord2DDbl *pointList = lineString->GetPointList(nPoint);
 			UOSInt i = 0;
@@ -374,11 +374,11 @@ Bool Math::GeoJSONWriter::ToGeometry(NotNullPtr<Text::JSONBuilder> json, NotNull
 		json->ObjectBeginArray(CSTR("coordinates"));
 		{
 			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec.Ptr();
-			NotNullPtr<Math::Geometry::LineString> lineString;
+			NN<Math::Geometry::LineString> lineString;
 			Math::Coord2DDbl *pointList;
 			UOSInt k;
 			UOSInt l;
-			Data::ArrayIterator<NotNullPtr<Math::Geometry::LineString>> it = pl->Iterator();
+			Data::ArrayIterator<NN<Math::Geometry::LineString>> it = pl->Iterator();
 			while (it.HasNext())
 			{
 				lineString = it.Next();

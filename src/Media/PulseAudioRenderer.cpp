@@ -19,7 +19,7 @@
 //http://fossies.org/dox/alsa-util-1.0.28/aplay_8c_source.html
 
 
-void __stdcall Media::PulseAudioRenderer::PlayThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall Media::PulseAudioRenderer::PlayThread(NN<Sync::Thread> thread)
 {
 	//Media::PulseAudioRenderer *me = (Media::PulseAudioRenderer *)thread->GetUserObj();
 /*	Media::AudioFormat af;
@@ -361,7 +361,7 @@ void PulseAudioRenderer_SinkCb(pa_context *c, const pa_sink_info *i, int eol, vo
 	devInfo->count++;
 }
 
-Bool Media::PulseAudioRenderer::GetDeviceInfo(NotNullPtr<DeviceInfo> devInfo)
+Bool Media::PulseAudioRenderer::GetDeviceInfo(NN<DeviceInfo> devInfo)
 {
 	pa_mainloop *paMl = pa_mainloop_new();
 	pa_mainloop_api *paMlAPI = pa_mainloop_get_api(paMl);

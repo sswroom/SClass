@@ -14,29 +14,29 @@ namespace SSWR
 		class AVIRFileExForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblSrc;
-			NotNullPtr<UI::GUITextBox> txtSrc;
-			NotNullPtr<UI::GUIButton> btnSrc;
-			NotNullPtr<UI::GUILabel> lblDest;
-			NotNullPtr<UI::GUITextBox> txtDest;
-			NotNullPtr<UI::GUIButton> btnDest;
-			NotNullPtr<UI::GUILabel> lblFileSize;
-			NotNullPtr<UI::GUITextBox> txtFileSize;
-			NotNullPtr<UI::GUILabel> lblStartOfst;
-			NotNullPtr<UI::GUITextBox> txtStartOfst;
-			NotNullPtr<UI::GUILabel> lblEndOfst;
-			NotNullPtr<UI::GUITextBox> txtEndOfst;
-			NotNullPtr<UI::GUIButton> btnStart;
+			NN<UI::GUILabel> lblSrc;
+			NN<UI::GUITextBox> txtSrc;
+			NN<UI::GUIButton> btnSrc;
+			NN<UI::GUILabel> lblDest;
+			NN<UI::GUITextBox> txtDest;
+			NN<UI::GUIButton> btnDest;
+			NN<UI::GUILabel> lblFileSize;
+			NN<UI::GUITextBox> txtFileSize;
+			NN<UI::GUILabel> lblStartOfst;
+			NN<UI::GUITextBox> txtStartOfst;
+			NN<UI::GUILabel> lblEndOfst;
+			NN<UI::GUITextBox> txtEndOfst;
+			NN<UI::GUIButton> btnStart;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
 			static void __stdcall OnSrcChanged(AnyType userObj);
 			static void __stdcall OnSrcClicked(AnyType userObj);
 			static void __stdcall OnDestClicked(AnyType userObj);
 			static void __stdcall OnStartClicked(AnyType userObj);
-			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 		public:
-			AVIRFileExForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRFileExForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRFileExForm();
 
 			virtual void OnMonitorChanged();

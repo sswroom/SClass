@@ -13,7 +13,7 @@
 //http://stackoverflow.com/questions/662565/how-to-create-huffman-tree-from-ffc4-dht-header-in-jpeg-file
 //http://u88.n24.queensu.ca/exiftool/forum/index.php?topic=4898.0 FLIR
 
-Bool Media::JPEGFile::ParseJPEGHeader(NotNullPtr<IO::StreamData> fd, Media::RasterImage *img, NotNullPtr<Media::ImageList> imgList, Parser::ParserList *parsers)
+Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, Media::RasterImage *img, NN<Media::ImageList> imgList, Parser::ParserList *parsers)
 {
 	UInt64 ofst;
 	UInt64 nextOfst;
@@ -53,7 +53,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NotNullPtr<IO::StreamData> fd, Media::Rast
 			fd->GetRealData(ofst + 4, 14, BYTEARR(buff));
 			if (*(Int32*)buff == *(Int32*)"Exif")
 			{
-				NotNullPtr<Data::ByteOrder> bo;
+				NN<Data::ByteOrder> bo;
 				if (*(Int16*)&buff[6] == *(Int16*)"II")
 				{
 					NEW_CLASSNN(bo, Data::ByteOrderLSB());
@@ -118,7 +118,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NotNullPtr<IO::StreamData> fd, Media::Rast
 			fd->GetRealData(ofst + 4, j, tagBuff);
 			if (Text::StrStartsWithC(tagBuff.Ptr(), j, UTF8STRC("ICC_PROFILE")))
 			{
-				NotNullPtr<Media::ICCProfile> icc;
+				NN<Media::ICCProfile> icc;
 				if (Media::ICCProfile::Parse(tagBuff.SubArray(14, j - 14)).SetTo(icc))
 				{
 					icc->SetToColorProfile(img->info.color);
@@ -188,7 +188,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NotNullPtr<IO::StreamData> fd, Media::Rast
 						{
 							Media::ImageList *innerImgList;
 							Media::RasterImage *innerImg;
-							NotNullPtr<Media::StaticImage> stImg;
+							NN<Media::StaticImage> stImg;
 							{
 								IO::StmData::MemoryDataRef mfd(&tagBuff[blkOfst + 32], blkSize - 32);
 								innerImgList = (Media::ImageList*)parsers->ParseFileType(mfd, IO::ParserType::ImageList);
@@ -233,7 +233,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NotNullPtr<IO::StreamData> fd, Media::Rast
 	return ret;
 }
 
-Optional<Media::EXIFData> Media::JPEGFile::ParseJPEGExif(NotNullPtr<IO::StreamData> fd)
+Optional<Media::EXIFData> Media::JPEGFile::ParseJPEGExif(NN<IO::StreamData> fd)
 {
 	UInt64 ofst;
 	UInt64 nextOfst;
@@ -259,7 +259,7 @@ Optional<Media::EXIFData> Media::JPEGFile::ParseJPEGExif(NotNullPtr<IO::StreamDa
 			fd->GetRealData(ofst + 4, 14, BYTEARR(buff));
 			if (*(Int32*)buff == *(Int32*)"Exif")
 			{
-				NotNullPtr<Data::ByteOrder> bo;
+				NN<Data::ByteOrder> bo;
 				if (*(Int16*)&buff[6] == *(Int16*)"II")
 				{
 					NEW_CLASSNN(bo, Data::ByteOrderLSB());
@@ -300,7 +300,7 @@ Optional<Media::EXIFData> Media::JPEGFile::ParseJPEGExif(NotNullPtr<IO::StreamDa
 	}
 }
 
-Bool Media::JPEGFile::ParseJPEGHeaders(NotNullPtr<IO::StreamData> fd, OutParam<Optional<Media::EXIFData>> exif, OutParam<Optional<Text::XMLDocument>> xmf, OutParam<Optional<Media::ICCProfile>> icc, OutParam<UInt32> width, OutParam<UInt32> height)
+Bool Media::JPEGFile::ParseJPEGHeaders(NN<IO::StreamData> fd, OutParam<Optional<Media::EXIFData>> exif, OutParam<Optional<Text::XMLDocument>> xmf, OutParam<Optional<Media::ICCProfile>> icc, OutParam<UInt32> width, OutParam<UInt32> height)
 {
 	UInt64 ofst;
 	UInt64 nextOfst;
@@ -332,7 +332,7 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NotNullPtr<IO::StreamData> fd, OutParam<O
 			fd->GetRealData(ofst + 4, 30, BYTEARR(buff));
 			if (*(Int32*)buff == *(Int32*)"Exif")
 			{
-				NotNullPtr<Data::ByteOrder> bo;
+				NN<Data::ByteOrder> bo;
 				if (*(Int16*)&buff[6] == *(Int16*)"II")
 				{
 					NEW_CLASSNN(bo, Data::ByteOrderLSB());
@@ -364,7 +364,7 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NotNullPtr<IO::StreamData> fd, OutParam<O
 				Text::EncodingFactory encFact;
 				Data::ByteBuffer tagBuff(j - 29);
 				fd->GetRealData(ofst + 33, j - 29, tagBuff);
-				NotNullPtr<Text::XMLDocument> doc;
+				NN<Text::XMLDocument> doc;
 				NEW_CLASSNN(doc, Text::XMLDocument());
 				if (doc->ParseBuff(encFact, tagBuff.Ptr(), j - 29))
 				{
@@ -387,7 +387,7 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NotNullPtr<IO::StreamData> fd, OutParam<O
 			fd->GetRealData(ofst + 4, j, tagBuff);
 			if (Text::StrStartsWithC(tagBuff.Ptr(), j, UTF8STRC("ICC_PROFILE")) == 0)
 			{
-				NotNullPtr<Media::ICCProfile> newIcc;
+				NN<Media::ICCProfile> newIcc;
 				if (Media::ICCProfile::Parse(Data::ByteArrayR(&tagBuff[14], j - 14)).SetTo(newIcc))
 				{
 					icc.Set(newIcc);
@@ -430,7 +430,7 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NotNullPtr<IO::StreamData> fd, OutParam<O
 	return true;
 }
 
-void Media::JPEGFile::WriteJPGBuffer(NotNullPtr<IO::Stream> stm, const UInt8 *jpgBuff, UOSInt buffSize, Media::RasterImage *oriImg)
+void Media::JPEGFile::WriteJPGBuffer(NN<IO::Stream> stm, const UInt8 *jpgBuff, UOSInt buffSize, Media::RasterImage *oriImg)
 {
 	if (oriImg != 0 && (!oriImg->exif.IsNull() || oriImg->info.color.GetRAWICC() != 0) && jpgBuff[0] == 0xff && jpgBuff[1] == 0xd8)
 	{
@@ -465,7 +465,7 @@ void Media::JPEGFile::WriteJPGBuffer(NotNullPtr<IO::Stream> stm, const UInt8 *jp
 					stm->Write(iccHdr, 18);
 					stm->Write(iccBuff, iccLeng);
 				}
-				NotNullPtr<Media::EXIFData> exif;
+				NN<Media::EXIFData> exif;
 				if (oriImg->exif.SetTo(exif))
 				{
 					/////////////////////////////////////

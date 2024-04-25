@@ -7,7 +7,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnClientCertClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGCISClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGCISClientForm>();
+	NN<SSWR::AVIRead::AVIRGCISClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGCISClientForm>();
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->cliCert, me->cliKey, me->cliCACerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
@@ -27,9 +27,9 @@ void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnClientCertClicked(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnSendClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGCISClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGCISClientForm>();
-	NotNullPtr<Crypto::Cert::X509Cert> cliCert;
-	NotNullPtr<Crypto::Cert::X509File> cliKey;
+	NN<SSWR::AVIRead::AVIRGCISClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGCISClientForm>();
+	NN<Crypto::Cert::X509Cert> cliCert;
+	NN<Crypto::Cert::X509File> cliKey;
 	if (!cliCert.Set(me->cliCert) || !cliKey.Set(me->cliKey))
 	{
 		me->ui->ShowMsgOK(CSTR("Please select client cert and key first"), CSTR("GCIS Client"), me);
@@ -79,7 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnSendClicked(AnyType userObj)
 	cli.SendMessage(false, CSTR("UTF-8"), sbContType.ToCString(), sbSubject.ToCString(), sbContent.ToCString(), sbTo.ToCString(), sbCC.ToCString(), sbBCC.ToCString(), &sbErr);
 	me->txtResponseStatus->SetText(sbErr.ToCString());
 	SDEL_CLASS(me->svrCert);
-	NotNullPtr<Crypto::Cert::X509File> cert;
+	NN<Crypto::Cert::X509File> cert;
 	if (cli.GetServerCertChain().SetTo(cert))
 	{
 		me->svrCert = (Crypto::Cert::X509File*)cert->Clone().Ptr();
@@ -105,7 +105,7 @@ void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnSendClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnServerCertClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGCISClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGCISClientForm>();
+	NN<SSWR::AVIRead::AVIRGCISClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGCISClientForm>();
 	if (me->svrCert)
 	{
 		me->core->OpenObject(me->svrCert->Clone());
@@ -122,7 +122,7 @@ void SSWR::AVIRead::AVIRGCISClientForm::ClearCliCACerts()
 	this->cliCACerts.Clear();
 }
 
-SSWR::AVIRead::AVIRGCISClientForm::AVIRGCISClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 640, ui)
+SSWR::AVIRead::AVIRGCISClientForm::AVIRGCISClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 640, ui)
 {
 	this->SetText(CSTR("GCIS Client"));
 	this->SetFont(0, 0, 8.25, false);

@@ -14,7 +14,7 @@ namespace Text
 		private:
 			Data::ArrayList<Text::CString> elements;
 		public:
-			HTMLBodyBuilder(NotNullPtr<Text::StringBuilderUTF8> sb);
+			HTMLBodyBuilder(NN<Text::StringBuilderUTF8> sb);
 			virtual ~HTMLBodyBuilder();
 
 			void BeginLink(Text::CString url);

@@ -58,9 +58,9 @@ UTF8Char *Crypto::Hash::AESCMAC::GetName(UTF8Char *sbuff) const
 	return Text::StrConcatC(sbuff, UTF8STRC("AES-CMAC"));
 }
 
-NotNullPtr<Crypto::Hash::IHash> Crypto::Hash::AESCMAC::Clone() const
+NN<Crypto::Hash::IHash> Crypto::Hash::AESCMAC::Clone() const
 {
-	NotNullPtr<Crypto::Hash::IHash> ret;
+	NN<Crypto::Hash::IHash> ret;
 	NEW_CLASSNN(ret, Crypto::Hash::AESCMAC(this->key));
 	return ret;
 }

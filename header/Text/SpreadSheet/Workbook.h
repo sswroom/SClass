@@ -71,24 +71,24 @@ namespace Text
 			Bool HasWindowInfo();
 
 			Bool HasCellStyle();
-			NotNullPtr<CellStyle> NewCellStyle();
-			NotNullPtr<CellStyle> NewCellStyle(WorkbookFont *font, HAlignment halign, VAlignment valign, Text::CString dataFormat);
+			NN<CellStyle> NewCellStyle();
+			NN<CellStyle> NewCellStyle(WorkbookFont *font, HAlignment halign, VAlignment valign, Text::CString dataFormat);
 			UOSInt GetStyleCount() const;
-			virtual OSInt GetStyleIndex(NotNullPtr<CellStyle> style) const;
+			virtual OSInt GetStyleIndex(NN<CellStyle> style) const;
 			virtual Optional<CellStyle> GetStyle(UOSInt index) const;
-			virtual NotNullPtr<CellStyle> FindOrCreateStyle(NotNullPtr<const CellStyle> tmpStyle);
-			Data::ArrayIterator<NotNullPtr<CellStyle>> StyleIterator() const;
+			virtual NN<CellStyle> FindOrCreateStyle(NN<const CellStyle> tmpStyle);
+			Data::ArrayIterator<NN<CellStyle>> StyleIterator() const;
 			Optional<CellStyle> GetDefaultStyle();
 			void GetPalette(UInt32 *palette);
 			void SetPalette(UInt32 *palette);
 
-			NotNullPtr<Worksheet> AddWorksheet();
-			NotNullPtr<Worksheet> AddWorksheet(NotNullPtr<Text::String> name);
-			NotNullPtr<Worksheet> AddWorksheet(Text::CStringNN name);
-			NotNullPtr<Worksheet> InsertWorksheet(UOSInt index, Text::CStringNN name);
+			NN<Worksheet> AddWorksheet();
+			NN<Worksheet> AddWorksheet(NN<Text::String> name);
+			NN<Worksheet> AddWorksheet(Text::CStringNN name);
+			NN<Worksheet> InsertWorksheet(UOSInt index, Text::CStringNN name);
 			UOSInt GetCount() const;
 			Optional<Worksheet> GetItem(UOSInt index) const;
-			Data::ArrayIterator<NotNullPtr<Worksheet>> Iterator() const;
+			Data::ArrayIterator<NN<Worksheet>> Iterator() const;
 			void RemoveAt(UOSInt index);
 			Optional<Worksheet> GetWorksheetByName(Text::CString name);
 

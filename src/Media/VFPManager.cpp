@@ -95,7 +95,7 @@ UOSInt Media::VFPManager::LoadFile(const UTF8Char *fileName, Data::ArrayList<Med
 				if (funcs->GetFileInfo(fhand, &finfo) == VF_OK)
 				{
 					UOSInt outCnt = 0;
-					NotNullPtr<VFMediaFile> mfile;
+					NN<VFMediaFile> mfile;
 					NEW_CLASSNN(mfile, VFMediaFile());
 					mfile->vfpmgr = this;
 					mfile->plugin = plugin;
@@ -167,7 +167,7 @@ void Media::VFPManager::Release()
 	}
 }
 
-void Media::VFPManager::PrepareSelector(NotNullPtr<IO::FileSelector> selector)
+void Media::VFPManager::PrepareSelector(NN<IO::FileSelector> selector)
 {
 	VFPluginFile *plugin;
 	VF_GetPluginInfo GetInfo;
@@ -195,8 +195,8 @@ void Media::VFPManager::PrepareSelector(NotNullPtr<IO::FileSelector> selector)
 				j = Text::StrSplit(sarr, 3, sarr[2], '|');
 				if (j == 1)
 					break;
-				NotNullPtr<Text::String> wptr1 = Text::String::NewNotNull(sarr[1]);
-				NotNullPtr<Text::String> wptr0 = Text::String::NewNotNull(sarr[0]);
+				NN<Text::String> wptr1 = Text::String::NewNotNull(sarr[1]);
+				NN<Text::String> wptr0 = Text::String::NewNotNull(sarr[0]);
 				selector->AddFilter(wptr1->ToCString(), wptr0->ToCString());
 				wptr1->Release();
 				wptr0->Release();

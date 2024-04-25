@@ -57,39 +57,39 @@ namespace SSWR
 				Text::StringBuilderUTF8 *sbError;
 			};
 		private:
-			NotNullPtr<UI::GUITabControl> tcMain;
-			NotNullPtr<UI::GUIProgressBar> prgStatus;
+			NN<UI::GUITabControl> tcMain;
+			NN<UI::GUIProgressBar> prgStatus;
 
-			NotNullPtr<UI::GUITabPage> tpFiles;
-			NotNullPtr<UI::GUIListView> lvFiles;
+			NN<UI::GUITabPage> tpFiles;
+			NN<UI::GUIListView> lvFiles;
 
-			NotNullPtr<UI::GUITabPage> tpStatus;
-			NotNullPtr<UI::GUIPanel> pnlStatus;
-			NotNullPtr<UI::GUILabel> lblStatusFile;
-			NotNullPtr<UI::GUITextBox> txtStatusFile;
-			NotNullPtr<UI::GUIPanel> pnlStatusBNT;
-			NotNullPtr<UI::GUILabel> lblStatusFileSize;
-			NotNullPtr<UI::GUITextBox> txtStatusFileSize;
-			NotNullPtr<UI::GUILabel> lblStatusCurrSize;
-			NotNullPtr<UI::GUITextBox> txtStatusCurrSize;
-			NotNullPtr<UI::GUILabel> lblStatusCurrSpeed;
-			NotNullPtr<UI::GUITextBox> txtStatusCurrSpeed;
-			NotNullPtr<UI::GUILabel> lblStatusTimeLeft;
-			NotNullPtr<UI::GUITextBox> txtStatusTimeLeft;
-			NotNullPtr<UI::GUIListView> lvStatus;
-			NotNullPtr<UI::GUIVSplitter> vspStatus;
-			NotNullPtr<UI::GUIRealtimeLineChart> rlcStatus;
+			NN<UI::GUITabPage> tpStatus;
+			NN<UI::GUIPanel> pnlStatus;
+			NN<UI::GUILabel> lblStatusFile;
+			NN<UI::GUITextBox> txtStatusFile;
+			NN<UI::GUIPanel> pnlStatusBNT;
+			NN<UI::GUILabel> lblStatusFileSize;
+			NN<UI::GUITextBox> txtStatusFileSize;
+			NN<UI::GUILabel> lblStatusCurrSize;
+			NN<UI::GUITextBox> txtStatusCurrSize;
+			NN<UI::GUILabel> lblStatusCurrSpeed;
+			NN<UI::GUITextBox> txtStatusCurrSpeed;
+			NN<UI::GUILabel> lblStatusTimeLeft;
+			NN<UI::GUITextBox> txtStatusTimeLeft;
+			NN<UI::GUIListView> lvStatus;
+			NN<UI::GUIVSplitter> vspStatus;
+			NN<UI::GUIRealtimeLineChart> rlcStatus;
 
-			NotNullPtr<UI::GUITabPage> tpInfo;
-			NotNullPtr<UI::GUITextBox> txtInfo;
+			NN<UI::GUITabPage> tpInfo;
+			NN<UI::GUITextBox> txtInfo;
 
-			NotNullPtr<UI::GUITabPage> tpTest;
-			NotNullPtr<UI::GUITextBox> txtTest;
+			NN<UI::GUITabPage> tpTest;
+			NN<UI::GUITextBox> txtTest;
 
-			NotNullPtr<UI::GUIPopupMenu> mnuPopup;
+			NN<UI::GUIPopupMenu> mnuPopup;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<IO::PackageFile> packFile;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<IO::PackageFile> packFile;
 			IO::PackageFile *rootPackFile;
 			Bool packNeedDelete;
 			Text::String *initSel;
@@ -134,17 +134,17 @@ namespace SSWR
 			static void __stdcall LVDblClick(AnyType userObj, UOSInt index);
 			static void __stdcall OnStatusDblClick(AnyType userObj, UOSInt index);
 			static void __stdcall OnFilesRightClick(AnyType userObj, Math::Coord2DDbl coord, UOSInt index);
-			static void __stdcall OnFiles(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFiles(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 
 			void GoUpLevel();
 			void OpenItem(UOSInt index);
-			void TestPackage(NotNullPtr<IO::ActiveStreamReader> reader, NotNullPtr<ReadSession> sess, NotNullPtr<IO::PackageFile> pack);
-			void DisplayPackFile(NotNullPtr<IO::PackageFile> packFile);
+			void TestPackage(NN<IO::ActiveStreamReader> reader, NN<ReadSession> sess, NN<IO::PackageFile> pack);
+			void DisplayPackFile(NN<IO::PackageFile> packFile);
 			UOSInt PackFileIndex(UOSInt lvIndex);
-			void UpdatePackFile(NotNullPtr<IO::PackageFile> packFile, Bool needDelete, Text::CString initSel);
-			void PasteFiles(NotNullPtr<Data::ArrayListStringNN> files, Bool move);
+			void UpdatePackFile(NN<IO::PackageFile> packFile, Bool needDelete, Text::CString initSel);
+			void PasteFiles(NN<Data::ArrayListStringNN> files, Bool move);
 		public:
-			AVIRPackageForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::PackageFile> packFile);
+			AVIRPackageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::PackageFile> packFile);
 			virtual ~AVIRPackageForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

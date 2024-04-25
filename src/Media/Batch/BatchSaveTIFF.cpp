@@ -14,7 +14,7 @@ Media::Batch::BatchSaveTIFF::~BatchSaveTIFF()
 {
 }
 
-void Media::Batch::BatchSaveTIFF::ImageOutput(NotNullPtr<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN targetId)
+void Media::Batch::BatchSaveTIFF::ImageOutput(NN<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN targetId)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

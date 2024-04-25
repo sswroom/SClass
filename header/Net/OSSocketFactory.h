@@ -39,8 +39,8 @@ namespace Net
 		virtual Bool SocketListen(Socket *socket);
 		virtual Socket *SocketAccept(Socket *socket);
 		virtual Int32 SocketGetLastError();
-		virtual Bool GetRemoteAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, OptOut<UInt16> port);
-		virtual Bool GetLocalAddr(Socket *socket, NotNullPtr<Net::SocketUtil::AddressInfo> addr, OptOut<UInt16> port);
+		virtual Bool GetRemoteAddr(Socket *socket, NN<Net::SocketUtil::AddressInfo> addr, OptOut<UInt16> port);
+		virtual Bool GetLocalAddr(Socket *socket, NN<Net::SocketUtil::AddressInfo> addr, OptOut<UInt16> port);
 		virtual OSInt SocketGetFD(Socket *socket);
 		virtual Bool SocketWait(Socket *socket, Data::Duration dur);
 
@@ -61,39 +61,39 @@ namespace Net
 		virtual UOSInt EndReceiveData(void *reqData, Bool toWait, OutParam<Bool> incomplete);
 		virtual void CancelReceiveData(void *reqData);
 
-		virtual UOSInt UDPReceive(Socket *socket, UInt8 *buff, UOSInt buffSize, NotNullPtr<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et);
-		virtual UOSInt SendTo(Socket *socket, const UInt8 *buff, UOSInt buffSize, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port);
+		virtual UOSInt UDPReceive(Socket *socket, UInt8 *buff, UOSInt buffSize, NN<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et);
+		virtual UOSInt SendTo(Socket *socket, const UInt8 *buff, UOSInt buffSize, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port);
 		virtual UOSInt SendToIF(Socket *socket, const UInt8 *buff, UOSInt buffSize, const UTF8Char *ifName);
 
-		virtual Bool IcmpSendEcho2(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt32 *respTime_us, UInt32 *ttl);
+		virtual Bool IcmpSendEcho2(NN<const Net::SocketUtil::AddressInfo> addr, UInt32 *respTime_us, UInt32 *ttl);
 
 		virtual Bool Connect(Socket *socket, UInt32 ip, UInt16 port, Data::Duration timeout);
-		virtual Bool Connect(Socket *socket, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Duration timeout);
+		virtual Bool Connect(Socket *socket, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Duration timeout);
 		virtual void ShutdownSend(Socket *socket);
 		virtual void ShutdownSocket(Socket *socket);
 
 		virtual Bool SocketGetReadBuff(Socket *socket, UInt32 *size);
 
-		virtual Bool DNSResolveIPDef(const Char *host, NotNullPtr<Net::SocketUtil::AddressInfo> addr);
-		virtual Bool GetDefDNS(NotNullPtr<Net::SocketUtil::AddressInfo> addr);
+		virtual Bool DNSResolveIPDef(const Char *host, NN<Net::SocketUtil::AddressInfo> addr);
+		virtual Bool GetDefDNS(NN<Net::SocketUtil::AddressInfo> addr);
 		virtual UOSInt GetDNSList(Data::ArrayList<UInt32> *dnsList);
 		virtual Bool LoadHosts(Net::DNSHandler *dnsHdlr);
 
 		virtual Bool ARPAddRecord(UOSInt ifIndex, const UInt8 *hwAddr, UInt32 ipv4);
 
-		virtual UOSInt GetConnInfoList(NotNullPtr<Data::ArrayListNN<Net::ConnectionInfo>> connInfoList);
-		virtual Bool GetIPInfo(NotNullPtr<IPInfo> info); //////////////////////////////////
-		virtual Bool GetTCPInfo(NotNullPtr<TCPInfo> info); //////////////////////////////////
-		virtual Bool GetUDPInfo(NotNullPtr<UDPInfo> info); //////////////////////////////////
-		virtual UOSInt QueryPortInfos(NotNullPtr<Data::ArrayListNN<PortInfo>> portInfoList, ProtocolType protoType, UInt16 procId);
-		virtual void FreePortInfos(NotNullPtr<Data::ArrayListNN<PortInfo>> portInfoList);
-		virtual UOSInt QueryPortInfos2(NotNullPtr<Data::ArrayListNN<PortInfo3>> portInfoList, ProtocolType protoType, UInt16 procId);
-		virtual void FreePortInfos2(NotNullPtr<Data::ArrayListNN<PortInfo3>> portInfoList);
+		virtual UOSInt GetConnInfoList(NN<Data::ArrayListNN<Net::ConnectionInfo>> connInfoList);
+		virtual Bool GetIPInfo(NN<IPInfo> info); //////////////////////////////////
+		virtual Bool GetTCPInfo(NN<TCPInfo> info); //////////////////////////////////
+		virtual Bool GetUDPInfo(NN<UDPInfo> info); //////////////////////////////////
+		virtual UOSInt QueryPortInfos(NN<Data::ArrayListNN<PortInfo>> portInfoList, ProtocolType protoType, UInt16 procId);
+		virtual void FreePortInfos(NN<Data::ArrayListNN<PortInfo>> portInfoList);
+		virtual UOSInt QueryPortInfos2(NN<Data::ArrayListNN<PortInfo3>> portInfoList, ProtocolType protoType, UInt16 procId);
+		virtual void FreePortInfos2(NN<Data::ArrayListNN<PortInfo3>> portInfoList);
 
 		virtual Bool AdapterSetHWAddr(Text::CString adapterName, const UInt8 *hwAddr);
 		virtual Bool AdapterEnable(Text::CString adapterName, Bool enable);
 
-		UOSInt GetBroadcastAddrs(NotNullPtr<Data::ArrayList<UInt32>> addrs);
+		UOSInt GetBroadcastAddrs(NN<Data::ArrayList<UInt32>> addrs);
 
 		static ErrorType FromSystemError(Int32 sysErr);
 	};

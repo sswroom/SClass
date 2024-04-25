@@ -80,7 +80,7 @@ void IO::DirectoryPackage::Init()
 	}
 }
 
-IO::DirectoryPackage::DirectoryPackage(NotNullPtr<Text::String> dirName) : IO::PackageFile(dirName)
+IO::DirectoryPackage::DirectoryPackage(NN<Text::String> dirName) : IO::PackageFile(dirName)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -132,7 +132,7 @@ IO::PackageFile::PackObjectType IO::DirectoryPackage::GetItemType(UOSInt index) 
 {
 	if (this->files.GetCount() <= index)
 		return IO::PackageFile::PackObjectType::Unknown;
-	NotNullPtr<Text::String> fileName = this->files.GetItem(index).fileName;
+	NN<Text::String> fileName = this->files.GetItem(index).fileName;
 	IO::Path::PathType pt = IO::Path::GetPathType(fileName->ToCString());
 	if (pt == IO::Path::PathType::File)
 	{
@@ -153,7 +153,7 @@ UTF8Char *IO::DirectoryPackage::GetItemName(UTF8Char *sbuff, UOSInt index) const
 	UOSInt i;
 	if (this->files.GetCount() <= index)
 		return 0;
-	NotNullPtr<Text::String> fileName = this->files.GetItem(index).fileName;
+	NN<Text::String> fileName = this->files.GetItem(index).fileName;
 	i = fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 	return Text::StrConcat(sbuff, &fileName->v[i + 1]);
 }
@@ -162,7 +162,7 @@ Optional<IO::StreamData> IO::DirectoryPackage::GetItemStmDataNew(UOSInt index) c
 {
 	if (this->files.GetCount() <= index)
 		return 0;
-	NotNullPtr<Text::String> fileName = this->files.GetItem(index).fileName;
+	NN<Text::String> fileName = this->files.GetItem(index).fileName;
 	IO::Path::PathType pt = IO::Path::GetPathType(fileName->ToCString());
 	if (pt == IO::Path::PathType::File)
 	{
@@ -180,7 +180,7 @@ Optional<IO::PackageFile> IO::DirectoryPackage::GetItemPack(UOSInt index, OutPar
 {
 	if (this->files.GetCount() <= index)
 		return 0;
-	NotNullPtr<Text::String> fileName = this->files.GetItem(index).fileName;
+	NN<Text::String> fileName = this->files.GetItem(index).fileName;
 	IO::Path::PathType pt = IO::Path::GetPathType(fileName->ToCString());
 	if (pt == IO::Path::PathType::Directory)
 	{
@@ -237,7 +237,7 @@ UOSInt IO::DirectoryPackage::GetItemIndex(Text::CStringNN name) const
 	UOSInt i;
 	while (j-- > 0)
 	{
-		NotNullPtr<Text::String> fileName = this->files.GetItem(j).fileName;
+		NN<Text::String> fileName = this->files.GetItem(j).fileName;
 		i = fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		if (name.Equals(&fileName->v[i + 1], fileName->leng - i - 1))
 		{
@@ -257,9 +257,9 @@ Data::Compress::Decompressor::CompressMethod IO::DirectoryPackage::GetItemComp(U
 	return Data::Compress::Decompressor::CM_UNCOMPRESSED;
 }
 
-NotNullPtr<IO::PackageFile> IO::DirectoryPackage::Clone() const
+NN<IO::PackageFile> IO::DirectoryPackage::Clone() const
 {
-	NotNullPtr<IO::DirectoryPackage> dpkg;
+	NN<IO::DirectoryPackage> dpkg;
 	NEW_CLASSNN(dpkg, IO::DirectoryPackage(this->dirName));
 	return dpkg;
 }

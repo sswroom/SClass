@@ -11,7 +11,7 @@ namespace Media
 	class MPAStreamSource : public Media::IAudioSource, public Media::IMediaStream
 	{
 	private:
-		NotNullPtr<Media::IStreamControl> pbc;
+		NN<Media::IStreamControl> pbc;
 		Media::AudioFormat fmt;
 		Sync::Event *pbEvt;
 
@@ -27,7 +27,7 @@ namespace Media
 
 
 	public:
-		MPAStreamSource(NotNullPtr<Media::IStreamControl> pbc);
+		MPAStreamSource(NN<Media::IStreamControl> pbc);
 		virtual ~MPAStreamSource();
 
 		Bool ParseHeader(UInt8 *buff, UOSInt buffSize);
@@ -39,7 +39,7 @@ namespace Media
 		virtual Data::Duration SeekToTime(Data::Duration time);
 		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 
-		virtual void GetFormat(NotNullPtr<AudioFormat> format);
+		virtual void GetFormat(NN<AudioFormat> format);
 
 		virtual Bool Start(Sync::Event *evt, UOSInt blkSize);
 		virtual void Stop();

@@ -16,7 +16,7 @@ typedef enum
 
 void __stdcall OnMenuEvent(AnyType userObj, UInt16 cmdId)
 {
-	NotNullPtr<UI::GUIForm> me = userObj.GetNN<UI::GUIForm>();
+	NN<UI::GUIForm> me = userObj.GetNN<UI::GUIForm>();
 	switch (cmdId)
 	{
 	case MNU_EXIT:
@@ -34,9 +34,9 @@ void __stdcall OnMenuEvent(AnyType userObj, UInt16 cmdId)
 	}
 }
 
-void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<UI::GUIForm> me = userObj.GetNN<UI::GUIForm>();
+	NN<UI::GUIForm> me = userObj.GetNN<UI::GUIForm>();
 	UOSInt i;
 	UOSInt nFiles = files.GetCount();
 	Text::StringBuilderUTF8 sb;
@@ -51,17 +51,17 @@ void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::Stri
 	me->GetUI()->ShowMsgOK(sb.ToCString(), CSTR("Drop Files"), me);
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	NotNullPtr<UI::GUICore> core;
+	NN<UI::GUICore> core;
 	if (progCtrl->CreateGUICore(progCtrl).SetTo(core))
 	{
-		NotNullPtr<UI::GUIMainMenu> mainMenu;
+		NN<UI::GUIMainMenu> mainMenu;
 		UI::GUIForm *frm;
 		NEW_CLASS(frm, UI::GUIForm(0, 640, 480, core));
 		frm->SetText(CSTR("Test 4 - Menu and file drop"));
 		NEW_CLASSNN(mainMenu, UI::GUIMainMenu());
-		NotNullPtr<UI::GUIMenu> mnu = mainMenu->AddSubMenu(CSTR("&File"));
+		NN<UI::GUIMenu> mnu = mainMenu->AddSubMenu(CSTR("&File"));
 		mnu->AddItem(CSTR("E&xit"), MNU_EXIT, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_X);
 		mnu = mainMenu->AddSubMenu(CSTR("&Item"));
 		mnu->AddItem(CSTR("Item &1"), MNU_ITEM1, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_1);

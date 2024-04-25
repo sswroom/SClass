@@ -34,7 +34,7 @@
 
 #define STACKDUMPSIZE 4096
 
-NotNullPtr<Text::String> Manage::ExceptionRecorder::fileName;
+NN<Text::String> Manage::ExceptionRecorder::fileName;
 Manage::ExceptionRecorder::ExceptionAction Manage::ExceptionRecorder::exAction;
 
 #ifndef _WIN32_WCE
@@ -121,7 +121,7 @@ Text::CString Manage::ExceptionRecorder::GetExceptionCodeName(UInt32 exCode)
 
 Int32 __stdcall Manage::ExceptionRecorder::ExceptionHandler(void *exInfo)
 {
-	NotNullPtr<Manage::ThreadContext> tCont;
+	NN<Manage::ThreadContext> tCont;
 	EXCEPTION_POINTERS *info = (EXCEPTION_POINTERS*)exInfo;
 	printf("exception occured: %s\r\n", GetExceptionCodeName(info->ExceptionRecord->ExceptionCode).v);
 #if defined(CPU_X86_64) || defined(_M_ARM64EC)

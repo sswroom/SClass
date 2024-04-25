@@ -32,7 +32,7 @@ namespace Net
 			FF_LAST = FF_PCAPNG
 		} FileFormat;
 	private:
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Net::SocketMonitor *socMon;
 		IO::PacketLogWriter *writer;
 		Sync::Mutex mut;
@@ -41,7 +41,7 @@ namespace Net
 	
 		static void __stdcall DataHandler(AnyType userData, const UInt8 *packetData, UOSInt packetSize);
 	public:
-		RAWCapture(NotNullPtr<Net::SocketFactory> sockf, UInt32 adapterIP, CaptureType type, FileFormat format, Text::CStringNN fileName, Text::CString appName);
+		RAWCapture(NN<Net::SocketFactory> sockf, UInt32 adapterIP, CaptureType type, FileFormat format, Text::CStringNN fileName, Text::CString appName);
 		~RAWCapture();
 
 		Bool IsError();
@@ -52,7 +52,7 @@ namespace Net
 		static Int32 CaptureTypeGetLinkType(CaptureType type);
 		static Text::CStringNN FileFormatGetName(FileFormat format);
 		static Text::CStringNN FileFormatGetExt(FileFormat format);
-		static void AddFilters(NotNullPtr<IO::FileSelector> selector);
+		static void AddFilters(NN<IO::FileSelector> selector);
 	};
 }
 #endif

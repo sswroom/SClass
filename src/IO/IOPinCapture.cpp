@@ -31,7 +31,7 @@ UOSInt IO::IOPinCapture::AddCaptureData(Data::ArrayList<Double> *times, Data::Ar
 	return ret;
 };
 
-IO::IOPinCapture::IOPinCapture(NotNullPtr<IO::IOPin> pin)
+IO::IOPinCapture::IOPinCapture(NN<IO::IOPin> pin)
 {
 	this->pin = pin;
 	this->capBuff = MemAlloc(CaptureBuff, 1);

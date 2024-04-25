@@ -8,10 +8,10 @@ namespace Math
 	class CoordinateSystemConverter : public CoordinateConverter
 	{
 	private:
-		NotNullPtr<const Math::CoordinateSystem> srcCsys;
-		NotNullPtr<const Math::CoordinateSystem> destCsys;
+		NN<const Math::CoordinateSystem> srcCsys;
+		NN<const Math::CoordinateSystem> destCsys;
 	public:
-		CoordinateSystemConverter(NotNullPtr<const Math::CoordinateSystem> srcCsys, NotNullPtr<const Math::CoordinateSystem> destCsys);
+		CoordinateSystemConverter(NN<const Math::CoordinateSystem> srcCsys, NN<const Math::CoordinateSystem> destCsys);
 		virtual ~CoordinateSystemConverter();
 
 		virtual UInt32 GetSourceSRID() const;

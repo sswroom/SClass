@@ -94,7 +94,7 @@ UOSInt UI::Clipboard::GetDataFormats(Data::ArrayList<UInt32> *dataTypes)
 	return ret;
 }
 
-Bool UI::Clipboard::GetDataText(UInt32 fmtId, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool UI::Clipboard::GetDataText(UInt32 fmtId, NN<Text::StringBuilderUTF8> sb)
 {
 	//return GetDataTextH(0, fmtId, sb, 0);
 	return false;
@@ -196,7 +196,7 @@ void UI::Clipboard::FreeDataFiles(Data::ArrayList<Text::String *> *fileNames)
 	}
 }
 
-Bool UI::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, NotNullPtr<Text::StringBuilderUTF8> sb, UInt32 tymed)
+Bool UI::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, NN<Text::StringBuilderUTF8> sb, UInt32 tymed)
 {
 /*	GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 	if (clipboard == 0)
@@ -309,7 +309,7 @@ Bool UI::Clipboard::SetString(ControlHandle *hWndOwner, Text::CString s)
 	return false;
 }
 
-Bool UI::Clipboard::GetString(ControlHandle *hWndOwner, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool UI::Clipboard::GetString(ControlHandle *hWndOwner, NN<Text::StringBuilderUTF8> sb)
 {
 /*	GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 	if (clipboard == 0)

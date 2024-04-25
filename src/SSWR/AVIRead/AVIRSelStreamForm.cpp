@@ -11,7 +11,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSelStreamForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelStreamForm>();
+	NN<SSWR::AVIRead::AVIRSelStreamForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelStreamForm>();
 	IO::StreamType st = (IO::StreamType)me->cboStreamType->GetSelectedItem().GetOSInt();
 	UTF8Char sbuff[256];
 
@@ -163,7 +163,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 		{
 			Text::StringBuilderUTF8 sb;
 			Net::SocketUtil::AddressInfo addr;
-			NotNullPtr<Net::SSLEngine> ssl;
+			NN<Net::SSLEngine> ssl;
 			if (!me->ssl.SetTo(ssl))
 			{
 				me->ui->ShowMsgOK(CSTR("SSL Engine is not initiated"), CSTR("Error"), me);
@@ -347,16 +347,16 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnCancelClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSelStreamForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelStreamForm>();
+	NN<SSWR::AVIRead::AVIRSelStreamForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelStreamForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
 void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnFileBrowseClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSelStreamForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelStreamForm>();
+	NN<SSWR::AVIRead::AVIRSelStreamForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelStreamForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtFileName->GetText(sb);
-	NotNullPtr<UI::GUIFileDialog> ofd = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"OpenStreamFile", false);
+	NN<UI::GUIFileDialog> ofd = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"OpenStreamFile", false);
 	ofd->SetAllowMultiSel(false);
 	if (sb.GetLength() > 0)
 	{
@@ -371,7 +371,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnFileBrowseClick(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnStmTypeChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSelStreamForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelStreamForm>();
+	NN<SSWR::AVIRead::AVIRSelStreamForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelStreamForm>();
 	UOSInt i = me->cboStreamType->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
@@ -403,7 +403,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnStmTypeChg(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Bool allowReadOnly, Optional<Net::SSLEngine> ssl, NotNullPtr<IO::LogTool> log) : UI::GUIForm(parent, 640, 300, ui)
+SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Bool allowReadOnly, Optional<Net::SSLEngine> ssl, NN<IO::LogTool> log) : UI::GUIForm(parent, 640, 300, ui)
 {
 	UTF8Char sbuff[32];
 	UOSInt i;
@@ -738,9 +738,9 @@ void SSWR::AVIRead::AVIRSelStreamForm::SetInitBaudRate(Int32 baudRate)
 	this->txtBaudRate->SetText(CSTRP(sbuff, sptr));
 }
 
-NotNullPtr<IO::Stream> SSWR::AVIRead::AVIRSelStreamForm::GetStream() const
+NN<IO::Stream> SSWR::AVIRead::AVIRSelStreamForm::GetStream() const
 {
-	return NotNullPtr<IO::Stream>::FromPtr(this->stm);
+	return NN<IO::Stream>::FromPtr(this->stm);
 }
 
 IO::StreamType SSWR::AVIRead::AVIRSelStreamForm::GetStreamType() const

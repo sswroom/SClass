@@ -8,7 +8,7 @@ typedef struct
 	UInt8 devId[6];
 } JTT808StreamData;
 
-IO::ProtoHdlr::ProtoJTT808Handler::ProtoJTT808Handler(NotNullPtr<IO::IProtocolHandler::DataListener> listener, UInt64 devId)
+IO::ProtoHdlr::ProtoJTT808Handler::ProtoJTT808Handler(NN<IO::IProtocolHandler::DataListener> listener, UInt64 devId)
 {
 	this->listener = listener;
 	this->devId = devId;
@@ -18,7 +18,7 @@ IO::ProtoHdlr::ProtoJTT808Handler::~ProtoJTT808Handler()
 {
 }
 
-AnyType IO::ProtoHdlr::ProtoJTT808Handler::CreateStreamData(NotNullPtr<IO::Stream> stm)
+AnyType IO::ProtoHdlr::ProtoJTT808Handler::CreateStreamData(NN<IO::Stream> stm)
 {
 	JTT808StreamData *data = MemAlloc(JTT808StreamData, 1);
 	UInt64 devId = this->devId;
@@ -36,15 +36,15 @@ AnyType IO::ProtoHdlr::ProtoJTT808Handler::CreateStreamData(NotNullPtr<IO::Strea
 	return data;
 }
 
-void IO::ProtoHdlr::ProtoJTT808Handler::DeleteStreamData(NotNullPtr<IO::Stream> stm, AnyType stmData)
+void IO::ProtoHdlr::ProtoJTT808Handler::DeleteStreamData(NN<IO::Stream> stm, AnyType stmData)
 {
-	NotNullPtr<JTT808StreamData> data = stmData.GetNN<JTT808StreamData>();
+	NN<JTT808StreamData> data = stmData.GetNN<JTT808StreamData>();
 	MemFree(data.Ptr());
 }
 
-UOSInt IO::ProtoHdlr::ProtoJTT808Handler::ParseProtocol(NotNullPtr<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &buff)
+UOSInt IO::ProtoHdlr::ProtoJTT808Handler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &buff)
 {
-	NotNullPtr<JTT808StreamData> data = stmData.GetNN<JTT808StreamData>();
+	NN<JTT808StreamData> data = stmData.GetNN<JTT808StreamData>();
 	UInt8 packetBuff[1044];
 	UOSInt firstIndex = (UOSInt)-1;
 	UOSInt parseOfst = 0;
@@ -138,7 +138,7 @@ UOSInt IO::ProtoHdlr::ProtoJTT808Handler::ParseProtocol(NotNullPtr<IO::Stream> s
 
 UOSInt IO::ProtoHdlr::ProtoJTT808Handler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, AnyType stmData)
 {
-	NotNullPtr<JTT808StreamData> data;
+	NN<JTT808StreamData> data;
 	UInt8 hdr[12];
 	if (cmdSize >= 1024)
 		return 0;

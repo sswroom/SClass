@@ -15,29 +15,29 @@ namespace SSWR
 		class AVIRUSBDeviceForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayList<IO::USBInfo*> usbList;
 
-			NotNullPtr<UI::GUIListBox> lbDevices;
-			NotNullPtr<UI::GUIHSplitter> hspDevices;
-			NotNullPtr<UI::GUIPanel> pnlDevices;
-			NotNullPtr<UI::GUILabel> lblVendorId;
-			NotNullPtr<UI::GUITextBox> txtVendorId;
-			NotNullPtr<UI::GUILabel> lblVendorName;
-			NotNullPtr<UI::GUITextBox> txtVendorName;
-			NotNullPtr<UI::GUILabel> lblProductId;
-			NotNullPtr<UI::GUITextBox> txtProductId;
-			NotNullPtr<UI::GUILabel> lblDevice;
-			NotNullPtr<UI::GUITextBox> txtDevice;
-			NotNullPtr<UI::GUILabel> lblDispName;
-			NotNullPtr<UI::GUITextBox> txtDispName;
-			NotNullPtr<UI::GUILabel> lblDBName;
-			NotNullPtr<UI::GUITextBox> txtDBName;
+			NN<UI::GUIListBox> lbDevices;
+			NN<UI::GUIHSplitter> hspDevices;
+			NN<UI::GUIPanel> pnlDevices;
+			NN<UI::GUILabel> lblVendorId;
+			NN<UI::GUITextBox> txtVendorId;
+			NN<UI::GUILabel> lblVendorName;
+			NN<UI::GUITextBox> txtVendorName;
+			NN<UI::GUILabel> lblProductId;
+			NN<UI::GUITextBox> txtProductId;
+			NN<UI::GUILabel> lblDevice;
+			NN<UI::GUITextBox> txtDevice;
+			NN<UI::GUILabel> lblDispName;
+			NN<UI::GUITextBox> txtDispName;
+			NN<UI::GUILabel> lblDBName;
+			NN<UI::GUITextBox> txtDBName;
 			
 			static void __stdcall OnDevicesSelChg(AnyType userObj);
 			static OSInt __stdcall ItemCompare(IO::USBInfo *item1, IO::USBInfo *item2);
 		public:
-			AVIRUSBDeviceForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRUSBDeviceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRUSBDeviceForm();
 
 			virtual void OnMonitorChanged();

@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIReadCE::AVIRCEThreadInfoForm::OnMyStackChg(void *userObj
 {
 	SSWR::AVIReadCE::AVIRCEThreadInfoForm *me = (SSWR::AVIReadCE::AVIRCEThreadInfoForm*)userObj;
 	OSInt i = me->lbMyStack->GetSelectedIndex();
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	Optional<Text::String> st = me->stacks.GetItem(i);
 	Optional<Text::String> sMem = me->stacksMem.GetItem(i);
 	UOSInt slen;
@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIReadCE::AVIRCEThreadInfoForm::OnMyStackDblClk(void *user
 	}
 }
 
-SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, Manage::Process *proc, Manage::SymbolResolver *symbol, Int32 threadId) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, Manage::Process *proc, Manage::SymbolResolver *symbol, Int32 threadId) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Thread Info"));

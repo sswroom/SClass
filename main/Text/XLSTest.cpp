@@ -37,10 +37,10 @@ void TestChart()
 
 	Workbook wb;
 	WorkbookFont *font10 = wb.NewFont(CSTR("Arial"), 10, false);
-	NotNullPtr<CellStyle> dateStyle = wb.NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("yyyy-MM-dd"));
-	NotNullPtr<CellStyle> numStyle = wb.NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0.###"));
-	NotNullPtr<Worksheet> graphSheet = wb.AddWorksheet();
-	NotNullPtr<Worksheet> dataSheet = wb.AddWorksheet();
+	NN<CellStyle> dateStyle = wb.NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("yyyy-MM-dd"));
+	NN<CellStyle> numStyle = wb.NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0.###"));
+	NN<Worksheet> graphSheet = wb.AddWorksheet();
+	NN<Worksheet> dataSheet = wb.AddWorksheet();
 	OfficeChart *chart = graphSheet->CreateChart(Math::Unit::Distance::DU_INCH, 0.64, 1.61, 13.10, 5.53, CSTR("\nSETTLEMENT VS CHAINAGE"));
 	chart->InitLineChart(CSTR("ACCUMULATED SETTLEMENT"), CSTR("CHAINAGE"), AxisType::Category);
 	chart->SetDisplayBlankAs(BlankAs::Gap);
@@ -103,8 +103,8 @@ void TestCols()
 	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/ColsMe.xlsx"));
 	Workbook wb;
 	WorkbookFont *font10 = wb.NewFont(CSTR("Arial"), 10, false);
-	NotNullPtr<CellStyle> numStyle = wb.NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0.###"));
-	NotNullPtr<Worksheet> sheet = wb.AddWorksheet(CSTR("Sheet1"));
+	NN<CellStyle> numStyle = wb.NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0.###"));
+	NN<Worksheet> sheet = wb.AddWorksheet(CSTR("Sheet1"));
 	UOSInt i = 0;
 	UOSInt j = 2000;
 	while (i < j)
@@ -128,7 +128,7 @@ void TestColWidth()
 	UTF8Char *sptr;
 	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/ColWidthMe.xlsx"));
 	Workbook wb;
-	NotNullPtr<Worksheet> sheet = wb.AddWorksheet(CSTR("Sheet1"));
+	NN<Worksheet> sheet = wb.AddWorksheet(CSTR("Sheet1"));
 	sheet->SetColWidth(0, 123.75, Math::Unit::Distance::DU_POINT);	//23.5714285714286 * 5.25
 	sheet->SetColWidth(1, 75.75, Math::Unit::Distance::DU_POINT);	//14.4285714285714
 	sheet->SetColWidth(2, 303.75, Math::Unit::Distance::DU_POINT);	//57.8571428571429
@@ -153,12 +153,12 @@ void TestBorder()
 	UTF8Char *sptr;
 	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/BorderMe.xlsx"));
 	Workbook wb;
-	NotNullPtr<Worksheet> sheet = wb.AddWorksheet(CSTR("Sheet1"));
+	NN<Worksheet> sheet = wb.AddWorksheet(CSTR("Sheet1"));
 	WorkbookFont *font = wb.NewFont(CSTR("Arial"), 10.0, false);
-	NotNullPtr<CellStyle> borderStyle = wb.NewCellStyle(font, Text::HAlignment::Center, Text::VAlignment::Bottom, CSTR("0.0"));
+	NN<CellStyle> borderStyle = wb.NewCellStyle(font, Text::HAlignment::Center, Text::VAlignment::Bottom, CSTR("0.0"));
 	CellStyle::BorderStyle border(0xFF000000, BorderType::Medium);
 	borderStyle->SetBorderBottom(border);
-	NotNullPtr<CellStyle> normalStyle = wb.NewCellStyle(font, Text::HAlignment::Center, Text::VAlignment::Bottom, CSTR("0.0"));
+	NN<CellStyle> normalStyle = wb.NewCellStyle(font, Text::HAlignment::Center, Text::VAlignment::Bottom, CSTR("0.0"));
 	sheet->SetCellInt32(0, 0, borderStyle.Ptr(), 1);
 	sheet->SetCellInt32(0, 1, borderStyle.Ptr(), 2);
 	sheet->SetCellInt32(0, 2, borderStyle.Ptr(), 3);
@@ -176,7 +176,7 @@ void TestBorder()
 	}
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	TestEmpty();
 	TestChart();

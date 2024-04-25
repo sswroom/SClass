@@ -14,7 +14,7 @@ namespace Media
 		UOSInt currGraph;
 		Data::ArrayList<Media::VectorGraph*> *items;
 		Optional<Media::IPrintDocument> currDoc;
-		NotNullPtr<Media::DrawEngine> refEng;
+		NN<Media::DrawEngine> refEng;
 		UInt32 srid;
 
 		Text::String *docName;
@@ -27,11 +27,11 @@ namespace Media
 		Int64 modTimeTicks;
 
 	public:
-		VectorDocument(UInt32 srid, NotNullPtr<Media::DrawEngine> refEng);
-		VectorDocument(UInt32 srid, Text::CStringNN name, NotNullPtr<Media::DrawEngine> refEng);
+		VectorDocument(UInt32 srid, NN<Media::DrawEngine> refEng);
+		VectorDocument(UInt32 srid, Text::CStringNN name, NN<Media::DrawEngine> refEng);
 		virtual ~VectorDocument();
 
-		NotNullPtr<Media::VectorGraph> AddGraph(Double width, Double height, Math::Unit::Distance::DistanceUnit unit);
+		NN<Media::VectorGraph> AddGraph(Double width, Double height, Math::Unit::Distance::DistanceUnit unit);
 		void SetDocName(Text::CString docName);
 		Text::String *GetDocName() const;
 		void SetCreateTime(Int64 createTimeTicks);
@@ -52,9 +52,9 @@ namespace Media
 		virtual UOSInt GetCount() const;
 		virtual Media::VectorGraph *GetItem(UOSInt Index) const;
 
-		virtual Bool BeginPrint(NotNullPtr<IPrintDocument> doc);
-		virtual Bool PrintPage(NotNullPtr<Media::DrawImage> printPage); //return has more pages 
-		virtual Bool EndPrint(NotNullPtr<IPrintDocument> doc);
+		virtual Bool BeginPrint(NN<IPrintDocument> doc);
+		virtual Bool PrintPage(NN<Media::DrawImage> printPage); //return has more pages 
+		virtual Bool EndPrint(NN<IPrintDocument> doc);
 
 		virtual IO::ParserType GetParserType() const;
 	};

@@ -11,7 +11,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	UInt32 pxSize;
@@ -45,7 +45,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 	Manage::HiResClock clk;
 	Parser::FileParser::GUIImgParser parser;
-	NotNullPtr<Media::ImageList> imgList;
+	NN<Media::ImageList> imgList;
 	{
 		IO::StmData::FileData fd(srcFile, false);
 		if (fd.GetDataSize() == 0)
@@ -68,7 +68,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			Media::RasterImage *img = imgList->GetImage(0, 0);
 			Media::Resizer::LanczosResizer8_C8 resizer(4, 4, img->info.color, img->info.color, 0, img->info.atype);
 			resizer.SetTargetSize(Math::Size2D<UOSInt>(pxSize, pxSize));
-			NotNullPtr<Media::StaticImage> simg;
+			NN<Media::StaticImage> simg;
 			Media::StaticImage *newImg;
 			if (simg.Set((Media::StaticImage*)img))
 			{

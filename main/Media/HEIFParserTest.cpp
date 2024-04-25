@@ -3,7 +3,7 @@
 //#include "Exporter/WebPExporter.h"
 #include "Parser/FileParser/HEIFParser.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Text::CStringNN fileName = CSTR("/home/sswroom/Progs/Temp/FileTest/grid_960x640.heic");
 //	Text::CString outName = CSTR("/home/sswroom/Progs/Temp/FileTest/1.enc.webp");

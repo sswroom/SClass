@@ -14,7 +14,7 @@ void Net::WebServer::IWebRequest::ParseUserAgent()
 	this->uaParsed = true;
 	this->reqBrowser = Net::BrowserInfo::BT_UNKNOWN;
 
-	NotNullPtr<Text::String> uaHdr;
+	NN<Text::String> uaHdr;
 	if (!this->GetSHeader(CSTR("User-Agent")).SetTo(uaHdr))
 	{
 		return;
@@ -75,9 +75,9 @@ Net::WebServer::IWebRequest::~IWebRequest()
 	SDEL_TEXT(this->reqDevModel.v);
 }
 
-Bool Net::WebServer::IWebRequest::GetRefererDomain(NotNullPtr<Text::StringBuilderUTF8> sb) const
+Bool Net::WebServer::IWebRequest::GetRefererDomain(NN<Text::StringBuilderUTF8> sb) const
 {
-	NotNullPtr<Text::String> hdr;
+	NN<Text::String> hdr;
 	UTF8Char domain[256];
 	UTF8Char *sptr;
 	if (!this->GetSHeader(CSTR("Referer")).SetTo(hdr))
@@ -96,9 +96,9 @@ Bool Net::WebServer::IWebRequest::GetRefererDomain(NotNullPtr<Text::StringBuilde
 	}
 }
 
-Bool Net::WebServer::IWebRequest::GetIfModifiedSince(NotNullPtr<Data::DateTime> dt) const
+Bool Net::WebServer::IWebRequest::GetIfModifiedSince(NN<Data::DateTime> dt) const
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (this->GetSHeader(CSTR("If-Modified-Since")).SetTo(s))
 	{
 		if (dt->SetValue(s->ToCString()))
@@ -109,9 +109,9 @@ Bool Net::WebServer::IWebRequest::GetIfModifiedSince(NotNullPtr<Data::DateTime> 
 	return false;
 }
 
-Bool Net::WebServer::IWebRequest::GetCookie(Text::CStringNN name, NotNullPtr<Text::StringBuilderUTF8> sb) const
+Bool Net::WebServer::IWebRequest::GetCookie(Text::CStringNN name, NN<Text::StringBuilderUTF8> sb) const
 {
-	NotNullPtr<Text::String> cookie;
+	NN<Text::String> cookie;
 	if (!this->GetSHeader(CSTR("Cookie")).SetTo(cookie))
 	{
 		return 0;
@@ -143,7 +143,7 @@ Bool Net::WebServer::IWebRequest::GetCookie(Text::CStringNN name, NotNullPtr<Tex
 
 Optional<Text::String> Net::WebServer::IWebRequest::GetCookieAsNew(Text::CStringNN name) const
 {
-	NotNullPtr<Text::String> cookie;
+	NN<Text::String> cookie;
 	if (!this->GetSHeader(CSTR("Cookie")).SetTo(cookie))
 	{
 		return 0;
@@ -192,7 +192,7 @@ UTF8Char *Net::WebServer::IWebRequest::GetRequestPath(UTF8Char *sbuff, UOSInt ma
 
 UTF8Char *Net::WebServer::IWebRequest::GetQueryString(UTF8Char *sbuff, UOSInt maxLeng)
 {
-	NotNullPtr<Text::String> s = this->GetRequestURI();
+	NN<Text::String> s = this->GetRequestURI();
 	UOSInt i = s->IndexOf('?');
 	if (i == INVALID_INDEX)
 		return 0;
@@ -216,7 +216,7 @@ UTF8Char *Net::WebServer::IWebRequest::GetQueryString(UTF8Char *sbuff, UOSInt ma
 
 UTF8Char *Net::WebServer::IWebRequest::GetQueryValueStr(Text::CStringNN name, UTF8Char *buff, UOSInt buffSize)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (!this->GetQueryValue(name).SetTo(s))
 		return 0;
 	return Text::StrConcatCS(buff, s->v, s->leng, buffSize);
@@ -224,7 +224,7 @@ UTF8Char *Net::WebServer::IWebRequest::GetQueryValueStr(Text::CStringNN name, UT
 
 Bool Net::WebServer::IWebRequest::GetQueryValueI16(Text::CStringNN name, OutParam<Int16> val)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (!this->GetQueryValue(name).SetTo(s))
 		return false;
 	return s->ToInt16(val);
@@ -232,7 +232,7 @@ Bool Net::WebServer::IWebRequest::GetQueryValueI16(Text::CStringNN name, OutPara
 
 Bool Net::WebServer::IWebRequest::GetQueryValueU16(Text::CStringNN name, OutParam<UInt16> val)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (!this->GetQueryValue(name).SetTo(s))
 		return false;
 	return s->ToUInt16(val);
@@ -240,7 +240,7 @@ Bool Net::WebServer::IWebRequest::GetQueryValueU16(Text::CStringNN name, OutPara
 
 Bool Net::WebServer::IWebRequest::GetQueryValueI32(Text::CStringNN name, OutParam<Int32> val)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (!this->GetQueryValue(name).SetTo(s))
 		return false;
 	return s->ToInt32(val);
@@ -248,7 +248,7 @@ Bool Net::WebServer::IWebRequest::GetQueryValueI32(Text::CStringNN name, OutPara
 
 Bool Net::WebServer::IWebRequest::GetQueryValueU32(Text::CStringNN name, OutParam<UInt32> val)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (!this->GetQueryValue(name).SetTo(s))
 		return false;
 	return s->ToUInt32(val);
@@ -256,7 +256,7 @@ Bool Net::WebServer::IWebRequest::GetQueryValueU32(Text::CStringNN name, OutPara
 
 Bool Net::WebServer::IWebRequest::GetQueryValueI64(Text::CStringNN name, OutParam<Int64> val)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (!this->GetQueryValue(name).SetTo(s))
 		return false;
 	return s->ToInt64(val);
@@ -264,7 +264,7 @@ Bool Net::WebServer::IWebRequest::GetQueryValueI64(Text::CStringNN name, OutPara
 
 Bool Net::WebServer::IWebRequest::GetQueryValueF64(Text::CStringNN name, OutParam<Double> val)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (!this->GetQueryValue(name).SetTo(s))
 		return false;
 	return s->ToDouble(val);
@@ -272,7 +272,7 @@ Bool Net::WebServer::IWebRequest::GetQueryValueF64(Text::CStringNN name, OutPara
 
 Bool Net::WebServer::IWebRequest::GetHTTPFormInt16(Text::CStringNN name, OutParam<Int16> valOut)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (!this->GetHTTPFormStr(name).SetTo(s))
 	{
 		return false;
@@ -282,7 +282,7 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormInt16(Text::CStringNN name, OutPara
 
 Bool Net::WebServer::IWebRequest::GetHTTPFormUInt16(Text::CStringNN name, OutParam<UInt16> valOut)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (!this->GetHTTPFormStr(name).SetTo(s))
 	{
 		return false;
@@ -292,7 +292,7 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormUInt16(Text::CStringNN name, OutPar
 
 Bool Net::WebServer::IWebRequest::GetHTTPFormInt32(Text::CStringNN name, OutParam<Int32> valOut)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (!this->GetHTTPFormStr(name).SetTo(s))
 	{
 		return false;
@@ -302,7 +302,7 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormInt32(Text::CStringNN name, OutPara
 
 Bool Net::WebServer::IWebRequest::GetHTTPFormUInt32(Text::CStringNN name, OutParam<UInt32> valOut)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (!this->GetHTTPFormStr(name).SetTo(s))
 	{
 		return false;
@@ -312,7 +312,7 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormUInt32(Text::CStringNN name, OutPar
 
 Bool Net::WebServer::IWebRequest::GetHTTPFormInt64(Text::CStringNN name, OutParam<Int64> valOut)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (!this->GetHTTPFormStr(name).SetTo(s))
 	{
 		return false;
@@ -322,7 +322,7 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormInt64(Text::CStringNN name, OutPara
 
 Bool Net::WebServer::IWebRequest::GetHTTPFormUInt64(Text::CStringNN name, OutParam<UInt64> valOut)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (!this->GetHTTPFormStr(name).SetTo(s))
 	{
 		return false;
@@ -332,7 +332,7 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormUInt64(Text::CStringNN name, OutPar
 
 Bool Net::WebServer::IWebRequest::GetHTTPFormDouble(Text::CStringNN name, OutParam<Double> valOut)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (!this->GetHTTPFormStr(name).SetTo(s))
 	{
 		return false;
@@ -342,7 +342,7 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormDouble(Text::CStringNN name, OutPar
 
 UTF8Char *Net::WebServer::IWebRequest::BuildURLHost(UTF8Char *sbuff)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (this->GetSHeader(CSTR("X-Forwarded-Proto")).SetTo(s))
 	{
 		sbuff = s->ConcatTo(sbuff);
@@ -393,7 +393,7 @@ UTF8Char *Net::WebServer::IWebRequest::BuildURLHost(UTF8Char *sbuff)
 	return sbuff;
 }
 
-void Net::WebServer::IWebRequest::GetRequestAddr(NotNullPtr<Net::SocketUtil::AddressInfo> addr) const
+void Net::WebServer::IWebRequest::GetRequestAddr(NN<Net::SocketUtil::AddressInfo> addr) const
 {
 	Text::StringBuilderUTF8 sb;
 	Text::PString s;

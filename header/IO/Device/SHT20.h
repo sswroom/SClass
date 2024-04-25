@@ -9,7 +9,7 @@ namespace IO
 		class SHT20 : public IO::MODBUSDevice
 		{
 		public:
-			SHT20(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr);
+			SHT20(NN<IO::MODBUSMaster> modbus, UInt8 addr);
 			virtual ~SHT20();
 
 			Bool ReadTempRH(OutParam<Double> temp, OutParam<Double> rh);

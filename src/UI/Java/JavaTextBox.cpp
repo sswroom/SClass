@@ -6,7 +6,7 @@
 #include "UI/GUIForm.h"
 #include "UI/Java/JavaTextBox.h"
 
-UI::Java::JavaTextBox::JavaTextBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool isMultiline) : UI::GUITextBox(ui, parent)
+UI::Java::JavaTextBox::JavaTextBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool isMultiline) : UI::GUITextBox(ui, parent)
 {
 }
 
@@ -32,7 +32,7 @@ UTF8Char *UI::Java::JavaTextBox::GetText(UTF8Char *buff)
 	return 0;
 }
 
-Bool UI::Java::JavaTextBox::GetText(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool UI::Java::JavaTextBox::GetText(NN<Text::StringBuilderUTF8> sb)
 {
 	return false;
 }

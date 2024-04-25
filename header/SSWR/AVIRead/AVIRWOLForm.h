@@ -14,17 +14,17 @@ namespace SSWR
 		class AVIRWOLForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblAdapter;
-			NotNullPtr<UI::GUIComboBox> cboAdapter;
-			NotNullPtr<UI::GUILabel> lblDeviceMac;
-			NotNullPtr<UI::GUITextBox> txtDeviceMac;
-			NotNullPtr<UI::GUIButton> btnSend;
+			NN<UI::GUILabel> lblAdapter;
+			NN<UI::GUIComboBox> cboAdapter;
+			NN<UI::GUILabel> lblDeviceMac;
+			NN<UI::GUITextBox> txtDeviceMac;
+			NN<UI::GUIButton> btnSend;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
 			static void __stdcall OnSendClicked(AnyType userObj);
 		public:
-			AVIRWOLForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRWOLForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWOLForm();
 
 			virtual void OnMonitorChanged();

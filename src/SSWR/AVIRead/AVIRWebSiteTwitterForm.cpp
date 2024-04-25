@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRWebSiteTwitterForm::OnRequestPageClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWebSiteTwitterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWebSiteTwitterForm>();
+	NN<SSWR::AVIRead::AVIRWebSiteTwitterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWebSiteTwitterForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteTwitterForm::OnRequestPageClicked(AnyTy
 		UOSInt j;
 		Data::ArrayList<Net::WebSite::WebSiteTwitterControl::ItemData*> itemList;
 		Net::WebSite::WebSiteTwitterControl::ItemData *item;
-		NotNullPtr<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
+		NN<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
 		me->ctrl->GetChannelItems(s, 0, &itemList, 0);
 		s->Release();
 		i = 0;
@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteTwitterForm::OnRequestPageClicked(AnyTy
 	}
 }
 
-SSWR::AVIRead::AVIRWebSiteTwitterForm::AVIRWebSiteTwitterForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRWebSiteTwitterForm::AVIRWebSiteTwitterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Twitter"));
 	this->SetFont(UTF8STRC("MingLiu"), 8.25, false);

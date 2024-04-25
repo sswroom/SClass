@@ -71,12 +71,12 @@ Bool Net::WLANLinuxInterface::Scan()
 }
 
 
-UOSInt Net::WLANLinuxInterface::GetNetworks(NotNullPtr<Data::ArrayListNN<Net::WirelessLAN::Network>> networkList)
+UOSInt Net::WLANLinuxInterface::GetNetworks(NN<Data::ArrayListNN<Net::WirelessLAN::Network>> networkList)
 {
 	UOSInt retVal = 0;
 	Data::ArrayListNN<Net::WirelessLAN::BSSInfo> bssList;
-	NotNullPtr<Net::WirelessLAN::BSSInfo> bss;
-	NotNullPtr<Net::WirelessLAN::Network> network;
+	NN<Net::WirelessLAN::BSSInfo> bss;
+	NN<Net::WirelessLAN::Network> network;
 	this->GetBSSList(bssList);
 	if (bssList.GetCount() > 0)
 	{
@@ -95,12 +95,12 @@ UOSInt Net::WLANLinuxInterface::GetNetworks(NotNullPtr<Data::ArrayListNN<Net::Wi
 	return retVal;
 }
 
-UOSInt Net::WLANLinuxInterface::GetBSSList(NotNullPtr<Data::ArrayListNN<Net::WirelessLAN::BSSInfo>> bssList)
+UOSInt Net::WLANLinuxInterface::GetBSSList(NN<Data::ArrayListNN<Net::WirelessLAN::BSSInfo>> bssList)
 {
 	UOSInt retVal = 0;
-	NotNullPtr<Net::WirelessLAN::BSSInfo> bssInfo;
+	NN<Net::WirelessLAN::BSSInfo> bssInfo;
 	BSSEntry bss;
-	NotNullPtr<Net::WirelessLANIE> ie;
+	NN<Net::WirelessLANIE> ie;
 	struct iwreq wrq;
 	int ret;
 	UInt8 *buff;

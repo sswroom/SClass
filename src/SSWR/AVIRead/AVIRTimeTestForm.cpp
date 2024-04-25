@@ -6,7 +6,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRTimeTestForm::OnSleepMSClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTimeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimeTestForm>();
+	NN<SSWR::AVIRead::AVIRTimeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimeTestForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt32 t;
 	Double tDiff;
@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRTimeTestForm::OnSleepMSClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRTimeTestForm::OnSleepUSClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTimeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimeTestForm>();
+	NN<SSWR::AVIRead::AVIRTimeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimeTestForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt32 t;
 	Double tDiff;
@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRTimeTestForm::OnSleepUSClicked(AnyType userObj
 	}
 }
 
-SSWR::AVIRead::AVIRTimeTestForm::AVIRTimeTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 320, 120, ui)
+SSWR::AVIRead::AVIRTimeTestForm::AVIRTimeTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 320, 120, ui)
 {
 	this->core = core;
 	this->SetText(CSTR("Timing Test"));

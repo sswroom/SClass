@@ -4,7 +4,7 @@
 #include "Text/JSText.h"
 #include "Text/StringTool.h"
 
-void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Text::String *s)
+void Text::StringTool::BuildString(NN<Text::StringBuilderUTF8> sb, Text::String *s)
 {
 	if (s == 0)
 	{
@@ -16,7 +16,7 @@ void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Text:
 	}
 }
 
-void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *s)
+void Text::StringTool::BuildString(NN<Text::StringBuilderUTF8> sb, const UTF8Char *s)
 {
 	if (s == 0)
 	{
@@ -28,7 +28,7 @@ void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, const
 	}
 }
 
-void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Data::StringMap<Text::String*> *map)
+void Text::StringTool::BuildString(NN<Text::StringBuilderUTF8> sb, Data::StringMap<Text::String*> *map)
 {
 	if (map == 0)
 	{
@@ -36,8 +36,8 @@ void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Data:
 		return;
 	}
 	sb->AppendUTF8Char('{');
-	NotNullPtr<Data::ArrayList<Text::String *>> keys = map->GetKeys();
-	NotNullPtr<const Data::ArrayList<Text::String *>> vals = map->GetValues();
+	NN<Data::ArrayList<Text::String *>> keys = map->GetKeys();
+	NN<const Data::ArrayList<Text::String *>> vals = map->GetValues();
 	UOSInt i = 0;
 	UOSInt j = keys->GetCount();
 	while (i < j)
@@ -55,7 +55,7 @@ void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Data:
 	sb->AppendUTF8Char('}');
 }
 
-void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Data::StringUTF8Map<Text::String*> *map)
+void Text::StringTool::BuildString(NN<Text::StringBuilderUTF8> sb, Data::StringUTF8Map<Text::String*> *map)
 {
 	if (map == 0)
 	{
@@ -63,8 +63,8 @@ void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Data:
 		return;
 	}
 	sb->AppendUTF8Char('{');
-	NotNullPtr<Data::ArrayList<const UTF8Char *>> keys = map->GetKeys();
-	NotNullPtr<const Data::ArrayList<Text::String *>> vals = map->GetValues();
+	NN<Data::ArrayList<const UTF8Char *>> keys = map->GetKeys();
+	NN<const Data::ArrayList<Text::String *>> vals = map->GetValues();
 	UOSInt i = 0;
 	UOSInt j = keys->GetCount();
 	while (i < j)
@@ -82,7 +82,7 @@ void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Data:
 	sb->AppendUTF8Char('}');
 }
 
-void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Data::StringUTF8Map<const UTF8Char*> *map)
+void Text::StringTool::BuildString(NN<Text::StringBuilderUTF8> sb, Data::StringUTF8Map<const UTF8Char*> *map)
 {
 	if (map == 0)
 	{
@@ -90,8 +90,8 @@ void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Data:
 		return;
 	}
 	sb->AppendUTF8Char('{');
-	NotNullPtr<Data::ArrayList<const UTF8Char *>> keys = map->GetKeys();
-	NotNullPtr<const Data::ArrayList<const UTF8Char *>> vals = map->GetValues();
+	NN<Data::ArrayList<const UTF8Char *>> keys = map->GetKeys();
+	NN<const Data::ArrayList<const UTF8Char *>> vals = map->GetValues();
 	UOSInt i = 0;
 	UOSInt j = keys->GetCount();
 	while (i < j)
@@ -109,7 +109,7 @@ void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Data:
 	sb->AppendUTF8Char('}');
 }
 
-void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Data::ReadingList<const UTF8Char*> *list)
+void Text::StringTool::BuildString(NN<Text::StringBuilderUTF8> sb, Data::ReadingList<const UTF8Char*> *list)
 {
 	if (list == 0)
 	{
@@ -132,7 +132,7 @@ void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Data:
 	sb->AppendUTF8Char(']');
 }
 
-void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Data::ReadingList<Text::String*> *list)
+void Text::StringTool::BuildString(NN<Text::StringBuilderUTF8> sb, Data::ReadingList<Text::String*> *list)
 {
 	if (list == 0)
 	{
@@ -155,7 +155,7 @@ void Text::StringTool::BuildString(NotNullPtr<Text::StringBuilderUTF8> sb, Data:
 	sb->AppendUTF8Char(']');
 }
 
-void Text::StringTool::Int32Join(NotNullPtr<Text::StringBuilderUTF8> sb, Data::List<Int32> *list, Text::CString seperator)
+void Text::StringTool::Int32Join(NN<Text::StringBuilderUTF8> sb, Data::List<Int32> *list, Text::CString seperator)
 {
 	UOSInt i = 0;
 	UOSInt j = list->GetCount();
@@ -384,7 +384,7 @@ const UTF8Char *Text::StringTool::Null2Empty(const UTF8Char *s)
 	return (const UTF8Char*)"";
 }
 
-Bool Text::StringTool::SplitAsDouble(Text::CStringNN str, UTF8Char splitChar, NotNullPtr<Data::ArrayList<Double>> outArr)
+Bool Text::StringTool::SplitAsDouble(Text::CStringNN str, UTF8Char splitChar, NN<Data::ArrayList<Double>> outArr)
 {
 	UTF8Char sbuff[128];
 	Double v;
@@ -412,7 +412,7 @@ Bool Text::StringTool::SplitAsDouble(Text::CStringNN str, UTF8Char splitChar, No
 	}
 }
 
-UOSInt Text::StringTool::SplitAsNewString(Text::CStringNN str, UTF8Char splitChar, NotNullPtr<Data::ArrayListStringNN> outArr)
+UOSInt Text::StringTool::SplitAsNewString(Text::CStringNN str, UTF8Char splitChar, NN<Data::ArrayListStringNN> outArr)
 {
 	UOSInt initCnt = outArr->GetCount();
 	UOSInt i = 0;
@@ -434,8 +434,8 @@ Bool Text::StringTool::Equals(Optional<Text::String> s1, Optional<Text::String> 
 {
 	if (s1 == s2)
 		return true;
-	NotNullPtr<Text::String> str2;
-	NotNullPtr<Text::String> str1;
+	NN<Text::String> str2;
+	NN<Text::String> str1;
 	if (!s1.SetTo(str1))
 		return false;
 	if (!s2.SetTo(str2))
@@ -447,8 +447,8 @@ OSInt Text::StringTool::Compare(Text::String *s1, Text::String *s2)
 {
 	if (s1 == s2)
 		return 0;
-	NotNullPtr<Text::String> str1;
-	NotNullPtr<Text::String> str2;
+	NN<Text::String> str1;
+	NN<Text::String> str2;
 	if (!str1.Set(s1))
 		return -1;
 	if (!str2.Set(s2))
@@ -460,8 +460,8 @@ OSInt Text::StringTool::CompareICase(Text::String *s1, Text::String *s2)
 {
 	if (s1 == s2)
 		return 0;
-	NotNullPtr<Text::String> str1;
-	NotNullPtr<Text::String> str2;
+	NN<Text::String> str1;
+	NN<Text::String> str2;
 	if (!str1.Set(s1))
 		return -1;
 	if (!str2.Set(s2))

@@ -4,7 +4,7 @@
 #include "IO/ProtoHdlr/ProtoGPSDevInfoHandler.h"
 #include "Sync/MutexUsage.h"
 
-IO::ProtoHdlr::ProtoGPSDevInfoHandler::ProtoGPSDevInfoHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener)
+IO::ProtoHdlr::ProtoGPSDevInfoHandler::ProtoGPSDevInfoHandler(NN<IO::IProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
 }
@@ -13,16 +13,16 @@ IO::ProtoHdlr::ProtoGPSDevInfoHandler::~ProtoGPSDevInfoHandler()
 {
 }
 
-AnyType IO::ProtoHdlr::ProtoGPSDevInfoHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
+AnyType IO::ProtoHdlr::ProtoGPSDevInfoHandler::CreateStreamData(NN<IO::Stream> stm)
 {
 	return 0;
 }
 
-void IO::ProtoHdlr::ProtoGPSDevInfoHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, AnyType stmData)
+void IO::ProtoHdlr::ProtoGPSDevInfoHandler::DeleteStreamData(NN<IO::Stream> stm, AnyType stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoGPSDevInfoHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
+UOSInt IO::ProtoHdlr::ProtoGPSDevInfoHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
 {
 	Bool found;
 	UInt8 crcVal[4];

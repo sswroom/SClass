@@ -3,7 +3,7 @@
 #include "Net/SNS/SNS7gogo.h"
 #include "Text/StringBuilderUTF8.h"
 
-Net::SNS::SNS7gogo::SNS7gogo(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CString channelId)
+Net::SNS::SNS7gogo::SNS7gogo(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CString channelId)
 {
 	NEW_CLASS(this->ctrl, Net::WebSite::WebSite7gogoControl(sockf, ssl, encFact, userAgent));
 	this->channelId = Text::String::New(channelId);
@@ -43,8 +43,8 @@ Net::SNS::SNS7gogo::SNS7gogo(NotNullPtr<Net::SocketFactory> sockf, Optional<Net:
 		sb.Append(this->channelId);
 		sb.AppendC(UTF8STRC("/"));
 		sb.AppendI64(item->id);
-		NotNullPtr<Text::String> s = Text::String::NewP(sbuff, sptr);
-		NotNullPtr<Text::String> s2 = Text::String::New(sb.ToString(), sb.GetLength());
+		NN<Text::String> s = Text::String::NewP(sbuff, sptr);
+		NN<Text::String> s2 = Text::String::New(sb.ToString(), sb.GetLength());
 		snsItem = CreateItem(s, item->recTime, 0, item->message, s2.Ptr(), item->imgURL, 0);
 		s->Release();
 		s2->Release();
@@ -76,12 +76,12 @@ Net::SNS::SNSControl::SNSType Net::SNS::SNS7gogo::GetSNSType()
 	return Net::SNS::SNSControl::ST_7GOGO;
 }
 
-NotNullPtr<Text::String> Net::SNS::SNS7gogo::GetChannelId() const
+NN<Text::String> Net::SNS::SNS7gogo::GetChannelId() const
 {
 	return this->channelId;
 }
 
-NotNullPtr<Text::String> Net::SNS::SNS7gogo::GetName() const
+NN<Text::String> Net::SNS::SNS7gogo::GetName() const
 {
 	return this->chName;
 }
@@ -93,7 +93,7 @@ UTF8Char *Net::SNS::SNS7gogo::GetDirName(UTF8Char *dirName)
 	return dirName;
 }
 
-UOSInt Net::SNS::SNS7gogo::GetCurrItems(NotNullPtr<Data::ArrayList<SNSItem*>> itemList)
+UOSInt Net::SNS::SNS7gogo::GetCurrItems(NN<Data::ArrayList<SNSItem*>> itemList)
 {
 	UOSInt initCnt = itemList->GetCount();
 	itemList->AddAll(this->itemMap);
@@ -143,8 +143,8 @@ Bool Net::SNS::SNS7gogo::Reload()
 				sb.Append(this->channelId);
 				sb.AppendC(UTF8STRC("/"));
 				sb.AppendI64(item->id);
-				NotNullPtr<Text::String> s = Text::String::NewP(sbuff, sptr);
-				NotNullPtr<Text::String> s2 = Text::String::New(sb.ToString(), sb.GetLength());
+				NN<Text::String> s = Text::String::NewP(sbuff, sptr);
+				NN<Text::String> s2 = Text::String::New(sb.ToString(), sb.GetLength());
 				snsItem = CreateItem(s, item->recTime, 0, item->message, s2.Ptr(), item->imgURL, 0);
 				s->Release();
 				s2->Release();

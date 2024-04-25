@@ -4,13 +4,13 @@
 
 void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnChgClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProfiledResizerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProfiledResizerForm>();
+	NN<SSWR::AVIRead::AVIRProfiledResizerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProfiledResizerForm>();
 	me->ChangeProfile();
 }
 
-void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProfiledResizerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProfiledResizerForm>();
+	NN<SSWR::AVIRead::AVIRProfiledResizerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProfiledResizerForm>();
 	UOSInt i = 0;
 	UOSInt nFiles = files.GetCount();
 	while (i < nFiles)
@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnFileDrop(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedDelProfile(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProfiledResizerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProfiledResizerForm>();
+	NN<SSWR::AVIRead::AVIRProfiledResizerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProfiledResizerForm>();
 	UOSInt i = me->lbProfile->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(AnyTy
 	UInt32 outParam;
 	Text::StringBuilderUTF8 sb;
 	Media::ProfiledResizer::OutputType outType;
-	NotNullPtr<SSWR::AVIRead::AVIRProfiledResizerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProfiledResizerForm>();
+	NN<SSWR::AVIRead::AVIRProfiledResizerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProfiledResizerForm>();
 	sptr = me->txtProfileName->GetText(sbuff);
 	if (sbuff[0] == 0)
 	{
@@ -216,9 +216,9 @@ void SSWR::AVIRead::AVIRProfiledResizerForm::UpdateProfileList()
 
 }
 
-SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 320, 320, ui)
+SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 320, 320, ui)
 {
-	NotNullPtr<UI::GUILabel> lbl;
+	NN<UI::GUILabel> lbl;
 	this->SetText(CSTR("Profiled Resizer"));
 	this->SetNoResize(true);
 	this->SetFont(0, 0, 8.25, false);

@@ -3,7 +3,7 @@
 #include "Net/SNS/SNSTwitter.h"
 #include "Text/StringBuilderUTF8.h"
 
-Net::SNS::SNSTwitter::SNSTwitter(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CString channelId)
+Net::SNS::SNSTwitter::SNSTwitter(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CString channelId)
 {
 	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteTwitterControl(sockf, ssl, encFact, userAgent));
 	this->channelId = Text::String::New(channelId);
@@ -38,8 +38,8 @@ Net::SNS::SNSTwitter::SNSTwitter(NotNullPtr<Net::SocketFactory> sockf, Optional<
 		sb.Append(this->channelId);
 		sb.AppendC(UTF8STRC("/status/"));
 		sb.AppendI64(item->id);
-		NotNullPtr<Text::String> s = Text::String::NewP(sbuff, sptr);
-		NotNullPtr<Text::String> s2 = Text::String::New(sb.ToString(), sb.GetLength());
+		NN<Text::String> s = Text::String::NewP(sbuff, sptr);
+		NN<Text::String> s2 = Text::String::New(sb.ToString(), sb.GetLength());
 		snsItem = CreateItem(s, item->recTime, 0, Text::String::OrEmpty(item->message), s2.Ptr(), item->imgURL, 0);
 		s->Release();
 		s2->Release();
@@ -71,12 +71,12 @@ Net::SNS::SNSControl::SNSType Net::SNS::SNSTwitter::GetSNSType()
 	return Net::SNS::SNSControl::ST_TWITTER;
 }
 
-NotNullPtr<Text::String> Net::SNS::SNSTwitter::GetChannelId() const
+NN<Text::String> Net::SNS::SNSTwitter::GetChannelId() const
 {
 	return this->channelId;
 }
 
-NotNullPtr<Text::String> Net::SNS::SNSTwitter::GetName() const
+NN<Text::String> Net::SNS::SNSTwitter::GetName() const
 {
 	return this->chName;
 }
@@ -88,7 +88,7 @@ UTF8Char *Net::SNS::SNSTwitter::GetDirName(UTF8Char *dirName)
 	return dirName;
 }
 
-UOSInt Net::SNS::SNSTwitter::GetCurrItems(NotNullPtr<Data::ArrayList<SNSItem*>> itemList)
+UOSInt Net::SNS::SNSTwitter::GetCurrItems(NN<Data::ArrayList<SNSItem*>> itemList)
 {
 	return itemList->AddAll(this->itemMap);
 }
@@ -136,8 +136,8 @@ Bool Net::SNS::SNSTwitter::Reload()
 				sb.Append(this->channelId);
 				sb.AppendC(UTF8STRC("/status/"));
 				sb.AppendI64(item->id);
-				NotNullPtr<Text::String> s = Text::String::NewP(sbuff, sptr);
-				NotNullPtr<Text::String> s2 = Text::String::New(sb.ToString(), sb.GetLength());
+				NN<Text::String> s = Text::String::NewP(sbuff, sptr);
+				NN<Text::String> s2 = Text::String::New(sb.ToString(), sb.GetLength());
 				snsItem = CreateItem(s, item->recTime, 0, Text::String::OrEmpty(item->message), s2.Ptr(), item->imgURL, 0);
 				s->Release();
 				s2->Release();

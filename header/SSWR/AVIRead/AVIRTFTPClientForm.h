@@ -13,22 +13,22 @@ namespace SSWR
 		class AVIRTFTPClientForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUILabel> lblHost;
-			NotNullPtr<UI::GUITextBox> txtHost;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUILabel> lblFileName;
-			NotNullPtr<UI::GUITextBox> txtFileName;
-			NotNullPtr<UI::GUIButton> btnRecv;
-			NotNullPtr<UI::GUIButton> btnSend;
+			NN<UI::GUILabel> lblHost;
+			NN<UI::GUITextBox> txtHost;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUILabel> lblFileName;
+			NN<UI::GUITextBox> txtFileName;
+			NN<UI::GUIButton> btnRecv;
+			NN<UI::GUIButton> btnSend;
 
 		private:
 			static void __stdcall OnRecvClick(AnyType userObj);
 			static void __stdcall OnSendClick(AnyType userObj);
 		public:
-			AVIRTFTPClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRTFTPClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTFTPClientForm();
 
 			virtual void OnMonitorChanged();

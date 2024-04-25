@@ -21,12 +21,12 @@ namespace Media
 			Media::PixelFormat srcPF;
 
 		public:
-			BatchToLRGB(NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::Batch::BatchHandler *hdlr);
+			BatchToLRGB(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::Batch::BatchHandler *hdlr);
 			virtual ~BatchToLRGB();
 			
 			void SetHandler(Media::Batch::BatchHandler *hdlr);
 		private:
-			virtual void ImageOutput(NotNullPtr<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId);
+			virtual void ImageOutput(NN<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId);
 		};
 	}
 }

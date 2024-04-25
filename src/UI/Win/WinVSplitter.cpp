@@ -23,7 +23,7 @@ OSInt __stdcall UI::Win::WinVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSIn
 	POINT pt;
 	HDC hdc;
 	UOSInt i;
-	NotNullPtr<UI::GUIControl> ctrl;
+	NN<UI::GUIControl> ctrl;
 
 	if (me == 0)
 	{
@@ -48,7 +48,7 @@ OSInt __stdcall UI::Win::WinVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSIn
 			me->dragMode = false;
 			me->ReleaseCapture();
 
-			NotNullPtr<UI::GUIClientControl> nnparent;
+			NN<UI::GUIClientControl> nnparent;
 			if (me->parent.SetTo(nnparent))
 			{
 				hdc = GetDC((HWND)nnparent->GetHandle());
@@ -108,7 +108,7 @@ OSInt __stdcall UI::Win::WinVSplitter::FormWndProc(void *hWnd, UInt32 msg, UOSIn
 		{
 			GetCursorPos(&pt);
 
-			NotNullPtr<UI::GUIClientControl> nnparent;
+			NN<UI::GUIClientControl> nnparent;
 			if (me->parent.SetTo(nnparent))
 			{
 				hdc = GetDC((HWND)nnparent->GetHandle());
@@ -164,7 +164,7 @@ void UI::Win::WinVSplitter::DrawXorBar(HDC hdc, OSInt x, OSInt y)
 	OSInt cliOfstY = 0;
 	Math::Size2D<UOSInt> sz;
 	Math::Coord2DDbl lcliOfst;
-	NotNullPtr<UI::GUIClientControl> nnparent;
+	NN<UI::GUIClientControl> nnparent;
 	if (this->parent.SetTo(nnparent))
 	{
 		lcliOfst = nnparent->GetClientOfst();
@@ -208,10 +208,10 @@ void UI::Win::WinVSplitter::CalDragRange()
 	Bool foundTop = false;
 	Bool foundBottom = false;
 	Bool foundThis = false;
-	NotNullPtr<UI::GUIControl> ctrl;
+	NN<UI::GUIControl> ctrl;
 	UI::GUIControl::DockType dockType;
 	min = 0;
-	NotNullPtr<UI::GUIClientControl> nnparent;
+	NN<UI::GUIClientControl> nnparent;
 	if (this->parent.SetTo(nnparent))
 	{
 		Double maxD = nnparent->GetClientSize().x;
@@ -291,7 +291,7 @@ void UI::Win::WinVSplitter::CalDragRange()
 	}
 }
 
-UI::Win::WinVSplitter::WinVSplitter(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Int32 height, Bool isBottom) : UI::GUIVSplitter(ui, parent)
+UI::Win::WinVSplitter::WinVSplitter(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Int32 height, Bool isBottom) : UI::GUIVSplitter(ui, parent)
 {
 	this->dragMode = false;
 	this->isBottom = isBottom;
@@ -336,7 +336,7 @@ void UI::Win::WinVSplitter::EventMouseDown(UI::GUIControl::MouseButton btn, Math
 		this->SetCapture();
 		
 		{
-			NotNullPtr<UI::GUIClientControl> nnparent;
+			NN<UI::GUIClientControl> nnparent;
 			if (this->parent.SetTo(nnparent))
 			{
 				HDC hdc = GetDC((HWND)nnparent->GetHandle());

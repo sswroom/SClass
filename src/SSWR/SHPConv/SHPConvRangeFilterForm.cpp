@@ -6,7 +6,7 @@
 
 void __stdcall SSWR::SHPConv::SHPConvRangeFilterForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::SHPConv::SHPConvRangeFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvRangeFilterForm>();
+	NN<SSWR::SHPConv::SHPConvRangeFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvRangeFilterForm>();
 	Double x1;
 	Double y1;
 	Double x2;
@@ -67,11 +67,11 @@ void __stdcall SSWR::SHPConv::SHPConvRangeFilterForm::OnOKClicked(AnyType userOb
 
 void __stdcall SSWR::SHPConv::SHPConvRangeFilterForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::SHPConv::SHPConvRangeFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvRangeFilterForm>();
+	NN<SSWR::SHPConv::SHPConvRangeFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvRangeFilterForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::SHPConv::SHPConvRangeFilterForm::SHPConvRangeFilterForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<Media::DrawEngine> deng) : UI::GUIForm(parent, 350, 232, ui)
+SSWR::SHPConv::SHPConvRangeFilterForm::SHPConvRangeFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::DrawEngine> deng) : UI::GUIForm(parent, 350, 232, ui)
 {
 	this->SetText(CSTR("Range Filter"));
 	this->SetFont(0, 0, 8.25, false);

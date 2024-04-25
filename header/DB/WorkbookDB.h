@@ -8,16 +8,16 @@ namespace DB
 	class WorkbookDB : public DB::ReadingDB
 	{
 	private:
-		NotNullPtr<Text::SpreadSheet::Workbook> wb;
+		NN<Text::SpreadSheet::Workbook> wb;
 	public:
-		WorkbookDB(NotNullPtr<Text::SpreadSheet::Workbook> wb);
+		WorkbookDB(NN<Text::SpreadSheet::Workbook> wb);
 		virtual ~WorkbookDB();
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
 		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
-		virtual void CloseReader(NotNullPtr<DBReader> r);
-		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
+		virtual void CloseReader(NN<DBReader> r);
+		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
 	};
 }

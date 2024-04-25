@@ -16,23 +16,23 @@ namespace SSWR
 		class AVIRImageForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIListBox> lbImages;
-			NotNullPtr<UI::GUIHSplitter> hSplitter;
-			NotNullPtr<UI::GUIMainMenu> mnuMain;
-			NotNullPtr<UI::GUITabControl> tcImage;
+			NN<UI::GUIListBox> lbImages;
+			NN<UI::GUIHSplitter> hSplitter;
+			NN<UI::GUIMainMenu> mnuMain;
+			NN<UI::GUITabControl> tcImage;
 
-			NotNullPtr<UI::GUITabPage> tpImage;
-			NotNullPtr<UI::GUIPictureBoxDD> pbImage;
-			NotNullPtr<UI::GUITextBox> txtImageStatus;
+			NN<UI::GUITabPage> tpImage;
+			NN<UI::GUIPictureBoxDD> pbImage;
+			NN<UI::GUITextBox> txtImageStatus;
 
-			NotNullPtr<UI::GUITabPage> tpInfo;
-			NotNullPtr<UI::GUIPanel> pnlInfo;
-			NotNullPtr<UI::GUIButton> btnInfoICC;
-			NotNullPtr<UI::GUITextBox> txtInfo;
+			NN<UI::GUITabPage> tpInfo;
+			NN<UI::GUIPanel> pnlInfo;
+			NN<UI::GUIButton> btnInfoICC;
+			NN<UI::GUITextBox> txtInfo;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Media::ColorManagerSess> colorSess;
-			NotNullPtr<Media::ImageList> imgList;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Media::ColorManagerSess> colorSess;
+			NN<Media::ImageList> imgList;
 			Bool allowEnlarge;
 			Media::RasterImage *currImg;
 			UInt32 currImgDelay;
@@ -42,7 +42,7 @@ namespace SSWR
 			static void __stdcall OnInfoICCClicked(AnyType userObj);
 			void UpdateInfo();
 		public:
-			AVIRImageForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::ImageList> imgList);
+			AVIRImageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::ImageList> imgList);
 			virtual ~AVIRImageForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

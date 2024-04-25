@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Net/RTPVSource.h"
 
-Net::RTPVSource::RTPVSource(NotNullPtr<Net::RTPCliChannel> ch, NotNullPtr<Net::RTPVPLHandler> hdlr)
+Net::RTPVSource::RTPVSource(NN<Net::RTPCliChannel> ch, NN<Net::RTPVPLHandler> hdlr)
 {
 	this->ch = ch;
 	this->hdlr = hdlr;
@@ -23,7 +23,7 @@ Text::CStringNN Net::RTPVSource::GetFilterName()
 	return CSTR("RTPVSource");
 }
 
-Bool Net::RTPVSource::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Net::RTPVSource::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	return this->hdlr->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 }

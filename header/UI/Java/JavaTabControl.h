@@ -15,13 +15,13 @@ namespace UI
 			UOSInt selIndex;
 
 		public:
-			JavaTabControl(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
+			JavaTabControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 			virtual ~JavaTabControl();
 
-			virtual NotNullPtr<GUITabPage> AddTabPage(NotNullPtr<Text::String> itemText);
-			virtual NotNullPtr<GUITabPage> AddTabPage(Text::CStringNN itemText);
+			virtual NN<GUITabPage> AddTabPage(NN<Text::String> itemText);
+			virtual NN<GUITabPage> AddTabPage(Text::CStringNN itemText);
 			virtual void SetSelectedIndex(UOSInt index);
-			virtual void SetSelectedPage(NotNullPtr<GUITabPage> page);
+			virtual void SetSelectedPage(NN<GUITabPage> page);
 			virtual UOSInt GetSelectedIndex();
 			virtual Optional<GUITabPage> GetSelectedPage();
 			virtual void SetTabPageName(UOSInt index, Text::CStringNN name);

@@ -11,7 +11,7 @@
 IO::ConsoleWriter *console;
 IO::LogTool *logger;
 
-void __stdcall OnForwardRequest(void *userObj, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
+void __stdcall OnForwardRequest(void *userObj, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -28,10 +28,10 @@ void __stdcall OnForwardRequest(void *userObj, NotNullPtr<Net::WebServer::IWebRe
 	logger->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 
 	Data::ArrayListStringNN headerNames;
-	NotNullPtr<Text::String> headerName;
-	NotNullPtr<Text::String> headerVal;
+	NN<Text::String> headerName;
+	NN<Text::String> headerVal;
 	req->GetHeaderNames(headerNames);
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = headerNames.Iterator();
+	Data::ArrayIterator<NN<Text::String>> it = headerNames.Iterator();
 	while (it.HasNext())
 	{
 		headerName = it.Next();
@@ -57,11 +57,11 @@ void __stdcall OnForwardRequest(void *userObj, NotNullPtr<Net::WebServer::IWebRe
 	logger->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UInt16 listenPort = 0;
 	UInt16 forwardPort = 0;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 
@@ -92,7 +92,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				*sptr++ = ':';
 				sptr = Text::StrUInt16(sptr, forwardPort);
 			}
-			NotNullPtr<Net::WebServer::HTTPForwardHandler> hdlr;
+			NN<Net::WebServer::HTTPForwardHandler> hdlr;
 			Net::WebServer::WebListener *svr;
 			NEW_CLASSNN(hdlr, Net::WebServer::HTTPForwardHandler(sockf, 0, CSTRP(sbuff, sptr), Net::WebServer::HTTPForwardHandler::ForwardType::Normal));
 			sptr = IO::Path::GetProcessFileName(sbuff);

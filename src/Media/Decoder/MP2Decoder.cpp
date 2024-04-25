@@ -521,7 +521,7 @@ unsigned long kjmp2_decode_frame(
 }
 
 
-Media::Decoder::MP2Decoder::MP2Decoder(NotNullPtr<Media::IAudioSource> sourceAudio)
+Media::Decoder::MP2Decoder::MP2Decoder(NN<Media::IAudioSource> sourceAudio)
 {
 	Media::AudioFormat fmt;
 	this->sourceAudio = 0;
@@ -552,7 +552,7 @@ Media::Decoder::MP2Decoder::~MP2Decoder()
 	}
 }
 
-void Media::Decoder::MP2Decoder::GetFormat(NotNullPtr<AudioFormat> format)
+void Media::Decoder::MP2Decoder::GetFormat(NN<AudioFormat> format)
 {
 	if (this->sourceAudio)
 	{

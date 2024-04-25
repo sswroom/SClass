@@ -2,16 +2,16 @@
 #include "Media/DDrawManager.h"
 #include "Media/MonitorSurfaceMgrFactory.h"
 
-NotNullPtr<Media::MonitorSurfaceMgr> Media::MonitorSurfaceMgrFactory::Create(Media::MonitorMgr *monMgr, Media::ColorManagerSess *colorSess)
+NN<Media::MonitorSurfaceMgr> Media::MonitorSurfaceMgrFactory::Create(Media::MonitorMgr *monMgr, Media::ColorManagerSess *colorSess)
 {
-	NotNullPtr<Media::MonitorSurfaceMgr> surfaceMgr;
+	NN<Media::MonitorSurfaceMgr> surfaceMgr;
 	NEW_CLASSNN(surfaceMgr, Media::DDrawManager(monMgr, colorSess));
 	return surfaceMgr;
 }
 
-NotNullPtr<Media::MonitorSurfaceMgr> Media::MonitorSurfaceMgrFactory::Create(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr)
+NN<Media::MonitorSurfaceMgr> Media::MonitorSurfaceMgrFactory::Create(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr)
 {
-	NotNullPtr<Media::MonitorSurfaceMgr> surfaceMgr;
+	NN<Media::MonitorSurfaceMgr> surfaceMgr;
 	NEW_CLASSNN(surfaceMgr, Media::DDrawManager(monMgr, colorMgr));
 	return surfaceMgr;
 }

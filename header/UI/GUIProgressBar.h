@@ -8,7 +8,7 @@ namespace UI
 	class GUIProgressBar : public GUIControl, public IO::ProgressHandler
 	{
 	public:
-		GUIProgressBar(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
+		GUIProgressBar(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 		virtual ~GUIProgressBar();
 
 		virtual Text::CStringNN GetObjectClass() const;

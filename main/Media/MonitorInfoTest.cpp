@@ -5,7 +5,7 @@
 #include "Media/MonitorInfo.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Media::MonitorInfo *info;
 	IO::ConsoleWriter console;

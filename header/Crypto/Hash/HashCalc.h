@@ -11,11 +11,11 @@ namespace Crypto
 		class HashCalc
 		{
 		private:
-			NotNullPtr<Crypto::Hash::IHash> hash;
+			NN<Crypto::Hash::IHash> hash;
 			Sync::Mutex mut;
 
 		public:
-			HashCalc(NotNullPtr<Crypto::Hash::IHash> hash); //hash will be released
+			HashCalc(NN<Crypto::Hash::IHash> hash); //hash will be released
 			~HashCalc();
 
 			void Calc(const UInt8 *buff, UOSInt size, UInt8 *hashVal);

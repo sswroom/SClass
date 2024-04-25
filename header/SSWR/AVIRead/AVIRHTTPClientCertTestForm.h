@@ -15,7 +15,7 @@ namespace SSWR
 		class AVIRHTTPClientCertTestForm : public UI::GUIForm, public Net::WebServer::IWebHandler
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 			Net::WebServer::WebListener *svr;
 			IO::LogTool *log;
@@ -23,16 +23,16 @@ namespace SSWR
 			Crypto::Cert::X509File *sslKey;
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 
-			NotNullPtr<UI::GUIGroupBox> grpParam;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUILabel> lblSSL;
-			NotNullPtr<UI::GUIButton> btnSSLCert;
-			NotNullPtr<UI::GUILabel> lblSSLCert;
-			NotNullPtr<UI::GUILabel> lblClientCA;
-			NotNullPtr<UI::GUITextBox> txtClientCA;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUIButton> btnStop;
+			NN<UI::GUIGroupBox> grpParam;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUILabel> lblSSL;
+			NN<UI::GUIButton> btnSSLCert;
+			NN<UI::GUILabel> lblSSLCert;
+			NN<UI::GUILabel> lblClientCA;
+			NN<UI::GUITextBox> txtClientCA;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUIButton> btnStop;
 
 		private:
 			static void __stdcall OnStartClick(AnyType userObj);
@@ -40,12 +40,12 @@ namespace SSWR
 			static void __stdcall OnSSLCertClicked(AnyType userObj);
 			void ClearCACerts();
 		public:
-			AVIRHTTPClientCertTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRHTTPClientCertTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHTTPClientCertTestForm();
 
 			virtual void OnMonitorChanged();
 
-			virtual void WebRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
+			virtual void WebRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
 			virtual void Release();
 		};
 	}

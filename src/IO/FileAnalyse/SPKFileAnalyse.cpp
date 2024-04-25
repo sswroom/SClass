@@ -62,9 +62,9 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV2Directory(UInt64 dirOfst, UInt64 di
 	this->packs.Add(pack);
 }
 
-void __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::FileAnalyse::SPKFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::SPKFileAnalyse>();
+	NN<IO::FileAnalyse::SPKFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::SPKFileAnalyse>();
 	UInt8 buff[256];
 	NN<IO::FileAnalyse::SPKFileAnalyse::PackInfo> pack;
 	me->fd->GetRealData(0, 256, BYTEARR(buff));
@@ -120,7 +120,7 @@ void IO::FileAnalyse::SPKFileAnalyse::FreePackInfo(NN<IO::FileAnalyse::SPKFileAn
 	MemFreeNN(pack);
 }
 
-IO::FileAnalyse::SPKFileAnalyse::SPKFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("SPKFileAnalyse"))
+IO::FileAnalyse::SPKFileAnalyse::SPKFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("SPKFileAnalyse"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -152,7 +152,7 @@ UOSInt IO::FileAnalyse::SPKFileAnalyse::GetFrameCount()
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::SPKFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::SPKFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::SPKFileAnalyse::PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
@@ -213,7 +213,7 @@ UOSInt IO::FileAnalyse::SPKFileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SPKFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<IO::FileAnalyse::SPKFileAnalyse::PackInfo> pack;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -346,7 +346,7 @@ Bool IO::FileAnalyse::SPKFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 	return false;
 }
 
-void IO::FileAnalyse::SPKFileAnalyse::GetDetailDirs(const UInt8 *dirBuff, UOSInt dirSize, UOSInt frameOfst, NotNullPtr<IO::FileAnalyse::FrameDetail> frame)
+void IO::FileAnalyse::SPKFileAnalyse::GetDetailDirs(const UInt8 *dirBuff, UOSInt dirSize, UOSInt frameOfst, NN<IO::FileAnalyse::FrameDetail> frame)
 {
 	UOSInt ofst = 0;
 	while (dirSize - ofst >= 26)

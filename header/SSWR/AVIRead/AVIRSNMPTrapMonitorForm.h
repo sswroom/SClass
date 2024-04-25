@@ -26,43 +26,43 @@ namespace SSWR
 			} SNMPPacket;
 			
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Net::SNMPTrapMonitor *mon;
 			Sync::Mutex packetMut;
 			Data::ArrayList<SNMPPacket*> packetList;
 
-			NotNullPtr<UI::GUIListBox> lbResults;
-			NotNullPtr<UI::GUIHSplitter> hspResults;
-			NotNullPtr<UI::GUIPanel> pnlResults;
-			NotNullPtr<UI::GUIPanel> pnlTrap;
-			NotNullPtr<UI::GUILabel> lblCommunity;
-			NotNullPtr<UI::GUITextBox> txtCommunity;
-			NotNullPtr<UI::GUILabel> lblEnterpriseOID;
-			NotNullPtr<UI::GUITextBox> txtEnterpriseOID;
-			NotNullPtr<UI::GUILabel> lblEnterpriseName;
-			NotNullPtr<UI::GUITextBox> txtEnterpriseName;
-			NotNullPtr<UI::GUILabel> lblRemoteIP;
-			NotNullPtr<UI::GUITextBox> txtRemoteIP;
-			NotNullPtr<UI::GUILabel> lblRemotePort;
-			NotNullPtr<UI::GUITextBox> txtRemotePort;
-			NotNullPtr<UI::GUILabel> lblAgentAddr;
-			NotNullPtr<UI::GUITextBox> txtAgentAddr;
-			NotNullPtr<UI::GUILabel> lblGenericTrap;
-			NotNullPtr<UI::GUITextBox> txtGenericTrap;
-			NotNullPtr<UI::GUILabel> lblSpecificTrap;
-			NotNullPtr<UI::GUITextBox> txtSpecificTrap;
-			NotNullPtr<UI::GUILabel> lblRecvTime;
-			NotNullPtr<UI::GUITextBox> txtRecvTime;
-			NotNullPtr<UI::GUILabel> lblTrapTime;
-			NotNullPtr<UI::GUITextBox> txtTrapTime;
-			NotNullPtr<UI::GUIListView> lvResults;
+			NN<UI::GUIListBox> lbResults;
+			NN<UI::GUIHSplitter> hspResults;
+			NN<UI::GUIPanel> pnlResults;
+			NN<UI::GUIPanel> pnlTrap;
+			NN<UI::GUILabel> lblCommunity;
+			NN<UI::GUITextBox> txtCommunity;
+			NN<UI::GUILabel> lblEnterpriseOID;
+			NN<UI::GUITextBox> txtEnterpriseOID;
+			NN<UI::GUILabel> lblEnterpriseName;
+			NN<UI::GUITextBox> txtEnterpriseName;
+			NN<UI::GUILabel> lblRemoteIP;
+			NN<UI::GUITextBox> txtRemoteIP;
+			NN<UI::GUILabel> lblRemotePort;
+			NN<UI::GUITextBox> txtRemotePort;
+			NN<UI::GUILabel> lblAgentAddr;
+			NN<UI::GUITextBox> txtAgentAddr;
+			NN<UI::GUILabel> lblGenericTrap;
+			NN<UI::GUITextBox> txtGenericTrap;
+			NN<UI::GUILabel> lblSpecificTrap;
+			NN<UI::GUITextBox> txtSpecificTrap;
+			NN<UI::GUILabel> lblRecvTime;
+			NN<UI::GUITextBox> txtRecvTime;
+			NN<UI::GUILabel> lblTrapTime;
+			NN<UI::GUITextBox> txtTrapTime;
+			NN<UI::GUIListView> lvResults;
 
 			static void __stdcall OnResultSelChg(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
-			static Bool __stdcall OnSNMPTrapPacket(AnyType userObj, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NotNullPtr<const Net::SNMPUtil::TrapInfo> trap, NotNullPtr<Data::ArrayList<Net::SNMPUtil::BindingItem*>> itemList);
+			static Bool __stdcall OnSNMPTrapPacket(AnyType userObj, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NN<const Net::SNMPUtil::TrapInfo> trap, NN<Data::ArrayList<Net::SNMPUtil::BindingItem*>> itemList);
 
 		public:
-			AVIRSNMPTrapMonitorForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRSNMPTrapMonitorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSNMPTrapMonitorForm();
 
 			virtual void OnMonitorChanged();

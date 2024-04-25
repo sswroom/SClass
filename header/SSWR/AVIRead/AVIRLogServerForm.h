@@ -25,17 +25,17 @@ namespace SSWR
 				Data::ArrayListStringNN logMessage;
 			};
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Net::LogServer *svr;
 
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUIListBox> lbClient;
-			NotNullPtr<UI::GUIHSplitter> hspClient;
-			NotNullPtr<UI::GUITextBox> txtLog;
-			NotNullPtr<UI::GUIListBox> lbLog;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUIListBox> lbClient;
+			NN<UI::GUIHSplitter> hspClient;
+			NN<UI::GUITextBox> txtLog;
+			NN<UI::GUIListBox> lbLog;
 
 			UInt32 currIP;
 			Bool ipListUpd;
@@ -51,7 +51,7 @@ namespace SSWR
 			static void __stdcall OnClientLog(AnyType userObj, UInt32 ip, Text::CString message);
 			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
-			AVIRLogServerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRLogServerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLogServerForm();
 
 			virtual void OnMonitorChanged();

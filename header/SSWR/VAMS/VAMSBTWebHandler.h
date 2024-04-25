@@ -11,17 +11,17 @@ namespace SSWR
 		class VAMSBTWebHandler : public Net::WebServer::WebServiceHandler
 		{
 		private:
-			NotNullPtr<Text::String> logPath;
+			NN<Text::String> logPath;
 			VAMSBTList *btList;
 
-			static Bool __stdcall DevData(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> me);
-			static Bool __stdcall KAData(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> me);
-			static Bool __stdcall LogData(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> me);
-			static Bool __stdcall ListData(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> me);
-			static Bool __stdcall ListItem(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> me);
+			static Bool __stdcall DevData(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);
+			static Bool __stdcall KAData(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);
+			static Bool __stdcall LogData(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);
+			static Bool __stdcall ListData(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);
+			static Bool __stdcall ListItem(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);
 
 		public:
-			VAMSBTWebHandler(NotNullPtr<Text::String> logPath, VAMSBTList *btList);
+			VAMSBTWebHandler(NN<Text::String> logPath, VAMSBTList *btList);
 			virtual ~VAMSBTWebHandler();
 		};
 	}

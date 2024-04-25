@@ -10,7 +10,7 @@ extern "C"
 
 UInt32 Media::CS::CSAYUV_RGB8::WorkerThread(AnyType obj)
 {
-	NotNullPtr<CSAYUV_RGB8> converter = obj.GetNN<CSAYUV_RGB8>();
+	NN<CSAYUV_RGB8> converter = obj.GetNN<CSAYUV_RGB8>();
 	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 
@@ -35,7 +35,7 @@ UInt32 Media::CS::CSAYUV_RGB8::WorkerThread(AnyType obj)
 	return 0;
 }
 
-Media::CS::CSAYUV_RGB8::CSAYUV_RGB8(NotNullPtr<const Media::ColorProfile> srcColor, NotNullPtr<const Media::ColorProfile> destColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV_RGB8(srcColor, destColor, yuvType, colorSess)
+Media::CS::CSAYUV_RGB8::CSAYUV_RGB8(NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV_RGB8(srcColor, destColor, yuvType, colorSess)
 {
 	UOSInt i;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();

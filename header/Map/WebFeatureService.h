@@ -16,9 +16,9 @@ namespace Map
 		struct FeatureType
 		{
 			Math::RectAreaDbl wgs84Bounds;
-			NotNullPtr<Text::String> name;
-			NotNullPtr<Text::String> title;
-			NotNullPtr<Text::String> crs;
+			NN<Text::String> name;
+			NN<Text::String> title;
+			NN<Text::String> crs;
 		};
 	public:
 		enum class Version
@@ -30,8 +30,8 @@ namespace Map
 		};
 	private:
 		Optional<Text::EncodingFactory> encFact;
-		NotNullPtr<Text::String> wfsURL;
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Text::String> wfsURL;
+		NN<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;
 
 		Text::String *version;
@@ -39,9 +39,9 @@ namespace Map
 		FeatureType *currFeature;
 
 		void LoadXML(Version version);
-		void LoadXMLFeatureType(NotNullPtr<Text::XMLReader> reader);
+		void LoadXMLFeatureType(NN<Text::XMLReader> reader);
 	public:
-		WebFeatureService(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString wfsURL, Version version);
+		WebFeatureService(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString wfsURL, Version version);
 		virtual ~WebFeatureService();
 
 		Bool IsError() const;

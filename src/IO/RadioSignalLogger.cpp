@@ -3,9 +3,9 @@
 #include "IO/RadioSignalLogger.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(NotNullPtr<Net::WirelessLAN::BSSInfo> bss, const Data::Timestamp &scanTime, AnyType userObj)
+void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(NN<Net::WirelessLAN::BSSInfo> bss, const Data::Timestamp &scanTime, AnyType userObj)
 {
-	NotNullPtr<IO::RadioSignalLogger> me = userObj.GetNN<IO::RadioSignalLogger>();
+	NN<IO::RadioSignalLogger> me = userObj.GetNN<IO::RadioSignalLogger>();
 	if (me->fs)
 	{
 		UTF8Char sbuff[64];
@@ -27,9 +27,9 @@ void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(NotNullPtr<Net::WirelessLAN::
 	}
 }
 
-void __stdcall IO::RadioSignalLogger::OnBTUpdate(NotNullPtr<IO::BTScanLog::ScanRecord3> dev, IO::BTScanner::UpdateType updateType, AnyType userObj)
+void __stdcall IO::RadioSignalLogger::OnBTUpdate(NN<IO::BTScanLog::ScanRecord3> dev, IO::BTScanner::UpdateType updateType, AnyType userObj)
 {
-	NotNullPtr<IO::RadioSignalLogger> me = userObj.GetNN<IO::RadioSignalLogger>();
+	NN<IO::RadioSignalLogger> me = userObj.GetNN<IO::RadioSignalLogger>();
 	if (updateType == IO::BTScanner::UT_RSSI)
 	{
 		UTF8Char sbuff[64];

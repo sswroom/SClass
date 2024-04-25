@@ -17,31 +17,31 @@ namespace SSWR
 		class AVIRHKOForecastForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
-			NotNullPtr<UI::GUIPanel> pnlMain;
-			NotNullPtr<UI::GUILabel> lblLang;
-			NotNullPtr<UI::GUIComboBox> cboLang;
-			NotNullPtr<UI::GUIButton> btnReload;
-			NotNullPtr<UI::GUILabel> lblReqTime;
-			NotNullPtr<UI::GUITextBox> txtReqTime;
-			NotNullPtr<UI::GUILabel> lblUpdateTime;
-			NotNullPtr<UI::GUITextBox> txtUpdateTime;
-			NotNullPtr<UI::GUILabel> lblSeaTemp;
-			NotNullPtr<UI::GUITextBox> txtSeaTemp;
-			NotNullPtr<UI::GUILabel> lblSeaTempPlace;
-			NotNullPtr<UI::GUITextBox> txtSeaTempPlace;
-			NotNullPtr<UI::GUILabel> lblSeaTempTime;
-			NotNullPtr<UI::GUITextBox> txtSeaTempTime;
-			NotNullPtr<UI::GUILabel> lblGeneralSituation;
-			NotNullPtr<UI::GUITextBox> txtGeneralSituation;
-			NotNullPtr<UI::GUIListView> lvForecast;
+			NN<UI::GUIPanel> pnlMain;
+			NN<UI::GUILabel> lblLang;
+			NN<UI::GUIComboBox> cboLang;
+			NN<UI::GUIButton> btnReload;
+			NN<UI::GUILabel> lblReqTime;
+			NN<UI::GUITextBox> txtReqTime;
+			NN<UI::GUILabel> lblUpdateTime;
+			NN<UI::GUITextBox> txtUpdateTime;
+			NN<UI::GUILabel> lblSeaTemp;
+			NN<UI::GUITextBox> txtSeaTemp;
+			NN<UI::GUILabel> lblSeaTempPlace;
+			NN<UI::GUITextBox> txtSeaTempPlace;
+			NN<UI::GUILabel> lblSeaTempTime;
+			NN<UI::GUITextBox> txtSeaTempTime;
+			NN<UI::GUILabel> lblGeneralSituation;
+			NN<UI::GUITextBox> txtGeneralSituation;
+			NN<UI::GUIListView> lvForecast;
 
 			static void __stdcall OnReloadClicked(AnyType userObj);
 			void Reload(Net::HKOWeather::Language lang);
 		public:
-			AVIRHKOForecastForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRHKOForecastForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHKOForecastForm();
 
 			virtual void OnMonitorChanged();

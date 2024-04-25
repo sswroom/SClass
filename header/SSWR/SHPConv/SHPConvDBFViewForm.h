@@ -14,11 +14,11 @@ namespace SSWR
 		class SHPConvDBFViewForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIListView> lvDBF;
+			NN<UI::GUIListView> lvDBF;
 			Media::MonitorMgr *monMgr;
 
 		public:
-			SHPConvDBFViewForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf, SSWR::SHPConv::IMapEng *eng, Text::CString lbl);
+			SHPConvDBFViewForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, DB::DBFFile *dbf, SSWR::SHPConv::IMapEng *eng, Text::CString lbl);
 			virtual ~SHPConvDBFViewForm();
 
 			virtual void OnMonitorChanged();

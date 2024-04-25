@@ -15,7 +15,7 @@ namespace UI
 		virtual ~GUIFolderDialog();
 
 		void SetFolder(Text::CString dirName);
-		NotNullPtr<Text::String> GetFolder() const;
+		NN<Text::String> GetFolder() const;
 		void SetMessage(Text::CStringNN message);
 
 		virtual Bool ShowDialog(ControlHandle *ownerHandle) = 0;

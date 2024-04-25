@@ -27,7 +27,7 @@ UInt32 threadCurrCnt;
 Int32 connLeft;
 Manage::HiResClock *clk;
 Double t;
-NotNullPtr<Net::SocketFactory> sockf;
+NN<Net::SocketFactory> sockf;
 Optional<Net::SSLEngine> ssl;
 
 struct ThreadStatus
@@ -45,8 +45,8 @@ struct ThreadStatus
 
 UInt32 __stdcall ProcessThread(AnyType userObj)
 {
-	NotNullPtr<ThreadStatus> status = userObj.GetNN<ThreadStatus>();
-	NotNullPtr<Net::HTTPClient> cli;
+	NN<ThreadStatus> status = userObj.GetNN<ThreadStatus>();
+	NN<Net::HTTPClient> cli;
 //	UInt8 buff[2048];
 	Text::CStringNN url;
 	Double timeDNS;
@@ -193,7 +193,7 @@ UInt32 __stdcall ProcessThread(AnyType userObj)
 	return 0;
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	paramUrl = CSTR(URL);
 	threadCnt = THREADCNT;

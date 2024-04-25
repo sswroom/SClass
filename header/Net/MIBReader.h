@@ -21,16 +21,16 @@ namespace Net
 		UOSInt currOfst;
 		EscapeType escapeType;
 
-		Bool ReadLineInner(NotNullPtr<Text::StringBuilderUTF8> sb);
-		Bool ReadWord(NotNullPtr<Text::StringBuilderUTF8> sb, Bool move);
+		Bool ReadLineInner(NN<Text::StringBuilderUTF8> sb);
+		Bool ReadWord(NN<Text::StringBuilderUTF8> sb, Bool move);
 	public:
-		MIBReader(NotNullPtr<IO::Stream> stm);
+		MIBReader(NN<IO::Stream> stm);
 		~MIBReader();
 
-		Bool PeekWord(NotNullPtr<Text::StringBuilderUTF8> sb);
-		Bool NextWord(NotNullPtr<Text::StringBuilderUTF8> sb);
-		Bool ReadLine(NotNullPtr<Text::StringBuilderUTF8> sb);
-		Bool GetLastLineBreak(NotNullPtr<Text::StringBuilderUTF8> sb);
+		Bool PeekWord(NN<Text::StringBuilderUTF8> sb);
+		Bool NextWord(NN<Text::StringBuilderUTF8> sb);
+		Bool ReadLine(NN<Text::StringBuilderUTF8> sb);
+		Bool GetLastLineBreak(NN<Text::StringBuilderUTF8> sb);
 	};
 }
 #endif

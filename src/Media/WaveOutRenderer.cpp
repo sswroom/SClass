@@ -99,7 +99,7 @@ void __stdcall Media::WaveOutRenderer::WaveEvents(void *hwo, UInt32 uMsg, UInt32
 
 UInt32 __stdcall Media::WaveOutRenderer::PlayThread(AnyType obj)
 {
-	NotNullPtr<Media::WaveOutRenderer> me = obj.GetNN<Media::WaveOutRenderer>();
+	NN<Media::WaveOutRenderer> me = obj.GetNN<Media::WaveOutRenderer>();
 	Media::AudioFormat af;
 	Sync::Event *evt;
 	WAVEHDR hdrs[4];
@@ -230,7 +230,7 @@ UInt32 __stdcall Media::WaveOutRenderer::PlayThread(AnyType obj)
 	return 0;
 }
 
-UInt32 Media::WaveOutRenderer::GetMSFromTime(void *mmTime, NotNullPtr<const AudioFormat> fmt)
+UInt32 Media::WaveOutRenderer::GetMSFromTime(void *mmTime, NN<const AudioFormat> fmt)
 {
 	MMTIME *mmt = (MMTIME *)mmTime;
 	if (mmt->wType == TIME_MS)
@@ -258,7 +258,7 @@ UInt32 Media::WaveOutRenderer::GetMSFromTime(void *mmTime, NotNullPtr<const Audi
 	}
 }
 
-Data::Duration Media::WaveOutRenderer::GetDurFromTime(void *mmTime, NotNullPtr<const AudioFormat> fmt)
+Data::Duration Media::WaveOutRenderer::GetDurFromTime(void *mmTime, NN<const AudioFormat> fmt)
 {
 	MMTIME *mmt = (MMTIME *)mmTime;
 	if (mmt->wType == TIME_MS)

@@ -9,7 +9,7 @@ struct UI::GTK::GTKListBox::ItemData
 {
 	GtkListBoxRow *row;
 	GtkWidget *lbl;
-	NotNullPtr<Text::String> txt;
+	NN<Text::String> txt;
 	AnyType userData;
 };
 
@@ -61,7 +61,7 @@ void UI::GTK::GTKListBox::SignalShow(GtkWidget *widget, gpointer user_data)
 	me->showTime = Data::DateTimeUtil::GetCurrTimeMillis();
 }
 
-UI::GTK::GTKListBox::GTKListBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool multiSelect) : UI::GUIListBox(ui, parent)
+UI::GTK::GTKListBox::GTKListBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Bool multiSelect) : UI::GUIListBox(ui, parent)
 {
 	this->mulSel = multiSelect;
 	this->listbox = gtk_list_box_new();
@@ -94,7 +94,7 @@ UI::GTK::GTKListBox::~GTKListBox()
 	}
 }
 
-UOSInt UI::GTK::GTKListBox::AddItem(NotNullPtr<Text::String> itemText, AnyType itemObj)
+UOSInt UI::GTK::GTKListBox::AddItem(NN<Text::String> itemText, AnyType itemObj)
 {
 	ItemData *item = MemAlloc(ItemData, 1);
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());

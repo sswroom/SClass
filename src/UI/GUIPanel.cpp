@@ -1,12 +1,12 @@
 #include "Stdafx.h"
 #include "UI/GUIPanel.h"
 
-UI::GUIPanel::GUIPanel(NotNullPtr<GUICore> ui, ControlHandle *parentHWnd) : UI::GUIClientControl(ui, 0)
+UI::GUIPanel::GUIPanel(NN<GUICore> ui, ControlHandle *parentHWnd) : UI::GUIClientControl(ui, 0)
 {
 	this->base = ui->NewPanelBase(*this, parentHWnd);
 }
 
-UI::GUIPanel::GUIPanel(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : UI::GUIClientControl(ui, parent)
+UI::GUIPanel::GUIPanel(NN<GUICore> ui, NN<UI::GUIClientControl> parent) : UI::GUIClientControl(ui, parent)
 {
 	this->base = ui->NewPanelBase(*this, parent);
 }
@@ -51,7 +51,7 @@ void UI::GUIPanel::SetHandle(ControlHandle *hwnd)
 	this->hwnd = hwnd;
 }
 
-NotNullPtr<UI::GUIPanelBase> UI::GUIPanel::GetBase() const
+NN<UI::GUIPanelBase> UI::GUIPanel::GetBase() const
 {
 	return this->base;
 }

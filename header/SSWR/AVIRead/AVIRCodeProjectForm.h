@@ -18,21 +18,21 @@ namespace SSWR
 		class AVIRCodeProjectForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Text::CodeProject *proj;
 
-			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			NotNullPtr<UI::GUILabel> lblConfig;
-			NotNullPtr<UI::GUIComboBox> cboConfig;
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUILabel> lblConfig;
+			NN<UI::GUIComboBox> cboConfig;
 			UI::GUITreeView *tvMain;
-			NotNullPtr<UI::GUIHSplitter> hspMain;
-			NotNullPtr<UI::GUITextBox> txtMessage;
+			NN<UI::GUIHSplitter> hspMain;
+			NN<UI::GUITextBox> txtMessage;
 
 			static void __stdcall OnItemSelected(AnyType userObj);
-			void DisplayStatus(NotNullPtr<Text::StringBuilderUTF8> sb, Text::Cpp::CppParseStatus *status);
+			void DisplayStatus(NN<Text::StringBuilderUTF8> sb, Text::Cpp::CppParseStatus *status);
 			void AddTreeObj(Optional<UI::GUITreeView::TreeItem> parent, Text::CodeContainer *container);
 		public:
-			AVIRCodeProjectForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Text::CodeProject *proj);
+			AVIRCodeProjectForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::CodeProject *proj);
 			virtual ~AVIRCodeProjectForm();
 
 			virtual void OnMonitorChanged();

@@ -12,12 +12,12 @@ namespace Media
 		protected:
 			YUVPARAM yuvParam;
 			RGBPARAM2 rgbParam;
-			NotNullPtr<TransferFunc> frFunc;
-			NotNullPtr<TransferFunc> fgFunc;
-			NotNullPtr<TransferFunc> fbFunc;
-			NotNullPtr<TransferFunc> irFunc;
-			NotNullPtr<TransferFunc> igFunc;
-			NotNullPtr<TransferFunc> ibFunc;
+			NN<TransferFunc> frFunc;
+			NN<TransferFunc> fgFunc;
+			NN<TransferFunc> fbFunc;
+			NN<TransferFunc> irFunc;
+			NN<TransferFunc> igFunc;
+			NN<TransferFunc> ibFunc;
 			Media::ColorProfile srcColor;
 			Media::ColorProfile destColor;
 			Media::ColorProfile::YUVType yuvType;
@@ -32,13 +32,13 @@ namespace Media
 			void SetupYUV_RGB13();
 
 		protected:
-			CSYUV_RGB8(NotNullPtr<const Media::ColorProfile> srcColor, NotNullPtr<const Media::ColorProfile> destColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess);
+			CSYUV_RGB8(NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess);
 			virtual ~CSYUV_RGB8();
 			virtual void UpdateTable();
 
 		public:
-			virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuv);
-			virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgb);
+			virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuv);
+			virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgb);
 			virtual UOSInt GetDestFrameSize(UOSInt width, UOSInt height);
 		};
 	}

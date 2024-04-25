@@ -6,7 +6,7 @@
 #include "Manage/HiResClock.h"
 #include <stdio.h>
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Text::CStringNN fileName = CSTR("/home/sswroom/Progs/Temp/20221116 CAD/dataProcessed/adsb_movement_statistic/ADSB_Movement_Statistic_201904.csv");
 	Manage::HiResClock clk;
@@ -15,7 +15,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		{
 			DB::CSVFile csv(stm, 65001);
 
-			NotNullPtr<DB::DBReader> rdr;
+			NN<DB::DBReader> rdr;
 			if (csv.QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(rdr))
 			{
 				Int32 rowCnt = 0;

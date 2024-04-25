@@ -9,7 +9,7 @@
 #include <stdio.h>
 #endif
 
-Net::SMSGatewayIntersoft::SMSGatewayIntersoft(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<Text::EncodingFactory> encFact, IO::LogTool *log)
+Net::SMSGatewayIntersoft::SMSGatewayIntersoft(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact, IO::LogTool *log)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -85,7 +85,7 @@ Bool Net::SMSGatewayIntersoft::SendSMS(Text::CString userName, Text::CString pas
 	UInt8 dataBuff[2048];
 	UOSInt readSize;
 	Text::StringBuilderUTF8 sbMsg;
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (!cli->IsError())
 	{
 		Int32 status = (Int32)cli->GetRespStatus();

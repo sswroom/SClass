@@ -15,7 +15,7 @@ Bool DB::MDBFileConn::CreateMDBFile(Text::CStringNN fileName)
 	return false;
 }
 
-DB::DBTool *DB::MDBFileConn::CreateDBTool(NotNullPtr<Text::String> fileName, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *DB::MDBFileConn::CreateDBTool(NN<Text::String> fileName, IO::LogTool *log, Text::CString logPrefix)
 {
 	return 0;
 }

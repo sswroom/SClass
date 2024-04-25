@@ -7,7 +7,7 @@
 void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnTextChg(AnyType userObj)
 {
 	UTF8Char sbuff[512];
-	NotNullPtr<SSWR::AVIRead::AVIRGISSearchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISSearchForm>();
+	NN<SSWR::AVIRead::AVIRGISSearchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISSearchForm>();
 	me->txtSearchStr->GetText(sbuff);
 
 	me->layer->ReleaseSearchStr(me->dispList);
@@ -18,8 +18,8 @@ void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnTextChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnResultSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISSearchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISSearchForm>();
-	NotNullPtr<Text::String> s;
+	NN<SSWR::AVIRead::AVIRGISSearchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISSearchForm>();
+	NN<Text::String> s;
 	UOSInt i = me->lbResults->GetSelectedIndex();
 	if (i != INVALID_INDEX && me->lbResults->GetItemTextNew(i).SetTo(s))
 	{
@@ -32,8 +32,8 @@ void __stdcall SSWR::AVIRead::AVIRGISSearchForm::OnResultSelChg(AnyType userObj)
 
 		if (vec)
 		{
-			NotNullPtr<Math::CoordinateSystem> csys1 = me->navi->GetCoordinateSystem();
-			NotNullPtr<Math::CoordinateSystem> csys2 = me->layer->GetCoordinateSystem();
+			NN<Math::CoordinateSystem> csys1 = me->navi->GetCoordinateSystem();
+			NN<Math::CoordinateSystem> csys2 = me->layer->GetCoordinateSystem();
 			if (!csys1->Equals(csys2))
 			{
 				Math::CoordinateSystemConverter converter(csys2, csys1);
@@ -77,7 +77,7 @@ void SSWR::AVIRead::AVIRGISSearchForm::UpdateResults()
 	}
 }
 
-SSWR::AVIRead::AVIRGISSearchForm::AVIRGISSearchForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi, NotNullPtr<Map::MapDrawLayer> layer, Text::SearchIndexer *searching, UOSInt strIndex, Int32 flags) : UI::GUIForm(parent, 320, 360, ui)
+SSWR::AVIRead::AVIRGISSearchForm::AVIRGISSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi, NN<Map::MapDrawLayer> layer, Text::SearchIndexer *searching, UOSInt strIndex, Int32 flags) : UI::GUIForm(parent, 320, 360, ui)
 {
 	this->core = core;
 	this->navi = navi;

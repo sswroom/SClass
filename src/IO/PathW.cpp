@@ -255,7 +255,7 @@ WChar *IO::Path::GetProcessFileNameW(WChar *buff)
 	return &buff[retSize];
 }
 
-Bool IO::Path::GetProcessFileName(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::Path::GetProcessFileName(NN<Text::StringBuilderUTF8> sb)
 {
 	UInt32 retSize;
 	WChar *wptr = MemAlloc(WChar, 1024);
@@ -634,7 +634,7 @@ WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
 	}
 }
 
-Bool IO::Path::AppendPath(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *toAppend, UOSInt toAppendLen)
+Bool IO::Path::AppendPath(NN<Text::StringBuilderUTF8> sb, const UTF8Char *toAppend, UOSInt toAppendLen)
 {
 	UTF8Char pathTmp[512];
 	UTF8Char *lastSep;

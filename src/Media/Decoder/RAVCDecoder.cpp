@@ -333,7 +333,7 @@ void Media::Decoder::RAVCDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 	mutUsage.EndUse();
 }
 
-Media::Decoder::RAVCDecoder::RAVCDecoder(NotNullPtr<IVideoSource> sourceVideo, Bool toRelease, Bool skipHeader) : Media::Decoder::VDecoderBase(sourceVideo)
+Media::Decoder::RAVCDecoder::RAVCDecoder(NN<IVideoSource> sourceVideo, Bool toRelease, Bool skipHeader) : Media::Decoder::VDecoderBase(sourceVideo)
 {
 	Media::FrameInfo info;
 	UOSInt size;
@@ -573,7 +573,7 @@ UOSInt Media::Decoder::RAVCDecoder::ReadFrame(UOSInt frameIndex, UInt8 *buff)
 	return outSize;
 }
 
-Bool Media::Decoder::RAVCDecoder::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::Decoder::RAVCDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	if (this->pps == 0 || this->sps == 0)
 		return false;

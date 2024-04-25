@@ -38,7 +38,7 @@ namespace Map
 			Sync::Event *evt;
 		} ThreadStat;
 	private:
-		NotNullPtr<Media::DrawEngine> eng;
+		NN<Media::DrawEngine> eng;
 		Map::TileMap *map;
 		Parser::ParserList *parsers;
 		Media::IImgResizer *resizer;
@@ -64,7 +64,7 @@ namespace Map
 		void AddTask(CachedImage *cimg);
 		void DrawImage(Map::MapView *view, Media::DrawImage *img, CachedImage *cimg);
 	public:
-		ResizableTileMapRenderer(NotNullPtr<Media::DrawEngine> eng, Map::TileMap *map, Parser::ParserList *parsers, Media::ColorManagerSess *sess, Media::ColorProfile *outputColor);
+		ResizableTileMapRenderer(NN<Media::DrawEngine> eng, Map::TileMap *map, Parser::ParserList *parsers, Media::ColorManagerSess *sess, Media::ColorProfile *outputColor);
 		virtual ~ResizableTileMapRenderer();
 
 		virtual void DrawMap(Media::DrawImage *img, Map::MapView *view);

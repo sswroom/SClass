@@ -18,7 +18,7 @@ Int32 Parser::FileParser::MTKGPSParser::GetName()
 	return *(Int32*)"MTKG";
 }
 
-void Parser::FileParser::MTKGPSParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::MTKGPSParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
@@ -31,7 +31,7 @@ IO::ParserType Parser::FileParser::MTKGPSParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::MTKGPSParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::MTKGPSParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (!fd->GetFullFileName()->EndsWith(UTF8STRC(".bin")))
 	{
@@ -48,7 +48,7 @@ IO::ParsedObject *Parser::FileParser::MTKGPSParser::ParseFileHdr(NotNullPtr<IO::
 	}
 
 	UOSInt i;
-	NotNullPtr<Map::GPSTrack> trk;
+	NN<Map::GPSTrack> trk;
 	Data::ByteBuffer fileBuff((UOSInt)fileLen);
 	if (fd->GetRealData(0, (UOSInt)fileLen, fileBuff) != fileLen)
 	{

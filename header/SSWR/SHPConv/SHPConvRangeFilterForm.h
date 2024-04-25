@@ -18,27 +18,27 @@ namespace SSWR
 		class SHPConvRangeFilterForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIRadioButton> radInRange;
-			NotNullPtr<UI::GUIRadioButton> radOutRange;
-			NotNullPtr<UI::GUILabel> lblX1;
-			NotNullPtr<UI::GUITextBox> txtX1;
-			NotNullPtr<UI::GUILabel> lblY1;
-			NotNullPtr<UI::GUITextBox> txtY1;
-			NotNullPtr<UI::GUIPictureBoxSimple> pbBox;
-			NotNullPtr<UI::GUILabel> lblX2;
-			NotNullPtr<UI::GUITextBox> txtX2;
-			NotNullPtr<UI::GUILabel> lblY2;
-			NotNullPtr<UI::GUITextBox> txtY2;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
-			NotNullPtr<Media::DrawEngine> deng;
+			NN<UI::GUIRadioButton> radInRange;
+			NN<UI::GUIRadioButton> radOutRange;
+			NN<UI::GUILabel> lblX1;
+			NN<UI::GUITextBox> txtX1;
+			NN<UI::GUILabel> lblY1;
+			NN<UI::GUITextBox> txtY1;
+			NN<UI::GUIPictureBoxSimple> pbBox;
+			NN<UI::GUILabel> lblX2;
+			NN<UI::GUITextBox> txtX2;
+			NN<UI::GUILabel> lblY2;
+			NN<UI::GUITextBox> txtY2;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
+			NN<Media::DrawEngine> deng;
 			Media::MonitorMgr *monMgr;
 			MapFilter *filter;
 
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			SHPConvRangeFilterForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<Media::DrawEngine> deng);
+			SHPConvRangeFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::DrawEngine> deng);
 			virtual ~SHPConvRangeFilterForm();
 
 			virtual void OnMonitorChanged();

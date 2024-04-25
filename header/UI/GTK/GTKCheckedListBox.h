@@ -9,7 +9,7 @@ namespace UI
 		class GTKCheckedListBox : public GUICheckedListBox
 		{
 		public:
-			GTKCheckedListBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
+			GTKCheckedListBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 			virtual ~GTKCheckedListBox();
 
 			virtual Bool GetItemChecked(UOSInt index);

@@ -31,11 +31,11 @@ Int32 MyAdd(Int32 a, Int32 b)
 	return a;
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	NotNullPtr<UI::GUICore> ui;
+	NN<UI::GUICore> ui;
 	SSWR::AVIRead::AVIRBaseForm *frm;
-	NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+	NN<SSWR::AVIRead::AVIRCore> core;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UOSInt argc;

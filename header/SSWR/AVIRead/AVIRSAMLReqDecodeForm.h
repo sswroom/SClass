@@ -18,20 +18,20 @@ namespace SSWR
 		class AVIRSAMLReqDecodeForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUILabel> lblRAWRequest;
-			NotNullPtr<UI::GUITextBox> txtRAWRequest;
-			NotNullPtr<UI::GUIButton> btnDecode;
-			NotNullPtr<UI::GUILabel> lblResult;
-			NotNullPtr<UI::GUITextBox> txtResult;
-			NotNullPtr<UI::GUILabel> lblWellFormat;
-			NotNullPtr<UI::GUITextBox> txtWellFormat;
+			NN<UI::GUILabel> lblRAWRequest;
+			NN<UI::GUITextBox> txtRAWRequest;
+			NN<UI::GUIButton> btnDecode;
+			NN<UI::GUILabel> lblResult;
+			NN<UI::GUITextBox> txtResult;
+			NN<UI::GUILabel> lblWellFormat;
+			NN<UI::GUITextBox> txtWellFormat;
 
 		private:
 			static void __stdcall OnDecodeClicked(AnyType userObj);
 		public:
-			AVIRSAMLReqDecodeForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRSAMLReqDecodeForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSAMLReqDecodeForm();
 
 			virtual void OnMonitorChanged();

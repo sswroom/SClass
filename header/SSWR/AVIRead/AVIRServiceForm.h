@@ -17,30 +17,30 @@ namespace SSWR
 		class AVIRServiceForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIListView> lvService;
-			NotNullPtr<UI::GUIHSplitter> hspService;
-			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUIButton> btnStop;
-			NotNullPtr<UI::GUIButton> btnEnable;
-			NotNullPtr<UI::GUIButton> btnDisable;
-			NotNullPtr<UI::GUIButton> btnDelete;
-			NotNullPtr<UI::GUIButton> btnCreate;
-			NotNullPtr<UI::GUIPanel> pnlDetail;
-			NotNullPtr<UI::GUILabel> lblName;
-			NotNullPtr<UI::GUITextBox> txtName;
-			NotNullPtr<UI::GUILabel> lblStatus;
-			NotNullPtr<UI::GUITextBox> txtStatus;
-			NotNullPtr<UI::GUILabel> lblEnabled;
-			NotNullPtr<UI::GUITextBox> txtEnabled;
-			NotNullPtr<UI::GUILabel> lblProcId;
-			NotNullPtr<UI::GUITextBox> txtProcId;
-			NotNullPtr<UI::GUILabel> lblStartTime;
-			NotNullPtr<UI::GUITextBox> txtStartTime;
-			NotNullPtr<UI::GUILabel> lblMemory;
-			NotNullPtr<UI::GUITextBox> txtMemory;
+			NN<UI::GUIListView> lvService;
+			NN<UI::GUIHSplitter> hspService;
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUIButton> btnStop;
+			NN<UI::GUIButton> btnEnable;
+			NN<UI::GUIButton> btnDisable;
+			NN<UI::GUIButton> btnDelete;
+			NN<UI::GUIButton> btnCreate;
+			NN<UI::GUIPanel> pnlDetail;
+			NN<UI::GUILabel> lblName;
+			NN<UI::GUITextBox> txtName;
+			NN<UI::GUILabel> lblStatus;
+			NN<UI::GUITextBox> txtStatus;
+			NN<UI::GUILabel> lblEnabled;
+			NN<UI::GUITextBox> txtEnabled;
+			NN<UI::GUILabel> lblProcId;
+			NN<UI::GUITextBox> txtProcId;
+			NN<UI::GUILabel> lblStartTime;
+			NN<UI::GUITextBox> txtStartTime;
+			NN<UI::GUILabel> lblMemory;
+			NN<UI::GUITextBox> txtMemory;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::ServiceManager svcMgr;
 
 			static void __stdcall OnServiceSelChg(AnyType userObj);
@@ -53,7 +53,7 @@ namespace SSWR
 
 			void UpdateSvcList();
 		public:
-			AVIRServiceForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRServiceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRServiceForm();
 
 			virtual void OnMonitorChanged();

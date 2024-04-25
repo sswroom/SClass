@@ -7,7 +7,7 @@ namespace Net
 	class SSLEngineFactory
 	{
 	public:
-		static Optional<Net::SSLEngine> Create(NotNullPtr<Net::SocketFactory> sockf, Bool skipCertCheck);
+		static Optional<Net::SSLEngine> Create(NN<Net::SocketFactory> sockf, Bool skipCertCheck);
 	};
 }
 #endif

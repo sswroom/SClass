@@ -25,14 +25,14 @@ namespace Data
 		virtual UOSInt IndexOf(T val) const;
 		virtual void Clear();
 		T RemoveLast();
-		NotNullPtr<SyncArrayList> Clone() const;
+		NN<SyncArrayList> Clone() const;
 
 		virtual UOSInt GetCount() const;
 		virtual UOSInt GetCapacity() const;
 
 		virtual T GetItem(UOSInt index) const;
 		virtual void SetItem(UOSInt index, T val);
-		NotNullPtr<Data::ArrayList<T>> GetArrayList(NotNullPtr<Sync::MutexUsage> mutUsage);
+		NN<Data::ArrayList<T>> GetArrayList(NN<Sync::MutexUsage> mutUsage);
 	};
 
 
@@ -101,9 +101,9 @@ namespace Data
 		return 0;
 	}
 
-	template <class T> NotNullPtr<Data::SyncArrayList<T>> Data::SyncArrayList<T>::Clone() const
+	template <class T> NN<Data::SyncArrayList<T>> Data::SyncArrayList<T>::Clone() const
 	{
-		NotNullPtr<Data::SyncArrayList<T>> newArr;
+		NN<Data::SyncArrayList<T>> newArr;
 		Sync::MutexUsage mutUsage(this->mut);
 		NEW_CLASSNN(newArr, Data::SyncArrayList<T>(this->arr.GetCapacity()));
 		newArr->arr.AddRange(&this->arr);
@@ -132,7 +132,7 @@ namespace Data
 		this->arr.SetItem(index, val);
 	}
 
-	template <class T> NotNullPtr<Data::ArrayList<T>> Data::SyncArrayList<T>::GetArrayList(NotNullPtr<Sync::MutexUsage> mutUsage)
+	template <class T> NN<Data::ArrayList<T>> Data::SyncArrayList<T>::GetArrayList(NN<Sync::MutexUsage> mutUsage)
 	{
 		mutUsage->ReplaceMutex(this->mut);
 		return this->arr;

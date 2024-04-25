@@ -17,16 +17,16 @@ namespace SSWR
 			class AVIRMultipartViewer : public AVIRMIMEViewer
 			{
 			private:
-				NotNullPtr<UI::GUITabControl> tcParts;
-				NotNullPtr<UI::GUIPanel> pnlSMIME;
-				NotNullPtr<UI::GUILabel> lblSignState;
-				NotNullPtr<UI::GUITextBox> txtSignState;
+				NN<UI::GUITabControl> tcParts;
+				NN<UI::GUIPanel> pnlSMIME;
+				NN<UI::GUILabel> lblSignState;
+				NN<UI::GUITextBox> txtSignState;
 
 				Data::ArrayList<SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer*> subViewers;
 				Text::MIMEObj::MultipartMIMEObj *obj;
 
 			public:
-				AVIRMultipartViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::MIMEObj::MultipartMIMEObj *obj);
+				AVIRMultipartViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, Text::MIMEObj::MultipartMIMEObj *obj);
 				virtual ~AVIRMultipartViewer();
 			};
 		}

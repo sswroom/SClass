@@ -10,9 +10,9 @@
 
 #define BTTIMEOUT 30000
 
-Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
 {
-	NotNullPtr<Net::WebServer::CapturerWebHandler> me = NotNullPtr<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
+	NN<Net::WebServer::CapturerWebHandler> me = NN<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("<html><head><title>Capture Handler</title>\r\n"));
 	sb.AppendC(UTF8STRC("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>\r\n"));
@@ -24,7 +24,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NotNullPtr<Net::Web
 		sb.AppendTSNoZone(lastScanTime);
 		sb.AppendC(UTF8STRC("<br/>\r\n"));
 		Sync::MutexUsage mutUsage;
-		NotNullPtr<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> logList = me->wifiCapture->GetLogList(mutUsage);
+		NN<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> logList = me->wifiCapture->GetLogList(mutUsage);
 		sb.AppendC(UTF8STRC("<a href=\"wifidet.html\">"));
 		sb.AppendC(UTF8STRC("Wifi Record count = "));
 		sb.AppendUOSInt(logList->GetCount());
@@ -47,7 +47,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NotNullPtr<Net::Web
 	{
 		Int64 currTime = Data::DateTimeUtil::GetCurrTimeMillis();
 		Sync::MutexUsage mutUsage;
-		NotNullPtr<IO::BTScanLog::ScanRecord3> entry;
+		NN<IO::BTScanLog::ScanRecord3> entry;
 		Data::ArrayListNN<IO::BTScanLog::ScanRecord3> logList;
 		logList.AddAll(me->btCapture->GetPublicList(mutUsage));
 		sb.AppendC(UTF8STRC("<a href=\"btdetpub.html\">"));
@@ -94,9 +94,9 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(NotNullPtr<Net::Web
 	return true;
 }
 
-Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
 {
-	NotNullPtr<Net::WebServer::CapturerWebHandler> me = NotNullPtr<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
+	NN<Net::WebServer::CapturerWebHandler> me = NN<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
 	if (me->btCapture == 0)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);
@@ -126,9 +126,9 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(NotNullPtr<Net:
 
 }
 
-Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
 {
-	NotNullPtr<Net::WebServer::CapturerWebHandler> me = NotNullPtr<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
+	NN<Net::WebServer::CapturerWebHandler> me = NN<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
 	if (me->btCapture == 0)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);
@@ -159,16 +159,16 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(NotNullPtr<Net::
 }
 
 
-Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailPubFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailPubFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
 {
-	NotNullPtr<Net::WebServer::CapturerWebHandler> me = NotNullPtr<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
+	NN<Net::WebServer::CapturerWebHandler> me = NN<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
 	if (me->btCapture == 0)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);
 		return true;
 	}
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<const Data::ReadingListNN<IO::BTScanLog::ScanRecord3>> entryList;
+	NN<const Data::ReadingListNN<IO::BTScanLog::ScanRecord3>> entryList;
 
 	Sync::MutexUsage mutUsage;
 	entryList = me->btCapture->GetPublicList(mutUsage);
@@ -190,16 +190,16 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailPubFunc(NotNullPtr<Ne
 	return true;
 }
 
-Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiCurrentFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiCurrentFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
 {
-	NotNullPtr<Net::WebServer::CapturerWebHandler> me = NotNullPtr<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
+	NN<Net::WebServer::CapturerWebHandler> me = NN<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
 	if (me->wifiCapture == 0)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);
 		return true;
 	}
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> entryList;
+	NN<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> entryList;
 
 	Sync::MutexUsage mutUsage;
 	entryList = me->wifiCapture->GetLogList(mutUsage);
@@ -224,16 +224,16 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiCurrentFunc(NotNullPtr<Ne
 	return true;
 }
 
-Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDetailFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDetailFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
 {
-	NotNullPtr<Net::WebServer::CapturerWebHandler> me = NotNullPtr<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
+	NN<Net::WebServer::CapturerWebHandler> me = NN<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
 	if (me->wifiCapture == 0)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);
 		return true;
 	}
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> entryList;
+	NN<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> entryList;
 
 	Sync::MutexUsage mutUsage;
 	entryList = me->wifiCapture->GetLogList(mutUsage);
@@ -256,9 +256,9 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDetailFunc(NotNullPtr<Net
 	return true;
 }
 
-Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svc)
+Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svc)
 {
-	NotNullPtr<Net::WebServer::CapturerWebHandler> me = NotNullPtr<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
+	NN<Net::WebServer::CapturerWebHandler> me = NN<Net::WebServer::CapturerWebHandler>::ConvertFrom(svc);
 	if (me->wifiCapture == 0)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);
@@ -269,8 +269,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(NotNullPtr<N
 	UOSInt j;
 	UOSInt k;
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> entryList;
-	NotNullPtr<Net::WiFiLogFile::LogFileEntry> entry;
+	NN<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> entryList;
+	NN<Net::WiFiLogFile::LogFileEntry> entry;
 	Sync::MutexUsage mutUsage;
 	entryList = me->wifiCapture->GetLogList(mutUsage);
 	i = 0;
@@ -337,15 +337,15 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(NotNullPtr<N
 	return true;
 }
 
-void Net::WebServer::CapturerWebHandler::AppendWiFiTable(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> entryList, const Data::Timestamp &scanTime)
+void Net::WebServer::CapturerWebHandler::AppendWiFiTable(NN<Text::StringBuilderUTF8> sb, NN<Net::WebServer::IWebRequest> req, NN<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> entryList, const Data::Timestamp &scanTime)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UInt32 sort = 0;
 	UOSInt i;
 	UOSInt j;
-	NotNullPtr<Text::String> s;
-	NotNullPtr<Net::WiFiLogFile::LogFileEntry> entry;
+	NN<Text::String> s;
+	NN<Net::WiFiLogFile::LogFileEntry> entry;
 	sptr = req->GetRequestPath(sbuff, 512);
 	sb->AppendC(UTF8STRC("<table border=\"1\">\r\n"));
 	sb->AppendC(UTF8STRC("<tr><td><a href="));
@@ -365,7 +365,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(NotNullPtr<Text::String
 	{
 		sortList.AddAll(entryList);
 		entryList = sortList;
-		Data::Sort::ArtificialQuickSortFunc<NotNullPtr<Net::WiFiLogFile::LogFileEntry>>::Sort(sortList, WiFiLogRSSICompare);
+		Data::Sort::ArtificialQuickSortFunc<NN<Net::WiFiLogFile::LogFileEntry>>::Sort(sortList, WiFiLogRSSICompare);
 	}
 
 	i = 0;
@@ -401,16 +401,16 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(NotNullPtr<Text::String
 	sb->AppendC(UTF8STRC("</table>"));
 }
 
-void Net::WebServer::CapturerWebHandler::AppendBTTable(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<const Data::ReadingListNN<IO::BTScanLog::ScanRecord3>> entryList, Bool inRangeOnly)
+void Net::WebServer::CapturerWebHandler::AppendBTTable(NN<Text::StringBuilderUTF8> sb, NN<Net::WebServer::IWebRequest> req, NN<const Data::ReadingListNN<IO::BTScanLog::ScanRecord3>> entryList, Bool inRangeOnly)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UInt32 sort = 0;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	Int64 currTime = Data::DateTimeUtil::GetCurrTimeMillis();
 	UOSInt i;
 	UOSInt j;
-	NotNullPtr<IO::BTScanLog::ScanRecord3> entry;
+	NN<IO::BTScanLog::ScanRecord3> entry;
 	sptr = req->GetRequestPath(sbuff, 512);
 	sb->AppendC(UTF8STRC("<table border=\"1\">\r\n"));
 	sb->AppendC(UTF8STRC("<tr><td><a href="));
@@ -430,7 +430,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(NotNullPtr<Text::StringBu
 	{
 		sortList.AddAll(entryList);
 		entryList = sortList;
-		Data::Sort::ArtificialQuickSortFunc<NotNullPtr<IO::BTScanLog::ScanRecord3>>::Sort(sortList, BTLogRSSICompare);
+		Data::Sort::ArtificialQuickSortFunc<NN<IO::BTScanLog::ScanRecord3>>::Sort(sortList, BTLogRSSICompare);
 	}
 
 	i = 0;
@@ -514,7 +514,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(NotNullPtr<Text::StringBu
 	sb->AppendC(UTF8STRC("</table>"));
 }
 
-OSInt __stdcall Net::WebServer::CapturerWebHandler::WiFiLogRSSICompare(NotNullPtr<Net::WiFiLogFile::LogFileEntry> obj1, NotNullPtr<Net::WiFiLogFile::LogFileEntry> obj2)
+OSInt __stdcall Net::WebServer::CapturerWebHandler::WiFiLogRSSICompare(NN<Net::WiFiLogFile::LogFileEntry> obj1, NN<Net::WiFiLogFile::LogFileEntry> obj2)
 {
 	if (obj1->lastRSSI == obj2->lastRSSI)
 	{
@@ -549,7 +549,7 @@ OSInt __stdcall Net::WebServer::CapturerWebHandler::WiFiLogRSSICompare(NotNullPt
 	}
 }
 
-OSInt __stdcall Net::WebServer::CapturerWebHandler::BTLogRSSICompare(NotNullPtr<IO::BTScanLog::ScanRecord3> obj1, NotNullPtr<IO::BTScanLog::ScanRecord3> obj2)
+OSInt __stdcall Net::WebServer::CapturerWebHandler::BTLogRSSICompare(NN<IO::BTScanLog::ScanRecord3> obj1, NN<IO::BTScanLog::ScanRecord3> obj2)
 {
 	if (obj1->rssi == obj2->rssi)
 	{

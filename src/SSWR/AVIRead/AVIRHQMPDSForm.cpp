@@ -129,9 +129,9 @@ typedef enum
 	MNU_PB_CHAPTERS = 1000
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHQMPDSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPDSForm>();
+	NN<SSWR::AVIRead::AVIRHQMPDSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPDSForm>();
 	UOSInt i;
 	UOSInt nFiles = files.GetCount();
 
@@ -147,7 +147,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnFileDrop(AnyType userObj, Data::
 
 void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHQMPDSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPDSForm>();
+	NN<SSWR::AVIRead::AVIRHQMPDSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPDSForm>();
 	if (me->dbgFrm)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -230,7 +230,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnTimerTick(AnyType userObj)
 		sb.AppendC(UTF8STRC("Src Gamma: "));
 		sb.AppendDouble(dbg.color.GetRTranParam()->GetGamma());
 		sb.AppendC(UTF8STRC("\r\n"));
-		NotNullPtr<Media::ColorProfile::ColorPrimaries> primaries = dbg.color.GetPrimaries(); 
+		NN<Media::ColorProfile::ColorPrimaries> primaries = dbg.color.GetPrimaries(); 
 		sb.AppendC(UTF8STRC("Src RGB Primary: "));
 		sb.Append(Media::ColorProfile::ColorTypeGetName(primaries->colorType));
 		sb.AppendC(UTF8STRC("\r\n"));
@@ -258,15 +258,15 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnDebugClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm)
+void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnDebugClosed(AnyType userObj, NN<UI::GUIForm> frm)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHQMPDSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPDSForm>();
+	NN<SSWR::AVIRead::AVIRHQMPDSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPDSForm>();
 	me->dbgFrm = 0;
 }
 
 Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenFile(Text::CStringNN fileName, IO::ParserType targetType)
 {
-	NotNullPtr<Parser::ParserList> parsers = this->core->GetParserList();
+	NN<Parser::ParserList> parsers = this->core->GetParserList();
 	IO::ParsedObject *pobj;
 	{
 		IO::StmData::FileData fd(fileName, false);
@@ -365,7 +365,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::CloseFile()
 	this->UpdateMenu();
 }
 
-SSWR::AVIRead::AVIRHQMPDSForm::AVIRHQMPDSForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, QualityMode qMode) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRHQMPDSForm::AVIRHQMPDSForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, QualityMode qMode) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
@@ -387,9 +387,9 @@ SSWR::AVIRead::AVIRHQMPDSForm::AVIRHQMPDSForm(Optional<UI::GUIClientControl> par
 	this->playlist = 0;
 	this->storeTime = -1;
 
-	NotNullPtr<UI::GUIMenu> mnu;
-	NotNullPtr<UI::GUIMenu> mnu2;
-	NotNullPtr<UI::GUIMenu> mnu3;
+	NN<UI::GUIMenu> mnu;
+	NN<UI::GUIMenu> mnu2;
+	NN<UI::GUIMenu> mnu3;
 	NEW_CLASSNN(this->mnu, UI::GUIMainMenu());
 	mnu = this->mnu->AddSubMenu(CSTR("&File"));
 	mnu->AddItem(CSTR("&Open..."), MNU_FILE_OPEN, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_O);
@@ -582,7 +582,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIROpenFileForm dlg(0, this->ui, this->core, IO::ParserType::MediaFile);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				NotNullPtr<Text::String> fname = dlg.GetFileName();
+				NN<Text::String> fname = dlg.GetFileName();
 				UOSInt i = fname->IndexOf(':');
 				if (i == 1 || i == INVALID_INDEX)
 				{
@@ -654,7 +654,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILE_INFO:
 		if (this->dbgFrm == 0)
 		{
-			NotNullPtr<UI::GUIForm> frm;
+			NN<UI::GUIForm> frm;
 			NEW_CLASSNN(frm, UI::GUIForm(0, 320, 360, ui));
 			this->dbgFrm = frm.Ptr();
 			this->txtDebug = ui->NewTextBox(frm, CSTR(""), true);

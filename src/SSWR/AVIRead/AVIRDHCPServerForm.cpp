@@ -9,7 +9,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDHCPServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDHCPServerForm>();
+	NN<SSWR::AVIRead::AVIRDHCPServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDHCPServerForm>();
 	if (me->svr)
 	{
 		DEL_CLASS(me->svr);
@@ -137,7 +137,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDHCPServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDHCPServerForm>();
+	NN<SSWR::AVIRead::AVIRDHCPServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDHCPServerForm>();
 	if (me->svr)
 	{
 		UTF8Char sbuff[64];
@@ -147,7 +147,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(AnyType userObj)
 		UOSInt j;
 		Net::DHCPServer::DeviceStatus *dhcp;
 		const Net::MACInfo::MACEntry *macInfo;
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		Sync::MutexUsage mutUsage;
 		me->svr->UseStatus(mutUsage);
 		const Data::ReadingList<Net::DHCPServer::DeviceStatus*> *dhcpList = me->svr->StatusGetList();
@@ -202,7 +202,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRDHCPServerForm::AVIRDHCPServerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRDHCPServerForm::AVIRDHCPServerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
 	this->sockf = this->core->GetSocketFactory();
@@ -258,7 +258,7 @@ SSWR::AVIRead::AVIRDHCPServerForm::AVIRDHCPServerForm(Optional<UI::GUIClientCont
 	this->lvDevices->AddColumn(CSTR("Vendor Class"), 100);
 
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
-	NotNullPtr<Net::ConnectionInfo> connInfo;
+	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UOSInt i;

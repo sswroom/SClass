@@ -59,7 +59,7 @@ Text::CString IO::USBInfo::GetDispName()
 	return this->clsData->dispName;
 }
 
-UOSInt USBInfo_AppendDevices(NotNullPtr<Data::ArrayList<IO::USBInfo*>> usbList, const Char *clsName)
+UOSInt USBInfo_AppendDevices(NN<Data::ArrayList<IO::USBInfo*>> usbList, const Char *clsName)
 {
 	IO::USBInfo::ClassData clsData;
 	IO::USBInfo *usb;
@@ -122,7 +122,7 @@ UOSInt USBInfo_AppendDevices(NotNullPtr<Data::ArrayList<IO::USBInfo*>> usbList, 
 	return ret;
 }
 
-UOSInt IO::USBInfo::GetUSBList(NotNullPtr<Data::ArrayList<USBInfo*>> usbList)
+UOSInt IO::USBInfo::GetUSBList(NN<Data::ArrayList<USBInfo*>> usbList)
 {
 	UOSInt ret = 0;
 	ret += USBInfo_AppendDevices(usbList, kIOUSBDeviceClassName);

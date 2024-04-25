@@ -30,7 +30,7 @@ Int32 Exporter::XLSXExporter::GetName()
 	return *(Int32*)"XLSX";
 }
 
-IO::FileExporter::SupportType Exporter::XLSXExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
+IO::FileExporter::SupportType Exporter::XLSXExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::Workbook)
 	{
@@ -50,15 +50,15 @@ Bool Exporter::XLSXExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF
 	return false;
 }
 
-Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	if (pobj->GetParserType() != IO::ParserType::Workbook)
 	{
 		return false;
 	}
-	NotNullPtr<Text::SpreadSheet::Workbook> workbook = NotNullPtr<Text::SpreadSheet::Workbook>::ConvertFrom(pobj);
-	NotNullPtr<Text::SpreadSheet::Worksheet> sheet;
-	NotNullPtr<Text::SpreadSheet::CellStyle> tmpStyle;
+	NN<Text::SpreadSheet::Workbook> workbook = NN<Text::SpreadSheet::Workbook>::ConvertFrom(pobj);
+	NN<Text::SpreadSheet::Worksheet> sheet;
+	NN<Text::SpreadSheet::CellStyle> tmpStyle;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbContTypes;
 	UTF8Char sbuff[256];
@@ -66,8 +66,8 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 	Data::Timestamp ts;
 	Data::DateTime dt2;
 	Data::DateTime *t;
-	NotNullPtr<Text::String> s;
-	NotNullPtr<Text::String> s2;
+	NN<Text::String> s;
+	NN<Text::String> s2;
 	const UTF8Char *csptr;
 	IO::ZIPBuilder *zip;
 	UOSInt i;
@@ -98,7 +98,7 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 	sbContTypes.AppendC(UTF8STRC("<Default Extension=\"png\" ContentType=\"image/png\"/>"));
 	sbContTypes.AppendC(UTF8STRC("<Default Extension=\"jpeg\" ContentType=\"image/jpeg\"/>"));
 
-	Data::ArrayIterator<NotNullPtr<Text::SpreadSheet::Worksheet>> itSheet = workbook->Iterator();
+	Data::ArrayIterator<NN<Text::SpreadSheet::Worksheet>> itSheet = workbook->Iterator();
 	i = 0;
 	while (itSheet.HasNext())
 	{
@@ -793,12 +793,12 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 		numFmtMap.Put(csptr, numFmts.GetCount());
 		numFmts.Add(csptr);
 
-		Data::ArrayIterator<NotNullPtr<Text::SpreadSheet::CellStyle>> itStyle = workbook->StyleIterator();
+		Data::ArrayIterator<NN<Text::SpreadSheet::CellStyle>> itStyle = workbook->StyleIterator();
 		i = 0;
 		while (itStyle.HasNext())
 		{
-			NotNullPtr<Text::SpreadSheet::CellStyle> style = itStyle.Next();
-			NotNullPtr<Text::String> optS;
+			NN<Text::SpreadSheet::CellStyle> style = itStyle.Next();
+			NN<Text::String> optS;
 			if (!style->GetDataFormat().SetTo(optS))
 			{
 				csptr = (const UTF8Char*)"general";
@@ -991,7 +991,7 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 			k = workbook->GetStyleCount();
 			while (i < k)
 			{
-				NotNullPtr<Text::SpreadSheet::CellStyle> style;
+				NN<Text::SpreadSheet::CellStyle> style;
 				if (workbook->GetStyle(i).SetTo(style))
 				{
 					AppendXF(sb, style, borders, workbook, numFmtMap);
@@ -1189,7 +1189,7 @@ Bool Exporter::XLSXExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 	return true;
 }
 
-void Exporter::XLSXExporter::AppendFill(NotNullPtr<Text::StringBuilderUTF8> sb, OfficeFill *fill)
+void Exporter::XLSXExporter::AppendFill(NN<Text::StringBuilderUTF8> sb, OfficeFill *fill)
 {
 	if (fill == 0)
 		return;
@@ -1217,7 +1217,7 @@ void Exporter::XLSXExporter::AppendFill(NotNullPtr<Text::StringBuilderUTF8> sb, 
 	}
 }
 
-void Exporter::XLSXExporter::AppendLineStyle(NotNullPtr<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeLineStyle *lineStyle)
+void Exporter::XLSXExporter::AppendLineStyle(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeLineStyle *lineStyle)
 {
 	if (lineStyle == 0)
 		return;
@@ -1226,7 +1226,7 @@ void Exporter::XLSXExporter::AppendLineStyle(NotNullPtr<Text::StringBuilderUTF8>
 	sb->AppendC(UTF8STRC("</a:ln>"));
 }
 
-void Exporter::XLSXExporter::AppendTitle(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *title)
+void Exporter::XLSXExporter::AppendTitle(NN<Text::StringBuilderUTF8> sb, const UTF8Char *title)
 {
 	sb->AppendC(UTF8STRC("<c:title>"));
 	sb->AppendC(UTF8STRC("<c:tx>"));
@@ -1240,7 +1240,7 @@ void Exporter::XLSXExporter::AppendTitle(NotNullPtr<Text::StringBuilderUTF8> sb,
 	sb->AppendC(UTF8STRC("<a:r>"));
 	sb->AppendC(UTF8STRC("<a:rPr lang=\"en-HK\"/>"));
 	sb->AppendC(UTF8STRC("<a:t>"));
-	NotNullPtr<Text::String> s = Text::XML::ToNewXMLText(title);
+	NN<Text::String> s = Text::XML::ToNewXMLText(title);
 	sb->Append(s);
 	s->Release();
 	sb->AppendC(UTF8STRC("</a:t>"));
@@ -1253,7 +1253,7 @@ void Exporter::XLSXExporter::AppendTitle(NotNullPtr<Text::StringBuilderUTF8> sb,
 	sb->AppendC(UTF8STRC("</c:title>"));
 }
 
-void Exporter::XLSXExporter::AppendShapeProp(NotNullPtr<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeShapeProp *shapeProp)
+void Exporter::XLSXExporter::AppendShapeProp(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeShapeProp *shapeProp)
 {
 	if (shapeProp == 0)
 		return;
@@ -1263,11 +1263,11 @@ void Exporter::XLSXExporter::AppendShapeProp(NotNullPtr<Text::StringBuilderUTF8>
 	sb->AppendC(UTF8STRC("</c:spPr>"));
 }
 
-void Exporter::XLSXExporter::AppendAxis(NotNullPtr<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeChartAxis *axis, UOSInt index)
+void Exporter::XLSXExporter::AppendAxis(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeChartAxis *axis, UOSInt index)
 {
 	if (axis == 0)
 		return;
-	NotNullPtr<Text::String> s;	
+	NN<Text::String> s;	
 	switch (axis->GetAxisType())
 	{
 	case AxisType::Category:
@@ -1353,9 +1353,9 @@ void Exporter::XLSXExporter::AppendAxis(NotNullPtr<Text::StringBuilderUTF8> sb, 
 	}
 }
 
-void Exporter::XLSXExporter::AppendSeries(NotNullPtr<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeChartSeries *series, UOSInt index)
+void Exporter::XLSXExporter::AppendSeries(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeChartSeries *series, UOSInt index)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	sb->AppendC(UTF8STRC("<c:ser>"));
 	sb->AppendC(UTF8STRC("<c:idx val=\""));
 	sb->AppendUOSInt(index);
@@ -1448,7 +1448,7 @@ void Exporter::XLSXExporter::AppendSeries(NotNullPtr<Text::StringBuilderUTF8> sb
 	UOSInt lastCol = valData->GetLastCol();
 	if (firstRow == lastRow)
 	{
-		NotNullPtr<Worksheet> sheet = valData->GetSheet();
+		NN<Worksheet> sheet = valData->GetSheet();
 		sb->AppendC(UTF8STRC("<c:numCache>"));
 		sb->AppendC(UTF8STRC("<c:ptCount val=\""));
 		sb->AppendUOSInt(lastCol - firstCol + 1);
@@ -1477,7 +1477,7 @@ void Exporter::XLSXExporter::AppendSeries(NotNullPtr<Text::StringBuilderUTF8> sb
 	}
 	else if (firstCol == lastCol)
 	{
-		NotNullPtr<Worksheet> sheet = valData->GetSheet();
+		NN<Worksheet> sheet = valData->GetSheet();
 		sb->AppendC(UTF8STRC("<c:numCache>"));
 		sb->AppendC(UTF8STRC("<c:ptCount val=\""));
 		sb->AppendUOSInt(lastRow - firstRow + 1);
@@ -1522,7 +1522,7 @@ void Exporter::XLSXExporter::AppendSeries(NotNullPtr<Text::StringBuilderUTF8> sb
 	sb->AppendC(UTF8STRC("</c:ser>"));
 }
 
-void Exporter::XLSXExporter::AppendBorder(NotNullPtr<Text::StringBuilderUTF8> sb, Text::SpreadSheet::CellStyle::BorderStyle border, Text::CString name)
+void Exporter::XLSXExporter::AppendBorder(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::CellStyle::BorderStyle border, Text::CString name)
 {
 	sb->AppendUTF8Char('<');
 	sb->Append(name);
@@ -1585,13 +1585,13 @@ void Exporter::XLSXExporter::AppendBorder(NotNullPtr<Text::StringBuilderUTF8> sb
 	}
 }
 
-void Exporter::XLSXExporter::AppendXF(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Text::SpreadSheet::CellStyle> style, NotNullPtr<Data::ArrayList<BorderInfo*>> borders, NotNullPtr<Text::SpreadSheet::Workbook> workbook, NotNullPtr<Data::StringUTF8Map<UOSInt>> numFmtMap)
+void Exporter::XLSXExporter::AppendXF(NN<Text::StringBuilderUTF8> sb, NN<Text::SpreadSheet::CellStyle> style, NN<Data::ArrayList<BorderInfo*>> borders, NN<Text::SpreadSheet::Workbook> workbook, NN<Data::StringUTF8Map<UOSInt>> numFmtMap)
 {
 	UOSInt k;
 	const UTF8Char *csptr;
 	BorderInfo *border;
 	Text::SpreadSheet::WorkbookFont *font = style->GetFont();
-	NotNullPtr<Text::String> optS;
+	NN<Text::String> optS;
 	if (!style->GetDataFormat().SetTo(optS))
 	{
 		csptr = (const UTF8Char*)"general";

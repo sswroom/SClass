@@ -18,34 +18,34 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				NotNullPtr<Text::String> fileName;
+				NN<Text::String> fileName;
 				UOSInt codeCnt;
 				UOSInt nonEmpyCnt;
 				UOSInt totalLineCnt;
 			} FileInfo;
 		private:
-			NotNullPtr<UI::GUIPanel> pnlConfig;
-			NotNullPtr<UI::GUILabel> lblPath;
-			NotNullPtr<UI::GUITextBox> txtPath;
-			NotNullPtr<UI::GUILabel> lblExtensions;
-			NotNullPtr<UI::GUITextBox> txtExtensions;
-			NotNullPtr<UI::GUIButton> btnExtensionsAdd;
-			NotNullPtr<UI::GUIListBox> lbExtensions;
-			NotNullPtr<UI::GUIButton> btnExtensionsRemove;
-			NotNullPtr<UI::GUIButton> btnExtensionsClear;
-			NotNullPtr<UI::GUIButton> btnCalc;
-			NotNullPtr<UI::GUILabel> lblResult;
-			NotNullPtr<UI::GUILabel> lblTotalLine;
-			NotNullPtr<UI::GUITextBox> txtTotalLine;
-			NotNullPtr<UI::GUILabel> lblNonEmpty;
-			NotNullPtr<UI::GUITextBox> txtNonEmpty;
-			NotNullPtr<UI::GUILabel> lblCode;
-			NotNullPtr<UI::GUITextBox> txtCode;
-			NotNullPtr<UI::GUIButton> btnResultSave;
+			NN<UI::GUIPanel> pnlConfig;
+			NN<UI::GUILabel> lblPath;
+			NN<UI::GUITextBox> txtPath;
+			NN<UI::GUILabel> lblExtensions;
+			NN<UI::GUITextBox> txtExtensions;
+			NN<UI::GUIButton> btnExtensionsAdd;
+			NN<UI::GUIListBox> lbExtensions;
+			NN<UI::GUIButton> btnExtensionsRemove;
+			NN<UI::GUIButton> btnExtensionsClear;
+			NN<UI::GUIButton> btnCalc;
+			NN<UI::GUILabel> lblResult;
+			NN<UI::GUILabel> lblTotalLine;
+			NN<UI::GUITextBox> txtTotalLine;
+			NN<UI::GUILabel> lblNonEmpty;
+			NN<UI::GUITextBox> txtNonEmpty;
+			NN<UI::GUILabel> lblCode;
+			NN<UI::GUITextBox> txtCode;
+			NN<UI::GUIButton> btnResultSave;
 
-			NotNullPtr<UI::GUIListView> lvResult;
+			NN<UI::GUIListView> lvResult;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayListStringNN extList;
 			Data::ArrayList<FileInfo *> resList;
 
@@ -59,7 +59,7 @@ namespace SSWR
 			void ClearExts(Bool inclDisp);
 			void ClearResult(Bool inclDisp);
 		public:
-			AVIRLineCounterForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRLineCounterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLineCounterForm();
 
 			virtual void OnMonitorChanged();

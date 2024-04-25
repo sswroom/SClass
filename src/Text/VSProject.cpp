@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "Text/VSProject.h"
 
-Text::VSFile::VSFile(NotNullPtr<Text::String> fileName)
+Text::VSFile::VSFile(NN<Text::String> fileName)
 {
 	this->fileName = fileName->Clone();
 }
@@ -18,12 +18,12 @@ Text::VSFile::~VSFile()
 	this->fileName->Release();
 }
 
-NotNullPtr<Text::String> Text::VSFile::GetFileName() const
+NN<Text::String> Text::VSFile::GetFileName() const
 {
 	return this->fileName;
 }
 
-Text::VSContainer::VSContainer(NotNullPtr<Text::String> contName)
+Text::VSContainer::VSContainer(NN<Text::String> contName)
 {
 	this->contName = contName->Clone();
 }
@@ -55,7 +55,7 @@ void Text::VSContainer::SetContainerName(Text::CString contName)
 	}
 }
 
-NotNullPtr<Text::String> Text::VSContainer::GetContainerName() const
+NN<Text::String> Text::VSContainer::GetContainerName() const
 {
 	return this->contName;
 }
@@ -128,7 +128,7 @@ void Text::VSProject::SetProjectName(Text::CString projName)
 	}
 }
 
-NotNullPtr<Text::String> Text::VSProject::GetContainerName() const
+NN<Text::String> Text::VSProject::GetContainerName() const
 {
 	return this->projName;
 }

@@ -6,7 +6,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::AddStyleClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
+	NN<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
 	UOSInt newStyle = me->env->AddFontStyle(CSTR("Unnamed"), CSTR("Arial"), 12, false, 0xff000000, 0, 0xff000000);
 
 	SSWR::AVIRead::AVIRGISFontEditForm frm(0, me->ui, me->core, me->env, me->eng, newStyle);
@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::AddStyleClicked(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::RemoveStyleClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
+	NN<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
 	me->env->RemoveFontStyle(me->fontStyle);
 	me->fsFonts->UpdateFontStyles();
 	me->fsFonts->Redraw();
@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::RemoveStyleClicked(AnyType u
 
 void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::EditStyleClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
+	NN<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
 	if (me->fontStyle < me->env->GetFontStyleCount())
 	{
 		SSWR::AVIRead::AVIRGISFontEditForm frm(0, me->ui, me->core, me->env, me->eng, me->fontStyle);
@@ -46,26 +46,26 @@ void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::EditStyleClicked(AnyType use
 
 void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::FontsSelectedChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
+	NN<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
 	UOSInt i = me->fsFonts->GetSelectedFontStyle();
 	me->fontStyle = i;
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::FontsDoubleClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
+	NN<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::OKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
+	NN<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISFontStyleForm::CancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
+	NN<SSWR::AVIRead::AVIRGISFontStyleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontStyleForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
@@ -75,7 +75,7 @@ void SSWR::AVIRead::AVIRGISFontStyleForm::UpdatePreview()
 	this->fsFonts->Redraw();
 }
 
-SSWR::AVIRead::AVIRGISFontStyleForm::AVIRGISFontStyleForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, NotNullPtr<Media::DrawEngine> eng, UOSInt fontStyle) : UI::GUIForm(parent, 480, 306, ui)
+SSWR::AVIRead::AVIRGISFontStyleForm::AVIRGISFontStyleForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Media::DrawEngine> eng, UOSInt fontStyle) : UI::GUIForm(parent, 480, 306, ui)
 {
 	this->core = core;
 	this->env = env;
@@ -136,11 +136,11 @@ void SSWR::AVIRead::AVIRGISFontStyleForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRGISFontStyleForm::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
+void SSWR::AVIRead::AVIRGISFontStyleForm::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void SSWR::AVIRead::AVIRGISFontStyleForm::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void SSWR::AVIRead::AVIRGISFontStyleForm::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 }
 

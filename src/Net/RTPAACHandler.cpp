@@ -221,7 +221,7 @@ Bool Net::RTPAACHandler::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, In
 	return false;
 }
 
-void Net::RTPAACHandler::GetFormat(NotNullPtr<Media::AudioFormat> format)
+void Net::RTPAACHandler::GetFormat(NN<Media::AudioFormat> format)
 {
 	format->Clear();
 	format->formatId = 255;

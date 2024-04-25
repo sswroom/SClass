@@ -19,10 +19,10 @@ namespace UI
 
 			static OSInt __stdcall LBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
 		public:
-			WinListBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool multiSelect);
+			WinListBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Bool multiSelect);
 			virtual ~WinListBox();
 
-			virtual UOSInt AddItem(NotNullPtr<Text::String> itemText, AnyType itemObj);
+			virtual UOSInt AddItem(NN<Text::String> itemText, AnyType itemObj);
 			virtual UOSInt AddItem(Text::CStringNN itemText, AnyType itemObj);
 			UOSInt AddItem(const WChar *itemText, AnyType itemObj);
 			virtual UOSInt InsertItem(UOSInt index, Text::String *itemText, AnyType itemObj);

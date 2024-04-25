@@ -13,7 +13,7 @@ void Media::AudioFilter::AudioSampleRipper::ResetStatus()
 	this->changed = true;
 }
 
-Media::AudioFilter::AudioSampleRipper::AudioSampleRipper(NotNullPtr<Media::IAudioSource> sourceAudio, UInt32 sampleCount) : Media::IAudioFilter(sourceAudio)
+Media::AudioFilter::AudioSampleRipper::AudioSampleRipper(NN<Media::IAudioSource> sourceAudio, UInt32 sampleCount) : Media::IAudioFilter(sourceAudio)
 {
 	Media::AudioFormat fmt;
 	this->soundBuff = 0;

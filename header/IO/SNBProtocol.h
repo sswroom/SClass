@@ -10,7 +10,7 @@ namespace IO
 	public:
 		typedef void (__stdcall *ProtocolHandler)(AnyType userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd);
 	public:
-		NotNullPtr<IO::Stream> stm;
+		NN<IO::Stream> stm;
 		ProtocolHandler protoHdlr;
 		AnyType protoObj;
 
@@ -19,7 +19,7 @@ namespace IO
 
 		static UInt32 __stdcall RecvThread(AnyType userObj);
 	public:
-		SNBProtocol(NotNullPtr<IO::Stream> stm, ProtocolHandler protoHdlr, AnyType userObj);
+		SNBProtocol(NN<IO::Stream> stm, ProtocolHandler protoHdlr, AnyType userObj);
 		~SNBProtocol();
 
 		void SendCommand(UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd);

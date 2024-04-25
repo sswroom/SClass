@@ -5,7 +5,7 @@
 
 void __stdcall UtilUI::TextSearchForm::OnSearchClicked(AnyType userObj)
 {
-	NotNullPtr<UtilUI::TextSearchForm> me = userObj.GetNN<UtilUI::TextSearchForm>();
+	NN<UtilUI::TextSearchForm> me = userObj.GetNN<UtilUI::TextSearchForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtSearch->GetText(sb);
 	if (sb.GetLength() > 0)
@@ -16,11 +16,11 @@ void __stdcall UtilUI::TextSearchForm::OnSearchClicked(AnyType userObj)
 
 void __stdcall UtilUI::TextSearchForm::OnCloseClicked(AnyType userObj)
 {
-	NotNullPtr<UtilUI::TextSearchForm> me = userObj.GetNN<UtilUI::TextSearchForm>();
+	NN<UtilUI::TextSearchForm> me = userObj.GetNN<UtilUI::TextSearchForm>();
 	me->Close();
 }
 
-UtilUI::TextSearchForm::TextSearchForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, Media::MonitorMgr *monMgr, UtilUI::TextViewerForm *mainFrm) : UI::GUIForm(parent, 320, 120, ui)
+UtilUI::TextSearchForm::TextSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, Media::MonitorMgr *monMgr, UtilUI::TextViewerForm *mainFrm) : UI::GUIForm(parent, 320, 120, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Search"));

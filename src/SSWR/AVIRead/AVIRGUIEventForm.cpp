@@ -4,7 +4,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnLogSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGUIEventForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGUIEventForm>();
+	NN<SSWR::AVIRead::AVIRGUIEventForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGUIEventForm>();
 	Optional<Text::String> s = me->lbLog->GetSelectedItemTextNew();
 	me->txtLog->SetText(Text::String::OrEmpty(s)->ToCString());
 	OPTSTR_DEL(s);
@@ -12,21 +12,21 @@ void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnLogSelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnDisplayOffClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGUIEventForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGUIEventForm>();
+	NN<SSWR::AVIRead::AVIRGUIEventForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGUIEventForm>();
 	me->log->LogMessage(CSTR("DisplayOff"), IO::LogHandler::LogLevel::Action);
 	me->ui->DisplayOff();
 }
 
 void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnKeyDown(AnyType userObj, UOSInt keyCode, Bool extendedKey)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGUIEventForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGUIEventForm>();
+	NN<SSWR::AVIRead::AVIRGUIEventForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGUIEventForm>();
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Key Down - "));
 	sb.Append(GUIKeyGetName(OSKey2GUIKey((UInt32)keyCode)));
 	me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 }
 
-SSWR::AVIRead::AVIRGUIEventForm::AVIRGUIEventForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRGUIEventForm::AVIRGUIEventForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("GUI Event"));

@@ -56,23 +56,23 @@ namespace Map
 		static UInt32 __stdcall MapThread(AnyType obj);
 
 	private:
-		void DrawVector(NotNullPtr<Math::Geometry::Vector2D> vec);
-		void DrawPoint(NotNullPtr<Math::Geometry::Point> pt);
-		void DrawLineString(NotNullPtr<Math::Geometry::LineString> pl);
-		void DrawPolyline(NotNullPtr<Math::Geometry::Polyline> pl);
-		void DrawPolygon(NotNullPtr<Math::Geometry::Polygon> pg);
-		void DrawMultiPolygon(NotNullPtr<Math::Geometry::MultiPolygon> mpg);
-		void DrawMultiSurface(NotNullPtr<Math::Geometry::MultiSurface> ms);
-		void DrawCurvePolygon(NotNullPtr<Math::Geometry::CurvePolygon> cp);
-		void DrawGeometryCollection(NotNullPtr<Math::Geometry::GeometryCollection> geomColl);
+		void DrawVector(NN<Math::Geometry::Vector2D> vec);
+		void DrawPoint(NN<Math::Geometry::Point> pt);
+		void DrawLineString(NN<Math::Geometry::LineString> pl);
+		void DrawPolyline(NN<Math::Geometry::Polyline> pl);
+		void DrawPolygon(NN<Math::Geometry::Polygon> pg);
+		void DrawMultiPolygon(NN<Math::Geometry::MultiPolygon> mpg);
+		void DrawMultiSurface(NN<Math::Geometry::MultiSurface> ms);
+		void DrawCurvePolygon(NN<Math::Geometry::CurvePolygon> cp);
+		void DrawGeometryCollection(NN<Math::Geometry::GeometryCollection> geomColl);
 	public:
 		MapScheduler();
 		virtual ~MapScheduler();
 
-		void SetMapView(NotNullPtr<Map::MapView> map, NotNullPtr<Media::DrawImage> img);
-		void SetDrawType(NotNullPtr<Map::MapDrawLayer> lyr, Optional<Media::DrawPen> p, Optional<Media::DrawBrush> b, Media::DrawImage *ico, Double icoSpotX, Double icoSpotY, Bool *isLayerEmpty);
+		void SetMapView(NN<Map::MapView> map, NN<Media::DrawImage> img);
+		void SetDrawType(NN<Map::MapDrawLayer> lyr, Optional<Media::DrawPen> p, Optional<Media::DrawBrush> b, Media::DrawImage *ico, Double icoSpotX, Double icoSpotY, Bool *isLayerEmpty);
 		void SetDrawObjs(Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxCnt);
-		void Draw(NotNullPtr<Math::Geometry::Vector2D> vec);
+		void Draw(NN<Math::Geometry::Vector2D> vec);
 		void DrawNextType(Optional<Media::DrawPen> p, Optional<Media::DrawBrush> b);
 		void WaitForFinish();
 	};

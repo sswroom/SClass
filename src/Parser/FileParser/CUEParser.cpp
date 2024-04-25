@@ -27,7 +27,7 @@ void Parser::FileParser::CUEParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::CUEParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::CUEParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
@@ -40,7 +40,7 @@ IO::ParserType Parser::FileParser::CUEParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::CUEParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::CUEParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];

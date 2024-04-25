@@ -29,8 +29,8 @@ namespace Manage
 		Bool SupportIntelDTS(); //Digital Thermal Sensor
 
 		UOSInt GetInfoCnt();
-		Bool GetInfoName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
-		Bool GetInfoValue(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
+		Bool GetInfoName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
+		Bool GetInfoValue(UOSInt index, NN<Text::StringBuilderUTF8> sb);
 		UOSInt GetCacheInfoList(Data::ArrayList<const UTF8Char*> *infoList);
 		void GetFeatureFlags(Int32 *flag1, Int32 *flag2);
 
@@ -43,8 +43,8 @@ namespace Manage
 		static Text::CStringNN GetFeatureShortName(UOSInt index);
 		static Text::CStringNN GetFeatureName(UOSInt index);
 		static Text::CStringNN GetFeatureDesc(UOSInt index);
-		static void AppendNameInfo10(UInt32 ecxv, UInt32 edxv, NotNullPtr<Text::StringBuilderUTF8> sb);
-		static void AppendNameInfo11(UInt32 ecxv, UInt32 edxv, NotNullPtr<Text::StringBuilderUTF8> sb);
+		static void AppendNameInfo10(UInt32 ecxv, UInt32 edxv, NN<Text::StringBuilderUTF8> sb);
+		static void AppendNameInfo11(UInt32 ecxv, UInt32 edxv, NN<Text::StringBuilderUTF8> sb);
 	};
 }
 

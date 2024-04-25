@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/FileStream.h"
 
-IO::FileStream::FileStream(NotNullPtr<Text::String> fileName, IO::FileMode mode, FileShare share, IO::FileStream::BufferType buffType) : IO::SeekableStream(fileName)
+IO::FileStream::FileStream(NN<Text::String> fileName, IO::FileMode mode, FileShare share, IO::FileStream::BufferType buffType) : IO::SeekableStream(fileName)
 {
 	this->handle = 0;
 	this->currPos = -1;

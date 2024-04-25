@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "UI/GUIComboBox.h"
 
-UI::GUIComboBox::GUIComboBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
+UI::GUIComboBox::GUIComboBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
 {
 	this->autoComplete = false;
 	this->nonUIEvent = false;
@@ -31,8 +31,8 @@ void UI::GUIComboBox::EventTextChanged()
 		if (sb.GetLength() > this->lastTextLeng)
 		{
 			this->nonUIEvent = true;
-			Data::ArrayIterator<NotNullPtr<Text::String>> it = this->itemTexts.Iterator();
-			NotNullPtr<Text::String> s;
+			Data::ArrayIterator<NN<Text::String>> it = this->itemTexts.Iterator();
+			NN<Text::String> s;
 			while (it.HasNext())
 			{
 				s = it.Next();
@@ -53,7 +53,7 @@ void UI::GUIComboBox::EventTextChanged()
 UTF8Char *UI::GUIComboBox::GetSelectedItemText(UTF8Char *sbuff)
 {
 	UOSInt i = this->GetSelectedIndex();
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (i == INVALID_INDEX || !this->itemTexts.GetItem(i).SetTo(s))
 		return 0;
 	return Text::StrConcatC(sbuff, s->v, s->leng);
@@ -61,7 +61,7 @@ UTF8Char *UI::GUIComboBox::GetSelectedItemText(UTF8Char *sbuff)
 
 UTF8Char *UI::GUIComboBox::GetItemText(UTF8Char *buff, UOSInt index)
 {
-	NotNullPtr<Text::String> txt;
+	NN<Text::String> txt;
 	if (!this->itemTexts.GetItem(index).SetTo(txt))
 		return 0;
 	return Text::StrConcatC(buff, txt->v, txt->leng);

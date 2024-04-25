@@ -25,7 +25,7 @@ namespace Win32
 		virtual ConnType GetConnType() const;
 		virtual Int8 GetTzQhr() const;
 		virtual void ForceTz(Int8 tzQhr);
-		virtual void GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual void GetConnName(NN<Text::StringBuilderUTF8> sb);
 		virtual void Close();
 		virtual OSInt ExecuteNonQuery(Text::CStringNN sql);
 		OSInt ExecuteNonQueryW(const WChar *sql);
@@ -34,13 +34,13 @@ namespace Win32
 		virtual Bool IsLastDataError();
 
 		virtual Optional<DB::DBTransaction> BeginTransaction();
-		virtual void Commit(NotNullPtr<DB::DBTransaction> tran);
-		virtual void Rollback(NotNullPtr<DB::DBTransaction> tran);
+		virtual void Commit(NN<DB::DBTransaction> tran);
+		virtual void Rollback(NN<DB::DBTransaction> tran);
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
 		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
-		virtual void CloseReader(NotNullPtr<DB::DBReader> reader);
-		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
+		virtual void CloseReader(NN<DB::DBReader> reader);
+		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
 
 		const WChar *GetNS();

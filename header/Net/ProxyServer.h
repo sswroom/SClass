@@ -11,19 +11,19 @@ namespace Net
 	class ProxyServer
 	{
 	private:
-		NotNullPtr<Net::SocketFactory> sockf;
-		NotNullPtr<IO::LogTool> log;
+		NN<Net::SocketFactory> sockf;
+		NN<IO::LogTool> log;
 		UInt16 port;
 		Net::TCPServer *svr;
 		Net::TCPClientMgr *cliMgr;
 
 		static void __stdcall OnClientConn(Socket *s, AnyType userObj);
-		static void __stdcall OnClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
-		static void __stdcall OnClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
-		static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
+		static void __stdcall OnClientEvent(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
+		static void __stdcall OnClientData(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
+		static void __stdcall OnClientTimeout(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
 
 	public:
-		ProxyServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log, Bool autoStart);
+		ProxyServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log, Bool autoStart);
 		~ProxyServer();
 
 		Bool Start();

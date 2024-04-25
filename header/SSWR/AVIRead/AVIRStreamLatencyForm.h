@@ -22,36 +22,36 @@ namespace SSWR
 		class AVIRStreamLatencyForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::SiLabDriver *siLabDriver;
 
-			NotNullPtr<UI::GUIGroupBox> grpStream;
-			NotNullPtr<UI::GUILabel> lblStream;
-			NotNullPtr<UI::GUITextBox> txtStream;
-			NotNullPtr<UI::GUIButton> btnStream;
+			NN<UI::GUIGroupBox> grpStream;
+			NN<UI::GUILabel> lblStream;
+			NN<UI::GUITextBox> txtStream;
+			NN<UI::GUIButton> btnStream;
 
-			NotNullPtr<UI::GUIGroupBox> grpControl;
-			NotNullPtr<UI::GUILabel> lblReqInterval;
-			NotNullPtr<UI::GUIComboBox> cboReqInterval;
+			NN<UI::GUIGroupBox> grpControl;
+			NN<UI::GUILabel> lblReqInterval;
+			NN<UI::GUIComboBox> cboReqInterval;
 
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpLatency;
-			NotNullPtr<UI::GUIRealtimeLineChart> rlcLatency;
+			NN<UI::GUITabPage> tpLatency;
+			NN<UI::GUIRealtimeLineChart> rlcLatency;
 
-			NotNullPtr<UI::GUITabPage> tpLog;
-			NotNullPtr<UI::GUITextBox> txtLog;
-			NotNullPtr<UI::GUIListBox> lbLog;
+			NN<UI::GUITabPage> tpLog;
+			NN<UI::GUITextBox> txtLog;
+			NN<UI::GUIListBox> lbLog;
 
-			NotNullPtr<UI::GUITabPage> tpStatus;
-			NotNullPtr<UI::GUILabel> lblSentCnt;
-			NotNullPtr<UI::GUITextBox> txtSentCnt;
-			NotNullPtr<UI::GUILabel> lblRecvCnt;
-			NotNullPtr<UI::GUITextBox> txtRecvCnt;
+			NN<UI::GUITabPage> tpStatus;
+			NN<UI::GUILabel> lblSentCnt;
+			NN<UI::GUITextBox> txtSentCnt;
+			NN<UI::GUILabel> lblRecvCnt;
+			NN<UI::GUITextBox> txtRecvCnt;
 
 			IO::Stream *stm;
 			IO::LogTool *log;
-			NotNullPtr<UI::ListBoxLogger> logger;
+			NN<UI::ListBoxLogger> logger;
 			Bool threadRunning;
 			Bool threadToStop;
 			Bool remoteClosed;
@@ -69,7 +69,7 @@ namespace SSWR
 			void StopStream();
 
 		public:
-			AVIRStreamLatencyForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRStreamLatencyForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRStreamLatencyForm();
 
 			virtual void OnMonitorChanged();

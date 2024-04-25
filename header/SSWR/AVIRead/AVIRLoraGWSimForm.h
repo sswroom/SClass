@@ -32,49 +32,49 @@ namespace SSWR
 		private:
 			static PredefData pdata[];
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Net::SocketFactory> sockf;
 
 			Net::LoRaGateway *lora;
 			IO::LogTool log;
-			NotNullPtr<UI::ListBoxLogger> logger;
+			NN<UI::ListBoxLogger> logger;
 
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 			
-			NotNullPtr<UI::GUITabPage> tpControl;
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUILabel> lblServerIP;
-			NotNullPtr<UI::GUITextBox> txtServerIP;
-			NotNullPtr<UI::GUILabel> lblServerPort;
-			NotNullPtr<UI::GUITextBox> txtServerPort;
-			NotNullPtr<UI::GUILabel> lblGatewayEUI;
-			NotNullPtr<UI::GUITextBox> txtGatewayEUI;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUIPanel> pnlDevice;
-			NotNullPtr<UI::GUILabel> lblDevAddr;
-			NotNullPtr<UI::GUITextBox> txtDevAddr;
-			NotNullPtr<UI::GUILabel> lblNwkSKey;
-			NotNullPtr<UI::GUITextBox> txtNwkSKey;
-			NotNullPtr<UI::GUILabel> lblAppSKey;
-			NotNullPtr<UI::GUITextBox> txtAppSKey;
-			NotNullPtr<UI::GUILabel> lblFCnt;
-			NotNullPtr<UI::GUITextBox> txtFCnt;
-			NotNullPtr<UI::GUILabel> lblRSSI;
-			NotNullPtr<UI::GUITextBox> txtRSSI;
-			NotNullPtr<UI::GUILabel> lblLSNR;
-			NotNullPtr<UI::GUITextBox> txtLSNR;
-			NotNullPtr<UI::GUILabel> lblPredef;
-			NotNullPtr<UI::GUIComboBox> cboPredef;
-			NotNullPtr<UI::GUIButton> btnPredef;
-			NotNullPtr<UI::GUILabel> lblFPort;
-			NotNullPtr<UI::GUITextBox> txtFPort;
-			NotNullPtr<UI::GUILabel> lblData;
-			NotNullPtr<UI::GUITextBox> txtData;
-			NotNullPtr<UI::GUIButton> btnSendULData;
+			NN<UI::GUITabPage> tpControl;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUILabel> lblServerIP;
+			NN<UI::GUITextBox> txtServerIP;
+			NN<UI::GUILabel> lblServerPort;
+			NN<UI::GUITextBox> txtServerPort;
+			NN<UI::GUILabel> lblGatewayEUI;
+			NN<UI::GUITextBox> txtGatewayEUI;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUIPanel> pnlDevice;
+			NN<UI::GUILabel> lblDevAddr;
+			NN<UI::GUITextBox> txtDevAddr;
+			NN<UI::GUILabel> lblNwkSKey;
+			NN<UI::GUITextBox> txtNwkSKey;
+			NN<UI::GUILabel> lblAppSKey;
+			NN<UI::GUITextBox> txtAppSKey;
+			NN<UI::GUILabel> lblFCnt;
+			NN<UI::GUITextBox> txtFCnt;
+			NN<UI::GUILabel> lblRSSI;
+			NN<UI::GUITextBox> txtRSSI;
+			NN<UI::GUILabel> lblLSNR;
+			NN<UI::GUITextBox> txtLSNR;
+			NN<UI::GUILabel> lblPredef;
+			NN<UI::GUIComboBox> cboPredef;
+			NN<UI::GUIButton> btnPredef;
+			NN<UI::GUILabel> lblFPort;
+			NN<UI::GUITextBox> txtFPort;
+			NN<UI::GUILabel> lblData;
+			NN<UI::GUITextBox> txtData;
+			NN<UI::GUIButton> btnSendULData;
 
-			NotNullPtr<UI::GUITabPage> tpLog;
-			NotNullPtr<UI::GUITextBox> txtLog;
-			NotNullPtr<UI::GUIListBox> lbLog;
+			NN<UI::GUITabPage> tpLog;
+			NN<UI::GUITextBox> txtLog;
+			NN<UI::GUIListBox> lbLog;
 
 		private:
 			static void __stdcall OnStartClick(AnyType userObj);
@@ -82,7 +82,7 @@ namespace SSWR
 			static void __stdcall OnSendULDataClick(AnyType userObj);
 			static void __stdcall OnLogSelChg(AnyType userObj);
 		public:
-			AVIRLoraGWSimForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRLoraGWSimForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLoraGWSimForm();
 
 			virtual void OnMonitorChanged();

@@ -20,8 +20,8 @@ namespace UI
 			static gboolean SignalKeyDown(GtkWidget *widget, GdkEvent *event, gpointer user_data);
 			void InitTextBox(Text::CStringNN lbl, Bool multiLine);
 		public:
-			GTKTextBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText);
-			GTKTextBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool isMultiline);
+			GTKTextBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText);
+			GTKTextBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool isMultiline);
 			virtual ~GTKTextBox();
 
 			virtual Bool EventKeyDown(UInt32 osKey);
@@ -31,7 +31,7 @@ namespace UI
 
 			virtual void SetText(Text::CStringNN text);
 			virtual UTF8Char *GetText(UTF8Char *buff);
-			virtual Bool GetText(NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual Bool GetText(NN<Text::StringBuilderUTF8> sb);
 			virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 			virtual void SetWordWrap(Bool wordWrap);

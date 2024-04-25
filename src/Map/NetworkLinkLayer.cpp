@@ -16,7 +16,7 @@
 
 void __stdcall Map::NetworkLinkLayer::InnerUpdated(AnyType userObj)
 {
-	NotNullPtr<Map::NetworkLinkLayer> me = userObj.GetNN<Map::NetworkLinkLayer>();
+	NN<Map::NetworkLinkLayer> me = userObj.GetNN<Map::NetworkLinkLayer>();
 	UOSInt i;
 	Sync::RWMutexUsage mutUsage(me->linkMut, false);
 	i = me->updHdlrs.GetCount();
@@ -29,7 +29,7 @@ void __stdcall Map::NetworkLinkLayer::InnerUpdated(AnyType userObj)
 
 UInt32 __stdcall Map::NetworkLinkLayer::ControlThread(AnyType userObj)
 {
-	NotNullPtr<Map::NetworkLinkLayer> me = userObj.GetNN<Map::NetworkLinkLayer>();
+	NN<Map::NetworkLinkLayer> me = userObj.GetNN<Map::NetworkLinkLayer>();
 	me->ctrlRunning = true;
 	while (!me->ctrlToStop)
 	{
@@ -128,7 +128,7 @@ void Map::NetworkLinkLayer::LoadLink(LinkInfo *link)
 #endif
 		data = this->browser->GetData(sb.ToCString(), true, 0);
 	}
-	NotNullPtr<IO::StreamData> fd;
+	NN<IO::StreamData> fd;
 	if (fd.Set(data))
 	{
 		while (fd->IsLoading())
@@ -332,7 +332,7 @@ Map::DrawLayerType Map::NetworkLinkLayer::GetLayerType() const
 	return this->innerLayerType;
 }
 
-UOSInt Map::NetworkLinkLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::NetworkLinkLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -367,7 +367,7 @@ UOSInt Map::NetworkLinkLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> o
 	return ret;
 }
 
-UOSInt Map::NetworkLinkLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::NetworkLinkLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	{
 		Sync::MutexUsage mutUsage(this->dispMut);
@@ -414,7 +414,7 @@ UOSInt Map::NetworkLinkLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outA
 	return ret;
 }
 
-UOSInt Map::NetworkLinkLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::NetworkLinkLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	{
 		Sync::MutexUsage mutUsage(this->dispMut);
@@ -485,7 +485,7 @@ void Map::NetworkLinkLayer::ReleaseNameArr(NameArray *nameArr)
 		lyr->ReleaseNameArr(nameArr);*/
 }
 
-Bool Map::NetworkLinkLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::NetworkLinkLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	UOSInt i;
 	UOSInt j;
@@ -526,7 +526,7 @@ DB::DBUtil::ColType Map::NetworkLinkLayer::GetColumnType(UOSInt colIndex, OptOut
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::NetworkLinkLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Map::NetworkLinkLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	return false;
 }
@@ -547,7 +547,7 @@ Bool Map::NetworkLinkLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 	UOSInt i;
 	Math::RectAreaDbl minMax;
 	Math::RectAreaDbl thisBounds;
-	Sync::RWMutexUsage mutUsage(NotNullPtr<Sync::RWMutex>::ConvertFrom(NotNullPtr<const Sync::RWMutex>(this->linkMut)), false);
+	Sync::RWMutexUsage mutUsage(NN<Sync::RWMutex>::ConvertFrom(NN<const Sync::RWMutex>(this->linkMut)), false);
 	i = this->links.GetCount();
 	while (i-- > 0)
 	{
@@ -666,7 +666,7 @@ Map::MapDrawLayer::ObjectClass Map::NetworkLinkLayer::GetObjectClass() const
 	return Map::MapDrawLayer::OC_NETWORKLINK_LAYER;
 }
 
-NotNullPtr<Math::CoordinateSystem> Map::NetworkLinkLayer::GetCoordinateSystem()
+NN<Math::CoordinateSystem> Map::NetworkLinkLayer::GetCoordinateSystem()
 {
 	UOSInt i;
 	Sync::RWMutexUsage mutUsage(this->linkMut, false);
@@ -683,7 +683,7 @@ NotNullPtr<Math::CoordinateSystem> Map::NetworkLinkLayer::GetCoordinateSystem()
 	return this->csys;
 }
 
-void Map::NetworkLinkLayer::SetCoordinateSystem(NotNullPtr<Math::CoordinateSystem> csys)
+void Map::NetworkLinkLayer::SetCoordinateSystem(NN<Math::CoordinateSystem> csys)
 {
 	UOSInt i;
 	Sync::RWMutexUsage mutUsage(this->linkMut, true);

@@ -14,21 +14,21 @@ namespace SSWR
 		class AVIRAccelerometerForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblX;
-			NotNullPtr<UI::GUITextBox> txtX;
-			NotNullPtr<UI::GUILabel> lblY;
-			NotNullPtr<UI::GUITextBox> txtY;
-			NotNullPtr<UI::GUILabel> lblZ;
-			NotNullPtr<UI::GUITextBox> txtZ;
-			NotNullPtr<UI::GUIPanel> pnlMoving;
+			NN<UI::GUILabel> lblX;
+			NN<UI::GUITextBox> txtX;
+			NN<UI::GUILabel> lblY;
+			NN<UI::GUITextBox> txtY;
+			NN<UI::GUILabel> lblZ;
+			NN<UI::GUITextBox> txtZ;
+			NN<UI::GUIPanel> pnlMoving;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::MotionDetectorAccelerometer motion;
 			Bool currMoving;
 
 			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
-			AVIRAccelerometerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::SensorAccelerometer> acc);
+			AVIRAccelerometerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::SensorAccelerometer> acc);
 			virtual ~AVIRAccelerometerForm();
 
 			virtual void OnMonitorChanged();

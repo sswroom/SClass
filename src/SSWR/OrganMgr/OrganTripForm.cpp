@@ -28,7 +28,7 @@ void SSWR::OrganMgr::OrganTripForm::UpdateList()
 
 void __stdcall SSWR::OrganMgr::OrganTripForm::OnTripSelChg(AnyType userObj)
 {
-	NotNullPtr<OrganTripForm> me = userObj.GetNN<OrganTripForm>();
+	NN<OrganTripForm> me = userObj.GetNN<OrganTripForm>();
 	Trip *trip = (Trip*)me->lbTrips->GetSelectedItem().p;
 	if (trip && !me->updating)
 	{
@@ -55,7 +55,7 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnTripSelChg(AnyType userObj)
 
 void __stdcall SSWR::OrganMgr::OrganTripForm::OnAddClicked(AnyType userObj)
 {
-	NotNullPtr<OrganTripForm> me = userObj.GetNN<OrganTripForm>();
+	NN<OrganTripForm> me = userObj.GetNN<OrganTripForm>();
 
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -123,7 +123,7 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnAddClicked(AnyType userObj)
 
 void __stdcall SSWR::OrganMgr::OrganTripForm::OnLocationClicked(AnyType userObj)
 {
-	NotNullPtr<OrganTripForm> me = userObj.GetNN<OrganTripForm>();
+	NN<OrganTripForm> me = userObj.GetNN<OrganTripForm>();
 	
 	OrganLocationForm frm(0, me->ui, me->env, OrganLocationForm::SM_CHILD, me->locId);
 	if (frm.ShowDialog(me) == DR_OK)
@@ -142,7 +142,7 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnLocationClicked(AnyType userObj)
 
 void __stdcall SSWR::OrganMgr::OrganTripForm::OnDate1HrClicked(AnyType userObj)
 {
-	NotNullPtr<OrganTripForm> me = userObj.GetNN<OrganTripForm>();
+	NN<OrganTripForm> me = userObj.GetNN<OrganTripForm>();
 	if (!me->refTime.IsNull())
 	{
 		Data::DateTime dt(me->refTime.ToTicks(), me->refTime.tzQhr);
@@ -173,7 +173,7 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnDate1HrClicked(AnyType userObj)
 
 void __stdcall SSWR::OrganMgr::OrganTripForm::OnLocationLastClicked(AnyType userObj)
 {
-	NotNullPtr<OrganTripForm> me = userObj.GetNN<OrganTripForm>();
+	NN<OrganTripForm> me = userObj.GetNN<OrganTripForm>();
 	IO::Registry *reg = IO::Registry::OpenLocalSoftware(L"OrganMgr");
 	if (reg)
 	{
@@ -188,7 +188,7 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnLocationLastClicked(AnyType user
 	}
 }
 
-SSWR::OrganMgr::OrganTripForm::OrganTripForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env) : UI::GUIForm(parent, 640, 300, ui)
+SSWR::OrganMgr::OrganTripForm::OrganTripForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<OrganEnv> env) : UI::GUIForm(parent, 640, 300, ui)
 {
 	this->SetFont(0, 0, 10.5, false);
 	this->env = env;

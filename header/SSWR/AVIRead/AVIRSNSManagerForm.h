@@ -21,25 +21,25 @@ namespace SSWR
 		class AVIRSNSManagerForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIPanel> pnlChannel;
-			NotNullPtr<UI::GUIComboBox> cboChannel;
-			NotNullPtr<UI::GUITextBox> txtChannelId;
-			NotNullPtr<UI::GUIButton> btnChannelAdd;
-			NotNullPtr<UI::GUIListBox> lbChannels;
-			NotNullPtr<UI::GUIHSplitter> hspChannels;
-			NotNullPtr<UI::GUITabControl> tcChannels;
+			NN<UI::GUIPanel> pnlChannel;
+			NN<UI::GUIComboBox> cboChannel;
+			NN<UI::GUITextBox> txtChannelId;
+			NN<UI::GUIButton> btnChannelAdd;
+			NN<UI::GUIListBox> lbChannels;
+			NN<UI::GUIHSplitter> hspChannels;
+			NN<UI::GUITabControl> tcChannels;
 
-			NotNullPtr<UI::GUITabPage> tpCurrItems;
-			NotNullPtr<UI::GUIListView> lvCurrItems;
+			NN<UI::GUITabPage> tpCurrItems;
+			NN<UI::GUIListView> lvCurrItems;
 
 			Net::SNS::SNSManager *mgr;
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
 			static void __stdcall OnChannelAddClicked(AnyType userObj);
 			static void __stdcall OnChannelsSelChg(AnyType userObj);
 		public:
-			AVIRSNSManagerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRSNSManagerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSNSManagerForm();
 
 			virtual void OnMonitorChanged();

@@ -22,7 +22,7 @@
 #include <stdio.h>
 #endif
 
-Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLRoot(NotNullPtr<Text::XMLReader> reader, Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
+Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLRoot(NN<Text::XMLReader> reader, Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
 {
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element)
 		return 0;
@@ -31,7 +31,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLRoot(NotNullPtr<Text::XMLReader
 	Data::ICaseStringMap<KMLStyle*> styles;
 	Optional<Map::MapDrawLayer> lyr = ParseKMLContainer(reader, &styles, fileName, parsers, browser, pkgFile, true);
 
-	NotNullPtr<const Data::ArrayList<KMLStyle*>> styleList = styles.GetValues();
+	NN<const Data::ArrayList<KMLStyle*>> styleList = styles.GetValues();
 	KMLStyle *style;
 	UOSInt ui = styleList->GetCount();
 	while (ui-- > 0)
@@ -45,7 +45,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLRoot(NotNullPtr<Text::XMLReader
 }
 
 
-Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLReader> reader, Data::ICaseStringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF, Bool rootKml)
+Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> reader, Data::ICaseStringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF, Bool rootKml)
 {
 	KMLStyle *style;
 	UOSInt i;
@@ -59,7 +59,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLR
 	Map::WebImageLayer *imgLyr = 0;
 	Text::StringBuilderUTF8 containerNameSb;
 	containerNameSb.Append(sourceName);
-	NotNullPtr<Map::MapDrawLayer> lyr;
+	NN<Map::MapDrawLayer> lyr;
 	i = Text::StrLastIndexOfCharC(containerNameSb.ToString(), containerNameSb.GetLength(), '/');
 	if (i != INVALID_INDEX)
 	{
@@ -71,17 +71,17 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLR
 		containerNameSb.SetSubstr(i + 1);
 	}
 
-	NotNullPtr<Text::String> nodeName;
+	NN<Text::String> nodeName;
 	while (reader->NextElementName().SetTo(nodeName))
 	{
 		if (nodeName->EqualsICase(UTF8STRC("NetworkLink")))
 		{
 			if (parsers && browser)
 			{
-				NotNullPtr<Map::NetworkLinkLayer> lyr;
-				NotNullPtr<Text::String> layerName = Text::String::NewEmpty();
-				NotNullPtr<Text::String> url = Text::String::NewEmpty();
-				NotNullPtr<Text::String> viewFormat = Text::String::NewEmpty();
+				NN<Map::NetworkLinkLayer> lyr;
+				NN<Text::String> layerName = Text::String::NewEmpty();
+				NN<Text::String> url = Text::String::NewEmpty();
+				NN<Text::String> viewFormat = Text::String::NewEmpty();
 				Map::NetworkLinkLayer::RefreshMode mode = Map::NetworkLinkLayer::RefreshMode::OnInterval;
 				Int32 interval = 0;
 				NEW_CLASSNN(lyr, Map::NetworkLinkLayer(sourceName, parsers, browser, CSTR_NULL));
@@ -492,7 +492,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLR
 				NEW_CLASS(imgLyr, Map::WebImageLayer(browser, parsers, sourceName, Math::CoordinateSystemManager::CreateDefaultCsys(), containerNameSb.ToCString()));
 			}
 
-			NotNullPtr<Text::String> name = Text::String::NewEmpty();
+			NN<Text::String> name = Text::String::NewEmpty();
 			Int32 zIndex = 0;
 			Double minX = 0;
 			Double minY = 0;
@@ -646,7 +646,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLR
 				NEW_CLASS(imgLyr, Map::WebImageLayer(browser, parsers, sourceName, Math::CoordinateSystemManager::CreateDefaultCsys(), containerNameSb.ToCString()));
 			}
 
-			NotNullPtr<Text::String> name = Text::String::NewEmpty();
+			NN<Text::String> name = Text::String::NewEmpty();
 			Int32 zIndex = 0;
 			Double minX = 0;
 			Double minY = 0;
@@ -838,7 +838,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLR
 	{
 		Map::MapLayerCollection *lyrColl;
 		NEW_CLASS(lyrColl, Map::MapLayerCollection(sourceName, containerNameSb.ToCString()));
-		Data::ArrayIterator<NotNullPtr<Map::MapDrawLayer>> it = layers.Iterator();
+		Data::ArrayIterator<NN<Map::MapDrawLayer>> it = layers.Iterator();
 		while (it.HasNext())
 		{
 			lyrColl->Add(it.Next());
@@ -848,12 +848,12 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NotNullPtr<Text::XMLR
 	}
 }
 
-void Map::KMLXML::ParseKMLPlacemarkTrack(NotNullPtr<Text::XMLReader> reader, NotNullPtr<Map::GPSTrack> lyr, Data::StringMap<KMLStyle*> *styles)
+void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPSTrack> lyr, Data::StringMap<KMLStyle*> *styles)
 {
 	Data::ArrayListStringNN timeList;
 	Data::ArrayListStringNN coordList;
 	Bool lastTrack = false;
-	NotNullPtr<Text::String> nodeName;
+	NN<Text::String> nodeName;
 	while (reader->NextElementName().SetTo(nodeName))
 	{
 		if (nodeName->EqualsICase(UTF8STRC("GX:MULTITRACK")))
@@ -906,7 +906,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NotNullPtr<Text::XMLReader> reader, Not
 								UOSInt j = timeList.GetCount();
 								while (i < j)
 								{
-									NotNullPtr<Text::String> s;
+									NN<Text::String> s;
 									if (timeList.GetItem(i).SetTo(s))
 									{
 										dt.SetValue(s->ToCString());
@@ -1081,7 +1081,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NotNullPtr<Text::XMLReader> reader, Not
 						UOSInt j = timeList.GetCount();
 						while (i < j)
 						{
-							NotNullPtr<Text::String> s;
+							NN<Text::String> s;
 							if (timeList.GetItem(i).SetTo(s))
 							{
 								dt.SetValue(s->ToCString());
@@ -1178,7 +1178,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NotNullPtr<Text::XMLReader> reader, Not
 				UOSInt j = timeList.GetCount();
 				while (i < j)
 				{
-					NotNullPtr<Text::String> s;
+					NN<Text::String> s;
 					if (timeList.GetItem(i).SetTo(s))
 					{
 						dt.SetValue(s->ToCString());
@@ -1242,7 +1242,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NotNullPtr<Text::XMLReader> reader, Not
 	}
 }
 
-Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::XMLReader> reader, Data::StringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF)
+Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader> reader, Data::StringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF)
 {
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayListStringNN colNames;
@@ -1250,12 +1250,12 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::X
 	Data::ArrayList<Map::VectorLayer::ColInfo> colInfos;
 	KMLStyle *style = 0;
 	Data::ArrayListNN<Map::MapDrawLayer> layers;
-	NotNullPtr<Math::Geometry::Vector2D> vec;
+	NN<Math::Geometry::Vector2D> vec;
 	colNames.Add(Text::String::New(UTF8STRC("Name")));
 	colValues.Add(Text::String::New(UTF8STRC("Layer")));
 	colInfos.Add(Map::VectorLayer::ColInfo(DB::DBUtil::CT_VarUTF8Char, 256, 0));
-	NotNullPtr<Text::String> s;
-	NotNullPtr<Text::String> nodeText;
+	NN<Text::String> s;
+	NN<Text::String> nodeText;
 	while (reader->NextElementName().SetTo(nodeText))
 	{
 		if (nodeText->EqualsICase(UTF8STRC("NAME")))
@@ -1278,7 +1278,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::X
 		}
 		else if (nodeText->EqualsICase(UTF8STRC("GX:MULTITRACK")))
 		{
-			NotNullPtr<Map::GPSTrack> lyr;
+			NN<Map::GPSTrack> lyr;
 			if (colValues.GetItem(0).SetTo(s))
 			{
 				NEW_CLASSNN(lyr, Map::GPSTrack(sourceName, true, 65001, s->ToCString()));
@@ -1299,7 +1299,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::X
 			Math::Geometry::Vector2D::VectorType vecType = vec->GetVectorType();
 			if (vecType == Math::Geometry::Vector2D::VectorType::LineString)
 			{
-				NotNullPtr<Map::VectorLayer> lyr;
+				NN<Map::VectorLayer> lyr;
 				if (colValues.GetItem(0).SetTo(s))
 				{
 					NEW_CLASSNN(lyr, Map::VectorLayer(vec->HasZ()?Map::DRAW_LAYER_POLYLINE3D:Map::DRAW_LAYER_POLYLINE, sourceName, colNames, Math::CoordinateSystemManager::CreateDefaultCsys(), colInfos, 0, s->ToCString()));
@@ -1323,7 +1323,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::X
 			}
 			else if (Math::Geometry::Vector2D::VectorTypeIsPoint(vecType))
 			{
-				NotNullPtr<Map::VectorLayer> lyr;
+				NN<Map::VectorLayer> lyr;
 				if (colValues.GetItem(0).SetTo(s))
 				{
 					NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, sourceName, colNames, Math::CoordinateSystemManager::CreateDefaultCsys(), colInfos, 0, s->ToCString()));
@@ -1343,10 +1343,10 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::X
 							{
 								fd = browser->GetData(style->iconURL->ToCString(), false, 0);
 							}
-							NotNullPtr<IO::StreamData> nnfd;
+							NN<IO::StreamData> nnfd;
 							if (fd.SetTo(nnfd))
 							{
-								NotNullPtr<Media::ImageList> imgList;
+								NN<Media::ImageList> imgList;
 								if (imgList.Set((Media::ImageList*)parsers->ParseFileType(nnfd, IO::ParserType::ImageList)))
 								{
 									if (style->iconColor != 0)
@@ -1364,7 +1364,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::X
 								nnfd.Delete();
 							}
 						}
-						NotNullPtr<Media::SharedImage> shimg;
+						NN<Media::SharedImage> shimg;
 						if (shimg.Set(style->img))
 						{
 							Media::RasterImage *img = shimg->GetImage(0);
@@ -1383,7 +1383,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::X
 			}
 			else if (vecType == Math::Geometry::Vector2D::VectorType::Polygon || vecType == Math::Geometry::Vector2D::VectorType::MultiPolygon)
 			{
-				NotNullPtr<Map::VectorLayer> lyr;
+				NN<Map::VectorLayer> lyr;
 				if (colValues.GetItem(0).SetTo(s))
 				{
 					NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYGON, sourceName, colNames, Math::CoordinateSystemManager::CreateDefaultCsys(), colInfos, 0, s->ToCString()));
@@ -1433,9 +1433,9 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NotNullPtr<Text::X
 	return 0;
 }
 
-Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NotNullPtr<Text::XMLReader> reader, NotNullPtr<Data::ArrayListStringNN> colNames, NotNullPtr<Data::ArrayListStringNN> colValues, NotNullPtr<Data::ArrayList<Map::VectorLayer::ColInfo>> colInfos)
+Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NN<Text::XMLReader> reader, NN<Data::ArrayListStringNN> colNames, NN<Data::ArrayListStringNN> colValues, NN<Data::ArrayList<Map::VectorLayer::ColInfo>> colInfos)
 {
-	NotNullPtr<Text::String> nodeText = Text::String::OrEmpty(reader->GetNodeOriText());
+	NN<Text::String> nodeText = Text::String::OrEmpty(reader->GetNodeOriText());
 	Optional<Math::Geometry::Vector2D> vec = 0;
 	if (nodeText->EqualsICase(UTF8STRC("LINESTRING")))
 	{
@@ -1495,7 +1495,7 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NotNullPtr<Text::
 				}
 				if (coord.GetCount() > 0)
 				{
-					NotNullPtr<Math::Geometry::LineString> pl;
+					NN<Math::Geometry::LineString> pl;
 					UOSInt nPoints;
 					Math::Coord2DDbl *ptArr;
 					Double *altArr;
@@ -1537,7 +1537,7 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NotNullPtr<Text::
 				i = Text::StrSplitTrim(sarr, 4, sb.v, ',');
 				if (i == 3)
 				{
-					NotNullPtr<Math::Geometry::PointZ> pt;
+					NN<Math::Geometry::PointZ> pt;
 					x = Text::StrToDouble(sarr[0]);
 					y = Text::StrToDouble(sarr[1]);
 					z = Text::StrToDouble(sarr[2]);
@@ -1547,7 +1547,7 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NotNullPtr<Text::
 				}
 				else if (i == 2)
 				{
-					NotNullPtr<Math::Geometry::PointZ> pt;
+					NN<Math::Geometry::PointZ> pt;
 					x = Text::StrToDouble(sarr[0]);
 					y = Text::StrToDouble(sarr[1]);
 					NEW_CLASSNN(pt, Math::Geometry::PointZ(4326, x, y, 0));
@@ -1564,7 +1564,7 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NotNullPtr<Text::
 	}
 	else if (nodeText->EqualsICase(UTF8STRC("POLYGON")))
 	{
-		NotNullPtr<Math::Geometry::Polygon> pg;
+		NN<Math::Geometry::Polygon> pg;
 		NEW_CLASSNN(pg, Math::Geometry::Polygon(4326));
 
 		Data::ArrayListA<Math::Coord2DDbl> coord;
@@ -1587,7 +1587,7 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NotNullPtr<Text::
 			}
 			if (coord.GetCount() > 0)
 			{
-				NotNullPtr<Math::Geometry::LinearRing> lr;
+				NN<Math::Geometry::LinearRing> lr;
 				UOSInt nPoints;
 				Math::Coord2DDbl *ptArr;
 
@@ -1616,7 +1616,7 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NotNullPtr<Text::
 	else if (nodeText->EqualsICase(UTF8STRC("MULTIGEOMETRY")))
 	{
 		Data::ArrayListNN<Math::Geometry::Vector2D> vecList;
-		NotNullPtr<Math::Geometry::Vector2D> innerVec;
+		NN<Math::Geometry::Vector2D> innerVec;
 		while (!reader->NextElementName().IsNull())
 		{
 			if (ParseKMLVector(reader, colNames, colValues, colInfos).SetTo(innerVec))
@@ -1630,8 +1630,8 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NotNullPtr<Text::
 		Bool allPG = true;
 		Bool allPL = true;
 //		Bool allPT = true;
-		NotNullPtr<Math::Geometry::Vector2D> v;
-		Data::ArrayIterator<NotNullPtr<Math::Geometry::Vector2D>> it = vecList.Iterator();
+		NN<Math::Geometry::Vector2D> v;
+		Data::ArrayIterator<NN<Math::Geometry::Vector2D>> it = vecList.Iterator();
 		while (it.HasNext())
 		{
 			v = it.Next();
@@ -1659,29 +1659,29 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NotNullPtr<Text::
 		}
 		if (allPG)
 		{
-			NotNullPtr<Math::Geometry::MultiPolygon> mpg;
+			NN<Math::Geometry::MultiPolygon> mpg;
 			NEW_CLASSNN(mpg, Math::Geometry::MultiPolygon(4326));
 			it = vecList.Iterator();
 			while (it.HasNext())
 			{
-				mpg->AddGeometry(NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(it.Next()));
+				mpg->AddGeometry(NN<Math::Geometry::Polygon>::ConvertFrom(it.Next()));
 			}
 			return Optional<Math::Geometry::MultiPolygon>(mpg);
 		}
 		else if (allPL)
 		{
-			NotNullPtr<Math::Geometry::Polyline> pl;
+			NN<Math::Geometry::Polyline> pl;
 			NEW_CLASSNN(pl, Math::Geometry::Polyline(4326));
 			it = vecList.Iterator();
 			while (it.HasNext())
 			{
-				pl->AddGeometry(NotNullPtr<Math::Geometry::LineString>::ConvertFrom(it.Next()));
+				pl->AddGeometry(NN<Math::Geometry::LineString>::ConvertFrom(it.Next()));
 			}
 			return Optional<Math::Geometry::Polyline>(pl);
 		}
 		else
 		{
-			NotNullPtr<Math::Geometry::GeometryCollection> mpg;
+			NN<Math::Geometry::GeometryCollection> mpg;
 			NEW_CLASSNN(mpg, Math::Geometry::GeometryCollection(4326));
 			it = vecList.Iterator();
 			while (it.HasNext())
@@ -1705,7 +1705,7 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NotNullPtr<Text::
 	return 0;
 }
 
-void Map::KMLXML::ParseCoordinates(NotNullPtr<Text::XMLReader> reader, NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList, NotNullPtr<Data::ArrayList<Double>> altList)
+void Map::KMLXML::ParseCoordinates(NN<Text::XMLReader> reader, NN<Data::ArrayListA<Math::Coord2DDbl>> coordList, NN<Data::ArrayList<Double>> altList)
 {
 	UOSInt i;
 	UTF8Char *sptr;
@@ -1713,7 +1713,7 @@ void Map::KMLXML::ParseCoordinates(NotNullPtr<Text::XMLReader> reader, NotNullPt
 	UTF8Char c;
 	UTF8Char sbuff[256];
 	UTF8Char *sarr[4];
-	NotNullPtr<Text::String> nodeName;
+	NN<Text::String> nodeName;
 
 	while (reader->NextElementName().SetTo(nodeName))
 	{

@@ -5,7 +5,7 @@
 #include "UI/GUIClientControl.h"
 #include "UI/Java/JavaHScrollBar.h"
 
-UI::Java::JavaHScrollBar::JavaHScrollBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Double width) : UI::GUIHScrollBar(ui, parent)
+UI::Java::JavaHScrollBar::JavaHScrollBar(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Double width) : UI::GUIHScrollBar(ui, parent)
 {
 }
 

@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRGenImageForm::GenerateClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGenImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGenImageForm>();
+	NN<SSWR::AVIRead::AVIRGenImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGenImageForm>();
 	UTF8Char sbuff[256];
 	UInt32 width;
 	UInt32 height;
@@ -22,13 +22,13 @@ void __stdcall SSWR::AVIRead::AVIRGenImageForm::GenerateClicked(AnyType userObj)
 	UOSInt i = me->cboGenerator->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
-		NotNullPtr<Media::ImageGenerator> imgGen = me->cboGenerator->GetItem(i).GetNN<Media::ImageGenerator>();
+		NN<Media::ImageGenerator> imgGen = me->cboGenerator->GetItem(i).GetNN<Media::ImageGenerator>();
 		Media::ColorProfile colorProfile((Media::ColorProfile::CommonProfileType)me->cboColorProfile->GetSelectedItem().GetOSInt());
 
 		Media::RasterImage *img = imgGen->GenerateImage(colorProfile, Math::Size2D<UOSInt>(width, height));
 		if (img)
 		{
-			NotNullPtr<Media::ImageList> imgList;
+			NN<Media::ImageList> imgList;
 			NEW_CLASSNN(imgList, Media::ImageList(imgGen->GetName()));
 			imgList->AddImage(img, 0);
 			me->core->OpenObject(imgList);
@@ -47,11 +47,11 @@ void __stdcall SSWR::AVIRead::AVIRGenImageForm::GenerateClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRGenImageForm::CancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGenImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGenImageForm>();
+	NN<SSWR::AVIRead::AVIRGenImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGenImageForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRGenImageForm::AVIRGenImageForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 350, 296, ui)
+SSWR::AVIRead::AVIRGenImageForm::AVIRGenImageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 350, 296, ui)
 {
 	this->SetText(CSTR("Generate Image"));
 	this->SetFont(0, 0, 8.25, false);
@@ -59,7 +59,7 @@ SSWR::AVIRead::AVIRGenImageForm::AVIRGenImageForm(Optional<UI::GUIClientControl>
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
-	NotNullPtr<UI::GUILabel> lbl;
+	NN<UI::GUILabel> lbl;
 	
 	lbl = ui->NewLabel(*this, CSTR("Generator"));
 	lbl->SetRect(8, 8, 100, 23, false);

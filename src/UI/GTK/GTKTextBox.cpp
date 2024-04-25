@@ -55,7 +55,7 @@ void UI::GTK::GTKTextBox::InitTextBox(Text::CStringNN lbl, Bool multiLine)
 	}
 }
 
-UI::GTK::GTKTextBox::GTKTextBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText) : UI::GUITextBox(ui, parent)
+UI::GTK::GTKTextBox::GTKTextBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText) : UI::GUITextBox(ui, parent)
 {
 	this->InitTextBox(initText, false);
 	this->hwnd = (ControlHandle*)this->widget;
@@ -63,7 +63,7 @@ UI::GTK::GTKTextBox::GTKTextBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUICl
 	this->Show();
 }
 
-UI::GTK::GTKTextBox::GTKTextBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool isMultiline) : UI::GUITextBox(ui, parent)
+UI::GTK::GTKTextBox::GTKTextBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool isMultiline) : UI::GUITextBox(ui, parent)
 {
 	this->InitTextBox(initText, isMultiline);
 	if (isMultiline)
@@ -94,7 +94,7 @@ Bool UI::GTK::GTKTextBox::EventKeyDown(UInt32 osKey)
 		UI::GUIControl::GUIKey key = UI::GUIControl::OSKey2GUIKey(osKey);
 		if (key == UI::GUIControl::GK_ESCAPE)
 		{
-			NotNullPtr<UI::GUIButton> btn;
+			NN<UI::GUIButton> btn;
 			if (this->GetRootForm()->GetCancelButton().SetTo(btn))
 			{
 				btn->EventButtonClick();
@@ -105,7 +105,7 @@ Bool UI::GTK::GTKTextBox::EventKeyDown(UInt32 osKey)
 		{
 			if (!this->multiLine)
 			{
-				NotNullPtr<UI::GUIButton> btn;
+				NN<UI::GUIButton> btn;
 				if (this->GetRootForm()->GetDefaultButton().SetTo(btn))
 				{
 					btn->EventButtonClick();
@@ -179,7 +179,7 @@ UTF8Char *UI::GTK::GTKTextBox::GetText(UTF8Char *buff)
 	}
 }
 
-Bool UI::GTK::GTKTextBox::GetText(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool UI::GTK::GTKTextBox::GetText(NN<Text::StringBuilderUTF8> sb)
 {
 	const gchar *lbl;
 	if (this->multiLine)

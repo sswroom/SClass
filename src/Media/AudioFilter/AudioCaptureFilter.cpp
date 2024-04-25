@@ -9,7 +9,7 @@
 
 UInt32 __stdcall Media::AudioFilter::AudioCaptureFilter::CaptureThread(AnyType userObj)
 {
-	NotNullPtr<Media::AudioFilter::AudioCaptureFilter> me = userObj.GetNN<Media::AudioFilter::AudioCaptureFilter>();
+	NN<Media::AudioFilter::AudioCaptureFilter> me = userObj.GetNN<Media::AudioFilter::AudioCaptureFilter>();
 	UInt8 *tmpBuff;
 	UOSInt buffSize;
 	me->running = true;
@@ -41,7 +41,7 @@ UInt32 __stdcall Media::AudioFilter::AudioCaptureFilter::CaptureThread(AnyType u
 	return 0;
 }
 
-Media::AudioFilter::AudioCaptureFilter::AudioCaptureFilter(NotNullPtr<Media::IAudioSource> sourceAudio) : Media::IAudioFilter(sourceAudio)
+Media::AudioFilter::AudioCaptureFilter::AudioCaptureFilter(NN<Media::IAudioSource> sourceAudio) : Media::IAudioFilter(sourceAudio)
 {
 	this->waveStm = 0;
 	this->readBuff = MemAlloc(UInt8, BUFFSIZE);

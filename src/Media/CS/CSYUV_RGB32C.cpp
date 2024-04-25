@@ -11,7 +11,7 @@ void Media::CS::CSYUV_RGB32C::SetupRGB13_LR()
 	Double thisV;
 	UInt16 v[4];
 
-	NotNullPtr<Media::ColorProfile> srcProfile;
+	NN<Media::ColorProfile> srcProfile;
 	if (this->colorSess == 0)
 	{
 		srcProfile = this->srcProfile;		
@@ -45,9 +45,9 @@ void Media::CS::CSYUV_RGB32C::SetupRGB13_LR()
 		srcProfile = this->srcProfile;
 	}
 
-	NotNullPtr<Media::CS::TransferFunc> rtFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetRTranParam());
-	NotNullPtr<Media::CS::TransferFunc> gtFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetGTranParam());
-	NotNullPtr<Media::CS::TransferFunc> btFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetBTranParam());
+	NN<Media::CS::TransferFunc> rtFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetRTranParam());
+	NN<Media::CS::TransferFunc> gtFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetGTranParam());
+	NN<Media::CS::TransferFunc> btFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetBTranParam());
 	Math::Matrix3 mat1;
 	if (this->destProfile.GetPrimaries()->colorType == Media::ColorProfile::CT_DISPLAY)
 	{
@@ -411,7 +411,7 @@ void Media::CS::CSYUV_RGB32C::SetupYUV14_RGB13()
 	}
 }
 
-Media::CS::CSYUV_RGB32C::CSYUV_RGB32C(NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess, Media::PixelFormat destPF) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
+Media::CS::CSYUV_RGB32C::CSYUV_RGB32C(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess, Media::PixelFormat destPF) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
 {
 	this->yuvType = yuvType;
 	this->destPF = destPF;
@@ -456,13 +456,13 @@ void Media::CS::CSYUV_RGB32C::UpdateTable()
 	}
 }
 
-void Media::CS::CSYUV_RGB32C::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuv)
+void Media::CS::CSYUV_RGB32C::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuv)
 {
 	MemCopyNO(&this->yuvParam, yuv.Ptr(), sizeof(YUVPARAM));
 	this->yuvUpdated = true;
 }
 
-void Media::CS::CSYUV_RGB32C::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgb)
+void Media::CS::CSYUV_RGB32C::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgb)
 {
 	this->rgbParam.Set(rgb);
 	this->rgbUpdated = true;

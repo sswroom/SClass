@@ -22,13 +22,13 @@ Int32 Exporter::CIPExporter::GetName()
 	return *(Int32*)"CIPE";
 }
 
-IO::FileExporter::SupportType Exporter::CIPExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
+IO::FileExporter::SupportType Exporter::CIPExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
-	NotNullPtr<Map::MapDrawLayer> layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj);
+	NN<Map::MapDrawLayer> layer = NN<Map::MapDrawLayer>::ConvertFrom(pobj);
 	Map::DrawLayerType layerType = layer->GetLayerType();
 	if (layerType == Map::DRAW_LAYER_POINT || layerType == Map::DRAW_LAYER_POINT3D)
 	{
@@ -56,12 +56,12 @@ Bool Exporter::CIPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	UInt8 buff[256];
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (!param.SetTo(para))
 		return false;
 	Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)para.Ptr();
@@ -69,7 +69,7 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	{
 		return false;
 	}
-	NotNullPtr<Map::MapDrawLayer> layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj);
+	NN<Map::MapDrawLayer> layer = NN<Map::MapDrawLayer>::ConvertFrom(pobj);
 	Map::DrawLayerType layerType = layer->GetLayerType();
 	Int32 iLayerType;
 	if (layerType == Map::DRAW_LAYER_POINT || layerType == Map::DRAW_LAYER_POINT3D)
@@ -167,7 +167,7 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 			WriteUInt32(&buff[4], (UInt32)nPtOfst);
 			ptOfstArr[0] = 0;
 			UOSInt i = 0;
-			NotNullPtr<Math::Geometry::LineString> ls;
+			NN<Math::Geometry::LineString> ls;
 			while (i < nPtOfst)
 			{
 				i++;
@@ -186,7 +186,7 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 			UOSInt j = 0;
 			UOSInt k;
 			UOSInt l;
-			NotNullPtr<Math::Geometry::LineString> lineString;
+			NN<Math::Geometry::LineString> lineString;
 			i = 0;
 			while (i < nPtOfst)
 			{
@@ -235,7 +235,7 @@ Bool Exporter::CIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 			UOSInt nPtOfst = pg->GetCount();
 			UInt32 *ptOfstArr = MemAlloc(UInt32, nPtOfst);
 			Data::ArrayListA<Math::Coord2DDbl> pointArr;
-			NotNullPtr<Math::Geometry::LinearRing> lr;
+			NN<Math::Geometry::LinearRing> lr;
 			j = 0;
 			while (j < nPtOfst)
 			{
@@ -475,13 +475,13 @@ UOSInt Exporter::CIPExporter::GetParamCnt()
 	return 2;
 }
 
-Optional<IO::FileExporter::ParamData> Exporter::CIPExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
+Optional<IO::FileExporter::ParamData> Exporter::CIPExporter::CreateParam(NN<IO::ParsedObject> pobj)
 {
 	if (this->IsObjectSupported(pobj) == IO::FileExporter::SupportType::MultiFiles)
 	{
 		Exporter::CIPExporter::CIPParam *param;
 		param = MemAlloc(Exporter::CIPExporter::CIPParam, 1);
-		param->layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj);
+		param->layer = NN<Map::MapDrawLayer>::ConvertFrom(pobj);
 		param->dispCol = 0;
 
 		if (param->layer->GetLayerType() == Map::DRAW_LAYER_POINT || param->layer->GetLayerType() == Map::DRAW_LAYER_POINT3D)
@@ -499,14 +499,14 @@ Optional<IO::FileExporter::ParamData> Exporter::CIPExporter::CreateParam(NotNull
 
 void Exporter::CIPExporter::DeleteParam(Optional<ParamData> param)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (param.SetTo(para))
 	{
 		MemFree(para.Ptr());
 	}
 }
 
-Bool Exporter::CIPExporter::GetParamInfo(UOSInt index, NotNullPtr<IO::FileExporter::ParamInfo> info)
+Bool Exporter::CIPExporter::GetParamInfo(UOSInt index, NN<IO::FileExporter::ParamInfo> info)
 {
 	if (index == 0)
 	{
@@ -532,7 +532,7 @@ Bool Exporter::CIPExporter::SetParamStr(Optional<ParamData> param, UOSInt index,
 
 Bool Exporter::CIPExporter::SetParamInt32(Optional<ParamData> param, UOSInt index, Int32 val)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
 	{
 		if (val >= 5000 && val <= 5000000)
@@ -551,7 +551,7 @@ Bool Exporter::CIPExporter::SetParamInt32(Optional<ParamData> param, UOSInt inde
 
 Bool Exporter::CIPExporter::SetParamSel(Optional<ParamData> param, UOSInt index, UOSInt selCol)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (index == 1 && param.SetTo(para))
 	{
 		Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)para.Ptr();
@@ -568,7 +568,7 @@ UTF8Char *Exporter::CIPExporter::GetParamStr(Optional<ParamData> param, UOSInt i
 
 Int32 Exporter::CIPExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
 	{
 		Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)para.Ptr();
@@ -579,7 +579,7 @@ Int32 Exporter::CIPExporter::GetParamInt32(Optional<ParamData> param, UOSInt ind
 
 Int32 Exporter::CIPExporter::GetParamSel(Optional<ParamData> param, UOSInt index)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (index == 1 && param.SetTo(para))
 	{
 		Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)para.Ptr();
@@ -590,7 +590,7 @@ Int32 Exporter::CIPExporter::GetParamSel(Optional<ParamData> param, UOSInt index
 
 UTF8Char *Exporter::CIPExporter::GetParamSelItems(Optional<ParamData> param, UOSInt index, UOSInt itemIndex, UTF8Char *buff)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (index == 1 && param.SetTo(para))
 	{
 		Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)para.Ptr();

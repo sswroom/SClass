@@ -26,7 +26,7 @@ UInt32 Net::OpenSSLClient::GetLastErrorCode()
 	return lastError;
 }
 
-Net::OpenSSLClient::OpenSSLClient(NotNullPtr<Net::SocketFactory> sockf, void *ssl, Socket *s) : SSLClient(sockf, s)
+Net::OpenSSLClient::OpenSSLClient(NN<Net::SocketFactory> sockf, void *ssl, Socket *s) : SSLClient(sockf, s)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->ssl = (SSL*)ssl;
@@ -42,8 +42,8 @@ Net::OpenSSLClient::OpenSSLClient(NotNullPtr<Net::SocketFactory> sockf, void *ss
 #endif
 	if (certs != 0)
 	{
-		NotNullPtr<Data::ArrayListNN<Crypto::Cert::Certificate>> certList;
-		NotNullPtr<Crypto::Cert::OpenSSLCert> cert;
+		NN<Data::ArrayListNN<Crypto::Cert::Certificate>> certList;
+		NN<Crypto::Cert::OpenSSLCert> cert;
 		NEW_CLASSNN(certList, Data::ArrayListNN<Crypto::Cert::Certificate>());
 		this->clsData->remoteCerts = certList;
 		int i = 0;
@@ -69,11 +69,11 @@ Net::OpenSSLClient::OpenSSLClient(NotNullPtr<Net::SocketFactory> sockf, void *ss
 
 Net::OpenSSLClient::~OpenSSLClient()
 {
-	NotNullPtr<Data::ArrayListNN<Crypto::Cert::Certificate>> certList;
+	NN<Data::ArrayListNN<Crypto::Cert::Certificate>> certList;
 	if (this->clsData->remoteCerts.SetTo(certList))
 	{
 		UOSInt i = certList->GetCount();
-		NotNullPtr<Crypto::Cert::Certificate> cert;
+		NN<Crypto::Cert::Certificate> cert;
 		while (i-- > 0)
 		{
 			cert = certList->GetItemNoCheck(i);
@@ -212,7 +212,7 @@ void Net::OpenSSLClient::ShutdownSend()
 
 Optional<Crypto::Cert::Certificate> Net::OpenSSLClient::GetRemoteCert()
 {
-	NotNullPtr<Data::ArrayListNN<Crypto::Cert::Certificate>> certs;
+	NN<Data::ArrayListNN<Crypto::Cert::Certificate>> certs;
 	if (this->clsData->remoteCerts.SetTo(certs))
 		return certs->GetItem(0);
 	else

@@ -66,7 +66,7 @@
 #endif
 
 Manage::HiResClock *clk;
-NotNullPtr<Sync::Mutex> mut;
+NN<Sync::Mutex> mut;
 Sync::Event *threadEvt;
 Sync::Event *mainEvt;
 Double threadT;
@@ -83,7 +83,7 @@ UInt32 __stdcall TestThread(AnyType userObj)
 	return 0;
 }
 
-Double HashTestSpeed(NotNullPtr<Crypto::Hash::IHash> hash)
+Double HashTestSpeed(NN<Crypto::Hash::IHash> hash)
 {
 	UInt8 hashVal[64];
 	UInt8 *testBlock = MemAllocA(UInt8, 1048576);	
@@ -126,12 +126,12 @@ UInt32 EmptyThread(void *userObj)
 	return 0;
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Manage::ExceptionRecorder *exHdlr;
 	IO::ConsoleWriter *console;
 
-	NotNullPtr<IO::FileStream> fs;
+	NN<IO::FileStream> fs;
 #if defined(EXPORT_IMAGE)
 	IO::FileStream *efs;
 	Text::CString cstr;
@@ -782,7 +782,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 #endif
 
 #if defined(TEST_HASH)
-	NotNullPtr<Crypto::Hash::IHash> hash;
+	NN<Crypto::Hash::IHash> hash;
 	Crypto::Hash::HashType currHash = Crypto::Hash::HashType::First;
 	while (currHash <= Crypto::Hash::HashType::Last)
 	{
@@ -2179,7 +2179,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			}
 			else
 			{
-				NotNullPtr<Net::HTTPClient> cli;
+				NN<Net::HTTPClient> cli;
 				UInt64 readSize;
 				Data::ByteBuffer txtBuff((UOSInt)fileSize);
 				fs->SeekFromBeginning(0);

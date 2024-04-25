@@ -12,9 +12,9 @@ Data::ArrayListSng::ArrayListSng(OSInt Capacity) : Data::SortableArrayListNative
 {
 }
 
-NotNullPtr<Data::ArrayList<Single>> Data::ArrayListSng::Clone() const
+NN<Data::ArrayList<Single>> Data::ArrayListSng::Clone() const
 {
-	NotNullPtr<Data::ArrayListSng> newArr;
+	NN<Data::ArrayListSng> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListSng(this->capacity));
 	newArr->AddAll(*this);
 	return newArr;

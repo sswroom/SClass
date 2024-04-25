@@ -30,9 +30,9 @@ namespace Net
 		class IWebResponse : public IO::Stream
 		{
 		public:
-			typedef void (__stdcall *SSEDisconnectHandler)(NotNullPtr<Net::WebServer::IWebResponse> resp, AnyType userObj);
+			typedef void (__stdcall *SSEDisconnectHandler)(NN<Net::WebServer::IWebResponse> resp, AnyType userObj);
 		public:
-			IWebResponse(NotNullPtr<Text::String> sourceName);
+			IWebResponse(NN<Text::String> sourceName);
 			IWebResponse(Text::CStringNN sourceName);
 			virtual ~IWebResponse();
 
@@ -40,7 +40,7 @@ namespace Net
 			virtual Bool SetStatusCode(Net::WebStatus::StatusCode code) = 0;
 			virtual Int32 GetStatusCode() = 0;
 			virtual Bool AddHeader(Text::CStringNN name, Text::CStringNN value) = 0;
-			virtual Bool AddDefHeaders(NotNullPtr<Net::WebServer::IWebRequest> req) = 0;
+			virtual Bool AddDefHeaders(NN<Net::WebServer::IWebRequest> req) = 0;
 			virtual UInt64 GetRespLength() = 0;
 			virtual void ShutdownSend() = 0;
 			virtual Bool ResponseSSE(Data::Duration timeout, SSEDisconnectHandler hdlr, AnyType userObj) = 0;
@@ -48,14 +48,14 @@ namespace Net
 			virtual Bool SwitchProtocol(ProtocolHandler *protoHdlr) = 0;
 			virtual Text::CString GetRespHeaders() = 0;
 
-			Bool ResponseError(NotNullPtr<Net::WebServer::IWebRequest> req, Net::WebStatus::StatusCode code);
-			Bool RedirectURL(NotNullPtr<Net::WebServer::IWebRequest> req, Text::CStringNN url, OSInt cacheAge);
-			Bool VirtualRedirectURL(NotNullPtr<Net::WebServer::IWebRequest> req, Text::CStringNN url, OSInt cacheAge);
-			Bool ResponseNotModified(NotNullPtr<Net::WebServer::IWebRequest> req, OSInt cacheAge);
+			Bool ResponseError(NN<Net::WebServer::IWebRequest> req, Net::WebStatus::StatusCode code);
+			Bool RedirectURL(NN<Net::WebServer::IWebRequest> req, Text::CStringNN url, OSInt cacheAge);
+			Bool VirtualRedirectURL(NN<Net::WebServer::IWebRequest> req, Text::CStringNN url, OSInt cacheAge);
+			Bool ResponseNotModified(NN<Net::WebServer::IWebRequest> req, OSInt cacheAge);
 			Bool ResponseText(Text::CStringNN txt);
 			Bool ResponseText(Text::CStringNN txt, Text::CStringNN contentType);
 
-			Bool AddHeaderS(Text::CStringNN name, NotNullPtr<Text::String> value)
+			Bool AddHeaderS(Text::CStringNN name, NN<Text::String> value)
 			{
 				return AddHeader(name, value->ToCString());
 			}
@@ -80,7 +80,7 @@ namespace Net
 				return true;
 			}
 
-			Bool AddTimeHeader(Text::CStringNN name, NotNullPtr<Data::DateTime> dt)
+			Bool AddTimeHeader(Text::CStringNN name, NN<Data::DateTime> dt)
 			{
 				UTF8Char sbuff[256];
 				UTF8Char *sptr = Net::WebUtil::Date2Str(sbuff, dt);
@@ -134,14 +134,14 @@ namespace Net
 				return this->AddHeader(CSTR("Content-Type"), contentType);
 			}
 
-			Bool AddDate(NotNullPtr<Data::DateTime> dt)
+			Bool AddDate(NN<Data::DateTime> dt)
 			{
 				return this->AddTimeHeader(CSTR("Date"), dt);
 			}
 
 			Bool AddExpireTime(Data::DateTime *dt)
 			{
-				NotNullPtr<Data::DateTime> nnDt;
+				NN<Data::DateTime> nnDt;
 				if (!nnDt.Set(dt))
 				{
 					return this->AddHeader(CSTR("Expires"), CSTR("0"));
@@ -152,7 +152,7 @@ namespace Net
 				}
 			}
 
-			Bool AddLastModified(NotNullPtr<Data::DateTime> dt)
+			Bool AddLastModified(NN<Data::DateTime> dt)
 			{
 				return this->AddTimeHeader(CSTR("Last-Modified"), dt);
 			}

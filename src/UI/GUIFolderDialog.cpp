@@ -19,7 +19,7 @@ void UI::GUIFolderDialog::SetFolder(Text::CString dirName)
 	this->dirName = Text::String::New(dirName);
 }
 
-NotNullPtr<Text::String> UI::GUIFolderDialog::GetFolder() const
+NN<Text::String> UI::GUIFolderDialog::GetFolder() const
 {
 	return Text::String::OrEmpty(this->dirName);
 }

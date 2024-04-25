@@ -34,9 +34,9 @@ namespace Map
 		} ThreadStat;
 
 	private:
-		NotNullPtr<Map::TileMap> tileMap;
+		NN<Map::TileMap> tileMap;
 		Double scale;
-		NotNullPtr<Parser::ParserList> parsers;
+		NN<Parser::ParserList> parsers;
 
 		UOSInt threadCnt;
 		ThreadStat *threads;
@@ -58,26 +58,26 @@ namespace Map
 		static UInt32 __stdcall TaskThread(AnyType userObj);
 		static Math::Coord2D<Int32> IdToCoord(Int64 id);
 		static Int64 CoordToId(Math::Coord2D<Int32> tileId);
-		void AddTask(NotNullPtr<CachedImage> cimg);
-		void CheckCache(NotNullPtr<Data::ArrayListInt64> currIDs);
+		void AddTask(NN<CachedImage> cimg);
+		void CheckCache(NN<Data::ArrayListInt64> currIDs);
 	public:
-		TileMapLayer(NotNullPtr<Map::TileMap> tileMap, NotNullPtr<Parser::ParserList> parsers);
+		TileMapLayer(NN<Map::TileMap> tileMap, NN<Parser::ParserList> parsers);
 		virtual ~TileMapLayer();
 
 		virtual void SetCurrScale(Double scale);
-		virtual NotNullPtr<Map::MapView> CreateMapView(Math::Size2DDbl scnSize);
+		virtual NN<Map::MapView> CreateMapView(Math::Size2DDbl scnSize);
 
 		virtual DrawLayerType GetLayerType() const;
-		virtual UOSInt GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr);
-		virtual UOSInt GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
-		virtual UOSInt GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
+		virtual UOSInt GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr);
+		virtual UOSInt GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
+		virtual UOSInt GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
 		virtual Int64 GetObjectIdMax() const;
 		virtual void ReleaseNameArr(NameArray *nameArr);
-		virtual Bool GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex);
+		virtual Bool GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex);
 		virtual UOSInt GetColumnCnt() const;
 		virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize);
-		virtual Bool GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
+		virtual Bool GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef);
 		virtual UInt32 GetCodePage() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 
@@ -88,13 +88,13 @@ namespace Map
 		virtual ObjectClass GetObjectClass() const;
 
 		virtual Bool CanQuery();
-		virtual Bool QueryInfos(Math::Coord2DDbl coord, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NotNullPtr<Data::ArrayList<UOSInt>> valueOfstList, NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListNN<Text::String>> valueList);
+		virtual Bool QueryInfos(Math::Coord2DDbl coord, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayList<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList);
 
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 		Bool IsCaching(UOSInt level, Int64 imgId);
 		void WaitCache();
-		NotNullPtr<Map::TileMap> GetTileMap();
+		NN<Map::TileMap> GetTileMap();
 	};
 }
 #endif

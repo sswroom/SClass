@@ -17,7 +17,7 @@ namespace IO
 				UInt64 fileLength;
 				UInt64 currentOffset;
 				Text::CString fileName;
-				NotNullPtr<Text::String> fullName;
+				NN<Text::String> fullName;
 				UInt8 *fptr;
 
 				Sync::Mutex mut;
@@ -35,12 +35,12 @@ namespace IO
 			virtual ~FileViewData();
 
 			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer);
-			virtual NotNullPtr<Text::String> GetFullName();
+			virtual NN<Text::String> GetFullName();
 			virtual Text::CString GetShortName();
 			virtual UInt64 GetDataSize();
 			virtual const UInt8 *GetPointer();
 
-			virtual NotNullPtr<IO::StreamData> GetPartialData(UInt64 offset, UInt64 length);
+			virtual NN<IO::StreamData> GetPartialData(UInt64 offset, UInt64 length);
 			virtual Bool IsFullFile();
 			virtual Bool IsLoading();
 			virtual UOSInt GetSeekCount();

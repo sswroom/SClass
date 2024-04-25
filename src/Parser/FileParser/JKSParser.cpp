@@ -22,7 +22,7 @@ Int32 Parser::FileParser::JKSParser::GetName()
 	return *(Int32*)"JKSP";
 }
 
-void Parser::FileParser::JKSParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::JKSParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::SectorData)
 	{
@@ -35,7 +35,7 @@ IO::ParserType Parser::FileParser::JKSParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::JKSParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::JKSParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt64 fileSize = fd->GetDataSize();
 	if (ReadMUInt32(&hdr[0]) != 0xFEEDFEED)
@@ -87,7 +87,7 @@ IO::ParsedObject *Parser::FileParser::JKSParser::ParseFileHdr(NotNullPtr<IO::Str
 		{
 			cerBuff.ChangeSize(certLen);
 		}
-		NotNullPtr<Text::String> s = Text::String::New(sb.ToCString());
+		NN<Text::String> s = Text::String::New(sb.ToCString());
 		fd->GetRealData(ofst + 20 + aliasLen + certTypeLen, certLen, cerBuff);
 		Crypto::Cert::X509Cert *cert = (Crypto::Cert::X509Cert*)Parser::FileParser::X509Parser::ParseBuff(cerBuff.WithSize(certLen), s);
 		s->Release();

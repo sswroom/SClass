@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Crypto/Hash/HashStream.h"
 
-Crypto::Hash::HashStream::HashStream(NotNullPtr<IO::Stream> srcStm, Crypto::Hash::IHash *hash) : IO::Stream(srcStm->GetSourceNameObj())
+Crypto::Hash::HashStream::HashStream(NN<IO::Stream> srcStm, Crypto::Hash::IHash *hash) : IO::Stream(srcStm->GetSourceNameObj())
 {
 	this->srcStm = srcStm;
 	this->hash = hash;

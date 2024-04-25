@@ -3,9 +3,9 @@
 #include "Sync/MutexUsage.h"
 #include "UI/GUIDObjArea.h"
 
-void __stdcall UI::GUIDObjArea::DisplayThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall UI::GUIDObjArea::DisplayThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<UI::GUIDObjArea> me = thread->GetUserObj().GetNN<UI::GUIDObjArea>();
+	NN<UI::GUIDObjArea> me = thread->GetUserObj().GetNN<UI::GUIDObjArea>();
 	me->mainEvt.Set();
 	while (!thread->IsStopping())
 	{
@@ -139,10 +139,10 @@ void __stdcall UI::GUIDObjArea::DisplayThread(NotNullPtr<Sync::Thread> thread)
 	me->mainEvt.Set();
 }
 
-void __stdcall UI::GUIDObjArea::ProcessThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall UI::GUIDObjArea::ProcessThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<UI::GUIDObjArea> me = thread->GetUserObj().GetNN<UI::GUIDObjArea>();
-	NotNullPtr<Media::DrawImage> img;
+	NN<UI::GUIDObjArea> me = thread->GetUserObj().GetNN<UI::GUIDObjArea>();
+	NN<Media::DrawImage> img;
 	me->mainEvt.Set();
 	while (!thread->IsStopping())
 	{
@@ -172,7 +172,7 @@ void __stdcall UI::GUIDObjArea::ProcessThread(NotNullPtr<Sync::Thread> thread)
 
 void __stdcall UI::GUIDObjArea::OnUpdateSize(AnyType userObj)
 {
-	NotNullPtr<UI::GUIDObjArea> me = userObj.GetNN<UI::GUIDObjArea>();
+	NN<UI::GUIDObjArea> me = userObj.GetNN<UI::GUIDObjArea>();
 	Sync::MutexUsage mutUsage(me->dobjMut);
 	if (me->dobjHdlr)
 	{
@@ -180,7 +180,7 @@ void __stdcall UI::GUIDObjArea::OnUpdateSize(AnyType userObj)
 	}
 }
 
-UI::GUIDObjArea::GUIDObjArea(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> deng, NotNullPtr<Media::ColorManagerSess> colorSess) : UI::GUIDDrawControl(ui, parent, false, colorSess), displayThread(DisplayThread, this, CSTR("GUIDObjAreaDisp")), processThread(ProcessThread, this, CSTR("GUIDObjAreaProc"))
+UI::GUIDObjArea::GUIDObjArea(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng, NN<Media::ColorManagerSess> colorSess) : UI::GUIDDrawControl(ui, parent, false, colorSess), displayThread(DisplayThread, this, CSTR("GUIDObjAreaDisp")), processThread(ProcessThread, this, CSTR("GUIDObjAreaProc"))
 {
 	this->deng = deng;
 	this->colorSess = colorSess;
@@ -203,7 +203,7 @@ UI::GUIDObjArea::~GUIDObjArea()
 	{
 		DEL_CLASS(this->dobjHdlr);
 	}
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->currDrawImg))
 	{
 		this->deng->DeleteImage(img);
@@ -238,7 +238,7 @@ OSInt UI::GUIDObjArea::OnNotify(UInt32 code, void *lParam)
 void UI::GUIDObjArea::OnSurfaceCreated()
 {
 	Sync::MutexUsage mutUsage(this->dobjMut);
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->currDrawImg))
 	{
 		this->deng->DeleteImage(img);

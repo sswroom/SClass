@@ -26,7 +26,7 @@ namespace SSWR
 		class AVIRHTTPLoadBalanceForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 			Net::WebServer::WebListener *svr;
 			IO::LogTool *log;
@@ -39,57 +39,57 @@ namespace SSWR
 			Crypto::Cert::X509File *sslKey;
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 
-			NotNullPtr<UI::GUITabControl> tcMain;
-			NotNullPtr<UI::GUITabPage> tpControl;
-			NotNullPtr<UI::GUITabPage> tpStatus;
-			NotNullPtr<UI::GUITabPage> tpAccess;
-			NotNullPtr<UI::GUITabPage> tpLog;
+			NN<UI::GUITabControl> tcMain;
+			NN<UI::GUITabPage> tpControl;
+			NN<UI::GUITabPage> tpStatus;
+			NN<UI::GUITabPage> tpAccess;
+			NN<UI::GUITabPage> tpLog;
 
-			NotNullPtr<UI::GUIGroupBox> grpParam;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUILabel> lblLogDir;
-			NotNullPtr<UI::GUITextBox> txtLogDir;
-			NotNullPtr<UI::GUILabel> lblSSL;
-			NotNullPtr<UI::GUICheckBox> chkSSL;
-			NotNullPtr<UI::GUIButton> btnSSLCert;
-			NotNullPtr<UI::GUILabel> lblSSLCert;
-			NotNullPtr<UI::GUILabel> lblAllowProxy;
-			NotNullPtr<UI::GUICheckBox> chkAllowProxy;
-			NotNullPtr<UI::GUILabel> lblSkipLog;
-			NotNullPtr<UI::GUICheckBox> chkSkipLog;
-			NotNullPtr<UI::GUILabel> lblAllowKA;
-			NotNullPtr<UI::GUICheckBox> chkAllowKA;
-			NotNullPtr<UI::GUILabel> lblFwdURL;
-			NotNullPtr<UI::GUITextBox> txtFwdURL;
-			NotNullPtr<UI::GUILabel> lblFwdType;
-			NotNullPtr<UI::GUIComboBox> cboFwdType;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUIButton> btnStop;
+			NN<UI::GUIGroupBox> grpParam;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUILabel> lblLogDir;
+			NN<UI::GUITextBox> txtLogDir;
+			NN<UI::GUILabel> lblSSL;
+			NN<UI::GUICheckBox> chkSSL;
+			NN<UI::GUIButton> btnSSLCert;
+			NN<UI::GUILabel> lblSSLCert;
+			NN<UI::GUILabel> lblAllowProxy;
+			NN<UI::GUICheckBox> chkAllowProxy;
+			NN<UI::GUILabel> lblSkipLog;
+			NN<UI::GUICheckBox> chkSkipLog;
+			NN<UI::GUILabel> lblAllowKA;
+			NN<UI::GUICheckBox> chkAllowKA;
+			NN<UI::GUILabel> lblFwdURL;
+			NN<UI::GUITextBox> txtFwdURL;
+			NN<UI::GUILabel> lblFwdType;
+			NN<UI::GUIComboBox> cboFwdType;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUIButton> btnStop;
 
-			NotNullPtr<UI::GUILabel> lblConnCurr;
-			NotNullPtr<UI::GUITextBox> txtConnCurr;
-			NotNullPtr<UI::GUILabel> lblConnTotal;
-			NotNullPtr<UI::GUITextBox> txtConnTotal;
-			NotNullPtr<UI::GUILabel> lblDataRateR;
-			NotNullPtr<UI::GUITextBox> txtDataRateR;
-			NotNullPtr<UI::GUILabel> lblDataRateW;
-			NotNullPtr<UI::GUITextBox> txtDataRateW;
-			NotNullPtr<UI::GUILabel> lblDataTotalR;
-			NotNullPtr<UI::GUITextBox> txtDataTotalR;
-			NotNullPtr<UI::GUILabel> lblDataTotalW;
-			NotNullPtr<UI::GUITextBox> txtDataTotalW;
-			NotNullPtr<UI::GUILabel> lblReqRate;
-			NotNullPtr<UI::GUITextBox> txtReqRate;
-			NotNullPtr<UI::GUILabel> lblReqTotal;
-			NotNullPtr<UI::GUITextBox> txtReqTotal;
+			NN<UI::GUILabel> lblConnCurr;
+			NN<UI::GUITextBox> txtConnCurr;
+			NN<UI::GUILabel> lblConnTotal;
+			NN<UI::GUITextBox> txtConnTotal;
+			NN<UI::GUILabel> lblDataRateR;
+			NN<UI::GUITextBox> txtDataRateR;
+			NN<UI::GUILabel> lblDataRateW;
+			NN<UI::GUITextBox> txtDataRateW;
+			NN<UI::GUILabel> lblDataTotalR;
+			NN<UI::GUITextBox> txtDataTotalR;
+			NN<UI::GUILabel> lblDataTotalW;
+			NN<UI::GUITextBox> txtDataTotalW;
+			NN<UI::GUILabel> lblReqRate;
+			NN<UI::GUITextBox> txtReqRate;
+			NN<UI::GUILabel> lblReqTotal;
+			NN<UI::GUITextBox> txtReqTotal;
 
-			NotNullPtr<UI::GUIListBox> lbAccess;
-			NotNullPtr<UI::GUIHSplitter> hspAccess;
-			NotNullPtr<UI::GUITextBox> txtAccess;
+			NN<UI::GUIListBox> lbAccess;
+			NN<UI::GUIHSplitter> hspAccess;
+			NN<UI::GUITextBox> txtAccess;
 
-			NotNullPtr<UI::GUIListBox> lbLog;
-			NotNullPtr<UI::GUITextBox> txtLog;
+			NN<UI::GUIListBox> lbLog;
+			NN<UI::GUITextBox> txtLog;
 
 		private:
 			static void __stdcall OnStartClick(AnyType userObj);
@@ -100,7 +100,7 @@ namespace SSWR
 			static void __stdcall OnSSLCertClicked(AnyType userObj);
 			void ClearCACerts();
 		public:
-			AVIRHTTPLoadBalanceForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRHTTPLoadBalanceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHTTPLoadBalanceForm();
 
 			virtual void OnMonitorChanged();

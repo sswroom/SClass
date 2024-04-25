@@ -4,7 +4,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRPowerForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPowerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPowerForm>();
+	NN<SSWR::AVIRead::AVIRPowerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPowerForm>();
 	IO::PowerInfo::PowerStatus power;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -38,17 +38,17 @@ void __stdcall SSWR::AVIRead::AVIRPowerForm::OnTimerTick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRPowerForm::OnSleepClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPowerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPowerForm>();
+	NN<SSWR::AVIRead::AVIRPowerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPowerForm>();
 	me->ui->Suspend();
 }
 
 void __stdcall SSWR::AVIRead::AVIRPowerForm::OnDisplayOffClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPowerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPowerForm>();
+	NN<SSWR::AVIRead::AVIRPowerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPowerForm>();
 	me->ui->DisplayOff();
 }
 
-SSWR::AVIRead::AVIRPowerForm::AVIRPowerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 320, 168, ui)
+SSWR::AVIRead::AVIRPowerForm::AVIRPowerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 320, 168, ui)
 {
 	this->SetText(CSTR("Power Control"));
 	this->SetFont(0, 0, 8.25, false);

@@ -9,14 +9,14 @@ namespace Net
 		class PKCS9
 		{
 		public:
-			static void AttributeContentType(NotNullPtr<ASN1Names> names);
-			static void AttributeMessageDigest(NotNullPtr<ASN1Names> names);
-			static void AttributeSigningTime(NotNullPtr<ASN1Names> names);
-			static void AttributeSMIMECapabilities(NotNullPtr<ASN1Names> names);
-			static void AttributeFriendlyName(NotNullPtr<ASN1Names> names);
-			static void AttributeLocalKeyId(NotNullPtr<ASN1Names> names);
-			static void SMIMECapabilitiesCont(NotNullPtr<ASN1Names> names);
-			static void SMIMECapabilityCont(NotNullPtr<ASN1Names> names);
+			static void AttributeContentType(NN<ASN1Names> names);
+			static void AttributeMessageDigest(NN<ASN1Names> names);
+			static void AttributeSigningTime(NN<ASN1Names> names);
+			static void AttributeSMIMECapabilities(NN<ASN1Names> names);
+			static void AttributeFriendlyName(NN<ASN1Names> names);
+			static void AttributeLocalKeyId(NN<ASN1Names> names);
+			static void SMIMECapabilitiesCont(NN<ASN1Names> names);
+			static void SMIMECapabilityCont(NN<ASN1Names> names);
 		};
 	}
 }

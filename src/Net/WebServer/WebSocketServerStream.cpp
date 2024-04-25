@@ -58,7 +58,7 @@ void Net::WebServer::WebSocketServerStream::NextPacket(UInt8 opcode, const UInt8
 	}
 }
 
-Net::WebServer::WebSocketServerStream::WebSocketServerStream(IO::StreamHandler *stmHdlr, NotNullPtr<Net::WebServer::IWebResponse> resp) : IO::Stream(CSTR("WebSocket"))
+Net::WebServer::WebSocketServerStream::WebSocketServerStream(IO::StreamHandler *stmHdlr, NN<Net::WebServer::IWebResponse> resp) : IO::Stream(CSTR("WebSocket"))
 {
 	this->stmHdlr = stmHdlr;
 	this->resp = resp;

@@ -16,7 +16,7 @@ namespace IO
 		StreamRecorder(Text::CStringNN destFile);
 		~StreamRecorder();
 
-		Bool AppendStream(NotNullPtr<IO::Stream> stm);
+		Bool AppendStream(NN<IO::Stream> stm);
 		UInt64 GetRecordedLength();
 	};
 }

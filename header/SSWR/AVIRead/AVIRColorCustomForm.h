@@ -21,42 +21,42 @@ namespace SSWR
 		class AVIRColorCustomForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Media::MonitorColorManager> monColor;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Media::MonitorColorManager> monColor;
 
-			NotNullPtr<UI::GUILabel> lblRX;
-			NotNullPtr<UI::GUITextBox> txtRX;
-			NotNullPtr<UI::GUIButton> btnRXDown;
-			NotNullPtr<UI::GUIButton> btnRXUp;
-			NotNullPtr<UI::GUILabel> lblRY;
-			NotNullPtr<UI::GUITextBox> txtRY;
-			NotNullPtr<UI::GUIButton> btnRYDown;
-			NotNullPtr<UI::GUIButton> btnRYUp;
-			NotNullPtr<UI::GUILabel> lblGX;
-			NotNullPtr<UI::GUITextBox> txtGX;
-			NotNullPtr<UI::GUIButton> btnGXDown;
-			NotNullPtr<UI::GUIButton> btnGXUp;
-			NotNullPtr<UI::GUILabel> lblGY;
-			NotNullPtr<UI::GUITextBox> txtGY;
-			NotNullPtr<UI::GUIButton> btnGYDown;
-			NotNullPtr<UI::GUIButton> btnGYUp;
-			NotNullPtr<UI::GUILabel> lblBX;
-			NotNullPtr<UI::GUITextBox> txtBX;
-			NotNullPtr<UI::GUIButton> btnBXDown;
-			NotNullPtr<UI::GUIButton> btnBXUp;
-			NotNullPtr<UI::GUILabel> lblBY;
-			NotNullPtr<UI::GUITextBox> txtBY;
-			NotNullPtr<UI::GUIButton> btnBYDown;
-			NotNullPtr<UI::GUIButton> btnBYUp;
-			NotNullPtr<UI::GUILabel> lblWX;
-			NotNullPtr<UI::GUITextBox> txtWX;
-			NotNullPtr<UI::GUIButton> btnWXDown;
-			NotNullPtr<UI::GUIButton> btnWXUp;
-			NotNullPtr<UI::GUILabel> lblWY;
-			NotNullPtr<UI::GUITextBox> txtWY;
-			NotNullPtr<UI::GUIButton> btnWYDown;
-			NotNullPtr<UI::GUIButton> btnWYUp;
-			NotNullPtr<UI::GUIButton> btnClose;
+			NN<UI::GUILabel> lblRX;
+			NN<UI::GUITextBox> txtRX;
+			NN<UI::GUIButton> btnRXDown;
+			NN<UI::GUIButton> btnRXUp;
+			NN<UI::GUILabel> lblRY;
+			NN<UI::GUITextBox> txtRY;
+			NN<UI::GUIButton> btnRYDown;
+			NN<UI::GUIButton> btnRYUp;
+			NN<UI::GUILabel> lblGX;
+			NN<UI::GUITextBox> txtGX;
+			NN<UI::GUIButton> btnGXDown;
+			NN<UI::GUIButton> btnGXUp;
+			NN<UI::GUILabel> lblGY;
+			NN<UI::GUITextBox> txtGY;
+			NN<UI::GUIButton> btnGYDown;
+			NN<UI::GUIButton> btnGYUp;
+			NN<UI::GUILabel> lblBX;
+			NN<UI::GUITextBox> txtBX;
+			NN<UI::GUIButton> btnBXDown;
+			NN<UI::GUIButton> btnBXUp;
+			NN<UI::GUILabel> lblBY;
+			NN<UI::GUITextBox> txtBY;
+			NN<UI::GUIButton> btnBYDown;
+			NN<UI::GUIButton> btnBYUp;
+			NN<UI::GUILabel> lblWX;
+			NN<UI::GUITextBox> txtWX;
+			NN<UI::GUIButton> btnWXDown;
+			NN<UI::GUIButton> btnWXUp;
+			NN<UI::GUILabel> lblWY;
+			NN<UI::GUITextBox> txtWY;
+			NN<UI::GUIButton> btnWYDown;
+			NN<UI::GUIButton> btnWYUp;
+			NN<UI::GUIButton> btnClose;
 
 			static void __stdcall OnRXDownClicked(AnyType userObj);
 			static void __stdcall OnRXUpClicked(AnyType userObj);
@@ -76,7 +76,7 @@ namespace SSWR
 			static void __stdcall OnWYUpClicked(AnyType userObj);
 			static void __stdcall OnCloseClicked(AnyType userObj);
 		public:
-			AVIRColorCustomForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::MonitorColorManager> monColor);
+			AVIRColorCustomForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::MonitorColorManager> monColor);
 			virtual ~AVIRColorCustomForm();
 
 			virtual void OnMonitorChanged();

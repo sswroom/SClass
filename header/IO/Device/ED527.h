@@ -9,7 +9,7 @@ namespace IO
 		class ED527 : public IO::MODBUSDevice
 		{
 		public:
-			ED527(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr);
+			ED527(NN<IO::MODBUSMaster> modbus, UInt8 addr);
 			virtual ~ED527();
 
 			Bool IsRelayHigh(UInt16 index);

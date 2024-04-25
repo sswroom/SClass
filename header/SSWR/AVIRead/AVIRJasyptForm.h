@@ -14,25 +14,25 @@ namespace SSWR
 		class AVIRJasyptForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblKeyAlg;
-			NotNullPtr<UI::GUIComboBox> cboKeyAlg;
-			NotNullPtr<UI::GUILabel> lblEncAlg;
-			NotNullPtr<UI::GUIComboBox> cboEncAlg;
-			NotNullPtr<UI::GUILabel> lblPassword;
-			NotNullPtr<UI::GUITextBox> txtPassword;
-			NotNullPtr<UI::GUILabel> lblMessage;
-			NotNullPtr<UI::GUITextBox> txtMessage;
-			NotNullPtr<UI::GUIButton> btnDecrypt;
-			NotNullPtr<UI::GUIButton> btnEncrypt;
-			NotNullPtr<UI::GUILabel> lblResult;
-			NotNullPtr<UI::GUITextBox> txtResult;
+			NN<UI::GUILabel> lblKeyAlg;
+			NN<UI::GUIComboBox> cboKeyAlg;
+			NN<UI::GUILabel> lblEncAlg;
+			NN<UI::GUIComboBox> cboEncAlg;
+			NN<UI::GUILabel> lblPassword;
+			NN<UI::GUITextBox> txtPassword;
+			NN<UI::GUILabel> lblMessage;
+			NN<UI::GUITextBox> txtMessage;
+			NN<UI::GUIButton> btnDecrypt;
+			NN<UI::GUIButton> btnEncrypt;
+			NN<UI::GUILabel> lblResult;
+			NN<UI::GUITextBox> txtResult;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
 			static void __stdcall OnDecryptClicked(AnyType userObj);
 			static void __stdcall OnEncryptClicked(AnyType userObj);
 		public:
-			AVIRJasyptForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRJasyptForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRJasyptForm();
 
 			virtual void OnMonitorChanged();

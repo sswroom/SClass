@@ -20,11 +20,11 @@ Int32 Exporter::GIFExporter::GetName()
 	return *(Int32*)"GIFE";
 }
 
-IO::FileExporter::SupportType Exporter::GIFExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
+IO::FileExporter::SupportType Exporter::GIFExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
-	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
+	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
 	Media::RasterImage *img = imgList->GetImage(0, 0);
@@ -74,12 +74,12 @@ void Exporter::GIFExporter::SetCodePage(UInt32 codePage)
 {
 }
 
-Bool Exporter::GIFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::GIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	if (IsObjectSupported(pobj) == SupportType::NotSupported)
 		return false;
 	UInt8 buff[256];
-	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
+	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	Media::RasterImage *img = imgList->GetImage(0, 0);
 	UOSInt transparentIndex = INVALID_INDEX;
 	UOSInt i;

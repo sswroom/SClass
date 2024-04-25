@@ -63,14 +63,14 @@ void Math::Matrix3::Transposition()
 }
 
 
-void Math::Matrix3::Set(NotNullPtr<const Matrix3> matrix)
+void Math::Matrix3::Set(NN<const Matrix3> matrix)
 {
 	this->vec[0] = matrix->vec[0];
 	this->vec[1] = matrix->vec[1];
 	this->vec[2] = matrix->vec[2];
 }
 
-void Math::Matrix3::Multiply(NotNullPtr<const Matrix3> matrix)
+void Math::Matrix3::Multiply(NN<const Matrix3> matrix)
 {
 	Vector3 tmpVec[3];
 	tmpVec[0] = this->vec[0];
@@ -87,7 +87,7 @@ void Math::Matrix3::Multiply(NotNullPtr<const Matrix3> matrix)
 	this->vec[2].val[2] = tmpVec[2].val[0] * matrix->vec[0].val[2] + tmpVec[2].val[1] * matrix->vec[1].val[2] + tmpVec[2].val[2] * matrix->vec[2].val[2];
 }
 
-void Math::Matrix3::MultiplyBA(NotNullPtr<const Matrix3> matrix)
+void Math::Matrix3::MultiplyBA(NN<const Matrix3> matrix)
 {
 	Vector3 tmpVec[3];
 	tmpVec[0] = this->vec[0];

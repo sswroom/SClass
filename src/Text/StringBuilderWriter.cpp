@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Text/StringBuilderWriter.h"
 
-Text::StringBuilderWriter::StringBuilderWriter(NotNullPtr<Text::StringBuilderUTF8> sb)
+Text::StringBuilderWriter::StringBuilderWriter(NN<Text::StringBuilderUTF8> sb)
 {
 	this->sb = sb;
 }

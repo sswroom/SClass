@@ -82,7 +82,7 @@ void IO::FileStream::InitStream(const WChar *fileName, FileMode mode, FileShare 
 	}
 }
 
-IO::FileStream::FileStream(NotNullPtr<Text::String> fileName, FileMode mode, FileShare share, BufferType buffType) : IO::SeekableStream(fileName)
+IO::FileStream::FileStream(NN<Text::String> fileName, FileMode mode, FileShare share, BufferType buffType) : IO::SeekableStream(fileName)
 {
 	if (fileName->v[0] == 0)
 	{

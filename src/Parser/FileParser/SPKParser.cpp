@@ -31,7 +31,7 @@ void Parser::FileParser::SPKParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::SPKParser::SetSocketFactory(NotNullPtr<Net::SocketFactory> sockf)
+void Parser::FileParser::SPKParser::SetSocketFactory(NN<Net::SocketFactory> sockf)
 {
 	this->sockf = sockf.Ptr();
 }
@@ -41,7 +41,7 @@ void Parser::FileParser::SPKParser::SetSSLEngine(Optional<Net::SSLEngine> ssl)
 	this->ssl = ssl;
 }
 
-void Parser::FileParser::SPKParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::SPKParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
@@ -54,7 +54,7 @@ IO::ParserType Parser::FileParser::SPKParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt64 dirOfst;
 	UInt64 fileSize;
@@ -89,13 +89,13 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NotNullPtr<IO::Str
 		}
 		customType = ReadInt32(&hdr[i + 0]);
 		customSize = ReadUInt32(&hdr[i + 4]);
-		NotNullPtr<Net::SocketFactory> sockf;
-		NotNullPtr<Parser::ParserList> parsers;
+		NN<Net::SocketFactory> sockf;
+		NN<Parser::ParserList> parsers;
 		if (customType == 1 && fd->IsFullFile() && sockf.Set(this->sockf) && parsers.Set(this->parsers))
 		{
 			Data::ByteBuffer customBuff(customSize);
 			IO::SPackageFile *spkg;
-			NotNullPtr<Map::OSM::OSMTileMap> tileMap;
+			NN<Map::OSM::OSMTileMap> tileMap;
 			fd->GetRealData(i + 8, customSize, customBuff);
 			MemCopyNO(srcPath, &customBuff[2], customBuff[1]);
 			srcPath[customBuff[1]] = 0;
@@ -118,7 +118,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NotNullPtr<IO::Str
 
 	IO::VirtualPackageFile *pf;
 	IO::VirtualPackageFile *pf2;
-	NotNullPtr<IO::PackageFile> pf3;
+	NN<IO::PackageFile> pf3;
 	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
 	srcPtr = fd->GetFullName()->ConcatTo(srcPath);
 	UOSInt k;

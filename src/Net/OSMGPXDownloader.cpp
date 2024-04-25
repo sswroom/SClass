@@ -5,7 +5,7 @@
 #include "Net/OSMGPXDownloader.h"
 #include "Sync/ThreadUtil.h"
 
-Net::OSMGPXDownloader::OSMGPXDownloader(NotNullPtr<Net::SocketFactory> sockf, Text::CString storeDir, IO::Writer *writer)
+Net::OSMGPXDownloader::OSMGPXDownloader(NN<Net::SocketFactory> sockf, Text::CString storeDir, IO::Writer *writer)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -62,7 +62,7 @@ void Net::OSMGPXDownloader::ItemAdded(Net::RSSItem *item)
 	else
 	{
 		Text::StringBuilderUTF8 sb;
-		NotNullPtr<Net::HTTPClient> cli;
+		NN<Net::HTTPClient> cli;
 		UInt8 buff[2048];
 		UOSInt readSize;
 		UInt64 totalSize;

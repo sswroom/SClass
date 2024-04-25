@@ -21,7 +21,7 @@ Int32 Exporter::MEVExporter::GetName()
 	return *(Int32*)"MENV";
 }
 
-IO::FileExporter::SupportType Exporter::MEVExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
+IO::FileExporter::SupportType Exporter::MEVExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapEnv)
 	{
@@ -41,13 +41,13 @@ Bool Exporter::MEVExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-Bool Exporter::MEVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapEnv)
 	{
 		return false;
 	}
-	NotNullPtr<Map::MapEnv> env = NotNullPtr<Map::MapEnv>::ConvertFrom(pobj);
+	NN<Map::MapEnv> env = NN<Map::MapEnv>::ConvertFrom(pobj);
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -60,7 +60,7 @@ Bool Exporter::MEVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Text::String *tmpStr;
-	NotNullPtr<const Data::ArrayList<Exporter::MEVExporter::MEVStrRecord*>> tmpArr;
+	NN<const Data::ArrayList<Exporter::MEVExporter::MEVStrRecord*>> tmpArr;
 	Data::ArrayListICaseString dirArr;
 	Data::StringMap<Exporter::MEVExporter::MEVStrRecord*> strArr;
 
@@ -144,7 +144,7 @@ Bool Exporter::MEVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	j = env->GetFontStyleCount();
 	while (i < j)
 	{
-		NotNullPtr<Text::String> fontName;
+		NN<Text::String> fontName;
 		Double fontSize;
 		Bool bold;
 		UInt32 fontColor;
@@ -261,7 +261,7 @@ Bool Exporter::MEVExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	return true;
 }
 
-void Exporter::MEVExporter::GetMapDirs(NotNullPtr<Map::MapEnv> env, Data::ArrayListString *dirArr, Optional<Map::MapEnv::GroupItem> group)
+void Exporter::MEVExporter::GetMapDirs(NN<Map::MapEnv> env, Data::ArrayListString *dirArr, Optional<Map::MapEnv::GroupItem> group)
 {
 	UOSInt i = 0;
 	UOSInt j = env->GetItemCount(group);
@@ -269,7 +269,7 @@ void Exporter::MEVExporter::GetMapDirs(NotNullPtr<Map::MapEnv> env, Data::ArrayL
 	OSInt si;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	NotNullPtr<Map::MapEnv::MapItem> item;
+	NN<Map::MapEnv::MapItem> item;
 
 	while (i < j)
 	{
@@ -277,12 +277,12 @@ void Exporter::MEVExporter::GetMapDirs(NotNullPtr<Map::MapEnv> env, Data::ArrayL
 		{
 			if (item->itemType == Map::MapEnv::IT_GROUP)
 			{
-				GetMapDirs(env, dirArr, NotNullPtr<Map::MapEnv::GroupItem>::ConvertFrom(item));
+				GetMapDirs(env, dirArr, NN<Map::MapEnv::GroupItem>::ConvertFrom(item));
 			}
 			else
 			{
-				NotNullPtr<Map::MapEnv::LayerItem> lyr = NotNullPtr<Map::MapEnv::LayerItem>::ConvertFrom(item);
-				NotNullPtr<Map::MapDrawLayer> layer = lyr->layer;
+				NN<Map::MapEnv::LayerItem> lyr = NN<Map::MapEnv::LayerItem>::ConvertFrom(item);
+				NN<Map::MapDrawLayer> layer = lyr->layer;
 				if ((sptr = layer->GetSourceName(sbuff)) != 0)
 				{
 					k = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
@@ -332,7 +332,7 @@ UInt32 Exporter::MEVExporter::AddString(Data::StringMap<MEVStrRecord*> *strArr, 
 	return strRec->byteSize;
 }
 
-void Exporter::MEVExporter::WriteGroupItems(NotNullPtr<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group, UInt32 *stmPos, NotNullPtr<IO::SeekableStream> stm, Data::StringMap<Exporter::MEVExporter::MEVStrRecord*> *strArr, Data::ArrayListString *dirArr)
+void Exporter::MEVExporter::WriteGroupItems(NN<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group, UInt32 *stmPos, NN<IO::SeekableStream> stm, Data::StringMap<Exporter::MEVExporter::MEVStrRecord*> *strArr, Data::ArrayListString *dirArr)
 {
 	UInt8 buff[256];
 	UTF8Char sbuff[256];
@@ -341,7 +341,7 @@ void Exporter::MEVExporter::WriteGroupItems(NotNullPtr<Map::MapEnv> env, Optiona
 	UOSInt i = 0;
 	UOSInt j = env->GetItemCount(group);
 	UOSInt k;
-	NotNullPtr<Map::MapEnv::MapItem> item;
+	NN<Map::MapEnv::MapItem> item;
 	while (i < j)
 	{
 		if (env->GetItem(group, i).SetTo(item))
@@ -350,20 +350,20 @@ void Exporter::MEVExporter::WriteGroupItems(NotNullPtr<Map::MapEnv> env, Optiona
 			{
 				*(Int32*)&buff[0] = item->itemType;
 
-				NotNullPtr<Text::String> groupName = env->GetGroupName(NotNullPtr<Map::MapEnv::GroupItem>::ConvertFrom(item));
+				NN<Text::String> groupName = env->GetGroupName(NN<Map::MapEnv::GroupItem>::ConvertFrom(item));
 				*(Int32*)&buff[4] = 0;
 				*(UInt32*)&buff[8] = AddString(strArr, groupName->v, groupName->leng, 4 + *stmPos);
-				*(Int32*)&buff[12] = (Int32)env->GetItemCount(NotNullPtr<Map::MapEnv::GroupItem>::ConvertFrom(item));
+				*(Int32*)&buff[12] = (Int32)env->GetItemCount(NN<Map::MapEnv::GroupItem>::ConvertFrom(item));
 				stm->Write(buff, 16);
 				*stmPos = 16 + *stmPos;
 
-				WriteGroupItems(env, NotNullPtr<Map::MapEnv::GroupItem>::ConvertFrom(item), stmPos, stm, strArr, dirArr);
+				WriteGroupItems(env, NN<Map::MapEnv::GroupItem>::ConvertFrom(item), stmPos, stm, strArr, dirArr);
 			}
 			else if (item->itemType == Map::MapEnv::IT_LAYER)
 			{
 				Map::DrawLayerType ltype;
-				NotNullPtr<Map::MapEnv::LayerItem> lyr = NotNullPtr<Map::MapEnv::LayerItem>::ConvertFrom(item);
-				NotNullPtr<Map::MapDrawLayer> layer = lyr->layer;
+				NN<Map::MapEnv::LayerItem> lyr = NN<Map::MapEnv::LayerItem>::ConvertFrom(item);
+				NN<Map::MapDrawLayer> layer = lyr->layer;
 				*(Int32*)&buff[0] = item->itemType;
 				sptr = layer->GetSourceName(sbuff);
 				*(Int32*)&buff[4] = 0;

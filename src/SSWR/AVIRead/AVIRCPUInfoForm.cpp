@@ -11,7 +11,7 @@
 void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(AnyType userObj)
 {
 #if defined(CPU_X86_32) || defined(CPU_X86_64)
-	NotNullPtr<SSWR::AVIRead::AVIRCPUInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCPUInfoForm>();
+	NN<SSWR::AVIRead::AVIRCPUInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCPUInfoForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Manage::CPUInfo cpu;
@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(AnyType userObj)
 		{
 			Int32 respStatus;
 			Text::StringBuilderUTF8 sbData;
-			NotNullPtr<Net::SocketFactory> sockf = me->core->GetSocketFactory();
+			NN<Net::SocketFactory> sockf = me->core->GetSocketFactory();
 			Text::StringBuilderUTF8 sbURL;
 			sbURL.AppendC(UTF8STRC("http://sswroom.no-ip.org:5080/benchmark/cpuinfo?family="));
 			sbURL.AppendI32(cpu.GetFamilyId());
@@ -36,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(AnyType userObj)
 			sbURL.AppendI32(cpu.GetStepping());
 
 			sbData.AppendP(sbuff, sptr);
-			NotNullPtr<Net::HTTPClient> cli;
+			NN<Net::HTTPClient> cli;
 			cli = Net::HTTPClient::CreateConnect(sockf, me->ssl, sbURL.ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, false);
 			cli->AddContentLength(sbData.GetLength());
 			cli->Write(sbData.ToString(), sbData.GetLength());
@@ -63,7 +63,7 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnCopyInfoClick(AnyType userObj)
 {
 #if defined(CPU_X86_32) || defined(CPU_X86_64)
-	NotNullPtr<SSWR::AVIRead::AVIRCPUInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCPUInfoForm>();
+	NN<SSWR::AVIRead::AVIRCPUInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCPUInfoForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Manage::CPUInfo cpu;
@@ -86,7 +86,7 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnCopyInfoClick(AnyType userObj)
 #endif
 }
 
-SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)
+SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetText(CSTR("CPU Info"));
 	this->SetFont(0, 0, 8.25, false);

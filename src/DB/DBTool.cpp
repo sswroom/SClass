@@ -20,7 +20,7 @@
 #include "Text/UTF8Writer.h"
 
 
-DB::DBTool::DBTool(NotNullPtr<DB::DBConn> conn, Bool needRelease, NotNullPtr<IO::LogTool> log, Text::CString logPrefix) : DB::ReadingDBTool(conn, needRelease, log, logPrefix)
+DB::DBTool::DBTool(NN<DB::DBConn> conn, Bool needRelease, NN<IO::LogTool> log, Text::CString logPrefix) : DB::ReadingDBTool(conn, needRelease, log, logPrefix)
 {
 	this->ssh = 0;
 	this->sshCli = 0;
@@ -116,7 +116,7 @@ void DB::DBTool::BeginTrans()
 
 void DB::DBTool::EndTrans(Bool toCommit)
 {
-	NotNullPtr<DB::DBTransaction> thisTran;
+	NN<DB::DBTransaction> thisTran;
 	if (!tran.SetTo(thisTran))
 		return;
 
@@ -132,7 +132,7 @@ Int32 DB::DBTool::GetLastIdentity32()
 	if (this->sqlType == DB::SQLType::MySQL || this->sqlType == DB::SQLType::MSSQL || this->sqlType == DB::SQLType::Access || this->sqlType == DB::SQLType::MDBTools)
 	{
 		Int32 id = 0;
-		NotNullPtr<DB::DBReader> reader;
+		NN<DB::DBReader> reader;
 		if (this->ExecuteReader(CSTR("select @@identity")).SetTo(reader))
 		{
 			if (reader->ReadNext())
@@ -146,7 +146,7 @@ Int32 DB::DBTool::GetLastIdentity32()
 	else if (this->sqlType == DB::SQLType::PostgreSQL)
 	{
 		Int32 id = 0;
-		NotNullPtr<DB::DBReader> reader;
+		NN<DB::DBReader> reader;
 		if (this->ExecuteReader(CSTR("select lastval()")).SetTo(reader))
 		{
 			if (reader->ReadNext())
@@ -168,7 +168,7 @@ Int64 DB::DBTool::GetLastIdentity64()
 	if (this->sqlType == DB::SQLType::MySQL || this->sqlType == DB::SQLType::MSSQL || this->sqlType == DB::SQLType::Access || this->sqlType == DB::SQLType::MDBTools)
 	{
 		Int64 id = 0;
-		NotNullPtr<DB::DBReader> reader;
+		NN<DB::DBReader> reader;
 		if (this->ExecuteReader(CSTR("select @@identity")).SetTo(reader))
 		{
 			if (reader->ReadNext())
@@ -182,7 +182,7 @@ Int64 DB::DBTool::GetLastIdentity64()
 	else if (this->sqlType == DB::SQLType::PostgreSQL)
 	{
 		Int64 id = 0;
-		NotNullPtr<DB::DBReader> reader;
+		NN<DB::DBReader> reader;
 		if (this->ExecuteReader(CSTR("select lastval()")).SetTo(reader))
 		{
 			if (reader->ReadNext())
@@ -335,7 +335,7 @@ Bool DB::DBTool::KillConnection(Int32 id)
 		sql.AppendCmdC(CSTR("SELECT pg_terminate_backend("));
 		sql.AppendInt32(id);
 		sql.AppendCmdC(CSTR(")"));
-		NotNullPtr<DB::DBReader> r;
+		NN<DB::DBReader> r;
 		if (this->ExecuteReader(sql.ToCString()).SetTo(r))
 		{
 			if (r->ReadNext())

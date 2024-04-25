@@ -13,7 +13,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(AnyType userObj)
 	UInt8 buff[2048];
 	UOSInt readSize;
 
-	NotNullPtr<HTTPDATAHANDLE> fdh = userObj.GetNN<HTTPDATAHANDLE>();
+	NN<HTTPDATAHANDLE> fdh = userObj.GetNN<HTTPDATAHANDLE>();
 	if (fdh->queue)
 	{
 		Sync::MutexUsage mutUsage(fdh->mut);
@@ -183,7 +183,7 @@ Net::HTTPData::HTTPData(const Net::HTTPData *fd, UInt64 offset, UInt64 length)
 	fdh->objectCnt++;
 }
 
-Net::HTTPData::HTTPData(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Net::HTTPQueue *queue, Text::CString url, Text::CStringNN localFile, Bool forceReload)
+Net::HTTPData::HTTPData(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Net::HTTPQueue *queue, Text::CString url, Text::CStringNN localFile, Bool forceReload)
 {
 	UOSInt i;
 	Bool needReload = forceReload;
@@ -330,7 +330,7 @@ UInt64 Net::HTTPData::GetDataSize()
 	return dataLength;
 }
 
-NotNullPtr<Text::String> Net::HTTPData::GetFullName()
+NN<Text::String> Net::HTTPData::GetFullName()
 {
 	if (fdh == 0)
 		return Text::String::NewEmpty();
@@ -370,9 +370,9 @@ const UInt8 *Net::HTTPData::GetPointer()
 	return 0;
 }
 
-NotNullPtr<IO::StreamData> Net::HTTPData::GetPartialData(UInt64 offset, UInt64 length)
+NN<IO::StreamData> Net::HTTPData::GetPartialData(UInt64 offset, UInt64 length)
 {
-	NotNullPtr<Net::HTTPData> data;
+	NN<Net::HTTPData> data;
 	NEW_CLASSNN(data, Net::HTTPData(this, offset, length));
 	return data;
 }

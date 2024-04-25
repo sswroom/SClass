@@ -139,7 +139,7 @@ void Media::CS::CSP016_LRGBC::SetupInterpolationParameter(UOSInt source_length, 
 
 UInt32 Media::CS::CSP016_LRGBC::WorkerThread(AnyType obj)
 {
-	NotNullPtr<CSP016_LRGBC> converter = obj.GetNN<CSP016_LRGBC>();
+	NN<CSP016_LRGBC> converter = obj.GetNN<CSP016_LRGBC>();
 	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 
@@ -204,7 +204,7 @@ void Media::CS::CSP016_LRGBC::WaitForWorker(Int32 jobStatus)
 	}
 }
 
-Media::CS::CSP016_LRGBC::CSP016_LRGBC(NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV16_LRGBC(srcProfile, destProfile, yuvType, colorSess)
+Media::CS::CSP016_LRGBC::CSP016_LRGBC(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV16_LRGBC(srcProfile, destProfile, yuvType, colorSess)
 {
 	UOSInt i;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();

@@ -6,12 +6,12 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	OSInt i;
 	OSInt j;
 	Text::String *strArr[10000];
-	NotNullPtr<Text::String> str;
+	NN<Text::String> str;
 	Data::ArrayListString *a;
 	Double t1;
 	Manage::HiResClock *clk;

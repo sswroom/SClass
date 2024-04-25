@@ -5,7 +5,7 @@ void __stdcall SSWR::OrganMgr::OrganSearchForm::OnOKClicked(AnyType userObj)
 {
 	UTF8Char sbuff[256];
 	UTF8Char sbuff2[256];
-	NotNullPtr<OrganSearchForm> me = userObj.GetNN<OrganSearchForm>();
+	NN<OrganSearchForm> me = userObj.GetNN<OrganSearchForm>();
 	if (sbuff == me->txt->GetText(sbuff))
 	{
 		return;
@@ -27,11 +27,11 @@ void __stdcall SSWR::OrganMgr::OrganSearchForm::OnOKClicked(AnyType userObj)
 
 void __stdcall SSWR::OrganMgr::OrganSearchForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<OrganSearchForm> me = userObj.GetNN<OrganSearchForm>();
+	NN<OrganSearchForm> me = userObj.GetNN<OrganSearchForm>();
 	me->SetDialogResult(DR_CANCEL);
 }
 
-SSWR::OrganMgr::OrganSearchForm::OrganSearchForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env) : UI::GUIForm(0, 340, 90, ui)
+SSWR::OrganMgr::OrganSearchForm::OrganSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<OrganEnv> env) : UI::GUIForm(0, 340, 90, ui)
 {
 	this->SetFont(0, 0, 10.5, false);
 	this->SetNoResize(true);

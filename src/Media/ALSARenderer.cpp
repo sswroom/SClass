@@ -66,9 +66,9 @@ snd_pcm_state_t ALSARenderer_GetState(void *hand)
 	return state;
 }
 
-void __stdcall Media::ALSARenderer::PlayThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall Media::ALSARenderer::PlayThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<Media::ALSARenderer> me = thread->GetUserObj().GetNN<Media::ALSARenderer>();
+	NN<Media::ALSARenderer> me = thread->GetUserObj().GetNN<Media::ALSARenderer>();
 	Media::AudioFormat af;
 	Int32 i;
 	Data::Duration refStart;
@@ -593,7 +593,7 @@ Media::ALSARenderer::ALSARenderer(const UTF8Char *devName) : thread(PlayThread, 
 		IO::ConfigFile *cfg = IO::WSConfigFile::Parse(CSTR("/etc/asound.conf"));
 		if (cfg)
 		{
-			NotNullPtr<Text::String> s;
+			NN<Text::String> s;
 			if (cfg->GetValue(CSTR("defaults.pcm.card")).SetTo(s))
 			{
 				UTF8Char sbuff[32];
@@ -651,7 +651,7 @@ Bool Media::ALSARenderer::BindAudio(Media::IAudioSource *audsrc)
 		SDEL_CLASS(this->resampler);
 		this->hand = 0;
 	}
-	NotNullPtr<Media::IAudioSource> asrc;
+	NN<Media::IAudioSource> asrc;
 	if (!asrc.Set(audsrc))
 		return false;
 

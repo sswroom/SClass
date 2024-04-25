@@ -7,7 +7,7 @@ typedef enum
 	MNU_FILE_VALIDATE
 } MenuItems;
 
-SSWR::AVIRead::AVIRFileChkForm::AVIRFileChkForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::FileCheck> fileChk) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRFileChkForm::AVIRFileChkForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::FileCheck> fileChk) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -19,7 +19,7 @@ SSWR::AVIRead::AVIRFileChkForm::AVIRFileChkForm(Optional<UI::GUIClientControl> p
 	this->SetText(CSTRP(sbuff, sptr));
 	
 	NEW_CLASSNN(this->mnu, UI::GUIMainMenu());
-	NotNullPtr<UI::GUIMenu> mnu = this->mnu->AddSubMenu(CSTR("&File"));
+	NN<UI::GUIMenu> mnu = this->mnu->AddSubMenu(CSTR("&File"));
 	mnu->AddItem(CSTR("&Save"), MNU_FILE_SAVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("&Validate"), MNU_FILE_VALIDATE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->SetMenu(this->mnu);

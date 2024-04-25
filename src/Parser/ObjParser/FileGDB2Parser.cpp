@@ -26,7 +26,7 @@ void Parser::ObjParser::FileGDB2Parser::SetArcGISPRJParser(Math::ArcGISPRJParser
 	this->prjParser = prjParser;
 }
 
-void Parser::ObjParser::FileGDB2Parser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::ObjParser::FileGDB2Parser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::ReadingDB || t == IO::ParserType::Unknown)
 	{
@@ -39,13 +39,13 @@ IO::ParserType Parser::ObjParser::FileGDB2Parser::GetParserType()
 	return IO::ParserType::ReadingDB;
 }
 
-IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(NotNullPtr<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(NN<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	NotNullPtr<Math::ArcGISPRJParser> prjParser;
+	NN<Math::ArcGISPRJParser> prjParser;
 	if (!prjParser.Set(this->prjParser) || pobj->GetParserType() != IO::ParserType::PackageFile)
 		return 0;
 	IO::PackageFile *relObj = 0;
-	NotNullPtr<IO::PackageFile> pkg = NotNullPtr<IO::PackageFile>::ConvertFrom(pobj);
+	NN<IO::PackageFile> pkg = NN<IO::PackageFile>::ConvertFrom(pobj);
 	if (pkg->GetCount() == 1 && pkg->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFileType)
 	{
 		Bool needRelease;
@@ -58,7 +58,7 @@ IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(NotNullPtr<IO::
 		SDEL_CLASS(relObj);
 		return 0;
 	}
-	NotNullPtr<Map::ESRI::FileGDBDir> fgdb;
+	NN<Map::ESRI::FileGDBDir> fgdb;
 	if (!fgdb.Set(Map::ESRI::FileGDBDir::OpenDir(pkg, prjParser)))
 	{
 		SDEL_CLASS(relObj);
@@ -66,11 +66,11 @@ IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(NotNullPtr<IO::
 	}
 	if (targetType == IO::ParserType::MapLayer || targetType == IO::ParserType::Unknown)
 	{
-		NotNullPtr<DB::DBReader> r;
+		NN<DB::DBReader> r;
 		if (fgdb->QueryTableData(CSTR_NULL, CSTR("GDB_Items"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			Data::ArrayListStringNN layers;
-			NotNullPtr<Text::String> layerName;
+			NN<Text::String> layerName;
 			while (r->ReadNext())
 			{
 				if (!r->IsNull(6) && !r->IsNull(7))
@@ -87,7 +87,7 @@ IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(NotNullPtr<IO::
 				UTF8Char sbuff[512];
 				UTF8Char *sptr;
 				Map::MapLayerCollection *layerColl;
-				NotNullPtr<Map::FileGDBLayer> layer;
+				NN<Map::FileGDBLayer> layer;
 				DB::SharedReadingDB *db;
 				UOSInt i;
 				UOSInt j;

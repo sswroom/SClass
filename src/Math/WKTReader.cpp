@@ -309,7 +309,7 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(const UTF8Char *wkt
 			return 0;
 		}
 		Math::Geometry::Polygon *pg;
-		NotNullPtr<Math::Geometry::LinearRing> lr;
+		NN<Math::Geometry::LinearRing> lr;
 		Bool hasM = false;
 		Bool hasZ = false;
 		if (zList.GetCount() == ptList.GetCount())
@@ -368,7 +368,7 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(const UTF8Char *wkt
 		Double y;
 		Double z;
 		Math::Geometry::Polyline *pl;
-		NotNullPtr<Math::Geometry::LineString> lineString;
+		NN<Math::Geometry::LineString> lineString;
 		wkt += 15;
 		while (*wkt == ' ')
 		{
@@ -588,8 +588,8 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(const UTF8Char *wkt
 					return 0;
 				}
 			}
-			NotNullPtr<Math::Geometry::Polygon> pg;
-			NotNullPtr<Math::Geometry::LinearRing> lr;
+			NN<Math::Geometry::Polygon> pg;
+			NN<Math::Geometry::LinearRing> lr;
 			Bool hasM = false;
 			Bool hasZ = false;
 			if (zList.GetCount() == ptList.GetCount())

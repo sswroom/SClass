@@ -18,25 +18,25 @@ namespace SSWR
 		{
 		private:
 			Bool echo;
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Net::TCPServer *svr;
 			Net::TCPClientMgr *cliMgr;
 			IO::LogTool log;
 
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUICheckBox> chkMultiThread;
-			NotNullPtr<UI::GUICheckBox> chkEcho;
-			NotNullPtr<UI::GUIButton> btnStart;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUICheckBox> chkMultiThread;
+			NN<UI::GUICheckBox> chkEcho;
+			NN<UI::GUIButton> btnStart;
 
 			static void __stdcall OnStartClick(AnyType userObj);
 			static void __stdcall OnClientConn(Socket *s, AnyType userObj);
-			static void __stdcall OnClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
-			static void __stdcall OnClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
-			static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
+			static void __stdcall OnClientEvent(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
+			static void __stdcall OnClientData(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
+			static void __stdcall OnClientTimeout(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
 			static UInt32 __stdcall RecvThread(AnyType userObj);
 		public:
-			AVIRTCPSpdSvrForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRTCPSpdSvrForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTCPSpdSvrForm();
 
 			virtual void OnMonitorChanged();

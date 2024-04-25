@@ -25,7 +25,7 @@ namespace SSWR
 			{
 				UInt8 mac[6];
 				Double freq;
-				NotNullPtr<Text::String> ssid;
+				NN<Text::String> ssid;
 				Int32 phyType;
 				Int32 bssType;
 			} BSSStatus;
@@ -33,7 +33,7 @@ namespace SSWR
 			typedef struct
 			{
 				UInt8 mac[6];
-				NotNullPtr<Text::String> ssid;
+				NN<Text::String> ssid;
 				Int32 phyType;
 				Double freq;
 				Text::String *manuf;
@@ -46,7 +46,7 @@ namespace SSWR
 				UInt8 *ieBuff;
 			} WifiLog;
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Net::WirelessLAN *wlan;
 			Optional<Net::WirelessLAN::Interface> wlanInterf;
 			OSInt wlanScan;
@@ -54,16 +54,16 @@ namespace SSWR
 			Data::FastMap<UInt64, WifiLog*> wifiLogMap;
 			Int64 lastTimeTick;
 
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpCurr;
-			NotNullPtr<UI::GUIListView> lvCurrWifi;
+			NN<UI::GUITabPage> tpCurr;
+			NN<UI::GUIListView> lvCurrWifi;
 
-			NotNullPtr<UI::GUITabPage> tpLogWifi;
-			NotNullPtr<UI::GUIListView> lvLogWifi;
-			NotNullPtr<UI::GUIPanel> pnlLogWifi;
-			NotNullPtr<UI::GUIButton> btnLogWifiSave;
-			NotNullPtr<UI::GUIButton> btnLogWifiSaveF;
+			NN<UI::GUITabPage> tpLogWifi;
+			NN<UI::GUIListView> lvLogWifi;
+			NN<UI::GUIPanel> pnlLogWifi;
+			NN<UI::GUIButton> btnLogWifiSave;
+			NN<UI::GUIButton> btnLogWifiSaveF;
 
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnLogWifiDblClicked(AnyType userObj, UOSInt index);
@@ -71,7 +71,7 @@ namespace SSWR
 			static void __stdcall OnLogWifiSaveFClicked(AnyType userObj);
 			static Bool __stdcall OnFormClosing(AnyType userObj, CloseReason reason);
 		public:
-			AVIRWifiCaptureLiteForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRWifiCaptureLiteForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWifiCaptureLiteForm();
 
 			virtual void OnMonitorChanged();

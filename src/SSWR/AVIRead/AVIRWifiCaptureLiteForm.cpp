@@ -13,7 +13,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureLiteForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureLiteForm>();
+	NN<SSWR::AVIRead::AVIRWifiCaptureLiteForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureLiteForm>();
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -29,10 +29,10 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 	Int32 maxRSSI;
 	Text::StringBuilderUTF8 sb;
 	UOSInt ieLen;
-	NotNullPtr<Net::WirelessLANIE> ie;
+	NN<Net::WirelessLANIE> ie;
 	const UInt8 *ieBuff;
 	dt.SetCurrTimeUTC();
-	NotNullPtr<Net::WirelessLAN::Interface> wlanInterf;
+	NN<Net::WirelessLAN::Interface> wlanInterf;
 	if (me->wlanInterf.SetTo(wlanInterf))
 	{
 		dt.SetCurrTimeUTC();
@@ -40,11 +40,11 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 		{
 			if (me->wlanScan-- <= 0)
 			{
-				NotNullPtr<Text::String> s;
+				NN<Text::String> s;
 				Text::String *str;
-				NotNullPtr<Text::String> ssid;
+				NN<Text::String> ssid;
 				Data::ArrayListNN<Net::WirelessLAN::BSSInfo> bssList;
-				NotNullPtr<Net::WirelessLAN::BSSInfo> bss;
+				NN<Net::WirelessLAN::BSSInfo> bss;
 				wlanInterf->GetBSSList(bssList);
 				me->lvCurrWifi->ClearItems();
 
@@ -395,7 +395,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiDblClicked(AnyType userObj, UOSInt index)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureLiteForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureLiteForm>();
+	NN<SSWR::AVIRead::AVIRWifiCaptureLiteForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureLiteForm>();
 	Text::String *s = me->lvLogWifi->GetItemTextNew(index);
 	if (s)
 	{
@@ -406,14 +406,14 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiDblClicked(AnyTy
 
 void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureLiteForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureLiteForm>();
+	NN<SSWR::AVIRead::AVIRWifiCaptureLiteForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureLiteForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	Data::DateTime dt;
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
@@ -514,7 +514,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveClicked(AnyT
 
 void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveFClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureLiteForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureLiteForm>();
+	NN<SSWR::AVIRead::AVIRWifiCaptureLiteForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureLiteForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -584,7 +584,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveFClicked(Any
 
 Bool __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnFormClosing(AnyType userObj, CloseReason reason)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureLiteForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureLiteForm>();
+	NN<SSWR::AVIRead::AVIRWifiCaptureLiteForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureLiteForm>();
 	Manage::HiResClock clk;
 	if (me->ui->ShowMsgYesNo(CSTR("Are you sure to close?"), CSTR("Question"), me))
 	{
@@ -596,7 +596,7 @@ Bool __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnFormClosing(AnyType use
 	return true;
 }
 
-SSWR::AVIRead::AVIRWifiCaptureLiteForm::AVIRWifiCaptureLiteForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRWifiCaptureLiteForm::AVIRWifiCaptureLiteForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Wifi Capture Lite"));
@@ -611,7 +611,7 @@ SSWR::AVIRead::AVIRWifiCaptureLiteForm::AVIRWifiCaptureLiteForm(Optional<UI::GUI
 	i = interfList.GetCount();
 	while (i-- > 1)
 	{
-		NotNullPtr<Net::WirelessLAN::Interface> interf = interfList.GetItemNoCheck(i);
+		NN<Net::WirelessLAN::Interface> interf = interfList.GetItemNoCheck(i);
 		interf.Delete();
 	}
 	this->wlanScan = 0;

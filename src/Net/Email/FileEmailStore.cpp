@@ -27,8 +27,8 @@ void Net::Email::FileEmailStore::AddMail(const Text::MIMEObj::MailMessage *mail,
 	UOSInt l;
 	while (i < j)
 	{
-		NotNullPtr<Text::String> name;
-		NotNullPtr<Text::String> value;
+		NN<Text::String> name;
+		NN<Text::String> value;
 		if (mail->GetHeaderName(i).SetTo(name) && mail->GetHeaderValue(i).SetTo(value))
 		{
 			if (name->EqualsICase(UTF8STRC("Received")))
@@ -95,7 +95,7 @@ void Net::Email::FileEmailStore::AddMail(const Text::MIMEObj::MailMessage *mail,
 		file->fileName = Text::String::NewP(filePath, filePathEnd);
 		file->uid = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
 
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = rcptList.Iterator();
+		Data::ArrayIterator<NN<Text::String>> it = rcptList.Iterator();
 		while (it.HasNext())
 		{
 			file->rcptList.Add(it.Next()->Clone());
@@ -170,7 +170,7 @@ Int64 Net::Email::FileEmailStore::NextEmailId()
 	return id;
 }
 
-Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NotNullPtr<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CStringNN serverName, NotNullPtr<const Net::Email::SMTPServer::MailStatus> mail)
+Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NN<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CStringNN serverName, NN<const Net::Email::SMTPServer::MailStatus> mail)
 {
 	Data::DateTime currTime;
 	EmailInfo *email;
@@ -255,7 +255,7 @@ Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NotNullPtr<const Net::Socket
 	return true;
 }
 
-Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NotNullPtr<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CStringNN serverName, NotNullPtr<const Text::MIMEObj::MailMessage> mail)
+Bool Net::Email::FileEmailStore::NewEmail(Int64 id, NN<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CStringNN serverName, NN<const Text::MIMEObj::MailMessage> mail)
 {
 	Data::DateTime currTime;
 	UOSInt i;
@@ -358,7 +358,7 @@ const UTF8Char *Net::Email::FileEmailStore::GetEmailUid(Int64 id)
 	return fileInfo->uid;
 }
 
-UOSInt Net::Email::FileEmailStore::GetRcptList(Int64 id, NotNullPtr<Data::ArrayListStringNN> rcptList)
+UOSInt Net::Email::FileEmailStore::GetRcptList(Int64 id, NN<Data::ArrayListStringNN> rcptList)
 {
 	Sync::MutexUsage mutUsage(this->fileMut);
 	FileInfo *fileInfo = this->fileMap.Get(id);

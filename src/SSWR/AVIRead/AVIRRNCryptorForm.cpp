@@ -9,7 +9,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnProcessClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRRNCryptorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRNCryptorForm>();
+	NN<SSWR::AVIRead::AVIRRNCryptorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRNCryptorForm>();
 	Text::StringBuilderUTF8 sbSrcFile;
 	Text::StringBuilderUTF8 sbPassword;
 	me->txtSourceFile->GetText(sbSrcFile);
@@ -98,9 +98,9 @@ void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnProcessClicked(AnyType userOb
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnFiles(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnFiles(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRRNCryptorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRNCryptorForm>();
+	NN<SSWR::AVIRead::AVIRRNCryptorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRNCryptorForm>();
 	if (files.GetCount() > 0)
 	{
 		me->txtSourceFile->SetText(files[0]->ToCString());
@@ -119,7 +119,7 @@ void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnFiles(AnyType userObj, Data::
 	}
 }
 
-SSWR::AVIRead::AVIRRNCryptorForm::AVIRRNCryptorForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 160, ui)
+SSWR::AVIRead::AVIRRNCryptorForm::AVIRRNCryptorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 160, ui)
 {
 	this->SetText(CSTR("RNCryptor"));
 	this->SetFont(0, 0, 8.25, false);

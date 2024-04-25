@@ -12,7 +12,7 @@ IO::BTManager::~BTManager()
 	
 }
 
-UOSInt IO::BTManager::CreateControllers(NotNullPtr<Data::ArrayListNN<IO::BTController>> ctrlList)
+UOSInt IO::BTManager::CreateControllers(NN<Data::ArrayListNN<IO::BTController>> ctrlList)
 {
 	return 0;
 }

@@ -18,7 +18,7 @@ typedef struct
 	Double lon;
 } OSMNodeInfo;
 
-Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NotNullPtr<Text::XMLReader> reader, Text::CStringNN fileName)
+Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> reader, Text::CStringNN fileName)
 {
 	Data::FastMap<Int64, OSMNodeInfo*> nodeMap;
 	OSMNodeInfo *node;
@@ -96,7 +96,7 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NotNullPtr<Text::XMLReade
 	Int64 id;
 	Double lat;
 	Double lon;
-	NotNullPtr<Text::String> nodeText;
+	NN<Text::String> nodeText;
 	i = OSMTYPECNT;
 	while (i-- > 0)
 	{
@@ -654,7 +654,7 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NotNullPtr<Text::XMLReade
 							}
 							NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POINT, fileName, colCnt, colName, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, layerNames[elemType - 1]));
 						}
-						NotNullPtr<Math::Geometry::Point> pt;
+						NN<Math::Geometry::Point> pt;
 						NEW_CLASSNN(pt, Math::Geometry::Point(4326, lon, lat));
 						layers[elemType - 1]->AddVector(pt, names);
 					}
@@ -1308,8 +1308,8 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NotNullPtr<Text::XMLReade
 						}
 						NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POLYGON, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, layerNames[elemType - 1]));
 					}
-					NotNullPtr<Math::Geometry::Polygon> pg;
-					NotNullPtr<Math::Geometry::LinearRing> lr;
+					NN<Math::Geometry::Polygon> pg;
+					NN<Math::Geometry::LinearRing> lr;
 					NEW_CLASSNN(pg, Math::Geometry::Polygon(4326));
 					NEW_CLASSNN(lr, Math::Geometry::LinearRing(4326, latList.GetCount(), false, false));
 					Math::Coord2DDbl *points = lr->GetPointList(i);
@@ -1332,7 +1332,7 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NotNullPtr<Text::XMLReade
 						}
 						NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, layerNames[elemType - 1]));
 					}
-					NotNullPtr<Math::Geometry::LineString> pl;
+					NN<Math::Geometry::LineString> pl;
 					NEW_CLASSNN(pl, Math::Geometry::LineString(4326, latList.GetCount(), false, false));
 					Math::Coord2DDbl *points = pl->GetPointList(i);
 					while (i-- > 0)
@@ -1361,7 +1361,7 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NotNullPtr<Text::XMLReade
 		MemFree(nodeMap.GetItem(i));
 	}
 	Map::MapLayerCollection *layerList;
-	NotNullPtr<Map::MapDrawLayer> layer;
+	NN<Map::MapDrawLayer> layer;
 	NEW_CLASS(layerList, Map::MapLayerCollection(fileName, CSTR("OSM")));
 	i = 0;
 	while (i < OSMTYPECNT)

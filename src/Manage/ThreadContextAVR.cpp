@@ -24,7 +24,7 @@ UTF8Char *Manage::ThreadContextAVR::GetRegister(UOSInt index, UTF8Char *buff, UI
 	return 0;
 }
 
-void Manage::ThreadContextAVR::ToString(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Manage::ThreadContextAVR::ToString(NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;

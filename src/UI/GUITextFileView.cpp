@@ -21,7 +21,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(AnyType userObj)
 	UOSInt lineCurr;
 	WChar lastC;
 	WChar c;
-	NotNullPtr<UI::GUITextFileView> me = userObj.GetNN<UI::GUITextFileView>();
+	NN<UI::GUITextFileView> me = userObj.GetNN<UI::GUITextFileView>();
 	me->threadRunning = true;
 	while (!me->threadToStop)
 	{
@@ -39,7 +39,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(AnyType userObj)
 			{
 				DEL_CLASS(me->fs);
 			}
-			NotNullPtr<IO::StreamData> stmData;
+			NN<IO::StreamData> stmData;
 			if (thisType == LoadFileType::FileData && stmData.Set(me->fileData))
 			{
 				NEW_CLASS(me->fs, IO::StreamDataStream(stmData));
@@ -878,7 +878,7 @@ void UI::GUITextFileView::ClearFileStatus()
 	this->evtThread.Set();
 }
 
-UI::GUITextFileView::GUITextFileView(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> deng) : UI::GUITextView(ui, parent, deng), readBuff(READBUFFSIZE)
+UI::GUITextFileView::GUITextFileView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng) : UI::GUITextView(ui, parent, deng), readBuff(READBUFFSIZE)
 {
 	this->fileName = Text::String::NewEmpty();
 	this->fileData = 0;
@@ -1171,13 +1171,13 @@ void UI::GUITextFileView::EventTimerTick()
 	}
 }
 
-void UI::GUITextFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
+void UI::GUITextFileView::DrawImage(NN<Media::DrawImage> dimg)
 {
 //	WChar wbuff[21];
 	UTF8Char sbuff[21];
 	UTF8Char *sbuffEnd;
-	NotNullPtr<Text::String> s;
-	NotNullPtr<Text::String> s2;
+	NN<Text::String> s;
+	NN<Text::String> s2;
 	UOSInt xPos;
 	UOSInt yPos;
 	UInt64 startOfst;
@@ -1196,7 +1196,7 @@ void UI::GUITextFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
 	xPos = (UOSInt)this->GetScrollHPos();
 	yPos = (UOSInt)this->GetScrollVPos();
 
-	NotNullPtr<Media::DrawBrush> bgBrush = dimg->NewBrushARGB(this->bgColor);
+	NN<Media::DrawBrush> bgBrush = dimg->NewBrushARGB(this->bgColor);
 	dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), 0, bgBrush);
 	dimg->DelBrush(bgBrush);
 
@@ -1218,7 +1218,7 @@ void UI::GUITextFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
 	this->fs->Read(rbuff);
 
 	maxScnWidth = dimg->GetWidth() + xPos;
-	NotNullPtr<Media::DrawFont> fnt;
+	NN<Media::DrawFont> fnt;
 	if (!fnt.Set(this->CreateDrawFont(dimg)))
 	{
 		return;
@@ -1256,10 +1256,10 @@ void UI::GUITextFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
 	{
 	}
 
-	NotNullPtr<Media::DrawBrush> textBrush = dimg->NewBrushARGB(this->txtColor);
-	NotNullPtr<Media::DrawBrush> lineNumBrush = dimg->NewBrushARGB(this->lineNumColor);
-	NotNullPtr<Media::DrawBrush> selBrush = dimg->NewBrushARGB(this->selColor);
-	NotNullPtr<Media::DrawBrush> selTextBrush = dimg->NewBrushARGB(this->selTextColor);
+	NN<Media::DrawBrush> textBrush = dimg->NewBrushARGB(this->txtColor);
+	NN<Media::DrawBrush> lineNumBrush = dimg->NewBrushARGB(this->lineNumColor);
+	NN<Media::DrawBrush> selBrush = dimg->NewBrushARGB(this->selColor);
+	NN<Media::DrawBrush> selTextBrush = dimg->NewBrushARGB(this->selTextColor);
 	currOfst = startOfst;
 	i = 0;
 	while (i < this->pageLineCnt)
@@ -1526,7 +1526,7 @@ void UI::GUITextFileView::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-Bool UI::GUITextFileView::LoadFile(NotNullPtr<Text::String> fileName)
+Bool UI::GUITextFileView::LoadFile(NN<Text::String> fileName)
 {
 	while (this->isSearching)
 	{
@@ -1543,7 +1543,7 @@ Bool UI::GUITextFileView::LoadFile(NotNullPtr<Text::String> fileName)
 	return true;
 }
 
-Bool UI::GUITextFileView::LoadStreamData(NotNullPtr<IO::StreamData> fd)
+Bool UI::GUITextFileView::LoadStreamData(NN<IO::StreamData> fd)
 {
 	while (this->isSearching)
 	{
@@ -1561,7 +1561,7 @@ Bool UI::GUITextFileView::LoadStreamData(NotNullPtr<IO::StreamData> fd)
 	return true;
 }
 
-NotNullPtr<Text::String> UI::GUITextFileView::GetFileName() const
+NN<Text::String> UI::GUITextFileView::GetFileName() const
 {
 	return this->fileName;
 }

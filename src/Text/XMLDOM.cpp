@@ -33,7 +33,7 @@ Text::XMLAttrib::~XMLAttrib()
 	SDEL_STRING(this->valueOri);
 }
 
-Bool Text::XMLAttrib::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+Bool Text::XMLAttrib::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	sb->Append(this->name);
 	if (this->value)
@@ -45,7 +45,7 @@ Bool Text::XMLAttrib::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 		}
 		else
 		{
-			NotNullPtr<Text::String> s = Text::XML::ToNewAttrText(this->value->v);
+			NN<Text::String> s = Text::XML::ToNewAttrText(this->value->v);
 			sb->Append(s);
 			s->Release();
 		}
@@ -165,7 +165,7 @@ Text::XMLNode *Text::XMLNode::GetChild(UOSInt index)
 	return this->childArr->GetItem(index);
 }
 
-void Text::XMLNode::GetInnerXML(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Text::XMLNode::GetInnerXML(NN<Text::StringBuilderUTF8> sb)
 {
 	Text::XMLNode *n;
 	Text::XMLAttrib *attr;
@@ -239,7 +239,7 @@ void Text::XMLNode::GetInnerXML(NotNullPtr<Text::StringBuilderUTF8> sb)
 	}
 }
 
-void Text::XMLNode::GetInnerText(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Text::XMLNode::GetInnerText(NN<Text::StringBuilderUTF8> sb)
 {
 	Text::XMLNode *n;
 	UOSInt i;
@@ -600,7 +600,7 @@ Bool Text::XMLNode::SearchEqual(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr
 	return true;
 }
 
-Bool Text::XMLNode::SearchEval(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, Text::XMLNode *n, const UTF8Char *nameStart, const UTF8Char *nameEnd, NotNullPtr<Text::StringBuilderUTF8> outSB)
+Bool Text::XMLNode::SearchEval(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, Text::XMLNode *n, const UTF8Char *nameStart, const UTF8Char *nameEnd, NN<Text::StringBuilderUTF8> outSB)
 {
 	const UTF8Char *src;
 	const UTF8Char *dest;
@@ -1173,7 +1173,7 @@ Text::XMLDocument::~XMLDocument()
 	SDEL_STRING(this->version);
 }
 
-Bool Text::XMLDocument::ParseBuff(NotNullPtr<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UOSInt size)
+Bool Text::XMLDocument::ParseBuff(NN<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *newDoc = 0;
@@ -1373,7 +1373,7 @@ Bool Text::XMLDocument::ParseBuff(NotNullPtr<Text::EncodingFactory> encFact, Uns
 	return false;
 }
 
-Bool Text::XMLDocument::ParseStream(NotNullPtr<Text::EncodingFactory> encFact, IO::Stream *stm)
+Bool Text::XMLDocument::ParseStream(NN<Text::EncodingFactory> encFact, IO::Stream *stm)
 {
 	Bool parseRes;
 	UInt8 buff[2048];
@@ -1390,7 +1390,7 @@ Bool Text::XMLDocument::ParseStream(NotNullPtr<Text::EncodingFactory> encFact, I
 	return parseRes;
 }
 
-void Text::XMLDocument::AppendXmlDeclaration(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Text::XMLDocument::AppendXmlDeclaration(NN<Text::StringBuilderUTF8> sb)
 {
 	if (this->version || this->encoding)
 	{

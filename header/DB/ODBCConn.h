@@ -37,7 +37,7 @@ namespace DB
 		Optional<Text::String> pwd;
 		Optional<Text::String> schema;
 		Text::String *connStr;
-		NotNullPtr<IO::LogTool> log;
+		NN<IO::LogTool> log;
 		Bool enableDebug;
 		Bool forceTz;
 		Int8 tzQhr;
@@ -49,13 +49,13 @@ namespace DB
 		Bool Connect(Optional<Text::String> dsn, Optional<Text::String> uid, Optional<Text::String> pwd, Optional<Text::String> schema);
 
 	protected:		
-		Bool Connect(NotNullPtr<Text::String> connStr);
+		Bool Connect(NN<Text::String> connStr);
 		Bool Connect(Text::CString connStr);
-		ODBCConn(Text::CStringNN sourceName, NotNullPtr<IO::LogTool> log);
+		ODBCConn(Text::CStringNN sourceName, NN<IO::LogTool> log);
 	public:
-		ODBCConn(NotNullPtr<Text::String> dsn, Optional<Text::String> uid, Optional<Text::String> pwd, Optional<Text::String> schema, NotNullPtr<IO::LogTool> log);
-		ODBCConn(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NotNullPtr<IO::LogTool> log);
-		ODBCConn(Text::CString connStr, Text::CStringNN sourceName, NotNullPtr<IO::LogTool> log);
+		ODBCConn(NN<Text::String> dsn, Optional<Text::String> uid, Optional<Text::String> pwd, Optional<Text::String> schema, NN<IO::LogTool> log);
+		ODBCConn(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NN<IO::LogTool> log);
+		ODBCConn(Text::CString connStr, Text::CStringNN sourceName, NN<IO::LogTool> log);
 		virtual ~ODBCConn();
 
 		virtual DB::SQLType GetSQLType() const;
@@ -63,19 +63,19 @@ namespace DB
 		virtual ConnType GetConnType() const;
 		virtual Int8 GetTzQhr() const;
 		virtual void ForceTz(Int8 tzQhr);
-		virtual void GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual void GetConnName(NN<Text::StringBuilderUTF8> sb);
 		virtual void Close();
 		void Dispose();
 		virtual OSInt ExecuteNonQuery(Text::CStringNN sql);
 		virtual Optional<DB::DBReader> ExecuteReader(Text::CStringNN sql);
-		virtual void CloseReader(NotNullPtr<DB::DBReader> r);
-		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
+		virtual void CloseReader(NN<DB::DBReader> r);
+		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual Bool IsLastDataError();
 		virtual void Reconnect();
 
 		virtual Optional<DB::DBTransaction> BeginTransaction();
-		virtual void Commit(NotNullPtr<DB::DBTransaction> tran);
-		virtual void Rollback(NotNullPtr<DB::DBTransaction> tran);
+		virtual void Commit(NN<DB::DBTransaction> tran);
+		virtual void Rollback(NN<DB::DBTransaction> tran);
 
 		ConnError GetConnError();
 		void SetEnableDebug(Bool enableDebug);
@@ -83,7 +83,7 @@ namespace DB
 		UTF8Char *ShowTablesCmd(UTF8Char *sbuff);
 
 		Optional<DBReader> GetTablesInfo(Text::CString schemaName);
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
 		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 
 	public:
@@ -96,10 +96,10 @@ namespace DB
 		Optional<Text::String> GetConnPWD();
 		Optional<Text::String> GetConnSchema();
 
-		static UOSInt GetDriverList(NotNullPtr<Data::ArrayListStringNN> driverList);
+		static UOSInt GetDriverList(NN<Data::ArrayListStringNN> driverList);
 		static Optional<IO::ConfigFile> GetDriverInfo(Text::CString driverName);
-		static Optional<DBTool> CreateDBTool(NotNullPtr<Text::String> dsn, Optional<Text::String> uid, Optional<Text::String> pwd, Optional<Text::String> schema, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
-		static Optional<DBTool> CreateDBTool(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DBTool> CreateDBTool(NN<Text::String> dsn, Optional<Text::String> uid, Optional<Text::String> pwd, Optional<Text::String> schema, NN<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DBTool> CreateDBTool(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NN<IO::LogTool> log, Text::CString logPrefix);
 	};
 
 	class ODBCReader : public DB::DBReader
@@ -134,7 +134,7 @@ namespace DB
 		virtual Int32 GetInt32(UOSInt colIndex);
 		virtual Int64 GetInt64(UOSInt colIndex);
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
-		virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb);
 		virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
 		virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
@@ -143,13 +143,13 @@ namespace DB
 		virtual UOSInt GetBinarySize(UOSInt colIndex);
 		virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff);
 		virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex);
-		virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid);
-		virtual Bool GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item);
+		virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid);
+		virtual Bool GetVariItem(UOSInt colIndex, NN<Data::VariItem> item);
 
 		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
 		virtual Bool IsNull(UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
-		virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
+		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);
 
 		DB::DBUtil::ColType ODBCType2DBType(Int16 odbcType, UOSInt colSize);
 	};

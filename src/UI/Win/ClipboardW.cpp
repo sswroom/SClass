@@ -49,7 +49,7 @@ UOSInt UI::Clipboard::GetDataFormats(Data::ArrayList<UInt32> *dataTypes)
 	return i;
 }
 
-Bool UI::Clipboard::GetDataText(UInt32 fmtId, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool UI::Clipboard::GetDataText(UInt32 fmtId, NN<Text::StringBuilderUTF8> sb)
 {
 	HANDLE hand = GetClipboardData(fmtId);
 	return GetDataTextH(hand, fmtId, sb, 1);
@@ -123,7 +123,7 @@ void UI::Clipboard::FreeDataFiles(Data::ArrayListStringNN *fileNames)
 	fileNames->FreeAll();
 }
 
-Bool UI::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, NotNullPtr<Text::StringBuilderUTF8> sb, UInt32 tymed)
+Bool UI::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, NN<Text::StringBuilderUTF8> sb, UInt32 tymed)
 {
 	UInt8 *memptr;
 	WChar wbuff[512];
@@ -541,7 +541,7 @@ Bool UI::Clipboard::SetString(ControlHandle *hWndOwner, Text::CString s)
 	return true;
 }
 
-Bool UI::Clipboard::GetString(ControlHandle *hWndOwner, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool UI::Clipboard::GetString(ControlHandle *hWndOwner, NN<Text::StringBuilderUTF8> sb)
 {
 	if (OpenClipboard((HWND)hWndOwner) == 0)
 		return false;

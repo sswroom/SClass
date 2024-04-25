@@ -14,11 +14,11 @@ namespace SSWR
 		class OrganSearchForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lbl;
-			NotNullPtr<UI::GUITextBox> txt;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
-			NotNullPtr<OrganEnv> env;
+			NN<UI::GUILabel> lbl;
+			NN<UI::GUITextBox> txt;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
+			NN<OrganEnv> env;
 			Text::String *foundStr;
 			OrganGroup *foundGroup;
 			Int32 parentId;
@@ -26,7 +26,7 @@ namespace SSWR
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			OrganSearchForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env);
+			OrganSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<OrganEnv> env);
 			virtual ~OrganSearchForm();
 
 			virtual void OnMonitorChanged();

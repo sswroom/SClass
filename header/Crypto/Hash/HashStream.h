@@ -11,10 +11,10 @@ namespace Crypto
 		{
 		private:
 			Crypto::Hash::IHash *hash;
-			NotNullPtr<IO::Stream> srcStm;
+			NN<IO::Stream> srcStm;
 
 		public:
-			HashStream(NotNullPtr<IO::Stream> srcStm, Crypto::Hash::IHash *hash);
+			HashStream(NN<IO::Stream> srcStm, Crypto::Hash::IHash *hash);
 			virtual ~HashStream();
 
 			virtual Bool IsDown() const;

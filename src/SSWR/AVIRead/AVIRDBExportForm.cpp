@@ -6,7 +6,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnTablesDblClk(AnyType userObj, UOSInt itemIndex)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDBExportForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBExportForm>();
+	NN<SSWR::AVIRead::AVIRDBExportForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBExportForm>();
 	UOSInt currVal = me->lvTables->GetItem(itemIndex).GetUOSInt();
 	if (currVal == 0)
 	{
@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnTablesDblClk(AnyType userObj, 
 
 void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDBExportForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBExportForm>();
+	NN<SSWR::AVIRead::AVIRDBExportForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBExportForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sbSchema;
@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(AnyType userObj)
 	*sptr++ = '_';
 	sptr = Data::Timestamp::Now().ToString(sptr, "yyyyMMdd_HHmmss");
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".sql"));
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"DBExport", true);
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"DBExport", true);
 	dlg->AddFilter(CSTR("*.sql"), CSTR("SQL File"));
 	dlg->SetFileName(CSTRP(sbuff, sptr));
 	if (dlg->ShowDialog(me->GetHandle()))
@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(AnyType userObj)
 			}
 			i++;
 		}
-		NotNullPtr<DB::DBReader> r;
+		NN<DB::DBReader> r;
 		if (!me->db->QueryTableData(me->schema, me->table, &cols, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			me->ui->ShowMsgOK(CSTR("Error in reading table data"), CSTR("Export Table Data"), me);
@@ -78,7 +78,7 @@ void __stdcall SSWR::AVIRead::AVIRDBExportForm::OnExportClicked(AnyType userObj)
 	dlg.Delete();
 }
 
-SSWR::AVIRead::AVIRDBExportForm::AVIRDBExportForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN table) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRDBExportForm::AVIRDBExportForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN table) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Export Table Data as SQL"));
@@ -130,8 +130,8 @@ SSWR::AVIRead::AVIRDBExportForm::AVIRDBExportForm(Optional<UI::GUIClientControl>
 	{
 		UTF8Char sbuff[128];
 		UTF8Char *sptr;
-		NotNullPtr<DB::ColDef> col;
-		Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = tab->ColIterator();
+		NN<DB::ColDef> col;
+		Data::ArrayIterator<NN<DB::ColDef>> it = tab->ColIterator();
 		UOSInt i;
 		while (it.HasNext())
 		{

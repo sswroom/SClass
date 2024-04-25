@@ -16,7 +16,7 @@ namespace Net
 			{
 				Int64 id;
 				Int64 recTime;
-				NotNullPtr<Text::String> message;
+				NN<Text::String> message;
 				Text::String *imgURL;
 			} ItemData;
 
@@ -31,17 +31,17 @@ namespace Net
 			} ChannelInfo;
 			
 		private:
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 			Optional<Text::EncodingFactory> encFact;
 			Optional<Text::String> userAgent;
 
 			ItemData *ParsePost(Text::JSONObject *postObj);
 		public:
-			WebSite7gogoControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent);
+			WebSite7gogoControl(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent);
 			~WebSite7gogoControl();
 
-			OSInt GetChannelItems(NotNullPtr<Text::String> channelId, OSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);
+			OSInt GetChannelItems(NN<Text::String> channelId, OSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);
 			void FreeItems(Data::ArrayList<ItemData*> *itemList);
 			void FreeChannelInfo(ChannelInfo *chInfo);
 			Optional<Text::String> GetUserAgent();

@@ -101,7 +101,7 @@ void Media::DeinterlaceLR::SetupInterpolationParameter(UOSInt source_length, UOS
 
 UInt32 __stdcall Media::DeinterlaceLR::ProcThread(AnyType obj)
 {
-	NotNullPtr<DITHREADSTAT> stat = obj.GetNN<DITHREADSTAT>();
+	NN<DITHREADSTAT> stat = obj.GetNN<DITHREADSTAT>();
 	stat->status = 1;
 	while (true)
 	{

@@ -273,9 +273,9 @@ Math::Coord2DDbl Map::MercatorMapView::ScnXYToMapXY(Math::Coord2DDbl scnPos) con
 	return Math::Coord2DDbl(PixelX2Lon(px.x), PixelY2Lat(px.y));
 }
 
-NotNullPtr<Map::MapView> Map::MercatorMapView::Clone() const
+NN<Map::MapView> Map::MercatorMapView::Clone() const
 {
-	NotNullPtr<Map::MercatorMapView> view;
+	NN<Map::MercatorMapView> view;
 	NEW_CLASSNN(view, Map::MercatorMapView(this->scnSize, this->centMap, this->maxLevel, (UOSInt)this->dtileSize));
 	return view;
 }

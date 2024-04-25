@@ -91,7 +91,7 @@ void UI::GTK::GTKPictureBox::UpdatePreview()
 		DEL_CLASS(this->tmpImage);
 		this->tmpImage = 0;
 	}
-	NotNullPtr<Media::StaticImage> img;
+	NN<Media::StaticImage> img;
 	if (this->currImage.SetTo(img))
 	{
 		if (this->allowResize)
@@ -127,7 +127,7 @@ void UI::GTK::GTKPictureBox::UpdatePreview()
 	this->Redraw();
 }
 
-UI::GTK::GTKPictureBox::GTKPictureBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize) : UI::GUIPictureBox(ui, parent, eng, hasBorder, allowResize)
+UI::GTK::GTKPictureBox::GTKPictureBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize) : UI::GUIPictureBox(ui, parent, eng, hasBorder, allowResize)
 {
 	this->pixbuf = 0;
 	this->tmpImage = 0;

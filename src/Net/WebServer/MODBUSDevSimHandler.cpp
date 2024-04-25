@@ -4,13 +4,13 @@
 #include "Net/WebServer/HTTPServerUtil.h"
 #include "Text/XML.h"
 
-Bool Net::WebServer::MODBUSDevSimHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Net::WebServer::MODBUSDevSimHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	if (subReq.Equals(UTF8STRC("/device")))
 	{
 		if (this->dev)
 		{
-			NotNullPtr<Text::String> s;
+			NN<Text::String> s;
 			if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 			{
 				UInt32 delay;
@@ -91,7 +91,7 @@ Bool Net::WebServer::MODBUSDevSimHandler::ProcessRequest(NotNullPtr<Net::WebServ
 	return this->DoRequest(req, resp, subReq);
 }
 
-Net::WebServer::MODBUSDevSimHandler::MODBUSDevSimHandler(NotNullPtr<Net::MODBUSTCPListener> listener, IO::MODBUSDevSim *dev)
+Net::WebServer::MODBUSDevSimHandler::MODBUSDevSimHandler(NN<Net::MODBUSTCPListener> listener, IO::MODBUSDevSim *dev)
 {
 	this->listener = listener;
 	this->dev = dev;

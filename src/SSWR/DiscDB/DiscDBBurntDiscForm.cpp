@@ -67,7 +67,7 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateAnimeName()
 	NN<SSWR::DiscDB::DiscDBEnv::DVDVideoInfo> dvdVideo;
 	Data::ArrayListNN<SSWR::DiscDB::DiscDBEnv::DVDVideoInfo> dvdVideoList;
 	Data::ArrayListStringNN animeList;
-	NotNullPtr<Text::String> anime;
+	NN<Text::String> anime;
 	this->cboDVDName->ClearItems();
 	this->env->GetDVDVideos(dvdVideoList);
 	i = 0;
@@ -82,7 +82,7 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateAnimeName()
 		}
 		i++;
 	}
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = animeList.Iterator();
+	Data::ArrayIterator<NN<Text::String>> it = animeList.Iterator();
 	while (it.HasNext())
 	{
 		anime = it.Next();
@@ -102,7 +102,7 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateSeries()
 	UOSInt j;
 	OSInt k;
 	Data::ArrayListString seriesList;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 
 	this->cboDVDName->GetText(sb);
 	this->cboSeries->ClearItems();
@@ -134,7 +134,7 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateSeries()
 	j = seriesList.GetCount();
 	while (i < j)
 	{
-		this->cboSeries->AddItem(NotNullPtr<Text::String>::FromPtr(seriesList.GetItem(i)), 0);
+		this->cboSeries->AddItem(NN<Text::String>::FromPtr(seriesList.GetItem(i)), 0);
 		i++;
 	}
 	this->UpdateVolume();
@@ -148,7 +148,7 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateVolume()
 	NN<SSWR::DiscDB::DiscDBEnv::DVDVideoInfo> dvdVideo;
 	UOSInt i;
 	UOSInt j;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 
 	this->cboDVDName->GetText(sbName);
 	this->cboSeries->GetText(sbSeries);
@@ -204,8 +204,8 @@ Bool SSWR::DiscDB::DiscDBBurntDiscForm::UpdateFileInfo()
 	}
 	Data::ArrayListNN<SSWR::DiscDB::DiscDBEnv::DVDVideoInfo> dvdVideoList;
 	NN<SSWR::DiscDB::DiscDBEnv::DVDVideoInfo> dvdVideo;
-	NotNullPtr<Text::String> s;
-	NotNullPtr<Text::String> vol;
+	NN<Text::String> s;
+	NN<Text::String> vol;
 	this->env->GetDVDVideos(dvdVideoList);
 	i = 0;
 	j = dvdVideoList.GetCount();
@@ -275,7 +275,7 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateType()
 	NN<SSWR::DiscDB::DiscDBEnv::DVDVideoInfo> dvdVideo;
 	UOSInt i;
 	UOSInt j;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 
 	this->cboDVDName->GetText(sbName);
 	this->cboSeries->GetText(sbSeries);
@@ -824,8 +824,8 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::MovieColsFree(MovieCols *anime)
 
 void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnBrowseClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
-	NotNullPtr<UI::GUIFileDialog> ofd = me->ui->NewFileDialog(L"SSWR", L"DVDDB", L"Browse", true);
+	NN<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
+	NN<UI::GUIFileDialog> ofd = me->ui->NewFileDialog(L"SSWR", L"DVDDB", L"Browse", true);
 	if (ofd->ShowDialog(me->GetHandle()))
 	{
 		UOSInt i = ofd->GetFileName()->LastIndexOf(IO::Path::PATH_SEPERATOR);
@@ -852,7 +852,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnBrowseClicked(AnyType userOb
 
 void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFileNameSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
+	NN<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
 	me->pnlFile->SetEnabled(true);
 	if (me->selectedFile)
 	{
@@ -889,8 +889,8 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFileNameSelChg(AnyType userO
 		UOSInt animeLen = 0;
 		UOSInt seriesLen = 0;
 		UOSInt len;
-		NotNullPtr<Text::String> anime = Text::String::NewEmpty();
-		NotNullPtr<Text::String> series = Text::String::NewEmpty();
+		NN<Text::String> anime = Text::String::NewEmpty();
+		NN<Text::String> series = Text::String::NewEmpty();
 		UOSInt prefix = me->selectedFile->fname->IndexOf(UTF8STRC(".part"));
 		UOSInt i;
 		UOSInt j;
@@ -920,7 +920,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFileNameSelChg(AnyType userO
 		{
 			Data::ArrayListNN<SSWR::DiscDB::DiscDBEnv::DVDVideoInfo> dvdVideoList;
 			NN<SSWR::DiscDB::DiscDBEnv::DVDVideoInfo> dvdVideo;
-			NotNullPtr<Text::String> s;
+			NN<Text::String> s;
 			me->env->GetDVDVideos(dvdVideoList);
 			i = 0;
 			j = dvdVideoList.GetCount();
@@ -981,7 +981,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFileNameSelChg(AnyType userO
 				}
 				me->OnSeriesSelChg(me);
 				Bool hasVol = false;
-				NotNullPtr<Text::String> fname = me->selectedFile->fname;
+				NN<Text::String> fname = me->selectedFile->fname;
 				i = fname->IndexOf(series) + seriesLen;
 				OSInt lastR = 0;
 				UOSInt endOfst = fname->leng;
@@ -1046,14 +1046,14 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFileNameSelChg(AnyType userO
 
 void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnBrandSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
+	NN<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
 	Data::ArrayListNN<const SSWR::DiscDB::DiscDBEnv::DiscTypeInfo> discList;
 	NN<const SSWR::DiscDB::DiscDBEnv::DiscTypeInfo> discType;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (me->lbBrand->GetSelectedItemTextNew().SetTo(s))
 	{
 		me->env->GetDiscTypesByBrand(discList, s->v, s->leng);
@@ -1069,7 +1069,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnBrandSelChg(AnyType userObj)
 		sptr = Text::StrConcat(sptr, discType->mid);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
 		sptr = Text::StrConcat(sptr, discType->name);
-		me->lbDVDName->AddItem(CSTRP(sbuff, sptr), NotNullPtr<SSWR::DiscDB::DiscDBEnv::DiscTypeInfo>::ConvertFrom(discType));
+		me->lbDVDName->AddItem(CSTRP(sbuff, sptr), NN<SSWR::DiscDB::DiscDBEnv::DiscTypeInfo>::ConvertFrom(discType));
 
 		i++;
 	}
@@ -1077,32 +1077,32 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnBrandSelChg(AnyType userObj)
 
 void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnDVDNameSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
-	NotNullPtr<const SSWR::DiscDB::DiscDBEnv::DiscTypeInfo> discType = me->lbDVDName->GetSelectedItem().GetNN<const SSWR::DiscDB::DiscDBEnv::DiscTypeInfo>();
+	NN<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
+	NN<const SSWR::DiscDB::DiscDBEnv::DiscTypeInfo> discType = me->lbDVDName->GetSelectedItem().GetNN<const SSWR::DiscDB::DiscDBEnv::DiscTypeInfo>();
 	me->txtDiscType->SetText(discType->discTypeId->ToCString());
 }
 
 void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnCboDVDNameSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
+	NN<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
 	me->UpdateSeries();
 }
 
 void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnCboDVDNameTextChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
+	NN<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
 	me->UpdateSeries();
 }
 
 void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnSeriesSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
+	NN<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
 	me->UpdateVolume();
 }
 
 void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFinishClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
+	NN<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
 	if (me->selectedFile)
 	{
 		if (!me->UpdateFileInfo())
@@ -1180,13 +1180,13 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFinishClicked(AnyType userOb
 
 void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnVolumeSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
+	NN<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
 	me->UpdateType();
 }
 
 void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnRemoveFileClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
+	NN<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
 	UOSInt i = me->lbFileName->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
@@ -1198,8 +1198,8 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnRemoveFileClicked(AnyType us
 
 void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnCategorySelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
-	NotNullPtr<SSWR::DiscDB::DiscDBEnv::CategoryInfo> cate;
+	NN<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
+	NN<SSWR::DiscDB::DiscDBEnv::CategoryInfo> cate;
 	if (me->cboCategory->GetSelectedItem().GetOpt<SSWR::DiscDB::DiscDBEnv::CategoryInfo>().SetTo(cate))
 	{
 		if (cate->id->Equals(UTF8STRC("ISO")))
@@ -1231,7 +1231,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnCategorySelChg(AnyType userO
 
 void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnDiscIdTextChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
+	NN<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtDiscId->GetText(sb);
     if (sb.GetLength() <= 0)
@@ -1250,7 +1250,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnDiscIdTextChg(AnyType userOb
 
 void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnSectorSizeClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
+	NN<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
 	UOSInt i;
 	UOSInt j;
 	UInt64 size;
@@ -1285,7 +1285,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnSectorSizeClicked(AnyType us
 
 void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnAllFileClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
+	NN<SSWR::DiscDB::DiscDBBurntDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBBurntDiscForm>();
 	if (me->selectedFile)
 	{
 		if (me->UpdateFileInfo())
@@ -1310,7 +1310,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnAllFileClicked(AnyType userO
 	}
 }
 
-SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, SSWR::DiscDB::DiscDBEnv *env) : UI::GUIForm(parent, 632, 483, ui)
+SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, SSWR::DiscDB::DiscDBEnv *env) : UI::GUIForm(parent, 632, 483, ui)
 {
 	this->SetText(CSTR("Burnt Disc"));
 	this->SetFont(0, 0, 8.25, false);

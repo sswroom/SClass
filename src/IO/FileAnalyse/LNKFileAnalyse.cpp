@@ -6,9 +6,9 @@
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::FileAnalyse::LNKFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::LNKFileAnalyse>();
+	NN<IO::FileAnalyse::LNKFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::LNKFileAnalyse>();
 	UInt64 ofst;
 	UInt8 tagHdr[24];
 	UInt32 linkFlags;
@@ -120,7 +120,7 @@ void __stdcall IO::FileAnalyse::LNKFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	}
 }
 
-IO::FileAnalyse::LNKFileAnalyse::LNKFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("LNKFileAnalyse"))
+IO::FileAnalyse::LNKFileAnalyse::LNKFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("LNKFileAnalyse"))
 {
 	UInt8 buff[40];
 	this->fd = 0;
@@ -151,7 +151,7 @@ UOSInt IO::FileAnalyse::LNKFileAnalyse::GetFrameCount()
 	return this->tags.GetCount();
 }
 
-Bool IO::FileAnalyse::LNKFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::LNKFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::LNKFileAnalyse::TagInfo> tag;
 	if (!this->tags.GetItem(index).SetTo(tag))
@@ -192,7 +192,7 @@ UOSInt IO::FileAnalyse::LNKFileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::LNKFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[1024];
 	UTF8Char* sptr;
 	NN<IO::FileAnalyse::LNKFileAnalyse::TagInfo> tag;

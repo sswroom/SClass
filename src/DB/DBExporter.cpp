@@ -10,7 +10,7 @@
 #include "Text/XML.h"
 #include "Text/SpreadSheet/Workbook.h"
 
-Data::Class *DB::DBExporter::CreateTableClass(NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName)
+Data::Class *DB::DBExporter::CreateTableClass(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName)
 {
 	DB::TableDef *tab = db->GetTableDef(schema, tableName);
 	if (tab)
@@ -20,7 +20,7 @@ Data::Class *DB::DBExporter::CreateTableClass(NotNullPtr<DB::ReadingDB> db, Text
 		return cls;
 	}
 
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (db->QueryTableData(schema, tableName, 0, 0, 1, CSTR_NULL, 0).SetTo(r))
 	{
 		Data::Class *cls = r->CreateClass().Ptr();
@@ -30,10 +30,10 @@ Data::Class *DB::DBExporter::CreateTableClass(NotNullPtr<DB::ReadingDB> db, Text
 	return 0;
 }
 
-Bool DB::DBExporter::GenerateInsertSQLs(NotNullPtr<DB::ReadingDB> db, DB::SQLType sqlType, Bool axisAware, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NotNullPtr<IO::Stream> outStm)
+Bool DB::DBExporter::GenerateInsertSQLs(NN<DB::ReadingDB> db, DB::SQLType sqlType, Bool axisAware, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NN<IO::Stream> outStm)
 {
 	DB::SQLBuilder sql(sqlType, axisAware, 0);
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (!db->QueryTableData(schema, tableName, 0, 0, 0, CSTR_NULL, cond).SetTo(r))
 	{
 		return false;
@@ -53,9 +53,9 @@ Bool DB::DBExporter::GenerateInsertSQLs(NotNullPtr<DB::ReadingDB> db, DB::SQLTyp
 	return true;
 }
 
-Bool DB::DBExporter::GenerateCSV(NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, Text::CStringNN nullText, NotNullPtr<IO::Stream> outStm, UInt32 codePage)
+Bool DB::DBExporter::GenerateCSV(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, Text::CStringNN nullText, NN<IO::Stream> outStm, UInt32 codePage)
 {
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (!db->QueryTableData(schema, tableName, 0, 0, 0, CSTR_NULL, cond).SetTo(r))
 	{
 		return false;
@@ -152,10 +152,10 @@ Bool DB::DBExporter::GenerateCSV(NotNullPtr<DB::ReadingDB> db, Text::CString sch
 	return true;
 }
 
-Bool DB::DBExporter::GenerateSQLite(NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NotNullPtr<DB::SQLiteFile> file, Text::StringBuilderUTF8 *sbError)
+Bool DB::DBExporter::GenerateSQLite(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NN<DB::SQLiteFile> file, Text::StringBuilderUTF8 *sbError)
 {
-	NotNullPtr<Text::StringBuilderUTF8> sb;
-	NotNullPtr<DB::TableDef> table;
+	NN<Text::StringBuilderUTF8> sb;
+	NN<DB::TableDef> table;
 	if (!table.Set(db->GetTableDef(schema, tableName)))
 	{
 		if (sbError)
@@ -176,7 +176,7 @@ Bool DB::DBExporter::GenerateSQLite(NotNullPtr<DB::ReadingDB> db, Text::CString 
 		table.Delete();
 		return false;
 	}
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (!db->QueryTableData(schema, tableName, 0, 0, 0, CSTR_NULL, cond).SetTo(r))
 	{
 		if (sb.Set(sbError))
@@ -189,7 +189,7 @@ Bool DB::DBExporter::GenerateSQLite(NotNullPtr<DB::ReadingDB> db, Text::CString 
 	}
 	Bool succ = true;
 	Optional<DB::DBTransaction> tran = file->BeginTransaction();
-	NotNullPtr<DB::DBTransaction> thisTran;
+	NN<DB::DBTransaction> thisTran;
 	while (r->ReadNext())
 	{
 		sql.Clear();
@@ -216,9 +216,9 @@ Bool DB::DBExporter::GenerateSQLite(NotNullPtr<DB::ReadingDB> db, Text::CString 
 	return succ;
 }
 
-Bool DB::DBExporter::GenerateHTML(NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NotNullPtr<IO::Stream> outStm, UInt32 codePage)
+Bool DB::DBExporter::GenerateHTML(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NN<IO::Stream> outStm, UInt32 codePage)
 {
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (!db->QueryTableData(schema, tableName, 0, 0, 0, CSTR_NULL, cond).SetTo(r))
 	{
 		return false;
@@ -302,9 +302,9 @@ Bool DB::DBExporter::GenerateHTML(NotNullPtr<DB::ReadingDB> db, Text::CString sc
 	return true;
 }
 
-Bool DB::DBExporter::GeneratePList(NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NotNullPtr<IO::Stream> outStm, UInt32 codePage)
+Bool DB::DBExporter::GeneratePList(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NN<IO::Stream> outStm, UInt32 codePage)
 {
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (!db->QueryTableData(schema, tableName, 0, 0, 0, CSTR_NULL, cond).SetTo(r))
 	{
 		return false;
@@ -413,13 +413,13 @@ Bool DB::DBExporter::GeneratePList(NotNullPtr<DB::ReadingDB> db, Text::CString s
 	return true;
 }
 
-Bool DB::DBExporter::AppendWorksheet(NotNullPtr<Text::SpreadSheet::Workbook> wb, NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, Text::StringBuilderUTF8 *sbError)
+Bool DB::DBExporter::AppendWorksheet(NN<Text::SpreadSheet::Workbook> wb, NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, Text::StringBuilderUTF8 *sbError)
 {
 	UTF8Char sbuff[4096];
 	UTF8Char *sptr;
-	NotNullPtr<Text::StringBuilderUTF8> sb;
+	NN<Text::StringBuilderUTF8> sb;
 	DB::TableDef *table = db->GetTableDef(schema, tableName);
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (!db->QueryTableData(schema, tableName, 0, 0, 0, CSTR_NULL, cond).SetTo(r))
 	{
 		if (sb.Set(sbError))
@@ -430,9 +430,9 @@ Bool DB::DBExporter::AppendWorksheet(NotNullPtr<Text::SpreadSheet::Workbook> wb,
 		SDEL_CLASS(table);
 		return false;
 	}
-	NotNullPtr<Text::SpreadSheet::Worksheet> ws = wb->AddWorksheet(tableName);
+	NN<Text::SpreadSheet::Worksheet> ws = wb->AddWorksheet(tableName);
 	Text::SpreadSheet::CellStyle style(0);
-	NotNullPtr<Text::SpreadSheet::CellStyle> timeStyle;
+	NN<Text::SpreadSheet::CellStyle> timeStyle;
 	UOSInt i = 0;
 	UOSInt j = r->ColCount();
 	UOSInt row;
@@ -516,7 +516,7 @@ Bool DB::DBExporter::AppendWorksheet(NotNullPtr<Text::SpreadSheet::Workbook> wb,
 	return true;
 }
 
-Bool DB::DBExporter::GenerateXLSX(NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NotNullPtr<IO::SeekableStream> outStm, Text::StringBuilderUTF8 *sbError)
+Bool DB::DBExporter::GenerateXLSX(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NN<IO::SeekableStream> outStm, Text::StringBuilderUTF8 *sbError)
 {
 	Text::SpreadSheet::Workbook wb;
 	wb.AddDefaultStyles();
@@ -527,7 +527,7 @@ Bool DB::DBExporter::GenerateXLSX(NotNullPtr<DB::ReadingDB> db, Text::CString sc
 	return exporter.ExportFile(outStm, outStm->GetSourceNameObj()->ToCString(), wb, 0);
 }
 
-Bool DB::DBExporter::GenerateExcelXML(NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NotNullPtr<IO::SeekableStream> outStm, Text::StringBuilderUTF8 *sbError)
+Bool DB::DBExporter::GenerateExcelXML(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NN<IO::SeekableStream> outStm, Text::StringBuilderUTF8 *sbError)
 {
 	Text::SpreadSheet::Workbook wb;
 	wb.AddDefaultStyles();
@@ -538,7 +538,7 @@ Bool DB::DBExporter::GenerateExcelXML(NotNullPtr<DB::ReadingDB> db, Text::CStrin
 	return exporter.ExportFile(outStm, outStm->GetSourceNameObj()->ToCString(), wb, 0);
 }
 
-Bool DB::DBExporter::GenerateExcelXMLAllTables(NotNullPtr<DB::ReadingDB> db, Text::CString schema, NotNullPtr<IO::Stream> outStm, UInt32 codePage)
+Bool DB::DBExporter::GenerateExcelXMLAllTables(NN<DB::ReadingDB> db, Text::CString schema, NN<IO::Stream> outStm, UInt32 codePage)
 {
 	UTF8Char *lineBuff1;
 	UTF8Char *lineBuff2;
@@ -552,7 +552,7 @@ Bool DB::DBExporter::GenerateExcelXMLAllTables(NotNullPtr<DB::ReadingDB> db, Tex
 	lineBuff1 = MemAlloc(UTF8Char, 65536);
 	lineBuff2 = MemAlloc(UTF8Char, 65536);
 
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 
 	sptr = Text::StrConcatC(Text::EncodingFactory::GetInternetName(Text::StrConcatC(lineBuff1, UTF8STRC("<?xml version=\"1.0\" encoding=\"")), codePage), UTF8STRC("\"?>"));
 	writer.WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
@@ -564,10 +564,10 @@ Bool DB::DBExporter::GenerateExcelXMLAllTables(NotNullPtr<DB::ReadingDB> db, Tex
 
 	Data::ArrayListStringNN names;
 	db->QueryTableNames(CSTR_NULL, names);
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = names.Iterator();
+	Data::ArrayIterator<NN<Text::String>> it = names.Iterator();
 	while (it.HasNext())
 	{
-		NotNullPtr<Text::String> tableName = it.Next();
+		NN<Text::String> tableName = it.Next();
 		if (db->QueryTableData(CSTR_NULL, tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			UOSInt ind = tableName->LastIndexOf('\\');

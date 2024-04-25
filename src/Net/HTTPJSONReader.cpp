@@ -7,9 +7,9 @@
 #include <stdio.h>
 #endif
 
-Text::JSONBase *Net::HTTPJSONReader::Read(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url)
+Text::JSONBase *Net::HTTPJSONReader::Read(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN url)
 {
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, false);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, false);
 	if (cli->IsError())
 	{
 #if defined(VERBOSE)
@@ -26,7 +26,7 @@ Text::JSONBase *Net::HTTPJSONReader::Read(NotNullPtr<Net::SocketFactory> sockf, 
 #if defined(VERBOSE)
 			printf("HTTPJSONReader: Redirect location found: %s\r\n", newUrl.v);
 #endif
-			NotNullPtr<Net::HTTPClient> cli2 = Net::HTTPClient::CreateConnect(sockf, ssl, newUrl, Net::WebUtil::RequestMethod::HTTP_GET, false);
+			NN<Net::HTTPClient> cli2 = Net::HTTPClient::CreateConnect(sockf, ssl, newUrl, Net::WebUtil::RequestMethod::HTTP_GET, false);
 			if (cli2->IsError())
 			{
 #if defined(VERBOSE)

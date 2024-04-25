@@ -162,7 +162,7 @@ void Media::M2VStreamSource::SubmitFrame(UOSInt frameSize, UOSInt frameStart, UO
 				if (this->playToStop || (!this->playing && clk.GetTimeDiff() >= 3))
 				{
 #ifdef _DEBUG
-					NotNullPtr<Sync::Mutex> debugMut;
+					NN<Sync::Mutex> debugMut;
 					if (this->debugLog && debugMut.Set(this->debugMut))
 					{
 						Text::StringBuilderUTF8 sb;
@@ -180,7 +180,7 @@ void Media::M2VStreamSource::SubmitFrame(UOSInt frameSize, UOSInt frameStart, UO
 			else
 			{
 #ifdef _DEBUG
-				NotNullPtr<Sync::Mutex> debugMut;
+				NN<Sync::Mutex> debugMut;
 				if (this->debugLog && debugMut.Set(this->debugMut))
 				{
 					Text::StringBuilderUTF8 sb;
@@ -228,7 +228,7 @@ void Media::M2VStreamSource::ClearPlayBuff()
 
 UInt32 __stdcall Media::M2VStreamSource::PlayThread(AnyType userObj)
 {
-	NotNullPtr<Media::M2VStreamSource> me = userObj.GetNN<Media::M2VStreamSource>();
+	NN<Media::M2VStreamSource> me = userObj.GetNN<Media::M2VStreamSource>();
 	me->playInit = true;
 	me->playing = true;
 	while (!me->playToStop)
@@ -381,7 +381,7 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(AnyType userObj)
 			mutUsage.EndUse();
 
 #ifdef _DEBUG
-			NotNullPtr<Sync::Mutex> debugMut;
+			NN<Sync::Mutex> debugMut;
 			if (me->debugLog && debugMut.Set(me->debugMut))
 			{
 				Text::StringBuilderUTF8 sb;
@@ -408,7 +408,7 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(AnyType userObj)
 	return 1001;
 }
 
-Media::M2VStreamSource::M2VStreamSource(NotNullPtr<Media::IStreamControl> pbc)
+Media::M2VStreamSource::M2VStreamSource(NN<Media::IStreamControl> pbc)
 {
 	this->info.Clear();
 	this->pbc = pbc;
@@ -434,7 +434,7 @@ Media::M2VStreamSource::M2VStreamSource(NotNullPtr<Media::IStreamControl> pbc)
 	this->debugMut = 0;
 
 #ifdef _DEBUG
-	NotNullPtr<IO::FileStream> debugFS;
+	NN<IO::FileStream> debugFS;
 	NEW_CLASS(this->debugMut, Sync::Mutex());
 	NEW_CLASSNN(debugFS, IO::FileStream(CSTR("M2VDebug.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	this->debugFS = debugFS.Ptr();
@@ -472,7 +472,7 @@ Text::CStringNN Media::M2VStreamSource::GetFilterName()
 	return CSTR("M2VStreamSource");
 }
 
-Bool Media::M2VStreamSource::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::M2VStreamSource::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	info->Set(this->info);
 	frameRateNorm.Set(this->frameRateNorm);
@@ -500,7 +500,7 @@ Bool Media::M2VStreamSource::Start()
 		return false;
 
 #ifdef _DEBUG
-	NotNullPtr<Sync::Mutex> debugMut;
+	NN<Sync::Mutex> debugMut;
 	if (this->debugLog && debugMut.Set(this->debugMut))
 	{
 		Sync::MutexUsage debugMutUsage(debugMut);
@@ -643,7 +643,7 @@ void Media::M2VStreamSource::ClearFrameBuff()
 void Media::M2VStreamSource::SetStreamTime(Data::Duration time)
 {
 #ifdef _DEBUG
-	NotNullPtr<Sync::Mutex> debugMut;
+	NN<Sync::Mutex> debugMut;
 	if (this->debugLog && debugMut.Set(this->debugMut))
 	{
 		Text::StringBuilderUTF8 sb;
@@ -671,7 +671,7 @@ void Media::M2VStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 	WriteMInt32((UInt8*)&pictureHdr, 0x00000100);
 
 #ifdef _DEBUG
-	NotNullPtr<Sync::Mutex> debugMut;
+	NN<Sync::Mutex> debugMut;
 	if (this->debugLog && debugMut.Set(this->debugMut))
 	{
 		Text::StringBuilderUTF8 sb;

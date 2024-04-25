@@ -10,7 +10,7 @@ void __stdcall SSWR::AVIRead::AVIRPostgreSQLForm::OnOKClicked(AnyType userObj)
 	Text::StringBuilderUTF8 sb3;
 	Text::StringBuilderUTF8 sb4;
 	Text::StringBuilderUTF8 sbPort;
-	NotNullPtr<SSWR::AVIRead::AVIRPostgreSQLForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPostgreSQLForm>();
+	NN<SSWR::AVIRead::AVIRPostgreSQLForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPostgreSQLForm>();
 	me->txtServer->GetText(sb);
 	me->txtUID->GetText(sb2);
 	me->txtPWD->GetText(sb3);
@@ -37,11 +37,11 @@ void __stdcall SSWR::AVIRead::AVIRPostgreSQLForm::OnOKClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRPostgreSQLForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPostgreSQLForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPostgreSQLForm>();
+	NN<SSWR::AVIRead::AVIRPostgreSQLForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPostgreSQLForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRPostgreSQLForm::AVIRPostgreSQLForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 340, 188, ui)
+SSWR::AVIRead::AVIRPostgreSQLForm::AVIRPostgreSQLForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 340, 188, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("PostgreSQL Connection"));

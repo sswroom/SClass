@@ -27,7 +27,7 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse(CSTR("/etc/os-release"));
 		if (cfg)
 		{
-			NotNullPtr<Text::String> s;
+			NN<Text::String> s;
 			if (cfg->GetValue(CSTR("NAME")).SetTo(s))
 			{
 				sbuff = s->ConcatTo(sbuff);
@@ -161,7 +161,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse(CSTR("/etc/os-release"));
 		if (cfg)
 		{
-			NotNullPtr<Text::String> s;
+			NN<Text::String> s;
 			if (cfg->GetValue(CSTR("VERSION")).SetTo(s))
 			{
 				sbuff = s->ConcatTo(sbuff);
@@ -202,7 +202,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 	if (IO::Path::GetPathType(CSTR("/etc/VERSION")) == IO::Path::PathType::File)
 	{
 		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse(CSTR("/etc/VERSION"));
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		if (cfg)
 		{
 			if (cfg->GetValue(CSTR("productversion")).SetTo(s))

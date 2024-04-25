@@ -5,7 +5,7 @@
 #include "IO/SMake.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	Bool showHelp;
@@ -55,7 +55,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				else if (cmdLines[i][1] == 'V')
 				{
 					smake.SetMessageWriter(&console);
-					NotNullPtr<const Data::ArrayListNN<IO::SMake::ConfigItem>> cfgList = smake.GetConfigList();
+					NN<const Data::ArrayListNN<IO::SMake::ConfigItem>> cfgList = smake.GetConfigList();
 					NN<IO::SMake::ConfigItem> cfg;
 					Text::StringBuilderUTF8 sb;
 					j = 0;

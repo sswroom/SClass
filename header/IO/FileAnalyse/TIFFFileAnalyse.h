@@ -35,15 +35,15 @@ namespace IO
 			Bool pauseParsing;
 			Sync::Thread thread;
 
-			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> thread);
+			static void __stdcall ParseThread(NN<Sync::Thread> thread);
 			static void FreePackInfo(NN<PackInfo> pack);
 		public:
-			TIFFFileAnalyse(NotNullPtr<IO::StreamData> fd);
+			TIFFFileAnalyse(NN<IO::StreamData> fd);
 			virtual ~TIFFFileAnalyse();
 
 			virtual Text::CStringNN GetFormatName();
 			virtual UOSInt GetFrameCount();
-			virtual Bool GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual Bool GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst);
 			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index);
 

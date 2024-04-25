@@ -11,9 +11,9 @@ namespace Data
 	{
 	public:
 		T key;
-		NotNullPtr<V> value;
+		NN<V> value;
 	
-		TwinItemNN(T key, NotNullPtr<V> value)
+		TwinItemNN(T key, NN<V> value)
 		{
 			this->key = key;
 			this->value = value;
@@ -33,11 +33,11 @@ namespace Data
 	template <class T, class V> class FastMapNNIterator
 	{
 	private:
-		NotNullPtr<const Data::ArrayList<TwinItemNN<T, V>>> arr;
+		NN<const Data::ArrayList<TwinItemNN<T, V>>> arr;
 		UOSInt nextIndex;
 
 	public:
-		FastMapNNIterator(NotNullPtr<const Data::ArrayList<TwinItemNN<T, V>>> arr)
+		FastMapNNIterator(NN<const Data::ArrayList<TwinItemNN<T, V>>> arr)
 		{
 			this->arr = arr;
 			this->nextIndex = 0;
@@ -48,7 +48,7 @@ namespace Data
 			return this->nextIndex < this->arr->GetCount();
 		}
 
-		NotNullPtr<V> Next()
+		NN<V> Next()
 		{
 			return this->arr->GetItem(this->nextIndex++);
 		}
@@ -63,18 +63,18 @@ namespace Data
 		FastMapNN();
 		virtual ~FastMapNN();
 
-		virtual Optional<V> Put(T key, NotNullPtr<V> val);
+		virtual Optional<V> Put(T key, NN<V> val);
 		virtual Optional<V> Get(T key) const;
 		virtual Optional<V> Remove(T key);
 		OSInt GetIndex(T key) const;
 		Bool ContainsKey(T key) const;
 
 		void AllocSize(UOSInt cnt);
-		UOSInt AddKeysTo(NotNullPtr<List<T>> list);
+		UOSInt AddKeysTo(NN<List<T>> list);
 		virtual UOSInt GetCount() const;
 		virtual T GetKey(UOSInt index) const;
 		virtual Optional<V> GetItem(UOSInt index) const;
-		virtual NotNullPtr<V> GetItemNoCheck(UOSInt index) const;
+		virtual NN<V> GetItemNoCheck(UOSInt index) const;
 		Optional<V> RemoveAt(UOSInt index);
 		virtual Bool IsEmpty() const;
 		virtual Optional<V> *ToArray(OutParam<UOSInt> objCnt);
@@ -92,7 +92,7 @@ namespace Data
 	{
 	}
 
-	template <class T, class V> Optional<V> FastMapNN<T, V>::Put(T key, NotNullPtr<V> val)
+	template <class T, class V> Optional<V> FastMapNN<T, V>::Put(T key, NN<V> val)
 	{
 		OSInt i;
 		i = this->GetIndex(key);
@@ -176,7 +176,7 @@ namespace Data
 		this->values.EnsureCapacity(newSize);
 	}
 
-	template <class T, class V> UOSInt FastMapNN<T, V>::AddKeysTo(NotNullPtr<List<T>> list)
+	template <class T, class V> UOSInt FastMapNN<T, V>::AddKeysTo(NN<List<T>> list)
 	{
 		UOSInt i = 0;
 		UOSInt j = this->values.GetCount();
@@ -205,7 +205,7 @@ namespace Data
 		return this->values.GetItem(index).value;
 	}
 
-	template <class T, class V> NotNullPtr<V> FastMapNN<T, V>::GetItemNoCheck(UOSInt index) const
+	template <class T, class V> NN<V> FastMapNN<T, V>::GetItemNoCheck(UOSInt index) const
 	{
 		return this->values.GetItem(index).value;
 	}

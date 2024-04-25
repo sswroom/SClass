@@ -6,13 +6,13 @@
 
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnStopClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
+	NN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
 	me->player->PBStop();
 }
 
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnCaptureDevClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
+	NN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
 	SSWR::AVIRead::AVIRCaptureDevForm dlg(0, me->ui, me->core);
 	me->player->CloseFile();
 	if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
@@ -30,9 +30,9 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnCaptureDevClicked(An
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
+	NN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
 	UOSInt i = 0;
 	UOSInt nFiles = files.GetCount();
 	while (i < nFiles)
@@ -54,33 +54,33 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnFileDrop(AnyType use
 
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnRotateChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
+	NN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
 	me->player->SetRotateType((Media::RotateType)me->cboRotate->GetSelectedItem().GetOSInt());
 }
 
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnSurfaceBugChg(AnyType userObj, Bool newVal)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
+	NN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
 	me->player->SetSurfaceBugMode(me->chkSurfaceBug->IsChecked());
 }
 
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnYUVTypeChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
+	NN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
 	if (!me->videoOpening)
 		me->player->GetVideoRenderer()->SetSrcYUVType((Media::ColorProfile::YUVType)me->cboYUVType->GetSelectedItem().GetOSInt());
 }
 
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnRGBTransChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
+	NN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
 	if (!me->videoOpening)
 		me->player->GetVideoRenderer()->SetSrcRGBType((Media::CS::TransferType)me->cboRGBTrans->GetSelectedItem().GetOSInt());
 }
 
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnColorPrimariesChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
+	NN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
 	if (!me->videoOpening)
 		me->player->GetVideoRenderer()->SetSrcPrimaries((Media::ColorProfile::ColorType)me->cboColorPrimaries->GetSelectedItem().GetOSInt());
 }
@@ -150,7 +150,7 @@ Bool SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OpenICC(Text::CStringNN iccFile)
 		Data::ByteBuffer buff((UOSInt)len);
 		if (fs.Read(buff) == len)
 		{
-			NotNullPtr<Media::ICCProfile> icc;
+			NN<Media::ICCProfile> icc;
 			if (Media::ICCProfile::Parse(buff).SetTo(icc))
 			{
 				Media::CS::TransferParam param;
@@ -177,7 +177,7 @@ Bool SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OpenICC(Text::CStringNN iccFile)
 	return succ;
 }
 
-SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 320, 240, ui)
+SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 320, 240, ui)
 {
 	this->SetText(CSTR("Console Media Player"));
 	this->SetFont(0, 0, 8.25, false);

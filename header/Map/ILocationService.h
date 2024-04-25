@@ -32,7 +32,7 @@ namespace Map
 			Int8 snr;
 		};
 
-		typedef void (__stdcall *LocationHandler)(AnyType userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, Data::DataArray<SateStatus> sates);
+		typedef void (__stdcall *LocationHandler)(AnyType userObj, NN<Map::GPSTrack::GPSRecord3> record, Data::DataArray<SateStatus> sates);
 
 		virtual ~ILocationService() {};
 

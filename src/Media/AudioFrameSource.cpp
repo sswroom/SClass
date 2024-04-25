@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "Media/AudioFrameSource.h"
 
-Media::AudioFrameSource::AudioFrameSource(NotNullPtr<IO::StreamData> fd, NotNullPtr<const Media::AudioFormat> format, NotNullPtr<Text::String> name)
+Media::AudioFrameSource::AudioFrameSource(NN<IO::StreamData> fd, NN<const Media::AudioFormat> format, NN<Text::String> name)
 {
 	this->format.FromAudioFormat(format);
 	if (this->format.frequency == 0)
@@ -25,7 +25,7 @@ Media::AudioFrameSource::AudioFrameSource(NotNullPtr<IO::StreamData> fd, NotNull
 	this->blocks = MemAlloc(Media::AudioFrameSource::AudioFrame, this->maxBlockCnt);
 }
 
-Media::AudioFrameSource::AudioFrameSource(NotNullPtr<IO::StreamData> fd, NotNullPtr<const Media::AudioFormat> format, Text::CStringNN name)
+Media::AudioFrameSource::AudioFrameSource(NN<IO::StreamData> fd, NN<const Media::AudioFormat> format, Text::CStringNN name)
 {
 	this->format.FromAudioFormat(format);
 	if (this->format.frequency == 0)
@@ -105,7 +105,7 @@ Bool Media::AudioFrameSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEn
 	return false;
 }
 
-void Media::AudioFrameSource::GetFormat(NotNullPtr<AudioFormat> format)
+void Media::AudioFrameSource::GetFormat(NN<AudioFormat> format)
 {
 	if (this->format.bitRate == 0)
 	{

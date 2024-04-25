@@ -15,9 +15,9 @@ namespace IO
 		IO::LogHandler::LogType logStyle;
 		UOSInt nFiles;
 		Int32 lastVal;
-		NotNullPtr<Text::UTF8Writer> log;
-		NotNullPtr<IO::FileStream> fileStm;
-		NotNullPtr<Text::String> fileName;
+		NN<Text::UTF8Writer> log;
+		NN<IO::FileStream> fileStm;
+		NN<Text::String> fileName;
 		const UTF8Char *extName;
 		Int64 fileSize;
 		Bool closed;

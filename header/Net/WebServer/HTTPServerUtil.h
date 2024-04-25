@@ -15,10 +15,10 @@ namespace Net
 			static Data::Compress::DeflateStream::CompLevel compLevel;
 		public:
 			static Bool MIMEToCompress(Text::CStringNN mime);
-			static Bool SendContent(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN mime, UInt64 contLeng, NotNullPtr<IO::Stream> stm);
-			static Bool SendContent(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN mime, UInt64 contLeng, const UInt8 *buff);
-			static Bool SendContent(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN mime, Text::CStringNN cont);
-			static Bool ResponseFile(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN fileName, OSInt cacheAge);
+			static Bool SendContent(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN mime, UInt64 contLeng, NN<IO::Stream> stm);
+			static Bool SendContent(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN mime, UInt64 contLeng, const UInt8 *buff);
+			static Bool SendContent(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN mime, Text::CStringNN cont);
+			static Bool ResponseFile(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN fileName, OSInt cacheAge);
 
 			static void SetCompLevel(Data::Compress::DeflateStream::CompLevel compLevel);
 			static Bool AllowGZip(Net::BrowserInfo::BrowserType browser, Manage::OSInfo::OSType os);

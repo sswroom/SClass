@@ -13,18 +13,18 @@ namespace SSWR
 		class AVIROLEDBForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblConnStr;
-			NotNullPtr<UI::GUITextBox> txtConnStr;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUILabel> lblConnStr;
+			NN<UI::GUITextBox> txtConnStr;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			DB::DBConn *conn;
 
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			AVIROLEDBForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIROLEDBForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIROLEDBForm();
 
 			virtual void OnMonitorChanged();

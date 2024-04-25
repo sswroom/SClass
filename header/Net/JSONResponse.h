@@ -59,7 +59,7 @@ namespace Net
 			virtual ~ArrayNativeField() {};
 
 			void AddValue(T val) { this->vals.Add(val);}
-			NotNullPtr<const Data::ArrayList<T>> GetValue() const { return this->vals; }
+			NN<const Data::ArrayList<T>> GetValue() const { return this->vals; }
 		};
 
 		template <typename T> class ArrayNNField : public ArrayField
@@ -70,8 +70,8 @@ namespace Net
 			ArrayNNField(Text::CStringNN name, Bool optional, Bool allowNull) : ArrayField(name, optional, allowNull, Text::JSONType::Object) {};
 			virtual ~ArrayNNField() { this->vals.DeleteAll(); };
 
-			void AddValue(NotNullPtr<T> val) { this->vals.Add(val);}
-			NotNullPtr<const Data::ArrayListNN<T>> GetValue() const { return this->vals; }
+			void AddValue(NN<T> val) { this->vals.Add(val);}
+			NN<const Data::ArrayListNN<T>> GetValue() const { return this->vals; }
 		};
 
 		class ArrayStrField : public ArrayField
@@ -82,36 +82,36 @@ namespace Net
 			ArrayStrField(Text::CStringNN name, Bool optional, Bool allowNull) : ArrayField(name, optional, allowNull, Text::JSONType::String) {};
 			virtual ~ArrayStrField() { this->vals.FreeAll(); };
 
-			void AddValue(NotNullPtr<Text::String> val) { this->vals.Add(val);}
-			NotNullPtr<const Data::ArrayListStringNN> GetValue() const { return this->vals; }
+			void AddValue(NN<Text::String> val) { this->vals.Add(val);}
+			NN<const Data::ArrayListStringNN> GetValue() const { return this->vals; }
 		};
 
 	protected:
 		Bool valid;
 		Bool allowAll;
-		NotNullPtr<Text::JSONBase> json;
+		NN<Text::JSONBase> json;
 		Data::FastStringMap<Field*> fieldMap;
 		Text::CStringNN clsName;
 
 		void FindMissingFields();
-		void AppendFuncName(NotNullPtr<Text::StringBuilderUTF8> sb, Bool boolFunc, NotNullPtr<Text::String> fieldName);
+		void AppendFuncName(NN<Text::StringBuilderUTF8> sb, Bool boolFunc, NN<Text::String> fieldName);
 		void AddField(Text::CStringNN name, Text::JSONType fieldType, Bool optional, Bool allowNull);
 		void AddFieldArrDbl(Text::CStringNN name, Bool optional, Bool allowNull);
 		void AddFieldArrStr(Text::CStringNN name, Bool optional, Bool allowNull);
 	public:
-		JSONResponse(NotNullPtr<Text::JSONBase> json, Text::CStringNN clsName);
+		JSONResponse(NN<Text::JSONBase> json, Text::CStringNN clsName);
 		virtual ~JSONResponse();
 
 		Bool IsValid() const;
-		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStringNN linePrefix) const;
-		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		void ToString(NN<Text::StringBuilderUTF8> sb, Text::CStringNN linePrefix) const;
+		void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
 }
 
 #define JSONRESP_BEGIN(clsName) class clsName : public Net::JSONResponse \
 	{ \
 	public: \
-		clsName(NotNullPtr<Text::JSONBase> json) : Net::JSONResponse(json, CSTR(#clsName)) \
+		clsName(NN<Text::JSONBase> json) : Net::JSONResponse(json, CSTR(#clsName)) \
 		{
 
 #define JSONRESP_SEC_GET(clsName) this->FindMissingFields(); \
@@ -140,7 +140,7 @@ namespace Net
 		} \
 		return; \
 	} \
-	NotNullPtr<Text::JSONObject> val; \
+	NN<Text::JSONObject> val; \
 	UOSInt i = 0; \
 	UOSInt j = arr->GetArrayLength(); \
 	while (i < j) \
@@ -156,7 +156,7 @@ namespace Net
 		} \
 		else \
 		{ \
-			NotNullPtr<className> v; \
+			NN<className> v; \
 			NEW_CLASSNN(v, className(val)); \
 			if (!v->IsValid() && !hasError) \
 			{ \
@@ -175,8 +175,8 @@ namespace Net
 	} \
 }
 #define JSONRESP_OBJ(name, optional, allowNull, className) { \
-	NotNullPtr<Text::JSONBase> jobj; \
-	NotNullPtr<className> cobj; \
+	NN<Text::JSONBase> jobj; \
+	NN<className> cobj; \
 	ObjectField *ofield; \
 	Field *field; \
 	if (jobj.Set(this->json->GetValue(CSTR(name))) && jobj->GetType() == Text::JSONType::Object) { \
@@ -194,7 +194,7 @@ namespace Net
 		} else if (!optional) printf("JSONResponse: %s.%s is not found which is not optional\r\n", this->clsName.v, name); \
 	} }
 
-#define JSONRESP_GETSTR(name, funcName) NotNullPtr<Text::String> funcName() const { return Text::String::OrEmpty(this->json->GetValueString(CSTR(name))); }
+#define JSONRESP_GETSTR(name, funcName) NN<Text::String> funcName() const { return Text::String::OrEmpty(this->json->GetValueString(CSTR(name))); }
 #define JSONRESP_GETSTROPT(name, funcName) Optional<Text::String> funcName() const { return this->json->GetValueString(CSTR(name)); }
 #define JSONRESP_GETDOUBLE(name, funcName, defVal) Double funcName() const { Double v; if (!this->json->GetValueAsDouble(CSTR(name), v)) return defVal; return v; }
 #define JSONRESP_GETINT32(name, funcName, defVal) Int32 funcName() const { Int32 v; if (!this->json->GetValueAsInt32(CSTR(name), v)) return defVal; return v; }
@@ -206,9 +206,9 @@ namespace Net
 #define JSONRESP_GETARRAY_OBJ(name, funcName, clsName) Optional<const Data::ArrayListNN<clsName>> funcName() const { ArrayNNField<clsName> *f = (ArrayNNField<clsName>*)this->fieldMap.GetC(CSTR(name)); if (f) return f->GetValue(); return 0; }
 
 #define JSONREQ_RET(sockf, ssl, url, respType) \
-	NotNullPtr<Text::JSONBase> json; \
+	NN<Text::JSONBase> json; \
 	if (!json.Set(Net::HTTPJSONReader::Read(sockf, ssl, url))) return 0; \
-	NotNullPtr<respType> ret; \
+	NN<respType> ret; \
 	NEW_CLASSNN(ret, respType(json)); \
 	json->EndUse(); \
 	if (ret->IsValid()) return ret; \

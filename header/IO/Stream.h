@@ -50,7 +50,7 @@ namespace IO
 	class Stream : public IO::ParsedObject
 	{
 	public:
-		Stream(NotNullPtr<Text::String> sourceName);
+		Stream(NN<Text::String> sourceName);
 		Stream(const Text::CStringNN &sourceName);
 		virtual ~Stream(){};
 		virtual Bool IsDown() const = 0;
@@ -72,8 +72,8 @@ namespace IO
 		virtual StreamType GetStreamType() const = 0;
 
 		virtual IO::ParserType GetParserType() const;
-		UInt64 ReadToEnd(NotNullPtr<IO::Stream> stm, UOSInt buffSize);
-		Bool WriteFromData(NotNullPtr<IO::StreamData> data, UOSInt buffSize);
+		UInt64 ReadToEnd(NN<IO::Stream> stm, UOSInt buffSize);
+		Bool WriteFromData(NN<IO::StreamData> data, UOSInt buffSize);
 		UOSInt WriteCont(const UInt8 *buff, UOSInt size);
 	};
 

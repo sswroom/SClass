@@ -8,10 +8,10 @@
 #include "Parser/FileParser/X509Parser.h"
 #include "Text/StringTool.h"
 
-Bool Crypto::Cert::CertUtil::AppendNames(NotNullPtr<Net::ASN1PDUBuilder> builder, NotNullPtr<const CertNames> names)
+Bool Crypto::Cert::CertUtil::AppendNames(NN<Net::ASN1PDUBuilder> builder, NN<const CertNames> names)
 {
 	Bool found = false;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	builder->BeginSequence();
 	if (names->countryName.SetTo(s))
 	{
@@ -87,7 +87,7 @@ Bool Crypto::Cert::CertUtil::AppendNames(NotNullPtr<Net::ASN1PDUBuilder> builder
 	return found;
 }
 
-Bool Crypto::Cert::CertUtil::AppendPublicKey(NotNullPtr<Net::ASN1PDUBuilder> builder, NotNullPtr<Crypto::Cert::X509Key> key)
+Bool Crypto::Cert::CertUtil::AppendPublicKey(NN<Net::ASN1PDUBuilder> builder, NN<Crypto::Cert::X509Key> key)
 {
 	if (key->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSA)
 	{
@@ -120,10 +120,10 @@ Bool Crypto::Cert::CertUtil::AppendPublicKey(NotNullPtr<Net::ASN1PDUBuilder> bui
 	return false;
 }
 
-Bool Crypto::Cert::CertUtil::AppendExtensions(NotNullPtr<Net::ASN1PDUBuilder> builder, NotNullPtr<const CertExtensions> ext)
+Bool Crypto::Cert::CertUtil::AppendExtensions(NN<Net::ASN1PDUBuilder> builder, NN<const CertExtensions> ext)
 {
 	Bool found = false;
-	NotNullPtr<Data::ArrayListStringNN> strList;
+	NN<Data::ArrayListStringNN> strList;
 	if (ext->subjectAltName.SetTo(strList) && strList->GetCount() > 0)
 	{
 		if (!found)
@@ -135,8 +135,8 @@ Bool Crypto::Cert::CertUtil::AppendExtensions(NotNullPtr<Net::ASN1PDUBuilder> bu
 		builder->AppendOIDString(CSTR("2.5.29.17"));
 		builder->BeginOther(Net::ASN1Util::IT_OCTET_STRING);
 		builder->BeginSequence();
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = strList->Iterator();
-		NotNullPtr<Text::String> s;
+		Data::ArrayIterator<NN<Text::String>> it = strList->Iterator();
+		NN<Text::String> s;
 		Net::SocketUtil::AddressInfo addr;
 		while (it.HasNext())
 		{
@@ -174,7 +174,7 @@ Bool Crypto::Cert::CertUtil::AppendExtensions(NotNullPtr<Net::ASN1PDUBuilder> bu
 		builder->BeginSequence();
 		UOSInt i = 0;
 		UOSInt j = strList->GetCount();
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		Net::SocketUtil::AddressInfo addr;
 		while (i < j)
 		{
@@ -285,7 +285,7 @@ Bool Crypto::Cert::CertUtil::AppendExtensions(NotNullPtr<Net::ASN1PDUBuilder> bu
 	return true;
 }
 
-Bool Crypto::Cert::CertUtil::AppendSign(NotNullPtr<Net::ASN1PDUBuilder> builder, NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType)
+Bool Crypto::Cert::CertUtil::AppendSign(NN<Net::ASN1PDUBuilder> builder, NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType)
 {
 	UOSInt itemLen;
 	UOSInt itemOfst;
@@ -315,9 +315,9 @@ Bool Crypto::Cert::CertUtil::AppendSign(NotNullPtr<Net::ASN1PDUBuilder> builder,
 	}
 }
 
-Crypto::Cert::X509CertReq *Crypto::Cert::CertUtil::CertReqCreate(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<const CertNames> names, NotNullPtr<Crypto::Cert::X509Key> key, const CertExtensions *ext)
+Crypto::Cert::X509CertReq *Crypto::Cert::CertUtil::CertReqCreate(NN<Net::SSLEngine> ssl, NN<const CertNames> names, NN<Crypto::Cert::X509Key> key, const CertExtensions *ext)
 {
-	NotNullPtr<const CertExtensions> nnext;
+	NN<const CertExtensions> nnext;
 	Net::ASN1PDUBuilder builder;
 	builder.BeginSequence();
 
@@ -349,9 +349,9 @@ Crypto::Cert::X509CertReq *Crypto::Cert::CertUtil::CertReqCreate(NotNullPtr<Net:
 	return csr;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::SelfSignedCertCreate(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<const CertNames> names, NotNullPtr<Crypto::Cert::X509Key> key, UOSInt validDays, const CertExtensions *ext)
+Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::SelfSignedCertCreate(NN<Net::SSLEngine> ssl, NN<const CertNames> names, NN<Crypto::Cert::X509Key> key, UOSInt validDays, const CertExtensions *ext)
 {
-	NotNullPtr<const CertExtensions> nnext;
+	NN<const CertExtensions> nnext;
 	Data::RandomBytesGenerator rndBytes;
 	Net::ASN1PDUBuilder builder;
 	Data::DateTime dt;
@@ -405,7 +405,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::SelfSignedCertCreate(NotNullPtr<
 	return cert;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::IssueCert(NotNullPtr<Net::SSLEngine> ssl, Crypto::Cert::X509Cert *caCert, NotNullPtr<Crypto::Cert::X509Key> caKey, UOSInt validDays, Crypto::Cert::X509CertReq *csr)
+Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::IssueCert(NN<Net::SSLEngine> ssl, Crypto::Cert::X509Cert *caCert, NN<Crypto::Cert::X509Key> caKey, UOSInt validDays, Crypto::Cert::X509CertReq *csr)
 {
 	UInt8 bSerial[20];
 	if (caCert == 0)
@@ -473,7 +473,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::IssueCert(NotNullPtr<Net::SSLEng
 	}
 	sbFileName.AppendOpt(names.commonName);
 	Crypto::Cert::CertNames::FreeNames(names);
-	NotNullPtr<Crypto::Cert::X509Key> pubKey;;
+	NN<Crypto::Cert::X509Key> pubKey;;
 	if (!pubKey.Set(csr->GetNewPublicKey()))
 	{
 		return 0;
@@ -503,7 +503,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::IssueCert(NotNullPtr<Net::SSLEng
 	return cert;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(NotNullPtr<Crypto::Cert::X509Cert> cert)
+Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(NN<Crypto::Cert::X509Cert> cert)
 {
 	UInt8 dataBuff[8192];
 	UTF8Char sbuff[512];
@@ -553,7 +553,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(NotNullPtr<Crypto::Ce
 			{
 				if (IO::FileStream::LoadFile(CSTRP(sbuff, sptr2), dataBuff, sizeof(dataBuff)) == fileSize)
 				{
-					NotNullPtr<Text::String> s = Text::String::New(sbuff, (UOSInt)(sptr2 - sbuff));
+					NN<Text::String> s = Text::String::New(sbuff, (UOSInt)(sptr2 - sbuff));
 					x509 = Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR(dataBuff, (UOSInt)fileSize), s);
 					s->Release();
 					if (x509)

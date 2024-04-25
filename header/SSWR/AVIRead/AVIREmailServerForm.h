@@ -29,51 +29,51 @@ namespace SSWR
 		class AVIREmailServerForm : public UI::GUIForm, public Net::Email::MailController
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpSMTP;
-			NotNullPtr<UI::GUIButton> btnSMTPCertKey;
-			NotNullPtr<UI::GUILabel> lblSMTPCertKey;
-			NotNullPtr<UI::GUILabel> lblSMTPPort;
-			NotNullPtr<UI::GUITextBox> txtSMTPPort;
-			NotNullPtr<UI::GUILabel> lblSMTPType;
-			NotNullPtr<UI::GUIComboBox> cboSMTPType;
-			NotNullPtr<UI::GUIButton> btnSMTPStart;
-			NotNullPtr<UI::GUIButton> btnLogFile;
+			NN<UI::GUITabPage> tpSMTP;
+			NN<UI::GUIButton> btnSMTPCertKey;
+			NN<UI::GUILabel> lblSMTPCertKey;
+			NN<UI::GUILabel> lblSMTPPort;
+			NN<UI::GUITextBox> txtSMTPPort;
+			NN<UI::GUILabel> lblSMTPType;
+			NN<UI::GUIComboBox> cboSMTPType;
+			NN<UI::GUIButton> btnSMTPStart;
+			NN<UI::GUIButton> btnLogFile;
 
-			NotNullPtr<UI::GUITabPage> tpPOP3;
-			NotNullPtr<UI::GUIButton> btnPOP3CertKey;
-			NotNullPtr<UI::GUILabel> lblPOP3CertKey;
-			NotNullPtr<UI::GUILabel> lblPOP3Port;
-			NotNullPtr<UI::GUITextBox> txtPOP3Port;
-			NotNullPtr<UI::GUICheckBox> chkPOP3SSL;
-			NotNullPtr<UI::GUIButton> btnPOP3Start;
+			NN<UI::GUITabPage> tpPOP3;
+			NN<UI::GUIButton> btnPOP3CertKey;
+			NN<UI::GUILabel> lblPOP3CertKey;
+			NN<UI::GUILabel> lblPOP3Port;
+			NN<UI::GUITextBox> txtPOP3Port;
+			NN<UI::GUICheckBox> chkPOP3SSL;
+			NN<UI::GUIButton> btnPOP3Start;
 
-			NotNullPtr<UI::GUITabPage> tpGCIS;
-			NotNullPtr<UI::GUIButton> btnGCISCertKey;
-			NotNullPtr<UI::GUILabel> lblGCISCertKey;
-			NotNullPtr<UI::GUILabel> lblGCISPort;
-			NotNullPtr<UI::GUITextBox> txtGCISPort;
-			NotNullPtr<UI::GUILabel> lblGCISNotifPath;
-			NotNullPtr<UI::GUITextBox> txtGCISNotifPath;
-			NotNullPtr<UI::GUILabel> lblGCISBatchUplPath;
-			NotNullPtr<UI::GUITextBox> txtGCISBatchUplPath;
-			NotNullPtr<UI::GUIButton> btnGCISStart;
+			NN<UI::GUITabPage> tpGCIS;
+			NN<UI::GUIButton> btnGCISCertKey;
+			NN<UI::GUILabel> lblGCISCertKey;
+			NN<UI::GUILabel> lblGCISPort;
+			NN<UI::GUITextBox> txtGCISPort;
+			NN<UI::GUILabel> lblGCISNotifPath;
+			NN<UI::GUITextBox> txtGCISNotifPath;
+			NN<UI::GUILabel> lblGCISBatchUplPath;
+			NN<UI::GUITextBox> txtGCISBatchUplPath;
+			NN<UI::GUIButton> btnGCISStart;
 
-			NotNullPtr<UI::GUITabPage> tpEmail;
-			NotNullPtr<UI::GUIListView> lvEmail;
+			NN<UI::GUITabPage> tpEmail;
+			NN<UI::GUIListView> lvEmail;
 
-			NotNullPtr<UI::GUITabPage> tpLog;
-			NotNullPtr<UI::GUITextBox> txtLog;
-			NotNullPtr<UI::GUIListBox> lbLog;
+			NN<UI::GUITabPage> tpLog;
+			NN<UI::GUITextBox> txtLog;
+			NN<UI::GUIListBox> lbLog;
 
 			Net::Email::SMTPServer *smtpSvr;
 			Net::Email::POP3Server *pop3Svr;
 			IO::LogTool log;
-			NotNullPtr<UI::ListBoxLogger> logger;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<UI::ListBoxLogger> logger;
+			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> smtpSSL;
 			Crypto::Cert::X509Cert *smtpSSLCert;
 			Crypto::Cert::X509File *smtpSSLKey;
@@ -104,8 +104,8 @@ namespace SSWR
 			static void __stdcall OnGCISStartClicked(AnyType userObj);
 			static void __stdcall OnLogFileClicked(AnyType userObj);
 			static void __stdcall OnEmailDblClicked(AnyType userObj, UOSInt index);
-			static UTF8Char *__stdcall OnMailReceived(UTF8Char *queryId, AnyType userObj, NotNullPtr<Net::TCPClient> cli, NotNullPtr<const Net::Email::SMTPServer::MailStatus> mail);
-			static void __stdcall OnGCISMailReceived(AnyType userObj, NotNullPtr<Net::NetConnection> cli, NotNullPtr<const Text::MIMEObj::MailMessage> mail);
+			static UTF8Char *__stdcall OnMailReceived(UTF8Char *queryId, AnyType userObj, NN<Net::TCPClient> cli, NN<const Net::Email::SMTPServer::MailStatus> mail);
+			static void __stdcall OnGCISMailReceived(AnyType userObj, NN<Net::NetConnection> cli, NN<const Text::MIMEObj::MailMessage> mail);
 			static Bool __stdcall OnMailLogin(AnyType userObj, Text::CString userName, Text::CString pwd);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnSMTPCertKeyClicked(AnyType userObj);
@@ -119,7 +119,7 @@ namespace SSWR
 			void ClearPOP3CACerts();
 			void ClearGCISCACerts();
 		public:
-			AVIREmailServerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIREmailServerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIREmailServerForm();
 
 			virtual void OnMonitorChanged();

@@ -15,18 +15,18 @@ namespace Net
 		typedef void (__stdcall *TCPServerConn)(Socket *s, AnyType userObj);
 		typedef struct
 		{
-			NotNullPtr<TCPServer> me;
+			NN<TCPServer> me;
 			Bool toStop;
 			Bool threadRunning;
 			Sync::Event *threadEvt;
 		} SubthreadStatus;
 
 	private:
-		NotNullPtr<SocketFactory> socf;
+		NN<SocketFactory> socf;
 
 	public:
 		UInt16 port;
-		NotNullPtr<IO::LogTool> log;
+		NN<IO::LogTool> log;
 		Data::CallbackStorage<TCPServerConn> hdlr;
 		Bool toStop;
 		Bool errorv4;
@@ -47,7 +47,7 @@ namespace Net
 		static UInt32 __stdcall WorkerThread(AnyType o);
 		void AcceptSocket(Socket *svrSoc);
 	public:
-		TCPServer(NotNullPtr<SocketFactory> socf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, NotNullPtr<IO::LogTool> log, TCPServerConn hdlr, AnyType userObj, Text::CString logPrefix, Bool autoStart);
+		TCPServer(NN<SocketFactory> socf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, NN<IO::LogTool> log, TCPServerConn hdlr, AnyType userObj, Text::CString logPrefix, Bool autoStart);
 		~TCPServer();
 
 		Bool Start();

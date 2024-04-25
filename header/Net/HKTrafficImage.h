@@ -11,29 +11,29 @@ namespace Net
 	public:
 		typedef struct
 		{
-			NotNullPtr<Text::String> key;
-			NotNullPtr<Text::String> addr;
+			NN<Text::String> key;
+			NN<Text::String> addr;
 			Double lat;
 			Double lon;
-			NotNullPtr<Text::String> url;
+			NN<Text::String> url;
 		} ImageInfo;
 
 		typedef struct
 		{
-			NotNullPtr<Text::String> groupName;
+			NN<Text::String> groupName;
 			Data::ArrayListNN<ImageInfo> *imageList;
 		} GroupInfo;
 
 	private:
 		Data::FastStringMapNN<GroupInfo> groupMap;
 
-		void Init(NotNullPtr<Text::EncodingFactory> encFact, const UInt8 *buff, UOSInt buffSize);
+		void Init(NN<Text::EncodingFactory> encFact, const UInt8 *buff, UOSInt buffSize);
 	public:
-		HKTrafficImage(NotNullPtr<Text::EncodingFactory> encFact, const UInt8 *buff, UOSInt buffSize);
-		HKTrafficImage(NotNullPtr<Text::EncodingFactory> encFact, Text::CStringNN fileName);
+		HKTrafficImage(NN<Text::EncodingFactory> encFact, const UInt8 *buff, UOSInt buffSize);
+		HKTrafficImage(NN<Text::EncodingFactory> encFact, Text::CStringNN fileName);
 		~HKTrafficImage();
 
-		UOSInt GetGroups(NotNullPtr<Data::ArrayListNN<GroupInfo>> groups);
+		UOSInt GetGroups(NN<Data::ArrayListNN<GroupInfo>> groups);
 	};
 }
 #endif

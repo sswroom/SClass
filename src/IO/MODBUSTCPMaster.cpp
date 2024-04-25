@@ -12,7 +12,7 @@
 
 UInt32 __stdcall IO::MODBUSTCPMaster::ThreadProc(AnyType userObj)
 {
-	NotNullPtr<IO::MODBUSTCPMaster> me = userObj.GetNN<IO::MODBUSTCPMaster>();
+	NN<IO::MODBUSTCPMaster> me = userObj.GetNN<IO::MODBUSTCPMaster>();
 	UInt8 buff[1024];
 	UOSInt buffSize = 0;
 	UOSInt readSize;

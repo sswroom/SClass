@@ -43,7 +43,7 @@ void UI::GUIClientControl::InitContainer()
 	gtk_widget_show(data->scrolledWin);
 }
 
-UI::GUIClientControl::GUIClientControl(NotNullPtr<UI::GUICore> ui, Optional<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
+UI::GUIClientControl::GUIClientControl(NN<UI::GUICore> ui, Optional<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
 {
 	this->container = 0;
 }
@@ -65,7 +65,7 @@ void UI::GUIClientControl::UpdateFont()
 	{
 		SendMessage((HWND)this->hwnd, WM_SETFONT, (WPARAM)font, TRUE);
 	}*/
-	Data::ArrayIterator<NotNullPtr<GUIControl>> it = this->children.Iterator();
+	Data::ArrayIterator<NN<GUIControl>> it = this->children.Iterator();
 	while (it.HasNext())
 	{
 		it.Next()->UpdateFont();
@@ -74,10 +74,10 @@ void UI::GUIClientControl::UpdateFont()
 
 void UI::GUIClientControl::ClearChildren()
 {
-	Data::ArrayIterator<NotNullPtr<GUIControl>> it = this->children.Iterator();
+	Data::ArrayIterator<NN<GUIControl>> it = this->children.Iterator();
 	while (it.HasNext())
 	{
-		NotNullPtr<GUIControl> ctrl = it.Next();
+		NN<GUIControl> ctrl = it.Next();
 		ctrl->DestroyObject();
 		ctrl.Delete();
 	}
@@ -95,7 +95,7 @@ Math::Size2DDbl UI::GUIClientControl::GetClientSize()
 	return this->GetSize();
 }
 
-void UI::GUIClientControl::AddChild(NotNullPtr<GUIControl> child)
+void UI::GUIClientControl::AddChild(NN<GUIControl> child)
 {
 	if (this->container == 0) InitContainer();
 	this->selfResize = true;
@@ -115,14 +115,14 @@ Optional<UI::GUIControl> UI::GUIClientControl::GetChild(UOSInt index) const
 	return this->children.GetItem(index);
 }
 
-Data::ArrayIterator<NotNullPtr<UI::GUIControl>> UI::GUIClientControl::ChildIterator() const
+Data::ArrayIterator<NN<UI::GUIControl>> UI::GUIClientControl::ChildIterator() const
 {
 	return this->children.Iterator();
 }
 
 void UI::GUIClientControl::FocusChild(GUIControl *child)
 {
-	NotNullPtr<GUIClientControl> nnparent;
+	NN<GUIClientControl> nnparent;
 	if (this->parent.SetTo(nnparent))
 	{
 		nnparent->FocusChild(child);
@@ -140,13 +140,13 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 	Math::Coord2DDbl br;
 	Math::Size2DDbl ctrlSz;
 	Bool hasFill = false;
-	NotNullPtr<GUIControl> ctrl;
+	NN<GUIControl> ctrl;
 	DockType dt;
 
 	this->selfResize = true;
 	br = GetClientSize();
 //	printf("UpdateChildrenSize: %lf, %lf, %lf, %lf\r\n", right, bottom, this->hdpi, this->ddpi);
-	Data::ArrayIterator<NotNullPtr<GUIControl>> it = this->children.Iterator();
+	Data::ArrayIterator<NN<GUIControl>> it = this->children.Iterator();
 	while (it.HasNext())
 	{
 		ctrl = it.Next();
@@ -269,7 +269,7 @@ void UI::GUIClientControl::SetDPI(Double hdpi, Double ddpi)
 		this->UpdateFont();
 	}
 
-	Data::ArrayIterator<NotNullPtr<GUIControl>> it = this->children.Iterator();
+	Data::ArrayIterator<NN<GUIControl>> it = this->children.Iterator();
 	while (it.HasNext())
 	{
 		it.Next()->SetDPI(hdpi, ddpi);

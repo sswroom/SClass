@@ -17,14 +17,14 @@ namespace DB
 			Connected
 		};
 	private:
-		NotNullPtr<IO::LogTool> log;
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<IO::LogTool> log;
+		NN<Net::SocketFactory> sockf;
 		Optional<Parser::ParserList> parsers;
 		Optional<Text::String> connStr;
 		Optional<DB::ReadingDB> db;
 		ConnStatus status;
 
-		DBManagerCtrl(NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers);
+		DBManagerCtrl(NN<IO::LogTool> log, NN<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers);
 	public:
 		~DBManagerCtrl();
 
@@ -33,12 +33,12 @@ namespace DB
 		ConnStatus GetStatus();
 		Optional<Text::String> GetConnStr();
 		Optional<DB::ReadingDB> GetDB();
-		void GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb);
+		void GetConnName(NN<Text::StringBuilderUTF8> sb);
 
-		static NotNullPtr<DBManagerCtrl> Create(Text::String *connStr, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers);
-		static NotNullPtr<DBManagerCtrl> Create(Text::CString connStr, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers);
-		static NotNullPtr<DBManagerCtrl> Create(NotNullPtr<DB::DBTool> db, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers);
-		static NotNullPtr<DBManagerCtrl> CreateFromFile(NotNullPtr<DB::ReadingDB> db, NotNullPtr<Text::String> filePath, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Parser::ParserList> parsers);
+		static NN<DBManagerCtrl> Create(Text::String *connStr, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers);
+		static NN<DBManagerCtrl> Create(Text::CString connStr, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers);
+		static NN<DBManagerCtrl> Create(NN<DB::DBTool> db, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers);
+		static NN<DBManagerCtrl> CreateFromFile(NN<DB::ReadingDB> db, NN<Text::String> filePath, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf, NN<Parser::ParserList> parsers);
 	};
 }
 #endif

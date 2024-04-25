@@ -439,19 +439,19 @@ namespace Map
 			JSONRESP_END
 
 		private:
-			NotNullPtr<Text::String> url;
-			NotNullPtr<Text::String> name;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Text::String> url;
+			NN<Text::String> name;
+			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 
 		public:
-			ESRIFeatureServer(Text::CStringNN url, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
+			ESRIFeatureServer(Text::CStringNN url, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
 			virtual ~ESRIFeatureServer();
 
 			Optional<LayerInfo> GetLayerInfo();
 
-			NotNullPtr<Text::String> GetURL() const;
-			NotNullPtr<Text::String> GetName() const;
+			NN<Text::String> GetURL() const;
+			NN<Text::String> GetName() const;
 		};
 	}
 }

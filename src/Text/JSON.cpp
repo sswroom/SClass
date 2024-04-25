@@ -484,7 +484,7 @@ const UTF8Char *Text::JSONBase::ClearWS(const UTF8Char *jsonStr)
 	return jsonStr;
 }
 
-const UTF8Char *Text::JSONBase::ParseJSString(const UTF8Char *jsonStr, NotNullPtr<Text::StringBuilderUTF8> sb)
+const UTF8Char *Text::JSONBase::ParseJSString(const UTF8Char *jsonStr, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -763,7 +763,7 @@ const UTF8Char *Text::JSONBase::ParseJSNumber(const UTF8Char *jsonStr, OutParam<
 }
 
 
-Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF8Char *jsonStrEnd, OutParam<const UTF8Char *> jsonStrEndOut, NotNullPtr<Text::StringBuilderUTF8> sbEnv)
+Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF8Char *jsonStrEnd, OutParam<const UTF8Char *> jsonStrEndOut, NN<Text::StringBuilderUTF8> sbEnv)
 {
 	UTF8Char c;
 	jsonStr = ClearWS(jsonStr);
@@ -997,7 +997,7 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 	}
 }
 
-Bool Text::JSONBase::Str2Bool(NotNullPtr<Text::String> s)
+Bool Text::JSONBase::Str2Bool(NN<Text::String> s)
 {
 	Double d;
 	if (s->leng == 0)
@@ -1023,7 +1023,7 @@ Text::JSONType Text::JSONNumber::GetType()
 	return Text::JSONType::Number;
 }
 
-void Text::JSONNumber::ToJSONString(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Text::JSONNumber::ToJSONString(NN<Text::StringBuilderUTF8> sb)
 {
 	Text::SBAppendF64(sb, this->val);
 }
@@ -1033,14 +1033,14 @@ Bool Text::JSONNumber::Equals(Text::CString s)
 	return false;
 }
 
-Bool Text::JSONNumber::Identical(NotNullPtr<Text::JSONBase> obj)
+Bool Text::JSONNumber::Identical(NN<Text::JSONBase> obj)
 {
 	if (obj->GetType() != Text::JSONType::Number)
 		return false;
 	return ((Text::JSONNumber*)obj.Ptr())->GetValue() == this->val;
 }
 
-void Text::JSONNumber::ToString(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Text::JSONNumber::ToString(NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendDouble(this->val);
 }
@@ -1064,7 +1064,7 @@ Text::JSONType Text::JSONInt32::GetType()
 	return Text::JSONType::INT32;
 }
 
-void Text::JSONInt32::ToJSONString(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Text::JSONInt32::ToJSONString(NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendI32(this->val);
 }
@@ -1074,14 +1074,14 @@ Bool Text::JSONInt32::Equals(Text::CString s)
 	return false;
 }
 
-Bool Text::JSONInt32::Identical(NotNullPtr<Text::JSONBase> obj)
+Bool Text::JSONInt32::Identical(NN<Text::JSONBase> obj)
 {
 	if (obj->GetType() != Text::JSONType::INT32)
 		return false;
 	return ((Text::JSONInt32*)obj.Ptr())->GetValue() == this->val;
 }
 
-void Text::JSONInt32::ToString(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Text::JSONInt32::ToString(NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendI32(this->val);
 }
@@ -1105,7 +1105,7 @@ Text::JSONType Text::JSONInt64::GetType()
 	return Text::JSONType::INT64;
 }
 
-void Text::JSONInt64::ToJSONString(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Text::JSONInt64::ToJSONString(NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendI64(this->val);
 }
@@ -1115,14 +1115,14 @@ Bool Text::JSONInt64::Equals(Text::CString s)
 	return false;
 }
 
-Bool Text::JSONInt64::Identical(NotNullPtr<Text::JSONBase> obj)
+Bool Text::JSONInt64::Identical(NN<Text::JSONBase> obj)
 {
 	if (obj->GetType() != Text::JSONType::INT64)
 		return false;
 	return ((Text::JSONInt64*)obj.Ptr())->GetValue() == this->val;
 }
 
-void Text::JSONInt64::ToString(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Text::JSONInt64::ToString(NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendI64(this->val);
 }
@@ -1132,7 +1132,7 @@ Int64 Text::JSONInt64::GetValue()
 	return this->val;
 }
 
-Text::JSONString::JSONString(NotNullPtr<Text::String> val)
+Text::JSONString::JSONString(NN<Text::String> val)
 {
 	this->val = val->Clone();
 }
@@ -1152,7 +1152,7 @@ Text::JSONType Text::JSONString::GetType()
 	return Text::JSONType::String;
 }
 
-void Text::JSONString::ToJSONString(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Text::JSONString::ToJSONString(NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[128];
 	const UTF8Char *sptr;
@@ -1200,19 +1200,19 @@ Bool Text::JSONString::Equals(Text::CString s)
 	return this->val->Equals(s.v, s.leng);
 }
 
-Bool Text::JSONString::Identical(NotNullPtr<Text::JSONBase> obj)
+Bool Text::JSONString::Identical(NN<Text::JSONBase> obj)
 {
 	if (obj->GetType() != Text::JSONType::String)
 		return false;
 	return Text::StringTool::Equals(((Text::JSONString*)obj.Ptr())->GetValue(), this->val);
 }
 
-void Text::JSONString::ToString(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Text::JSONString::ToString(NN<Text::StringBuilderUTF8> sb)
 {
 	sb->Append(this->val);
 }
 
-NotNullPtr<Text::String> Text::JSONString::GetValue()
+NN<Text::String> Text::JSONString::GetValue()
 {
 	return this->val;
 }
@@ -1231,7 +1231,7 @@ Text::JSONType Text::JSONBool::GetType()
 	return Text::JSONType::BOOL;
 }
 
-void Text::JSONBool::ToJSONString(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Text::JSONBool::ToJSONString(NN<Text::StringBuilderUTF8> sb)
 {
 	if (this->val)
 	{
@@ -1251,14 +1251,14 @@ Bool Text::JSONBool::Equals(Text::CString s)
 		return s.EqualsICase(UTF8STRC("false"));
 }
 
-Bool Text::JSONBool::Identical(NotNullPtr<Text::JSONBase> obj)
+Bool Text::JSONBool::Identical(NN<Text::JSONBase> obj)
 {
 	if (obj->GetType() != Text::JSONType::BOOL)
 		return false;
 	return ((Text::JSONBool*)obj.Ptr())->GetValue() == val;
 }
 
-void Text::JSONBool::ToString(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Text::JSONBool::ToString(NN<Text::StringBuilderUTF8> sb)
 {
 	this->ToJSONString(sb);
 }
@@ -1289,7 +1289,7 @@ Text::JSONType Text::JSONObject::GetType()
 	return Text::JSONType::Object;
 }
 
-void Text::JSONObject::ToJSONString(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Text::JSONObject::ToJSONString(NN<Text::StringBuilderUTF8> sb)
 {
 	Text::JSONBase *obj;
 	UOSInt i = 0;
@@ -1324,12 +1324,12 @@ Bool Text::JSONObject::Equals(Text::CString s)
 	return false;
 }
 
-Bool Text::JSONObject::Identical(NotNullPtr<Text::JSONBase> obj)
+Bool Text::JSONObject::Identical(NN<Text::JSONBase> obj)
 {
 	return this == obj.Ptr();
 }
 
-void Text::JSONObject::ToString(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Text::JSONObject::ToString(NN<Text::StringBuilderUTF8> sb)
 {
 	this->ToJSONString(sb);
 }
@@ -1403,7 +1403,7 @@ void Text::JSONObject::SetObjectString(Text::CStringNN name, Optional<Text::Stri
 	{
 		obj->EndUse();
 	}
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (val.SetTo(s))
 	{
 		Text::JSONString *ival;
@@ -1418,7 +1418,7 @@ void Text::JSONObject::SetObjectString(Text::CStringNN name, Optional<Text::Stri
 	}
 }
 
-void Text::JSONObject::SetObjectString(Text::CStringNN name, NotNullPtr<Text::String> val)
+void Text::JSONObject::SetObjectString(Text::CStringNN name, NN<Text::String> val)
 {
 	Text::JSONBase *obj = this->objVals.GetC(name);
 	if (obj)
@@ -1463,7 +1463,7 @@ Text::JSONObject *Text::JSONObject::GetObjectObject(Text::CStringNN name)
 	return 0;
 }
 
-void Text::JSONObject::GetObjectNames(NotNullPtr<Data::ArrayListNN<Text::String>> names)
+void Text::JSONObject::GetObjectNames(NN<Data::ArrayListNN<Text::String>> names)
 {
 	Data::FastStringKeyIterator<Text::JSONBase*> it = this->objVals.KeyIterator();
 	while (it.HasNext())
@@ -1559,7 +1559,7 @@ Text::JSONType Text::JSONArray::GetType()
 	return Text::JSONType::Array;
 }
 
-void Text::JSONArray::ToJSONString(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Text::JSONArray::ToJSONString(NN<Text::StringBuilderUTF8> sb)
 {
 	Text::JSONBase *obj;
 	UOSInt i = 0;
@@ -1591,12 +1591,12 @@ Bool Text::JSONArray::Equals(Text::CString s)
 	return false;
 }
 
-Bool Text::JSONArray::Identical(NotNullPtr<Text::JSONBase> obj)
+Bool Text::JSONArray::Identical(NN<Text::JSONBase> obj)
 {
 	return this == obj.Ptr();
 }
 
-void Text::JSONArray::ToString(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Text::JSONArray::ToString(NN<Text::StringBuilderUTF8> sb)
 {
 	this->ToJSONString(sb);
 }
@@ -1686,7 +1686,7 @@ Text::JSONType Text::JSONNull::GetType()
 	return Text::JSONType::Null;
 }
 
-void Text::JSONNull::ToJSONString(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Text::JSONNull::ToJSONString(NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("null"));
 }
@@ -1696,12 +1696,12 @@ Bool Text::JSONNull::Equals(Text::CString s)
 	return s.Equals(UTF8STRC("null"));
 }
 
-Bool Text::JSONNull::Identical(NotNullPtr<Text::JSONBase> obj)
+Bool Text::JSONNull::Identical(NN<Text::JSONBase> obj)
 {
 	return obj->GetType() == Text::JSONType::Null;
 }
 
-void Text::JSONNull::ToString(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Text::JSONNull::ToString(NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("null"));
 }

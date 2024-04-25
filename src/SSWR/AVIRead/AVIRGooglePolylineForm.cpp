@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRGooglePolylineForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGooglePolylineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGooglePolylineForm>();
+	NN<SSWR::AVIRead::AVIRGooglePolylineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGooglePolylineForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtPolylineText->GetText(sb);
 	me->polyline = Map::GoogleMap::GoogleMapsUtil::ParsePolylineText(sb.ToString());
@@ -17,11 +17,11 @@ void __stdcall SSWR::AVIRead::AVIRGooglePolylineForm::OnOKClicked(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRGooglePolylineForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGooglePolylineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGooglePolylineForm>();
+	NN<SSWR::AVIRead::AVIRGooglePolylineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGooglePolylineForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRGooglePolylineForm::AVIRGooglePolylineForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 120, ui)
+SSWR::AVIRead::AVIRGooglePolylineForm::AVIRGooglePolylineForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 120, ui)
 {
 	this->SetText(CSTR("Google Polyline"));
 	this->SetFont(0, 0, 8.25, false);

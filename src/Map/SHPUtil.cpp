@@ -47,7 +47,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 				UOSInt k;
 				UInt32 *ptOfsts;
 				Math::Coord2DDbl *points;
-				NotNullPtr<Math::Geometry::LineString> lineString;
+				NN<Math::Geometry::LineString> lineString;
 				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
 				ptOfsts = MemAlloc(UInt32, nPtOfst);
 				buff += 44;
@@ -93,7 +93,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 			UInt32 nPtOfst;
 			UInt32 nPoint;
 			Math::Geometry::Polygon *pg;
-			NotNullPtr<Math::Geometry::LinearRing> lr;
+			NN<Math::Geometry::LinearRing> lr;
 			/*
 			xMin = ReadDouble(&buff[4]);
 			yMin = ReadDouble(&buff[12]);
@@ -182,7 +182,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 				UOSInt j;
 				UOSInt k;
 				UInt32 *ptOfsts;
-				NotNullPtr<Math::Geometry::LineString> lineString;
+				NN<Math::Geometry::LineString> lineString;
 				Math::Coord2DDbl *points;
 				Double *alts;
 				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
@@ -268,7 +268,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 				UOSInt j;
 				UOSInt k;
 				UInt32 *ptOfsts;
-				NotNullPtr<Math::Geometry::LineString> lineString;
+				NN<Math::Geometry::LineString> lineString;
 				Math::Coord2DDbl *points;
 				Double *dArr;
 				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
@@ -488,7 +488,7 @@ Math::Geometry::Vector2D *Map::SHPUtil::ParseShpRecord(UInt32 srid, const UInt8 
 				UOSInt j;
 				UOSInt k;
 				UInt32 *ptOfsts;
-				NotNullPtr<Math::Geometry::LineString> lineString;
+				NN<Math::Geometry::LineString> lineString;
 				Math::Coord2DDbl *points;
 				Double *mArr;
 				NEW_CLASS(pl, Math::Geometry::Polyline(srid));

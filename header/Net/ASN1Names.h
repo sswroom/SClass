@@ -9,7 +9,7 @@ namespace Net
 	class ASN1Names
 	{
 	private:
-		typedef void (__stdcall *ContentFunc)(NotNullPtr<ASN1Names> names);
+		typedef void (__stdcall *ContentFunc)(NN<ASN1Names> names);
 
 		enum class RuleCond
 		{
@@ -52,9 +52,9 @@ namespace Net
 		UInt8 readLastOID[32];
 		UOSInt readLastOIDLen;
 	private:
-		void AddRule(NotNullPtr<NameRule> rule);
+		void AddRule(NN<NameRule> rule);
 		void FreeContainer(RuleContainer *container);
-		void ClearRules(NotNullPtr<Data::ArrayListNN<NameRule>> rules);
+		void ClearRules(NN<Data::ArrayListNN<NameRule>> rules);
 
 	public:
 		ASN1Names();
@@ -66,26 +66,26 @@ namespace Net
 		void ReadContainerBegin();
 		void ReadContainerEnd();
 
-		NotNullPtr<ASN1Names> AnyCond();
-		NotNullPtr<ASN1Names> TypeIs(Net::ASN1Util::ItemType itemType);
-		NotNullPtr<ASN1Names> TypeIsTime();
-		NotNullPtr<ASN1Names> TypeIsString();
-		NotNullPtr<ASN1Names> TypeIsOpt(UInt8 index);
-		NotNullPtr<ASN1Names> RepeatIfTypeIs(Net::ASN1Util::ItemType itemType);
-		NotNullPtr<ASN1Names> LastOIDAndTypeIs(Text::CStringNN oidText, Net::ASN1Util::ItemType itemType);
-		NotNullPtr<ASN1Names> AllNotMatch();
+		NN<ASN1Names> AnyCond();
+		NN<ASN1Names> TypeIs(Net::ASN1Util::ItemType itemType);
+		NN<ASN1Names> TypeIsTime();
+		NN<ASN1Names> TypeIsString();
+		NN<ASN1Names> TypeIsOpt(UInt8 index);
+		NN<ASN1Names> RepeatIfTypeIs(Net::ASN1Util::ItemType itemType);
+		NN<ASN1Names> LastOIDAndTypeIs(Text::CStringNN oidText, Net::ASN1Util::ItemType itemType);
+		NN<ASN1Names> AllNotMatch();
 
-		NotNullPtr<ASN1Names> Container(Text::CStringNN name, ContentFunc func);
-		NotNullPtr<ASN1Names> NextValue(Text::CStringNN name);
-		NotNullPtr<ASN1Names> Enum(Text::CStringNN name, Text::CStringNN *enumVals, UOSInt enumCnt);
+		NN<ASN1Names> Container(Text::CStringNN name, ContentFunc func);
+		NN<ASN1Names> NextValue(Text::CStringNN name);
+		NN<ASN1Names> Enum(Text::CStringNN name, Text::CStringNN *enumVals, UOSInt enumCnt);
 
-		NotNullPtr<ASN1Names> SetCertificate(); //PKIX1Explicit88
-		NotNullPtr<ASN1Names> SetRSAPublicKey(); //PKCS-1
-		NotNullPtr<ASN1Names> SetRSAPrivateKey(); //PKCS-1
-		NotNullPtr<ASN1Names> SetPKCS7ContentInfo(); //PKCS-7
-		NotNullPtr<ASN1Names> SetCertificationRequest(); //PKCS-10
-		NotNullPtr<ASN1Names> SetCertificationList(); //RFC5280
-		NotNullPtr<ASN1Names> SetPFX(); //PKCS-12
+		NN<ASN1Names> SetCertificate(); //PKIX1Explicit88
+		NN<ASN1Names> SetRSAPublicKey(); //PKCS-1
+		NN<ASN1Names> SetRSAPrivateKey(); //PKCS-1
+		NN<ASN1Names> SetPKCS7ContentInfo(); //PKCS-7
+		NN<ASN1Names> SetCertificationRequest(); //PKCS-10
+		NN<ASN1Names> SetCertificationList(); //RFC5280
+		NN<ASN1Names> SetPFX(); //PKCS-12
 	};
 }
 #endif

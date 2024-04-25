@@ -18,7 +18,7 @@ void *IO::Registry::allRegistryFile = 0;
 
 struct Registry_File
 {
-	NotNullPtr<Text::String> fileName;
+	NN<Text::String> fileName;
 	Sync::Mutex mut;
 	IO::ConfigFile *cfg;
 	UInt32 useCnt;
@@ -35,7 +35,7 @@ struct Registry_Param
 struct IO::Registry::ClassData
 {
 	Registry_File *reg;
-	NotNullPtr<Text::String> cate;
+	NN<Text::String> cate;
 };
 
 void *IO::Registry::OpenUserType(RegistryUser usr)
@@ -130,7 +130,7 @@ IO::Registry *IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr, const W
 	}
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Software\\"));
-	NotNullPtr<Text::String> s = Text::String::NewNotNull(compName);
+	NN<Text::String> s = Text::String::NewNotNull(compName);
 	sb.Append(s);
 	s->Release();
 	sb.AppendUTF8Char('\\');
@@ -153,7 +153,7 @@ IO::Registry *IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr, const W
 	}
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Software\\"));
-	NotNullPtr<Text::String> s = Text::String::NewNotNull(compName);
+	NN<Text::String> s = Text::String::NewNotNull(compName);
 	sb.Append(s);
 	s->Release();
 	param.currCate = {sb.ToString(), sb.GetLength()};
@@ -218,7 +218,7 @@ IO::Registry *IO::Registry::OpenSubReg(const WChar *name)
 	Text::StringBuilderUTF8 sb;
 	sb.Append(this->clsData->cate);
 	sb.AppendUTF8Char('\\');
-	NotNullPtr<Text::String> s = Text::String::NewNotNull(name);
+	NN<Text::String> s = Text::String::NewNotNull(name);
 	sb.Append(s);
 	s->Release();
 	param.currCate = {sb.ToString(), sb.GetLength()};
@@ -237,12 +237,12 @@ WChar *IO::Registry::GetSubReg(WChar *buff, UOSInt index)
 	{
 		return 0;
 	}
-	NotNullPtr<Text::String> cate;
+	NN<Text::String> cate;
 	this->clsData->reg->cfg->GetCateList(cateList, false);
 	WChar *ret = 0;
 	Text::StringBuilderUTF8 sbSubReg;
 	UOSInt thisCateLen = this->clsData->cate->leng;
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = cateList.Iterator();
+	Data::ArrayIterator<NN<Text::String>> it = cateList.Iterator();
 	UOSInt k;
 	while (it.HasNext())
 	{
@@ -288,7 +288,7 @@ void IO::Registry::SetValue(const WChar *name, Int32 value)
 	{
 		NEW_CLASS(this->clsData->reg->cfg, IO::ConfigFile());
 	}
-	NotNullPtr<Text::String> s = Text::String::NewNotNull(name);
+	NN<Text::String> s = Text::String::NewNotNull(name);
 	this->clsData->reg->cfg->SetValue(this->clsData->cate->ToCString(), s->ToCString(), sb.ToCString());
 	this->clsData->reg->modified = true;
 	s->Release();
@@ -298,7 +298,7 @@ void IO::Registry::SetValue(const WChar *name, const WChar *value)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("sz:"));
-	NotNullPtr<Text::String> s = Text::String::NewNotNull(value);
+	NN<Text::String> s = Text::String::NewNotNull(value);
 	sb.Append(s);
 	s->Release();
 
@@ -320,7 +320,7 @@ void IO::Registry::DelValue(const WChar *name)
 	{
 		return;
 	}
-	NotNullPtr<Text::String> s = Text::String::NewNotNull(name);
+	NN<Text::String> s = Text::String::NewNotNull(name);
 	this->clsData->reg->cfg->RemoveValue(this->clsData->cate->ToCString(), s->ToCString());
 	s->Release();
 }
@@ -332,8 +332,8 @@ Int32 IO::Registry::GetValueI32(const WChar *name)
 	{
 		return 0;
 	}
-	NotNullPtr<Text::String> s = Text::String::NewNotNull(name);
-	NotNullPtr<Text::String> csval;
+	NN<Text::String> s = Text::String::NewNotNull(name);
+	NN<Text::String> csval;
 	if (this->clsData->reg->cfg->GetCateValue(this->clsData->cate, s).SetTo(csval) && csval->StartsWith(UTF8STRC("dword:")))
 	{
 		s->Release();
@@ -350,8 +350,8 @@ WChar *IO::Registry::GetValueStr(const WChar *name, WChar *buff)
 	{
 		return 0;
 	}
-	NotNullPtr<Text::String> s = Text::String::NewNotNull(name);
-	NotNullPtr<Text::String> csval;
+	NN<Text::String> s = Text::String::NewNotNull(name);
+	NN<Text::String> csval;
 	if (this->clsData->reg->cfg->GetCateValue(this->clsData->cate, s).SetTo(csval) && csval->StartsWith(UTF8STRC("sz:")))
 	{
 		s->Release();
@@ -368,8 +368,8 @@ Bool IO::Registry::GetValueI32(const WChar *name, OutParam<Int32> value)
 	{
 		return false;
 	}
-	NotNullPtr<Text::String> s = Text::String::NewNotNull(name);
-	NotNullPtr<Text::String> csval;
+	NN<Text::String> s = Text::String::NewNotNull(name);
+	NN<Text::String> csval;
 	if (this->clsData->reg->cfg->GetCateValue(this->clsData->cate, s).SetTo(csval) && csval->StartsWith(UTF8STRC("dword:")))
 	{
 		s->Release();
@@ -389,7 +389,7 @@ WChar *IO::Registry::GetName(WChar *nameBuff, UOSInt index)
 	}
 	Data::ArrayListStringNN keys;
 	this->clsData->reg->cfg->GetKeys(this->clsData->cate->ToCString(), keys);
-	NotNullPtr<Text::String> key;
+	NN<Text::String> key;
 	if (keys.GetItem(index).SetTo(key))
 	{
 		return Text::StrUTF8_WChar(nameBuff, key->v, 0);

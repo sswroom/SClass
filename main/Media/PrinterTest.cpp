@@ -18,38 +18,38 @@ public:
 	{
 	}
 
-	virtual Bool BeginPrint(NotNullPtr<Media::IPrintDocument> doc)
+	virtual Bool BeginPrint(NN<Media::IPrintDocument> doc)
 	{
 		doc->SetDocName(CSTR("PrinterTest"));
 		return true;
 	}
 
-	virtual Bool PrintPage(NotNullPtr<Media::DrawImage> printPage)
+	virtual Bool PrintPage(NN<Media::DrawImage> printPage)
 	{
-		NotNullPtr<Media::DrawFont> font = printPage->NewFontPt(CSTR("Arial"), 12, Media::DrawEngine::DFS_NORMAL, 0);
-		NotNullPtr<Media::DrawBrush> brush = printPage->NewBrushARGB(0xff000000);
+		NN<Media::DrawFont> font = printPage->NewFontPt(CSTR("Arial"), 12, Media::DrawEngine::DFS_NORMAL, 0);
+		NN<Media::DrawBrush> brush = printPage->NewBrushARGB(0xff000000);
 		printPage->DrawString(Math::Coord2DDbl(100, 100), CSTR("Testing"), font, brush);
 		printPage->DelBrush(brush);
 		printPage->DelFont(font);
 		return false;
 	}
-	virtual Bool EndPrint(NotNullPtr<Media::IPrintDocument> doc)
+	virtual Bool EndPrint(NN<Media::IPrintDocument> doc)
 	{
 		return true;
 	}
 };
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter *console;
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	NotNullPtr<Media::DrawEngine> eng;
+	NN<Media::DrawEngine> eng;
 	Media::Printer *printer;
-	NotNullPtr<Media::IPrintDocument> doc;
-	NotNullPtr<PrintObj> prtobj;
+	NN<Media::IPrintDocument> doc;
+	NN<PrintObj> prtobj;
 
 	NEW_CLASS(console, IO::ConsoleWriter());
 	console->WriteLineC(UTF8STRC("Found Printers:"));

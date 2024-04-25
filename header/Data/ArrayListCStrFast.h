@@ -11,7 +11,7 @@ namespace Data
 		ArrayListCStrFast();
 		ArrayListCStrFast(UOSInt capacity);
 
-		virtual NotNullPtr<Data::ArrayList<Text::CString>> Clone() const;
+		virtual NN<Data::ArrayList<Text::CString>> Clone() const;
 		virtual OSInt Compare(Text::CString obj1, Text::CString obj2) const;
 	};
 }

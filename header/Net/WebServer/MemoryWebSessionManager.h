@@ -17,8 +17,8 @@ namespace Net
 			Data::ArrayListInt64 sessIds;
 			Data::ArrayListNN<Net::WebServer::MemoryWebSession> sesses;
 			Sync::Mutex mut;
-			NotNullPtr<Text::String> path;
-			NotNullPtr<Text::String> cookieName;
+			NN<Text::String> path;
+			NN<Text::String> cookieName;
 
 			Int32 chkInterval;
 			SessionHandler chkHdlr;
@@ -28,21 +28,21 @@ namespace Net
 			Sync::Event chkEvt;
 
 			static UInt32 __stdcall CheckThread(AnyType userObj);
-			Int64 GetSessId(NotNullPtr<Net::WebServer::IWebRequest> req);
+			Int64 GetSessId(NN<Net::WebServer::IWebRequest> req);
 		public:
 			MemoryWebSessionManager(Text::CStringNN path, SessionHandler delHdlr, AnyType delHdlrObj, Int32 chkInterval, SessionHandler chkHdlr, AnyType chkHdlrObj, Text::CString cookieName);
 			virtual ~MemoryWebSessionManager();
 
-			virtual Optional<IWebSession> GetSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-			virtual NotNullPtr<IWebSession> CreateSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-			virtual void DeleteSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
+			virtual Optional<IWebSession> GetSession(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			virtual NN<IWebSession> CreateSession(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			virtual void DeleteSession(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
 
-			Int64 GenSessId(NotNullPtr<Net::WebServer::IWebRequest> req);
-			NotNullPtr<IWebSession> CreateSession(Int64 sessId);
+			Int64 GenSessId(NN<Net::WebServer::IWebRequest> req);
+			NN<IWebSession> CreateSession(Int64 sessId);
 			Optional<IWebSession> GetSession(Int64 sessId);
 			void DeleteSession(Int64 sessId);
 
-			void GetSessionIds(NotNullPtr<Data::ArrayList<Int64>> sessIds);
+			void GetSessionIds(NN<Data::ArrayList<Int64>> sessIds);
 		};
 	}
 }

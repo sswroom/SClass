@@ -9,12 +9,12 @@ namespace Net
 	class AzureManager
 	{
 	private:
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;
 		Data::FastStringMap<Text::String*> *keyMap;
 
 	public:
-		AzureManager(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
+		AzureManager(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
 		~AzureManager();
 
 		Crypto::Cert::X509Key *CreateKey(Text::CStringNN kid);

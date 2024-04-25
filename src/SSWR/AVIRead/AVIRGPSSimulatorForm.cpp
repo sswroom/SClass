@@ -10,7 +10,7 @@
 
 Bool __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGPSSimulatorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSSimulatorForm>();
+	NN<SSWR::AVIRead::AVIRGPSSimulatorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSSimulatorForm>();
 	if (!me->chkAddPoints->IsChecked())
 		return false;
 	UTF8Char sbuff[128];
@@ -45,7 +45,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnMouseDown(AnyType userObj,
 
 void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnStreamClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGPSSimulatorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSSimulatorForm>();
+	NN<SSWR::AVIRead::AVIRGPSSimulatorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSSimulatorForm>();
 	if (me->stm)
 	{
 		DEL_CLASS(me->stm);
@@ -63,7 +63,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnStreamClicked(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnSpeedClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGPSSimulatorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSSimulatorForm>();
+	NN<SSWR::AVIRead::AVIRGPSSimulatorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSSimulatorForm>();
 	Text::StringBuilderUTF8 sb;
 	Double v;
 	me->txtSpeedInput->GetText(sb);
@@ -79,7 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnSpeedClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGPSSimulatorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSSimulatorForm>();
+	NN<SSWR::AVIRead::AVIRGPSSimulatorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSSimulatorForm>();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	if (me->stm)
@@ -266,7 +266,7 @@ Char *SSWR::AVIRead::AVIRGPSSimulatorForm::GenCheck(Char *ptr, Char *start)
 	return Text::StrHexByte(ptr, (UInt8)c);
 }
 
-SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi) : UI::GUIForm(parent, 480, 480, ui)
+SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi) : UI::GUIForm(parent, 480, 480, ui)
 {
 	this->core = core;
 	this->navi = navi;

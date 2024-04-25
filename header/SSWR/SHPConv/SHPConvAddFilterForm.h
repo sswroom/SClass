@@ -15,19 +15,19 @@ namespace SSWR
 		class SHPConvAddFilterForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblFilter;
-			NotNullPtr<UI::GUIComboBox> cboFilter;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUILabel> lblFilter;
+			NN<UI::GUIComboBox> cboFilter;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 			DB::DBFFile *dbf;
-			NotNullPtr<Media::DrawEngine> deng;
+			NN<Media::DrawEngine> deng;
 			Media::MonitorMgr *monMgr;
 			MapFilter *filter;
 
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			SHPConvAddFilterForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf, NotNullPtr<Media::DrawEngine> deng);
+			SHPConvAddFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, DB::DBFFile *dbf, NN<Media::DrawEngine> deng);
 			virtual ~SHPConvAddFilterForm();
 
 			virtual void OnMonitorChanged();

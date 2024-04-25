@@ -19,11 +19,11 @@ Int32 Exporter::BMPExporter::GetName()
 	return *(Int32*)"BMPE";
 }
 
-IO::FileExporter::SupportType Exporter::BMPExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
+IO::FileExporter::SupportType Exporter::BMPExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
-	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
+	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
 	Media::RasterImage *img = imgList->GetImage(0, 0);
@@ -73,11 +73,11 @@ void Exporter::BMPExporter::SetCodePage(UInt32 codePage)
 {
 }
 
-Bool Exporter::BMPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::BMPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	if (IsObjectSupported(pobj) == SupportType::NotSupported)
 		return false;
-	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
+	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	Media::RasterImage *img = imgList->GetImage(0, 0);
 
 	UInt8 buff[138];
@@ -162,7 +162,7 @@ Bool Exporter::BMPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 		else
 		{
 			
-			NotNullPtr<Media::ColorProfile::ColorPrimaries> primaries = img->info.color.GetPrimaries();
+			NN<Media::ColorProfile::ColorPrimaries> primaries = img->info.color.GetPrimaries();
 			Math::Vector3 xyzVec;
 			hdrSize = 124;
 			WriteInt32(&buff[70], 0); //bV5CSType = LCS_CALIBRATED_RGB

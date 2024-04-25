@@ -78,7 +78,7 @@ Manage::StackTracer::StackTracer(Optional<Manage::ThreadContext> context)
 	sf->AddrPC.Mode = AddrModeFlat;
 	sf->AddrStack.Mode = AddrModeFlat;
 	sf->AddrFrame.Mode = AddrModeFlat;
-	NotNullPtr<Manage::ThreadContext> nncontext;
+	NN<Manage::ThreadContext> nncontext;
 	if (context.SetTo(nncontext))
 	{
 		this->winContext = nncontext->Clone().Ptr();

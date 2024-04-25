@@ -10,7 +10,7 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorSelChg(AnyType userObj)
 	UInt8 buff[16];
 	UInt32 ipAddr;
 	UOSInt i;
-	NotNullPtr<SSWR::AVIRead::AVIRNetInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetInfoForm>();
+	NN<SSWR::AVIRead::AVIRNetInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetInfoForm>();
 	Net::ConnectionInfo *connInfo = (Net::ConnectionInfo*)me->lbAdaptors->GetSelectedItem().p;
 	Net::ConnectionInfo::ConnectionType connType;
 	if (connInfo)
@@ -126,7 +126,7 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorSelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRNetInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetInfoForm>();
+	NN<SSWR::AVIRead::AVIRNetInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetInfoForm>();
 	UOSInt i = me->tcMain->GetSelectedIndex();
 	if (i == 1)
 	{
@@ -155,13 +155,13 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnTimerTick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnPortClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRNetInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetInfoForm>();
+	NN<SSWR::AVIRead::AVIRNetInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetInfoForm>();
 	me->UpdatePortStats();
 }
 
 void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorEnableClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRNetInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetInfoForm>();
+	NN<SSWR::AVIRead::AVIRNetInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetInfoForm>();
 	Net::ConnectionInfo *connInfo = (Net::ConnectionInfo*)me->lbAdaptors->GetSelectedItem().p;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -183,7 +183,7 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorEnableClicked(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorDisableClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRNetInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetInfoForm>();
+	NN<SSWR::AVIRead::AVIRNetInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetInfoForm>();
 	Net::ConnectionInfo *connInfo = (Net::ConnectionInfo*)me->lbAdaptors->GetSelectedItem().p;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -446,7 +446,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateARPStats()
 
 void SSWR::AVIRead::AVIRNetInfoForm::ReleaseConns()
 {
-	NotNullPtr<Net::ConnectionInfo> connInfo;
+	NN<Net::ConnectionInfo> connInfo;
 	UOSInt i;
 	i = this->conns.GetCount();
 	while (i-- > 0)
@@ -464,7 +464,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateConns()
 	this->core->GetSocketFactory()->GetConnInfoList(this->conns);
 	UOSInt i;
 	UOSInt j;
-	NotNullPtr<Net::ConnectionInfo> connInfo;
+	NN<Net::ConnectionInfo> connInfo;
 	this->lbAdaptors->ClearItems();
 	i = 0;
 	j = this->conns.GetCount();
@@ -486,7 +486,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFIIFs()
 {
 	UOSInt i;
 	UOSInt j;
-	NotNullPtr<Net::WirelessLAN::Interface> interf;
+	NN<Net::WirelessLAN::Interface> interf;
 	if (!this->wlan->IsError())
 	{
 		this->ReleaseWIFIIFs();
@@ -518,7 +518,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFINetworks()
 		UOSInt j;
 		UOSInt k;
 		Data::ArrayListNN<Net::WirelessLAN::Network> networks;
-		NotNullPtr<Net::WirelessLAN::Network> network;
+		NN<Net::WirelessLAN::Network> network;
 		interf->GetNetworks(networks);
 		this->lvWIFINetwork->ClearItems();
 		i = 0;
@@ -534,9 +534,9 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFINetworks()
 		}
 
 		Data::ArrayListNN<Net::WirelessLAN::BSSInfo> bssList;
-		NotNullPtr<Net::WirelessLAN::BSSInfo> bss;
+		NN<Net::WirelessLAN::BSSInfo> bss;
 		interf->GetBSSList(bssList);
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		this->lvWIFIBSS->ClearItems();
 		i = 0;
 		j = bssList.GetCount();
@@ -584,7 +584,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdatePortStats()
 	Data::ArrayListNN<Net::SocketFactory::PortInfo3> portInfoList;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	NotNullPtr<Net::SocketFactory::PortInfo3> portInfo;
+	NN<Net::SocketFactory::PortInfo3> portInfo;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -694,7 +694,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdatePortStats()
 	this->core->GetSocketFactory()->FreePortInfos2(portInfoList);
 }
 
-SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Network Info"));

@@ -15,7 +15,7 @@ namespace UI
 		Data::ArrayList<Data::CallbackStorage<UpDownEvent>> btnUpDownHandlers;
 		Data::ArrayList<Data::CallbackStorage<UIEvent>> btnFocusLostHandlers;
 	public:
-		GUIButton(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
+		GUIButton(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 		virtual ~GUIButton();
 
 		virtual void SetText(Text::CStringNN text) = 0;

@@ -12,7 +12,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCameraControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCameraControlForm>();
+	NN<SSWR::AVIRead::AVIRCameraControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCameraControlForm>();
 	Data::ArrayList<UOSInt> selIndices;
 	me->lvFiles->GetSelectedIndices(&selIndices);
 	if (selIndices.GetCount() <= 0)
@@ -21,8 +21,8 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(AnyType u
 	}
 	else if (selIndices.GetCount() == 1)
 	{
-		NotNullPtr<IO::CameraControl::FileInfo> file = me->lvFiles->GetItem(selIndices.GetItem(0)).GetNN<IO::CameraControl::FileInfo>();
-		NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"CameraControlFile", true);
+		NN<IO::CameraControl::FileInfo> file = me->lvFiles->GetItem(selIndices.GetItem(0)).GetNN<IO::CameraControl::FileInfo>();
+		NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"CameraControlFile", true);
 		dlg->SetFileName(Text::CString::FromPtr(file->fileName));
 		if (dlg->ShowDialog(me->GetHandle()))
 		{
@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(AnyType u
 	{
 		Data::DateTime dt;
 		Text::StringBuilderUTF8 sb;
-		NotNullPtr<UI::GUIFolderDialog> dlg = me->ui->NewFolderDialog();
+		NN<UI::GUIFolderDialog> dlg = me->ui->NewFolderDialog();
 		if (dlg->ShowDialog(me->GetHandle()))
 		{
 			Bool succ = true;
@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(AnyType u
 			UOSInt j = selIndices.GetCount();
 			while (i < j)
 			{
-				NotNullPtr<IO::CameraControl::FileInfo> file = me->lvFiles->GetItem(selIndices.GetItem(i)).GetNN<IO::CameraControl::FileInfo>();
+				NN<IO::CameraControl::FileInfo> file = me->lvFiles->GetItem(selIndices.GetItem(i)).GetNN<IO::CameraControl::FileInfo>();
 				sb.ClearStr();
 				sb.Append(dlg->GetFolder());
 				if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))
@@ -100,8 +100,8 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(AnyType u
 
 void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(AnyType userObj, UOSInt index)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCameraControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCameraControlForm>();
-	NotNullPtr<IO::CameraControl::FileInfo> file;
+	NN<SSWR::AVIRead::AVIRCameraControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCameraControlForm>();
+	NN<IO::CameraControl::FileInfo> file;
 	if (!me->lvFiles->GetItem(index).GetOpt<IO::CameraControl::FileInfo>().SetTo(file))
 		return;
 	if (file->fileType == IO::CameraControl::FT_IMAGE)
@@ -111,7 +111,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(AnyType use
 			IO::MemoryStream mstm;
 			if (me->camera->GetFile(file, mstm))
 			{
-				NotNullPtr<IO::ParsedObject> pobj;
+				NN<IO::ParsedObject> pobj;
 				UOSInt size;
 				UInt8 *buff = mstm.GetBuff(size);
 				IO::StmData::MemoryDataRef fd(buff, size);
@@ -130,7 +130,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(AnyType use
 			if (me->camera->GetFile(file, mstm))
 			{
 				mstm.SeekFromBeginning(0);
-				NotNullPtr<Map::GPSTrack> trk = IO::GPSNMEA::NMEA2Track(mstm, {file->fileName, Text::StrCharCnt(file->fileName)});
+				NN<Map::GPSTrack> trk = IO::GPSNMEA::NMEA2Track(mstm, {file->fileName, Text::StrCharCnt(file->fileName)});
 				SSWR::AVIRead::AVIRGISForm *frm = me->core->GetGISForm();
 				if (frm)
 				{
@@ -147,8 +147,8 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(AnyType use
 
 void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCameraControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCameraControlForm>();
-	NotNullPtr<IO::CameraControl::FileInfo> file;
+	NN<SSWR::AVIRead::AVIRCameraControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCameraControlForm>();
+	NN<IO::CameraControl::FileInfo> file;
 	if (!me->lvFiles->GetSelectedItem().GetOpt<IO::CameraControl::FileInfo>().SetTo(file))
 		return;
 	Media::ImageList *previewImg = me->previewMap.Get(file->fileName);
@@ -175,7 +175,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesSelChg(AnyType userO
 	}
 }
 
-SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::CameraControl *camera) : UI::GUIForm(parent, 640, 768, ui)
+SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::CameraControl *camera) : UI::GUIForm(parent, 640, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Camera Control"));
@@ -227,7 +227,7 @@ SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(Optional<UI::GUIClie
 	this->camera->FreeInfoList(nameList, valueList);
 
 	Data::ArrayListNN<IO::CameraControl::FileInfo> fileList;
-	NotNullPtr<IO::CameraControl::FileInfo> file;
+	NN<IO::CameraControl::FileInfo> file;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Data::DateTime dt;
@@ -260,7 +260,7 @@ SSWR::AVIRead::AVIRCameraControlForm::~AVIRCameraControlForm()
 {
 	this->ClearChildren();
 	DEL_CLASS(this->camera);
-	NotNullPtr<const Data::ArrayList<Media::ImageList*>> previewList = this->previewMap.GetValues();
+	NN<const Data::ArrayList<Media::ImageList*>> previewList = this->previewMap.GetValues();
 	UOSInt i = previewList->GetCount();
 	Media::ImageList *previewImg;
 	while (i-- > 0)

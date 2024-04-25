@@ -126,14 +126,14 @@ namespace DB
 		static UTF8Char *Field2DBName(UTF8Char *dbNameBuff, const UTF8Char *fieldName);
 		static Bool HasSchema(SQLType sqlType);
 		template <class T> static Bool SaveCSV(NN<IO::Stream> stm, NN<Data::ArrayListNN<T>> list, NN<Data::Class> cls);
-		template <typename T> static Bool Model2JSON(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<T> obj);
+		template <typename T> static Bool Model2JSON(NN<Text::JSONBuilder> json, NN<T> obj);
 	};
 }
 
 template <class T> Bool DB::DBUtil::SaveCSV(NN<IO::Stream> stm, NN<Data::ArrayListNN<T>> list, NN<Data::Class> cls)
 {
 	UTF8Char sbuff[512];
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	Bool succ = true;
@@ -205,10 +205,10 @@ template <class T> Bool DB::DBUtil::SaveCSV(NN<IO::Stream> stm, NN<Data::ArrayLi
 	return succ;
 }
 
-template <typename T> Bool DB::DBUtil::Model2JSON(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<T> obj)
+template <typename T> Bool DB::DBUtil::Model2JSON(NN<Text::JSONBuilder> json, NN<T> obj)
 {
-	NotNullPtr<Data::NamedClass<T>> cls = obj->CreateClass();
-	NotNullPtr<Text::String> name;
+	NN<Data::NamedClass<T>> cls = obj->CreateClass();
+	NN<Text::String> name;
 	Data::VariItem item;
 	UOSInt i = 0;
 	UOSInt j = cls->GetFieldCount();

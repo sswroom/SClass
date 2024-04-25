@@ -30,13 +30,13 @@ namespace Net
 
 		typedef struct
 		{
-			NotNullPtr<Text::String> type;
+			NN<Text::String> type;
 			Text::String *value;
 		} SearchResItem;
 
 		typedef struct
 		{
-			NotNullPtr<Text::String> name;
+			NN<Text::String> name;
 			Bool isRef;
 			Data::ArrayList<SearchResItem*> *items;
 		} SearchResObject;
@@ -51,7 +51,7 @@ namespace Net
 		} ReqStatus;
 
 	private:
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Net::TCPClient *cli;
 		
 		Sync::Mutex reqMut;
@@ -68,7 +68,7 @@ namespace Net
 		void ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen);
 		const UTF8Char *ParseFilter(Net::ASN1PDUBuilder *pdu, const UTF8Char *filter, Bool complex);
 	public:
-		LDAPClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Duration timeout);
+		LDAPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Duration timeout);
 		~LDAPClient();
 
 		Bool IsError();
@@ -80,7 +80,7 @@ namespace Net
 
 		static void SearchResultsFree(Data::ArrayList<SearchResObject*> *results);
 		static void SearchResObjectFree(SearchResObject *obj);
-		static void SearchResDisplay(Text::CString type, Text::CString value, NotNullPtr<Text::StringBuilderUTF8> sb);
+		static void SearchResDisplay(Text::CString type, Text::CString value, NN<Text::StringBuilderUTF8> sb);
 	};
 }
 #endif

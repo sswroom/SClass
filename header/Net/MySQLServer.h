@@ -22,8 +22,8 @@ namespace Net
 		} CharsetInfo;
 
 	private:
-		NotNullPtr<Net::SocketFactory> sockf;
-		NotNullPtr<IO::LogTool> log;
+		NN<Net::SocketFactory> sockf;
+		NN<IO::LogTool> log;
 		Net::TCPServer *svr;
 		DB::DBMS *dbms;
 		Net::TCPClientMgr *cliMgr;
@@ -33,13 +33,13 @@ namespace Net
 
 		static CharsetInfo charsets[];
 
-		static void __stdcall OnClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
-		static void __stdcall OnClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
-		static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
+		static void __stdcall OnClientEvent(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
+		static void __stdcall OnClientData(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
+		static void __stdcall OnClientTimeout(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
 		static void __stdcall OnClientConn(Socket *s, AnyType userObj);
 		
 	public:
-		MySQLServer(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, DB::DBMS *dbms, Bool autoStart);
+		MySQLServer(NN<Net::SocketFactory> sockf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, DB::DBMS *dbms, Bool autoStart);
 		~MySQLServer();
 
 		Bool Start();

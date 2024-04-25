@@ -170,7 +170,7 @@ void SSWR::AVIRead::AVIREncryptMsgForm::ShowOutput(const UInt8 *buff, UOSInt buf
 
 void __stdcall SSWR::AVIRead::AVIREncryptMsgForm::OnEncryptClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIREncryptMsgForm> me = userObj.GetNN<SSWR::AVIRead::AVIREncryptMsgForm>();
+	NN<SSWR::AVIRead::AVIREncryptMsgForm> me = userObj.GetNN<SSWR::AVIRead::AVIREncryptMsgForm>();
 	Crypto::Encrypt::ICrypto *crypto = me->InitCrypto();
 	if (crypto)
 	{
@@ -192,7 +192,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptMsgForm::OnEncryptClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIREncryptMsgForm::OnDecryptClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIREncryptMsgForm> me = userObj.GetNN<SSWR::AVIRead::AVIREncryptMsgForm>();
+	NN<SSWR::AVIRead::AVIREncryptMsgForm> me = userObj.GetNN<SSWR::AVIRead::AVIREncryptMsgForm>();
 	Crypto::Encrypt::ICrypto *crypto = me->InitCrypto();
 	if (crypto)
 	{
@@ -212,7 +212,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptMsgForm::OnDecryptClicked(AnyType userO
 	}
 }
 
-Text::TextBinEnc::ITextBinEnc *SSWR::AVIRead::AVIREncryptMsgForm::GetTextEncType(NotNullPtr<UI::GUIComboBox> cbo)
+Text::TextBinEnc::ITextBinEnc *SSWR::AVIRead::AVIREncryptMsgForm::GetTextEncType(NN<UI::GUIComboBox> cbo)
 {
 	switch (cbo->GetSelectedIndex())
 	{
@@ -226,7 +226,7 @@ Text::TextBinEnc::ITextBinEnc *SSWR::AVIRead::AVIREncryptMsgForm::GetTextEncType
 	}
 }
 			
-void SSWR::AVIRead::AVIREncryptMsgForm::AddTextEncType(NotNullPtr<UI::GUIComboBox> cbo)
+void SSWR::AVIRead::AVIREncryptMsgForm::AddTextEncType(NN<UI::GUIComboBox> cbo)
 {
 	cbo->AddItem(CSTR("UTF-8"), 0);
 	cbo->AddItem(CSTR("Hex"), 0);
@@ -234,7 +234,7 @@ void SSWR::AVIRead::AVIREncryptMsgForm::AddTextEncType(NotNullPtr<UI::GUIComboBo
 	cbo->SetSelectedIndex(0);
 }
 
-SSWR::AVIRead::AVIREncryptMsgForm::AVIREncryptMsgForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIREncryptMsgForm::AVIREncryptMsgForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Encrypt Message"));
 	this->SetFont(0, 0, 8.25, false);

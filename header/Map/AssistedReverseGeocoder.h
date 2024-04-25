@@ -14,11 +14,11 @@ namespace Map
 	private:
 		Data::ArrayList<Map::IReverseGeocoder *> revGeos;
 		UOSInt nextCoder;
-		NotNullPtr<DB::DBTool> conn;
+		NN<DB::DBTool> conn;
 		IO::Writer *errWriter;
 		Sync::Mutex mut;
 	public:
-		AssistedReverseGeocoder(NotNullPtr<DB::DBTool> db, IO::Writer *errWriter);
+		AssistedReverseGeocoder(NN<DB::DBTool> db, IO::Writer *errWriter);
 		virtual ~AssistedReverseGeocoder();
 
 		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);

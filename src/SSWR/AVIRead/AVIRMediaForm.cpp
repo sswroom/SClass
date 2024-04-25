@@ -47,7 +47,7 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateStreamList()
 	UOSInt j;
 	UOSInt k;
 	Media::MediaFile *mFile;
-	NotNullPtr<Media::IMediaSource> medSource;
+	NN<Media::IMediaSource> medSource;
 	Int32 syncTime;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -67,7 +67,7 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateStreamList()
 			{
 				if (this->activeVideo == 0)
 				{
-					SetActiveVideo(NotNullPtr<Media::IVideoSource>::ConvertFrom(medSource));
+					SetActiveVideo(NN<Media::IVideoSource>::ConvertFrom(medSource));
 				}
 				if (this->activeVideo == medSource.Ptr())
 					*sptr++ = '*';
@@ -77,7 +77,7 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateStreamList()
 			{
 				if (this->activeAudio == 0)
 				{
-					SetActiveAudio(NotNullPtr<Media::IAudioSource>::ConvertFrom(medSource), syncTime);
+					SetActiveAudio(NN<Media::IAudioSource>::ConvertFrom(medSource), syncTime);
 				}
 				if (this->activeAudio == medSource.Ptr())
 					*sptr++ = '*';
@@ -131,7 +131,7 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateChapters()
 	this->UpdateMenu();
 }
 
-void SSWR::AVIRead::AVIRMediaForm::SetActiveVideo(NotNullPtr<Media::IVideoSource> video)
+void SSWR::AVIRead::AVIRMediaForm::SetActiveVideo(NN<Media::IVideoSource> video)
 {
 	SDEL_CLASS(this->currDecoder);
 	this->currDecoder = this->decoders->DecodeVideo(video);
@@ -149,7 +149,7 @@ void SSWR::AVIRead::AVIRMediaForm::SetActiveVideo(NotNullPtr<Media::IVideoSource
 	}
 }
 
-void SSWR::AVIRead::AVIRMediaForm::SetActiveAudio(NotNullPtr<Media::IAudioSource> audio, Int32 timeDelay)
+void SSWR::AVIRead::AVIRMediaForm::SetActiveAudio(NN<Media::IAudioSource> audio, Int32 timeDelay)
 {
 	this->core->BindAudio(0);
 	SDEL_CLASS(this->currADecoder);
@@ -181,7 +181,7 @@ void SSWR::AVIRead::AVIRMediaForm::SetActiveAudio(NotNullPtr<Media::IAudioSource
 
 Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileRClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMediaForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMediaForm>();
+	NN<SSWR::AVIRead::AVIRMediaForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMediaForm>();
 	me->popMedia = (Media::IMediaSource*)me->lbFiles->GetSelectedItem().p;
 	if (me->popMedia == 0)
 	{
@@ -203,7 +203,7 @@ Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileRClicked(AnyType userObj, Mat
 
 void __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileDblClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMediaForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMediaForm>();
+	NN<SSWR::AVIRead::AVIRMediaForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMediaForm>();
 	Media::IMediaSource *mediaSrc = (Media::IMediaSource*)me->lbFiles->GetSelectedItem().p;
 	if (mediaSrc == 0)
 	{
@@ -216,9 +216,9 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileDblClicked(AnyType userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(AnyType userObj, Data::Duration frameTime, UInt32 frameNum, NotNullPtr<Media::StaticImage> img)
+void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(AnyType userObj, Data::Duration frameTime, UInt32 frameNum, NN<Media::StaticImage> img)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMediaForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMediaForm>();
+	NN<SSWR::AVIRead::AVIRMediaForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMediaForm>();
 	UOSInt w = img->info.dispSize.x;
 	UOSInt h = img->info.dispSize.y;
 	UInt8 *yptr = img->data;
@@ -252,7 +252,7 @@ Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFrameTime(Data::Duration frameTim
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	NotNullPtr<IO::Writer> writer = userData.GetNN<IO::Writer>();
+	NN<IO::Writer> writer = userData.GetNN<IO::Writer>();
 	sptr = Text::StrInt64(sbuff, frameTime.GetTotalMS());
 	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	return true;
@@ -307,7 +307,7 @@ Bool SSWR::AVIRead::AVIRMediaForm::PBIsPlaying()
 	return false;
 }
 
-SSWR::AVIRead::AVIRMediaForm::AVIRMediaForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::MediaFile *mediaFile) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRMediaForm::AVIRMediaForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::MediaFile *mediaFile) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	UTF8Char sbuff[512];
@@ -337,8 +337,8 @@ SSWR::AVIRead::AVIRMediaForm::AVIRMediaForm(Optional<UI::GUIClientControl> paren
 	NEW_CLASS(this->vbdMain, UI::GUIVideoBoxDD(ui, *this, this->colorSess, 5, Sync::ThreadUtil::GetThreadCnt()));
 	this->vbdMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	NotNullPtr<UI::GUIMenu> mnu;
-	NotNullPtr<UI::GUIMenu> mnu2;
+	NN<UI::GUIMenu> mnu;
+	NN<UI::GUIMenu> mnu2;
 	NEW_CLASSNN(this->mnu, UI::GUIMainMenu());
 	mnu = this->mnu->AddSubMenu(CSTR("&Playback"));
 	mnu->AddItem(CSTR("&Start"), MNU_PB_START, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_SPACE);
@@ -581,7 +581,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_POPV_SAVE_TIMECODE:
 		{
-			NotNullPtr<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"SaveTimecode", true);
+			NN<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"SaveTimecode", true);
 			dlg->AddFilter(CSTR("*.tc2"), CSTR("Timecode V2"));
 			if (dlg->ShowDialog(this->hwnd))
 			{
@@ -620,7 +620,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			Manage::HiResClock clk;
 			Double t;
 			clk.Start();
-			NotNullPtr<Media::DrawImage> img;
+			NN<Media::DrawImage> img;
 			if (img.Set(Media::FrequencyGraph::CreateGraph(this->core->GetDrawEngine(), audio, 2048, 2048, Math::FFTCalc::WT_BLACKMANN_HARRIS, 12.0)))
 			{
 				t = clk.GetTimeDiff();
@@ -631,7 +631,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 
 				UTF8Char sbuff[512];
 				UTF8Char *sptr;
-				NotNullPtr<Media::ImageList> imgList;
+				NN<Media::ImageList> imgList;
 				Media::StaticImage *simg = img->ToStaticImage();
 				this->core->GetDrawEngine()->DeleteImage(img);
 				sptr = audio->GetSourceName(sbuff);

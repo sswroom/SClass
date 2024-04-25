@@ -6,7 +6,7 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-Media::AudioFilter::AudioSweepFilter::AudioSweepFilter(NotNullPtr<IAudioSource> sourceAudio) : Media::IAudioFilter(sourceAudio)
+Media::AudioFilter::AudioSweepFilter::AudioSweepFilter(NN<IAudioSource> sourceAudio) : Media::IAudioFilter(sourceAudio)
 {
 	this->sourceAudio = sourceAudio;
 	sourceAudio->GetFormat(this->format);
@@ -22,7 +22,7 @@ Media::AudioFilter::AudioSweepFilter::~AudioSweepFilter()
 {
 }
 
-void Media::AudioFilter::AudioSweepFilter::GetFormat(NotNullPtr<AudioFormat> format)
+void Media::AudioFilter::AudioSweepFilter::GetFormat(NN<AudioFormat> format)
 {
 	format->FromAudioFormat(this->format);
 }

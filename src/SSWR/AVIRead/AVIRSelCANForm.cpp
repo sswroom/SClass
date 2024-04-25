@@ -8,7 +8,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRSelCANForm::OnAXCANSerialClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSelCANForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelCANForm>();
+	NN<SSWR::AVIRead::AVIRSelCANForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelCANForm>();
 	SSWR::AVIRead::AVIRSelStreamForm dlg(0, me->ui, me->core, false, me->ssl, me->core->GetLog());
 	if (dlg.ShowDialog(me) == DR_OK)
 	{
@@ -22,8 +22,8 @@ void __stdcall SSWR::AVIRead::AVIRSelCANForm::OnAXCANSerialClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRSelCANForm::OnAXCANFileClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSelCANForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelCANForm>();
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AXCANFile", false);
+	NN<SSWR::AVIRead::AVIRSelCANForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelCANForm>();
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AXCANFile", false);
 	dlg->AddFilter(CSTR("*.txt"), CSTR("Text File"));
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRSelCANForm::OnAXCANFileClicked(AnyType userObj
 	dlg.Delete();
 }
 
-SSWR::AVIRead::AVIRSelCANForm::AVIRSelCANForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, NotNullPtr<IO::CANHandler> hdlr) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRSelCANForm::AVIRSelCANForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, NN<IO::CANHandler> hdlr) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetText(CSTR("Select CAN Bus"));
 	this->SetFont(0, 0, 8.25, false);

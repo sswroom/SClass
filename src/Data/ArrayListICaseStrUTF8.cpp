@@ -11,9 +11,9 @@ Data::ArrayListICaseStrUTF8::ArrayListICaseStrUTF8(UOSInt capacity) : Data::Arra
 {
 }
 
-NotNullPtr<Data::ArrayList<const UTF8Char*>> Data::ArrayListICaseStrUTF8::Clone() const
+NN<Data::ArrayList<const UTF8Char*>> Data::ArrayListICaseStrUTF8::Clone() const
 {
-	NotNullPtr<Data::ArrayList<const UTF8Char*>> newArr;
+	NN<Data::ArrayList<const UTF8Char*>> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListICaseStrUTF8(this->capacity));
 	newArr->AddAll(*this);
 	return newArr;

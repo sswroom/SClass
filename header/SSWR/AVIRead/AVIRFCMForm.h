@@ -13,22 +13,22 @@ namespace SSWR
 		class AVIRFCMForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblAPIKey;
-			NotNullPtr<UI::GUITextBox> txtAPIKey;
-			NotNullPtr<UI::GUILabel> lblDeviceToken;
-			NotNullPtr<UI::GUITextBox> txtDeviceToken;
-			NotNullPtr<UI::GUILabel> lblMessage;
-			NotNullPtr<UI::GUITextBox> txtMessage;
-			NotNullPtr<UI::GUIButton> btnSend;
-			NotNullPtr<UI::GUILabel> lblStatus;
-			NotNullPtr<UI::GUITextBox> txtStatus;
+			NN<UI::GUILabel> lblAPIKey;
+			NN<UI::GUITextBox> txtAPIKey;
+			NN<UI::GUILabel> lblDeviceToken;
+			NN<UI::GUITextBox> txtDeviceToken;
+			NN<UI::GUILabel> lblMessage;
+			NN<UI::GUITextBox> txtMessage;
+			NN<UI::GUIButton> btnSend;
+			NN<UI::GUILabel> lblStatus;
+			NN<UI::GUITextBox> txtStatus;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
 			static void __stdcall OnSendClicked(AnyType userObj);
 		public:
-			AVIRFCMForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRFCMForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRFCMForm();
 
 			virtual void OnMonitorChanged();

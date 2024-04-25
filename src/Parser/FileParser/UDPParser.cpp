@@ -16,7 +16,7 @@ Int32 Parser::FileParser::UDPParser::GetName()
 	return *(Int32*)"UDPP";
 }
 
-void Parser::FileParser::UDPParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::UDPParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::LogFile)
 	{
@@ -29,7 +29,7 @@ IO::ParserType Parser::FileParser::UDPParser::GetParserType()
 	return IO::ParserType::LogFile;
 }
 
-IO::ParsedObject *Parser::FileParser::UDPParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::UDPParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC("UDP")))
 		return 0;

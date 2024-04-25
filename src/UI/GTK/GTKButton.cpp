@@ -41,7 +41,7 @@ gboolean UI::GTK::GTKButton::SignalFocusLost(void *window, void *userObj)
 	return FALSE;
 }
 
-UI::GTK::GTKButton::GTKButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN label) : UI::GUIButton(ui, parent)
+UI::GTK::GTKButton::GTKButton(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN label) : UI::GUIButton(ui, parent)
 {
 	this->hwnd = (ControlHandle*)gtk_button_new();
 	this->SetText(label);

@@ -10,7 +10,7 @@
 #include "Text/UTF8Writer.h"
 #include "Text/TextBinEnc/FormEncoding.h"
 
-Net::WebServiceClient::WebServiceClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString serviceAddr, const UTF8Char *serviceName, const UTF8Char *targetNS)
+Net::WebServiceClient::WebServiceClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString serviceAddr, const UTF8Char *serviceName, const UTF8Char *targetNS)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -75,7 +75,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 	if (rt == RT_SOAP11)
 	{
 		Bool succ;
-		NotNullPtr<Net::HTTPClient> cli;
+		NN<Net::HTTPClient> cli;
 		IO::MemoryStream *mstm;
 		Text::UTF8Writer *writer;
 		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Net.WebServiceClient.Request.S11")));
@@ -228,7 +228,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 	else if (rt == RT_SOAP12)
 	{
 		Bool succ;
-		NotNullPtr<Net::HTTPClient> cli;
+		NN<Net::HTTPClient> cli;
 		IO::MemoryStream *mstm;
 		Text::UTF8Writer *writer;
 		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Net.WebServiceClient.Request.S11")));

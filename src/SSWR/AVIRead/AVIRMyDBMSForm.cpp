@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRMyDBMSForm::OnUserAddClicked(void *userObj)
 
 void __stdcall SSWR::AVIRead::AVIRMyDBMSForm::OnLogSel(void *userObj)
 {
-	NotNullPtr<Text::String> t;
+	NN<Text::String> t;
 	SSWR::AVIRead::AVIRMyDBMSForm *me = (SSWR::AVIRead::AVIRMyDBMSForm*)userObj;
 	t = Text::String::OrEmpty(me->lbLog->GetSelectedItemTextNew());
 	me->txtLog->SetText(t->ToCString());
@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRMyDBMSForm::OnTimerTick(void *userObj)
 //	SSWR::AVIRead::AVIRTFTPServerForm *me = (SSWR::AVIRead::AVIRTFTPServerForm*)userObj;
 }
 
-SSWR::AVIRead::AVIRMyDBMSForm::AVIRMyDBMSForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRMyDBMSForm::AVIRMyDBMSForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
 	this->SetText(CSTR("My DBMS"));

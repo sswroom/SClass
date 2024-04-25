@@ -5,7 +5,7 @@
 #include "UI/GUIClientControl.h"
 #include "UI/Java/JavaLabel.h"
 
-UI::Java::JavaLabel::JavaLabel(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN label) : UI::GUILabel(ui, parent)
+UI::Java::JavaLabel::JavaLabel(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN label) : UI::GUILabel(ui, parent)
 {
 }
 

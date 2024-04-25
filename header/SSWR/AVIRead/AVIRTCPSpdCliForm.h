@@ -15,7 +15,7 @@ namespace SSWR
 		class AVIRTCPSpdCliForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			UInt64 recvSize;
 			UInt64 sendSize;
 			Double lastTime;
@@ -33,23 +33,23 @@ namespace SSWR
 			Sync::Event recvEvt;
 			Sync::Event procEvt;
 
-			NotNullPtr<UI::GUILabel> lblHost;
-			NotNullPtr<UI::GUITextBox> txtHost;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUIButton> btnConn;
+			NN<UI::GUILabel> lblHost;
+			NN<UI::GUITextBox> txtHost;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUIButton> btnConn;
 
-			NotNullPtr<UI::GUILabel> lblSendSpeed;
-			NotNullPtr<UI::GUITextBox> txtSendSpeed;
-			NotNullPtr<UI::GUILabel> lblRecvSpeed;
-			NotNullPtr<UI::GUITextBox> txtRecvSpeed;
+			NN<UI::GUILabel> lblSendSpeed;
+			NN<UI::GUITextBox> txtSendSpeed;
+			NN<UI::GUILabel> lblRecvSpeed;
+			NN<UI::GUITextBox> txtRecvSpeed;
 
 			static void __stdcall OnConnClick(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static UInt32 __stdcall ProcThread(AnyType userObj);
 			static UInt32 __stdcall RecvThread(AnyType userObj);
 		public:
-			AVIRTCPSpdCliForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRTCPSpdCliForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTCPSpdCliForm();
 
 			virtual void OnMonitorChanged();

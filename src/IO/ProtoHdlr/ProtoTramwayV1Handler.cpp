@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/ProtoHdlr/ProtoTramwayV1Handler.h"
 
-IO::ProtoHdlr::ProtoTramwayV1Handler::ProtoTramwayV1Handler(NotNullPtr<IO::IProtocolHandler::DataListener> listener)
+IO::ProtoHdlr::ProtoTramwayV1Handler::ProtoTramwayV1Handler(NN<IO::IProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
 }
@@ -11,7 +11,7 @@ IO::ProtoHdlr::ProtoTramwayV1Handler::~ProtoTramwayV1Handler()
 {
 }
 
-void *IO::ProtoHdlr::ProtoTramwayV1Handler::CreateStreamData(NotNullPtr<IO::Stream> stm)
+void *IO::ProtoHdlr::ProtoTramwayV1Handler::CreateStreamData(NN<IO::Stream> stm)
 {
 	ProtocolStatus *stat = MemAlloc(ProtocolStatus, 1);
 	stat->buffSize = 0;
@@ -19,14 +19,14 @@ void *IO::ProtoHdlr::ProtoTramwayV1Handler::CreateStreamData(NotNullPtr<IO::Stre
 	return stat;
 }
 
-void IO::ProtoHdlr::ProtoTramwayV1Handler::DeleteStreamData(NotNullPtr<IO::Stream> stm, void *stmData)
+void IO::ProtoHdlr::ProtoTramwayV1Handler::DeleteStreamData(NN<IO::Stream> stm, void *stmData)
 {
 	ProtocolStatus *stat = (ProtocolStatus *)stmData;;
 	MemFree(stat->packetBuff);
 	MemFree(stat);
 }
 
-UOSInt IO::ProtoHdlr::ProtoTramwayV1Handler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &buff)
+UOSInt IO::ProtoHdlr::ProtoTramwayV1Handler::ParseProtocol(NN<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &buff)
 {
 	ProtocolStatus *stat = (ProtocolStatus *)stmData;;
 	UOSInt skipStart = 0;

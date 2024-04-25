@@ -14,17 +14,17 @@ namespace SSWR
 		class AVIRHKOWarningSummaryForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
-			NotNullPtr<UI::GUIPanel> pnlReqTime;
-			NotNullPtr<UI::GUILabel> lblReqTime;
-			NotNullPtr<UI::GUITextBox> txtReqTime;
-			NotNullPtr<UI::GUIListView> lvWarning;
+			NN<UI::GUIPanel> pnlReqTime;
+			NN<UI::GUILabel> lblReqTime;
+			NN<UI::GUITextBox> txtReqTime;
+			NN<UI::GUIListView> lvWarning;
 
 			void Reload();
 		public:
-			AVIRHKOWarningSummaryForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRHKOWarningSummaryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHKOWarningSummaryForm();
 
 			virtual void OnMonitorChanged();

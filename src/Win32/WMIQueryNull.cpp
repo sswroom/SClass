@@ -53,7 +53,7 @@ void Win32::WMIQuery::ForceTz(Int8 tzQhr)
 {
 }
 
-void Win32::WMIQuery::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Win32::WMIQuery::GetConnName(NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("WMI:"));
 }
@@ -96,16 +96,16 @@ Optional<DB::DBTransaction> Win32::WMIQuery::BeginTransaction()
 	return 0;
 }
 
-void Win32::WMIQuery::Commit(NotNullPtr<DB::DBTransaction> tran)
+void Win32::WMIQuery::Commit(NN<DB::DBTransaction> tran)
 {
 }
 
-void Win32::WMIQuery::Rollback(NotNullPtr<DB::DBTransaction> tran)
+void Win32::WMIQuery::Rollback(NN<DB::DBTransaction> tran)
 {
 }
 
 
-UOSInt Win32::WMIQuery::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt Win32::WMIQuery::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (this->pService == 0)
 	{
@@ -121,11 +121,11 @@ Optional<DB::DBReader> Win32::WMIQuery::QueryTableData(Text::CString schemaName,
 	return this->ExecuteReaderW(wbuff);
 }
 
-void Win32::WMIQuery::CloseReader(NotNullPtr<DB::DBReader> reader)
+void Win32::WMIQuery::CloseReader(NN<DB::DBReader> reader)
 {
 }
 
-void Win32::WMIQuery::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void Win32::WMIQuery::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 }
 

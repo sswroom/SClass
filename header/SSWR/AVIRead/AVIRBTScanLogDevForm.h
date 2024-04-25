@@ -16,21 +16,21 @@ namespace SSWR
 		class AVIRBTScanLogDevForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUIPanel> pnlDevInfo;
-			NotNullPtr<UI::GUILabel> lblMAC;
-			NotNullPtr<UI::GUITextBox> txtMAC;
-			NotNullPtr<UI::GUILabel> lblName;
-			NotNullPtr<UI::GUITextBox> txtName;
-			NotNullPtr<UI::GUIButton> btnCSV;
-			NotNullPtr<UI::GUIListView> lvContent;
+			NN<UI::GUIPanel> pnlDevInfo;
+			NN<UI::GUILabel> lblMAC;
+			NN<UI::GUITextBox> txtMAC;
+			NN<UI::GUILabel> lblName;
+			NN<UI::GUITextBox> txtName;
+			NN<UI::GUIButton> btnCSV;
+			NN<UI::GUIListView> lvContent;
 
-			NotNullPtr<const IO::BTScanLog::DevEntry> entry;
+			NN<const IO::BTScanLog::DevEntry> entry;
 
 			static void __stdcall OnCSVClicked(AnyType userObj);
 		public:
-			AVIRBTScanLogDevForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<const IO::BTScanLog::DevEntry> entry);
+			AVIRBTScanLogDevForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<const IO::BTScanLog::DevEntry> entry);
 			virtual ~AVIRBTScanLogDevForm();
 
 			virtual void OnMonitorChanged();

@@ -37,7 +37,7 @@ OSInt __stdcall UI::Win::WinButton::BTNWndProc(void *hWnd, UInt32 msg, UInt32 wP
 	return 0;
 }
 
-UI::Win::WinButton::WinButton(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN txt) : UI::GUIButton(ui, parent)
+UI::Win::WinButton::WinButton(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN txt) : UI::GUIButton(ui, parent)
 {
 	UInt32 style = WS_CHILD | WS_TABSTOP;
 	if (parent->IsChildVisible())

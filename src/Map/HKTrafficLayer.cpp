@@ -811,7 +811,7 @@ IO::Stream *Map::HKTrafficLayer::OpenURLStream()
 	else
 	{
 		Int32 status;
-		NotNullPtr<Net::HTTPClient> cli;
+		NN<Net::HTTPClient> cli;
 		cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, this->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 		while (true)
 		{
@@ -847,7 +847,7 @@ IO::Stream *Map::HKTrafficLayer::OpenURLStream()
 	}
 }
 
-Map::HKTrafficLayer::HKTrafficLayer(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<Text::EncodingFactory> encFact) : Map::MapDrawLayer(CSTR("HKTraffic"), 0, CSTR("HKTraffic"), Math::CoordinateSystemManager::CreateProjCoordinateSystemDefNameOrDef(Math::CoordinateSystemManager::PCST_HK80))
+Map::HKTrafficLayer::HKTrafficLayer(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact) : Map::MapDrawLayer(CSTR("HKTraffic"), 0, CSTR("HKTraffic"), Math::CoordinateSystemManager::CreateProjCoordinateSystemDefNameOrDef(Math::CoordinateSystemManager::PCST_HK80))
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -1123,7 +1123,7 @@ Map::DrawLayerType Map::HKTrafficLayer::GetLayerType() const
 	return Map::DRAW_LAYER_POLYLINE;
 }
 
-UOSInt Map::HKTrafficLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::HKTrafficLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	UOSInt ret = 0;
 	UOSInt i;
@@ -1145,12 +1145,12 @@ UOSInt Map::HKTrafficLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> out
 	return ret;
 }
 
-UOSInt Map::HKTrafficLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::HKTrafficLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt retCnt = 0;
 	NN<RoadInfo> road;
@@ -1183,7 +1183,7 @@ void Map::HKTrafficLayer::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-Bool Map::HKTrafficLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::HKTrafficLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	return false;
 }
@@ -1206,7 +1206,7 @@ DB::DBUtil::ColType Map::HKTrafficLayer::GetColumnType(UOSInt colIndex, OptOut<U
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::HKTrafficLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Map::HKTrafficLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	////////////////////////////
 	return false;
@@ -1267,8 +1267,8 @@ Map::MapDrawLayer *Map::HKTrafficLayer::GetNodePoints()
 	UTF8Char sbuff[32];
 	const UTF8Char *sptr = sbuff;
 	const UTF8Char *col = (const UTF8Char*)"id";
-	NotNullPtr<Math::Geometry::Point> pt;
-	NotNullPtr<Math::CoordinateSystem> csys;
+	NN<Math::Geometry::Point> pt;
+	NN<Math::CoordinateSystem> csys;
 	if (!csys.Set(Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80)))
 		return 0;
 	NEW_CLASS(layer, Map::VectorLayer(Map::DRAW_LAYER_POINT, CSTR("HKTrafficNode"), 1, &col, csys, 0, CSTR("HKTrafficNode")));

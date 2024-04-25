@@ -35,18 +35,18 @@ namespace Exporter
 		virtual ~XLSXExporter();
 
 		virtual Int32 GetName();
-		virtual SupportType IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj);
+		virtual SupportType IsObjectSupported(NN<IO::ParsedObject> pobj);
 		virtual Bool GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff);
-		virtual Bool ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param);
+		virtual Bool ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param);
 
-		static void AppendFill(NotNullPtr<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeFill *fill);
-		static void AppendLineStyle(NotNullPtr<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeLineStyle *lineStyle);
-		static void AppendTitle(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *title);
-		static void AppendShapeProp(NotNullPtr<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeShapeProp *shapeProp);
-		static void AppendAxis(NotNullPtr<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeChartAxis *axis, UOSInt index);
-		static void AppendSeries(NotNullPtr<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeChartSeries *series, UOSInt index);
-		static void AppendBorder(NotNullPtr<Text::StringBuilderUTF8> sb, Text::SpreadSheet::CellStyle::BorderStyle border, Text::CString name);
-		static void AppendXF(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Text::SpreadSheet::CellStyle> style, NotNullPtr<Data::ArrayList<BorderInfo*>> borders, NotNullPtr<Text::SpreadSheet::Workbook> workbook, NotNullPtr<Data::StringUTF8Map<UOSInt>> numFmtMap);
+		static void AppendFill(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeFill *fill);
+		static void AppendLineStyle(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeLineStyle *lineStyle);
+		static void AppendTitle(NN<Text::StringBuilderUTF8> sb, const UTF8Char *title);
+		static void AppendShapeProp(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeShapeProp *shapeProp);
+		static void AppendAxis(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeChartAxis *axis, UOSInt index);
+		static void AppendSeries(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeChartSeries *series, UOSInt index);
+		static void AppendBorder(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::CellStyle::BorderStyle border, Text::CString name);
+		static void AppendXF(NN<Text::StringBuilderUTF8> sb, NN<Text::SpreadSheet::CellStyle> style, NN<Data::ArrayList<BorderInfo*>> borders, NN<Text::SpreadSheet::Workbook> workbook, NN<Data::StringUTF8Map<UOSInt>> numFmtMap);
 
 		static Text::CString PresetColorCode(Text::SpreadSheet::PresetColor color);
 		static UTF8Char *ToFormatCode(UTF8Char *sbuff, const UTF8Char *dataFormat);

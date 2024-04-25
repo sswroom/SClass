@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "UI/GUIPictureBoxSimple.h"
 
-UI::GUIPictureBoxSimple::GUIPictureBoxSimple(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder) : UI::GUIControl(ui, parent)
+UI::GUIPictureBoxSimple::GUIPictureBoxSimple(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder) : UI::GUIControl(ui, parent)
 {
 	this->hasBorder = hasBorder;
 	this->eng = eng;

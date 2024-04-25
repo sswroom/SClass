@@ -8,7 +8,7 @@
 
 #include <stdio.h>
 
-void __stdcall Net::LoRaGateway::OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::LoRaGateway::OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
 	Text::StringBuilderUTF8 sb;
 	Net::LoRaGWUtil::ParseUDPMessage(sb, false, buff, dataSize);
@@ -17,7 +17,7 @@ void __stdcall Net::LoRaGateway::OnUDPPacket(NotNullPtr<const Net::SocketUtil::A
 
 UInt32 __stdcall Net::LoRaGateway::PullThread(AnyType userObj)
 {
-	NotNullPtr<Net::LoRaGateway> me = userObj.GetNN<Net::LoRaGateway>();
+	NN<Net::LoRaGateway> me = userObj.GetNN<Net::LoRaGateway>();
 	Data::Timestamp currTime;
 	{
 		Sync::Event evt;
@@ -70,7 +70,7 @@ Bool Net::LoRaGateway::SendStatData()
 	return this->SendPushData(sb.ToString(), sb.GetLength());
 }
 
-Net::LoRaGateway::LoRaGateway(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> svrAddr, UInt16 svrPort, const UInt8 *gatewayEUI, NotNullPtr<IO::LogTool> log) : udp(sockf, 0, 0, CSTR_NULL, OnUDPPacket, this, log, CSTR("LoRa: "), 4, false)
+Net::LoRaGateway::LoRaGateway(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> svrAddr, UInt16 svrPort, const UInt8 *gatewayEUI, NN<IO::LogTool> log) : udp(sockf, 0, 0, CSTR_NULL, OnUDPPacket, this, log, CSTR("LoRa: "), 4, false)
 {
 	this->svrAddr = svrAddr.Ptr()[0];
 	this->svrPort = svrPort;

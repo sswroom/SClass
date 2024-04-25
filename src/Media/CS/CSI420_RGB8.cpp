@@ -712,7 +712,7 @@ yv2rflopexit:
 
 UInt32 Media::CS::CSI420_RGB8::WorkerThread(AnyType obj)
 {
-	NotNullPtr<CSI420_RGB8> converter = obj.GetNN<CSI420_RGB8>();
+	NN<CSI420_RGB8> converter = obj.GetNN<CSI420_RGB8>();
 	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 
@@ -737,7 +737,7 @@ UInt32 Media::CS::CSI420_RGB8::WorkerThread(AnyType obj)
 	return 0;
 }
 
-Media::CS::CSI420_RGB8::CSI420_RGB8(NotNullPtr<const Media::ColorProfile> srcColor, NotNullPtr<const Media::ColorProfile> destColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV_RGB8(srcColor, destColor, yuvType, colorSess)
+Media::CS::CSI420_RGB8::CSI420_RGB8(NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV_RGB8(srcColor, destColor, yuvType, colorSess)
 {
 	UOSInt i;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();

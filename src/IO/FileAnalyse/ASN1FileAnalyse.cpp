@@ -2,7 +2,7 @@
 #include "Data/ByteBuffer.h"
 #include "IO/FileAnalyse/ASN1FileAnalyse.h"
 
-IO::FileAnalyse::ASN1FileAnalyse::ASN1FileAnalyse(NotNullPtr<IO::StreamData> fd, Optional<Net::ASN1Names> names)
+IO::FileAnalyse::ASN1FileAnalyse::ASN1FileAnalyse(NN<IO::StreamData> fd, Optional<Net::ASN1Names> names)
 {
 	this->fd = fd->GetPartialData(0, fd->GetDataSize());
 	this->names = names;
@@ -25,7 +25,7 @@ UOSInt IO::FileAnalyse::ASN1FileAnalyse::GetFrameCount()
 	return 1;
 }
 
-Bool IO::FileAnalyse::ASN1FileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::ASN1FileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	if (index != 0)
 		return false;
@@ -48,7 +48,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ASN1FileAnalyse::GetFram
 		return 0;
 	Data::ByteBuffer buff((UOSInt)this->fd->GetDataSize());
 	this->fd->GetRealData(0, buff.GetSize(), buff);
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(0, buff.GetSize()));
 	Net::ASN1Util::PDUAnalyse(frame, buff, 0, buff.GetSize(), this->names);
 	return frame;

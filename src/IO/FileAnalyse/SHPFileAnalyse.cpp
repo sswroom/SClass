@@ -42,9 +42,9 @@ Text::CString IO::FileAnalyse::SHPFileAnalyse::ShapeTypeGetName(UInt32 shapeType
 	}
 }
 
-void __stdcall IO::FileAnalyse::SHPFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::FileAnalyse::SHPFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::FileAnalyse::SHPFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::SHPFileAnalyse>();
+	NN<IO::FileAnalyse::SHPFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::SHPFileAnalyse>();
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt8 recHdr[12];
@@ -77,7 +77,7 @@ void __stdcall IO::FileAnalyse::SHPFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	}
 }
 
-IO::FileAnalyse::SHPFileAnalyse::SHPFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("SHPFileAnalyse"))
+IO::FileAnalyse::SHPFileAnalyse::SHPFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("SHPFileAnalyse"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -108,7 +108,7 @@ UOSInt IO::FileAnalyse::SHPFileAnalyse::GetFrameCount()
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::SHPFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::SHPFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::SHPFileAnalyse::PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
@@ -148,7 +148,7 @@ UOSInt IO::FileAnalyse::SHPFileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SHPFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	NN<IO::FileAnalyse::SHPFileAnalyse::PackInfo> pack;

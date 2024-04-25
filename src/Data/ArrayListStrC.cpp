@@ -11,9 +11,9 @@ Data::ArrayListStrC::ArrayListStrC(UOSInt capacity) : Data::SortableArrayList<co
 {
 }
 
-NotNullPtr<Data::ArrayList<const Char*>> Data::ArrayListStrC::Clone() const
+NN<Data::ArrayList<const Char*>> Data::ArrayListStrC::Clone() const
 {
-	NotNullPtr<Data::ArrayListStrC> newArr;
+	NN<Data::ArrayListStrC> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListStrC(this->capacity));
 	newArr->AddAll(*this);
 	return newArr;

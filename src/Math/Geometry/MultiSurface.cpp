@@ -10,7 +10,7 @@ Math::Geometry::MultiSurface::~MultiSurface()
 {
 }
 
-void Math::Geometry::MultiSurface::AddGeometry(NotNullPtr<Vector2D> geometry)
+void Math::Geometry::MultiSurface::AddGeometry(NN<Vector2D> geometry)
 {
 	VectorType t = geometry->GetVectorType();
 	if (t == VectorType::CurvePolygon)// || t == VectorType::LineString)
@@ -28,11 +28,11 @@ Math::Geometry::Vector2D::VectorType Math::Geometry::MultiSurface::GetVectorType
 	return Math::Geometry::Vector2D::VectorType::MultiSurface;
 }
 
-NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::MultiSurface::Clone() const
+NN<Math::Geometry::Vector2D> Math::Geometry::MultiSurface::Clone() const
 {
-	NotNullPtr<Math::Geometry::MultiSurface> newObj;
+	NN<Math::Geometry::MultiSurface> newObj;
 	NEW_CLASSNN(newObj, Math::Geometry::MultiSurface(this->srid));
-	Data::ArrayIterator<NotNullPtr<Vector2D>> it = this->Iterator();
+	Data::ArrayIterator<NN<Vector2D>> it = this->Iterator();
 	while (it.HasNext())
 	{
 		newObj->AddGeometry(it.Next()->Clone());

@@ -11,7 +11,7 @@ namespace Net
 		class EmailSenderConfig
 		{
 		public:
-			static Optional<EmailSender> LoadFromConfig(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<IO::ConfigFile> cfg, Text::CString cfgCategory, NotNullPtr<IO::LogTool> log);
+			static Optional<EmailSender> LoadFromConfig(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<IO::ConfigFile> cfg, Text::CString cfgCategory, NN<IO::LogTool> log);
 		};
 	}
 }

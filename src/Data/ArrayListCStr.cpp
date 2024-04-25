@@ -11,9 +11,9 @@ Data::ArrayListCStr::ArrayListCStr(UOSInt capacity) : Data::SortableArrayList<Te
 {
 }
 
-NotNullPtr<Data::ArrayList<Text::CString>> Data::ArrayListCStr::Clone() const
+NN<Data::ArrayList<Text::CString>> Data::ArrayListCStr::Clone() const
 {
-	NotNullPtr<Data::ArrayList<Text::CString>> newArr;
+	NN<Data::ArrayList<Text::CString>> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListCStr(this->capacity));
 	newArr->AddAll(*this);
 	return newArr;

@@ -18,29 +18,29 @@ namespace SSWR
 		class AVIRConsoleMediaPlayerForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUIButton> btnStop;
-			NotNullPtr<UI::GUIButton> btnCaptureDev;
-			NotNullPtr<UI::GUILabel> lblRotate;
-			NotNullPtr<UI::GUIComboBox> cboRotate;
-			NotNullPtr<UI::GUICheckBox> chkSurfaceBug;
-			NotNullPtr<UI::GUILabel> lblYUVType;
-			NotNullPtr<UI::GUIComboBox> cboYUVType;
-			NotNullPtr<UI::GUILabel> lblRGBTrans;
-			NotNullPtr<UI::GUIComboBox> cboRGBTrans;
-			NotNullPtr<UI::GUILabel> lblColorPrimaries;
-			NotNullPtr<UI::GUIComboBox> cboColorPrimaries;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUIButton> btnStop;
+			NN<UI::GUIButton> btnCaptureDev;
+			NN<UI::GUILabel> lblRotate;
+			NN<UI::GUIComboBox> cboRotate;
+			NN<UI::GUICheckBox> chkSurfaceBug;
+			NN<UI::GUILabel> lblYUVType;
+			NN<UI::GUIComboBox> cboYUVType;
+			NN<UI::GUILabel> lblRGBTrans;
+			NN<UI::GUIComboBox> cboRGBTrans;
+			NN<UI::GUILabel> lblColorPrimaries;
+			NN<UI::GUIComboBox> cboColorPrimaries;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Media::ConsoleMediaPlayer *player;
-			NotNullPtr<Media::MediaPlayerWebInterface> webIface;
+			NN<Media::MediaPlayerWebInterface> webIface;
 			Net::WebServer::WebListener *listener;
 			Bool videoOpening;
 
 			static void __stdcall OnStopClicked(AnyType userObj);
 			static void __stdcall OnCaptureDevClicked(AnyType userObj);
-			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnRotateChg(AnyType userObj);
 			static void __stdcall OnSurfaceBugChg(AnyType userObj, Bool newVal);
 			static void __stdcall OnYUVTypeChg(AnyType userObj);
@@ -53,7 +53,7 @@ namespace SSWR
 			void UpdateColorDisp();
 			Bool OpenICC(Text::CStringNN iccFile);
 		public:
-			AVIRConsoleMediaPlayerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRConsoleMediaPlayerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRConsoleMediaPlayerForm();
 
 			virtual void OnMonitorChanged();

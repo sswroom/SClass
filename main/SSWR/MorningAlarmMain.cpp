@@ -41,14 +41,14 @@ Media::IAudioRenderer *audOut;
 Data::DateTime *startDt;
 Text::String *audioDevice; //L"Realtek HD Audio output"
 IO::ConsoleWriter *console;
-NotNullPtr<Net::SocketFactory> sockf;
+NN<Net::SocketFactory> sockf;
 Optional<Net::SSLEngine> ssl;
-NotNullPtr<Text::EncodingFactory> encFact;
+NN<Text::EncodingFactory> encFact;
 Net::NTPClient *timeCli;
-NotNullPtr<Data::DateTime> tmpDt;
+NN<Data::DateTime> tmpDt;
 
 
-void __stdcall PlayThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall PlayThread(NN<Sync::Thread> thread)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -238,7 +238,7 @@ void __stdcall PlayThread(NotNullPtr<Sync::Thread> thread)
 	}
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UTF8Char buff[256];
 	UTF8Char *sptr;

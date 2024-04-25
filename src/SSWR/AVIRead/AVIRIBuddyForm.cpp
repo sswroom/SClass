@@ -4,7 +4,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnHeadChanged(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRIBuddyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIBuddyForm>();
+	NN<SSWR::AVIRead::AVIRIBuddyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIBuddyForm>();
 	if (me->currBuddy)
 	{
 		me->currHead = (IO::Device::IBuddy::IBuddyHeadEffect)(OSInt)me->lbHead->GetSelectedItem().p;
@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnHeadChanged(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnHeartChanged(AnyType userObj, Bool newState)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRIBuddyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIBuddyForm>();
+	NN<SSWR::AVIRead::AVIRIBuddyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIBuddyForm>();
 	if (me->currBuddy)
 	{
 		if (newState)
@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnHeartChanged(AnyType userObj, Bo
 
 void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnTurnLeftDown(AnyType userObj, Bool isDown)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRIBuddyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIBuddyForm>();
+	NN<SSWR::AVIRead::AVIRIBuddyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIBuddyForm>();
 	if (me->currBuddy)
 	{
 		if (isDown)
@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnTurnLeftDown(AnyType userObj, Bo
 
 void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnTurnRightDown(AnyType userObj, Bool isDown)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRIBuddyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIBuddyForm>();
+	NN<SSWR::AVIRead::AVIRIBuddyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIBuddyForm>();
 	if (me->currBuddy)
 	{
 		if (isDown)
@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnTurnRightDown(AnyType userObj, B
 
 void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnWingUpDown(AnyType userObj, Bool isDown)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRIBuddyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIBuddyForm>();
+	NN<SSWR::AVIRead::AVIRIBuddyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIBuddyForm>();
 	if (me->currBuddy)
 	{
 		if (isDown)
@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnWingUpDown(AnyType userObj, Bool
 
 void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnWingDownDown(AnyType userObj, Bool isDown)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRIBuddyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIBuddyForm>();
+	NN<SSWR::AVIRead::AVIRIBuddyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIBuddyForm>();
 	if (me->currBuddy)
 	{
 		if (isDown)
@@ -99,7 +99,7 @@ void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnWingDownDown(AnyType userObj, Bo
 
 void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnDevChanged(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRIBuddyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIBuddyForm>();
+	NN<SSWR::AVIRead::AVIRIBuddyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIBuddyForm>();
 	if (me->currBuddy)
 	{
 		me->currBuddy->PlayEffect(IO::Device::IBuddy::IBBE_OFF, IO::Device::IBuddy::IBHDE_OFF, IO::Device::IBuddy::IBHRE_OFF, IO::Device::IBuddy::IBWE_OFF);
@@ -114,7 +114,7 @@ void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnDevChanged(AnyType userObj)
 	me->currBuddy = (IO::Device::IBuddy*)me->lbDevice->GetSelectedItem().p;
 }
 
-SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)
+SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetText(CSTR("i-Buddy"));
 	this->SetFont(0, 0, 8.25, false);

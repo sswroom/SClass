@@ -21,7 +21,7 @@
 
 void __stdcall UI::GUIMapControl::ImageUpdated(AnyType userObj)
 {
-	NotNullPtr<UI::GUIMapControl> me = userObj.GetNN<UI::GUIMapControl>();
+	NN<UI::GUIMapControl> me = userObj.GetNN<UI::GUIMapControl>();
 	me->bgUpdated = true;
 	if (!me->pauseUpdate)
 	{
@@ -140,7 +140,7 @@ Bool UI::GUIMapControl::OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 delta)
 	{
 		newScale = this->view->GetMapScale() * 0.5;
 	}
-	NotNullPtr<Map::MapEnv> mapEnv;
+	NN<Map::MapEnv> mapEnv;
 	if (!mapEnv.Set(this->mapEnv))
 		mapEnv = this->renderer->GetEnv();
 	if (newScale < mapEnv->GetMinScale())
@@ -187,7 +187,7 @@ void UI::GUIMapControl::OnGestureEnd(Math::Coord2D<OSInt> scnPos, UInt64 dist)
 		this->gZoom = false;
 		pt = this->view->ScnXYToMapXY(this->gZoomPos.ToDouble());
 		Double newScale = this->view->GetMapScale() * (Double)this->gZoomDist /(Double)dist;
-		NotNullPtr<Map::MapEnv> mapEnv;
+		NN<Map::MapEnv> mapEnv;
 		if (!mapEnv.Set(this->mapEnv))
 			mapEnv = this->renderer->GetEnv();
 		if (newScale < mapEnv->GetMinScale())
@@ -263,10 +263,10 @@ void UI::GUIMapControl::OnTimerTick()
 	}
 }
 
-void UI::GUIMapControl::OnDraw(NotNullPtr<Media::DrawImage> img)
+void UI::GUIMapControl::OnDraw(NN<Media::DrawImage> img)
 {
 	Math::Coord2DDbl tl;
-	NotNullPtr<Media::DrawImage> bgImg;
+	NN<Media::DrawImage> bgImg;
 	if (!bgImg.Set(this->bgImg))
 	{
 		return;
@@ -287,7 +287,7 @@ void UI::GUIMapControl::OnDraw(NotNullPtr<Media::DrawImage> img)
 
 	if (this->gZoom)
 	{
-		NotNullPtr<Media::StaticImage> drawImg;
+		NN<Media::StaticImage> drawImg;
 		Media::StaticImage *srcImg;
 		Media::Resizer::LanczosResizerH8_8 resizer(4, 3, Media::AT_NO_ALPHA);
 		Math::Size2D<UOSInt> sz;
@@ -295,7 +295,7 @@ void UI::GUIMapControl::OnDraw(NotNullPtr<Media::DrawImage> img)
 		Sync::MutexUsage mutUsage(this->drawMut);
 		if (this->drawHdlr.func)
 		{
-			NotNullPtr<Media::DrawImage> tmpImg;
+			NN<Media::DrawImage> tmpImg;
 			if (tmpImg.Set(this->eng->CloneImage(bgImg)))
 			{
 				this->drawHdlr.func(this->drawHdlr.userObj, tmpImg, 0, 0);
@@ -367,7 +367,7 @@ void UI::GUIMapControl::OnDraw(NotNullPtr<Media::DrawImage> img)
 		drawImg.Delete();
 
 
-		NotNullPtr<Media::DrawBrush> bgBrush = img->NewBrushARGB(this->bgColor);
+		NN<Media::DrawBrush> bgBrush = img->NewBrushARGB(this->bgColor);
 		if (tl.x > 0)
 		{
 			img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(tl.x, UOSInt2Double(this->currSize.y)), 0, bgBrush);
@@ -388,7 +388,7 @@ void UI::GUIMapControl::OnDraw(NotNullPtr<Media::DrawImage> img)
 	}
 	else
 	{
-		NotNullPtr<Media::DrawBrush> bgBrush = img->NewBrushARGB(this->bgColor);
+		NN<Media::DrawBrush> bgBrush = img->NewBrushARGB(this->bgColor);
 		if (tl.x > 0)
 		{
 			img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(tl.x, UOSInt2Double(this->currSize.y)), 0, bgBrush);
@@ -410,7 +410,7 @@ void UI::GUIMapControl::OnDraw(NotNullPtr<Media::DrawImage> img)
 		Sync::MutexUsage mutUsage(this->drawMut);
 		if (this->drawHdlr.func)
 		{
-			NotNullPtr<Media::DrawImage> drawImg;
+			NN<Media::DrawImage> drawImg;
 			if (drawImg.Set(this->eng->CloneImage(bgImg)))
 			{
 				this->drawHdlr.func(this->drawHdlr.userObj, drawImg, 0, 0);
@@ -428,7 +428,7 @@ void UI::GUIMapControl::OnDraw(NotNullPtr<Media::DrawImage> img)
 	}
 }
 
-void UI::GUIMapControl::DrawScnObjects(NotNullPtr<Media::DrawImage> img, Math::Coord2DDbl ofst)
+void UI::GUIMapControl::DrawScnObjects(NN<Media::DrawImage> img, Math::Coord2DDbl ofst)
 {
 	Double hdpi = this->view->GetHDPI();
 	Double ddpi = this->view->GetDDPI();
@@ -440,7 +440,7 @@ void UI::GUIMapControl::DrawScnObjects(NotNullPtr<Media::DrawImage> img, Math::C
 		scnPos = this->view->MapXYToScnXY(this->markerPos);
 		x = Double2Int32(scnPos.x + ofst.x);
 		y = Double2Int32(scnPos.y + ofst.y);
-		NotNullPtr<Media::DrawPen> p = img->NewPenARGB(0xffff0000, 3 * hdpi / ddpi, 0, 0);
+		NN<Media::DrawPen> p = img->NewPenARGB(0xffff0000, 3 * hdpi / ddpi, 0, 0);
 		if (this->markerHasDir)
 		{
 			Double ptAdd = 8 * hdpi / ddpi;
@@ -463,9 +463,9 @@ void UI::GUIMapControl::DrawScnObjects(NotNullPtr<Media::DrawImage> img, Math::C
 	UOSInt j = this->selVecList.GetCount();
 	if (j > 0)
 	{
-		NotNullPtr<Media::DrawPen> p = img->NewPenARGB(0xffff0000, 3, 0, 0);
-		NotNullPtr<Media::DrawBrush> b = img->NewBrushARGB(0x403f0000);
-		NotNullPtr<Math::Geometry::Vector2D> vec;
+		NN<Media::DrawPen> p = img->NewPenARGB(0xffff0000, 3, 0, 0);
+		NN<Media::DrawBrush> b = img->NewBrushARGB(0x403f0000);
+		NN<Math::Geometry::Vector2D> vec;
 		while (i < j)
 		{
 			if (this->selVecList.GetItem(i).SetTo(vec))
@@ -484,7 +484,7 @@ void UI::GUIMapControl::ReleaseSelVecList()
 	this->selVecList.DeleteAll();
 }
 
-UI::GUIMapControl::GUIMapControl(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, UInt32 bgColor, Map::DrawMapRenderer *renderer, NotNullPtr<Map::MapView> view, NotNullPtr<Media::ColorManagerSess> colorSess) : UI::GUICustomDraw(ui, parent, eng)
+UI::GUIMapControl::GUIMapControl(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, UInt32 bgColor, Map::DrawMapRenderer *renderer, NN<Map::MapView> view, NN<Media::ColorManagerSess> colorSess) : UI::GUICustomDraw(ui, parent, eng)
 {
 	this->colorSess = colorSess;
 	this->colorSess->AddHandler(*this);
@@ -520,7 +520,7 @@ UI::GUIMapControl::GUIMapControl(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIC
 	}
 }
 
-UI::GUIMapControl::GUIMapControl(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, NotNullPtr<Map::MapEnv> mapEnv, NotNullPtr<Media::ColorManagerSess> colorSess) : UI::GUICustomDraw(ui, parent, eng)
+UI::GUIMapControl::GUIMapControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, NN<Map::MapEnv> mapEnv, NN<Media::ColorManagerSess> colorSess) : UI::GUICustomDraw(ui, parent, eng)
 {
 	this->colorSess = colorSess;
 	this->colorSess->AddHandler(*this);
@@ -565,7 +565,7 @@ UI::GUIMapControl::~GUIMapControl()
 	{
 		this->mapEnv->RemoveUpdatedHandler(ImageUpdated, this);
 	}
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->bgImg))
 	{
 		this->eng->DeleteImage(img);
@@ -589,7 +589,7 @@ void UI::GUIMapControl::OnSizeChanged(Bool updateScn)
 	Sync::MutexUsage mutUsage(this->drawMut);
 	this->currSize = this->GetSizeP();
 	this->view->UpdateSize(this->currSize.ToDouble());
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->bgImg))
 	{
 		this->eng->DeleteImage(img);
@@ -613,11 +613,11 @@ void UI::GUIMapControl::OnSizeChanged(Bool updateScn)
 	}
 }
 
-void UI::GUIMapControl::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
+void UI::GUIMapControl::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void UI::GUIMapControl::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void UI::GUIMapControl::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	this->renderer->ColorUpdated();
 	this->SetBGColor(this->bgColor);
@@ -689,7 +689,7 @@ void UI::GUIMapControl::SetRenderer(Map::DrawMapRenderer *renderer)
 void UI::GUIMapControl::UpdateMap()
 {
 	Sync::MutexUsage mutUsage(this->drawMut);
-	NotNullPtr<Media::DrawImage> bgImg;
+	NN<Media::DrawImage> bgImg;
 	if (bgImg.Set(this->bgImg) && this->renderer)
 	{
 		Double t;
@@ -697,7 +697,7 @@ void UI::GUIMapControl::UpdateMap()
 		UInt32 imgDurMS;
 		Math::Coord2DDbl center = this->view->GetCenter();
 		Manage::HiResClock clk;
-		NotNullPtr<Media::DrawBrush> b = bgImg->NewBrushARGB(this->bgDispColor);
+		NN<Media::DrawBrush> b = bgImg->NewBrushARGB(this->bgDispColor);
 		bgImg->DrawRect(Math::Coord2DDbl(0, 0), bgImg->GetSize().ToDouble(), 0, b);
 		bgImg->DelBrush(b);
 		this->renderer->DrawMap(bgImg, this->view, imgDurMS);
@@ -749,7 +749,7 @@ void UI::GUIMapControl::SetMapScale(Double newScale)
 {
 	if (this->view->GetMapScale() == newScale)
 		return;
-	NotNullPtr<Map::MapEnv> mapEnv;
+	NN<Map::MapEnv> mapEnv;
 	if (!mapEnv.Set(this->mapEnv))
 		mapEnv = this->renderer->GetEnv();
 	if (newScale < mapEnv->GetMinScale())
@@ -840,7 +840,7 @@ void UI::GUIMapControl::HideMarker()
 void UI::GUIMapControl::SetSelectedVector(Math::Geometry::Vector2D *vec)
 {
 	this->ReleaseSelVecList();
-	NotNullPtr<Math::Geometry::Vector2D> nnvec;
+	NN<Math::Geometry::Vector2D> nnvec;
 	if (nnvec.Set(vec))
 	{
 		this->selVecList.Add(nnvec);
@@ -848,7 +848,7 @@ void UI::GUIMapControl::SetSelectedVector(Math::Geometry::Vector2D *vec)
 	this->Redraw();
 }
 
-void UI::GUIMapControl::SetSelectedVectors(NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList)
+void UI::GUIMapControl::SetSelectedVectors(NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList)
 {
 	this->ReleaseSelVecList();
 	this->selVecList.AddAll(vecList);
@@ -896,7 +896,7 @@ void UI::GUIMapControl::SetMapUpdated()
 	this->bgUpdated = true;
 }
 
-void UI::GUIMapControl::UpdateMapView(NotNullPtr<Map::MapView> view)
+void UI::GUIMapControl::UpdateMapView(NN<Map::MapView> view)
 {
 	this->view.Delete();
 	this->view = view;
@@ -904,7 +904,7 @@ void UI::GUIMapControl::UpdateMapView(NotNullPtr<Map::MapView> view)
 	this->EventScaleChanged(this->view->GetMapScale());
 }
 
-NotNullPtr<Map::MapView> UI::GUIMapControl::CloneMapView()
+NN<Map::MapView> UI::GUIMapControl::CloneMapView()
 {
 	return this->view->Clone();
 }

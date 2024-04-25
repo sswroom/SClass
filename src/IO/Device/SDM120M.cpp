@@ -12,7 +12,7 @@
 #include "Math/Unit/ReactiveEnergy.h"
 #include "Math/Unit/ReactivePower.h"
 
-IO::Device::SDM120M::SDM120M(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr) : IO::MODBUSDevice(modbus, addr)
+IO::Device::SDM120M::SDM120M(NN<IO::MODBUSMaster> modbus, UInt8 addr) : IO::MODBUSDevice(modbus, addr)
 {
 }
 

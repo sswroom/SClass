@@ -8,9 +8,9 @@
 #include "Text/MyStringW.h"
 #include "Text/XLSUtil.h"
 
-void __stdcall IO::FileAnalyse::MDBFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::FileAnalyse::MDBFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::FileAnalyse::MDBFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::MDBFileAnalyse>();
+	NN<IO::FileAnalyse::MDBFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::MDBFileAnalyse>();
 	UInt8 readBuff[4096];
 	UInt64 readOfst;
 	UOSInt readSize;
@@ -39,7 +39,7 @@ void __stdcall IO::FileAnalyse::MDBFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	}
 }
 
-IO::FileAnalyse::MDBFileAnalyse::MDBFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("MDBFileAnalyse"))
+IO::FileAnalyse::MDBFileAnalyse::MDBFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("MDBFileAnalyse"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -83,7 +83,7 @@ UOSInt IO::FileAnalyse::MDBFileAnalyse::GetFrameCount()
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::MDBFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::MDBFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::MDBFileAnalyse::PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
@@ -129,7 +129,7 @@ UOSInt IO::FileAnalyse::MDBFileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<IO::FileAnalyse::MDBFileAnalyse::PackInfo> pack;
 	UTF8Char sbuff[64];
 	UTF8Char sbuff2[256];

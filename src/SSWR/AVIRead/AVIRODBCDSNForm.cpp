@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRODBCDSNForm::OnOKClicked(AnyType userObj)
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	Text::StringBuilderUTF8 sb3;
-	NotNullPtr<SSWR::AVIRead::AVIRODBCDSNForm> me = userObj.GetNN<SSWR::AVIRead::AVIRODBCDSNForm>();
+	NN<SSWR::AVIRead::AVIRODBCDSNForm> me = userObj.GetNN<SSWR::AVIRead::AVIRODBCDSNForm>();
 	me->txtDSN->GetText(sb);
 	me->txtUID->GetText(sb2);
 	me->txtPWD->GetText(sb3);
@@ -30,11 +30,11 @@ void __stdcall SSWR::AVIRead::AVIRODBCDSNForm::OnOKClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRODBCDSNForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRODBCDSNForm> me = userObj.GetNN<SSWR::AVIRead::AVIRODBCDSNForm>();
+	NN<SSWR::AVIRead::AVIRODBCDSNForm> me = userObj.GetNN<SSWR::AVIRead::AVIRODBCDSNForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRODBCDSNForm::AVIRODBCDSNForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 320, 140, ui)
+SSWR::AVIRead::AVIRODBCDSNForm::AVIRODBCDSNForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 320, 140, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("ODBC DSN Connection"));

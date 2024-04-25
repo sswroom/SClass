@@ -6,7 +6,7 @@
 #include "Text/MyStringW.h"
 #include "Text/UTF8Writer.h"
 
-Text::UTF8Writer::UTF8Writer(NotNullPtr<IO::Stream> stm)
+Text::UTF8Writer::UTF8Writer(NN<IO::Stream> stm)
 {
 	this->stm = stm;
 }

@@ -19,7 +19,7 @@ namespace Net
 		} ScanResult;
 
 	private:
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Sync::Mutex resultMut;
 		Data::FastMap<UInt32, ScanResult*> results;
 		Manage::HiResClock *clk;
@@ -34,7 +34,7 @@ namespace Net
 
 		void AppendMACs(UInt32 ip);
 	public:
-		ICMPScanner(NotNullPtr<Net::SocketFactory> sockf);
+		ICMPScanner(NN<Net::SocketFactory> sockf);
 		~ICMPScanner();
 
 		Bool Scan(UInt32 ip);

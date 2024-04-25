@@ -6,14 +6,14 @@
 
 Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISGroupQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISGroupQueryForm>();
+	NN<SSWR::AVIRead::AVIRGISGroupQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISGroupQueryForm>();
 	me->downPos = scnPos;
 	return false;
 }
 
 Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISGroupQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISGroupQueryForm>();
+	NN<SSWR::AVIRead::AVIRGISGroupQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISGroupQueryForm>();
 	if (me->downPos == scnPos)
 	{
 		Math::Coord2DDbl mapEnvPos;
@@ -32,9 +32,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType userObj, 
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		Data::ArrayListNN<Map::MapDrawLayer> layers;
-		NotNullPtr<Map::MapDrawLayer> lyr;
-		NotNullPtr<Math::CoordinateSystem> csysEnv = me->navi->GetCoordinateSystem();
-		NotNullPtr<Math::CoordinateSystem> csysLyr;
+		NN<Map::MapDrawLayer> lyr;
+		NN<Math::CoordinateSystem> csysEnv = me->navi->GetCoordinateSystem();
+		NN<Math::CoordinateSystem> csysLyr;
 		mapEnvPos = me->navi->ScnXY2MapXY(scnPos);
 		me->env->GetLayersInGroup(me->group, layers);
 		i = layers.GetCount();
@@ -164,7 +164,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(AnyType userObj, 
 	return false;
 }
 
-SSWR::AVIRead::AVIRGISGroupQueryForm::AVIRGISGroupQueryForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi, NotNullPtr<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group) : UI::GUIForm(parent, 416, 408, ui)
+SSWR::AVIRead::AVIRGISGroupQueryForm::AVIRGISGroupQueryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi, NN<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group) : UI::GUIForm(parent, 416, 408, ui)
 {
 	Text::StringBuilderUTF8 sb;
 	this->core = core;
@@ -173,14 +173,14 @@ SSWR::AVIRead::AVIRGISGroupQueryForm::AVIRGISGroupQueryForm(Optional<UI::GUIClie
 	this->env = env;
 	this->group = group;
 	sb.AppendC(UTF8STRC("Group Query - "));
-	NotNullPtr<Map::MapEnv::GroupItem> nngroup;
+	NN<Map::MapEnv::GroupItem> nngroup;
 	if (!group.SetTo(nngroup))
 	{
 		sb.AppendC(UTF8STRC("ROOT"));
 	}
 	else
 	{
-		NotNullPtr<Text::String> name = env->GetGroupName(nngroup);
+		NN<Text::String> name = env->GetGroupName(nngroup);
 		sb.Append(name);
 	}
 	this->SetText(sb.ToCString());

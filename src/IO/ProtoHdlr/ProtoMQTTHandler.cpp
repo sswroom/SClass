@@ -11,7 +11,7 @@ typedef struct
 	UInt8 *packetBuff;
 } ClientData;
 
-IO::ProtoHdlr::ProtoMQTTHandler::ProtoMQTTHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener)
+IO::ProtoHdlr::ProtoMQTTHandler::ProtoMQTTHandler(NN<IO::IProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
 }
@@ -20,7 +20,7 @@ IO::ProtoHdlr::ProtoMQTTHandler::~ProtoMQTTHandler()
 {
 }
 
-AnyType IO::ProtoHdlr::ProtoMQTTHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
+AnyType IO::ProtoHdlr::ProtoMQTTHandler::CreateStreamData(NN<IO::Stream> stm)
 {
 	ClientData *cliData = MemAlloc(ClientData, 1);
 	cliData->packetBuff = 0;
@@ -30,9 +30,9 @@ AnyType IO::ProtoHdlr::ProtoMQTTHandler::CreateStreamData(NotNullPtr<IO::Stream>
 	return cliData;
 }
 
-void IO::ProtoHdlr::ProtoMQTTHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, AnyType stmData)
+void IO::ProtoHdlr::ProtoMQTTHandler::DeleteStreamData(NN<IO::Stream> stm, AnyType stmData)
 {
-	NotNullPtr<ClientData> cliData = stmData.GetNN<ClientData>();
+	NN<ClientData> cliData = stmData.GetNN<ClientData>();
 	if (cliData->packetBuff)
 	{
 		MemFree(cliData->packetBuff);
@@ -41,9 +41,9 @@ void IO::ProtoHdlr::ProtoMQTTHandler::DeleteStreamData(NotNullPtr<IO::Stream> st
 	MemFree(cliData.Ptr());
 }
 
-UOSInt IO::ProtoHdlr::ProtoMQTTHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
+UOSInt IO::ProtoHdlr::ProtoMQTTHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
 {
-	NotNullPtr<ClientData> cliData = stmData.GetNN<ClientData>();
+	NN<ClientData> cliData = stmData.GetNN<ClientData>();
 	Data::ByteArrayR buff = srcBuff;
 	if (cliData->packetBuff)
 	{
@@ -165,7 +165,7 @@ UOSInt IO::ProtoHdlr::ProtoMQTTHandler::BuildPacket(UInt8 *buff, Int32 cmdType, 
 	}
 }
 
-Bool IO::ProtoHdlr::ProtoMQTTHandler::ParseUTF8Str(const UTF8Char *buff, UOSInt *index, UOSInt buffSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::ProtoHdlr::ProtoMQTTHandler::ParseUTF8Str(const UTF8Char *buff, UOSInt *index, UOSInt buffSize, NN<Text::StringBuilderUTF8> sb)
 {
 	UInt16 strSize;
 	if ((buffSize - *index) < 2)

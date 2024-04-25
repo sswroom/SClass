@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "UI/Java/JavaCheckBox.h"
 
-UI::Java::JavaCheckBox::JavaCheckBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool checked) : UI::GUICheckBox(ui, parent)
+UI::Java::JavaCheckBox::JavaCheckBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool checked) : UI::GUICheckBox(ui, parent)
 {
 }
 

@@ -6,14 +6,14 @@
 
 void __stdcall SSWR::AVIRead::AVIRDataModelForm::OnPasteDataClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDataModelForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDataModelForm>();
+	NN<SSWR::AVIRead::AVIRDataModelForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDataModelForm>();
 	me->PasteData(true);
 }
 
 void __stdcall SSWR::AVIRead::AVIRDataModelForm::OnGenerateClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDataModelForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDataModelForm>();
-	NotNullPtr<Data::Class> cls;
+	NN<SSWR::AVIRead::AVIRDataModelForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDataModelForm>();
+	NN<Data::Class> cls;
 	UOSInt i = me->cboType->GetSelectedIndex();
 	if (me->cls.SetTo(cls))
 	{
@@ -74,10 +74,10 @@ void __stdcall SSWR::AVIRead::AVIRDataModelForm::OnGenerateClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRDataModelForm::OnColumnsDblClk(AnyType userObj, UOSInt index)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDataModelForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDataModelForm>();
+	NN<SSWR::AVIRead::AVIRDataModelForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDataModelForm>();
 	UOSInt fieldIndex = me->lvColumns->GetItem(index).GetUOSInt();
-	NotNullPtr<Data::Class> cls;
-	NotNullPtr<Data::Class::FieldInfo> field;
+	NN<Data::Class> cls;
+	NN<Data::Class::FieldInfo> field;
 	if (me->cls.SetTo(cls) && cls->GetFieldInfo(fieldIndex).SetTo(field))
 	{
 		if (field->typeName.NotNull())
@@ -112,14 +112,14 @@ void __stdcall SSWR::AVIRead::AVIRDataModelForm::OnColumnsDblClk(AnyType userObj
 void SSWR::AVIRead::AVIRDataModelForm::UpdateClassDisp()
 {
 	this->lvColumns->ClearItems();
-	NotNullPtr<Data::Class> cls;
+	NN<Data::Class> cls;
 	if (this->cls.SetTo(cls))
 	{
 		UOSInt i = 0;
 		UOSInt j = cls->GetFieldCount();
 		UOSInt k;
-		NotNullPtr<Data::Class::FieldInfo> field;
-		NotNullPtr<Text::String> typeName;
+		NN<Data::Class::FieldInfo> field;
+		NN<Text::String> typeName;
 		while (i < j)
 		{
 			if (cls->GetFieldInfo(i).SetTo(field))
@@ -146,7 +146,7 @@ void SSWR::AVIRead::AVIRDataModelForm::PasteData(Bool showError)
 	Text::StringBuilderUTF8 sb;
 	if (UI::Clipboard::GetString(this->GetHandle(), sb))
 	{
-		NotNullPtr<Data::Class> cls;
+		NN<Data::Class> cls;
 		if (Data::Class::ParseFromStr(sb.ToCString()).SetTo(cls))
 		{
 			this->cls.Delete();
@@ -164,7 +164,7 @@ void SSWR::AVIRead::AVIRDataModelForm::PasteData(Bool showError)
 	}
 }
 
-SSWR::AVIRead::AVIRDataModelForm::AVIRDataModelForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)
+SSWR::AVIRead::AVIRDataModelForm::AVIRDataModelForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetText(CSTR("Data Model"));
 	this->SetFont(0, 0, 8.25, false);

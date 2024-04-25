@@ -319,7 +319,7 @@ void Media::Decoder::MP2GDecoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 	}
 }
 
-Media::Decoder::MP2GDecoder::MP2GDecoder(NotNullPtr<IVideoSource> sourceVideo, Bool toRelease) : VDecoderBase(sourceVideo)
+Media::Decoder::MP2GDecoder::MP2GDecoder(NN<IVideoSource> sourceVideo, Bool toRelease) : VDecoderBase(sourceVideo)
 {
 	Media::FrameInfo info;
 	UOSInt size;
@@ -386,7 +386,7 @@ void Media::Decoder::MP2GDecoder::EnumFrameInfos(FrameInfoCallback cb, AnyType u
 	this->finfoMode = false;
 }
 
-Bool Media::Decoder::MP2GDecoder::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::Decoder::MP2GDecoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	if (this->sourceVideo == 0)
 		return false;

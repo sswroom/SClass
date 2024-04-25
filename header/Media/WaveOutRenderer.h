@@ -25,8 +25,8 @@ namespace Media
 
 		static void __stdcall WaveEvents(void *hwo, UInt32 uMsg, UInt32 *dwInstance, UInt32 *dwParam1, UInt32 *dwParam2);
 		static UInt32 __stdcall PlayThread(AnyType obj);
-		static UInt32 GetMSFromTime(void *mmTime, NotNullPtr<const AudioFormat> fmt);
-		static Data::Duration GetDurFromTime(void *mmTime, NotNullPtr<const AudioFormat> fmt);
+		static UInt32 GetMSFromTime(void *mmTime, NN<const AudioFormat> fmt);
+		static Data::Duration GetDurFromTime(void *mmTime, NN<const AudioFormat> fmt);
 	public:
 		static UOSInt GetDeviceCount();
 		static UTF8Char *GetDeviceName(UTF8Char *buff, UOSInt devNo);

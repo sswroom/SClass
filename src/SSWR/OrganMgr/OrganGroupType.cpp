@@ -21,12 +21,12 @@ Int32 SSWR::OrganMgr::OrganGroupType::GetSeq()
 	return this->seq;
 }
 
-NotNullPtr<Text::String> SSWR::OrganMgr::OrganGroupType::GetCName() const
+NN<Text::String> SSWR::OrganMgr::OrganGroupType::GetCName() const
 {
 	return this->cName;
 }
 
-NotNullPtr<Text::String> SSWR::OrganMgr::OrganGroupType::GetEName() const
+NN<Text::String> SSWR::OrganMgr::OrganGroupType::GetEName() const
 {
 	return this->eName;
 }

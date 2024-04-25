@@ -65,7 +65,7 @@ IO::Stream *Map::HKTrafficLayer2::OpenURLStream()
 	else
 	{
 		Int32 status;
-		NotNullPtr<Net::HTTPClient> cli;
+		NN<Net::HTTPClient> cli;
 		cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, this->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 		while (true)
 		{
@@ -101,7 +101,7 @@ IO::Stream *Map::HKTrafficLayer2::OpenURLStream()
 	}
 }
 
-Map::HKTrafficLayer2::HKTrafficLayer2(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, HKRoadNetwork2 *rn2) : Map::MapDrawLayer(CSTR("HKTraffic2"), 0, CSTR("HKTraffic2"), Math::CoordinateSystemManager::CreateProjCoordinateSystemDefNameOrDef(Math::CoordinateSystemManager::PCST_HK80))
+Map::HKTrafficLayer2::HKTrafficLayer2(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, HKRoadNetwork2 *rn2) : Map::MapDrawLayer(CSTR("HKTraffic2"), 0, CSTR("HKTraffic2"), Math::CoordinateSystemManager::CreateProjCoordinateSystemDefNameOrDef(Math::CoordinateSystemManager::PCST_HK80))
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -111,11 +111,11 @@ Map::HKTrafficLayer2::HKTrafficLayer2(NotNullPtr<Net::SocketFactory> sockf, Opti
 
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	NotNullPtr<Math::Geometry::Vector2D> vec;
+	NN<Math::Geometry::Vector2D> vec;
 	DB::ReadingDB *db = rn2->GetDB();
 	if(db)
 	{
-		NotNullPtr<DB::DBReader> r;
+		NN<DB::DBReader> r;
 		if (db->QueryTableData(CSTR_NULL, CSTR("CENTERLINE"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			UOSInt shapeCol = INVALID_INDEX;
@@ -196,7 +196,7 @@ void Map::HKTrafficLayer2::ReloadData()
 			mstm.Write(buff, readSize);
 		}
 		mstm.SeekFromBeginning(0);
-		NotNullPtr<Text::String> nodeName;
+		NN<Text::String> nodeName;
 		Text::StringBuilderUTF8 sb;
 		Text::XMLReader reader(this->encFact, mstm, Text::XMLReader::PM_XML);
 		while (reader.NextElementName().SetTo(nodeName))
@@ -277,7 +277,7 @@ Map::DrawLayerType Map::HKTrafficLayer2::GetLayerType() const
 	return Map::DRAW_LAYER_POLYLINE;
 }
 
-UOSInt Map::HKTrafficLayer2::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::HKTrafficLayer2::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	UOSInt ret = 0;
 	UOSInt i;
@@ -299,12 +299,12 @@ UOSInt Map::HKTrafficLayer2::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> ou
 	return ret;
 }
 
-UOSInt Map::HKTrafficLayer2::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::HKTrafficLayer2::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::HKTrafficLayer2::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::HKTrafficLayer2::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt retCnt = 0;
 	RoadInfo *road;
@@ -337,7 +337,7 @@ void Map::HKTrafficLayer2::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-Bool Map::HKTrafficLayer2::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::HKTrafficLayer2::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	return false;
 }
@@ -360,7 +360,7 @@ DB::DBUtil::ColType Map::HKTrafficLayer2::GetColumnType(UOSInt colIndex, OptOut<
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::HKTrafficLayer2::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Map::HKTrafficLayer2::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	////////////////////////////
 	return false;

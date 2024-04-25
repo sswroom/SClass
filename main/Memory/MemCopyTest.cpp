@@ -106,7 +106,7 @@ void MemTest2(UOSInt cnt)
 	}
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	mtest(COPYCNT);
 	UOSInt i = 0;

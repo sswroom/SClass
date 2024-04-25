@@ -23,8 +23,8 @@ namespace Net
 				SSL
 			};
 		private:
-			NotNullPtr<Net::TCPClient> cli;
-			NotNullPtr<Text::UTF8Writer> writer;
+			NN<Net::TCPClient> cli;
+			NN<Text::UTF8Writer> writer;
 			Bool threadToStop;
 			Bool threadRunning;
 			Bool threadStarted;
@@ -41,7 +41,7 @@ namespace Net
 			static UInt32 __stdcall SMTPThread(AnyType userObj);
 			UInt32 WaitForResult(UTF8Char **msgRetEnd);
 		public:
-			SMTPConn(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, ConnType connType, Optional<IO::Writer> logWriter, Data::Duration timeout);
+			SMTPConn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, ConnType connType, Optional<IO::Writer> logWriter, Data::Duration timeout);
 			~SMTPConn();
 
 			Bool IsError();

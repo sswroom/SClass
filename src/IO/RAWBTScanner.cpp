@@ -18,9 +18,9 @@ struct IO::RAWBTScanner::ClassData
 	IO::ProgCtrl::BluetoothCtlProgCtrl *btCtrl;
 };
 
-void __stdcall IO::RAWBTScanner::RecvThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::RAWBTScanner::RecvThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::RAWBTScanner> me = thread->GetUserObj().GetNN<IO::RAWBTScanner>();
+	NN<IO::RAWBTScanner> me = thread->GetUserObj().GetNN<IO::RAWBTScanner>();
 	UInt8 *buff;
 	UOSInt packetSize;
 	Int64 timeTicks;
@@ -36,7 +36,7 @@ void __stdcall IO::RAWBTScanner::RecvThread(NotNullPtr<Sync::Thread> thread)
 	MemFree(buff);
 }
 
-void IO::RAWBTScanner::FreeRec(NotNullPtr<IO::BTScanLog::ScanRecord3> rec)
+void IO::RAWBTScanner::FreeRec(NN<IO::BTScanLog::ScanRecord3> rec)
 {
 	SDEL_STRING(rec->name);
 	MemFreeNN(rec);
@@ -150,13 +150,13 @@ Bool IO::RAWBTScanner::SetScanMode(ScanMode scanMode)
 	return false;
 }
 
-NotNullPtr<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> IO::RAWBTScanner::GetPublicMap(NotNullPtr<Sync::MutexUsage> mutUsage)
+NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> IO::RAWBTScanner::GetPublicMap(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->recMut);
 	return this->pubRecMap;	
 }
 
-NotNullPtr<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> IO::RAWBTScanner::GetRandomMap(NotNullPtr<Sync::MutexUsage> mutUsage)
+NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> IO::RAWBTScanner::GetRandomMap(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->recMut);
 	return this->randRecMap;	
@@ -168,7 +168,7 @@ void IO::RAWBTScanner::OnPacket(Int64 timeTicks, Data::ByteArrayR packet)
 	if (IO::BTScanLog::ParseBTRAWPacket(rec, timeTicks, packet))
 	{
 		Optional<IO::BTScanLog::ScanRecord3> optdev;
-		NotNullPtr<IO::BTScanLog::ScanRecord3> dev;
+		NN<IO::BTScanLog::ScanRecord3> dev;
 		Sync::MutexUsage mutUsage(this->recMut);
 		if (rec.addrType == IO::BTScanLog::AT_RANDOM)
 		{

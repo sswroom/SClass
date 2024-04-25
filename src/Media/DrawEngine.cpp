@@ -2,7 +2,7 @@
 #include "Media/DrawEngine.h"
 #include "Media/ImageUtil.h"
 
-Bool Media::DrawImage::DrawStringHAlign(Math::Coord2DDbl tl, Double brx, Text::CStringNN str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b, Text::HAlignment hAlign)
+Bool Media::DrawImage::DrawStringHAlign(Math::Coord2DDbl tl, Double brx, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b, Text::HAlignment hAlign)
 {
 	Math::Size2DDbl sz;
 	if (hAlign == Text::HAlignment::Right)

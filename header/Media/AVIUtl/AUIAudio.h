@@ -12,13 +12,13 @@ namespace Media
 		private:
 			Media::AVIUtl::AUIPlugin *plugin;
 			Media::AVIUtl::AUIPlugin::AUIInput *input;
-			NotNullPtr<Media::AudioFormat> format;
+			NN<Media::AudioFormat> format;
 			UOSInt nSamples;
 			UOSInt currSample;
 			Sync::Event *playEvt;
 
 		public:
-			AUIAudio(Media::AVIUtl::AUIPlugin *plugin, Media::AVIUtl::AUIPlugin::AUIInput *input, NotNullPtr<Media::AudioFormat> format, UOSInt nSamples);
+			AUIAudio(Media::AVIUtl::AUIPlugin *plugin, Media::AVIUtl::AUIPlugin::AUIInput *input, NN<Media::AudioFormat> format, UOSInt nSamples);
 			~AUIAudio();
 
 			virtual UTF8Char *GetSourceName(UTF8Char *buff);
@@ -27,7 +27,7 @@ namespace Media
 			virtual Data::Duration SeekToTime(Data::Duration time);
 			virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 
-			virtual void GetFormat(NotNullPtr<AudioFormat> format);
+			virtual void GetFormat(NN<AudioFormat> format);
 
 			virtual Bool Start(Sync::Event *evt, UOSInt blkSize);
 			virtual void Stop();

@@ -4,7 +4,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRWindowsErrorForm::OnErrorCodeChanged(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWindowsErrorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWindowsErrorForm>();
+	NN<SSWR::AVIRead::AVIRWindowsErrorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWindowsErrorForm>();
 	UInt32 errCode;
 	Text::StringBuilderUTF8 sb;
 	me->txtErrorCode->GetText(sb);
@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRWindowsErrorForm::OnErrorCodeChanged(AnyType u
 	}
 }
 
-SSWR::AVIRead::AVIRWindowsErrorForm::AVIRWindowsErrorForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 200, ui)
+SSWR::AVIRead::AVIRWindowsErrorForm::AVIRWindowsErrorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 200, ui)
 {
 	this->SetText(CSTR("Windows Error"));
 	this->SetFont(0, 0, 8.25, false);

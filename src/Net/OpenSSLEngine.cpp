@@ -182,7 +182,7 @@ Bool Net::OpenSSLEngine::SetRSAPadding(void *ctx, Crypto::Encrypt::RSACipher::Pa
 	return EVP_PKEY_CTX_set_rsa_padding((EVP_PKEY_CTX*)ctx, ipadding) > 0;
 }
 
-Net::OpenSSLEngine::OpenSSLEngine(NotNullPtr<Net::SocketFactory> sockf, Method method) : Net::SSLEngine(sockf)
+Net::OpenSSLEngine::OpenSSLEngine(NN<Net::SocketFactory> sockf, Method method) : Net::SSLEngine(sockf)
 {
 	Net::OpenSSLCore::Init();
 	const SSL_METHOD *m = 0;
@@ -279,7 +279,7 @@ Bool Net::OpenSSLEngine::IsError()
 	return this->clsData->ctx == 0;
 }
 
-Bool Net::OpenSSLEngine::ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1, NotNullPtr<Data::ArrayListNN<Crypto::Cert::X509Cert>> caCerts)
+Bool Net::OpenSSLEngine::ServerSetCertsASN1(NN<Crypto::Cert::X509Cert> certASN1, NN<Crypto::Cert::X509File> keyASN1, NN<Data::ArrayListNN<Crypto::Cert::X509Cert>> caCerts)
 {
 	if (this->clsData->ctx == 0)
 	{
@@ -293,10 +293,10 @@ Bool Net::OpenSSLEngine::ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> c
 	{
 		return false;
 	}
-	Data::ArrayIterator<NotNullPtr<Crypto::Cert::X509Cert>> it = caCerts->Iterator();
+	Data::ArrayIterator<NN<Crypto::Cert::X509Cert>> it = caCerts->Iterator();
 	while (it.HasNext())
 	{
-		NotNullPtr<Crypto::Cert::X509Cert> caCert = it.Next();
+		NN<Crypto::Cert::X509Cert> caCert = it.Next();
 		const UInt8 *asn1 = caCert->GetASN1Buff();
 		X509 *x509 = d2i_X509(0, &asn1, (long)caCert->GetASN1BuffSize());
 		if (x509 == 0)
@@ -308,7 +308,7 @@ Bool Net::OpenSSLEngine::ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> c
 
 	if (keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey)
 	{
-		NotNullPtr<Crypto::Cert::X509PrivKey> pkey = NotNullPtr<Crypto::Cert::X509PrivKey>::ConvertFrom(keyASN1);
+		NN<Crypto::Cert::X509PrivKey> pkey = NN<Crypto::Cert::X509PrivKey>::ConvertFrom(keyASN1);
 		Crypto::Cert::X509File::KeyType keyType = pkey->GetKeyType();
 		if (keyType == Crypto::Cert::X509File::KeyType::ECDSA)
 		{
@@ -326,10 +326,10 @@ Bool Net::OpenSSLEngine::ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> c
 		}
 		return true;
 	}
-	else if (keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::Key && NotNullPtr<Crypto::Cert::X509Key>::ConvertFrom(keyASN1)->IsPrivateKey())
+	else if (keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::Key && NN<Crypto::Cert::X509Key>::ConvertFrom(keyASN1)->IsPrivateKey())
 	{
-		NotNullPtr<Crypto::Cert::X509PrivKey> privKey;
-		if (Crypto::Cert::X509PrivKey::CreateFromKey(NotNullPtr<Crypto::Cert::X509Key>::ConvertFrom(keyASN1)).SetTo(privKey))
+		NN<Crypto::Cert::X509PrivKey> privKey;
+		if (Crypto::Cert::X509PrivKey::CreateFromKey(NN<Crypto::Cert::X509Key>::ConvertFrom(keyASN1)).SetTo(privKey))
 		{
 			Crypto::Cert::X509File::KeyType keyType = privKey->GetKeyType();
 			if (keyType == Crypto::Cert::X509File::KeyType::ECDSA)
@@ -467,7 +467,7 @@ Bool Net::OpenSSLEngine::ServerAddALPNSupport(Text::CStringNN proto)
 }
 
 
-Bool Net::OpenSSLEngine::ClientSetCertASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1)
+Bool Net::OpenSSLEngine::ClientSetCertASN1(NN<Crypto::Cert::X509Cert> certASN1, NN<Crypto::Cert::X509File> keyASN1)
 {
 	SDEL_CLASS(this->clsData->cliCert);
 	SDEL_CLASS(this->clsData->cliKey);
@@ -622,7 +622,7 @@ Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString compa
 		int readSize = BIO_read(bio2, buff, 4096);
 		if (readSize > 0)
 		{
-			NotNullPtr<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.key"));
+			NN<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.key"));
 			pobjKey = Parser::FileParser::X509Parser::ParseBuff(BYTEARR(buff).SubArray(0, (UInt32)readSize), fileName);
 			fileName->Release();
 		}
@@ -630,7 +630,7 @@ Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString compa
 		readSize = BIO_read(bio2, buff, 4096);
 		if (readSize > 0)
 		{
-			NotNullPtr<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.crt"));
+			NN<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.crt"));
 			pobjCert = (Crypto::Cert::X509Cert*)Parser::FileParser::X509Parser::ParseBuff(BYTEARR(buff).SubArray(0, (UInt32)readSize), fileName);
 			fileName->Release();
 		}
@@ -681,7 +681,7 @@ Optional<Crypto::Cert::X509Key> Net::OpenSSLEngine::GenerateRSAKey()
 		int readSize = BIO_read(bio2, buff, 4096);
 		if (readSize > 0)
 		{
-			NotNullPtr<Text::String> fileName = Text::String::New(UTF8STRC("RSAKey.key"));
+			NN<Text::String> fileName = Text::String::New(UTF8STRC("RSAKey.key"));
 			pobjKey = Parser::FileParser::X509Parser::ParseBuff(BYTEARR(buff).SubArray(0, (UOSInt)readSize), fileName);
 			fileName->Release();
 		}
@@ -704,18 +704,18 @@ Optional<Crypto::Cert::X509Key> Net::OpenSSLEngine::GenerateRSAKey()
 		BIO *bio2;
 		UInt8 buff[4096];
 		Optional<Crypto::Cert::X509File> pobjKey = 0;
-		NotNullPtr<Crypto::Cert::X509File> nnpobjKey;
+		NN<Crypto::Cert::X509File> nnpobjKey;
 
 		BIO_new_bio_pair(&bio1, 4096, &bio2, 4096);
 		PEM_write_bio_PrivateKey(bio1, pkey, nullptr, nullptr, 0, nullptr, nullptr);
 		int readSize = BIO_read(bio2, buff, 4096);
 		if (readSize > 0)
 		{
-			NotNullPtr<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.key"));
+			NN<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.key"));
 			pobjKey = Parser::FileParser::X509Parser::ParseBuff(BYTEARR(buff).SubArray(0, (UInt32)readSize), fileName);
 			if (pobjKey.SetTo(nnpobjKey) && nnpobjKey->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey)
 			{
-				NotNullPtr<Crypto::Cert::X509PrivKey> privKey = NotNullPtr<Crypto::Cert::X509PrivKey>::ConvertFrom(nnpobjKey);
+				NN<Crypto::Cert::X509PrivKey> privKey = NN<Crypto::Cert::X509PrivKey>::ConvertFrom(nnpobjKey);
 				pobjKey = privKey->CreateKey();
 				privKey.Delete();
 			}
@@ -745,7 +745,7 @@ int OpenSSLEngine_GetCurveName(Crypto::Cert::X509File::ECName ecName)
 		return 0;
 	}
 }
-EVP_PKEY *OpenSSLEngine_LoadKey(NotNullPtr<Crypto::Cert::X509Key> key, Bool privateKeyOnly)
+EVP_PKEY *OpenSSLEngine_LoadKey(NN<Crypto::Cert::X509Key> key, Bool privateKeyOnly)
 {
 	EVP_PKEY *pkey = 0;
 	if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSA)
@@ -882,7 +882,7 @@ const EVP_MD *OpenSSLEngine_GetHash(Crypto::Hash::HashType hashType)
 		return 0;
 	}
 }
-Bool Net::OpenSSLEngine::Signature(NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, OutParam<UOSInt> signLen)
+Bool Net::OpenSSLEngine::Signature(NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, OutParam<UOSInt> signLen)
 {
 	const EVP_MD *htype = OpenSSLEngine_GetHash(hashType);
 	if (htype == 0)
@@ -924,7 +924,7 @@ Bool Net::OpenSSLEngine::Signature(NotNullPtr<Crypto::Cert::X509Key> key, Crypto
 	return true;
 }
 
-Bool Net::OpenSSLEngine::SignatureVerify(NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, const UInt8 *signData, UOSInt signLen)
+Bool Net::OpenSSLEngine::SignatureVerify(NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, const UInt8 *signData, UOSInt signLen)
 {
 	const EVP_MD *htype = OpenSSLEngine_GetHash(hashType);
 	if (htype == 0)
@@ -968,7 +968,7 @@ Bool Net::OpenSSLEngine::SignatureVerify(NotNullPtr<Crypto::Cert::X509Key> key, 
 	return succ;
 }
 
-UOSInt Net::OpenSSLEngine::Encrypt(NotNullPtr<Crypto::Cert::X509Key> key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
+UOSInt Net::OpenSSLEngine::Encrypt(NN<Crypto::Cert::X509Key> key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	EVP_PKEY *pkey = OpenSSLEngine_LoadKey(key, false);
 	if (pkey == 0)
@@ -1012,7 +1012,7 @@ UOSInt Net::OpenSSLEngine::Encrypt(NotNullPtr<Crypto::Cert::X509Key> key, UInt8 
 	return (UOSInt)outlen;
 }
 
-UOSInt Net::OpenSSLEngine::Decrypt(NotNullPtr<Crypto::Cert::X509Key> key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
+UOSInt Net::OpenSSLEngine::Decrypt(NN<Crypto::Cert::X509Key> key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSAPublic)
 	{
@@ -1061,7 +1061,7 @@ UOSInt Net::OpenSSLEngine::Decrypt(NotNullPtr<Crypto::Cert::X509Key> key, UInt8 
 	return (UOSInt)outlen;
 }
 
-UOSInt Net::OpenSSLEngine::RSAPublicDecrypt(NotNullPtr<Crypto::Cert::X509Key> key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
+UOSInt Net::OpenSSLEngine::RSAPublicDecrypt(NN<Crypto::Cert::X509Key> key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	EVP_PKEY *pkey = OpenSSLEngine_LoadKey(key, false);
 	if (pkey == 0)

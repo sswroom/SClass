@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Net/HKOAPI.h"
 
-Optional<Net::HKOAPI::LocalWeatherForecast> Net::HKOAPI::GetLocalWeatherForecast(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang)
+Optional<Net::HKOAPI::LocalWeatherForecast> Net::HKOAPI::GetLocalWeatherForecast(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang)
 {
 	Text::CStringNN url;
 	switch (lang)
@@ -20,7 +20,7 @@ Optional<Net::HKOAPI::LocalWeatherForecast> Net::HKOAPI::GetLocalWeatherForecast
 	JSONREQ_RET(sockf, ssl, url, LocalWeatherForecast)
 }
 
-Optional<Net::HKOAPI::NineDayWeatherForecast> Net::HKOAPI::Get9DayWeatherForecast(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang)
+Optional<Net::HKOAPI::NineDayWeatherForecast> Net::HKOAPI::Get9DayWeatherForecast(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang)
 {
 	Text::CStringNN url;
 	switch (lang)
@@ -39,7 +39,7 @@ Optional<Net::HKOAPI::NineDayWeatherForecast> Net::HKOAPI::Get9DayWeatherForecas
 	JSONREQ_RET(sockf, ssl, url, NineDayWeatherForecast)
 }
 
-Optional<Net::HKOAPI::CurrentWeatherReport> Net::HKOAPI::GetCurrentWeatherReport(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang)
+Optional<Net::HKOAPI::CurrentWeatherReport> Net::HKOAPI::GetCurrentWeatherReport(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang)
 {
 	Text::CStringNN url;
 	switch (lang)
@@ -58,7 +58,7 @@ Optional<Net::HKOAPI::CurrentWeatherReport> Net::HKOAPI::GetCurrentWeatherReport
 	JSONREQ_RET(sockf, ssl, url, CurrentWeatherReport)
 }
 
-Optional<Net::HKOAPI::WeatherWarningSummary> Net::HKOAPI::GetWeatherWarningSummary(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang)
+Optional<Net::HKOAPI::WeatherWarningSummary> Net::HKOAPI::GetWeatherWarningSummary(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang)
 {
 	Text::CStringNN url;
 	switch (lang)
@@ -77,7 +77,7 @@ Optional<Net::HKOAPI::WeatherWarningSummary> Net::HKOAPI::GetWeatherWarningSumma
 	JSONREQ_RET(sockf, ssl, url, WeatherWarningSummary)
 }
 
-Optional<Net::HKOAPI::WeatherWarningInfo> Net::HKOAPI::GetWeatherWarningInfo(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang)
+Optional<Net::HKOAPI::WeatherWarningInfo> Net::HKOAPI::GetWeatherWarningInfo(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang)
 {
 	Text::CStringNN url;
 	switch (lang)
@@ -96,7 +96,7 @@ Optional<Net::HKOAPI::WeatherWarningInfo> Net::HKOAPI::GetWeatherWarningInfo(Not
 	JSONREQ_RET(sockf, ssl, url, WeatherWarningInfo)
 }
 
-Optional<Net::HKOAPI::SpecialWeatherTips> Net::HKOAPI::GetSpecialWeatherTips(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang)
+Optional<Net::HKOAPI::SpecialWeatherTips> Net::HKOAPI::GetSpecialWeatherTips(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang)
 {
 	Text::CStringNN url;
 	switch (lang)
@@ -115,7 +115,7 @@ Optional<Net::HKOAPI::SpecialWeatherTips> Net::HKOAPI::GetSpecialWeatherTips(Not
 	JSONREQ_RET(sockf, ssl, url, SpecialWeatherTips)
 }
 
-Optional<Net::HKOAPI::QuickEarthquakeMessages> Net::HKOAPI::GetQuickEarthquakeMessages(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang)
+Optional<Net::HKOAPI::QuickEarthquakeMessages> Net::HKOAPI::GetQuickEarthquakeMessages(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang)
 {
 	Text::CStringNN url;
 	switch (lang)
@@ -134,7 +134,7 @@ Optional<Net::HKOAPI::QuickEarthquakeMessages> Net::HKOAPI::GetQuickEarthquakeMe
 	JSONREQ_RET(sockf, ssl, url, QuickEarthquakeMessages)
 }
 
-Optional<Net::HKOAPI::LocallyFeltEarthTremorReport> Net::HKOAPI::GetLocallyFeltEarthTremorReport(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang)
+Optional<Net::HKOAPI::LocallyFeltEarthTremorReport> Net::HKOAPI::GetLocallyFeltEarthTremorReport(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang)
 {
 	Text::CStringNN url;
 	switch (lang)
@@ -153,7 +153,7 @@ Optional<Net::HKOAPI::LocallyFeltEarthTremorReport> Net::HKOAPI::GetLocallyFeltE
 	JSONREQ_RET(sockf, ssl, url, LocallyFeltEarthTremorReport)
 }
 
-Optional<Net::HKOAPI::LunarDate> Net::HKOAPI::GetLunarDate(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Data::Date date)
+Optional<Net::HKOAPI::LunarDate> Net::HKOAPI::GetLunarDate(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Data::Date date)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.Append(CSTR("https://data.weather.gov.hk/weatherAPI/opendata/lunardate.php?date="));
@@ -161,7 +161,7 @@ Optional<Net::HKOAPI::LunarDate> Net::HKOAPI::GetLunarDate(NotNullPtr<Net::Socke
 	JSONREQ_RET(sockf, ssl, sb.ToCString(), LunarDate)
 }
 
-Optional<Net::HKOAPI::HourlyRainfall> Net::HKOAPI::GetHourlyRainfall(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang)
+Optional<Net::HKOAPI::HourlyRainfall> Net::HKOAPI::GetHourlyRainfall(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang)
 {
 	Text::CStringNN url;
 	switch (lang)

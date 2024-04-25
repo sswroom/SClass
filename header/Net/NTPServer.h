@@ -11,20 +11,20 @@ namespace Net
 	class NTPServer
 	{
 	private:
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Net::UDPServer *svr;
-		NotNullPtr<IO::LogTool> log;
-		NotNullPtr<Text::String> timeServer;
+		NN<IO::LogTool> log;
+		NN<Text::String> timeServer;
 		Int64 refTime;
 		Int64 timeDiff;
 		Sync::Thread thread;
 		Net::NTPClient *cli;
 
-		static void __stdcall PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
-		static void __stdcall CheckThread(NotNullPtr<Sync::Thread> thread);
-		void InitServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port);
+		static void __stdcall PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+		static void __stdcall CheckThread(NN<Sync::Thread> thread);
+		void InitServer(NN<Net::SocketFactory> sockf, UInt16 port);
 	public:
-		NTPServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log, Text::CString timeServer);
+		NTPServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log, Text::CString timeServer);
 		~NTPServer();
 
 		Bool IsError();

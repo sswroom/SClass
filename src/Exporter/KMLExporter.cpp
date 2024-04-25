@@ -33,13 +33,13 @@ Int32 Exporter::KMLExporter::GetName()
 	return *(Int32*)"KMLE";
 }
 
-IO::FileExporter::SupportType Exporter::KMLExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
+IO::FileExporter::SupportType Exporter::KMLExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
-	NotNullPtr<Map::MapDrawLayer> layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj);
+	NN<Map::MapDrawLayer> layer = NN<Map::MapDrawLayer>::ConvertFrom(pobj);
 	Map::DrawLayerType layerType = layer->GetLayerType();
 	if (layerType == Map::DRAW_LAYER_POINT)
 	{
@@ -89,7 +89,7 @@ void Exporter::KMLExporter::SetEncFactory(Optional<Text::EncodingFactory> encFac
 	this->encFact = encFact;
 }
 
-Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
@@ -99,7 +99,7 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	UTF8Char sbuff[256];
 	UTF8Char sbuff2[512];
 	UTF8Char *sptr;
-	NotNullPtr<Map::MapDrawLayer> layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj);
+	NN<Map::MapDrawLayer> layer = NN<Map::MapDrawLayer>::ConvertFrom(pobj);
 	UOSInt nameCol = layer->GetNameCol();
 
 	UOSInt i;
@@ -112,16 +112,16 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	Math::Geometry::Vector2D *vec;
 	Text::Encoding enc(this->codePage);
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<Text::String> s;
-	NotNullPtr<Math::CoordinateSystem> srcCsys = layer->GetCoordinateSystem();
-	NotNullPtr<Math::CoordinateSystem> destCsys = Math::CoordinateSystemManager::CreateDefaultCsys();
+	NN<Text::String> s;
+	NN<Math::CoordinateSystem> srcCsys = layer->GetCoordinateSystem();
+	NN<Math::CoordinateSystem> destCsys = Math::CoordinateSystemManager::CreateDefaultCsys();
 	Bool needConv = false;
 	if (!destCsys->Equals(srcCsys))
 	{
 		needConv = true;
 	}
 
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (param.SetTo(para))
 	{
 		defHeight = *(Int32*)para.Ptr();
@@ -333,8 +333,8 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 					sb.AppendP(sbuff2, sptr);
 					sb.AppendC(UTF8STRC("</name><styleUrl>#lineLabel</styleUrl><LineString><coordinates>"));
 
-					NotNullPtr<Math::Geometry::LineString> lineString;
-					Data::ArrayIterator<NotNullPtr<Math::Geometry::LineString>> it = pl->Iterator();
+					NN<Math::Geometry::LineString> lineString;
+					Data::ArrayIterator<NN<Math::Geometry::LineString>> it = pl->Iterator();
 					while (it.HasNext())
 					{
 						lineString = it.Next();
@@ -449,12 +449,12 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 					sb.AppendC(UTF8STRC("<altitudeMode>relativeToGround</altitudeMode>"));
 
 					Math::Coord2DDbl *points;
-					NotNullPtr<Math::Geometry::LinearRing> lr;
+					NN<Math::Geometry::LinearRing> lr;
 
 					if (needConv)
 					{
 						Math::Vector3 v;
-						Data::ArrayIterator<NotNullPtr<Math::Geometry::LinearRing>> it = pg->Iterator();
+						Data::ArrayIterator<NN<Math::Geometry::LinearRing>> it = pg->Iterator();
 						while (it.HasNext())
 						{
 							lr = it.Next();
@@ -478,7 +478,7 @@ Bool Exporter::KMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 					}
 					else
 					{
-						Data::ArrayIterator<NotNullPtr<Math::Geometry::LinearRing>> it = pg->Iterator();
+						Data::ArrayIterator<NN<Math::Geometry::LinearRing>> it = pg->Iterator();
 						while (it.HasNext())
 						{
 							lr = it.Next();
@@ -703,7 +703,7 @@ UOSInt Exporter::KMLExporter::GetParamCnt()
 	return 1;
 }
 
-Optional<IO::FileExporter::ParamData> Exporter::KMLExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
+Optional<IO::FileExporter::ParamData> Exporter::KMLExporter::CreateParam(NN<IO::ParsedObject> pobj)
 {
 	Int32 *retParam = MemAlloc(Int32, 1);
 	*retParam = 0;
@@ -712,14 +712,14 @@ Optional<IO::FileExporter::ParamData> Exporter::KMLExporter::CreateParam(NotNull
 
 void Exporter::KMLExporter::DeleteParam(Optional<ParamData> param)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (param.SetTo(para))
 	{
 		MemFree(para.Ptr());
 	}
 }
 
-Bool Exporter::KMLExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> info)
+Bool Exporter::KMLExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
 {
 	if (index != 0)
 		return false;
@@ -731,7 +731,7 @@ Bool Exporter::KMLExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> inf
 
 Bool Exporter::KMLExporter::SetParamInt32(Optional<ParamData> param, UOSInt index, Int32 val)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (index != 0 || !param.SetTo(para))
 		return false;
 	Int32 *iParam = (Int32*)para.Ptr();
@@ -741,7 +741,7 @@ Bool Exporter::KMLExporter::SetParamInt32(Optional<ParamData> param, UOSInt inde
 
 Int32 Exporter::KMLExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (index != 0 || !param.SetTo(para))
 		return 0;
 	return *(Int32*)para.Ptr();

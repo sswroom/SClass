@@ -7,7 +7,7 @@
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF.h"
 
-UTF8Char *Text::StrDouble(UTF8Char *oriStr, Double val, UOSInt sigFig, NotNullPtr<const DoubleStyle> style)
+UTF8Char *Text::StrDouble(UTF8Char *oriStr, Double val, UOSInt sigFig, NN<const DoubleStyle> style)
 {
 	if (val == 0)
 	{

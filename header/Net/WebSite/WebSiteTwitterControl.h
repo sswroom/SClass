@@ -26,16 +26,16 @@ namespace Net
 			} ChannelInfo;
 			
 		private:
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 			Optional<Text::EncodingFactory> encFact;
 			Optional<Text::String> userAgent;
 
 		public:
-			WebSiteTwitterControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent);
+			WebSiteTwitterControl(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent);
 			~WebSiteTwitterControl();
 
-			UOSInt GetChannelItems(NotNullPtr<Text::String> channelId, UOSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);
+			UOSInt GetChannelItems(NN<Text::String> channelId, UOSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);
 			void FreeItems(Data::ArrayList<ItemData*> *itemList);
 			Optional<Text::String> GetUserAgent();
 		};

@@ -20,7 +20,7 @@ struct Parser::FileParser::PDFParser::PDFParseEnv
 	UOSInt dataSize;
 	UInt64 dataOfst;
 	UInt64 fileSize;
-	NotNullPtr<IO::StreamData> fd;
+	NN<IO::StreamData> fd;
 	UInt64 lineBegin;
 	Bool normalEnd;
 	Bool succ;
@@ -39,7 +39,7 @@ Bool Parser::FileParser::PDFParser::IsComment(const UTF8Char *buff, UOSInt size)
 	return false;
 }
 
-Bool Parser::FileParser::PDFParser::NextLine(PDFParseEnv *env, NotNullPtr<Text::StringBuilderUTF8> sb, Bool skipComment)
+Bool Parser::FileParser::PDFParser::NextLine(PDFParseEnv *env, NN<Text::StringBuilderUTF8> sb, Bool skipComment)
 {
 	UOSInt i = env->currOfst;
 	while (i < env->dataSize)
@@ -180,7 +180,7 @@ Bool Parser::FileParser::PDFParser::NextLineFixed(PDFParseEnv *env, UOSInt size)
 	}
 }
 
-void Parser::FileParser::PDFParser::ParseStartxref(PDFParseEnv *env, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Parser::FileParser::PDFParser::ParseStartxref(PDFParseEnv *env, NN<Text::StringBuilderUTF8> sb)
 {
 	if (!sb->Equals(UTF8STRC("startxref")))
 	{
@@ -250,7 +250,7 @@ void Parser::FileParser::PDFParser::ParseStartxref(PDFParseEnv *env, NotNullPtr<
 	}
 }
 
-Bool Parser::FileParser::PDFParser::ParseObject(PDFParseEnv *env, NotNullPtr<Text::StringBuilderUTF8> sb, Media::PDFDocument *doc, PDFXRef *xref)
+Bool Parser::FileParser::PDFParser::ParseObject(PDFParseEnv *env, NN<Text::StringBuilderUTF8> sb, Media::PDFDocument *doc, PDFXRef *xref)
 {
 	UInt32 id;
 	sb->RemoveChars(6);
@@ -376,7 +376,7 @@ Bool Parser::FileParser::PDFParser::ParseObject(PDFParseEnv *env, NotNullPtr<Tex
 	return false;
 }
 
-Bool Parser::FileParser::PDFParser::ParseObjectStream(PDFParseEnv *env, NotNullPtr<Text::StringBuilderUTF8> sb, Media::PDFObject *obj, PDFXRef *xref)
+Bool Parser::FileParser::PDFParser::ParseObjectStream(PDFParseEnv *env, NN<Text::StringBuilderUTF8> sb, Media::PDFObject *obj, PDFXRef *xref)
 {
 	Media::PDFParameter *param = obj->GetParameter();
 	if (param == 0)
@@ -387,7 +387,7 @@ Bool Parser::FileParser::PDFParser::ParseObjectStream(PDFParseEnv *env, NotNullP
 		env->normalEnd = true;
 		return false;
 	}
-	NotNullPtr<Text::String> leng;
+	NN<Text::String> leng;
 	if (!param->GetEntryValue(CSTR("Length")).SetTo(leng))
 	{
 #if defined(VERBOSE)
@@ -547,7 +547,7 @@ Bool Parser::FileParser::PDFParser::ParseObjectStream(PDFParseEnv *env, NotNullP
 	return true;
 }
 
-Parser::FileParser::PDFParser::PDFXRef *Parser::FileParser::PDFParser::ParseXRef(PDFParseEnv *env, NotNullPtr<Text::StringBuilderUTF8> sb)
+Parser::FileParser::PDFParser::PDFXRef *Parser::FileParser::PDFParser::ParseXRef(PDFParseEnv *env, NN<Text::StringBuilderUTF8> sb)
 {
 	if (!NextLine(env, sb, true))
 	{
@@ -704,7 +704,7 @@ Parser::FileParser::PDFParser::PDFXRef *Parser::FileParser::PDFParser::ParseXRef
 #if defined(VERBOSE)
 			printf("PDFParser: EOF found, ofst = %lld\r\n", env->lineBegin);
 #endif
-			NotNullPtr<Text::String> prevOfst;
+			NN<Text::String> prevOfst;
 			if (!thisRef->trailer->GetEntryValue(CSTR("Prev")).SetTo(prevOfst))
 			{
 				return firstRef;
@@ -831,7 +831,7 @@ Int32 Parser::FileParser::PDFParser::GetName()
 	return *(Int32*)"PDFP";
 }
 
-void Parser::FileParser::PDFParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::PDFParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PDFDocument)
 	{
@@ -844,7 +844,7 @@ IO::ParserType Parser::FileParser::PDFParser::GetParserType()
 	return IO::ParserType::PDFDocument;
 }
 
-IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (ReadNInt32(hdr) != ReadNInt32((const UInt8*)"%PDF") || hdr[4] != '-' || hdr[6] != '.')
 	{

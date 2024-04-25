@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "UI/GUIListBox.h"
 
-UI::GUIListBox::GUIListBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
+UI::GUIListBox::GUIListBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
 {
 }
 

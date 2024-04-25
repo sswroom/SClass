@@ -18,7 +18,7 @@ Int32 Parser::FileParser::ASN1Parser::GetName()
 	return *(Int32*)"ASN1";
 }
 
-void Parser::FileParser::ASN1Parser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::ASN1Parser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ASN1Data)
 	{
@@ -31,14 +31,14 @@ IO::ParserType Parser::FileParser::ASN1Parser::GetParserType()
 	return IO::ParserType::ASN1Data;
 }
 
-IO::ParsedObject *Parser::FileParser::ASN1Parser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::ASN1Parser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (!fd->IsFullFile())
 		return 0;
 	Net::ASN1Data *asn1 = 0;
 //	UInt8 *buff;
 	UInt64 fsize = fd->GetDataSize();
-	NotNullPtr<Text::String> fname = fd->GetFullFileName();
+	NN<Text::String> fname = fd->GetFullFileName();
 	if (fname->EndsWithICase(UTF8STRC(".JKS")) && fsize <= 65536)
 	{
 /*		buff = MemAlloc(UInt8, (UOSInt)fsize);

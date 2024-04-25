@@ -137,7 +137,7 @@ SSWR::OrganMgr::OrganGroupItem::ItemType SSWR::OrganMgr::OrganGroup::GetItemType
 UTF8Char *SSWR::OrganMgr::OrganGroup::GetItemName(UTF8Char *buff) const
 {
 	UTF8Char *sptr = buff;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (this->isDefault)
 	{
 		*sptr++ = '*';

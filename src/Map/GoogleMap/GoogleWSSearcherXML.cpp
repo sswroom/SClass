@@ -10,7 +10,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/XMLDOM.h"
 
-Map::GoogleMap::GoogleWSSearcherXML::GoogleWSSearcherXML(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, IO::Writer *errWriter, NotNullPtr<Text::EncodingFactory> encFact)
+Map::GoogleMap::GoogleWSSearcherXML::GoogleWSSearcherXML(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, IO::Writer *errWriter, NN<Text::EncodingFactory> encFact)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -40,7 +40,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt
 		Sync::SimpleThread::Sleep(200 - i);
 	}
 
-	NotNullPtr<Net::HTTPClient> cli;
+	NN<Net::HTTPClient> cli;
 	sptr = Text::StrConcatC(url, UTF8STRC("http://maps.googleapis.com/maps/api/geocode/xml?latlng="));
 	sptr = Text::StrDouble(sptr, lat);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(","));

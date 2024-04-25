@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NotNullPtr<Text::XMLReader> reader, Text::CStringNN fileName)
+Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NN<Text::XMLReader> reader, Text::CStringNN fileName)
 {
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element || !reader->GetNodeTextNN()->Equals(UTF8STRC("jasperReport")))
 	{
@@ -15,7 +15,7 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NotNull
 	UInt32 uval;
 	Text::XMLAttrib *attr;
 	Text::XMLNode::NodeType nodeType;
-	NotNullPtr<Text::String> nodeText;
+	NN<Text::String> nodeText;
 	Media::Jasper::JasperReport *report;
 	Text::StringBuilderUTF8 sb;
 	NN<JasperBand> band;
@@ -158,8 +158,8 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NotNull
 			{
 				printf("JasperXML: property is not empty element (%s)\r\n", name?name->v:(const UTF8Char*)"");
 			}
-			NotNullPtr<Text::String> nameStr;
-			NotNullPtr<Text::String> valueStr;
+			NN<Text::String> nameStr;
+			NN<Text::String> valueStr;
 			if (nameStr.Set(name) && valueStr.Set(value))
 			{
 				report->SetProperty(nameStr, valueStr);
@@ -187,7 +187,7 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NotNull
 			{
 				printf("JasperXML: import is not empty element (%s)\r\n", value?value->v:(const UTF8Char*)"");
 			}
-			NotNullPtr<Text::String> valueStr;
+			NN<Text::String> valueStr;
 			if (valueStr.Set(value))
 			{
 				report->AddImport(valueStr);
@@ -309,7 +309,7 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NotNull
 	return report;
 }
 
-Optional<Media::Jasper::JasperBand> Media::Jasper::JasperXML::ParseBand(NotNullPtr<Text::XMLReader> reader)
+Optional<Media::Jasper::JasperBand> Media::Jasper::JasperXML::ParseBand(NN<Text::XMLReader> reader)
 {
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element)
 	{
@@ -366,14 +366,14 @@ Optional<Media::Jasper::JasperBand> Media::Jasper::JasperXML::ParseBand(NotNullP
 	return band;
 }
 
-Media::Jasper::JasperElement *Media::Jasper::JasperXML::ParseElement(NotNullPtr<Text::XMLReader> reader)
+Media::Jasper::JasperElement *Media::Jasper::JasperXML::ParseElement(NN<Text::XMLReader> reader)
 {
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element)
 	{
 		printf("JasperXML: non element in ParseElement\r\n");
 		return 0;
 	}
-	NotNullPtr<Text::String> nodeName = reader->GetNodeTextNN();
+	NN<Text::String> nodeName = reader->GetNodeTextNN();
 	if (nodeName->Equals(UTF8STRC("staticText")))
 	{
 		reader->SkipElement();

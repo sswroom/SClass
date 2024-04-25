@@ -11,8 +11,8 @@ namespace Data
 	template <class T> struct FastStringNNItem
 	{
 		UInt32 hash;
-		NotNullPtr<Text::String> s;
-		NotNullPtr<T> val;
+		NN<Text::String> s;
+		NN<T> val;
 	};
 
 	template <class T> class FastStringNNKeyIterator
@@ -32,10 +32,10 @@ namespace Data
 			return this->cnt > 0;
 		}
 
-		NotNullPtr<Text::String> Next()
+		NN<Text::String> Next()
 		{
 			this->cnt--;
-			NotNullPtr<Text::String> ret = arr->s;
+			NN<Text::String> ret = arr->s;
 			this->arr++;
 			return ret;
 		}
@@ -49,7 +49,7 @@ namespace Data
 		FastStringNNItem<T> *items;
 		Crypto::Hash::CRC32RC crc;
 
-		void Insert(UOSInt index, UInt32 hash, NotNullPtr<Text::String> s, NotNullPtr<T> val);
+		void Insert(UOSInt index, UInt32 hash, NN<Text::String> s, NN<T> val);
 	public:
 		FastStringMapNN();
 		FastStringMapNN(const FastStringMapNN<T> *map);
@@ -57,20 +57,20 @@ namespace Data
 
 		virtual UOSInt GetCount() const;
 		virtual Optional<T> GetItem(UOSInt index) const;
-		virtual NotNullPtr<T> GetItemNoCheck(UOSInt index) const;
+		virtual NN<T> GetItemNoCheck(UOSInt index) const;
 		virtual Text::String *GetKey(UOSInt index) const;
 		virtual OSInt IndexOf(UInt32 hash, const UTF8Char *s, UOSInt len) const;
-		OSInt IndexOf(NotNullPtr<Text::String> s) const;
+		OSInt IndexOf(NN<Text::String> s) const;
 		OSInt IndexOfC(Text::CStringNN s) const;
 
-		virtual Optional<T> Put(Text::String *key, NotNullPtr<T> val);
-		Optional<T> PutNN(NotNullPtr<Text::String> key, NotNullPtr<T> val);
-		Optional<T> PutC(Text::CStringNN key, NotNullPtr<T> val);
+		virtual Optional<T> Put(Text::String *key, NN<T> val);
+		Optional<T> PutNN(NN<Text::String> key, NN<T> val);
+		Optional<T> PutC(Text::CStringNN key, NN<T> val);
 		virtual Optional<T> Get(Text::String *key) const;
-		Optional<T> GetNN(NotNullPtr<Text::String> key) const;
+		Optional<T> GetNN(NN<Text::String> key) const;
 		Optional<T> GetC(Text::CStringNN key) const;
 		virtual Optional<T> Remove(Text::String *key);
-		Optional<T> RemoveNN(NotNullPtr<Text::String> key);
+		Optional<T> RemoveNN(NN<Text::String> key);
 		Optional<T> RemoveC(Text::CStringNN key);
 		Optional<T> RemoveAt(UOSInt index);
 		virtual Bool IsEmpty() const;
@@ -80,7 +80,7 @@ namespace Data
 		UInt32 CalcHash(const UTF8Char *s, UOSInt len) const;
 	};
 
-	template <class T> void FastStringMapNN<T>::Insert(UOSInt index, UInt32 hash, NotNullPtr<Text::String> s, NotNullPtr<T> val)
+	template <class T> void FastStringMapNN<T>::Insert(UOSInt index, UInt32 hash, NN<Text::String> s, NN<T> val)
 	{
 		if (index > this->cnt)
 		{
@@ -165,7 +165,7 @@ namespace Data
 		return this->items[index].val;
 	}
 
-	template <class T> NotNullPtr<T> FastStringMapNN<T>::GetItemNoCheck(UOSInt index) const
+	template <class T> NN<T> FastStringMapNN<T>::GetItemNoCheck(UOSInt index) const
 	{
 		return this->items[index].val;
 	}
@@ -254,7 +254,7 @@ namespace Data
 		return -i - 1;
 	}
 
-	template <class T> OSInt FastStringMapNN<T>::IndexOf(NotNullPtr<Text::String> s) const
+	template <class T> OSInt FastStringMapNN<T>::IndexOf(NN<Text::String> s) const
 	{
 		UInt32 hash = this->crc.CalcDirect(s->v, s->leng);
 		return IndexOf(hash, s->v, s->leng);
@@ -266,12 +266,12 @@ namespace Data
 		return IndexOf(hash, s.v, s.leng);
 	}
 
-	template <class T> Optional<T> FastStringMapNN<T>::Put(Text::String *key, NotNullPtr<T> val)
+	template <class T> Optional<T> FastStringMapNN<T>::Put(Text::String *key, NN<T> val)
 	{
-		return PutNN(NotNullPtr<Text::String>::FromPtr(key), val);
+		return PutNN(NN<Text::String>::FromPtr(key), val);
 	}
 
-	template <class T> Optional<T> FastStringMapNN<T>::PutNN(NotNullPtr<Text::String> key, NotNullPtr<T> val)
+	template <class T> Optional<T> FastStringMapNN<T>::PutNN(NN<Text::String> key, NN<T> val)
 	{
 		UInt32 hash = this->crc.CalcDirect(key->v, key->leng);
 		OSInt index = this->IndexOf(hash, key->v, key->leng);
@@ -282,13 +282,13 @@ namespace Data
 		}
 		else
 		{
-			NotNullPtr<T> oldVal = this->items[index].val;
+			NN<T> oldVal = this->items[index].val;
 			this->items[index].val = val;
 			return oldVal;
 		}
 	}
 
-	template <class T> Optional<T> FastStringMapNN<T>::PutC(Text::CStringNN key, NotNullPtr<T> val)
+	template <class T> Optional<T> FastStringMapNN<T>::PutC(Text::CStringNN key, NN<T> val)
 	{
 		UInt32 hash = this->crc.CalcDirect(key.v, key.leng);
 		OSInt index = this->IndexOf(hash, key.v, key.leng);
@@ -299,7 +299,7 @@ namespace Data
 		}
 		else
 		{
-			NotNullPtr<T> oldVal = this->items[index].val;
+			NN<T> oldVal = this->items[index].val;
 			this->items[index].val = val;
 			return oldVal;
 		}
@@ -307,10 +307,10 @@ namespace Data
 
 	template <class T> Optional<T> FastStringMapNN<T>::Get(Text::String *key) const
 	{
-		return GetNN(NotNullPtr<Text::String>::FromPtr(key));
+		return GetNN(NN<Text::String>::FromPtr(key));
 	}
 
-	template <class T> Optional<T> FastStringMapNN<T>::GetNN(NotNullPtr<Text::String> key) const
+	template <class T> Optional<T> FastStringMapNN<T>::GetNN(NN<Text::String> key) const
 	{
 		UInt32 hash = this->crc.CalcDirect(key->v, key->leng);
 		OSInt index = this->IndexOf(hash, key->v, key->leng);
@@ -334,16 +334,16 @@ namespace Data
 
 	template <class T> Optional<T> FastStringMapNN<T>::Remove(Text::String *key)
 	{
-		return RemoveNN(NotNullPtr<Text::String>::FromPtr(key));
+		return RemoveNN(NN<Text::String>::FromPtr(key));
 	}
 
-	template <class T> Optional<T> FastStringMapNN<T>::RemoveNN(NotNullPtr<Text::String> key)
+	template <class T> Optional<T> FastStringMapNN<T>::RemoveNN(NN<Text::String> key)
 	{
 		UInt32 hash = this->crc.CalcDirect(key->v, key->leng);
 		OSInt index = this->IndexOf(hash, key->v, key->leng);
 		if (index >= 0)
 		{
-			NotNullPtr<T> oldVal = this->items[index].val;
+			NN<T> oldVal = this->items[index].val;
 			this->items[index].s->Release();
 			this->cnt--;
 			if ((UOSInt)index < this->cnt)
@@ -361,7 +361,7 @@ namespace Data
 		OSInt index = this->IndexOf(hash, key.v, key.leng);
 		if (index >= 0)
 		{
-			NotNullPtr<T> oldVal = this->items[index].val;
+			NN<T> oldVal = this->items[index].val;
 			this->items[index].s->Release();
 			this->cnt--;
 			if ((UOSInt)index < this->cnt)
@@ -377,7 +377,7 @@ namespace Data
 	{
 		if (index < this->cnt)
 		{
-			NotNullPtr<T> oldVal = this->items[index].val;
+			NN<T> oldVal = this->items[index].val;
 			this->items[index].s->Release();
 			this->cnt--;
 			if ((UOSInt)index < this->cnt)

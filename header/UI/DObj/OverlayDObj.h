@@ -12,7 +12,7 @@ namespace UI
 		class OverlayDObj : public DirectObject
 		{
 		private:
-			NotNullPtr<Media::DrawEngine> deng;
+			NN<Media::DrawEngine> deng;
 			Media::DrawImage *bmp;
 			Media::ImageList *imgList;
 			Bool noRelease;
@@ -22,13 +22,13 @@ namespace UI
 			OSInt lastFrameNum;
 
 		public:
-			OverlayDObj(NotNullPtr<Media::DrawEngine> deng, Media::DrawImage *bmp, Math::Coord2D<OSInt> tl);
-			OverlayDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<OSInt> tl, Parser::ParserList *parsers);
+			OverlayDObj(NN<Media::DrawEngine> deng, Media::DrawImage *bmp, Math::Coord2D<OSInt> tl);
+			OverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<OSInt> tl, Parser::ParserList *parsers);
 			virtual ~OverlayDObj();
 
 			virtual Bool IsChanged();
 			virtual Bool DoEvents();
-			virtual void DrawObject(NotNullPtr<Media::DrawImage> dimg);
+			virtual void DrawObject(NN<Media::DrawImage> dimg);
 
 			virtual Bool IsObject(Math::Coord2D<OSInt> scnPos);
 			//virtual System::Windows::Forms::Cursor ^GetCursor() override;

@@ -9,7 +9,7 @@ namespace IO
 		class ED538 : public IO::MODBUSDevice
 		{
 		public:
-			ED538(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr);
+			ED538(NN<IO::MODBUSMaster> modbus, UInt8 addr);
 			virtual ~ED538();
 
 			Bool IsDIHighByCoil(UInt16 diNum);

@@ -21,7 +21,7 @@ namespace Map
 		{
 		public:
 			Int32 id;
-			NotNullPtr<Text::String> url;
+			NN<Text::String> url;
 			Media::SharedImage *simg;
 			IO::StreamData *data;
 			Text::String *name;
@@ -68,10 +68,10 @@ namespace Map
 		OSInt GetImageStatIndex(Int32 id);
 		Optional<ImageStat> GetImageStat(Int32 id);
 
-		void LoadImage(NotNullPtr<ImageStat> stat);
+		void LoadImage(NN<ImageStat> stat);
 		static UInt32 __stdcall LoadThread(AnyType userObj);
 	public:
-		WebImageLayer(Net::WebBrowser *browser, Parser::ParserList *parsers, Text::CStringNN sourceName, NotNullPtr<Math::CoordinateSystem> csys, Text::CString layerName);
+		WebImageLayer(Net::WebBrowser *browser, Parser::ParserList *parsers, Text::CStringNN sourceName, NN<Math::CoordinateSystem> csys, Text::CString layerName);
 		virtual ~WebImageLayer();
 
 		virtual void SetCurrTimeTS(Int64 timeStamp);
@@ -79,16 +79,16 @@ namespace Map
 		virtual Int64 GetTimeEndTS() const;
 
 		virtual DrawLayerType GetLayerType() const;
-		virtual UOSInt GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr);
-		virtual UOSInt GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
-		virtual UOSInt GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
+		virtual UOSInt GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr);
+		virtual UOSInt GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
+		virtual UOSInt GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
 		virtual Int64 GetObjectIdMax() const;
 		virtual void ReleaseNameArr(NameArray *nameArr);
-		virtual Bool GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt colIndex);
+		virtual Bool GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt colIndex);
 		virtual UOSInt GetColumnCnt() const;
 		virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize);
-		virtual Bool GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
+		virtual Bool GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef);
 		virtual UInt32 GetCodePage() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 

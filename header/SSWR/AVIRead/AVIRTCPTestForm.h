@@ -21,8 +21,8 @@ namespace SSWR
 		class AVIRTCPTestForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Net::SocketFactory> sockf;
 			Sync::Thread **threads;
 			UInt32 svrIP;
 			UInt16 svrPort;
@@ -33,32 +33,32 @@ namespace SSWR
 			UInt32 connCnt;
 			UInt32 failCnt;
 
-			NotNullPtr<UI::GUIPanel> pnlRequest;
-			NotNullPtr<UI::GUILabel> lblIP;
-			NotNullPtr<UI::GUITextBox> txtIP;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUILabel> lblConcurrCnt;
-			NotNullPtr<UI::GUITextBox> txtConcurrCnt;
-			NotNullPtr<UI::GUILabel> lblTotalConnCnt;
-			NotNullPtr<UI::GUITextBox> txtTotalConnCnt;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUIGroupBox> grpStatus;
-			NotNullPtr<UI::GUILabel> lblConnLeftCnt;
-			NotNullPtr<UI::GUITextBox> txtConnLeftCnt;
-			NotNullPtr<UI::GUILabel> lblThreadCnt;
-			NotNullPtr<UI::GUITextBox> txtThreadCnt;
-			NotNullPtr<UI::GUILabel> lblSuccCnt;
-			NotNullPtr<UI::GUITextBox> txtSuccCnt;
-			NotNullPtr<UI::GUILabel> lblFailCnt;
-			NotNullPtr<UI::GUITextBox> txtFailCnt;
+			NN<UI::GUIPanel> pnlRequest;
+			NN<UI::GUILabel> lblIP;
+			NN<UI::GUITextBox> txtIP;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUILabel> lblConcurrCnt;
+			NN<UI::GUITextBox> txtConcurrCnt;
+			NN<UI::GUILabel> lblTotalConnCnt;
+			NN<UI::GUITextBox> txtTotalConnCnt;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUIGroupBox> grpStatus;
+			NN<UI::GUILabel> lblConnLeftCnt;
+			NN<UI::GUITextBox> txtConnLeftCnt;
+			NN<UI::GUILabel> lblThreadCnt;
+			NN<UI::GUITextBox> txtThreadCnt;
+			NN<UI::GUILabel> lblSuccCnt;
+			NN<UI::GUITextBox> txtSuccCnt;
+			NN<UI::GUILabel> lblFailCnt;
+			NN<UI::GUITextBox> txtFailCnt;
 
 			static void __stdcall OnStartClicked(AnyType userObj);
-			static void __stdcall ProcessThread(NotNullPtr<Sync::Thread> thread);
+			static void __stdcall ProcessThread(NN<Sync::Thread> thread);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			void StopThreads();
 		public:
-			AVIRTCPTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRTCPTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTCPTestForm();
 
 			virtual void OnMonitorChanged();

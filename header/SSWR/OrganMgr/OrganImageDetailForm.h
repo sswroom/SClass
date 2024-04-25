@@ -17,22 +17,22 @@ namespace SSWR
 			NN<OrganEnv> env;
 			const UTF8Char *descript;
 
-			NotNullPtr<UI::GUILabel> lblId;
-			NotNullPtr<UI::GUITextBox> txtId;
-			NotNullPtr<UI::GUILabel> lblFileName;
-			NotNullPtr<UI::GUITextBox> txtFileName;
-			NotNullPtr<UI::GUILabel> lblDescript;
-			NotNullPtr<UI::GUITextBox> txtDescript;
-			NotNullPtr<UI::GUILabel> lblCamera;
-			NotNullPtr<UI::GUITextBox> txtCamera;
-			NotNullPtr<UI::GUILabel> lblFileTime;
-			NotNullPtr<UI::GUITextBox> txtFileTime;
-			NotNullPtr<UI::GUILabel> lblLat;
-			NotNullPtr<UI::GUITextBox> txtLat;
-			NotNullPtr<UI::GUILabel> lblLon;
-			NotNullPtr<UI::GUITextBox> txtLon;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUILabel> lblId;
+			NN<UI::GUITextBox> txtId;
+			NN<UI::GUILabel> lblFileName;
+			NN<UI::GUITextBox> txtFileName;
+			NN<UI::GUILabel> lblDescript;
+			NN<UI::GUITextBox> txtDescript;
+			NN<UI::GUILabel> lblCamera;
+			NN<UI::GUITextBox> txtCamera;
+			NN<UI::GUILabel> lblFileTime;
+			NN<UI::GUITextBox> txtFileTime;
+			NN<UI::GUILabel> lblLat;
+			NN<UI::GUITextBox> txtLat;
+			NN<UI::GUILabel> lblLon;
+			NN<UI::GUITextBox> txtLon;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);

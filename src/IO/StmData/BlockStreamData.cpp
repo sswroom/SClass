@@ -8,7 +8,7 @@ IO::StmData::BlockStreamData::BlockStreamData(BlockStreamData &sd)
 	this->totalSize = 0;
 }
 
-IO::StmData::BlockStreamData::BlockStreamData(NotNullPtr<IO::StreamData> sd)
+IO::StmData::BlockStreamData::BlockStreamData(NN<IO::StreamData> sd)
 {
 	this->sd = sd->GetPartialData(0, sd->GetDataSize());
 	this->totalSize = 0;
@@ -60,7 +60,7 @@ UOSInt IO::StmData::BlockStreamData::GetRealData(UInt64 offset, UOSInt length, D
 	return totalLength;
 }
 
-NotNullPtr<Text::String> IO::StmData::BlockStreamData::GetFullName()
+NN<Text::String> IO::StmData::BlockStreamData::GetFullName()
 {
 	return this->sd->GetFullName();
 }
@@ -80,9 +80,9 @@ const UInt8 *IO::StmData::BlockStreamData::GetPointer()
 	return 0;
 }
 
-NotNullPtr<IO::StreamData> IO::StmData::BlockStreamData::GetPartialData(UInt64 offset, UInt64 length)
+NN<IO::StreamData> IO::StmData::BlockStreamData::GetPartialData(UInt64 offset, UInt64 length)
 {
-	NotNullPtr<IO::StmData::BlockStreamData> data;
+	NN<IO::StmData::BlockStreamData> data;
 	NEW_CLASSNN(data, IO::StmData::BlockStreamData(this->sd));
 	OSInt i = this->dataOfstList.SortedIndexOf(offset);
 	UInt64 totalLength = 0;

@@ -14,14 +14,14 @@ namespace Crypto
 		class CertUtil
 		{
 		public:
-			static Bool AppendNames(NotNullPtr<Net::ASN1PDUBuilder> builder, NotNullPtr<const CertNames> names);
-			static Bool AppendPublicKey(NotNullPtr<Net::ASN1PDUBuilder> builder, NotNullPtr<Crypto::Cert::X509Key> key);
-			static Bool AppendExtensions(NotNullPtr<Net::ASN1PDUBuilder> builder, NotNullPtr<const CertExtensions> ext);
-			static Bool AppendSign(NotNullPtr<Net::ASN1PDUBuilder> builder, NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType);
-			static Crypto::Cert::X509CertReq *CertReqCreate(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<const CertNames> names, NotNullPtr<Crypto::Cert::X509Key> key, const CertExtensions *ext);
-			static Crypto::Cert::X509Cert *SelfSignedCertCreate(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<const CertNames> names, NotNullPtr<Crypto::Cert::X509Key> key, UOSInt validDays, const CertExtensions *ext);
-			static Crypto::Cert::X509Cert *IssueCert(NotNullPtr<Net::SSLEngine> ssl, Crypto::Cert::X509Cert *caCert, NotNullPtr<Crypto::Cert::X509Key> caKey, UOSInt validDays, Crypto::Cert::X509CertReq *csr);
-			static Crypto::Cert::X509Cert *FindIssuer(NotNullPtr<Crypto::Cert::X509Cert> cert);
+			static Bool AppendNames(NN<Net::ASN1PDUBuilder> builder, NN<const CertNames> names);
+			static Bool AppendPublicKey(NN<Net::ASN1PDUBuilder> builder, NN<Crypto::Cert::X509Key> key);
+			static Bool AppendExtensions(NN<Net::ASN1PDUBuilder> builder, NN<const CertExtensions> ext);
+			static Bool AppendSign(NN<Net::ASN1PDUBuilder> builder, NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType);
+			static Crypto::Cert::X509CertReq *CertReqCreate(NN<Net::SSLEngine> ssl, NN<const CertNames> names, NN<Crypto::Cert::X509Key> key, const CertExtensions *ext);
+			static Crypto::Cert::X509Cert *SelfSignedCertCreate(NN<Net::SSLEngine> ssl, NN<const CertNames> names, NN<Crypto::Cert::X509Key> key, UOSInt validDays, const CertExtensions *ext);
+			static Crypto::Cert::X509Cert *IssueCert(NN<Net::SSLEngine> ssl, Crypto::Cert::X509Cert *caCert, NN<Crypto::Cert::X509Key> caKey, UOSInt validDays, Crypto::Cert::X509CertReq *csr);
+			static Crypto::Cert::X509Cert *FindIssuer(NN<Crypto::Cert::X509Cert> cert);
 		};
 	}
 }

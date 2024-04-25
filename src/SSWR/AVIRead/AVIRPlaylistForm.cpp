@@ -29,9 +29,9 @@ typedef enum
 	MNU_PB_CHAPTERS = 1000
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPlaylistForm>();
+	NN<SSWR::AVIRead::AVIRPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPlaylistForm>();
 	Bool changed = false;
 	UOSInt i;
 	UOSInt nFiles = files.GetCount();
@@ -53,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnFileDrop(AnyType userObj, Data
 
 void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnPlaylistDblClk(AnyType userObj, UOSInt itemIndex)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPlaylistForm>();
+	NN<SSWR::AVIRead::AVIRPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPlaylistForm>();
 	me->playlist->OpenItem(itemIndex);
 	if (!me->playlist->IsPlaying())
 	{
@@ -63,19 +63,19 @@ void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnPlaylistDblClk(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPlaylistForm>();
+	NN<SSWR::AVIRead::AVIRPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPlaylistForm>();
 	me->playlist->StartPlayback();
 }
 
 void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnEndClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPlaylistForm>();
+	NN<SSWR::AVIRead::AVIRPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPlaylistForm>();
 	me->playlist->StopPlayback();
 }
 
 void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnFSClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPlaylistForm>();
+	NN<SSWR::AVIRead::AVIRPlaylistForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPlaylistForm>();
 	me->vbdMain->SwitchFullScreen(true, true);
 }
 
@@ -84,7 +84,7 @@ void SSWR::AVIRead::AVIRPlaylistForm::UpdatePlaylist()
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	this->lvPlaylist->ClearItems();
 	i = 0;
 	j = this->playlist->GetCount();
@@ -99,7 +99,7 @@ void SSWR::AVIRead::AVIRPlaylistForm::UpdatePlaylist()
 	}
 }
 
-SSWR::AVIRead::AVIRPlaylistForm::AVIRPlaylistForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::Playlist *playlist) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRPlaylistForm::AVIRPlaylistForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::Playlist *playlist) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Playlist Form"));

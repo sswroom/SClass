@@ -17,7 +17,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTExplorerForm>();
+	NN<SSWR::AVIRead::AVIRMQTTExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTExplorerForm>();
 	if (me->client)
 	{
 		me->ServerStop();
@@ -61,11 +61,11 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(AnyType userO
 			return;
 		}
 		Optional<Net::SSLEngine> ssl = me->ssl;
-		NotNullPtr<Net::SSLEngine> nnssl;
+		NN<Net::SSLEngine> nnssl;
 		if (useSSL && ssl.SetTo(nnssl))
 		{
-			NotNullPtr<Crypto::Cert::X509Cert> cliCert;
-			NotNullPtr<Crypto::Cert::X509File> cliKey;
+			NN<Crypto::Cert::X509Cert> cliCert;
+			NN<Crypto::Cert::X509File> cliKey;
 			if (cliCert.Set(me->cliCert) && cliKey.Set(me->cliKey))
 			{
 				nnssl->ClientSetCertASN1(cliCert, cliKey);
@@ -73,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(AnyType userO
 		}
 		if (useWS)
 		{
-			NotNullPtr<Net::WebSocketClient> ws;
+			NN<Net::WebSocketClient> ws;
 			NEW_CLASSNN(ws, Net::WebSocketClient(me->core->GetSocketFactory(), useSSL?ssl:0, sb.ToCString(), port, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT, 30000));
 			if (ws->IsDown())
 			{
@@ -171,8 +171,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliCertClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTExplorerForm>();
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliCert", false);
+	NN<SSWR::AVIRead::AVIRMQTTExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTExplorerForm>();
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliCert", false);
 	dlg->AddFilter(CSTR("*.crt"), CSTR("Cert file"));
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
@@ -202,7 +202,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliCertClicked(AnyType use
 		}
 		SDEL_CLASS(me->cliCert);
 		me->cliCert = (Crypto::Cert::X509Cert*)x509;
-		NotNullPtr<Text::String> s = dlg->GetFileName();
+		NN<Text::String> s = dlg->GetFileName();
 		UOSInt i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		me->lblCliCert->SetText(s->ToCString().Substring(i + 1));
 	}
@@ -211,8 +211,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliCertClicked(AnyType use
 
 void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliKeyClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTExplorerForm>();
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliKey", false);
+	NN<SSWR::AVIRead::AVIRMQTTExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTExplorerForm>();
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliKey", false);
 	dlg->AddFilter(CSTR("*.key"), CSTR("Key file"));
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
@@ -235,7 +235,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliKeyClicked(AnyType user
 		}
 		SDEL_CLASS(me->cliKey);
 		me->cliKey = (Crypto::Cert::X509File*)asn1;
-		NotNullPtr<Text::String> s = dlg->GetFileName();
+		NN<Text::String> s = dlg->GetFileName();
 		UOSInt i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		me->lblCliKey->SetText(s->ToCString().Substring(i + 1));
 	}
@@ -244,7 +244,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliKeyClicked(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTExplorerForm>();
+	NN<SSWR::AVIRead::AVIRMQTTExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTExplorerForm>();
 	if (me->client == 0)
 	{
 		return;
@@ -273,14 +273,14 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishClicked(AnyType use
 
 void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTopicSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTExplorerForm>();
+	NN<SSWR::AVIRead::AVIRMQTTExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTExplorerForm>();
 	me->currTopic = me->lvRecvTopic->GetSelectedItem().GetOpt<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus>();
 	me->UpdateTopicChart();
 }
 
 void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPingTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTExplorerForm>();
+	NN<SSWR::AVIRead::AVIRMQTTExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTExplorerForm>();
 	if (me->client)
 	{
 		if (me->client->IsError())
@@ -305,11 +305,11 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPingTimerTick(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTExplorerForm>();
-	NotNullPtr<const Data::ArrayListNN<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus>> topicList;
+	NN<SSWR::AVIRead::AVIRMQTTExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTExplorerForm>();
+	NN<const Data::ArrayListNN<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus>> topicList;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus> topicSt;
+	NN<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus> topicSt;
 	UOSInt i;
 	UOSInt j;
 	Sync::MutexUsage mutUsage(me->topicMut);
@@ -389,7 +389,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTimerTick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(AnyType userObj, Text::CStringNN topic, const Data::ByteArrayR &message)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTExplorerForm>();
+	NN<SSWR::AVIRead::AVIRMQTTExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTExplorerForm>();
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Received message, topic = "));
 	sb.Append(topic);
@@ -398,7 +398,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(AnyType use
 	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 
 	Data::Timestamp ts = Data::Timestamp::UtcNow();
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus> topicSt;
+	NN<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus> topicSt;
 	Sync::MutexUsage mutUsage(me->topicMut);
 	if (!me->topicMap.Get(topic).SetTo(topicSt))
 	{
@@ -452,9 +452,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(AnyType use
 void SSWR::AVIRead::AVIRMQTTExplorerForm::UpdateTopicChart()
 {
 	Media::DrawImage *dimg;
-	NotNullPtr<Media::DrawEngine> deng = this->core->GetDrawEngine();
+	NN<Media::DrawEngine> deng = this->core->GetDrawEngine();
 	Math::Size2D<UOSInt> sz = this->pbRecvTopic->GetSizeP();
-	NotNullPtr<Media::DrawImage> gimg;
+	NN<Media::DrawImage> gimg;
 	if (sz.x > 0 && sz.y > 0)
 	{
 		if (this->dispImg == 0 || this->dispImg->GetWidth() != sz.x || this->dispImg->GetHeight() != sz.y)
@@ -468,10 +468,10 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::UpdateTopicChart()
 		}
 		if (gimg.Set(this->dispImg))
 		{
-			NotNullPtr<TopicStatus> currTopic;
+			NN<TopicStatus> currTopic;
 			if (!this->currTopic.SetTo(currTopic) || currTopic->recvCnt <= 1)
 			{
-				NotNullPtr<Media::DrawBrush> b;
+				NN<Media::DrawBrush> b;
 				b = gimg->NewBrushARGB(0xffffffff);
 				gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
 				gimg->DelBrush(b);
@@ -535,8 +535,8 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::ServerStop()
 void SSWR::AVIRead::AVIRMQTTExplorerForm::ClearTopics()
 {
 	UOSInt i;
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus> topicSt;
-	NotNullPtr<const Data::ArrayListNN<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus>> topicList;
+	NN<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus> topicSt;
+	NN<const Data::ArrayListNN<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus>> topicList;
 	topicList = this->topicMap.GetValues();
 	i = topicList->GetCount();
 	while (i-- > 0)
@@ -549,7 +549,7 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::ClearTopics()
 	this->topicMap.Clear();
 }
 
-SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("MQTT Explorer"));
@@ -654,7 +654,7 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::~AVIRMQTTExplorerForm()
 	SDEL_CLASS(this->cliCert);
 	SDEL_CLASS(this->cliKey);
 	this->logger.Delete();
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->dispImg))
 	{
 		this->core->GetDrawEngine()->DeleteImage(img);

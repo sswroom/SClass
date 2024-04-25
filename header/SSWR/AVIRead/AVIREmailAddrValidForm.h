@@ -14,18 +14,18 @@ namespace SSWR
 		class AVIREmailAddrValidForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblAddr;
-			NotNullPtr<UI::GUITextBox> txtAddr;
-			NotNullPtr<UI::GUIButton> btnValidate;
-			NotNullPtr<UI::GUILabel> lblStatus;
-			NotNullPtr<UI::GUITextBox> txtStatus;
+			NN<UI::GUILabel> lblAddr;
+			NN<UI::GUITextBox> txtAddr;
+			NN<UI::GUIButton> btnValidate;
+			NN<UI::GUILabel> lblStatus;
+			NN<UI::GUITextBox> txtStatus;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Net::Email::EmailValidator *validator;
 
 			static void __stdcall OnValidateClicked(AnyType userObj);
 		public:
-			AVIREmailAddrValidForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIREmailAddrValidForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIREmailAddrValidForm();
 
 			virtual void OnMonitorChanged();

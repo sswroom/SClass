@@ -11,26 +11,26 @@ namespace SSWR
 		class AVIRFontSelector : public UI::GUICustomDrawVScroll, public Media::IColorHandler
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Media::ColorManagerSess> colorSess;
-			NotNullPtr<Media::ColorConv> colorConv;
-			NotNullPtr<Map::MapEnv> env;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Media::ColorManagerSess> colorSess;
+			NN<Media::ColorConv> colorConv;
+			NN<Map::MapEnv> env;
 			UOSInt currFontStyle;
 
 			UI::GUIPopupMenu *mnuLayers;
 
 		private:
 			static void __stdcall OnResized(AnyType userObj);
-			virtual void OnDraw(NotNullPtr<Media::DrawImage> img);
+			virtual void OnDraw(NN<Media::DrawImage> img);
 			virtual void OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys);
 			virtual void OnKeyDown(UInt32 keyCode);
 
 		public:
-			AVIRFontSelector(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, UOSInt initFontStyle, NotNullPtr<Media::ColorManagerSess> colorSess);
+			AVIRFontSelector(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, UOSInt initFontStyle, NN<Media::ColorManagerSess> colorSess);
 			virtual ~AVIRFontSelector();
 
-			virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
-			virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);
+			virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
+			virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
 
 			void SetPopupMenu(UI::GUIPopupMenu *mnuLayers);
 

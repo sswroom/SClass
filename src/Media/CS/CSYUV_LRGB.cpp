@@ -128,7 +128,7 @@ void Media::CS::CSYUV_LRGB::SetupYUV_RGB13()
 	}
 }
 
-Media::CS::CSYUV_LRGB::CSYUV_LRGB(NotNullPtr<const Media::ColorProfile> srcColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcColor(srcColor)
+Media::CS::CSYUV_LRGB::CSYUV_LRGB(NN<const Media::ColorProfile> srcColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcColor(srcColor)
 {
 	this->yuvType = yuvType;
 	this->rgbGammaCorr = MemAlloc(UInt8, 65536 * 2);
@@ -140,7 +140,7 @@ Media::CS::CSYUV_LRGB::CSYUV_LRGB(NotNullPtr<const Media::ColorProfile> srcColor
 	MemCopyNO(&this->yuvParam, colorSess->GetYUVParam().Ptr(), sizeof(YUVPARAM));
 	this->rgbParam.Set(colorSess->GetRGBParam());
 
-	NotNullPtr<Media::ColorProfile> tranColor;
+	NN<Media::ColorProfile> tranColor;
 	if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{
 		tranColor = this->colorSess->GetDefVProfile();
@@ -185,15 +185,15 @@ void Media::CS::CSYUV_LRGB::UpdateTable()
 	}
 }
 
-void Media::CS::CSYUV_LRGB::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuv)
+void Media::CS::CSYUV_LRGB::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuv)
 {
 	MemCopyNO(&this->yuvParam, yuv.Ptr(), sizeof(YUVPARAM));
 	this->yuvUpdated = true;
 }
 
-void Media::CS::CSYUV_LRGB::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgb)
+void Media::CS::CSYUV_LRGB::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgb)
 {
-	NotNullPtr<Media::ColorProfile> srcColor;
+	NN<Media::ColorProfile> srcColor;
 	if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{
 		srcColor = this->colorSess->GetDefVProfile();

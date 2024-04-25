@@ -142,7 +142,7 @@ DrawPen *Media::FogImage::NewPenARGB(Int32 color, Int32 thick, UInt8 *pattern, I
 	return pen;
 }
 
-NotNullPtr<DrawBrush> Media::FogImage::NewBrushARGB(Int32 color)
+NN<DrawBrush> Media::FogImage::NewBrushARGB(Int32 color)
 {
 	/////////////////////////////////
 	return 0;

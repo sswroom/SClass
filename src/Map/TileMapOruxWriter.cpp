@@ -137,7 +137,7 @@ Map::TileMapOruxWriter::TileMapOruxWriter(Text::CStringNN fileName, UOSInt minLe
 
 Map::TileMapOruxWriter::~TileMapOruxWriter()
 {
-	NotNullPtr<DB::DBTransaction> sess;
+	NN<DB::DBTransaction> sess;
 	if (this->sess.SetTo(sess))
 	{
 		this->db->Commit(sess);
@@ -172,7 +172,7 @@ void Map::TileMapOruxWriter::AddImage(UOSInt level, Int32 x, Int32 y, Data::Byte
 	this->imgCount++;
 	if (this->imgCount > 0x3fff)
 	{
-		NotNullPtr<DB::DBTransaction> sess;
+		NN<DB::DBTransaction> sess;
 		if (this->sess.SetTo(sess))
 		{
 			this->db->Commit(sess);

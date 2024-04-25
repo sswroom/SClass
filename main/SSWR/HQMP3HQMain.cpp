@@ -8,9 +8,9 @@
 #include "SSWR/AVIRead/AVIRHQMPForm.h"
 #include "UI/GUICore.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	NotNullPtr<UI::GUICore> ui;
+	NN<UI::GUICore> ui;
 	SSWR::AVIRead::AVIRHQMPForm *frm;
 
 //	MemSetBreakPoint(0x01088d78);

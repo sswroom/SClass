@@ -11,16 +11,16 @@ namespace Text
 		StringBuilderUTF32();
 		virtual ~StringBuilderUTF32();
 
-		virtual NotNullPtr<StringBuilderUTF> Append(Text::PString *s);
-		virtual NotNullPtr<StringBuilderUTF> Append(const UTF8Char *s);
-		virtual NotNullPtr<StringBuilderUTF> AppendC(const UTF8Char *s, UOSInt charCnt);
-		virtual NotNullPtr<StringBuilderUTF> AppendS(const UTF8Char *s, UOSInt maxLen);
-		virtual NotNullPtr<StringBuilderUTF> AppendChar(UTF32Char c, UOSInt repCnt);
+		virtual NN<StringBuilderUTF> Append(Text::PString *s);
+		virtual NN<StringBuilderUTF> Append(const UTF8Char *s);
+		virtual NN<StringBuilderUTF> AppendC(const UTF8Char *s, UOSInt charCnt);
+		virtual NN<StringBuilderUTF> AppendS(const UTF8Char *s, UOSInt maxLen);
+		virtual NN<StringBuilderUTF> AppendChar(UTF32Char c, UOSInt repCnt);
 
-		NotNullPtr<StringBuilderUTF32> Append(UTF32Char c, UOSInt repeatCnt);
-		NotNullPtr<StringBuilderUTF32> AppendCSV(const UTF32Char **sarr, UOSInt nStr);
-		NotNullPtr<StringBuilderUTF32> AppendToUpper(const UTF32Char *s);
-		NotNullPtr<StringBuilderUTF32> AppendToLower(const UTF32Char *s);
+		NN<StringBuilderUTF32> Append(UTF32Char c, UOSInt repeatCnt);
+		NN<StringBuilderUTF32> AppendCSV(const UTF32Char **sarr, UOSInt nStr);
+		NN<StringBuilderUTF32> AppendToUpper(const UTF32Char *s);
+		NN<StringBuilderUTF32> AppendToLower(const UTF32Char *s);
  	};
 }
 #endif

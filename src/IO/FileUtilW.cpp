@@ -241,7 +241,7 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileEx
 			}
 		}
 
-		NotNullPtr<IO::ProgressHandler> nnprogHdlr;
+		NN<IO::ProgressHandler> nnprogHdlr;
 		if (progHdlr.SetTo(nnprogHdlr))
 		{
 			nnprogHdlr->ProgressStart(file1, fileSize);
@@ -525,11 +525,11 @@ Bool IO::FileUtil::MoveDir(Text::CStringNN srcDir, Text::CStringNN destDir, File
 
 void __stdcall IO::FileUtil::CopyHdlr(const UInt8 *buff, UOSInt buffSize, AnyType userData)
 {
-	NotNullPtr<CopySess> csess = userData.GetNN<CopySess>();
+	NN<CopySess> csess = userData.GetNN<CopySess>();
 	UOSInt writenSize;
 	writenSize = csess->destStm->Write(buff, buffSize);
 	csess->writeSize += writenSize;
-	NotNullPtr<IO::ProgressHandler> nnprogHdlr;
+	NN<IO::ProgressHandler> nnprogHdlr;
 	if (csess->progHdlr.SetTo(nnprogHdlr))
 	{
 		nnprogHdlr->ProgressUpdate(csess->writeSize, csess->fileSize);

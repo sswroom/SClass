@@ -36,7 +36,7 @@ namespace Media
 		Int32 GetProfileClass() const;
 		Int32 GetDataColorspace() const;
 		Int32 GetPCS() const;
-		void GetCreateTime(NotNullPtr<Data::DateTime> createTime) const;
+		void GetCreateTime(NN<Data::DateTime> createTime) const;
 		Int32 GetPrimaryPlatform() const;
 		Int32 GetProfileFlag() const;
 		Int32 GetDeviceManufacturer() const;
@@ -51,18 +51,18 @@ namespace Media
 		Optional<Media::LUT> CreateRLUT() const;
 		Optional<Media::LUT> CreateGLUT() const;
 		Optional<Media::LUT> CreateBLUT() const;
-		Bool GetRedTransferParam(NotNullPtr<Media::CS::TransferParam> param) const;
-		Bool GetGreenTransferParam(NotNullPtr<Media::CS::TransferParam> param) const;
-		Bool GetBlueTransferParam(NotNullPtr<Media::CS::TransferParam> param) const;
-		Bool GetColorPrimaries(NotNullPtr<Media::ColorProfile::ColorPrimaries> color) const;
+		Bool GetRedTransferParam(NN<Media::CS::TransferParam> param) const;
+		Bool GetGreenTransferParam(NN<Media::CS::TransferParam> param) const;
+		Bool GetBlueTransferParam(NN<Media::CS::TransferParam> param) const;
+		Bool GetColorPrimaries(NN<Media::ColorProfile::ColorPrimaries> color) const;
 
-		Bool SetToColorProfile(NotNullPtr<Media::ColorProfile> colorProfile);
-		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		Bool SetToColorProfile(NN<Media::ColorProfile> colorProfile);
+		void ToString(NN<Text::StringBuilderUTF8> sb) const;
 
 		static Optional<ICCProfile> Parse(Data::ByteArrayR buff);
-		static Bool ParseFrame(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, const UInt8 *buff, UOSInt buffSize);
+		static Bool ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, const UInt8 *buff, UOSInt buffSize);
 
-		static void ReadDateTimeNumber(const UInt8 *buff, NotNullPtr<Data::DateTime> dt);
+		static void ReadDateTimeNumber(const UInt8 *buff, NN<Data::DateTime> dt);
 		static CIEXYZ ReadXYZNumber(const UInt8 *buff);
 		static Double ReadS15Fixed16Number(const UInt8 *buff);
 		static Double ReadU16Fixed16Number(const UInt8 *buff);
@@ -78,8 +78,8 @@ namespace Media
 		static Text::CStringNN GetNameStandardObserver(Int32 val);
 		static Text::CStringNN GetNameStandardIlluminent(Int32 val);
 
-		static void GetDispCIEXYZ(NotNullPtr<Text::StringBuilderUTF8> sb, const CIEXYZ &xyz);
-		static void GetDispTagType(NotNullPtr<Text::StringBuilderUTF8> sb, UInt8 *buff, UInt32 leng);
+		static void GetDispCIEXYZ(NN<Text::StringBuilderUTF8> sb, const CIEXYZ &xyz);
+		static void GetDispTagType(NN<Text::StringBuilderUTF8> sb, UInt8 *buff, UInt32 leng);
 
 		static Media::CS::TransferType FindTransferType(UOSInt colorCount, UInt16 *curveColors, OutParam<Double> gamma);
 		static UTF8Char *GetProfilePath(UTF8Char *sbuff);
@@ -87,8 +87,8 @@ namespace Media
 		static Optional<ICCProfile> NewSRGBProfile();
 		static const UInt8 *GetSRGBICCData();
 
-		static void FrameAddXYZNumber(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, Text::CStringNN fieldName, const UInt8 *xyzBuff);
-		static void FrameDispTagType(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, Text::CStringNN fieldName, const UInt8 *buff, UInt32 leng);
+		static void FrameAddXYZNumber(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, Text::CStringNN fieldName, const UInt8 *xyzBuff);
+		static void FrameDispTagType(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, Text::CStringNN fieldName, const UInt8 *buff, UInt32 leng);
 	};
 }
 #endif

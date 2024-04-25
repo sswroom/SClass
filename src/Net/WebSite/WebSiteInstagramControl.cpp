@@ -12,8 +12,8 @@ Text::JSONBase *Net::WebSite::WebSiteInstagramControl::ParsePageJSON(Text::CStri
 {
 	Text::StringBuilderUTF8 sb;
 	Text::JSONBase *baseData = 0;
-	NotNullPtr<Text::XMLReader> reader;
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, OPTSTR_CSTR(this->userAgent), true, true);
+	NN<Text::XMLReader> reader;
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, OPTSTR_CSTR(this->userAgent), true, true);
 	cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	NEW_CLASSNN(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_HTML));
 	while (reader->ReadNext())
@@ -37,7 +37,7 @@ Text::JSONBase *Net::WebSite::WebSiteInstagramControl::ParsePageJSON(Text::CStri
 	return baseData;
 }
 
-Net::WebSite::WebSiteInstagramControl::WebSiteInstagramControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent)
+Net::WebSite::WebSiteInstagramControl::WebSiteInstagramControl(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -50,7 +50,7 @@ Net::WebSite::WebSiteInstagramControl::~WebSiteInstagramControl()
 	OPTSTR_DEL(this->userAgent);
 }
 
-OSInt Net::WebSite::WebSiteInstagramControl::GetChannelItems(NotNullPtr<Text::String> channelId, OSInt pageNo, Data::ArrayList<Net::WebSite::WebSiteInstagramControl::ItemData*> *itemList, Net::WebSite::WebSiteInstagramControl::ChannelInfo *chInfo)
+OSInt Net::WebSite::WebSiteInstagramControl::GetChannelItems(NN<Text::String> channelId, OSInt pageNo, Data::ArrayList<Net::WebSite::WebSiteInstagramControl::ItemData*> *itemList, Net::WebSite::WebSiteInstagramControl::ChannelInfo *chInfo)
 {
 	Text::StringBuilderUTF8 sb;
 	OSInt retCnt = 0;
@@ -238,7 +238,7 @@ void Net::WebSite::WebSiteInstagramControl::FreeChannelInfo(Net::WebSite::WebSit
 	SDEL_STRING(chInfo->username);
 }
 
-OSInt Net::WebSite::WebSiteInstagramControl::GetPageImages(NotNullPtr<Text::String> shortCode, Data::ArrayListStringNN *imageList, Data::ArrayListStringNN *videoList)
+OSInt Net::WebSite::WebSiteInstagramControl::GetPageImages(NN<Text::String> shortCode, Data::ArrayListStringNN *imageList, Data::ArrayListStringNN *videoList)
 {
 	Text::StringBuilderUTF8 sb;
 	OSInt retCnt = 0;

@@ -16,20 +16,20 @@ namespace Map
 
 			FileGDBTable *GetTable(Text::CString name);
 
-			FileGDBDir(NotNullPtr<Text::String> sourceName);
+			FileGDBDir(NN<Text::String> sourceName);
 		public:
 			virtual ~FileGDBDir();
 
-			virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
+			virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
 			virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 			virtual DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
-			virtual void CloseReader(NotNullPtr<DB::DBReader> r);
-			virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
+			virtual void CloseReader(NN<DB::DBReader> r);
+			virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 			virtual void Reconnect();
 
 			void AddTable(FileGDBTable *table);
 
-			static FileGDBDir *OpenDir(NotNullPtr<IO::PackageFile> pkg, NotNullPtr<Math::ArcGISPRJParser> prjParser);
+			static FileGDBDir *OpenDir(NN<IO::PackageFile> pkg, NN<Math::ArcGISPRJParser> prjParser);
 		};
 	}
 }

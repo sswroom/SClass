@@ -68,7 +68,7 @@ namespace UI
 		virtual void ProcessMessages() = 0;
 		virtual void WaitForMessages() = 0;
 		virtual void Exit() = 0;
-		virtual NotNullPtr<Media::DrawEngine> CreateDrawEngine() = 0;
+		virtual NN<Media::DrawEngine> CreateDrawEngine() = 0;
 		virtual Double GetMagnifyRatio(MonitorHandle *hMonitor) = 0;
 		virtual void UseDevice(Bool useSystem, Bool useDisplay) = 0;
 		virtual void SetNoDisplayOff(Bool noDispOff) = 0;
@@ -85,37 +85,37 @@ namespace UI
 
 		virtual void ShowMsgOK(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl) = 0;
 		virtual Bool ShowMsgYesNo(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl) = 0;
-		virtual NotNullPtr<GUIButton> NewButton(NotNullPtr<GUIClientControl> parent, Text::CStringNN text) = 0;
-		virtual NotNullPtr<GUICheckBox> NewCheckBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text, Bool checked) = 0;
-		virtual NotNullPtr<GUICheckedListBox> NewCheckedListBox(NotNullPtr<GUIClientControl> parent) = 0;
-		virtual NotNullPtr<GUIComboBox> NewComboBox(NotNullPtr<GUIClientControl> parent, Bool allowEdit) = 0;
-		virtual NotNullPtr<GUIDateTimePicker> NewDateTimePicker(NotNullPtr<UI::GUIClientControl> parent, Bool calendarSelect) = 0;
-		virtual NotNullPtr<GUIGroupBox> NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text) = 0;
-		virtual NotNullPtr<GUIHScrollBar> NewHScrollBar(NotNullPtr<GUIClientControl> parent, Double width) = 0;
-		virtual NotNullPtr<GUILabel> NewLabel(NotNullPtr<GUIClientControl> parent, Text::CStringNN text) = 0;
-		virtual NotNullPtr<GUIListBox> NewListBox(NotNullPtr<GUIClientControl> parent, Bool multiSelect) = 0;
-		virtual NotNullPtr<GUIPictureBox> NewPictureBox(NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize) = 0;
-		virtual NotNullPtr<GUIPictureBoxSimple> NewPictureBoxSimple(NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder) = 0;
-		virtual NotNullPtr<GUIProgressBar> NewProgressBar(NotNullPtr<UI::GUIClientControl> parent, UInt64 totalCnt) = 0;
-		virtual NotNullPtr<GUIRadioButton> NewRadioButton(NotNullPtr<GUIClientControl> parent, Text::CStringNN initText, Bool selected) = 0;
-		virtual NotNullPtr<GUIRealtimeLineChart> NewRealtimeLineChart(NotNullPtr<GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS) = 0;
-		virtual NotNullPtr<GUITabControl> NewTabControl(NotNullPtr<GUIClientControl> parent) = 0;
-		virtual NotNullPtr<GUITextBox> NewTextBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN initText) = 0;
-		virtual NotNullPtr<GUITextBox> NewTextBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN initText, Bool multiLine) = 0;
-		virtual NotNullPtr<GUITrackBar> NewTrackBar(NotNullPtr<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal) = 0;
-		virtual NotNullPtr<GUIHSplitter> NewHSplitter(NotNullPtr<UI::GUIClientControl> parent, Int32 width, Bool isRight) = 0;
-		virtual NotNullPtr<GUIVSplitter> NewVSplitter(NotNullPtr<UI::GUIClientControl> parent, Int32 height, Bool isBottom) = 0;
-		virtual NotNullPtr<GUIFileDialog> NewFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave) = 0;
-		virtual NotNullPtr<GUIFolderDialog> NewFolderDialog() = 0;
-		virtual NotNullPtr<GUIFontDialog> NewFontDialog(Optional<Text::String> fontName, Double fontSizePt, Bool isBold, Bool isItalic) = 0;
-		virtual NotNullPtr<GUIFontDialog> NewFontDialog(Text::CString fontName, Double fontSizePt, Bool isBold, Bool isItalic) = 0;
+		virtual NN<GUIButton> NewButton(NN<GUIClientControl> parent, Text::CStringNN text) = 0;
+		virtual NN<GUICheckBox> NewCheckBox(NN<GUIClientControl> parent, Text::CStringNN text, Bool checked) = 0;
+		virtual NN<GUICheckedListBox> NewCheckedListBox(NN<GUIClientControl> parent) = 0;
+		virtual NN<GUIComboBox> NewComboBox(NN<GUIClientControl> parent, Bool allowEdit) = 0;
+		virtual NN<GUIDateTimePicker> NewDateTimePicker(NN<UI::GUIClientControl> parent, Bool calendarSelect) = 0;
+		virtual NN<GUIGroupBox> NewGroupBox(NN<GUIClientControl> parent, Text::CStringNN text) = 0;
+		virtual NN<GUIHScrollBar> NewHScrollBar(NN<GUIClientControl> parent, Double width) = 0;
+		virtual NN<GUILabel> NewLabel(NN<GUIClientControl> parent, Text::CStringNN text) = 0;
+		virtual NN<GUIListBox> NewListBox(NN<GUIClientControl> parent, Bool multiSelect) = 0;
+		virtual NN<GUIPictureBox> NewPictureBox(NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize) = 0;
+		virtual NN<GUIPictureBoxSimple> NewPictureBoxSimple(NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder) = 0;
+		virtual NN<GUIProgressBar> NewProgressBar(NN<UI::GUIClientControl> parent, UInt64 totalCnt) = 0;
+		virtual NN<GUIRadioButton> NewRadioButton(NN<GUIClientControl> parent, Text::CStringNN initText, Bool selected) = 0;
+		virtual NN<GUIRealtimeLineChart> NewRealtimeLineChart(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS) = 0;
+		virtual NN<GUITabControl> NewTabControl(NN<GUIClientControl> parent) = 0;
+		virtual NN<GUITextBox> NewTextBox(NN<GUIClientControl> parent, Text::CStringNN initText) = 0;
+		virtual NN<GUITextBox> NewTextBox(NN<GUIClientControl> parent, Text::CStringNN initText, Bool multiLine) = 0;
+		virtual NN<GUITrackBar> NewTrackBar(NN<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal) = 0;
+		virtual NN<GUIHSplitter> NewHSplitter(NN<UI::GUIClientControl> parent, Int32 width, Bool isRight) = 0;
+		virtual NN<GUIVSplitter> NewVSplitter(NN<UI::GUIClientControl> parent, Int32 height, Bool isBottom) = 0;
+		virtual NN<GUIFileDialog> NewFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave) = 0;
+		virtual NN<GUIFolderDialog> NewFolderDialog() = 0;
+		virtual NN<GUIFontDialog> NewFontDialog(Optional<Text::String> fontName, Double fontSizePt, Bool isBold, Bool isItalic) = 0;
+		virtual NN<GUIFontDialog> NewFontDialog(Text::CString fontName, Double fontSizePt, Bool isBold, Bool isItalic) = 0;
 
-		virtual NotNullPtr<GUIPanelBase> NewPanelBase(NotNullPtr<UI::GUIPanel> master, ControlHandle *parentHWnd) = 0;
-		virtual NotNullPtr<GUIPanelBase> NewPanelBase(NotNullPtr<UI::GUIPanel> master, NotNullPtr<UI::GUIClientControl> parent) = 0;
+		virtual NN<GUIPanelBase> NewPanelBase(NN<UI::GUIPanel> master, ControlHandle *parentHWnd) = 0;
+		virtual NN<GUIPanelBase> NewPanelBase(NN<UI::GUIPanel> master, NN<UI::GUIClientControl> parent) = 0;
 
-		NotNullPtr<GUIListView> NewListView(NotNullPtr<UI::GUIClientControl> parent, ListViewStyle lvstyle, UOSInt colCount);
-		NotNullPtr<GUIPanel> NewPanel(NotNullPtr<UI::GUIClientControl> parent);
-		NotNullPtr<GUIPictureBoxDD> NewPictureBoxDD(NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::ColorManagerSess> colorSess, Bool allowEnlarge, Bool directMode);
+		NN<GUIListView> NewListView(NN<UI::GUIClientControl> parent, ListViewStyle lvstyle, UOSInt colCount);
+		NN<GUIPanel> NewPanel(NN<UI::GUIClientControl> parent);
+		NN<GUIPictureBoxDD> NewPictureBoxDD(NN<UI::GUIClientControl> parent, NN<Media::ColorManagerSess> colorSess, Bool allowEnlarge, Bool directMode);
 	};
 }
 #endif

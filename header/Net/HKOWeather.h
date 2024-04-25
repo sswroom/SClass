@@ -129,8 +129,8 @@ namespace Net
 		{
 			Data::DateTimeUtil::DateValue date;
 			Data::DateTimeUtil::Weekday weekday;
-			NotNullPtr<Text::String> wind;
-			NotNullPtr<Text::String> weather;
+			NN<Text::String> wind;
+			NN<Text::String> weather;
 			Int32 maxTemp;
 			Int32 minTemp;
 			Int32 maxRH;
@@ -174,25 +174,25 @@ namespace Net
 		typedef void (__stdcall *UpdateHandler)(WeatherSignal updatedSignal);
 	private:
 		UpdateHandler hdlr;
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;
-		NotNullPtr<Text::EncodingFactory> encFact;
+		NN<Text::EncodingFactory> encFact;
 		Net::RSSReader *rss;
 		WeatherSignal currSignal;
-		NotNullPtr<IO::LogTool> log;
+		NN<IO::LogTool> log;
 
 		static WeatherSignal String2Signal(Text::String *textMessage);
 	public:
-		static WeatherSignal GetSignalSummary(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<Text::EncodingFactory> encFact);
-		static Bool GetCurrentTempRH(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, OutParam<Int32> temperature, OutParam<Int32> rh, NotNullPtr<IO::LogTool> log);
-		static Bool GetWeatherForecast(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang, WeatherForecast *weatherForecast);
+		static WeatherSignal GetSignalSummary(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact);
+		static Bool GetCurrentTempRH(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, OutParam<Int32> temperature, OutParam<Int32> rh, NN<IO::LogTool> log);
+		static Bool GetWeatherForecast(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang, WeatherForecast *weatherForecast);
 		static void FreeWeatherForecast(WeatherForecast *weatherForecast);
-		static Bool GetLocalForecast(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang, LocalForecast *localForecast);
+		static Bool GetLocalForecast(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang, LocalForecast *localForecast);
 		static void FreeLocalForecast(LocalForecast *localForecast);
-		static Bool GetWarningSummary(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Data::ArrayList<WarningSummary*> *warnings);
+		static Bool GetWarningSummary(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Data::ArrayList<WarningSummary*> *warnings);
 		static void FreeWarningSummary(Data::ArrayList<WarningSummary*> *warnings);
 
-		HKOWeather(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<Text::EncodingFactory> encFact, UpdateHandler hdlr, NotNullPtr<IO::LogTool> log);
+		HKOWeather(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact, UpdateHandler hdlr, NN<IO::LogTool> log);
 		virtual ~HKOWeather();
 
 		virtual void ItemAdded(Net::RSSItem *item);

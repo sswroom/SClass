@@ -20,7 +20,7 @@ Int32 Parser::FileParser::PCAPParser::GetName()
 	return *(Int32*)"PCAP";
 }
 
-void Parser::FileParser::PCAPParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::PCAPParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::EthernetAnalyzer)
 	{
@@ -33,7 +33,7 @@ IO::ParserType Parser::FileParser::PCAPParser::GetParserType()
 	return IO::ParserType::EthernetAnalyzer;
 }
 
-IO::ParsedObject *Parser::FileParser::PCAPParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::PCAPParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt32 maxSize = 65536;
 	UInt64 currOfst;

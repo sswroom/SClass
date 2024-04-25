@@ -21,7 +21,7 @@ struct Net::HTTPOSClient::ClassData
 	CURL *curl;
 	struct curl_slist *headers;
 	Data::ArrayListStringNN *respHeaders;
-	NotNullPtr<Text::String> userAgent;
+	NN<Text::String> userAgent;
 	IO::MemoryStream *respData;
 	UInt64 contLen;
 	Optional<Data::ArrayListNN<Crypto::Cert::Certificate>> certs;
@@ -35,7 +35,7 @@ size_t HTTPOSClient_HeaderFunc(char *buffer, size_t size, size_t nitems, void *u
 	{
 		return len;
 	}
-	NotNullPtr<Text::String> hdr = Text::String::New(len);
+	NN<Text::String> hdr = Text::String::New(len);
 	MemCopyNO(hdr->v, buffer, len);
 	hdr->v[len] = 0;
 	UOSInt i = len;
@@ -67,7 +67,7 @@ size_t HTTPOSClient_WriteFunc(char *ptr, size_t size, size_t nmemb, void *userda
 	return size * nmemb;
 }
 
-Net::HTTPOSClient::HTTPOSClient(NotNullPtr<Net::SocketFactory> sockf, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn)
+Net::HTTPOSClient::HTTPOSClient(NN<Net::SocketFactory> sockf, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->curl = curl_easy_init();
@@ -109,11 +109,11 @@ Net::HTTPOSClient::~HTTPOSClient()
 	if (this->clsData->curl)
 		curl_easy_cleanup(this->clsData->curl);
 	this->clsData->userAgent->Release();
-	NotNullPtr<Data::ArrayListNN<Crypto::Cert::Certificate>> certList;
+	NN<Data::ArrayListNN<Crypto::Cert::Certificate>> certList;
 	if (this->clsData->certs.SetTo(certList))
 	{
 		UOSInt i = certList->GetCount();
-		NotNullPtr<Crypto::Cert::Certificate> cert;
+		NN<Crypto::Cert::Certificate> cert;
 		while (i-- > 0)
 		{
 			cert = certList->GetItemNoCheck(i);
@@ -568,7 +568,7 @@ Bool Net::HTTPOSClient::IsSecureConn() const
 	return false;
 }
 
-Bool Net::HTTPOSClient::SetClientCert(NotNullPtr<Crypto::Cert::X509Cert> cert, NotNullPtr<Crypto::Cert::X509File> key)
+Bool Net::HTTPOSClient::SetClientCert(NN<Crypto::Cert::X509Cert> cert, NN<Crypto::Cert::X509File> key)
 {
 #if defined(CURLOPTTYPE_BLOB)
 	if (this->clsData->curl)
@@ -602,10 +602,10 @@ Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> Net::HTTPOSClient
 		{
 			if (ci->num_of_certs > 0)
 			{
-				NotNullPtr<Data::ArrayListNN<Crypto::Cert::Certificate>> certList;
+				NN<Data::ArrayListNN<Crypto::Cert::Certificate>> certList;
 				NEW_CLASSNN(certList, Data::ArrayListNN<Crypto::Cert::Certificate>());
 				this->clsData->certs = certList;
-				NotNullPtr<Crypto::Cert::Certificate> cert;
+				NN<Crypto::Cert::Certificate> cert;
 				int i = 0;
 				while (i < ci->num_of_certs)
 				{

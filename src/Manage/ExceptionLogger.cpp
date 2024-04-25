@@ -12,7 +12,7 @@
 
 #define STACKDUMPSIZE 4096
 
-void Manage::ExceptionLogger::WriteContext(NotNullPtr<IO::Writer> writer, NotNullPtr<IO::Stream> stm, NotNullPtr<Manage::ThreadContext> context, NotNullPtr<Manage::AddressResolver> addrResol)
+void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream> stm, NN<Manage::ThreadContext> context, NN<Manage::AddressResolver> addrResol)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
@@ -333,7 +333,7 @@ void Manage::ExceptionLogger::WriteContext(NotNullPtr<IO::Writer> writer, NotNul
 	}
 }
 
-void Manage::ExceptionLogger::WriteStackTrace(NotNullPtr<IO::Writer> writer, NotNullPtr<Manage::StackTracer> tracer, NotNullPtr<Manage::AddressResolver> addrResol)
+void Manage::ExceptionLogger::WriteStackTrace(NN<IO::Writer> writer, NN<Manage::StackTracer> tracer, NN<Manage::AddressResolver> addrResol)
 {
 #ifndef _WIN32_WCE
 	if (tracer->IsSupported())
@@ -353,7 +353,7 @@ void Manage::ExceptionLogger::WriteStackTrace(NotNullPtr<IO::Writer> writer, Not
 #endif
 }
 
-Bool Manage::ExceptionLogger::LogToFile(NotNullPtr<Text::String> fileName, UInt32 exCode, Text::CString exName, UOSInt exAddr, NotNullPtr<Manage::ThreadContext> context)
+Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode, Text::CString exName, UOSInt exAddr, NN<Manage::ThreadContext> context)
 {
 #ifndef _WIN32_WCE
 	Manage::Process proc;
@@ -377,7 +377,7 @@ Bool Manage::ExceptionLogger::LogToFile(NotNullPtr<Text::String> fileName, UInt3
 	sb.Append(exName);
 	writer.WriteLineC(sb.ToString(), sb.GetLength());
 
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	j = symResol.GetModuleCount();
 	writer.WriteLineC(UTF8STRC("\r\nLoaded modules:"));
 	i = 0;
@@ -398,7 +398,7 @@ Bool Manage::ExceptionLogger::LogToFile(NotNullPtr<Text::String> fileName, UInt3
 	{
 		Data::ArrayList<Manage::ThreadInfo*> threadList;
 		Manage::ThreadInfo *thread;
-		NotNullPtr<Manage::ThreadContext> tCont;
+		NN<Manage::ThreadContext> tCont;
 		UInt64 startAddr;
 		proc.GetThreads(threadList);
 		i = 0;
@@ -486,7 +486,7 @@ Bool Manage::ExceptionLogger::LogToFile(NotNullPtr<Text::String> fileName, UInt3
 	{
 		Data::ArrayList<Manage::ThreadInfo*> threadList;
 		Manage::ThreadInfo *thread;
-		NotNullPtr<Manage::ThreadContext> tCont;
+		NN<Manage::ThreadContext> tCont;
 		proc.GetThreads(threadList);
 		i = 0;
 		j = threadList.GetCount();

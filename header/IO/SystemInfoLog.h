@@ -16,15 +16,15 @@ namespace IO
 
 		struct DeviceInfo
 		{
-			NotNullPtr<Text::String> desc;
-			NotNullPtr<Text::String> hwId;
+			NN<Text::String> desc;
+			NN<Text::String> hwId;
 			Optional<Text::String> service;
 			Optional<Text::String> driver;
 		};
 
 		struct DriverInfo
 		{
-			NotNullPtr<Text::String> fileName;
+			NN<Text::String> fileName;
 			UInt64 fileSize;
 			Optional<Text::String> creationDate;
 			Optional<Text::String> version;
@@ -43,9 +43,9 @@ namespace IO
 		Data::ArrayListNN<DeviceInfo> deviceInfos;
 		Data::ArrayListNN<DriverInfo> driverInfos;
 
-		static void FreeServerRole(NotNullPtr<ServerRole> serverRole);
-		static void FreeDeviceInfo(NotNullPtr<DeviceInfo> deviceInfo);
-		static void FreeDriverInfo(NotNullPtr<DriverInfo> driverInfo);
+		static void FreeServerRole(NN<ServerRole> serverRole);
+		static void FreeDeviceInfo(NN<DeviceInfo> deviceInfo);
+		static void FreeDriverInfo(NN<DriverInfo> driverInfo);
 	public:
 		SystemInfoLog(Text::CStringNN sourceName);
 		virtual ~SystemInfoLog();
@@ -63,11 +63,11 @@ namespace IO
 		void SetProductType(UInt32 productType);
 		UInt32 GetProductType() const;
 		void AddServerRole(const UTF8Char *name, const UTF8Char *data);
-		NotNullPtr<const Data::ArrayListNN<ServerRole>> GetServerRoles() const;
+		NN<const Data::ArrayListNN<ServerRole>> GetServerRoles() const;
 		void AddDeviceInfo(const UTF8Char *desc, const UTF8Char *hwId, const UTF8Char *service, const UTF8Char *driver);
-		NotNullPtr<const Data::ArrayListNN<DeviceInfo>> GetDeviceInfos() const;
+		NN<const Data::ArrayListNN<DeviceInfo>> GetDeviceInfos() const;
 		void AddDriverInfo(const UTF8Char *fileName, UInt64 fileSize, const UTF8Char *creationDate, const UTF8Char *version, const UTF8Char *manufacturer, const UTF8Char *productName, const UTF8Char *group, UInt32 altitude);
-		NotNullPtr<const Data::ArrayListNN<DriverInfo>> GetDriverInfos() const;
+		NN<const Data::ArrayListNN<DriverInfo>> GetDriverInfos() const;
 	};
 }
 

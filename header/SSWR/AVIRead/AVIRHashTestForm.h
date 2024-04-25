@@ -19,27 +19,27 @@ namespace SSWR
 		class AVIRHashTestForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpAlgorithm;
-			NotNullPtr<UI::GUILabel> lblAlgorithm;
-			NotNullPtr<UI::GUIComboBox> cboAlgorithm;
-			NotNullPtr<UI::GUIButton> btnSpeed;
-			NotNullPtr<UI::GUILabel> lblSpeed;
-			NotNullPtr<UI::GUITextBox> txtSpeed;
+			NN<UI::GUITabPage> tpAlgorithm;
+			NN<UI::GUILabel> lblAlgorithm;
+			NN<UI::GUIComboBox> cboAlgorithm;
+			NN<UI::GUIButton> btnSpeed;
+			NN<UI::GUILabel> lblSpeed;
+			NN<UI::GUITextBox> txtSpeed;
 
-			NotNullPtr<UI::GUITabPage> tpCompare;
-			NotNullPtr<UI::GUIPanel> pnlCompare;
-			NotNullPtr<UI::GUIButton> btnCompare;
-			NotNullPtr<UI::GUIListView> lvCompare;
+			NN<UI::GUITabPage> tpCompare;
+			NN<UI::GUIPanel> pnlCompare;
+			NN<UI::GUIButton> btnCompare;
+			NN<UI::GUIListView> lvCompare;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
 			static Double __stdcall HashTestSpeed(Crypto::Hash::IHash *hash);
 			static void __stdcall OnCompareClicked(AnyType userObj);
 			static void __stdcall OnSpeedClicked(AnyType userObj);
 		public:
-			AVIRHashTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRHashTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHashTestForm();
 
 			virtual void OnMonitorChanged();

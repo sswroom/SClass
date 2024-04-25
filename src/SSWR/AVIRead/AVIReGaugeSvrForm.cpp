@@ -8,7 +8,7 @@
 
 void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIReGaugeSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIReGaugeSvrForm>();
+	NN<SSWR::AVIRead::AVIReGaugeSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIReGaugeSvrForm>();
 	if (me->svr)
 	{
 		SDEL_CLASS(me->svr);
@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(AnyType userObj)
 
 		if (port > 0 && port <= 65535)
 		{
-			NotNullPtr<Net::WebServer::EGaugeHandler> dirHdlr;
+			NN<Net::WebServer::EGaugeHandler> dirHdlr;
 			NEW_CLASSNN(dirHdlr, Net::WebServer::EGaugeHandler());
 			dirHdlr->HandleEGaugeData(OnEGaugeData, me);
 			NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), 0, dirHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("eGauge/1.0"), false, Net::WebServer::KeepAlive::Default, false));
@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(AnyType userObj)
 				me->dirHdlr = dirHdlr.Ptr();
 				NEW_CLASS(me->log, IO::LogTool());
 				me->svr->SetAccessLog(me->log, IO::LogHandler::LogLevel::Raw);
-				NotNullPtr<UI::ListBoxLogger> logger;
+				NN<UI::ListBoxLogger> logger;
 				NEW_CLASSNN(logger, UI::ListBoxLogger(me, me->lbLog, 500, true));
 				me->logger = logger.Ptr();
 				me->log->AddLogHandler(logger, IO::LogHandler::LogLevel::Raw);
@@ -69,7 +69,7 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnLogSel(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIReGaugeSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIReGaugeSvrForm>();
+	NN<SSWR::AVIRead::AVIReGaugeSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIReGaugeSvrForm>();
 	Optional<Text::String> s = me->lbLog->GetSelectedItemTextNew();
 	me->txtLog->SetText(Text::String::OrEmpty(s)->ToCString());
 	OPTSTR_DEL(s);
@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnLogSel(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIReGaugeSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIReGaugeSvrForm>();
+	NN<SSWR::AVIRead::AVIReGaugeSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIReGaugeSvrForm>();
 	if (me->reqUpdated)
 	{
 		Sync::MutexUsage mutUsage(me->reqMut);
@@ -88,7 +88,7 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnTimerTick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnEGaugeData(AnyType userObj, const UInt8 *data, UOSInt dataSize)
 {
-	NotNullPtr<SSWR::AVIRead::AVIReGaugeSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIReGaugeSvrForm>();
+	NN<SSWR::AVIRead::AVIReGaugeSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIReGaugeSvrForm>();
 	Sync::MutexUsage mutUsage(me->reqMut);
 	if (me->reqLast)
 	{
@@ -98,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnEGaugeData(AnyType userObj, c
 	me->reqUpdated = true;
 }
 
-SSWR::AVIRead::AVIReGaugeSvrForm::AVIReGaugeSvrForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIReGaugeSvrForm::AVIReGaugeSvrForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
 	this->SetText(CSTR("eGauge Server"));

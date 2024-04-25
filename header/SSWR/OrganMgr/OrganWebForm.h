@@ -12,15 +12,15 @@ namespace SSWR
 		class OrganWebForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIButton> btnReload;
+			NN<UI::GUIButton> btnReload;
 
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			IO::LogTool log;
 			OrganEnv *env;
 			
 			static void __stdcall OnReloadClicked(AnyType userObj);
 		public:
-			OrganWebForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<Media::DrawEngine> eng);
+			OrganWebForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::DrawEngine> eng);
 			virtual ~OrganWebForm();
 
 			Bool IsError();

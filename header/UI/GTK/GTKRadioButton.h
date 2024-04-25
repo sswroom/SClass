@@ -15,7 +15,7 @@ namespace UI
 			static void SignalToggled(GtkRadioButton *btn, gpointer data);
 			void ChangeSelected(Bool selVal);
 		public:
-			GTKRadioButton(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool selected);
+			GTKRadioButton(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool selected);
 			virtual ~GTKRadioButton();
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);

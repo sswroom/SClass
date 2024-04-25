@@ -15,12 +15,12 @@ namespace SSWR
 		class SHPConvCurrFilterForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIListBox> lbFilters;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnAdd;
-			NotNullPtr<UI::GUIButton> btnDelete;
+			NN<UI::GUIListBox> lbFilters;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnAdd;
+			NN<UI::GUIButton> btnDelete;
 			DB::DBFFile *dbf;
-			NotNullPtr<Media::DrawEngine> deng;
+			NN<Media::DrawEngine> deng;
 			Media::MonitorMgr *monMgr;
 			Data::ArrayList<MapFilter*> *filters;
 
@@ -28,7 +28,7 @@ namespace SSWR
 			static void __stdcall OnDeleteClicked(AnyType userObj);
 			static void __stdcall OnOkClicked(AnyType userObj);
 		public:
-			SHPConvCurrFilterForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf, Data::ArrayList<MapFilter*> *filters, NotNullPtr<Media::DrawEngine> deng);
+			SHPConvCurrFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, DB::DBFFile *dbf, Data::ArrayList<MapFilter*> *filters, NN<Media::DrawEngine> deng);
 			virtual ~SHPConvCurrFilterForm();
 
 			virtual void OnMonitorChanged();

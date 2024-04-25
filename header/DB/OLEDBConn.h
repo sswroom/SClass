@@ -32,33 +32,33 @@ namespace DB
 		ConnError connErr;
 
 	protected:
-		OLEDBConn(NotNullPtr<IO::LogTool> log);
+		OLEDBConn(NN<IO::LogTool> log);
 		void Init(const WChar *connStr);
 	public:
-		OLEDBConn(const WChar *connStr, NotNullPtr<IO::LogTool> log);
+		OLEDBConn(const WChar *connStr, NN<IO::LogTool> log);
 		virtual ~OLEDBConn();
 
 		virtual DB::SQLType GetSQLType() const;
 		virtual ConnType GetConnType() const;
 		virtual Int8 GetTzQhr() const;
 		virtual void ForceTz(Int8 tzQhr);
-		virtual void GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual void GetConnName(NN<Text::StringBuilderUTF8> sb);
 		virtual void Close();
 		virtual OSInt ExecuteNonQuery(Text::CStringNN sql);
 //		virtual OSInt ExecuteNonQuery(const WChar *sql);
-		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
+		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual Bool IsLastDataError();
 		virtual void Reconnect();
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
 		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual Optional<DBReader> ExecuteReader(Text::CStringNN sql);
 //		virtual DBReader *ExecuteReader(const WChar *sql);
-		virtual void CloseReader(NotNullPtr<DBReader> r);
+		virtual void CloseReader(NN<DBReader> r);
 
 		virtual Optional<DB::DBTransaction> BeginTransaction();
-		virtual void Commit(NotNullPtr<DB::DBTransaction> tran);
-		virtual void Rollback(NotNullPtr<DB::DBTransaction> tran);
+		virtual void Commit(NN<DB::DBTransaction> tran);
+		virtual void Rollback(NN<DB::DBTransaction> tran);
 
 		ConnError GetConnError();
 		const WChar *GetConnStr();
@@ -83,7 +83,7 @@ namespace DB
 		virtual Int32 GetInt32(UOSInt colIndex);
 		virtual Int64 GetInt64(UOSInt colIndex);
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
-		virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb);
 		virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
 		virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
@@ -92,13 +92,13 @@ namespace DB
 		virtual UOSInt GetBinarySize(UOSInt colIndex);
 		virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff);
 		virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex);
-		virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid);
+		virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid);
 
 		//virtual WChar *GetName(UOSInt colIndex);
 		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
 		virtual Bool IsNull(UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
-		virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
+		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);
 
 		DB::DBUtil::ColType DBType2ColType(UInt16 dbType);
 	};

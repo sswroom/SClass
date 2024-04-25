@@ -3,7 +3,7 @@
 
 void __stdcall SSWR::AVIRead::AVIROSMCacheForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIROSMCacheForm> me = userObj.GetNN<SSWR::AVIRead::AVIROSMCacheForm>();
+	NN<SSWR::AVIRead::AVIROSMCacheForm> me = userObj.GetNN<SSWR::AVIRead::AVIROSMCacheForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Map::OSM::OSMCacheHandler::CacheStatus status;
@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheForm::OnTimerTick(AnyType userObj)
 	me->txtCacheCnt->SetText(CSTRP(sbuff, sptr));
 }
 
-SSWR::AVIRead::AVIROSMCacheForm::AVIROSMCacheForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Net::WebServer::WebListener> listener, NotNullPtr<Map::OSM::OSMCacheHandler> hdlr) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIROSMCacheForm::AVIROSMCacheForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Net::WebServer::WebListener> listener, NN<Map::OSM::OSMCacheHandler> hdlr) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("OSM Cache"));
 	this->SetFont(0, 0, 8.25, false);

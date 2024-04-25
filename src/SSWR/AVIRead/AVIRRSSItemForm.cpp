@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRRSSItemForm::OnImageSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRRSSItemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRSSItemForm>();
+	NN<SSWR::AVIRead::AVIRRSSItemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRSSItemForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UOSInt i = me->cboImage->GetSelectedIndex();
@@ -13,7 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSItemForm::OnImageSelChg(AnyType userObj)
 		return;
 	sptr = me->cboImage->GetItemText(sbuff, i);
 	Net::WebBrowser *browser = me->core->GetWebBrowser();
-	NotNullPtr<IO::StreamData> fd;
+	NN<IO::StreamData> fd;
 	if (fd.Set(browser->GetData(CSTRP(sbuff, sptr), false, sbuff)))
 	{
 		Media::ImageList *imgList = (Media::ImageList*)me->core->GetParserList()->ParseFile(fd, 0, IO::ParserType::ImageList);
@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSItemForm::OnImageSelChg(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Net::RSSItem> rssItem) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Net::RSSItem> rssItem) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UOSInt i;
 	UTF8Char sbuff[128];
@@ -64,7 +64,7 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(Optional<UI::GUIClientControl> p
 	this->txtText = ui->NewTextBox(this->tpText, CSTR(""), true);
 	this->txtText->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtText->SetReadOnly(true);
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 
 	i = this->lvInfo->AddItem(CSTR("Title"), 0);
 	if (s.Set(rssItem->title))
@@ -121,7 +121,7 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(Optional<UI::GUIClientControl> p
 	if (rssItem->description)
 	{
 		Data::ArrayListStringNN imgList;
-		NotNullPtr<Text::String> url;
+		NN<Text::String> url;
 		if (rssItem->descHTML)
 		{
 			Text::StringBuilderUTF8 sb;
@@ -137,7 +137,7 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(Optional<UI::GUIClientControl> p
 			this->txtText->SetText(rssItem->description->ToCString());
 		}
 
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = imgList.Iterator();
+		Data::ArrayIterator<NN<Text::String>> it = imgList.Iterator();
 		while (it.HasNext())
 		{
 			url = it.Next();

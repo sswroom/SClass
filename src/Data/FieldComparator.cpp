@@ -38,14 +38,14 @@ Data::FieldComparator::~FieldComparator()
 	this->fieldNames.FreeAll();
 }
 
-OSInt Data::FieldComparator::Compare(NotNullPtr<VariObject> a, NotNullPtr<VariObject> b) const
+OSInt Data::FieldComparator::Compare(NN<VariObject> a, NN<VariObject> b) const
 {
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = this->fieldNames.Iterator();
+	Data::ArrayIterator<NN<Text::String>> it = this->fieldNames.Iterator();
 	OSInt k;
 	UOSInt i = 0;
 	while (it.HasNext())
 	{
-		NotNullPtr<Text::String> fieldName = it.Next();
+		NN<Text::String> fieldName = it.Next();
 		k = Compare(a->GetItem(fieldName->v), b->GetItem(fieldName->v)) * this->dirs.GetItem(i);
 		if (k != 0)
 		{
@@ -61,7 +61,7 @@ Bool Data::FieldComparator::IsValid()
 	return this->fieldNames.GetCount() > 0;
 }
 
-Bool Data::FieldComparator::ToOrderClause(NotNullPtr<Text::StringBuilderUTF8> sb, DB::SQLType sqlType)
+Bool Data::FieldComparator::ToOrderClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType)
 {
 	if (this->fieldNames.GetCount() == 0)
 	{
@@ -69,7 +69,7 @@ Bool Data::FieldComparator::ToOrderClause(NotNullPtr<Text::StringBuilderUTF8> sb
 	}
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = this->fieldNames.Iterator();
+	Data::ArrayIterator<NN<Text::String>> it = this->fieldNames.Iterator();
 	Bool found = false;
 	UOSInt i = 0;
 	while (it.HasNext())

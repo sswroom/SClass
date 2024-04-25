@@ -9,9 +9,9 @@
 #include "Net/SocketFactory.h"
 #include "Sync/SimpleThread.h"
 
-void __stdcall IO::FileAnalyse::NFDumpFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::FileAnalyse::NFDumpFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::FileAnalyse::NFDumpFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::NFDumpFileAnalyse>();
+	NN<IO::FileAnalyse::NFDumpFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::NFDumpFileAnalyse>();
 	UInt64 endOfst;
 	UInt64 ofst;
 	UInt8 buff[12];
@@ -77,7 +77,7 @@ UOSInt IO::FileAnalyse::NFDumpFileAnalyse::LZODecompBlock(UInt8 *srcBlock, UOSIn
 	}
 }
 
-IO::FileAnalyse::NFDumpFileAnalyse::NFDumpFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("NFDumpFileAnaly"))
+IO::FileAnalyse::NFDumpFileAnalyse::NFDumpFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("NFDumpFileAnaly"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -111,7 +111,7 @@ UOSInt IO::FileAnalyse::NFDumpFileAnalyse::GetFrameCount()
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::NFDumpFileAnalyse::PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
@@ -139,7 +139,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<T
 	return true;
 }
 
-Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -734,7 +734,7 @@ UOSInt IO::FileAnalyse::NFDumpFileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<IO::FileAnalyse::NFDumpFileAnalyse::PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
 		return 0;

@@ -5,7 +5,7 @@
 #include "Math/Geometry/VectorImage.h"
 #include "Media/StaticImage.h"
 
-Math::Geometry::VectorImage::VectorImage(UInt32 srid, NotNullPtr<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Geometry::Vector2D(srid)
+Math::Geometry::VectorImage::VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Geometry::Vector2D(srid)
 {
 	this->img = img->Clone();
 	if (scnCoord)
@@ -31,7 +31,7 @@ Math::Geometry::VectorImage::VectorImage(UInt32 srid, NotNullPtr<Media::SharedIm
 	this->zIndex = 0;
 }
 
-Math::Geometry::VectorImage::VectorImage(UInt32 srid, NotNullPtr<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Geometry::Vector2D(srid)
+Math::Geometry::VectorImage::VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Geometry::Vector2D(srid)
 {
 	this->img = img->Clone();
 	if (scnCoord)
@@ -57,7 +57,7 @@ Math::Geometry::VectorImage::VectorImage(UInt32 srid, NotNullPtr<Media::SharedIm
 	this->zIndex = 0;
 }
 
-Math::Geometry::VectorImage::VectorImage(UInt32 srid, NotNullPtr<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Geometry::Vector2D(srid)
+Math::Geometry::VectorImage::VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Geometry::Vector2D(srid)
 {
 	this->img = img->Clone();
 	if (scnCoord)
@@ -83,7 +83,7 @@ Math::Geometry::VectorImage::VectorImage(UInt32 srid, NotNullPtr<Media::SharedIm
 	this->zIndex = 0;
 }
 
-Math::Geometry::VectorImage::VectorImage(UInt32 srid, NotNullPtr<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Geometry::Vector2D(srid)
+Math::Geometry::VectorImage::VectorImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl br, Math::Coord2DDbl size, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Geometry::Vector2D(srid)
 {
 	this->img = img->Clone();
 	if (scnCoord)
@@ -125,9 +125,9 @@ Math::Coord2DDbl Math::Geometry::VectorImage::GetCenter() const
 	return (this->tl + this->br) * 0.5;
 }
 
-NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::VectorImage::Clone() const
+NN<Math::Geometry::Vector2D> Math::Geometry::VectorImage::Clone() const
 {
-	NotNullPtr<Math::Geometry::VectorImage> vimg;
+	NN<Math::Geometry::VectorImage> vimg;
 	if (this->scnCoord)
 	{
 		NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, this->img, this->tl, this->br, this->size, this->scnCoord, this->srcAddr, this->timeStart, this->timeEnd));
@@ -264,7 +264,7 @@ Double Math::Geometry::VectorImage::CalArea() const
 	return 0;
 }
 
-Bool Math::Geometry::VectorImage::JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec)
+Bool Math::Geometry::VectorImage::JoinVector(NN<const Math::Geometry::Vector2D> vec)
 {
 	return false;
 }
@@ -290,7 +290,7 @@ Bool Math::Geometry::VectorImage::GetMBounds(OutParam<Double> min, OutParam<Doub
 	return false;
 }
 
-void Math::Geometry::VectorImage::Convert(NotNullPtr<Math::CoordinateConverter> converter)
+void Math::Geometry::VectorImage::Convert(NN<Math::CoordinateConverter> converter)
 {
 	if (this->scnCoord)
 	{
@@ -307,7 +307,7 @@ void Math::Geometry::VectorImage::Convert(NotNullPtr<Math::CoordinateConverter> 
 	}
 }
 
-Bool Math::Geometry::VectorImage::Equals(NotNullPtr<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
+Bool Math::Geometry::VectorImage::Equals(NN<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
 {
 	if (vec->GetVectorType() != VectorType::Image)
 	{
@@ -317,7 +317,7 @@ Bool Math::Geometry::VectorImage::Equals(NotNullPtr<const Vector2D> vec, Bool sa
 	return false;
 }
 
-UOSInt Math::Geometry::VectorImage::GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
+UOSInt Math::Geometry::VectorImage::GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
 {
 	if (this->scnCoord)
 	{
@@ -487,9 +487,9 @@ Optional<Media::StaticImage> Math::Geometry::VectorImage::GetImage(Double width,
 	return this->img->GetPrevImage(width, height, imgTimeMS);
 }
 
-NotNullPtr<Math::Geometry::VectorImage> Math::Geometry::VectorImage::CreateScreenImage(UInt32 srid, NotNullPtr<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl size, Text::CString srcAddr)
+NN<Math::Geometry::VectorImage> Math::Geometry::VectorImage::CreateScreenImage(UInt32 srid, NN<Media::SharedImage> img, Math::Coord2DDbl tl, Math::Coord2DDbl size, Text::CString srcAddr)
 {
-	NotNullPtr<Math::Geometry::VectorImage> vimg;
+	NN<Math::Geometry::VectorImage> vimg;
 	NEW_CLASSNN(vimg, Math::Geometry::VectorImage(srid, img, Math::Coord2DDbl(tl.x, 1 - tl.y - size.y), Math::Coord2DDbl(0, 0), size, true, srcAddr, 0, 0));
 	return vimg;
 }

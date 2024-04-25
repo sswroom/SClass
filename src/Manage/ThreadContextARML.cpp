@@ -101,7 +101,7 @@ UTF8Char *Manage::ThreadContextARM::GetRegister(UOSInt index, UTF8Char *buff, UI
 	}
 }
 
-void Manage::ThreadContextARM::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Manage::ThreadContextARM::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -174,9 +174,9 @@ void Manage::ThreadContextARM::SetFrameAddr(UOSInt frameAddr)
 	((ucontext_t*)this->context)->uc_mcontext.arm_lr = frameAddr;
 }
 
-NotNullPtr<Manage::ThreadContext> Manage::ThreadContextARM::Clone() const
+NN<Manage::ThreadContext> Manage::ThreadContextARM::Clone() const
 {
-	NotNullPtr<Manage::ThreadContextARM> cont;
+	NN<Manage::ThreadContextARM> cont;
 	NEW_CLASSNN(cont, Manage::ThreadContextARM(this->procId, this->threadId, this->context));
 	return cont;
 }

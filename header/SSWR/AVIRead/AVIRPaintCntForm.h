@@ -12,16 +12,16 @@ namespace SSWR
 		class AVIRPaintCntForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUITimer> tmrMain;
-			NotNullPtr<UI::GUILabel> lblCnt;
-			NotNullPtr<UI::GUITextBox> txtCnt;
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<UI::GUITimer> tmrMain;
+			NN<UI::GUILabel> lblCnt;
+			NN<UI::GUITextBox> txtCnt;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Int64 paintCnt;
 			Int64 dispCnt;
 
 			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
-			AVIRPaintCntForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRPaintCntForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRPaintCntForm();
 
 			virtual Bool OnPaint();

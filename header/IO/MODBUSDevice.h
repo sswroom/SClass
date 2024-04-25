@@ -13,7 +13,7 @@ namespace IO
 	public:
 		typedef void (__stdcall *MODBUSDataEntry)(AnyType userObj, Text::CString name, UInt8 devAddr, UInt32 regAddr, IO::MODBUSController::DataType dt, Math::Unit::UnitBase::ValueType vt, Int32 unit, Int32 denorm);
 	private:
-		NotNullPtr<IO::MODBUSMaster> modbus;
+		NN<IO::MODBUSMaster> modbus;
 		Data::Duration timeout;
 		UInt8 addr;
 		Sync::Event cbEvt;
@@ -45,7 +45,7 @@ namespace IO
 		Bool ReadCoil(UInt16 addr);
 		Bool WriteDOutput(UInt16 addr, Bool isHigh);
 	public:
-		MODBUSDevice(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr);
+		MODBUSDevice(NN<IO::MODBUSMaster> modbus, UInt8 addr);
 		virtual ~MODBUSDevice();
 	};
 }

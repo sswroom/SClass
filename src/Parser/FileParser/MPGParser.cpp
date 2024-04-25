@@ -20,7 +20,7 @@ Int32 Parser::FileParser::MPGParser::GetName()
 	return *(Int32*)"MPGP";
 }
 
-void Parser::FileParser::MPGParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::MPGParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
@@ -35,7 +35,7 @@ IO::ParserType Parser::FileParser::MPGParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::MPGParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::MPGParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	IO::StreamData *concatFile = 0;
 
@@ -69,12 +69,12 @@ IO::ParsedObject *Parser::FileParser::MPGParser::ParseFileHdr(NotNullPtr<IO::Str
 			if (fd->IsFullFile())
 			{
 				Int32 stmId;
-				NotNullPtr<IO::StmData::ConcatStreamData> data;
+				NN<IO::StmData::ConcatStreamData> data;
 				stmId = 2;
 				NEW_CLASSNN(data, IO::StmData::ConcatStreamData(fd->GetFullName()));
 				data->AddData(fd->GetPartialData(0, fd->GetDataSize()));
 				
-				NotNullPtr<Text::String> s = fd->GetFullFileName();
+				NN<Text::String> s = fd->GetFullFileName();
 				sptr = Text::StrConcatC(sbuff, s->v, s->leng - 5);
 				while (true)
 				{
@@ -95,7 +95,7 @@ IO::ParsedObject *Parser::FileParser::MPGParser::ParseFileHdr(NotNullPtr<IO::Str
 			{
 				Int32 stmId;
 				UOSInt ind;
-				NotNullPtr<IO::StmData::ConcatStreamData> data;
+				NN<IO::StmData::ConcatStreamData> data;
 				stmId = 2;
 				NEW_CLASSNN(data, IO::StmData::ConcatStreamData(fd->GetFullName()));
 				data->AddData(fd->GetPartialData(0, fd->GetDataSize()));

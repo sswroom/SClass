@@ -13,21 +13,21 @@ namespace SSWR
 		class AVIRTimeTestForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblSleepMS;
-			NotNullPtr<UI::GUITextBox> txtSleepMS;
-			NotNullPtr<UI::GUIButton> btnSleepMS;
-			NotNullPtr<UI::GUILabel> lblSleepUS;
-			NotNullPtr<UI::GUITextBox> txtSleepUS;
-			NotNullPtr<UI::GUIButton> btnSleepUS;
-			NotNullPtr<UI::GUILabel> lblActualTime;
-			NotNullPtr<UI::GUITextBox> txtActualTime;
+			NN<UI::GUILabel> lblSleepMS;
+			NN<UI::GUITextBox> txtSleepMS;
+			NN<UI::GUIButton> btnSleepMS;
+			NN<UI::GUILabel> lblSleepUS;
+			NN<UI::GUITextBox> txtSleepUS;
+			NN<UI::GUIButton> btnSleepUS;
+			NN<UI::GUILabel> lblActualTime;
+			NN<UI::GUITextBox> txtActualTime;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
 			static void __stdcall OnSleepMSClicked(AnyType userObj);
 			static void __stdcall OnSleepUSClicked(AnyType userObj);
 		public:
-			AVIRTimeTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRTimeTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTimeTestForm();
 
 			virtual void OnMonitorChanged();

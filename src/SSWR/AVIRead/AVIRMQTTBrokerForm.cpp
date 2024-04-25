@@ -11,7 +11,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTBrokerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTBrokerForm>();
+	NN<SSWR::AVIRead::AVIRMQTTBrokerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTBrokerForm>();
 	if (me->broker)
 	{
 		me->ServerStop();
@@ -37,9 +37,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(AnyType userObj
 			Optional<Net::SSLEngine> ssl = 0;
 			if (sslEnable)
 			{
-				NotNullPtr<Crypto::Cert::X509Cert> sslCert;
-				NotNullPtr<Crypto::Cert::X509File> sslKey;
-				NotNullPtr<Net::SSLEngine> nnssl;
+				NN<Crypto::Cert::X509Cert> sslCert;
+				NN<Crypto::Cert::X509File> sslKey;
+				NN<Net::SSLEngine> nnssl;
 				if (!me->ssl.SetTo(nnssl))
 				{
 					me->ui->ShowMsgOK(CSTR("Error in initializing SSL engine"), CSTR("MQTT Broker"), me);
@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnSSLCertClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTBrokerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTBrokerForm>();
+	NN<SSWR::AVIRead::AVIRMQTTBrokerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTBrokerForm>();
 	if (me->broker)
 	{
 		me->ui->ShowMsgOK(CSTR("You cannot change cert when server is started"), CSTR("MQTT Broker"), me);
@@ -107,8 +107,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnSSLCertClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnLogSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTBrokerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTBrokerForm>();
-	NotNullPtr<Text::String> s;
+	NN<SSWR::AVIRead::AVIRMQTTBrokerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTBrokerForm>();
+	NN<Text::String> s;
 	if (me->lbLog->GetSelectedItemTextNew().SetTo(s))
 	{
 		me->txtLog->SetText(s->ToCString());
@@ -118,8 +118,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnLogSelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTBrokerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTBrokerForm>();
-	NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus*>> topicList;
+	NN<SSWR::AVIRead::AVIRMQTTBrokerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTBrokerForm>();
+	NN<const Data::ArrayList<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus*>> topicList;
 	SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus *topicSt;
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
@@ -189,7 +189,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(AnyType userObj, Text::CString topic, const UInt8 *message, UOSInt msgSize)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTBrokerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTBrokerForm>();
+	NN<SSWR::AVIRead::AVIRMQTTBrokerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTBrokerForm>();
 	SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus *topicSt;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
@@ -236,7 +236,7 @@ void SSWR::AVIRead::AVIRMQTTBrokerForm::ClearCACerts()
 	this->caCerts.DeleteAll();
 }
 
-SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("MQTT Broker"));
@@ -312,7 +312,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::~AVIRMQTTBrokerForm()
 	this->ServerStop();
 	this->log.RemoveLogHandler(this->logger);
 	this->logger.Delete();
-	NotNullPtr<const Data::ArrayList<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus*>> topicList = this->topicMap.GetValues();
+	NN<const Data::ArrayList<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus*>> topicList = this->topicMap.GetValues();
 	SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus *topic;
 	UOSInt i = topicList->GetCount();
 	while (i-- > 0)

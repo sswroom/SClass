@@ -37,7 +37,7 @@ namespace Media
 		VFPManager();
 		UOSInt LoadFile(const UTF8Char *fileName, Data::ArrayList<Media::IMediaSource*> *outArr);
 		void Release();
-		void PrepareSelector(NotNullPtr<IO::FileSelector> selector);
+		void PrepareSelector(NN<IO::FileSelector> selector);
 
 	private:
 		~VFPManager();

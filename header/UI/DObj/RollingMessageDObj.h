@@ -14,13 +14,13 @@ namespace UI
 			struct MessageInfo
 			{
 				UInt32 id;
-				NotNullPtr<Text::String> message;
+				NN<Text::String> message;
 				Media::DrawImage *img;
 				Bool deleted;
 			};
 		private:
 			Math::Size2D<UOSInt> size;
-			NotNullPtr<Media::DrawEngine> deng;
+			NN<Media::DrawEngine> deng;
 			Double rollSpeed;
 			OSInt lastRollPos;
 			Data::DateTime startTime;
@@ -33,16 +33,16 @@ namespace UI
 			OSInt lastMsgOfst;
 
 		protected:
-			virtual Media::DrawImage *GenerateImage(NotNullPtr<Media::DrawEngine> deng, NotNullPtr<Text::String> message, Math::Size2D<UOSInt> drawSize, NotNullPtr<Media::DrawImage> scnImg) = 0;
+			virtual Media::DrawImage *GenerateImage(NN<Media::DrawEngine> deng, NN<Text::String> message, Math::Size2D<UOSInt> drawSize, NN<Media::DrawImage> scnImg) = 0;
 		private:
 			void FreeMessage(MessageInfo *msg);
 		public:
-			RollingMessageDObj(NotNullPtr<Media::DrawEngine> deng, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, Double rollSpeed);
+			RollingMessageDObj(NN<Media::DrawEngine> deng, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, Double rollSpeed);
 			virtual ~RollingMessageDObj();
 
 			virtual Bool IsChanged();
 			virtual Bool DoEvents();
-			virtual void DrawObject(NotNullPtr<Media::DrawImage> dimg);
+			virtual void DrawObject(NN<Media::DrawImage> dimg);
 
 			virtual Bool IsObject(Math::Coord2D<OSInt> scnPos);
 			virtual void OnMouseDown();
@@ -50,7 +50,7 @@ namespace UI
 			virtual void OnMouseClick();
 
 			UInt32 AddMessage(Text::CString message);
-			UInt32 AddMessage(NotNullPtr<Text::String> message);
+			UInt32 AddMessage(NN<Text::String> message);
 			void RemoveMessage(UInt32 msgId);
 
 			void SetSize(Math::Size2D<UOSInt> size);

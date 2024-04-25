@@ -172,7 +172,7 @@ u2rlop2:
 
 UInt32 Media::CS::CSUYVY_LRGB::WorkerThread(AnyType obj)
 {
-	NotNullPtr<CSUYVY_LRGB> converter = obj.GetNN<CSUYVY_LRGB>();
+	NN<CSUYVY_LRGB> converter = obj.GetNN<CSUYVY_LRGB>();
 	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 
@@ -197,7 +197,7 @@ UInt32 Media::CS::CSUYVY_LRGB::WorkerThread(AnyType obj)
 	return 0;
 }
 
-Media::CS::CSUYVY_LRGB::CSUYVY_LRGB(NotNullPtr<const Media::ColorProfile> srcColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV_LRGB(srcColor, yuvType, colorSess)
+Media::CS::CSUYVY_LRGB::CSUYVY_LRGB(NN<const Media::ColorProfile> srcColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV_LRGB(srcColor, yuvType, colorSess)
 {
 	UOSInt i;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();

@@ -12,14 +12,14 @@ namespace SSWR
 		class AVIRBaseForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<UI::GUIMainMenu> mnuMain;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<UI::GUIMainMenu> mnuMain;
 			Optional<Net::SSLEngine> ssl;
 
 		private:
-			static void __stdcall FileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 		public:
-			AVIRBaseForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRBaseForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRBaseForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

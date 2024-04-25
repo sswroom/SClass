@@ -15,24 +15,24 @@ namespace SSWR
 		class AVIRUserAgentBatchForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUIPanel> pnlSource;
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUITextBox> txtSource;
-			NotNullPtr<UI::GUIButton> btnParse;
-			NotNullPtr<UI::GUIButton> btnUpdate;
-			NotNullPtr<UI::GUIButton> btnUpdateCB;
-			NotNullPtr<UI::GUIVSplitter> vspControl;
-			NotNullPtr<UI::GUITextBox> txtOutput;
+			NN<UI::GUIPanel> pnlSource;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUITextBox> txtSource;
+			NN<UI::GUIButton> btnParse;
+			NN<UI::GUIButton> btnUpdate;
+			NN<UI::GUIButton> btnUpdateCB;
+			NN<UI::GUIVSplitter> vspControl;
+			NN<UI::GUITextBox> txtOutput;
 
-			static void UserAgent2Output(Text::CString userAgent, NotNullPtr<Text::StringBuilderUTF8> outSb);
+			static void UserAgent2Output(Text::CString userAgent, NN<Text::StringBuilderUTF8> outSb);
 			static void __stdcall OnParseClicked(AnyType userObj);
 			static void __stdcall OnUpdateClicked(AnyType userObj);
 			static void __stdcall OnUpdateCBClicked(AnyType userObj);
 			void UpdateByText(Text::PString txt);
 		public:
-			AVIRUserAgentBatchForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRUserAgentBatchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRUserAgentBatchForm();
 
 			virtual void OnMonitorChanged();

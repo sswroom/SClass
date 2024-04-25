@@ -23,7 +23,7 @@ void Parser::FileParser::ISOParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::ISOParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::ISOParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::SectorData)
 	{
@@ -37,13 +37,13 @@ IO::ParserType Parser::FileParser::ISOParser::GetParserType()
 	return IO::ParserType::SectorData;
 }
 
-IO::ParsedObject *Parser::FileParser::ISOParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::ISOParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt8 buff[32];
 	UInt64 fileSize = fd->GetDataSize();
 
 	IO::FileSectorData *sectorData = 0;
-	NotNullPtr<IO::FileSectorData> sd;
+	NN<IO::FileSectorData> sd;
 	if (ReadMInt32(&hdr[0]) == 0x00ffffff && ReadMUInt32(&hdr[4]) == 0xffffffff && ReadMUInt32(&hdr[8]) == 0xffffff00 && fileSize >= 75264 && (fileSize % 2352) == 0)
 	{
 		fd->GetRealData(37632, 32, BYTEARR(buff));

@@ -5,7 +5,7 @@
 #include "UI/GUITabPage.h"
 #include "UI/Java/JavaTabControl.h"
 
-UI::Java::JavaTabControl::JavaTabControl(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : UI::GUITabControl(ui, parent)
+UI::Java::JavaTabControl::JavaTabControl(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent) : UI::GUITabControl(ui, parent)
 {
 	this->selIndex = 0;
 }
@@ -15,17 +15,17 @@ UI::Java::JavaTabControl::~JavaTabControl()
 	this->tabPages.DeleteAll();
 }
 
-NotNullPtr<UI::GUITabPage> UI::Java::JavaTabControl::AddTabPage(NotNullPtr<Text::String> tabName)
+NN<UI::GUITabPage> UI::Java::JavaTabControl::AddTabPage(NN<Text::String> tabName)
 {
-	NotNullPtr<UI::GUITabPage> tp;
+	NN<UI::GUITabPage> tp;
 	NEW_CLASSNN(tp, UI::GUITabPage(this->ui, 0, *this, this->tabPages.GetCount()));
 	this->tabPages.Add(tp);
 	return tp;
 }
 
-NotNullPtr<UI::GUITabPage> UI::Java::JavaTabControl::AddTabPage(Text::CStringNN tabName)
+NN<UI::GUITabPage> UI::Java::JavaTabControl::AddTabPage(Text::CStringNN tabName)
 {
-	NotNullPtr<UI::GUITabPage> tp;
+	NN<UI::GUITabPage> tp;
 	NEW_CLASSNN(tp, UI::GUITabPage(this->ui, 0, *this, this->tabPages.GetCount()));
 	this->tabPages.Add(tp);
 	return tp;
@@ -40,7 +40,7 @@ void UI::Java::JavaTabControl::SetSelectedIndex(UOSInt index)
 	}
 }
 
-void UI::Java::JavaTabControl::SetSelectedPage(NotNullPtr<UI::GUITabPage> page)
+void UI::Java::JavaTabControl::SetSelectedPage(NN<UI::GUITabPage> page)
 {
 	UOSInt i = this->tabPages.GetCount();
 	while (i-- > 0)
@@ -64,14 +64,14 @@ Optional<UI::GUITabPage> UI::Java::JavaTabControl::GetSelectedPage()
 
 void UI::Java::JavaTabControl::SetTabPageName(UOSInt index, Text::CStringNN name)
 {
-	NotNullPtr<UI::GUITabPage> tp;
+	NN<UI::GUITabPage> tp;
 	if (!this->tabPages.GetItem(index).SetTo(tp))
 		return;
 }
 
 UTF8Char *UI::Java::JavaTabControl::GetTabPageName(UOSInt index, UTF8Char *buff)
 {
-	NotNullPtr<UI::GUITabPage> tp;
+	NN<UI::GUITabPage> tp;
 	if (!this->tabPages.GetItem(index).SetTo(tp))
 		return 0;
 	return 0;
@@ -110,7 +110,7 @@ void UI::Java::JavaTabControl::SetDPI(Double hdpi, Double ddpi)
 		this->UpdateFont();
 	}
 
-	Data::ArrayIterator<NotNullPtr<GUITabPage>> it = this->tabPages.Iterator();
+	Data::ArrayIterator<NN<GUITabPage>> it = this->tabPages.Iterator();
 	while (it.HasNext())
 	{
 		it.Next()->SetDPI(hdpi, ddpi);

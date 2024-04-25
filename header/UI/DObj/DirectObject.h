@@ -33,7 +33,7 @@ namespace UI
 			void MoveToPos(Math::Coord2D<OSInt> destTL, Double dur, MoveType mType);
 			virtual Bool IsChanged() = 0;
 			virtual Bool DoEvents() = 0;
-			virtual void DrawObject(NotNullPtr<Media::DrawImage> dimg) = 0;
+			virtual void DrawObject(NN<Media::DrawImage> dimg) = 0;
 
 			virtual Bool IsObject(Math::Coord2D<OSInt> scnPos) = 0;
 //			virtual System::Windows::Forms::Cursor ^GetCursor() = 0;

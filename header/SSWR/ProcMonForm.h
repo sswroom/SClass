@@ -21,34 +21,34 @@ namespace SSWR
 	private:
 		typedef struct
 		{
-			NotNullPtr<Text::String> progName;
+			NN<Text::String> progName;
 			Text::String *progPath;
 			UOSInt procId;
 		} ProgInfo;
 	private:
-		NotNullPtr<UI::GUITabControl> tcMain;
-		NotNullPtr<UI::GUITabPage> tpLog;
-		NotNullPtr<UI::GUIListBox> lbLog;
-		NotNullPtr<UI::GUITextBox> txtLog;
+		NN<UI::GUITabControl> tcMain;
+		NN<UI::GUITabPage> tpLog;
+		NN<UI::GUIListBox> lbLog;
+		NN<UI::GUITextBox> txtLog;
 
-		NotNullPtr<UI::GUITabPage> tpProg;
-		NotNullPtr<UI::GUIListBox> lbProg;
-		NotNullPtr<UI::GUIPanel> pnlProg;
-		NotNullPtr<UI::GUIGroupBox> grpProgAdd;
-		NotNullPtr<UI::GUILabel> lblProgAddName;
-		NotNullPtr<UI::GUITextBox> txtProgAddName;
-		NotNullPtr<UI::GUILabel> lblProgAddId;
-		NotNullPtr<UI::GUITextBox> txtProgAddId;
-		NotNullPtr<UI::GUIButton> btnProgAdd;
-		NotNullPtr<UI::GUILabel> lblProcId;
-		NotNullPtr<UI::GUITextBox> txtProcId;
-		NotNullPtr<UI::GUIButton> btnProcId;
-		NotNullPtr<UI::GUILabel> lblProgPath;
-		NotNullPtr<UI::GUITextBox> txtProgPath;
+		NN<UI::GUITabPage> tpProg;
+		NN<UI::GUIListBox> lbProg;
+		NN<UI::GUIPanel> pnlProg;
+		NN<UI::GUIGroupBox> grpProgAdd;
+		NN<UI::GUILabel> lblProgAddName;
+		NN<UI::GUITextBox> txtProgAddName;
+		NN<UI::GUILabel> lblProgAddId;
+		NN<UI::GUITextBox> txtProgAddId;
+		NN<UI::GUIButton> btnProgAdd;
+		NN<UI::GUILabel> lblProcId;
+		NN<UI::GUITextBox> txtProcId;
+		NN<UI::GUIButton> btnProcId;
+		NN<UI::GUILabel> lblProgPath;
+		NN<UI::GUITextBox> txtProgPath;
 
 		Data::ArrayList<ProgInfo*> *progList;
 		IO::LogTool *log;
-		NotNullPtr<UI::ListBoxLogger> logger;
+		NN<UI::ListBoxLogger> logger;
 		Text::String *notifyCmd;
 
 		void AddProg(Text::CString progName, Text::CString progPath);
@@ -62,7 +62,7 @@ namespace SSWR
 		static void __stdcall OnLogSelChg(AnyType userObj);
 		static void __stdcall OnTimerTick(AnyType userObj);
 	public:
-		ProcMonForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui);
+		ProcMonForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui);
 		virtual ~ProcMonForm();
 	};
 }

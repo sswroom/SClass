@@ -19,14 +19,14 @@ namespace SSWR
 		class AVIRCameraControlForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIListView> lvInfo;
-			NotNullPtr<UI::GUIVSplitter> vspInfo;
-			NotNullPtr<UI::GUIListView> lvFiles;
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUIPictureBoxSimple> pbPreview;
-			NotNullPtr<UI::GUIButton> btnDownload;
+			NN<UI::GUIListView> lvInfo;
+			NN<UI::GUIVSplitter> vspInfo;
+			NN<UI::GUIListView> lvFiles;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUIPictureBoxSimple> pbPreview;
+			NN<UI::GUIButton> btnDownload;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::CameraControl *camera;
 			Data::StringUTF8Map<Media::ImageList *> previewMap;
 
@@ -34,7 +34,7 @@ namespace SSWR
 			static void __stdcall OnFilesDblClick(AnyType userObj, UOSInt index);
 			static void __stdcall OnFilesSelChg(AnyType userObj);
 		public:
-			AVIRCameraControlForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::CameraControl *camera);
+			AVIRCameraControlForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::CameraControl *camera);
 			virtual ~AVIRCameraControlForm();
 
 			virtual void OnMonitorChanged();

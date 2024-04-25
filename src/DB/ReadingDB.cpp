@@ -3,7 +3,7 @@
 #include "DB/ReadingDB.h"
 #include "Text/MyString.h"
 
-DB::ReadingDB::ReadingDB(NotNullPtr<Text::String> sourceName) : IO::ParsedObject(sourceName)
+DB::ReadingDB::ReadingDB(NN<Text::String> sourceName) : IO::ParsedObject(sourceName)
 {
 }
 
@@ -15,7 +15,7 @@ DB::ReadingDB::~ReadingDB()
 {
 }
 
-UOSInt DB::ReadingDB::QuerySchemaNames(NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt DB::ReadingDB::QuerySchemaNames(NN<Data::ArrayListStringNN> names)
 {
 	return 0;
 }
@@ -25,12 +25,12 @@ Int8 DB::ReadingDB::GetTzQhr() const
 	return Data::DateTimeUtil::GetLocalTzQhr();
 }
 
-UOSInt DB::ReadingDB::GetDatabaseNames(NotNullPtr<Data::ArrayListStringNN> arr)
+UOSInt DB::ReadingDB::GetDatabaseNames(NN<Data::ArrayListStringNN> arr)
 {
 	return 0;
 }
 
-void DB::ReadingDB::ReleaseDatabaseNames(NotNullPtr<Data::ArrayListStringNN> arr)
+void DB::ReadingDB::ReleaseDatabaseNames(NN<Data::ArrayListStringNN> arr)
 {
 
 }
@@ -60,7 +60,7 @@ Bool DB::ReadingDB::IsDBTool() const
 	return false;
 }
 
-Bool DB::ReadingDB::IsDBObj(NotNullPtr<IO::ParsedObject> pobj)
+Bool DB::ReadingDB::IsDBObj(NN<IO::ParsedObject> pobj)
 {
 	IO::ParserType pt = pobj->GetParserType();
 	if (pt == IO::ParserType::MapLayer || pt == IO::ParserType::ReadingDB)

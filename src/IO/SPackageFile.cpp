@@ -86,7 +86,7 @@ void IO::SPackageFile::ReadV2DirEnt(UInt64 ofst, UInt64 size)
 	MemFree(sbuff);
 }
 
-void IO::SPackageFile::AddPackageInner(NotNullPtr<IO::PackageFile> pkg, UTF8Char pathSeperator, UTF8Char *pathStart, UTF8Char *pathEnd)
+void IO::SPackageFile::AddPackageInner(NN<IO::PackageFile> pkg, UTF8Char pathSeperator, UTF8Char *pathStart, UTF8Char *pathEnd)
 {
 	UOSInt i = 0;
 	UOSInt j = pkg->GetCount();
@@ -101,7 +101,7 @@ void IO::SPackageFile::AddPackageInner(NotNullPtr<IO::PackageFile> pkg, UTF8Char
 		else if (pt == IO::PackageFile::PackObjectType::PackageFileType)
 		{
 			Bool innerNeedDelete;
-			NotNullPtr<IO::PackageFile> innerPack;
+			NN<IO::PackageFile> innerPack;
 			if (pkg->GetItemPack(i, innerNeedDelete).SetTo(innerPack))
 			{
 				*sptr++ = pathSeperator;
@@ -114,7 +114,7 @@ void IO::SPackageFile::AddPackageInner(NotNullPtr<IO::PackageFile> pkg, UTF8Char
 		}
 		else if (pt == IO::PackageFile::PackObjectType::StreamData)
 		{
-			NotNullPtr<IO::StreamData> fd;
+			NN<IO::StreamData> fd;
 			if (pkg->GetItemStmDataNew(i).SetTo(fd))
 			{
 				this->AddFile(fd, {pathStart, (UOSInt)(sptr - pathStart)}, pkg->GetItemModTime(i));
@@ -185,7 +185,7 @@ Bool IO::SPackageFile::OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOf
 	return succ;
 }
 
-IO::SPackageFile::SPackageFile(NotNullPtr<IO::SeekableStream> stm, Bool toRelease)
+IO::SPackageFile::SPackageFile(NN<IO::SeekableStream> stm, Bool toRelease)
 {
 	UInt8 hdr[24];
 	this->stm = stm;
@@ -209,7 +209,7 @@ IO::SPackageFile::SPackageFile(NotNullPtr<IO::SeekableStream> stm, Bool toReleas
 	this->mstm.Write(hdr, 16);
 }
 
-IO::SPackageFile::SPackageFile(NotNullPtr<IO::SeekableStream> stm, Bool toRelease, Int32 customType, UOSInt customSize, Data::ByteArrayR customBuff)
+IO::SPackageFile::SPackageFile(NN<IO::SeekableStream> stm, Bool toRelease, Int32 customType, UOSInt customSize, Data::ByteArrayR customBuff)
 {
 	UInt8 hdr[32];
 	this->stm = stm;
@@ -429,7 +429,7 @@ IO::SPackageFile::~SPackageFile()
 	}
 }
 
-Bool IO::SPackageFile::AddFile(NotNullPtr<IO::StreamData> fd, Text::CString fileName, const Data::Timestamp &modTime)
+Bool IO::SPackageFile::AddFile(NN<IO::StreamData> fd, Text::CString fileName, const Data::Timestamp &modTime)
 {
 	UInt8 dataBuff[512];
 	UInt64 dataSize = fd->GetDataSize();
@@ -568,7 +568,7 @@ Bool IO::SPackageFile::AddFile(const UInt8 *fileBuff, UOSInt fileSize, Text::CSt
 	return succ;
 }
 
-Bool IO::SPackageFile::AddPackage(NotNullPtr<IO::PackageFile> pkg, UTF8Char pathSeperator)
+Bool IO::SPackageFile::AddPackage(NN<IO::PackageFile> pkg, UTF8Char pathSeperator)
 {
 	UTF8Char sbuff[512];
 	AddPackageInner(pkg, pathSeperator, sbuff, sbuff);
@@ -629,7 +629,7 @@ Bool IO::SPackageFile::OptimizeFile(Text::CStringNN newFile)
 		return false;
 	}
 	this->Commit();
-	NotNullPtr<IO::FileStream> fs;
+	NN<IO::FileStream> fs;
 	IO::SPackageFile *spkg;
 	NEW_CLASSNN(fs, IO::FileStream(newFile, IO::FileMode::Create, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoWriteBuffer));
 	if (fs->IsError())

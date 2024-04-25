@@ -12,7 +12,7 @@
 #include <stdio.h>
 #endif
 
-IO::ZIPBuilder::ZIPBuilder(NotNullPtr<IO::SeekableStream> stm, ZIPOS os) : stm(stm, 1048576)
+IO::ZIPBuilder::ZIPBuilder(NN<IO::SeekableStream> stm, ZIPOS os) : stm(stm, 1048576)
 {
 	this->outStm = stm;
 	this->baseOfst = this->outStm->GetPosition();

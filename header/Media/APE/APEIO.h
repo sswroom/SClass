@@ -11,11 +11,11 @@ namespace Media
 		class APEIO : public CIO
 		{
 		private:
-			NotNullPtr<IO::StreamData> data;
+			NN<IO::StreamData> data;
 			Int64 currPos;
 
 		public:
-			APEIO(NotNullPtr<IO::StreamData> data);
+			APEIO(NN<IO::StreamData> data);
 			virtual ~APEIO();
 
 			virtual int Open(const WChar * pName, BOOL bOpenReadOnly = FALSE);
@@ -35,7 +35,7 @@ namespace Media
 			virtual int GetSize();
 			virtual int GetName(WChar * pBuffer);
 
-			NotNullPtr<IO::StreamData> GetData();
+			NN<IO::StreamData> GetData();
 		};
 	};
 };

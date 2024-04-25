@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRSetAudioForm::OnOKClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSetAudioForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetAudioForm>();
+	NN<SSWR::AVIRead::AVIRSetAudioForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetAudioForm>();
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	sptr = me->lbDevice->GetSelectedItemText(sbuff);
@@ -25,11 +25,11 @@ void __stdcall SSWR::AVIRead::AVIRSetAudioForm::OnOKClick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRSetAudioForm::OnCancelClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSetAudioForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetAudioForm>();
+	NN<SSWR::AVIRead::AVIRSetAudioForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetAudioForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRSetAudioForm::AVIRSetAudioForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 272, ui)
+SSWR::AVIRead::AVIRSetAudioForm::AVIRSetAudioForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 272, ui)
 {
 	this->SetText(CSTR("Select Audio Device"));
 	this->SetFont(0, 0, 8.25, false);
@@ -55,7 +55,7 @@ SSWR::AVIRead::AVIRSetAudioForm::AVIRSetAudioForm(Optional<UI::GUIClientControl>
 
 	Data::ArrayListStringNN *audDevList = this->core->GetAudioDeviceList();
 	Optional<Text::String> devName = audDevList->GetItem(0);
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	Bool found = false;
 	UOSInt i;
 	UOSInt j;

@@ -13,24 +13,24 @@ namespace SSWR
 		class AVIRFileRenameForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Text::String> fileName;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Text::String> fileName;
 
-			NotNullPtr<UI::GUILabel> lblNewName;
-			NotNullPtr<UI::GUITextBox> txtNewName;
-			NotNullPtr<UI::GUITextBox> txtNewExt;
-			NotNullPtr<UI::GUIButton> btnRename;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUILabel> lblNewName;
+			NN<UI::GUITextBox> txtNewName;
+			NN<UI::GUITextBox> txtNewExt;
+			NN<UI::GUIButton> btnRename;
+			NN<UI::GUIButton> btnCancel;
 
 			static void __stdcall OnRenameClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 
 		public:
-			AVIRFileRenameForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Text::String> fileName);
+			AVIRFileRenameForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Text::String> fileName);
 			virtual ~AVIRFileRenameForm();
 
 			virtual void OnMonitorChanged();
-			NotNullPtr<Text::String> GetFileName() const;
+			NN<Text::String> GetFileName() const;
 		};
 	}
 }

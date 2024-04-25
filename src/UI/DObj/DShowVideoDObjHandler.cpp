@@ -10,7 +10,7 @@
 
 void __stdcall UI::DObj::DShowVideoDObjHandler::OnVideoFrame(AnyType userObj, UInt8 *frameBuff, Int32 frameTime, UInt32 frameW, UInt32 frameH)
 {
-	NotNullPtr<UI::DObj::DShowVideoDObjHandler> me = userObj.GetNN<UI::DObj::DShowVideoDObjHandler>();
+	NN<UI::DObj::DShowVideoDObjHandler> me = userObj.GetNN<UI::DObj::DShowVideoDObjHandler>();
 	Media::DrawImage *dimg = me->frameImg;
 	Int32 dbpl = (Int32)me->videoSize.x << 2;
 	UOSInt outW;
@@ -46,7 +46,7 @@ void __stdcall UI::DObj::DShowVideoDObjHandler::OnVideoFrame(AnyType userObj, UI
 
 void __stdcall UI::DObj::DShowVideoDObjHandler::OnTimerTick(AnyType userObj)
 {
-/*	NotNullPtr<UI::DObj::DShowVideoDObjHandler> me = userObj.GetNN<UI::DObj::DShowVideoDObjHandler>();
+/*	NN<UI::DObj::DShowVideoDObjHandler> me = userObj.GetNN<UI::DObj::DShowVideoDObjHandler>();
 	me->graph->CheckStatus();
 	if (me->graph->IsCompleted())
 	{
@@ -54,9 +54,9 @@ void __stdcall UI::DObj::DShowVideoDObjHandler::OnTimerTick(AnyType userObj)
 	}*/
 }
 
-void UI::DObj::DShowVideoDObjHandler::DrawBkg(NotNullPtr<Media::DrawImage> dimg)
+void UI::DObj::DShowVideoDObjHandler::DrawBkg(NN<Media::DrawImage> dimg)
 {
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->bmpBkg))
 	{
 		dimg->DrawImagePt(img, Math::Coord2DDbl(0, 0));
@@ -64,9 +64,9 @@ void UI::DObj::DShowVideoDObjHandler::DrawBkg(NotNullPtr<Media::DrawImage> dimg)
 	this->DrawVideo(dimg);
 }
 
-void UI::DObj::DShowVideoDObjHandler::DrawVideo(NotNullPtr<Media::DrawImage> dimg)
+void UI::DObj::DShowVideoDObjHandler::DrawVideo(NN<Media::DrawImage> dimg)
 {
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->frameImg))
 	{
 		Sync::MutexUsage mutUsage(this->frameMut);
@@ -74,7 +74,7 @@ void UI::DObj::DShowVideoDObjHandler::DrawVideo(NotNullPtr<Media::DrawImage> dim
 	}
 }
 
-UI::DObj::DShowVideoDObjHandler::DShowVideoDObjHandler(NotNullPtr<UI::GUIForm> ownerFrm, NotNullPtr<Media::DrawEngine> deng, Text::CStringNN imageFileName, Math::Coord2D<OSInt> videoPos, Math::Size2D<UOSInt> videoSize, Text::CString videoFileName) : UI::DObj::ImageDObjHandler(deng, imageFileName)
+UI::DObj::DShowVideoDObjHandler::DShowVideoDObjHandler(NN<UI::GUIForm> ownerFrm, NN<Media::DrawEngine> deng, Text::CStringNN imageFileName, Math::Coord2D<OSInt> videoPos, Math::Size2D<UOSInt> videoSize, Text::CString videoFileName) : UI::DObj::ImageDObjHandler(deng, imageFileName)
 {
 	this->videoTL = videoPos;
 	this->videoSize = videoSize;
@@ -101,7 +101,7 @@ UI::DObj::DShowVideoDObjHandler::~DShowVideoDObjHandler()
 //	SDEL_CLASS(this->graph);
 //	DEL_CLASS(this->dshowMgr);
 	DEL_CLASS(this->resizer);
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->frameImg))
 		this->deng->DeleteImage(img);
 	this->videoFileName->Release();

@@ -18,7 +18,7 @@ void Media::AudioFilter::DynamicVolBooster::ResetStatus()
 	soundIndex = 0;
 }
 
-Media::AudioFilter::DynamicVolBooster::DynamicVolBooster(NotNullPtr<Media::IAudioSource> sourceAudio) : Media::IAudioFilter(sourceAudio)
+Media::AudioFilter::DynamicVolBooster::DynamicVolBooster(NN<Media::IAudioSource> sourceAudio) : Media::IAudioFilter(sourceAudio)
 {
 	Media::AudioFormat fmt;
 	this->soundBuff = 0;
@@ -46,7 +46,7 @@ Media::AudioFilter::DynamicVolBooster::~DynamicVolBooster()
 	}
 }
 
-void Media::AudioFilter::DynamicVolBooster::GetFormat(NotNullPtr<AudioFormat> format)
+void Media::AudioFilter::DynamicVolBooster::GetFormat(NN<AudioFormat> format)
 {
 	Media::AudioFormat fmt;
 	this->sourceAudio->GetFormat(fmt);

@@ -8,7 +8,7 @@ namespace Data
 	public:
 		virtual UOSInt GetCount() const = 0;
 		virtual Optional<T> GetItem(UOSInt index) const = 0;
-		virtual NotNullPtr<T> GetItemNoCheck(UOSInt index) const = 0;
+		virtual NN<T> GetItemNoCheck(UOSInt index) const = 0;
 	};
 }
 #endif

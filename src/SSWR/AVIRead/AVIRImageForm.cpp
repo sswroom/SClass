@@ -27,7 +27,7 @@ typedef enum
 
 void __stdcall SSWR::AVIRead::AVIRImageForm::ImagesSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageForm>();
+	NN<SSWR::AVIRead::AVIRImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageForm>();
 	UOSInt selInd = me->lbImages->GetSelectedIndex();
 	Media::RasterImage *img = me->imgList->GetImage(selInd, me->currImgDelay);
 	me->pbImage->SetImage(img, false);
@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRImageForm::ImagesSelChg(AnyType userObj)
 
 Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageForm>();
+	NN<SSWR::AVIRead::AVIRImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageForm>();
 	if (me->currImg)
 	{
 		Double dR;
@@ -546,16 +546,16 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(AnyType userObj, M
 
 void __stdcall SSWR::AVIRead::AVIRImageForm::OnInfoICCClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageForm>();
+	NN<SSWR::AVIRead::AVIRImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageForm>();
 	if (me->currImg)
 	{
 		const UInt8 *iccBuff = me->currImg->info.color.rawICC;
 		if (iccBuff)
 		{
-			NotNullPtr<Media::ICCProfile> icc;
+			NN<Media::ICCProfile> icc;
 			if (Media::ICCProfile::Parse(Data::ByteArrayR(iccBuff, ReadMUInt32(iccBuff))).SetTo(icc))
 			{
-				NotNullPtr<SSWR::AVIRead::AVIRICCInfoForm> frm;
+				NN<SSWR::AVIRead::AVIRICCInfoForm> frm;
 				NEW_CLASSNN(frm, SSWR::AVIRead::AVIRICCInfoForm(0, me->ui, me->core));
 				frm->SetICCProfile(icc, me->imgList->GetSourceNameObj()->ToCString());
 				me->core->ShowForm(frm);
@@ -591,7 +591,7 @@ void SSWR::AVIRead::AVIRImageForm::UpdateInfo()
 	}
 }
 
-SSWR::AVIRead::AVIRImageForm::AVIRImageForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::ImageList> imgList) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRImageForm::AVIRImageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::ImageList> imgList) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	UTF8Char sbuff[512];
@@ -637,7 +637,7 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(Optional<UI::GUIClientControl> paren
 	this->txtInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtInfo->SetReadOnly(true);
 	
-	NotNullPtr<UI::GUIMenu> mnu;
+	NN<UI::GUIMenu> mnu;
 	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Image"));
 	mnu->AddItem(CSTR("&Save"), MNU_IMAGE_SAVE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
@@ -703,8 +703,8 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 			Media::RasterImage *img = this->imgList->GetImage(selInd, 0);
 			if (img)
 			{
-				NotNullPtr<Media::StaticImage> buffImg = img->CreateStaticImage();
-				NotNullPtr<Media::StaticImage> prevImg = img->CreateStaticImage();
+				NN<Media::StaticImage> buffImg = img->CreateStaticImage();
+				NN<Media::StaticImage> prevImg = img->CreateStaticImage();
 
 				this->pbImage->SetImage(prevImg.Ptr(), true);
 
@@ -741,8 +741,8 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 				
 				if (valid)
 				{
-					NotNullPtr<Media::StaticImage> buffImg = img->CreateStaticImage();
-					NotNullPtr<Media::StaticImage> prevImg = img->CreateStaticImage();
+					NN<Media::StaticImage> buffImg = img->CreateStaticImage();
+					NN<Media::StaticImage> prevImg = img->CreateStaticImage();
 
 					this->pbImage->SetImage(prevImg.Ptr(), true);
 
@@ -804,7 +804,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 			Media::RasterImage *img = this->imgList->GetImage(selInd, 0);
 			if (img)
 			{
-				NotNullPtr<Media::StaticImage> simg = img->CreateStaticImage();
+				NN<Media::StaticImage> simg = img->CreateStaticImage();
 				simg->To32bpp();
 				if (this->currImg == img)
 				{
@@ -822,7 +822,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 			Media::RasterImage *img = this->imgList->GetImage(selInd, 0);
 			if (img)
 			{
-				NotNullPtr<Media::StaticImage> simg = img->CreateStaticImage();
+				NN<Media::StaticImage> simg = img->CreateStaticImage();
 				simg->To64bpp();
 				if (this->currImg == img)
 				{
@@ -840,7 +840,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 			Media::RasterImage *img = this->imgList->GetImage(selInd, 0);
 			if (img)
 			{
-				NotNullPtr<Media::StaticImage> simg = img->CreateStaticImage();
+				NN<Media::StaticImage> simg = img->CreateStaticImage();
 				if (simg->ToPal8())
 				{
 					if (this->currImg == img)

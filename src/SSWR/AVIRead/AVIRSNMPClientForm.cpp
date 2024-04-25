@@ -7,7 +7,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNMPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPClientForm>();
+	NN<SSWR::AVIRead::AVIRSNMPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPClientForm>();
 	Text::StringBuilderUTF8 sbComm;
 	Text::StringBuilderUTF8 sbOID;
 	Net::SocketUtil::AddressInfo addr;
@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(AnyType userO
 	UOSInt i = me->cboCommandType->GetSelectedIndex();
 	Data::ArrayList<Net::SNMPUtil::BindingItem*> itemList;
 	Net::SNMPUtil::ErrorStatus err;
-	NotNullPtr<Text::String> community = Text::String::New(sbComm.ToString(), sbComm.GetLength());
+	NN<Text::String> community = Text::String::New(sbComm.ToString(), sbComm.GetLength());
 	if (i == 0)
 	{
 		err = me->cli->V1GetRequest(addr, community, sbOID.ToString(), sbOID.GetLength(), &itemList);
@@ -90,10 +90,10 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnTimerTick(AnyType userObj)
 {
-//	NotNullPtr<SSWR::AVIRead::AVIRSNMPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPClientForm>();
+//	NN<SSWR::AVIRead::AVIRSNMPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPClientForm>();
 }
 
-SSWR::AVIRead::AVIRSNMPClientForm::AVIRSNMPClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRSNMPClientForm::AVIRSNMPClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("SNMP Client"));

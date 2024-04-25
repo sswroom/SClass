@@ -21,7 +21,7 @@ namespace IO
 		} DialResult;
 
 	protected:
-		NotNullPtr<IO::ATCommandChannel> channel;
+		NN<IO::ATCommandChannel> channel;
 		Bool needRelease;
 		Data::ArrayListStringNN cmdResults;
 		Sync::Mutex cmdMut;
@@ -33,16 +33,16 @@ namespace IO
 		UTF8Char *SendStringCommand(UTF8Char *buff, const UTF8Char *cmd, UOSInt cmdLen, Data::Duration timeout);
 		Bool SendStringCommand(Data::ArrayListStringNN *resList, const UTF8Char *cmd, UOSInt cmdLen, Data::Duration timeout);
 		UTF8Char *SendStringCommandDirect(UTF8Char *buff, const UTF8Char *cmd, UOSInt cmdLen, Data::Duration timeout);
-		Bool SendStringListCommand(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *cmd, UOSInt cmdLen);
+		Bool SendStringListCommand(NN<Text::StringBuilderUTF8> sb, const UTF8Char *cmd, UOSInt cmdLen);
 		Bool SendBoolCommandC(const UTF8Char *cmd, UOSInt cmdLen);
 		Bool SendBoolCommandC(const UTF8Char *cmd, UOSInt cmdLen, Data::Duration timeout);
 		DialResult SendDialCommand(const UTF8Char *cmd, UOSInt cmdLen);
 
 	public:
-		ModemController(NotNullPtr<IO::ATCommandChannel> channel, Bool needRelease);
+		ModemController(NN<IO::ATCommandChannel> channel, Bool needRelease);
 		virtual ~ModemController();
 
-		NotNullPtr<IO::ATCommandChannel> GetChannel() const;
+		NN<IO::ATCommandChannel> GetChannel() const;
 		
 		// General Commands V.25TER
 		Bool HangUp(); //ATH

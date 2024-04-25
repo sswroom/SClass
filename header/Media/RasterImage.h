@@ -29,10 +29,10 @@ namespace Media
 		
 	public:
 		RasterImage(Math::Size2D<UOSInt> dispSize);
-		RasterImage(Math::Size2D<UOSInt> dispSize, Math::Size2D<UOSInt> storeSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, NotNullPtr<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst);
+		RasterImage(Math::Size2D<UOSInt> dispSize, Math::Size2D<UOSInt> storeSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, NN<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst);
 		virtual ~RasterImage();
 
-		virtual NotNullPtr<Media::RasterImage> Clone() const = 0;
+		virtual NN<Media::RasterImage> Clone() const = 0;
 		virtual Media::RasterImage::ImageType GetImageType() const = 0;
 		virtual void GetRasterData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const = 0;
 		void InitGrayPal();
@@ -43,10 +43,10 @@ namespace Media
 		OSInt GetHotSpotX() const;
 		OSInt GetHotSpotY() const;
 
-		NotNullPtr<Media::StaticImage> CreateStaticImage() const;
-		NotNullPtr<Media::StaticImage> CreateSubImage(Math::RectArea<OSInt> area) const;
+		NN<Media::StaticImage> CreateStaticImage() const;
+		NN<Media::StaticImage> CreateSubImage(Math::RectArea<OSInt> area) const;
 		Optional<Media::EXIFData> SetEXIFData(Optional<Media::EXIFData> exif);
-		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		void ToString(NN<Text::StringBuilderUTF8> sb) const;
 
 		Bool IsDispSize(Math::Size2D<UOSInt> dispSize);
 	};

@@ -84,16 +84,16 @@ namespace Media
 			void DestoryHori();
 			void DestoryVert();
 		public:
-			LanczosResizerLR_C16(UOSInt hnTap, UOSInt vnTap, NotNullPtr<const Media::ColorProfile> destColor, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance);
+			LanczosResizerLR_C16(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> destColor, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance);
 			virtual ~LanczosResizerLR_C16();
 
 			virtual void Resize(const UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight);
-			virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
-			virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);
+			virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
+			virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
 			virtual void SetSrcRefLuminance(Double srcRefLuminance);
 
-			virtual Bool IsSupported(NotNullPtr<const Media::FrameInfo> srcInfo);
-			virtual Media::StaticImage *ProcessToNewPartial(NotNullPtr<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR);
+			virtual Bool IsSupported(NN<const Media::FrameInfo> srcInfo);
+			virtual Media::StaticImage *ProcessToNewPartial(NN<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR);
 		};
 	}
 }

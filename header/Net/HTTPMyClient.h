@@ -23,7 +23,7 @@ namespace Net
 		Net::TCPClient *cli;
 		Text::String *cliHost;
 		IO::MemoryStream reqMstm;
-		NotNullPtr<Text::String> userAgent;
+		NN<Text::String> userAgent;
 		Data::ArrayListString reqHeaders;
 
 		Bool writing;
@@ -39,7 +39,7 @@ namespace Net
 
 		UOSInt ReadRAWInternal(Data::ByteArray buff);
 	public:
-		HTTPMyClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString userAgent, Bool kaConn);
+		HTTPMyClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString userAgent, Bool kaConn);
 		virtual ~HTTPMyClient();
 
 		virtual Bool IsError() const;
@@ -58,7 +58,7 @@ namespace Net
 		virtual void SetTimeout(Data::Duration timeout);
 
 		virtual Bool IsSecureConn() const;
-		virtual Bool SetClientCert(NotNullPtr<Crypto::Cert::X509Cert> cert, NotNullPtr<Crypto::Cert::X509File> key);
+		virtual Bool SetClientCert(NN<Crypto::Cert::X509Cert> cert, NN<Crypto::Cert::X509File> key);
 		virtual Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> GetServerCerts();
 	};
 }

@@ -3,9 +3,9 @@
 #include "Media/DrawEngineFactory.h"
 #include "Media/GDIEngine.h"
 
-NotNullPtr<Media::DrawEngine> Media::DrawEngineFactory::CreateDrawEngine()
+NN<Media::DrawEngine> Media::DrawEngineFactory::CreateDrawEngine()
 {
-	NotNullPtr<Media::GDIEngine> deng;
+	NN<Media::GDIEngine> deng;
 	NEW_CLASSNN(deng, Media::GDIEngine());
 	return deng;
 }

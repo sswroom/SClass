@@ -14,22 +14,22 @@ namespace SSWR
 		class AVIRPowerForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUILabel> lblBattery;
-			NotNullPtr<UI::GUITextBox> txtBattery;
-			NotNullPtr<UI::GUILabel> lblTimeLeft;
-			NotNullPtr<UI::GUITextBox> txtTimeLeft;
-			NotNullPtr<UI::GUICheckBox> chkNoSleep;
-			NotNullPtr<UI::GUICheckBox> chkNoDispOff;
-			NotNullPtr<UI::GUIButton> btnSleep;
-			NotNullPtr<UI::GUIButton> btnDisplayOff;
+			NN<UI::GUILabel> lblBattery;
+			NN<UI::GUITextBox> txtBattery;
+			NN<UI::GUILabel> lblTimeLeft;
+			NN<UI::GUITextBox> txtTimeLeft;
+			NN<UI::GUICheckBox> chkNoSleep;
+			NN<UI::GUICheckBox> chkNoDispOff;
+			NN<UI::GUIButton> btnSleep;
+			NN<UI::GUIButton> btnDisplayOff;
 
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnSleepClicked(AnyType userObj);
 			static void __stdcall OnDisplayOffClicked(AnyType userObj);
 		public:
-			AVIRPowerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRPowerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRPowerForm();
 
 			virtual void OnMonitorChanged();

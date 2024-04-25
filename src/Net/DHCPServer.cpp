@@ -9,9 +9,9 @@
 
 #include <stdio.h>
 
-void __stdcall Net::DHCPServer::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::DHCPServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	NotNullPtr<Net::DHCPServer> me = userData.GetNN<Net::DHCPServer>();
+	NN<Net::DHCPServer> me = userData.GetNN<Net::DHCPServer>();
 	UInt8 repBuff[512];
 	Net::SocketUtil::AddressInfo destAddr;
 	if (dataSize >= 240 && buff[0] == 1 && buff[1] == 1 && buff[2] == 6 && ReadMUInt32(&buff[236]) == 0x63825363)
@@ -263,7 +263,7 @@ void __stdcall Net::DHCPServer::PacketHdlr(NotNullPtr<const Net::SocketUtil::Add
 	}
 }
 
-Net::DHCPServer::DHCPServer(NotNullPtr<Net::SocketFactory> sockf, UInt32 infIP, UInt32 subnet, UInt32 firstIP, UInt32 devCount, UInt32 gateway, NotNullPtr<Data::ArrayList<UInt32>> dnsList, NotNullPtr<IO::LogTool> log)
+Net::DHCPServer::DHCPServer(NN<Net::SocketFactory> sockf, UInt32 infIP, UInt32 subnet, UInt32 firstIP, UInt32 devCount, UInt32 gateway, NN<Data::ArrayList<UInt32>> dnsList, NN<IO::LogTool> log)
 {
 	this->sockf = sockf;
 	this->svr = 0;
@@ -282,7 +282,7 @@ Net::DHCPServer::DHCPServer(NotNullPtr<Net::SocketFactory> sockf, UInt32 infIP, 
 	UOSInt j;
 	UInt32 ip;
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
-	NotNullPtr<Net::ConnectionInfo> connInfo;
+	NN<Net::ConnectionInfo> connInfo;
 	this->sockf->GetConnInfoList(connInfoList);
 	i = connInfoList.GetCount();
 	while (i-- > 0)
@@ -358,7 +358,7 @@ Bool Net::DHCPServer::IsError() const
 	return this->svr->IsError();
 }
 
-void Net::DHCPServer::UseStatus(NotNullPtr<Sync::MutexUsage> mutUsage) const
+void Net::DHCPServer::UseStatus(NN<Sync::MutexUsage> mutUsage) const
 {
 	mutUsage->ReplaceMutex(this->devMut);
 }

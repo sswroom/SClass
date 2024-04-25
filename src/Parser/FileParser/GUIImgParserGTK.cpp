@@ -39,7 +39,7 @@ void Parser::FileParser::GUIImgParser::SetParserList(Parser::ParserList *parsers
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::GUIImgParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::GUIImgParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
@@ -57,7 +57,7 @@ IO::ParserType Parser::FileParser::GUIImgParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	Int32 isImage = 0;
 	if (ReadUInt32(&hdr[0]) == 0x474e5089 && ReadUInt32(&hdr[4]) == 0x0a1a0a0d)
@@ -80,7 +80,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 		return 0;
 
 	Optional<Media::ImageList> imgList = 0;
-	NotNullPtr<Media::ImageList> nnimgList;
+	NN<Media::ImageList> nnimgList;
 	UInt64 dataSize = fd->GetDataSize();
 	{
 		Data::ByteBuffer data((UOSInt)dataSize);
@@ -186,12 +186,12 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 		Double maxX;
 		Double maxY;
 		UInt32 srid;
-		NotNullPtr<Media::EXIFData> exif;
+		NN<Media::EXIFData> exif;
 		if (img->exif.SetTo(exif) && exif->GetGeoBounds(img->info.dispSize, srid, minX, minY, maxX, maxY))
 		{
 			Map::VectorLayer *lyr;
-			NotNullPtr<Math::Geometry::VectorImage> vimg;
-			NotNullPtr<Media::SharedImage> simg;
+			NN<Math::Geometry::VectorImage> vimg;
+			NN<Media::SharedImage> simg;
 			
 			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, 0, 0, 0, 0));
 			NEW_CLASSNN(simg, Media::SharedImage(nnimgList, true));
@@ -260,9 +260,9 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 				if (valid && rotX == 0 && rotY == 0)
 				{
 					Map::VectorLayer *lyr;
-					NotNullPtr<Math::Geometry::VectorImage> vimg;
-					NotNullPtr<Media::SharedImage> simg;
-					NotNullPtr<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+					NN<Math::Geometry::VectorImage> vimg;
+					NN<Media::SharedImage> simg;
+					NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 					
 					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, csys, 0, 0, 0, 0, 0));
 					NEW_CLASSNN(simg, Media::SharedImage(nnimgList, true));

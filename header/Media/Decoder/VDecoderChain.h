@@ -14,12 +14,12 @@ namespace Media
 
 			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:
-			VDecoderChain(NotNullPtr<IVideoSource> sourceVideo);
+			VDecoderChain(NN<IVideoSource> sourceVideo);
 			virtual ~VDecoderChain();
 
 			virtual Text::CStringNN GetFilterName();
 
-			void AddDecoder(NotNullPtr<Media::IVideoSource> decoder);
+			void AddDecoder(NN<Media::IVideoSource> decoder);
 			virtual Bool CaptureImage(ImageCallback imgCb, AnyType userData);
 
 			virtual Bool HasFrameCount();
@@ -27,7 +27,7 @@ namespace Media
 			virtual Data::Duration GetFrameTime(UOSInt frameIndex);
 			virtual void EnumFrameInfos(FrameInfoCallback cb, AnyType userData);
 
-			virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
+			virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
 		};
 	}
 }

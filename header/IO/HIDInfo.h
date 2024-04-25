@@ -31,7 +31,7 @@ namespace IO
 
 		IO::Stream *OpenHID();
 
-		static OSInt GetHIDList(NotNullPtr<Data::ArrayList<HIDInfo*>> hidList);
+		static OSInt GetHIDList(NN<Data::ArrayList<HIDInfo*>> hidList);
 	};
 };
 

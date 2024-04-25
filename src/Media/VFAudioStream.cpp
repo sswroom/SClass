@@ -6,7 +6,7 @@
 #include <windows.h>
 #include "Media/VFAPI.h"
 
-Media::VFAudioStream::VFAudioStream(NotNullPtr<Media::VFMediaFile> mfile)
+Media::VFAudioStream::VFAudioStream(NN<Media::VFMediaFile> mfile)
 {
 	this->mfile = mfile;
 	{
@@ -77,7 +77,7 @@ Bool Media::VFAudioStream::TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, 
 	return false;
 }
 
-void Media::VFAudioStream::GetFormat(NotNullPtr<AudioFormat> format)
+void Media::VFAudioStream::GetFormat(NN<AudioFormat> format)
 {
 	format->FromAudioFormat(this->fmt);
 }

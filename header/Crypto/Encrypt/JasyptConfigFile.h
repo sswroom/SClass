@@ -11,15 +11,15 @@ namespace Crypto
 		class JasyptConfigFile : public IO::ConfigFile
 		{
 		private:
-			NotNullPtr<IO::ConfigFile> cfg;
+			NN<IO::ConfigFile> cfg;
 			Data::FastStringMapNN<Data::FastStringMapNN<Text::String>> decVals;
 			Crypto::Encrypt::JasyptEncryptor enc;
 
 		public:
-			JasyptConfigFile(NotNullPtr<IO::ConfigFile> cfg, Crypto::Encrypt::JasyptEncryptor::KeyAlgorithm keyAlg, Crypto::Encrypt::JasyptEncryptor::CipherAlgorithm cipherAlg, Data::ByteArrayR key);
+			JasyptConfigFile(NN<IO::ConfigFile> cfg, Crypto::Encrypt::JasyptEncryptor::KeyAlgorithm keyAlg, Crypto::Encrypt::JasyptEncryptor::CipherAlgorithm cipherAlg, Data::ByteArrayR key);
 			virtual ~JasyptConfigFile();
 
-			virtual Optional<Text::String> GetCateValue(NotNullPtr<Text::String> category, NotNullPtr<Text::String> name);
+			virtual Optional<Text::String> GetCateValue(NN<Text::String> category, NN<Text::String> name);
 			virtual Optional<Text::String> GetCateValue(Text::CStringNN category, Text::CStringNN name);
 		};
 	}

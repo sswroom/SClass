@@ -13,15 +13,15 @@ namespace Text
 		StringBuilderUTF16();
 		virtual ~StringBuilderUTF16();
 
-		virtual NotNullPtr<StringBuilderUTF> Append(Text::PString *s);
-		virtual NotNullPtr<StringBuilderUTF> Append(const UTF8Char *s);
-		virtual NotNullPtr<StringBuilderUTF> AppendC(const UTF8Char *s, UOSInt charCnt);
-		virtual NotNullPtr<StringBuilderUTF> AppendS(const UTF8Char *s, UOSInt maxLen);
-		virtual NotNullPtr<StringBuilderUTF> AppendChar(UTF32Char c, UOSInt repCnt);
+		virtual NN<StringBuilderUTF> Append(Text::PString *s);
+		virtual NN<StringBuilderUTF> Append(const UTF8Char *s);
+		virtual NN<StringBuilderUTF> AppendC(const UTF8Char *s, UOSInt charCnt);
+		virtual NN<StringBuilderUTF> AppendS(const UTF8Char *s, UOSInt maxLen);
+		virtual NN<StringBuilderUTF> AppendChar(UTF32Char c, UOSInt repCnt);
 
-		NotNullPtr<StringBuilderUTF16> AppendCSV(const UTF16Char **sarr, UOSInt nStr);
-		NotNullPtr<StringBuilderUTF16> AppendToUpper(const UTF16Char *s);
-		NotNullPtr<StringBuilderUTF16> AppendToLower(const UTF16Char *s);
+		NN<StringBuilderUTF16> AppendCSV(const UTF16Char **sarr, UOSInt nStr);
+		NN<StringBuilderUTF16> AppendToUpper(const UTF16Char *s);
+		NN<StringBuilderUTF16> AppendToLower(const UTF16Char *s);
  	};
 }
 #endif

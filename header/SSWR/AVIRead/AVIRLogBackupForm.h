@@ -20,17 +20,17 @@ namespace SSWR
 				Data::ArrayListStringNN *fileNames;
 			} LogGroup;
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUILabel> lblLogDir;
-			NotNullPtr<UI::GUITextBox> txtLogDir;
-			NotNullPtr<UI::GUILabel> lblLogName;
-			NotNullPtr<UI::GUITextBox> txtLogName;
-			NotNullPtr<UI::GUIButton> btnStart;
+			NN<UI::GUILabel> lblLogDir;
+			NN<UI::GUITextBox> txtLogDir;
+			NN<UI::GUILabel> lblLogName;
+			NN<UI::GUITextBox> txtLogName;
+			NN<UI::GUIButton> btnStart;
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 		public:
-			AVIRLogBackupForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRLogBackupForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLogBackupForm();
 
 			virtual void OnMonitorChanged();

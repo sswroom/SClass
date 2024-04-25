@@ -5,7 +5,7 @@
 #include "Text/MyString.h"
 #include <stdio.h>
 
-IO::I2CMODBUS::I2CMODBUS(NotNullPtr<IO::I2CChannel> channel, UOSInt delayMS) : I2C(channel, delayMS)
+IO::I2CMODBUS::I2CMODBUS(NN<IO::I2CChannel> channel, UOSInt delayMS) : I2C(channel, delayMS)
 {
 }
 

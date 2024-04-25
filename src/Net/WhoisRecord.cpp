@@ -116,16 +116,16 @@ Optional<Text::String> Net::WhoisRecord::GetItem(UOSInt index) const
 	return this->items.GetItem(index);
 }
 
-Data::ArrayIterator<NotNullPtr<Text::String>> Net::WhoisRecord::Iterator() const
+Data::ArrayIterator<NN<Text::String>> Net::WhoisRecord::Iterator() const
 {
 	return this->items.Iterator();
 }
 
 UTF8Char *Net::WhoisRecord::GetNetworkName(UTF8Char *buff)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UTF8Char *sptr;
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = this->items.Iterator();
+	Data::ArrayIterator<NN<Text::String>> it = this->items.Iterator();
 	while (it.HasNext())
 	{
 		s = it.Next();
@@ -140,9 +140,9 @@ UTF8Char *Net::WhoisRecord::GetNetworkName(UTF8Char *buff)
 
 UTF8Char *Net::WhoisRecord::GetCountryCode(UTF8Char *buff)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UTF8Char *sptr;
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = this->items.Iterator();
+	Data::ArrayIterator<NN<Text::String>> it = this->items.Iterator();
 	while (it.HasNext())
 	{
 		s = it.Next();

@@ -12,7 +12,7 @@
 
 UInt32 __stdcall Media::NullRenderer::PlayThread(AnyType obj)
 {
-	NotNullPtr<Media::NullRenderer> me = obj.GetNN<Media::NullRenderer>();
+	NN<Media::NullRenderer> me = obj.GetNN<Media::NullRenderer>();
 	Media::AudioFormat af;
 	Data::Duration audStartTime;
 	UOSInt buffLeng = 16384;

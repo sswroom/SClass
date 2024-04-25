@@ -38,7 +38,7 @@ void Parser::FileParser::JSONParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::JSONParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::JSONParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
@@ -51,7 +51,7 @@ IO::ParserType Parser::FileParser::JSONParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::JSONParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::JSONParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	Text::CString fileName = fd->GetShortName();
 	Bool valid = false;
@@ -91,27 +91,27 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFileHdr(NotNullPtr<IO::St
 	return pobj;
 }
 
-IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *fileJSON, NotNullPtr<Text::String> sourceName, Text::CStringNN layerName, IO::ParserType targetType, Optional<IO::PackageFile> pkgFile, Optional<Parser::ParserList> parsers)
+IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *fileJSON, NN<Text::String> sourceName, Text::CStringNN layerName, IO::ParserType targetType, Optional<IO::PackageFile> pkgFile, Optional<Parser::ParserList> parsers)
 {
 	UInt32 srid = 0;
 	IO::ParsedObject *pobj = 0;
 	if (fileJSON->GetType() == Text::JSONType::Object)
 	{
-		NotNullPtr<IO::PackageFile> nnpkgFile;
-		NotNullPtr<Parser::ParserList> nnparsers;
+		NN<IO::PackageFile> nnpkgFile;
+		NN<Parser::ParserList> nnparsers;
 		Text::JSONObject *jobj = (Text::JSONObject*)fileJSON;
 		Text::JSONBase *jbase = jobj->GetObjectValue(CSTR("type"));
 		if (jbase && jbase->Equals(CSTR("FeatureCollection")))
 		{
 			Math::CoordinateSystem *csys = 0;
-			NotNullPtr<Math::CoordinateSystem> nncsys;
+			NN<Math::CoordinateSystem> nncsys;
 			Text::JSONBase *crs = jobj->GetObjectValue(CSTR("crs"));
 			if (crs && crs->GetType() == Text::JSONType::Object)
 			{
 				Text::JSONBase *crsProp = ((Text::JSONObject*)crs)->GetObjectValue(CSTR("properties"));
 				if (crsProp && crsProp->GetType() == Text::JSONType::Object)
 				{
-					NotNullPtr<Text::String> crsName;
+					NN<Text::String> crsName;
 					if (((Text::JSONObject*)crsProp)->GetObjectString(CSTR("name")).SetTo(crsName))
 					{
 						csys = Math::CoordinateSystemManager::CreateFromName(crsName->ToCString());
@@ -143,7 +143,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 				Text::JSONBase *featType;
 				Text::JSONBase *featProp;
 				Text::JSONBase *featGeom;
-				NotNullPtr<Math::Geometry::Vector2D> vec;
+				NN<Math::Geometry::Vector2D> vec;
 				if (feature && feature->GetType() == Text::JSONType::Object)
 				{
 					featType = ((Text::JSONObject*)feature)->GetObjectValue(CSTR("type"));
@@ -163,7 +163,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 						}
 						if (vec.Set(ParseGeomJSON((Text::JSONObject*)featGeom, srid)))
 						{
-							NotNullPtr<Text::String> s = Text::String::New(layerName);
+							NN<Text::String> s = Text::String::New(layerName);
 							NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_MIXED, sourceName, colCnt, tabHdrs, nncsys, 0, s.Ptr()));
 							s->Release();
 							vec.Delete();
@@ -222,10 +222,10 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 		}
 		else if (jbase && jbase->Equals(CSTR("overlay")) && layerName.EndsWith(UTF8STRC("metadata.json")) && pkgFile.SetTo(nnpkgFile) && parsers.SetTo(nnparsers))
 		{
-			NotNullPtr<Text::String> name;
-			NotNullPtr<Text::String> format;
-			NotNullPtr<Text::String> sMinZoom;
-			NotNullPtr<Text::String> sMaxZoom;
+			NN<Text::String> name;
+			NN<Text::String> format;
+			NN<Text::String> sMinZoom;
+			NN<Text::String> sMaxZoom;
 			UInt32 minZoom;
 			UInt32 maxZoom;
 			Text::JSONArray *bounds = jobj->GetObjectArray(CSTR("bounds"));
@@ -241,8 +241,8 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 				maxCoord = Math::Coord2DDbl(bounds->GetArrayDouble(2), bounds->GetArrayDouble(3));
 				minCoord = coord.Min(maxCoord);
 				maxCoord = coord.Max(maxCoord);
-				NotNullPtr<Map::OSM::OSMLocalTileMap> tileMap;
-				NotNullPtr<Map::TileMapLayer> mapLayer;
+				NN<Map::OSM::OSMLocalTileMap> tileMap;
+				NN<Map::TileMapLayer> mapLayer;
 				NEW_CLASSNN(tileMap, Map::OSM::OSMLocalTileMap(nnpkgFile->Clone(), name, format, minZoom, maxZoom, minCoord, maxCoord));
 				NEW_CLASSNN(mapLayer, Map::TileMapLayer(tileMap, nnparsers));
 				return mapLayer.Ptr();
@@ -254,7 +254,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 	{
 		return 0;
 	}
-	NotNullPtr<DB::JSONDB> db;
+	NN<DB::JSONDB> db;
 	NEW_CLASSNN(db, DB::JSONDB(sourceName, layerName, dataArr));
 	if (targetType == IO::ParserType::Unknown || targetType == IO::ParserType::MapLayer)
 	{
@@ -271,7 +271,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 
 Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *obj, UInt32 srid)
 {
-	NotNullPtr<Text::String> sType;
+	NN<Text::String> sType;
 	if (obj->GetObjectString(CSTR("type")).SetTo(sType))
 	{
 		Text::JSONBase *jbase;
@@ -467,7 +467,7 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 				{
 					Math::Coord2DDbl *ptArr;
 					Math::Geometry::Polygon *pg;
-					NotNullPtr<Math::Geometry::LinearRing> lr;
+					NN<Math::Geometry::LinearRing> lr;
 					UOSInt m;
 					NEW_CLASS(pg, Math::Geometry::Polygon(srid));
 					i = 0;
@@ -564,9 +564,9 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 						if (ptList.GetCount() >= 4)
 						{
 							Math::Coord2DDbl *ptArr;
-							NotNullPtr<Math::Geometry::Polygon> pg;
+							NN<Math::Geometry::Polygon> pg;
 							Bool hasZ = ptList.GetCount() == altList.GetCount() * 2;
-							NotNullPtr<Math::Geometry::LinearRing> lr;
+							NN<Math::Geometry::LinearRing> lr;
 							UOSInt m;
 							NEW_CLASSNN(pg, Math::Geometry::Polygon(srid));
 							i = 0;

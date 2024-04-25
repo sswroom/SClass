@@ -339,7 +339,7 @@ OSInt __stdcall UI::GUITextView::TFVWndProc(void *hWnd, UInt32 msg, UInt32 wPara
 		{
 			UOSInt scnW = (UInt16)LOWORD(lParam);
 			UOSInt scnH = (UInt16)HIWORD(lParam);
-			NotNullPtr<Media::DrawImage> img;
+			NN<Media::DrawImage> img;
 			if (img.Set(me->drawBuff))
 			{
 				me->deng->DeleteImage(img);
@@ -386,7 +386,7 @@ void UI::GUITextView::OnPaint()
 	RECT rc;
 	PAINTSTRUCT ps;
 	GetClientRect((HWND)this->hwnd, &rc);
-	NotNullPtr<Media::GDIImage> img;
+	NN<Media::GDIImage> img;
 	if (!img.Set((Media::GDIImage*)this->drawBuff))
 	{	
 		BeginPaint((HWND)this->hwnd, &ps);
@@ -411,14 +411,14 @@ void UI::GUITextView::UpdateScrollBar()
 
 	Math::Size2DDbl sz;
 	RECT rc;
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (!img.Set(this->drawBuff))
 	{
 		sz.y = 12;
 	}
 	else
 	{
-		NotNullPtr<Media::DrawFont> fnt;
+		NN<Media::DrawFont> fnt;
 		if (!fnt.Set(this->CreateDrawFont(img)))
 		{
 			sz.y = 12;
@@ -470,11 +470,11 @@ void UI::GUITextView::SetScrollVRange(UOSInt min, UOSInt max)
 
 UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWidth)
 {
-	NotNullPtr<Media::GDIImage> img;
+	NN<Media::GDIImage> img;
 	if (img.Set((Media::GDIImage*)this->drawBuff))
 	{
 		SIZE sz;
-		NotNullPtr<Media::GDIFont> fnt;
+		NN<Media::GDIFont> fnt;
 		if (fnt.Set((Media::GDIFont*)this->CreateDrawFont(img)))
 		{
 			HDC hdc = (HDC)img->hdcBmp;
@@ -507,11 +507,11 @@ UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWi
 
 void UI::GUITextView::GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSInt *height)
 {
-	NotNullPtr<Media::GDIImage> img;
+	NN<Media::GDIImage> img;
 	if (img.Set((Media::GDIImage*)this->drawBuff))
 	{
 		Math::Size2DDbl sz;
-		NotNullPtr<Media::DrawFont> fnt;
+		NN<Media::DrawFont> fnt;
 		if (fnt.Set(this->CreateDrawFont(img)))
 		{
 			sz = img->GetTextSize(fnt, str, (OSInt)strLen);
@@ -546,7 +546,7 @@ void UI::GUITextView::SetCaretPos(OSInt scnX, OSInt scnY)
 	::SetCaretPos((int)scnX, (int)scnY);
 }
 
-UI::GUITextView::GUITextView(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> deng) : UI::GUIControl(ui, parent)
+UI::GUITextView::GUITextView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng) : UI::GUIControl(ui, parent)
 {
 	this->deng = deng;
 	this->drawBuff = 0;
@@ -577,7 +577,7 @@ UI::GUITextView::GUITextView(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClien
 UI::GUITextView::~GUITextView()
 {
 	KillTimer((HWND)this->hwnd, 1);
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->drawBuff))
 	{
 		this->deng->DeleteImage(img);

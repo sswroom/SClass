@@ -51,9 +51,9 @@ namespace Text
 
 		struct HeaderInfo
 		{
-			NotNullPtr<Text::String> name;
+			NN<Text::String> name;
 			UOSInt nameCellCnt;
-			NotNullPtr<Text::String> value;
+			NN<Text::String> value;
 			UOSInt valueCellCnt;
 			Bool valueUnderline;
 			Bool isRight;
@@ -65,9 +65,9 @@ namespace Text
 			HAlignment hAlign;
 		};
 	private:
-		NotNullPtr<Text::String> name;
+		NN<Text::String> name;
 		Text::HAlignment nameHAlign;
-		NotNullPtr<Text::String> fontName;
+		NN<Text::String> fontName;
 		UOSInt colCount;
 		Data::ArrayList<HeaderInfo*> preheaders;
 		Data::ArrayList<HeaderInfo*> headers;
@@ -106,7 +106,7 @@ namespace Text
 		void SetColHAlign(UOSInt index, HAlignment hAlign);
 		Bool HasChart();
 		Text::SpreadSheet::Workbook *CreateWorkbook();
-		NotNullPtr<Media::VectorDocument> CreateVDoc(Int32 id, NotNullPtr<Media::DrawEngine> deng);
+		NN<Media::VectorDocument> CreateVDoc(Int32 id, NN<Media::DrawEngine> deng);
 	};
 }
 #endif

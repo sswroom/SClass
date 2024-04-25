@@ -17,23 +17,23 @@ namespace Net
 	protected:
 		Data::ByteBuffer buff;
 
-		ASN1Data(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff);
+		ASN1Data(NN<Text::String> sourceName, Data::ByteArrayR buff);
 		ASN1Data(Text::CStringNN sourceName, Data::ByteArrayR buff);
 	public:
 		virtual ~ASN1Data();
 
 		virtual IO::ParserType GetParserType() const;
 		virtual ASN1Type GetASN1Type() const = 0;
-		virtual NotNullPtr<ASN1Data> Clone() const = 0;
-		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const = 0;
-		virtual NotNullPtr<ASN1Names> CreateNames() const = 0;
+		virtual NN<ASN1Data> Clone() const = 0;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const = 0;
+		virtual NN<ASN1Names> CreateNames() const = 0;
 
-		Bool ToASN1String(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		Bool ToASN1String(NN<Text::StringBuilderUTF8> sb) const;
 		const UInt8 *GetASN1Buff() const;
 		UOSInt GetASN1BuffSize() const;
 		Data::ByteArrayR GetASN1Array() const;
 
-		static void AppendInteger(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *pdu, UOSInt len);
+		static void AppendInteger(NN<Text::StringBuilderUTF8> sb, const UInt8 *pdu, UOSInt len);
 	};
 }
 #endif

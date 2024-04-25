@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Text/JSONUtil.h"
 
-void Text::JSONUtil::ArrayGPSTrack(NotNullPtr<JSONBuilder> json, NotNullPtr<Map::GPSTrack> trk)
+void Text::JSONUtil::ArrayGPSTrack(NN<JSONBuilder> json, NN<Map::GPSTrack> trk)
 {
 	Map::GPSTrack::GPSRecord3 *recs;
 	UOSInt recordCnt;

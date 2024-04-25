@@ -5,9 +5,9 @@
 
 //#include <stdio.h>
 
-void __stdcall IO::BTCapturer::CheckThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::BTCapturer::CheckThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::BTCapturer> me = thread->GetUserObj().GetNN<IO::BTCapturer>();
+	NN<IO::BTCapturer> me = thread->GetUserObj().GetNN<IO::BTCapturer>();
 	Int64 currTime;
 	Int64 lastTime;
 	lastTime = Data::DateTimeUtil::GetCurrTimeMillis();
@@ -40,7 +40,7 @@ IO::BTCapturer::BTCapturer(Bool autoStore) : thread(CheckThread, this, CSTR("BTC
 IO::BTCapturer::~BTCapturer()
 {
 	this->Stop();
-	NotNullPtr<IO::BTScanner> bt;
+	NN<IO::BTScanner> bt;
 	if (this->bt.SetTo(bt))
 	{
 		bt->Close();
@@ -61,7 +61,7 @@ Bool IO::BTCapturer::IsStarted()
 
 Bool IO::BTCapturer::Start()
 {
-	NotNullPtr<IO::BTScanner> bt;
+	NN<IO::BTScanner> bt;
 	if (!this->bt.SetTo(bt) || this->IsStarted())
 	{
 		return false;
@@ -74,7 +74,7 @@ Bool IO::BTCapturer::Start()
 void IO::BTCapturer::Stop()
 {
 	//printf("BTCapturer: Stopping\r\n");
-	NotNullPtr<IO::BTScanner> bt;
+	NN<IO::BTScanner> bt;
 	if (this->thread.IsRunning() && this->bt.SetTo(bt))
 	{
 		this->thread.Stop();
@@ -86,7 +86,7 @@ void IO::BTCapturer::Stop()
 
 void IO::BTCapturer::StoreStatus()
 {
-	NotNullPtr<IO::BTScanner> bt;
+	NN<IO::BTScanner> bt;
 	if (this->bt.SetTo(bt))
 	{
 		UTF8Char sbuff[512];
@@ -116,19 +116,19 @@ void IO::BTCapturer::StoreStatus()
 	}
 }
 
-NotNullPtr<const Data::ReadingListNN<IO::BTScanLog::ScanRecord3>> IO::BTCapturer::GetPublicList(NotNullPtr<Sync::MutexUsage> mutUsage) const
+NN<const Data::ReadingListNN<IO::BTScanLog::ScanRecord3>> IO::BTCapturer::GetPublicList(NN<Sync::MutexUsage> mutUsage) const
 {
 	return this->bt.OrNull()->GetPublicMap(mutUsage);
 }
 
-NotNullPtr<const Data::ReadingListNN<IO::BTScanLog::ScanRecord3>> IO::BTCapturer::GetRandomList(NotNullPtr<Sync::MutexUsage> mutUsage) const
+NN<const Data::ReadingListNN<IO::BTScanLog::ScanRecord3>> IO::BTCapturer::GetRandomList(NN<Sync::MutexUsage> mutUsage) const
 {
 	return this->bt.OrNull()->GetRandomMap(mutUsage);
 }
 
 void IO::BTCapturer::SetUpdateHandler(IO::BTScanner::RecordHandler hdlr, void *userObj)
 {
-	NotNullPtr<IO::BTScanner> bt;
+	NN<IO::BTScanner> bt;
 	if (this->bt.SetTo(bt))
 		bt->HandleRecordUpdate(hdlr, userObj);
 }

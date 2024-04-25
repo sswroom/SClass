@@ -33,7 +33,7 @@ Int32 DB::DBQueue::SQLCmd::GetProgId() const
 	return this->progId;
 }
 
-NotNullPtr<Text::String> DB::DBQueue::SQLCmd::GetSQL() const
+NN<Text::String> DB::DBQueue::SQLCmd::GetSQL() const
 {
 	return this->str;
 }
@@ -112,7 +112,7 @@ Int32 DB::DBQueue::SQLGetDB::GetProgId() const
 	return this->progId;
 };
 
-DB::DBQueue::DBQueue(NotNullPtr<DBTool> db, IO::LogTool *log, Text::CString name, UOSInt dbSize)
+DB::DBQueue::DBQueue(NN<DBTool> db, IO::LogTool *log, Text::CString name, UOSInt dbSize)
 {
 	this->db1 = db.Ptr();
 	this->dbSize = dbSize / 200;
@@ -135,7 +135,7 @@ DB::DBQueue::DBQueue(NotNullPtr<DBTool> db, IO::LogTool *log, Text::CString name
 	this->dbList.Add(dbHdlr);
 }
 
-DB::DBQueue::DBQueue(NotNullPtr<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, NotNullPtr<Text::String> name, UOSInt dbSize)
+DB::DBQueue::DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, NN<Text::String> name, UOSInt dbSize)
 {
 	this->db1 = dbs->GetItem(0);
 	this->dbSize = dbSize / 200;
@@ -153,7 +153,7 @@ DB::DBQueue::DBQueue(NotNullPtr<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log
 	this->name = name->Clone();
 	this->nextDB = 0;
 	stopping = false;
-	Data::ArrayIterator<NotNullPtr<DB::DBTool>> it = dbs->Iterator();
+	Data::ArrayIterator<NN<DB::DBTool>> it = dbs->Iterator();
 	while (it.HasNext())
 	{
 		DB::DBHandler *dbHdlr;
@@ -162,7 +162,7 @@ DB::DBQueue::DBQueue(NotNullPtr<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log
 	}
 }
 
-DB::DBQueue::DBQueue(NotNullPtr<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, Text::CString name, UOSInt dbSize)
+DB::DBQueue::DBQueue(NN<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log, Text::CString name, UOSInt dbSize)
 {
 	this->db1 = dbs->GetItem(0);
 	this->dbSize = dbSize / 200;
@@ -180,7 +180,7 @@ DB::DBQueue::DBQueue(NotNullPtr<Data::ArrayListNN<DBTool>> dbs, IO::LogTool *log
 	this->name = Text::String::New(name);
 	this->nextDB = 0;
 	stopping = false;
-	Data::ArrayIterator<NotNullPtr<DB::DBTool>> it = dbs->Iterator();
+	Data::ArrayIterator<NN<DB::DBTool>> it = dbs->Iterator();
 	while (it.HasNext())
 	{
 		DB::DBHandler *dbHdlr;
@@ -217,14 +217,14 @@ DB::DBQueue::~DBQueue()
 			c = sqlList[i]->GetItem(j);
 			if (c->GetCmdType() == CmdType::SQLCmd)
 			{
-				NotNullPtr<IO::FileStream> nnfs;
+				NN<IO::FileStream> nnfs;
 				if (fs == 0)
 				{
 					NEW_CLASSNN(nnfs, IO::FileStream(CSTR("FailSQL.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					fs = nnfs.Ptr();
 					NEW_CLASS(writer, Text::UTF8Writer(nnfs));
 				}
-				NotNullPtr<Text::String> sql = ((DB::DBQueue::SQLCmd*)c)->GetSQL();
+				NN<Text::String> sql = ((DB::DBQueue::SQLCmd*)c)->GetSQL();
 				writer->WriteStrC(sql->v, sql->leng);
 				writer->WriteLineC(UTF8STRC(";"));
 			}
@@ -241,14 +241,14 @@ DB::DBQueue::~DBQueue()
 				c = carr[k];
 				if (c->GetCmdType() == CmdType::SQLCmd)
 				{
-					NotNullPtr<IO::FileStream> nnfs;
+					NN<IO::FileStream> nnfs;
 					if (fs == 0)
 					{
 						NEW_CLASSNN(nnfs, IO::FileStream(CSTR("FailSQL.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						fs = nnfs.Ptr();
 						NEW_CLASS(writer, Text::UTF8Writer(nnfs));
 					}
-					NotNullPtr<Text::String> sql = ((DB::DBQueue::SQLCmd*)c)->GetSQL();
+					NN<Text::String> sql = ((DB::DBQueue::SQLCmd*)c)->GetSQL();
 					writer->WriteStrC(sql->v, sql->leng);
 					writer->WriteLineC(UTF8STRC(";"));
 				}
@@ -269,7 +269,7 @@ DB::DBQueue::~DBQueue()
 	this->name->Release();
 }
 
-void DB::DBQueue::AddDB(NotNullPtr<DB::DBTool> db)
+void DB::DBQueue::AddDB(NN<DB::DBTool> db)
 {
 	DB::DBHandler *dbHdlr;
 	NEW_CLASS(dbHdlr, DB::DBHandler(this, db));
@@ -436,7 +436,7 @@ UTF8Char *DB::DBQueue::ToString(UTF8Char *buff)
 
 DB::SQLType DB::DBQueue::GetSQLType() const
 {
-	NotNullPtr<DB::DBTool> db;
+	NN<DB::DBTool> db;
 	if (this->db1.SetTo(db))
 		return db->GetSQLType();
 	return DB::SQLType::Unknown;
@@ -444,7 +444,7 @@ DB::SQLType DB::DBQueue::GetSQLType() const
 
 Bool DB::DBQueue::IsAxisAware() const
 {
-	NotNullPtr<DB::DBTool> db;
+	NN<DB::DBTool> db;
 	if (this->db1.SetTo(db))
 		return db->IsAxisAware();
 	return false;
@@ -452,7 +452,7 @@ Bool DB::DBQueue::IsAxisAware() const
 
 Int8 DB::DBQueue::GetTzQhr() const
 {
-	NotNullPtr<DB::DBTool> db;
+	NN<DB::DBTool> db;
 	if (this->db1.SetTo(db))
 		return db->GetTzQhr();
 	return 0;
@@ -498,7 +498,7 @@ UOSInt DB::DBQueue::GetNextCmds(IDBCmd **cmds)
 
 UTF8Char *DB::DBQueue::DBDateTime(UTF8Char *buff, Data::DateTime *dat)
 {
-	NotNullPtr<DB::DBTool> db;
+	NN<DB::DBTool> db;
 	if (this->db1.SetTo(db))
 		return db->DBDateTime(buff, dat);
 	return DB::DBUtil::SDBDateTime(buff, dat, DB::SQLType::Unknown, 0);
@@ -547,7 +547,7 @@ Bool DB::DBQueue::IsExecTimeout()
 	return false;
 }
 
-DB::DBHandler::DBHandler(DB::DBQueue *dbQ, NotNullPtr<DB::DBTool> db)
+DB::DBHandler::DBHandler(DB::DBQueue *dbQ, NN<DB::DBTool> db)
 {
 	this->processing = false;
 	this->dbQ = dbQ;
@@ -570,7 +570,7 @@ UInt32 DB::DBHandler::GetDataCnt()
 	return db->GetDataCnt();
 }
 
-void DB::DBHandler::WriteError(const UTF8Char *errMsg, NotNullPtr<Text::String> sqlCmd)
+void DB::DBHandler::WriteError(const UTF8Char *errMsg, NN<Text::String> sqlCmd)
 {
 	this->dbQ->log->LogMessage(CSTR("SQL: Failed"), IO::LogHandler::LogLevel::Error);
 
@@ -586,10 +586,10 @@ void DB::DBHandler::WriteError(const UTF8Char *errMsg, NotNullPtr<Text::String> 
 
 UInt32 __stdcall DB::DBHandler::ProcessSQL(AnyType userObj)
 {
-	NotNullPtr<DB::DBHandler> me = userObj.GetNN<DB::DBHandler>();
+	NN<DB::DBHandler> me = userObj.GetNN<DB::DBHandler>();
 	me->running = true;
 
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UOSInt i = 0;
 	DB::DBQueue::SQLCmd *cmd;
 	DB::DBQueue::SQLGroup *grp;
@@ -647,7 +647,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(AnyType userObj)
 						{
 							i = 3;
 							Optional<DB::DBReader> r = me->db->ExecuteReader(s->ToCString());
-							NotNullPtr<DB::DBReader> nnr;
+							NN<DB::DBReader> nnr;
 							while (r.IsNull())
 							{
 								i -= 1;
@@ -731,7 +731,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(AnyType userObj)
 							else
 							{
 								Optional<DB::DBReader> rdr = 0;
-								NotNullPtr<DB::DBReader> nnrdr;
+								NN<DB::DBReader> nnrdr;
 								i = 3;
 								while (k < grp->strs.GetCount())
 								{

@@ -14,20 +14,20 @@ namespace SSWR
 		public:
 			typedef void (__stdcall *RecordReplyHandler)(AnyType userObj, Int64 recTime, Int64 svrTime);
 		private:
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			Net::UDPServer *svr;
-			NotNullPtr<Text::String> hostName;
+			NN<Text::String> hostName;
 			UInt16 port;
 			Crypto::Hash::CRC16 dataCRC;
 			Sync::Mutex dataCRCMut;
 			RecordReplyHandler recReplyHdlr;
 			AnyType recReplyObj;
 
-			static void __stdcall OnDataUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+			static void __stdcall OnDataUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
 			void CalcCRC(const UInt8 *buff, UOSInt size, UInt8 *crcVal);
 		public:
-			SMonitorRedir(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log);
-			SMonitorRedir(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Text::String> hostName, UInt16 port, NotNullPtr<IO::LogTool> log);
+			SMonitorRedir(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log);
+			SMonitorRedir(NN<Net::SocketFactory> sockf, NN<Text::String> hostName, UInt16 port, NN<IO::LogTool> log);
 			~SMonitorRedir();
 
 			Bool IsError();

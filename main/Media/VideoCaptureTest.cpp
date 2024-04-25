@@ -48,11 +48,11 @@ void __stdcall CaptureTest(Data::Duration frameTime, UInt32 frameNum, UInt8 **im
 	frameCnt--;
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Media::VideoCaptureMgr *mgr;
 	Media::ColorManager *colorMgr;
-	NotNullPtr<Media::ColorManagerSess> colorSess;
+	NN<Media::ColorManagerSess> colorSess;
 	Data::ArrayList<Media::VideoCaptureMgr::DeviceInfo *> devList;
 	Media::VideoCaptureMgr::DeviceInfo *devInfo;
 	UOSInt cnt;

@@ -13,19 +13,19 @@ namespace Media
 		{
 		private:
 			Data::RandomOS rnd;
-			NotNullPtr<Media::DrawEngine> deng;
+			NN<Media::DrawEngine> deng;
 			Media::ABlend::AlphaBlend8_8 ablend;
 			Text::String *watermark;
 			Media::Batch::BatchHandler *hdlr;
 
 		public:
-			BatchWatermarker(NotNullPtr<Media::DrawEngine> deng, Media::Batch::BatchHandler *hdlr);
+			BatchWatermarker(NN<Media::DrawEngine> deng, Media::Batch::BatchHandler *hdlr);
 			virtual ~BatchWatermarker();
 			
 			void SetWatermark(Text::CString watermark);
 			void SetHandler(Media::Batch::BatchHandler *hdlr);
 		private:
-			virtual void ImageOutput(NotNullPtr<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId);
+			virtual void ImageOutput(NN<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId);
 		};
 	}
 }

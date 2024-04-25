@@ -96,7 +96,7 @@ void Media::Decoder::VP09Decoder::ProcVideoFrame(Data::Duration frameTime, UInt3
 	}
 }
 
-Media::Decoder::VP09Decoder::VP09Decoder(NotNullPtr<IVideoSource> sourceVideo, Bool toRelease) : Media::Decoder::VDecoderBase(sourceVideo)
+Media::Decoder::VP09Decoder::VP09Decoder(NN<IVideoSource> sourceVideo, Bool toRelease) : Media::Decoder::VDecoderBase(sourceVideo)
 {
 	this->finfoMode = false;
 }
@@ -363,7 +363,7 @@ UOSInt Media::Decoder::VP09Decoder::ReadFrame(UOSInt frameIndex, UInt8 *buff)
 	}
 }
 
-Bool Media::Decoder::VP09Decoder::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::Decoder::VP09Decoder::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	return this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 }

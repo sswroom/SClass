@@ -39,7 +39,7 @@ namespace Crypto
 			void SetJWTId(Optional<Text::String> id);
 			Optional<Text::String> GetJWTId() const;
 			Bool IsExpired(Data::Timestamp ts) const;
-			void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+			void ToString(NN<Text::StringBuilderUTF8> sb) const;
 		};
 	}
 }

@@ -33,7 +33,7 @@ namespace Data
 		} val;
 
 	private:
-		NotNullPtr<Data::DateTimeUtil::TimeValue> GetTimeValue();
+		NN<Data::DateTimeUtil::TimeValue> GetTimeValue();
 
 		void FixValues();
 	public:
@@ -44,13 +44,13 @@ namespace Data
 		DateTime(Int32 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second);
 		DateTime(Int32 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt16 ms);
 		DateTime(Text::CStringNN dateStr);
-		DateTime(NotNullPtr<Data::DateTime> dt);
+		DateTime(NN<Data::DateTime> dt);
 		~DateTime();
 
 		Bool SetAsComputerTime();
-		NotNullPtr<Data::DateTime> SetCurrTime();
-		NotNullPtr<Data::DateTime> SetCurrTimeUTC();
-		void SetValue(NotNullPtr<const DateTime> time);
+		NN<Data::DateTime> SetCurrTime();
+		NN<Data::DateTime> SetCurrTimeUTC();
+		void SetValue(NN<const DateTime> time);
 		void SetValue(Int32 year, OSInt month, OSInt day, OSInt hour, OSInt minute, OSInt second, OSInt ms, Int8 tzQhr);
 		void SetValue(Int32 year, OSInt month, OSInt day, OSInt hour, OSInt minute, OSInt second, OSInt ms);
 		void SetValue(Int64 ticks, Int8 tzQhr);
@@ -70,13 +70,13 @@ namespace Data
 		UInt8 GetSecond();
 		UInt16 GetMS();
 		UInt32 GetNS();
-		NotNullPtr<Data::DateTime> AddMonth(OSInt val);
-		NotNullPtr<Data::DateTime> AddDay(OSInt val);
-		NotNullPtr<Data::DateTime> AddHour(OSInt val);
-		NotNullPtr<Data::DateTime> AddMinute(OSInt val);
-		NotNullPtr<Data::DateTime> AddSecond(OSInt val);
-		NotNullPtr<Data::DateTime> AddMS(OSInt val);
-		NotNullPtr<Data::DateTime> AddNS(OSInt val);
+		NN<Data::DateTime> AddMonth(OSInt val);
+		NN<Data::DateTime> AddDay(OSInt val);
+		NN<Data::DateTime> AddHour(OSInt val);
+		NN<Data::DateTime> AddMinute(OSInt val);
+		NN<Data::DateTime> AddSecond(OSInt val);
+		NN<Data::DateTime> AddMS(OSInt val);
+		NN<Data::DateTime> AddNS(OSInt val);
 		void SetDate(Int32 year, OSInt month, OSInt day);
 		void SetYear(Int32 year);
 		void SetMonth(OSInt month);
@@ -88,8 +88,8 @@ namespace Data
 		void ClearTime();
 		Int64 GetMSPassedDate();
 
-		Int64 DiffMS(NotNullPtr<DateTime> dt);
-		Data::Duration Diff(NotNullPtr<DateTime> dt);
+		Int64 DiffMS(NN<DateTime> dt);
+		Data::Duration Diff(NN<DateTime> dt);
 
 		Bool IsYearLeap();
 		Int64 ToTicks();
@@ -119,9 +119,9 @@ namespace Data
 		Bool operator<(DateTime dt);
 		
 		UTF8Char *ToLocalStr(UTF8Char *buff);
-		OSInt CompareTo(NotNullPtr<Data::DateTime> obj);
-		Int32 DateCompare(NotNullPtr<Data::DateTime> dt);
-		Bool IsSameDay(NotNullPtr<Data::DateTime> dt);
+		OSInt CompareTo(NN<Data::DateTime> obj);
+		Int32 DateCompare(NN<Data::DateTime> dt);
+		Bool IsSameDay(NN<Data::DateTime> dt);
 
 		void ToUTCTime();
 		void ToLocalTime();

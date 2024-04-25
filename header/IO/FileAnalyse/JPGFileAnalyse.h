@@ -28,15 +28,15 @@ namespace IO
 			Sync::Thread thread;
 
 			static Text::CString GetTagName(UInt8 tagType);
-			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> userObj);
+			static void __stdcall ParseThread(NN<Sync::Thread> userObj);
 		public:
-			JPGFileAnalyse(NotNullPtr<IO::StreamData> fd);
+			JPGFileAnalyse(NN<IO::StreamData> fd);
 			virtual ~JPGFileAnalyse();
 
 			virtual Text::CStringNN GetFormatName();
 			virtual UOSInt GetFrameCount();
-			virtual Bool GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
-			virtual Bool GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual Bool GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
+			virtual Bool GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst);
 			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index);
 

@@ -8,7 +8,7 @@ namespace IO
 	class SDCardMgr
 	{
 	public:
-		static UOSInt GetCardList(NotNullPtr<Data::ArrayList<IO::SDCardInfo*>> cardList);
+		static UOSInt GetCardList(NN<Data::ArrayList<IO::SDCardInfo*>> cardList);
 	};
 }
 #endif

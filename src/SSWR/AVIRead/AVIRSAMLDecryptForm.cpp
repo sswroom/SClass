@@ -5,10 +5,10 @@
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRSAMLDecryptForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnFormFiles(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnFormFiles(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSAMLDecryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLDecryptForm>();
-	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
+	NN<SSWR::AVIRead::AVIRSAMLDecryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLDecryptForm>();
+	NN<Parser::ParserList> parsers = me->core->GetParserList();
 
 	UOSInt i = 0;
 	UOSInt nFiles = files.GetCount();
@@ -58,9 +58,9 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnFormFiles(AnyType userObj, 
 
 void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSAMLDecryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLDecryptForm>();
+	NN<SSWR::AVIRead::AVIRSAMLDecryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLDecryptForm>();
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<Net::SSLEngine> ssl;
+	NN<Net::SSLEngine> ssl;
 	Optional<Crypto::Cert::X509Key> key = 0;
 	IO::ParsedObject *pobj;
 	me->txtKey->GetText(sb);
@@ -123,7 +123,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(AnyType user
 	}
 	sb.ClearStr();
 	me->txtRAWResponse->GetText(sb);
-	NotNullPtr<Crypto::Cert::X509Key> keyNN;
+	NN<Crypto::Cert::X509Key> keyNN;
 	if (sb.GetLength() == 0 || !key.SetTo(keyNN))
 	{
 		key.Delete();
@@ -144,7 +144,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(AnyType user
 	me->txtResult->SetText(sbResult.ToCString());
 }
 
-SSWR::AVIRead::AVIRSAMLDecryptForm::AVIRSAMLDecryptForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRSAMLDecryptForm::AVIRSAMLDecryptForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
 	this->SetText(CSTR("SAML Response Decrypt"));

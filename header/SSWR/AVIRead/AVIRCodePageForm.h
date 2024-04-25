@@ -11,15 +11,15 @@ namespace SSWR
 		class AVIRCodePageForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIListBox> lbCodePages;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<UI::GUIListBox> lbCodePages;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
 			static void __stdcall OKClicked(AnyType userObj);
 			static void __stdcall CancelClicked(AnyType userObj);
 		public:
-			AVIRCodePageForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRCodePageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCodePageForm();
 
 			virtual void OnMonitorChanged();

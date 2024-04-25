@@ -343,7 +343,7 @@ Int32 IO::SMBIOS::GetChassisType() const
 	return ret;
 }
 
-Bool IO::SMBIOS::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+Bool IO::SMBIOS::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	Text::CString carr[32];
 	const UInt8 *dataBuff;
@@ -4431,9 +4431,9 @@ Bool IO::SMBIOS::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 	return true;
 }
 
-NotNullPtr<IO::StreamData> IO::SMBIOS::CreateStreamData() const
+NN<IO::StreamData> IO::SMBIOS::CreateStreamData() const
 {
-	NotNullPtr<IO::StreamData> ret;
+	NN<IO::StreamData> ret;
 	NEW_CLASSNN(ret, IO::StmData::MemoryDataCopy(this->smbiosBuff, this->smbiosBuffSize));
 	return ret;
 }

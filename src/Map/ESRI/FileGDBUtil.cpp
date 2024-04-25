@@ -13,12 +13,12 @@
 #define HAS_M_FLAG 4
 #define HAS_Z_FLAG 2
 
-Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Data::ByteArray fieldDesc, NotNullPtr<Math::ArcGISPRJParser> prjParser)
+Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Data::ByteArray fieldDesc, NN<Math::ArcGISPRJParser> prjParser)
 {
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;
 	FileGDBFieldInfo *field;
-	NotNullPtr<FileGDBTableInfo> table = MemAllocNN(FileGDBTableInfo);
+	NN<FileGDBTableInfo> table = MemAllocNN(FileGDBTableInfo);
 	MemClear(table.Ptr(), sizeof(FileGDBTableInfo));
 	NEW_CLASS(table->fields, Data::ArrayList<FileGDBFieldInfo*>());
 	UInt32 descSize = ReadUInt32(&fieldDesc[0]);
@@ -205,7 +205,7 @@ void Map::ESRI::FileGDBUtil::FreeFieldInfo(FileGDBFieldInfo *fieldInfo)
 	MemFree(fieldInfo);
 }
 
-void Map::ESRI::FileGDBUtil::FreeTableInfo(NotNullPtr<FileGDBTableInfo> tableInfo)
+void Map::ESRI::FileGDBUtil::FreeTableInfo(NN<FileGDBTableInfo> tableInfo)
 {
 	LIST_FREE_FUNC(tableInfo->fields, FreeFieldInfo);
 	DEL_CLASS(tableInfo->fields);
@@ -238,9 +238,9 @@ Map::ESRI::FileGDBFieldInfo *Map::ESRI::FileGDBUtil::FieldInfoClone(FileGDBField
 	return newField;
 }
 
-NotNullPtr<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::TableInfoClone(NotNullPtr<FileGDBTableInfo> tableInfo)
+NN<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::TableInfoClone(NN<FileGDBTableInfo> tableInfo)
 {
-	NotNullPtr<FileGDBTableInfo> newTable = MemAllocNN(FileGDBTableInfo);
+	NN<FileGDBTableInfo> newTable = MemAllocNN(FileGDBTableInfo);
 	MemCopyNO(newTable.Ptr(), tableInfo.Ptr(), sizeof(FileGDBTableInfo));
 	if (tableInfo->csys)
 	{
@@ -392,7 +392,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBUtil::ParseSDERecord(Data::
 	}
 	if (type1 == 1 && type2 == 4 && nPoints == 1)
 	{
-		NotNullPtr<Math::Geometry::Point> pt;
+		NN<Math::Geometry::Point> pt;
 		ofst = ReadVarInt(buff, ofst, iv);
 		dx += (Double)iv * ratio;
 		ofst = ReadVarInt(buff, ofst, iv);
@@ -409,7 +409,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBUtil::ParseSDERecord(Data::
 	else if (type1 == 4 && type2 == 12)
 	{
 		UOSInt tmpV;
-		NotNullPtr<Math::Geometry::LineString> lineString;
+		NN<Math::Geometry::LineString> lineString;
 		NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, nPoints, false, false));
 		Math::Coord2DDbl *ptList = lineString->GetPointList(tmpV);
 		UOSInt i = 0;

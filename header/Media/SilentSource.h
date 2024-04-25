@@ -26,7 +26,7 @@ namespace Media
 		virtual Data::Duration SeekToTime(Data::Duration time);
 		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 
-		virtual void GetFormat(NotNullPtr<AudioFormat> format);
+		virtual void GetFormat(NN<AudioFormat> format);
 
 		virtual Bool Start(Sync::Event *evt, UOSInt blkSize);
 		virtual void Stop();

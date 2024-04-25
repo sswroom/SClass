@@ -16,10 +16,10 @@ namespace Data
 		~UUID();
 
 		void SetValue(const UInt8 *buff);
-		void SetValue(NotNullPtr<UUID> uuid);
+		void SetValue(NN<UUID> uuid);
 		void SetValue(Text::CStringNN str);
 		UOSInt GetValue(UInt8 *buff) const;
-		OSInt CompareTo(NotNullPtr<UUID> uuid) const;
+		OSInt CompareTo(NN<UUID> uuid) const;
 
 		UInt32 GetTimeLow() const;
 		UInt16 GetTimeMid() const;
@@ -28,10 +28,10 @@ namespace Data
 		UInt8 GetClkSeqLow() const;
 		UInt64 GetNode() const;
 
-		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		void ToString(NN<Text::StringBuilderUTF8> sb) const;
 		UTF8Char *ToString(UTF8Char *sbuff) const;
-		NotNullPtr<UUID> Clone() const;
-		Bool Equals(NotNullPtr<UUID> uuid) const;
+		NN<UUID> Clone() const;
+		Bool Equals(NN<UUID> uuid) const;
 	};
 }
 #endif

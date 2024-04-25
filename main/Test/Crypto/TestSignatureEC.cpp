@@ -15,7 +15,7 @@ const Char key[] =
 	"lpQg5vf23Fc9fFrQ9AnQKrb1dgTkoxQ=\r\n"
 	"-----END EC PRIVATE KEY-----\r\n";
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Int32 ret = 1;
 	UInt8 signData[2048];
@@ -23,14 +23,14 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Net::OSSocketFactory sockf(true);
 	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(sockf, true);
 	Crypto::Cert::X509File *x509 = 0;
-	NotNullPtr<Net::SSLEngine> nnssl;
+	NN<Net::SSLEngine> nnssl;
 	if (ssl.SetTo(nnssl))
 	{
-		NotNullPtr<Text::String> fileName = Text::String::New(UTF8STRC("Temp.key"));
+		NN<Text::String> fileName = Text::String::New(UTF8STRC("Temp.key"));
 		x509 = Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR((const UInt8*)key, sizeof(key) - 1), fileName);
 		fileName->Release();
 	}
-	NotNullPtr<Crypto::Cert::X509Key> key;
+	NN<Crypto::Cert::X509Key> key;
 	if (x509 && ssl.SetTo(nnssl) && x509->GetFileType() == Crypto::Cert::X509File::FileType::Key && key.Set((Crypto::Cert::X509Key*)x509))
 	{
 		if (!nnssl->Signature(key, Crypto::Hash::HashType::SHA256, UTF8STRC("123456"), signData, signLen))

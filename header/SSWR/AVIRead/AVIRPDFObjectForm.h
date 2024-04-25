@@ -16,22 +16,22 @@ namespace SSWR
 		class AVIRPDFObjectForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Media::PDFDocument *doc;
 
-			NotNullPtr<UI::GUIListBox> lbObject;
-			NotNullPtr<UI::GUIHSplitter> hspMain;
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUIListBox> lbObject;
+			NN<UI::GUIHSplitter> hspMain;
+			NN<UI::GUITabControl> tcMain;
 			
-			NotNullPtr<UI::GUITabPage> tpParameter;
-			NotNullPtr<UI::GUIListView> lvParameter;
+			NN<UI::GUITabPage> tpParameter;
+			NN<UI::GUIListView> lvParameter;
 
-			NotNullPtr<UI::GUIMainMenu> mnuMain;
+			NN<UI::GUIMainMenu> mnuMain;
 
 			static void __stdcall OnObjectSelChg(AnyType userObj);
 			static void __stdcall OnObjectDblClk(AnyType userObj);
 		public:
-			AVIRPDFObjectForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::PDFDocument *doc);
+			AVIRPDFObjectForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::PDFDocument *doc);
 			virtual ~AVIRPDFObjectForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

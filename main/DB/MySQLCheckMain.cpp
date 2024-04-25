@@ -10,7 +10,7 @@
 #include "Net/SSLEngineFactory.h"
 #include "Net/Email/SMTPClient.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
@@ -55,18 +55,18 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		i++;
 	}
 
-	NotNullPtr<Text::String> mysqlServer;
-	NotNullPtr<Text::String> mysqlPort;
+	NN<Text::String> mysqlServer;
+	NN<Text::String> mysqlPort;
 	Optional<Text::String> mysqlUser = cfg->GetValue(CSTR("MySQLUser"));
 	Optional<Text::String> mysqlPassword = cfg->GetValue(CSTR("MySQLPassword"));
-	NotNullPtr<Text::String> mysqlSchemas;
-	NotNullPtr<Text::String> smtpHost;
-	NotNullPtr<Text::String> smtpPort;
-	NotNullPtr<Text::String> smtpType;
-	NotNullPtr<Text::String> smtpFrom;
-	NotNullPtr<Text::String> smtpTo;
-	NotNullPtr<Text::String> smtpUser;
-	NotNullPtr<Text::String> smtpPassword;
+	NN<Text::String> mysqlSchemas;
+	NN<Text::String> smtpHost;
+	NN<Text::String> smtpPort;
+	NN<Text::String> smtpType;
+	NN<Text::String> smtpFrom;
+	NN<Text::String> smtpTo;
+	NN<Text::String> smtpUser;
+	NN<Text::String> smtpPassword;
 	Net::MySQLTCPClient *cli;
 	DB::MySQLMaintance *mysql;
 	Net::SocketUtil::AddressInfo addr;

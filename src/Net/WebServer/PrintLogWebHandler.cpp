@@ -3,7 +3,7 @@
 #include "Net/WebServer/PrintLogWebResponse.h"
 #include "Text/StringBuilderUTF8.h"
 
-Net::WebServer::PrintLogWebHandler::PrintLogWebHandler(NotNullPtr<Net::WebServer::IWebHandler> hdlr, NotNullPtr<IO::Writer> writer)
+Net::WebServer::PrintLogWebHandler::PrintLogWebHandler(NN<Net::WebServer::IWebHandler> hdlr, NN<IO::Writer> writer)
 {
 	this->hdlr = hdlr;
 	this->writer = writer;
@@ -14,7 +14,7 @@ Net::WebServer::PrintLogWebHandler::~PrintLogWebHandler()
 	this->hdlr.Delete();
 }
 
-void Net::WebServer::PrintLogWebHandler::WebRequest(NotNullPtr<IWebRequest> req, NotNullPtr<IWebResponse> resp)
+void Net::WebServer::PrintLogWebHandler::WebRequest(NN<IWebRequest> req, NN<IWebResponse> resp)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -30,8 +30,8 @@ void Net::WebServer::PrintLogWebHandler::WebRequest(NotNullPtr<IWebRequest> req,
 	this->writer->WriteLineC(sb.ToString(), sb.GetLength());
 	Data::ArrayListStringNN headers;
 	req->GetHeaderNames(headers);
-	NotNullPtr<Text::String> header;
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = headers.Iterator();
+	NN<Text::String> header;
+	Data::ArrayIterator<NN<Text::String>> it = headers.Iterator();
 	while (it.HasNext())
 	{
 		sb.ClearStr();

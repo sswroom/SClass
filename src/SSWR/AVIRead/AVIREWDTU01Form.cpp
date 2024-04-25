@@ -10,15 +10,15 @@
 
 void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(AnyType userObj, Text::CStringNN topic, const Data::ByteArrayR &buff)
 {
-	NotNullPtr<SSWR::AVIRead::AVIREWDTU01Form> me = userObj.GetNN<SSWR::AVIRead::AVIREWDTU01Form>();
+	NN<SSWR::AVIRead::AVIREWDTU01Form> me = userObj.GetNN<SSWR::AVIRead::AVIREWDTU01Form>();
 	Text::JSONBase *jsonObj = Text::JSONBase::ParseJSONBytes(buff.Ptr(), buff.GetSize());
 	Text::JSONObject *obj;
 	Text::JSONBase *baseObj;
 	Text::JSONArray *arr;
 	Optional<Text::String> name;
-	NotNullPtr<Text::String> mac;
-	NotNullPtr<Text::String> rssi;
-	NotNullPtr<DeviceEntry> entry;
+	NN<Text::String> mac;
+	NN<Text::String> rssi;
+	NN<DeviceEntry> entry;
 	UInt8 macBuff[8];
 	Int32 irssi;
 	UInt64 macInt;
@@ -86,7 +86,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(AnyType userObj, Te
 
 void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnConnectClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIREWDTU01Form> me = userObj.GetNN<SSWR::AVIRead::AVIREWDTU01Form>();
+	NN<SSWR::AVIRead::AVIREWDTU01Form> me = userObj.GetNN<SSWR::AVIRead::AVIREWDTU01Form>();
 	if (me->cli)
 	{
 		SDEL_CLASS(me->cli);
@@ -120,14 +120,14 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnConnectClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIREWDTU01Form> me = userObj.GetNN<SSWR::AVIRead::AVIREWDTU01Form>();
+	NN<SSWR::AVIRead::AVIREWDTU01Form> me = userObj.GetNN<SSWR::AVIRead::AVIREWDTU01Form>();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	if (me->dataChg)
 	{
-		NotNullPtr<DeviceEntry> entry;
+		NN<DeviceEntry> entry;
 		const Net::MACInfo::MACEntry *macEntry;
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		Sync::MutexUsage mutUsage(me->dataMut);
 		me->lvDevices->ClearItems();
 		UOSInt i = 0;
@@ -163,7 +163,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(AnyType userObj)
 
 void SSWR::AVIRead::AVIREWDTU01Form::DataClear()
 {
-	NotNullPtr<DeviceEntry> entry;
+	NN<DeviceEntry> entry;
 	UOSInt i = this->dataMap.GetCount();
 	while (i-- > 0)
 	{
@@ -175,7 +175,7 @@ void SSWR::AVIRead::AVIREWDTU01Form::DataClear()
 	this->dataMap.Clear();
 }
 
-SSWR::AVIRead::AVIREWDTU01Form::AVIREWDTU01Form(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIREWDTU01Form::AVIREWDTU01Form(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("EasyWay EW-DTU01"));
 	this->SetFont(0, 0, 8.25, false);

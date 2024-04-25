@@ -9,12 +9,12 @@
 
 namespace Data
 {
-	template <class T> class ArrayListNN : public ReadingListNN<T>, public ArrayCollection<NotNullPtr<T>>
+	template <class T> class ArrayListNN : public ReadingListNN<T>, public ArrayCollection<NN<T>>
 	{
 	public:
-		typedef void (*FreeFunc)(NotNullPtr<T> v);
+		typedef void (*FreeFunc)(NN<T> v);
 	protected:
-		NotNullPtr<T> *arr;
+		NN<T> *arr;
 		UOSInt objCnt;
 		UOSInt capacity;
 
@@ -25,37 +25,37 @@ namespace Data
 		ArrayListNN(const ArrayListNN<T> &list);
 		virtual ~ArrayListNN();
 
-		virtual UOSInt Add(NotNullPtr<T> val);
-		virtual UOSInt AddRange(const NotNullPtr<T> *arr, UOSInt cnt);
-		UOSInt AddAll(NotNullPtr<const ReadingListNN<T>> list);
-		UOSInt AddAll(Data::ArrayIterator<NotNullPtr<T>> it);
-		UOSInt AddAllOpt(NotNullPtr<const ReadingList<T*>> list);
-		virtual Bool Remove(NotNullPtr<T> val);
+		virtual UOSInt Add(NN<T> val);
+		virtual UOSInt AddRange(const NN<T> *arr, UOSInt cnt);
+		UOSInt AddAll(NN<const ReadingListNN<T>> list);
+		UOSInt AddAll(Data::ArrayIterator<NN<T>> it);
+		UOSInt AddAllOpt(NN<const ReadingList<T*>> list);
+		virtual Bool Remove(NN<T> val);
 		virtual Optional<T> RemoveAt(UOSInt index);
-		virtual void Insert(UOSInt index, NotNullPtr<T> val);
-		virtual UOSInt IndexOf(NotNullPtr<T> val) const;
+		virtual void Insert(UOSInt index, NN<T> val);
+		virtual UOSInt IndexOf(NN<T> val) const;
 		virtual void Clear();
-		virtual NotNullPtr<ArrayListNN<T>> Clone() const;
+		virtual NN<ArrayListNN<T>> Clone() const;
 
 		virtual UOSInt GetCount() const;
 		virtual UOSInt GetCapacity() const;
 		void EnsureCapacity(UOSInt capacity);
 
 		virtual Optional<T> GetItem(UOSInt index) const;
-		virtual NotNullPtr<T> GetItemNoCheck(UOSInt index) const;
-		virtual Optional<T> SetItem(UOSInt index, NotNullPtr<T> val);
+		virtual NN<T> GetItemNoCheck(UOSInt index) const;
+		virtual Optional<T> SetItem(UOSInt index, NN<T> val);
 		void CopyItems(UOSInt destIndex, UOSInt srcIndex, UOSInt count);
-		UOSInt GetRange(NotNullPtr<T> *outArr, UOSInt index, UOSInt cnt) const;
+		UOSInt GetRange(NN<T> *outArr, UOSInt index, UOSInt cnt) const;
 		UOSInt RemoveRange(UOSInt index, UOSInt cnt);
-		virtual NotNullPtr<T> *GetPtr(OutParam<UOSInt> arraySize) const;
-		virtual NotNullPtr<T> *Ptr() const;
+		virtual NN<T> *GetPtr(OutParam<UOSInt> arraySize) const;
+		virtual NN<T> *Ptr() const;
 		Optional<T> GetLast();
 		Optional<T> Pop();
 		ArrayListNN<T> &operator =(const ArrayListNN<T> &v);
 		void DeleteAll();
 		void FreeAll(FreeFunc freeFunc);
 		void MemFreeAll();
-		Data::DataArray<NotNullPtr<T>> ToArray() const;
+		Data::DataArray<NN<T>> ToArray() const;
 	};
 
 
@@ -63,7 +63,7 @@ namespace Data
 	{
 		this->objCnt = 0;
 		this->capacity = capacity;
-		this->arr = MemAlloc(NotNullPtr<T>, capacity);
+		this->arr = MemAlloc(NN<T>, capacity);
 	}
 
 	template <class T> ArrayListNN<T>::ArrayListNN()
@@ -88,14 +88,14 @@ namespace Data
 		arr = 0;
 	}
 
-	template <class T> UOSInt ArrayListNN<T>::Add(NotNullPtr<T> val)
+	template <class T> UOSInt ArrayListNN<T>::Add(NN<T> val)
 	{
 		UOSInt ret;
 		if (objCnt >= this->capacity)
 		{
 			this->capacity = this->capacity << 1;
-			NotNullPtr<T> *newArr = MemAlloc(NotNullPtr<T>, this->capacity);
-			MemCopyNO(newArr, arr, this->objCnt * sizeof(NotNullPtr<T>));
+			NN<T> *newArr = MemAlloc(NN<T>, this->capacity);
+			MemCopyNO(newArr, arr, this->objCnt * sizeof(NN<T>));
 			MemFree(arr);
 			arr = newArr;
 		}
@@ -103,7 +103,7 @@ namespace Data
 		return ret;
 	}
 
-	template <class T> UOSInt ArrayListNN<T>::AddAll(NotNullPtr<const ReadingListNN<T>> arr)
+	template <class T> UOSInt ArrayListNN<T>::AddAll(NN<const ReadingListNN<T>> arr)
 	{
 		UOSInt cnt = arr->GetCount();
 		if (objCnt + cnt >= this->capacity)
@@ -112,10 +112,10 @@ namespace Data
 			{
 				this->capacity = this->capacity << 1;
 			}
-			NotNullPtr<T> *newArr = MemAlloc(NotNullPtr<T>, this->capacity);
+			NN<T> *newArr = MemAlloc(NN<T>, this->capacity);
 			if (objCnt > 0)
 			{
-				MemCopyNO(newArr, this->arr, objCnt * sizeof(NotNullPtr<T>));
+				MemCopyNO(newArr, this->arr, objCnt * sizeof(NN<T>));
 			}
 			MemFree(this->arr);
 			this->arr = newArr;
@@ -130,7 +130,7 @@ namespace Data
 		return cnt;
 	}
 
-	template <class T> UOSInt ArrayListNN<T>::AddAll(Data::ArrayIterator<NotNullPtr<T>> it)
+	template <class T> UOSInt ArrayListNN<T>::AddAll(Data::ArrayIterator<NN<T>> it)
 	{
 		UOSInt ret = 0;
 		while (it->HasNext())
@@ -141,12 +141,12 @@ namespace Data
 		return ret;
 	}
 
-	template <class T> UOSInt ArrayListNN<T>::AddAllOpt(NotNullPtr<const ReadingList<T*>> list)
+	template <class T> UOSInt ArrayListNN<T>::AddAllOpt(NN<const ReadingList<T*>> list)
 	{
 		UOSInt ret = 0;
 		UOSInt i = 0;
 		UOSInt j = list->GetCount();
-		NotNullPtr<T> s;
+		NN<T> s;
 		while (i < j)
 		{
 			if (s.Set(list->GetItem(i)))
@@ -159,7 +159,7 @@ namespace Data
 		return ret;
 	}
 
-	template <class T> UOSInt ArrayListNN<T>::AddRange(const NotNullPtr<T> *arr, UOSInt cnt)
+	template <class T> UOSInt ArrayListNN<T>::AddRange(const NN<T> *arr, UOSInt cnt)
 	{
 		if (objCnt + cnt >= this->capacity)
 		{
@@ -167,20 +167,20 @@ namespace Data
 			{
 				this->capacity = this->capacity << 1;
 			}
-			NotNullPtr<T> *newArr = MemAlloc(NotNullPtr<T>, this->capacity);
+			NN<T> *newArr = MemAlloc(NN<T>, this->capacity);
 			if (objCnt > 0)
 			{
-				MemCopyNO(newArr, this->arr, objCnt * sizeof(NotNullPtr<T>));
+				MemCopyNO(newArr, this->arr, objCnt * sizeof(NN<T>));
 			}
 			MemFree(this->arr);
 			this->arr = newArr;
 		}
-		MemCopyNO(&this->arr[objCnt], arr, cnt * sizeof(NotNullPtr<T>));
+		MemCopyNO(&this->arr[objCnt], arr, cnt * sizeof(NN<T>));
 		this->objCnt += cnt;
 		return cnt;
 	}
 
-	template <class T> Bool ArrayListNN<T>::Remove(NotNullPtr<T> val)
+	template <class T> Bool ArrayListNN<T>::Remove(NN<T> val)
 	{
 		UOSInt i = 0;
 		UOSInt j = this->objCnt;
@@ -214,29 +214,29 @@ namespace Data
 		if (index >= this->objCnt)
 			return nullptr;
 		UOSInt i = this->objCnt - index - 1;
-		NotNullPtr<T> o = arr[index];
+		NN<T> o = arr[index];
 		if (i > 0)
 		{
-			MemCopyO(&arr[index], &arr[index + 1], i * sizeof(NotNullPtr<T>));
+			MemCopyO(&arr[index], &arr[index + 1], i * sizeof(NN<T>));
 		}
 		this->objCnt--;
 		//arr[objCnt] = (T)0;
 		return o;
 	}
 
-	template <class T> void ArrayListNN<T>::Insert(UOSInt Index, NotNullPtr<T> Val)
+	template <class T> void ArrayListNN<T>::Insert(UOSInt Index, NN<T> Val)
 	{
 		if (objCnt == this->capacity)
 		{
-			NotNullPtr<T> *newArr = MemAlloc(NotNullPtr<T>, this->capacity * 2);
+			NN<T> *newArr = MemAlloc(NN<T>, this->capacity * 2);
 			if (Index > 0)
 			{
-				MemCopyNO(newArr, this->arr, Index * sizeof(NotNullPtr<T>));
+				MemCopyNO(newArr, this->arr, Index * sizeof(NN<T>));
 			}
 			newArr[Index] = Val;
 			if (Index < this->objCnt)
 			{
-				MemCopyNO(&newArr[Index + 1], &this->arr[Index], (this->objCnt - Index) * sizeof(NotNullPtr<T>));
+				MemCopyNO(&newArr[Index + 1], &this->arr[Index], (this->objCnt - Index) * sizeof(NN<T>));
 			}
 			this->capacity = this->capacity << 1;
 			MemFree(arr);
@@ -255,7 +255,7 @@ namespace Data
 		objCnt++;
 	}
 
-	template <class T> UOSInt ArrayListNN<T>::IndexOf(NotNullPtr<T> val) const
+	template <class T> UOSInt ArrayListNN<T>::IndexOf(NN<T> val) const
 	{
 		UOSInt i = objCnt;
 		while (i-- > 0)
@@ -269,9 +269,9 @@ namespace Data
 		this->objCnt = 0;
 	}
 
-	template <class T> NotNullPtr<ArrayListNN<T>> ArrayListNN<T>::Clone() const
+	template <class T> NN<ArrayListNN<T>> ArrayListNN<T>::Clone() const
 	{
-		NotNullPtr<ArrayListNN<T>> newArr;
+		NN<ArrayListNN<T>> newArr;
 		NEW_CLASSNN(newArr, ArrayListNN<T>(this->capacity));
 		newArr->AddAll(*this);
 		return newArr;
@@ -296,8 +296,8 @@ namespace Data
 				this->capacity = this->capacity << 1;
 			}
 
-			NotNullPtr<T> *newArr = MemAlloc(NotNullPtr<T>, this->capacity);
-			MemCopyNO(newArr, this->arr, this->objCnt * sizeof(NotNullPtr<T>));
+			NN<T> *newArr = MemAlloc(NN<T>, this->capacity);
+			MemCopyNO(newArr, this->arr, this->objCnt * sizeof(NN<T>));
 			MemFree(this->arr);
 			this->arr = newArr;
 		}
@@ -310,12 +310,12 @@ namespace Data
 		return this->arr[index];
 	}
 
-	template <class T> NotNullPtr<T> ArrayListNN<T>::GetItemNoCheck(UOSInt index) const
+	template <class T> NN<T> ArrayListNN<T>::GetItemNoCheck(UOSInt index) const
 	{
 		return this->arr[index];
 	}
 
-	template <class T> Optional<T> ArrayListNN<T>::SetItem(UOSInt index, NotNullPtr<T> val)
+	template <class T> Optional<T> ArrayListNN<T>::SetItem(UOSInt index, NN<T> val)
 	{
 		if (index == objCnt)
 		{
@@ -324,7 +324,7 @@ namespace Data
 		}
 		else if (index < objCnt)
 		{
-			NotNullPtr<T> oriVal = this->arr[index];
+			NN<T> oriVal = this->arr[index];
 			this->arr[index] = val;
 			return oriVal;
 		}
@@ -339,7 +339,7 @@ namespace Data
 		MemCopyO(&this->arr[destIndex], &this->arr[srcIndex], count * sizeof(this->arr[0]));
 	}
 
-	template <class T> UOSInt ArrayListNN<T>::GetRange(NotNullPtr<T> *outArr, UOSInt Index, UOSInt cnt) const
+	template <class T> UOSInt ArrayListNN<T>::GetRange(NN<T> *outArr, UOSInt Index, UOSInt cnt) const
 	{
 		UOSInt startIndex = Index;
 		UOSInt endIndex = Index + cnt;
@@ -353,7 +353,7 @@ namespace Data
 		{
 			return 0;
 		}
-		MemCopyNO(outArr, &arr[startIndex], sizeof(NotNullPtr<T>) * (endIndex - startIndex));
+		MemCopyNO(outArr, &arr[startIndex], sizeof(NN<T>) * (endIndex - startIndex));
 		return endIndex - startIndex;
 	}
 
@@ -372,7 +372,7 @@ namespace Data
 			return 0;
 		}
 #if defined(_MSC_VER)
-		MemCopyO(&arr[startIndex], &arr[endIndex], sizeof(NotNullPtr<T>) * (objCnt - endIndex));
+		MemCopyO(&arr[startIndex], &arr[endIndex], sizeof(NN<T>) * (objCnt - endIndex));
 #else
 		UOSInt i = startIndex;
 		UOSInt j = endIndex;
@@ -385,13 +385,13 @@ namespace Data
 		return endIndex - startIndex;
 	}
 
-	template <class T> NotNullPtr<T>* ArrayListNN<T>::GetPtr(OutParam<UOSInt> arraySize) const
+	template <class T> NN<T>* ArrayListNN<T>::GetPtr(OutParam<UOSInt> arraySize) const
 	{
 		arraySize.Set(this->objCnt);
 		return this->arr;
 	}
 	
-	template <class T> NotNullPtr<T>* ArrayListNN<T>::Ptr() const
+	template <class T> NN<T>* ArrayListNN<T>::Ptr() const
 	{
 		return this->arr;
 	}
@@ -405,7 +405,7 @@ namespace Data
 	template <class T> Optional<T> ArrayListNN<T>::Pop()
 	{
 		if (this->objCnt == 0) return 0;
-		NotNullPtr<T> o = arr[this->objCnt - 1];
+		NN<T> o = arr[this->objCnt - 1];
 		this->objCnt--;
 		return o;
 	}
@@ -448,9 +448,9 @@ namespace Data
 		this->objCnt = 0;
 	}
 
-	template <class T> Data::DataArray<NotNullPtr<T>> ArrayListNN<T>::ToArray() const
+	template <class T> Data::DataArray<NN<T>> ArrayListNN<T>::ToArray() const
 	{
-		return Data::DataArray<NotNullPtr<T>>(this->arr, this->objCnt);
+		return Data::DataArray<NN<T>>(this->arr, this->objCnt);
 	}
 }
 

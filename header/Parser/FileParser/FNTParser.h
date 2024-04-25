@@ -15,13 +15,13 @@ namespace Parser
 			virtual ~FNTParser();
 
 			virtual Int32 GetName();
-			virtual void PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t);
+			virtual void PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
-			virtual IO::ParsedObject *ParseFile(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType);
+			virtual IO::ParsedObject *ParseFile(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType);
 
-			static Media::FontRenderer *ParseFontBuff(NotNullPtr<Text::String> sourceName, const UInt8 *fontBuff, UOSInt buffSize);
-			static UOSInt GetFileDesc(const UInt8 *fileBuff, UOSInt fileSize, NotNullPtr<Text::StringBuilderUTF8> sb); //return header size
-			static void GetFileDirDesc(const UInt8 *fileBuff, UOSInt fileSize, NotNullPtr<Text::StringBuilderUTF8> sb);
+			static Media::FontRenderer *ParseFontBuff(NN<Text::String> sourceName, const UInt8 *fontBuff, UOSInt buffSize);
+			static UOSInt GetFileDesc(const UInt8 *fileBuff, UOSInt fileSize, NN<Text::StringBuilderUTF8> sb); //return header size
+			static void GetFileDirDesc(const UInt8 *fileBuff, UOSInt fileSize, NN<Text::StringBuilderUTF8> sb);
 		};
 	}
 }

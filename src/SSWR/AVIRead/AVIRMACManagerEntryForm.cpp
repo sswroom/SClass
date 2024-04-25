@@ -7,7 +7,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMACManagerEntryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACManagerEntryForm>();
+	NN<SSWR::AVIRead::AVIRMACManagerEntryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACManagerEntryForm>();
 	Text::StringBuilderUTF8 sb;
 	me->cboName->GetText(sb);
 	sb.Trim();
@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::OnOKClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMACManagerEntryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACManagerEntryForm>();
+	NN<SSWR::AVIRead::AVIRMACManagerEntryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACManagerEntryForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
@@ -36,7 +36,7 @@ OSInt __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::MACCompare(Net::MACInfo:
 	return Text::StrCompareFastC(obj1->name, obj1->nameLen, obj2->name, obj2->nameLen);
 }
 
-SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, const UInt8 *mac, Text::CString name) : UI::GUIForm(parent, 480, 104, ui)
+SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, const UInt8 *mac, Text::CString name) : UI::GUIForm(parent, 480, 104, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("MAC Entry"));
@@ -120,7 +120,7 @@ void SSWR::AVIRead::AVIRMACManagerEntryForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-NotNullPtr<Text::String> SSWR::AVIRead::AVIRMACManagerEntryForm::GetNameNew() const
+NN<Text::String> SSWR::AVIRead::AVIRMACManagerEntryForm::GetNameNew() const
 {
 	return this->name->Clone();
 }

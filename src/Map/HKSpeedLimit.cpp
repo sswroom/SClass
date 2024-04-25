@@ -102,7 +102,7 @@ void Map::HKSpeedLimit::BuildIndex()
 void Map::HKSpeedLimit::AppendRouteIds(Data::ArrayList<Int32> *routeList, Int32 x, Int32 y)
 {
 	Int64 key = (((Int64)x) << 32) | (UInt32)y;
-	NotNullPtr<Data::ArrayList<Int32>> index;
+	NN<Data::ArrayList<Int32>> index;
 	if (index.Set(this->indexMap.Get(key)))
 	{
 		routeList->AddAll(index);
@@ -120,7 +120,7 @@ Map::HKSpeedLimit::HKSpeedLimit(Map::HKRoadNetwork2 *roadNetwork)
 	DB::ReadingDB *fgdb = roadNetwork->GetDB();
 	if (fgdb)
 	{
-		NotNullPtr<DB::DBReader> r;
+		NN<DB::DBReader> r;
 		if (fgdb->QueryTableData(CSTR_NULL, CSTR("CENTERLINE"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			UOSInt objIdCol = INVALID_INDEX;
@@ -147,7 +147,7 @@ Map::HKSpeedLimit::HKSpeedLimit(Map::HKRoadNetwork2 *roadNetwork)
 			{
 				while (r->ReadNext())
 				{
-					NotNullPtr<Math::Geometry::Vector2D> vec;
+					NN<Math::Geometry::Vector2D> vec;
 					NEW_CLASS(route, RouteInfo());
 					route->objectId = r->GetInt32(objIdCol);
 					route->routeId = r->GetInt32(routeIdCol);
@@ -232,7 +232,7 @@ Map::HKSpeedLimit::~HKSpeedLimit()
 
 const Map::HKSpeedLimit::RouteInfo *Map::HKSpeedLimit::GetNearestRoute(Math::Coord2DDbl pt)
 {
-	NotNullPtr<Math::CoordinateSystem> csys;
+	NN<Math::CoordinateSystem> csys;
 	if (csys.Set(this->reqCsys) && !this->reqCsys->Equals(this->dataCsys))
 	{
 		pt = Math::CoordinateSystem::Convert(csys, this->dataCsys, pt);
@@ -275,7 +275,7 @@ const Map::HKSpeedLimit::RouteInfo *Map::HKSpeedLimit::GetNearestRoute(Math::Coo
 		{
 			lastRouteId = routeId;
 			route = this->routeMap.Get(routeId);
-			NotNullPtr<Math::Geometry::Vector2D> vec;
+			NN<Math::Geometry::Vector2D> vec;
 			if (route && route->vecOri.SetTo(vec))
 			{
 				Math::Coord2DDbl nearPt;
@@ -296,7 +296,7 @@ Int32 Map::HKSpeedLimit::GetSpeedLimit(Math::Coord2DDbl pt, Double maxDistM)
 {
 	Int32 speedLimit = 50;
 	Double distComp = maxDistM * maxDistM;
-	NotNullPtr<Math::CoordinateSystem> csys;
+	NN<Math::CoordinateSystem> csys;
 	if (csys.Set(this->reqCsys) && !this->reqCsys->Equals(this->dataCsys))
 	{
 		pt = Math::CoordinateSystem::Convert(csys, this->dataCsys, pt);
@@ -337,7 +337,7 @@ Int32 Map::HKSpeedLimit::GetSpeedLimit(Math::Coord2DDbl pt, Double maxDistM)
 		{
 			lastRouteId = routeId;
 			route = this->routeMap.Get(routeId);
-			NotNullPtr<Math::Geometry::Vector2D> vec;
+			NN<Math::Geometry::Vector2D> vec;
 			if (route && route->speedLimit > speedLimit && route->vecOri.SetTo(vec))
 			{
 				Math::Coord2DDbl nearPt;
@@ -355,8 +355,8 @@ Int32 Map::HKSpeedLimit::GetSpeedLimit(Math::Coord2DDbl pt, Double maxDistM)
 
 void Map::HKSpeedLimit::SetReqCoordinateSystem(Math::CoordinateSystem *csys)
 {
-	NotNullPtr<Math::CoordinateSystem> srcCsys;
-	NotNullPtr<Math::CoordinateSystem> reqCsys;
+	NN<Math::CoordinateSystem> srcCsys;
+	NN<Math::CoordinateSystem> reqCsys;
 	if (srcCsys.Set(csys) && (!reqCsys.Set(this->reqCsys) || !reqCsys->Equals(srcCsys)))
 	{
 		SDEL_CLASS(this->reqCsys);

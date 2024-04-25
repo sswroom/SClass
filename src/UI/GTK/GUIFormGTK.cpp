@@ -85,7 +85,7 @@ void UI::GUIForm::UpdateHAcc()
 	{
 		accel_group = (GtkAccelGroup*)this->hAcc;
 	}
-	NotNullPtr<UI::GUIMainMenu> menu;
+	NN<UI::GUIMainMenu> menu;
 	if (this->menu.SetTo(menu))
 	{
 		UOSInt i;
@@ -108,7 +108,7 @@ void UI::GUIForm::UpdateHAcc()
 	}
 }
 
-UI::GUIForm::GUIForm(Optional<GUIClientControl> parent, Double initW, Double initH, NotNullPtr<GUICore> ui) : UI::GUIClientControl(ui, parent)
+UI::GUIForm::GUIForm(Optional<GUIClientControl> parent, Double initW, Double initH, NN<GUICore> ui) : UI::GUIClientControl(ui, parent)
 {
 	this->exitOnClose = false;
 	this->isDialog = false;
@@ -126,7 +126,7 @@ UI::GUIForm::GUIForm(Optional<GUIClientControl> parent, Double initW, Double ini
 	Math::Size2DDbl sz;
 	Double initX;
 	Double initY;
-	NotNullPtr<GUIClientControl> nnparent;
+	NN<GUIClientControl> nnparent;
 	if (parent.SetTo(nnparent))
 	{
 		sz = nnparent->GetClientSize();
@@ -234,7 +234,7 @@ void UI::GUIForm::SetFormState(FormState fs)
 
 UI::GUIForm::DialogResult UI::GUIForm::ShowDialog(Optional<UI::GUIForm> owner)
 {
-	NotNullPtr<UI::GUIForm> frm;
+	NN<UI::GUIForm> frm;
 	if (owner.SetTo(frm))
 	{
 		frm->SetEnabled(false);
@@ -335,15 +335,15 @@ void UI::GUIForm::SetNoResize(Bool noResize)
 	}
 }
 
-NotNullPtr<UI::GUITimer> UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, AnyType userObj)
+NN<UI::GUITimer> UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, AnyType userObj)
 {
-	NotNullPtr<UI::GTK::GTKTimer> tmr;
+	NN<UI::GTK::GTKTimer> tmr;
 	NEW_CLASSNN(tmr, UI::GTK::GTKTimer(interval, handler, userObj));
 	this->timers.Add(tmr);
 	return tmr;
 }
 
-void UI::GUIForm::RemoveTimer(NotNullPtr<UI::GUITimer> tmr)
+void UI::GUIForm::RemoveTimer(NN<UI::GUITimer> tmr)
 {
 	UOSInt i;
 	i = this->timers.GetCount();	
@@ -358,7 +358,7 @@ void UI::GUIForm::RemoveTimer(NotNullPtr<UI::GUITimer> tmr)
 	}
 }
 
-void UI::GUIForm::SetMenu(NotNullPtr<UI::GUIMainMenu> menu)
+void UI::GUIForm::SetMenu(NN<UI::GUIMainMenu> menu)
 {
 	this->menu.Delete();
 	if (this->container == 0) this->InitContainer();
@@ -386,13 +386,13 @@ void UI::GUIForm::UpdateMenu()
 	this->UpdateHAcc();
 }
 
-void UI::GUIForm::SetDefaultButton(NotNullPtr<UI::GUIButton> btn)
+void UI::GUIForm::SetDefaultButton(NN<UI::GUIButton> btn)
 {
 	this->okBtn = btn;
 //	btn->SetDefaultBtnLook();
 }
 
-void UI::GUIForm::SetCancelButton(NotNullPtr<UI::GUIButton> btn)
+void UI::GUIForm::SetCancelButton(NN<UI::GUIButton> btn)
 {
 	this->cancelBtn = btn;
 }
@@ -412,7 +412,7 @@ Math::Size2DDbl UI::GUIForm::GetClientSize()
 	int width;
 	int height;
 	gtk_window_get_size((GtkWindow*)this->hwnd, &width, &height);
-	NotNullPtr<UI::GUIMainMenu> menu;
+	NN<UI::GUIMainMenu> menu;
 	if (this->menu.SetTo(menu))
 	{
 		GtkWidget *menuBar = (GtkWidget*)menu->GetHMenu();
@@ -579,7 +579,7 @@ void UI::GUIForm::SetDPI(Double hdpi, Double ddpi)
 	{
 		this->menu->SetDPI(hdpi, ddpi);
 	}*/
-	Data::ArrayIterator<NotNullPtr<GUIControl>> it = this->children.Iterator();
+	Data::ArrayIterator<NN<GUIControl>> it = this->children.Iterator();
 	while (it.HasNext())
 	{
 		it.Next()->SetDPI(hdpi, ddpi);
@@ -624,7 +624,7 @@ void UI::GUIForm::OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight)
 {
 }
 
-void UI::GUIForm::OnFileDrop(Data::DataArray<NotNullPtr<Text::String>> files)
+void UI::GUIForm::OnFileDrop(Data::DataArray<NN<Text::String>> files)
 {
 	UOSInt i;
 	i = this->dropFileHandlers.GetCount();
@@ -637,7 +637,7 @@ void UI::GUIForm::OnFileDrop(Data::DataArray<NotNullPtr<Text::String>> files)
 
 void UI::GUIForm::ToFullScn()
 {
-	NotNullPtr<UI::GUIMainMenu> menu;
+	NN<UI::GUIMainMenu> menu;
 	if (this->menu.SetTo(menu))
 	{
 		GtkWidget *menuBar = (GtkWidget*)menu->GetHMenu();
@@ -649,7 +649,7 @@ void UI::GUIForm::ToFullScn()
 void UI::GUIForm::FromFullScn()
 {
 	gtk_window_unfullscreen((GtkWindow*)this->hwnd);
-	NotNullPtr<UI::GUIMainMenu> menu;
+	NN<UI::GUIMainMenu> menu;
 	if (this->menu.SetTo(menu))
 	{
 		GtkWidget *menuBar = (GtkWidget*)menu->GetHMenu();
@@ -657,7 +657,7 @@ void UI::GUIForm::FromFullScn()
 	}
 }
 
-NotNullPtr<UI::GUICore> UI::GUIForm::GetUI()
+NN<UI::GUICore> UI::GUIForm::GetUI()
 {
 	return this->ui;
 }

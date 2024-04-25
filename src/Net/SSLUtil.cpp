@@ -308,7 +308,7 @@ UOSInt Net::SSLUtil::GenSSLClientHello(UInt8 *buff, Text::CStringNN serverHost, 
 	return len + 5;
 }
 
-void Net::SSLUtil::ParseResponse(const UInt8 *buff, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb, OutParam<Optional<Crypto::Cert::X509File>> cert)
+void Net::SSLUtil::ParseResponse(const UInt8 *buff, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb, OutParam<Optional<Crypto::Cert::X509File>> cert)
 {
 	cert.Set(0);
 	if (buff[0] == 21 && packetSize == 7)
@@ -327,7 +327,7 @@ void Net::SSLUtil::ParseResponse(const UInt8 *buff, UOSInt packetSize, NotNullPt
 	else if (buff[0] == 22 && packetSize >= 9)
 	{
 		Data::ArrayListNN<Crypto::Cert::X509Cert> certs;
-		NotNullPtr<Crypto::Cert::X509Cert> c;
+		NN<Crypto::Cert::X509Cert> c;
 		Bool hasServerHello = false;
 		UOSInt i = 0;
 		UOSInt j;

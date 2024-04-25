@@ -35,12 +35,12 @@ namespace SSWR
 			virtual Text::String *GetCacheDir();
 			virtual Text::CString GetMapFont();
 
-			virtual UOSInt GetGroupItems(NotNullPtr<Data::ArrayListNN<OrganGroupItem>> items, Optional<OrganGroup> grp);
-			virtual UOSInt GetGroupImages(NotNullPtr<Data::ArrayListNN<OrganImageItem>> items, NotNullPtr<OrganGroup> grp);
-			virtual UOSInt GetSpeciesImages(NotNullPtr<Data::ArrayListNN<OrganImageItem>> items, NotNullPtr<OrganSpecies> sp);
-			virtual UOSInt GetGroupAllSpecies(NotNullPtr<Data::ArrayListNN<OrganSpecies>> items, Optional<OrganGroup> grp);
-			virtual UOSInt GetGroupAllUserFile(NotNullPtr<Data::ArrayListNN<UserFileInfo>> items, NotNullPtr<Data::ArrayList<UInt32>> colors, Optional<OrganGroup> grp);
-			virtual UOSInt GetSpeciesItems(NotNullPtr<Data::ArrayListNN<OrganGroupItem>> items, NotNullPtr<Data::ArrayList<Int32>> speciesIds);
+			virtual UOSInt GetGroupItems(NN<Data::ArrayListNN<OrganGroupItem>> items, Optional<OrganGroup> grp);
+			virtual UOSInt GetGroupImages(NN<Data::ArrayListNN<OrganImageItem>> items, NN<OrganGroup> grp);
+			virtual UOSInt GetSpeciesImages(NN<Data::ArrayListNN<OrganImageItem>> items, NN<OrganSpecies> sp);
+			virtual UOSInt GetGroupAllSpecies(NN<Data::ArrayListNN<OrganSpecies>> items, Optional<OrganGroup> grp);
+			virtual UOSInt GetGroupAllUserFile(NN<Data::ArrayListNN<UserFileInfo>> items, NN<Data::ArrayList<UInt32>> colors, Optional<OrganGroup> grp);
+			virtual UOSInt GetSpeciesItems(NN<Data::ArrayListNN<OrganGroupItem>> items, NN<Data::ArrayList<Int32>> speciesIds);
 			virtual Optional<OrganGroup> GetGroup(Int32 groupId, OutParam<Int32> parentId);
 			virtual Optional<OrganSpecies> GetSpecies(Int32 speciesId);
 			virtual UTF8Char *GetSpeciesDir(NN<OrganSpecies> sp, UTF8Char *sbuff);
@@ -79,14 +79,14 @@ namespace SSWR
 			virtual Int32 NewBook(Text::CString title, Text::CString author, Text::CString press, const Data::Timestamp &publishDate, Text::CString url);
 
 			virtual Bool AddDataFile(Text::CStringNN fileName);
-			virtual Bool DelDataFile(NotNullPtr<DataFileInfo> dataFile);
+			virtual Bool DelDataFile(NN<DataFileInfo> dataFile);
 			virtual Bool GetGPSPos(Int32 userId, const Data::Timestamp &ts, OutParam<Math::Coord2DDbl> pos);
-			virtual Map::GPSTrack *OpenGPSTrack(NotNullPtr<DataFileInfo> dataFile);
+			virtual Map::GPSTrack *OpenGPSTrack(NN<DataFileInfo> dataFile);
 
 			virtual void UpdateUserFileCrop(NN<UserFileInfo> userFile, Double cropLeft, Double cropTop, Double cropRight, Double cropBottom);
 			virtual void UpdateUserFileRot(NN<UserFileInfo> userFile, Int32 rotType);
 			virtual Bool UpdateUserFilePos(NN<UserFileInfo> userFile, const Data::Timestamp &captureTime, Double lat, Double lon);
-			virtual Bool GetUserFilePath(NN<UserFileInfo> userFile, NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual Bool GetUserFilePath(NN<UserFileInfo> userFile, NN<Text::StringBuilderUTF8> sb);
 			virtual Bool UpdateUserFileDesc(NN<UserFileInfo> userFile, const UTF8Char *descript);
 			virtual Bool UpdateUserFileLoc(NN<UserFileInfo> userFile, const UTF8Char *location);
 			virtual void UpdateWebFileCrop(NN<WebFileInfo> webFile, Double cropLeft, Double cropTop, Double cropRight, Double cropBottom);
@@ -112,8 +112,8 @@ namespace SSWR
 			virtual void LoadGroupTypes();
 
 		private:
-			virtual NotNullPtr<Data::FastMapNN<Int32, Data::ArrayListNN<OrganGroup>>> GetGroupTree();
-			virtual NotNullPtr<Data::FastMapNN<Int32, Data::ArrayListNN<OrganSpecies>>> GetSpeciesTree();
+			virtual NN<Data::FastMapNN<Int32, Data::ArrayListNN<OrganGroup>>> GetGroupTree();
+			virtual NN<Data::FastMapNN<Int32, Data::ArrayListNN<OrganSpecies>>> GetSpeciesTree();
 
 		public:
 			virtual void Test();

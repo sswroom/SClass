@@ -19,19 +19,19 @@ namespace Map
 	class MapDrawUtil
 	{
 	private:
-		static Bool DrawPoint(NotNullPtr<Math::Geometry::Point> pt, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst);
-		static Bool DrawLineString(NotNullPtr<Math::Geometry::LineString> pl, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst);
-		static Bool DrawPolyline(NotNullPtr<Math::Geometry::Polyline> pl, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst);
-		static Bool DrawLinearRing(NotNullPtr<Math::Geometry::LinearRing> pg, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst);
-		static Bool DrawPolygon(NotNullPtr<Math::Geometry::Polygon> pg, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst);
-		static Bool DrawMultiPolygon(NotNullPtr<Math::Geometry::MultiPolygon> mpg, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst);
-		static Bool DrawMultiSurface(NotNullPtr<Math::Geometry::MultiSurface> ms, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst);
-		static Bool DrawCurvePolygon(NotNullPtr<Math::Geometry::CurvePolygon> cp, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst);
-		static Bool DrawGeometryCollection(NotNullPtr<Math::Geometry::GeometryCollection> geomColl, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst);
-		static Bool DrawEllipse(NotNullPtr<Math::Geometry::Ellipse> circle, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst);
-		static Bool DrawVectorImage(NotNullPtr<Math::Geometry::VectorImage> vimg, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst);
+		static Bool DrawPoint(NN<Math::Geometry::Point> pt, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst);
+		static Bool DrawLineString(NN<Math::Geometry::LineString> pl, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst);
+		static Bool DrawPolyline(NN<Math::Geometry::Polyline> pl, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst);
+		static Bool DrawLinearRing(NN<Math::Geometry::LinearRing> pg, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst);
+		static Bool DrawPolygon(NN<Math::Geometry::Polygon> pg, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst);
+		static Bool DrawMultiPolygon(NN<Math::Geometry::MultiPolygon> mpg, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst);
+		static Bool DrawMultiSurface(NN<Math::Geometry::MultiSurface> ms, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst);
+		static Bool DrawCurvePolygon(NN<Math::Geometry::CurvePolygon> cp, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst);
+		static Bool DrawGeometryCollection(NN<Math::Geometry::GeometryCollection> geomColl, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst);
+		static Bool DrawEllipse(NN<Math::Geometry::Ellipse> circle, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst);
+		static Bool DrawVectorImage(NN<Math::Geometry::VectorImage> vimg, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst);
 	public:
-		static Bool DrawVector(NotNullPtr<Math::Geometry::Vector2D> vec, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst);
+		static Bool DrawVector(NN<Math::Geometry::Vector2D> vec, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst);
 	};
 }
 #endif

@@ -13,7 +13,7 @@
 #include "Text/Locale.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Map::GoogleMap::GoogleWSSearcherJSON::GoogleWSSearcherJSON(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, IO::Writer *errWriter, Optional<Text::EncodingFactory> encFact)
+Map::GoogleMap::GoogleWSSearcherJSON::GoogleWSSearcherJSON(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, IO::Writer *errWriter, Optional<Text::EncodingFactory> encFact)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -109,8 +109,8 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 		}
 	}
 
-	NotNullPtr<Text::String> s;
-	NotNullPtr<Net::HTTPClient> cli;
+	NN<Text::String> s;
+	NN<Net::HTTPClient> cli;
 	urlStart = sptr = Text::StrConcatC(url, UTF8STRC("https://maps.googleapis.com"));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/maps/api/geocode/json?latlng="));
 	sptr = Text::StrDouble(sptr, pos.GetLat());

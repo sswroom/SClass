@@ -6,12 +6,12 @@
 #include "UI/GUIClientControl.h"
 #include "UI/GUIRealtimeLineChart.h"
 
-void UI::GUIRealtimeLineChart::OnPaint(NotNullPtr<Media::DrawImage> dimg)
+void UI::GUIRealtimeLineChart::OnPaint(NN<Media::DrawImage> dimg)
 {
-	NotNullPtr<Media::DrawImage> img;
-	NotNullPtr<Media::DrawPen> p;
-	NotNullPtr<Media::DrawBrush> b;
-	NotNullPtr<Media::DrawFont> f;
+	NN<Media::DrawImage> img;
+	NN<Media::DrawPen> p;
+	NN<Media::DrawBrush> b;
+	NN<Media::DrawFont> f;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -111,7 +111,7 @@ void UI::GUIRealtimeLineChart::OnPaint(NotNullPtr<Media::DrawImage> dimg)
 	}
 }
 
-UI::GUIRealtimeLineChart::GUIRealtimeLineChart(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt) : UI::GUIControl(ui, parent)
+UI::GUIRealtimeLineChart::GUIRealtimeLineChart(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt) : UI::GUIControl(ui, parent)
 {
 	this->eng = eng;
 	this->lineCnt = lineCnt;

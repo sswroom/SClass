@@ -20,28 +20,28 @@ namespace SSWR
 		class AVIRLDAPExplorerForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Net::LDAPClient *cli;
 			Data::ArrayList<Net::LDAPClient::SearchResObject*> *dispResults;
 			UOSInt rootLev;
 
-			NotNullPtr<UI::GUIPanel> pnlRequest;
-			NotNullPtr<UI::GUILabel> lblHost;
-			NotNullPtr<UI::GUITextBox> txtHost;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUILabel> lblAuthType;
-			NotNullPtr<UI::GUIComboBox> cboAuthType;
-			NotNullPtr<UI::GUILabel> lblUserDN;
-			NotNullPtr<UI::GUITextBox> txtUserDN;
-			NotNullPtr<UI::GUILabel> lblPassword;
-			NotNullPtr<UI::GUITextBox> txtPassword;
-			NotNullPtr<UI::GUIButton> btnConnect;
-			NotNullPtr<UI::GUIListBox> lbPath;
-			NotNullPtr<UI::GUIHSplitter> hspPath;
-			NotNullPtr<UI::GUIListBox> lbObjects;
-			NotNullPtr<UI::GUIHSplitter> hspObjects;
-			NotNullPtr<UI::GUIListView> lvValues;
+			NN<UI::GUIPanel> pnlRequest;
+			NN<UI::GUILabel> lblHost;
+			NN<UI::GUITextBox> txtHost;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUILabel> lblAuthType;
+			NN<UI::GUIComboBox> cboAuthType;
+			NN<UI::GUILabel> lblUserDN;
+			NN<UI::GUITextBox> txtUserDN;
+			NN<UI::GUILabel> lblPassword;
+			NN<UI::GUITextBox> txtPassword;
+			NN<UI::GUIButton> btnConnect;
+			NN<UI::GUIListBox> lbPath;
+			NN<UI::GUIHSplitter> hspPath;
+			NN<UI::GUIListBox> lbObjects;
+			NN<UI::GUIHSplitter> hspObjects;
+			NN<UI::GUIListView> lvValues;
 		
 			static void __stdcall OnConnectClicked(AnyType userObj);
 			static void __stdcall OnPathSelChg(AnyType userObj);
@@ -49,7 +49,7 @@ namespace SSWR
 			static void __stdcall OnObjectsDblClk(AnyType userObj);
 
 		public:
-			AVIRLDAPExplorerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRLDAPExplorerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLDAPExplorerForm();
 
 			virtual void OnMonitorChanged();

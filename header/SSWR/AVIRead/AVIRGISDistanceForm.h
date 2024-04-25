@@ -16,21 +16,21 @@ namespace SSWR
 		class AVIRGISDistanceForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblType;
-			NotNullPtr<UI::GUIPanel> pnlType;
-			NotNullPtr<UI::GUIRadioButton> radTypeLine;
-			NotNullPtr<UI::GUIRadioButton> radTypePath;
-			NotNullPtr<UI::GUILabel> lblAction;
-			NotNullPtr<UI::GUIPanel> pnlAction;
-			NotNullPtr<UI::GUIRadioButton> radActionPause;
-			NotNullPtr<UI::GUIRadioButton> radActionMeasure;
-			NotNullPtr<UI::GUILabel> lblDistance;
-			NotNullPtr<UI::GUITextBox> txtDistance;
-			NotNullPtr<UI::GUIComboBox> cboDistanceUnit;
+			NN<UI::GUILabel> lblType;
+			NN<UI::GUIPanel> pnlType;
+			NN<UI::GUIRadioButton> radTypeLine;
+			NN<UI::GUIRadioButton> radTypePath;
+			NN<UI::GUILabel> lblAction;
+			NN<UI::GUIPanel> pnlAction;
+			NN<UI::GUIRadioButton> radActionPause;
+			NN<UI::GUIRadioButton> radActionMeasure;
+			NN<UI::GUILabel> lblDistance;
+			NN<UI::GUITextBox> txtDistance;
+			NN<UI::GUIComboBox> cboDistanceUnit;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IMapNavigator *navi;
-			NotNullPtr<Math::CoordinateSystem> csys;
+			NN<Math::CoordinateSystem> csys;
 
 			Data::ArrayList<Double> *ptList;
 			Math::Coord2DDbl lastMapPos;
@@ -46,7 +46,7 @@ namespace SSWR
 			void UpdateDistDisp();
 
 		public:
-			AVIRGISDistanceForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi);
+			AVIRGISDistanceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi);
 			virtual ~AVIRGISDistanceForm();
 
 			virtual void OnMonitorChanged();

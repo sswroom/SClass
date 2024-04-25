@@ -12,7 +12,7 @@ Text::StringBuilderUTF16::~StringBuilderUTF16()
 {
 }
 
-NotNullPtr<Text::StringBuilderUTF> Text::StringBuilderUTF16::Append(Text::PString *s)
+NN<Text::StringBuilderUTF> Text::StringBuilderUTF16::Append(Text::PString *s)
 {
 	UOSInt slen = Text::StrUTF8_UTF16CntC(s->v, s->leng);
 	if (slen > 0)
@@ -24,7 +24,7 @@ NotNullPtr<Text::StringBuilderUTF> Text::StringBuilderUTF16::Append(Text::PStrin
 
 }
 
-NotNullPtr<Text::StringBuilderUTF> Text::StringBuilderUTF16::Append(const UTF8Char *s)
+NN<Text::StringBuilderUTF> Text::StringBuilderUTF16::Append(const UTF8Char *s)
 {
 	UOSInt slen = Text::StrUTF8_UTF16Cnt(s);
 	if (slen > 0)
@@ -35,7 +35,7 @@ NotNullPtr<Text::StringBuilderUTF> Text::StringBuilderUTF16::Append(const UTF8Ch
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF> Text::StringBuilderUTF16::AppendC(const UTF8Char *s, UOSInt charCnt)
+NN<Text::StringBuilderUTF> Text::StringBuilderUTF16::AppendC(const UTF8Char *s, UOSInt charCnt)
 {
 	UOSInt slen = Text::StrUTF8_UTF16CntC(s, charCnt);
 	if (slen > 0)
@@ -46,7 +46,7 @@ NotNullPtr<Text::StringBuilderUTF> Text::StringBuilderUTF16::AppendC(const UTF8C
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF> Text::StringBuilderUTF16::AppendS(const UTF8Char *s, UOSInt maxLen)
+NN<Text::StringBuilderUTF> Text::StringBuilderUTF16::AppendS(const UTF8Char *s, UOSInt maxLen)
 {
 	UOSInt len = Text::StrCharCntS(s, maxLen);
 	UOSInt slen = Text::StrUTF8_UTF16CntC(s, len);
@@ -58,7 +58,7 @@ NotNullPtr<Text::StringBuilderUTF> Text::StringBuilderUTF16::AppendS(const UTF8C
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF> Text::StringBuilderUTF16::AppendChar(UTF32Char c, UOSInt repCnt)
+NN<Text::StringBuilderUTF> Text::StringBuilderUTF16::AppendChar(UTF32Char c, UOSInt repCnt)
 {
 	if (c >= 0x10000)
 	{
@@ -87,7 +87,7 @@ NotNullPtr<Text::StringBuilderUTF> Text::StringBuilderUTF16::AppendChar(UTF32Cha
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF16> Text::StringBuilderUTF16::AppendCSV(const UTF16Char **sarr, UOSInt nStr)
+NN<Text::StringBuilderUTF16> Text::StringBuilderUTF16::AppendCSV(const UTF16Char **sarr, UOSInt nStr)
 {
 	const UTF16Char *csptr;
 	UOSInt i;
@@ -114,7 +114,7 @@ NotNullPtr<Text::StringBuilderUTF16> Text::StringBuilderUTF16::AppendCSV(const U
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF16> Text::StringBuilderUTF16::AppendToUpper(const UTF16Char *s)
+NN<Text::StringBuilderUTF16> Text::StringBuilderUTF16::AppendToUpper(const UTF16Char *s)
 {
 	UOSInt slen = Text::StrCharCnt(s);
 	this->AllocLeng(slen);
@@ -122,7 +122,7 @@ NotNullPtr<Text::StringBuilderUTF16> Text::StringBuilderUTF16::AppendToUpper(con
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF16> Text::StringBuilderUTF16::AppendToLower(const UTF16Char *s)
+NN<Text::StringBuilderUTF16> Text::StringBuilderUTF16::AppendToLower(const UTF16Char *s)
 {
 	UOSInt slen = Text::StrCharCnt(s);
 	this->AllocLeng(slen);
@@ -130,12 +130,12 @@ NotNullPtr<Text::StringBuilderUTF16> Text::StringBuilderUTF16::AppendToLower(con
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF> Text::StringBuilderUTF::Append(const UTF8Char *s)
+NN<Text::StringBuilderUTF> Text::StringBuilderUTF::Append(const UTF8Char *s)
 {
 	return *this;
 }
 
-NotNullPtr<Text::StringBuilderUTF> Text::StringBuilderUTF::AppendC(const UTF8Char *s, UOSInt cnt)
+NN<Text::StringBuilderUTF> Text::StringBuilderUTF::AppendC(const UTF8Char *s, UOSInt cnt)
 {
 	return *this;
 }

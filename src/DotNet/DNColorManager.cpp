@@ -40,7 +40,7 @@ void DotNet::DNColorManager::RGBUpdated()
 
 void DotNet::DNColorManager::YUVUpdated()
 {
-	NotNullPtr<const Media::IColorHandler::YUVPARAM> yuv = this->colorMgr->GetYUVParam();
+	NN<const Media::IColorHandler::YUVPARAM> yuv = this->colorMgr->GetYUVParam();
 	System::Int32 i = this->hdlrs->Count;
 	while (i-- > 0)
 	{

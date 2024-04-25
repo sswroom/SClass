@@ -8,10 +8,10 @@
 #include "SSWR/AVIRead/AVIRCertUtilForm.h"
 #include "Text/StringTool.h"
 
-void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
-	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
+	NN<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
+	NN<Parser::ParserList> parsers = me->core->GetParserList();
 
 	UOSInt i = 0;
 	UOSInt nFiles = files.GetCount();
@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(AnyType userObj, Data
 				{
 					Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
 					Crypto::Cert::X509Key *key;
-					NotNullPtr<Crypto::Cert::X509Key> nnkey;
+					NN<Crypto::Cert::X509Key> nnkey;
 					Crypto::Cert::X509PrivKey *privKey;
 					Crypto::Cert::X509CertReq *csr;
 					Crypto::Cert::X509Cert *cert;
@@ -152,11 +152,11 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(AnyType userObj, Data
 
 void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeyGenerateClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
-	NotNullPtr<Net::SSLEngine> ssl;
+	NN<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
+	NN<Net::SSLEngine> ssl;
 	if (me->ssl.SetTo(ssl))
 	{
-		NotNullPtr<Crypto::Cert::X509Key> key;
+		NN<Crypto::Cert::X509Key> key;
 		if (ssl->GenerateRSAKey().SetTo(key))
 		{
 			me->key.Delete();
@@ -168,8 +168,8 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeyGenerateClicked(AnyType use
 
 void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeyViewClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
-	NotNullPtr<Crypto::Cert::X509Key> key;
+	NN<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
+	NN<Crypto::Cert::X509Key> key;
 	if (me->key.SetTo(key))
 	{
 		me->core->OpenObject(key->Clone());
@@ -178,8 +178,8 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeyViewClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeySaveClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
-	NotNullPtr<Crypto::Cert::X509Key> key;
+	NN<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
+	NN<Crypto::Cert::X509Key> key;
 	if (me->key.SetTo(key))
 	{
 		me->core->SaveData(me.Ptr(), key, L"CertUtilSaveKey");
@@ -188,7 +188,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeySaveClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSANAddClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
+	NN<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtSAN->GetText(sb);
 	if (sb.GetLength() > 0)
@@ -201,21 +201,21 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSANAddClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSANClearClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
+	NN<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
 	me->sanList->FreeAll();
 	me->lbSAN->ClearItems();
 }
 
 void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnCSRGenerateClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
-	NotNullPtr<Net::SSLEngine> ssl;
+	NN<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
+	NN<Net::SSLEngine> ssl;
 	if (!me->ssl.SetTo(ssl))
 	{
 		me->ui->ShowMsgOK(CSTR("SSL engine is not initiated"), CSTR("Cert Util"), me);
 		return;
 	}
-	NotNullPtr<Crypto::Cert::X509Key> key;
+	NN<Crypto::Cert::X509Key> key;
 	if (!me->key.SetTo(key))
 	{
 		me->ui->ShowMsgOK(CSTR("Key not exist"), CSTR("Cert Util"), me);
@@ -233,7 +233,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnCSRGenerateClicked(AnyType use
 	ext.caCert = me->chkCACert->IsChecked();
 	ext.digitalSign = me->chkDigitalSign->IsChecked();
 	Crypto::Cert::X509CertReq *csr;
-	NotNullPtr<Crypto::Cert::X509CertReq> nncsr;
+	NN<Crypto::Cert::X509CertReq> nncsr;
 	if (me->sanList->GetCount() > 0 || ext.caCert || ext.digitalSign)
 	{
 		csr = Crypto::Cert::CertUtil::CertReqCreate(ssl, names, key, &ext);
@@ -255,14 +255,14 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnCSRGenerateClicked(AnyType use
 
 void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
-	NotNullPtr<Net::SSLEngine> ssl;
+	NN<SSWR::AVIRead::AVIRCertUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertUtilForm>();
+	NN<Net::SSLEngine> ssl;
 	if (!me->ssl.SetTo(ssl))
 	{
 		me->ui->ShowMsgOK(CSTR("SSL Engine is not initiated"), CSTR("Cert Util"), me);
 		return;
 	}
-	NotNullPtr<Crypto::Cert::X509Key> key;
+	NN<Crypto::Cert::X509Key> key;
 	if (!me->key.SetTo(key))
 	{
 		me->ui->ShowMsgOK(CSTR("Key not exist"), CSTR("Cert Util"), me);
@@ -291,7 +291,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(AnyType 
 	key->GetKeyId(BYTEARR(ext.authKeyId));
 	ext.caCert = me->chkCACert->IsChecked();
 	ext.digitalSign = me->chkDigitalSign->IsChecked();
-	NotNullPtr<Crypto::Cert::X509Cert> cert;
+	NN<Crypto::Cert::X509Cert> cert;
 	if (cert.Set(Crypto::Cert::CertUtil::SelfSignedCertCreate(ssl, names, key, validDays, &ext)))
 	{
 		me->core->OpenObject(cert);
@@ -372,7 +372,7 @@ Bool SSWR::AVIRead::AVIRCertUtilForm::GetNames(Crypto::Cert::CertNames *names)
 
 void SSWR::AVIRead::AVIRCertUtilForm::DisplayKeyDetail()
 {
-	NotNullPtr<Crypto::Cert::X509Key> key;
+	NN<Crypto::Cert::X509Key> key;
 	if (!this->key.SetTo(key))
 	{
 		this->txtKeyDetail->SetText(CSTR("-"));
@@ -394,7 +394,7 @@ void SSWR::AVIRead::AVIRCertUtilForm::DisplayKeyDetail()
 	}
 }
 
-void SSWR::AVIRead::AVIRCertUtilForm::DisplayNames(NotNullPtr<Crypto::Cert::CertNames> names)
+void SSWR::AVIRead::AVIRCertUtilForm::DisplayNames(NN<Crypto::Cert::CertNames> names)
 {
 	this->txtCountryName->SetText(Text::String::OrEmpty(names->countryName)->ToCString());
 	this->txtStateOrProvinceName->SetText(Text::String::OrEmpty(names->stateOrProvinceName)->ToCString());
@@ -405,14 +405,14 @@ void SSWR::AVIRead::AVIRCertUtilForm::DisplayNames(NotNullPtr<Crypto::Cert::Cert
 	this->txtEmailAddress->SetText(Text::String::OrEmpty(names->emailAddress)->ToCString());
 }
 
-void SSWR::AVIRead::AVIRCertUtilForm::DisplayExtensions(NotNullPtr<Crypto::Cert::CertExtensions> exts)
+void SSWR::AVIRead::AVIRCertUtilForm::DisplayExtensions(NN<Crypto::Cert::CertExtensions> exts)
 {
 	this->ClearExtensions();
-	NotNullPtr<Data::ArrayListStringNN> nameList;
+	NN<Data::ArrayListStringNN> nameList;
 	if (exts->subjectAltName.SetTo(nameList))
 	{
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = nameList->Iterator();
-		NotNullPtr<Text::String> s;
+		Data::ArrayIterator<NN<Text::String>> it = nameList->Iterator();
+		NN<Text::String> s;
 		while (it.HasNext())
 		{
 			s = it.Next()->Clone();
@@ -428,7 +428,7 @@ void SSWR::AVIRead::AVIRCertUtilForm::ClearExtensions()
 	this->lbSAN->ClearItems();
 }
 
-SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Cert Utility"));
 	this->SetFont(0, 0, 8.25, false);

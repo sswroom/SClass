@@ -66,9 +66,9 @@ void UI::GTK::GTKCore::Exit()
 	gtk_main_quit();
 }
 
-NotNullPtr<Media::DrawEngine> UI::GTK::GTKCore::CreateDrawEngine()
+NN<Media::DrawEngine> UI::GTK::GTKCore::CreateDrawEngine()
 {
-	NotNullPtr<Media::DrawEngine> deng;
+	NN<Media::DrawEngine> deng;
 	NEW_CLASSNN(deng, Media::GTKDrawEngine());
 	return deng;
 };
@@ -218,184 +218,184 @@ Bool UI::GTK::GTKCore::ShowMsgYesNo(Text::CStringNN message, Text::CStringNN tit
 	return UI::GTK::GTKMessageDialog::ShowYesNo(message, title, ctrl);
 }
 
-NotNullPtr<UI::GUIButton> UI::GTK::GTKCore::NewButton(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
+NN<UI::GUIButton> UI::GTK::GTKCore::NewButton(NN<GUIClientControl> parent, Text::CStringNN text)
 {
-	NotNullPtr<UI::GTK::GTKButton> ctrl;
+	NN<UI::GTK::GTKButton> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKButton(*this, parent, text));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUICheckBox> UI::GTK::GTKCore::NewCheckBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text, Bool checked)
+NN<UI::GUICheckBox> UI::GTK::GTKCore::NewCheckBox(NN<GUIClientControl> parent, Text::CStringNN text, Bool checked)
 {
-	NotNullPtr<UI::GTK::GTKCheckBox> ctrl;
+	NN<UI::GTK::GTKCheckBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKCheckBox(*this, parent, text, checked));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUICheckedListBox> UI::GTK::GTKCore::NewCheckedListBox(NotNullPtr<GUIClientControl> parent)
+NN<UI::GUICheckedListBox> UI::GTK::GTKCore::NewCheckedListBox(NN<GUIClientControl> parent)
 {
-	NotNullPtr<UI::GTK::GTKCheckedListBox> ctrl;
+	NN<UI::GTK::GTKCheckedListBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKCheckedListBox(*this, parent));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIComboBox> UI::GTK::GTKCore::NewComboBox(NotNullPtr<GUIClientControl> parent, Bool allowEdit)
+NN<UI::GUIComboBox> UI::GTK::GTKCore::NewComboBox(NN<GUIClientControl> parent, Bool allowEdit)
 {
-	NotNullPtr<UI::GTK::GTKComboBox> ctrl;
+	NN<UI::GTK::GTKComboBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKComboBox(*this, parent, allowEdit));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIDateTimePicker> UI::GTK::GTKCore::NewDateTimePicker(NotNullPtr<GUIClientControl> parent, Bool calendarSelect)
+NN<UI::GUIDateTimePicker> UI::GTK::GTKCore::NewDateTimePicker(NN<GUIClientControl> parent, Bool calendarSelect)
 {
-	NotNullPtr<UI::GTK::GTKDateTimePicker> ctrl;
+	NN<UI::GTK::GTKDateTimePicker> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKDateTimePicker(*this, parent));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIGroupBox> UI::GTK::GTKCore::NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
+NN<UI::GUIGroupBox> UI::GTK::GTKCore::NewGroupBox(NN<GUIClientControl> parent, Text::CStringNN text)
 {
-	NotNullPtr<UI::GTK::GTKGroupBox> ctrl;
+	NN<UI::GTK::GTKGroupBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKGroupBox(*this, parent, text));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIHScrollBar> UI::GTK::GTKCore::NewHScrollBar(NotNullPtr<GUIClientControl> parent, Double width)
+NN<UI::GUIHScrollBar> UI::GTK::GTKCore::NewHScrollBar(NN<GUIClientControl> parent, Double width)
 {
-	NotNullPtr<UI::GTK::GTKHScrollBar> ctrl;
+	NN<UI::GTK::GTKHScrollBar> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKHScrollBar(*this, parent, width));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUILabel> UI::GTK::GTKCore::NewLabel(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
+NN<UI::GUILabel> UI::GTK::GTKCore::NewLabel(NN<GUIClientControl> parent, Text::CStringNN text)
 {
-	NotNullPtr<UI::GTK::GTKLabel> ctrl;
+	NN<UI::GTK::GTKLabel> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKLabel(*this, parent, text));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIListBox> UI::GTK::GTKCore::NewListBox(NotNullPtr<GUIClientControl> parent, Bool multiSelect)
+NN<UI::GUIListBox> UI::GTK::GTKCore::NewListBox(NN<GUIClientControl> parent, Bool multiSelect)
 {
-	NotNullPtr<UI::GTK::GTKListBox> ctrl;
+	NN<UI::GTK::GTKListBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKListBox(*this, parent, multiSelect));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIPictureBox> UI::GTK::GTKCore::NewPictureBox(NotNullPtr<GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize)
+NN<UI::GUIPictureBox> UI::GTK::GTKCore::NewPictureBox(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize)
 {
-	NotNullPtr<UI::GTK::GTKPictureBox> ctrl;
+	NN<UI::GTK::GTKPictureBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKPictureBox(*this, parent, eng, hasBorder, allowResize));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIPictureBoxSimple> UI::GTK::GTKCore::NewPictureBoxSimple(NotNullPtr<GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder)
+NN<UI::GUIPictureBoxSimple> UI::GTK::GTKCore::NewPictureBoxSimple(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder)
 {
-	NotNullPtr<UI::GTK::GTKPictureBoxSimple> ctrl;
+	NN<UI::GTK::GTKPictureBoxSimple> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKPictureBoxSimple(*this, parent, eng, hasBorder));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIProgressBar> UI::GTK::GTKCore::NewProgressBar(NotNullPtr<GUIClientControl> parent, UInt64 totalCnt)
+NN<UI::GUIProgressBar> UI::GTK::GTKCore::NewProgressBar(NN<GUIClientControl> parent, UInt64 totalCnt)
 {
-	NotNullPtr<UI::GTK::GTKProgressBar> ctrl;
+	NN<UI::GTK::GTKProgressBar> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKProgressBar(*this, parent, totalCnt));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIRadioButton> UI::GTK::GTKCore::NewRadioButton(NotNullPtr<GUIClientControl> parent, Text::CStringNN initText, Bool selected)
+NN<UI::GUIRadioButton> UI::GTK::GTKCore::NewRadioButton(NN<GUIClientControl> parent, Text::CStringNN initText, Bool selected)
 {
-	NotNullPtr<UI::GTK::GTKRadioButton> ctrl;
+	NN<UI::GTK::GTKRadioButton> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKRadioButton(*this, parent, initText, selected));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIRealtimeLineChart> UI::GTK::GTKCore::NewRealtimeLineChart(NotNullPtr<GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS)
+NN<UI::GUIRealtimeLineChart> UI::GTK::GTKCore::NewRealtimeLineChart(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS)
 {
-	NotNullPtr<UI::GTK::GTKRealtimeLineChart> ctrl;
+	NN<UI::GTK::GTKRealtimeLineChart> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKRealtimeLineChart(*this, parent, eng, lineCnt, sampleCnt, updateIntervalMS));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUITabControl> UI::GTK::GTKCore::NewTabControl(NotNullPtr<GUIClientControl> parent)
+NN<UI::GUITabControl> UI::GTK::GTKCore::NewTabControl(NN<GUIClientControl> parent)
 {
-	NotNullPtr<UI::GTK::GTKTabControl> ctrl;
+	NN<UI::GTK::GTKTabControl> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKTabControl(*this, parent));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUITextBox> UI::GTK::GTKCore::NewTextBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN initText)
+NN<UI::GUITextBox> UI::GTK::GTKCore::NewTextBox(NN<GUIClientControl> parent, Text::CStringNN initText)
 {
-	NotNullPtr<UI::GTK::GTKTextBox> ctrl;
+	NN<UI::GTK::GTKTextBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKTextBox(*this, parent, initText, false));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUITextBox> UI::GTK::GTKCore::NewTextBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN initText, Bool multiLine)
+NN<UI::GUITextBox> UI::GTK::GTKCore::NewTextBox(NN<GUIClientControl> parent, Text::CStringNN initText, Bool multiLine)
 {
-	NotNullPtr<UI::GTK::GTKTextBox> ctrl;
+	NN<UI::GTK::GTKTextBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKTextBox(*this, parent, initText, multiLine));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUITrackBar> UI::GTK::GTKCore::NewTrackBar(NotNullPtr<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal)
+NN<UI::GUITrackBar> UI::GTK::GTKCore::NewTrackBar(NN<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal)
 {
-	NotNullPtr<UI::GTK::GTKTrackBar> ctrl;
+	NN<UI::GTK::GTKTrackBar> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKTrackBar(*this, parent, minVal, maxVal, currVal));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIHSplitter> UI::GTK::GTKCore::NewHSplitter(NotNullPtr<GUIClientControl> parent, Int32 width, Bool isRight)
+NN<UI::GUIHSplitter> UI::GTK::GTKCore::NewHSplitter(NN<GUIClientControl> parent, Int32 width, Bool isRight)
 {
-	NotNullPtr<UI::GTK::GTKHSplitter> ctrl;
+	NN<UI::GTK::GTKHSplitter> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKHSplitter(*this, parent, width, isRight));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIVSplitter> UI::GTK::GTKCore::NewVSplitter(NotNullPtr<GUIClientControl> parent, Int32 height, Bool isBottom)
+NN<UI::GUIVSplitter> UI::GTK::GTKCore::NewVSplitter(NN<GUIClientControl> parent, Int32 height, Bool isBottom)
 {
-	NotNullPtr<UI::GTK::GTKVSplitter> ctrl;
+	NN<UI::GTK::GTKVSplitter> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKVSplitter(*this, parent, height, isBottom));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIFileDialog> UI::GTK::GTKCore::NewFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave)
+NN<UI::GUIFileDialog> UI::GTK::GTKCore::NewFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave)
 {
-	NotNullPtr<UI::GTK::GTKFileDialog> ctrl;
+	NN<UI::GTK::GTKFileDialog> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKFileDialog(compName, appName, dialogName, isSave));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIFolderDialog> UI::GTK::GTKCore::NewFolderDialog()
+NN<UI::GUIFolderDialog> UI::GTK::GTKCore::NewFolderDialog()
 {
-	NotNullPtr<UI::GTK::GTKFolderDialog> ctrl;
+	NN<UI::GTK::GTKFolderDialog> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKFolderDialog());
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIFontDialog> UI::GTK::GTKCore::NewFontDialog(Optional<Text::String> fontName, Double fontSizePt, Bool isBold, Bool isItalic)
+NN<UI::GUIFontDialog> UI::GTK::GTKCore::NewFontDialog(Optional<Text::String> fontName, Double fontSizePt, Bool isBold, Bool isItalic)
 {
-	NotNullPtr<UI::GTK::GTKFontDialog> ctrl;
+	NN<UI::GTK::GTKFontDialog> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKFontDialog(fontName, fontSizePt, isBold, isItalic));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIFontDialog> UI::GTK::GTKCore::NewFontDialog(Text::CString fontName, Double fontSizePt, Bool isBold, Bool isItalic)
+NN<UI::GUIFontDialog> UI::GTK::GTKCore::NewFontDialog(Text::CString fontName, Double fontSizePt, Bool isBold, Bool isItalic)
 {
-	NotNullPtr<UI::GTK::GTKFontDialog> ctrl;
+	NN<UI::GTK::GTKFontDialog> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKFontDialog(fontName, fontSizePt, isBold, isItalic));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIPanelBase> UI::GTK::GTKCore::NewPanelBase(NotNullPtr<UI::GUIPanel> master, ControlHandle *parentHWnd)
+NN<UI::GUIPanelBase> UI::GTK::GTKCore::NewPanelBase(NN<UI::GUIPanel> master, ControlHandle *parentHWnd)
 {
-	NotNullPtr<UI::GTK::GTKPanelBase> ctrl;
+	NN<UI::GTK::GTKPanelBase> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKPanelBase(master, *this, parentHWnd));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIPanelBase> UI::GTK::GTKCore::NewPanelBase(NotNullPtr<UI::GUIPanel> master, NotNullPtr<UI::GUIClientControl> parent)
+NN<UI::GUIPanelBase> UI::GTK::GTKCore::NewPanelBase(NN<UI::GUIPanel> master, NN<UI::GUIClientControl> parent)
 {
-	NotNullPtr<UI::GTK::GTKPanelBase> ctrl;
+	NN<UI::GTK::GTKPanelBase> ctrl;
 	NEW_CLASSNN(ctrl, UI::GTK::GTKPanelBase(master, *this, parent));
 	return ctrl;
 }

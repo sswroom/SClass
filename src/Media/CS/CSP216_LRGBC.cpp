@@ -10,7 +10,7 @@ extern "C"
 
 UInt32 Media::CS::CSP216_LRGBC::WorkerThread(AnyType obj)
 {
-	NotNullPtr<CSP216_LRGBC> converter = obj.GetNN<CSP216_LRGBC>();
+	NN<CSP216_LRGBC> converter = obj.GetNN<CSP216_LRGBC>();
 	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 
@@ -35,7 +35,7 @@ UInt32 Media::CS::CSP216_LRGBC::WorkerThread(AnyType obj)
 	return 0;
 }
 
-Media::CS::CSP216_LRGBC::CSP216_LRGBC(NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV16_LRGBC(srcProfile, destProfile, yuvType, colorSess)
+Media::CS::CSP216_LRGBC::CSP216_LRGBC(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV16_LRGBC(srcProfile, destProfile, yuvType, colorSess)
 {
 	UOSInt i;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();

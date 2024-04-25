@@ -53,18 +53,18 @@ namespace Net
 		UInt64 totalUpload;
 		UInt64 totalDownload;
 
-		virtual void DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-		virtual void DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize);
+		virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
+		virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize);
 		static UInt32 __stdcall RecvThread(AnyType userObj);
 
 		void OnPublishMessage(Text::CStringNN topic, const UInt8 *message, UOSInt msgSize);
 		Optional<PacketInfo> GetNextPacket(UInt8 packetType, Data::Duration timeout);
 		Bool SendPacket(const UInt8 *packet, UOSInt packetSize);
 
-		void InitStream(NotNullPtr<IO::Stream> stm);
+		void InitStream(NN<IO::Stream> stm);
 	public:
-		MQTTConn(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, DisconnectHdlr discHdlr, AnyType discHdlrObj, Data::Duration timeout);
-		MQTTConn(NotNullPtr<IO::Stream> stm, DisconnectHdlr discHdlr, AnyType discHdlrObj);
+		MQTTConn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, DisconnectHdlr discHdlr, AnyType discHdlrObj, Data::Duration timeout);
+		MQTTConn(NN<IO::Stream> stm, DisconnectHdlr discHdlr, AnyType discHdlrObj);
 		virtual ~MQTTConn();
 
 		void HandlePublishMessage(PublishMessageHdlr hdlr, AnyType userObj);
@@ -85,7 +85,7 @@ namespace Net
 		UInt64 GetTotalUpload();
 		UInt64 GetTotalDownload();
 
-		static Bool PublishMessage(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Text::CString topic, Text::CString message, Data::Duration timeout);
+		static Bool PublishMessage(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Text::CString topic, Text::CString message, Data::Duration timeout);
 	};
 }
 #endif

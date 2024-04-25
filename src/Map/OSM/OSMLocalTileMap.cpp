@@ -9,7 +9,7 @@
 #include "Map/OSM/OSMTileMap.h"
 #include "Math/CoordinateSystemManager.h"
 
-Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NotNullPtr<IO::PackageFile> pkgFile)
+Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NN<IO::PackageFile> pkgFile)
 {
 	this->pkgFile = pkgFile;
 	this->name = 0;
@@ -78,7 +78,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NotNullPtr<IO::PackageFile> pkgFile)
 		maxXBlk = (UInt32)-1;
 		
 		Bool xNeedDelete;
-		NotNullPtr<IO::PackageFile> xPkg;
+		NN<IO::PackageFile> xPkg;
 		sptr = Text::StrUOSInt(sbuff, this->maxLevel);
 		if (pkgFile->GetItemPack((UOSInt)pkgFile->GetItemIndex(CSTRP(sbuff, sptr)), xNeedDelete).SetTo(xPkg))
 		{
@@ -112,7 +112,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NotNullPtr<IO::PackageFile> pkgFile)
 				maxYBlk = (UInt32)-1;
 
 				Bool yNeedDelete;
-				NotNullPtr<IO::PackageFile> yPkg;
+				NN<IO::PackageFile> yPkg;
 				sptr = Text::StrUInt32(sbuff, minXBlk);
 				if (xPkg->GetItemPack((UOSInt)xPkg->GetItemIndex(CSTRP(sbuff, sptr)), yNeedDelete).SetTo(yPkg))
 				{
@@ -162,7 +162,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NotNullPtr<IO::PackageFile> pkgFile)
 	}
 }
 
-Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NotNullPtr<IO::PackageFile> pkgFile, NotNullPtr<Text::String> name, NotNullPtr<Text::String> format, UOSInt minZoom, UOSInt maxZoom, Math::Coord2DDbl minCoord, Math::Coord2DDbl maxCoord)
+Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NN<IO::PackageFile> pkgFile, NN<Text::String> name, NN<Text::String> format, UOSInt minZoom, UOSInt maxZoom, Math::Coord2DDbl minCoord, Math::Coord2DDbl maxCoord)
 {
 	this->pkgFile = pkgFile;
 	this->name = name->Clone().Ptr();
@@ -179,7 +179,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NotNullPtr<IO::PackageFile> pkgFile, 
 
 Map::OSM::OSMLocalTileMap::~OSMLocalTileMap()
 {
-	NotNullPtr<IO::PackageFile> pkg;
+	NN<IO::PackageFile> pkg;
 	if (this->rootPkg.SetTo(pkg))
 	{
 		pkg.Delete();
@@ -247,7 +247,7 @@ Bool Map::OSM::OSMLocalTileMap::GetBounds(OutParam<Math::RectAreaDbl> bounds) co
 	return this->min.x != 0 || this->min.y != 0 || this->max.x != 0 || this->max.y != 0;
 }
 
-NotNullPtr<Math::CoordinateSystem> Map::OSM::OSMLocalTileMap::GetCoordinateSystem() const
+NN<Math::CoordinateSystem> Map::OSM::OSMLocalTileMap::GetCoordinateSystem() const
 {
 	return this->csys;
 }
@@ -332,10 +332,10 @@ UOSInt Map::OSM::OSMLocalTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDb
 	return (UOSInt)((pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1));
 }
 
-Media::ImageList *Map::OSM::OSMLocalTileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NotNullPtr<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
+Media::ImageList *Map::OSM::OSMLocalTileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
 {
 	ImageType it;
-	NotNullPtr<IO::StreamData> fd;
+	NN<IO::StreamData> fd;
 	IO::ParsedObject *pobj;
 	if (this->LoadTileImageData(level, tileId, bounds, localOnly, it).SetTo(fd))
 	{
@@ -374,7 +374,7 @@ UTF8Char *Map::OSM::OSMLocalTileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt lev
 	return sptr;
 }
 
-Bool Map::OSM::OSMLocalTileMap::GetTileImageURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
+Bool Map::OSM::OSMLocalTileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
 {
 	sb->AppendC(UTF8STRC("file:///"));
 	sb->Append(this->pkgFile->GetSourceNameObj());
@@ -411,9 +411,9 @@ Optional<IO::StreamData> Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt lev
 		return 0;
 
 	Bool xNeedDelete;
-	NotNullPtr<IO::PackageFile> xPkg;
+	NN<IO::PackageFile> xPkg;
 	Bool yNeedDelete;
-	NotNullPtr<IO::PackageFile> yPkg;
+	NN<IO::PackageFile> yPkg;
 	fd = 0;
 	sptr = Text::StrUOSInt(sbuff, level);
 	if (this->pkgFile->GetItemPack((UOSInt)this->pkgFile->GetItemIndex(CSTRP(sbuff, sptr)), xNeedDelete).SetTo(xPkg))
@@ -489,7 +489,7 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, OutParam<Int32> minX
 	Int32 thisMaxX = 0;
 	Int32 thisMaxY = 0;
 	Bool levNeedDelete;
-	NotNullPtr<IO::PackageFile> levPkg;
+	NN<IO::PackageFile> levPkg;
 	if (pkgFile->GetItemPack(i, levNeedDelete).SetTo(levPkg))
 	{
 		i = levPkg->GetCount();
@@ -514,7 +514,7 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, OutParam<Int32> minX
 						thisMaxX = x;
 					}
 					Bool xNeedDelete;
-					NotNullPtr<IO::PackageFile> xPkg;
+					NN<IO::PackageFile> xPkg;
 					if (levPkg->GetItemPack(i, xNeedDelete).SetTo(xPkg))
 					{
 						j = xPkg->GetCount();

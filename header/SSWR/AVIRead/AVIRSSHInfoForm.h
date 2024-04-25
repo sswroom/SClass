@@ -14,31 +14,31 @@ namespace SSWR
 		class AVIRSSHInfoForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Net::SocketFactory> sockf;
-			NotNullPtr<UI::GUILabel> lblHost;
-			NotNullPtr<UI::GUITextBox> txtHost;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUILabel> lblUserName;
-			NotNullPtr<UI::GUITextBox> txtUserName;
-			NotNullPtr<UI::GUIButton> btnQuery;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Net::SocketFactory> sockf;
+			NN<UI::GUILabel> lblHost;
+			NN<UI::GUITextBox> txtHost;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUILabel> lblUserName;
+			NN<UI::GUITextBox> txtUserName;
+			NN<UI::GUIButton> btnQuery;
 
-			NotNullPtr<UI::GUILabel> lblStatus;
-			NotNullPtr<UI::GUITextBox> txtStatus;
-			NotNullPtr<UI::GUILabel> lblHostKey;
-			NotNullPtr<UI::GUITextBox> txtHostKey;
-			NotNullPtr<UI::GUILabel> lblBanner;
-			NotNullPtr<UI::GUITextBox> txtBanner;
-			NotNullPtr<UI::GUILabel> lblAuthMeth;
-			NotNullPtr<UI::GUIListBox> lbAuthMeth;
-			NotNullPtr<UI::GUITextBox> txtDesc;
+			NN<UI::GUILabel> lblStatus;
+			NN<UI::GUITextBox> txtStatus;
+			NN<UI::GUILabel> lblHostKey;
+			NN<UI::GUITextBox> txtHostKey;
+			NN<UI::GUILabel> lblBanner;
+			NN<UI::GUITextBox> txtBanner;
+			NN<UI::GUILabel> lblAuthMeth;
+			NN<UI::GUIListBox> lbAuthMeth;
+			NN<UI::GUITextBox> txtDesc;
 
 		private:
 			static void __stdcall OnQueryClicked(AnyType userObj);
 			
 		public:
-			AVIRSSHInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRSSHInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSSHInfoForm();
 
 			virtual void OnMonitorChanged();

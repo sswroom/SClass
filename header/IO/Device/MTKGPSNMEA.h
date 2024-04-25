@@ -53,7 +53,7 @@ namespace IO
 		private:
 			virtual void ParseUnknownCmd(const UTF8Char *cmd, UOSInt cmdLen);
 		public:
-			MTKGPSNMEA(NotNullPtr<IO::Stream> stm, Bool relStm);
+			MTKGPSNMEA(NN<IO::Stream> stm, Bool relStm);
 			virtual ~MTKGPSNMEA();
 
 			virtual ServiceType GetServiceType();
@@ -70,7 +70,7 @@ namespace IO
 			UOSInt CalLogBlockCount(UOSInt logSize);
 			Bool ReadLogPart(UOSInt addr, UInt8 *buff); //1024 bytes
 			Bool ReadLogBlock(UOSInt addr, UInt8 *buff); //65536 bytes
-			Bool ParseLog(NotNullPtr<Map::GPSTrack> gps);
+			Bool ParseLog(NN<Map::GPSTrack> gps);
 			Bool DelLogData();
 			Bool SetLogFormat(LogFormat lf);
 			Bool SetLogInterval(UInt32 sec);
@@ -91,7 +91,7 @@ namespace IO
 			Text::String *GetSDKVer();
 
 			static UOSInt GetMTKSerialPort();
-			static Bool ParseBlock(UInt8 *block, NotNullPtr<Map::GPSTrack> gps);
+			static Bool ParseBlock(UInt8 *block, NN<Map::GPSTrack> gps);
 		};
 	}
 }

@@ -31,25 +31,25 @@ namespace SSWR
 				Last = ED527
 			};
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Net::MODBUSTCPListener *listener;
 			IO::LogTool log;
 			IO::MODBUSDevSim *currDev;
 
-			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUIButton> btnListen;
-			NotNullPtr<UI::GUIGroupBox> grpDev;
-			NotNullPtr<UI::GUILabel> lblAddr;
-			NotNullPtr<UI::GUITextBox> txtAddr;
-			NotNullPtr<UI::GUIComboBox> cboDevType;
-			NotNullPtr<UI::GUIButton> btnDev;
-			NotNullPtr<UI::GUILabel> lblDelay;
-			NotNullPtr<UI::GUITextBox> txtDelay;
-			NotNullPtr<UI::GUIButton> btnDelay;
-			NotNullPtr<UI::GUIListBox> lbDevice;
-			NotNullPtr<UI::GUIListView> lvDeviceValues;
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUIButton> btnListen;
+			NN<UI::GUIGroupBox> grpDev;
+			NN<UI::GUILabel> lblAddr;
+			NN<UI::GUITextBox> txtAddr;
+			NN<UI::GUIComboBox> cboDevType;
+			NN<UI::GUIButton> btnDev;
+			NN<UI::GUILabel> lblDelay;
+			NN<UI::GUITextBox> txtDelay;
+			NN<UI::GUIButton> btnDelay;
+			NN<UI::GUIListBox> lbDevice;
+			NN<UI::GUIListView> lvDeviceValues;
 
 			static void __stdcall OnListenClicked(AnyType userObj);
 			static void __stdcall OnDevAddClicked(AnyType userObj);
@@ -60,7 +60,7 @@ namespace SSWR
 			void UpdateDevList();
 			void UpdateDevValues();
 		public:
-			AVIRMODBUSTCPSimForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRMODBUSTCPSimForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMODBUSTCPSimForm();
 
 			virtual void OnMonitorChanged();

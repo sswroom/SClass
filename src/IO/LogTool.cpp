@@ -25,8 +25,8 @@
 void IO::LogTool::HandlerClose()
 {
 	Sync::MutexUsage mutUsage(this->hdlrMut);
-	Data::ArrayIterator<NotNullPtr<IO::LogHandler>> it = this->hdlrArr.Iterator();
-	NotNullPtr<IO::LogHandler> logHdlr;
+	Data::ArrayIterator<NN<IO::LogHandler>> it = this->hdlrArr.Iterator();
+	NN<IO::LogHandler> logHdlr;
 	Data::Timestamp ts = Data::Timestamp::Now();
 	while (it.HasNext())
 	{
@@ -54,20 +54,20 @@ void IO::LogTool::Close()
 	this->HandlerClose();
 }
 
-void IO::LogTool::AddFileLog(NotNullPtr<Text::String> fileName, LogHandler::LogType style, LogHandler::LogGroup groupStyle, LogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite)
+void IO::LogTool::AddFileLog(NN<Text::String> fileName, LogHandler::LogType style, LogHandler::LogGroup groupStyle, LogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite)
 {
 	if (closed)
 		return;
 	if (directWrite)
 	{
-		NotNullPtr<IO::FileLog> logs;
+		NN<IO::FileLog> logs;
 		NEW_CLASSNN(logs, IO::FileLog(fileName, style, groupStyle, dateFormat));
 		AddLogHandler(logs, logLev);
 		this->fileLogArr.Add(logs);
 	}
 	else
 	{
-		NotNullPtr<IO::MTFileLog> logs;
+		NN<IO::MTFileLog> logs;
 		NEW_CLASSNN(logs, IO::MTFileLog(fileName, style, groupStyle, dateFormat));
 		AddLogHandler(logs, logLev);
 		this->fileLogArr.Add(logs);
@@ -80,21 +80,21 @@ void IO::LogTool::AddFileLog(Text::CStringNN fileName, LogHandler::LogType style
 		return;
 	if (directWrite)
 	{
-		NotNullPtr<IO::FileLog> logs;
+		NN<IO::FileLog> logs;
 		NEW_CLASSNN(logs, IO::FileLog(fileName, style, groupStyle, dateFormat));
 		AddLogHandler(logs, logLev);
 		this->fileLogArr.Add(logs);
 	}
 	else
 	{
-		NotNullPtr<IO::MTFileLog> logs;
+		NN<IO::MTFileLog> logs;
 		NEW_CLASSNN(logs, IO::MTFileLog(fileName, style, groupStyle, dateFormat));
 		AddLogHandler(logs, logLev);
 		this->fileLogArr.Add(logs);
 	}
 }
 
-void IO::LogTool::AddLogHandler(NotNullPtr<LogHandler> hdlr, IO::LogHandler::LogLevel logLev)
+void IO::LogTool::AddLogHandler(NN<LogHandler> hdlr, IO::LogHandler::LogLevel logLev)
 {
 	if (closed)
 		return;
@@ -120,7 +120,7 @@ void IO::LogTool::AddLogHandler(NotNullPtr<LogHandler> hdlr, IO::LogHandler::Log
 	hdlr->LogAdded(ts, sb.ToCString(), (LogHandler::LogLevel)0);
 }
 
-void IO::LogTool::RemoveLogHandler(NotNullPtr<LogHandler> hdlr)
+void IO::LogTool::RemoveLogHandler(NN<LogHandler> hdlr)
 {
 	if (closed)
 		return;
@@ -159,7 +159,7 @@ void IO::LogTool::LogMessage(Text::CStringNN logMsg, LogHandler::LogLevel level)
 {
 	Data::Timestamp ts = Data::Timestamp::Now();
 	Sync::MutexUsage mutUsage(this->hdlrMut);
-	NotNullPtr<IO::LogHandler> logHdlr;
+	NN<IO::LogHandler> logHdlr;
 	UOSInt i = this->hdlrArr.GetCount();
 	while (i-- > 0)
 	{
@@ -170,7 +170,7 @@ void IO::LogTool::LogMessage(Text::CStringNN logMsg, LogHandler::LogLevel level)
 
 void IO::LogTool::LogStackTrace(LogHandler::LogLevel level)
 {
-	NotNullPtr<Manage::ThreadInfo> thread;
+	NN<Manage::ThreadInfo> thread;
 	if (thread.Set(Manage::ThreadInfo::GetCurrThread()))
 	{
 		Manage::Process proc;

@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCoordInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordInfoForm>();
+	NN<SSWR::AVIRead::AVIRCoordInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordInfoForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtSRID->GetText(sb);
 	UInt32 srid;
@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDPrevClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCoordInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordInfoForm>();
+	NN<SSWR::AVIRead::AVIRCoordInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordInfoForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtSRID->GetText(sb);
 	UInt32 srid;
@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDPrevClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDNextClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCoordInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordInfoForm>();
+	NN<SSWR::AVIRead::AVIRCoordInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCoordInfoForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtSRID->GetText(sb);
 	UInt32 srid;
@@ -67,7 +67,7 @@ void SSWR::AVIRead::AVIRCoordInfoForm::ShowInfo(const Math::CoordinateSystemMana
 	}
 	else if (srinfo->srType == Math::CoordinateSystemManager::SRT_GEOGCS || srinfo->srType == Math::CoordinateSystemManager::SRT_PROJCS)
 	{
-		NotNullPtr<Math::CoordinateSystem> csys;
+		NN<Math::CoordinateSystem> csys;
 		if (csys.Set(Math::CoordinateSystemManager::SRCreateCSys(srinfo->srid)))
 		{
 			Text::StringBuilderUTF8 sb;
@@ -156,7 +156,7 @@ void SSWR::AVIRead::AVIRCoordInfoForm::ShowInfo(const Math::CoordinateSystemMana
 	this->txtDisp->SetText(CSTR(""));
 }
 
-SSWR::AVIRead::AVIRCoordInfoForm::AVIRCoordInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRCoordInfoForm::AVIRCoordInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Coordinate Info"));
 	this->SetFont(0, 0, 8.25, false);

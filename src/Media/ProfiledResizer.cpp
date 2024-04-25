@@ -20,7 +20,7 @@ void Media::ProfiledResizer::ReleaseProfile(Media::ProfiledResizer::ResizeProfil
 	MemFree(profile);
 }
 
-Media::ProfiledResizer::ProfiledResizer(NotNullPtr<Parser::ParserList> parsers, Media::ColorManagerSess *colorSess, NotNullPtr<Media::DrawEngine> deng)
+Media::ProfiledResizer::ProfiledResizer(NN<Parser::ParserList> parsers, Media::ColorManagerSess *colorSess, NN<Media::DrawEngine> deng)
 {
 	this->currProfile = (UOSInt)-1;
 	this->saver = 0;
@@ -299,7 +299,7 @@ Bool Media::ProfiledResizer::LoadProfile(Text::CStringNN fileName)
 		NEW_CLASS(csv, DB::CSVFile(fileName, 65001));
 	}
 	csv->SetNoHeader(true);
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (csv->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		UOSInt i;

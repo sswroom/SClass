@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "UI/Java/JavaDateTimePicker.h"
 
-UI::Java::JavaDateTimePicker::JavaDateTimePicker(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : UI::GUIDateTimePicker(ui, parent)
+UI::Java::JavaDateTimePicker::JavaDateTimePicker(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent) : UI::GUIDateTimePicker(ui, parent)
 {
 }
 
@@ -16,7 +16,7 @@ OSInt UI::Java::JavaDateTimePicker::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-void UI::Java::JavaDateTimePicker::SetValue(NotNullPtr<Data::DateTime> dt)
+void UI::Java::JavaDateTimePicker::SetValue(NN<Data::DateTime> dt)
 {
 }
 
@@ -24,7 +24,7 @@ void UI::Java::JavaDateTimePicker::SetValue(const Data::Timestamp &ts)
 {
 }
 
-void UI::Java::JavaDateTimePicker::GetSelectedTime(NotNullPtr<Data::DateTime> dt)
+void UI::Java::JavaDateTimePicker::GetSelectedTime(NN<Data::DateTime> dt)
 {
 }
 

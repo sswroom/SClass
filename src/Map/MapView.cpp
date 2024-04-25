@@ -32,7 +32,7 @@ void Map::MapView::SetVAngle(Double angleRad)
 {
 }
 
-void Map::MapView::SetDestImage(NotNullPtr<Media::DrawImage> img)
+void Map::MapView::SetDestImage(NN<Media::DrawImage> img)
 {
 	if (this->scnSize.GetWidth() != UOSInt2Double(img->GetWidth()) || this->scnSize.GetHeight() != UOSInt2Double(img->GetHeight()) || this->GetDDPI() != img->GetHDPI())
 	{

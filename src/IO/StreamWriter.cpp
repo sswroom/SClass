@@ -5,13 +5,13 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-IO::StreamWriter::StreamWriter(NotNullPtr<IO::Stream> stm, Text::Encoding *enc) : enc(enc->GetEncCodePage())
+IO::StreamWriter::StreamWriter(NN<IO::Stream> stm, Text::Encoding *enc) : enc(enc->GetEncCodePage())
 {
 	this->stm = stm;
 	this->buff = MemAlloc(UInt8, this->buffSize = 256);
 }
 
-IO::StreamWriter::StreamWriter(NotNullPtr<IO::Stream> stm, UInt32 codePage) : enc(codePage)
+IO::StreamWriter::StreamWriter(NN<IO::Stream> stm, UInt32 codePage) : enc(codePage)
 {
 	this->stm = stm;
 	this->buff = MemAlloc(UInt8, this->buffSize = 256);

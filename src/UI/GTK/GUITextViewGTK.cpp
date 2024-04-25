@@ -200,9 +200,9 @@ gboolean GUITextView_OnKeyDown(GtkWidget* self, GdkEventKey *event, gpointer use
 
 void __stdcall UI::GUITextView::OnResize(AnyType userObj)
 {
-	NotNullPtr<UI::GUITextView> me = userObj.GetNN<UI::GUITextView>();
+	NN<UI::GUITextView> me = userObj.GetNN<UI::GUITextView>();
 	Math::Size2D<UOSInt> scnSize;
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(me->drawBuff))
 	{
 		me->deng->DeleteImage(img);
@@ -234,14 +234,14 @@ void UI::GUITextView::UpdateScrollBar()
 	}
 
 	Math::Size2DDbl sz;
-	NotNullPtr<Media::DrawImage> drawBuff;
+	NN<Media::DrawImage> drawBuff;
 	if (!drawBuff.Set(this->drawBuff))
 	{
 		sz.y = 12;
 	}
 	else
 	{
-		NotNullPtr<Media::DrawFont> fnt;
+		NN<Media::DrawFont> fnt;
 		if (!fnt.Set(this->CreateDrawFont(drawBuff)))
 		{
 			sz.y = 12;
@@ -356,7 +356,7 @@ void UI::GUITextView::SetScrollVRange(UOSInt min, UOSInt max)
 
 UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWidth)
 {
-	NotNullPtr<Media::DrawImage> drawBuff;
+	NN<Media::DrawImage> drawBuff;
 	if (drawBuff.Set(this->drawBuff))
 	{
 		Double pxLeft = UOSInt2Double(pxWidth);
@@ -371,14 +371,14 @@ UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWi
 		cairo_t *cr = gdk_drawing_context_get_cairo_context(drawing);
 		WChar c;
 		UOSInt ret;
-		NotNullPtr<Media::DrawFont> fnt;
+		NN<Media::DrawFont> fnt;
 		if (fnt.Set(this->CreateDrawFont(drawBuff)))
 		{
 			c = str[strLen];
 			str[strLen] = 0;
 			const UTF8Char *csptr = Text::StrToUTF8New(str);
 			str[strLen] = c;
-			NotNullPtr<Media::GTKDrawFont>::ConvertFrom(fnt)->Init(cr);
+			NN<Media::GTKDrawFont>::ConvertFrom(fnt)->Init(cr);
 			cairo_text_extents_t extents;
 
 			currPtr = csptr;
@@ -423,17 +423,17 @@ UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWi
 
 void UI::GUITextView::GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSInt *height)
 {
-	NotNullPtr<Media::DrawImage> drawBuff;
+	NN<Media::DrawImage> drawBuff;
 	if (drawBuff.Set(this->drawBuff))
 	{
 		WChar c;
 		Math::Size2DDbl sz;
-		NotNullPtr<Media::DrawFont> fnt;
+		NN<Media::DrawFont> fnt;
 		if (fnt.Set(this->CreateDrawFont(drawBuff)))
 		{
 			c = str[strLen];
 			str[strLen] = 0;
-			NotNullPtr<Text::String> s = Text::String::NewNotNull(str);
+			NN<Text::String> s = Text::String::NewNotNull(str);
 			str[strLen] = c;
 			sz = drawBuff->GetTextSize(fnt, s->ToCString());
 			s->Release();
@@ -476,7 +476,7 @@ void UI::GUITextView::SetCaretPos(OSInt scnX, OSInt scnY)
 
 }
 
-UI::GUITextView::GUITextView(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> deng) : UI::GUIControl(ui, parent)
+UI::GUITextView::GUITextView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng) : UI::GUIControl(ui, parent)
 {
 	this->deng = deng;
 	this->drawBuff = 0;
@@ -529,7 +529,7 @@ UI::GUITextView::GUITextView(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClien
 UI::GUITextView::~GUITextView()
 {
 	g_source_remove(this->clsData->timerId);
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->drawBuff))
 	{
 		this->deng->DeleteImage(img);
@@ -787,7 +787,7 @@ void UI::GUITextView::OnDraw(void *cr)
 		hasHScr = true;
 		drawHeight -= clsData->scrSize;
 	}
-	NotNullPtr<Media::DrawImage> dimg = ((Media::GTKDrawEngine*)this->deng.Ptr())->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>((OSInt)drawWidth, (OSInt)drawHeight));
+	NN<Media::DrawImage> dimg = ((Media::GTKDrawEngine*)this->deng.Ptr())->CreateImageScn(cr, Math::Coord2D<OSInt>(0, 0), Math::Coord2D<OSInt>((OSInt)drawWidth, (OSInt)drawHeight));
 	this->clsData->scrSize = (UOSInt)Double2OSInt(8.0 * this->GetHDPI() / this->GetDDPI());
 	dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
@@ -799,7 +799,7 @@ void UI::GUITextView::OnDraw(void *cr)
 		dimg = ((Media::GTKDrawEngine*)this->deng.Ptr())->CreateImageScn(cr, Math::Coord2D<OSInt>((OSInt)(sz.x - clsData->scrSize), 0), Math::Coord2D<OSInt>((OSInt)clsData->scrSize, (OSInt)drawHeight));
 		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
-		NotNullPtr<Media::DrawBrush> b = dimg->NewBrushARGB(this->bgColor);
+		NN<Media::DrawBrush> b = dimg->NewBrushARGB(this->bgColor);
 		dimg->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(clsData->scrSize), UOSInt2Double(drawHeight)), 0, b);
 		dimg->DelBrush(b);
 		b = dimg->NewBrushARGB(this->scrColor);
@@ -818,7 +818,7 @@ void UI::GUITextView::OnDraw(void *cr)
 		dimg = ((Media::GTKDrawEngine*)this->deng.Ptr())->CreateImageScn(cr, Math::Coord2D<OSInt>(0, (OSInt)(sz.y - clsData->scrSize)), Math::Coord2D<OSInt>((OSInt)drawWidth, (OSInt)clsData->scrSize));
 		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
-		NotNullPtr<Media::DrawBrush> b = dimg->NewBrushARGB(this->bgColor);
+		NN<Media::DrawBrush> b = dimg->NewBrushARGB(this->bgColor);
 		dimg->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(drawWidth), UOSInt2Double(clsData->scrSize)), 0, b);
 		dimg->DelBrush(b);
 		b = dimg->NewBrushARGB(this->scrColor);

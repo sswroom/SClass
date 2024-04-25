@@ -17,21 +17,21 @@ namespace SSWR
 		class AVIRGLBViewerForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUIPanel> pnlBinBuff;
-			NotNullPtr<UI::GUIVSplitter> vspMain;
-			NotNullPtr<UI::GUIPanel> pnlJSON;
-			NotNullPtr<UI::GUILabel> lblJSON;
-			NotNullPtr<UI::GUITextBox> txtJSON;
-			NotNullPtr<UI::GUILabel> lblBinBuff;
+			NN<UI::GUIPanel> pnlBinBuff;
+			NN<UI::GUIVSplitter> vspMain;
+			NN<UI::GUIPanel> pnlJSON;
+			NN<UI::GUILabel> lblJSON;
+			NN<UI::GUITextBox> txtJSON;
+			NN<UI::GUILabel> lblBinBuff;
 			UI::GUIHexFileView *hfvBinBuff;
 
-			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> filesles);
-			Bool LoadFile(NotNullPtr<Text::String> fileName);
-			Bool LoadData(NotNullPtr<IO::StreamData> jsonFD, NotNullPtr<IO::StreamData> binBuffFD);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> filesles);
+			Bool LoadFile(NN<Text::String> fileName);
+			Bool LoadData(NN<IO::StreamData> jsonFD, NN<IO::StreamData> binBuffFD);
 		public:
-			AVIRGLBViewerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRGLBViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRGLBViewerForm();
 
 			virtual void OnMonitorChanged();

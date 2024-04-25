@@ -9,12 +9,12 @@
 #include <stdio.h>
 #endif
 
-IO::Device::AM2315::AM2315(NotNullPtr<IO::I2CChannel> channel, Bool toRelease)
+IO::Device::AM2315::AM2315(NN<IO::I2CChannel> channel, Bool toRelease)
 {
 	this->channel = channel;
 	this->toRelease = toRelease;
 	this->i2c = 0;
-	NotNullPtr<IO::I2CMODBUS> i2c;
+	NN<IO::I2CMODBUS> i2c;
 	NEW_CLASSNN(i2c, IO::I2CMODBUS(this->channel, 20));
 
 	UInt8 buff[3];
@@ -67,7 +67,7 @@ Bool IO::Device::AM2315::IsError()
 void IO::Device::AM2315::Wakeup()
 {
 	UInt8 byte = 0;
-	NotNullPtr<IO::I2C> i2c;
+	NN<IO::I2C> i2c;
 	if (this->i2c.SetTo(i2c))
 	{
 		this->channel->I2CWrite(&byte, 1);
@@ -81,7 +81,7 @@ void IO::Device::AM2315::Wakeup()
 Bool IO::Device::AM2315::ReadTemperature(OutParam<Single> temp)
 {
 	UInt8 buff[2];
-	NotNullPtr<IO::I2C> i2c;
+	NN<IO::I2C> i2c;
 	if (!this->i2c.SetTo(i2c))
 		return false;
 	this->Wakeup();
@@ -99,7 +99,7 @@ Bool IO::Device::AM2315::ReadTemperature(OutParam<Single> temp)
 Bool IO::Device::AM2315::ReadRH(OutParam<Single> rh)
 {
 	UInt8 buff[2];
-	NotNullPtr<IO::I2C> i2c;
+	NN<IO::I2C> i2c;
 	if (!this->i2c.SetTo(i2c))
 		return false;
 	this->Wakeup();

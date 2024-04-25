@@ -15,7 +15,7 @@ Int32 Parser::FileParser::JP2Parser::GetName()
 	return *(Int32*)"JP2P";
 }
 
-void Parser::FileParser::JP2Parser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::JP2Parser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 }
 
@@ -24,7 +24,7 @@ IO::ParserType Parser::FileParser::JP2Parser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::JP2Parser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::JP2Parser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	return 0;
 }

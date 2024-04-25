@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Net/Email/POP3Client.h"
 
-Net::Email::POP3Client::POP3Client(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::POP3Conn::ConnType connType, IO::Writer *logWriter, Text::CString username, Text::CString password, Data::Duration timeout) : conn(sockf, ssl, host, port, connType, logWriter, timeout)
+Net::Email::POP3Client::POP3Client(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::POP3Conn::ConnType connType, IO::Writer *logWriter, Text::CString username, Text::CString password, Data::Duration timeout) : conn(sockf, ssl, host, port, connType, logWriter, timeout)
 {
 	this->loggedIn = false;
 	this->msgCnt = 0;
@@ -37,7 +37,7 @@ UOSInt Net::Email::POP3Client::GetMessageSize()
 	return this->msgSize;
 }
 
-Bool Net::Email::POP3Client::ReadMessageAsString(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Net::Email::POP3Client::ReadMessageAsString(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	if (!this->loggedIn)
 		return false;

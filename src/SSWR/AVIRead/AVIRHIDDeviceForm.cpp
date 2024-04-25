@@ -8,7 +8,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRHIDDeviceForm::OnDevicesSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHIDDeviceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHIDDeviceForm>();
+	NN<SSWR::AVIRead::AVIRHIDDeviceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHIDDeviceForm>();
 	IO::HIDInfo *hid;
 	hid = (IO::HIDInfo*)me->lbDevices->GetSelectedItem().p;
 	if (hid == 0)
@@ -53,7 +53,7 @@ OSInt __stdcall SSWR::AVIRead::AVIRHIDDeviceForm::ItemCompare(IO::HIDInfo *item1
 	}
 }
 
-SSWR::AVIRead::AVIRHIDDeviceForm::AVIRHIDDeviceForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRHIDDeviceForm::AVIRHIDDeviceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
 	this->SetText(CSTR("HID Devices"));

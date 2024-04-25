@@ -27,7 +27,7 @@ SSWR::VAMS::VAMSBTList::~VAMSBTList()
 	}
 }
 
-void SSWR::VAMS::VAMSBTList::AddItem(NotNullPtr<Text::String> avlNo, Int32 progId, Int64 ts, Int16 rssi)
+void SSWR::VAMS::VAMSBTList::AddItem(NN<Text::String> avlNo, Int32 progId, Int64 ts, Int16 rssi)
 {
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
@@ -110,7 +110,7 @@ Bool SSWR::VAMS::VAMSBTList::HasProg(Int32 progId)
 }
 
 
-UOSInt SSWR::VAMS::VAMSBTList::GetProgList(NotNullPtr<Data::ArrayList<Int32>> progList)
+UOSInt SSWR::VAMS::VAMSBTList::GetProgList(NN<Data::ArrayList<Int32>> progList)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	return this->itemMap.AddKeysTo(progList);

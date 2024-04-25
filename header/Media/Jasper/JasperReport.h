@@ -14,14 +14,14 @@ namespace Media
 		public:
 			struct JasperProperty
 			{
-				NotNullPtr<Text::String> name;
-				NotNullPtr<Text::String> value;
+				NN<Text::String> name;
+				NN<Text::String> value;
 			};
 
 			struct JasperParameter
 			{
-				NotNullPtr<Text::String> name;
-				NotNullPtr<Text::String> className;
+				NN<Text::String> name;
+				NN<Text::String> className;
 				Text::String *defValueExp;
 			};
 
@@ -47,7 +47,7 @@ namespace Media
 
 			void InitValues();
 		public:
-			JasperReport(NotNullPtr<Text::String> sourceName);
+			JasperReport(NN<Text::String> sourceName);
 			JasperReport(Text::CStringNN sourceName);
 			virtual ~JasperReport();
 
@@ -72,8 +72,8 @@ namespace Media
 			Text::String *GetUUID() const;
 
 			void SetQueryString(Optional<Text::String> str);
-			void SetProperty(NotNullPtr<Text::String> name, NotNullPtr<Text::String> value);
-			void AddImport(NotNullPtr<Text::String> value);
+			void SetProperty(NN<Text::String> name, NN<Text::String> value);
+			void AddImport(NN<Text::String> value);
 			void AddParameter(Text::String *name, Text::String *className, Text::CString defValueExp);
 			void SetTitle(NN<Media::Jasper::JasperBand> band);
 			void AddDetail(NN<Media::Jasper::JasperBand> band);

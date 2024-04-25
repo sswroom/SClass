@@ -6,9 +6,9 @@
 #include "SSWR/AVIRead/AVIRICCInfoForm.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRICCInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRICCInfoForm>();
+	NN<SSWR::AVIRead::AVIRICCInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRICCInfoForm>();
 	UOSInt i;
 	Data::ByteBuffer buff(1048576);
 	UOSInt fileSize;
@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnFileDrop(AnyType userObj, Data:
 		}
 		else
 		{
-			NotNullPtr<Media::ICCProfile> icc;
+			NN<Media::ICCProfile> icc;
 			if (Media::ICCProfile::Parse(buff.WithSize(fileSize)).SetTo(icc))
 			{
 				me->SetICCProfile(icc, files[i]->ToCString());
@@ -38,10 +38,10 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnFileDrop(AnyType userObj, Data:
 
 void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnRLUTClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRICCInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRICCInfoForm>();
+	NN<SSWR::AVIRead::AVIRICCInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRICCInfoForm>();
 	if (me->icc)
 	{
-		NotNullPtr<Media::LUT> lut;
+		NN<Media::LUT> lut;
 		if (me->icc->CreateRLUT().SetTo(lut))
 		{
 			me->core->OpenObject(lut);
@@ -51,10 +51,10 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnRLUTClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnGLUTClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRICCInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRICCInfoForm>();
+	NN<SSWR::AVIRead::AVIRICCInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRICCInfoForm>();
 	if (me->icc)
 	{
-		NotNullPtr<Media::LUT> lut;
+		NN<Media::LUT> lut;
 		if (me->icc->CreateGLUT().SetTo(lut))
 		{
 			me->core->OpenObject(lut);
@@ -64,10 +64,10 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnGLUTClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnBLUTClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRICCInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRICCInfoForm>();
+	NN<SSWR::AVIRead::AVIRICCInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRICCInfoForm>();
 	if (me->icc)
 	{
-		NotNullPtr<Media::LUT> lut;
+		NN<Media::LUT> lut;
 		if (me->icc->CreateBLUT().SetTo(lut))
 		{
 			me->core->OpenObject(lut);
@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnBLUTClicked(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRICCInfoForm::AVIRICCInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRICCInfoForm::AVIRICCInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("ICC Info"));
 	this->SetFont(0, 0, 8.25, false);
@@ -118,7 +118,7 @@ void SSWR::AVIRead::AVIRICCInfoForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRICCInfoForm::SetICCProfile(NotNullPtr<Media::ICCProfile> icc, Text::CStringNN fileName)
+void SSWR::AVIRead::AVIRICCInfoForm::SetICCProfile(NN<Media::ICCProfile> icc, Text::CStringNN fileName)
 {
 	SDEL_CLASS(this->icc);
 

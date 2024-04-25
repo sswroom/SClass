@@ -24,7 +24,7 @@ Int32 Exporter::DBExcelXMLExporter::GetName()
 	return *(Int32*)"DEXM";
 }
 
-IO::FileExporter::SupportType Exporter::DBExcelXMLExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
+IO::FileExporter::SupportType Exporter::DBExcelXMLExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
 	if (!DB::ReadingDB::IsDBObj(pobj))
 	{
@@ -49,13 +49,13 @@ void Exporter::DBExcelXMLExporter::SetCodePage(UInt32 codePage)
 //	this->codePage = codePage;
 }
 
-Bool Exporter::DBExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::DBExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	if (!DB::ReadingDB::IsDBObj(pobj))
 	{
 		return false;
 	}
 
-	NotNullPtr<DB::ReadingDB> db = NotNullPtr<DB::ReadingDB>::ConvertFrom(pobj);
+	NN<DB::ReadingDB> db = NN<DB::ReadingDB>::ConvertFrom(pobj);
 	return DB::DBExporter::GenerateExcelXMLAllTables(db, CSTR_NULL, stm, this->codePage);
 }

@@ -28,7 +28,7 @@ namespace IO
 		};
 
 	public:
-		PackageFile(NotNullPtr<Text::String> fileName);
+		PackageFile(NN<Text::String> fileName);
 		PackageFile(Text::CStringNN fileName);
 		virtual ~PackageFile();
 
@@ -51,7 +51,7 @@ namespace IO
 		virtual UOSInt GetItemIndex(Text::CStringNN name) const = 0;
 		virtual Bool IsCompressed(UOSInt index) const = 0;
 		virtual Data::Compress::Decompressor::CompressMethod GetItemComp(UOSInt index) const = 0;
-		virtual NotNullPtr<PackageFile> Clone() const = 0;
+		virtual NN<PackageFile> Clone() const = 0;
 		virtual PackageFileType GetFileType() const = 0;
 		virtual Bool CopyFrom(Text::CStringNN fileName, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt) = 0;
 		virtual Bool MoveFrom(Text::CStringNN fileName, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt) = 0;

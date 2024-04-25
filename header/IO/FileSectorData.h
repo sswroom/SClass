@@ -8,18 +8,18 @@ namespace IO
 	class FileSectorData : public IO::ISectorData
 	{
 	private:
-		NotNullPtr<IO::StreamData> data;
+		NN<IO::StreamData> data;
 		UInt32 sectorSize;
 
 	public:
-		FileSectorData(NotNullPtr<IO::StreamData> data, UInt64 ofst, UInt64 dataSize, UInt32 sectorSize);
+		FileSectorData(NN<IO::StreamData> data, UInt64 ofst, UInt64 dataSize, UInt32 sectorSize);
 		virtual ~FileSectorData();
 
 		virtual UInt64 GetSectorCount() const;
 		virtual UOSInt GetBytesPerSector() const;
 		virtual Bool ReadSector(UInt64 sectorNum, Data::ByteArray sectorBuff);
-		virtual NotNullPtr<ISectorData> GetPartialData(UInt64 startSector, UInt64 sectorCount) const;
-		virtual NotNullPtr<IO::StreamData> GetStreamData(UInt64 startSector, UInt64 dataSize) const;
+		virtual NN<ISectorData> GetPartialData(UInt64 startSector, UInt64 sectorCount) const;
+		virtual NN<IO::StreamData> GetStreamData(UInt64 startSector, UInt64 dataSize) const;
 		virtual UOSInt GetSeekCount() const;
 	};
 }

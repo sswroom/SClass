@@ -5,10 +5,10 @@
 #include "IO/ProtoHdlr/ProtoDUploadHandler.h"
 #include "Sync/MutexUsage.h"
 
-IO::ProtoHdlr::ProtoDUploadHandler::ProtoDUploadHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener)
+IO::ProtoHdlr::ProtoDUploadHandler::ProtoDUploadHandler(NN<IO::IProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
-	NotNullPtr<Crypto::Hash::CRC32R> crc;
+	NN<Crypto::Hash::CRC32R> crc;
 	NEW_CLASSNN(crc, Crypto::Hash::CRC32R());
 	NEW_CLASSNN(this->crc, Crypto::Hash::HashCalc(crc));
 }
@@ -18,16 +18,16 @@ IO::ProtoHdlr::ProtoDUploadHandler::~ProtoDUploadHandler()
 	this->crc.Delete();
 }
 
-AnyType IO::ProtoHdlr::ProtoDUploadHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
+AnyType IO::ProtoHdlr::ProtoDUploadHandler::CreateStreamData(NN<IO::Stream> stm)
 {
 	return 0;
 }
 
-void IO::ProtoHdlr::ProtoDUploadHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, AnyType stmData)
+void IO::ProtoHdlr::ProtoDUploadHandler::DeleteStreamData(NN<IO::Stream> stm, AnyType stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoDUploadHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
+UOSInt IO::ProtoHdlr::ProtoDUploadHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
 {
 	Bool found;
 	UInt8 crcVal[4];

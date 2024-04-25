@@ -5,7 +5,7 @@
 #include "UI/GUIClientControl.h"
 #include "UI/Java/JavaVSplitter.h"
 
-UI::Java::JavaVSplitter::JavaVSplitter(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Int32 height, Bool isBottom) : UI::GUIVSplitter(ui, parent)
+UI::Java::JavaVSplitter::JavaVSplitter(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Int32 height, Bool isBottom) : UI::GUIVSplitter(ui, parent)
 {
 	this->dragMode = false;
 	this->isBottom = isBottom;

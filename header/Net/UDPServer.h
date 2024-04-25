@@ -14,7 +14,7 @@ namespace Net
 	class UDPServer
 	{
 	public:
-		typedef void (__stdcall *UDPPacketHdlr)(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+		typedef void (__stdcall *UDPPacketHdlr)(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
 
 		typedef struct
 		{
@@ -25,7 +25,7 @@ namespace Net
 		} ThreadStat;
 
 	private:
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Net::AddrType addrType;
 		Socket *socV4;
 		Socket *socV6;
@@ -39,7 +39,7 @@ namespace Net
 		UInt16 port;
 		Sync::Event ctrlEvt;
 
-		NotNullPtr<IO::LogTool> msgLog;
+		NN<IO::LogTool> msgLog;
 		Optional<Text::String> msgPrefix;
 
 		Sync::Mutex logFileMut;
@@ -53,13 +53,13 @@ namespace Net
 		static UInt32 __stdcall DataV6Thread(AnyType obj);
 
 	public:
-		UDPServer(NotNullPtr<Net::SocketFactory> sockf, Net::SocketUtil::AddressInfo *bindAddr, UInt16 port, Text::CString rawLogPrefix, UDPPacketHdlr hdlr, AnyType userData, NotNullPtr<IO::LogTool> msgLog, Text::CString msgPrefix, UOSInt workerCnt, Bool reuseAddr);
+		UDPServer(NN<Net::SocketFactory> sockf, Net::SocketUtil::AddressInfo *bindAddr, UInt16 port, Text::CString rawLogPrefix, UDPPacketHdlr hdlr, AnyType userData, NN<IO::LogTool> msgLog, Text::CString msgPrefix, UOSInt workerCnt, Bool reuseAddr);
 		virtual ~UDPServer();
 
 		UInt16 GetPort();
 		Bool IsError();
 		Bool SupportV6();
-		virtual Bool SendTo(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize);
+		virtual Bool SendTo(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize);
 		Int32 GetRecvCnt();
 		void AddMulticastIP(UInt32 ip);
 		void SetBuffSize(Int32 buffSize);

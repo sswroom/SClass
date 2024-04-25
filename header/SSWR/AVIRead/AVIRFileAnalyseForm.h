@@ -19,28 +19,28 @@ namespace SSWR
 		class AVIRFileAnalyseForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			NotNullPtr<UI::GUILabel> lblFile;
-			NotNullPtr<UI::GUITextBox> txtFile;
-			NotNullPtr<UI::GUIButton> btnFile;
-			NotNullPtr<UI::GUITabControl> tcMain;
-			NotNullPtr<UI::GUITabPage> tpContent;
-			NotNullPtr<UI::GUITabPage> tpStream;
-			NotNullPtr<UI::GUITabPage> tpTool;
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUILabel> lblFile;
+			NN<UI::GUITextBox> txtFile;
+			NN<UI::GUIButton> btnFile;
+			NN<UI::GUITabControl> tcMain;
+			NN<UI::GUITabPage> tpContent;
+			NN<UI::GUITabPage> tpStream;
+			NN<UI::GUITabPage> tpTool;
 
-			NotNullPtr<UI::GUIListBox> lbPackList;
-			NotNullPtr<UI::GUIHSplitter> hspPack;
-			NotNullPtr<UI::GUIListBox> lbPackItems;
-			NotNullPtr<UI::GUIHSplitter> hspPack2;
-			NotNullPtr<UI::GUITextBox> txtPack;
+			NN<UI::GUIListBox> lbPackList;
+			NN<UI::GUIHSplitter> hspPack;
+			NN<UI::GUIListBox> lbPackItems;
+			NN<UI::GUIHSplitter> hspPack2;
+			NN<UI::GUITextBox> txtPack;
 
-			NotNullPtr<UI::GUIButton> btnTrimPadding;
+			NN<UI::GUIButton> btnTrimPadding;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::FileAnalyse::IFileAnalyse *file;
 			UOSInt lastPackCount;
 
-			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnFileClicked(AnyType userObj);
 			static void __stdcall OnTrimPaddingClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
@@ -48,7 +48,7 @@ namespace SSWR
 			static void __stdcall OnPackItemChanged(AnyType userObj);
 			Bool OpenFile(Text::CStringNN fileName);
 		public:
-			AVIRFileAnalyseForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRFileAnalyseForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRFileAnalyseForm();
 
 			virtual void OnMonitorChanged();

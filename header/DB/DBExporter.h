@@ -10,17 +10,17 @@ namespace DB
 	class DBExporter
 	{
 	public:
-		static Data::Class *CreateTableClass(NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName);
-		static Bool GenerateInsertSQLs(NotNullPtr<DB::ReadingDB> db, DB::SQLType sqlType, Bool axisAware, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NotNullPtr<IO::Stream> outStm);
-		static Bool GenerateCSV(NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, Text::CStringNN nullText, NotNullPtr<IO::Stream> outStm, UInt32 codePage);
-		static Bool GenerateSQLite(NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NotNullPtr<DB::SQLiteFile> file, Text::StringBuilderUTF8 *sbError);
-		static Bool GenerateHTML(NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NotNullPtr<IO::Stream> outStm, UInt32 codePage);
-		static Bool GeneratePList(NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NotNullPtr<IO::Stream> outStm, UInt32 codePage);
-		static Bool AppendWorksheet(NotNullPtr<Text::SpreadSheet::Workbook> wb, NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, Text::StringBuilderUTF8 *sbError);
-		static Bool GenerateXLSX(NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NotNullPtr<IO::SeekableStream> outStm, Text::StringBuilderUTF8 *sbError);
-		static Bool GenerateExcelXML(NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NotNullPtr<IO::SeekableStream> outStm, Text::StringBuilderUTF8 *sbError);
+		static Data::Class *CreateTableClass(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName);
+		static Bool GenerateInsertSQLs(NN<DB::ReadingDB> db, DB::SQLType sqlType, Bool axisAware, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NN<IO::Stream> outStm);
+		static Bool GenerateCSV(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, Text::CStringNN nullText, NN<IO::Stream> outStm, UInt32 codePage);
+		static Bool GenerateSQLite(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NN<DB::SQLiteFile> file, Text::StringBuilderUTF8 *sbError);
+		static Bool GenerateHTML(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NN<IO::Stream> outStm, UInt32 codePage);
+		static Bool GeneratePList(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NN<IO::Stream> outStm, UInt32 codePage);
+		static Bool AppendWorksheet(NN<Text::SpreadSheet::Workbook> wb, NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, Text::StringBuilderUTF8 *sbError);
+		static Bool GenerateXLSX(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NN<IO::SeekableStream> outStm, Text::StringBuilderUTF8 *sbError);
+		static Bool GenerateExcelXML(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NN<IO::SeekableStream> outStm, Text::StringBuilderUTF8 *sbError);
 
-		static Bool GenerateExcelXMLAllTables(NotNullPtr<DB::ReadingDB> db, Text::CString schema, NotNullPtr<IO::Stream> outStm, UInt32 codePage);
+		static Bool GenerateExcelXMLAllTables(NN<DB::ReadingDB> db, Text::CString schema, NN<IO::Stream> outStm, UInt32 codePage);
 	};
 }
 #endif

@@ -48,7 +48,7 @@ void Parser::FileParser::TXTParser::SetMapManager(Map::MapManager *mapMgr)
 	this->mapMgr = mapMgr;
 }
 
-void Parser::FileParser::TXTParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::TXTParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapEnv)
 	{
@@ -61,7 +61,7 @@ IO::ParserType Parser::FileParser::TXTParser::GetParserType()
 	return IO::ParserType::MapEnv;
 }
 
-IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char baseDir[256];
@@ -81,7 +81,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 	{
 		return 0;
 	}
-	NotNullPtr<Parser::ParserList> parsers;
+	NN<Parser::ParserList> parsers;
 	IO::StreamDataStream stm(fd);
 	IO::StreamReader reader(stm, this->codePage);
 	if ((sptr = reader.ReadLine(sbuff, 255)) == 0)
@@ -97,7 +97,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 			return 0;
 		}
 
-		NotNullPtr<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+		NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 		NEW_CLASS(env, Map::MapEnv(fd->GetFullName()->ToCString(), ToColor(Text::StrHex2UInt32C(sarr[1].v)), csys));
 		env->SetNString(Text::StrToUInt32(sarr[4].v));
 		fileName = baseDir;
@@ -161,7 +161,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 			}
 			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("5,")))
 			{
-				NotNullPtr<Text::String> fontName;
+				NN<Text::String> fontName;
 				Text::CString pfontName;
 				Double fontSize;
 				Bool bold;
@@ -225,7 +225,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 					return 0;
 				}
 				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
-				NotNullPtr<Map::MapDrawLayer> lyr;
+				NN<Map::MapDrawLayer> lyr;
 				if (lyr.Set(this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env)))
 				{
 					i = env->AddLayer(currGroup, lyr, false);
@@ -250,7 +250,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 				}
 
 				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
-				NotNullPtr<Map::MapDrawLayer> lyr;
+				NN<Map::MapDrawLayer> lyr;
 				if (lyr.Set(this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env)))
 				{
 					i = env->AddLayer(currGroup, lyr, false);
@@ -276,7 +276,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 					return 0;
 				}
 				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
-				NotNullPtr<Map::MapDrawLayer> lyr;
+				NN<Map::MapDrawLayer> lyr;
 				if (lyr.Set(this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env)))
 				{
 					i = env->AddLayer(currGroup, lyr, false);
@@ -316,7 +316,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 				}
 				OSInt si;
 				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
-				NotNullPtr<Map::MapDrawLayer> lyr;
+				NN<Map::MapDrawLayer> lyr;
 				if (lyr.Set(this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env)))
 				{
 					baseDirEnd = Text::StrConcat(sbuff3, sbuff2);
@@ -368,7 +368,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 		Math::Geometry::LineString *pl;
 		Math::Geometry::PointZ *pt;
 		Math::Geometry::Vector2D *vec;
-		NotNullPtr<Math::Geometry::Vector2D> nnvec;
+		NN<Math::Geometry::Vector2D> nnvec;
 		Math::Coord2DDbl *ptList;
 		Double *hList;
 
@@ -396,7 +396,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 						{
 							hasPG = true;
 							NEW_CLASS(pg, Math::Geometry::Polygon(srid));
-							NotNullPtr<Math::Geometry::LinearRing> lr;
+							NN<Math::Geometry::LinearRing> lr;
 							NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, j, false, false));
 							ptList = lr->GetPointList(k);
 							k = 0;
@@ -456,7 +456,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NotNullPtr<IO::Str
 			{
 				hasPG = true;
 				NEW_CLASS(pg, Math::Geometry::Polygon(srid));
-				NotNullPtr<Math::Geometry::LinearRing> lr;
+				NN<Math::Geometry::LinearRing> lr;
 				NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, j, false, false));
 				ptList = lr->GetPointList(k);
 				k = 0;

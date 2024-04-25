@@ -91,7 +91,7 @@ void Media::Resizer::NearestNeighbourResizer32_32::Resize(const UInt8 *src, OSIn
 	NearestNeighbourResizer32_32_Resize(src, dest, dwidth, dheight, dbpl, this->xindex, this->yindex);
 }
 
-Bool Media::Resizer::NearestNeighbourResizer32_32::Resize(NotNullPtr<const Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg)
+Bool Media::Resizer::NearestNeighbourResizer32_32::Resize(NN<const Media::StaticImage> srcImg, NN<Media::StaticImage> destImg)
 {
 	if (srcImg->info.fourcc != 0 && srcImg->info.fourcc != *(UInt32*)"DIB")
 		return false;
@@ -113,7 +113,7 @@ Bool Media::Resizer::NearestNeighbourResizer32_32::Resize(NotNullPtr<const Media
 	}
 }
 
-Bool Media::Resizer::NearestNeighbourResizer32_32::IsSupported(NotNullPtr<const Media::FrameInfo> srcInfo)
+Bool Media::Resizer::NearestNeighbourResizer32_32::IsSupported(NN<const Media::FrameInfo> srcInfo)
 {
 	if (srcInfo->fourcc != 0)
 		return false;
@@ -122,7 +122,7 @@ Bool Media::Resizer::NearestNeighbourResizer32_32::IsSupported(NotNullPtr<const 
 	return true;
 }
 
-Media::StaticImage *Media::Resizer::NearestNeighbourResizer32_32::ProcessToNewPartial(NotNullPtr<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
+Media::StaticImage *Media::Resizer::NearestNeighbourResizer32_32::ProcessToNewPartial(NN<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR)
 {
 	Media::FrameInfo destInfo;
 	Media::StaticImage *newImage;

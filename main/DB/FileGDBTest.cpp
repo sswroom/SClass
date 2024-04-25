@@ -936,13 +936,13 @@ NN<Data::NamedClass<Lamppost>> Lamppost::CreateClass()
 	return cls;
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	IO::ConsoleWriter console;
 	Manage::HiResClock clk;
-	NotNullPtr<IO::DirectoryPackage> dir;
+	NN<IO::DirectoryPackage> dir;
 	NEW_CLASSNN(dir, IO::DirectoryPackage(CSTR("~/Progs/Temp/E20210522_PLIS.gdb")));
 	Map::ESRI::FileGDBDir *fileGDB;
 	Math::ArcGISPRJParser prjParser;
@@ -956,7 +956,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		colNames.Add((const UTF8Char*)"Shape");
 		Data::QueryConditions cond;
 		cond.Int32Equals(CSTR("OBJECTID"), 40);
-		NotNullPtr<DB::DBReader> r;
+		NN<DB::DBReader> r;
 /*		if (r.Set(fileGDB->QueryTableData((const UTF8Char*)"LAMPPOST", &colNames, 0, 10, (const UTF8Char*)"OBJECTID desc", 0)))//&cond);
 		{
 			while (r->ReadNext())

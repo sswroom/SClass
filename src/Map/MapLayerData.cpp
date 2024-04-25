@@ -54,7 +54,7 @@ Bool Map::MapLayerData::IsError() const
 	return this->cixFile == 0 || this->ciuFile == 0 || this->cipFile == 0 || this->blkFile == 0;
 }
 
-Bool Map::MapLayerData::GetPGLabel(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OptOut<Math::Coord2DDbl> outCoord, UOSInt strIndex)
+Bool Map::MapLayerData::GetPGLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OptOut<Math::Coord2DDbl> outCoord, UOSInt strIndex)
 {
 	Math::Coord2DDbl mapPos = coord * 200000.0;
 	Int32 blkx;
@@ -218,7 +218,7 @@ Bool Map::MapLayerData::GetPGLabel(NotNullPtr<Text::StringBuilderUTF8> sb, Math:
 	return false;
 }
 
-Bool Map::MapLayerData::GetPLLabel(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> outCoord, UOSInt strIndex)
+Bool Map::MapLayerData::GetPLLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> outCoord, UOSInt strIndex)
 {
 	Math::Coord2DDbl mapPos = coord * 200000.0;
 	Int32 blkCnt;

@@ -5,15 +5,15 @@
 
 void __stdcall SSWR::AVIRead::AVIRSMBIOSForm::OnHexClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSMBIOSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSMBIOSForm>();
-	NotNullPtr<IO::StreamData> fd = me->smbios->CreateStreamData();
+	NN<SSWR::AVIRead::AVIRSMBIOSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSMBIOSForm>();
+	NN<IO::StreamData> fd = me->smbios->CreateStreamData();
 	IO::FileAnalyse::SMBIOSFileAnalyse *fileAnalyse;
 	NEW_CLASS(fileAnalyse, IO::FileAnalyse::SMBIOSFileAnalyse(fd));
 	me->core->OpenHex(fd, fileAnalyse);
 	fd.Delete();
 }
 
-SSWR::AVIRead::AVIRSMBIOSForm::AVIRSMBIOSForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRSMBIOSForm::AVIRSMBIOSForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("SMBIOS"));

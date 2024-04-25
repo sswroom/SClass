@@ -25,7 +25,7 @@ public:
 
 	}
 
-	virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+	virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 	{
 		if (this->DoRequest(req, resp, subReq))
 		{
@@ -121,10 +121,10 @@ public:
 	}
 };
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Net::WebServer::WebListener *listener;
-	NotNullPtr<GPIOWebHandler> webHdlr;
+	NN<GPIOWebHandler> webHdlr;
 	IO::GPIOControl *gpio;
 	Net::OSSocketFactory sockf(false);
 	NEW_CLASS(gpio, IO::GPIOControl());

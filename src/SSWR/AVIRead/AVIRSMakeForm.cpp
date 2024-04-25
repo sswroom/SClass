@@ -3,8 +3,8 @@
 
 void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSMakeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSMakeForm>();
-	NotNullPtr<Text::String> progName;
+	NN<SSWR::AVIRead::AVIRSMakeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSMakeForm>();
+	NN<Text::String> progName;
 	me->lbProgHeader->ClearItems();
 	me->lbProgObject->ClearItems();
 	me->lbProgSource->ClearItems();
@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(AnyType userObj)
 		Data::ArrayListStringNN headerList;
 		Int64 latestTime;
 		Bool progGroup;
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		UOSInt i;
 		UOSInt j;
 		NN<const IO::SMake::ProgramItem> prog;
@@ -66,8 +66,8 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgGroupSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSMakeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSMakeForm>();
-	NotNullPtr<Text::String> progName;
+	NN<SSWR::AVIRead::AVIRSMakeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSMakeForm>();
+	NN<Text::String> progName;
 	me->lbProgGroupItems->ClearItems();
 	if (me->lbProgGroup->GetSelectedItemTextNew().SetTo(progName))
 	{
@@ -86,7 +86,7 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgGroupSelChg(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::SMake> smake) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::SMake> smake) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->smake = smake;
@@ -150,7 +150,7 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(Optional<UI::GUIClientControl> paren
 	this->lvConfig->AddColumn(CSTR("Value"), 450);
 
 	Data::ArrayListNN<Text::String> progList;
-	NotNullPtr<Text::String> progName;
+	NN<Text::String> progName;
 	UOSInt i = 0;
 	UOSInt j = this->smake->GetProgList(progList);
 	while (i < j)
@@ -167,7 +167,7 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(Optional<UI::GUIClientControl> paren
 		i++;
 	}
 
-	NotNullPtr<const Data::ArrayListNN<IO::SMake::ConfigItem>> configList = this->smake->GetConfigList();
+	NN<const Data::ArrayListNN<IO::SMake::ConfigItem>> configList = this->smake->GetConfigList();
 	NN<IO::SMake::ConfigItem> config;
 	i = 0;
 	j = configList->GetCount();

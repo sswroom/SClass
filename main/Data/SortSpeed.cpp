@@ -25,7 +25,7 @@
 //#define NUM_RECORD (2 << 26)
 
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Manage::HiResClock *clk;
 	Data::RandomMT19937 *rand;

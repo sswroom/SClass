@@ -28,9 +28,9 @@ UTF8Char *Crypto::Hash::MD5::GetName(UTF8Char *sbuff) const
 	return Text::StrConcatC(sbuff, UTF8STRC("MD5"));
 }
 
-NotNullPtr<Crypto::Hash::IHash> Crypto::Hash::MD5::Clone() const
+NN<Crypto::Hash::IHash> Crypto::Hash::MD5::Clone() const
 {
-	NotNullPtr<Crypto::Hash::MD5> md5;
+	NN<Crypto::Hash::MD5> md5;
 	NEW_CLASSNN(md5, Crypto::Hash::MD5());
 	md5->msgLeng = this->msgLeng;
 	md5->h[0] = this->h[0];

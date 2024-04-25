@@ -54,7 +54,7 @@ namespace DB
 			MultiPolygonM
 		};
 	private:
-		NotNullPtr<Text::String> colName;
+		NN<Text::String> colName;
 		DB::DBUtil::ColType colType;
 		Optional<Text::String> nativeType;
 		UOSInt colSize;
@@ -67,13 +67,13 @@ namespace DB
 		Optional<Text::String> defVal;
 		Optional<Text::String> attr;
 
-		static void AppendDefVal(NotNullPtr<DB::SQLBuilder> sql, Text::CStringNN defVal, UOSInt colSize);
+		static void AppendDefVal(NN<DB::SQLBuilder> sql, Text::CStringNN defVal, UOSInt colSize);
 	public:
 		ColDef(Text::CString colName);
-		ColDef(NotNullPtr<Text::String> colName);
+		ColDef(NN<Text::String> colName);
 		~ColDef();
 
-		NotNullPtr<Text::String> GetColName() const;
+		NN<Text::String> GetColName() const;
 		DB::DBUtil::ColType GetColType() const;
 		Optional<Text::String> GetNativeType() const;
 		UOSInt GetColSize() const;
@@ -86,13 +86,13 @@ namespace DB
 		Int64 GetAutoIncStep() const;
 		Optional<Text::String> GetDefVal() const;
 		Optional<Text::String> GetAttr() const;
-		Bool GetDefVal(NotNullPtr<DB::SQLBuilder> sql) const;
+		Bool GetDefVal(NN<DB::SQLBuilder> sql) const;
 		DB::ColDef::GeometryType GetGeometryType() const;
 		UInt32 GetGeometrySRID() const;
 
-		void SetColName(NotNullPtr<const UTF8Char> colName);
+		void SetColName(NN<const UTF8Char> colName);
 		void SetColName(Text::CString colName);
-		void SetColName(NotNullPtr<Text::String> colName);
+		void SetColName(NN<Text::String> colName);
 		void SetColType(DB::DBUtil::ColType colType);
 		void SetNativeType(Optional<Text::String> nativeType);
 		void SetNativeType(Text::CString nativeType);
@@ -108,10 +108,10 @@ namespace DB
 		void SetAttr(Optional<Text::String> attr);
 		void SetGeometrySRID(UInt32 srid);
 
-		void Set(NotNullPtr<const ColDef> colDef);
+		void Set(NN<const ColDef> colDef);
 
 		UTF8Char *ToColTypeStr(UTF8Char *sbuff) const;
-		NotNullPtr<ColDef> Clone() const;
+		NN<ColDef> Clone() const;
 
 		static GeometryType GeometryTypeAdjust(GeometryType geomType, Bool hasZ, Bool hasM);
 		static Text::CStringNN GeometryTypeGetName(GeometryType geomType);

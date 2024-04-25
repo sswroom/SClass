@@ -11,7 +11,7 @@
 #define GWL_USERDATA GWLP_USERDATA
 #endif
 
-UI::GUITreeView::TreeItem::TreeItem(AnyType itemObj, NotNullPtr<Text::String> txt)
+UI::GUITreeView::TreeItem::TreeItem(AnyType itemObj, NN<Text::String> txt)
 {
 	this->hTreeItem = hTreeItem;
 	this->itemObj = itemObj;
@@ -29,7 +29,7 @@ UI::GUITreeView::TreeItem::TreeItem(AnyType itemObj, Text::CStringNN txt)
 
 UI::GUITreeView::TreeItem::~TreeItem()
 {
-	NotNullPtr<TreeItem> item;
+	NN<TreeItem> item;
 	UOSInt i;
 	i = this->children.GetCount();
 	while (i-- > 0)
@@ -40,7 +40,7 @@ UI::GUITreeView::TreeItem::~TreeItem()
 	this->txt->Release();
 }
 
-void UI::GUITreeView::TreeItem::AddChild(NotNullPtr<UI::GUITreeView::TreeItem> child)
+void UI::GUITreeView::TreeItem::AddChild(NN<UI::GUITreeView::TreeItem> child)
 {
 	this->children.Add(child);
 	child->SetParent(this);
@@ -80,7 +80,7 @@ void UI::GUITreeView::TreeItem::SetText(Text::CStringNN txt)
 	this->txt = Text::String::New(txt);
 }
 
-NotNullPtr<Text::String> UI::GUITreeView::TreeItem::GetText() const
+NN<Text::String> UI::GUITreeView::TreeItem::GetText() const
 {
 	return this->txt;
 }
@@ -98,7 +98,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::TreeItem::GetChild(UOSInt i
 OSInt __stdcall UI::GUITreeView::TVWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
 {
 	UI::GUITreeView *me = (UI::GUITreeView*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA);
-	NotNullPtr<TreeItem> dragItem;
+	NN<TreeItem> dragItem;
 	switch (msg)
 	{
 	case WM_MOUSEMOVE:
@@ -136,7 +136,7 @@ OSInt __stdcall UI::GUITreeView::TVWndProc(void *hWnd, UInt32 msg, UOSInt wParam
 			me->draging = false;
 			if (Selected != dragItem->GetHItem())
 			{
-				NotNullPtr<TreeItem> dropItem;
+				NN<TreeItem> dropItem;
 				TVITEMW itm;
 				itm.mask = TVIF_HANDLE | TVIF_PARAM;
 				itm.hItem = Selected;
@@ -157,7 +157,7 @@ OSInt __stdcall UI::GUITreeView::TVWndProc(void *hWnd, UInt32 msg, UOSInt wParam
 
 void UI::GUITreeView::FreeItems()
 {
-	NotNullPtr<TreeItem> item;
+	NN<TreeItem> item;
 	UOSInt i;
 	i = this->treeItems.GetCount();
 	while (i-- > 0)
@@ -168,7 +168,7 @@ void UI::GUITreeView::FreeItems()
 	this->treeItems.Clear();
 }
 
-UI::GUITreeView::GUITreeView(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
+UI::GUITreeView::GUITreeView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
 {
 	Math::Size2DDbl sz = parent->GetClientSize();
 	UInt32 style = WS_TABSTOP | WS_CHILD | WS_VSCROLL | WS_BORDER | TVS_EDITLABELS;
@@ -211,25 +211,25 @@ void UI::GUITreeView::EventRightClicked()
 	}
 }
 
-OSInt UI::GUITreeView::EventBeginLabelEdit(NotNullPtr<TreeItem> item)
+OSInt UI::GUITreeView::EventBeginLabelEdit(NN<TreeItem> item)
 {
 	return 0;
 }
 
-OSInt UI::GUITreeView::EventEndLabelEdit(NotNullPtr<TreeItem> item, const UTF8Char *newLabel)
+OSInt UI::GUITreeView::EventEndLabelEdit(NN<TreeItem> item, const UTF8Char *newLabel)
 {
 	return 1;
 }
 
-void UI::GUITreeView::EventDragItem(NotNullPtr<TreeItem> dragItem, NotNullPtr<TreeItem> dropItem)
+void UI::GUITreeView::EventDragItem(NN<TreeItem> dragItem, NN<TreeItem> dropItem)
 {
 
 }
 
-Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUITreeView::TreeItem> parent, Optional<UI::GUITreeView::TreeItem> insertAfter, NotNullPtr<Text::String> itemText, AnyType itemObj)
+Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUITreeView::TreeItem> parent, Optional<UI::GUITreeView::TreeItem> insertAfter, NN<Text::String> itemText, AnyType itemObj)
 {
-	NotNullPtr<TreeItem> item;
-	NotNullPtr<TreeItem> nnparent;
+	NN<TreeItem> item;
+	NN<TreeItem> nnparent;
 	TVINSERTSTRUCTW is;
 	if (parent.SetTo(nnparent))
 	{
@@ -275,8 +275,8 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUI
 
 Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUITreeView::TreeItem> parent, Optional<UI::GUITreeView::TreeItem> insertAfter, Text::CStringNN itemText, AnyType itemObj)
 {
-	NotNullPtr<TreeItem> item;
-	NotNullPtr<TreeItem> nnparent;
+	NN<TreeItem> item;
+	NN<TreeItem> nnparent;
 	TVINSERTSTRUCTW is;
 	if (parent.SetTo(nnparent))
 	{
@@ -320,7 +320,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::InsertItem(Optional<UI::GUI
 	return item;
 }
 
-AnyType UI::GUITreeView::RemoveItem(NotNullPtr<UI::GUITreeView::TreeItem> item)
+AnyType UI::GUITreeView::RemoveItem(NN<UI::GUITreeView::TreeItem> item)
 {
 	UOSInt i = this->treeItems.IndexOf(item);
 	if (i != INVALID_INDEX)
@@ -353,12 +353,12 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetRootItem(UOSInt index)
 	return this->treeItems.GetItem(index);
 }
 
-void UI::GUITreeView::ExpandItem(NotNullPtr<UI::GUITreeView::TreeItem> titem)
+void UI::GUITreeView::ExpandItem(NN<UI::GUITreeView::TreeItem> titem)
 {
 	SendMessage((HWND)this->hwnd, TVM_EXPAND, TVE_EXPAND, (LPARAM)titem->GetHItem());
 }
 
-Bool UI::GUITreeView::IsExpanded(NotNullPtr<UI::GUITreeView::TreeItem> titem)
+Bool UI::GUITreeView::IsExpanded(NN<UI::GUITreeView::TreeItem> titem)
 {
 	return (SendMessage((HWND)this->hwnd, TVM_GETITEMSTATE, (WPARAM)titem->GetHItem(), TVIS_EXPANDED) & TVIS_EXPANDED) != 0;
 }
@@ -473,7 +473,7 @@ Optional<UI::GUITreeView::TreeItem> UI::GUITreeView::GetHighlightItem()
 	return 0;
 }
 
-void UI::GUITreeView::BeginEdit(NotNullPtr<TreeItem> item)
+void UI::GUITreeView::BeginEdit(NN<TreeItem> item)
 {
 	SendMessage((HWND)this->hwnd, TVM_SELECTITEM, TVGN_CARET, (LPARAM)item->GetHItem());
 	SendMessage((HWND)this->hwnd, TVM_EDITLABEL, 0, (LPARAM)item->GetHItem());
@@ -489,7 +489,7 @@ OSInt UI::GUITreeView::OnNotify(UInt32 code, void *lParam)
 	NMTVDISPINFOW *info;
 	LPNMTREEVIEW lpnmtv;
 	OSInt retVal;
-	NotNullPtr<UI::GUITreeView::TreeItem> item;
+	NN<UI::GUITreeView::TreeItem> item;
 	switch (code)
 	{
 	case NM_RCLICK:
@@ -514,7 +514,7 @@ OSInt UI::GUITreeView::OnNotify(UInt32 code, void *lParam)
 		{
 			this->editing = false;
 			info = (NMTVDISPINFOW*)lParam;
-			NotNullPtr<Text::String> s = Text::String::NewNotNull(info->item.pszText);
+			NN<Text::String> s = Text::String::NewNotNull(info->item.pszText);
 			if (item.Set((UI::GUITreeView::TreeItem*)info->item.lParam))
 			{
 				retVal = EventEndLabelEdit(item, s->v);

@@ -21,21 +21,21 @@ namespace Net
 		
 		typedef void (__stdcall *ClientLogHandler)(AnyType userObj, UInt32 ip, Text::CString logMessage);
 	private:
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Net::UDPServer *svr;
-		NotNullPtr<Text::String> logPath;
-		NotNullPtr<IO::LogTool> log;
+		NN<Text::String> logPath;
+		NN<IO::LogTool> log;
 		Bool redirLog;
 		Sync::Mutex ipMut;
 		Data::FastMap<UInt32, IPStatus*> ipMap;
 		ClientLogHandler logHdlr;
 		AnyType logHdlrObj;
 
-		static void __stdcall OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+		static void __stdcall OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
 
-		IPStatus *GetIPStatus(NotNullPtr<const Net::SocketUtil::AddressInfo> addr);
+		IPStatus *GetIPStatus(NN<const Net::SocketUtil::AddressInfo> addr);
 	public:
-		SyslogServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, Text::CString logPath, NotNullPtr<IO::LogTool> svrLog, Bool redirLog);
+		SyslogServer(NN<Net::SocketFactory> sockf, UInt16 port, Text::CString logPath, NN<IO::LogTool> svrLog, Bool redirLog);
 		~SyslogServer();
 
 		Bool IsError();

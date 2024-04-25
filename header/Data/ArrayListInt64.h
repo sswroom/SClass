@@ -10,7 +10,7 @@ namespace Data
 		ArrayListInt64();
 		ArrayListInt64(UOSInt capacity);
 
-		virtual NotNullPtr<ArrayList<Int64>> Clone() const;
+		virtual NN<ArrayList<Int64>> Clone() const;
 
 		void AddRangeI32(Int32 *arr, UOSInt cnt);
 		void AddRangeI32(const Data::ArrayList<Int32> *arr);

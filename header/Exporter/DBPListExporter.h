@@ -13,7 +13,7 @@ namespace Exporter
 	private:
 		typedef struct
 		{
-			NotNullPtr<DB::ReadingDB> db;
+			NN<DB::ReadingDB> db;
 			UOSInt tableIndex;
 			Data::ArrayListStringNN names;
 		} DBParam;
@@ -26,15 +26,15 @@ namespace Exporter
 		virtual ~DBPListExporter();
 
 		virtual Int32 GetName();
-		virtual SupportType IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj);
+		virtual SupportType IsObjectSupported(NN<IO::ParsedObject> pobj);
 		virtual Bool GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff);
 		virtual void SetCodePage(UInt32 codePage);
-		virtual Bool ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param);
+		virtual Bool ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param);
 
 		virtual UOSInt GetParamCnt();
-		virtual Optional<ParamData> CreateParam(NotNullPtr<IO::ParsedObject> pobj);
+		virtual Optional<ParamData> CreateParam(NN<IO::ParsedObject> pobj);
 		virtual void DeleteParam(Optional<ParamData> param);
-		virtual Bool GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> info);
+		virtual Bool GetParamInfo(UOSInt index, NN<ParamInfo> info);
 		virtual Bool SetParamStr(Optional<ParamData> param, UOSInt index, const UTF8Char *val);
 		virtual Bool SetParamInt32(Optional<ParamData> param, UOSInt index, Int32 val);
 		virtual Bool SetParamSel(Optional<ParamData> param, UOSInt index, UOSInt selCol);

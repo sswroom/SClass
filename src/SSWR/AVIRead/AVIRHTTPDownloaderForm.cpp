@@ -14,7 +14,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnRequestClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPDownloaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPDownloaderForm>();
+	NN<SSWR::AVIRead::AVIRHTTPDownloaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPDownloaderForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtDownloadDir->GetText(sb);
 	if (IO::Path::GetPathType(sb.ToCString()) != IO::Path::PathType::Directory)
@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnRequestClicked(AnyType u
 
 UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPDownloaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPDownloaderForm>();
+	NN<SSWR::AVIRead::AVIRHTTPDownloaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPDownloaderForm>();
 	Text::String *currURL;
 	Text::String *currPath;
 	Text::String *currHeader;
@@ -100,7 +100,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(AnyType us
 				sptrEnd = &sptr[i];
 			}
 			IO::FileStream fs({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-			NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, CSTR_NULL, false, currURL->StartsWith(UTF8STRC("https://")));
+			NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, CSTR_NULL, false, currURL->StartsWith(UTF8STRC("https://")));
 			cli->Connect(currURL->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, &me->respTimeDNS, &me->respTimeConn, false);
 			if (currHeader)
 			{
@@ -168,14 +168,14 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPDownloaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPDownloaderForm>();
+	NN<SSWR::AVIRead::AVIRHTTPDownloaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPDownloaderForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
 	if (me->respHdrChanged)
 	{
 		me->lvHeaders->ClearItems();
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = me->respHeaders.Iterator();
+		Data::ArrayIterator<NN<Text::String>> it = me->respHeaders.Iterator();
 		while (it.HasNext())
 		{
 			me->lvHeaders->AddItem(it.Next(), 0);
@@ -257,7 +257,7 @@ void SSWR::AVIRead::AVIRHTTPDownloaderForm::ClearHeaders()
 	}
 }
 
-SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("HTTP Downloader"));

@@ -98,7 +98,7 @@ UTF8Char *Text::JSText::ToJSTextDQuote(UTF8Char *buff, const UTF8Char *s)
 	return buff;
 }
 
-void Text::JSText::ToJSTextDQuote(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *s)
+void Text::JSText::ToJSTextDQuote(NN<Text::StringBuilderUTF8> sb, const UTF8Char *s)
 {
 	UTF8Char c;
 	UTF8Char buff[256];
@@ -216,22 +216,22 @@ WChar *Text::JSText::ToJSTextDQuote(WChar *buff, const WChar *s)
 	return buff;
 }
 
-NotNullPtr<Text::String> Text::JSText::ToNewJSText(Text::String *s)
+NN<Text::String> Text::JSText::ToNewJSText(Text::String *s)
 {
 	return ToNewJSText(STR_PTR(s));
 }
 
-NotNullPtr<Text::String> Text::JSText::ToNewJSText(Optional<Text::String> s)
+NN<Text::String> Text::JSText::ToNewJSText(Optional<Text::String> s)
 {
 	return ToNewJSText(OPTSTR_CSTR(s).v);
 }
 
-NotNullPtr<Text::String> Text::JSText::ToNewJSText(NotNullPtr<Text::String> s)
+NN<Text::String> Text::JSText::ToNewJSText(NN<Text::String> s)
 {
 	return ToNewJSText(s->v);
 }
 
-NotNullPtr<Text::String> Text::JSText::ToNewJSText(const UTF8Char *s)
+NN<Text::String> Text::JSText::ToNewJSText(const UTF8Char *s)
 {
 	if (s == 0)
 	{
@@ -266,12 +266,12 @@ NotNullPtr<Text::String> Text::JSText::ToNewJSText(const UTF8Char *s)
 			break;
 		}
 	}
-	NotNullPtr<Text::String> retS = Text::String::New(chCnt);
+	NN<Text::String> retS = Text::String::New(chCnt);
 	ToJSText(retS->v, s);
 	return retS;
 }
 
-NotNullPtr<Text::String> Text::JSText::ToNewJSTextDQuote(const UTF8Char *s)
+NN<Text::String> Text::JSText::ToNewJSTextDQuote(const UTF8Char *s)
 {
 	if (s == 0)
 	{
@@ -306,7 +306,7 @@ NotNullPtr<Text::String> Text::JSText::ToNewJSTextDQuote(const UTF8Char *s)
 			break;
 		}
 	}
-	NotNullPtr<Text::String> retS = Text::String::New(chCnt);
+	NN<Text::String> retS = Text::String::New(chCnt);
 	ToJSTextDQuote(retS->v, s);
 	return retS;
 }
@@ -384,7 +384,7 @@ Text::String *Text::JSText::FromNewJSText(const UTF8Char *s)
 {
 	const UTF8Char *srcPtr;
 	UTF8Char *destPtr;
-	NotNullPtr<Text::String> outS;
+	NN<Text::String> outS;
 	UOSInt chCnt;
 	UTF8Char c;
 	UTF8Char startC;
@@ -863,7 +863,7 @@ void Text::JSText::FreeNewText(const WChar *s)
 	MemFree((void*)s);
 }
 
-Bool Text::JSText::JSONWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt initLev, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Text::JSText::JSONWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt initLev, NN<Text::StringBuilderUTF8> sb)
 {
 	UOSInt lev = initLev;
 	UOSInt i = 0;
@@ -954,7 +954,7 @@ Bool Text::JSText::JSONWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt 
 	return lev == initLev;
 }
 
-Bool Text::JSText::JSWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt initLev, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Text::JSText::JSWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt initLev, NN<Text::StringBuilderUTF8> sb)
 {
 	Data::ArrayList<Int32> lastType;
 	UOSInt lev = initLev;

@@ -4,9 +4,9 @@
 #include "Text/JSON.h"
 #include "Text/JSONBuilder.h"
 
-Bool Net::GoogleFCM::SendMessage(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString apiKey, Text::CString devToken, Text::CString message, Text::StringBuilderUTF8 *sbResult)
+Bool Net::GoogleFCM::SendMessage(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString apiKey, Text::CString devToken, Text::CString message, Text::StringBuilderUTF8 *sbResult)
 {
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTR("https://fcm.googleapis.com/fcm/send"), Net::WebUtil::RequestMethod::HTTP_POST, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTR("https://fcm.googleapis.com/fcm/send"), Net::WebUtil::RequestMethod::HTTP_POST, true);
 	if (cli->IsError())
 	{
 		cli.Delete();
@@ -73,9 +73,9 @@ Bool Net::GoogleFCM::SendMessage(NotNullPtr<Net::SocketFactory> sockf, Optional<
 	return succ;
 }
 
-Bool Net::GoogleFCM::SendMessages(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString apiKey, Data::ArrayList<Text::String*> *devTokens, Text::CString message, Text::StringBuilderUTF8 *sbResult)
+Bool Net::GoogleFCM::SendMessages(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString apiKey, Data::ArrayList<Text::String*> *devTokens, Text::CString message, Text::StringBuilderUTF8 *sbResult)
 {
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTR("https://fcm.googleapis.com/fcm/send"), Net::WebUtil::RequestMethod::HTTP_POST, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTR("https://fcm.googleapis.com/fcm/send"), Net::WebUtil::RequestMethod::HTTP_POST, true);
 	if (cli->IsError())
 	{
 		cli.Delete();

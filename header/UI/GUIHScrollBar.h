@@ -15,7 +15,7 @@ namespace UI
 		Data::ArrayList<Data::CallbackStorage<PosChgEvent>> posChgHdlrs;
 	
 	public:
-		GUIHScrollBar(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
+		GUIHScrollBar(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 		virtual ~GUIHScrollBar();
 
 		virtual void InitScrollBar(UOSInt minVal, UOSInt maxVal, UOSInt currVal, UOSInt largeChg) = 0;

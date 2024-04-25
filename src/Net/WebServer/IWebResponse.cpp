@@ -8,7 +8,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/TextBinEnc/URIEncoding.h"
 
-Net::WebServer::IWebResponse::IWebResponse(NotNullPtr<Text::String> sourceName) : IO::Stream(sourceName)
+Net::WebServer::IWebResponse::IWebResponse(NN<Text::String> sourceName) : IO::Stream(sourceName)
 {
 }
 
@@ -20,7 +20,7 @@ Net::WebServer::IWebResponse::~IWebResponse()
 {
 }
 
-Bool Net::WebServer::IWebResponse::ResponseError(NotNullPtr<Net::WebServer::IWebRequest> req, Net::WebStatus::StatusCode code)
+Bool Net::WebServer::IWebResponse::ResponseError(NN<Net::WebServer::IWebRequest> req, Net::WebStatus::StatusCode code)
 {
 	Text::StringBuilderUTF8 sb;
 	if (!this->SetStatusCode(code))
@@ -45,7 +45,7 @@ Bool Net::WebServer::IWebResponse::ResponseError(NotNullPtr<Net::WebServer::IWeb
 	return true;
 }
 
-Bool Net::WebServer::IWebResponse::RedirectURL(NotNullPtr<Net::WebServer::IWebRequest> req, Text::CStringNN url, OSInt cacheAge)
+Bool Net::WebServer::IWebResponse::RedirectURL(NN<Net::WebServer::IWebRequest> req, Text::CStringNN url, OSInt cacheAge)
 {
 	this->AddDefHeaders(req);
 	this->SetStatusCode(Net::WebStatus::SC_MOVED_TEMPORARILY);
@@ -55,7 +55,7 @@ Bool Net::WebServer::IWebResponse::RedirectURL(NotNullPtr<Net::WebServer::IWebRe
 	return true;
 }
 
-Bool Net::WebServer::IWebResponse::VirtualRedirectURL(NotNullPtr<Net::WebServer::IWebRequest> req, Text::CStringNN url, OSInt cacheAge)
+Bool Net::WebServer::IWebResponse::VirtualRedirectURL(NN<Net::WebServer::IWebRequest> req, Text::CStringNN url, OSInt cacheAge)
 {
 	this->AddDefHeaders(req);
 	this->AddCacheControl(cacheAge);
@@ -64,7 +64,7 @@ Bool Net::WebServer::IWebResponse::VirtualRedirectURL(NotNullPtr<Net::WebServer:
 	"<script type=\"text/javascript\">\r\n"
 	"function afterLoad(){\r\n"
 	"	document.location.replace("));
-	NotNullPtr<Text::String> s = Text::JSText::ToNewJSText(url.v);
+	NN<Text::String> s = Text::JSText::ToNewJSText(url.v);
 	sb.Append(s);
 	s->Release();
 	sb.AppendC(UTF8STRC(");\r\n"
@@ -76,7 +76,7 @@ Bool Net::WebServer::IWebResponse::VirtualRedirectURL(NotNullPtr<Net::WebServer:
 	return true;
 }
 
-Bool Net::WebServer::IWebResponse::ResponseNotModified(NotNullPtr<Net::WebServer::IWebRequest> req, OSInt cacheAge)
+Bool Net::WebServer::IWebResponse::ResponseNotModified(NN<Net::WebServer::IWebRequest> req, OSInt cacheAge)
 {
 	this->SetStatusCode(Net::WebStatus::SC_NOT_MODIFIED);
 	this->AddDefHeaders(req);

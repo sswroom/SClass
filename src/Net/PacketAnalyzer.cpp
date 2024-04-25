@@ -5,7 +5,7 @@
 #include "Net/PacketAnalyzerEthernet.h"
 #include "Text/StringBuilderUTF8.h"
 
-Bool Net::PacketAnalyzer::PacketDataGetName(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Net::PacketAnalyzer::PacketDataGetName(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	switch (linkType)
 	{
@@ -23,13 +23,13 @@ Bool Net::PacketAnalyzer::PacketDataGetName(UInt32 linkType, const UInt8 *packet
 	return false;
 }
 
-void Net::PacketAnalyzer::PacketDataGetDetail(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Net::PacketAnalyzer::PacketDataGetDetail(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketDataGetDetail(linkType, packet, packetSize, 0, frame);
 }
 
-void Net::PacketAnalyzer::PacketDataGetDetail(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame)
+void Net::PacketAnalyzer::PacketDataGetDetail(UInt32 linkType, const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	switch (linkType)
 	{

@@ -13,10 +13,10 @@ namespace Media
 			UInt32 bitCount;
 			Double level;
 		public:
-			AudioAmplifier(NotNullPtr<IAudioSource> sourceAudio);
+			AudioAmplifier(NN<IAudioSource> sourceAudio);
 			virtual ~AudioAmplifier();
 
-			virtual void GetFormat(NotNullPtr<AudioFormat> format);
+			virtual void GetFormat(NN<AudioFormat> format);
 			virtual Data::Duration SeekToTime(Data::Duration time);
 			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
 

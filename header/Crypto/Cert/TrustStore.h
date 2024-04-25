@@ -9,8 +9,8 @@ namespace Crypto
 		class TrustStore
 		{
 		public:
-			static NotNullPtr<Crypto::Cert::CertStore> Load();
-			static NotNullPtr<Crypto::Cert::CertStore> LoadJavaCA();
+			static NN<Crypto::Cert::CertStore> Load();
+			static NN<Crypto::Cert::CertStore> LoadJavaCA();
 		};
 	}
 }

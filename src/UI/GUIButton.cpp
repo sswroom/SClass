@@ -5,7 +5,7 @@
 #include "Text/MyStringW.h"
 #include "UI/GUIButton.h"
 
-UI::GUIButton::GUIButton(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
+UI::GUIButton::GUIButton(NN<GUICore> ui, NN<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
 {
 }
 

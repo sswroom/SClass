@@ -28,7 +28,7 @@ namespace UI
 		static OSInt useCnt;
 
 	public:
-		GUIListView(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, ListViewStyle lvstyle, UOSInt colCount);
+		GUIListView(NN<GUICore> ui, NN<UI::GUIClientControl> parent, ListViewStyle lvstyle, UOSInt colCount);
 		virtual ~GUIListView();
 
 		void ResetImages(UInt32 width, UInt32 height);
@@ -37,21 +37,21 @@ namespace UI
 
 		void ChangeColumnCnt(UOSInt newColCnt);
 		UOSInt GetColumnCnt();
-		Bool AddColumn(NotNullPtr<Text::String> columnName, Double colWidth);
+		Bool AddColumn(NN<Text::String> columnName, Double colWidth);
 		Bool AddColumn(Text::CStringNN columnName, Double colWidth);
 		Bool AddColumn(const WChar *columnName, Double colWidth);
 		Bool SetColumnWidth(UOSInt index, Double colWidth);
 		Bool ClearAll();
 
-		UOSInt AddItem(NotNullPtr<Text::String> itemText, AnyType itemObj);
+		UOSInt AddItem(NN<Text::String> itemText, AnyType itemObj);
 		UOSInt AddItem(Text::CStringNN itemText, AnyType itemObj);
 		UOSInt AddItem(const WChar *itemText, AnyType itemObj);
 		UOSInt AddItem(Text::CStringNN itemText, AnyType itemObj, UOSInt imageIndex);
-		Bool SetSubItem(UOSInt index, UOSInt subIndex, NotNullPtr<Text::String> text);
+		Bool SetSubItem(UOSInt index, UOSInt subIndex, NN<Text::String> text);
 		Bool SetSubItem(UOSInt index, UOSInt subIndex, Text::CStringNN text);
 		Bool SetSubItem(UOSInt index, UOSInt subIndex, const WChar *text);
-		Bool GetSubItem(UOSInt index, UOSInt subIndex, NotNullPtr<Text::StringBuilderUTF8> sb);
-		UOSInt InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, AnyType itemObj);
+		Bool GetSubItem(UOSInt index, UOSInt subIndex, NN<Text::StringBuilderUTF8> sb);
+		UOSInt InsertItem(UOSInt index, NN<Text::String> itemText, AnyType itemObj);
 		UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj);
 		UOSInt InsertItem(UOSInt index, const WChar *itemText, AnyType itemObj);
 		AnyType RemoveItem(UOSInt index);

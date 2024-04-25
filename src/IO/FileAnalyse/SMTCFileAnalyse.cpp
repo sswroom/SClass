@@ -6,9 +6,9 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/StringTool.h"
 
-void __stdcall IO::FileAnalyse::SMTCFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::FileAnalyse::SMTCFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::FileAnalyse::SMTCFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::SMTCFileAnalyse>();
+	NN<IO::FileAnalyse::SMTCFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::SMTCFileAnalyse>();
 	NN<DataInfo> data;
 	UInt64 dataSize;
 	UInt64 ofst;
@@ -43,7 +43,7 @@ void __stdcall IO::FileAnalyse::SMTCFileAnalyse::ParseThread(NotNullPtr<Sync::Th
 	}
 }
 
-IO::FileAnalyse::SMTCFileAnalyse::SMTCFileAnalyse(NotNullPtr<IO::StreamData> fd) : packetBuff(65535 + 23), thread(ParseThread, this, CSTR("SMTCFileAnalyse"))
+IO::FileAnalyse::SMTCFileAnalyse::SMTCFileAnalyse(NN<IO::StreamData> fd) : packetBuff(65535 + 23), thread(ParseThread, this, CSTR("SMTCFileAnalyse"))
 {
 	UInt8 buff[25];
 	this->fd = 0;
@@ -79,7 +79,7 @@ UOSInt IO::FileAnalyse::SMTCFileAnalyse::GetFrameCount()
 	return 1 + this->dataList.GetCount();
 }
 
-Bool IO::FileAnalyse::SMTCFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::SMTCFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	if (index == 0)
 	{
@@ -162,7 +162,7 @@ UOSInt IO::FileAnalyse::SMTCFileAnalyse::GetFrameIndex(UInt64 ofst)
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMTCFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	if (index == 0)

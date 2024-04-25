@@ -5,7 +5,7 @@
 #include "IO/ConsoleWriter.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UOSInt i;
 	UOSInt j;
@@ -13,8 +13,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UOSInt l;
 	Data::ArrayListNN<IO::BTController> btCtrlList;
 	Data::ArrayListNN<IO::BTController::BTDevice> btDevList;
-	NotNullPtr<IO::BTController> btCtrl;
-	NotNullPtr<IO::BTController::BTDevice> btDev;
+	NN<IO::BTController> btCtrl;
+	NN<IO::BTController::BTDevice> btDev;
 	IO::ConsoleWriter console;
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;

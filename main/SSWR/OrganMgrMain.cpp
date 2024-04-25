@@ -8,7 +8,7 @@
 #include "SSWR/OrganMgr/OrganSelCategoryForm.h"
 #include "UI/GUICore.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	MemSetLogFile(UTF8STRC("Memory.log"));
 
@@ -18,7 +18,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	}
 	else
 	{
-		NotNullPtr<UI::GUICore> ui;
+		NN<UI::GUICore> ui;
 		if (progCtrl->CreateGUICore(progCtrl).SetTo(ui))
 		{
 			SSWR::OrganMgr::OrganEnvDB env;

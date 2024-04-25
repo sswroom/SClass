@@ -28,15 +28,15 @@ namespace Parser
 			virtual void SetParserList(Parser::ParserList *parsers);
 			virtual void SetWebBrowser(Net::WebBrowser *browser);
 			virtual void SetEncFactory(Optional<Text::EncodingFactory> encFact);
-			virtual void PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t);
+			virtual void PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
-			virtual IO::ParsedObject *ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
+			virtual IO::ParsedObject *ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
 
-			static IO::ParsedObject *ParseStream(Optional<Text::EncodingFactory> encFact, NotNullPtr<IO::Stream> stm, Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile);
+			static IO::ParsedObject *ParseStream(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile);
 		private:
-			static Bool ParseGPXPoint(NotNullPtr<Text::XMLReader> reader, Map::GPSTrack::GPSRecord3 *rec);
-			static Bool ParseVSProjFile(NotNullPtr<Text::XMLReader> reader, Text::VSProjContainer *container);
-			static Bool ParseVSConfFile(NotNullPtr<Text::XMLReader> reader, Text::CodeProject *proj);
+			static Bool ParseGPXPoint(NN<Text::XMLReader> reader, Map::GPSTrack::GPSRecord3 *rec);
+			static Bool ParseVSProjFile(NN<Text::XMLReader> reader, Text::VSProjContainer *container);
+			static Bool ParseVSConfFile(NN<Text::XMLReader> reader, Text::CodeProject *proj);
 		};
 	}
 }

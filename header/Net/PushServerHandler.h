@@ -9,18 +9,18 @@ namespace Net
 	class PushServerHandler : public Net::WebServer::WebServiceHandler
 	{
 	private:
-		NotNullPtr<PushManager> mgr;
+		NN<PushManager> mgr;
 
-		static Bool __stdcall SendHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> me);
-		static Bool __stdcall SendBatchHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> me);
-		static Bool __stdcall SubscribeHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> me);
-		static Bool __stdcall UnsubscribeHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> me);
-		static Bool __stdcall UsersHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> me);
-		static Bool __stdcall ListDevicesHandler(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> me);
+		static Bool __stdcall SendHandler(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);
+		static Bool __stdcall SendBatchHandler(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);
+		static Bool __stdcall SubscribeHandler(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);
+		static Bool __stdcall UnsubscribeHandler(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);
+		static Bool __stdcall UsersHandler(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);
+		static Bool __stdcall ListDevicesHandler(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);
 
 		void ParseJSONSend(Text::JSONBase *sendJson);
 	public:
-		PushServerHandler(NotNullPtr<PushManager> mgr);
+		PushServerHandler(NN<PushManager> mgr);
 		virtual ~PushServerHandler();
 	};
 }

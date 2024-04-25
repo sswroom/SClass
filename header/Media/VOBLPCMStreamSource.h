@@ -11,7 +11,7 @@ namespace Media
 	class VOBLPCMStreamSource : public Media::IAudioSource, public Media::IMediaStream
 	{
 	private:
-		NotNullPtr<Media::IStreamControl> pbc;
+		NN<Media::IStreamControl> pbc;
 		Media::AudioFormat fmt;
 		Sync::Event *pbEvt;
 
@@ -24,7 +24,7 @@ namespace Media
 
 
 	public:
-		VOBLPCMStreamSource(NotNullPtr<Media::IStreamControl> pbc, NotNullPtr<const Media::AudioFormat> fmt);
+		VOBLPCMStreamSource(NN<Media::IStreamControl> pbc, NN<const Media::AudioFormat> fmt);
 		virtual ~VOBLPCMStreamSource();
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);
@@ -33,7 +33,7 @@ namespace Media
 		virtual Data::Duration SeekToTime(Data::Duration time);
 		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 
-		virtual void GetFormat(NotNullPtr<AudioFormat> format);
+		virtual void GetFormat(NN<AudioFormat> format);
 
 		virtual Bool Start(Sync::Event *evt, UOSInt blkSize);
 		virtual void Stop();

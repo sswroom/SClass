@@ -11,7 +11,7 @@
 #include <windows.h>
 #include <commctrl.h>
 
-UI::Win::WinComboBox::WinComboBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool allowTyping) : UI::GUIComboBox(ui, parent)
+UI::Win::WinComboBox::WinComboBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Bool allowTyping) : UI::GUIComboBox(ui, parent)
 {
 	this->minVisible = 5;
 	this->allowEdit = allowTyping;
@@ -75,7 +75,7 @@ UTF8Char *UI::Win::WinComboBox::GetText(UTF8Char *buff)
 	return Text::StrWChar_UTF8(buff, wbuff);
 }
 
-Bool UI::Win::WinComboBox::GetText(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool UI::Win::WinComboBox::GetText(NN<Text::StringBuilderUTF8> sb)
 {
 	UOSInt leng = (UOSInt)GetWindowTextLengthW((HWND)hwnd);
 	WChar *wptr = MemAlloc(WChar, leng + 1);
@@ -95,7 +95,7 @@ void UI::Win::WinComboBox::EndUpdate()
 	
 }
 
-UOSInt UI::Win::WinComboBox::AddItem(NotNullPtr<Text::String> itemText, AnyType itemObj)
+UOSInt UI::Win::WinComboBox::AddItem(NN<Text::String> itemText, AnyType itemObj)
 {
 	const WChar *wptr = Text::StrToWCharNew(itemText->v);
 	OSInt i = SendMessage((HWND)hwnd, CB_ADDSTRING, 0, (LPARAM)wptr);
@@ -125,7 +125,7 @@ UOSInt UI::Win::WinComboBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
 	return (UOSInt)i;
 }
 
-UOSInt UI::Win::WinComboBox::InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, AnyType itemObj)
+UOSInt UI::Win::WinComboBox::InsertItem(UOSInt index, NN<Text::String> itemText, AnyType itemObj)
 {
 	const WChar *wptr = Text::StrToWCharNew(itemText->v);
 	OSInt i = SendMessage((HWND)hwnd, CB_INSERTSTRING, index, (LPARAM)wptr);
@@ -231,7 +231,7 @@ void UI::Win::WinComboBox::SetArea(Double left, Double top, Double right, Double
 {
 	UOSInt itemHeight = GetSelectionHeight();
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
-	NotNullPtr<GUIClientControl> nnparent;
+	NN<GUIClientControl> nnparent;
 	if (this->parent.SetTo(nnparent))
 	{
 		ofst = nnparent->GetClientOfst();
@@ -267,7 +267,7 @@ void UI::Win::WinComboBox::UpdatePos(Bool redraw)
 {
 	UOSInt itemHeight = GetSelectionHeight();
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
-	NotNullPtr<GUIClientControl> nnparent;
+	NN<GUIClientControl> nnparent;
 	if (this->parent.SetTo(nnparent))
 	{
 		ofst = nnparent->GetClientOfst();

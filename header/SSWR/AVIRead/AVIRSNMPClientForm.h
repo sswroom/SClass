@@ -22,26 +22,26 @@ namespace SSWR
 		class AVIRSNMPClientForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Net::SNMPClient *cli;
 
-			NotNullPtr<UI::GUIPanel> pnlRequest;
-			NotNullPtr<UI::GUILabel> lblAgent;
-			NotNullPtr<UI::GUITextBox> txtAgent;
-			NotNullPtr<UI::GUILabel> lblCommunity;
-			NotNullPtr<UI::GUITextBox> txtCommunity;
-			NotNullPtr<UI::GUILabel> lblOID;
-			NotNullPtr<UI::GUITextBox> txtOID;
-			NotNullPtr<UI::GUILabel> lblCommandType;
-			NotNullPtr<UI::GUIComboBox> cboCommandType;
-			NotNullPtr<UI::GUIButton> btnRequest;
-			NotNullPtr<UI::GUIListView> lvResults;
+			NN<UI::GUIPanel> pnlRequest;
+			NN<UI::GUILabel> lblAgent;
+			NN<UI::GUITextBox> txtAgent;
+			NN<UI::GUILabel> lblCommunity;
+			NN<UI::GUITextBox> txtCommunity;
+			NN<UI::GUILabel> lblOID;
+			NN<UI::GUITextBox> txtOID;
+			NN<UI::GUILabel> lblCommandType;
+			NN<UI::GUIComboBox> cboCommandType;
+			NN<UI::GUIButton> btnRequest;
+			NN<UI::GUIListView> lvResults;
 
 			static void __stdcall OnRequestClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 
 		public:
-			AVIRSNMPClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRSNMPClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSNMPClientForm();
 
 			virtual void OnMonitorChanged();

@@ -9,9 +9,9 @@ namespace IO
 	{
 	private:
 		Manage::HiResClock clk;
-		NotNullPtr<IO::IOPin> pin;
+		NN<IO::IOPin> pin;
 	public:
-		OneWireGPIO(NotNullPtr<IO::IOPin> pin);
+		OneWireGPIO(NN<IO::IOPin> pin);
 		~OneWireGPIO();
 
 		Bool Init();

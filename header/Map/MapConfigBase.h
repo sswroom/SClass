@@ -15,11 +15,11 @@ namespace Map
 	typedef struct
 	{
 		Int32 fontType;
-		NotNullPtr<Text::String> fontName;
+		NN<Text::String> fontName;
 		UInt32 fontSizePt;
 		Double thick;
 		UInt32 color;
-		NotNullPtr<Media::DrawFont> font;
+		NN<Media::DrawFont> font;
 		void *other;
 	} MapFontStyle;
 

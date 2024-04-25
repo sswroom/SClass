@@ -4,7 +4,7 @@
 #include "Media/AudioUtil.h"
 #include "Media/AudioFilter/AudioAmplifier.h"
 
-Media::AudioFilter::AudioAmplifier::AudioAmplifier(NotNullPtr<Media::IAudioSource> sourceAudio) : Media::IAudioFilter(sourceAudio)
+Media::AudioFilter::AudioAmplifier::AudioAmplifier(NN<Media::IAudioSource> sourceAudio) : Media::IAudioFilter(sourceAudio)
 {
 	Media::AudioFormat fmt;
 	this->level = 1.0;
@@ -21,7 +21,7 @@ Media::AudioFilter::AudioAmplifier::~AudioAmplifier()
 {
 }
 
-void Media::AudioFilter::AudioAmplifier::GetFormat(NotNullPtr<AudioFormat> format)
+void Media::AudioFilter::AudioAmplifier::GetFormat(NN<AudioFormat> format)
 {
 	Media::AudioFormat fmt;
 	this->sourceAudio->GetFormat(fmt);

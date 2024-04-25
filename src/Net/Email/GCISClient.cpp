@@ -28,13 +28,13 @@
 }
 {"ChanType":"EM","IsEncrypt":false,"IsSign":false,"IsRestricted":false,"IsUrgent":false,"ValidityPeriod":-1,"ContentDetail":{"CharSet":"UTF-8","ContentType":"text/html","Subject":"Email Testing","Content":"This is a test email","AtthFile":[]},"RecipientDetail":[{"ChanAddr":"sswroom@yahoo.com","CcAddr":null,"BccAddr":null,"RecipientAtthFile":[]}]}
 */
-Net::Email::GCISClient::GCISClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN notifyURL, NotNullPtr<Crypto::Cert::X509Cert> cert, NotNullPtr<Crypto::Cert::X509File> key)
+Net::Email::GCISClient::GCISClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN notifyURL, NN<Crypto::Cert::X509Cert> cert, NN<Crypto::Cert::X509File> key)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->notifyURL = Text::String::New(notifyURL);
-	this->cert = NotNullPtr<Crypto::Cert::X509Cert>::ConvertFrom(cert->Clone());
-	this->key = NotNullPtr<Crypto::Cert::X509File>::ConvertFrom(key->Clone());
+	this->cert = NN<Crypto::Cert::X509Cert>::ConvertFrom(cert->Clone());
+	this->key = NN<Crypto::Cert::X509File>::ConvertFrom(key->Clone());
 	this->svrCert = 0;
 }
 
@@ -48,7 +48,7 @@ Net::Email::GCISClient::~GCISClient()
 
 Bool Net::Email::GCISClient::SendMessage(Bool intranetChannel, Text::CString charset, Text::CStringNN contentType, Text::CStringNN subject, Text::CStringNN content, Text::CStringNN toList, Text::CString ccList, Text::CString bccList, Text::StringBuilderUTF8 *sbError)
 {
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, ssl, CSTR("GCISClient/1.0"), false, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, ssl, CSTR("GCISClient/1.0"), false, true);
 	if (!cli->SetClientCert(this->cert, this->key))
 	{
 		if (sbError) sbError->AppendC(UTF8STRC("Error in adding client cert"));
@@ -93,7 +93,7 @@ Bool Net::Email::GCISClient::SendMessage(Bool intranetChannel, Text::CString cha
 		return false;
 	}
 	this->svrCert.Delete();
-	NotNullPtr<const Data::ReadingListNN<Crypto::Cert::Certificate>> svrCert;
+	NN<const Data::ReadingListNN<Crypto::Cert::Certificate>> svrCert;
 	if (!cli->GetServerCerts().SetTo(svrCert) || svrCert->GetCount() == 0)
 	{
 
@@ -104,7 +104,7 @@ Bool Net::Email::GCISClient::SendMessage(Bool intranetChannel, Text::CString cha
 	}
 	else
 	{
-		NotNullPtr<Crypto::Cert::X509Cert> cert;
+		NN<Crypto::Cert::X509Cert> cert;
 		Crypto::Cert::X509FileList *certList = 0;
 		UOSInt i = 0;
 		UOSInt j = svrCert->GetCount();
@@ -125,7 +125,7 @@ Bool Net::Email::GCISClient::SendMessage(Bool intranetChannel, Text::CString cha
 		}
 		this->svrCert = certList;
 	}
-	NotNullPtr<Text::StringBuilderUTF8> sb;
+	NN<Text::StringBuilderUTF8> sb;
 	if (sb.Set(sbError))
 		cli->ReadAllContent(sb, 4096, 1048576);
 	cli.Delete();
@@ -137,7 +137,7 @@ Optional<Crypto::Cert::X509File> Net::Email::GCISClient::GetServerCertChain() co
 	return this->svrCert;
 }
 
-void Net::Email::GCISClient::ParseEmailAddresses(NotNullPtr<Text::JSONBuilder> builder, Text::CStringNN toList, Text::CString ccList, Text::CString bccList)
+void Net::Email::GCISClient::ParseEmailAddresses(NN<Text::JSONBuilder> builder, Text::CStringNN toList, Text::CString ccList, Text::CString bccList)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::PString sarr[10];

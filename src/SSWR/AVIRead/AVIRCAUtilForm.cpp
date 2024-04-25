@@ -10,10 +10,10 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/StringTool.h"
 
-void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCAUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCAUtilForm>();
-	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
+	NN<SSWR::AVIRead::AVIRCAUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCAUtilForm>();
+	NN<Parser::ParserList> parsers = me->core->GetParserList();
 
 	UOSInt i = 0;
 	UOSInt nFiles = files.GetCount();
@@ -32,8 +32,8 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(AnyType userObj, Data::
 				if (asn1->GetASN1Type() == Net::ASN1Data::ASN1Type::X509)
 				{
 					Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
-					NotNullPtr<Crypto::Cert::X509Key> key;
-					NotNullPtr<Text::String> s;
+					NN<Crypto::Cert::X509Key> key;
+					NN<Text::String> s;
 					Crypto::Cert::X509PrivKey *privKey;
 					Crypto::Cert::X509CertReq *csr;
 					Crypto::Cert::X509Cert *cert;
@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(AnyType userObj, Data::
 								me->txtCACert->SetText(CSTR("Unnamed"));
 							}
 							Crypto::Cert::CertNames::FreeNames(names);
-							NotNullPtr<Net::SSLEngine> ssl;
+							NN<Net::SSLEngine> ssl;
 							if (key.Set(me->key) && me->ssl.SetTo(ssl))
 							{
 								if (!me->caCert->IsSignatureKey(ssl, key))
@@ -95,7 +95,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(AnyType userObj, Data::
 							MemClear(&exts, sizeof(exts));
 							if (csr->GetExtensions(exts))
 							{
-								NotNullPtr<Data::ArrayListStringNN> nameList;
+								NN<Data::ArrayListStringNN> nameList;
 								if (exts.subjectAltName.SetTo(nameList))
 								{
 									UOSInt j = 0;
@@ -119,7 +119,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(AnyType userObj, Data::
 						{
 							if (key->IsPrivateKey())
 							{
-								NotNullPtr<Net::SSLEngine> ssl;
+								NN<Net::SSLEngine> ssl;
 								if (me->caCert && (!me->ssl.SetTo(ssl) || !me->caCert->IsSignatureKey(ssl, key)))
 								{
 									me->ui->ShowMsgOK(CSTR("Key is not match with CA cert"), CSTR("CA Util"), me);
@@ -164,7 +164,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(AnyType userObj, Data::
 								me->txtCACert->SetText(CSTR("Unnamed"));
 							}
 							Crypto::Cert::CertNames::FreeNames(names);
-							NotNullPtr<Net::SSLEngine> ssl;
+							NN<Net::SSLEngine> ssl;
 							if (key.Set(me->key) && me->ssl.SetTo(ssl))
 							{
 								if (!me->caCert->IsSignatureKey(ssl, key))
@@ -207,7 +207,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(AnyType userObj, Data::
 
 void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnKeyViewClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCAUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCAUtilForm>();
+	NN<SSWR::AVIRead::AVIRCAUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCAUtilForm>();
 	if (me->key)
 	{
 		me->core->OpenObject(me->key->Clone());
@@ -216,7 +216,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnKeyViewClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnCACertViewClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCAUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCAUtilForm>();
+	NN<SSWR::AVIRead::AVIRCAUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCAUtilForm>();
 	if (me->caCert)
 	{
 		me->core->OpenObject(me->caCert->Clone());
@@ -225,7 +225,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnCACertViewClicked(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnCSRViewClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCAUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCAUtilForm>();
+	NN<SSWR::AVIRead::AVIRCAUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCAUtilForm>();
 	if (me->csr)
 	{
 		me->core->OpenObject(me->csr->Clone());
@@ -234,8 +234,8 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnCSRViewClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnIssueClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCAUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCAUtilForm>();
-	NotNullPtr<Crypto::Cert::X509Key> key;
+	NN<SSWR::AVIRead::AVIRCAUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCAUtilForm>();
+	NN<Crypto::Cert::X509Key> key;
 	if (!key.Set(me->key))
 	{
 		me->ui->ShowMsgOK(CSTR("Key not exist"), CSTR("CA Util"), me);
@@ -259,13 +259,13 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnIssueClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Valid Days not valid"), CSTR("CA Util"), me);
 		return;
 	}
-	NotNullPtr<Net::SSLEngine> ssl;
+	NN<Net::SSLEngine> ssl;
 	if (!me->ssl.SetTo(ssl))
 	{
 		me->ui->ShowMsgOK(CSTR("SSL Engine is not initiated"), CSTR("CA Util"), me);
 		return;
 	}
-	NotNullPtr<Crypto::Cert::X509Cert> cert;
+	NN<Crypto::Cert::X509Cert> cert;
 	if (cert.Set(Crypto::Cert::CertUtil::IssueCert(ssl, me->caCert, key, validDays, me->csr)))
 	{
 		me->core->OpenObject(cert);
@@ -293,7 +293,7 @@ void SSWR::AVIRead::AVIRCAUtilForm::DisplayKeyDetail()
 	}
 }
 
-void SSWR::AVIRead::AVIRCAUtilForm::DisplayNames(NotNullPtr<Crypto::Cert::CertNames> names)
+void SSWR::AVIRead::AVIRCAUtilForm::DisplayNames(NN<Crypto::Cert::CertNames> names)
 {
 	this->txtCountryName->SetText(Text::String::OrEmpty(names->countryName)->ToCString());
 	this->txtStateOrProvinceName->SetText(Text::String::OrEmpty(names->stateOrProvinceName)->ToCString());
@@ -304,7 +304,7 @@ void SSWR::AVIRead::AVIRCAUtilForm::DisplayNames(NotNullPtr<Crypto::Cert::CertNa
 	this->txtEmailAddress->SetText(Text::String::OrEmpty(names->emailAddress)->ToCString());
 }
 
-SSWR::AVIRead::AVIRCAUtilForm::AVIRCAUtilForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRCAUtilForm::AVIRCAUtilForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("CA Utility"));
 	this->SetFont(0, 0, 8.25, false);

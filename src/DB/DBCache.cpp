@@ -13,7 +13,7 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(Text::CString tableName)
 	mutUsage.EndUse();
 	if (table)
 		return table;
-	NotNullPtr<DB::TableDef> def;
+	NN<DB::TableDef> def;
 	if (!def.Set(this->model->GetTable(tableName)))
 	{
 		return 0;
@@ -25,7 +25,7 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(Text::CString tableName)
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("select count(*) from "));
 	sql.AppendTableName(def);
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (this->db->ExecuteReader(sql.ToCString()).SetTo(r))
 	{
 		if (r->ReadNext())
@@ -45,12 +45,12 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(Text::CString tableName)
 	return table;
 }
 
-DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(NotNullPtr<DB::TableDef> tableDef)
+DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(NN<DB::TableDef> tableDef)
 {
 	DB::DBCache::TableInfo *table;
 	UOSInt i;
 	Sync::MutexUsage mutUsage(this->tableMut);
-	NotNullPtr<const Data::ArrayList<DB::DBCache::TableInfo*>> tableList = this->tableMap.GetValues();
+	NN<const Data::ArrayList<DB::DBCache::TableInfo*>> tableList = this->tableMap.GetValues();
 	i = tableList->GetCount();
 	while (i-- > 0)
 	{
@@ -63,7 +63,7 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(NotNullPtr<DB::TableDef> table
 	return 0;
 }
 
-DB::DBCache::DBCache(NotNullPtr<DB::DBModel> model, NotNullPtr<DB::DBTool> db)
+DB::DBCache::DBCache(NN<DB::DBModel> model, NN<DB::DBTool> db)
 {
 	this->model = model;
 	this->db = db;
@@ -72,7 +72,7 @@ DB::DBCache::DBCache(NotNullPtr<DB::DBModel> model, NotNullPtr<DB::DBTool> db)
 
 DB::DBCache::~DBCache()
 {
-	NotNullPtr<const Data::ArrayList<DB::DBCache::TableInfo*>> tableList = this->tableMap.GetValues();
+	NN<const Data::ArrayList<DB::DBCache::TableInfo*>> tableList = this->tableMap.GetValues();
 	DB::DBCache::TableInfo *table;
 	UOSInt i = tableList->GetCount();
 	while (i-- > 0)
@@ -96,7 +96,7 @@ OSInt DB::DBCache::GetRowCount(Text::CString tableName)
 	}
 }
 
-UOSInt DB::DBCache::QueryTableData(NotNullPtr<Data::ArrayListNN<DB::DBRow>> outRows, Text::CString tableName, DB::PageRequest *page)
+UOSInt DB::DBCache::QueryTableData(NN<Data::ArrayListNN<DB::DBRow>> outRows, Text::CString tableName, DB::PageRequest *page)
 {
 	DB::DBCache::TableInfo *tableInfo = this->GetTableInfo(tableName);
 	if (tableInfo == 0)
@@ -104,10 +104,10 @@ UOSInt DB::DBCache::QueryTableData(NotNullPtr<Data::ArrayListNN<DB::DBRow>> outR
 	UOSInt ret = 0;
 	DB::SQLBuilder sql(this->db);
 	DB::SQLGenerator::PageStatus status = DB::SQLGenerator::GenSelectCmdPage(sql, tableInfo->def, page);
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (this->db->ExecuteReader(sql.ToCString()).SetTo(r))
 	{
-		NotNullPtr<DB::DBRow> row;
+		NN<DB::DBRow> row;
 		UOSInt pageSkip = 0;
 		UOSInt pageSize = page->GetPageSize();
 		if (status != DB::SQLGenerator::PageStatus::Succ)
@@ -143,7 +143,7 @@ DB::DBRow *DB::DBCache::GetTableItem(Text::CString tableName, Int64 pk)
 	DB::DBCache::TableInfo *tableInfo = this->GetTableInfo(tableName);
 	if (tableInfo == 0)
 		return 0;
-	NotNullPtr<DB::ColDef> col;
+	NN<DB::ColDef> col;
 	if (!tableInfo->def->GetSinglePKCol().SetTo(col))
 	{
 		return 0;
@@ -185,7 +185,7 @@ DB::DBRow *DB::DBCache::GetTableItem(Text::CString tableName, Int64 pk)
 	sql.AppendCol(col->GetColName()->v);
 	sql.AppendCmdC(CSTR(" = "));
 	sql.AppendInt64(pk);
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (this->db->ExecuteReader(sql.ToCString()).SetTo(r))
 	{
 		if (r->ReadNext())
@@ -198,12 +198,12 @@ DB::DBRow *DB::DBCache::GetTableItem(Text::CString tableName, Int64 pk)
 	return row;
 }
 
-void DB::DBCache::FreeTableData(NotNullPtr<Data::ArrayListNN<DB::DBRow>> rows)
+void DB::DBCache::FreeTableData(NN<Data::ArrayListNN<DB::DBRow>> rows)
 {
-	NotNullPtr<DB::DBRow> row;
+	NN<DB::DBRow> row;
 	if (rows->GetCount() > 0 && rows->GetItem(0).SetTo(row))
 	{
-		NotNullPtr<DB::TableDef> table = row->GetTableDef();
+		NN<DB::TableDef> table = row->GetTableDef();
 		DB::DBCache::TableInfo *tableInfo = this->GetTableInfo(table);
 		if (tableInfo->dataCnt >= this->cacheCnt)
 		{
@@ -217,7 +217,7 @@ void DB::DBCache::FreeTableData(NotNullPtr<Data::ArrayListNN<DB::DBRow>> rows)
 	}
 }
 
-void DB::DBCache::FreeTableItem(NotNullPtr<DB::DBRow> row)
+void DB::DBCache::FreeTableItem(NN<DB::DBRow> row)
 {
 	row.Delete();
 }

@@ -6,7 +6,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRGPUInfoForm::OnGPUSelChange(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGPUInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPUInfoForm>();
+	NN<SSWR::AVIRead::AVIRGPUInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPUInfoForm>();
 	IO::IGPUControl *gpu = (IO::IGPUControl*)me->lbGPU->GetSelectedItem().p;
 	if (gpu == 0)
 	{
@@ -45,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIRGPUInfoForm::OnGPUSelChange(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRGPUInfoForm::AVIRGPUInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)
+SSWR::AVIRead::AVIRGPUInfoForm::AVIRGPUInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetText(CSTR("GPU Info"));
 	this->SetFont(0, 0, 8.25, false);

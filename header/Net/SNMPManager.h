@@ -12,7 +12,7 @@ namespace Net
 	public:
 		typedef struct
 		{
-			NotNullPtr<Text::String> name;
+			NN<Text::String> name;
 			UOSInt index;
 			UInt8 objId[64];
 			UOSInt objIdLen;
@@ -26,10 +26,10 @@ namespace Net
 		typedef struct
 		{
 			Net::SocketUtil::AddressInfo addr;
-			NotNullPtr<Text::String> community;
+			NN<Text::String> community;
 			UInt8 objId[64];
 			UOSInt objIdLen;
-			NotNullPtr<Text::String> descr;
+			NN<Text::String> descr;
 			Text::String *contact;
 			Text::String *name;
 			Text::String *location;
@@ -48,15 +48,15 @@ namespace Net
 
 		static void FreeAllItems(Data::ArrayList<Net::SNMPUtil::BindingItem*> *itemList);
 	public:
-		SNMPManager(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log);
+		SNMPManager(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log);
 		~SNMPManager();
 
 		Bool IsError();
 		void UpdateValues();
-		UOSInt GetAgentList(NotNullPtr<Data::ArrayList<AgentInfo*>> agentList);
+		UOSInt GetAgentList(NN<Data::ArrayList<AgentInfo*>> agentList);
 
-		AgentInfo *AddAgent(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, NotNullPtr<Text::String> community);
-		UOSInt AddAgents(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, NotNullPtr<Text::String> community, Data::ArrayList<AgentInfo*> *agentList, Bool scanIP);
+		AgentInfo *AddAgent(NN<const Net::SocketUtil::AddressInfo> addr, NN<Text::String> community);
+		UOSInt AddAgents(NN<const Net::SocketUtil::AddressInfo> addr, NN<Text::String> community, Data::ArrayList<AgentInfo*> *agentList, Bool scanIP);
 
 		static void Agent2Record(const AgentInfo *agent, SSWR::SMonitor::ISMonitorCore::DevRecord2 *rec, Int64 *cliId);
 		static Int64 Agent2CliId(const AgentInfo *agent);

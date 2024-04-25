@@ -9,7 +9,7 @@ namespace UI
 		class JavaCheckedListBox : public GUICheckedListBox
 		{
 		public:
-			JavaCheckedListBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
+			JavaCheckedListBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 			virtual ~JavaCheckedListBox();
 
 			virtual Bool GetItemChecked(UOSInt index);

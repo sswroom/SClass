@@ -3,12 +3,12 @@
 #include "Crypto/Hash/Bcrypt.h"
 #include "Text/StringBuilderUTF8.h"
 
-Bool BCryptTest(NotNullPtr<Crypto::Hash::Bcrypt> bcrypt, Text::CStringNN hash, Text::CStringNN password)
+Bool BCryptTest(NN<Crypto::Hash::Bcrypt> bcrypt, Text::CStringNN hash, Text::CStringNN password)
 {
 	return bcrypt->Matches(hash, password);
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Crypto::Hash::Bcrypt bcrypt;
 	UInt8 radixTest[] = {0x85, 0x20, 0xAF, 0x9F, 0x03, 0x3D, 0xB3, 0x8C, 0x08, 0x5F, 0xD2, 0x5E, 0x2D, 0xAA, 0x5E, 0x84, 0xA2, 0xB9, 0x61, 0xD2, 0xF1, 0x29, 0xC9, 0xA4};

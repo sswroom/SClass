@@ -22,26 +22,26 @@ namespace SSWR
 		class AVIRTraceRouteForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Net::SocketFactory> sockf;
 			Net::WhoisHandler whois;
 
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUILabel> lblSelfIP;
-			NotNullPtr<UI::GUIComboBox> cboSelfIP;
-			NotNullPtr<UI::GUILabel> lblTargetIP;
-			NotNullPtr<UI::GUITextBox> txtTargetIP;
-			NotNullPtr<UI::GUIButton> btnStart;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUILabel> lblSelfIP;
+			NN<UI::GUIComboBox> cboSelfIP;
+			NN<UI::GUILabel> lblTargetIP;
+			NN<UI::GUITextBox> txtTargetIP;
+			NN<UI::GUIButton> btnStart;
 
-			NotNullPtr<UI::GUIListBox> lbIP;
-			NotNullPtr<UI::GUIHSplitter> hspIP;
-			NotNullPtr<UI::GUITextBox> txtIPWhois;
+			NN<UI::GUIListBox> lbIP;
+			NN<UI::GUIHSplitter> hspIP;
+			NN<UI::GUITextBox> txtIPWhois;
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnIPSelChg(AnyType userObj);
 
 		public:
-			AVIRTraceRouteForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRTraceRouteForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTraceRouteForm();
 
 			virtual void OnMonitorChanged();

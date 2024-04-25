@@ -22,7 +22,7 @@ Int32 Parser::FileParser::PCAPNGParser::GetName()
 	return *(Int32*)"PCAN";
 }
 
-void Parser::FileParser::PCAPNGParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::PCAPNGParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::EthernetAnalyzer)
 	{
@@ -35,7 +35,7 @@ IO::ParserType Parser::FileParser::PCAPNGParser::GetParserType()
 	return IO::ParserType::EthernetAnalyzer;
 }
 
-IO::ParsedObject *Parser::FileParser::PCAPNGParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt32 maxSize = 65536;
 	UInt64 currOfst;

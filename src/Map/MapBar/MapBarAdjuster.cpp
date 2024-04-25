@@ -9,7 +9,7 @@
 #include "Text/StringBuilder.h"
 #include "Text/XMLDOM.h"
 
-Map::MapBar::MapBarAdjuster::MapBarAdjuster(NotNullPtr<Net::SocketFactory> sockf, IO::Writer *errWriter)
+Map::MapBar::MapBarAdjuster::MapBarAdjuster(NN<Net::SocketFactory> sockf, IO::Writer *errWriter)
 {
 	this->sockf = sockf;
 	this->errWriter = errWriter;
@@ -23,7 +23,7 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 {
 	UInt8 *buff;
 	UInt8 *xmlBuff;
-	NotNullPtr<Net::HTTPClient> cli;
+	NN<Net::HTTPClient> cli;
 	IO::MemoryStream *mstm;
 	Text::XMLDocument *xmlDoc;
 	Text::EncodingFactory encFact;

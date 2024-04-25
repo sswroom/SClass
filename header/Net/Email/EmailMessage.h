@@ -29,15 +29,15 @@ namespace Net
 			{
 				RecipientType type;
 				Optional<Text::String> name;
-				NotNullPtr<Text::String> addr;
+				NN<Text::String> addr;
 			};
 
 			struct Attachment
 			{
 				UInt8 *content;
 				UOSInt contentLen;
-				NotNullPtr<Text::String> contentId;
-				NotNullPtr<Text::String> fileName;
+				NN<Text::String> contentId;
+				NN<Text::String> fileName;
 				Data::DateTime createTime;
 				Data::DateTime modifyTime;
 				Bool isInline;
@@ -58,23 +58,23 @@ namespace Net
 
 			UOSInt GetHeaderIndex(const UTF8Char *name, UOSInt nameLen);
 			Bool SetHeader(const UTF8Char *name, UOSInt nameLen, const UTF8Char *val, UOSInt valLen);
-			Bool AppendUTF8Header(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *val, UOSInt valLen);
-			void GenMultipart(NotNullPtr<IO::Stream> stm, Text::CString boundary);
+			Bool AppendUTF8Header(NN<Text::StringBuilderUTF8> sb, const UTF8Char *val, UOSInt valLen);
+			void GenMultipart(NN<IO::Stream> stm, Text::CString boundary);
 
-			void WriteHeaders(NotNullPtr<IO::Stream> stm);
-			void WriteContents(NotNullPtr<IO::Stream> stm);
+			void WriteHeaders(NN<IO::Stream> stm);
+			void WriteContents(NN<IO::Stream> stm);
 			static UTF8Char *GenBoundary(UTF8Char *sbuff, const UInt8 *data, UOSInt dataLen);
-			static void WriteB64Data(NotNullPtr<IO::Stream> stm, const UInt8 *data, UOSInt dataSize);
-			static void AttachmentFree(NotNullPtr<Attachment> attachment);
-			static void EmailAddressFree(NotNullPtr<EmailAddress> recipient);
-			static NotNullPtr<EmailAddress> EmailAddressCreate(RecipientType type, Text::CString name, Text::CStringNN addr);
+			static void WriteB64Data(NN<IO::Stream> stm, const UInt8 *data, UOSInt dataSize);
+			static void AttachmentFree(NN<Attachment> attachment);
+			static void EmailAddressFree(NN<EmailAddress> recipient);
+			static NN<EmailAddress> EmailAddressCreate(RecipientType type, Text::CString name, Text::CStringNN addr);
 		public:
 			EmailMessage();
 			~EmailMessage();
 			
 			Bool SetSubject(Text::CStringNN subject);
 			Bool SetContent(Text::CStringNN content, Text::CStringNN contentType);
-			Bool SetSentDate(NotNullPtr<Data::DateTime> dt);
+			Bool SetSentDate(NN<Data::DateTime> dt);
 			Bool SetSentDate(Data::Timestamp ts);
 			Bool SetMessageId(Text::CString msgId);
 			Bool SetFrom(Text::CString name, Text::CStringNN addr);
@@ -84,15 +84,15 @@ namespace Net
 			Bool AddBcc(Text::CStringNN addr);
 			void AddCustomHeader(Text::CStringNN name, Text::CStringNN value);
 			Optional<Attachment> AddAttachment(Text::CStringNN fileName);
-			NotNullPtr<Attachment> AddAttachment(const UInt8 *content, UOSInt contentLen, Text::CString fileName);
+			NN<Attachment> AddAttachment(const UInt8 *content, UOSInt contentLen, Text::CString fileName);
 			Bool AddSignature(Optional<Net::SSLEngine> ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509Key *key);
 
 			Bool CompletedMessage();
 			Optional<EmailAddress> GetFrom();
-			NotNullPtr<const Data::ArrayListNN<EmailAddress>> GetRecpList();
-			Bool WriteToStream(NotNullPtr<IO::Stream> stm);
+			NN<const Data::ArrayListNN<EmailAddress>> GetRecpList();
+			Bool WriteToStream(NN<IO::Stream> stm);
 
-			static Bool GenerateMessageID(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString fromAddr);
+			static Bool GenerateMessageID(NN<Text::StringBuilderUTF8> sb, Text::CString fromAddr);
 		};
 	}
 }

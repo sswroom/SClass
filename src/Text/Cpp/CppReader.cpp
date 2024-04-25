@@ -2,7 +2,7 @@
 #include "Text/CharUtil.h"
 #include "Text/Cpp/CppReader.h"
 
-Bool Text::Cpp::CppReader::ReadLineInner(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Text::Cpp::CppReader::ReadLineInner(NN<Text::StringBuilderUTF8> sb)
 {
 	UOSInt initSize = sb->GetLength();
 	if (!this->reader.ReadLine(sb, 512))
@@ -83,7 +83,7 @@ Bool Text::Cpp::CppReader::ReadLineInner(NotNullPtr<Text::StringBuilderUTF8> sb)
 	return true;
 }
 
-Bool Text::Cpp::CppReader::ReadWord(NotNullPtr<Text::StringBuilderUTF8> sb, Bool move)
+Bool Text::Cpp::CppReader::ReadWord(NN<Text::StringBuilderUTF8> sb, Bool move)
 {
 	while (this->currOfst >= this->sbLine.GetCharCnt())
 	{
@@ -202,7 +202,7 @@ Bool Text::Cpp::CppReader::ReadWord(NotNullPtr<Text::StringBuilderUTF8> sb, Bool
 	}
 }
 
-Text::Cpp::CppReader::CppReader(NotNullPtr<IO::Stream> stm) : reader(stm)
+Text::Cpp::CppReader::CppReader(NN<IO::Stream> stm) : reader(stm)
 {
 	this->currOfst = 0;
 	this->escapeType = ET_NONE;
@@ -212,17 +212,17 @@ Text::Cpp::CppReader::~CppReader()
 {
 }
 
-Bool Text::Cpp::CppReader::PeekWord(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Text::Cpp::CppReader::PeekWord(NN<Text::StringBuilderUTF8> sb)
 {
 	return ReadWord(sb, false);
 }
 
-Bool Text::Cpp::CppReader::NextWord(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Text::Cpp::CppReader::NextWord(NN<Text::StringBuilderUTF8> sb)
 {
 	return ReadWord(sb, true);
 }
 
-Bool Text::Cpp::CppReader::ReadLine(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Text::Cpp::CppReader::ReadLine(NN<Text::StringBuilderUTF8> sb)
 {
 	if (this->currOfst >= this->sbLine.GetCharCnt())
 	{
@@ -236,7 +236,7 @@ Bool Text::Cpp::CppReader::ReadLine(NotNullPtr<Text::StringBuilderUTF8> sb)
 	}
 }
 
-Bool Text::Cpp::CppReader::GetLastLineBreak(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Text::Cpp::CppReader::GetLastLineBreak(NN<Text::StringBuilderUTF8> sb)
 {
 	return this->reader.GetLastLineBreak(sb);
 }

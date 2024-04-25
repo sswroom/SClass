@@ -1025,15 +1025,15 @@ void Math::GeometryTool::CalcHVAngleDeg(Math::Coord2DDbl ptCurr, Math::Coord2DDb
 Math::Geometry::Polygon *Math::GeometryTool::CreateCircularPolygonWGS84(Math::Coord2DDbl pt, Double radiusMeter, UOSInt nPoints)
 {
 	Math::Geometry::Polygon *pg = 0;
-	NotNullPtr<Math::CoordinateSystem> csys4326;
-	NotNullPtr<Math::CoordinateSystem> csys3857;
+	NN<Math::CoordinateSystem> csys4326;
+	NN<Math::CoordinateSystem> csys3857;
 	if (csys4326.Set(Math::CoordinateSystemManager::SRCreateCSys(4326)))
 	{
 		if (csys3857.Set(Math::CoordinateSystemManager::SRCreateCSys(3857)))
 		{
 			Math::CoordinateSystemConverter converter(csys3857, csys4326);
 			Math::Coord2DDbl outPos = CoordinateSystem::Convert(csys4326, csys3857, pt);
-			NotNullPtr<Math::Geometry::LinearRing> lr;
+			NN<Math::Geometry::LinearRing> lr;
 			NEW_CLASSNN(lr, Math::Geometry::LinearRing(3857, nPoints + 1, false, false));
 			UOSInt pgNPt;
 			Math::Coord2DDbl *ptArr = lr->GetPointList(pgNPt);
@@ -1091,7 +1091,7 @@ Math::Coord2DDbl GeometryTool_ArcNearest(Double x, Double y, Double h, Double k,
 	return Math::Coord2DDbl(thisX, thisY);
 }
 
-UOSInt Math::GeometryTool::ArcToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, Math::Coord2DDbl pt3, Double minDist, NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> ptOut)
+UOSInt Math::GeometryTool::ArcToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, Math::Coord2DDbl pt3, Double minDist, NN<Data::ArrayListA<Math::Coord2DDbl>> ptOut)
 {
 	//(x – h)^2 + (y – k)^2 = r^2
 	//2h(x1 - x2) + 2k(y1 - y2) = x1^2 - x2^2 + y1^2 - y2^2
@@ -1139,7 +1139,7 @@ UOSInt Math::GeometryTool::ArcToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2,
 	return ptOut->GetCount() - initCnt;
 }
 
-/*UOSInt Math::GeometryTool::CurveToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, Math::Coord2DDbl pt3, Double minDist, NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> ptOut)
+/*UOSInt Math::GeometryTool::CurveToLine(Math::Coord2DDbl pt1, Math::Coord2DDbl pt2, Math::Coord2DDbl pt3, Double minDist, NN<Data::ArrayListA<Math::Coord2DDbl>> ptOut)
 {
 	ptOut->Add(pt1);
 	ptOut->Add(pt2);

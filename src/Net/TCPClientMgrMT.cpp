@@ -121,7 +121,7 @@ Net::TCPClientMgr::~TCPClientMgr()
 	DEL_CLASS(cliEvt);
 }
 
-void Net::TCPClientMgr::AddClient(NotNullPtr<TCPClient> cli, void *cliData)
+void Net::TCPClientMgr::AddClient(NN<TCPClient> cli, void *cliData)
 {
 	cli->SetNoDelay(true);
 	cli->SetTimeout(this->timeout);
@@ -181,7 +181,7 @@ void Net::TCPClientMgr::CloseAll()
 	mutUsage.EndUse();
 }
 
-void Net::TCPClientMgr::UseGetClient(NotNullPtr<Sync::MutexUsage> mutUsage)
+void Net::TCPClientMgr::UseGetClient(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->cliMut);
 }
@@ -191,7 +191,7 @@ UOSInt Net::TCPClientMgr::GetClientCount() const
 	return this->cliMap.GetCount();
 }
 
-void Net::TCPClientMgr::ExtendTimeout(NotNullPtr<Net::TCPClient> cli)
+void Net::TCPClientMgr::ExtendTimeout(NN<Net::TCPClient> cli)
 {
 	Sync::MutexUsage mutUsage(this->cliMut);
 	Net::TCPClientMgr::TCPClientStatus *cliStat = this->cliMap.Get(cli->GetCliId());

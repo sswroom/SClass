@@ -12,9 +12,9 @@ namespace UI
 	{
 	private:
 		Sync::Mutex mut;
-		NotNullPtr<UI::GUIListBox> lb;
-		NotNullPtr<UI::GUITimer> tmr;
-		NotNullPtr<UI::GUIForm> frm;
+		NN<UI::GUIListBox> lb;
+		NN<UI::GUITimer> tmr;
+		NN<UI::GUIForm> frm;
 		UOSInt maxLog;
 		Bool reverse;
 		Text::String **logArr;
@@ -27,14 +27,14 @@ namespace UI
 		static void __stdcall TimerTick(AnyType userObj);
 		static void __stdcall OnListBoxSelChg(AnyType userObj);
 	public:
-		ListBoxLogger(NotNullPtr<UI::GUIForm> frm, NotNullPtr<UI::GUIListBox> lb, UOSInt maxLog, Bool reverse);
+		ListBoxLogger(NN<UI::GUIForm> frm, NN<UI::GUIListBox> lb, UOSInt maxLog, Bool reverse);
 		virtual ~ListBoxLogger();
 		virtual void LogClosed();
 		virtual void LogAdded(const Data::Timestamp &logTime, Text::CStringNN logMsg, IO::LogHandler::LogLevel logLev);
 
 		void SetTimeFormat(const Char *timeFormat);
 
-		static NotNullPtr<ListBoxLogger> CreateUI(NotNullPtr<UI::GUIForm> frm, NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> ctrl, UOSInt maxLog, Bool reverse);
+		static NN<ListBoxLogger> CreateUI(NN<UI::GUIForm> frm, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, UOSInt maxLog, Bool reverse);
 	};
 }
 #endif

@@ -13,17 +13,17 @@ namespace Net
 		class GCISNotifyHandler : public WebServiceHandler
 		{
 		public:
-			typedef void (__stdcall *MailHandler)(AnyType userObj, NotNullPtr<Net::NetConnection> cli, NotNullPtr<const Text::MIMEObj::MailMessage> msg);
+			typedef void (__stdcall *MailHandler)(AnyType userObj, NN<Net::NetConnection> cli, NN<const Text::MIMEObj::MailMessage> msg);
 		private:
 			MailHandler hdlr;
 			AnyType hdlrObj;
-			NotNullPtr<IO::LogTool> log;
+			NN<IO::LogTool> log;
 
-			static Bool __stdcall NotifyFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> me);
-			static Bool __stdcall BatchUplFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> me);
+			static Bool __stdcall NotifyFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);
+			static Bool __stdcall BatchUplFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);
 
 		public:
-			GCISNotifyHandler(Text::CStringNN notifyPath, Text::CStringNN batchUplPath, MailHandler hdlr, AnyType userObj, NotNullPtr<IO::LogTool> log);
+			GCISNotifyHandler(Text::CStringNN notifyPath, Text::CStringNN batchUplPath, MailHandler hdlr, AnyType userObj, NN<IO::LogTool> log);
 			virtual ~GCISNotifyHandler();
 		};
 	}

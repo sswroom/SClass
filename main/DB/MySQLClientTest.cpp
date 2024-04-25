@@ -382,7 +382,7 @@ IO::ConsoleWriter *console;
 void TextReadAll(DB::DBTool *db)
 {
 	Data::ArrayListNN<Userfile> dataList;
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (db->QueryTableData(CSTR_NULL, CSTR("userfile"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		NN<Data::NamedClass<Userfile>> cls = Userfile().CreateClass();
@@ -403,8 +403,8 @@ void TextReadAll(DB::DBTool *db)
 void TestBinaryRead(DB::DBTool *db)
 {
 	Data::ArrayListNN<Userfile> dataList;
-	NotNullPtr<Net::MySQLTCPClient> conn = NotNullPtr<Net::MySQLTCPClient>::ConvertFrom(db->GetDBConn());
-	NotNullPtr<DB::DBReader> r;
+	NN<Net::MySQLTCPClient> conn = NN<Net::MySQLTCPClient>::ConvertFrom(db->GetDBConn());
+	NN<DB::DBReader> r;
 	if (conn->ExecuteReaderBinary(CSTR("select * from userfile")).SetTo(r))
 	{
 		NN<Data::NamedClass<Userfile>> cls = Userfile().CreateClass();
@@ -433,7 +433,7 @@ void TestBinaryRead(DB::DBTool *db)
 	}
 }
 
-void TempTest(NotNullPtr<Net::SocketFactory> sockf, IO::Writer *console)
+void TempTest(NN<Net::SocketFactory> sockf, IO::Writer *console)
 {
 	Text::CStringNN mysqlServer;
 	Text::CStringNN mysqlDB;
@@ -448,7 +448,7 @@ void TempTest(NotNullPtr<Net::SocketFactory> sockf, IO::Writer *console)
 	db = Net::MySQLTCPClient::CreateDBTool(sockf, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, log, CSTR("DB: "));
 	if (db)
 	{
-		NotNullPtr<DB::DBReader> r;
+		NN<DB::DBReader> r;
 		if (db->ExecuteReader(CSTR("select id, time1, time2 from test")).SetTo(r))
 		{
 			UTF8Char sbuff[64];
@@ -466,7 +466,7 @@ void TempTest(NotNullPtr<Net::SocketFactory> sockf, IO::Writer *console)
 	}
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Text::CStringNN mysqlServer;
 	Text::CStringNN mysqlDB;

@@ -19,7 +19,7 @@ namespace UI
 			Data::StringUTF8Map<OSInt> targetMap;
 			Data::FastMap<Int32, Text::String*> targetText;
 
-			static void AppendWC(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF16Char *s, UOSInt slen);
+			static void AppendWC(NN<Text::StringBuilderUTF8> sb, const UTF16Char *s, UOSInt slen);
 
 			void LoadData();
 		public:
@@ -28,7 +28,7 @@ namespace UI
 
 			virtual UOSInt GetCount();
 			virtual const UTF8Char *GetName(UOSInt index);
-			virtual Bool GetDataText(const UTF8Char *name, NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual Bool GetDataText(const UTF8Char *name, NN<Text::StringBuilderUTF8> sb);
 			virtual IO::Stream *GetDataStream(const UTF8Char *name);
 
 			void OnDataReceived(void *selData);

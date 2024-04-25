@@ -11,7 +11,7 @@ namespace UI
 		private:
 			UInt64 totalCnt;
 		public:
-			WinProgressBar(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, UInt64 totalCnt);
+			WinProgressBar(NN<GUICore> ui, NN<UI::GUIClientControl> parent, UInt64 totalCnt);
 			virtual ~WinProgressBar();
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);

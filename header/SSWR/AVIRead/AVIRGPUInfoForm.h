@@ -14,16 +14,16 @@ namespace SSWR
 		class AVIRGPUInfoForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIListBox> lbGPU;
-			NotNullPtr<UI::GUIHSplitter> hspGPU;
-			NotNullPtr<UI::GUIListView> lvMain;
+			NN<UI::GUIListBox> lbGPU;
+			NN<UI::GUIHSplitter> hspGPU;
+			NN<UI::GUIListView> lvMain;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::GPUManager *gpuMgr;
 
 			static void __stdcall OnGPUSelChange(AnyType userObj);
 		public:
-			AVIRGPUInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRGPUInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRGPUInfoForm();
 
 			virtual void OnMonitorChanged();

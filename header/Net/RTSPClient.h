@@ -17,10 +17,10 @@ namespace Net
 		{
 			Int32 useCnt;
 
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			Net::TCPClient *cli;
 			Sync::Mutex cliMut;
-			NotNullPtr<Text::String> host;
+			NN<Text::String> host;
 			UInt16 port;
 			Int32 nextSeq;
 			Data::Duration timeout;
@@ -46,27 +46,27 @@ namespace Net
 
 		RTSPClient(const RTSPClient *cli);
 	public:
-		RTSPClient(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN host, UInt16 port, Data::Duration timeout);
+		RTSPClient(NN<Net::SocketFactory> sockf, Text::CStringNN host, UInt16 port, Data::Duration timeout);
 		~RTSPClient();
 
 
 		Bool GetOptions(Text::CString url, Data::ArrayList<const UTF8Char *> *options);
 		Net::SDPFile *GetMediaInfo(Text::CString url);
 
-		static IO::ParsedObject *ParseURL(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN url, Data::Duration timeout, NotNullPtr<IO::LogTool> log);
+		static IO::ParsedObject *ParseURL(NN<Net::SocketFactory> sockf, Text::CStringNN url, Data::Duration timeout, NN<IO::LogTool> log);
 
 	private:
-		UTF8Char *SetupRTP(UTF8Char *sessIdOut, Text::CString url, NotNullPtr<Net::RTPCliChannel> rtpChannel);
+		UTF8Char *SetupRTP(UTF8Char *sessIdOut, Text::CString url, NN<Net::RTPCliChannel> rtpChannel);
 
 		Bool Play(Text::CString url, Text::CString sessId);
 		Bool Close(Text::CString url, Text::CString sessId);
 
 	public:
-		virtual Bool Init(NotNullPtr<Net::RTPCliChannel> rtpChannel);
-		virtual Bool Play(NotNullPtr<Net::RTPCliChannel> rtpChannel);
-		virtual Bool KeepAlive(NotNullPtr<Net::RTPCliChannel> rtpChannel);
-		virtual Bool StopPlay(NotNullPtr<Net::RTPCliChannel> rtpChannel);
-		virtual Bool Deinit(NotNullPtr<Net::RTPCliChannel> rtpChannel);
+		virtual Bool Init(NN<Net::RTPCliChannel> rtpChannel);
+		virtual Bool Play(NN<Net::RTPCliChannel> rtpChannel);
+		virtual Bool KeepAlive(NN<Net::RTPCliChannel> rtpChannel);
+		virtual Bool StopPlay(NN<Net::RTPCliChannel> rtpChannel);
+		virtual Bool Deinit(NN<Net::RTPCliChannel> rtpChannel);
 
 		virtual Net::IRTPController *Clone() const;
 	};

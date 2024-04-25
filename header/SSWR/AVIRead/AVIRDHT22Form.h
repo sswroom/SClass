@@ -16,26 +16,26 @@ namespace SSWR
 		class AVIRDHT22Form : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblTemp;
-			NotNullPtr<UI::GUITextBox> txtTemp;
-			NotNullPtr<UI::GUILabel> lblRH;
-			NotNullPtr<UI::GUITextBox> txtRH;
-			NotNullPtr<UI::GUILabel> lblHumidity;
-			NotNullPtr<UI::GUITextBox> txtHumidity;
-			NotNullPtr<UI::GUIButton> btnRead;
-			NotNullPtr<UI::GUICheckBox> chkAutoRead;
-			NotNullPtr<UI::GUILabel> lblStatus;
-			NotNullPtr<UI::GUITextBox> txtStatus;
+			NN<UI::GUILabel> lblTemp;
+			NN<UI::GUITextBox> txtTemp;
+			NN<UI::GUILabel> lblRH;
+			NN<UI::GUITextBox> txtRH;
+			NN<UI::GUILabel> lblHumidity;
+			NN<UI::GUITextBox> txtHumidity;
+			NN<UI::GUIButton> btnRead;
+			NN<UI::GUICheckBox> chkAutoRead;
+			NN<UI::GUILabel> lblStatus;
+			NN<UI::GUITextBox> txtStatus;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<IO::IOPin> pin;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<IO::IOPin> pin;
 			IO::Device::DHT22 *dht22;
 
 			static void __stdcall OnReadClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			void ReadData();
 		public:
-			AVIRDHT22Form(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::IOPin> pin);
+			AVIRDHT22Form(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::IOPin> pin);
 			virtual ~AVIRDHT22Form();
 
 			virtual void OnMonitorChanged();

@@ -9,7 +9,7 @@ namespace Media
 		class CSYUV420P8_RGB32C : public Media::CS::CSYUV420_RGB32C
 		{
 		public:
-			CSYUV420P8_RGB32C(NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess, Media::PixelFormat destPF);
+			CSYUV420P8_RGB32C(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess, Media::PixelFormat destPF);
 			virtual ~CSYUV420P8_RGB32C();
 			virtual void ConvertV2(UInt8 *const* srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
 		};

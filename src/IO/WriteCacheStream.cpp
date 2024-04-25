@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/WriteCacheStream.h"
 
-IO::WriteCacheStream::WriteCacheStream(NotNullPtr<IO::Stream> outStm) : IO::Stream(outStm->GetSourceNameObj())
+IO::WriteCacheStream::WriteCacheStream(NN<IO::Stream> outStm) : IO::Stream(outStm->GetSourceNameObj())
 {
 	this->outStm = outStm;
 	this->cacheBuff = 0;

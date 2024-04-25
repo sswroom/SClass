@@ -6,7 +6,7 @@
 #include "Media/AudioFilter/SoundGen/BellSoundGen.h"
 #include "Text/MyString.h"
 
-Media::AudioFilter::SoundGenerator::SoundGenerator(NotNullPtr<IAudioSource> sourceAudio) : Media::IAudioFilter(sourceAudio)
+Media::AudioFilter::SoundGenerator::SoundGenerator(NN<IAudioSource> sourceAudio) : Media::IAudioFilter(sourceAudio)
 {
 	sourceAudio->GetFormat(this->format);
 	Media::AudioFilter::SoundGen::ISoundGen *sndGen;
@@ -27,7 +27,7 @@ Media::AudioFilter::SoundGenerator::~SoundGenerator()
 	}
 }
 
-void Media::AudioFilter::SoundGenerator::GetFormat(NotNullPtr<AudioFormat> format)
+void Media::AudioFilter::SoundGenerator::GetFormat(NN<AudioFormat> format)
 {
 	format->FromAudioFormat(this->format);
 }

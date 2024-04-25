@@ -12,20 +12,20 @@ namespace SSWR
 		class AVIREDIDViewerForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			NotNullPtr<UI::GUIButton> btnSave;
-			NotNullPtr<UI::GUIButton> btnHex;
-			NotNullPtr<UI::GUITextBox> txtEDID;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUIButton> btnSave;
+			NN<UI::GUIButton> btnHex;
+			NN<UI::GUITextBox> txtEDID;
 			UInt8 *edid;
 			UOSInt edidSize;
 			
 			void UpdateEDIDDisp();
 			static void __stdcall OnSaveClicked(AnyType userObj);
 			static void __stdcall OnHexClicked(AnyType userObj);
-			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> fileNames);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> fileNames);
 		public:
-			AVIREDIDViewerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIREDIDViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIREDIDViewerForm();
 
 			virtual void OnMonitorChanged();

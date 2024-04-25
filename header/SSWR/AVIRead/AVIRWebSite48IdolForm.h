@@ -18,38 +18,38 @@ namespace SSWR
 		class AVIRWebSite48IdolForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 			
-			NotNullPtr<UI::GUITabPage> tpItems;
-			NotNullPtr<UI::GUIPanel> pnlRequest;
-			NotNullPtr<UI::GUILabel> lblPageNo;
-			NotNullPtr<UI::GUITextBox> txtPageNo;
-			NotNullPtr<UI::GUIButton> btnRequestPage;
-			NotNullPtr<UI::GUIListView> lvItems;
+			NN<UI::GUITabPage> tpItems;
+			NN<UI::GUIPanel> pnlRequest;
+			NN<UI::GUILabel> lblPageNo;
+			NN<UI::GUITextBox> txtPageNo;
+			NN<UI::GUIButton> btnRequestPage;
+			NN<UI::GUIListView> lvItems;
 
-			NotNullPtr<UI::GUITabPage> tpDownloadLink;
-			NotNullPtr<UI::GUILabel> lblVideoId;
-			NotNullPtr<UI::GUITextBox> txtVideoId;
-			NotNullPtr<UI::GUIButton> btnDownloadLink;
-			NotNullPtr<UI::GUILabel> lblDownloadLink;
-			NotNullPtr<UI::GUITextBox> txtDownloadLink;
+			NN<UI::GUITabPage> tpDownloadLink;
+			NN<UI::GUILabel> lblVideoId;
+			NN<UI::GUITextBox> txtVideoId;
+			NN<UI::GUIButton> btnDownloadLink;
+			NN<UI::GUILabel> lblDownloadLink;
+			NN<UI::GUITextBox> txtDownloadLink;
 
-			NotNullPtr<UI::GUITabPage> tpVideoName;
-			NotNullPtr<UI::GUILabel> lblNameVideoId;
-			NotNullPtr<UI::GUITextBox> txtNameVideoId;
-			NotNullPtr<UI::GUIButton> btnVideoName;
-			NotNullPtr<UI::GUILabel> lblVideoName;
-			NotNullPtr<UI::GUITextBox> txtVideoName;
+			NN<UI::GUITabPage> tpVideoName;
+			NN<UI::GUILabel> lblNameVideoId;
+			NN<UI::GUITextBox> txtNameVideoId;
+			NN<UI::GUIButton> btnVideoName;
+			NN<UI::GUILabel> lblVideoName;
+			NN<UI::GUITextBox> txtVideoName;
 
 			Net::WebSite::WebSite48IdolControl *ctrl;
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
 			static void __stdcall OnRequestPageClicked(AnyType userObj);
 			static void __stdcall OnDownloadLinkClicked(AnyType userObj);
 			static void __stdcall OnVideoNameClicked(AnyType userObj);
 		public:
-			AVIRWebSite48IdolForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRWebSite48IdolForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWebSite48IdolForm();
 
 			virtual void OnMonitorChanged();

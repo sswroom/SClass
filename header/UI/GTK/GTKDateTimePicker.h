@@ -16,13 +16,13 @@ namespace UI
 			const Char *format;
 
 		public:
-			GTKDateTimePicker(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
+			GTKDateTimePicker(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 			virtual ~GTKDateTimePicker();
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);
-			virtual void SetValue(NotNullPtr<Data::DateTime> dt);
+			virtual void SetValue(NN<Data::DateTime> dt);
 			virtual void SetValue(const Data::Timestamp &dt);
-			virtual void GetSelectedTime(NotNullPtr<Data::DateTime> dt);
+			virtual void GetSelectedTime(NN<Data::DateTime> dt);
 			virtual Data::Timestamp GetSelectedTime();
 			virtual void SetFormat(const Char *format);
 			virtual void SetCalShowWeeknum(Bool showWeeknum);

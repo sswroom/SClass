@@ -23,7 +23,7 @@ namespace SSWR
 		class AVIRGPSTrackerForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Map::ILocationService *locSvc;
 			Bool relLocSvc;
 
@@ -48,83 +48,83 @@ namespace SSWR
 			UOSInt nmeaIndex;
 			Bool nmeaUpdated;
 
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpLocation;
-			NotNullPtr<UI::GUILabel> lblStreamStatus;
-			NotNullPtr<UI::GUITextBox> txtStreamStatus;
-			NotNullPtr<UI::GUILabel> lblGPSTime;
-			NotNullPtr<UI::GUITextBox> txtGPSTime;
-			NotNullPtr<UI::GUILabel> lblLatitude;
-			NotNullPtr<UI::GUITextBox> txtLatitude;
-			NotNullPtr<UI::GUILabel> lblLongitude;
-			NotNullPtr<UI::GUITextBox> txtLongitude;
-			NotNullPtr<UI::GUILabel> lblAltitude;
-			NotNullPtr<UI::GUITextBox> txtAltitude;
-			NotNullPtr<UI::GUILabel> lblSpeed;
-			NotNullPtr<UI::GUITextBox> txtSpeed;
-			NotNullPtr<UI::GUILabel> lblHeading;
-			NotNullPtr<UI::GUITextBox> txtHeading;
-			NotNullPtr<UI::GUILabel> lblGPSValid;
-			NotNullPtr<UI::GUITextBox> txtGPSValid;
-			NotNullPtr<UI::GUILabel> lblNSateUsed;
-			NotNullPtr<UI::GUITextBox> txtNSateUsed;
-			NotNullPtr<UI::GUILabel> lblNSateUsedGPS;
-			NotNullPtr<UI::GUITextBox> txtNSateUsedGPS;
-			NotNullPtr<UI::GUILabel> lblNSateUsedSBAS;
-			NotNullPtr<UI::GUITextBox> txtNSateUsedSBAS;
-			NotNullPtr<UI::GUILabel> lblNSateUsedGLO;
-			NotNullPtr<UI::GUITextBox> txtNSateUsedGLO;
-			NotNullPtr<UI::GUILabel> lblNSateViewGPS;
-			NotNullPtr<UI::GUITextBox> txtNSateViewGPS;
-			NotNullPtr<UI::GUILabel> lblNSateViewGLO;
-			NotNullPtr<UI::GUITextBox> txtNSateViewGLO;
-			NotNullPtr<UI::GUILabel> lblNSateViewGA;
-			NotNullPtr<UI::GUITextBox> txtNSateViewGA;
-			NotNullPtr<UI::GUILabel> lblNSateViewQZSS;
-			NotNullPtr<UI::GUITextBox> txtNSateViewQZSS;
-			NotNullPtr<UI::GUILabel> lblNSateViewBD;
-			NotNullPtr<UI::GUITextBox> txtNSateViewBD;
-			NotNullPtr<UI::GUICheckBox> chkAutoPan;
-			NotNullPtr<UI::GUICheckBox> chkNoSleep;
-			NotNullPtr<UI::GUICheckBox> chkTopMost;
-			NotNullPtr<UI::GUIButton> btnDispOff;
-			NotNullPtr<UI::GUILabel> lblDistance;
-			NotNullPtr<UI::GUITextBox> txtDistance;
+			NN<UI::GUITabPage> tpLocation;
+			NN<UI::GUILabel> lblStreamStatus;
+			NN<UI::GUITextBox> txtStreamStatus;
+			NN<UI::GUILabel> lblGPSTime;
+			NN<UI::GUITextBox> txtGPSTime;
+			NN<UI::GUILabel> lblLatitude;
+			NN<UI::GUITextBox> txtLatitude;
+			NN<UI::GUILabel> lblLongitude;
+			NN<UI::GUITextBox> txtLongitude;
+			NN<UI::GUILabel> lblAltitude;
+			NN<UI::GUITextBox> txtAltitude;
+			NN<UI::GUILabel> lblSpeed;
+			NN<UI::GUITextBox> txtSpeed;
+			NN<UI::GUILabel> lblHeading;
+			NN<UI::GUITextBox> txtHeading;
+			NN<UI::GUILabel> lblGPSValid;
+			NN<UI::GUITextBox> txtGPSValid;
+			NN<UI::GUILabel> lblNSateUsed;
+			NN<UI::GUITextBox> txtNSateUsed;
+			NN<UI::GUILabel> lblNSateUsedGPS;
+			NN<UI::GUITextBox> txtNSateUsedGPS;
+			NN<UI::GUILabel> lblNSateUsedSBAS;
+			NN<UI::GUITextBox> txtNSateUsedSBAS;
+			NN<UI::GUILabel> lblNSateUsedGLO;
+			NN<UI::GUITextBox> txtNSateUsedGLO;
+			NN<UI::GUILabel> lblNSateViewGPS;
+			NN<UI::GUITextBox> txtNSateViewGPS;
+			NN<UI::GUILabel> lblNSateViewGLO;
+			NN<UI::GUITextBox> txtNSateViewGLO;
+			NN<UI::GUILabel> lblNSateViewGA;
+			NN<UI::GUITextBox> txtNSateViewGA;
+			NN<UI::GUILabel> lblNSateViewQZSS;
+			NN<UI::GUITextBox> txtNSateViewQZSS;
+			NN<UI::GUILabel> lblNSateViewBD;
+			NN<UI::GUITextBox> txtNSateViewBD;
+			NN<UI::GUICheckBox> chkAutoPan;
+			NN<UI::GUICheckBox> chkNoSleep;
+			NN<UI::GUICheckBox> chkTopMost;
+			NN<UI::GUIButton> btnDispOff;
+			NN<UI::GUILabel> lblDistance;
+			NN<UI::GUITextBox> txtDistance;
 
-			NotNullPtr<UI::GUITabPage> tpAlert;
-			NotNullPtr<UI::GUITabControl> tcAlert;
-			NotNullPtr<UI::GUITabPage> tpAlertAdd;
-			NotNullPtr<UI::GUIListBox> lbAlertLyr;
-			NotNullPtr<UI::GUIHSplitter> hspAlertAdd;
-			NotNullPtr<UI::GUIListBox> lbAlertAdd;
-			NotNullPtr<UI::GUITabPage> tpAlertView;
-			NotNullPtr<UI::GUIPanel> pnlAlertView;
-			NotNullPtr<UI::GUIListBox> lbAlert;
+			NN<UI::GUITabPage> tpAlert;
+			NN<UI::GUITabControl> tcAlert;
+			NN<UI::GUITabPage> tpAlertAdd;
+			NN<UI::GUIListBox> lbAlertLyr;
+			NN<UI::GUIHSplitter> hspAlertAdd;
+			NN<UI::GUIListBox> lbAlertAdd;
+			NN<UI::GUITabPage> tpAlertView;
+			NN<UI::GUIPanel> pnlAlertView;
+			NN<UI::GUIListBox> lbAlert;
 
-			NotNullPtr<UI::GUITabPage> tpMTK;
-			NotNullPtr<UI::GUIGroupBox> grpMTKFirmware;
-			NotNullPtr<UI::GUILabel> lblMTKRelease;
-			NotNullPtr<UI::GUITextBox> txtMTKRelease;
-			NotNullPtr<UI::GUILabel> lblMTKBuildID;
-			NotNullPtr<UI::GUITextBox> txtMTKBuildID;
-			NotNullPtr<UI::GUILabel> lblMTKProdMode;
-			NotNullPtr<UI::GUITextBox> txtMTKProdMode;
-			NotNullPtr<UI::GUILabel> lblMTKSDKVer;
-			NotNullPtr<UI::GUITextBox> txtMTKSDKVer;
-			NotNullPtr<UI::GUIButton> btnMTKFirmware;
-			NotNullPtr<UI::GUIButton> btnMTKLogDownload;
-			NotNullPtr<UI::GUIButton> btnMTKLogDelete;
-			NotNullPtr<UI::GUIButton> btnMTKFactoryReset;
-			NotNullPtr<UI::GUIButton> btnMTKTest;
+			NN<UI::GUITabPage> tpMTK;
+			NN<UI::GUIGroupBox> grpMTKFirmware;
+			NN<UI::GUILabel> lblMTKRelease;
+			NN<UI::GUITextBox> txtMTKRelease;
+			NN<UI::GUILabel> lblMTKBuildID;
+			NN<UI::GUITextBox> txtMTKBuildID;
+			NN<UI::GUILabel> lblMTKProdMode;
+			NN<UI::GUITextBox> txtMTKProdMode;
+			NN<UI::GUILabel> lblMTKSDKVer;
+			NN<UI::GUITextBox> txtMTKSDKVer;
+			NN<UI::GUIButton> btnMTKFirmware;
+			NN<UI::GUIButton> btnMTKLogDownload;
+			NN<UI::GUIButton> btnMTKLogDelete;
+			NN<UI::GUIButton> btnMTKFactoryReset;
+			NN<UI::GUIButton> btnMTKTest;
 
-			NotNullPtr<UI::GUITabPage> tpSate;
-			NotNullPtr<UI::GUIListView> lvSate;
+			NN<UI::GUITabPage> tpSate;
+			NN<UI::GUIListView> lvSate;
 
-			NotNullPtr<UI::GUITabPage> tpNMEA;
-			NotNullPtr<UI::GUIListBox> lbNMEA;
+			NN<UI::GUITabPage> tpNMEA;
+			NN<UI::GUIListBox> lbNMEA;
 
-			static void __stdcall OnGPSUpdate(AnyType userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates);
+			static void __stdcall OnGPSUpdate(AnyType userObj, NN<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnMTKFirmwareClicked(AnyType userObj);
 			static void __stdcall OnMTKLogDownloadClicked(AnyType userObj);
@@ -135,7 +135,7 @@ namespace SSWR
 			static void __stdcall OnTopMostChg(AnyType userObj, Bool newState);
 			static void __stdcall OnNMEALine(AnyType userObj, const UTF8Char *line, UOSInt lineLen);
 			static void __stdcall SignalFocusLost(AnyType userObj);
-			NotNullPtr<UI::GUIButton> NewDisplayOffButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN txt);
+			NN<UI::GUIButton> NewDisplayOffButton(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN txt);
 		public:
 #if defined(_MSC_VER)
 			void* operator new(size_t i)
@@ -148,7 +148,7 @@ namespace SSWR
 				MemFreeA(p);
 			}
 #endif
-			AVIRGPSTrackerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::ILocationService *locSvc, Bool toRelease);
+			AVIRGPSTrackerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Map::ILocationService *locSvc, Bool toRelease);
 			virtual ~AVIRGPSTrackerForm();
 
 			virtual void OnMonitorChanged();

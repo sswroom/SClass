@@ -13,13 +13,13 @@ namespace SSWR
 		class AVIRFunctionInfoForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIListView> lvMyStack;
+			NN<UI::GUIListView> lvMyStack;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
 			static void __stdcall OnMyStackDblClk(AnyType userObj, UOSInt index);
 		public:
-			AVIRFunctionInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Manage::Process *proc, Manage::SymbolResolver *symbol, Int64 funcAddr);
+			AVIRFunctionInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Manage::Process *proc, Manage::SymbolResolver *symbol, Int64 funcAddr);
 			virtual ~AVIRFunctionInfoForm();
 
 			virtual void OnMonitorChanged();

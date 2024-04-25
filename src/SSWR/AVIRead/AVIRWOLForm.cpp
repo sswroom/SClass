@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRWOLForm::OnSendClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWOLForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWOLForm>();
+	NN<SSWR::AVIRead::AVIRWOLForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWOLForm>();
 	UInt8 macBuff[16];
 	Net::WOLClient *cli;
 	Text::StringBuilderUTF8 sb;
@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRWOLForm::OnSendClicked(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRWOLForm::AVIRWOLForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 400, 120, ui)
+SSWR::AVIRead::AVIRWOLForm::AVIRWOLForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 400, 120, ui)
 {
 	this->SetText(CSTR("Wake-On-LAN"));
 	this->SetFont(0, 0, 8.25, false);
@@ -62,7 +62,7 @@ SSWR::AVIRead::AVIRWOLForm::AVIRWOLForm(Optional<UI::GUIClientControl> parent, N
 	this->btnSend->HandleButtonClick(OnSendClicked, this);
 
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
-	NotNullPtr<Net::ConnectionInfo> connInfo;
+	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UOSInt i;

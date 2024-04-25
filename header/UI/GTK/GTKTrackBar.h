@@ -12,7 +12,7 @@ namespace UI
 		private:
 			static gboolean SignalValueChanged(void *window, void *userObj);
 		public:
-			GTKTrackBar(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal);
+			GTKTrackBar(NN<GUICore> ui, NN<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal);
 			virtual ~GTKTrackBar();
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);

@@ -13,10 +13,10 @@ namespace Math
 			CompoundCurve(UInt32 srid);
 			virtual ~CompoundCurve();
 
-			virtual void AddGeometry(NotNullPtr<LineString> geometry);
+			virtual void AddGeometry(NN<LineString> geometry);
 			virtual Vector2D::VectorType GetVectorType() const;
-			virtual NotNullPtr<Vector2D> Clone() const;
-			UOSInt GetDrawPoints(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> ptList);
+			virtual NN<Vector2D> Clone() const;
+			UOSInt GetDrawPoints(NN<Data::ArrayListA<Math::Coord2DDbl>> ptList);
 		};
 	}
 }

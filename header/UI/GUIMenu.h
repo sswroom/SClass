@@ -47,9 +47,9 @@ namespace UI
 
 		UOSInt AddItem(Text::CString name, UInt16 cmdId, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey);
 		void AddSeperator();
-		NotNullPtr<GUIMenu> AddSubMenu(Text::CString name);
+		NN<GUIMenu> AddSubMenu(Text::CString name);
 		void *GetHMenu();
-		UOSInt GetAllKeys(NotNullPtr<Data::ArrayList<ShortcutKey*>> keys);
+		UOSInt GetAllKeys(NN<Data::ArrayList<ShortcutKey*>> keys);
 		UOSInt GetShortcutKeyCnt();
 		Optional<ShortcutKey> GetShortcutKey(UOSInt index);
 		void SetItemEnabled(UInt16 cmdId, Bool enabled); /////////////////////////

@@ -17,7 +17,7 @@ namespace Media
 			
 			void SetHandler(Media::Batch::BatchHandler *hdlr);
 		private:
-			virtual void ImageOutput(NotNullPtr<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId);
+			virtual void ImageOutput(NN<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId);
 		};
 	}
 }

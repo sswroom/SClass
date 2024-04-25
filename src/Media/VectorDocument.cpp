@@ -3,7 +3,7 @@
 #include "Media/VectorDocument.h"
 #include "Text/MyString.h"
 
-Media::VectorDocument::VectorDocument(UInt32 srid, NotNullPtr<Media::DrawEngine> refEng) : IO::ParsedObject(CSTR("Untitled"))
+Media::VectorDocument::VectorDocument(UInt32 srid, NN<Media::DrawEngine> refEng) : IO::ParsedObject(CSTR("Untitled"))
 {
 	NEW_CLASS(this->items, Data::ArrayList<Media::VectorGraph*>());
 	this->currDoc = 0;
@@ -19,7 +19,7 @@ Media::VectorDocument::VectorDocument(UInt32 srid, NotNullPtr<Media::DrawEngine>
 	this->modTimeTicks = 0;
 }
 
-Media::VectorDocument::VectorDocument(UInt32 srid, Text::CStringNN name, NotNullPtr<Media::DrawEngine> refEng) : IO::ParsedObject(name)
+Media::VectorDocument::VectorDocument(UInt32 srid, Text::CStringNN name, NN<Media::DrawEngine> refEng) : IO::ParsedObject(name)
 {
 	NEW_CLASS(this->items, Data::ArrayList<Media::VectorGraph*>());
 	this->currDoc = 0;
@@ -54,9 +54,9 @@ Media::VectorDocument::~VectorDocument()
 	SDEL_TEXT(this->producer);
 }
 
-NotNullPtr<Media::VectorGraph> Media::VectorDocument::AddGraph(Double width, Double height, Math::Unit::Distance::DistanceUnit unit)
+NN<Media::VectorGraph> Media::VectorDocument::AddGraph(Double width, Double height, Math::Unit::Distance::DistanceUnit unit)
 {
-	NotNullPtr<Media::VectorGraph> graph;
+	NN<Media::VectorGraph> graph;
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 	NEW_CLASSNN(graph, Media::VectorGraph(this->srid, width, height, unit, this->refEng, color));
 	this->items->Add(graph.Ptr());
@@ -177,7 +177,7 @@ Media::VectorGraph *Media::VectorDocument::GetItem(UOSInt Index) const
 	return this->items->GetItem(Index);
 }
 
-Bool Media::VectorDocument::BeginPrint(NotNullPtr<IPrintDocument> doc)
+Bool Media::VectorDocument::BeginPrint(NN<IPrintDocument> doc)
 {
 	Media::VectorGraph *graph;
 	Double width;
@@ -204,13 +204,13 @@ Bool Media::VectorDocument::BeginPrint(NotNullPtr<IPrintDocument> doc)
 	return true;
 }
 
-Bool Media::VectorDocument::PrintPage(NotNullPtr<Media::DrawImage> printPage)
+Bool Media::VectorDocument::PrintPage(NN<Media::DrawImage> printPage)
 {
 	Media::VectorGraph *graph;
 	Double width;
 	Double height;
 	graph = this->items->GetItem(this->currGraph);
-	NotNullPtr<Media::IPrintDocument> doc;
+	NN<Media::IPrintDocument> doc;
 	if (!this->currDoc.SetTo(doc) || graph == 0)
 		return false;
 	graph->DrawTo(printPage, 0);
@@ -233,7 +233,7 @@ Bool Media::VectorDocument::PrintPage(NotNullPtr<Media::DrawImage> printPage)
 	return true;
 }
 
-Bool Media::VectorDocument::EndPrint(NotNullPtr<IPrintDocument> doc)
+Bool Media::VectorDocument::EndPrint(NN<IPrintDocument> doc)
 {
 	this->currDoc = 0;
 	return true;

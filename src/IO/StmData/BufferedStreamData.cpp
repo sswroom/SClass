@@ -3,7 +3,7 @@
 
 #define BUFFSIZE 65536
 
-IO::StmData::BufferedStreamData::BufferedStreamData(NotNullPtr<IO::StreamData> stmData) : buff(BUFFSIZE)
+IO::StmData::BufferedStreamData::BufferedStreamData(NN<IO::StreamData> stmData) : buff(BUFFSIZE)
 {
 	this->stmData = stmData;
 	this->buffLength = 0;
@@ -64,7 +64,7 @@ UOSInt IO::StmData::BufferedStreamData::GetRealData(UInt64 offset, UOSInt length
 	return length + ret;
 }
 
-NotNullPtr<Text::String> IO::StmData::BufferedStreamData::GetFullName()
+NN<Text::String> IO::StmData::BufferedStreamData::GetFullName()
 {
 	return this->stmData->GetFullName();
 }
@@ -89,7 +89,7 @@ const UInt8 *IO::StmData::BufferedStreamData::GetPointer()
 	return this->stmData->GetPointer();
 }
 
-NotNullPtr<IO::StreamData> IO::StmData::BufferedStreamData::GetPartialData(UInt64 offset, UInt64 length)
+NN<IO::StreamData> IO::StmData::BufferedStreamData::GetPartialData(UInt64 offset, UInt64 length)
 {
 	return this->stmData->GetPartialData(offset, length);
 }
@@ -99,7 +99,7 @@ Bool IO::StmData::BufferedStreamData::IsFullFile()
 	return this->stmData->IsFullFile();
 }
 
-NotNullPtr<Text::String> IO::StmData::BufferedStreamData::GetFullFileName()
+NN<Text::String> IO::StmData::BufferedStreamData::GetFullFileName()
 {
 	return this->stmData->GetFullFileName();
 }

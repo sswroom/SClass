@@ -6,7 +6,7 @@
 #include "Manage/HiResClock.h"
 #include "Sync/ThreadUtil.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	IO::SerialPort serial(1, 115200, IO::SerialPort::PARITY_NONE, false);
 	IO::GPIOControl gpio;

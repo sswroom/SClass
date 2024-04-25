@@ -32,15 +32,15 @@ namespace IO
 			static Text::CString GetCompName(UInt16 comp);
 			UOSInt ParseCentDir(const UInt8 *buff, UOSInt buffSize, UInt64 ofst);
 			UOSInt AddCentDir(const UInt8 *buff, UOSInt buffSize, UInt64 ofst);
-			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> thread);
-			static void ParseExtraTag(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR tagData, UOSInt extraStart, UOSInt extraLen, UOSInt tagSize, UInt32 compSize, UInt32 uncompSize, UInt32 ofst);
+			static void __stdcall ParseThread(NN<Sync::Thread> thread);
+			static void ParseExtraTag(NN<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR tagData, UOSInt extraStart, UOSInt extraLen, UOSInt tagSize, UInt32 compSize, UInt32 uncompSize, UInt32 ofst);
 		public:
-			ZIPFileAnalyse(NotNullPtr<IO::StreamData> fd);
+			ZIPFileAnalyse(NN<IO::StreamData> fd);
 			virtual ~ZIPFileAnalyse();
 
 			virtual Text::CStringNN GetFormatName();
 			virtual UOSInt GetFrameCount();
-			virtual Bool GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual Bool GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst);
 			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index);
 

@@ -20,7 +20,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRThreadInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRThreadInfoForm>();
+	NN<SSWR::AVIRead::AVIRThreadInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRThreadInfoForm>();
 	UOSInt i = me->lbMyStack->GetSelectedIndex();
 	const UTF8Char *s = me->stacks.GetItem(i).OrNull();
 	const UTF8Char *sMem = me->stacksMem.GetItem(i).OrNull();
@@ -151,7 +151,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackDblClk(AnyType userObj, UOSInt index)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRThreadInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRThreadInfoForm>();
+	NN<SSWR::AVIRead::AVIRThreadInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRThreadInfoForm>();
 	UTF8Char sbuff[18];
 	UOSInt i;
 	Int64 funcOfst;
@@ -172,7 +172,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackDblClk(AnyType userOb
 	}
 }
 
-SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Manage::Process *proc, Manage::SymbolResolver *symbol, UInt32 threadId) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Manage::Process *proc, Manage::SymbolResolver *symbol, UInt32 threadId) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Thread Info"));
@@ -187,7 +187,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	Manage::ThreadInfo thread(proc->GetProcId(), threadId);
-	NotNullPtr<Manage::ThreadContext> context;
+	NN<Manage::ThreadContext> context;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UInt64 startAddr;

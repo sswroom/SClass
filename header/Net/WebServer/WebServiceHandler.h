@@ -11,18 +11,18 @@ namespace Net
 		class WebServiceHandler : public Net::WebServer::HTTPDirectoryHandler
 		{
 		public:
-			typedef Bool (__stdcall *ServiceFunc)(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> svcHdlr);
+			typedef Bool (__stdcall *ServiceFunc)(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> svcHdlr);
 		private:
 			typedef struct
 			{
-				NotNullPtr<Text::String> svcPath;
+				NN<Text::String> svcPath;
 				Data::FastMap<Int32, ServiceFunc> funcs;
 			} ServiceInfo;
 			
 			Data::FastStringMap<ServiceInfo *> services;
 
 		protected:
-			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
+			virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 		public:
 			WebServiceHandler();
 			WebServiceHandler(Text::CStringNN rootDir);

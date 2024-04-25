@@ -24,10 +24,10 @@ namespace Map
 
 		Bool IsError();
 		DB::ReadingDB *GetDB();
-		NotNullPtr<Math::CoordinateSystem> CreateCoordinateSystem();
+		NN<Math::CoordinateSystem> CreateCoordinateSystem();
 		Map::HKSpeedLimit *CreateSpeedLimit();
 		Map::MapDrawLayer *CreateTonnesSignLayer();
-		Map::HKTrafficLayer2 *CreateTrafficLayer(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact);
+		Map::HKTrafficLayer2 *CreateTrafficLayer(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact);
 
 		static Text::CStringNN GetDownloadURL();
 		static Text::CStringNN GetDefFileName();

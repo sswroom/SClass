@@ -35,10 +35,10 @@ namespace Text
 
 	public:
 		virtual JSONType GetType() = 0;
-		virtual void ToJSONString(NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
+		virtual void ToJSONString(NN<Text::StringBuilderUTF8> sb) = 0;
 		virtual Bool Equals(Text::CString s) = 0;
-		virtual Bool Identical(NotNullPtr<JSONBase> obj) = 0;
-		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
+		virtual Bool Identical(NN<JSONBase> obj) = 0;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) = 0;
 		void BeginUse();
 		void EndUse();
 		Bool IsString();
@@ -69,10 +69,10 @@ namespace Text
 
 	private:
 		static const UTF8Char *ClearWS(const UTF8Char *jsonStr);
-		static const UTF8Char *ParseJSString(const UTF8Char *jsonStr, NotNullPtr<Text::StringBuilderUTF8> sb);
+		static const UTF8Char *ParseJSString(const UTF8Char *jsonStr, NN<Text::StringBuilderUTF8> sb);
 		static const UTF8Char *ParseJSNumber(const UTF8Char *jsonStr, OutParam<Double> val);
-		static JSONBase *ParseJSONStr2(const UTF8Char *jsonStr, const UTF8Char *jsonStrEnd, OutParam<const UTF8Char *> jsonStrEndOut, NotNullPtr<Text::StringBuilderUTF8> sbEnv);
-		static Bool Str2Bool(NotNullPtr<Text::String> s);
+		static JSONBase *ParseJSONStr2(const UTF8Char *jsonStr, const UTF8Char *jsonStrEnd, OutParam<const UTF8Char *> jsonStrEndOut, NN<Text::StringBuilderUTF8> sbEnv);
+		static Bool Str2Bool(NN<Text::String> s);
 	};
 
 	class JSONNumber : public JSONBase
@@ -87,10 +87,10 @@ namespace Text
 
 	public:
 		virtual JSONType GetType();
-		virtual void ToJSONString(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual void ToJSONString(NN<Text::StringBuilderUTF8> sb);
 		virtual Bool Equals(Text::CString s);
-		virtual Bool Identical(NotNullPtr<JSONBase> obj);
-		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual Bool Identical(NN<JSONBase> obj);
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb);
 		Double GetValue();
 	};
 
@@ -106,10 +106,10 @@ namespace Text
 
 	public:
 		virtual JSONType GetType();
-		virtual void ToJSONString(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual void ToJSONString(NN<Text::StringBuilderUTF8> sb);
 		virtual Bool Equals(Text::CString s);
-		virtual Bool Identical(NotNullPtr<JSONBase> obj);
-		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual Bool Identical(NN<JSONBase> obj);
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb);
 		Int32 GetValue();
 	};
 
@@ -125,31 +125,31 @@ namespace Text
 
 	public:
 		virtual JSONType GetType();
-		virtual void ToJSONString(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual void ToJSONString(NN<Text::StringBuilderUTF8> sb);
 		virtual Bool Equals(Text::CString s);
-		virtual Bool Identical(NotNullPtr<JSONBase> obj);
-		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual Bool Identical(NN<JSONBase> obj);
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb);
 		Int64 GetValue();
 	};
 
 	class JSONString : public JSONBase
 	{
 	private:
-		NotNullPtr<Text::String> val;
+		NN<Text::String> val;
 
 	public:
-		JSONString(NotNullPtr<Text::String> val);
+		JSONString(NN<Text::String> val);
 		JSONString(Text::CStringNN val);
 	private:
 		virtual ~JSONString();
 
 	public:
 		virtual JSONType GetType();
-		virtual void ToJSONString(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual void ToJSONString(NN<Text::StringBuilderUTF8> sb);
 		virtual Bool Equals(Text::CString s);
-		virtual Bool Identical(NotNullPtr<JSONBase> obj);
-		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb);
-		NotNullPtr<Text::String> GetValue();
+		virtual Bool Identical(NN<JSONBase> obj);
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb);
+		NN<Text::String> GetValue();
 	};
 
 	class JSONBool : public JSONBase
@@ -164,10 +164,10 @@ namespace Text
 
 	public:
 		virtual JSONType GetType();
-		virtual void ToJSONString(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual void ToJSONString(NN<Text::StringBuilderUTF8> sb);
 		virtual Bool Equals(Text::CString s);
-		virtual Bool Identical(NotNullPtr<JSONBase> obj);
-		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual Bool Identical(NN<JSONBase> obj);
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb);
 		Bool GetValue();
 	};
 
@@ -182,22 +182,22 @@ namespace Text
 
 	public:
 		virtual JSONType GetType();
-		virtual void ToJSONString(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual void ToJSONString(NN<Text::StringBuilderUTF8> sb);
 		virtual Bool Equals(Text::CString s);
-		virtual Bool Identical(NotNullPtr<JSONBase> obj);
-		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual Bool Identical(NN<JSONBase> obj);
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb);
 		void SetObjectValue(Text::CStringNN name, JSONBase *val);
 		void SetObjectInt32(Text::CStringNN name, Int32 val);
 		void SetObjectInt64(Text::CStringNN name, Int64 val);
 		void SetObjectDouble(Text::CStringNN name, Double val);
 		void SetObjectString(Text::CStringNN name, Text::CStringNN val);
 		void SetObjectString(Text::CStringNN name, Optional<Text::String> val);
-		void SetObjectString(Text::CStringNN name, NotNullPtr<Text::String> val);
+		void SetObjectString(Text::CStringNN name, NN<Text::String> val);
 		void SetObjectBool(Text::CStringNN name, Bool val);
 		JSONBase *GetObjectValue(Text::CStringNN name);
 		JSONArray *GetObjectArray(Text::CStringNN name);
 		JSONObject *GetObjectObject(Text::CStringNN name);
-		void GetObjectNames(NotNullPtr<Data::ArrayListNN<Text::String>> names);
+		void GetObjectNames(NN<Data::ArrayListNN<Text::String>> names);
 		Optional<Text::String> GetObjectString(Text::CStringNN name);
 		Optional<Text::String> GetObjectNewString(Text::CStringNN name);
 		Double GetObjectDouble(Text::CStringNN name);
@@ -218,10 +218,10 @@ namespace Text
 
 	public:
 		virtual JSONType GetType();
-		virtual void ToJSONString(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual void ToJSONString(NN<Text::StringBuilderUTF8> sb);
 		virtual Bool Equals(Text::CString s);
-		virtual Bool Identical(NotNullPtr<JSONBase> obj);
-		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual Bool Identical(NN<JSONBase> obj);
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb);
 		void SetArrayValue(UOSInt index, Text::JSONBase *val);
 		void AddArrayValue(Text::JSONBase *val);
 		JSONBase *GetArrayValue(UOSInt index);
@@ -241,10 +241,10 @@ namespace Text
 
 	public:
 		virtual JSONType GetType();
-		virtual void ToJSONString(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual void ToJSONString(NN<Text::StringBuilderUTF8> sb);
 		virtual Bool Equals(Text::CString s);
-		virtual Bool Identical(NotNullPtr<JSONBase> obj);
-		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual Bool Identical(NN<JSONBase> obj);
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb);
 	};
 
 	Text::CString JSONTypeGetName(JSONType t);

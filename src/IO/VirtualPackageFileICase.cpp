@@ -2,14 +2,14 @@
 #include "IO/VirtualPackageFileICase.h"
 #include "Sync/Interlocked.h"
 
-IO::VirtualPackageFileICase::VirtualPackageFileICase(NotNullPtr<const VirtualPackageFileICase> pkg) : VirtualPackageFile(pkg->GetSourceNameObj())
+IO::VirtualPackageFileICase::VirtualPackageFileICase(NN<const VirtualPackageFileICase> pkg) : VirtualPackageFile(pkg->GetSourceNameObj())
 {
 	this->pkgFiles.PutAll(pkg->pkgFiles);
 	this->parent = pkg->parent;
 	this->items.AddAll(pkg->items);
 	this->namedItems.PutAll(pkg->namedItems);
-	NotNullPtr<IO::PackFileItem> item;
-	Data::ArrayIterator<NotNullPtr<IO::PackFileItem>> it = this->items.Iterator();
+	NN<IO::PackFileItem> item;
+	Data::ArrayIterator<NN<IO::PackFileItem>> it = this->items.Iterator();
 	while (it.HasNext())
 	{
 		item = it.Next();
@@ -17,7 +17,7 @@ IO::VirtualPackageFileICase::VirtualPackageFileICase(NotNullPtr<const VirtualPac
 	}
 }
 
-IO::VirtualPackageFileICase::VirtualPackageFileICase(NotNullPtr<Text::String> fileName) : VirtualPackageFile(fileName)
+IO::VirtualPackageFileICase::VirtualPackageFileICase(NN<Text::String> fileName) : VirtualPackageFile(fileName)
 {
 }
 
@@ -34,19 +34,19 @@ Optional<const IO::PackFileItem> IO::VirtualPackageFileICase::GetItemByName(Text
 	return this->namedItems.Get(name);
 }
 
-void IO::VirtualPackageFileICase::PutItem(NotNullPtr<Text::String> name, NotNullPtr<PackFileItem> item)
+void IO::VirtualPackageFileICase::PutItem(NN<Text::String> name, NN<PackFileItem> item)
 {
 	this->namedItems.PutNN(name, item.Ptr());
 }
 
-void IO::VirtualPackageFileICase::RemoveItem(NotNullPtr<Text::String> name)
+void IO::VirtualPackageFileICase::RemoveItem(NN<Text::String> name)
 {
 	this->namedItems.RemoveNN(name);
 }
 
-NotNullPtr<IO::PackageFile> IO::VirtualPackageFileICase::Clone() const
+NN<IO::PackageFile> IO::VirtualPackageFileICase::Clone() const
 {
-	NotNullPtr<IO::PackageFile> pkg;
-	NEW_CLASSNN(pkg, VirtualPackageFileICase(NotNullPtr<const VirtualPackageFileICase>(*this)));
+	NN<IO::PackageFile> pkg;
+	NEW_CLASSNN(pkg, VirtualPackageFileICase(NN<const VirtualPackageFileICase>(*this)));
 	return pkg;
 }

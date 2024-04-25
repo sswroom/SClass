@@ -12,7 +12,7 @@ namespace UI
 			UInt64 totalCnt;
 
 		public:
-			JavaProgressBar(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, UInt64 totalCnt);
+			JavaProgressBar(NN<GUICore> ui, NN<UI::GUIClientControl> parent, UInt64 totalCnt);
 			virtual ~JavaProgressBar();
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);

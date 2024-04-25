@@ -14,8 +14,8 @@ namespace UI
 			ClassData *clsData;
 
 		public:
-			WinTextBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText);
-			WinTextBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool isMultiline);
+			WinTextBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText);
+			WinTextBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool isMultiline);
 			virtual ~WinTextBox();
 
 			virtual void SetReadOnly(Bool isReadOnly);
@@ -23,7 +23,7 @@ namespace UI
 
 			virtual void SetText(Text::CStringNN text);
 			virtual UTF8Char *GetText(UTF8Char *buff);
-			virtual Bool GetText(NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual Bool GetText(NN<Text::StringBuilderUTF8> sb);
 			virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 			virtual void SetWordWrap(Bool wordWrap);

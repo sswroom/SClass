@@ -4,7 +4,7 @@
 #include "Sync/SimpleThread.h"
 #include "Text/URLString.h"
 
-Net::HTTPQueue::HTTPQueue(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl)
+Net::HTTPQueue::HTTPQueue(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -15,13 +15,13 @@ Net::HTTPQueue::~HTTPQueue()
 	this->Clear();
 }
 
-NotNullPtr<Net::HTTPClient> Net::HTTPQueue::MakeRequest(Text::CStringNN url, Net::WebUtil::RequestMethod method, Bool noShutdown)
+NN<Net::HTTPClient> Net::HTTPQueue::MakeRequest(Text::CStringNN url, Net::WebUtil::RequestMethod method, Bool noShutdown)
 {
 	UTF8Char sbuff[512];
 	Text::URLString::GetURLDomain(sbuff, url, 0);
 	Bool found = false;;
 	DomainStatus *status;
-	NotNullPtr<Net::HTTPClient> cli;
+	NN<Net::HTTPClient> cli;
 	while (true)
 	{
 		Sync::MutexUsage mutUsage(this->statusMut);
@@ -95,7 +95,7 @@ void Net::HTTPQueue::EndRequest(Net::HTTPClient *cli)
 
 void Net::HTTPQueue::Clear()
 {
-	NotNullPtr<const Data::ArrayList<DomainStatus*>> statusList;
+	NN<const Data::ArrayList<DomainStatus*>> statusList;
 	DomainStatus *status;
 	UOSInt i;
 

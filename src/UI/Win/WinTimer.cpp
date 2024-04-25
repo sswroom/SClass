@@ -5,7 +5,7 @@
 
 #include <windows.h>
 
-UI::Win::WinTimer::WinTimer(NotNullPtr<UI::GUIForm> parent, UOSInt id, UInt32 interval, UI::UIEvent handler, AnyType userObj) : UI::GUITimer(handler, userObj)
+UI::Win::WinTimer::WinTimer(NN<UI::GUIForm> parent, UOSInt id, UInt32 interval, UI::UIEvent handler, AnyType userObj) : UI::GUITimer(handler, userObj)
 {
 	this->parent = parent;
 	this->id = id;

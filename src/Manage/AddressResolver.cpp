@@ -9,7 +9,7 @@ Manage::AddressResolver::~AddressResolver()
 {
 }
 
-Bool Manage::AddressResolver::ResolveNameSB(NotNullPtr<Text::StringBuilderUTF8> sb, UInt64 address)
+Bool Manage::AddressResolver::ResolveNameSB(NN<Text::StringBuilderUTF8> sb, UInt64 address)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr = this->ResolveName(sbuff, address);

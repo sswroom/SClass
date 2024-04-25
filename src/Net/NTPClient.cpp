@@ -8,9 +8,9 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-void __stdcall Net::NTPClient::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::NTPClient::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	NotNullPtr<Net::NTPClient> me = userData.GetNN<Net::NTPClient>();
+	NN<Net::NTPClient> me = userData.GetNN<Net::NTPClient>();
 //	UInt8 li = buff[0] >> 6;
 //	UInt8 vn = (buff[0] >> 3) & 7;
 	UInt8 mode = buff[0] & 7;
@@ -29,7 +29,7 @@ void __stdcall Net::NTPClient::PacketHdlr(NotNullPtr<const Net::SocketUtil::Addr
 	}
 }
 
-Net::NTPClient::NTPClient(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log)
+Net::NTPClient::NTPClient(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log)
 {
 	this->sockf = sockf;
 	this->resultTime = 0;
@@ -41,7 +41,7 @@ Net::NTPClient::~NTPClient()
 	DEL_CLASS(this->svr);
 }
 
-Bool Net::NTPClient::GetServerTime(Text::CStringNN host, UInt16 port, NotNullPtr<Data::DateTime> svrTime)
+Bool Net::NTPClient::GetServerTime(Text::CStringNN host, UInt16 port, NN<Data::DateTime> svrTime)
 {
 	Net::SocketUtil::AddressInfo addr;
 	if (!sockf->DNSResolveIP(host, addr))
@@ -57,7 +57,7 @@ Bool Net::NTPClient::GetServerTime(Text::CStringNN host, UInt16 port, OutParam<D
 	return GetServerTime(addr, port, svrTime);
 }
 
-Bool Net::NTPClient::GetServerTime(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NotNullPtr<Data::DateTime> svrTime)
+Bool Net::NTPClient::GetServerTime(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NN<Data::DateTime> svrTime)
 {
 	UInt8 buff[48];
 	Bool hasResult;
@@ -95,7 +95,7 @@ Bool Net::NTPClient::GetServerTime(NotNullPtr<const Net::SocketUtil::AddressInfo
 	return hasResult;
 }
 
-Bool Net::NTPClient::GetServerTime(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, OutParam<Data::Timestamp> svrTime)
+Bool Net::NTPClient::GetServerTime(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, OutParam<Data::Timestamp> svrTime)
 {
 	UInt8 buff[48];
 	Bool hasResult;

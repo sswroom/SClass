@@ -16,7 +16,7 @@ void Net::SNMPManager::FreeAllItems(Data::ArrayList<Net::SNMPUtil::BindingItem*>
 	itemList->Clear();
 }
 
-Net::SNMPManager::SNMPManager(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log)
+Net::SNMPManager::SNMPManager(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log)
 {
 	NEW_CLASS(this->cli, Net::SNMPClient(sockf, log));
 }
@@ -94,7 +94,7 @@ void Net::SNMPManager::UpdateValues()
 	}
 }
 
-UOSInt Net::SNMPManager::GetAgentList(NotNullPtr<Data::ArrayList<AgentInfo*>> agentList)
+UOSInt Net::SNMPManager::GetAgentList(NN<Data::ArrayList<AgentInfo*>> agentList)
 {
 	UOSInt ret;
 	Sync::MutexUsage mutUsage(this->agentMut);
@@ -103,7 +103,7 @@ UOSInt Net::SNMPManager::GetAgentList(NotNullPtr<Data::ArrayList<AgentInfo*>> ag
 	return ret;
 }
 
-Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, NotNullPtr<Text::String> community)
+Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(NN<const Net::SocketUtil::AddressInfo> addr, NN<Text::String> community)
 {
 	Data::ArrayList<Net::SNMPUtil::BindingItem *> itemList;
 	Net::SNMPUtil::ErrorStatus err;
@@ -874,7 +874,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(NotNullPtr<const Net::So
 	return agent;
 }
 
-UOSInt Net::SNMPManager::AddAgents(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, NotNullPtr<Text::String> community, Data::ArrayList<AgentInfo*> *agentList, Bool scanIP)
+UOSInt Net::SNMPManager::AddAgents(NN<const Net::SocketUtil::AddressInfo> addr, NN<Text::String> community, Data::ArrayList<AgentInfo*> *agentList, Bool scanIP)
 {
 	AgentInfo *agent;
 	UOSInt ret = 0;
@@ -883,7 +883,7 @@ UOSInt Net::SNMPManager::AddAgents(NotNullPtr<const Net::SocketUtil::AddressInfo
 		Net::IPType ipType = Net::SocketUtil::GetIPv4Type(ReadNUInt32(addr->addr));
 		if (ipType == Net::IPType::Broadcast)
 		{
-			NotNullPtr<Net::SocketUtil::AddressInfo> agentAddr;
+			NN<Net::SocketUtil::AddressInfo> agentAddr;
 			Data::ArrayList<Net::SocketUtil::AddressInfo *> addrList;
 			UOSInt i;
 			UOSInt j;

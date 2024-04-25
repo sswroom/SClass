@@ -28,13 +28,13 @@ Int32 Exporter::SHPExporter::GetName()
 	return *(Int32*)"SHPE";
 }
 
-IO::FileExporter::SupportType Exporter::SHPExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
+IO::FileExporter::SupportType Exporter::SHPExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
-	NotNullPtr<Map::MapDrawLayer> layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj);
+	NN<Map::MapDrawLayer> layer = NN<Map::MapDrawLayer>::ConvertFrom(pobj);
 	Map::DrawLayerType layerType = layer->GetLayerType();
 	if (layerType == Map::DRAW_LAYER_POINT || layerType == Map::DRAW_LAYER_POINT3D || layerType == Map::DRAW_LAYER_POLYLINE || layerType == Map::DRAW_LAYER_POLYLINE3D || layerType == Map::DRAW_LAYER_POLYGON)
 	{
@@ -59,7 +59,7 @@ void Exporter::SHPExporter::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::SHPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	UInt8 buff[256];
 	UTF8Char fileName2[256];
@@ -68,7 +68,7 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	{
 		return false;
 	}
-	NotNullPtr<Map::MapDrawLayer> layer = NotNullPtr<Map::MapDrawLayer>::ConvertFrom(pobj);
+	NN<Map::MapDrawLayer> layer = NN<Map::MapDrawLayer>::ConvertFrom(pobj);
 	Map::DrawLayerType layerType = layer->GetLayerType();
 	UOSInt fileSize = 100;
 	UOSInt recCnt = 0;
@@ -426,7 +426,7 @@ Bool Exporter::SHPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	}
 
 	sptr = IO::Path::ReplaceExt(fileName2, UTF8STRC("prj"));
-	NotNullPtr<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
+	NN<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
 	UTF8Char projArr[1024];
 	Math::SRESRIWKTWriter wkt;
 	UTF8Char *cptr = wkt.WriteCSys(csys, projArr, 0, Text::LineBreakType::None);

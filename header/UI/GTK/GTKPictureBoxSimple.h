@@ -17,7 +17,7 @@ namespace UI
 
 			void UpdatePreview();
 		public:
-			GTKPictureBoxSimple(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder);
+			GTKPictureBoxSimple(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder);
 			virtual ~GTKPictureBoxSimple();
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);

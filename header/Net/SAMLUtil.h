@@ -8,14 +8,14 @@ namespace Net
 	class SAMLUtil
 	{
 	private:
-		static UOSInt DecryptEncryptedKey(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<Crypto::Cert::X509Key> key, NotNullPtr<Text::XMLReader> reader, NotNullPtr<Text::StringBuilderUTF8> sbResult, UInt8 *keyBuff);
-		static UOSInt ParseKeyInfo(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<Crypto::Cert::X509Key> key, NotNullPtr<Text::XMLReader> reader, NotNullPtr<Text::StringBuilderUTF8> sbResult, UInt8 *keyBuff);
-		static Bool DecryptEncryptedData(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<Crypto::Cert::X509Key> key, NotNullPtr<Text::XMLReader> reader, NotNullPtr<Text::StringBuilderUTF8> sbResult);
-		static Bool DecryptAssertion(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<Crypto::Cert::X509Key> key, NotNullPtr<Text::XMLReader> reader, NotNullPtr<Text::StringBuilderUTF8> sbResult);
-		static Bool DecryptResponse(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<Crypto::Cert::X509Key> key, NotNullPtr<Text::XMLReader> reader, NotNullPtr<Text::StringBuilderUTF8> sbResult);
+		static UOSInt DecryptEncryptedKey(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key, NN<Text::XMLReader> reader, NN<Text::StringBuilderUTF8> sbResult, UInt8 *keyBuff);
+		static UOSInt ParseKeyInfo(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key, NN<Text::XMLReader> reader, NN<Text::StringBuilderUTF8> sbResult, UInt8 *keyBuff);
+		static Bool DecryptEncryptedData(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key, NN<Text::XMLReader> reader, NN<Text::StringBuilderUTF8> sbResult);
+		static Bool DecryptAssertion(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key, NN<Text::XMLReader> reader, NN<Text::StringBuilderUTF8> sbResult);
+		static Bool DecryptResponse(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key, NN<Text::XMLReader> reader, NN<Text::StringBuilderUTF8> sbResult);
 	public:
-		static Bool DecryptResponse(NotNullPtr<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NotNullPtr<Crypto::Cert::X509Key> key, Text::CString responseXML, NotNullPtr<Text::StringBuilderUTF8> sbResult);
-		static Bool DecodeRequest(Text::CString requestB64, NotNullPtr<Text::StringBuilderUTF8> sbResult);
+		static Bool DecryptResponse(NN<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NN<Crypto::Cert::X509Key> key, Text::CString responseXML, NN<Text::StringBuilderUTF8> sbResult);
+		static Bool DecodeRequest(Text::CString requestB64, NN<Text::StringBuilderUTF8> sbResult);
 	};
 }
 #endif

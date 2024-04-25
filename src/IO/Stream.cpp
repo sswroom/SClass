@@ -3,7 +3,7 @@
 #include "Data/ByteBuffer.h"
 #include "IO/Stream.h"
 
-IO::Stream::Stream(NotNullPtr<Text::String> sourceName) : IO::ParsedObject(sourceName)
+IO::Stream::Stream(NN<Text::String> sourceName) : IO::ParsedObject(sourceName)
 {
 }
 
@@ -59,7 +59,7 @@ IO::ParserType IO::Stream::GetParserType() const
 	return IO::ParserType::Stream;
 }
 
-UInt64 IO::Stream::ReadToEnd(NotNullPtr<IO::Stream> stm, UOSInt buffSize)
+UInt64 IO::Stream::ReadToEnd(NN<IO::Stream> stm, UOSInt buffSize)
 {
 	UInt64 totalSize = 0;
 	UOSInt readSize;
@@ -82,7 +82,7 @@ UInt64 IO::Stream::ReadToEnd(NotNullPtr<IO::Stream> stm, UOSInt buffSize)
 	return totalSize;
 }
 
-Bool IO::Stream::WriteFromData(NotNullPtr<IO::StreamData> data, UOSInt buffSize)
+Bool IO::Stream::WriteFromData(NN<IO::StreamData> data, UOSInt buffSize)
 {
 	UInt64 currOfst = 0;
 	UInt64 totalSize = 0;

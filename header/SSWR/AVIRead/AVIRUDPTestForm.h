@@ -31,8 +31,8 @@ namespace SSWR
 				Sync::Event *evt;
 			} ThreadStatus;
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Net::SocketFactory> sockf;
 			Net::UDPServer *udp;
 			Bool autoReply;
 			Sync::Mutex mut;
@@ -48,34 +48,34 @@ namespace SSWR
 			ThreadStatus *threads;
 			Sync::Event mainEvt;
 
-			NotNullPtr<UI::GUIGroupBox> grpServer;
-			NotNullPtr<UI::GUILabel> lblServerPort;
-			NotNullPtr<UI::GUITextBox> txtServerPort;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUICheckBox> chkAutoReply;
-			NotNullPtr<UI::GUIGroupBox> grpDest;
-			NotNullPtr<UI::GUILabel> lblDestHost;
-			NotNullPtr<UI::GUITextBox> txtDestHost;
-			NotNullPtr<UI::GUILabel> lblDestPort;
-			NotNullPtr<UI::GUITextBox> txtDestPort;
-			NotNullPtr<UI::GUILabel> lblDestCount;
-			NotNullPtr<UI::GUITextBox> txtDestCount;
-			NotNullPtr<UI::GUIButton> btnSend;
-			NotNullPtr<UI::GUIGroupBox> grpStatus;
-			NotNullPtr<UI::GUILabel> lblRecvCnt;
-			NotNullPtr<UI::GUITextBox> txtRecvCnt;
-			NotNullPtr<UI::GUITextBox> txtRecvCntRate;
-			NotNullPtr<UI::GUILabel> lblRecvSize;
-			NotNullPtr<UI::GUITextBox> txtRecvSize;
-			NotNullPtr<UI::GUITextBox> txtRecvSizeRate;
-			NotNullPtr<UI::GUILabel> lblSentSuccCnt;
-			NotNullPtr<UI::GUITextBox> txtSentSuccCnt;
-			NotNullPtr<UI::GUITextBox> txtSentSuccCntRate;
-			NotNullPtr<UI::GUILabel> lblSentFailCnt;
-			NotNullPtr<UI::GUITextBox> txtSentFailCnt;
-			NotNullPtr<UI::GUITextBox> txtSentFailCntRate;
+			NN<UI::GUIGroupBox> grpServer;
+			NN<UI::GUILabel> lblServerPort;
+			NN<UI::GUITextBox> txtServerPort;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUICheckBox> chkAutoReply;
+			NN<UI::GUIGroupBox> grpDest;
+			NN<UI::GUILabel> lblDestHost;
+			NN<UI::GUITextBox> txtDestHost;
+			NN<UI::GUILabel> lblDestPort;
+			NN<UI::GUITextBox> txtDestPort;
+			NN<UI::GUILabel> lblDestCount;
+			NN<UI::GUITextBox> txtDestCount;
+			NN<UI::GUIButton> btnSend;
+			NN<UI::GUIGroupBox> grpStatus;
+			NN<UI::GUILabel> lblRecvCnt;
+			NN<UI::GUITextBox> txtRecvCnt;
+			NN<UI::GUITextBox> txtRecvCntRate;
+			NN<UI::GUILabel> lblRecvSize;
+			NN<UI::GUITextBox> txtRecvSize;
+			NN<UI::GUITextBox> txtRecvSizeRate;
+			NN<UI::GUILabel> lblSentSuccCnt;
+			NN<UI::GUITextBox> txtSentSuccCnt;
+			NN<UI::GUITextBox> txtSentSuccCntRate;
+			NN<UI::GUILabel> lblSentFailCnt;
+			NN<UI::GUITextBox> txtSentFailCnt;
+			NN<UI::GUITextBox> txtSentFailCntRate;
 
-			static void __stdcall OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+			static void __stdcall OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
 			static void __stdcall OnAutoReplyChanged(AnyType userObj, Bool newVal);
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnSendClicked(AnyType userObj);
@@ -83,7 +83,7 @@ namespace SSWR
 
 			static UInt32 __stdcall ProcThread(AnyType userObj);
 		public:
-			AVIRUDPTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRUDPTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRUDPTestForm();
 
 			virtual void OnMonitorChanged();

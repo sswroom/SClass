@@ -3,9 +3,9 @@
 #include "Data/ByteTool.h"
 #include "Net/TraceRoute.h"
 
-void __stdcall Net::TraceRoute::RecvThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall Net::TraceRoute::RecvThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<Net::TraceRoute> me = thread->GetUserObj().GetNN<Net::TraceRoute>();
+	NN<Net::TraceRoute> me = thread->GetUserObj().GetNN<Net::TraceRoute>();
 	UInt8 *readBuff;
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
@@ -80,7 +80,7 @@ void Net::TraceRoute::ICMPChecksum(UInt8 *buff, UOSInt buffSize)
 }
 
 
-Net::TraceRoute::TraceRoute(NotNullPtr<Net::SocketFactory> sockf, UInt32 ip) : thread(RecvThread, this, CSTR("TraceRoute"))
+Net::TraceRoute::TraceRoute(NN<Net::SocketFactory> sockf, UInt32 ip) : thread(RecvThread, this, CSTR("TraceRoute"))
 {
 	this->sockf = sockf;
 	this->socV4 = this->sockf->CreateICMPIPv4Socket(ip);

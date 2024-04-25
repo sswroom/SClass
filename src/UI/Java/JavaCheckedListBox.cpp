@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "UI/Java/JavaCheckedListBox.h"
 
-UI::Java::JavaCheckedListBox::JavaCheckedListBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : UI::GUICheckedListBox(ui, parent)
+UI::Java::JavaCheckedListBox::JavaCheckedListBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent) : UI::GUICheckedListBox(ui, parent)
 {
 }
 

@@ -36,56 +36,56 @@ namespace SSWR
 
 			static Text::CStringNN typeName[];
 		private:
-			NotNullPtr<UI::GUILabel> lblDirectory;
-			NotNullPtr<UI::GUITextBox> txtDirectory;
-			NotNullPtr<UI::GUIButton> btnDirectory;
-			NotNullPtr<UI::GUILabel> lblSource;
-			NotNullPtr<UI::GUITextBox> txtSource;
-			NotNullPtr<UI::GUIButton> btnSBrowse;
+			NN<UI::GUILabel> lblDirectory;
+			NN<UI::GUITextBox> txtDirectory;
+			NN<UI::GUIButton> btnDirectory;
+			NN<UI::GUILabel> lblSource;
+			NN<UI::GUITextBox> txtSource;
+			NN<UI::GUIButton> btnSBrowse;
 
-			NotNullPtr<UI::GUILabel> lblFileLength;
-			NotNullPtr<UI::GUITextBox> txtFileLength;
-			NotNullPtr<UI::GUILabel> lblVersion;
-			NotNullPtr<UI::GUITextBox> txtVersion;
-			NotNullPtr<UI::GUILabel> lblShpType;
-			NotNullPtr<UI::GUITextBox> txtShpType;
-			NotNullPtr<UI::GUILabel> lblMMin;
-			NotNullPtr<UI::GUITextBox> txtMMin;
-			NotNullPtr<UI::GUILabel> lblMMax;
-			NotNullPtr<UI::GUITextBox> txtMMax;
-			NotNullPtr<UI::GUIListBox> lstRecords;
+			NN<UI::GUILabel> lblFileLength;
+			NN<UI::GUITextBox> txtFileLength;
+			NN<UI::GUILabel> lblVersion;
+			NN<UI::GUITextBox> txtVersion;
+			NN<UI::GUILabel> lblShpType;
+			NN<UI::GUITextBox> txtShpType;
+			NN<UI::GUILabel> lblMMin;
+			NN<UI::GUITextBox> txtMMin;
+			NN<UI::GUILabel> lblMMax;
+			NN<UI::GUITextBox> txtMMax;
+			NN<UI::GUIListBox> lstRecords;
 
-			NotNullPtr<UI::GUILabel> lblXMin;
-			NotNullPtr<UI::GUITextBox> txtXMin;
-			NotNullPtr<UI::GUILabel> lblXMax;
-			NotNullPtr<UI::GUITextBox> txtXMax;
-			NotNullPtr<UI::GUILabel> lblYMin;
-			NotNullPtr<UI::GUITextBox> txtYMin;
-			NotNullPtr<UI::GUILabel> lblYMax;
-			NotNullPtr<UI::GUITextBox> txtYMax;
-			NotNullPtr<UI::GUILabel> lblZMin;
-			NotNullPtr<UI::GUITextBox> txtZMin;
-			NotNullPtr<UI::GUILabel> lblZMax;
-			NotNullPtr<UI::GUITextBox> txtZMax;
-			NotNullPtr<UI::GUILabel> lblRecCnt;
-			NotNullPtr<UI::GUITextBox> txtRecCnt;
-			NotNullPtr<UI::GUILabel> lblBlkScale;
-			NotNullPtr<UI::GUITextBox> txtBlkScale;
+			NN<UI::GUILabel> lblXMin;
+			NN<UI::GUITextBox> txtXMin;
+			NN<UI::GUILabel> lblXMax;
+			NN<UI::GUITextBox> txtXMax;
+			NN<UI::GUILabel> lblYMin;
+			NN<UI::GUITextBox> txtYMin;
+			NN<UI::GUILabel> lblYMax;
+			NN<UI::GUITextBox> txtYMax;
+			NN<UI::GUILabel> lblZMin;
+			NN<UI::GUITextBox> txtZMin;
+			NN<UI::GUILabel> lblZMax;
+			NN<UI::GUITextBox> txtZMax;
+			NN<UI::GUILabel> lblRecCnt;
+			NN<UI::GUITextBox> txtRecCnt;
+			NN<UI::GUILabel> lblBlkScale;
+			NN<UI::GUITextBox> txtBlkScale;
 
-			NotNullPtr<UI::GUIListBox> lstLang;
-			NotNullPtr<UI::GUITextBox> txtCodePage;
+			NN<UI::GUIListBox> lstLang;
+			NN<UI::GUITextBox> txtCodePage;
 
-			NotNullPtr<UI::GUILabel> lblSeperator;
-			NotNullPtr<UI::GUIComboBox> cboSeperator;
-			NotNullPtr<UI::GUIButton> btnGroup;
-			NotNullPtr<UI::GUIButton> btnFilter;
-			NotNullPtr<UI::GUIButton> btnPreview;
-			NotNullPtr<UI::GUIButton> btnConvert;
-			NotNullPtr<UI::GUITextBox> txtLabel;
-			NotNullPtr<UI::GUILabel> lblLabelLegend;
-			NotNullPtr<UI::GUILabel> lblProgress;
+			NN<UI::GUILabel> lblSeperator;
+			NN<UI::GUIComboBox> cboSeperator;
+			NN<UI::GUIButton> btnGroup;
+			NN<UI::GUIButton> btnFilter;
+			NN<UI::GUIButton> btnPreview;
+			NN<UI::GUIButton> btnConvert;
+			NN<UI::GUITextBox> txtLabel;
+			NN<UI::GUILabel> lblLabelLegend;
+			NN<UI::GUILabel> lblProgress;
 
-			NotNullPtr<Media::DrawEngine> deng;
+			NN<Media::DrawEngine> deng;
 			Media::MonitorMgr *monMgr;
 			Data::ArrayList<MapFilter *> globalFilters;
 			Text::CString progressName;
@@ -102,19 +102,19 @@ namespace SSWR
 			static void __stdcall OnFilterClicked(AnyType userObj);
 			static void __stdcall OnPreviewClicked(AnyType userObj);
 			static void __stdcall OnConvertClicked(AnyType userObj);
-			static void __stdcall OnFile(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFile(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 
-			Int32 GroupConvert(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NotNullPtr<Data::ArrayList<MapFilter*>> filters, IO::ProgressHandler *progress, UOSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, NotNullPtr<Data::ArrayList<UInt32>> dbCols2);
-			Int32 ConvertShp(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NotNullPtr<Data::ArrayList<MapFilter*>> filters, IO::ProgressHandler *progress, NotNullPtr<Data::ArrayList<UInt32>> dbCols2);
+			Int32 GroupConvert(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NN<Data::ArrayList<MapFilter*>> filters, IO::ProgressHandler *progress, UOSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, NN<Data::ArrayList<UInt32>> dbCols2);
+			Int32 ConvertShp(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NN<Data::ArrayList<MapFilter*>> filters, IO::ProgressHandler *progress, NN<Data::ArrayList<UInt32>> dbCols2);
 			Int32 LoadShape(Text::CStringNN fileName, Bool updateTxt);
 			void ClearFilter();
 
 			virtual void ParseLabelStr(Text::CString labelStr, Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<UInt32> *dbCols2);
 			virtual void FreeLabelStr(Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<UInt32> *dbCols2);
-			virtual NotNullPtr<Text::String> GetNewDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, UOSInt currRec, NotNullPtr<Data::ArrayList<UInt32>> dbcols2);
+			virtual NN<Text::String> GetNewDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, UOSInt currRec, NN<Data::ArrayList<UInt32>> dbcols2);
 
 		public:
-			SHPConvMainForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<Media::DrawEngine> deng, Media::MonitorMgr *monMgr);
+			SHPConvMainForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::DrawEngine> deng, Media::MonitorMgr *monMgr);
 			virtual ~SHPConvMainForm();
 
 			virtual void OnMonitorChanged();

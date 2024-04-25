@@ -78,14 +78,14 @@ namespace Net
 			}
 		};
 	private:
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;
-		NotNullPtr<Text::String> apikey;
+		NN<Text::String> apikey;
 
-		void BuildURL(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString path);
+		void BuildURL(NN<Text::StringBuilderUTF8> sb, Text::CString path);
 		Text::JSONBase *GetJSON(Text::CStringNN url);
 	public:
-		SolarEdgeAPI(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString apikey);
+		SolarEdgeAPI(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString apikey);
 		~SolarEdgeAPI();
 
 		Optional<Text::String> GetCurrentVersion();
@@ -96,7 +96,7 @@ namespace Net
 		Bool GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, TimeUnit timeUnit, Data::ArrayList<TimedValue> *values);
 		Bool GetSitePower(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, Data::ArrayList<TimedValue> *values);
 
-		static void AppendFormDate(NotNullPtr<Text::StringBuilderUTF8> sb, Data::Timestamp ts, Bool hasTime);
+		static void AppendFormDate(NN<Text::StringBuilderUTF8> sb, Data::Timestamp ts, Bool hasTime);
 		static Text::CStringNN TimeUnitGetName(TimeUnit timeUnit);
 	};
 }

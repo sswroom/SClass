@@ -4,7 +4,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-void Media::DrawImageTool::SplitString(NotNullPtr<Media::DrawImage> dimg, Text::CStringNN txt, NotNullPtr<Data::ArrayListStringNN> outStr, NotNullPtr<Media::DrawFont> f, Double width)
+void Media::DrawImageTool::SplitString(NN<Media::DrawImage> dimg, Text::CStringNN txt, NN<Data::ArrayListStringNN> outStr, NN<Media::DrawFont> f, Double width)
 {
 	UOSInt i;
 	UOSInt k;

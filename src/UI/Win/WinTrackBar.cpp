@@ -7,7 +7,7 @@
 #include <windows.h>
 #include <commctrl.h>
 
-UI::Win::WinTrackBar::WinTrackBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal) : UI::GUITrackBar(ui, parent)
+UI::Win::WinTrackBar::WinTrackBar(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal) : UI::GUITrackBar(ui, parent)
 {
     INITCOMMONCONTROLSEX icex;
 

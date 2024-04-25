@@ -8,11 +8,11 @@
 
 void __stdcall SSWR::AVIRead::AVIRStringMsgForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRStringMsgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStringMsgForm>();
+	NN<SSWR::AVIRead::AVIRStringMsgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStringMsgForm>();
 	me->Close();
 }
 
-SSWR::AVIRead::AVIRStringMsgForm::AVIRStringMsgForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Text::CStringNN title, Text::CStringNN msg) : UI::GUIForm(parent, 480, 144, ui)
+SSWR::AVIRead::AVIRStringMsgForm::AVIRStringMsgForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::CStringNN title, Text::CStringNN msg) : UI::GUIForm(parent, 480, 144, ui)
 {
 	this->SetText(title);
 	this->SetFont(0, 0, 8.25, false);

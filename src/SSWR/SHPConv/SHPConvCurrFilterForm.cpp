@@ -4,7 +4,7 @@
 
 void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnAddClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::SHPConv::SHPConvCurrFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvCurrFilterForm>();
+	NN<SSWR::SHPConv::SHPConvCurrFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvCurrFilterForm>();
 	SSWR::SHPConv::SHPConvAddFilterForm frm(0, me->ui, me->dbf, me->deng);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
@@ -19,7 +19,7 @@ void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnAddClicked(AnyType userOb
 
 void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnDeleteClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::SHPConv::SHPConvCurrFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvCurrFilterForm>();
+	NN<SSWR::SHPConv::SHPConvCurrFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvCurrFilterForm>();
 	UOSInt i = me->lbFilters->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
@@ -31,11 +31,11 @@ void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnDeleteClicked(AnyType use
 
 void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnOkClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::SHPConv::SHPConvCurrFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvCurrFilterForm>();
+	NN<SSWR::SHPConv::SHPConvCurrFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvCurrFilterForm>();
 	me->Close();
 }
 
-SSWR::SHPConv::SHPConvCurrFilterForm::SHPConvCurrFilterForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf, Data::ArrayList<MapFilter*> *filters, NotNullPtr<Media::DrawEngine> deng) : UI::GUIForm(parent, 414, 298, ui)
+SSWR::SHPConv::SHPConvCurrFilterForm::SHPConvCurrFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, DB::DBFFile *dbf, Data::ArrayList<MapFilter*> *filters, NN<Media::DrawEngine> deng) : UI::GUIForm(parent, 414, 298, ui)
 {
 	this->SetText(CSTR("Current Filters"));
 	this->SetFont(0, 0, 8.25, false);

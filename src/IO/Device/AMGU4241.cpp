@@ -4,7 +4,7 @@
 #include "Math/Unit/Count.h"
 #include "Math/Unit/Temperature.h"
 
-IO::Device::AMGU4241::AMGU4241(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr) : IO::MODBUSDevice(modbus, addr)
+IO::Device::AMGU4241::AMGU4241(NN<IO::MODBUSMaster> modbus, UInt8 addr) : IO::MODBUSDevice(modbus, addr)
 {
 }
 

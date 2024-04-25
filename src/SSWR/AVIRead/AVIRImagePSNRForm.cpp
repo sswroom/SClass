@@ -11,10 +11,10 @@
 
 void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnOriFileClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImagePSNRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImagePSNRForm>();
+	NN<SSWR::AVIRead::AVIRImagePSNRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImagePSNRForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtOriFile->GetText(sb);
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"ImagePSNRO", false);
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"ImagePSNRO", false);
 	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::ImageList);
 	if (sb.GetLength() > 0)
 	{
@@ -29,10 +29,10 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnOriFileClicked(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnLossyFileClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImagePSNRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImagePSNRForm>();
+	NN<SSWR::AVIRead::AVIRImagePSNRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImagePSNRForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtLossyFile->GetText(sb);
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"ImagePSNRL", false);
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"ImagePSNRL", false);
 	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::ImageList);
 	if (sb.GetLength() > 0)
 	{
@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnLossyFileClicked(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnCompareClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImagePSNRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImagePSNRForm>();
+	NN<SSWR::AVIRead::AVIRImagePSNRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImagePSNRForm>();
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	me->txtOriFile->GetText(sb);
@@ -102,7 +102,7 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnCompareClicked(AnyType userOb
 	SDEL_CLASS(imgList2);
 }
 
-SSWR::AVIRead::AVIRImagePSNRForm::AVIRImagePSNRForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 160, ui)
+SSWR::AVIRead::AVIRImagePSNRForm::AVIRImagePSNRForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 160, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Image PSNR"));

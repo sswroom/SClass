@@ -9,7 +9,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnStreamClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRElectronicScaleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRElectronicScaleForm>();
+	NN<SSWR::AVIRead::AVIRElectronicScaleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRElectronicScaleForm>();
 	if (me->stm)
 	{
 		me->StopStream();
@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnStreamClicked(AnyType u
 
 void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRElectronicScaleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRElectronicScaleForm>();
+	NN<SSWR::AVIRead::AVIRElectronicScaleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRElectronicScaleForm>();
 	if (me->remoteClosed)
 	{
 		me->remoteClosed = false;
@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(AnyType userO
 		Math::Size2D<UOSInt> usz = me->pbsDisplay->GetSizeP();
 		if (usz.x > 0 && usz.y > 0)
 		{
-			NotNullPtr<Media::DrawImage> img;
+			NN<Media::DrawImage> img;
 			if (!img.Set(me->dimg))
 			{
 				me->dimg = me->eng->CreateImage32(usz, Media::AT_NO_ALPHA);
@@ -70,8 +70,8 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(AnyType userO
 
 			if (img.Set(me->dimg))
 			{
-				NotNullPtr<Media::DrawBrush> b;
-				NotNullPtr<Media::DrawFont> f;
+				NN<Media::DrawBrush> b;
+				NN<Media::DrawFont> f;
 				b = img->NewBrushARGB(0xffffffff);
 				img->DrawRect(Math::Coord2DDbl(0, 0), usz.ToDouble(), 0, b);
 				img->DelBrush(b);
@@ -105,7 +105,7 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(AnyType userO
 
 UInt32 __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::RecvThread(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRElectronicScaleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRElectronicScaleForm>();
+	NN<SSWR::AVIRead::AVIRElectronicScaleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRElectronicScaleForm>();
 	UInt8 buff[512];
 	UOSInt recvSize;
 	UOSInt buffSize = 0;
@@ -203,7 +203,7 @@ void SSWR::AVIRead::AVIRElectronicScaleForm::StopStream()
 	}
 }
 
-SSWR::AVIRead::AVIRElectronicScaleForm::AVIRElectronicScaleForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 200, ui)
+SSWR::AVIRead::AVIRElectronicScaleForm::AVIRElectronicScaleForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 200, ui)
 {
 	this->SetText(CSTR("Electronic Scale"));
 	this->SetFont(0, 0, 8.25, false);
@@ -255,7 +255,7 @@ SSWR::AVIRead::AVIRElectronicScaleForm::AVIRElectronicScaleForm(Optional<UI::GUI
 SSWR::AVIRead::AVIRElectronicScaleForm::~AVIRElectronicScaleForm()
 {
 	StopStream();
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->dimg))
 	{
 		this->eng->DeleteImage(img);

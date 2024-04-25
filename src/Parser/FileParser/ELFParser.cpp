@@ -1367,7 +1367,7 @@ Int32 Parser::FileParser::ELFParser::GetName()
 	return *(Int32*)"ELFP";
 }
 
-void Parser::FileParser::ELFParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::ELFParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::EXEFile)
 	{
@@ -1380,7 +1380,7 @@ IO::ParserType Parser::FileParser::ELFParser::GetParserType()
 	return IO::ParserType::EXEFile;
 }
 
-IO::ParsedObject *Parser::FileParser::ELFParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::ELFParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (hdr[0] != 0x7f || hdr[1] != 'E' || hdr[2] != 'L' || hdr[3] != 'F')
 	{

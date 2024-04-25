@@ -17,12 +17,12 @@ namespace Map
 			Optional<Text::String> gooCliId;
 			UInt8 *gooPrivKey;
 			UOSInt gooPrivKeyLeng;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 			
 		public:
-			GoogleStaticMap(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey);
-			GoogleStaticMap(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey);
+			GoogleStaticMap(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey);
+			GoogleStaticMap(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey);
 			~GoogleStaticMap();
 
 			static UInt32 Level2Scale(UInt32 level);

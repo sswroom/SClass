@@ -19,7 +19,7 @@ void UI::GTK::GTKPictureBoxSimple::UpdatePreview()
 		DEL_CLASS(this->tmpImage);
 		this->tmpImage = 0;
 	}
-	NotNullPtr<Media::StaticImage> simg;
+	NN<Media::StaticImage> simg;
 	if (this->currImage.SetTo(simg))
 	{
 		GdkPixbuf *buf;
@@ -48,7 +48,7 @@ void UI::GTK::GTKPictureBoxSimple::UpdatePreview()
 	this->Redraw();
 }
 
-UI::GTK::GTKPictureBoxSimple::GTKPictureBoxSimple(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder) : UI::GUIPictureBoxSimple(ui, parent, eng, hasBorder)
+UI::GTK::GTKPictureBoxSimple::GTKPictureBoxSimple(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder) : UI::GUIPictureBoxSimple(ui, parent, eng, hasBorder)
 {
 	this->currImage = 0;
 	this->prevImageD = 0;
@@ -63,7 +63,7 @@ UI::GTK::GTKPictureBoxSimple::GTKPictureBoxSimple(NotNullPtr<UI::GUICore> ui, No
 
 UI::GTK::GTKPictureBoxSimple::~GTKPictureBoxSimple()
 {
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->prevImageD))
 	{
 		this->eng->DeleteImage(img);
@@ -95,7 +95,7 @@ void UI::GTK::GTKPictureBoxSimple::SetImage(Optional<Media::StaticImage> currIma
 void UI::GTK::GTKPictureBoxSimple::SetImageDImg(Media::DrawImage *img)
 {
 	this->currImage = 0;
-	NotNullPtr<Media::DrawImage> imgnn;
+	NN<Media::DrawImage> imgnn;
 	if (imgnn.Set(this->prevImageD))
 	{
 		this->eng->DeleteImage(imgnn);

@@ -81,7 +81,7 @@ void __stdcall HTTPOSClient_StatusCb(HINTERNET hInternet, DWORD_PTR dwContext, D
 	}
 }
 
-Net::HTTPOSClient::HTTPOSClient(NotNullPtr<Net::SocketFactory> sockf, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn)
+Net::HTTPOSClient::HTTPOSClient(NN<Net::SocketFactory> sockf, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn)
 {
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;
@@ -143,7 +143,7 @@ Net::HTTPOSClient::~HTTPOSClient()
 		UOSInt i = data->certs->GetCount();
 		while (i-- > 0)
 		{
-			NotNullPtr<Crypto::Cert::Certificate> cert = data->certs->GetItemNoCheck(i);
+			NN<Crypto::Cert::Certificate> cert = data->certs->GetItemNoCheck(i);
 			cert.Delete();
 		}
 		DEL_CLASS(data->certs);
@@ -470,8 +470,8 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	{
 		if (https)
 		{
-			NotNullPtr<Crypto::Cert::X509Cert> cliCert;
-			NotNullPtr<Crypto::Cert::X509File> cliKey;
+			NN<Crypto::Cert::X509Cert> cliCert;
+			NN<Crypto::Cert::X509File> cliKey;
 			if (cliCert.Set(this->clsData->cliCert) && cliKey.Set(this->clsData->cliKey))
 			{
 				this->SetClientCert(cliCert, cliKey);
@@ -607,7 +607,7 @@ void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 					if (succ)
 					{
 						WChar *wptr = buff;
-						NotNullPtr<Text::String> s;
+						NN<Text::String> s;
 						UOSInt i;
 						while ((i = Text::StrIndexOf(wptr, L"\r\n")) != INVALID_INDEX && i > 0)
 						{
@@ -655,9 +655,9 @@ Bool Net::HTTPOSClient::IsSecureConn() const
 	return this->clsData->https;
 }
 
-Bool WinSSLEngine_InitKey(HCRYPTPROV* hProvOut, HCRYPTKEY* hKeyOut, NotNullPtr<Crypto::Cert::X509File> keyASN1, const WChar* containerName, Bool signature, CRYPT_KEY_PROV_INFO *keyProvInfo);
+Bool WinSSLEngine_InitKey(HCRYPTPROV* hProvOut, HCRYPTKEY* hKeyOut, NN<Crypto::Cert::X509File> keyASN1, const WChar* containerName, Bool signature, CRYPT_KEY_PROV_INFO *keyProvInfo);
 
-Bool Net::HTTPOSClient::SetClientCert(NotNullPtr<Crypto::Cert::X509Cert> cert, NotNullPtr<Crypto::Cert::X509File> key)
+Bool Net::HTTPOSClient::SetClientCert(NN<Crypto::Cert::X509Cert> cert, NN<Crypto::Cert::X509File> key)
 {
 	if (this->clsData->hRequest)
 	{
@@ -717,7 +717,7 @@ Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> Net::HTTPOSClient
 	PCCERT_CONTEXT thisCert = 0;
 	PCCERT_CONTEXT lastCert = 0;
 	DWORD dwVerificationFlags = 0;
-	NotNullPtr<Crypto::Cert::X509Cert> cert;
+	NN<Crypto::Cert::X509Cert> cert;
 	NEW_CLASS(this->clsData->certs, Data::ArrayListNN<Crypto::Cert::Certificate>());
 	NEW_CLASSNN(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), Data::ByteArrayR(serverCert->pbCertEncoded, serverCert->cbCertEncoded)));
 	this->clsData->certs->Add(cert);

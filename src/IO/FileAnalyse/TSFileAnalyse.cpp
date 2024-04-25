@@ -4,7 +4,7 @@
 #include "IO/FileAnalyse/TSFileAnalyse.h"
 #include "Sync/ThreadUtil.h"
 
-IO::FileAnalyse::TSFileAnalyse::TSFileAnalyse(NotNullPtr<IO::StreamData> fd)
+IO::FileAnalyse::TSFileAnalyse::TSFileAnalyse(NN<IO::StreamData> fd)
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -45,7 +45,7 @@ UOSInt IO::FileAnalyse::TSFileAnalyse::GetFrameCount()
 	return (UOSInt)(this->fileSize / this->packSize);
 }
 
-Bool IO::FileAnalyse::TSFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::TSFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	UInt64 fileOfst = index * this->packSize;
 	if (fileOfst >= this->fileSize)
@@ -57,7 +57,7 @@ Bool IO::FileAnalyse::TSFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text:
 	return true;
 }
 
-Bool IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	UInt64 fileOfst = index * this->packSize;
 	if (fileOfst >= this->fileSize)
@@ -275,7 +275,7 @@ UOSInt IO::FileAnalyse::TSFileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	UInt64 fileOfst = index * this->packSize;
 	if (fileOfst >= this->fileSize)
 		return 0;

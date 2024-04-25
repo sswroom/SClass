@@ -4,13 +4,13 @@
 
 void __stdcall Media::VideoFilter::VideoFilterBase::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	NotNullPtr<Media::VideoFilter::VideoFilterBase> me = userData.GetNN<Media::VideoFilter::VideoFilterBase>();
+	NN<Media::VideoFilter::VideoFilterBase> me = userData.GetNN<Media::VideoFilter::VideoFilterBase>();
 	me->ProcessVideoFrame(frameTime, frameNum, imgData, dataSize, frameStruct, userData, frameType, flags, ycOfst);
 }
 
 void __stdcall Media::VideoFilter::VideoFilterBase::OnVideoChange(Media::IVideoSource::FrameChange fc, AnyType userData)
 {
-	NotNullPtr<Media::VideoFilter::VideoFilterBase> me = userData.GetNN<Media::VideoFilter::VideoFilterBase>();
+	NN<Media::VideoFilter::VideoFilterBase> me = userData.GetNN<Media::VideoFilter::VideoFilterBase>();
 	me->OnFrameChange(fc);
 	if (me->fcCb)
 	{
@@ -85,7 +85,7 @@ void Media::VideoFilter::VideoFilterBase::GetBorderCrop(OutParam<UOSInt> cropLef
 	}
 }
 
-Bool Media::VideoFilter::VideoFilterBase::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::VideoFilter::VideoFilterBase::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	if (this->srcVideo)
 	{

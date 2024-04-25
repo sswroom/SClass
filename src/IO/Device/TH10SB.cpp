@@ -2,7 +2,7 @@
 #include "Data/ByteTool.h"
 #include "IO/Device/TH10SB.h"
 
-IO::Device::TH10SB::TH10SB(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr) : IO::MODBUSDevice(modbus, addr)
+IO::Device::TH10SB::TH10SB(NN<IO::MODBUSMaster> modbus, UInt8 addr) : IO::MODBUSDevice(modbus, addr)
 {
 }
 

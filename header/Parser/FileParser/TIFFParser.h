@@ -17,14 +17,14 @@ namespace Parser
 
 			virtual Int32 GetName();
 			virtual void SetParserList(Parser::ParserList *parsers);
-			virtual void PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t);
+			virtual void PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
-			virtual IO::ParsedObject *ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
+			virtual IO::ParsedObject *ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
 
 		private:
-			static UInt32 GetUInt(NotNullPtr<Media::EXIFData> exif, UInt32 id);
-			static UInt32 GetUInt0(NotNullPtr<Media::EXIFData> exif, UInt32 id);
-			static UInt32 GetUIntSum(NotNullPtr<Media::EXIFData> exif, UInt32 id, OptOut<UOSInt> nChannels);
+			static UInt32 GetUInt(NN<Media::EXIFData> exif, UInt32 id);
+			static UInt32 GetUInt0(NN<Media::EXIFData> exif, UInt32 id);
+			static UInt32 GetUIntSum(NN<Media::EXIFData> exif, UInt32 id, OptOut<UOSInt> nChannels);
 		};
 	}
 }

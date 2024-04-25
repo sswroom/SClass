@@ -12,7 +12,7 @@
 #include "Text/MIMEObj/TextMIMEObj.h"
 #include "Text/MIMEObj/UnknownMIMEObj.h"
 
-void Text::MailCreator::AppendStr(NotNullPtr<Text::StringBuilderUTF8> sbc, Text::CString s)
+void Text::MailCreator::AppendStr(NN<Text::StringBuilderUTF8> sbc, Text::CString s)
 {
 	const UTF8Char *sptr;
 	UTF8Char c;
@@ -46,7 +46,7 @@ void Text::MailCreator::AppendStr(NotNullPtr<Text::StringBuilderUTF8> sbc, Text:
 	}
 }
 
-void Text::MailCreator::AppendStr(NotNullPtr<Text::StringBuilderUTF8> sbc, const WChar *s)
+void Text::MailCreator::AppendStr(NN<Text::StringBuilderUTF8> sbc, const WChar *s)
 {
 	const WChar *wptr;
 	WChar c;
@@ -62,7 +62,7 @@ void Text::MailCreator::AppendStr(NotNullPtr<Text::StringBuilderUTF8> sbc, const
 	}
 	if (found)
 	{
-		NotNullPtr<Text::String> str = Text::String::NewNotNull(s);
+		NN<Text::String> str = Text::String::NewNotNull(s);
 		UOSInt buffSize;
 		UInt8 *b64Buff;
 		UOSInt b64Size;
@@ -78,7 +78,7 @@ void Text::MailCreator::AppendStr(NotNullPtr<Text::StringBuilderUTF8> sbc, const
 	}
 	else
 	{
-		NotNullPtr<Text::String> str = Text::String::NewNotNull(s);
+		NN<Text::String> str = Text::String::NewNotNull(s);
 		sbc->Append(str);
 		str->Release();
 	}
@@ -330,7 +330,7 @@ void Text::MailCreator::ToAdd(const WChar *name, const WChar *address)
 	}
 }
 
-void Text::MailCreator::ToAdd(Text::String *name, NotNullPtr<Text::String> address)
+void Text::MailCreator::ToAdd(Text::String *name, NN<Text::String> address)
 {
 	if (this->toVals.GetLength() > 0)
 	{
@@ -373,7 +373,7 @@ void Text::MailCreator::CCAdd(const WChar *name, const WChar *address)
 	}
 }
 
-void Text::MailCreator::CCAdd(Text::String *name, NotNullPtr<Text::String> address)
+void Text::MailCreator::CCAdd(Text::String *name, NN<Text::String> address)
 {
 	if (this->ccVals.GetLength() > 0)
 	{
@@ -405,7 +405,7 @@ void Text::MailCreator::SetSubject(const WChar *subj)
 	this->subject = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 }
 
-void Text::MailCreator::SetSubject(NotNullPtr<Text::String> subj)
+void Text::MailCreator::SetSubject(NN<Text::String> subj)
 {
 	Text::StringBuilderUTF8 sb;
 	this->AppendStr(sb, subj->ToCString());
@@ -429,7 +429,7 @@ void Text::MailCreator::SetContentHTML(const WChar *content, Text::CString htmlP
 	}
 }
 
-void Text::MailCreator::SetContentHTML(NotNullPtr<Text::String> content, Text::CString htmlPath)
+void Text::MailCreator::SetContentHTML(NN<Text::String> content, Text::CString htmlPath)
 {
 	Text::IMIMEObj *obj = ParseContentHTML(content->v, content->leng, 65001, htmlPath);
 	if (obj)
@@ -447,7 +447,7 @@ void Text::MailCreator::SetContentText(const WChar *content, UInt32 codePage)
 	this->content = obj;
 }
 
-void Text::MailCreator::SetContentText(NotNullPtr<Text::String> content)
+void Text::MailCreator::SetContentText(NN<Text::String> content)
 {
 	Text::MIMEObj::TextMIMEObj *obj;
 	NEW_CLASS(obj, Text::MIMEObj::TextMIMEObj(content->v, content->leng, 65001));
@@ -490,9 +490,9 @@ void Text::MailCreator::AddAttachment(Text::CStringNN fileName)
 	this->attachName.Add(Text::String::New(fileName.v, fileName.leng));
 }
 
-NotNullPtr<Text::MIMEObj::MailMessage> Text::MailCreator::CreateMail()
+NN<Text::MIMEObj::MailMessage> Text::MailCreator::CreateMail()
 {
-	NotNullPtr<Text::MIMEObj::MailMessage> msg;
+	NN<Text::MIMEObj::MailMessage> msg;
 	NEW_CLASSNN(msg, Text::MIMEObj::MailMessage());
 	if (this->from)
 	{
@@ -524,7 +524,7 @@ NotNullPtr<Text::MIMEObj::MailMessage> Text::MailCreator::CreateMail()
 		UOSInt j;
 		UOSInt k;
 		UOSInt l;
-		NotNullPtr<Text::String> fname;
+		NN<Text::String> fname;
 		NEW_CLASS(mpart, Text::MIMEObj::MultipartMIMEObj(CSTR("multipart/mixed"), CSTR("This is a multi-part message in MIME format.")));
 		if (this->content)
 		{

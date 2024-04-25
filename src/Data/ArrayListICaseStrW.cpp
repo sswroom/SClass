@@ -12,9 +12,9 @@ Data::ArrayListICaseStrW::ArrayListICaseStrW(UOSInt Capacity) : Data::ArrayListS
 {
 }
 
-NotNullPtr<Data::ArrayList<const WChar*>> Data::ArrayListICaseStrW::Clone() const
+NN<Data::ArrayList<const WChar*>> Data::ArrayListICaseStrW::Clone() const
 {
-	NotNullPtr<Data::ArrayListICaseStrW> newArr;
+	NN<Data::ArrayListICaseStrW> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListICaseStrW(this->capacity));
 	newArr->AddAll(*this);
 	return newArr;

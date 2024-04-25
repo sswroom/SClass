@@ -23,7 +23,7 @@ namespace DB
 		Optional<Net::SSHClient> sshCli;
 
 	public:
-		DBTool(NotNullPtr<DBConn> conn, Bool needRelease, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
+		DBTool(NN<DBConn> conn, Bool needRelease, NN<IO::LogTool> log, Text::CString logPrefix);
 		virtual ~DBTool();
 
 /*		static DBTool *NullSource(IO::LogTool *);*/

@@ -14,19 +14,19 @@ namespace SSWR
 		class OrganDataFileForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<OrganEnv> env;
-			NotNullPtr<UI::GUIListView> lvFiles;
-			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			NotNullPtr<UI::GUIButton> btnDelete;
-			NotNullPtr<UI::GUIButton> btnStartTime;
+			NN<OrganEnv> env;
+			NN<UI::GUIListView> lvFiles;
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUIButton> btnDelete;
+			NN<UI::GUIButton> btnStartTime;
 
-			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnFilesDblClk(AnyType userObj, UOSInt itemIndex);
 			static void __stdcall OnDeleteClicked(AnyType userObj);
 			static void __stdcall OnStartTimeClicked(AnyType userObj);
 			void UpdateFileList();
 		public:
-			OrganDataFileForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env);
+			OrganDataFileForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<OrganEnv> env);
 			virtual ~OrganDataFileForm();
 
 			virtual void OnMonitorChanged();

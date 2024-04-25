@@ -13,23 +13,23 @@ namespace Crypto
 		{
 		private:
 			Data::FastStringMapNN<Crypto::Cert::X509Cert> certMap;
-			NotNullPtr<Text::String> storeName;
+			NN<Text::String> storeName;
 		public:
 			CertStore(Text::CString name);
-			CertStore(NotNullPtr<Text::String> name);
+			CertStore(NN<Text::String> name);
 			virtual ~CertStore();
 
-			NotNullPtr<CertStore> Clone() const;
+			NN<CertStore> Clone() const;
 			Bool LoadDir(Text::CStringNN certsDir);
 			Bool LoadJavaCACerts(Text::CStringNN jksPath);
-			void AddCert(NotNullPtr<Crypto::Cert::X509Cert> cert);
+			void AddCert(NN<Crypto::Cert::X509Cert> cert);
 			void FromPackageFile(IO::PackageFile *pkg);
-			NotNullPtr<Text::String> GetStoreName() const;
+			NN<Text::String> GetStoreName() const;
 
 			Optional<Crypto::Cert::X509Cert> GetCertByCN(Text::CStringNN commonName);
 			virtual UOSInt GetCount() const;
 			virtual Optional<Crypto::Cert::X509Cert> GetItem(UOSInt index) const;
-			virtual NotNullPtr<Crypto::Cert::X509Cert> GetItemNoCheck(UOSInt index) const;
+			virtual NN<Crypto::Cert::X509Cert> GetItemNoCheck(UOSInt index) const;
 		};
 	}
 }

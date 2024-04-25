@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::OrganMgr::OrganImageWebForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<OrganImageWebForm> me = userObj.GetNN<OrganImageWebForm>();
+	NN<OrganImageWebForm> me = userObj.GetNN<OrganImageWebForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtSourceURL->GetText(sb);
 	SDEL_STRING(me->srcURL);
@@ -20,11 +20,11 @@ void __stdcall SSWR::OrganMgr::OrganImageWebForm::OnOKClicked(AnyType userObj)
 
 void __stdcall SSWR::OrganMgr::OrganImageWebForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<OrganImageWebForm> me = userObj.GetNN<OrganImageWebForm>();
+	NN<OrganImageWebForm> me = userObj.GetNN<OrganImageWebForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::OrganMgr::OrganImageWebForm::OrganImageWebForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env, NN<OrganImageItem> imgItem, NN<SSWR::OrganMgr::WebFileInfo> wfile) : UI::GUIForm(parent, 800, 176, ui)
+SSWR::OrganMgr::OrganImageWebForm::OrganImageWebForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<OrganEnv> env, NN<OrganImageItem> imgItem, NN<SSWR::OrganMgr::WebFileInfo> wfile) : UI::GUIForm(parent, 800, 176, ui)
 {
 	this->SetNoResize(true);
 	this->SetFont(0, 0, 10.5, false);

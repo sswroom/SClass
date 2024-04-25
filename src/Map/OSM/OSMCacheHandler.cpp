@@ -14,7 +14,7 @@
 #include <stdio.h>
 #endif
 
-IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTile, Int32 yTile, NotNullPtr<Sync::MutexUsage> mutUsage)
+IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTile, Int32 yTile, NN<Sync::MutexUsage> mutUsage)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -34,7 +34,7 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 	Data::DateTime dt;
 	Data::DateTime currTime;
 
-	NotNullPtr<Sync::Mutex> ioMut;
+	NN<Sync::Mutex> ioMut;
 	if (ioMut.Set(this->ioMut))
 	{
 		mutUsage->ReplaceMutex(ioMut);
@@ -60,7 +60,7 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 	fs = 0;
 	mutUsage->EndUse();
 
-	NotNullPtr<Text::String> thisUrl;
+	NN<Text::String> thisUrl;
 	Sync::MutexUsage urlMutUsage(this->urlMut);
 	if (!this->urls.GetItem(this->urlNext).SetTo(thisUrl))
 	{
@@ -80,7 +80,7 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 	urlSb.AppendI32(yTile);
 	urlSb.AppendC(UTF8STRC(".png"));
 
-	NotNullPtr<Net::HTTPClient> cli;
+	NN<Net::HTTPClient> cli;
 	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("OSMTileMap/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
 	cli->Connect(urlSb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 
@@ -111,7 +111,7 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 			}
 			if (currPos >= contLeng)
 			{
-				NotNullPtr<Sync::Mutex> ioMut;
+				NN<Sync::Mutex> ioMut;
 				if (ioMut.Set(this->ioMut))
 				{
 					mutUsage->ReplaceMutex(ioMut);
@@ -151,7 +151,7 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 	return fs;
 }
 
-Map::OSM::OSMCacheHandler::OSMCacheHandler(Text::CString url, Text::CString cacheDir, Int32 maxLevel, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl)
+Map::OSM::OSMCacheHandler::OSMCacheHandler(Text::CString url, Text::CString cacheDir, Int32 maxLevel, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl)
 {
 	if (url.leng > 0)
 	{
@@ -187,7 +187,7 @@ void Map::OSM::OSMCacheHandler::SetIOMut(Sync::Mutex *ioMut)
 	this->ioMut = ioMut;
 }
 
-Bool Map::OSM::OSMCacheHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Map::OSM::OSMCacheHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sarr[5];

@@ -17,26 +17,26 @@ namespace SSWR
 		class AVIRTCPPortScanForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Net::SocketFactory> sockf;
 			Net::TCPPortScanner *scanner;
 			Bool listUpdated;
 
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUILabel> lblIP;
-			NotNullPtr<UI::GUITextBox> txtIP;
-			NotNullPtr<UI::GUILabel> lblThreadCnt;
-			NotNullPtr<UI::GUITextBox> txtThreadCnt;
-			NotNullPtr<UI::GUILabel> lblMaxPort;
-			NotNullPtr<UI::GUITextBox> txtMaxPort;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUIListView> lvPort;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUILabel> lblIP;
+			NN<UI::GUITextBox> txtIP;
+			NN<UI::GUILabel> lblThreadCnt;
+			NN<UI::GUITextBox> txtThreadCnt;
+			NN<UI::GUILabel> lblMaxPort;
+			NN<UI::GUITextBox> txtMaxPort;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUIListView> lvPort;
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnPortUpdated(AnyType userObj, UInt16 port);
 		public:
-			AVIRTCPPortScanForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRTCPPortScanForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTCPPortScanForm();
 
 			virtual void OnMonitorChanged();

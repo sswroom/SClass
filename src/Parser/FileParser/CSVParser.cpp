@@ -31,7 +31,7 @@ void Parser::FileParser::CSVParser::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-void Parser::FileParser::CSVParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::CSVParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer || t == IO::ParserType::ReadingDB)
 	{
@@ -44,7 +44,7 @@ IO::ParserType Parser::FileParser::CSVParser::GetParserType()
 	return IO::ParserType::Unknown;
 }
 
-IO::ParsedObject *Parser::FileParser::CSVParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[1024];
 	UTF8Char sbuff2[64];
@@ -369,7 +369,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFileHdr(NotNullPtr<IO::Str
 	else if (latCol != INVALID_INDEX && lonCol != INVALID_INDEX)
 	{
 		Map::VectorLayer *lyr;
-		NotNullPtr<Math::Geometry::Point> pt;
+		NN<Math::Geometry::Point> pt;
 		UOSInt i;
 		UOSInt nameCol = 0;
 
@@ -383,7 +383,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFileHdr(NotNullPtr<IO::Str
 				nameCol = i;
 			}
 		}
-		NotNullPtr<Math::CoordinateSystem> csys;
+		NN<Math::CoordinateSystem> csys;
 		NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, fd->GetFullName(), currCol, tmpcArr2, csys = Math::CoordinateSystemManager::CreateDefaultCsys(), nameCol, 0));
 		
 		UTF8Char **tmpUArr2 = (UTF8Char**)tmpcArr2;

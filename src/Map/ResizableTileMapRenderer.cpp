@@ -194,7 +194,7 @@ void Map::ResizableTileMapRenderer::DrawImage(Map::MapView *view, Media::DrawIma
 	}
 }
 
-Map::ResizableTileMapRenderer::ResizableTileMapRenderer(NotNullPtr<Media::DrawEngine> eng, Map::TileMap *map, Parser::ParserList *parsers, Media::ColorManagerSess *sess, Media::ColorProfile *outputColor) : srcColor(Media::ColorProfile::CPT_SRGB), outputColor(outputColor)
+Map::ResizableTileMapRenderer::ResizableTileMapRenderer(NN<Media::DrawEngine> eng, Map::TileMap *map, Parser::ParserList *parsers, Media::ColorManagerSess *sess, Media::ColorProfile *outputColor) : srcColor(Media::ColorProfile::CPT_SRGB), outputColor(outputColor)
 {
 	this->eng = eng;
 	this->map = map;

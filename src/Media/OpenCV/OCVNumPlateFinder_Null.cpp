@@ -23,6 +23,6 @@ void Media::OpenCV::OCVNumPlateFinder::SetAreaRange(Double minArea, Double maxAr
 	this->maxArea = maxArea;
 }
 
-void Media::OpenCV::OCVNumPlateFinder::Find(NotNullPtr<Media::OpenCV::OCVFrame> frame, PossibleAreaFunc func, AnyType userObj)
+void Media::OpenCV::OCVNumPlateFinder::Find(NN<Media::OpenCV::OCVFrame> frame, PossibleAreaFunc func, AnyType userObj)
 {
 }

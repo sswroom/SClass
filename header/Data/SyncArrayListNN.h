@@ -9,7 +9,7 @@ namespace Data
 	template <class T> class SyncArrayListNN : public ReadingListNN<T>
 	{
 	public:
-		typedef void (*FreeFunc)(NotNullPtr<T> v);
+		typedef void (*FreeFunc)(NN<T> v);
 	private:
 		Data::ArrayListNN<T> arr;
 		Sync::Mutex mut;
@@ -19,23 +19,23 @@ namespace Data
 		SyncArrayListNN(UOSInt capacity);
 		virtual ~SyncArrayListNN();
 
-		virtual UOSInt Add(NotNullPtr<T> val);
-		virtual UOSInt AddRange(const NotNullPtr<T> *arr, UOSInt cnt);
-		virtual Bool Remove(NotNullPtr<T> val);
+		virtual UOSInt Add(NN<T> val);
+		virtual UOSInt AddRange(const NN<T> *arr, UOSInt cnt);
+		virtual Bool Remove(NN<T> val);
 		virtual Optional<T> RemoveAt(UOSInt index);
-		virtual void Insert(UOSInt index, NotNullPtr<T> val);
-		virtual UOSInt IndexOf(NotNullPtr<T> val) const;
+		virtual void Insert(UOSInt index, NN<T> val);
+		virtual UOSInt IndexOf(NN<T> val) const;
 		virtual void Clear();
 		Optional<T> RemoveLast();
-		NotNullPtr<SyncArrayListNN> Clone() const;
+		NN<SyncArrayListNN> Clone() const;
 
 		virtual UOSInt GetCount() const;
 		virtual UOSInt GetCapacity() const;
 
 		virtual Optional<T> GetItem(UOSInt index) const;
-		virtual NotNullPtr<T> GetItemNoCheck(UOSInt index) const;
+		virtual NN<T> GetItemNoCheck(UOSInt index) const;
 		virtual void SetItem(UOSInt index, T val);
-		NotNullPtr<Data::ArrayListNN<T>> GetArrayList(NotNullPtr<Sync::MutexUsage> mutUsage);
+		NN<Data::ArrayListNN<T>> GetArrayList(NN<Sync::MutexUsage> mutUsage);
 
 		void DeleteAll();
 		void FreeAll(FreeFunc freeFunc);
@@ -55,19 +55,19 @@ namespace Data
 	{
 	}
 
-	template <class T> UOSInt SyncArrayListNN<T>::Add(NotNullPtr<T> val)
+	template <class T> UOSInt SyncArrayListNN<T>::Add(NN<T> val)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		return this->arr.Add(val);
 	}
 
-	template <class T> UOSInt Data::SyncArrayListNN<T>::AddRange(const NotNullPtr<T> *arr, UOSInt cnt)
+	template <class T> UOSInt Data::SyncArrayListNN<T>::AddRange(const NN<T> *arr, UOSInt cnt)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		return this->arr.AddRange(arr, cnt);
 	}
 
-	template <class T> Bool Data::SyncArrayListNN<T>::Remove(NotNullPtr<T> val)
+	template <class T> Bool Data::SyncArrayListNN<T>::Remove(NN<T> val)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		return this->arr.Remove(val);
@@ -79,13 +79,13 @@ namespace Data
 		return this->arr.RemoveAt(index);
 	}
 
-	template <class T> void Data::SyncArrayListNN<T>::Insert(UOSInt index, NotNullPtr<T> val)
+	template <class T> void Data::SyncArrayListNN<T>::Insert(UOSInt index, NN<T> val)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		this->arr.Insert(index, val);
 	}
 
-	template <class T> UOSInt Data::SyncArrayListNN<T>::IndexOf(NotNullPtr<T> val) const
+	template <class T> UOSInt Data::SyncArrayListNN<T>::IndexOf(NN<T> val) const
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		return this->arr.IndexOf(val);
@@ -108,9 +108,9 @@ namespace Data
 		return 0;
 	}
 
-	template <class T> NotNullPtr<Data::SyncArrayListNN<T>> Data::SyncArrayListNN<T>::Clone() const
+	template <class T> NN<Data::SyncArrayListNN<T>> Data::SyncArrayListNN<T>::Clone() const
 	{
-		NotNullPtr<Data::SyncArrayListNN<T>> newArr;
+		NN<Data::SyncArrayListNN<T>> newArr;
 		Sync::MutexUsage mutUsage(this->mut);
 		NEW_CLASSNN(newArr, Data::SyncArrayListNN<T>(this->arr.GetCapacity()));
 		newArr->arr.AddRange(&this->arr);
@@ -133,7 +133,7 @@ namespace Data
 		return this->arr.GetItem(index);
 	}
 
-	template <class T> NotNullPtr<T> Data::SyncArrayListNN<T>::GetItemNoCheck(UOSInt index) const
+	template <class T> NN<T> Data::SyncArrayListNN<T>::GetItemNoCheck(UOSInt index) const
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		return this->arr.GetItemNoCheck(index);
@@ -145,7 +145,7 @@ namespace Data
 		this->arr.SetItem(index, val);
 	}
 
-	template <class T> NotNullPtr<Data::ArrayListNN<T>> Data::SyncArrayListNN<T>::GetArrayList(NotNullPtr<Sync::MutexUsage> mutUsage)
+	template <class T> NN<Data::ArrayListNN<T>> Data::SyncArrayListNN<T>::GetArrayList(NN<Sync::MutexUsage> mutUsage)
 	{
 		mutUsage->ReplaceMutex(this->mut);
 		return this->arr;

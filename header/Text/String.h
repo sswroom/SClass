@@ -15,12 +15,12 @@ namespace Text
 		UTF8Char vbuff[1];
 
 		static Optional<String> NewOrNullSlow(const UTF8Char *str);
-		static NotNullPtr<String> NewNotNullSlow(const UTF8Char *str);
+		static NN<String> NewNotNullSlow(const UTF8Char *str);
 		static Optional<String> NewOrNull(Text::CString str);
-		static NotNullPtr<String> New(const Text::CString &str)
+		static NN<String> New(const Text::CString &str)
 		{
 			if (str.leng == 0) return NewEmpty();
-			NotNullPtr<Text::String> s = NotNullPtr<Text::String>::FromPtr((Text::String*)MAlloc(str.leng + sizeof(String)));
+			NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MAlloc(str.leng + sizeof(String)));
 			s->v = s->vbuff;
 			s->leng = str.leng;
 			s->useCnt = 1;
@@ -29,10 +29,10 @@ namespace Text
 			return s;
 		}
 
-		static NotNullPtr<String> New(const UTF8Char *str, UOSInt len)
+		static NN<String> New(const UTF8Char *str, UOSInt len)
 		{
 			if (len == 0) return NewEmpty();
-			NotNullPtr<Text::String> s = NotNullPtr<Text::String>::FromPtr((Text::String*)MAlloc(len + sizeof(String)));
+			NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MAlloc(len + sizeof(String)));
 			s->v = s->vbuff;
 			s->leng = len;
 			s->useCnt = 1;
@@ -41,11 +41,11 @@ namespace Text
 			return s;
 		}
 		
-		static NotNullPtr<String> NewP(const UTF8Char *str, const UTF8Char *strEnd);
+		static NN<String> NewP(const UTF8Char *str, const UTF8Char *strEnd);
 
-		static NotNullPtr<String> New(UOSInt len)
+		static NN<String> New(UOSInt len)
 		{
-			NotNullPtr<Text::String> s = NotNullPtr<Text::String>::FromPtr((Text::String*)MAlloc(len + sizeof(String)));
+			NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MAlloc(len + sizeof(String)));
 			s->v = s->vbuff;
 			s->leng = len;
 			s->useCnt = 1;
@@ -54,19 +54,19 @@ namespace Text
 		}
 
 		static Optional<String> NewOrNull(const UTF16Char *str);
-		static NotNullPtr<String> NewNotNull(const UTF16Char *str);
-		static NotNullPtr<String> New(const UTF16Char *str, UOSInt len);
+		static NN<String> NewNotNull(const UTF16Char *str);
+		static NN<String> New(const UTF16Char *str, UOSInt len);
 		static Optional<String> NewOrNull(const UTF32Char *str);
-		static NotNullPtr<String> NewNotNull(const UTF32Char *str);
-		static NotNullPtr<String> New(const UTF32Char *str, UOSInt len);
-		static NotNullPtr<String> NewCSVRec(const UTF8Char *str);
-		static NotNullPtr<String> NewEmpty();
-		static NotNullPtr<String> OrEmpty(Optional<Text::String> s);
+		static NN<String> NewNotNull(const UTF32Char *str);
+		static NN<String> New(const UTF32Char *str, UOSInt len);
+		static NN<String> NewCSVRec(const UTF8Char *str);
+		static NN<String> NewEmpty();
+		static NN<String> OrEmpty(Optional<Text::String> s);
 		static Optional<String> CopyOrNull(Optional<Text::String> s);
 		void Release();
-		NotNullPtr<String> Clone() const;
+		NN<String> Clone() const;
 
-		NotNullPtr<String> ToLower();
+		NN<String> ToLower();
 	private:
 		String(UOSInt cnt);
 		~String();

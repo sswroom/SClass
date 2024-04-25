@@ -13,7 +13,7 @@ IO::CodeScanner::~CodeScanner()
 	this->devName->Release();
 }
 
-NotNullPtr<Text::String> IO::CodeScanner::GetDevName() const
+NN<Text::String> IO::CodeScanner::GetDevName() const
 {
 	return this->devName;
 }

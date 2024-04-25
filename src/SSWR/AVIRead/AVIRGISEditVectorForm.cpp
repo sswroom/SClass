@@ -7,25 +7,25 @@
 
 Bool __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-//	NotNullPtr<SSWR::AVIRead::AVIRGISEditVectorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditVectorForm>();
+//	NN<SSWR::AVIRead::AVIRGISEditVectorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditVectorForm>();
 	return false;
 }
 
 Bool __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-//	NotNullPtr<SSWR::AVIRead::AVIRGISEditVectorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditVectorForm>();
+//	NN<SSWR::AVIRead::AVIRGISEditVectorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditVectorForm>();
 	return false;
 }
 
 Bool __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-//	NotNullPtr<SSWR::AVIRead::AVIRGISEditVectorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditVectorForm>();
+//	NN<SSWR::AVIRead::AVIRGISEditVectorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditVectorForm>();
 	return false;
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnObjectsDblClk(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISEditVectorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditVectorForm>();
+	NN<SSWR::AVIRead::AVIRGISEditVectorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditVectorForm>();
 	UOSInt selInd = me->lbObjects->GetSelectedIndex();
 	if (selInd != INVALID_INDEX)
 	{
@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRGISEditVectorForm::OnObjectsDblClk(AnyType use
 	}
 }
 
-SSWR::AVIRead::AVIRGISEditVectorForm::AVIRGISEditVectorForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::VectorLayer> lyr, IMapNavigator *navi) : UI::GUIForm(parent, 416, 408, ui)
+SSWR::AVIRead::AVIRGISEditVectorForm::AVIRGISEditVectorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::VectorLayer> lyr, IMapNavigator *navi) : UI::GUIForm(parent, 416, 408, ui)
 {
 	Text::StringBuilderUTF8 sb;
 	this->core = core;

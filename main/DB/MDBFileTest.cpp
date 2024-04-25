@@ -10,7 +10,7 @@
 #include "Parser/FullParserList.h"
 #include "Text/MyString.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Text::CStringNN fileName = CSTR("E:\\myworks\\0_req\\20120925 Macau Layer\\GeoDatabase\\Basemap.mdb");
 	const UTF8Char *destPath = (const UTF8Char*)"E:\\myworks\\0_req\\20120925 Macau Layer\\GeoDatabase\\";
@@ -37,7 +37,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		shpExp.SetCodePage(65001);
 
 		Map::MapLayerCollection *lyrColl = (Map::MapLayerCollection*)pobj;
-		NotNullPtr<Map::MapDrawLayer> lyr;
+		NN<Map::MapDrawLayer> lyr;
 		j = lyrColl->GetCount();
 		i = 0;
 		while (i < j)

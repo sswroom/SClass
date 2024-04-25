@@ -20,24 +20,24 @@ namespace SSWR
 		class AVIRGPSSimulatorForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblStreamType;
-			NotNullPtr<UI::GUITextBox> txtStreamType;
-			NotNullPtr<UI::GUIButton> btnStream;
-			NotNullPtr<UI::GUICheckBox> chkAddPoints;
-			NotNullPtr<UI::GUILabel> lblSpeed;
-			NotNullPtr<UI::GUITextBox> txtSpeed;
-			NotNullPtr<UI::GUITextBox> txtSpeedInput;
-			NotNullPtr<UI::GUIButton> btnSpeed;
-			NotNullPtr<UI::GUILabel> lblCurrLat;
-			NotNullPtr<UI::GUITextBox> txtCurrLat;
-			NotNullPtr<UI::GUILabel> lblCurrLon;
-			NotNullPtr<UI::GUITextBox> txtCurrLon;
-			NotNullPtr<UI::GUILabel> lblPoints;
-			NotNullPtr<UI::GUIListBox> lbPoints;
+			NN<UI::GUILabel> lblStreamType;
+			NN<UI::GUITextBox> txtStreamType;
+			NN<UI::GUIButton> btnStream;
+			NN<UI::GUICheckBox> chkAddPoints;
+			NN<UI::GUILabel> lblSpeed;
+			NN<UI::GUITextBox> txtSpeed;
+			NN<UI::GUITextBox> txtSpeedInput;
+			NN<UI::GUIButton> btnSpeed;
+			NN<UI::GUILabel> lblCurrLat;
+			NN<UI::GUITextBox> txtCurrLat;
+			NN<UI::GUILabel> lblCurrLon;
+			NN<UI::GUITextBox> txtCurrLon;
+			NN<UI::GUILabel> lblPoints;
+			NN<UI::GUIListBox> lbPoints;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IMapNavigator *navi;
-			NotNullPtr<Math::GeographicCoordinateSystem> wgs84;
+			NN<Math::GeographicCoordinateSystem> wgs84;
 			IO::Stream *stm;
 			Data::ArrayListA<Math::Coord2DDbl> points;
 			Math::Coord2DDbl currPos;
@@ -52,7 +52,7 @@ namespace SSWR
 			Char *GenLon(Char *ptr, Double lon);
 			Char *GenCheck(Char *ptr, Char *start);
 		public:
-			AVIRGPSSimulatorForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi);
+			AVIRGPSSimulatorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi);
 			virtual ~AVIRGPSSimulatorForm();
 
 			virtual void OnMonitorChanged();

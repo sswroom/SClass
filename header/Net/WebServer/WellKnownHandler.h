@@ -12,9 +12,9 @@ namespace Net
 			Sync::Mutex acmeMut;
 			Data::FastStringMap<Text::String*> acmeMap;
 		protected:
-			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
+			virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 		private:
-			static Bool __stdcall AddFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> me);
+			static Bool __stdcall AddFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);
 		public:
 			WellKnownHandler();
 			virtual ~WellKnownHandler();

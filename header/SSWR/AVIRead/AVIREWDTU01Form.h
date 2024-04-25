@@ -29,15 +29,15 @@ namespace SSWR
 			} DeviceEntry;
 
 		private:
-			NotNullPtr<UI::GUIPanel> pnlMQTT;
-			NotNullPtr<UI::GUILabel> lblServer;
-			NotNullPtr<UI::GUITextBox> txtServer;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUIButton> btnConnect;
-			NotNullPtr<UI::GUIListView> lvDevices;
+			NN<UI::GUIPanel> pnlMQTT;
+			NN<UI::GUILabel> lblServer;
+			NN<UI::GUITextBox> txtServer;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUIButton> btnConnect;
+			NN<UI::GUIListView> lvDevices;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Net::MQTTStaticClient *cli;
 			Sync::Mutex dataMut;
 			Bool dataChg;
@@ -48,7 +48,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(AnyType userObj);
 			void DataClear();
 		public:
-			AVIREWDTU01Form(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIREWDTU01Form(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIREWDTU01Form();
 
 			virtual void OnMonitorChanged();

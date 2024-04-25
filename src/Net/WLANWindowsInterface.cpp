@@ -22,7 +22,7 @@ Bool Net::WLANWindowsInterface::Scan()
 	return this->core->Scan(this->id, 0, 0, 0) == ERROR_SUCCESS;
 }
 
-UOSInt Net::WLANWindowsInterface::GetNetworks(NotNullPtr<Data::ArrayListNN<Net::WirelessLAN::Network>> networkList)
+UOSInt Net::WLANWindowsInterface::GetNetworks(NN<Data::ArrayListNN<Net::WirelessLAN::Network>> networkList)
 {
 	WLAN_AVAILABLE_NETWORK_LIST *list;
 	UOSInt retVal = 0;
@@ -32,7 +32,7 @@ UOSInt Net::WLANWindowsInterface::GetNetworks(NotNullPtr<Data::ArrayListNN<Net::
 		UInt32 j = list->dwNumberOfItems;
 		while (i < j)
 		{
-			NotNullPtr<Net::WirelessLAN::Network> net;
+			NN<Net::WirelessLAN::Network> net;
 			UTF8Char buff[33];
 			UTF8Char *sptr = Text::StrConcatC(buff, list->Network[i].dot11Ssid.ucSSID, list->Network[i].dot11Ssid.uSSIDLength);
 			NEW_CLASSNN(net, Net::WirelessLAN::Network(CSTRP(buff, sptr), -100 + 0.5 * list->Network[i].wlanSignalQuality));
@@ -45,7 +45,7 @@ UOSInt Net::WLANWindowsInterface::GetNetworks(NotNullPtr<Data::ArrayListNN<Net::
 	return retVal;
 }
 
-UOSInt Net::WLANWindowsInterface::GetBSSList(NotNullPtr<Data::ArrayListNN<Net::WirelessLAN::BSSInfo>> bssList)
+UOSInt Net::WLANWindowsInterface::GetBSSList(NN<Data::ArrayListNN<Net::WirelessLAN::BSSInfo>> bssList)
 {
 	WLAN_BSS_LIST *list;
 	UOSInt retVal = 0;
@@ -55,7 +55,7 @@ UOSInt Net::WLANWindowsInterface::GetBSSList(NotNullPtr<Data::ArrayListNN<Net::W
 		UInt32 j = list->dwNumberOfItems;
 		while (i < j)
 		{
-			NotNullPtr<Net::WirelessLAN::BSSInfo> bss;
+			NN<Net::WirelessLAN::BSSInfo> bss;
 			UTF8Char buff[33];
 			UTF8Char *sptr;
 			sptr = Text::StrConcatC(buff, list->wlanBssEntries[i].dot11Ssid.ucSSID, list->wlanBssEntries[i].dot11Ssid.uSSIDLength);

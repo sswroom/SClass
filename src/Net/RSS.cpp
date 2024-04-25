@@ -201,7 +201,7 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 	}
 }
 
-Net::RSSItem::RSSItem(NotNullPtr<Text::XMLReader> reader)
+Net::RSSItem::RSSItem(NN<Text::XMLReader> reader)
 {
 	this->objectId = 0;
 	this->title = 0;
@@ -222,7 +222,7 @@ Net::RSSItem::RSSItem(NotNullPtr<Text::XMLReader> reader)
 	Bool descHTML = reader->GetNodeTextNN()->Equals(UTF8STRC("item"));
 	Text::StringBuilderUTF8 sb;
 	Text::XMLAttrib *attr;
-	NotNullPtr<Text::String> name;
+	NN<Text::String> name;
 	UOSInt i;
 	UOSInt j;
 	i = 0;
@@ -429,7 +429,7 @@ Text::String *Net::RSSItem::GetId()
 	}
 }
 
-Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Data::Duration timeout, NotNullPtr<IO::LogTool> log)
+Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Data::Duration timeout, NN<IO::LogTool> log)
 {
 	this->isError = true;
 	this->title = 0;
@@ -446,7 +446,7 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NotNullPtr<
 	this->ttl = 0;
 
 	IO::ParsedObject *pobj;
-	NotNullPtr<IO::Stream> stm;
+	NN<IO::Stream> stm;
 	pobj = Net::URL::OpenObject(url, OPTSTR_CSTR(userAgent), sockf, ssl, timeout, log);
 	if (pobj == 0)
 	{
@@ -823,7 +823,7 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NotNullPtr<
 	Text::XMLReader reader(&encFact, stm, Text::XMLReader::PM_XML);
 
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<Text::String> name;
+	NN<Text::String> name;
 	while (reader.NextElementName().SetTo(name))
 	{
 		if (name->EqualsICase(UTF8STRC("RSS")))
@@ -1259,7 +1259,7 @@ Int32 Net::RSS::GetTTL() const
 	return this->ttl;
 }
 
-void Net::RSS::GetYoutubeURL(Text::CString channelId, NotNullPtr<Text::StringBuilderUTF8> outURL)
+void Net::RSS::GetYoutubeURL(Text::CString channelId, NN<Text::StringBuilderUTF8> outURL)
 {
 	outURL->AppendC(UTF8STRC("https://www.youtube.com/feeds/videos.xml?channel_id="));
 	outURL->Append(channelId);

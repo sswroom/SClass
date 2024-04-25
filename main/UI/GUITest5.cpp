@@ -5,12 +5,12 @@
 #include "UI/GUIForm.h"
 #include "UI/GUIListBox.h"
 
-NotNullPtr<UI::GUIListBox> lb;
+NN<UI::GUIListBox> lb;
 
 void __stdcall OnLBDblClick(AnyType userObj)
 {
-	NotNullPtr<UI::GUIForm> me = userObj.GetNN<UI::GUIForm>();
-	NotNullPtr<Text::String> s;
+	NN<UI::GUIForm> me = userObj.GetNN<UI::GUIForm>();
+	NN<Text::String> s;
 	if (lb->GetSelectedItemTextNew().SetTo(s))
 	{
 		me->GetUI()->ShowMsgOK(s->ToCString(), CSTR("GUI Test 5 LB DblClick"), me);
@@ -22,12 +22,12 @@ void __stdcall OnLBDblClick(AnyType userObj)
 	}
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	NotNullPtr<UI::GUICore> core;
+	NN<UI::GUICore> core;
 	if (progCtrl->CreateGUICore(progCtrl).SetTo(core))
 	{
-		NotNullPtr<UI::GUIForm> frm;
+		NN<UI::GUIForm> frm;
 		NEW_CLASSNN(frm, UI::GUIForm(0, 640, 480, core));
 		frm->SetText(CSTR("Test 5 - ListBox"));
 		lb = core->NewListBox(frm, false);

@@ -370,7 +370,7 @@ Int32 Media::ASIOOutRenderer::GetDeviceIndex(const UTF8Char *buff)
 
 UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(AnyType obj)
 {
-	NotNullPtr<Media::ASIOOutRenderer> me = obj.GetNN<Media::ASIOOutRenderer>();
+	NN<Media::ASIOOutRenderer> me = obj.GetNN<Media::ASIOOutRenderer>();
 	IASIO *asio = (IASIO*)me->asiodrv;
 	AudioFormat fmt;
 	UInt32 ch;

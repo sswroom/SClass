@@ -12,11 +12,11 @@ namespace SSWR
 		class AVIRImageViewerForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIPictureBoxDD> pbImage;
-			NotNullPtr<UI::GUIMainMenu> mnuMain;
+			NN<UI::GUIPictureBoxDD> pbImage;
+			NN<UI::GUIMainMenu> mnuMain;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Media::ColorManagerSess> colorSess;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Media::ColorManagerSess> colorSess;
 			Bool allowEnlarge;
 			Int64 imgTimeoutTick;
 			Media::ImageList *imgList;
@@ -26,7 +26,7 @@ namespace SSWR
 			Bool hideCursor;
 			UOSInt noMoveCount;
 			
-			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnMoveToNext(AnyType userObj);
 			static void __stdcall OnMoveToPrev(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
@@ -34,7 +34,7 @@ namespace SSWR
 			static Bool __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn);
 			static Bool IsImageFileName(Text::CString fileName);
 		public:
-			AVIRImageViewerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRImageViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRImageViewerForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);
@@ -42,7 +42,7 @@ namespace SSWR
 			virtual void OnMonitorChanged();
 
 			void SetImage(Media::ImageList *imgList, Bool sameDir);
-			Bool ParseFile(NotNullPtr<IO::StreamData> fd);
+			Bool ParseFile(NN<IO::StreamData> fd);
 		};
 	}
 }

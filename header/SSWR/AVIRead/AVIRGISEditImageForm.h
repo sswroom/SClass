@@ -19,29 +19,29 @@ namespace SSWR
 		class AVIRGISEditImageForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			NotNullPtr<UI::GUICheckBox> chkAutoPan;
-			NotNullPtr<UI::GUICheckBox> chkEdit;
-			NotNullPtr<UI::GUIListBox> lbImages;
-			NotNullPtr<UI::GUIHSplitter> hspMain;
-			NotNullPtr<UI::GUIPanel> pnlMain;
-			NotNullPtr<UI::GUILabel> lblLeft;
-			NotNullPtr<UI::GUITextBox> txtLeft;
-			NotNullPtr<UI::GUILabel> lblTop;
-			NotNullPtr<UI::GUITextBox> txtTop;
-			NotNullPtr<UI::GUILabel> lblRight;
-			NotNullPtr<UI::GUITextBox> txtRight;
-			NotNullPtr<UI::GUILabel> lblBottom;
-			NotNullPtr<UI::GUITextBox> txtBottom;
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUICheckBox> chkAutoPan;
+			NN<UI::GUICheckBox> chkEdit;
+			NN<UI::GUIListBox> lbImages;
+			NN<UI::GUIHSplitter> hspMain;
+			NN<UI::GUIPanel> pnlMain;
+			NN<UI::GUILabel> lblLeft;
+			NN<UI::GUITextBox> txtLeft;
+			NN<UI::GUILabel> lblTop;
+			NN<UI::GUITextBox> txtTop;
+			NN<UI::GUILabel> lblRight;
+			NN<UI::GUITextBox> txtRight;
+			NN<UI::GUILabel> lblBottom;
+			NN<UI::GUITextBox> txtBottom;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Int64 currImage;
 			Math::Coord2DDbl imgMin;
 			Math::Coord2DDbl imgMax;
 			Int32 downType;
 			Math::Coord2D<OSInt> downPos;
 
-			NotNullPtr<Map::VectorLayer> lyr;
+			NN<Map::VectorLayer> lyr;
 			IMapNavigator *navi;
 
 			static void __stdcall OnImageChg(AnyType userObj);
@@ -51,7 +51,7 @@ namespace SSWR
 			static Bool __stdcall OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			Int32 CalcDownType(Math::Coord2D<OSInt> scnPos);
 		public:
-			AVIRGISEditImageForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::VectorLayer> lyr, IMapNavigator *navi);
+			AVIRGISEditImageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::VectorLayer> lyr, IMapNavigator *navi);
 			virtual ~AVIRGISEditImageForm();
 
 			virtual void OnMonitorChanged();

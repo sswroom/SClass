@@ -18,7 +18,7 @@ Map::DrawLayerType SSWR::OrganMgr::OrganSpImgLayer::GetLayerType() const
 	return Map::DRAW_LAYER_POINT;
 }
 
-UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, Map::NameArray **nameArr)
+UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, Map::NameArray **nameArr)
 {
 	UOSInt i = 0;
 	UOSInt j = this->objList.GetCount();
@@ -30,12 +30,12 @@ UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetAllObjectIds(NotNullPtr<Data::ArrayLi
 	return j;
 }
 
-UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, Map::NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, Map::NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, Map::NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt SSWR::OrganMgr::OrganSpImgLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, Map::NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt cnt = 0;
 	UOSInt i;
@@ -65,10 +65,10 @@ void SSWR::OrganMgr::OrganSpImgLayer::ReleaseNameArr(Map::NameArray *nameArr)
 {
 }
 
-Bool SSWR::OrganMgr::OrganSpImgLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, Map::NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool SSWR::OrganMgr::OrganSpImgLayer::GetString(NN<Text::StringBuilderUTF8> sb, Map::NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	NN<UserFileInfo> ufile;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (!this->objList.GetItem((UOSInt)id).SetTo(ufile))
 		return false;
 	if (strIndex == 0)
@@ -110,7 +110,7 @@ DB::DBUtil::ColType SSWR::OrganMgr::OrganSpImgLayer::GetColumnType(UOSInt colInd
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool SSWR::OrganMgr::OrganSpImgLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool SSWR::OrganMgr::OrganSpImgLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	if (colIndex == 0)
 	{

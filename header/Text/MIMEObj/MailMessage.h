@@ -27,7 +27,7 @@ namespace Text
 			{
 				AddressType type;
 				Text::String *name;
-				NotNullPtr<Text::String> address;
+				NN<Text::String> address;
 			} MailAddress;
 
 		public:
@@ -41,19 +41,19 @@ namespace Text
 			UTF8Char *GetFromAddr(UTF8Char *sbuff) const;
 			UTF8Char *GetSubject(UTF8Char *sbuff) const;
 			UTF8Char *GetReplyTo(UTF8Char *sbuff) const;
-			UOSInt GetRecpList(NotNullPtr<Data::ArrayList<MailAddress*>> recpList) const;
-			void FreeRecpList(NotNullPtr<Data::ArrayList<MailAddress*>> recpList) const;
+			UOSInt GetRecpList(NN<Data::ArrayList<MailAddress*>> recpList) const;
+			void FreeRecpList(NN<Data::ArrayList<MailAddress*>> recpList) const;
 
 			Text::MIMEObj::TextMIMEObj *GetContentText() const;
 			Text::IMIMEObj *GetContentMajor() const;
-			Text::IMIMEObj *GetAttachment(OSInt index, NotNullPtr<Text::StringBuilderUTF8> name) const;
+			Text::IMIMEObj *GetAttachment(OSInt index, NN<Text::StringBuilderUTF8> name) const;
 			
 			Text::IMIMEObj *GetRAWContent() const;
 
-			static MailMessage *ParseFile(NotNullPtr<IO::StreamData> fd);
+			static MailMessage *ParseFile(NN<IO::StreamData> fd);
 
 		private:
-			UOSInt ParseAddrList(const UTF8Char *hdr, UOSInt hdrLen, NotNullPtr<Data::ArrayList<MailAddress*>> recpList, AddressType type) const;
+			UOSInt ParseAddrList(const UTF8Char *hdr, UOSInt hdrLen, NN<Data::ArrayList<MailAddress*>> recpList, AddressType type) const;
 		};
 	}
 }

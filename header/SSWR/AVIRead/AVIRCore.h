@@ -38,16 +38,16 @@ namespace SSWR
 			} IOPinType;
 
 		protected:
-			NotNullPtr<Parser::ParserList> parsers;
+			NN<Parser::ParserList> parsers;
 			Map::MapManager mapMgr;
 			Media::ColorManager colorMgr;
 			IO::SiLabDriver *siLabDriver;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 			Net::WebBrowser *browser;
 			Text::EncodingFactory encFact;
-			NotNullPtr<Media::DrawEngine> eng;
-			NotNullPtr<UI::GUICore> ui;
+			NN<Media::DrawEngine> eng;
+			NN<UI::GUICore> ui;
 			Exporter::ExporterList exporters;
 			UInt32 currCodePage;
 			IO::LogTool log;
@@ -66,32 +66,32 @@ namespace SSWR
 			Data::ArrayList<Map::MapDrawLayer*> *batchLyrs;
 
 		protected:
-			static void __stdcall FormClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm);
-			void InitForm(NotNullPtr<UI::GUIForm> frm);
+			static void __stdcall FormClosed(AnyType userObj, NN<UI::GUIForm> frm);
+			void InitForm(NN<UI::GUIForm> frm);
 
-			AVIRCore(NotNullPtr<UI::GUICore> ui);
+			AVIRCore(NN<UI::GUICore> ui);
 		public:
 			virtual ~AVIRCore();
 
-			virtual void OpenObject(NotNullPtr<IO::ParsedObject> pobj) = 0;
-			virtual void SaveData(UI::GUIForm *ownerForm, NotNullPtr<IO::ParsedObject> pobj, const WChar *dialogName) = 0;
+			virtual void OpenObject(NN<IO::ParsedObject> pobj) = 0;
+			virtual void SaveData(UI::GUIForm *ownerForm, NN<IO::ParsedObject> pobj, const WChar *dialogName) = 0;
 			virtual Media::Printer *SelectPrinter(UI::GUIForm *frm) = 0;
 
 			void OpenGSMModem(IO::Stream *modemPort);
 			IO::Stream *OpenStream(OptOut<IO::StreamType> st, Optional<UI::GUIForm> ownerFrm, Int32 defBaudRate, Bool allowReadOnly);
-			void OpenHex(NotNullPtr<IO::StreamData> fd, IO::FileAnalyse::IFileAnalyse *fileAnalyse);
+			void OpenHex(NN<IO::StreamData> fd, IO::FileAnalyse::IFileAnalyse *fileAnalyse);
 
 			void BeginLoad();
 			void EndLoad();
-			Bool LoadData(NotNullPtr<IO::StreamData> data, IO::PackageFile *pkgFile);
-			Bool LoadDataType(NotNullPtr<IO::StreamData> data, IO::PackageFile *pkgFile, IO::ParserType targetType);
+			Bool LoadData(NN<IO::StreamData> data, IO::PackageFile *pkgFile);
+			Bool LoadDataType(NN<IO::StreamData> data, IO::PackageFile *pkgFile, IO::ParserType targetType);
 
-			NotNullPtr<Parser::ParserList> GetParserList();
+			NN<Parser::ParserList> GetParserList();
 			Map::MapManager *GetMapManager();
 			Media::ColorManager *GetColorMgr();
-			NotNullPtr<Net::SocketFactory> GetSocketFactory();
-			NotNullPtr<Media::DrawEngine> GetDrawEngine();
-			NotNullPtr<Text::EncodingFactory> GetEncFactory();
+			NN<Net::SocketFactory> GetSocketFactory();
+			NN<Media::DrawEngine> GetDrawEngine();
+			NN<Text::EncodingFactory> GetEncFactory();
 			IO::SiLabDriver *GetSiLabDriver();
 			Net::WebBrowser *GetWebBrowser();
 			IO::VirtualIOPinMgr *GetVirtualIOPinMgr();
@@ -100,7 +100,7 @@ namespace SSWR
 
 			UInt32 GetCurrCodePage();
 			void SetCodePage(UInt32 codePage);
-			NotNullPtr<IO::LogTool> GetLog();
+			NN<IO::LogTool> GetLog();
 			Double GetMonitorHDPI(MonitorHandle *hMonitor);
 			void SetMonitorHDPI(MonitorHandle *hMonitor, Double monitorHDPI);
 			Double GetMonitorDDPI(MonitorHandle *hMonitor);
@@ -112,11 +112,11 @@ namespace SSWR
 			Int32 GetAudioAPIType();
 			Media::IAudioRenderer *BindAudio(Media::IAudioSource *audSrc);
 
-			Bool GenLinePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, Double lineThick, UInt32 lineColor, NotNullPtr<Media::ColorConv> colorConv);
-			Bool GenLineStylePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, NotNullPtr<Map::MapEnv> env, UOSInt lineStyle, NotNullPtr<Media::ColorConv> colorConv);
-			Bool GenFontStylePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, NotNullPtr<Map::MapEnv> env, UOSInt fontStyle, NotNullPtr<Media::ColorConv> colorConv);
-			Bool GenFontPreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, Text::CStringNN fontName, Double fontSizePt, UInt32 fontColor, NotNullPtr<Media::ColorConv> colorConv);
-			void ShowForm(NotNullPtr<UI::GUIForm> frm);
+			Bool GenLinePreview(NN<Media::DrawImage> img, NN<Media::DrawEngine> eng, Double lineThick, UInt32 lineColor, NN<Media::ColorConv> colorConv);
+			Bool GenLineStylePreview(NN<Media::DrawImage> img, NN<Media::DrawEngine> eng, NN<Map::MapEnv> env, UOSInt lineStyle, NN<Media::ColorConv> colorConv);
+			Bool GenFontStylePreview(NN<Media::DrawImage> img, NN<Media::DrawEngine> eng, NN<Map::MapEnv> env, UOSInt fontStyle, NN<Media::ColorConv> colorConv);
+			Bool GenFontPreview(NN<Media::DrawImage> img, NN<Media::DrawEngine> eng, Text::CStringNN fontName, Double fontSizePt, UInt32 fontColor, NN<Media::ColorConv> colorConv);
+			void ShowForm(NN<UI::GUIForm> frm);
 			void CloseAllForm();
 			void SetGISForm(SSWR::AVIRead::AVIRGISForm *frm);
 			SSWR::AVIRead::AVIRGISForm *GetGISForm();

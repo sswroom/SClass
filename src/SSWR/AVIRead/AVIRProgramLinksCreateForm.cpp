@@ -4,7 +4,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRProgramLinksCreateForm::OnCreateClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProgramLinksCreateForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProgramLinksCreateForm>();
+	NN<SSWR::AVIRead::AVIRProgramLinksCreateForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProgramLinksCreateForm>();
 	Text::StringBuilderUTF8 sbShortName;
 	Text::StringBuilderUTF8 sbName;
 	Text::StringBuilderUTF8 sbComment;
@@ -43,11 +43,11 @@ void __stdcall SSWR::AVIRead::AVIRProgramLinksCreateForm::OnCreateClicked(AnyTyp
 
 void __stdcall SSWR::AVIRead::AVIRProgramLinksCreateForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProgramLinksCreateForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProgramLinksCreateForm>();
+	NN<SSWR::AVIRead::AVIRProgramLinksCreateForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProgramLinksCreateForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRProgramLinksCreateForm::AVIRProgramLinksCreateForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::ProgramLinkManager *progMgr) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRProgramLinksCreateForm::AVIRProgramLinksCreateForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::ProgramLinkManager *progMgr) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Program Links Create"));
 	this->SetFont(0, 0, 8.25, false);

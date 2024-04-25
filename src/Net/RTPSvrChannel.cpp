@@ -7,9 +7,9 @@
 #include "Text/MyString.h"
 #include "Text/URLString.h"
 
-void __stdcall Net::RTPSvrChannel::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::RTPSvrChannel::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	NotNullPtr<Net::RTPSvrChannel> me = userData.GetNN<Net::RTPSvrChannel>();
+	NN<Net::RTPSvrChannel> me = userData.GetNN<Net::RTPSvrChannel>();
 
 	if (dataSize < 12)
 	{
@@ -91,9 +91,9 @@ void __stdcall Net::RTPSvrChannel::PacketHdlr(NotNullPtr<const Net::SocketUtil::
 	me->packMut->Unlock();*/
 }
 
-void __stdcall Net::RTPSvrChannel::PacketCtrlHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::RTPSvrChannel::PacketCtrlHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	NotNullPtr<Net::RTPSvrChannel> me = userData.GetNN<Net::RTPSvrChannel>();
+	NN<Net::RTPSvrChannel> me = userData.GetNN<Net::RTPSvrChannel>();
 	UInt32 size = 0;
 	UInt32 ofst = 0;
 	while (ofst < dataSize)
@@ -163,7 +163,7 @@ void __stdcall Net::RTPSvrChannel::PacketCtrlHdlr(NotNullPtr<const Net::SocketUt
 	}
 }
 
-Net::RTPSvrChannel::RTPSvrChannel(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, Int32 ssrc, NotNullPtr<const Net::SocketUtil::AddressInfo> targetAddr, UInt16 targetPort, Net::RTPSessionController *sessCtrl)
+Net::RTPSvrChannel::RTPSvrChannel(NN<Net::SocketFactory> sockf, UInt16 port, Int32 ssrc, NN<const Net::SocketUtil::AddressInfo> targetAddr, UInt16 targetPort, Net::RTPSessionController *sessCtrl)
 {
 	this->rtpUDP = 0;
 	this->rtcpUDP = 0;
@@ -199,7 +199,7 @@ Net::RTPSvrChannel::~RTPSvrChannel()
 	SDEL_CLASS(this->rtcpUDP);
 }
 
-NotNullPtr<const Net::SocketUtil::AddressInfo> Net::RTPSvrChannel::GetTargetAddr()
+NN<const Net::SocketUtil::AddressInfo> Net::RTPSvrChannel::GetTargetAddr()
 {
 	return this->targetAddr;
 }

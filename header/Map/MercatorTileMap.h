@@ -14,22 +14,22 @@ namespace Map
 	protected:
 		Optional<Text::String> cacheDir;
 		IO::SPackageFile *spkg;
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;
 		UOSInt minLevel;
 		UOSInt maxLevel;
 
 		UOSInt tileWidth;
 		UOSInt tileHeight;
-		NotNullPtr<Math::CoordinateSystem> csys;
+		NN<Math::CoordinateSystem> csys;
 
 	public:
-		MercatorTileMap(Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
+		MercatorTileMap(Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
 		virtual ~MercatorTileMap();
 
 		void SetSPackageFile(IO::SPackageFile *spkg);
 		Bool HasSPackageFile();
-		Bool ImportTiles(NotNullPtr<IO::PackageFile> pkg);
+		Bool ImportTiles(NN<IO::PackageFile> pkg);
 		Bool OptimizeToFile(Text::CStringNN fileName);
 
 		virtual Bool IsError() const;
@@ -38,12 +38,12 @@ namespace Map
 		virtual Double GetLevelScale(UOSInt level) const;
 		virtual UOSInt GetNearestLevel(Double scale) const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
-		virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem() const;
+		virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const;
 		virtual Bool IsMercatorProj() const;
 		virtual UOSInt GetTileSize() const;
 
 		virtual UOSInt GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids);
-		virtual Media::ImageList *LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NotNullPtr<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly);
+		virtual Media::ImageList *LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly);
 		virtual Optional<IO::StreamData> LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it);
 
 		static Int32 Lon2TileX(Double lon, UOSInt level);

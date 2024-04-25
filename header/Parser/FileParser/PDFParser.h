@@ -30,21 +30,21 @@ namespace Parser
 			struct PDFParseEnv;
 
 			Bool IsComment(const UTF8Char *buff, UOSInt size);
-			Bool NextLine(PDFParseEnv *env, NotNullPtr<Text::StringBuilderUTF8> sb, Bool skipComment);
+			Bool NextLine(PDFParseEnv *env, NN<Text::StringBuilderUTF8> sb, Bool skipComment);
 			Bool NextLineFixed(PDFParseEnv *env, UOSInt size);
-			void ParseStartxref(PDFParseEnv *env, NotNullPtr<Text::StringBuilderUTF8> sb);
-			Bool ParseObject(PDFParseEnv *env, NotNullPtr<Text::StringBuilderUTF8> sb, Media::PDFDocument *doc, PDFXRef *xref);
-			Bool ParseObjectStream(PDFParseEnv *env, NotNullPtr<Text::StringBuilderUTF8> sb, Media::PDFObject *obj, PDFXRef *xref);
-			PDFXRef *ParseXRef(PDFParseEnv *env, NotNullPtr<Text::StringBuilderUTF8> sb);
+			void ParseStartxref(PDFParseEnv *env, NN<Text::StringBuilderUTF8> sb);
+			Bool ParseObject(PDFParseEnv *env, NN<Text::StringBuilderUTF8> sb, Media::PDFDocument *doc, PDFXRef *xref);
+			Bool ParseObjectStream(PDFParseEnv *env, NN<Text::StringBuilderUTF8> sb, Media::PDFObject *obj, PDFXRef *xref);
+			PDFXRef *ParseXRef(PDFParseEnv *env, NN<Text::StringBuilderUTF8> sb);
 			void FreeXRef(PDFXRef *xref);
 		public:
 			PDFParser();
 			virtual ~PDFParser();
 
 			virtual Int32 GetName();
-			virtual void PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t);
+			virtual void PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
-			virtual IO::ParsedObject *ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
+			virtual IO::ParsedObject *ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
 		};
 	}
 }

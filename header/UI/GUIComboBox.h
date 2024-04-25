@@ -17,7 +17,7 @@ namespace UI
 		Bool nonUIEvent;
 
 	public:
-		GUIComboBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
+		GUIComboBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 		virtual ~GUIComboBox();
 
 		void EventSelectionChange();
@@ -25,13 +25,13 @@ namespace UI
 
 		virtual void SetText(Text::CStringNN text) = 0;
 		virtual UTF8Char *GetText(UTF8Char *buff) = 0;
-		virtual Bool GetText(NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
+		virtual Bool GetText(NN<Text::StringBuilderUTF8> sb) = 0;
 
 		virtual void BeginUpdate() = 0;
 		virtual void EndUpdate() = 0;
-		virtual UOSInt AddItem(NotNullPtr<Text::String> itemText, AnyType itemObj) = 0;
+		virtual UOSInt AddItem(NN<Text::String> itemText, AnyType itemObj) = 0;
 		virtual UOSInt AddItem(Text::CStringNN itemText, AnyType itemObj) = 0;
-		virtual UOSInt InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, AnyType itemObj) = 0;
+		virtual UOSInt InsertItem(UOSInt index, NN<Text::String> itemText, AnyType itemObj) = 0;
 		virtual UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj) = 0;
 		virtual AnyType RemoveItem(UOSInt index) = 0;
 		virtual void ClearItems() = 0;

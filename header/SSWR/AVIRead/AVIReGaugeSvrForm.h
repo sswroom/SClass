@@ -22,7 +22,7 @@ namespace SSWR
 		class AVIReGaugeSvrForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Net::WebServer::WebListener *svr;
 			IO::LogTool *log;
 			Net::WebServer::EGaugeHandler *dirHdlr;
@@ -31,19 +31,19 @@ namespace SSWR
 			Text::String *reqLast;
 			Bool reqUpdated;
 
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpControl;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUIButton> btnStart;
+			NN<UI::GUITabPage> tpControl;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUIButton> btnStart;
 
-			NotNullPtr<UI::GUITabPage> tpReqText;
-			NotNullPtr<UI::GUITextBox> txtReqText;
+			NN<UI::GUITabPage> tpReqText;
+			NN<UI::GUITextBox> txtReqText;
 
-			NotNullPtr<UI::GUIListBox> lbLog;
-			NotNullPtr<UI::GUITextBox> txtLog;
-			NotNullPtr<UI::GUITabPage> tpLog;
+			NN<UI::GUIListBox> lbLog;
+			NN<UI::GUITextBox> txtLog;
+			NN<UI::GUITabPage> tpLog;
 
 		private:
 			static void __stdcall OnStartClick(AnyType userObj);
@@ -51,7 +51,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnEGaugeData(AnyType userObj, const UInt8 *data, UOSInt dataSize);
 		public:
-			AVIReGaugeSvrForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIReGaugeSvrForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIReGaugeSvrForm();
 
 			virtual void OnMonitorChanged();

@@ -12,7 +12,7 @@ namespace UI
 		class ButtonDObj : public DirectObject
 		{
 		private:
-			NotNullPtr<Media::DrawEngine> deng;
+			NN<Media::DrawEngine> deng;
 			Media::DrawImage *bmpUnclick;
 			Media::DrawImage *bmpClicked;
 			Double alpha;
@@ -31,7 +31,7 @@ namespace UI
 
 			static UInt32 __stdcall ClickThread(AnyType userObj);
 		public:
-			ButtonDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, Bool rectMode, UI::UIEvent clkHdlr, AnyType clkUserObj);
+			ButtonDObj(NN<Media::DrawEngine> deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Math::Coord2D<OSInt> tl, Bool rectMode, UI::UIEvent clkHdlr, AnyType clkUserObj);
 			virtual ~ButtonDObj();
 
 			void SetRectMode(Bool rectMode);
@@ -39,7 +39,7 @@ namespace UI
 
 			virtual Bool IsChanged();
 			virtual Bool DoEvents();
-			virtual void DrawObject(NotNullPtr<Media::DrawImage> dimg);
+			virtual void DrawObject(NN<Media::DrawImage> dimg);
 
 			virtual Bool IsObject(Math::Coord2D<OSInt> scnPos);
 			//virtual System::Windows::Forms::Cursor ^GetCursor() override;

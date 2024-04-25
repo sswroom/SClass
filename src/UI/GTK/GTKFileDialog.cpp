@@ -31,9 +31,9 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(ControlHandle *ownerHandle)
 	Text::StringBuilderUTF8 sb;
 	UOSInt i = 0;
 	UOSInt filterCnt = this->names.GetCount();
-	NotNullPtr<Text::String> name;
-	NotNullPtr<Text::String> pattern;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> name;
+	NN<Text::String> pattern;
+	NN<Text::String> s;
 
 	GtkWidget *dialog;
 	GtkFileChooser *chooser;
@@ -202,11 +202,11 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(ControlHandle *ownerHandle)
 		{
 			Bool found = false;
 			UOSInt foundIndexLeng = 0;
-			NotNullPtr<Text::String> u8fname = Text::String::NewNotNull(fnameBuff);
+			NN<Text::String> u8fname = Text::String::NewNotNull(fnameBuff);
 			i = 0;
 			while (i < filterCnt)
 			{
-				NotNullPtr<Text::String> pattern;
+				NN<Text::String> pattern;
 				if (this->patterns.GetItem(i).SetTo(pattern) && IO::Path::FilePathMatch(u8fname->v, u8fname->leng, pattern->v, pattern->leng))
 				{
 					if (!found)

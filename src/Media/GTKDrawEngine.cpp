@@ -42,9 +42,9 @@ Media::DrawImage *Media::GTKDrawEngine::CreateImage32(Math::Size2D<UOSInt> size,
 	return dimg;
 }
 
-NotNullPtr<Media::DrawImage> Media::GTKDrawEngine::CreateImageScn(void *cr, Math::Coord2D<OSInt> tl, Math::Coord2D<OSInt> br)
+NN<Media::DrawImage> Media::GTKDrawEngine::CreateImageScn(void *cr, Math::Coord2D<OSInt> tl, Math::Coord2D<OSInt> br)
 {
-	NotNullPtr<Media::GTKDrawImage> dimg;
+	NN<Media::GTKDrawImage> dimg;
 	NEW_CLASSNN(dimg, Media::GTKDrawImage(*this, 0, cr, tl, Math::Size2D<UOSInt>((UOSInt)(br.x - tl.x), (UOSInt)(br.y - tl.y)), 32, Media::AT_NO_ALPHA));
 	return dimg;
 }
@@ -72,7 +72,7 @@ Media::DrawImage *Media::GTKDrawEngine::LoadImage(Text::CStringNN fileName)
 	}
 
 	Media::DrawImage *dimg = 0;
-	NotNullPtr<Media::RasterImage> img;
+	NN<Media::RasterImage> img;
 	if (img.Set(imgList->GetImage(0, 0)))
 	{
 		dimg = this->ConvImage(img);
@@ -81,12 +81,12 @@ Media::DrawImage *Media::GTKDrawEngine::LoadImage(Text::CStringNN fileName)
 	return dimg;
 }
 
-Media::DrawImage *Media::GTKDrawEngine::LoadImageStream(NotNullPtr<IO::SeekableStream> stm)
+Media::DrawImage *Media::GTKDrawEngine::LoadImageStream(NN<IO::SeekableStream> stm)
 {
 	return 0;
 }
 
-Media::DrawImage *Media::GTKDrawEngine::ConvImage(NotNullPtr<Media::RasterImage> img)
+Media::DrawImage *Media::GTKDrawEngine::ConvImage(NN<Media::RasterImage> img)
 {
 	if (img->info.fourcc != 0)
 	{
@@ -100,7 +100,7 @@ Media::DrawImage *Media::GTKDrawEngine::ConvImage(NotNullPtr<Media::RasterImage>
 	gimg->info.color.Set(img->info.color);
 	if (img->GetImageType() == Media::RasterImage::ImageType::Static)
 	{
-		NotNullPtr<Media::StaticImage> simg = NotNullPtr<Media::StaticImage>::ConvertFrom(img);
+		NN<Media::StaticImage> simg = NN<Media::StaticImage>::ConvertFrom(img);
 		if (simg->To32bpp())
 		{
 			cairo_surface_flush((cairo_surface_t*)gimg->GetSurface());
@@ -121,7 +121,7 @@ Media::DrawImage *Media::GTKDrawEngine::ConvImage(NotNullPtr<Media::RasterImage>
 	}
 	else
 	{
-		NotNullPtr<Media::StaticImage> simg = img->CreateStaticImage();
+		NN<Media::StaticImage> simg = img->CreateStaticImage();
 		if (simg->To32bpp())
 		{
 			cairo_surface_flush((cairo_surface_t*)gimg->GetSurface());
@@ -144,7 +144,7 @@ Media::DrawImage *Media::GTKDrawEngine::ConvImage(NotNullPtr<Media::RasterImage>
 	return gimg;
 }
 
-Media::DrawImage *Media::GTKDrawEngine::CloneImage(NotNullPtr<DrawImage> img)
+Media::DrawImage *Media::GTKDrawEngine::CloneImage(NN<DrawImage> img)
 {
 	Media::GTKDrawImage *dimg = (Media::GTKDrawImage*)img.Ptr();
 	Math::Size2D<UOSInt> size = dimg->GetSize();
@@ -163,7 +163,7 @@ Media::DrawImage *Media::GTKDrawEngine::CloneImage(NotNullPtr<DrawImage> img)
 	return newImg;
 }
 
-Bool Media::GTKDrawEngine::DeleteImage(NotNullPtr<DrawImage> img)
+Bool Media::GTKDrawEngine::DeleteImage(NN<DrawImage> img)
 {
 	Media::GTKDrawImage *dimg = (Media::GTKDrawImage*)img.Ptr();
 	DEL_CLASS(dimg);
@@ -214,7 +214,7 @@ Media::GTKDrawFont::GTKDrawFont(Text::String *fontName, Double fontHeight, OSInt
 	this->fontSlant = fontSlant;
 }
 
-Media::GTKDrawFont::GTKDrawFont(NotNullPtr<Text::String> fontName, Double fontHeight, OSInt fontSlant, OSInt fontWeight)
+Media::GTKDrawFont::GTKDrawFont(NN<Text::String> fontName, Double fontHeight, OSInt fontSlant, OSInt fontWeight)
 {
 	this->fontName = fontName->Clone();
 	this->fontHeight = fontHeight;
@@ -233,7 +233,7 @@ void Media::GTKDrawFont::Init(void *cr)
 	cairo_set_font_size((cairo_t*)cr, this->fontHeight);
 }
 
-NotNullPtr<Text::String> Media::GTKDrawFont::GetFontName()
+NN<Text::String> Media::GTKDrawFont::GetFontName()
 {
 	return this->fontName;
 }
@@ -301,7 +301,7 @@ UInt32 Media::GTKDrawBrush::GetOriColor()
 	return this->oriColor;
 }
 
-Media::GTKDrawImage::GTKDrawImage(NotNullPtr<GTKDrawEngine> eng, void *surface, void *cr, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, UInt32 bitCount, Media::AlphaType atype) : Media::RasterImage(size, Math::Size2D<UOSInt>(0, 0), 0, bitCount, Media::PixelFormatGetDef(0, bitCount), 0, ColorProfile(), Media::ColorProfile::YUVT_BT601, atype, Media::YCOFST_C_CENTER_LEFT)
+Media::GTKDrawImage::GTKDrawImage(NN<GTKDrawEngine> eng, void *surface, void *cr, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, UInt32 bitCount, Media::AlphaType atype) : Media::RasterImage(size, Math::Size2D<UOSInt>(0, 0), 0, bitCount, Media::PixelFormatGetDef(0, bitCount), 0, ColorProfile(), Media::ColorProfile::YUVT_BT601, atype, Media::YCOFST_C_CENTER_LEFT)
 {
 	this->eng = eng;
 	this->surface = surface;
@@ -340,12 +340,12 @@ UInt32 Media::GTKDrawImage::GetBitCount() const
 	return this->info.storeBPP;
 }
 
-NotNullPtr<const Media::ColorProfile> Media::GTKDrawImage::GetColorProfile() const
+NN<const Media::ColorProfile> Media::GTKDrawImage::GetColorProfile() const
 {
 	return this->info.color;
 }
 
-void Media::GTKDrawImage::SetColorProfile(NotNullPtr<const ColorProfile> color)
+void Media::GTKDrawImage::SetColorProfile(NN<const ColorProfile> color)
 {
 	this->info.color.Set(color);
 }
@@ -410,9 +410,9 @@ Media::PixelFormat Media::GTKDrawImage::GetPixelFormat() const
 	return this->info.pf;
 }
 
-Bool Media::GTKDrawImage::DrawLine(Double x1, Double y1, Double x2, Double y2, NotNullPtr<DrawPen> p)
+Bool Media::GTKDrawImage::DrawLine(Double x1, Double y1, Double x2, Double y2, NN<DrawPen> p)
 {
-	NotNullPtr<GTKDrawPen> pen = NotNullPtr<GTKDrawPen>::ConvertFrom(p);
+	NN<GTKDrawPen> pen = NN<GTKDrawPen>::ConvertFrom(p);
 	pen->Init(this->cr);
 	cairo_move_to((cairo_t*)this->cr, x1 + OSInt2Double(this->tl.x), y1 + OSInt2Double(this->tl.y));
 	cairo_line_to((cairo_t*)this->cr, x2 + OSInt2Double(this->tl.x), y2 + OSInt2Double(this->tl.y));
@@ -420,7 +420,7 @@ Bool Media::GTKDrawImage::DrawLine(Double x1, Double y1, Double x2, Double y2, N
 	return true;
 }
 
-Bool Media::GTKDrawImage::DrawPolylineI(const Int32 *points, UOSInt nPoints, NotNullPtr<DrawPen> p)
+Bool Media::GTKDrawImage::DrawPolylineI(const Int32 *points, UOSInt nPoints, NN<DrawPen> p)
 {
 	printf("GTK: Draw PolylineI (Not support)\r\n");
 	return false;
@@ -438,9 +438,9 @@ Bool Media::GTKDrawImage::DrawPolyPolygonI(const Int32 *points, const UInt32 *po
 	return false;
 }
 
-Bool Media::GTKDrawImage::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPoints, NotNullPtr<DrawPen> p)
+Bool Media::GTKDrawImage::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nPoints, NN<DrawPen> p)
 {
-	NotNullPtr<GTKDrawPen> pen = NotNullPtr<GTKDrawPen>::ConvertFrom(p);
+	NN<GTKDrawPen> pen = NN<GTKDrawPen>::ConvertFrom(p);
 	if (nPoints >= 2)
 	{
 		pen->Init(this->cr);
@@ -462,10 +462,10 @@ Bool Media::GTKDrawImage::DrawPolyline(const Math::Coord2DDbl *points, UOSInt nP
 
 Bool Media::GTKDrawImage::DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPoints, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
-	NotNullPtr<GTKDrawPen> pen;
-	NotNullPtr<DrawPen> nnp;
-	NotNullPtr<DrawBrush> nnb;
-	NotNullPtr<GTKDrawBrush> brush;
+	NN<GTKDrawPen> pen;
+	NN<DrawPen> nnp;
+	NN<DrawBrush> nnb;
+	NN<GTKDrawBrush> brush;
 	if (nPoints >= 2)
 	{
 		cairo_move_to((cairo_t*)this->cr, points->x + OSInt2Double(this->tl.x), points->y + OSInt2Double(this->tl.y));
@@ -478,8 +478,8 @@ Bool Media::GTKDrawImage::DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPo
 		cairo_close_path((cairo_t*)this->cr);
 		if (p.SetTo(nnp) && b.SetTo(nnb))
 		{
-			brush = NotNullPtr<GTKDrawBrush>::ConvertFrom(nnb);
-			pen = NotNullPtr<GTKDrawPen>::ConvertFrom(nnp);
+			brush = NN<GTKDrawBrush>::ConvertFrom(nnb);
+			pen = NN<GTKDrawPen>::ConvertFrom(nnp);
 			pen->Init(this->cr);
 			cairo_stroke_preserve((cairo_t*)this->cr);
 			brush->Init(this->cr);
@@ -487,13 +487,13 @@ Bool Media::GTKDrawImage::DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPo
 		}
 		else if (p.SetTo(nnp))
 		{
-			pen = NotNullPtr<GTKDrawPen>::ConvertFrom(nnp);
+			pen = NN<GTKDrawPen>::ConvertFrom(nnp);
 			pen->Init(this->cr);
 			cairo_stroke((cairo_t*)this->cr);
 		}
 		else if (b.SetTo(nnb))
 		{
-			brush = NotNullPtr<GTKDrawBrush>::ConvertFrom(nnb);
+			brush = NN<GTKDrawBrush>::ConvertFrom(nnb);
 			brush->Init(this->cr);
 			cairo_fill((cairo_t*)this->cr);
 		}
@@ -511,10 +511,10 @@ Bool Media::GTKDrawImage::DrawPolygon(const Math::Coord2DDbl *points, UOSInt nPo
 
 Bool Media::GTKDrawImage::DrawPolyPolygon(const Math::Coord2DDbl *points, const UInt32 *pointCnt, UOSInt nPointCnt, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
-	NotNullPtr<GTKDrawPen> pen;
-	NotNullPtr<DrawPen> nnp;
-	NotNullPtr<DrawBrush> nnb;
-	NotNullPtr<GTKDrawBrush> brush;
+	NN<GTKDrawPen> pen;
+	NN<DrawPen> nnp;
+	NN<DrawBrush> nnb;
+	NN<GTKDrawBrush> brush;
 	UOSInt i;
 	if (nPointCnt > 0)
 	{
@@ -536,8 +536,8 @@ Bool Media::GTKDrawImage::DrawPolyPolygon(const Math::Coord2DDbl *points, const 
 
 		if (p.SetTo(nnp) && b.SetTo(nnb))
 		{
-			brush = NotNullPtr<GTKDrawBrush>::ConvertFrom(nnb);
-			pen = NotNullPtr<GTKDrawPen>::ConvertFrom(nnp);
+			brush = NN<GTKDrawBrush>::ConvertFrom(nnb);
+			pen = NN<GTKDrawPen>::ConvertFrom(nnp);
 			pen->Init(this->cr);
 			cairo_stroke_preserve((cairo_t*)this->cr);
 			brush->Init(this->cr);
@@ -545,13 +545,13 @@ Bool Media::GTKDrawImage::DrawPolyPolygon(const Math::Coord2DDbl *points, const 
 		}
 		else if (p.SetTo(nnp))
 		{
-			pen = NotNullPtr<GTKDrawPen>::ConvertFrom(nnp);
+			pen = NN<GTKDrawPen>::ConvertFrom(nnp);
 			pen->Init(this->cr);
 			cairo_stroke((cairo_t*)this->cr);
 		}
 		else if (b.SetTo(nnb))
 		{
-			brush = NotNullPtr<GTKDrawBrush>::ConvertFrom(nnb);
+			brush = NN<GTKDrawBrush>::ConvertFrom(nnb);
 			brush->Init(this->cr);
 			cairo_fill((cairo_t*)this->cr);
 		}
@@ -569,18 +569,18 @@ Bool Media::GTKDrawImage::DrawPolyPolygon(const Math::Coord2DDbl *points, const 
 
 Bool Media::GTKDrawImage::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
-	NotNullPtr<DrawBrush> nnb;
-	NotNullPtr<DrawPen> nnp;
+	NN<DrawBrush> nnb;
+	NN<DrawPen> nnp;
 	if (b.SetTo(nnb))
 	{
-		NotNullPtr<GTKDrawBrush> brush = NotNullPtr<GTKDrawBrush>::ConvertFrom(nnb);
+		NN<GTKDrawBrush> brush = NN<GTKDrawBrush>::ConvertFrom(nnb);
 		brush->Init(this->cr);
 		cairo_rectangle((cairo_t*)this->cr, tl.x + OSInt2Double(this->tl.x), tl.y + OSInt2Double(this->tl.y), size.x, size.y);
 		cairo_fill((cairo_t*)this->cr);
 	}
 	if (p.SetTo(nnp))
 	{
-		NotNullPtr<GTKDrawPen> pen = NotNullPtr<GTKDrawPen>::ConvertFrom(nnp);
+		NN<GTKDrawPen> pen = NN<GTKDrawPen>::ConvertFrom(nnp);
 		pen->Init(this->cr);
 		cairo_rectangle((cairo_t*)this->cr, tl.x + OSInt2Double(this->tl.x), tl.y + OSInt2Double(this->tl.y), size.x, size.y);
 		cairo_stroke((cairo_t*)this->cr);
@@ -590,10 +590,10 @@ Bool Media::GTKDrawImage::DrawRect(Math::Coord2DDbl tl, Math::Size2DDbl size, Op
 
 Bool Media::GTKDrawImage::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, Optional<DrawPen> p, Optional<DrawBrush> b)
 {
-	NotNullPtr<GTKDrawPen> pen;
-	NotNullPtr<DrawPen> nnp;
-	NotNullPtr<DrawBrush> nnb;
-	NotNullPtr<GTKDrawBrush> brush;
+	NN<GTKDrawPen> pen;
+	NN<DrawPen> nnp;
+	NN<DrawBrush> nnb;
+	NN<GTKDrawBrush> brush;
 	cairo_t *cr = (cairo_t *)this->cr;
 	cairo_save(cr);
 	cairo_translate(cr, tl.x + size.x * 0.5, tl.y + size.y * 0.5);
@@ -603,8 +603,8 @@ Bool Media::GTKDrawImage::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size,
 	cairo_close_path(cr);
 	if (p.SetTo(nnp) && b.SetTo(nnb))
 	{
-		brush = NotNullPtr<GTKDrawBrush>::ConvertFrom(nnb);
-		pen = NotNullPtr<GTKDrawPen>::ConvertFrom(nnp);
+		brush = NN<GTKDrawBrush>::ConvertFrom(nnb);
+		pen = NN<GTKDrawPen>::ConvertFrom(nnp);
 		pen->Init(this->cr);
 		cairo_stroke_preserve((cairo_t*)this->cr);
 		brush->Init(this->cr);
@@ -612,13 +612,13 @@ Bool Media::GTKDrawImage::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size,
 	}
 	else if (p.SetTo(nnp))
 	{
-		pen = NotNullPtr<GTKDrawPen>::ConvertFrom(nnp);
+		pen = NN<GTKDrawPen>::ConvertFrom(nnp);
 		pen->Init(this->cr);
 		cairo_stroke((cairo_t*)this->cr);
 	}
 	else if (b.SetTo(nnb))
 	{
-		brush = NotNullPtr<GTKDrawBrush>::ConvertFrom(nnb);
+		brush = NN<GTKDrawBrush>::ConvertFrom(nnb);
 		brush->Init(this->cr);
 		cairo_fill((cairo_t*)this->cr);
 	}
@@ -630,15 +630,15 @@ Bool Media::GTKDrawImage::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size,
 	return true;
 }
 
-Bool Media::GTKDrawImage::DrawString(Math::Coord2DDbl tl, NotNullPtr<Text::String> str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b)
+Bool Media::GTKDrawImage::DrawString(Math::Coord2DDbl tl, NN<Text::String> str, NN<DrawFont> f, NN<DrawBrush> b)
 {
 	return DrawString(tl, str->ToCString(), f, b);
 }
 
-Bool Media::GTKDrawImage::DrawString(Math::Coord2DDbl tl, Text::CStringNN str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b)
+Bool Media::GTKDrawImage::DrawString(Math::Coord2DDbl tl, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b)
 {
-	NotNullPtr<GTKDrawFont> font = NotNullPtr<GTKDrawFont>::ConvertFrom(f);
-	NotNullPtr<GTKDrawBrush> brush = NotNullPtr<GTKDrawBrush>::ConvertFrom(b);
+	NN<GTKDrawFont> font = NN<GTKDrawFont>::ConvertFrom(f);
+	NN<GTKDrawBrush> brush = NN<GTKDrawBrush>::ConvertFrom(b);
 	font->Init(this->cr);
 	brush->Init(this->cr);
 	cairo_move_to((cairo_t *)this->cr, tl.x + OSInt2Double(this->tl.x), tl.y + font->GetHeight() * 0.8 + 1 + OSInt2Double(this->tl.y));
@@ -646,15 +646,15 @@ Bool Media::GTKDrawImage::DrawString(Math::Coord2DDbl tl, Text::CStringNN str, N
 	return true;
 }
 
-Bool Media::GTKDrawImage::DrawStringRot(Math::Coord2DDbl center, NotNullPtr<Text::String> str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b, Double angleDegree)
+Bool Media::GTKDrawImage::DrawStringRot(Math::Coord2DDbl center, NN<Text::String> str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegree)
 {
 	return DrawStringRot(center, str->ToCString(), f, b, angleDegree);
 }
 
-Bool Media::GTKDrawImage::DrawStringRot(Math::Coord2DDbl center, Text::CStringNN str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b, Double angleDegree)
+Bool Media::GTKDrawImage::DrawStringRot(Math::Coord2DDbl center, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegree)
 {
-	NotNullPtr<GTKDrawFont> font = NotNullPtr<GTKDrawFont>::ConvertFrom(f);
-	NotNullPtr<GTKDrawBrush> brush = NotNullPtr<GTKDrawBrush>::ConvertFrom(b);
+	NN<GTKDrawFont> font = NN<GTKDrawFont>::ConvertFrom(f);
+	NN<GTKDrawBrush> brush = NN<GTKDrawBrush>::ConvertFrom(b);
 	Double angleR = -angleDegree * Math::PI / 180;
 	cairo_text_extents_t extents;
 	font->Init(this->cr);
@@ -670,20 +670,20 @@ Bool Media::GTKDrawImage::DrawStringRot(Math::Coord2DDbl center, Text::CStringNN
 	return true;
 }
 
-Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, NotNullPtr<Text::String> str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b, UOSInt buffSize)
+Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, NN<Text::String> str, NN<DrawFont> f, NN<DrawBrush> b, UOSInt buffSize)
 {
 	return DrawStringB(tl, str->ToCString(), f, b, buffSize);
 }
 
-Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, Text::CStringNN str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b, UOSInt buffSize)
+Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b, UOSInt buffSize)
 {
 	OSInt px = Double2OSInt(tl.x);
 	OSInt py = Double2OSInt(tl.y);
-	NotNullPtr<GTKDrawFont> font = NotNullPtr<GTKDrawFont>::ConvertFrom(f);
-	NotNullPtr<GTKDrawBrush> brush = NotNullPtr<GTKDrawBrush>::ConvertFrom(b);
+	NN<GTKDrawFont> font = NN<GTKDrawFont>::ConvertFrom(f);
+	NN<GTKDrawBrush> brush = NN<GTKDrawBrush>::ConvertFrom(b);
 
 	UInt32 sz[2];
-	NotNullPtr<Media::GTKDrawImage> gimg;
+	NN<Media::GTKDrawImage> gimg;
 	OSInt swidth;
 	OSInt sheight;
 	OSInt sx;
@@ -758,7 +758,7 @@ Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, Text::CStringNN str, 
 		}
 		else
 		{
-			NotNullPtr<Media::DrawBrush> whiteB = gimg->NewBrushARGB(0xffffffff);
+			NN<Media::DrawBrush> whiteB = gimg->NewBrushARGB(0xffffffff);
 			gimg->DrawString(Math::Coord2DDbl(OSInt2Double(sx) + tl.x - OSInt2Double(px),
 				OSInt2Double(sy) + tl.y - OSInt2Double(py)), str, f, whiteB);
 			gimg->DelBrush(whiteB);
@@ -812,18 +812,18 @@ Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, Text::CStringNN str, 
 	return true;
 }
 
-Bool Media::GTKDrawImage::DrawStringRotB(Math::Coord2DDbl center, NotNullPtr<Text::String> str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b, Double angleDegree, UOSInt buffSize)
+Bool Media::GTKDrawImage::DrawStringRotB(Math::Coord2DDbl center, NN<Text::String> str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegree, UOSInt buffSize)
 {
 	return DrawStringRotB(center, str->ToCString(), f, b, angleDegree, buffSize);
 }
 
-Bool Media::GTKDrawImage::DrawStringRotB(Math::Coord2DDbl center, Text::CStringNN str, NotNullPtr<DrawFont> f, NotNullPtr<DrawBrush> b, Double angleDegree, UOSInt buffSize)
+Bool Media::GTKDrawImage::DrawStringRotB(Math::Coord2DDbl center, Text::CStringNN str, NN<DrawFont> f, NN<DrawBrush> b, Double angleDegree, UOSInt buffSize)
 {
 	printf("GTK: Draw StringRotBUTF8 (Not support)\r\n");
 	return false;
 }
 
-Bool Media::GTKDrawImage::DrawImagePt(NotNullPtr<DrawImage> img, Math::Coord2DDbl tl)
+Bool Media::GTKDrawImage::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 {
 	Media::GTKDrawImage *gimg = (GTKDrawImage*)img.Ptr();
 	if (gimg->surface == 0)
@@ -913,11 +913,11 @@ Bool Media::GTKDrawImage::DrawImagePt(NotNullPtr<DrawImage> img, Math::Coord2DDb
 	}
 }
 
-Bool Media::GTKDrawImage::DrawImagePt2(NotNullPtr<Media::StaticImage> img, Math::Coord2DDbl tl)
+Bool Media::GTKDrawImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl tl)
 {
 	if (this->surface == 0)
 	{
-		NotNullPtr<Media::DrawImage> dimg;
+		NN<Media::DrawImage> dimg;
 		if (!dimg.Set(this->eng->ConvImage(img)))
 		{
 			return false;
@@ -983,7 +983,7 @@ Bool Media::GTKDrawImage::DrawImagePt2(NotNullPtr<Media::StaticImage> img, Math:
 	return false;
 }
 
-Bool Media::GTKDrawImage::DrawImagePt3(NotNullPtr<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
+Bool Media::GTKDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
 {
 	Media::GTKDrawImage *gimg = (GTKDrawImage*)img.Ptr();
 	if (gimg->surface == 0)
@@ -1077,38 +1077,38 @@ Bool Media::GTKDrawImage::DrawImagePt3(NotNullPtr<DrawImage> img, Math::Coord2DD
 	}
 }
 
-NotNullPtr<Media::DrawPen> Media::GTKDrawImage::NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern)
+NN<Media::DrawPen> Media::GTKDrawImage::NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern)
 {
-	NotNullPtr<Media::GTKDrawPen> p;
+	NN<Media::GTKDrawPen> p;
 	NEW_CLASSNN(p, Media::GTKDrawPen(color, thick));
 	return p;
 }
 
-NotNullPtr<Media::DrawBrush> Media::GTKDrawImage::NewBrushARGB(UInt32 color)
+NN<Media::DrawBrush> Media::GTKDrawImage::NewBrushARGB(UInt32 color)
 {
-	NotNullPtr<Media::GTKDrawBrush> b;
+	NN<Media::GTKDrawBrush> b;
 	NEW_CLASSNN(b, Media::GTKDrawBrush(color));
 	return b;
 }
 
-NotNullPtr<Media::DrawFont> Media::GTKDrawImage::NewFontPt(Text::CString name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
+NN<Media::DrawFont> Media::GTKDrawImage::NewFontPt(Text::CString name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
-	NotNullPtr<Media::GTKDrawFont> f;
+	NN<Media::GTKDrawFont> f;
 	NEW_CLASSNN(f, Media::GTKDrawFont(name, ptSize * this->info.hdpi / 72.0, fontStyle));
 	return f;
 }
 
-NotNullPtr<Media::DrawFont> Media::GTKDrawImage::NewFontPx(Text::CString name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
+NN<Media::DrawFont> Media::GTKDrawImage::NewFontPx(Text::CString name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
-	NotNullPtr<Media::GTKDrawFont> f;
+	NN<Media::GTKDrawFont> f;
 	NEW_CLASSNN(f, Media::GTKDrawFont(name, pxSize, fontStyle));
 	return f;
 }
 
-NotNullPtr<Media::DrawFont> Media::GTKDrawImage::CloneFont(NotNullPtr<DrawFont> f)
+NN<Media::DrawFont> Media::GTKDrawImage::CloneFont(NN<DrawFont> f)
 {
-	NotNullPtr<Media::GTKDrawFont> fnt = NotNullPtr<Media::GTKDrawFont>::ConvertFrom(f);
-	NotNullPtr<Text::String> fname = fnt->GetFontName();
+	NN<Media::GTKDrawFont> fnt = NN<Media::GTKDrawFont>::ConvertFrom(f);
+	NN<Text::String> fname = fnt->GetFontName();
 	Double height = fnt->GetHeight();
 	OSInt fontWeight = fnt->GetFontWeight();
 	OSInt fontSlant = fnt->GetFontSlant();
@@ -1116,27 +1116,27 @@ NotNullPtr<Media::DrawFont> Media::GTKDrawImage::CloneFont(NotNullPtr<DrawFont> 
 	return fnt;
 }
 
-void Media::GTKDrawImage::DelPen(NotNullPtr<DrawPen> p)
+void Media::GTKDrawImage::DelPen(NN<DrawPen> p)
 {
-	NotNullPtr<GTKDrawPen> pen = NotNullPtr<GTKDrawPen>::ConvertFrom(p);
+	NN<GTKDrawPen> pen = NN<GTKDrawPen>::ConvertFrom(p);
 	pen.Delete();
 }
 
-void Media::GTKDrawImage::DelBrush(NotNullPtr<DrawBrush> b)
+void Media::GTKDrawImage::DelBrush(NN<DrawBrush> b)
 {
-	NotNullPtr<GTKDrawBrush> brush = NotNullPtr<GTKDrawBrush>::ConvertFrom(b);
+	NN<GTKDrawBrush> brush = NN<GTKDrawBrush>::ConvertFrom(b);
 	brush.Delete();
 }
 
-void Media::GTKDrawImage::DelFont(NotNullPtr<DrawFont> f)
+void Media::GTKDrawImage::DelFont(NN<DrawFont> f)
 {
-	NotNullPtr<GTKDrawFont> font = NotNullPtr<GTKDrawFont>::ConvertFrom(f);
+	NN<GTKDrawFont> font = NN<GTKDrawFont>::ConvertFrom(f);
 	font.Delete();
 }
 
-Math::Size2DDbl Media::GTKDrawImage::GetTextSize(NotNullPtr<DrawFont> fnt, Text::CStringNN txt)
+Math::Size2DDbl Media::GTKDrawImage::GetTextSize(NN<DrawFont> fnt, Text::CStringNN txt)
 {
-	NotNullPtr<GTKDrawFont> font = NotNullPtr<GTKDrawFont>::ConvertFrom(fnt);
+	NN<GTKDrawFont> font = NN<GTKDrawFont>::ConvertFrom(fnt);
 	cairo_text_extents_t extents;
 	font->Init(this->cr);
 	cairo_text_extents((cairo_t *)this->cr, (const Char*)txt.v, &extents);
@@ -1147,11 +1147,11 @@ void Media::GTKDrawImage::SetTextAlign(DrawEngine::DrawPos pos)
 {
 }
 
-void Media::GTKDrawImage::GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const UTF8Char *str, NotNullPtr<DrawFont> f, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
+void Media::GTKDrawImage::GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const UTF8Char *str, NN<DrawFont> f, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
 {
 }
 
-void Media::GTKDrawImage::GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, NotNullPtr<DrawFont> f, Double angleDegree, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
+void Media::GTKDrawImage::GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, NN<DrawFont> f, Double angleDegree, OutParam<OSInt> drawX, OutParam<OSInt> drawY)
 {
 }
 
@@ -1195,7 +1195,7 @@ Media::StaticImage *Media::GTKDrawImage::ToStaticImage() const
 	return 0;
 }
 
-UOSInt Media::GTKDrawImage::SavePng(NotNullPtr<IO::SeekableStream> stm)
+UOSInt Media::GTKDrawImage::SavePng(NN<IO::SeekableStream> stm)
 {
 #if defined(NO_GDK)
 	return 0;
@@ -1228,12 +1228,12 @@ UOSInt Media::GTKDrawImage::SavePng(NotNullPtr<IO::SeekableStream> stm)
 #endif
 }
 
-UOSInt Media::GTKDrawImage::SaveGIF(NotNullPtr<IO::SeekableStream> stm)
+UOSInt Media::GTKDrawImage::SaveGIF(NN<IO::SeekableStream> stm)
 {
 	return 0;
 }
 
-UOSInt Media::GTKDrawImage::SaveJPG(NotNullPtr<IO::SeekableStream> stm)
+UOSInt Media::GTKDrawImage::SaveJPG(NN<IO::SeekableStream> stm)
 {
 #if defined(NO_GDK)
 	return 0;
@@ -1273,9 +1273,9 @@ UOSInt Media::GTKDrawImage::SaveJPG(NotNullPtr<IO::SeekableStream> stm)
 #endif
 }
 
-NotNullPtr<Media::RasterImage> Media::GTKDrawImage::Clone() const
+NN<Media::RasterImage> Media::GTKDrawImage::Clone() const
 {
-	NotNullPtr<Media::GTKDrawImage> dimg;
+	NN<Media::GTKDrawImage> dimg;
 	NEW_CLASSNN(dimg, Media::GTKDrawImage(this->eng, this->surface, this->cr, this->tl, this->info.dispSize, this->info.storeBPP, this->info.atype));
 	return dimg;
 }

@@ -8,10 +8,10 @@
 
 void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnRXDownClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
+	NN<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
+	NN<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
 	color.GetPrimaries()->r.x -= 0.001;
 	me->monColor->SetMonProfile(color);
@@ -21,10 +21,10 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnRXDownClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnRXUpClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
+	NN<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
+	NN<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
 	color.GetPrimaries()->r.x += 0.001;
 	me->monColor->SetMonProfile(color);
@@ -34,10 +34,10 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnRXUpClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnRYDownClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
+	NN<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
+	NN<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
 	color.GetPrimaries()->r.y -= 0.001;
 	me->monColor->SetMonProfile(color);
@@ -47,10 +47,10 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnRYDownClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnRYUpClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
+	NN<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
+	NN<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
 	color.GetPrimaries()->r.y += 0.001;
 	me->monColor->SetMonProfile(color);
@@ -60,10 +60,10 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnRYUpClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnGXDownClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
+	NN<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
+	NN<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
 	color.GetPrimaries()->g.x -= 0.001;
 	me->monColor->SetMonProfile(color);
@@ -73,10 +73,10 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnGXDownClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnGXUpClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
+	NN<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
+	NN<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
 	color.GetPrimaries()->g.x += 0.001;
 	me->monColor->SetMonProfile(color);
@@ -86,10 +86,10 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnGXUpClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnGYDownClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
+	NN<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
+	NN<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
 	color.GetPrimaries()->g.y -= 0.001;
 	me->monColor->SetMonProfile(color);
@@ -99,10 +99,10 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnGYDownClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnGYUpClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
+	NN<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
+	NN<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
 	color.GetPrimaries()->g.y += 0.001;
 	me->monColor->SetMonProfile(color);
@@ -112,10 +112,10 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnGYUpClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnBXDownClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
+	NN<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
+	NN<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
 	color.GetPrimaries()->b.x -= 0.001;
 	me->monColor->SetMonProfile(color);
@@ -125,10 +125,10 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnBXDownClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnBXUpClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
+	NN<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
+	NN<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
 	color.GetPrimaries()->b.x += 0.001;
 	me->monColor->SetMonProfile(color);
@@ -138,10 +138,10 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnBXUpClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnBYDownClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
+	NN<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
+	NN<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
 	color.GetPrimaries()->b.y -= 0.001;
 	me->monColor->SetMonProfile(color);
@@ -151,10 +151,10 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnBYDownClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnBYUpClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
+	NN<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
+	NN<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
 	color.GetPrimaries()->b.y += 0.001;
 	me->monColor->SetMonProfile(color);
@@ -164,10 +164,10 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnBYUpClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnWXDownClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
+	NN<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
+	NN<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
 	color.GetPrimaries()->w.x -= 0.001;
 	me->monColor->SetMonProfile(color);
@@ -177,10 +177,10 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnWXDownClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnWXUpClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
+	NN<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
+	NN<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
 	color.GetPrimaries()->w.x += 0.001;
 	me->monColor->SetMonProfile(color);
@@ -190,10 +190,10 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnWXUpClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnWYDownClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
+	NN<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
+	NN<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
 	color.GetPrimaries()->w.y -= 0.001;
 	me->monColor->SetMonProfile(color);
@@ -203,10 +203,10 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnWYDownClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnWYUpClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
+	NN<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
+	NN<const Media::IColorHandler::RGBPARAM2> rgbParam = me->monColor->GetRGBParam();
 	Media::ColorProfile color(rgbParam->monProfile);
 	color.GetPrimaries()->w.y += 0.001;
 	me->monColor->SetMonProfile(color);
@@ -216,11 +216,11 @@ void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnWYUpClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRColorCustomForm::OnCloseClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
+	NN<SSWR::AVIRead::AVIRColorCustomForm> me = userObj.GetNN<SSWR::AVIRead::AVIRColorCustomForm>();
 	me->Close();
 }
 
-SSWR::AVIRead::AVIRColorCustomForm::AVIRColorCustomForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::MonitorColorManager> monColor) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRColorCustomForm::AVIRColorCustomForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::MonitorColorManager> monColor) : UI::GUIForm(parent, 640, 480, ui)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -323,7 +323,7 @@ SSWR::AVIRead::AVIRColorCustomForm::AVIRColorCustomForm(Optional<UI::GUIClientCo
 	this->btnClose->SetRect(104, 196, 75, 23, false);
 	this->btnClose->HandleButtonClick(OnCloseClicked, this);
 
-	NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam = this->monColor->GetRGBParam();
+	NN<const Media::IColorHandler::RGBPARAM2> rgbParam = this->monColor->GetRGBParam();
 	sptr = Text::StrDouble(sbuff, rgbParam->monProfile.GetPrimariesRead()->r.x);
 	this->txtRX->SetText(CSTRP(sbuff, sptr));
 	sptr = Text::StrDouble(sbuff, rgbParam->monProfile.GetPrimariesRead()->r.y);

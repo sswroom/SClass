@@ -6,7 +6,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnAutoGenClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRNetRAWCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetRAWCaptureForm>();
+	NN<SSWR::AVIRead::AVIRNetRAWCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetRAWCaptureForm>();
 	Net::RAWCapture::FileFormat format = (Net::RAWCapture::FileFormat)me->cboFormat->GetSelectedItem().GetOSInt();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -24,10 +24,10 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnAutoGenClicked(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnBrowseClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRNetRAWCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetRAWCaptureForm>();
+	NN<SSWR::AVIRead::AVIRNetRAWCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetRAWCaptureForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtFileName->GetText(sb);
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"NetRAWCapture", true);
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"NetRAWCapture", true);
 	Net::RAWCapture::AddFilters(dlg);
 	if (sb.GetLength() > 0)
 	{
@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnBrowseClicked(AnyType use
 
 void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRNetRAWCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetRAWCaptureForm>();
+	NN<SSWR::AVIRead::AVIRNetRAWCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetRAWCaptureForm>();
 	if (me->capture)
 	{
 		DEL_CLASS(me->capture);
@@ -78,7 +78,7 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnStartClicked(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRNetRAWCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetRAWCaptureForm>();
+	NN<SSWR::AVIRead::AVIRNetRAWCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetRAWCaptureForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UInt64 val;
@@ -102,7 +102,7 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnTimerTick(AnyType userObj
 	}
 }
 
-SSWR::AVIRead::AVIRNetRAWCaptureForm::AVIRNetRAWCaptureForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 300, ui)
+SSWR::AVIRead::AVIRNetRAWCaptureForm::AVIRNetRAWCaptureForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 300, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("RAW Capture"));
@@ -151,7 +151,7 @@ SSWR::AVIRead::AVIRNetRAWCaptureForm::AVIRNetRAWCaptureForm(Optional<UI::GUIClie
 	this->txtDataSize->SetRect(104, 148, 150, 23, false);
 
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
-	NotNullPtr<Net::ConnectionInfo> connInfo;
+	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UOSInt i;

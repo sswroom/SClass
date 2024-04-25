@@ -15,10 +15,10 @@ namespace Net
 		class SMTPClient : public EmailSender
 		{
 		private:
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 			Net::Email::SMTPConn::ConnType connType;
-			NotNullPtr<Text::String> host;
+			NN<Text::String> host;
 			UInt16 port;
 			Data::Duration timeout;
 			Optional<IO::Writer> logWriter;
@@ -27,12 +27,12 @@ namespace Net
 			Optional<Text::String> authPassword;
 
 		public:
-			SMTPClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Optional<IO::Writer> logWriter, Data::Duration timeout);
-			SMTPClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Optional<IO::LogTool> log, Data::Duration timeout);
+			SMTPClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Optional<IO::Writer> logWriter, Data::Duration timeout);
+			SMTPClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Optional<IO::LogTool> log, Data::Duration timeout);
 			virtual ~SMTPClient();
 
 			void SetPlainAuth(Text::CString userName, Text::CString password);
-			virtual Bool Send(NotNullPtr<Net::Email::EmailMessage> message);
+			virtual Bool Send(NN<Net::Email::EmailMessage> message);
 		};
 	}
 }

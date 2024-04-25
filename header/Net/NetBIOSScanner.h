@@ -34,16 +34,16 @@ namespace Net
 		Data::FastMap<UInt32, NameAnswer*> answers;
 		Data::CallbackStorage<AnswerUpdated> hdlr;
 
-		static void __stdcall OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+		static void __stdcall OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
 		static void FreeAnswer(NameAnswer *ans);
 	public:
-		NetBIOSScanner(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log);
+		NetBIOSScanner(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log);
 		~NetBIOSScanner();
 
 		Bool IsError() const;
 		void SendRequest(UInt32 ip);
 		void SetAnswerHandler(AnswerUpdated hdlr, AnyType userObj);
-		NotNullPtr<const Data::ReadingList<NameAnswer*>> GetAnswers(NotNullPtr<Sync::MutexUsage> mutUsage) const;
+		NN<const Data::ReadingList<NameAnswer*>> GetAnswers(NN<Sync::MutexUsage> mutUsage) const;
 	};
 }
 #endif

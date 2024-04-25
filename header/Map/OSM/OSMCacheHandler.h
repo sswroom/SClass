@@ -44,23 +44,23 @@ namespace Map
 			UOSInt urlNext;
 			Sync::Mutex urlMut;
 
-			NotNullPtr<Text::String> cacheDir;
+			NN<Text::String> cacheDir;
 			Int32 maxLevel;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 			CacheStatus status;
 			Sync::Mutex *ioMut;
 
-			IO::SeekableStream *GetTileData(Int32 lev, Int32 xTile, Int32 yTile, NotNullPtr<Sync::MutexUsage> mutUsage);
+			IO::SeekableStream *GetTileData(Int32 lev, Int32 xTile, Int32 yTile, NN<Sync::MutexUsage> mutUsage);
 		public:
-			OSMCacheHandler(Text::CString url, Text::CString cacheDir, Int32 maxLevel, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
+			OSMCacheHandler(Text::CString url, Text::CString cacheDir, Int32 maxLevel, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
 			virtual ~OSMCacheHandler();
 
 			void AddAlternateURL(Text::CString url);
 			void GetStatus(CacheStatus *status);
 			void SetIOMut(Sync::Mutex *ioMut);
 
-			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
+			virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 		};
 	}
 }

@@ -60,9 +60,9 @@ void IO::FileAnalyse::QTFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt64 
 	}
 }
 
-void __stdcall IO::FileAnalyse::QTFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::FileAnalyse::QTFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::FileAnalyse::QTFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::QTFileAnalyse>();
+	NN<IO::FileAnalyse::QTFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::QTFileAnalyse>();
 	me->ParseRange(0, 0, me->fd->GetDataSize());
 }
 
@@ -96,7 +96,7 @@ UOSInt IO::FileAnalyse::QTFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
 	return INVALID_INDEX;
 }
 
-IO::FileAnalyse::QTFileAnalyse::QTFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("QTFileAnalyse"))
+IO::FileAnalyse::QTFileAnalyse::QTFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("QTFileAnalyse"))
 {
 	UInt8 buff[8];
 	this->fd = 0;
@@ -133,7 +133,7 @@ UOSInt IO::FileAnalyse::QTFileAnalyse::GetFrameCount()
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::QTFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::QTFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::QTFileAnalyse::PackInfo> pack;
 	UInt8 buff[5];
@@ -149,7 +149,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text:
 	return true;
 }
 
-Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::QTFileAnalyse::PackInfo> pack;
 	UInt8 buff[5];
@@ -866,7 +866,7 @@ UOSInt IO::FileAnalyse::QTFileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<IO::FileAnalyse::QTFileAnalyse::PackInfo> pack;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;

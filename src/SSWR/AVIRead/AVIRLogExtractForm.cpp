@@ -9,9 +9,9 @@
 
 void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnSFileClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLogExtractForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogExtractForm>();
+	NN<SSWR::AVIRead::AVIRLogExtractForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogExtractForm>();
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"LogExtractSFile", false);
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"LogExtractSFile", false);
 	dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
 	dlg->SetAllowMultiSel(false);
 	me->txtSFile->GetText(sb);
@@ -28,9 +28,9 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnSFileClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnOFileClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLogExtractForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogExtractForm>();
+	NN<SSWR::AVIRead::AVIRLogExtractForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogExtractForm>();
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"LogExtractOFile", true);
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"LogExtractOFile", true);
 	dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
 	dlg->AddFilter(CSTR("*.txt"), CSTR("Text File"));
 	me->txtOFile->GetText(sb);
@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnOFileClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLogExtractForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogExtractForm>();
+	NN<SSWR::AVIRead::AVIRLogExtractForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogExtractForm>();
 	UTF8Char sbuff[16];
 	Text::StringBuilderUTF8 sb1;
 	Text::StringBuilderUTF8 sb2;
@@ -126,7 +126,7 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(AnyType userO
 	}
 }
 
-SSWR::AVIRead::AVIRLogExtractForm::AVIRLogExtractForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 184, ui)
+SSWR::AVIRead::AVIRLogExtractForm::AVIRLogExtractForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 184, ui)
 {
 	this->SetText(CSTR("Log Extract"));
 	this->SetFont(0, 0, 8.25, false);

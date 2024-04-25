@@ -13,7 +13,7 @@ SSWR::AVIRead::AVIRLoraGWSimForm::PredefData SSWR::AVIRead::AVIRLoraGWSimForm::p
 
 void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnStartClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLoraGWSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLoraGWSimForm>();
+	NN<SSWR::AVIRead::AVIRLoraGWSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLoraGWSimForm>();
 	if (me->lora)
 	{
 		DEL_CLASS(me->lora);
@@ -65,8 +65,8 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnStartClick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnPredefClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLoraGWSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLoraGWSimForm>();
-	NotNullPtr<PredefData> data;
+	NN<SSWR::AVIRead::AVIRLoraGWSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLoraGWSimForm>();
+	NN<PredefData> data;
 	if (me->cboPredef->GetSelectedItem().GetOpt<PredefData>().SetTo(data) && data->data)
 	{
 		UTF8Char sbuff[16];
@@ -79,7 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnPredefClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnSendULDataClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLoraGWSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLoraGWSimForm>();
+	NN<SSWR::AVIRead::AVIRLoraGWSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLoraGWSimForm>();
 	if (me->lora == 0)
 	{
 		return;
@@ -174,13 +174,13 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnSendULDataClick(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnLogSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLoraGWSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLoraGWSimForm>();
+	NN<SSWR::AVIRead::AVIRLoraGWSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLoraGWSimForm>();
 	Optional<Text::String> s = me->lbLog->GetSelectedItemTextNew();
 	me->lbLog->SetText(Text::String::OrEmpty(s)->ToCString());
 	OPTSTR_DEL(s);
 }
 
-SSWR::AVIRead::AVIRLoraGWSimForm::AVIRLoraGWSimForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRLoraGWSimForm::AVIRLoraGWSimForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("LoRa Gateway Simulator"));
 	this->SetFont(0, 0, 8.25, false);

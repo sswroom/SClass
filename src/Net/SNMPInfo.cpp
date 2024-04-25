@@ -17,7 +17,7 @@ Net::SNMPInfo::~SNMPInfo()
 
 }
 
-void Net::SNMPInfo::PDUSeqGetDetail(const UInt8 *pdu, UOSInt pduSize, UOSInt level, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Net::SNMPInfo::PDUSeqGetDetail(const UInt8 *pdu, UOSInt pduSize, UOSInt level, NN<Text::StringBuilderUTF8> sb)
 {
 	if (level > 0)
 	{
@@ -41,7 +41,7 @@ void Net::SNMPInfo::PDUSeqGetDetail(const UInt8 *pdu, UOSInt pduSize, UOSInt lev
 	sb->AppendC(UTF8STRC("}"));
 }
 
-UOSInt Net::SNMPInfo::PDUGetDetail(Text::CString name, const UInt8 *pdu, UOSInt pduSize, UOSInt level, NotNullPtr<Text::StringBuilderUTF8> sb)
+UOSInt Net::SNMPInfo::PDUGetDetail(Text::CString name, const UInt8 *pdu, UOSInt pduSize, UOSInt level, NN<Text::StringBuilderUTF8> sb)
 {
 	if (pduSize < 2)
 	{
@@ -269,7 +269,7 @@ UOSInt Net::SNMPInfo::PDUGetDetail(Text::CString name, const UInt8 *pdu, UOSInt 
 	}
 }
 
-void Net::SNMPInfo::ValueToString(UInt8 type, const UInt8 *pduBuff, UOSInt valLen, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Net::SNMPInfo::ValueToString(UInt8 type, const UInt8 *pduBuff, UOSInt valLen, NN<Text::StringBuilderUTF8> sb)
 {
 	switch (type)
 	{

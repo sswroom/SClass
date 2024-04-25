@@ -10,13 +10,13 @@
 
 void __stdcall OnMessage(AnyType userObj, Bool toServer, UInt8 ver, UInt16 token, UInt8 msgType, const UInt8 *msg, UOSInt msgSize)
 {
-	NotNullPtr<IO::LogTool> log = userObj.GetNN<IO::LogTool>();
+	NN<IO::LogTool> log = userObj.GetNN<IO::LogTool>();
 	Text::StringBuilderUTF8 sb;
 	Net::LoRaGWUtil::ParseGWMPMessage(sb, toServer, ver, token, msgType, msg, msgSize);
 	log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Net::OSSocketFactory sockf(true);
 	IO::ConsoleWriter console;

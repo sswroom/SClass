@@ -101,7 +101,7 @@ Net::WebSite::WebSite7gogoControl::ItemData *Net::WebSite::WebSite7gogoControl::
 	}
 }
 
-Net::WebSite::WebSite7gogoControl::WebSite7gogoControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent)
+Net::WebSite::WebSite7gogoControl::WebSite7gogoControl(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent)
 {
 	this->sockf = sockf;
 	this->encFact = encFact;
@@ -113,7 +113,7 @@ Net::WebSite::WebSite7gogoControl::~WebSite7gogoControl()
 	OPTSTR_DEL(this->userAgent);
 }
 
-OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NotNullPtr<Text::String> channelId, OSInt pageNo, Data::ArrayList<Net::WebSite::WebSite7gogoControl::ItemData*> *itemList, Net::WebSite::WebSite7gogoControl::ChannelInfo *chInfo)
+OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NN<Text::String> channelId, OSInt pageNo, Data::ArrayList<Net::WebSite::WebSite7gogoControl::ItemData*> *itemList, Net::WebSite::WebSite7gogoControl::ChannelInfo *chInfo)
 {
 	Text::StringBuilderUTF8 sb;
 	OSInt retCnt = 0;
@@ -122,7 +122,7 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NotNullPtr<Text::String
 	Net::WebSite::WebSite7gogoControl::ItemData *item;
 	Data::ArrayListInt64 idList;
 //	printf("Requesting to URL %s\r\n", sb.ToString());
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, OPTSTR_CSTR(this->userAgent), true, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, OPTSTR_CSTR(this->userAgent), true, true);
 	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	Text::XMLReader reader(this->encFact, cli, Text::XMLReader::PM_HTML);
 	while (reader.ReadNext())

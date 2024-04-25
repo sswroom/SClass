@@ -9,7 +9,7 @@ namespace UI
 		class JavaButton : public UI::GUIButton
 		{
 		public:
-			JavaButton(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN txt);
+			JavaButton(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN txt);
 			virtual ~JavaButton();
 
 			virtual void SetText(Text::CStringNN text);

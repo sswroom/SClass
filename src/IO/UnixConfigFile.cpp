@@ -19,7 +19,7 @@ IO::ConfigFile *IO::UnixConfigFile::Parse(Text::CStringNN fileName)
 	return cfg;
 }
 
-IO::ConfigFile *IO::UnixConfigFile::ParseReader(NotNullPtr<Text::UTF8Reader> reader)
+IO::ConfigFile *IO::UnixConfigFile::ParseReader(NN<Text::UTF8Reader> reader)
 {
 	UTF8Char buff[1024];
 	UTF8Char *name;

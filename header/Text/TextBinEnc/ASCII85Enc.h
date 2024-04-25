@@ -11,7 +11,7 @@ namespace Text
 		public:
 			ASCII85Enc();
 			virtual ~ASCII85Enc();
-			virtual UOSInt EncodeBin(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize);
+			virtual UOSInt EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize);
 			UTF8Char *EncodeBin(UTF8Char *sbuff, const UInt8 *dataBuff, UOSInt buffSize);
 			virtual UOSInt CalcBinSize(const UTF8Char *a85Str, UOSInt strLen);
 			virtual UOSInt DecodeBin(const UTF8Char *a85Str, UOSInt strLen, UInt8 *dataBuff);

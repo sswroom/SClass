@@ -11,7 +11,7 @@ namespace Text
 	class UTF8Reader : public IO::Reader
 	{
 	private:
-		NotNullPtr<IO::Stream> stm;
+		NN<IO::Stream> stm;
 
 		UInt8 buff[UTF8READER_BUFFSIZE];
 		UOSInt buffSize;
@@ -23,17 +23,17 @@ namespace Text
 		void FillBuffer();
 		void CheckHeader();
 	public:
-		UTF8Reader(NotNullPtr<IO::Stream> stm);
+		UTF8Reader(NN<IO::Stream> stm);
 		virtual ~UTF8Reader();
 		virtual void Close();
 		UTF32Char Peek();
 		UTF32Char Read();
-		virtual Bool ReadLine(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt maxCharCnt);
+		virtual Bool ReadLine(NN<Text::StringBuilderUTF8> sb, UOSInt maxCharCnt);
 		virtual UTF8Char *ReadLine(UTF8Char *sbuff, UOSInt maxCharCnt);
 		virtual UTF8Char *GetLastLineBreak(UTF8Char *buff);
-		virtual Bool GetLastLineBreak(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual Bool GetLastLineBreak(NN<Text::StringBuilderUTF8> sb);
 		virtual Bool IsLineBreak();
-		virtual Bool ReadToEnd(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual Bool ReadToEnd(NN<Text::StringBuilderUTF8> sb);
 	};
 }
 #endif

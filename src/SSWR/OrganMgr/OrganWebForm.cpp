@@ -8,11 +8,11 @@
 
 void __stdcall SSWR::OrganMgr::OrganWebForm::OnReloadClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::OrganMgr::OrganWebForm> me = userObj.GetNN<SSWR::OrganMgr::OrganWebForm>();
+	NN<SSWR::OrganMgr::OrganWebForm> me = userObj.GetNN<SSWR::OrganMgr::OrganWebForm>();
 	me->env->Reload();
 }
 
-SSWR::OrganMgr::OrganWebForm::OrganWebForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<Media::DrawEngine> eng) : UI::GUIForm(parent, 160, 100, ui)
+SSWR::OrganMgr::OrganWebForm::OrganWebForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::DrawEngine> eng) : UI::GUIForm(parent, 160, 100, ui)
 {
 	this->SetFont(0, 0, 10.5, false);
 	this->SetText(CSTR("OrganWeb"));
@@ -30,7 +30,7 @@ SSWR::OrganMgr::OrganWebForm::OrganWebForm(Optional<UI::GUIClientControl> parent
 
 	DB::DBTool *db;
 	Int32 scnSize = 0;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (cfg->GetValue(CSTR("ScreenSize")).SetTo(s))
 	{
 		scnSize = s->ToInt32();

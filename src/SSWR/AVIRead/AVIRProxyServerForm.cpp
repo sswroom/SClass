@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProxyServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProxyServerForm>();
+	NN<SSWR::AVIRead::AVIRProxyServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProxyServerForm>();
 	if (me->svr == 0)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -38,8 +38,8 @@ void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnStartClicked(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnLogSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProxyServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProxyServerForm>();
-	NotNullPtr<Text::String> s;
+	NN<SSWR::AVIRead::AVIRProxyServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProxyServerForm>();
+	NN<Text::String> s;
 	if (me->lbLog->GetSelectedItemTextNew().SetTo(s))
 	{
 		me->txtLog->SetText(s->ToCString());
@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnLogSelChg(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRProxyServerForm::AVIRProxyServerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRProxyServerForm::AVIRProxyServerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Proxy Server"));

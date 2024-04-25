@@ -17,25 +17,25 @@ namespace SSWR
 		class AVIREncryptForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIPanel> pnlSrc;
-			NotNullPtr<UI::GUIPanel> pnlSrcCtrl;
-			NotNullPtr<UI::GUIPanel> pnlDest;
-			NotNullPtr<UI::GUIPanel> pnlDestCtrl;
-			NotNullPtr<UI::GUIHSplitter> hspMain;
-			NotNullPtr<UI::GUILabel> lblSrc;
-			NotNullPtr<UI::GUIComboBox> cboSrc;
-			NotNullPtr<UI::GUITextBox> txtSrc;
-			NotNullPtr<UI::GUILabel> lblDest;
-			NotNullPtr<UI::GUIComboBox> cboDest;
-			NotNullPtr<UI::GUITextBox> txtDest;
-			NotNullPtr<UI::GUIButton> btnConvert;
+			NN<UI::GUIPanel> pnlSrc;
+			NN<UI::GUIPanel> pnlSrcCtrl;
+			NN<UI::GUIPanel> pnlDest;
+			NN<UI::GUIPanel> pnlDestCtrl;
+			NN<UI::GUIHSplitter> hspMain;
+			NN<UI::GUILabel> lblSrc;
+			NN<UI::GUIComboBox> cboSrc;
+			NN<UI::GUITextBox> txtSrc;
+			NN<UI::GUILabel> lblDest;
+			NN<UI::GUIComboBox> cboDest;
+			NN<UI::GUITextBox> txtDest;
+			NN<UI::GUIButton> btnConvert;
 			UOSInt fileIndex;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Text::TextBinEnc::TextBinEncList encList;
 			static void __stdcall OnConvertClicked(AnyType userObj);
 		public:
-			AVIREncryptForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIREncryptForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIREncryptForm();
 
 			virtual void OnMonitorChanged();

@@ -123,7 +123,7 @@ void __stdcall SSWR::MapReplay::MapReplayForm::OnLayerDblClicked(void *userObj)
 	}
 }
 
-SSWR::MapReplay::MapReplayForm::MapReplayForm(UI::MSWindowUI *ui, UI::MSWindowForm *parent, Media::GDIEngine *eng, Parser::ParserList *parsers, Media::ColorManager *colorMgr, NotNullPtr<Net::SocketFactory> sockf) : UI::MSWindowForm(ui->GetHInst(), parent, 1024, 768, ui)
+SSWR::MapReplay::MapReplayForm::MapReplayForm(UI::MSWindowUI *ui, UI::MSWindowForm *parent, Media::GDIEngine *eng, Parser::ParserList *parsers, Media::ColorManager *colorMgr, NN<Net::SocketFactory> sockf) : UI::MSWindowForm(ui->GetHInst(), parent, 1024, 768, ui)
 {
 	this->parsers = parsers;
 	this->colorMgr = colorMgr;

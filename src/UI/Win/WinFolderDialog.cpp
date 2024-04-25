@@ -11,7 +11,7 @@
 Int32 __stdcall UI::Win::WinFolderDialog::BrowseCB(void *hwnd, UInt32 uMsg, OSInt lParam, OSInt lpData)
 {
 	UI::Win::WinFolderDialog *me = (UI::Win::WinFolderDialog*)lpData;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	switch (uMsg)
 	{
 	case BFFM_INITIALIZED:
@@ -42,7 +42,7 @@ Bool UI::Win::WinFolderDialog::ShowDialog(ControlHandle *ownerHandle)
 	BROWSEINFOW info;
 	info.hwndOwner = (HWND)ownerHandle;
 	info.pidlRoot = 0;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (this->dirName.SetTo(s))
 	{
 		Text::StrUTF8_WChar(wbuff, s->v, 0);

@@ -8,12 +8,12 @@ namespace Map
 	class TileMapFolderWriter : public Map::TileMapWriter
 	{
 	private:
-		NotNullPtr<Text::String> folderName;
+		NN<Text::String> folderName;
 		Map::TileMap::ImageType imgType;
 		UOSInt minLev;
 		UOSInt maxLev;
 		Math::RectAreaDbl bounds;
-		NotNullPtr<Text::String> name;
+		NN<Text::String> name;
 	public:
 		TileMapFolderWriter(Text::CStringNN folderName, Map::TileMap::ImageType imgType, UOSInt minLev, UOSInt maxLev, Math::RectAreaDbl bounds);
 		virtual ~TileMapFolderWriter();

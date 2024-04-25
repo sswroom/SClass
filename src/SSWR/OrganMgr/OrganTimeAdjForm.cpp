@@ -6,7 +6,7 @@
 
 void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnSpeciesChg(AnyType userObj)
 {
-	NotNullPtr<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
+	NN<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
 	NN<UserFileInfo> userFile;
 	UOSInt i;
 	UOSInt j;
@@ -33,13 +33,13 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnSpeciesChg(AnyType userObj)
 
 void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTileUpdated(AnyType userObj)
 {
-	NotNullPtr<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
+	NN<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
 	me->mapUpdated = true;
 }
 
 void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
+	NN<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
 	if (me->mapUpdated)
 	{
 		me->mapUpdated = false;
@@ -50,13 +50,13 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimerTick(AnyType userObj)
 
 void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnMapScaleScroll(AnyType userObj, UOSInt newVal)
 {
-	NotNullPtr<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
+	NN<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
 	me->mapMain->SetMapScale(Double2Int32(me->mapTile->GetLevelScale(newVal)));
 }
 
 void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTrackChg(AnyType userObj)
 {
-	NotNullPtr<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
+	NN<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
 	Map::GPSTrack::GPSRecord3 *rec = (Map::GPSTrack::GPSRecord3 *)me->lbTrack->GetSelectedItem().p;
 	if (rec)
 	{
@@ -70,9 +70,9 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTrackChg(AnyType userObj)
 
 void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnPictureChg(AnyType userObj)
 {
-	NotNullPtr<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
+	NN<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
 	NN<UserFileInfo> userFile; 
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (me->lbPictures->GetSelectedItem().GetOpt<UserFileInfo>().SetTo(userFile) && userFile->camera.SetTo(s))
 	{
 		me->selImgCamera = s.Ptr();
@@ -93,7 +93,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnPictureChg(AnyType userObj)
 
 void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnCameraChg(AnyType userObj)
 {
-	NotNullPtr<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
+	NN<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
@@ -106,7 +106,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnCameraChg(AnyType userObj)
 
 void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnPasteClicked(AnyType userObj)
 {
-	NotNullPtr<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
+	NN<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
@@ -132,7 +132,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnPasteClicked(AnyType userObj)
 
 void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeAddClicked(AnyType userObj)
 {
-	NotNullPtr<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
+	NN<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
@@ -151,7 +151,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeAddClicked(AnyType userOb
 
 void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeSubClicked(AnyType userObj)
 {
-	NotNullPtr<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
+	NN<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
@@ -170,7 +170,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeSubClicked(AnyType userOb
 
 void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeApplyClicked(AnyType userObj)
 {
-	NotNullPtr<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
+	NN<OrganTimeAdjForm> me = userObj.GetNN<OrganTimeAdjForm>();
 	Text::StringBuilderUTF8 sb;
 	Int32 timeAdj;
 	UOSInt i;
@@ -180,7 +180,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeApplyClicked(AnyType user
 	Int32 failCnt = 0;
 	Math::Coord2DDbl pos;
 	Data::Timestamp ts;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 
 	me->cboCamera->GetText(sb);
 	timeAdj = me->cameraMap.Get(sb.ToCString());
@@ -227,7 +227,7 @@ void SSWR::OrganMgr::OrganTimeAdjForm::UpdateSelTime(const UTF8Char *camera, UOS
 	}
 }
 
-SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env, NotNullPtr<DataFileInfo> dataFile) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<OrganEnv> env, NN<DataFileInfo> dataFile) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFormState(UI::GUIForm::FS_MAXIMIZED);
 	this->SetFont(0, 0, 10.5, false);
@@ -245,13 +245,13 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl
 
 	this->SetText(this->env->GetLang(CSTR("TimeAdjTitle")));
 
-	NotNullPtr<Map::OSM::OSMTileMap> tileMap;
+	NN<Map::OSM::OSMTileMap> tileMap;
 	Media::StaticImage *stimg;
 	Media::ImageList *imgList;
 	UOSInt i;
 	UOSInt j;
 	OSInt k;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 
 	this->mapUpdated = false;
 	NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.opencyclemap.org/cycle/"), this->env->GetCacheDir()->ToCString(), 0, 18, this->env->GetSocketFactory(), this->env->GetSSLEngine()));
@@ -362,7 +362,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl
 		}
 		i++;
 	}
-	NotNullPtr<Data::ArrayList<Text::String *>> cameraList = this->cameraMap.GetKeys();
+	NN<Data::ArrayList<Text::String *>> cameraList = this->cameraMap.GetKeys();
 	Text::StringBuilderUTF8 sbu8;
 	i = 0;
 	j = cameraList->GetCount();

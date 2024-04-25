@@ -101,7 +101,7 @@ SSWR::OrganMgr::Location *SSWR::OrganMgr::OrganLocationForm::GetParentLoc()
 
 void __stdcall SSWR::OrganMgr::OrganLocationForm::OnLocSelChg(AnyType userObj)
 {
-	NotNullPtr<OrganLocationForm> me = userObj.GetNN<OrganLocationForm>();
+	NN<OrganLocationForm> me = userObj.GetNN<OrganLocationForm>();
 	if (me->ToSave())
 	{
 		me->lbLocation->SetSelectedIndex(me->lbLocation->GetCount() - 1);
@@ -120,7 +120,7 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnLocSelChg(AnyType userObj)
 
 void __stdcall SSWR::OrganMgr::OrganLocationForm::OnSubLocSelChg(AnyType userObj)
 {
-	NotNullPtr<OrganLocationForm> me = userObj.GetNN<OrganLocationForm>();
+	NN<OrganLocationForm> me = userObj.GetNN<OrganLocationForm>();
 	if (!me->sublocUpdating)
 	{
 		if (me->ToSave())
@@ -151,7 +151,7 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnSubLocSelChg(AnyType userObj
 
 void __stdcall SSWR::OrganMgr::OrganLocationForm::OnSubLocDblClk(AnyType userObj)
 {
-	NotNullPtr<OrganLocationForm> me = userObj.GetNN<OrganLocationForm>();
+	NN<OrganLocationForm> me = userObj.GetNN<OrganLocationForm>();
 	UOSInt i = me->lbSublocations->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
@@ -165,7 +165,7 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnSubLocDblClk(AnyType userObj
 
 void __stdcall SSWR::OrganMgr::OrganLocationForm::OnAddClicked(AnyType userObj)
 {
-	NotNullPtr<OrganLocationForm> me = userObj.GetNN<OrganLocationForm>();
+	NN<OrganLocationForm> me = userObj.GetNN<OrganLocationForm>();
 	UTF8Char sbuff[256];
 	UTF8Char *sbuffEnd;
 	UTF8Char sbuff2[256];
@@ -207,7 +207,7 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnAddClicked(AnyType userObj)
 
 void __stdcall SSWR::OrganMgr::OrganLocationForm::OnOkClicked(AnyType userObj)
 {
-	NotNullPtr<OrganLocationForm> me = userObj.GetNN<OrganLocationForm>();
+	NN<OrganLocationForm> me = userObj.GetNN<OrganLocationForm>();
 	if (me->ToSave())
 		return;
 	if (me->selMode == SM_CHILD)
@@ -267,13 +267,13 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnOkClicked(AnyType userObj)
 
 void __stdcall SSWR::OrganMgr::OrganLocationForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<OrganLocationForm> me = userObj.GetNN<OrganLocationForm>();
+	NN<OrganLocationForm> me = userObj.GetNN<OrganLocationForm>();
 	if (me->ToSave())
 		return;
 	me->SetDialogResult(DR_CANCEL);
 }
 
-SSWR::OrganMgr::OrganLocationForm::OrganLocationForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env, SelectMode selMode, Int32 initId) : UI::GUIForm(parent, 420, 440, ui)
+SSWR::OrganMgr::OrganLocationForm::OrganLocationForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<OrganEnv> env, SelectMode selMode, Int32 initId) : UI::GUIForm(parent, 420, 440, ui)
 {
 	this->SetFont(0, 0, 10.5, false);
 

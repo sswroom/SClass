@@ -9,7 +9,7 @@
 #include "Text/MyString.h"
 #include <stdio.h>
 
-DB::DBConn::DBConn(NotNullPtr<Text::String> sourceName) : DB::ReadingDB(sourceName)
+DB::DBConn::DBConn(NN<Text::String> sourceName) : DB::ReadingDB(sourceName)
 {
 	this->lastDataError = DE_NO_ERROR;
 }
@@ -38,7 +38,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 	{
 		OSInt i = 4;
 		Optional<DB::DBReader> tmpr = 0;
-		NotNullPtr<DB::DBReader> r;
+		NN<DB::DBReader> r;
 		ptr = Text::StrConcatC(buff, UTF8STRC("show table status where Name = "));
 		ptr = DB::DBUtil::SDBStrUTF8(ptr, tableName.v, DB::SQLType::MySQL);
 
@@ -85,7 +85,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 			this->CloseReader(r);
 			return 0;
 		}
-		NotNullPtr<DB::ColDef> col;
+		NN<DB::ColDef> col;
 		ptr = Text::StrConcatC(buff, UTF8STRC("desc "));
 		ptr = DB::DBUtil::SDBColUTF8(ptr, tableName.v, DB::SQLType::MySQL);
 		if (this->ExecuteReader(CSTRP(buff, ptr)).SetTo(r))
@@ -135,7 +135,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 					{
 						col->SetNotNull(false);
 					}
-					NotNullPtr<Text::String> defVal;
+					NN<Text::String> defVal;
 					if (col->GetDefVal().SetTo(defVal) && defVal->StartsWith(UTF8STRC("0000-00-00 00:00:00")))
 					{
 						col->SetDefVal(CSTR_NULL);
@@ -155,7 +155,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 	{
 		Int32 i = 4;
 		Optional<DB::DBReader> tmpr = 0;
-		NotNullPtr<DB::DBReader> r;
+		NN<DB::DBReader> r;
 		ptr = Text::StrConcatC(buff, UTF8STRC("exec sp_columns "));
 		ptr = DB::DBUtil::SDBStrUTF8(ptr, tableName.v, DB::SQLType::MSSQL);
 		if (schemaName.leng != 0)
@@ -178,7 +178,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 		tab->SetCharset(CSTR_NULL);
 		tab->SetSQLType(DB::SQLType::MSSQL);
 
-		NotNullPtr<DB::ColDef> col;
+		NN<DB::ColDef> col;
 		while (r->ReadNext())
 		{
 			ptr = r->GetStr(3, buff, sizeof(buff));
@@ -235,14 +235,14 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 		if (!tmpr.SetTo(r))
 			return tab;
 
-		Data::ArrayIterator<NotNullPtr<DB::ColDef>> it;
+		Data::ArrayIterator<NN<DB::ColDef>> it;
 		while (r->ReadNext())
 		{
 			ptr = r->GetStr(0, buff, sizeof(buff));
 			it = tab->ColIterator();
 			while (it.HasNext())
 			{
-				NotNullPtr<DB::ColDef> col = it.Next();
+				NN<DB::ColDef> col = it.Next();
 				if (col->GetColName()->Equals(buff, (UOSInt)(ptr - buff)))
 				{
 					col->SetPK(true);
@@ -273,7 +273,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 		DB::SQLBuilder sql(DB::SQLType::SQLite, false, this->GetTzQhr());
 		sql.AppendCmdC(CSTR("select sql from sqlite_master where type='table' and name="));
 		sql.AppendStrC(tableName);
-		NotNullPtr<DB::DBReader> r;
+		NN<DB::DBReader> r;
 		if (!this->ExecuteReader(sql.ToCString()).SetTo(r))
 		{
 			return 0;
@@ -305,7 +305,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 				if (r->ReadNext())
 				{
 					Int32 srid = r->GetInt32(0);
-					NotNullPtr<DB::ColDef> col;
+					NN<DB::ColDef> col;
 					UOSInt i = tab->GetColCnt();
 					while (i-- > 0)
 					{
@@ -339,18 +339,18 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 			sql.AppendStrC(schemaName);
 		}
 		sql.AppendCmdC(CSTR(" order by ordinal_position"));
-		NotNullPtr<DB::DBReader> r;
+		NN<DB::DBReader> r;
 		if (!this->ExecuteReader(sql.ToCString()).SetTo(r))
 		{
 			return 0;
 		}
 		Data::FastStringMap<DB::ColDef*> colMap;
 		DB::TableDef *tab;
-		NotNullPtr<DB::ColDef> col;
+		NN<DB::ColDef> col;
 		Bool hasGeometry = false;
 		Optional<Text::String> geometrySchema = 0;
 		Optional<Text::String> ops;
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		UOSInt sizeCol;
 		NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
 		while (r->ReadNext())
@@ -698,7 +698,7 @@ DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString ta
 					Int32 srid = r->GetInt32(2);
 					Optional<Text::String> t = r->GetNewStr(3);
 					DB::ColDef *col = 0;
-					NotNullPtr<Text::String> s;
+					NN<Text::String> s;
 					if (colName.SetTo(s))
 						col = colMap.GetNN(s);
 					if (col)

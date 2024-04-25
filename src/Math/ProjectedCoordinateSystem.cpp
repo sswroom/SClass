@@ -8,7 +8,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Math::ProjectedCoordinateSystem::ProjectedCoordinateSystem(NotNullPtr<Text::String> sourceName, UInt32 srid, Text::CString projName, Double falseEasting, Double falseNorthing, Double dcentralMeridian, Double dlatitudeOfOrigin, Double scaleFactor, NotNullPtr<Math::GeographicCoordinateSystem> gcs, Math::CoordinateSystem::UnitType unit) : Math::CoordinateSystem(sourceName, srid, projName)
+Math::ProjectedCoordinateSystem::ProjectedCoordinateSystem(NN<Text::String> sourceName, UInt32 srid, Text::CString projName, Double falseEasting, Double falseNorthing, Double dcentralMeridian, Double dlatitudeOfOrigin, Double scaleFactor, NN<Math::GeographicCoordinateSystem> gcs, Math::CoordinateSystem::UnitType unit) : Math::CoordinateSystem(sourceName, srid, projName)
 {
 	this->falseEasting = falseEasting;
 	this->falseNorthing = falseNorthing;
@@ -19,7 +19,7 @@ Math::ProjectedCoordinateSystem::ProjectedCoordinateSystem(NotNullPtr<Text::Stri
 	this->unit = unit;
 }
 
-Math::ProjectedCoordinateSystem::ProjectedCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CString projName, Double falseEasting, Double falseNorthing, Double dcentralMeridian, Double dlatitudeOfOrigin, Double scaleFactor, NotNullPtr<Math::GeographicCoordinateSystem> gcs, Math::CoordinateSystem::UnitType unit) : Math::CoordinateSystem(sourceName, srid, projName)
+Math::ProjectedCoordinateSystem::ProjectedCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CString projName, Double falseEasting, Double falseNorthing, Double dcentralMeridian, Double dlatitudeOfOrigin, Double scaleFactor, NN<Math::GeographicCoordinateSystem> gcs, Math::CoordinateSystem::UnitType unit) : Math::CoordinateSystem(sourceName, srid, projName)
 {
 	this->falseEasting = falseEasting;
 	this->falseNorthing = falseNorthing;
@@ -47,7 +47,7 @@ Double Math::ProjectedCoordinateSystem::CalSurfaceDistance(Math::Coord2DDbl pos1
 	return d;
 }
 
-Double Math::ProjectedCoordinateSystem::CalLineStringDistance(NotNullPtr<Math::Geometry::LineString> lineString, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::ProjectedCoordinateSystem::CalLineStringDistance(NN<Math::Geometry::LineString> lineString, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const
 {
 	UOSInt nPoint;
 	UOSInt nAlts;
@@ -109,7 +109,7 @@ Bool Math::ProjectedCoordinateSystem::IsProjected() const
 	return true;
 }
 
-void Math::ProjectedCoordinateSystem::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Math::ProjectedCoordinateSystem::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	sb->AppendC(UTF8STRC("Projected File Name: "));
 	sb->Append(this->sourceName);
@@ -133,7 +133,7 @@ void Math::ProjectedCoordinateSystem::ToString(NotNullPtr<Text::StringBuilderUTF
 	this->gcs->ToString(sb);
 }
 
-Bool Math::ProjectedCoordinateSystem::SameProjection(NotNullPtr<const Math::ProjectedCoordinateSystem> csys) const
+Bool Math::ProjectedCoordinateSystem::SameProjection(NN<const Math::ProjectedCoordinateSystem> csys) const
 {
 	if (this->falseEasting != csys->falseEasting)
 		return false;

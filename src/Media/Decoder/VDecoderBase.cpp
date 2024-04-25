@@ -4,18 +4,18 @@
 
 void __stdcall Media::Decoder::VDecoderBase::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	NotNullPtr<Media::Decoder::VDecoderBase> me = userData.GetNN<Media::Decoder::VDecoderBase>();
+	NN<Media::Decoder::VDecoderBase> me = userData.GetNN<Media::Decoder::VDecoderBase>();
 	me->ProcVideoFrame(frameTime, frameNum, imgData, dataSize, frameStruct, frameType, flags, ycOfst);
 }
 
 void __stdcall Media::Decoder::VDecoderBase::OnVideoChange(Media::IVideoSource::FrameChange fc, AnyType userData)
 {
-	NotNullPtr<Media::Decoder::VDecoderBase> me = userData.GetNN<Media::Decoder::VDecoderBase>();
+	NN<Media::Decoder::VDecoderBase> me = userData.GetNN<Media::Decoder::VDecoderBase>();
 	me->OnFrameChanged(fc);
 	me->fcCb(fc, me->frameCbData);
 }
 
-Media::Decoder::VDecoderBase::VDecoderBase(NotNullPtr<IVideoSource> sourceVideo)
+Media::Decoder::VDecoderBase::VDecoderBase(NN<IVideoSource> sourceVideo)
 {
 	this->sourceVideo = sourceVideo.Ptr();
 	this->fcCb = 0;

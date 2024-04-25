@@ -10,7 +10,7 @@
 #include "Net/SSLEngineFactory.h"
 #include "Parser/FileParser/X509Parser.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UInt8 buff[4096];
 	UTF8Char sbuff[512];
@@ -25,7 +25,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		return 0;
 	}
 	Parser::FileParser::X509Parser parser;
-	NotNullPtr<Text::String> s = Text::String::NewP(sbuff, sptr);
+	NN<Text::String> s = Text::String::NewP(sbuff, sptr);
 	Crypto::Cert::X509File *x509 = parser.ParseBuff(Data::ByteArray(buff, buffSize), s);
 	s->Release();
 	if (x509 == 0)
@@ -42,7 +42,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Optional<Net::SSLEngine> ssl;
 	Net::OSSocketFactory sockf(false);
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
-	NotNullPtr<Crypto::Cert::X509Key> key;
+	NN<Crypto::Cert::X509Key> key;
 	key.Set((Crypto::Cert::X509Key*)x509);
 	Crypto::Cert::CertNames names;
 	Crypto::Cert::CertExtensions ext;
@@ -56,12 +56,12 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	names.commonName = Text::String::New(UTF8STRC("sswroom.no-ip.org")).Ptr();
 	names.emailAddress = Text::String::New(UTF8STRC("sswroom@yahoo.com")).Ptr();
 
-	NotNullPtr<Data::ArrayListStringNN> nameList;
+	NN<Data::ArrayListStringNN> nameList;
 	NEW_CLASSNN(nameList, Data::ArrayListStringNN());
 	ext.subjectAltName = nameList;
 	nameList->Add(Text::String::New(UTF8STRC("sswroom.no-ip.org")));
-	NotNullPtr<Crypto::Cert::X509CertReq> csr;
-	NotNullPtr<Net::SSLEngine> nnssl;
+	NN<Crypto::Cert::X509CertReq> csr;
+	NN<Net::SSLEngine> nnssl;
 	if (ssl.SetTo(nnssl) && csr.Set(Crypto::Cert::CertUtil::CertReqCreate(nnssl, names, key, &ext)))
 	{
 		sptr = IO::Path::GetProcessFileName(sbuff);

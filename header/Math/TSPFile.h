@@ -17,14 +17,14 @@ namespace Math
 		Int32 fileType;
 
 	public:
-		TSPFile(NotNullPtr<IO::StreamData> fd);
+		TSPFile(NN<IO::StreamData> fd);
 		virtual ~TSPFile();
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
 		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
-		virtual void CloseReader(NotNullPtr<DB::DBReader> r);
-		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
+		virtual void CloseReader(NN<DB::DBReader> r);
+		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
 
 		UInt8 *GetRowPtr(UOSInt row) const;
@@ -52,7 +52,7 @@ namespace Math
 		virtual Int32 GetInt32(UOSInt colIndex);
 		virtual Int64 GetInt64(UOSInt colIndex);
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
-		virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb);
 		virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
 		virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
@@ -61,15 +61,15 @@ namespace Math
 		virtual UOSInt GetBinarySize(UOSInt colIndex);
 		virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff);
 		virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex);
-		virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid);
+		virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid);
 
 		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
 		virtual Bool IsNull(UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
-		virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
+		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);
 
 		static Text::CString GetName(UOSInt colIndex, UOSInt rowSize);
-		static Bool GetColDefV(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef, UOSInt rowSize);
+		static Bool GetColDefV(UOSInt colIndex, NN<DB::ColDef> colDef, UOSInt rowSize);
 	};
 
 	class TSPHReader : public DB::DBReader
@@ -88,7 +88,7 @@ namespace Math
 		virtual Int32 GetInt32(UOSInt colIndex);
 		virtual Int64 GetInt64(UOSInt colIndex);
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
-		virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb);
 		virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
 		virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
@@ -97,15 +97,15 @@ namespace Math
 		virtual UOSInt GetBinarySize(UOSInt colIndex);
 		virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff);
 		virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex);
-		virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid);
+		virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid);
 
 		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
 		virtual Bool IsNull(UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
-		virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
+		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);
 
 		static Text::CString GetName(UOSInt colIndex);
-		static Bool GetColDefV(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
+		static Bool GetColDefV(UOSInt colIndex, NN<DB::ColDef> colDef);
 	};
 }
 #endif

@@ -16,17 +16,17 @@ namespace SSWR
 			class AVIRMIMEX509Viewer : public AVIRMIMEViewer
 			{
 			private:
-				NotNullPtr<UI::GUITabControl> tcMain;
+				NN<UI::GUITabControl> tcMain;
 
-				NotNullPtr<UI::GUITabPage> tpDesc;
-				NotNullPtr<UI::GUITextBox> txtDesc;
-				NotNullPtr<UI::GUITabPage> tpASN1;
-				NotNullPtr<UI::GUITextBox> txtASN1;
+				NN<UI::GUITabPage> tpDesc;
+				NN<UI::GUITextBox> txtDesc;
+				NN<UI::GUITabPage> tpASN1;
+				NN<UI::GUITextBox> txtASN1;
 
 				Text::MIMEObj::UnknownMIMEObj *obj;
 
 			public:
-				AVIRMIMEX509Viewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::MIMEObj::UnknownMIMEObj *obj);
+				AVIRMIMEX509Viewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, Text::MIMEObj::UnknownMIMEObj *obj);
 				virtual ~AVIRMIMEX509Viewer();
 			};
 		}

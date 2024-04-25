@@ -154,9 +154,9 @@ Optional<SSWR::OrganMgr::WebFileInfo> SSWR::OrganMgr::OrganImageItem::GetWebFile
 	return this->webFile;
 }
 
-NotNullPtr<SSWR::OrganMgr::OrganImageItem> SSWR::OrganMgr::OrganImageItem::Clone() const
+NN<SSWR::OrganMgr::OrganImageItem> SSWR::OrganMgr::OrganImageItem::Clone() const
 {
-	NotNullPtr<OrganImageItem> newItem;
+	NN<OrganImageItem> newItem;
 	NEW_CLASSNN(newItem, OrganImageItem(this->userId));
 	newItem->SetDispName(this->dispName);
 	newItem->SetIsCoverPhoto(this->isCoverPhoto);

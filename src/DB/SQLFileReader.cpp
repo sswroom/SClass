@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "DB/SQLFileReader.h"
 
-DB::SQLFileReader::SQLFileReader(NotNullPtr<IO::Stream> stm, DB::SQLType sqlType, Bool mergeInsert) : reader(stm)
+DB::SQLFileReader::SQLFileReader(NN<IO::Stream> stm, DB::SQLType sqlType, Bool mergeInsert) : reader(stm)
 {
 	this->sqlType = sqlType;
 	this->mergeInsert = mergeInsert;
@@ -11,7 +11,7 @@ DB::SQLFileReader::~SQLFileReader()
 {
 }
 
-Bool DB::SQLFileReader::NextSQL(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool DB::SQLFileReader::NextSQL(NN<Text::StringBuilderUTF8> sb)
 {
 	if (this->mergeInsert)
 	{

@@ -59,9 +59,9 @@ void IO::FileAnalyse::RIFFFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt6
 	}
 }
 
-void __stdcall IO::FileAnalyse::RIFFFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::FileAnalyse::RIFFFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::FileAnalyse::RIFFFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::RIFFFileAnalyse>();
+	NN<IO::FileAnalyse::RIFFFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::RIFFFileAnalyse>();
 	me->ParseRange(0, 0, me->fd->GetDataSize());
 }
 
@@ -95,7 +95,7 @@ UOSInt IO::FileAnalyse::RIFFFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
 	return INVALID_INDEX;
 }
 
-IO::FileAnalyse::RIFFFileAnalyse::RIFFFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("RIFFFileAnalyse"))
+IO::FileAnalyse::RIFFFileAnalyse::RIFFFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("RIFFFileAnalyse"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -132,7 +132,7 @@ UOSInt IO::FileAnalyse::RIFFFileAnalyse::GetFrameCount()
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<PackInfo> pack;
 	UInt8 buff[5];
@@ -155,7 +155,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Tex
 	return true;
 }
 
-Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<PackInfo> pack;
 	UInt8 buff[5];

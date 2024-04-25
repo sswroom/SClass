@@ -23,11 +23,11 @@ Optional<Text::String> Text::String::NewOrNullSlow(const UTF8Char *str)
 	return s;
 }
 
-NotNullPtr<Text::String> Text::String::NewNotNullSlow(const UTF8Char *str)
+NN<Text::String> Text::String::NewNotNullSlow(const UTF8Char *str)
 {
 	if (str[0] == 0) return NewEmpty();
 	UOSInt len = Text::StrCharCnt(str);
-	NotNullPtr<Text::String> s = NotNullPtr<Text::String>::FromPtr((Text::String*)MAlloc(len + sizeof(String)));
+	NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MAlloc(len + sizeof(String)));
 	s->v = s->vbuff;
 	s->leng = len;
 	s->useCnt = 1;
@@ -48,11 +48,11 @@ Optional<Text::String> Text::String::NewOrNull(Text::CString str)
 	return s;
 }
 
-NotNullPtr<Text::String> Text::String::NewP(const UTF8Char *str, const UTF8Char *strEnd)
+NN<Text::String> Text::String::NewP(const UTF8Char *str, const UTF8Char *strEnd)
 {
 	if (strEnd == 0 || strEnd == str) return NewEmpty();
 	UOSInt len = (UOSInt)(strEnd - str);
-	NotNullPtr<Text::String> s = NotNullPtr<Text::String>::FromPtr((Text::String*)MAlloc(len + sizeof(String)));
+	NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MAlloc(len + sizeof(String)));
 	s->v = s->vbuff;
 	s->leng = len;
 	s->useCnt = 1;
@@ -70,19 +70,19 @@ Optional<Text::String> Text::String::NewOrNull(const UTF16Char *str)
 	return s;
 }
 
-NotNullPtr<Text::String> Text::String::NewNotNull(const UTF16Char *str)
+NN<Text::String> Text::String::NewNotNull(const UTF16Char *str)
 {
 	UOSInt charCnt = Text::StrUTF16_UTF8Cnt(str);
-	NotNullPtr<Text::String> s = New(charCnt);
+	NN<Text::String> s = New(charCnt);
 	Text::StrUTF16_UTF8(s->v, str);
 	return s;
 }
 
-NotNullPtr<Text::String> Text::String::New(const UTF16Char *str, UOSInt len)
+NN<Text::String> Text::String::New(const UTF16Char *str, UOSInt len)
 {
 	if (len == 0) return NewEmpty();
 	UOSInt charCnt = Text::StrUTF16_UTF8CntC(str, len);
-	NotNullPtr<Text::String> s = New(charCnt);
+	NN<Text::String> s = New(charCnt);
 	Text::StrUTF16_UTF8C(s->v, str, len);
 	s->v[charCnt] = 0;
 	return s;
@@ -97,25 +97,25 @@ Optional<Text::String> Text::String::NewOrNull(const UTF32Char *str)
 	return s;
 }
 
-NotNullPtr<Text::String> Text::String::NewNotNull(const UTF32Char *str)
+NN<Text::String> Text::String::NewNotNull(const UTF32Char *str)
 {
 	UOSInt charCnt = Text::StrUTF32_UTF8Cnt(str);
-	NotNullPtr<Text::String> s = New(charCnt);
+	NN<Text::String> s = New(charCnt);
 	Text::StrUTF32_UTF8(s->v, str);
 	return s;
 }
 
-NotNullPtr<Text::String> Text::String::New(const UTF32Char *str, UOSInt len)
+NN<Text::String> Text::String::New(const UTF32Char *str, UOSInt len)
 {
 	if (len == 0) return NewEmpty();
 	UOSInt charCnt = Text::StrUTF32_UTF8CntC(str, len);
-	NotNullPtr<Text::String> s = New(charCnt);
+	NN<Text::String> s = New(charCnt);
 	Text::StrUTF32_UTF8C(s->v, str, len);
 	s->v[charCnt] = 0;
 	return s;
 }
 
-NotNullPtr<Text::String> Text::String::NewCSVRec(const UTF8Char *str)
+NN<Text::String> Text::String::NewCSVRec(const UTF8Char *str)
 {
 	UOSInt len = 2;
 	UTF8Char c;
@@ -132,7 +132,7 @@ NotNullPtr<Text::String> Text::String::NewCSVRec(const UTF8Char *str)
 			len += 1;
 		}
 	}
-	NotNullPtr<Text::String> s = New(len);
+	NN<Text::String> s = New(len);
 	sptr2 = s->v;
 	*sptr2++ = '"';
 	while ((c = *str++) != 0)
@@ -152,21 +152,21 @@ NotNullPtr<Text::String> Text::String::NewCSVRec(const UTF8Char *str)
 	return s;
 }
 
-NotNullPtr<Text::String> Text::String::NewEmpty()
+NN<Text::String> Text::String::NewEmpty()
 {
 	return emptyStr.Clone();
 }
 
-NotNullPtr<Text::String> Text::String::OrEmpty(Optional<Text::String> s)
+NN<Text::String> Text::String::OrEmpty(Optional<Text::String> s)
 {
-	NotNullPtr<Text::String> ret;
+	NN<Text::String> ret;
 	if (s.SetTo(ret)) return ret;
 	return emptyStr.Clone();
 }
 
 Optional<Text::String> Text::String::CopyOrNull(Optional<Text::String> s)
 {
-	NotNullPtr<Text::String> ret;
+	NN<Text::String> ret;
 	if (s.SetTo(ret)) return ret->Clone();
 	return 0;
 }
@@ -192,7 +192,7 @@ void Text::String::Release()
 #endif
 }
 
-NotNullPtr<Text::String> Text::String::Clone() const
+NN<Text::String> Text::String::Clone() const
 {
 #if defined(MEMDEBUG)
 	return New(this->v, this->leng);
@@ -202,19 +202,19 @@ NotNullPtr<Text::String> Text::String::Clone() const
 	#else
 	Interlocked_IncrementU32(&((Text::String*)this)->useCnt);
 	#endif
-	return NotNullPtr<Text::String>(*(Text::String*)this);
+	return NN<Text::String>(*(Text::String*)this);
 #else
 	((Text::String*)this)->useCnt++;
-	return NotNullPtr<Text::String>(*(Text::String*)this);
+	return NN<Text::String>(*(Text::String*)this);
 #endif
 }
 
-NotNullPtr<Text::String> Text::String::ToLower()
+NN<Text::String> Text::String::ToLower()
 {
 	if (this->HasUpperCase())
 	{
 		UOSInt len = this->leng;
-		NotNullPtr<Text::String> s = Text::String::New(len);
+		NN<Text::String> s = Text::String::New(len);
 		Text::StrToLowerC(s->v, this->v, len);
 		return s;
 	}

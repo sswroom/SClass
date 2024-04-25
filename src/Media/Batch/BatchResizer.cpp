@@ -16,7 +16,7 @@ Media::Batch::BatchResizer::~BatchResizer()
 	ClearTargetSizes();
 }
 
-void Media::Batch::BatchResizer::AddTargetSize(UInt32 targetWidth, UInt32 targetHeight, NotNullPtr<Text::String> targetId)
+void Media::Batch::BatchResizer::AddTargetSize(UInt32 targetWidth, UInt32 targetHeight, NN<Text::String> targetId)
 {
 	TargetParam *param;
 	param = MemAlloc(TargetParam, 1);
@@ -27,7 +27,7 @@ void Media::Batch::BatchResizer::AddTargetSize(UInt32 targetWidth, UInt32 target
 	this->targetParam.Add(param);
 }
 
-void Media::Batch::BatchResizer::AddTargetDPI(UInt32 targetHDPI, UInt32 targetVDPI, NotNullPtr<Text::String> targetId)
+void Media::Batch::BatchResizer::AddTargetDPI(UInt32 targetHDPI, UInt32 targetVDPI, NN<Text::String> targetId)
 {
 	TargetParam *param;
 	param = MemAlloc(TargetParam, 1);
@@ -55,13 +55,13 @@ void Media::Batch::BatchResizer::SetHandler(Media::Batch::BatchHandler *hdlr)
 	this->hdlr = hdlr;
 }
 
-void Media::Batch::BatchResizer::ImageOutput(NotNullPtr<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId)
+void Media::Batch::BatchResizer::ImageOutput(NN<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId)
 {
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
 	TargetParam *param;
-	NotNullPtr<Media::StaticImage> newImg;
+	NN<Media::StaticImage> newImg;
 	Media::StaticImage *rImg;
 	Bool succ;
 	UTF8Char sbuff[256];

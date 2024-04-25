@@ -12,7 +12,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 
-DB::DBFFile::DBFFile(NotNullPtr<IO::StreamData> stmData, UInt32 codePage) : DB::ReadingDB(stmData->GetFullName()), enc(codePage)
+DB::DBFFile::DBFFile(NN<IO::StreamData> stmData, UInt32 codePage) : DB::ReadingDB(stmData->GetFullName()), enc(codePage)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -77,7 +77,7 @@ DB::DBFFile::~DBFFile()
 	this->stmData.Delete();
 }
 
-UOSInt DB::DBFFile::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt DB::DBFFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -89,7 +89,7 @@ Optional<DB::DBReader> DB::DBFFile::QueryTableData(Text::CString schemaName, Tex
 {
 	if (cols)
 	{
-		NotNullPtr<DB::DBFReader> r;
+		NN<DB::DBFReader> r;
 		NEW_CLASSNN(r, DB::DBFReader(this, this->colCnt, this->cols, this->rowSize, &this->enc));
 		return r;
 	}
@@ -101,7 +101,7 @@ Optional<DB::DBReader> DB::DBFFile::QueryTableData(Text::CString schemaName, Tex
 
 DB::TableDef *DB::DBFFile::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
-	NotNullPtr<DB::ColDef> col;
+	NN<DB::ColDef> col;
 	DB::TableDef *tab;
 	UOSInt i;
 	UOSInt j;
@@ -118,13 +118,13 @@ DB::TableDef *DB::DBFFile::GetTableDef(Text::CString schemaName, Text::CString t
 	return tab;
 }
 
-void DB::DBFFile::CloseReader(NotNullPtr<DBReader> r)
+void DB::DBFFile::CloseReader(NN<DBReader> r)
 {
 	DB::DBFReader *rdr = (DB::DBFReader*)r.Ptr();
 	DEL_CLASS(rdr);
 }
 
-void DB::DBFFile::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void DB::DBFFile::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 }
 
@@ -193,7 +193,7 @@ UTF8Char *DB::DBFFile::GetRecord(UTF8Char *buff, UOSInt row, UOSInt col)
 	}
 }
 
-Bool DB::DBFFile::GetRecord(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt row, UOSInt col)
+Bool DB::DBFFile::GetRecord(NN<Text::StringBuilderUTF8> sb, UOSInt row, UOSInt col)
 {
 	if (col >= this->colCnt)
 		return false;
@@ -306,7 +306,7 @@ DB::DBUtil::ColType DB::DBFFile::GetColumnType(UOSInt colIndex, OptOut<UOSInt> c
 	return DB::DBUtil::CT_VarUTF8Char;
 }
 
-Bool DB::DBFFile::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool DB::DBFFile::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	if (colIndex >= this->colCnt)
 	{
@@ -619,7 +619,7 @@ WChar *DB::DBFReader::GetStr(UOSInt colIndex, WChar *buff)
 	}
 }
 
-Bool DB::DBFReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool DB::DBFReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	if (!this->recordExist)
 		return false;
@@ -641,7 +641,7 @@ Optional<Text::String> DB::DBFReader::GetNewStr(UOSInt colIndex)
 	if (colIndex >= this->colCnt)
 		return 0;
 	UOSInt strLen = this->enc->CountUTF8Chars(&this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize);
-	NotNullPtr<Text::String> s = Text::String::New(strLen);
+	NN<Text::String> s = Text::String::New(strLen);
 	this->enc->UTF8FromBytes(s->v, &this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize, 0);
 	return s;
 }
@@ -759,7 +759,7 @@ Optional<Math::Geometry::Vector2D> DB::DBFReader::GetVector(UOSInt colIndex)
 	return 0;
 }
 
-Bool DB::DBFReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
+Bool DB::DBFReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 {
 	return false;
 }
@@ -806,7 +806,7 @@ DB::DBUtil::ColType DB::DBFReader::GetColType(UOSInt colIndex, OptOut<UOSInt> co
 	return this->dbf->GetColumnType(colIndex, colSize);
 }
 
-Bool DB::DBFReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool DB::DBFReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	return this->dbf->GetColumnDef(colIndex, colDef);
 }

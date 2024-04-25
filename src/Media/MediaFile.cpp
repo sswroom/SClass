@@ -8,7 +8,7 @@
 #include "Media/IMediaSource.h"
 #include "Media/MediaFile.h"
 
-Media::MediaFile::MediaFile(NotNullPtr<Text::String> name) : IO::ParsedObject(name)
+Media::MediaFile::MediaFile(NN<Text::String> name) : IO::ParsedObject(name)
 {
 	this->chapters = 0;
 	this->releaseChapter = false;

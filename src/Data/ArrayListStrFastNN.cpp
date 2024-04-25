@@ -11,15 +11,15 @@ Data::ArrayListStrFastNN::ArrayListStrFastNN(UOSInt capacity) : Data::SortableAr
 {
 }
 
-NotNullPtr<Data::ArrayListNN<Text::String>> Data::ArrayListStrFastNN::Clone() const
+NN<Data::ArrayListNN<Text::String>> Data::ArrayListStrFastNN::Clone() const
 {
-	NotNullPtr<Data::ArrayListStrFastNN> newArr;
+	NN<Data::ArrayListStrFastNN> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListStrFastNN(this->capacity));
 	newArr->AddAll(*this);
 	return newArr;
 }
 
-OSInt Data::ArrayListStrFastNN::Compare(NotNullPtr<Text::String> obj1, NotNullPtr<Text::String> obj2) const
+OSInt Data::ArrayListStrFastNN::Compare(NN<Text::String> obj1, NN<Text::String> obj2) const
 {
 	return obj1->CompareToFast(obj2->ToCString());
 }

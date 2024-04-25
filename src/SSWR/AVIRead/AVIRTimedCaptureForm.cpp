@@ -8,7 +8,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTimedCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimedCaptureForm>();
+	NN<SSWR::AVIRead::AVIRTimedCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimedCaptureForm>();
 	if (me->currCapture)
 	{
 		DEL_CLASS(me->currCapture);
@@ -134,7 +134,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTimedCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimedCaptureForm>();
+	NN<SSWR::AVIRead::AVIRTimedCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimedCaptureForm>();
 	if (me->isStarted)
 	{
 		me->StopCapture();
@@ -146,7 +146,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(AnyType userO
 	}
 	else
 	{
-		NotNullPtr<CaptureFormat> cfmt;
+		NN<CaptureFormat> cfmt;
 		if (me->cboFormat->GetSelectedItem().GetOpt<CaptureFormat>().SetTo(cfmt) && me->currCapture)
 		{
 			Text::StringBuilderUTF8 sb;
@@ -217,7 +217,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTimedCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimedCaptureForm>();
+	NN<SSWR::AVIRead::AVIRTimedCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimedCaptureForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	sptr = Text::StrUInt32(sbuff, me->frameCnt);
@@ -228,11 +228,11 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnTimerTick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTimedCaptureForm> me = userData.GetNN<SSWR::AVIRead::AVIRTimedCaptureForm>();
+	NN<SSWR::AVIRead::AVIRTimedCaptureForm> me = userData.GetNN<SSWR::AVIRead::AVIRTimedCaptureForm>();
 	me->frameCnt++;
 	if (me->lastSaveTime + me->interval <= frameTime)
 	{
-		NotNullPtr<Media::ImageList> imgList;
+		NN<Media::ImageList> imgList;
 		Media::StaticImage *simg;
 		Data::DateTime dt;
 		Optional<IO::FileExporter::ParamData> param;
@@ -262,7 +262,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(Data::Duration 
 
 void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoChange(Media::IVideoSource::FrameChange frChg, AnyType userData)
 {
-//	NotNullPtr<SSWR::AVIRead::AVIRTimedCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimedCaptureForm>();
+//	NN<SSWR::AVIRead::AVIRTimedCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimedCaptureForm>();
 }
 
 void SSWR::AVIRead::AVIRTimedCaptureForm::StopCapture()
@@ -285,7 +285,7 @@ void SSWR::AVIRead::AVIRTimedCaptureForm::ReleaseFormats()
 	}
 }
 
-SSWR::AVIRead::AVIRTimedCaptureForm::AVIRTimedCaptureForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 652, 480, ui)
+SSWR::AVIRead::AVIRTimedCaptureForm::AVIRTimedCaptureForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 652, 480, ui)
 {
 	this->SetText(CSTR("Timed Capture"));
 	this->SetFont(0, 0, 8.25, false);

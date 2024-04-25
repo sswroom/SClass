@@ -13,7 +13,7 @@ namespace Net
 	private:
 		typedef void (__stdcall *PortUpdatedHandler)(AnyType userObj, UInt16 port);
 	private:
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Net::SocketUtil::AddressInfo addr;
 		UInt8 *portList;
 		Sync::Mutex portMut;
@@ -24,7 +24,7 @@ namespace Net
 
 		static UInt32 __stdcall ScanThread(AnyType userObj);
 	public:
-		TCPPortScanner(NotNullPtr<Net::SocketFactory> socf, UOSInt threadCnt, PortUpdatedHandler hdlr, AnyType userObj);
+		TCPPortScanner(NN<Net::SocketFactory> socf, UOSInt threadCnt, PortUpdatedHandler hdlr, AnyType userObj);
 		~TCPPortScanner();
 
 		void Start(Net::SocketUtil::AddressInfo *addr, UInt16 maxPort);

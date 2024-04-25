@@ -17,11 +17,11 @@ void IO::Device::GoProCameraControl::GetMediaList()
 		UTF8Char *sptr;
 		
 		Text::StringBuilderUTF8 sb;
-		NotNullPtr<IO::CameraControl::FileInfo> file;
+		NN<IO::CameraControl::FileInfo> file;
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
 		sptr = Net::SocketUtil::GetAddrName(sptr, this->addr);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(":8080/gp/gpMediaList"));
-		NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 		{
 			Text::UTF8Reader reader(cli);
 			reader.ReadToEnd(sb);
@@ -58,7 +58,7 @@ void IO::Device::GoProCameraControl::GetMediaList()
 						jsBase2 = jsArrDir->GetArrayValue(i);
 						if (jsBase2 && jsBase->GetType() == Text::JSONType::Object)
 						{
-							NotNullPtr<Text::String> dirName;
+							NN<Text::String> dirName;
 							jsObjDir = (Text::JSONObject *)jsBase2;
 
 							jsBase2 = jsObjDir->GetObjectValue(CSTR("fs"));
@@ -72,10 +72,10 @@ void IO::Device::GoProCameraControl::GetMediaList()
 									jsBase2 = jsArrFS->GetArrayValue(k);
 									if (jsBase2 && jsBase2->GetType() == Text::JSONType::Object)
 									{
-										NotNullPtr<Text::String> fileName;
+										NN<Text::String> fileName;
 										Optional<Text::String> modTime;
-										NotNullPtr<Text::String> fileSize;
-										NotNullPtr<Text::String> s;
+										NN<Text::String> fileSize;
+										NN<Text::String> s;
 										jsObjFS = (Text::JSONObject*)jsBase2;
 										modTime = jsObjFS->GetObjectString(CSTR("mod"));
 										
@@ -117,7 +117,7 @@ void IO::Device::GoProCameraControl::GetMediaList()
 	}
 }
 
-Bool IO::Device::GoProCameraControl::GetInfo(NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListStringNN> valueList)
+Bool IO::Device::GoProCameraControl::GetInfo(NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListStringNN> valueList)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -125,7 +125,7 @@ Bool IO::Device::GoProCameraControl::GetInfo(NotNullPtr<Data::ArrayListStringNN>
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
 	sptr = Net::SocketUtil::GetAddrName(sptr, this->addr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/gp/gpControl/info"));
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	{
 		Text::UTF8Reader reader(cli);
 		reader.ReadToEnd(sb);
@@ -184,7 +184,7 @@ Bool IO::Device::GoProCameraControl::GetInfo(NotNullPtr<Data::ArrayListStringNN>
 	return false;
 }
 
-IO::Device::GoProCameraControl::GoProCameraControl(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *addr) : IO::CameraControl()
+IO::Device::GoProCameraControl::GoProCameraControl(NN<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *addr) : IO::CameraControl()
 {
 	this->addr = *addr;
 	this->sockf = sockf;
@@ -196,7 +196,7 @@ IO::Device::GoProCameraControl::~GoProCameraControl()
 	UOSInt i;
 	if (this->fileList)
 	{
-		NotNullPtr<IO::CameraControl::FileInfo> file;
+		NN<IO::CameraControl::FileInfo> file;
 		i = this->fileList->GetCount();
 		while (i-- > 0)
 		{
@@ -207,7 +207,7 @@ IO::Device::GoProCameraControl::~GoProCameraControl()
 	}
 }
 
-UOSInt IO::Device::GoProCameraControl::GetInfoList(NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListStringNN> valueList)
+UOSInt IO::Device::GoProCameraControl::GetInfoList(NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListStringNN> valueList)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt initCnt = nameList->GetCount();
@@ -215,19 +215,19 @@ UOSInt IO::Device::GoProCameraControl::GetInfoList(NotNullPtr<Data::ArrayListStr
 	return nameList->GetCount() - initCnt;
 }
 
-void IO::Device::GoProCameraControl::FreeInfoList(NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListStringNN> valueList)
+void IO::Device::GoProCameraControl::FreeInfoList(NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListStringNN> valueList)
 {
 	nameList->FreeAll();
 	valueList->FreeAll();
 }
 
-UOSInt IO::Device::GoProCameraControl::GetFileList(NotNullPtr<Data::ArrayListNN<IO::CameraControl::FileInfo>> fileList)
+UOSInt IO::Device::GoProCameraControl::GetFileList(NN<Data::ArrayListNN<IO::CameraControl::FileInfo>> fileList)
 {
 	if (this->fileList == 0)
 	{
 		this->GetMediaList();
 	}
-	NotNullPtr<Data::ArrayListNN<IO::CameraControl::FileInfo>> nnfileList;
+	NN<Data::ArrayListNN<IO::CameraControl::FileInfo>> nnfileList;
 	if (nnfileList.Set(this->fileList))
 	{
 		fileList->AddAll(nnfileList);
@@ -236,7 +236,7 @@ UOSInt IO::Device::GoProCameraControl::GetFileList(NotNullPtr<Data::ArrayListNN<
 	return 0;
 }
 
-Bool IO::Device::GoProCameraControl::GetFile(NotNullPtr<IO::CameraControl::FileInfo> file, NotNullPtr<IO::Stream> outStm)
+Bool IO::Device::GoProCameraControl::GetFile(NN<IO::CameraControl::FileInfo> file, NN<IO::Stream> outStm)
 {
 	UTF8Char sbuff[2048];
 	UOSInt readSize;
@@ -249,7 +249,7 @@ Bool IO::Device::GoProCameraControl::GetFile(NotNullPtr<IO::CameraControl::FileI
 	sptr = Text::StrConcat(sptr, file->filePath);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrConcat(sptr, file->fileName);
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	while ((readSize = cli->Read(BYTEARR(sbuff))) > 0)
 	{
 		totalSize += readSize;
@@ -259,7 +259,7 @@ Bool IO::Device::GoProCameraControl::GetFile(NotNullPtr<IO::CameraControl::FileI
 	return totalSize == file->fileSize && totalSize == totalWriteSize;
 }
 
-Bool IO::Device::GoProCameraControl::GetThumbnailFile(NotNullPtr<IO::CameraControl::FileInfo> file, NotNullPtr<IO::Stream> outStm)
+Bool IO::Device::GoProCameraControl::GetThumbnailFile(NN<IO::CameraControl::FileInfo> file, NN<IO::Stream> outStm)
 {
 	UTF8Char sbuff[2048];
 	UOSInt readSize;
@@ -276,7 +276,7 @@ Bool IO::Device::GoProCameraControl::GetThumbnailFile(NotNullPtr<IO::CameraContr
 	sptr = Text::StrConcat(sptr, file->filePath);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrConcatC(sptr, file->fileName, nameLen);
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	while ((readSize = cli->Read(BYTEARR(sbuff))) > 0)
 	{
 		totalSize += readSize;
@@ -286,10 +286,10 @@ Bool IO::Device::GoProCameraControl::GetThumbnailFile(NotNullPtr<IO::CameraContr
 	return totalSize > 512;
 }
 
-IO::Device::GoProCameraControl *IO::Device::GoProCameraControl::CreateControl(NotNullPtr<Net::SocketFactory> sockf)
+IO::Device::GoProCameraControl *IO::Device::GoProCameraControl::CreateControl(NN<Net::SocketFactory> sockf)
 {
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
-	NotNullPtr<Net::ConnectionInfo> connInfo;
+	NN<Net::ConnectionInfo> connInfo;
 	Bool found = false;
 	if (sockf->GetConnInfoList(connInfoList) == 0)
 		return 0;

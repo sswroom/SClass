@@ -14,12 +14,12 @@ namespace SSWR
 			class AVIRMIMEXMLViewer : public AVIRMIMEViewer
 			{
 			private:
-				NotNullPtr<UI::GUIListView> lvXML;
+				NN<UI::GUIListView> lvXML;
 
 				Text::MIMEObj::UnknownMIMEObj *obj;
 
 			public:
-				AVIRMIMEXMLViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::MIMEObj::UnknownMIMEObj *obj);
+				AVIRMIMEXMLViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, Text::MIMEObj::UnknownMIMEObj *obj);
 				virtual ~AVIRMIMEXMLViewer();
 			};
 		}

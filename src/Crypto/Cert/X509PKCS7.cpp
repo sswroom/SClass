@@ -3,7 +3,7 @@
 #include "Crypto/Cert/X509PKCS7.h"
 #include "Net/ASN1Util.h"
 
-Crypto::Cert::X509PKCS7::X509PKCS7(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
+Crypto::Cert::X509PKCS7::X509PKCS7(NN<Text::String> sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
 {
 
 }
@@ -23,7 +23,7 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509PKCS7::GetFileType() const
 	return FileType::PKCS7;
 }
 
-void Crypto::Cert::X509PKCS7::ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Crypto::Cert::X509PKCS7::ToShortName(NN<Text::StringBuilderUTF8> sb) const
 {
 /*	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
@@ -46,7 +46,7 @@ UOSInt Crypto::Cert::X509PKCS7::GetCertCount()
 	return Net::ASN1Util::PDUCountItem(certListPDU, certListPDU + len, 0);
 }
 
-Bool Crypto::Cert::X509PKCS7::GetCertName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Crypto::Cert::X509PKCS7::GetCertName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt len;
@@ -94,26 +94,26 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::X509PKCS7::GetNewCert(UOSInt inde
 	const UInt8 *certPDU = Net::ASN1Util::PDUGetItemRAW(certListPDU, certListPDU + len, sbuff, len, ofst);
 	if (certPDU)
 	{
-		NotNullPtr<Crypto::Cert::X509Cert> cert;
+		NN<Crypto::Cert::X509Cert> cert;
 		NEW_CLASSNN(cert, Crypto::Cert::X509Cert(this->GetSourceNameObj(), Data::ByteArrayR(certPDU, len + ofst)));
 		return cert;
 	}
 	return 0;
 }
 
-Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PKCS7::IsValid(NotNullPtr<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509PKCS7::IsValid(NN<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const
 {
 	return Crypto::Cert::X509File::ValidStatus::SignatureInvalid;
 }
 
-NotNullPtr<Net::ASN1Data> Crypto::Cert::X509PKCS7::Clone() const
+NN<Net::ASN1Data> Crypto::Cert::X509PKCS7::Clone() const
 {
-	NotNullPtr<Crypto::Cert::X509PKCS7> asn1;
+	NN<Crypto::Cert::X509PKCS7> asn1;
 	NEW_CLASSNN(asn1, Crypto::Cert::X509PKCS7(this->GetSourceNameObj(), this->buff));
 	return asn1;
 }
 
-void Crypto::Cert::X509PKCS7::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Crypto::Cert::X509PKCS7::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	if (IsContentInfo(this->buff.Ptr(), this->buff.PtrEnd(), "1"))
 	{
@@ -121,9 +121,9 @@ void Crypto::Cert::X509PKCS7::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) c
 	}
 }
 
-NotNullPtr<Net::ASN1Names> Crypto::Cert::X509PKCS7::CreateNames() const
+NN<Net::ASN1Names> Crypto::Cert::X509PKCS7::CreateNames() const
 {
-	NotNullPtr<Net::ASN1Names> names;
+	NN<Net::ASN1Names> names;
 	NEW_CLASSNN(names, Net::ASN1Names());
 	return names->SetPKCS7ContentInfo();
 }

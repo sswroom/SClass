@@ -39,7 +39,7 @@ namespace Net
 	private:
 		typedef struct
 		{
-			NotNullPtr<Text::String> name;
+			NN<Text::String> name;
 			Text::String *defValues;
 			UInt32 colLen;
 			UInt16 charSet;
@@ -59,7 +59,7 @@ namespace Net
 		Sync::Event nextRowEvt;
 		Sync::MutexUsage mutUsage;
 	public:
-		MySQLTCPReader(NotNullPtr<Sync::Mutex> mut)
+		MySQLTCPReader(NN<Sync::Mutex> mut)
 		{
 			this->mutUsage.ReplaceMutex(mut);
 			this->rowChanged = -1;
@@ -177,7 +177,7 @@ namespace Net
 			return Text::StrUTF8_WChar(buff, this->currRow[colIndex]->v, 0);
 		}
 
-		virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+		virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 		{
 			if (this->currRow == 0)
 			{
@@ -298,7 +298,7 @@ namespace Net
 			return 0;
 		}
 
-		virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
+		virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 		{
 			/////////////////////////////
 			return false;
@@ -338,7 +338,7 @@ namespace Net
 			return DB::DBUtil::CT_Unknown;
 		}
 
-		virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 		{
 			ColumnDef *col = this->cols.GetItem(colIndex);
 			if (col)
@@ -455,7 +455,7 @@ namespace Net
 	private:
 		typedef struct
 		{
-			NotNullPtr<Text::String> name;
+			NN<Text::String> name;
 			Text::String *defValues;
 			UInt32 colLen;
 			UInt16 charSet;
@@ -494,7 +494,7 @@ namespace Net
 		UOSInt rowNum;
 		UInt32 stmtId;
 	public:
-		MySQLTCPBinaryReader(NotNullPtr<Sync::Mutex> mut)
+		MySQLTCPBinaryReader(NN<Sync::Mutex> mut)
 		{
 			this->mutUsage.ReplaceMutex(mut);
 			this->colTypes = 0;
@@ -656,7 +656,7 @@ namespace Net
 			return Text::StrUTF8_WChar(buff, sb.ToString(), 0);
 		}
 
-		virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+		virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 		{
 			Data::VariItem item;
 			if (!this->GetVariItem(colIndex, item))
@@ -830,14 +830,14 @@ namespace Net
 			return item.GetAndRemoveVector();
 		}
 
-		virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
+		virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 		{
 			Data::VariItem item;
 			if (!this->GetVariItem(colIndex, item))
 			{
 				return false;
 			}
-			NotNullPtr<Data::UUID> itemUUID;
+			NN<Data::UUID> itemUUID;
 			if (!itemUUID.Set(item.GetAndRemoveUUID()))
 			{
 				return false;
@@ -847,7 +847,7 @@ namespace Net
 			return true;
 		}
 
-		virtual Bool GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item)
+		virtual Bool GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
 		{
 			if (this->currRow == 0 || colIndex >= this->colCount)
 			{
@@ -1007,7 +1007,7 @@ namespace Net
 				if (col->len > 4)
 				{
 					Math::WKBReader wkb(ReadUInt32(&this->currRow->rowBuff[col->ofst]));
-					NotNullPtr<Math::Geometry::Vector2D> vec;
+					NN<Math::Geometry::Vector2D> vec;
 					if (wkb.ParseWKB(&this->currRow->rowBuff[col->ofst + 4], col->len - 4, 0).SetTo(vec))
 					{
 						item->SetVectorDirect(vec);
@@ -1079,7 +1079,7 @@ namespace Net
 			return DB::DBUtil::CT_Unknown;
 		}
 
-		virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 		{
 			ColumnDef *col = this->cols.GetItem(colIndex);
 			if (col)
@@ -1369,7 +1369,7 @@ namespace Net
 
 UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 {
-	NotNullPtr<Net::MySQLTCPClient> me = userObj.GetNN<Net::MySQLTCPClient>();
+	NN<Net::MySQLTCPClient> me = userObj.GetNN<Net::MySQLTCPClient>();
 	UInt8 *buff;
 	UOSInt buffCapacity = INITBUFFSIZE;
 	UOSInt buffSize;
@@ -1559,7 +1559,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 										ptrCurr = me->userName->ConcatTo(&buff[36]) + 1;
 										ptrCurr[0] = (UInt8)Net::MySQLUtil::BuildAuthen(ptrCurr + 1, me->authenType, me->authPluginData, 20, me->password->ToCString());
 										ptrCurr += ptrCurr[0] + 1;
-										NotNullPtr<Text::String> s;
+										NN<Text::String> s;
 										if (me->database.SetTo(s))
 										{
 											ptrCurr = s->ConcatTo(ptrCurr) + 1;
@@ -2044,7 +2044,7 @@ void Net::MySQLTCPClient::SendStmtClose(UInt32 stmtId)
 	this->cli->Write(sbuff, 9);
 }
 
-Net::MySQLTCPClient::MySQLTCPClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NotNullPtr<Text::String> userName, NotNullPtr<Text::String> password, Optional<Text::String> database) : DB::DBConn(CSTR("MySQLTCPClient"))
+Net::MySQLTCPClient::MySQLTCPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NN<Text::String> userName, NN<Text::String> password, Optional<Text::String> database) : DB::DBConn(CSTR("MySQLTCPClient"))
 {
 	this->sockf = sockf;
 	this->recvRunning = false;
@@ -2069,7 +2069,7 @@ Net::MySQLTCPClient::MySQLTCPClient(NotNullPtr<Net::SocketFactory> sockf, NotNul
 	this->Reconnect();
 }
 
-Net::MySQLTCPClient::MySQLTCPClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Text::CString userName, Text::CString password, Text::CString database) : DB::DBConn(CSTR("MySQLTCPClient"))
+Net::MySQLTCPClient::MySQLTCPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Text::CString userName, Text::CString password, Text::CString database) : DB::DBConn(CSTR("MySQLTCPClient"))
 {
 	this->sockf = sockf;
 	this->recvRunning = false;
@@ -2141,14 +2141,14 @@ void Net::MySQLTCPClient::ForceTz(Int8 tzQhr)
 
 }
 
-void Net::MySQLTCPClient::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Net::MySQLTCPClient::GetConnName(NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	sb->AppendC(UTF8STRC("MySQLTCP:"));
 	sptr = Net::SocketUtil::GetAddrName(sbuff, this->addr, this->port);
 	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (this->database.SetTo(s))
 	{
 		sb->AppendUTF8Char('/');
@@ -2171,7 +2171,7 @@ void Net::MySQLTCPClient::Dispose()
 
 OSInt Net::MySQLTCPClient::ExecuteNonQuery(Text::CStringNN sql)
 {
-	NotNullPtr<DB::DBReader> reader;
+	NN<DB::DBReader> reader;
 	if (!ExecuteReaderText(sql).SetTo(reader))
 	{
 		return -2;
@@ -2215,7 +2215,7 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderText(Text::CStringNN sq
 		}
 		Sync::SimpleThread::Sleep(10);
 	}
-	NotNullPtr<MySQLTCPReader> reader;
+	NN<MySQLTCPReader> reader;
 	NEW_CLASSNN(reader, MySQLTCPReader(this->cmdMut));
 	this->cmdResultType = CmdResultType::Processing;
 	this->cmdSeqNum = 1;
@@ -2269,7 +2269,7 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderBinary(Text::CStringNN 
 		}
 		Sync::SimpleThread::Sleep(10);
 	}
-	NotNullPtr<MySQLTCPBinaryReader> reader;
+	NN<MySQLTCPBinaryReader> reader;
 	NEW_CLASSNN(reader, MySQLTCPBinaryReader(this->cmdMut));
 	this->cmdResultType = CmdResultType::ProcessingBinary;
 	this->cmdSeqNum = 1;
@@ -2308,7 +2308,7 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderBinary(Text::CStringNN 
 	return reader;
 }
 
-void Net::MySQLTCPClient::CloseReader(NotNullPtr<DB::DBReader> r)
+void Net::MySQLTCPClient::CloseReader(NN<DB::DBReader> r)
 {
 	while (r->ReadNext())
 	{
@@ -2331,7 +2331,7 @@ void Net::MySQLTCPClient::CloseReader(NotNullPtr<DB::DBReader> r)
 	}
 }
 
-void Net::MySQLTCPClient::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void Net::MySQLTCPClient::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 	if (this->lastError)
 	{
@@ -2397,17 +2397,17 @@ Optional<DB::DBTransaction> Net::MySQLTCPClient::BeginTransaction()
 	}
 	return 0;
 }
-void Net::MySQLTCPClient::Commit(NotNullPtr<DB::DBTransaction> tran)
+void Net::MySQLTCPClient::Commit(NN<DB::DBTransaction> tran)
 {
 	this->ExecuteNonQuery(CSTR("COMMIT"));
 }
 
-void Net::MySQLTCPClient::Rollback(NotNullPtr<DB::DBTransaction> tran)
+void Net::MySQLTCPClient::Rollback(NN<DB::DBTransaction> tran)
 {
 	this->ExecuteNonQuery(CSTR("ROLLBACK"));
 }
 
-UOSInt Net::MySQLTCPClient::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt Net::MySQLTCPClient::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -2415,7 +2415,7 @@ UOSInt Net::MySQLTCPClient::QueryTableNames(Text::CString schemaName, NotNullPtr
 	UTF8Char *sptr;
 	UOSInt len;
 	UOSInt initCnt = names->GetCount();
-	NotNullPtr<DB::DBReader> rdr;
+	NN<DB::DBReader> rdr;
 	if (this->ExecuteReader(CSTR("show tables")).SetTo(rdr))
 	{
 		while (rdr->ReadNext())
@@ -2441,7 +2441,7 @@ Optional<DB::DBReader> Net::MySQLTCPClient::QueryTableData(Text::CString schemaN
 	}
 	else
 	{
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = columnNames->Iterator();
+		Data::ArrayIterator<NN<Text::String>> it = columnNames->Iterator();
 		Bool found = false;
 		while (it.HasNext())
 		{
@@ -2545,7 +2545,7 @@ UInt16 Net::MySQLTCPClient::GetServerCS() const
 	return this->svrCS;
 }
 
-NotNullPtr<const Net::SocketUtil::AddressInfo> Net::MySQLTCPClient::GetConnAddr() const
+NN<const Net::SocketUtil::AddressInfo> Net::MySQLTCPClient::GetConnAddr() const
 {
 	return this->addr;
 }
@@ -2560,12 +2560,12 @@ Optional<Text::String> Net::MySQLTCPClient::GetConnDB() const
 	return this->database;
 }
 
-NotNullPtr<Text::String> Net::MySQLTCPClient::GetConnUID() const
+NN<Text::String> Net::MySQLTCPClient::GetConnUID() const
 {
 	return this->userName;
 }
 
-NotNullPtr<Text::String> Net::MySQLTCPClient::GetConnPWD() const
+NN<Text::String> Net::MySQLTCPClient::GetConnPWD() const
 {
 	return this->password;
 }
@@ -2575,9 +2575,9 @@ UInt16 Net::MySQLTCPClient::GetDefaultPort()
 	return 3306;
 }
 
-DB::DBTool *Net::MySQLTCPClient::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Text::String> serverName, Optional<Text::String> dbName, NotNullPtr<Text::String> uid, NotNullPtr<Text::String> pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
+DB::DBTool *Net::MySQLTCPClient::CreateDBTool(NN<Net::SocketFactory> sockf, NN<Text::String> serverName, Optional<Text::String> dbName, NN<Text::String> uid, NN<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
-	NotNullPtr<Net::MySQLTCPClient> conn;
+	NN<Net::MySQLTCPClient> conn;
 	DB::DBTool *db;
 	Net::SocketUtil::AddressInfo addr;
 	if (sockf->DNSResolveIP(serverName->ToCString(), addr))
@@ -2600,9 +2600,9 @@ DB::DBTool *Net::MySQLTCPClient::CreateDBTool(NotNullPtr<Net::SocketFactory> soc
 	}
 }
 
-DB::DBTool *Net::MySQLTCPClient::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
+DB::DBTool *Net::MySQLTCPClient::CreateDBTool(NN<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
-	NotNullPtr<Net::MySQLTCPClient> conn;
+	NN<Net::MySQLTCPClient> conn;
 	DB::DBTool *db;
 	Net::SocketUtil::AddressInfo addr;
 	if (sockf->DNSResolveIP(serverName, addr))

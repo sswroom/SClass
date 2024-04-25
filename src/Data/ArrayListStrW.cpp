@@ -12,9 +12,9 @@ Data::ArrayListStrW::ArrayListStrW(UOSInt Capacity) : Data::SortableArrayList<co
 {
 }
 
-NotNullPtr<Data::ArrayList<const WChar*>> Data::ArrayListStrW::Clone() const
+NN<Data::ArrayList<const WChar*>> Data::ArrayListStrW::Clone() const
 {
-	NotNullPtr<Data::ArrayListStrW> newArr;
+	NN<Data::ArrayListStrW> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListStrW(this->capacity));
 	newArr->AddAll(*this);
 	return newArr;

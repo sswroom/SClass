@@ -119,7 +119,7 @@ UTF8Char *Manage::ThreadContextX86_64::GetRegister(UOSInt index, UTF8Char *buff,
 	}
 }
 
-void Manage::ThreadContextX86_64::ToString(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Manage::ThreadContextX86_64::ToString(NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -531,7 +531,7 @@ UTF8Char *Manage::ThreadContextX86_64::GetRegister(UOSInt index, UTF8Char *buff,
 	}
 }
 
-void Manage::ThreadContextX86_64::ToString(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Manage::ThreadContextX86_64::ToString(NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -1093,7 +1093,7 @@ UTF8Char *Manage::ThreadContextX86_64::GetRegister(UOSInt index, UTF8Char *buff,
 	}
 }
 
-void Manage::ThreadContextX86_64::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Manage::ThreadContextX86_64::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -1186,9 +1186,9 @@ void Manage::ThreadContextX86_64::SetFrameAddr(UOSInt frameAddr)
 	((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RBP] = (OSInt)frameAddr;
 }
 
-NotNullPtr<Manage::ThreadContext> Manage::ThreadContextX86_64::Clone() const
+NN<Manage::ThreadContext> Manage::ThreadContextX86_64::Clone() const
 {
-	NotNullPtr<Manage::ThreadContextX86_64> ret;
+	NN<Manage::ThreadContextX86_64> ret;
 	NEW_CLASSNN(ret, Manage::ThreadContextX86_64(this->procId, this->threadId, this->context));
 	return ret;
 }

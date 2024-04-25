@@ -2,7 +2,7 @@
 #include "Net/DNSHandler.h"
 #include "Sync/MutexUsage.h"
 
-Net::DNSHandler::DNSHandler(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> serverAddr, NotNullPtr<IO::LogTool> log) : dnsCli(sockf, serverAddr, log)
+Net::DNSHandler::DNSHandler(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> serverAddr, NN<IO::LogTool> log) : dnsCli(sockf, serverAddr, log)
 {
 }
 
@@ -48,14 +48,14 @@ Net::DNSHandler::~DNSHandler()
 	MemFree(arr);
 }
 
-Bool Net::DNSHandler::GetByDomainNamev4(NotNullPtr<Net::SocketUtil::AddressInfo> addr, Text::CStringNN domain)
+Bool Net::DNSHandler::GetByDomainNamev4(NN<Net::SocketUtil::AddressInfo> addr, Text::CStringNN domain)
 {
 	DomainStatus *dnsStat;
 	DomainStatus *newDnsStat;
 	UOSInt i;
 	UOSInt j;
 	Data::Timestamp currTime;
-	NotNullPtr<Net::DNSClient::RequestAnswer> ans;
+	NN<Net::DNSClient::RequestAnswer> ans;
 	Sync::MutexUsage mutUsage(this->reqv4Mut);
 	dnsStat = this->reqv4Map.Get(domain);
 	if (dnsStat)
@@ -136,13 +136,13 @@ Bool Net::DNSHandler::GetByDomainNamev4(NotNullPtr<Net::SocketUtil::AddressInfo>
 	return succ;
 }
 
-Bool Net::DNSHandler::GetByDomainNamev6(NotNullPtr<Net::SocketUtil::AddressInfo> addr, Text::CStringNN domain)
+Bool Net::DNSHandler::GetByDomainNamev6(NN<Net::SocketUtil::AddressInfo> addr, Text::CStringNN domain)
 {
 	DomainStatus *newDnsStat;
 	DomainStatus *dnsStat;
 	UOSInt i;
 	UOSInt j;
-	NotNullPtr<Net::DNSClient::RequestAnswer> ans;
+	NN<Net::DNSClient::RequestAnswer> ans;
 	Data::Timestamp currTime;
 	Sync::MutexUsage mutUsage(this->reqv6Mut);
 	dnsStat = this->reqv6Map.Get(domain);
@@ -235,7 +235,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv4(Data::DataArray<Net::SocketUtil::Addr
 	UOSInt i;
 	UOSInt j;
 	Data::Timestamp currTime;
-	NotNullPtr<Net::DNSClient::RequestAnswer> ans;
+	NN<Net::DNSClient::RequestAnswer> ans;
 	UOSInt ret = 0;
 	Sync::MutexUsage mutUsage(this->reqv4Mut);
 	dnsStat = this->reqv4Map.Get(domain);
@@ -332,7 +332,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv6(Data::DataArray<Net::SocketUtil::Addr
 	DomainStatus *dnsStat;
 	UOSInt i;
 	UOSInt j;
-	NotNullPtr<Net::DNSClient::RequestAnswer> ans;
+	NN<Net::DNSClient::RequestAnswer> ans;
 	Data::Timestamp currTime;
 	Sync::MutexUsage mutUsage(this->reqv6Mut);
 	UOSInt ret = 0;
@@ -419,7 +419,7 @@ UOSInt Net::DNSHandler::GetByDomainNamesv6(Data::DataArray<Net::SocketUtil::Addr
 	return ret;
 }
 
-Bool Net::DNSHandler::AddHost(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, const UTF8Char *domain, UOSInt domainLen)
+Bool Net::DNSHandler::AddHost(NN<const Net::SocketUtil::AddressInfo> addr, const UTF8Char *domain, UOSInt domainLen)
 {
 	DomainStatus *dnsStat;
 	if (addr->addrType == Net::AddrType::IPv4)
@@ -463,7 +463,7 @@ Bool Net::DNSHandler::AddHost(NotNullPtr<const Net::SocketUtil::AddressInfo> add
 	return false;
 }
 
-void Net::DNSHandler::UpdateDNSAddr(NotNullPtr<const Net::SocketUtil::AddressInfo> serverAddr)
+void Net::DNSHandler::UpdateDNSAddr(NN<const Net::SocketUtil::AddressInfo> serverAddr)
 {
 	this->dnsCli.UpdateDNSAddr(serverAddr);
 }

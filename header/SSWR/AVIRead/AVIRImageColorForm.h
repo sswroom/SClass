@@ -15,37 +15,37 @@ namespace SSWR
 		class AVIRImageColorForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<const Media::StaticImage> srcImg;
-			NotNullPtr<Media::StaticImage> destImg;
-			NotNullPtr<Media::StaticImage> srcPrevImg;
-			NotNullPtr<Media::StaticImage> destPrevImg;
-			NotNullPtr<UI::GUIPictureBoxDD> previewCtrl;
+			NN<const Media::StaticImage> srcImg;
+			NN<Media::StaticImage> destImg;
+			NN<Media::StaticImage> srcPrevImg;
+			NN<Media::StaticImage> destPrevImg;
+			NN<UI::GUIPictureBoxDD> previewCtrl;
 			Media::RGBColorFilter *rgbFilter;
 			Double currBVal;
 			Double currCVal;
 			Double currGVal;
 
-			NotNullPtr<UI::GUILabel> lblBright;
-			NotNullPtr<UI::GUIHScrollBar> hsbBright;
-			NotNullPtr<UI::GUILabel> lblBrightV;
-			NotNullPtr<UI::GUILabel> lblContr;
-			NotNullPtr<UI::GUIHScrollBar> hsbContr;
-			NotNullPtr<UI::GUILabel> lblContrV;
-			NotNullPtr<UI::GUILabel> lblGamma;
-			NotNullPtr<UI::GUIHScrollBar> hsbGamma;
-			NotNullPtr<UI::GUILabel> lblGammaV;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
-			NotNullPtr<UI::GUIButton> btnLastValue;
+			NN<UI::GUILabel> lblBright;
+			NN<UI::GUIHScrollBar> hsbBright;
+			NN<UI::GUILabel> lblBrightV;
+			NN<UI::GUILabel> lblContr;
+			NN<UI::GUIHScrollBar> hsbContr;
+			NN<UI::GUILabel> lblContrV;
+			NN<UI::GUILabel> lblGamma;
+			NN<UI::GUIHScrollBar> hsbGamma;
+			NN<UI::GUILabel> lblGammaV;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
+			NN<UI::GUIButton> btnLastValue;
 
 			static void __stdcall OnColorChg(AnyType userObj, UOSInt newPos);
 			static void __stdcall OnOKClick(AnyType userObj);
 			static void __stdcall OnCancelClick(AnyType userObj);
 			static void __stdcall OnLastValueClick(AnyType userObj);
 		public:
-			AVIRImageColorForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<const Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg, NotNullPtr<UI::GUIPictureBoxDD> previewCtrl);
+			AVIRImageColorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<const Media::StaticImage> srcImg, NN<Media::StaticImage> destImg, NN<UI::GUIPictureBoxDD> previewCtrl);
 			virtual ~AVIRImageColorForm();
 
 			virtual void OnMonitorChanged();

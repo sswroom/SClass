@@ -6,12 +6,12 @@
 #include "SSWR/AVIRead/AVIRHQMPForm.h"
 #include "UI/GUICore.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Manage::ExceptionRecorder *exHdlr;
 	UI::GUICore *ui;
 	SSWR::AVIRead::AVIRHQMPForm *frm;
-	NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+	NN<SSWR::AVIRead::AVIRCore> core;
 
 //	MemSetBreakPoint(0x01088d78);
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(L"Error.log", Manage::ExceptionRecorder::EA_CLOSE));

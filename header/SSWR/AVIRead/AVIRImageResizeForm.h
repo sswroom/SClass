@@ -20,28 +20,28 @@ namespace SSWR
 		class AVIRImageResizeForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<Media::StaticImage> srcImg;
+			NN<Media::StaticImage> srcImg;
 			Media::StaticImage *outImg;
 
-			NotNullPtr<UI::GUILabel> lblOriW;
-			NotNullPtr<UI::GUITextBox> txtOriW;
-			NotNullPtr<UI::GUILabel> lblOriH;
-			NotNullPtr<UI::GUITextBox> txtOriH;
-			NotNullPtr<UI::GUILabel> lblOutW;
-			NotNullPtr<UI::GUITextBox> txtOutW;
-			NotNullPtr<UI::GUILabel> lblOutH;
-			NotNullPtr<UI::GUITextBox> txtOutH;
-			NotNullPtr<UI::GUILabel> lblNTap;
-			NotNullPtr<UI::GUITextBox> txtNTap;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUILabel> lblOriW;
+			NN<UI::GUITextBox> txtOriW;
+			NN<UI::GUILabel> lblOriH;
+			NN<UI::GUITextBox> txtOriH;
+			NN<UI::GUILabel> lblOutW;
+			NN<UI::GUITextBox> txtOutW;
+			NN<UI::GUILabel> lblOutH;
+			NN<UI::GUITextBox> txtOutH;
+			NN<UI::GUILabel> lblNTap;
+			NN<UI::GUITextBox> txtNTap;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			AVIRImageResizeForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::RasterImage *srcImg);
+			AVIRImageResizeForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::RasterImage *srcImg);
 			virtual ~AVIRImageResizeForm();
 
 			virtual void OnMonitorChanged();

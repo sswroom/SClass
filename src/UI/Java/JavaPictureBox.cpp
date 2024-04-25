@@ -11,7 +11,7 @@ void UI::Java::JavaPictureBox::UpdatePreview()
 {
 }
 
-UI::Java::JavaPictureBox::JavaPictureBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize) : UI::GUIPictureBox(ui, parent, eng, hasBorder, allowResize)
+UI::Java::JavaPictureBox::JavaPictureBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize) : UI::GUIPictureBox(ui, parent, eng, hasBorder, allowResize)
 {
 }
 

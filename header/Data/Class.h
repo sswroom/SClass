@@ -37,13 +37,14 @@ namespace Data
 		Bool AddField(Text::CStringNN name, const Int16 *val);
 		Bool AddField(Text::CStringNN name, const UInt32 *val);
 		Bool AddField(Text::CStringNN name, const Int32 *val);
+		Bool AddField(Text::CStringNN name, const NInt32 *val);
 		Bool AddField(Text::CStringNN name, const UInt64 *val);
 		Bool AddField(Text::CStringNN name, const Int64 *val);
 		Bool AddField(Text::CStringNN name, const Single *val);
 		Bool AddField(Text::CStringNN name, const Double *val);
 		Bool AddField(Text::CStringNN name, Text::String *const *val);
 		Bool AddField(Text::CStringNN name, const Optional<Text::String> *val);
-		Bool AddField(Text::CStringNN name, const NotNullPtr<Text::String> *val);
+		Bool AddField(Text::CStringNN name, const NN<Text::String> *val);
 		Bool AddField(Text::CStringNN name, const Data::Timestamp *val);
 		Bool AddField(Text::CStringNN name, const Data::Date *val);
 		Bool AddField(Text::CStringNN name, const Bool *val);

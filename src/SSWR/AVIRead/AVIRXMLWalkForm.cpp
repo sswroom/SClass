@@ -6,8 +6,8 @@
 
 void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnBrowseClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRXMLWalkForm> me = userObj.GetNN<SSWR::AVIRead::AVIRXMLWalkForm>();
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"XMLWalk", false);
+	NN<SSWR::AVIRead::AVIRXMLWalkForm> me = userObj.GetNN<SSWR::AVIRead::AVIRXMLWalkForm>();
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"XMLWalk", false);
 	dlg->SetAllowMultiSel(false);
 	dlg->AddFilter(CSTR("*.xml"), CSTR("XML File"));
 	dlg->AddFilter(CSTR("*.html"), CSTR("HTML File"));
@@ -18,9 +18,9 @@ void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnBrowseClick(AnyType userObj)
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> fileNames)
+void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> fileNames)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRXMLWalkForm> me = userObj.GetNN<SSWR::AVIRead::AVIRXMLWalkForm>();
+	NN<SSWR::AVIRead::AVIRXMLWalkForm> me = userObj.GetNN<SSWR::AVIRead::AVIRXMLWalkForm>();
 	if (fileNames.GetCount() > 0)
 	{
 		me->LoadFile(fileNames[0]->ToCString());
@@ -66,7 +66,7 @@ void SSWR::AVIRead::AVIRXMLWalkForm::LoadFile(Text::CStringNN fileName)
 	}
 }
 
-SSWR::AVIRead::AVIRXMLWalkForm::AVIRXMLWalkForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRXMLWalkForm::AVIRXMLWalkForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("XML Walk"));
 	this->SetFont(0, 0, 8.25, false);

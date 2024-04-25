@@ -32,7 +32,7 @@ Bool Exporter::GUIJPGExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 	return false;
 }
 
-Bool Exporter::GUIJPGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	UInt8 *tmpBuff;
 	GdkPixbuf *image = (GdkPixbuf*)ToImage(pobj, &tmpBuff);
@@ -43,7 +43,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 	Char cbuff[32];
 	gchar *buff = 0;
 	gsize buffSize;
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 
 	if (param.SetTo(para))
 	{
@@ -84,7 +84,7 @@ UOSInt Exporter::GUIJPGExporter::GetParamCnt()
 	return 1;
 }
 
-Optional<IO::FileExporter::ParamData> Exporter::GUIJPGExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
+Optional<IO::FileExporter::ParamData> Exporter::GUIJPGExporter::CreateParam(NN<IO::ParsedObject> pobj)
 {
 	Int32 *val = MemAlloc(Int32, 1);
 	*val = 100;
@@ -93,14 +93,14 @@ Optional<IO::FileExporter::ParamData> Exporter::GUIJPGExporter::CreateParam(NotN
 
 void Exporter::GUIJPGExporter::DeleteParam(Optional<ParamData> param)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (param.SetTo(para))
 	{
 		MemFree(para.Ptr());
 	}
 }
 
-Bool Exporter::GUIJPGExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> info)
+Bool Exporter::GUIJPGExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
 {
 	if (index == 0)
 	{
@@ -114,7 +114,7 @@ Bool Exporter::GUIJPGExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> 
 
 Bool Exporter::GUIJPGExporter::SetParamInt32(Optional<ParamData> param, UOSInt index, Int32 val)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
 	{
 		if (val >= 0 && val <= 100)
@@ -129,7 +129,7 @@ Bool Exporter::GUIJPGExporter::SetParamInt32(Optional<ParamData> param, UOSInt i
 
 Int32 Exporter::GUIJPGExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
 	{
 		return *(Int32*)para.Ptr();

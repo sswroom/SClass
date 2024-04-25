@@ -19,13 +19,13 @@ namespace Net
 				Transparent
 			};
 
-			typedef void (__stdcall *ReqHandler)(void *userObj, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
+			typedef void (__stdcall *ReqHandler)(void *userObj, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
 		private:
 			Data::ArrayListStringNN forwardAddrs;
 			Data::ArrayListStringNN injHeaders;
 			UOSInt nextURL;
 			Sync::Mutex mut;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 			Optional<Text::String> forceHost;
 			ForwardType fwdType;
@@ -34,15 +34,15 @@ namespace Net
 			IO::LogTool *log;
 			Bool logContent;
 
-			virtual Optional<Text::String> GetNextURL(NotNullPtr<Net::WebServer::IWebRequest> req);
+			virtual Optional<Text::String> GetNextURL(NN<Net::WebServer::IWebRequest> req);
 		public:
-			HTTPForwardHandler(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN forwardURL, ForwardType fwdType);
+			HTTPForwardHandler(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN forwardURL, ForwardType fwdType);
 			virtual ~HTTPForwardHandler();
 
-			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
+			virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 
 			void AddForwardURL(Text::CString url);
-			void AddInjectHeader(NotNullPtr<Text::String> header);
+			void AddInjectHeader(NN<Text::String> header);
 			void AddInjectHeader(Text::CString header);
 			void SetLog(IO::LogTool *log, Bool logContent);
 			void SetForceHost(Text::CString forceHost);

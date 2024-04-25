@@ -6,7 +6,7 @@
 
 UInt32 __stdcall IO::SNBProtocol::RecvThread(AnyType userObj)
 {
-	NotNullPtr<IO::SNBProtocol> me = userObj.GetNN<IO::SNBProtocol>();
+	NN<IO::SNBProtocol> me = userObj.GetNN<IO::SNBProtocol>();
 	UInt8 *recvBuff;
 	UOSInt buffSize;
 	UOSInt recvSize;
@@ -64,7 +64,7 @@ UInt32 __stdcall IO::SNBProtocol::RecvThread(AnyType userObj)
 	return 0;
 }
 
-IO::SNBProtocol::SNBProtocol(NotNullPtr<IO::Stream> stm, ProtocolHandler protoHdlr, AnyType userObj)
+IO::SNBProtocol::SNBProtocol(NN<IO::Stream> stm, ProtocolHandler protoHdlr, AnyType userObj)
 {
 	this->stm = stm;
 	this->protoHdlr = protoHdlr;

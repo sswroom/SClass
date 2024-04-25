@@ -61,7 +61,7 @@ namespace Net
 		void AddBuildMedia(Net::ISDPMedia *media);
 		Bool BuildBuff();
 
-		Bool WriteToStream(NotNullPtr<IO::Stream> stm);
+		Bool WriteToStream(NN<IO::Stream> stm);
 		UOSInt GetLength();
 
 		UOSInt GetMediaCount();

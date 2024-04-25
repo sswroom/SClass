@@ -8,10 +8,10 @@
 
 void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnRoadCenterlineClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISHKTrafficForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISHKTrafficForm>();
+	NN<SSWR::AVIRead::AVIRGISHKTrafficForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISHKTrafficForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtRoadCenterline->GetText(sb);
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HKTraffic", false);
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HKTraffic", false);
 	if (sb.GetLength() > 0)
 	{
 		dlg->SetFileName(sb.ToCString());
@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnRoadCenterlineClicked(AnyT
 
 void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISHKTrafficForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISHKTrafficForm>();
+	NN<SSWR::AVIRead::AVIRGISHKTrafficForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISHKTrafficForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtRoadCenterline->GetText(sb);
 	Map::MapDrawLayer *lyr;
@@ -61,11 +61,11 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnOKClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISHKTrafficForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISHKTrafficForm>();
+	NN<SSWR::AVIRead::AVIRGISHKTrafficForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISHKTrafficForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRGISHKTrafficForm::AVIRGISHKTrafficForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 120, ui)
+SSWR::AVIRead::AVIRGISHKTrafficForm::AVIRGISHKTrafficForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 120, ui)
 {
 	this->SetText(CSTR("Hong Kong Traffic"));
 	this->SetFont(0, 0, 8.25, false);

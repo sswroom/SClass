@@ -14,12 +14,12 @@ namespace SSWR
 			class AVIRMIMETextViewer : public AVIRMIMEViewer
 			{
 			private:
-				NotNullPtr<UI::GUITextBox> txtContent;
+				NN<UI::GUITextBox> txtContent;
 
 				Text::MIMEObj::TextMIMEObj *txt;
 
 			public:
-				AVIRMIMETextViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::MIMEObj::TextMIMEObj *txt);
+				AVIRMIMETextViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, Text::MIMEObj::TextMIMEObj *txt);
 				virtual ~AVIRMIMETextViewer();
 			};
 		}

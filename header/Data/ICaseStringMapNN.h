@@ -9,10 +9,10 @@ namespace Data
 	{
 	public:
 		ICaseStringMapNN();
-		ICaseStringMapNN(NotNullPtr<const ICaseStringMapNN<T>> map);
+		ICaseStringMapNN(NN<const ICaseStringMapNN<T>> map);
 		virtual ~ICaseStringMapNN();
 
-		virtual NotNullPtr<StringMapNN<T>> Clone() const;
+		virtual NN<StringMapNN<T>> Clone() const;
 	};
 
 
@@ -22,7 +22,7 @@ namespace Data
 		NEW_CLASS(this->keys, Data::ArrayListICaseString());
 	}
 
-	template <class T> ICaseStringMapNN<T>::ICaseStringMapNN(NotNullPtr<const ICaseStringMapNN<T>> map) : StringMapNN<T>()
+	template <class T> ICaseStringMapNN<T>::ICaseStringMapNN(NN<const ICaseStringMapNN<T>> map) : StringMapNN<T>()
 	{
 		DEL_CLASS(this->keys);
 		NEW_CLASS(this->keys, Data::ArrayListICaseString());
@@ -40,9 +40,9 @@ namespace Data
 	{
 	}
 
-	template <class T> NotNullPtr<StringMapNN<T>> ICaseStringMapNN<T>::Clone() const
+	template <class T> NN<StringMapNN<T>> ICaseStringMapNN<T>::Clone() const
 	{
-		NotNullPtr<ICaseStringMapNN<T>> ret;
+		NN<ICaseStringMapNN<T>> ret;
 		NEW_CLASSNN(ret, ICaseStringMapNN<T>(*this));
 		return ret;
 	}

@@ -3,9 +3,9 @@
 #include "Media/DrawEngineFactory.h"
 #include "Media/GTKDrawEngine.h"
 
-NotNullPtr<Media::DrawEngine> Media::DrawEngineFactory::CreateDrawEngine()
+NN<Media::DrawEngine> Media::DrawEngineFactory::CreateDrawEngine()
 {
-	NotNullPtr<Media::GTKDrawEngine> deng;
+	NN<Media::GTKDrawEngine> deng;
 	NEW_CLASSNN(deng, Media::GTKDrawEngine());
 	return deng;
 }

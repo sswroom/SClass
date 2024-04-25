@@ -20,14 +20,14 @@ Math::Geometry::Vector2D::VectorType Math::Geometry::Polyline::GetVectorType() c
 	return Math::Geometry::Vector2D::VectorType::Polyline;
 }
 
-NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::Polyline::Clone() const
+NN<Math::Geometry::Vector2D> Math::Geometry::Polyline::Clone() const
 {
-	NotNullPtr<Math::Geometry::Polyline> pl;
+	NN<Math::Geometry::Polyline> pl;
 	NEW_CLASSNN(pl, Math::Geometry::Polyline(this->srid));
-	Data::ArrayIterator<NotNullPtr<LineString>> it = this->geometries.Iterator();
+	Data::ArrayIterator<NN<LineString>> it = this->geometries.Iterator();
 	while (it.HasNext())
 	{
-		pl->AddGeometry(NotNullPtr<LineString>::ConvertFrom(it.Next()->Clone()));
+		pl->AddGeometry(NN<LineString>::ConvertFrom(it.Next()->Clone()));
 	}
 	pl->flags = this->flags;
 	pl->color = this->color;
@@ -36,7 +36,7 @@ NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::Polyline::Clone() const
 
 Double Math::Geometry::Polyline::CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const
 {
-	Data::ArrayIterator<NotNullPtr<Math::Geometry::LineString>> it = this->geometries.Iterator();
+	Data::ArrayIterator<NN<Math::Geometry::LineString>> it = this->geometries.Iterator();
 	if (!it.HasNext())
 	{
 		nearPt.Set(Math::Coord2DDbl(0, 0));
@@ -58,24 +58,24 @@ Double Math::Geometry::Polyline::CalBoundarySqrDistance(Math::Coord2DDbl pt, Out
 	return minDist;
 }
 
-Bool Math::Geometry::Polyline::JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec)
+Bool Math::Geometry::Polyline::JoinVector(NN<const Math::Geometry::Vector2D> vec)
 {
 	if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::Polyline || this->HasZ() != vec->HasZ() || this->HasM() != vec->HasM())
 	{
 		return false;
 	}
-	NotNullPtr<Math::Geometry::Polyline> pl = NotNullPtr<Math::Geometry::Polyline>::ConvertFrom(vec);
-	Data::ArrayIterator<NotNullPtr<LineString>> it = pl->Iterator();
+	NN<Math::Geometry::Polyline> pl = NN<Math::Geometry::Polyline>::ConvertFrom(vec);
+	Data::ArrayIterator<NN<LineString>> it = pl->Iterator();
 	while (it.HasNext())
 	{
-		this->AddGeometry(NotNullPtr<LineString>::ConvertFrom(it.Next()->Clone()));
+		this->AddGeometry(NN<LineString>::ConvertFrom(it.Next()->Clone()));
 	}
 	return true;
 }
 
 void Math::Geometry::Polyline::AddFromPtOfst(UInt32 *ptOfstList, UOSInt nPtOfst, Math::Coord2DDbl *pointList, UOSInt nPoint, Double *zList, Double *mList)
 {
-	NotNullPtr<LineString> lineString;
+	NN<LineString> lineString;
 	UOSInt i = 0;
 	UOSInt j;
 	UOSInt k;
@@ -111,7 +111,7 @@ void Math::Geometry::Polyline::AddFromPtOfst(UInt32 *ptOfstList, UOSInt nPtOfst,
 Double Math::Geometry::Polyline::CalcLength() const
 {
 	Double dist = 0;
-	Data::ArrayIterator<NotNullPtr<LineString>> it = this->Iterator();
+	Data::ArrayIterator<NN<LineString>> it = this->Iterator();
 	while (it.HasNext())
 	{
 		dist += it.Next()->CalcLength();
@@ -123,11 +123,11 @@ UOSInt Math::Geometry::Polyline::FillPointOfstList(Math::Coord2DDbl *pointList, 
 {
 	UOSInt totalCnt = 0;
 	UOSInt nPoint;
-	NotNullPtr<LineString> lineString;
+	NN<LineString> lineString;
 	Math::Coord2DDbl *thisPtList;
 	Double *dList;
 	UOSInt k;
-	Data::ArrayIterator<NotNullPtr<LineString>> it = this->geometries.Iterator();
+	Data::ArrayIterator<NN<LineString>> it = this->geometries.Iterator();
 	UOSInt i = 0;
 	while (it.HasNext())
 	{
@@ -159,10 +159,10 @@ UOSInt Math::Geometry::Polyline::FillPointOfstList(Math::Coord2DDbl *pointList, 
 
 Math::Coord2DDbl Math::Geometry::Polyline::CalcPosAtDistance(Double dist) const
 {
-	NotNullPtr<Math::Geometry::LineString> lineString;
+	NN<Math::Geometry::LineString> lineString;
 	Math::Coord2DDbl *points;
 	Math::Coord2DDbl lastPt = Math::Coord2DDbl(0, 0);
-	Data::ArrayIterator<NotNullPtr<LineString>> it = this->geometries.Iterator();
+	Data::ArrayIterator<NN<LineString>> it = this->geometries.Iterator();
 	UOSInt k;
 	UOSInt nPoint;
 	Math::Coord2DDbl diff;
@@ -206,12 +206,12 @@ Math::Geometry::Polyline *Math::Geometry::Polyline::SplitByPoint(Math::Coord2DDb
 	Bool isPoint;
 	UOSInt minId = (UOSInt)this->GetPointNo(pt, isPoint, calPt, calZ, calM);
 
-	NotNullPtr<Math::Geometry::LineString> lineString;
+	NN<Math::Geometry::LineString> lineString;
 	Math::Geometry::Polyline *newPL;
 	
 	if (minId == (UOSInt)-1)
 		return 0;
-	Data::ArrayIterator<NotNullPtr<LineString>> it = this->geometries.Iterator();
+	Data::ArrayIterator<NN<LineString>> it = this->geometries.Iterator();
 	UOSInt i = 0;
 	while (it.HasNext())
 	{
@@ -463,9 +463,9 @@ OSInt Math::Geometry::Polyline::GetPointNo(Math::Coord2DDbl pt, OptOut<Bool> isP
 	OSInt minId = -1;
 	Bool isPointI = false;
 
-	NotNullPtr<Math::Geometry::LineString> lineString;
+	NN<Math::Geometry::LineString> lineString;
 	UOSInt currId = 0;
-	Data::ArrayIterator<NotNullPtr<LineString>> it = this->geometries.Iterator();
+	Data::ArrayIterator<NN<LineString>> it = this->geometries.Iterator();
 	while (it.HasNext())
 	{
 		lineString = it.Next();

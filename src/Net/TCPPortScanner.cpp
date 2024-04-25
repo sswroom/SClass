@@ -7,7 +7,7 @@
 
 UInt32 __stdcall Net::TCPPortScanner::ScanThread(AnyType userObj)
 {
-	NotNullPtr<Net::TCPPortScanner> me = userObj.GetNN<Net::TCPPortScanner>();
+	NN<Net::TCPPortScanner> me = userObj.GetNN<Net::TCPPortScanner>();
 	Net::SocketUtil::AddressInfo addr;
 	OSInt i;
 	Socket *s;
@@ -73,7 +73,7 @@ UInt32 __stdcall Net::TCPPortScanner::ScanThread(AnyType userObj)
 	return 0;
 }
 
-Net::TCPPortScanner::TCPPortScanner(NotNullPtr<Net::SocketFactory> sockf, UOSInt threadCnt, PortUpdatedHandler hdlr, AnyType userObj)
+Net::TCPPortScanner::TCPPortScanner(NN<Net::SocketFactory> sockf, UOSInt threadCnt, PortUpdatedHandler hdlr, AnyType userObj)
 {
 	this->sockf = sockf;
 	this->portList = MemAlloc(UInt8, 65536);

@@ -19,8 +19,8 @@ namespace IO
 
 			virtual Text::CStringNN GetFormatName() = 0;
 			virtual UOSInt GetFrameCount() = 0;
-			virtual Bool GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
-			virtual Bool GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual Bool GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb) = 0;
+			virtual Bool GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst) = 0;
 			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index) = 0;
 
@@ -28,8 +28,8 @@ namespace IO
 			virtual Bool IsParsing() = 0;
 			virtual Bool TrimPadding(Text::CStringNN outputFile) = 0;
 
-			static Optional<IFileAnalyse> AnalyseFile(NotNullPtr<IO::StreamData> fd);
-			static void AddFilters(NotNullPtr<IO::FileSelector> selector);
+			static Optional<IFileAnalyse> AnalyseFile(NN<IO::StreamData> fd);
+			static void AddFilters(NN<IO::FileSelector> selector);
 		};
 	}
 }

@@ -11,12 +11,12 @@ namespace SSWR
 		class AVIRTableMsgForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIListView> lvTable;
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<UI::GUIListView> lvTable;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			UOSInt colCnt;
 
 		public:
-			AVIRTableMsgForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Text::CStringNN title, UOSInt colCnt, const UTF8Char **colName);
+			AVIRTableMsgForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::CStringNN title, UOSInt colCnt, const UTF8Char **colName);
 			virtual ~AVIRTableMsgForm();
 
 			virtual void OnMonitorChanged();

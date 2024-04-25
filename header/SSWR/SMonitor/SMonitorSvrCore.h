@@ -31,13 +31,13 @@ namespace SSWR
 				UInt8 *dataBuff;
 				UOSInt dataSize;
 				Int64 cliId;
-				NotNullPtr<SMonitorSvrCore> me;
+				NN<SMonitorSvrCore> me;
 				AnyType stmData;
 				Optional<DeviceInfo> dev;
 			} ClientStatus;
 
 		private:
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 			IO::LogTool log;
 			Net::TCPServer *cliSvr;
@@ -52,8 +52,8 @@ namespace SSWR
 			Net::WebServer::WebListener *listener;
 			Net::WebServer::HTTPDirectoryHandler *webHdlr;
 			Text::String *dataDir;
-			NotNullPtr<Media::DrawEngine> deng;
-			NotNullPtr<Parser::ParserList> parsers;
+			NN<Media::DrawEngine> deng;
+			NN<Parser::ParserList> parsers;
 			Bool initErr;
 
 			DB::DBTool *db;
@@ -71,75 +71,75 @@ namespace SSWR
 			IO::StringLogger uaLog;
 			IO::StringLogger refererLog;
 
-			static void __stdcall OnClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
-			static void __stdcall OnClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
-			static void __stdcall OnClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
+			static void __stdcall OnClientEvent(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
+			static void __stdcall OnClientData(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
+			static void __stdcall OnClientTimeout(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
 			static void __stdcall OnServerConn(Socket *s, AnyType userObj);
-			static void __stdcall CheckThread(NotNullPtr<Sync::Thread> thread);
-			static void __stdcall OnDataUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
-			static void __stdcall OnNotifyUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+			static void __stdcall CheckThread(NN<Sync::Thread> thread);
+			static void __stdcall OnDataUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+			static void __stdcall OnNotifyUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
 
-			virtual void DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-			virtual void DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize);
+			virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
+			virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize);
 
-			void NewNotify(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Timestamp ts, UInt8 type, UInt32 procId, Text::CString progName);
+			void NewNotify(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Timestamp ts, UInt8 type, UInt32 procId, Text::CString progName);
 
-			void TCPSendLoginReply(NotNullPtr<IO::Stream> stm, Int64 cliTime, Int64 svrTime, UInt8 status);
-			void TCPSendKAReply(NotNullPtr<IO::Stream> stm, Int64 cliTime, Int64 svrTime);
-			void TCPSendCapturePhoto(NotNullPtr<IO::Stream> stm);
-			void TCPSendPhotoEnd(NotNullPtr<IO::Stream> stm, Int64 photoTime);
-			void TCPSendSetOutput(NotNullPtr<IO::Stream> stm, UInt32 outputNum, Bool toHigh);
+			void TCPSendLoginReply(NN<IO::Stream> stm, Int64 cliTime, Int64 svrTime, UInt8 status);
+			void TCPSendKAReply(NN<IO::Stream> stm, Int64 cliTime, Int64 svrTime);
+			void TCPSendCapturePhoto(NN<IO::Stream> stm);
+			void TCPSendPhotoEnd(NN<IO::Stream> stm, Int64 photoTime);
+			void TCPSendSetOutput(NN<IO::Stream> stm, UInt32 outputNum, Bool toHigh);
 
-			void UDPSendReadingRecv(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Int64 recTime);
-			void UDPSendCapturePhoto(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port);
-			void UDPSendPhotoPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Int64 photoTime, UInt32 seq);
-			void UDPSendPhotoEnd(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Int64 photoTime);
-			void UDPSendSetOutput(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, UInt8 outputNum, Bool isHigh);
+			void UDPSendReadingRecv(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Int64 recTime);
+			void UDPSendCapturePhoto(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port);
+			void UDPSendPhotoPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Int64 photoTime, UInt32 seq);
+			void UDPSendPhotoEnd(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Int64 photoTime);
+			void UDPSendSetOutput(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, UInt8 outputNum, Bool isHigh);
 
 			void SaveDatas();
 			void SavePhoto(Int64 cliId, Int64 photoTime, Int32 photoFmt, UInt8 *photoBuff, UOSInt photoSize);
 
 			void LoadData();
-			DB::DBTool *UseDB(NotNullPtr<Sync::MutexUsage> mut);
+			DB::DBTool *UseDB(NN<Sync::MutexUsage> mut);
 			void UserPwdCalc(const UTF8Char *userName, const UTF8Char *pwd, UInt8 *buff);
 		public:
-			SMonitorSvrCore(NotNullPtr<IO::Writer> writer, NotNullPtr<Media::DrawEngine> deng);
+			SMonitorSvrCore(NN<IO::Writer> writer, NN<Media::DrawEngine> deng);
 			virtual ~SMonitorSvrCore();
 
 			Bool IsError();
-			virtual NotNullPtr<Media::DrawEngine> GetDrawEngine();
+			virtual NN<Media::DrawEngine> GetDrawEngine();
 
 			Optional<DeviceInfo> DevGet(Int64 cliId);
 			Optional<DeviceInfo> DevGetOrAdd(Int64 cliId);
 			Optional<DeviceInfo> DevAdd(Int64 cliId, Text::CString cpuName, Text::CString platformName);
-			Bool DeviceRecvReading(NotNullPtr<DeviceInfo> dev, Int64 cliTime, UOSInt nDigitals, UOSInt nReading, UOSInt nOutput, UInt32 digitalVals, ReadingInfo *readings, Int32 profileId, UInt32 cliIP, UInt16 port);
-			Bool DeviceKARecv(NotNullPtr<DeviceInfo> dev, Int64 kaTime);
-			Bool DeviceSetName(Int64 cliId, NotNullPtr<Text::String> devName);
-			Bool DeviceSetPlatform(Int64 cliId, NotNullPtr<Text::String> platformName);
-			Bool DeviceSetCPUName(Int64 cliId, NotNullPtr<Text::String> cpuName);
+			Bool DeviceRecvReading(NN<DeviceInfo> dev, Int64 cliTime, UOSInt nDigitals, UOSInt nReading, UOSInt nOutput, UInt32 digitalVals, ReadingInfo *readings, Int32 profileId, UInt32 cliIP, UInt16 port);
+			Bool DeviceKARecv(NN<DeviceInfo> dev, Int64 kaTime);
+			Bool DeviceSetName(Int64 cliId, NN<Text::String> devName);
+			Bool DeviceSetPlatform(Int64 cliId, NN<Text::String> platformName);
+			Bool DeviceSetCPUName(Int64 cliId, NN<Text::String> cpuName);
 			Bool DeviceSetReading(Int64 cliId, UInt32 index, UInt16 sensorId, UInt16 readingId, const UTF8Char *readingName);
 			Bool DeviceSetVersion(Int64 cliId, Int64 version);
 			virtual Optional<DeviceInfo> DeviceGet(Int64 cliId);
 			virtual Bool DeviceModify(Int64 cliId, Text::CString devName, Int32 flags);
-			virtual Bool DeviceSetReadings(NotNullPtr<DeviceInfo> dev, const UTF8Char *readings);
-			virtual Bool DeviceSetDigitals(NotNullPtr<DeviceInfo> dev, const UTF8Char *digitals);
-			virtual UOSInt DeviceQueryRec(Int64 cliId, Int64 startTime, Int64 endTime, NotNullPtr<Data::ArrayListNN<DevRecord2>> recList);
+			virtual Bool DeviceSetReadings(NN<DeviceInfo> dev, const UTF8Char *readings);
+			virtual Bool DeviceSetDigitals(NN<DeviceInfo> dev, const UTF8Char *digitals);
+			virtual UOSInt DeviceQueryRec(Int64 cliId, Int64 startTime, Int64 endTime, NN<Data::ArrayListNN<DevRecord2>> recList);
 			virtual Bool DeviceSetOutput(Int64 cliId, UInt32 outputNum, Bool toHigh);
 
 			virtual Bool UserExist();
 			virtual Bool UserAdd(const UTF8Char *userName, const UTF8Char *password, Int32 userType);
 			virtual Bool UserSetPassword(Int32 userId, const UTF8Char *password);
 			virtual Optional<LoginInfo> UserLogin(const UTF8Char *userName, const UTF8Char *password);
-			virtual void UserFreeLogin(NotNullPtr<LoginInfo> login);
-			virtual UOSInt UserGetDevices(Int32 userId, Int32 userType, NotNullPtr<Data::ArrayListNN<DeviceInfo>> devList);
+			virtual void UserFreeLogin(NN<LoginInfo> login);
+			virtual UOSInt UserGetDevices(Int32 userId, Int32 userType, NN<Data::ArrayListNN<DeviceInfo>> devList);
 			virtual Bool UserHasDevice(Int32 userId, Int32 userType, Int64 cliId);
-			virtual UOSInt UserGetList(NotNullPtr<Data::ArrayListNN<WebUser>> userList);
+			virtual UOSInt UserGetList(NN<Data::ArrayListNN<WebUser>> userList);
 			virtual Optional<WebUser> UserGet(Int32 userId);
-			virtual Bool UserAssign(Int32 userId, NotNullPtr<Data::ArrayList<Int64>> devIdList);
+			virtual Bool UserAssign(Int32 userId, NN<Data::ArrayList<Int64>> devIdList);
 
 			virtual Bool SendCapturePhoto(Int64 cliId);
 
-			virtual void LogRequest(NotNullPtr<Net::WebServer::IWebRequest> req);
+			virtual void LogRequest(NN<Net::WebServer::IWebRequest> req);
 
 			void UserAgentLog(const UTF8Char *userAgent, UOSInt len);
 			void UserAgentStore();

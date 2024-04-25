@@ -14,26 +14,26 @@ namespace UtilUI
 	{
 	private:
 		UI::GUITextFileView *txtView;
-		NotNullPtr<UI::GUIPanel> pnlStatus;
-		NotNullPtr<UI::GUITextBox> txtStatus;
-		NotNullPtr<UI::GUIMainMenu> mnuMain;
+		NN<UI::GUIPanel> pnlStatus;
+		NN<UI::GUITextBox> txtStatus;
+		NN<UI::GUIMainMenu> mnuMain;
 
 		UI::GUIForm *srchFrm;
 		Media::MonitorMgr *monMgr;
 		
-		static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+		static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 		static void __stdcall OnTextPosUpd(AnyType userObj, UInt32 textPosX, UOSInt textPosY);
-		static void __stdcall OnSearchClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm);
+		static void __stdcall OnSearchClosed(AnyType userObj, NN<UI::GUIForm> frm);
 	public:
-		TextViewerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, Media::MonitorMgr *monMgr, NotNullPtr<Media::DrawEngine> deng, UInt32 codePage);
+		TextViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, Media::MonitorMgr *monMgr, NN<Media::DrawEngine> deng, UInt32 codePage);
 		virtual ~TextViewerForm();
 
 		virtual void EventMenuClicked(UInt16 cmdId);
 		virtual void OnMonitorChanged();
 
 		Bool SearchText(Text::CString txt);
-		Bool LoadFile(NotNullPtr<Text::String> filePath);
-		Bool LoadStreamData(NotNullPtr<IO::StreamData> data);
+		Bool LoadFile(NN<Text::String> filePath);
+		Bool LoadStreamData(NN<IO::StreamData> data);
 		Bool OpenSearch(Text::CString txt);
 	};
 }

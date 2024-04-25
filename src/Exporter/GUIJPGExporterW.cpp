@@ -39,7 +39,7 @@ Bool Exporter::GUIJPGExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 	return false;
 }
 
-Bool Exporter::GUIJPGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 #ifdef _WIN32_WCE
 	return false;
@@ -68,7 +68,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 	IO::MemoryStream mstm;
 	{
 		Win32::COMStream cstm(mstm);
-		NotNullPtr<ParamData> para;
+		NN<ParamData> para;
 
 		if (param.SetTo(para))
 		{
@@ -96,16 +96,16 @@ Bool Exporter::GUIJPGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 		return false;
 	}
 	Media::RasterImage *srcImg = 0;
-	NotNullPtr<Media::ImageList> imgList;
+	NN<Media::ImageList> imgList;
 	UInt8 *jpgBuff;
 	UOSInt jpgSize;
 	if (pobj->GetParserType() == IO::ParserType::ImageList)
 	{
-		imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
+		imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 		srcImg = imgList->GetImage(0, 0);
 	}
 	jpgBuff = mstm.GetBuff(jpgSize);
-	NotNullPtr<Media::EXIFData> exif;
+	NN<Media::EXIFData> exif;
 	if (srcImg != 0 && srcImg->exif.SetTo(exif) && jpgBuff[0] == 0xff && jpgBuff[1] == 0xd8)
 	{
 		UOSInt i;
@@ -209,7 +209,7 @@ UOSInt Exporter::GUIJPGExporter::GetParamCnt()
 	return 1;
 }
 
-Optional<IO::FileExporter::ParamData> Exporter::GUIJPGExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
+Optional<IO::FileExporter::ParamData> Exporter::GUIJPGExporter::CreateParam(NN<IO::ParsedObject> pobj)
 {
 	Int32 *val = MemAlloc(Int32, 1);
 	*val = 100;
@@ -218,14 +218,14 @@ Optional<IO::FileExporter::ParamData> Exporter::GUIJPGExporter::CreateParam(NotN
 
 void Exporter::GUIJPGExporter::DeleteParam(Optional<ParamData> param)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (param.SetTo(para))
 	{
 		MemFree(para.Ptr());
 	}
 }
 
-Bool Exporter::GUIJPGExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> info)
+Bool Exporter::GUIJPGExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
 {
 	if (index == 0)
 	{
@@ -239,7 +239,7 @@ Bool Exporter::GUIJPGExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> 
 
 Bool Exporter::GUIJPGExporter::SetParamInt32(Optional<ParamData> param, UOSInt index, Int32 val)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
 	{
 		if (val >= 0 && val <= 100)
@@ -254,7 +254,7 @@ Bool Exporter::GUIJPGExporter::SetParamInt32(Optional<ParamData> param, UOSInt i
 
 Int32 Exporter::GUIJPGExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
 	{
 		return *(Int32*)para.Ptr();

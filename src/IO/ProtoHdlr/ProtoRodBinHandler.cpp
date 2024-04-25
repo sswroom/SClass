@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/ProtoHdlr/ProtoRodBinHandler.h"
 
-IO::ProtoHdlr::ProtoRodBinHandler::ProtoRodBinHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener)
+IO::ProtoHdlr::ProtoRodBinHandler::ProtoRodBinHandler(NN<IO::IProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
 }
@@ -11,16 +11,16 @@ IO::ProtoHdlr::ProtoRodBinHandler::~ProtoRodBinHandler()
 {
 }
 
-void *IO::ProtoHdlr::ProtoRodBinHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
+void *IO::ProtoHdlr::ProtoRodBinHandler::CreateStreamData(NN<IO::Stream> stm)
 {
 	return 0;
 }
 
-void IO::ProtoHdlr::ProtoRodBinHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, void *stmData)
+void IO::ProtoHdlr::ProtoRodBinHandler::DeleteStreamData(NN<IO::Stream> stm, void *stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoRodBinHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &srcBuff)
+UOSInt IO::ProtoHdlr::ProtoRodBinHandler::ParseProtocol(NN<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &srcBuff)
 {
 	Bool found;
 	Data::ByteArrayR buff = srcBuff;

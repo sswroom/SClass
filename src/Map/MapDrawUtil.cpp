@@ -2,18 +2,18 @@
 #include "Map/MapDrawUtil.h"
 #include "Math/Geometry/CompoundCurve.h"
 
-Bool Map::MapDrawUtil::DrawPoint(NotNullPtr<Math::Geometry::Point> pt, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
+Bool Map::MapDrawUtil::DrawPoint(NN<Math::Geometry::Point> pt, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
 	Math::Coord2DDbl coord = view->MapXYToScnXY(pt->GetCenter()) + ofst;
-	NotNullPtr<Media::DrawBrush> b2 = img->NewBrushARGB(0xffff0000);
+	NN<Media::DrawBrush> b2 = img->NewBrushARGB(0xffff0000);
 	img->DrawRect(coord - 8, Math::Size2DDbl(17, 17), 0, b2);
 	img->DelBrush(b2);
 	return true;
 }
 
-Bool Map::MapDrawUtil::DrawLineString(NotNullPtr<Math::Geometry::LineString> pl, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
+Bool Map::MapDrawUtil::DrawLineString(NN<Math::Geometry::LineString> pl, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
-	NotNullPtr<Media::DrawPen> nnp;
+	NN<Media::DrawPen> nnp;
 	if (!p.SetTo(nnp))
 		return false;
 	UOSInt nPoint;
@@ -25,16 +25,16 @@ Bool Map::MapDrawUtil::DrawLineString(NotNullPtr<Math::Geometry::LineString> pl,
 	return true;
 }
 
-Bool Map::MapDrawUtil::DrawPolyline(NotNullPtr<Math::Geometry::Polyline> pl, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
+Bool Map::MapDrawUtil::DrawPolyline(NN<Math::Geometry::Polyline> pl, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
-	NotNullPtr<Media::DrawPen> nnp;
+	NN<Media::DrawPen> nnp;
 	if (!p.SetTo(nnp))
 		return false;
-	NotNullPtr<Math::Geometry::LineString> lineString;
+	NN<Math::Geometry::LineString> lineString;
 	UOSInt nPoint;
 	UOSInt dpointsSize = 0;
 	Math::Coord2DDbl *dpoints = 0;
-	Data::ArrayIterator<NotNullPtr<Math::Geometry::LineString>> it = pl->Iterator();
+	Data::ArrayIterator<NN<Math::Geometry::LineString>> it = pl->Iterator();
 	while (it.HasNext())
 	{
 		lineString = it.Next();
@@ -56,7 +56,7 @@ Bool Map::MapDrawUtil::DrawPolyline(NotNullPtr<Math::Geometry::Polyline> pl, Not
 	return true;
 }
 
-Bool Map::MapDrawUtil::DrawLinearRing(NotNullPtr<Math::Geometry::LinearRing> lr, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
+Bool Map::MapDrawUtil::DrawLinearRing(NN<Math::Geometry::LinearRing> lr, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
 	UOSInt nPoint;
 	Math::Coord2DDbl *points = lr->GetPointList(nPoint);
@@ -67,17 +67,17 @@ Bool Map::MapDrawUtil::DrawLinearRing(NotNullPtr<Math::Geometry::LinearRing> lr,
 	return true;
 }
 
-Bool Map::MapDrawUtil::DrawPolygon(NotNullPtr<Math::Geometry::Polygon> pg, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
+Bool Map::MapDrawUtil::DrawPolygon(NN<Math::Geometry::Polygon> pg, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
 	UOSInt nPoint = pg->GetPointCount();
 	UOSInt k;
 	Math::Coord2DDbl *points;
 	Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
-	NotNullPtr<Math::Geometry::LinearRing> lr;
+	NN<Math::Geometry::LinearRing> lr;
 	UOSInt nPtOfst = pg->GetCount();
 	UInt32 *myPtCnts = MemAlloc(UInt32, nPtOfst);
 
-	Data::ArrayIterator<NotNullPtr<Math::Geometry::LinearRing>> it = pg->Iterator();
+	Data::ArrayIterator<NN<Math::Geometry::LinearRing>> it = pg->Iterator();
 	UOSInt i = 0;
 	UOSInt j = 0;
 	while (it.HasNext())
@@ -96,10 +96,10 @@ Bool Map::MapDrawUtil::DrawPolygon(NotNullPtr<Math::Geometry::Polygon> pg, NotNu
 	return true;
 }
 
-Bool Map::MapDrawUtil::DrawMultiPolygon(NotNullPtr<Math::Geometry::MultiPolygon> mpg, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
+Bool Map::MapDrawUtil::DrawMultiPolygon(NN<Math::Geometry::MultiPolygon> mpg, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
 	Bool succ = false;
-	NotNullPtr<Math::Geometry::Polygon> pg;
+	NN<Math::Geometry::Polygon> pg;
 	UOSInt i = mpg->GetCount();
 	while (i-- > 0)
 	{
@@ -111,10 +111,10 @@ Bool Map::MapDrawUtil::DrawMultiPolygon(NotNullPtr<Math::Geometry::MultiPolygon>
 	return succ;
 }
 
-Bool Map::MapDrawUtil::DrawMultiSurface(NotNullPtr<Math::Geometry::MultiSurface> ms, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
+Bool Map::MapDrawUtil::DrawMultiSurface(NN<Math::Geometry::MultiSurface> ms, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
 	Bool succ = false;
-	NotNullPtr<Math::Geometry::Vector2D> vec;
+	NN<Math::Geometry::Vector2D> vec;
 	UOSInt pgInd = ms->GetCount();
 	while (pgInd-- > 0)
 	{
@@ -126,25 +126,25 @@ Bool Map::MapDrawUtil::DrawMultiSurface(NotNullPtr<Math::Geometry::MultiSurface>
 	return succ;
 }
 
-Bool Map::MapDrawUtil::DrawCurvePolygon(NotNullPtr<Math::Geometry::CurvePolygon> cp, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
+Bool Map::MapDrawUtil::DrawCurvePolygon(NN<Math::Geometry::CurvePolygon> cp, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
 	Data::ArrayList<UInt32> ptOfst;
 	Data::ArrayListA<Math::Coord2DDbl> ptList;
 	UOSInt nPoint;
-	NotNullPtr<Math::Geometry::Vector2D> vec;
-	Data::ArrayIterator<NotNullPtr<Math::Geometry::Vector2D>> it = cp->Iterator();
+	NN<Math::Geometry::Vector2D> vec;
+	Data::ArrayIterator<NN<Math::Geometry::Vector2D>> it = cp->Iterator();
 	while (it.HasNext())
 	{
 		vec = it.Next();
 		if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::CompoundCurve)
 		{
 			ptOfst.Add((UInt32)ptList.GetCount());
-			NotNullPtr<Math::Geometry::CompoundCurve>::ConvertFrom(vec)->GetDrawPoints(ptList);
+			NN<Math::Geometry::CompoundCurve>::ConvertFrom(vec)->GetDrawPoints(ptList);
 		}
 		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::LineString)
 		{
 			ptOfst.Add((UInt32)ptList.GetCount());
-			const Math::Coord2DDbl *ptArr = NotNullPtr<Math::Geometry::LineString>::ConvertFrom(vec)->GetPointListRead(nPoint);
+			const Math::Coord2DDbl *ptArr = NN<Math::Geometry::LineString>::ConvertFrom(vec)->GetPointListRead(nPoint);
 			ptList.AddRange(ptArr, nPoint);
 		}
 		else
@@ -177,10 +177,10 @@ Bool Map::MapDrawUtil::DrawCurvePolygon(NotNullPtr<Math::Geometry::CurvePolygon>
 	return false;
 }
 
-Bool Map::MapDrawUtil::DrawGeometryCollection(NotNullPtr<Math::Geometry::GeometryCollection> geomColl, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
+Bool Map::MapDrawUtil::DrawGeometryCollection(NN<Math::Geometry::GeometryCollection> geomColl, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
 	Bool succ = false;
-	NotNullPtr<Math::Geometry::Vector2D> vec;
+	NN<Math::Geometry::Vector2D> vec;
 	UOSInt pgInd = geomColl->GetCount();
 	while (pgInd-- > 0)
 	{
@@ -192,7 +192,7 @@ Bool Map::MapDrawUtil::DrawGeometryCollection(NotNullPtr<Math::Geometry::Geometr
 	return succ;
 }
 
-Bool Map::MapDrawUtil::DrawEllipse(NotNullPtr<Math::Geometry::Ellipse> circle, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
+Bool Map::MapDrawUtil::DrawEllipse(NN<Math::Geometry::Ellipse> circle, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
 	Math::Coord2DDbl bl = view->MapXYToScnXY(circle->GetTL());
 	Math::Coord2DDbl tr = view->MapXYToScnXY(circle->GetBR());
@@ -200,7 +200,7 @@ Bool Map::MapDrawUtil::DrawEllipse(NotNullPtr<Math::Geometry::Ellipse> circle, N
 	return true;
 }
 
-Bool Map::MapDrawUtil::DrawVectorImage(NotNullPtr<Math::Geometry::VectorImage> vimg, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
+Bool Map::MapDrawUtil::DrawVectorImage(NN<Math::Geometry::VectorImage> vimg, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
 	UInt32 nPoints;
 	Math::Coord2DDbl pts[5];
@@ -236,7 +236,7 @@ Bool Map::MapDrawUtil::DrawVectorImage(NotNullPtr<Math::Geometry::VectorImage> v
 }
 
 /*
-Bool Map::MapDrawUtil::DrawPieArea(NotNullPtr<Math::Geometry::PieArea> pieArea, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Media::DrawPen *p, Math::Coord2DDbl ofst)
+Bool Map::MapDrawUtil::DrawPieArea(NN<Math::Geometry::PieArea> pieArea, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Media::DrawPen *p, Math::Coord2DDbl ofst)
 {
 	BITMAPINFOHEADER bmih;
 	bmih.biSize = sizeof(bmih);
@@ -319,33 +319,33 @@ Bool Map::MapDrawUtil::DrawPieArea(NotNullPtr<Math::Geometry::PieArea> pieArea, 
 	DeleteDC(hdcBmp);
 }*/
 
-Bool Map::MapDrawUtil::DrawVector(NotNullPtr<Math::Geometry::Vector2D> vec, NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
+Bool Map::MapDrawUtil::DrawVector(NN<Math::Geometry::Vector2D> vec, NN<Media::DrawImage> img, NN<Map::MapView> view, Optional<Media::DrawBrush> b, Optional<Media::DrawPen> p, Math::Coord2DDbl ofst)
 {
 	Math::Geometry::Vector2D::VectorType vecType = vec->GetVectorType();
 	switch (vecType)
 	{
 	case Math::Geometry::Vector2D::VectorType::Point:
-		return DrawPoint(NotNullPtr<Math::Geometry::Point>::ConvertFrom(vec), img, view, b, p, ofst);
+		return DrawPoint(NN<Math::Geometry::Point>::ConvertFrom(vec), img, view, b, p, ofst);
 	case Math::Geometry::Vector2D::VectorType::Image:
-		return DrawVectorImage(NotNullPtr<Math::Geometry::VectorImage>::ConvertFrom(vec), img, view, b, p, ofst);
+		return DrawVectorImage(NN<Math::Geometry::VectorImage>::ConvertFrom(vec), img, view, b, p, ofst);
 	case Math::Geometry::Vector2D::VectorType::Polyline:
-		return DrawPolyline(NotNullPtr<Math::Geometry::Polyline>::ConvertFrom(vec), img, view, b, p, ofst);
+		return DrawPolyline(NN<Math::Geometry::Polyline>::ConvertFrom(vec), img, view, b, p, ofst);
 	case Math::Geometry::Vector2D::VectorType::LineString:
-		return DrawLineString(NotNullPtr<Math::Geometry::LineString>::ConvertFrom(vec), img, view, b, p, ofst);
+		return DrawLineString(NN<Math::Geometry::LineString>::ConvertFrom(vec), img, view, b, p, ofst);
 	case Math::Geometry::Vector2D::VectorType::Polygon:
-		return DrawPolygon(NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(vec), img, view, b, p, ofst);
+		return DrawPolygon(NN<Math::Geometry::Polygon>::ConvertFrom(vec), img, view, b, p, ofst);
 	case Math::Geometry::Vector2D::VectorType::MultiPolygon:
-		return DrawMultiPolygon(NotNullPtr<Math::Geometry::MultiPolygon>::ConvertFrom(vec), img, view, b, p, ofst);
+		return DrawMultiPolygon(NN<Math::Geometry::MultiPolygon>::ConvertFrom(vec), img, view, b, p, ofst);
 	case Math::Geometry::Vector2D::VectorType::GeometryCollection:
-		return DrawGeometryCollection(NotNullPtr<Math::Geometry::GeometryCollection>::ConvertFrom(vec), img, view, b, p, ofst);
+		return DrawGeometryCollection(NN<Math::Geometry::GeometryCollection>::ConvertFrom(vec), img, view, b, p, ofst);
 	case Math::Geometry::Vector2D::VectorType::MultiSurface:
-		return DrawMultiSurface(NotNullPtr<Math::Geometry::MultiSurface>::ConvertFrom(vec), img, view, b, p, ofst);
+		return DrawMultiSurface(NN<Math::Geometry::MultiSurface>::ConvertFrom(vec), img, view, b, p, ofst);
 	case Math::Geometry::Vector2D::VectorType::CurvePolygon:
-		return DrawCurvePolygon(NotNullPtr<Math::Geometry::CurvePolygon>::ConvertFrom(vec), img, view, b, p, ofst);
+		return DrawCurvePolygon(NN<Math::Geometry::CurvePolygon>::ConvertFrom(vec), img, view, b, p, ofst);
 	case Math::Geometry::Vector2D::VectorType::Ellipse:
-		return DrawEllipse(NotNullPtr<Math::Geometry::Ellipse>::ConvertFrom(vec), img, view, b, p, ofst);
+		return DrawEllipse(NN<Math::Geometry::Ellipse>::ConvertFrom(vec), img, view, b, p, ofst);
 	case Math::Geometry::Vector2D::VectorType::LinearRing:
-		return DrawLinearRing(NotNullPtr<Math::Geometry::LinearRing>::ConvertFrom(vec), img, view, b, p, ofst);
+		return DrawLinearRing(NN<Math::Geometry::LinearRing>::ConvertFrom(vec), img, view, b, p, ofst);
 	case Math::Geometry::Vector2D::VectorType::MultiPoint:
 	case Math::Geometry::Vector2D::VectorType::CircularString:
 	case Math::Geometry::Vector2D::VectorType::CompoundCurve:

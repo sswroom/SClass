@@ -31,9 +31,9 @@ IO::FileAnalyse::IFileAnalyse::~IFileAnalyse()
 {
 }
 
-Bool IO::FileAnalyse::IFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::IFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	if (!this->GetFrameDetail(index).SetTo(frame))
 	{
 		return false;
@@ -43,12 +43,12 @@ Bool IO::FileAnalyse::IFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Text
 	return true;
 }
 
-Optional<IO::FileAnalyse::IFileAnalyse> IO::FileAnalyse::IFileAnalyse::AnalyseFile(NotNullPtr<IO::StreamData> fd)
+Optional<IO::FileAnalyse::IFileAnalyse> IO::FileAnalyse::IFileAnalyse::AnalyseFile(NN<IO::StreamData> fd)
 {
 	UInt8 buff[256];
 	UOSInt buffSize;
-	NotNullPtr<IO::FileAnalyse::IFileAnalyse> analyse;
-	NotNullPtr<Text::String> fileName = fd->GetFullFileName();
+	NN<IO::FileAnalyse::IFileAnalyse> analyse;
+	NN<Text::String> fileName = fd->GetFullFileName();
 	buffSize = fd->GetRealData(0, 256, BYTEARR(buff));
 	if (buffSize >= 4 && ReadMInt32(&buff[0]) == 0x000001ba)
 	{
@@ -179,7 +179,7 @@ Optional<IO::FileAnalyse::IFileAnalyse> IO::FileAnalyse::IFileAnalyse::AnalyseFi
 	return analyse;
 }
 
-void IO::FileAnalyse::IFileAnalyse::AddFilters(NotNullPtr<IO::FileSelector> selector)
+void IO::FileAnalyse::IFileAnalyse::AddFilters(NN<IO::FileSelector> selector)
 {
 	selector->AddFilter(CSTR("*.mpg"), CSTR("MPEG System Stream"));
 	selector->AddFilter(CSTR("*.avi"), CSTR("RIFF AVI"));

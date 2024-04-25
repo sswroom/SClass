@@ -18,13 +18,13 @@ namespace UI
 			static void SignalSwitchPage(GtkNotebook *notebook, GtkWidget *page, guint page_num, gpointer user_data);
 			static gboolean SignalShown(gpointer user_data);
 		public:
-			GTKTabControl(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
+			GTKTabControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 			virtual ~GTKTabControl();
 
-			virtual NotNullPtr<GUITabPage> AddTabPage(NotNullPtr<Text::String> itemText);
-			virtual NotNullPtr<GUITabPage> AddTabPage(Text::CStringNN itemText);
+			virtual NN<GUITabPage> AddTabPage(NN<Text::String> itemText);
+			virtual NN<GUITabPage> AddTabPage(Text::CStringNN itemText);
 			virtual void SetSelectedIndex(UOSInt index);
-			virtual void SetSelectedPage(NotNullPtr<GUITabPage> page);
+			virtual void SetSelectedPage(NN<GUITabPage> page);
 			virtual UOSInt GetSelectedIndex();
 			virtual Optional<GUITabPage> GetSelectedPage();
 			virtual void SetTabPageName(UOSInt index, Text::CStringNN name);

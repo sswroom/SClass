@@ -3,7 +3,7 @@
 #include "IO/OneWireGPIO.h"
 #include "Sync/SimpleThread.h"
 
-IO::OneWireGPIO::OneWireGPIO(NotNullPtr<IO::IOPin> pin)
+IO::OneWireGPIO::OneWireGPIO(NN<IO::IOPin> pin)
 {
 	this->pin = pin;
 }

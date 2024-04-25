@@ -33,40 +33,40 @@ namespace SSWR
 				UInt16 port;
 			} PacketInfo;
 		private:
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUICheckBox> chkReuseAddr;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUICheckBox> chkReuseAddr;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpData;
-			NotNullPtr<UI::GUIListBox> lbData;
-			NotNullPtr<UI::GUIHSplitter> hspData;
-			NotNullPtr<UI::GUITextBox> txtData;
+			NN<UI::GUITabPage> tpData;
+			NN<UI::GUIListBox> lbData;
+			NN<UI::GUIHSplitter> hspData;
+			NN<UI::GUITextBox> txtData;
 
-			NotNullPtr<UI::GUITabPage> tpLog;
-			NotNullPtr<UI::GUITextBox> txtLog;
-			NotNullPtr<UI::GUIListBox> lbLog;
+			NN<UI::GUITabPage> tpLog;
+			NN<UI::GUITextBox> txtLog;
+			NN<UI::GUIListBox> lbLog;
 
-			NotNullPtr<UI::GUITabPage> tpPorts;
-			NotNullPtr<UI::GUIListView> lvPorts;
+			NN<UI::GUITabPage> tpPorts;
+			NN<UI::GUIListView> lvPorts;
 
-			NotNullPtr<UI::GUITabPage> tpMulticast;
-			NotNullPtr<UI::GUIPanel> pnlMulticastCommon;
-			NotNullPtr<UI::GUILabel> lblMulticastCommon;
-			NotNullPtr<UI::GUIListBox> lbMulticastCommon;
-			NotNullPtr<UI::GUIHSplitter> hspMulticast;
-			NotNullPtr<UI::GUIPanel> pnlMulticast;
-			NotNullPtr<UI::GUIPanel> pnlMulticastCtrl;
-			NotNullPtr<UI::GUILabel> lblMulticastCurr;
-			NotNullPtr<UI::GUITextBox> txtMulticastCurr;
-			NotNullPtr<UI::GUIButton> btnMulticastAdd;
-			NotNullPtr<UI::GUIListBox> lbMulticastCurr;
+			NN<UI::GUITabPage> tpMulticast;
+			NN<UI::GUIPanel> pnlMulticastCommon;
+			NN<UI::GUILabel> lblMulticastCommon;
+			NN<UI::GUIListBox> lbMulticastCommon;
+			NN<UI::GUIHSplitter> hspMulticast;
+			NN<UI::GUIPanel> pnlMulticast;
+			NN<UI::GUIPanel> pnlMulticastCtrl;
+			NN<UI::GUILabel> lblMulticastCurr;
+			NN<UI::GUITextBox> txtMulticastCurr;
+			NN<UI::GUIButton> btnMulticastAdd;
+			NN<UI::GUIListBox> lbMulticastCurr;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::LogTool log;
-			NotNullPtr<UI::ListBoxLogger> logger;
+			NN<UI::ListBoxLogger> logger;
 			Net::UDPServer *svr;
 
 			Bool packetsChg;
@@ -79,11 +79,11 @@ namespace SSWR
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnDataSelChg(AnyType userObj);
 			static void __stdcall OnPortsDblClk(AnyType userObj, UOSInt index);
-			static void __stdcall OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+			static void __stdcall OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
 			static void __stdcall OnMulticastClicked(AnyType userObj);
 			static void __stdcall OnMulticastDoubleClk(AnyType userObj);
 		public:
-			AVIRUDPCaptureForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRUDPCaptureForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRUDPCaptureForm();
 
 			virtual void OnMonitorChanged();

@@ -5,7 +5,7 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/SimpleThread.h"
 
-Media::VOBLPCMStreamSource::VOBLPCMStreamSource(NotNullPtr<Media::IStreamControl> pbc, NotNullPtr<const Media::AudioFormat> fmt)
+Media::VOBLPCMStreamSource::VOBLPCMStreamSource(NN<Media::IStreamControl> pbc, NN<const Media::AudioFormat> fmt)
 {
 	this->pbc = pbc;
 	this->fmt.FromAudioFormat(fmt);
@@ -53,7 +53,7 @@ Bool Media::VOBLPCMStreamSource::TrimStream(UInt32 trimTimeStart, UInt32 trimTim
 	return false;
 }
 
-void Media::VOBLPCMStreamSource::GetFormat(NotNullPtr<Media::AudioFormat> format)
+void Media::VOBLPCMStreamSource::GetFormat(NN<Media::AudioFormat> format)
 {
 	format->FromAudioFormat(this->fmt);
 }

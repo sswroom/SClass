@@ -63,7 +63,7 @@ void Net::ASN1MIB::ModuleAppendOID(NN<Net::ASN1MIB::ModuleInfo> module, NN<Objec
 	module->oidList.Insert((UOSInt)i, obj);
 }
 
-Bool Net::ASN1MIB::ParseObjectOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, Text::String *oriS, NotNullPtr<Text::StringBuilderUTF8> errMessage)
+Bool Net::ASN1MIB::ParseObjectOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, Text::String *oriS, NN<Text::StringBuilderUTF8> errMessage)
 {
 	const UTF8Char *csptr = oriS->v;
 	const UTF8Char *csptrEnd = oriS->GetEndPtr();
@@ -368,7 +368,7 @@ Bool Net::ASN1MIB::ParseObjectOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, Tex
 	return true;
 }
 
-Bool Net::ASN1MIB::ParseObjectBegin(NN<Net::MIBReader> reader, Optional<ObjectInfo> obj, NotNullPtr<Text::StringBuilderUTF8> errMessage)
+Bool Net::ASN1MIB::ParseObjectBegin(NN<Net::MIBReader> reader, Optional<ObjectInfo> obj, NN<Text::StringBuilderUTF8> errMessage)
 {
 	Text::StringBuilderUTF8 sb;
 	while (true)
@@ -394,7 +394,7 @@ Bool Net::ASN1MIB::ParseObjectBegin(NN<Net::MIBReader> reader, Optional<ObjectIn
 	}
 }
 
-Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module, NotNullPtr<Text::StringBuilderUTF8> errMessage)
+Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module, NN<Text::StringBuilderUTF8> errMessage)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
@@ -1005,7 +1005,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 									}
 								}
 								NEW_CLASSNN(impObj, ObjectInfo());
-								NotNullPtr<Text::String> s = Text::String::New(impSarr[0].v, impSarr[0].leng);
+								NN<Text::String> s = Text::String::New(impSarr[0].v, impSarr[0].leng);
 								impObj->objectName = s.Ptr();
 								impObj->typeName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 								impObj->typeVal = Text::String::New(UTF8STRC("Imported Value")).Ptr();
@@ -1183,7 +1183,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 							k = l;
 						}
 						NEW_CLASSNN(obj, ObjectInfo());
-						NotNullPtr<Text::String> s = Text::String::New(sb.ToString(), k);
+						NN<Text::String> s = Text::String::New(sb.ToString(), k);
 						obj->objectName = s.Ptr();
 						if (j > k)
 						{
@@ -1406,7 +1406,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 						}
 
 						NEW_CLASSNN(obj, ObjectInfo());
-						NotNullPtr<Text::String> s = Text::String::New(sb.ToString(), (UOSInt)i);
+						NN<Text::String> s = Text::String::New(sb.ToString(), (UOSInt)i);
 						obj->objectName = s.Ptr();
 						while (sb.ToString()[i] == ' ' || sb.ToString()[i] == '\t')
 						{
@@ -1473,7 +1473,7 @@ Bool Net::ASN1MIB::ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module,
 	}
 }
 
-Bool Net::ASN1MIB::ApplyModuleOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, NotNullPtr<Text::StringBuilderUTF8> errMessage)
+Bool Net::ASN1MIB::ApplyModuleOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, NN<Text::StringBuilderUTF8> errMessage)
 {
 	Bool valid = false;
 	if (obj->parsed)
@@ -1567,7 +1567,7 @@ Bool Net::ASN1MIB::ApplyModuleOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, Not
 	return true;
 }
 
-Bool Net::ASN1MIB::ApplyModuleOIDs(NN<ModuleInfo> module, NotNullPtr<Text::StringBuilderUTF8> errMessage)
+Bool Net::ASN1MIB::ApplyModuleOIDs(NN<ModuleInfo> module, NN<Text::StringBuilderUTF8> errMessage)
 {
 	NN<Data::ArrayListNN<ObjectInfo>> objList = module->objValues;
 	NN<ObjectInfo> obj;
@@ -1585,7 +1585,7 @@ Bool Net::ASN1MIB::ApplyModuleOIDs(NN<ModuleInfo> module, NotNullPtr<Text::Strin
 	return true;
 }
 
-Bool Net::ASN1MIB::ApplyOIDs(NotNullPtr<Text::StringBuilderUTF8> errMessage)
+Bool Net::ASN1MIB::ApplyOIDs(NN<Text::StringBuilderUTF8> errMessage)
 {
 	UOSInt i = this->moduleMap.GetCount();
 	while (i-- > 0)
@@ -1660,7 +1660,7 @@ Bool Net::ASN1MIB::ApplyOIDs(NotNullPtr<Text::StringBuilderUTF8> errMessage)
 	return true;
 }*/
 
-Bool Net::ASN1MIB::ApplyImports(NotNullPtr<Text::StringBuilderUTF8> errMessage)
+Bool Net::ASN1MIB::ApplyImports(NN<Text::StringBuilderUTF8> errMessage)
 {
 /*	Data::ArrayList<ModuleInfo*> *moduleList = this->moduleMap->GetValues();
 	UOSInt i = moduleList->GetCount();
@@ -1674,7 +1674,7 @@ Bool Net::ASN1MIB::ApplyImports(NotNullPtr<Text::StringBuilderUTF8> errMessage)
 	return true;
 }
 
-Bool Net::ASN1MIB::LoadFileInner(Text::CStringNN fileName, NotNullPtr<Text::StringBuilderUTF8> errMessage, Bool postApply)
+Bool Net::ASN1MIB::LoadFileInner(Text::CStringNN fileName, NN<Text::StringBuilderUTF8> errMessage, Bool postApply)
 {
 	Text::StringBuilderUTF8 sbFileName;
 	NN<ModuleInfo> module;
@@ -2068,7 +2068,7 @@ void Net::ASN1MIB::UnloadAll()
 	this->globalModule.objValues.Clear();
 }
 
-Bool Net::ASN1MIB::LoadFile(Text::CStringNN fileName, NotNullPtr<Text::StringBuilderUTF8> errMessage)
+Bool Net::ASN1MIB::LoadFile(Text::CStringNN fileName, NN<Text::StringBuilderUTF8> errMessage)
 {
 	return LoadFileInner(fileName, errMessage, true);
 }

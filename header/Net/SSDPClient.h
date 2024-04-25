@@ -18,7 +18,7 @@ namespace Net
 			Optional<Text::String> opt;
 			Optional<Text::String> server;
 			Optional<Text::String> st;
-			NotNullPtr<Text::String> usn;
+			NN<Text::String> usn;
 			Optional<Text::String> userAgent;
 		};
 
@@ -48,19 +48,19 @@ namespace Net
 		Sync::Mutex mut;
 		Data::FastMap<UInt32, SSDPDevice *> devMap;
 
-		static void __stdcall OnPacketRecv(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+		static void __stdcall OnPacketRecv(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
 
 		void SSDPServiceFree(SSDPService *svc);
 		void SSDPDeviceFree(SSDPDevice *dev);
 	public:
-		SSDPClient(NotNullPtr<Net::SocketFactory> sockf, Text::CString userAgent, NotNullPtr<IO::LogTool> log);
+		SSDPClient(NN<Net::SocketFactory> sockf, Text::CString userAgent, NN<IO::LogTool> log);
 		~SSDPClient();
 
 		Bool IsError() const;
 		Bool Scan();
-		const Data::ReadingList<SSDPDevice*> *GetDevices(NotNullPtr<Sync::MutexUsage> mutUsage) const;
+		const Data::ReadingList<SSDPDevice*> *GetDevices(NN<Sync::MutexUsage> mutUsage) const;
 
-		static SSDPRoot *SSDPRootParse(Optional<Text::EncodingFactory> encFact, NotNullPtr<IO::Stream> stm);
+		static SSDPRoot *SSDPRootParse(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm);
 		static void SSDPRootFree(SSDPRoot *root);
 	};
 }

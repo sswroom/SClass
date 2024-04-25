@@ -23,8 +23,8 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 	Data::FastStringMap<Text::String*> hdrMap;
 	Text::StringBuilderUTF8 sb;
 	Text::PString sarr[2];
-	NotNullPtr<Text::String> hdrName;
-	NotNullPtr<Text::String> hdrValue;
+	NN<Text::String> hdrName;
+	NN<Text::String> hdrValue;
 	Bool found = false;
 	lineStart = 0;
 	i = 0;
@@ -139,8 +139,8 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 			k = hdrNames.GetCount();
 			while (j < k)
 			{
-				NotNullPtr<Text::String> name;
-				NotNullPtr<Text::String> value;
+				NN<Text::String> name;
+				NN<Text::String> value;
 				if (hdrNames.GetItem(j).SetTo(name) && hdrValues.GetItem(j).SetTo(value))
 					this->AddPartHeader(i, name->v, name->leng, value->v, value->leng);
 				j++;
@@ -156,7 +156,7 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 	}
 }
 
-Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(NotNullPtr<Text::String> contentType, Text::String *defMsg, NotNullPtr<Text::String> boundary) : Text::IMIMEObj(CSTR("multipart/mixed"))
+Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(NN<Text::String> contentType, Text::String *defMsg, NN<Text::String> boundary) : Text::IMIMEObj(CSTR("multipart/mixed"))
 {
 	this->contentType = contentType->Clone();
 	if (defMsg)
@@ -337,7 +337,7 @@ UOSInt Text::MIMEObj::MultipartMIMEObj::GetPartCount() const
 	return this->parts.GetCount();
 }
 
-Text::MIMEObj::MultipartMIMEObj *Text::MIMEObj::MultipartMIMEObj::ParseFile(Text::CString contentType, NotNullPtr<IO::StreamData> data)
+Text::MIMEObj::MultipartMIMEObj *Text::MIMEObj::MultipartMIMEObj::ParseFile(Text::CString contentType, NN<IO::StreamData> data)
 {
 	UOSInt j;
 	if (contentType.StartsWith(UTF8STRC("multipart/mixed;")))

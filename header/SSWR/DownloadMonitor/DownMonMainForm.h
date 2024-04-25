@@ -24,18 +24,18 @@ namespace SSWR
 			Bool alarmSet;
 			Int64 alarmTime;
 
-			NotNullPtr<UI::GUIPanel> pnlButtons;
-			NotNullPtr<UI::GUILabel> lblStatus;
-			NotNullPtr<UI::GUITextBox> txtStatus;
-			NotNullPtr<UI::GUICheckBox> chkAutoStart;
-			NotNullPtr<UI::GUIButton> btnPasteTable;
-			NotNullPtr<UI::GUIButton> btnPasteHTML;
-			NotNullPtr<UI::GUIButton> btnCopyTable;
-			NotNullPtr<UI::GUIButton> btnFileEnd;
-			NotNullPtr<UI::GUIButton> btnWebUpdate;
-			NotNullPtr<UI::GUILabel> lblAlarm;
-			NotNullPtr<UI::GUIButton> btn30Minutes;
-			NotNullPtr<UI::GUIListView> lvFiles;
+			NN<UI::GUIPanel> pnlButtons;
+			NN<UI::GUILabel> lblStatus;
+			NN<UI::GUITextBox> txtStatus;
+			NN<UI::GUICheckBox> chkAutoStart;
+			NN<UI::GUIButton> btnPasteTable;
+			NN<UI::GUIButton> btnPasteHTML;
+			NN<UI::GUIButton> btnCopyTable;
+			NN<UI::GUIButton> btnFileEnd;
+			NN<UI::GUIButton> btnWebUpdate;
+			NN<UI::GUILabel> lblAlarm;
+			NN<UI::GUIButton> btn30Minutes;
+			NN<UI::GUIListView> lvFiles;
 
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnPasteTableClicked(AnyType userObj);
@@ -51,7 +51,7 @@ namespace SSWR
 			void LoadList();
 			void SaveList();
 		public:
-			DownMonMainForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, SSWR::DownloadMonitor::DownMonCore *core);
+			DownMonMainForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, SSWR::DownloadMonitor::DownMonCore *core);
 			virtual ~DownMonMainForm();
 		};
 	}

@@ -11,7 +11,7 @@
 #include <richedit.h>
 #endif
 
-UI::Win::WinTextBox::WinTextBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText) : UI::GUITextBox(ui, parent)
+UI::Win::WinTextBox::WinTextBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText) : UI::GUITextBox(ui, parent)
 {
 	UInt32 style = WS_BORDER | WS_TABSTOP | WS_CHILD | ES_AUTOHSCROLL;
 	if (parent->IsChildVisible())
@@ -21,7 +21,7 @@ UI::Win::WinTextBox::WinTextBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUICl
 	this->InitControl(((UI::Win::WinCore*)ui.Ptr())->GetHInst(), parent, L"EDIT", initText.v, style, WS_EX_CLIENTEDGE, 0, 0, 200, 28);
 }
 
-UI::Win::WinTextBox::WinTextBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool isMultiline) : UI::GUITextBox(ui, parent)
+UI::Win::WinTextBox::WinTextBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool isMultiline) : UI::GUITextBox(ui, parent)
 {
 	UInt32 style = WS_BORDER | WS_TABSTOP | WS_CHILD | ES_AUTOHSCROLL;
 	if (parent->IsChildVisible())
@@ -66,7 +66,7 @@ UTF8Char *UI::Win::WinTextBox::GetText(UTF8Char *buff)
 	return buff;
 }
 
-Bool UI::Win::WinTextBox::GetText(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool UI::Win::WinTextBox::GetText(NN<Text::StringBuilderUTF8> sb)
 {
 	UOSInt leng = (UOSInt)GetWindowTextLengthW((HWND)hwnd);
 	WChar *wptr = MemAlloc(WChar, leng + 1);

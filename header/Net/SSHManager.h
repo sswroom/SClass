@@ -9,10 +9,10 @@ namespace Net
 	{
 	private:
 		static UInt32 useCnt;
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Int32 error;
 	public:
-		SSHManager(NotNullPtr<Net::SocketFactory> sockf);
+		SSHManager(NN<Net::SocketFactory> sockf);
 		~SSHManager();
 
 		Bool IsError() const;

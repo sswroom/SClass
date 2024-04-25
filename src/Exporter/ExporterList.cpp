@@ -161,7 +161,7 @@ void Exporter::ExporterList::SetEncFactory(Optional<Text::EncodingFactory> encFa
 	}
 }
 
-UOSInt Exporter::ExporterList::GetSupportedExporters(Data::ArrayList<IO::FileExporter*> *exporters, NotNullPtr<IO::ParsedObject> obj)
+UOSInt Exporter::ExporterList::GetSupportedExporters(Data::ArrayList<IO::FileExporter*> *exporters, NN<IO::ParsedObject> obj)
 {
 	UOSInt cnt = 0;
 	UOSInt i = 0;

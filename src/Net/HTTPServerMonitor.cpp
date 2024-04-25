@@ -6,7 +6,7 @@
 
 UInt32 __stdcall Net::HTTPServerMonitor::ThreadProc(AnyType userObj)
 {
-	NotNullPtr<Net::HTTPServerMonitor> me = userObj.GetNN<Net::HTTPServerMonitor>();
+	NN<Net::HTTPServerMonitor> me = userObj.GetNN<Net::HTTPServerMonitor>();
 	me->threadRunning = true;
 	while (!me->threadToStop)
 	{
@@ -19,13 +19,13 @@ UInt32 __stdcall Net::HTTPServerMonitor::ThreadProc(AnyType userObj)
 
 Bool Net::HTTPServerMonitor::CheckOnline()
 {
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, this->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, this->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	Net::WebStatus::StatusCode status = cli->GetRespStatus();
 	cli.Delete();
 	return status == Net::WebStatus::SC_OK;
 }
 
-Net::HTTPServerMonitor::HTTPServerMonitor(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<Text::String> url)
+Net::HTTPServerMonitor::HTTPServerMonitor(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Text::String> url)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -41,7 +41,7 @@ Net::HTTPServerMonitor::HTTPServerMonitor(NotNullPtr<Net::SocketFactory> sockf, 
 	}
 }
 
-Net::HTTPServerMonitor::HTTPServerMonitor(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString url)
+Net::HTTPServerMonitor::HTTPServerMonitor(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString url)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

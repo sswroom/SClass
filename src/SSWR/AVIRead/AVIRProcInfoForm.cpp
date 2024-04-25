@@ -7,14 +7,14 @@
 
 void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnSumDblClicked(AnyType userObj, UOSInt index)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
+	NN<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
 	me->lbDetail->SetSelectedIndex(index);
 	me->tcMain->SetSelectedIndex(1);
 }
 
 void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnProcSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
+	NN<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
 	ProcessInfo *procInfo = (ProcessInfo*)me->lbDetail->GetSelectedItem().p;
 	SDEL_CLASS(me->currProcRes);
 	SDEL_CLASS(me->currProcObj);
@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnProcSelChg(AnyType userObj)
 	{
 		Text::StringBuilderUTF8 sb;
 		me->currProc = procInfo->procId;
-		NotNullPtr<Manage::Process> procObj;
+		NN<Manage::Process> procObj;
 		NEW_CLASSNN(procObj, Manage::Process(procInfo->procId, false));
 		me->currProcObj = procObj.Ptr();
 		NEW_CLASS(me->currProcRes, Manage::SymbolResolver(procObj));
@@ -79,7 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnProcSelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
+	NN<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[12];
 	UTF8Char *sptr;
@@ -182,7 +182,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerCPUTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
+	NN<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
 	if (me->currProc != 0)
 	{
 		Data::Timestamp kernelTime;
@@ -223,7 +223,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerCPUTick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetailCurrClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
+	NN<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
 	OSInt i = me->procIds.SortedIndexOf((UInt32)Manage::Process::GetCurrProcId());
 	if (i >= 0)
 	{
@@ -233,19 +233,19 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetailCurrClicked(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetModuleRefClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
+	NN<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
 	me->UpdateProcModules();
 }
 
 void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetThreadRefClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
+	NN<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
 	me->UpdateProcThreads();
 }
 
 void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetThreadDblClicked(AnyType userObj, UOSInt index)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
+	NN<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
 	UInt32 threadId = (UInt32)me->lvDetThread->GetItem(index).GetUOSInt();
 	SSWR::AVIRead::AVIRThreadInfoForm frm(0, me->ui, me->core, me->currProcObj, me->currProcRes, threadId);
 	frm.ShowDialog(me);
@@ -253,20 +253,20 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetThreadDblClicked(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapRefClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
+	NN<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
 	me->UpdateProcHeaps();
 }
 
 void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
+	NN<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
 	UOSInt id = (UOSInt)me->lbDetHeap->GetSelectedItem().p;
 	me->UpdateProcHeapDetail((UInt32)id);
 }
 
 void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapItemSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
+	NN<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
 	UOSInt i = me->lvDetHeap->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 		return;
@@ -300,7 +300,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapItemSelChg(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHandleClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
+	NN<SSWR::AVIRead::AVIRProcInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProcInfoForm>();
 	me->UpdateProcHandles();
 }
 
@@ -314,7 +314,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcModules()
 	{
 		Manage::Process proc(this->currProc, false);
 		Data::ArrayListNN<Manage::ModuleInfo> modList;
-		NotNullPtr<Manage::ModuleInfo> module;
+		NN<Manage::ModuleInfo> module;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		UOSInt k;
@@ -324,7 +324,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcModules()
 		proc.GetModules(modList);
 
 		this->lvDetModule->ClearItems();
-		Data::ArrayIterator<NotNullPtr<Manage::ModuleInfo>> it = modList.Iterator();
+		Data::ArrayIterator<NN<Manage::ModuleInfo>> it = modList.Iterator();
 		while (it.HasNext())
 		{
 			module = it.Next();
@@ -529,7 +529,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHandles()
 	}
 }
 
-SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Process Info"));

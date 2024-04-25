@@ -4,7 +4,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRHKOLocalForecastForm::OnReloadClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHKOLocalForecastForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHKOLocalForecastForm>();
+	NN<SSWR::AVIRead::AVIRHKOLocalForecastForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHKOLocalForecastForm>();
 	Net::HKOWeather::Language lang = (Net::HKOWeather::Language)me->cboLang->GetSelectedItem().GetOSInt();
 	me->Reload(lang);
 }
@@ -41,7 +41,7 @@ void SSWR::AVIRead::AVIRHKOLocalForecastForm::Reload(Net::HKOWeather::Language l
 	}
 }
 
-SSWR::AVIRead::AVIRHKOLocalForecastForm::AVIRHKOLocalForecastForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)
+SSWR::AVIRead::AVIRHKOLocalForecastForm::AVIRHKOLocalForecastForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetText(CSTR("HK Observatory Local Weather Forecast"));
 	this->SetFont(0, 0, 8.25, false);

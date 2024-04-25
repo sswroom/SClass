@@ -9,34 +9,34 @@ namespace Net
 		class PKIX1Explicit88
 		{
 		public:
-			static void AddAttributeTypeAndValue(NotNullPtr<ASN1Names> names, Text::CStringNN name);
-			static void AttributeTypeAndValueCont(NotNullPtr<ASN1Names> names);
-			static void AddName(NotNullPtr<ASN1Names> names, Text::CStringNN name);
-			static void Name(NotNullPtr<ASN1Names> names);
-			static void RDNSequenceCont(NotNullPtr<ASN1Names> names);
-			static void RelativeDistinguishedName(NotNullPtr<ASN1Names> names);
-			static void RelativeDistinguishedNameCont(NotNullPtr<ASN1Names> names);
-			static void Certificate(NotNullPtr<ASN1Names> names);
-			static void CertificateCont(NotNullPtr<ASN1Names> names);
-			static void AddTBSCertificate(NotNullPtr<ASN1Names> names, Text::CStringNN name);
-			static void TBSCertificateCont(NotNullPtr<ASN1Names> names);
-			static void Version(NotNullPtr<ASN1Names> names);
-			static void AddValidity(NotNullPtr<ASN1Names> names, Text::CStringNN name);
-			static void ValidityCont(NotNullPtr<ASN1Names> names);
-			static void AddSubjectPublicKeyInfo(NotNullPtr<ASN1Names> names, Text::CStringNN name);
-			static void SubjectPublicKeyInfoCont(NotNullPtr<ASN1Names> names);
-			static void AddExtensions(NotNullPtr<ASN1Names> names, Text::CStringNN name);
-			static void Extensions(NotNullPtr<ASN1Names> names);
-			static void ExtensionsCont(NotNullPtr<ASN1Names> names);
-			static void ExtensionCont(NotNullPtr<ASN1Names> names);
-			static void CertificateList(NotNullPtr<ASN1Names> names);
-			static void CertificateListCont(NotNullPtr<ASN1Names> names);
-			static void AddTBSCertList(NotNullPtr<ASN1Names> names, Text::CStringNN name);
-			static void TBSCertListCont(NotNullPtr<ASN1Names> names);
-			static void RevokedCertificates(NotNullPtr<ASN1Names> names);
-			static void RevokedCertificateCont(NotNullPtr<ASN1Names> names);
-			static void AddAlgorithmIdentifier(NotNullPtr<ASN1Names> names, Text::CStringNN name);
-			static void AlgorithmIdentifierCont(NotNullPtr<ASN1Names> names);
+			static void AddAttributeTypeAndValue(NN<ASN1Names> names, Text::CStringNN name);
+			static void AttributeTypeAndValueCont(NN<ASN1Names> names);
+			static void AddName(NN<ASN1Names> names, Text::CStringNN name);
+			static void Name(NN<ASN1Names> names);
+			static void RDNSequenceCont(NN<ASN1Names> names);
+			static void RelativeDistinguishedName(NN<ASN1Names> names);
+			static void RelativeDistinguishedNameCont(NN<ASN1Names> names);
+			static void Certificate(NN<ASN1Names> names);
+			static void CertificateCont(NN<ASN1Names> names);
+			static void AddTBSCertificate(NN<ASN1Names> names, Text::CStringNN name);
+			static void TBSCertificateCont(NN<ASN1Names> names);
+			static void Version(NN<ASN1Names> names);
+			static void AddValidity(NN<ASN1Names> names, Text::CStringNN name);
+			static void ValidityCont(NN<ASN1Names> names);
+			static void AddSubjectPublicKeyInfo(NN<ASN1Names> names, Text::CStringNN name);
+			static void SubjectPublicKeyInfoCont(NN<ASN1Names> names);
+			static void AddExtensions(NN<ASN1Names> names, Text::CStringNN name);
+			static void Extensions(NN<ASN1Names> names);
+			static void ExtensionsCont(NN<ASN1Names> names);
+			static void ExtensionCont(NN<ASN1Names> names);
+			static void CertificateList(NN<ASN1Names> names);
+			static void CertificateListCont(NN<ASN1Names> names);
+			static void AddTBSCertList(NN<ASN1Names> names, Text::CStringNN name);
+			static void TBSCertListCont(NN<ASN1Names> names);
+			static void RevokedCertificates(NN<ASN1Names> names);
+			static void RevokedCertificateCont(NN<ASN1Names> names);
+			static void AddAlgorithmIdentifier(NN<ASN1Names> names, Text::CStringNN name);
+			static void AlgorithmIdentifierCont(NN<ASN1Names> names);
 		};
 	}
 }

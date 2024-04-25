@@ -11,7 +11,7 @@ namespace Data
 		ArrayListUInt32(UOSInt capacity);
 		virtual ~ArrayListUInt32();
 
-		virtual NotNullPtr<ArrayList<UInt32>> Clone() const;
+		virtual NN<ArrayList<UInt32>> Clone() const;
 	};
 }
 #endif

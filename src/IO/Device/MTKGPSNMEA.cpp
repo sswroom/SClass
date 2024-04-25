@@ -33,7 +33,7 @@ void IO::Device::MTKGPSNMEA::ParseUnknownCmd(const UTF8Char *cmd, UOSInt cmdLen)
 	}
 }
 
-IO::Device::MTKGPSNMEA::MTKGPSNMEA(NotNullPtr<IO::Stream> stm, Bool relStm) : IO::GPSNMEA(stm, relStm)
+IO::Device::MTKGPSNMEA::MTKGPSNMEA(NN<IO::Stream> stm, Bool relStm) : IO::GPSNMEA(stm, relStm)
 {
 	this->firmwareBuild = 0;
 	this->firmwareRel = 0;
@@ -293,7 +293,7 @@ Bool IO::Device::MTKGPSNMEA::ReadLogBlock(UOSInt addr, UInt8 *buff)
 	return true;
 }
 
-Bool IO::Device::MTKGPSNMEA::ParseLog(NotNullPtr<Map::GPSTrack> gps)
+Bool IO::Device::MTKGPSNMEA::ParseLog(NN<Map::GPSTrack> gps)
 {
 	Bool logEnabled = this->IsLogEnabled();
 	this->DisableLog();
@@ -586,7 +586,7 @@ UOSInt IO::Device::MTKGPSNMEA::GetMTKSerialPort()
 	return port;
 }
 
-Bool IO::Device::MTKGPSNMEA::ParseBlock(UInt8 *block, NotNullPtr<Map::GPSTrack> gps)
+Bool IO::Device::MTKGPSNMEA::ParseBlock(UInt8 *block, NN<Map::GPSTrack> gps)
 {
 	Int32 bitmask;
 	Map::GPSTrack::GPSRecord3 rec;

@@ -4,7 +4,7 @@
 
 void __stdcall SSWR::OrganMgr::OrganUserForm::OnAddClicked(AnyType userObj)
 {
-	NotNullPtr<OrganUserForm> me = userObj.GetNN<OrganUserForm>();
+	NN<OrganUserForm> me = userObj.GetNN<OrganUserForm>();
 	OrganUserEditForm frm(0, me->ui, me->env, 0);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
@@ -13,8 +13,8 @@ void __stdcall SSWR::OrganMgr::OrganUserForm::OnAddClicked(AnyType userObj)
 }
 void __stdcall SSWR::OrganMgr::OrganUserForm::OnModifyClicked(AnyType userObj)
 {
-	NotNullPtr<OrganUserForm> me = userObj.GetNN<OrganUserForm>();
-	NotNullPtr<OrganWebUser> user;
+	NN<OrganUserForm> me = userObj.GetNN<OrganUserForm>();
+	NN<OrganWebUser> user;
 	if (me->lvUser->GetSelectedItem().GetOpt<OrganWebUser>().SetTo(user))
 	{
 		OrganUserEditForm frm(0, me->ui, me->env, user);
@@ -49,7 +49,7 @@ void SSWR::OrganMgr::OrganUserForm::UpdateUserList()
 	}
 }
 
-SSWR::OrganMgr::OrganUserForm::OrganUserForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::OrganMgr::OrganUserForm::OrganUserForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<OrganEnv> env) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 10.5, false);
 

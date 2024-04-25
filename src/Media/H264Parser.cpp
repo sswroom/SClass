@@ -4,7 +4,7 @@
 #include "Media/H264Parser.h"
 #include "Text/MyString.h"
 
-Bool Media::H264Parser::ParseHRDParameters(NotNullPtr<IO::BitReaderMSB> reader, H264Flags *flags)
+Bool Media::H264Parser::ParseHRDParameters(NN<IO::BitReaderMSB> reader, H264Flags *flags)
 {
 	UInt32 cpb_cnt_minus1;
 	UInt32 bit_rate_scale;
@@ -39,7 +39,7 @@ Bool Media::H264Parser::ParseHRDParameters(NotNullPtr<IO::BitReaderMSB> reader, 
 	return true;
 }
 
-Bool Media::H264Parser::ParseVUIParameters(NotNullPtr<IO::BitReaderMSB> reader, NotNullPtr<Media::FrameInfo> info, H264Flags *flags)
+Bool Media::H264Parser::ParseVUIParameters(NN<IO::BitReaderMSB> reader, NN<Media::FrameInfo> info, H264Flags *flags)
 {
 	UInt32 aspect_ratio_info_present_flag = 0;
 	UInt32 overscan_info_present_flag = 0;
@@ -301,7 +301,7 @@ Bool Media::H264Parser::ParseVUIParameters(NotNullPtr<IO::BitReaderMSB> reader, 
 	return true;
 }
 
-Bool Media::H264Parser::GetFrameInfo(const UInt8 *frame, UOSInt frameSize, NotNullPtr<Media::FrameInfo> frameInfo, H264Flags *flags) //Bool *frameOnly, Bool *mbaff, Bool *separateColourPlane, Int32 *maxFrameNum_4, 
+Bool Media::H264Parser::GetFrameInfo(const UInt8 *frame, UOSInt frameSize, NN<Media::FrameInfo> frameInfo, H264Flags *flags) //Bool *frameOnly, Bool *mbaff, Bool *separateColourPlane, Int32 *maxFrameNum_4, 
 {
 	Bool succ = false;
 	UInt8 *tmpBuff;
@@ -501,7 +501,7 @@ Bool Media::H264Parser::GetFrameInfo(const UInt8 *frame, UOSInt frameSize, NotNu
 	return succ;
 }
 
-Bool Media::H264Parser::ParseVari(NotNullPtr<IO::BitReaderMSB> reader, OutParam<UInt32> val)
+Bool Media::H264Parser::ParseVari(NN<IO::BitReaderMSB> reader, OutParam<UInt32> val)
 {
 	UInt32 v;
 	UInt32 bitCnt = 0;
@@ -528,7 +528,7 @@ Bool Media::H264Parser::ParseVari(NotNullPtr<IO::BitReaderMSB> reader, OutParam<
 	return true;
 }
 
-Bool Media::H264Parser::ParseSVari(NotNullPtr<IO::BitReaderMSB> reader, OutParam<Int32> val)
+Bool Media::H264Parser::ParseSVari(NN<IO::BitReaderMSB> reader, OutParam<Int32> val)
 {
 	UInt32 v;
 	Bool ret = ParseVari(reader, v);

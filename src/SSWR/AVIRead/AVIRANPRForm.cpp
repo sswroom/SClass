@@ -4,10 +4,10 @@
 #include "Math/Quadrilateral.h"
 #include "SSWR/AVIRead/AVIRANPRForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRANPRForm::OnFileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRANPRForm::OnFileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRANPRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRANPRForm>();
-	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
+	NN<SSWR::AVIRead::AVIRANPRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRANPRForm>();
+	NN<Parser::ParserList> parsers = me->core->GetParserList();
 	UOSInt i = 0;
 	UOSInt nFiles = files.GetCount();
 	while (i < nFiles)
@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnFileHandler(AnyType userObj, Data:
 		if (imgList)
 		{
 			imgList->ToStaticImage(0);
-			NotNullPtr<Media::StaticImage> img;
+			NN<Media::StaticImage> img;
 			if (img.Set((Media::StaticImage*)imgList->GetImage(0, 0)))
 			{
 				SDEL_CLASS(me->currImg);
@@ -42,8 +42,8 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnFileHandler(AnyType userObj, Data:
 
 void __stdcall SSWR::AVIRead::AVIRANPRForm::OnPlateSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRANPRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRANPRForm>();
-	NotNullPtr<ResultInfo> res;
+	NN<SSWR::AVIRead::AVIRANPRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRANPRForm>();
+	NN<ResultInfo> res;
 	if (me->lvPlate->GetSelectedItem().GetOpt<ResultInfo>().SetTo(res))
 	{
 		me->pbPlate->SetImage(res->plateImg);
@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnPlateSelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRANPRForm::OnSelPlateClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRANPRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRANPRForm>();
+	NN<SSWR::AVIRead::AVIRANPRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRANPRForm>();
 	if (me->selectMode == ActionType::Plate)
 	{
 		me->selectMode = ActionType::None;
@@ -67,7 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnSelPlateClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRANPRForm::OnSelCornersClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRANPRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRANPRForm>();
+	NN<SSWR::AVIRead::AVIRANPRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRANPRForm>();
 	if (me->selectMode == ActionType::Corners)
 	{
 		me->selectMode = ActionType::None;
@@ -84,8 +84,8 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnSelCornersClicked(AnyType userObj)
 
 Bool __stdcall SSWR::AVIRead::AVIRANPRForm::OnImgDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRANPRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRANPRForm>();
-	NotNullPtr<Media::StaticImage> img;
+	NN<SSWR::AVIRead::AVIRANPRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRANPRForm>();
+	NN<Media::StaticImage> img;
 	if (!img.Set(me->currImg))
 		return false;
 	if (me->selectMode == ActionType::Corners)
@@ -116,9 +116,9 @@ Bool __stdcall SSWR::AVIRead::AVIRANPRForm::OnImgDown(AnyType userObj, Math::Coo
 	return false;
 }
 
-void __stdcall SSWR::AVIRead::AVIRANPRForm::OnANPRResult(AnyType userObj, NotNullPtr<Media::StaticImage> simg, Math::RectArea<UOSInt> area, NotNullPtr<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, NotNullPtr<Media::StaticImage> plateImg)
+void __stdcall SSWR::AVIRead::AVIRANPRForm::OnANPRResult(AnyType userObj, NN<Media::StaticImage> simg, Math::RectArea<UOSInt> area, NN<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, NN<Media::StaticImage> plateImg)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRANPRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRANPRForm>();
+	NN<SSWR::AVIRead::AVIRANPRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRANPRForm>();
 	ResultInfo *res;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -129,7 +129,7 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnANPRResult(AnyType userObj, NotNul
 	res->maxTileAngle = maxTileAngle;
 	res->pxArea = pxArea;
 	res->confidence = confidence;
-	res->plateImg = NotNullPtr<Media::StaticImage>::ConvertFrom(plateImg->Clone());
+	res->plateImg = NN<Media::StaticImage>::ConvertFrom(plateImg->Clone());
 	me->results.Add(res);
 	i = me->lvPlate->AddItem(res->result, res);
 	sptr = Text::StrDouble(sbuff, maxTileAngle);
@@ -154,7 +154,7 @@ void SSWR::AVIRead::AVIRANPRForm::ClearResults()
 	this->results.Clear();
 }
 
-SSWR::AVIRead::AVIRANPRForm::AVIRANPRForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRANPRForm::AVIRANPRForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("ANPR"));

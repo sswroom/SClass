@@ -13,9 +13,9 @@ typedef enum
 	MNU_SEARCH_DISC
 } MenuItems;
 
-void __stdcall SSWR::DiscDB::DiscDBMainForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::DiscDB::DiscDBMainForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::DiscDB::DiscDBMainForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBMainForm>();
+	NN<SSWR::DiscDB::DiscDBMainForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBMainForm>();
 	Bool succ;
 	Bool failed = false;
 	UOSInt i = 0;
@@ -60,14 +60,14 @@ void __stdcall SSWR::DiscDB::DiscDBMainForm::OnFileDrop(AnyType userObj, Data::D
 	}
 }
 
-SSWR::DiscDB::DiscDBMainForm::DiscDBMainForm(NotNullPtr<UI::GUICore> ui, Optional<UI::GUIClientControl> parent, SSWR::DiscDB::DiscDBEnv *env) : UI::GUIForm(parent, 430, 344, ui)
+SSWR::DiscDB::DiscDBMainForm::DiscDBMainForm(NN<UI::GUICore> ui, Optional<UI::GUIClientControl> parent, SSWR::DiscDB::DiscDBEnv *env) : UI::GUIForm(parent, 430, 344, ui)
 {
 	this->SetText(CSTR("Main Menu"));
 	this->SetFont(0, 0, 8.25, false);
 	this->env = env;
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));
 
-	NotNullPtr<UI::GUIMenu> mnu;
+	NN<UI::GUIMenu> mnu;
 
 	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Maintain"));

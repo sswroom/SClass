@@ -8,7 +8,7 @@
 
 IO::ConsoleWriter *console;
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 //	Text::CStringNN sslCert = CSTR("C:\\Progs\\VCClass\\keystore\\localhost.crt");
 //	Text::CStringNN sslKey = CSTR("C:\\Progs\\VCClass\\keystore\\localhost.key");
@@ -24,7 +24,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	Bool succ = true;
 	Net::OSSocketFactory sockf(false);
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
-	NotNullPtr<Net::SSLEngine> nnssl;
+	NN<Net::SSLEngine> nnssl;
 	if (!ssl.SetTo(nnssl))
 	{
 		console->WriteLineC(UTF8STRC("Error in initializing SSL"));
@@ -40,7 +40,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 	if (succ)
 	{
-		NotNullPtr<Net::WebServer::HTTPForwardHandler> hdlr;
+		NN<Net::WebServer::HTTPForwardHandler> hdlr;
 		Net::WebServer::WebListener *svr;
 		NEW_CLASSNN(hdlr, Net::WebServer::HTTPForwardHandler(sockf, ssl, fwdUrl, Net::WebServer::HTTPForwardHandler::ForwardType::Normal));
 		NEW_CLASS(svr, Net::WebServer::WebListener(sockf, ssl, hdlr, port, 120, 1, 4, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));

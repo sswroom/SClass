@@ -11,7 +11,7 @@ namespace UI
 		private:
 			static Int32 useCnt;
 
-			NotNullPtr<Media::DrawEngine> eng;
+			NN<Media::DrawEngine> eng;
 			void *clsData;
 
 		public:
@@ -20,7 +20,7 @@ namespace UI
 			void Init(InstanceHandle *hInst);
 			void Deinit(InstanceHandle *hInst);
 		public:
-			WinRealtimeLineChart(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS);
+			WinRealtimeLineChart(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS);
 			virtual ~WinRealtimeLineChart();
 		};
 	}

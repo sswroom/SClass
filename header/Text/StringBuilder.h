@@ -18,26 +18,26 @@ namespace Text
 		StringBuilder();
 		virtual ~StringBuilder();
 
-		NotNullPtr<StringBuilder<T>> AppendI16(Int16 iVal);
-		NotNullPtr<StringBuilder<T>> AppendU16(UInt16 iVal);
-		NotNullPtr<StringBuilder<T>> AppendI32(Int32 iVal);
-		NotNullPtr<StringBuilder<T>> AppendU32(UInt32 iVal);
-		NotNullPtr<StringBuilder<T>> AppendI64(Int64 iVal);
-		NotNullPtr<StringBuilder<T>> AppendU64(UInt64 iVal);
-		NotNullPtr<StringBuilder<T>> AppendDate(NotNullPtr<Data::DateTime> dt);
-		NotNullPtr<StringBuilder<T>> AppendOSInt(OSInt iVal);
-		NotNullPtr<StringBuilder<T>> AppendUOSInt(UOSInt iVal);
-		NotNullPtr<StringBuilder<T>> AppendSB(NotNullPtr<Text::StringBuilder<T>> sb);
+		NN<StringBuilder<T>> AppendI16(Int16 iVal);
+		NN<StringBuilder<T>> AppendU16(UInt16 iVal);
+		NN<StringBuilder<T>> AppendI32(Int32 iVal);
+		NN<StringBuilder<T>> AppendU32(UInt32 iVal);
+		NN<StringBuilder<T>> AppendI64(Int64 iVal);
+		NN<StringBuilder<T>> AppendU64(UInt64 iVal);
+		NN<StringBuilder<T>> AppendDate(NN<Data::DateTime> dt);
+		NN<StringBuilder<T>> AppendOSInt(OSInt iVal);
+		NN<StringBuilder<T>> AppendUOSInt(UOSInt iVal);
+		NN<StringBuilder<T>> AppendSB(NN<Text::StringBuilder<T>> sb);
 
-		NotNullPtr<StringBuilder<T>> AppendHex8(UInt8 iVal);
-		NotNullPtr<StringBuilder<T>> AppendHex16(UInt16 iVal);
-		NotNullPtr<StringBuilder<T>> AppendHex24(UInt32 iVal);
-		NotNullPtr<StringBuilder<T>> AppendHex32(UInt32 iVal);
-		NotNullPtr<StringBuilder<T>> AppendHex32V(UInt32 iVal);
-		NotNullPtr<StringBuilder<T>> AppendHex64(UInt64 iVal);
-		NotNullPtr<StringBuilder<T>> AppendHex64V(UInt64 iVal);
-		NotNullPtr<StringBuilder<T>> AppendHexOS(UOSInt iVal);
-		NotNullPtr<StringBuilder<T>> AppendHex(const UInt8 *buff, UOSInt buffSize, T seperator, LineBreakType lineBreak);
+		NN<StringBuilder<T>> AppendHex8(UInt8 iVal);
+		NN<StringBuilder<T>> AppendHex16(UInt16 iVal);
+		NN<StringBuilder<T>> AppendHex24(UInt32 iVal);
+		NN<StringBuilder<T>> AppendHex32(UInt32 iVal);
+		NN<StringBuilder<T>> AppendHex32V(UInt32 iVal);
+		NN<StringBuilder<T>> AppendHex64(UInt64 iVal);
+		NN<StringBuilder<T>> AppendHex64V(UInt64 iVal);
+		NN<StringBuilder<T>> AppendHexOS(UOSInt iVal);
+		NN<StringBuilder<T>> AppendHex(const UInt8 *buff, UOSInt buffSize, T seperator, LineBreakType lineBreak);
 
 		void ClearStr();
 		void AllocLeng(UOSInt leng);
@@ -48,7 +48,7 @@ namespace Text
 		void TrimWSCRLF();
 		void TrimRight();
 		void TrimToLength(UOSInt leng);
-		NotNullPtr<StringBuilder<T>> SetSubstr(UOSInt index);
+		NN<StringBuilder<T>> SetSubstr(UOSInt index);
 		void ToUpper();
 		void ToLower();
 		void ToCapital();
@@ -95,49 +95,49 @@ namespace Text
 		MemFree(this->buff);
 	}
 
-	template <class T> NotNullPtr<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendI16(Int16 iVal)
+	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendI16(Int16 iVal)
 	{
 		this->AllocLeng(6);
 		this->buffEnd = Text::StrInt16(this->buffEnd, iVal);
 		return *this;
 	}
 
-	template <class T> NotNullPtr<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendU16(UInt16 iVal)
+	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendU16(UInt16 iVal)
 	{
 		this->AllocLeng(5);
 		this->buffEnd = Text::StrUInt16(this->buffEnd, iVal);
 		return *this;
 	}
 
-	template <class T> NotNullPtr<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendI32(Int32 iVal)
+	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendI32(Int32 iVal)
 	{
 		this->AllocLeng(11);
 		this->buffEnd = Text::StrInt32(this->buffEnd, iVal);
 		return *this;
 	}
 
-	template <class T> NotNullPtr<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendU32(UInt32 iVal)
+	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendU32(UInt32 iVal)
 	{
 		this->AllocLeng(10);
 		this->buffEnd = Text::StrUInt32(this->buffEnd, iVal);
 		return *this;
 	}
 
-	template <class T> NotNullPtr<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendI64(Int64 iVal)
+	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendI64(Int64 iVal)
 	{
 		this->AllocLeng(22);
 		this->buffEnd = Text::StrInt64(this->buffEnd, iVal);
 		return *this;
 	}
 
-	template <class T> NotNullPtr<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendU64(UInt64 iVal)
+	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendU64(UInt64 iVal)
 	{
 		this->AllocLeng(20);
 		this->buffEnd = Text::StrUInt64(this->buffEnd, iVal);
 		return *this;
 	}
 
-	template <class T> NotNullPtr<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendDate(NotNullPtr<Data::DateTime> dt)
+	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendDate(NN<Data::DateTime> dt)
 	{
 		UTF8Char sbuff[30];
 		UTF8Char *sptr;
@@ -147,7 +147,7 @@ namespace Text
 		return *this;
 	}
 
-	template <class T> NotNullPtr<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendOSInt(OSInt iVal)
+	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendOSInt(OSInt iVal)
 	{
 #if _OSINT_SIZE == 64
 		this->AllocLeng(22);
@@ -159,7 +159,7 @@ namespace Text
 		return *this;
 	}
 
-	template <class T> NotNullPtr<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendUOSInt(UOSInt iVal)
+	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendUOSInt(UOSInt iVal)
 	{
 #if _OSINT_SIZE == 64
 		this->AllocLeng(22);
@@ -171,7 +171,7 @@ namespace Text
 		return *this;
 	}
 
-	template <class T> NotNullPtr<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendSB(NotNullPtr<Text::StringBuilder<T>> sb)
+	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendSB(NN<Text::StringBuilder<T>> sb)
 	{
 		UOSInt slen = (UOSInt)(sb->buffEnd - sb->buff);
 		this->AllocLeng(slen);
@@ -180,56 +180,56 @@ namespace Text
 		return *this;
 	}
 
-	template <class T> NotNullPtr<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex8(UInt8 iVal)
+	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex8(UInt8 iVal)
 	{
 		this->AllocLeng(2);
 		this->buffEnd = Text::StrHexByte(this->buffEnd, iVal);
 		return *this;
 	}
 
-	template <class T> NotNullPtr<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex16(UInt16 iVal)
+	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex16(UInt16 iVal)
 	{
 		this->AllocLeng(4);
 		this->buffEnd = Text::StrHexVal16(this->buffEnd, iVal);
 		return *this;
 	}
 
-	template <class T> NotNullPtr<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex24(UInt32 iVal)
+	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex24(UInt32 iVal)
 	{
 		this->AllocLeng(6);
 		this->buffEnd = Text::StrHexVal24(this->buffEnd, iVal);
 		return *this;
 	}
 
-	template <class T> NotNullPtr<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex32(UInt32 iVal)
+	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex32(UInt32 iVal)
 	{
 		this->AllocLeng(8);
 		this->buffEnd = Text::StrHexVal32(this->buffEnd, iVal);
 		return *this;
 	}
 
-	template <class T> NotNullPtr<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex32V(UInt32 iVal)
+	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex32V(UInt32 iVal)
 	{
 		this->AllocLeng(8);
 		this->buffEnd = Text::StrHexVal32V(this->buffEnd, iVal);
 		return *this;
 	}
 
-	template <class T> NotNullPtr<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex64(UInt64 iVal)
+	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex64(UInt64 iVal)
 	{
 		this->AllocLeng(16);
 		this->buffEnd = Text::StrHexVal64(this->buffEnd, iVal);
 		return *this;
 	}
 
-	template <class T> NotNullPtr<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex64V(UInt64 iVal)
+	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex64V(UInt64 iVal)
 	{
 		this->AllocLeng(16);
 		this->buffEnd = Text::StrHexVal64V(this->buffEnd, iVal);
 		return *this;
 	}
 
-	template <class T> NotNullPtr<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHexOS(UOSInt iVal)
+	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHexOS(UOSInt iVal)
 	{
 	#if _OSINT_SIZE == 64
 		return AppendHex64(iVal);
@@ -240,7 +240,7 @@ namespace Text
 	#endif
 	}
 
-	template <class T> NotNullPtr<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex(const UInt8 *buff, UOSInt buffSize, T seperator, LineBreakType lineBreak)
+	template <class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::AppendHex(const UInt8 *buff, UOSInt buffSize, T seperator, LineBreakType lineBreak)
 	{
 		UOSInt lbCnt = (buffSize >> 4);
 		OSInt i;
@@ -396,7 +396,7 @@ namespace Text
 		}
 	}
 
-	template<class T> NotNullPtr<Text::StringBuilder<T>> Text::StringBuilder<T>::SetSubstr(UOSInt index)
+	template<class T> NN<Text::StringBuilder<T>> Text::StringBuilder<T>::SetSubstr(UOSInt index)
 	{
 		if (index >= (UOSInt)(this->buffEnd - this->buff))
 		{

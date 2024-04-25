@@ -26,7 +26,7 @@ namespace Net
 		static UInt32 __stdcall FTPThread(AnyType userObj);
 		Int32 WaitForResult();
 	public:
-		FTPConn(Text::CStringNN host, UInt16 port, NotNullPtr<Net::SocketFactory> sockf, UInt32 codePage, Data::Duration timeout);
+		FTPConn(Text::CStringNN host, UInt16 port, NN<Net::SocketFactory> sockf, UInt32 codePage, Data::Duration timeout);
 		~FTPConn();
 
 		Bool IsLogged();

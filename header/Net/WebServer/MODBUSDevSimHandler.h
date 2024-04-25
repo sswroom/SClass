@@ -12,12 +12,12 @@ namespace Net
 		{
 		private:
 			IO::MODBUSDevSim *dev;
-			NotNullPtr<Net::MODBUSTCPListener> listener;
+			NN<Net::MODBUSTCPListener> listener;
 
 		protected:
-			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
+			virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 		public:
-			MODBUSDevSimHandler(NotNullPtr<Net::MODBUSTCPListener> listener, IO::MODBUSDevSim *dev);
+			MODBUSDevSimHandler(NN<Net::MODBUSTCPListener> listener, IO::MODBUSDevSim *dev);
 			virtual ~MODBUSDevSimHandler();
 		};
 	}

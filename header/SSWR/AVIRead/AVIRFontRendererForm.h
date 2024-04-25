@@ -18,21 +18,21 @@ namespace SSWR
 		class AVIRFontRendererForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpChar;
-			NotNullPtr<UI::GUIListBox> lbChar;
-			NotNullPtr<UI::GUIHSplitter> hspChar;
-			NotNullPtr<UI::GUIPictureBoxDD> pbChar;
+			NN<UI::GUITabPage> tpChar;
+			NN<UI::GUIListBox> lbChar;
+			NN<UI::GUIHSplitter> hspChar;
+			NN<UI::GUIPictureBoxDD> pbChar;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Media::ColorManagerSess> colorSess;
-			NotNullPtr<Media::FontRenderer> font;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Media::ColorManagerSess> colorSess;
+			NN<Media::FontRenderer> font;
 			Optional<Media::StaticImage> currImg;
 
 			static void __stdcall OnCharSelChg(AnyType userObj);
 		public:
-			AVIRFontRendererForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::FontRenderer> font);
+			AVIRFontRendererForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::FontRenderer> font);
 			virtual ~AVIRFontRendererForm();
 
 			virtual void OnMonitorChanged();

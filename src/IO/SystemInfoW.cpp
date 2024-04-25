@@ -192,7 +192,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 	RAMInfo *ram;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	IO::SMBIOS *smbios = IO::SMBIOSUtil::GetSMBIOS();
 	if (smbios)
 	{

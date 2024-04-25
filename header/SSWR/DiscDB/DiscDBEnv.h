@@ -23,8 +23,8 @@ namespace SSWR
 
 			typedef struct
 			{
-				NotNullPtr<Text::String> discId;
-				NotNullPtr<Text::String> discTypeId;
+				NN<Text::String> discId;
+				NN<Text::String> discTypeId;
 				Data::Timestamp burntDate;
 				Int32 status;
 			} BurntDiscInfo;
@@ -32,7 +32,7 @@ namespace SSWR
 			typedef struct
 			{
 				UInt32 fileId;
-				NotNullPtr<Text::String> fileName;
+				NN<Text::String> fileName;
 				UInt64 fileSize;
 				UTF8Char category[6];
 				Int32 videoId;
@@ -40,21 +40,21 @@ namespace SSWR
 
 			typedef struct
 			{
-				NotNullPtr<Text::String> id;
-				NotNullPtr<Text::String> name;
+				NN<Text::String> id;
+				NN<Text::String> name;
 			} CategoryInfo;
 
 			typedef struct
 			{
-				NotNullPtr<Text::String> discTypeID;
-				NotNullPtr<Text::String> name;
-				NotNullPtr<Text::String> description;
+				NN<Text::String> discTypeID;
+				NN<Text::String> name;
+				NN<Text::String> description;
 			} DVDTypeInfo;
 
 			typedef struct
 			{
-				NotNullPtr<Text::String> discTypeId;
-				NotNullPtr<Text::String> brand;
+				NN<Text::String> discTypeId;
+				NN<Text::String> brand;
 				const UTF8Char *name;
 				Double speed;
 				const UTF8Char *dvdType;
@@ -69,14 +69,14 @@ namespace SSWR
 			typedef struct
 			{
 				Int32 videoId;
-				NotNullPtr<Text::String> anime;
+				NN<Text::String> anime;
 				Optional<Text::String> series;
 				Optional<Text::String> volume;
-				NotNullPtr<Text::String> dvdType;
+				NN<Text::String> dvdType;
 			} DVDVideoInfo;
 		private:
 			ErrorType err;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			DB::DBTool *db;
 			IO::LogTool log;
 			Media::MonitorMgr *monMgr;
@@ -115,7 +115,7 @@ namespace SSWR
 			Int32 NewDVDVideo(const UTF8Char *anime, const UTF8Char *series, const UTF8Char *volume, const UTF8Char *dvdType);
 			UOSInt GetDVDVideos(NN<Data::ArrayListNN<DVDVideoInfo>> dvdVideoList);
 			Optional<const DVDVideoInfo> GetDVDVideo(Int32 videoId);
-			Bool NewMovies(const UTF8Char *discId, UOSInt fileId, const UTF8Char *mainTitle, NotNullPtr<Text::String> type, const UTF8Char *chapter, const UTF8Char *chapterTitle, Text::CString videoFormat, Int32 width, Int32 height, Int32 fps, Int32 length, Text::CString audioFormat, Int32 samplingRate, Int32 bitRate, const UTF8Char *aspectRatio, const UTF8Char *remark);
+			Bool NewMovies(const UTF8Char *discId, UOSInt fileId, const UTF8Char *mainTitle, NN<Text::String> type, const UTF8Char *chapter, const UTF8Char *chapterTitle, Text::CString videoFormat, Int32 width, Int32 height, Int32 fps, Int32 length, Text::CString audioFormat, Int32 samplingRate, Int32 bitRate, const UTF8Char *aspectRatio, const UTF8Char *remark);
 			Bool AddMD5(NN<IO::StreamData> fd);
 		};
 	}

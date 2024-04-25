@@ -8,9 +8,9 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall IO::FileAnalyse::PNGFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::FileAnalyse::PNGFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::FileAnalyse::PNGFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::PNGFileAnalyse>();
+	NN<IO::FileAnalyse::PNGFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::PNGFileAnalyse>();
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt32 lastSize;
@@ -49,7 +49,7 @@ void __stdcall IO::FileAnalyse::PNGFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	}
 }
 
-IO::FileAnalyse::PNGFileAnalyse::PNGFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("PNGFileAnalyse"))
+IO::FileAnalyse::PNGFileAnalyse::PNGFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("PNGFileAnalyse"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -80,7 +80,7 @@ UOSInt IO::FileAnalyse::PNGFileAnalyse::GetFrameCount()
 	return this->tags.GetCount();
 }
 
-Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::PNGFileAnalyse::PNGTag> tag;
 	if (!this->tags.GetItem(index).SetTo(tag))
@@ -95,7 +95,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text
 	return true;
 }
 
-Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::PNGFileAnalyse::PNGTag> tag;
 	if (!this->tags.GetItem(index).SetTo(tag))
@@ -238,12 +238,12 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Te
 			sb->AppendC(UTF8STRC("\r\nCheck value = 0x"));
 			sb->AppendHex32(ReadMUInt32(&tagData[tag->size - 8]));
 
-			NotNullPtr<IO::StreamData> stmData = this->fd->GetPartialData(tag->ofst + i + 3, tag->size - i - 12);
+			NN<IO::StreamData> stmData = this->fd->GetPartialData(tag->ofst + i + 3, tag->size - i - 12);
 			Data::Compress::Inflate comp(false);
 			IO::MemoryStream mstm;
 			if (!comp.Decompress(mstm, stmData))
 			{
-				NotNullPtr<Media::ICCProfile> icc;
+				NN<Media::ICCProfile> icc;
 				if (Media::ICCProfile::Parse(mstm.GetArray()).SetTo(icc))
 				{
 					sb->AppendC(UTF8STRC("\r\n\r\n"));
@@ -314,7 +314,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PNGFileAnalyse::GetFrame
 	UTF8Char sbuff[128];
 	UTF8Char *sptr2;
 	UTF8Char *sptr;
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<IO::FileAnalyse::PNGFileAnalyse::PNGTag> tag;
 	if (!this->tags.GetItem(index).SetTo(tag))
 		return 0;
@@ -413,7 +413,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PNGFileAnalyse::GetFrame
 			frame->AddHex32(tag->size - 8, CSTR("Check value"), ReadMUInt32(&tagData[tag->size - 8]));
 
 /*			IO::MemoryStream *mstm;
-			NotNullPtr<IO::StreamData> stmData = this->fd->GetPartialData(tag->ofst + i + 3, tag->size - i - 12);
+			NN<IO::StreamData> stmData = this->fd->GetPartialData(tag->ofst + i + 3, tag->size - i - 12);
 			Data::Compress::Inflate comp;
 			NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"IO.FileAnalyse.PNGFileAnalyse"));
 			if (!comp.Decompress(mstm, stmData))

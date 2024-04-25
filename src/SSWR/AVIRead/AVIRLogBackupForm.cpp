@@ -8,7 +8,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLogBackupForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogBackupForm>();
+	NN<SSWR::AVIRead::AVIRLogBackupForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogBackupForm>();
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[64];
 	UOSInt logNameSize;
@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(AnyType userObj)
 	IO::Path::FindFileSession *sess;
 	Data::DateTime currTime;
 	Data::StringUTF8Map<LogGroup*> logGrps;
-	NotNullPtr<const Data::ArrayList<LogGroup*>> logGrpList;
+	NN<const Data::ArrayList<LogGroup*>> logGrpList;
 	LogGroup *logGrp;
 	UOSInt i;
 	UOSInt j;
@@ -92,10 +92,10 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(AnyType userObj)
 		{
 			IO::FileStream fs(CSTRP(sbuff, filePathEnd), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			IO::ZIPMTBuilder zip(fs, IO::ZIPOS::UNIX);
-			Data::ArrayIterator<NotNullPtr<Text::String>> it = logGrp->fileNames->Iterator();
+			Data::ArrayIterator<NN<Text::String>> it = logGrp->fileNames->Iterator();
 			while (succ && it.HasNext())
 			{
-				NotNullPtr<Text::String> s = it.Next();
+				NN<Text::String> s = it.Next();
 				IO::FileStream rfs(s, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				UInt32 unixAttr = IO::Path::GetFileUnixAttr(s->ToCString());
 				Data::Timestamp lastModTime = 0;
@@ -108,10 +108,10 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(AnyType userObj)
 
 		if (succ)
 		{
-			Data::ArrayIterator<NotNullPtr<Text::String>> it = logGrp->fileNames->Iterator();
+			Data::ArrayIterator<NN<Text::String>> it = logGrp->fileNames->Iterator();
 			while (it.HasNext())
 			{
-				NotNullPtr<Text::String> s = it.Next();
+				NN<Text::String> s = it.Next();
 				pt = IO::Path::GetPathType(s->ToCString());
 				if (pt == IO::Path::PathType::File)
 				{
@@ -137,7 +137,7 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRLogBackupForm::AVIRLogBackupForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 200, ui)
+SSWR::AVIRead::AVIRLogBackupForm::AVIRLogBackupForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 200, ui)
 {
 	this->SetText(CSTR("Log Backup"));
 	this->SetFont(0, 0, 8.25, false);

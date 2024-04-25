@@ -311,7 +311,7 @@ template <class T> void DB::DBDataFile<T>::AddRecord(NN<T> obj)
 			}
 			else
 			{
-				NotNullPtr<Data::UUID> uuid = item.GetItemValue().uuid;
+				NN<Data::UUID> uuid = item.GetItemValue().uuid;
 				uuid->GetValue(&this->recordBuff[m]);
 				m += 16;
 			}
@@ -520,7 +520,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, NN
 							else
 							{
 								m2 = ReadInt(buff, m2, &m3);
-								NotNullPtr<Text::String> s = Text::String::New(&buff[m2], m3);
+								NN<Text::String> s = Text::String::New(&buff[m2], m3);
 								item.SetStr(s);
 								s->Release();
 								cls->SetField(obj, k, item);
@@ -573,7 +573,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CStringNN fileName, NN
 							break;
 						case Data::VariItem::ItemType::UUID:
 							{
-								NotNullPtr<Data::UUID> uuid;
+								NN<Data::UUID> uuid;
 								NEW_CLASSNN(uuid, Data::UUID(&buff[m2]));
 								item.SetUUIDDirect(uuid);
 								cls->SetFieldClearItem(obj, k, item);

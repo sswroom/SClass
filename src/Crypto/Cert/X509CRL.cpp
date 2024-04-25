@@ -3,7 +3,7 @@
 #include "Net/ASN1Util.h"
 #include "Net/SSLEngine.h"
 
-Crypto::Cert::X509CRL::X509CRL(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
+Crypto::Cert::X509CRL::X509CRL(NN<Text::String> sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
 {
 
 }
@@ -23,7 +23,7 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509CRL::GetFileType() const
 	return FileType::CRL;
 }
 
-void Crypto::Cert::X509CRL::ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Crypto::Cert::X509CRL::ToShortName(NN<Text::StringBuilderUTF8> sb) const
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
@@ -42,9 +42,9 @@ void Crypto::Cert::X509CRL::ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) 
 	}
 }
 
-Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CRL::IsValid(NotNullPtr<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CRL::IsValid(NN<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const
 {
-	NotNullPtr<Crypto::Cert::CertStore> trusts;
+	NN<Crypto::Cert::CertStore> trusts;
 	if (!trustStore.SetTo(trusts))
 	{
 		trusts = ssl->GetTrustStore();
@@ -82,12 +82,12 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CRL::IsValid(NotNullPtr<Ne
 		return Crypto::Cert::X509File::ValidStatus::UnsupportedAlgorithm;
 	}
 
-	NotNullPtr<Crypto::Cert::X509Cert> issuer;
+	NN<Crypto::Cert::X509Cert> issuer;
 	if (!trusts->GetCertByCN(sb.ToCString()).SetTo(issuer))
 	{
 		return Crypto::Cert::X509File::ValidStatus::UnknownIssuer;
 	}
-	NotNullPtr<Crypto::Cert::X509Key> key;
+	NN<Crypto::Cert::X509Key> key;
 	if (!key.Set(issuer->GetNewPublicKey()))
 	{
 		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
@@ -101,14 +101,14 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CRL::IsValid(NotNullPtr<Ne
 	return Crypto::Cert::X509File::ValidStatus::Valid;
 }
 
-NotNullPtr<Net::ASN1Data> Crypto::Cert::X509CRL::Clone() const
+NN<Net::ASN1Data> Crypto::Cert::X509CRL::Clone() const
 {
-	NotNullPtr<Crypto::Cert::X509CRL> asn1;
+	NN<Crypto::Cert::X509CRL> asn1;
 	NEW_CLASSNN(asn1, Crypto::Cert::X509CRL(this->GetSourceNameObj(), this->buff));
 	return asn1;
 }
 
-void Crypto::Cert::X509CRL::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Crypto::Cert::X509CRL::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	if (IsCertificateList(this->buff.Ptr(), this->buff.PtrEnd(), "1"))
 	{
@@ -116,9 +116,9 @@ void Crypto::Cert::X509CRL::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 	}
 }
 
-NotNullPtr<Net::ASN1Names> Crypto::Cert::X509CRL::CreateNames() const
+NN<Net::ASN1Names> Crypto::Cert::X509CRL::CreateNames() const
 {
-	NotNullPtr<Net::ASN1Names> names;
+	NN<Net::ASN1Names> names;
 	NEW_CLASSNN(names, Net::ASN1Names());
 	return names;
 //	return names->SetCertificateList();*/
@@ -135,7 +135,7 @@ Bool Crypto::Cert::X509CRL::HasVersion() const
 	return false;
 }
 
-Bool Crypto::Cert::X509CRL::GetIssuerCN(NotNullPtr<Text::StringBuilderUTF8> sb) const
+Bool Crypto::Cert::X509CRL::GetIssuerCN(NN<Text::StringBuilderUTF8> sb) const
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
@@ -158,7 +158,7 @@ Bool Crypto::Cert::X509CRL::GetIssuerCN(NotNullPtr<Text::StringBuilderUTF8> sb) 
 	}
 }
 
-Bool Crypto::Cert::X509CRL::GetThisUpdate(NotNullPtr<Data::DateTime> dt) const
+Bool Crypto::Cert::X509CRL::GetThisUpdate(NN<Data::DateTime> dt) const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt itemLen;
@@ -181,7 +181,7 @@ Bool Crypto::Cert::X509CRL::GetThisUpdate(NotNullPtr<Data::DateTime> dt) const
 	}
 }
 
-Bool Crypto::Cert::X509CRL::GetNextUpdate(NotNullPtr<Data::DateTime> dt) const
+Bool Crypto::Cert::X509CRL::GetNextUpdate(NN<Data::DateTime> dt) const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt itemLen;
@@ -204,7 +204,7 @@ Bool Crypto::Cert::X509CRL::GetNextUpdate(NotNullPtr<Data::DateTime> dt) const
 	}
 }
 
-Bool Crypto::Cert::X509CRL::IsRevoked(NotNullPtr<Crypto::Cert::X509Cert> cert) const
+Bool Crypto::Cert::X509CRL::IsRevoked(NN<Crypto::Cert::X509Cert> cert) const
 {
 	UOSInt snLen;
 	const UInt8 *sn = cert->GetSerialNumber(snLen);

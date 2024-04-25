@@ -7,7 +7,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(AnyType userData, UInt32 srcIP, UInt32 destIP, UInt8 ttl, UOSInt packetSize)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPingMonitorForm> me = userData.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
+	NN<SSWR::AVIRead::AVIRPingMonitorForm> me = userData.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt32 sortableIP = Net::SocketUtil::IPv4ToSortable(srcIP);
 	IPInfo *ipInfo;
@@ -63,13 +63,13 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(AnyType userData
 
 void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnRAWData(AnyType userData, const UInt8 *rawData, UOSInt packetSize)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPingMonitorForm> me = userData.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
+	NN<SSWR::AVIRead::AVIRPingMonitorForm> me = userData.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
 	me->analyzer.PacketIPv4(rawData, packetSize, 0, 0);
 }
 
 void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnInfoClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPingMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
+	NN<SSWR::AVIRead::AVIRPingMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
 	if (me->listener)
 	{
 		DEL_CLASS(me->listener);
@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnInfoClicked(AnyType userObj
 		me->ui->ShowMsgOK(CSTR("Info port is not valid"), CSTR("Ping Monitor"), me);
 		return;
 	}
-	NotNullPtr<Net::EthernetWebHandler> webHdlr;
+	NN<Net::EthernetWebHandler> webHdlr;
 	NEW_CLASSNN(webHdlr, Net::EthernetWebHandler(&me->analyzer));
 	NEW_CLASS(me->listener, Net::WebServer::WebListener(me->sockf, 0, webHdlr, port, 60, 1, 3, CSTR("PingMonitor/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (me->listener->IsError())
@@ -105,7 +105,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnInfoClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPingMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
+	NN<SSWR::AVIRead::AVIRPingMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
 	if (me->socMon)
 	{
 		DEL_CLASS(me->socMon);
@@ -133,8 +133,8 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnStartClicked(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnLogSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPingMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
-	NotNullPtr<Text::String> s;
+	NN<SSWR::AVIRead::AVIRPingMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
+	NN<Text::String> s;
 	if (me->lbLog->GetSelectedItemTextNew().SetTo(s))
 	{
 		me->txtLog->SetText(s->ToCString());
@@ -144,7 +144,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnLogSelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnIPSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPingMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
+	NN<SSWR::AVIRead::AVIRPingMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
 	me->currIP = (IPInfo*)me->lbIP->GetSelectedItem().p;
 	me->ipContUpdated = false;
 	if (me->currIP)
@@ -175,7 +175,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnIPSelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPingMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
+	NN<SSWR::AVIRead::AVIRPingMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	if (me->ipContUpdated)
@@ -209,7 +209,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui), whois(core->GetSocketFactory(), 15000), analyzer(0, Net::EthernetAnalyzer::AT_ICMP, CSTR("PingMonitor"))
+SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui), whois(core->GetSocketFactory(), 15000), analyzer(0, Net::EthernetAnalyzer::AT_ICMP, CSTR("PingMonitor"))
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Ping Monitor"));
@@ -286,7 +286,7 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(Optional<UI::GUIClientCo
 	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
-	NotNullPtr<Net::ConnectionInfo> connInfo;
+	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UOSInt i;

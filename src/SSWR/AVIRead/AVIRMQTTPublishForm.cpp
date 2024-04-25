@@ -6,12 +6,12 @@
 
 void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTPublishForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTPublishForm>();
+	NN<SSWR::AVIRead::AVIRMQTTPublishForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTPublishForm>();
 	Net::SocketUtil::AddressInfo addr;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbHost;
-	NotNullPtr<Text::String> topic;
-	NotNullPtr<Text::String> message;
+	NN<Text::String> topic;
+	NN<Text::String> message;
 	Text::CString username = CSTR_NULL;
 	Text::CString password = CSTR_NULL;
 	UInt16 port;
@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(AnyType user
 	SDEL_TEXT(password.v);
 }
 
-SSWR::AVIRead::AVIRMQTTPublishForm::AVIRMQTTPublishForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRMQTTPublishForm::AVIRMQTTPublishForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("MQTT Publish"));

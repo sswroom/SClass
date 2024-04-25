@@ -42,9 +42,9 @@ Int32 UI::GUIForm::useCnt = 0;
 
 OSInt __stdcall UI::GUIForm::FormWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
 {
-	NotNullPtr<UI::GUIForm> me = NotNullPtr<UI::GUIForm>::FromPtr((UI::GUIForm*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA));
+	NN<UI::GUIForm> me = NN<UI::GUIForm>::FromPtr((UI::GUIForm*)(OSInt)GetWindowLongPtr((HWND)hWnd, GWL_USERDATA));
 	UI::GUIControl *ctrl;
-	NotNullPtr<UI::GUIButton> btn;
+	NN<UI::GUIButton> btn;
 	RECT rc;
 	NMHDR *nmhdr;
 	UOSInt i;
@@ -363,7 +363,7 @@ void UI::GUIForm::UpdateHAcc()
 		DestroyAcceleratorTable((HACCEL)this->hAcc);
 		this->hAcc = 0;
 	}
-	NotNullPtr<UI::GUIMainMenu> menu;
+	NN<UI::GUIMainMenu> menu;
 	if (this->menu.SetTo(menu))
 	{
 		UOSInt i;
@@ -397,7 +397,7 @@ void UI::GUIForm::UpdateHAcc()
 		((UI::Win::WinCore*)this->ui.Ptr())->SetFocusWnd(this->hwnd, this->hAcc);
 	}
 }
-UI::GUIForm::GUIForm(NotNullPtr<UI::GUICore> ui, ControlHandle *hWnd) : UI::GUIClientControl(ui, 0)
+UI::GUIForm::GUIForm(NN<UI::GUICore> ui, ControlHandle *hWnd) : UI::GUIClientControl(ui, 0)
 {
 	this->hwnd = hWnd;
 	this->hAcc = 0;
@@ -406,7 +406,7 @@ UI::GUIForm::GUIForm(NotNullPtr<UI::GUICore> ui, ControlHandle *hWnd) : UI::GUIC
 	this->fs = false;
 }
 
-UI::GUIForm *UI::GUIForm::FindForm(NotNullPtr<UI::GUICore> ui, const UTF8Char *formName)
+UI::GUIForm *UI::GUIForm::FindForm(NN<UI::GUICore> ui, const UTF8Char *formName)
 {
 	HWND hWnd;
 	const WChar *wptr = Text::StrToWCharNew(formName);
@@ -419,7 +419,7 @@ UI::GUIForm *UI::GUIForm::FindForm(NotNullPtr<UI::GUICore> ui, const UTF8Char *f
 	return frm;
 }
 
-UI::GUIForm::GUIForm(Optional<UI::GUIClientControl> parent, Double initW, Double initH, NotNullPtr<UI::GUICore> ui) : UI::GUIClientControl(ui, parent)
+UI::GUIForm::GUIForm(Optional<UI::GUIClientControl> parent, Double initW, Double initH, NN<UI::GUICore> ui) : UI::GUIClientControl(ui, parent)
 {
 	this->virtualMode = false;
 	this->hAcc = 0;
@@ -442,7 +442,7 @@ UI::GUIForm::GUIForm(Optional<UI::GUIClientControl> parent, Double initW, Double
 	Math::Size2DDbl sz;
 	Double initX;
 	Double initY;
-	NotNullPtr<GUIClientControl> nnparent;
+	NN<GUIClientControl> nnparent;
 	if (parent.SetTo(nnparent))
 	{
 		sz = nnparent->GetClientSize();
@@ -575,7 +575,7 @@ void UI::GUIForm::SetFormState(UI::GUIForm::FormState fs)
 
 UI::GUIForm::DialogResult UI::GUIForm::ShowDialog(Optional<UI::GUIForm> owner)
 {
-	NotNullPtr<UI::GUIForm> frm;
+	NN<UI::GUIForm> frm;
 	if (owner.SetTo(frm))
 	{
 		frm->SetEnabled(false);
@@ -687,15 +687,15 @@ void UI::GUIForm::SetNoResize(Bool noResize)
 	}
 }
 
-NotNullPtr<UI::GUITimer> UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, AnyType userObj)
+NN<UI::GUITimer> UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, AnyType userObj)
 {
-	NotNullPtr<UI::Win::WinTimer> tmr;
+	NN<UI::Win::WinTimer> tmr;
 	NEW_CLASSNN(tmr, UI::Win::WinTimer(*this, this->nextTmrId++, interval, handler, userObj));
 	this->timers.Add(tmr);
 	return tmr;
 }
 
-void UI::GUIForm::RemoveTimer(NotNullPtr<UI::GUITimer> tmr)
+void UI::GUIForm::RemoveTimer(NN<UI::GUITimer> tmr)
 {
 	UOSInt i = this->timers.GetCount();
 	while (i-- > 0)
@@ -709,7 +709,7 @@ void UI::GUIForm::RemoveTimer(NotNullPtr<UI::GUITimer> tmr)
 	}
 }
 
-void UI::GUIForm::SetMenu(NotNullPtr<UI::GUIMainMenu> menu)
+void UI::GUIForm::SetMenu(NN<UI::GUIMainMenu> menu)
 {
 #ifndef _WIN32_WCE
 	::SetMenu((HWND)this->hwnd, (HMENU)menu->GetHMenu());
@@ -730,13 +730,13 @@ void UI::GUIForm::UpdateMenu()
 	this->UpdateHAcc();
 }
 
-void UI::GUIForm::SetDefaultButton(NotNullPtr<UI::GUIButton> btn)
+void UI::GUIForm::SetDefaultButton(NN<UI::GUIButton> btn)
 {
 	this->okBtn = btn;
-	NotNullPtr<UI::Win::WinButton>::ConvertFrom(btn)->SetDefaultBtnLook();
+	NN<UI::Win::WinButton>::ConvertFrom(btn)->SetDefaultBtnLook();
 }
 
-void UI::GUIForm::SetCancelButton(NotNullPtr<UI::GUIButton> btn)
+void UI::GUIForm::SetCancelButton(NN<UI::GUIButton> btn)
 {
 	this->cancelBtn = btn;
 }
@@ -806,7 +806,7 @@ void UI::GUIForm::OnDropFiles(void *hDrop)
 	{
 		UInt32 i;
 		WChar wbuff[256];
-		NotNullPtr<Text::String> *files = MemAlloc(NotNullPtr<Text::String>, fileCnt);
+		NN<Text::String> *files = MemAlloc(NN<Text::String>, fileCnt);
 		i = 0;
 		while (i < fileCnt)
 		{
@@ -912,12 +912,12 @@ void UI::GUIForm::SetDPI(Double hdpi, Double ddpi)
 	{
 		this->UpdateFont();
 	}
-	NotNullPtr<UI::GUIMainMenu> menu;
+	NN<UI::GUIMainMenu> menu;
 	if (this->menu.SetTo(menu))
 	{
 		menu->SetDPI(hdpi, ddpi);
 	}
-	Data::ArrayIterator<NotNullPtr<GUIControl>> it = this->children.Iterator();
+	Data::ArrayIterator<NN<GUIControl>> it = this->children.Iterator();
 	while (it.HasNext())
 	{
 		it.Next()->SetDPI(hdpi, ddpi);
@@ -935,12 +935,12 @@ void UI::GUIForm::EventClosed()
 
 void UI::GUIForm::EventTimer(UOSInt tmrId)
 {
-	NotNullPtr<UI::GUITimer> tmr;
-	Data::ArrayIterator<NotNullPtr<UI::GUITimer>> it = this->timers.Iterator();
+	NN<UI::GUITimer> tmr;
+	Data::ArrayIterator<NN<UI::GUITimer>> it = this->timers.Iterator();
 	while (it.HasNext())
 	{
 		tmr = it.Next();
-		if (NotNullPtr<UI::Win::WinTimer>::ConvertFrom(tmr)->GetId() == tmrId)
+		if (NN<UI::Win::WinTimer>::ConvertFrom(tmr)->GetId() == tmrId)
 		{
 			tmr->EventTick();
 			break;
@@ -1019,7 +1019,7 @@ void UI::GUIForm::FromFullScn()
 
 	SetWindowPos((HWND)this->hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE); 
 
-	NotNullPtr<UI::GUIMainMenu> menu;
+	NN<UI::GUIMainMenu> menu;
 	if (this->menu.SetTo(menu))
 	{
 #ifdef _WIN32_WCE
@@ -1030,7 +1030,7 @@ void UI::GUIForm::FromFullScn()
 	}
 }
 
-NotNullPtr<UI::GUICore> UI::GUIForm::GetUI()
+NN<UI::GUICore> UI::GUIForm::GetUI()
 {
 	return this->ui;
 }

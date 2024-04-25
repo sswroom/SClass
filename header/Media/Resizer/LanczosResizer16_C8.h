@@ -91,18 +91,18 @@ namespace Media
 			void DestoryHori();
 			void DestoryVert();
 		public:
-			LanczosResizer16_C8(UOSInt hnTap, UOSInt vnTap, NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType);
+			LanczosResizer16_C8(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType);
 			virtual ~LanczosResizer16_C8();
 
 			virtual void Resize(const UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight);
-			virtual Bool Resize(NotNullPtr<const Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg);
-			virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
-			virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);
-			void SetSrcProfile(NotNullPtr<const Media::ColorProfile> srcProfile);
-			void SetDestProfile(NotNullPtr<const Media::ColorProfile> destProfile);
+			virtual Bool Resize(NN<const Media::StaticImage> srcImg, NN<Media::StaticImage> destImg);
+			virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
+			virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
+			void SetSrcProfile(NN<const Media::ColorProfile> srcProfile);
+			void SetDestProfile(NN<const Media::ColorProfile> destProfile);
 			Media::AlphaType GetDestAlphaType();
-			virtual Bool IsSupported(NotNullPtr<const Media::FrameInfo> srcInfo);
-			virtual Media::StaticImage *ProcessToNewPartial(NotNullPtr<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR);
+			virtual Bool IsSupported(NN<const Media::FrameInfo> srcInfo);
+			virtual Media::StaticImage *ProcessToNewPartial(NN<const Media::RasterImage> srcImage, Math::Coord2DDbl srcTL, Math::Coord2DDbl srcBR);
 		};
 	}
 }

@@ -22,7 +22,7 @@ Double Math::Geometry::Vector2D::CalSqrDistance(Math::Coord2DDbl pt, OutParam<Ma
 	return this->CalBoundarySqrDistance(pt, nearPt);
 }
 
-Bool Math::Geometry::Vector2D::Contains(NotNullPtr<Math::Geometry::Vector2D> vec) const
+Bool Math::Geometry::Vector2D::Contains(NN<Math::Geometry::Vector2D> vec) const
 {
 	Data::ArrayListA<Math::Coord2DDbl> ptList;
 	this->GetCoordinates(ptList);

@@ -41,7 +41,7 @@ UInt64 IO::FileAnalyse::FrameDetail::GetSize() const
 	return this->size;
 }
 
-UOSInt IO::FileAnalyse::FrameDetail::GetFieldInfos(UInt64 ofst, NotNullPtr<Data::ArrayListNN<const FieldInfo>> fieldList) const
+UOSInt IO::FileAnalyse::FrameDetail::GetFieldInfos(UInt64 ofst, NN<Data::ArrayListNN<const FieldInfo>> fieldList) const
 {
 	if (ofst < this->ofst || ofst >= this->ofst + this->size)
 	{
@@ -65,7 +65,7 @@ UOSInt IO::FileAnalyse::FrameDetail::GetFieldInfos(UInt64 ofst, NotNullPtr<Data:
 	return ret;
 }
 
-UOSInt IO::FileAnalyse::FrameDetail::GetAreaInfos(UInt64 ofst, NotNullPtr<Data::ArrayListNN<const FieldInfo>> areaList) const
+UOSInt IO::FileAnalyse::FrameDetail::GetAreaInfos(UInt64 ofst, NN<Data::ArrayListNN<const FieldInfo>> areaList) const
 {
 	if (ofst < this->ofst || ofst >= this->ofst + this->size)
 	{
@@ -124,11 +124,11 @@ void IO::FileAnalyse::FrameDetail::AddArea(UInt64 ofst, UOSInt size, Text::CStri
 	this->AddFieldInfo(ofst, size, name, CSTR_NULL, FT_AREA);
 }
 
-void IO::FileAnalyse::FrameDetail::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void IO::FileAnalyse::FrameDetail::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	sb->AppendC(UTF8STRC("Offset="));
 	sb->AppendU64(this->ofst);
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = this->headers.Iterator();
+	Data::ArrayIterator<NN<Text::String>> it = this->headers.Iterator();
 	while (it.HasNext())
 	{
 		sb->AppendC(UTF8STRC("\r\n"));

@@ -33,7 +33,7 @@ Text::Builder::HTMLBodyBuilder *Text::Builder::HTMLDocumentBuilder::StartBody(Te
 		if (onLoadScript.leng > 0)
 		{
 			this->sb.AppendC(UTF8STRC(" onLoad="));
-			NotNullPtr<Text::String> s = Text::XML::ToNewAttrText(onLoadScript.v);
+			NN<Text::String> s = Text::XML::ToNewAttrText(onLoadScript.v);
 			this->sb.Append(s);
 			s->Release();
 		}

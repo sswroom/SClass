@@ -13,14 +13,14 @@ namespace SSWR
 		{
 		private:
 			UI::GUISudokuViewer *svMain;
-			NotNullPtr<UI::GUIMainMenu> mnuMain;
+			NN<UI::GUIMainMenu> mnuMain;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Game::Sudoku::SudokuBoard *board;
 
 			static void __stdcall EventNumInput(void *userObj, UOSInt selX, UOSInt selY, UInt8 num);
 		public:
-			AVIRSudokuForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRSudokuForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSudokuForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

@@ -18,13 +18,13 @@ namespace SSWR
 		class AVIRGISFontEditForm : public UI::GUIForm, public Media::IColorHandler
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Media::ColorManagerSess> colorSess;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Media::ColorManagerSess> colorSess;
 			Media::ColorConv *colorConv;
-			NotNullPtr<Map::MapEnv> env;
+			NN<Map::MapEnv> env;
 			UOSInt fontStyle;
 			Bool changed;
-			NotNullPtr<Media::DrawEngine> eng;
+			NN<Media::DrawEngine> eng;
 
 			Text::String *currFontName;
 			Double currFontSizePt;
@@ -34,20 +34,20 @@ namespace SSWR
 			Bool isBold;
 			Media::StaticImage *previewImage;
 
-			NotNullPtr<UI::GUIPictureBox> pbFontPreview;
-			NotNullPtr<UI::GUILabel> lblStyleName;
-			NotNullPtr<UI::GUITextBox> txtStyleName;
-			NotNullPtr<UI::GUILabel> lblFontName;
-			NotNullPtr<UI::GUITextBox> txtFontName;
-			NotNullPtr<UI::GUIButton> btnFontName;
-			NotNullPtr<UI::GUILabel> lblFontColor;
-			NotNullPtr<UI::GUIPictureBox> pbFontColor;
-			NotNullPtr<UI::GUILabel> lblBufferSize;
-			NotNullPtr<UI::GUIHScrollBar> hsbBufferSize;
-			NotNullPtr<UI::GUILabel> lblBufferColor;
-			NotNullPtr<UI::GUIPictureBox> pbBufferColor;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUIPictureBox> pbFontPreview;
+			NN<UI::GUILabel> lblStyleName;
+			NN<UI::GUITextBox> txtStyleName;
+			NN<UI::GUILabel> lblFontName;
+			NN<UI::GUITextBox> txtFontName;
+			NN<UI::GUIButton> btnFontName;
+			NN<UI::GUILabel> lblFontColor;
+			NN<UI::GUIPictureBox> pbFontColor;
+			NN<UI::GUILabel> lblBufferSize;
+			NN<UI::GUIHScrollBar> hsbBufferSize;
+			NN<UI::GUILabel> lblBufferColor;
+			NN<UI::GUIPictureBox> pbBufferColor;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
 			static void __stdcall FontNameClicked(AnyType userObj);
 			static Bool __stdcall FontColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton mouseBtn);
@@ -60,13 +60,13 @@ namespace SSWR
 			void UpdateFontPreview();
 			void UpdateDisplay();
 		public:
-			AVIRGISFontEditForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, NotNullPtr<Media::DrawEngine> eng, UOSInt fontStyle);
+			AVIRGISFontEditForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Media::DrawEngine> eng, UOSInt fontStyle);
 			virtual ~AVIRGISFontEditForm();
 
 			virtual void OnMonitorChanged();
 
-			virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
-			virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);
+			virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
+			virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
 		};
 	}
 }

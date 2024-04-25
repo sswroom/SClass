@@ -13,16 +13,16 @@ namespace SSWR
 		class AVIRGISHKTDTonnesForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUILabel> lblRoadRoute;
-			NotNullPtr<UI::GUITextBox> txtRoadRoute;
-			NotNullPtr<UI::GUIButton> btnRoadRoute;
-			NotNullPtr<UI::GUILabel> lblVehicleRes;
-			NotNullPtr<UI::GUITextBox> txtVehicleRes;
-			NotNullPtr<UI::GUIButton> btnVehicleRes;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUILabel> lblRoadRoute;
+			NN<UI::GUITextBox> txtRoadRoute;
+			NN<UI::GUIButton> btnRoadRoute;
+			NN<UI::GUILabel> lblVehicleRes;
+			NN<UI::GUITextBox> txtVehicleRes;
+			NN<UI::GUIButton> btnVehicleRes;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
 			Map::MapDrawLayer *lyr;
 
@@ -31,7 +31,7 @@ namespace SSWR
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			AVIRGISHKTDTonnesForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRGISHKTDTonnesForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRGISHKTDTonnesForm();
 
 			virtual void OnMonitorChanged();

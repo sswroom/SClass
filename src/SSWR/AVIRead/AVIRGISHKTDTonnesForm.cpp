@@ -9,10 +9,10 @@
 
 void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnRoadRouteClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISHKTDTonnesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISHKTDTonnesForm>();
+	NN<SSWR::AVIRead::AVIRGISHKTDTonnesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISHKTDTonnesForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtRoadRoute->GetText(sb);
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HKTDTonnesRoadRoute", false);
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HKTDTonnesRoadRoute", false);
 	if (sb.GetLength() > 0)
 	{
 		dlg->SetFileName(sb.ToCString());
@@ -28,10 +28,10 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnRoadRouteClicked(AnyType 
 
 void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnVehicleResClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISHKTDTonnesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISHKTDTonnesForm>();
+	NN<SSWR::AVIRead::AVIRGISHKTDTonnesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISHKTDTonnesForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtVehicleRes->GetText(sb);
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HKTDTonnesVehicleRes", false);
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HKTDTonnesVehicleRes", false);
 	if (sb.GetLength() > 0)
 	{
 		dlg->SetFileName(sb.ToCString());
@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnVehicleResClicked(AnyType
 
 void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISHKTDTonnesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISHKTDTonnesForm>();
+	NN<SSWR::AVIRead::AVIRGISHKTDTonnesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISHKTDTonnesForm>();
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	me->txtRoadRoute->GetText(sb);
@@ -111,11 +111,11 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISHKTDTonnesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISHKTDTonnesForm>();
+	NN<SSWR::AVIRead::AVIRGISHKTDTonnesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISHKTDTonnesForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRGISHKTDTonnesForm::AVIRGISHKTDTonnesForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 144, ui)
+SSWR::AVIRead::AVIRGISHKTDTonnesForm::AVIRGISHKTDTonnesForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 144, ui)
 {
 	this->SetText(CSTR("Hong Kong Tonnes Sign"));
 	this->SetFont(0, 0, 8.25, false);

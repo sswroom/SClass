@@ -9,12 +9,12 @@
 
 #include <stdio.h>
 
-Media::StaticImage::StaticImage(Math::Size2D<UOSInt> dispSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, NotNullPtr<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst) : Media::RasterImage(dispSize, Math::Size2D<UOSInt>(0, 0), fourcc, bpp, pf, maxSize, color, yuvType, atype, ycOfst)
+Media::StaticImage::StaticImage(Math::Size2D<UOSInt> dispSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, NN<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst) : Media::RasterImage(dispSize, Math::Size2D<UOSInt>(0, 0), fourcc, bpp, pf, maxSize, color, yuvType, atype, ycOfst)
 {
 	this->data = MemAllocA(UInt8, this->info.byteSize + 4);
 }
 
-Media::StaticImage::StaticImage(NotNullPtr<const Media::FrameInfo> imgInfo) : Media::RasterImage(imgInfo->dispSize, imgInfo->storeSize, imgInfo->fourcc, imgInfo->storeBPP, imgInfo->pf, imgInfo->byteSize, imgInfo->color, imgInfo->yuvType, imgInfo->atype, imgInfo->ycOfst)
+Media::StaticImage::StaticImage(NN<const Media::FrameInfo> imgInfo) : Media::RasterImage(imgInfo->dispSize, imgInfo->storeSize, imgInfo->fourcc, imgInfo->storeBPP, imgInfo->pf, imgInfo->byteSize, imgInfo->color, imgInfo->yuvType, imgInfo->atype, imgInfo->ycOfst)
 {
 	this->info.par2 = imgInfo->par2;
 	this->info.hdpi = imgInfo->hdpi;
@@ -29,9 +29,9 @@ Media::StaticImage::~StaticImage()
 	MemFreeA(data);
 }
 
-NotNullPtr<Media::RasterImage> Media::StaticImage::Clone() const
+NN<Media::RasterImage> Media::StaticImage::Clone() const
 {
-	NotNullPtr<Media::StaticImage> img;
+	NN<Media::StaticImage> img;
 	NEW_CLASSNN(img, Media::StaticImage(this->info));
 	MemCopyANC(img->data, this->data, this->info.byteSize + 4);
 	if (this->info.fourcc == 0)

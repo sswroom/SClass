@@ -4,11 +4,11 @@
 
 void __stdcall SSWR::AVIRead::AVIRLineSelector::OnResized(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLineSelector> me = userObj.GetNN<SSWR::AVIRead::AVIRLineSelector>();
+	NN<SSWR::AVIRead::AVIRLineSelector> me = userObj.GetNN<SSWR::AVIRead::AVIRLineSelector>();
 	me->UpdateLineStyles();
 }
 
-void SSWR::AVIRead::AVIRLineSelector::OnDraw(NotNullPtr<Media::DrawImage> img)
+void SSWR::AVIRead::AVIRLineSelector::OnDraw(NN<Media::DrawImage> img)
 {
 	UOSInt defVal = this->env->GetDefLineStyle();
 	UOSInt currPos = this->GetVScrollPos();
@@ -25,8 +25,8 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(NotNullPtr<Media::DrawImage> img)
 	UInt32 itemTH = (UInt32)Double2Int32(24 * hdpi / ddpi);
 	UInt32 itemL = (UInt32)Double2Int32(5 * hdpi / ddpi);
 	UInt32 itemW = (UInt32)Double2Int32(120 * hdpi / ddpi);
-	NotNullPtr<Media::DrawEngine> deng = this->core->GetDrawEngine();
-	NotNullPtr<Media::DrawImage> tmpBmp;
+	NN<Media::DrawEngine> deng = this->core->GetDrawEngine();
+	NN<Media::DrawImage> tmpBmp;
 	if (w >= itemW)
 	{
 		if (!tmpBmp.Set(deng->CreateImage32(Math::Size2D<UOSInt>((UInt32)Double2Int32(110 * hdpi / ddpi), itemH), Media::AT_NO_ALPHA)))
@@ -51,13 +51,13 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(NotNullPtr<Media::DrawImage> img)
 	tmpBmp->SetHDPI(hdpi / ddpi * 96.0);
 	tmpBmp->SetVDPI(hdpi / ddpi * 96.0);
 
-	NotNullPtr<Media::DrawBrush> bWhite = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffffffff));
-	NotNullPtr<Media::DrawBrush> bBlack = img->NewBrushARGB(this->colorConv->ConvRGB8(0xff000000));
+	NN<Media::DrawBrush> bWhite = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffffffff));
+	NN<Media::DrawBrush> bBlack = img->NewBrushARGB(this->colorConv->ConvRGB8(0xff000000));
 	while (currPos < j && i < h)
 	{
 		if (currPos == defVal)
 		{
-			NotNullPtr<Media::DrawBrush> bDef = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffffffc0));
+			NN<Media::DrawBrush> bDef = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffffffc0));
 			img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(UOSInt2Double(w), UOSInt2Double(itemTH)), 0, bDef);
 			img->DelBrush(bDef);
 		}
@@ -68,7 +68,7 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(NotNullPtr<Media::DrawImage> img)
 		this->core->GenLineStylePreview(tmpBmp, deng, this->env, currPos, this->colorConv);
 		if (currPos == this->currLineStyle)
 		{
-			NotNullPtr<Media::DrawBrush> bRed = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffff0000));
+			NN<Media::DrawBrush> bRed = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffff0000));
 			img->DrawRect(Math::Coord2DDbl(0, UOSInt2Double(i)), Math::Size2DDbl(itemW, itemTH), 0, bRed);
 			img->DelBrush(bRed);
 		}
@@ -88,7 +88,7 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(NotNullPtr<Media::DrawImage> img)
 		sptr = this->env->GetLineStyleName(currPos, sbuff);
 		if (sbuff[0])
 		{
-			NotNullPtr<Media::DrawFont> fnt;
+			NN<Media::DrawFont> fnt;
 			if (fnt.Set(this->CreateDrawFont(img)))
 			{
 				img->DrawString(Math::Coord2DDbl(itemW, UOSInt2Double(i + 1)), CSTRP(sbuff, sptr), fnt, bBlack);
@@ -123,7 +123,7 @@ void SSWR::AVIRead::AVIRLineSelector::OnMouseDown(OSInt scrollY, Math::Coord2D<O
 			this->EventSelChg();
 			this->Redraw();
 		}
-		NotNullPtr<UI::GUIPopupMenu> mnu;
+		NN<UI::GUIPopupMenu> mnu;
 		if (btn == UI::GUIClientControl::MBTN_RIGHT && this->mnuLayers.SetTo(mnu))
 		{
 			Math::Coord2D<OSInt> scnPos = this->GetScreenPosP();
@@ -136,7 +136,7 @@ void SSWR::AVIRead::AVIRLineSelector::OnKeyDown(UInt32 keyCode)
 {
 }
 
-SSWR::AVIRead::AVIRLineSelector::AVIRLineSelector(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, UOSInt initLineStyle, NotNullPtr<Media::ColorManagerSess> colorSess) : UI::GUICustomDrawVScroll(ui, parent, core->GetDrawEngine())
+SSWR::AVIRead::AVIRLineSelector::AVIRLineSelector(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, UOSInt initLineStyle, NN<Media::ColorManagerSess> colorSess) : UI::GUICustomDrawVScroll(ui, parent, core->GetDrawEngine())
 {
 	this->core = core;
 	this->env = env;
@@ -159,11 +159,11 @@ SSWR::AVIRead::AVIRLineSelector::~AVIRLineSelector()
 	this->colorSess->RemoveHandler(*this);
 }
 
-void SSWR::AVIRead::AVIRLineSelector::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
+void SSWR::AVIRead::AVIRLineSelector::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void SSWR::AVIRead::AVIRLineSelector::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void SSWR::AVIRead::AVIRLineSelector::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	this->colorConv->RGBParamChanged(rgbParam);
 	this->Redraw();

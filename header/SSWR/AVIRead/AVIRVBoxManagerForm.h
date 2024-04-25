@@ -19,23 +19,23 @@ namespace SSWR
 		{
 		private:
 			IO::VBoxManager vbox;
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<UI::GUIPanel> pnlVersion;
-			NotNullPtr<UI::GUILabel> lblVersion;
-			NotNullPtr<UI::GUITextBox> txtVersion;
-			NotNullPtr<UI::GUIListBox> lbVMS;
-			NotNullPtr<UI::GUIHSplitter> hspVM;
-			NotNullPtr<UI::GUITabControl> tcVM;
-			NotNullPtr<UI::GUITabPage> tpControl;
-			NotNullPtr<UI::GUILabel> lblState;
-			NotNullPtr<UI::GUITextBox> txtState;
-			NotNullPtr<UI::GUILabel> lblStateSince;
-			NotNullPtr<UI::GUITextBox> txtStateSince;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<UI::GUIPanel> pnlVersion;
+			NN<UI::GUILabel> lblVersion;
+			NN<UI::GUITextBox> txtVersion;
+			NN<UI::GUIListBox> lbVMS;
+			NN<UI::GUIHSplitter> hspVM;
+			NN<UI::GUITabControl> tcVM;
+			NN<UI::GUITabPage> tpControl;
+			NN<UI::GUILabel> lblState;
+			NN<UI::GUITextBox> txtState;
+			NN<UI::GUILabel> lblStateSince;
+			NN<UI::GUITextBox> txtStateSince;
 
 			static void __stdcall OnVMSSelChg(AnyType userObj);
 			void UpdateVMInfo();
 		public:
-			AVIRVBoxManagerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRVBoxManagerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRVBoxManagerForm();
 
 			virtual void OnMonitorChanged();

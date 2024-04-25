@@ -16,31 +16,31 @@ namespace SSWR
 		class AVIRBruteForceForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Crypto::Hash::BruteForceAttack *bforce;
 			UInt64 lastCnt;
 			Int64 lastTime;
 
-			NotNullPtr<UI::GUILabel> lblHashType;
-			NotNullPtr<UI::GUIComboBox> cboHashType;
-			NotNullPtr<UI::GUILabel> lblHashValue;
-			NotNullPtr<UI::GUITextBox> txtHashValue;
-			NotNullPtr<UI::GUILabel> lblEncoding;
-			NotNullPtr<UI::GUIComboBox> cboEncoding;
-			NotNullPtr<UI::GUILabel> lblMinLen;
-			NotNullPtr<UI::GUITextBox> txtMinLen;
-			NotNullPtr<UI::GUILabel> lblMaxLen;
-			NotNullPtr<UI::GUITextBox> txtMaxLen;
-			NotNullPtr<UI::GUILabel> lblCharType;
-			NotNullPtr<UI::GUIComboBox> cboCharType;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUILabel> lblStatus;
-			NotNullPtr<UI::GUITextBox> txtStatus;
+			NN<UI::GUILabel> lblHashType;
+			NN<UI::GUIComboBox> cboHashType;
+			NN<UI::GUILabel> lblHashValue;
+			NN<UI::GUITextBox> txtHashValue;
+			NN<UI::GUILabel> lblEncoding;
+			NN<UI::GUIComboBox> cboEncoding;
+			NN<UI::GUILabel> lblMinLen;
+			NN<UI::GUITextBox> txtMinLen;
+			NN<UI::GUILabel> lblMaxLen;
+			NN<UI::GUITextBox> txtMaxLen;
+			NN<UI::GUILabel> lblCharType;
+			NN<UI::GUIComboBox> cboCharType;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUILabel> lblStatus;
+			NN<UI::GUITextBox> txtStatus;
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
-			AVIRBruteForceForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRBruteForceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRBruteForceForm();
 
 			virtual void OnMonitorChanged();

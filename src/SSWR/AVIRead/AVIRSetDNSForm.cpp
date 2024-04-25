@@ -3,7 +3,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRSetDNSForm::OnOKClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSetDNSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDNSForm>();
+	NN<SSWR::AVIRead::AVIRSetDNSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDNSForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtDNSServer->GetText(sb);
 	if (sb.leng > 0)
@@ -21,11 +21,11 @@ void __stdcall SSWR::AVIRead::AVIRSetDNSForm::OnOKClick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRSetDNSForm::OnCancelClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSetDNSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDNSForm>();
+	NN<SSWR::AVIRead::AVIRSetDNSForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSetDNSForm>();
 	me->Close();
 }
 
-SSWR::AVIRead::AVIRSetDNSForm::AVIRSetDNSForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 120, ui)
+SSWR::AVIRead::AVIRSetDNSForm::AVIRSetDNSForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 120, ui)
 {
 	this->SetText(CSTR("Set DNS Server"));
 	this->SetFont(0, 0, 8.25, false);

@@ -10,23 +10,23 @@ namespace UI
 		class LabelDObj : public DirectObject
 		{
 		private:
-			NotNullPtr<Media::DrawEngine> deng;
+			NN<Media::DrawEngine> deng;
 			Text::String *txt;
 			Sync::Mutex txtMut;
 			Bool txtChg;
-			NotNullPtr<Text::String> fontName;
+			NN<Text::String> fontName;
 			Double fontSizePx;
 			Media::DrawEngine::DrawFontStyle fontStyle;
 			UInt32 fontColor;
 			UInt32 codePage;
 
 		public:
-			LabelDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSizePx, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, Math::Coord2D<OSInt> tl, UInt32 codePage);
+			LabelDObj(NN<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSizePx, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, Math::Coord2D<OSInt> tl, UInt32 codePage);
 			virtual ~LabelDObj();
 
 			virtual Bool IsChanged();
 			virtual Bool DoEvents();
-			virtual void DrawObject(NotNullPtr<Media::DrawImage> dimg);
+			virtual void DrawObject(NN<Media::DrawImage> dimg);
 
 			virtual Bool IsObject(Math::Coord2D<OSInt> scnPos);
 			virtual void OnMouseDown();

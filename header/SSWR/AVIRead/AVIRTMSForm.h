@@ -14,21 +14,21 @@ namespace SSWR
 		class AVIRTMSForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblTMSURL;
-			NotNullPtr<UI::GUITextBox> txtTMSURL;
-			NotNullPtr<UI::GUIButton> btnLoad;
-			NotNullPtr<UI::GUILabel> lblStatus;
-			NotNullPtr<UI::GUITextBox> txtStatus;
-			NotNullPtr<UI::GUIButton> btnOK;
+			NN<UI::GUILabel> lblTMSURL;
+			NN<UI::GUITextBox> txtTMSURL;
+			NN<UI::GUIButton> btnLoad;
+			NN<UI::GUILabel> lblStatus;
+			NN<UI::GUITextBox> txtStatus;
+			NN<UI::GUIButton> btnOK;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 			Map::TileMapServiceSource *tms;
 
 			static void __stdcall OnLoadClicked(AnyType userObj);
 			static void __stdcall OnOKClicked(AnyType userObj);
 		public:
-			AVIRTMSForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl);
+			AVIRTMSForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl);
 			virtual ~AVIRTMSForm();
 
 			virtual void OnMonitorChanged();

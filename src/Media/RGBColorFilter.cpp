@@ -16,7 +16,7 @@ extern "C"
 
 UInt32 __stdcall Media::RGBColorFilter::ProcessThread(AnyType userObj)
 {
-	NotNullPtr<ThreadStat> tstat = userObj.GetNN<ThreadStat>();
+	NN<ThreadStat> tstat = userObj.GetNN<ThreadStat>();
 	{
 		Sync::Event evt;
 		tstat->evt = &evt;
@@ -153,7 +153,7 @@ void Media::RGBColorFilter::SetGammaCorr(Double *gammaParam, UOSInt gammaCnt)
 	}
 }
 
-void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Double gamma, NotNullPtr<const Media::ColorProfile> color, UInt32 bpp, Media::PixelFormat pf, UInt32 hdrLev)
+void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Double gamma, NN<const Media::ColorProfile> color, UInt32 bpp, Media::PixelFormat pf, UInt32 hdrLev)
 {
 	this->brightness = brightness;
 	this->contrast = contrast;
@@ -169,9 +169,9 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 	}
 
 	UOSInt i;
-	NotNullPtr<Media::CS::TransferFunc> rtFunc = Media::CS::TransferFunc::CreateFunc(color->GetRTranParamRead());
-	NotNullPtr<Media::CS::TransferFunc> gtFunc = Media::CS::TransferFunc::CreateFunc(color->GetGTranParamRead());
-	NotNullPtr<Media::CS::TransferFunc> btFunc = Media::CS::TransferFunc::CreateFunc(color->GetBTranParamRead());
+	NN<Media::CS::TransferFunc> rtFunc = Media::CS::TransferFunc::CreateFunc(color->GetRTranParamRead());
+	NN<Media::CS::TransferFunc> gtFunc = Media::CS::TransferFunc::CreateFunc(color->GetGTranParamRead());
+	NN<Media::CS::TransferFunc> btFunc = Media::CS::TransferFunc::CreateFunc(color->GetBTranParamRead());
 	if (bpp == 24 || bpp == 32)
 	{
 		Int16 *srcLUT;

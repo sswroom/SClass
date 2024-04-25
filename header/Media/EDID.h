@@ -31,9 +31,9 @@ namespace Media
 			Math::Double2D b;
 			Math::Double2D w;
 		} EDIDInfo;
-		static Bool Parse(const UInt8 *edidBuff, NotNullPtr<EDIDInfo> info);
-		static void ParseDescriptor(NotNullPtr<EDIDInfo> info, const UInt8 *descriptor);
-		static Bool SetColorProfile(NotNullPtr<EDIDInfo> info, NotNullPtr<Media::ColorProfile> cp);
+		static Bool Parse(const UInt8 *edidBuff, NN<EDIDInfo> info);
+		static void ParseDescriptor(NN<EDIDInfo> info, const UInt8 *descriptor);
+		static Bool SetColorProfile(NN<EDIDInfo> info, NN<Media::ColorProfile> cp);
 	};
 }
 #endif

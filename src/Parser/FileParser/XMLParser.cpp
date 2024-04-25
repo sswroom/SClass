@@ -55,7 +55,7 @@ void Parser::FileParser::XMLParser::SetEncFactory(Optional<Text::EncodingFactory
 	this->encFact = encFact;
 }
 
-void Parser::FileParser::XMLParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::XMLParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
@@ -74,7 +74,7 @@ IO::ParserType Parser::FileParser::XMLParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::XMLParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::XMLParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -133,9 +133,9 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseFileHdr(NotNullPtr<IO::Str
 	return pobj;
 }
 
-IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Optional<Text::EncodingFactory> encFact, NotNullPtr<IO::Stream> stm, Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
+IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
 {
-	NotNullPtr<Text::String> nodeText;
+	NN<Text::String> nodeText;
 	Text::XMLReader reader(encFact, stm, Text::XMLReader::PM_XML);
 
 	if (!reader.NextElementName().SetTo(nodeText))
@@ -406,7 +406,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Optional<Text::Enco
 					}
 					else if (nodeText->Equals(UTF8STRC("MapName")))
 					{
-						NotNullPtr<Parser::ParserList> nnparsers;
+						NN<Parser::ParserList> nnparsers;
 						if (lyr == 0 && nnparsers.Set(parsers))
 						{
 							Text::StringBuilderUTF8 sb;
@@ -936,7 +936,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Optional<Text::Enco
 	return 0;
 }
 
-Bool Parser::FileParser::XMLParser::ParseGPXPoint(NotNullPtr<Text::XMLReader> reader, Map::GPSTrack::GPSRecord3 *rec)
+Bool Parser::FileParser::XMLParser::ParseGPXPoint(NN<Text::XMLReader> reader, Map::GPSTrack::GPSRecord3 *rec)
 {
 	UOSInt i;
 	UOSInt j;
@@ -960,7 +960,7 @@ Bool Parser::FileParser::XMLParser::ParseGPXPoint(NotNullPtr<Text::XMLReader> re
 		i++;
 	}
 
-	NotNullPtr<Text::String> nodeText;
+	NN<Text::String> nodeText;
 	while (reader->NextElementName().SetTo(nodeText))
 	{
 		if (nodeText->EqualsICase(UTF8STRC("ELE")))
@@ -1003,12 +1003,12 @@ Bool Parser::FileParser::XMLParser::ParseGPXPoint(NotNullPtr<Text::XMLReader> re
 	return succ;
 }
 
-Bool Parser::FileParser::XMLParser::ParseVSProjFile(NotNullPtr<Text::XMLReader> reader, Text::VSProjContainer *container)
+Bool Parser::FileParser::XMLParser::ParseVSProjFile(NN<Text::XMLReader> reader, Text::VSProjContainer *container)
 {
 	UOSInt i;
 	Bool found;
 	Text::XMLAttrib *attr;
-	NotNullPtr<Text::String> nodeText;
+	NN<Text::String> nodeText;
 	while (reader->NextElementName().SetTo(nodeText))
 	{
 		if (nodeText->Equals(UTF8STRC("Filter")))
@@ -1020,7 +1020,7 @@ Bool Parser::FileParser::XMLParser::ParseVSProjFile(NotNullPtr<Text::XMLReader> 
 				attr = reader->GetAttrib(i);
 				if (attr->name->Equals(UTF8STRC("Name")))
 				{
-					NotNullPtr<Text::String> name;
+					NN<Text::String> name;
 					if (name.Set(attr->value))
 					{
 						Text::VSContainer *childCont;
@@ -1048,7 +1048,7 @@ Bool Parser::FileParser::XMLParser::ParseVSProjFile(NotNullPtr<Text::XMLReader> 
 				attr = reader->GetAttrib(i);
 				if (attr->name->Equals(UTF8STRC("RelativePath")))
 				{
-					NotNullPtr<Text::String> path;
+					NN<Text::String> path;
 					if (path.Set(attr->value))
 					{
 						Text::VSFile *childFile;
@@ -1068,13 +1068,13 @@ Bool Parser::FileParser::XMLParser::ParseVSProjFile(NotNullPtr<Text::XMLReader> 
 	return !reader->HasError();
 }
 
-Bool Parser::FileParser::XMLParser::ParseVSConfFile(NotNullPtr<Text::XMLReader> reader, Text::CodeProject *proj)
+Bool Parser::FileParser::XMLParser::ParseVSConfFile(NN<Text::XMLReader> reader, Text::CodeProject *proj)
 {
 	UOSInt i;
 	Text::CodeProjectCfg *cfg;
 	Text::XMLAttrib *attr;
 	Text::String *cfgName;
-	NotNullPtr<Text::String> nodeName;
+	NN<Text::String> nodeName;
 	while (reader->NextElementName().SetTo(nodeName))
 	{
 		if (nodeName->Equals(UTF8STRC("Configuration")))
@@ -1091,7 +1091,7 @@ Bool Parser::FileParser::XMLParser::ParseVSConfFile(NotNullPtr<Text::XMLReader> 
 					break;
 				}
 			}
-			NotNullPtr<Text::String> cfgNameStr;
+			NN<Text::String> cfgNameStr;
 			if (cfgNameStr.Set(cfgName))
 			{
 				NEW_CLASS(cfg, Text::CodeProjectCfg(cfgNameStr));
@@ -1113,7 +1113,7 @@ Bool Parser::FileParser::XMLParser::ParseVSConfFile(NotNullPtr<Text::XMLReader> 
 							while (i-- > 0)
 							{
 								attr = reader->GetAttrib(i);
-								NotNullPtr<Text::String> name;
+								NN<Text::String> name;
 								if (name.Set(attr->name))
 								{
 									if (name->Equals(UTF8STRC("Name")))

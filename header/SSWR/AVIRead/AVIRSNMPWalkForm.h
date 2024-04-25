@@ -15,15 +15,15 @@ namespace SSWR
 		class AVIRSNMPWalkForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUIPanel> pnlRequest;
-			NotNullPtr<UI::GUILabel> lblAgent;
-			NotNullPtr<UI::GUITextBox> txtAgent;
-			NotNullPtr<UI::GUIListView> lvResults;
+			NN<UI::GUIPanel> pnlRequest;
+			NN<UI::GUILabel> lblAgent;
+			NN<UI::GUITextBox> txtAgent;
+			NN<UI::GUIListView> lvResults;
 
 		public:
-			AVIRSNMPWalkForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, NotNullPtr<Text::String> community);
+			AVIRSNMPWalkForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<const Net::SocketUtil::AddressInfo> addr, NN<Text::String> community);
 			virtual ~AVIRSNMPWalkForm();
 
 			virtual void OnMonitorChanged();

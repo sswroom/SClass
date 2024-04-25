@@ -64,7 +64,7 @@ IO::BTController::BTDevice::~BTDevice()
 	}
 }
 
-NotNullPtr<Text::String> IO::BTController::BTDevice::GetName() const
+NN<Text::String> IO::BTController::BTDevice::GetName() const
 {
 	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo;
 	if (this->clsData == 0)
@@ -246,7 +246,7 @@ IO::BTController::~BTController()
 	}
 }
 
-OSInt IO::BTController::CreateDevices(NotNullPtr<Data::ArrayListNN<BTDevice>> devList, Bool toSearch)
+OSInt IO::BTController::CreateDevices(NN<Data::ArrayListNN<BTDevice>> devList, Bool toSearch)
 {
 	InternalData *me = (InternalData*)this->internalData;
 	BluetoothFindFirstDeviceFunc FindFirst = (BluetoothFindFirstDeviceFunc)me->lib->GetFunc("BluetoothFindFirstDevice");
@@ -258,7 +258,7 @@ OSInt IO::BTController::CreateDevices(NotNullPtr<Data::ArrayListNN<BTDevice>> de
 	OSInt ret = 0;
 	BLUETOOTH_DEVICE_SEARCH_PARAMS dsp;
 	BLUETOOTH_DEVICE_INFO devInfo;
-	NotNullPtr<IO::BTController::BTDevice> btDev;
+	NN<IO::BTController::BTDevice> btDev;
 	dsp.dwSize = sizeof(BLUETOOTH_DEVICE_SEARCH_PARAMS);
 	dsp.fReturnAuthenticated = TRUE;
 	dsp.fReturnRemembered = TRUE;
@@ -294,7 +294,7 @@ UInt8 *IO::BTController::GetAddress()
 	return this->addr;
 }
 
-NotNullPtr<Text::String> IO::BTController::GetName() const
+NN<Text::String> IO::BTController::GetName() const
 {
 	return this->name;
 }

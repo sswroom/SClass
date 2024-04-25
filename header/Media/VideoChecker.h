@@ -21,7 +21,7 @@ namespace Media
 			Media::IAudioSource *adecoder;
 			Media::NullRenderer *renderer;
 			Media::IVideoSource *vdecoder;
-			NotNullPtr<Sync::Event> evt;
+			NN<Sync::Event> evt;
 		} DecodeStatus;
 	private:
 		Media::Decoder::VideoDecoderFinder vdecoders;

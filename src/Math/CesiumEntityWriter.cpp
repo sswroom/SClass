@@ -28,7 +28,7 @@ Text::CStringNN Math::CesiumEntityWriter::GetWriterName() const
 	return CSTR("Cesium Entity");
 }
 
-Bool Math::CesiumEntityWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<const Math::Geometry::Vector2D> vec)
+Bool Math::CesiumEntityWriter::ToText(NN<Text::StringBuilderUTF8> sb, NN<const Math::Geometry::Vector2D> vec)
 {
 	switch (vec->GetVectorType())
 	{
@@ -90,7 +90,7 @@ Bool Math::CesiumEntityWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, No
 	case Math::Geometry::Vector2D::VectorType::LineString:
 		sb->AppendC(UTF8STRC("{\r\n"));
 		{
-			NotNullPtr<Math::Geometry::LineString> lineString = NotNullPtr<Math::Geometry::LineString>::ConvertFrom(vec);
+			NN<Math::Geometry::LineString> lineString = NN<Math::Geometry::LineString>::ConvertFrom(vec);
 			UOSInt nPoint;
 			Math::Coord2DDbl *pointList = lineString->GetPointList(nPoint);
 			UOSInt k;
@@ -115,10 +115,10 @@ Bool Math::CesiumEntityWriter::ToText(NotNullPtr<Text::StringBuilderUTF8> sb, No
 		sb->AppendC(UTF8STRC("{\r\n"));
 		{
 			Math::Geometry::Polyline *pl = (Math::Geometry::Polyline*)vec.Ptr();
-			NotNullPtr<Math::Geometry::LineString> lineString;
+			NN<Math::Geometry::LineString> lineString;
 			sb->AppendC(UTF8STRC("\tpolyline : {\r\n"));
 			sb->AppendC(UTF8STRC("\t\tpositions : Cesium.Cartesian3.fromDegreesArray([\r\n"));
-			Data::ArrayIterator<NotNullPtr<Math::Geometry::LineString>> it = pl->Iterator();
+			Data::ArrayIterator<NN<Math::Geometry::LineString>> it = pl->Iterator();
 			while (it.HasNext())
 			{
 				lineString = it.Next();

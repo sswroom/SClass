@@ -582,7 +582,7 @@ NN<Data::NamedClass<FlightHoldingsPeriod>> FlightHoldingsPeriod::CreateClass() c
 	return cls;
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Text::CStringNN serverHost;
 	Text::CString database;
@@ -597,10 +597,10 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	IO::LogTool log;
 	IO::ConsoleLogHandler logHdlr(console);
 	log.AddLogHandler(logHdlr, IO::LogHandler::LogLevel::Raw);
-	NotNullPtr<DB::DBTool> db;
+	NN<DB::DBTool> db;
 	if (DB::MSSQLConn::CreateDBToolTCP(serverHost, 1433, false, database, uid, pwd, log, CSTR("DB: ")).SetTo(db))
 	{
-		NotNullPtr<DB::DBReader> r;
+		NN<DB::DBReader> r;
 		if (db->QueryTableData(CSTR("dbo"), CSTR("Flight_Holdings_Period"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			Manage::HiResClock clk;

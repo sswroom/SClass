@@ -23,8 +23,8 @@ namespace Text
 			Base64Enc();
 			Base64Enc(Charset cs, Bool noPadding);
 			virtual ~Base64Enc();
-			virtual UOSInt EncodeBin(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize);
-			UOSInt EncodeBin(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize, Text::LineBreakType lbt, UOSInt charsPerLine);
+			virtual UOSInt EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize);
+			UOSInt EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize, Text::LineBreakType lbt, UOSInt charsPerLine);
 			UTF8Char *EncodeBin(UTF8Char *sbuff, const UInt8 *dataBuff, UOSInt buffSize);
 			virtual UOSInt CalcBinSize(const UTF8Char *b64Str, UOSInt strLen);
 			virtual UOSInt CalcBinSize(const WChar *sbuff);

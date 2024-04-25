@@ -15,49 +15,49 @@ namespace SSWR
 		class AVIRCertUtilForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 			Data::ArrayListStringNN *sanList;
 			Optional<Crypto::Cert::X509Key> key;
 
-			NotNullPtr<UI::GUILabel> lblKey;
-			NotNullPtr<UI::GUITextBox> txtKeyDetail;
-			NotNullPtr<UI::GUIButton> btnKeyGenerate;
-			NotNullPtr<UI::GUIButton> btnKeyView;
-			NotNullPtr<UI::GUIButton> btnKeySave;
-			NotNullPtr<UI::GUILabel> lblCountryName;
-			NotNullPtr<UI::GUITextBox> txtCountryName;
-			NotNullPtr<UI::GUILabel> lblCountryName2;
-			NotNullPtr<UI::GUILabel> lblStateOrProvinceName;
-			NotNullPtr<UI::GUITextBox> txtStateOrProvinceName;
-			NotNullPtr<UI::GUILabel> lblStateOrProvinceName2;
-			NotNullPtr<UI::GUILabel> lblLocalityName;
-			NotNullPtr<UI::GUITextBox> txtLocalityName;
-			NotNullPtr<UI::GUILabel> lblLocalityName2;
-			NotNullPtr<UI::GUILabel> lblOrganizationName;
-			NotNullPtr<UI::GUITextBox> txtOrganizationName;
-			NotNullPtr<UI::GUILabel> lblOrganizationName2;
-			NotNullPtr<UI::GUILabel> lblOrganizationUnitName;
-			NotNullPtr<UI::GUITextBox> txtOrganizationUnitName;
-			NotNullPtr<UI::GUILabel> lblOrganizationUnitName2;
-			NotNullPtr<UI::GUILabel> lblCommonName;
-			NotNullPtr<UI::GUITextBox> txtCommonName;
-			NotNullPtr<UI::GUILabel> lblCommonName2;
-			NotNullPtr<UI::GUILabel> lblEmailAddress;
-			NotNullPtr<UI::GUITextBox> txtEmailAddress;
-			NotNullPtr<UI::GUILabel> lblValidDays;
-			NotNullPtr<UI::GUITextBox> txtValidDays;
-			NotNullPtr<UI::GUICheckBox> chkCACert;
-			NotNullPtr<UI::GUICheckBox> chkDigitalSign;
-			NotNullPtr<UI::GUILabel> lblSAN;
-			NotNullPtr<UI::GUITextBox> txtSAN;
-			NotNullPtr<UI::GUIButton> btnSANAdd;
-			NotNullPtr<UI::GUIListBox> lbSAN;
-			NotNullPtr<UI::GUIButton> btnSANClear;
-			NotNullPtr<UI::GUIButton> btnCSRGenerate;
-			NotNullPtr<UI::GUIButton> btnSelfSignedCert;
+			NN<UI::GUILabel> lblKey;
+			NN<UI::GUITextBox> txtKeyDetail;
+			NN<UI::GUIButton> btnKeyGenerate;
+			NN<UI::GUIButton> btnKeyView;
+			NN<UI::GUIButton> btnKeySave;
+			NN<UI::GUILabel> lblCountryName;
+			NN<UI::GUITextBox> txtCountryName;
+			NN<UI::GUILabel> lblCountryName2;
+			NN<UI::GUILabel> lblStateOrProvinceName;
+			NN<UI::GUITextBox> txtStateOrProvinceName;
+			NN<UI::GUILabel> lblStateOrProvinceName2;
+			NN<UI::GUILabel> lblLocalityName;
+			NN<UI::GUITextBox> txtLocalityName;
+			NN<UI::GUILabel> lblLocalityName2;
+			NN<UI::GUILabel> lblOrganizationName;
+			NN<UI::GUITextBox> txtOrganizationName;
+			NN<UI::GUILabel> lblOrganizationName2;
+			NN<UI::GUILabel> lblOrganizationUnitName;
+			NN<UI::GUITextBox> txtOrganizationUnitName;
+			NN<UI::GUILabel> lblOrganizationUnitName2;
+			NN<UI::GUILabel> lblCommonName;
+			NN<UI::GUITextBox> txtCommonName;
+			NN<UI::GUILabel> lblCommonName2;
+			NN<UI::GUILabel> lblEmailAddress;
+			NN<UI::GUITextBox> txtEmailAddress;
+			NN<UI::GUILabel> lblValidDays;
+			NN<UI::GUITextBox> txtValidDays;
+			NN<UI::GUICheckBox> chkCACert;
+			NN<UI::GUICheckBox> chkDigitalSign;
+			NN<UI::GUILabel> lblSAN;
+			NN<UI::GUITextBox> txtSAN;
+			NN<UI::GUIButton> btnSANAdd;
+			NN<UI::GUIListBox> lbSAN;
+			NN<UI::GUIButton> btnSANClear;
+			NN<UI::GUIButton> btnCSRGenerate;
+			NN<UI::GUIButton> btnSelfSignedCert;
 
-			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnKeyGenerateClicked(AnyType userObj);
 			static void __stdcall OnKeyViewClicked(AnyType userObj);
 			static void __stdcall OnKeySaveClicked(AnyType userObj);
@@ -68,11 +68,11 @@ namespace SSWR
 
 			Bool GetNames(Crypto::Cert::CertNames *names);
 			void DisplayKeyDetail();
-			void DisplayNames(NotNullPtr<Crypto::Cert::CertNames> names);
-			void DisplayExtensions(NotNullPtr<Crypto::Cert::CertExtensions> exts);
+			void DisplayNames(NN<Crypto::Cert::CertNames> names);
+			void DisplayExtensions(NN<Crypto::Cert::CertExtensions> exts);
 			void ClearExtensions();
 		public:
-			AVIRCertUtilForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRCertUtilForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCertUtilForm();
 
 			virtual void OnMonitorChanged();

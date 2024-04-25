@@ -22,10 +22,10 @@ namespace UI
 		Bool hasBorder;
 
 	public:
-		GUIPictureList(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Math::Size2D<UOSInt> iconSize);
+		GUIPictureList(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder, Math::Size2D<UOSInt> iconSize);
 		virtual ~GUIPictureList();
 
-		virtual void OnDraw(NotNullPtr<Media::DrawImage> img);
+		virtual void OnDraw(NN<Media::DrawImage> img);
 		virtual void OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys);
 
 		UOSInt IndexFromPoint(Math::Coord2D<OSInt> pos);

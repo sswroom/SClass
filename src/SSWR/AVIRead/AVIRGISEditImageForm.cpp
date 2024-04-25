@@ -9,7 +9,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnImageChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISEditImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditImageForm>();
+	NN<SSWR::AVIRead::AVIRGISEditImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditImageForm>();
 	me->currImage = (OSInt)me->lbImages->GetSelectedItem().p;
 	me->UpdateImgStat();
 	if (me->chkAutoPan->IsChecked())
@@ -50,7 +50,7 @@ void SSWR::AVIRead::AVIRGISEditImageForm::UpdateImgStat()
 
 Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISEditImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditImageForm>();
+	NN<SSWR::AVIRead::AVIRGISEditImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditImageForm>();
 	if (me->currImage == -1)
 		return false;
 	if (!me->chkEdit->IsChecked())
@@ -59,7 +59,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseDown(AnyType userObj,
 	if (me->downType != 0)
 	{
 		Math::Geometry::Polygon *pg;
-		NotNullPtr<Math::Geometry::LinearRing> lr;
+		NN<Math::Geometry::LinearRing> lr;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
@@ -89,7 +89,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseDown(AnyType userObj,
 
 Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISEditImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditImageForm>();
+	NN<SSWR::AVIRead::AVIRGISEditImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditImageForm>();
 	if (me->currImage == -1)
 	{
 		return false;
@@ -102,7 +102,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType userObj, M
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
 		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
-		NotNullPtr<Math::Geometry::VectorImage> img;
+		NN<Math::Geometry::VectorImage> img;
 		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
 		{
 			if (pt1.y > me->imgMin.y)
@@ -135,7 +135,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType userObj, M
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
 		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
-		NotNullPtr<Math::Geometry::VectorImage> img;
+		NN<Math::Geometry::VectorImage> img;
 		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
 		{
 			if (pt1.y > me->imgMin.y)
@@ -175,7 +175,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType userObj, M
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
 		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
-		NotNullPtr<Math::Geometry::VectorImage> img;
+		NN<Math::Geometry::VectorImage> img;
 		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
 		{
 			pt1.y = me->imgMin.y;
@@ -208,7 +208,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType userObj, M
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
 		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
-		NotNullPtr<Math::Geometry::VectorImage> img;
+		NN<Math::Geometry::VectorImage> img;
 		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
 		{
 			if (pt1.y < me->imgMax.y)
@@ -248,7 +248,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType userObj, M
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
 		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
-		NotNullPtr<Math::Geometry::VectorImage> img;
+		NN<Math::Geometry::VectorImage> img;
 		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
 		{
 			if (pt1.y < me->imgMax.y)
@@ -281,7 +281,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType userObj, M
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
 		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
-		NotNullPtr<Math::Geometry::VectorImage> img;
+		NN<Math::Geometry::VectorImage> img;
 		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
 		{
 			if (pt1.y < me->imgMax.y)
@@ -321,7 +321,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType userObj, M
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
 		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
-		NotNullPtr<Math::Geometry::VectorImage> img;
+		NN<Math::Geometry::VectorImage> img;
 		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
 		{
 			pt1.y = me->imgMin.y;
@@ -354,7 +354,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType userObj, M
 		Math::Coord2DDbl pt1 = me->navi->ScnXY2MapXY(scnPos);
 
 		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
-		NotNullPtr<Math::Geometry::VectorImage> img;
+		NN<Math::Geometry::VectorImage> img;
 		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
 		{
 			if (pt1.y > me->imgMin.y)
@@ -393,7 +393,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType userObj, M
 		Math::Coord2DDbl pt2 = me->navi->ScnXY2MapXY(scnPos - me->downPos);
 
 		Map::GetObjectSess *sess = me->lyr->BeginGetObject();
-		NotNullPtr<Math::Geometry::VectorImage> img;
+		NN<Math::Geometry::VectorImage> img;
 		if (img.Set((Math::Geometry::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage)))
 		{
 			img->SetBounds(me->imgMin.x + pt2.x - pt1.x, me->imgMin.y + pt2.y - pt1.y, me->imgMax.x + pt2.x - pt1.x, me->imgMax.y + pt2.y - pt1.y);
@@ -414,7 +414,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(AnyType userObj, M
 
 Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISEditImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditImageForm>();
+	NN<SSWR::AVIRead::AVIRGISEditImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISEditImageForm>();
 	if (me->currImage == -1)
 		return false;
 	if (me->downType == 1)
@@ -422,7 +422,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyType userObj,
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 
 		Math::Geometry::Polygon *pg;
-		NotNullPtr<Math::Geometry::LinearRing> lr;
+		NN<Math::Geometry::LinearRing> lr;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
@@ -447,7 +447,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyType userObj,
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 
 		Math::Geometry::Polygon *pg;
-		NotNullPtr<Math::Geometry::LinearRing> lr;
+		NN<Math::Geometry::LinearRing> lr;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
@@ -471,7 +471,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyType userObj,
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 
 		Math::Geometry::Polygon *pg;
-		NotNullPtr<Math::Geometry::LinearRing> lr;
+		NN<Math::Geometry::LinearRing> lr;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
@@ -496,7 +496,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyType userObj,
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 
 		Math::Geometry::Polygon *pg;
-		NotNullPtr<Math::Geometry::LinearRing> lr;
+		NN<Math::Geometry::LinearRing> lr;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
@@ -520,7 +520,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyType userObj,
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 
 		Math::Geometry::Polygon *pg;
-		NotNullPtr<Math::Geometry::LinearRing> lr;
+		NN<Math::Geometry::LinearRing> lr;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
@@ -545,7 +545,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyType userObj,
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 
 		Math::Geometry::Polygon *pg;
-		NotNullPtr<Math::Geometry::LinearRing> lr;
+		NN<Math::Geometry::LinearRing> lr;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
@@ -569,7 +569,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyType userObj,
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 
 		Math::Geometry::Polygon *pg;
-		NotNullPtr<Math::Geometry::LinearRing> lr;
+		NN<Math::Geometry::LinearRing> lr;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
@@ -594,7 +594,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyType userObj,
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 
 		Math::Geometry::Polygon *pg;
-		NotNullPtr<Math::Geometry::LinearRing> lr;
+		NN<Math::Geometry::LinearRing> lr;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
@@ -618,7 +618,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseMove(AnyType userObj,
 		Math::Coord2DDbl pt2 = me->navi->ScnXY2MapXY(scnPos - me->downPos);
 
 		Math::Geometry::Polygon *pg;
-		NotNullPtr<Math::Geometry::LinearRing> lr;
+		NN<Math::Geometry::LinearRing> lr;
 		Math::Coord2DDbl *ptList;
 		UOSInt nPoints;
 		NEW_CLASS(pg, Math::Geometry::Polygon(me->navi->GetSRID()));
@@ -762,7 +762,7 @@ Int32 SSWR::AVIRead::AVIRGISEditImageForm::CalcDownType(Math::Coord2D<OSInt> scn
 	}
 }
 
-SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::VectorLayer> lyr, IMapNavigator *navi) : UI::GUIForm(parent, 416, 408, ui)
+SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::VectorLayer> lyr, IMapNavigator *navi) : UI::GUIForm(parent, 416, 408, ui)
 {
 	Text::StringBuilderUTF8 sb;
 	this->core = core;

@@ -15,7 +15,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
+	NN<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -107,7 +107,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 			me->txtGPSActive->SetText(CSTR("Void"));
 		}
 	}
-	NotNullPtr<Net::WirelessLAN::Interface> wlanInterf;
+	NN<Net::WirelessLAN::Interface> wlanInterf;
 	if (me->wlanInterf.SetTo(wlanInterf))
 	{
 		ts = Data::Timestamp::UtcNow();
@@ -115,12 +115,12 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 		{
 			if (me->wlanScan-- <= 0)
 			{
-				NotNullPtr<Text::String> s;
+				NN<Text::String> s;
 				Text::String *str;
-				NotNullPtr<Text::String> ssid;
+				NN<Text::String> ssid;
 				Bool bssListUpd = false;
 				Data::ArrayListNN<Net::WirelessLAN::BSSInfo> bssList;
-				NotNullPtr<Net::WirelessLAN::BSSInfo> bss;
+				NN<Net::WirelessLAN::BSSInfo> bss;
 				wlanInterf->GetBSSList(bssList);
 				me->lvCurrWifi->ClearItems();
 
@@ -452,7 +452,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
+	NN<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
 	if (me->locSvc)
 	{
 		me->locSvc->UnregisterLocationHandler(OnGPSData, me);
@@ -467,7 +467,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSClicked(AnyType userObj)
 	else
 	{
 		IO::StreamType st;
-		NotNullPtr<IO::Stream> stm;
+		NN<IO::Stream> stm;
 		if (stm.Set(me->core->OpenStream(st, me, 0, true)))
 		{
 			Text::StringBuilderUTF8 sb;
@@ -482,7 +482,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
+	NN<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
 	if (me->captureWriter)
 	{
 		Sync::MutexUsage mutUsage(me->captureMut);
@@ -523,7 +523,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(AnyType user
 		sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
 		Sync::MutexUsage mutUsage(me->captureMut);
-		NotNullPtr<IO::FileStream> fs;
+		NN<IO::FileStream> fs;
 		NEW_CLASSNN(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		me->captureFS = fs.Ptr();
 		if (me->captureFS->IsError())
@@ -549,7 +549,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiDblClicked(AnyType userObj, UOSInt index)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
+	NN<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
 	Text::String *s = me->lvLogWifi->GetItemTextNew(index);
 	if (s)
 	{
@@ -560,7 +560,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiDblClicked(AnyType u
 
 void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
+	NN<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -659,7 +659,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveClicked(AnyType 
 
 void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveFClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
+	NN<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -729,7 +729,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveFClicked(AnyType
 
 Bool __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnFormClosing(AnyType userObj, CloseReason reason)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
+	NN<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
 	Manage::HiResClock clk;
 	if (me->ui->ShowMsgYesNo(CSTR("Are you sure to close?"), CSTR("Question"), me))
 	{
@@ -741,9 +741,9 @@ Bool __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnFormClosing(AnyType userObj
 	return true;
 }
 
-void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(AnyType userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates)
+void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(AnyType userObj, NN<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
+	NN<SSWR::AVIRead::AVIRWifiCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWifiCaptureForm>();
 	if (me->currActive || record->valid != 0)
 	{
 		Sync::MutexUsage mutUsage(me->captureMut);
@@ -777,7 +777,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(AnyType userObj, No
 	me->gpsChg = true;
 }
 
-SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Wifi Capture"));
@@ -801,8 +801,8 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(Optional<UI::GUIClientCo
 	{
 		if (this->sensorMgr.GetSensorType(i) == IO::Sensor::SensorType::Accelerometer)
 		{
-			NotNullPtr<IO::Sensor> sensor;
-			NotNullPtr<IO::SensorAccelerometer> acc;
+			NN<IO::Sensor> sensor;
+			NN<IO::SensorAccelerometer> acc;
 			if (this->sensorMgr.CreateSensor(i).SetTo(sensor) && sensor->GetSensorAccelerator().SetTo(acc))
 			{
 				NEW_CLASS(this->motion, IO::MotionDetectorAccelerometer(acc, true));
@@ -818,7 +818,7 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(Optional<UI::GUIClientCo
 	i = interfList.GetCount();
 	while (i-- > 1)
 	{
-		NotNullPtr<Net::WirelessLAN::Interface> interf = interfList.GetItemNoCheck(i);
+		NN<Net::WirelessLAN::Interface> interf = interfList.GetItemNoCheck(i);
 		interf.Delete();
 	}
 	this->wlanScan = 0;

@@ -21,9 +21,9 @@
 #include "Text/MyStringW.h"
 #include "UI/GUIForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRCore::FormClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm)
+void __stdcall SSWR::AVIRead::AVIRCore::FormClosed(AnyType userObj, NN<UI::GUIForm> frm)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCore> me = userObj.GetNN<SSWR::AVIRead::AVIRCore>();
+	NN<SSWR::AVIRead::AVIRCore> me = userObj.GetNN<SSWR::AVIRead::AVIRCore>();
 	me->frms.RemoveAt(me->frms.IndexOf(frm));
 	if (me->gisForm == frm.Ptr())
 	{
@@ -31,13 +31,13 @@ void __stdcall SSWR::AVIRead::AVIRCore::FormClosed(AnyType userObj, NotNullPtr<U
 	}
 }
 
-void SSWR::AVIRead::AVIRCore::InitForm(NotNullPtr<UI::GUIForm> frm)
+void SSWR::AVIRead::AVIRCore::InitForm(NN<UI::GUIForm> frm)
 {
 	frm->HandleFormClosed(FormClosed, this);
 	this->frms.Add(frm);
 }
 
-SSWR::AVIRead::AVIRCore::AVIRCore(NotNullPtr<UI::GUICore> ui) : vioPinMgr(4)
+SSWR::AVIRead::AVIRCore::AVIRCore(NN<UI::GUICore> ui) : vioPinMgr(4)
 {
 	WChar wbuff[512];
 	WChar wbuff2[32];
@@ -85,7 +85,7 @@ SSWR::AVIRead::AVIRCore::AVIRCore(NotNullPtr<UI::GUICore> ui) : vioPinMgr(4)
 			Text::StrOSInt(Text::StrConcatC(wbuff2, L"AudioDevice", 11), i);
 			if (reg->GetValueStr(wbuff2, wbuff) != 0)
 			{
-				NotNullPtr<Text::String> devName = Text::String::NewNotNull(wbuff);
+				NN<Text::String> devName = Text::String::NewNotNull(wbuff);
 				this->audDevice.AddDevice(devName->ToCString());
 				this->audDevList.Add(devName);
 			}
@@ -120,7 +120,7 @@ SSWR::AVIRead::AVIRCore::~AVIRCore()
 
 void SSWR::AVIRead::AVIRCore::OpenGSMModem(IO::Stream *modemPort)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGSMModemForm> frm;
+	NN<SSWR::AVIRead::AVIRGSMModemForm> frm;
 	NEW_CLASSNN(frm, SSWR::AVIRead::AVIRGSMModemForm(0, ui, *this, modemPort));
 	InitForm(frm);
 	frm->Show();
@@ -142,9 +142,9 @@ IO::Stream *SSWR::AVIRead::AVIRCore::OpenStream(OptOut<IO::StreamType> st, Optio
 	return retStm;
 }
 
-void SSWR::AVIRead::AVIRCore::OpenHex(NotNullPtr<IO::StreamData> fd, IO::FileAnalyse::IFileAnalyse *fileAnalyse)
+void SSWR::AVIRead::AVIRCore::OpenHex(NN<IO::StreamData> fd, IO::FileAnalyse::IFileAnalyse *fileAnalyse)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHexViewerForm> frm;
+	NN<SSWR::AVIRead::AVIRHexViewerForm> frm;
 	NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHexViewerForm(0, ui, *this));
 	InitForm(frm);
 	frm->SetData(fd, fileAnalyse);
@@ -161,10 +161,10 @@ void SSWR::AVIRead::AVIRCore::EndLoad()
 	this->batchLoad = false;
 	if (this->batchLyrs)
 	{
-		NotNullPtr<AVIRead::AVIRGISForm> gisForm;
-		NotNullPtr<Map::MapEnv> env;
-		NotNullPtr<Map::MapView> view;
-		NotNullPtr<Math::CoordinateSystem> csys = this->batchLyrs->GetItem(0)->GetCoordinateSystem();
+		NN<AVIRead::AVIRGISForm> gisForm;
+		NN<Map::MapEnv> env;
+		NN<Map::MapView> view;
+		NN<Math::CoordinateSystem> csys = this->batchLyrs->GetItem(0)->GetCoordinateSystem();
 		NEW_CLASSNN(env, Map::MapEnv(CSTR("Untitled"), 0xffc0c0ff, csys->Clone()));
 		if (this->batchLyrs->GetCount() > 0)
 		{
@@ -183,9 +183,9 @@ void SSWR::AVIRead::AVIRCore::EndLoad()
 	}
 }
 
-Bool SSWR::AVIRead::AVIRCore::LoadData(NotNullPtr<IO::StreamData> data, IO::PackageFile *pkgFile)
+Bool SSWR::AVIRead::AVIRCore::LoadData(NN<IO::StreamData> data, IO::PackageFile *pkgFile)
 {
-	NotNullPtr<IO::ParsedObject> pobj;
+	NN<IO::ParsedObject> pobj;
 	if (pobj.Set(this->parsers->ParseFile(data, pkgFile)))
 	{
 		OpenObject(pobj);
@@ -197,9 +197,9 @@ Bool SSWR::AVIRead::AVIRCore::LoadData(NotNullPtr<IO::StreamData> data, IO::Pack
 	}
 }
 
-Bool SSWR::AVIRead::AVIRCore::LoadDataType(NotNullPtr<IO::StreamData> data, IO::PackageFile *pkgFile, IO::ParserType targetType)
+Bool SSWR::AVIRead::AVIRCore::LoadDataType(NN<IO::StreamData> data, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	NotNullPtr<IO::ParsedObject> pobj;
+	NN<IO::ParsedObject> pobj;
 	if (pobj.Set(this->parsers->ParseFile(data, pkgFile, targetType)))
 	{
 		OpenObject(pobj);
@@ -211,7 +211,7 @@ Bool SSWR::AVIRead::AVIRCore::LoadDataType(NotNullPtr<IO::StreamData> data, IO::
 	}
 }
 
-NotNullPtr<Parser::ParserList> SSWR::AVIRead::AVIRCore::GetParserList()
+NN<Parser::ParserList> SSWR::AVIRead::AVIRCore::GetParserList()
 {
 	return this->parsers;
 }
@@ -226,17 +226,17 @@ Media::ColorManager *SSWR::AVIRead::AVIRCore::GetColorMgr()
 	return &this->colorMgr;
 }
 
-NotNullPtr<Net::SocketFactory> SSWR::AVIRead::AVIRCore::GetSocketFactory()
+NN<Net::SocketFactory> SSWR::AVIRead::AVIRCore::GetSocketFactory()
 {
 	return this->sockf;
 }
 
-NotNullPtr<Media::DrawEngine> SSWR::AVIRead::AVIRCore::GetDrawEngine()
+NN<Media::DrawEngine> SSWR::AVIRead::AVIRCore::GetDrawEngine()
 {
 	return this->eng;
 }
 
-NotNullPtr<Text::EncodingFactory> SSWR::AVIRead::AVIRCore::GetEncFactory()
+NN<Text::EncodingFactory> SSWR::AVIRead::AVIRCore::GetEncFactory()
 {
 	return this->encFact;
 }
@@ -280,7 +280,7 @@ void SSWR::AVIRead::AVIRCore::SetCodePage(UInt32 codePage)
 	this->exporters.SetCodePage(codePage);
 }
 
-NotNullPtr<IO::LogTool> SSWR::AVIRead::AVIRCore::GetLog()
+NN<IO::LogTool> SSWR::AVIRead::AVIRCore::GetLog()
 {
 	return this->log;
 }
@@ -349,7 +349,7 @@ void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Data::ArrayListStringNN *devLis
 		}
 		else
 		{
-			Data::ArrayIterator<NotNullPtr<Text::String>> it = devList->Iterator();
+			Data::ArrayIterator<NN<Text::String>> it = devList->Iterator();
 			i = 0;
 			while (it.HasNext())
 			{
@@ -367,8 +367,8 @@ void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Data::ArrayListStringNN *devLis
 	this->audDevice.ClearDevices();
 	if (devList)
 	{
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = devList->Iterator();
-		NotNullPtr<Text::String> s;
+		Data::ArrayIterator<NN<Text::String>> it = devList->Iterator();
+		NN<Text::String> s;
 		while (it.HasNext())
 		{
 			s = it.Next();
@@ -394,10 +394,10 @@ Media::IAudioRenderer *SSWR::AVIRead::AVIRCore::BindAudio(Media::IAudioSource *a
 	return this->audDevice.BindAudio(audSrc);
 }
 
-Bool SSWR::AVIRead::AVIRCore::GenLinePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, Double lineThick, UInt32 lineColor, NotNullPtr<Media::ColorConv> colorConv)
+Bool SSWR::AVIRead::AVIRCore::GenLinePreview(NN<Media::DrawImage> img, NN<Media::DrawEngine> eng, Double lineThick, UInt32 lineColor, NN<Media::ColorConv> colorConv)
 {
-	NotNullPtr<Media::DrawPen> p;
-	NotNullPtr<Media::DrawBrush> b;
+	NN<Media::DrawPen> p;
+	NN<Media::DrawBrush> b;
 	Double dpi = img->GetHDPI();
 	b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
 	img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize().ToDouble(), 0, b);
@@ -409,14 +409,14 @@ Bool SSWR::AVIRead::AVIRCore::GenLinePreview(NotNullPtr<Media::DrawImage> img, N
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, NotNullPtr<Map::MapEnv> env, UOSInt lineStyle, NotNullPtr<Media::ColorConv> colorConv)
+Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(NN<Media::DrawImage> img, NN<Media::DrawEngine> eng, NN<Map::MapEnv> env, UOSInt lineStyle, NN<Media::ColorConv> colorConv)
 {
 	Math::Size2D<UOSInt> size = img->GetSize();
 	Double dpi = img->GetHDPI();
 	if (lineStyle >= env->GetLineStyleCount())
 	{
-		NotNullPtr<Media::DrawFont> f = img->NewFontPt(CSTR("Arial"), 9, Media::DrawEngine::DFS_ANTIALIAS, 0);
-		NotNullPtr<Media::DrawBrush> b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
+		NN<Media::DrawFont> f = img->NewFontPt(CSTR("Arial"), 9, Media::DrawEngine::DFS_ANTIALIAS, 0);
+		NN<Media::DrawBrush> b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
 		img->DrawRect(Math::Coord2DDbl(0, 0), size.ToDouble(), 0, b);
 		img->DelBrush(b);
 		b = img->NewBrushARGB(colorConv->ConvRGB8(0xff000000));
@@ -426,8 +426,8 @@ Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(NotNullPtr<Media::DrawImage> i
 		return false;
 	}
 
-	NotNullPtr<Media::DrawPen> p;
-	NotNullPtr<Media::DrawBrush> b;
+	NN<Media::DrawPen> p;
+	NN<Media::DrawBrush> b;
 	b = img->NewBrushARGB(colorConv->ConvRGB8(0xffc0c0c0));
 	img->DrawRect(Math::Coord2DDbl(0, 0), size.ToDouble(), 0, b);
 	img->DelBrush(b);
@@ -447,15 +447,15 @@ Bool SSWR::AVIRead::AVIRCore::GenLineStylePreview(NotNullPtr<Media::DrawImage> i
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, NotNullPtr<Map::MapEnv> env, UOSInt fontStyle, NotNullPtr<Media::ColorConv> colorConv)
+Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(NN<Media::DrawImage> img, NN<Media::DrawEngine> eng, NN<Map::MapEnv> env, UOSInt fontStyle, NN<Media::ColorConv> colorConv)
 {
 	Math::Size2D<UOSInt> size = img->GetSize();
 	Double dpi = img->GetHDPI();
 	
 	if (fontStyle >= env->GetFontStyleCount())
 	{
-		NotNullPtr<Media::DrawFont> f = img->NewFontPt(CSTR("Arial"), 9.0, Media::DrawEngine::DFS_ANTIALIAS, 0);
-		NotNullPtr<Media::DrawBrush> b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
+		NN<Media::DrawFont> f = img->NewFontPt(CSTR("Arial"), 9.0, Media::DrawEngine::DFS_ANTIALIAS, 0);
+		NN<Media::DrawBrush> b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
 		img->DrawRect(Math::Coord2DDbl(0, 0), size.ToDouble(), 0, b);
 		img->DelBrush(b);
 		b = img->NewBrushARGB(colorConv->ConvRGB8(0xff000000));
@@ -465,8 +465,8 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(NotNullPtr<Media::DrawImage> i
 		return false;
 	}
 
-	NotNullPtr<Media::DrawFont> f;
-	NotNullPtr<Media::DrawBrush> b;
+	NN<Media::DrawFont> f;
+	NN<Media::DrawBrush> b;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Math::Coord2DDbl refPos;
@@ -474,7 +474,7 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(NotNullPtr<Media::DrawImage> i
 	img->DrawRect(Math::Coord2DDbl(0, 0), size.ToDouble(), 0, b);
 	img->DelBrush(b);
 
-	NotNullPtr<Text::String> fontName;
+	NN<Text::String> fontName;
 	Double fontSizePt;
 	Bool bold;
 	UInt32 fontColor;
@@ -507,15 +507,15 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(NotNullPtr<Media::DrawImage> i
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRCore::GenFontPreview(NotNullPtr<Media::DrawImage> img, NotNullPtr<Media::DrawEngine> eng, Text::CStringNN fontName, Double fontSizePt, UInt32 fontColor, NotNullPtr<Media::ColorConv> colorConv)
+Bool SSWR::AVIRead::AVIRCore::GenFontPreview(NN<Media::DrawImage> img, NN<Media::DrawEngine> eng, Text::CStringNN fontName, Double fontSizePt, UInt32 fontColor, NN<Media::ColorConv> colorConv)
 {
 	if (fontName.leng == 0)
 	{
 		fontName = CSTR("Arial");
 	}
 	Math::Size2DDbl sz;
-	NotNullPtr<Media::DrawFont> f;
-	NotNullPtr<Media::DrawBrush> b;
+	NN<Media::DrawFont> f;
+	NN<Media::DrawBrush> b;
 	b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));
 	img->DrawRect(Math::Coord2DDbl(0, 0), img->GetSize().ToDouble(), 0, b);
 	img->DelBrush(b);
@@ -529,7 +529,7 @@ Bool SSWR::AVIRead::AVIRCore::GenFontPreview(NotNullPtr<Media::DrawImage> img, N
 	return true;
 }
 
-void SSWR::AVIRead::AVIRCore::ShowForm(NotNullPtr<UI::GUIForm> frm)
+void SSWR::AVIRead::AVIRCore::ShowForm(NN<UI::GUIForm> frm)
 {
 	frm->Show();
 	this->InitForm(frm);
@@ -537,7 +537,7 @@ void SSWR::AVIRead::AVIRCore::ShowForm(NotNullPtr<UI::GUIForm> frm)
 
 void SSWR::AVIRead::AVIRCore::CloseAllForm()
 {
-	NotNullPtr<UI::GUIForm> frm;
+	NN<UI::GUIForm> frm;
 	UOSInt i = this->frms.GetCount();
 	while (i-- > 0)
 	{

@@ -26,19 +26,19 @@ namespace SSWR
 			} OSItem;
 			
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			const UTF8Char *currUserAgent;
 			UOSInt currUserAgentLen;
 			Data::ArrayList<OSItem*> *osList;
 
-			NotNullPtr<UI::GUIPanel> pnlFilter;
-			NotNullPtr<UI::GUILabel> lblFilterOS;
-			NotNullPtr<UI::GUIComboBox> cboFilterOS;
-			NotNullPtr<UI::GUILabel> lblFilterBrowser;
-			NotNullPtr<UI::GUIComboBox> cboFilterBrowser;
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUIButton> btnOk;
-			NotNullPtr<UI::GUIListView> lvUserAgent;
+			NN<UI::GUIPanel> pnlFilter;
+			NN<UI::GUILabel> lblFilterOS;
+			NN<UI::GUIComboBox> cboFilterOS;
+			NN<UI::GUILabel> lblFilterBrowser;
+			NN<UI::GUIComboBox> cboFilterBrowser;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUIButton> btnOk;
+			NN<UI::GUIListView> lvUserAgent;
 
 			static void __stdcall OnOkClicked(AnyType userObj);
 			static void __stdcall OnFilterChg(AnyType userObj);
@@ -46,7 +46,7 @@ namespace SSWR
 			static void __stdcall OnUserAgentDblClk(AnyType userObj, UOSInt itemIndex);
 			void UpdateUAList(Manage::OSInfo::OSType os, Text::CString osVer, Net::BrowserInfo::BrowserType browser);
 		public:
-			AVIRUserAgentSelForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Text::CString currUserAgent);
+			AVIRUserAgentSelForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::CString currUserAgent);
 			virtual ~AVIRUserAgentSelForm();
 
 			virtual void OnMonitorChanged();

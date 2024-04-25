@@ -12,7 +12,7 @@ namespace DB
 	class CSVFile : public DB::ReadingDB
 	{
 	private:
-		NotNullPtr<Text::String> fileName;
+		NN<Text::String> fileName;
 		IO::SeekableStream *stm;
 		Bool releaseStm;
 		UInt32 codePage;
@@ -20,17 +20,17 @@ namespace DB
 		Bool nullIfEmpty;
 
 	public:
-		CSVFile(NotNullPtr<Text::String> fileName, UInt32 codePage);
+		CSVFile(NN<Text::String> fileName, UInt32 codePage);
 		CSVFile(Text::CStringNN fileName, UInt32 codePage);
-		CSVFile(NotNullPtr<IO::SeekableStream> stm, UInt32 codePage);
-		CSVFile(NotNullPtr<IO::StreamData> fd, UInt32 codePage);
+		CSVFile(NN<IO::SeekableStream> stm, UInt32 codePage);
+		CSVFile(NN<IO::StreamData> fd, UInt32 codePage);
 		virtual ~CSVFile();
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
 		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
-		virtual void CloseReader(NotNullPtr<DBReader> r);
-		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
+		virtual void CloseReader(NN<DBReader> r);
+		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
 		void SetNoHeader(Bool noHeader);
 		void SetNullIfEmpty(Bool nullIfEmpty);
@@ -40,7 +40,7 @@ namespace DB
 	{
 	private:
 		Optional<IO::Stream> stm;
-		NotNullPtr<IO::Reader> rdr;
+		NN<IO::Reader> rdr;
 		UOSInt nCol;
 		UOSInt nHdr;
 		UTF8Char *row;
@@ -54,7 +54,7 @@ namespace DB
 		Data::QueryConditions *condition;
 
 	public:
-		CSVReader(Optional<IO::Stream> stm, NotNullPtr<IO::Reader> rdr, Bool noHeader, Bool nullIfEmpty, Data::QueryConditions *condition);
+		CSVReader(Optional<IO::Stream> stm, NN<IO::Reader> rdr, Bool noHeader, Bool nullIfEmpty, Data::QueryConditions *condition);
 		virtual ~CSVReader();
 
 		virtual Bool ReadNext();
@@ -63,7 +63,7 @@ namespace DB
 		virtual Int32 GetInt32(UOSInt colIndex);
 		virtual Int64 GetInt64(UOSInt colIndex);
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
-		virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb);
 		virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
 		virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
@@ -72,15 +72,15 @@ namespace DB
 		virtual UOSInt GetBinarySize(UOSInt colIndex);
 		virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff);
 		virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex);
-		virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid);
-		virtual Bool GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item);
+		virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid);
+		virtual Bool GetVariItem(UOSInt colIndex, NN<Data::VariItem> item);
 
 		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
 		virtual Bool IsNull(UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
-		virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
+		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);
 
-		virtual NotNullPtr<Data::VariItem> GetNewItem(Text::CStringNN name);
+		virtual NN<Data::VariItem> GetNewItem(Text::CStringNN name);
 	};
 }
 #endif

@@ -10,9 +10,9 @@
 
 UInt32 __stdcall Net::WebServer::MemoryWebSessionManager::CheckThread(AnyType userObj)
 {
-	NotNullPtr<Net::WebServer::MemoryWebSessionManager> me = userObj.GetNN<Net::WebServer::MemoryWebSessionManager>();
+	NN<Net::WebServer::MemoryWebSessionManager> me = userObj.GetNN<Net::WebServer::MemoryWebSessionManager>();
 	Optional<Net::WebServer::MemoryWebSession> sess;
-	NotNullPtr<MemoryWebSession> nnsess;
+	NN<MemoryWebSession> nnsess;
 	Int64 sessId;
 	UOSInt i;
 	OSInt j;
@@ -66,14 +66,14 @@ UInt32 __stdcall Net::WebServer::MemoryWebSessionManager::CheckThread(AnyType us
 	return 0;
 }
 
-Int64 Net::WebServer::MemoryWebSessionManager::GetSessId(NotNullPtr<Net::WebServer::IWebRequest> req)
+Int64 Net::WebServer::MemoryWebSessionManager::GetSessId(NN<Net::WebServer::IWebRequest> req)
 {
 	UTF8Char *sbuff;
 	Text::PString strs[2];
 	UOSInt strCnt = 2;
 	Int64 sessId = 0;
 
-	NotNullPtr<Text::String> cookie;
+	NN<Text::String> cookie;
 	if (!req->GetSHeader(CSTR("Cookie")).SetTo(cookie))
 	{
 		return 0;
@@ -118,7 +118,7 @@ Net::WebServer::MemoryWebSessionManager::MemoryWebSessionManager(Text::CStringNN
 
 Net::WebServer::MemoryWebSessionManager::~MemoryWebSessionManager()
 {
-	NotNullPtr<Net::WebServer::MemoryWebSession> sess;
+	NN<Net::WebServer::MemoryWebSession> sess;
 
 	this->chkToStop = true;
 	this->chkEvt.Set();
@@ -127,7 +127,7 @@ Net::WebServer::MemoryWebSessionManager::~MemoryWebSessionManager()
 		Sync::SimpleThread::Sleep(10);
 	}
 
-	Data::ArrayIterator<NotNullPtr<MemoryWebSession>> it = this->sesses.Iterator();
+	Data::ArrayIterator<NN<MemoryWebSession>> it = this->sesses.Iterator();
 	while (it.HasNext())
 	{
 		sess = it.Next();
@@ -138,12 +138,12 @@ Net::WebServer::MemoryWebSessionManager::~MemoryWebSessionManager()
 	this->cookieName->Release();
 }
 
-Optional<Net::WebServer::IWebSession> Net::WebServer::MemoryWebSessionManager::GetSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
+Optional<Net::WebServer::IWebSession> Net::WebServer::MemoryWebSessionManager::GetSession(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Int64 sessId = this->GetSessId(req);
 	if (sessId == 0)
 		return 0;
-	NotNullPtr<Net::WebServer::MemoryWebSession> sess;
+	NN<Net::WebServer::MemoryWebSession> sess;
 	if (Optional<Net::WebServer::MemoryWebSession>::ConvertFrom(this->GetSession(sessId)).SetTo(sess))
 	{
 		if (!sess->RequestValid(req->GetBrowser(), req->GetOS()))
@@ -151,16 +151,16 @@ Optional<Net::WebServer::IWebSession> Net::WebServer::MemoryWebSessionManager::G
 			sess->EndUse();
 			return 0;
 		}
-		return NotNullPtr<Net::WebServer::IWebSession>(sess);
+		return NN<Net::WebServer::IWebSession>(sess);
 	}
 	return 0;
 }
 
-NotNullPtr<Net::WebServer::IWebSession> Net::WebServer::MemoryWebSessionManager::CreateSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
+NN<Net::WebServer::IWebSession> Net::WebServer::MemoryWebSessionManager::CreateSession(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	NotNullPtr<Net::WebServer::IWebSession> sess;
+	NN<Net::WebServer::IWebSession> sess;
 	if (this->GetSession(req, resp).SetTo(sess))
 		return sess;
 	Int64 sessId = this->GenSessId(req);
@@ -170,18 +170,18 @@ NotNullPtr<Net::WebServer::IWebSession> Net::WebServer::MemoryWebSessionManager:
 	NEW_CLASSNN(sess, Net::WebServer::MemoryWebSession(sessId, req->GetBrowser(), req->GetOS()));
 	Sync::MutexUsage mutUsage(this->mut);
 	i = this->sessIds.SortedInsert(sessId);
-	this->sesses.Insert(i, NotNullPtr<Net::WebServer::MemoryWebSession>::ConvertFrom(sess));
+	this->sesses.Insert(i, NN<Net::WebServer::MemoryWebSession>::ConvertFrom(sess));
 	mutUsage.EndUse();
-	NotNullPtr<Net::WebServer::MemoryWebSession>::ConvertFrom(sess)->BeginUse();
+	NN<Net::WebServer::MemoryWebSession>::ConvertFrom(sess)->BeginUse();
 	return sess;
 }
 
-void Net::WebServer::MemoryWebSessionManager::DeleteSession(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
+void Net::WebServer::MemoryWebSessionManager::DeleteSession(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Int64 sessId = GetSessId(req);
 	OSInt i;
 	Optional<Net::WebServer::MemoryWebSession> sess;
-	NotNullPtr<MemoryWebSession> nnsess;
+	NN<MemoryWebSession> nnsess;
 	if (sessId != 0)
 	{
 		sess = 0;
@@ -204,14 +204,14 @@ void Net::WebServer::MemoryWebSessionManager::DeleteSession(NotNullPtr<Net::WebS
 	}
 }
 
-Int64 Net::WebServer::MemoryWebSessionManager::GenSessId(NotNullPtr<Net::WebServer::IWebRequest> req)
+Int64 Net::WebServer::MemoryWebSessionManager::GenSessId(NN<Net::WebServer::IWebRequest> req)
 {
 	Data::DateTime dt;
 	UInt8 buff[8];
 	buff[0] = 0;
 	buff[1] = 0;
 	*(UInt16*)&buff[2] = req->GetClientPort();
-	NotNullPtr<const Net::SocketUtil::AddressInfo> addr = req->GetClientAddr();
+	NN<const Net::SocketUtil::AddressInfo> addr = req->GetClientAddr();
 	if (addr->addrType == Net::AddrType::IPv4)
 	{
 		*(UInt32*)&buff[4] = *(UInt32*)addr->addr;
@@ -230,10 +230,10 @@ Int64 Net::WebServer::MemoryWebSessionManager::GenSessId(NotNullPtr<Net::WebServ
 	return dt.ToTicks() + *(Int64*)buff;
 }
 
-NotNullPtr<Net::WebServer::IWebSession> Net::WebServer::MemoryWebSessionManager::CreateSession(Int64 sessId)
+NN<Net::WebServer::IWebSession> Net::WebServer::MemoryWebSessionManager::CreateSession(Int64 sessId)
 {
 	OSInt si;
-	NotNullPtr<Net::WebServer::MemoryWebSession> sess;
+	NN<Net::WebServer::MemoryWebSession> sess;
 	Sync::MutexUsage mutUsage(this->mut);
 	si = this->sessIds.SortedIndexOf(sessId);
 	if (si >= 0 && this->sesses.GetItem((UOSInt)si).SetTo(sess))
@@ -244,10 +244,10 @@ NotNullPtr<Net::WebServer::IWebSession> Net::WebServer::MemoryWebSessionManager:
 	{
 		NEW_CLASSNN(sess, Net::WebServer::MemoryWebSession(sessId, Net::BrowserInfo::BT_UNKNOWN, Manage::OSInfo::OT_UNKNOWN));
 		UOSInt i = this->sessIds.SortedInsert(sessId);
-		this->sesses.Insert(i, NotNullPtr<Net::WebServer::MemoryWebSession>::ConvertFrom(sess));
+		this->sesses.Insert(i, NN<Net::WebServer::MemoryWebSession>::ConvertFrom(sess));
 	}
 	mutUsage.EndUse();
-	NotNullPtr<Net::WebServer::MemoryWebSession>::ConvertFrom(sess)->BeginUse();
+	NN<Net::WebServer::MemoryWebSession>::ConvertFrom(sess)->BeginUse();
 	return sess;
 }
 
@@ -274,7 +274,7 @@ void Net::WebServer::MemoryWebSessionManager::DeleteSession(Int64 sessId)
 {
 	OSInt i;
 	Optional<Net::WebServer::MemoryWebSession> sess;
-	NotNullPtr<MemoryWebSession> nnsess;
+	NN<MemoryWebSession> nnsess;
 	sess = 0;
 	Sync::MutexUsage mutUsage(this->mut);
 	i = this->sessIds.SortedIndexOf(sessId);
@@ -293,7 +293,7 @@ void Net::WebServer::MemoryWebSessionManager::DeleteSession(Int64 sessId)
 	}
 }
 
-void Net::WebServer::MemoryWebSessionManager::GetSessionIds(NotNullPtr<Data::ArrayList<Int64>> sessIds)
+void Net::WebServer::MemoryWebSessionManager::GetSessionIds(NN<Data::ArrayList<Int64>> sessIds)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	sessIds->AddAll(this->sessIds);

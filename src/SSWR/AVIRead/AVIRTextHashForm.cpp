@@ -6,7 +6,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRTextHashForm::OnGenerateClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTextHashForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTextHashForm>();
+	NN<SSWR::AVIRead::AVIRTextHashForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTextHashForm>();
 	UInt8 buff[64];
 	Text::StringBuilderUTF8 sb;
 	me->txtText->GetText(sb);
@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRTextHashForm::OnGenerateClicked(AnyType userOb
 		me->cboHashType->Focus();
 		return;
 	}
-	NotNullPtr<Text::TextBinEnc::ITextBinEnc> srcEnc;
+	NN<Text::TextBinEnc::ITextBinEnc> srcEnc;
 	if (!me->cboEncrypt->GetSelectedItem().GetOpt<Text::TextBinEnc::ITextBinEnc>().SetTo(srcEnc))
 	{
 		me->ui->ShowMsgOK(CSTR("Please select text encryption"), CSTR("Text Hash"), me);
@@ -54,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRTextHashForm::OnGenerateClicked(AnyType userOb
 	}
 }
 
-SSWR::AVIRead::AVIRTextHashForm::AVIRTextHashForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRTextHashForm::AVIRTextHashForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Text Hash"));

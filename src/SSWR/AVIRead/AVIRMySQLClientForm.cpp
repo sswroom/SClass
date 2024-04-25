@@ -9,7 +9,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMySQLClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMySQLClientForm>();
+	NN<SSWR::AVIRead::AVIRMySQLClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMySQLClientForm>();
 	if (me->cli)
 	{
 		DEL_CLASS(me->cli);
@@ -103,7 +103,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnQueryClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMySQLClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMySQLClientForm>();
+	NN<SSWR::AVIRead::AVIRMySQLClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMySQLClientForm>();
 	if (me->cli == 0)
 	{
 		return;
@@ -114,7 +114,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnQueryClicked(AnyType userOb
 	{
 		return;
 	}
-	NotNullPtr<DB::DBReader> reader;
+	NN<DB::DBReader> reader;
 	if (me->cli->ExecuteReader(sb.ToCString()).SetTo(reader))
 	{
 		me->UpdateResult(reader);
@@ -130,12 +130,12 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnQueryClicked(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMySQLClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMySQLClientForm>();
+	NN<SSWR::AVIRead::AVIRMySQLClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMySQLClientForm>();
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	UInt8 buff[48];
 	UOSInt i;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (me->cli)
 	{
 		if (!me->cliConnected && me->cli->ServerInfoRecv())
@@ -172,7 +172,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnTimerTick(AnyType userObj)
 }
 
 
-void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(NotNullPtr<DB::DBReader> r)
+void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(NN<DB::DBReader> r)
 {
 	OSInt rowChg;
 	UOSInt i;
@@ -261,7 +261,7 @@ void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(NotNullPtr<DB::DBReader> r
 	}
 }
 
-SSWR::AVIRead::AVIRMySQLClientForm::AVIRMySQLClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRMySQLClientForm::AVIRMySQLClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
 	this->SetText(CSTR("MySQL Client"));

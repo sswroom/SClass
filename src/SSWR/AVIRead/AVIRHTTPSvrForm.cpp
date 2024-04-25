@@ -41,7 +41,7 @@ SSWR::AVIRead::AVIRHTTPLog::~AVIRHTTPLog()
 	MemFree(this->entries);
 }
 
-void SSWR::AVIRead::AVIRHTTPLog::LogRequest(NotNullPtr<Net::WebServer::IWebRequest> req)
+void SSWR::AVIRead::AVIRHTTPLog::LogRequest(NN<Net::WebServer::IWebRequest> req)
 {
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
@@ -61,10 +61,10 @@ void SSWR::AVIRead::AVIRHTTPLog::LogRequest(NotNullPtr<Net::WebServer::IWebReque
 	this->entries[i].headerName->FreeAll();
 	this->entries[i].headerVal->FreeAll();
 	Data::ArrayListStringNN names;
-	NotNullPtr<Text::String> name;
+	NN<Text::String> name;
 	Text::StringBuilderUTF8 sb;
 	req->GetHeaderNames(names);
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = names.Iterator();
+	Data::ArrayIterator<NN<Text::String>> it = names.Iterator();
 	while (it.HasNext())
 	{
 		name = it.Next();
@@ -81,7 +81,7 @@ UOSInt SSWR::AVIRead::AVIRHTTPLog::GetNextIndex()
 	return this->currEnt;
 }
 
-void SSWR::AVIRead::AVIRHTTPLog::Use(NotNullPtr<Sync::MutexUsage> mutUsage)
+void SSWR::AVIRead::AVIRHTTPLog::Use(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->entMut);
 }
@@ -125,7 +125,7 @@ SSWR::AVIRead::AVIRHTTPLog::LogEntry *SSWR::AVIRead::AVIRHTTPLog::GetEntry(UOSIn
 
 void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPSvrForm>();
+	NN<SSWR::AVIRead::AVIRHTTPSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPSvrForm>();
 	if (me->svr)
 	{
 		return;
@@ -149,15 +149,15 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(AnyType userObj)
 
 	if (me->chkSSL->IsChecked())
 	{
-		NotNullPtr<Crypto::Cert::X509Cert> sslCert;
-		NotNullPtr<Crypto::Cert::X509File> sslKey;
+		NN<Crypto::Cert::X509Cert> sslCert;
+		NN<Crypto::Cert::X509File> sslKey;
 		if (!sslCert.Set(me->sslCert) || !sslKey.Set(me->sslKey))
 		{
 			me->ui->ShowMsgOK(CSTR("Please select SSL Cert/Key First"), CSTR("HTTP Server"), me);
 			return;
 		}
 		ssl = me->ssl;
-		NotNullPtr<Net::SSLEngine> nnssl;
+		NN<Net::SSLEngine> nnssl;
 		if (!ssl.SetTo(nnssl) || !nnssl->ServerSetCertsASN1(sslCert, sslKey, me->caCerts))
 		{
 			me->ui->ShowMsgOK(CSTR("Error in initializing Cert/Key"), CSTR("HTTP Server"), me);
@@ -177,7 +177,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(AnyType userObj)
 		IO::BuildTime::GetBuildTime(&dt);
 		dt.ToUTCTime();
 		sptr = dt.ToString(Text::StrConcatC(sbuff, UTF8STRC("AVIRead/")), "yyyyMMddHHmmss");
-		NotNullPtr<Net::WebServer::HTTPDirectoryHandler> dirHdlr;
+		NN<Net::WebServer::HTTPDirectoryHandler> dirHdlr;
 		NEW_CLASSNN(dirHdlr, Net::WebServer::HTTPDirectoryHandler(sb.ToCString(), me->chkAllowBrowse->IsChecked(), cacheSize, true));
 		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, dirHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTRP(sbuff, sptr), me->chkAllowProxy->IsChecked(), (Net::WebServer::KeepAlive)me->cboKeepAlive->GetSelectedItem().GetOSInt(), false));
 		if (me->svr->IsError())
@@ -204,7 +204,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(AnyType userObj)
 				me->log->AddFileLog(sb.ToCString(), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
 				me->svr->SetAccessLog(me->log, IO::LogHandler::LogLevel::Raw);
 				me->svr->SetRequestLog(me->reqLog);
-				NotNullPtr<UI::ListBoxLogger> logger;
+				NN<UI::ListBoxLogger> logger;
 				NEW_CLASSNN(logger, UI::ListBoxLogger(me, me->lbLog, 500, true));
 				me->logger = logger.Ptr();
 				me->log->AddLogHandler(logger, IO::LogHandler::LogLevel::Raw);
@@ -276,7 +276,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStopClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPSvrForm>();
+	NN<SSWR::AVIRead::AVIRHTTPSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPSvrForm>();
 	if (me->svr == 0)
 	{
 		return;
@@ -304,7 +304,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStopClick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnLogSel(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPSvrForm>();
+	NN<SSWR::AVIRead::AVIRHTTPSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPSvrForm>();
 	Optional<Text::String> s;
 	s = me->lbLog->GetSelectedItemTextNew();
 	me->txtLog->SetText(Text::String::OrEmpty(s)->ToCString());
@@ -313,7 +313,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnLogSel(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPSvrForm>();
+	NN<SSWR::AVIRead::AVIRHTTPSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPSvrForm>();
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[128];
@@ -394,7 +394,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnAccessSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPSvrForm>();
+	NN<SSWR::AVIRead::AVIRHTTPSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPSvrForm>();
 	Text::StringBuilderUTF8 sb;
 	Sync::MutexUsage mutUsage;
 	UTF8Char sbuff[128];
@@ -426,7 +426,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnAccessSelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnSSLCertClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPSvrForm>();
+	NN<SSWR::AVIRead::AVIRHTTPSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPSvrForm>();
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
@@ -449,7 +449,7 @@ void SSWR::AVIRead::AVIRHTTPSvrForm::ClearCACerts()
 	this->caCerts.DeleteAll();
 }
 
-SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

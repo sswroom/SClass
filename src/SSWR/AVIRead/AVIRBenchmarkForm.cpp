@@ -200,7 +200,7 @@ void SSWR::AVIRead::AVIRBenchmarkForm::ClearResult()
 
 void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRBenchmarkForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBenchmarkForm>();
+	NN<SSWR::AVIRead::AVIRBenchmarkForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBenchmarkForm>();
 	if (me->processing)
 		return;
 	me->StartTest(128, 64 << 20); //64 MB
@@ -208,7 +208,7 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnStartClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnQuickClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRBenchmarkForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBenchmarkForm>();
+	NN<SSWR::AVIRead::AVIRBenchmarkForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBenchmarkForm>();
 	if (me->processing)
 		return;
 	me->StartTest(64 << 20, 64 << 20); //64 MB
@@ -216,7 +216,7 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnQuickClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRBenchmarkForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBenchmarkForm>();
+	NN<SSWR::AVIRead::AVIRBenchmarkForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBenchmarkForm>();
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	UOSInt i;
@@ -231,7 +231,7 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("No result"), CSTR("Error"), me);
 		return;
 	}
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"BenchmarkSave", true);
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"BenchmarkSave", true);
 	dlg->AddFilter(CSTR("*.txt"), CSTR("Result File"));
 	{
 		Text::StringBuilderUTF8 sb;
@@ -336,7 +336,7 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(AnyType userObj)
 	dlg.Delete();
 }
 
-SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetText(CSTR("Benchmark"));
 	this->SetFont(0, 0, 8.25, false);

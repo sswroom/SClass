@@ -8,7 +8,7 @@ DB::SharedDBConn::~SharedDBConn()
 	this->conn.Delete();
 }
 
-DB::SharedDBConn::SharedDBConn(NotNullPtr<DB::DBConn> conn)
+DB::SharedDBConn::SharedDBConn(NN<DB::DBConn> conn)
 {
 	this->conn = conn;
 	this->useCnt = 1;
@@ -43,7 +43,7 @@ void DB::SharedDBConn::UnuseObject()
 	}
 }
 
-NotNullPtr<DB::DBConn> DB::SharedDBConn::UseConn(NotNullPtr<Sync::MutexUsage> mutUsage)
+NN<DB::DBConn> DB::SharedDBConn::UseConn(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->mutConn);
 	return this->conn;

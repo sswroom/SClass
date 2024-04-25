@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 
-IO::LogFileManager::LogFileManager(NotNullPtr<Text::String> logPath)
+IO::LogFileManager::LogFileManager(NN<Text::String> logPath)
 {
 	this->logPath = logPath->Clone();
 }
@@ -98,7 +98,7 @@ IO::Stream *IO::LogFileManager::OpenLogFile(UInt32 date)
 	return fs;
 }
 
-void IO::LogFileManager::WriteLogText(NotNullPtr<IO::Stream> fs, Text::StyledTextWriter *writer)
+void IO::LogFileManager::WriteLogText(NN<IO::Stream> fs, Text::StyledTextWriter *writer)
 {
 	Text::UTF8Reader reader(fs);
 	Text::StringBuilderUTF8 sb;

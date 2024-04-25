@@ -11,15 +11,15 @@ Data::ArrayListICaseStringNN::ArrayListICaseStringNN(UOSInt capacity) : Data::Ar
 {
 }
 
-NotNullPtr<Data::ArrayListNN<Text::String>> Data::ArrayListICaseStringNN::Clone() const
+NN<Data::ArrayListNN<Text::String>> Data::ArrayListICaseStringNN::Clone() const
 {
-	NotNullPtr<Data::ArrayListNN<Text::String>> newArr;
+	NN<Data::ArrayListNN<Text::String>> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListICaseStringNN(this->capacity));
 	newArr->AddAll(*this);
 	return newArr;
 }
 
-OSInt Data::ArrayListICaseStringNN::Compare(NotNullPtr<Text::String> obj1, NotNullPtr<Text::String> obj2) const
+OSInt Data::ArrayListICaseStringNN::Compare(NN<Text::String> obj1, NN<Text::String> obj2) const
 {
 	if (obj1 == obj2)
 		return 0;

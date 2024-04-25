@@ -17,10 +17,10 @@ namespace IO
 		~SMTCWriter();
 
 		Bool IsError() const;
-		void TCPConnect(NotNullPtr<Net::TCPClient> cli);
-		void TCPDisconnect(NotNullPtr<Net::TCPClient> cli);
-		void TCPSend(NotNullPtr<Net::TCPClient> cli, const UInt8 *buff, UOSInt size);
-		void TCPRecv(NotNullPtr<Net::TCPClient> cli, const UInt8 *buff, UOSInt size);
+		void TCPConnect(NN<Net::TCPClient> cli);
+		void TCPDisconnect(NN<Net::TCPClient> cli);
+		void TCPSend(NN<Net::TCPClient> cli, const UInt8 *buff, UOSInt size);
+		void TCPRecv(NN<Net::TCPClient> cli, const UInt8 *buff, UOSInt size);
 	};
 }
 

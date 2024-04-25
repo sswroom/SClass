@@ -13,15 +13,15 @@ namespace SSWR
 		class AVIRStringMsgForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIPanel> pnlButton;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUITextBox> txtMessage;
+			NN<UI::GUIPanel> pnlButton;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUITextBox> txtMessage;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
 			static void __stdcall OnOKClicked(AnyType userObj);
 		public:
-			AVIRStringMsgForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Text::CStringNN title, Text::CStringNN msg);
+			AVIRStringMsgForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::CStringNN title, Text::CStringNN msg);
 			virtual ~AVIRStringMsgForm();
 
 			virtual void OnMonitorChanged();

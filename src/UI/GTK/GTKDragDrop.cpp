@@ -7,9 +7,9 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 
-void UI::GTK::GTKDropData::AppendWC(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF16Char *s, UOSInt slen)
+void UI::GTK::GTKDropData::AppendWC(NN<Text::StringBuilderUTF8> sb, const UTF16Char *s, UOSInt slen)
 {
-	NotNullPtr<Text::String> str = Text::String::New(s, slen);
+	NN<Text::String> str = Text::String::New(s, slen);
 	sb->Append(str);
 	str->Release();
 }
@@ -85,7 +85,7 @@ const UTF8Char *UI::GTK::GTKDropData::GetName(UOSInt index)
 	return this->targetMap.GetKey(index);
 }
 
-Bool UI::GTK::GTKDropData::GetDataText(const UTF8Char *name, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool UI::GTK::GTKDropData::GetDataText(const UTF8Char *name, NN<Text::StringBuilderUTF8> sb)
 {
 	OSInt fmt = this->targetMap.Get(name);
 	if (fmt == 0)

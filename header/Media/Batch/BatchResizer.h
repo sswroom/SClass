@@ -17,7 +17,7 @@ namespace Media
 				UInt32 width;
 				UInt32 height;
 				Int32 sizeType;
-				NotNullPtr<Text::String> targetId;
+				NN<Text::String> targetId;
 			} TargetParam;
 		private:
 			Media::IImgResizer *resizer;
@@ -29,12 +29,12 @@ namespace Media
 			BatchResizer(Media::IImgResizer *resizer, Media::Batch::BatchHandler *hdlr);
 			virtual ~BatchResizer();
 			
-			void AddTargetSize(UInt32 targetWidth, UInt32 targetHeight, NotNullPtr<Text::String> targetId);
-			void AddTargetDPI(UInt32 targetHDPI, UInt32 targetVDPI, NotNullPtr<Text::String> targetId);
+			void AddTargetSize(UInt32 targetWidth, UInt32 targetHeight, NN<Text::String> targetId);
+			void AddTargetDPI(UInt32 targetHDPI, UInt32 targetVDPI, NN<Text::String> targetId);
 			void ClearTargetSizes();
 			void SetHandler(Media::Batch::BatchHandler *hdlr);
 		private:
-			virtual void ImageOutput(NotNullPtr<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId);
+			virtual void ImageOutput(NN<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId);
 		};
 	}
 }

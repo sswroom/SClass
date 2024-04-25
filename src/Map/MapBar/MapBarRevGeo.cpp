@@ -10,7 +10,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XMLDOM.h"
 
-Map::MapBar::MapBarRevGeo::MapBarRevGeo(NotNullPtr<Net::SocketFactory> sockf, IO::Writer *errWriter, Map::MapBar::MapBarAdjuster *adjuster, Int32 imgWidth, Int32 imgHeight)
+Map::MapBar::MapBarRevGeo::MapBarRevGeo(NN<Net::SocketFactory> sockf, IO::Writer *errWriter, Map::MapBar::MapBarAdjuster *adjuster, Int32 imgWidth, Int32 imgHeight)
 {
 	this->sockf = sockf;
 	this->errWriter = errWriter;
@@ -41,7 +41,7 @@ UTF8Char *Map::MapBar::MapBarRevGeo::CacheName(UTF8Char *buff, UOSInt buffSize, 
 UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UOSInt buffSize, Double adjLat, Double adjLon, Int32 lcid)
 {
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<Net::HTTPClient> cli;
+	NN<Net::HTTPClient> cli;
 	IO::MemoryStream mstm(UTF8STRC("Map.MapBar.MapBarRevGeo"));
 	OSInt readSize;
 	UInt8 *dataBbuff;

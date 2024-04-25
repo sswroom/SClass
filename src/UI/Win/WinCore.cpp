@@ -108,9 +108,9 @@ void UI::Win::WinCore::Exit()
 	PostQuitMessage(0);
 }
 
-NotNullPtr<Media::DrawEngine> UI::Win::WinCore::CreateDrawEngine()
+NN<Media::DrawEngine> UI::Win::WinCore::CreateDrawEngine()
 {
-	NotNullPtr<Media::DrawEngine> deng;
+	NN<Media::DrawEngine> deng;
 	NEW_CLASSNN(deng, Media::GDIEngine());
 	return deng;
 }
@@ -268,184 +268,184 @@ Bool UI::Win::WinCore::ShowMsgYesNo(Text::CStringNN message, Text::CStringNN tit
 	return UI::Win::WinMessageDialog::ShowYesNo(message, title, ctrl);
 }
 
-NotNullPtr<UI::GUIButton> UI::Win::WinCore::NewButton(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
+NN<UI::GUIButton> UI::Win::WinCore::NewButton(NN<GUIClientControl> parent, Text::CStringNN text)
 {
-	NotNullPtr<UI::Win::WinButton> ctrl;
+	NN<UI::Win::WinButton> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinButton(*this, parent, text));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUICheckBox> UI::Win::WinCore::NewCheckBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text, Bool checked)
+NN<UI::GUICheckBox> UI::Win::WinCore::NewCheckBox(NN<GUIClientControl> parent, Text::CStringNN text, Bool checked)
 {
-	NotNullPtr<UI::Win::WinCheckBox> ctrl;
+	NN<UI::Win::WinCheckBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinCheckBox(*this, parent, text, checked));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUICheckedListBox> UI::Win::WinCore::NewCheckedListBox(NotNullPtr<GUIClientControl> parent)
+NN<UI::GUICheckedListBox> UI::Win::WinCore::NewCheckedListBox(NN<GUIClientControl> parent)
 {
-	NotNullPtr<UI::Win::WinCheckedListBox> ctrl;
+	NN<UI::Win::WinCheckedListBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinCheckedListBox(*this, parent));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIComboBox> UI::Win::WinCore::NewComboBox(NotNullPtr<GUIClientControl> parent, Bool allowEdit)
+NN<UI::GUIComboBox> UI::Win::WinCore::NewComboBox(NN<GUIClientControl> parent, Bool allowEdit)
 {
-	NotNullPtr<UI::Win::WinComboBox> ctrl;
+	NN<UI::Win::WinComboBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinComboBox(*this, parent, allowEdit));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIDateTimePicker> UI::Win::WinCore::NewDateTimePicker(NotNullPtr<GUIClientControl> parent, Bool calendarSelect)
+NN<UI::GUIDateTimePicker> UI::Win::WinCore::NewDateTimePicker(NN<GUIClientControl> parent, Bool calendarSelect)
 {
-	NotNullPtr<UI::Win::WinDateTimePicker> ctrl;
+	NN<UI::Win::WinDateTimePicker> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinDateTimePicker(*this, parent, calendarSelect));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIGroupBox> UI::Win::WinCore::NewGroupBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
+NN<UI::GUIGroupBox> UI::Win::WinCore::NewGroupBox(NN<GUIClientControl> parent, Text::CStringNN text)
 {
-	NotNullPtr<UI::Win::WinGroupBox> ctrl;
+	NN<UI::Win::WinGroupBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinGroupBox(*this, parent, text));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIHScrollBar> UI::Win::WinCore::NewHScrollBar(NotNullPtr<GUIClientControl> parent, Double width)
+NN<UI::GUIHScrollBar> UI::Win::WinCore::NewHScrollBar(NN<GUIClientControl> parent, Double width)
 {
-	NotNullPtr<UI::Win::WinHScrollBar> ctrl;
+	NN<UI::Win::WinHScrollBar> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinHScrollBar(*this, parent, width));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUILabel> UI::Win::WinCore::NewLabel(NotNullPtr<GUIClientControl> parent, Text::CStringNN text)
+NN<UI::GUILabel> UI::Win::WinCore::NewLabel(NN<GUIClientControl> parent, Text::CStringNN text)
 {
-	NotNullPtr<UI::Win::WinLabel> ctrl;
+	NN<UI::Win::WinLabel> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinLabel(*this, parent, text));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIListBox> UI::Win::WinCore::NewListBox(NotNullPtr<GUIClientControl> parent, Bool multiSelect)
+NN<UI::GUIListBox> UI::Win::WinCore::NewListBox(NN<GUIClientControl> parent, Bool multiSelect)
 {
-	NotNullPtr<UI::Win::WinListBox> ctrl;
+	NN<UI::Win::WinListBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinListBox(*this, parent, multiSelect));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIPictureBox> UI::Win::WinCore::NewPictureBox(NotNullPtr<GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize)
+NN<UI::GUIPictureBox> UI::Win::WinCore::NewPictureBox(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize)
 {
-	NotNullPtr<UI::Win::WinPictureBox> ctrl;
+	NN<UI::Win::WinPictureBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinPictureBox(*this, parent, eng, hasBorder, allowResize));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIPictureBoxSimple> UI::Win::WinCore::NewPictureBoxSimple(NotNullPtr<GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder)
+NN<UI::GUIPictureBoxSimple> UI::Win::WinCore::NewPictureBoxSimple(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder)
 {
-	NotNullPtr<UI::Win::WinPictureBoxSimple> ctrl;
+	NN<UI::Win::WinPictureBoxSimple> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinPictureBoxSimple(*this, parent, eng, hasBorder));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIProgressBar> UI::Win::WinCore::NewProgressBar(NotNullPtr<GUIClientControl> parent, UInt64 totalCnt)
+NN<UI::GUIProgressBar> UI::Win::WinCore::NewProgressBar(NN<GUIClientControl> parent, UInt64 totalCnt)
 {
-	NotNullPtr<UI::Win::WinProgressBar> ctrl;
+	NN<UI::Win::WinProgressBar> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinProgressBar(*this, parent, totalCnt));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIRadioButton> UI::Win::WinCore::NewRadioButton(NotNullPtr<GUIClientControl> parent, Text::CStringNN initText, Bool selected)
+NN<UI::GUIRadioButton> UI::Win::WinCore::NewRadioButton(NN<GUIClientControl> parent, Text::CStringNN initText, Bool selected)
 {
-	NotNullPtr<UI::Win::WinRadioButton> ctrl;
+	NN<UI::Win::WinRadioButton> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinRadioButton(*this, parent, initText, selected));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIRealtimeLineChart> UI::Win::WinCore::NewRealtimeLineChart(NotNullPtr<GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS)
+NN<UI::GUIRealtimeLineChart> UI::Win::WinCore::NewRealtimeLineChart(NN<GUIClientControl> parent, NN<Media::DrawEngine> eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateIntervalMS)
 {
-	NotNullPtr<UI::Win::WinRealtimeLineChart> ctrl;
+	NN<UI::Win::WinRealtimeLineChart> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinRealtimeLineChart(*this, parent, eng, lineCnt, sampleCnt, updateIntervalMS));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUITabControl> UI::Win::WinCore::NewTabControl(NotNullPtr<GUIClientControl> parent)
+NN<UI::GUITabControl> UI::Win::WinCore::NewTabControl(NN<GUIClientControl> parent)
 {
-	NotNullPtr<UI::Win::WinTabControl> ctrl;
+	NN<UI::Win::WinTabControl> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinTabControl(*this, parent));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUITextBox> UI::Win::WinCore::NewTextBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN initText)
+NN<UI::GUITextBox> UI::Win::WinCore::NewTextBox(NN<GUIClientControl> parent, Text::CStringNN initText)
 {
-	NotNullPtr<UI::Win::WinTextBox> ctrl;
+	NN<UI::Win::WinTextBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinTextBox(*this, parent, initText, false));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUITextBox> UI::Win::WinCore::NewTextBox(NotNullPtr<GUIClientControl> parent, Text::CStringNN initText, Bool multiLine)
+NN<UI::GUITextBox> UI::Win::WinCore::NewTextBox(NN<GUIClientControl> parent, Text::CStringNN initText, Bool multiLine)
 {
-	NotNullPtr<UI::Win::WinTextBox> ctrl;
+	NN<UI::Win::WinTextBox> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinTextBox(*this, parent, initText, multiLine));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUITrackBar> UI::Win::WinCore::NewTrackBar(NotNullPtr<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal)
+NN<UI::GUITrackBar> UI::Win::WinCore::NewTrackBar(NN<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal)
 {
-	NotNullPtr<UI::Win::WinTrackBar> ctrl;
+	NN<UI::Win::WinTrackBar> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinTrackBar(*this, parent, minVal, maxVal, currVal));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIHSplitter> UI::Win::WinCore::NewHSplitter(NotNullPtr<GUIClientControl> parent, Int32 width, Bool isRight)
+NN<UI::GUIHSplitter> UI::Win::WinCore::NewHSplitter(NN<GUIClientControl> parent, Int32 width, Bool isRight)
 {
-	NotNullPtr<UI::Win::WinHSplitter> ctrl;
+	NN<UI::Win::WinHSplitter> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinHSplitter(*this, parent, width, isRight));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIVSplitter> UI::Win::WinCore::NewVSplitter(NotNullPtr<GUIClientControl> parent, Int32 height, Bool isBottom)
+NN<UI::GUIVSplitter> UI::Win::WinCore::NewVSplitter(NN<GUIClientControl> parent, Int32 height, Bool isBottom)
 {
-	NotNullPtr<UI::Win::WinVSplitter> ctrl;
+	NN<UI::Win::WinVSplitter> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinVSplitter(*this, parent, height, isBottom));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIFileDialog> UI::Win::WinCore::NewFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave)
+NN<UI::GUIFileDialog> UI::Win::WinCore::NewFileDialog(const WChar *compName, const WChar *appName, const WChar *dialogName, Bool isSave)
 {
-	NotNullPtr<UI::Win::WinFileDialog> ctrl;
+	NN<UI::Win::WinFileDialog> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinFileDialog(compName, appName, dialogName, isSave));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIFolderDialog> UI::Win::WinCore::NewFolderDialog()
+NN<UI::GUIFolderDialog> UI::Win::WinCore::NewFolderDialog()
 {
-	NotNullPtr<UI::Win::WinFolderDialog> ctrl;
+	NN<UI::Win::WinFolderDialog> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinFolderDialog());
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIFontDialog> UI::Win::WinCore::NewFontDialog(Optional<Text::String> fontName, Double fontSizePt, Bool isBold, Bool isItalic)
+NN<UI::GUIFontDialog> UI::Win::WinCore::NewFontDialog(Optional<Text::String> fontName, Double fontSizePt, Bool isBold, Bool isItalic)
 {
-	NotNullPtr<UI::Win::WinFontDialog> ctrl;
+	NN<UI::Win::WinFontDialog> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinFontDialog(fontName, fontSizePt, isBold, isItalic));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIFontDialog> UI::Win::WinCore::NewFontDialog(Text::CString fontName, Double fontSizePt, Bool isBold, Bool isItalic)
+NN<UI::GUIFontDialog> UI::Win::WinCore::NewFontDialog(Text::CString fontName, Double fontSizePt, Bool isBold, Bool isItalic)
 {
-	NotNullPtr<UI::Win::WinFontDialog> ctrl;
+	NN<UI::Win::WinFontDialog> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinFontDialog(fontName, fontSizePt, isBold, isItalic));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIPanelBase> UI::Win::WinCore::NewPanelBase(NotNullPtr<UI::GUIPanel> master, ControlHandle *parentHWnd)
+NN<UI::GUIPanelBase> UI::Win::WinCore::NewPanelBase(NN<UI::GUIPanel> master, ControlHandle *parentHWnd)
 {
-	NotNullPtr<UI::Win::WinPanelBase> ctrl;
+	NN<UI::Win::WinPanelBase> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinPanelBase(master, *this, parentHWnd));
 	return ctrl;
 }
 
-NotNullPtr<UI::GUIPanelBase> UI::Win::WinCore::NewPanelBase(NotNullPtr<UI::GUIPanel> master, NotNullPtr<UI::GUIClientControl> parent)
+NN<UI::GUIPanelBase> UI::Win::WinCore::NewPanelBase(NN<UI::GUIPanel> master, NN<UI::GUIClientControl> parent)
 {
-	NotNullPtr<UI::Win::WinPanelBase> ctrl;
+	NN<UI::Win::WinPanelBase> ctrl;
 	NEW_CLASSNN(ctrl, UI::Win::WinPanelBase(master, *this, parent));
 	return ctrl;
 }

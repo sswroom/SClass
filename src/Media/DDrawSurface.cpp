@@ -52,7 +52,7 @@ Media::DDrawSurface::DDrawSurface(DDrawManager *mgr, void *lpDD, void *surface, 
 	this->info.par2 = 1.0;
 	this->info.hdpi = mgr->GetMonitorDPI(hMon);;
 	this->info.vdpi = this->info.hdpi;
-	NotNullPtr<const Media::ColorProfile> color;
+	NN<const Media::ColorProfile> color;
 	if (color.Set(mgr->GetMonProfile(hMon)))
 		this->info.color.Set(color);
 	else
@@ -73,9 +73,9 @@ Media::DDrawSurface::~DDrawSurface()
 	MemFree(this->clsData);
 }
 
-NotNullPtr<Media::RasterImage> Media::DDrawSurface::Clone() const
+NN<Media::RasterImage> Media::DDrawSurface::Clone() const
 {
-	NotNullPtr<DDrawSurface> ret;
+	NN<DDrawSurface> ret;
 	NEW_CLASSNN(ret, Media::DDrawSurface(this->clsData->mgr, this->clsData->lpDD, this->clsData->surface, this->clsData->hMon, false, this->info.rotateType));
 	return ret;
 }
@@ -142,7 +142,7 @@ Bool Media::DDrawSurface::DrawFromBuff()
 	return hRes == DD_OK;
 }
 
-Bool Media::DDrawSurface::DrawFromSurface(NotNullPtr<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn, Bool waitForVBlank)
+Bool Media::DDrawSurface::DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn, Bool waitForVBlank)
 {
 	OSInt drawWidth = (OSInt)this->info.dispSize.x;
 	OSInt drawHeight = (OSInt)this->info.dispSize.y;

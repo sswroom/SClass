@@ -18,7 +18,7 @@ namespace UI
 
 		void InitContainer();
 	protected:
-		GUIClientControl(NotNullPtr<GUICore> ui, Optional<UI::GUIClientControl> parent);
+		GUIClientControl(NN<GUICore> ui, Optional<UI::GUIClientControl> parent);
 		virtual void UpdateFont();
 		void ClearChildren();
 	public:
@@ -28,12 +28,12 @@ namespace UI
 
 		virtual Math::Coord2DDbl GetClientOfst();
 		virtual Math::Size2DDbl GetClientSize();
-		virtual void AddChild(NotNullPtr<GUIControl> child);
+		virtual void AddChild(NN<GUIControl> child);
 		virtual Bool IsChildVisible() = 0;
 		
 		UOSInt GetChildCount() const;
 		Optional<UI::GUIControl> GetChild(UOSInt index) const;
-		Data::ArrayIterator<NotNullPtr<UI::GUIControl>> ChildIterator() const;
+		Data::ArrayIterator<NN<UI::GUIControl>> ChildIterator() const;
 		void FocusChild(GUIControl *child);
 
 		void UpdateChildrenSize(Bool redraw);

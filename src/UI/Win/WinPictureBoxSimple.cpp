@@ -141,14 +141,14 @@ void UI::Win::WinPictureBoxSimple::Deinit(InstanceHandle *hInst)
 
 void UI::Win::WinPictureBoxSimple::UpdatePreview()
 {
-	NotNullPtr<Media::DrawImage> dimg;
+	NN<Media::DrawImage> dimg;
 	if (dimg.Set(this->prevImageD))
 	{
 		this->eng->DeleteImage(dimg);
 		this->prevImageD = 0;
 	}
 
-	NotNullPtr<Media::StaticImage> simg;
+	NN<Media::StaticImage> simg;
 	if (this->currImage.SetTo(simg))
 	{
 		this->prevImageD = this->eng->ConvImage(simg);
@@ -156,7 +156,7 @@ void UI::Win::WinPictureBoxSimple::UpdatePreview()
 	this->Redraw();
 }
 
-UI::Win::WinPictureBoxSimple::WinPictureBoxSimple(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder) : UI::GUIPictureBoxSimple(ui, parent, eng, hasBorder)
+UI::Win::WinPictureBoxSimple::WinPictureBoxSimple(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder) : UI::GUIPictureBoxSimple(ui, parent, eng, hasBorder)
 {
 	this->currImage = 0;
 	this->prevImageD = 0;
@@ -176,7 +176,7 @@ UI::Win::WinPictureBoxSimple::WinPictureBoxSimple(NotNullPtr<UI::GUICore> ui, No
 
 UI::Win::WinPictureBoxSimple::~WinPictureBoxSimple()
 {
-	NotNullPtr<Media::DrawImage> dimg;
+	NN<Media::DrawImage> dimg;
 	if (dimg.Set(this->prevImageD))
 	{
 		this->eng->DeleteImage(dimg);
@@ -202,8 +202,8 @@ void UI::Win::WinPictureBoxSimple::SetImage(Optional<Media::StaticImage> currIma
 void UI::Win::WinPictureBoxSimple::SetImageDImg(Media::DrawImage *img)
 {
 	this->currImage = 0;
-	NotNullPtr<Media::DrawImage> dimg;
-	NotNullPtr<Media::GDIImage> gimg;
+	NN<Media::DrawImage> dimg;
+	NN<Media::GDIImage> gimg;
 	if (dimg.Set(this->prevImageD))
 	{
 		this->eng->DeleteImage(dimg);

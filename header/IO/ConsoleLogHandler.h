@@ -8,10 +8,10 @@ namespace IO
 	class ConsoleLogHandler : public IO::LogHandler
 	{
 	private:
-		NotNullPtr<IO::ConsoleWriter> console;
+		NN<IO::ConsoleWriter> console;
 
 	public:
-		ConsoleLogHandler(NotNullPtr<IO::ConsoleWriter> console);
+		ConsoleLogHandler(NN<IO::ConsoleWriter> console);
 		virtual ~ConsoleLogHandler();
 
 		virtual void LogAdded(const Data::Timestamp &logTime, Text::CStringNN logMsg, LogLevel logLev);

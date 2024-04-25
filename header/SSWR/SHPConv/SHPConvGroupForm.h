@@ -13,16 +13,16 @@ namespace SSWR
 		class SHPConvGroupForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblGroup;
-			NotNullPtr<UI::GUIListBox> lbGroup;
-			NotNullPtr<UI::GUIButton> btnOk;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUILabel> lblGroup;
+			NN<UI::GUIListBox> lbGroup;
+			NN<UI::GUIButton> btnOk;
+			NN<UI::GUIButton> btnCancel;
 			Media::MonitorMgr *monMgr;
 
 			static void __stdcall OnOkClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			SHPConvGroupForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui);
+			SHPConvGroupForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui);
 			virtual ~SHPConvGroupForm();
 
 			virtual void OnMonitorChanged();

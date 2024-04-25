@@ -7,7 +7,7 @@
 
 UInt32 __stdcall IO::RS232GPIO::ReadThread(AnyType userObj)
 {
-	NotNullPtr<IO::RS232GPIO> me = userObj.GetNN<IO::RS232GPIO>();
+	NN<IO::RS232GPIO> me = userObj.GetNN<IO::RS232GPIO>();
 	Manage::HiResClock *clk;
 	UInt8 readBuff[12];
 	UInt32 fullClk = 1000000 / me->baudRate;

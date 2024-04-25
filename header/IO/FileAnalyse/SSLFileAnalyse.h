@@ -26,17 +26,17 @@ namespace IO
 			Bool pauseParsing;
 			Sync::Thread thread;
 
-			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> thread);
+			static void __stdcall ParseThread(NN<Sync::Thread> thread);
 			static void FreePackInfo(NN<PackInfo> pack);
 
-			static UOSInt AppendExtension(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UOSInt ofst, UOSInt totalLeng);
+			static UOSInt AppendExtension(NN<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UOSInt ofst, UOSInt totalLeng);
 		public:
-			SSLFileAnalyse(NotNullPtr<IO::StreamData> fd);
+			SSLFileAnalyse(NN<IO::StreamData> fd);
 			virtual ~SSLFileAnalyse();
 
 			virtual Text::CStringNN GetFormatName();
 			virtual UOSInt GetFrameCount();
-			virtual Bool GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual Bool GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst);
 			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index);
 

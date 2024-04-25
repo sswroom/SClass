@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRBYDC9RForm::OnCANBusClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRBYDC9RForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBYDC9RForm>();
+	NN<SSWR::AVIRead::AVIRBYDC9RForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBYDC9RForm>();
 	if (me->listener)
 	{
 		DEL_CLASS(me->listener);
@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRBYDC9RForm::OnCANBusClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRBYDC9RForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRBYDC9RForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBYDC9RForm>();
+	NN<SSWR::AVIRead::AVIRBYDC9RForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBYDC9RForm>();
 	IO::Device::BYDC9R::DeviceStatus currStatus;
 	me->c9r.GetStatus(&currStatus);
 	UTF8Char sbuff[64];
@@ -111,7 +111,7 @@ void __stdcall SSWR::AVIRead::AVIRBYDC9RForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRBYDC9RForm::AVIRBYDC9RForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRBYDC9RForm::AVIRBYDC9RForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("BYD C9R"));

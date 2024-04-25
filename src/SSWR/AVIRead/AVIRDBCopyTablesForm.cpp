@@ -9,9 +9,9 @@
 
 void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDBCopyTablesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCopyTablesForm>();
-	NotNullPtr<DB::DBManagerCtrl> ctrl;
-	NotNullPtr<DB::ReadingDB> db;
+	NN<SSWR::AVIRead::AVIRDBCopyTablesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCopyTablesForm>();
+	NN<DB::DBManagerCtrl> ctrl;
+	NN<DB::ReadingDB> db;
 	if (me->cboSourceConn->GetSelectedItem().GetOpt<DB::DBManagerCtrl>().SetTo(ctrl))
 	{
 		me->cboSourceSchema->ClearItems();
@@ -24,9 +24,9 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(AnyType userOb
 		{
 			UTF8Char sbuff[128];
 			UTF8Char *sptr;
-			NotNullPtr<DB::ReadingDBTool> dbt = NotNullPtr<DB::ReadingDBTool>::ConvertFrom(db);
+			NN<DB::ReadingDBTool> dbt = NN<DB::ReadingDBTool>::ConvertFrom(db);
 			DB::Collation collation;
-			NotNullPtr<Text::String> dbName = Text::String::OrEmpty(dbt->GetCurrDBName());
+			NN<Text::String> dbName = Text::String::OrEmpty(dbt->GetCurrDBName());
 			me->txtSourceDB->SetText(dbName->ToCString());
 			if (dbt->GetDBCollation(dbName->ToCString(), &collation))
 			{
@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(AnyType userOb
 			me->txtSourceCollation->SetText(CSTR(""));
 		}
 		Data::ArrayListStringNN schemaNames;
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		db->QuerySchemaNames(schemaNames);
 		UOSInt i = 0;
 		UOSInt j = schemaNames.GetCount();
@@ -68,9 +68,9 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceDBChg(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceSelectClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDBCopyTablesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCopyTablesForm>();
-	NotNullPtr<DB::DBManagerCtrl> ctrl;
-	NotNullPtr<DB::ReadingDB> db;
+	NN<SSWR::AVIRead::AVIRDBCopyTablesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCopyTablesForm>();
+	NN<DB::DBManagerCtrl> ctrl;
+	NN<DB::ReadingDB> db;
 	if (!me->cboSourceConn->GetSelectedItem().GetOpt<DB::DBManagerCtrl>().SetTo(ctrl) || !ctrl->GetDB().SetTo(db))
 		return;
 	UTF8Char sbuff[512];
@@ -105,8 +105,8 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnSourceSelectClicked(AnyTyp
 
 void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnDestDBChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDBCopyTablesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCopyTablesForm>();
-	NotNullPtr<DB::DBManagerCtrl> ctrl;
+	NN<SSWR::AVIRead::AVIRDBCopyTablesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCopyTablesForm>();
+	NN<DB::DBManagerCtrl> ctrl;
 	if (me->cboDestDB->GetSelectedItem().GetOpt<DB::DBManagerCtrl>().SetTo(ctrl))
 	{
 		me->cboDestSchema->ClearItems();
@@ -115,14 +115,14 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnDestDBChg(AnyType userObj)
 			me->ui->ShowMsgOK(CSTR("Error in connecting to database"), CSTR("Copy Tables"), me);
 			return;
 		}
-		NotNullPtr<DB::ReadingDB> db;
+		NN<DB::ReadingDB> db;
 		if (!ctrl->GetDB().SetTo(db))
 		{
 			me->ui->ShowMsgOK(CSTR("Error in getting database"), CSTR("Copy Tables"), me);
 			return;
 		}
 		Data::ArrayListStringNN schemaNames;
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		db->QuerySchemaNames(schemaNames);
 		UOSInt i = 0;
 		UOSInt j = schemaNames.GetCount();
@@ -146,12 +146,12 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnDestDBChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDBCopyTablesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCopyTablesForm>();
+	NN<SSWR::AVIRead::AVIRDBCopyTablesForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCopyTablesForm>();
 	if (me->dataConn == 0)
 	{
 		return;
 	}
-	NotNullPtr<DB::DBManagerCtrl> destDB;
+	NN<DB::DBManagerCtrl> destDB;
 	if (!me->cboDestDB->GetSelectedItem().GetOpt<DB::DBManagerCtrl>().SetTo(destDB))
 	{
 		me->ui->ShowMsgOK(CSTR("Please select a destination DB first"), CSTR("Copy Tables"), me);
@@ -162,19 +162,19 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 		me->ui->ShowMsgOK(CSTR("Error in connecting destination DB"), CSTR("Copy Tables"), me);
 		return;
 	}
-	NotNullPtr<DB::ReadingDB> destConn;
+	NN<DB::ReadingDB> destConn;
 	if (!destDB->GetDB().SetTo(destConn))
 	{
 		me->ui->ShowMsgOK(CSTR("Error in getting destination DB"), CSTR("Copy Tables"), me);
 		return;
 	}
-	NotNullPtr<DB::DBTool> destDBTool;
+	NN<DB::DBTool> destDBTool;
 	if (!destConn->IsDBTool() || !((DB::ReadingDBTool*)destConn.Ptr())->CanModify())
 	{
 		me->ui->ShowMsgOK(CSTR("Destination DB is read-onlyl"), CSTR("Copy Tables"), me);
 		return;
 	}
-	destDBTool = NotNullPtr<DB::DBTool>::ConvertFrom(destConn);
+	destDBTool = NN<DB::DBTool>::ConvertFrom(destConn);
 	UTF8Char destSchema[512];
 	UTF8Char *destSchemaEnd = me->cboDestSchema->GetSelectedItemText(destSchema);
 	if (destSchemaEnd == 0)
@@ -188,9 +188,9 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 	DB::SQLBuilder sql(destDBTool);
 	Text::StringBuilderUTF8 sb;
 	DB::TableDef *tabDef;
-	NotNullPtr<DB::TableDef> nntabDef;
-	NotNullPtr<Text::String> tableName;
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::TableDef> nntabDef;
+	NN<Text::String> tableName;
+	NN<DB::DBReader> r;
 	if (destDBTool->GetSQLType() == DB::SQLType::MySQL)
 	{
 		destDBTool->ExecuteNonQuery(CSTR("set sql_mode=CONCAT(@@Session.sql_mode,',NO_AUTO_VALUE_ON_ZERO')"));
@@ -228,7 +228,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 			return;
 		}
 	}
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = me->dataTables.Iterator();
+	Data::ArrayIterator<NN<Text::String>> it = me->dataTables.Iterator();
 	UOSInt i = 0;
 	while (it.HasNext())
 	{
@@ -397,7 +397,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 	}
 }
 
-SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Data::ArrayListNN<DB::DBManagerCtrl>> dbList) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Data::ArrayListNN<DB::DBManagerCtrl>> dbList) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Copy Tables"));
@@ -470,7 +470,7 @@ SSWR::AVIRead::AVIRDBCopyTablesForm::AVIRDBCopyTablesForm(Optional<UI::GUIClient
 	this->btnCopy->HandleButtonClick(OnCopyClicked, this);
 
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<DB::DBManagerCtrl> ctrl;
+	NN<DB::DBManagerCtrl> ctrl;
 	UOSInt firstActive = INVALID_INDEX;
 	UOSInt i = 0;
 	UOSInt j = this->dbList->GetCount();

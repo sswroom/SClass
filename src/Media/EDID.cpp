@@ -5,7 +5,7 @@
 #include "Media/EDID.h"
 #include "Text/MyString.h"
 
-Bool Media::EDID::Parse(const UInt8 *edidBuff, NotNullPtr<Media::EDID::EDIDInfo> info)
+Bool Media::EDID::Parse(const UInt8 *edidBuff, NN<Media::EDID::EDIDInfo> info)
 {
 	if (edidBuff[0] != 0 || edidBuff[1] != 0xff || edidBuff[2] != 0xff || edidBuff[3] != 0xff ||edidBuff[4] != 0xff || edidBuff[5] != 0xff || edidBuff[6] != 0xff || edidBuff[7] != 0)
 	{
@@ -71,7 +71,7 @@ Bool Media::EDID::Parse(const UInt8 *edidBuff, NotNullPtr<Media::EDID::EDIDInfo>
 	return true;
 }
 
-void Media::EDID::ParseDescriptor(NotNullPtr<EDIDInfo> info, const UInt8 *descriptor)
+void Media::EDID::ParseDescriptor(NN<EDIDInfo> info, const UInt8 *descriptor)
 {
 	OSInt i;
 	UTF8Char *sptr;
@@ -135,7 +135,7 @@ void Media::EDID::ParseDescriptor(NotNullPtr<EDIDInfo> info, const UInt8 *descri
 	}
 }
 
-Bool Media::EDID::SetColorProfile(NotNullPtr<EDIDInfo> info, NotNullPtr<Media::ColorProfile> cp)
+Bool Media::EDID::SetColorProfile(NN<EDIDInfo> info, NN<Media::ColorProfile> cp)
 {
 	if (info->w.x != 0 || info->w.y != 0)
 	{

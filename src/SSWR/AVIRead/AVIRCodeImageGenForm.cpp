@@ -6,7 +6,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeTypeChanged(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCodeImageGenForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCodeImageGenForm>();
+	NN<SSWR::AVIRead::AVIRCodeImageGenForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCodeImageGenForm>();
 	SDEL_CLASS(me->codeImgGen);
 	me->codeImgGen = Media::CodeImageGen::CodeImageGen::CreateGenerator((Media::CodeImageGen::CodeImageGen::CodeType)me->cboCodeType->GetSelectedItem().GetOSInt());
 	if (me->codeImgGen)
@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeTypeChanged(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeGenClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCodeImageGenForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCodeImageGenForm>();
+	NN<SSWR::AVIRead::AVIRCodeImageGenForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCodeImageGenForm>();
 	if (me->codeImgGen)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeGenClicked(AnyType use
 		{
 			sb.ClearStr();
 			me->txtCode->GetText(sb);
-			NotNullPtr<Media::DrawImage> dimg;
+			NN<Media::DrawImage> dimg;
 			if (dimg.Set(me->codeImgGen->GenCode(sb.ToCString(), codeWidth, me->core->GetDrawEngine())))
 			{
 				Media::StaticImage *simg = dimg->ToStaticImage();
@@ -53,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeGenClicked(AnyType use
 	}
 }
 
-SSWR::AVIRead::AVIRCodeImageGenForm::AVIRCodeImageGenForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRCodeImageGenForm::AVIRCodeImageGenForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Code Image Generator"));

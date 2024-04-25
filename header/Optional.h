@@ -5,7 +5,7 @@
 template <typename T> struct Optional
 {
 public:
-	typedef void (*FreeFunc)(NotNullPtr<T> v);
+	typedef void (*FreeFunc)(NN<T> v);
 private:
 	T *p;
 public:
@@ -21,14 +21,14 @@ public:
 		this->p = &p;
 	}
 
-	template <typename V> Optional(NotNullPtr<V> p)
+	template <typename V> Optional(NN<V> p)
 	{
 		this->p = p.Ptr();
 	}
 
 	template <typename V> Optional(Optional<V> p)
 	{
-		NotNullPtr<V> nnp;
+		NN<V> nnp;
 		if (p.SetTo(nnp))
 			this->p = nnp.Ptr();
 		else
@@ -40,7 +40,7 @@ public:
 		return this->p;
 	}
 
-	Bool SetTo(NotNullPtr<T> &p) const
+	Bool SetTo(NN<T> &p) const
 	{
 		return p.Set(this->p);
 	}
@@ -66,7 +66,7 @@ public:
 
 	void FreeBy(FreeFunc freeFunc)
 	{
-		NotNullPtr<T> v;
+		NN<T> v;
 		if (v.Set(this->p))
 		{
 			freeFunc(v);
@@ -88,7 +88,7 @@ public:
 
 	template <typename V> static Optional<T> ConvertFrom(Optional<V> ptr)
 	{
-		NotNullPtr<V> p;
+		NN<V> p;
 		if (ptr.SetTo(p))
 			return Optional<T>((T*)p.Ptr());
 		return Optional<T>(0);

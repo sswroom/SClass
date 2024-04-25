@@ -9,7 +9,7 @@ namespace IO
 		class MultitekM812 : public IO::MODBUSDevice
 		{
 		public:
-			MultitekM812(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr);
+			MultitekM812(NN<IO::MODBUSMaster> modbus, UInt8 addr);
 			virtual ~MultitekM812();
 
 			Bool ReadVoltsL2_L1(OutParam<Double> volt);

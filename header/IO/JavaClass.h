@@ -113,73 +113,73 @@ namespace IO
 		UInt8 **attrs;
 		UInt16 signatureIndex;
 
-		static const UInt8 *Type2String(const UInt8 *typeStr, NotNullPtr<Text::StringBuilderUTF8> sb);
+		static const UInt8 *Type2String(const UInt8 *typeStr, NN<Text::StringBuilderUTF8> sb);
 		static Text::CString CondType2String(CondType ct);
 		static Text::CString CondType2IString(CondType ct);
-		static void DetailAccessFlags(UInt16 accessFlags, NotNullPtr<Text::StringBuilderUTF8> sb);
-		static void AppendCond(NotNullPtr<Text::StringBuilderUTF8> sb, DecompileEnv *env, UOSInt index, CondType ct, Bool inv);
+		static void DetailAccessFlags(UInt16 accessFlags, NN<Text::StringBuilderUTF8> sb);
+		static void AppendCond(NN<Text::StringBuilderUTF8> sb, DecompileEnv *env, UOSInt index, CondType ct, Bool inv);
 		static UInt32 GetParamId(UInt32 paramIndex, const MethodInfo *method);
-		void AppendIndent(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt lev) const;
-		void AppendLineNum(NotNullPtr<Text::StringBuilderUTF8> sb, DecompileEnv *env, const UInt8 *codePtr) const;
-		const UInt8 *DetailAttribute(const UInt8 *attr, UOSInt lev, NotNullPtr<Text::StringBuilderUTF8> sb) const;
-		void DetailConstVal(UInt16 index, NotNullPtr<Text::StringBuilderUTF8> sb, Bool brankets) const;
-		void DetailName(UInt16 index, NotNullPtr<Text::StringBuilderUTF8> sb, Bool brankets) const;
-		void DetailClassName(UInt16 index, NotNullPtr<Text::StringBuilderUTF8> sb) const;
-		void DetailClassNameStr(UInt16 index, NotNullPtr<Text::StringBuilderUTF8> sb) const;
-		void DetailFieldRef(UInt16 index, NotNullPtr<Text::StringBuilderUTF8> sb) const;
-		void DetailMethodRef(UInt16 index, NotNullPtr<Text::StringBuilderUTF8> sb) const;
-		Bool MethodGetReturnType(UInt16 index, NotNullPtr<Text::StringBuilderUTF8> sb) const;
-		void DetailNameAndType(UInt16 index, UInt16 classIndex, NotNullPtr<Text::StringBuilderUTF8> sb) const;
-		void DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 classIndex, const UTF8Char *prefix, NotNullPtr<Text::StringBuilderUTF8> sb, UTF8Char *typeBuff, MethodInfo *method, Data::ArrayListString *importList, const UTF8Char *packageName) const;
-		void DetailType(UInt16 typeIndex, NotNullPtr<Text::StringBuilderUTF8> sb, Data::ArrayListString *importList, const UTF8Char *packageName) const;
-		void DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, NotNullPtr<Text::StringBuilderUTF8> sb) const;
-		const UInt8 *DetailAnnotation(const UInt8 *annoPtr, const UInt8 *annoEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Data::ArrayListString *importList, const UTF8Char *packageName) const;
-		const UInt8 *DetailElementValue(const UInt8 *annoPtr, const UInt8 *annoEnd, NotNullPtr<Text::StringBuilderUTF8> sb, Data::ArrayListString *importList, const UTF8Char *packageName) const;
-		const UInt8 *DetailStackMapFrame(const UInt8 *currPtr, const UInt8 *ptrEnd, UOSInt lev, NotNullPtr<Text::StringBuilderUTF8> sb) const;
-		const UInt8 *DetailVerificationTypeInfo(const UInt8 *currPtr, const UInt8 *ptrEnd, UOSInt lev, NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		void AppendIndent(NN<Text::StringBuilderUTF8> sb, UOSInt lev) const;
+		void AppendLineNum(NN<Text::StringBuilderUTF8> sb, DecompileEnv *env, const UInt8 *codePtr) const;
+		const UInt8 *DetailAttribute(const UInt8 *attr, UOSInt lev, NN<Text::StringBuilderUTF8> sb) const;
+		void DetailConstVal(UInt16 index, NN<Text::StringBuilderUTF8> sb, Bool brankets) const;
+		void DetailName(UInt16 index, NN<Text::StringBuilderUTF8> sb, Bool brankets) const;
+		void DetailClassName(UInt16 index, NN<Text::StringBuilderUTF8> sb) const;
+		void DetailClassNameStr(UInt16 index, NN<Text::StringBuilderUTF8> sb) const;
+		void DetailFieldRef(UInt16 index, NN<Text::StringBuilderUTF8> sb) const;
+		void DetailMethodRef(UInt16 index, NN<Text::StringBuilderUTF8> sb) const;
+		Bool MethodGetReturnType(UInt16 index, NN<Text::StringBuilderUTF8> sb) const;
+		void DetailNameAndType(UInt16 index, UInt16 classIndex, NN<Text::StringBuilderUTF8> sb) const;
+		void DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 classIndex, const UTF8Char *prefix, NN<Text::StringBuilderUTF8> sb, UTF8Char *typeBuff, MethodInfo *method, Data::ArrayListString *importList, const UTF8Char *packageName) const;
+		void DetailType(UInt16 typeIndex, NN<Text::StringBuilderUTF8> sb, Data::ArrayListString *importList, const UTF8Char *packageName) const;
+		void DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, NN<Text::StringBuilderUTF8> sb) const;
+		const UInt8 *DetailAnnotation(const UInt8 *annoPtr, const UInt8 *annoEnd, NN<Text::StringBuilderUTF8> sb, Data::ArrayListString *importList, const UTF8Char *packageName) const;
+		const UInt8 *DetailElementValue(const UInt8 *annoPtr, const UInt8 *annoEnd, NN<Text::StringBuilderUTF8> sb, Data::ArrayListString *importList, const UTF8Char *packageName) const;
+		const UInt8 *DetailStackMapFrame(const UInt8 *currPtr, const UInt8 *ptrEnd, UOSInt lev, NN<Text::StringBuilderUTF8> sb) const;
+		const UInt8 *DetailVerificationTypeInfo(const UInt8 *currPtr, const UInt8 *ptrEnd, UOSInt lev, NN<Text::StringBuilderUTF8> sb) const;
 		UTF8Char *GetConstName(UTF8Char *sbuff, UInt16 index) const;
-		Bool ClassNameString(UInt16 index, NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		Bool ClassNameString(UInt16 index, NN<Text::StringBuilderUTF8> sb) const;
 		UTF8Char *GetLVName(UTF8Char *sbuff, UInt16 index, const MethodInfo *method, UOSInt codeOfst) const;
 		UTF8Char *GetLVType(UTF8Char *sbuff, UInt16 index, const MethodInfo *method, UOSInt codeOfst, Data::ArrayListString *importList, const UTF8Char *packageName) const;
 
 		Bool MethodParse(NN<MethodInfo> method, const UInt8 *methodBuff) const;
 		void MethodFree(NN<MethodInfo> method) const;
 
-		void AppendCodeClassName(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *className, Data::ArrayListString *importList, const UTF8Char *packageName) const;
-		void AppendCodeClassContent(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt lev, const UTF8Char *className, Data::ArrayListString *importList, const UTF8Char *packageName);
-		void AppendCodeField(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt index, Data::ArrayListString *importList, const UTF8Char *packageName) const;
-		void AppendCodeMethod(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt index, UOSInt lev, Bool disasm, Bool decompile, Data::ArrayListString *importList, const UTF8Char *packageName) const;
-		void AppendCodeMethodCodes(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt lev, Data::ArrayListString *importList, const UTF8Char *packageName, const UInt8 *codeAttr, const UTF8Char *typeBuff, const MethodInfo *method) const;
-		static const UTF8Char *AppendCodeType2String(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *typeStr, Data::ArrayListString *importList, const UTF8Char *packageName);
+		void AppendCodeClassName(NN<Text::StringBuilderUTF8> sb, const UTF8Char *className, Data::ArrayListString *importList, const UTF8Char *packageName) const;
+		void AppendCodeClassContent(NN<Text::StringBuilderUTF8> sb, UOSInt lev, const UTF8Char *className, Data::ArrayListString *importList, const UTF8Char *packageName);
+		void AppendCodeField(NN<Text::StringBuilderUTF8> sb, UOSInt index, Data::ArrayListString *importList, const UTF8Char *packageName) const;
+		void AppendCodeMethod(NN<Text::StringBuilderUTF8> sb, UOSInt index, UOSInt lev, Bool disasm, Bool decompile, Data::ArrayListString *importList, const UTF8Char *packageName) const;
+		void AppendCodeMethodCodes(NN<Text::StringBuilderUTF8> sb, UOSInt lev, Data::ArrayListString *importList, const UTF8Char *packageName, const UInt8 *codeAttr, const UTF8Char *typeBuff, const MethodInfo *method) const;
+		static const UTF8Char *AppendCodeType2String(NN<Text::StringBuilderUTF8> sb, const UTF8Char *typeStr, Data::ArrayListString *importList, const UTF8Char *packageName);
 
 		void Init(Data::ByteArrayR buff);
 	public:
-		JavaClass(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff);
+		JavaClass(NN<Text::String> sourceName, Data::ByteArrayR buff);
 		JavaClass(Text::CStringNN sourceName, Data::ByteArrayR buff);
 		virtual ~JavaClass();
 
 		virtual IO::ParserType GetParserType() const;
 
-		Bool GetClassNameFull(NotNullPtr<Text::StringBuilderUTF8> sb) const;
-		Bool GetSuperClass(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		Bool GetClassNameFull(NN<Text::StringBuilderUTF8> sb) const;
+		Bool GetSuperClass(NN<Text::StringBuilderUTF8> sb) const;
 
-		Bool FileStructDetail(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		Bool FileStructDetail(NN<Text::StringBuilderUTF8> sb) const;
 		UOSInt FieldsGetCount() const;
-		Bool FieldsGetDecl(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		Bool FieldsGetDecl(UOSInt index, NN<Text::StringBuilderUTF8> sb) const;
 		UOSInt MethodsGetCount() const;
-		Bool MethodsGetDecl(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb) const;
-		Bool MethodsGetDetail(UOSInt index, UOSInt lev, Bool disasm, NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		Bool MethodsGetDecl(UOSInt index, NN<Text::StringBuilderUTF8> sb) const;
+		Bool MethodsGetDetail(UOSInt index, UOSInt lev, Bool disasm, NN<Text::StringBuilderUTF8> sb) const;
 
-		void DecompileFile(NotNullPtr<Text::StringBuilderUTF8> sb);
+		void DecompileFile(NN<Text::StringBuilderUTF8> sb);
 	private:
-		EndType DecompileCode(const UInt8 *codePtr, const UInt8 *codeEnd, DecompileEnv *env, UOSInt lev, NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		EndType DecompileCode(const UInt8 *codePtr, const UInt8 *codeEnd, DecompileEnv *env, UOSInt lev, NN<Text::StringBuilderUTF8> sb) const;
 		void DecompileLDC(UInt16 index, DecompileEnv *env) const;
-		void DecompileStore(UInt16 index, DecompileEnv *env, UOSInt lev, NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt codeOfst) const;
-		EndType DecompileCondBranch(const UInt8 *codePtr, const UInt8 *codeEnd, CondType ct, DecompileEnv *env, UOSInt lev, NotNullPtr<Text::StringBuilderUTF8> sb) const;
-		UTF8Char *DecompileMethod(UInt16 methodIndex, UTF8Char *nameBuff, UInt16 *classIndex, UTF8Char *retType, DecompileEnv *env, NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		void DecompileStore(UInt16 index, DecompileEnv *env, UOSInt lev, NN<Text::StringBuilderUTF8> sb, UOSInt codeOfst) const;
+		EndType DecompileCondBranch(const UInt8 *codePtr, const UInt8 *codeEnd, CondType ct, DecompileEnv *env, UOSInt lev, NN<Text::StringBuilderUTF8> sb) const;
+		UTF8Char *DecompileMethod(UInt16 methodIndex, UTF8Char *nameBuff, UInt16 *classIndex, UTF8Char *retType, DecompileEnv *env, NN<Text::StringBuilderUTF8> sb) const;
 	public:
 		static JavaClass *ParseFile(Text::CStringNN fileName);
-		static JavaClass *ParseBuff(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff);
+		static JavaClass *ParseBuff(NN<Text::String> sourceName, Data::ByteArrayR buff);
 		static JavaClass *ParseBuff(Text::CStringNN sourceName, Data::ByteArrayR buff);
 		static Text::CString EndTypeGetName(EndType et);
 	};

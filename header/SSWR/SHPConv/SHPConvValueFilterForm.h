@@ -17,15 +17,15 @@ namespace SSWR
 		class SHPConvValueFilterForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblCol;
-			NotNullPtr<UI::GUIComboBox> cboCol;
-			NotNullPtr<UI::GUILabel> lblType;
-			NotNullPtr<UI::GUIRadioButton> radEqual;
-			NotNullPtr<UI::GUIRadioButton> radNotEq;
-			NotNullPtr<UI::GUILabel> lblValue;
-			NotNullPtr<UI::GUITextBox> txtValue;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUILabel> lblCol;
+			NN<UI::GUIComboBox> cboCol;
+			NN<UI::GUILabel> lblType;
+			NN<UI::GUIRadioButton> radEqual;
+			NN<UI::GUIRadioButton> radNotEq;
+			NN<UI::GUILabel> lblValue;
+			NN<UI::GUITextBox> txtValue;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 			DB::DBFFile *dbf;
 			Media::MonitorMgr *monMgr;
 			MapFilter *filter;
@@ -33,7 +33,7 @@ namespace SSWR
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			SHPConvValueFilterForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf);
+			SHPConvValueFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, DB::DBFFile *dbf);
 			virtual ~SHPConvValueFilterForm();
 
 			virtual void OnMonitorChanged();

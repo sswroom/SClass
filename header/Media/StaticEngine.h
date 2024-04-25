@@ -20,10 +20,10 @@ namespace Media
 		virtual DrawImage *CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype);
 		virtual DrawImage *LoadImage(Text::CStringNN fileName);
 		virtual DrawImage *LoadImageW(const WChar *fileName);
-		virtual DrawImage *LoadImageStream(NotNullPtr<IO::SeekableStream> stm); /////////////////////////
+		virtual DrawImage *LoadImageStream(NN<IO::SeekableStream> stm); /////////////////////////
 		virtual DrawImage *ConvImage(Media::Image *img);
-		virtual DrawImage *CloneImage(NotNullPtr<DrawImage> img);
-		virtual Bool DeleteImage(NotNullPtr<DrawImage> img);
+		virtual DrawImage *CloneImage(NN<DrawImage> img);
+		virtual Bool DeleteImage(NN<DrawImage> img);
 	};
 
 	class StaticBrush : public DrawBrush
@@ -55,13 +55,13 @@ namespace Media
 	private:
 		Media::StaticEngine *eng;
 	public:
-		StaticDrawImage(StaticEngine *eng, Math::Size2D<UOSInt> dispSize, Int32 fourcc, Int32 bpp, Media::PixelFormat pf, OSInt maxSize, NotNullPtr<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst);
+		StaticDrawImage(StaticEngine *eng, Math::Size2D<UOSInt> dispSize, Int32 fourcc, Int32 bpp, Media::PixelFormat pf, OSInt maxSize, NN<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst);
 		virtual ~StaticDrawImage();
 
 		virtual UOSInt GetWidth() const;
 		virtual UOSInt GetHeight() const;
 		virtual UInt32 GetBitCount() const;
-		virtual NotNullPtr<const ColorProfile> GetColorProfile() const;
+		virtual NN<const ColorProfile> GetColorProfile() const;
 		virtual Media::AlphaType GetAlphaType() const;
 		virtual Double GetHDPI() const;
 		virtual Double GetVDPI() const;
@@ -82,12 +82,12 @@ namespace Media
 		virtual Bool DrawStringRot(Double centX, Double centY, const WChar *str, DrawFont *f, DrawBrush *b, Double angleDegree) = 0;
 		virtual Bool DrawStringB(Double tlx, Double tly, const WChar *str, DrawFont *f, DrawBrush *b, Int32 buffSize) = 0;
 		virtual Bool DrawStringRotB(Double centX, Double centY, const WChar *str, DrawFont *f, DrawBrush *b, Double angleDegree, Int32 buffSize) = 0;*/
-		virtual Bool DrawImagePt(NotNullPtr<DrawImage> img, Math::Coord2DDbl tl);
-		virtual Bool DrawImagePt2(NotNullPtr<Media::StaticImage> img, Math::Coord2DDbl tl);
-		virtual Bool DrawImagePt3(NotNullPtr<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize);
+		virtual Bool DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl);
+		virtual Bool DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl tl);
+		virtual Bool DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize);
 
 		virtual DrawPen *NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern);
-		virtual NotNullPtr<DrawBrush> NewBrushARGB(UInt32 color);
+		virtual NN<DrawBrush> NewBrushARGB(UInt32 color);
 /*		virtual DrawFont *NewFontA(const Char *name, Int16 pxSize, Media::DrawEngine::DrawFontStyle fontStyle) = 0;
 		virtual DrawFont *NewFontW(const WChar *name, Int16 pxSize, Media::DrawEngine::DrawFontStyle fontStyle) = 0;
 		virtual DrawFont *NewFontH(const WChar *name, Double height, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage) = 0;*/
@@ -102,9 +102,9 @@ namespace Media
 		virtual void CopyBits(OSInt x, OSInt y, void *imgPtr, OSInt bpl, OSInt width, OSInt height) = 0;*/
 
 		virtual Media::StaticImage *ToStaticImage() const;
-//		virtual UOSInt SavePng(NotNullPtr<IO::SeekableStream> stm) = 0;
-		virtual UOSInt SaveGIF(NotNullPtr<IO::SeekableStream> stm);
-//		virtual UOSInt SaveJPG(NotNullPtr<IO::SeekableStream> stm) = 0;
+//		virtual UOSInt SavePng(NN<IO::SeekableStream> stm) = 0;
+		virtual UOSInt SaveGIF(NN<IO::SeekableStream> stm);
+//		virtual UOSInt SaveJPG(NN<IO::SeekableStream> stm) = 0;
 	};
 }
 #endif

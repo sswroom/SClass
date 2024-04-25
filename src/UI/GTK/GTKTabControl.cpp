@@ -8,7 +8,7 @@
 typedef struct
 {
 	GtkWidget *lbl;
-	NotNullPtr<Text::String> txt;
+	NN<Text::String> txt;
 } PageInfo;
 
 void UI::GTK::GTKTabControl::SignalSwitchPage(GtkNotebook *notebook, GtkWidget *page, guint page_num, gpointer user_data)
@@ -28,7 +28,7 @@ gboolean UI::GTK::GTKTabControl::SignalShown(gpointer user_data)
 	return false;
 }
 
-UI::GTK::GTKTabControl::GTKTabControl(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : UI::GUITabControl(ui, parent)
+UI::GTK::GTKTabControl::GTKTabControl(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent) : UI::GUITabControl(ui, parent)
 {
 	this->selIndex = 0;
 	this->hwnd = (ControlHandle*)gtk_notebook_new();
@@ -40,9 +40,9 @@ UI::GTK::GTKTabControl::GTKTabControl(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI:
 
 UI::GTK::GTKTabControl::~GTKTabControl()
 {
-	NotNullPtr<UI::GUITabPage> tp;
+	NN<UI::GUITabPage> tp;
 	PageInfo *page;
-	Data::ArrayIterator<NotNullPtr<GUITabPage>> it = this->tabPages.Iterator();
+	Data::ArrayIterator<NN<GUITabPage>> it = this->tabPages.Iterator();
 	while (it.HasNext())
 	{
 		tp = it.Next();
@@ -53,9 +53,9 @@ UI::GTK::GTKTabControl::~GTKTabControl()
 	}
 }
 
-NotNullPtr<UI::GUITabPage> UI::GTK::GTKTabControl::AddTabPage(NotNullPtr<Text::String> tabName)
+NN<UI::GUITabPage> UI::GTK::GTKTabControl::AddTabPage(NN<Text::String> tabName)
 {
-	NotNullPtr<UI::GUITabPage> tp;
+	NN<UI::GUITabPage> tp;
 	PageInfo *page;
 	NEW_CLASSNN(tp, UI::GUITabPage(this->ui, 0, *this, this->tabPages.GetCount()));
 	page = MemAlloc(PageInfo, 1);
@@ -71,9 +71,9 @@ NotNullPtr<UI::GUITabPage> UI::GTK::GTKTabControl::AddTabPage(NotNullPtr<Text::S
 	return tp;
 }
 
-NotNullPtr<UI::GUITabPage> UI::GTK::GTKTabControl::AddTabPage(Text::CStringNN tabName)
+NN<UI::GUITabPage> UI::GTK::GTKTabControl::AddTabPage(Text::CStringNN tabName)
 {
-	NotNullPtr<UI::GUITabPage> tp;
+	NN<UI::GUITabPage> tp;
 	PageInfo *page;
 	NEW_CLASSNN(tp, UI::GUITabPage(this->ui, 0, *this, this->tabPages.GetCount()));
 	page = MemAlloc(PageInfo, 1);
@@ -99,7 +99,7 @@ void UI::GTK::GTKTabControl::SetSelectedIndex(UOSInt index)
 	}
 }
 
-void UI::GTK::GTKTabControl::SetSelectedPage(NotNullPtr<UI::GUITabPage> page)
+void UI::GTK::GTKTabControl::SetSelectedPage(NN<UI::GUITabPage> page)
 {
 	UOSInt i = this->tabPages.GetCount();
 	while (i-- > 0)
@@ -123,7 +123,7 @@ Optional<UI::GUITabPage> UI::GTK::GTKTabControl::GetSelectedPage()
 
 void UI::GTK::GTKTabControl::SetTabPageName(UOSInt index, Text::CStringNN name)
 {
-	NotNullPtr<UI::GUITabPage> tp;
+	NN<UI::GUITabPage> tp;
 	if (!this->tabPages.GetItem(index).SetTo(tp))
 		return;
 	PageInfo *page = (PageInfo*)tp->GetCustObj();
@@ -134,7 +134,7 @@ void UI::GTK::GTKTabControl::SetTabPageName(UOSInt index, Text::CStringNN name)
 
 UTF8Char *UI::GTK::GTKTabControl::GetTabPageName(UOSInt index, UTF8Char *buff)
 {
-	NotNullPtr<UI::GUITabPage> tp;
+	NN<UI::GUITabPage> tp;
 	if (!this->tabPages.GetItem(index).SetTo(tp))
 		return 0;
 	PageInfo *page = (PageInfo*)tp->GetCustObj();
@@ -189,8 +189,8 @@ void UI::GTK::GTKTabControl::OnSizeChanged(Bool updateScn)
 	//sz1 = GetSizeP();
 	sz2 = GetTabPageRect().GetSize();
 	sz1 = Math::Size2D<UOSInt>((UOSInt)sz2.x, (UOSInt)sz2.y);
-	NotNullPtr<GUITabPage> tp;
-	Data::ArrayIterator<NotNullPtr<GUITabPage>> it = this->tabPages.Iterator();
+	NN<GUITabPage> tp;
+	Data::ArrayIterator<NN<GUITabPage>> it = this->tabPages.Iterator();
 	while (it.HasNext())
 	{
 		tp = it.Next();
@@ -213,7 +213,7 @@ void UI::GTK::GTKTabControl::SetDPI(Double hdpi, Double ddpi)
 		this->UpdateFont();
 	}
 
-	Data::ArrayIterator<NotNullPtr<GUITabPage>> it = this->tabPages.Iterator();
+	Data::ArrayIterator<NN<GUITabPage>> it = this->tabPages.Iterator();
 	while (it.HasNext())
 	{
 		it.Next()->SetDPI(hdpi, ddpi);

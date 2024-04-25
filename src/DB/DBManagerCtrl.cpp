@@ -2,7 +2,7 @@
 #include "DB/DBManager.h"
 #include "DB/DBManagerCtrl.h"
 
-DB::DBManagerCtrl::DBManagerCtrl(NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
+DB::DBManagerCtrl::DBManagerCtrl(NN<IO::LogTool> log, NN<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
 {
 	this->log = log;
 	this->sockf = sockf;
@@ -20,7 +20,7 @@ DB::DBManagerCtrl::~DBManagerCtrl()
 
 Bool DB::DBManagerCtrl::Connect()
 {
-	NotNullPtr<Text::String> connStr;
+	NN<Text::String> connStr;
 	if (this->status == ConnStatus::Connected)
 	{
 		return true;
@@ -69,10 +69,10 @@ Optional<DB::ReadingDB> DB::DBManagerCtrl::GetDB()
 	return this->db;
 }
 
-void DB::DBManagerCtrl::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
+void DB::DBManagerCtrl::GetConnName(NN<Text::StringBuilderUTF8> sb)
 {
-	NotNullPtr<Text::String> connStr;
-	NotNullPtr<DB::ReadingDB> db;
+	NN<Text::String> connStr;
+	NN<DB::ReadingDB> db;
 	if (this->connStr.SetTo(connStr))
 	{
 		DB::DBManager::GetConnName(connStr->ToCString(), sb);		
@@ -81,11 +81,11 @@ void DB::DBManagerCtrl::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
 	{
 		if (db->IsDBTool())
 		{
-			NotNullPtr<DB::ReadingDBTool>::ConvertFrom(db)->GetDBConn()->GetConnName(sb);
+			NN<DB::ReadingDBTool>::ConvertFrom(db)->GetDBConn()->GetConnName(sb);
 		}
 		else if (db->IsFullConn())
 		{
-			NotNullPtr<DB::DBConn>::ConvertFrom(db)->GetConnName(sb);
+			NN<DB::DBConn>::ConvertFrom(db)->GetConnName(sb);
 		}
 		else
 		{
@@ -94,26 +94,26 @@ void DB::DBManagerCtrl::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
 	}
 }
 
-NotNullPtr<DB::DBManagerCtrl> DB::DBManagerCtrl::Create(Text::String *connStr, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
+NN<DB::DBManagerCtrl> DB::DBManagerCtrl::Create(Text::String *connStr, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
 {
-	NotNullPtr<DB::DBManagerCtrl> ctrl;
+	NN<DB::DBManagerCtrl> ctrl;
 	NEW_CLASSNN(ctrl, DB::DBManagerCtrl(log, sockf, parsers));
 	ctrl->connStr = connStr->Clone();
 	return ctrl;
 }
 
-NotNullPtr<DB::DBManagerCtrl> DB::DBManagerCtrl::Create(Text::CString connStr, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
+NN<DB::DBManagerCtrl> DB::DBManagerCtrl::Create(Text::CString connStr, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
 {
-	NotNullPtr<DB::DBManagerCtrl> ctrl;
+	NN<DB::DBManagerCtrl> ctrl;
 	NEW_CLASSNN(ctrl, DB::DBManagerCtrl(log, sockf, parsers));
 	ctrl->connStr = Text::String::New(connStr);
 	return ctrl;
 }
 
-NotNullPtr<DB::DBManagerCtrl> DB::DBManagerCtrl::Create(NotNullPtr<DB::DBTool> db, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
+NN<DB::DBManagerCtrl> DB::DBManagerCtrl::Create(NN<DB::DBTool> db, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
 {
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<DB::DBManagerCtrl> ctrl;
+	NN<DB::DBManagerCtrl> ctrl;
 	NEW_CLASSNN(ctrl, DB::DBManagerCtrl(log, sockf, parsers));
 	if (DB::DBManager::GetConnStr(db, sb))
 	{
@@ -124,10 +124,10 @@ NotNullPtr<DB::DBManagerCtrl> DB::DBManagerCtrl::Create(NotNullPtr<DB::DBTool> d
 	return ctrl;
 }
 
-NotNullPtr<DB::DBManagerCtrl> DB::DBManagerCtrl::CreateFromFile(NotNullPtr<DB::ReadingDB> db, NotNullPtr<Text::String> filePath, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Parser::ParserList> parsers)
+NN<DB::DBManagerCtrl> DB::DBManagerCtrl::CreateFromFile(NN<DB::ReadingDB> db, NN<Text::String> filePath, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf, NN<Parser::ParserList> parsers)
 {
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<DB::DBManagerCtrl> ctrl;
+	NN<DB::DBManagerCtrl> ctrl;
 	NEW_CLASSNN(ctrl, DB::DBManagerCtrl(log, sockf, parsers));
 	sb.AppendC(UTF8STRC("file:"));
 	sb.Append(filePath);

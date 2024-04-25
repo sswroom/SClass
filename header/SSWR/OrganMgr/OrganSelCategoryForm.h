@@ -14,16 +14,16 @@ namespace SSWR
 		class OrganSelCategoryForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lbl;
-			NotNullPtr<UI::GUIListBox> lbCategory;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
-			NotNullPtr<SSWR::OrganMgr::OrganEnv> env;
+			NN<UI::GUILabel> lbl;
+			NN<UI::GUIListBox> lbCategory;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
+			NN<SSWR::OrganMgr::OrganEnv> env;
 			
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			OrganSelCategoryForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::OrganMgr::OrganEnv> env);
+			OrganSelCategoryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::OrganMgr::OrganEnv> env);
 			~OrganSelCategoryForm();
 
 			virtual void OnMonitorChanged();

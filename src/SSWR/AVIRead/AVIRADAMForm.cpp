@@ -4,7 +4,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRADAMForm::OnStreamClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRADAMForm> me = userObj.GetNN<SSWR::AVIRead::AVIRADAMForm>();
+	NN<SSWR::AVIRead::AVIRADAMForm> me = userObj.GetNN<SSWR::AVIRead::AVIRADAMForm>();
 	if (me->stm)
 	{
 		me->StopStream(true);
@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRADAMForm::OnStreamClicked(AnyType userObj)
 			return;
 		}
 		IO::StreamType st;
-		NotNullPtr<IO::Stream> stm;
+		NN<IO::Stream> stm;
 		if (stm.Set(me->core->OpenStream(st, me, 0, false)))
 		{
 			me->stm = stm.Ptr();
@@ -88,7 +88,7 @@ void __stdcall SSWR::AVIRead::AVIRADAMForm::OnStreamClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRADAMForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRADAMForm> me = userObj.GetNN<SSWR::AVIRead::AVIRADAMForm>();
+	NN<SSWR::AVIRead::AVIRADAMForm> me = userObj.GetNN<SSWR::AVIRead::AVIRADAMForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;		
 	UOSInt i;
@@ -154,7 +154,7 @@ void SSWR::AVIRead::AVIRADAMForm::StopStream(Bool clearUI)
 	}
 }
 
-SSWR::AVIRead::AVIRADAMForm::AVIRADAMForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 576, 480, ui)
+SSWR::AVIRead::AVIRADAMForm::AVIRADAMForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 576, 480, ui)
 {
 	this->SetText(CSTR("ADAM device"));
 	this->SetFont(0, 0, 8.25, false);

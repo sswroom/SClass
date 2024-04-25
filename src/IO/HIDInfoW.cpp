@@ -17,7 +17,7 @@ struct IO::HIDInfo::ClassData
 IO::HIDInfo::BusType busType;
 UInt16 vendor;
 UInt16 product;
-NotNullPtr<Text::String> devPath;
+NN<Text::String> devPath;
 };
 
 
@@ -67,7 +67,7 @@ IO::Stream *IO::HIDInfo::OpenHID()
 	}
 }
 
-OSInt IO::HIDInfo::GetHIDList(NotNullPtr<Data::ArrayList<HIDInfo*>> hidList)
+OSInt IO::HIDInfo::GetHIDList(NN<Data::ArrayList<HIDInfo*>> hidList)
 {
 	OSInt ret = 0;
 	ClassData *clsData;

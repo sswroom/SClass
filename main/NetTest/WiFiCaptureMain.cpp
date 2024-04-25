@@ -10,7 +10,7 @@
 
 Net::WiFiCapturer *capturer;
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	Net::WebServer::WebListener *listener;

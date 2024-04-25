@@ -23,7 +23,7 @@ Int32 Parser::FileParser::CFBParser::GetName()
 	return *(Int32*)"CFBP";
 }
 
-void Parser::FileParser::CFBParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::CFBParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile || t == IO::ParserType::Workbook || t == IO::ParserType::MapLayer || t == IO::ParserType::ReadingDB)
 	{
@@ -40,7 +40,7 @@ IO::ParserType Parser::FileParser::CFBParser::GetParserType()
 	return IO::ParserType::Workbook;
 }
 
-IO::ParsedObject *Parser::FileParser::CFBParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt8 buff[4096];
 	if (ReadUInt32(hdr) != 0xe011cfd0 || ReadUInt32(&hdr[4]) != 0xe11ab1a1)
@@ -106,7 +106,7 @@ IO::ParsedObject *Parser::FileParser::CFBParser::ParseFileHdr(NotNullPtr<IO::Str
 	}
 
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<IO::VirtualPackageFile> pkg;
+	NN<IO::VirtualPackageFile> pkg;
 	NEW_CLASSNN(pkg, IO::VirtualPackageFileFast(fd->GetFullFileName()));
 	Text::String *workbookName = 0;
 	IO::StmData::BlockStreamData miniStmFd(fd);
@@ -242,10 +242,10 @@ IO::ParsedObject *Parser::FileParser::CFBParser::ParseFileHdr(NotNullPtr<IO::Str
 			break;
 		}
 	}
-	NotNullPtr<IO::StreamData> stmData;
+	NN<IO::StreamData> stmData;
 	if (workbookName && targetType != IO::ParserType::PackageFile && pkg->OpenStreamData(workbookName->ToCString()).SetTo(stmData))
 	{
-		NotNullPtr<Text::SpreadSheet::Workbook> wb;
+		NN<Text::SpreadSheet::Workbook> wb;
 		workbookName->Release();
 		NEW_CLASSNN(wb, Text::SpreadSheet::Workbook());
 		wb->SetSourceName(fd->GetFullName());
@@ -269,8 +269,8 @@ IO::ParsedObject *Parser::FileParser::CFBParser::ParseFileHdr(NotNullPtr<IO::Str
 		else if (targetType == IO::ParserType::MapLayer || targetType == IO::ParserType::Unknown)
 		{
 			Map::DBMapLayer *layer;
-			NotNullPtr<DB::WorkbookDB> db;
-			NotNullPtr<Text::SpreadSheet::Worksheet> sheet;
+			NN<DB::WorkbookDB> db;
+			NN<Text::SpreadSheet::Worksheet> sheet;
 			if (!wb->GetItem(0).SetTo(sheet))
 			{
 				if (targetType == IO::ParserType::Unknown)
@@ -306,13 +306,13 @@ IO::ParsedObject *Parser::FileParser::CFBParser::ParseFileHdr(NotNullPtr<IO::Str
 }
 
 
-Bool Parser::FileParser::CFBParser::ParseWorkbook(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 ofstRef, NotNullPtr<Text::SpreadSheet::Workbook> wb)
+Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 ofst, UInt64 ofstRef, NN<Text::SpreadSheet::Workbook> wb)
 {
 	Bool eofFound = false;
 	Bool bofFound = false;
 	WorkbookStatus status;
 	Parser::FileParser::CFBParser::FontInfo *font;
-	NotNullPtr<Text::SpreadSheet::CellStyle> style;
+	NN<Text::SpreadSheet::CellStyle> style;
 	UOSInt readBuffSize;
 	UOSInt readSize;
 	UOSInt i;
@@ -458,7 +458,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NotNullPtr<IO::StreamData> fd,
 					sb.ClearStr();
 					if (readBuff[i + 11] & 1)
 					{
-						NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&readBuff[i + 12], readBuff[i + 10]);
+						NN<Text::String> s = Text::String::New((UTF16Char*)&readBuff[i + 12], readBuff[i + 10]);
 						sb.Append(s);
 						s->Release();
 					}
@@ -775,7 +775,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NotNullPtr<IO::StreamData> fd,
 					UInt16 ixfe = ReadUInt16(&readBuff[i + 18]);
 					Int16 cexts = ReadInt16(&readBuff[i + 22]);
 					UInt32 j;
-					NotNullPtr<Text::SpreadSheet::CellStyle> style;
+					NN<Text::SpreadSheet::CellStyle> style;
 					if (wb->GetStyle(ixfe).SetTo(style))
 					{
 						j = 24;
@@ -914,7 +914,7 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NotNullPtr<IO::StreamData> fd,
 	return eofFound;
 }
 
-Bool Parser::FileParser::CFBParser::ParseWorksheet(NotNullPtr<IO::StreamData> fd, UInt64 ofst, NotNullPtr<Text::SpreadSheet::Workbook> wb, NotNullPtr<Text::SpreadSheet::Worksheet> ws, WorkbookStatus *status)
+Bool Parser::FileParser::CFBParser::ParseWorksheet(NN<IO::StreamData> fd, UInt64 ofst, NN<Text::SpreadSheet::Workbook> wb, NN<Text::SpreadSheet::Worksheet> ws, WorkbookStatus *status)
 {
 	Bool eofFound = false;
 	Bool bofFound = false;
@@ -1153,7 +1153,7 @@ Bool Parser::FileParser::CFBParser::ParseWorksheet(NotNullPtr<IO::StreamData> fd
 	return eofFound;
 }
 
-UOSInt Parser::FileParser::CFBParser::ReadUString(UInt8 *buff, NotNullPtr<Text::StringBuilderUTF8> sb)
+UOSInt Parser::FileParser::CFBParser::ReadUString(UInt8 *buff, NN<Text::StringBuilderUTF8> sb)
 {
 	UOSInt currOfst = 0;
 	UOSInt charCnt = ReadUInt16(&buff[0]);
@@ -1164,7 +1164,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUString(UInt8 *buff, NotNullPtr<Text::
 	{
 		if (flags & 1)
 		{
-			NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&buff[3], charCnt);
+			NN<Text::String> s = Text::String::New((UTF16Char*)&buff[3], charCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 3 + charCnt * 2;
@@ -1180,7 +1180,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUString(UInt8 *buff, NotNullPtr<Text::
 		cchExtRst = ReadUInt32(&buff[3]);
 		if (flags & 1)
 		{
-			NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&buff[7], charCnt);
+			NN<Text::String> s = Text::String::New((UTF16Char*)&buff[7], charCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 7 + charCnt * 2;
@@ -1198,7 +1198,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUString(UInt8 *buff, NotNullPtr<Text::
 		fmtCnt = ReadUInt16(&buff[3]);
 		if (flags & 1)
 		{
-			NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&buff[5], charCnt);
+			NN<Text::String> s = Text::String::New((UTF16Char*)&buff[5], charCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 5 + charCnt * 2;
@@ -1217,7 +1217,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUString(UInt8 *buff, NotNullPtr<Text::
 		cchExtRst = ReadUInt32(&buff[5]);
 		if (flags & 1)
 		{
-			NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&buff[9], charCnt);
+			NN<Text::String> s = Text::String::New((UTF16Char*)&buff[9], charCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 9 + charCnt * 2;
@@ -1233,7 +1233,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUString(UInt8 *buff, NotNullPtr<Text::
 	return currOfst;
 }
 
-UOSInt Parser::FileParser::CFBParser::ReadUStringPartial(UInt8 *buff, UOSInt buffSize, InOutParam<UInt32> charCnt, NotNullPtr<Text::StringBuilderUTF8> sb)
+UOSInt Parser::FileParser::CFBParser::ReadUStringPartial(UInt8 *buff, UOSInt buffSize, InOutParam<UInt32> charCnt, NN<Text::StringBuilderUTF8> sb)
 {
 	UOSInt currOfst = 0;
 	UInt8 flags = buff[0];
@@ -1246,7 +1246,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUStringPartial(UInt8 *buff, UOSInt buf
 		{
 			if (thisCnt * 2 + 1 > buffSize)
 				thisCnt = (buffSize - 1) >> 1;
-			NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&buff[1], thisCnt);
+			NN<Text::String> s = Text::String::New((UTF16Char*)&buff[1], thisCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 1 + thisCnt * 2;
@@ -1266,7 +1266,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUStringPartial(UInt8 *buff, UOSInt buf
 		{
 			if (thisCnt * 2 + 1 + cchExtRst > buffSize)
 				thisCnt = (buffSize - 1 - cchExtRst) >> 1;
-			NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&buff[5], thisCnt);
+			NN<Text::String> s = Text::String::New((UTF16Char*)&buff[5], thisCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 5 + thisCnt * 2;
@@ -1288,7 +1288,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUStringPartial(UInt8 *buff, UOSInt buf
 		{
 			if (thisCnt * 2 + 3 + (fmtCnt << 2) > buffSize)
 				thisCnt = (buffSize - 3 - (fmtCnt << 2)) >> 1;
-			NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&buff[3], thisCnt);
+			NN<Text::String> s = Text::String::New((UTF16Char*)&buff[3], thisCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 3 + thisCnt * 2;
@@ -1311,7 +1311,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUStringPartial(UInt8 *buff, UOSInt buf
 		{
 			if (thisCnt * 2 + 7 + (fmtCnt << 2) + cchExtRst > buffSize)
 				thisCnt = (buffSize - 7 - (fmtCnt << 2) - cchExtRst) >> 1;
-			NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&buff[7], thisCnt);
+			NN<Text::String> s = Text::String::New((UTF16Char*)&buff[7], thisCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 7 + thisCnt * 2;
@@ -1330,7 +1330,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUStringPartial(UInt8 *buff, UOSInt buf
 	return currOfst;
 }
 
-UOSInt Parser::FileParser::CFBParser::ReadUStringB(UInt8 *buff, NotNullPtr<Text::StringBuilderUTF8> sb)
+UOSInt Parser::FileParser::CFBParser::ReadUStringB(UInt8 *buff, NN<Text::StringBuilderUTF8> sb)
 {
 	UOSInt currOfst = 0;
 	UOSInt charCnt = buff[0];
@@ -1341,7 +1341,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUStringB(UInt8 *buff, NotNullPtr<Text:
 	{
 		if (flags & 1)
 		{
-			NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&buff[2], charCnt);
+			NN<Text::String> s = Text::String::New((UTF16Char*)&buff[2], charCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 3 + charCnt * 2;
@@ -1357,7 +1357,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUStringB(UInt8 *buff, NotNullPtr<Text:
 		cchExtRst = ReadUInt32(&buff[2]);
 		if (flags & 1)
 		{
-			NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&buff[6], charCnt);
+			NN<Text::String> s = Text::String::New((UTF16Char*)&buff[6], charCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 7 + charCnt * 2;
@@ -1375,7 +1375,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUStringB(UInt8 *buff, NotNullPtr<Text:
 		fmtCnt = ReadUInt16(&buff[2]);
 		if (flags & 1)
 		{
-			NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&buff[4], charCnt);
+			NN<Text::String> s = Text::String::New((UTF16Char*)&buff[4], charCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 5 + charCnt * 2;
@@ -1394,7 +1394,7 @@ UOSInt Parser::FileParser::CFBParser::ReadUStringB(UInt8 *buff, NotNullPtr<Text:
 		cchExtRst = ReadUInt32(&buff[4]);
 		if (flags & 1)
 		{
-			NotNullPtr<Text::String> s = Text::String::New((UTF16Char*)&buff[8], charCnt);
+			NN<Text::String> s = Text::String::New((UTF16Char*)&buff[8], charCnt);
 			sb->Append(s);
 			s->Release();
 			currOfst += 9 + charCnt * 2;

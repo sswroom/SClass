@@ -20,21 +20,21 @@ typedef enum
 
 void __stdcall SSWR::AVIRead::AVIRAudioViewerForm::OnSizeChanged(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRAudioViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioViewerForm>();
+	NN<SSWR::AVIRead::AVIRAudioViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAudioViewerForm>();
 	me->UpdateImages();
 }
 
 void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 {
-	NotNullPtr<Media::DrawImage> gimg;
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> gimg;
+	NN<Media::DrawImage> img;
 	Math::Size2D<UOSInt> sz = this->pbsSample->GetSizeP();
 	if (sz.x <= 0 || sz.y <= 0)
 		return;
 	if (this->totalSample == 0 || this->totalSample == (UOSInt)-1)
 	{
-		NotNullPtr<Media::DrawBrush> b;
-		NotNullPtr<Media::DrawFont> f;
+		NN<Media::DrawBrush> b;
+		NN<Media::DrawFont> f;
 		if (gimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 		{
 			b = gimg->NewBrushARGB(0xff000000);
@@ -55,8 +55,8 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 	}
 	else
 	{
-		NotNullPtr<Media::DrawBrush> b;
-		NotNullPtr<Media::DrawPen> p;
+		NN<Media::DrawBrush> b;
+		NN<Media::DrawPen> p;
 		UOSInt i;
 		UOSInt j;
 		UInt32 currCh;
@@ -127,15 +127,15 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 
 void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 {
-	NotNullPtr<Media::DrawImage> gimg;
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> gimg;
+	NN<Media::DrawImage> img;
 	Math::Size2D<UOSInt> sz = this->pbsFreq->GetSizeP();
 	if (sz.x <= 0 || sz.y <= 0)
 		return;
 	if (this->totalSample == 0 || this->totalSample == (UOSInt)-1)
 	{
-		NotNullPtr<Media::DrawBrush> b;
-		NotNullPtr<Media::DrawFont> f;
+		NN<Media::DrawBrush> b;
+		NN<Media::DrawFont> f;
 		if (gimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 		{
 			b = gimg->NewBrushARGB(0xff000000);
@@ -156,8 +156,8 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 	}
 	else
 	{
-		NotNullPtr<Media::DrawBrush> b;
-		NotNullPtr<Media::DrawPen> p;
+		NN<Media::DrawBrush> b;
+		NN<Media::DrawPen> p;
 		UOSInt i;
 		UOSInt j;
 		Double lastX;
@@ -234,7 +234,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 	}
 }
 
-SSWR::AVIRead::AVIRAudioViewerForm::AVIRAudioViewerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::IAudioSource *audSrc) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRAudioViewerForm::AVIRAudioViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::IAudioSource *audSrc) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -250,7 +250,7 @@ SSWR::AVIRead::AVIRAudioViewerForm::AVIRAudioViewerForm(Optional<UI::GUIClientCo
 	this->fftImg = 0;
 	this->audSrc->GetFormat(this->format);
 
-	NotNullPtr<UI::GUIMenu> mnu;
+	NN<UI::GUIMenu> mnu;
 	NEW_CLASSNN(this->mnu, UI::GUIMainMenu());
 	mnu = this->mnu->AddSubMenu(CSTR("&Navigate"));
 	mnu->AddItem(CSTR("&Next Sample"), MNU_NEXT_SAMPLE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_RIGHT);
@@ -281,7 +281,7 @@ SSWR::AVIRead::AVIRAudioViewerForm::AVIRAudioViewerForm(Optional<UI::GUIClientCo
 
 SSWR::AVIRead::AVIRAudioViewerForm::~AVIRAudioViewerForm()
 {
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->sampleImg))
 	{
 		this->eng->DeleteImage(img);

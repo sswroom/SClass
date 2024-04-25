@@ -4,7 +4,7 @@
 #include "Net/ASN1PDUBuilder.h"
 #include "Net/ASN1Util.h"
 
-Crypto::Cert::X509Key::X509Key(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff, KeyType keyType) : Crypto::Cert::X509File(sourceName, buff)
+Crypto::Cert::X509Key::X509Key(NN<Text::String> sourceName, Data::ByteArrayR buff, KeyType keyType) : Crypto::Cert::X509File(sourceName, buff)
 {
 	this->keyType = keyType;
 }
@@ -24,7 +24,7 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509Key::GetFileType() const
 	return FileType::Key;
 }
 
-void Crypto::Cert::X509Key::ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Crypto::Cert::X509Key::ToShortName(NN<Text::StringBuilderUTF8> sb) const
 {
 	sb->Append(KeyTypeGetName(this->keyType));
 	sb->AppendUTF8Char(' ');
@@ -32,7 +32,7 @@ void Crypto::Cert::X509Key::ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) 
 	sb->AppendC(UTF8STRC(" bits"));
 }
 
-Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Key::IsValid(NotNullPtr<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Key::IsValid(NN<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const
 {
 	if (this->keyType == KeyType::Unknown)
 	{
@@ -41,14 +41,14 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Key::IsValid(NotNullPtr<Ne
 	return Crypto::Cert::X509File::ValidStatus::Valid;
 }
 
-NotNullPtr<Net::ASN1Data> Crypto::Cert::X509Key::Clone() const
+NN<Net::ASN1Data> Crypto::Cert::X509Key::Clone() const
 {
-	NotNullPtr<Crypto::Cert::X509Key> asn1;
+	NN<Crypto::Cert::X509Key> asn1;
 	NEW_CLASSNN(asn1, Crypto::Cert::X509Key(this->GetSourceNameObj(), this->buff, this->keyType));
 	return asn1;
 }
 
-void Crypto::Cert::X509Key::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Crypto::Cert::X509Key::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	Bool found = false;
 	if (this->keyType == KeyType::RSA)
@@ -230,9 +230,9 @@ void Crypto::Cert::X509Key::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) con
 	}
 }
 
-NotNullPtr<Net::ASN1Names> Crypto::Cert::X509Key::CreateNames() const
+NN<Net::ASN1Names> Crypto::Cert::X509Key::CreateNames() const
 {
-	NotNullPtr<Net::ASN1Names> names;
+	NN<Net::ASN1Names> names;
 	NEW_CLASSNN(names, Net::ASN1Names());
 	switch (this->keyType)
 	{

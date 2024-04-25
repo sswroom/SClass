@@ -40,7 +40,7 @@ Bool Exporter::CURExporter::ImageSupported(Media::RasterImage *img)
 	return false;
 }
 
-UOSInt Exporter::CURExporter::CalcBuffSize(NotNullPtr<Media::ImageList> imgList)
+UOSInt Exporter::CURExporter::CalcBuffSize(NN<Media::ImageList> imgList)
 {
 	UOSInt i;
 	UOSInt j;
@@ -136,7 +136,7 @@ UOSInt Exporter::CURExporter::CalcBuffSize(NotNullPtr<Media::ImageList> imgList)
 	return retSize;
 }
 
-UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, NotNullPtr<Media::ImageList> imgList, Bool hasHotSpot)
+UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgList, Bool hasHotSpot)
 {
 	UInt8 *indexPtr;
 	UInt8 *imgPtr;
@@ -681,11 +681,11 @@ Int32 Exporter::CURExporter::GetName()
 	return *(Int32*)"CURE";
 }
 
-IO::FileExporter::SupportType Exporter::CURExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
+IO::FileExporter::SupportType Exporter::CURExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
-	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
+	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	Media::RasterImage *img;
 	UOSInt i = imgList->GetCount();
 	if (i <= 0)
@@ -719,11 +719,11 @@ void Exporter::CURExporter::SetCodePage(UInt32 codePage)
 {
 }
 
-Bool Exporter::CURExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::CURExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return 0;
-	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
+	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	UOSInt buffSize = CalcBuffSize(imgList);
 	if (buffSize == 0)
 		return false;

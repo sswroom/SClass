@@ -26,7 +26,7 @@ Bool toStop;
 Sync::Event *evt;
 Sync::Event *httpEvt;
 IO::Device::AM2315 *am2315;
-NotNullPtr<Net::SocketFactory> sockf;
+NN<Net::SocketFactory> sockf;
 Optional<Net::SSLEngine> ssl;
 IO::ConsoleWriter *consoleWriter;
 
@@ -79,7 +79,7 @@ UInt32 __stdcall WatchdogThread(AnyType userObj)
 
 UInt32 __stdcall HTTPThread(AnyType userObj)
 {
-	NotNullPtr<Net::HTTPClient> cli;
+	NN<Net::HTTPClient> cli;
 	{
 		Text::StringBuilderUTF8 sb;
 		httpRunning = true;
@@ -115,7 +115,7 @@ UInt32 __stdcall HTTPThread(AnyType userObj)
 	return 0;
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	IO::IOTool::EchoFile(CSTR("/sys/class/gpio/export"), CSTR("71"));
@@ -127,7 +127,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	running = false;
 	httpRunning = false;
 	toStop = false;
-	NotNullPtr<IO::I2CChannel> channel;
+	NN<IO::I2CChannel> channel;
 	if (!channel.Set(IO::Device::AM2315::CreateDefChannel(1)))
 	{
 		console.WriteLineC(UTF8STRC("I2C Bus not found"));

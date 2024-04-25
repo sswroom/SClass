@@ -4,7 +4,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnGetTimeClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRNTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNTPClientForm>();
+	NN<SSWR::AVIRead::AVIRNTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNTPClientForm>();
 	Net::NTPClient *cli;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnGetTimeClicked(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnSyncTimeClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRNTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNTPClientForm>();
+	NN<SSWR::AVIRead::AVIRNTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNTPClientForm>();
 	Text::StringBuilderUTF8 sb;
 	Net::NTPClient *cli;
 	UTF8Char sbuff[64];
@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnSyncTimeClicked(AnyType userO
 	}
 }
 
-SSWR::AVIRead::AVIRNTPClientForm::AVIRNTPClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 480, 160, ui)
+SSWR::AVIRead::AVIRNTPClientForm::AVIRNTPClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 480, 160, ui)
 {
 	this->SetText(CSTR("NTP Client"));
 	this->SetFont(0, 0, 8.25, false);

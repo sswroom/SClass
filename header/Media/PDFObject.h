@@ -17,8 +17,8 @@ namespace Media
 		PDFObject(UInt32 id);
 		~PDFObject();
 
-		void SetStream(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 len);
-		void SetData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 len);
+		void SetStream(NN<IO::StreamData> fd, UInt64 ofst, UInt64 len);
+		void SetData(NN<IO::StreamData> fd, UInt64 ofst, UInt64 len);
 		void SetParameter(PDFParameter *parameter);
 		PDFParameter *GetParameter() const;
 		UInt32 GetId() const;
@@ -32,7 +32,7 @@ namespace Media
 		UOSInt GetHeight() const;
 		IO::StreamData *GetData() const;
 		Bool SaveFile(Text::CStringNN fileName);
-		Bool SaveStream(NotNullPtr<IO::Stream> stm);
+		Bool SaveStream(NN<IO::Stream> stm);
 	};
 }
 #endif

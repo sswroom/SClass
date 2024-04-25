@@ -4,9 +4,9 @@
 
 void __stdcall Net::TCPServerController::ConnHdlr(Socket *s, AnyType userObj)
 {
-	NotNullPtr<Net::TCPClient> cli;
+	NN<Net::TCPClient> cli;
 	Net::TCPServerController::ClientData *data;
-	NotNullPtr<Net::TCPServerController> me = userObj.GetNN<Net::TCPServerController>();
+	NN<Net::TCPServerController> me = userObj.GetNN<Net::TCPServerController>();
 	NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
 	data = MemAlloc(Net::TCPServerController::ClientData, 1);
 	data->buffSize = 0;
@@ -15,10 +15,10 @@ void __stdcall Net::TCPServerController::ConnHdlr(Socket *s, AnyType userObj)
 	data->cliObj = me->hdlr->NewConn(cli);
 }
 
-void __stdcall Net::TCPServerController::EventHdlr(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::TCPServerController::EventHdlr(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
-	NotNullPtr<Net::TCPServerController> me = userObj.GetNN<Net::TCPServerController>();
-	NotNullPtr<Net::TCPServerController::ClientData> data = cliData.GetNN<Net::TCPServerController::ClientData>();
+	NN<Net::TCPServerController> me = userObj.GetNN<Net::TCPServerController>();
+	NN<Net::TCPServerController::ClientData> data = cliData.GetNN<Net::TCPServerController::ClientData>();
 
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_HASDATA)
 	{
@@ -32,10 +32,10 @@ void __stdcall Net::TCPServerController::EventHdlr(NotNullPtr<Net::TCPClient> cl
 	}
 }
 
-void __stdcall Net::TCPServerController::DataHdlr(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &srcBuff)
+void __stdcall Net::TCPServerController::DataHdlr(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &srcBuff)
 {
-	NotNullPtr<Net::TCPServerController> me = userObj.GetNN<Net::TCPServerController>();
-	NotNullPtr<Net::TCPServerController::ClientData> data = cliData.GetNN<Net::TCPServerController::ClientData>();
+	NN<Net::TCPServerController> me = userObj.GetNN<Net::TCPServerController>();
+	NN<Net::TCPServerController::ClientData> data = cliData.GetNN<Net::TCPServerController::ClientData>();
 	UOSInt copySize;
 
 	Data::ByteArrayR buff = srcBuff;
@@ -63,11 +63,11 @@ void __stdcall Net::TCPServerController::DataHdlr(NotNullPtr<Net::TCPClient> cli
 	}
 }
 
-void __stdcall Net::TCPServerController::TimeoutHdlr(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
+void __stdcall Net::TCPServerController::TimeoutHdlr(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
 {
 }
 
-Net::TCPServerController::TCPServerController(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log, UInt16 port, Text::CString prefix, UOSInt maxBuffSize, Net::TCPServerController::TCPServerHandler *hdlr, UOSInt workerCnt, Int32 timeoutSec, Bool autoStart)
+Net::TCPServerController::TCPServerController(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log, UInt16 port, Text::CString prefix, UOSInt maxBuffSize, Net::TCPServerController::TCPServerHandler *hdlr, UOSInt workerCnt, Int32 timeoutSec, Bool autoStart)
 {
 	this->cliMgr = 0;
 	this->sockf = sockf;
@@ -107,7 +107,7 @@ Bool Net::TCPServerController::IsError()
 	return this->svr == 0 || this->maxBuffSize <= 0;
 }
 
-void Net::TCPServerController::UseGetCli(NotNullPtr<Sync::MutexUsage> mutUsage)
+void Net::TCPServerController::UseGetCli(NN<Sync::MutexUsage> mutUsage)
 {
 	this->cliMgr->UseGetClient(mutUsage);
 }
@@ -120,7 +120,7 @@ UOSInt Net::TCPServerController::GetCliCount()
 Net::TCPClient *Net::TCPServerController::GetClient(UOSInt index, OutParam<AnyType> cliObj)
 {
 	AnyType cliData;
-	NotNullPtr<Net::TCPServerController::ClientData> data;
+	NN<Net::TCPServerController::ClientData> data;
 	Net::TCPClient *cli = this->cliMgr->GetClient(index, cliData);
 	if (cli == 0)
 		return 0;

@@ -4,8 +4,8 @@
 
 void __stdcall SSWR::AVIRead::AVIRDragDropViewerForm::OnTypeSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDragDropViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDragDropViewerForm>();
-	NotNullPtr<Text::String> s;
+	NN<SSWR::AVIRead::AVIRDragDropViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDragDropViewerForm>();
+	NN<Text::String> s;
 	if (me->lbType->GetSelectedItemTextNew().SetTo(s))
 	{
 		const UTF8Char *msg = me->dropMap->Get(s->v);
@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRDragDropViewerForm::OnTypeSelChg(AnyType userO
 
 void SSWR::AVIRead::AVIRDragDropViewerForm::ClearDrops()
 {
-	NotNullPtr<const Data::ArrayList<const UTF8Char*>> dropList = this->dropMap->GetValues();
+	NN<const Data::ArrayList<const UTF8Char*>> dropList = this->dropMap->GetValues();
 	UOSInt i;
 	const UTF8Char *dropMsg;
 	i = dropList->GetCount();
@@ -35,7 +35,7 @@ void SSWR::AVIRead::AVIRDragDropViewerForm::ClearDrops()
 	this->dropMap->Clear();
 }
 
-SSWR::AVIRead::AVIRDragDropViewerForm::AVIRDragDropViewerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRDragDropViewerForm::AVIRDragDropViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Drag Drop Viewer"));
 	this->SetFont(0, 0, 8.25, false);

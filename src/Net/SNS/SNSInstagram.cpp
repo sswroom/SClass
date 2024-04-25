@@ -3,7 +3,7 @@
 #include "Net/SNS/SNSInstagram.h"
 #include "Text/StringBuilderUTF8.h"
 
-Net::SNS::SNSInstagram::SNSInstagram(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CString channelId)
+Net::SNS::SNSInstagram::SNSInstagram(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CString channelId)
 {
 	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteInstagramControl(sockf, ssl, encFact, userAgent));
 	this->channelId = Text::String::New(channelId);
@@ -65,7 +65,7 @@ Net::SNS::SNSInstagram::SNSInstagram(NotNullPtr<Net::SocketFactory> sockf, Optio
 		sb.AppendC(UTF8STRC("https://www.instagram.com/p/"));
 		sb.Append(item->shortCode);
 		sb.AppendC(UTF8STRC("/"));
-		NotNullPtr<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
+		NN<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
 		snsItem = CreateItem(item->shortCode, item->recTime, 0, item->message, s.Ptr(), item->imgURL, item->videoURL);
 		s->Release();
 		this->itemMap.PutNN(item->shortCode, snsItem);
@@ -96,12 +96,12 @@ Net::SNS::SNSControl::SNSType Net::SNS::SNSInstagram::GetSNSType()
 	return Net::SNS::SNSControl::ST_INSTAGRAM;
 }
 
-NotNullPtr<Text::String> Net::SNS::SNSInstagram::GetChannelId() const
+NN<Text::String> Net::SNS::SNSInstagram::GetChannelId() const
 {
 	return this->channelId;
 }
 
-NotNullPtr<Text::String> Net::SNS::SNSInstagram::GetName() const
+NN<Text::String> Net::SNS::SNSInstagram::GetName() const
 {
 	return this->chName;
 }
@@ -113,7 +113,7 @@ UTF8Char *Net::SNS::SNSInstagram::GetDirName(UTF8Char *dirName)
 	return dirName;
 }
 
-UOSInt Net::SNS::SNSInstagram::GetCurrItems(NotNullPtr<Data::ArrayList<SNSItem*>> itemList)
+UOSInt Net::SNS::SNSInstagram::GetCurrItems(NN<Data::ArrayList<SNSItem*>> itemList)
 {
 	UOSInt initCnt = itemList->GetCount();
 	itemList->AddAll(this->itemMap);
@@ -192,7 +192,7 @@ Bool Net::SNS::SNSInstagram::Reload()
 				sb.AppendC(UTF8STRC("https://www.instagram.com/p/"));
 				sb.Append(item->shortCode);
 				sb.AppendC(UTF8STRC("/"));
-				NotNullPtr<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
+				NN<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
 				snsItem = CreateItem(item->shortCode, item->recTime, 0, item->message, s.Ptr(), item->imgURL, item->videoURL);
 				s->Release();
 				this->itemMap.PutNN(item->shortCode, snsItem);

@@ -14,25 +14,25 @@ namespace SSWR
 		class AVIRUserAgentParseForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUILabel> lblUserAgent;
-			NotNullPtr<UI::GUITextBox> txtUserAgent;
-			NotNullPtr<UI::GUIButton> btnParse;
-			NotNullPtr<UI::GUILabel> lblBrowser;
-			NotNullPtr<UI::GUITextBox> txtBrowser;
-			NotNullPtr<UI::GUILabel> lblBrowserVer;
-			NotNullPtr<UI::GUITextBox> txtBrowserVer;
-			NotNullPtr<UI::GUILabel> lblOS;
-			NotNullPtr<UI::GUITextBox> txtOS;
-			NotNullPtr<UI::GUILabel> lblOSVer;
-			NotNullPtr<UI::GUITextBox> txtOSVer;
-			NotNullPtr<UI::GUILabel> lblDeviceName;
-			NotNullPtr<UI::GUITextBox> txtDeviceName;
+			NN<UI::GUILabel> lblUserAgent;
+			NN<UI::GUITextBox> txtUserAgent;
+			NN<UI::GUIButton> btnParse;
+			NN<UI::GUILabel> lblBrowser;
+			NN<UI::GUITextBox> txtBrowser;
+			NN<UI::GUILabel> lblBrowserVer;
+			NN<UI::GUITextBox> txtBrowserVer;
+			NN<UI::GUILabel> lblOS;
+			NN<UI::GUITextBox> txtOS;
+			NN<UI::GUILabel> lblOSVer;
+			NN<UI::GUITextBox> txtOSVer;
+			NN<UI::GUILabel> lblDeviceName;
+			NN<UI::GUITextBox> txtDeviceName;
 
 			static void __stdcall OnParseClicked(AnyType userObj);
 		public:
-			AVIRUserAgentParseForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRUserAgentParseForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRUserAgentParseForm();
 
 			virtual void OnMonitorChanged();

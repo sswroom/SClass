@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRLoRaJSONForm::OnJSONParseClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLoRaJSONForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLoRaJSONForm>();
+	NN<SSWR::AVIRead::AVIRLoRaJSONForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLoRaJSONForm>();
 	UInt8 buff[256];
 	UOSInt buffSize;
 	Text::StringBuilderUTF8 sb;
@@ -13,9 +13,9 @@ void __stdcall SSWR::AVIRead::AVIRLoRaJSONForm::OnJSONParseClick(AnyType userObj
 	Text::JSONBase *json = Text::JSONBase::ParseJSONStr(sb.ToCString());
 	if (json)
 	{
-		NotNullPtr<Text::String> rxdata;
+		NN<Text::String> rxdata;
 		Text::JSONBase *rxstat = json->GetValue(CSTR("rxpk[0].stat"));
-		NotNullPtr<Text::String> txdata;
+		NN<Text::String> txdata;
 		if (json->GetValueString(CSTR("rxpk[0].data")).SetTo(rxdata))
 		{
 			Text::TextBinEnc::Base64Enc b64;
@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRLoRaJSONForm::OnJSONParseClick(AnyType userObj
 	}
 }
 
-void SSWR::AVIRead::AVIRLoRaJSONForm::PHYPayloadDetail(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *buff, UOSInt buffSize)
+void SSWR::AVIRead::AVIRLoRaJSONForm::PHYPayloadDetail(NN<Text::StringBuilderUTF8> sb, const UInt8 *buff, UOSInt buffSize)
 {
 	switch (buff[0] >> 5)
 	{
@@ -100,7 +100,7 @@ void SSWR::AVIRead::AVIRLoRaJSONForm::PHYPayloadDetail(NotNullPtr<Text::StringBu
 	sb->AppendC(UTF8STRC("\r\n"));
 }
 
-void SSWR::AVIRead::AVIRLoRaJSONForm::MACPayloadDetail(NotNullPtr<Text::StringBuilderUTF8> sb, Bool donwLink, const UInt8 *buff, UOSInt buffSize)
+void SSWR::AVIRead::AVIRLoRaJSONForm::MACPayloadDetail(NN<Text::StringBuilderUTF8> sb, Bool donwLink, const UInt8 *buff, UOSInt buffSize)
 {
 	if (buffSize < 7)
 	{
@@ -158,7 +158,7 @@ void SSWR::AVIRead::AVIRLoRaJSONForm::MACPayloadDetail(NotNullPtr<Text::StringBu
 	sb->AppendC(UTF8STRC("\r\n"));
 }
 
-SSWR::AVIRead::AVIRLoRaJSONForm::AVIRLoRaJSONForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRLoRaJSONForm::AVIRLoRaJSONForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("LoRa JSON Parser"));
 	this->SetFont(0, 0, 8.25, false);

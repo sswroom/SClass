@@ -11,9 +11,9 @@ namespace Net
 	class RAWAnalyzer
 	{
 	private:
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Net::WebServer::WebListener *listener;
-		NotNullPtr<Net::WebServer::WebStandardHandler> webHdlr;
+		NN<Net::WebServer::WebStandardHandler> webHdlr;
 		Socket *rawSock;
 		Net::EthernetAnalyzer *analyzer;
 	
@@ -23,7 +23,7 @@ namespace Net
 		static UInt32 __stdcall RecvThread(AnyType obj);
 
 	public:
-		RAWAnalyzer(NotNullPtr<Net::SocketFactory> sockf, UInt16 infoPort, IO::Writer *errWriter, Net::EthernetAnalyzer::AnalyzeType aType);
+		RAWAnalyzer(NN<Net::SocketFactory> sockf, UInt16 infoPort, IO::Writer *errWriter, Net::EthernetAnalyzer::AnalyzeType aType);
 		~RAWAnalyzer();
 
 		Bool IsError();

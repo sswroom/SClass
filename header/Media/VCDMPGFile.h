@@ -13,7 +13,7 @@ namespace Media
 	class VCDMPGFile : public Media::MediaFile, public Media::IStreamControl
 	{
 	private:
-		NotNullPtr<IO::ISectorData> data;
+		NN<IO::ISectorData> data;
 		Data::ByteBuffer readBuff;
 		UInt64 readOfst;
 		UInt64 fleng;
@@ -31,7 +31,7 @@ namespace Media
 		Bool StartPlay();
 		Bool StopPlay();
 	public:
-		VCDMPGFile(NotNullPtr<IO::ISectorData> data, UInt64 startSector, UInt64 endSector);
+		VCDMPGFile(NN<IO::ISectorData> data, UInt64 startSector, UInt64 endSector);
 		virtual ~VCDMPGFile();
 		
 		virtual UOSInt AddSource(Media::IMediaSource *src, Int32 syncTime);

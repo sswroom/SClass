@@ -29,7 +29,7 @@ namespace UI
 		Math::Size2D<UOSInt> bgBuffSize;
 
 		Media::CS::CSConverter *csconv;
-		NotNullPtr<Media::ColorManagerSess> colorSess;
+		NN<Media::ColorManagerSess> colorSess;
 		Optional<Media::RasterImage> currImage;
 		Math::Size2D<UOSInt> currImageSize;
 		Media::IImgResizer *resizer;
@@ -55,7 +55,7 @@ namespace UI
 
 	private:
 		void UpdateSubSurface();
-		void CalDispRect(NotNullPtr<Math::RectAreaDbl> srcRect, NotNullPtr<Math::RectArea<OSInt>> destRect);
+		void CalDispRect(NN<Math::RectAreaDbl> srcRect, NN<Math::RectArea<OSInt>> destRect);
 		void UpdateZoomRange();
 		void UpdateMinScale();
 		void CreateResizer();
@@ -63,7 +63,7 @@ namespace UI
 		void DrawFromBG();
 		virtual void OnPaint();
 	public:
-		GUIPictureBoxDD(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::ColorManagerSess> colorSess, Bool allowEnlarge, Bool directMode);
+		GUIPictureBoxDD(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::ColorManagerSess> colorSess, Bool allowEnlarge, Bool directMode);
 		virtual ~GUIPictureBoxDD();
 
 		virtual Text::CStringNN GetObjectClass() const;
@@ -74,8 +74,8 @@ namespace UI
 		void EnableLRGBLimit(Bool enable);
 		void SetImage(Optional<Media::RasterImage> currImage, Bool sameImg);
 
-		virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
-		virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);
+		virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
+		virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
 		void SetAllowEnlarge(Bool allowEnlarge);
 
 		virtual void OnSurfaceCreated();
@@ -93,7 +93,7 @@ namespace UI
 		void EventMoveToPrev();
 
 		Bool GetImageViewSize(Math::Size2D<UOSInt> *viewSize, Math::Size2D<UOSInt> imageSize);
-		NotNullPtr<Media::StaticImage> CreatePreviewImage(NotNullPtr<const Media::StaticImage> image);
+		NN<Media::StaticImage> CreatePreviewImage(NN<const Media::StaticImage> image);
 
 		void HandleMouseDown(MouseEventHandler hdlr, AnyType userObj);
 		void HandleMouseMove(MouseEventHandler hdlr, AnyType userObj);

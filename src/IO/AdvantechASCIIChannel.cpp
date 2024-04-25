@@ -7,7 +7,7 @@
 
 UInt32 __stdcall IO::AdvantechASCIIChannel::CmdThread(AnyType userObj)
 {
-	NotNullPtr<IO::AdvantechASCIIChannel> me = userObj.GetNN<IO::AdvantechASCIIChannel>();
+	NN<IO::AdvantechASCIIChannel> me = userObj.GetNN<IO::AdvantechASCIIChannel>();
 	UInt8 readBuff[64];
 	UOSInt readSize;
 	UOSInt buffSize = 0;
@@ -67,7 +67,7 @@ UInt32 __stdcall IO::AdvantechASCIIChannel::CmdThread(AnyType userObj)
 	return 0;
 }
 
-IO::AdvantechASCIIChannel::AdvantechASCIIChannel(NotNullPtr<IO::Stream> stm, Bool needRelease)
+IO::AdvantechASCIIChannel::AdvantechASCIIChannel(NN<IO::Stream> stm, Bool needRelease)
 {
 	this->stm = stm;
 	this->stmRelease = needRelease;
@@ -89,7 +89,7 @@ IO::AdvantechASCIIChannel::~AdvantechASCIIChannel()
 	}
 }
 
-NotNullPtr<IO::Stream> IO::AdvantechASCIIChannel::GetStream() const
+NN<IO::Stream> IO::AdvantechASCIIChannel::GetStream() const
 {
 	return this->stm;
 }

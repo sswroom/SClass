@@ -28,17 +28,17 @@ namespace Parser
 		void SetEncFactory(Optional<Text::EncodingFactory> encFact);
 		void SetWebBrowser(Net::WebBrowser *browser);
 		void SetProgressHandler(IO::ProgressHandler *progHdlr);
-		void SetSocketFactory(NotNullPtr<Net::SocketFactory> sockf);
+		void SetSocketFactory(NN<Net::SocketFactory> sockf);
 		void SetSSLEngine(Optional<Net::SSLEngine> ssl);
 		void SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser);
 		void SetLogTool(IO::LogTool *log);
-		void PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t);
-		IO::ParsedObject *ParseFile(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType);
-		IO::ParsedObject *ParseFile(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile);
-		IO::ParsedObject *ParseFile(NotNullPtr<IO::StreamData> fd);
-		IO::ParsedObject *ParseFileType(NotNullPtr<IO::StreamData> fd, IO::ParserType t);
-		IO::ParsedObject *ParseObject(NotNullPtr<IO::ParsedObject> pobj);
-		IO::ParsedObject *ParseObjectType(NotNullPtr<IO::ParsedObject> pobj, IO::ParserType targetType);
+		void PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t);
+		IO::ParsedObject *ParseFile(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType);
+		IO::ParsedObject *ParseFile(NN<IO::StreamData> fd, IO::PackageFile *pkgFile);
+		IO::ParsedObject *ParseFile(NN<IO::StreamData> fd);
+		IO::ParsedObject *ParseFileType(NN<IO::StreamData> fd, IO::ParserType t);
+		IO::ParsedObject *ParseObject(NN<IO::ParsedObject> pobj);
+		IO::ParsedObject *ParseObjectType(NN<IO::ParsedObject> pobj, IO::ParserType targetType);
 	};
 }
 #endif

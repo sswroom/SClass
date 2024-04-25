@@ -10,7 +10,7 @@ namespace Media
 	private:
 		void *hPrinter;
 		UInt8 *devMode;
-		NotNullPtr<Text::String> printerName;
+		NN<Text::String> printerName;
 		
 	public:
 		static UOSInt GetPrinterCount();
@@ -20,14 +20,14 @@ namespace Media
 	private:
 		Printer(const WChar *printerName, UInt8 *devMode, UOSInt devModeSize);
 	public:
-		Printer(NotNullPtr<Text::String> printerName);
+		Printer(NN<Text::String> printerName);
 		Printer(Text::CString printerName);
 		~Printer();
 		
 		Bool IsError();
 		Bool ShowPrintSettings(void *hWnd);
-		Optional<IPrintDocument> StartPrint(NotNullPtr<IPrintHandler> hdlr, NotNullPtr<Media::DrawEngine> eng);
-		void EndPrint(NotNullPtr<IPrintDocument> doc);
+		Optional<IPrintDocument> StartPrint(NN<IPrintHandler> hdlr, NN<Media::DrawEngine> eng);
+		void EndPrint(NN<IPrintDocument> doc);
 	};
 }
 #endif

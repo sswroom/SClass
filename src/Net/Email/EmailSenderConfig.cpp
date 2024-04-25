@@ -2,10 +2,10 @@
 #include "Net/Email/EmailSenderConfig.h"
 #include "Net/Email/SMTPClient.h"
 
-Optional<Net::Email::EmailSender> Net::Email::EmailSenderConfig::LoadFromConfig(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<IO::ConfigFile> cfg, Text::CString cfgCategory, NotNullPtr<IO::LogTool> log)
+Optional<Net::Email::EmailSender> Net::Email::EmailSenderConfig::LoadFromConfig(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<IO::ConfigFile> cfg, Text::CString cfgCategory, NN<IO::LogTool> log)
 {
 	Text::CStringNN category = cfgCategory.OrEmpty();
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (!cfg->GetCateValue(category, CSTR("EmailSenderType")).SetTo(s))
 	{
 		log->LogMessage(CSTR("EmailSenderType not found"), IO::LogHandler::LogLevel::Error);
@@ -15,10 +15,10 @@ Optional<Net::Email::EmailSender> Net::Email::EmailSenderConfig::LoadFromConfig(
 	if (s->Equals(CSTR("SMTP")))
 	{
 		Data::Duration timeout = 60000;
-		NotNullPtr<Text::String> host;
+		NN<Text::String> host;
 		UInt16 port;
 		Net::Email::SMTPConn::ConnType connType;
-		NotNullPtr<Net::Email::SMTPClient> cli;
+		NN<Net::Email::SMTPClient> cli;
 		if (!cfg->GetCateValue(category, CSTR("SMTPPort")).SetTo(s))
 		{
 			log->LogMessage(CSTR("SMTPPort not found"), IO::LogHandler::LogLevel::Error);
@@ -68,8 +68,8 @@ Optional<Net::Email::EmailSender> Net::Email::EmailSenderConfig::LoadFromConfig(
 		}
 
 		NEW_CLASSNN(cli, Net::Email::SMTPClient(sockf, ssl, host->ToCString(), port, connType, Optional<IO::LogTool>(log), timeout));
-		NotNullPtr<Text::String> user;
-		NotNullPtr<Text::String> password;
+		NN<Text::String> user;
+		NN<Text::String> password;
 		if (cfg->GetCateValue(category, CSTR("SMTPUser")).SetTo(user) && cfg->GetCateValue(category, CSTR("SMTPPassword")).SetTo(password))
 		{
 			cli->SetPlainAuth(user->ToCString(), password->ToCString());

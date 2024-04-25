@@ -5,7 +5,7 @@
 
 #include <stdio.h>
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Text::CStringNN filePath = CSTR("/media/sswroom/Extreme SSD/PictureProc/IMG_0003.HEIC");
 	IO::StmData::FileData fd(filePath, false);

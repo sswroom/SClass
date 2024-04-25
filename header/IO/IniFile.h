@@ -9,7 +9,7 @@ namespace IO
 	class IniFile
 	{
 	public:
-		static IO::ConfigFile *Parse(NotNullPtr<IO::Stream> stm, UInt32 codePage);
+		static IO::ConfigFile *Parse(NN<IO::Stream> stm, UInt32 codePage);
 		static IO::ConfigFile *Parse(Text::CStringNN fileName, UInt32 codePage);
 		static IO::ConfigFile *ParseProgConfig(UInt32 codePage);
 
@@ -17,7 +17,7 @@ namespace IO
 		static IO::ConfigFile *ParseReader(IO::StreamReader *reader);
 
 	public:
-		static Bool SaveConfig(NotNullPtr<IO::Stream> stm, UInt32 codePage, IO::ConfigFile *cfg);
+		static Bool SaveConfig(NN<IO::Stream> stm, UInt32 codePage, IO::ConfigFile *cfg);
 		static Bool SaveConfig(IO::Writer *writer, IO::ConfigFile *cfg);
 	};
 }

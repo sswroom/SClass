@@ -11,7 +11,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNMPManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPManagerForm>();
+	NN<SSWR::AVIRead::AVIRSNMPManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPManagerForm>();
 	Text::StringBuilderUTF8 sb;
 	Net::SocketUtil::AddressInfo addr;
 	UTF8Char sbuff[128];
@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(AnyType use
 	UOSInt j;
 	UOSInt k;
 	Data::ArrayList<Net::SNMPManager::AgentInfo *> agentList;
-	NotNullPtr<Text::String> community = Text::String::New(sb.ToString(), sb.GetLength());
+	NN<Text::String> community = Text::String::New(sb.ToString(), sb.GetLength());
 	j = me->mgr->AddAgents(addr, community, &agentList, me->chkAgentScan->IsChecked());
 	community->Release();
 	if (j <= 0)
@@ -113,7 +113,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(AnyType userObj
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	NotNullPtr<SSWR::AVIRead::AVIRSNMPManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPManagerForm>();
+	NN<SSWR::AVIRead::AVIRSNMPManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPManagerForm>();
 	Net::SNMPManager::AgentInfo *agent = (Net::SNMPManager::AgentInfo*)me->lbAgent->GetSelectedItem().p;
 	if (agent)
 	{
@@ -212,14 +212,14 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNMPManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPManagerForm>();
+	NN<SSWR::AVIRead::AVIRSNMPManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPManagerForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	if (dt.ToTicks() - me->lastUpdateTime >= 30000)
 	{
-		NotNullPtr<Net::SNMPManager::ReadingInfo> reading;
+		NN<Net::SNMPManager::ReadingInfo> reading;
 		me->mgr->UpdateValues();
 		UOSInt i = me->lvAgentReading->GetCount();
 		while (i-- > 0)
@@ -251,7 +251,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnTimerTick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentWalkClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNMPManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPManagerForm>();
+	NN<SSWR::AVIRead::AVIRSNMPManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPManagerForm>();
 	Net::SNMPManager::AgentInfo *agent = (Net::SNMPManager::AgentInfo*)me->lbAgent->GetSelectedItem().p;
 	if (agent)
 	{
@@ -260,7 +260,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentWalkClicked(AnyType us
 	}
 }
 
-void SSWR::AVIRead::AVIRSNMPManagerForm::SendAgentValues(NotNullPtr<Data::ArrayList<Net::SNMPManager::AgentInfo *>> agentList)
+void SSWR::AVIRead::AVIRSNMPManagerForm::SendAgentValues(NN<Data::ArrayList<Net::SNMPManager::AgentInfo *>> agentList)
 {
 	Net::SNMPManager::AgentInfo *agent;
 	SSWR::SMonitor::ISMonitorCore::DevRecord2 devRec;
@@ -274,7 +274,7 @@ void SSWR::AVIRead::AVIRSNMPManagerForm::SendAgentValues(NotNullPtr<Data::ArrayL
 	}
 }
 
-SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("SNMP Manager"));
@@ -375,7 +375,7 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(Optional<UI::GUIClientCo
 
 	this->AddTimer(1000, OnTimerTick, this);
 
-	NotNullPtr<Net::SocketFactory> sockf = this->core->GetSocketFactory();
+	NN<Net::SocketFactory> sockf = this->core->GetSocketFactory();
 	NEW_CLASS(this->redir, SSWR::SMonitor::SMonitorRedir(sockf, this->core->GetLog()));
 	NEW_CLASS(this->mgr, Net::SNMPManager(sockf, this->core->GetLog()));
 	if (this->mgr->IsError())
@@ -384,7 +384,7 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(Optional<UI::GUIClientCo
 	}
 
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
-	NotNullPtr<Net::ConnectionInfo> connInfo;
+	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UOSInt i;

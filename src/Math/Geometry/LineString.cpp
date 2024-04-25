@@ -115,9 +115,9 @@ Math::Coord2DDbl Math::Geometry::LineString::GetCenter() const
 	}
 }
 
-NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::LineString::Clone() const
+NN<Math::Geometry::Vector2D> Math::Geometry::LineString::Clone() const
 {
-	NotNullPtr<Math::Geometry::LineString> pl;
+	NN<Math::Geometry::LineString> pl;
 	NEW_CLASSNN(pl, Math::Geometry::LineString(this->srid, this->nPoint, this->zArr != 0, this->mArr != 0));
 	MemCopyAC(pl->pointArr, this->pointArr, sizeof(Math::Coord2DDbl) * nPoint);
 	if (this->zArr)
@@ -251,13 +251,13 @@ Double Math::Geometry::LineString::CalArea() const
 	return 0;
 }
 
-Bool Math::Geometry::LineString::JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec)
+Bool Math::Geometry::LineString::JoinVector(NN<const Math::Geometry::Vector2D> vec)
 {
 	if (vec->GetVectorType() != Math::Geometry::Vector2D::VectorType::LineString || this->HasZ() != vec->HasZ() || this->HasM() != vec->HasM())
 	{
 		return false;
 	}
-	NotNullPtr<LineString> ls = NotNullPtr<LineString>::ConvertFrom(vec);
+	NN<LineString> ls = NN<LineString>::ConvertFrom(vec);
 	UOSInt nPoint;
 	UOSInt i;
 	UOSInt j;
@@ -366,7 +366,7 @@ Bool Math::Geometry::LineString::GetMBounds(OutParam<Double> min, OutParam<Doubl
 	return true;
 }
 
-void Math::Geometry::LineString::Convert(NotNullPtr<Math::CoordinateConverter> converter)
+void Math::Geometry::LineString::Convert(NN<Math::CoordinateConverter> converter)
 {
 	if (this->zArr)
 	{
@@ -387,7 +387,7 @@ void Math::Geometry::LineString::Convert(NotNullPtr<Math::CoordinateConverter> c
 	}
 }
 
-Bool Math::Geometry::LineString::Equals(NotNullPtr<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
+Bool Math::Geometry::LineString::Equals(NN<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
 {
 	if (vec->GetSRID() != this->srid)
 	{
@@ -482,7 +482,7 @@ Bool Math::Geometry::LineString::Equals(NotNullPtr<const Vector2D> vec, Bool sam
 	}
 }
 
-UOSInt Math::Geometry::LineString::GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
+UOSInt Math::Geometry::LineString::GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
 {
 	return coordList->AddRange(this->pointArr, this->nPoint);
 }
@@ -1067,7 +1067,7 @@ Math::Geometry::Polygon *Math::Geometry::LineString::CreatePolygonByDist(Double 
 	outPoints.Add(lastPtY);
 
 	Math::Geometry::Polygon *pg;
-	NotNullPtr<Math::Geometry::LinearRing> lr;
+	NN<Math::Geometry::LinearRing> lr;
 	UOSInt nPoints;
 	Math::Coord2DDbl *pts;
 	NEW_CLASS(pg, Math::Geometry::Polygon(this->srid));
@@ -1084,10 +1084,10 @@ Math::Geometry::Polygon *Math::Geometry::LineString::CreatePolygonByDist(Double 
 	return pg;
 }
 
-NotNullPtr<Math::Geometry::Polyline> Math::Geometry::LineString::CreatePolyline() const
+NN<Math::Geometry::Polyline> Math::Geometry::LineString::CreatePolyline() const
 {
-	NotNullPtr<Math::Geometry::Polyline> pl;
+	NN<Math::Geometry::Polyline> pl;
 	NEW_CLASSNN(pl, Math::Geometry::Polyline(this->srid));
-	pl->AddGeometry(NotNullPtr<LineString>::ConvertFrom(this->Clone()));
+	pl->AddGeometry(NN<LineString>::ConvertFrom(this->Clone()));
 	return pl;
 }

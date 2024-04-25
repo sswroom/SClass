@@ -11,9 +11,9 @@ Data::ArrayListICaseString::ArrayListICaseString(UOSInt capacity) : Data::ArrayL
 {
 }
 
-NotNullPtr<Data::ArrayList<Text::String*>> Data::ArrayListICaseString::Clone() const
+NN<Data::ArrayList<Text::String*>> Data::ArrayListICaseString::Clone() const
 {
-	NotNullPtr<Data::ArrayList<Text::String*>> newArr;
+	NN<Data::ArrayList<Text::String*>> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListICaseString(this->capacity));
 	newArr->AddAll(*this);
 	return newArr;
@@ -23,8 +23,8 @@ OSInt Data::ArrayListICaseString::Compare(Text::String* obj1, Text::String* obj2
 {
 	if (obj1 == obj2)
 		return 0;
-	NotNullPtr<Text::String> s1;
-	NotNullPtr<Text::String> s2;
+	NN<Text::String> s1;
+	NN<Text::String> s2;
 	if (!s1.Set(obj1))
 		return -1;
 	if (!s2.Set(obj2))

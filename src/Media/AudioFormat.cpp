@@ -74,7 +74,7 @@ void Media::AudioFormat::Clear()
 	this->extra = 0;
 }
 
-void Media::AudioFormat::FromAudioFormat(NotNullPtr<const Media::AudioFormat> fmt)
+void Media::AudioFormat::FromAudioFormat(NN<const Media::AudioFormat> fmt)
 {
 	this->formatId = fmt->formatId;
 	this->nChannels = fmt->nChannels;
@@ -97,7 +97,7 @@ void Media::AudioFormat::FromAudioFormat(NotNullPtr<const Media::AudioFormat> fm
 	}
 }
 
-void Media::AudioFormat::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Media::AudioFormat::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	sb->AppendC(UTF8STRC("Foramt Id = 0x"));
 	sb->AppendHex32V(this->formatId);

@@ -14,7 +14,7 @@ namespace Net
 			RTPAFMT_PCMU
 		} RTPAudioFormat;
 	private:
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Net::UDPServer *svr;
 		IO::LogTool *log;
 		Media::AudioFormat *format;
@@ -41,7 +41,7 @@ namespace Net
 		static void __stdcall UDPData(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 		static UInt32 __stdcall SendThread(void *userObj);
 	public:
-		RTPAudioSession(NotNullPtr<Net::SocketFactory> sockf, const Char *ip, UInt16 port, IO::LogTool *log);
+		RTPAudioSession(NN<Net::SocketFactory> sockf, const Char *ip, UInt16 port, IO::LogTool *log);
 		virtual ~RTPAudioSession();
 
 		Bool IsError();

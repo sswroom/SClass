@@ -8,7 +8,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRUSBDeviceForm::OnDevicesSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRUSBDeviceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUSBDeviceForm>();
+	NN<SSWR::AVIRead::AVIRUSBDeviceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUSBDeviceForm>();
 	IO::USBInfo *usb;
 	usb = (IO::USBInfo*)me->lbDevices->GetSelectedItem().p;
 	if (usb == 0)
@@ -88,7 +88,7 @@ OSInt __stdcall SSWR::AVIRead::AVIRUSBDeviceForm::ItemCompare(IO::USBInfo *item1
 	}
 }
 
-SSWR::AVIRead::AVIRUSBDeviceForm::AVIRUSBDeviceForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRUSBDeviceForm::AVIRUSBDeviceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
 	this->SetText(CSTR("USB Devices"));

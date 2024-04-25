@@ -13,7 +13,7 @@ namespace UI
 
 			void ChangeSelected(Bool selVal);
 		public:
-			JavaRadioButton(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool selected);
+			JavaRadioButton(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool selected);
 			virtual ~JavaRadioButton();
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);

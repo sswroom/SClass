@@ -56,7 +56,7 @@ Bool Crypto::HOTP::IsValid(UInt32 code)
 UInt32 Crypto::HOTP::CalcCode(const UInt8 *key, UOSInt keySize, UInt64 counter, UInt32 nDigits)
 {
 	UInt8 buff[20];
-	NotNullPtr<Crypto::Hash::SHA1> hash;
+	NN<Crypto::Hash::SHA1> hash;
 	NEW_CLASSNN(hash, Crypto::Hash::SHA1());
 	{
 		Crypto::Hash::HMAC hmac(hash, key, keySize);
@@ -80,7 +80,7 @@ UInt32 Crypto::HOTP::CalcCode(const UInt8 *key, UOSInt keySize, UInt64 counter, 
 	}
 }
 
-void Crypto::HOTP::GenURI(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *name)
+void Crypto::HOTP::GenURI(NN<Text::StringBuilderUTF8> sb, const UTF8Char *name)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

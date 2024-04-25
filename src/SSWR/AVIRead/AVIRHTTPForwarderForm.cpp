@@ -10,7 +10,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPForwarderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPForwarderForm>();
+	NN<SSWR::AVIRead::AVIRHTTPForwarderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPForwarderForm>();
 	if (me->svr)
 	{
 		return;
@@ -31,15 +31,15 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(AnyType userOb
 
 	if (me->chkSSL->IsChecked())
 	{
-		NotNullPtr<Crypto::Cert::X509Cert> sslCert;
-		NotNullPtr<Crypto::Cert::X509File> sslKey;
+		NN<Crypto::Cert::X509Cert> sslCert;
+		NN<Crypto::Cert::X509File> sslKey;
 		if (!sslCert.Set(me->sslCert) || !sslKey.Set(me->sslKey))
 		{
 			me->ui->ShowMsgOK(CSTR("Please select SSL Cert/Key First"), CSTR("HTTP Forwarder"), me);
 			return;
 		}
 		ssl = me->ssl;
-		NotNullPtr<Net::SSLEngine> nnssl;
+		NN<Net::SSLEngine> nnssl;
 		if (!ssl.SetTo(nnssl) || !nnssl->ServerSetCertsASN1(sslCert, sslKey, me->caCerts))
 		{
 			me->ui->ShowMsgOK(CSTR("Error in initializing Cert/Key"), CSTR("HTTP Forwarder"), me);
@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(AnyType userOb
 	}
 	if (port > 0 && port < 65535)
 	{
-		NotNullPtr<Net::WebServer::HTTPForwardHandler> fwdHdlr;
+		NN<Net::WebServer::HTTPForwardHandler> fwdHdlr;
 		NEW_CLASSNN(fwdHdlr, Net::WebServer::HTTPForwardHandler(me->core->GetSocketFactory(), me->ssl, sb.ToCString(), Net::WebServer::HTTPForwardHandler::ForwardType::Transparent));
 		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, fwdHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("sswr"), false, me->chkAllowKA->IsChecked()?Net::WebServer::KeepAlive::Always:Net::WebServer::KeepAlive::Default, false));
 		if (me->svr->IsError())
@@ -98,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStartClick(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStopClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPForwarderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPForwarderForm>();
+	NN<SSWR::AVIRead::AVIRHTTPForwarderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPForwarderForm>();
 	if (me->svr == 0)
 	{
 		return;
@@ -115,7 +115,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnStopClick(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRHTTPForwarderForm::OnSSLCertClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPForwarderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPForwarderForm>();
+	NN<SSWR::AVIRead::AVIRHTTPForwarderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPForwarderForm>();
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
@@ -144,7 +144,7 @@ void SSWR::AVIRead::AVIRHTTPForwarderForm::ClearCACerts()
 	this->caCerts.Clear();
 }
 
-SSWR::AVIRead::AVIRHTTPForwarderForm::AVIRHTTPForwarderForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRHTTPForwarderForm::AVIRHTTPForwarderForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
 	this->SetText(CSTR("HTTP Forwarder"));

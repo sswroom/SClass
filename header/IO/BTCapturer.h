@@ -15,7 +15,7 @@ namespace IO
 		Sync::Thread thread;
 		Bool autoStore;
 
-		static void __stdcall CheckThread(NotNullPtr<Sync::Thread> thread);
+		static void __stdcall CheckThread(NN<Sync::Thread> thread);
 	public:
 		BTCapturer(Bool autoStore);
 		~BTCapturer();
@@ -27,8 +27,8 @@ namespace IO
 		void Stop();
 
 		void StoreStatus();
-		NotNullPtr<const Data::ReadingListNN<IO::BTScanLog::ScanRecord3>> GetPublicList(NotNullPtr<Sync::MutexUsage> mutUsage) const;
-		NotNullPtr<const Data::ReadingListNN<IO::BTScanLog::ScanRecord3>> GetRandomList(NotNullPtr<Sync::MutexUsage> mutUsage) const;
+		NN<const Data::ReadingListNN<IO::BTScanLog::ScanRecord3>> GetPublicList(NN<Sync::MutexUsage> mutUsage) const;
+		NN<const Data::ReadingListNN<IO::BTScanLog::ScanRecord3>> GetRandomList(NN<Sync::MutexUsage> mutUsage) const;
 		void SetUpdateHandler(IO::BTScanner::RecordHandler hdlr, void *userObj);
 	};
 }

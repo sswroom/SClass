@@ -18,31 +18,31 @@ namespace SSWR
 		class AVIRVoiceModemForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<IO::Device::RockwellModemController> modem;
-			NotNullPtr<IO::ATCommandChannel> channel;
-			NotNullPtr<IO::Stream> port;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<IO::Device::RockwellModemController> modem;
+			NN<IO::ATCommandChannel> channel;
+			NN<IO::Stream> port;
 
-			NotNullPtr<UI::GUITabControl> tcMain;
-			NotNullPtr<UI::GUITabPage> tpInfo;
-			NotNullPtr<UI::GUILabel> lblModemManu;
-			NotNullPtr<UI::GUITextBox> txtModemManu;
-			NotNullPtr<UI::GUILabel> lblModemModel;
-			NotNullPtr<UI::GUITextBox> txtModemModel;
-			NotNullPtr<UI::GUILabel> lblModemRev;
-			NotNullPtr<UI::GUITextBox> txtModemRev;
-			NotNullPtr<UI::GUILabel> lblModemIMEI;
-			NotNullPtr<UI::GUITextBox> txtModemIMEI;
+			NN<UI::GUITabControl> tcMain;
+			NN<UI::GUITabPage> tpInfo;
+			NN<UI::GUILabel> lblModemManu;
+			NN<UI::GUITextBox> txtModemManu;
+			NN<UI::GUILabel> lblModemModel;
+			NN<UI::GUITextBox> txtModemModel;
+			NN<UI::GUILabel> lblModemRev;
+			NN<UI::GUITextBox> txtModemRev;
+			NN<UI::GUILabel> lblModemIMEI;
+			NN<UI::GUITextBox> txtModemIMEI;
 
-			NotNullPtr<UI::GUITabPage> tpDial;
-			NotNullPtr<UI::GUILabel> lblDialNum;
-			NotNullPtr<UI::GUITextBox> txtDialNum;
-			NotNullPtr<UI::GUIButton> btnDial;
-			NotNullPtr<UI::GUIButton> btnHangUp;
-			NotNullPtr<UI::GUILabel> lblDialStatus;
-			NotNullPtr<UI::GUITextBox> txtDialStatus;
-			NotNullPtr<UI::GUILabel> lblDialTones;
-			NotNullPtr<UI::GUITextBox> txtDialTones;
+			NN<UI::GUITabPage> tpDial;
+			NN<UI::GUILabel> lblDialNum;
+			NN<UI::GUITextBox> txtDialNum;
+			NN<UI::GUIButton> btnDial;
+			NN<UI::GUIButton> btnHangUp;
+			NN<UI::GUILabel> lblDialStatus;
+			NN<UI::GUITextBox> txtDialStatus;
+			NN<UI::GUILabel> lblDialTones;
+			NN<UI::GUITextBox> txtDialTones;
 
 			Sync::Mutex toneMut;
 			Text::StringBuilderUTF8 toneSb;
@@ -58,7 +58,7 @@ namespace SSWR
 			static void __stdcall OnModemEvent(AnyType userObj, UInt8 evtType);
 
 		public:
-			AVIRVoiceModemForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::Device::RockwellModemController> modem, NotNullPtr<IO::ATCommandChannel> channel, NotNullPtr<IO::Stream> port);
+			AVIRVoiceModemForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::Device::RockwellModemController> modem, NN<IO::ATCommandChannel> channel, NN<IO::Stream> port);
 			virtual ~AVIRVoiceModemForm();
 
 			virtual void OnMonitorChanged();

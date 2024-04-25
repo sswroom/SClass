@@ -11,7 +11,7 @@ namespace UI
 		struct ClassData;
 
 		static OSInt useCnt;
-		NotNullPtr<Media::DrawEngine> deng;
+		NN<Media::DrawEngine> deng;
 		ClassData *clsData;
 		void *drawFont;
 		Media::DrawImage *drawBuff;
@@ -45,7 +45,7 @@ namespace UI
 		void GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSInt *height);
 		void SetCaretPos(OSInt scnX, OSInt scnY);
 	public:
-		GUITextView(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> deng);
+		GUITextView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng);
 		virtual ~GUITextView();
 
 		virtual Text::CStringNN GetObjectClass() const;
@@ -69,7 +69,7 @@ namespace UI
 		virtual void EventMouseUp(OSInt scnX, OSInt scnY, MouseButton btn) = 0;
 		virtual void EventMouseMove(OSInt scnX, OSInt scnY) = 0;
 		virtual void EventTimerTick() = 0;
-		virtual void DrawImage(NotNullPtr<Media::DrawImage> dimg) = 0;
+		virtual void DrawImage(NN<Media::DrawImage> dimg) = 0;
 		virtual void UpdateCaretPos() = 0;
 
 		void OnMouseDown(OSInt scnX, OSInt scnY, MouseButton btn);

@@ -36,7 +36,7 @@ Bool Exporter::GUITIFExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 	return false;
 }
 
-Bool Exporter::GUITIFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::GUITIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 #ifdef _WIN32_WCE
 	return false;
@@ -65,7 +65,7 @@ Bool Exporter::GUITIFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 	Win32::COMStream *cstm;
 	NEW_CLASS(cstm, Win32::COMStream(stm));
 	Bool compressed = false;
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (param.SetTo(para))
 	{
 		compressed = *(Bool*)para.Ptr();
@@ -98,7 +98,7 @@ UOSInt Exporter::GUITIFExporter::GetParamCnt()
 	return 1;
 }
 
-Optional<IO::FileExporter::ParamData> Exporter::GUITIFExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
+Optional<IO::FileExporter::ParamData> Exporter::GUITIFExporter::CreateParam(NN<IO::ParsedObject> pobj)
 {
 	Bool *val = MemAlloc(Bool, 1);
 	*val = false;
@@ -107,14 +107,14 @@ Optional<IO::FileExporter::ParamData> Exporter::GUITIFExporter::CreateParam(NotN
 
 void Exporter::GUITIFExporter::DeleteParam(Optional<ParamData> param)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (param.SetTo(para))
 	{
 		MemFree(para.Ptr());
 	}
 }
 
-Bool Exporter::GUITIFExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> info)
+Bool Exporter::GUITIFExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
 {
 	if (index == 0)
 	{
@@ -128,7 +128,7 @@ Bool Exporter::GUITIFExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> 
 
 Bool Exporter::GUITIFExporter::SetParamBool(Optional<ParamData> param, UOSInt index, Bool val)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
 	{
 		*(Bool*)para.Ptr() = val;
@@ -139,7 +139,7 @@ Bool Exporter::GUITIFExporter::SetParamBool(Optional<ParamData> param, UOSInt in
 
 Bool Exporter::GUITIFExporter::GetParamBool(Optional<ParamData> param, UOSInt index)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
 	{
 		return *(Bool*)para.Ptr();

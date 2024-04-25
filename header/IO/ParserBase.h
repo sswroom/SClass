@@ -43,11 +43,11 @@ namespace IO
 		virtual void SetMapManager(Map::MapManager *mapMgr) {};
 		virtual void SetEncFactory(Optional<Text::EncodingFactory> encFact) {};
 		virtual void SetProgressHandler(IO::ProgressHandler *progHdlr) {};
-		virtual void SetSocketFactory(NotNullPtr<Net::SocketFactory> sockf) {};
+		virtual void SetSocketFactory(NN<Net::SocketFactory> sockf) {};
 		virtual void SetSSLEngine(Optional<Net::SSLEngine> ssl) {};
 		virtual void SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser) {};
 		virtual void SetLogTool(IO::LogTool *log) {};
-		virtual void PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t) = 0;
+		virtual void PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t) = 0;
 		virtual IO::ParserType GetParserType() = 0;
 	};
 }

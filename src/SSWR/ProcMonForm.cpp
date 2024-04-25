@@ -34,7 +34,7 @@ void SSWR::ProcMonForm::AddProg(Text::CString progName, Text::CString progPath)
 
 Bool SSWR::ProcMonForm::SearchProcId(SSWR::ProcMonForm::ProgInfo *prog)
 {
-	NotNullPtr<Text::String> progPath;
+	NN<Text::String> progPath;
 	if (!progPath.Set(prog->progPath))
 		return false;
 
@@ -155,7 +155,7 @@ void SSWR::ProcMonForm::SaveProgList()
 
 void __stdcall SSWR::ProcMonForm::OnProgSelChange(AnyType userObj)
 {
-	NotNullPtr<SSWR::ProcMonForm> me = userObj.GetNN<SSWR::ProcMonForm>();
+	NN<SSWR::ProcMonForm> me = userObj.GetNN<SSWR::ProcMonForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	ProgInfo *prog = (ProgInfo*)me->lbProg->GetSelectedItem().p;
@@ -180,7 +180,7 @@ void __stdcall SSWR::ProcMonForm::OnProgSelChange(AnyType userObj)
 
 void __stdcall SSWR::ProcMonForm::OnProcIdClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::ProcMonForm> me = userObj.GetNN<SSWR::ProcMonForm>();
+	NN<SSWR::ProcMonForm> me = userObj.GetNN<SSWR::ProcMonForm>();
 	ProgInfo *prog = (ProgInfo*)me->lbProg->GetSelectedItem().p;
 	if (prog)
 	{
@@ -196,7 +196,7 @@ void __stdcall SSWR::ProcMonForm::OnProcIdClicked(AnyType userObj)
 
 void __stdcall SSWR::ProcMonForm::OnProgAddClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::ProcMonForm> me = userObj.GetNN<SSWR::ProcMonForm>();
+	NN<SSWR::ProcMonForm> me = userObj.GetNN<SSWR::ProcMonForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt32 procId;
 	me->txtProgAddId->GetText(sb);
@@ -223,15 +223,15 @@ void __stdcall SSWR::ProcMonForm::OnProgAddClicked(AnyType userObj)
 
 void __stdcall SSWR::ProcMonForm::OnLogSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::ProcMonForm> me = userObj.GetNN<SSWR::ProcMonForm>();
-	NotNullPtr<Text::String> s = Text::String::OrEmpty(me->lbLog->GetSelectedItemTextNew());
+	NN<SSWR::ProcMonForm> me = userObj.GetNN<SSWR::ProcMonForm>();
+	NN<Text::String> s = Text::String::OrEmpty(me->lbLog->GetSelectedItemTextNew());
 	me->txtLog->SetText(s->ToCString());
 	s->Release();
 }
 
 void __stdcall SSWR::ProcMonForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::ProcMonForm> me = userObj.GetNN<SSWR::ProcMonForm>();
+	NN<SSWR::ProcMonForm> me = userObj.GetNN<SSWR::ProcMonForm>();
 	UOSInt i;
 	ProgInfo *prog;
 	i = me->progList->GetCount();
@@ -284,7 +284,7 @@ void __stdcall SSWR::ProcMonForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-SSWR::ProcMonForm::ProcMonForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::ProcMonForm::ProcMonForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Process Monitor"));
 	this->SetFont(0, 0, 8.25, false);
@@ -349,7 +349,7 @@ SSWR::ProcMonForm::ProcMonForm(Optional<UI::GUIClientControl> parent, NotNullPtr
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg)
 	{
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		if (cfg->GetValue(CSTR("NotifyCmd")).SetTo(s))
 		{
 			this->notifyCmd = s->Clone().Ptr();

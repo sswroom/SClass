@@ -77,7 +77,7 @@ namespace Manage
 		virtual ~DasmARM();
 
 		virtual Text::CString GetHeader(Bool fullRegs) const;
-		virtual Bool Disasm32(NotNullPtr<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
+		virtual Bool Disasm32(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
 		virtual Dasm_Regs *CreateRegs() const;
 		virtual void FreeRegs(Dasm_Regs *regs) const;
 

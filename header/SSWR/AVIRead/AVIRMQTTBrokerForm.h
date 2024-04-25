@@ -25,7 +25,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				NotNullPtr<Text::String> topic;
+				NN<Text::String> topic;
 				UInt8 *message;
 				UOSInt msgSize;
 				Bool updated;
@@ -33,14 +33,14 @@ namespace SSWR
 			} TopicStatus;
 			
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 			Crypto::Cert::X509Cert *sslCert;
 			Crypto::Cert::X509File *sslKey;
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 			Net::MQTTBroker *broker;
 			IO::LogTool log;
-			NotNullPtr<UI::ListBoxLogger> logger;
+			NN<UI::ListBoxLogger> logger;
 			Data::StringMap<TopicStatus*> topicMap;
 			Sync::Mutex topicMut;
 			Bool topicListUpdated;
@@ -48,27 +48,27 @@ namespace SSWR
 			UInt64 dispCount;
 			Data::Timestamp dispTime;
 
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpStatus;
-			NotNullPtr<UI::GUILabel> lblSSL;
-			NotNullPtr<UI::GUICheckBox> chkSSL;
-			NotNullPtr<UI::GUIButton> btnSSLCert;
-			NotNullPtr<UI::GUILabel> lblSSLCert;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUILabel> lblTotalCount;
-			NotNullPtr<UI::GUITextBox> txtTotalCount;
-			NotNullPtr<UI::GUILabel> lblDataRate;
-			NotNullPtr<UI::GUITextBox> txtDataRate;
+			NN<UI::GUITabPage> tpStatus;
+			NN<UI::GUILabel> lblSSL;
+			NN<UI::GUICheckBox> chkSSL;
+			NN<UI::GUIButton> btnSSLCert;
+			NN<UI::GUILabel> lblSSLCert;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUILabel> lblTotalCount;
+			NN<UI::GUITextBox> txtTotalCount;
+			NN<UI::GUILabel> lblDataRate;
+			NN<UI::GUITextBox> txtDataRate;
 
-			NotNullPtr<UI::GUITabPage> tpTopic;
-			NotNullPtr<UI::GUIListView> lvTopic;
+			NN<UI::GUITabPage> tpTopic;
+			NN<UI::GUIListView> lvTopic;
 
-			NotNullPtr<UI::GUITabPage> tpLog;
-			NotNullPtr<UI::GUIListBox> lbLog;
-			NotNullPtr<UI::GUITextBox> txtLog;
+			NN<UI::GUITabPage> tpLog;
+			NN<UI::GUIListBox> lbLog;
+			NN<UI::GUITextBox> txtLog;
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnSSLCertClicked(AnyType userObj);
@@ -79,7 +79,7 @@ namespace SSWR
 			void ServerStop();
 			void ClearCACerts();
 		public:
-			AVIRMQTTBrokerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRMQTTBrokerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMQTTBrokerForm();
 
 			virtual void OnMonitorChanged();

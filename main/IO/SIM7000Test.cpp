@@ -15,7 +15,7 @@
 
 IO::ConsoleWriter *console;
 
-void __stdcall OnUDPData(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall OnUDPData(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -26,7 +26,7 @@ void __stdcall OnUDPData(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UI
 	console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -51,7 +51,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	sb.AppendUOSInt(portNum);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 
-	NotNullPtr<IO::SerialPort> port;
+	NN<IO::SerialPort> port;
 	NEW_CLASSNN(port, IO::SerialPort(portNum, baudRate, IO::SerialPort::PARITY_NONE, true));
 	if (port->IsError())
 	{
@@ -59,7 +59,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	}
 	else
 	{
-		NotNullPtr<IO::ATCommandChannel> channel;
+		NN<IO::ATCommandChannel> channel;
 		IO::Device::SIM7000 *modem;
 		NEW_CLASSNN(channel, IO::ATCommandChannel(port, false));
 		NEW_CLASS(modem, IO::Device::SIM7000(channel, false));
@@ -113,7 +113,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				console->WriteLineC(UTF8STRC("UE Sys Info: Error in getting the value"));
 			}
 
-			NotNullPtr<IO::Device::SIM7000SocketFactory> sockf;
+			NN<IO::Device::SIM7000SocketFactory> sockf;
 			NEW_CLASSNN(sockf, IO::Device::SIM7000SocketFactory(modem, false));
 			if (sockf->NetworkStart())
 			{

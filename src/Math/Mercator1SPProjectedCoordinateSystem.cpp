@@ -3,11 +3,11 @@
 #include "Math/Math.h"
 #include "Math/Mercator1SPProjectedCoordinateSystem.h"
 
-Math::Mercator1SPProjectedCoordinateSystem::Mercator1SPProjectedCoordinateSystem(NotNullPtr<Text::String> sourceName, UInt32 srid, Text::CString csysName, Double falseEasting, Double falseNorthing, Double centralMeridian, Double latitudeOfOrigin, Double scaleFactor, NotNullPtr<Math::GeographicCoordinateSystem> gcs, UnitType unit) : ProjectedCoordinateSystem(sourceName, srid, csysName, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcs, unit)
+Math::Mercator1SPProjectedCoordinateSystem::Mercator1SPProjectedCoordinateSystem(NN<Text::String> sourceName, UInt32 srid, Text::CString csysName, Double falseEasting, Double falseNorthing, Double centralMeridian, Double latitudeOfOrigin, Double scaleFactor, NN<Math::GeographicCoordinateSystem> gcs, UnitType unit) : ProjectedCoordinateSystem(sourceName, srid, csysName, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcs, unit)
 {
 }
 
-Math::Mercator1SPProjectedCoordinateSystem::Mercator1SPProjectedCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CString csysName, Double falseEasting, Double falseNorthing, Double centralMeridian, Double latitudeOfOrigin, Double scaleFactor, NotNullPtr<Math::GeographicCoordinateSystem> gcs, UnitType unit) : ProjectedCoordinateSystem(sourceName, srid, csysName, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcs, unit)
+Math::Mercator1SPProjectedCoordinateSystem::Mercator1SPProjectedCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CString csysName, Double falseEasting, Double falseNorthing, Double centralMeridian, Double latitudeOfOrigin, Double scaleFactor, NN<Math::GeographicCoordinateSystem> gcs, UnitType unit) : ProjectedCoordinateSystem(sourceName, srid, csysName, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcs, unit)
 {
 }
 
@@ -15,10 +15,10 @@ Math::Mercator1SPProjectedCoordinateSystem::~Mercator1SPProjectedCoordinateSyste
 {
 }
 
-NotNullPtr<Math::CoordinateSystem> Math::Mercator1SPProjectedCoordinateSystem::Clone() const
+NN<Math::CoordinateSystem> Math::Mercator1SPProjectedCoordinateSystem::Clone() const
 {
-	NotNullPtr<Math::CoordinateSystem> csys;
-	NEW_CLASSNN(csys, Math::Mercator1SPProjectedCoordinateSystem(this->sourceName, this->srid, this->csysName->ToCString(), this->falseEasting, this->falseNorthing, this->GetCentralMeridianDegree(), this->GetLatitudeOfOriginDegree(), this->scaleFactor, NotNullPtr<Math::GeographicCoordinateSystem>::ConvertFrom(this->gcs->Clone()), this->unit));
+	NN<Math::CoordinateSystem> csys;
+	NEW_CLASSNN(csys, Math::Mercator1SPProjectedCoordinateSystem(this->sourceName, this->srid, this->csysName->ToCString(), this->falseEasting, this->falseNorthing, this->GetCentralMeridianDegree(), this->GetLatitudeOfOriginDegree(), this->scaleFactor, NN<Math::GeographicCoordinateSystem>::ConvertFrom(this->gcs->Clone()), this->unit));
 	return csys;
 }
 
@@ -29,7 +29,7 @@ Math::CoordinateSystem::CoordinateSystemType Math::Mercator1SPProjectedCoordinat
 
 Math::Coord2DDbl Math::Mercator1SPProjectedCoordinateSystem::ToGeographicCoordinateRad(Math::Coord2DDbl projPos) const
 {
-	NotNullPtr<Math::EarthEllipsoid> ellipsoid = this->gcs->GetEllipsoid();
+	NN<Math::EarthEllipsoid> ellipsoid = this->gcs->GetEllipsoid();
 	Double rLon0 = this->rcentralMeridian;
 	Double a = ellipsoid->GetSemiMajorAxis();
 	return Math::Coord2DDbl(((projPos.x - this->falseEasting) / a + rLon0),
@@ -38,7 +38,7 @@ Math::Coord2DDbl Math::Mercator1SPProjectedCoordinateSystem::ToGeographicCoordin
 
 Math::Coord2DDbl Math::Mercator1SPProjectedCoordinateSystem::FromGeographicCoordinateRad(Math::Coord2DDbl geoPos) const
 {
-	NotNullPtr<Math::EarthEllipsoid> ellipsoid = this->gcs->GetEllipsoid();
+	NN<Math::EarthEllipsoid> ellipsoid = this->gcs->GetEllipsoid();
 	Double rLat = geoPos.GetLat();
 	Double rLon = geoPos.GetLon();
 	Double rLon0 = this->rcentralMeridian;

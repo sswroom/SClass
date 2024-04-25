@@ -17,7 +17,7 @@ namespace Text
 //http://msdn.microsoft.com/en-us/library/b0084kay.aspx
 			typedef struct
 			{
-				NotNullPtr<Text::String> defineName;
+				NN<Text::String> defineName;
 				Text::String *defineVal;
 				Text::String *defineParam;
 				Text::String *fileName;
@@ -48,18 +48,18 @@ namespace Text
 
 			typedef struct
 			{
-				NotNullPtr<Text::String> fileName;
+				NN<Text::String> fileName;
 				Int32 lineNum;
 				Bool lineStart;
 				ParserMode currMode;
 				Int32 modeStatus;
 				Data::ArrayList<Int32> *ifValid;
 				Data::ArrayList<ParserMode> *pastModes;
-				NotNullPtr<Text::StringBuilderUTF8> lineBuffSB;
+				NN<Text::StringBuilderUTF8> lineBuffSB;
 				UTF8Char *lineBuffWS;
 			} FileParseStatus;
 		private:
-			NotNullPtr<Text::String> fileName;
+			NN<Text::String> fileName;
 			Data::FastStringMap<DefineInfo*> defines;
 			Data::ArrayList<FileParseStatus*> statuses;
 			Data::ArrayListICaseString fileNames;
@@ -67,7 +67,7 @@ namespace Text
 			void FreeDefineInfo(DefineInfo *definfo);
 			void FreeFileStatus(FileParseStatus *fileStatus);
 		public:
-			CppParseStatus(NotNullPtr<Text::String> rootFile);
+			CppParseStatus(NN<Text::String> rootFile);
 			CppParseStatus(Text::CString rootFile);
 			~CppParseStatus();
 
@@ -79,14 +79,14 @@ namespace Text
 			Bool AddGlobalDef(Text::CStringNN defName, Text::CString defVal);
 			Bool AddDef(Text::CStringNN defName, Text::CString defParams, Text::CString defVal, Int32 lineNum);
 			Bool Undefine(Text::CStringNN defName);
-			Bool GetDefineVal(Text::CStringNN defName, Text::CString defParams, NotNullPtr<Text::StringBuilderUTF8> sb);
+			Bool GetDefineVal(Text::CStringNN defName, Text::CString defParams, NN<Text::StringBuilderUTF8> sb);
 
 			UOSInt GetDefineCount();
 			Bool GetDefineInfo(UOSInt index, DefineInfo *defInfo);
 
 			UOSInt GetFileCount();
 			Text::String *GetFileName(UOSInt index);
-			NotNullPtr<Text::String> GetCurrCodeFile() const;
+			NN<Text::String> GetCurrCodeFile() const;
 		};
 	}
 }

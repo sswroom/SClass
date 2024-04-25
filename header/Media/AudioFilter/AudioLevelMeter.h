@@ -27,7 +27,7 @@ namespace Media
 		private:
 			void ResetStatus();
 		public:
-			AudioLevelMeter(NotNullPtr<IAudioSource> sourceAudio);
+			AudioLevelMeter(NN<IAudioSource> sourceAudio);
 			virtual ~AudioLevelMeter();
 
 			virtual Data::Duration SeekToTime(Data::Duration time);

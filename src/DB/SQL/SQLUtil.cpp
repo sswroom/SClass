@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "DB/SQL/SQLUtil.h"
 
-const UTF8Char *DB::SQL::SQLUtil::ParseNextWord(const UTF8Char *sql, NotNullPtr<Text::StringBuilderUTF8> sb, DB::SQLType sqlType)
+const UTF8Char *DB::SQL::SQLUtil::ParseNextWord(const UTF8Char *sql, NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType)
 {
 	sb->ClearStr();
 	const UTF8Char *strStart = 0;
@@ -100,10 +100,10 @@ const UTF8Char *DB::SQL::SQLUtil::ParseNextWord(const UTF8Char *sql, NotNullPtr<
 
 Data::VariItem *DB::SQL::SQLUtil::ParseValue(Text::CStringNN val, DB::SQLType sqlType)
 {
-	NotNullPtr<Data::VariItem> item;
+	NN<Data::VariItem> item;
 	if (val.leng > 1 && val.v[0] == '\'' && val.v[val.leng - 1] == '\'')
 	{
-		NotNullPtr<Text::String> s = Text::String::New(val.v + 1, val.leng - 2);
+		NN<Text::String> s = Text::String::New(val.v + 1, val.leng - 2);
 		item = Data::VariItem::NewStr(s.Ptr());
 		s->Release();
 		return item.Ptr();

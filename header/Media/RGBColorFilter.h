@@ -47,7 +47,7 @@ namespace Media
 		~RGBColorFilter();
 
 		void SetGammaCorr(Double *gammaParam, UOSInt gammaCnt);
-		void SetParameter(Double brightness, Double contrast, Double gamma, NotNullPtr<const Media::ColorProfile> color, UInt32 bpp, Media::PixelFormat pf, UInt32 hdrLev);
+		void SetParameter(Double brightness, Double contrast, Double gamma, NN<const Media::ColorProfile> color, UInt32 bpp, Media::PixelFormat pf, UInt32 hdrLev);
 		void ProcessImage(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, UOSInt sbpl, UOSInt dbpl, Bool upsideDown);
 	};
 }

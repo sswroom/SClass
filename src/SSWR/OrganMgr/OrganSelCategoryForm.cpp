@@ -3,7 +3,7 @@
 
 void __stdcall SSWR::OrganMgr::OrganSelCategoryForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<OrganSelCategoryForm> me = userObj.GetNN<OrganSelCategoryForm>();
+	NN<OrganSelCategoryForm> me = userObj.GetNN<OrganSelCategoryForm>();
 	UOSInt i = me->lbCategory->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
@@ -18,11 +18,11 @@ void __stdcall SSWR::OrganMgr::OrganSelCategoryForm::OnOKClicked(AnyType userObj
 
 void __stdcall SSWR::OrganMgr::OrganSelCategoryForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<OrganSelCategoryForm> me = userObj.GetNN<OrganSelCategoryForm>();
+	NN<OrganSelCategoryForm> me = userObj.GetNN<OrganSelCategoryForm>();
 	me->SetDialogResult(DR_CANCEL);
 }
 
-SSWR::OrganMgr::OrganSelCategoryForm::OrganSelCategoryForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env) : UI::GUIForm(parent, 374, 262, ui)
+SSWR::OrganMgr::OrganSelCategoryForm::OrganSelCategoryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<OrganEnv> env) : UI::GUIForm(parent, 374, 262, ui)
 {
 	this->SetNoResize(true);
 	this->SetFont(0, 0, 10.5, false);

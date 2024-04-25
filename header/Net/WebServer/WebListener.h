@@ -30,15 +30,15 @@ namespace Net
 
 			typedef void (__stdcall *TimeoutHandler)(AnyType userObj, Text::String *url);
 		private:
-			NotNullPtr<IWebHandler> hdlr;
-			NotNullPtr<Net::TCPServer> svr;
+			NN<IWebHandler> hdlr;
+			NN<Net::TCPServer> svr;
 			Data::ArrayListNN<Net::TCPClientMgr> cliMgrs;
 			UOSInt nextCli;
 			Net::TCPClientMgr *proxyCliMgr;
 			Optional<Net::SSLEngine> ssl;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			IO::LogTool log;
-			NotNullPtr<Text::String> svrName;
+			NN<Text::String> svrName;
 			Bool allowProxy;
 			KeepAlive keepAlive;
 			SERVER_STATUS status;
@@ -53,34 +53,34 @@ namespace Net
 			
 
 		private:
-			static void __stdcall ClientReady(NotNullPtr<Net::TCPClient> cli, AnyType userObj);
+			static void __stdcall ClientReady(NN<Net::TCPClient> cli, AnyType userObj);
 			static void __stdcall ConnHdlr(Socket *s, AnyType userObj);
-			static void __stdcall ClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
-			static void __stdcall ClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
-			static void __stdcall ClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
+			static void __stdcall ClientEvent(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
+			static void __stdcall ClientData(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
+			static void __stdcall ClientTimeout(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
 
-			static void __stdcall ProxyClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
-			static void __stdcall ProxyClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
-			static void __stdcall ProxyTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
+			static void __stdcall ProxyClientEvent(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
+			static void __stdcall ProxyClientData(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
+			static void __stdcall ProxyTimeout(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
 
 			static void __stdcall OnDataSent(AnyType userObj, UOSInt buffSize);
 		public:
-			WebListener(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<IWebHandler> hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt mgrCnt, UOSInt workerCnt, Text::CString svrName, Bool allowProxy, KeepAlive keepAlive, Bool autoStart);
+			WebListener(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<IWebHandler> hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt mgrCnt, UOSInt workerCnt, Text::CString svrName, Bool allowProxy, KeepAlive keepAlive, Bool autoStart);
 			~WebListener();
 
 			Bool Start();
 			Bool IsError();
-			NotNullPtr<Text::String> GetServerName() const;
+			NN<Text::String> GetServerName() const;
 			UInt16 GetListenPort();
 			void SetClientLog(Text::CStringNN logFile);
 			void SetAccessLog(IO::LogTool *accLog, IO::LogHandler::LogLevel accLogLev);
 			void SetRequestLog(IReqLogger *reqLog);
-			void LogAccess(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Double time);
+			void LogAccess(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Double time);
 			void LogMessageC(Net::WebServer::IWebRequest *req, const UTF8Char *msg, UOSInt msgLen);
-			void AddProxyConn(Net::WebServer::WebConnection *conn, NotNullPtr<Net::TCPClient> proxyCli);
+			void AddProxyConn(Net::WebServer::WebConnection *conn, NN<Net::TCPClient> proxyCli);
 			void HandleTimeout(TimeoutHandler hdlr, AnyType userObj);
 
-			void ExtendTimeout(NotNullPtr<Net::TCPClient> cli);
+			void ExtendTimeout(NN<Net::TCPClient> cli);
 			void GetStatus(SERVER_STATUS *status);
 			UOSInt GetClientCount() const;
 		};

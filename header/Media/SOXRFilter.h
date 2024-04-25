@@ -10,7 +10,7 @@ namespace Media
 		struct ClassData;
 		ClassData *clsData;
 	public:
-		SOXRFilter(NotNullPtr<Media::IAudioSource> sourceAudio, UInt32 targetFreq);
+		SOXRFilter(NN<Media::IAudioSource> sourceAudio, UInt32 targetFreq);
 		virtual ~SOXRFilter();
 
 		virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size

@@ -10,9 +10,9 @@ namespace Net
 	class HTTPServerMonitor
 	{
 	private:
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;
-		NotNullPtr<Text::String> url;
+		NN<Text::String> url;
 		Bool currOnline;
 		Bool threadRunning;
 		Bool threadToStop;
@@ -21,8 +21,8 @@ namespace Net
 		static UInt32 __stdcall ThreadProc(AnyType userObj);
 		Bool CheckOnline();
 	public:
-		HTTPServerMonitor(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<Text::String> url);
-		HTTPServerMonitor(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString url);
+		HTTPServerMonitor(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Text::String> url);
+		HTTPServerMonitor(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString url);
 		~HTTPServerMonitor();
 
 		Bool IsOnline();

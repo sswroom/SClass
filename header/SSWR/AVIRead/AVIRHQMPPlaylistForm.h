@@ -14,18 +14,18 @@ namespace SSWR
 		class AVIRHQMPPlaylistForm : public UI::GUIForm 
 		{
 		private:
-			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			NotNullPtr<UI::GUIListBox> lbPlaylist;
-			NotNullPtr<UI::GUIButton> btnAdd;
-			NotNullPtr<UI::GUIButton> btnAddDir;
-			NotNullPtr<UI::GUIButton> btnClear;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUIListBox> lbPlaylist;
+			NN<UI::GUIButton> btnAdd;
+			NN<UI::GUIButton> btnAddDir;
+			NN<UI::GUIButton> btnClear;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Media::Playlist *playlist;
 		private:
-			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnAddClicked(AnyType userObj);
 			static void __stdcall OnAddDirClicked(AnyType userObj);
 			static void __stdcall OnClearClicked(AnyType userObj);
@@ -34,7 +34,7 @@ namespace SSWR
 			Bool AddFolder(UTF8Char *folderBuff, UTF8Char *folderBuffEnd);
 			void UpdatePlaylist();
 		public:
-			AVIRHQMPPlaylistForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::Playlist *playlist);
+			AVIRHQMPPlaylistForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::Playlist *playlist);
 			virtual ~AVIRHQMPPlaylistForm();
 
 			virtual void OnMonitorChanged();

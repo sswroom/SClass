@@ -49,24 +49,24 @@ namespace Math
 
 			virtual VectorType GetVectorType() const = 0;
 			virtual Math::Coord2DDbl GetCenter() const = 0;
-			virtual NotNullPtr<Math::Geometry::Vector2D> Clone() const = 0;
+			virtual NN<Math::Geometry::Vector2D> Clone() const = 0;
 			virtual Math::RectAreaDbl GetBounds() const = 0;
 			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const = 0;
 			virtual Double CalSqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const;
 			virtual Double CalArea() const = 0;
-			virtual Bool JoinVector(NotNullPtr<const Vector2D> vec) = 0;
+			virtual Bool JoinVector(NN<const Vector2D> vec) = 0;
 			virtual Bool HasZ() const { return false; };
 			virtual Bool HasM() const { return false; };
 			virtual Bool GetZBounds(OutParam<Double> min, OutParam<Double> max) const = 0;
 			virtual Bool GetMBounds(OutParam<Double> min, OutParam<Double> max) const = 0;
-			virtual void Convert(NotNullPtr<Math::CoordinateConverter> converter) = 0;
-			virtual Bool Equals(NotNullPtr<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const = 0;
-			virtual UOSInt GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const = 0;
+			virtual void Convert(NN<Math::CoordinateConverter> converter) = 0;
+			virtual Bool Equals(NN<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const = 0;
+			virtual UOSInt GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const = 0;
 			virtual Bool InsideOrTouch(Math::Coord2DDbl coord) const = 0;
 			virtual void SwapXY() = 0;
 			virtual void MultiplyCoordinatesXY(Double v) = 0;
 			virtual UOSInt GetPointCount() const = 0;
-			Bool Contains(NotNullPtr<Math::Geometry::Vector2D> vec) const;
+			Bool Contains(NN<Math::Geometry::Vector2D> vec) const;
 
 			UInt32 GetSRID() const;
 			virtual void SetSRID(UInt32 srid);

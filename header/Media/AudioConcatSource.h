@@ -23,13 +23,13 @@ namespace Media
 		AudioConcatSource();
 		virtual ~AudioConcatSource();
 
-		Bool AppendAudio(NotNullPtr<Media::IAudioSource> audio);
+		Bool AppendAudio(NN<Media::IAudioSource> audio);
 		Bool AppendSilent(UInt32 time);
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);
 		virtual Bool CanSeek();
 		virtual Data::Duration GetStreamTime();
-		virtual void GetFormat(NotNullPtr<AudioFormat> format);
+		virtual void GetFormat(NN<AudioFormat> format);
 		virtual Bool TrimStream(UInt32 trimTimeStart, UInt32 trimTimeEnd, Int32 *syncTime);
 
 		virtual Data::Duration SeekToTime(Data::Duration time);

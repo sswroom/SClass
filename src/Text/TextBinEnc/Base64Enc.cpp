@@ -54,12 +54,12 @@ Text::TextBinEnc::Base64Enc::~Base64Enc()
 {
 }
 
-UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
+UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
 {
 	return this->EncodeBin(sb, dataBuff, buffSize, Text::LineBreakType::None, 0);
 }
 
-UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize, Text::LineBreakType lbt, UOSInt charsPerLine)
+UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize, Text::LineBreakType lbt, UOSInt charsPerLine)
 {
 	const UTF8Char *encArr = GetEncArr(this->cs);
 	UOSInt outSize;

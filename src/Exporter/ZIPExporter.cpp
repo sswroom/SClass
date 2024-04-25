@@ -21,7 +21,7 @@ Int32 Exporter::ZIPExporter::GetName()
 	return *(Int32*)"ZIPE";
 }
 
-IO::FileExporter::SupportType Exporter::ZIPExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
+IO::FileExporter::SupportType Exporter::ZIPExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() == IO::ParserType::PackageFile)
 	{
@@ -41,7 +41,7 @@ Bool Exporter::ZIPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-Bool Exporter::ZIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::ZIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	if (pobj->GetParserType() != IO::ParserType::PackageFile)
 	{
@@ -49,16 +49,16 @@ Bool Exporter::ZIPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text:
 	}
 	UTF8Char sbuff[512];
 	IO::ZIPMTBuilder zip(stm, IO::ZIPOS::UNIX);
-	return this->ExportPackage(zip, sbuff, sbuff, NotNullPtr<IO::PackageFile>::ConvertFrom(pobj));
+	return this->ExportPackage(zip, sbuff, sbuff, NN<IO::PackageFile>::ConvertFrom(pobj));
 }
 
-Bool Exporter::ZIPExporter::ExportPackage(NotNullPtr<IO::ZIPMTBuilder> zip, UTF8Char *buffStart, UTF8Char *buffEnd, NotNullPtr<IO::PackageFile> pkg)
+Bool Exporter::ZIPExporter::ExportPackage(NN<IO::ZIPMTBuilder> zip, UTF8Char *buffStart, UTF8Char *buffEnd, NN<IO::PackageFile> pkg)
 {
 	UOSInt i;
 	UOSInt j;
 	UTF8Char *sptr;
 	IO::PackageFile::PackObjectType itemType;
-	NotNullPtr<IO::StreamData> fd;
+	NN<IO::StreamData> fd;
 	i = 0;
 	j = pkg->GetCount();
 	while (i < j)
@@ -69,13 +69,13 @@ Bool Exporter::ZIPExporter::ExportPackage(NotNullPtr<IO::ZIPMTBuilder> zip, UTF8
 		{
 			if (pkg->GetFileType() == IO::PackageFileType::Virtual)
 			{
-				NotNullPtr<const IO::PackFileItem> pitem;
-				if (NotNullPtr<IO::VirtualPackageFile>::ConvertFrom(pkg)->GetPackFileItem(i).SetTo(pitem) && pitem->itemType == IO::PackFileItem::PackItemType::Compressed && pitem->compInfo->compMethod == Data::Compress::Decompressor::CM_DEFLATE)
+				NN<const IO::PackFileItem> pitem;
+				if (NN<IO::VirtualPackageFile>::ConvertFrom(pkg)->GetPackFileItem(i).SetTo(pitem) && pitem->itemType == IO::PackFileItem::PackItemType::Compressed && pitem->compInfo->compMethod == Data::Compress::Decompressor::CM_DEFLATE)
 				{
 					UInt64 dataSize = pitem->dataLength;
 					UOSInt readSize;
 					Data::ByteBuffer buff((UOSInt)dataSize);
-					if ((readSize = pitem->fullFd->GetRealData(NotNullPtr<IO::VirtualPackageFile>::ConvertFrom(pkg)->GetPItemDataOfst(pitem), (UOSInt)dataSize, buff)) != dataSize)
+					if ((readSize = pitem->fullFd->GetRealData(NN<IO::VirtualPackageFile>::ConvertFrom(pkg)->GetPItemDataOfst(pitem), (UOSInt)dataSize, buff)) != dataSize)
 					{
 #if defined(VERBOSE)
 						printf("ZIPExp: Error in reading compressed data: dataSize = %lld, readSize = %lld, fileName = %s\r\n", dataSize, (UInt64)readSize, pitem->name->v);
@@ -126,7 +126,7 @@ Bool Exporter::ZIPExporter::ExportPackage(NotNullPtr<IO::ZIPMTBuilder> zip, UTF8
 			*sptr++ = '/';
 			*sptr = 0;
 			zip->AddDir(CSTRP(buffStart, sptr), pkg->GetItemModTime(i), pkg->GetItemAccTime(i), pkg->GetItemCreateTime(i), pkg->GetItemUnixAttr(i));
-			NotNullPtr<IO::PackageFile> innerPkg;
+			NN<IO::PackageFile> innerPkg;
 			Bool innerNeedDelete;
 			if (pkg->GetItemPack(i, innerNeedDelete).SetTo(innerPkg))
 			{

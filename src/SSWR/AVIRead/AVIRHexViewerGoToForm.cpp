@@ -3,7 +3,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRHexViewerGoToForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHexViewerGoToForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHexViewerGoToForm>();
+	NN<SSWR::AVIRead::AVIRHexViewerGoToForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHexViewerGoToForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtInput->GetText(sb);
 
@@ -53,11 +53,11 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerGoToForm::OnOKClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRHexViewerGoToForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHexViewerGoToForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHexViewerGoToForm>();
+	NN<SSWR::AVIRead::AVIRHexViewerGoToForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHexViewerGoToForm>();
 	me->SetDialogResult(DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRHexViewerGoToForm::AVIRHexViewerGoToForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, UInt64 currOfst, UInt64 fileSize) : UI::GUIForm(parent, 320, 160, ui)
+SSWR::AVIRead::AVIRHexViewerGoToForm::AVIRHexViewerGoToForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, UInt64 currOfst, UInt64 fileSize) : UI::GUIForm(parent, 320, 160, ui)
 {
 	this->core = core;
 	this->currOfst = currOfst;

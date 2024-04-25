@@ -6,8 +6,8 @@
 
 void __stdcall SSWR::AVIRead::AVIRProgramLinksForm::OnItemsSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProgramLinksForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProgramLinksForm>();
-	NotNullPtr<Text::String> s;
+	NN<SSWR::AVIRead::AVIRProgramLinksForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProgramLinksForm>();
+	NN<Text::String> s;
 	if (me->lbItems->GetSelectedItemTextNew().SetTo(s))
 	{
 		IO::ProgramLink link;
@@ -67,8 +67,8 @@ void __stdcall SSWR::AVIRead::AVIRProgramLinksForm::OnItemsSelChg(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRProgramLinksForm::OnDeleteClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProgramLinksForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProgramLinksForm>();
-	NotNullPtr<Text::String> s;
+	NN<SSWR::AVIRead::AVIRProgramLinksForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProgramLinksForm>();
+	NN<Text::String> s;
 	if (me->lbItems->GetSelectedItemTextNew().SetTo(s))
 	{
 		Text::StringBuilderUTF8 sb;
@@ -96,7 +96,7 @@ void __stdcall SSWR::AVIRead::AVIRProgramLinksForm::OnDeleteClicked(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRProgramLinksForm::OnCreateClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRProgramLinksForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProgramLinksForm>();
+	NN<SSWR::AVIRead::AVIRProgramLinksForm> me = userObj.GetNN<SSWR::AVIRead::AVIRProgramLinksForm>();
 	SSWR::AVIRead::AVIRProgramLinksCreateForm frm(0, me->ui, me->core, &me->progMgr);
 	if (frm.ShowDialog(me))
 	{
@@ -110,8 +110,8 @@ void SSWR::AVIRead::AVIRProgramLinksForm::UpdateLinkList()
 	Data::ArrayListStringNN nameList;
 	Text::StringComparatorFastNN comparator;
 	this->progMgr.GetLinkNames(&nameList, true, true);
-	Data::Sort::ArtificialQuickSort::Sort<NotNullPtr<Text::String>>(&nameList, comparator);
-	NotNullPtr<Text::String> s;
+	Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(&nameList, comparator);
+	NN<Text::String> s;
 	UOSInt i = 0;
 	UOSInt j = nameList.GetCount();
 	while (i < j)
@@ -123,7 +123,7 @@ void SSWR::AVIRead::AVIRProgramLinksForm::UpdateLinkList()
 	}
 }
 
-SSWR::AVIRead::AVIRProgramLinksForm::AVIRProgramLinksForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRProgramLinksForm::AVIRProgramLinksForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Program Links"));
 	this->SetFont(0, 0, 8.25, false);

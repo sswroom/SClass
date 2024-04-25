@@ -101,7 +101,7 @@ Bool Map::ESRI::ESRITileMap::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 	return bnd.min.x != 0 || bnd.min.y != 0 || bnd.max.x != 0 || bnd.max.y != 0;
 }
 
-NotNullPtr<Math::CoordinateSystem> Map::ESRI::ESRITileMap::GetCoordinateSystem() const
+NN<Math::CoordinateSystem> Map::ESRI::ESRITileMap::GetCoordinateSystem() const
 {
 	return this->esriMap->GetCoordinateSystem();
 }
@@ -126,7 +126,7 @@ Bool Map::ESRI::ESRITileMap::CanQuery() const
 	return true;
 }
 
-Bool Map::ESRI::ESRITileMap::QueryInfos(Math::Coord2DDbl coord, UOSInt level, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NotNullPtr<Data::ArrayList<UOSInt>> valueOfstList, NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListNN<Text::String>> valueList) const
+Bool Map::ESRI::ESRITileMap::QueryInfos(Math::Coord2DDbl coord, UOSInt level, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayList<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList) const
 {
 	return this->esriMap->QueryInfos(coord, this->dispBounds, (UInt32)Double2Int32(this->dispSize.x), (UInt32)Double2Int32(this->dispSize.y), this->dispDPI, vecList, valueOfstList, nameList, valueList);
 }
@@ -186,7 +186,7 @@ UOSInt Map::ESRI::ESRITileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl r
 	return (UOSInt)((pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1));
 }
 
-Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NotNullPtr<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
+Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
 {
 	UTF8Char filePath[512];
 	UTF8Char *sptr;
@@ -260,7 +260,7 @@ UTF8Char *Map::ESRI::ESRITileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt level,
 	return this->esriMap->TileGetURL(sbuff, level, tileId.x, tileId.y);
 }
 
-Bool Map::ESRI::ESRITileMap::GetTileImageURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
+Bool Map::ESRI::ESRITileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
 {
 	return this->esriMap->TileGetURL(sb, level, tileId.x, tileId.y);
 }

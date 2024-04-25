@@ -13,7 +13,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 
-Map::GPSTrack::GPSTrack(NotNullPtr<Text::String> sourceName, Bool hasAltitude, UInt32 codePage, Text::String *layerName) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CoordinateSystemManager::CreateDefaultCsys())
+Map::GPSTrack::GPSTrack(NN<Text::String> sourceName, Bool hasAltitude, UInt32 codePage, Text::String *layerName) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CoordinateSystemManager::CreateDefaultCsys())
 {
 	this->codePage = codePage;
 	this->currTrackName = 0;
@@ -79,7 +79,7 @@ Map::DrawLayerType Map::GPSTrack::GetLayerType() const
 	}
 }
 
-UOSInt Map::GPSTrack::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::GPSTrack::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	Sync::MutexUsage mutUsage(this->recMut);
 	UOSInt i = 0;
@@ -102,12 +102,12 @@ UOSInt Map::GPSTrack::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, N
 	}
 }
 
-UOSInt Map::GPSTrack::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::GPSTrack::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::GPSTrack::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::GPSTrack::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	Sync::MutexUsage mutUsage(this->recMut);
 	rect = rect.Reorder();
@@ -152,9 +152,9 @@ void Map::GPSTrack::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-Bool Map::GPSTrack::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::GPSTrack::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (strIndex >= 3)
 		return false;
 
@@ -267,7 +267,7 @@ DB::DBUtil::ColType Map::GPSTrack::GetColumnType(UOSInt colIndex, OptOut<UOSInt>
 	}
 }
 
-Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	switch(colIndex)
 	{
@@ -491,7 +491,7 @@ void Map::GPSTrack::RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 	mutUsage.EndUse();
 }
 
-UOSInt Map::GPSTrack::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt Map::GPSTrack::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -502,7 +502,7 @@ UOSInt Map::GPSTrack::QueryTableNames(Text::CString schemaName, NotNullPtr<Data:
 
 Optional<DB::DBReader> Map::GPSTrack::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (tableName.v != 0 && tableName.Equals(UTF8STRC("GPSData")))
 	{
 		NEW_CLASSNN(r, Map::GPSDataReader(*this));
@@ -518,7 +518,7 @@ DB::TableDef *Map::GPSTrack::GetTableDef(Text::CString schemaName, Text::CString
 {
 	UOSInt i = 0;
 	UOSInt j;
-	NotNullPtr<DB::ColDef> col;
+	NN<DB::ColDef> col;
 	DB::TableDef *tab = 0;
 	if (tableName.v != 0 && tableName.Equals(UTF8STRC("GPSData")))
 	{
@@ -604,7 +604,7 @@ void Map::GPSTrack::NewTrack()
 	}
 }
 
-UOSInt Map::GPSTrack::AddRecord(NotNullPtr<Map::GPSTrack::GPSRecord3> rec)
+UOSInt Map::GPSTrack::AddRecord(NN<Map::GPSTrack::GPSRecord3> rec)
 {
 	Sync::MutexUsage mutUsage(this->recMut);
 	if (this->currTimes.GetCount() == 0)
@@ -1018,7 +1018,7 @@ UOSInt Map::GPSTrack::GetExtraCount(UOSInt trackIndex, UOSInt recIndex)
 	return this->extraParser->GetExtraCount(data, dataSize);
 }
 
-Bool Map::GPSTrack::GetExtraName(UOSInt trackIndex, UOSInt recIndex, UOSInt extIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Map::GPSTrack::GetExtraName(UOSInt trackIndex, UOSInt recIndex, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	if (this->extraParser == 0)
 		return false;
@@ -1029,7 +1029,7 @@ Bool Map::GPSTrack::GetExtraName(UOSInt trackIndex, UOSInt recIndex, UOSInt extI
 	return this->extraParser->GetExtraName(data, dataSize, extIndex, sb);
 }
 
-Bool Map::GPSTrack::GetExtraValueStr(UOSInt trackIndex, UOSInt recIndex, UOSInt extIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Map::GPSTrack::GetExtraValueStr(UOSInt trackIndex, UOSInt recIndex, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	if (this->extraParser == 0)
 		return false;
@@ -1040,7 +1040,7 @@ Bool Map::GPSTrack::GetExtraValueStr(UOSInt trackIndex, UOSInt recIndex, UOSInt 
 	return this->extraParser->GetExtraValueStr(data, dataSize, extIndex, sb);
 }
 
-Map::GPSTrackReader::GPSTrackReader(NotNullPtr<Map::GPSTrack> gps) : Map::MapLayerReader(gps)
+Map::GPSTrackReader::GPSTrackReader(NN<Map::GPSTrack> gps) : Map::MapLayerReader(gps)
 {
 	this->gps = gps;
 }
@@ -1049,7 +1049,7 @@ Map::GPSTrackReader::~GPSTrackReader()
 {
 }
 
-Map::GPSDataReader::GPSDataReader(NotNullPtr<Map::GPSTrack> gps)
+Map::GPSDataReader::GPSDataReader(NN<Map::GPSTrack> gps)
 {
 	this->gps = gps;
 	this->currRow = -1;
@@ -1198,7 +1198,7 @@ WChar *Map::GPSDataReader::GetStr(UOSInt colIndex, WChar *buff)
 	return 0;
 }
 
-Bool Map::GPSDataReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Map::GPSDataReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -1351,7 +1351,7 @@ Optional<Math::Geometry::Vector2D> Map::GPSDataReader::GetVector(UOSInt colIndex
 	return pt;
 }
 
-Bool Map::GPSDataReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
+Bool Map::GPSDataReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 {
 	return false;
 }
@@ -1442,7 +1442,7 @@ DB::DBUtil::ColType Map::GPSDataReader::GetColType(UOSInt colIndex, OptOut<UOSIn
 	}
 }
 
-Bool Map::GPSDataReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Map::GPSDataReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	return GetColDefV(colIndex, colDef, this->gps->GetHasAltitude());
 }
@@ -1497,7 +1497,7 @@ Text::CString Map::GPSDataReader::GetName(UOSInt colIndex, Bool hasAltitude)
 	}
 }
 
-Bool Map::GPSDataReader::GetColDefV(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef, Bool hasAltitude)
+Bool Map::GPSDataReader::GetColDefV(UOSInt colIndex, NN<DB::ColDef> colDef, Bool hasAltitude)
 {
 	colDef->SetNotNull(true);
 	colDef->SetPK(false);

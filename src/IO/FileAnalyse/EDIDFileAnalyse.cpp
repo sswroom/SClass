@@ -8,7 +8,7 @@
 
 //https://en.wikipedia.org/wiki/Extended_Display_Identification_Data
 
-void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(NotNullPtr<FrameDetail> frame, const UInt8 *buff, UOSInt ofst)
+void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(NN<FrameDetail> frame, const UInt8 *buff, UOSInt ofst)
 {
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
@@ -206,7 +206,7 @@ void IO::FileAnalyse::EDIDFileAnalyse::RemoveNonASCII(UTF8Char *sbuff, UTF8Char 
 	}
 }
 
-IO::FileAnalyse::EDIDFileAnalyse::EDIDFileAnalyse(NotNullPtr<IO::StreamData> fd)
+IO::FileAnalyse::EDIDFileAnalyse::EDIDFileAnalyse(NN<IO::StreamData> fd)
 {
 	UInt8 buff[128];
 	if (fd->GetRealData(0, 128, BYTEARR(buff)) != 128 || ReadMInt32(buff) != 0xFFFFFF || ReadUInt32(&buff[4]) != 0xFFFFFF || (((UOSInt)buff[126] + 1) << 7) > fd->GetDataSize() || (fd->GetDataSize() & 127))
@@ -234,7 +234,7 @@ UOSInt IO::FileAnalyse::EDIDFileAnalyse::GetFrameCount()
 	return this->blockCnt;
 }
 
-Bool IO::FileAnalyse::EDIDFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::EDIDFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	if (index >= this->blockCnt)
 	{
@@ -277,7 +277,7 @@ UOSInt IO::FileAnalyse::EDIDFileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EDIDFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	if (index >= this->blockCnt)
 	{
 		if (index == this->blockCnt && this->fd && this->blockCnt * 128 < this->fd->GetDataSize())

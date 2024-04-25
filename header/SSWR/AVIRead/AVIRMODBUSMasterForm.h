@@ -45,7 +45,7 @@ namespace SSWR
 
 			typedef struct
 			{
-				NotNullPtr<Text::String> name;
+				NN<Text::String> name;
 				UInt8 devAddr;
 				UInt32 regAddr;
 				IO::MODBUSController::DataType dt;
@@ -56,7 +56,7 @@ namespace SSWR
 				Double val;
 			} MODBUSEntry;
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::DataCaptureStream *stm;
 			IO::Stream *devStm;
 			IO::MODBUSMaster *modbus;
@@ -69,73 +69,73 @@ namespace SSWR
 			Data::CircularByteBuff sendBuff;
 			Bool sendUpdated;
 			IO::LogTool log;
-			NotNullPtr<UI::ListBoxLogger> logger;
+			NN<UI::ListBoxLogger> logger;
 
-			NotNullPtr<UI::GUIGroupBox> grpStream;
-			NotNullPtr<UI::GUILabel> lblStream;
-			NotNullPtr<UI::GUITextBox> txtStream;
-			NotNullPtr<UI::GUIButton> btnStream;
-			NotNullPtr<UI::GUIRadioButton> radMODBUSRTU;
-			NotNullPtr<UI::GUIRadioButton> radMODBUSTCP;
-			NotNullPtr<UI::GUILabel> lblTimeout;
-			NotNullPtr<UI::GUITextBox> txtTimeout;
-			NotNullPtr<UI::GUIButton> btnTimeout;
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUIGroupBox> grpStream;
+			NN<UI::GUILabel> lblStream;
+			NN<UI::GUITextBox> txtStream;
+			NN<UI::GUIButton> btnStream;
+			NN<UI::GUIRadioButton> radMODBUSRTU;
+			NN<UI::GUIRadioButton> radMODBUSTCP;
+			NN<UI::GUILabel> lblTimeout;
+			NN<UI::GUITextBox> txtTimeout;
+			NN<UI::GUIButton> btnTimeout;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpGetValue;
-			NotNullPtr<UI::GUILabel> lblDevAddr;
-			NotNullPtr<UI::GUILabel> lblRegAddr;
-			NotNullPtr<UI::GUILabel> lblValue;
-			NotNullPtr<UI::GUILabel> lblU8Name;
-			NotNullPtr<UI::GUITextBox> txtU8DevAddr;
-			NotNullPtr<UI::GUITextBox> txtU8RegAddr;
-			NotNullPtr<UI::GUIButton> btnU8Get;
-			NotNullPtr<UI::GUITextBox> txtU8Value;
-			NotNullPtr<UI::GUILabel> lblU16Name;
-			NotNullPtr<UI::GUITextBox> txtU16DevAddr;
-			NotNullPtr<UI::GUITextBox> txtU16RegAddr;
-			NotNullPtr<UI::GUIButton> btnU16Get;
-			NotNullPtr<UI::GUITextBox> txtU16Value;
-			NotNullPtr<UI::GUILabel> lblI32Name;
-			NotNullPtr<UI::GUITextBox> txtI32DevAddr;
-			NotNullPtr<UI::GUITextBox> txtI32RegAddr;
-			NotNullPtr<UI::GUIButton> btnI32Get;
-			NotNullPtr<UI::GUITextBox> txtI32Value;
-			NotNullPtr<UI::GUILabel> lblF32Name;
-			NotNullPtr<UI::GUITextBox> txtF32DevAddr;
-			NotNullPtr<UI::GUITextBox> txtF32RegAddr;
-			NotNullPtr<UI::GUIButton> btnF32Get;
-			NotNullPtr<UI::GUITextBox> txtF32Value;
+			NN<UI::GUITabPage> tpGetValue;
+			NN<UI::GUILabel> lblDevAddr;
+			NN<UI::GUILabel> lblRegAddr;
+			NN<UI::GUILabel> lblValue;
+			NN<UI::GUILabel> lblU8Name;
+			NN<UI::GUITextBox> txtU8DevAddr;
+			NN<UI::GUITextBox> txtU8RegAddr;
+			NN<UI::GUIButton> btnU8Get;
+			NN<UI::GUITextBox> txtU8Value;
+			NN<UI::GUILabel> lblU16Name;
+			NN<UI::GUITextBox> txtU16DevAddr;
+			NN<UI::GUITextBox> txtU16RegAddr;
+			NN<UI::GUIButton> btnU16Get;
+			NN<UI::GUITextBox> txtU16Value;
+			NN<UI::GUILabel> lblI32Name;
+			NN<UI::GUITextBox> txtI32DevAddr;
+			NN<UI::GUITextBox> txtI32RegAddr;
+			NN<UI::GUIButton> btnI32Get;
+			NN<UI::GUITextBox> txtI32Value;
+			NN<UI::GUILabel> lblF32Name;
+			NN<UI::GUITextBox> txtF32DevAddr;
+			NN<UI::GUITextBox> txtF32RegAddr;
+			NN<UI::GUIButton> btnF32Get;
+			NN<UI::GUITextBox> txtF32Value;
 
-			NotNullPtr<UI::GUITabPage> tpSetValue;
-			NotNullPtr<UI::GUILabel> lblSetDevAddr;
-			NotNullPtr<UI::GUILabel> lblSetRegAddr;
-			NotNullPtr<UI::GUILabel> lblSetValue;
-			NotNullPtr<UI::GUILabel> lblSetU8Name;
-			NotNullPtr<UI::GUITextBox> txtSetU8DevAddr;
-			NotNullPtr<UI::GUITextBox> txtSetU8RegAddr;
-			NotNullPtr<UI::GUIButton> btnSetU8Low;
-			NotNullPtr<UI::GUIButton> btnSetU8High;
-			NotNullPtr<UI::GUITextBox> txtSetU8Value;
+			NN<UI::GUITabPage> tpSetValue;
+			NN<UI::GUILabel> lblSetDevAddr;
+			NN<UI::GUILabel> lblSetRegAddr;
+			NN<UI::GUILabel> lblSetValue;
+			NN<UI::GUILabel> lblSetU8Name;
+			NN<UI::GUITextBox> txtSetU8DevAddr;
+			NN<UI::GUITextBox> txtSetU8RegAddr;
+			NN<UI::GUIButton> btnSetU8Low;
+			NN<UI::GUIButton> btnSetU8High;
+			NN<UI::GUITextBox> txtSetU8Value;
 
-			NotNullPtr<UI::GUITabPage> tpDevice;
-			NotNullPtr<UI::GUIPanel> pnlDevice;
-			NotNullPtr<UI::GUILabel> lblDeviceAddr;
-			NotNullPtr<UI::GUITextBox> txtDeviceAddr;
-			NotNullPtr<UI::GUILabel> lblDevice;
-			NotNullPtr<UI::GUIComboBox> cboDevice;
-			NotNullPtr<UI::GUIButton> btnDeviceAdd;
-			NotNullPtr<UI::GUIListView> lvDevice;
+			NN<UI::GUITabPage> tpDevice;
+			NN<UI::GUIPanel> pnlDevice;
+			NN<UI::GUILabel> lblDeviceAddr;
+			NN<UI::GUITextBox> txtDeviceAddr;
+			NN<UI::GUILabel> lblDevice;
+			NN<UI::GUIComboBox> cboDevice;
+			NN<UI::GUIButton> btnDeviceAdd;
+			NN<UI::GUIListView> lvDevice;
 
-			NotNullPtr<UI::GUITabPage> tpRAWSend;
-			NotNullPtr<UI::GUITextBox> txtRAWSend;
+			NN<UI::GUITabPage> tpRAWSend;
+			NN<UI::GUITextBox> txtRAWSend;
 
-			NotNullPtr<UI::GUITabPage> tpRAWRecv;
-			NotNullPtr<UI::GUITextBox> txtRAWRecv;
+			NN<UI::GUITabPage> tpRAWRecv;
+			NN<UI::GUITextBox> txtRAWRecv;
 
-			NotNullPtr<UI::GUITabPage> tpLog;
-			NotNullPtr<UI::GUITextBox> txtLog;
-			NotNullPtr<UI::GUIListBox> lbLog;
+			NN<UI::GUITabPage> tpLog;
+			NN<UI::GUITextBox> txtLog;
+			NN<UI::GUIListBox> lbLog;
 		private:
 			static void __stdcall OnStreamClicked(AnyType userObj);
 			static void __stdcall OnU8GetClicked(AnyType userObj);
@@ -154,7 +154,7 @@ namespace SSWR
 			void StopStream(Bool clearUI);
 
 		public:
-			AVIRMODBUSMasterForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRMODBUSMasterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMODBUSMasterForm();
 
 			virtual void OnMonitorChanged();

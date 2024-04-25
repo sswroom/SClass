@@ -5,7 +5,7 @@
 #include "Media/H265Parser.h"
 #include "Text/MyString.h"
 
-Bool Media::H265Parser::GetFrameInfoSPS(const UInt8 *sps, UOSInt spsSize, NotNullPtr<Media::FrameInfo> frameInfo)
+Bool Media::H265Parser::GetFrameInfoSPS(const UInt8 *sps, UOSInt spsSize, NN<Media::FrameInfo> frameInfo)
 {
 	UInt8 *tmpBuff;
 	UOSInt tmpSize;

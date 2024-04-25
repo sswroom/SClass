@@ -25,7 +25,7 @@ UOSInt SSWR::OrganWeb::OrganWebController::GetPerPage(Bool isMobile)
 	}
 }
 
-Net::WebServer::IWebSession *SSWR::OrganWeb::OrganWebController::ParseRequestEnv(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, NotNullPtr<RequestEnv> env, Bool keepSess)
+Net::WebServer::IWebSession *SSWR::OrganWeb::OrganWebController::ParseRequestEnv(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, NN<RequestEnv> env, Bool keepSess)
 {
 	env->scnWidth = this->scnSize;
 	env->isMobile = false;
@@ -36,7 +36,7 @@ Net::WebServer::IWebSession *SSWR::OrganWeb::OrganWebController::ParseRequestEnv
 		env->isMobile = true;
 		env->scnWidth = 1024;
 	}
-	NotNullPtr<Net::WebServer::IWebSession> sess;
+	NN<Net::WebServer::IWebSession> sess;
 	if (this->sessMgr->GetSession(req, resp).SetTo(sess))
 	{
 		Data::DateTime *t;
@@ -59,7 +59,7 @@ Net::WebServer::IWebSession *SSWR::OrganWeb::OrganWebController::ParseRequestEnv
 	return 0;
 }
 
-void SSWR::OrganWeb::OrganWebController::ResponseMstm(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, NotNullPtr<IO::MemoryStream> mstm, Text::CStringNN contType)
+void SSWR::OrganWeb::OrganWebController::ResponseMstm(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, NN<IO::MemoryStream> mstm, Text::CStringNN contType)
 {
 	resp->AddDefHeaders(req);
 	resp->AddContentType(contType);
@@ -70,7 +70,7 @@ void SSWR::OrganWeb::OrganWebController::ResponseMstm(NotNullPtr<Net::WebServer:
 
 void SSWR::OrganWeb::OrganWebController::WriteHeaderPart1(IO::Writer *writer, const UTF8Char *title, Bool isMobile)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	writer->WriteLineC(UTF8STRC("<HTML>"));
 	writer->WriteLineC(UTF8STRC("<HEAD>"));
 	writer->WriteLineC(UTF8STRC("<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf8\">"));
@@ -87,7 +87,7 @@ void SSWR::OrganWeb::OrganWebController::WriteHeaderPart1(IO::Writer *writer, co
 
 void SSWR::OrganWeb::OrganWebController::WriteHeaderPart2(IO::Writer *writer, WebUserInfo *user, const UTF8Char *onLoadFunc)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	writer->WriteLineC(UTF8STRC("</HEAD>"));
 	writer->WriteLine();
 	writer->WriteStrC(UTF8STRC("<BODY TEXT=\"#c0e0ff\" LINK=\"#6080ff\" VLINK=\"#4060ff\" ALINK=\"#4040FF\" bgcolor=\"#000000\""));
@@ -121,10 +121,10 @@ void SSWR::OrganWeb::OrganWebController::WriteFooter(IO::Writer *writer)
 	writer->WriteLineC(UTF8STRC("</HTML>"));
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteLocator(NotNullPtr<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NotNullPtr<GroupInfo> group, NotNullPtr<CategoryInfo> cate)
+void SSWR::OrganWeb::OrganWebController::WriteLocator(NN<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NN<GroupInfo> group, NN<CategoryInfo> cate)
 {
 	GroupTypeInfo *grpType;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[12];
 	UTF8Char *sptr;
@@ -203,7 +203,7 @@ void SSWR::OrganWeb::OrganWebController::WriteLocator(NotNullPtr<Sync::RWMutexUs
 	writer->WriteLineC(UTF8STRC("</center>"));
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteLocatorText(NotNullPtr<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NotNullPtr<GroupInfo> group, NotNullPtr<CategoryInfo> cate)
+void SSWR::OrganWeb::OrganWebController::WriteLocatorText(NN<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NN<GroupInfo> group, NN<CategoryInfo> cate)
 {
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayListNN<GroupInfo> groupList;
@@ -246,10 +246,10 @@ void SSWR::OrganWeb::OrganWebController::WriteLocatorText(NotNullPtr<Sync::RWMut
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NotNullPtr<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NotNullPtr<const Data::ReadingList<Optional<GroupInfo>>> groupList, UInt32 scnWidth, Bool showSelect, Bool showAll)
+void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NN<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NN<const Data::ReadingList<Optional<GroupInfo>>> groupList, UInt32 scnWidth, Bool showSelect, Bool showAll)
 {
-	NotNullPtr<GroupInfo> group;
-	NotNullPtr<Text::String> s;
+	NN<GroupInfo> group;
+	NN<Text::String> s;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
@@ -442,10 +442,10 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NotNullPtr<Sync::RWMute
 	}
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(NotNullPtr<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NotNullPtr<const Data::ReadingList<Optional<SpeciesInfo>>> spList, UInt32 scnWidth, Int32 cateId, Bool showSelect, Bool showModify)
+void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(NN<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NN<const Data::ReadingList<Optional<SpeciesInfo>>> spList, UInt32 scnWidth, Int32 cateId, Bool showSelect, Bool showModify)
 {
-	NotNullPtr<SpeciesInfo> sp;
-	NotNullPtr<Text::String> s;
+	NN<SpeciesInfo> sp;
+	NN<Text::String> s;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
@@ -666,17 +666,17 @@ void SSWR::OrganWeb::OrganWebController::WriteSpeciesTable(NotNullPtr<Sync::RWMu
 	}
 }
 
-void SSWR::OrganWeb::OrganWebController::WritePickObjs(NotNullPtr<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, RequestEnv *env, const UTF8Char *url, Bool allowMerge)
+void SSWR::OrganWeb::OrganWebController::WritePickObjs(NN<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, RequestEnv *env, const UTF8Char *url, Bool allowMerge)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	UOSInt j;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UInt32 colCount = env->scnWidth / PREVIEW_SIZE;
 	UInt32 colWidth = 100 / colCount;
 	UInt32 currColumn;
 	UserFileInfo *userFile;
-	NotNullPtr<SpeciesInfo> species;
+	NN<SpeciesInfo> species;
 	Data::DateTime dt;
 	UTF8Char sbuff2[64];
 	UTF8Char *sptr2;
@@ -844,7 +844,7 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NotNullPtr<Sync::RWMutexU
 		sb.AppendC(UTF8STRC(" method=\"POST\"/>"));
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 		writer->WriteLineC(UTF8STRC("<input type=\"hidden\" name=\"action\" value=\"place\"/>"));
-		NotNullPtr<SpeciesInfo> species;
+		NN<SpeciesInfo> species;
 		Data::ArrayListNN<SpeciesInfo> spList;
 		i = 0;
 		j = env->pickObjs->GetCount();
@@ -876,7 +876,7 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NotNullPtr<Sync::RWMutexU
 		sb.AppendC(UTF8STRC(" method=\"POST\"/>"));
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 		writer->WriteLineC(UTF8STRC("<input type=\"hidden\" name=\"action\" value=\"place\"/>"));
-		NotNullPtr<GroupInfo> group;
+		NN<GroupInfo> group;
 		Data::ArrayListNN<GroupInfo> groupList;
 		i = 0;
 		j = env->pickObjs->GetCount();
@@ -939,7 +939,7 @@ Text::CStringNN SSWR::OrganWeb::OrganWebController::LangGetValue(IO::ConfigFile 
 {
 	if (lang == 0)
 		return name;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (lang->GetValue(name).SetTo(s))
 		return s->ToCString();
 	return name;

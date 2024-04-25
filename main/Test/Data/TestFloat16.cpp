@@ -4,7 +4,7 @@
 #include "Math/Math.h"
 
 #define DIFFRATIO 0.0000001
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UInt16 iVal;
 	Double dVal;

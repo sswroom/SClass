@@ -5,9 +5,9 @@
 #include "Text/JSText.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRGLBViewerForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRGLBViewerForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGLBViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGLBViewerForm>();
+	NN<SSWR::AVIRead::AVIRGLBViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGLBViewerForm>();
 	UOSInt i = 0;
 	UOSInt nFiles = files.GetCount();
 	while (i < nFiles)
@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRGLBViewerForm::OnFileDrop(AnyType userObj, Dat
 	}
 }
 
-Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadFile(NotNullPtr<Text::String> fileName)
+Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadFile(NN<Text::String> fileName)
 {
 	UInt8 hdr[40];
 	IO::StmData::FileData fd(fileName, false);
@@ -84,7 +84,7 @@ Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadFile(NotNullPtr<Text::String> fileNam
 	}
 }
 
-Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadData(NotNullPtr<IO::StreamData> jsonFD, NotNullPtr<IO::StreamData> binBuffFD)
+Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadData(NN<IO::StreamData> jsonFD, NN<IO::StreamData> binBuffFD)
 {
 	UOSInt jsonLen = (UOSInt)jsonFD->GetDataSize();
 	Data::ByteBuffer jsonBuff(jsonLen);
@@ -102,7 +102,7 @@ Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadData(NotNullPtr<IO::StreamData> jsonF
 	return true;
 }
 
-SSWR::AVIRead::AVIRGLBViewerForm::AVIRGLBViewerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRGLBViewerForm::AVIRGLBViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("GLB Viewer"));
 	this->SetFont(0, 0, 8.25, false);

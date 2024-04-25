@@ -20,38 +20,38 @@ namespace SSWR
 		class AVIRHTTPDownloaderForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUIPanel> pnlRequest;
-			NotNullPtr<UI::GUILabel> lblURL;
-			NotNullPtr<UI::GUITextBox> txtURL;
-			NotNullPtr<UI::GUILabel> lblDownloadDir;
-			NotNullPtr<UI::GUITextBox> txtDownloadDir;
-			NotNullPtr<UI::GUILabel> lblHeaders;
-			NotNullPtr<UI::GUITextBox> txtHeaders;
-			NotNullPtr<UI::GUIButton> btnRequest;
-			NotNullPtr<UI::GUIGroupBox> grpStatus;
-			NotNullPtr<UI::GUILabel> lblCurrSpeed;
-			NotNullPtr<UI::GUITextBox> txtCurrSpeed;
-			NotNullPtr<UI::GUILabel> lblTotalSize;
-			NotNullPtr<UI::GUITextBox> txtTotalSize;
-			NotNullPtr<UI::GUIGroupBox> grpResponse;
-			NotNullPtr<UI::GUIPanel> pnlResponse;
-			NotNullPtr<UI::GUILabel> lblSvrIP;
-			NotNullPtr<UI::GUITextBox> txtSvrIP;
-			NotNullPtr<UI::GUILabel> lblTimeDNS;
-			NotNullPtr<UI::GUITextBox> txtTimeDNS;
-			NotNullPtr<UI::GUILabel> lblTimeConn;
-			NotNullPtr<UI::GUITextBox> txtTimeConn;
-			NotNullPtr<UI::GUILabel> lblTimeSendHdr;
-			NotNullPtr<UI::GUITextBox> txtTimeSendHdr;
-			NotNullPtr<UI::GUILabel> lblTimeResp;
-			NotNullPtr<UI::GUITextBox> txtTimeResp;
-			NotNullPtr<UI::GUILabel> lblTimeTotal;
-			NotNullPtr<UI::GUITextBox> txtTimeTotal;
-			NotNullPtr<UI::GUIListView> lvHeaders;
+			NN<UI::GUIPanel> pnlRequest;
+			NN<UI::GUILabel> lblURL;
+			NN<UI::GUITextBox> txtURL;
+			NN<UI::GUILabel> lblDownloadDir;
+			NN<UI::GUITextBox> txtDownloadDir;
+			NN<UI::GUILabel> lblHeaders;
+			NN<UI::GUITextBox> txtHeaders;
+			NN<UI::GUIButton> btnRequest;
+			NN<UI::GUIGroupBox> grpStatus;
+			NN<UI::GUILabel> lblCurrSpeed;
+			NN<UI::GUITextBox> txtCurrSpeed;
+			NN<UI::GUILabel> lblTotalSize;
+			NN<UI::GUITextBox> txtTotalSize;
+			NN<UI::GUIGroupBox> grpResponse;
+			NN<UI::GUIPanel> pnlResponse;
+			NN<UI::GUILabel> lblSvrIP;
+			NN<UI::GUITextBox> txtSvrIP;
+			NN<UI::GUILabel> lblTimeDNS;
+			NN<UI::GUITextBox> txtTimeDNS;
+			NN<UI::GUILabel> lblTimeConn;
+			NN<UI::GUITextBox> txtTimeConn;
+			NN<UI::GUILabel> lblTimeSendHdr;
+			NN<UI::GUITextBox> txtTimeSendHdr;
+			NN<UI::GUILabel> lblTimeResp;
+			NN<UI::GUITextBox> txtTimeResp;
+			NN<UI::GUILabel> lblTimeTotal;
+			NN<UI::GUITextBox> txtTimeTotal;
+			NN<UI::GUIListView> lvHeaders;
 
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 			Bool threadRunning;
 			Bool threadToStop;
@@ -79,7 +79,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(AnyType userObj);
 			void ClearHeaders();
 		public:
-			AVIRHTTPDownloaderForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRHTTPDownloaderForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHTTPDownloaderForm();
 
 			virtual void OnMonitorChanged();

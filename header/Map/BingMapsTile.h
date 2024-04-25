@@ -41,7 +41,7 @@ namespace Map
 
 		Optional<Text::String> GetNextSubdomain();
 	public:
-		BingMapsTile(ImagerySet is, Text::CString key, Text::CString cacheDir, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
+		BingMapsTile(ImagerySet is, Text::CString key, Text::CString cacheDir, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
 		virtual ~BingMapsTile();
 
 		virtual Bool IsError() const;
@@ -51,16 +51,16 @@ namespace Map
 		virtual UOSInt GetConcurrentCount() const;
 		virtual void SetDispSize(Math::Size2DDbl size, Double dpi);
 		virtual UTF8Char *GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> imgId);
-		virtual Bool GetTileImageURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> imgId);
+		virtual Bool GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> imgId);
 
 		virtual UOSInt GetScreenObjCnt();
 		virtual Optional<Math::Geometry::Vector2D> CreateScreenObjVector(UOSInt index);
 		virtual UTF8Char *GetScreenObjURL(UTF8Char *sbuff, UOSInt index);
-		virtual Bool GetScreenObjURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt index);
+		virtual Bool GetScreenObjURL(NN<Text::StringBuilderUTF8> sb, UOSInt index);
 
 		void SetHideLogo(Bool hideLogo);
 		
-		static void GetDefaultCacheDir(ImagerySet is, NotNullPtr<Text::StringBuilderUTF8> sb);
+		static void GetDefaultCacheDir(ImagerySet is, NN<Text::StringBuilderUTF8> sb);
 		static Text::CStringNN ImagerySetGetName(ImagerySet is);
 		static UTF8Char *GenQuadkey(UTF8Char *sbuff, UOSInt level, Int32 imgX, Int32 imgY);
 	};

@@ -52,7 +52,7 @@ void Media::Resizer::DeintResizerLR_C32::DestoryVertE()
 	esStep = 0;
 }
 
-Media::Resizer::DeintResizerLR_C32::DeintResizerLR_C32(UOSInt hnTap, UOSInt vnTap, NotNullPtr<const Media::ColorProfile> destColor, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance, Media::PixelFormat pf) : Media::Resizer::LanczosResizerLR_C32(hnTap, vnTap, destColor, colorSess, srcAlphaType, srcRefLuminance, pf), Media::IDeintResizer(srcAlphaType)
+Media::Resizer::DeintResizerLR_C32::DeintResizerLR_C32(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> destColor, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance, Media::PixelFormat pf) : Media::Resizer::LanczosResizerLR_C32(hnTap, vnTap, destColor, colorSess, srcAlphaType, srcRefLuminance, pf), Media::IDeintResizer(srcAlphaType)
 {
 	this->osSize = 0;
 	this->odSize = 0;

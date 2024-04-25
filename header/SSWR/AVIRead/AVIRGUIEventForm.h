@@ -16,20 +16,20 @@ namespace SSWR
 		class AVIRGUIEventForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIPanel> pnlMain;
-			NotNullPtr<UI::GUIButton> btnDisplayOff;
-			NotNullPtr<UI::GUIListBox> lbLog;
-			NotNullPtr<UI::GUITextBox> txtLog;
+			NN<UI::GUIPanel> pnlMain;
+			NN<UI::GUIButton> btnDisplayOff;
+			NN<UI::GUIListBox> lbLog;
+			NN<UI::GUITextBox> txtLog;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::LogTool *log;
-			NotNullPtr<UI::ListBoxLogger> logger;
+			NN<UI::ListBoxLogger> logger;
 
 			static void __stdcall OnLogSelChg(AnyType userObj);
 			static void __stdcall OnDisplayOffClicked(AnyType userObj);
 			static void __stdcall OnKeyDown(AnyType userObj, UOSInt keyCode, Bool extendedKey);
 		public:
-			AVIRGUIEventForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRGUIEventForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRGUIEventForm();
 
 			virtual Bool OnPaint();

@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/MotionDetectorAccelerometer.h"
 
-IO::MotionDetectorAccelerometer::MotionDetectorAccelerometer(NotNullPtr<IO::SensorAccelerometer> acc, Bool toRelease)
+IO::MotionDetectorAccelerometer::MotionDetectorAccelerometer(NN<IO::SensorAccelerometer> acc, Bool toRelease)
 {
 	this->acc = acc;
 	this->toRelease = toRelease;

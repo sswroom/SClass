@@ -11,14 +11,14 @@ namespace Net
 	class SSHClient
 	{
 	private:
-		NotNullPtr<Net::SSHConn> conn;
+		NN<Net::SSHConn> conn;
 		Data::ArrayListNN<Net::SSHForwarder> fwd;
 		Sync::Thread thread;
 		Sync::Mutex mut;
 
-		static void __stdcall EventThread(NotNullPtr<Sync::Thread> thread);
+		static void __stdcall EventThread(NN<Sync::Thread> thread);
 	public:
-		SSHClient(NotNullPtr<Net::SSHConn> conn);
+		SSHClient(NN<Net::SSHConn> conn);
 		virtual ~SSHClient();
 
 		Optional<Net::SSHForwarder> CreateForward(UInt16 localPort, Text::CStringNN remoteHost, UInt16 remotePort);

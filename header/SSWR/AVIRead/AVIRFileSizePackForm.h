@@ -20,14 +20,14 @@ namespace SSWR
 			class MyFile : public Data::IComparable
 			{
 			private:
-				NotNullPtr<Text::String> fileName;
+				NN<Text::String> fileName;
 				UInt64 fileSize;
 			public:
 				MyFile(Text::CString fileName, UInt64 fileSize);
 				virtual ~MyFile();
 
-				Bool ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
-				NotNullPtr<Text::String> GetName() const;
+				Bool ToString(NN<Text::StringBuilderUTF8> sb) const;
+				NN<Text::String> GetName() const;
 				UInt64 GetSize() const;
 				virtual OSInt CompareTo(Data::IComparable *obj) const;
 			};
@@ -36,22 +36,22 @@ namespace SSWR
 			Data::ArrayList<MyFile *> fileList;
 			Data::ArrayList<MyFile *> packList;
 			const UTF8Char *filePath;
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUIPanel> pnlFile;
-			NotNullPtr<UI::GUILabel> lblDir;
-			NotNullPtr<UI::GUITextBox> txtDir;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUILabel> lblMaxSize;
-			NotNullPtr<UI::GUIComboBox> cboMaxSize;
-			NotNullPtr<UI::GUILabel> lblTotalSize;
-			NotNullPtr<UI::GUITextBox> txtTotalSize;
-			NotNullPtr<UI::GUILabel> lblDirName;
-			NotNullPtr<UI::GUITextBox> txtDirName;
-			NotNullPtr<UI::GUIButton> btnMove;
-			NotNullPtr<UI::GUIListBox> lbFilePack;
-			NotNullPtr<UI::GUIHSplitter> hspFile;
-			NotNullPtr<UI::GUIListBox> lbFileDir;
+			NN<UI::GUIPanel> pnlFile;
+			NN<UI::GUILabel> lblDir;
+			NN<UI::GUITextBox> txtDir;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUILabel> lblMaxSize;
+			NN<UI::GUIComboBox> cboMaxSize;
+			NN<UI::GUILabel> lblTotalSize;
+			NN<UI::GUITextBox> txtTotalSize;
+			NN<UI::GUILabel> lblDirName;
+			NN<UI::GUITextBox> txtDirName;
+			NN<UI::GUIButton> btnMove;
+			NN<UI::GUIListBox> lbFilePack;
+			NN<UI::GUIHSplitter> hspFile;
+			NN<UI::GUIListBox> lbFileDir;
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnMoveClicked(AnyType userObj);
@@ -60,7 +60,7 @@ namespace SSWR
 			void GenList();
 			UInt64 NewCalc(Data::ArrayList<MyFile *> *fileList, Data::ArrayList<MyFile *> *packList, UInt64 maxSize, UInt64 minSize);
 		public:
-			AVIRFileSizePackForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRFileSizePackForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRFileSizePackForm();
 
 			virtual void OnMonitorChanged();

@@ -60,7 +60,7 @@ namespace Net
 			MustExist
 		};
 
-		typedef void (__stdcall *ClientReadyHandler)(NotNullPtr<Net::TCPClient> cli, AnyType userObj);
+		typedef void (__stdcall *ClientReadyHandler)(NN<Net::TCPClient> cli, AnyType userObj);
 
 		struct ThreadState
 		{
@@ -73,7 +73,7 @@ namespace Net
 			SSLEngine *me;
 		};
 	protected:
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		UOSInt maxThreadCnt;
 		UOSInt currThreadCnt;
 		Bool threadToStop;
@@ -86,13 +86,13 @@ namespace Net
 
 		static UInt32 __stdcall ServerThread(AnyType userObj);
 		virtual Net::SSLClient *CreateServerConn(Socket *s) = 0;
-		SSLEngine(NotNullPtr<Net::SocketFactory> sockf);
+		SSLEngine(NN<Net::SocketFactory> sockf);
 	public:
 		virtual ~SSLEngine();
 		
 		virtual Bool IsError() = 0;
 
-		virtual Bool ServerSetCertsASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1, NotNullPtr<Data::ArrayListNN<Crypto::Cert::X509Cert>> cacerts) = 0;
+		virtual Bool ServerSetCertsASN1(NN<Crypto::Cert::X509Cert> certASN1, NN<Crypto::Cert::X509File> keyASN1, NN<Data::ArrayListNN<Crypto::Cert::X509Cert>> cacerts) = 0;
 		virtual Bool ServerSetRequireClientCert(ClientCertType cliCert) = 0;
 		virtual Bool ServerSetClientCA(Text::CStringNN clientCA) = 0;
 		virtual Bool ServerAddALPNSupport(Text::CStringNN proto) = 0;
@@ -100,7 +100,7 @@ namespace Net
 		Bool ServerSetCerts(Text::CStringNN certFile, Text::CStringNN keyFile);
 		void ServerInit(Socket *s, ClientReadyHandler readyHdlr, AnyType userObj);
 
-		virtual Bool ClientSetCertASN1(NotNullPtr<Crypto::Cert::X509Cert> certASN1, NotNullPtr<Crypto::Cert::X509File> keyASN1) = 0;
+		virtual Bool ClientSetCertASN1(NN<Crypto::Cert::X509Cert> certASN1, NN<Crypto::Cert::X509File> keyASN1) = 0;
 		virtual Net::SSLClient *ClientConnect(Text::CStringNN hostName, UInt16 port, OptOut<ErrorType> err, Data::Duration timeout) = 0;
 		virtual Net::SSLClient *ClientInit(Socket *s, Text::CStringNN hostName, OptOut<ErrorType> err) = 0;
 		virtual void ClientSetSkipCertCheck(Bool skipCertCheck) = 0;
@@ -108,12 +108,12 @@ namespace Net
 		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff) = 0;
 		virtual Bool GenerateCert(Text::CString country, Text::CString company, Text::CStringNN commonName, OutParam<Crypto::Cert::X509Cert*> certASN1, OutParam<Crypto::Cert::X509File*> keyASN1) = 0;
 		virtual Optional<Crypto::Cert::X509Key> GenerateRSAKey() = 0;
-		virtual Bool Signature(NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, OutParam<UOSInt> signLen) = 0;
-		virtual Bool SignatureVerify(NotNullPtr<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, const UInt8 *signData, UOSInt signLen) = 0;
-		virtual UOSInt Encrypt(NotNullPtr<Crypto::Cert::X509Key> key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding) = 0;
-		virtual UOSInt Decrypt(NotNullPtr<Crypto::Cert::X509Key> key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding) = 0;
+		virtual Bool Signature(NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, OutParam<UOSInt> signLen) = 0;
+		virtual Bool SignatureVerify(NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, const UInt8 *signData, UOSInt signLen) = 0;
+		virtual UOSInt Encrypt(NN<Crypto::Cert::X509Key> key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding) = 0;
+		virtual UOSInt Decrypt(NN<Crypto::Cert::X509Key> key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding) = 0;
 
-		NotNullPtr<Crypto::Cert::CertStore> GetTrustStore();
+		NN<Crypto::Cert::CertStore> GetTrustStore();
 
 		static Text::CStringNN ErrorTypeGetName(ErrorType err);
 	};

@@ -3,12 +3,12 @@
 #include "UI/DObj/DirectObject.h"
 #include "UI/DObj/ImageDObjHandler.h"
 
-void UI::DObj::ImageDObjHandler::DrawBkg(NotNullPtr<Media::DrawImage> dimg)
+void UI::DObj::ImageDObjHandler::DrawBkg(NN<Media::DrawImage> dimg)
 {
-	NotNullPtr<Media::DrawImage> bmpBkg;
+	NN<Media::DrawImage> bmpBkg;
 	if (bmpBkg.Set(this->bmpBkg))
 	{
-		NotNullPtr<Media::DrawImage> bmpBuff;
+		NN<Media::DrawImage> bmpBuff;
 		Math::Size2D<UOSInt> scnSize = dimg->GetSize();
 		if (bmpBuff.Set(this->bmpBuff))
 		{
@@ -20,7 +20,7 @@ void UI::DObj::ImageDObjHandler::DrawBkg(NotNullPtr<Media::DrawImage> dimg)
 		}
 		if (this->bmpBuff == 0)
 		{
-			NotNullPtr<Media::StaticImage> simg;
+			NN<Media::StaticImage> simg;
 			if (simg.Set(this->bmpBkg->ToStaticImage()))
 			{
 				Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
@@ -28,7 +28,7 @@ void UI::DObj::ImageDObjHandler::DrawBkg(NotNullPtr<Media::DrawImage> dimg)
 				Media::Resizer::LanczosResizer8_C8 resizer(4, 3, srgb, dispProfile, colorSess, Media::AlphaType::AT_NO_ALPHA);
 				resizer.SetTargetSize(scnSize);
 				resizer.SetResizeAspectRatio(Media::IImgResizer::RAR_KEEPAR);
-				NotNullPtr<Media::StaticImage> srimg;
+				NN<Media::StaticImage> srimg;
 				if (srimg.Set(resizer.ProcessToNew(simg)))
 				{
 					simg.Delete();
@@ -52,13 +52,13 @@ void UI::DObj::ImageDObjHandler::DrawBkg(NotNullPtr<Media::DrawImage> dimg)
 	}
 	else
 	{
-		NotNullPtr<Media::DrawBrush> b = dimg->NewBrushARGB(this->bgColor);
+		NN<Media::DrawBrush> b = dimg->NewBrushARGB(this->bgColor);
 		dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), 0, b);
 		dimg->DelBrush(b);
 	}
 }
 
-UI::DObj::ImageDObjHandler::ImageDObjHandler(NotNullPtr<Media::DrawEngine> deng, Text::CStringNN fileName) : UI::DObj::DObjHandler(deng)
+UI::DObj::ImageDObjHandler::ImageDObjHandler(NN<Media::DrawEngine> deng, Text::CStringNN fileName) : UI::DObj::DObjHandler(deng)
 {
 	this->bmpBkg = this->deng->LoadImage(fileName);
 	this->bmpBuff = 0;
@@ -67,7 +67,7 @@ UI::DObj::ImageDObjHandler::ImageDObjHandler(NotNullPtr<Media::DrawEngine> deng,
 
 UI::DObj::ImageDObjHandler::~ImageDObjHandler()
 {
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->bmpBkg))
 	{
 		this->deng->DeleteImage(img);

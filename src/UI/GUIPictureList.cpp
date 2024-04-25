@@ -9,7 +9,7 @@
 
 #define ICONPADDING 10
 
-UI::GUIPictureList::GUIPictureList(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Math::Size2D<UOSInt> iconSize) : UI::GUICustomDrawVScroll(ui, parent, eng)
+UI::GUIPictureList::GUIPictureList(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder, Math::Size2D<UOSInt> iconSize) : UI::GUICustomDrawVScroll(ui, parent, eng)
 {
 	this->hasBorder = hasBorder;
 	this->iconSize = iconSize;
@@ -27,7 +27,7 @@ UI::GUIPictureList::~GUIPictureList()
 	DEL_CLASS(this->resizer);
 }
 
-void UI::GUIPictureList::OnDraw(NotNullPtr<Media::DrawImage> img)
+void UI::GUIPictureList::OnDraw(NN<Media::DrawImage> img)
 {
 	UOSInt w = img->GetWidth();
 	UOSInt h = img->GetHeight();
@@ -39,7 +39,7 @@ void UI::GUIPictureList::OnDraw(NotNullPtr<Media::DrawImage> img)
 	OSInt x;
 	OSInt y;
 	UOSInt iconPerRow;
-	NotNullPtr<Media::DrawImage> gimg;
+	NN<Media::DrawImage> gimg;
 	this->ClearBackground(img);
 
 	if (w <= this->iconSize.x + ICONPADDING)
@@ -53,7 +53,7 @@ void UI::GUIPictureList::OnDraw(NotNullPtr<Media::DrawImage> img)
 			{
 				if (i == this->selectedIndex)
 				{
-					NotNullPtr<Media::DrawBrush> b = img->NewBrushARGB(0xffff4040);
+					NN<Media::DrawBrush> b = img->NewBrushARGB(0xffff4040);
 					img->DrawRect(Math::Coord2DDbl(0, OSInt2Double(ofst)), Math::Size2DDbl(UOSInt2Double(w), UOSInt2Double(this->iconSize.y + ICONPADDING)), 0, b);
 					img->DelBrush(b);
 				}
@@ -89,7 +89,7 @@ void UI::GUIPictureList::OnDraw(NotNullPtr<Media::DrawImage> img)
 				{
 					if (i + k == this->selectedIndex)
 					{
-						NotNullPtr<Media::DrawBrush> b = img->NewBrushARGB(0xffff4040);
+						NN<Media::DrawBrush> b = img->NewBrushARGB(0xffff4040);
 						img->DrawRect(Math::Coord2DDbl(UOSInt2Double((this->iconSize.x + ICONPADDING) * k), OSInt2Double(ofst)), this->iconSize.ToDouble() + ICONPADDING, 0, b);
 						img->DelBrush(b);
 					}
@@ -117,7 +117,7 @@ void UI::GUIPictureList::OnDraw(NotNullPtr<Media::DrawImage> img)
 
 	if (this->hasBorder)
 	{
-		NotNullPtr<Media::DrawPen> p = img->NewPenARGB(0xff000000, 1, 0, 0);
+		NN<Media::DrawPen> p = img->NewPenARGB(0xff000000, 1, 0, 0);
 		img->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(w - 1), UOSInt2Double(h - 1)), p, 0);
 		img->DelPen(p);
 	}
@@ -164,8 +164,8 @@ UOSInt UI::GUIPictureList::IndexFromPoint(Math::Coord2D<OSInt> pos)
 
 void UI::GUIPictureList::Add(Media::RasterImage *img)
 {
-	NotNullPtr<Media::StaticImage> simg = img->CreateStaticImage();
-	NotNullPtr<Media::StaticImage> nsimg;
+	NN<Media::StaticImage> simg = img->CreateStaticImage();
+	NN<Media::StaticImage> nsimg;
 	if (nsimg.Set(this->resizer->ProcessToNew(simg)))
 	{
 		this->imgList.Add(this->deng->ConvImage(nsimg));
@@ -181,7 +181,7 @@ UOSInt UI::GUIPictureList::GetCount()
 
 void UI::GUIPictureList::RemoveAt(UOSInt index)
 {
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->imgList.RemoveAt(index)))
 	{
 		this->deng->DeleteImage(img);
@@ -193,7 +193,7 @@ void UI::GUIPictureList::Clear()
 	UOSInt i = this->imgList.GetCount();
 	while (i-- > 0)
 	{
-		NotNullPtr<Media::DrawImage> img;
+		NN<Media::DrawImage> img;
 		if(img.Set(this->imgList.RemoveAt(i)))
 			this->deng->DeleteImage(img);
 	}

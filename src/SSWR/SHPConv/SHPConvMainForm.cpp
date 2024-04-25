@@ -56,7 +56,7 @@ Text::CStringNN SSWR::SHPConv::SHPConvMainForm::typeName[] = {
 
 void __stdcall SSWR::SHPConv::SHPConvMainForm::OnDirectoryClicked(AnyType userObj)
 {
-//	NotNullPtr<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
+//	NN<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
 /*
         If Me.txtOutput.Text <> "" Then
             Dim frm As New frmDirectory(Me.txtOutput.Text, Me)
@@ -66,8 +66,8 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnDirectoryClicked(AnyType userOb
 
 void __stdcall SSWR::SHPConv::SHPConvMainForm::OnSBrowseClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
-	NotNullPtr<UI::GUIFileDialog> ofd = me->ui->NewFileDialog(L"SSWR", L"SHPConv", L"Source", false);
+	NN<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
+	NN<UI::GUIFileDialog> ofd = me->ui->NewFileDialog(L"SSWR", L"SHPConv", L"Source", false);
 	ofd->AddFilter(CSTR("*.shp"), CSTR("Shape File"));
 	if (ofd->ShowDialog(me->GetHandle()))
 	{
@@ -81,7 +81,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnSBrowseClicked(AnyType userObj)
 
 void __stdcall SSWR::SHPConv::SHPConvMainForm::OnLangSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
+	NN<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	sptr = Text::StrOSInt(sbuff, (OSInt)me->lstLang->GetSelectedItem().p);
@@ -90,7 +90,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnLangSelChg(AnyType userObj)
 
 void __stdcall SSWR::SHPConv::SHPConvMainForm::OnRecordsSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
+	NN<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
 	Data::ArrayList<UInt32> indices;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -125,8 +125,8 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnRecordsSelChg(AnyType userObj)
 
 void __stdcall SSWR::SHPConv::SHPConvMainForm::OnGroupClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
-	NotNullPtr<Text::String> s;
+	NN<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
+	NN<Text::String> s;
 	UOSInt i;
 	UOSInt j;
 	SSWR::SHPConv::SHPConvGroupForm frm(0, me->ui);
@@ -151,7 +151,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnGroupClicked(AnyType userObj)
 
 void __stdcall SSWR::SHPConv::SHPConvMainForm::OnFilterClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
+	NN<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtSource->GetText(sb);
 	if (sb.GetLength() <= 0)
@@ -169,7 +169,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnFilterClicked(AnyType userObj)
 
 void __stdcall SSWR::SHPConv::SHPConvMainForm::OnPreviewClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
+	NN<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtSource->GetText(sb);
 	UOSInt i = sb.LastIndexOf('.');
@@ -191,7 +191,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnPreviewClicked(AnyType userObj)
 
 void __stdcall SSWR::SHPConv::SHPConvMainForm::OnConvertClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
+	NN<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
 	Text::StringBuilderUTF8 sb;
 	Int32 blkScale;
 	me->txtBlkScale->GetText(sb);
@@ -215,7 +215,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnConvertClicked(AnyType userObj)
 	me->ParseLabelStr(sb.ToCString(), &dbCols, &dbCols2);
 	sb.ClearStr();
 	me->txtSource->GetText(sb);
-	NotNullPtr<Text::String> srcFile = Text::String::New(sb.ToString(), sb.GetLength());
+	NN<Text::String> srcFile = Text::String::New(sb.ToString(), sb.GetLength());
 	sb.RemoveChars(4);
 	if (me->currGroup == (UOSInt)-1)
 	{
@@ -236,24 +236,24 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnConvertClicked(AnyType userObj)
 	me->btnSBrowse->SetEnabled(true);
 }
 
-void __stdcall SSWR::SHPConv::SHPConvMainForm::OnFile(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::SHPConv::SHPConvMainForm::OnFile(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
+	NN<SSWR::SHPConv::SHPConvMainForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvMainForm>();
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	sptr = Text::StrInt32(sbuff, me->LoadShape(files[0]->ToCString(), true));
 	me->txtBlkScale->SetText(CSTRP(sbuff, sptr));
 }
 
-Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NotNullPtr<Data::ArrayList<MapFilter*>> filters, IO::ProgressHandler *progress, UOSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, NotNullPtr<Data::ArrayList<UInt32>> dbCols2)
+Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NN<Data::ArrayList<MapFilter*>> filters, IO::ProgressHandler *progress, UOSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, NN<Data::ArrayList<UInt32>> dbCols2)
 {
 	UOSInt i;
 	OSInt si;
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayListStringNN names;
 	Int32 shpType = 0;
-	NotNullPtr<DB::DBReader> r;
-	NotNullPtr<Text::String> s;
+	NN<DB::DBReader> r;
+	NN<Text::String> s;
 
 	sb.Append(sourceFile);
 	i = sb.LastIndexOf('.');
@@ -313,7 +313,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CStringNN sourceFile, T
 	return shpType;
 }
 
-Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NotNullPtr<Data::ArrayList<MapFilter*>> filters, IO::ProgressHandler *progress, NotNullPtr<Data::ArrayList<UInt32>> dbCols2)
+Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NN<Data::ArrayList<MapFilter*>> filters, IO::ProgressHandler *progress, NN<Data::ArrayList<UInt32>> dbCols2)
 {
 	Text::StringBuilderUTF8 sb;
 	UInt8 buff[259];
@@ -328,7 +328,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 	OSInt sm;
 	UInt32 cipPos;
 	Optional<DB::DBReader> dbfr;
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	Data::ArrayList<Block*> blks;
 	Int32 currRec;
 	UInt32 nRecords;
@@ -1315,7 +1315,7 @@ void SSWR::SHPConv::SHPConvMainForm::FreeLabelStr(Data::ArrayList<const UTF8Char
 	dbCols2->Clear();
 }
 
-NotNullPtr<Text::String> SSWR::SHPConv::SHPConvMainForm::GetNewDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, UOSInt currRec, NotNullPtr<Data::ArrayList<UInt32>> dbCols2)
+NN<Text::String> SSWR::SHPConv::SHPConvMainForm::GetNewDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, UOSInt currRec, NN<Data::ArrayList<UInt32>> dbCols2)
 {
 	Text::StringBuilderUTF16 output;
 	UOSInt i;
@@ -1370,7 +1370,7 @@ NotNullPtr<Text::String> SSWR::SHPConv::SHPConvMainForm::GetNewDBFName(DB::DBFFi
 	return Text::String::NewNotNull(output.ToString());
 }
 
-SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<Media::DrawEngine> deng, Media::MonitorMgr *monMgr) : UI::GUIForm(parent, 576, 464, ui)
+SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::DrawEngine> deng, Media::MonitorMgr *monMgr) : UI::GUIForm(parent, 576, 464, ui)
 {
 	this->SetText(CSTR("SHPConv"));
 	this->SetFont(0, 0, 8.25, false);

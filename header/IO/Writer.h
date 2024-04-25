@@ -25,9 +25,9 @@ namespace IO
 			return WriteLineC(str.v, str.leng);
 		}
 
-		Bool WriteLines(Data::ArrayIterator<NotNullPtr<Text::String>> it)
+		Bool WriteLines(Data::ArrayIterator<NN<Text::String>> it)
 		{
-			NotNullPtr<Text::String> s;
+			NN<Text::String> s;
 			while (it.HasNext())
 			{
 				s = it.Next();

@@ -4,8 +4,8 @@
 
 void __stdcall SSWR::AVIRead::AVIRRegionalMapForm::OnMapsSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRRegionalMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRegionalMapForm>();
-	NotNullPtr<const Map::RegionalMapSource::MapInfo> map;
+	NN<SSWR::AVIRead::AVIRRegionalMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRegionalMapForm>();
+	NN<const Map::RegionalMapSource::MapInfo> map;
 	if (me->lvMaps->GetSelectedItem().GetOpt<const Map::RegionalMapSource::MapInfo>().SetTo(map))
 	{
 		me->txtDesc->SetText(Text::CStringNN(map->desc, map->descLen));
@@ -18,8 +18,8 @@ void __stdcall SSWR::AVIRead::AVIRRegionalMapForm::OnMapsSelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRRegionalMapForm::OnMapsDblClk(AnyType userObj, UOSInt index)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRRegionalMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRegionalMapForm>();
-	NotNullPtr<const Map::RegionalMapSource::MapInfo> map;
+	NN<SSWR::AVIRead::AVIRRegionalMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRegionalMapForm>();
+	NN<const Map::RegionalMapSource::MapInfo> map;
 	if (me->lvMaps->GetItem(index).GetOpt<const Map::RegionalMapSource::MapInfo>().SetTo(map))
 	{
 		me->layer = Map::RegionalMapSource::OpenMap(map, me->core->GetSocketFactory(), me->ssl, me->core->GetEncFactory(), me->core->GetParserList(), me->core->GetWebBrowser(), me->envCSys);
@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRRegionalMapForm::OnMapsDblClk(AnyType userObj,
 	}
 }
 
-SSWR::AVIRead::AVIRRegionalMapForm::AVIRRegionalMapForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, NotNullPtr<Math::CoordinateSystem> envCSys) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRRegionalMapForm::AVIRRegionalMapForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, NN<Math::CoordinateSystem> envCSys) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Regional Map Source"));
 	this->SetFont(0, 0, 8.25, false);

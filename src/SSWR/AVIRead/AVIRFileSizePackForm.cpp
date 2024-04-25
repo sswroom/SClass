@@ -15,7 +15,7 @@ SSWR::AVIRead::AVIRFileSizePackForm::MyFile::~MyFile()
 	this->fileName->Release();
 }
 
-Bool SSWR::AVIRead::AVIRFileSizePackForm::MyFile::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+Bool SSWR::AVIRead::AVIRFileSizePackForm::MyFile::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	sb->Append(this->fileName);
 	sb->AppendC(UTF8STRC(" size="));
@@ -23,7 +23,7 @@ Bool SSWR::AVIRead::AVIRFileSizePackForm::MyFile::ToString(NotNullPtr<Text::Stri
 	return true;
 }
 
-NotNullPtr<Text::String> SSWR::AVIRead::AVIRFileSizePackForm::MyFile::GetName() const
+NN<Text::String> SSWR::AVIRead::AVIRFileSizePackForm::MyFile::GetName() const
 {
 	return this->fileName;
 }
@@ -46,13 +46,13 @@ OSInt SSWR::AVIRead::AVIRFileSizePackForm::MyFile::CompareTo(Data::IComparable *
 
 void __stdcall SSWR::AVIRead::AVIRFileSizePackForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFileSizePackForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileSizePackForm>();
+	NN<SSWR::AVIRead::AVIRFileSizePackForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileSizePackForm>();
 	me->GenList();
 }
 
 void __stdcall SSWR::AVIRead::AVIRFileSizePackForm::OnMoveClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFileSizePackForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileSizePackForm>();
+	NN<SSWR::AVIRead::AVIRFileSizePackForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileSizePackForm>();
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
 	UTF8Char *sptr;
@@ -341,7 +341,7 @@ UInt64 SSWR::AVIRead::AVIRFileSizePackForm::NewCalc(Data::ArrayList<SSWR::AVIRea
 	return 0;
 }
 
-SSWR::AVIRead::AVIRFileSizePackForm::AVIRFileSizePackForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 432, 344, ui)
+SSWR::AVIRead::AVIRFileSizePackForm::AVIRFileSizePackForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 432, 344, ui)
 {
 	this->SetText(CSTR("File Size Pack"));
 	this->SetFont(0, 0, 8.25, false);

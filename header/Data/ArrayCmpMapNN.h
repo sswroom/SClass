@@ -16,7 +16,7 @@ namespace Data
 	public:
 		virtual ~ArrayCmpMapNN();
 
-		virtual Optional<V> Put(T key, NotNullPtr<V> val);
+		virtual Optional<V> Put(T key, NN<V> val);
 		virtual Optional<V> Get(T key) const;
 		virtual Optional<V> Remove(T key);
 		virtual T GetKey(UOSInt index) const;
@@ -24,13 +24,13 @@ namespace Data
 		Bool ContainsKey(T key) const;
 
 		void AllocSize(UOSInt cnt);
-		NotNullPtr<const Data::ArrayListNN<V>> GetValues() const;
-		NotNullPtr<Data::SortableArrayList<T>> GetKeys() const;
+		NN<const Data::ArrayListNN<V>> GetValues() const;
+		NN<Data::SortableArrayList<T>> GetKeys() const;
 		virtual UOSInt GetCount() const;
 		virtual Optional<V> GetItem(UOSInt index) const;
-		virtual NotNullPtr<V> GetItemNoCheck(UOSInt index) const;
+		virtual NN<V> GetItemNoCheck(UOSInt index) const;
 		virtual Bool IsEmpty() const;
-		virtual NotNullPtr<V> *ToArray(OutParam<UOSInt> objCnt);
+		virtual NN<V> *ToArray(OutParam<UOSInt> objCnt);
 		virtual void Clear();
 	};
 
@@ -44,7 +44,7 @@ namespace Data
 	{
 	}
 
-	template <class T, class V> Optional<V> ArrayCmpMapNN<T, V>::Put(T key, NotNullPtr<V> val)
+	template <class T, class V> Optional<V> ArrayCmpMapNN<T, V>::Put(T key, NN<V> val)
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
@@ -113,14 +113,14 @@ namespace Data
 		this->vals.EnsureCapacity(newSize);
 	}
 
-	template <class T, class V> NotNullPtr<const Data::ArrayListNN<V>> ArrayCmpMapNN<T, V>::GetValues() const
+	template <class T, class V> NN<const Data::ArrayListNN<V>> ArrayCmpMapNN<T, V>::GetValues() const
 	{
 		return this->vals;
 	}
 
-	template <class T, class V> NotNullPtr<Data::SortableArrayList<T>> ArrayCmpMapNN<T, V>::GetKeys() const
+	template <class T, class V> NN<Data::SortableArrayList<T>> ArrayCmpMapNN<T, V>::GetKeys() const
 	{
-		return NotNullPtr<Data::SortableArrayList<T>>::FromPtr(this->keys);
+		return NN<Data::SortableArrayList<T>>::FromPtr(this->keys);
 	}
 
 	template <class T, class V> UOSInt ArrayCmpMapNN<T, V>::GetCount() const
@@ -133,7 +133,7 @@ namespace Data
 		return this->vals.GetItem(index);
 	}
 
-	template <class T, class V> NotNullPtr<V> ArrayCmpMapNN<T, V>::GetItemNoCheck(UOSInt index) const
+	template <class T, class V> NN<V> ArrayCmpMapNN<T, V>::GetItemNoCheck(UOSInt index) const
 	{
 		return this->vals.GetItemNoCheck(index);
 	}
@@ -143,12 +143,12 @@ namespace Data
 		return this->vals.GetCount() == 0;
 	}
 
-	template <class T, class V> NotNullPtr<V> *ArrayCmpMapNN<T, V>::ToArray(OutParam<UOSInt> objCnt)
+	template <class T, class V> NN<V> *ArrayCmpMapNN<T, V>::ToArray(OutParam<UOSInt> objCnt)
 	{
 		UOSInt cnt;
-		NotNullPtr<V> *arr = this->vals.GetPtr(cnt);
-		NotNullPtr<V> *outArr = MemAlloc(NotNullPtr<V>, cnt);
-		MemCopyNO(outArr, arr, sizeof(NotNullPtr<V>) * cnt);
+		NN<V> *arr = this->vals.GetPtr(cnt);
+		NN<V> *outArr = MemAlloc(NN<V>, cnt);
+		MemCopyNO(outArr, arr, sizeof(NN<V>) * cnt);
 		objCnt.Set(cnt);
 		return outArr;
 	}

@@ -22,16 +22,16 @@ namespace SSWR
 		class AVIRAudioViewerForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIMainMenu> mnu;
-			NotNullPtr<UI::GUITabControl> tcMain;
-			NotNullPtr<UI::GUITabPage> tpSample;
-			NotNullPtr<UI::GUIPictureBoxSimple> pbsSample;
-			NotNullPtr<UI::GUITabPage> tpFreq;
-			NotNullPtr<UI::GUIPictureBoxSimple> pbsFreq;
+			NN<UI::GUIMainMenu> mnu;
+			NN<UI::GUITabControl> tcMain;
+			NN<UI::GUITabPage> tpSample;
+			NN<UI::GUIPictureBoxSimple> pbsSample;
+			NN<UI::GUITabPage> tpFreq;
+			NN<UI::GUIPictureBoxSimple> pbsFreq;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Media::IAudioSource *audSrc;
-			NotNullPtr<Media::DrawEngine> eng;
+			NN<Media::DrawEngine> eng;
 			Media::DrawImage *sampleImg;
 			Media::DrawImage *fftImg;
 			UInt64 currSample;
@@ -42,7 +42,7 @@ namespace SSWR
 			void UpdateImages();
 			void UpdateFreqImage();
 		public:
-			AVIRAudioViewerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::IAudioSource *audSrc);
+			AVIRAudioViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::IAudioSource *audSrc);
 			virtual ~AVIRAudioViewerForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

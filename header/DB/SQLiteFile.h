@@ -12,7 +12,7 @@ namespace DB
 	class SQLiteFile : public DB::DBConn
 	{
 	private:
-		NotNullPtr<Text::String> fileName;
+		NN<Text::String> fileName;
 		void *db;
 //		Data::ArrayList<Text::CString> tableNames;
 		Bool delOnClose;
@@ -20,7 +20,7 @@ namespace DB
 
 		void Init();
 	public:
-		SQLiteFile(NotNullPtr<Text::String> fileName);
+		SQLiteFile(NN<Text::String> fileName);
 		SQLiteFile(Text::CStringNN fileName);
 		virtual ~SQLiteFile();
 
@@ -28,30 +28,30 @@ namespace DB
 		virtual ConnType GetConnType() const;
 		virtual Int8 GetTzQhr() const;
 		virtual void ForceTz(Int8 tzQhr);
-		virtual void GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual void GetConnName(NN<Text::StringBuilderUTF8> sb);
 		virtual void Close();
 		virtual OSInt ExecuteNonQuery(Text::CStringNN sql);
 		virtual Optional<DBReader> ExecuteReader(Text::CStringNN sql);
-		virtual void CloseReader(NotNullPtr<DBReader> r);
-		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
+		virtual void CloseReader(NN<DBReader> r);
+		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual Bool IsLastDataError();
 		virtual void Reconnect();
 
 		virtual Optional<DB::DBTransaction> BeginTransaction();
-		virtual void Commit(NotNullPtr<DB::DBTransaction> tran);
-		virtual void Rollback(NotNullPtr<DB::DBTransaction> tran);
+		virtual void Commit(NN<DB::DBTransaction> tran);
+		virtual void Rollback(NN<DB::DBTransaction> tran);
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
 		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 
 		void SetDeleteOnClose(Bool delOnClose);
 		Bool IsError();
-		NotNullPtr<Text::String> GetFileName();
+		NN<Text::String> GetFileName();
 
 		static Optional<Math::Geometry::Vector2D> GPGeometryParse(const UInt8 *buff, UOSInt buffSize);
 		
-		static Optional<DBTool> CreateDBTool(NotNullPtr<Text::String> fileName, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
-		static Optional<DBTool> CreateDBTool(Text::CStringNN fileName, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DBTool> CreateDBTool(NN<Text::String> fileName, NN<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DBTool> CreateDBTool(Text::CStringNN fileName, NN<IO::LogTool> log, Text::CString logPrefix);
 	};
 
 	class SQLiteReader : public DB::DBReader
@@ -84,7 +84,7 @@ namespace DB
 		virtual Int32 GetInt32(UOSInt colIndex);
 		virtual Int64 GetInt64(UOSInt colIndex);
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
-		virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb);
 		virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
 		virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
@@ -94,12 +94,12 @@ namespace DB
 		virtual UOSInt GetBinarySize(UOSInt colIndex);
 		virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff);
 		virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex);
-		virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid);
+		virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid);
 
 		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
 		virtual Bool IsNull(UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
-		virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
+		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);
 	};
 }
 #endif

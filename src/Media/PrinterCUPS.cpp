@@ -25,18 +25,18 @@ namespace Media
 	class CUPSPrintDocument : public Media::IPrintDocument
 	{
 	private:
-		NotNullPtr<IPrintHandler> hdlr;
+		NN<IPrintHandler> hdlr;
 		Media::GTKDrawEngine *eng;
 		Optional<Text::String> docName;
 		Bool started;
 		Bool running;
 		PageOrientation po;
 		Math::Size2DDbl paperSizeMM;
-		NotNullPtr<Text::String> printerName;
+		NN<Text::String> printerName;
 
 		static UInt32 __stdcall PrintThread(AnyType userObj);
 	public:
-		CUPSPrintDocument(NotNullPtr<Text::String> printerName, Media::GTKDrawEngine *eng, NotNullPtr<IPrintHandler> hdlr);
+		CUPSPrintDocument(NN<Text::String> printerName, Media::GTKDrawEngine *eng, NN<IPrintHandler> hdlr);
 		virtual ~CUPSPrintDocument();
 
 		Bool IsError();
@@ -52,8 +52,8 @@ namespace Media
 
 UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(AnyType userObj)
 {
-	NotNullPtr<Media::CUPSPrintDocument> me = userObj.GetNN<Media::CUPSPrintDocument>();
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::CUPSPrintDocument> me = userObj.GetNN<Media::CUPSPrintDocument>();
+	NN<Media::DrawImage> img;
 	Bool hasMorePage;
 
 	UTF8Char fileName[512];
@@ -63,7 +63,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(AnyType userObj)
 	Double paperWidth;
 	Double paperHeight;
 	Data::DateTime dt;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	dt.SetCurrTimeUTC();
 	t = dt.ToTicks();
 	sptr = IO::Path::GetProcessFileName(fileName);
@@ -137,7 +137,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(AnyType userObj)
 	return 0;
 }
 
-Media::CUPSPrintDocument::CUPSPrintDocument(NotNullPtr<Text::String> printerName, Media::GTKDrawEngine *eng, NotNullPtr<IPrintHandler> hdlr)
+Media::CUPSPrintDocument::CUPSPrintDocument(NN<Text::String> printerName, Media::GTKDrawEngine *eng, NN<IPrintHandler> hdlr)
 {
 	this->eng = eng;
 	this->hdlr = hdlr;
@@ -232,7 +232,7 @@ Media::Printer *Media::Printer::SelectPrinter(void *hWnd)
 	return 0;
 }
 
-Media::Printer::Printer(NotNullPtr<Text::String> printerName)
+Media::Printer::Printer(NN<Text::String> printerName)
 {
 	this->printerName = printerName->Clone();
 }
@@ -257,7 +257,7 @@ Bool Media::Printer::ShowPrintSettings(void *hWnd)
 	return false;
 }
 
-Optional<Media::IPrintDocument> Media::Printer::StartPrint(NotNullPtr<IPrintHandler> hdlr, NotNullPtr<Media::DrawEngine> eng)
+Optional<Media::IPrintDocument> Media::Printer::StartPrint(NN<IPrintHandler> hdlr, NN<Media::DrawEngine> eng)
 {
 	Media::CUPSPrintDocument *doc;
 	NEW_CLASS(doc, Media::CUPSPrintDocument(this->printerName, (Media::GTKDrawEngine*)eng.Ptr(), hdlr));
@@ -270,7 +270,7 @@ Optional<Media::IPrintDocument> Media::Printer::StartPrint(NotNullPtr<IPrintHand
 	return doc;
 }
 
-void Media::Printer::EndPrint(NotNullPtr<IPrintDocument> doc)
+void Media::Printer::EndPrint(NN<IPrintDocument> doc)
 {
 	doc.Delete();
 }

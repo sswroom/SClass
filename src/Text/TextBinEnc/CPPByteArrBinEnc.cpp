@@ -10,7 +10,7 @@ Text::TextBinEnc::CPPByteArrBinEnc::~CPPByteArrBinEnc()
 {
 }
 
-UOSInt Text::TextBinEnc::CPPByteArrBinEnc::EncodeBin(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
+UOSInt Text::TextBinEnc::CPPByteArrBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
 {
 	UOSInt size = sb->GetCharCnt();
 	UOSInt i = 0;

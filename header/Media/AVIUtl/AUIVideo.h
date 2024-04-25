@@ -14,7 +14,7 @@ namespace Media
 		private:
 			Media::AVIUtl::AUIPlugin *plugin;
 			Media::AVIUtl::AUIPlugin::AUIInput *input;
-			NotNullPtr<const Media::FrameInfo> frameInfo;
+			NN<const Media::FrameInfo> frameInfo;
 			UInt32 frameRateNorm;
 			UInt32 frameRateDenorm;
 			UInt32 frameCnt;
@@ -32,13 +32,13 @@ namespace Media
 			static UInt32 __stdcall PlayThread(AnyType userObj);
 			UOSInt GetMaxFrameSize();
 		public:
-			AUIVideo(Media::AVIUtl::AUIPlugin *plugin, Media::AVIUtl::AUIPlugin::AUIInput *input, NotNullPtr<const Media::FrameInfo> frameInfo, UInt32 frameRateNorm, UInt32 frameRateDenorm, UInt32 frameCnt);
+			AUIVideo(Media::AVIUtl::AUIPlugin *plugin, Media::AVIUtl::AUIPlugin::AUIInput *input, NN<const Media::FrameInfo> frameInfo, UInt32 frameRateNorm, UInt32 frameRateDenorm, UInt32 frameCnt);
 			~AUIVideo();
 
 			virtual UTF8Char *GetSourceName(UTF8Char *buff);
 			virtual Text::CStringNN GetFilterName();
 
-			virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
+			virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
 			virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData);
 			virtual Bool Start();
 			virtual void Stop();

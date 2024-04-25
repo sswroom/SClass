@@ -81,7 +81,7 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::OpenSSLCert::CreateX509Cert() con
 	readSize = BIO_read(bio2, buff, 4096);
 	if (readSize > 0)
 	{
-		NotNullPtr<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.crt"));
+		NN<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.crt"));
 		pobjCert = Parser::FileParser::X509Parser::ParseBuff(BYTEARR(buff).WithSize((UOSInt)readSize), fileName);
 		if (pobjCert)
 		{
@@ -101,10 +101,10 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::OpenSSLCert::CreateX509Cert() con
 	return (Crypto::Cert::X509Cert*)pobjCert;
 }
 
-void Crypto::Cert::OpenSSLCert::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Crypto::Cert::OpenSSLCert::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	/////////////////////////////
-	NotNullPtr<Crypto::Cert::X509Cert> cert;
+	NN<Crypto::Cert::X509Cert> cert;
 	if (this->CreateX509Cert().SetTo(cert))
 	{
 		cert->ToString(sb);

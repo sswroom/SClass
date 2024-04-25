@@ -6,7 +6,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnHOfstChanged(AnyType userObj, UOSInt newPos)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
+	NN<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
 	OSInt hOfst;
 	OSInt vOfst;
 	OSInt level;
@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnHOfstChanged(AnyType userObj, U
 
 void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnVOfstChanged(AnyType userObj, UOSInt newPos)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
+	NN<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
 	OSInt hOfst;
 	OSInt vOfst;
 	OSInt level;
@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnVOfstChanged(AnyType userObj, U
 
 void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnLevelChanged(AnyType userObj, UOSInt newPos)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
+	NN<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
 	OSInt hOfst;
 	OSInt vOfst;
 	OSInt level;
@@ -60,7 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnLevelChanged(AnyType userObj, U
 
 void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnTypeChanged(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
+	NN<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
 	OSInt hOfst;
 	OSInt vOfst;
 	OSInt level;
@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnTypeChanged(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnEnableChanged(AnyType userObj, Bool newVal)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
+	NN<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
 	OSInt hOfst;
 	OSInt vOfst;
 	OSInt level;
@@ -97,14 +97,14 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnEnableChanged(AnyType userObj, 
 
 void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnAddLayerClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
+	NN<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
 	me->grFilter->AddLayer();
 	me->UpdateLayers();
 }
 
 void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnRemoveLayerClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
+	NN<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
 	if (me->currLayer != INVALID_INDEX)
 	{
 		me->grFilter->RemoveLayer(me->currLayer);
@@ -114,7 +114,7 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnRemoveLayerClicked(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnLayersChanged(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
+	NN<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
 	me->currLayer = (UOSInt)me->lbLayers->GetSelectedIndex();
 	if (me->currLayer != INVALID_INDEX)
 	{
@@ -145,7 +145,7 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnLayersChanged(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
+	NN<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
 	if (me->srcImg->info.pf == Media::PF_B8G8R8)
 	{
 		me->srcImg->To32bpp();
@@ -166,7 +166,7 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnOKClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
+	NN<SSWR::AVIRead::AVIRImageGRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageGRForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
@@ -201,7 +201,7 @@ void SSWR::AVIRead::AVIRImageGRForm::UpdateLayers()
 	}
 }
 
-SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::StaticImage> srcImg, NotNullPtr<Media::StaticImage> destImg, NotNullPtr<UI::GUIPictureBoxDD> previewCtrl) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::StaticImage> srcImg, NN<Media::StaticImage> destImg, NN<UI::GUIPictureBoxDD> previewCtrl) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("GR Filter"));

@@ -29,7 +29,7 @@ namespace Net
 				TimedOut
 			};
 		private:
-			NotNullPtr<Net::TCPClient> cli;
+			NN<Net::TCPClient> cli;
 			Text::UTF8Writer *writer;
 			Bool threadToStop;
 			Bool threadRunning;
@@ -49,7 +49,7 @@ namespace Net
 			static UInt32 __stdcall RecvThread(AnyType userObj);
 			ResultStatus WaitForResult(UTF8Char **msgRetEnd);
 		public:
-			POP3Conn(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, ConnType connType, IO::Writer *logWriter, Data::Duration timeout);
+			POP3Conn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, ConnType connType, IO::Writer *logWriter, Data::Duration timeout);
 			~POP3Conn();
 
 			Bool IsError();
@@ -58,7 +58,7 @@ namespace Net
 			ResultStatus SendPass(Text::CString password);
 			ResultStatus SendNoop();
 			ResultStatus SendStat(UOSInt *msgCount, UOSInt *msgSize);
-			ResultStatus SendRetr(UOSInt msgIndex, NotNullPtr<Text::StringBuilderUTF8> msgBuff);
+			ResultStatus SendRetr(UOSInt msgIndex, NN<Text::StringBuilderUTF8> msgBuff);
 			ResultStatus SendDele(UOSInt msgIndex);
 			ResultStatus SendQuit();
 

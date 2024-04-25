@@ -27,37 +27,37 @@ namespace SSWR
 				IO::TVControl::CommandFormat cmdFmt;
 			} CommandInfo;
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::Stream *port;
 			IO::TVControl *tvCtrl;
 			IO::LogTool log;
-			NotNullPtr<UI::ListBoxLogger> logger;
+			NN<UI::ListBoxLogger> logger;
 			CommandInfo *cmdInfos;
 
-			NotNullPtr<UI::GUIPanel> pnlPort;
-			NotNullPtr<UI::GUILabel> lblTVType;
-			NotNullPtr<UI::GUIComboBox> cboTVType;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUIComboBox> cboPort;
-			NotNullPtr<UI::GUICheckBox> chkLogFile;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUITabControl> tcMain;
-			NotNullPtr<UI::GUITabPage> tpControl;
-			NotNullPtr<UI::GUITabPage> tpLog;
+			NN<UI::GUIPanel> pnlPort;
+			NN<UI::GUILabel> lblTVType;
+			NN<UI::GUIComboBox> cboTVType;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUIComboBox> cboPort;
+			NN<UI::GUICheckBox> chkLogFile;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUITabControl> tcMain;
+			NN<UI::GUITabPage> tpControl;
+			NN<UI::GUITabPage> tpLog;
 
-			NotNullPtr<UI::GUIListBox> lbLog;
-			NotNullPtr<UI::GUITextBox> txtLog;
+			NN<UI::GUIListBox> lbLog;
+			NN<UI::GUITextBox> txtLog;
 
-			NotNullPtr<UI::GUILabel> lblCommand;
-			NotNullPtr<UI::GUIComboBox> cboCommand;
-			NotNullPtr<UI::GUIButton> btnCommand;
-			NotNullPtr<UI::GUITextBox> txtCommand;
+			NN<UI::GUILabel> lblCommand;
+			NN<UI::GUIComboBox> cboCommand;
+			NN<UI::GUIButton> btnCommand;
+			NN<UI::GUITextBox> txtCommand;
 
 			static void __stdcall OnStartClick(AnyType userObj);
 			static void __stdcall OnSendCommandClicked(AnyType userObj);
 			static void __stdcall OnCmdChanged(AnyType userObj);
 		public:
-			AVIRTVControlForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRTVControlForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTVControlForm();
 
 			virtual void OnMonitorChanged();

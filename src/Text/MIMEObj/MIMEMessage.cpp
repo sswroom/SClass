@@ -46,7 +46,7 @@ Text::CStringNN Text::MIMEObj::MIMEMessage::GetClassName() const
 
 Text::CStringNN Text::MIMEObj::MIMEMessage::GetContentType() const
 {
-	NotNullPtr<Text::String> contType;
+	NN<Text::String> contType;
 	if (!this->GetHeader(UTF8STRC("Content-Type")).SetTo(contType))
 		return CSTR("application/octet-stream");
 	else
@@ -57,7 +57,7 @@ UOSInt Text::MIMEObj::MIMEMessage::WriteStream(IO::Stream *stm) const
 {
 	UOSInt i;
 	UOSInt j;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	Text::StringBuilderUTF8 sbc;
 	i = 0;
 	j = this->headerName.GetCount();
@@ -96,8 +96,8 @@ Text::IMIMEObj *Text::MIMEObj::MIMEMessage::Clone() const
 	j = this->headerName.GetCount();
 	while (i < j)
 	{
-		NotNullPtr<Text::String> name;
-		NotNullPtr<Text::String> value;
+		NN<Text::String> name;
+		NN<Text::String> value;
 		if (this->headerName.GetItem(i).SetTo(name) && this->headerValue.GetItem(i).SetTo(value))
 		msg->AddHeader(name, value);
 		i++;
@@ -137,7 +137,7 @@ void Text::MIMEObj::MIMEMessage::AddHeader(const UTF8Char *name, UOSInt nameLen,
 	this->headerValue.Add(Text::String::New(value, valueLen));
 }
 
-void Text::MIMEObj::MIMEMessage::AddHeader(NotNullPtr<Text::String> name, NotNullPtr<Text::String> value)
+void Text::MIMEObj::MIMEMessage::AddHeader(NN<Text::String> name, NN<Text::String> value)
 {
 	this->headerName.Add(name->Clone());
 	this->headerValue.Add(value->Clone());
@@ -147,7 +147,7 @@ Optional<Text::String> Text::MIMEObj::MIMEMessage::GetHeader(const UTF8Char *nam
 {
 	UOSInt i;
 	UOSInt j;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	i = 0;
 	j = this->headerName.GetCount();
 	while (i < j)
@@ -174,7 +174,7 @@ Optional<Text::String> Text::MIMEObj::MIMEMessage::GetHeaderValue(UOSInt index) 
 	return this->headerValue.GetItem(index);
 }
 
-Bool Text::MIMEObj::MIMEMessage::ParseFromData(NotNullPtr<IO::StreamData> fd)
+Bool Text::MIMEObj::MIMEMessage::ParseFromData(NN<IO::StreamData> fd)
 {
 	UOSInt buffSize;
 	UOSInt readSize;
@@ -330,12 +330,12 @@ Bool Text::MIMEObj::MIMEMessage::ParseFromData(NotNullPtr<IO::StreamData> fd)
 	}
 
 	UInt64 contentOfst = fileOfst - buffSize + lineStart;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (this->GetHeader(UTF8STRC("Content-Length")).SetTo(s))
 	{
 		if (Text::StrToUInt64(s->v) == fd->GetDataSize() - contentOfst)
 		{
-			NotNullPtr<IO::StreamData> data = fd->GetPartialData(contentOfst, fd->GetDataSize() - contentOfst);
+			NN<IO::StreamData> data = fd->GetPartialData(contentOfst, fd->GetDataSize() - contentOfst);
 			Optional<Text::String> contType = this->GetHeader(UTF8STRC("Content-Type"));
 			Text::IMIMEObj *obj = Text::IMIMEObj::ParseFromData(data, contType.SetTo(s)?s->ToCString():CSTR("application/octet-stream"));
 			data.Delete();
@@ -347,7 +347,7 @@ Bool Text::MIMEObj::MIMEMessage::ParseFromData(NotNullPtr<IO::StreamData> fd)
 	}
 	else
 	{
-		NotNullPtr<IO::StreamData> data = fd->GetPartialData(contentOfst, fd->GetDataSize() - contentOfst);
+		NN<IO::StreamData> data = fd->GetPartialData(contentOfst, fd->GetDataSize() - contentOfst);
 		Optional<Text::String> contType = this->GetHeader(UTF8STRC("Content-Type"));
 		Text::IMIMEObj *obj = Text::IMIMEObj::ParseFromData(data, contType.SetTo(s)?s->ToCString():CSTR("application/octet-stream"));
 		data.Delete();

@@ -18,7 +18,7 @@ namespace Map
 		UOSInt maxLev;
 		Math::RectAreaDbl bounds;
 		Data::ArrayListInt32 xList;
-		NotNullPtr<Text::String> name;
+		NN<Text::String> name;
 		UOSInt currLev;
 	public:
 		TileMapZipWriter(Text::CStringNN fileName, Map::TileMap::ImageType imgType, UOSInt minLev, UOSInt maxLev, Math::RectAreaDbl bounds);

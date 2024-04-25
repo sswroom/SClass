@@ -16,7 +16,7 @@ Bool IO::SMTCWriter::IsError() const
 	return this->fs.IsError();
 }
 
-void IO::SMTCWriter::TCPConnect(NotNullPtr<Net::TCPClient> cli)
+void IO::SMTCWriter::TCPConnect(NN<Net::TCPClient> cli)
 {
 	Data::Timestamp ts = Data::Timestamp::UtcNow();
 	UInt8 buff[21];
@@ -28,7 +28,7 @@ void IO::SMTCWriter::TCPConnect(NotNullPtr<Net::TCPClient> cli)
 	this->fs.Write(buff, 21);
 }
 
-void IO::SMTCWriter::TCPDisconnect(NotNullPtr<Net::TCPClient> cli)
+void IO::SMTCWriter::TCPDisconnect(NN<Net::TCPClient> cli)
 {
 	Data::Timestamp ts = Data::Timestamp::UtcNow();
 	UInt8 buff[21];
@@ -40,7 +40,7 @@ void IO::SMTCWriter::TCPDisconnect(NotNullPtr<Net::TCPClient> cli)
 	this->fs.Write(buff, 21);
 }
 
-void IO::SMTCWriter::TCPSend(NotNullPtr<Net::TCPClient> cli, const UInt8 *data, UOSInt size)
+void IO::SMTCWriter::TCPSend(NN<Net::TCPClient> cli, const UInt8 *data, UOSInt size)
 {
 	Data::Timestamp ts = Data::Timestamp::UtcNow();
 	UInt8 buff[23];
@@ -54,7 +54,7 @@ void IO::SMTCWriter::TCPSend(NotNullPtr<Net::TCPClient> cli, const UInt8 *data, 
 	this->fs.Write(data, size);
 }
 
-void IO::SMTCWriter::TCPRecv(NotNullPtr<Net::TCPClient> cli, const UInt8 *data, UOSInt size)
+void IO::SMTCWriter::TCPRecv(NN<Net::TCPClient> cli, const UInt8 *data, UOSInt size)
 {
 	Data::Timestamp ts = Data::Timestamp::UtcNow();
 	UInt8 buff[23];

@@ -5,7 +5,7 @@
 
 #define BASEVOLUME 0x4000 //0x4000
 
-Media::Decoder::ADXDecoder::ADXDecoder(NotNullPtr<Media::IAudioSource> sourceAudio)
+Media::Decoder::ADXDecoder::ADXDecoder(NN<Media::IAudioSource> sourceAudio)
 {
 	Media::AudioFormat fmt;
 	this->sourceAudio = 0;
@@ -36,7 +36,7 @@ Media::Decoder::ADXDecoder::~ADXDecoder()
 {
 }
 
-void Media::Decoder::ADXDecoder::GetFormat(NotNullPtr<AudioFormat> format)
+void Media::Decoder::ADXDecoder::GetFormat(NN<AudioFormat> format)
 {
 	if (this->sourceAudio)
 	{

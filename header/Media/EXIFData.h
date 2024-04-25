@@ -84,14 +84,14 @@ namespace Media
 		EXIFMaker exifMaker;
 
 	private:
-		void FreeItem(NotNullPtr<EXIFItem> item);
-		void ToExifBuffImpl(UInt8 *buff, NotNullPtr<const Data::ReadingListNN<EXIFItem>> exifList, InOutParam<UInt32> startOfst, InOutParam<UInt32> otherOfst) const;
-		void GetExifBuffSize(NotNullPtr<const Data::ReadingListNN<EXIFItem>> exifList, OutParam<UInt64> size, OutParam<UInt64> endOfst) const;
+		void FreeItem(NN<EXIFItem> item);
+		void ToExifBuffImpl(UInt8 *buff, NN<const Data::ReadingListNN<EXIFItem>> exifList, InOutParam<UInt32> startOfst, InOutParam<UInt32> otherOfst) const;
+		void GetExifBuffSize(NN<const Data::ReadingListNN<EXIFItem>> exifList, OutParam<UInt64> size, OutParam<UInt64> endOfst) const;
 	public:
 		EXIFData(EXIFMaker exifMaker);
 		~EXIFData();
 		EXIFMaker GetEXIFMaker() const;
-		NotNullPtr<Media::EXIFData> Clone() const;
+		NN<Media::EXIFData> Clone() const;
 		void AddBytes(UInt32 id, UInt64 cnt, const UInt8 *buff);
 		void AddString(UInt32 id, UInt64 cnt, const Char *buff);
 		void AddUInt16(UInt32 id, UInt64 cnt, const UInt16 *buff);
@@ -101,14 +101,14 @@ namespace Media
 		void AddRational(UInt32 id, UInt64 cnt, const UInt32 *buff);
 		void AddSRational(UInt32 id, UInt64 cnt, const Int32 *buff);
 		void AddOther(UInt32 id, UInt64 cnt, const UInt8 *buff);
-		void AddSubEXIF(UInt32 id, NotNullPtr<Media::EXIFData> exif);
+		void AddSubEXIF(UInt32 id, NN<Media::EXIFData> exif);
 		void AddDouble(UInt32 id, UInt64 cnt, const Double *buff);
 		void AddUInt64(UInt32 id, UInt64 cnt, const UInt64 *buff);
 		void AddInt64(UInt32 id, UInt64 cnt, const Int64 *buff);
 		void Remove(UInt32 id);
 		Bool RemoveLargest();
 
-		UOSInt GetExifIds(NotNullPtr<Data::ArrayList<UInt32>> idArr) const;
+		UOSInt GetExifIds(NN<Data::ArrayList<UInt32>> idArr) const;
 		EXIFType GetExifType(UInt32 id) const;
 		UInt64 GetExifCount(UInt32 id) const;
 		Optional<EXIFItem> GetExifItem(UInt32 id) const;
@@ -117,7 +117,7 @@ namespace Media
 		Media::EXIFData *GetExifSubexif(UInt32 id) const;
 		UInt8 *GetExifOther(UInt32 id) const;
 
-		Bool GetPhotoDate(NotNullPtr<Data::DateTime> dt) const;
+		Bool GetPhotoDate(NN<Data::DateTime> dt) const;
 		Bool GetPhotoDate(OutParam<Data::Timestamp> dt) const;
 		Text::CString GetPhotoMake() const;
 		Text::CString GetPhotoModel() const;
@@ -135,11 +135,11 @@ namespace Media
 		void SetWidth(UInt32 width);
 		void SetHeight(UInt32 height);
 
-		Bool ToString(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString linePrefix) const;
-		Bool ToStringCanonCameraSettings(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const;
-		Bool ToStringCanonFocalLength(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const;
-		Bool ToStringCanonShotInfo(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const;
-		Bool ToStringCanonLensType(NotNullPtr<Text::StringBuilderUTF8> sb, UInt16 lensType) const;
+		Bool ToString(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix) const;
+		Bool ToStringCanonCameraSettings(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const;
+		Bool ToStringCanonFocalLength(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const;
+		Bool ToStringCanonShotInfo(NN<Text::StringBuilderUTF8> sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt) const;
+		Bool ToStringCanonLensType(NN<Text::StringBuilderUTF8> sb, UInt16 lensType) const;
 		void ToExifBuff(UInt8 *buff, InOutParam<UInt32> startOfst, InOutParam<UInt32> otherOfst) const;
 		void GetExifBuffSize(OutParam<UInt64> size, OutParam<UInt64> endOfst) const;
 
@@ -150,11 +150,11 @@ namespace Media
 		static Text::CStringNN GetEXIFName(EXIFMaker exifMaker, UInt32 id, UInt32 subId);
 		static Text::CString GetEXIFTypeName(EXIFType type);
 		static Text::CString GetFieldTypeName(UInt32 ftype);
-		static Optional<EXIFData> ParseIFD(UnsafeArray<const UInt8> buff, UOSInt buffSize, NotNullPtr<Data::ByteOrder> byteOrder, OptOut<UInt64> nextOfst, EXIFMaker exifMaker, const UInt8 *basePtr);
-		static Optional<EXIFData> ParseIFD(NotNullPtr<IO::StreamData> fd, UInt64 ofst, NotNullPtr<Data::ByteOrder> byteOrder, OptOut<UInt64> nextOfst, UInt64 readBase);
-		static Optional<EXIFData> ParseIFD64(NotNullPtr<IO::StreamData> fd, UInt64 ofst, NotNullPtr<Data::ByteOrder> byteOrder, OptOut<UInt64> nextOfst, UInt64 readBase);
-		static Bool ParseEXIFFrame(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt frameOfst, NotNullPtr<IO::StreamData> fd, UInt64 ofst);
-		static Bool ParseFrame(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt frameOfst, NotNullPtr<IO::StreamData> fd, UInt64 ofst, NotNullPtr<Data::ByteOrder> byteOrder, OptOut<UInt32> nextOfst, UInt32 ifdId, UInt64 readBase);
+		static Optional<EXIFData> ParseIFD(UnsafeArray<const UInt8> buff, UOSInt buffSize, NN<Data::ByteOrder> byteOrder, OptOut<UInt64> nextOfst, EXIFMaker exifMaker, const UInt8 *basePtr);
+		static Optional<EXIFData> ParseIFD(NN<IO::StreamData> fd, UInt64 ofst, NN<Data::ByteOrder> byteOrder, OptOut<UInt64> nextOfst, UInt64 readBase);
+		static Optional<EXIFData> ParseIFD64(NN<IO::StreamData> fd, UInt64 ofst, NN<Data::ByteOrder> byteOrder, OptOut<UInt64> nextOfst, UInt64 readBase);
+		static Bool ParseEXIFFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt frameOfst, NN<IO::StreamData> fd, UInt64 ofst);
+		static Bool ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt frameOfst, NN<IO::StreamData> fd, UInt64 ofst, NN<Data::ByteOrder> byteOrder, OptOut<UInt32> nextOfst, UInt32 ifdId, UInt64 readBase);
 		static Optional<EXIFData> ParseExif(const UInt8 *buff, UOSInt buffSize);
 	};
 }

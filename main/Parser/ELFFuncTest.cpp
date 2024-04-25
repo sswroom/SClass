@@ -3,7 +3,7 @@
 #include "Parser/FileParser/ELFParser.h"
 #include <stdio.h>
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[512];
 	Text::CString name = CSTR("_ZdlPv@GLIBCXX_3.4");

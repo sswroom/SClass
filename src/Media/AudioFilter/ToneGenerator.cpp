@@ -5,7 +5,7 @@
 #include "Media/AudioFilter/ToneGenerator.h"
 #include "Text/MyString.h"
 
-Media::AudioFilter::ToneGenerator::ToneGenerator(NotNullPtr<IAudioSource> sourceAudio) : Media::IAudioFilter(sourceAudio)
+Media::AudioFilter::ToneGenerator::ToneGenerator(NN<IAudioSource> sourceAudio) : Media::IAudioFilter(sourceAudio)
 {
 	this->sourceAudio = sourceAudio;
 	this->instType = IT_SINCWAVE;
@@ -16,7 +16,7 @@ Media::AudioFilter::ToneGenerator::~ToneGenerator()
 {
 }
 
-void Media::AudioFilter::ToneGenerator::GetFormat(NotNullPtr<AudioFormat> format)
+void Media::AudioFilter::ToneGenerator::GetFormat(NN<AudioFormat> format)
 {
 	format->FromAudioFormat(this->format);
 }

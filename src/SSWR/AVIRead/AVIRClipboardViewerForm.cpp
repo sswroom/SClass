@@ -4,7 +4,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRClipboardViewerForm::OnTypeSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRClipboardViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRClipboardViewerForm>();
+	NN<SSWR::AVIRead::AVIRClipboardViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRClipboardViewerForm>();
 	UInt32 fmtId = (UInt32)(UOSInt)me->lbType->GetSelectedItem().p;
 	if (fmtId)
 	{
@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRClipboardViewerForm::OnTypeSelChg(AnyType user
 	}
 }
 
-SSWR::AVIRead::AVIRClipboardViewerForm::AVIRClipboardViewerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRClipboardViewerForm::AVIRClipboardViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Clipboard Viewer"));
 	this->SetFont(0, 0, 8.25, false);

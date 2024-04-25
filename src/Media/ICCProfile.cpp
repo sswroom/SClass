@@ -237,7 +237,7 @@ Int32 Media::ICCProfile::GetPCS() const
 	return ReadMInt32(&this->iccBuff[20]);
 }
 
-void Media::ICCProfile::GetCreateTime(NotNullPtr<Data::DateTime> createTime) const
+void Media::ICCProfile::GetCreateTime(NN<Data::DateTime> createTime) const
 {
 	ReadDateTimeNumber(&this->iccBuff[24], createTime);
 }
@@ -442,7 +442,7 @@ Optional<Media::LUT> Media::ICCProfile::CreateBLUT() const
 	return 0;
 }
 
-Bool Media::ICCProfile::GetRedTransferParam(NotNullPtr<Media::CS::TransferParam> param) const
+Bool Media::ICCProfile::GetRedTransferParam(NN<Media::CS::TransferParam> param) const
 {
 	Int32 cnt = ReadMInt32(&this->iccBuff[128]);
 	Int32 i = 0;
@@ -473,7 +473,7 @@ Bool Media::ICCProfile::GetRedTransferParam(NotNullPtr<Media::CS::TransferParam>
 				}
 				else
 				{
-					NotNullPtr<Media::LUT> lut;
+					NN<Media::LUT> lut;
 					if (this->CreateRLUT().SetTo(lut))
 					{
 						param->Set(lut);
@@ -531,7 +531,7 @@ Bool Media::ICCProfile::GetRedTransferParam(NotNullPtr<Media::CS::TransferParam>
 	return false;
 }
 
-Bool Media::ICCProfile::GetGreenTransferParam(NotNullPtr<Media::CS::TransferParam> param) const
+Bool Media::ICCProfile::GetGreenTransferParam(NN<Media::CS::TransferParam> param) const
 {
 	Int32 cnt = ReadMInt32(&this->iccBuff[128]);
 	Int32 i = 0;
@@ -562,7 +562,7 @@ Bool Media::ICCProfile::GetGreenTransferParam(NotNullPtr<Media::CS::TransferPara
 				}
 				else
 				{
-					NotNullPtr<Media::LUT> lut;
+					NN<Media::LUT> lut;
 					if (this->CreateGLUT().SetTo(lut))
 					{
 						param->Set(lut);
@@ -620,7 +620,7 @@ Bool Media::ICCProfile::GetGreenTransferParam(NotNullPtr<Media::CS::TransferPara
 	return false;
 }
 
-Bool Media::ICCProfile::GetBlueTransferParam(NotNullPtr<Media::CS::TransferParam> param) const
+Bool Media::ICCProfile::GetBlueTransferParam(NN<Media::CS::TransferParam> param) const
 {
 	Int32 cnt = ReadMInt32(&this->iccBuff[128]);
 	Int32 i = 0;
@@ -651,7 +651,7 @@ Bool Media::ICCProfile::GetBlueTransferParam(NotNullPtr<Media::CS::TransferParam
 				}
 				else
 				{
-					NotNullPtr<Media::LUT> lut;
+					NN<Media::LUT> lut;
 					if (this->CreateBLUT().SetTo(lut))
 					{
 						param->Set(lut);
@@ -709,7 +709,7 @@ Bool Media::ICCProfile::GetBlueTransferParam(NotNullPtr<Media::CS::TransferParam
 	return false;
 }
 
-Bool Media::ICCProfile::GetColorPrimaries(NotNullPtr<Media::ColorProfile::ColorPrimaries> color) const
+Bool Media::ICCProfile::GetColorPrimaries(NN<Media::ColorProfile::ColorPrimaries> color) const
 {
 	Int32 cnt = ReadMInt32(&this->iccBuff[128]);
 	Int32 i = 0;
@@ -826,7 +826,7 @@ Bool Media::ICCProfile::GetColorPrimaries(NotNullPtr<Media::ColorProfile::ColorP
 	}
 }
 
-Bool Media::ICCProfile::SetToColorProfile(NotNullPtr<Media::ColorProfile> colorProfile)
+Bool Media::ICCProfile::SetToColorProfile(NN<Media::ColorProfile> colorProfile)
 {
 	if (this->GetRedTransferParam(colorProfile->GetRTranParam()) &&
 		this->GetGreenTransferParam(colorProfile->GetGTranParam()) &&
@@ -839,7 +839,7 @@ Bool Media::ICCProfile::SetToColorProfile(NotNullPtr<Media::ColorProfile> colorP
 	return false;
 }
 
-void Media::ICCProfile::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Media::ICCProfile::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	UInt8 majorVer;
 	UInt8 minorVer;
@@ -925,7 +925,7 @@ void Media::ICCProfile::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 
 Optional<Media::ICCProfile> Media::ICCProfile::Parse(Data::ByteArrayR buff)
 {
-	NotNullPtr<Media::ICCProfile> profile;
+	NN<Media::ICCProfile> profile;
 	if (buff.ReadMU32(0) != buff.GetSize())
 		return 0;
 	if (buff.ReadMI32(36) != 0x61637370)
@@ -936,7 +936,7 @@ Optional<Media::ICCProfile> Media::ICCProfile::Parse(Data::ByteArrayR buff)
 	return profile;
 }
 
-Bool Media::ICCProfile::ParseFrame(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, const UInt8 *buff, UOSInt buffSize)
+Bool Media::ICCProfile::ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, const UInt8 *buff, UOSInt buffSize)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -1014,7 +1014,7 @@ Bool Media::ICCProfile::ParseFrame(NotNullPtr<IO::FileAnalyse::FrameDetailHandle
 	return true;
 }
 
-void Media::ICCProfile::ReadDateTimeNumber(const UInt8 *buff, NotNullPtr<Data::DateTime> dt)
+void Media::ICCProfile::ReadDateTimeNumber(const UInt8 *buff, NN<Data::DateTime> dt)
 {
 	dt->SetValue(ReadMUInt16(&buff[0]), (UInt8)ReadMUInt16(&buff[2]), (UInt8)ReadMUInt16(&buff[4]), (UInt8)ReadMUInt16(&buff[6]), (UInt8)ReadMUInt16(&buff[8]), (UInt8)ReadMUInt16(&buff[10]), 0);
 }
@@ -1372,7 +1372,7 @@ Text::CStringNN Media::ICCProfile::GetNameStandardIlluminent(Int32 val)
 	}
 }
 
-void Media::ICCProfile::GetDispCIEXYZ(NotNullPtr<Text::StringBuilderUTF8> sb, const CIEXYZ &xyz)
+void Media::ICCProfile::GetDispCIEXYZ(NN<Text::StringBuilderUTF8> sb, const CIEXYZ &xyz)
 {
 	sb->AppendC(UTF8STRC("X = "));
 	Text::SBAppendF64(sb, xyz.val[0]);
@@ -1391,7 +1391,7 @@ void Media::ICCProfile::GetDispCIEXYZ(NotNullPtr<Text::StringBuilderUTF8> sb, co
 	}
 }
 
-void Media::ICCProfile::GetDispTagType(NotNullPtr<Text::StringBuilderUTF8> sb, UInt8 *buff, UInt32 leng)
+void Media::ICCProfile::GetDispTagType(NN<Text::StringBuilderUTF8> sb, UInt8 *buff, UInt32 leng)
 {
 	Int32 typ = ReadMInt32(buff);
 	Int32 nCh;
@@ -1650,7 +1650,7 @@ Media::CS::TransferType Media::ICCProfile::FindTransferType(UOSInt colorCount, U
 		return Media::CS::TRANT_GAMMA;
 	}
 
-	NotNullPtr<Media::CS::TransferFunc> *funcs = MemAlloc(NotNullPtr<Media::CS::TransferFunc>, tranCnt);
+	NN<Media::CS::TransferFunc> *funcs = MemAlloc(NN<Media::CS::TransferFunc>, tranCnt);
 	Double *diffSqrSum = MemAlloc(Double, tranCnt);
 	UOSInt i = tranCnt;
 	while (i-- > 0)
@@ -1716,7 +1716,7 @@ const UInt8 *Media::ICCProfile::GetSRGBICCData()
 	return srgbICC;
 }
 
-void Media::ICCProfile::FrameAddXYZNumber(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, Text::CStringNN fieldName, const UInt8 *xyzBuff)
+void Media::ICCProfile::FrameAddXYZNumber(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, Text::CStringNN fieldName, const UInt8 *xyzBuff)
 {
 	Text::StringBuilderUTF8 sb;
 	GetDispCIEXYZ(sb, ReadXYZNumber(xyzBuff));
@@ -1724,7 +1724,7 @@ void Media::ICCProfile::FrameAddXYZNumber(NotNullPtr<IO::FileAnalyse::FrameDetai
 }
 
 
-void Media::ICCProfile::FrameDispTagType(NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, Text::CStringNN fieldName, const UInt8 *buff, UInt32 leng)
+void Media::ICCProfile::FrameDispTagType(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, Text::CStringNN fieldName, const UInt8 *buff, UInt32 leng)
 {
 	UInt32 typ = ReadMUInt32(buff);
 	Int32 nCh;

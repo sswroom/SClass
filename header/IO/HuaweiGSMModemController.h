@@ -126,7 +126,7 @@ namespace IO
 			};
 		};
 	public:
-		HuaweiGSMModemController(NotNullPtr<IO::ATCommandChannel> channel, Bool needRelease);
+		HuaweiGSMModemController(NN<IO::ATCommandChannel> channel, Bool needRelease);
 		virtual ~HuaweiGSMModemController();
 
 		//Huawei Proprietary: Mobile Termination Control and Status Interface

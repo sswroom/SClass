@@ -116,7 +116,7 @@ namespace Media
 		Media::ColorManagerSess *colorSess;
 		Media::IVideoSource *video;
 		Media::FrameInfo videoInfo;
-		NotNullPtr<Media::MonitorSurfaceMgr> surfaceMgr;
+		NN<Media::MonitorSurfaceMgr> surfaceMgr;
 		UInt32 frameRateNorm;
 		UInt32 frameRateDenorm;
 		Media::ImageCopy outputCopier;
@@ -198,10 +198,10 @@ namespace Media
 
 		void CalDisplayRect(UOSInt srcWidth, UOSInt srcHeight, DrawRect *rect);
 
-		virtual void ProcessVideo(NotNullPtr<ThreadStat> tstat, VideoBuff *vbuff, VideoBuff *vbuff2);
+		virtual void ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, VideoBuff *vbuff2);
 		virtual Media::IImgResizer *CreateResizer(Media::ColorManagerSess *colorSess, UInt32 bitDepth, Double srcRefLuminance);
-		virtual void CreateCSConv(NotNullPtr<ThreadStat> tstat, Media::FrameInfo *info);
-		virtual void CreateThreadResizer(NotNullPtr<ThreadStat> tstat);
+		virtual void CreateCSConv(NN<ThreadStat> tstat, Media::FrameInfo *info);
+		virtual void CreateThreadResizer(NN<ThreadStat> tstat);
 
 		static void __stdcall OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		static void __stdcall OnVideoChange(Media::IVideoSource::FrameChange fc, AnyType userData);
@@ -223,10 +223,10 @@ namespace Media
 		void UpdateOutputSize(Math::Size2D<UOSInt> outputSize);
 		void UpdateDispInfo(Math::Size2D<UOSInt> outputSize, UInt32 bpp, Media::PixelFormat pf);
 
-		virtual void LockUpdateSize(NotNullPtr<Sync::MutexUsage> mutUsage) = 0;
-		virtual void DrawFromSurface(NotNullPtr<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn) = 0;
+		virtual void LockUpdateSize(NN<Sync::MutexUsage> mutUsage) = 0;
+		virtual void DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn) = 0;
 	public:
-		VideoRenderer(Media::ColorManagerSess *colorSess, NotNullPtr<Media::MonitorSurfaceMgr> surfaceMgr, UOSInt buffCnt, UOSInt threadCnt);
+		VideoRenderer(Media::ColorManagerSess *colorSess, NN<Media::MonitorSurfaceMgr> surfaceMgr, UOSInt buffCnt, UOSInt threadCnt);
 		virtual ~VideoRenderer();
 
 		void SetVideo(Media::IVideoSource *video);
@@ -242,9 +242,9 @@ namespace Media
 
 		void SetEndNotify(EndNotifier endHdlr, AnyType userObj);
 		void SetSrcRGBType(Media::CS::TransferType rgbType);
-		void SetSrcRGBTransfer(NotNullPtr<const Media::CS::TransferParam> transf);
+		void SetSrcRGBTransfer(NN<const Media::CS::TransferParam> transf);
 		void SetSrcPrimaries(Media::ColorProfile::ColorType colorType);
-		void SetSrcPrimaries(NotNullPtr<const Media::ColorProfile::ColorPrimaries> primaries);
+		void SetSrcPrimaries(NN<const Media::ColorProfile::ColorPrimaries> primaries);
 		void SetSrcWP(Media::ColorProfile::WhitePointType wpType);
 		void SetSrcWPTemp(Double colorTemp);
 		void SetSrcYUVType(Media::ColorProfile::YUVType yuvType);
@@ -261,8 +261,8 @@ namespace Media
 
 		void AddImgFilter(Media::IImgFilter *imgFilter);
 		void Snapshot();
-		void GetStatus(NotNullPtr<RendererStatus2> status);
-		NotNullPtr<Media::MonitorSurfaceMgr> GetSurfaceMgr();
+		void GetStatus(NN<RendererStatus2> status);
+		NN<Media::MonitorSurfaceMgr> GetSurfaceMgr();
 	};
 }
 #endif

@@ -95,10 +95,10 @@ namespace Media
 			InstrumentType instType;
 
 		public:
-			ToneGenerator(NotNullPtr<IAudioSource> sourceAudio);
+			ToneGenerator(NN<IAudioSource> sourceAudio);
 			virtual ~ToneGenerator();
 
-			virtual void GetFormat(NotNullPtr<AudioFormat> format);
+			virtual void GetFormat(NN<AudioFormat> format);
 			virtual UOSInt ReadBlock(Data::ByteArray buff); //ret actual block size
 
 			void ClearTones();

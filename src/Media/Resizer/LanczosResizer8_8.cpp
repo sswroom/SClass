@@ -1192,7 +1192,7 @@ void Media::Resizer::LanczosResizer8_8::mt_vertical_filter(UInt8 *inPt, UInt8 *o
 
 UInt32 Media::Resizer::LanczosResizer8_8::WorkerThread(AnyType obj)
 {
-	NotNullPtr<LanczosResizer8_8> lr = obj.GetNN<LanczosResizer8_8>();
+	NN<LanczosResizer8_8> lr = obj.GetNN<LanczosResizer8_8>();
 	Int32 threadId = lr->currId;
 	LRTHREADSTAT *ts = &lr->stats[threadId];
 

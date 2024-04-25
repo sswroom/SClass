@@ -2,7 +2,7 @@
 #include "DB/SDFFile.h"
 #include "Text/StringBuilderW.h"
 
-DB::SDFFile::SDFFile(const UTF8Char *fileName, Version ver, NotNullPtr<IO::LogTool> log, const UTF8Char *password) : DB::OLEDBConn(log)
+DB::SDFFile::SDFFile(const UTF8Char *fileName, Version ver, NN<IO::LogTool> log, const UTF8Char *password) : DB::OLEDBConn(log)
 {
 	Text::StringBuilderW sb;
 	switch (ver)

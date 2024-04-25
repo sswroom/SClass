@@ -9,7 +9,7 @@ namespace Media
 	class MediaPlayerInterface
 	{
 	private:
-		NotNullPtr<Parser::ParserList> parsers;
+		NN<Parser::ParserList> parsers;
 		Data::Duration storeTime;
 		Media::MediaFile *currFile;
 	protected:
@@ -22,7 +22,7 @@ namespace Media
 
 		void SetPlayer(Media::MediaPlayer *player);
 	public:
-		MediaPlayerInterface(NotNullPtr<Parser::ParserList> parsers);
+		MediaPlayerInterface(NN<Parser::ParserList> parsers);
 		virtual ~MediaPlayerInterface();
 
 		Bool OpenFile(Text::CStringNN fileName, IO::ParserType targetType);

@@ -36,10 +36,10 @@ namespace Media
 			Sync::Thread thread;
 
 		private:
-			static void __stdcall CalcThread(NotNullPtr<Sync::Thread> thread);
+			static void __stdcall CalcThread(NN<Sync::Thread> thread);
 			void ResetStatus();
 		public:
-			DTMFDecoder(NotNullPtr<Media::IAudioSource> audSrc, UOSInt calcInt);
+			DTMFDecoder(NN<Media::IAudioSource> audSrc, UOSInt calcInt);
 			virtual ~DTMFDecoder();
 
 			virtual Data::Duration SeekToTime(Data::Duration time);

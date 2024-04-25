@@ -146,8 +146,8 @@ namespace IO
 
 		typedef struct
 		{
-			NotNullPtr<Text::String> longName;
-			NotNullPtr<Text::String> shortName;
+			NN<Text::String> longName;
+			NN<Text::String> shortName;
 			Int32 plmn;
 			OperStatus status;
 			Int32 netact;
@@ -171,15 +171,15 @@ namespace IO
 		typedef struct
 		{
 			Int32 index;
-			NotNullPtr<Text::String> name;
-			NotNullPtr<Text::String> number;
+			NN<Text::String> name;
+			NN<Text::String> number;
 		} PBEntry;
 
 		struct PDPContext
 		{
 			UInt32 cid;
-			NotNullPtr<Text::String> type;
-			NotNullPtr<Text::String> apn;
+			NN<Text::String> type;
+			NN<Text::String> apn;
 		};
 
 		struct ActiveState
@@ -207,10 +207,10 @@ namespace IO
 		Bool SetSMSFormat(SMSFormat smsFormat);
 		Bool GetSMSFormat(OutParam<SMSFormat> smsFormat);
 
-		static void FreeOperator(NotNullPtr<Operator> oper);
+		static void FreeOperator(NN<Operator> oper);
 
 	public:
-		GSMModemController(NotNullPtr<IO::ATCommandChannel> channel, Bool needRelease);
+		GSMModemController(NN<IO::ATCommandChannel> channel, Bool needRelease);
 		virtual ~GSMModemController();
 
 		// GSM Commands 3GPP TS 27.007
@@ -220,21 +220,21 @@ namespace IO
 		UTF8Char *GSMGetIMEI(UTF8Char *imei); //AT+CGSN
 		UTF8Char *GSMGetTECharset(UTF8Char *cs); //AT+CSCS
 		Bool GSMSetTECharset(const UTF8Char *cs); //AT+CSCS
-		Bool GSMGetTECharsetsSupported(NotNullPtr<Data::ArrayListStringNN> csList); //AT+CSCS
+		Bool GSMGetTECharsetsSupported(NN<Data::ArrayListStringNN> csList); //AT+CSCS
 		UTF8Char *GSMGetIMSI(UTF8Char *imsi); //AT+CIMI
 		UTF8Char *GSMGetCurrOperator(UTF8Char *oper); //AT+COPS
 		UTF8Char *GSMGetCurrPLMN(UTF8Char *plmn); //AT+COPS
 		Bool GSMConnectPLMN(Int32 plmn); //AT+COPS
-		Bool GSMGetAllowedOperators(NotNullPtr<Data::ArrayListNN<Operator>> operList); //AT+COPS
-		void GSMFreeOperators(NotNullPtr<Data::ArrayListNN<Operator>> operList);
+		Bool GSMGetAllowedOperators(NN<Data::ArrayListNN<Operator>> operList); //AT+COPS
+		void GSMFreeOperators(NN<Data::ArrayListNN<Operator>> operList);
 		Int32 GSMSearchOperatorPLMN(Int32 netact);
 		SIMStatus GSMGetSIMStatus(); //AT+CPIN
 		Bool GSMGetSignalQuality(OutParam<RSSI> rssi, OutParam<BER> ber); //AT+CSQ
 		Bool GSMSetFunctionalityMin(); //AT+CFUN
 		Bool GSMSetFunctionalityFull(); //AT+CFUN
 		Bool GSMSetFunctionalityReset(); //AT+CFUN
-		Bool GSMGetModemTime(NotNullPtr<Data::DateTime> date); //AT+CCLK
-		Bool GSMSetModemTime(NotNullPtr<Data::DateTime> date); //AT+CCLK
+		Bool GSMGetModemTime(NN<Data::DateTime> date); //AT+CCLK
+		Bool GSMSetModemTime(NN<Data::DateTime> date); //AT+CCLK
 		Bool GSMGetRegisterNetwork(OutParam<NetworkResult> n, OutParam<RegisterStatus> stat, OutParam<UInt16> lac, OutParam<UInt32> ci, OutParam<AccessTech> act); //AT+CREG
 
 		Int32 GSMGetSIMPLMN();
@@ -245,18 +245,18 @@ namespace IO
 		Bool GPRSServiceSetAttached(Bool attached); //AT+CGATT
 		Bool GPRSSetAPN(Text::CString apn); //AT+CGDCONT
 		Bool GPRSSetPDPContext(UInt32 cid, Text::CString type, Text::CString apn); //AT+CGDCONT
-		Bool GPRSGetPDPContext(NotNullPtr<Data::ArrayListNN<PDPContext>> ctxList); //AT+CGDCONT
-		void GPRSFreePDPContext(NotNullPtr<Data::ArrayListNN<PDPContext>> ctxList);
+		Bool GPRSGetPDPContext(NN<Data::ArrayListNN<PDPContext>> ctxList); //AT+CGDCONT
+		void GPRSFreePDPContext(NN<Data::ArrayListNN<PDPContext>> ctxList);
 		Bool GPRSSetPDPActive(Bool active); //AT+CGACT
 		Bool GPRSSetPDPActive(Bool active, UInt32 cid); //AT+CGACT
-		Bool GPRSGetPDPActive(NotNullPtr<Data::ArrayList<ActiveState>> actList); //AT+CGACT
+		Bool GPRSGetPDPActive(NN<Data::ArrayList<ActiveState>> actList); //AT+CGACT
 
 		// SMS Commands
-		Bool SMSListMessages(NotNullPtr<Data::ArrayListNN<SMSMessage>> msgList, SMSStatus status);
-		void SMSFreeMessages(NotNullPtr<Data::ArrayListNN<SMSMessage>> msgList);
-		static void SMSFreeMessage(NotNullPtr<SMSMessage> msg);
+		Bool SMSListMessages(NN<Data::ArrayListNN<SMSMessage>> msgList, SMSStatus status);
+		void SMSFreeMessages(NN<Data::ArrayListNN<SMSMessage>> msgList);
+		static void SMSFreeMessage(NN<SMSMessage> msg);
 		Bool SMSDeleteMessage(Int32 index);
-		Bool SMSSendMessage(NotNullPtr<Text::SMSMessage> msg);
+		Bool SMSSendMessage(NN<Text::SMSMessage> msg);
 		Bool SMSSetStorage(SMSStorage reading, SMSStorage writing, SMSStorage store);
 		Bool SMSGetStorageInfo(Optional<SMSStorageInfo> reading, Optional<SMSStorageInfo> writing, Optional<SMSStorageInfo> store);
 		UTF8Char *SMSGetSMSC(UTF8Char *buff);
@@ -267,10 +267,10 @@ namespace IO
 		Bool PBSetStorage(PBStorage storage);
 		Bool PBGetStorage(OptOut<PBStorage> storage, OptOut<Int32> usedEntry, OptOut<Int32> freeEntry);
 		Bool PBGetStorageStatus(OptOut<Int32> startEntry, OptOut<Int32> endEntry, OptOut<Int32> maxNumberLen, OptOut<Int32> maxTextLen);
-		Bool PBReadEntries(NotNullPtr<Data::ArrayListNN<PBEntry>> phoneList, Int32 startEntry, Int32 endEntry);
-		Bool PBReadAllEntries(NotNullPtr<Data::ArrayListNN<PBEntry>> phoneList);
-		static void PBFreeEntry(NotNullPtr<PBEntry> entry);
-		void PBFreeEntries(NotNullPtr<Data::ArrayListNN<PBEntry>> phoneList);
+		Bool PBReadEntries(NN<Data::ArrayListNN<PBEntry>> phoneList, Int32 startEntry, Int32 endEntry);
+		Bool PBReadAllEntries(NN<Data::ArrayListNN<PBEntry>> phoneList);
+		static void PBFreeEntry(NN<PBEntry> entry);
+		void PBFreeEntries(NN<Data::ArrayListNN<PBEntry>> phoneList);
 
 	public:
 		static Int32 RSSIGetdBm(RSSI rssi);

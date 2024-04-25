@@ -23,20 +23,20 @@ namespace SSWR
 				SM_ANY
 			} SelectMode;
 		private:
-			NotNullPtr<UI::GUIListBox> lbLocation;
-			NotNullPtr<UI::GUIListBox> lbSublocations;
-			NotNullPtr<UI::GUIPanel> pnlLocation;
-			NotNullPtr<UI::GUILabel> lblID;
-			NotNullPtr<UI::GUILabel> lblEName;
-			NotNullPtr<UI::GUILabel> lblCName;
-			NotNullPtr<UI::GUITextBox> txtID;
-			NotNullPtr<UI::GUITextBox> txtEName;
-			NotNullPtr<UI::GUITextBox> txtCName;
-			NotNullPtr<UI::GUIButton> btnAdd;
-			NotNullPtr<UI::GUIButton> btnOk;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUIListBox> lbLocation;
+			NN<UI::GUIListBox> lbSublocations;
+			NN<UI::GUIPanel> pnlLocation;
+			NN<UI::GUILabel> lblID;
+			NN<UI::GUILabel> lblEName;
+			NN<UI::GUILabel> lblCName;
+			NN<UI::GUITextBox> txtID;
+			NN<UI::GUITextBox> txtEName;
+			NN<UI::GUITextBox> txtCName;
+			NN<UI::GUIButton> btnAdd;
+			NN<UI::GUIButton> btnOk;
+			NN<UI::GUIButton> btnCancel;
 
-			NotNullPtr<OrganEnv> env;
+			NN<OrganEnv> env;
 			SelectMode selMode;
 			Int32 initId;
 			Bool sublocUpdating;
@@ -56,7 +56,7 @@ namespace SSWR
 			static void __stdcall OnOkClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			OrganLocationForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env, SelectMode selMode, Int32 initId);
+			OrganLocationForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<OrganEnv> env, SelectMode selMode, Int32 initId);
 			virtual ~OrganLocationForm();
 
 			virtual void OnMonitorChanged();

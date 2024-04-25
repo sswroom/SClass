@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "UI/GUIHScrollBar.h"
 
-UI::GUIHScrollBar::GUIHScrollBar(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
+UI::GUIHScrollBar::GUIHScrollBar(NN<GUICore> ui, NN<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
 {
 }
 

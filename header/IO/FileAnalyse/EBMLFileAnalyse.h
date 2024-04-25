@@ -55,16 +55,16 @@ namespace IO
 			static const UInt8 *ReadInt(const UInt8 *buffPtr, UInt64 *val, UInt32 *intSize);
 			static const ElementInfo *GetElementInfo(UInt32 elementId);
 			void ParseRange(UOSInt lev, UInt64 ofst, UInt64 size);
-			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> thread);
+			static void __stdcall ParseThread(NN<Sync::Thread> thread);
 			UOSInt GetFrameIndex(UOSInt lev, UInt64 ofst);
 		public:
-			EBMLFileAnalyse(NotNullPtr<IO::StreamData> fd);
+			EBMLFileAnalyse(NN<IO::StreamData> fd);
 			virtual ~EBMLFileAnalyse();
 
 			virtual Text::CStringNN GetFormatName();
 			virtual UOSInt GetFrameCount();
-			virtual Bool GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
-			virtual Bool GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual Bool GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
+			virtual Bool GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst);
 			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index);
 

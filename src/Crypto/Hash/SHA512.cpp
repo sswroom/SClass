@@ -23,9 +23,9 @@ UTF8Char *Crypto::Hash::SHA512::GetName(UTF8Char *sbuff) const
 	return Text::StrConcatC(sbuff, UTF8STRC("SHA-512"));
 }
 
-NotNullPtr<Crypto::Hash::IHash> Crypto::Hash::SHA512::Clone() const
+NN<Crypto::Hash::IHash> Crypto::Hash::SHA512::Clone() const
 {
-	NotNullPtr<Crypto::Hash::SHA512> sha512;
+	NN<Crypto::Hash::SHA512> sha512;
 	NEW_CLASSNN(sha512, Crypto::Hash::SHA512());
 	sha512->messageLength = this->messageLength;
 	sha512->messageBlockIndex = this->messageBlockIndex;

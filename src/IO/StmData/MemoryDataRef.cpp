@@ -35,7 +35,7 @@ UOSInt IO::StmData::MemoryDataRef::GetRealData(UInt64 offset, UOSInt length, Dat
 	return length;
 }
 
-NotNullPtr<Text::String> IO::StmData::MemoryDataRef::GetFullName()
+NN<Text::String> IO::StmData::MemoryDataRef::GetFullName()
 {
 	return Text::String::OrEmpty(this->name);
 }
@@ -66,10 +66,10 @@ const UInt8 *IO::StmData::MemoryDataRef::GetPointer()
 	return this->data.Ptr();
 }
 
-NotNullPtr<IO::StreamData> IO::StmData::MemoryDataRef::GetPartialData(UInt64 offset, UInt64 length)
+NN<IO::StreamData> IO::StmData::MemoryDataRef::GetPartialData(UInt64 offset, UInt64 length)
 {
-	NotNullPtr<Text::String> s;
-	NotNullPtr<IO::StmData::MemoryDataRef> data;
+	NN<Text::String> s;
+	NN<IO::StmData::MemoryDataRef> data;
 	if (offset >= this->data.GetSize())
 	{
 		NEW_CLASSNN(data, IO::StmData::MemoryDataRef(this->data.Ptr(), 0));
@@ -108,7 +108,7 @@ void IO::StmData::MemoryDataRef::SetName(Text::CStringNN name)
 	this->name = Text::String::New(name).Ptr();
 }
 
-void IO::StmData::MemoryDataRef::SetName(NotNullPtr<Text::String> name)
+void IO::StmData::MemoryDataRef::SetName(NN<Text::String> name)
 {
 	SDEL_STRING(this->name);
 	this->name = name->Clone().Ptr();

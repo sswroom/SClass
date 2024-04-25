@@ -9,7 +9,7 @@ namespace Data
 	class DataModelUtil
 	{
 	public:
-		static Bool FillFromDBReader(NotNullPtr<Data::Class> cls, AnyType value, NotNullPtr<DB::DBReader> r);
+		static Bool FillFromDBReader(NN<Data::Class> cls, AnyType value, NN<DB::DBReader> r);
 	};
 }
 #endif

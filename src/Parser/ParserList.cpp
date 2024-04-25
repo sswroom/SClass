@@ -109,7 +109,7 @@ void Parser::ParserList::SetWebBrowser(Net::WebBrowser *browser)
 	}
 }
 
-void Parser::ParserList::SetSocketFactory(NotNullPtr<Net::SocketFactory> sockf)
+void Parser::ParserList::SetSocketFactory(NN<Net::SocketFactory> sockf)
 {
 	IO::ParserBase *parser;
 	UOSInt i = this->filePArr.GetCount();
@@ -187,7 +187,7 @@ void Parser::ParserList::SetLogTool(IO::LogTool *log)
 	}
 }
 
-void Parser::ParserList::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::ParserList::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	IO::ParserBase *parser;
 	UOSInt i;
@@ -209,7 +209,7 @@ void Parser::ParserList::PrepareSelector(NotNullPtr<IO::FileSelector> selector, 
 	}
 }
 
-IO::ParsedObject *Parser::ParserList::ParseFile(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::ParserList::ParseFile(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UOSInt i = 0;
 	UOSInt j = this->filePArr.GetCount();
@@ -256,19 +256,19 @@ IO::ParsedObject *Parser::ParserList::ParseFile(NotNullPtr<IO::StreamData> fd, I
 	return 0;
 }
 
-IO::ParsedObject *Parser::ParserList::ParseFile(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile)
+IO::ParsedObject *Parser::ParserList::ParseFile(NN<IO::StreamData> fd, IO::PackageFile *pkgFile)
 {
 	return ParseFile(fd, pkgFile, IO::ParserType::Unknown);
 }
 
-IO::ParsedObject *Parser::ParserList::ParseFile(NotNullPtr<IO::StreamData> fd)
+IO::ParsedObject *Parser::ParserList::ParseFile(NN<IO::StreamData> fd)
 {
 	return ParseFile(fd, 0, IO::ParserType::Unknown);
 }
 
-IO::ParsedObject *Parser::ParserList::ParseFileType(NotNullPtr<IO::StreamData> fd, IO::ParserType t)
+IO::ParsedObject *Parser::ParserList::ParseFileType(NN<IO::StreamData> fd, IO::ParserType t)
 {
-	NotNullPtr<IO::ParsedObject> pobj;
+	NN<IO::ParsedObject> pobj;
 	IO::ParsedObject *pobj2 = this->ParseFile(fd, 0, t);
 	while (pobj.Set(pobj2))
 	{
@@ -280,12 +280,12 @@ IO::ParsedObject *Parser::ParserList::ParseFileType(NotNullPtr<IO::StreamData> f
 	return 0;
 }
 
-IO::ParsedObject *Parser::ParserList::ParseObject(NotNullPtr<IO::ParsedObject> pobj)
+IO::ParsedObject *Parser::ParserList::ParseObject(NN<IO::ParsedObject> pobj)
 {
 	return ParseObjectType(pobj, IO::ParserType::Unknown);
 }
 
-IO::ParsedObject *Parser::ParserList::ParseObjectType(NotNullPtr<IO::ParsedObject> pobj, IO::ParserType targetType)
+IO::ParsedObject *Parser::ParserList::ParseObjectType(NN<IO::ParsedObject> pobj, IO::ParserType targetType)
 {
 	UOSInt i = 0;
 	UOSInt j = this->objPArr.GetCount();

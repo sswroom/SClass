@@ -19,29 +19,29 @@ namespace SSWR
 			class AVIRMailViewer : public AVIRMIMEViewer
 			{
 			private:
-				NotNullPtr<UI::GUITabControl> tcHeader;
-				NotNullPtr<UI::GUITabPage> tpHeading;
-				NotNullPtr<UI::GUIListView> lvRecp;
-				NotNullPtr<UI::GUIPanel> pnlFrom;
-				NotNullPtr<UI::GUILabel> lblFrom;
-				NotNullPtr<UI::GUITextBox> txtFrom;
-				NotNullPtr<UI::GUIPanel> pnlSubject;
-				NotNullPtr<UI::GUILabel> lblSubject;
-				NotNullPtr<UI::GUITextBox> txtSubject;
-				NotNullPtr<UI::GUIPanel> pnlDate;
-				NotNullPtr<UI::GUILabel> lblDate;
-				NotNullPtr<UI::GUITextBox> txtDate;
+				NN<UI::GUITabControl> tcHeader;
+				NN<UI::GUITabPage> tpHeading;
+				NN<UI::GUIListView> lvRecp;
+				NN<UI::GUIPanel> pnlFrom;
+				NN<UI::GUILabel> lblFrom;
+				NN<UI::GUITextBox> txtFrom;
+				NN<UI::GUIPanel> pnlSubject;
+				NN<UI::GUILabel> lblSubject;
+				NN<UI::GUITextBox> txtSubject;
+				NN<UI::GUIPanel> pnlDate;
+				NN<UI::GUILabel> lblDate;
+				NN<UI::GUITextBox> txtDate;
 
-				NotNullPtr<UI::GUITabPage> tpRAW;
-				NotNullPtr<UI::GUIListView> lvRAW;
+				NN<UI::GUITabPage> tpRAW;
+				NN<UI::GUIListView> lvRAW;
 
-				NotNullPtr<UI::GUIPanel> pnlContent;
+				NN<UI::GUIPanel> pnlContent;
 
 				Text::MIMEObj::MailMessage *mail;
 				SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *viewer;
 
 			public:
-				AVIRMailViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::MIMEObj::MailMessage *mail);
+				AVIRMailViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, Text::MIMEObj::MailMessage *mail);
 				virtual ~AVIRMailViewer();
 			};
 		}

@@ -22,7 +22,7 @@ Int32 Parser::FileParser::FNTParser::GetName()
 	return *(Int32*)"FNTP";
 }
 
-void Parser::FileParser::FNTParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::FNTParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::FontRenderer)
 	{
@@ -35,7 +35,7 @@ IO::ParserType Parser::FileParser::FNTParser::GetParserType()
 	return IO::ParserType::FontRenderer;
 }
 
-IO::ParsedObject *Parser::FileParser::FNTParser::ParseFile(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::FNTParser::ParseFile(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdr[118];
 	OSInt hdrSize;
@@ -71,7 +71,7 @@ IO::ParsedObject *Parser::FileParser::FNTParser::ParseFile(NotNullPtr<IO::Stream
 	return font;
 }
 
-Media::FontRenderer *Parser::FileParser::FNTParser::ParseFontBuff(NotNullPtr<Text::String> sourceName, const UInt8 *fontBuff, UOSInt buffSize)
+Media::FontRenderer *Parser::FileParser::FNTParser::ParseFontBuff(NN<Text::String> sourceName, const UInt8 *fontBuff, UOSInt buffSize)
 {
 	UInt32 ver;
 	if (buffSize < 118)
@@ -102,7 +102,7 @@ Media::FontRenderer *Parser::FileParser::FNTParser::ParseFontBuff(NotNullPtr<Tex
 	return font;
 }
 
-UOSInt Parser::FileParser::FNTParser::GetFileDesc(const UInt8 *fileBuff, UOSInt fileSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+UOSInt Parser::FileParser::FNTParser::GetFileDesc(const UInt8 *fileBuff, UOSInt fileSize, NN<Text::StringBuilderUTF8> sb)
 {
 	if (fileSize < 100)
 		return 0;
@@ -243,7 +243,7 @@ UOSInt Parser::FileParser::FNTParser::GetFileDesc(const UInt8 *fileBuff, UOSInt 
 	return hdrSize;
 }
 
-void Parser::FileParser::FNTParser::GetFileDirDesc(const UInt8 *fileBuff, UOSInt fileSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Parser::FileParser::FNTParser::GetFileDirDesc(const UInt8 *fileBuff, UOSInt fileSize, NN<Text::StringBuilderUTF8> sb)
 {
 	UOSInt nFonts = ReadUInt16(&fileBuff[0]);
 	UOSInt i = 2;

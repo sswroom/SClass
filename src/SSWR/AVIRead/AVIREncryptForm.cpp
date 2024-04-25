@@ -7,13 +7,13 @@
 
 void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIREncryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIREncryptForm>();
+	NN<SSWR::AVIRead::AVIREncryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIREncryptForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt8 *decBuff;
 	UOSInt buffSize;
-	NotNullPtr<Text::TextBinEnc::ITextBinEnc> srcEnc;
+	NN<Text::TextBinEnc::ITextBinEnc> srcEnc;
 	Optional<Text::TextBinEnc::ITextBinEnc> destEnc = me->cboDest->GetSelectedItem().GetOpt<Text::TextBinEnc::ITextBinEnc>();
-	NotNullPtr<Text::TextBinEnc::ITextBinEnc> nndestEnc;
+	NN<Text::TextBinEnc::ITextBinEnc> nndestEnc;
 	me->txtSrc->GetText(sb);
 	if (!me->cboSrc->GetSelectedItem().GetOpt<Text::TextBinEnc::ITextBinEnc>().SetTo(srcEnc))
 	{
@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(AnyType userObj)
 			}
 			else if (!destEnc.SetTo(nndestEnc))
 			{
-				NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"TextEncFile", true);
+				NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"TextEncFile", true);
 				if (dlg->ShowDialog(me->GetHandle()))
 				{
 					IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIREncryptForm::AVIREncryptForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIREncryptForm::AVIREncryptForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Text Encrypt"));
 	this->SetFont(0, 0, 8.25, false);

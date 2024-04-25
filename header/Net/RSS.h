@@ -28,7 +28,7 @@ namespace Net
 
 	public:
 		RSSItem(Text::XMLNode *itemNode);
-		RSSItem(NotNullPtr<Text::XMLReader> itemNode);
+		RSSItem(NN<Text::XMLReader> itemNode);
 		~RSSItem();
 
 		Bool IsError();
@@ -57,7 +57,7 @@ namespace Net
 		Data::ArrayList<RSSItem*> items;
 
 	public:
-		RSS(Text::CStringNN url, Optional<Text::String> userAgent, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Data::Duration timeout, NotNullPtr<IO::LogTool> log);
+		RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Data::Duration timeout, NN<IO::LogTool> log);
 		virtual ~RSS();
 
 		Bool IsError();
@@ -78,7 +78,7 @@ namespace Net
 		Text::String *GetDocs() const;
 		Int32 GetTTL() const;
 
-		static void GetYoutubeURL(Text::CString channelId, NotNullPtr<Text::StringBuilderUTF8> outURL);
+		static void GetYoutubeURL(Text::CString channelId, NN<Text::StringBuilderUTF8> outURL);
 	};
 }
 #endif

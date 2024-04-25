@@ -11,9 +11,9 @@ Math::Geometry::PointM::~PointM()
 {
 }
 
-NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::PointM::Clone() const
+NN<Math::Geometry::Vector2D> Math::Geometry::PointM::Clone() const
 {
-	NotNullPtr<Math::Geometry::PointM> pt;
+	NN<Math::Geometry::PointM> pt;
 	NEW_CLASSNN(pt, Math::Geometry::PointM(this->srid, this->pos.x, this->pos.y, this->m));
 	return pt;
 }
@@ -35,7 +35,7 @@ Bool Math::Geometry::PointM::GetMBounds(OutParam<Double> min, OutParam<Double> m
 	return true;
 }
 
-Bool Math::Geometry::PointM::Equals(NotNullPtr<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
+Bool Math::Geometry::PointM::Equals(NN<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
 {
 	if (vec->GetSRID() != this->srid)
 	{

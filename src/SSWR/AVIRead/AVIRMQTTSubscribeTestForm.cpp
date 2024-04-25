@@ -18,7 +18,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm>();
+	NN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm>();
 	if (me->client)
 	{
 		me->ServerStop();
@@ -65,11 +65,11 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnStartClicked(AnyType 
 			return;
 		}
 		Optional<Net::SSLEngine> ssl = me->ssl;
-		NotNullPtr<Net::SSLEngine> nnssl;
+		NN<Net::SSLEngine> nnssl;
 		if (useSSL && ssl.SetTo(nnssl))
 		{
-			NotNullPtr<Crypto::Cert::X509Cert> cliCert;
-			NotNullPtr<Crypto::Cert::X509File> cliKey;
+			NN<Crypto::Cert::X509Cert> cliCert;
+			NN<Crypto::Cert::X509File> cliKey;
 			if (cliCert.Set(me->cliCert) && cliKey.Set(me->cliKey))
 			{
 				nnssl->ClientSetCertASN1(cliCert, cliKey);
@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnStartClicked(AnyType 
 		}
 		if (useWS)
 		{
-			NotNullPtr<Net::WebSocketClient> ws;
+			NN<Net::WebSocketClient> ws;
 			NEW_CLASSNN(ws, Net::WebSocketClient(me->core->GetSocketFactory(), useSSL?ssl:0, sb.ToCString(), port, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT, 10000));
 			if (ws->IsDown())
 			{
@@ -166,8 +166,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnStartClicked(AnyType 
 
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnCliCertClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm>();
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliCert", false);
+	NN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm>();
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliCert", false);
 	dlg->AddFilter(CSTR("*.crt"), CSTR("Cert file"));
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
@@ -200,7 +200,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnCliCertClicked(AnyTyp
 		}
 		SDEL_CLASS(me->cliCert);
 		me->cliCert = (Crypto::Cert::X509Cert*)x509;
-		NotNullPtr<Text::String> s = dlg->GetFileName();
+		NN<Text::String> s = dlg->GetFileName();
 		UOSInt i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		me->lblCliCert->SetText(s->ToCString().Substring(i + 1));
 	}
@@ -209,8 +209,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnCliCertClicked(AnyTyp
 
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnCliKeyClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm>();
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliKey", false);
+	NN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm>();
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliKey", false);
 	dlg->AddFilter(CSTR("*.key"), CSTR("Key file"));
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
@@ -235,7 +235,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnCliKeyClicked(AnyType
 		}
 		SDEL_CLASS(me->cliKey);
 		me->cliKey = (Crypto::Cert::X509File*)asn1;
-		NotNullPtr<Text::String> s = dlg->GetFileName();
+		NN<Text::String> s = dlg->GetFileName();
 		UOSInt i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		me->lblCliKey->SetText(s->ToCString().Substring(i + 1));
 	}
@@ -244,7 +244,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnCliKeyClicked(AnyType
 
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnPingTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm>();
+	NN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm>();
 	if (me->client)
 	{
 		if (me->client->IsError())
@@ -270,7 +270,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnPingTimerTick(AnyType
 
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm>();
+	NN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm>();
 	Data::DateTime dt;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -321,7 +321,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnTimerTick(AnyType use
 
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeTestForm::OnPublishMessage(AnyType userObj, Text::CStringNN topic, const Data::ByteArrayR &message)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMQTTSubscribeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm>();
+	NN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTSubscribeTestForm>();
 	Sync::Interlocked::IncrementU64(me->totalCount);
 }
 
@@ -334,7 +334,7 @@ void SSWR::AVIRead::AVIRMQTTSubscribeTestForm::ServerStop()
 	}
 }
 
-SSWR::AVIRead::AVIRMQTTSubscribeTestForm::AVIRMQTTSubscribeTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 200, ui)
+SSWR::AVIRead::AVIRMQTTSubscribeTestForm::AVIRMQTTSubscribeTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 200, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("MQTT Subscribe Test"));

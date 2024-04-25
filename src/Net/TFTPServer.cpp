@@ -9,9 +9,9 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::TFTPServer::OnCommandPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	NotNullPtr<Net::TFTPServer> me = userData.GetNN<Net::TFTPServer>();
+	NN<Net::TFTPServer> me = userData.GetNN<Net::TFTPServer>();
 	const UTF8Char *fileName;
 	UOSInt fileNameLen;
 	const UTF8Char *mode;
@@ -206,9 +206,9 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NotNullPtr<const Net::SocketUtil
 	
 }
 
-void __stdcall Net::TFTPServer::OnDataPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::TFTPServer::OnDataPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	NotNullPtr<Net::TFTPServer> me = userData.GetNN<Net::TFTPServer>();
+	NN<Net::TFTPServer> me = userData.GetNN<Net::TFTPServer>();
 	UInt64 sessId = (((UInt64)ReadMUInt32(addr->addr)) << 16) | port;
 	SessionInfo *sess;
 	UInt8 repBuff[32];
@@ -317,7 +317,7 @@ void __stdcall Net::TFTPServer::OnDataPacket(NotNullPtr<const Net::SocketUtil::A
 
 UInt32 __stdcall Net::TFTPServer::CheckThread(AnyType userObj)
 {
-	NotNullPtr<Net::TFTPServer> me = userObj.GetNN<Net::TFTPServer>();
+	NN<Net::TFTPServer> me = userObj.GetNN<Net::TFTPServer>();
 	SessionInfo *sess;
 	UOSInt i;
 	Int64 currTime;
@@ -355,7 +355,7 @@ void Net::TFTPServer::ReleaseSess(SessionInfo *sess)
 	MemFree(sess);
 }
 
-Net::TFTPServer::TFTPServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log, Text::CString path)
+Net::TFTPServer::TFTPServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log, Text::CString path)
 {
 	this->log = log;
 	this->svr = 0;

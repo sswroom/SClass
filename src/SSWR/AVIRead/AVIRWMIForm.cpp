@@ -6,11 +6,11 @@
 
 void __stdcall SSWR::AVIRead::AVIRWMIForm::OnOKClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWMIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMIForm>();
-	NotNullPtr<Text::String> ns;
+	NN<SSWR::AVIRead::AVIRWMIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMIForm>();
+	NN<Text::String> ns;
 	if (me->lbNS->GetSelectedItemTextNew().SetTo(ns))
 	{
-		NotNullPtr<Win32::WMIQuery> db;
+		NN<Win32::WMIQuery> db;
 		const WChar *wptr = Text::StrToWCharNew(ns->v);
 		NEW_CLASSNN(db, Win32::WMIQuery(wptr));
 		Text::StrDelNew(wptr);
@@ -30,17 +30,17 @@ void __stdcall SSWR::AVIRead::AVIRWMIForm::OnOKClick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRWMIForm::OnCancelClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWMIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMIForm>();
+	NN<SSWR::AVIRead::AVIRWMIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMIForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
 void __stdcall SSWR::AVIRead::AVIRWMIForm::OnDblClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRWMIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMIForm>();
-	NotNullPtr<Text::String> ns;
+	NN<SSWR::AVIRead::AVIRWMIForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWMIForm>();
+	NN<Text::String> ns;
 	if (me->lbNS->GetSelectedItemTextNew().SetTo(ns))
 	{
-		NotNullPtr<Win32::WMIQuery> db;
+		NN<Win32::WMIQuery> db;
 		const WChar *wptr = Text::StrToWCharNew(ns->v);
 		NEW_CLASSNN(db, Win32::WMIQuery(wptr));
 		Text::StrDelNew(wptr);
@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRWMIForm::OnDblClicked(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRWMIForm::AVIRWMIForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 200, ui)
+SSWR::AVIRead::AVIRWMIForm::AVIRWMIForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 200, ui)
 {
 	this->SetText(CSTR("Select WMI Namespace"));
 	this->SetFont(0, 0, 8.25, false);

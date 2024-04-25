@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "Media/AudioFixBlockSource.h"
 
-Media::AudioFixBlockSource::AudioFixBlockSource(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 length, NotNullPtr<const Media::AudioFormat> format, NotNullPtr<Text::String> name)
+Media::AudioFixBlockSource::AudioFixBlockSource(NN<IO::StreamData> fd, UInt64 ofst, UInt64 length, NN<const Media::AudioFormat> format, NN<Text::String> name)
 {
 	this->format.FromAudioFormat(format);
 	this->data = fd->GetPartialData(ofst, length);
@@ -44,7 +44,7 @@ Data::Duration Media::AudioFixBlockSource::SeekToTime(Data::Duration time)
 	return Data::Duration::FromRatioU64(this->readOfst, this->format.bitRate >> 3);
 }
 
-void Media::AudioFixBlockSource::GetFormat(NotNullPtr<AudioFormat> format)
+void Media::AudioFixBlockSource::GetFormat(NN<AudioFormat> format)
 {
 	format->FromAudioFormat(this->format);
 }

@@ -18,26 +18,26 @@ namespace SSWR
 		class AVIRCodeImageGenForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Media::ColorManagerSess> colorSess;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Media::ColorManagerSess> colorSess;
 			Media::CodeImageGen::CodeImageGen *codeImgGen;
 			Media::StaticImage *simg;
 
-			NotNullPtr<UI::GUIPictureBoxDD> pbMain;
-			NotNullPtr<UI::GUIPanel> pnlMain;
-			NotNullPtr<UI::GUILabel> lblCodeType;
-			NotNullPtr<UI::GUIComboBox> cboCodeType;
-			NotNullPtr<UI::GUILabel> lblCodeSize;
-			NotNullPtr<UI::GUITextBox> txtCodeSize;
-			NotNullPtr<UI::GUILabel> lblCode;
-			NotNullPtr<UI::GUITextBox> txtCode;
-			NotNullPtr<UI::GUILabel> lblCodeInfo;
-			NotNullPtr<UI::GUIButton> btnCodeGen;
+			NN<UI::GUIPictureBoxDD> pbMain;
+			NN<UI::GUIPanel> pnlMain;
+			NN<UI::GUILabel> lblCodeType;
+			NN<UI::GUIComboBox> cboCodeType;
+			NN<UI::GUILabel> lblCodeSize;
+			NN<UI::GUITextBox> txtCodeSize;
+			NN<UI::GUILabel> lblCode;
+			NN<UI::GUITextBox> txtCode;
+			NN<UI::GUILabel> lblCodeInfo;
+			NN<UI::GUIButton> btnCodeGen;
 
 			static void __stdcall OnCodeTypeChanged(AnyType userObj);
 			static void __stdcall OnCodeGenClicked(AnyType userObj);
 		public:
-			AVIRCodeImageGenForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRCodeImageGenForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCodeImageGenForm();
 
 			virtual void OnMonitorChanged();

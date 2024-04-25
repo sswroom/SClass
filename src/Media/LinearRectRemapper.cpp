@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Media/LinearRectRemapper.h"
 
-NotNullPtr<Media::StaticImage> Media::LinearRectRemapper::RemapW8(const UInt8 *imgPtr, Math::Size2D<UOSInt> imgSize, OSInt imgBpl, Math::Size2D<UOSInt> outputSize, Math::Quadrilateral quad, NotNullPtr<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::YCOffset ycOfst)
+NN<Media::StaticImage> Media::LinearRectRemapper::RemapW8(const UInt8 *imgPtr, Math::Size2D<UOSInt> imgSize, OSInt imgBpl, Math::Size2D<UOSInt> outputSize, Math::Quadrilateral quad, NN<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::YCOffset ycOfst)
 {
 	Math::Coord2DDbl pt;
 	Double xPos;
@@ -21,7 +21,7 @@ NotNullPtr<Media::StaticImage> Media::LinearRectRemapper::RemapW8(const UInt8 *i
 	UOSInt i;
 	UOSInt j;
 
-	NotNullPtr<Media::StaticImage> ret;
+	NN<Media::StaticImage> ret;
 	NEW_CLASSNN(ret, Media::StaticImage(outputSize, 0, 8, Media::PF_PAL_W8, outputSize.CalcArea(), color, yuvType, Media::AT_NO_ALPHA, ycOfst));
 	ret->InitGrayPal();
 	xPos = UOSInt2Double(outputSize.x - 1);

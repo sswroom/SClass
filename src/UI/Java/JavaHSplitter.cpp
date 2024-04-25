@@ -5,7 +5,7 @@
 #include "UI/GUIClientControl.h"
 #include "UI/Java/JavaHSplitter.h"
 
-UI::Java::JavaHSplitter::JavaHSplitter(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Int32 width, Bool isRight) : UI::GUIHSplitter(ui, parent)
+UI::Java::JavaHSplitter::JavaHSplitter(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Int32 width, Bool isRight) : UI::GUIHSplitter(ui, parent)
 {
 	this->dragMode = false;
 	this->isRight = isRight;

@@ -189,10 +189,10 @@ namespace Net
 
 		static void NetBIOSDecName(UTF8Char *nameBuff, UOSInt nameSize);
 
-		NotNullPtr<MACStatus> MACGet(UInt64 macAddr);
-		void MDNSAdd(NotNullPtr<Net::DNSClient::RequestAnswer> ans);
+		NN<MACStatus> MACGet(UInt64 macAddr);
+		void MDNSAdd(NN<Net::DNSClient::RequestAnswer> ans);
 	public:
-		EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType ctype, NotNullPtr<Text::String> name);
+		EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType ctype, NN<Text::String> name);
 		EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType ctype, Text::CStringNN name);
 		virtual ~EthernetAnalyzer();
 
@@ -200,31 +200,31 @@ namespace Net
 
 		UInt64 GetPacketCnt() const;
 		UInt64 GetPacketTotalSize() const;
-		void UseIPTran(NotNullPtr<Sync::MutexUsage> mutUsage);
-		NotNullPtr<const Data::ReadingListNN<IPTranStatus>> IPTranGetList() const;
+		void UseIPTran(NN<Sync::MutexUsage> mutUsage);
+		NN<const Data::ReadingListNN<IPTranStatus>> IPTranGetList() const;
 		UOSInt IPTranGetCount() const;
-		void UseMAC(NotNullPtr<Sync::MutexUsage> mutUsage);
-		NotNullPtr<const Data::ReadingListNN<MACStatus>> MACGetList() const;
-		void UseDNSCli(NotNullPtr<Sync::MutexUsage> mutUsage);
-		NotNullPtr<const Data::ReadingListNN<DNSClientInfo>> DNSCliGetList() const;
+		void UseMAC(NN<Sync::MutexUsage> mutUsage);
+		NN<const Data::ReadingListNN<MACStatus>> MACGetList() const;
+		void UseDNSCli(NN<Sync::MutexUsage> mutUsage);
+		NN<const Data::ReadingListNN<DNSClientInfo>> DNSCliGetList() const;
 		UOSInt DNSCliGetCount();
-		UOSInt DNSReqv4GetList(NotNullPtr<Data::ArrayListNN<Text::String>> reqList); //no need release
+		UOSInt DNSReqv4GetList(NN<Data::ArrayListNN<Text::String>> reqList); //no need release
 		UOSInt DNSReqv4GetCount();
-		Bool DNSReqv4GetInfo(Text::CStringNN req, NotNullPtr<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NotNullPtr<Data::DateTime> reqTime, OutParam<UInt32> ttl);
-		UOSInt DNSReqv6GetList(NotNullPtr<Data::ArrayListNN<Text::String>> reqList); //no need release
+		Bool DNSReqv4GetInfo(Text::CStringNN req, NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NN<Data::DateTime> reqTime, OutParam<UInt32> ttl);
+		UOSInt DNSReqv6GetList(NN<Data::ArrayListNN<Text::String>> reqList); //no need release
 		UOSInt DNSReqv6GetCount();
-		Bool DNSReqv6GetInfo(Text::CStringNN req, NotNullPtr<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NotNullPtr<Data::DateTime> reqTime, OutParam<UInt32> ttl);
-		UOSInt DNSReqOthGetList(NotNullPtr<Data::ArrayListNN<Text::String>> reqList); //no need release
+		Bool DNSReqv6GetInfo(Text::CStringNN req, NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NN<Data::DateTime> reqTime, OutParam<UInt32> ttl);
+		UOSInt DNSReqOthGetList(NN<Data::ArrayListNN<Text::String>> reqList); //no need release
 		UOSInt DNSReqOthGetCount();
-		Bool DNSReqOthGetInfo(Text::CStringNN req, NotNullPtr<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NotNullPtr<Data::DateTime> reqTime, OutParam<UInt32> ttl);
-		UOSInt DNSTargetGetList(NotNullPtr<Data::ArrayListNN<DNSTargetInfo>> targetList); //no need release
+		Bool DNSReqOthGetInfo(Text::CStringNN req, NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> ansList, NN<Data::DateTime> reqTime, OutParam<UInt32> ttl);
+		UOSInt DNSTargetGetList(NN<Data::ArrayListNN<DNSTargetInfo>> targetList); //no need release
 		UOSInt DNSTargetGetCount();
-		UOSInt MDNSGetList(NotNullPtr<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> mdnsList); //no need release
+		UOSInt MDNSGetList(NN<Data::ArrayListNN<Net::DNSClient::RequestAnswer>> mdnsList); //no need release
 		UOSInt MDNSGetCount();
-		void UseDHCP(NotNullPtr<Sync::MutexUsage> mutUsage);
-		NotNullPtr<const Data::ReadingListNN<DHCPInfo>> DHCPGetList() const;
-		void UseIPLog(NotNullPtr<Sync::MutexUsage> mutUsage);
-		NotNullPtr<const Data::ReadingListNN<IPLogInfo>> IPLogGetList() const;
+		void UseDHCP(NN<Sync::MutexUsage> mutUsage);
+		NN<const Data::ReadingListNN<DHCPInfo>> DHCPGetList() const;
+		void UseIPLog(NN<Sync::MutexUsage> mutUsage);
+		NN<const Data::ReadingListNN<IPLogInfo>> IPLogGetList() const;
 		UOSInt IPLogGetCount() const;
 		Bool TCP4SYNIsDiff(UOSInt lastIndex) const;
 		UOSInt TCP4SYNGetList(Data::ArrayList<TCP4SYNInfo> *synList, UOSInt *thisIndex) const;

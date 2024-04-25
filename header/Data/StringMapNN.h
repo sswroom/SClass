@@ -11,21 +11,21 @@ namespace Data
 	{
 	public:
 		StringMapNN();
-		StringMapNN(NotNullPtr<const StringMapNN<T>> map);
+		StringMapNN(NN<const StringMapNN<T>> map);
 		virtual ~StringMapNN();
 
-		virtual Optional<T> Put(Text::String *key, NotNullPtr<T> val);
-		Optional<T> PutNN(NotNullPtr<Text::String> key, NotNullPtr<T> val);
-		Optional<T> Put(Text::CStringNN key, NotNullPtr<T> val);
+		virtual Optional<T> Put(Text::String *key, NN<T> val);
+		Optional<T> PutNN(NN<Text::String> key, NN<T> val);
+		Optional<T> Put(Text::CStringNN key, NN<T> val);
 		virtual Optional<T> Get(Text::String *key) const;
-		Optional<T> GetNN(NotNullPtr<Text::String> key) const;
+		Optional<T> GetNN(NN<Text::String> key) const;
 		Optional<T> Get(Text::CStringNN key) const;
 		virtual Optional<T> Remove(Text::String *key);
-		Optional<T> RemoveNN(NotNullPtr<Text::String> key);
+		Optional<T> RemoveNN(NN<Text::String> key);
 		Optional<T> Remove(Text::CStringNN key);
 		virtual Text::String *GetKey(UOSInt index) const;
 		virtual void Clear();
-		virtual NotNullPtr<StringMapNN<T>> Clone() const;
+		virtual NN<StringMapNN<T>> Clone() const;
 	};
 
 
@@ -34,7 +34,7 @@ namespace Data
 		NEW_CLASS(this->keys, Data::ArrayListString());
 	}
 
-	template <class T> StringMapNN<T>::StringMapNN(NotNullPtr<const StringMapNN<T>> map) : ArrayCmpMapNN<Text::String*, T>()
+	template <class T> StringMapNN<T>::StringMapNN(NN<const StringMapNN<T>> map) : ArrayCmpMapNN<Text::String*, T>()
 	{
 		NEW_CLASS(this->keys, Data::ArrayListString());
 		UOSInt i = 0;
@@ -57,7 +57,7 @@ namespace Data
 		DEL_CLASS(this->keys);
 	}
 
-	template <class T> Optional<T> StringMapNN<T>::Put(Text::String *key, NotNullPtr<T> val)
+	template <class T> Optional<T> StringMapNN<T>::Put(Text::String *key, NN<T> val)
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
@@ -75,7 +75,7 @@ namespace Data
 		}
 	}
 
-	template <class T> Optional<T> StringMapNN<T>::PutNN(NotNullPtr<Text::String> key, NotNullPtr<T> val)
+	template <class T> Optional<T> StringMapNN<T>::PutNN(NN<Text::String> key, NN<T> val)
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key.Ptr());
@@ -93,7 +93,7 @@ namespace Data
 		}
 	}
 
-	template <class T> Optional<T> StringMapNN<T>::Put(Text::CStringNN key, NotNullPtr<T> val)
+	template <class T> Optional<T> StringMapNN<T>::Put(Text::CStringNN key, NN<T> val)
 	{
 		OSInt i;
 		i = ((Data::ArrayListString*)this->keys)->SortedIndexOfPtr(key.v, key.leng);
@@ -125,7 +125,7 @@ namespace Data
 		}
 	}
 
-	template <class T> Optional<T> StringMapNN<T>::GetNN(NotNullPtr<Text::String> key) const
+	template <class T> Optional<T> StringMapNN<T>::GetNN(NN<Text::String> key) const
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key.Ptr());
@@ -168,7 +168,7 @@ namespace Data
 		}
 	}
 
-	template <class T> Optional<T> StringMapNN<T>::RemoveNN(NotNullPtr<Text::String> key)
+	template <class T> Optional<T> StringMapNN<T>::RemoveNN(NN<Text::String> key)
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key.Ptr());
@@ -214,9 +214,9 @@ namespace Data
 		this->vals.Clear();
 	}
 
-	template <class T> NotNullPtr<StringMapNN<T>> StringMapNN<T>::Clone() const
+	template <class T> NN<StringMapNN<T>> StringMapNN<T>::Clone() const
 	{
-		NotNullPtr<StringMapNN<T>> ret;
+		NN<StringMapNN<T>> ret;
 		NEW_CLASSNN(ret, StringMapNN<T>(*this));
 		return ret;
 	}

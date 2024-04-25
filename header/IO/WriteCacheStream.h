@@ -7,12 +7,12 @@ namespace IO
 	class WriteCacheStream : public IO::Stream
 	{
 	private:
-		NotNullPtr<IO::Stream> outStm;
+		NN<IO::Stream> outStm;
 		UInt8 *cacheBuff;
 		UOSInt cacheBuffSize;
 		UOSInt cacheSize;
 	public:
-		WriteCacheStream(NotNullPtr<IO::Stream> outStm);
+		WriteCacheStream(NN<IO::Stream> outStm);
 		virtual ~WriteCacheStream();
 
 		virtual Bool IsDown() const;

@@ -25,20 +25,20 @@ namespace IO
 		Data::FastMapNN<UInt64, DevEntry> pubDevs;
 		Data::FastMapNN<UInt64, DevEntry> randDevs;
 
-		static Bool IsDefaultName(NotNullPtr<Text::String> name);
-		static void FreeDev(NotNullPtr<DevEntry> dev);
+		static Bool IsDefaultName(NN<Text::String> name);
+		static void FreeDev(NN<DevEntry> dev);
 	public:
 		BTDevLog();
 		~BTDevLog();
 
-		NotNullPtr<DevEntry> AddEntry(UInt64 macInt, Optional<Text::String> name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company, IO::BTScanLog::AdvType advType);
-		void AppendList(NotNullPtr<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> devMap);
+		NN<DevEntry> AddEntry(UInt64 macInt, Optional<Text::String> name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company, IO::BTScanLog::AdvType advType);
+		void AppendList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> devMap);
 		void ClearList();
 		Bool LoadFile(Text::CStringNN fileName);
 		Bool StoreFile(Text::CStringNN fileName);
 
-		NotNullPtr<const Data::ReadingListNN<IO::BTDevLog::DevEntry>> GetPublicList() const;
-		NotNullPtr<const Data::ReadingListNN<IO::BTDevLog::DevEntry>> GetRandomList() const;
+		NN<const Data::ReadingListNN<IO::BTDevLog::DevEntry>> GetPublicList() const;
+		NN<const Data::ReadingListNN<IO::BTDevLog::DevEntry>> GetRandomList() const;
 	};
 }
 #endif

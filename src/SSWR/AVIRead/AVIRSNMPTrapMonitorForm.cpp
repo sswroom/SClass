@@ -8,7 +8,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnResultSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNMPTrapMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPTrapMonitorForm>();
+	NN<SSWR::AVIRead::AVIRSNMPTrapMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPTrapMonitorForm>();
 	SNMPPacket *packet = (SNMPPacket*)me->lbResults->GetSelectedItem().p;
 	me->lvResults->ClearItems();
 	if (packet == 0)
@@ -80,7 +80,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnResultSelChg(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNMPTrapMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPTrapMonitorForm>();
+	NN<SSWR::AVIRead::AVIRSNMPTrapMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPTrapMonitorForm>();
 	UOSInt i = me->lbResults->GetCount();
 	UOSInt j = me->packetList.GetCount();
 	SNMPPacket *packet;
@@ -102,9 +102,9 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnTimerTick(AnyType userO
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnSNMPTrapPacket(AnyType userObj, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NotNullPtr<const Net::SNMPUtil::TrapInfo> trap, NotNullPtr<Data::ArrayList<Net::SNMPUtil::BindingItem*>> itemList)
+Bool __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnSNMPTrapPacket(AnyType userObj, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NN<const Net::SNMPUtil::TrapInfo> trap, NN<Data::ArrayList<Net::SNMPUtil::BindingItem*>> itemList)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNMPTrapMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPTrapMonitorForm>();
+	NN<SSWR::AVIRead::AVIRSNMPTrapMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPTrapMonitorForm>();
 	SNMPPacket *packet;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
@@ -120,7 +120,7 @@ Bool __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnSNMPTrapPacket(AnyType 
 	return true;
 }
 
-SSWR::AVIRead::AVIRSNMPTrapMonitorForm::AVIRSNMPTrapMonitorForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRSNMPTrapMonitorForm::AVIRSNMPTrapMonitorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("SNMP Trap Monitor"));

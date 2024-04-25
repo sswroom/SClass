@@ -9,7 +9,7 @@ namespace Net
 		class InformationFramework
 		{
 		public:
-			static void AttributeCont(NotNullPtr<ASN1Names> names);
+			static void AttributeCont(NN<ASN1Names> names);
 		};
 	}
 }

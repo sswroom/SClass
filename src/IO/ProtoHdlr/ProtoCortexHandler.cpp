@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/ProtoHdlr/ProtoCortexHandler.h"
 
-IO::ProtoHdlr::ProtoCortexHandler::ProtoCortexHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener)
+IO::ProtoHdlr::ProtoCortexHandler::ProtoCortexHandler(NN<IO::IProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
 }
@@ -11,16 +11,16 @@ IO::ProtoHdlr::ProtoCortexHandler::~ProtoCortexHandler()
 {
 }
 
-AnyType IO::ProtoHdlr::ProtoCortexHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
+AnyType IO::ProtoHdlr::ProtoCortexHandler::CreateStreamData(NN<IO::Stream> stm)
 {
 	return 0;
 }
 
-void IO::ProtoHdlr::ProtoCortexHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, AnyType stmData)
+void IO::ProtoHdlr::ProtoCortexHandler::DeleteStreamData(NN<IO::Stream> stm, AnyType stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoCortexHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &buff)
+UOSInt IO::ProtoHdlr::ProtoCortexHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &buff)
 {
 	UOSInt i;
 	UOSInt j;

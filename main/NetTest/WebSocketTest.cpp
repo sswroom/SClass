@@ -19,10 +19,10 @@ void __stdcall OnMessage(AnyType userObj, Text::CStringNN topic, const Data::Byt
 	printf("Data from topic: %s\r\n", topic.v);
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Net::OSSocketFactory sockf(true);
-	NotNullPtr<Net::WebSocketClient> cli;
+	NN<Net::WebSocketClient> cli;
 //	NEW_CLASSNN(cli, Net::WebSocketClient(&sockf, 0, CSTR("192.168.1.24"), 9001, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT, 30000));
 //	NEW_CLASSNN(cli, Net::WebSocketClient(&sockf, 0, CSTR("ws.vi-server.org"), 80, CSTR("/mirror"), CSTR("http://127.0.0.1"), Net::WebSocketClient::Protocol::Chat, 30000));
 //	NEW_CLASSNN(cli, Net::WebSocketClient(&sockf, 0, CSTR("test.mosquitto.org"), 8080, CSTR("/mqtt"), CSTR_NULL, Net::WebSocketClient::Protocol::MQTT, 30000));

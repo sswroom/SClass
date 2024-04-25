@@ -6,9 +6,9 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/MyString.h"
 
-void __stdcall Net::SocketMonitor::DataThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall Net::SocketMonitor::DataThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<Net::SocketMonitor> me = thread->GetUserObj().GetNN<Net::SocketMonitor>();
+	NN<Net::SocketMonitor> me = thread->GetUserObj().GetNN<Net::SocketMonitor>();
 	{
 		UInt8 *buff = MemAlloc(UInt8, 65536);
 		while (!thread->IsStopping())
@@ -32,7 +32,7 @@ void __stdcall Net::SocketMonitor::DataThread(NotNullPtr<Sync::Thread> thread)
 	}
 }
 
-Net::SocketMonitor::SocketMonitor(NotNullPtr<Net::SocketFactory> sockf, Socket *soc, RAWDataHdlr hdlr, AnyType userData, UOSInt threadCnt)
+Net::SocketMonitor::SocketMonitor(NN<Net::SocketFactory> sockf, Socket *soc, RAWDataHdlr hdlr, AnyType userData, UOSInt threadCnt)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;

@@ -27,7 +27,7 @@ Int32 Parser::FileParser::HEIFParser::GetName()
 	return *(Int32*)"HEIF";
 }
 
-void Parser::FileParser::HEIFParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::HEIFParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
@@ -338,7 +338,7 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 			struct heif_error error = heif_image_handle_get_raw_color_profile(imgHdlr, buff.Ptr());
 			if (error.code == heif_error_Ok)
 			{
-				NotNullPtr<Media::ICCProfile> icc;
+				NN<Media::ICCProfile> icc;
 				if (Media::ICCProfile::Parse(buff).SetTo(icc))
 				{
 					icc->SetToColorProfile(simg->info.color);
@@ -371,7 +371,7 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 				struct heif_error error = heif_image_handle_get_metadata(imgHdlr, metaIds[i], exifData);
 				if (error.code == heif_error_Ok)
 				{
-					NotNullPtr<Media::EXIFData> exif;
+					NN<Media::EXIFData> exif;
 					if (Media::EXIFData::ParseExif(exifData, (UOSInt)exifSize).SetTo(exif))
 					{
 						if (removeRotate)
@@ -399,7 +399,7 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 	return simg;
 }
 
-IO::ParsedObject *Parser::FileParser::HEIFParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::HEIFParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (ReadNInt32(&hdr[4]) != *(Int32*)"ftyp" || (ReadNInt32(&hdr[8]) != *(Int32*)"mif1" && ReadNInt32(&hdr[8]) != *(Int32*)"heic"))
 		return 0;
@@ -461,7 +461,7 @@ IO::ParsedObject *Parser::FileParser::HEIFParser::ParseFileHdr(NotNullPtr<IO::St
 	return imgList;
 }
 
-Bool Parser::FileParser::HEIFParser::ParseHeaders(NotNullPtr<IO::StreamData> fd, OutParam<Optional<Media::EXIFData>> exif, OutParam<Optional<Text::XMLDocument>> xmf, OutParam<Optional<Media::ICCProfile>> icc, OutParam<UInt32> width, OutParam<UInt32> height)
+Bool Parser::FileParser::HEIFParser::ParseHeaders(NN<IO::StreamData> fd, OutParam<Optional<Media::EXIFData>> exif, OutParam<Optional<Text::XMLDocument>> xmf, OutParam<Optional<Media::ICCProfile>> icc, OutParam<UInt32> width, OutParam<UInt32> height)
 {
 	UInt8 hdr[12];
 	if (fd->GetRealData(0, 12, BYTEARR(hdr)) != 12)

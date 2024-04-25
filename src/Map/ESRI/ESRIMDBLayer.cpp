@@ -11,7 +11,7 @@ Data::FastMap<Int32, const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 	UTF8Char sbuff[512];
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseConn(mutUsage).Ptr();
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (this->currDB->QueryTableData(CSTR_NULL, this->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		Data::FastMap<Int32, const UTF8Char **> *nameArr;
@@ -78,12 +78,12 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseConn(mutUsage).Ptr();
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (this->currDB->QueryTableData(CSTR_NULL, tableName, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		UOSInt i;
 		UOSInt j;
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		i = 0;
 		j = r->ColCount();
 		while (i < j)
@@ -186,7 +186,7 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 	this->currDB = 0;
 }
 
-Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, NotNullPtr<Text::String> sourceName, Text::CString tableName) : Map::MapDrawLayer(sourceName->ToCString(), 0, tableName, Math::CoordinateSystemManager::SRCreateCSysOrDef(srid))
+Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, NN<Text::String> sourceName, Text::CString tableName) : Map::MapDrawLayer(sourceName->ToCString(), 0, tableName, Math::CoordinateSystemManager::SRCreateCSysOrDef(srid))
 {
 	SDEL_STRING(this->layerName);
 	this->Init(conn, srid, tableName);
@@ -218,7 +218,7 @@ Map::DrawLayerType Map::ESRI::ESRIMDBLayer::GetLayerType() const
 	return this->layerType;
 }
 
-UOSInt Map::ESRI::ESRIMDBLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::ESRI::ESRIMDBLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	if (nameArr)
 	{
@@ -234,12 +234,12 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64>
 	return j;
 }
 
-UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	if (nameArr)
 	{
@@ -292,7 +292,7 @@ void Map::ESRI::ESRIMDBLayer::ReleaseNameArr(NameArray *nameArr)
 	DEL_CLASS(names);
 }
 
-Bool Map::ESRI::ESRIMDBLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::ESRI::ESRIMDBLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	Data::FastMap<Int32, const UTF8Char **> *names = (Data::FastMap<Int32, const UTF8Char **> *)nameArr;
 	if (names == 0)
@@ -313,7 +313,7 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetColumnCnt() const
 
 UTF8Char *Map::ESRI::ESRIMDBLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 {
-	NotNullPtr<Text::String> colName;
+	NN<Text::String> colName;
 	if (this->colNames.GetItem(colIndex).SetTo(colName))
 	{
 		return colName->ConcatTo(buff);
@@ -326,7 +326,7 @@ DB::DBUtil::ColType Map::ESRI::ESRIMDBLayer::GetColumnType(UOSInt colIndex, OptO
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::ESRI::ESRIMDBLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Map::ESRI::ESRIMDBLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	return false;
 }
@@ -367,7 +367,7 @@ void Map::ESRI::ESRIMDBLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType 
 {
 }
 
-UOSInt Map::ESRI::ESRIMDBLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt Map::ESRI::ESRIMDBLayer::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -377,15 +377,15 @@ UOSInt Map::ESRI::ESRIMDBLayer::QueryTableNames(Text::CString schemaName, NotNul
 
 Optional<DB::DBReader> Map::ESRI::ESRIMDBLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
-	NotNullPtr<Sync::MutexUsage> mutUsage;
+	NN<Sync::MutexUsage> mutUsage;
 	NEW_CLASSNN(mutUsage, Sync::MutexUsage());
-	NotNullPtr<DB::DBConn> currDB = this->conn->UseConn(mutUsage);
+	NN<DB::DBConn> currDB = this->conn->UseConn(mutUsage);
 	this->currDB = currDB.Ptr();
 	this->lastDB = this->currDB;
-	NotNullPtr<DB::DBReader> rdr;
+	NN<DB::DBReader> rdr;
 	if (this->currDB->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition).SetTo(rdr))
 	{
-		NotNullPtr<Map::ESRI::ESRIMDBReader> r;
+		NN<Map::ESRI::ESRIMDBReader> r;
 		NEW_CLASSNN(r, Map::ESRI::ESRIMDBReader(currDB, rdr, mutUsage));
 		return r;
 	}
@@ -411,7 +411,7 @@ void Map::ESRI::ESRIMDBLayer::CloseReader(DB::DBReader *r)
 	this->currDB = 0;
 }
 
-void Map::ESRI::ESRIMDBLayer::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void Map::ESRI::ESRIMDBLayer::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 	if (this->lastDB)
 	{
@@ -429,7 +429,7 @@ Map::MapDrawLayer::ObjectClass Map::ESRI::ESRIMDBLayer::GetObjectClass() const
 	return Map::MapDrawLayer::OC_ESRI_MDB_LAYER;
 }
 
-Map::ESRI::ESRIMDBReader::ESRIMDBReader(NotNullPtr<DB::DBConn> conn, NotNullPtr<DB::DBReader> r, NotNullPtr<Sync::MutexUsage> mutUsage)
+Map::ESRI::ESRIMDBReader::ESRIMDBReader(NN<DB::DBConn> conn, NN<DB::DBReader> r, NN<Sync::MutexUsage> mutUsage)
 {
 	this->conn = conn;
 	this->r = r;
@@ -472,7 +472,7 @@ WChar *Map::ESRI::ESRIMDBReader::GetStr(UOSInt colIndex, WChar *buff)
 	return this->r->GetStr((colIndex > 0)?(colIndex + 1):colIndex, buff);
 }
 
-Bool Map::ESRI::ESRIMDBReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Map::ESRI::ESRIMDBReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	return this->r->GetStr((colIndex > 0)?(colIndex + 1):colIndex, sb);
 }
@@ -517,7 +517,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMDBReader::GetVector(UOSInt co
 	return this->r->GetVector(colIndex);
 }
 
-Bool Map::ESRI::ESRIMDBReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
+Bool Map::ESRI::ESRIMDBReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 {
 	return this->r->GetUUID(colIndex, uuid);
 }
@@ -537,7 +537,7 @@ DB::DBUtil::ColType Map::ESRI::ESRIMDBReader::GetColType(UOSInt colIndex, OptOut
 	return this->r->GetColType((colIndex > 0)?(colIndex + 1):colIndex, colSize);
 }
 
-Bool Map::ESRI::ESRIMDBReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Map::ESRI::ESRIMDBReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	return this->r->GetColDef((colIndex > 0)?(colIndex + 1):colIndex, colDef);
 }

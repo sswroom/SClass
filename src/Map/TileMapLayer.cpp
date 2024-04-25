@@ -16,10 +16,10 @@
 UInt32 __stdcall Map::TileMapLayer::TaskThread(AnyType userObj)
 {
 	Math::RectAreaDbl bounds;
-	NotNullPtr<Media::ImageList> imgList;
-	NotNullPtr<Media::SharedImage> shimg;
+	NN<Media::ImageList> imgList;
+	NN<Media::SharedImage> shimg;
 	CachedImage *cimg;
-	NotNullPtr<ThreadStat> stat = userObj.GetNN<ThreadStat>();
+	NN<ThreadStat> stat = userObj.GetNN<ThreadStat>();
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("TileMapLayer")), stat->index);
@@ -86,7 +86,7 @@ Int64 Map::TileMapLayer::CoordToId(Math::Coord2D<Int32> tileId)
 	return (((Int64)(UInt32)tileId.x) << 32) | (UInt32)tileId.y;
 }
 
-void Map::TileMapLayer::AddTask(NotNullPtr<CachedImage> cimg)
+void Map::TileMapLayer::AddTask(NN<CachedImage> cimg)
 {
 	Sync::MutexUsage mutUsage(this->taskMut);
 	this->taskQueued.Put(cimg.Ptr());
@@ -95,12 +95,12 @@ void Map::TileMapLayer::AddTask(NotNullPtr<CachedImage> cimg)
 	this->threadNext = (this->threadNext + 1) % this->threadCnt;
 }
 
-void Map::TileMapLayer::CheckCache(NotNullPtr<Data::ArrayListInt64> currIDs)
+void Map::TileMapLayer::CheckCache(NN<Data::ArrayListInt64> currIDs)
 {
 	if (this->lastIds.GetCount() <= 0)
 		return;
 
-	NotNullPtr<CachedImage> cimg;
+	NN<CachedImage> cimg;
 	Data::ArrayListInt64 cacheIds;
 	Data::ArrayListNN<CachedImage> cacheImgs;
 	UOSInt i;
@@ -156,7 +156,7 @@ void Map::TileMapLayer::CheckCache(NotNullPtr<Data::ArrayListInt64> currIDs)
 	idleMutUsage.EndUse();
 }
 
-Map::TileMapLayer::TileMapLayer(NotNullPtr<Map::TileMap> tileMap, NotNullPtr<Parser::ParserList> parsers) : Map::MapDrawLayer(tileMap->GetName(), 0, CSTR_NULL, tileMap->GetCoordinateSystem()->Clone())
+Map::TileMapLayer::TileMapLayer(NN<Map::TileMap> tileMap, NN<Parser::ParserList> parsers) : Map::MapDrawLayer(tileMap->GetName(), 0, CSTR_NULL, tileMap->GetCoordinateSystem()->Clone())
 {
 	this->parsers = parsers;
 	this->tileMap = tileMap;
@@ -202,7 +202,7 @@ Map::TileMapLayer::TileMapLayer(NotNullPtr<Map::TileMap> tileMap, NotNullPtr<Par
 
 Map::TileMapLayer::~TileMapLayer()
 {
-	NotNullPtr<CachedImage> cimg;
+	NN<CachedImage> cimg;
 	UOSInt i;
 	Bool running;
 	Sync::MutexUsage mutUsage(this->updMut);
@@ -253,7 +253,7 @@ Map::TileMapLayer::~TileMapLayer()
 
 void Map::TileMapLayer::SetCurrScale(Double scale)
 {
-	NotNullPtr<CachedImage> cimg;
+	NN<CachedImage> cimg;
 	UOSInt j;
 
 	this->scale = scale;
@@ -285,9 +285,9 @@ void Map::TileMapLayer::SetCurrScale(Double scale)
 	}
 }
 
-NotNullPtr<Map::MapView> Map::TileMapLayer::CreateMapView(Math::Size2DDbl scnSize)
+NN<Map::MapView> Map::TileMapLayer::CreateMapView(Math::Size2DDbl scnSize)
 {
-	NotNullPtr<Map::MapView> view;
+	NN<Map::MapView> view;
 	if (this->tileMap->IsMercatorProj())
 	{
 		NEW_CLASSNN(view, Map::MercatorMapView(scnSize, Math::Coord2DDbl(114.2, 22.4), this->tileMap->GetMaxLevel(), this->tileMap->GetTileSize()));
@@ -305,7 +305,7 @@ NotNullPtr<Map::MapView> Map::TileMapLayer::CreateMapView(Math::Size2DDbl scnSiz
 		}
 		Math::RectAreaDbl bounds;
 		this->tileMap->GetBounds(bounds);
-		NotNullPtr<Math::CoordinateSystem> csys = this->tileMap->GetCoordinateSystem();
+		NN<Math::CoordinateSystem> csys = this->tileMap->GetCoordinateSystem();
 		NEW_CLASSNN(view, Map::LeveledMapView(csys->IsProjected(), scnSize, bounds.GetCenter(), scales));
 		return view;
 	}
@@ -316,7 +316,7 @@ Map::DrawLayerType Map::TileMapLayer::GetLayerType() const
 	return Map::DRAW_LAYER_IMAGE;
 }
 
-UOSInt Map::TileMapLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::TileMapLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	UOSInt retCnt;
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
@@ -339,7 +339,7 @@ UOSInt Map::TileMapLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outAr
 	return retCnt;
 }
 
-UOSInt Map::TileMapLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::TileMapLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	UOSInt retCnt;
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
@@ -363,7 +363,7 @@ UOSInt Map::TileMapLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, 
 	return retCnt;
 }
 
-UOSInt Map::TileMapLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::TileMapLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt retCnt;
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
@@ -396,7 +396,7 @@ void Map::TileMapLayer::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-Bool Map::TileMapLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::TileMapLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	switch (strIndex)
 	{
@@ -458,7 +458,7 @@ DB::DBUtil::ColType Map::TileMapLayer::GetColumnType(UOSInt colIndex, OptOut<UOS
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool Map::TileMapLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Map::TileMapLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -502,14 +502,14 @@ void Map::TileMapLayer::EndGetObject(GetObjectSess *session)
 
 Math::Geometry::Vector2D *Map::TileMapLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
-	NotNullPtr<CachedImage> cimg;
+	NN<CachedImage> cimg;
 	Math::Geometry::VectorImage *vimg;
 	OSInt i;
 	UOSInt k;
 	Media::ImageList *imgList;
-	NotNullPtr<Media::ImageList> nnimgList;
+	NN<Media::ImageList> nnimgList;
 	Math::RectAreaDbl bounds;
-	NotNullPtr<Media::SharedImage> shimg;
+	NN<Media::SharedImage> shimg;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
@@ -586,7 +586,7 @@ Bool Map::TileMapLayer::CanQuery()
 	return this->tileMap->CanQuery();
 }
 
-Bool Map::TileMapLayer::QueryInfos(Math::Coord2DDbl coord, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NotNullPtr<Data::ArrayList<UOSInt>> valueOfstList, NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListNN<Text::String>> valueList)
+Bool Map::TileMapLayer::QueryInfos(Math::Coord2DDbl coord, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayList<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
 {
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
 	return this->tileMap->QueryInfos(coord, level, vecList, valueOfstList, nameList, valueList);
@@ -618,7 +618,7 @@ Bool Map::TileMapLayer::IsCaching(UOSInt level, Int64 imgId)
 {
 	UOSInt i;
 	Bool found = false;
-	NotNullPtr<CachedImage> cimg;
+	NN<CachedImage> cimg;
 	Sync::MutexUsage mutUsage(this->idleMut);
 	i = this->idleImgs.GetCount();
 	while (i-- > 0)
@@ -656,7 +656,7 @@ void Map::TileMapLayer::WaitCache()
 	}
 }
 
-NotNullPtr<Map::TileMap> Map::TileMapLayer::GetTileMap()
+NN<Map::TileMap> Map::TileMapLayer::GetTileMap()
 {
 	return this->tileMap;
 }

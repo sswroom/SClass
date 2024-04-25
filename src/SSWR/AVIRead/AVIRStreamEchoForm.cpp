@@ -7,7 +7,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRStreamEchoForm::OnStreamClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRStreamEchoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamEchoForm>();
+	NN<SSWR::AVIRead::AVIRStreamEchoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamEchoForm>();
 	if (me->stm)
 	{
 		me->StopStream();
@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamEchoForm::OnStreamClicked(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRStreamEchoForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRStreamEchoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamEchoForm>();
+	NN<SSWR::AVIRead::AVIRStreamEchoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamEchoForm>();
 	if (me->remoteClosed)
 	{
 		me->remoteClosed = false;
@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamEchoForm::OnTimerTick(AnyType userObj)
 
 UInt32 __stdcall SSWR::AVIRead::AVIRStreamEchoForm::RecvThread(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRStreamEchoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamEchoForm>();
+	NN<SSWR::AVIRead::AVIRStreamEchoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamEchoForm>();
 	UInt8 buff[2048];
 	UOSInt recvSize;
 	me->threadRunning = true;
@@ -96,7 +96,7 @@ void SSWR::AVIRead::AVIRStreamEchoForm::StopStream()
 	}
 }
 
-SSWR::AVIRead::AVIRStreamEchoForm::AVIRStreamEchoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 200, ui)
+SSWR::AVIRead::AVIRStreamEchoForm::AVIRStreamEchoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 200, ui)
 {
 	this->SetText(CSTR("Stream Echo"));
 	this->SetFont(0, 0, 8.25, false);

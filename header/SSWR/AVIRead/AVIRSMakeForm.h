@@ -19,41 +19,41 @@ namespace SSWR
 		class AVIRSMakeForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIPanel> pnlFile;
-			NotNullPtr<UI::GUILabel> lblFile;
-			NotNullPtr<UI::GUITextBox> txtFile;
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUIPanel> pnlFile;
+			NN<UI::GUILabel> lblFile;
+			NN<UI::GUITextBox> txtFile;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpProgGroup;
-			NotNullPtr<UI::GUIListBox> lbProgGroup;
-			NotNullPtr<UI::GUIHSplitter> hspProgGroup;
-			NotNullPtr<UI::GUIListBox> lbProgGroupItems;
+			NN<UI::GUITabPage> tpProgGroup;
+			NN<UI::GUIListBox> lbProgGroup;
+			NN<UI::GUIHSplitter> hspProgGroup;
+			NN<UI::GUIListBox> lbProgGroupItems;
 
-			NotNullPtr<UI::GUITabPage> tpProg;
-			NotNullPtr<UI::GUIListBox> lbProg;
-			NotNullPtr<UI::GUIHSplitter> hspProg;
-			NotNullPtr<UI::GUIPanel> pnlProg;
-			NotNullPtr<UI::GUITabControl> tcProg;
+			NN<UI::GUITabPage> tpProg;
+			NN<UI::GUIListBox> lbProg;
+			NN<UI::GUIHSplitter> hspProg;
+			NN<UI::GUIPanel> pnlProg;
+			NN<UI::GUITabControl> tcProg;
 
-			NotNullPtr<UI::GUITabPage> tpProgObject;
-			NotNullPtr<UI::GUIListBox> lbProgObject;
+			NN<UI::GUITabPage> tpProgObject;
+			NN<UI::GUIListBox> lbProgObject;
 
-			NotNullPtr<UI::GUITabPage> tpProgHeader;
-			NotNullPtr<UI::GUIListBox> lbProgHeader;
+			NN<UI::GUITabPage> tpProgHeader;
+			NN<UI::GUIListBox> lbProgHeader;
 
-			NotNullPtr<UI::GUITabPage> tpProgSource;
-			NotNullPtr<UI::GUIListBox> lbProgSource;
+			NN<UI::GUITabPage> tpProgSource;
+			NN<UI::GUIListBox> lbProgSource;
 
-			NotNullPtr<UI::GUITabPage> tpConfig;
-			NotNullPtr<UI::GUIListView> lvConfig;
+			NN<UI::GUITabPage> tpConfig;
+			NN<UI::GUIListView> lvConfig;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<IO::SMake> smake;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<IO::SMake> smake;
 
 			static void __stdcall OnProgSelChg(AnyType userObj);
 			static void __stdcall OnProgGroupSelChg(AnyType userObj);
 		public:
-			AVIRSMakeForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::SMake> smake);
+			AVIRSMakeForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::SMake> smake);
 			virtual ~AVIRSMakeForm();
 
 			virtual void OnMonitorChanged();

@@ -1237,7 +1237,7 @@ UOSInt DB::DBUtil::SDBUInt64Leng(UInt64 val, DB::SQLType sqlType)
 UTF8Char *DB::DBUtil::SDBDateTime(UTF8Char *sqlstr, Data::DateTime *dat, DB::SQLType sqlType, Int8 tzQhr)
 {
 	UTF8Char *sptr;
-	NotNullPtr<Data::DateTime> nnDat;
+	NN<Data::DateTime> nnDat;
 	if (!nnDat.Set(dat))
 		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
 	Data::DateTime dt(nnDat);
@@ -1650,7 +1650,7 @@ UOSInt DB::DBUtil::SDBBinLeng(const UInt8 *buff, UOSInt size, DB::SQLType sqlTyp
 
 UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Optional<Math::Geometry::Vector2D> vec, DB::SQLType sqlType, Bool axisAware)
 {
-	NotNullPtr<Math::Geometry::Vector2D> nnvec;
+	NN<Math::Geometry::Vector2D> nnvec;
 	if (!vec.SetTo(nnvec))
 	{
 		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
@@ -1659,7 +1659,7 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Optional<Math::Geometry::Vecto
 	{
 		if (nnvec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Point)
 		{
-			NotNullPtr<Math::Geometry::Point> pt = NotNullPtr<Math::Geometry::Point>::ConvertFrom(nnvec);
+			NN<Math::Geometry::Point> pt = NN<Math::Geometry::Point>::ConvertFrom(nnvec);
 			UInt8 buff[22];
 			WriteUInt32(buff, nnvec->GetSRID());
 			buff[4] = 1;
@@ -1780,7 +1780,7 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Optional<Math::Geometry::Vecto
 
 UOSInt DB::DBUtil::SDBVectorLeng(Optional<Math::Geometry::Vector2D> vec, DB::SQLType sqlType)
 {
-	NotNullPtr<Math::Geometry::Vector2D> nnvec;
+	NN<Math::Geometry::Vector2D> nnvec;
 	if (!vec.SetTo(nnvec))
 	{
 		return 4;
@@ -2920,7 +2920,7 @@ UTF8Char *DB::DBUtil::DB2FieldName(UTF8Char *fieldNameBuff, const UTF8Char *dbNa
 
 UTF8Char *DB::DBUtil::Field2DBName(UTF8Char *dbNameBuff, Optional<Text::String> fieldName)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (fieldName.SetTo(s))
 	{
 		return Field2DBName(dbNameBuff, s->v);

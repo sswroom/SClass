@@ -10,7 +10,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLConnForm::OnOKClicked(AnyType userObj)
 	Text::StringBuilderUTF8 sb3;
 	Text::StringBuilderUTF8 sb4;
 	Text::StringBuilderUTF8 sbPort;
-	NotNullPtr<SSWR::AVIRead::AVIRMySQLConnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMySQLConnForm>();
+	NN<SSWR::AVIRead::AVIRMySQLConnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMySQLConnForm>();
 	me->txtServer->GetText(sb);
 	me->txtUID->GetText(sb2);
 	me->txtPWD->GetText(sb3);
@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLConnForm::OnOKClicked(AnyType userObj)
 	UInt16 port;
 
 	Net::MySQLTCPClient *conn;
-	NotNullPtr<Net::SocketFactory> sockf = me->core->GetSocketFactory();
+	NN<Net::SocketFactory> sockf = me->core->GetSocketFactory();
 	Net::SocketUtil::AddressInfo addr;
 	if (!sbPort.ToUInt16(port))
 	{
@@ -44,11 +44,11 @@ void __stdcall SSWR::AVIRead::AVIRMySQLConnForm::OnOKClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRMySQLConnForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMySQLConnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMySQLConnForm>();
+	NN<SSWR::AVIRead::AVIRMySQLConnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMySQLConnForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRMySQLConnForm::AVIRMySQLConnForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 340, 188, ui)
+SSWR::AVIRead::AVIRMySQLConnForm::AVIRMySQLConnForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 340, 188, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("MySQL Connection"));

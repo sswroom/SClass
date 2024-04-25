@@ -13,7 +13,7 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-Map::SHPData::SHPData(const UInt8 *shpHdr, NotNullPtr<IO::StreamData> data, UInt32 codePage, Math::ArcGISPRJParser *prjParser) : Map::MapDrawLayer(data->GetFullName(), 0, 0, Math::CoordinateSystemManager::CreateDefaultCsys())
+Map::SHPData::SHPData(const UInt8 *shpHdr, NN<IO::StreamData> data, UInt32 codePage, Math::ArcGISPRJParser *prjParser) : Map::MapDrawLayer(data->GetFullName(), 0, 0, Math::CoordinateSystemManager::CreateDefaultCsys())
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -52,7 +52,7 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, NotNullPtr<IO::StreamData> data, UInt
 		this->SetLayerName(CSTRP(&sbuff[i + 1], sptr));
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".prj"));
 	}
-	NotNullPtr<Math::CoordinateSystem> csys;
+	NN<Math::CoordinateSystem> csys;
 	if (csys.Set(prjParser->ParsePRJFile({sbuff, (UOSInt)(sptr - sbuff)})))
 	{
 		this->SetCoordinateSystem(csys);	
@@ -396,7 +396,7 @@ Map::DrawLayerType Map::SHPData::GetLayerType() const
 	return this->layerType;
 }
 
-UOSInt Map::SHPData::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::SHPData::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	UOSInt i;
 	UOSInt j;
@@ -428,12 +428,12 @@ UOSInt Map::SHPData::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, Na
 	}
 }
 
-UOSInt Map::SHPData::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::SHPData::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::SHPData::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::SHPData::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt retCnt = 0;
 	UOSInt i = 0;
@@ -501,7 +501,7 @@ void Map::SHPData::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-Bool Map::SHPData::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::SHPData::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	Bool ret = this->dbf->GetRecord(sb, (UOSInt)id, strIndex);
 	sb->Trim();
@@ -523,7 +523,7 @@ DB::DBUtil::ColType Map::SHPData::GetColumnType(UOSInt colIndex, OptOut<UOSInt> 
 	return this->dbf->GetColumnType(colIndex, colSize);
 }
 
-Bool Map::SHPData::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Map::SHPData::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	return this->dbf->GetColumnDef(colIndex, colDef);
 }
@@ -551,7 +551,7 @@ void Map::SHPData::EndGetObject(GetObjectSess *session)
 Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
 	Map::SHPData::RecHdr *rec;
-	NotNullPtr<Sync::Mutex> mut;
+	NN<Sync::Mutex> mut;
 
 	UInt32 srid = this->csys->GetSRID();
 	if (this->layerType == Map::DRAW_LAYER_POINT)
@@ -640,7 +640,7 @@ Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session,
 	}
 }
 
-UOSInt Map::SHPData::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt Map::SHPData::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	return this->dbf->QueryTableNames(schemaName, names);
 }
@@ -655,12 +655,12 @@ DB::TableDef *Map::SHPData::GetTableDef(Text::CString schemaName, Text::CString 
 	return this->dbf->GetTableDef(schemaName, tableName);
 }
 
-void Map::SHPData::CloseReader(NotNullPtr<DB::DBReader> r)
+void Map::SHPData::CloseReader(NN<DB::DBReader> r)
 {
 	this->dbf->CloseReader(r);
 }
 
-void Map::SHPData::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void Map::SHPData::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 	this->dbf->GetLastErrorMsg(str);
 

@@ -30,8 +30,8 @@ void SSWR::AVIRead::AVIRGISLineEditForm::UpdatePreview()
 	UOSInt h = this->prevImage->GetHeight();
 	Double dpi = this->prevImage->GetHDPI();
 
-	NotNullPtr<Media::DrawPen> p;
-	NotNullPtr<Media::DrawBrush> b;
+	NN<Media::DrawPen> p;
+	NN<Media::DrawBrush> b;
 	b = this->prevImage->NewBrushARGB(Media::ColorConv::ConvARGB(srcProfile, destProfile, this->colorSess.Ptr(), 0xffc0c0c0));
 	this->prevImage->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(w), UOSInt2Double(h)), 0, b);
 	this->prevImage->DelBrush(b);
@@ -67,7 +67,7 @@ void SSWR::AVIRead::AVIRGISLineEditForm::UpdatePreview()
 
 void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::NewLayerClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
+	NN<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
 	LineLayer *lyr;
 	lyr = MemAlloc(LineLayer, 1);
 	lyr->color = 0xff000000;
@@ -84,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::NewLayerClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::RemoveLayerClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
+	NN<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
 	UOSInt i = me->lbLayer->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
@@ -97,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::RemoveLayerClicked(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::LayerSelChanged(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
+	NN<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
 	UOSInt i = me->lbLayer->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
@@ -132,7 +132,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::LayerSelChanged(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ThickChanged(AnyType userObj)
 {
 	UTF8Char sbuff[16];
-	NotNullPtr<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
+	NN<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
 	if (me->currLayer && !me->thickChging)
 	{
 		me->thickChging = true;
@@ -151,7 +151,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ThickChanged(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::OnThickScrolled(AnyType userObj, UOSInt newPos)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
+	NN<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	if (me->currLayer && !me->thickChging)
@@ -167,7 +167,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::OnThickScrolled(AnyType userO
 
 Bool __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
+	NN<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT && me->currLayer)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
@@ -189,7 +189,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISLineEditForm::ColorClicked(AnyType userObj,
 
 void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::PatternChanged(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
+	NN<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
 	UOSInt npattern;
 	UTF8Char sbuff[256];
 	UTF8Char *sarr[32];
@@ -226,7 +226,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::PatternChanged(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::OKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
+	NN<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
 	LineLayer *lyr;
 	Text::StringBuilderUTF8 sb;
 	UOSInt i = me->lineLayers->GetCount();
@@ -257,7 +257,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::OKClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::CancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
+	NN<SSWR::AVIRead::AVIRGISLineEditForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineEditForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
@@ -270,7 +270,7 @@ void SSWR::AVIRead::AVIRGISLineEditForm::FreeLayer(LineLayer *lyr)
 	MemFree(lyr);
 }
 
-SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, NotNullPtr<Media::DrawEngine> eng, UOSInt lineStyle) : UI::GUIForm(parent, 462, 334, ui)
+SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Media::DrawEngine> eng, UOSInt lineStyle) : UI::GUIForm(parent, 462, 334, ui)
 {
 	this->core = core;
 	this->env = env;
@@ -416,7 +416,7 @@ SSWR::AVIRead::AVIRGISLineEditForm::~AVIRGISLineEditForm()
 		FreeLayer(this->lineLayers->GetItem(i));
 	}
 	DEL_CLASS(this->lineLayers);
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->prevImage))
 	{
 		this->eng->DeleteImage(img);
@@ -437,7 +437,7 @@ void SSWR::AVIRead::AVIRGISLineEditForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	Math::Size2D<UOSInt> sz = this->pbPreview->GetSizeP();
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (img.Set(this->prevImage))
 	{
 		this->eng->DeleteImage(img);
@@ -456,11 +456,11 @@ void SSWR::AVIRead::AVIRGISLineEditForm::OnMonitorChanged()
 	}
 }
 
-void SSWR::AVIRead::AVIRGISLineEditForm::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
+void SSWR::AVIRead::AVIRGISLineEditForm::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void SSWR::AVIRead::AVIRGISLineEditForm::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void SSWR::AVIRead::AVIRGISLineEditForm::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	if (this->currLayer)
 	{

@@ -8,7 +8,7 @@
 
 UInt32 __stdcall Media::M2VFile::PlayThread(AnyType userData)
 {
-	NotNullPtr<Media::M2VFile> me = userData.GetNN<Media::M2VFile>();
+	NN<Media::M2VFile> me = userData.GetNN<Media::M2VFile>();
 	UOSInt buffSize;
 	me->playStarted = true;
 	me->playing = true;
@@ -32,7 +32,7 @@ UInt32 __stdcall Media::M2VFile::PlayThread(AnyType userData)
 	return 0;
 }
 
-Media::M2VFile::M2VFile(NotNullPtr<IO::StreamData> stmData) : Media::MediaFile(stmData->GetFullName()), readBuff(1048576)
+Media::M2VFile::M2VFile(NN<IO::StreamData> stmData) : Media::MediaFile(stmData->GetFullName()), readBuff(1048576)
 {
 	this->stmData = stmData->GetPartialData(0, this->fleng = stmData->GetDataSize());
 	this->readOfst = 0;

@@ -11,7 +11,7 @@
 
 UInt32 __stdcall IO::TVCtrl::NECTVControl::RecvThread(AnyType userObj)
 {
-	NotNullPtr<IO::TVCtrl::NECTVControl> me = userObj.GetNN<IO::TVCtrl::NECTVControl>();
+	NN<IO::TVCtrl::NECTVControl> me = userObj.GetNN<IO::TVCtrl::NECTVControl>();
 	UInt8 buff[256];
 	UOSInt recvSize;
 	me->recvRunning = true;

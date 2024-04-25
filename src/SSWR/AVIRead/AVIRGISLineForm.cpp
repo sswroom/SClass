@@ -10,7 +10,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnThickChanged(AnyType userObj, U
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<SSWR::AVIRead::AVIRGISLineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineForm>();
+	NN<SSWR::AVIRead::AVIRGISLineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineForm>();
 	me->lineThick = UOSInt2Double(newPos) * 0.1;
 	sptr = Text::StrDouble(sbuff, me->lineThick);
 	me->lblThickV->SetText(CSTRP(sbuff, sptr));
@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnThickChanged(AnyType userObj, U
 
 Bool __stdcall SSWR::AVIRead::AVIRGISLineForm::OnColorDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISLineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineForm>();
+	NN<SSWR::AVIRead::AVIRGISLineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineForm>();
 	if (btn == UI::GUIControl::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
@@ -38,20 +38,20 @@ Bool __stdcall SSWR::AVIRead::AVIRGISLineForm::OnColorDown(AnyType userObj, Math
 
 void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISLineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineForm>();
+	NN<SSWR::AVIRead::AVIRGISLineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineForm>();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISLineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineForm>();
+	NN<SSWR::AVIRead::AVIRGISLineForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISLineForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
 void SSWR::AVIRead::AVIRGISLineForm::UpdatePreview()
 {
 	Math::Size2D<UOSInt> sz;
-	NotNullPtr<Media::DrawImage> dimg;
+	NN<Media::DrawImage> dimg;
 	sz = this->pbPreview->GetSizeP();
 	if (dimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 	{
@@ -65,7 +65,7 @@ void SSWR::AVIRead::AVIRGISLineForm::UpdatePreview()
 	}
 }
 
-SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::DrawEngine> eng, Double lineThick, UInt32 lineColor) : UI::GUIForm(parent, 462, 334, ui)
+SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::DrawEngine> eng, Double lineThick, UInt32 lineColor) : UI::GUIForm(parent, 462, 334, ui)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -133,11 +133,11 @@ void SSWR::AVIRead::AVIRGISLineForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRGISLineForm::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
+void SSWR::AVIRead::AVIRGISLineForm::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void SSWR::AVIRead::AVIRGISLineForm::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void SSWR::AVIRead::AVIRGISLineForm::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	this->colorConv->RGBParamChanged(rgbParam);
 	this->pbColor->SetBGColor(this->colorConv->ConvRGB8(this->lineColor));

@@ -20,11 +20,11 @@ Int32 Exporter::WebPExporter::GetName()
 	return *(Int32*)"WEBP";
 }
 
-IO::FileExporter::SupportType Exporter::WebPExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
+IO::FileExporter::SupportType Exporter::WebPExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
-	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
+	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
 	return IO::FileExporter::SupportType::NormalStream;
@@ -41,15 +41,15 @@ Bool Exporter::WebPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF
 	return false;
 }
 
-Bool Exporter::WebPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::WebPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return false;
-	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
+	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return false;
 	Int32 quality;
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (param.SetTo(para))
 	{
 		quality = *(Int32*)para.Ptr();
@@ -125,7 +125,7 @@ Bool Exporter::WebPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 	}
 	else
 	{
-		NotNullPtr<Media::StaticImage> simg = img->CreateStaticImage();
+		NN<Media::StaticImage> simg = img->CreateStaticImage();
 		simg->To32bpp();
 		UOSInt bpl = simg->GetDataBpl();
 		if (quality < 0)
@@ -152,7 +152,7 @@ Bool Exporter::WebPExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 			data.size = (size_t)ReadMUInt32(icc);
 			WebPMuxSetChunk(mux, "ICCP", &data, 0);
 		}
-		NotNullPtr<Media::EXIFData> exif;
+		NN<Media::EXIFData> exif;
 		if (img->exif.SetTo(exif))
 		{
 			UInt64 exifSize;
@@ -189,7 +189,7 @@ UOSInt Exporter::WebPExporter::GetParamCnt()
 	return 1;
 }
 
-Optional<IO::FileExporter::ParamData> Exporter::WebPExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
+Optional<IO::FileExporter::ParamData> Exporter::WebPExporter::CreateParam(NN<IO::ParsedObject> pobj)
 {
 	Int32 *val = MemAlloc(Int32, 1);
 	*val = 100;
@@ -198,14 +198,14 @@ Optional<IO::FileExporter::ParamData> Exporter::WebPExporter::CreateParam(NotNul
 
 void Exporter::WebPExporter::DeleteParam(Optional<ParamData> param)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (param.SetTo(para))
 	{
 		MemFree(para.Ptr());
 	}
 }
 
-Bool Exporter::WebPExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> info)
+Bool Exporter::WebPExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
 {
 	if (index == 0)
 	{
@@ -219,7 +219,7 @@ Bool Exporter::WebPExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> in
 
 Bool Exporter::WebPExporter::SetParamInt32(Optional<ParamData> param, UOSInt index, Int32 val)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
 	{
 		if (val <= 100)
@@ -234,7 +234,7 @@ Bool Exporter::WebPExporter::SetParamInt32(Optional<ParamData> param, UOSInt ind
 
 Int32 Exporter::WebPExporter::GetParamInt32(Optional<ParamData> param, UOSInt index)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
 	{
 		return *(Int32*)para.Ptr();

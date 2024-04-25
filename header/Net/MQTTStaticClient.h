@@ -23,13 +23,13 @@ namespace Net
 		Sync::Mutex packetIdMut;
 		IO::Writer *errLog;
 
-		NotNullPtr<Text::String> clientId;
+		NN<Text::String> clientId;
 		Sync::Mutex hdlrMut;
 		Data::ArrayList<Data::CallbackStorage<Net::MQTTConn::PublishMessageHdlr>> hdlrList;
 		Sync::Mutex topicMut;
 		Data::ArrayList<Text::String*> topicList;
 
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;
 		Data::Duration connTimeout;
 		Text::String *host;
@@ -38,15 +38,15 @@ namespace Net
 		Text::String *password;
 		Bool webSocket;
 
-		static void __stdcall KAThread(NotNullPtr<Sync::Thread> thread);
+		static void __stdcall KAThread(NN<Sync::Thread> thread);
 		static void __stdcall OnDisconnect(AnyType userObj);
 		void Connect();
 		UInt16 GetNextPacketId();
 
-		void Init(NotNullPtr<Net::SocketFactory> sockf, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType hdlrObj, IO::Writer *errLog);
+		void Init(NN<Net::SocketFactory> sockf, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType hdlrObj, IO::Writer *errLog);
 	public:
-		MQTTStaticClient(NotNullPtr<Net::SocketFactory> sockf, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType hdlrObj, IO::Writer *errLog);
-		MQTTStaticClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType userObj, UInt16 kaSeconds, IO::Writer *errLog);
+		MQTTStaticClient(NN<Net::SocketFactory> sockf, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType hdlrObj, IO::Writer *errLog);
+		MQTTStaticClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket, Net::MQTTConn::PublishMessageHdlr hdlr, AnyType userObj, UInt16 kaSeconds, IO::Writer *errLog);
 		virtual ~MQTTStaticClient();
 
 		Bool IsStarted();

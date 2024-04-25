@@ -3,9 +3,9 @@
 #include "IO/FileStream.h"
 #include "SSWR/AVIRead/AVIRFileTextEncryptForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFileTextEncryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileTextEncryptForm>();
+	NN<SSWR::AVIRead::AVIRFileTextEncryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileTextEncryptForm>();
 	if (files.GetCount() > 0)
 	{
 		me->txtSrcFile->SetText(files[0]->ToCString());
@@ -15,10 +15,10 @@ void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnFileDrop(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnConvertClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFileTextEncryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileTextEncryptForm>();
+	NN<SSWR::AVIRead::AVIRFileTextEncryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileTextEncryptForm>();
 	Text::StringBuilderUTF8 sbSrc;
 	Text::StringBuilderUTF8 sbDest;
-	NotNullPtr<Text::TextBinEnc::ITextBinEnc> destEnc;
+	NN<Text::TextBinEnc::ITextBinEnc> destEnc;
 	me->txtSrcFile->GetText(sbSrc);
 	me->txtDestFile->GetText(sbDest);
 	if (!me->cboEncrypt->GetSelectedItem().GetOpt<Text::TextBinEnc::ITextBinEnc>().SetTo(destEnc))
@@ -86,7 +86,7 @@ void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnConvertClicked(AnyType 
 
 void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnDecryptChange(AnyType userObj, Bool newState)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFileTextEncryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileTextEncryptForm>();
+	NN<SSWR::AVIRead::AVIRFileTextEncryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileTextEncryptForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtSrcFile->GetText(sb);
 	if (sb.leng > 0)
@@ -111,7 +111,7 @@ void SSWR::AVIRead::AVIRFileTextEncryptForm::GenDestFileName(Text::CStringNN fil
 	this->txtDestFile->SetText(sb.ToCString());
 }
 
-SSWR::AVIRead::AVIRFileTextEncryptForm::AVIRFileTextEncryptForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 144, ui)
+SSWR::AVIRead::AVIRFileTextEncryptForm::AVIRFileTextEncryptForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 144, ui)
 {
 	this->SetText(CSTR("File Text Encrypt"));
 	this->SetFont(0, 0, 8.25, false);

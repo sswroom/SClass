@@ -16,7 +16,7 @@ class ProcMonitorCore
 private:
 	struct ProgInfo
 	{
-		NotNullPtr<Text::String> progName;
+		NN<Text::String> progName;
 		Text::String *progPath;
 		UOSInt procId;
 		Data::Timestamp lastSent;
@@ -58,7 +58,7 @@ private:
 
 	Bool SearchProcId(ProgInfo *prog)
 	{
-		NotNullPtr<Text::String> progPath;
+		NN<Text::String> progPath;
 		if (!progPath.Set(prog->progPath))
 			return false;
 
@@ -159,7 +159,7 @@ private:
 
 	static void __stdcall OnTimerTick(AnyType userObj)
 	{
-		NotNullPtr<ProcMonitorCore> me = userObj.GetNN<ProcMonitorCore>();
+		NN<ProcMonitorCore> me = userObj.GetNN<ProcMonitorCore>();
 		UOSInt i;
 		ProgInfo *prog;
 		i = me->progList.GetCount();
@@ -203,7 +203,7 @@ private:
 		}
 	}
 
-	static void __stdcall CheckThread(NotNullPtr<Sync::Thread> thread)
+	static void __stdcall CheckThread(NN<Sync::Thread> thread)
 	{
 		while (!thread->IsStopping())
 		{
@@ -212,7 +212,7 @@ private:
 		}
 	}
 
-	static void __stdcall OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+	static void __stdcall OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 	{
 
 	}
@@ -241,7 +241,7 @@ public:
 		}
 	}
 
-	void Run(NotNullPtr<Core::IProgControl> progCtrl)
+	void Run(NN<Core::IProgControl> progCtrl)
 	{
 		if (this->progList.GetCount() > 0)
 		{
@@ -255,7 +255,7 @@ public:
 	}
 };
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	ProcMonitorCore core;
 	core.Run(progCtrl);

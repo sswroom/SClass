@@ -13,9 +13,9 @@
 
 #include <stdio.h>
 
-void __stdcall Media::V4LVideoCapture::PlayThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall Media::V4LVideoCapture::PlayThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<Media::V4LVideoCapture> me = thread->GetUserObj().GetNN<Media::V4LVideoCapture>();
+	NN<Media::V4LVideoCapture> me = thread->GetUserObj().GetNN<Media::V4LVideoCapture>();
 	Sync::ThreadUtil::SetName(CSTR("V4LVideoCap"));
 	struct timeval tv;
 	fd_set fds;
@@ -139,7 +139,7 @@ Text::CStringNN Media::V4LVideoCapture::GetFilterName()
 	return CSTR("V4LVideoCapture");
 }
 
-Bool Media::V4LVideoCapture::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::V4LVideoCapture::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	struct v4l2_format fmt;
 	MemClear(&fmt, sizeof(fmt));
@@ -350,7 +350,7 @@ UOSInt Media::V4LVideoCapture::GetSupportedFormats(VideoFormat *fmtArr, UOSInt m
 	return ret;
 }
 
-void Media::V4LVideoCapture::GetInfo(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Media::V4LVideoCapture::GetInfo(NN<Text::StringBuilderUTF8> sb)
 {
 	struct v4l2_capability video_cap;
 	sb->AppendC(UTF8STRC("DevPath: /dev/video"));

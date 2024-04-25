@@ -6,7 +6,7 @@
 #include "Text/StringBuilderUTF8.h"
 
 
-NotNullPtr<Text::String> DB::MySQLConn::GetConnServer()
+NN<Text::String> DB::MySQLConn::GetConnServer()
 {
 	return this->server;
 }
@@ -31,9 +31,9 @@ Optional<Text::String> DB::MySQLConn::GetConnPWD()
 	return 0;
 }*/
 
-DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<Text::String> serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
+DB::DBTool *DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, NN<Text::String> serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
-	NotNullPtr<Net::MySQLTCPClient> conn;
+	NN<Net::MySQLTCPClient> conn;
 	DB::DBTool *db;
 	Net::SocketUtil::AddressInfo addr;
 	if (!sockf->DNSResolveIP(serverName->ToCString(), addr))
@@ -74,9 +74,9 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, No
 	}
 }
 
-DB::DBTool *DB::MySQLConn::CreateDBTool(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
+DB::DBTool *DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
-	NotNullPtr<Net::MySQLTCPClient> conn;
+	NN<Net::MySQLTCPClient> conn;
 	DB::DBTool *db;
 	Net::SocketUtil::AddressInfo addr;
 	if (!sockf->DNSResolveIP(serverName, addr))

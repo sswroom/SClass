@@ -14,7 +14,7 @@ namespace UI
 	class GUICustomDraw : public GUIControl
 	{
 	public:
-		NotNullPtr<Media::DrawEngine> eng;
+		NN<Media::DrawEngine> eng;
 	private:
 		IO::Library *lib;
 		void *clsData;
@@ -32,7 +32,7 @@ namespace UI
 		void InitJS();
 
 	public:
-		GUICustomDraw(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng);
+		GUICustomDraw(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng);
 		virtual ~GUICustomDraw();
 
 		virtual Text::CStringNN GetObjectClass() const;
@@ -51,7 +51,7 @@ namespace UI
 		virtual Bool OnKeyDown(UI::GUIControl::GUIKey key); //true = handled
 
 		virtual void OnTimerTick();
-		virtual void OnDraw(NotNullPtr<Media::DrawImage> img);
+		virtual void OnDraw(NN<Media::DrawImage> img);
 	};
 }
 #endif

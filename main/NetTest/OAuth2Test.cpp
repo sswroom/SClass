@@ -6,11 +6,11 @@
 #include "Net/WebServer/PrintLogWebHandler.h"
 #include "Net/WebServer/WebListener.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
-	NotNullPtr<Net::WebServer::OAuth2Handler> oauth2Hdlr;
-	NotNullPtr<Net::WebServer::PrintLogWebHandler> hdlr;
+	NN<Net::WebServer::OAuth2Handler> oauth2Hdlr;
+	NN<Net::WebServer::PrintLogWebHandler> hdlr;
 	Net::WebServer::WebListener *listener;
 	Net::OSSocketFactory sockf(false);
 	NEW_CLASSNN(oauth2Hdlr, Net::WebServer::OAuth2Handler(CSTR("/auth"), CSTR("/token"), CSTR("/userinfo")));

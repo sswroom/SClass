@@ -26,28 +26,28 @@ namespace SSWR
 
 			struct FileItem
 			{
-				NotNullPtr<Text::String> fileName;
+				NN<Text::String> fileName;
 				UInt64 fileSize;
 				FileStatus status;
 			};
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayList<FileItem *> *items;
 
-			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			NotNullPtr<UI::GUILabel> lblUsername;
-			NotNullPtr<UI::GUITextBox> txtUsername;
-			NotNullPtr<UI::GUILabel> lblPassword;
-			NotNullPtr<UI::GUITextBox> txtPassword;
-			NotNullPtr<UI::GUICheckBox> chkErrorCont;
-			NotNullPtr<UI::GUIButton> btnUpload;
-			NotNullPtr<UI::GUIListView> lvStatus;
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUILabel> lblUsername;
+			NN<UI::GUITextBox> txtUsername;
+			NN<UI::GUILabel> lblPassword;
+			NN<UI::GUITextBox> txtPassword;
+			NN<UI::GUICheckBox> chkErrorCont;
+			NN<UI::GUIButton> btnUpload;
+			NN<UI::GUIListView> lvStatus;
 
-			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnUploadClicked(AnyType userObj);
 			static void FreeItem(FileItem *item);
 		public:
-			AVIRImageUploaderForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRImageUploaderForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRImageUploaderForm();
 
 			virtual void OnMonitorChanged();

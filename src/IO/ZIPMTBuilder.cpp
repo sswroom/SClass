@@ -5,9 +5,9 @@
 #if defined(VERBOSE)
 #include <stdio.h>
 #endif
-void __stdcall IO::ZIPMTBuilder::ThreadProc(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::ZIPMTBuilder::ThreadProc(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::ZIPMTBuilder> me = thread->GetUserObj().GetNN<IO::ZIPMTBuilder>();
+	NN<IO::ZIPMTBuilder> me = thread->GetUserObj().GetNN<IO::ZIPMTBuilder>();
 	FileTask *task;
 	while (!thread->IsStopping())
 	{
@@ -59,7 +59,7 @@ void IO::ZIPMTBuilder::AddTask(FileTask *task)
 	}
 }
 
-IO::ZIPMTBuilder::ZIPMTBuilder(NotNullPtr<IO::SeekableStream> stm, IO::ZIPOS os) : zip(stm, os)
+IO::ZIPMTBuilder::ZIPMTBuilder(NN<IO::SeekableStream> stm, IO::ZIPOS os) : zip(stm, os)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -92,7 +92,7 @@ IO::ZIPMTBuilder::~ZIPMTBuilder()
 	MemFree(this->threads);
 }
 
-Bool IO::ZIPMTBuilder::AddFile(Text::CStringNN fileName, NotNullPtr<IO::SeekableStream> stm, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel, UInt32 unixAttr)
+Bool IO::ZIPMTBuilder::AddFile(Text::CStringNN fileName, NN<IO::SeekableStream> stm, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel, UInt32 unixAttr)
 {
 	FileTask *task = MemAlloc(FileTask, 1);
 	task->fileSize = (UOSInt)stm->GetLength();
@@ -124,7 +124,7 @@ Bool IO::ZIPMTBuilder::AddFile(Text::CStringNN fileName, NotNullPtr<IO::Seekable
 	return true;
 }
 
-Bool IO::ZIPMTBuilder::AddFile(Text::CStringNN fileName, NotNullPtr<IO::StreamData> fd, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel, UInt32 unixAttr)
+Bool IO::ZIPMTBuilder::AddFile(Text::CStringNN fileName, NN<IO::StreamData> fd, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel, UInt32 unixAttr)
 {
 	UOSInt readSize;
 	FileTask *task = MemAlloc(FileTask, 1);

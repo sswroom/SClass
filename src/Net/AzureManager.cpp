@@ -5,7 +5,7 @@
 #include "Text/JSON.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Net::AzureManager::AzureManager(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl)
+Net::AzureManager::AzureManager(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -44,8 +44,8 @@ Crypto::Cert::X509Key *Net::AzureManager::CreateKey(Text::CStringNN kid)
 					while (i < j)
 					{
 						Text::JSONBase *key = keys->GetArrayValue(i);
-						NotNullPtr<Text::String> kid;
-						NotNullPtr<Text::String> cert;
+						NN<Text::String> kid;
+						NN<Text::String> cert;
 						if (key->GetValueString(CSTR("kid")).SetTo(kid) && key->GetValueString(CSTR("x5c[0]")).SetTo(cert))
 						{
 							this->keyMap->PutNN(kid, cert->Clone().Ptr());

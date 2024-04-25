@@ -31,7 +31,7 @@ OSInt IO::SDCardInfo::GetCSD(UInt8 *csd)
 	return 16;
 }
 
-NotNullPtr<Text::String> IO::SDCardInfo::GetName() const
+NN<Text::String> IO::SDCardInfo::GetName() const
 {
 	return this->name;
 }

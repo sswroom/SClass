@@ -11,7 +11,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter *console;
 	UOSInt argc;
@@ -38,7 +38,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 			Text::StringBuilderUTF8 sb;
 			Int32 httpStatus;
 			Optional<Net::SSLEngine> ssl;
-			NotNullPtr<Net::HTTPClient> cli;
+			NN<Net::HTTPClient> cli;
 			Net::OSSocketFactory sockf(true);
 			ssl = Net::SSLEngineFactory::Create(sockf, true);
 			cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR("Test/1.0"), false, url.StartsWith(UTF8STRC("https://")));

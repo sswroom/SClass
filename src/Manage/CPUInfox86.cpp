@@ -217,7 +217,7 @@ Bool Manage::CPUInfo::SupportIntelDTS()
 }
 
 
-Bool Manage::CPUInfo::GetInfoValue(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Manage::CPUInfo::GetInfoValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	Int32 cpuInfo[4];
 	switch (index)
@@ -450,7 +450,7 @@ UOSInt Manage::CPUInfo::GetInfoCnt()
 	return this->infoCnt;
 }
 
-Bool Manage::CPUInfo::GetInfoName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Manage::CPUInfo::GetInfoName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	if (index >= this->infoCnt)
 		return false;
@@ -1072,7 +1072,7 @@ Text::CStringNN Manage::CPUInfo::GetFeatureDesc(UOSInt index)
 	return desc[index];
 }
 
-void Manage::CPUInfo::AppendNameInfo10(UInt32 ecxv, UInt32 edxv, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Manage::CPUInfo::AppendNameInfo10(UInt32 ecxv, UInt32 edxv, NN<Text::StringBuilderUTF8> sb)
 {
 	if (edxv & 1)
 		sb->AppendC(UTF8STRC("FPU "));
@@ -1130,7 +1130,7 @@ void Manage::CPUInfo::AppendNameInfo10(UInt32 ecxv, UInt32 edxv, NotNullPtr<Text
 		sb->AppendC(UTF8STRC("RDRAND "));
 }
 
-void Manage::CPUInfo::AppendNameInfo11(UInt32 ecxv, UInt32 edxv, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Manage::CPUInfo::AppendNameInfo11(UInt32 ecxv, UInt32 edxv, NN<Text::StringBuilderUTF8> sb)
 {
 	if (edxv & 2)
 		sb->AppendC(UTF8STRC("VME "));

@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIReadCE::AVIRCEProcInfoForm::OnProcSelChg(void *userObj)
 	{
 		Text::StringBuilderUTF8 sb;
 		me->currProc = procInfo->procId;
-		NotNullPtr<Manage::Process> procress;
+		NN<Manage::Process> procress;
 
 		NEW_CLASSNN(procress, Manage::Process(procInfo->procId, false));
 		me->currProcObj = procress.Ptr();
@@ -249,7 +249,7 @@ void SSWR::AVIReadCE::AVIRCEProcInfoForm::UpdateProcModules()
 	{
 		Manage::Process proc(this->currProc, false);
 		Data::ArrayListNN<Manage::ModuleInfo> modList;
-		NotNullPtr<Manage::ModuleInfo> module;
+		NN<Manage::ModuleInfo> module;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		UOSInt i;
@@ -261,7 +261,7 @@ void SSWR::AVIReadCE::AVIRCEProcInfoForm::UpdateProcModules()
 		proc.GetModules(modList);
 
 		this->lvDetModule->ClearItems();
-		Data::ArrayIterator<NotNullPtr<Manage::ModuleInfo>> it = modList.Iterator();
+		Data::ArrayIterator<NN<Manage::ModuleInfo>> it = modList.Iterator();
 		while (it.HasNext())
 		{
 			module = it.Next();
@@ -411,7 +411,7 @@ void SSWR::AVIReadCE::AVIRCEProcInfoForm::UpdateProcHeapDetail(Int32 heapId)
 	
 }
 
-SSWR::AVIReadCE::AVIRCEProcInfoForm::AVIRCEProcInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 240, 320, ui)
+SSWR::AVIReadCE::AVIRCEProcInfoForm::AVIRCEProcInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 240, 320, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Process Info"));

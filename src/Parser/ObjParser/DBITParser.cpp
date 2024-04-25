@@ -18,7 +18,7 @@ Int32 Parser::ObjParser::DBITParser::GetName()
 	return *(Int32*)"DBIT";
 }
 
-void Parser::ObjParser::DBITParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::ObjParser::DBITParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::MapLayer)
 	{
@@ -31,16 +31,16 @@ IO::ParserType Parser::ObjParser::DBITParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(NotNullPtr<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(NN<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	NotNullPtr<DB::ReadingDB> db;
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::ReadingDB> db;
+	NN<DB::DBReader> r;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Bool valid = false;
 	if (pobj->GetParserType() != IO::ParserType::ReadingDB)
 		return 0;
-	db = NotNullPtr<DB::ReadingDB>::ConvertFrom(pobj);
+	db = NN<DB::ReadingDB>::ConvertFrom(pobj);
 	if (db->QueryTableData(CSTR_NULL, CSTR("IT_TGVLib"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		valid = true;

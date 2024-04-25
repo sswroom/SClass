@@ -6,10 +6,10 @@
 
 void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnBrowseClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRAccessConnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAccessConnForm>();
+	NN<SSWR::AVIRead::AVIRAccessConnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAccessConnForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtFileName->GetText(sb);
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AccessConn", false);
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"AccessConn", false);
 	dlg->AddFilter(CSTR("*.mdb"), CSTR("MDB File"));
 	dlg->AddFilter(CSTR("*.accdb"), CSTR("Access DB File"));
 	dlg->SetFileName(sb.ToCString());
@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnBrowseClicked(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRAccessConnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAccessConnForm>();
+	NN<SSWR::AVIRead::AVIRAccessConnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAccessConnForm>();
 	Text::StringBuilderUTF8 sbFileName;
 	me->txtFileName->GetText(sbFileName);
 	if (sbFileName.GetCharCnt() == 0)
@@ -48,11 +48,11 @@ void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnOKClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRAccessConnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAccessConnForm>();
+	NN<SSWR::AVIRead::AVIRAccessConnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAccessConnForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRAccessConnForm::AVIRAccessConnForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 100, ui)
+SSWR::AVIRead::AVIRAccessConnForm::AVIRAccessConnForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 100, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Access Connection"));

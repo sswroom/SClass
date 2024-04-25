@@ -19,7 +19,7 @@ namespace Media
 
 		Bool OpenCard(UOSInt cardNum);
 	public:
-		DRMMonitorSurfaceMgr(UOSInt cardNum, NotNullPtr<UI::GUICore> ui, Media::ColorManagerSess *colorSess);
+		DRMMonitorSurfaceMgr(UOSInt cardNum, NN<UI::GUICore> ui, Media::ColorManagerSess *colorSess);
 		DRMMonitorSurfaceMgr(UOSInt cardNum, Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr);
 		virtual ~DRMMonitorSurfaceMgr();
 

@@ -2,7 +2,7 @@
 #include "IO/FileExporter.h"
 #include "IO/FileStream.h"
 
-Bool IO::FileExporter::ExportNewFile(Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool IO::FileExporter::ExportNewFile(Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
@@ -26,7 +26,7 @@ UOSInt IO::FileExporter::GetParamCnt()
 	return 0;
 }
 
-Optional<IO::FileExporter::ParamData> IO::FileExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
+Optional<IO::FileExporter::ParamData> IO::FileExporter::CreateParam(NN<IO::ParsedObject> pobj)
 {
 	return 0;
 }
@@ -35,7 +35,7 @@ void IO::FileExporter::DeleteParam(Optional<ParamData> param)
 {
 }
 
-Bool IO::FileExporter::GetParamInfo(UOSInt index, NotNullPtr<ParamInfo> info)
+Bool IO::FileExporter::GetParamInfo(UOSInt index, NN<ParamInfo> info)
 {
 	return false;
 }

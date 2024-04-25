@@ -11,7 +11,7 @@ namespace Media
 		class ImageStatus
 		{
 		public:
-			NotNullPtr<Media::ImageList> imgList;
+			NN<Media::ImageList> imgList;
 			Data::ArrayListNN<Media::StaticImage> *prevList;
 			Sync::Mutex mut;
 			Int32 useCnt;
@@ -21,14 +21,14 @@ namespace Media
 			Int64 lastTimeTick;
 		};
 	private:
-		NotNullPtr<ImageStatus> imgStatus;
+		NN<ImageStatus> imgStatus;
 
-		SharedImage(NotNullPtr<ImageStatus> status);
+		SharedImage(NN<ImageStatus> status);
 	public:
-		SharedImage(NotNullPtr<Media::ImageList> imgList, Bool genPreview);
+		SharedImage(NN<Media::ImageList> imgList, Bool genPreview);
 		~SharedImage();
 
-		NotNullPtr<SharedImage> Clone() const;
+		NN<SharedImage> Clone() const;
 		Media::StaticImage *GetImage(OptOut<UInt32> imgTimeMS) const;
 		Optional<Media::StaticImage> GetPrevImage(Double width, Double height, OptOut<UInt32> imgTimeMS) const;
 	};

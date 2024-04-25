@@ -19,13 +19,13 @@ namespace UI
 
 			static OSInt __stdcall TCWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
 		public:
-			WinTabControl(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
+			WinTabControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 			virtual ~WinTabControl();
 
-			virtual NotNullPtr<GUITabPage> AddTabPage(NotNullPtr<Text::String> itemText);
-			virtual NotNullPtr<GUITabPage> AddTabPage(Text::CStringNN itemText);
+			virtual NN<GUITabPage> AddTabPage(NN<Text::String> itemText);
+			virtual NN<GUITabPage> AddTabPage(Text::CStringNN itemText);
 			virtual void SetSelectedIndex(UOSInt index);
-			virtual void SetSelectedPage(NotNullPtr<GUITabPage> page);
+			virtual void SetSelectedPage(NN<GUITabPage> page);
 			virtual UOSInt GetSelectedIndex();
 			virtual Optional<GUITabPage> GetSelectedPage();
 			virtual void SetTabPageName(UOSInt index, Text::CStringNN name);

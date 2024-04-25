@@ -23,16 +23,16 @@
 #define ENCKEY "sswr"
 #define ENCKEYLEN (sizeof(ENCKEY) - 1)
 
-Bool DB::DBManager::GetConnStr(NotNullPtr<DB::DBTool> db, NotNullPtr<Text::StringBuilderUTF8> connStr)
+Bool DB::DBManager::GetConnStr(NN<DB::DBTool> db, NN<Text::StringBuilderUTF8> connStr)
 {
-	NotNullPtr<DB::DBConn> conn = db->GetDBConn();
-	NotNullPtr<Text::String> s;
-	NotNullPtr<Text::String> nns;
+	NN<DB::DBConn> conn = db->GetDBConn();
+	NN<Text::String> s;
+	NN<Text::String> nns;
 	switch (conn->GetConnType())
 	{
 	case DB::DBConn::CT_ODBC:
 		{
-			NotNullPtr<DB::ODBCConn> odbc = NotNullPtr<DB::ODBCConn>::ConvertFrom(conn);
+			NN<DB::ODBCConn> odbc = NN<DB::ODBCConn>::ConvertFrom(conn);
 			if (s.Set(odbc->GetConnStr()))
 			{
 				connStr->AppendC(UTF8STRC("odbc:"));
@@ -65,7 +65,7 @@ Bool DB::DBManager::GetConnStr(NotNullPtr<DB::DBTool> db, NotNullPtr<Text::Strin
 		break;
 	case DB::DBConn::CT_MYSQL:
 		{
-			NotNullPtr<DB::MySQLConn> mysql = NotNullPtr<DB::MySQLConn>::ConvertFrom(conn);
+			NN<DB::MySQLConn> mysql = NN<DB::MySQLConn>::ConvertFrom(conn);
 			connStr->AppendC(UTF8STRC("mysql:Server="));
 			connStr->Append(mysql->GetConnServer());
 			if (mysql->GetConnDB().SetTo(s))
@@ -88,7 +88,7 @@ Bool DB::DBManager::GetConnStr(NotNullPtr<DB::DBTool> db, NotNullPtr<Text::Strin
 		break;
 	case DB::DBConn::CT_SQLITE:
 		{
-			NotNullPtr<DB::SQLiteFile> sqlite = NotNullPtr<DB::SQLiteFile>::ConvertFrom(conn);
+			NN<DB::SQLiteFile> sqlite = NN<DB::SQLiteFile>::ConvertFrom(conn);
 			connStr->AppendC(UTF8STRC("sqlite:File="));
 			connStr->Append(sqlite->GetFileName());
 			return true;
@@ -96,7 +96,7 @@ Bool DB::DBManager::GetConnStr(NotNullPtr<DB::DBTool> db, NotNullPtr<Text::Strin
 		break;
 	case DB::DBConn::CT_WMIQUERY:
 		{
-			NotNullPtr<Win32::WMIQuery> wmi = NotNullPtr<Win32::WMIQuery>::ConvertFrom(conn);
+			NN<Win32::WMIQuery> wmi = NN<Win32::WMIQuery>::ConvertFrom(conn);
 			connStr->AppendC(UTF8STRC("wmi:ns="));
 			const WChar *ns = wmi->GetNS();
 			nns = Text::String::NewNotNull(ns);
@@ -107,7 +107,7 @@ Bool DB::DBManager::GetConnStr(NotNullPtr<DB::DBTool> db, NotNullPtr<Text::Strin
 		break;
 	case DB::DBConn::CT_OLEDB:
 		{
-			NotNullPtr<DB::OLEDBConn> oledb = NotNullPtr<DB::OLEDBConn>::ConvertFrom(conn);
+			NN<DB::OLEDBConn> oledb = NN<DB::OLEDBConn>::ConvertFrom(conn);
 			connStr->AppendC(UTF8STRC("oledb:"));
 			const WChar *cStr = oledb->GetConnStr();
 			nns = Text::String::NewNotNull(cStr);
@@ -120,7 +120,7 @@ Bool DB::DBManager::GetConnStr(NotNullPtr<DB::DBTool> db, NotNullPtr<Text::Strin
 		{
 			UTF8Char sbuff[128];
 			UTF8Char *sptr;
-			NotNullPtr<Net::MySQLTCPClient> mysql = NotNullPtr<Net::MySQLTCPClient>::ConvertFrom(conn);
+			NN<Net::MySQLTCPClient> mysql = NN<Net::MySQLTCPClient>::ConvertFrom(conn);
 			connStr->AppendC(UTF8STRC("mysqltcp:Server="));
 			sptr = Net::SocketUtil::GetAddrName(sbuff, mysql->GetConnAddr());
 			connStr->AppendP(sbuff, sptr);
@@ -143,7 +143,7 @@ Bool DB::DBManager::GetConnStr(NotNullPtr<DB::DBTool> db, NotNullPtr<Text::Strin
 		{
 			UTF8Char sbuff[128];
 			UTF8Char *sptr;
-			NotNullPtr<DB::PostgreSQLConn> psql = NotNullPtr<DB::PostgreSQLConn>::ConvertFrom(conn);
+			NN<DB::PostgreSQLConn> psql = NN<DB::PostgreSQLConn>::ConvertFrom(conn);
 			connStr->AppendC(UTF8STRC("postgresql:Server="));
 			sptr = psql->GetConnServer()->ConcatTo(sbuff);
 			connStr->AppendP(sbuff, sptr);
@@ -165,7 +165,7 @@ Bool DB::DBManager::GetConnStr(NotNullPtr<DB::DBTool> db, NotNullPtr<Text::Strin
 		{
 			UTF8Char sbuff[128];
 			UTF8Char *sptr;
-			NotNullPtr<DB::TDSConn> tds = NotNullPtr<DB::TDSConn>::ConvertFrom(conn);
+			NN<DB::TDSConn> tds = NN<DB::TDSConn>::ConvertFrom(conn);
 			connStr->AppendC(UTF8STRC("tds:Host="));
 			sptr = tds->GetConnHost()->ConcatTo(sbuff);
 			connStr->AppendP(sbuff, sptr);
@@ -188,12 +188,12 @@ Bool DB::DBManager::GetConnStr(NotNullPtr<DB::DBTool> db, NotNullPtr<Text::Strin
 	return false;
 }
 
-Optional<DB::ReadingDB> DB::DBManager::OpenConn(NotNullPtr<Text::String> connStr, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
+Optional<DB::ReadingDB> DB::DBManager::OpenConn(NN<Text::String> connStr, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
 {
 	return OpenConn(connStr->ToCString(), log, sockf, parsers);
 }
 
-Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
+Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
 {
 	DB::DBTool *db;
 	if (connStr.StartsWith(UTF8STRC("odbc:")))
@@ -237,7 +237,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NotNull
 					break;
 				}
 			}
-			NotNullPtr<Text::String> s;
+			NN<Text::String> s;
 			db = 0;
 			if (s.Set(dsn))
 			{
@@ -254,7 +254,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NotNull
 		}
 		else
 		{
-			NotNullPtr<DB::ODBCConn> conn;
+			NN<DB::ODBCConn> conn;
 			NEW_CLASSNN(conn, DB::ODBCConn(connStr.Substring(5), CSTR("ODBCConn"), log));
 			if (conn->GetConnError() == DB::ODBCConn::CE_NONE)
 			{
@@ -267,7 +267,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NotNull
 	else if (connStr.StartsWith(UTF8STRC("mysql:")))
 	{
 		Text::StringBuilderUTF8 sb;
-		NotNullPtr<Text::String> nnserver;
+		NN<Text::String> nnserver;
 		Text::String *server = 0;
 		Text::String *uid = 0;
 		Text::String *pwd = 0;
@@ -326,10 +326,10 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NotNull
 	{
 		if (connStr.Substring(7).StartsWithICase(UTF8STRC("FILE=")))
 		{
-			NotNullPtr<DB::DBTool> db;
+			NN<DB::DBTool> db;
 			if (DB::SQLiteFile::CreateDBTool(connStr.Substring(12), log, DBPREFIX).SetTo(db))
 			{
-				return NotNullPtr<DB::ReadingDB>(db);
+				return NN<DB::ReadingDB>(db);
 			}
 		}
 	}
@@ -338,7 +338,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NotNull
 		if (connStr.Substring(4).StartsWithICase(UTF8STRC("NS=")))
 		{
 			const WChar *ns = Text::StrToWCharNew(connStr.v + 7);
-			NotNullPtr<Win32::WMIQuery> wmi;
+			NN<Win32::WMIQuery> wmi;
 			NEW_CLASSNN(wmi, Win32::WMIQuery(ns));
 			if (wmi->IsError())
 			{
@@ -354,7 +354,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NotNull
 	else if (connStr.StartsWith(UTF8STRC("oledb:")))
 	{
 		const WChar *cstr = Text::StrToWCharNew(connStr.v + 6);
-		NotNullPtr<DB::OLEDBConn> oledb;
+		NN<DB::OLEDBConn> oledb;
 		NEW_CLASSNN(oledb, DB::OLEDBConn(cstr, log));
 		if (oledb->GetConnError() != DB::OLEDBConn::CE_NONE)
 		{
@@ -411,9 +411,9 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NotNull
 			}
 		}
 		Net::MySQLTCPClient *cli = 0;
-		NotNullPtr<Net::MySQLTCPClient> nncli;
-		NotNullPtr<Text::String> uidStr;
-		NotNullPtr<Text::String> pwdStr;
+		NN<Net::MySQLTCPClient> nncli;
+		NN<Text::String> uidStr;
+		NN<Text::String> pwdStr;
 		if (uidStr.Set(uid) && pwdStr.Set(pwd))
 		{
 			NEW_CLASS(cli, Net::MySQLTCPClient(sockf, addr, port, uidStr, pwdStr, schema));
@@ -480,9 +480,9 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NotNull
 			}
 		}
 		DB::PostgreSQLConn *cli;
-		NotNullPtr<DB::PostgreSQLConn> nncli;
-		NotNullPtr<Text::String> serverStr;
-		NotNullPtr<Text::String> schemaStr;
+		NN<DB::PostgreSQLConn> nncli;
+		NN<Text::String> serverStr;
+		NN<Text::String> schemaStr;
 		if (serverStr.Set(server) && schemaStr.Set(schema))
 		{
 			NEW_CLASS(cli, DB::PostgreSQLConn(serverStr, port, uid, pwd, schemaStr, log));
@@ -511,7 +511,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NotNull
 	}
 	else if (connStr.StartsWith(UTF8STRC("file:")))
 	{
-		NotNullPtr<Parser::ParserList> nnparsers;
+		NN<Parser::ParserList> nnparsers;
 		if (parsers.SetTo(nnparsers))
 		{
 			IO::StmData::FileData fd(connStr.Substring(5), false);
@@ -562,7 +562,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NotNull
 			}
 		}
 		DB::TDSConn *cli = 0;
-		NotNullPtr<DB::TDSConn> nncli;
+		NN<DB::TDSConn> nncli;
 		UInt16 port = 1433;
 		if (server)
 		{
@@ -592,7 +592,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NotNull
 	return 0;
 }
 
-void DB::DBManager::GetConnName(Text::CString connStr, NotNullPtr<Text::StringBuilderUTF8> sbOut)
+void DB::DBManager::GetConnName(Text::CString connStr, NN<Text::StringBuilderUTF8> sbOut)
 {
 	if (connStr.StartsWith(UTF8STRC("odbc:")))
 	{
@@ -769,7 +769,7 @@ void DB::DBManager::GetConnName(Text::CString connStr, NotNullPtr<Text::StringBu
 	}
 }
 
-Bool DB::DBManager::StoreConn(Text::CStringNN fileName, NotNullPtr<Data::ArrayListNN<DB::DBManagerCtrl>> ctrlList)
+Bool DB::DBManager::StoreConn(Text::CStringNN fileName, NN<Data::ArrayListNN<DB::DBManagerCtrl>> ctrlList)
 {
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -782,8 +782,8 @@ Bool DB::DBManager::StoreConn(Text::CStringNN fileName, NotNullPtr<Data::ArrayLi
 	if (ctrlList->GetCount() > 0)
 	{
 		Text::StringBuilderUTF8 sb;
-		NotNullPtr<DB::DBManagerCtrl> ctrl;
-		NotNullPtr<Text::String> connStr;
+		NN<DB::DBManagerCtrl> ctrl;
+		NN<Text::String> connStr;
 		UOSInt i;
 		UOSInt j;
 		i = 0;
@@ -818,7 +818,7 @@ Bool DB::DBManager::StoreConn(Text::CStringNN fileName, NotNullPtr<Data::ArrayLi
 	return true;
 }
 
-Bool DB::DBManager::RestoreConn(Text::CStringNN fileName, NotNullPtr<Data::ArrayListNN<DB::DBManagerCtrl>> ctrlList, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
+Bool DB::DBManager::RestoreConn(Text::CStringNN fileName, NN<Data::ArrayListNN<DB::DBManagerCtrl>> ctrlList, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
 {
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));

@@ -4,7 +4,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRJasyptForm::OnDecryptClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRJasyptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRJasyptForm>();
+	NN<SSWR::AVIRead::AVIRJasyptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRJasyptForm>();
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	me->txtPassword->GetText(sb);
@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRJasyptForm::OnDecryptClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRJasyptForm::OnEncryptClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRJasyptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRJasyptForm>();
+	NN<SSWR::AVIRead::AVIRJasyptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRJasyptForm>();
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	me->txtPassword->GetText(sb);
@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRJasyptForm::OnEncryptClicked(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRJasyptForm::AVIRJasyptForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 256, ui)
+SSWR::AVIRead::AVIRJasyptForm::AVIRJasyptForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 256, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);

@@ -13,7 +13,7 @@ Math::WKBWriter::~WKBWriter()
 {
 }
 
-Bool Math::WKBWriter::Write(NotNullPtr<IO::Stream> stm, NotNullPtr<Math::Geometry::Vector2D> vec)
+Bool Math::WKBWriter::Write(NN<IO::Stream> stm, NN<Math::Geometry::Vector2D> vec)
 {
 	UInt8 buff[64];
 	UOSInt i;
@@ -26,8 +26,8 @@ Bool Math::WKBWriter::Write(NotNullPtr<IO::Stream> stm, NotNullPtr<Math::Geometr
 	{
 	case Math::Geometry::Vector2D::VectorType::Polygon:
 		{
-			NotNullPtr<Math::Geometry::Polygon> pg = NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(vec);
-			NotNullPtr<Math::Geometry::LinearRing> lr;
+			NN<Math::Geometry::Polygon> pg = NN<Math::Geometry::Polygon>::ConvertFrom(vec);
+			NN<Math::Geometry::LinearRing> lr;
 			Math::Coord2DDbl *points;
 			geomType = 3;
 			j = pg->GetCount();

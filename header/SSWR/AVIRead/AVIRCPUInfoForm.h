@@ -16,27 +16,27 @@ namespace SSWR
 		class AVIRCPUInfoForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpCPU;
-			NotNullPtr<UI::GUIListView> lvMain;
-			NotNullPtr<UI::GUIPanel> pnlMain;
-			NotNullPtr<UI::GUIButton> btnUpload;
-			NotNullPtr<UI::GUIButton> btnCopyInfo;
+			NN<UI::GUITabPage> tpCPU;
+			NN<UI::GUIListView> lvMain;
+			NN<UI::GUIPanel> pnlMain;
+			NN<UI::GUIButton> btnUpload;
+			NN<UI::GUIButton> btnCopyInfo;
 
-			NotNullPtr<UI::GUITabPage> tpCache;
-			NotNullPtr<UI::GUIListBox> lbCache;
+			NN<UI::GUITabPage> tpCache;
+			NN<UI::GUIListBox> lbCache;
 
-			NotNullPtr<UI::GUITabPage> tpFeature;
-			NotNullPtr<UI::GUIListView> lvFeature;
+			NN<UI::GUITabPage> tpFeature;
+			NN<UI::GUIListView> lvFeature;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
 			static void __stdcall OnUploadClick(AnyType userObj);
 			static void __stdcall OnCopyInfoClick(AnyType userObj);
 		public:
-			AVIRCPUInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRCPUInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCPUInfoForm();
 
 			virtual void OnMonitorChanged();

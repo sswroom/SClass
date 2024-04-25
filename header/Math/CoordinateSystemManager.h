@@ -171,18 +171,18 @@ namespace Math
 		static const ProjcsSRInfo *SRGetProjcsInfo(UInt32 epsgId);
 		static Bool SRAxisReversed(UInt32 epsgId);
 		static Math::CoordinateSystem *SRCreateCSys(UInt32 epsgId);
-		static NotNullPtr<Math::CoordinateSystem> SRCreateCSysOrDef(UInt32 epsgId);
+		static NN<Math::CoordinateSystem> SRCreateCSysOrDef(UInt32 epsgId);
 		static Math::ProjectedCoordinateSystem *SRCreateProjCSys(UInt32 epsgId);
 		static Math::GeographicCoordinateSystem *SRCreateGeogCSys(UInt32 epsgId);
 		
 		static Math::CoordinateSystem *CreateFromName(Text::CStringNN name);
-		static NotNullPtr<Math::CoordinateSystem> CreateFromNameOrDef(Text::CStringNN name);
+		static NN<Math::CoordinateSystem> CreateFromNameOrDef(Text::CStringNN name);
 
 		static const Math::CoordinateSystemManager::DatumInfo *GetDatumInfoByName(const UTF8Char *name);
-		static void FillDatumData(NotNullPtr<Math::GeographicCoordinateSystem::DatumData1> data, const DatumInfo *datum, Text::CString name, NotNullPtr<Math::EarthEllipsoid> ee, const SpheroidInfo *spheroid);
+		static void FillDatumData(NN<Math::GeographicCoordinateSystem::DatumData1> data, const DatumInfo *datum, Text::CString name, NN<Math::EarthEllipsoid> ee, const SpheroidInfo *spheroid);
 
 		static Math::ProjectedCoordinateSystem *CreateProjCoordinateSystemDefName(ProjCoordSysType pcst);
-		static NotNullPtr<Math::CoordinateSystem> CreateProjCoordinateSystemDefNameOrDef(ProjCoordSysType pcst);
+		static NN<Math::CoordinateSystem> CreateProjCoordinateSystemDefNameOrDef(ProjCoordSysType pcst);
 		static Math::ProjectedCoordinateSystem *CreateProjCoordinateSystem(Text::CStringNN sourceNmae, const UTF8Char *projName);
 		static UOSInt GetProjCoordinateSystems(Data::ArrayList<ProjCoordSysType> *csysList);
 		static UOSInt GetProjCoordinateSystemNames(Data::ArrayList<const UTF8Char *> *nameList);
@@ -192,7 +192,7 @@ namespace Math
 		static Math::GeographicCoordinateSystem *CreateGeogCoordinateSystem(Text::CStringNN sourceName, const UTF8Char *geoName);
 		static UOSInt GetGeogCoordinateSystems(Data::ArrayList<GeoCoordSysType> *csysList);
 		static const GeographicCSysInfo *GetGeogCoordinateSystemInfo(const UTF8Char *geoName);
-		static NotNullPtr<Math::GeographicCoordinateSystem> CreateDefaultCsys();
+		static NN<Math::GeographicCoordinateSystem> CreateDefaultCsys();
 
 		static Text::CStringNN GeoCoordSysTypeGetName(GeoCoordSysType gcst);
 		static Text::CString ProjCoordSysTypeGetName(ProjCoordSysType pcst);

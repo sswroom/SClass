@@ -724,7 +724,7 @@ yv2rflopexit:
 
 UInt32 Media::CS::CSI420_LRGB::WorkerThread(AnyType obj)
 {
-	NotNullPtr<CSI420_LRGB> converter = obj.GetNN<CSI420_LRGB>();
+	NN<CSI420_LRGB> converter = obj.GetNN<CSI420_LRGB>();
 	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 
@@ -749,7 +749,7 @@ UInt32 Media::CS::CSI420_LRGB::WorkerThread(AnyType obj)
 	return 0;
 }
 
-Media::CS::CSI420_LRGB::CSI420_LRGB(NotNullPtr<const Media::ColorProfile> srcColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV_LRGB(srcColor, yuvType, colorSess)
+Media::CS::CSI420_LRGB::CSI420_LRGB(NN<const Media::ColorProfile> srcColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV_LRGB(srcColor, yuvType, colorSess)
 {
 	UOSInt i;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();

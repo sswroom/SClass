@@ -25,7 +25,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnUserAgentClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
+	NN<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
 	SSWR::AVIRead::AVIRUserAgentSelForm frm(0, me->ui, me->core, me->userAgent->ToCString());
 	if (frm.ShowDialog(me))
 	{
@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnUserAgentClicked(AnyType use
 
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
+	NN<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
 	UTF8Char sbuffLocal[512];
 	UTF8Char *sbuff = sbuffLocal;
 	UTF8Char *sbuffPtr = 0;
@@ -88,7 +88,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(AnyType userO
 			{
 				sb.AppendUTF8Char('?');
 			}
-			NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm::ParamValue> param;
+			NN<SSWR::AVIRead::AVIRHTTPClientForm::ParamValue> param;
 			Text::StringBuilderUTF8 sb2;
 			while (i < j)
 			{
@@ -119,7 +119,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(AnyType userO
 	}
 	else if (me->fileList.GetCount() == 1 && me->cboPostFormat->GetSelectedIndex() == 2)
 	{
-		NotNullPtr<Text::String> fileName = Text::String::OrEmpty(me->fileList.GetItem(0));
+		NN<Text::String> fileName = Text::String::OrEmpty(me->fileList.GetItem(0));
 		UTF8Char *sptr;
 		{
 			IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -152,8 +152,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(AnyType userO
 		UOSInt i = 0;
 		UOSInt j = me->params.GetCount();
 		UOSInt k;
-		NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm::ParamValue> param;
-		NotNullPtr<Text::String> s;
+		NN<SSWR::AVIRead::AVIRHTTPClientForm::ParamValue> param;
+		NN<Text::String> s;
 		while (i < j)
 		{
 			param = me->params.GetItemNoCheck(i);
@@ -172,7 +172,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(AnyType userO
 		sb2.ClearStr();
 		me->txtFileFormName->GetText(sb2);
 		UInt8 fileBuff[4096];
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = me->fileList.Iterator();
+		Data::ArrayIterator<NN<Text::String>> it = me->fileList.Iterator();
 		while (it.HasNext())
 		{
 			s = it.Next();
@@ -235,7 +235,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(AnyType userO
 		UOSInt j = me->params.GetCount();
 		if (j > 0)
 		{
-			NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm::ParamValue> param;
+			NN<SSWR::AVIRead::AVIRHTTPClientForm::ParamValue> param;
 			Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 			while (i < j)
 			{
@@ -270,7 +270,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(AnyType userO
 	{
 		UOSInt i = 0;
 		UOSInt j = me->params.GetCount();
-		NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm::ParamValue> param;
+		NN<SSWR::AVIRead::AVIRHTTPClientForm::ParamValue> param;
 		Text::StringBuilderUTF8 sb2;
 		while (i < j)
 		{
@@ -308,16 +308,16 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
+	NN<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
 	if (me->respData == 0)
 	{
 		return;
 	}
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HTTPClientSave", true);
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = me->respHeaders.Iterator();
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HTTPClientSave", true);
+	Data::ArrayIterator<NN<Text::String>> it = me->respHeaders.Iterator();
 	while (it.HasNext())
 	{
-		NotNullPtr<Text::String> hdr = it.Next();
+		NN<Text::String> hdr = it.Next();
 		if (hdr->StartsWithICase(UTF8STRC("Content-Disposition: ")))
 		{
 			Text::StringBuilderUTF8 sb;
@@ -379,13 +379,13 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnViewClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
+	NN<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
 	Sync::MutexUsage mutUsage(me->respMut);
 	if (me->respData)
 	{
 		UOSInt buffSize;
 		UInt8 *buff = me->respData->GetBuff(buffSize);
-		NotNullPtr<Text::IMIMEObj> mimeObj;
+		NN<Text::IMIMEObj> mimeObj;
 		{
 			IO::StmData::MemoryDataRef md(buff, buffSize);
 			Text::CStringNN contType;
@@ -408,9 +408,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnViewClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnDataStrClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
+	NN<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm::ParamValue> param;
+	NN<SSWR::AVIRead::AVIRHTTPClientForm::ParamValue> param;
 	UTF8Char *sbuff;
 	UTF8Char sbuffLocal[512];
 	UTF8Char *sbuffPtr = 0;
@@ -472,8 +472,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnDataStrClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnFileSelectClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HTTPClientSelect", false);
+	NN<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"HTTPClientSelect", false);
 	dlg->SetAllowMultiSel(true);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
@@ -505,15 +505,15 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnFileSelectClicked(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnFileClearClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
+	NN<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
 	me->ClearFiles();
 	me->lblFileStatus->SetText(CSTR("No files selected"));
 }
 
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnCertClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
-	NotNullPtr<Crypto::Cert::X509File> file;
+	NN<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
+	NN<Crypto::Cert::X509File> file;
 	if (me->respCert.SetTo(file))
 	{
 		me->core->OpenObject(file->Clone());
@@ -522,7 +522,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnCertClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnClientCertClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
+	NN<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
 	Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->cliCert, me->cliKey, caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
@@ -539,9 +539,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnClientCertClicked(AnyType us
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm> me = thread->GetUserObj().GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
+	NN<SSWR::AVIRead::AVIRHTTPClientForm> me = thread->GetUserObj().GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
 	Text::String *currURL;
 	const UTF8Char *currBody;
 	UOSInt currBodyLen;
@@ -580,11 +580,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NotNullPtr<Sync:
 			me->reqHeaders = 0;
 			me->reqAllowComp = false;
 			
-			NotNullPtr<Net::HTTPClient> cli;
+			NN<Net::HTTPClient> cli;
 			me->respTimeStart = Data::Timestamp::Now();
 			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), currOSClient?0:me->ssl, me->userAgent->ToCString(), me->noShutdown, currURL->StartsWith(UTF8STRC("https://")));
-			NotNullPtr<Crypto::Cert::X509Cert> cliCert;
-			NotNullPtr<Crypto::Cert::X509File> cliKey;
+			NN<Crypto::Cert::X509Cert> cliCert;
+			NN<Crypto::Cert::X509File> cliKey;
 			if (cliCert.Set(me->cliCert) && cliKey.Set(me->cliKey))
 			{
 				cli->SetClientCert(cliCert, cliKey);
@@ -738,7 +738,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NotNullPtr<Sync:
 					}
 				}
 				me->ClearHeaders();
-				Data::ArrayIterator<NotNullPtr<Text::String>> it = cli->RespHeaderIterator();
+				Data::ArrayIterator<NN<Text::String>> it = cli->RespHeaderIterator();
 				while (it.HasNext())
 				{
 					me->respHeaders.Add(it.Next()->Clone());
@@ -757,7 +757,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NotNullPtr<Sync:
 						const UInt8 *respData = mstm->GetBuff(respSize);
 						if (respSize > 16 && respData[0] == 0x1F && respData[1] == 0x8B && respData[2] == 0x8)
 						{
-							NotNullPtr<IO::MemoryStream> mstm2;
+							NN<IO::MemoryStream> mstm2;
 							Data::Compress::Inflate inflate(false);
 							i = 10;
 							IO::StmData::MemoryDataRef mdata(&respData[i], respSize - i - 8);
@@ -784,11 +784,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NotNullPtr<Sync:
 				me->respData = mstm;
 				SDEL_STRING(me->respCertText);
 				me->respCert.Delete();
-				NotNullPtr<const Data::ReadingListNN<Crypto::Cert::Certificate>> certs;
+				NN<const Data::ReadingListNN<Crypto::Cert::Certificate>> certs;
 				if (cli->GetServerCerts().SetTo(certs))
 				{
 					Text::StringBuilderUTF8 sb;
-					NotNullPtr<Crypto::Cert::X509File> x509;
+					NN<Crypto::Cert::X509File> x509;
 					if (Crypto::Cert::X509File::CreateFromCerts(certs).SetTo(x509))
 					{
 						x509->ToString(sb);
@@ -845,11 +845,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NotNullPtr<Sync:
 
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
-	NotNullPtr<Text::String> hdr;
+	NN<SSWR::AVIRead::AVIRHTTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientForm>();
+	NN<Text::String> hdr;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UOSInt i;
 	UOSInt j;
 	if (me->respChanged)
@@ -937,7 +937,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(AnyType userObj)
 			hdr = Text::String::OrEmpty(me->respHeaders.GetItem(i));
 			if (hdr->StartsWithICase(UTF8STRC("Set-Cookie: ")))
 			{
-				NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie> cookie;
+				NN<SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie> cookie;
 				if (me->SetCookie(hdr->ToCString().Substring(12), me->respReqURL->ToCString()).SetTo(cookie))
 				{
 					UOSInt k = me->lvCookie->AddItem(cookie->domain, cookie);
@@ -974,7 +974,7 @@ void SSWR::AVIRead::AVIRHTTPClientForm::ClearHeaders()
 void SSWR::AVIRead::AVIRHTTPClientForm::ClearParams()
 {
 	UOSInt i;
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm::ParamValue> param;
+	NN<SSWR::AVIRead::AVIRHTTPClientForm::ParamValue> param;
 	i = this->params.GetCount();
 	while (i-- > 0)
 	{
@@ -989,7 +989,7 @@ void SSWR::AVIRead::AVIRHTTPClientForm::ClearParams()
 void SSWR::AVIRead::AVIRHTTPClientForm::ClearCookie()
 {
 	UOSInt i;
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie> cookie;
+	NN<SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie> cookie;
 	i = this->cookieList.GetCount();
 	while (i-- > 0)
 	{
@@ -1099,8 +1099,8 @@ Optional<SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie> SSWR::AVIRead::AVIRHTTPC
 	}
 	if (valid)
 	{
-		NotNullPtr<Text::String> cookieName = Text::String::New(cookieValue, (UOSInt)i);
-		NotNullPtr<SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie> cookie;
+		NN<Text::String> cookieName = Text::String::New(cookieValue, (UOSInt)i);
+		NN<SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie> cookie;
 		Bool eq;
 		UOSInt j = this->cookieList.GetCount();
 		while (j-- > 0)
@@ -1154,7 +1154,7 @@ UTF8Char *SSWR::AVIRead::AVIRHTTPClientForm::AppendCookie(UTF8Char *sbuff, Text:
 {
 	UInt8 buff[4096];
 	UTF8Char *sptr;
-	NotNullPtr<HTTPCookie> cookie;
+	NN<HTTPCookie> cookie;
 	UOSInt len1;
 	UOSInt len2;
 	UOSInt i;
@@ -1209,7 +1209,7 @@ UTF8Char *SSWR::AVIRead::AVIRHTTPClientForm::AppendCookie(UTF8Char *sbuff, Text:
 	return cookiePtr;
 }
 
-SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui), procThread(ProcessThread, this, CSTR("HTTPClient"))
+SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui), procThread(ProcessThread, this, CSTR("HTTPClient"))
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("HTTP Client"));

@@ -21,18 +21,19 @@ namespace DB
 
 	public:
 		SQLBuilder(DB::SQLType sqlType, Bool axisAware, Int32 tzQhr);
-		SQLBuilder(NotNullPtr<const DB::ReadingDBTool> db);
+		SQLBuilder(NN<const DB::ReadingDBTool> db);
 		~SQLBuilder();
 
 		void AppendCmdSlow(const UTF8Char *val);
 		void AppendCmdC(Text::CStringNN val);
 		void AppendInt32(Int32 val);
+		void AppendNInt32(NInt32 val);
 		void AppendInt64(Int64 val);
 		void AppendUInt32(UInt32 val);
 		void AppendUInt64(UInt64 val);
 		void AppendStr(Text::String *val);
 		void AppendStr(Optional<Text::String> val);
-		void AppendStr(NotNullPtr<Text::String> val);
+		void AppendStr(NN<Text::String> val);
 		void AppendStrC(Text::CString val);
 		void AppendStrUTF8(const UTF8Char *val);
 		void AppendStrW(const WChar *val);
@@ -45,7 +46,7 @@ namespace DB
 		void AppendVector(Optional<Math::Geometry::Vector2D> vec);
 		void AppendBinary(const UInt8 *buff, UOSInt buffSize);
 
-		void AppendTableName(NotNullPtr<DB::TableDef> table);
+		void AppendTableName(NN<DB::TableDef> table);
 		void AppendCol(const UTF8Char *val);
 		void AppendCol(const WChar *val);
 		void AppendTrim(Text::CString val);
@@ -54,7 +55,7 @@ namespace DB
 		const UTF8Char *ToString() const;
 		UOSInt GetLength() const;
 		Text::CStringNN ToCString() const;
-		NotNullPtr<Text::String> ToNewString() const;
+		NN<Text::String> ToNewString() const;
 		DB::SQLType GetSQLType() const;
 		Bool SupportSchema() const;
 	};

@@ -5,7 +5,7 @@
 
 #include <windows.h>
 
-void TrustStore_LoadStore(NotNullPtr<Crypto::Cert::CertStore> store, const WChar *storeName)
+void TrustStore_LoadStore(NN<Crypto::Cert::CertStore> store, const WChar *storeName)
 {
 	HCERTSTORE hSystemStore = CertOpenSystemStoreW(0, storeName);
 	if (hSystemStore)
@@ -13,7 +13,7 @@ void TrustStore_LoadStore(NotNullPtr<Crypto::Cert::CertStore> store, const WChar
 		PCCERT_CONTEXT cert = 0;
 		while ((cert = CertEnumCertificatesInStore(hSystemStore, cert)) != 0)
 		{
-			NotNullPtr<Crypto::Cert::X509Cert> x509Cert;
+			NN<Crypto::Cert::X509Cert> x509Cert;
 			NEW_CLASSNN(x509Cert, Crypto::Cert::X509Cert(CSTR("temp.crt"), Data::ByteArray(cert->pbCertEncoded, cert->cbCertEncoded)));
 			store->AddCert(x509Cert);
 		}
@@ -21,20 +21,20 @@ void TrustStore_LoadStore(NotNullPtr<Crypto::Cert::CertStore> store, const WChar
 	}
 }
 
-NotNullPtr<Crypto::Cert::CertStore> Crypto::Cert::TrustStore::Load()
+NN<Crypto::Cert::CertStore> Crypto::Cert::TrustStore::Load()
 {
-	NotNullPtr<Crypto::Cert::CertStore> store;
+	NN<Crypto::Cert::CertStore> store;
 	NEW_CLASSNN(store, Crypto::Cert::CertStore(CSTR("Default Trust Store")));
 	TrustStore_LoadStore(store, L"CA");
 	TrustStore_LoadStore(store, L"ROOT");
 	return store;
 }
 
-NotNullPtr<Crypto::Cert::CertStore> Crypto::Cert::TrustStore::LoadJavaCA()
+NN<Crypto::Cert::CertStore> Crypto::Cert::TrustStore::LoadJavaCA()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	NotNullPtr<Crypto::Cert::CertStore> store;
+	NN<Crypto::Cert::CertStore> store;
 	NEW_CLASSNN(store, Crypto::Cert::CertStore(CSTR("Java CACerts")));
 
 	Manage::EnvironmentVar env;

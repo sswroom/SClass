@@ -6,7 +6,7 @@
 #include "UI/GUIClientControl.h"
 #include "UI/Java/JavaComboBox.h"
 
-UI::Java::JavaComboBox::JavaComboBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool allowEdit) : UI::GUIComboBox(ui, parent)
+UI::Java::JavaComboBox::JavaComboBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Bool allowEdit) : UI::GUIComboBox(ui, parent)
 {
 	this->allowEdit = allowEdit;
 	parent->AddChild(this);
@@ -26,7 +26,7 @@ UTF8Char *UI::Java::JavaComboBox::GetText(UTF8Char *buff)
 	return 0;
 }
 
-Bool UI::Java::JavaComboBox::GetText(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool UI::Java::JavaComboBox::GetText(NN<Text::StringBuilderUTF8> sb)
 {
 	return false;
 }
@@ -50,7 +50,7 @@ void UI::Java::JavaComboBox::EndUpdate()
 	this->clsData->model = 0;*/
 }
 
-UOSInt UI::Java::JavaComboBox::AddItem(NotNullPtr<Text::String> itemText, void *itemObj)
+UOSInt UI::Java::JavaComboBox::AddItem(NN<Text::String> itemText, void *itemObj)
 {
 	return 0;
 }
@@ -60,7 +60,7 @@ UOSInt UI::Java::JavaComboBox::AddItem(Text::CStringNN itemText, void *itemObj)
 	return 0;
 }
 
-UOSInt UI::Java::JavaComboBox::InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, void *itemObj)
+UOSInt UI::Java::JavaComboBox::InsertItem(UOSInt index, NN<Text::String> itemText, void *itemObj)
 {
 	return 0;
 }

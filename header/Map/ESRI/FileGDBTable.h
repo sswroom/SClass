@@ -11,20 +11,20 @@ namespace Map
 		class FileGDBTable
 		{
 		private:
-			NotNullPtr<Text::String> tableName;
-			NotNullPtr<IO::StreamData> gdbtableFD;
+			NN<Text::String> tableName;
+			NN<IO::StreamData> gdbtableFD;
 			IO::StreamData *gdbtablxFD;
 			UOSInt indexCnt;
 			UInt64 dataOfst;
 			UInt32 maxRowSize;
 			Optional<FileGDBTableInfo> tableInfo;
-			NotNullPtr<Math::ArcGISPRJParser> prjParser;
+			NN<Math::ArcGISPRJParser> prjParser;
 		public:
-			FileGDBTable(Text::CString tableName, NotNullPtr<IO::StreamData> gdbtableFD, IO::StreamData *gdbtablxFD, NotNullPtr<Math::ArcGISPRJParser> prjParser);
+			FileGDBTable(Text::CString tableName, NN<IO::StreamData> gdbtableFD, IO::StreamData *gdbtablxFD, NN<Math::ArcGISPRJParser> prjParser);
 			~FileGDBTable();
 
 			Bool IsError();
-			NotNullPtr<Text::String> GetName() const;
+			NN<Text::String> GetName() const;
 			Optional<DB::DBReader> OpenReader(Data::ArrayListStringNN *columnNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *conditions);	
 		};
 	}

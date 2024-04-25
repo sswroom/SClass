@@ -9,7 +9,7 @@
 #include "Media/AudioFilter/FileMixFilter.h"
 #include "Text/MyString.h"
 
-Media::AudioFilter::FileMixFilter::FileMixFilter(NotNullPtr<IAudioSource> sourceAudio, NotNullPtr<Parser::ParserList> parsers) : Media::IAudioFilter(sourceAudio)
+Media::AudioFilter::FileMixFilter::FileMixFilter(NN<IAudioSource> sourceAudio, NN<Parser::ParserList> parsers) : Media::IAudioFilter(sourceAudio)
 {
 	sourceAudio->GetFormat(this->format);
 	this->parsers = parsers;
@@ -119,7 +119,7 @@ UOSInt Media::AudioFilter::FileMixFilter::ReadBlock(Data::ByteArray blk)
 	return readSize;
 }
 
-Bool Media::AudioFilter::FileMixFilter::LoadFile(NotNullPtr<Text::String> fileName)
+Bool Media::AudioFilter::FileMixFilter::LoadFile(NN<Text::String> fileName)
 {
 	Media::MediaFile *mf;
 	{

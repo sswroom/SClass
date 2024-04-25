@@ -4,7 +4,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnOKClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISImageForm>();
+	NN<SSWR::AVIRead::AVIRGISImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISImageForm>();
 	UOSInt selIndex = me->plIcons->GetSelectedIndex();
 	if (selIndex != INVALID_INDEX)
 	{
@@ -19,13 +19,13 @@ void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnOKClick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnCancelClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISImageForm>();
+	NN<SSWR::AVIRead::AVIRGISImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISImageForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> fileNames)
+void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> fileNames)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISImageForm>();
+	NN<SSWR::AVIRead::AVIRGISImageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISImageForm>();
 	Bool loaded = false;
 	UOSInt i;
 	UOSInt fileCnt = fileNames.GetCount();
@@ -57,7 +57,7 @@ void SSWR::AVIRead::AVIRGISImageForm::UpdateImages()
 	}
 }
 
-SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, UOSInt imgIndex) : UI::GUIForm(parent, 456, 405, ui)
+SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, UOSInt imgIndex) : UI::GUIForm(parent, 456, 405, ui)
 {
 	this->SetText(CSTR("Select Image"));
 	this->SetFont(0, 0, 8.25, false);

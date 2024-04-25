@@ -30,11 +30,11 @@ namespace IO
 			Bool scanOn;
 			Bool cmdReady;
 
-			static void __stdcall ReadThread(NotNullPtr<Sync::Thread> thread);
+			static void __stdcall ReadThread(NN<Sync::Thread> thread);
 			void SendCmd(const UTF8Char *cmd, UOSInt cmdLen);
 
 			Optional<IO::BTScanLog::ScanRecord3> DeviceGetByStr(Text::CStringNN s);
-			static void DeviceFree(NotNullPtr<IO::BTScanLog::ScanRecord3> dev);
+			static void DeviceFree(NN<IO::BTScanLog::ScanRecord3> dev);
 		public:
 			BluetoothCtlProgCtrl();
 			virtual ~BluetoothCtlProgCtrl();
@@ -47,8 +47,8 @@ namespace IO
 			virtual void Close();
 			virtual Bool SetScanMode(ScanMode scanMode);
 
-			virtual NotNullPtr<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> GetPublicMap(NotNullPtr<Sync::MutexUsage> mutUsage);
-			virtual NotNullPtr<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> GetRandomMap(NotNullPtr<Sync::MutexUsage> mutUsage);
+			virtual NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> GetPublicMap(NN<Sync::MutexUsage> mutUsage);
+			virtual NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> GetRandomMap(NN<Sync::MutexUsage> mutUsage);
 
 			Bool WaitForCmdReady();
 		};

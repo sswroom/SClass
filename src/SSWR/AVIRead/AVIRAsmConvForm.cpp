@@ -6,13 +6,13 @@
 
 void __stdcall SSWR::AVIRead::AVIRAsmConvForm::OnConvClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRAsmConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAsmConvForm>();
+	NN<SSWR::AVIRead::AVIRAsmConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAsmConvForm>();
 	me->ConvAsm();
 }
 
 void __stdcall SSWR::AVIRead::AVIRAsmConvForm::OnConv2Clicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRAsmConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAsmConvForm>();
+	NN<SSWR::AVIRead::AVIRAsmConvForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAsmConvForm>();
 	Text::StringBuilderUTF8 sb;
 	UI::Clipboard clipboard(me->GetHandle());
 	if (clipboard.GetString(me->GetHandle(), sb))
@@ -428,7 +428,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 	this->txtGNUAsm->SetText(destSb.ToCString());
 }
 
-SSWR::AVIRead::AVIRAsmConvForm::AVIRAsmConvForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRAsmConvForm::AVIRAsmConvForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Assembly MASM to GCC"));
 	this->SetFont(0, 0, 8.25, false);

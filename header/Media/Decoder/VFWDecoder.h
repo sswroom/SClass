@@ -61,13 +61,13 @@ namespace Media
 
 			virtual void ProcVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst);
 		public:
-			VFWDecoder(NotNullPtr<IVideoSource> sourceAudio);
+			VFWDecoder(NN<IVideoSource> sourceAudio);
 			virtual ~VFWDecoder();
 
 			virtual Bool CaptureImage(ImageCallback imgCb, AnyType userData);
 			virtual Text::CStringNN GetFilterName();
 
-			virtual Bool GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
+			virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
 			virtual void Stop();
 
 			virtual Bool HasFrameCount();

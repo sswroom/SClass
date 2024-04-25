@@ -162,7 +162,7 @@ void Media::Decoder::ACMDecoder::InitACM()
 	}
 }
 
-Media::Decoder::ACMDecoder::ACMDecoder(NotNullPtr<Media::IAudioSource> sourceAudio)
+Media::Decoder::ACMDecoder::ACMDecoder(NN<Media::IAudioSource> sourceAudio)
 {
 	this->hAcmStream = 0;
 	this->acmFmt = 0;
@@ -181,9 +181,9 @@ Media::Decoder::ACMDecoder::~ACMDecoder()
 	FreeACM();
 }
 
-void Media::Decoder::ACMDecoder::GetFormat(NotNullPtr<AudioFormat> format)
+void Media::Decoder::ACMDecoder::GetFormat(NN<AudioFormat> format)
 {
-	NotNullPtr<Media::AudioFormat> decFmt;
+	NN<Media::AudioFormat> decFmt;
 	if (decFmt.Set(this->decFmt))
 	{
 		format->FromAudioFormat(decFmt);

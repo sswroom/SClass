@@ -14,7 +14,7 @@
 #include "Text/StringBuilderUTF8.h"
 
 IO::ConsoleWriter *console;
-void __stdcall OnGPSPos(AnyType userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates)
+void __stdcall OnGPSPos(AnyType userObj, NN<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Lat = "));
@@ -34,10 +34,10 @@ void __stdcall OnGPSPos(AnyType userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> r
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	IO::GPIOControl *gpio;
-	NotNullPtr<IO::RS232GPIO> port;
+	NN<IO::RS232GPIO> port;
 	IO::GPSNMEA *gps;
 	Text::StringBuilderUTF8 sb;
 	UInt16 pinNum = 7;

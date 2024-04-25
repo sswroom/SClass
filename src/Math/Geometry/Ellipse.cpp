@@ -24,9 +24,9 @@ Math::Coord2DDbl Math::Geometry::Ellipse::GetCenter() const
 	return this->tl + (this->size * 0.5);
 }
 
-NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::Ellipse::Clone() const
+NN<Math::Geometry::Vector2D> Math::Geometry::Ellipse::Clone() const
 {
-	NotNullPtr<Math::Geometry::Ellipse> ellipse;
+	NN<Math::Geometry::Ellipse> ellipse;
 	NEW_CLASSNN(ellipse, Math::Geometry::Ellipse(this->srid, this->tl, this->size));
 	return ellipse;
 }
@@ -51,7 +51,7 @@ Double Math::Geometry::Ellipse::CalArea() const
 	return this->size.CalcArea() * Math::PI * 0.25;
 }
 
-Bool Math::Geometry::Ellipse::JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec)
+Bool Math::Geometry::Ellipse::JoinVector(NN<const Math::Geometry::Vector2D> vec)
 {
 	return false;
 }
@@ -71,7 +71,7 @@ Bool Math::Geometry::Ellipse::GetMBounds(OutParam<Double> min, OutParam<Double> 
 	return false;
 }
 
-void Math::Geometry::Ellipse::Convert(NotNullPtr<Math::CoordinateConverter> converter)
+void Math::Geometry::Ellipse::Convert(NN<Math::CoordinateConverter> converter)
 {
 	Math::Coord2DDbl br = converter->Convert2D(this->tl + this->size);
 	this->tl = converter->Convert2D(this->tl);
@@ -79,7 +79,7 @@ void Math::Geometry::Ellipse::Convert(NotNullPtr<Math::CoordinateConverter> conv
 	this->srid = converter->GetOutputSRID();
 }
 
-Bool Math::Geometry::Ellipse::Equals(NotNullPtr<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
+Bool Math::Geometry::Ellipse::Equals(NN<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
 {
 	if (vec->GetVectorType() != VectorType::Ellipse)
 	{
@@ -98,7 +98,7 @@ Bool Math::Geometry::Ellipse::Equals(NotNullPtr<const Math::Geometry::Vector2D> 
 			this->tl == ellipse->tl;
 }
 
-UOSInt Math::Geometry::Ellipse::GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
+UOSInt Math::Geometry::Ellipse::GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
 {
 	coordList->Add(Math::Coord2DDbl(this->tl.x + this->size.x * 0.5, this->tl.y));
 	coordList->Add(Math::Coord2DDbl(this->tl.x + this->size.x, this->tl.y + this->size.y * 0.5));

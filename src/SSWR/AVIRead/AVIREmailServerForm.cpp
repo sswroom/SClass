@@ -17,7 +17,7 @@
 
 void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
+	NN<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
 	if (me->smtpSvr)
 	{
 		DEL_CLASS(me->smtpSvr);
@@ -39,9 +39,9 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPStartClicked(AnyType us
 			me->ui->ShowMsgOK(CSTR("Please enter valid port number"), CSTR("Error"), me);
 			return;
 		}
-		NotNullPtr<Net::SSLEngine> ssl;
-		NotNullPtr<Crypto::Cert::X509Cert> smtpSSLCert;
-		NotNullPtr<Crypto::Cert::X509File> smtpSSLKey;
+		NN<Net::SSLEngine> ssl;
+		NN<Crypto::Cert::X509Cert> smtpSSLCert;
+		NN<Crypto::Cert::X509File> smtpSSLKey;
 		if (me->smtpSSL.SetTo(ssl) && smtpSSLCert.Set(me->smtpSSLCert) && smtpSSLKey.Set(me->smtpSSLKey))
 		{
 			ssl->ServerSetCertsASN1(smtpSSLCert, smtpSSLKey, me->smtpCACerts);
@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPStartClicked(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnPOP3StartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
+	NN<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
 	if (me->pop3Svr)
 	{
 		DEL_CLASS(me->pop3Svr);
@@ -82,12 +82,12 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnPOP3StartClicked(AnyType us
 		}
 		Optional<Net::SSLEngine> ssl = 0;
 		Bool sslConn = me->chkPOP3SSL->IsChecked();
-		NotNullPtr<Crypto::Cert::X509Cert> pop3SSLCert;
-		NotNullPtr<Crypto::Cert::X509File> pop3SSLKey;
+		NN<Crypto::Cert::X509Cert> pop3SSLCert;
+		NN<Crypto::Cert::X509File> pop3SSLKey;
 		if (pop3SSLCert.Set(me->pop3SSLCert) && pop3SSLKey.Set(me->pop3SSLKey))
 		{
 			ssl = me->pop3SSL;
-			NotNullPtr<Net::SSLEngine> nnssl;
+			NN<Net::SSLEngine> nnssl;
 			if (ssl.SetTo(nnssl))
 			{
 				nnssl->ServerSetCertsASN1(pop3SSLCert, pop3SSLKey, me->pop3CACerts);
@@ -113,7 +113,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnPOP3StartClicked(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
+	NN<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
 	if (me->gcisListener)
 	{
 		DEL_CLASS(me->gcisListener);
@@ -155,15 +155,15 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(AnyType us
 			return;
 		}
 		Optional<Net::SSLEngine> ssl = 0;
-		NotNullPtr<Crypto::Cert::X509Cert> gcisSSLCert;
-		NotNullPtr<Crypto::Cert::X509File> gcisSSLKey;
+		NN<Crypto::Cert::X509Cert> gcisSSLCert;
+		NN<Crypto::Cert::X509File> gcisSSLKey;
 		if (!gcisSSLCert.Set(me->gcisSSLCert) || !gcisSSLKey.Set(me->gcisSSLKey))
 		{
 			me->ui->ShowMsgOK(CSTR("Please select SSL Cert/Key"), CSTR("SMTP Server"), me);
 			return;
 		}
 		ssl = me->gcisSSL;
-		NotNullPtr<Net::SSLEngine> nnssl;
+		NN<Net::SSLEngine> nnssl;
 		Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(gcisSSLCert);
 		if (ssl.SetTo(nnssl))
 		{
@@ -171,7 +171,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(AnyType us
 			nnssl->ServerSetCertsASN1(gcisSSLCert, gcisSSLKey, me->gcisCACerts);
 		}
 		SDEL_CLASS(issuerCert);
-		NotNullPtr<Net::WebServer::GCISNotifyHandler> gcisHdlr;
+		NN<Net::WebServer::GCISNotifyHandler> gcisHdlr;
 		NEW_CLASSNN(gcisHdlr, Net::WebServer::GCISNotifyHandler(sb.ToCString(), sb2.ToCString(), OnGCISMailReceived, me, me->log));
 		NEW_CLASS(me->gcisListener, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, gcisHdlr, port, 60, 1, 2, CSTR("SSWRGCIS/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (me->gcisListener->IsError())
@@ -193,7 +193,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnLogFileClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
+	NN<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
 	Text::StringBuilderUTF8 sb;
 	IO::Path::GetProcessFileName(sb);
 	if (IO::Path::PATH_SEPERATOR == '\\')
@@ -210,12 +210,12 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnLogFileClicked(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnEmailDblClicked(AnyType userObj, UOSInt index)
 {
-	NotNullPtr<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
-	NotNullPtr<Net::Email::EmailStore::EmailInfo> email;
+	NN<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
+	NN<Net::Email::EmailStore::EmailInfo> email;
 	if (me->lvEmail->GetItem(index).GetOpt<Net::Email::EmailStore::EmailInfo>().SetTo(email))
 	{
 		Text::MIMEObj::MailMessage *mail;
-		NotNullPtr<IO::StreamData> fd;
+		NN<IO::StreamData> fd;
 		if (fd.Set(me->store->OpenEmailData(email->id)))
 		{
 			mail = Text::MIMEObj::MailMessage::ParseFile(fd);
@@ -237,9 +237,9 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnEmailDblClicked(AnyType use
 	}
 }
 
-UTF8Char *__stdcall SSWR::AVIRead::AVIREmailServerForm::OnMailReceived(UTF8Char *queryId, AnyType userObj, NotNullPtr<Net::TCPClient> cli, NotNullPtr<const Net::Email::SMTPServer::MailStatus> mail)
+UTF8Char *__stdcall SSWR::AVIRead::AVIREmailServerForm::OnMailReceived(UTF8Char *queryId, AnyType userObj, NN<Net::TCPClient> cli, NN<const Net::Email::SMTPServer::MailStatus> mail)
 {
-	NotNullPtr<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
+	NN<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
@@ -259,9 +259,9 @@ UTF8Char *__stdcall SSWR::AVIRead::AVIREmailServerForm::OnMailReceived(UTF8Char 
 	return Text::StrInt64(queryId, id);
 }
 
-void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISMailReceived(AnyType userObj, NotNullPtr<Net::NetConnection> cli, NotNullPtr<const Text::MIMEObj::MailMessage> mail)
+void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISMailReceived(AnyType userObj, NN<Net::NetConnection> cli, NN<const Text::MIMEObj::MailMessage> mail)
 {
-	NotNullPtr<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
+	NN<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
@@ -290,7 +290,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISMailReceived(AnyType us
 Bool __stdcall SSWR::AVIRead::AVIREmailServerForm::OnMailLogin(AnyType userObj, Text::CString userName, Text::CString pwd)
 {
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
+	NN<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
 	sb.AppendC(UTF8STRC("User: "));
 	sb.Append(userName);
 	sb.AppendC(UTF8STRC(", Pwd: "));
@@ -301,7 +301,7 @@ Bool __stdcall SSWR::AVIRead::AVIREmailServerForm::OnMailLogin(AnyType userObj, 
 
 void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
+	NN<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
 	Net::Email::EmailStore::EmailInfo *email;
 	UOSInt i;
 	UOSInt j;
@@ -335,7 +335,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnTimerTick(AnyType userObj)
 			rcptList.Clear();
 			me->store->GetRcptList(email->id, rcptList);
 			sb.ClearStr();
-			Data::ArrayIterator<NotNullPtr<Text::String>> it = rcptList.Iterator();
+			Data::ArrayIterator<NN<Text::String>> it = rcptList.Iterator();
 			Bool found = false;
 			while (it.HasNext())
 			{
@@ -352,7 +352,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnTimerTick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPCertKeyClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
+	NN<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
 	if (me->smtpSvr)
 	{
 		me->ui->ShowMsgOK(CSTR("Cannot change Cert/Key when SMTP server is started"), CSTR("SMTP Server"), me);
@@ -377,7 +377,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPCertKeyClicked(AnyType 
 
 void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnPOP3CertKeyClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
+	NN<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
 	if (me->pop3Svr)
 	{
 		me->ui->ShowMsgOK(CSTR("Cannot change Cert/Key when POP3 server is started"), CSTR("SMTP Server"), me);
@@ -402,7 +402,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnPOP3CertKeyClicked(AnyType 
 
 void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISCertKeyClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
+	NN<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
 	if (me->gcisListener)
 	{
 		me->ui->ShowMsgOK(CSTR("Cannot change Cert/Key when GCIS server is started"), CSTR("SMTP Server"), me);
@@ -427,7 +427,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISCertKeyClicked(AnyType 
 
 void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPTypeSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
+	NN<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
 	UInt16 port;
 	Text::StringBuilderUTF8 sb;
 	Net::Email::SMTPConn::ConnType newType = (Net::Email::SMTPConn::ConnType)me->cboSMTPType->GetSelectedItem().GetOSInt();
@@ -446,7 +446,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPTypeSelChg(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnPOP3SSLChanged(AnyType userObj, Bool isChecked)
 {
-	NotNullPtr<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
+	NN<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
 	UInt16 port;
 	Text::StringBuilderUTF8 sb;
 	me->txtPOP3Port->GetText(sb);
@@ -497,7 +497,7 @@ void SSWR::AVIRead::AVIREmailServerForm::ClearGCISCACerts()
 	this->gcisCACerts.Clear();
 }
 
-SSWR::AVIRead::AVIREmailServerForm::AVIREmailServerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIREmailServerForm::AVIREmailServerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Email Server"));
@@ -656,7 +656,7 @@ Bool SSWR::AVIRead::AVIREmailServerForm::Login(Text::CStringNN user, Text::CStri
 	UOSInt index = this->userMap.GetC(user);
 	if (index == 0)
 	{
-		NotNullPtr<Text::String> str = Text::String::New(user);
+		NN<Text::String> str = Text::String::New(user);
 		index = this->userList.Add(str) + 1;
 		this->userMap.PutNN(str, index);
 	}

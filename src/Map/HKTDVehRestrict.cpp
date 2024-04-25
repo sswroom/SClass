@@ -107,7 +107,7 @@ Map::MapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
 	Map::VectorLayer *lyr = 0;
 	NEW_CLASS(lyr, Map::VectorLayer(layerType, CSTR("HKTDVehRestirct"), 3, colNames, this->csys->Clone(), colTypes, colSize, colDP, 0, CSTR("VehRestrict")));
 	
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (this->db->QueryTableData(CSTR_NULL, CSTR("VEHICLE_RESTRICTION"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		UTF8Char sbuff[256];
@@ -163,7 +163,7 @@ Map::MapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
 				Int32 vrId = r->GetInt32((UOSInt)vrIdCol);
 				Double maxWeight = r->GetDbl((UOSInt)maxWeightCol);
 				RouteInfo *route;
-				NotNullPtr<Math::Geometry::Point> pt;
+				NN<Math::Geometry::Point> pt;
 				Math::Coord2DDbl coord;
 				sbuff[0] = 0;
 				r->GetStr((UOSInt)remarksCol, sbuff, sizeof(sbuff));

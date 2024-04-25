@@ -14,11 +14,11 @@ extern "C" Int32 CPUBrand;
 
 void __stdcall SSWR::AVIRead::AVIRAboutForm::OKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRAboutForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAboutForm>();
+	NN<SSWR::AVIRead::AVIRAboutForm> me = userObj.GetNN<SSWR::AVIRead::AVIRAboutForm>();
 	me->Close();
 }
 
-SSWR::AVIRead::AVIRAboutForm::AVIRAboutForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 480, 144, ui)
+SSWR::AVIRead::AVIRAboutForm::AVIRAboutForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 480, 144, ui)
 {
 	this->SetText(CSTR("About"));
 	this->SetFont(0, 0, 8.25, false);
@@ -29,7 +29,7 @@ SSWR::AVIRead::AVIRAboutForm::AVIRAboutForm(Optional<UI::GUIClientControl> paren
 
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	NotNullPtr<UI::GUILabel> lbl;
+	NN<UI::GUILabel> lbl;
 	Data::DateTime t;
 #if defined(CPU_X86_32) || defined(CPU_X86_64)
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("AVIRead v4 by sswroom"));

@@ -5,7 +5,7 @@
 #include "DB/TableDef.h"
 #include "Text/MyString.h"
 
-Bool DB::DBReader::GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item)
+Bool DB::DBReader::GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
 {
 	if (colIndex >= this->ColCount())
 	{
@@ -81,7 +81,7 @@ Bool DB::DBReader::GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item)
 		break;
 	case DB::DBUtil::CT_Vector:
 		{
-			NotNullPtr<Math::Geometry::Vector2D> vec;
+			NN<Math::Geometry::Vector2D> vec;
 			if (this->GetVector(colIndex).SetTo(vec))
 			{
 				item->SetVectorDirect(vec);
@@ -94,7 +94,7 @@ Bool DB::DBReader::GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item)
 		}
 	case DB::DBUtil::CT_UUID:
 		{
-			NotNullPtr<Data::UUID> uuid;
+			NN<Data::UUID> uuid;
 			NEW_CLASSNN(uuid, Data::UUID());
 			this->GetUUID(colIndex, uuid);
 			item->SetUUIDDirect(uuid);
@@ -109,7 +109,7 @@ Bool DB::DBReader::GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item)
 DB::TableDef *DB::DBReader::GenTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	DB::TableDef *table;
-	NotNullPtr<DB::ColDef> colDef;
+	NN<DB::ColDef> colDef;
 	UOSInt i;
 	UOSInt j;
 	NEW_CLASS(table, DB::TableDef(schemaName, tableName));
@@ -223,7 +223,7 @@ Data::VariObject *DB::DBReader::CreateVariObject()
 	return obj;
 }
 
-NotNullPtr<Data::Class> DB::DBReader::CreateClass()
+NN<Data::Class> DB::DBReader::CreateClass()
 {
 	UTF8Char sbuff[256];
 	UOSInt i;

@@ -28,10 +28,10 @@ namespace Media
 			void FreeACM();
 			void InitACM();
 		public:
-			ACMDecoder(NotNullPtr<IAudioSource> sourceAudio);
+			ACMDecoder(NN<IAudioSource> sourceAudio);
 			virtual ~ACMDecoder();
 
-			virtual void GetFormat(NotNullPtr<AudioFormat> format);
+			virtual void GetFormat(NN<AudioFormat> format);
 
 			virtual Data::Duration SeekToTime(Data::Duration time);
 			virtual Bool Start(Sync::Event *evt, UOSInt blkSize);

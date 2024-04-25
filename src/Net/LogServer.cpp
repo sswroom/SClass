@@ -13,8 +13,8 @@
 
 void __stdcall Net::LogServer::ConnHdlr(Socket *s, AnyType userObj)
 {
-	NotNullPtr<Net::LogServer> me = userObj.GetNN<Net::LogServer>();
-	NotNullPtr<Net::TCPClient> cli;
+	NN<Net::LogServer> me = userObj.GetNN<Net::LogServer>();
+	NN<Net::TCPClient> cli;
 	ClientStatus *cliStatus;
 	Net::SocketUtil::AddressInfo addr;
 	NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
@@ -26,12 +26,12 @@ void __stdcall Net::LogServer::ConnHdlr(Socket *s, AnyType userObj)
 	me->cliMgr->AddClient(cli, cliStatus);
 }
 
-void __stdcall Net::LogServer::ClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::LogServer::ClientEvent(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
-	NotNullPtr<Net::LogServer> me = userObj.GetNN<Net::LogServer>();
+	NN<Net::LogServer> me = userObj.GetNN<Net::LogServer>();
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
-		NotNullPtr<ClientStatus> cliStatus = cliData.GetNN<ClientStatus>();
+		NN<ClientStatus> cliStatus = cliData.GetNN<ClientStatus>();
 		me->log->LogMessage(CSTR("Client Disconnected"), IO::LogHandler::LogLevel::Command);
 		MemFree(cliStatus->buff);
 		MemFree(cliStatus.Ptr());
@@ -42,10 +42,10 @@ void __stdcall Net::LogServer::ClientEvent(NotNullPtr<Net::TCPClient> cli, AnyTy
 	}
 }
 
-void __stdcall Net::LogServer::ClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
+void __stdcall Net::LogServer::ClientData(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
 {
-	NotNullPtr<Net::LogServer> me = userObj.GetNN<Net::LogServer>();
-	NotNullPtr<ClientStatus> cliStatus = cliData.GetNN<ClientStatus>();
+	NN<Net::LogServer> me = userObj.GetNN<Net::LogServer>();
+	NN<ClientStatus> cliStatus = cliData.GetNN<ClientStatus>();
 	if (buff.GetSize() > BUFFSIZE)
 	{
 		MemCopyNO(cliStatus->buff, &buff[buff.GetSize() - BUFFSIZE], BUFFSIZE);
@@ -75,11 +75,11 @@ void __stdcall Net::LogServer::ClientData(NotNullPtr<Net::TCPClient> cli, AnyTyp
 	}
 }
 
-void __stdcall Net::LogServer::ClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
+void __stdcall Net::LogServer::ClientTimeout(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
 {
 }
 
-Net::LogServer::IPStatus *Net::LogServer::GetIPStatus(NotNullPtr<const Net::SocketUtil::AddressInfo> addr)
+Net::LogServer::IPStatus *Net::LogServer::GetIPStatus(NN<const Net::SocketUtil::AddressInfo> addr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -114,7 +114,7 @@ Net::LogServer::IPStatus *Net::LogServer::GetIPStatus(NotNullPtr<const Net::Sock
 	return 0;
 }
 
-Net::LogServer::LogServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, Text::CString logPath, NotNullPtr<IO::LogTool> svrLog, Bool redirLog, Bool autoStart) : protoHdlr(*this)
+Net::LogServer::LogServer(NN<Net::SocketFactory> sockf, UInt16 port, Text::CString logPath, NN<IO::LogTool> svrLog, Bool redirLog, Bool autoStart) : protoHdlr(*this)
 {
 	this->sockf = sockf;
 	this->logPath = Text::String::New(logPath);
@@ -158,13 +158,13 @@ void Net::LogServer::HandleClientLog(ClientLogHandler hdlr, AnyType userObj)
 	this->logHdlr = hdlr;
 }
 
-void Net::LogServer::DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void Net::LogServer::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 	UInt8 reply[18];
 	UOSInt replySize;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	NotNullPtr<ClientStatus> cliStatus = stmObj.GetNN<ClientStatus>();
+	NN<ClientStatus> cliStatus = stmObj.GetNN<ClientStatus>();
 	switch (cmdType)
 	{
 	case 0: //KA
@@ -232,7 +232,7 @@ void Net::LogServer::DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int3
 	}
 }
 
-void Net::LogServer::DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
+void Net::LogServer::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 
 }

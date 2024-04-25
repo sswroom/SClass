@@ -18,21 +18,21 @@ namespace SSWR
 		class AVIRSAMLDecryptForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUILabel> lblKey;
-			NotNullPtr<UI::GUITextBox> txtKey;
-			NotNullPtr<UI::GUILabel> lblRAWResponse;
-			NotNullPtr<UI::GUITextBox> txtRAWResponse;
-			NotNullPtr<UI::GUIButton> btnDecrypt;
-			NotNullPtr<UI::GUILabel> lblResult;
-			NotNullPtr<UI::GUITextBox> txtResult;
+			NN<UI::GUILabel> lblKey;
+			NN<UI::GUITextBox> txtKey;
+			NN<UI::GUILabel> lblRAWResponse;
+			NN<UI::GUITextBox> txtRAWResponse;
+			NN<UI::GUIButton> btnDecrypt;
+			NN<UI::GUILabel> lblResult;
+			NN<UI::GUITextBox> txtResult;
 
 		private:
-			static void __stdcall OnFormFiles(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFormFiles(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnDecryptClicked(AnyType userObj);
 		public:
-			AVIRSAMLDecryptForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRSAMLDecryptForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSAMLDecryptForm();
 
 			virtual void OnMonitorChanged();

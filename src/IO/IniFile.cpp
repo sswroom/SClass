@@ -9,7 +9,7 @@
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 
-IO::ConfigFile *IO::IniFile::Parse(NotNullPtr<IO::Stream> stm, UInt32 codePage)
+IO::ConfigFile *IO::IniFile::Parse(NN<IO::Stream> stm, UInt32 codePage)
 {
 	IO::ConfigFile *cfg;
 	IO::StreamReader reader(stm, codePage);
@@ -105,7 +105,7 @@ IO::ConfigFile *IO::IniFile::ParseReader(IO::StreamReader *reader)
 	return cfg;
 }
 
-Bool IO::IniFile::SaveConfig(NotNullPtr<IO::Stream> stm, UInt32 codePage, IO::ConfigFile *cfg)
+Bool IO::IniFile::SaveConfig(NN<IO::Stream> stm, UInt32 codePage, IO::ConfigFile *cfg)
 {
 	Bool ret;
 	IO::StreamWriter writer(stm, codePage);
@@ -117,12 +117,12 @@ Bool IO::IniFile::SaveConfig(IO::Writer *writer, IO::ConfigFile *cfg)
 {
 	Data::ArrayListStringNN cateList;
 	Data::ArrayListStringNN keyList;
-	NotNullPtr<Text::String> s;
-	NotNullPtr<Text::String> s2;
-	NotNullPtr<Text::String> s3;
+	NN<Text::String> s;
+	NN<Text::String> s2;
+	NN<Text::String> s3;
 	cfg->GetKeys(CSTR(""), keyList);
-	Data::ArrayIterator<NotNullPtr<Text::String>> itCate;
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = keyList.Iterator();
+	Data::ArrayIterator<NN<Text::String>> itCate;
+	Data::ArrayIterator<NN<Text::String>> it = keyList.Iterator();
 	while (it.HasNext())
 	{
 		s = it.Next();

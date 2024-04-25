@@ -12,7 +12,7 @@
 
 void __stdcall Media::OpenCV::OCVFrameFeeder::OnFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	NotNullPtr<Media::OpenCV::OCVFrameFeeder> me = userData.GetNN<Media::OpenCV::OCVFrameFeeder>();
+	NN<Media::OpenCV::OCVFrameFeeder> me = userData.GetNN<Media::OpenCV::OCVFrameFeeder>();
 	Media::OpenCV::OCVFrame *frame = Media::OpenCV::OCVFrame::CreateYFrame(imgData, dataSize, me->info.fourcc, me->info.dispSize, me->info.storeSize.x, me->info.storeBPP, me->info.pf);
 	if (frame)
 	{
@@ -31,10 +31,10 @@ void __stdcall Media::OpenCV::OCVFrameFeeder::OnFrame(Data::Duration frameTime, 
 
 void __stdcall Media::OpenCV::OCVFrameFeeder::OnFrameChange(Media::IVideoSource::FrameChange frChg, AnyType userData)
 {
-//	NotNullPtr<Media::OpenCV::OCVFrameFeeder> me = userData.GetNN<Media::OpenCV::OCVFrameFeeder>();
+//	NN<Media::OpenCV::OCVFrameFeeder> me = userData.GetNN<Media::OpenCV::OCVFrameFeeder>();
 }
 
-Media::OpenCV::OCVFrameFeeder::OCVFrameFeeder(Media::OpenCV::OCVObjectDetector *frameInput, NotNullPtr<Media::IVideoSource> src)
+Media::OpenCV::OCVFrameFeeder::OCVFrameFeeder(Media::OpenCV::OCVObjectDetector *frameInput, NN<Media::IVideoSource> src)
 {
 	this->frameInput = frameInput;
 	this->src = src;

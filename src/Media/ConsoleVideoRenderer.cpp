@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Media/ConsoleVideoRenderer.h"
 
-Media::ConsoleVideoRenderer::ConsoleVideoRenderer(NotNullPtr<Media::MonitorSurfaceMgr> surfaceMgr, Media::ColorManagerSess *colorSess) : Media::VideoRenderer(colorSess, surfaceMgr, 6, 2)
+Media::ConsoleVideoRenderer::ConsoleVideoRenderer(NN<Media::MonitorSurfaceMgr> surfaceMgr, Media::ColorManagerSess *colorSess) : Media::VideoRenderer(colorSess, surfaceMgr, 6, 2)
 {
 	this->surfaceMgr = surfaceMgr;
 	this->primarySurface = this->surfaceMgr->CreatePrimarySurface(this->surfaceMgr->GetMonitorHandle(0), 0, Media::RotateType::None);
@@ -58,12 +58,12 @@ Bool Media::ConsoleVideoRenderer::IsUpdatingSize()
 	return false;
 }
 
-void Media::ConsoleVideoRenderer::LockUpdateSize(NotNullPtr<Sync::MutexUsage> mutUsage)
+void Media::ConsoleVideoRenderer::LockUpdateSize(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->mut);
 }
 
-void Media::ConsoleVideoRenderer::DrawFromSurface(NotNullPtr<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn)
+void Media::ConsoleVideoRenderer::DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	if (this->primarySurface)

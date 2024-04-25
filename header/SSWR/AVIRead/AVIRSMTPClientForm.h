@@ -16,38 +16,38 @@ namespace SSWR
 		class AVIRSMTPClientForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUILabel> lblHost;
-			NotNullPtr<UI::GUITextBox> txtHost;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUILabel> lblSSLType;
-			NotNullPtr<UI::GUIComboBox> cboSSLType;
-			NotNullPtr<UI::GUILabel> lblUsername;
-			NotNullPtr<UI::GUITextBox> txtUsername;
-			NotNullPtr<UI::GUILabel> lblPassword;
-			NotNullPtr<UI::GUITextBox> txtPassword;
-			NotNullPtr<UI::GUILabel> lblFromAddr;
-			NotNullPtr<UI::GUITextBox> txtFromAddr;
-			NotNullPtr<UI::GUILabel> lblToAddr;
-			NotNullPtr<UI::GUITextBox> txtToAddr;
-			NotNullPtr<UI::GUILabel> lblCcAddr;
-			NotNullPtr<UI::GUITextBox> txtCcAddr;
-			NotNullPtr<UI::GUILabel> lblBccAddr;
-			NotNullPtr<UI::GUITextBox> txtBccAddr;
-			NotNullPtr<UI::GUILabel> lblSubject;
-			NotNullPtr<UI::GUITextBox> txtSubject;
-			NotNullPtr<UI::GUILabel> lblContent;
-			NotNullPtr<UI::GUITextBox> txtContent;
-			NotNullPtr<UI::GUIButton> btnSend;
-			NotNullPtr<UI::GUITextBox> txtLog;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUILabel> lblHost;
+			NN<UI::GUITextBox> txtHost;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUILabel> lblSSLType;
+			NN<UI::GUIComboBox> cboSSLType;
+			NN<UI::GUILabel> lblUsername;
+			NN<UI::GUITextBox> txtUsername;
+			NN<UI::GUILabel> lblPassword;
+			NN<UI::GUITextBox> txtPassword;
+			NN<UI::GUILabel> lblFromAddr;
+			NN<UI::GUITextBox> txtFromAddr;
+			NN<UI::GUILabel> lblToAddr;
+			NN<UI::GUITextBox> txtToAddr;
+			NN<UI::GUILabel> lblCcAddr;
+			NN<UI::GUITextBox> txtCcAddr;
+			NN<UI::GUILabel> lblBccAddr;
+			NN<UI::GUITextBox> txtBccAddr;
+			NN<UI::GUILabel> lblSubject;
+			NN<UI::GUITextBox> txtSubject;
+			NN<UI::GUILabel> lblContent;
+			NN<UI::GUITextBox> txtContent;
+			NN<UI::GUIButton> btnSend;
+			NN<UI::GUITextBox> txtLog;
 
 			static void __stdcall OnSendClicked(AnyType userObj);
 		public:
-			AVIRSMTPClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRSMTPClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSMTPClientForm();
 
 			virtual void OnMonitorChanged();

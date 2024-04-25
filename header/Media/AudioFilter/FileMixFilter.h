@@ -12,20 +12,20 @@ namespace Media
 		{
 		private:
 			AudioFormat format;
-			NotNullPtr<Parser::ParserList> parsers;
+			NN<Parser::ParserList> parsers;
 			Media::IAudioSource *fileSrc;
 			Bool mixing;
 			UInt64 mixOfst;
 			Bool chMix;
 
 		public:
-			FileMixFilter(NotNullPtr<IAudioSource> sourceAudio, NotNullPtr<Parser::ParserList> parsers);
+			FileMixFilter(NN<IAudioSource> sourceAudio, NN<Parser::ParserList> parsers);
 			virtual ~FileMixFilter();
 
 			virtual void GetFormat(AudioFormat *format);
 			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
 
-			Bool LoadFile(NotNullPtr<Text::String> fileName);
+			Bool LoadFile(NN<Text::String> fileName);
 			Bool StartMix();
 			Bool StopMix();
 		};

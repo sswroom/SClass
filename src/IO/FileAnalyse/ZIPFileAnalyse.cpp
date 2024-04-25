@@ -226,9 +226,9 @@ UOSInt IO::FileAnalyse::ZIPFileAnalyse::AddCentDir(const UInt8 *buff, UOSInt buf
 	return i;
 }
 
-void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::FileAnalyse::ZIPFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::ZIPFileAnalyse>();
+	NN<IO::FileAnalyse::ZIPFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::ZIPFileAnalyse>();
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt8 recHdr[64];
@@ -469,7 +469,7 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	}
 }
 
-void IO::FileAnalyse::ZIPFileAnalyse::ParseExtraTag(NotNullPtr<IO::FileAnalyse::FrameDetail> frame,Data::ByteArrayR tagData, UOSInt extraStart, UOSInt extraLen, UOSInt tagSize, UInt32 compSize, UInt32 uncompSize, UInt32 ofst)
+void IO::FileAnalyse::ZIPFileAnalyse::ParseExtraTag(NN<IO::FileAnalyse::FrameDetail> frame,Data::ByteArrayR tagData, UOSInt extraStart, UOSInt extraLen, UOSInt tagSize, UInt32 compSize, UInt32 uncompSize, UInt32 ofst)
 {
 	if (tagSize < extraStart + extraLen)
 	{
@@ -550,7 +550,7 @@ void IO::FileAnalyse::ZIPFileAnalyse::ParseExtraTag(NotNullPtr<IO::FileAnalyse::
 	}
 }
 
-IO::FileAnalyse::ZIPFileAnalyse::ZIPFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("ZIPFileAnalyse"))
+IO::FileAnalyse::ZIPFileAnalyse::ZIPFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("ZIPFileAnalyse"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -589,7 +589,7 @@ UOSInt IO::FileAnalyse::ZIPFileAnalyse::GetFrameCount()
 	return this->tags.GetCount();
 }
 
-Bool IO::FileAnalyse::ZIPFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::ZIPFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::ZIPFileAnalyse::ZIPRecord> tag;
 	Text::CString name;
@@ -644,7 +644,7 @@ UOSInt IO::FileAnalyse::ZIPFileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ZIPFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	NN<IO::FileAnalyse::ZIPFileAnalyse::ZIPRecord> tag;

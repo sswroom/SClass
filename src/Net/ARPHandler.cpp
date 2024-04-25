@@ -7,7 +7,7 @@
 
 UInt32 __stdcall Net::ARPHandler::DataThread(AnyType obj)
 {
-	NotNullPtr<Net::ARPHandler::ThreadStat> stat = obj.GetNN<Net::ARPHandler::ThreadStat>();
+	NN<Net::ARPHandler::ThreadStat> stat = obj.GetNN<Net::ARPHandler::ThreadStat>();
 	stat->threadRunning = true;
 	stat->me->ctrlEvt->Set();
 
@@ -41,7 +41,7 @@ UInt32 __stdcall Net::ARPHandler::DataThread(AnyType obj)
 	return 0;
 }
 
-Net::ARPHandler::ARPHandler(NotNullPtr<Net::SocketFactory> sockf, const UTF8Char *ifName, const UInt8 *hwAddr, UInt32 adapterIP, ARPResponseHdlr hdlr, AnyType userData, UOSInt threadCnt)
+Net::ARPHandler::ARPHandler(NN<Net::SocketFactory> sockf, const UTF8Char *ifName, const UInt8 *hwAddr, UInt32 adapterIP, ARPResponseHdlr hdlr, AnyType userData, UOSInt threadCnt)
 {
 	UOSInt i;
 	this->threadCnt = threadCnt;

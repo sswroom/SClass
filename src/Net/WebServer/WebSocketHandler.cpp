@@ -14,13 +14,13 @@ Net::WebServer::WebSocketHandler::~WebSocketHandler()
 
 }
 
-Bool Net::WebServer::WebSocketHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Net::WebServer::WebSocketHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
-	NotNullPtr<Text::String> upgrade;
-	NotNullPtr<Text::String> conn;
-	NotNullPtr<Text::String> secWebSocketKey;
-	NotNullPtr<Text::String> secWebSocketProtocol;
-	NotNullPtr<Text::String> secWebSocketVersion;
+	NN<Text::String> upgrade;
+	NN<Text::String> conn;
+	NN<Text::String> secWebSocketKey;
+	NN<Text::String> secWebSocketProtocol;
+	NN<Text::String> secWebSocketVersion;
 	if (!req->GetSHeader(CSTR("Upgrade")).SetTo(upgrade) ||
 		!req->GetSHeader(CSTR("Connection")).SetTo(conn) ||
 		!req->GetSHeader(CSTR("Sec-WebSocket-Key")).SetTo(secWebSocketKey) ||

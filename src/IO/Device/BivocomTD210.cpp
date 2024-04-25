@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/Device/BivocomTD210.h"
 
-IO::Device::BivocomTD210::BivocomTD210(NotNullPtr<IO::MODBUSMaster> modbus, UInt8 addr) : IO::MODBUSDevice(modbus, addr)
+IO::Device::BivocomTD210::BivocomTD210(NN<IO::MODBUSMaster> modbus, UInt8 addr) : IO::MODBUSDevice(modbus, addr)
 {
 	this->SetTimeout(5000);
 }

@@ -31,7 +31,7 @@ namespace UI
 			virtual void AddFilter(Text::CStringNN pattern, Text::CStringNN name);
 			virtual UOSInt GetFilterIndex();
 			virtual void SetFileName(Text::CString fileName);
-			virtual NotNullPtr<Text::String> GetFileName() const;
+			virtual NN<Text::String> GetFileName() const;
 			virtual UOSInt GetFileNameCount();
 			virtual Optional<Text::String> GetFileNames(UOSInt index);
 			virtual void SetAllowMultiSel(Bool allowMulti);

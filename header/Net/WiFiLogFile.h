@@ -12,7 +12,7 @@ namespace Net
 		{
 			UInt8 mac[6];
 			UInt64 macInt;
-			NotNullPtr<Text::String> ssid;
+			NN<Text::String> ssid;
 			Int32 phyType;
 			Double freq;
 			Text::String *manuf;
@@ -30,7 +30,7 @@ namespace Net
 	private:
 		Data::ArrayListNN<LogFileEntry> logList;
 
-		UOSInt DirectInsert(NotNullPtr<LogFileEntry> log);
+		UOSInt DirectInsert(NN<LogFileEntry> log);
 	public:
 		WiFiLogFile();
 		~WiFiLogFile();
@@ -40,10 +40,10 @@ namespace Net
 		void Clear();
 		Optional<LogFileEntry> Get(UInt64 iMAC);
 		OSInt GetIndex(UInt64 iMAC);
-		NotNullPtr<Data::ArrayListNN<LogFileEntry>> GetLogList();
+		NN<Data::ArrayListNN<LogFileEntry>> GetLogList();
 		Optional<const LogFileEntry> GetItem(UOSInt index);
 
-		NotNullPtr<LogFileEntry> AddBSSInfo(NotNullPtr<Net::WirelessLAN::BSSInfo> bss, OutParam<OSInt> lastIndex);
+		NN<LogFileEntry> AddBSSInfo(NN<Net::WirelessLAN::BSSInfo> bss, OutParam<OSInt> lastIndex);
 	};
 }
 #endif

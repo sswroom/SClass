@@ -3,7 +3,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRGPIOStatusForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGPIOStatusForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPIOStatusForm>();
+	NN<SSWR::AVIRead::AVIRGPIOStatusForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPIOStatusForm>();
 	if (me->states)
 	{
 		Bool isHigh;
@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRGPIOStatusForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRGPIOStatusForm::AVIRGPIOStatusForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRGPIOStatusForm::AVIRGPIOStatusForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("GPIO Status"));

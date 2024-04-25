@@ -42,7 +42,7 @@ DB::OLEDBConn::ProviderInfo DB::OLEDBConn::providerInfo[] = {
 
 struct DB::OLEDBConn::ClassData
 {
-	NotNullPtr<IO::LogTool> log;
+	NN<IO::LogTool> log;
 	const WChar *connStr;
 	HRESULT ci;
 	IDataInitialize *pIDataInitialize;
@@ -70,7 +70,7 @@ struct DB::OLEDBReader::ClassData
 
 //https://github.com/StevenChangZH/OleDbVCExample/blob/master/OleDbProject/OleDbSQL.cpp
 
-DB::OLEDBConn::OLEDBConn(NotNullPtr<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
+DB::OLEDBConn::OLEDBConn(NN<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
 {
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;
@@ -160,7 +160,7 @@ void DB::OLEDBConn::Init(const WChar *connStr)
 	this->connErr = CE_NONE;
 }
 
-DB::OLEDBConn::OLEDBConn(const WChar *connStr, NotNullPtr<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
+DB::OLEDBConn::OLEDBConn(const WChar *connStr, NN<IO::LogTool> log) : DB::DBConn(CSTR("OLEDBConn"))
 {
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;
@@ -264,7 +264,7 @@ void DB::OLEDBConn::ForceTz(Int8 tzQhr)
 {
 }
 
-void DB::OLEDBConn::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
+void DB::OLEDBConn::GetConnName(NN<Text::StringBuilderUTF8> sb)
 {
 	ClassData *data = this->clsData;
 	sb->AppendC(UTF8STRC("OLEDB:"));
@@ -436,7 +436,7 @@ OSInt DB::OLEDBConn::ExecuteNonQuery(Text::CStringNN sql)
 	return ret;
 }*/
 
-void DB::OLEDBConn::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void DB::OLEDBConn::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 	IErrorInfo *pIErrorInfoAll = 0;
 	GetErrorInfo(0, &pIErrorInfoAll);
@@ -464,7 +464,7 @@ void DB::OLEDBConn::Reconnect()
 {
 }
 
-UOSInt DB::OLEDBConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt DB::OLEDBConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -607,7 +607,7 @@ Optional<DB::DBReader> DB::OLEDBConn::ExecuteReader(Text::CStringNN sql)
 	pIDBCreateCommand->Release();
 	this->lastDataError = DE_NO_ERROR;
 
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	NEW_CLASSNN(r, DB::OLEDBReader(pIRowset, rowChanged));
 	return r;
 }
@@ -692,7 +692,7 @@ Optional<DB::DBReader> DB::OLEDBConn::ExecuteReader(Text::CStringNN sql)
 	return r;
 }*/
 
-void DB::OLEDBConn::CloseReader(NotNullPtr<DBReader> r)
+void DB::OLEDBConn::CloseReader(NN<DBReader> r)
 {
 	DB::OLEDBReader *reader = (DB::OLEDBReader*)r.Ptr();
 	DEL_CLASS(reader);
@@ -710,7 +710,7 @@ Optional<DB::DBTransaction> DB::OLEDBConn::BeginTransaction()
 	return 0;
 }
 
-void DB::OLEDBConn::Commit(NotNullPtr<DB::DBTransaction> tran)
+void DB::OLEDBConn::Commit(NN<DB::DBTransaction> tran)
 {
 	ClassData *data = this->clsData;
 	if (data->pITransactionLocal)
@@ -721,7 +721,7 @@ void DB::OLEDBConn::Commit(NotNullPtr<DB::DBTransaction> tran)
 	}
 }
 
-void DB::OLEDBConn::Rollback(NotNullPtr<DB::DBTransaction> tran)
+void DB::OLEDBConn::Rollback(NN<DB::DBTransaction> tran)
 {
 	ClassData *data = this->clsData;
 	if (data->pITransactionLocal)
@@ -1180,7 +1180,7 @@ WChar *DB::OLEDBReader::GetStr(UOSInt colIndex, WChar *buff)
 	}
 }
 
-Bool DB::OLEDBReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool DB::OLEDBReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
@@ -1320,7 +1320,7 @@ Optional<Text::String> DB::OLEDBReader::GetNewStr(UOSInt colIndex)
 			WChar *tmpBuff = MemAlloc(WChar, (*valLen / sizeof(WChar*)) + 1);
 			MemCopyNO(tmpBuff, val, *valLen);
 			tmpBuff[*valLen / sizeof(WChar*)] = 0;
-			NotNullPtr<Text::String> ret = Text::String::New(tmpBuff, *valLen / sizeof(WChar*));
+			NN<Text::String> ret = Text::String::New(tmpBuff, *valLen / sizeof(WChar*));
 			MemFree(tmpBuff);
 			return ret;
 		}
@@ -1613,7 +1613,7 @@ Optional<Math::Geometry::Vector2D> DB::OLEDBReader::GetVector(UOSInt colIndex)
 	return 0;
 }
 
-Bool DB::OLEDBReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
+Bool DB::OLEDBReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 {
 	return false;
 }
@@ -1649,7 +1649,7 @@ DB::DBUtil::ColType DB::OLEDBReader::GetColType(UOSInt colIndex, OptOut<UOSInt> 
 	return DBType2ColType(data->dbColInfo[colIndex].wType);
 }
 
-Bool DB::OLEDBReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool DB::OLEDBReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	ClassData *data = this->clsData;
 	if (data->dbColInfo == 0 || colIndex >= data->nCols)
@@ -1658,7 +1658,7 @@ Bool DB::OLEDBReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 	}
 	if (data->dbColInfo[colIndex].pwszName)
 	{
-		NotNullPtr<Text::String> s = Text::String::NewNotNull(data->dbColInfo[colIndex].pwszName);
+		NN<Text::String> s = Text::String::NewNotNull(data->dbColInfo[colIndex].pwszName);
 		colDef->SetColName(s);
 		s->Release();
 	}

@@ -6,7 +6,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-UOSInt IO::FileAnalyse::FLVFileAnalyse::ParseScriptDataVal(UInt8 *data, UOSInt ofst, UOSInt endOfst, NotNullPtr<Text::StringBuilderUTF8> sb)
+UOSInt IO::FileAnalyse::FLVFileAnalyse::ParseScriptDataVal(UInt8 *data, UOSInt ofst, UOSInt endOfst, NN<Text::StringBuilderUTF8> sb)
 {
 	if (ofst >= endOfst)
 	{
@@ -104,7 +104,7 @@ UOSInt IO::FileAnalyse::FLVFileAnalyse::ParseScriptDataVal(UInt8 *data, UOSInt o
 	}
 }
 
-void IO::FileAnalyse::FLVFileAnalyse::ParseScriptData(UInt8 *data, UOSInt ofst, UOSInt endOfst, UOSInt frameOfst, NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame)
+void IO::FileAnalyse::FLVFileAnalyse::ParseScriptData(UInt8 *data, UOSInt ofst, UOSInt endOfst, UOSInt frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	Text::StringBuilderUTF8 sbName;
 	Text::StringBuilderUTF8 sbVal;
@@ -113,9 +113,9 @@ void IO::FileAnalyse::FLVFileAnalyse::ParseScriptData(UInt8 *data, UOSInt ofst, 
 	frame->AddField(frameOfst + ofst, ofstVal - ofst, sbName.ToCString(), sbVal.ToCString());
 }
 
-void __stdcall IO::FileAnalyse::FLVFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::FileAnalyse::FLVFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::FileAnalyse::FLVFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::FLVFileAnalyse>();
+	NN<IO::FileAnalyse::FLVFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::FLVFileAnalyse>();
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt32 lastSize;
@@ -146,7 +146,7 @@ void __stdcall IO::FileAnalyse::FLVFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	}
 }
 
-IO::FileAnalyse::FLVFileAnalyse::FLVFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("FLVFileAnalyse"))
+IO::FileAnalyse::FLVFileAnalyse::FLVFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("FLVFileAnalyse"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -182,7 +182,7 @@ UOSInt IO::FileAnalyse::FLVFileAnalyse::GetFrameCount()
 	return 1 + this->tags.GetCount();
 }
 
-Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	if (index == 0)
 	{
@@ -200,7 +200,7 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text
 	return true;
 }
 
-Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	UInt8 buff[128];
 	if (index == 0)
@@ -322,7 +322,7 @@ UOSInt IO::FileAnalyse::FLVFileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	UInt8 buff[128];
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;

@@ -4,7 +4,7 @@
 #include "Media/Batch/BatchToLRGB.h"
 #include "Sync/MutexUsage.h"
 
-Media::Batch::BatchToLRGB::BatchToLRGB(NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::Batch::BatchHandler *hdlr) : srcProfile(srcProfile), destProfile(destProfile)
+Media::Batch::BatchToLRGB::BatchToLRGB(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::Batch::BatchHandler *hdlr) : srcProfile(srcProfile), destProfile(destProfile)
 {
 	this->hdlr = hdlr;
 	this->csconv = 0;
@@ -22,7 +22,7 @@ void Media::Batch::BatchToLRGB::SetHandler(Media::Batch::BatchHandler *hdlr)
 	this->hdlr = hdlr;
 }
 
-void Media::Batch::BatchToLRGB::ImageOutput(NotNullPtr<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId)
+void Media::Batch::BatchToLRGB::ImageOutput(NN<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN subId)
 {
 	UOSInt i;
 	UOSInt j;

@@ -14,7 +14,7 @@ IO::SensorLocationWin::~SensorLocationWin()
 {
 }
 
-Bool IO::SensorLocationWin::ReadLocation(NotNullPtr<Map::GPSTrack::GPSRecord3> loc)
+Bool IO::SensorLocationWin::ReadLocation(NN<Map::GPSTrack::GPSRecord3> loc)
 {
 	ISensorDataReport *pReport;
 	HRESULT hr;

@@ -17,9 +17,9 @@ namespace Map
 	private:
 		Map::IReverseGeocoder *revGeo;
 		IO::ProtoHdlr::ProtoRevGeoHandler protocol;
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		IO::Writer *errWriter;
-		NotNullPtr<Text::String> host;
+		NN<Text::String> host;
 		UInt16 port;
 		Sync::Mutex cliMut;
 		Net::TCPClient *cli;
@@ -35,11 +35,11 @@ namespace Map
 		static UInt32 __stdcall ClientThread(void *userObj);
 		static UInt32 __stdcall MonThread(void *userObj);
 	public:
-		ReverseGeocoderClient(NotNullPtr<Net::SocketFactory> sockf, Text::CString host, UInt16 port, Map::IReverseGeocoder *revGeo, IO::Writer *errWriter);
+		ReverseGeocoderClient(NN<Net::SocketFactory> sockf, Text::CString host, UInt16 port, Map::IReverseGeocoder *revGeo, IO::Writer *errWriter);
 		virtual ~ReverseGeocoderClient();
 
-		virtual void DataParsed(NotNullPtr<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-		virtual void DataSkipped(NotNullPtr<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
+		virtual void DataParsed(NN<IO::Stream> stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
+		virtual void DataSkipped(NN<IO::Stream> stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
 	};
 }
 #endif

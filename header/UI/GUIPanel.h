@@ -8,10 +8,10 @@ namespace UI
 	class GUIPanel : public GUIClientControl
 	{
 	private:
-		NotNullPtr<UI::GUIPanelBase> base;
+		NN<UI::GUIPanelBase> base;
 	public:
-		GUIPanel(NotNullPtr<GUICore> ui, ControlHandle *parentHWnd);
-		GUIPanel(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
+		GUIPanel(NN<GUICore> ui, ControlHandle *parentHWnd);
+		GUIPanel(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 		virtual ~GUIPanel();
 
 		virtual Bool IsChildVisible();
@@ -23,7 +23,7 @@ namespace UI
 
 		void SetMinSize(Int32 minW, Int32 minH);
 		void SetHandle(ControlHandle *hwnd);
-		NotNullPtr<UI::GUIPanelBase> GetBase() const;
+		NN<UI::GUIPanelBase> GetBase() const;
 	};
 }
 #endif

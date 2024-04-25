@@ -3,13 +3,13 @@
 #include "Media/Decoder/FFMPEGDecoder.h"
 #include "SSWR/DownloadMonitor/DownMonMainForm.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 #if 1
 	Media::Decoder::FFMPEGDecoder::Enable();
 #endif
 
-	NotNullPtr<UI::GUICore> ui;
+	NN<UI::GUICore> ui;
 	if (progCtrl->CreateGUICore(progCtrl).SetTo(ui))
 	{
 		SSWR::DownloadMonitor::DownMonCore *core;

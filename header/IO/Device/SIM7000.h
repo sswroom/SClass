@@ -31,7 +31,7 @@ namespace IO
 
 			static Bool __stdcall CheckATCommand(AnyType userObj, const UTF8Char *cmd, UOSInt cmdLen);
 		public:
-			SIM7000(NotNullPtr<IO::ATCommandChannel> channel, Bool needRelease);
+			SIM7000(NN<IO::ATCommandChannel> channel, Bool needRelease);
 			virtual ~SIM7000();
 
 			void SetReceiveHandler(ReceiveHandler recvHdlr, AnyType userObj);
@@ -45,8 +45,8 @@ namespace IO
 			//AT+CNSMOD
 			//AT+CSCLK
 			UTF8Char *SIMCOMGetICCID(UTF8Char *ccid); //AT+CCID
-			Bool SIMCOMGetFlashDeviceType(NotNullPtr<Text::StringBuilderUTF8> sb); //AT+CDEVICE
-			Bool SIMCOMGetDeviceProductID(NotNullPtr<Text::StringBuilderUTF8> sb); //AT+GSV
+			Bool SIMCOMGetFlashDeviceType(NN<Text::StringBuilderUTF8> sb); //AT+CDEVICE
+			Bool SIMCOMGetDeviceProductID(NN<Text::StringBuilderUTF8> sb); //AT+GSV
 			//AT+SGPIO
 			//AT+SLEDS
 			//AT+CNETLIGHT
@@ -88,7 +88,7 @@ namespace IO
 			//AT+CIFSREX
 			//AT+CIPSTATUS
 			Bool NetGetDNSList(Data::ArrayList<UInt32> *dnsList); //AT+CDNSCFG
-			Bool NetDNSResolveIP(Text::CString domain, NotNullPtr<Net::SocketUtil::AddressInfo> addr); //AT+CDNSGIP //////////////////////////////
+			Bool NetDNSResolveIP(Text::CString domain, NN<Net::SocketUtil::AddressInfo> addr); //AT+CDNSGIP //////////////////////////////
 			//AT+CIPHEAD
 			//AT+CIPATS
 			//AT+CIPSPRT

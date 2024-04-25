@@ -18,7 +18,7 @@
 
 UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 {
-	NotNullPtr<Net::TCPClientMgr> me = o.GetNN<Net::TCPClientMgr>();
+	NN<Net::TCPClientMgr> me = o.GetNN<Net::TCPClientMgr>();
 	Double t;
 	UInt32 waitPeriod = 1;
 	Data::Timestamp intT;
@@ -26,7 +26,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 	UOSInt i;
 	UOSInt readSize;
 	Bool found;
-	NotNullPtr<Net::TCPClientMgr::TCPClientStatus> cliStat;
+	NN<Net::TCPClientMgr::TCPClientStatus> cliStat;
 	Sync::ThreadUtil::SetName(CSTR("TCPCliMgr"));
 	me->clientThreadRunning = true;
 	{
@@ -162,9 +162,9 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 
 UInt32 __stdcall Net::TCPClientMgr::WorkerThread(AnyType o)
 {
-	NotNullPtr<Net::TCPClientMgr::WorkerStatus> stat = o.GetNN<Net::TCPClientMgr::WorkerStatus>();
+	NN<Net::TCPClientMgr::WorkerStatus> stat = o.GetNN<Net::TCPClientMgr::WorkerStatus>();
 	Net::TCPClientMgr *me = stat->me;
-	NotNullPtr<Net::TCPClientMgr::TCPClientStatus> cliStat;
+	NN<Net::TCPClientMgr::TCPClientStatus> cliStat;
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("TCPCliMgr")), stat->index);
@@ -189,7 +189,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(AnyType o)
 	return 0;
 }
 
-void Net::TCPClientMgr::ProcessClient(NotNullPtr<Net::TCPClientMgr::TCPClientStatus> cliStat)
+void Net::TCPClientMgr::ProcessClient(NN<Net::TCPClientMgr::TCPClientStatus> cliStat)
 {
 	this->workerTasks.Put(cliStat.Ptr());
 	UOSInt i = this->workerCnt;
@@ -203,7 +203,7 @@ void Net::TCPClientMgr::ProcessClient(NotNullPtr<Net::TCPClientMgr::TCPClientSta
 	}
 }
 
-void Net::TCPClientMgr::ClientBeginRead(NotNullPtr<TCPClientStatus> cliStat)
+void Net::TCPClientMgr::ClientBeginRead(NN<TCPClientStatus> cliStat)
 {
 	Bool setEvt = false;
 	if (cliStat->cli->GetRecvBuffSize() > 0)
@@ -320,7 +320,7 @@ void Net::TCPClientMgr::SetLogFile(Text::CStringNN logFile)
 	NEW_CLASS(this->logWriter, IO::SMTCWriter(logFile));
 }
 
-void Net::TCPClientMgr::AddClient(NotNullPtr<TCPClient> cli, AnyType cliData)
+void Net::TCPClientMgr::AddClient(NN<TCPClient> cli, AnyType cliData)
 {
 	cli->SetNoDelay(true);
 	cli->SetTimeout(this->timeout);
@@ -380,7 +380,7 @@ void Net::TCPClientMgr::CloseAll()
 	mutUsage.EndUse();
 }
 
-void Net::TCPClientMgr::UseGetClient(NotNullPtr<Sync::MutexUsage> mutUsage)
+void Net::TCPClientMgr::UseGetClient(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->cliMut);
 }
@@ -390,7 +390,7 @@ UOSInt Net::TCPClientMgr::GetClientCount() const
 	return this->cliMap.GetCount();
 }
 
-void Net::TCPClientMgr::ExtendTimeout(NotNullPtr<Net::TCPClient> cli)
+void Net::TCPClientMgr::ExtendTimeout(NN<Net::TCPClient> cli)
 {
 	Sync::MutexUsage mutUsage(this->cliMut);
 	Net::TCPClientMgr::TCPClientStatus *cliStat = this->cliMap.Get(cli->GetCliId());

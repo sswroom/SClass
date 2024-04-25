@@ -6,7 +6,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnPingClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRNetPingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetPingForm>();
+	NN<SSWR::AVIRead::AVIRNetPingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetPingForm>();
 	if (me->targetAddr.addrType != Net::AddrType::Unknown)
 	{
 		me->targetAddr.addrType = Net::AddrType::Unknown;
@@ -59,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnPingClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRNetPingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetPingForm>();
+	NN<SSWR::AVIRead::AVIRNetPingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRNetPingForm>();
 	if (me->targetAddr.addrType != Net::AddrType::Unknown)
 	{
 		UInt32 t1;
@@ -93,7 +93,7 @@ void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRNetPingForm::AVIRNetPingForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRNetPingForm::AVIRNetPingForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Network Ping"));

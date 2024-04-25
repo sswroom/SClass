@@ -21,11 +21,11 @@ Int32 Exporter::ICOExporter::GetName()
 	return *(Int32*)"ICOE";
 }
 
-IO::FileExporter::SupportType Exporter::ICOExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
+IO::FileExporter::SupportType Exporter::ICOExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
-	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
+	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	UInt32 imgTime;
 	Media::RasterImage *img;
 	UOSInt i = imgList->GetCount();
@@ -60,11 +60,11 @@ void Exporter::ICOExporter::SetCodePage(UInt32 codePage)
 {
 }
 
-Bool Exporter::ICOExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::ICOExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return 0;
-	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
+	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	UOSInt buffSize = Exporter::CURExporter::CalcBuffSize(imgList);
 	if (buffSize == 0)
 		return false;

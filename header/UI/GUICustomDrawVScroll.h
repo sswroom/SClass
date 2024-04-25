@@ -10,7 +10,7 @@ namespace UI
 	class GUICustomDrawVScroll : public UI::GUIControl
 	{
 	public:
-		NotNullPtr<Media::DrawEngine> deng;
+		NN<Media::DrawEngine> deng;
 		void *clsData;
 		typedef enum
 		{
@@ -30,17 +30,17 @@ namespace UI
 		void Deinit(InstanceHandle *hInst);
 	
 	protected:
-		void ClearBackground(NotNullPtr<Media::DrawImage> img);
+		void ClearBackground(NN<Media::DrawImage> img);
 
 	public:
-		GUICustomDrawVScroll(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> deng);
+		GUICustomDrawVScroll(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng);
 		virtual ~GUICustomDrawVScroll();
 
 		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		virtual void OnSizeChanged(Bool updateScn);
 
-		virtual void OnDraw(NotNullPtr<Media::DrawImage> img) = 0;
+		virtual void OnDraw(NN<Media::DrawImage> img) = 0;
 		virtual void OnMouseDown(OSInt scrollY, Math::Coord2D<OSInt> pos, UI::GUIClientControl::MouseButton btn, KeyButton keys);
 		virtual void OnKeyDown(UInt32 keyCode);
 

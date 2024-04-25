@@ -18,42 +18,42 @@ namespace SSWR
 		class AVIRLDAPClientForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Net::LDAPClient *cli;
 			Data::ArrayList<Net::LDAPClient::SearchResObject*> *dispResults;
 
-			NotNullPtr<UI::GUIPanel> pnlRequest;
-			NotNullPtr<UI::GUILabel> lblHost;
-			NotNullPtr<UI::GUITextBox> txtHost;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUILabel> lblAuthType;
-			NotNullPtr<UI::GUIComboBox> cboAuthType;
-			NotNullPtr<UI::GUILabel> lblUserDN;
-			NotNullPtr<UI::GUITextBox> txtUserDN;
-			NotNullPtr<UI::GUILabel> lblPassword;
-			NotNullPtr<UI::GUITextBox> txtPassword;
-			NotNullPtr<UI::GUIButton> btnConnect;
-			NotNullPtr<UI::GUIGroupBox> grpSearch;
-			NotNullPtr<UI::GUIPanel> pnlSearchRequest;
-			NotNullPtr<UI::GUILabel> lblSearchBase;
-			NotNullPtr<UI::GUITextBox> txtSearchBase;
-			NotNullPtr<UI::GUILabel> lblSearchScope;
-			NotNullPtr<UI::GUIComboBox> cboSearchScope;
-			NotNullPtr<UI::GUILabel> lblSearchDerefAliases;
-			NotNullPtr<UI::GUIComboBox> cboSearchDerefAliases;
-			NotNullPtr<UI::GUILabel> lblSearchFilter;
-			NotNullPtr<UI::GUITextBox> txtSearchFilter;
-			NotNullPtr<UI::GUIButton> btnSearch;
-			NotNullPtr<UI::GUIComboBox> cboSearchResult;
-			NotNullPtr<UI::GUIListView> lvSearch;
+			NN<UI::GUIPanel> pnlRequest;
+			NN<UI::GUILabel> lblHost;
+			NN<UI::GUITextBox> txtHost;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUILabel> lblAuthType;
+			NN<UI::GUIComboBox> cboAuthType;
+			NN<UI::GUILabel> lblUserDN;
+			NN<UI::GUITextBox> txtUserDN;
+			NN<UI::GUILabel> lblPassword;
+			NN<UI::GUITextBox> txtPassword;
+			NN<UI::GUIButton> btnConnect;
+			NN<UI::GUIGroupBox> grpSearch;
+			NN<UI::GUIPanel> pnlSearchRequest;
+			NN<UI::GUILabel> lblSearchBase;
+			NN<UI::GUITextBox> txtSearchBase;
+			NN<UI::GUILabel> lblSearchScope;
+			NN<UI::GUIComboBox> cboSearchScope;
+			NN<UI::GUILabel> lblSearchDerefAliases;
+			NN<UI::GUIComboBox> cboSearchDerefAliases;
+			NN<UI::GUILabel> lblSearchFilter;
+			NN<UI::GUITextBox> txtSearchFilter;
+			NN<UI::GUIButton> btnSearch;
+			NN<UI::GUIComboBox> cboSearchResult;
+			NN<UI::GUIListView> lvSearch;
 		
 			static void __stdcall OnConnectClicked(AnyType userObj);
 			static void __stdcall OnSearchClicked(AnyType userObj);
 			static void __stdcall OnSearchResultSelChg(AnyType userObj);
 
 		public:
-			AVIRLDAPClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRLDAPClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLDAPClientForm();
 
 			virtual void OnMonitorChanged();

@@ -20,34 +20,34 @@ namespace SSWR
 		class AVIRDBCopyTablesForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpSource;
-			NotNullPtr<UI::GUILabel> lblSourceConn;
-			NotNullPtr<UI::GUIComboBox> cboSourceConn;
-			NotNullPtr<UI::GUILabel> lblSourceDB;
-			NotNullPtr<UI::GUITextBox> txtSourceDB;
-			NotNullPtr<UI::GUILabel> lblSourceCollation;
-			NotNullPtr<UI::GUITextBox> txtSourceCollation;
-			NotNullPtr<UI::GUILabel> lblSourceSchema;
-			NotNullPtr<UI::GUIComboBox> cboSourceSchema;
-			NotNullPtr<UI::GUIButton> btnSourceSelect;
+			NN<UI::GUITabPage> tpSource;
+			NN<UI::GUILabel> lblSourceConn;
+			NN<UI::GUIComboBox> cboSourceConn;
+			NN<UI::GUILabel> lblSourceDB;
+			NN<UI::GUITextBox> txtSourceDB;
+			NN<UI::GUILabel> lblSourceCollation;
+			NN<UI::GUITextBox> txtSourceCollation;
+			NN<UI::GUILabel> lblSourceSchema;
+			NN<UI::GUIComboBox> cboSourceSchema;
+			NN<UI::GUIButton> btnSourceSelect;
 
-			NotNullPtr<UI::GUITabPage> tpData;
-			NotNullPtr<UI::GUIGroupBox> grpDest;
-			NotNullPtr<UI::GUIListView> lvData;
-			NotNullPtr<UI::GUILabel> lblDestDB;
-			NotNullPtr<UI::GUIComboBox> cboDestDB;
-			NotNullPtr<UI::GUILabel> lblDestSchema;
-			NotNullPtr<UI::GUIComboBox> cboDestSchema;
-			NotNullPtr<UI::GUILabel> lblDestOptions;
-			NotNullPtr<UI::GUIComboBox> cboDestTableType;
-			NotNullPtr<UI::GUICheckBox> chkDestCopyData;
-			NotNullPtr<UI::GUICheckBox> chkDestCreateDDB;
-			NotNullPtr<UI::GUIButton> btnCopy;
+			NN<UI::GUITabPage> tpData;
+			NN<UI::GUIGroupBox> grpDest;
+			NN<UI::GUIListView> lvData;
+			NN<UI::GUILabel> lblDestDB;
+			NN<UI::GUIComboBox> cboDestDB;
+			NN<UI::GUILabel> lblDestSchema;
+			NN<UI::GUIComboBox> cboDestSchema;
+			NN<UI::GUILabel> lblDestOptions;
+			NN<UI::GUIComboBox> cboDestTableType;
+			NN<UI::GUICheckBox> chkDestCopyData;
+			NN<UI::GUICheckBox> chkDestCreateDDB;
+			NN<UI::GUIButton> btnCopy;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Data::ArrayListNN<DB::DBManagerCtrl>> dbList;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Data::ArrayListNN<DB::DBManagerCtrl>> dbList;
 
 			DB::ReadingDB *dataConn;
 			Text::String *dataSchema;
@@ -58,7 +58,7 @@ namespace SSWR
 			static void __stdcall OnDestDBChg(AnyType userObj);
 			static void __stdcall OnCopyClicked(AnyType userObj);
 		public:
-			AVIRDBCopyTablesForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Data::ArrayListNN<DB::DBManagerCtrl>> dbList);
+			AVIRDBCopyTablesForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Data::ArrayListNN<DB::DBManagerCtrl>> dbList);
 			virtual ~AVIRDBCopyTablesForm();
 
 			virtual void OnMonitorChanged();

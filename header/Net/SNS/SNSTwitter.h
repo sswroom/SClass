@@ -15,22 +15,22 @@ namespace Net
 		{
 		private:
 			Net::WebSite::WebSiteTwitterControl *ctrl;
-			NotNullPtr<Text::String> channelId;
-			NotNullPtr<Text::String> chName;
+			NN<Text::String> channelId;
+			NN<Text::String> chName;
 			Text::String *chDesc;
 			Bool chError;
 			Data::FastMap<Int64, SNSItem *> itemMap;
 
 		public:
-			SNSTwitter(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CString channelId);
+			SNSTwitter(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CString channelId);
 			virtual ~SNSTwitter();
 
 			virtual Bool IsError();
 			virtual SNSType GetSNSType();
-			virtual NotNullPtr<Text::String> GetChannelId() const;
-			virtual NotNullPtr<Text::String> GetName() const;
+			virtual NN<Text::String> GetChannelId() const;
+			virtual NN<Text::String> GetName() const;
 			virtual UTF8Char *GetDirName(UTF8Char *dirName);
-			virtual UOSInt GetCurrItems(NotNullPtr<Data::ArrayList<SNSItem*>> itemList);
+			virtual UOSInt GetCurrItems(NN<Data::ArrayList<SNSItem*>> itemList);
 			virtual UTF8Char *GetItemShortId(UTF8Char *buff, SNSItem *item);
 			virtual Int32 GetMinIntevalMS();
 			virtual Bool Reload();

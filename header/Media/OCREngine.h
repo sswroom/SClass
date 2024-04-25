@@ -16,7 +16,7 @@ namespace Media
 			English
 		};
 		
-		typedef void (__stdcall *OCRResultFunc)(AnyType userObj, NotNullPtr<Text::String> text, Double confidence, Math::RectArea<OSInt> boundary);
+		typedef void (__stdcall *OCRResultFunc)(AnyType userObj, NN<Text::String> text, Double confidence, Math::RectArea<OSInt> boundary);
 	private:
 		class ClassData;
 		ClassData *clsData;
@@ -29,8 +29,8 @@ namespace Media
 
 		void SetCharWhiteList(const Char *whiteList);
 
-		Bool SetParsingImage(NotNullPtr<Media::StaticImage> img);
-		Bool SetOCVFrame(NotNullPtr<Media::OpenCV::OCVFrame> frame);
+		Bool SetParsingImage(NN<Media::StaticImage> img);
+		Bool SetOCVFrame(NN<Media::OpenCV::OCVFrame> frame);
 		Optional<Text::String> ParseInsideImage(Math::RectArea<UOSInt> area, OptOut<UOSInt> confidence);
 		
 		void HandleOCRResult(OCRResultFunc hdlr, AnyType userObj);

@@ -7,7 +7,7 @@
 
 #define LOGPREFIX CSTR("DB:")
 
-NotNullPtr<Text::String> DB::JavaDBUtil::AppendFieldAnno(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<DB::ColDef> colDef, NotNullPtr<Data::StringMap<Bool>> importMap)
+NN<Text::String> DB::JavaDBUtil::AppendFieldAnno(NN<Text::StringBuilderUTF8> sb, NN<DB::ColDef> colDef, NN<Data::StringMap<Bool>> importMap)
 {
 	if (colDef->IsPK())
 	{
@@ -24,7 +24,7 @@ NotNullPtr<Text::String> DB::JavaDBUtil::AppendFieldAnno(NotNullPtr<Text::String
 	{
 		importMap->Put(CSTR("javax.persistence.Column"), true);
 		sb->AppendC(UTF8STRC("\t@Column(name="));
-		NotNullPtr<Text::String> s = Text::JSText::ToNewJSTextDQuote(colDef->GetColName()->v);
+		NN<Text::String> s = Text::JSText::ToNewJSTextDQuote(colDef->GetColName()->v);
 		sb->Append(s);
 		s->Release();
 		sb->AppendC(UTF8STRC(")\r\n"));
@@ -36,7 +36,7 @@ NotNullPtr<Text::String> DB::JavaDBUtil::AppendFieldAnno(NotNullPtr<Text::String
 	}
 }
 
-void DB::JavaDBUtil::AppendFieldDef(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<DB::ColDef> col, NotNullPtr<Text::String> colName, NotNullPtr<Data::StringMap<Bool>> importMap)
+void DB::JavaDBUtil::AppendFieldDef(NN<Text::StringBuilderUTF8> sb, NN<DB::ColDef> col, NN<Text::String> colName, NN<Data::StringMap<Bool>> importMap)
 {
 	sb->AppendC(UTF8STRC("\tprivate "));
 	DB::DBUtil::ColType colType = col->GetColType();
@@ -58,7 +58,7 @@ void DB::JavaDBUtil::AppendFieldDef(NotNullPtr<Text::StringBuilderUTF8> sb, NotN
 	sb->AppendC(UTF8STRC(";\r\n"));
 }
 
-void DB::JavaDBUtil::AppendConstrHdr(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<DB::ColDef> col, NotNullPtr<Text::String> colName, Bool isLast)
+void DB::JavaDBUtil::AppendConstrHdr(NN<Text::StringBuilderUTF8> sb, NN<DB::ColDef> col, NN<Text::String> colName, Bool isLast)
 {
 	sb->Append(Text::JavaText::GetJavaTypeName(col->GetColType(), col->IsNotNull()));
 	sb->AppendUTF8Char(' ');
@@ -69,7 +69,7 @@ void DB::JavaDBUtil::AppendConstrHdr(NotNullPtr<Text::StringBuilderUTF8> sb, Not
 	}
 }
 
-void DB::JavaDBUtil::AppendConstrItem(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Text::String> colName)
+void DB::JavaDBUtil::AppendConstrItem(NN<Text::StringBuilderUTF8> sb, NN<Text::String> colName)
 {
 	sb->AppendC(UTF8STRC("\t\tthis."));
 	Text::JavaText::ToJavaName(sb, colName->v, false);
@@ -78,7 +78,7 @@ void DB::JavaDBUtil::AppendConstrItem(NotNullPtr<Text::StringBuilderUTF8> sb, No
 	sb->AppendC(UTF8STRC(";\r\n"));
 }
 
-void DB::JavaDBUtil::AppendGetterSetter(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<DB::ColDef> col, NotNullPtr<Text::String> colName)
+void DB::JavaDBUtil::AppendGetterSetter(NN<Text::StringBuilderUTF8> sb, NN<DB::ColDef> col, NN<Text::String> colName)
 {
 	sb->AppendC(UTF8STRC("\r\n"));
 	sb->AppendC(UTF8STRC("\tpublic "));
@@ -113,7 +113,7 @@ void DB::JavaDBUtil::AppendGetterSetter(NotNullPtr<Text::StringBuilderUTF8> sb, 
 	sb->AppendC(UTF8STRC("\t}\r\n"));
 }
 
-void DB::JavaDBUtil::AppendEqualsItem(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<DB::ColDef> col, NotNullPtr<Text::String> colName, NotNullPtr<Text::String> clsName, Bool isLast)
+void DB::JavaDBUtil::AppendEqualsItem(NN<Text::StringBuilderUTF8> sb, NN<DB::ColDef> col, NN<Text::String> colName, NN<Text::String> clsName, Bool isLast)
 {
 	Bool isObj = true;
 	if (col->IsNotNull())
@@ -174,7 +174,7 @@ void DB::JavaDBUtil::AppendEqualsItem(NotNullPtr<Text::StringBuilderUTF8> sb, No
 	}
 }
 
-void DB::JavaDBUtil::AppendHashCodeItem(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Text::String> colName, Bool isLast)
+void DB::JavaDBUtil::AppendHashCodeItem(NN<Text::StringBuilderUTF8> sb, NN<Text::String> colName, Bool isLast)
 {
 	Text::JavaText::ToJavaName(sb, colName->v, false);
 	if (!isLast)
@@ -183,7 +183,7 @@ void DB::JavaDBUtil::AppendHashCodeItem(NotNullPtr<Text::StringBuilderUTF8> sb, 
 	}
 }
 
-void DB::JavaDBUtil::AppendFieldOrderItem(NotNullPtr<Text::StringBuilderUTF8> sb, NotNullPtr<Text::String> colName, Bool isLast)
+void DB::JavaDBUtil::AppendFieldOrderItem(NN<Text::StringBuilderUTF8> sb, NN<Text::String> colName, Bool isLast)
 {
 	sb->AppendC(UTF8STRC("\t\t\""));
 	Text::JavaText::ToJavaName(sb, colName->v, false);
@@ -197,7 +197,7 @@ void DB::JavaDBUtil::AppendFieldOrderItem(NotNullPtr<Text::StringBuilderUTF8> sb
 	}
 }
 
-Optional<DB::DBTool> DB::JavaDBUtil::OpenJDBC(Text::String *url, Text::String *username, Text::String *password, NotNullPtr<IO::LogTool> log, NotNullPtr<Net::SocketFactory> sockf)
+Optional<DB::DBTool> DB::JavaDBUtil::OpenJDBC(Text::String *url, Text::String *username, Text::String *password, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf)
 {
 	if (url == 0 || !url->StartsWith(UTF8STRC("jdbc:")))
 	{
@@ -241,7 +241,7 @@ Optional<DB::DBTool> DB::JavaDBUtil::OpenJDBC(Text::String *url, Text::String *u
 	return 0;
 }
 
-Bool DB::JavaDBUtil::ToJavaEntity(NotNullPtr<Text::StringBuilderUTF8> sb, Optional<Text::String> schemaName, NotNullPtr<Text::String> tableName, Optional<Text::String> databaseName, NotNullPtr<DB::ReadingDB> db)
+Bool DB::JavaDBUtil::ToJavaEntity(NN<Text::StringBuilderUTF8> sb, Optional<Text::String> schemaName, NN<Text::String> tableName, Optional<Text::String> databaseName, NN<DB::ReadingDB> db)
 {
 	Data::StringMap<Bool> importMap;
 	Text::StringBuilderUTF8 sbCode;
@@ -257,7 +257,7 @@ Bool DB::JavaDBUtil::ToJavaEntity(NotNullPtr<Text::StringBuilderUTF8> sb, Option
 	sbCode.AppendC(UTF8STRC("@Entity\r\n"));
 	sbCode.AppendC(UTF8STRC("@Table(name="));
 	Text::JSText::ToJSTextDQuote(sbCode, tableName->v);
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (schemaName.SetTo(s) && s->leng > 0)
 	{
 		sbCode.AppendC(UTF8STRC(", schema="));
@@ -270,7 +270,7 @@ Bool DB::JavaDBUtil::ToJavaEntity(NotNullPtr<Text::StringBuilderUTF8> sb, Option
 	}
 	sbCode.AppendC(UTF8STRC(")\r\n"));
 	sbCode.AppendC(UTF8STRC("public class "));
-	NotNullPtr<Text::String> clsName;
+	NN<Text::String> clsName;
 	if (Text::StrHasUpperCase(tableName->v))
 	{
 		clsName = Text::String::New(tableName->v, tableName->leng);
@@ -328,11 +328,11 @@ Bool DB::JavaDBUtil::ToJavaEntity(NotNullPtr<Text::StringBuilderUTF8> sb, Option
 
 	sbCode.AppendC(UTF8STRC("{\r\n"));
 	DB::TableDef *tableDef = db->GetTableDef(OPTSTR_CSTR(schemaName), tableName->ToCString());
-	NotNullPtr<Text::String> colName;
+	NN<Text::String> colName;
 	if (tableDef)
 	{
-		NotNullPtr<DB::ColDef> colDef;
-		Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = tableDef->ColIterator();
+		NN<DB::ColDef> colDef;
+		Data::ArrayIterator<NN<DB::ColDef>> it = tableDef->ColIterator();
 		while (it.HasNext())
 		{
 			colDef = it.Next();
@@ -349,7 +349,7 @@ Bool DB::JavaDBUtil::ToJavaEntity(NotNullPtr<Text::StringBuilderUTF8> sb, Option
 	}
 	else
 	{
-		NotNullPtr<DB::DBReader> r;
+		NN<DB::DBReader> r;
 		if (db->QueryTableData(OPTSTR_CSTR(schemaName), tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			DB::ColDef colDef(CSTR(""));

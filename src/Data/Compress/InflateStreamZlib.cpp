@@ -9,7 +9,7 @@
 #include <stdio.h>
 #endif
 
-Data::Compress::InflateStream::InflateStream(NotNullPtr<IO::Stream> outStm, UOSInt headerSize, Bool zlibHeader) : IO::Stream(CSTR("InflateStream"))
+Data::Compress::InflateStream::InflateStream(NN<IO::Stream> outStm, UOSInt headerSize, Bool zlibHeader) : IO::Stream(CSTR("InflateStream"))
 {
 	this->outStm = outStm;
 	this->writeBuff = MemAlloc(UInt8, BUFFSIZE);
@@ -27,7 +27,7 @@ Data::Compress::InflateStream::InflateStream(NotNullPtr<IO::Stream> outStm, UOSI
 		inflateInit2(mzstm, -15);
 }
 
-Data::Compress::InflateStream::InflateStream(NotNullPtr<IO::Stream> outStm, Bool zlibHeader) : IO::Stream(CSTR("InflateStream"))
+Data::Compress::InflateStream::InflateStream(NN<IO::Stream> outStm, Bool zlibHeader) : IO::Stream(CSTR("InflateStream"))
 {
 	this->outStm = outStm;
 	this->writeBuff = MemAlloc(UInt8, BUFFSIZE);

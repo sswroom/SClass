@@ -2,7 +2,7 @@
 #include "Text/MyString.h"
 #include "UI/GUIComboBoxUtil.h"
 
-void UI::GUIComboBoxUtil::AddYearItems(NotNullPtr<UI::GUIComboBox> cbo, UOSInt nYears)
+void UI::GUIComboBoxUtil::AddYearItems(NN<UI::GUIComboBox> cbo, UOSInt nYears)
 {
 	UOSInt k;
 	UTF8Char sbuff[6];
@@ -21,7 +21,7 @@ void UI::GUIComboBoxUtil::AddYearItems(NotNullPtr<UI::GUIComboBox> cbo, UOSInt n
 	}
 }
 
-void UI::GUIComboBoxUtil::AddMonthItems(NotNullPtr<UI::GUIComboBox> cbo)
+void UI::GUIComboBoxUtil::AddMonthItems(NN<UI::GUIComboBox> cbo)
 {
 	Data::DateTime dt;
 	dt.SetCurrTime();
@@ -39,7 +39,7 @@ void UI::GUIComboBoxUtil::AddMonthItems(NotNullPtr<UI::GUIComboBox> cbo)
 	}
 }
 
-void UI::GUIComboBoxUtil::AddDayItems(NotNullPtr<UI::GUIComboBox> cbo)
+void UI::GUIComboBoxUtil::AddDayItems(NN<UI::GUIComboBox> cbo)
 {
 	Data::DateTime dt;
 	dt.SetCurrTime();

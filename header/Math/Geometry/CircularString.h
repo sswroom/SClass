@@ -13,7 +13,7 @@ namespace Math
 			virtual ~CircularString();
 
 			virtual VectorType GetVectorType() const;
-			virtual NotNullPtr<Math::Geometry::Vector2D> Clone() const;
+			virtual NN<Math::Geometry::Vector2D> Clone() const;
 		};
 	}
 }

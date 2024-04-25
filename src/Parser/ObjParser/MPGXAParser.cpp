@@ -18,7 +18,7 @@ Int32 Parser::ObjParser::MPGXAParser::GetName()
 	return *(Int32*)"MPGX";
 }
 
-void Parser::ObjParser::MPGXAParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::ObjParser::MPGXAParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::MediaFile)
 	{
@@ -31,12 +31,12 @@ IO::ParserType Parser::ObjParser::MPGXAParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::ObjParser::MPGXAParser::ParseObject(NotNullPtr<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::ObjParser::MPGXAParser::ParseObject(NN<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	NotNullPtr<IO::ISectorData> data;
+	NN<IO::ISectorData> data;
 	if (pobj->GetParserType() != IO::ParserType::SectorData)
 		return 0;
-	data = NotNullPtr<IO::ISectorData>::ConvertFrom(pobj);
+	data = NN<IO::ISectorData>::ConvertFrom(pobj);
 	if (data->GetBytesPerSector() != 2352)
 		return 0;
 

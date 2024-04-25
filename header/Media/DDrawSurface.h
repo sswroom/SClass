@@ -19,7 +19,7 @@ namespace Media
 		DDrawSurface(DDrawManager *mgr, void *lpDD, void *surface, MonitorHandle *hMon, Bool needRelease, Media::RotateType rotateType);
 		virtual ~DDrawSurface();
 
-		virtual NotNullPtr<Media::RasterImage> Clone() const;
+		virtual NN<Media::RasterImage> Clone() const;
 		virtual Media::RasterImage::ImageType GetImageType() const;
 		virtual void GetRasterData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown, Media::RotateType destRotate) const;
 
@@ -27,7 +27,7 @@ namespace Media
 		virtual void *GetHandle();
 
 		virtual Bool DrawFromBuff();
-		virtual Bool DrawFromSurface(NotNullPtr<Media::MonitorSurface> surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn, Bool waitForVBlank);
+		virtual Bool DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn, Bool waitForVBlank);
 		virtual UInt8 *LockSurface(OSInt *lineAdd);
 		virtual void UnlockSurface();
 		virtual void SetSurfaceBugMode(Bool surfaceBugMode);

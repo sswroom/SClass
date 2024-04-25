@@ -13,45 +13,45 @@ namespace SSWR
 		class SMonitorWebHandler : public Net::WebServer::WebStandardHandler
 		{
 		private:
-			typedef Bool (__stdcall *RequestHandler)(SSWR::SMonitor::SMonitorWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
+			typedef Bool (__stdcall *RequestHandler)(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
 		private:
 			SSWR::SMonitor::ISMonitorCore *core;
 			Data::FastStringMap<RequestHandler> *reqMap;
 			Net::WebServer::MemoryWebSessionManager *sessMgr;
 
-			static Bool __stdcall OnSessDeleted(NotNullPtr<Net::WebServer::IWebSession> sess, AnyType userObj);
-			static Bool __stdcall OnSessCheck(NotNullPtr<Net::WebServer::IWebSession> sess, AnyType userObj);
+			static Bool __stdcall OnSessDeleted(NN<Net::WebServer::IWebSession> sess, AnyType userObj);
+			static Bool __stdcall OnSessCheck(NN<Net::WebServer::IWebSession> sess, AnyType userObj);
 
-			static Bool __stdcall DefaultReq(SSWR::SMonitor::SMonitorWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall IndexReq(SSWR::SMonitor::SMonitorWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall LoginReq(SSWR::SMonitor::SMonitorWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall LogoutReq(SSWR::SMonitor::SMonitorWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall DeviceReq(SSWR::SMonitor::SMonitorWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall DeviceEditReq(SSWR::SMonitor::SMonitorWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall DeviceReadingReq(SSWR::SMonitor::SMonitorWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall DeviceDigitalsReq(SSWR::SMonitor::SMonitorWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall DeviceReadingImgReq(SSWR::SMonitor::SMonitorWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall DevicePastDataReq(SSWR::SMonitor::SMonitorWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall DevicePastDataImgReq(SSWR::SMonitor::SMonitorWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall UserPasswordReq(SSWR::SMonitor::SMonitorWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall UsersReq(SSWR::SMonitor::SMonitorWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall UserAddReq(SSWR::SMonitor::SMonitorWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall UserAssignReq(SSWR::SMonitor::SMonitorWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall DefaultReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall IndexReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall LoginReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall LogoutReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall DeviceReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall DeviceEditReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall DeviceReadingReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall DeviceDigitalsReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall DeviceReadingImgReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall DevicePastDataReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall DevicePastDataImgReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall UserPasswordReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall UsersReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall UserAddReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall UserAssignReq(SSWR::SMonitor::SMonitorWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
 
 			static void __stdcall WriteHeaderBegin(IO::Writer *writer);
 			static void __stdcall WriteHeaderEnd(IO::Writer *writer);
 			static void __stdcall WriteMenu(IO::Writer *writer, Optional<Net::WebServer::IWebSession> sess);
 			static void __stdcall WriteHTMLText(IO::Writer *writer, const UTF8Char *txt);
-			static void __stdcall WriteHTMLText(IO::Writer *writer, NotNullPtr<Text::String> txt);
+			static void __stdcall WriteHTMLText(IO::Writer *writer, NN<Text::String> txt);
 			static void __stdcall WriteHTMLText(IO::Writer *writer, Text::CString txt);
 			static void __stdcall WriteAttrText(IO::Writer *writer, const UTF8Char *txt);
 			static void __stdcall WriteAttrText(IO::Writer *writer, Text::String *txt);
-			static void __stdcall WriteAttrText(IO::Writer *writer, NotNullPtr<Text::String> txt);
+			static void __stdcall WriteAttrText(IO::Writer *writer, NN<Text::String> txt);
 			static void __stdcall WriteJSText(IO::Writer *writer, const UTF8Char *txt);
 			static void __stdcall WriteJSText(IO::Writer *writer, Text::String *txt);
-			static void __stdcall WriteJSText(IO::Writer *writer, NotNullPtr<Text::String> txt);
+			static void __stdcall WriteJSText(IO::Writer *writer, NN<Text::String> txt);
 
-			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
+			virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 
 		public:
 			SMonitorWebHandler(SSWR::SMonitor::ISMonitorCore *core);

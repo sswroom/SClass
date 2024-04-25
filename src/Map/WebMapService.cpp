@@ -44,7 +44,7 @@ void Map::WebMapService::LoadXML(Version version)
 		return;
 	mstm.SeekFromBeginning(0);
 	Text::XMLReader reader(this->encFact, mstm, Text::XMLReader::PM_XML);
-	NotNullPtr<Text::String> nodeName;
+	NN<Text::String> nodeName;
 	if (reader.NextElementName().SetTo(nodeName))
 	{
 		if (nodeName->Equals(UTF8STRC("WMS_Capabilities")) || nodeName->Equals(UTF8STRC("WMT_MS_Capabilities")))
@@ -109,10 +109,10 @@ void Map::WebMapService::LoadXML(Version version)
 	this->SetLayer(0);
 }
 
-void Map::WebMapService::LoadXMLRequest(NotNullPtr<Text::XMLReader> reader)
+void Map::WebMapService::LoadXMLRequest(NN<Text::XMLReader> reader)
 {
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<Text::String> nodeName;
+	NN<Text::String> nodeName;
 	while (reader->NextElementName().SetTo(nodeName))
 	{
 		if (nodeName->Equals(UTF8STRC("GetCapabilities")))
@@ -183,10 +183,10 @@ void Map::WebMapService::LoadXMLRequest(NotNullPtr<Text::XMLReader> reader)
 	}
 }
 
-void Map::WebMapService::LoadXMLLayers(NotNullPtr<Text::XMLReader> reader)
+void Map::WebMapService::LoadXMLLayers(NN<Text::XMLReader> reader)
 {
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<Text::String> nodeName;
+	NN<Text::String> nodeName;
 	while (reader->NextElementName().SetTo(nodeName))
 	{
 		if (nodeName->Equals(UTF8STRC("Layer")))
@@ -195,7 +195,7 @@ void Map::WebMapService::LoadXMLLayers(NotNullPtr<Text::XMLReader> reader)
 			Text::String *layerName = 0;
 			Text::String *layerTitle = 0;
 			Data::ArrayListNN<LayerCRS> layerCRS;
-			NotNullPtr<LayerCRS> crs;
+			NN<LayerCRS> crs;
 			UOSInt i;
 			Text::XMLAttrib *attr;
 			i = reader->GetAttribCount();
@@ -287,10 +287,10 @@ void Map::WebMapService::LoadXMLLayers(NotNullPtr<Text::XMLReader> reader)
 					reader->SkipElement();
 				}
 			}
-			NotNullPtr<Text::String> s;
+			NN<Text::String> s;
 			if (s.Set(layerName) && layerTitle && layerCRS.GetCount() > 0)
 			{
-				NotNullPtr<LayerInfo> layer;
+				NN<LayerInfo> layer;
 				NEW_CLASSNN(layer, LayerInfo());
 				layer->name = s;
 				layer->title = layerTitle;
@@ -318,7 +318,7 @@ void Map::WebMapService::LoadXMLLayers(NotNullPtr<Text::XMLReader> reader)
 	}
 }
 
-Map::WebMapService::WebMapService(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString wmsURL, Version version, NotNullPtr<Math::CoordinateSystem> envCsys)
+Map::WebMapService::WebMapService(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString wmsURL, Version version, NN<Math::CoordinateSystem> envCsys)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -347,8 +347,8 @@ Map::WebMapService::~WebMapService()
 		OPTSTR_DEL(this->infoTypeNames.GetItem(i));
 	}
 	i = this->layers.GetCount();
-	NotNullPtr<LayerInfo> layer;
-	NotNullPtr<LayerCRS> crs;
+	NN<LayerInfo> layer;
+	NN<LayerCRS> crs;
 	UOSInt j;
 	while (i-- > 0)
 	{
@@ -369,22 +369,22 @@ Map::WebMapService::~WebMapService()
 	this->csys.Delete();
 }
 
-NotNullPtr<Text::String> Map::WebMapService::GetName() const
+NN<Text::String> Map::WebMapService::GetName() const
 {
-	NotNullPtr<LayerInfo> layer;
+	NN<LayerInfo> layer;
 	if (!this->layers.GetItem(this->layer).SetTo(layer))
 		return Text::String::NewEmpty();
 	return layer->name;
 }
 
-NotNullPtr<Math::CoordinateSystem> Map::WebMapService::GetCoordinateSystem() const
+NN<Math::CoordinateSystem> Map::WebMapService::GetCoordinateSystem() const
 {
 	return this->csys;
 }
 
 Math::RectAreaDbl Map::WebMapService::GetInitBounds() const
 {
-	NotNullPtr<LayerCRS> currCRS;
+	NN<LayerCRS> currCRS;
 	if (this->currCRS.SetTo(currCRS))
 		return currCRS->bounds;
 	return Math::RectAreaDbl(0, 0, 0, 0);
@@ -392,7 +392,7 @@ Math::RectAreaDbl Map::WebMapService::GetInitBounds() const
 
 Bool Map::WebMapService::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 {
-	NotNullPtr<LayerCRS> currCRS;
+	NN<LayerCRS> currCRS;
 	if (this->currCRS.SetTo(currCRS))
 	{
 		bounds.Set(currCRS->bounds);
@@ -403,16 +403,16 @@ Bool Map::WebMapService::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 
 Bool Map::WebMapService::CanQuery() const
 {
-	NotNullPtr<LayerInfo> layer;
+	NN<LayerInfo> layer;
 	return this->layers.GetItem(this->layer).SetTo(layer) && layer->queryable;
 }
 
-Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NotNullPtr<Data::ArrayList<UOSInt>> valueOfstList, NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListNN<Text::String>> valueList)
+Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayList<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
 {
-	NotNullPtr<LayerInfo> layer;
-	NotNullPtr<Text::String> imgFormat;
-	NotNullPtr<Text::String> infoFormat;
-	NotNullPtr<LayerCRS> currCRS;
+	NN<LayerInfo> layer;
+	NN<Text::String> imgFormat;
+	NN<Text::String> infoFormat;
+	NN<LayerCRS> currCRS;
 	if (!this->layers.GetItem(this->layer).SetTo(layer) || !layer->queryable || !this->infoTypeNames.GetItem(this->infoType).SetTo(infoFormat) || !this->mapImageTypeNames.GetItem(this->mapImageType).SetTo(imgFormat) || !this->currCRS.SetTo(currCRS))
 		return false;
 
@@ -497,7 +497,7 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 
 	UInt8 dataBuff[2048];
 	UOSInt readSize;
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 	{
 		Text::StringBuilderUTF8 sbData;
@@ -546,9 +546,9 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 Optional<Media::ImageList> Map::WebMapService::DrawMap(Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Optional<Text::StringBuilderUTF8> sbUrl)
 {
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<Text::String> imgFormat;
-	NotNullPtr<LayerInfo> layer;
-	NotNullPtr<LayerCRS> currCRS;
+	NN<Text::String> imgFormat;
+	NN<LayerInfo> layer;
+	NN<LayerCRS> currCRS;
 	if (!this->layers.GetItem(this->layer).SetTo(layer) || !this->mapImageTypeNames.GetItem(this->mapImageType).SetTo(imgFormat) || !this->currCRS.SetTo(currCRS))
 		return 0;
 	if (currCRS->swapXY)
@@ -603,7 +603,7 @@ Optional<Media::ImageList> Map::WebMapService::DrawMap(Math::RectAreaDbl bounds,
 		sb.AppendC(UTF8STRC("&styles=&format="));
 		Text::TextBinEnc::FormEncoding::FormEncode(sb, imgFormat->v, imgFormat->leng);
 	}
-	NotNullPtr<Text::StringBuilderUTF8> nnsb;
+	NN<Text::StringBuilderUTF8> nnsb;
 	if (sbUrl.SetTo(nnsb))
 	{
 		nnsb->Append(sb);
@@ -615,7 +615,7 @@ Optional<Media::ImageList> Map::WebMapService::DrawMap(Math::RectAreaDbl bounds,
 	UInt8 dataBuff[2048];
 	UOSInt readSize;
 	Media::ImageList *ret = 0;
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	Bool succ = cli->GetRespStatus() == Net::WebStatus::SC_OK;
 	if (succ)
 	{
@@ -675,10 +675,10 @@ UOSInt Map::WebMapService::GetInfoType() const
 
 UOSInt Map::WebMapService::GetLayerCRS() const
 {
-	NotNullPtr<LayerCRS> currCRS;
+	NN<LayerCRS> currCRS;
 	if (!this->currCRS.SetTo(currCRS))
 		return INVALID_INDEX;
-	NotNullPtr<LayerInfo> layer;
+	NN<LayerInfo> layer;
 	if (this->layers.GetItem(this->layer).SetTo(layer))
 	{
 		return layer->crsList.IndexOf(currCRS);
@@ -700,8 +700,8 @@ void Map::WebMapService::SetLayer(UOSInt index)
 	{
 		this->layer = index;
 		Math::CoordinateSystem *csys;
-		NotNullPtr<LayerInfo> layer = this->layers.GetItemNoCheck(index);
-		NotNullPtr<LayerCRS> crs;
+		NN<LayerInfo> layer = this->layers.GetItemNoCheck(index);
+		NN<LayerCRS> crs;
 		Bool found = false;
 		UOSInt i = 0;
 		UOSInt j = layer->crsList.GetCount();
@@ -751,17 +751,17 @@ void Map::WebMapService::SetMapImageType(UOSInt index)
 
 void Map::WebMapService::SetLayerCRS(UOSInt index)
 {
-	NotNullPtr<LayerInfo> layer;
+	NN<LayerInfo> layer;
 	if (this->layers.GetItem(this->layer).SetTo(layer) && index < layer->crsList.GetCount())
 	{
-		NotNullPtr<LayerCRS> crs = layer->crsList.GetItemNoCheck(index);
+		NN<LayerCRS> crs = layer->crsList.GetItemNoCheck(index);
 		this->currCRS = crs;
 		this->csys.Delete();
 		this->csys = Math::CoordinateSystemManager::CreateFromNameOrDef(crs->name->ToCString());
 	}
 }
 
-UOSInt Map::WebMapService::GetLayerNames(NotNullPtr<Data::ArrayListStringNN> nameList) const
+UOSInt Map::WebMapService::GetLayerNames(NN<Data::ArrayListStringNN> nameList) const
 {
 	UOSInt i = 0;
 	UOSInt j = this->layers.GetCount();
@@ -773,19 +773,19 @@ UOSInt Map::WebMapService::GetLayerNames(NotNullPtr<Data::ArrayListStringNN> nam
 	return j;
 }
 
-UOSInt Map::WebMapService::GetMapImageTypeNames(NotNullPtr<Data::ArrayListStringNN> nameList) const
+UOSInt Map::WebMapService::GetMapImageTypeNames(NN<Data::ArrayListStringNN> nameList) const
 {
 	return nameList->AddAll(this->mapImageTypeNames);
 }
 
-UOSInt Map::WebMapService::GetInfoTypeNames(NotNullPtr<Data::ArrayListStringNN> nameList) const
+UOSInt Map::WebMapService::GetInfoTypeNames(NN<Data::ArrayListStringNN> nameList) const
 {
 	return nameList->AddAll(this->infoTypeNames);
 }
 
-UOSInt Map::WebMapService::GetLayerCRSNames(NotNullPtr<Data::ArrayListNN<Text::String>> nameList) const
+UOSInt Map::WebMapService::GetLayerCRSNames(NN<Data::ArrayListNN<Text::String>> nameList) const
 {
-	NotNullPtr<LayerInfo> layer;
+	NN<LayerInfo> layer;
 	if (!this->layers.GetItem(this->layer).SetTo(layer))
 		return 0;
 	UOSInt i = 0;

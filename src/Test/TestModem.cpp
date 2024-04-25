@@ -135,7 +135,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 	if (!quick)
 	{
 		Data::ArrayListNN<IO::GSMModemController::Operator> operList;
-		NotNullPtr<IO::GSMModemController::Operator> oper;
+		NN<IO::GSMModemController::Operator> oper;
 		if (modem->GSMGetAllowedOperators(operList))
 		{
 
@@ -216,7 +216,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 	}
 
 	Data::ArrayListNN<IO::GSMModemController::SMSMessage> smsList;
-	NotNullPtr<IO::GSMModemController::SMSMessage> sms;
+	NN<IO::GSMModemController::SMSMessage> sms;
 	if (modem->SMSListMessages(smsList, IO::GSMModemController::SMSS_ALL))
 	{
 

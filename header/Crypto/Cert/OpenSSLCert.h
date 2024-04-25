@@ -25,7 +25,7 @@ namespace Crypto
 
 			virtual Optional<Crypto::Cert::X509Cert> CreateX509Cert() const;
 
-			virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+			virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 		};
 	}
 }

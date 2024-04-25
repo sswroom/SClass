@@ -4,7 +4,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRGoogleTileMapForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGoogleTileMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGoogleTileMapForm>();
+	NN<SSWR::AVIRead::AVIRGoogleTileMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGoogleTileMapForm>();
 	switch (me->cboMapType->GetSelectedIndex())
 	{
 	case 0:
@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRGoogleTileMapForm::OnOKClicked(AnyType userObj
 	}
 }
 
-SSWR::AVIRead::AVIRGoogleTileMapForm::AVIRGoogleTileMapForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl) : UI::GUIForm(parent, 400, 120, ui)
+SSWR::AVIRead::AVIRGoogleTileMapForm::AVIRGoogleTileMapForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl) : UI::GUIForm(parent, 400, 120, ui)
 {
 	this->SetText(CSTR("Google Tile Map"));
 	this->SetFont(0, 0, 8.25, false);

@@ -4,7 +4,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRPaintCntForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPaintCntForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPaintCntForm>();
+	NN<SSWR::AVIRead::AVIRPaintCntForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPaintCntForm>();
 	if (me->dispCnt != me->paintCnt)
 	{
 		UTF8Char sbuff[32];
@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRPaintCntForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRPaintCntForm::AVIRPaintCntForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRPaintCntForm::AVIRPaintCntForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Paint Counter"));

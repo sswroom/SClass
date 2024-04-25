@@ -49,7 +49,7 @@ void UI::GUIControl::InitControl(InstanceHandle *hInst, void *parentHWnd, const 
 void UI::GUIControl::InitControl(InstanceHandle *hInst, Optional<UI::GUIClientControl> parent, const WChar *className, const UTF8Char *txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h)
 {
 	this->fontHeightPt = 0.0;
-	NotNullPtr<GUIClientControl> nnparent;
+	NN<GUIClientControl> nnparent;
 	if (parent.SetTo(nnparent))
 	{
 		Math::Coord2DDbl ofst = nnparent->GetClientOfst();
@@ -95,7 +95,7 @@ void UI::GUIControl::InitControl(InstanceHandle *hInst, Optional<UI::GUIClientCo
 //	UpdateBGColor();
 }
 
-UI::GUIControl::GUIControl(NotNullPtr<GUICore> ui, Optional<UI::GUIClientControl> parent)
+UI::GUIControl::GUIControl(NN<GUICore> ui, Optional<UI::GUIClientControl> parent)
 {
 	this->dropHdlr = 0;
 	this->inited = false;
@@ -109,7 +109,7 @@ UI::GUIControl::GUIControl(NotNullPtr<GUICore> ui, Optional<UI::GUIClientControl
 	this->fontName = 0;
 	this->fontHeightPt = 0;
 	this->fontIsBold = false;
-	NotNullPtr<GUIClientControl> nnparent;
+	NN<GUIClientControl> nnparent;
 	if (parent.SetTo(nnparent))
 	{
 		this->hdpi = nnparent->GetHDPI();
@@ -157,7 +157,7 @@ UI::InstanceHandle *UI::GUIControl::GetHInst()
 
 void *UI::GUIControl::GetFont()
 {
-	NotNullPtr<GUIClientControl> nnparent;
+	NN<GUIClientControl> nnparent;
 	if (hFont)
 	{
 		return hFont;
@@ -198,7 +198,7 @@ UTF8Char *UI::GUIControl::GetText(UTF8Char *buff)
 	return Text::StrWChar_UTF8(buff, wbuff);
 }
 
-Bool UI::GUIControl::GetText(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool UI::GUIControl::GetText(NN<Text::StringBuilderUTF8> sb)
 {
 	UOSInt leng = (UOSInt)GetWindowTextLengthW((HWND)hwnd);
 	WChar *wptr = MemAlloc(WChar, leng + 1);
@@ -251,7 +251,7 @@ void UI::GUIControl::SetArea(Double left, Double top, Double right, Double botto
 	if (left == this->lxPos && top == this->lyPos && right == this->lxPos2 && bottom == this->lyPos2)
 		return;
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
-	NotNullPtr<GUIClientControl> nnparent;
+	NN<GUIClientControl> nnparent;
 	if (this->parent.SetTo(nnparent))
 	{
 		ofst = nnparent->GetClientOfst();
@@ -271,7 +271,7 @@ void UI::GUIControl::SetArea(Double left, Double top, Double right, Double botto
 void UI::GUIControl::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, Bool updateScn)
 {
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
-	NotNullPtr<GUIClientControl> nnparent;
+	NN<GUIClientControl> nnparent;
 	if (this->parent.SetTo(nnparent))
 	{
 		ofst = nnparent->GetClientOfst();
@@ -336,7 +336,7 @@ void UI::GUIControl::InitFont()
 
 void UI::GUIControl::SetDockType(UI::GUIControl::DockType dockType)
 {
-	NotNullPtr<GUIClientControl> nnparent;
+	NN<GUIClientControl> nnparent;
 	if (this->dockType != dockType)
 	{
 		this->dockType = dockType;
@@ -388,7 +388,7 @@ void UI::GUIControl::SetVisible(Bool isVisible)
 	}
 	if (changed && this->dockType != UI::GUIControl::DOCK_NONE)
 	{
-		NotNullPtr<GUIClientControl> nnparent;
+		NN<GUIClientControl> nnparent;
 		if (this->parent.SetTo(nnparent))
 		{
 			nnparent->UpdateChildrenSize(true);
@@ -426,7 +426,7 @@ void *UI::GUIControl::GetBGBrush()
 {
 	if (this->hbrBackground)
 		return this->hbrBackground;
-	NotNullPtr<GUIClientControl> nnparent;
+	NN<GUIClientControl> nnparent;
 	if (this->parent.SetTo(nnparent))
 		return nnparent->GetBGBrush();
 	return 0;
@@ -434,7 +434,7 @@ void *UI::GUIControl::GetBGBrush()
 
 Bool UI::GUIControl::IsFormFocused()
 {
-	NotNullPtr<GUIClientControl> nnparent;
+	NN<GUIClientControl> nnparent;
 	if (this->parent.SetTo(nnparent))
 	{
 		return nnparent->IsFormFocused();
@@ -546,7 +546,7 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 	}
 #endif
 
-	NotNullPtr<GUIClientControl> nnparent;
+	NN<GUIClientControl> nnparent;
 	if (this->parent.SetTo(nnparent))
 	{
 		Math::Coord2DDbl ofst = nnparent->GetClientOfst();
@@ -763,7 +763,7 @@ Double UI::GUIControl::GetDDPI()
 	return this->ddpi;
 }
 
-Media::DrawFont *UI::GUIControl::CreateDrawFont(NotNullPtr<Media::DrawImage> img)
+Media::DrawFont *UI::GUIControl::CreateDrawFont(NN<Media::DrawImage> img)
 {
 	void *f = this->GetFont();
 	if (f == 0)

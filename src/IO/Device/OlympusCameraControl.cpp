@@ -10,7 +10,7 @@ void IO::Device::OlympusCameraControl::GetCommandList()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	NotNullPtr<Net::HTTPClient> cli;
+	NN<Net::HTTPClient> cli;
 	Text::StringBuilderUTF8 sb;
 	Text::XMLAttrib *attr;
 	UOSInt i;
@@ -20,7 +20,7 @@ void IO::Device::OlympusCameraControl::GetCommandList()
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/get_commandlist.cgi"));
 	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	Text::XMLReader reader(this->encFact, cli, Text::XMLReader::PM_XML);
-	NotNullPtr<Text::String> nodeName;
+	NN<Text::String> nodeName;
 	while (reader.NextElementName().SetTo(nodeName))
 	{
 		if (nodeName->Equals(UTF8STRC("oishare")))
@@ -85,10 +85,10 @@ void IO::Device::OlympusCameraControl::GetImageList()
 		NEW_CLASS(this->fileList, Data::ArrayListNN<IO::Device::OlympusCameraControl::FileInfo>());
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
-		NotNullPtr<Net::HTTPClient> cli;
+		NN<Net::HTTPClient> cli;
 		Text::UTF8Reader *reader;
 		Text::StringBuilderUTF8 sb;
-		NotNullPtr<IO::CameraControl::FileInfo> file;
+		NN<IO::CameraControl::FileInfo> file;
 		UTF8Char *sarr[7];
 		Data::DateTime dt;
 		Int32 dateVal;
@@ -140,10 +140,10 @@ void IO::Device::OlympusCameraControl::GetGPSLogList()
 	}
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	NotNullPtr<Net::HTTPClient> cli;
+	NN<Net::HTTPClient> cli;
 	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<IO::CameraControl::FileInfo> file;
+	NN<IO::CameraControl::FileInfo> file;
 	UTF8Char *sarr[11];
 	Data::DateTime dt;
 	Int32 dateVal;
@@ -189,10 +189,10 @@ void IO::Device::OlympusCameraControl::GetSNSLogList()
 	}
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	NotNullPtr<Net::HTTPClient> cli;
+	NN<Net::HTTPClient> cli;
 	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<IO::CameraControl::FileInfo> file;
+	NN<IO::CameraControl::FileInfo> file;
 	UTF8Char *sarr[11];
 	Data::DateTime dt;
 	Int32 dateVal;
@@ -229,7 +229,7 @@ void IO::Device::OlympusCameraControl::GetSNSLogList()
 	cli.Delete();
 }
 
-IO::Device::OlympusCameraControl::OlympusCameraControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Text::EncodingFactory> encFact, const Net::SocketUtil::AddressInfo *addr) : IO::CameraControl()
+IO::Device::OlympusCameraControl::OlympusCameraControl(NN<Net::SocketFactory> sockf, Optional<Text::EncodingFactory> encFact, const Net::SocketUtil::AddressInfo *addr) : IO::CameraControl()
 {
 	this->addr = *addr;
 	this->sockf = sockf;
@@ -245,7 +245,7 @@ IO::Device::OlympusCameraControl::~OlympusCameraControl()
 	this->cmdList.FreeAll();
 	if (this->fileList)
 	{
-		NotNullPtr<IO::CameraControl::FileInfo> file;
+		NN<IO::CameraControl::FileInfo> file;
 		UOSInt i = this->fileList->GetCount();
 		while (i-- > 0)
 		{
@@ -258,7 +258,7 @@ IO::Device::OlympusCameraControl::~OlympusCameraControl()
 	SDEL_STRING(this->oiTrackVersion);
 }
 
-UOSInt IO::Device::OlympusCameraControl::GetInfoList(NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListStringNN> valueList)
+UOSInt IO::Device::OlympusCameraControl::GetInfoList(NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListStringNN> valueList)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt initCnt = nameList->GetCount();
@@ -280,13 +280,13 @@ UOSInt IO::Device::OlympusCameraControl::GetInfoList(NotNullPtr<Data::ArrayListS
 	return nameList->GetCount() - initCnt;
 }
 
-void IO::Device::OlympusCameraControl::FreeInfoList(NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListStringNN> valueList)
+void IO::Device::OlympusCameraControl::FreeInfoList(NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListStringNN> valueList)
 {
 	nameList->FreeAll();
 	valueList->FreeAll();
 }
 
-UOSInt IO::Device::OlympusCameraControl::GetFileList(NotNullPtr<Data::ArrayListNN<IO::Device::OlympusCameraControl::FileInfo>> fileList)
+UOSInt IO::Device::OlympusCameraControl::GetFileList(NN<Data::ArrayListNN<IO::Device::OlympusCameraControl::FileInfo>> fileList)
 {
 	if (this->fileList == 0)
 	{
@@ -294,7 +294,7 @@ UOSInt IO::Device::OlympusCameraControl::GetFileList(NotNullPtr<Data::ArrayListN
 		this->GetGPSLogList();
 		this->GetSNSLogList();
 	}
-	NotNullPtr<Data::ArrayListNN<IO::Device::OlympusCameraControl::FileInfo>> nnfileList;
+	NN<Data::ArrayListNN<IO::Device::OlympusCameraControl::FileInfo>> nnfileList;
 	if (nnfileList.Set(this->fileList))
 	{
 		fileList->AddAll(nnfileList);
@@ -303,14 +303,14 @@ UOSInt IO::Device::OlympusCameraControl::GetFileList(NotNullPtr<Data::ArrayListN
 	return 0;
 }
 
-Bool IO::Device::OlympusCameraControl::GetFile(NotNullPtr<IO::Device::OlympusCameraControl::FileInfo> file, NotNullPtr<IO::Stream> outStm)
+Bool IO::Device::OlympusCameraControl::GetFile(NN<IO::Device::OlympusCameraControl::FileInfo> file, NN<IO::Stream> outStm)
 {
 	UTF8Char sbuff[2048];
 	UOSInt readSize;
 	UInt64 totalSize = 0;
 	UInt64 totalWriteSize = 0;
 	UTF8Char *sptr;
-	NotNullPtr<Net::HTTPClient> cli;
+	NN<Net::HTTPClient> cli;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
 	sptr = Net::SocketUtil::GetAddrName(sptr, this->addr);
 	if (Text::StrEndsWith(file->fileName, (const UTF8Char*)".SNS"))
@@ -336,13 +336,13 @@ Bool IO::Device::OlympusCameraControl::GetFile(NotNullPtr<IO::Device::OlympusCam
 	return totalSize == file->fileSize && totalSize == totalWriteSize;
 }
 
-Bool IO::Device::OlympusCameraControl::GetThumbnailFile(NotNullPtr<IO::Device::OlympusCameraControl::FileInfo> file, NotNullPtr<IO::Stream> outStm)
+Bool IO::Device::OlympusCameraControl::GetThumbnailFile(NN<IO::Device::OlympusCameraControl::FileInfo> file, NN<IO::Stream> outStm)
 {
 	UTF8Char sbuff[2048];
 	UOSInt readSize;
 	UInt64 totalSize = 0;
 	UTF8Char *sptr;
-	NotNullPtr<Net::HTTPClient> cli;
+	NN<Net::HTTPClient> cli;
 	if (Text::StrEndsWith(file->fileName, (const UTF8Char*)".SNS"))
 	{
 		return false;
@@ -375,18 +375,18 @@ Text::String *IO::Device::OlympusCameraControl::GetOITrackVersion()
 	return this->oiTrackVersion;
 }
 
-Bool IO::Device::OlympusCameraControl::GetModel(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::Device::OlympusCameraControl::GetModel(NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	NotNullPtr<Net::HTTPClient> cli;
+	NN<Net::HTTPClient> cli;
 	Bool found = false;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
 	sptr = Net::SocketUtil::GetAddrName(sptr, this->addr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/get_caminfo.cgi"));
 	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	Text::XMLReader reader(this->encFact, cli, Text::XMLReader::PM_XML);
-	NotNullPtr<Text::String> nodeText;
+	NN<Text::String> nodeText;
 	while (reader.NextElementName().SetTo(nodeText))
 	{
 		if (nodeText->Equals(UTF8STRC("caminfo")))
@@ -413,10 +413,10 @@ Bool IO::Device::OlympusCameraControl::GetModel(NotNullPtr<Text::StringBuilderUT
 	return found;
 }
 
-IO::Device::OlympusCameraControl *IO::Device::OlympusCameraControl::CreateControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Text::EncodingFactory> encFact)
+IO::Device::OlympusCameraControl *IO::Device::OlympusCameraControl::CreateControl(NN<Net::SocketFactory> sockf, Optional<Text::EncodingFactory> encFact)
 {
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
-	NotNullPtr<Net::ConnectionInfo> connInfo;
+	NN<Net::ConnectionInfo> connInfo;
 	Bool found = false;
 	if (sockf->GetConnInfoList(connInfoList) == 0)
 		return 0;

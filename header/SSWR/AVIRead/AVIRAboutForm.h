@@ -10,13 +10,13 @@ namespace SSWR
 		class AVIRAboutForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIButton> btn;
+			NN<UI::GUIButton> btn;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
 			static void __stdcall OKClicked(AnyType userObj);
 		public:
-			AVIRAboutForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRAboutForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRAboutForm();
 
 			virtual void OnMonitorChanged();

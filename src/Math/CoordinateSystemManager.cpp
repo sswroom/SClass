@@ -431,9 +431,9 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::SRCreateCSys(UInt32 epsgI
 	return 0;
 }
 
-NotNullPtr<Math::CoordinateSystem> Math::CoordinateSystemManager::SRCreateCSysOrDef(UInt32 epsgId)
+NN<Math::CoordinateSystem> Math::CoordinateSystemManager::SRCreateCSysOrDef(UInt32 epsgId)
 {
-	NotNullPtr<Math::CoordinateSystem> csys;
+	NN<Math::CoordinateSystem> csys;
 	if (csys.Set(SRCreateCSys(epsgId)))
 		return csys;
 	else
@@ -447,7 +447,7 @@ Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::SRCreateProjCSys
 	{
 		return 0;
 	}
-	NotNullPtr<Math::GeographicCoordinateSystem> gcsys;
+	NN<Math::GeographicCoordinateSystem> gcsys;
 	if (!gcsys.Set(SRCreateGeogCSys(projcs->geogcsSRID)))
 	{
 		return 0;
@@ -526,9 +526,9 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::CreateFromName(Text::CStr
 	return 0;
 }
 
-NotNullPtr<Math::CoordinateSystem> Math::CoordinateSystemManager::CreateFromNameOrDef(Text::CStringNN name)
+NN<Math::CoordinateSystem> Math::CoordinateSystemManager::CreateFromNameOrDef(Text::CStringNN name)
 {
-	NotNullPtr<Math::CoordinateSystem> csys;
+	NN<Math::CoordinateSystem> csys;
 	if (csys.Set(CreateFromName(name)))
 		return csys;
 	else
@@ -565,7 +565,7 @@ const Math::CoordinateSystemManager::DatumInfo *Math::CoordinateSystemManager::G
 	return 0;
 }
 
-void Math::CoordinateSystemManager::FillDatumData(NotNullPtr<Math::GeographicCoordinateSystem::DatumData1> data, const Math::CoordinateSystemManager::DatumInfo *datum, Text::CString name, NotNullPtr<Math::EarthEllipsoid> ee, const SpheroidInfo *spheroid)
+void Math::CoordinateSystemManager::FillDatumData(NN<Math::GeographicCoordinateSystem::DatumData1> data, const Math::CoordinateSystemManager::DatumInfo *datum, Text::CString name, NN<Math::EarthEllipsoid> ee, const SpheroidInfo *spheroid)
 {
 	if (datum)
 	{
@@ -627,9 +627,9 @@ Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::CreateProjCoordi
 	return CreateProjCoordinateSystem(name.OrEmpty(), name.v);
 }
 
-NotNullPtr<Math::CoordinateSystem> Math::CoordinateSystemManager::CreateProjCoordinateSystemDefNameOrDef(ProjCoordSysType pcst)
+NN<Math::CoordinateSystem> Math::CoordinateSystemManager::CreateProjCoordinateSystemDefNameOrDef(ProjCoordSysType pcst)
 {
-	NotNullPtr<Math::CoordinateSystem> csys;
+	NN<Math::CoordinateSystem> csys;
 	if (!csys.Set(CreateProjCoordinateSystemDefName(pcst)))
 		csys = CreateDefaultCsys();
 	return csys;
@@ -638,7 +638,7 @@ NotNullPtr<Math::CoordinateSystem> Math::CoordinateSystemManager::CreateProjCoor
 Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::CreateProjCoordinateSystem(Text::CStringNN sourceName, const UTF8Char *projName)
 {
 	const Math::CoordinateSystemManager::ProjectedCSysInfo *coord = GetProjCoordinateSystemInfo(projName);
-	NotNullPtr<Math::GeographicCoordinateSystem> gcs;
+	NN<Math::GeographicCoordinateSystem> gcs;
 	Math::ProjectedCoordinateSystem *csys = 0;
 	if (coord == 0)
 	{
@@ -771,9 +771,9 @@ const Math::CoordinateSystemManager::GeographicCSysInfo *Math::CoordinateSystemM
 	return 0;
 }
 
-NotNullPtr<Math::GeographicCoordinateSystem> Math::CoordinateSystemManager::CreateDefaultCsys()
+NN<Math::GeographicCoordinateSystem> Math::CoordinateSystemManager::CreateDefaultCsys()
 {
-	NotNullPtr<Math::GeographicCoordinateSystem> csys;
+	NN<Math::GeographicCoordinateSystem> csys;
 	const Math::CoordinateSystemManager::DatumInfo *datum = GetDatumInfoByName((const UTF8Char*)"WGS_1984");
 	Math::EarthEllipsoid ellipsoid(Math::EarthEllipsoid::EET_WGS84);
 	Math::GeographicCoordinateSystem::DatumData1 data;

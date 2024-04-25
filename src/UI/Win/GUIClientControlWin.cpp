@@ -5,7 +5,7 @@
 #include "UI/GUIClientControl.h"
 #include <windows.h>
 
-UI::GUIClientControl::GUIClientControl(NotNullPtr<GUICore> ui, Optional<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
+UI::GUIClientControl::GUIClientControl(NN<GUICore> ui, Optional<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
 {
 	this->hasFillCtrl = false;
 	this->undockLeft = 0;
@@ -26,7 +26,7 @@ void UI::GUIClientControl::UpdateFont()
 	{
 		SendMessage((HWND)this->hwnd, WM_SETFONT, (WPARAM)font, TRUE);
 	}
-	Data::ArrayIterator<NotNullPtr<UI::GUIControl>> it = this->children.Iterator();
+	Data::ArrayIterator<NN<UI::GUIControl>> it = this->children.Iterator();
 	while (it.HasNext())
 	{
 		it.Next()->UpdateFont();
@@ -35,10 +35,10 @@ void UI::GUIClientControl::UpdateFont()
 
 void UI::GUIClientControl::ClearChildren()
 {
-	Data::ArrayIterator<NotNullPtr<GUIControl>> it = this->children.Iterator();
+	Data::ArrayIterator<NN<GUIControl>> it = this->children.Iterator();
 	while (it.HasNext())
 	{
-		NotNullPtr<GUIControl> ctrl = it.Next();
+		NN<GUIControl> ctrl = it.Next();
 		ctrl->DestroyObject();
 		ctrl.Delete();
 	}
@@ -77,7 +77,7 @@ Math::Size2DDbl UI::GUIClientControl::GetClientSize()
 	return Math::Size2DDbl(rc.right - rc.left, rc.bottom - rc.top) * this->ddpi / this->hdpi;
 }
 
-void UI::GUIClientControl::AddChild(NotNullPtr<GUIControl> child)
+void UI::GUIClientControl::AddChild(NN<GUIControl> child)
 {
 	this->children.Add(child);
 }
@@ -92,7 +92,7 @@ Optional<UI::GUIControl> UI::GUIClientControl::GetChild(UOSInt index) const
 	return this->children.GetItem(index);
 }
 
-Data::ArrayIterator<NotNullPtr<UI::GUIControl>> UI::GUIClientControl::ChildIterator() const
+Data::ArrayIterator<NN<UI::GUIControl>> UI::GUIClientControl::ChildIterator() const
 {
 	return this->children.Iterator();
 }
@@ -104,11 +104,11 @@ void UI::GUIClientControl::UpdateChildrenSize(Bool redraw)
 	Math::Size2DDbl br;
 	Math::Size2DDbl ctrlSz;
 	Bool hasFill = false;
-	NotNullPtr<GUIControl> ctrl;
+	NN<GUIControl> ctrl;
 	DockType dt;
 
 	br = GetClientSize();
-	Data::ArrayIterator<NotNullPtr<GUIControl>> it = this->children.Iterator();
+	Data::ArrayIterator<NN<GUIControl>> it = this->children.Iterator();
 	while (it.HasNext())
 	{
 		ctrl = it.Next();
@@ -197,7 +197,7 @@ void UI::GUIClientControl::SetDPI(Double hdpi, Double ddpi)
 	{
 		this->UpdateFont();
 	}
-	Data::ArrayIterator<NotNullPtr<GUIControl>> it = this->children.Iterator();
+	Data::ArrayIterator<NN<GUIControl>> it = this->children.Iterator();
 	while (it.HasNext())
 	{
 		it.Next()->SetDPI(hdpi, ddpi);

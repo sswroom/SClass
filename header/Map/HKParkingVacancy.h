@@ -13,7 +13,7 @@ namespace Map
 	private:
 		struct ParkingInfo
 		{
-			NotNullPtr<Text::String> parkId;
+			NN<Text::String> parkId;
 			Optional<Text::String> parkingNameEn;
 			Optional<Text::String> parkingAddressEn;
 			Optional<Text::String> parkingDistictEn;
@@ -35,7 +35,7 @@ namespace Map
 	private:
 		Data::FastStringMapNN<ParkingInfo> parkingMap;
 		Sync::Mutex parkingMut;
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;
 		Math::RectAreaDbl bounds;
 
@@ -43,20 +43,20 @@ namespace Map
 		void LoadVacancy();
 		static void ParkingInfoFree(NN<ParkingInfo> parking);
 	public:
-		HKParkingVacancy(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
+		HKParkingVacancy(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
 		virtual ~HKParkingVacancy();
 
 		virtual DrawLayerType GetLayerType() const;
-		virtual UOSInt GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr);
-		virtual UOSInt GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
-		virtual UOSInt GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
+		virtual UOSInt GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr);
+		virtual UOSInt GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty);
+		virtual UOSInt GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty);
 		virtual Int64 GetObjectIdMax() const;
 		virtual void ReleaseNameArr(NameArray *nameArr);
-		virtual Bool GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex);
+		virtual Bool GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex);
 		virtual UOSInt GetColumnCnt() const;
 		virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize);
-		virtual Bool GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
+		virtual Bool GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef);
 		virtual UInt32 GetCodePage() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> rect) const;
 

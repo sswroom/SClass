@@ -7,7 +7,7 @@
 #include "Media/Decoder/FFMPEGDecoder.h"
 #include "Parser/FullParserList.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	UOSInt cmdCnt;

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRCoordSysForm.h"
 
-SSWR::AVIRead::AVIRCoordSysForm::AVIRCoordSysForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Math::CoordinateSystem *csys) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRCoordSysForm::AVIRCoordSysForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Math::CoordinateSystem *csys) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Coordinate System"));
 	this->SetFont(0, 0, 8.25, false);

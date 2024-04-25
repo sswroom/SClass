@@ -73,7 +73,7 @@ gboolean UI::GTK::GTKHSplitter::SignalMouseUp(GtkWidget *widget, GdkEvent *event
 	return false;
 }
 
-UI::GTK::GTKHSplitter::GTKHSplitter(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Int32 width, Bool isRight) : UI::GUIHSplitter(ui, parent)
+UI::GTK::GTKHSplitter::GTKHSplitter(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Int32 width, Bool isRight) : UI::GUIHSplitter(ui, parent)
 {
 	this->dragMode = false;
 	this->isRight = isRight;
@@ -112,10 +112,10 @@ void UI::GTK::GTKHSplitter::EventMouseUp(UI::GUIControl::MouseButton btn, Math::
 {
 	if (btn == UI::GUIControl::MBTN_LEFT)
 	{
-		NotNullPtr<GUIClientControl> nnparent;
+		NN<GUIClientControl> nnparent;
 		if (this->dragMode && this->parent.SetTo(nnparent))
 		{
-			NotNullPtr<UI::GUIControl> ctrl;
+			NN<UI::GUIControl> ctrl;
 			Bool foundThis = false;
 			OSInt drawX = pos.x - this->dragX;
 			pos = this->GetPositionP();

@@ -29,16 +29,16 @@ namespace IO
 			UOSInt maxLev;
 
 			void ParseRange(UOSInt lev, UInt64 ofst, UInt64 size);
-			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> thread);
+			static void __stdcall ParseThread(NN<Sync::Thread> thread);
 			UOSInt GetFrameIndex(UOSInt lev, UInt64 ofst);
 		public:
-			QTFileAnalyse(NotNullPtr<IO::StreamData> fd);
+			QTFileAnalyse(NN<IO::StreamData> fd);
 			virtual ~QTFileAnalyse();
 
 			virtual Text::CStringNN GetFormatName();
 			virtual UOSInt GetFrameCount();
-			virtual Bool GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
-			virtual Bool GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual Bool GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
+			virtual Bool GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst);
 			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index);
 

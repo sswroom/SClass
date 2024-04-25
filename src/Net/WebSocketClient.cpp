@@ -243,7 +243,7 @@ const UInt8 *Net::WebSocketClient::NextPacket(UInt8 *opcode, UOSInt *packetSize)
 	}
 }
 
-const UInt8 *Net::WebSocketClient::NextPacket(NotNullPtr<Sync::MutexUsage> mutUsage, UOSInt *packetSize)
+const UInt8 *Net::WebSocketClient::NextPacket(NN<Sync::MutexUsage> mutUsage, UOSInt *packetSize)
 {
 	mutUsage->ReplaceMutex(this->recvMut);
 	if (this->cli == 0)
@@ -279,7 +279,7 @@ const UInt8 *Net::WebSocketClient::NextPacket(NotNullPtr<Sync::MutexUsage> mutUs
 	}
 }
 
-Net::WebSocketClient::WebSocketClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString path, Text::CString origin, Protocol protocol, Data::Duration timeout) : Stream(CSTR("WebSocket"))
+Net::WebSocketClient::WebSocketClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString path, Text::CString origin, Protocol protocol, Data::Duration timeout) : Stream(CSTR("WebSocket"))
 {
 	this->recvCapacity = 4096;
 	this->recvBuff = MemAlloc(UInt8, this->recvCapacity);
@@ -290,7 +290,7 @@ Net::WebSocketClient::WebSocketClient(NotNullPtr<Net::SocketFactory> sockf, Opti
 	this->recvDataOfst = 0;
 	this->recvDataSize = 0;
 
-	NotNullPtr<Net::SSLEngine> nnssl;
+	NN<Net::SSLEngine> nnssl;
 	if (ssl.SetTo(nnssl))
 	{
 		this->cli = nnssl->ClientConnect(host, port, 0, timeout);
@@ -434,7 +434,7 @@ UTF8Char *Net::WebSocketClient::GetLocalName(UTF8Char *buff) const
 	return 0;
 }
 
-Bool Net::WebSocketClient::GetRemoteAddr(NotNullPtr<Net::SocketUtil::AddressInfo> addr) const
+Bool Net::WebSocketClient::GetRemoteAddr(NN<Net::SocketUtil::AddressInfo> addr) const
 {
 	if (this->cli)
 	{

@@ -11,13 +11,13 @@ Optional<Text::String> Map::OSM::OSMTileMap::GetNextURL()
 	return thisUrl;
 }
 
-Map::OSM::OSMTileMap::OSMTileMap(Text::CStringNN url, Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl) : Map::MercatorTileMap(cacheDir, minLevel, maxLevel, sockf, ssl)
+Map::OSM::OSMTileMap::OSMTileMap(Text::CStringNN url, Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl) : Map::MercatorTileMap(cacheDir, minLevel, maxLevel, sockf, ssl)
 {
 	this->urls.Add(Text::String::New(url));
 	this->urlNext = 0;
 }
 
-Map::OSM::OSMTileMap::OSMTileMap(Text::CStringNN url, IO::SPackageFile *spkg, UOSInt minLevel, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl) : Map::MercatorTileMap(CSTR_NULL, minLevel, maxLevel, sockf, ssl)
+Map::OSM::OSMTileMap::OSMTileMap(Text::CStringNN url, IO::SPackageFile *spkg, UOSInt minLevel, UOSInt maxLevel, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl) : Map::MercatorTileMap(CSTR_NULL, minLevel, maxLevel, sockf, ssl)
 {
 	this->urls.Add(Text::String::New(url));
 	this->urlNext = 0;
@@ -62,7 +62,7 @@ UOSInt Map::OSM::OSMTileMap::GetConcurrentCount() const
 UTF8Char *Map::OSM::OSMTileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
 {
 	UTF8Char *sptr;
-	NotNullPtr<Text::String> thisUrl;
+	NN<Text::String> thisUrl;
 	if (this->GetNextURL().SetTo(thisUrl))
 	{
 		sptr = thisUrl->ConcatTo(sbuff);
@@ -77,9 +77,9 @@ UTF8Char *Map::OSM::OSMTileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt level, M
 	return 0;
 }
 
-Bool Map::OSM::OSMTileMap::GetTileImageURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
+Bool Map::OSM::OSMTileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (this->GetNextURL().SetTo(s))
 	{
 		sb->Append(s);

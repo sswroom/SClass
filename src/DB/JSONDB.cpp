@@ -55,7 +55,7 @@ public:
 	{
 		if (this->obj == 0)
 			return 0;
-		NotNullPtr<DB::ColDef> col;
+		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
 		return this->obj->GetValueAsInt32(col->GetColName()->ToCString());
@@ -65,7 +65,7 @@ public:
 	{
 		if (this->obj == 0)
 			return 0;
-		NotNullPtr<DB::ColDef> col;
+		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
 		return this->obj->GetValueAsInt64(col->GetColName()->ToCString());
@@ -75,10 +75,10 @@ public:
 	{
 		if (this->obj == 0)
 			return 0;
-		NotNullPtr<DB::ColDef> col;
+		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		if (this->obj->GetValueString(col->GetColName()->ToCString()).SetTo(s))
 		{
 			return Text::StrUTF8_WChar(buff, s->v, 0);
@@ -92,14 +92,14 @@ public:
 		return 0;
 	}
 
-	virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+	virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 	{
 		if (this->obj == 0)
 			return false;
-		NotNullPtr<DB::ColDef> col;
+		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return false;
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		if (this->obj->GetValueString(col->GetColName()->ToCString()).SetTo(s))
 		{
 			sb->Append(s);
@@ -118,7 +118,7 @@ public:
 	{
 		if (this->obj == 0)
 			return 0;
-		NotNullPtr<DB::ColDef> col;
+		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
 		return this->obj->GetValueNewString(col->GetColName()->ToCString());
@@ -128,10 +128,10 @@ public:
 	{
 		if (this->obj == 0)
 			return 0;
-		NotNullPtr<DB::ColDef> col;
+		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		if (this->obj->GetValueString(col->GetColName()->ToCString()).SetTo(s))
 		{
 			return s->ConcatToS(buff, buffSize);
@@ -149,10 +149,10 @@ public:
 	{
 		if (this->obj == 0)
 			return 0;
-		NotNullPtr<DB::ColDef> col;
+		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		if (this->obj->GetValueString(col->GetColName()->ToCString()).SetTo(s))
 		{
 			return Data::Timestamp::FromStr(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
@@ -164,7 +164,7 @@ public:
 	{
 		if (this->obj == 0)
 			return 0;
-		NotNullPtr<DB::ColDef> col;
+		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
 		return this->obj->GetValueAsDouble(col->GetColName()->ToCString());
@@ -174,7 +174,7 @@ public:
 	{
 		if (this->obj == 0)
 			return 0;
-		NotNullPtr<DB::ColDef> col;
+		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
 		return this->obj->GetValueAsBool(col->GetColName()->ToCString());
@@ -195,7 +195,7 @@ public:
 		return 0;
 	}
 
-	virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
+	virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 	{
 		return false;
 	}
@@ -204,7 +204,7 @@ public:
 	{
 		if (this->obj == 0)
 			return true;
-		NotNullPtr<DB::ColDef> col;
+		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return true;
 		Text::JSONBase *o = this->obj->GetObjectValue(col->GetColName()->ToCString());
@@ -213,7 +213,7 @@ public:
 
 	virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff)
 	{
-		NotNullPtr<DB::ColDef> col;
+		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return 0;
 		return col->GetColName()->ConcatTo(buff);
@@ -221,16 +221,16 @@ public:
 
 	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 	{
-		NotNullPtr<DB::ColDef> col;
+		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return DB::DBUtil::CT_Unknown;
 		colSize.Set(col->GetColSize());
 		return col->GetColType();
 	}
 
-	virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+	virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 	{
-		NotNullPtr<DB::ColDef> col;
+		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
 			return false;
 		colDef->Set(col);
@@ -238,7 +238,7 @@ public:
 	}
 };
 
-DB::JSONDB::JSONDB(NotNullPtr<Text::String> sourceName, Text::CString layerName, Text::JSONArray *data) : DB::ReadingDB(sourceName)
+DB::JSONDB::JSONDB(NN<Text::String> sourceName, Text::CString layerName, Text::JSONArray *data) : DB::ReadingDB(sourceName)
 {
 	this->layerName = Text::String::New(layerName);
 	this->data = data;
@@ -251,7 +251,7 @@ DB::JSONDB::~JSONDB()
 	this->data->EndUse();
 }
 
-UOSInt DB::JSONDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt DB::JSONDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	names->Add(this->layerName->Clone());
 	return 1;
@@ -261,7 +261,7 @@ Optional<DB::DBReader> DB::JSONDB::QueryTableData(Text::CString schemaName, Text
 {
 	if (tableName.Equals(this->layerName->ToCString()))
 	{
-		NotNullPtr<JSONDBReader> r;
+		NN<JSONDBReader> r;
 		UOSInt endOfst;
 		if (maxCnt == 0)
 			endOfst = this->data->GetArrayLength();
@@ -285,10 +285,10 @@ DB::TableDef *DB::JSONDB::GetTableDef(Text::CString schemaName, Text::CString ta
 		Data::ArrayListStringNN names;
 		Text::JSONObject *obj = (Text::JSONObject*)json;
 		Text::JSONType type;
-		NotNullPtr<DB::ColDef> col;
+		NN<DB::ColDef> col;
 		obj->GetObjectNames(names);
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = names.Iterator();
-		NotNullPtr<Text::String> name;
+		Data::ArrayIterator<NN<Text::String>> it = names.Iterator();
+		NN<Text::String> name;
 		while (it.HasNext())
 		{
 			name = it.Next();
@@ -334,13 +334,13 @@ DB::TableDef *DB::JSONDB::GetTableDef(Text::CString schemaName, Text::CString ta
 	return tab;
 }
 
-void DB::JSONDB::CloseReader(NotNullPtr<DBReader> r)
+void DB::JSONDB::CloseReader(NN<DBReader> r)
 {
 	JSONDBReader *reader = (JSONDBReader*)r.Ptr();
 	DEL_CLASS(reader);
 }
 
-void DB::JSONDB::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void DB::JSONDB::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 }
 

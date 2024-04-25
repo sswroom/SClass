@@ -55,7 +55,7 @@ Math::EarthEllipsoid::EarthEllipsoid(Double semiMajorAxis, Double inverseFlatten
 
 Math::EarthEllipsoid::EarthEllipsoid(EarthEllipsoidType eet)
 {
-	NotNullPtr<const Math::EarthEllipsoid::EarthEllipsoidInfo> info = GetEarthInfo(eet);
+	NN<const Math::EarthEllipsoid::EarthEllipsoidInfo> info = GetEarthInfo(eet);
 	this->eet = info->eet;
 	this->semiMajorAxis = info->semiMajorAxis;
 	this->inverseFlattening = info->inverseFlattening;
@@ -66,7 +66,7 @@ Math::EarthEllipsoid::EarthEllipsoid(EarthEllipsoidType eet)
 
 Math::EarthEllipsoid::EarthEllipsoid()
 {
-	NotNullPtr<const Math::EarthEllipsoid::EarthEllipsoidInfo> info = GetEarthInfo(Math::EarthEllipsoid::EET_OTHER);
+	NN<const Math::EarthEllipsoid::EarthEllipsoidInfo> info = GetEarthInfo(Math::EarthEllipsoid::EET_OTHER);
 	this->eet = info->eet;
 	this->semiMajorAxis = info->semiMajorAxis;
 	this->inverseFlattening = info->inverseFlattening;
@@ -113,7 +113,7 @@ Double Math::EarthEllipsoid::CalSurfaceDistance(Double dLat1, Double dLon1, Doub
 	return d;
 }
 
-Double Math::EarthEllipsoid::CalLineStringDistance(NotNullPtr<Math::Geometry::LineString> lineString, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::EarthEllipsoid::CalLineStringDistance(NN<Math::Geometry::LineString> lineString, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const
 {
 	UOSInt nPoint;
 	UOSInt nAlts;
@@ -170,9 +170,9 @@ Double Math::EarthEllipsoid::CalLineStringDistance(NotNullPtr<Math::Geometry::Li
 	}
 }
 
-Double Math::EarthEllipsoid::CalPLDistance(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::EarthEllipsoid::CalPLDistance(NN<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
 {
-	NotNullPtr<Math::Geometry::LineString> lineString;
+	NN<Math::Geometry::LineString> lineString;
 	UOSInt i = pl->GetCount();
 	Double totalDist = 0;
 	while (i-- > 0)
@@ -185,9 +185,9 @@ Double Math::EarthEllipsoid::CalPLDistance(NotNullPtr<Math::Geometry::Polyline> 
 	return totalDist;
 }
 
-Double Math::EarthEllipsoid::CalPLDistance3D(NotNullPtr<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::EarthEllipsoid::CalPLDistance3D(NN<Math::Geometry::Polyline> pl, Math::Unit::Distance::DistanceUnit unit) const
 {
-	NotNullPtr<Math::Geometry::LineString> lineString;
+	NN<Math::Geometry::LineString> lineString;
 	UOSInt i = pl->GetCount();
 	Double totalDist = 0;
 	while (i-- > 0)
@@ -223,7 +223,7 @@ Text::CStringNN Math::EarthEllipsoid::GetName() const
 	return GetEarthInfo(this->eet)->name;
 }
 
-void Math::EarthEllipsoid::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Math::EarthEllipsoid::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	sb->AppendC(UTF8STRC("Semi-Major Axis: "));
 	Text::SBAppendF64(sb, this->GetSemiMajorAxis());
@@ -249,9 +249,9 @@ void Math::EarthEllipsoid::operator=(const EarthEllipsoid *ellipsoid)
 	this->eet = ellipsoid->eet;
 }
 
-NotNullPtr<Math::EarthEllipsoid> Math::EarthEllipsoid::Clone() const
+NN<Math::EarthEllipsoid> Math::EarthEllipsoid::Clone() const
 {
-	NotNullPtr<Math::EarthEllipsoid> ellipsoid;
+	NN<Math::EarthEllipsoid> ellipsoid;
 	NEW_CLASSNN(ellipsoid, Math::EarthEllipsoid(this->semiMajorAxis, this->inverseFlattening, this->eet));
 	return ellipsoid;
 }
@@ -292,7 +292,7 @@ Math::Vector3 Math::EarthEllipsoid::FromCartesianCoordRad(Math::Vector3 coord) c
 	return Math::Vector3(rLon, rLat, p / Math_Cos(rLat) - v);
 }
 
-NotNullPtr<const Math::EarthEllipsoid::EarthEllipsoidInfo> Math::EarthEllipsoid::GetEarthInfo(EarthEllipsoidType eet)
+NN<const Math::EarthEllipsoid::EarthEllipsoidInfo> Math::EarthEllipsoid::GetEarthInfo(EarthEllipsoidType eet)
 {
 	OSInt i = 0;
 	OSInt j = (OSInt)(sizeof(refEllipsoids) / sizeof(refEllipsoids[0])) - 1;

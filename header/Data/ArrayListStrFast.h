@@ -11,7 +11,7 @@ namespace Data
 		ArrayListStrFast();
 		ArrayListStrFast(UOSInt capacity);
 
-		virtual NotNullPtr<Data::ArrayList<Text::String*>> Clone() const;
+		virtual NN<Data::ArrayList<Text::String*>> Clone() const;
 		virtual OSInt Compare(Text::String *obj1, Text::String *obj2) const;
 		OSInt SortedIndexOf(Text::CString str) const;
 	};

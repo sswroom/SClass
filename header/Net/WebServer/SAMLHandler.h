@@ -40,7 +40,7 @@ namespace Net
 		{
 		public:
 			typedef void (__stdcall *SAMLStrFunc)(AnyType userObj, Text::CString msg);
-			typedef Bool (__stdcall *SAMLLoginFunc)(AnyType userObj, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, const SAMLMessage *msg);
+			typedef Bool (__stdcall *SAMLLoginFunc)(AnyType userObj, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, const SAMLMessage *msg);
 		private:
 			WebStandardHandler *defHdlr;
 			Optional<Net::SSLEngine> ssl;
@@ -57,15 +57,15 @@ namespace Net
 			AnyType loginObj;
 
 		protected:
-			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
+			virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 		public:
-			SAMLHandler(NotNullPtr<SAMLConfig> cfg, Optional<Net::SSLEngine> ssl, WebStandardHandler *defHdlr);
+			SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEngine> ssl, WebStandardHandler *defHdlr);
 			virtual ~SAMLHandler();
 
 			SAMLError GetInitError();
-			Bool GetLogoutURL(NotNullPtr<Text::StringBuilderUTF8> sb);
-			Bool GetMetadataURL(NotNullPtr<Text::StringBuilderUTF8> sb);
-			Bool GetSSOURL(NotNullPtr<Text::StringBuilderUTF8> sb);
+			Bool GetLogoutURL(NN<Text::StringBuilderUTF8> sb);
+			Bool GetMetadataURL(NN<Text::StringBuilderUTF8> sb);
+			Bool GetSSOURL(NN<Text::StringBuilderUTF8> sb);
 			void HandleRAWSAMLResponse(SAMLStrFunc hdlr, AnyType userObj);
 			void HandleLoginRequest(SAMLLoginFunc hdlr, AnyType userObj);
 			Optional<Crypto::Cert::X509PrivKey> GetKey();

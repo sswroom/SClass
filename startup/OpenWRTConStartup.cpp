@@ -5,7 +5,7 @@
 #include <signal.h>
 #include <unistd.h>
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl);
+Int32 MyMain(NN<Core::IProgControl> progCtrl);
 
 struct LinuxProgControl : public Core::IProgControl
 {
@@ -17,7 +17,7 @@ void LinuxProgControl_OnSignal(Int32 sigNum)
 {
 }
 
-void __stdcall LinuxProgControl_WaitForExit(NotNullPtr<Core::IProgControl> progCtrl)
+void __stdcall LinuxProgControl_WaitForExit(NN<Core::IProgControl> progCtrl)
 {
 	signal(SIGINT, LinuxProgControl_OnSignal);
 	signal(SIGPIPE, LinuxProgControl_OnSignal);
@@ -25,17 +25,17 @@ void __stdcall LinuxProgControl_WaitForExit(NotNullPtr<Core::IProgControl> progC
 //	getchar();
 }
 
-void __stdcall LinuxProgControl_SignalExit(NotNullPtr<Core::IProgControl> progCtrl)
+void __stdcall LinuxProgControl_SignalExit(NN<Core::IProgControl> progCtrl)
 {
 	raise(SIGINT);
 }
 
-Optional<UI::GUICore> __stdcall Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
+Optional<UI::GUICore> __stdcall Core::IProgControl::CreateGUICore(NN<Core::IProgControl> progCtrl)
 {
 	return 0;
 }
 
-UTF8Char **__stdcall LinuxProgControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
+UTF8Char **__stdcall LinuxProgControl_GetCommandLines(NN<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
 {
 	LinuxProgControl *ctrl = (LinuxProgControl*)progCtrl.Ptr();
 	cmdCnt.Set(ctrl->argc);

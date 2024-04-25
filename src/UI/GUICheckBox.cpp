@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "UI/GUICheckBox.h"
 
-UI::GUICheckBox::GUICheckBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
+UI::GUICheckBox::GUICheckBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
 {
 }
 

@@ -9,7 +9,7 @@
 #include <stdio.h>
 
 #define DATACNT 10000
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 //	Data::StringMap<UInt32> map;
 	Data::FastStringMap<UInt32> map;
@@ -19,7 +19,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UTF8Char *sptr;
 	UInt32 val;
 	UInt32 val2;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	val = 0;
 	while (val < DATACNT)
 	{

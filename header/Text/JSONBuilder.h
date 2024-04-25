@@ -35,9 +35,9 @@ namespace Text
 		void AppendDateStr(Data::Date dat);
 		void AppendCoord2D(Math::Coord2DDbl coord);
 		void AppendCoord2DArray(const Math::Coord2DDbl *coordList, UOSInt nPoints);
-		void AppendCoordPL(NotNullPtr<Math::Geometry::Polyline> pl);
-		void AppendCoordPG(NotNullPtr<Math::Geometry::Polygon> pg);
-		void AppendGeometry(NotNullPtr<Math::Geometry::Vector2D> vec);
+		void AppendCoordPL(NN<Math::Geometry::Polyline> pl);
+		void AppendCoordPG(NN<Math::Geometry::Polygon> pg);
+		void AppendGeometry(NN<Math::Geometry::Vector2D> vec);
 	public:
 		JSONBuilder(ObjectType rootType);
 		~JSONBuilder();
@@ -48,12 +48,12 @@ namespace Text
 		Bool ArrayAddBool(Bool val);
 		Bool ArrayAddStr(Text::PString *val);
 		Bool ArrayAddStr(Text::CString val);
-		Bool ArrayAddStr(NotNullPtr<Text::String> val);
+		Bool ArrayAddStr(NN<Text::String> val);
 		Bool ArrayAddStrUTF8(const UTF8Char *val);
 		Bool ArrayAddNull();
 		Bool ArrayAddCoord2D(Math::Coord2DDbl coord);
 		Bool ArrayAddVector3(Math::Vector3 vec3);
-		Bool ArrayAdd(NotNullPtr<Text::JSONArray> arr);
+		Bool ArrayAdd(NN<Text::JSONArray> arr);
 		Bool ArrayBeginObject();
 		Bool ArrayBeginArray();
 		Bool ArrayEnd();
@@ -64,7 +64,7 @@ namespace Text
 		Bool ObjectAddUInt64(Text::CStringNN name, UInt64 val);
 		Bool ObjectAddBool(Text::CStringNN name, Bool val);
 		Bool ObjectAddStr(Text::CStringNN name, Text::PString *val);
-		Bool ObjectAddStr(Text::CStringNN name, NotNullPtr<const Text::String> val);
+		Bool ObjectAddStr(Text::CStringNN name, NN<const Text::String> val);
 		Bool ObjectAddStr(Text::CStringNN name, Text::CString val);
 		Bool ObjectAddStrOpt(Text::CStringNN name, Optional<Text::String> val);
 		Bool ObjectAddStrUTF8(Text::CStringNN name, const UTF8Char *val);
@@ -76,10 +76,10 @@ namespace Text
 		Bool ObjectAddCoord2D(Text::CStringNN name, Math::Coord2DDbl coord);
 		Bool ObjectAddArrayCoord2D(Text::CStringNN name, Data::ArrayListA<Math::Coord2DDbl> *coordArr);
 		Bool ObjectAddVector3(Text::CStringNN name, Math::Vector3 vec3);
-		Bool ObjectAddGeometry(Text::CStringNN name, NotNullPtr<Math::Geometry::Vector2D> vec);
+		Bool ObjectAddGeometry(Text::CStringNN name, NN<Math::Geometry::Vector2D> vec);
 		Bool ObjectAddGeometryOpt(Text::CStringNN name, Optional<Math::Geometry::Vector2D> vec);
-		Bool ObjectAddVarItem(Text::CStringNN name, NotNullPtr<Data::VariItem> item);
-		Bool ObjectAdd(NotNullPtr<Text::JSONObject> obj);
+		Bool ObjectAddVarItem(Text::CStringNN name, NN<Data::VariItem> item);
+		Bool ObjectAdd(NN<Text::JSONObject> obj);
 		Bool ObjectBeginArray(Text::CStringNN name);
 		Bool ObjectBeginObject(Text::CStringNN name);
 		Bool ObjectEnd();

@@ -7,19 +7,19 @@
 
 void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnOkClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNBHandlerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBHandlerForm>();
+	NN<SSWR::AVIRead::AVIRSNBHandlerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBHandlerForm>();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
 void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNBHandlerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBHandlerForm>();
+	NN<SSWR::AVIRead::AVIRSNBHandlerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBHandlerForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
 void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnTypeSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSNBHandlerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBHandlerForm>();
+	NN<SSWR::AVIRead::AVIRSNBHandlerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBHandlerForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	OSInt val = me->cboType->GetSelectedItem().GetOSInt();
@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnTypeSelChg(AnyType userObj)
 	me->pbImage->SetImage(0);
 	SDEL_CLASS(me->simg);
 
-	NotNullPtr<Parser::ParserList> parsers = me->core->GetParserList();
+	NN<Parser::ParserList> parsers = me->core->GetParserList();
 	Media::ImageList *imgList;
 	{
 		IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnTypeSelChg(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRSNBHandlerForm::AVIRSNBHandlerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::SNBDongle::HandleType handType) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRSNBHandlerForm::AVIRSNBHandlerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::SNBDongle::HandleType handType) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("SnB Handle Type"));
 	this->SetFont(0, 0, 8.25, false);

@@ -16,23 +16,23 @@ namespace SSWR
 		class AVIRTextHashForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Text::TextBinEnc::TextBinEncList encList;
 
-			NotNullPtr<UI::GUILabel> lblText;
-			NotNullPtr<UI::GUITextBox> txtText;
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUILabel> lblEncrypt;
-			NotNullPtr<UI::GUIComboBox> cboEncrypt;
-			NotNullPtr<UI::GUILabel> lblHashType;
-			NotNullPtr<UI::GUIComboBox> cboHashType;
-			NotNullPtr<UI::GUIButton> btnGenerate;
-			NotNullPtr<UI::GUILabel> lblHashValue;
-			NotNullPtr<UI::GUITextBox> txtHashValue;
+			NN<UI::GUILabel> lblText;
+			NN<UI::GUITextBox> txtText;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUILabel> lblEncrypt;
+			NN<UI::GUIComboBox> cboEncrypt;
+			NN<UI::GUILabel> lblHashType;
+			NN<UI::GUIComboBox> cboHashType;
+			NN<UI::GUIButton> btnGenerate;
+			NN<UI::GUILabel> lblHashValue;
+			NN<UI::GUITextBox> txtHashValue;
 
 			static void __stdcall OnGenerateClicked(AnyType userObj);
 		public:
-			AVIRTextHashForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRTextHashForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRTextHashForm();
 
 			virtual void OnMonitorChanged();

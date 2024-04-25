@@ -31,7 +31,7 @@ Optional<IO::ConfigFile> IO::JavaProperties::Parse(Text::CStringNN fileName)
 	return cfg;
 }
 
-Optional<IO::ConfigFile> IO::JavaProperties::ParseReader(NotNullPtr<Text::UTF8Reader> reader)
+Optional<IO::ConfigFile> IO::JavaProperties::ParseReader(NN<Text::UTF8Reader> reader)
 {
 	UTF8Char buff[1024];
 	UTF8Char *name;

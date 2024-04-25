@@ -8,11 +8,11 @@ namespace DB
 	class MDBFileConn : public DB::ODBCConn
 	{
 	public:
-		MDBFileConn(Text::CStringNN fileName, NotNullPtr<IO::LogTool> log, UInt32 codePage, const WChar *uid, const WChar *pwd);
+		MDBFileConn(Text::CStringNN fileName, NN<IO::LogTool> log, UInt32 codePage, const WChar *uid, const WChar *pwd);
 	public:
 		static Bool CreateMDBFile(Text::CStringNN fileName);
-		static DBTool *CreateDBTool(NotNullPtr<Text::String> fileName, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
-		static DBTool *CreateDBTool(Text::CStringNN fileName, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
+		static DBTool *CreateDBTool(NN<Text::String> fileName, NN<IO::LogTool> log, Text::CString logPrefix);
+		static DBTool *CreateDBTool(Text::CStringNN fileName, NN<IO::LogTool> log, Text::CString logPrefix);
 	};
 }
 #endif

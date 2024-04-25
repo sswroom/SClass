@@ -2,9 +2,9 @@
 #include "MyMemory.h"
 #include "Net/SNMPTrapMonitor.h"
 
-void __stdcall Net::SNMPTrapMonitor::OnSNMPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::SNMPTrapMonitor::OnSNMPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	NotNullPtr<Net::SNMPTrapMonitor> me = userData.GetNN<Net::SNMPTrapMonitor>();
+	NN<Net::SNMPTrapMonitor> me = userData.GetNN<Net::SNMPTrapMonitor>();
 	Net::SNMPUtil::TrapInfo trap;
 	Data::ArrayList<Net::SNMPUtil::BindingItem*> itemList;
 	Net::SNMPUtil::ErrorStatus err;
@@ -30,7 +30,7 @@ void __stdcall Net::SNMPTrapMonitor::OnSNMPPacket(NotNullPtr<const Net::SocketUt
 	}
 }
 
-Net::SNMPTrapMonitor::SNMPTrapMonitor(NotNullPtr<Net::SocketFactory> sockf, SNMPTrapHandler hdlr, AnyType userObj, NotNullPtr<IO::LogTool> log)
+Net::SNMPTrapMonitor::SNMPTrapMonitor(NN<Net::SocketFactory> sockf, SNMPTrapHandler hdlr, AnyType userObj, NN<IO::LogTool> log)
 {
 	this->hdlr = hdlr;
 	this->hdlrObj = userObj;

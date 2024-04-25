@@ -5,17 +5,17 @@
 #include "Media/DrawEngineFactory.h"
 #include "Text/MyString.h"
 
-void GenerateAngle(NotNullPtr<Media::DrawEngine> deng, UOSInt angleDegree)
+void GenerateAngle(NN<Media::DrawEngine> deng, UOSInt angleDegree)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	sptr = Text::StrUOSInt(sbuff, angleDegree);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
-	NotNullPtr<Media::DrawImage> dimg;
+	NN<Media::DrawImage> dimg;
 	if (dimg.Set(deng->CreateImage32(Math::Size2D<UOSInt>(160, 160), Media::AlphaType::AT_NO_ALPHA)))
 	{
-		NotNullPtr<Media::DrawFont> f = dimg->NewFontPt(CSTR("Arial"), 9, Media::DrawEngine::DFS_NORMAL, 0);
-		NotNullPtr<Media::DrawBrush> b = dimg->NewBrushARGB(0xffffffff);
+		NN<Media::DrawFont> f = dimg->NewFontPt(CSTR("Arial"), 9, Media::DrawEngine::DFS_NORMAL, 0);
+		NN<Media::DrawBrush> b = dimg->NewBrushARGB(0xffffffff);
 		dimg->DrawStringRot(Math::Coord2DDbl(80, 80), CSTRP(sbuff, sptr), f, b, UOSInt2Double(angleDegree));
 		dimg->DelBrush(b);
 		dimg->DelFont(f);
@@ -25,9 +25,9 @@ void GenerateAngle(NotNullPtr<Media::DrawEngine> deng, UOSInt angleDegree)
 	}
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	NotNullPtr<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
+	NN<Media::DrawEngine> deng = Media::DrawEngineFactory::CreateDrawEngine();
 	GenerateAngle(deng, 0);
 	GenerateAngle(deng, 45);
 	GenerateAngle(deng, 90);

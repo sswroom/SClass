@@ -6,7 +6,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSMTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSMTPClientForm>();
+	NN<SSWR::AVIRead::AVIRSMTPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSMTPClientForm>();
 	Text::StringBuilderUTF8 sb1;
 	Text::StringBuilderUTF8 sb2;
 	UInt16 port;
@@ -98,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(AnyType userObj)
 	me->txtLog->SetText(sbLog.ToCString());
 }
 
-SSWR::AVIRead::AVIRSMTPClientForm::AVIRSMTPClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRSMTPClientForm::AVIRSMTPClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("SMTP Client"));

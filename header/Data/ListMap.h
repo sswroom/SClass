@@ -11,10 +11,10 @@ namespace Data
 		virtual ~ListMap() {};
 
 		virtual T GetKey(UOSInt index) const = 0;
-		void PutAll(NotNullPtr<const ListMap<T,V>> map);
+		void PutAll(NN<const ListMap<T,V>> map);
 	};
 
-	template <class T, class V> void ListMap<T, V>::PutAll(NotNullPtr<const ListMap<T,V>> map)
+	template <class T, class V> void ListMap<T, V>::PutAll(NN<const ListMap<T,V>> map)
 	{
 		UOSInt i;
 		UOSInt j;

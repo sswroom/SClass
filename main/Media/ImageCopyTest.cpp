@@ -11,7 +11,7 @@
 #define HEIGHT 2160
 #define LOOPCNT 100
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Media::ImageCopy *imgCopy;
 	IO::ConsoleWriter *console;

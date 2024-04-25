@@ -8,7 +8,7 @@ Bool DB::PostgreSQLConn::Connect()
 	return false;
 }
 
-DB::PostgreSQLConn::PostgreSQLConn(NotNullPtr<Text::String> server, UInt16 port, Text::String *uid, Text::String *pwd, NotNullPtr<Text::String> database, NotNullPtr<IO::LogTool> log) : DBConn(server)
+DB::PostgreSQLConn::PostgreSQLConn(NN<Text::String> server, UInt16 port, Text::String *uid, Text::String *pwd, NN<Text::String> database, NN<IO::LogTool> log) : DBConn(server)
 {
 	this->clsData = 0;
 	this->tzQhr = 0;
@@ -24,7 +24,7 @@ DB::PostgreSQLConn::PostgreSQLConn(NotNullPtr<Text::String> server, UInt16 port,
 	this->Connect();
 }
 
-DB::PostgreSQLConn::PostgreSQLConn(Text::CStringNN server, UInt16 port, Text::CString uid, Text::CString pwd, Text::CString database, NotNullPtr<IO::LogTool> log) : DBConn(server)
+DB::PostgreSQLConn::PostgreSQLConn(Text::CStringNN server, UInt16 port, Text::CString uid, Text::CString pwd, Text::CString database, NN<IO::LogTool> log) : DBConn(server)
 {
 	this->clsData = 0;
 	this->tzQhr = 0;
@@ -69,7 +69,7 @@ void DB::PostgreSQLConn::ForceTz(Int8 tzQhr)
 	this->tzQhr = tzQhr;
 }
 
-void DB::PostgreSQLConn::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
+void DB::PostgreSQLConn::GetConnName(NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("PostgreSQL"));
 }
@@ -93,12 +93,12 @@ Optional<DB::DBReader> DB::PostgreSQLConn::ExecuteReader(Text::CStringNN sql)
 	return 0;
 }
 
-void DB::PostgreSQLConn::CloseReader(NotNullPtr<DB::DBReader> r)
+void DB::PostgreSQLConn::CloseReader(NN<DB::DBReader> r)
 {
 
 }
 
-void DB::PostgreSQLConn::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void DB::PostgreSQLConn::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 }
 
@@ -124,7 +124,7 @@ Optional<DB::DBTransaction> DB::PostgreSQLConn::BeginTransaction()
 	return (DB::DBTransaction*)-1;
 }
 
-void DB::PostgreSQLConn::Commit(NotNullPtr<DB::DBTransaction> tran)
+void DB::PostgreSQLConn::Commit(NN<DB::DBTransaction> tran)
 {
 	if (this->isTran)
 	{
@@ -133,7 +133,7 @@ void DB::PostgreSQLConn::Commit(NotNullPtr<DB::DBTransaction> tran)
 	}
 }
 
-void DB::PostgreSQLConn::Rollback(NotNullPtr<DB::DBTransaction> tran)
+void DB::PostgreSQLConn::Rollback(NN<DB::DBTransaction> tran)
 {
 	if (this->isTran)
 	{
@@ -142,10 +142,10 @@ void DB::PostgreSQLConn::Rollback(NotNullPtr<DB::DBTransaction> tran)
 	}
 }
 
-UOSInt DB::PostgreSQLConn::QuerySchemaNames(NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt DB::PostgreSQLConn::QuerySchemaNames(NN<Data::ArrayListStringNN> names)
 {
 	UOSInt initCnt = names->GetCount();
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (this->ExecuteReader(CSTR("SELECT nspname FROM pg_catalog.pg_namespace")).SetTo(r))
 	{
 		while (r->ReadNext())
@@ -157,7 +157,7 @@ UOSInt DB::PostgreSQLConn::QuerySchemaNames(NotNullPtr<Data::ArrayListStringNN> 
 	return names->GetCount() - initCnt;
 }
 
-UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng == 0)
 		schemaName = CSTR("public");
@@ -165,12 +165,12 @@ UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, NotNullPtr<
 	sql.AppendCmdC(CSTR("select tablename from pg_catalog.pg_tables where schemaname = "));
 	sql.AppendStrC(schemaName);
 	UOSInt initCnt = names->GetCount();
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (this->ExecuteReader(sql.ToCString()).SetTo(r))
 	{
 		while (r->ReadNext())
 		{
-			NotNullPtr<Text::String> tabName;
+			NN<Text::String> tabName;
 			if (r->GetNewStr(0).SetTo(tabName))
 				names->Add(tabName);
 		}
@@ -194,7 +194,7 @@ Optional<DB::DBReader> DB::PostgreSQLConn::QueryTableData(Text::CString schemaNa
 	}
 	else
 	{
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = columnNames->Iterator();
+		Data::ArrayIterator<NN<Text::String>> it = columnNames->Iterator();
 		Bool found = false;
 		while (it.HasNext())
 		{
@@ -251,7 +251,7 @@ Bool DB::PostgreSQLConn::IsConnError()
 	return true;
 }
 
-NotNullPtr<Text::String> DB::PostgreSQLConn::GetConnServer() const
+NN<Text::String> DB::PostgreSQLConn::GetConnServer() const
 {
 	return this->server;
 }
@@ -261,7 +261,7 @@ UInt16 DB::PostgreSQLConn::GetConnPort() const
 	return this->port;
 }
 
-NotNullPtr<Text::String> DB::PostgreSQLConn::GetConnDB() const
+NN<Text::String> DB::PostgreSQLConn::GetConnDB() const
 {
 	return this->database;
 }
@@ -395,30 +395,30 @@ DB::DBUtil::ColType DB::PostgreSQLConn::DBType2ColType(UInt32 dbType)
 	}
 }
 
-Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(NotNullPtr<Text::String> serverName, UInt16 port, NotNullPtr<Text::String> dbName, Text::String *uid, Text::String *pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(NN<Text::String> serverName, UInt16 port, NN<Text::String> dbName, Text::String *uid, Text::String *pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
-	NotNullPtr<DB::PostgreSQLConn> conn;
+	NN<DB::PostgreSQLConn> conn;
 	NEW_CLASSNN(conn, DB::PostgreSQLConn(serverName, port, uid, pwd, dbName, log));
 	if (conn->IsConnError())
 	{
 		conn.Delete();
 		return 0;
 	}
-	NotNullPtr<DB::DBTool> db;
+	NN<DB::DBTool> db;
 	NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
 	return db;
 }
 
-Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(Text::CStringNN serverName, UInt16 port, Text::CString dbName, Text::CString uid, Text::CString pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::PostgreSQLConn::CreateDBTool(Text::CStringNN serverName, UInt16 port, Text::CString dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
-	NotNullPtr<DB::PostgreSQLConn> conn;
+	NN<DB::PostgreSQLConn> conn;
 	NEW_CLASSNN(conn, DB::PostgreSQLConn(serverName, port, uid, pwd, dbName, log));
 	if (conn->IsConnError())
 	{
 		conn.Delete();
 		return 0;
 	}
-	NotNullPtr<DB::DBTool> db;
+	NN<DB::DBTool> db;
 	NEW_CLASSNN(db, DB::DBTool(conn, true, log, logPrefix));
 	return db;
 }

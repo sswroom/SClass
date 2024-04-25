@@ -38,7 +38,7 @@ namespace Net
 			UInt32 lastSeqNumLo;
 			Data::FastMap<Int32, Net::IRTPPLHandler *> payloadMap;
 			Media::MediaType mediaType;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 
 			UOSInt threadCnt;
 			UOSInt buffCnt;
@@ -58,15 +58,15 @@ namespace Net
 		ChannelData *chData;
 
 	private:
-		static void __stdcall PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
-		static void __stdcall PacketCtrlHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+		static void __stdcall PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
+		static void __stdcall PacketCtrlHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
 		static UInt32 __stdcall PlayThread(AnyType userObj);
 
 	private:
 		void SetControlURL(Text::CString url);
 		void SetPlayControl(Net::IRTPController *playCtrl);
 
-		RTPCliChannel(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log);
+		RTPCliChannel(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log);
 		RTPCliChannel(RTPCliChannel *ch);
 	public:
 		~RTPCliChannel();
@@ -91,7 +91,7 @@ namespace Net
 		Bool MapPayloadType(Int32 payloadType, Text::CString typ, UInt32 freq, UInt32 nChannel);
 		Bool SetPayloadFormat(Int32 paylodType, const UTF8Char *format);
 
-		static RTPCliChannel *CreateChannel(NotNullPtr<Net::SocketFactory> sockf, Data::ArrayList<const UTF8Char *> *sdpDesc, Text::CString ctrlURL, Net::IRTPController *playCtrl, NotNullPtr<IO::LogTool> log);
+		static RTPCliChannel *CreateChannel(NN<Net::SocketFactory> sockf, Data::ArrayList<const UTF8Char *> *sdpDesc, Text::CString ctrlURL, Net::IRTPController *playCtrl, NN<IO::LogTool> log);
 	};
 }
 #endif

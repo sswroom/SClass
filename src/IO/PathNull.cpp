@@ -56,7 +56,7 @@ WChar *IO::Path::GetProcessFileNameW(WChar *buff)
 	return 0;
 }
 
-Bool IO::Path::GetProcessFileName(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::Path::GetProcessFileName(NN<Text::StringBuilderUTF8> sb)
 {
 	return false;
 }
@@ -149,7 +149,7 @@ WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
 	return Text::StrConcat(&path[i + 1], toAppend);
 }
 
-Bool IO::Path::AppendPath(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *toAppend, UOSInt toAppendLen)
+Bool IO::Path::AppendPath(NN<Text::StringBuilderUTF8> sb, const UTF8Char *toAppend, UOSInt toAppendLen)
 {
 	if (toAppend[0] == '/')
 	{

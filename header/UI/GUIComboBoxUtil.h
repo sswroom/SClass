@@ -9,9 +9,9 @@ namespace UI
 	class GUIComboBoxUtil
 	{
 	public:
-		static void AddYearItems(NotNullPtr<UI::GUIComboBox> cbo, UOSInt nYears);
-		static void AddMonthItems(NotNullPtr<UI::GUIComboBox> cbo);
-		static void AddDayItems(NotNullPtr<UI::GUIComboBox> cbo);
+		static void AddYearItems(NN<UI::GUIComboBox> cbo, UOSInt nYears);
+		static void AddMonthItems(NN<UI::GUIComboBox> cbo);
+		static void AddDayItems(NN<UI::GUIComboBox> cbo);
 	};
 }
 #endif

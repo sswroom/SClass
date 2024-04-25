@@ -2,7 +2,7 @@
 #include "Net/Email/EmailValidator.h"
 #include "Net/Email/SMTPConn.h"
 
-Net::Email::EmailValidator::EmailValidator(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log)
+Net::Email::EmailValidator::EmailValidator(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log)
 {
 	Net::SocketUtil::AddressInfo dnsAddr;
 	this->sockf = sockf;
@@ -35,7 +35,7 @@ Net::Email::EmailValidator::Status Net::Email::EmailValidator::Validate(Text::CS
 
 	Text::String *emailSvr = 0;
 	Data::ArrayListNN<Net::DNSClient::RequestAnswer> ansList;
-	NotNullPtr<Net::DNSClient::RequestAnswer> ans;
+	NN<Net::DNSClient::RequestAnswer> ans;
 	this->dnsClient->GetByEmailDomainName(ansList, emailDomain);
 	i = 0;
 	j = ansList.GetCount();

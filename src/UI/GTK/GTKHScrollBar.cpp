@@ -12,7 +12,7 @@ gboolean UI::GTK::GTKHScrollBar::SignalValueChanged(void *window, void *userObj)
 	return FALSE;
 }
 
-UI::GTK::GTKHScrollBar::GTKHScrollBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Double width) : UI::GUIHScrollBar(ui, parent)
+UI::GTK::GTKHScrollBar::GTKHScrollBar(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Double width) : UI::GUIHScrollBar(ui, parent)
 {
 	this->hwnd = (ControlHandle*)gtk_scrollbar_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	g_signal_connect((GtkButton*)this->hwnd, "value-changed", G_CALLBACK(SignalValueChanged), this);
@@ -49,7 +49,7 @@ void UI::GTK::GTKHScrollBar::SetArea(Double left, Double top, Double right, Doub
 	if (left == this->lxPos && top == this->lyPos && right == this->lxPos2 && bottom == this->lyPos2)
 		return;
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
-	NotNullPtr<UI::GUIClientControl> nnparent;
+	NN<UI::GUIClientControl> nnparent;
 	if (this->parent.SetTo(nnparent))
 	{
 		ofst = nnparent->GetClientOfst();
@@ -101,7 +101,7 @@ void UI::GTK::GTKHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt 
 	if (OSInt2Double(left) == this->lxPos && OSInt2Double(top) == this->lyPos && OSInt2Double(right) == this->lxPos2 && OSInt2Double(bottom) == this->lyPos2)
 		return;
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
-	NotNullPtr<UI::GUIClientControl> nnparent;
+	NN<UI::GUIClientControl> nnparent;
 	if (this->parent.SetTo(nnparent))
 	{
 		ofst = nnparent->GetClientOfst();

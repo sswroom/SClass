@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRSystemInfoLogForm.h"
 
-SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::SystemInfoLog *sysInfo) : UI::GUIForm(parent, 800, 600, ui)
+SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::SystemInfoLog *sysInfo) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetText(CSTR("System Info Log"));
 	this->SetFont(0, 0, 8.25, false);
@@ -66,7 +66,7 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(Optional<UI::GUIClie
 
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (this->sysInfo->GetOSName().SetTo(s))
 	{
 		this->txtOSName->SetText(s->ToCString());
@@ -91,8 +91,8 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(Optional<UI::GUIClie
 		this->txtProductType->SetText(CSTRP(sbuff, sptr));
 	}
 
-	NotNullPtr<const Data::ArrayListNN<IO::SystemInfoLog::DeviceInfo>> devList = this->sysInfo->GetDeviceInfos();
-	NotNullPtr<IO::SystemInfoLog::DeviceInfo> dev;
+	NN<const Data::ArrayListNN<IO::SystemInfoLog::DeviceInfo>> devList = this->sysInfo->GetDeviceInfos();
+	NN<IO::SystemInfoLog::DeviceInfo> dev;
 	UOSInt i = 0;
 	UOSInt j = devList->GetCount();
 	while (i < j)
@@ -111,8 +111,8 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(Optional<UI::GUIClie
 		i++;
 	}
 
-	NotNullPtr<const Data::ArrayListNN<IO::SystemInfoLog::DriverInfo>> driverList = this->sysInfo->GetDriverInfos();
-	NotNullPtr<IO::SystemInfoLog::DriverInfo> driver;
+	NN<const Data::ArrayListNN<IO::SystemInfoLog::DriverInfo>> driverList = this->sysInfo->GetDriverInfos();
+	NN<IO::SystemInfoLog::DriverInfo> driver;
 	i = 0;
 	j = driverList->GetCount();
 	while (i < j)

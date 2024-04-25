@@ -16,18 +16,18 @@ namespace UI
 			Bool allowEdit;
 
 		public:
-			GTKComboBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool allowEditing);
+			GTKComboBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Bool allowEditing);
 			virtual ~GTKComboBox();
 
 			virtual void SetText(Text::CStringNN text);
 			virtual UTF8Char *GetText(UTF8Char *buff);
-			virtual Bool GetText(NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual Bool GetText(NN<Text::StringBuilderUTF8> sb);
 
 			virtual void BeginUpdate();
 			virtual void EndUpdate();
-			virtual UOSInt AddItem(NotNullPtr<Text::String> itemText, AnyType itemObj);
+			virtual UOSInt AddItem(NN<Text::String> itemText, AnyType itemObj);
 			virtual UOSInt AddItem(Text::CStringNN itemText, AnyType itemObj);
-			virtual UOSInt InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, AnyType itemObj);
+			virtual UOSInt InsertItem(UOSInt index, NN<Text::String> itemText, AnyType itemObj);
 			virtual UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj);
 			virtual AnyType RemoveItem(UOSInt index);
 			virtual void ClearItems();

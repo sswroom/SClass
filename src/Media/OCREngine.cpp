@@ -42,7 +42,7 @@ void Media::OCREngine::SetCharWhiteList(const Char *whiteList)
 	this->clsData->api.SetVariable("tessedit_char_whitelist", whiteList);
 }
 
-Bool Media::OCREngine::SetParsingImage(NotNullPtr<Media::StaticImage> img)
+Bool Media::OCREngine::SetParsingImage(NN<Media::StaticImage> img)
 {
 	PIX *pix;
 	if (img->info.pf == Media::PF_PAL_W8)
@@ -80,7 +80,7 @@ Bool Media::OCREngine::SetParsingImage(NotNullPtr<Media::StaticImage> img)
 	return true;
 }
 
-Bool Media::OCREngine::SetOCVFrame(NotNullPtr<Media::OpenCV::OCVFrame> frame)
+Bool Media::OCREngine::SetOCVFrame(NN<Media::OpenCV::OCVFrame> frame)
 {
 	PIX *pix;
 	pix = pixCreateNoInit((l_int32)frame->GetWidth(), (l_int32)frame->GetHeight(), (l_int32)8);
@@ -157,7 +157,7 @@ Bool Media::OCREngine::ParseAllInImage()
 				ri->BoundingBox(level, &left, &top, &right, &bottom);
 				if (this->hdlr)
 				{
-					NotNullPtr<Text::String> res = Text::String::NewNotNullSlow((const UTF8Char*)txt);
+					NN<Text::String> res = Text::String::NewNotNullSlow((const UTF8Char*)txt);
 					this->hdlr(this->hdlrObj, res, confidence, Math::RectArea<OSInt>(left, top, right - left, bottom - top));
 					res->Release();
 				}

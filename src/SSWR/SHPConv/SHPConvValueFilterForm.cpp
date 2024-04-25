@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::SHPConv::SHPConvValueFilterForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::SHPConv::SHPConvValueFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvValueFilterForm>();
+	NN<SSWR::SHPConv::SHPConvValueFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvValueFilterForm>();
 	Text::StringBuilderUTF8 sb;
 	Int32 typ;
 	me->txtValue->GetText(sb);
@@ -23,11 +23,11 @@ void __stdcall SSWR::SHPConv::SHPConvValueFilterForm::OnOKClicked(AnyType userOb
 
 void __stdcall SSWR::SHPConv::SHPConvValueFilterForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::SHPConv::SHPConvValueFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvValueFilterForm>();
+	NN<SSWR::SHPConv::SHPConvValueFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvValueFilterForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::SHPConv::SHPConvValueFilterForm::SHPConvValueFilterForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf) : UI::GUIForm(parent, 256, 152, ui)
+SSWR::SHPConv::SHPConvValueFilterForm::SHPConvValueFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, DB::DBFFile *dbf) : UI::GUIForm(parent, 256, 152, ui)
 {
 	this->SetText(CSTR("Value Filter"));
 	this->SetFont(0, 0, 8.25, false);

@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Net/WhoisGlobalClient.h"
 
-Net::WhoisGlobalClient::WhoisGlobalClient(NotNullPtr<Net::SocketFactory> sockf) : Net::WhoisClient(sockf, 0, CSTR_NULL)
+Net::WhoisGlobalClient::WhoisGlobalClient(NN<Net::SocketFactory> sockf) : Net::WhoisClient(sockf, 0, CSTR_NULL)
 {
 }
 

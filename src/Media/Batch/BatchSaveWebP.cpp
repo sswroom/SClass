@@ -17,7 +17,7 @@ Media::Batch::BatchSaveWebP::~BatchSaveWebP()
 {
 }
 
-void Media::Batch::BatchSaveWebP::ImageOutput(NotNullPtr<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN targetId)
+void Media::Batch::BatchSaveWebP::ImageOutput(NN<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN targetId)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

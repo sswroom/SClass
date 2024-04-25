@@ -7,9 +7,9 @@
 #include "Text/TextBinEnc/Base64Enc.h"
 #include "Data/Compress/Inflate.h"
 
-UOSInt Net::SAMLUtil::DecryptEncryptedKey(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<Crypto::Cert::X509Key> key, NotNullPtr<Text::XMLReader> reader, NotNullPtr<Text::StringBuilderUTF8> sbResult, UInt8 *keyBuff)
+UOSInt Net::SAMLUtil::DecryptEncryptedKey(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key, NN<Text::XMLReader> reader, NN<Text::StringBuilderUTF8> sbResult, UInt8 *keyBuff)
 {
-	NotNullPtr<Text::String> nodeName;
+	NN<Text::String> nodeName;
 	Crypto::Encrypt::RSACipher::Padding rsaPadding = Crypto::Encrypt::RSACipher::Padding::PKCS1;
 	Bool algFound = false;
 	Text::XMLAttrib *attr;
@@ -82,9 +82,9 @@ UOSInt Net::SAMLUtil::DecryptEncryptedKey(NotNullPtr<Net::SSLEngine> ssl, NotNul
 	return keySize;
 }
 
-UOSInt Net::SAMLUtil::ParseKeyInfo(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<Crypto::Cert::X509Key> key, NotNullPtr<Text::XMLReader> reader, NotNullPtr<Text::StringBuilderUTF8> sbResult, UInt8 *keyBuff)
+UOSInt Net::SAMLUtil::ParseKeyInfo(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key, NN<Text::XMLReader> reader, NN<Text::StringBuilderUTF8> sbResult, UInt8 *keyBuff)
 {
-	NotNullPtr<Text::String> nodeName;
+	NN<Text::String> nodeName;
 	UOSInt keySize = 0;
 	while (reader->NextElementName().SetTo(nodeName))
 	{
@@ -114,7 +114,7 @@ UOSInt Net::SAMLUtil::ParseKeyInfo(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<Cr
 	return keySize;
 }
 
-Bool Net::SAMLUtil::DecryptEncryptedData(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<Crypto::Cert::X509Key> key, NotNullPtr<Text::XMLReader> reader, NotNullPtr<Text::StringBuilderUTF8> sbResult)
+Bool Net::SAMLUtil::DecryptEncryptedData(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key, NN<Text::XMLReader> reader, NN<Text::StringBuilderUTF8> sbResult)
 {
 	UInt8 keyBuff[128];
 	UOSInt keySize = 0;
@@ -123,7 +123,7 @@ Bool Net::SAMLUtil::DecryptEncryptedData(NotNullPtr<Net::SSLEngine> ssl, NotNull
 	MemClear(keyBuff, sizeof(keyBuff));
 	Crypto::Encrypt::BlockCipher *cipher = 0;
 	Text::XMLAttrib *attr;
-	NotNullPtr<Text::String> nodeName;
+	NN<Text::String> nodeName;
 	while (reader->NextElementName().SetTo(nodeName))
 	{
 		if (nodeName->Equals(UTF8STRC("xenc:EncryptionMethod")))
@@ -250,9 +250,9 @@ Bool Net::SAMLUtil::DecryptEncryptedData(NotNullPtr<Net::SSLEngine> ssl, NotNull
 	return false;
 }
 
-Bool Net::SAMLUtil::DecryptAssertion(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<Crypto::Cert::X509Key> key, NotNullPtr<Text::XMLReader> reader, NotNullPtr<Text::StringBuilderUTF8> sbResult)
+Bool Net::SAMLUtil::DecryptAssertion(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key, NN<Text::XMLReader> reader, NN<Text::StringBuilderUTF8> sbResult)
 {
-	NotNullPtr<Text::String> nodeName;
+	NN<Text::String> nodeName;
 	while (reader->NextElementName().SetTo(nodeName))
 	{
 		if (nodeName->Equals(UTF8STRC("xenc:EncryptedData")))
@@ -273,9 +273,9 @@ Bool Net::SAMLUtil::DecryptAssertion(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<
 	return false;
 }
 
-Bool Net::SAMLUtil::DecryptResponse(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<Crypto::Cert::X509Key> key, NotNullPtr<Text::XMLReader> reader, NotNullPtr<Text::StringBuilderUTF8> sbResult)
+Bool Net::SAMLUtil::DecryptResponse(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Key> key, NN<Text::XMLReader> reader, NN<Text::StringBuilderUTF8> sbResult)
 {
-	NotNullPtr<Text::String> nodeName;
+	NN<Text::String> nodeName;
 	while (reader->NextElementName().SetTo(nodeName))
 	{
 		if (nodeName->Equals(UTF8STRC("EncryptedAssertion")))
@@ -296,11 +296,11 @@ Bool Net::SAMLUtil::DecryptResponse(NotNullPtr<Net::SSLEngine> ssl, NotNullPtr<C
 	return false;
 }
 
-Bool Net::SAMLUtil::DecryptResponse(NotNullPtr<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NotNullPtr<Crypto::Cert::X509Key> key, Text::CString responseXML, NotNullPtr<Text::StringBuilderUTF8> sbResult)
+Bool Net::SAMLUtil::DecryptResponse(NN<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NN<Crypto::Cert::X509Key> key, Text::CString responseXML, NN<Text::StringBuilderUTF8> sbResult)
 {
 	IO::MemoryReadingStream mstm(responseXML.v, responseXML.leng);
 	Text::XMLReader reader(encFact, mstm, Text::XMLReader::PM_XML);
-	NotNullPtr<Text::String> nodeText;
+	NN<Text::String> nodeText;
 	if (reader.NextElementName().SetTo(nodeText))
 	{
 		if (nodeText->Equals(UTF8STRC("samlp:Response")))
@@ -317,7 +317,7 @@ Bool Net::SAMLUtil::DecryptResponse(NotNullPtr<Net::SSLEngine> ssl, Optional<Tex
 	return false;
 }
 
-Bool Net::SAMLUtil::DecodeRequest(Text::CString requestB64, NotNullPtr<Text::StringBuilderUTF8> sbResult)
+Bool Net::SAMLUtil::DecodeRequest(Text::CString requestB64, NN<Text::StringBuilderUTF8> sbResult)
 {
 	Text::TextBinEnc::Base64Enc b64;
 	UOSInt decSize = b64.CalcBinSize(requestB64.v, requestB64.leng);

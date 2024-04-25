@@ -6,12 +6,12 @@
 
 void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDNSClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSClientForm>();
+	NN<SSWR::AVIRead::AVIRDNSClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSClientForm>();
 	Net::SocketUtil::AddressInfo dnsAddr;
 	UInt32 reqIP;
 	Text::StringBuilderUTF8 sb;
 	Net::DNSClient *dnsCli;
-	NotNullPtr<Net::DNSClient::RequestAnswer> ans;
+	NN<Net::DNSClient::RequestAnswer> ans;
 	Manage::HiResClock *clk;
 	UOSInt i;
 	UOSInt j;
@@ -81,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnAnswerSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDNSClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSClientForm>();
+	NN<SSWR::AVIRead::AVIRDNSClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDNSClientForm>();
 	Net::DNSClient::RequestAnswer *ans = (Net::DNSClient::RequestAnswer*)me->lbAnswer->GetSelectedItem().p;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -126,7 +126,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnAnswerSelChg(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRDNSClientForm::AVIRDNSClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRDNSClientForm::AVIRDNSClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("DNS Client"));

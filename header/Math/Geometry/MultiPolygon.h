@@ -14,7 +14,7 @@ namespace Math
 			virtual ~MultiPolygon();
 
 			virtual Vector2D::VectorType GetVectorType() const;
-			virtual NotNullPtr<Vector2D> Clone() const;
+			virtual NN<Vector2D> Clone() const;
 		};
 	}
 }

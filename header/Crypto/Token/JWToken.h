@@ -47,11 +47,11 @@ namespace Crypto
 			JWSignature::Algorithm GetAlgorithm() const;
 			Text::String *GetHeader() const;
 			Text::String *GetPayload() const;
-			VerifyType GetVerifyType(NotNullPtr<JWTParam> param) const;
+			VerifyType GetVerifyType(NN<JWTParam> param) const;
 			Bool SignatureValid(Optional<Net::SSLEngine> ssl, const UInt8 *key, UOSInt keyLeng, Crypto::Cert::X509Key::KeyType keyType);
-			void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+			void ToString(NN<Text::StringBuilderUTF8> sb) const;
 
-			Data::StringMap<Text::String*> *ParsePayload(NotNullPtr<JWTParam> param, Bool keepDefault, Text::StringBuilderUTF8 *sbErr);
+			Data::StringMap<Text::String*> *ParsePayload(NN<JWTParam> param, Bool keepDefault, Text::StringBuilderUTF8 *sbErr);
 			void FreeResult(Data::StringMap<Text::String*> *result);
 
 			static JWToken *Generate(JWSignature::Algorithm alg, Text::CStringNN payload, Optional<Net::SSLEngine> ssl, const UInt8 *key, UOSInt keyLeng, Crypto::Cert::X509Key::KeyType keyType);

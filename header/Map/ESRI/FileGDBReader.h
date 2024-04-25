@@ -13,9 +13,9 @@ namespace Map
 		class FileGDBReader : public DB::DBReader, public Data::ObjectGetter
 		{
 		private:
-			NotNullPtr<IO::StreamData> fd;
+			NN<IO::StreamData> fd;
 			UInt64 currOfst;
-			NotNullPtr<FileGDBTableInfo> tableInfo;
+			NN<FileGDBTableInfo> tableInfo;
 			UOSInt rowSize;
 			Data::ByteBuffer rowData;
 			Int32 objectId;
@@ -33,7 +33,7 @@ namespace Map
 			
 			UOSInt GetFieldIndex(UOSInt colIndex);
 		public:
-			FileGDBReader(NotNullPtr<IO::StreamData> fd, UInt64 ofst, NotNullPtr<FileGDBTableInfo> tableInfo, Data::ArrayListStringNN *columnNames, UOSInt dataOfst, UOSInt maxCnt, Data::QueryConditions *conditions, UInt32 maxRowSize);
+			FileGDBReader(NN<IO::StreamData> fd, UInt64 ofst, NN<FileGDBTableInfo> tableInfo, Data::ArrayListStringNN *columnNames, UOSInt dataOfst, UOSInt maxCnt, Data::QueryConditions *conditions, UInt32 maxRowSize);
 			virtual ~FileGDBReader();
 
 			virtual Bool ReadNext();
@@ -42,7 +42,7 @@ namespace Map
 			virtual Int32 GetInt32(UOSInt colIndex);
 			virtual Int64 GetInt64(UOSInt colIndex);
 			virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
-			virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb);
 			virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
 			virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
 			virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
@@ -51,17 +51,17 @@ namespace Map
 			virtual UOSInt GetBinarySize(UOSInt colIndex);
 			virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff);
 			virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex);
-			virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid);
-			virtual Bool GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item);
+			virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid);
+			virtual Bool GetVariItem(UOSInt colIndex, NN<Data::VariItem> item);
 
-			virtual NotNullPtr<Data::VariItem> GetNewItem(Text::CStringNN name);
+			virtual NN<Data::VariItem> GetNewItem(Text::CStringNN name);
 
 			virtual Bool IsNull(UOSInt colIndex);
 			virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
 			virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
-			virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef);
+			virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);
 
-			void SetIndex(NotNullPtr<IO::StreamData> fd, UOSInt indexCnt);
+			void SetIndex(NN<IO::StreamData> fd, UOSInt indexCnt);
 		};
 	}
 }

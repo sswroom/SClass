@@ -24,7 +24,7 @@ namespace Media
 
 		void Init(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt);
 	public:
-		LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt, NotNullPtr<Text::String> sourceName);
+		LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt, NN<Text::String> sourceName);
 		LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt, Text::CStringNN sourceName);
 		virtual ~LUT();
 

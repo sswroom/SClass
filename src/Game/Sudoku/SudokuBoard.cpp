@@ -651,7 +651,7 @@ UInt8 Game::Sudoku::SudokuBoard::GetBoardNum(UOSInt xOfst, UOSInt yOfst, OptOut<
 	return v & 15;
 }
 
-void Game::Sudoku::SudokuBoard::CopyFrom(NotNullPtr<const SudokuBoard> board)
+void Game::Sudoku::SudokuBoard::CopyFrom(NN<const SudokuBoard> board)
 {
 	MemCopyNO(this->board, board->board, 81 * sizeof(*this->board));
 }

@@ -9,7 +9,7 @@ namespace UI
 		class JavaCheckBox : public GUICheckBox
 		{
 		public:
-			JavaCheckBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool checked);
+			JavaCheckBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool checked);
 			virtual ~JavaCheckBox();
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);

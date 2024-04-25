@@ -4,7 +4,7 @@
 
 void __stdcall SSWR::DiscDB::DiscDBSearchDiscForm::OnSearchClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::DiscDB::DiscDBSearchDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBSearchDiscForm>();
+	NN<SSWR::DiscDB::DiscDBSearchDiscForm> me = userObj.GetNN<SSWR::DiscDB::DiscDBSearchDiscForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtDiscId->GetText(sb);
 	if (sb.GetLength() <= 0)
@@ -49,7 +49,7 @@ void __stdcall SSWR::DiscDB::DiscDBSearchDiscForm::OnSearchClicked(AnyType userO
 	}
 }
 
-SSWR::DiscDB::DiscDBSearchDiscForm::DiscDBSearchDiscForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, SSWR::DiscDB::DiscDBEnv *env) : UI::GUIForm(parent, 300, 322, ui)
+SSWR::DiscDB::DiscDBSearchDiscForm::DiscDBSearchDiscForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, SSWR::DiscDB::DiscDBEnv *env) : UI::GUIForm(parent, 300, 322, ui)
 {
 	this->SetText(CSTR("DVDType"));
 	this->SetFont(0, 0, 8.25, false);

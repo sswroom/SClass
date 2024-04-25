@@ -15,10 +15,10 @@ namespace Media
 			Data::FastMap<Int32, Media::AudioFilter::SoundGen::ISoundGen*> sndGenMap;
 	
 		public:
-			SoundGenerator(NotNullPtr<IAudioSource> sourceAudio);
+			SoundGenerator(NN<IAudioSource> sourceAudio);
 			virtual ~SoundGenerator();
 
-			virtual void GetFormat(NotNullPtr<AudioFormat> format);
+			virtual void GetFormat(NN<AudioFormat> format);
 			virtual UOSInt ReadBlock(Data::ByteArray blk); //ret actual block size
 
 			Bool GenSound(Media::AudioFilter::SoundGen::ISoundGen::SoundType sndType, Double sampleVol);

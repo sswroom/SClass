@@ -15,8 +15,8 @@
 #include <stdio.h>
 void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnFileClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMACManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACManagerForm>();
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"MACManagerFile", false);
+	NN<SSWR::AVIRead::AVIRMACManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACManagerForm>();
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"MACManagerFile", false);
 	dlg->SetAllowMultiSel(false);
 	dlg->AddFilter(CSTR("*.txt"), CSTR("Log File"));
 	if (dlg->ShowDialog(me->GetHandle()))
@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnFileClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnStoreClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMACManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACManagerForm>();
+	NN<SSWR::AVIRead::AVIRMACManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACManagerForm>();
 	if (me->macList.Store())
 	{
 		me->ui->ShowMsgOK(CSTR("Data Stored"), CSTR("MAC Manager"), me);
@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnStoreClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(AnyType userObj, UOSInt index)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMACManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACManagerForm>();
+	NN<SSWR::AVIRead::AVIRMACManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACManagerForm>();
 	SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry *log = me->logList.GetItem(index);
 	if (log == 0)
 		return;
@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(AnyType us
 	SSWR::AVIRead::AVIRMACManagerEntryForm frm(0, me->ui, me->core, log->mac, name);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
-		NotNullPtr<Text::String> name = frm.GetNameNew();
+		NN<Text::String> name = frm.GetNameNew();
 		UOSInt i = me->macList.SetEntry(log->macInt, name->ToCString());
 		name->Release();
 		entry = me->macList.GetItem(i);
@@ -81,8 +81,8 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMACManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACManagerForm>();
-	NotNullPtr<SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry> log;
+	NN<SSWR::AVIRead::AVIRMACManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACManagerForm>();
+	NN<SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry> log;
 	if (!me->lvContent->GetSelectedItem().GetOpt<SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry>().SetTo(log) || log->ieLen <= 0)
 	{
 		me->txtFileIE->SetText(CSTR(""));
@@ -101,7 +101,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentSelChg(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMACManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACManagerForm>();
+	NN<SSWR::AVIRead::AVIRMACManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACManagerForm>();
 	UInt8 buff[16];
 	UTF8Char sbuff[2];
 	UOSInt i;
@@ -157,7 +157,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(AnyType userObj
 	SSWR::AVIRead::AVIRMACManagerEntryForm frm(0, me->ui, me->core, &buff[2], name);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
-		NotNullPtr<Text::String> name = frm.GetNameNew();
+		NN<Text::String> name = frm.GetNameNew();
 		i = me->macList.SetEntry(macInt, name->ToCString());
 		name->Release();
 		me->UpdateStatus();
@@ -181,8 +181,8 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMACManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACManagerForm>();
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"MACManagerWiresharkFile", false);
+	NN<SSWR::AVIRead::AVIRMACManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACManagerForm>();
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"MACManagerWiresharkFile", false);
 	dlg->SetAllowMultiSel(false);
 	dlg->AddFilter(CSTR("manuf"), CSTR("Wireshark manuf File"));
 	if (dlg->ShowDialog(me->GetHandle()))
@@ -403,7 +403,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CStringNN fileName)
 		}
 
 		const Net::MACInfo::MACEntry *entry;
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		this->lvContent->BeginUpdate();
 		this->lvContent->ClearItems();
 		i = 0;
@@ -485,7 +485,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::UpdateStatus()
 	this->lblInfo->SetText(sb.ToCString());
 }
 
-SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("MAC Manager"));

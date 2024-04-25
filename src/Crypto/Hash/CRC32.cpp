@@ -46,9 +46,9 @@ UTF8Char *Crypto::Hash::CRC32::GetName(UTF8Char *sbuff) const
 	return Text::StrConcatC(sbuff, UTF8STRC("CRC (32-bit)"));
 }
 
-NotNullPtr<Crypto::Hash::IHash> Crypto::Hash::CRC32::Clone() const
+NN<Crypto::Hash::IHash> Crypto::Hash::CRC32::Clone() const
 {
-	NotNullPtr<Crypto::Hash::CRC32> crc;
+	NN<Crypto::Hash::CRC32> crc;
 	NEW_CLASSNN(crc, Crypto::Hash::CRC32(this));
 	return crc;
 }

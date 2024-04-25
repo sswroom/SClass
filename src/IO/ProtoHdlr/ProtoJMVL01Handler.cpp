@@ -4,7 +4,7 @@
 #include "Data/ByteTool.h"
 #include "IO/ProtoHdlr/ProtoJMVL01Handler.h"
 
-IO::ProtoHdlr::ProtoJMVL01Handler::ProtoJMVL01Handler(NotNullPtr<IO::IProtocolHandler::DataListener> listener, UInt64 devId) : crc(Crypto::Hash::CRC16::GetPolynomialCCITT())
+IO::ProtoHdlr::ProtoJMVL01Handler::ProtoJMVL01Handler(NN<IO::IProtocolHandler::DataListener> listener, UInt64 devId) : crc(Crypto::Hash::CRC16::GetPolynomialCCITT())
 {
 	this->listener = listener;
 	this->devId = devId;
@@ -14,16 +14,16 @@ IO::ProtoHdlr::ProtoJMVL01Handler::~ProtoJMVL01Handler()
 {
 }
 
-AnyType IO::ProtoHdlr::ProtoJMVL01Handler::CreateStreamData(NotNullPtr<IO::Stream> stm)
+AnyType IO::ProtoHdlr::ProtoJMVL01Handler::CreateStreamData(NN<IO::Stream> stm)
 {
 	return (void*)-1;
 }
 
-void IO::ProtoHdlr::ProtoJMVL01Handler::DeleteStreamData(NotNullPtr<IO::Stream> stm, AnyType stmData)
+void IO::ProtoHdlr::ProtoJMVL01Handler::DeleteStreamData(NN<IO::Stream> stm, AnyType stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::ParseProtocol(NotNullPtr<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &buff)
+UOSInt IO::ProtoHdlr::ProtoJMVL01Handler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &buff)
 {
 	UInt16 crcVal;
 	UInt16 len;

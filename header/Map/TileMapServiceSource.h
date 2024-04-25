@@ -12,7 +12,7 @@ namespace Map
 	private:
 		struct TileLayer
 		{
-			NotNullPtr<Text::String> url;
+			NN<Text::String> url;
 			Double unitPerPixel;
 			UOSInt order;
 		};
@@ -25,18 +25,18 @@ namespace Map
 		Optional<Text::EncodingFactory> encFact;
 		ImageType imgType;
 		Text::String *tileExt;
-		NotNullPtr<Text::String> tmsURL;
+		NN<Text::String> tmsURL;
 		Text::String *title;
-		NotNullPtr<Text::String> cacheDir;
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Text::String> cacheDir;
+		NN<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;
 		Data::ArrayList<TileLayer*> layers;
-		NotNullPtr<Math::CoordinateSystem> csys;
+		NN<Math::CoordinateSystem> csys;
 		UOSInt concurrCnt;
 
 		void LoadXML();
 	public:
-		TileMapServiceSource(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString tmsURL);
+		TileMapServiceSource(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString tmsURL);
 		virtual ~TileMapServiceSource();
 
 		virtual Text::CStringNN GetName() const;
@@ -48,15 +48,15 @@ namespace Map
 		virtual UOSInt GetNearestLevel(Double scale) const;
 		virtual UOSInt GetConcurrentCount() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
-		virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem() const;
+		virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const;
 		virtual Bool IsMercatorProj() const;
 		virtual UOSInt GetTileSize() const;
 		virtual ImageType GetImageType() const;
 
 		virtual UOSInt GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids);
-		virtual Media::ImageList *LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NotNullPtr<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly);
+		virtual Media::ImageList *LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly);
 		virtual UTF8Char *GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId);
-		virtual Bool GetTileImageURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId);
+		virtual Bool GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId);
 		virtual Optional<IO::StreamData> LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it);
 
 		void SetConcurrentCount(UOSInt concurrCnt);

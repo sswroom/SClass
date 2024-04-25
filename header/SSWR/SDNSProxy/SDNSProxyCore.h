@@ -38,7 +38,7 @@ namespace SSWR
 		private:
 			IO::Writer *console;
 			Net::DNSProxy *proxy;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 
 			Sync::Mutex cliInfoMut;
 			Data::FastMapNN<UInt32, ClientInfo> cliInfos;
@@ -51,16 +51,16 @@ namespace SSWR
 			UOSInt lastCnt;
 			UOSInt currCnt;
 
-			static void __stdcall OnDNSRequest(AnyType userObj, Text::CStringNN reqName, Int32 reqType, Int32 reqClass, NotNullPtr<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
+			static void __stdcall OnDNSRequest(AnyType userObj, Text::CStringNN reqName, Int32 reqType, Int32 reqClass, NN<const Net::SocketUtil::AddressInfo> reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
 
 		public:
 			SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *console);
 			~SDNSProxyCore();
 
 			Bool IsError();
-			void Run(NotNullPtr<Core::IProgControl> progCtrl);
+			void Run(NN<Core::IProgControl> progCtrl);
 
-			UOSInt GetClientList(NotNullPtr<Data::ArrayListNN<SSWR::SDNSProxy::SDNSProxyCore::ClientInfo>> cliList);
+			UOSInt GetClientList(NN<Data::ArrayListNN<SSWR::SDNSProxy::SDNSProxyCore::ClientInfo>> cliList);
 			UOSInt GetRequestPerMin();
 		};
 	}

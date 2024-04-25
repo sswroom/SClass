@@ -4,7 +4,7 @@
 #include "Sync/MutexUsage.h"
 #include "UI/DObj/SizedOverlayDObj.h"
 
-UI::DObj::SizedOverlayDObj::SizedOverlayDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, Parser::ParserList *parsers, Media::Resizer::LanczosResizer8_C8 *resizer) : DirectObject(tl)
+UI::DObj::SizedOverlayDObj::SizedOverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, Parser::ParserList *parsers, Media::Resizer::LanczosResizer8_C8 *resizer) : DirectObject(tl)
 {
 	this->deng = deng;
 	this->noRelease = false;
@@ -79,7 +79,7 @@ Bool UI::DObj::SizedOverlayDObj::DoEvents()
 	return false;
 }
 
-void UI::DObj::SizedOverlayDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
+void UI::DObj::SizedOverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 {
 	Sync::MutexUsage imgMutUsage(this->imgMut);
 	if (this->imgList)
@@ -100,7 +100,7 @@ void UI::DObj::SizedOverlayDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
 			}
 		}
 		Sync::MutexUsage mutUsage(this->dispMut);
-		NotNullPtr<Media::StaticImage> img;
+		NN<Media::StaticImage> img;
 		if (this->dispImg == 0 || this->dispFrameNum != frameNum)
 		{
 			SDEL_CLASS(this->dispImg);

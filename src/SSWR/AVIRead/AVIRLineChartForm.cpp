@@ -7,7 +7,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLineChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineChartForm>();
+	NN<SSWR::AVIRead::AVIRLineChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineChartForm>();
 	OSInt xCol;
 	UOSInt i;
 	UOSInt j;
@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(AnyType userObj)
 
 	UOSInt colCount;
 	ColInfo *colInfos;
-	NotNullPtr<DB::DBReader> reader;
+	NN<DB::DBReader> reader;
 	if (!me->db->QueryTableData(OPTSTR_CSTR(me->schemaName), me->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0).SetTo(reader))
 	{
 		me->ui->ShowMsgOK(CSTR("Error in getting database data"), CSTR("Error"), me);
@@ -231,13 +231,13 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLineChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineChartForm>();
+	NN<SSWR::AVIRead::AVIRLineChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineChartForm>();
 	me->SetDialogResult(DR_CANCEL);
 }
 
 void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnYAxisClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLineChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineChartForm>();
+	NN<SSWR::AVIRead::AVIRLineChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineChartForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UOSInt i = me->cboYAxis->GetSelectedIndex();
@@ -255,13 +255,13 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnYAxisClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsDblClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLineChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineChartForm>();
+	NN<SSWR::AVIRead::AVIRLineChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineChartForm>();
 	UOSInt selInd = me->lbStrCols->GetSelectedIndex();
 	if (selInd != INVALID_INDEX)
 	{
 		UOSInt colInd = (UOSInt)me->lbStrCols->GetItem(selInd).p;
 		me->strTypes[colInd] = DB::DBUtil::CT_Double;
-		NotNullPtr<Text::String> s = Text::String::OrEmpty(me->lbStrCols->GetItemTextNew(selInd));
+		NN<Text::String> s = Text::String::OrEmpty(me->lbStrCols->GetItemTextNew(selInd));
 		me->cboXAxis->AddItem(s, (void*)colInd);
 		me->cboYAxis->AddItem(s, (void*)colInd);
 		s->Release();
@@ -271,13 +271,13 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsDblClicked(AnyType use
 
 void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsInt32Clicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLineChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineChartForm>();
+	NN<SSWR::AVIRead::AVIRLineChartForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLineChartForm>();
 	UOSInt selInd = me->lbStrCols->GetSelectedIndex();
 	if (selInd != INVALID_INDEX)
 	{
 		UOSInt colInd = (UOSInt)me->lbStrCols->GetItem(selInd).p;
 		me->strTypes[colInd] = DB::DBUtil::CT_Int32;
-		NotNullPtr<Text::String> s = Text::String::OrEmpty(me->lbStrCols->GetItemTextNew(selInd));
+		NN<Text::String> s = Text::String::OrEmpty(me->lbStrCols->GetItemTextNew(selInd));
 		me->cboXAxis->AddItem(s, (void*)colInd);
 		me->cboYAxis->AddItem(s, (void*)colInd);
 		s->Release();
@@ -285,7 +285,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsInt32Clicked(AnyType u
 	}
 }
 
-SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, DB::ReadingDB *db, Text::CString schemaName, Text::CString tableName) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, DB::ReadingDB *db, Text::CString schemaName, Text::CString tableName) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Line Chart"));
 	this->SetFont(0, 0, 8.25, false);
@@ -342,7 +342,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(Optional<UI::GUIClientContro
 	this->lbYAxis = ui->NewListBox(this->grpYAxis, false);
 	this->lbYAxis->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	NotNullPtr<DB::DBReader> reader;
+	NN<DB::DBReader> reader;
 	if (!this->db->QueryTableData(OPTSTR_CSTR(this->schemaName), tableName, 0, 0, 0, CSTR_NULL, 0).SetTo(reader))
 	{
 	}

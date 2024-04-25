@@ -15,43 +15,43 @@ namespace SSWR
 		class AVIRSDCardForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayList<IO::SDCardInfo*> sdCardList;
 
-			NotNullPtr<UI::GUIListBox> lbDevices;
-			NotNullPtr<UI::GUIHSplitter> hspDevices;
-			NotNullPtr<UI::GUIPanel> pnlDevices;
-			NotNullPtr<UI::GUILabel> lblName;
-			NotNullPtr<UI::GUITextBox> txtName;
-			NotNullPtr<UI::GUILabel> lblCID;
-			NotNullPtr<UI::GUITextBox> txtCID;
-			NotNullPtr<UI::GUILabel> lblCSD;
-			NotNullPtr<UI::GUITextBox> txtCSD;
-			NotNullPtr<UI::GUILabel> lblMID;
-			NotNullPtr<UI::GUITextBox> txtMID;
-			NotNullPtr<UI::GUILabel> lblOID;
-			NotNullPtr<UI::GUITextBox> txtOID;
-			NotNullPtr<UI::GUILabel> lblProductName;
-			NotNullPtr<UI::GUITextBox> txtProductName;
-			NotNullPtr<UI::GUILabel> lblProductRevision;
-			NotNullPtr<UI::GUITextBox> txtProductRevision;
-			NotNullPtr<UI::GUILabel> lblSerialNo;
-			NotNullPtr<UI::GUITextBox> txtSerialNo;
-			NotNullPtr<UI::GUILabel> lblManuDate;
-			NotNullPtr<UI::GUITextBox> txtManuDate;
-			NotNullPtr<UI::GUILabel> lblCSDVersion;
-			NotNullPtr<UI::GUITextBox> txtCSDVersion;
-			NotNullPtr<UI::GUILabel> lblTranRate;
-			NotNullPtr<UI::GUITextBox> txtTranRate;
-			NotNullPtr<UI::GUILabel> lblCardCmdClass;
-			NotNullPtr<UI::GUITextBox> txtCardCmdClass;
-			NotNullPtr<UI::GUILabel> lblCapacity;
-			NotNullPtr<UI::GUITextBox> txtCapacity;
+			NN<UI::GUIListBox> lbDevices;
+			NN<UI::GUIHSplitter> hspDevices;
+			NN<UI::GUIPanel> pnlDevices;
+			NN<UI::GUILabel> lblName;
+			NN<UI::GUITextBox> txtName;
+			NN<UI::GUILabel> lblCID;
+			NN<UI::GUITextBox> txtCID;
+			NN<UI::GUILabel> lblCSD;
+			NN<UI::GUITextBox> txtCSD;
+			NN<UI::GUILabel> lblMID;
+			NN<UI::GUITextBox> txtMID;
+			NN<UI::GUILabel> lblOID;
+			NN<UI::GUITextBox> txtOID;
+			NN<UI::GUILabel> lblProductName;
+			NN<UI::GUITextBox> txtProductName;
+			NN<UI::GUILabel> lblProductRevision;
+			NN<UI::GUITextBox> txtProductRevision;
+			NN<UI::GUILabel> lblSerialNo;
+			NN<UI::GUITextBox> txtSerialNo;
+			NN<UI::GUILabel> lblManuDate;
+			NN<UI::GUITextBox> txtManuDate;
+			NN<UI::GUILabel> lblCSDVersion;
+			NN<UI::GUITextBox> txtCSDVersion;
+			NN<UI::GUILabel> lblTranRate;
+			NN<UI::GUITextBox> txtTranRate;
+			NN<UI::GUILabel> lblCardCmdClass;
+			NN<UI::GUITextBox> txtCardCmdClass;
+			NN<UI::GUILabel> lblCapacity;
+			NN<UI::GUITextBox> txtCapacity;
 			
 			static void __stdcall OnDevicesSelChg(AnyType userObj);
 			static OSInt __stdcall ItemCompare(IO::SDCardInfo *item1, IO::SDCardInfo *item2);
 		public:
-			AVIRSDCardForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRSDCardForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSDCardForm();
 
 			virtual void OnMonitorChanged();

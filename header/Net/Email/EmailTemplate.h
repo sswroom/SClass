@@ -19,16 +19,16 @@ namespace Net
 		class EmailTemplate
 		{
 		private:
-			NotNullPtr<Text::String> subject;
-			NotNullPtr<Text::String> content;
+			NN<Text::String> subject;
+			NN<Text::String> content;
 			Bool htmlContent;
 
-			Bool ParseTemplate(NotNullPtr<Text::StringBuilderUTF8> sbOut, Text::CStringNN tpl, NotNullPtr<Data::FastStringMapNN<Text::String>> items, NotNullPtr<IO::LogTool> log);
+			Bool ParseTemplate(NN<Text::StringBuilderUTF8> sbOut, Text::CStringNN tpl, NN<Data::FastStringMapNN<Text::String>> items, NN<IO::LogTool> log);
 		public:
 			EmailTemplate(Text::CStringNN subject, Text::CStringNN content, Bool htmlContent);
 			~EmailTemplate();
 
-			Bool FillEmailMessage(NotNullPtr<Net::Email::EmailMessage> msg, NotNullPtr<Data::FastStringMapNN<Text::String>> items, NotNullPtr<IO::LogTool> log);
+			Bool FillEmailMessage(NN<Net::Email::EmailMessage> msg, NN<Data::FastStringMapNN<Text::String>> items, NN<IO::LogTool> log);
 
 			static Optional<EmailTemplate> LoadFromFile(Text::CStringNN fileName, Bool htmlContent);
 		};

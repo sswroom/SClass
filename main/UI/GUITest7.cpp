@@ -6,14 +6,14 @@
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	NotNullPtr<UI::GUICore> core;
+	NN<UI::GUICore> core;
 	if (progCtrl->CreateGUICore(progCtrl).SetTo(core))
 	{
-		NotNullPtr<UI::GUIButton> btn;
-		NotNullPtr<UI::GUIForm> frm;
-		NotNullPtr<UI::GUILabel> lbl;
+		NN<UI::GUIButton> btn;
+		NN<UI::GUIForm> frm;
+		NN<UI::GUILabel> lbl;
 		NEW_CLASSNN(frm, UI::GUIForm(0, 640, 480, core));
 		frm->SetText(CSTR("Test 7 - Font and Color"));
 		btn = core->NewButton(frm, CSTR("Button"));

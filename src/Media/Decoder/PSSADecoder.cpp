@@ -5,7 +5,7 @@
 
 #define BASEVOLUME 0x4000 //0x4000
 
-Media::Decoder::PSSADecoder::PSSADecoder(NotNullPtr<Media::IAudioSource> sourceAudio)
+Media::Decoder::PSSADecoder::PSSADecoder(NN<Media::IAudioSource> sourceAudio)
 {
 	Media::AudioFormat fmt;
 	this->sourceAudio = 0;
@@ -42,7 +42,7 @@ Media::Decoder::PSSADecoder::~PSSADecoder()
 {
 }
 
-void Media::Decoder::PSSADecoder::GetFormat(NotNullPtr<AudioFormat> format)
+void Media::Decoder::PSSADecoder::GetFormat(NN<AudioFormat> format)
 {
 	if (this->sourceAudio)
 	{

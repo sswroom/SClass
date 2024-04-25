@@ -7,7 +7,7 @@
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 
-Bool IO::BTDevLog::IsDefaultName(NotNullPtr<Text::String> name)
+Bool IO::BTDevLog::IsDefaultName(NN<Text::String> name)
 {
 	if (name->leng == 17)
 	{
@@ -23,7 +23,7 @@ Bool IO::BTDevLog::IsDefaultName(NotNullPtr<Text::String> name)
 	return false;
 }
 
-void IO::BTDevLog::FreeDev(NotNullPtr<DevEntry> dev)
+void IO::BTDevLog::FreeDev(NN<DevEntry> dev)
 {
 	OPTSTR_DEL(dev->name);
 	MemFreeNN(dev);
@@ -38,11 +38,11 @@ IO::BTDevLog::~BTDevLog()
 	this->ClearList();
 }
 
-NotNullPtr<IO::BTDevLog::DevEntry> IO::BTDevLog::AddEntry(UInt64 macInt, Optional<Text::String> name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company, IO::BTScanLog::AdvType advType)
+NN<IO::BTDevLog::DevEntry> IO::BTDevLog::AddEntry(UInt64 macInt, Optional<Text::String> name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company, IO::BTScanLog::AdvType advType)
 {
 	UInt8 mac[8];
 	Optional<DevEntry> log;
-	NotNullPtr<DevEntry> nnlog;
+	NN<DevEntry> nnlog;
 	if (addrType == IO::BTScanLog::AT_RANDOM)
 	{
 		log = this->randDevs.Get(macInt);
@@ -69,8 +69,8 @@ NotNullPtr<IO::BTDevLog::DevEntry> IO::BTDevLog::AddEntry(UInt64 macInt, Optiona
 		{
 			nnlog->measurePower = measurePower;
 		}
-		NotNullPtr<Text::String> name1;
-		NotNullPtr<Text::String> name2;
+		NN<Text::String> name1;
+		NN<Text::String> name2;
 		if (nnlog->name.IsNull() && name.SetTo(name2))
 		{
 			nnlog->name = name2->Clone();
@@ -109,9 +109,9 @@ NotNullPtr<IO::BTDevLog::DevEntry> IO::BTDevLog::AddEntry(UInt64 macInt, Optiona
 	return nnlog;
 }
 
-void IO::BTDevLog::AppendList(NotNullPtr<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> devMap)
+void IO::BTDevLog::AppendList(NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> devMap)
 {
-	NotNullPtr<IO::BTScanLog::ScanRecord3> rec;
+	NN<IO::BTScanLog::ScanRecord3> rec;
 	UOSInt i = devMap->GetCount();
 	while (i-- > 0)
 	{
@@ -223,7 +223,7 @@ Bool IO::BTDevLog::StoreFile(Text::CStringNN fileName)
 	Data::ArrayListNN<DevEntry> logList;
 	logList.AddAll(this->pubDevs);
 	logList.AddAll(this->randDevs);
-	NotNullPtr<DevEntry> log;
+	NN<DevEntry> log;
 	UOSInt i = 0;
 	UOSInt j = logList.GetCount();
 	while (i < j)
@@ -275,12 +275,12 @@ Bool IO::BTDevLog::StoreFile(Text::CStringNN fileName)
 	return true;
 }
 
-NotNullPtr<const Data::ReadingListNN<IO::BTDevLog::DevEntry>> IO::BTDevLog::GetPublicList() const
+NN<const Data::ReadingListNN<IO::BTDevLog::DevEntry>> IO::BTDevLog::GetPublicList() const
 {
 	return this->pubDevs;
 }
 
-NotNullPtr<const Data::ReadingListNN<IO::BTDevLog::DevEntry>> IO::BTDevLog::GetRandomList() const
+NN<const Data::ReadingListNN<IO::BTDevLog::DevEntry>> IO::BTDevLog::GetRandomList() const
 {
 	return this->randDevs;
 }

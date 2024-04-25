@@ -122,7 +122,7 @@ namespace IO
 		static void __stdcall OnProtocolRecv(AnyType userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd);
 		DeviceInfo *GetDevice(UInt64 devId);
 	public:
-		SNBDongle(NotNullPtr<IO::Stream> stm, SNBHandler *hdlr);
+		SNBDongle(NN<IO::Stream> stm, SNBHandler *hdlr);
 		~SNBDongle();
 
 		void SetDevHandleType(UInt64 devId, HandleType handType);

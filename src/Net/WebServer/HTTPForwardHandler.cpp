@@ -5,7 +5,7 @@
 #include "Text/CPPText.h"
 #include "Text/StringBuilderUTF8.h"
 
-Optional<Text::String> Net::WebServer::HTTPForwardHandler::GetNextURL(NotNullPtr<Net::WebServer::IWebRequest> req)
+Optional<Text::String> Net::WebServer::HTTPForwardHandler::GetNextURL(NN<Net::WebServer::IWebRequest> req)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	UOSInt i = this->nextURL;
@@ -13,7 +13,7 @@ Optional<Text::String> Net::WebServer::HTTPForwardHandler::GetNextURL(NotNullPtr
 	return this->forwardAddrs.GetItem(i);
 }
 
-Net::WebServer::HTTPForwardHandler::HTTPForwardHandler(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN forwardURL, ForwardType fwdType)
+Net::WebServer::HTTPForwardHandler::HTTPForwardHandler(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN forwardURL, ForwardType fwdType)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -34,7 +34,7 @@ Net::WebServer::HTTPForwardHandler::~HTTPForwardHandler()
 	OPTSTR_DEL(this->forceHost);
 }
 
-Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	UInt8 buff[2048];
 	UTF8Char *sptr;
@@ -42,7 +42,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NotNullPtr<Net::WebServe
 	{
 		subReq = CSTR("/");
 	}
-	NotNullPtr<Text::String> fwdBaseUrl;
+	NN<Text::String> fwdBaseUrl;
 	if (!this->GetNextURL(req).SetTo(fwdBaseUrl))
 		return false;
 	Text::StringBuilderUTF8 sb;
@@ -52,7 +52,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NotNullPtr<Net::WebServe
 		sb.RemoveChars(1);
 	}
 	sb.Append(subReq);
-	NotNullPtr<Text::String> uri = req->GetRequestURI();
+	NN<Text::String> uri = req->GetRequestURI();
 	UOSInt i = uri->IndexOf('?');
 	UOSInt j;
 	if (i != INVALID_INDEX)
@@ -77,8 +77,8 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NotNullPtr<Net::WebServe
 		sbHeader.Append(req->GetReqMethodStr());
 		this->log->LogMessage(sbHeader.ToCString(), IO::LogHandler::LogLevel::Action);
 	}
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("sswr/1.0"), kaConn, sb.StartsWith(UTF8STRC("https://")));
-	NotNullPtr<Text::String> hdr;
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("sswr/1.0"), kaConn, sb.StartsWith(UTF8STRC("https://")));
+	NN<Text::String> hdr;
 	if (this->forceHost.SetTo(hdr))
 	{
 		cli->ForceHostName(hdr->ToCString());
@@ -92,7 +92,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NotNullPtr<Net::WebServe
 	}
 	Data::ArrayListStringNN hdrNames;
 	req->GetHeaderNames(hdrNames);
-	Data::ArrayIterator<NotNullPtr<Text::String>> it;
+	Data::ArrayIterator<NN<Text::String>> it;
 
 	Text::String *svrHost = 0;
 	UInt16 svrPort = 0;
@@ -327,7 +327,7 @@ void Net::WebServer::HTTPForwardHandler::AddForwardURL(Text::CString url)
 	this->forwardAddrs.Add(Text::String::New(url));
 }
 
-void Net::WebServer::HTTPForwardHandler::AddInjectHeader(NotNullPtr<Text::String> header)
+void Net::WebServer::HTTPForwardHandler::AddInjectHeader(NN<Text::String> header)
 {
 	this->injHeaders.Add(header->Clone());
 }

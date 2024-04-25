@@ -16,13 +16,13 @@ namespace Map
 		class ESRIMapServer : public Map::DrawMapService
 		{
 		private:
-			NotNullPtr<Text::String> url;
-			NotNullPtr<Text::String> name;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Text::String> url;
+			NN<Text::String> name;
+			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 			Math::RectAreaDbl bounds;
 			Math::RectAreaDbl initBounds;
-			NotNullPtr<Math::CoordinateSystem> csys;
+			NN<Math::CoordinateSystem> csys;
 			Bool noResource;
 
 			Bool supportMap;
@@ -36,14 +36,14 @@ namespace Map
 			Data::ArrayListDbl tileLevels;
 
 		public:
-			ESRIMapServer(Text::CString url, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Bool noResource);
+			ESRIMapServer(Text::CString url, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Bool noResource);
 			virtual ~ESRIMapServer();
 
 			Bool IsError() const;
 			Bool HasTile() const;
 			void SetSRID(UInt32 srid);
 
-			NotNullPtr<Text::String> GetURL() const;
+			NN<Text::String> GetURL() const;
 			Math::RectAreaDbl GetBounds() const;
 
 			UOSInt TileGetLevelCount() const;
@@ -52,19 +52,19 @@ namespace Map
 			UOSInt TileGetHeight() const;
 			Math::Coord2DDbl TileGetOrigin() const;
 			UTF8Char *TileGetURL(UTF8Char *sbuff, UOSInt level, Int32 tileX, Int32 tileY) const;
-			Bool TileGetURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, Int32 tileX, Int32 tileY) const;
+			Bool TileGetURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Int32 tileX, Int32 tileY) const;
 			Bool TileLoadToStream(IO::Stream *stm, UOSInt level, Int32 tileX, Int32 tileY) const;
 			Bool TileLoadToFile(Text::CStringNN fileName, UOSInt level, Int32 tileX, Int32 tileY) const;
 
-			virtual NotNullPtr<Text::String> GetName() const;
-			virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem() const;
+			virtual NN<Text::String> GetName() const;
+			virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const;
 			virtual Math::RectAreaDbl GetInitBounds() const;
 			virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 			virtual Bool CanQuery() const;
-			virtual Bool QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NotNullPtr<Data::ArrayList<UOSInt>> valueOfstList, NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListNN<Text::String>> valueList);
+			virtual Bool QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayList<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList);
 			virtual Optional<Media::ImageList> DrawMap(Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Optional<Text::StringBuilderUTF8> sbUrl);
 
-			static Optional<Math::Geometry::Vector2D> ParseGeometry(UInt32 srid, NotNullPtr<Text::String> geometryType, NotNullPtr<Text::JSONBase> geometry);
+			static Optional<Math::Geometry::Vector2D> ParseGeometry(UInt32 srid, NN<Text::String> geometryType, NN<Text::JSONBase> geometry);
 		};
 	}
 }

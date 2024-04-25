@@ -157,7 +157,7 @@ Bool DB::DBRow::SetFieldVector(DB::DBRow::Field *field, Optional<Math::Geometry:
 	}
 	SDEL_CLASS(field->currentData.vec);
 	field->currentChanged = true;
-	NotNullPtr<Math::Geometry::Vector2D> nnvec;
+	NN<Math::Geometry::Vector2D> nnvec;
 	if (!vec.SetTo(nnvec))
 	{
 		field->currentNull = true;
@@ -319,12 +319,12 @@ const UInt8 *DB::DBRow::GetFieldBinary(DB::DBRow::Field *field, UOSInt *buffSize
 }
 
 
-DB::DBRow::DBRow(NotNullPtr<TableDef> table)
+DB::DBRow::DBRow(NN<TableDef> table)
 {
 	this->table = table;
-	NotNullPtr<DB::ColDef> col;
+	NN<DB::ColDef> col;
 	DB::DBRow::Field *field;
-	Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = table->ColIterator();
+	Data::ArrayIterator<NN<DB::ColDef>> it = table->ColIterator();
 	while (it.HasNext())
 	{
 		col = it.Next();
@@ -341,15 +341,15 @@ DB::DBRow::DBRow(NotNullPtr<TableDef> table)
 
 DB::DBRow::~DBRow()
 {
-	NotNullPtr<const Data::ArrayList<Field*>> fieldList = this->dataMap.GetValues();
+	NN<const Data::ArrayList<Field*>> fieldList = this->dataMap.GetValues();
 	LIST_CALL_FUNC(fieldList, this->FreeField);
 }
 
-Bool DB::DBRow::SetByReader(NotNullPtr<DB::DBReader> r, Bool commit)
+Bool DB::DBRow::SetByReader(NN<DB::DBReader> r, Bool commit)
 {
-	NotNullPtr<DB::ColDef> col;
+	NN<DB::ColDef> col;
 	DB::DBRow::Field *field;
-	Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = table->ColIterator();
+	Data::ArrayIterator<NN<DB::ColDef>> it = table->ColIterator();
 	UOSInt i = 0;
 	while (it.HasNext())
 	{
@@ -389,7 +389,7 @@ Bool DB::DBRow::SetByReader(NotNullPtr<DB::DBReader> r, Bool commit)
 				break;
 			case DT_STRING:
 				{
-					NotNullPtr<Text::String> s = r->GetNewStrNN(i);
+					NN<Text::String> s = r->GetNewStrNN(i);
 					this->SetFieldStr(field, s->v);
 					s->Release();
 				}
@@ -578,7 +578,7 @@ const UInt8 *DB::DBRow::GetValueBinary(const UTF8Char *fieldName, UOSInt *buffSi
 
 void DB::DBRow::Commit()
 {
-	NotNullPtr<const Data::ArrayList<DB::DBRow::Field*>> fieldList = this->dataMap.GetValues();
+	NN<const Data::ArrayList<DB::DBRow::Field*>> fieldList = this->dataMap.GetValues();
 	DB::DBRow::Field *field;
 	UOSInt i = fieldList->GetCount();
 	while (i-- > 0)
@@ -631,7 +631,7 @@ void DB::DBRow::Commit()
 
 void DB::DBRow::Rollback()
 {
-	NotNullPtr<const Data::ArrayList<DB::DBRow::Field*>> fieldList = this->dataMap.GetValues();
+	NN<const Data::ArrayList<DB::DBRow::Field*>> fieldList = this->dataMap.GetValues();
 	DB::DBRow::Field *field;
 	UOSInt i = fieldList->GetCount();
 	while (i-- > 0)
@@ -674,7 +674,7 @@ void DB::DBRow::Rollback()
 Bool DB::DBRow::GetSinglePKI64(Int64 *key) const
 {
 	Bool hasKey = false;
-	NotNullPtr<const Data::ArrayList<DB::DBRow::Field*>> fieldList = this->dataMap.GetValues();
+	NN<const Data::ArrayList<DB::DBRow::Field*>> fieldList = this->dataMap.GetValues();
 	DB::DBRow::Field *field;
 	UOSInt i = fieldList->GetCount();
 	while (i-- > 0)
@@ -701,20 +701,20 @@ Bool DB::DBRow::GetSinglePKI64(Int64 *key) const
 	return hasKey;
 }
 
-void DB::DBRow::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void DB::DBRow::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	NotNullPtr<DB::ColDef> col;
+	NN<DB::ColDef> col;
 	DB::DBRow::Field *field;
 	const UInt8 *buff;
 	Math::WKTWriter wkt;
-	NotNullPtr<Math::Geometry::Vector2D> vec;
+	NN<Math::Geometry::Vector2D> vec;
 	DataType dtype;
 	UOSInt k;
 	UOSInt strLen;
 	this->AppendTableName(sb);
-	Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = this->table->ColIterator();
+	Data::ArrayIterator<NN<DB::ColDef>> it = this->table->ColIterator();
 	Bool found = false;
 	sb->AppendUTF8Char('[');
 	while (it.HasNext())
@@ -800,7 +800,7 @@ void DB::DBRow::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 	sb->AppendUTF8Char(']');
 }
 
-void DB::DBRow::AppendTableName(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void DB::DBRow::AppendTableName(NN<Text::StringBuilderUTF8> sb) const
 {
 	Text::CString tableName = this->table->GetTableName()->ToCString();
 	UOSInt i = tableName.IndexOf('.');
@@ -847,7 +847,7 @@ void DB::DBRow::AppendTableName(NotNullPtr<Text::StringBuilderUTF8> sb) const
 	}
 }
 
-void DB::DBRow::AppendVarNameForm(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *colName) const
+void DB::DBRow::AppendVarNameForm(NN<Text::StringBuilderUTF8> sb, const UTF8Char *colName) const
 {
 	Bool nextCap = false;
 	UTF8Char c;
@@ -886,7 +886,7 @@ void DB::DBRow::AppendVarNameForm(NotNullPtr<Text::StringBuilderUTF8> sb, const 
 	}
 }
 
-NotNullPtr<DB::TableDef> DB::DBRow::GetTableDef()
+NN<DB::TableDef> DB::DBRow::GetTableDef()
 {
 	return this->table;
 }

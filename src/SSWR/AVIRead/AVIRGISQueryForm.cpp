@@ -8,14 +8,14 @@
 
 Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
+	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
 	me->downPos = scnPos;
 	return false;
 }
 
 Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
+	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
 	if (me->downPos == scnPos)
 	{
 		Map::GetObjectSess *sess;
@@ -24,9 +24,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(AnyType userObj, Math:
 		UOSInt j;
 		UOSInt k;
 		Math::Coord2DDbl mapPt = me->navi->ScnXY2MapXY(scnPos);
-		NotNullPtr<Math::CoordinateSystem> csys = me->navi->GetCoordinateSystem();
-		NotNullPtr<Math::CoordinateSystem> lyrCSys = me->lyr->GetCoordinateSystem();
-		NotNullPtr<Math::Geometry::Vector2D> vec;
+		NN<Math::CoordinateSystem> csys = me->navi->GetCoordinateSystem();
+		NN<Math::CoordinateSystem> lyrCSys = me->lyr->GetCoordinateSystem();
+		NN<Math::Geometry::Vector2D> vec;
 		if (!csys->Equals(lyrCSys))
 		{
 			mapPt = Math::CoordinateSystem::Convert(csys, lyrCSys, mapPt);
@@ -92,8 +92,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(AnyType userObj, Math:
 		}
 		else
 		{
-			NotNullPtr<Map::MapDrawLayer::ObjectInfo> obj;
-			NotNullPtr<Math::Geometry::Vector2D> vec;
+			NN<Map::MapDrawLayer::ObjectInfo> obj;
+			NN<Math::Geometry::Vector2D> vec;
 			Data::ArrayListInt64 arr;
 			Map::NameArray *nameArr;
 			Text::StringBuilderUTF8 sb;
@@ -150,10 +150,10 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(AnyType userObj, Math:
 
 Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
+	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
 	if (me->currVec)
 	{
-		NotNullPtr<Math::CoordinateSystem> csys = me->navi->GetCoordinateSystem();
+		NN<Math::CoordinateSystem> csys = me->navi->GetCoordinateSystem();
 		Math::Coord2DDbl mapPos = me->navi->ScnXY2MapXY(scnPos);
 		Math::Coord2DDbl nearPos = mapPos;
 		me->currVec->CalBoundarySqrDistance(mapPos, nearPos);
@@ -177,9 +177,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseMove(AnyType userObj, Mat
 
 void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnShapeFmtChanged(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
-	NotNullPtr<Math::Geometry::Vector2D> vec;
-	NotNullPtr<Math::VectorTextWriter> writer;
+	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
+	NN<Math::Geometry::Vector2D> vec;
+	NN<Math::VectorTextWriter> writer;
 	if (vec.Set(me->currVec) && me->cboShapeFmt->GetSelectedItem().GetOpt<Math::VectorTextWriter>().SetTo(writer))
 	{
 		Text::StringBuilderUTF8 sb;
@@ -190,7 +190,7 @@ void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnShapeFmtChanged(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnObjSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
+	NN<SSWR::AVIRead::AVIRGISQueryForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISQueryForm>();
 	UOSInt index = me->cboObj->GetSelectedIndex();
 	if (index != INVALID_INDEX)
 	{
@@ -220,7 +220,7 @@ void SSWR::AVIRead::AVIRGISQueryForm::ShowLayerNames()
 
 void SSWR::AVIRead::AVIRGISQueryForm::ClearQueryResults()
 {
-	NotNullPtr<Text::String> value;
+	NN<Text::String> value;
 	this->queryNameList.FreeAll();
 	UOSInt i = this->queryValueList.GetCount();
 	while (i-- > 0)
@@ -237,8 +237,8 @@ void SSWR::AVIRead::AVIRGISQueryForm::ClearQueryResults()
 
 void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 {
-	NotNullPtr<Math::VectorTextWriter> writer;
-	NotNullPtr<Math::Geometry::Vector2D> vec;
+	NN<Math::VectorTextWriter> writer;
+	NN<Math::Geometry::Vector2D> vec;
 	if (!this->queryVecList.GetItem(index).SetTo(vec) || !this->cboShapeFmt->GetSelectedItem().GetOpt<Math::VectorTextWriter>().SetTo(writer))
 		return;
 	SDEL_CLASS(this->currVec);
@@ -271,7 +271,7 @@ void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 		j = this->queryValueOfstList.GetItem(index + 1);
 		if (j == 0)
 			j = this->queryNameList.GetCount();
-		NotNullPtr<Text::String> valueStr;
+		NN<Text::String> valueStr;
 		while (i < j)
 		{
 			name = this->queryNameList.GetItem(i);
@@ -289,7 +289,7 @@ void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 	Text::StringBuilderUTF8 sb;
 	writer->ToText(sb, vec);
 	this->txtShape->SetText(sb.ToCString());
-	NotNullPtr<Math::CoordinateSystem> csys = this->lyr->GetCoordinateSystem();
+	NN<Math::CoordinateSystem> csys = this->lyr->GetCoordinateSystem();
 	sb.ClearStr();
 	sb.AppendDouble(csys->CalDistance(vec, false, Math::Unit::Distance::DU_METER));
 	this->txtShapeLength->SetText(sb.ToCString());
@@ -314,7 +314,7 @@ void SSWR::AVIRead::AVIRGISQueryForm::SetQueryItem(UOSInt index)
 	this->txtMaxY->SetText(CSTRP(sbuff, sptr));
 }
 
-SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapDrawLayer> lyr, IMapNavigator *navi) : UI::GUIForm(parent, 416, 408, ui)
+SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapDrawLayer> lyr, IMapNavigator *navi) : UI::GUIForm(parent, 416, 408, ui)
 {
 	Text::StringBuilderUTF8 sb;
 	this->core = core;

@@ -12,13 +12,13 @@ namespace IO
 	{
 	private:
 		Text::Encoding enc;
-		NotNullPtr<IO::Stream> stm;
+		NN<IO::Stream> stm;
 		UInt8 *buff;
 		UInt32 buffSize;
 
 	public:
-		StreamWriter(NotNullPtr<IO::Stream> stm, Text::Encoding *enc);
-		StreamWriter(NotNullPtr<IO::Stream> stm, UInt32 codePage);
+		StreamWriter(NN<IO::Stream> stm, Text::Encoding *enc);
+		StreamWriter(NN<IO::Stream> stm, UInt32 codePage);
 		virtual ~StreamWriter();
 
 		virtual Bool WriteStrC(const UTF8Char *str, UOSInt nChar);

@@ -6,9 +6,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::Email::SMTPServer::ClientReady(NotNullPtr<Net::TCPClient> cli, AnyType userObj)
+void __stdcall Net::Email::SMTPServer::ClientReady(NN<Net::TCPClient> cli, AnyType userObj)
 {
-	NotNullPtr<Net::Email::SMTPServer> me = userObj.GetNN<Net::Email::SMTPServer>();
+	NN<Net::Email::SMTPServer> me = userObj.GetNN<Net::Email::SMTPServer>();
 	MailStatus *cliStatus;
 	NEW_CLASS(cliStatus, MailStatus());
 	cliStatus->buffSize = 0;
@@ -33,9 +33,9 @@ void __stdcall Net::Email::SMTPServer::ClientReady(NotNullPtr<Net::TCPClient> cl
 
 void __stdcall Net::Email::SMTPServer::ConnHdlr(Socket *s, AnyType userObj)
 {
-	NotNullPtr<Net::Email::SMTPServer> me = userObj.GetNN<Net::Email::SMTPServer>();
-	NotNullPtr<Net::TCPClient> cli;
-	NotNullPtr<Net::SSLEngine> ssl;
+	NN<Net::Email::SMTPServer> me = userObj.GetNN<Net::Email::SMTPServer>();
+	NN<Net::TCPClient> cli;
+	NN<Net::SSLEngine> ssl;
 	if (me->connType == Net::Email::SMTPConn::ConnType::SSL && me->ssl.SetTo(ssl))
 	{
 		ssl->ServerInit(s, ClientReady, me);
@@ -47,11 +47,11 @@ void __stdcall Net::Email::SMTPServer::ConnHdlr(Socket *s, AnyType userObj)
 	}
 }
 
-void __stdcall Net::Email::SMTPServer::ClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::Email::SMTPServer::ClientEvent(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
-		NotNullPtr<MailStatus> cliStatus = cliData.GetNN<MailStatus>();
+		NN<MailStatus> cliStatus = cliData.GetNN<MailStatus>();
 		UOSInt i;
 		SDEL_STRING(cliStatus->cliName);
 		SDEL_STRING(cliStatus->mailFrom);
@@ -72,10 +72,10 @@ void __stdcall Net::Email::SMTPServer::ClientEvent(NotNullPtr<Net::TCPClient> cl
 	}
 }
 
-void __stdcall Net::Email::SMTPServer::ClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &srcBuff)
+void __stdcall Net::Email::SMTPServer::ClientData(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &srcBuff)
 {
-	NotNullPtr<Net::Email::SMTPServer> me = userObj.GetNN<Net::Email::SMTPServer>();
-	NotNullPtr<Net::Email::SMTPServer::MailStatus> cliStatus;
+	NN<Net::Email::SMTPServer> me = userObj.GetNN<Net::Email::SMTPServer>();
+	NN<Net::Email::SMTPServer::MailStatus> cliStatus;
 	Data::ByteArrayR buff = srcBuff;
 	if (!cliData.GetOpt<MailStatus>().SetTo(cliStatus))
 		return;
@@ -151,11 +151,11 @@ void __stdcall Net::Email::SMTPServer::ClientData(NotNullPtr<Net::TCPClient> cli
 	}
 }
 
-void __stdcall Net::Email::SMTPServer::ClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
+void __stdcall Net::Email::SMTPServer::ClientTimeout(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
 {
 }
 
-UOSInt Net::Email::SMTPServer::WriteMessage(NotNullPtr<Net::TCPClient> cli, Int32 statusCode, Text::CString msg)
+UOSInt Net::Email::SMTPServer::WriteMessage(NN<Net::TCPClient> cli, Int32 statusCode, Text::CString msg)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt i = 0;
@@ -223,7 +223,7 @@ UOSInt Net::Email::SMTPServer::WriteMessage(NotNullPtr<Net::TCPClient> cli, Int3
 	return strLen;
 }*/
 
-void Net::Email::SMTPServer::ParseCmd(NotNullPtr<Net::TCPClient> cli, NotNullPtr<Net::Email::SMTPServer::MailStatus> cliStatus, const UTF8Char *cmd, UOSInt cmdLen, Text::LineBreakType lbt)
+void Net::Email::SMTPServer::ParseCmd(NN<Net::TCPClient> cli, NN<Net::Email::SMTPServer::MailStatus> cliStatus, const UTF8Char *cmd, UOSInt cmdLen, Text::LineBreakType lbt)
 {
 	if (cliStatus->loginMode)
 	{
@@ -354,7 +354,7 @@ void Net::Email::SMTPServer::ParseCmd(NotNullPtr<Net::TCPClient> cli, NotNullPtr
 	}
 	else if (Text::StrEqualsC(cmd, cmdLen, UTF8STRC("STARTTLS")))
 	{
-		NotNullPtr<Net::SSLEngine> ssl;
+		NN<Net::SSLEngine> ssl;
 		if (!cli->IsSSL() && this->connType == Net::Email::SMTPConn::ConnType::STARTTLS && this->ssl.SetTo(ssl))
 		{
 			WriteMessage(cli, 220, CSTR("Go ahead"));
@@ -469,7 +469,7 @@ void Net::Email::SMTPServer::ParseCmd(NotNullPtr<Net::TCPClient> cli, NotNullPtr
 	
 }
 
-Net::Email::SMTPServer::SMTPServer(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt16 port, Net::Email::SMTPConn::ConnType connType, NotNullPtr<IO::LogTool> log, Text::CStringNN domain, Text::CStringNN serverName, MailHandler mailHdlr, LoginHandler loginHdlr, AnyType userObj, Bool autoStart) : cliMgr(60, ClientEvent, ClientData, this, 4, ClientTimeout)
+Net::Email::SMTPServer::SMTPServer(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt16 port, Net::Email::SMTPConn::ConnType connType, NN<IO::LogTool> log, Text::CStringNN domain, Text::CStringNN serverName, MailHandler mailHdlr, LoginHandler loginHdlr, AnyType userObj, Bool autoStart) : cliMgr(60, ClientEvent, ClientData, this, 4, ClientTimeout)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

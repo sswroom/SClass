@@ -11,7 +11,7 @@ public:
 	{
 	}
 
-	InOutParam(NotNullPtr<T> p) : OutParam<T>(p)
+	InOutParam(NN<T> p) : OutParam<T>(p)
 	{
 	}
 

@@ -14,30 +14,30 @@ namespace SSWR
 		class AVIRBCryptForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUIGroupBox> grpGenerate;
-			NotNullPtr<UI::GUILabel> lblCost;
-			NotNullPtr<UI::GUITextBox> txtCost;
-			NotNullPtr<UI::GUILabel> lblGenPassword;
-			NotNullPtr<UI::GUITextBox> txtGenPassword;
-			NotNullPtr<UI::GUIButton> btnGenerate;
-			NotNullPtr<UI::GUILabel> lblGenHash;
-			NotNullPtr<UI::GUITextBox> txtGenHash;
+			NN<UI::GUIGroupBox> grpGenerate;
+			NN<UI::GUILabel> lblCost;
+			NN<UI::GUITextBox> txtCost;
+			NN<UI::GUILabel> lblGenPassword;
+			NN<UI::GUITextBox> txtGenPassword;
+			NN<UI::GUIButton> btnGenerate;
+			NN<UI::GUILabel> lblGenHash;
+			NN<UI::GUITextBox> txtGenHash;
 
-			NotNullPtr<UI::GUIGroupBox> grpCheck;
-			NotNullPtr<UI::GUILabel> lblCheckHash;
-			NotNullPtr<UI::GUITextBox> txtCheckHash;
-			NotNullPtr<UI::GUILabel> lblCheckPassword;
-			NotNullPtr<UI::GUITextBox> txtCheckPassword;
-			NotNullPtr<UI::GUIButton> btnCheck;
-			NotNullPtr<UI::GUILabel> lblCheckResult;
-			NotNullPtr<UI::GUITextBox> txtCheckResult;
+			NN<UI::GUIGroupBox> grpCheck;
+			NN<UI::GUILabel> lblCheckHash;
+			NN<UI::GUITextBox> txtCheckHash;
+			NN<UI::GUILabel> lblCheckPassword;
+			NN<UI::GUITextBox> txtCheckPassword;
+			NN<UI::GUIButton> btnCheck;
+			NN<UI::GUILabel> lblCheckResult;
+			NN<UI::GUITextBox> txtCheckResult;
 
 			static void __stdcall OnGenHashClicked(AnyType userObj);
 			static void __stdcall OnCheckClicked(AnyType userObj);
 		public:
-			AVIRBCryptForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRBCryptForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRBCryptForm();
 
 			virtual void OnMonitorChanged();

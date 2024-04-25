@@ -63,9 +63,9 @@ UOSInt IO::StmData::MemoryDataCopy::GetRealData(UInt64 offset, UOSInt length, Da
 	return length;
 }
 
-NotNullPtr<Text::String> IO::StmData::MemoryDataCopy::GetFullName()
+NN<Text::String> IO::StmData::MemoryDataCopy::GetFullName()
 {
-	NotNullPtr<Text::String> retStr;
+	NN<Text::String> retStr;
 	if (retStr.Set(this->stat->fullName))
 		return retStr;
 	return Text::String::NewEmpty();
@@ -101,9 +101,9 @@ const UInt8 *IO::StmData::MemoryDataCopy::GetPointer()
 	return this->data;
 }
 
-NotNullPtr<IO::StreamData> IO::StmData::MemoryDataCopy::GetPartialData(UInt64 offset, UInt64 length)
+NN<IO::StreamData> IO::StmData::MemoryDataCopy::GetPartialData(UInt64 offset, UInt64 length)
 {
-	NotNullPtr<IO::StmData::MemoryDataCopy> data;
+	NN<IO::StmData::MemoryDataCopy> data;
 	if (offset >= this->dataLength)
 	{
 		NEW_CLASSNN(data, IO::StmData::MemoryDataCopy(this->stat, this->data, 0));

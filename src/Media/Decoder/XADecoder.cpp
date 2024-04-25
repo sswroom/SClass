@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "Media/Decoder/XADecoder.h"
 
-Media::Decoder::XADecoder::XADecoder(NotNullPtr<Media::IAudioSource> sourceAudio)
+Media::Decoder::XADecoder::XADecoder(NN<Media::IAudioSource> sourceAudio)
 {
 	Media::AudioFormat fmt;
 	this->sourceAudio = 0;
@@ -34,7 +34,7 @@ Media::Decoder::XADecoder::~XADecoder()
 {
 }
 
-void Media::Decoder::XADecoder::GetFormat(NotNullPtr<AudioFormat> format)
+void Media::Decoder::XADecoder::GetFormat(NN<AudioFormat> format)
 {
 	if (this->sourceAudio)
 	{

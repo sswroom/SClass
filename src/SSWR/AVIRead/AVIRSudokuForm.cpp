@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRSudokuForm::EventNumInput(void *userObj, UOSIn
 	me->svMain->Redraw();
 }
 
-SSWR::AVIRead::AVIRSudokuForm::AVIRSudokuForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 768, ui)
+SSWR::AVIRead::AVIRSudokuForm::AVIRSudokuForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 768, ui)
 {
 	this->SetText(CSTR("Sudoku Solver"));
 
@@ -26,7 +26,7 @@ SSWR::AVIRead::AVIRSudokuForm::AVIRSudokuForm(Optional<UI::GUIClientControl> par
 	NEW_CLASS(this->svMain, UI::GUISudokuViewer(ui, *this, this->core->GetDrawEngine(), board));
 	this->svMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->svMain->HandleNumberInput(EventNumInput, this);
-	NotNullPtr<UI::GUIMenu> mnu;
+	NN<UI::GUIMenu> mnu;
 	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Board"));
 	mnu->AddItem(CSTR("&Clear"), MNU_CLEAR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);

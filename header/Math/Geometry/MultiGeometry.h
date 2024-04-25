@@ -34,7 +34,7 @@ namespace Math
 				}
 			}
 
-			virtual void AddGeometry(NotNullPtr<T> geometry)
+			virtual void AddGeometry(NN<T> geometry)
 			{
 				this->geometries.Add(geometry);
 			}
@@ -49,7 +49,7 @@ namespace Math
 				return this->geometries.GetItem(index);
 			}
 
-			Data::ArrayIterator<NotNullPtr<T>> Iterator() const
+			Data::ArrayIterator<NN<T>> Iterator() const
 			{
 				return this->geometries.Iterator();
 			}
@@ -62,7 +62,7 @@ namespace Math
 			virtual Math::RectAreaDbl GetBounds() const
 			{
 				Math::RectAreaDbl bounds;
-				Data::ArrayIterator<NotNullPtr<T>> it = this->Iterator();
+				Data::ArrayIterator<NN<T>> it = this->Iterator();
 				if (!it.HasNext())
 				{
 					bounds.min = Math::Coord2DDbl(0, 0);
@@ -81,7 +81,7 @@ namespace Math
 
 			virtual Double CalBoundarySqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const
 			{
-				Data::ArrayIterator<NotNullPtr<T>> it = this->Iterator();
+				Data::ArrayIterator<NN<T>> it = this->Iterator();
 				if (!it.HasNext())
 				{
 					nearPt.Set(Math::Coord2DDbl(0, 0));
@@ -106,7 +106,7 @@ namespace Math
 
 			virtual Double CalSqrDistance(Math::Coord2DDbl pt, OutParam<Math::Coord2DDbl> nearPt) const
 			{
-				Data::ArrayIterator<NotNullPtr<T>> it = this->geometries.Iterator();
+				Data::ArrayIterator<NN<T>> it = this->geometries.Iterator();
 				if (!it.HasNext())
 				{
 					nearPt.Set(Math::Coord2DDbl(0, 0));
@@ -132,7 +132,7 @@ namespace Math
 			virtual Double CalArea() const
 			{
 				Double totalArea = 0;
-				Data::ArrayIterator<NotNullPtr<T>> it = this->geometries.Iterator();
+				Data::ArrayIterator<NN<T>> it = this->geometries.Iterator();
 				while (it.HasNext())
 				{
 					totalArea += it.Next()->CalArea();
@@ -140,24 +140,24 @@ namespace Math
 				return totalArea;
 			}
 
-			virtual Bool JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec)
+			virtual Bool JoinVector(NN<const Math::Geometry::Vector2D> vec)
 			{
 				if (this->GetVectorType() != vec->GetVectorType())
 				{
 					return false;
 				}
-				NotNullPtr<const Math::Geometry::MultiGeometry<T>> obj = NotNullPtr<const Math::Geometry::MultiGeometry<T>>::ConvertFrom(vec);
-				Data::ArrayIterator<NotNullPtr<T>> it = obj->Iterator();
+				NN<const Math::Geometry::MultiGeometry<T>> obj = NN<const Math::Geometry::MultiGeometry<T>>::ConvertFrom(vec);
+				Data::ArrayIterator<NN<T>> it = obj->Iterator();
 				while (it.HasNext())
 				{
-					this->AddGeometry(NotNullPtr<T>::ConvertFrom(it.Next()->Clone()));
+					this->AddGeometry(NN<T>::ConvertFrom(it.Next()->Clone()));
 				}
 				return true;
 			}
 
 			virtual Bool HasZ() const
 			{
-				NotNullPtr<T> geom;
+				NN<T> geom;
 				if (this->geometries.GetItem(0).SetTo(geom))
 					return geom->HasZ();
 				return false;
@@ -165,7 +165,7 @@ namespace Math
 
 			virtual Bool HasM() const
 			{
-				NotNullPtr<T> geom;
+				NN<T> geom;
 				if (this->geometries.GetItem(0).SetTo(geom))
 					return geom->HasM();
 				return false;
@@ -173,7 +173,7 @@ namespace Math
 
 			virtual Bool GetZBounds(OutParam<Double> min, OutParam<Double> max) const
 			{
-				NotNullPtr<T> geom;
+				NN<T> geom;
 				Double thisMin;
 				Double thisMax;
 				Double allMin;
@@ -203,7 +203,7 @@ namespace Math
 
 			virtual Bool GetMBounds(OutParam<Double> min, OutParam<Double> max) const
 			{
-				NotNullPtr<T> geom;
+				NN<T> geom;
 				Double thisMin;
 				Double thisMax;
 				Double allMin;
@@ -231,9 +231,9 @@ namespace Math
 				return true;
 			}
 
-			virtual void Convert(NotNullPtr<Math::CoordinateConverter> converter)
+			virtual void Convert(NN<Math::CoordinateConverter> converter)
 			{
-				Data::ArrayIterator<NotNullPtr<T>> it = this->Iterator();
+				Data::ArrayIterator<NN<T>> it = this->Iterator();
 				while (it.HasNext())
 				{
 					it.Next()->Convert(converter);
@@ -241,11 +241,11 @@ namespace Math
 				this->srid = converter->GetOutputSRID();
 			}
 
-			virtual Bool Equals(NotNullPtr<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
+			virtual Bool Equals(NN<const Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
 			{
 				if (this->GetVectorType() != vec->GetVectorType())
 				{
-					NotNullPtr<T> geom;
+					NN<T> geom;
 					if (!sameTypeOnly && this->geometries.GetCount() == 1 && this->geometries.GetItem(0).SetTo(geom))
 					{
 						return geom->Equals(vec, sameTypeOnly, nearlyVal);
@@ -263,8 +263,8 @@ namespace Math
 #endif
 					return false;
 				}
-				NotNullPtr<T> v;
-				Data::ArrayIterator<NotNullPtr<T>> it = this->geometries.Iterator();
+				NN<T> v;
+				Data::ArrayIterator<NN<T>> it = this->geometries.Iterator();
 				UOSInt i = 0;
 				while (it.HasNext())
 				{
@@ -275,10 +275,10 @@ namespace Math
 				return true;
 			}
 
-			virtual UOSInt GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
+			virtual UOSInt GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
 			{
 				UOSInt ret = 0;
-				Data::ArrayIterator<NotNullPtr<T>> it = this->geometries.Iterator();
+				Data::ArrayIterator<NN<T>> it = this->geometries.Iterator();
 				while (it.HasNext())
 				{
 					ret += it.Next()->GetCoordinates(coordList);
@@ -288,7 +288,7 @@ namespace Math
 
 			virtual Bool InsideOrTouch(Math::Coord2DDbl coord) const
 			{
-				Data::ArrayIterator<NotNullPtr<T>> it = this->geometries.Iterator();
+				Data::ArrayIterator<NN<T>> it = this->geometries.Iterator();
 				while (it.HasNext())
 				{
 					if (it.Next()->InsideOrTouch(coord))
@@ -299,7 +299,7 @@ namespace Math
 
 			virtual void SwapXY()
 			{
-				Data::ArrayIterator<NotNullPtr<T>> it = this->geometries.Iterator();
+				Data::ArrayIterator<NN<T>> it = this->geometries.Iterator();
 				while (it.HasNext())
 				{
 					it.Next()->SwapXY();
@@ -308,7 +308,7 @@ namespace Math
 
 			virtual void MultiplyCoordinatesXY(Double v)
 			{
-				Data::ArrayIterator<NotNullPtr<T>> it = this->geometries.Iterator();
+				Data::ArrayIterator<NN<T>> it = this->geometries.Iterator();
 				while (it.HasNext())
 				{
 					it.Next()->MultiplyCoordinatesXY(v);
@@ -318,7 +318,7 @@ namespace Math
 			virtual void SetSRID(UInt32 srid)
 			{
 				this->srid = srid;
-				Data::ArrayIterator<NotNullPtr<T>> it = this->geometries.Iterator();
+				Data::ArrayIterator<NN<T>> it = this->geometries.Iterator();
 				while (it.HasNext())
 				{
 					it.Next()->SetSRID(srid);
@@ -328,7 +328,7 @@ namespace Math
 			virtual UOSInt GetPointCount() const
 			{
 				UOSInt ret = 0;
-				Data::ArrayIterator<NotNullPtr<T>> it = this->geometries.Iterator();
+				Data::ArrayIterator<NN<T>> it = this->geometries.Iterator();
 				while (it.HasNext())
 				{
 					ret += it.Next()->GetPointCount();

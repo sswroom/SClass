@@ -12,7 +12,7 @@ namespace Net
 		public:
 			virtual ~IWebHandler() {};
 
-			virtual void WebRequest(NotNullPtr<IWebRequest> req, NotNullPtr<IWebResponse> resp) = 0;
+			virtual void WebRequest(NN<IWebRequest> req, NN<IWebResponse> resp) = 0;
 		};
 	}
 }

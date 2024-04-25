@@ -3,9 +3,9 @@
 #include "IO/FileAnalyse/TXTFileAnalyse.h"
 #include "Sync/MutexUsage.h"
 
-void __stdcall IO::FileAnalyse::TXTFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::FileAnalyse::TXTFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::FileAnalyse::TXTFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::TXTFileAnalyse>();
+	NN<IO::FileAnalyse::TXTFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::TXTFileAnalyse>();
 	UInt64 buffOfst = 0;
 	UOSInt buffSize = 0;
 	UOSInt readSize;
@@ -86,7 +86,7 @@ void __stdcall IO::FileAnalyse::TXTFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	}
 }
 
-IO::FileAnalyse::TXTFileAnalyse::TXTFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("TXTFileAnalyse"))
+IO::FileAnalyse::TXTFileAnalyse::TXTFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("TXTFileAnalyse"))
 {
 	this->fd = 0;
 	this->pauseParsing = false;
@@ -112,7 +112,7 @@ UOSInt IO::FileAnalyse::TXTFileAnalyse::GetFrameCount()
 	return this->lineOfsts.GetCount();
 }
 
-Bool IO::FileAnalyse::TXTFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::TXTFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	UOSInt cnt = this->lineOfsts.GetCount();
@@ -163,7 +163,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TXTFileAnalyse::GetFrame
 		size = (UOSInt)(this->lineOfsts.GetItem(index + 1) - lineOfst);
 	}
 	mutUsage.EndUse();
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(lineOfst, size));
 	UInt8 buff[4096];
 	if (size <= sizeof(buff))

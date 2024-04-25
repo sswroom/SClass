@@ -7,14 +7,14 @@
 
 void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnOkClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRUserAgentSelForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentSelForm>();
+	NN<SSWR::AVIRead::AVIRUserAgentSelForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentSelForm>();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
 void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnFilterChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRUserAgentSelForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentSelForm>();
-	NotNullPtr<SSWR::AVIRead::AVIRUserAgentSelForm::OSItem> osItem;
+	NN<SSWR::AVIRead::AVIRUserAgentSelForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentSelForm>();
+	NN<SSWR::AVIRead::AVIRUserAgentSelForm::OSItem> osItem;
 	if (me->cboFilterOS->GetSelectedItem().GetOpt<SSWR::AVIRead::AVIRUserAgentSelForm::OSItem>().SetTo(osItem))
 	{
 		me->UpdateUAList(osItem->os, {osItem->osVer, osItem->osVerLen}, (Net::BrowserInfo::BrowserType)me->cboFilterBrowser->GetSelectedItem().GetOSInt());
@@ -23,8 +23,8 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnFilterChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnUserAgentSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRUserAgentSelForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentSelForm>();
-	NotNullPtr<Net::UserAgentDB::UAEntry> uaList;
+	NN<SSWR::AVIRead::AVIRUserAgentSelForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentSelForm>();
+	NN<Net::UserAgentDB::UAEntry> uaList;
 	if (me->lvUserAgent->GetSelectedItem().GetOpt<Net::UserAgentDB::UAEntry>().SetTo(uaList))
 	{
 		me->currUserAgent = uaList->userAgent;
@@ -34,8 +34,8 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnUserAgentSelChg(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnUserAgentDblClk(AnyType userObj, UOSInt itemIndex)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRUserAgentSelForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentSelForm>();
-	NotNullPtr<Net::UserAgentDB::UAEntry> uaList;
+	NN<SSWR::AVIRead::AVIRUserAgentSelForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUserAgentSelForm>();
+	NN<Net::UserAgentDB::UAEntry> uaList;
 	if (me->lvUserAgent->GetItem(itemIndex).GetOpt<Net::UserAgentDB::UAEntry>().SetTo(uaList))
 	{
 		me->currUserAgent = uaList->userAgent;
@@ -105,7 +105,7 @@ void SSWR::AVIRead::AVIRUserAgentSelForm::UpdateUAList(Manage::OSInfo::OSType os
 	}
 }
 
-SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Text::CString currUserAgent) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::CString currUserAgent) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("User Agent Select"));

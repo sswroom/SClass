@@ -14,10 +14,10 @@ namespace DB
 		Bool mergeInsert;
 		Text::StringBuilderUTF8 sbLastLine;
 	public:
-		SQLFileReader(NotNullPtr<IO::Stream> stm, DB::SQLType sqlType, Bool mergeInsert);
+		SQLFileReader(NN<IO::Stream> stm, DB::SQLType sqlType, Bool mergeInsert);
 		~SQLFileReader();
 
-		Bool NextSQL(NotNullPtr<Text::StringBuilderUTF8> sb);
+		Bool NextSQL(NN<Text::StringBuilderUTF8> sb);
 	};
 }
 #endif

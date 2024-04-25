@@ -15,21 +15,21 @@ namespace SSWR
 		class AVIRCustomTileMapForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
-			NotNullPtr<UI::GUILabel> lblURL;
-			NotNullPtr<UI::GUITextBox> txtURL;
-			NotNullPtr<UI::GUILabel> lblMinLevel;
-			NotNullPtr<UI::GUITextBox> txtMinLevel;
-			NotNullPtr<UI::GUILabel> lblMaxLevel;
-			NotNullPtr<UI::GUITextBox> txtMaxLevel;
-			NotNullPtr<UI::GUIButton> btnOK;
+			NN<UI::GUILabel> lblURL;
+			NN<UI::GUITextBox> txtURL;
+			NN<UI::GUILabel> lblMinLevel;
+			NN<UI::GUITextBox> txtMinLevel;
+			NN<UI::GUILabel> lblMaxLevel;
+			NN<UI::GUITextBox> txtMaxLevel;
+			NN<UI::GUIButton> btnOK;
 			Map::TileMap *tileMap;
 
 			static void __stdcall OnOKClicked(AnyType userObj);
 		public:
-			AVIRCustomTileMapForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl);
+			AVIRCustomTileMapForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl);
 			virtual ~AVIRCustomTileMapForm();
 
 			virtual void OnMonitorChanged();

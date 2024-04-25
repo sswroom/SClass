@@ -4,7 +4,7 @@
 #include "Text/CSSBuilder.h"
 #include "UI/Java/JavaProgressBar.h"
 
-UI::Java::JavaProgressBar::JavaProgressBar(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, UInt64 totalCnt) : UI::GUIProgressBar(ui, parent)
+UI::Java::JavaProgressBar::JavaProgressBar(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, UInt64 totalCnt) : UI::GUIProgressBar(ui, parent)
 {
 	this->totalCnt = totalCnt;
 }

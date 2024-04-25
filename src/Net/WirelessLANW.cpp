@@ -10,7 +10,7 @@
 #include <windows.h>
 #include <wlanapi.h>
 
-Net::WirelessLAN::Network::Network(NotNullPtr<Text::String> ssid, Double rssi)
+Net::WirelessLAN::Network::Network(NN<Text::String> ssid, Double rssi)
 {
 	this->ssid = ssid->Clone();
 	this->rssi = rssi;
@@ -32,7 +32,7 @@ Double Net::WirelessLAN::Network::GetRSSI() const
 	return this->rssi;
 }
 
-NotNullPtr<Text::String> Net::WirelessLAN::Network::GetSSID() const
+NN<Text::String> Net::WirelessLAN::Network::GetSSID() const
 {
 	return this->ssid;
 }
@@ -63,7 +63,7 @@ Net::WirelessLAN::BSSInfo::BSSInfo(Text::CString ssid, const void *bssEntry)
 	}
 	const UInt8 *ptrCurr = bss->ulIeOffset + (const UTF8Char*)bssEntry;
 	const UInt8 *ptrEnd = ptrCurr + bss->ulIeSize;
-	NotNullPtr<Net::WirelessLANIE> ie;
+	NN<Net::WirelessLANIE> ie;
 	Text::StringBuilderUTF8 sbTmp;
 	UInt8 ieCmd;
 	UInt8 ieSize;
@@ -168,7 +168,7 @@ Net::WirelessLAN::BSSInfo::BSSInfo(Text::CString ssid, const void *bssEntry)
 Net::WirelessLAN::BSSInfo::~BSSInfo()
 {
 	UOSInt i = this->ieList.GetCount();
-	NotNullPtr<Net::WirelessLANIE> ie;
+	NN<Net::WirelessLANIE> ie;
 	while (i-- > 0)
 	{
 		ie = this->ieList.GetItemNoCheck(i);
@@ -180,7 +180,7 @@ Net::WirelessLAN::BSSInfo::~BSSInfo()
 	SDEL_STRING(this->devSN);
 }
 
-NotNullPtr<Text::String> Net::WirelessLAN::BSSInfo::GetSSID() const
+NN<Text::String> Net::WirelessLAN::BSSInfo::GetSSID() const
 {
 	return this->ssid;
 }
@@ -270,7 +270,7 @@ Net::WirelessLAN::Interface::~Interface()
 	this->name->Release();
 }
 
-NotNullPtr<Text::String> Net::WirelessLAN::Interface::GetName() const
+NN<Text::String> Net::WirelessLAN::Interface::GetName() const
 {
 	return this->name;
 }
@@ -295,7 +295,7 @@ Bool Net::WirelessLAN::IsError()
 	return core->IsError();
 }
 
-UOSInt Net::WirelessLAN::GetInterfaces(NotNullPtr<Data::ArrayListNN<Net::WirelessLAN::Interface>> outArr)
+UOSInt Net::WirelessLAN::GetInterfaces(NN<Data::ArrayListNN<Net::WirelessLAN::Interface>> outArr)
 {
 	Net::WLANWindowsCore *core = (Net::WLANWindowsCore*)this->clsData;
 	WLAN_INTERFACE_INFO_LIST *list;
@@ -308,8 +308,8 @@ UOSInt Net::WirelessLAN::GetInterfaces(NotNullPtr<Data::ArrayListNN<Net::Wireles
 		j = list->dwNumberOfItems;
 		while (i < j)
 		{
-			NotNullPtr<Net::WirelessLAN::Interface> interf;
-			NotNullPtr<Text::String> s = Text::String::NewNotNull(list->InterfaceInfo[i].strInterfaceDescription);
+			NN<Net::WirelessLAN::Interface> interf;
+			NN<Text::String> s = Text::String::NewNotNull(list->InterfaceInfo[i].strInterfaceDescription);
 			NEW_CLASSNN(interf, Net::WLANWindowsInterface(s.Ptr(), &list->InterfaceInfo[i].InterfaceGuid, (Net::WirelessLAN::INTERFACE_STATE)list->InterfaceInfo[i].isState, core));
 			s->Release();
 			outArr->Add(interf);

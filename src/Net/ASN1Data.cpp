@@ -3,7 +3,7 @@
 #include "Net/ASN1Data.h"
 #include "Net/ASN1Util.h"
 
-Net::ASN1Data::ASN1Data(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff) : IO::ParsedObject(sourceName), buff(buff.GetSize())
+Net::ASN1Data::ASN1Data(NN<Text::String> sourceName, Data::ByteArrayR buff) : IO::ParsedObject(sourceName), buff(buff.GetSize())
 {
 	this->buff.CopyFrom(buff);
 }
@@ -22,9 +22,9 @@ IO::ParserType Net::ASN1Data::GetParserType() const
 	return IO::ParserType::ASN1Data;
 }
 
-Bool Net::ASN1Data::ToASN1String(NotNullPtr<Text::StringBuilderUTF8> sb) const
+Bool Net::ASN1Data::ToASN1String(NN<Text::StringBuilderUTF8> sb) const
 {
-	NotNullPtr<Net::ASN1Names> names = this->CreateNames();
+	NN<Net::ASN1Names> names = this->CreateNames();
 	Bool ret = Net::ASN1Util::PDUToString(this->buff.GetPtr(), this->buff.PtrEnd(), sb, 0, 0, names);
 	names.Delete();
 	return ret;
@@ -45,7 +45,7 @@ Data::ByteArrayR Net::ASN1Data::GetASN1Array() const
 	return this->buff;
 }
 
-void Net::ASN1Data::AppendInteger(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *pdu, UOSInt len)
+void Net::ASN1Data::AppendInteger(NN<Text::StringBuilderUTF8> sb, const UInt8 *pdu, UOSInt len)
 {
 	if (len == 1)
 	{

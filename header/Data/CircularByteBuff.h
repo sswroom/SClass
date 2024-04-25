@@ -19,7 +19,7 @@ namespace Data
 		void Clear();
 		void AppendBytes(const UInt8 *buff, UOSInt buffSize);
 		UOSInt GetBytes(UInt8 *buff);
-		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb);
+		void ToString(NN<Text::StringBuilderUTF8> sb);
 	};
 }
 #endif

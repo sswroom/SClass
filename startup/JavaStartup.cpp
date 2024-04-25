@@ -7,7 +7,7 @@
 #include <jni.h>
 #include <stdio.h>
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl);
+Int32 MyMain(NN<Core::IProgControl> progCtrl);
 
 extern "C"
 {
@@ -24,7 +24,7 @@ void LinuxProgControl_OnSignal(Int32 sigNum)
 {
 }
 
-void __stdcall LinuxProgControl_WaitForExit(NotNullPtr<Core::IProgControl> progCtrl)
+void __stdcall LinuxProgControl_WaitForExit(NN<Core::IProgControl> progCtrl)
 {
 /*	signal(SIGINT, LinuxProgControl_OnSignal);
 	signal(SIGPIPE, LinuxProgControl_OnSignal);
@@ -33,16 +33,16 @@ void __stdcall LinuxProgControl_WaitForExit(NotNullPtr<Core::IProgControl> progC
 //	getchar();
 }
 
-Optional<UI::GUICore> __stdcall Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
+Optional<UI::GUICore> __stdcall Core::IProgControl::CreateGUICore(NN<Core::IProgControl> progCtrl)
 {
-	NotNullPtr<UI::Java::JavaCore> ui;
+	NN<UI::Java::JavaCore> ui;
 	NEW_CLASSNN(ui, UI::Java::JavaCore());
 	return ui;
 }
 
-UTF8Char **__stdcall LinuxProgControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
+UTF8Char **__stdcall LinuxProgControl_GetCommandLines(NN<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
 {
-	NotNullPtr<LinuxProgControl> ctrl = NotNullPtr<LinuxProgControl>::ConvertFrom(progCtrl);
+	NN<LinuxProgControl> ctrl = NN<LinuxProgControl>::ConvertFrom(progCtrl);
 	cmdCnt.Set((UOSInt)ctrl->argc);
 	return ctrl->argv;
 }

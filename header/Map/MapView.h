@@ -40,14 +40,14 @@ namespace Map
 		virtual Bool IMapXYToScnXY(Double mapRate, const Math::Coord2D<Int32> *srcArr, Math::Coord2D<Int32> *destArr, UOSInt nPoints, Math::Coord2D<Int32> ofst) const = 0; // return inScreen
 		virtual Math::Coord2DDbl MapXYToScnXY(Math::Coord2DDbl mapPos) const = 0;
 		virtual Math::Coord2DDbl ScnXYToMapXY(Math::Coord2DDbl scnPos) const = 0;
-		virtual NotNullPtr<Map::MapView> Clone() const = 0;
+		virtual NN<Map::MapView> Clone() const = 0;
 
 		Double GetScnWidth() const;
 		Double GetScnHeight() const;
 		Math::Size2DDbl GetScnSize() const;
 		void SetVAngle(Double angleRad);
 
-		void SetDestImage(NotNullPtr<Media::DrawImage> img);
+		void SetDestImage(NN<Media::DrawImage> img);
 		void ToPointCnt(Int32 *parts, Int32 nParts, Int32 nPoints) const;
 		void SetViewBounds(Math::RectAreaDbl bounds);
 

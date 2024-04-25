@@ -12,7 +12,7 @@
 
 #include <stdio.h>
 
-SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::MIMEObj::MultipartMIMEObj *obj) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, obj)
+SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, Text::MIMEObj::MultipartMIMEObj *obj) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, obj)
 {
 	UInt8 hashBuff[64];
 	UOSInt i;
@@ -89,21 +89,21 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NotNullPtr<S
 									}
 									else
 									{
-										NotNullPtr<Crypto::Cert::X509Cert> crt;
+										NN<Crypto::Cert::X509Cert> crt;
 										if (!pkcs7->GetNewCert(0).SetTo(crt))
 										{
 											this->txtSignState->SetText(CSTR("Cert not found"));
 										}
 										else
 										{
-											NotNullPtr<Crypto::Cert::X509Key> key;
+											NN<Crypto::Cert::X509Key> key;
 											if (!key.Set(crt->GetNewPublicKey()))
 											{
 												this->txtSignState->SetText(CSTR("Public key not found"));
 											}
 											else
 											{
-												NotNullPtr<Net::SSLEngine> ssl;
+												NN<Net::SSLEngine> ssl;
 												if (!Net::SSLEngineFactory::Create(core->GetSocketFactory(), false).SetTo(ssl))
 												{
 													this->txtSignState->SetText(CSTR("Error in initializing SSL Engine"));
@@ -175,7 +175,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NotNullPtr<S
 			this->txtSignState->SetText(CSTR("Unexpected Multipart format"));
 		}
 	}
-	NotNullPtr<UI::GUITabPage> tp;
+	NN<UI::GUITabPage> tp;
 	SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *viewer;
 	this->tcParts = ui->NewTabControl(ctrl);
 	this->tcParts->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -183,7 +183,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NotNullPtr<S
 	Text::String *defMsg = obj->GetDefMsg();
 	if (defMsg && defMsg->v[0])
 	{
-		NotNullPtr<UI::GUITextBox> txt;
+		NN<UI::GUITextBox> txt;
 		tp = this->tcParts->AddTabPage(CSTR("Default"));
 		txt = ui->NewTextBox(tp, obj->GetDefMsg()->ToCString(), true);
 		txt->SetDockType(UI::GUIControl::DOCK_FILL);

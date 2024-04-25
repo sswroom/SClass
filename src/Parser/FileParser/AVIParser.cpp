@@ -102,7 +102,7 @@ void Parser::FileParser::AVIParser::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-void Parser::FileParser::AVIParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::AVIParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
@@ -115,7 +115,7 @@ IO::ParserType Parser::FileParser::AVIParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -129,7 +129,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(NotNullPtr<IO::Str
 	UInt16 wLongsPerEntry;
 	Int32 cmpTmp;
 	Media::MediaFile *mf;
-	NotNullPtr<Text::String> audsName;
+	NN<Text::String> audsName;
 
 	UInt32 rate = 30000;
 	UInt32 scale = 1001;
@@ -587,7 +587,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(NotNullPtr<IO::Str
 						}
 						k++;
 					}
-					NotNullPtr<IO::StreamData> fd;
+					NN<IO::StreamData> fd;
 					if(fmt.formatId == 1 && fd.Set(blkData))
 					{
 						NEW_CLASS(lpcmData, Media::LPCMSource(fd, 0, blkData->GetDataSize(), fmt, audsName));

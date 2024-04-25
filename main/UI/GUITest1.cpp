@@ -3,9 +3,9 @@
 #include "Core/Core.h"
 #include "UI/GUICore.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	NotNullPtr<UI::GUICore> ui;
+	NN<UI::GUICore> ui;
 	if (progCtrl->CreateGUICore(progCtrl).SetTo(ui))
 	{
 		ui->ShowMsgOK(CSTR("Message Dialog Test"), CSTR("Message Dialog"), 0);

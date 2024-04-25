@@ -8,7 +8,7 @@
 #define BASEURL "https://48idol.tv/archive/"
 #define TVBASEURL "https://48idol.tv/all-videos"
 
-Net::WebSite::WebSite48IdolControl::WebSite48IdolControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::String *userAgent)
+Net::WebSite::WebSite48IdolControl::WebSite48IdolControl(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::String *userAgent)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -43,7 +43,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetTVPageItems(OSInt pageNo, Data::Arr
 	Text::XMLAttrib *attr2;
 	Text::XMLAttrib *attr3;
 	Data::DateTime dt;
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
 	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	Text::XMLReader reader(this->encFact, cli, Text::XMLReader::PM_HTML);
 	while (reader.ReadNext())
@@ -111,7 +111,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 	ItemData *item;
 	Text::XMLAttrib *attr;
 	Data::DateTime dt;
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
 	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	Text::XMLReader reader(this->encFact, cli, Text::XMLReader::PM_HTML);
 	while (reader.ReadNext())
@@ -177,7 +177,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 						}
 					}
 				}
-				NotNullPtr<Text::String> titleStr;
+				NN<Text::String> titleStr;
 				if (id != 0 && time != 0 && titleStr.Set(title))
 				{
 					item = MemAlloc(ItemData, 1);
@@ -209,14 +209,14 @@ void Net::WebSite::WebSite48IdolControl::FreeItems(Data::ArrayList<Net::WebSite:
 	itemList->Clear();
 }
 
-Bool Net::WebSite::WebSite48IdolControl::GetDownloadLink(Int32 videoId, Int32 linkId, NotNullPtr<Text::StringBuilderUTF8> link)
+Bool Net::WebSite::WebSite48IdolControl::GetDownloadLink(Int32 videoId, Int32 linkId, NN<Text::StringBuilderUTF8> link)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC(BASEURL "video/"));
 	sb.AppendI32(videoId);
 	Text::XMLAttrib *attr;
 	Bool found = false;
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
 	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	Text::XMLReader reader(this->encFact, cli, Text::XMLReader::PM_HTML);
 	while (!found && reader.ReadNext())
@@ -250,14 +250,14 @@ Bool Net::WebSite::WebSite48IdolControl::GetDownloadLink(Int32 videoId, Int32 li
 	return found;
 }
 
-Bool Net::WebSite::WebSite48IdolControl::GetVideoName(Int32 videoId, NotNullPtr<Text::StringBuilderUTF8> name)
+Bool Net::WebSite::WebSite48IdolControl::GetVideoName(Int32 videoId, NN<Text::StringBuilderUTF8> name)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC(BASEURL "video/"));
 	sb.AppendI32(videoId);
 	Text::XMLAttrib *attr;
 	Bool found = false;
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
 	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	Text::XMLReader reader(this->encFact, cli, Text::XMLReader::PM_HTML);
 	while (!found && reader.ReadNext())
@@ -283,7 +283,7 @@ Bool Net::WebSite::WebSite48IdolControl::GetVideoName(Int32 videoId, NotNullPtr<
 	return found;
 }
 
-void Net::WebSite::WebSite48IdolControl::Title2DisplayName(NotNullPtr<Text::String> title, NotNullPtr<Text::StringBuilderUTF8> dispName)
+void Net::WebSite::WebSite48IdolControl::Title2DisplayName(NN<Text::String> title, NN<Text::StringBuilderUTF8> dispName)
 {
 	UOSInt i;
 	Text::StringBuilderUTF8 sb;

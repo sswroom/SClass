@@ -9,8 +9,8 @@
 
 UInt32 __stdcall Net::FTPConn::FTPThread(AnyType userObj)
 {
-	NotNullPtr<Net::FTPConn> me = userObj.GetNN<Net::FTPConn>();
-	NotNullPtr<IO::StreamReader> reader;
+	NN<Net::FTPConn> me = userObj.GetNN<Net::FTPConn>();
+	NN<IO::StreamReader> reader;
 	UTF8Char sbuff[2048];
 	UTF8Char sbuff2[4];
 	UTF8Char *sptr;
@@ -86,7 +86,7 @@ Int32 Net::FTPConn::WaitForResult()
 		return 0;
 }
 
-Net::FTPConn::FTPConn(Text::CStringNN host, UInt16 port, NotNullPtr<Net::SocketFactory> sockf, UInt32 codePage, Data::Duration timeout) : cli(sockf, host, port, timeout)
+Net::FTPConn::FTPConn(Text::CStringNN host, UInt16 port, NN<Net::SocketFactory> sockf, UInt32 codePage, Data::Duration timeout) : cli(sockf, host, port, timeout)
 {
 	this->codePage = codePage;
 	this->threadRunning = false;

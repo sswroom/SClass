@@ -13,7 +13,7 @@ namespace IO
 		virtual Text::CString GetName() = 0;
 		virtual UOSInt GetValueCount() = 0;
 		virtual Text::CString GetValueName(UOSInt index) = 0;
-		virtual Bool GetValue(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
+		virtual Bool GetValue(UOSInt index, NN<Text::StringBuilderUTF8> sb) = 0;
 		virtual Bool ToggleValue(UOSInt index) = 0;
 
 		virtual Bool ReadCoil(UInt16 coilAddr, Bool *value) = 0;

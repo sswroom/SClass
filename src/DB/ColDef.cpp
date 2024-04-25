@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "DB/ColDef.h"
 
-void DB::ColDef::AppendDefVal(NotNullPtr<DB::SQLBuilder> sql, Text::CStringNN defVal, UOSInt colSize)
+void DB::ColDef::AppendDefVal(NN<DB::SQLBuilder> sql, Text::CStringNN defVal, UOSInt colSize)
 {
 	if (defVal.StartsWith(UTF8STRC("b'")))
 	{
@@ -80,7 +80,7 @@ DB::ColDef::ColDef(Text::CString colName)
 	this->attr = 0;
 }
 
-DB::ColDef::ColDef(NotNullPtr<Text::String> colName)
+DB::ColDef::ColDef(NN<Text::String> colName)
 {
 	this->colName = colName->Clone();
 	this->colType = DB::DBUtil::CT_Unknown;
@@ -103,7 +103,7 @@ DB::ColDef::~ColDef()
 	OPTSTR_DEL(this->attr);
 }
 
-NotNullPtr<Text::String> DB::ColDef::GetColName() const
+NN<Text::String> DB::ColDef::GetColName() const
 {
 	return this->colName;
 }
@@ -168,9 +168,9 @@ Optional<Text::String> DB::ColDef::GetAttr() const
 	return this->attr;
 }
 
-Bool DB::ColDef::GetDefVal(NotNullPtr<DB::SQLBuilder> sql) const
+Bool DB::ColDef::GetDefVal(NN<DB::SQLBuilder> sql) const
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (!this->defVal.SetTo(s))
 		return false;
 	if (s->v[0] == '(' && s->EndsWith(')'))
@@ -201,7 +201,7 @@ UInt32 DB::ColDef::GetGeometrySRID() const
 	return (UInt32)this->colDP;
 }
 
-void DB::ColDef::SetColName(NotNullPtr<const UTF8Char> colName)
+void DB::ColDef::SetColName(NN<const UTF8Char> colName)
 {
 	this->colName->Release();
 	this->colName = Text::String::NewNotNullSlow(colName.Ptr());
@@ -213,7 +213,7 @@ void DB::ColDef::SetColName(Text::CString colName)
 	this->colName = Text::String::New(colName);
 }
 
-void DB::ColDef::SetColName(NotNullPtr<Text::String> colName)
+void DB::ColDef::SetColName(NN<Text::String> colName)
 {
 	this->colName->Release();
 	this->colName = colName->Clone();
@@ -298,7 +298,7 @@ void DB::ColDef::SetGeometrySRID(UInt32 srid)
 	this->colDP = srid;
 }
 
-void DB::ColDef::Set(NotNullPtr<const ColDef> colDef)
+void DB::ColDef::Set(NN<const ColDef> colDef)
 {
 	this->SetColName(colDef->colName);
 	this->SetColType(colDef->colType);
@@ -317,9 +317,9 @@ UTF8Char *DB::ColDef::ToColTypeStr(UTF8Char *sbuff) const
 	return DB::DBUtil::ColTypeGetString(sbuff, this->colType, this->colSize, this->colDP);
 }
 
-NotNullPtr<DB::ColDef> DB::ColDef::Clone() const
+NN<DB::ColDef> DB::ColDef::Clone() const
 {
-	NotNullPtr<DB::ColDef> newObj;
+	NN<DB::ColDef> newObj;
 	NEW_CLASSNN(newObj, DB::ColDef(this->colName));
 	newObj->Set(*this);
 	return newObj;

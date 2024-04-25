@@ -52,7 +52,7 @@ Bool Crypto::TOTP::IsValid(UInt32 code)
 	return false;
 }
 
-void Crypto::TOTP::GenURI(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *name)
+void Crypto::TOTP::GenURI(NN<Text::StringBuilderUTF8> sb, const UTF8Char *name)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

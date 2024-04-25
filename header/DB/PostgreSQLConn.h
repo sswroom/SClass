@@ -16,12 +16,12 @@ namespace DB
 		ClassData *clsData;
 
 		Bool isTran;
-		NotNullPtr<Text::String> server;
+		NN<Text::String> server;
 		UInt16 port;
-		NotNullPtr<Text::String> database;
+		NN<Text::String> database;
 		Optional<Text::String> uid;
 		Optional<Text::String> pwd;
-		NotNullPtr<IO::LogTool> log;
+		NN<IO::LogTool> log;
 		Int8 tzQhr;
 		UInt32 geometryOid;
 		UInt32 citextOid;
@@ -31,35 +31,35 @@ namespace DB
 		void InitConnection();
 
 	public:
-		PostgreSQLConn(NotNullPtr<Text::String> server, UInt16 port, Text::String *uid, Text::String *pwd, NotNullPtr<Text::String> database, NotNullPtr<IO::LogTool> log);
-		PostgreSQLConn(Text::CStringNN server, UInt16 port, Text::CString uid, Text::CString pwd, Text::CString database, NotNullPtr<IO::LogTool> log);
+		PostgreSQLConn(NN<Text::String> server, UInt16 port, Text::String *uid, Text::String *pwd, NN<Text::String> database, NN<IO::LogTool> log);
+		PostgreSQLConn(Text::CStringNN server, UInt16 port, Text::CString uid, Text::CString pwd, Text::CString database, NN<IO::LogTool> log);
 		virtual ~PostgreSQLConn();
 		virtual DB::SQLType GetSQLType() const;
 		virtual ConnType GetConnType() const;
 		virtual Int8 GetTzQhr() const;
 		virtual void ForceTz(Int8 tzQhr);
-		virtual void GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual void GetConnName(NN<Text::StringBuilderUTF8> sb);
 		virtual void Close();
 		virtual void Dispose();
 		virtual OSInt ExecuteNonQuery(Text::CStringNN sql);
 		virtual Optional<DBReader> ExecuteReader(Text::CStringNN sql);
-		virtual void CloseReader(NotNullPtr<DB::DBReader> r);
-		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
+		virtual void CloseReader(NN<DB::DBReader> r);
+		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual Bool IsLastDataError();
 		virtual void Reconnect();
 
 		virtual Optional<DB::DBTransaction> BeginTransaction();
-		virtual void Commit(NotNullPtr<DB::DBTransaction> tran);
-		virtual void Rollback(NotNullPtr<DB::DBTransaction> tran);
+		virtual void Commit(NN<DB::DBTransaction> tran);
+		virtual void Rollback(NN<DB::DBTransaction> tran);
 
-		virtual UOSInt QuerySchemaNames(NotNullPtr<Data::ArrayListStringNN> names);
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
+		virtual UOSInt QuerySchemaNames(NN<Data::ArrayListStringNN> names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
 		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 
 		Bool IsConnError();
-		NotNullPtr<Text::String> GetConnServer() const;
+		NN<Text::String> GetConnServer() const;
 		UInt16 GetConnPort() const;
-		NotNullPtr<Text::String> GetConnDB() const;
+		NN<Text::String> GetConnDB() const;
 		Optional<Text::String> GetConnUID() const;
 		Optional<Text::String> GetConnPWD() const;
 		Bool ChangeDatabase(Text::CString databaseName);
@@ -70,8 +70,8 @@ namespace DB
 		DB::DBUtil::ColType DBType2ColType(UInt32 dbType);
 
 		static Text::CString ExecStatusTypeGetName(OSInt status);
-		static Optional<DBTool> CreateDBTool(NotNullPtr<Text::String> serverName, UInt16 port, NotNullPtr<Text::String> dbName, Text::String *uid, Text::String *pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
-		static Optional<DBTool> CreateDBTool(Text::CStringNN serverName, UInt16 port, Text::CString dbName, Text::CString uid, Text::CString pwd, NotNullPtr<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DBTool> CreateDBTool(NN<Text::String> serverName, UInt16 port, NN<Text::String> dbName, Text::String *uid, Text::String *pwd, NN<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DBTool> CreateDBTool(Text::CStringNN serverName, UInt16 port, Text::CString dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix);
 	};
 }
 #endif

@@ -11,7 +11,7 @@ Media::ImageAlphaBlend::~ImageAlphaBlend()
 {
 }
 
-void Media::ImageAlphaBlend::SetSourceProfile(NotNullPtr<const Media::ColorProfile> sProfile)
+void Media::ImageAlphaBlend::SetSourceProfile(NN<const Media::ColorProfile> sProfile)
 {
 	if (!this->sProfile.Equals(sProfile))
 	{
@@ -20,7 +20,7 @@ void Media::ImageAlphaBlend::SetSourceProfile(NotNullPtr<const Media::ColorProfi
 	}
 }
 
-void Media::ImageAlphaBlend::SetDestProfile(NotNullPtr<const Media::ColorProfile> dProfile)
+void Media::ImageAlphaBlend::SetDestProfile(NN<const Media::ColorProfile> dProfile)
 {
 	if (!this->dProfile.Equals(dProfile))
 	{
@@ -29,7 +29,7 @@ void Media::ImageAlphaBlend::SetDestProfile(NotNullPtr<const Media::ColorProfile
 	}
 }
 
-void Media::ImageAlphaBlend::SetOutputProfile(NotNullPtr<const Media::ColorProfile>  oProfile)
+void Media::ImageAlphaBlend::SetOutputProfile(NN<const Media::ColorProfile>  oProfile)
 {
 	if (!this->oProfile.Equals(oProfile))
 	{

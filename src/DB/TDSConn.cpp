@@ -273,7 +273,7 @@ public:
 		return 0;
 	}
 
-	virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+	virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 	{
 		if (colIndex > this->nCols)
 			return false;
@@ -322,7 +322,7 @@ public:
 			return true;
 		case SYBGEOMETRY:
 			{
-				NotNullPtr<Math::Geometry::Vector2D> vec;
+				NN<Math::Geometry::Vector2D> vec;
 				if (this->GetVector(colIndex).SetTo(vec))
 				{
 					Math::WKTWriter wkt;
@@ -393,7 +393,7 @@ public:
 			return Text::String::NewP(sbuff, sptr);
 		case SYBGEOMETRY:
 			{
-				NotNullPtr<Math::Geometry::Vector2D> vec;
+				NN<Math::Geometry::Vector2D> vec;
 				if (this->GetVector(colIndex).SetTo(vec))
 				{
 					Text::StringBuilderUTF8 sb;
@@ -569,7 +569,7 @@ public:
 		return Math::MSGeography::ParseBinary(buffPtr, dataSize, srId);
 	}
 
-	virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
+	virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 	{
 		if (colIndex >= this->nCols)
 			return false;
@@ -583,7 +583,7 @@ public:
 		return true;
 	}
 
-	virtual Bool GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item)
+	virtual Bool GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
 	{
 		if (colIndex >= this->nCols)
 			return false;
@@ -655,7 +655,7 @@ public:
 			UOSInt dataSize = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
 			UInt8 *buffPtr = dbdata(this->dbproc, (int)colIndex + 1);
 			UInt32 srId;
-			NotNullPtr<Math::Geometry::Vector2D> vec;
+			NN<Math::Geometry::Vector2D> vec;
 			if (Math::MSGeography::ParseBinary(buffPtr, dataSize, srId).SetTo(vec))
 			{
 				item->SetVectorDirect(vec);
@@ -672,7 +672,7 @@ public:
 		}
 		case SYBUUID:
 		{
-			NotNullPtr<Data::UUID> uuid;
+			NN<Data::UUID> uuid;
 			NEW_CLASSNN(uuid, Data::UUID(dbdata(this->dbproc, (int)colIndex + 1)));
 			item->SetUUIDDirect(uuid);
 			return true;
@@ -742,11 +742,11 @@ public:
 		}
 	}
 
-	virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+	virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 	{
 		if (colIndex >= this->nCols)
 			return DB::DBUtil::ColType::CT_Unknown;
-		NotNullPtr<const UTF8Char> colName;
+		NN<const UTF8Char> colName;
 		if (!colName.Set((const UTF8Char*)this->cols[colIndex].name)) colName.Set((const UTF8Char*)"");
 		colDef->SetColName(colName);
 		colDef->SetColType(this->GetColType(colIndex, 0));
@@ -761,10 +761,10 @@ struct DB::TDSConn::ClassData
 	Int8 tzQhr;
 
 	Text::StringBuilderUTF8 *errMsg;
-	NotNullPtr<IO::LogTool> log;
-	NotNullPtr<Text::String> host;
-	NotNullPtr<Text::String> username;
-	NotNullPtr<Text::String> password;
+	NN<IO::LogTool> log;
+	NN<Text::String> host;
+	NN<Text::String> username;
+	NN<Text::String> password;
 	Optional<Text::String> database;
 };
 
@@ -784,7 +784,7 @@ int TDSConnMsgHdlr(DBPROCESS * dbproc, DBINT msgno, int msgstate, int severity, 
 	return INT_CONTINUE;
 }
 
-DB::TDSConn::TDSConn(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NotNullPtr<IO::LogTool> log, Text::StringBuilderUTF8 *errMsg) : DBConn(serverHost)
+DB::TDSConn::TDSConn(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text::CString database, Text::CString userName, Text::CString password, NN<IO::LogTool> log, Text::StringBuilderUTF8 *errMsg) : DBConn(serverHost)
 {
 	if (!inited)
 	{
@@ -810,7 +810,7 @@ DB::TDSConn::TDSConn(Text::CStringNN serverHost, UInt16 port, Bool encrypt, Text
 	this->Reconnect();
 	if (this->clsData->dbproc != 0)
 	{
-		NotNullPtr<DB::DBReader> r;
+		NN<DB::DBReader> r;
 		if (this->ExecuteReader(CSTR("select SYSDATETIME(), GETUTCDATE()")).SetTo(r))
 		{
 			if (r->ReadNext())
@@ -839,7 +839,7 @@ Bool DB::TDSConn::IsConnected() const
 	return this->clsData->dbproc != 0;
 }
 
-NotNullPtr<Text::String> DB::TDSConn::GetConnHost() const
+NN<Text::String> DB::TDSConn::GetConnHost() const
 {
 	return this->clsData->host;
 }
@@ -849,12 +849,12 @@ Optional<Text::String> DB::TDSConn::GetConnDB() const
 	return this->clsData->database;
 }
 
-NotNullPtr<Text::String> DB::TDSConn::GetConnUID() const
+NN<Text::String> DB::TDSConn::GetConnUID() const
 {
 	return this->clsData->username;
 }
 
-NotNullPtr<Text::String> DB::TDSConn::GetConnPWD() const
+NN<Text::String> DB::TDSConn::GetConnPWD() const
 {
 	return this->clsData->password;
 }
@@ -879,13 +879,13 @@ void DB::TDSConn::ForceTz(Int8 tzQhr)
 	this->clsData->tzQhr = tzQhr;
 }
 
-void DB::TDSConn::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
+void DB::TDSConn::GetConnName(NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("TDS:"));
 	sb->Append(this->clsData->host);
 	sb->AppendUTF8Char(',');
 	sb->Append(this->clsData->username);
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (this->clsData->database.SetTo(s))
 	{
 		sb->AppendUTF8Char(',');
@@ -904,7 +904,7 @@ void DB::TDSConn::Close()
 
 OSInt DB::TDSConn::ExecuteNonQuery(Text::CStringNN sql)
 {
-	NotNullPtr<DBReader> r;
+	NN<DBReader> r;
 	if (!this->ExecuteReader(sql).SetTo(r))
 		return -2;
 	OSInt rows = r->GetRowChanged();
@@ -930,19 +930,19 @@ Optional<DB::DBReader> DB::TDSConn::ExecuteReader(Text::CStringNN sql)
 #endif
 		return 0;
 	}
-	NotNullPtr<TDSConnReader> r;
+	NN<TDSConnReader> r;
 	NEW_CLASSNN(r, TDSConnReader(this->clsData->dbproc, this->clsData->tzQhr));
 	return r;
 }
 
-void DB::TDSConn::CloseReader(NotNullPtr<DBReader> r)
+void DB::TDSConn::CloseReader(NN<DBReader> r)
 {
 	TDSConnReader *reader = (TDSConnReader*)r.Ptr();
 	DEL_CLASS(reader);
 	this->cmdMut.Unlock();
 }
 
-void DB::TDSConn::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void DB::TDSConn::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 	///////////////////////////////////////
 }
@@ -968,7 +968,7 @@ void DB::TDSConn::Reconnect()
 	DBSETLPWD(login, (const Char*)this->clsData->password->v);
 	DBSETLAPP(login, "SSWRTDS");
 	DBSETLCHARSET(login, "utf8");
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (this->clsData->database.SetTo(s))
 		DBSETLDBNAME(login, (const Char*)s->v);
 
@@ -999,17 +999,17 @@ Optional<DB::DBTransaction> DB::TDSConn::BeginTransaction()
 	return 0;
 }
 
-void DB::TDSConn::Commit(NotNullPtr<DB::DBTransaction> tran)
+void DB::TDSConn::Commit(NN<DB::DBTransaction> tran)
 {
 	///////////////////////////////////////
 }
 
-void DB::TDSConn::Rollback(NotNullPtr<DB::DBTransaction> tran)
+void DB::TDSConn::Rollback(NN<DB::DBTransaction> tran)
 {
 	///////////////////////////////////////
 }
 
-UOSInt DB::TDSConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt DB::TDSConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (this->sqlType == DB::SQLType::MSSQL)
 	{
@@ -1024,7 +1024,7 @@ UOSInt DB::TDSConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::A
 		{
 			sql.AppendStrC(schemaName);
 		}
-		NotNullPtr<DB::DBReader> r;
+		NN<DB::DBReader> r;
 		if (this->ExecuteReader(sql.ToCString()).SetTo(r))
 		{
 			Text::StringBuilderUTF8 sb;
@@ -1065,7 +1065,7 @@ Optional<DB::DBReader> DB::TDSConn::QueryTableData(Text::CString schemaName, Tex
 	}
 	else
 	{
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = columnNames->Iterator();
+		Data::ArrayIterator<NN<Text::String>> it = columnNames->Iterator();
 		Bool found = false;
 		while (it.HasNext())
 		{

@@ -2,14 +2,14 @@
 #include "MyMemory.h"
 #include "IO/StreamDataStream.h"
 
-IO::StreamDataStream::StreamDataStream(NotNullPtr<IO::StreamData> data) : IO::SeekableStream(data->GetFullName())
+IO::StreamDataStream::StreamDataStream(NN<IO::StreamData> data) : IO::SeekableStream(data->GetFullName())
 {
 	this->currOfst = 0;
 	this->stmDataLeng = data->GetDataSize();
 	this->data = data->GetPartialData(0, this->stmDataLeng);
 }
 
-IO::StreamDataStream::StreamDataStream(NotNullPtr<IO::StreamData> data, UInt64 ofst, UInt64 length) : IO::SeekableStream(data->GetFullName())
+IO::StreamDataStream::StreamDataStream(NN<IO::StreamData> data, UInt64 ofst, UInt64 length) : IO::SeekableStream(data->GetFullName())
 {
 	this->currOfst = 0;
 	this->data = data->GetPartialData(ofst, length);

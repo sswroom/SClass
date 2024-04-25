@@ -3,7 +3,7 @@
 #include "Core/Core.h"
 #include "Text/Locale.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Text::Locale *locale;
 	NEW_CLASS(locale, Text::Locale());

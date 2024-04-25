@@ -11,7 +11,7 @@ namespace UI
 		private:
 			Bool checked;
 		public:
-			WinCheckBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool checked);
+			WinCheckBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool checked);
 			virtual ~WinCheckBox();
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);

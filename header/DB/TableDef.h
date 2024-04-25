@@ -14,7 +14,7 @@ namespace DB
 	private:
 		Optional<Text::String> databaseName;
 		Optional<Text::String> schemaName;
-		NotNullPtr<Text::String> tableName;
+		NN<Text::String> tableName;
 		Optional<Text::String> engine;
 		Optional<Text::String> charset;
 		const UTF8Char *attr;
@@ -29,7 +29,7 @@ namespace DB
 
 		Optional<Text::String> GetDatabaseName() const;
 		Optional<Text::String> GetSchemaName() const;
-		NotNullPtr<Text::String> GetTableName() const;
+		NN<Text::String> GetTableName() const;
 		Optional<Text::String> GetEngine() const;
 		Optional<Text::String> GetCharset() const;
 		const UTF8Char *GetAttr() const;
@@ -39,9 +39,9 @@ namespace DB
 		Optional<DB::ColDef> GetCol(UOSInt index) const;
 		Optional<DB::ColDef> GetSinglePKCol() const;
 		UOSInt CountPK() const;
-		Data::ArrayIterator<NotNullPtr<DB::ColDef>> ColIterator() const;
+		Data::ArrayIterator<NN<DB::ColDef>> ColIterator() const;
 
-		TableDef *AddCol(NotNullPtr<DB::ColDef> col);
+		TableDef *AddCol(NN<DB::ColDef> col);
 		TableDef *SetDatabaseName(Text::CString databaseName);
 		TableDef *SetSchemaName(Text::CString schemaName);
 		TableDef *SetTableName(Text::CString tableName);
@@ -51,9 +51,9 @@ namespace DB
 		TableDef *SetComments(const UTF8Char *comments);
 		TableDef *SetSQLType(SQLType sqlType);
 		
-		void ColFromReader(NotNullPtr<DB::DBReader> r);
-		NotNullPtr<TableDef> Clone() const;
-		NotNullPtr<Data::Class> CreateTableClass() const;
+		void ColFromReader(NN<DB::DBReader> r);
+		NN<TableDef> Clone() const;
+		NN<Data::Class> CreateTableClass() const;
 	};
 }
 #endif

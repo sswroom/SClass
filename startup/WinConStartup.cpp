@@ -6,9 +6,9 @@
 #include "Text/MyStringW.h"
 #include <windows.h>
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl);
+Int32 MyMain(NN<Core::IProgControl> progCtrl);
 
-NotNullPtr<Core::ConsoleControl> ConsoleControl_self;
+NN<Core::ConsoleControl> ConsoleControl_self;
 
 Int32 __stdcall ConsoleControl_ExitHdlr(UInt32 evtType)
 {
@@ -35,7 +35,7 @@ Int32 __stdcall ConsoleControl_ExitHdlr(UInt32 evtType)
 	return TRUE;
 }
 
-void __stdcall ConsoleControl_WaitForExit(NotNullPtr<Core::IProgControl> progCtrl)
+void __stdcall ConsoleControl_WaitForExit(NN<Core::IProgControl> progCtrl)
 {
 	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl.Ptr();
 	while (!ctrl->exited)
@@ -44,14 +44,14 @@ void __stdcall ConsoleControl_WaitForExit(NotNullPtr<Core::IProgControl> progCtr
 	}
 }
 
-void __stdcall ConsoleControl_SignalExit(NotNullPtr<Core::IProgControl> progCtrl)
+void __stdcall ConsoleControl_SignalExit(NN<Core::IProgControl> progCtrl)
 {
 	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl.Ptr();
 	ctrl->exited = true;
 	ctrl->evt->Set();
 }
 
-UTF8Char **__stdcall ConsoleControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
+UTF8Char **__stdcall ConsoleControl_GetCommandLines(NN<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
 {
 	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl.Ptr();
 	if (ctrl->argv == 0)
@@ -73,7 +73,7 @@ UTF8Char **__stdcall ConsoleControl_GetCommandLines(NotNullPtr<Core::IProgContro
 	return ctrl->argv;
 }
 
-void ConsoleControl_Create(NotNullPtr<Core::ConsoleControl> ctrl)
+void ConsoleControl_Create(NN<Core::ConsoleControl> ctrl)
 {
 	ConsoleControl_self = ctrl;
 	ctrl->argc = 0;
@@ -90,7 +90,7 @@ void ConsoleControl_Create(NotNullPtr<Core::ConsoleControl> ctrl)
 	SetConsoleCtrlHandler((PHANDLER_ROUTINE)ConsoleControl_ExitHdlr, TRUE);
 }
 
-void ConsoleControl_Destroy(NotNullPtr<Core::ConsoleControl> ctrl)
+void ConsoleControl_Destroy(NN<Core::ConsoleControl> ctrl)
 {
 	ctrl->ended = true;
 	ctrl->evt->Set();
@@ -114,7 +114,7 @@ void ConsoleControl_Destroy(NotNullPtr<Core::ConsoleControl> ctrl)
 #endif
 }
 
-Optional<UI::GUICore> Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
+Optional<UI::GUICore> Core::IProgControl::CreateGUICore(NN<Core::IProgControl> progCtrl)
 {
 	return 0;
 }

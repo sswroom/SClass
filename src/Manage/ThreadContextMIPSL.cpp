@@ -165,7 +165,7 @@ UTF8Char *Manage::ThreadContextMIPS::GetRegister(UOSInt index, UTF8Char *buff, U
 	}
 }
 
-void Manage::ThreadContextMIPS::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Manage::ThreadContextMIPS::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;

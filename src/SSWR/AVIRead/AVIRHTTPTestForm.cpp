@@ -12,7 +12,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPTestForm>();
+	NN<SSWR::AVIRead::AVIRHTTPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPTestForm>();
 	if (me->threadCurrCnt > 0)
 	{
 		me->StopThreads();
@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLAddClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPTestForm>();
+	NN<SSWR::AVIRead::AVIRHTTPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPTestForm>();
 	Text::StringBuilderUTF8 sb;
 	if (me->threadCurrCnt > 0)
 	{
@@ -105,7 +105,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLAddClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLClearClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPTestForm>();
+	NN<SSWR::AVIRead::AVIRHTTPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPTestForm>();
 	if (me->threadCurrCnt > 0)
 	{
 		me->ui->ShowMsgOK(CSTR("You cannot add URL while running"), CSTR("Add"), me);
@@ -114,11 +114,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLClearClicked(AnyType userOb
 	me->ClearURLs();
 }
 
-void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPTestForm> me = thread->GetUserObj().GetNN<SSWR::AVIRead::AVIRHTTPTestForm>();
+	NN<SSWR::AVIRead::AVIRHTTPTestForm> me = thread->GetUserObj().GetNN<SSWR::AVIRead::AVIRHTTPTestForm>();
 //	UInt8 buff[2048];
-	NotNullPtr<Text::String> url;
+	NN<Text::String> url;
 	Double timeDNS;
 	Double timeConn;
 	Double timeReq;
@@ -131,7 +131,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NotNullPtr<Sync::T
 	Sync::Interlocked::IncrementU32(me->threadCurrCnt);
 	if (me->kaConn)
 	{
-		NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(me->sockf, me->ssl, CSTR_NULL, true, false);
+		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(me->sockf, me->ssl, CSTR_NULL, true, false);
 		while (!thread->IsStopping())
 		{
 			if (!me->GetNextURL().SetTo(url))
@@ -204,7 +204,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NotNullPtr<Sync::T
 		{
 			if (!me->GetNextURL().SetTo(url))
 				break;
-			NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(me->sockf, me->ssl, CSTR_NULL, true, url->StartsWith(UTF8STRC("https://")));
+			NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(me->sockf, me->ssl, CSTR_NULL, true, url->StartsWith(UTF8STRC("https://")));
 			if (cli->Connect(url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, &timeDNS, &timeConn, false))
 			{
 				if (me->enableGZip)
@@ -238,7 +238,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NotNullPtr<Sync::T
 
 void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPTestForm>();
+	NN<SSWR::AVIRead::AVIRHTTPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPTestForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	sptr = Text::StrUInt32(sbuff, me->connLeftCnt);
@@ -310,7 +310,7 @@ Optional<Text::String> SSWR::AVIRead::AVIRHTTPTestForm::GetNextURL()
 	return url;
 }
 
-SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("HTTP Test"));

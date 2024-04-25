@@ -29,9 +29,9 @@ IO::FileCheck *IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto::Hash::Ha
 	IO::Path::PathType pt;
 	UInt64 fileSize;
 	ReadSess readSess;
-	NotNullPtr<IO::FileStream> fs;
+	NN<IO::FileStream> fs;
 	IO::ActiveStreamReader::BottleNeckType bnt;
-	NotNullPtr<IO::ProgressHandler> nnprogress;
+	NN<IO::ProgressHandler> nnprogress;
 
 	hash = Crypto::Hash::HashCreator::CreateHash(chkType);
 	if (hash == 0)
@@ -135,28 +135,28 @@ IO::FileCheck *IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto::Hash::Ha
 
 void __stdcall IO::FileCheck::CheckData(const UInt8 *buff, UOSInt buffSize, AnyType userData)
 {
-	NotNullPtr<ReadSess> sess = userData.GetNN<ReadSess>();
+	NN<ReadSess> sess = userData.GetNN<ReadSess>();
 	sess->hash->Calc(buff, buffSize);
 	sess->readSize += buffSize;
-	NotNullPtr<IO::ProgressHandler> progress;
+	NN<IO::ProgressHandler> progress;
 	if (sess->progress.SetTo(progress))
 	{
 		progress->ProgressUpdate(sess->readSize, sess->fileSize);
 	}
 }
 
-Bool IO::FileCheck::CheckDir(NotNullPtr<IO::ActiveStreamReader> reader, UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Hash::IHash *hash, IO::FileCheck *fchk, Optional<IO::ProgressHandler> progress, Bool skipError)
+Bool IO::FileCheck::CheckDir(NN<IO::ActiveStreamReader> reader, UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Hash::IHash *hash, IO::FileCheck *fchk, Optional<IO::ProgressHandler> progress, Bool skipError)
 {
 	UTF8Char *sptr = &hashPath[Text::StrCharCnt(hashPath)];
 	UTF8Char *sptr2;
 	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
-	NotNullPtr<IO::FileStream> fs;
+	NN<IO::FileStream> fs;
 	ReadSess readSess;
 	UInt64 fileSize;
 	UInt8 hashBuff[32];
 	IO::ActiveStreamReader::BottleNeckType bnt;
-	NotNullPtr<IO::ProgressHandler> nnprogress;
+	NN<IO::ProgressHandler> nnprogress;
 
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
@@ -231,7 +231,7 @@ Bool IO::FileCheck::CheckDir(NotNullPtr<IO::ActiveStreamReader> reader, UTF8Char
 	return false;
 }
 
-IO::FileCheck::FileCheck(NotNullPtr<Text::String> name, Crypto::Hash::HashType chkType) : IO::ParsedObject(name)
+IO::FileCheck::FileCheck(NN<Text::String> name, Crypto::Hash::HashType chkType) : IO::ParsedObject(name)
 {
 	this->chkType = chkType;
 	Crypto::Hash::IHash *hash = Crypto::Hash::HashCreator::CreateHash(chkType);
@@ -325,7 +325,7 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal) const
 	UOSInt i;
 	Crypto::Hash::IHash *hash;
 
-	NotNullPtr<Text::String> fileName;
+	NN<Text::String> fileName;
 	if (!this->fileNames.GetItem(index).SetTo(fileName))
 	{
 #if defined(VERBOSE)
@@ -410,11 +410,11 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal) const
 	}
 }
 
-Bool IO::FileCheck::MergeFrom(NotNullPtr<FileCheck> chk)
+Bool IO::FileCheck::MergeFrom(NN<FileCheck> chk)
 {
 	if (this->chkType != chk->chkType)
 		return false;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UInt8 val[64];
 	UOSInt i = 0;
 	UOSInt j = chk->GetCount();

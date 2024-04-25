@@ -17,11 +17,11 @@ namespace SSWR
 		class AVIRThreadSpeedForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			NotNullPtr<UI::GUIButton> btnTest;
-			NotNullPtr<UI::GUIListView> lvResult;
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUIButton> btnTest;
+			NN<UI::GUIListView> lvResult;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
 			Int32 tmpVal;
 			Manage::HiResClock clk;
@@ -33,7 +33,7 @@ namespace SSWR
 			static UInt32 __stdcall TestThread(AnyType userObj);
 			static void __stdcall OnTestClicked(AnyType userObj);
 		public:
-			AVIRThreadSpeedForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRThreadSpeedForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRThreadSpeedForm();
 
 			virtual void OnMonitorChanged();

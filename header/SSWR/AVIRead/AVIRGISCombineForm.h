@@ -20,14 +20,14 @@ namespace SSWR
 		class AVIRGISCombineForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIButton> btnCheckAll;
-			NotNullPtr<UI::GUIButton> btnUncheckAll;
-			NotNullPtr<UI::GUICheckedListBox> lbLayers;
-			NotNullPtr<UI::GUIButton> btnCombine;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUIButton> btnCheckAll;
+			NN<UI::GUIButton> btnUncheckAll;
+			NN<UI::GUICheckedListBox> lbLayers;
+			NN<UI::GUIButton> btnCombine;
+			NN<UI::GUIButton> btnCancel;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Data::ArrayListNN<Map::MapDrawLayer>> layers;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Data::ArrayListNN<Map::MapDrawLayer>> layers;
 			Data::ArrayListNN<Map::MapDrawLayer> selLayers;
 
 		private:
@@ -37,7 +37,7 @@ namespace SSWR
 			static void __stdcall OnCancelClick(AnyType userObj);
 
 		public:
-			AVIRGISCombineForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Data::ArrayListNN<Map::MapDrawLayer>> layers);
+			AVIRGISCombineForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Data::ArrayListNN<Map::MapDrawLayer>> layers);
 			virtual ~AVIRGISCombineForm();
 
 			virtual void OnMonitorChanged();

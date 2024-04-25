@@ -29,7 +29,7 @@ Media::RasterImage::RasterImage(Math::Size2D<UOSInt> dispSize)
 	this->pal = 0;
 }
 
-Media::RasterImage::RasterImage(Math::Size2D<UOSInt> dispSize, Math::Size2D<UOSInt> storeSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, NotNullPtr<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst)
+Media::RasterImage::RasterImage(Math::Size2D<UOSInt> dispSize, Math::Size2D<UOSInt> storeSize, UInt32 fourcc, UInt32 bpp, Media::PixelFormat pf, UOSInt maxSize, NN<const Media::ColorProfile> color, Media::ColorProfile::YUVType yuvType, Media::AlphaType atype, Media::YCOffset ycOfst)
 {
 	this->exif = 0;
 	this->hasHotSpot = false;
@@ -256,10 +256,10 @@ OSInt Media::RasterImage::GetHotSpotY() const
 	return this->hotSpotY;
 }
 
-NotNullPtr<Media::StaticImage> Media::RasterImage::CreateStaticImage() const
+NN<Media::StaticImage> Media::RasterImage::CreateStaticImage() const
 {
-	NotNullPtr<Media::StaticImage> outImg;
-	NotNullPtr<Media::EXIFData> exif;
+	NN<Media::StaticImage> outImg;
+	NN<Media::EXIFData> exif;
 	NEW_CLASSNN(outImg, Media::StaticImage(this->info));
 	if (this->exif.SetTo(exif))
 	{
@@ -282,15 +282,15 @@ NotNullPtr<Media::StaticImage> Media::RasterImage::CreateStaticImage() const
 	return outImg;
 }
 
-NotNullPtr<Media::StaticImage> Media::RasterImage::CreateSubImage(Math::RectArea<OSInt> area) const
+NN<Media::StaticImage> Media::RasterImage::CreateSubImage(Math::RectArea<OSInt> area) const
 {
 	Media::FrameInfo frameInfo;
 	frameInfo.Set(this->info);
 	frameInfo.dispSize = Math::Size2D<UOSInt>((UOSInt)area.GetWidth(), (UOSInt)area.GetHeight());
 	frameInfo.storeSize = frameInfo.dispSize;
 	frameInfo.byteSize = frameInfo.storeSize.CalcArea() * (frameInfo.storeBPP >> 3);
-	NotNullPtr<Media::StaticImage> outImg;
-	NotNullPtr<Media::EXIFData> exif;
+	NN<Media::StaticImage> outImg;
+	NN<Media::EXIFData> exif;
 	NEW_CLASSNN(outImg, Media::StaticImage(frameInfo));
 	if (this->exif.SetTo(exif))
 	{
@@ -320,7 +320,7 @@ Optional<Media::EXIFData> Media::RasterImage::SetEXIFData(Optional<Media::EXIFDa
 	return oldExif;
 }
 
-void Media::RasterImage::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Media::RasterImage::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	this->info.ToString(sb);
 	if (this->HasHotSpot())
@@ -332,7 +332,7 @@ void Media::RasterImage::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 		sb->AppendC(UTF8STRC(")"));
 	}
 
-	NotNullPtr<Media::EXIFData> exif;
+	NN<Media::EXIFData> exif;
 	if (this->exif.SetTo(exif))
 	{
 		sb->AppendC(UTF8STRC("\r\n"));

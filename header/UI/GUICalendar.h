@@ -16,13 +16,13 @@ namespace UI
 		Data::ArrayList<DateChangedHandler> dateChangedHdlrs;
 		Data::ArrayList<void*> dateChangedObjs;
 	public:
-		GUICalendar(NotNullPtr<GUICore> ui, Optional<UI::GUIClientControl> parent);
+		GUICalendar(NN<GUICore> ui, Optional<UI::GUIClientControl> parent);
 		virtual ~GUICalendar();
 
 		virtual Text::CStringNN GetObjectClass();
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
-		void GetSelectedTime(NotNullPtr<Data::DateTime> dt);
+		void GetSelectedTime(NN<Data::DateTime> dt);
 		void HandleDateChange(DateChangedHandler hdlr, void *obj);
 	};
 }

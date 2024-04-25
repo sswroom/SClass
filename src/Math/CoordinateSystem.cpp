@@ -13,7 +13,7 @@
 #include "Math/Geometry/Polyline.h"
 #include "Text/MyString.h"
 
-Math::CoordinateSystem::CoordinateSystem(NotNullPtr<Text::String> sourceName, UInt32 srid, Text::CString csysName) : IO::ParsedObject(sourceName)
+Math::CoordinateSystem::CoordinateSystem(NN<Text::String> sourceName, UInt32 srid, Text::CString csysName) : IO::ParsedObject(sourceName)
 {
 	this->csysName = Text::String::New(csysName);
 	this->srid = srid;
@@ -30,7 +30,7 @@ Math::CoordinateSystem::~CoordinateSystem()
 	this->csysName->Release();
 }
 
-Double Math::CoordinateSystem::CalDistance(NotNullPtr<Math::Geometry::Vector2D> vec, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::CoordinateSystem::CalDistance(NN<Math::Geometry::Vector2D> vec, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const
 {
 	Double totalDist;
 	switch (vec->GetVectorType())
@@ -39,13 +39,13 @@ Double Math::CoordinateSystem::CalDistance(NotNullPtr<Math::Geometry::Vector2D> 
 	case Math::Geometry::Vector2D::VectorType::MultiPoint:
 		return 0;
 	case Math::Geometry::Vector2D::VectorType::LineString:
-		return CalLineStringDistance(NotNullPtr<Math::Geometry::LineString>::ConvertFrom(vec), include3D, unit);
+		return CalLineStringDistance(NN<Math::Geometry::LineString>::ConvertFrom(vec), include3D, unit);
 	case Math::Geometry::Vector2D::VectorType::LinearRing:
-		return CalLineStringDistance(NotNullPtr<Math::Geometry::LinearRing>::ConvertFrom(vec), include3D, unit);
+		return CalLineStringDistance(NN<Math::Geometry::LinearRing>::ConvertFrom(vec), include3D, unit);
 	case Math::Geometry::Vector2D::VectorType::Polygon:
 	{
 		totalDist = 0;
-		Data::ArrayIterator<NotNullPtr<Math::Geometry::LinearRing>> it = NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(vec)->Iterator();
+		Data::ArrayIterator<NN<Math::Geometry::LinearRing>> it = NN<Math::Geometry::Polygon>::ConvertFrom(vec)->Iterator();
 		while (it.HasNext())
 		{
 			totalDist += CalLineStringDistance(it.Next(), include3D, unit);
@@ -55,7 +55,7 @@ Double Math::CoordinateSystem::CalDistance(NotNullPtr<Math::Geometry::Vector2D> 
 	case Math::Geometry::Vector2D::VectorType::Polyline:
 	{
 		totalDist = 0;
-		Data::ArrayIterator<NotNullPtr<Math::Geometry::LineString>> it = NotNullPtr<Math::Geometry::Polyline>::ConvertFrom(vec)->Iterator();
+		Data::ArrayIterator<NN<Math::Geometry::LineString>> it = NN<Math::Geometry::Polyline>::ConvertFrom(vec)->Iterator();
 		while (it.HasNext())
 		{
 			totalDist += CalLineStringDistance(it.Next(), include3D, unit);
@@ -65,7 +65,7 @@ Double Math::CoordinateSystem::CalDistance(NotNullPtr<Math::Geometry::Vector2D> 
 	case Math::Geometry::Vector2D::VectorType::MultiPolygon:
 	{
 		totalDist = 0;
-		Data::ArrayIterator<NotNullPtr<Math::Geometry::Polygon>> it = NotNullPtr<Math::Geometry::MultiPolygon>::ConvertFrom(vec)->Iterator();
+		Data::ArrayIterator<NN<Math::Geometry::Polygon>> it = NN<Math::Geometry::MultiPolygon>::ConvertFrom(vec)->Iterator();
 		while (it.HasNext())
 		{
 			totalDist += CalDistance(it.Next(), include3D, unit);
@@ -75,7 +75,7 @@ Double Math::CoordinateSystem::CalDistance(NotNullPtr<Math::Geometry::Vector2D> 
 	case Math::Geometry::Vector2D::VectorType::GeometryCollection:
 	{
 		totalDist = 0;
-		Data::ArrayIterator<NotNullPtr<Math::Geometry::Vector2D>> it = NotNullPtr<Math::Geometry::GeometryCollection>::ConvertFrom(vec)->Iterator();
+		Data::ArrayIterator<NN<Math::Geometry::Vector2D>> it = NN<Math::Geometry::GeometryCollection>::ConvertFrom(vec)->Iterator();
 		while (it.HasNext())
 		{
 			totalDist += CalDistance(it.Next(), include3D, unit);
@@ -83,11 +83,11 @@ Double Math::CoordinateSystem::CalDistance(NotNullPtr<Math::Geometry::Vector2D> 
 		return totalDist;
 	}
 	case Math::Geometry::Vector2D::VectorType::CircularString:
-		return CalLineStringDistance(NotNullPtr<Math::Geometry::CircularString>::ConvertFrom(vec), include3D, unit);
+		return CalLineStringDistance(NN<Math::Geometry::CircularString>::ConvertFrom(vec), include3D, unit);
 	case Math::Geometry::Vector2D::VectorType::CompoundCurve:
 	{
 		totalDist = 0;
-		Data::ArrayIterator<NotNullPtr<Math::Geometry::LineString>> it = NotNullPtr<Math::Geometry::CompoundCurve>::ConvertFrom(vec)->Iterator();
+		Data::ArrayIterator<NN<Math::Geometry::LineString>> it = NN<Math::Geometry::CompoundCurve>::ConvertFrom(vec)->Iterator();
 		while (it.HasNext())
 		{
 			totalDist += CalLineStringDistance(it.Next(), include3D, unit);
@@ -97,7 +97,7 @@ Double Math::CoordinateSystem::CalDistance(NotNullPtr<Math::Geometry::Vector2D> 
 	case Math::Geometry::Vector2D::VectorType::CurvePolygon:
 	{
 		totalDist = 0;
-		Data::ArrayIterator<NotNullPtr<Math::Geometry::Vector2D>> it = NotNullPtr<Math::Geometry::CurvePolygon>::ConvertFrom(vec)->Iterator();
+		Data::ArrayIterator<NN<Math::Geometry::Vector2D>> it = NN<Math::Geometry::CurvePolygon>::ConvertFrom(vec)->Iterator();
 		while (it.HasNext())
 		{
 			totalDist += CalDistance(it.Next(), include3D, unit);
@@ -126,7 +126,7 @@ IO::ParserType Math::CoordinateSystem::GetParserType() const
 	return IO::ParserType::CoordinateSystem;
 }
 
-Bool Math::CoordinateSystem::Equals(NotNullPtr<const Math::CoordinateSystem> csys) const
+Bool Math::CoordinateSystem::Equals(NN<const Math::CoordinateSystem> csys) const
 {
 	if (this == csys.Ptr())
 		return true;
@@ -146,16 +146,16 @@ Bool Math::CoordinateSystem::Equals(NotNullPtr<const Math::CoordinateSystem> csy
 	else
 	{
 		Math::ProjectedCoordinateSystem *pcs1 = (Math::ProjectedCoordinateSystem*)this;
-		return pcs1->SameProjection(NotNullPtr<const Math::ProjectedCoordinateSystem>::ConvertFrom(csys));
+		return pcs1->SameProjection(NN<const Math::ProjectedCoordinateSystem>::ConvertFrom(csys));
 	}
 }
 
-Math::Coord2DDbl Math::CoordinateSystem::Convert(NotNullPtr<const Math::CoordinateSystem> srcCoord, NotNullPtr<const Math::CoordinateSystem> destCoord, Math::Coord2DDbl coord)
+Math::Coord2DDbl Math::CoordinateSystem::Convert(NN<const Math::CoordinateSystem> srcCoord, NN<const Math::CoordinateSystem> destCoord, Math::Coord2DDbl coord)
 {
 	return Convert3D(srcCoord, destCoord, Math::Vector3(coord, 0)).GetXY();
 }
 
-Math::Vector3 Math::CoordinateSystem::Convert3D(NotNullPtr<const Math::CoordinateSystem> srcCoord, NotNullPtr<const Math::CoordinateSystem> destCoord, Math::Vector3 srcPos)
+Math::Vector3 Math::CoordinateSystem::Convert3D(NN<const Math::CoordinateSystem> srcCoord, NN<const Math::CoordinateSystem> destCoord, Math::Vector3 srcPos)
 {
 	if (srcCoord->IsProjected())
 	{
@@ -172,7 +172,7 @@ Math::Vector3 Math::CoordinateSystem::Convert3D(NotNullPtr<const Math::Coordinat
 	if (destCoord->IsProjected())
 	{
 		Math::ProjectedCoordinateSystem *pcs = (Math::ProjectedCoordinateSystem*)destCoord.Ptr();
-		NotNullPtr<Math::GeographicCoordinateSystem> gcs = pcs->GetGeographicCoordinateSystem();
+		NN<Math::GeographicCoordinateSystem> gcs = pcs->GetGeographicCoordinateSystem();
 		srcPos = gcs->FromCartesianCoordRad(srcPos);
 		return Math::Vector3(pcs->FromGeographicCoordinateRad(srcPos.GetXY()), srcPos.GetZ());
 	}
@@ -183,7 +183,7 @@ Math::Vector3 Math::CoordinateSystem::Convert3D(NotNullPtr<const Math::Coordinat
 	}
 }
 
-void Math::CoordinateSystem::ConvertArray(NotNullPtr<const Math::CoordinateSystem> srcCoord, NotNullPtr<const Math::CoordinateSystem> destCoord, const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints)
+void Math::CoordinateSystem::ConvertArray(NN<const Math::CoordinateSystem> srcCoord, NN<const Math::CoordinateSystem> destCoord, const Math::Coord2DDbl *srcArr, Math::Coord2DDbl *destArr, UOSInt nPoints)
 {
 	UOSInt i;
 	Bool srcRad = false;
@@ -219,7 +219,7 @@ void Math::CoordinateSystem::ConvertArray(NotNullPtr<const Math::CoordinateSyste
 	if (destCoord->IsProjected())
 	{
 		Math::ProjectedCoordinateSystem *pcs = (Math::ProjectedCoordinateSystem*)destCoord.Ptr();
-		NotNullPtr<Math::GeographicCoordinateSystem> gcs = pcs->GetGeographicCoordinateSystem();
+		NN<Math::GeographicCoordinateSystem> gcs = pcs->GetGeographicCoordinateSystem();
 		if (srcRad)
 		{
 			i = nPoints;
@@ -265,7 +265,7 @@ void Math::CoordinateSystem::ConvertArray(NotNullPtr<const Math::CoordinateSyste
 	}
 }
 
-Math::Vector3 Math::CoordinateSystem::ConvertToCartesianCoord(NotNullPtr<const Math::CoordinateSystem> srcCoord, Math::Vector3 srcPos)
+Math::Vector3 Math::CoordinateSystem::ConvertToCartesianCoord(NN<const Math::CoordinateSystem> srcCoord, Math::Vector3 srcPos)
 {
 	if (srcCoord->IsProjected())
 	{
@@ -276,7 +276,7 @@ Math::Vector3 Math::CoordinateSystem::ConvertToCartesianCoord(NotNullPtr<const M
 	return ((Math::GeographicCoordinateSystem*)srcCoord.Ptr())->ToCartesianCoordDeg(srcPos);
 }
 
-void Math::CoordinateSystem::DatumData1ToString(NotNullPtr<const DatumData1> datum, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Math::CoordinateSystem::DatumData1ToString(NN<const DatumData1> datum, NN<Text::StringBuilderUTF8> sb)
 {
 	sb->AppendC(UTF8STRC("Datum Name: "));
 	sb->AppendC(datum->name, datum->nameLen);

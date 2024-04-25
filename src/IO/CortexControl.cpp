@@ -11,7 +11,7 @@
 
 UInt32 __stdcall IO::CortexControl::RecvThread(AnyType userObj)
 {
-	NotNullPtr<IO::CortexControl> me = userObj.GetNN<IO::CortexControl>();
+	NN<IO::CortexControl> me = userObj.GetNN<IO::CortexControl>();
 	UInt8 buff[260];
 	UOSInt buffSize = 0;
 	UOSInt recvSize;
@@ -87,7 +87,7 @@ Bool IO::CortexControl::IsError()
 	return this->stm->IsError();
 }
 
-void IO::CortexControl::DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void IO::CortexControl::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 	if (cmdType == (this->sendType | 0x80))
 	{
@@ -202,7 +202,7 @@ void IO::CortexControl::DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, I
 	}
 }
 
-void IO::CortexControl::DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
+void IO::CortexControl::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 }
 

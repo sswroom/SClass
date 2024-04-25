@@ -451,7 +451,7 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sour
 				return 0;
 			}
 		}
-		NotNullPtr<Math::GeographicCoordinateSystem> nngcs;
+		NN<Math::GeographicCoordinateSystem> nngcs;
 		if (cst == Math::CoordinateSystem::CoordinateSystemType::Geographic || falseEasting == -1 || falseNorthing == -1 || centralMeridian == -1 || scaleFactor == -1 || latitudeOfOrigin == -1 || !nngcs.Set(gcs))
 		{
 			SDEL_CLASS(gcs);

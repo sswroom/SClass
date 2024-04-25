@@ -14,15 +14,15 @@ namespace SSWR
 		class AVIRODBCStrForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblDriver;
-			NotNullPtr<UI::GUIComboBox> cboDriver;
-			NotNullPtr<UI::GUIButton> btnDriverInfo;
-			NotNullPtr<UI::GUILabel> lblConnStr;
-			NotNullPtr<UI::GUITextBox> txtConnStr;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUILabel> lblDriver;
+			NN<UI::GUIComboBox> cboDriver;
+			NN<UI::GUIButton> btnDriverInfo;
+			NN<UI::GUILabel> lblConnStr;
+			NN<UI::GUITextBox> txtConnStr;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			DB::DBConn *conn;
 
 			static void __stdcall OnDriverSelChg(AnyType userObj);
@@ -30,7 +30,7 @@ namespace SSWR
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			AVIRODBCStrForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRODBCStrForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRODBCStrForm();
 
 			virtual void OnMonitorChanged();

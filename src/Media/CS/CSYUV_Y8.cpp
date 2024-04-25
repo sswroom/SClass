@@ -90,12 +90,12 @@ UOSInt Media::CS::CSYUV_Y8::GetDestFrameSize(UOSInt width, UOSInt height)
 	return width * height;
 }
 
-void Media::CS::CSYUV_Y8::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
+void Media::CS::CSYUV_Y8::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 
 }
 
-void Media::CS::CSYUV_Y8::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void Media::CS::CSYUV_Y8::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 
 }

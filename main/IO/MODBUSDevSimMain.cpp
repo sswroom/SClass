@@ -11,7 +11,7 @@
 #include "Net/WebServer/MODBUSDevSimHandler.h"
 #include "Net/WebServer/WebListener.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
@@ -23,7 +23,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	UInt16 modbusPort = 0;
 	UInt16 ctrlPort = 0;
 	UInt8 devAddr = 0;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (!cfg->GetValue(CSTR("MODBUSPort")).SetTo(s) || !s->ToUInt16(modbusPort))
 	{
 		console.WriteLineC(UTF8STRC("Config MODBUSPort not valid"));

@@ -25,76 +25,76 @@ namespace SSWR
 		class AVIRDBManagerForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIPopupMenu> mnuTable;
-			NotNullPtr<UI::GUIPopupMenu> mnuSchema;
-			NotNullPtr<UI::GUIPopupMenu> mnuConn;
-			NotNullPtr<UI::GUIMainMenu> mnuMain;
+			NN<UI::GUIPopupMenu> mnuTable;
+			NN<UI::GUIPopupMenu> mnuSchema;
+			NN<UI::GUIPopupMenu> mnuConn;
+			NN<UI::GUIMainMenu> mnuMain;
 
-			NotNullPtr<UI::GUIListBox> lbConn;
-			NotNullPtr<UI::GUIHSplitter> hspConn;
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUIListBox> lbConn;
+			NN<UI::GUIHSplitter> hspConn;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpDatabase;
-			NotNullPtr<UI::GUIListBox> lbDatabase;
-			NotNullPtr<UI::GUIButton> btnDatabaseChange;
-			NotNullPtr<UI::GUIButton> btnDatabaseDelete;
-			NotNullPtr<UI::GUIButton> btnDatabaseNew;
+			NN<UI::GUITabPage> tpDatabase;
+			NN<UI::GUIListBox> lbDatabase;
+			NN<UI::GUIButton> btnDatabaseChange;
+			NN<UI::GUIButton> btnDatabaseDelete;
+			NN<UI::GUIButton> btnDatabaseNew;
 
-			NotNullPtr<UI::GUITabPage> tpTable;
-			NotNullPtr<UI::GUIPanel> pnlTable;
-			NotNullPtr<UI::GUIListBox> lbSchema;
-			NotNullPtr<UI::GUIHSplitter> hspSchema;
-			NotNullPtr<UI::GUIListBox> lbTable;
-			NotNullPtr<UI::GUIHSplitter> hspTable;
-			NotNullPtr<UI::GUIListView> lvTable;
-			NotNullPtr<UI::GUIVSplitter> vspTable;
-			NotNullPtr<UI::GUIListView> lvTableResult;
+			NN<UI::GUITabPage> tpTable;
+			NN<UI::GUIPanel> pnlTable;
+			NN<UI::GUIListBox> lbSchema;
+			NN<UI::GUIHSplitter> hspSchema;
+			NN<UI::GUIListBox> lbTable;
+			NN<UI::GUIHSplitter> hspTable;
+			NN<UI::GUIListView> lvTable;
+			NN<UI::GUIVSplitter> vspTable;
+			NN<UI::GUIListView> lvTableResult;
 
-			NotNullPtr<UI::GUITabPage> tpSQL;
-			NotNullPtr<UI::GUIPanel> pnlSQL;
-			NotNullPtr<UI::GUIPanel> pnlSQLCtrl;
-			NotNullPtr<UI::GUIButton> btnSQLExec;
-			NotNullPtr<UI::GUIButton> btnSQLFile;
-			NotNullPtr<UI::GUITextBox> txtSQL;
-			NotNullPtr<UI::GUIVSplitter> vspSQL;
-			NotNullPtr<UI::GUIListView> lvSQLResult;
+			NN<UI::GUITabPage> tpSQL;
+			NN<UI::GUIPanel> pnlSQL;
+			NN<UI::GUIPanel> pnlSQLCtrl;
+			NN<UI::GUIButton> btnSQLExec;
+			NN<UI::GUIButton> btnSQLFile;
+			NN<UI::GUITextBox> txtSQL;
+			NN<UI::GUIVSplitter> vspSQL;
+			NN<UI::GUIListView> lvSQLResult;
 
-			NotNullPtr<UI::GUITabPage> tpMap;
-			NotNullPtr<UI::GUIPanel> pnlMap;
-			NotNullPtr<UI::GUIHSplitter> hspMap;
+			NN<UI::GUITabPage> tpMap;
+			NN<UI::GUIPanel> pnlMap;
+			NN<UI::GUIHSplitter> hspMap;
 			UI::GUIMapControl *mapMain;
-			NotNullPtr<UI::GUIPanel> pnlMapTable;
-			NotNullPtr<UI::GUIVSplitter> vspMapRecord;
-			NotNullPtr<UI::GUIListView> lvMapRecord;
-			NotNullPtr<UI::GUIListBox> lbMapSchema;
-			NotNullPtr<UI::GUIHSplitter> hspMapTable;
-			NotNullPtr<UI::GUIListBox> lbMapTable;
+			NN<UI::GUIPanel> pnlMapTable;
+			NN<UI::GUIVSplitter> vspMapRecord;
+			NN<UI::GUIListView> lvMapRecord;
+			NN<UI::GUIListBox> lbMapSchema;
+			NN<UI::GUIHSplitter> hspMapTable;
+			NN<UI::GUIListBox> lbMapTable;
 
-			NotNullPtr<UI::GUITabPage> tpVariable;
-			NotNullPtr<UI::GUIPanel> pnlVariable;
-			NotNullPtr<UI::GUIButton> btnVariable;
-			NotNullPtr<UI::GUIListView> lvVariable;
+			NN<UI::GUITabPage> tpVariable;
+			NN<UI::GUIPanel> pnlVariable;
+			NN<UI::GUIButton> btnVariable;
+			NN<UI::GUIListView> lvVariable;
 
-			NotNullPtr<UI::GUITabPage> tpSvrConn;
-			NotNullPtr<UI::GUIPanel> pnlSvrConn;
-			NotNullPtr<UI::GUIButton> btnSvrConn;
-			NotNullPtr<UI::GUIButton> btnSvrConnKill;
-			NotNullPtr<UI::GUIListView> lvSvrConn;
+			NN<UI::GUITabPage> tpSvrConn;
+			NN<UI::GUIPanel> pnlSvrConn;
+			NN<UI::GUIButton> btnSvrConn;
+			NN<UI::GUIButton> btnSvrConnKill;
+			NN<UI::GUIListView> lvSvrConn;
 
-			NotNullPtr<UI::GUITabPage> tpLog;
-			NotNullPtr<UI::GUIListBox> lbLog;
-			NotNullPtr<UI::GUITextBox> txtLog;
+			NN<UI::GUITabPage> tpLog;
+			NN<UI::GUIListBox> lbLog;
+			NN<UI::GUITextBox> txtLog;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<UI::ListBoxLogger> logger;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<UI::ListBoxLogger> logger;
 			Data::ArrayListNN<DB::DBManagerCtrl> dbList;
 			Optional<Net::SSLEngine> ssl;
 			IO::LogTool log;
 			Optional<DB::ReadingDB> currDB;
 			Data::QueryConditions *currCond;
-			NotNullPtr<Media::ColorManagerSess> colorSess;
-			NotNullPtr<Map::MapEnv> mapEnv;
-			NotNullPtr<Map::DBMapLayer> dbLayer;
+			NN<Media::ColorManagerSess> colorSess;
+			NN<Map::MapEnv> mapEnv;
+			NN<Map::DBMapLayer> dbLayer;
 			Math::Coord2D<OSInt> mapDownPos;
 			Bool sqlFileMode;
 
@@ -118,17 +118,17 @@ namespace SSWR
 			static void __stdcall OnVariableClicked(AnyType userObj);
 			static void __stdcall OnSvrConnClicked(AnyType userObj);
 			static void __stdcall OnSvrConnKillClicked(AnyType userObj);
-			static void __stdcall OnFileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 
 			void UpdateDatabaseList();
 			void UpdateSchemaList();
 			void UpdateTableList();
 			void UpdateMapTableList();
 			void UpdateTableData(Text::CString schemaName, Optional<Text::String> tableName);
-			static void UpdateResult(NotNullPtr<DB::DBReader> r, NotNullPtr<UI::GUIListView> lv);
+			static void UpdateResult(NN<DB::DBReader> r, NN<UI::GUIListView> lv);
 			void UpdateVariableList();
 			void UpdateSvrConnList();
-			void RunSQLFile(NotNullPtr<DB::ReadingDBTool> db, NotNullPtr<Text::String> fileName);
+			void RunSQLFile(NN<DB::ReadingDBTool> db, NN<Text::String> fileName);
 
 			Data::Class *CreateTableClass(Text::CString schemaName, Text::CStringNN tableName);
 			void CopyTableCreate(DB::SQLType sqlType, Bool axisAware);
@@ -140,13 +140,13 @@ namespace SSWR
 			void ExportTableXLSX();
 			void ExportTableExcelXML();
 		public:
-			AVIRDBManagerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRDBManagerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRDBManagerForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);
 			virtual void OnMonitorChanged();
 
-			void ConnAdd(NotNullPtr<DB::DBConn> conn);
+			void ConnAdd(NN<DB::DBConn> conn);
 		};
 	}
 }

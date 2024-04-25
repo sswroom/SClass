@@ -122,7 +122,7 @@ void UI::GUICustomDrawVScroll::OnPaint()
 
 	RECT rc;
 	GetClientRect((HWND)this->hwnd, &rc);
-	NotNullPtr<Media::DrawImage> dimg;
+	NN<Media::DrawImage> dimg;
 	if (dimg.Set(((Media::GDIEngine*)this->deng.Ptr())->CreateImageScn(ps.hdc, 0, 0, rc.right - rc.left, rc.bottom - rc.top)))
 	{
 		Double hdpi = this->GetHDPI();
@@ -158,7 +158,7 @@ void UI::GUICustomDrawVScroll::Deinit(InstanceHandle *hInst)
 	UnregisterClassW(CLASSNAME, (HINSTANCE)hInst);
 }
 
-void UI::GUICustomDrawVScroll::ClearBackground(NotNullPtr<Media::DrawImage> img)
+void UI::GUICustomDrawVScroll::ClearBackground(NN<Media::DrawImage> img)
 {
 	RECT rc;
 	GetClientRect((HWND)this->hwnd, &rc);
@@ -172,7 +172,7 @@ void UI::GUICustomDrawVScroll::ClearBackground(NotNullPtr<Media::DrawImage> img)
 	}
 }
 
-UI::GUICustomDrawVScroll::GUICustomDrawVScroll(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> deng) : UI::GUIControl(ui, parent)
+UI::GUICustomDrawVScroll::GUICustomDrawVScroll(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng) : UI::GUIControl(ui, parent)
 {
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{

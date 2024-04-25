@@ -16,7 +16,7 @@ namespace UI
 			static gboolean SignalFocus(void *window, GtkDirectionType direction, void *userObj);
 			static gboolean SignalFocusLost(void *window, void *userObj);
 		public:
-			GTKButton(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN txt);
+			GTKButton(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN txt);
 			virtual ~GTKButton();
 
 			virtual void SetText(Text::CStringNN text);

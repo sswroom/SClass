@@ -29,7 +29,7 @@ namespace Net
 		UOSInt buffSize;
 
 	public:
-		HTTPOSClient(NotNullPtr<Net::SocketFactory> sockf, Text::CString userAgent, Bool kaConn);
+		HTTPOSClient(NN<Net::SocketFactory> sockf, Text::CString userAgent, Bool kaConn);
 		virtual ~HTTPOSClient();
 
 		virtual Bool IsError() const;
@@ -47,7 +47,7 @@ namespace Net
 		virtual void SetTimeout(Data::Duration timeout);
 
 		virtual Bool IsSecureConn() const;
-		virtual Bool SetClientCert(NotNullPtr<Crypto::Cert::X509Cert> cert, NotNullPtr<Crypto::Cert::X509File> key);
+		virtual Bool SetClientCert(NN<Crypto::Cert::X509Cert> cert, NN<Crypto::Cert::X509File> key);
 		virtual Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> GetServerCerts();
 	};
 }

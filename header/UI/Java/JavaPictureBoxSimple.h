@@ -9,7 +9,7 @@ namespace UI
 		class JavaPictureBoxSimple : public GUIPictureBoxSimple
 		{
 		public:
-			JavaPictureBoxSimple(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder);
+			JavaPictureBoxSimple(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder);
 			virtual ~JavaPictureBoxSimple();
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);

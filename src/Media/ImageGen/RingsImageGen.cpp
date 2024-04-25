@@ -18,7 +18,7 @@ Text::CStringNN Media::ImageGen::RingsImageGen::GetName() const
 	return CSTR("Rings Image");
 }
 
-Media::RasterImage *Media::ImageGen::RingsImageGen::GenerateImage(NotNullPtr<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size)
+Media::RasterImage *Media::ImageGen::RingsImageGen::GenerateImage(NN<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size)
 {
 	Media::StaticImage *outImage;
 	Int64 *imgPtr;
@@ -38,9 +38,9 @@ Media::RasterImage *Media::ImageGen::RingsImageGen::GenerateImage(NotNullPtr<con
 	}
 	if (size.x < 8 || size.x < 4)
 		return 0;
-	NotNullPtr<Media::CS::TransferFunc> rfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetRTranParamRead());
-	NotNullPtr<Media::CS::TransferFunc> gfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetGTranParamRead());
-	NotNullPtr<Media::CS::TransferFunc> bfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetBTranParamRead());
+	NN<Media::CS::TransferFunc> rfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetRTranParamRead());
+	NN<Media::CS::TransferFunc> gfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetGTranParamRead());
+	NN<Media::CS::TransferFunc> bfunc = Media::CS::TransferFunc::CreateFunc(colorProfile->GetBTranParamRead());
 	NEW_CLASS(outImage, Media::StaticImage(size, 0, 64, Media::PF_LE_B16G16R16A16, 0, colorProfile, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 
 	imgPtr2 = outImage->data;

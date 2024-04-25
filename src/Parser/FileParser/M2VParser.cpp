@@ -21,7 +21,7 @@ Int32 Parser::FileParser::M2VParser::GetName()
 	return *(Int32*)"M2VP";
 }
 
-void Parser::FileParser::M2VParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::M2VParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
@@ -34,7 +34,7 @@ IO::ParserType Parser::FileParser::M2VParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::M2VParser::ParseFile(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::M2VParser::ParseFile(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 tmpBuff[1024];
 	OSInt readSize = fd->GetRealData(0, 1024, BYTEARR(tmpBuff));
@@ -52,7 +52,7 @@ IO::ParsedObject *Parser::FileParser::M2VParser::ParseFile(NotNullPtr<IO::Stream
 	Int64 thisGop;
 	OSInt totalFrameCnt = 0;
 	Int64 currOfst;
-	NotNullPtr<Media::FileVideoSource> vSource;
+	NN<Media::FileVideoSource> vSource;
 	Int32 hdr;
 	Int32 pictureHdr;
 	WriteMInt32((UInt8*)&hdr, 0x000001b3);

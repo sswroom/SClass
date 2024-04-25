@@ -7,7 +7,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRSSHInfoForm::OnQueryClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSSHInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSHInfoForm>();
+	NN<SSWR::AVIRead::AVIRSSHInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSHInfoForm>();
 	Text::StringBuilderUTF8 sbHost;
 	Text::StringBuilderUTF8 sbTmp;
 	Text::PString hostName;
@@ -59,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRSSHInfoForm::OnQueryClicked(AnyType userObj)
 		{
 			me->txtBanner->SetText(Text::CStringNN::FromPtr(csptr));
 		}
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = authMeths.Iterator();
+		Data::ArrayIterator<NN<Text::String>> it = authMeths.Iterator();
 		while (it.HasNext())
 		{
 			me->lbAuthMeth->AddItem(it.Next()->ToCString(), 0);
@@ -92,7 +92,7 @@ void __stdcall SSWR::AVIRead::AVIRSSHInfoForm::OnQueryClicked(AnyType userObj)
 	authMeths.FreeAll();
 }
 
-SSWR::AVIRead::AVIRSSHInfoForm::AVIRSSHInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)
+SSWR::AVIRead::AVIRSSHInfoForm::AVIRSSHInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetText(CSTR("SSH Info"));
 	this->SetFont(0, 0, 8.25, false);

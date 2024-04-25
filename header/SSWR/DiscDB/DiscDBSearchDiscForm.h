@@ -17,22 +17,22 @@ namespace SSWR
 		private:
 			SSWR::DiscDB::DiscDBEnv *env;
 
-			NotNullPtr<UI::GUIPanel> pnlDiscId;
-			NotNullPtr<UI::GUILabel> lblDiscId;
-			NotNullPtr<UI::GUITextBox> txtDiscId;
-			NotNullPtr<UI::GUIButton> btnSearch;
-			NotNullPtr<UI::GUIPanel> pnlOut;
-			NotNullPtr<UI::GUILabel> lblDiscIdOut;
-			NotNullPtr<UI::GUITextBox> txtDiscIdOut;
-			NotNullPtr<UI::GUILabel> lblDiscType;
-			NotNullPtr<UI::GUITextBox> txtDiscType;
-			NotNullPtr<UI::GUILabel> lblBurntDate;
-			NotNullPtr<UI::GUITextBox> txtBurntDate;
-			NotNullPtr<UI::GUIListView> lvFiles;
+			NN<UI::GUIPanel> pnlDiscId;
+			NN<UI::GUILabel> lblDiscId;
+			NN<UI::GUITextBox> txtDiscId;
+			NN<UI::GUIButton> btnSearch;
+			NN<UI::GUIPanel> pnlOut;
+			NN<UI::GUILabel> lblDiscIdOut;
+			NN<UI::GUITextBox> txtDiscIdOut;
+			NN<UI::GUILabel> lblDiscType;
+			NN<UI::GUITextBox> txtDiscType;
+			NN<UI::GUILabel> lblBurntDate;
+			NN<UI::GUITextBox> txtBurntDate;
+			NN<UI::GUIListView> lvFiles;
 
 			static void __stdcall OnSearchClicked(AnyType userObj);
 		public:
-			DiscDBSearchDiscForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, SSWR::DiscDB::DiscDBEnv *env);
+			DiscDBSearchDiscForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, SSWR::DiscDB::DiscDBEnv *env);
 			virtual ~DiscDBSearchDiscForm();
 
 			virtual void OnMonitorChanged();

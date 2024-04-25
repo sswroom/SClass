@@ -29,15 +29,15 @@ namespace SSWR
 		{
 		private:
 			DB::DBTool *db;
-			NotNullPtr<Text::String> imageDir;
+			NN<Text::String> imageDir;
 			Optional<Text::String> cacheDir;
-			NotNullPtr<Text::String> dataDir;
+			NN<Text::String> dataDir;
 			Int32 unorganizedGroupId;
 			UInt32 scnSize;
 			Optional<Text::String> reloadPwd;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
-			NotNullPtr<IO::LogTool> log;
+			NN<IO::LogTool> log;
 			Net::WebServer::WebListener *listener;
 			Net::WebServer::WebListener *sslListener;
 			Sync::Mutex parserMut;
@@ -45,10 +45,10 @@ namespace SSWR
 			BookInfo *selectedBook;
 
 			Media::ColorManager colorMgr;
-			NotNullPtr<Media::ColorManagerSess> colorSess;
-			NotNullPtr<Media::DrawEngine> eng;
-			NotNullPtr<Map::OSM::OSMCacheHandler> osmHdlr;
-			NotNullPtr<Net::WebServer::NodeModuleHandler> nodeHdlr;
+			NN<Media::ColorManagerSess> colorSess;
+			NN<Media::DrawEngine> eng;
+			NN<Map::OSM::OSMCacheHandler> osmHdlr;
+			NN<Net::WebServer::NodeModuleHandler> nodeHdlr;
 			SSWR::OrganWeb::OrganWebHandler *webHdlr;
 
 			Data::FastStringMap<CategoryInfo*> cateSMap;
@@ -72,7 +72,7 @@ namespace SSWR
 			void LoadSpecies();
 			void LoadGroups();
 			void LoadBooks();
-			void LoadUsers(NotNullPtr<Sync::RWMutexUsage> mutUsage);
+			void LoadUsers(NN<Sync::RWMutexUsage> mutUsage);
 			void LoadLocations();
 			void FreeSpecies();
 			void FreeGroups();
@@ -81,7 +81,7 @@ namespace SSWR
 			void FreeUsers();
 			void ClearUsers();
 		public:
-			OrganWebEnv(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<IO::LogTool> log, DB::DBTool *db, NotNullPtr<Text::String> imageDir, UInt16 port, UInt16 sslPort, Optional<Text::String> cacheDir, NotNullPtr<Text::String> dataDir, UInt32 scnSize, Optional<Text::String> reloadPwd, Int32 unorganizedGroupId, NotNullPtr<Media::DrawEngine> eng, Text::CString osmCachePath);
+			OrganWebEnv(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<IO::LogTool> log, DB::DBTool *db, NN<Text::String> imageDir, UInt16 port, UInt16 sslPort, Optional<Text::String> cacheDir, NN<Text::String> dataDir, UInt32 scnSize, Optional<Text::String> reloadPwd, Int32 unorganizedGroupId, NN<Media::DrawEngine> eng, Text::CString osmCachePath);
 			~OrganWebEnv();
 
 			Bool IsError();
@@ -89,82 +89,82 @@ namespace SSWR
 			void Reload();
 			void Restart();
 
-			IO::ParsedObject *ParseFileType(NotNullPtr<IO::StreamData> fd, IO::ParserType targetType);
+			IO::ParsedObject *ParseFileType(NN<IO::StreamData> fd, IO::ParserType targetType);
 			Bool HasReloadPwd() const;
-			Bool ReloadPwdMatches(NotNullPtr<Text::String> pwd) const;
+			Bool ReloadPwdMatches(NN<Text::String> pwd) const;
 			Optional<Text::String> GetCacheDir() const;
-			NotNullPtr<Text::String> GetDataDir() const;
-			NotNullPtr<Media::ColorManagerSess> GetColorSess() const;
-			NotNullPtr<Media::DrawEngine> GetDrawEngine() const;
+			NN<Text::String> GetDataDir() const;
+			NN<Media::ColorManagerSess> GetColorSess() const;
+			NN<Media::DrawEngine> GetDrawEngine() const;
 
-			void CalcGroupCount(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<GroupInfo> group);
-			void GetGroupSpecies(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<GroupInfo> group, Data::DataMap<Text::String*, SpeciesInfo*> *spMap, WebUserInfo *user);
-			void SearchInGroup(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<GroupInfo> group, const UTF8Char *searchStr, UOSInt searchStrLen, NotNullPtr<Data::ArrayListDbl> speciesIndice, NotNullPtr<Data::ArrayListNN<SpeciesInfo>> speciesObjs, NotNullPtr<Data::ArrayListDbl> groupIndice, NotNullPtr<Data::ArrayListNN<GroupInfo>> groupObjs, WebUserInfo *user);
-			Bool GroupIsAdmin(NotNullPtr<GroupInfo> group);
+			void CalcGroupCount(NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group);
+			void GetGroupSpecies(NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group, Data::DataMap<Text::String*, SpeciesInfo*> *spMap, WebUserInfo *user);
+			void SearchInGroup(NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group, const UTF8Char *searchStr, UOSInt searchStrLen, NN<Data::ArrayListDbl> speciesIndice, NN<Data::ArrayListNN<SpeciesInfo>> speciesObjs, NN<Data::ArrayListDbl> groupIndice, NN<Data::ArrayListNN<GroupInfo>> groupObjs, WebUserInfo *user);
+			Bool GroupIsAdmin(NN<GroupInfo> group);
 			UTF8Char *PasswordEnc(UTF8Char *buff, Text::CString pwd);
 
-			BookInfo *BookGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id);
-			BookInfo *BookGetSelected(NotNullPtr<Sync::RWMutexUsage> mutUsage);
+			BookInfo *BookGet(NN<Sync::RWMutexUsage> mutUsage, Int32 id);
+			BookInfo *BookGetSelected(NN<Sync::RWMutexUsage> mutUsage);
 			void BookSelect(BookInfo *book);
 			UTF8Char *BookGetPath(UTF8Char *sbuff, Int32 bookId);
-			void BookGetList(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Data::ArrayList<BookInfo*>> bookList);
-			Bool BookFileExist(NotNullPtr<BookInfo> book);
-			Bool BookSetPhoto(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 bookId, Int32 userfileId);
-			BookInfo *BookAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Text::String> title, NotNullPtr<Text::String> author, NotNullPtr<Text::String> press, Data::Timestamp pubDate, NotNullPtr<Text::String> url);
-			Bool BookAddSpecies(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId, NotNullPtr<Text::String> bookspecies, Bool allowDuplicate);
+			void BookGetList(NN<Sync::RWMutexUsage> mutUsage, NN<Data::ArrayList<BookInfo*>> bookList);
+			Bool BookFileExist(NN<BookInfo> book);
+			Bool BookSetPhoto(NN<Sync::RWMutexUsage> mutUsage, Int32 bookId, Int32 userfileId);
+			BookInfo *BookAdd(NN<Sync::RWMutexUsage> mutUsage, NN<Text::String> title, NN<Text::String> author, NN<Text::String> press, Data::Timestamp pubDate, NN<Text::String> url);
+			Bool BookAddSpecies(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, NN<Text::String> bookspecies, Bool allowDuplicate);
 
-			Bool UserGPSGetPos(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userId, const Data::Timestamp &t, Double *lat, Double *lon);
-			WebUserInfo *UserGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id);
-			Optional<WebUserInfo> UserGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Text::String> name);
+			Bool UserGPSGetPos(NN<Sync::RWMutexUsage> mutUsage, Int32 userId, const Data::Timestamp &t, Double *lat, Double *lon);
+			WebUserInfo *UserGet(NN<Sync::RWMutexUsage> mutUsage, Int32 id);
+			Optional<WebUserInfo> UserGetByName(NN<Sync::RWMutexUsage> mutUsage, NN<Text::String> name);
 
-			Optional<SpeciesInfo> SpeciesGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id);
-			Optional<SpeciesInfo> SpeciesGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Text::String> sname);
-			Int32 SpeciesAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::CString engName, Text::CString chiName, Text::CString sciName, Int32 groupId, Text::CString description, Text::CString dirName, Text::CString idKey, Int32 cateId);
-			Bool SpeciesUpdateDefPhoto(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId);
-			Bool SpeciesSetPhotoId(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Int32 photoId);
-			Bool SpeciesSetPhotoWId(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Int32 photoWId, Bool removePhotoId);
-			Bool SpeciesSetFlags(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId, SpeciesFlags flags);
-			Bool SpeciesMove(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Int32 groupId, Int32 cateId);
-			Bool SpeciesModify(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Text::CString engName, Text::CString chiName, Text::CStringNN sciName, Text::CString description, Text::CString dirName);
-			Bool SpeciesDelete(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId);
-			Bool SpeciesMerge(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 srcSpeciesId, Int32 destSpeciesId, Int32 cateId);
-			Bool SpeciesAddWebfile(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Text::CStringNN imgURL, Text::CStringNN sourceURL, Text::CString location);
-			UserFileInfo *UserfileGetCheck(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId, WebUserInfo *currUser, UTF8Char **filePathOut);
-			UserFileInfo *UserfileGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id);
+			Optional<SpeciesInfo> SpeciesGet(NN<Sync::RWMutexUsage> mutUsage, Int32 id);
+			Optional<SpeciesInfo> SpeciesGetByName(NN<Sync::RWMutexUsage> mutUsage, NN<Text::String> sname);
+			Int32 SpeciesAdd(NN<Sync::RWMutexUsage> mutUsage, Text::CString engName, Text::CString chiName, Text::CString sciName, Int32 groupId, Text::CString description, Text::CString dirName, Text::CString idKey, Int32 cateId);
+			Bool SpeciesUpdateDefPhoto(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId);
+			Bool SpeciesSetPhotoId(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Int32 photoId);
+			Bool SpeciesSetPhotoWId(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Int32 photoWId, Bool removePhotoId);
+			Bool SpeciesSetFlags(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, SpeciesFlags flags);
+			Bool SpeciesMove(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Int32 groupId, Int32 cateId);
+			Bool SpeciesModify(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Text::CString engName, Text::CString chiName, Text::CStringNN sciName, Text::CString description, Text::CString dirName);
+			Bool SpeciesDelete(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId);
+			Bool SpeciesMerge(NN<Sync::RWMutexUsage> mutUsage, Int32 srcSpeciesId, Int32 destSpeciesId, Int32 cateId);
+			Bool SpeciesAddWebfile(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Text::CStringNN imgURL, Text::CStringNN sourceURL, Text::CString location);
+			UserFileInfo *UserfileGetCheck(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId, WebUserInfo *currUser, UTF8Char **filePathOut);
+			UserFileInfo *UserfileGet(NN<Sync::RWMutexUsage> mutUsage, Int32 id);
 			UTF8Char *UserfileGetPath(UTF8Char *sbuff, const UserFileInfo *userfile);
-			Int32 UserfileAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userId, Int32 spId, Text::CStringNN fileName, const UInt8 *fileCont, UOSInt fileSize, Bool mustHaveCamera, Text::String *location);
-			Bool UserfileMove(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId);
-			Bool UserfileUpdateDesc(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Text::CString descr);
-			Bool UserfileUpdateRotType(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 rotType);
-			Bool UserfileUpdatePos(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Data::Timestamp captureTime, Double lat, Double lon, LocType locType);
-			Bool SpeciesBookIsExist(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::CString speciesName, NotNullPtr<Text::StringBuilderUTF8> bookNameOut);
-			void UserFilePrevUpdated(NotNullPtr<Sync::RWMutexUsage> mutUsage, UserFileInfo *userFile);
-			void WebFilePrevUpdated(NotNullPtr<Sync::RWMutexUsage> mutUsage, WebFileInfo *userFile);
-			Bool GPSFileAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, const UInt8 *fileCont, UOSInt fileSize, NotNullPtr<Map::GPSTrack> gpsTrk, OutParam<Text::CString> errMsg);
+			Int32 UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 userId, Int32 spId, Text::CStringNN fileName, const UInt8 *fileCont, UOSInt fileSize, Bool mustHaveCamera, Text::String *location);
+			Bool UserfileMove(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId);
+			Bool UserfileUpdateDesc(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Text::CString descr);
+			Bool UserfileUpdateRotType(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 rotType);
+			Bool UserfileUpdatePos(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Data::Timestamp captureTime, Double lat, Double lon, LocType locType);
+			Bool SpeciesBookIsExist(NN<Sync::RWMutexUsage> mutUsage, Text::CString speciesName, NN<Text::StringBuilderUTF8> bookNameOut);
+			void UserFilePrevUpdated(NN<Sync::RWMutexUsage> mutUsage, UserFileInfo *userFile);
+			void WebFilePrevUpdated(NN<Sync::RWMutexUsage> mutUsage, WebFileInfo *userFile);
+			Bool GPSFileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, const UInt8 *fileCont, UOSInt fileSize, NN<Map::GPSTrack> gpsTrk, OutParam<Text::CString> errMsg);
 
-			Bool DataFileAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, DataFileType fileType, const UInt8 *fileCont, UOSInt fileSize, OutParam<Text::CString> errMsg);
-			IO::ParsedObject *DataFileParse(NotNullPtr<DataFileInfo> dataFile);
-			DataFileInfo *DataFileGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 datafileId);
+			Bool DataFileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, DataFileType fileType, const UInt8 *fileCont, UOSInt fileSize, OutParam<Text::CString> errMsg);
+			IO::ParsedObject *DataFileParse(NN<DataFileInfo> dataFile);
+			DataFileInfo *DataFileGet(NN<Sync::RWMutexUsage> mutUsage, Int32 datafileId);
 
-			Optional<GroupInfo> GroupGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id);
-			Int32 GroupAdd(NotNullPtr<Sync::RWMutexUsage> mutUsage, Text::CString engName, Text::CString chiName, Int32 parentId, Text::CString descr, Int32 groupTypeId, Int32 cateId, GroupFlags flags);
-			Bool GroupModify(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id, Text::CString engName, Text::CString chiName, Text::CString descr, Int32 groupTypeId, GroupFlags flags);
-			Bool GroupDelete(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id);
-			Bool GroupMove(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 groupId, Int32 destGroupId, Int32 cateId);
-			Bool GroupAddCounts(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 groupId, UOSInt totalCount, UOSInt photoCount, UOSInt myPhotoCount);
-			Bool GroupSetPhotoSpecies(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 groupId, Int32 photoSpeciesId);
-			Bool GroupSetPhotoGroup(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 groupId, Int32 photoGroupId);
-			Bool GroupIsPublic(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 groupId);
+			Optional<GroupInfo> GroupGet(NN<Sync::RWMutexUsage> mutUsage, Int32 id);
+			Int32 GroupAdd(NN<Sync::RWMutexUsage> mutUsage, Text::CString engName, Text::CString chiName, Int32 parentId, Text::CString descr, Int32 groupTypeId, Int32 cateId, GroupFlags flags);
+			Bool GroupModify(NN<Sync::RWMutexUsage> mutUsage, Int32 id, Text::CString engName, Text::CString chiName, Text::CString descr, Int32 groupTypeId, GroupFlags flags);
+			Bool GroupDelete(NN<Sync::RWMutexUsage> mutUsage, Int32 id);
+			Bool GroupMove(NN<Sync::RWMutexUsage> mutUsage, Int32 groupId, Int32 destGroupId, Int32 cateId);
+			Bool GroupAddCounts(NN<Sync::RWMutexUsage> mutUsage, Int32 groupId, UOSInt totalCount, UOSInt photoCount, UOSInt myPhotoCount);
+			Bool GroupSetPhotoSpecies(NN<Sync::RWMutexUsage> mutUsage, Int32 groupId, Int32 photoSpeciesId);
+			Bool GroupSetPhotoGroup(NN<Sync::RWMutexUsage> mutUsage, Int32 groupId, Int32 photoGroupId);
+			Bool GroupIsPublic(NN<Sync::RWMutexUsage> mutUsage, Int32 groupId);
 
-			Optional<CategoryInfo> CateGet(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id);
-			Optional<CategoryInfo> CateGetByName(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Text::String> name);
-			Data::ReadingList<CategoryInfo*> *CateGetList(NotNullPtr<Sync::RWMutexUsage> mutUsage);
+			Optional<CategoryInfo> CateGet(NN<Sync::RWMutexUsage> mutUsage, Int32 id);
+			Optional<CategoryInfo> CateGetByName(NN<Sync::RWMutexUsage> mutUsage, NN<Text::String> name);
+			Data::ReadingList<CategoryInfo*> *CateGetList(NN<Sync::RWMutexUsage> mutUsage);
 
-			UOSInt PeakGetUnfin(NotNullPtr<Sync::RWMutexUsage> mutUsage, NotNullPtr<Data::ArrayListNN<PeakInfo>> peaks);
-			Bool PeakUpdateStatus(NotNullPtr<Sync::RWMutexUsage> mutUsage, Int32 id, Int32 status);
-			void PeakFreeAll(NotNullPtr<Data::ArrayListNN<PeakInfo>> peaks);
+			UOSInt PeakGetUnfin(NN<Sync::RWMutexUsage> mutUsage, NN<Data::ArrayListNN<PeakInfo>> peaks);
+			Bool PeakUpdateStatus(NN<Sync::RWMutexUsage> mutUsage, Int32 id, Int32 status);
+			void PeakFreeAll(NN<Data::ArrayListNN<PeakInfo>> peaks);
 
-			IO::ConfigFile *LangGet(NotNullPtr<Net::WebServer::IWebRequest> req);
+			IO::ConfigFile *LangGet(NN<Net::WebServer::IWebRequest> req);
 		};
 	}
 }

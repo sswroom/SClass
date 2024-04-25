@@ -98,8 +98,8 @@ namespace IO
 		UTF8Char *GetPlatformName(UTF8Char *buff) const;
 		UTF8Char *GetPlatformSN(UTF8Char *buff) const;
 		Int32 GetChassisType() const;
-		Bool ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
-		NotNullPtr<IO::StreamData> CreateStreamData() const;
+		Bool ToString(NN<Text::StringBuilderUTF8> sb) const;
+		NN<IO::StreamData> CreateStreamData() const;
 
 		static Text::CString GetProcessorFamily(UInt32 family);
 		static Text::CString GetConnectorType(UInt8 type);

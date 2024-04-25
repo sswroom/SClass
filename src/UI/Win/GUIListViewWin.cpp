@@ -15,7 +15,7 @@
 
 OSInt UI::GUIListView::useCnt = 0;
 
-UI::GUIListView::GUIListView(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, ListViewStyle lvstyle, UOSInt colCount) : UI::GUIControl(ui, parent)
+UI::GUIListView::GUIListView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, ListViewStyle lvstyle, UOSInt colCount) : UI::GUIControl(ui, parent)
 {
 	if (Sync::Interlocked::IncrementOS(useCnt) == 1)
 	{
@@ -113,7 +113,7 @@ UOSInt UI::GUIListView::GetColumnCnt()
 	return this->colCnt;
 }
 
-Bool UI::GUIListView::AddColumn(NotNullPtr<Text::String> columnName, Double colWidth)
+Bool UI::GUIListView::AddColumn(NN<Text::String> columnName, Double colWidth)
 {
 	const WChar *wptr = Text::StrToWCharNew(columnName->v);
 	Bool ret = this->AddColumn(wptr, colWidth);
@@ -170,7 +170,7 @@ Bool UI::GUIListView::ClearAll()
 	return true;
 }
 
-UOSInt UI::GUIListView::AddItem(NotNullPtr<Text::String> itemText, AnyType itemObj)
+UOSInt UI::GUIListView::AddItem(NN<Text::String> itemText, AnyType itemObj)
 {
 	UOSInt strLen = Text::StrUTF8_WCharCntC(itemText->v, itemText->leng);
 	WChar *ws = MemAlloc(WChar, strLen + 1);
@@ -231,7 +231,7 @@ UOSInt UI::GUIListView::AddItem(Text::CStringNN itemText, AnyType itemObj, UOSIn
 	return ret;
 }
 
-Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, NotNullPtr<Text::String> text)
+Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, NN<Text::String> text)
 {
 	const WChar *ws = 0;
 	LVITEMW item;
@@ -280,7 +280,7 @@ Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, const WChar *tex
 	return (SendMessage((HWND)this->hwnd, LVM_SETITEMW, 0, (LPARAM)&item) == TRUE);
 }
 
-Bool UI::GUIListView::GetSubItem(UOSInt index, UOSInt subIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool UI::GUIListView::GetSubItem(UOSInt index, UOSInt subIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	LVITEMW item;
 	sb->AllocLeng(256);
@@ -425,7 +425,7 @@ UTF8Char *UI::GUIListView::GetItemText(UTF8Char *buff, UOSInt index)
 Text::String *UI::GUIListView::GetItemTextNew(UOSInt index)
 {
 	UTF8Char sbuff[768];
-	NotNullPtr<Text::String> sout;
+	NN<Text::String> sout;
 	UTF8Char *sptr = GetItemText(sbuff, index);
 	if (sptr == 0)
 		return 0;

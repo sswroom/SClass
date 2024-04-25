@@ -9,11 +9,11 @@
 #include "SSWR/AVIRead/AVIRDNSProxyForm.h"
 #include "UI/GUICore.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	NotNullPtr<UI::GUICore> ui;
+	NN<UI::GUICore> ui;
 	SSWR::AVIRead::AVIRDNSProxyForm *frm;
-	NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+	NN<SSWR::AVIRead::AVIRCore> core;
 	Manage::ExceptionRecorder *exHdlr;
 	IO::ConfigFile *cfg;
 
@@ -29,7 +29,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		cfg = IO::IniFile::ParseProgConfig(0);
 		if (cfg)
 		{
-			NotNullPtr<Text::String> s;
+			NN<Text::String> s;
 			UOSInt i;
 			UInt32 ip;
 			Int32 v;

@@ -4,7 +4,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRBCryptForm::OnGenHashClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRBCryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBCryptForm>();
+	NN<SSWR::AVIRead::AVIRBCryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBCryptForm>();
 	UInt32 cost;
 	Text::StringBuilderUTF8 sbCost;
 	Text::StringBuilderUTF8 sbPassword;
@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRBCryptForm::OnGenHashClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRBCryptForm::OnCheckClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRBCryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBCryptForm>();
+	NN<SSWR::AVIRead::AVIRBCryptForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBCryptForm>();
 	Text::StringBuilderUTF8 sbHash;
 	Text::StringBuilderUTF8 sbPassword;
 	me->txtCheckHash->GetText(sbHash);
@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRBCryptForm::OnCheckClicked(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRBCryptForm::AVIRBCryptForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 320, ui)
+SSWR::AVIRead::AVIRBCryptForm::AVIRBCryptForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 320, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("BCrypt"));

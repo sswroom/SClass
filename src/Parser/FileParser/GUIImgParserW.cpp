@@ -56,7 +56,7 @@ void Parser::FileParser::GUIImgParser::SetParserList(Parser::ParserList *parsers
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::GUIImgParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::GUIImgParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
@@ -74,9 +74,9 @@ IO::ParserType Parser::FileParser::GUIImgParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
-	NotNullPtr<IO::StreamDataStream> stm;
+	NN<IO::StreamDataStream> stm;
 	Win32::COMStream *cstm;
 	Int32 isImage = 0;
 	if (ReadUInt32(&hdr[0]) == 0x474e5089 && ReadUInt32(&hdr[4]) == 0x0a1a0a0d)
@@ -99,7 +99,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 		return 0;
 
 	Media::ImageList *imgList = 0;
-	NotNullPtr<Media::ImageList> nnimgList;
+	NN<Media::ImageList> nnimgList;
 
 	Sync::MutexUsage mutUsage(this->clsData->mut);
 	NEW_CLASSNN(stm, IO::StreamDataStream(fd));
@@ -275,11 +275,11 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 		Math::Coord2DDbl min;
 		Math::Coord2DDbl max;
 		UInt32 srid;
-		NotNullPtr<Media::EXIFData> exif;
+		NN<Media::EXIFData> exif;
 		if (img->exif.SetTo(exif) && exif->GetGeoBounds(img->info.dispSize, srid, min.x, min.y, max.x, max.y))
 		{
 			Map::VectorLayer *lyr;
-			NotNullPtr<Math::Geometry::VectorImage> vimg;
+			NN<Math::Geometry::VectorImage> vimg;
 			if (srid == 0)
 			{
 				srid = 4326;
@@ -347,10 +347,10 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::
 				if (valid && rotX == 0 && rotY == 0)
 				{
 					Map::VectorLayer *lyr;
-					NotNullPtr<Math::Geometry::VectorImage> vimg;
+					NN<Math::Geometry::VectorImage> vimg;
 					
 					
-					NotNullPtr<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+					NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, csys, 0, 0, 0, 0, 0));
 					img->To32bpp();
 					Media::SharedImage simg(nnimgList, true);
@@ -382,7 +382,7 @@ void Parser::FileParser::GUIImgParser::SetParserList(Parser::ParserList *parsers
 {
 }
 
-void Parser::FileParser::GUIImgParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::GUIImgParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 }
 
@@ -391,7 +391,7 @@ IO::ParserType Parser::FileParser::GUIImgParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	return 0;
 }

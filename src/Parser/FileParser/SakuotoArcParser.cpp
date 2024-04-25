@@ -20,7 +20,7 @@ Int32 Parser::FileParser::SakuotoArcParser::GetName()
 	return *(Int32*)"SARC";
 }
 
-void Parser::FileParser::SakuotoArcParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::SakuotoArcParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
@@ -33,7 +33,7 @@ IO::ParserType Parser::FileParser::SakuotoArcParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::SakuotoArcParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::SakuotoArcParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt64 dataOfst;
 	UInt32 recCnt;
@@ -78,7 +78,7 @@ IO::ParsedObject *Parser::FileParser::SakuotoArcParser::ParseFileHdr(NotNullPtr<
 		}
 		fileName = (UTF16Char*)&recBuff[i + 8];
 		while (*fileName++);
-		NotNullPtr<Text::String> s = Text::String::NewNotNull((UTF16Char*)&recBuff[i + 8]);
+		NN<Text::String> s = Text::String::NewNotNull((UTF16Char*)&recBuff[i + 8]);
 		pf->AddData(fd, dataOfst + fileOfst, fileSize, IO::PackFileItem::HeaderType::No, s->ToCString(), 0, 0, 0, 0);
 		s->Release();
 

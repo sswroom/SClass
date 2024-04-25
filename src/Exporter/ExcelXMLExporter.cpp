@@ -26,7 +26,7 @@ Int32 Exporter::ExcelXMLExporter::GetName()
 	return *(Int32*)"EXML";
 }
 
-IO::FileExporter::SupportType Exporter::ExcelXMLExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
+IO::FileExporter::SupportType Exporter::ExcelXMLExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::Workbook)
 	{
@@ -51,7 +51,7 @@ void Exporter::ExcelXMLExporter::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-Bool Exporter::ExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	UTF8Char sbuff[256];
 	UTF8Char sbuff2[256];
@@ -63,23 +63,23 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, 
 	{
 		return false;
 	}
-	NotNullPtr<Text::SpreadSheet::Workbook> wb;
-	NotNullPtr<Text::SpreadSheet::Worksheet> ws;
-	NotNullPtr<Text::SpreadSheet::CellStyle> style;
+	NN<Text::SpreadSheet::Workbook> wb;
+	NN<Text::SpreadSheet::Worksheet> ws;
+	NN<Text::SpreadSheet::CellStyle> style;
 	UOSInt k;
 	UOSInt l;
 	UOSInt m;
 	UOSInt n;
 	UInt32 v;
 	const UTF8Char *text;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	Data::DateTime *dt;
 	Double ver;
 	Text::StringBuilderUTF8 sb;
 
 	IO::BufferedOutputStream cstm(stm, 65536);
 	IO::StreamWriter writer(cstm, this->codePage);
-	wb = NotNullPtr<Text::SpreadSheet::Workbook>::ConvertFrom(pobj);
+	wb = NN<Text::SpreadSheet::Workbook>::ConvertFrom(pobj);
 	writer.WriteSignature();
 
 	sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding="));
@@ -411,7 +411,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, 
 		writer.WriteLineC(UTF8STRC(" </Styles>"));
 	}
 
-	Data::ArrayIterator<NotNullPtr<Text::SpreadSheet::Worksheet>> it = wb->Iterator();
+	Data::ArrayIterator<NN<Text::SpreadSheet::Worksheet>> it = wb->Iterator();
 	while (it.HasNext())
 	{
 		ws = it.Next();
@@ -591,7 +591,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, 
 									sb.AppendC(UTF8STRC("\""));
 									lastDispCol += cell->mergeHori - 1;
 								}
-								NotNullPtr<Text::SpreadSheet::CellStyle> tmpStyle;
+								NN<Text::SpreadSheet::CellStyle> tmpStyle;
 								if (cell->style.SetTo(tmpStyle))
 								{
 									text = tmpStyle->GetID();
@@ -807,12 +807,12 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, 
 	return true;
 }
 
-void Exporter::ExcelXMLExporter::WriteBorderStyle(NotNullPtr<IO::Writer> writer, const UTF8Char *position, Text::SpreadSheet::CellStyle::BorderStyle border)
+void Exporter::ExcelXMLExporter::WriteBorderStyle(NN<IO::Writer> writer, const UTF8Char *position, Text::SpreadSheet::CellStyle::BorderStyle border)
 {
 	UTF8Char sbuff[10];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	sb.AppendC(UTF8STRC("    <Border ss:Position="));
 	s = Text::XML::ToNewAttrText(position);
 	sb.Append(s);

@@ -9,7 +9,7 @@ namespace UI
 		class JavaHScrollBar : public GUIHScrollBar
 		{
 		public:
-			JavaHScrollBar(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Double width);
+			JavaHScrollBar(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Double width);
 			virtual ~JavaHScrollBar();
 
 			virtual void InitScrollBar(UOSInt minVal, UOSInt maxVal, UOSInt currVal, UOSInt largeChg);

@@ -13,7 +13,7 @@ namespace Net
 		UInt8 *authBuff;
 		UOSInt authBuffSize;
 	public:
-		HTTPProxyClient(NotNullPtr<Net::SocketFactory> sockf, Bool noShutdown, UInt32 proxyIP, UInt16 proxyPort);
+		HTTPProxyClient(NN<Net::SocketFactory> sockf, Bool noShutdown, UInt32 proxyIP, UInt16 proxyPort);
 		virtual ~HTTPProxyClient();
 
 		virtual Bool Connect(Text::CStringNN url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders);

@@ -6,13 +6,13 @@
 
 void __stdcall SSWR::AVIRead::AVIRDHT22Form::OnReadClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDHT22Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDHT22Form>();
+	NN<SSWR::AVIRead::AVIRDHT22Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDHT22Form>();
 	me->ReadData();
 }
 
 void __stdcall SSWR::AVIRead::AVIRDHT22Form::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDHT22Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDHT22Form>();
+	NN<SSWR::AVIRead::AVIRDHT22Form> me = userObj.GetNN<SSWR::AVIRead::AVIRDHT22Form>();
 	if (me->chkAutoRead->IsChecked())
 	{
 		me->ReadData();
@@ -43,7 +43,7 @@ void SSWR::AVIRead::AVIRDHT22Form::ReadData()
 	}
 }
 
-SSWR::AVIRead::AVIRDHT22Form::AVIRDHT22Form(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::IOPin> pin) : UI::GUIForm(parent, 480, 160, ui)
+SSWR::AVIRead::AVIRDHT22Form::AVIRDHT22Form(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::IOPin> pin) : UI::GUIForm(parent, 480, 160, ui)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

@@ -29,7 +29,7 @@ Bool Data::Compress::LZWDecompressor::Decompress(Data::ByteArray destBuff, OutPa
 	return true;
 }
 
-Bool Data::Compress::LZWDecompressor::Decompress(NotNullPtr<IO::Stream> destStm, NotNullPtr<IO::StreamData> srcData)
+Bool Data::Compress::LZWDecompressor::Decompress(NN<IO::Stream> destStm, NN<IO::StreamData> srcData)
 {
 	IO::StreamDataStream *srcStm;
 	Data::ByteBuffer tmpBuff(65536);

@@ -10,15 +10,15 @@ namespace IO
 		class ASN1FileAnalyse : public IO::FileAnalyse::IFileAnalyse
 		{
 		private:
-			NotNullPtr<IO::StreamData> fd;
+			NN<IO::StreamData> fd;
 			Optional<Net::ASN1Names> names;
 		public:
-			ASN1FileAnalyse(NotNullPtr<IO::StreamData> fd, Optional<Net::ASN1Names> names);
+			ASN1FileAnalyse(NN<IO::StreamData> fd, Optional<Net::ASN1Names> names);
 			virtual ~ASN1FileAnalyse();
 
 			virtual Text::CStringNN GetFormatName();
 			virtual UOSInt GetFrameCount();
-			virtual Bool GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual Bool GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst);
 			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index);
 

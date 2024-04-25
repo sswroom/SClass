@@ -23,7 +23,7 @@ namespace Manage
 		} ExceptionAction;
 	private:
 
-		static NotNullPtr<Text::String> fileName;
+		static NN<Text::String> fileName;
 		static ExceptionAction exAction;
 
 		static Text::CString GetExceptionCodeName(UInt32 exCode);

@@ -10,16 +10,16 @@ namespace IO
 	class LogFileManager
 	{
 	private:
-		NotNullPtr<Text::String> logPath;
+		NN<Text::String> logPath;
 	public:
-		LogFileManager(NotNullPtr<Text::String> logPath);
+		LogFileManager(NN<Text::String> logPath);
 		~LogFileManager();
 
 		void QueryLogMonths(Data::ArrayList<UInt32> *months);
 		void QueryLogByMonth(Data::ArrayList<UInt32> *dates, UInt32 month);
 		IO::Stream *OpenLogFile(UInt32 date);
 
-		static void WriteLogText(NotNullPtr<IO::Stream> fs, Text::StyledTextWriter *writer);
+		static void WriteLogText(NN<IO::Stream> fs, Text::StyledTextWriter *writer);
 	};
 }
 #endif

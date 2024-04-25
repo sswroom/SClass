@@ -12,7 +12,7 @@ namespace UI
 			Bool hasTextColor;
 			UInt32 textColor;
 		public:
-			JavaLabel(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText);
+			JavaLabel(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText);
 			virtual ~JavaLabel();
 
 			virtual void SetText(Text::CStringNN text);

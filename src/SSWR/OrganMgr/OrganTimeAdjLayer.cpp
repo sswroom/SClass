@@ -4,7 +4,7 @@
 #include "Math/Geometry/Point.h"
 #include "SSWR/OrganMgr/OrganTimeAdjLayer.h"
 
-SSWR::OrganMgr::OrganTimeAdjLayer::OrganTimeAdjLayer(NotNullPtr<Map::GPSTrack> gpsTrk, NN<Data::ArrayListNN<UserFileInfo>> userFileList) : Map::MapDrawLayer(CSTR("ImageLayer"), 0, CSTR_NULL, Math::CoordinateSystemManager::CreateDefaultCsys())
+SSWR::OrganMgr::OrganTimeAdjLayer::OrganTimeAdjLayer(NN<Map::GPSTrack> gpsTrk, NN<Data::ArrayListNN<UserFileInfo>> userFileList) : Map::MapDrawLayer(CSTR("ImageLayer"), 0, CSTR_NULL, Math::CoordinateSystemManager::CreateDefaultCsys())
 {
 	this->gpsTrk = gpsTrk;
 	this->userFileList = userFileList;
@@ -19,7 +19,7 @@ Map::DrawLayerType SSWR::OrganMgr::OrganTimeAdjLayer::GetLayerType() const
 	return Map::DRAW_LAYER_POINT;
 }
 
-UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, Map::NameArray **nameArr)
+UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, Map::NameArray **nameArr)
 {
 	UOSInt i = 0;
 	UOSInt j = this->userFileList->GetCount();
@@ -31,12 +31,12 @@ UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetAllObjectIds(NotNullPtr<Data::Array
 	return j;
 }
 
-UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, Map::NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, Map::NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, Map::NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, Map::NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	UOSInt cnt = 0;
 	UOSInt i;
@@ -66,7 +66,7 @@ void SSWR::OrganMgr::OrganTimeAdjLayer::ReleaseNameArr(Map::NameArray *nameArr)
 {
 }
 
-Bool SSWR::OrganMgr::OrganTimeAdjLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, Map::NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool SSWR::OrganMgr::OrganTimeAdjLayer::GetString(NN<Text::StringBuilderUTF8> sb, Map::NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	return false;
 }
@@ -86,7 +86,7 @@ DB::DBUtil::ColType SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnType(UOSInt colI
 	return DB::DBUtil::CT_Unknown;
 }
 
-Bool SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool SSWR::OrganMgr::OrganTimeAdjLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	return false;
 }
@@ -117,7 +117,7 @@ Math::Geometry::Vector2D *SSWR::OrganMgr::OrganTimeAdjLayer::GetNewVectorById(Ma
 	if (!this->userFileList->GetItem((UOSInt)id).SetTo(ufile))
 		return 0;
 	Math::Geometry::Point *pt;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (ufile->locType != LocType::PhotoExif && ufile->locType != LocType::UserInput)
 	{
 		Math::Coord2DDbl pos;

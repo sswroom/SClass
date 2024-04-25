@@ -19,30 +19,30 @@ namespace SSWR
 			typedef struct
 			{
 				Math::RectArea<OSInt> area;
-				NotNullPtr<Text::String> result;
+				NN<Text::String> result;
 				Double confidence;
-				NotNullPtr<Media::StaticImage> resImg;
+				NN<Media::StaticImage> resImg;
 			} ResultInfo;
 			
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Media::OCREngine ocr;
-			NotNullPtr<Media::ColorManagerSess> colorSess;
+			NN<Media::ColorManagerSess> colorSess;
 			Data::ArrayListNN<ResultInfo> results;
 			Media::StaticImage *currImg;
 
-			NotNullPtr<UI::GUIPanel> pnlResult;
-			NotNullPtr<UI::GUIPictureBoxSimple> pbResult;
-			NotNullPtr<UI::GUIListView> lvText;
-			NotNullPtr<UI::GUIHSplitter> hspText;
-			NotNullPtr<UI::GUIPictureBoxDD> pbImg;
+			NN<UI::GUIPanel> pnlResult;
+			NN<UI::GUIPictureBoxSimple> pbResult;
+			NN<UI::GUIListView> lvText;
+			NN<UI::GUIHSplitter> hspText;
+			NN<UI::GUIPictureBoxDD> pbImg;
 
-			static void __stdcall OnFileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnTextSelChg(AnyType userObj);
-			static void __stdcall OnOCRResult(AnyType userObj, NotNullPtr<Text::String> txt, Double confidence, Math::RectArea<OSInt> boundary);
+			static void __stdcall OnOCRResult(AnyType userObj, NN<Text::String> txt, Double confidence, Math::RectArea<OSInt> boundary);
 			void ClearResults();
 		public:
-			AVIROCRForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIROCRForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIROCRForm();
 
 			virtual void OnMonitorChanged();

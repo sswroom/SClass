@@ -20,8 +20,8 @@
 
 UOSInt Net::Email::EmailMessage::GetHeaderIndex(const UTF8Char *name, UOSInt nameLen)
 {
-	NotNullPtr<Text::String> header;
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = this->headerList.Iterator();
+	NN<Text::String> header;
+	Data::ArrayIterator<NN<Text::String>> it = this->headerList.Iterator();
 	UOSInt i = 0;
 	while (it.HasNext())
 	{
@@ -55,7 +55,7 @@ Bool Net::Email::EmailMessage::SetHeader(const UTF8Char *name, UOSInt nameLen, c
 	return true;
 }
 
-Bool Net::Email::EmailMessage::AppendUTF8Header(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *val, UOSInt valLen)
+Bool Net::Email::EmailMessage::AppendUTF8Header(NN<Text::StringBuilderUTF8> sb, const UTF8Char *val, UOSInt valLen)
 {
 	Text::TextBinEnc::Base64Enc b64;
 	sb->AppendC(UTF8STRC("=?UTF-8?B?"));
@@ -64,7 +64,7 @@ Bool Net::Email::EmailMessage::AppendUTF8Header(NotNullPtr<Text::StringBuilderUT
 	return true;
 }
 
-void Net::Email::EmailMessage::GenMultipart(NotNullPtr<IO::Stream> stm, Text::CString boundary)
+void Net::Email::EmailMessage::GenMultipart(NN<IO::Stream> stm, Text::CString boundary)
 {
 	stm->Write(UTF8STRC("--"));
 	stm->Write(boundary.v, boundary.leng);
@@ -75,10 +75,10 @@ void Net::Email::EmailMessage::GenMultipart(NotNullPtr<IO::Stream> stm, Text::CS
 
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<Attachment> att;
+	NN<Attachment> att;
 	Text::CString mime;
 	UOSInt k;
-	Data::ArrayIterator<NotNullPtr<Attachment>> it = this->attachments.Iterator();
+	Data::ArrayIterator<NN<Attachment>> it = this->attachments.Iterator();
 	while (it.HasNext())
 	{
 		att = it.Next();
@@ -172,10 +172,10 @@ void Net::Email::EmailMessage::GenMultipart(NotNullPtr<IO::Stream> stm, Text::CS
 	stm->Write(UTF8STRC("--\r\n"));
 }
 
-void Net::Email::EmailMessage::WriteHeaders(NotNullPtr<IO::Stream> stm)
+void Net::Email::EmailMessage::WriteHeaders(NN<IO::Stream> stm)
 {
-	NotNullPtr<Text::String> header;
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = this->headerList.Iterator();
+	NN<Text::String> header;
+	Data::ArrayIterator<NN<Text::String>> it = this->headerList.Iterator();
 	while (it.HasNext())
 	{
 		header = it.Next();
@@ -184,7 +184,7 @@ void Net::Email::EmailMessage::WriteHeaders(NotNullPtr<IO::Stream> stm)
 	}
 }
 
-void Net::Email::EmailMessage::WriteContents(NotNullPtr<IO::Stream> stm)
+void Net::Email::EmailMessage::WriteContents(NN<IO::Stream> stm)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -229,7 +229,7 @@ UTF8Char *Net::Email::EmailMessage::GenBoundary(UTF8Char *sbuff, const UInt8 *da
 	return b64.EncodeBin(sbuff, sha1Val, 20);
 }
 
-void Net::Email::EmailMessage::WriteB64Data(NotNullPtr<IO::Stream> stm, const UInt8 *data, UOSInt dataSize)
+void Net::Email::EmailMessage::WriteB64Data(NN<IO::Stream> stm, const UInt8 *data, UOSInt dataSize)
 {
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::Normal, false);
 	UTF8Char sbuff[80];
@@ -251,7 +251,7 @@ void Net::Email::EmailMessage::WriteB64Data(NotNullPtr<IO::Stream> stm, const UI
 	stm->Write(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-void Net::Email::EmailMessage::AttachmentFree(NotNullPtr<Attachment> attachment)
+void Net::Email::EmailMessage::AttachmentFree(NN<Attachment> attachment)
 {
 	MemFree(attachment->content);
 	attachment->fileName->Release();
@@ -259,18 +259,18 @@ void Net::Email::EmailMessage::AttachmentFree(NotNullPtr<Attachment> attachment)
 	MemFreeNN(attachment);
 }
 
-void Net::Email::EmailMessage::EmailAddressFree(NotNullPtr<EmailAddress> addr)
+void Net::Email::EmailMessage::EmailAddressFree(NN<EmailAddress> addr)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (addr->name.SetTo(s))
 		s->Release();
 	addr->addr->Release();
 	MemFreeNN(addr);
 }
 
-NotNullPtr<Net::Email::EmailMessage::EmailAddress> Net::Email::EmailMessage::EmailAddressCreate(RecipientType type, Text::CString name, Text::CStringNN addr)
+NN<Net::Email::EmailMessage::EmailAddress> Net::Email::EmailMessage::EmailAddressCreate(RecipientType type, Text::CString name, Text::CStringNN addr)
 {
-	NotNullPtr<EmailAddress> ret = MemAllocNN(EmailAddress);
+	NN<EmailAddress> ret = MemAllocNN(EmailAddress);
 	ret->type = type;
 	if (name.leng > 0)
 		ret->name = Text::String::New(name);
@@ -332,7 +332,7 @@ Bool Net::Email::EmailMessage::SetContent(Text::CStringNN content, Text::CString
 	return true;
 }
 
-Bool Net::Email::EmailMessage::SetSentDate(NotNullPtr<Data::DateTime> dt)
+Bool Net::Email::EmailMessage::SetSentDate(NN<Data::DateTime> dt)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -401,7 +401,7 @@ Bool Net::Email::EmailMessage::AddTo(Text::CString name, Text::CStringNN addr)
 {
 	UOSInt i = this->GetHeaderIndex(UTF8STRC("To"));
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (i != INVALID_INDEX && this->headerList.GetItem(i).SetTo(s))
 	{
 		sb.Append(s->ToCString().Substring(4));
@@ -459,7 +459,7 @@ Bool Net::Email::EmailMessage::AddCc(Text::CString name, Text::CStringNN addr)
 {
 	UOSInt i = this->GetHeaderIndex(UTF8STRC("Cc"));
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (i != INVALID_INDEX && this->headerList.GetItem(i).SetTo(s))
 	{
 		sb.AppendC(s->v + 4, s->leng - 4);
@@ -507,7 +507,7 @@ Optional<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAtta
 	}
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<Attachment> attachment = MemAllocNN(Attachment);
+	NN<Attachment> attachment = MemAllocNN(Attachment);
 	attachment->contentLen = (UOSInt)len;
 	attachment->content = MemAlloc(UInt8, attachment->contentLen);
 	if (fs.Read(Data::ByteArray(attachment->content, attachment->contentLen)) != attachment->contentLen)
@@ -527,11 +527,11 @@ Optional<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAtta
 	return attachment;
 }
 
-NotNullPtr<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAttachment(const UInt8 *content, UOSInt contentLen, Text::CString fileName)
+NN<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAttachment(const UInt8 *content, UOSInt contentLen, Text::CString fileName)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	NotNullPtr<Attachment> attachment = MemAllocNN(Attachment);
+	NN<Attachment> attachment = MemAllocNN(Attachment);
 	attachment->contentLen = contentLen;
 	attachment->content = MemAlloc(UInt8, attachment->contentLen);
 	MemCopyNO(attachment->content, content, contentLen);
@@ -569,20 +569,20 @@ Optional<Net::Email::EmailMessage::EmailAddress> Net::Email::EmailMessage::GetFr
 	return this->fromAddr;
 }
 
-NotNullPtr<const Data::ArrayListNN<Net::Email::EmailMessage::EmailAddress>> Net::Email::EmailMessage::GetRecpList()
+NN<const Data::ArrayListNN<Net::Email::EmailMessage::EmailAddress>> Net::Email::EmailMessage::GetRecpList()
 {
 	return this->recpList;
 }
 
-Bool Net::Email::EmailMessage::WriteToStream(NotNullPtr<IO::Stream> stm)
+Bool Net::Email::EmailMessage::WriteToStream(NN<IO::Stream> stm)
 {
 	if (!this->CompletedMessage())
 	{
 		return false;
 	}
 	this->WriteHeaders(stm);
-	NotNullPtr<Net::SSLEngine> nnssl;
-	NotNullPtr<Crypto::Cert::X509Key> signKey;
+	NN<Net::SSLEngine> nnssl;
+	NN<Crypto::Cert::X509Key> signKey;
 	if (this->signCert && signKey.Set(this->signKey) && this->ssl.SetTo(nnssl))
 	{
 		IO::MemoryStream mstm;
@@ -747,7 +747,7 @@ Bool Net::Email::EmailMessage::WriteToStream(NotNullPtr<IO::Stream> stm)
 	return true;
 }
 
-Bool Net::Email::EmailMessage::GenerateMessageID(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString mailFrom)
+Bool Net::Email::EmailMessage::GenerateMessageID(NN<Text::StringBuilderUTF8> sb, Text::CString mailFrom)
 {
 	sb->AppendHex64((UInt64)Data::DateTimeUtil::GetCurrTimeMillis());
 	sb->AppendUTF8Char('.');

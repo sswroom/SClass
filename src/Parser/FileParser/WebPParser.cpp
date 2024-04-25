@@ -29,7 +29,7 @@ Int32 Parser::FileParser::WebPParser::GetName()
 	return *(Int32*)"WEBP";
 }
 
-void Parser::FileParser::WebPParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::WebPParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
@@ -42,7 +42,7 @@ IO::ParserType Parser::FileParser::WebPParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::WebPParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::WebPParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt64 fileLen = fd->GetDataSize();
 	if (fileLen < 32 || fileLen > 104857600)
@@ -85,7 +85,7 @@ IO::ParsedObject *Parser::FileParser::WebPParser::ParseFileHdr(NotNullPtr<IO::St
 	if (flags & ICCP_FLAG)
 	{
  		WebPDemuxGetChunk(demux, "ICCP", 1, &chunk_iter);
-		NotNullPtr<Media::ICCProfile> profile;
+		NN<Media::ICCProfile> profile;
 		if (Media::ICCProfile::Parse(Data::ByteArrayR(chunk_iter.chunk.bytes, (UOSInt)chunk_iter.chunk.size)).SetTo(profile))
 		{
 			profile->SetToColorProfile(simg->info.color);
@@ -98,7 +98,7 @@ IO::ParsedObject *Parser::FileParser::WebPParser::ParseFileHdr(NotNullPtr<IO::St
 		WebPDemuxGetChunk(demux, "EXIF", 1, &chunk_iter);
 		const UInt8 *buff = chunk_iter.chunk.bytes;
 		Bool succ = true;
-		NotNullPtr<Data::ByteOrder> bo;
+		NN<Data::ByteOrder> bo;
 		if (*(Int16*)&buff[0] == *(Int16*)"II")
 		{
 			NEW_CLASSNN(bo, Data::ByteOrderLSB());
@@ -138,7 +138,7 @@ IO::ParsedObject *Parser::FileParser::WebPParser::ParseFileHdr(NotNullPtr<IO::St
 	}
 	WebPDemuxDelete(demux);
 	
-	NotNullPtr<Media::EXIFData> exif;
+	NN<Media::EXIFData> exif;
 	if (simg->exif.SetTo(exif))
 	{
 		Double hdpi = exif->GetHDPI();

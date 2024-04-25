@@ -4,7 +4,7 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-Crypto::Hash::HashCalc::HashCalc(NotNullPtr<Crypto::Hash::IHash> hash)
+Crypto::Hash::HashCalc::HashCalc(NN<Crypto::Hash::IHash> hash)
 {
 	this->hash = hash;
 }

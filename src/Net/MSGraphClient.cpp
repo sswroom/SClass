@@ -12,7 +12,7 @@
 #include <stdio.h>
 #endif
 
-Net::MSGraphAccessToken::MSGraphAccessToken(NotNullPtr<Text::String> type, Int32 expiresIn, Int32 extExpiresIn, NotNullPtr<Text::String> accessToken)
+Net::MSGraphAccessToken::MSGraphAccessToken(NN<Text::String> type, Int32 expiresIn, Int32 extExpiresIn, NN<Text::String> accessToken)
 {
 	Data::Timestamp t = Data::Timestamp::Now();
 	this->type = type->Clone();
@@ -27,7 +27,7 @@ Net::MSGraphAccessToken::~MSGraphAccessToken()
 	this->accessToken->Release();
 }
 
-void Net::MSGraphAccessToken::InitClient(NotNullPtr<Net::HTTPClient> cli)
+void Net::MSGraphAccessToken::InitClient(NN<Net::HTTPClient> cli)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.Append(this->type);
@@ -85,7 +85,7 @@ Text::CStringNN Net::MSGraphEventMessageRequest::knownTypes[] = {
 	CSTR("webLink")
 };
 
-Net::MSGraphEventMessageRequest::MSGraphEventMessageRequest(NotNullPtr<Text::JSONObject> obj)
+Net::MSGraphEventMessageRequest::MSGraphEventMessageRequest(NN<Text::JSONObject> obj)
 {
 	this->obj = obj;
 	this->obj->BeginUse();
@@ -96,13 +96,13 @@ Net::MSGraphEventMessageRequest::~MSGraphEventMessageRequest()
 	this->obj->EndUse();
 }
 
-Optional<Net::MSGraphEventMessageRequest> Net::MSGraphEventMessageRequest::Parse(NotNullPtr<Text::JSONObject> obj)
+Optional<Net::MSGraphEventMessageRequest> Net::MSGraphEventMessageRequest::Parse(NN<Text::JSONObject> obj)
 {
-	NotNullPtr<Text::String> type;
+	NN<Text::String> type;
 	if (obj->GetValueString(CSTR("@odata.type")).SetTo(type) && type->Equals(CSTR("#microsoft.graph.eventMessageRequest")))
 	{
 		MSGraphClient::HasUnknownTypes(obj, IsKnownType, CSTR("MSGraphEventMessageRequest"));
-		NotNullPtr<MSGraphEventMessageRequest> msg;
+		NN<MSGraphEventMessageRequest> msg;
 		NEW_CLASSNN(msg, MSGraphEventMessageRequest(obj));
 		return msg;
 	}
@@ -155,8 +155,8 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenParse(Net::WebS
 #endif
 		return 0;
 	}
-	NotNullPtr<Text::String> t;
-	NotNullPtr<Text::String> at;
+	NN<Text::String> t;
+	NN<Text::String> at;
 	Int32 expiresIn;
 	Int32 extExpiresIn;
 	if (result->GetValueString(CSTR("token_type")).SetTo(t) &&
@@ -164,7 +164,7 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenParse(Net::WebS
 		result->GetValueAsInt32(CSTR("expires_in"), expiresIn) &&
 		result->GetValueAsInt32(CSTR("ext_expires_in"), extExpiresIn))
 	{
-		NotNullPtr<MSGraphAccessToken> token;
+		NN<MSGraphAccessToken> token;
 		NEW_CLASSNN(token, MSGraphAccessToken(t, expiresIn, extExpiresIn, at));
 		result->EndUse();
 		if (this->log.SetTo(log))
@@ -196,9 +196,9 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenParse(Net::WebS
 	}
 }
 
-template<class T> Bool Net::MSGraphClient::GetList(NotNullPtr<MSGraphAccessToken> token, Text::CStringNN url, Text::CStringNN funcName, NotNullPtr<Data::ArrayListNN<T>> dataList)
+template<class T> Bool Net::MSGraphClient::GetList(NN<MSGraphAccessToken> token, Text::CStringNN url, Text::CStringNN funcName, NN<Data::ArrayListNN<T>> dataList)
 {
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, false);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, false);
 	token->InitClient(cli);
 	Net::WebStatus::StatusCode status = cli->GetRespStatus();
 	Text::StringBuilderUTF8 sb;
@@ -232,8 +232,8 @@ template<class T> Bool Net::MSGraphClient::GetList(NotNullPtr<MSGraphAccessToken
 #endif
 			return false;
 		}
-		NotNullPtr<Text::JSONObject> dataObj;
-		NotNullPtr<T> data;
+		NN<Text::JSONObject> dataObj;
+		NN<T> data;
 		UOSInt i = 0;
 		UOSInt j = arr->GetArrayLength();
 		while (i < j)
@@ -267,7 +267,7 @@ template<class T> Bool Net::MSGraphClient::GetList(NotNullPtr<MSGraphAccessToken
 	return false;
 }
 
-Net::MSGraphClient::MSGraphClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl)
+Net::MSGraphClient::MSGraphClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -304,7 +304,7 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenGet(Text::CStri
 		sbLog.Append(sb);
 		log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Raw);
 	}
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, false);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, false);
 	cli->FormBegin();
 	cli->FormAdd(CSTR("client_id"), clientId);
 	cli->FormAdd(CSTR("client_secret"), clientSecret);
@@ -342,7 +342,7 @@ Optional<Net::MSGraphAccessToken> Net::MSGraphClient::AccessTokenGet(Text::CStri
 	return 0;
 }
 
-Optional<Net::MSGraphEntity> Net::MSGraphClient::EntityGet(NotNullPtr<MSGraphAccessToken> token, Text::CString userName)
+Optional<Net::MSGraphEntity> Net::MSGraphClient::EntityGet(NN<MSGraphAccessToken> token, Text::CString userName)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -358,7 +358,7 @@ Optional<Net::MSGraphEntity> Net::MSGraphClient::EntityGet(NotNullPtr<MSGraphAcc
 	{
 		sb.Append(CSTR("me"));
 	}
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	token->InitClient(cli);
 	Net::WebStatus::StatusCode status = cli->GetRespStatus();
 	sb.ClearStr();
@@ -368,10 +368,10 @@ Optional<Net::MSGraphEntity> Net::MSGraphClient::EntityGet(NotNullPtr<MSGraphAcc
 #if defined(VERBOSE)
 		printf("MSGraphClient: EntityGetMe %d, %s\r\n", (Int32)status, sb.ToString());
 #endif
-		NotNullPtr<Text::JSONBase> json;
+		NN<Text::JSONBase> json;
 		if (json.Set(Text::JSONBase::ParseJSONStr(sb.ToCString())))
 		{
-			NotNullPtr<MSGraphEntity> entity;
+			NN<MSGraphEntity> entity;
 			NEW_CLASSNN(entity, MSGraphEntity(json));
 			json->EndUse();
 			if (entity->IsValid())
@@ -394,7 +394,7 @@ Optional<Net::MSGraphEntity> Net::MSGraphClient::EntityGet(NotNullPtr<MSGraphAcc
 	return 0;
 }
 
-Bool Net::MSGraphClient::MailMessagesGet(NotNullPtr<MSGraphAccessToken> token, Text::CString userName, UOSInt top, UOSInt skip, NotNullPtr<Data::ArrayListNN<MSGraphEventMessageRequest>> msgList, OutParam<Bool> hasNext)
+Bool Net::MSGraphClient::MailMessagesGet(NN<MSGraphAccessToken> token, Text::CString userName, UOSInt top, UOSInt skip, NN<Data::ArrayListNN<MSGraphEventMessageRequest>> msgList, OutParam<Bool> hasNext)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -438,7 +438,7 @@ Bool Net::MSGraphClient::MailMessagesGet(NotNullPtr<MSGraphAccessToken> token, T
 		sbLog.Append(sb);
 		log->LogMessage(sbLog.ToCString(), IO::LogHandler::LogLevel::Action);
 	}
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	token->InitClient(cli);
 	Net::WebStatus::StatusCode status = cli->GetRespStatus();
 	sb.ClearStr();
@@ -488,8 +488,8 @@ Bool Net::MSGraphClient::MailMessagesGet(NotNullPtr<MSGraphAccessToken> token, T
 #endif
 			return false;
 		}
-		NotNullPtr<Text::JSONObject> msgObj;
-		NotNullPtr<MSGraphEventMessageRequest> msg;
+		NN<Text::JSONObject> msgObj;
+		NN<MSGraphEventMessageRequest> msg;
 		UOSInt i = 0;
 		UOSInt j = arr->GetArrayLength();
 		while (i < j)
@@ -530,7 +530,7 @@ Bool Net::MSGraphClient::MailMessagesGet(NotNullPtr<MSGraphAccessToken> token, T
 	return 0;
 }
 
-Bool Net::MSGraphClient::MailFoldersGet(NotNullPtr<MSGraphAccessToken> token, Text::CString userName, Bool includeHidden, NotNullPtr<Data::ArrayListNN<MSGraphMailFolder>> folderList)
+Bool Net::MSGraphClient::MailFoldersGet(NN<MSGraphAccessToken> token, Text::CString userName, Bool includeHidden, NN<Data::ArrayListNN<MSGraphMailFolder>> folderList)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -554,13 +554,13 @@ Bool Net::MSGraphClient::MailFoldersGet(NotNullPtr<MSGraphAccessToken> token, Te
 	return this->GetList(token, sb.ToCString(), CSTR("MailFoldersGet"), folderList);
 }
 
-Bool Net::MSGraphClient::HasUnknownTypes(NotNullPtr<Text::JSONObject> obj, IsKnownTypeFunc isKnownType, Text::CStringNN typeName)
+Bool Net::MSGraphClient::HasUnknownTypes(NN<Text::JSONObject> obj, IsKnownTypeFunc isKnownType, Text::CStringNN typeName)
 {
 	Bool ret = false;
 	Data::ArrayListNN<Text::String> names;
 	obj->GetObjectNames(names);
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = names.Iterator();
-	NotNullPtr<Text::String> name;
+	Data::ArrayIterator<NN<Text::String>> it = names.Iterator();
+	NN<Text::String> name;
 	while (it.HasNext())
 	{
 		name = it.Next();

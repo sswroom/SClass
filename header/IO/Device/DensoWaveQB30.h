@@ -14,7 +14,7 @@ namespace IO
 		class DensoWaveQB30 : public IO::CodeScanner
 		{
 		private:
-			NotNullPtr<IO::Stream> stm;
+			NN<IO::Stream> stm;
 			ModeType currMode;
 			UInt32 scanDelay;
 
@@ -27,7 +27,7 @@ namespace IO
 			Sync::Thread thread;
 			Sync::Event recvEvt;
 
-			static void __stdcall RecvThread(NotNullPtr<Sync::Thread> userObj);
+			static void __stdcall RecvThread(NN<Sync::Thread> userObj);
 			Bool ScanModeStart();
 			Bool ScanModeEnd();
 			Bool SettingModeStart();
@@ -38,7 +38,7 @@ namespace IO
 			Int32 ReadCommand(const Char *cmdStr, UOSInt cmdLen);
 			Bool WriteCommand(const Char *cmdStr, UOSInt cmdLen);
 		public:
-			DensoWaveQB30(NotNullPtr<IO::Stream> stm);
+			DensoWaveQB30(NN<IO::Stream> stm);
 			virtual ~DensoWaveQB30();
 
 			virtual void SetCurrMode(ModeType currMode);

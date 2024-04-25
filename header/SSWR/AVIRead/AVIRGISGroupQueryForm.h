@@ -14,19 +14,19 @@ namespace SSWR
 		class AVIRGISGroupQueryForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUITextBox> txtLayer;
-			NotNullPtr<UI::GUIListView> lvInfo;
+			NN<UI::GUITextBox> txtLayer;
+			NN<UI::GUIListView> lvInfo;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IMapNavigator *navi;
-			NotNullPtr<Map::MapEnv> env;
+			NN<Map::MapEnv> env;
 			Optional<Map::MapEnv::GroupItem> group;
 			Math::Coord2D<OSInt> downPos;
 
 			static Bool __stdcall OnMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static Bool __stdcall OnMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 		public:
-			AVIRGISGroupQueryForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi, NotNullPtr<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group);
+			AVIRGISGroupQueryForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi, NN<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group);
 			virtual ~AVIRGISGroupQueryForm();
 
 			virtual void OnMonitorChanged();

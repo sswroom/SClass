@@ -12,7 +12,7 @@ DB::SQLBuilder::SQLBuilder(DB::SQLType sqlType, Bool axisAware, Int32 tzQhr)
 	this->axisAware = axisAware;
 }
 
-DB::SQLBuilder::SQLBuilder(NotNullPtr<const DB::ReadingDBTool> db)
+DB::SQLBuilder::SQLBuilder(NN<const DB::ReadingDBTool> db)
 {
 	this->sqlType = db->GetSQLType();
 	this->tzQhr = db->GetTzQhr();
@@ -37,6 +37,19 @@ void DB::SQLBuilder::AppendInt32(Int32 val)
 {
 	this->sb.AllocLeng(DB::DBUtil::SDBInt32Leng(val, this->sqlType));
 	this->sb.SetEndPtr(DB::DBUtil::SDBInt32(this->sb.GetEndPtr(), val, this->sqlType));
+}
+
+void DB::SQLBuilder::AppendNInt32(NInt32 val)
+{
+	if (val.IsNull())
+	{
+		this->sb.Append(CSTR("null"));
+	}
+	else
+	{
+		this->sb.AllocLeng(DB::DBUtil::SDBInt32Leng(val.IntVal(), this->sqlType));
+		this->sb.SetEndPtr(DB::DBUtil::SDBInt32(this->sb.GetEndPtr(), val.IntVal(), this->sqlType));
+	}
 }
 
 void DB::SQLBuilder::AppendInt64(Int64 val)
@@ -69,7 +82,7 @@ void DB::SQLBuilder::AppendStr(Optional<Text::String> val)
 	this->sb.SetEndPtr(DB::DBUtil::SDBStrUTF8(this->sb.GetEndPtr(), OPTSTR_CSTR(val).v, this->sqlType));
 }
 
-void DB::SQLBuilder::AppendStr(NotNullPtr<Text::String> val)
+void DB::SQLBuilder::AppendStr(NN<Text::String> val)
 {
 	this->sb.AllocLeng(DB::DBUtil::SDBStrUTF8Leng(val->v, this->sqlType));
 	this->sb.SetEndPtr(DB::DBUtil::SDBStrUTF8(this->sb.GetEndPtr(), val->v, this->sqlType));
@@ -150,9 +163,9 @@ void DB::SQLBuilder::AppendBinary(const UInt8 *buff, UOSInt buffSize)
 	this->sb.SetEndPtr(DB::DBUtil::SDBBin(this->sb.GetEndPtr(), buff, buffSize, this->sqlType));
 }
 
-void DB::SQLBuilder::AppendTableName(NotNullPtr<DB::TableDef> table)
+void DB::SQLBuilder::AppendTableName(NN<DB::TableDef> table)
 {
-	NotNullPtr<Text::String> name;
+	NN<Text::String> name;
 	if (table->GetDatabaseName().SetTo(name))
 	{
 		this->AppendCol(name->v);
@@ -214,7 +227,7 @@ Text::CStringNN DB::SQLBuilder::ToCString() const
 	return this->sb.ToCString();
 }
 
-NotNullPtr<Text::String> DB::SQLBuilder::ToNewString() const
+NN<Text::String> DB::SQLBuilder::ToNewString() const
 {
 	return Text::String::New(this->sb.ToCString());
 }

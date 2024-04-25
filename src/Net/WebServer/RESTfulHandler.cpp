@@ -9,16 +9,16 @@
 #include "Net/WebServer/RESTfulHandler.h"
 #include "Text/JSONBuilder.h"
 
-void Net::WebServer::RESTfulHandler::BuildJSON(NotNullPtr<Text::JSONBuilder> json, NotNullPtr<DB::DBRow> row)
+void Net::WebServer::RESTfulHandler::BuildJSON(NN<Text::JSONBuilder> json, NN<DB::DBRow> row)
 {
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<DB::ColDef> col;
+	NN<DB::ColDef> col;
 	Data::Timestamp ts;
 	UTF8Char sbuff[64];
 	DB::DBRow::DataType dtype;
-	NotNullPtr<Math::Geometry::Vector2D> vec;
-	NotNullPtr<DB::TableDef> table = row->GetTableDef();
-	Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = table->ColIterator();
+	NN<Math::Geometry::Vector2D> vec;
+	NN<DB::TableDef> table = row->GetTableDef();
+	Data::ArrayIterator<NN<DB::ColDef>> it = table->ColIterator();
 	while (it.HasNext())
 	{
 		col = it.Next();
@@ -62,7 +62,7 @@ void Net::WebServer::RESTfulHandler::BuildJSON(NotNullPtr<Text::JSONBuilder> jso
 	}
 }
 
-void Net::WebServer::RESTfulHandler::AppendVector(NotNullPtr<Text::JSONBuilder> json, Text::CStringNN name, NotNullPtr<Math::Geometry::Vector2D> vec)
+void Net::WebServer::RESTfulHandler::AppendVector(NN<Text::JSONBuilder> json, Text::CStringNN name, NN<Math::Geometry::Vector2D> vec)
 {
 	Math::GeoJSONWriter writer;
 	json->ObjectBeginObject(name);
@@ -83,7 +83,7 @@ Net::WebServer::RESTfulHandler::~RESTfulHandler()
 {
 }
 
-Bool Net::WebServer::RESTfulHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool Net::WebServer::RESTfulHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -98,8 +98,8 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NotNullPtr<Net::WebServer::I
 		UOSInt i = subReq.IndexOf('/');
 		if (i != INVALID_INDEX)
 		{
-			NotNullPtr<DB::DBRow> row;
-			NotNullPtr<Text::String> tableName;
+			NN<DB::DBRow> row;
+			NN<Text::String> tableName;
 			Int64 ikey;
 			if (!Text::StrToInt64(&subReq.v[1 + i], ikey))
 			{
@@ -155,12 +155,12 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NotNullPtr<Net::WebServer::I
 				DB::PageRequest *page = ParsePageReq(req);
 				Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 				Data::ArrayListNN<DB::DBRow> rows;
-				NotNullPtr<DB::DBRow> row;
+				NN<DB::DBRow> row;
 				Int64 ikey;
 				this->dbCache->QueryTableData(rows, subReq, page);
 				json.ObjectBeginObject(CSTR("_embedded"));
 				json.ObjectBeginArray(subReq);
-				Data::ArrayIterator<NotNullPtr<DB::DBRow>> it = rows.Iterator();
+				Data::ArrayIterator<NN<DB::DBRow>> it = rows.Iterator();
 				while (it.HasNext())
 				{
 					row = it.Next();
@@ -280,7 +280,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NotNullPtr<Net::WebServer::I
 	return false;
 }
 
-DB::PageRequest *Net::WebServer::RESTfulHandler::ParsePageReq(NotNullPtr<Net::WebServer::IWebRequest> req)
+DB::PageRequest *Net::WebServer::RESTfulHandler::ParsePageReq(NN<Net::WebServer::IWebRequest> req)
 {
 	UInt32 pageNum = 0;
 	UInt32 pageSize = 20;
@@ -292,7 +292,7 @@ DB::PageRequest *Net::WebServer::RESTfulHandler::ParsePageReq(NotNullPtr<Net::We
 	}
 	DB::PageRequest *page;
 	NEW_CLASS(page, DB::PageRequest(pageNum, pageSize));
-	NotNullPtr<Text::String> sort;
+	NN<Text::String> sort;
 	if (req->GetQueryValue(CSTR("sort")).SetTo(sort))
 	{
 		Text::StringBuilderUTF8 sb;

@@ -9,19 +9,19 @@ namespace Net
 	class SSHForwarder
 	{
 	private:
-		NotNullPtr<Net::SSHConn> conn;
-		NotNullPtr<Net::TCPServer> svr;
+		NN<Net::SSHConn> conn;
+		NN<Net::TCPServer> svr;
 		Net::TCPClientMgr cliMgr;
 		IO::LogTool log;
-		NotNullPtr<Text::String> remoteHost;
+		NN<Text::String> remoteHost;
 		UInt16 remotePort;
 
-		static void __stdcall OnClientEvent(NotNullPtr<TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
-		static void __stdcall OnClientData(NotNullPtr<TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
-		static void __stdcall OnClientTimeout(NotNullPtr<TCPClient> cli, AnyType userObj, AnyType cliData);
+		static void __stdcall OnClientEvent(NN<TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
+		static void __stdcall OnClientData(NN<TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
+		static void __stdcall OnClientTimeout(NN<TCPClient> cli, AnyType userObj, AnyType cliData);
 		static void __stdcall OnClientConn(Socket *s, AnyType userObj);
 	public:
-		SSHForwarder(NotNullPtr<Net::SSHConn> conn, UInt16 localPort, Text::CStringNN remoteHost, UInt16 remotePort);
+		SSHForwarder(NN<Net::SSHConn> conn, UInt16 localPort, Text::CStringNN remoteHost, UInt16 remotePort);
 		~SSHForwarder();
 		
 		Bool IsError() const;

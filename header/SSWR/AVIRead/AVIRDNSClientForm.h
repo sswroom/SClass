@@ -20,40 +20,40 @@ namespace SSWR
 		class AVIRDNSClientForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUIPanel> pnlRequest;
-			NotNullPtr<UI::GUILabel> lblServer;
-			NotNullPtr<UI::GUITextBox> txtServer;
-			NotNullPtr<UI::GUILabel> lblRequest;
-			NotNullPtr<UI::GUITextBox> txtRequest;
-			NotNullPtr<UI::GUIComboBox> cboRequest;
-//			NotNullPtr<UI::GUIRadioButton> radRequestNormal;
-//			NotNullPtr<UI::GUIRadioButton> radRequestMX;
-			NotNullPtr<UI::GUIButton> btnRequest;
-			NotNullPtr<UI::GUILabel> lblRequestTime;
-			NotNullPtr<UI::GUITextBox> txtRequestTime;
-			NotNullPtr<UI::GUIListBox> lbAnswer;
-			NotNullPtr<UI::GUIHSplitter> hspAnswer;
-			NotNullPtr<UI::GUIPanel> pnlAnswer;
-			NotNullPtr<UI::GUILabel> lblAnsName;
-			NotNullPtr<UI::GUITextBox> txtAnsName;
-			NotNullPtr<UI::GUILabel> lblAnsType;
-			NotNullPtr<UI::GUITextBox> txtAnsType;
-			NotNullPtr<UI::GUILabel> lblAnsClass;
-			NotNullPtr<UI::GUITextBox> txtAnsClass;
-			NotNullPtr<UI::GUILabel> lblAnsTTL;
-			NotNullPtr<UI::GUITextBox> txtAnsTTL;
-			NotNullPtr<UI::GUILabel> lblAnsRD;
-			NotNullPtr<UI::GUITextBox> txtAnsRD;
+			NN<UI::GUIPanel> pnlRequest;
+			NN<UI::GUILabel> lblServer;
+			NN<UI::GUITextBox> txtServer;
+			NN<UI::GUILabel> lblRequest;
+			NN<UI::GUITextBox> txtRequest;
+			NN<UI::GUIComboBox> cboRequest;
+//			NN<UI::GUIRadioButton> radRequestNormal;
+//			NN<UI::GUIRadioButton> radRequestMX;
+			NN<UI::GUIButton> btnRequest;
+			NN<UI::GUILabel> lblRequestTime;
+			NN<UI::GUITextBox> txtRequestTime;
+			NN<UI::GUIListBox> lbAnswer;
+			NN<UI::GUIHSplitter> hspAnswer;
+			NN<UI::GUIPanel> pnlAnswer;
+			NN<UI::GUILabel> lblAnsName;
+			NN<UI::GUITextBox> txtAnsName;
+			NN<UI::GUILabel> lblAnsType;
+			NN<UI::GUITextBox> txtAnsType;
+			NN<UI::GUILabel> lblAnsClass;
+			NN<UI::GUITextBox> txtAnsClass;
+			NN<UI::GUILabel> lblAnsTTL;
+			NN<UI::GUITextBox> txtAnsTTL;
+			NN<UI::GUILabel> lblAnsRD;
+			NN<UI::GUITextBox> txtAnsRD;
 
 			Data::ArrayListNN<Net::DNSClient::RequestAnswer> ansList;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 
 			static void __stdcall OnRequestClicked(AnyType userObj);
 			static void __stdcall OnAnswerSelChg(AnyType userObj);
 		public:
-			AVIRDNSClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRDNSClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRDNSClientForm();
 
 			virtual void OnMonitorChanged();

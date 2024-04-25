@@ -10,9 +10,9 @@
 #include "Sync/SimpleThread.h"
 #include "Sync/ThreadUtil.h"
 
-void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFileHashForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileHashForm>();
+	NN<SSWR::AVIRead::AVIRFileHashForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileHashForm>();
 	UOSInt i;
 	UOSInt nFiles = files.GetCount();
 	i = 0;
@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnFileDrop(AnyType userObj, Data
 
 void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFileHashForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileHashForm>();
+	NN<SSWR::AVIRead::AVIRFileHashForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileHashForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	me->UpdateUI();
@@ -71,13 +71,13 @@ void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnTimerTick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnCheckTypeChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFileHashForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileHashForm>();
+	NN<SSWR::AVIRead::AVIRFileHashForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileHashForm>();
 	me->currHashType = (Crypto::Hash::HashType)me->cboCheckType->GetSelectedItem().GetOSInt();
 }
 
 UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFileHashForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileHashForm>();
+	NN<SSWR::AVIRead::AVIRFileHashForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileHashForm>();
 	Bool found;
 	FileStatus *status = 0;
 	UTF8Char sbuff[512];
@@ -132,7 +132,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(AnyType userObj)
 			}
 			if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::Unknown)
 			{
-				NotNullPtr<IO::FileCheck> fchk;
+				NN<IO::FileCheck> fchk;
 				if (fchk.Set(IO::FileCheck::CreateCheck(status->fileName->ToCString(), chkType, me, false)))
 				{
 					if (chkType == Crypto::Hash::HashType::CRC32)
@@ -261,7 +261,7 @@ void SSWR::AVIRead::AVIRFileHashForm::UpdateUI()
 	}
 }
 
-SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("File Hash"));

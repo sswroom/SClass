@@ -12,9 +12,9 @@ Math::Geometry::PointZ::~PointZ()
 {
 }
 
-NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::PointZ::Clone() const
+NN<Math::Geometry::Vector2D> Math::Geometry::PointZ::Clone() const
 {
-	NotNullPtr<Math::Geometry::PointZ> pt;
+	NN<Math::Geometry::PointZ> pt;
 	NEW_CLASSNN(pt, Math::Geometry::PointZ(this->srid, this->pos.x, this->pos.y, this->z));
 	return pt;
 }
@@ -41,7 +41,7 @@ Bool Math::Geometry::PointZ::HasZ() const
 	return true;
 }
 
-void Math::Geometry::PointZ::Convert(NotNullPtr<Math::CoordinateConverter> converter)
+void Math::Geometry::PointZ::Convert(NN<Math::CoordinateConverter> converter)
 {
 	Math::Vector3 tmpPos = converter->Convert3D(Math::Vector3(this->pos, this->z));
 	this->pos = tmpPos.GetXY();
@@ -49,7 +49,7 @@ void Math::Geometry::PointZ::Convert(NotNullPtr<Math::CoordinateConverter> conve
 	this->srid = converter->GetOutputSRID();
 }
 
-Bool Math::Geometry::PointZ::Equals(NotNullPtr<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
+Bool Math::Geometry::PointZ::Equals(NN<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
 {
 	if (vec->GetSRID() != this->srid)
 	{

@@ -2,7 +2,7 @@
 #include "Media/Resizer/LanczosResizer8_C8.h"
 #include "UI/GUIPictureBox.h"
 
-UI::GUIPictureBox::GUIPictureBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize) : UI::GUIControl(ui, parent)
+UI::GUIPictureBox::GUIPictureBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder, Bool allowResize) : UI::GUIControl(ui, parent)
 {
 	this->hasBorder = hasBorder;
 	this->allowResize = allowResize;

@@ -14,7 +14,7 @@ UOSInt PNGExporter_EstimateSize(const UInt8 *data, UOSInt dataSize, UInt8 *tmpBu
 	return Data::Compress::Inflate::Compress(data, dataSize, tmpBuff, false, Data::Compress::Inflate::CompressionLevel::BestSpeed);	
 }
 
-UOSInt PNGExporter_WritePal(NotNullPtr<IO::Stream> stm, Media::StaticImage *img, Crypto::Hash::CRC32R *crc)
+UOSInt PNGExporter_WritePal(NN<IO::Stream> stm, Media::StaticImage *img, Crypto::Hash::CRC32R *crc)
 {
 	UInt8 *palPtr = img->pal;
 	if (palPtr == 0)
@@ -1372,11 +1372,11 @@ Int32 Exporter::PNGExporter::GetName()
 	return *(Int32*)"PNGE";
 }
 
-IO::FileExporter::SupportType Exporter::PNGExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
+IO::FileExporter::SupportType Exporter::PNGExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
-	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
+	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
 	Media::RasterImage *img = imgList->GetImage(0, 0);
@@ -1426,11 +1426,11 @@ Bool Exporter::PNGExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-Bool Exporter::PNGExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	if (IsObjectSupported(pobj) == SupportType::NotSupported)
 		return false;
-	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
+	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	imgList->ToStaticImage(0);
 	Media::StaticImage *img = (Media::StaticImage*)imgList->GetImage(0, 0);
 	UInt8 *tmpBuff;

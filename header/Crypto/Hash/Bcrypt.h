@@ -19,8 +19,8 @@ namespace Crypto
 			virtual ~Bcrypt();
 			
 			Bool Matches(Text::CStringNN hash, Text::CStringNN password);
-			Bool GenHash(NotNullPtr<Text::StringBuilderUTF8> sb, UInt32 cost, Text::CStringNN password);
-			Bool GenHash(NotNullPtr<Text::StringBuilderUTF8> sb, UInt32 cost, const UInt8 *salt, Text::CStringNN password);
+			Bool GenHash(NN<Text::StringBuilderUTF8> sb, UInt32 cost, Text::CStringNN password);
+			Bool GenHash(NN<Text::StringBuilderUTF8> sb, UInt32 cost, const UInt8 *salt, Text::CStringNN password);
 		};
 	}
 }

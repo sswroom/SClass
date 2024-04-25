@@ -12,7 +12,7 @@
 
 UInt32 __stdcall Net::IPScanDetector::DataThread(AnyType obj)
 {
-	NotNullPtr<Net::IPScanDetector::ThreadStat> stat = obj.GetNN<Net::IPScanDetector::ThreadStat>();
+	NN<Net::IPScanDetector::ThreadStat> stat = obj.GetNN<Net::IPScanDetector::ThreadStat>();
 	UInt8 macBuff[8];
 	stat->threadRunning = true;
 	stat->me->ctrlEvt->Set();
@@ -134,7 +134,7 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(AnyType obj)
 	return 0;
 }
 
-Net::IPScanDetector::IPScanDetector(NotNullPtr<Net::SocketFactory> sockf, IPScanHandler hdlr, AnyType userData, UOSInt threadCnt)
+Net::IPScanDetector::IPScanDetector(NN<Net::SocketFactory> sockf, IPScanHandler hdlr, AnyType userData, UOSInt threadCnt)
 {
 	UOSInt i;
 	this->threadCnt = threadCnt;

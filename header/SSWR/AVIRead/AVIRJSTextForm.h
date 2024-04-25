@@ -13,17 +13,17 @@ namespace SSWR
 		class AVIRJSTextForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblJSText;
-			NotNullPtr<UI::GUITextBox> txtJSText;
-			NotNullPtr<UI::GUIButton> btnExtract;
-			NotNullPtr<UI::GUILabel> lblOriText;
-			NotNullPtr<UI::GUITextBox> txtOriText;
+			NN<UI::GUILabel> lblJSText;
+			NN<UI::GUITextBox> txtJSText;
+			NN<UI::GUIButton> btnExtract;
+			NN<UI::GUILabel> lblOriText;
+			NN<UI::GUITextBox> txtOriText;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
 			static void __stdcall OnExtractClicked(AnyType userObj);
 		public:
-			AVIRJSTextForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRJSTextForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRJSTextForm();
 
 			virtual void OnMonitorChanged();

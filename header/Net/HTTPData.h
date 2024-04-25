@@ -18,13 +18,13 @@ namespace Net
 			IO::FileStream *file;
 			UInt64 fileLength;
 			UInt64 currentOffset;
-			NotNullPtr<Text::String> url;
+			NN<Text::String> url;
 			Text::CString fileName;
-			NotNullPtr<Text::String> localFile;
+			NN<Text::String> localFile;
 			UOSInt seekCnt;
 
 			Net::HTTPClient *cli;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 			Net::HTTPQueue *queue;
 			UInt64 loadSize;
@@ -43,17 +43,17 @@ namespace Net
 		static UInt32 __stdcall LoadThread(AnyType userObj);
 	public:
 		HTTPData(const HTTPData *fd, UInt64 offset, UInt64 length);
-		HTTPData(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Net::HTTPQueue *queue, Text::CString url, Text::CStringNN localFile, Bool forceReload);
+		HTTPData(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Net::HTTPQueue *queue, Text::CString url, Text::CStringNN localFile, Bool forceReload);
 		virtual ~HTTPData();
 
 		virtual UOSInt GetRealData(UInt64 offset, UOSInt length, Data::ByteArray buffer);
-		virtual NotNullPtr<Text::String> GetFullName();
+		virtual NN<Text::String> GetFullName();
 		virtual Text::CString GetShortName();
 		virtual void SetFullName(Text::CString fullName);
 		virtual UInt64 GetDataSize();
 		virtual const UInt8 *GetPointer();
 
-		virtual NotNullPtr<IO::StreamData> GetPartialData(UInt64 offset, UInt64 length);
+		virtual NN<IO::StreamData> GetPartialData(UInt64 offset, UInt64 length);
 		virtual Bool IsFullFile();
 		virtual Bool IsLoading();
 		virtual UOSInt GetSeekCount();

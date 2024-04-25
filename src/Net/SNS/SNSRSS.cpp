@@ -14,7 +14,7 @@ void Net::SNS::SNSRSS::CalcCRC(const UInt8 *buff, UOSInt size, UInt8 *hashVal)
 	this->crc.GetValue(hashVal);
 }
 
-Net::SNS::SNSRSS::SNSRSS(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CString channelId, NotNullPtr<IO::LogTool> log)
+Net::SNS::SNSRSS::SNSRSS(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent, Text::CString channelId, NN<IO::LogTool> log)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -57,8 +57,8 @@ Net::SNS::SNSRSS::SNSRSS(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSL
 			{
 				sb2.Append(item->imgURL);
 			}
-			Data::ArrayIterator<NotNullPtr<Text::String>> it = imgList.Iterator();
-			NotNullPtr<Text::String> s;
+			Data::ArrayIterator<NN<Text::String>> it = imgList.Iterator();
+			NN<Text::String> s;
 			while (it.HasNext())
 			{
 				s = it.Next();
@@ -69,8 +69,8 @@ Net::SNS::SNSRSS::SNSRSS(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSL
 				sb2.Append(s);
 				s->Release();
 			}
-			NotNullPtr<Text::String> nns;
-			NotNullPtr<Text::String> s2;
+			NN<Text::String> nns;
+			NN<Text::String> s2;
 			nns = Text::String::New(sb.ToString(), sb.GetLength());
 			s2 = Text::String::New(sb2.ToString(), sb2.GetLength());
 			snsItem = CreateItem(Text::String::OrEmpty(item->guid), item->pubDate.ToTicks(), item->title, nns, item->link, s2.Ptr(), 0);
@@ -109,12 +109,12 @@ Net::SNS::SNSControl::SNSType Net::SNS::SNSRSS::GetSNSType()
 	return Net::SNS::SNSControl::ST_RSS;
 }
 
-NotNullPtr<Text::String> Net::SNS::SNSRSS::GetChannelId() const
+NN<Text::String> Net::SNS::SNSRSS::GetChannelId() const
 {
 	return this->channelId;
 }
 
-NotNullPtr<Text::String> Net::SNS::SNSRSS::GetName() const
+NN<Text::String> Net::SNS::SNSRSS::GetName() const
 {
 	return this->chName;
 }
@@ -128,7 +128,7 @@ UTF8Char *Net::SNS::SNSRSS::GetDirName(UTF8Char *dirName)
 	return dirName;
 }
 
-UOSInt Net::SNS::SNSRSS::GetCurrItems(NotNullPtr<Data::ArrayList<SNSItem*>> itemList)
+UOSInt Net::SNS::SNSRSS::GetCurrItems(NN<Data::ArrayList<SNSItem*>> itemList)
 {
 	UOSInt initCnt = itemList->GetCount();
 	itemList->AddAll(this->itemMap);
@@ -191,8 +191,8 @@ Bool Net::SNS::SNSRSS::Reload()
 					{
 						sb2.Append(item->imgURL);
 					}
-					Data::ArrayIterator<NotNullPtr<Text::String>> it = imgList.Iterator();
-					NotNullPtr<Text::String> s;
+					Data::ArrayIterator<NN<Text::String>> it = imgList.Iterator();
+					NN<Text::String> s;
 					while (it.HasNext())
 					{
 						s = it.Next();
@@ -203,8 +203,8 @@ Bool Net::SNS::SNSRSS::Reload()
 						sb2.Append(s);
 						s->Release();
 					}
-					NotNullPtr<Text::String> nns;
-					NotNullPtr<Text::String> s2;
+					NN<Text::String> nns;
+					NN<Text::String> s2;
 					nns = Text::String::New(sb.ToString(), sb.GetLength());
 					s2 = Text::String::New(sb2.ToString(), sb2.GetLength());
 					snsItem = CreateItem(Text::String::OrEmpty(item->guid), item->pubDate.ToTicks(), item->title, nns, item->link, s2.Ptr(), 0);

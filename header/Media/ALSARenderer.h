@@ -25,7 +25,7 @@ namespace Media
 		UInt32 buffTime;
 
 		static void __stdcall WaveEvents(void *hwo, UInt32 uMsg, UInt32 *dwInstance, UInt32 *dwParam1, UInt32 *dwParam2);
-		static void __stdcall PlayThread(NotNullPtr<Sync::Thread> thread);
+		static void __stdcall PlayThread(NN<Sync::Thread> thread);
 		static Data::Duration GetCurrTime(void *hand);
 
 		Bool SetHWParams(Media::IAudioSource *audsrc, void *h);

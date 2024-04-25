@@ -13,17 +13,17 @@ namespace Media
 			TransferParam param;
 		public:
 			TransferFunc(TransferType tranType, Double gamma);
-			TransferFunc(NotNullPtr<const Media::LUT> lut);
+			TransferFunc(NN<const Media::LUT> lut);
 			virtual ~TransferFunc();
 
 			virtual Double ForwardTransfer(Double linearVal) = 0;
 			virtual Double InverseTransfer(Double gammaVal) = 0;
 			TransferType GetTransferType();
 			Double GetTransferGamma();
-			NotNullPtr<const TransferParam> GetTransferParam();
+			NN<const TransferParam> GetTransferParam();
 
-			static NotNullPtr<TransferFunc> CreateFunc(NotNullPtr<const TransferParam> param);
-			static Double GetRefLuminance(NotNullPtr<const TransferParam> param);
+			static NN<TransferFunc> CreateFunc(NN<const TransferParam> param);
+			static Double GetRefLuminance(NN<const TransferParam> param);
 		};
 	}
 }

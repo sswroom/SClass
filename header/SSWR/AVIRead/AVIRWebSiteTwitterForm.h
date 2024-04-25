@@ -16,19 +16,19 @@ namespace SSWR
 		class AVIRWebSiteTwitterForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIPanel> pnlRequest;
-			NotNullPtr<UI::GUILabel> lblChannelId;
-			NotNullPtr<UI::GUITextBox> txtChannelId;
-			NotNullPtr<UI::GUIButton> btnRequestPage;
-			NotNullPtr<UI::GUIListView> lvItems;
+			NN<UI::GUIPanel> pnlRequest;
+			NN<UI::GUILabel> lblChannelId;
+			NN<UI::GUITextBox> txtChannelId;
+			NN<UI::GUIButton> btnRequestPage;
+			NN<UI::GUIListView> lvItems;
 
 			Net::WebSite::WebSiteTwitterControl *ctrl;
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
 			static void __stdcall OnRequestPageClicked(AnyType userObj);
 		public:
-			AVIRWebSiteTwitterForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRWebSiteTwitterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWebSiteTwitterForm();
 
 			virtual void OnMonitorChanged();

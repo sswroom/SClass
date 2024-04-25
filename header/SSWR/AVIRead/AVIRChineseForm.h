@@ -19,47 +19,47 @@ namespace SSWR
 		class AVIRChineseForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Text::ChineseInfo *chinese;
-			NotNullPtr<Media::DrawEngine> deng;
+			NN<Media::DrawEngine> deng;
 			UInt32 currChar;
 			Media::DrawImage *charImg;
-			NotNullPtr<Text::String> currFont;
+			NN<Text::String> currFont;
 			UInt32 currRadical;
 
-			NotNullPtr<UI::GUIMainMenu> mnuMain;
+			NN<UI::GUIMainMenu> mnuMain;
 
-			NotNullPtr<UI::GUILabel> lblCharCode;
-			NotNullPtr<UI::GUITextBox> txtCharCode;
-			NotNullPtr<UI::GUILabel> lblChar;
-			NotNullPtr<UI::GUITextBox> txtChar;
-			NotNullPtr<UI::GUIButton> btnCharPrev;
-			NotNullPtr<UI::GUIButton> btnCharNext;
-			NotNullPtr<UI::GUIPictureBoxSimple> pbChar;
-			NotNullPtr<UI::GUILabel> lblRelatedCurr;
-			NotNullPtr<UI::GUITextBox> txtRelatedCurr;
-			NotNullPtr<UI::GUILabel> lblRelatedAdd;
-			NotNullPtr<UI::GUITextBox> txtRelatedAdd;
-			NotNullPtr<UI::GUIButton> btnRelatedGo;
+			NN<UI::GUILabel> lblCharCode;
+			NN<UI::GUITextBox> txtCharCode;
+			NN<UI::GUILabel> lblChar;
+			NN<UI::GUITextBox> txtChar;
+			NN<UI::GUIButton> btnCharPrev;
+			NN<UI::GUIButton> btnCharNext;
+			NN<UI::GUIPictureBoxSimple> pbChar;
+			NN<UI::GUILabel> lblRelatedCurr;
+			NN<UI::GUITextBox> txtRelatedCurr;
+			NN<UI::GUILabel> lblRelatedAdd;
+			NN<UI::GUITextBox> txtRelatedAdd;
+			NN<UI::GUIButton> btnRelatedGo;
 
-			NotNullPtr<UI::GUIGroupBox> grpCharInfo;
-			NotNullPtr<UI::GUILabel> lblRadical;
-			NotNullPtr<UI::GUITextBox> txtRadical;
-			NotNullPtr<UI::GUILabel> lblRadicalV;
-			NotNullPtr<UI::GUILabel> lblStrokeCount;
-			NotNullPtr<UI::GUITextBox> txtStrokeCount;
-			NotNullPtr<UI::GUILabel> lblCharType;
-			NotNullPtr<UI::GUIComboBox> cboCharType;
-			NotNullPtr<UI::GUILabel> lblFlags;
-			NotNullPtr<UI::GUICheckBox> chkMainChar;
-			NotNullPtr<UI::GUILabel> lblPronun1;
-			NotNullPtr<UI::GUITextBox> txtPronun1;
-			NotNullPtr<UI::GUILabel> lblPronun2;
-			NotNullPtr<UI::GUITextBox> txtPronun2;
-			NotNullPtr<UI::GUILabel> lblPronun3;
-			NotNullPtr<UI::GUITextBox> txtPronun3;
-			NotNullPtr<UI::GUILabel> lblPronun4;
-			NotNullPtr<UI::GUITextBox> txtPronun4;
+			NN<UI::GUIGroupBox> grpCharInfo;
+			NN<UI::GUILabel> lblRadical;
+			NN<UI::GUITextBox> txtRadical;
+			NN<UI::GUILabel> lblRadicalV;
+			NN<UI::GUILabel> lblStrokeCount;
+			NN<UI::GUITextBox> txtStrokeCount;
+			NN<UI::GUILabel> lblCharType;
+			NN<UI::GUIComboBox> cboCharType;
+			NN<UI::GUILabel> lblFlags;
+			NN<UI::GUICheckBox> chkMainChar;
+			NN<UI::GUILabel> lblPronun1;
+			NN<UI::GUITextBox> txtPronun1;
+			NN<UI::GUILabel> lblPronun2;
+			NN<UI::GUITextBox> txtPronun2;
+			NN<UI::GUILabel> lblPronun3;
+			NN<UI::GUITextBox> txtPronun3;
+			NN<UI::GUILabel> lblPronun4;
+			NN<UI::GUITextBox> txtPronun4;
 			
 			static void __stdcall OnCharChg(AnyType userObj);
 			static Bool __stdcall OnCharMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIControl::MouseButton btn);
@@ -68,14 +68,14 @@ namespace SSWR
 			static void __stdcall OnRadicalChg(AnyType userObj);
 			static void __stdcall OnRelatedAddChg(AnyType userObj);
 			static void __stdcall OnRelatedGoClicked(AnyType userObj);
-			static void __stdcall OnFormClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm);
+			static void __stdcall OnFormClosed(AnyType userObj, NN<UI::GUIForm> frm);
 
 			Bool SaveChar();
 			void UpdateChar(UInt32 charCode);
 			void UpdateImg();
 			void UpdateRelation();
 		public:
-			AVIRChineseForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRChineseForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRChineseForm();
 
 			virtual void OnMonitorChanged();

@@ -6,11 +6,11 @@
 
 void __stdcall SSWR::AVIRead::AVIRGISFontForm::OnFontClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISFontForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontForm>();
-	NotNullPtr<UI::GUIFontDialog> dlg = me->ui->NewFontDialog(me->fontName, me->fontSizePt, false, false);
+	NN<SSWR::AVIRead::AVIRGISFontForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontForm>();
+	NN<UI::GUIFontDialog> dlg = me->ui->NewFontDialog(me->fontName, me->fontSizePt, false, false);
 	if (dlg->ShowDialog(me->hwnd))
 	{
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		if (dlg->GetFontName().SetTo(s))
 		{
 			me->fontName->Release();
@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontForm::OnFontClicked(AnyType userObj)
 
 Bool __stdcall SSWR::AVIRead::AVIRGISFontForm::OnColorClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISFontForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontForm>();
+	NN<SSWR::AVIRead::AVIRGISFontForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontForm>();
 	if (btn == UI::GUIControl::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
@@ -44,13 +44,13 @@ Bool __stdcall SSWR::AVIRead::AVIRGISFontForm::OnColorClicked(AnyType userObj, M
 
 void __stdcall SSWR::AVIRead::AVIRGISFontForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISFontForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontForm>();
+	NN<SSWR::AVIRead::AVIRGISFontForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontForm>();
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISFontForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISFontForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontForm>();
+	NN<SSWR::AVIRead::AVIRGISFontForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISFontForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
@@ -68,7 +68,7 @@ void SSWR::AVIRead::AVIRGISFontForm::UpdateFontPreview()
 {
 	SDEL_CLASS(this->previewImage);
 	Math::Size2D<UOSInt> sz = this->pbPreview->GetSizeP();
-	NotNullPtr<Media::DrawImage> dimg;
+	NN<Media::DrawImage> dimg;
 	if (dimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 	{
 		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
@@ -80,7 +80,7 @@ void SSWR::AVIRead::AVIRGISFontForm::UpdateFontPreview()
 	}
 }
 
-SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::DrawEngine> eng, Text::String *fontName, Double fontSizePt, UInt32 fontColor) : UI::GUIForm(parent, 480, 306, ui)
+SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::DrawEngine> eng, Text::String *fontName, Double fontSizePt, UInt32 fontColor) : UI::GUIForm(parent, 480, 306, ui)
 {
 	this->core = core;
 	this->eng = eng;
@@ -159,11 +159,11 @@ void SSWR::AVIRead::AVIRGISFontForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRGISFontForm::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
+void SSWR::AVIRead::AVIRGISFontForm::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void SSWR::AVIRead::AVIRGISFontForm::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void SSWR::AVIRead::AVIRGISFontForm::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	this->colorConv->RGBParamChanged(rgbParam);
 	this->pbColor->SetBGColor(this->colorConv->ConvRGB8(this->fontColor));
@@ -171,7 +171,7 @@ void SSWR::AVIRead::AVIRGISFontForm::RGBParamChanged(NotNullPtr<const Media::ICo
 	this->UpdateFontPreview();
 }
 
-NotNullPtr<Text::String> SSWR::AVIRead::AVIRGISFontForm::GetFontName() const
+NN<Text::String> SSWR::AVIRead::AVIRGISFontForm::GetFontName() const
 {
 	return this->fontName;
 }

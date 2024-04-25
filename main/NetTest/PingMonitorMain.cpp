@@ -22,7 +22,7 @@ IO::Writer *console;
 Int32 threadCnt;
 Bool threadToStop;
 Socket *rawSock;
-NotNullPtr<Net::SocketFactory> sockf;
+NN<Net::SocketFactory> sockf;
 IO::LogTool *logTool;
 
 UInt32 __stdcall RecvThread(AnyType userObj)
@@ -117,7 +117,7 @@ UInt32 __stdcall RecvThread(AnyType userObj)
 	return 0;
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	OSInt i;
 	UTF8Char sbuff[512];

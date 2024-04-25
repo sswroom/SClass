@@ -135,12 +135,12 @@ const UTF8Char **Map::VectorLayer::CopyStrs(Text::PString *strs)
 	return newStrs;
 }
 
-const UTF8Char **Map::VectorLayer::CopyStrs(NotNullPtr<Data::ArrayListStringNN> strs)
+const UTF8Char **Map::VectorLayer::CopyStrs(NN<Data::ArrayListStringNN> strs)
 {
 	UOSInt i = this->strCnt;
 	UOSInt j = 0;
 	UOSInt k;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UTF8Char *sptr = 0;
 	while (i-- > 0)
 	{
@@ -214,7 +214,7 @@ void Map::VectorLayer::UpdateMapRate()
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::String> sourceName, UOSInt strCnt, const UTF8Char **colNames, NotNullPtr<Math::CoordinateSystem> csys, UOSInt nameCol, Text::String *layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, UOSInt strCnt, const UTF8Char **colNames, NN<Math::CoordinateSystem> csys, UOSInt nameCol, Text::String *layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
 {
 	UOSInt i;
 	this->layerType = layerType;
@@ -236,7 +236,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::Str
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, const UTF8Char **colNames, NotNullPtr<Math::CoordinateSystem> csys, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, const UTF8Char **colNames, NN<Math::CoordinateSystem> csys, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
 {
 	UOSInt i;
 	this->layerType = layerType;
@@ -258,7 +258,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sour
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::String> sourceName, UOSInt strCnt, const UTF8Char **colNames, NotNullPtr<Math::CoordinateSystem> csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::String *layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, UOSInt strCnt, const UTF8Char **colNames, NN<Math::CoordinateSystem> csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::String *layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
 {
 	UOSInt i;
 	this->layerType = layerType;
@@ -283,7 +283,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NotNullPtr<Text::Str
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, const UTF8Char **colNames, NotNullPtr<Math::CoordinateSystem> csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, const UTF8Char **colNames, NN<Math::CoordinateSystem> csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
 {
 	UOSInt i;
 	this->layerType = layerType;
@@ -308,7 +308,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sour
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, NotNullPtr<Data::ArrayListStringNN> colNames, NotNullPtr<Math::CoordinateSystem> csys, NotNullPtr<Data::ArrayList<ColInfo>> colInfos, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, NN<Data::ArrayListStringNN> colNames, NN<Math::CoordinateSystem> csys, NN<Data::ArrayList<ColInfo>> colInfos, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
 {
 	UOSInt i;
 	this->layerType = layerType;
@@ -404,13 +404,13 @@ void Map::VectorLayer::SetMixedData(MixedData mixedData)
 	this->mixedData = mixedData;
 }
 
-UOSInt Map::VectorLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::VectorLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	UOSInt i = 0;
 	UOSInt j = this->vectorList.GetCount();
 	if (this->layerType == Map::DRAW_LAYER_MIXED && this->mixedData != MixedData::AllData)
 	{
-		NotNullPtr<Math::Geometry::Vector2D> vec;
+		NN<Math::Geometry::Vector2D> vec;
 		UOSInt ret = 0;
 		while (i < j)
 		{
@@ -434,16 +434,16 @@ UOSInt Map::VectorLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr
 	}
 }
 
-UOSInt Map::VectorLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::VectorLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() / mapRate, keepEmpty);
 }
 
-UOSInt Map::VectorLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::VectorLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	Math::RectAreaDbl vBounds;
 	UOSInt recCnt = 0;
-	NotNullPtr<Math::Geometry::Vector2D> vec;
+	NN<Math::Geometry::Vector2D> vec;
 	UOSInt i;
 	UOSInt j;
 	if (this->layerType == Map::DRAW_LAYER_MIXED && this->mixedData != MixedData::AllData)
@@ -494,7 +494,7 @@ void Map::VectorLayer::ReleaseNameArr(NameArray *nameArr)
 {
 }
 
-Bool Map::VectorLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::VectorLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	if (id < 0 || (UInt64)id >= this->strList.GetCount())
 	{
@@ -556,7 +556,7 @@ DB::DBUtil::ColType Map::VectorLayer::GetColumnType(UOSInt colIndex, OptOut<UOSI
 	
 }
 
-Bool Map::VectorLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Map::VectorLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	if (colIndex >= this->strCnt)
 		return false;
@@ -608,7 +608,7 @@ void Map::VectorLayer::EndGetObject(Map::GetObjectSess *session)
 
 Math::Geometry::Vector2D *Map::VectorLayer::GetNewVectorById(Map::GetObjectSess *session, Int64 id)
 {
-	NotNullPtr<Math::Geometry::Vector2D> vec;
+	NN<Math::Geometry::Vector2D> vec;
 	if (this->vectorList.GetItem((UOSInt)id).SetTo(vec))
 	{
 		return vec->Clone().Ptr();
@@ -628,7 +628,7 @@ void Map::VectorLayer::SetTableName(Text::String *tableName)
 	}
 }
 
-UOSInt Map::VectorLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt Map::VectorLayer::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -648,7 +648,7 @@ Map::MapDrawLayer::ObjectClass Map::VectorLayer::GetObjectClass() const
 	return Map::MapDrawLayer::OC_VECTOR_LAYER;
 }
 
-Bool Map::VectorLayer::VectorValid(NotNullPtr<Math::Geometry::Vector2D> vec)
+Bool Map::VectorLayer::VectorValid(NN<Math::Geometry::Vector2D> vec)
 {
 	Math::Geometry::Vector2D::VectorType vecType;
 	switch (this->layerType)
@@ -692,7 +692,7 @@ Bool Map::VectorLayer::VectorValid(NotNullPtr<Math::Geometry::Vector2D> vec)
 	return true;
 }
 
-Bool Map::VectorLayer::AddVector(NotNullPtr<Math::Geometry::Vector2D> vec, Text::String **strs)
+Bool Map::VectorLayer::AddVector(NN<Math::Geometry::Vector2D> vec, Text::String **strs)
 {
 	if (!this->VectorValid(vec))
 		return false;
@@ -738,7 +738,7 @@ Bool Map::VectorLayer::AddVector(NotNullPtr<Math::Geometry::Vector2D> vec, Text:
 	return true;
 }
 
-Bool Map::VectorLayer::AddVector(NotNullPtr<Math::Geometry::Vector2D> vec, Text::PString *strs)
+Bool Map::VectorLayer::AddVector(NN<Math::Geometry::Vector2D> vec, Text::PString *strs)
 {
 	if (!this->VectorValid(vec))
 		return false;
@@ -784,7 +784,7 @@ Bool Map::VectorLayer::AddVector(NotNullPtr<Math::Geometry::Vector2D> vec, Text:
 	return true;
 }
 
-Bool Map::VectorLayer::AddVector(NotNullPtr<Math::Geometry::Vector2D> vec, const UTF8Char **strs)
+Bool Map::VectorLayer::AddVector(NN<Math::Geometry::Vector2D> vec, const UTF8Char **strs)
 {
 	if (!this->VectorValid(vec))
 		return false;
@@ -830,7 +830,7 @@ Bool Map::VectorLayer::AddVector(NotNullPtr<Math::Geometry::Vector2D> vec, const
 	return true;
 }
 
-Bool Map::VectorLayer::AddVector(NotNullPtr<Math::Geometry::Vector2D> vec, NotNullPtr<Data::ArrayListStringNN> strs)
+Bool Map::VectorLayer::AddVector(NN<Math::Geometry::Vector2D> vec, NN<Data::ArrayListStringNN> strs)
 {
 	if (!this->VectorValid(vec))
 		return false;
@@ -886,10 +886,10 @@ Bool Map::VectorLayer::SplitPolyline(Math::Coord2DDbl pt)
 	if (objId < 0)
 		return false;
 
-	NotNullPtr<Math::Geometry::Polyline> pl;
+	NN<Math::Geometry::Polyline> pl;
 	if (Optional<Math::Geometry::Polyline>::ConvertFrom(this->vectorList.GetItem((UOSInt)objId)).SetTo(pl))
 	{
-		NotNullPtr<Math::Geometry::Polyline> pl2;
+		NN<Math::Geometry::Polyline> pl2;
 		if (pl2.Set(pl->SplitByPoint(pt)))
 		{
 			this->vectorList.Add(pl2);
@@ -904,8 +904,8 @@ void Map::VectorLayer::OptimizePolylinePath()
 	if (this->layerType != Map::DRAW_LAYER_POLYLINE)
 		return;
 	const UTF8Char **tmpStr;
-	NotNullPtr<Math::Geometry::Polyline> tmpPL;
-	NotNullPtr<Math::Geometry::LineString> tmpLS;
+	NN<Math::Geometry::Polyline> tmpPL;
+	NN<Math::Geometry::LineString> tmpLS;
 
 	Math::Coord2DDbl pt;
 	Math::Coord2DDbl nearPt;
@@ -944,8 +944,8 @@ void Map::VectorLayer::OptimizePolylinePath()
 					niy = (Int32)(nearPt.y * 200000.0);
 					if (ix == nix && iy == niy)
 					{
-						NotNullPtr<Math::Geometry::Polyline> pl;
-						NotNullPtr<Math::Geometry::Polyline> pl2;
+						NN<Math::Geometry::Polyline> pl;
+						NN<Math::Geometry::Polyline> pl2;
 						if (Optional<Math::Geometry::Polyline>::ConvertFrom(this->vectorList.GetItem((UOSInt)objId)).SetTo(pl) && pl2.Set(pl->SplitByPoint(pt)))
 						{
 							this->vectorList.Add(pl2);
@@ -965,8 +965,8 @@ void Map::VectorLayer::OptimizePolylinePath()
 					niy = (Int32)(nearPt.y * 200000.0);
 					if (ix == nix && iy == niy)
 					{
-						NotNullPtr<Math::Geometry::Polyline> pl;
-						NotNullPtr<Math::Geometry::Polyline> pl2;
+						NN<Math::Geometry::Polyline> pl;
+						NN<Math::Geometry::Polyline> pl2;
 						if (Optional<Math::Geometry::Polyline>::ConvertFrom(this->vectorList.GetItem((UOSInt)objId)).SetTo(pl) && pl2.Set(pl->SplitByPoint(pt)))
 						{
 							this->vectorList.Add(pl2);
@@ -994,7 +994,7 @@ void Map::VectorLayer::OptimizePolylinePath()
 	}*/
 }
 
-void Map::VectorLayer::ReplaceVector(Int64 id, NotNullPtr<Math::Geometry::Vector2D> vec)
+void Map::VectorLayer::ReplaceVector(Int64 id, NN<Math::Geometry::Vector2D> vec)
 {
 	if (this->vectorList.GetCount() <= (UInt64)id)
 	{
@@ -1007,10 +1007,10 @@ void Map::VectorLayer::ReplaceVector(Int64 id, NotNullPtr<Math::Geometry::Vector
 	}
 }
 
-void Map::VectorLayer::ConvCoordinateSystem(NotNullPtr<Math::CoordinateSystem> destCsys)
+void Map::VectorLayer::ConvCoordinateSystem(NN<Math::CoordinateSystem> destCsys)
 {
 	Math::CoordinateSystemConverter converter(this->csys, destCsys);
-	Data::ArrayIterator<NotNullPtr<Math::Geometry::Vector2D>> it = this->vectorList.Iterator();
+	Data::ArrayIterator<NN<Math::Geometry::Vector2D>> it = this->vectorList.Iterator();
 	while (it.HasNext())
 	{
 		it.Next()->Convert(converter);
@@ -1026,7 +1026,7 @@ void Map::VectorLayer::ConvCoordinateSystem(NotNullPtr<Math::CoordinateSystem> d
 
 void Map::VectorLayer::SwapXY()
 {
-	Data::ArrayIterator<NotNullPtr<Math::Geometry::Vector2D>> it = this->vectorList.Iterator();
+	Data::ArrayIterator<NN<Math::Geometry::Vector2D>> it = this->vectorList.Iterator();
 	while (it.HasNext())
 	{
 		it.Next()->SwapXY();

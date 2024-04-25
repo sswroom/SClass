@@ -5,30 +5,30 @@
 #include "DB/SQLiteFile.h"
 #include "Net/SSHManager.h"
 
-Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::ConfigFile> cfg, Text::CString cfgCategory, NotNullPtr<IO::LogTool> log)
+Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NN<Net::SocketFactory> sockf, NN<IO::ConfigFile> cfg, Text::CString cfgCategory, NN<IO::LogTool> log)
 {
 	Text::CStringNN logPrefix = CSTR("DB: ");
 	Text::CStringNN category = cfgCategory.OrEmpty();
-	NotNullPtr<Text::String> sshHost;
+	NN<Text::String> sshHost;
 	UInt16 sshPort;
-	NotNullPtr<Text::String> sshUser;
-	NotNullPtr<Text::String> sshPassword;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> sshUser;
+	NN<Text::String> sshPassword;
+	NN<Text::String> s;
 	if (!cfg->GetCateValue(category, CSTR("DBType")).SetTo(s))
 	{
 		log->LogMessage(CSTR("DBType not found in config"), IO::LogHandler::LogLevel::Error);
 		return 0;
 	}
-	NotNullPtr<DB::DBTool> db;
+	NN<DB::DBTool> db;
 	if (s->Equals(UTF8STRC("MSSQL")))
 	{
 		UInt16 port;
-		NotNullPtr<Text::String> serverHost;
-		NotNullPtr<Text::String> sPort;
+		NN<Text::String> serverHost;
+		NN<Text::String> sPort;
 		Text::String *sSSL = cfg->GetCateValue(category, CSTR("MSSQLEncrypt")).OrNull();
-		NotNullPtr<Text::String> database;
-		NotNullPtr<Text::String> userName;
-		NotNullPtr<Text::String> password;
+		NN<Text::String> database;
+		NN<Text::String> userName;
+		NN<Text::String> password;
 		Net::SocketUtil::AddressInfo addr;
 		if (!cfg->GetCateValue(category, CSTR("MSSQLHost")).SetTo(serverHost))
 		{
@@ -75,11 +75,11 @@ Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NotNullPtr<Net::SocketFactory>
 	else if (s->Equals(UTF8STRC("PostgreSQL")))
 	{
 		UInt16 port;
-		NotNullPtr<Text::String> serverHost;
-		NotNullPtr<Text::String> sPort;
-		NotNullPtr<Text::String> database;
-		NotNullPtr<Text::String> userName;
-		NotNullPtr<Text::String> password;
+		NN<Text::String> serverHost;
+		NN<Text::String> sPort;
+		NN<Text::String> database;
+		NN<Text::String> userName;
+		NN<Text::String> password;
 		if (!cfg->GetCateValue(category, CSTR("PSQLHost")).SetTo(serverHost))
 		{
 			log->LogMessage(CSTR("PSQLHost is missing"), IO::LogHandler::LogLevel::Error);
@@ -125,9 +125,9 @@ Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NotNullPtr<Net::SocketFactory>
 			}
 			if (cfg->GetCateValue(category, CSTR("DBSSHPassword")).SetTo(sshPassword))
 			{
-				NotNullPtr<Net::SSHManager> ssh;
-				NotNullPtr<Net::SSHClient> cli;
-				NotNullPtr<Net::SSHForwarder> fwd;
+				NN<Net::SSHManager> ssh;
+				NN<Net::SSHClient> cli;
+				NN<Net::SSHForwarder> fwd;
 				NEW_CLASSNN(ssh, Net::SSHManager(sockf));
 				if (ssh->IsError())
 				{
@@ -174,7 +174,7 @@ Optional<DB::DBTool> DB::DBConfig::LoadFromConfig(NotNullPtr<Net::SocketFactory>
 	}
 	else if (s->Equals(UTF8STRC("SQLite")))
 	{
-		NotNullPtr<Text::String> filePath;
+		NN<Text::String> filePath;
 		if (!cfg->GetCateValue(category, CSTR("SQLiteFile")).SetTo(filePath))
 		{
 			log->LogMessage(CSTR("SQLiteFile is missing"), IO::LogHandler::LogLevel::Error);

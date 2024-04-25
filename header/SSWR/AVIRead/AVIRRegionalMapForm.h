@@ -12,18 +12,18 @@ namespace SSWR
 		class AVIRRegionalMapForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			NotNullPtr<Math::CoordinateSystem> envCSys;
+			NN<Math::CoordinateSystem> envCSys;
 
-			NotNullPtr<UI::GUITextBox> txtDesc;
-			NotNullPtr<UI::GUIListView> lvMaps;
+			NN<UI::GUITextBox> txtDesc;
+			NN<UI::GUIListView> lvMaps;
 			Map::MapDrawLayer *layer;
 			
 			static void __stdcall OnMapsSelChg(AnyType userObj);
 			static void __stdcall OnMapsDblClk(AnyType userObj, UOSInt index);
 		public:
-			AVIRRegionalMapForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, NotNullPtr<Math::CoordinateSystem> envCSys);
+			AVIRRegionalMapForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, NN<Math::CoordinateSystem> envCSys);
 			virtual ~AVIRRegionalMapForm();
 
 			virtual void OnMonitorChanged();

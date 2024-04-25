@@ -59,7 +59,7 @@ void UI::GUIFileDialog::SetFileName(Text::CString fileName)
 	this->fileName = Text::String::New(fileName);
 }
 
-NotNullPtr<Text::String> UI::GUIFileDialog::GetFileName() const
+NN<Text::String> UI::GUIFileDialog::GetFileName() const
 {
 	return Text::String::OrEmpty(this->fileName);
 }

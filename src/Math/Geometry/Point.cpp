@@ -28,9 +28,9 @@ Math::Coord2DDbl Math::Geometry::Point::GetCenter() const
 	return this->pos;
 }
 
-NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::Point::Clone() const
+NN<Math::Geometry::Vector2D> Math::Geometry::Point::Clone() const
 {
-	NotNullPtr<Math::Geometry::Point> pt;
+	NN<Math::Geometry::Point> pt;
 	NEW_CLASSNN(pt, Math::Geometry::Point(this->srid, this->pos));
 	return pt;
 }
@@ -53,7 +53,7 @@ Double Math::Geometry::Point::CalArea() const
 	return 0;
 }
 
-Bool Math::Geometry::Point::JoinVector(NotNullPtr<const Math::Geometry::Vector2D> vec)
+Bool Math::Geometry::Point::JoinVector(NN<const Math::Geometry::Vector2D> vec)
 {
 	return false;
 }
@@ -68,13 +68,13 @@ Bool Math::Geometry::Point::GetMBounds(OutParam<Double> min, OutParam<Double> ma
 	return false;
 }
 
-void Math::Geometry::Point::Convert(NotNullPtr<Math::CoordinateConverter> converter)
+void Math::Geometry::Point::Convert(NN<Math::CoordinateConverter> converter)
 {
 	this->pos = converter->Convert2D(this->pos);
 	this->srid = converter->GetOutputSRID();
 }
 
-Bool Math::Geometry::Point::Equals(NotNullPtr<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
+Bool Math::Geometry::Point::Equals(NN<const Math::Geometry::Vector2D> vec, Bool sameTypeOnly, Bool nearlyVal) const
 {
 	if (vec->GetSRID() != this->srid)
 	{
@@ -94,7 +94,7 @@ Bool Math::Geometry::Point::Equals(NotNullPtr<const Math::Geometry::Vector2D> ve
 	}
 }
 
-UOSInt Math::Geometry::Point::GetCoordinates(NotNullPtr<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
+UOSInt Math::Geometry::Point::GetCoordinates(NN<Data::ArrayListA<Math::Coord2DDbl>> coordList) const
 {
 	coordList->Add(this->pos);
 	return 1;

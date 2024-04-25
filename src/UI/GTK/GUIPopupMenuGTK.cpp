@@ -8,9 +8,9 @@ UI::GUIPopupMenu::GUIPopupMenu() : UI::GUIMenu(true)
 {
 }
 
-void UI::GUIPopupMenu::ShowMenu(NotNullPtr<UI::GUIControl> ctrl, Math::Coord2D<OSInt> scnPos)
+void UI::GUIPopupMenu::ShowMenu(NN<UI::GUIControl> ctrl, Math::Coord2D<OSInt> scnPos)
 {
-	NotNullPtr<UI::GUIForm> frm;
+	NN<UI::GUIForm> frm;
 	if (frm.Set(ctrl->GetRootForm()))
 	{
 		gint tranX;

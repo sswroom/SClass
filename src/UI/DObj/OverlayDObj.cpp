@@ -3,7 +3,7 @@
 #include "Math/Math.h"
 #include "UI/DObj/OverlayDObj.h"
 
-UI::DObj::OverlayDObj::OverlayDObj(NotNullPtr<Media::DrawEngine> deng, Media::DrawImage *bmp, Math::Coord2D<OSInt> tl) : DirectObject(tl)
+UI::DObj::OverlayDObj::OverlayDObj(NN<Media::DrawEngine> deng, Media::DrawImage *bmp, Math::Coord2D<OSInt> tl) : DirectObject(tl)
 {
 	this->deng = deng;
 	this->noRelease = true;
@@ -13,7 +13,7 @@ UI::DObj::OverlayDObj::OverlayDObj(NotNullPtr<Media::DrawEngine> deng, Media::Dr
 	this->clk = 0;
 }
 
-UI::DObj::OverlayDObj::OverlayDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<OSInt> tl, Parser::ParserList *parsers) : DirectObject(tl)
+UI::DObj::OverlayDObj::OverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<OSInt> tl, Parser::ParserList *parsers) : DirectObject(tl)
 {
 	this->deng = deng;
 	this->noRelease = false;
@@ -36,7 +36,7 @@ UI::DObj::OverlayDObj::OverlayDObj(NotNullPtr<Media::DrawEngine> deng, Text::CSt
 
 UI::DObj::OverlayDObj::~OverlayDObj()
 {
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	if (this->noRelease)
 	{
 	}
@@ -80,9 +80,9 @@ Bool UI::DObj::OverlayDObj::DoEvents()
 	return false;
 }
 
-void UI::DObj::OverlayDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
+void UI::DObj::OverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 {
-	NotNullPtr<Media::DrawImage> bmp;
+	NN<Media::DrawImage> bmp;
 	if (bmp.Set(this->bmp))
 	{
 		Math::Coord2DDbl tl = GetCurrPos().ToDouble();
@@ -106,7 +106,7 @@ void UI::DObj::OverlayDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
 			}
 		}
 		this->imgList->ToStaticImage(frameNum);
-		NotNullPtr<Media::StaticImage> img;
+		NN<Media::StaticImage> img;
 		if (img.Set((Media::StaticImage*)this->imgList->GetImage(frameNum, 0)))
 		{
 			Math::Coord2DDbl tl = GetCurrPos().ToDouble();

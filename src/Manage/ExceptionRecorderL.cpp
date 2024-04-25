@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-NotNullPtr<Text::String> Manage::ExceptionRecorder::fileName;
+NN<Text::String> Manage::ExceptionRecorder::fileName;
 Manage::ExceptionRecorder::ExceptionAction Manage::ExceptionRecorder::exAction;
 Int32 (__stdcall *ExceptionRecorder_Handler)(void *);
 
@@ -75,7 +75,7 @@ Text::CString Manage::ExceptionRecorder::GetExceptionCodeName(UInt32 exCode)
 Int32 __stdcall Manage::ExceptionRecorder::ExceptionHandler(void *exInfo)
 {
 	ExInfo *einfo = (ExInfo*)exInfo;
-	NotNullPtr<Manage::ThreadContext> context;
+	NN<Manage::ThreadContext> context;
 #if defined(CPU_X86_32)
 	NEW_CLASSNN(context, Manage::ThreadContextX86_32((UOSInt)einfo->info->si_pid, 0, einfo->ucontext));
 #elif defined(CPU_X86_64)

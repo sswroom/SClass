@@ -112,7 +112,7 @@ void DB::ODBCConn::UpdateConnInfo()
 
 	if (this->sqlType == DB::SQLType::MSSQL)
 	{
-		NotNullPtr<DB::DBReader> r;
+		NN<DB::DBReader> r;
 		if (this->ExecuteReader(CSTR("select getdate(), GETUTCDATE()")).SetTo(r))
 		{
 			r->ReadNext();
@@ -124,11 +124,11 @@ void DB::ODBCConn::UpdateConnInfo()
 	}
 	else if (this->sqlType == DB::SQLType::MySQL)
 	{
-		NotNullPtr<DB::DBReader> r;
+		NN<DB::DBReader> r;
 		if (this->ExecuteReader(CSTR("SELECT VERSION()")).SetTo(r))
 		{
 			r->ReadNext();
-			NotNullPtr<Text::String> s;
+			NN<Text::String> s;
 			if (r->GetNewStr(0).SetTo(s))
 			{
 				this->axisAware = Net::MySQLUtil::IsAxisAware(s->ToCString());
@@ -144,8 +144,8 @@ Bool DB::ODBCConn::Connect(Optional<Text::String> dsn, Optional<Text::String> ui
 	SQLHANDLE hand;
 	SQLHANDLE hConn;
 	SQLRETURN ret;
-	NotNullPtr<Text::String> nndsn;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> nndsn;
+	NN<Text::String> s;
 	int timeOut = 5;
 	this->connErr = CE_NONE;
 	this->envHand = 0;
@@ -208,7 +208,7 @@ Bool DB::ODBCConn::Connect(Optional<Text::String> dsn, Optional<Text::String> ui
 		{
 			sb.AppendC(UTF8STRC("["));
 			state[5] = 0;
-			NotNullPtr<Text::String> s = Text::String::NewNotNull((const UTF16Char*)state);
+			NN<Text::String> s = Text::String::NewNotNull((const UTF16Char*)state);
 			sb.Append(s);
 			s->Release();
 			sb.AppendC(UTF8STRC("]"));
@@ -252,7 +252,7 @@ Bool DB::ODBCConn::Connect(Optional<Text::String> dsn, Optional<Text::String> ui
 	return true;
 }
 
-Bool DB::ODBCConn::Connect(NotNullPtr<Text::String> connStr)
+Bool DB::ODBCConn::Connect(NN<Text::String> connStr)
 {
 	SQLHANDLE hand;
 	SQLHANDLE hConn;
@@ -315,7 +315,7 @@ Bool DB::ODBCConn::Connect(NotNullPtr<Text::String> connStr)
 		{
 			sb.AppendC(UTF8STRC("["));
 			state[5] = 0;
-			NotNullPtr<Text::String> s = Text::String::NewNotNull((const UTF16Char*)state);
+			NN<Text::String> s = Text::String::NewNotNull((const UTF16Char*)state);
 			sb.Append(s);
 			s->Release();
 			sb.AppendC(UTF8STRC("]"));
@@ -354,13 +354,13 @@ Bool DB::ODBCConn::Connect(NotNullPtr<Text::String> connStr)
 
 Bool DB::ODBCConn::Connect(Text::CString connStr)
 {
-	NotNullPtr<Text::String> s = Text::String::New(connStr);
+	NN<Text::String> s = Text::String::New(connStr);
 	Bool ret = this->Connect(s);
 	s->Release();
 	return ret;
 }
 
-DB::ODBCConn::ODBCConn(Text::CStringNN sourceName, NotNullPtr<IO::LogTool> log) : DB::DBConn(sourceName)
+DB::ODBCConn::ODBCConn(Text::CStringNN sourceName, NN<IO::LogTool> log) : DB::DBConn(sourceName)
 {
 	connHand = 0;
 	envHand = 0;
@@ -381,7 +381,7 @@ DB::ODBCConn::ODBCConn(Text::CStringNN sourceName, NotNullPtr<IO::LogTool> log) 
 	this->axisAware = false;
 }
 
-DB::ODBCConn::ODBCConn(Text::CString connStr, Text::CStringNN sourceName, NotNullPtr<IO::LogTool> log) : DB::DBConn(sourceName)
+DB::ODBCConn::ODBCConn(Text::CString connStr, Text::CStringNN sourceName, NN<IO::LogTool> log) : DB::DBConn(sourceName)
 {
 	connHand = 0;
 	envHand = 0;
@@ -400,12 +400,12 @@ DB::ODBCConn::ODBCConn(Text::CString connStr, Text::CStringNN sourceName, NotNul
 	this->tzQhr = 0;
 	this->forceTz = false;
 	this->axisAware = false;
-	NotNullPtr<Text::String> s = Text::String::New(connStr);
+	NN<Text::String> s = Text::String::New(connStr);
 	this->Connect(s);
 	s->Release();
 }
 
-DB::ODBCConn::ODBCConn(NotNullPtr<Text::String> dsn, Optional<Text::String> uid, Optional<Text::String> pwd, Optional<Text::String> schema, NotNullPtr<IO::LogTool> log) : DB::DBConn(dsn)
+DB::ODBCConn::ODBCConn(NN<Text::String> dsn, Optional<Text::String> uid, Optional<Text::String> pwd, Optional<Text::String> schema, NN<IO::LogTool> log) : DB::DBConn(dsn)
 {
 	this->log = log;
 	this->connStr = 0;
@@ -425,7 +425,7 @@ DB::ODBCConn::ODBCConn(NotNullPtr<Text::String> dsn, Optional<Text::String> uid,
 	this->Connect(this->dsn, this->uid, this->pwd, this->schema);
 }
 
-DB::ODBCConn::ODBCConn(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NotNullPtr<IO::LogTool> log) : DB::DBConn(dsn)
+DB::ODBCConn::ODBCConn(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NN<IO::LogTool> log) : DB::DBConn(dsn)
 {
 	this->log = log;
 	this->connStr = 0;
@@ -476,9 +476,9 @@ Int8 DB::ODBCConn::GetTzQhr() const
 	return this->tzQhr;
 }
 
-void DB::ODBCConn::GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb)
+void DB::ODBCConn::GetConnName(NN<Text::StringBuilderUTF8> sb)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	sb->AppendC(UTF8STRC("ODBC:"));
 	if (this->connStr)
 	{
@@ -680,7 +680,7 @@ Optional<DB::DBReader> DB::ODBCConn::ExecuteReader(Text::CStringNN sql)
 	}
 	this->lastDataError = DE_NO_ERROR;
 
-	NotNullPtr<DB::ODBCReader> r;
+	NN<DB::ODBCReader> r;
 	NEW_CLASSNN(r, DB::ODBCReader(this, hStmt, this->enableDebug, this->tzQhr));
 	return r;
 }
@@ -737,13 +737,13 @@ Optional<DB::DBReader> DB::ODBCConn::ExecuteReader(Text::CStringNN sql)
 	return r;
 }*/
 
-void DB::ODBCConn::CloseReader(NotNullPtr<DB::DBReader> r)
+void DB::ODBCConn::CloseReader(NN<DB::DBReader> r)
 {
 	DB::ODBCReader *rdr = (DB::ODBCReader*)r.Ptr();
 	DEL_CLASS(rdr);
 }
 
-void DB::ODBCConn::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void DB::ODBCConn::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 	Int32 recNumber = 1;
 	SQLWCHAR state[6];
@@ -764,7 +764,7 @@ void DB::ODBCConn::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
 		{
 			str->AppendC(UTF8STRC("["));
 			state[5] = 0;
-			NotNullPtr<Text::String> s = Text::String::NewNotNull((const UTF16Char*)state);
+			NN<Text::String> s = Text::String::NewNotNull((const UTF16Char*)state);
 			str->Append(s);
 			str->AppendC(UTF8STRC("]"));
 
@@ -820,7 +820,7 @@ Bool DB::ODBCConn::IsLastDataError()
 	if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 	{
 		state[5] = 0;
-		NotNullPtr<Text::String> s = Text::String::New((const UTF16Char*)state, 5);
+		NN<Text::String> s = Text::String::New((const UTF16Char*)state, 5);
 		Bool ret = false;
 		if (s->Equals(UTF8STRC("23000")))
 			ret = true;
@@ -840,7 +840,7 @@ void DB::ODBCConn::Reconnect()
 	Int8 oldTzQhr = this->tzQhr;
 	if (this->connStr)
 	{
-		NotNullPtr<Text::String> connStr = this->connStr->Clone();
+		NN<Text::String> connStr = this->connStr->Clone();
 		Connect(connStr);
 		connStr->Release();
 	}
@@ -877,7 +877,7 @@ Optional<DB::DBTransaction> DB::ODBCConn::BeginTransaction()
 	}
 }
 
-void DB::ODBCConn::Commit(NotNullPtr<DB::DBTransaction> tran)
+void DB::ODBCConn::Commit(NN<DB::DBTransaction> tran)
 {
 	if (!isTran)
 		return;
@@ -893,7 +893,7 @@ void DB::ODBCConn::Commit(NotNullPtr<DB::DBTransaction> tran)
 	SQLSetConnectAttr(this->connHand, SQL_ATTR_AUTOCOMMIT, &mode, sizeof(mode));
 }
 
-void DB::ODBCConn::Rollback(NotNullPtr<DB::DBTransaction> tran)
+void DB::ODBCConn::Rollback(NN<DB::DBTransaction> tran)
 {
 	if (!isTran)
 		return;
@@ -977,19 +977,19 @@ Optional<DB::DBReader> DB::ODBCConn::GetTablesInfo(Text::CString schemaName)
 	}
 	this->lastDataError = DE_NO_ERROR;
 
-	NotNullPtr<DB::ODBCReader> r;
+	NN<DB::ODBCReader> r;
 	NEW_CLASSNN(r, DB::ODBCReader(this, hStmt, this->enableDebug, this->tzQhr));
 	return r;
 }
 
-UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 //		ShowTablesCmd(sbuff);
 //		DB::ReadingDB::DBReader *rdr = this->ExecuteReader(sbuff);
 	UOSInt initCnt = names->GetCount();
-	NotNullPtr<DB::DBReader> rdr;
+	NN<DB::DBReader> rdr;
 	if (this->GetTablesInfo(schemaName).SetTo(rdr))
 	{
 		sbuff[0] = 0;
@@ -1035,7 +1035,7 @@ Optional<DB::DBReader> DB::ODBCConn::QueryTableData(Text::CString schemaName, Te
 	}
 	else
 	{
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = columnNames->Iterator();
+		Data::ArrayIterator<NN<Text::String>> it = columnNames->Iterator();
 		Bool found = false;
 		while (it.HasNext())
 		{
@@ -1072,7 +1072,7 @@ void DB::ODBCConn::ShowSQLError(const UTF16Char *state, const UTF16Char *errMsg)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("ODBC Error: ["));
-	NotNullPtr<Text::String> s = Text::String::NewNotNull(state);
+	NN<Text::String> s = Text::String::NewNotNull(state);
 	sb.Append(s);
 	s->Release();
 	sb.AppendC(UTF8STRC("] "));
@@ -1125,7 +1125,7 @@ void DB::ODBCConn::ForceTz(Int8 tzQhr)
 	this->tzQhr = tzQhr;
 }
 
-UOSInt DB::ODBCConn::GetDriverList(NotNullPtr<Data::ArrayListStringNN> driverList)
+UOSInt DB::ODBCConn::GetDriverList(NN<Data::ArrayListStringNN> driverList)
 {
 #if defined(WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(__MINGW32__)
 	WChar wbuff[512];
@@ -1147,7 +1147,7 @@ UOSInt DB::ODBCConn::GetDriverList(NotNullPtr<Data::ArrayListStringNN> driverLis
 	{
 		Data::ArrayListStringNN cateList;
 		cfg->GetCateList(cateList, false);
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = cateList.Iterator();
+		Data::ArrayIterator<NN<Text::String>> it = cateList.Iterator();
 		while (it.HasNext())
 		{
 			driverList->Add(it.Next()->Clone());
@@ -1175,9 +1175,9 @@ Optional<IO::ConfigFile> DB::ODBCConn::GetDriverInfo(Text::CString driverName)
 #endif
 }
 
-Optional<DB::DBTool> DB::ODBCConn::CreateDBTool(NotNullPtr<Text::String> dsn, Optional<Text::String> uid, Optional<Text::String> pwd, Optional<Text::String> schema, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::ODBCConn::CreateDBTool(NN<Text::String> dsn, Optional<Text::String> uid, Optional<Text::String> pwd, Optional<Text::String> schema, NN<IO::LogTool> log, Text::CString logPrefix)
 {
-	NotNullPtr<DB::ODBCConn> conn;
+	NN<DB::ODBCConn> conn;
 	DB::DBTool *db;
 	NEW_CLASSNN(conn, DB::ODBCConn(dsn, uid, pwd, schema, log));
 	if (conn->GetConnError() == CE_NONE)
@@ -1192,9 +1192,9 @@ Optional<DB::DBTool> DB::ODBCConn::CreateDBTool(NotNullPtr<Text::String> dsn, Op
 	}
 }
 
-Optional<DB::DBTool> DB::ODBCConn::CreateDBTool(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NotNullPtr<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::ODBCConn::CreateDBTool(Text::CStringNN dsn, Text::CString uid, Text::CString pwd, Text::CString schema, NN<IO::LogTool> log, Text::CString logPrefix)
 {
-	NotNullPtr<DB::ODBCConn> conn;
+	NN<DB::ODBCConn> conn;
 	DB::DBTool *db;
 	NEW_CLASSNN(conn, DB::ODBCConn(dsn, uid, pwd, schema, log));
 	if (conn->GetConnError() == CE_NONE)
@@ -1864,7 +1864,7 @@ WChar *DB::ODBCReader::GetStr(UOSInt colIndex, WChar *buff)
 		return 0;
 	case DB::DBUtil::CT_Vector:
 		{
-			NotNullPtr<Math::Geometry::Vector2D> vec;;
+			NN<Math::Geometry::Vector2D> vec;;
 
 			if (this->GetVector(colIndex).SetTo(vec))
 			{
@@ -1880,7 +1880,7 @@ WChar *DB::ODBCReader::GetStr(UOSInt colIndex, WChar *buff)
 	return 0;
 }
 
-Bool DB::ODBCReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool DB::ODBCReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	if (colIndex >= this->colCnt)
 		return false;
@@ -1927,7 +1927,7 @@ Bool DB::ODBCReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8>
 		return false;
 	case DB::DBUtil::CT_Vector:
 		{
-			NotNullPtr<Math::Geometry::Vector2D> vec;
+			NN<Math::Geometry::Vector2D> vec;
 			if (this->GetVector(colIndex).SetTo(vec))
 			{
 				Math::WKTWriter wkt;
@@ -1994,7 +1994,7 @@ Optional<Text::String> DB::ODBCReader::GetNewStr(UOSInt colIndex)
 		return 0;
 	case DB::DBUtil::CT_Vector:
 		{
-			NotNullPtr<Math::Geometry::Vector2D> vec;
+			NN<Math::Geometry::Vector2D> vec;
 			if (this->GetVector(colIndex).SetTo(vec))
 			{
 				Text::StringBuilderUTF8 sb;
@@ -2052,7 +2052,7 @@ UTF8Char *DB::ODBCReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSiz
 		return 0;
 	case DB::DBUtil::CT_Vector:
 		{
-			NotNullPtr<Math::Geometry::Vector2D> vec;
+			NN<Math::Geometry::Vector2D> vec;
 			if (this->GetVector(colIndex).SetTo(vec))
 			{
 				Text::StringBuilderUTF8 sb;
@@ -2315,12 +2315,12 @@ Optional<Math::Geometry::Vector2D> DB::ODBCReader::GetVector(UOSInt colIndex)
 	return 0;
 }
 
-Bool DB::ODBCReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
+Bool DB::ODBCReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 {
 	return false;
 }
 
-Bool DB::ODBCReader::GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> item)
+Bool DB::ODBCReader::GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
 {
 	if (colIndex >= this->colCnt)
 		return false;
@@ -2384,7 +2384,7 @@ Bool DB::ODBCReader::GetVariItem(UOSInt colIndex, NotNullPtr<Data::VariItem> ite
 			UOSInt dataSize = (UOSInt)this->colDatas[colIndex].dataVal;
 			UInt8 *buffPtr = (UInt8*)this->colDatas[colIndex].colData;
 			UInt32 srId;
-			NotNullPtr<Math::Geometry::Vector2D> vec;
+			NN<Math::Geometry::Vector2D> vec;
 			if (Math::MSGeography::ParseBinary(buffPtr, dataSize, srId).SetTo(vec))
 			{
 				item->SetVectorDirect(vec);
@@ -2431,7 +2431,7 @@ DB::DBUtil::ColType DB::ODBCReader::GetColType(UOSInt colIndex, OptOut<UOSInt> c
 	return this->colDatas[colIndex].colType;
 }
 
-Bool DB::ODBCReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool DB::ODBCReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	SQLWCHAR sbuff[256];
 	Int16 nameLen = 0;
@@ -2446,7 +2446,7 @@ Bool DB::ODBCReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
 		return false;
 	}
 
-	NotNullPtr<Text::String> s = Text::String::NewNotNull((const UTF16Char*)sbuff);
+	NN<Text::String> s = Text::String::NewNotNull((const UTF16Char*)sbuff);
 	colDef->SetColName(s);
 	s->Release();
 	colDef->SetColType(this->ODBCType2DBType(dataType, colSize));

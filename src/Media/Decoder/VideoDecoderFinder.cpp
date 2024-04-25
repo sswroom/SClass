@@ -19,9 +19,9 @@ Media::Decoder::VideoDecoderFinder::~VideoDecoderFinder()
 {
 }
 
-Media::IVideoSource *Media::Decoder::VideoDecoderFinder::DecodeVideo(NotNullPtr<Media::IVideoSource> vsrc)
+Media::IVideoSource *Media::Decoder::VideoDecoderFinder::DecodeVideo(NN<Media::IVideoSource> vsrc)
 {
-	NotNullPtr<Media::IVideoSource> decoder;
+	NN<Media::IVideoSource> decoder;
 	Media::FrameInfo frameInfo;
 	Media::FrameInfo decFrameInfo;
 	UInt32 frameRateNorm;
@@ -43,7 +43,7 @@ Media::IVideoSource *Media::Decoder::VideoDecoderFinder::DecodeVideo(NotNullPtr<
 	}
 	if (frameInfo.fourcc == *(UInt32*)"MP2G")
 	{
-		NotNullPtr<Media::Decoder::MP2GDecoder> mp2g;
+		NN<Media::Decoder::MP2GDecoder> mp2g;
 		Media::Decoder::VDecoderChain *decChain;
 
 		NEW_CLASSNN(mp2g, Media::Decoder::MP2GDecoder(vsrc, false));
@@ -59,7 +59,7 @@ Media::IVideoSource *Media::Decoder::VideoDecoderFinder::DecodeVideo(NotNullPtr<
 	}
 	else if (frameInfo.fourcc == *(UInt32*)"m2v1")
 	{
-		NotNullPtr<Media::Decoder::M2VDecoder> m2vd;
+		NN<Media::Decoder::M2VDecoder> m2vd;
 		Media::Decoder::VDecoderChain *decChain;
 
 		NEW_CLASSNN(m2vd, Media::Decoder::M2VDecoder(vsrc, false));
@@ -75,7 +75,7 @@ Media::IVideoSource *Media::Decoder::VideoDecoderFinder::DecodeVideo(NotNullPtr<
 	}
 	else if (frameInfo.fourcc == *(UInt32*)"ravc")
 	{
-		NotNullPtr<Media::Decoder::RAVCDecoder> ravc;
+		NN<Media::Decoder::RAVCDecoder> ravc;
 		Media::Decoder::VDecoderChain *decChain;
 
 		NEW_CLASSNN(ravc, Media::Decoder::RAVCDecoder(vsrc, false, false));
@@ -91,7 +91,7 @@ Media::IVideoSource *Media::Decoder::VideoDecoderFinder::DecodeVideo(NotNullPtr<
 	}
 	else if (frameInfo.fourcc == *(UInt32*)"rhvc")
 	{
-		NotNullPtr<Media::Decoder::RHVCDecoder> rhvc;
+		NN<Media::Decoder::RHVCDecoder> rhvc;
 		Media::Decoder::VDecoderChain *decChain;
 
 		NEW_CLASSNN(rhvc, Media::Decoder::RHVCDecoder(vsrc, false));

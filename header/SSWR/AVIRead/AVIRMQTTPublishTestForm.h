@@ -17,7 +17,7 @@ namespace SSWR
 		class AVIRMQTTPublishTestForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 			Net::MQTTConn *client;
 			IO::LogTool log;
@@ -31,30 +31,30 @@ namespace SSWR
 			Bool threadRunning;
 			Bool threadToStop;
 
-			NotNullPtr<UI::GUILabel> lblHost;
-			NotNullPtr<UI::GUITextBox> txtHost;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUILabel> lblUsername;
-			NotNullPtr<UI::GUITextBox> txtUsername;
-			NotNullPtr<UI::GUILabel> lblPassword;
-			NotNullPtr<UI::GUITextBox> txtPassword;
-			NotNullPtr<UI::GUICheckBox> chkSSL;
-			NotNullPtr<UI::GUICheckBox> chkWebSocket;
-			NotNullPtr<UI::GUIButton> btnCliCert;
-			NotNullPtr<UI::GUILabel> lblCliCert;
-			NotNullPtr<UI::GUIButton> btnCliKey;
-			NotNullPtr<UI::GUILabel> lblCliKey;
-			NotNullPtr<UI::GUILabel> lblTopic;
-			NotNullPtr<UI::GUITextBox> txtTopic;
-			NotNullPtr<UI::GUILabel> lblContent;
-			NotNullPtr<UI::GUITextBox> txtContent;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUILabel> lblTotalCount;
-			NotNullPtr<UI::GUITextBox> txtTotalCount;
-			NotNullPtr<UI::GUILabel> lblRecvRate;
-			NotNullPtr<UI::GUITextBox> txtRecvRate;
-			NotNullPtr<UI::GUILabel> lblStatus;
+			NN<UI::GUILabel> lblHost;
+			NN<UI::GUITextBox> txtHost;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUILabel> lblUsername;
+			NN<UI::GUITextBox> txtUsername;
+			NN<UI::GUILabel> lblPassword;
+			NN<UI::GUITextBox> txtPassword;
+			NN<UI::GUICheckBox> chkSSL;
+			NN<UI::GUICheckBox> chkWebSocket;
+			NN<UI::GUIButton> btnCliCert;
+			NN<UI::GUILabel> lblCliCert;
+			NN<UI::GUIButton> btnCliKey;
+			NN<UI::GUILabel> lblCliKey;
+			NN<UI::GUILabel> lblTopic;
+			NN<UI::GUITextBox> txtTopic;
+			NN<UI::GUILabel> lblContent;
+			NN<UI::GUITextBox> txtContent;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUILabel> lblTotalCount;
+			NN<UI::GUITextBox> txtTotalCount;
+			NN<UI::GUILabel> lblRecvRate;
+			NN<UI::GUITextBox> txtRecvRate;
+			NN<UI::GUILabel> lblStatus;
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnCliCertClicked(AnyType userObj);
@@ -66,7 +66,7 @@ namespace SSWR
 
 			void ServerStop();
 		public:
-			AVIRMQTTPublishTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRMQTTPublishTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMQTTPublishTestForm();
 
 			virtual void OnMonitorChanged();

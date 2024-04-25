@@ -46,50 +46,50 @@ namespace SSWR
 				Int32 alarmStatus5;
 			} DevGuard;
 		private:
-			NotNullPtr<UI::GUIPanel> pnlConn;
-			NotNullPtr<UI::GUILabel> lblHost;
-			NotNullPtr<UI::GUITextBox> txtHost;
-			NotNullPtr<UI::GUILabel> lblPort;
-			NotNullPtr<UI::GUITextBox> txtPort;
-			NotNullPtr<UI::GUIButton> btnConn;
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUIPanel> pnlConn;
+			NN<UI::GUILabel> lblHost;
+			NN<UI::GUITextBox> txtHost;
+			NN<UI::GUILabel> lblPort;
+			NN<UI::GUITextBox> txtPort;
+			NN<UI::GUIButton> btnConn;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpStatus;
-			NotNullPtr<UI::GUILabel> lblStatusConn;
-			NotNullPtr<UI::GUITextBox> txtStatusConn;
+			NN<UI::GUITabPage> tpStatus;
+			NN<UI::GUILabel> lblStatusConn;
+			NN<UI::GUITextBox> txtStatusConn;
 
-			NotNullPtr<UI::GUITabPage> tpDevice;
-			NotNullPtr<UI::GUIPanel> pnlDeviceC;
-			NotNullPtr<UI::GUIButton> btnDeviceR;
-			NotNullPtr<UI::GUIListBox> lbDevice;
-			NotNullPtr<UI::GUIHSplitter> hspDevice;
-			NotNullPtr<UI::GUITabControl> tcDevice;
-			NotNullPtr<UI::GUITabPage> tpDevInfo;
-			NotNullPtr<UI::GUIListView> lvDevInfo;
-			NotNullPtr<UI::GUITabPage> tpDevAlert;
-			NotNullPtr<UI::GUIListView> lvDevAlert;
-			NotNullPtr<UI::GUITabPage> tpDevGuard;
-			NotNullPtr<UI::GUIListView> lvDevGuard;
+			NN<UI::GUITabPage> tpDevice;
+			NN<UI::GUIPanel> pnlDeviceC;
+			NN<UI::GUIButton> btnDeviceR;
+			NN<UI::GUIListBox> lbDevice;
+			NN<UI::GUIHSplitter> hspDevice;
+			NN<UI::GUITabControl> tcDevice;
+			NN<UI::GUITabPage> tpDevInfo;
+			NN<UI::GUIListView> lvDevInfo;
+			NN<UI::GUITabPage> tpDevAlert;
+			NN<UI::GUIListView> lvDevAlert;
+			NN<UI::GUITabPage> tpDevGuard;
+			NN<UI::GUIListView> lvDevGuard;
 
-			NotNullPtr<UI::GUITabPage> tpUser;
-			NotNullPtr<UI::GUIPanel> pnlUserC;
-			NotNullPtr<UI::GUIButton> btnUserR;
-			NotNullPtr<UI::GUIListBox> lbUser;
-			NotNullPtr<UI::GUIHSplitter> hspUser;
-			NotNullPtr<UI::GUIPanel> pnlUser;
-			NotNullPtr<UI::GUIListBox> lbUserDev;
-			NotNullPtr<UI::GUIListView> lvUser;
+			NN<UI::GUITabPage> tpUser;
+			NN<UI::GUIPanel> pnlUserC;
+			NN<UI::GUIButton> btnUserR;
+			NN<UI::GUIListBox> lbUser;
+			NN<UI::GUIHSplitter> hspUser;
+			NN<UI::GUIPanel> pnlUser;
+			NN<UI::GUIListBox> lbUserDev;
+			NN<UI::GUIListView> lvUser;
 
-			NotNullPtr<UI::GUITabPage> tpAlert;
-			NotNullPtr<UI::GUIPanel> pnlAlertC;
-			NotNullPtr<UI::GUIButton> btnAlertR;
-			NotNullPtr<UI::GUIListBox> lbAlert;
-			NotNullPtr<UI::GUIHSplitter> hspAlert;
-			NotNullPtr<UI::GUIPanel> pnlAlert;
-			NotNullPtr<UI::GUIListBox> lbAlertDev;
-			NotNullPtr<UI::GUIListView> lvAlert;
+			NN<UI::GUITabPage> tpAlert;
+			NN<UI::GUIPanel> pnlAlertC;
+			NN<UI::GUIButton> btnAlertR;
+			NN<UI::GUIListBox> lbAlert;
+			NN<UI::GUIHSplitter> hspAlert;
+			NN<UI::GUIPanel> pnlAlert;
+			NN<UI::GUIListBox> lbAlertDev;
+			NN<UI::GUIListView> lvAlert;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Sync::Mutex cliMut;
 			Net::TCPClient *cli;
 			IO::ProtoHdlr::ProtoGPSDevInfoHandler protoHdlr;
@@ -150,13 +150,13 @@ namespace SSWR
 			void SendGetAlert(Int32 alertId);
 			void SendGetUser(Int32 userId);
 		public:
-			AVIRGPSDevForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRGPSDevForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRGPSDevForm();
 
 			virtual void OnMonitorChanged();
 
-			virtual void DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
-			virtual void DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize);
+			virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
+			virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize);
 		};
 	}
 }

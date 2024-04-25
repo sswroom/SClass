@@ -46,14 +46,14 @@ Bool IO::GSMModemController::GetSMSFormat(OutParam<SMSFormat> smsFormat)
 	}
 }
 
-void IO::GSMModemController::FreeOperator(NotNullPtr<Operator> oper)
+void IO::GSMModemController::FreeOperator(NN<Operator> oper)
 {
 	oper->longName->Release();
 	oper->shortName->Release();
 	MemFreeNN(oper);
 }
 
-IO::GSMModemController::GSMModemController(NotNullPtr<IO::ATCommandChannel> channel, Bool needRelease) : IO::ModemController(channel, needRelease)
+IO::GSMModemController::GSMModemController(NN<IO::ATCommandChannel> channel, Bool needRelease) : IO::ModemController(channel, needRelease)
 {
 	this->smsFormat = -1;
 }
@@ -108,7 +108,7 @@ Bool IO::GSMModemController::GSMSetTECharset(const UTF8Char *cs)
 	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-Bool IO::GSMModemController::GSMGetTECharsetsSupported(NotNullPtr<Data::ArrayListStringNN> csList)
+Bool IO::GSMModemController::GSMGetTECharsetsSupported(NN<Data::ArrayListStringNN> csList)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr2;
@@ -203,7 +203,7 @@ Bool IO::GSMModemController::GSMConnectPLMN(Int32 plmn)
 	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff), 300000);
 }
 
-Bool IO::GSMModemController::GSMGetAllowedOperators(NotNullPtr<Data::ArrayListNN<Operator>> operList)
+Bool IO::GSMModemController::GSMGetAllowedOperators(NN<Data::ArrayListNN<Operator>> operList)
 {
 	UTF8Char sbuff[256];
 	UTF8Char lbuff[256];
@@ -222,14 +222,14 @@ Bool IO::GSMModemController::GSMGetAllowedOperators(NotNullPtr<Data::ArrayListNN
 	Bool quoteStarted;
 	Bool operExist;
 	Bool operError = false;
-	NotNullPtr<Text::String> val;
+	NN<Text::String> val;
 	if (j > 1 && this->cmdResults.GetItem(j - 1).SetTo(val))
 	{
 		if (val->Equals(UTF8STRC("OK")))
 		{
 			Int32 status = 0;
 			Int32 plmn = 0;
-			NotNullPtr<Operator> newOper;
+			NN<Operator> newOper;
 			j -= 1;
 			i = 1;
 			while (i < j)
@@ -414,7 +414,7 @@ Bool IO::GSMModemController::GSMGetAllowedOperators(NotNullPtr<Data::ArrayListNN
 	}
 }
 
-void IO::GSMModemController::GSMFreeOperators(NotNullPtr<Data::ArrayListNN<Operator>> operList)
+void IO::GSMModemController::GSMFreeOperators(NN<Data::ArrayListNN<Operator>> operList)
 {
 	operList->FreeAll(FreeOperator);
 }
@@ -422,7 +422,7 @@ void IO::GSMModemController::GSMFreeOperators(NotNullPtr<Data::ArrayListNN<Opera
 Int32 IO::GSMModemController::GSMSearchOperatorPLMN(Int32 netact)
 {
 	Data::ArrayListNN<IO::GSMModemController::Operator> operList;
-	NotNullPtr<IO::GSMModemController::Operator> oper;
+	NN<IO::GSMModemController::Operator> oper;
 	Int32 plmn = 0;
 	UOSInt i;
 	UOSInt j;
@@ -450,7 +450,7 @@ IO::GSMModemController::SIMStatus IO::GSMModemController::GSMGetSIMStatus()
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, UTF8STRC("AT+CPIN?"), 3000);
 	UOSInt i = this->cmdResults.GetCount();
-	NotNullPtr<Text::String> val;
+	NN<Text::String> val;
 	while (i-- > 0)
 	{
 		if (this->cmdResults.GetItem(i).SetTo(val))
@@ -514,7 +514,7 @@ Bool IO::GSMModemController::GSMSetFunctionalityReset()
 	return this->SendBoolCommandC(UTF8STRC("AT+CFUN=6"));
 }
 
-Bool IO::GSMModemController::GSMGetModemTime(NotNullPtr<Data::DateTime> date)
+Bool IO::GSMModemController::GSMGetModemTime(NN<Data::DateTime> date)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr = this->SendStringCommand(sbuff, UTF8STRC("AT+CCLK?"), 3000);
@@ -561,7 +561,7 @@ Bool IO::GSMModemController::GSMGetModemTime(NotNullPtr<Data::DateTime> date)
 	}
 }
 
-Bool IO::GSMModemController::GSMSetModemTime(NotNullPtr<Data::DateTime> date)
+Bool IO::GSMModemController::GSMSetModemTime(NN<Data::DateTime> date)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CCLK=\""));
@@ -735,7 +735,7 @@ Bool IO::GSMModemController::GPRSSetPDPContext(UInt32 cid, Text::CString type, T
 	return SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-Bool IO::GSMModemController::GPRSGetPDPContext(NotNullPtr<Data::ArrayListNN<PDPContext>> ctxList)
+Bool IO::GSMModemController::GPRSGetPDPContext(NN<Data::ArrayListNN<PDPContext>> ctxList)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -744,8 +744,8 @@ Bool IO::GSMModemController::GPRSGetPDPContext(NotNullPtr<Data::ArrayListNN<PDPC
 	this->channel->SendATCommand(this->cmdResults, UTF8STRC("AT+CGDCONT?"), 3000);
 	UOSInt i;
 	UOSInt j = this->cmdResults.GetCount();
-	NotNullPtr<Text::String> val;
-	NotNullPtr<PDPContext> ctx;
+	NN<Text::String> val;
+	NN<PDPContext> ctx;
 
 	if (j > 1)
 	{
@@ -801,9 +801,9 @@ Bool IO::GSMModemController::GPRSGetPDPContext(NotNullPtr<Data::ArrayListNN<PDPC
 	}
 }
 
-void IO::GSMModemController::GPRSFreePDPContext(NotNullPtr<Data::ArrayListNN<PDPContext>> ctxList)
+void IO::GSMModemController::GPRSFreePDPContext(NN<Data::ArrayListNN<PDPContext>> ctxList)
 {
-	NotNullPtr<PDPContext> ctx;
+	NN<PDPContext> ctx;
 	UOSInt i = ctxList->GetCount();
 	while (i-- > 0)
 	{
@@ -843,7 +843,7 @@ Bool IO::GSMModemController::GPRSSetPDPActive(Bool active, UInt32 cid)
 	return SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff), 3000);
 }
 
-Bool IO::GSMModemController::GPRSGetPDPActive(NotNullPtr<Data::ArrayList<ActiveState>> actList)
+Bool IO::GSMModemController::GPRSGetPDPActive(NN<Data::ArrayList<ActiveState>> actList)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -852,7 +852,7 @@ Bool IO::GSMModemController::GPRSGetPDPActive(NotNullPtr<Data::ArrayList<ActiveS
 	this->channel->SendATCommand(this->cmdResults, UTF8STRC("AT+CGACT?"), 3000);
 	UOSInt i;
 	UOSInt j = this->cmdResults.GetCount();
-	NotNullPtr<Text::String> val;
+	NN<Text::String> val;
 	ActiveState act;
 
 	if (j > 1)
@@ -891,7 +891,7 @@ Bool IO::GSMModemController::GPRSGetPDPActive(NotNullPtr<Data::ArrayList<ActiveS
 	}
 }
 
-Bool IO::GSMModemController::SMSListMessages(NotNullPtr<Data::ArrayListNN<IO::GSMModemController::SMSMessage>> msgList, IO::GSMModemController::SMSStatus status)
+Bool IO::GSMModemController::SMSListMessages(NN<Data::ArrayListNN<IO::GSMModemController::SMSMessage>> msgList, IO::GSMModemController::SMSStatus status)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -907,9 +907,9 @@ Bool IO::GSMModemController::SMSListMessages(NotNullPtr<Data::ArrayListNN<IO::GS
 	UOSInt i;
 	UOSInt j = this->cmdResults.GetCount();
 	Int32 lastIndex = 0;
-	NotNullPtr<Text::String> val;
-	NotNullPtr<Text::String> val2;
-	NotNullPtr<IO::GSMModemController::SMSMessage> msg;
+	NN<Text::String> val;
+	NN<Text::String> val2;
+	NN<IO::GSMModemController::SMSMessage> msg;
 
 	if (j > 1)
 	{
@@ -981,12 +981,12 @@ Bool IO::GSMModemController::SMSListMessages(NotNullPtr<Data::ArrayListNN<IO::GS
 	}
 }
 
-void IO::GSMModemController::SMSFreeMessages(NotNullPtr<Data::ArrayListNN<SMSMessage>> msgList)
+void IO::GSMModemController::SMSFreeMessages(NN<Data::ArrayListNN<SMSMessage>> msgList)
 {
 	msgList->FreeAll(SMSFreeMessage);
 }
 
-void IO::GSMModemController::SMSFreeMessage(NotNullPtr<SMSMessage> msg)
+void IO::GSMModemController::SMSFreeMessage(NN<SMSMessage> msg)
 {
 	MemFree(msg->pduMessage);
 	MemFreeNN(msg);
@@ -1000,7 +1000,7 @@ Bool IO::GSMModemController::SMSDeleteMessage(Int32 index)
 	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-Bool IO::GSMModemController::SMSSendMessage(NotNullPtr<Text::SMSMessage> msg)
+Bool IO::GSMModemController::SMSSendMessage(NN<Text::SMSMessage> msg)
 {
 	UTF8Char sbuff1[32];
 	UTF8Char *sptr1;
@@ -1100,7 +1100,7 @@ Bool IO::GSMModemController::SMSGetStorageInfo(Optional<SMSStorageInfo> reading,
 		return false;
 	if (Text::StrSplitP(buffs, 10, {&sbuff[7], (UOSInt)(sptr - &sbuff[7])}, ',') != 9)
 		return false;
-	NotNullPtr<SMSStorageInfo> info;
+	NN<SMSStorageInfo> info;
 	if (reading.SetTo(info))
 	{
 		if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"SM\"")))
@@ -1157,7 +1157,7 @@ UTF8Char *IO::GSMModemController::SMSGetSMSC(UTF8Char *buff)
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, UTF8STRC("AT+CSCA?"), 3000);
 	UOSInt i = this->cmdResults.GetCount();
-	NotNullPtr<Text::String> val;
+	NN<Text::String> val;
 	while (i-- > 0)
 	{
 		if (this->cmdResults.GetItem(i).SetTo(val) && val->StartsWith(UTF8STRC("+CSCA: ")))
@@ -1321,7 +1321,7 @@ Bool IO::GSMModemController::PBGetStorageStatus(OptOut<Int32> startEntry, OptOut
 	}
 }
 
-Bool IO::GSMModemController::PBReadEntries(NotNullPtr<Data::ArrayListNN<PBEntry>> phoneList, Int32 startEntry, Int32 endEntry)
+Bool IO::GSMModemController::PBReadEntries(NN<Data::ArrayListNN<PBEntry>> phoneList, Int32 startEntry, Int32 endEntry)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -1338,8 +1338,8 @@ Bool IO::GSMModemController::PBReadEntries(NotNullPtr<Data::ArrayListNN<PBEntry>
 	this->channel->SendATCommand(this->cmdResults, sbuff, (UOSInt)(sptr - sbuff), 10000);
 	UOSInt i;
 	UOSInt j = this->cmdResults.GetCount();
-	NotNullPtr<Text::String> val;
-	NotNullPtr<IO::GSMModemController::PBEntry> ent;
+	NN<Text::String> val;
+	NN<IO::GSMModemController::PBEntry> ent;
 	if (j > 1)
 	{
 		if (this->cmdResults.GetItem(j - 1).SetTo(val) && val->Equals(UTF8STRC("OK")))
@@ -1384,7 +1384,7 @@ Bool IO::GSMModemController::PBReadEntries(NotNullPtr<Data::ArrayListNN<PBEntry>
 	return false;
 }
 
-Bool IO::GSMModemController::PBReadAllEntries(NotNullPtr<Data::ArrayListNN<PBEntry>> phoneList)
+Bool IO::GSMModemController::PBReadAllEntries(NN<Data::ArrayListNN<PBEntry>> phoneList)
 {
 	Int32 startEntry;
 	Int32 endEntry;
@@ -1393,14 +1393,14 @@ Bool IO::GSMModemController::PBReadAllEntries(NotNullPtr<Data::ArrayListNN<PBEnt
 	return PBReadEntries(phoneList, startEntry, endEntry);
 }
 
-void IO::GSMModemController::PBFreeEntry(NotNullPtr<PBEntry> entry)
+void IO::GSMModemController::PBFreeEntry(NN<PBEntry> entry)
 {
 	entry->name->Release();
 	entry->number->Release();
 	MemFreeNN(entry);
 }
 
-void IO::GSMModemController::PBFreeEntries(NotNullPtr<Data::ArrayListNN<PBEntry>> phoneList)
+void IO::GSMModemController::PBFreeEntries(NN<Data::ArrayListNN<PBEntry>> phoneList)
 {
 	phoneList->FreeAll(PBFreeEntry);
 }

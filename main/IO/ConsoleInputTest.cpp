@@ -5,7 +5,7 @@
 #include "IO/ConsoleWriter.h"
 #include "Text/MyString.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

@@ -35,13 +35,13 @@ void GUIControl_SizeChanged(GtkWidget *wnd, GdkEvent *event, gpointer data)
 	me->OnSizeChanged(false);
 }
 
-UI::GUIControl::GUIControl(NotNullPtr<UI::GUICore> ui, Optional<GUIClientControl> parent)
+UI::GUIControl::GUIControl(NN<UI::GUICore> ui, Optional<GUIClientControl> parent)
 {
 	this->ui = ui;
 	this->parent = parent;
 	this->selfResize = false;
 	this->dockType = UI::GUIControl::DOCK_NONE;
-	NotNullPtr<GUIClientControl> nnparent;
+	NN<GUIClientControl> nnparent;
 	if (parent.SetTo(nnparent))
 	{
 		this->hdpi = nnparent->GetHDPI();
@@ -81,7 +81,7 @@ UI::GUIControl::~GUIControl()
 
 void *UI::GUIControl::GetFont()
 {
-	NotNullPtr<GUIClientControl> nnparent;
+	NN<GUIClientControl> nnparent;
 	if (this->hFont)
 	{
 		return this->hFont;
@@ -124,7 +124,7 @@ UTF8Char *UI::GUIControl::GetText(UTF8Char *buff)
 	return 0;
 }
 
-Bool UI::GUIControl::GetText(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool UI::GUIControl::GetText(NN<Text::StringBuilderUTF8> sb)
 {
 	///////////////////////////////
 	return false;
@@ -173,7 +173,7 @@ void UI::GUIControl::SetArea(Double left, Double top, Double right, Double botto
 	if (left == this->lxPos && top == this->lyPos && right == this->lxPos2 && bottom == this->lyPos2)
 		return;
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
-	NotNullPtr<GUIClientControl> nnparent;
+	NN<GUIClientControl> nnparent;
 	if (this->parent.SetTo(nnparent))
 	{
 		ofst = nnparent->GetClientOfst();
@@ -230,7 +230,7 @@ void UI::GUIControl::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, 
 	if (OSInt2Double(left) == this->lxPos && OSInt2Double(top) == this->lyPos && OSInt2Double(right) == this->lxPos2 && OSInt2Double(bottom) == this->lyPos2)
 		return;
 	Math::Coord2DDbl ofst = Math::Coord2DDbl(0, 0);
-	NotNullPtr<GUIClientControl> nnparent;
+	NN<GUIClientControl> nnparent;
 	if (this->parent.SetTo(nnparent))
 	{
 		ofst = nnparent->GetClientOfst();
@@ -331,7 +331,7 @@ void UI::GUIControl::SetDockType(UI::GUIControl::DockType dockType)
 	if (this->dockType != dockType)
 	{
 		this->dockType = dockType;
-		NotNullPtr<GUIClientControl> nnparent;
+		NN<GUIClientControl> nnparent;
 		if (this->parent.SetTo(nnparent))
 		{
 			nnparent->UpdateChildrenSize(true);
@@ -504,7 +504,7 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 		}
 	}
 
-	NotNullPtr<GUIClientControl> nnparent;
+	NN<GUIClientControl> nnparent;
 	if (this->parent.SetTo(nnparent))
 	{
 		Math::Coord2DDbl ofst = nnparent->GetClientOfst();
@@ -819,7 +819,7 @@ Double UI::GUIControl::GetDDPI()
 	return this->ddpi;
 }
 
-Media::DrawFont *UI::GUIControl::CreateDrawFont(NotNullPtr<Media::DrawImage> img)
+Media::DrawFont *UI::GUIControl::CreateDrawFont(NN<Media::DrawImage> img)
 {
 	PangoFontDescription *f = (PangoFontDescription *)this->GetFont();
 	if (f == 0)
@@ -837,7 +837,7 @@ Media::DrawFont *UI::GUIControl::CreateDrawFont(NotNullPtr<Media::DrawImage> img
 			family = "Arial";
 		}
 		Media::DrawFont *font;
-		NotNullPtr<Text::String> fntName = Text::String::NewNotNullSlow((const UTF8Char*)family);
+		NN<Text::String> fntName = Text::String::NewNotNullSlow((const UTF8Char*)family);
 		NEW_CLASS(font, Media::GTKDrawFont(fntName.Ptr(), height, (OSInt)((style & PANGO_STYLE_ITALIC)?CAIRO_FONT_SLANT_ITALIC:CAIRO_FONT_SLANT_NORMAL), (weight < PANGO_WEIGHT_BOLD)?0:1));
 		fntName->Release();
 		pango_font_description_free(fnt);

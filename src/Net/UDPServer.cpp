@@ -11,8 +11,8 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(AnyType obj)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	NotNullPtr<Text::String> s;
-	NotNullPtr<Net::UDPServer::ThreadStat> stat = obj.GetNN<Net::UDPServer::ThreadStat>();
+	NN<Text::String> s;
+	NN<Net::UDPServer::ThreadStat> stat = obj.GetNN<Net::UDPServer::ThreadStat>();
 	{
 		Sync::Event evt;
 		stat->evt = &evt;
@@ -87,8 +87,8 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(AnyType obj)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	NotNullPtr<Text::String> s;
-	NotNullPtr<Net::UDPServer::ThreadStat> stat = obj.GetNN<Net::UDPServer::ThreadStat>();
+	NN<Text::String> s;
+	NN<Net::UDPServer::ThreadStat> stat = obj.GetNN<Net::UDPServer::ThreadStat>();
 	{
 		Sync::Event evt;
 		stat->evt = &evt;
@@ -159,7 +159,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(AnyType obj)
 	return 0;
 }
 
-Net::UDPServer::UDPServer(NotNullPtr<Net::SocketFactory> sockf, Net::SocketUtil::AddressInfo *bindAddr, UInt16 port, Text::CString logPrefix, UDPPacketHdlr hdlr, AnyType userData, NotNullPtr<IO::LogTool> msgLog, Text::CString msgPrefix, UOSInt threadCnt, Bool reuseAddr)
+Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Net::SocketUtil::AddressInfo *bindAddr, UInt16 port, Text::CString logPrefix, UDPPacketHdlr hdlr, AnyType userData, NN<IO::LogTool> msgLog, Text::CString msgPrefix, UOSInt threadCnt, Bool reuseAddr)
 {
 	this->threadCnt = threadCnt;
 	this->v4threadStats = 0;
@@ -411,12 +411,12 @@ Bool Net::UDPServer::SupportV6()
 	return this->socV6 != 0;
 }
 
-Bool Net::UDPServer::SendTo(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize)
+Bool Net::UDPServer::SendTo(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Bool succ;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (this->logPrefix.SetTo(s))
 	{
 		Data::Timestamp logTime = Data::Timestamp::UtcNow();

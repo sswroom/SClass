@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTCPPortScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPPortScanForm>();
+	NN<SSWR::AVIRead::AVIRTCPPortScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPPortScanForm>();
 	if (me->scanner)
 	{
 		SDEL_CLASS(me->scanner);
@@ -45,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnStartClicked(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTCPPortScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPPortScanForm>();
+	NN<SSWR::AVIRead::AVIRTCPPortScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPPortScanForm>();
 	if (me->scanner)
 	{
 		if (me->listUpdated)
@@ -88,11 +88,11 @@ void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnTimerTick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnPortUpdated(AnyType userObj, UInt16 port)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTCPPortScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPPortScanForm>();
+	NN<SSWR::AVIRead::AVIRTCPPortScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPPortScanForm>();
 	me->listUpdated = true;
 }
 
-SSWR::AVIRead::AVIRTCPPortScanForm::AVIRTCPPortScanForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRTCPPortScanForm::AVIRTCPPortScanForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("TCP Port Scan"));

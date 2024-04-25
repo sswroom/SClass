@@ -11,12 +11,12 @@ namespace Data
 		ArrayListStringNN();
 		ArrayListStringNN(UOSInt capacity);
 
-		virtual NotNullPtr<Data::ArrayListNN<Text::String>> Clone() const;
-		virtual OSInt Compare(NotNullPtr<Text::String> obj1, NotNullPtr<Text::String> obj2) const;
+		virtual NN<Data::ArrayListNN<Text::String>> Clone() const;
+		virtual OSInt Compare(NN<Text::String> obj1, NN<Text::String> obj2) const;
 		virtual OSInt SortedIndexOfC(Text::CStringNN val) const;
 		UOSInt IndexOfC(Text::CStringNN val) const;
 
-		NotNullPtr<Text::String> JoinString() const;
+		NN<Text::String> JoinString() const;
 		void FreeAll();
 	};
 }

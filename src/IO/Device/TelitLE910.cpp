@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/Device/TelitLE910.h"
 
-IO::Device::TelitLE910::TelitLE910(NotNullPtr<IO::ATCommandChannel> channel, Bool needRelease) : IO::GSMModemController(channel, needRelease)
+IO::Device::TelitLE910::TelitLE910(NN<IO::ATCommandChannel> channel, Bool needRelease) : IO::GSMModemController(channel, needRelease)
 {
 }
 

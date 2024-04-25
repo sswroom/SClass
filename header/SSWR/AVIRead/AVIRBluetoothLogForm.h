@@ -18,14 +18,14 @@ namespace SSWR
 		class AVIRBluetoothLogForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUIButton> btnFile;
-			NotNullPtr<UI::GUICheckBox> chkUnkOnly;
-			NotNullPtr<UI::GUIButton> btnStore;
-			NotNullPtr<UI::GUILabel> lblInfo;
-			NotNullPtr<UI::GUIListView> lvContent;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUIButton> btnFile;
+			NN<UI::GUICheckBox> chkUnkOnly;
+			NN<UI::GUIButton> btnStore;
+			NN<UI::GUILabel> lblInfo;
+			NN<UI::GUIListView> lvContent;
 
 			IO::BTDevLog btLog;
 			Net::MACInfoList macList;
@@ -40,7 +40,7 @@ namespace SSWR
 
 			void UpdateStatus();
 		public:
-			AVIRBluetoothLogForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRBluetoothLogForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRBluetoothLogForm();
 
 			virtual void OnMonitorChanged();

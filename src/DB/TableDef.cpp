@@ -44,7 +44,7 @@ Optional<Text::String> DB::TableDef::GetSchemaName() const
 	return this->schemaName;
 }
 
-NotNullPtr<Text::String> DB::TableDef::GetTableName() const
+NN<Text::String> DB::TableDef::GetTableName() const
 {
 	return this->tableName;
 }
@@ -87,8 +87,8 @@ Optional<DB::ColDef> DB::TableDef::GetCol(UOSInt index) const
 Optional<DB::ColDef> DB::TableDef::GetSinglePKCol() const
 {
 	Optional<DB::ColDef> retCol = 0;
-	NotNullPtr<DB::ColDef> col;
-	Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = this->cols.Iterator();
+	NN<DB::ColDef> col;
+	Data::ArrayIterator<NN<DB::ColDef>> it = this->cols.Iterator();
 	while (it.HasNext())
 	{
 		col = it.Next();
@@ -107,7 +107,7 @@ Optional<DB::ColDef> DB::TableDef::GetSinglePKCol() const
 UOSInt DB::TableDef::CountPK() const
 {
 	UOSInt cnt = 0;
-	Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = this->cols.Iterator();
+	Data::ArrayIterator<NN<DB::ColDef>> it = this->cols.Iterator();
 	while (it.HasNext())
 	{
 		if (it.Next()->IsPK())
@@ -116,12 +116,12 @@ UOSInt DB::TableDef::CountPK() const
 	return cnt;
 }
 
-Data::ArrayIterator<NotNullPtr<DB::ColDef>> DB::TableDef::ColIterator() const
+Data::ArrayIterator<NN<DB::ColDef>> DB::TableDef::ColIterator() const
 {
 	return this->cols.Iterator();
 }
 
-DB::TableDef *DB::TableDef::AddCol(NotNullPtr<DB::ColDef> col)
+DB::TableDef *DB::TableDef::AddCol(NN<DB::ColDef> col)
 {
 	this->cols.Add(col);
 	return this;
@@ -182,11 +182,11 @@ DB::TableDef *DB::TableDef::SetSQLType(DB::SQLType sqlType)
 	return this;
 }
 
-void DB::TableDef::ColFromReader(NotNullPtr<DB::DBReader> r)
+void DB::TableDef::ColFromReader(NN<DB::DBReader> r)
 {
 	UOSInt i = 0;
 	UOSInt j = r->ColCount();
-	NotNullPtr<DB::ColDef> col;
+	NN<DB::ColDef> col;
 	while (i < j)
 	{
 		NEW_CLASSNN(col, DB::ColDef(Text::String::NewEmpty()));
@@ -196,9 +196,9 @@ void DB::TableDef::ColFromReader(NotNullPtr<DB::DBReader> r)
 	}
 }
 
-NotNullPtr<DB::TableDef> DB::TableDef::Clone() const
+NN<DB::TableDef> DB::TableDef::Clone() const
 {
-	NotNullPtr<DB::TableDef> newObj;
+	NN<DB::TableDef> newObj;
 	NEW_CLASSNN(newObj, DB::TableDef(OPTSTR_CSTR(this->schemaName), this->tableName->ToCString()));
 	newObj->SetDatabaseName(OPTSTR_CSTR(this->databaseName));
 	newObj->SetEngine(OPTSTR_CSTR(this->engine));
@@ -206,7 +206,7 @@ NotNullPtr<DB::TableDef> DB::TableDef::Clone() const
 	newObj->SetAttr(this->attr);
 	newObj->SetComments(this->comments);
 	newObj->SetSQLType(this->sqlType);
-	Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = this->cols.Iterator();
+	Data::ArrayIterator<NN<DB::ColDef>> it = this->cols.Iterator();
 	while (it.HasNext())
 	{
 		newObj->AddCol(it.Next()->Clone());
@@ -214,13 +214,13 @@ NotNullPtr<DB::TableDef> DB::TableDef::Clone() const
 	return newObj;
 }
 
-NotNullPtr<Data::Class> DB::TableDef::CreateTableClass() const
+NN<Data::Class> DB::TableDef::CreateTableClass() const
 {
 	DB::DBClassBuilder builder;
-	Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = this->cols.Iterator();
+	Data::ArrayIterator<NN<DB::ColDef>> it = this->cols.Iterator();
 	while (it.HasNext())
 	{
-		NotNullPtr<DB::ColDef> col = it.Next();
+		NN<DB::ColDef> col = it.Next();
 		builder.AddItem(col->GetColName()->v, col->GetColType(), col->IsNotNull());
 	}
 	return builder.GetResultClass();

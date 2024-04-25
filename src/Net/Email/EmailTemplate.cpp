@@ -5,14 +5,14 @@
 #include "Text/XML.h"
 #include "Text/TextBinEnc/FormEncoding.h"
 
-Bool Net::Email::EmailTemplate::ParseTemplate(NotNullPtr<Text::StringBuilderUTF8> sbOut, Text::CStringNN tpl, NotNullPtr<Data::FastStringMapNN<Text::String>> items, NotNullPtr<IO::LogTool> log)
+Bool Net::Email::EmailTemplate::ParseTemplate(NN<Text::StringBuilderUTF8> sbOut, Text::CStringNN tpl, NN<Data::FastStringMapNN<Text::String>> items, NN<IO::LogTool> log)
 {
 	UOSInt i;
 	UOSInt j;
 	Text::StringBuilderUTF8 sbParam;
 	Text::StringBuilderUTF8 sb;
 	Text::CStringNN paramName;
-	NotNullPtr<Text::String> param;
+	NN<Text::String> param;
 	i = 0;
 	while (true)
 	{
@@ -109,7 +109,7 @@ Net::Email::EmailTemplate::~EmailTemplate()
 	this->content->Release();
 }
 
-Bool Net::Email::EmailTemplate::FillEmailMessage(NotNullPtr<Net::Email::EmailMessage> msg, NotNullPtr<Data::FastStringMapNN<Text::String>> items, NotNullPtr<IO::LogTool> log)
+Bool Net::Email::EmailTemplate::FillEmailMessage(NN<Net::Email::EmailMessage> msg, NN<Data::FastStringMapNN<Text::String>> items, NN<IO::LogTool> log)
 {
 	Text::StringBuilderUTF8 sb;
 	if (!ParseTemplate(sb, this->subject->ToCString(), items, log))
@@ -140,7 +140,7 @@ Optional<Net::Email::EmailTemplate> Net::Email::EmailTemplate::LoadFromFile(Text
 	reader.ReadToEnd(sbContent);
 	if (sbSubject.leng > 0 && sbContent.leng > 0)
 	{
-		NotNullPtr<Net::Email::EmailTemplate> tpl;
+		NN<Net::Email::EmailTemplate> tpl;
 		NEW_CLASSNN(tpl, Net::Email::EmailTemplate(sbSubject.ToCString(), sbContent.ToCString(), htmlContent));
 		return tpl;
 	}

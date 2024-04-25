@@ -3,33 +3,33 @@
 
 void __stdcall SSWR::AVIRead::AVIRIOPinTestForm::OnPullUpClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRIOPinTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIOPinTestForm>();
+	NN<SSWR::AVIRead::AVIRIOPinTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIOPinTestForm>();
 	me->pin->SetPullType(IO::IOPin::PT_UP);
 }
 
 void __stdcall SSWR::AVIRead::AVIRIOPinTestForm::OnPullDownClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRIOPinTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIOPinTestForm>();
+	NN<SSWR::AVIRead::AVIRIOPinTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIOPinTestForm>();
 	me->pin->SetPullType(IO::IOPin::PT_DOWN);
 }
 
 void __stdcall SSWR::AVIRead::AVIRIOPinTestForm::OnPinModeInputClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRIOPinTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIOPinTestForm>();
+	NN<SSWR::AVIRead::AVIRIOPinTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIOPinTestForm>();
 	me->pin->SetPinOutput(false);
 	me->isOutput = false;
 }
 
 void __stdcall SSWR::AVIRead::AVIRIOPinTestForm::OnPinModeOutputClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRIOPinTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIOPinTestForm>();
+	NN<SSWR::AVIRead::AVIRIOPinTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIOPinTestForm>();
 	me->pin->SetPinOutput(true);
 	me->isOutput = true;
 }
 
 void __stdcall SSWR::AVIRead::AVIRIOPinTestForm::OnPinHighClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRIOPinTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIOPinTestForm>();
+	NN<SSWR::AVIRead::AVIRIOPinTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIOPinTestForm>();
 	if (me->isOutput)
 	{
 		me->pin->SetPinState(true);
@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRIOPinTestForm::OnPinHighClicked(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRIOPinTestForm::OnPinLowClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRIOPinTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIOPinTestForm>();
+	NN<SSWR::AVIRead::AVIRIOPinTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIOPinTestForm>();
 	if (me->isOutput)
 	{
 		me->pin->SetPinState(false);
@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRIOPinTestForm::OnPinLowClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRIOPinTestForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRIOPinTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIOPinTestForm>();
+	NN<SSWR::AVIRead::AVIRIOPinTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIOPinTestForm>();
 	if (!me->isOutput)
 	{
 		if (me->pin->IsPinHigh())
@@ -63,7 +63,7 @@ void __stdcall SSWR::AVIRead::AVIRIOPinTestForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRIOPinTestForm::AVIRIOPinTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::IOPin *pin) : UI::GUIForm(parent, 480, 160, ui)
+SSWR::AVIRead::AVIRIOPinTestForm::AVIRIOPinTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::IOPin *pin) : UI::GUIForm(parent, 480, 160, ui)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

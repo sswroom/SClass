@@ -14,7 +14,7 @@ namespace Net
 			Data::ArrayList<WebController *> ctrlList;
 
 		protected:
-			virtual Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
+			virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 		public:
 			WebControllerHandler();
 			WebControllerHandler(Text::CStringNN rootDir);

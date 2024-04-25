@@ -14,18 +14,18 @@ namespace SSWR
 		class OrganUserForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<OrganEnv> env;
-			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			NotNullPtr<UI::GUIButton> btnAdd;
-			NotNullPtr<UI::GUIButton> btnModify;
-			NotNullPtr<UI::GUIListView> lvUser;
+			NN<OrganEnv> env;
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUIButton> btnAdd;
+			NN<UI::GUIButton> btnModify;
+			NN<UI::GUIListView> lvUser;
 			Data::ArrayListNN<OrganWebUser> userList;
 
 			static void __stdcall OnAddClicked(AnyType userObj);
 			static void __stdcall OnModifyClicked(AnyType userObj);
 			void UpdateUserList();
 		public:
-			OrganUserForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env);
+			OrganUserForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<OrganEnv> env);
 			virtual ~OrganUserForm();
 
 			virtual void OnMonitorChanged();

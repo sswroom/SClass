@@ -22,9 +22,9 @@ UTF8Char *Crypto::Hash::SDBM::GetName(UTF8Char *sbuff) const
 	return Text::StrConcatC(sbuff, UTF8STRC("SDBM"));
 }
 
-NotNullPtr<Crypto::Hash::IHash> Crypto::Hash::SDBM::Clone() const
+NN<Crypto::Hash::IHash> Crypto::Hash::SDBM::Clone() const
 {
-	NotNullPtr<Crypto::Hash::SDBM> sdbm;
+	NN<Crypto::Hash::SDBM> sdbm;
 	NEW_CLASSNN(sdbm, Crypto::Hash::SDBM());
 	sdbm->currVal = this->currVal;
 	return sdbm;

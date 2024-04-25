@@ -12,22 +12,22 @@ namespace Net
 		class WebController
 		{
 		public:
-			typedef Bool (__stdcall *ServiceFunc)(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebController> me);
+			typedef Bool (__stdcall *ServiceFunc)(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebController> me);
 		private:
 			typedef struct
 			{
-				NotNullPtr<Text::String> svcPath;
+				NN<Text::String> svcPath;
 				Data::FastMap<Int32, ServiceFunc> funcs;
 			} ServiceInfo;
 			
 			Data::FastStringMapNN<ServiceInfo> services;
-			NotNullPtr<Text::String> svcPath;
+			NN<Text::String> svcPath;
 
 		public:
 			WebController(Text::CString svcPath);
 			virtual ~WebController();
 
-			Bool ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
+			Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 			void AddService(Text::CString svcPath, Net::WebUtil::RequestMethod reqMeth, ServiceFunc func);
 		};
 	}

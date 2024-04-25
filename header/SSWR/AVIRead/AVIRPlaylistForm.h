@@ -19,29 +19,29 @@ namespace SSWR
 		class AVIRPlaylistForm : public UI::GUIForm 
 		{
 		private:
-			NotNullPtr<UI::GUIListView> lvPlaylist;
-			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			NotNullPtr<UI::GUIHSplitter> hsplit;
+			NN<UI::GUIListView> lvPlaylist;
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUIHSplitter> hsplit;
 			UI::GUIVideoBoxDD *vbdMain;
 			UI::GUIMainMenu *mnu;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUIButton> btnEnd;
-			NotNullPtr<UI::GUIButton> btnFS;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUIButton> btnEnd;
+			NN<UI::GUIButton> btnFS;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Media::ColorManagerSess> colorSess;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Media::ColorManagerSess> colorSess;
 			Media::Playlist *playlist;
 			Media::MediaPlayer *player;
 			const WChar *currFileName;
 		private:
-			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnPlaylistDblClk(AnyType userObj, UOSInt itemIndex);
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnEndClicked(AnyType userObj);
 			static void __stdcall OnFSClicked(AnyType userObj);
 			void UpdatePlaylist();
 		public:
-			AVIRPlaylistForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Media::Playlist *playlist);
+			AVIRPlaylistForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::Playlist *playlist);
 			virtual ~AVIRPlaylistForm();
 		
 			virtual void EventMenuClicked(UInt16 cmdId);

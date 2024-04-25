@@ -12,7 +12,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
+	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	Map::MapEnv::LayerItem setting;
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
@@ -83,13 +83,13 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnOKClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
+	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
 Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFillClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
+	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
@@ -108,7 +108,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFillClicked(AnyType userObj, Ma
 
 Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
-//	NotNullPtr<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
+//	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
 		OnLineModifyClicked(userObj);
@@ -118,7 +118,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineDown(AnyType userObj, Math:
 
 void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineModifyClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
+	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	SSWR::AVIRead::AVIRGISLineForm frm(0, me->ui, me->core, me->core->GetDrawEngine(), me->lineThick, me->lineColor);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
@@ -132,7 +132,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineModifyClicked(AnyType userO
 			DEL_CLASS(me->imgLine);
 		}
 		sz = me->pbLineStyle->GetSizeP();
-		NotNullPtr<Media::DrawImage> dimg;
+		NN<Media::DrawImage> dimg;
 		if (dimg.Set(me->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 		{
 			dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
@@ -147,7 +147,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineModifyClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineStyleClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
+	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	SSWR::AVIRead::AVIRGISLineStyleForm frm(0, me->ui, me->core, me->env, me->core->GetDrawEngine(), me->lineStyle);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK || frm.IsChanged())
 	{
@@ -160,7 +160,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineStyleClicked(AnyType userOb
 			DEL_CLASS(me->imgLine);
 		}
 		sz = me->pbLineStyle->GetSizeP();
-		NotNullPtr<Media::DrawImage> dimg;
+		NN<Media::DrawImage> dimg;
 		if (dimg.Set(me->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 		{
 			dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
@@ -175,7 +175,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineStyleClicked(AnyType userOb
 
 Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnIconClicked(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
+	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
 		SSWR::AVIRead::AVIRGISImageForm frm(0, me->ui, me->core, me->env, me->imgIndex);
@@ -190,7 +190,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnIconClicked(AnyType userObj, Ma
 
 Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, UI::GUIPictureBox::MouseButton btn)
 {
-//	NotNullPtr<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
+//	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	if (btn == UI::GUIPictureBox::MBTN_LEFT)
 	{
 		OnFontModifyClicked(userObj);
@@ -200,7 +200,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyDown(AnyType userObj,
 
 void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
+	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	SSWR::AVIRead::AVIRGISFontForm frm(0, me->ui, me->core, me->core->GetDrawEngine(), me->fontName, me->fontSizePt, me->fontColor);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
@@ -216,7 +216,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyClicked(AnyType userO
 			DEL_CLASS(me->imgFont);
 		}
 		sz = me->pbFontStyle->GetSizeP();
-		NotNullPtr<Media::DrawImage> dimg;
+		NN<Media::DrawImage> dimg;
 		if (dimg.Set(me->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 		{
 			dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
@@ -231,7 +231,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontStyleClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
+	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	SSWR::AVIRead::AVIRGISFontStyleForm frm(0, me->ui, me->core, me->env, me->core->GetDrawEngine(), me->fontStyle);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK || frm.IsChanged())
 	{
@@ -244,7 +244,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontStyleClicked(AnyType userOb
 			DEL_CLASS(me->imgFont);
 		}
 		sz = me->pbFontStyle->GetSizeP();
-		NotNullPtr<Media::DrawImage> dimg;
+		NN<Media::DrawImage> dimg;
 		if (dimg.Set(me->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 		{
 			dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
@@ -257,9 +257,9 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontStyleClicked(AnyType userOb
 	}
 }
 
-SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group, UOSInt index) : UI::GUIForm(parent, 512, 320, ui)
+SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group, UOSInt index) : UI::GUIForm(parent, 512, 320, ui)
 {
-	NotNullPtr<UI::GUILabel> lbl;
+	NN<UI::GUILabel> lbl;
 	this->SetNoResize(true);
 	this->env = env;
 	this->group = group;
@@ -357,7 +357,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> p
 	this->imgLine = 0;
 	this->imgFont = 0;
 	Map::MapEnv::LayerItem setting;
-	NotNullPtr<Map::MapEnv::LayerItem> lyr;
+	NN<Map::MapEnv::LayerItem> lyr;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	if (this->env->GetLayerProp(setting, this->group, this->index) && Optional<Map::MapEnv::LayerItem>::ConvertFrom(this->env->GetItem(this->group, this->index)).SetTo(lyr))
@@ -384,7 +384,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> p
 		sptr = Text::StrInt32(sbuff, setting.priority);
 		this->txtPriority->SetText(CSTRP(sbuff, sptr));
 
-		NotNullPtr<Media::DrawImage> dimg;
+		NN<Media::DrawImage> dimg;
 		Math::Size2D<UOSInt> sz = this->pbLineStyle->GetSizeP();
 		this->lineType = setting.lineType;
 		this->lineStyle = setting.lineStyle;
@@ -540,11 +540,11 @@ void SSWR::AVIRead::AVIRGISPropForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRGISPropForm::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
+void SSWR::AVIRead::AVIRGISPropForm::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void SSWR::AVIRead::AVIRGISPropForm::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void SSWR::AVIRead::AVIRGISPropForm::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	Math::Size2D<UOSInt> sz;
 	this->colorConv->RGBParamChanged(rgbParam);
@@ -556,7 +556,7 @@ void SSWR::AVIRead::AVIRGISPropForm::RGBParamChanged(NotNullPtr<const Media::ICo
 		DEL_CLASS(this->imgLine);
 	}
 	sz = this->pbLineStyle->GetSizeP();
-	NotNullPtr<Media::DrawImage> dimg;
+	NN<Media::DrawImage> dimg;
 	if (dimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 	{
 		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);

@@ -46,18 +46,18 @@ namespace SSWR
 			};
 			
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<UI::GUILabel> lblDir;
-			NotNullPtr<UI::GUITextBox> txtDir;
-			NotNullPtr<UI::GUIButton> btnBrowse;
-			NotNullPtr<UI::GUILabel> lblOutFormat;
-			NotNullPtr<UI::GUIRadioButton> radFormatJPG;
-			NotNullPtr<UI::GUIRadioButton> radFormatWebP;
-			NotNullPtr<UI::GUILabel> lblQuality;
-			NotNullPtr<UI::GUITextBox> txtQuality;
-			NotNullPtr<UI::GUICheckBox> chkSubdir;
-			NotNullPtr<UI::GUITextBox> txtSubdir;
-			NotNullPtr<UI::GUIButton> btnConvert;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<UI::GUILabel> lblDir;
+			NN<UI::GUITextBox> txtDir;
+			NN<UI::GUIButton> btnBrowse;
+			NN<UI::GUILabel> lblOutFormat;
+			NN<UI::GUIRadioButton> radFormatJPG;
+			NN<UI::GUIRadioButton> radFormatWebP;
+			NN<UI::GUILabel> lblQuality;
+			NN<UI::GUITextBox> txtQuality;
+			NN<UI::GUICheckBox> chkSubdir;
+			NN<UI::GUITextBox> txtSubdir;
+			NN<UI::GUIButton> btnConvert;
 			UOSInt nThreads;
 			ThreadState *threadStates;
 			Bool threadToStop;
@@ -72,7 +72,7 @@ namespace SSWR
 			void MTConvertFile(ConvertSess *sess, Text::CStringNN srcFile, Text::CStringNN destFile);
 			void ConvertFile(ConvertSess *sess, Text::CStringNN srcFile, Text::CStringNN destFile);
 		public:
-			AVIRImageBatchConvForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRImageBatchConvForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRImageBatchConvForm();
 
 			virtual void OnMonitorChanged();

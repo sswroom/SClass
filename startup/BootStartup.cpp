@@ -2,18 +2,18 @@
 #include "MyMemory.h"
 #include "Core/Core.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl);
+Int32 MyMain(NN<Core::IProgControl> progCtrl);
 
-void __stdcall BootControl_WaitForExit(NotNullPtr<Core::IProgControl> progCtrl)
+void __stdcall BootControl_WaitForExit(NN<Core::IProgControl> progCtrl)
 {
 }
 
-Optional<UI::GUICore> __stdcall Core::IProgControl::CreateGUICore(NotNullPtr<Core::IProgControl> progCtrl)
+Optional<UI::GUICore> __stdcall Core::IProgControl::CreateGUICore(NN<Core::IProgControl> progCtrl)
 {
 	return 0;
 }
 
-UTF8Char **__stdcall BootControl_GetCommandLines(NotNullPtr<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
+UTF8Char **__stdcall BootControl_GetCommandLines(NN<Core::IProgControl> progCtrl, OutParam<UOSInt> cmdCnt)
 {
 	cmdCnt.Set(1);
 	return (UTF8Char**)&"Boot";

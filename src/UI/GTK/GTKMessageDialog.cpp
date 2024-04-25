@@ -8,7 +8,7 @@ void UI::GTK::GTKMessageDialog::ShowOK(Text::CStringNN message, Text::CStringNN 
 {
 	GtkWidget *dlg;
 	GtkWindow *wnd = 0;
-	NotNullPtr<GUIControl> nnctrl;
+	NN<GUIControl> nnctrl;
 	if (ctrl.SetTo(nnctrl))
 		wnd = (GtkWindow*)nnctrl->GetHandle();
 	dlg = gtk_message_dialog_new(wnd, GTK_DIALOG_MODAL, GTK_MESSAGE_OTHER, GTK_BUTTONS_OK, "%s", message.v);
@@ -21,7 +21,7 @@ Bool UI::GTK::GTKMessageDialog::ShowYesNo(Text::CStringNN message, Text::CString
 {
 	GtkWidget *dlg;
 	GtkWindow *wnd = 0;
-	NotNullPtr<GUIControl> nnctrl;
+	NN<GUIControl> nnctrl;
 	if (ctrl.SetTo(nnctrl))
 		wnd = (GtkWindow*)nnctrl->GetHandle();
 	dlg = gtk_message_dialog_new(wnd, GTK_DIALOG_MODAL, GTK_MESSAGE_OTHER, GTK_BUTTONS_YES_NO, "%s", message.v);

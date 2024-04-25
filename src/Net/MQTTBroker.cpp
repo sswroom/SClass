@@ -19,9 +19,9 @@ typedef struct
 	Bool connected;
 } ClientData;
 
-void __stdcall Net::MQTTBroker::OnClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::MQTTBroker::OnClientEvent(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
-	NotNullPtr<Listener> listener = userObj.GetNN<Listener>();
+	NN<Listener> listener = userObj.GetNN<Listener>();
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
 		if (listener->me->log->HasHandler())
@@ -38,19 +38,19 @@ void __stdcall Net::MQTTBroker::OnClientEvent(NotNullPtr<Net::TCPClient> cli, An
 	}
 }
 
-void __stdcall Net::MQTTBroker::OnClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
+void __stdcall Net::MQTTBroker::OnClientData(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
 {
-	NotNullPtr<Listener> listener = userObj.GetNN<Listener>();
+	NN<Listener> listener = userObj.GetNN<Listener>();
 	listener->me->StreamData(cli, cliData, buff);
 }
 
-void __stdcall Net::MQTTBroker::OnClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
+void __stdcall Net::MQTTBroker::OnClientTimeout(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
 {
 }
 
-void __stdcall Net::MQTTBroker::OnClientReady(NotNullPtr<Net::TCPClient> cli, AnyType userObj)
+void __stdcall Net::MQTTBroker::OnClientReady(NN<Net::TCPClient> cli, AnyType userObj)
 {
-	NotNullPtr<Listener> listener = userObj.GetNN<Listener>();
+	NN<Listener> listener = userObj.GetNN<Listener>();
 	listener->cliMgr->AddClient(cli, listener->me->StreamCreated(cli));
 	UOSInt cnt = listener->cliMgr->GetClientCount();
 	if (cnt > listener->me->infoCliMax)
@@ -61,15 +61,15 @@ void __stdcall Net::MQTTBroker::OnClientReady(NotNullPtr<Net::TCPClient> cli, An
 
 void __stdcall Net::MQTTBroker::OnClientConn(Socket *s, AnyType userObj)
 {
-	NotNullPtr<Listener> listener = userObj.GetNN<Listener>();
-	NotNullPtr<Net::SSLEngine> ssl;
+	NN<Listener> listener = userObj.GetNN<Listener>();
+	NN<Net::SSLEngine> ssl;
 	if (listener->ssl.SetTo(ssl))
 	{
 		ssl->ServerInit(s, OnClientReady, listener);
 	}
 	else
 	{
-		NotNullPtr<Net::TCPClient> cli;
+		NN<Net::TCPClient> cli;
 		NEW_CLASSNN(cli, Net::TCPClient(listener->me->sockf, s));
 		OnClientReady(cli, listener);
 	}
@@ -77,7 +77,7 @@ void __stdcall Net::MQTTBroker::OnClientConn(Socket *s, AnyType userObj)
 
 UInt32 __stdcall Net::MQTTBroker::SysInfoThread(AnyType userObj)
 {
-	NotNullPtr<Net::MQTTBroker> me = userObj.GetNN<Net::MQTTBroker>();
+	NN<Net::MQTTBroker> me = userObj.GetNN<Net::MQTTBroker>();
 	Data::DateTime *dt;
 	UTF8Char sbuff[64];
 	UOSInt i;
@@ -153,9 +153,9 @@ UInt32 __stdcall Net::MQTTBroker::SysInfoThread(AnyType userObj)
 	return 0;
 }
 
-void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
-	NotNullPtr<ClientData> data = stmObj.GetNN<ClientData>();
+	NN<ClientData> data = stmObj.GetNN<ClientData>();
 	UInt8 packet[256];
 	UInt8 packet2[256];
 	UOSInt i;
@@ -762,7 +762,7 @@ void Net::MQTTBroker::DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int
 	}
 }
 
-void Net::MQTTBroker::DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
+void Net::MQTTBroker::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 }
 
@@ -839,7 +839,7 @@ void Net::MQTTBroker::UpdateTopic(Text::CStringNN topic, const UInt8 *message, U
 	}
 }
 
-Bool Net::MQTTBroker::TopicSend(NotNullPtr<IO::Stream> stm, AnyType stmData, const TopicInfo *topic)
+Bool Net::MQTTBroker::TopicSend(NN<IO::Stream> stm, AnyType stmData, const TopicInfo *topic)
 {
 	UInt8 packet1[128];
 	UInt8 packet2[128];
@@ -876,7 +876,7 @@ Bool Net::MQTTBroker::TopicSend(NotNullPtr<IO::Stream> stm, AnyType stmData, con
 	}
 }
 
-AnyType Net::MQTTBroker::StreamCreated(NotNullPtr<IO::Stream> stm)
+AnyType Net::MQTTBroker::StreamCreated(NN<IO::Stream> stm)
 {
 	ClientData *data;
 	data = MemAlloc(ClientData, 1);
@@ -888,9 +888,9 @@ AnyType Net::MQTTBroker::StreamCreated(NotNullPtr<IO::Stream> stm)
 	return data;
 }
 
-void Net::MQTTBroker::StreamData(NotNullPtr<IO::Stream> stm, AnyType stmData, const Data::ByteArrayR &buff)
+void Net::MQTTBroker::StreamData(NN<IO::Stream> stm, AnyType stmData, const Data::ByteArrayR &buff)
 {
-	NotNullPtr<ClientData> data = stmData.GetNN<ClientData>();
+	NN<ClientData> data = stmData.GetNN<ClientData>();
 	Sync::Interlocked::AddI64(this->infoTotalRecv, (OSInt)buff.GetSize());
 
 	if (this->log->HasHandler())
@@ -928,9 +928,9 @@ void Net::MQTTBroker::StreamData(NotNullPtr<IO::Stream> stm, AnyType stmData, co
 	}
 }
 
-void Net::MQTTBroker::StreamClosed(NotNullPtr<IO::Stream> stm, AnyType stmData)
+void Net::MQTTBroker::StreamClosed(NN<IO::Stream> stm, AnyType stmData)
 {
-	NotNullPtr<ClientData> data = stmData.GetNN<ClientData>();
+	NN<ClientData> data = stmData.GetNN<ClientData>();
 	this->protoHdlr.DeleteStreamData(stm, data->cliData);
 	SDEL_STRING(data->cliId);
 	MemFree(data.Ptr());
@@ -951,7 +951,7 @@ void Net::MQTTBroker::StreamClosed(NotNullPtr<IO::Stream> stm, AnyType stmData)
 	}
 }
 
-Net::MQTTBroker::MQTTBroker(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt16 port, NotNullPtr<IO::LogTool> log, Bool sysInfo, Bool autoStart) : protoHdlr(*this), wsHdlr(this)
+Net::MQTTBroker::MQTTBroker(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt16 port, NN<IO::LogTool> log, Bool sysInfo, Bool autoStart) : protoHdlr(*this), wsHdlr(this)
 {
 	this->sockf = sockf;
 	this->log = log;

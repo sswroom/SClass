@@ -8,7 +8,7 @@
 
 void __stdcall Media::Playlist::OnPBEnd(AnyType userObj)
 {
-	NotNullPtr<Media::Playlist> me = userObj.GetNN<Media::Playlist>();
+	NN<Media::Playlist> me = userObj.GetNN<Media::Playlist>();
 	Data::RandomOS random;
 	UOSInt i = (UInt32)random.NextInt15() % me->entries.GetCount();
 	me->OpenItem(i);
@@ -22,7 +22,7 @@ void Media::Playlist::FreeEntry(PlaylistEntry* ent)
 	MemFree(ent);
 }
 
-Media::Playlist::Playlist(Text::CStringNN sourceName, NotNullPtr<Parser::ParserList> parsers) : IO::ParsedObject(sourceName)
+Media::Playlist::Playlist(Text::CStringNN sourceName, NN<Parser::ParserList> parsers) : IO::ParsedObject(sourceName)
 {
 	this->parsers = parsers;
 	this->player = 0;

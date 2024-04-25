@@ -14,26 +14,26 @@ namespace SSWR
 		class AVIRImagePSNRForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<UI::GUILabel> lblOriFile;
-			NotNullPtr<UI::GUITextBox> txtOriFile;
-			NotNullPtr<UI::GUIButton> btnOriFile;
-			NotNullPtr<UI::GUILabel> lblLossyFile;
-			NotNullPtr<UI::GUITextBox> txtLossyFile;
-			NotNullPtr<UI::GUIButton> btnLossyFile;
-			NotNullPtr<UI::GUILabel> lblMode;
-			NotNullPtr<UI::GUIRadioButton> radMode16Bit;
-			NotNullPtr<UI::GUIRadioButton> radMode8Bit;
-			NotNullPtr<UI::GUIButton> btnCompare;
-			NotNullPtr<UI::GUILabel> lblPSNR;
-			NotNullPtr<UI::GUITextBox> txtPSNR;
-			NotNullPtr<UI::GUILabel> lblPSNRDB;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<UI::GUILabel> lblOriFile;
+			NN<UI::GUITextBox> txtOriFile;
+			NN<UI::GUIButton> btnOriFile;
+			NN<UI::GUILabel> lblLossyFile;
+			NN<UI::GUITextBox> txtLossyFile;
+			NN<UI::GUIButton> btnLossyFile;
+			NN<UI::GUILabel> lblMode;
+			NN<UI::GUIRadioButton> radMode16Bit;
+			NN<UI::GUIRadioButton> radMode8Bit;
+			NN<UI::GUIButton> btnCompare;
+			NN<UI::GUILabel> lblPSNR;
+			NN<UI::GUITextBox> txtPSNR;
+			NN<UI::GUILabel> lblPSNRDB;
 
 			static void __stdcall OnOriFileClicked(AnyType userObj);
 			static void __stdcall OnLossyFileClicked(AnyType userObj);
 			static void __stdcall OnCompareClicked(AnyType userObj);
 		public:
-			AVIRImagePSNRForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRImagePSNRForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRImagePSNRForm();
 
 			virtual void OnMonitorChanged();

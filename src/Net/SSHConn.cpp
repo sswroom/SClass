@@ -18,7 +18,7 @@ struct Net::SSHConn::ClassData
 	Bool blocking;
 };
 
-Net::SSHConn::SSHConn(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN host, UInt16 port, Data::Duration timeout)
+Net::SSHConn::SSHConn(NN<Net::SocketFactory> sockf, Text::CStringNN host, UInt16 port, Data::Duration timeout)
 {
 	this->sockf = sockf;
 	this->clsData = MemAllocNN(ClassData);
@@ -33,7 +33,7 @@ Net::SSHConn::SSHConn(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN host
 #endif
 	if (this->clsData->session)
 	{
-		NotNullPtr<Net::TCPClient> cli;
+		NN<Net::TCPClient> cli;
 		NEW_CLASSNN(cli, Net::TCPClient(sockf, host, port, timeout));
 		if (cli->IsConnectError())
 		{
@@ -69,7 +69,7 @@ Bool Net::SSHConn::IsError() const
 	return this->clsData->session == 0 || this->cli.IsNull() || this->clsData->handshakeRet != 0;
 }
 
-NotNullPtr<Net::SocketFactory> Net::SSHConn::GetSocketFactory() const
+NN<Net::SocketFactory> Net::SSHConn::GetSocketFactory() const
 {
 	return this->sockf;
 }
@@ -109,7 +109,7 @@ const UTF8Char *Net::SSHConn::GetActiveAlgorithm(SSHMethodType method)
 	return (const UTF8Char*)libssh2_session_methods(this->clsData->session, (int)method);
 }
 
-Bool Net::SSHConn::GetAuthMethods(Text::CStringNN userName, NotNullPtr<Data::ArrayListStringNN> authMeth)
+Bool Net::SSHConn::GetAuthMethods(Text::CStringNN userName, NN<Data::ArrayListStringNN> authMeth)
 {
 	const Char *userauthlist = libssh2_userauth_list(this->clsData->session, (const Char*)userName.v, (unsigned int)userName.leng);
 	if (userauthlist)
@@ -178,7 +178,7 @@ Optional<Net::SSHTCPChannel> Net::SSHConn::RemoteConnect(Socket *sourceSoc, Text
 		printf("SSHConn: Session set to non-blocking\r\n");
 #endif
 	}
-	NotNullPtr<Net::SSHTCPChannel> ch;
+	NN<Net::SSHTCPChannel> ch;
 	NEW_CLASSNN(ch, Net::SSHTCPChannel(*this, (SSHChannelHandle*)channel, remoteHost));
 	return ch;
 }
@@ -242,7 +242,7 @@ void Net::SSHConn::Close()
 		libssh2_session_free(this->clsData->session);
 		this->clsData->session = 0;
 	}
-	NotNullPtr<Net::TCPClient> cli;
+	NN<Net::TCPClient> cli;
 	if (this->cli.SetTo(cli))
 	{
 		cli->Close();

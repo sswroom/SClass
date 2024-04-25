@@ -34,9 +34,9 @@ UTF8Char *Crypto::Hash::CRC32RIEEE::GetName(UTF8Char *sbuff) const
 	return Text::StrConcatC(sbuff, UTF8STRC("CRC32 IEEE"));
 }
 
-NotNullPtr<Crypto::Hash::IHash> Crypto::Hash::CRC32RIEEE::Clone() const
+NN<Crypto::Hash::IHash> Crypto::Hash::CRC32RIEEE::Clone() const
 {
-	NotNullPtr<Crypto::Hash::CRC32RIEEE> crc;
+	NN<Crypto::Hash::CRC32RIEEE> crc;
 	NEW_CLASSNN(crc, Crypto::Hash::CRC32RIEEE());
 	crc->currVal = this->currVal;
 	return crc;

@@ -29,9 +29,9 @@ public:
 	}
 };
 
-void __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::FileAnalyse::DWGFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::DWGFileAnalyse>();
+	NN<IO::FileAnalyse::DWGFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::DWGFileAnalyse>();
 	UInt8 buff[256];
 	NN<IO::FileAnalyse::DWGFileAnalyse::PackInfo> pack;
 	if (me->fileVer == 12 || me->fileVer == 14 || me->fileVer == 15)
@@ -104,7 +104,7 @@ void __stdcall IO::FileAnalyse::DWGFileAnalyse::ParseThread(NotNullPtr<Sync::Thr
 	}
 }
 
-IO::FileAnalyse::DWGFileAnalyse::DWGFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("DWGFileAnalyse"))
+IO::FileAnalyse::DWGFileAnalyse::DWGFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("DWGFileAnalyse"))
 {
 	UInt8 buff[8];
 	this->fd = 0;
@@ -155,7 +155,7 @@ UOSInt IO::FileAnalyse::DWGFileAnalyse::GetFrameCount()
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::DWGFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::DWGFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::DWGFileAnalyse::PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
@@ -203,7 +203,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DWGFileAnalyse::GetFrame
 		return 0;
 
 	Data::UUID uuid;
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	UOSInt nSection;
 	UOSInt ofst;
 	UOSInt i;

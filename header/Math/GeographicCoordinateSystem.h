@@ -15,20 +15,20 @@ namespace Math
 		UnitType unit;
 
 	public:
-		GeographicCoordinateSystem(NotNullPtr<Text::String> sourceName, UInt32 srid, Text::CString csysName, const DatumData1 *datum, PrimemType primem, UnitType unit);
+		GeographicCoordinateSystem(NN<Text::String> sourceName, UInt32 srid, Text::CString csysName, const DatumData1 *datum, PrimemType primem, UnitType unit);
 		GeographicCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CString csysName, const DatumData1 *datum, PrimemType primem, UnitType unit);
 		virtual ~GeographicCoordinateSystem();
 
 		virtual Double CalSurfaceDistance(Math::Coord2DDbl pos1, Math::Coord2DDbl pos2, Math::Unit::Distance::DistanceUnit unit) const;
-		virtual Double CalLineStringDistance(NotNullPtr<Math::Geometry::LineString> lineString, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const;
-		virtual NotNullPtr<Math::CoordinateSystem> Clone() const;
+		virtual Double CalLineStringDistance(NN<Math::Geometry::LineString> lineString, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const;
+		virtual NN<Math::CoordinateSystem> Clone() const;
 		virtual CoordinateSystemType GetCoordSysType() const;
 		virtual Bool IsProjected() const;
-		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
 
-		NotNullPtr<Math::EarthEllipsoid> GetEllipsoid() const { return this->datum.spheroid.ellipsoid; }
+		NN<Math::EarthEllipsoid> GetEllipsoid() const { return this->datum.spheroid.ellipsoid; }
 		Text::CString GetDatumName() const;
-		NotNullPtr<const DatumData1> GetDatum() const;
+		NN<const DatumData1> GetDatum() const;
 		PrimemType GetPrimem() const;
 		UnitType GetUnit() const;
 

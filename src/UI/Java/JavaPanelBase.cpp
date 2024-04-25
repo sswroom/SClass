@@ -3,12 +3,12 @@
 #include "UI/GUIPanel.h"
 #include "UI/Java/JavaPanelBase.h"
 
-UI::Java::JavaPanelBase::JavaPanelBase(NotNullPtr<UI::GUIPanel> master, NotNullPtr<UI::GUICore> ui, ControlHandle *parentHWnd)
+UI::Java::JavaPanelBase::JavaPanelBase(NN<UI::GUIPanel> master, NN<UI::GUICore> ui, ControlHandle *parentHWnd)
 {
 	this->master = master;
 }
 
-UI::Java::JavaPanelBase::JavaPanelBase(NotNullPtr<UI::GUIPanel> master, NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent)
+UI::Java::JavaPanelBase::JavaPanelBase(NN<UI::GUIPanel> master, NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent)
 {
 	this->master = master;
 	parent->AddChild(this->master);

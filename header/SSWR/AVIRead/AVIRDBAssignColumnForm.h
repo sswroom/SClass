@@ -15,16 +15,16 @@ namespace SSWR
 		class AVIRDBAssignColumnForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIPanel> pnlColumns;
-			NotNullPtr<UI::GUIPanel> pnlButtons;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
-			NotNullPtr<UI::GUIComboBox> *colsCbo;
+			NN<UI::GUIPanel> pnlColumns;
+			NN<UI::GUIPanel> pnlButtons;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
+			NN<UI::GUIComboBox> *colsCbo;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Data::ArrayList<UOSInt>> colInd;
-			NotNullPtr<DB::TableDef> dbTable;
-			NotNullPtr<DB::ReadingDB> dataFile;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Data::ArrayList<UOSInt>> colInd;
+			NN<DB::TableDef> dbTable;
+			NN<DB::ReadingDB> dataFile;
 			Text::CString schema;
 			Text::CStringNN table;
 			Bool dataFileNoHeader;
@@ -33,7 +33,7 @@ namespace SSWR
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			AVIRDBAssignColumnForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<DB::TableDef> dbTable, NotNullPtr<DB::ReadingDB> dataFile, Text::CString schema, Text::CStringNN table, Bool noHeader, Int8 dataFileTz, NotNullPtr<Data::ArrayList<UOSInt>> colInd);
+			AVIRDBAssignColumnForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::TableDef> dbTable, NN<DB::ReadingDB> dataFile, Text::CString schema, Text::CStringNN table, Bool noHeader, Int8 dataFileTz, NN<Data::ArrayList<UOSInt>> colInd);
 			virtual ~AVIRDBAssignColumnForm();
 
 			virtual void OnMonitorChanged();

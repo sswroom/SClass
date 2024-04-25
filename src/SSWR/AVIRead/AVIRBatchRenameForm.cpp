@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRBatchRenameForm::OnRenameExtUpperClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRBatchRenameForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBatchRenameForm>();
+	NN<SSWR::AVIRead::AVIRBatchRenameForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBatchRenameForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *sptrEnd;
@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRBatchRenameForm::OnRenameExtUpperClicked(AnyTy
 
 void __stdcall SSWR::AVIRead::AVIRBatchRenameForm::OnRenameExtLowerClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRBatchRenameForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBatchRenameForm>();
+	NN<SSWR::AVIRead::AVIRBatchRenameForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBatchRenameForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *sptrEnd;
@@ -93,7 +93,7 @@ void __stdcall SSWR::AVIRead::AVIRBatchRenameForm::OnRenameExtLowerClicked(AnyTy
 	}
 }
 
-SSWR::AVIRead::AVIRBatchRenameForm::AVIRBatchRenameForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 320, ui)
+SSWR::AVIRead::AVIRBatchRenameForm::AVIRBatchRenameForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 320, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Batch Rename"));

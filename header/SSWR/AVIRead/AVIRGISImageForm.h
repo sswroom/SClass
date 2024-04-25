@@ -16,24 +16,24 @@ namespace SSWR
 		class AVIRGISImageForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Media::Resizer::LanczosResizer8_C8 *resizer;
-			NotNullPtr<Map::MapEnv> env;
-			NotNullPtr<Parser::ParserList> parsers;
+			NN<Map::MapEnv> env;
+			NN<Parser::ParserList> parsers;
 			UOSInt imgIndex;
 
-			NotNullPtr<UI::GUILabel> lbl;
-			NotNullPtr<UI::GUIPanel> pnlButtons;
+			NN<UI::GUILabel> lbl;
+			NN<UI::GUIPanel> pnlButtons;
 			UI::GUIPictureList *plIcons;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
 			static void __stdcall OnOKClick(AnyType userObj);
 			static void __stdcall OnCancelClick(AnyType userObj);
-			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> fileNames);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> fileNames);
 			void UpdateImages();
 		public:
-			AVIRGISImageForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, UOSInt imgIndex);
+			AVIRGISImageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, UOSInt imgIndex);
 			virtual ~AVIRGISImageForm();
 
 			virtual void OnMonitorChanged();

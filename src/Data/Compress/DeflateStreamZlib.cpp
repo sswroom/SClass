@@ -7,14 +7,14 @@
 
 struct Data::Compress::DeflateStream::ClassData
 {
-	NotNullPtr<IO::Stream> srcStm;
+	NN<IO::Stream> srcStm;
 	UInt64 srcLeng;
 	Crypto::Hash::IHash *hash;
 	z_stream stm;
 	UInt8 buff[BUFFSIZE];
 };
 
-Data::Compress::DeflateStream::DeflateStream(NotNullPtr<IO::Stream> srcStm, UInt64 srcLeng, Crypto::Hash::IHash *hash, CompLevel level, Bool hasHeader) : Stream(srcStm->GetSourceNameObj())
+Data::Compress::DeflateStream::DeflateStream(NN<IO::Stream> srcStm, UInt64 srcLeng, Crypto::Hash::IHash *hash, CompLevel level, Bool hasHeader) : Stream(srcStm->GetSourceNameObj())
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->srcStm = srcStm;

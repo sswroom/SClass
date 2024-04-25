@@ -41,7 +41,7 @@ UI::Win::WinDropData::~WinDropData()
 	if (this->dataMap)
 	{
 		FORMATETC *fmt;
-		NotNullPtr<const Data::ArrayList<FORMATETC *>> fmtList = this->dataMap->GetValues();
+		NN<const Data::ArrayList<FORMATETC *>> fmtList = this->dataMap->GetValues();
 		UOSInt i = fmtList->GetCount();
 		while (i-- > 0)
 		{
@@ -70,7 +70,7 @@ const UTF8Char *UI::Win::WinDropData::GetName(UOSInt index)
 	return this->dataMap->GetKey(index);
 }
 
-Bool UI::Win::WinDropData::GetDataText(const UTF8Char *name, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool UI::Win::WinDropData::GetDataText(const UTF8Char *name, NN<Text::StringBuilderUTF8> sb)
 {
 	if (this->dataMap == 0)
 	{

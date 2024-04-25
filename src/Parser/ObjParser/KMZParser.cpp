@@ -24,7 +24,7 @@ void Parser::ObjParser::KMZParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::ObjParser::KMZParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::ObjParser::KMZParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::MapLayer)
 	{
@@ -37,13 +37,13 @@ IO::ParserType Parser::ObjParser::KMZParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(NotNullPtr<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(NN<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	if (pobj->GetParserType() != IO::ParserType::PackageFile)
 		return 0;
 	if (this->parsers == 0)
 		return 0;
-	NotNullPtr<IO::PackageFile> pkg = NotNullPtr<IO::PackageFile>::ConvertFrom(pobj);
+	NN<IO::PackageFile> pkg = NN<IO::PackageFile>::ConvertFrom(pobj);
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Data::ArrayList<IO::ParsedObject*> *pobjList;
@@ -58,7 +58,7 @@ IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(NotNullPtr<IO::Parse
 		sptr = pkg->GetItemName(sbuff, i);
 		if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".kml")))
 		{
-			NotNullPtr<IO::StreamData> fd;
+			NN<IO::StreamData> fd;
 			if (pkg->GetItemStmDataNew(i).SetTo(fd))
 			{
 				pobj2 = this->parsers->ParseFile(fd);
@@ -96,8 +96,8 @@ IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(NotNullPtr<IO::Parse
 	else
 	{
 		Map::MapLayerCollection *mapLyrColl;
-		NotNullPtr<IO::ParsedObject> nnpobj2;
-		NotNullPtr<Map::MapDrawLayer> layer;
+		NN<IO::ParsedObject> nnpobj2;
+		NN<Map::MapDrawLayer> layer;
 		NEW_CLASS(mapLyrColl, Map::MapLayerCollection(pobj->GetSourceNameObj(), 0));
 		i = 0;
 		j = pobjList->GetCount();
@@ -107,7 +107,7 @@ IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(NotNullPtr<IO::Parse
 			{
 				if (nnpobj2->GetParserType() == IO::ParserType::MapLayer)
 				{
-					mapLyrColl->Add(NotNullPtr<Map::MapDrawLayer>::ConvertFrom(nnpobj2));
+					mapLyrColl->Add(NN<Map::MapDrawLayer>::ConvertFrom(nnpobj2));
 				}
 				else
 				{

@@ -9,7 +9,7 @@
 #include "Net/HTTPClient.h"
 #include "Text/MyString.h"
 
-Map::MercatorTileMap::MercatorTileMap(Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl)
+Map::MercatorTileMap::MercatorTileMap(Text::CString cacheDir, UOSInt minLevel, UOSInt maxLevel, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl)
 {
 	this->cacheDir = Text::String::NewOrNull(cacheDir);
 	this->spkg = 0;
@@ -40,7 +40,7 @@ Bool Map::MercatorTileMap::HasSPackageFile()
 	return this->spkg != 0;
 }
 
-Bool Map::MercatorTileMap::ImportTiles(NotNullPtr<IO::PackageFile> pkg)
+Bool Map::MercatorTileMap::ImportTiles(NN<IO::PackageFile> pkg)
 {
 	if (this->spkg)
 	{
@@ -102,7 +102,7 @@ Bool Map::MercatorTileMap::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 	return true;
 }
 
-NotNullPtr<Math::CoordinateSystem> Map::MercatorTileMap::GetCoordinateSystem() const
+NN<Math::CoordinateSystem> Map::MercatorTileMap::GetCoordinateSystem() const
 {
 	return this->csys;
 }
@@ -177,7 +177,7 @@ UOSInt Map::MercatorTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rec
 	return (UOSInt)((pixX2 - pixX1 + 1) * (pixY2 - pixY1 + 1));
 }
 
-Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NotNullPtr<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
+Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
 {
 	UTF8Char url[1024];
 	UTF8Char *urlPtr;
@@ -188,7 +188,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 	Bool hasTime = false;
 	Data::Timestamp ts;
 	Data::Timestamp currTS;
-	NotNullPtr<Net::HTTPClient> cli;
+	NN<Net::HTTPClient> cli;
 	IO::ParsedObject *pobj;
 	if (level < this->minLevel || level > this->maxLevel)
 		return 0;
@@ -201,7 +201,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 	if (x1 > 180 || y1 < -90)
 		return 0;
 
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (this->cacheDir.SetTo(s))
 	{
 		sptru = s->ConcatTo(filePathU);
@@ -214,7 +214,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 		*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrInt32(sptru, tileId.y);
 		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
-		NotNullPtr<IO::StmData::FileData> fd;
+		NN<IO::StmData::FileData> fd;
 		NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
 		if (fd->GetDataSize() > 0)
 		{
@@ -252,7 +252,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 		*sptru++ = '/';
 		sptru = Text::StrInt32(sptru, tileId.y);
 		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
-		NotNullPtr<IO::StreamData> fd;
+		NN<IO::StreamData> fd;
 		if (fd.Set(this->spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)})))
 		{
 			IO::StmData::BufferedStreamData bsd(fd);
@@ -333,7 +333,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 	{
 		fd = this->spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)});
 	}
-	NotNullPtr<IO::StreamData> nnfd;
+	NN<IO::StreamData> nnfd;
 	if (nnfd.Set(fd))
 	{
 		if (nnfd->GetDataSize() > 0)
@@ -369,8 +369,8 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 	Bool hasTime = false;
 	Data::DateTime dt;
 	Data::DateTime currTime;
-	NotNullPtr<Net::HTTPClient> cli;
-	NotNullPtr<Text::String> s;
+	NN<Net::HTTPClient> cli;
+	NN<Text::String> s;
 	IO::StreamData *fd;
 	if (level > this->maxLevel)
 		return 0;

@@ -5,7 +5,7 @@
 #include "Sync/SimpleThread.h"
 #include <stdio.h>
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Net::OSSocketFactory sockf(true);
 	UInt32 respTime;

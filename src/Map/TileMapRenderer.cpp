@@ -4,7 +4,7 @@
 #include "Data/ArrayListInt64.h"
 #include "Map/TileMapRenderer.h"
 
-Map::TileMapRenderer::TileMapRenderer(NotNullPtr<Media::DrawEngine> eng, Map::TileMap *map, NotNullPtr<Parser::ParserList> parsers)
+Map::TileMapRenderer::TileMapRenderer(NN<Media::DrawEngine> eng, Map::TileMap *map, NN<Parser::ParserList> parsers)
 {
 	this->eng = eng;
 	this->map = map;
@@ -24,7 +24,7 @@ Map::TileMapRenderer::~TileMapRenderer()
 	}
 }
 
-void Map::TileMapRenderer::DrawMap(NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, OptOut<UInt32> imgDurMS)
+void Map::TileMapRenderer::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, OptOut<UInt32> imgDurMS)
 {
 	imgDurMS.Set(0);
 	CachedImage *cimg;

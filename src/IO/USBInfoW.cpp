@@ -73,7 +73,7 @@ UInt16 USBInfo_ReadI16(Text::CStringNN fileName)
 	return (UInt16)(Text::StrHex2Int32C((const UTF8Char*)buff) & 0xffff);
 }
 
-UOSInt IO::USBInfo::GetUSBList(NotNullPtr<Data::ArrayList<USBInfo*>> usbList)
+UOSInt IO::USBInfo::GetUSBList(NN<Data::ArrayList<USBInfo*>> usbList)
 {
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayListUInt32 existList;
@@ -86,7 +86,7 @@ UOSInt IO::USBInfo::GetUSBList(NotNullPtr<Data::ArrayList<USBInfo*>> usbList)
 	UTF8Char *sptr2End;
 	UOSInt ret = 0;
 	Win32::WMIQuery qry(L"ROOT\\CIMV2");
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (qry.QueryTableData(CSTR_NULL, CSTR("CIM_LogicalDevice"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		UOSInt descCol = INVALID_INDEX;

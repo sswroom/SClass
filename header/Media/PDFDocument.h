@@ -12,11 +12,11 @@ namespace Media
 	{
 	private:
 		Data::UInt32FastMap<PDFObject*> objMap;
-		NotNullPtr<Text::String> version;
+		NN<Text::String> version;
 
 		IO::ParsedObject *SetPObjName(IO::ParsedObject *pobj, UInt32 objId, Text::CString ext);
 	public:
-		PDFDocument(NotNullPtr<Text::String> sourceName, Text::CString version);
+		PDFDocument(NN<Text::String> sourceName, Text::CString version);
 		virtual ~PDFDocument();
 
 		virtual IO::ParserType GetParserType() const;
@@ -24,7 +24,7 @@ namespace Media
 		virtual PDFObject *GetItem(UOSInt index) const;
 		
 		PDFObject *AddObject(UInt32 id);
-		Media::ImageList *CreateImage(UInt32 id, NotNullPtr<Parser::ParserList> parsers);
+		Media::ImageList *CreateImage(UInt32 id, NN<Parser::ParserList> parsers);
 	};
 }
 #endif

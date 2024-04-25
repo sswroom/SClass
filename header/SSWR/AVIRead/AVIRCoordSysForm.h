@@ -12,13 +12,13 @@ namespace SSWR
 		class AVIRCoordSysForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUITextBox> txtDesc;
+			NN<UI::GUITextBox> txtDesc;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Math::CoordinateSystem *csys;
 
 		public:
-			AVIRCoordSysForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Math::CoordinateSystem *csys);
+			AVIRCoordSysForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Math::CoordinateSystem *csys);
 			virtual ~AVIRCoordSysForm();
 
 			virtual void OnMonitorChanged();

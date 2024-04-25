@@ -36,14 +36,14 @@ namespace IO
 		static WChar *GetFileDirectoryW(WChar *buff, const WChar *fileName);
 		static UTF8Char *GetProcessFileName(UTF8Char *buff);
 		static WChar *GetProcessFileNameW(WChar *buff);
-		static Bool GetProcessFileName(NotNullPtr<Text::StringBuilderUTF8> sb);
+		static Bool GetProcessFileName(NN<Text::StringBuilderUTF8> sb);
 		static UTF8Char *ReplaceExt(UTF8Char *fileName, const UTF8Char *ext, UOSInt extLen);
 		static WChar *ReplaceExtW(WChar *fileName, const WChar *ext);
 		static UTF8Char *GetFileExt(UTF8Char *fileBuff, const UTF8Char *path, UOSInt pathLen);
 		static WChar *GetFileExtW(WChar *fileBuff, const WChar *path);
 		static UTF8Char *AppendPath(UTF8Char *path, UTF8Char *pathEnd, Text::CStringNN toAppend);
 		static WChar *AppendPathW(WChar *path, const WChar *toAppend);
-		static Bool AppendPath(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *toAppend, UOSInt toAppendLen);
+		static Bool AppendPath(NN<Text::StringBuilderUTF8> sb, const UTF8Char *toAppend, UOSInt toAppendLen);
 		static FindFileSession *FindFile(Text::CString path);
 		static FindFileSession *FindFileW(const WChar *path);
 		static UTF8Char *FindNextFile(UTF8Char *buff, FindFileSession *session, Data::Timestamp *modTime, IO::Path::PathType *pt, UInt64 *fileSize);

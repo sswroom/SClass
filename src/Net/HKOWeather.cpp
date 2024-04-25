@@ -75,11 +75,11 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::String2Signal(Text::String *text
 	return signal;
 }
 
-Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<Text::EncodingFactory> encFact)
+Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact)
 {
 	UInt8 buff[1024];
 	UInt8 *mbuff;
-	NotNullPtr<Net::HTTPClient> cli;
+	NN<Net::HTTPClient> cli;
 	Net::HKOWeather::WeatherSignal signal;
 	UOSInt i;
 
@@ -123,12 +123,12 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(NotNullPtr<Net:
 	return signal;
 }
 
-Bool Net::HKOWeather::GetCurrentTempRH(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, OutParam<Int32> temperature, OutParam<Int32> rh, NotNullPtr<IO::LogTool> log)
+Bool Net::HKOWeather::GetCurrentTempRH(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, OutParam<Int32> temperature, OutParam<Int32> rh, NN<IO::LogTool> log)
 {
 	Bool succ = false;
 	Net::RSS *rss;
 	Text::CString userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-	NotNullPtr<Text::String> ua = Text::String::New(userAgent);
+	NN<Text::String> ua = Text::String::New(userAgent);
 	NEW_CLASS(rss, Net::RSS(CSTR("https://rss.weather.gov.hk/rss/CurrentWeather.xml"), ua.Ptr(), sockf, ssl, 30000, log));
 	ua->Release();
 	if (!rss->IsError())
@@ -172,7 +172,7 @@ Bool Net::HKOWeather::GetCurrentTempRH(NotNullPtr<Net::SocketFactory> sockf, Opt
 	return succ;
 }
 
-Bool Net::HKOWeather::GetWeatherForecast(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang, WeatherForecast *weatherForecast)
+Bool Net::HKOWeather::GetWeatherForecast(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang, WeatherForecast *weatherForecast)
 {
 	Text::CStringNN url;
 	switch (lang)
@@ -195,8 +195,8 @@ Bool Net::HKOWeather::GetWeatherForecast(NotNullPtr<Net::SocketFactory> sockf, O
 	if (json)
 	{
 		weatherForecast->seaTemp = json->GetValueAsInt32(CSTR("seaTemp.value"));
-		NotNullPtr<Text::String> sUpdateTime;
-		NotNullPtr<Text::String> sSeaTempTime;
+		NN<Text::String> sUpdateTime;
+		NN<Text::String> sSeaTempTime;
 		weatherForecast->generalSituation = json->GetValueNewString(CSTR("generalSituation"));
 		weatherForecast->seaTempPlace = json->GetValueNewString(CSTR("seaTemp.place"));
 		Text::JSONBase *weatherForecastBase = json->GetValue(CSTR("weatherForecast"));
@@ -218,11 +218,11 @@ Bool Net::HKOWeather::GetWeatherForecast(NotNullPtr<Net::SocketFactory> sockf, O
 		while (i < j)
 		{
 			Text::JSONBase *weatherForecastItem = weatherForecastArr->GetArrayValue(i);
-			NotNullPtr<Text::String> sDate;
-			NotNullPtr<Text::String> sWeekday;
-			NotNullPtr<Text::String> sWind;
-			NotNullPtr<Text::String> sWeather;
-			NotNullPtr<Text::String> sPSR;
+			NN<Text::String> sDate;
+			NN<Text::String> sWeekday;
+			NN<Text::String> sWind;
+			NN<Text::String> sWeather;
+			NN<Text::String> sPSR;
 			if (weatherForecastItem->GetValueString(CSTR("forecastDate")).SetTo(sDate) &&
 				weatherForecastItem->GetValueString(CSTR("week")).SetTo(sWeekday) &&
 				weatherForecastItem->GetValueString(CSTR("forecastWind")).SetTo(sWind) &&
@@ -274,7 +274,7 @@ void Net::HKOWeather::FreeWeatherForecast(WeatherForecast *weatherForecast)
 	}
 }
 
-Bool Net::HKOWeather::GetLocalForecast(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang, LocalForecast *localForecast)
+Bool Net::HKOWeather::GetLocalForecast(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang, LocalForecast *localForecast)
 {
 	Text::CStringNN url;
 	switch (lang)
@@ -299,7 +299,7 @@ Bool Net::HKOWeather::GetLocalForecast(NotNullPtr<Net::SocketFactory> sockf, Opt
 		localForecast->forecastPeriod = json->GetValueString(CSTR("forecastPeriod"));
 		localForecast->forecastDesc = json->GetValueString(CSTR("forecastDesc"));
 		localForecast->outlook = json->GetValueString(CSTR("outlook"));
-		NotNullPtr<Text::String> sUpdateTime;
+		NN<Text::String> sUpdateTime;
 		if (localForecast->generalSituation.IsNull() ||
 			localForecast->tcInfo.IsNull() ||
 			localForecast->fireDangerWarning.IsNull() ||
@@ -334,7 +334,7 @@ void Net::HKOWeather::FreeLocalForecast(LocalForecast *localForecast)
 	OPTSTR_DEL(localForecast->outlook);
 }
 
-Bool Net::HKOWeather::GetWarningSummary(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Data::ArrayList<WarningSummary*> *warnings)
+Bool Net::HKOWeather::GetWarningSummary(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Data::ArrayList<WarningSummary*> *warnings)
 {
 	Text::JSONBase *json = Net::HTTPJSONReader::Read(sockf, ssl, CSTR("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum&lang=en"));
 	if (json)
@@ -345,16 +345,16 @@ Bool Net::HKOWeather::GetWarningSummary(NotNullPtr<Net::SocketFactory> sockf, Op
 			Data::ArrayListNN<Text::String> objNames;
 			obj->GetObjectNames(objNames);
 			Text::JSONObject *warnObj;
-			Data::ArrayIterator<NotNullPtr<Text::String>> it = objNames.Iterator();
+			Data::ArrayIterator<NN<Text::String>> it = objNames.Iterator();
 			while (it.HasNext())
 			{
 				warnObj = obj->GetValueObject(it.Next()->ToCString());
 				if (warnObj)
 				{
-					NotNullPtr<Text::String> sCode;
-					NotNullPtr<Text::String> sActionCode;
-					NotNullPtr<Text::String> sIssueTime;
-					NotNullPtr<Text::String> sUpdateTime;
+					NN<Text::String> sCode;
+					NN<Text::String> sActionCode;
+					NN<Text::String> sIssueTime;
+					NN<Text::String> sUpdateTime;
 					Optional<Text::String> sExpireTime = warnObj->GetValueString(CSTR("expireTime"));
 					if (warnObj->GetValueString(CSTR("code")).SetTo(sCode) &&
 						warnObj->GetValueString(CSTR("actionCode")).SetTo(sActionCode) &&
@@ -366,7 +366,7 @@ Bool Net::HKOWeather::GetWarningSummary(NotNullPtr<Net::SocketFactory> sockf, Op
 						summary->actionCode = SignalActionParse(sActionCode->ToCString());
 						summary->issueTime = Data::Timestamp::FromStr(sIssueTime->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
 						summary->updateTime = Data::Timestamp::FromStr(sUpdateTime->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
-						NotNullPtr<Text::String> s;
+						NN<Text::String> s;
 						if (sExpireTime.SetTo(s))
 						{
 							summary->expireTime = Data::Timestamp::FromStr(s->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
@@ -397,7 +397,7 @@ void Net::HKOWeather::FreeWarningSummary(Data::ArrayList<WarningSummary*> *warni
 	LIST_FREE_FUNC(warnings, MemFree);
 }
 
-Net::HKOWeather::HKOWeather(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NotNullPtr<Text::EncodingFactory> encFact, UpdateHandler hdlr, NotNullPtr<IO::LogTool> log)
+Net::HKOWeather::HKOWeather(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact, UpdateHandler hdlr, NN<IO::LogTool> log)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

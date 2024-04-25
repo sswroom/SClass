@@ -16,7 +16,7 @@
 
 void Map::TileMapServiceSource::LoadXML()
 {
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, 0, this->tmsURL->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, 0, this->tmsURL->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	if (cli->IsError())
 	{
 		cli.Delete();
@@ -25,7 +25,7 @@ void Map::TileMapServiceSource::LoadXML()
 	{
 		Bool valid = false;
 		Text::XMLReader reader(this->encFact, cli, Text::XMLReader::PM_XML);
-		NotNullPtr<Text::String> nodeText;
+		NN<Text::String> nodeText;
 		if (reader.NextElementName().SetTo(nodeText))
 		{
 			valid = nodeText->Equals(UTF8STRC("TileMap"));
@@ -55,7 +55,7 @@ void Map::TileMapServiceSource::LoadXML()
 					sb.ClearStr();
 					if (reader.ReadNodeText(sb))
 					{
-						NotNullPtr<Math::CoordinateSystem> csys;
+						NN<Math::CoordinateSystem> csys;
 						if (csys.Set(Math::CoordinateSystemManager::CreateFromName(sb.ToCString())))
 						{
 							this->csys.Delete();
@@ -66,7 +66,7 @@ void Map::TileMapServiceSource::LoadXML()
 							const Math::CoordinateSystemManager::SpatialRefInfo *srInfo = Math::CoordinateSystemManager::SRGetSpatialRef(this->csys->GetSRID());
 							if (srInfo)
 							{
-								NotNullPtr<Math::CoordinateSystem> wgs84 = Math::CoordinateSystemManager::CreateDefaultCsys();
+								NN<Math::CoordinateSystem> wgs84 = Math::CoordinateSystemManager::CreateDefaultCsys();
 								this->csysOrigin = Math::CoordinateSystem::Convert(wgs84, this->csys, Math::Coord2DDbl(srInfo->minXGeo, srInfo->minYGeo));
 								wgs84.Delete();
 #if defined(VERBOSE)
@@ -272,7 +272,7 @@ void Map::TileMapServiceSource::LoadXML()
 	cli.Delete();
 }
 
-Map::TileMapServiceSource::TileMapServiceSource(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString tmsURL)
+Map::TileMapServiceSource::TileMapServiceSource(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString tmsURL)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -389,7 +389,7 @@ Bool Map::TileMapServiceSource::GetBounds(OutParam<Math::RectAreaDbl> bounds) co
 	return true;
 }
 
-NotNullPtr<Math::CoordinateSystem> Map::TileMapServiceSource::GetCoordinateSystem() const
+NN<Math::CoordinateSystem> Map::TileMapServiceSource::GetCoordinateSystem() const
 {
 	return this->csys;
 }
@@ -439,10 +439,10 @@ UOSInt Map::TileMapServiceSource::GetTileImageIDs(UOSInt level, Math::RectAreaDb
 	return ret;
 }
 
-Media::ImageList *Map::TileMapServiceSource::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NotNullPtr<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
+Media::ImageList *Map::TileMapServiceSource::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
 {
 	ImageType it;
-	NotNullPtr<IO::StreamData> fd;
+	NN<IO::StreamData> fd;
 	IO::ParsedObject *pobj;
 	if (this->LoadTileImageData(level, tileId, bounds, localOnly, it).SetTo(fd))
 	{
@@ -477,7 +477,7 @@ UTF8Char *Map::TileMapServiceSource::GetTileImageURL(UTF8Char *sbuff, UOSInt lev
 	return 0;
 }
 
-Bool Map::TileMapServiceSource::GetTileImageURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
+Bool Map::TileMapServiceSource::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
 {
 	TileLayer *layer = this->layers.GetItem(level);
 	if (layer)
@@ -504,8 +504,8 @@ Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UOSInt lev
 	Bool hasTime = false;
 	Data::DateTime dt;
 	Data::DateTime currTime;
-	NotNullPtr<Net::HTTPClient> cli;
-	NotNullPtr<IO::StreamData> fd;
+	NN<Net::HTTPClient> cli;
+	NN<IO::StreamData> fd;
 	TileLayer *layer = this->layers.GetItem(level);
 	if (layer == 0)
 		return 0;

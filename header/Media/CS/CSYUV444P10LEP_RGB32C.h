@@ -48,15 +48,15 @@ namespace Media
 			static UInt32 __stdcall WorkerThread(AnyType obj);
 			void WaitForWorker(Int32 jobStatus);
 		public:
-			CSYUV444P10LEP_RGB32C(NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess, Media::PixelFormat destPF);
+			CSYUV444P10LEP_RGB32C(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess, Media::PixelFormat destPF);
 			virtual ~CSYUV444P10LEP_RGB32C();
 
 			virtual void ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
 			virtual UOSInt GetSrcFrameSize(UOSInt width, UOSInt height);
 
 			virtual void UpdateTable();
-			virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuv);
-			virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgb);
+			virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuv);
+			virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgb);
 			virtual UOSInt GetDestFrameSize(UOSInt width, UOSInt height);
 		};
 	}

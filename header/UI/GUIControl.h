@@ -21,7 +21,7 @@ namespace UI
 	public:
 		virtual UOSInt GetCount() = 0;
 		virtual const UTF8Char *GetName(UOSInt index) = 0;
-		virtual Bool GetDataText(const UTF8Char *name, NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
+		virtual Bool GetDataText(const UTF8Char *name, NN<Text::StringBuilderUTF8> sb) = 0;
 		virtual IO::Stream *GetDataStream(const UTF8Char *name) = 0;
 	};
 
@@ -222,7 +222,7 @@ namespace UI
 		ControlHandle *hwnd;
 		void *hFont;
 		void *hbrBackground;
-		NotNullPtr<GUICore> ui;
+		NN<GUICore> ui;
 		DockType dockType;
 		Optional<GUIClientControl> parent;
 		Double lxPos;
@@ -245,7 +245,7 @@ namespace UI
 		void InitControl(InstanceHandle *hInst, Optional<UI::GUIClientControl> parent, const WChar *className, const UTF8Char *txt, UInt32 style, UInt32 exStyle, Double x, Double y, Double w, Double h);
 
 	protected:
-		GUIControl(NotNullPtr<GUICore> ui, Optional<UI::GUIClientControl> parent);
+		GUIControl(NN<GUICore> ui, Optional<UI::GUIClientControl> parent);
 	public:
 		virtual ~GUIControl();
 
@@ -255,7 +255,7 @@ namespace UI
 		virtual void Close();
 		virtual void SetText(Text::CStringNN text);
 		virtual UTF8Char *GetText(UTF8Char *buff);
-		virtual Bool GetText(NotNullPtr<Text::StringBuilderUTF8> sb);
+		virtual Bool GetText(NN<Text::StringBuilderUTF8> sb);
 		virtual void SetSize(Double width, Double height);
 		virtual void SetSizeP(Math::Size2D<UOSInt> size);
 		virtual Math::Size2DDbl GetSize();
@@ -313,7 +313,7 @@ namespace UI
 		Double GetHDPI();
 		Double GetDDPI();
 
-		Media::DrawFont *CreateDrawFont(NotNullPtr<Media::DrawImage> img);
+		Media::DrawFont *CreateDrawFont(NN<Media::DrawImage> img);
 		static UInt32 GUIKey2OSKey(GUIKey guiKey);
 		static GUIKey OSKey2GUIKey(UInt32 osKey);
 		static Text::CStringNN GUIKeyGetName(GUIKey guiKey);

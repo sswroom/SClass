@@ -23,7 +23,7 @@ namespace SSWR
 			{
 				UInt8 mac[6];
 				UInt64 macInt;
-				NotNullPtr<Text::String> ssid;
+				NN<Text::String> ssid;
 				Int32 phyType;
 				Double freq;
 				Text::String *manuf;
@@ -36,29 +36,29 @@ namespace SSWR
 				UInt8 *ieBuff;
 			} LogFileEntry;
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUIButton> btnStore;
-			NotNullPtr<UI::GUILabel> lblInfo;
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUIButton> btnStore;
+			NN<UI::GUILabel> lblInfo;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpFile;
-			NotNullPtr<UI::GUIPanel> pnlFile;
-			NotNullPtr<UI::GUILabel> lblFile;
-			NotNullPtr<UI::GUITextBox> txtFile;
-			NotNullPtr<UI::GUIButton> btnFile;
-			NotNullPtr<UI::GUITextBox> txtFileIE;
-			NotNullPtr<UI::GUIVSplitter> vspFile;
-			NotNullPtr<UI::GUIListView> lvContent;
+			NN<UI::GUITabPage> tpFile;
+			NN<UI::GUIPanel> pnlFile;
+			NN<UI::GUILabel> lblFile;
+			NN<UI::GUITextBox> txtFile;
+			NN<UI::GUIButton> btnFile;
+			NN<UI::GUITextBox> txtFileIE;
+			NN<UI::GUIVSplitter> vspFile;
+			NN<UI::GUIListView> lvContent;
 
-			NotNullPtr<UI::GUITabPage> tpInput;
-			NotNullPtr<UI::GUILabel> lblInput;
-			NotNullPtr<UI::GUITextBox> txtInput;
-			NotNullPtr<UI::GUIButton> btnInput;
+			NN<UI::GUITabPage> tpInput;
+			NN<UI::GUILabel> lblInput;
+			NN<UI::GUITextBox> txtInput;
+			NN<UI::GUIButton> btnInput;
 
-			NotNullPtr<UI::GUITabPage> tpWireshark;
-			NotNullPtr<UI::GUIButton> btnWireshark;
+			NN<UI::GUITabPage> tpWireshark;
+			NN<UI::GUIButton> btnWireshark;
 
 			Data::ArrayList<LogFileEntry*> logList;
 			Net::MACInfoList macList;
@@ -74,7 +74,7 @@ namespace SSWR
 
 			void UpdateStatus();
 		public:
-			AVIRMACManagerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRMACManagerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRMACManagerForm();
 
 			virtual void OnMonitorChanged();

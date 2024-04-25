@@ -22,9 +22,9 @@ UTF8Char *Crypto::Hash::FNV1a::GetName(UTF8Char *sbuff) const
 	return Text::StrConcatC(sbuff, UTF8STRC("FNV1a"));
 }
 
-NotNullPtr<Crypto::Hash::IHash> Crypto::Hash::FNV1a::Clone() const
+NN<Crypto::Hash::IHash> Crypto::Hash::FNV1a::Clone() const
 {
-	NotNullPtr<Crypto::Hash::FNV1a> fnv1;
+	NN<Crypto::Hash::FNV1a> fnv1;
 	NEW_CLASSNN(fnv1, Crypto::Hash::FNV1a());
 	fnv1->currVal = this->currVal;
 	return fnv1;

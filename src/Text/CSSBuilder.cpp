@@ -98,7 +98,7 @@ Bool Text::CSSBuilder::AddFontFamily(const UTF8Char *family)
 {
 	if (this->bstate == BS_ROOT) return false;
 	this->AppendStyleName(CSTR("font-family"));
-	NotNullPtr<Text::String> s = Text::JSText::ToNewJSTextDQuote(family);
+	NN<Text::String> s = Text::JSText::ToNewJSTextDQuote(family);
 	this->sb.Append(s);
 	s->Release();
 	return true;

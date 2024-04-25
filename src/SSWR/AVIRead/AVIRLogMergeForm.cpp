@@ -9,9 +9,9 @@
 
 void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnFile1Clicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLogMergeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogMergeForm>();
+	NN<SSWR::AVIRead::AVIRLogMergeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogMergeForm>();
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"LogMergeFile1", false);
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"LogMergeFile1", false);
 	dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
 	dlg->SetAllowMultiSel(false);
 	me->txtFile1->GetText(sb);
@@ -28,9 +28,9 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnFile1Clicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnFile2Clicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLogMergeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogMergeForm>();
+	NN<SSWR::AVIRead::AVIRLogMergeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogMergeForm>();
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"LogMergeFile2", false);
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"LogMergeFile2", false);
 	dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
 	dlg->SetAllowMultiSel(false);
 	me->txtFile2->GetText(sb);
@@ -47,9 +47,9 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnFile2Clicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnOFileClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLogMergeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogMergeForm>();
+	NN<SSWR::AVIRead::AVIRLogMergeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogMergeForm>();
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"LogMergeOFile", true);
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"LogMergeOFile", true);
 	dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
 	me->txtOFile->GetText(sb);
 	if (sb.GetLength() > 0)
@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnOFileClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLogMergeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogMergeForm>();
+	NN<SSWR::AVIRead::AVIRLogMergeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogMergeForm>();
 	UTF8Char sbuff[16];
 	Text::StringBuilderUTF8 sb1;
 	Text::StringBuilderUTF8 sb2;
@@ -94,12 +94,12 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(AnyType userObj
 		Data::DateTime dt;
 		Int64 t1;
 		Int64 t2;
-		NotNullPtr<IO::FileStream> fs1;
-		NotNullPtr<IO::FileStream> fs2;
-		NotNullPtr<IO::FileStream> fs3;
-		NotNullPtr<Text::UTF8Reader> reader1;
-		NotNullPtr<Text::UTF8Reader> reader2;
-		NotNullPtr<Text::UTF8Writer> writer;
+		NN<IO::FileStream> fs1;
+		NN<IO::FileStream> fs2;
+		NN<IO::FileStream> fs3;
+		NN<Text::UTF8Reader> reader1;
+		NN<Text::UTF8Reader> reader2;
+		NN<Text::UTF8Writer> writer;
 		NEW_CLASSNN(fs1, IO::FileStream(sb1.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASSNN(reader1, Text::UTF8Reader(fs1));
 		NEW_CLASSNN(fs2, IO::FileStream(sb2.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -217,7 +217,7 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(AnyType userObj
 	}
 }
 
-SSWR::AVIRead::AVIRLogMergeForm::AVIRLogMergeForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 136, ui)
+SSWR::AVIRead::AVIRLogMergeForm::AVIRLogMergeForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 136, ui)
 {
 	this->SetText(CSTR("Log Merge"));
 	this->SetFont(0, 0, 8.25, false);

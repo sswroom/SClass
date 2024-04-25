@@ -10,11 +10,11 @@ namespace UI
 		class GTKPanelBase : public UI::GUIPanelBase
 		{
 		protected:
-			NotNullPtr<GUIPanel> master;
+			NN<GUIPanel> master;
 
 		public:
-			GTKPanelBase(NotNullPtr<GUIPanel> master, NotNullPtr<GUICore> ui, ControlHandle *parentHWnd);
-			GTKPanelBase(NotNullPtr<GUIPanel> master, NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
+			GTKPanelBase(NN<GUIPanel> master, NN<GUICore> ui, ControlHandle *parentHWnd);
+			GTKPanelBase(NN<GUIPanel> master, NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 			virtual ~GTKPanelBase();
 
 			virtual Math::Coord2DDbl GetClientOfst();

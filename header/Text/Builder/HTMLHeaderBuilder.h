@@ -9,10 +9,10 @@ namespace Text
 		class HTMLHeaderBuilder
 		{
 		private:
-			NotNullPtr<Text::StringBuilderUTF8> sb;
+			NN<Text::StringBuilderUTF8> sb;
 
 		public:
-			HTMLHeaderBuilder(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString title);
+			HTMLHeaderBuilder(NN<Text::StringBuilderUTF8> sb, Text::CString title);
 			~HTMLHeaderBuilder();
 		};
 	}

@@ -5,7 +5,7 @@
 #include "Text/MyStringW.h"
 #include "UI/Java/JavaListBox.h"
 
-UI::Java::JavaListBox::JavaListBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool multiSelect) : UI::GUIListBox(ui, parent)
+UI::Java::JavaListBox::JavaListBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Bool multiSelect) : UI::GUIListBox(ui, parent)
 {
 }
 
@@ -13,7 +13,7 @@ UI::Java::JavaListBox::~JavaListBox()
 {
 }
 
-UOSInt UI::Java::JavaListBox::AddItem(NotNullPtr<Text::String> itemText, void *itemObj)
+UOSInt UI::Java::JavaListBox::AddItem(NN<Text::String> itemText, void *itemObj)
 {
 	return 0;
 }

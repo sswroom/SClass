@@ -10,7 +10,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnDatabaseMySQLClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRRESTfulForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRESTfulForm>();
+	NN<SSWR::AVIRead::AVIRRESTfulForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRESTfulForm>();
 	SSWR::AVIRead::AVIRMySQLConnForm frm(0, me->GetUI(), me->core);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnDatabaseMySQLClicked(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnDatabaseODBCDSNClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRRESTfulForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRESTfulForm>();
+	NN<SSWR::AVIRead::AVIRRESTfulForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRESTfulForm>();
 	SSWR::AVIRead::AVIRODBCDSNForm frm(0, me->GetUI(), me->core);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnDatabaseODBCDSNClicked(AnyType 
 
 void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRRESTfulForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRESTfulForm>();
+	NN<SSWR::AVIRead::AVIRRESTfulForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRESTfulForm>();
 	if (me->svr)
 	{
 		return;
@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(AnyType userObj)
 	me->txtPort->GetText(sb);
 	if (sb.ToUInt16(port) && port > 0 && port <= 65535)
 	{
-		NotNullPtr<Net::WebServer::RESTfulHandler> restHdlr;
+		NN<Net::WebServer::RESTfulHandler> restHdlr;
 		NEW_CLASSNN(restHdlr, Net::WebServer::RESTfulHandler(me->dbCache));
 		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), 0, restHdlr, port, 120, 2, Sync::ThreadUtil::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()?Net::WebServer::KeepAlive::Always:Net::WebServer::KeepAlive::Default, false));
 		if (me->svr->IsError())
@@ -81,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(AnyType userObj)
 			{
 				me->log.AddFileLog(sb.ToCString(), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
 				me->svr->SetAccessLog(&me->log, IO::LogHandler::LogLevel::Raw);
-				NotNullPtr<UI::ListBoxLogger> logger;
+				NN<UI::ListBoxLogger> logger;
 				NEW_CLASSNN(logger, UI::ListBoxLogger(me, me->lbLog, 500, true));
 				me->logger = logger.Ptr();
 				me->log.AddLogHandler(logger, IO::LogHandler::LogLevel::Raw);
@@ -128,7 +128,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(AnyType userObj)
 		{
 			SDEL_CLASS(me->svr);
 			SDEL_CLASS(me->restHdlr);
-			NotNullPtr<UI::ListBoxLogger> logger;
+			NN<UI::ListBoxLogger> logger;
 			if (logger.Set(me->logger))
 			{
 				me->log.RemoveLogHandler(logger);
@@ -144,7 +144,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStopClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRRESTfulForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRESTfulForm>();
+	NN<SSWR::AVIRead::AVIRRESTfulForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRESTfulForm>();
 	if (me->svr == 0)
 	{
 		return;
@@ -163,7 +163,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStopClick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnLogSel(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRRESTfulForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRESTfulForm>();
+	NN<SSWR::AVIRead::AVIRRESTfulForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRESTfulForm>();
 	Optional<Text::String> s = me->lbLog->GetSelectedItemTextNew();
 	me->txtLog->SetText(Text::String::OrEmpty(s)->ToCString());
 	OPTSTR_DEL(s);
@@ -171,9 +171,9 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnLogSel(AnyType userObj)
 
 void SSWR::AVIRead::AVIRRESTfulForm::InitDB()
 {
-	NotNullPtr<DB::DBTool> db;
-	NotNullPtr<DB::DBModel> dbModel;
-	NotNullPtr<DB::DBConn> dbConn;
+	NN<DB::DBTool> db;
+	NN<DB::DBModel> dbModel;
+	NN<DB::DBConn> dbConn;
 	if (dbConn.Set(this->dbConn))
 	{
 		Text::StringBuilderUTF8 sb;
@@ -188,7 +188,7 @@ void SSWR::AVIRead::AVIRRESTfulForm::InitDB()
 	}
 }
 
-SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -279,7 +279,7 @@ SSWR::AVIRead::AVIRRESTfulForm::~AVIRRESTfulForm()
 	SDEL_CLASS(this->dbModel);
 	SDEL_CLASS(this->db);
 	SDEL_CLASS(this->dbConn);
-	NotNullPtr<UI::ListBoxLogger> logger;
+	NN<UI::ListBoxLogger> logger;
 	if (logger.Set(this->logger))
 	{
 		this->log.RemoveLogHandler(logger);

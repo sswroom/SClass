@@ -35,7 +35,7 @@ namespace DB
 
 	protected:
 		DataError lastDataError;
-		DBConn(NotNullPtr<Text::String> sourceName);
+		DBConn(NN<Text::String> sourceName);
 		DBConn(Text::CStringNN sourceName);
 	public:
 		virtual ~DBConn();
@@ -45,7 +45,7 @@ namespace DB
 		virtual ConnType GetConnType() const = 0;
 		virtual Int8 GetTzQhr() const = 0;
 		virtual void ForceTz(Int8 tzQhr) = 0;
-		virtual void GetConnName(NotNullPtr<Text::StringBuilderUTF8> sb) = 0;
+		virtual void GetConnName(NN<Text::StringBuilderUTF8> sb) = 0;
 		virtual void Close() = 0;
 		virtual OSInt ExecuteNonQuery(Text::CStringNN sql) = 0;
 		virtual Optional<DBReader> ExecuteReader(Text::CStringNN sql) = 0;
@@ -54,8 +54,8 @@ namespace DB
 		DataError GetLastDataError();
 
 		virtual Optional<DBTransaction> BeginTransaction() = 0;
-		virtual void Commit(NotNullPtr<DBTransaction> tran) = 0;
-		virtual void Rollback(NotNullPtr<DBTransaction> tran) = 0;
+		virtual void Commit(NN<DBTransaction> tran) = 0;
+		virtual void Rollback(NN<DBTransaction> tran) = 0;
 
 		virtual Bool IsFullConn() const;
 	};

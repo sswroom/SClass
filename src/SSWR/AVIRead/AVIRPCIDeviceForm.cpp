@@ -7,7 +7,7 @@
 #include "Text/MyString.h"
 void __stdcall SSWR::AVIRead::AVIRPCIDeviceForm::OnDevicesSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPCIDeviceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPCIDeviceForm>();
+	NN<SSWR::AVIRead::AVIRPCIDeviceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPCIDeviceForm>();
 	IO::PCIInfo *pci;
 	pci = (IO::PCIInfo*)me->lbDevices->GetSelectedItem().p;
 	if (pci == 0)
@@ -67,7 +67,7 @@ OSInt __stdcall SSWR::AVIRead::AVIRPCIDeviceForm::ItemCompare(IO::PCIInfo *item1
 	}
 }
 
-SSWR::AVIRead::AVIRPCIDeviceForm::AVIRPCIDeviceForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRPCIDeviceForm::AVIRPCIDeviceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
 	this->SetText(CSTR("PCI Devices"));

@@ -42,7 +42,7 @@ namespace DB
 			FieldData currentData;
 		};
 	private:
-		NotNullPtr<TableDef> table;
+		NN<TableDef> table;
 		Data::StringUTF8Map<Field*> dataMap;
 
 		void FreeField(Field *field);
@@ -65,10 +65,10 @@ namespace DB
 		const UInt8 *GetFieldBinary(Field *field, UOSInt *buffSize) const;
 
 	public:
-		DBRow(NotNullPtr<TableDef> table);
+		DBRow(NN<TableDef> table);
 		~DBRow();
 
-		Bool SetByReader(NotNullPtr<DB::DBReader> r, Bool commit);
+		Bool SetByReader(NN<DB::DBReader> r, Bool commit);
 
 		DB::ColDef *GetFieldType(const UTF8Char *fieldName) const;
 		DataType GetFieldDataType(const UTF8Char *fieldName) const;
@@ -92,11 +92,11 @@ namespace DB
 		void Rollback();
 
 		Bool GetSinglePKI64(Int64 *key) const;
-		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
-		void AppendTableName(NotNullPtr<Text::StringBuilderUTF8> sb) const;
-		void AppendVarNameForm(NotNullPtr<Text::StringBuilderUTF8> sb, const UTF8Char *colName) const;
+		void ToString(NN<Text::StringBuilderUTF8> sb) const;
+		void AppendTableName(NN<Text::StringBuilderUTF8> sb) const;
+		void AppendVarNameForm(NN<Text::StringBuilderUTF8> sb, const UTF8Char *colName) const;
 
-		NotNullPtr<TableDef> GetTableDef();
+		NN<TableDef> GetTableDef();
 	};
 }
 #endif

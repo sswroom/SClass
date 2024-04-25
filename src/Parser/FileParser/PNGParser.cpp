@@ -1875,7 +1875,7 @@ UInt8 *PNGParser_ParsePixelsAW32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 	return srcData;
 }
 
-void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, UInt8 *dataBuff, NotNullPtr<Media::FrameInfo> info, Media::ImageList *imgList, UInt32 imgDelay, UInt32 imgX, UInt32 imgY, UInt32 imgW, UInt32 imgH, UInt8 interlaceMeth, UInt8 *palette)
+void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, UInt8 *dataBuff, NN<Media::FrameInfo> info, Media::ImageList *imgList, UInt32 imgDelay, UInt32 imgX, UInt32 imgY, UInt32 imgW, UInt32 imgH, UInt8 interlaceMeth, UInt8 *palette)
 {
 	Media::StaticImage *simg;
 	switch (colorType)
@@ -2559,7 +2559,7 @@ Int32 Parser::FileParser::PNGParser::GetName()
 	return *(Int32*)"PNGP";
 }
 
-void Parser::FileParser::PNGParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::PNGParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
@@ -2572,7 +2572,7 @@ IO::ParserType Parser::FileParser::PNGParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt64 ofst;
 	if (hdr[0] != 0x89 && hdr[1] != 0x50 && hdr[2] != 0x4e && hdr[3] != 0x47 && hdr[4] != 0x0d && hdr[5] != 0x0a && hdr[6] != 0x1a && hdr[7] != 0x0a)
@@ -2730,7 +2730,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(NotNullPtr<IO::Str
 					if (cstm.Write(&chunkData[i + 3], size - i - 7) == (size - i - 7))
 					{
 						Data::ByteArray iccBuff = mstm.GetArray();
-						NotNullPtr<Media::ICCProfile> icc;
+						NN<Media::ICCProfile> icc;
 						if (Media::ICCProfile::Parse(iccBuff).SetTo(icc))
 						{
 							icc->SetToColorProfile(info.color);
@@ -2794,7 +2794,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(NotNullPtr<IO::Str
 		{
 			if (size >= 26)
 			{
-				NotNullPtr<IO::MemoryStream> nnmstm;
+				NN<IO::MemoryStream> nnmstm;
 				if (mstm.SetTo(nnmstm))
 				{
 					UOSInt dataSize;
@@ -2833,7 +2833,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(NotNullPtr<IO::Str
 					if (mstm.IsNull())
 					{
 						imgSize = CalcImageSize(imgW, imgH, bitDepth, colorType, interlaceMeth);
-						NotNullPtr<IO::MemoryStream> nnmstm;
+						NN<IO::MemoryStream> nnmstm;
 						if (imgSize)
 						{
 							NEW_CLASSNN(nnmstm, IO::MemoryStream(imgSize));
@@ -2843,7 +2843,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(NotNullPtr<IO::Str
 							NEW_CLASSNN(nnmstm, IO::MemoryStream());
 						}
 						mstm = nnmstm;
-						NotNullPtr<Data::Compress::InflateStream> nncstm;
+						NN<Data::Compress::InflateStream> nncstm;
 						NEW_CLASSNN(nncstm, Data::Compress::InflateStream(nnmstm, 2, false));
 						cstm = nncstm;
 						NEW_CLASS(wcstm, IO::WriteCacheStream(nncstm));
@@ -2889,7 +2889,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(NotNullPtr<IO::Str
 						{
 							imgSize = 0;
 						}
-						NotNullPtr<IO::MemoryStream> nnmstm;
+						NN<IO::MemoryStream> nnmstm;
 						if (imgSize)
 						{
 							NEW_CLASSNN(nnmstm, IO::MemoryStream(imgSize));
@@ -2899,7 +2899,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(NotNullPtr<IO::Str
 							NEW_CLASSNN(nnmstm, IO::MemoryStream());
 						}
 						mstm = nnmstm;
-						NotNullPtr<Data::Compress::InflateStream> nncstm;
+						NN<Data::Compress::InflateStream> nncstm;
 						NEW_CLASSNN(nncstm, Data::Compress::InflateStream(nnmstm, 2, false));
 						cstm = nncstm;
 						NEW_CLASS(wcstm, IO::WriteCacheStream(nncstm));
@@ -2914,7 +2914,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(NotNullPtr<IO::Str
 		}
 		else if (*(Int32*)&buff[4] == *(Int32*)"IEND")
 		{
-			NotNullPtr<IO::MemoryStream> nnmstm;
+			NN<IO::MemoryStream> nnmstm;
 			if (mstm.SetTo(nnmstm))
 			{
 				wcstm->Flush();
@@ -2932,7 +2932,7 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFileHdr(NotNullPtr<IO::Str
 		}
 		ofst += (UInt64)size + 12;
 	}
-	NotNullPtr<IO::MemoryStream> nnmstm;
+	NN<IO::MemoryStream> nnmstm;
 	if (mstm.SetTo(nnmstm))
 	{
 		wcstm->Flush();

@@ -10,9 +10,9 @@ namespace IO
 		class SBFrameDetail : public IO::FileAnalyse::FrameDetailHandler
 		{
 		private:
-			NotNullPtr<Text::StringBuilderUTF8> sb;
+			NN<Text::StringBuilderUTF8> sb;
 		public:
-			SBFrameDetail(NotNullPtr<Text::StringBuilderUTF8> sb);
+			SBFrameDetail(NN<Text::StringBuilderUTF8> sb);
 			virtual ~SBFrameDetail();
 
 			virtual void AddHeader(Text::CStringNN header);

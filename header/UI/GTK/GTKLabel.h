@@ -12,7 +12,7 @@ namespace UI
 			Bool hasTextColor;
 			UInt32 textColor;
 		public:
-			GTKLabel(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText);
+			GTKLabel(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText);
 			virtual ~GTKLabel();
 
 			virtual void SetText(Text::CStringNN text);

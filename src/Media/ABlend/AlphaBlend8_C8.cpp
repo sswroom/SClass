@@ -133,7 +133,7 @@ void Media::ABlend::AlphaBlend8_C8::UpdateLUT()
 
 UInt32 __stdcall Media::ABlend::AlphaBlend8_C8::ProcessThread(AnyType userObj)
 {
-	NotNullPtr<ThreadStat> stat = userObj.GetNN<ThreadStat>();
+	NN<ThreadStat> stat = userObj.GetNN<ThreadStat>();
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("ABlend8_C8_")), stat->index);
@@ -328,11 +328,11 @@ void Media::ABlend::AlphaBlend8_C8::PremulAlpha(UInt8 *dest, OSInt dbpl, const U
 	mutUsage.EndUse();
 }
 
-void Media::ABlend::AlphaBlend8_C8::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
+void Media::ABlend::AlphaBlend8_C8::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 }
 
-void Media::ABlend::AlphaBlend8_C8::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void Media::ABlend::AlphaBlend8_C8::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
 	if (this->lutList)
 	{

@@ -18,7 +18,7 @@ Int32 Parser::ObjParser::DBMapParser::GetName()
 	return *(Int32*)"DBMA";
 }
 
-void Parser::ObjParser::DBMapParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::ObjParser::DBMapParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::MapLayer)
 	{

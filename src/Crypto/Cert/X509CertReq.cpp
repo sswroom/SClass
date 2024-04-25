@@ -4,7 +4,7 @@
 #include "Net/ASN1Util.h"
 #include "Net/SSLEngine.h"
 
-Crypto::Cert::X509CertReq::X509CertReq(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
+Crypto::Cert::X509CertReq::X509CertReq(NN<Text::String> sourceName, Data::ByteArrayR buff) : Crypto::Cert::X509File(sourceName, buff)
 {
 
 }
@@ -24,7 +24,7 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509CertReq::GetFileType() const
 	return FileType::CertRequest;
 }
 
-void Crypto::Cert::X509CertReq::ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Crypto::Cert::X509CertReq::ToShortName(NN<Text::StringBuilderUTF8> sb) const
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
@@ -35,7 +35,7 @@ void Crypto::Cert::X509CertReq::ToShortName(NotNullPtr<Text::StringBuilderUTF8> 
 	}
 }
 
-Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CertReq::IsValid(NotNullPtr<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const
+Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CertReq::IsValid(NN<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const
 {
 	SignedInfo signedInfo;
 	if (!this->GetSignedInfo(signedInfo))
@@ -47,7 +47,7 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CertReq::IsValid(NotNullPt
 	{
 		return Crypto::Cert::X509File::ValidStatus::UnsupportedAlgorithm;
 	}
-	NotNullPtr<Crypto::Cert::X509Key> key;;
+	NN<Crypto::Cert::X509Key> key;;
 	if (!key.Set(this->GetNewPublicKey()))
 	{
 		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
@@ -64,14 +64,14 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CertReq::IsValid(NotNullPt
 	}
 }
 
-NotNullPtr<Net::ASN1Data> Crypto::Cert::X509CertReq::Clone() const
+NN<Net::ASN1Data> Crypto::Cert::X509CertReq::Clone() const
 {
-	NotNullPtr<Crypto::Cert::X509CertReq> asn1;
+	NN<Crypto::Cert::X509CertReq> asn1;
 	NEW_CLASSNN(asn1, Crypto::Cert::X509CertReq(this->GetSourceNameObj(), this->buff));
 	return asn1;
 }
 
-void Crypto::Cert::X509CertReq::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Crypto::Cert::X509CertReq::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	if (IsCertificateRequest(this->buff.Ptr(), this->buff.PtrEnd(), "1"))
 	{
@@ -79,14 +79,14 @@ void Crypto::Cert::X509CertReq::ToString(NotNullPtr<Text::StringBuilderUTF8> sb)
 	}
 }
 
-NotNullPtr<Net::ASN1Names> Crypto::Cert::X509CertReq::CreateNames() const
+NN<Net::ASN1Names> Crypto::Cert::X509CertReq::CreateNames() const
 {
-	NotNullPtr<Net::ASN1Names> names;
+	NN<Net::ASN1Names> names;
 	NEW_CLASSNN(names, Net::ASN1Names());
 	return names->SetCertificationRequest();
 }
 
-Bool Crypto::Cert::X509CertReq::GetNames(NotNullPtr<CertNames> names) const
+Bool Crypto::Cert::X509CertReq::GetNames(NN<CertNames> names) const
 {
 	UOSInt itemLen;
 	Net::ASN1Util::ItemType itemType;
@@ -98,7 +98,7 @@ Bool Crypto::Cert::X509CertReq::GetNames(NotNullPtr<CertNames> names) const
 	return false;
 }
 
-Bool Crypto::Cert::X509CertReq::GetExtensions(NotNullPtr<CertExtensions> ext) const
+Bool Crypto::Cert::X509CertReq::GetExtensions(NN<CertExtensions> ext) const
 {
 	UOSInt itemLen;
 	Net::ASN1Util::ItemType itemType;

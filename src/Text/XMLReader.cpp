@@ -122,7 +122,7 @@ UOSInt Text::XMLReader::FillBuffer()
 	}
 }
 
-Text::XMLReader::XMLReader(Optional<Text::EncodingFactory> encFact, NotNullPtr<IO::Stream> stm, ParseMode mode)
+Text::XMLReader::XMLReader(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, ParseMode mode)
 {
 	this->encFact = encFact;
 	this->enc = 0;
@@ -156,9 +156,9 @@ Text::XMLReader::~XMLReader()
 	SDEL_CLASS(this->enc);
 }
 
-void Text::XMLReader::GetCurrPath(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Text::XMLReader::GetCurrPath(NN<Text::StringBuilderUTF8> sb) const
 {
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = this->pathList.Iterator();
+	Data::ArrayIterator<NN<Text::String>> it = this->pathList.Iterator();
 	if (!it.HasNext())
 	{
 		sb->AppendUTF8Char('/');
@@ -186,7 +186,7 @@ Optional<Text::String> Text::XMLReader::GetNodeText() const
 	return this->nodeText;
 }
 
-NotNullPtr<Text::String> Text::XMLReader::GetNodeTextNN() const
+NN<Text::String> Text::XMLReader::GetNodeTextNN() const
 {
 	return Text::String::OrEmpty(this->nodeText);
 }
@@ -309,7 +309,7 @@ Bool Text::XMLReader::ReadNext()
 		{
 			this->nt = Text::XMLNode::NodeType::Comment;
 			parseOfst += 4;
-			NotNullPtr<Text::StringBuilderUTF8> sb = this->sbTmp;
+			NN<Text::StringBuilderUTF8> sb = this->sbTmp;
 			sb->ClearStr();
 			while (true)
 			{
@@ -347,7 +347,7 @@ Bool Text::XMLReader::ReadNext()
 		{
 			this->nt = Text::XMLNode::NodeType::CData;
 			parseOfst += 9;
-			NotNullPtr<Text::StringBuilderUTF8> sb = this->sbTmp;
+			NN<Text::StringBuilderUTF8> sb = this->sbTmp;
 			sb->ClearStr();
 			while (true)
 			{
@@ -386,7 +386,7 @@ Bool Text::XMLReader::ReadNext()
 			if (lenLeft >= 10 && Text::StrStartsWithICaseC(&this->readBuff[parseOfst + 2], lenLeft - 2, UTF8STRC("DOCTYPE ")))
 			{
 				this->nt = Text::XMLNode::NodeType::DocType;
-				NotNullPtr<Text::StringBuilderUTF8> sb = this->sbTmp;
+				NN<Text::StringBuilderUTF8> sb = this->sbTmp;
 				Bool isEqual = false;
 				UTF8Char isQuote = 0;
 				UTF8Char c;
@@ -588,7 +588,7 @@ Bool Text::XMLReader::ReadNext()
 		else if (lenLeft >= 2 && this->readBuff[parseOfst + 1] == '?')
 		{
 			this->nt = Text::XMLNode::NodeType::Document;
-			NotNullPtr<Text::StringBuilderUTF8> sb = this->sbTmp;
+			NN<Text::StringBuilderUTF8> sb = this->sbTmp;
 			sb->ClearStr();
 			Bool isEqual = false;
 			UTF8Char isQuote = 0;
@@ -735,7 +735,7 @@ Bool Text::XMLReader::ReadNext()
 						this->parseOfst = parseOfst + 2;
 						if (this->nodeText != 0)
 						{
-							NotNullPtr<Text::EncodingFactory> encFact;
+							NN<Text::EncodingFactory> encFact;
 							if (this->encFact.SetTo(encFact) && this->nodeText->Equals(UTF8STRC("xml")))
 							{
 								UOSInt i = this->attrList.GetCount();
@@ -832,7 +832,7 @@ Bool Text::XMLReader::ReadNext()
 		else if (lenLeft >= 2 && this->readBuff[parseOfst + 1] == '/')
 		{
 			this->nt = Text::XMLNode::NodeType::ElementEnd;
-			NotNullPtr<Text::StringBuilderUTF8> sb = this->sbTmp;
+			NN<Text::StringBuilderUTF8> sb = this->sbTmp;
 			sb->ClearStr();
 			UTF8Char c;
 			parseOfst += 2;
@@ -881,8 +881,8 @@ Bool Text::XMLReader::ReadNext()
 							return false;
 						}
 					}
-					NotNullPtr<Text::String> nodeText;
-					NotNullPtr<Text::String> s;
+					NN<Text::String> nodeText;
+					NN<Text::String> s;
 					if (!nodeText.Set(this->nodeText))
 					{
 						this->parseError = 20;
@@ -923,7 +923,7 @@ Bool Text::XMLReader::ReadNext()
 		else
 		{
 			this->nt = Text::XMLNode::NodeType::Element;
-			NotNullPtr<Text::StringBuilderUTF8> sbText = this->sbTmp;
+			NN<Text::StringBuilderUTF8> sbText = this->sbTmp;
 			Text::StringBuilderUTF8 sbOri;
 			sbText->ClearStr();
 			Bool isEqual = false;
@@ -1353,7 +1353,7 @@ Bool Text::XMLReader::ReadNext()
 	}
 	else
 	{
-		NotNullPtr<Text::StringBuilderUTF8> sbText = this->sbTmp;
+		NN<Text::StringBuilderUTF8> sbText = this->sbTmp;
 		Text::StringBuilderUTF8 sbOri;
 		sbText->ClearStr();
 		UTF8Char c;
@@ -1545,7 +1545,7 @@ Bool Text::XMLReader::ReadNext()
 	}
 }
 
-Bool Text::XMLReader::ReadNodeText(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Text::XMLReader::ReadNodeText(NN<Text::StringBuilderUTF8> sb)
 {
 	if (this->GetNodeType() == Text::XMLNode::NodeType::Element)
 	{
@@ -1658,7 +1658,7 @@ UOSInt Text::XMLReader::GetErrorCode() const
 	return this->parseError;
 }
 
-Bool Text::XMLReader::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+Bool Text::XMLReader::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	UOSInt i;
 	UOSInt j;
@@ -1713,7 +1713,7 @@ Bool Text::XMLReader::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 		}
 		else if (this->mode == Text::XMLReader::PM_XML)
 		{
-			NotNullPtr<Text::String> s = Text::XML::ToNewXMLText(this->nodeText->v);
+			NN<Text::String> s = Text::XML::ToNewXMLText(this->nodeText->v);
 			sb->Append(s);
 			s->Release();
 		}
@@ -1762,7 +1762,7 @@ Bool Text::XMLReader::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 	return false;
 }
 
-Bool Text::XMLReader::XMLWellFormat(Optional<Text::EncodingFactory> encFact, NotNullPtr<IO::Stream> stm, UOSInt lev, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Text::XMLReader::XMLWellFormat(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, UOSInt lev, NN<Text::StringBuilderUTF8> sb)
 {
 	Bool toWrite;
 	Text::XMLNode::NodeType thisNT;

@@ -16,12 +16,12 @@
 
 UInt32 __stdcall Net::Email::SMTPConn::SMTPThread(AnyType userObj)
 {
-	NotNullPtr<Net::Email::SMTPConn> me = userObj.GetNN<Net::Email::SMTPConn>();
+	NN<Net::Email::SMTPConn> me = userObj.GetNN<Net::Email::SMTPConn>();
 	UTF8Char sbuff[2048];
 	UTF8Char sbuff2[4];
 	UTF8Char *sptr;
 	UInt32 msgCode;
-	NotNullPtr<IO::Writer> lwriter;
+	NN<IO::Writer> lwriter;
 
 	me->threadStarted = true;
 	me->threadRunning = true;
@@ -108,7 +108,7 @@ UInt32 Net::Email::SMTPConn::WaitForResult(UTF8Char **msgRetEnd)
 		return 0;
 }
 
-Net::Email::SMTPConn::SMTPConn(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, ConnType connType, Optional<IO::Writer> logWriter, Data::Duration timeout)
+Net::Email::SMTPConn::SMTPConn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, ConnType connType, Optional<IO::Writer> logWriter, Data::Duration timeout)
 {
 	this->threadStarted = false;
 	this->threadRunning = false;
@@ -122,10 +122,10 @@ Net::Email::SMTPConn::SMTPConn(NotNullPtr<Net::SocketFactory> sockf, Optional<Ne
 	addr.addrType = Net::AddrType::Unknown;
 	sockf->DNSResolveIP(host, addr);
 	this->logWriter = logWriter;
-	NotNullPtr<IO::Writer> lwriter;
+	NN<IO::Writer> lwriter;
 	if (connType == ConnType::SSL)
 	{
-		NotNullPtr<Net::SSLEngine> nnssl;
+		NN<Net::SSLEngine> nnssl;
 		if (!ssl.SetTo(nnssl) || !this->cli.Set(nnssl->ClientConnect(host, port, 0, timeout)))
 		{
 			NEW_CLASSNN(this->cli, Net::TCPClient(sockf, addr, port, timeout));
@@ -149,8 +149,8 @@ Net::Email::SMTPConn::SMTPConn(NotNullPtr<Net::SocketFactory> sockf, Optional<Ne
 			{
 				if (this->logWriter.SetTo(lwriter)) lwriter->WriteLineC(UTF8STRC("SSL Handshake begin"));
 				Socket *s = this->cli->RemoveSocket();
-				NotNullPtr<Net::TCPClient> cli;
-				NotNullPtr<Net::SSLEngine> nnssl;
+				NN<Net::TCPClient> cli;
+				NN<Net::SSLEngine> nnssl;
 				if (ssl.SetTo(nnssl) && cli.Set(nnssl->ClientInit(s, host, 0)))
 				{
 					if (this->logWriter.SetTo(lwriter)) lwriter->WriteLineC(UTF8STRC("SSL Handshake success"));
@@ -233,7 +233,7 @@ UOSInt Net::Email::SMTPConn::GetMaxSize()
 
 Bool Net::Email::SMTPConn::SendHelo(Text::CString cliName)
 {
-	NotNullPtr<IO::Writer> lwriter;
+	NN<IO::Writer> lwriter;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	sptr = cliName.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HELO ")));
@@ -246,7 +246,7 @@ Bool Net::Email::SMTPConn::SendHelo(Text::CString cliName)
 
 Bool Net::Email::SMTPConn::SendEHlo(Text::CString cliName)
 {
-	NotNullPtr<IO::Writer> lwriter;
+	NN<IO::Writer> lwriter;
 	UTF8Char returnMsg[2048];
 	UTF8Char *returnMsgEnd;
 	UTF8Char sbuff[512];
@@ -317,7 +317,7 @@ Bool Net::Email::SMTPConn::SendEHlo(Text::CString cliName)
 
 Bool Net::Email::SMTPConn::SendAuth(Text::CString userName, Text::CString password)
 {
-	NotNullPtr<IO::Writer> lwriter;
+	NN<IO::Writer> lwriter;
 	if (this->authPlain)
 	{
 		UTF8Char pwdBuff[128];
@@ -387,7 +387,7 @@ Bool Net::Email::SMTPConn::SendAuth(Text::CString userName, Text::CString passwo
 
 Bool Net::Email::SMTPConn::SendMailFrom(Text::CString fromEmail)
 {
-	NotNullPtr<IO::Writer> lwriter;
+	NN<IO::Writer> lwriter;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	sptr = Text::StrConcatC(fromEmail.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("MAIL FROM: <"))), UTF8STRC(">"));
@@ -400,7 +400,7 @@ Bool Net::Email::SMTPConn::SendMailFrom(Text::CString fromEmail)
 
 Bool Net::Email::SMTPConn::SendRcptTo(Text::CString toEmail)
 {
-	NotNullPtr<IO::Writer> lwriter;
+	NN<IO::Writer> lwriter;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	sptr = Text::StrConcatC(toEmail.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("RCPT TO: <"))), UTF8STRC(">"));
@@ -413,7 +413,7 @@ Bool Net::Email::SMTPConn::SendRcptTo(Text::CString toEmail)
 
 Bool Net::Email::SMTPConn::SendQuit()
 {
-	NotNullPtr<IO::Writer> lwriter;
+	NN<IO::Writer> lwriter;
 	this->statusChg = false;
 	if (this->logWriter.SetTo(lwriter)) lwriter->WriteLineC(UTF8STRC("QUIT"));
 	writer->WriteLineC(UTF8STRC("QUIT"));
@@ -423,7 +423,7 @@ Bool Net::Email::SMTPConn::SendQuit()
 
 Bool Net::Email::SMTPConn::SendData(const UTF8Char *buff, UOSInt buffSize)
 {
-	NotNullPtr<IO::Writer> lwriter;
+	NN<IO::Writer> lwriter;
 	this->statusChg = false;
 	if (this->logWriter.SetTo(lwriter)) lwriter->WriteLineC(UTF8STRC("DATA"));
 	writer->WriteLineC(UTF8STRC("DATA"));

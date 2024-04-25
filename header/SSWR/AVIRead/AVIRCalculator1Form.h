@@ -12,38 +12,38 @@ namespace SSWR
 		class AVIRCalculator1Form : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUITextBox> txtResult;
+			NN<UI::GUITextBox> txtResult;
 
-			NotNullPtr<UI::GUIButton> btnKeyMC;
-			NotNullPtr<UI::GUIButton> btnKeyMR;
-			NotNullPtr<UI::GUIButton> btnKeyMMinus;
-			NotNullPtr<UI::GUIButton> btnKeyMPlus;
-			NotNullPtr<UI::GUIButton> btnKeyDiv;
+			NN<UI::GUIButton> btnKeyMC;
+			NN<UI::GUIButton> btnKeyMR;
+			NN<UI::GUIButton> btnKeyMMinus;
+			NN<UI::GUIButton> btnKeyMPlus;
+			NN<UI::GUIButton> btnKeyDiv;
 
-			NotNullPtr<UI::GUIButton> btnKeySqrt;
-			NotNullPtr<UI::GUIButton> btnKey7;
-			NotNullPtr<UI::GUIButton> btnKey8;
-			NotNullPtr<UI::GUIButton> btnKey9;
-			NotNullPtr<UI::GUIButton> btnKeyMul;
+			NN<UI::GUIButton> btnKeySqrt;
+			NN<UI::GUIButton> btnKey7;
+			NN<UI::GUIButton> btnKey8;
+			NN<UI::GUIButton> btnKey9;
+			NN<UI::GUIButton> btnKeyMul;
 
-			NotNullPtr<UI::GUIButton> btnKeyPercent;
-			NotNullPtr<UI::GUIButton> btnKey4;
-			NotNullPtr<UI::GUIButton> btnKey5;
-			NotNullPtr<UI::GUIButton> btnKey6;
-			NotNullPtr<UI::GUIButton> btnKeyMinus;
+			NN<UI::GUIButton> btnKeyPercent;
+			NN<UI::GUIButton> btnKey4;
+			NN<UI::GUIButton> btnKey5;
+			NN<UI::GUIButton> btnKey6;
+			NN<UI::GUIButton> btnKeyMinus;
 
-			NotNullPtr<UI::GUIButton> btnKeyNeg;
-			NotNullPtr<UI::GUIButton> btnKey1;
-			NotNullPtr<UI::GUIButton> btnKey2;
-			NotNullPtr<UI::GUIButton> btnKey3;
-			NotNullPtr<UI::GUIButton> btnKeyPlus;
+			NN<UI::GUIButton> btnKeyNeg;
+			NN<UI::GUIButton> btnKey1;
+			NN<UI::GUIButton> btnKey2;
+			NN<UI::GUIButton> btnKey3;
+			NN<UI::GUIButton> btnKeyPlus;
 
-			NotNullPtr<UI::GUIButton> btnKeyCancel;
-			NotNullPtr<UI::GUIButton> btnKey0;
-			NotNullPtr<UI::GUIButton> btnKeyDot;
-			NotNullPtr<UI::GUIButton> btnKeyEqual;
+			NN<UI::GUIButton> btnKeyCancel;
+			NN<UI::GUIButton> btnKey0;
+			NN<UI::GUIButton> btnKeyDot;
+			NN<UI::GUIButton> btnKeyEqual;
 
 			static void __stdcall OnKeyMC(AnyType userObj);
 			static void __stdcall OnKeyMR(AnyType userObj);
@@ -74,7 +74,7 @@ namespace SSWR
 			static void __stdcall OnKeyDot(AnyType userObj);
 			static void __stdcall OnKeyEqual(AnyType userObj);
 		public:
-			AVIRCalculator1Form(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRCalculator1Form(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCalculator1Form();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

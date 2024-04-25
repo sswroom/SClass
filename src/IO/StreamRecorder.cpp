@@ -5,7 +5,7 @@
 
 void __stdcall IO::StreamRecorder::DataHdlr(const UInt8 *buff, UOSInt buffSize, AnyType userData)
 {
-	NotNullPtr<IO::StreamRecorder> me = userData.GetNN<IO::StreamRecorder>();
+	NN<IO::StreamRecorder> me = userData.GetNN<IO::StreamRecorder>();
 	me->recordedLength += me->destStm.Write(buff, buffSize);
 }
 
@@ -18,7 +18,7 @@ IO::StreamRecorder::~StreamRecorder()
 {
 }
 
-Bool IO::StreamRecorder::AppendStream(NotNullPtr<IO::Stream> stm)
+Bool IO::StreamRecorder::AppendStream(NN<IO::Stream> stm)
 {
 	if (destStm.IsError())
 		return false;

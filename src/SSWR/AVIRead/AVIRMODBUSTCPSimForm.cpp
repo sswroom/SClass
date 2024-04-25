@@ -8,7 +8,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnListenClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMODBUSTCPSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSTCPSimForm>();
+	NN<SSWR::AVIRead::AVIRMODBUSTCPSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSTCPSimForm>();
 	if (me->listener)
 	{
 		DEL_CLASS(me->listener);
@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnListenClicked(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDevAddClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMODBUSTCPSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSTCPSimForm>();
+	NN<SSWR::AVIRead::AVIRMODBUSTCPSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSTCPSimForm>();
 	DeviceType devType = (DeviceType)me->cboDevType->GetSelectedItem().GetOSInt();
 	Text::StringBuilderUTF8 sb;
 	UInt8 addr;
@@ -94,7 +94,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDevAddClicked(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDelayClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMODBUSTCPSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSTCPSimForm>();
+	NN<SSWR::AVIRead::AVIRMODBUSTCPSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSTCPSimForm>();
 	if (me->listener)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -109,7 +109,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDelayClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDeviceChanged(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMODBUSTCPSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSTCPSimForm>();
+	NN<SSWR::AVIRead::AVIRMODBUSTCPSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSTCPSimForm>();
 	me->currDev = (IO::MODBUSDevSim*)me->lbDevice->GetSelectedItem().p;
 	me->lvDeviceValues->ClearItems();
 	if (me->currDev)
@@ -130,7 +130,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDeviceChanged(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDeviceValuesDblClk(AnyType userObj, UOSInt index)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMODBUSTCPSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSTCPSimForm>();
+	NN<SSWR::AVIRead::AVIRMODBUSTCPSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSTCPSimForm>();
 	if (me->currDev && index != INVALID_INDEX)
 	{
 		me->currDev->ToggleValue(index);	
@@ -140,7 +140,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDeviceValuesDblClk(AnyType
 
 void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMODBUSTCPSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSTCPSimForm>();
+	NN<SSWR::AVIRead::AVIRMODBUSTCPSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSTCPSimForm>();
 	me->UpdateDevValues();
 }
 
@@ -185,7 +185,7 @@ void SSWR::AVIRead::AVIRMODBUSTCPSimForm::UpdateDevValues()
 	}
 }
 
-SSWR::AVIRead::AVIRMODBUSTCPSimForm::AVIRMODBUSTCPSimForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 576, 480, ui)
+SSWR::AVIRead::AVIRMODBUSTCPSimForm::AVIRMODBUSTCPSimForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 576, 480, ui)
 {
 	this->SetText(CSTR("MODBUS TCP Simulator"));
 	this->SetFont(0, 0, 8.25, false);

@@ -6,7 +6,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRSAMLReqDecodeForm::OnDecodeClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSAMLReqDecodeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLReqDecodeForm>();
+	NN<SSWR::AVIRead::AVIRSAMLReqDecodeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSAMLReqDecodeForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtRAWRequest->GetText(sb);
 	if (sb.GetLength() == 0)
@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLReqDecodeForm::OnDecodeClicked(AnyType use
 	}
 }
 
-SSWR::AVIRead::AVIRSAMLReqDecodeForm::AVIRSAMLReqDecodeForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRSAMLReqDecodeForm::AVIRSAMLReqDecodeForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
 	this->SetText(CSTR("SAML Request Decode"));

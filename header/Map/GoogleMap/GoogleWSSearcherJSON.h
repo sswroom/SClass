@@ -15,7 +15,7 @@ namespace Map
 		class GoogleWSSearcherJSON : public Map::IReverseGeocoder
 		{
 		private:
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 			IO::Writer *errWriter;
 			Data::DateTime lastSrchDate;
@@ -29,7 +29,7 @@ namespace Map
 			Optional<Text::String> gooAPIKey;
 
 		public:
-			GoogleWSSearcherJSON(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, IO::Writer *errWriter, Optional<Text::EncodingFactory> encFact);
+			GoogleWSSearcherJSON(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, IO::Writer *errWriter, Optional<Text::EncodingFactory> encFact);
 			virtual ~GoogleWSSearcherJSON();
 
 			void SetGoogleClientId(Text::String *gooCliId, Text::String *gooPrivKey);

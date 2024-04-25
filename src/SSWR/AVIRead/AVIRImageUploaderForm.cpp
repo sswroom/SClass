@@ -2,9 +2,9 @@
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRImageUploaderForm.h"
 
-void __stdcall SSWR::AVIRead::AVIRImageUploaderForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRImageUploaderForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageUploaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageUploaderForm>();
+	NN<SSWR::AVIRead::AVIRImageUploaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageUploaderForm>();
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	UOSInt i = 0;
@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRImageUploaderForm::OnFileDrop(AnyType userObj,
 
 void __stdcall SSWR::AVIRead::AVIRImageUploaderForm::OnUploadClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageUploaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageUploaderForm>();
+	NN<SSWR::AVIRead::AVIRImageUploaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageUploaderForm>();
 	Net::WebBrowser *browser;
 	Bool errorCont = me->chkErrorCont->IsChecked();
 	FileItem *item;
@@ -54,7 +54,7 @@ void SSWR::AVIRead::AVIRImageUploaderForm::FreeItem(FileItem *item)
 	MemFree(item);
 }
 
-SSWR::AVIRead::AVIRImageUploaderForm::AVIRImageUploaderForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 480, 240, ui)
+SSWR::AVIRead::AVIRImageUploaderForm::AVIRImageUploaderForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 480, 240, ui)
 {
 	this->SetText(CSTR("Image Uploader"));
 	this->SetFont(0, 0, 8.25, false);

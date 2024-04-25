@@ -14,7 +14,7 @@ Net::WirelessLAN::Network::Network(Text::CString ssid, Double rssi)
 	this->rssi = rssi;
 }
 
-Net::WirelessLAN::Network::Network(NotNullPtr<Text::String> ssid, Double rssi)
+Net::WirelessLAN::Network::Network(NN<Text::String> ssid, Double rssi)
 {
 	this->ssid = ssid->Clone();
 	this->rssi = rssi;
@@ -30,7 +30,7 @@ Double Net::WirelessLAN::Network::GetRSSI() const
 	return this->rssi;
 }
 
-NotNullPtr<Text::String> Net::WirelessLAN::Network::GetSSID() const
+NN<Text::String> Net::WirelessLAN::Network::GetSSID() const
 {
 	return this->ssid;
 }
@@ -74,7 +74,7 @@ Net::WirelessLAN::BSSInfo::~BSSInfo()
 	SDEL_STRING(this->devSN);
 }
 
-NotNullPtr<Text::String> Net::WirelessLAN::BSSInfo::GetSSID() const
+NN<Text::String> Net::WirelessLAN::BSSInfo::GetSSID() const
 {
 	return this->ssid;
 }
@@ -166,7 +166,7 @@ Net::WirelessLAN::Interface::~Interface()
 	this->name->Release();
 }
 
-NotNullPtr<Text::String> Net::WirelessLAN::Interface::GetName() const
+NN<Text::String> Net::WirelessLAN::Interface::GetName() const
 {
 	return this->name;
 }

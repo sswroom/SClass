@@ -12,7 +12,7 @@ namespace DB
 	private:
 		typedef struct
 		{
-			NotNullPtr<DB::DBTool> db;
+			NN<DB::DBTool> db;
 			Bool isUsing;
 		} DBInfo;
 
@@ -27,9 +27,9 @@ namespace DB
 		~DBList();
 
 		void Close();
-		void AddDB(NotNullPtr<DB::DBTool> db);
+		void AddDB(NN<DB::DBTool> db);
 		Optional<DB::DBTool> UseDB();
-		void UnuseDB(NotNullPtr<DB::DBTool> db);
+		void UnuseDB(NN<DB::DBTool> db);
 		UOSInt GetCount() const;
 	};
 }

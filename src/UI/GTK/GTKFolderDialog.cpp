@@ -18,7 +18,7 @@ Bool UI::GTK::GTKFolderDialog::ShowDialog(ControlHandle *ownerHandle)
 {
 	GtkWidget *dialog;
 	GtkFileChooser *chooser;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	const Char *msg = "Select Folder";
 	if (this->message.SetTo(s))
 	{

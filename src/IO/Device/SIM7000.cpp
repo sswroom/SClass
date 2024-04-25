@@ -11,7 +11,7 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(AnyType userObj, const UTF8Ch
 	UTF8Char sbuff[256];
 	Text::PString sarr[4];
 	UOSInt i;
-	NotNullPtr<IO::Device::SIM7000> me = userObj.GetNN<IO::Device::SIM7000>();
+	NN<IO::Device::SIM7000> me = userObj.GetNN<IO::Device::SIM7000>();
 	if (me->nextReceive)
 	{
 		me->nextReceive = false;
@@ -46,7 +46,7 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(AnyType userObj, const UTF8Ch
 				sarr[2].leng = i;
 			}
 			Sync::MutexUsage mutUsage(me->dnsMut);
-			NotNullPtr<Net::SocketUtil::AddressInfo> dnsResp;
+			NN<Net::SocketUtil::AddressInfo> dnsResp;
 			if (me->dnsReq.v && dnsResp.Set(me->dnsResp))
 			{
 				if (sarr[1].Equals(me->dnsReq.v, me->dnsReq.leng) && Net::SocketUtil::SetAddrInfo(dnsResp, sarr[2].ToCString()))
@@ -127,7 +127,7 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(AnyType userObj, const UTF8Ch
 	return false;
 }
 
-IO::Device::SIM7000::SIM7000(NotNullPtr<IO::ATCommandChannel> channel, Bool needRelease) : IO::GSMModemController(channel, needRelease)
+IO::Device::SIM7000::SIM7000(NN<IO::ATCommandChannel> channel, Bool needRelease) : IO::GSMModemController(channel, needRelease)
 {
 	this->dnsReq = CSTR_NULL;
 	this->dnsResp = 0;
@@ -156,7 +156,7 @@ Bool IO::Device::SIM7000::SIMCOMPowerDown()
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, UTF8STRC("AT+CPOWD=1"), 2000);
 	UOSInt i = this->cmdResults.GetCount();
-	NotNullPtr<Text::String> val;
+	NN<Text::String> val;
 	if (i > 1 && this->cmdResults.GetItem(i - 1).SetTo(val))
 	{
 		if (val->Equals(UTF8STRC("OK")) || val->Equals(UTF8STRC("NORMAL POWER DOWN")))
@@ -196,12 +196,12 @@ UTF8Char *IO::Device::SIM7000::SIMCOMGetICCID(UTF8Char *ccid)
 	return this->SendStringCommand(ccid, UTF8STRC("AT+CCID"), 3000);
 }
 
-Bool IO::Device::SIM7000::SIMCOMGetFlashDeviceType(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::Device::SIM7000::SIMCOMGetFlashDeviceType(NN<Text::StringBuilderUTF8> sb)
 {
 	return this->SendStringListCommand(sb, UTF8STRC("AT+CDEVICE?"));
 }
 
-Bool IO::Device::SIM7000::SIMCOMGetDeviceProductID(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::Device::SIM7000::SIMCOMGetDeviceProductID(NN<Text::StringBuilderUTF8> sb)
 {
 	return this->SendStringListCommand(sb, UTF8STRC("AT+GSV"));
 }
@@ -308,7 +308,7 @@ Bool IO::Device::SIM7000::NetIPSend(UOSInt index, const UInt8 *buff, UOSInt buff
 {
 	Text::StringBuilderUTF8 sb;
 	Sync::MutexUsage mutUsage;
-	NotNullPtr<Text::String> cmdRes;
+	NN<Text::String> cmdRes;
 	if (!this->channel->UseCmd(mutUsage))
 		return false;
 	sb.AppendC(UTF8STRC("AT+CIPSEND="));
@@ -398,7 +398,7 @@ Bool IO::Device::SIM7000::NetGetDNSList(Data::ArrayList<UInt32> *dnsList)
 		UOSInt k;
 		while (i < j)
 		{
-			NotNullPtr<Text::String> s;
+			NN<Text::String> s;
 			if (resList.GetItem(i).SetTo(s))
 			{
 				k = s->IndexOf(UTF8STRC("Dns: "));
@@ -415,7 +415,7 @@ Bool IO::Device::SIM7000::NetGetDNSList(Data::ArrayList<UInt32> *dnsList)
 	return false;
 }
 
-Bool IO::Device::SIM7000::NetDNSResolveIP(Text::CString domain, NotNullPtr<Net::SocketUtil::AddressInfo> addr)
+Bool IO::Device::SIM7000::NetDNSResolveIP(Text::CString domain, NN<Net::SocketUtil::AddressInfo> addr)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CDNSGIP=\""));

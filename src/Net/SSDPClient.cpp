@@ -4,9 +4,9 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XMLReader.h"
 
-void __stdcall Net::SSDPClient::OnPacketRecv(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::SSDPClient::OnPacketRecv(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	NotNullPtr<Net::SSDPClient> me = userData.GetNN<Net::SSDPClient>();
+	NN<Net::SSDPClient> me = userData.GetNN<Net::SSDPClient>();
 	if (Text::StrStartsWith(buff, (const UTF8Char*)"HTTP/1.1 200 OK"))
 	{
 		if (addr->addrType == Net::AddrType::IPv4)
@@ -122,7 +122,7 @@ void Net::SSDPClient::SSDPDeviceFree(SSDPDevice *dev)
 	DEL_CLASS(dev);
 }
 
-Net::SSDPClient::SSDPClient(NotNullPtr<Net::SocketFactory> sockf, Text::CString userAgent, NotNullPtr<IO::LogTool> log)
+Net::SSDPClient::SSDPClient(NN<Net::SocketFactory> sockf, Text::CString userAgent, NN<IO::LogTool> log)
 {
 	this->userAgent = Text::String::NewOrNull(userAgent);
 	NEW_CLASS(this->udp, Net::UDPServer(sockf, 0, 0, CSTR_NULL, OnPacketRecv, this, log, CSTR_NULL, 2, false));
@@ -149,7 +149,7 @@ Bool Net::SSDPClient::Scan()
 	sb.AppendC(UTF8STRC("Man: \"ssdp:discover\"\r\n"));
 	sb.AppendC(UTF8STRC("ST: ssdp:all\r\n"));
 	sb.AppendC(UTF8STRC("MX: 3\r\n"));
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (this->userAgent.SetTo(s))
 	{
 		sb.AppendC(UTF8STRC("User-Agent: "));
@@ -162,20 +162,20 @@ Bool Net::SSDPClient::Scan()
 	return this->udp->SendTo(addr, 1900, sb.ToString(), sb.GetLength());
 }
 
-const Data::ReadingList<Net::SSDPClient::SSDPDevice*> *Net::SSDPClient::GetDevices(NotNullPtr<Sync::MutexUsage> mutUsage) const
+const Data::ReadingList<Net::SSDPClient::SSDPDevice*> *Net::SSDPClient::GetDevices(NN<Sync::MutexUsage> mutUsage) const
 {
 	mutUsage->ReplaceMutex(this->mut);
 	return &this->devMap;
 }
 
 #define SET_VALUE(v) SDEL_STRING(v); sb.ClearStr(); reader.ReadNodeText(sb); v = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
-Net::SSDPClient::SSDPRoot *Net::SSDPClient::SSDPRootParse(Optional<Text::EncodingFactory> encFact, NotNullPtr<IO::Stream> stm)
+Net::SSDPClient::SSDPRoot *Net::SSDPClient::SSDPRootParse(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm)
 {
 	SSDPRoot *root = MemAlloc(SSDPRoot, 1);
 	MemClear(root, sizeof(SSDPRoot));
 	Text::XMLReader reader(encFact, stm, Text::XMLReader::PM_XML);
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<Text::String> nodeText;
+	NN<Text::String> nodeText;
 	while (reader.NextElementName().SetTo(nodeText))
 	{
 		if (nodeText->Equals(UTF8STRC("root")))

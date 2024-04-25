@@ -5,7 +5,7 @@
 #include "Text/MyString.h"
 #include "UI/GUISudokuViewer.h"
 
-UI::GUISudokuViewer::GUISudokuViewer(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> eng, Game::Sudoku::SudokuBoard *board) : UI::GUICustomDraw(ui, parent, eng)
+UI::GUISudokuViewer::GUISudokuViewer(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Game::Sudoku::SudokuBoard *board) : UI::GUICustomDraw(ui, parent, eng)
 {
 	this->board = board;
 	this->selX = 0;
@@ -118,14 +118,14 @@ Bool UI::GUISudokuViewer::OnKeyDown(UI::GUIControl::GUIKey key)
 	return false;
 }
 
-void UI::GUISudokuViewer::OnDraw(NotNullPtr<Media::DrawImage> img)
+void UI::GUISudokuViewer::OnDraw(NN<Media::DrawImage> img)
 {
 	Math::Size2D<UOSInt> sz;
 	UOSInt size;
 	UOSInt blockSize;
 	UOSInt tlx;
 	UOSInt tly;
-	NotNullPtr<Media::DrawBrush> b3;
+	NN<Media::DrawBrush> b3;
 	sz = this->GetSizeP();
 	b3 = img->NewBrushARGB(0xffffffff);
 	if (sz.x > sz.y)
@@ -146,10 +146,10 @@ void UI::GUISudokuViewer::OnDraw(NotNullPtr<Media::DrawImage> img)
 	}
 	blockSize = (size / 9) - 2;
 
-	NotNullPtr<Media::DrawPen> p;
-	NotNullPtr<Media::DrawBrush> b;
-	NotNullPtr<Media::DrawBrush> b2;
-	NotNullPtr<Media::DrawFont> f;
+	NN<Media::DrawPen> p;
+	NN<Media::DrawBrush> b;
+	NN<Media::DrawBrush> b2;
+	NN<Media::DrawFont> f;
 	UOSInt lastPos;
 	UOSInt currPos;
 	UOSInt i;

@@ -19,7 +19,7 @@ namespace Media
 			BatchSaveTIFF(Bool isCompressed);
 			virtual ~BatchSaveTIFF();
 			
-			virtual void ImageOutput(NotNullPtr<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN targetId);
+			virtual void ImageOutput(NN<Media::ImageList> imgList, Text::CStringNN fileId, Text::CStringNN targetId);
 		};
 	}
 }

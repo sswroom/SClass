@@ -3,7 +3,7 @@
 #include "Parser/FileParser/X509Parser.h"
 #include "SSWR/AVIRead/MIMEViewer/AVIRMIMEX509Viewer.h"
 
-SSWR::AVIRead::MIMEViewer::AVIRMIMEX509Viewer::AVIRMIMEX509Viewer(NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> ctrl, NotNullPtr<Media::ColorManagerSess> sess, Text::MIMEObj::UnknownMIMEObj *obj) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, obj)
+SSWR::AVIRead::MIMEViewer::AVIRMIMEX509Viewer::AVIRMIMEX509Viewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, Text::MIMEObj::UnknownMIMEObj *obj) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, obj)
 {
 	this->obj = obj;
 

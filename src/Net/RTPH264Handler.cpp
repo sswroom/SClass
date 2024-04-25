@@ -326,7 +326,7 @@ Text::CStringNN Net::RTPH264Handler::GetFilterName()
 	return CSTR("RTPH264Handler");
 }
 
-Bool Net::RTPH264Handler::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Net::RTPH264Handler::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	if (this->frameInfo.dispSize.x == 0 || this->frameInfo.dispSize.y == 0)
 		return false;

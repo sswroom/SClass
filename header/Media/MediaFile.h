@@ -18,7 +18,7 @@ namespace Media
 		Media::ChapterInfo *chapters;
 
 	public:
-		MediaFile(NotNullPtr<Text::String> name);
+		MediaFile(NN<Text::String> name);
 		MediaFile(Text::CStringNN name);
 		virtual ~MediaFile();
 

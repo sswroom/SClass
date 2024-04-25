@@ -7,9 +7,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::SyslogServer::OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::SyslogServer::OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	NotNullPtr<Net::SyslogServer> me = userData.GetNN<Net::SyslogServer>();
+	NN<Net::SyslogServer> me = userData.GetNN<Net::SyslogServer>();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	if (buff[0] == '<')
@@ -40,7 +40,7 @@ void __stdcall Net::SyslogServer::OnUDPPacket(NotNullPtr<const Net::SocketUtil::
 	}
 }
 
-Net::SyslogServer::IPStatus *Net::SyslogServer::GetIPStatus(NotNullPtr<const Net::SocketUtil::AddressInfo> addr)
+Net::SyslogServer::IPStatus *Net::SyslogServer::GetIPStatus(NN<const Net::SocketUtil::AddressInfo> addr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -73,7 +73,7 @@ Net::SyslogServer::IPStatus *Net::SyslogServer::GetIPStatus(NotNullPtr<const Net
 	return 0;
 }
 
-Net::SyslogServer::SyslogServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, Text::CString logPath, NotNullPtr<IO::LogTool> svrLog, Bool redirLog)
+Net::SyslogServer::SyslogServer(NN<Net::SocketFactory> sockf, UInt16 port, Text::CString logPath, NN<IO::LogTool> svrLog, Bool redirLog)
 {
 	this->sockf = sockf;
 	this->logPath = Text::String::New(logPath);

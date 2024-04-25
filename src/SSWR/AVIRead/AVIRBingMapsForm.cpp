@@ -4,7 +4,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRBingMapsForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRBingMapsForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBingMapsForm>();
+	NN<SSWR::AVIRead::AVIRBingMapsForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBingMapsForm>();
 	Text::StringBuilderUTF8 sbKey;
 	Text::StringBuilderUTF8 sb;
 	Map::BingMapsTile::ImagerySet is = (Map::BingMapsTile::ImagerySet)me->cboImagerySet->GetSelectedItem().GetOSInt();
@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRBingMapsForm::OnOKClicked(AnyType userObj)
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-SSWR::AVIRead::AVIRBingMapsForm::AVIRBingMapsForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl) : UI::GUIForm(parent, 1024, 120, ui)
+SSWR::AVIRead::AVIRBingMapsForm::AVIRBingMapsForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl) : UI::GUIForm(parent, 1024, 120, ui)
 {
 	this->SetText(CSTR("Bing Maps"));
 	this->SetFont(0, 0, 8.25, false);

@@ -142,7 +142,7 @@ namespace Data
 			return (this->dateVal <= dt.dateVal);
 		}
 		
-		OSInt CompareTo(NotNullPtr<const Data::Date> obj) const
+		OSInt CompareTo(NN<const Data::Date> obj) const
 		{
 			if (this->dateVal > obj->dateVal)
 				return 1;

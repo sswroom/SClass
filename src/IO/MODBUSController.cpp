@@ -7,7 +7,7 @@
 
 void __stdcall IO::MODBUSController::ReadResult(AnyType userObj, UInt8 funcCode, const UInt8 *result, UOSInt resultSize)
 {
-	NotNullPtr<IO::MODBUSController> me = userObj.GetNN<IO::MODBUSController>();
+	NN<IO::MODBUSController> me = userObj.GetNN<IO::MODBUSController>();
 	if (me->reqResult && funcCode == me->reqFuncCode && resultSize == me->reqResultSize)
 	{
 		MemCopyNO(me->reqResult, result, resultSize);
@@ -18,7 +18,7 @@ void __stdcall IO::MODBUSController::ReadResult(AnyType userObj, UInt8 funcCode,
 
 void __stdcall IO::MODBUSController::SetResult(AnyType userObj, UInt8 funcCode, UInt16 startAddr, UInt16 cnt)
 {
-	NotNullPtr<IO::MODBUSController> me = userObj.GetNN<IO::MODBUSController>();
+	NN<IO::MODBUSController> me = userObj.GetNN<IO::MODBUSController>();
 	if (me->reqResult && funcCode == me->reqFuncCode && me->reqSetStartAddr == startAddr)
 	{
 		me->reqHasResult = true;

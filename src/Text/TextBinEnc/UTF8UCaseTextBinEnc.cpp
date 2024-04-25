@@ -10,7 +10,7 @@ Text::TextBinEnc::UTF8UCaseTextBinEnc::~UTF8UCaseTextBinEnc()
 {
 }
 
-UOSInt Text::TextBinEnc::UTF8UCaseTextBinEnc::EncodeBin(NotNullPtr<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
+UOSInt Text::TextBinEnc::UTF8UCaseTextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
 {
 	UTF8Char c;
 	UOSInt i = buffSize;

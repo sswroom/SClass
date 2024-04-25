@@ -113,7 +113,7 @@ Text::SpreadSheet::Worksheet::RowData *Text::SpreadSheet::Worksheet::CloneRow(Ro
 	CellData *cell;
 	UOSInt i;
 	UOSInt j;
-	NotNullPtr<CellStyle> tmpStyle;
+	NN<CellStyle> tmpStyle;
 	newRow = MemAlloc(RowData, 1);
 	if (row->style.SetTo(tmpStyle))
 		newRow->style = newCtrl->GetStyle((UOSInt)srcCtrl->GetStyleIndex(tmpStyle));
@@ -152,7 +152,7 @@ Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::CloneCell(
 	{
 		newCell->cellValue = 0;
 	}
-	NotNullPtr<CellStyle> tmpStyle;
+	NN<CellStyle> tmpStyle;
 	if (cell->style.SetTo(tmpStyle))
 		newCell->style = newCtrl->GetStyle((UOSInt)srcCtrl->GetStyleIndex(tmpStyle));
 	else
@@ -177,7 +177,7 @@ void Text::SpreadSheet::Worksheet::FreeDrawing(WorksheetDrawing *drawing)
 	MemFree(drawing);
 }
 
-Text::SpreadSheet::Worksheet::Worksheet(NotNullPtr<Text::String> name)
+Text::SpreadSheet::Worksheet::Worksheet(NN<Text::String> name)
 {
 	this->name = name->Clone();
 	this->freezeHori = 0;
@@ -240,11 +240,11 @@ Text::SpreadSheet::Worksheet::~Worksheet()
 	DEL_CLASS(this->drawings);	
 }
 
-NotNullPtr<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Worksheet::Clone(const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl)
+NN<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Worksheet::Clone(const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl)
 {
 	UOSInt i;
 	UOSInt j;
-	NotNullPtr<Text::SpreadSheet::Worksheet> newWS;
+	NN<Text::SpreadSheet::Worksheet> newWS;
 	RowData *row;
 	NEW_CLASSNN(newWS, Text::SpreadSheet::Worksheet(this->name));
 	newWS->freezeHori = this->freezeHori;
@@ -410,12 +410,12 @@ Double Text::SpreadSheet::Worksheet::GetDefRowHeightPt()
 	return this->defRowHeightPt;
 }
 
-NotNullPtr<Text::String> Text::SpreadSheet::Worksheet::GetName() const
+NN<Text::String> Text::SpreadSheet::Worksheet::GetName() const
 {
 	return this->name;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, NotNullPtr<Text::String> val)
+Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, NN<Text::String> val)
 {
 	return this->SetCellString(row, col, 0, val);
 }
@@ -430,7 +430,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellTS(UOSInt row, UOSInt col, Data::Times
 	return this->SetCellTS(row, col, 0, val);
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellDateTime(UOSInt row, UOSInt col, NotNullPtr<Data::DateTime> val)
+Bool Text::SpreadSheet::Worksheet::SetCellDateTime(UOSInt row, UOSInt col, NN<Data::DateTime> val)
 {
 	return this->SetCellDateTime(row, col, 0, val);
 }
@@ -466,7 +466,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellStyleHAlign(UOSInt row, UOSInt col, IS
 	cell = GetCellData(row, col, false);
 	if (cell == 0)
 		return false;
-	NotNullPtr<CellStyle> tmpStyle;
+	NN<CellStyle> tmpStyle;
 	if (!cell->style.SetTo(tmpStyle))
 	{
 		if (hAlign == Text::HAlignment::Unknown)
@@ -494,7 +494,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellStyleBorderBottom(UOSInt row, UOSInt c
 	cell = GetCellData(row, col, true);
 	if (cell == 0)
 		return false;
-	NotNullPtr<CellStyle> tmpStyle;
+	NN<CellStyle> tmpStyle;
 	if (!cell->style.SetTo(tmpStyle))
 	{
 		if (borderType == Text::SpreadSheet::BorderType::None)
@@ -545,7 +545,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellURL(UOSInt row, UOSInt col, Text::CStr
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, Optional<CellStyle> style, NotNullPtr<Text::String> val)
+Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, Optional<CellStyle> style, NN<Text::String> val)
 {
 	CellData *cell;
 	cell = GetCellData(row, col, false);
@@ -610,7 +610,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellTS(UOSInt row, UOSInt col, CellStyle *
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellDateTime(UOSInt row, UOSInt col, CellStyle *style, NotNullPtr<Data::DateTime> val)
+Bool Text::SpreadSheet::Worksheet::SetCellDateTime(UOSInt row, UOSInt col, CellStyle *style, NN<Data::DateTime> val)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -971,7 +971,7 @@ const Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::GetC
 	return cell;
 }
 
-Bool Text::SpreadSheet::Worksheet::GetCellString(const CellData *cell, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Text::SpreadSheet::Worksheet::GetCellString(const CellData *cell, NN<Text::StringBuilderUTF8> sb)
 {
 	if (cell == 0 || cell->cellValue == 0)
 	{

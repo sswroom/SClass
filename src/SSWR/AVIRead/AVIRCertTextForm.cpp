@@ -6,7 +6,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRCertTextForm::OnLoadClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCertTextForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertTextForm>();
+	NN<SSWR::AVIRead::AVIRCertTextForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCertTextForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtText->GetText(sb);
 	if (sb.GetLength() == 0)
@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRCertTextForm::OnLoadClicked(AnyType userObj)
 		me->ui->ShowMsgOK(CSTR("Unknown Enc Type"), CSTR("Certificate Load from Text"), me);
 		return;
 	}
-	NotNullPtr<Crypto::Cert::X509File> file;
+	NN<Crypto::Cert::X509File> file;
 	if (file.Set(Parser::FileParser::X509Parser::ParseBinary(Data::ByteArray(buff, buffSize))))
 	{
 		MemFree(buff);
@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRCertTextForm::OnLoadClicked(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRCertTextForm::AVIRCertTextForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRCertTextForm::AVIRCertTextForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Certificate Load from Text"));
 	this->SetFont(0, 0, 8.25, false);

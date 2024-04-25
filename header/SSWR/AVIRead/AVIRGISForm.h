@@ -24,36 +24,36 @@ namespace SSWR
 		class AVIRGISForm : public UI::GUIForm, public SSWR::AVIRead::IMapNavigator, public Media::IPrintHandler
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 			UI::GUIForm *ctrlForm;
 			Optional<UI::GUITreeView::TreeItem> ctrlItem;
-			NotNullPtr<Media::ColorManagerSess> colorSess;
+			NN<Media::ColorManagerSess> colorSess;
 			Data::ArrayListNN<UI::GUIForm> subForms;
 			UI::GUIMapControl *mapCtrl;
 			UI::GUIMapTreeView *mapTree;
-			NotNullPtr<UI::GUIHSplitter> splitter;
+			NN<UI::GUIHSplitter> splitter;
 
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUIPanel> pnlStatus;
-			NotNullPtr<UI::GUITextBox> txtScale;
-			NotNullPtr<UI::GUITextBox> txtLatLon;
-			NotNullPtr<UI::GUITextBox> txtUTMGrid;
-			NotNullPtr<UI::GUITextBox> txtTimeUsed;
-			NotNullPtr<UI::GUITrackBar> tbScale;
-			NotNullPtr<UI::GUIMainMenu> mnuMain;
-			NotNullPtr<UI::GUIPopupMenu> mnuLayer;
-			NotNullPtr<UI::GUIPopupMenu> mnuGroup;
-			NotNullPtr<UI::GUITrackBar> tbTimeRange;
-			NotNullPtr<UI::GUICheckBox> chkTime;
-			NotNullPtr<UI::GUILabel> lblVAngle;
-			NotNullPtr<UI::GUITrackBar> tbVAngle;
-			NotNullPtr<Map::MapEnv> env;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUIPanel> pnlStatus;
+			NN<UI::GUITextBox> txtScale;
+			NN<UI::GUITextBox> txtLatLon;
+			NN<UI::GUITextBox> txtUTMGrid;
+			NN<UI::GUITextBox> txtTimeUsed;
+			NN<UI::GUITrackBar> tbScale;
+			NN<UI::GUIMainMenu> mnuMain;
+			NN<UI::GUIPopupMenu> mnuLayer;
+			NN<UI::GUIPopupMenu> mnuGroup;
+			NN<UI::GUITrackBar> tbTimeRange;
+			NN<UI::GUICheckBox> chkTime;
+			NN<UI::GUILabel> lblVAngle;
+			NN<UI::GUITrackBar> tbVAngle;
+			NN<Map::MapEnv> env;
 			Map::DrawMapRenderer *envRenderer;
 			Bool scaleChanging;
 			Optional<UI::GUITreeView::TreeItem> popNode;
 			Text::TextAnalyzer ta;
-			NotNullPtr<Math::GeographicCoordinateSystem> wgs84CSys;
+			NN<Math::GeographicCoordinateSystem> wgs84CSys;
 
 			Bool useTime;
 			Int64 currTime;
@@ -73,7 +73,7 @@ namespace SSWR
 			CursorType currCursor;
 
 		private:
-			static void __stdcall FileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnMapMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 			static Bool __stdcall OnMapMouseDown(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button);
 			static Bool __stdcall OnMapMouseUp(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton button);
@@ -81,33 +81,33 @@ namespace SSWR
 			static void __stdcall OnMapUpdated(AnyType userObj, Math::Coord2DDbl center, Double timeUsed);
 			static void __stdcall OnScaleScrolled(AnyType userObj, UOSInt newVal);
 			static void __stdcall OnTreeRightClick(AnyType userObj);
-			static void __stdcall OnCtrlFormClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm);
-			static void __stdcall OnSubFormClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm);
+			static void __stdcall OnCtrlFormClosed(AnyType userObj, NN<UI::GUIForm> frm);
+			static void __stdcall OnSubFormClosed(AnyType userObj, NN<UI::GUIForm> frm);
 			static void __stdcall OnMapLayerUpdated(AnyType userObj);
 			static void __stdcall OnTimeScrolled(AnyType userObj, UOSInt newVal);
 			static void __stdcall OnTimeChecked(AnyType userObj, Bool newState);
-			static void __stdcall OnTreeDrag(AnyType userObj, NotNullPtr<UI::GUIMapTreeView::ItemIndex> dragItem, NotNullPtr<UI::GUIMapTreeView::ItemIndex> dropItem);
+			static void __stdcall OnTreeDrag(AnyType userObj, NN<UI::GUIMapTreeView::ItemIndex> dragItem, NN<UI::GUIMapTreeView::ItemIndex> dropItem);
 			static void __stdcall OnVAngleScrolled(AnyType userObj, UOSInt newVal);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			void UpdateTitle();
 			void CloseCtrlForm(Bool closing);
 			void SetCtrlForm(UI::GUIForm *frm, Optional<UI::GUITreeView::TreeItem> item);
-			Bool ParseObject(NotNullPtr<IO::ParsedObject> pobj);
+			Bool ParseObject(NN<IO::ParsedObject> pobj);
 			void OpenURL(Text::CStringNN url, Text::CString customName);
 			void HKOPortal(Text::CString listFile, Text::CString filePath);
 			void OpenCSV(Text::CStringNN url, UInt32 codePage, Text::CStringNN name, Text::CString nameCol, Text::CString latCol, Text::CString lonCol);
 		public:
-			AVIRGISForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, NotNullPtr<Map::MapView> view);
+			AVIRGISForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Map::MapView> view);
 			virtual ~AVIRGISForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);
 			virtual void OnMonitorChanged();
 			virtual void OnFocus();
 
-			void AddLayer(NotNullPtr<Map::MapDrawLayer> layer);
+			void AddLayer(NN<Map::MapDrawLayer> layer);
 			void AddLayers(::Data::ArrayList<Map::MapDrawLayer*> *layers);
 //			void AddLayerColl(Map::MapLayerCollection *lyrColl);
-			void AddSubForm(NotNullPtr<UI::GUIForm> frm);
+			void AddSubForm(NN<UI::GUIForm> frm);
 
 			virtual UInt32 GetSRID();
 			virtual Bool InMap(Math::Coord2DDbl pos);
@@ -116,9 +116,9 @@ namespace SSWR
 			virtual void ShowMarkerDir(Math::Coord2DDbl pos, Double dir, Math::Unit::Angle::AngleUnit unit);
 			virtual void HideMarker();
 			virtual void SetSelectedVector(Math::Geometry::Vector2D *vec);
-			virtual void SetSelectedVectors(NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList);
+			virtual void SetSelectedVectors(NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList);
 			virtual void RedrawMap();
-			virtual NotNullPtr<Math::CoordinateSystem> GetCoordinateSystem() const;
+			virtual NN<Math::CoordinateSystem> GetCoordinateSystem() const;
 
 			virtual Math::Coord2DDbl ScnXY2MapXY(Math::Coord2D<OSInt> scnPos);
 			virtual Math::Coord2D<OSInt> MapXY2ScnXY(Math::Coord2DDbl mapPos);
@@ -137,9 +137,9 @@ namespace SSWR
 
 			void UpdateTimeRange();
 
-			virtual Bool BeginPrint(NotNullPtr<Media::IPrintDocument> doc);
-			virtual Bool PrintPage(NotNullPtr<Media::DrawImage> printPage);
-			virtual Bool EndPrint(NotNullPtr<Media::IPrintDocument> doc);
+			virtual Bool BeginPrint(NN<Media::IPrintDocument> doc);
+			virtual Bool PrintPage(NN<Media::DrawImage> printPage);
+			virtual Bool EndPrint(NN<Media::IPrintDocument> doc);
 		};
 	}
 }

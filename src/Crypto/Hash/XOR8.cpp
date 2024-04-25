@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Crypto/Hash/XOR8.h"
 
-Crypto::Hash::XOR8::XOR8(NotNullPtr<const XOR8> xor8)
+Crypto::Hash::XOR8::XOR8(NN<const XOR8> xor8)
 {
 	this->val = xor8->val;
 }
@@ -21,9 +21,9 @@ UTF8Char *Crypto::Hash::XOR8::GetName(UTF8Char *sbuff) const
 	return Text::StrConcatC(sbuff, UTF8STRC("XOR8"));
 }
 
-NotNullPtr<Crypto::Hash::IHash> Crypto::Hash::XOR8::Clone() const
+NN<Crypto::Hash::IHash> Crypto::Hash::XOR8::Clone() const
 {
-	NotNullPtr<Crypto::Hash::XOR8> xor8;
+	NN<Crypto::Hash::XOR8> xor8;
 	NEW_CLASSNN(xor8, Crypto::Hash::XOR8(*this));
 	return xor8;
 }

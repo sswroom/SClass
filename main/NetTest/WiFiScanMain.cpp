@@ -8,7 +8,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	Net::WirelessLAN *wlan;
@@ -30,11 +30,11 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		UOSInt maxSNLen;
 		UInt8 buff[8];
 		const UInt8 *macPtr;
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		Data::ArrayListNN<Net::WirelessLAN::Interface> interfaces;
 		Data::ArrayListNN<Net::WirelessLAN::BSSInfo> bssList;
-		NotNullPtr<Net::WirelessLAN::BSSInfo> bss;
-		NotNullPtr<Net::WirelessLAN::Interface> interface;
+		NN<Net::WirelessLAN::BSSInfo> bss;
+		NN<Net::WirelessLAN::Interface> interface;
 		wlan->GetInterfaces(interfaces);
 		i = interfaces.GetCount();
 		if (i <= 0)

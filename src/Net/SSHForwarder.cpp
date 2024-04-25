@@ -2,34 +2,34 @@
 #include "Net/SSHForwarder.h"
 #include "Net/SSHTCPChannel.h"
 
-void __stdcall Net::SSHForwarder::OnClientEvent(NotNullPtr<TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::SSHForwarder::OnClientEvent(NN<TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
-		NotNullPtr<Net::SSHTCPChannel> channel = cliData.GetNN<Net::SSHTCPChannel>();
+		NN<Net::SSHTCPChannel> channel = cliData.GetNN<Net::SSHTCPChannel>();
 		channel.Delete();
 		cli.Delete();
 	}
 }
 
-void __stdcall Net::SSHForwarder::OnClientData(NotNullPtr<TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
+void __stdcall Net::SSHForwarder::OnClientData(NN<TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
 {
-	NotNullPtr<Net::SSHTCPChannel> channel = cliData.GetNN<Net::SSHTCPChannel>();
+	NN<Net::SSHTCPChannel> channel = cliData.GetNN<Net::SSHTCPChannel>();
 	channel->WriteCont(buff.Ptr(), buff.GetSize());
 }
 
-void __stdcall Net::SSHForwarder::OnClientTimeout(NotNullPtr<TCPClient> cli, AnyType userObj, AnyType cliData)
+void __stdcall Net::SSHForwarder::OnClientTimeout(NN<TCPClient> cli, AnyType userObj, AnyType cliData)
 {
 
 }
 
 void __stdcall Net::SSHForwarder::OnClientConn(Socket *s, AnyType userObj)
 {
-	NotNullPtr<Net::SSHForwarder> me = userObj.GetNN<Net::SSHForwarder>();
-	NotNullPtr<Net::SSHTCPChannel> channel;
+	NN<Net::SSHForwarder> me = userObj.GetNN<Net::SSHForwarder>();
+	NN<Net::SSHTCPChannel> channel;
 	if (me->conn->RemoteConnect(s, me->remoteHost->ToCString(), me->remotePort).SetTo(channel))
 	{
-		NotNullPtr<Net::TCPClient> cli;
+		NN<Net::TCPClient> cli;
 		NEW_CLASSNN(cli, Net::TCPClient(me->conn->GetSocketFactory(), s));
 		me->cliMgr.AddClient(cli, channel.Ptr());
 	}
@@ -39,7 +39,7 @@ void __stdcall Net::SSHForwarder::OnClientConn(Socket *s, AnyType userObj)
 	}
 }
 
-Net::SSHForwarder::SSHForwarder(NotNullPtr<Net::SSHConn> conn, UInt16 localPort, Text::CStringNN remoteHost, UInt16 remotePort) : cliMgr(3600, OnClientEvent, OnClientData, this, 4, OnClientTimeout)
+Net::SSHForwarder::SSHForwarder(NN<Net::SSHConn> conn, UInt16 localPort, Text::CStringNN remoteHost, UInt16 remotePort) : cliMgr(3600, OnClientEvent, OnClientData, this, 4, OnClientTimeout)
 {
 	this->conn = conn;
 	this->remoteHost = Text::String::New(remoteHost);

@@ -31,15 +31,15 @@ namespace SSWR
 			{
 				UInt32 ip;
 				Int64 count;
-				NotNullPtr<Text::String> name;
-				NotNullPtr<Text::String> country;
+				NN<Text::String> name;
+				NN<Text::String> country;
 			} IPInfo;
 
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Net::SocketFactory> sockf;
 			IO::LogTool log;
-			NotNullPtr<UI::ListBoxLogger> logger;
+			NN<UI::ListBoxLogger> logger;
 			Net::WebServer::WebListener *listener;
 			Net::EthernetWebHandler *webHdlr;
 			Net::SocketMonitor *socMon;
@@ -51,32 +51,32 @@ namespace SSWR
 			Bool ipContUpdated;
 			IPInfo *currIP;
 
-			NotNullPtr<UI::GUIPanel> pnlControl;
-			NotNullPtr<UI::GUILabel> lblInfo;
-			NotNullPtr<UI::GUITextBox> txtInfo;
-			NotNullPtr<UI::GUIButton> btnInfo;
-			NotNullPtr<UI::GUILabel> lblIP;
-			NotNullPtr<UI::GUIComboBox> cboIP;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUIPanel> pnlControl;
+			NN<UI::GUILabel> lblInfo;
+			NN<UI::GUITextBox> txtInfo;
+			NN<UI::GUIButton> btnInfo;
+			NN<UI::GUILabel> lblIP;
+			NN<UI::GUIComboBox> cboIP;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpIP;
-			NotNullPtr<UI::GUIListBox> lbIP;
-			NotNullPtr<UI::GUIHSplitter> hspIP;
-			NotNullPtr<UI::GUITabControl> tcIP;
-			NotNullPtr<UI::GUITabPage> tpIPInfo;
-			NotNullPtr<UI::GUILabel> lblIPCount;
-			NotNullPtr<UI::GUITextBox> txtIPCount;
-			NotNullPtr<UI::GUILabel> lblIPName;
-			NotNullPtr<UI::GUITextBox> txtIPName;
-			NotNullPtr<UI::GUILabel> lblIPCountry;
-			NotNullPtr<UI::GUITextBox> txtIPCountry;
-			NotNullPtr<UI::GUITabPage> tpIPWhois;
-			NotNullPtr<UI::GUITextBox> txtIPWhois;
+			NN<UI::GUITabPage> tpIP;
+			NN<UI::GUIListBox> lbIP;
+			NN<UI::GUIHSplitter> hspIP;
+			NN<UI::GUITabControl> tcIP;
+			NN<UI::GUITabPage> tpIPInfo;
+			NN<UI::GUILabel> lblIPCount;
+			NN<UI::GUITextBox> txtIPCount;
+			NN<UI::GUILabel> lblIPName;
+			NN<UI::GUITextBox> txtIPName;
+			NN<UI::GUILabel> lblIPCountry;
+			NN<UI::GUITextBox> txtIPCountry;
+			NN<UI::GUITabPage> tpIPWhois;
+			NN<UI::GUITextBox> txtIPWhois;
 
-			NotNullPtr<UI::GUITabPage> tpLog;
-			NotNullPtr<UI::GUITextBox> txtLog;
-			NotNullPtr<UI::GUIListBox> lbLog;
+			NN<UI::GUITabPage> tpLog;
+			NN<UI::GUITextBox> txtLog;
+			NN<UI::GUIListBox> lbLog;
 
 			static void __stdcall OnPingPacket(AnyType userData, UInt32 srcIP, UInt32 destIP, UInt8 ttl, UOSInt packetSize);
 			static void __stdcall OnRAWData(AnyType userData, const UInt8 *rawData, UOSInt packetSize);
@@ -87,7 +87,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(AnyType userObj);
 
 		public:
-			AVIRPingMonitorForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRPingMonitorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRPingMonitorForm();
 
 			virtual void OnMonitorChanged();

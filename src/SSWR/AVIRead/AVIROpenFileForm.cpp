@@ -6,9 +6,9 @@
 
 void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnBrowseClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIROpenFileForm> me = userObj.GetNN<SSWR::AVIRead::AVIROpenFileForm>();
+	NN<SSWR::AVIRead::AVIROpenFileForm> me = userObj.GetNN<SSWR::AVIRead::AVIROpenFileForm>();
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"OpenFile", false);
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"OpenFile", false);
 	me->txtName->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnBrowseClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIROpenFileForm> me = userObj.GetNN<SSWR::AVIRead::AVIROpenFileForm>();
+	NN<SSWR::AVIRead::AVIROpenFileForm> me = userObj.GetNN<SSWR::AVIRead::AVIROpenFileForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtName->GetText(sb);
 	me->fileName = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
@@ -34,20 +34,20 @@ void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnOKClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIROpenFileForm> me = userObj.GetNN<SSWR::AVIRead::AVIROpenFileForm>();
+	NN<SSWR::AVIRead::AVIROpenFileForm> me = userObj.GetNN<SSWR::AVIRead::AVIROpenFileForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-void __stdcall SSWR::AVIRead::AVIROpenFileForm::FileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIROpenFileForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIROpenFileForm> me = userObj.GetNN<SSWR::AVIRead::AVIROpenFileForm>();
+	NN<SSWR::AVIRead::AVIROpenFileForm> me = userObj.GetNN<SSWR::AVIRead::AVIROpenFileForm>();
 	if (files.GetCount() > 0)
 	{
 		me->txtName->SetText(files[0]->ToCString());
 	}
 }
 
-SSWR::AVIRead::AVIROpenFileForm::AVIROpenFileForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::ParserType t) : UI::GUIForm(parent, 640, 120, ui)
+SSWR::AVIRead::AVIROpenFileForm::AVIROpenFileForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::ParserType t) : UI::GUIForm(parent, 640, 120, ui)
 {
 	this->SetText(CSTR("Open File"));
 	this->SetFont(0, 0, 8.25, false);
@@ -101,7 +101,7 @@ void SSWR::AVIRead::AVIROpenFileForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-NotNullPtr<Text::String> SSWR::AVIRead::AVIROpenFileForm::GetFileName() const
+NN<Text::String> SSWR::AVIRead::AVIROpenFileForm::GetFileName() const
 {
 	return Text::String::OrEmpty(this->fileName);
 }

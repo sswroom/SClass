@@ -36,7 +36,7 @@ void Parser::FileParser::MEVParser::SetMapManager(Map::MapManager *mapMgr)
 	this->mapMgr = mapMgr;
 }
 
-void Parser::FileParser::MEVParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::MEVParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapEnv)
 	{
@@ -49,7 +49,7 @@ IO::ParserType Parser::FileParser::MEVParser::GetParserType()
 	return IO::ParserType::MapEnv;
 }
 
-IO::ParsedObject *Parser::FileParser::MEVParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::MEVParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UInt8 buff[512];
 	UInt32 currPos = 0;
@@ -70,7 +70,7 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFileHdr(NotNullPtr<IO::Str
 	UTF8Char sbuff2[256];
 	UTF8Char *u8ptr;
 	UTF8Char *u8ptr2;
-	NotNullPtr<Parser::ParserList> parsers;
+	NN<Parser::ParserList> parsers;
 
 	UOSInt i;
 	UOSInt j;
@@ -154,7 +154,7 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFileHdr(NotNullPtr<IO::Str
 		*wptr++ = IO::Path::PATH_SEPERATOR;
 		Text::StrUTF8_WCharC(wptr, &buff[16], ReadUInt32(&buff[4]), 0);
 
-		NotNullPtr<Text::String> s = Text::String::NewNotNull(wbuff);
+		NN<Text::String> s = Text::String::NewNotNull(wbuff);
 		imgFileArr[i].envIndex = env->AddImage(s->ToCString(), parsers);
 		s->Release();
 		i++;
@@ -232,7 +232,7 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFileHdr(NotNullPtr<IO::Str
 	return env;
 }
 
-void Parser::FileParser::MEVParser::ReadItems(NotNullPtr<IO::StreamData> fd, Map::MapEnv *env, UInt32 itemCnt, InOutParam<UInt32> currPos, Optional<Map::MapEnv::GroupItem> group, const WChar **dirArr, MEVImageInfo *imgInfos)
+void Parser::FileParser::MEVParser::ReadItems(NN<IO::StreamData> fd, Map::MapEnv *env, UInt32 itemCnt, InOutParam<UInt32> currPos, Optional<Map::MapEnv::GroupItem> group, const WChar **dirArr, MEVImageInfo *imgInfos)
 {
 	UInt8 buff[512];
 	WChar wbuff[256];
@@ -250,8 +250,8 @@ void Parser::FileParser::MEVParser::ReadItems(NotNullPtr<IO::StreamData> fd, Map
 			Text::StrUTF8_WCharC(wbuff, &buff[12], ReadUInt32(&buff[4]), 0);
 			pos = 12 + pos;
 			
-			NotNullPtr<Text::String> s = Text::String::NewNotNull(wbuff);
-			NotNullPtr<Map::MapEnv::GroupItem> item = env->AddGroup(group, s->ToCString());
+			NN<Text::String> s = Text::String::NewNotNull(wbuff);
+			NN<Map::MapEnv::GroupItem> item = env->AddGroup(group, s->ToCString());
 			s->Release();
 			ReadItems(fd, env, ReadUInt32(&buff[8]), currPos, item, dirArr, imgInfos);
 		}
@@ -267,8 +267,8 @@ void Parser::FileParser::MEVParser::ReadItems(NotNullPtr<IO::StreamData> fd, Map
 			{
 				this->parsers->SetCodePage(ReadUInt32(&buff[12]));
 			}
-			NotNullPtr<Text::String> s = Text::String::NewNotNull(wbuff);
-			NotNullPtr<Map::MapDrawLayer> layer;
+			NN<Text::String> s = Text::String::NewNotNull(wbuff);
+			NN<Map::MapDrawLayer> layer;
 			if (layer.Set(this->mapMgr->LoadLayer(s->ToCString(), this->parsers, env)))
 			{
 				s->Release();

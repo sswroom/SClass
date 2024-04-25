@@ -29,7 +29,7 @@ void Media::CS::CSRGB8_LRGBC::UpdateRGBTable()
 	Double thisV;
 	Double dV;
 	UInt16 v[4];
-	NotNullPtr<Media::ColorProfile> srcProfile;
+	NN<Media::ColorProfile> srcProfile;
 	if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN && this->colorSess)
 	{
 		srcProfile = this->colorSess->GetDefVProfile();
@@ -46,9 +46,9 @@ void Media::CS::CSRGB8_LRGBC::UpdateRGBTable()
 	{
 		srcProfile = this->srcProfile;
 	}
-	NotNullPtr<Media::CS::TransferFunc> rtFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetRTranParam());
-	NotNullPtr<Media::CS::TransferFunc> gtFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetGTranParam());
-	NotNullPtr<Media::CS::TransferFunc> btFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetBTranParam());
+	NN<Media::CS::TransferFunc> rtFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetRTranParam());
+	NN<Media::CS::TransferFunc> gtFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetGTranParam());
+	NN<Media::CS::TransferFunc> btFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetBTranParam());
 	Math::Matrix3 mat1;
 	if (this->destProfile.GetPrimaries()->colorType == Media::ColorProfile::CT_DISPLAY)
 	{
@@ -102,7 +102,7 @@ void Media::CS::CSRGB8_LRGBC::UpdateRGBTable()
 	}
 }
 
-Media::CS::CSRGB8_LRGBC::CSRGB8_LRGBC(UOSInt srcNBits, Media::PixelFormat srcPF, Bool invert, NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
+Media::CS::CSRGB8_LRGBC::CSRGB8_LRGBC(UOSInt srcNBits, Media::PixelFormat srcPF, Bool invert, NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
 {
 	this->srcNBits = srcNBits;
 	this->srcPF = srcPF;
@@ -239,11 +239,11 @@ void Media::CS::CSRGB8_LRGBC::SetPalette(UInt8 *pal)
 	}
 }
 
-void Media::CS::CSRGB8_LRGBC::YUVParamChanged(NotNullPtr<const YUVPARAM> yuv)
+void Media::CS::CSRGB8_LRGBC::YUVParamChanged(NN<const YUVPARAM> yuv)
 {
 }
 
-void Media::CS::CSRGB8_LRGBC::RGBParamChanged(NotNullPtr<const RGBPARAM2> rgb)
+void Media::CS::CSRGB8_LRGBC::RGBParamChanged(NN<const RGBPARAM2> rgb)
 {
 	this->rgbParam.Set(rgb);
 	this->rgbUpdated = true;

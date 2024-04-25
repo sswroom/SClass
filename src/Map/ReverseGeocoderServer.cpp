@@ -16,7 +16,7 @@ Net::TCPClient *Map::ReverseGeocoderServer::GetLatestClient(UOSInt retryCnt)
 	UOSInt maxIndex = 0;
 	Net::TCPClient *cli;
 	AnyType cliObj;
-	NotNullPtr<ClientStatus> stat;
+	NN<ClientStatus> stat;
 
 	dt.SetCurrTimeUTC();
 	currTime = dt.ToTicks();
@@ -53,7 +53,7 @@ Net::TCPClient *Map::ReverseGeocoderServer::GetLatestClient(UOSInt retryCnt)
 	return cli;
 }
 
-Map::ReverseGeocoderServer::ReverseGeocoderServer(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log, UInt16 port) : protocol(*this)
+Map::ReverseGeocoderServer::ReverseGeocoderServer(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log, UInt16 port) : protocol(*this)
 {
 	NEW_CLASS(this->ctrl, Net::TCPServerController(sockf, log, port, CSTR("RGS: "), 4096, this, 8, 240, true));
 }
@@ -168,7 +168,7 @@ UTF8Char *Map::ReverseGeocoderServer::CacheName(UTF8Char *buff, UOSInt buffSize,
 	mutUsage.EndUse();
 	return sptr;}
 
-AnyType Map::ReverseGeocoderServer::NewConn(NotNullPtr<Net::TCPClient> cli)
+AnyType Map::ReverseGeocoderServer::NewConn(NN<Net::TCPClient> cli)
 {
 	ClientStatus *stat = MemAlloc(ClientStatus, 1);
 	stat->cliData = this->protocol.CreateStreamData(cli);
@@ -176,20 +176,20 @@ AnyType Map::ReverseGeocoderServer::NewConn(NotNullPtr<Net::TCPClient> cli)
 	return stat;
 }
 
-void Map::ReverseGeocoderServer::EndConn(NotNullPtr<Net::TCPClient> cli, AnyType cliObj)
+void Map::ReverseGeocoderServer::EndConn(NN<Net::TCPClient> cli, AnyType cliObj)
 {
-	NotNullPtr<ClientStatus> stat = cliObj.GetNN<ClientStatus>();
+	NN<ClientStatus> stat = cliObj.GetNN<ClientStatus>();
 	this->protocol.DeleteStreamData(cli, stat->cliData);
 	MemFree(stat.Ptr());
 }
 
-UOSInt Map::ReverseGeocoderServer::ReceivedData(NotNullPtr<Net::TCPClient> cli, AnyType cliObj, const Data::ByteArrayR &buff)
+UOSInt Map::ReverseGeocoderServer::ReceivedData(NN<Net::TCPClient> cli, AnyType cliObj, const Data::ByteArrayR &buff)
 {
-	NotNullPtr<ClientStatus> stat = cliObj.GetNN<ClientStatus>();
+	NN<ClientStatus> stat = cliObj.GetNN<ClientStatus>();
 	return this->protocol.ParseProtocol(cli, cliObj, stat->cliData, buff);
 }
 
-void Map::ReverseGeocoderServer::DataParsed(NotNullPtr<IO::Stream> stm, AnyType cliObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void Map::ReverseGeocoderServer::DataParsed(NN<IO::Stream> stm, AnyType cliObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 	if (cmdType == 1)
 	{
@@ -258,7 +258,7 @@ void Map::ReverseGeocoderServer::DataParsed(NotNullPtr<IO::Stream> stm, AnyType 
 	}
 }
 
-void Map::ReverseGeocoderServer::DataSkipped(NotNullPtr<IO::Stream> stm, AnyType cliObj, const UInt8 *buff, UOSInt buffSize)
+void Map::ReverseGeocoderServer::DataSkipped(NN<IO::Stream> stm, AnyType cliObj, const UInt8 *buff, UOSInt buffSize)
 {
 }
 

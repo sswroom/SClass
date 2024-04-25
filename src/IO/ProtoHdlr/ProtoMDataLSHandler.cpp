@@ -4,10 +4,10 @@
 #include "Data/ByteTool.h"
 #include "IO/ProtoHdlr/ProtoMDataLSHandler.h"
 
-IO::ProtoHdlr::ProtoMDataLSHandler::ProtoMDataLSHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener)
+IO::ProtoHdlr::ProtoMDataLSHandler::ProtoMDataLSHandler(NN<IO::IProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
-	NotNullPtr<Crypto::Hash::CRC32R> crc;
+	NN<Crypto::Hash::CRC32R> crc;
 	NEW_CLASSNN(crc, Crypto::Hash::CRC32R());
 	NEW_CLASSNN(this->crc, Crypto::Hash::HashCalc(crc));
 }
@@ -17,16 +17,16 @@ IO::ProtoHdlr::ProtoMDataLSHandler::~ProtoMDataLSHandler()
 	this->crc.Delete();
 }
 
-AnyType IO::ProtoHdlr::ProtoMDataLSHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
+AnyType IO::ProtoHdlr::ProtoMDataLSHandler::CreateStreamData(NN<IO::Stream> stm)
 {
 	return 0;
 }
 
-void IO::ProtoHdlr::ProtoMDataLSHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, AnyType stmData)
+void IO::ProtoHdlr::ProtoMDataLSHandler::DeleteStreamData(NN<IO::Stream> stm, AnyType stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoMDataLSHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
+UOSInt IO::ProtoHdlr::ProtoMDataLSHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
 {
 	Bool found;
 	UInt8 crcVal[4];

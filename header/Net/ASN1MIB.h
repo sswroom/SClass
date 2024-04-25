@@ -29,8 +29,8 @@ namespace Net
 
 		struct ModuleInfo
 		{
-			NotNullPtr<Text::String> moduleName;
-			NotNullPtr<Text::String> moduleFileName;
+			NN<Text::String> moduleName;
+			NN<Text::String> moduleFileName;
 			Data::ArrayListStringNN objKeys;
 			Data::ArrayListNN<ObjectInfo> objValues;
 			Data::ArrayListNN<ObjectInfo> oidList;
@@ -41,15 +41,15 @@ namespace Net
 
 		static UOSInt CalcLineSpace(const UTF8Char *txt);
 		static void ModuleAppendOID(NN<ModuleInfo> module, NN<ObjectInfo> obj);
-		Bool ParseObjectOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, Text::String *s, NotNullPtr<Text::StringBuilderUTF8> errMessage);
-		Bool ParseObjectBegin(NN<Net::MIBReader> reader, Optional<ObjectInfo> obj, NotNullPtr<Text::StringBuilderUTF8> errMessage);
-		Bool ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module, NotNullPtr<Text::StringBuilderUTF8> errMessage);
-		Bool ApplyModuleOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, NotNullPtr<Text::StringBuilderUTF8> errMessage);
-		Bool ApplyModuleOIDs(NN<ModuleInfo> module, NotNullPtr<Text::StringBuilderUTF8> errMessage);
-		Bool ApplyOIDs(NotNullPtr<Text::StringBuilderUTF8> errMessage);
-		Bool ApplyModuleImports(ModuleInfo *module, NotNullPtr<Text::StringBuilderUTF8> errMessage);
-		Bool ApplyImports(NotNullPtr<Text::StringBuilderUTF8> errMessage);
-		Bool LoadFileInner(Text::CStringNN fileName, NotNullPtr<Text::StringBuilderUTF8> errMessage, Bool postApply);
+		Bool ParseObjectOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, Text::String *s, NN<Text::StringBuilderUTF8> errMessage);
+		Bool ParseObjectBegin(NN<Net::MIBReader> reader, Optional<ObjectInfo> obj, NN<Text::StringBuilderUTF8> errMessage);
+		Bool ParseModule(NN<Net::MIBReader> reader, NN<ModuleInfo> module, NN<Text::StringBuilderUTF8> errMessage);
+		Bool ApplyModuleOID(NN<ModuleInfo> module, NN<ObjectInfo> obj, NN<Text::StringBuilderUTF8> errMessage);
+		Bool ApplyModuleOIDs(NN<ModuleInfo> module, NN<Text::StringBuilderUTF8> errMessage);
+		Bool ApplyOIDs(NN<Text::StringBuilderUTF8> errMessage);
+		Bool ApplyModuleImports(ModuleInfo *module, NN<Text::StringBuilderUTF8> errMessage);
+		Bool ApplyImports(NN<Text::StringBuilderUTF8> errMessage);
+		Bool LoadFileInner(Text::CStringNN fileName, NN<Text::StringBuilderUTF8> errMessage, Bool postApply);
 
 		static void RemoveSpace(Text::PString *s);
 		static Bool IsType(const UTF8Char *s);
@@ -66,7 +66,7 @@ namespace Net
 		Optional<ModuleInfo> GetModuleByFileName(Text::CStringNN fileName);
 
 		void UnloadAll();
-		Bool LoadFile(Text::CStringNN fileName, NotNullPtr<Text::StringBuilderUTF8> errMessage);
+		Bool LoadFile(Text::CStringNN fileName, NN<Text::StringBuilderUTF8> errMessage);
 	};
 }
 #endif

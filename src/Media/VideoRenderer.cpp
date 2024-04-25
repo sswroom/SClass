@@ -53,7 +53,7 @@ void Media::VideoRenderer::CalDisplayRect(UOSInt srcWidth, UOSInt srcHeight, Dra
 }
 
 
-void Media::VideoRenderer::ProcessVideo(NotNullPtr<ThreadStat> tstat, VideoBuff *vbuff, VideoBuff *vbuff2)
+void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, VideoBuff *vbuff2)
 {
 	DrawRect rect;
 	UOSInt srcWidth = 0;
@@ -713,7 +713,7 @@ Media::IImgResizer *Media::VideoRenderer::CreateResizer(Media::ColorManagerSess 
 	return resizer;
 }
 
-void Media::VideoRenderer::CreateCSConv(NotNullPtr<ThreadStat> tstat, Media::FrameInfo *info)
+void Media::VideoRenderer::CreateCSConv(NN<ThreadStat> tstat, Media::FrameInfo *info)
 {
 	SDEL_CLASS(tstat->csconv);
 	Media::ColorProfile::YUVType yuvType = info->yuvType;
@@ -776,7 +776,7 @@ void Media::VideoRenderer::CreateCSConv(NotNullPtr<ThreadStat> tstat, Media::Fra
 	}
 }
 
-void Media::VideoRenderer::CreateThreadResizer(NotNullPtr<ThreadStat> tstat)
+void Media::VideoRenderer::CreateThreadResizer(NN<ThreadStat> tstat)
 {
 	SDEL_CLASS(tstat->resizer);
 	SDEL_CLASS(tstat->dresizer);
@@ -805,7 +805,7 @@ void Media::VideoRenderer::CreateThreadResizer(NotNullPtr<ThreadStat> tstat)
 
 void __stdcall Media::VideoRenderer::OnVideoFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	NotNullPtr<Media::VideoRenderer> me = userData.GetNN<Media::VideoRenderer>();
+	NN<Media::VideoRenderer> me = userData.GetNN<Media::VideoRenderer>();
 	if (me->ignoreFrameTime)
 	{
 		frameTime = MulDivU32(frameNum, me->frameRateDenorm * 1000, me->frameRateNorm);
@@ -1147,7 +1147,7 @@ void __stdcall Media::VideoRenderer::OnVideoFrame(Data::Duration frameTime, UInt
 
 void __stdcall Media::VideoRenderer::OnVideoChange(Media::IVideoSource::FrameChange fc, AnyType userData)
 {
-	NotNullPtr<Media::VideoRenderer> me = userData.GetNN<Media::VideoRenderer>();
+	NN<Media::VideoRenderer> me = userData.GetNN<Media::VideoRenderer>();
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
 	UOSInt frameSize;
@@ -1175,7 +1175,7 @@ void __stdcall Media::VideoRenderer::OnVideoChange(Media::IVideoSource::FrameCha
 
 UInt32 __stdcall Media::VideoRenderer::ProcessThread(AnyType userObj)
 {
-	NotNullPtr<ThreadStat> tstat = userObj.GetNN<ThreadStat>();
+	NN<ThreadStat> tstat = userObj.GetNN<ThreadStat>();
 	Sync::ThreadUtil::SetName(CSTR("VideoRendererP"));
 	UOSInt i;
 	VideoBuff *buff = 0;
@@ -1338,7 +1338,7 @@ UInt32 __stdcall Media::VideoRenderer::ProcessThread(AnyType userObj)
 
 UInt32 __stdcall Media::VideoRenderer::DisplayThread(AnyType userObj)
 {
-	NotNullPtr<Media::VideoRenderer> me = userObj.GetNN<Media::VideoRenderer>();
+	NN<Media::VideoRenderer> me = userObj.GetNN<Media::VideoRenderer>();
 	Sync::ThreadUtil::SetName(CSTR("VideoRendererD"));
 	UOSInt i;
 	Bool found;
@@ -1491,7 +1491,7 @@ UInt32 __stdcall Media::VideoRenderer::DisplayThread(AnyType userObj)
 									lastH = rect.size.y;
 									me->toClear = false;
 								}
-								NotNullPtr<Media::MonitorSurface> surface;
+								NN<Media::MonitorSurface> surface;
 								if (surface.Set(me->buffs[minIndex].destSurface))
 									me->DrawFromSurface(surface, rect.tl, rect.size, toClear);
 							}
@@ -1731,7 +1731,7 @@ void Media::VideoRenderer::UpdateDispInfo(Math::Size2D<UOSInt> outputSize, UInt3
 	this->outputPf = pf;
 }
 
-Media::VideoRenderer::VideoRenderer(Media::ColorManagerSess *colorSess, NotNullPtr<Media::MonitorSurfaceMgr> surfaceMgr, UOSInt buffCnt, UOSInt threadCnt) : srcColor(Media::ColorProfile::CPT_VUNKNOWN), ivtc(0), uvOfst(0), autoCrop(0)
+Media::VideoRenderer::VideoRenderer(Media::ColorManagerSess *colorSess, NN<Media::MonitorSurfaceMgr> surfaceMgr, UOSInt buffCnt, UOSInt threadCnt) : srcColor(Media::ColorProfile::CPT_VUNKNOWN), ivtc(0), uvOfst(0), autoCrop(0)
 {
 	UOSInt i;
 	this->colorSess = colorSess;
@@ -2122,7 +2122,7 @@ void Media::VideoRenderer::SetSrcRGBType(Media::CS::TransferType rgbType)
 	this->VideoEndLoad();
 }
 
-void Media::VideoRenderer::SetSrcRGBTransfer(NotNullPtr<const Media::CS::TransferParam> transf)
+void Media::VideoRenderer::SetSrcRGBTransfer(NN<const Media::CS::TransferParam> transf)
 {
 	UOSInt i;
 	this->VideoBeginLoad();
@@ -2160,7 +2160,7 @@ void Media::VideoRenderer::SetSrcPrimaries(Media::ColorProfile::ColorType colorT
 	this->VideoEndLoad();
 }
 
-void Media::VideoRenderer::SetSrcPrimaries(NotNullPtr<const Media::ColorProfile::ColorPrimaries> primaries)
+void Media::VideoRenderer::SetSrcPrimaries(NN<const Media::ColorProfile::ColorPrimaries> primaries)
 {
 	UOSInt i;
 	this->VideoBeginLoad();
@@ -2268,7 +2268,7 @@ void Media::VideoRenderer::Snapshot()
 	}
 }
 
-void Media::VideoRenderer::GetStatus(NotNullPtr<RendererStatus2> status)
+void Media::VideoRenderer::GetStatus(NN<RendererStatus2> status)
 {
 	this->dispMut.LockRead();
 	if (this->dispClk && this->dispClk->Running())
@@ -2359,7 +2359,7 @@ void Media::VideoRenderer::GetStatus(NotNullPtr<RendererStatus2> status)
 	mutUsage.EndUse();
 }
 
-NotNullPtr<Media::MonitorSurfaceMgr> Media::VideoRenderer::GetSurfaceMgr()
+NN<Media::MonitorSurfaceMgr> Media::VideoRenderer::GetSurfaceMgr()
 {
 	return this->surfaceMgr;
 }

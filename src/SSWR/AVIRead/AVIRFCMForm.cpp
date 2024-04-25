@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRFCMForm::OnSendClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFCMForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFCMForm>();
+	NN<SSWR::AVIRead::AVIRFCMForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFCMForm>();
 	Text::StringBuilderUTF8 sbAPIKey;
 	Text::StringBuilderUTF8 sbDeviceToken;
 	Text::StringBuilderUTF8 sbMessage;
@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRFCMForm::OnSendClicked(AnyType userObj)
 	me->txtStatus->SetText(sbStatus.ToCString());
 }
 
-SSWR::AVIRead::AVIRFCMForm::AVIRFCMForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 156, ui)
+SSWR::AVIRead::AVIRFCMForm::AVIRFCMForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 156, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Google FCM"));

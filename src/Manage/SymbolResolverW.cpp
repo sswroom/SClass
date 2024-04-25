@@ -9,7 +9,7 @@
 #include <stdio.h>
 #undef GetModuleFileName
 
-Manage::SymbolResolver::SymbolResolver(NotNullPtr<Manage::Process> proc)
+Manage::SymbolResolver::SymbolResolver(NN<Manage::Process> proc)
 {
 	UOSInt baseAddr;
 	UOSInt size;
@@ -20,10 +20,10 @@ Manage::SymbolResolver::SymbolResolver(NotNullPtr<Manage::Process> proc)
 
 	Data::ArrayListNN<Manage::ModuleInfo> modList;
 	this->proc->GetModules(modList);
-	Data::ArrayIterator<NotNullPtr<Manage::ModuleInfo>> it = modList.Iterator();
+	Data::ArrayIterator<NN<Manage::ModuleInfo>> it = modList.Iterator();
 	while (it.HasNext())
 	{
-		NotNullPtr<Manage::ModuleInfo> mod = it.Next();
+		NN<Manage::ModuleInfo> mod = it.Next();
 
 		sptr = mod->GetModuleFileName(sbuff);
 		this->modNames.Add(Text::String::NewP(sbuff, sptr));
@@ -49,7 +49,7 @@ UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
 	UInt8 tmpBuff[sizeof(SYMBOL_INFO) + 256];
 	DWORD64 disp;
 	Bool found = false;
-	NotNullPtr<Text::String> name;
+	NN<Text::String> name;
 
 	i = this->modNames.GetCount();
 	while (i-- > 0)

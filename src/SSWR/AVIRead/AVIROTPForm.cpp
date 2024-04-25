@@ -19,19 +19,19 @@ void SSWR::AVIRead::AVIROTPForm::RandBytes(UOSInt len)
 
 void __stdcall SSWR::AVIRead::AVIROTPForm::OnKeyRand80Clicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIROTPForm> me = userObj.GetNN<SSWR::AVIRead::AVIROTPForm>();
+	NN<SSWR::AVIRead::AVIROTPForm> me = userObj.GetNN<SSWR::AVIRead::AVIROTPForm>();
 	me->RandBytes(10);
 }
 
 void __stdcall SSWR::AVIRead::AVIROTPForm::OnKeyRand160Clicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIROTPForm> me = userObj.GetNN<SSWR::AVIRead::AVIROTPForm>();
+	NN<SSWR::AVIRead::AVIROTPForm> me = userObj.GetNN<SSWR::AVIRead::AVIROTPForm>();
 	me->RandBytes(20);
 }
 
 void __stdcall SSWR::AVIRead::AVIROTPForm::OnNewClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIROTPForm> me = userObj.GetNN<SSWR::AVIRead::AVIROTPForm>();
+	NN<SSWR::AVIRead::AVIROTPForm> me = userObj.GetNN<SSWR::AVIRead::AVIROTPForm>();
 	Text::StringBuilderUTF8 sbName;
 	Text::StringBuilderUTF8 sbKey;
 	me->txtName->GetText(sbName);
@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnNewClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIROTPForm::OnEntryDblClicked(AnyType userObj, UOSInt index)
 {
-	NotNullPtr<SSWR::AVIRead::AVIROTPForm> me = userObj.GetNN<SSWR::AVIRead::AVIROTPForm>();
+	NN<SSWR::AVIRead::AVIROTPForm> me = userObj.GetNN<SSWR::AVIRead::AVIROTPForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	EntryInfo *entry = me->entryList->GetItem(index);
@@ -96,7 +96,7 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnEntryDblClicked(AnyType userObj, UO
 
 void __stdcall SSWR::AVIRead::AVIROTPForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIROTPForm> me = userObj.GetNN<SSWR::AVIRead::AVIROTPForm>();
+	NN<SSWR::AVIRead::AVIROTPForm> me = userObj.GetNN<SSWR::AVIRead::AVIROTPForm>();
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	EntryInfo *entry;
@@ -113,7 +113,7 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIROTPForm::AVIROTPForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIROTPForm::AVIROTPForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("One-Time Password (OTP)"));
 	this->SetFont(0, 0, 8.25, false);

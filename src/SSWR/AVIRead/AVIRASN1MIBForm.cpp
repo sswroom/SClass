@@ -5,18 +5,18 @@
 #include "SSWR/AVIRead/AVIRASN1MIBForm.h"
 #include "UI/GUIFileDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnFileDroped(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnFileDroped(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRASN1MIBForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1MIBForm>();
+	NN<SSWR::AVIRead::AVIRASN1MIBForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1MIBForm>();
 	me->LoadFile(files[0]->ToCString());
 }
 
 void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnBrowseClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRASN1MIBForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1MIBForm>();
+	NN<SSWR::AVIRead::AVIRASN1MIBForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1MIBForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtFile->GetText(sb);
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"ASN1MIB", false);
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"ASN1MIB", false);
 	dlg->AddFilter(CSTR("*.asn"), CSTR("ASN.1 MIB File"));
 	dlg->AddFilter(CSTR("*.mib"), CSTR("MIB file"));
 	if (dlg->ShowDialog(me->GetHandle()))
@@ -28,8 +28,8 @@ void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnBrowseClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnObjectsSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRASN1MIBForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1MIBForm>();
-	NotNullPtr<Net::ASN1MIB::ObjectInfo> obj;
+	NN<SSWR::AVIRead::AVIRASN1MIBForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1MIBForm>();
+	NN<Net::ASN1MIB::ObjectInfo> obj;
 	me->lvObjectsVal->ClearItems();
 	if (me->lvObjects->GetSelectedItem().GetOpt<Net::ASN1MIB::ObjectInfo>().SetTo(obj))
 	{
@@ -70,7 +70,7 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CStringNN fileName)
 		module = this->mib.GetGlobalModule();
 	}
 	NN<Data::ArrayListNN<Net::ASN1MIB::ObjectInfo>> objList = module->objValues;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	i = 0;
 	j = objList->GetCount();
 	while (i < j)
@@ -115,7 +115,7 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CStringNN fileName)
 	this->txtOIDText->SetText(sbOIDText.ToCString());
 }
 
-SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("ASN.1 MIB"));

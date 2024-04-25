@@ -17,7 +17,7 @@ Media::Printer *Media::Printer::SelectPrinter(void *hWnd)
 	return 0;
 }
 
-Media::Printer::Printer(NotNullPtr<Text::String> printerName)
+Media::Printer::Printer(NN<Text::String> printerName)
 {
 }
 
@@ -39,7 +39,7 @@ Bool Media::Printer::ShowPrintSettings(void *hWnd)
 	return false;
 }
 
-Media::IPrintDocument *Media::Printer::StartPrint(IPrintHandler *hdlr, NotNullPtr<Media::DrawEngine> eng)
+Media::IPrintDocument *Media::Printer::StartPrint(IPrintHandler *hdlr, NN<Media::DrawEngine> eng)
 {
 	return 0;
 }

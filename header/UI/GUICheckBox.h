@@ -15,7 +15,7 @@ namespace UI
 		Bool checked;
 		Data::ArrayList<Data::CallbackStorage<CheckedChangeHandler>> checkedChangeHdlrs;
 	public:
-		GUICheckBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
+		GUICheckBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 		virtual ~GUICheckBox();
 
 		virtual Text::CStringNN GetObjectClass() const;

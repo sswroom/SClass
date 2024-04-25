@@ -218,7 +218,7 @@ void UI::GUIDDrawControl::Deinit(InstanceHandle *hInst)
 
 void __stdcall UI::GUIDDrawControl::OnResized(AnyType userObj)
 {
-	NotNullPtr<UI::GUIDDrawControl> me = userObj.GetNN<UI::GUIDDrawControl>();
+	NN<UI::GUIDDrawControl> me = userObj.GetNN<UI::GUIDDrawControl>();
 	if (me->switching)
 		return;
 	if (me->currScnMode == SM_FS)
@@ -457,7 +457,7 @@ void UI::GUIDDrawControl::EndUpdateSize()
 	this->switching = false;
 }
 
-UI::GUIDDrawControl::GUIDDrawControl(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool directMode, NotNullPtr<Media::ColorManagerSess> colorSess) : UI::GUIControl(ui, parent)
+UI::GUIDDrawControl::GUIDDrawControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Bool directMode, NN<Media::ColorManagerSess> colorSess) : UI::GUIControl(ui, parent)
 {
 	this->inited = false;
 	this->primarySurface = 0;
@@ -475,7 +475,7 @@ UI::GUIDDrawControl::GUIDDrawControl(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIC
 	NEW_CLASS(this->lib, IO::Library((const UTF8Char*)"User32.dll"));
 #if defined(_DEBUG)
 	{
-		NotNullPtr<IO::FileStream> fs;
+		NN<IO::FileStream> fs;
 		NEW_CLASSNN(fs, IO::FileStream(CSTR("Ddraw.log"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		this->debugFS = fs.Ptr();
 		NEW_CLASS(this->debugWriter, Text::UTF8Writer(fs));
@@ -572,7 +572,7 @@ void UI::GUIDDrawControl::SetUserFSMode(ScreenMode fullScnMode)
 
 void UI::GUIDDrawControl::DrawToScreen()
 {
-	NotNullPtr<Media::MonitorSurface> buffSurface;
+	NN<Media::MonitorSurface> buffSurface;
 	Sync::MutexUsage mutUsage(this->surfaceMut);
 	if (this->debugWriter)
 	{
@@ -639,7 +639,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 	}
 }
 
-void UI::GUIDDrawControl::DisplayFromSurface(NotNullPtr<Media::MonitorSurface> surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn)
+void UI::GUIDDrawControl::DisplayFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn)
 {
 	if (primarySurface)
 	{

@@ -186,9 +186,9 @@ void UI::GUIPictureBoxDD::UpdateSubSurface()
 	}
 }
 
-void UI::GUIPictureBoxDD::CalDispRect(NotNullPtr<Math::RectAreaDbl> srcRect, NotNullPtr<Math::RectArea<OSInt>> destRect)
+void UI::GUIPictureBoxDD::CalDispRect(NN<Math::RectAreaDbl> srcRect, NN<Math::RectArea<OSInt>> destRect)
 {
-	NotNullPtr<Media::RasterImage> img;
+	NN<Media::RasterImage> img;
 	if (!this->currImage.SetTo(img))
 	{
 		srcRect->min = Math::Coord2DDbl(0, 0);
@@ -251,7 +251,7 @@ void UI::GUIPictureBoxDD::UpdateZoomRange()
 
 void UI::GUIPictureBoxDD::UpdateMinScale()
 {
-	NotNullPtr<Media::RasterImage> img;
+	NN<Media::RasterImage> img;
 	if (this->currImage.SetTo(img))
 	{
 		Double outZoomScale;
@@ -284,7 +284,7 @@ void UI::GUIPictureBoxDD::CreateResizer()
 
 	SDEL_CLASS(this->resizer);
 	Double refLuminance = 0;
-	NotNullPtr<Media::RasterImage> img;
+	NN<Media::RasterImage> img;
 	if (this->currImage.SetTo(img))
 	{
 		refLuminance = Media::CS::TransferFunc::GetRefLuminance(img->info.color.rtransfer);
@@ -301,7 +301,7 @@ void UI::GUIPictureBoxDD::CreateResizer()
 
 void __stdcall UI::GUIPictureBoxDD::OnSizeChg(AnyType userObj)
 {
-	NotNullPtr<UI::GUIPictureBoxDD> me = userObj.GetNN<UI::GUIPictureBoxDD>();
+	NN<UI::GUIPictureBoxDD> me = userObj.GetNN<UI::GUIPictureBoxDD>();
 	if (me->switching)
 		return;
 	Bool new10Bit = false;
@@ -363,7 +363,7 @@ void UI::GUIPictureBoxDD::OnPaint()
 	}
 }
 
-UI::GUIPictureBoxDD::GUIPictureBoxDD(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::ColorManagerSess> colorSess, Bool allowEnlarge, Bool directMode) : UI::GUIDDrawControl(ui, parent, directMode, colorSess)
+UI::GUIPictureBoxDD::GUIPictureBoxDD(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::ColorManagerSess> colorSess, Bool allowEnlarge, Bool directMode) : UI::GUIDDrawControl(ui, parent, directMode, colorSess)
 {
 	this->colorSess = colorSess;
 	this->colorSess->AddHandler(*this);
@@ -484,11 +484,11 @@ void UI::GUIPictureBoxDD::SetImage(Optional<Media::RasterImage> currImage, Bool 
 		DEL_CLASS(this->csconv);
 		this->csconv = 0;
 	}
-	NotNullPtr<Media::RasterImage> img;
+	NN<Media::RasterImage> img;
 	if (this->currImage.SetTo(img))
 	{
 		Media::RotateType rotType = Media::RotateType::None;
-		NotNullPtr<Media::EXIFData> exif;
+		NN<Media::EXIFData> exif;
 		this->currImageSize = img->info.dispSize;
 		if (img->exif.SetTo(exif))
 		{
@@ -523,7 +523,7 @@ void UI::GUIPictureBoxDD::SetImage(Optional<Media::RasterImage> currImage, Bool 
 			this->imgBuff = MemAllocA(UInt8, this->currImageSize.CalcArea() * 8);
 			if (img->GetImageType() == Media::RasterImage::ImageType::Static)
 			{
-				this->csconv->ConvertV2(&NotNullPtr<Media::StaticImage>::ConvertFrom(img)->data, this->imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
+				this->csconv->ConvertV2(&NN<Media::StaticImage>::ConvertFrom(img)->data, this->imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
 			}
 			else
 			{
@@ -568,13 +568,13 @@ void UI::GUIPictureBoxDD::SetImage(Optional<Media::RasterImage> currImage, Bool 
 	}
 }
 
-void UI::GUIPictureBoxDD::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam)
+void UI::GUIPictureBoxDD::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
-	NotNullPtr<Media::RasterImage> img;
+	NN<Media::RasterImage> img;
 	if (this->currImage.SetTo(img) && this->csconv)
 	{
 		Media::RotateType rotType = Media::RotateType::None;
-		NotNullPtr<Media::EXIFData> exif;
+		NN<Media::EXIFData> exif;
 		UInt8 *imgBuff;
 		if (img->exif.SetTo(exif))
 		{
@@ -590,7 +590,7 @@ void UI::GUIPictureBoxDD::YUVParamChanged(NotNullPtr<const Media::IColorHandler:
 		}
 		if (img->GetImageType() == Media::RasterImage::ImageType::Static)
 		{
-			this->csconv->ConvertV2(&NotNullPtr<Media::StaticImage>::ConvertFrom(img)->data, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
+			this->csconv->ConvertV2(&NN<Media::StaticImage>::ConvertFrom(img)->data, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
 		}
 		else
 		{
@@ -623,14 +623,14 @@ void UI::GUIPictureBoxDD::YUVParamChanged(NotNullPtr<const Media::IColorHandler:
 	}
 }
 
-void UI::GUIPictureBoxDD::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam)
+void UI::GUIPictureBoxDD::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
-	NotNullPtr<Media::RasterImage> img;
+	NN<Media::RasterImage> img;
 	if (this->currImage.SetTo(img) && this->csconv)
 	{
 		Media::RotateType rotType = Media::RotateType::None;
 		UInt8 *imgBuff;
-		NotNullPtr<Media::EXIFData> exif;
+		NN<Media::EXIFData> exif;
 		if (img->exif.SetTo(exif))
 		{
 			rotType = exif->GetRotateType();
@@ -645,7 +645,7 @@ void UI::GUIPictureBoxDD::RGBParamChanged(NotNullPtr<const Media::IColorHandler:
 		}
 		if (img->GetImageType() == Media::RasterImage::ImageType::Static)
 		{
-			this->csconv->ConvertV2(&NotNullPtr<Media::StaticImage>::ConvertFrom(img)->data, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
+			this->csconv->ConvertV2(&NN<Media::StaticImage>::ConvertFrom(img)->data, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
 		}
 		else
 		{
@@ -1058,14 +1058,14 @@ Bool UI::GUIPictureBoxDD::GetImageViewSize(Math::Size2D<UOSInt> *viewSize, Math:
 	return true;
 }
 
-NotNullPtr<Media::StaticImage> UI::GUIPictureBoxDD::CreatePreviewImage(NotNullPtr<const Media::StaticImage> image)
+NN<Media::StaticImage> UI::GUIPictureBoxDD::CreatePreviewImage(NN<const Media::StaticImage> image)
 {
-	NotNullPtr<Media::StaticImage> outImage;
+	NN<Media::StaticImage> outImage;
 	Math::Size2D<UOSInt> prevSize;
 	this->GetImageViewSize(&prevSize, image->info.dispSize);
 
 	UInt8 *prevImgData = MemAllocA(UInt8, image->info.dispSize.CalcArea() * 8);
-	Media::ColorProfile color(NotNullPtr<const Media::ColorProfile>(image->info.color));
+	Media::ColorProfile color(NN<const Media::ColorProfile>(image->info.color));
 	color.GetRTranParam()->Set(Media::CS::TRANT_LINEAR, 1.0);
 	color.GetGTranParam()->Set(Media::CS::TRANT_LINEAR, 1.0);
 	color.GetBTranParam()->Set(Media::CS::TRANT_LINEAR, 1.0);
@@ -1174,7 +1174,7 @@ Math::Coord2DDbl UI::GUIPictureBoxDD::Image2ScnPos(Math::Coord2DDbl imgPos)
 
 void UI::GUIPictureBoxDD::ZoomToFit()
 {
-	NotNullPtr<Media::RasterImage> img;
+	NN<Media::RasterImage> img;
 	if (this->currImage.SetTo(img))
 	{
 		this->zoomCenter = this->currImageSize.ToDouble() * 0.5;

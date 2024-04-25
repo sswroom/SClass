@@ -20,7 +20,7 @@ Int32 Parser::FileParser::IS2Parser::GetName()
 	return *(Int32*)"IS2P";
 }
 
-void Parser::FileParser::IS2Parser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::IS2Parser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
@@ -33,7 +33,7 @@ IO::ParserType Parser::FileParser::IS2Parser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (fd->GetDataSize() < 204)
 		return 0;
@@ -101,7 +101,7 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFileHdr(NotNullPtr<IO::Str
 						const UTF16Char *cameraBrand = (const UTF16Char *)&currBuff[72];
 						const UTF16Char *cameraModel = (const UTF16Char *)&currBuff[136];
 						const UTF16Char *cameraSN = (const UTF16Char *)&currBuff[200];
-						NotNullPtr<Text::String> s = Text::String::NewNotNull(cameraBrand);
+						NN<Text::String> s = Text::String::NewNotNull(cameraBrand);
 						imgList->SetValueStr(Media::ImageList::VT_CAMERA_BRAND, s->ToCString());
 						s->Release();
 						s = Text::String::NewNotNull(cameraModel);

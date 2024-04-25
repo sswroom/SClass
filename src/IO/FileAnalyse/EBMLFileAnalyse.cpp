@@ -394,9 +394,9 @@ void IO::FileAnalyse::EBMLFileAnalyse::ParseRange(UOSInt lev, UInt64 ofst, UInt6
 	}
 }
 
-void __stdcall IO::FileAnalyse::EBMLFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::FileAnalyse::EBMLFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::FileAnalyse::EBMLFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::EBMLFileAnalyse>();
+	NN<IO::FileAnalyse::EBMLFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::EBMLFileAnalyse>();
 	me->ParseRange(0, 0, me->fd->GetDataSize());
 }
 
@@ -430,7 +430,7 @@ UOSInt IO::FileAnalyse::EBMLFileAnalyse::GetFrameIndex(UOSInt lev, UInt64 ofst)
 	return INVALID_INDEX;
 }
 
-IO::FileAnalyse::EBMLFileAnalyse::EBMLFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("EBMLFileAnalyse"))
+IO::FileAnalyse::EBMLFileAnalyse::EBMLFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("EBMLFileAnalyse"))
 {
 	UInt8 buff[256];
 	this->fd = 0;
@@ -462,7 +462,7 @@ UOSInt IO::FileAnalyse::EBMLFileAnalyse::GetFrameCount()
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::EBMLFileAnalyse::PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
@@ -499,7 +499,7 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Tex
 	return true;
 }
 
-Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::EBMLFileAnalyse::PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
@@ -731,7 +731,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EBMLFileAnalyse::GetFram
 	if (!this->packs.GetItem(index).SetTo(pack))
 		return 0;
 
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, pack->packSize));
 	UInt64 eleId;
 	UInt32 intSize;

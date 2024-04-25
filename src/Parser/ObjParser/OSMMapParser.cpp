@@ -25,7 +25,7 @@ void Parser::ObjParser::OSMMapParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::ObjParser::OSMMapParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::ObjParser::OSMMapParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 }
 
@@ -34,16 +34,16 @@ IO::ParserType Parser::ObjParser::OSMMapParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::ObjParser::OSMMapParser::ParseObject(NotNullPtr<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::ObjParser::OSMMapParser::ParseObject(NN<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	NotNullPtr<IO::PackageFile> pkg;
+	NN<IO::PackageFile> pkg;
 	if (pobj->GetParserType() != IO::ParserType::PackageFile)
 		return 0;
-	pkg = NotNullPtr<IO::PackageFile>::ConvertFrom(pobj);
-	NotNullPtr<IO::StreamData> fd;
+	pkg = NN<IO::PackageFile>::ConvertFrom(pobj);
+	NN<IO::StreamData> fd;
 	if (!pkg->OpenStreamData(CSTR("metadata.json")).SetTo(fd))
 		return 0;
-	NotNullPtr<Parser::ParserList> parsers;
+	NN<Parser::ParserList> parsers;
 	if (!parsers.Set(this->parsers))
 		return 0;
 
@@ -64,10 +64,10 @@ IO::ParsedObject *Parser::ObjParser::OSMMapParser::ParseObject(NotNullPtr<IO::Pa
 		Text::JSONBase *jbase = jobj->GetObjectValue(CSTR("type"));
 		if (jbase && jbase->Equals(CSTR("overlay")) && fd->GetShortName().EndsWith(UTF8STRC("metadata.json")))
 		{
-			NotNullPtr<Text::String> name;
-			NotNullPtr<Text::String> format;
-			NotNullPtr<Text::String> sMinZoom;
-			NotNullPtr<Text::String> sMaxZoom;
+			NN<Text::String> name;
+			NN<Text::String> format;
+			NN<Text::String> sMinZoom;
+			NN<Text::String> sMaxZoom;
 			UInt32 minZoom;
 			UInt32 maxZoom;
 			Text::JSONArray *bounds = jobj->GetObjectArray(CSTR("bounds"));
@@ -83,8 +83,8 @@ IO::ParsedObject *Parser::ObjParser::OSMMapParser::ParseObject(NotNullPtr<IO::Pa
 				maxCoord = Math::Coord2DDbl(bounds->GetArrayDouble(2), bounds->GetArrayDouble(3));
 				minCoord = coord.Min(maxCoord);
 				maxCoord = coord.Max(maxCoord);
-				NotNullPtr<Map::OSM::OSMLocalTileMap> tileMap;
-				NotNullPtr<Map::TileMapLayer> mapLayer;
+				NN<Map::OSM::OSMLocalTileMap> tileMap;
+				NN<Map::TileMapLayer> mapLayer;
 				NEW_CLASSNN(tileMap, Map::OSM::OSMLocalTileMap(pkg->Clone(), name, format, minZoom, maxZoom, minCoord, maxCoord));
 				NEW_CLASSNN(mapLayer, Map::TileMapLayer(tileMap, parsers));
 				fd.Delete();

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "UI/GUIDateTimePicker.h"
 
-UI::GUIDateTimePicker::GUIDateTimePicker(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent) : GUIControl(ui, parent)
+UI::GUIDateTimePicker::GUIDateTimePicker(NN<GUICore> ui, NN<UI::GUIClientControl> parent) : GUIControl(ui, parent)
 {
 }
 
@@ -14,7 +14,7 @@ Text::CStringNN UI::GUIDateTimePicker::GetObjectClass() const
 	return CSTR("DateTimePicker");
 }
 
-void UI::GUIDateTimePicker::EventDateChange(NotNullPtr<Data::DateTime> newDate)
+void UI::GUIDateTimePicker::EventDateChange(NN<Data::DateTime> newDate)
 {
 	UOSInt i = this->dateChangedHdlrs.GetCount();
 	while (i-- > 0)

@@ -8,9 +8,9 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::SNMPClient::OnSNMPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::SNMPClient::OnSNMPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	NotNullPtr<Net::SNMPClient> me = userData.GetNN<Net::SNMPClient>();
+	NN<Net::SNMPClient> me = userData.GetNN<Net::SNMPClient>();
 	Data::ArrayList<Net::SNMPUtil::BindingItem*> itemList;
 	Int32 reqId;
 	Net::SNMPUtil::ErrorStatus err;
@@ -56,7 +56,7 @@ void __stdcall Net::SNMPClient::OnSNMPPacket(NotNullPtr<const Net::SocketUtil::A
 	}
 }
 
-Net::SNMPClient::SNMPClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log)
+Net::SNMPClient::SNMPClient(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log)
 {
 	this->scanList = 0;
 	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, OnSNMPPacket, this, log, CSTR_NULL, 1, false));
@@ -76,7 +76,7 @@ Bool Net::SNMPClient::IsError()
 	return this->svr->IsError();
 }
 
-Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetRequest(NotNullPtr<const Net::SocketUtil::AddressInfo> agentAddr, NotNullPtr<Text::String> community, const UTF8Char *oidText, UOSInt oidTextLen, Data::ArrayList<Net::SNMPUtil::BindingItem *> *itemList)
+Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetRequest(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, const UTF8Char *oidText, UOSInt oidTextLen, Data::ArrayList<Net::SNMPUtil::BindingItem *> *itemList)
 {
 	UInt8 pduBuff[64];
 	UOSInt oidLen;
@@ -84,7 +84,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetRequest(NotNullPtr<const Net::S
 	return V1GetRequestPDU(agentAddr, community, pduBuff, oidLen, itemList);
 }
 
-Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetRequestPDU(NotNullPtr<const Net::SocketUtil::AddressInfo> agentAddr, NotNullPtr<Text::String> community, const UInt8 *oid, UOSInt oidLen, Data::ArrayList<Net::SNMPUtil::BindingItem *> *itemList)
+Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetRequestPDU(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, const UInt8 *oid, UOSInt oidLen, Data::ArrayList<Net::SNMPUtil::BindingItem *> *itemList)
 {
 	UOSInt buffSize;
 	const UInt8 *buff;
@@ -119,7 +119,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetRequestPDU(NotNullPtr<const Net
 	return ret;
 }
 
-Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetNextRequest(NotNullPtr<const Net::SocketUtil::AddressInfo> agentAddr, NotNullPtr<Text::String> community, const UTF8Char *oidText, UOSInt oidTextLen, Data::ArrayList<Net::SNMPUtil::BindingItem *> *itemList)
+Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetNextRequest(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, const UTF8Char *oidText, UOSInt oidTextLen, Data::ArrayList<Net::SNMPUtil::BindingItem *> *itemList)
 {
 	UInt8 pduBuff[64];
 	UOSInt oidLen;
@@ -127,7 +127,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetNextRequest(NotNullPtr<const Ne
 	return V1GetNextRequestPDU(agentAddr, community, pduBuff, oidLen, itemList);
 }
 
-Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetNextRequestPDU(NotNullPtr<const Net::SocketUtil::AddressInfo> agentAddr, NotNullPtr<Text::String> community, const UInt8 *oid, UOSInt oidLen, Data::ArrayList<Net::SNMPUtil::BindingItem *> *itemList)
+Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetNextRequestPDU(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, const UInt8 *oid, UOSInt oidLen, Data::ArrayList<Net::SNMPUtil::BindingItem *> *itemList)
 {
 	UOSInt buffSize;
 	const UInt8 *buff;
@@ -162,7 +162,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetNextRequestPDU(NotNullPtr<const
 	return ret;
 }
 
-Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1Walk(NotNullPtr<const Net::SocketUtil::AddressInfo> agentAddr, NotNullPtr<Text::String> community, const UTF8Char *oidText, UOSInt oidTextLen, Data::ArrayList<Net::SNMPUtil::BindingItem *> *itemList)
+Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1Walk(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, const UTF8Char *oidText, UOSInt oidTextLen, Data::ArrayList<Net::SNMPUtil::BindingItem *> *itemList)
 {
 	Net::SNMPUtil::ErrorStatus ret;
 	Data::ArrayList<Net::SNMPUtil::BindingItem *> thisList;
@@ -214,7 +214,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1Walk(NotNullPtr<const Net::SocketU
 	return Net::SNMPUtil::ES_NOERROR;
 }
 
-UOSInt Net::SNMPClient::V1ScanGetRequest(NotNullPtr<const Net::SocketUtil::AddressInfo> broadcastAddr, NotNullPtr<Text::String> community, const UTF8Char *oidText, UOSInt oidTextLen, Data::ArrayList<Net::SocketUtil::AddressInfo *> *addrList, Data::Duration timeout, Bool scanIP)
+UOSInt Net::SNMPClient::V1ScanGetRequest(NN<const Net::SocketUtil::AddressInfo> broadcastAddr, NN<Text::String> community, const UTF8Char *oidText, UOSInt oidTextLen, Data::ArrayList<Net::SocketUtil::AddressInfo *> *addrList, Data::Duration timeout, Bool scanIP)
 {
 	UInt8 pduBuff[64];
 	UOSInt oidLen;

@@ -6,14 +6,14 @@
 #include "Net/WebServer/NodeModuleHandler.h"
 #include "Net/WebServer/WebListener.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Net::OSSocketFactory sockf(true);
 	Net::WebServer::WebStandardHandler baseHdlr;
-	NotNullPtr<Net::WebServer::HTTPDirectoryHandler> hdlr;
-	NotNullPtr<Net::WebServer::NodeModuleHandler> hdlr2;
+	NN<Net::WebServer::HTTPDirectoryHandler> hdlr;
+	NN<Net::WebServer::NodeModuleHandler> hdlr2;
 	sptr = IO::Path::GetRealPath(sbuff, UTF8STRC("~/Progs/SClass/js/aviread"));
 	NEW_CLASSNN(hdlr, Net::WebServer::HTTPDirectoryHandler(CSTRP(sbuff, sptr), true, 0, false));
 	baseHdlr.HandlePath(CSTR("/aviread"), hdlr, true);

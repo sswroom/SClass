@@ -312,7 +312,7 @@ void Media::CS::CSYUV10_RGB8::SetupYUV_RGB13()
 	}
 }
 
-Media::CS::CSYUV10_RGB8::CSYUV10_RGB8(NotNullPtr<const Media::ColorProfile> srcColor, NotNullPtr<const Media::ColorProfile> destColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcColor(srcColor), destColor(destColor)
+Media::CS::CSYUV10_RGB8::CSYUV10_RGB8(NN<const Media::ColorProfile> srcColor, NN<const Media::ColorProfile> destColor, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcColor(srcColor), destColor(destColor)
 {
 	this->yuvType = yuvType;
 	this->rgbGammaCorr = MemAlloc(UInt8, 65536 * 3);
@@ -324,8 +324,8 @@ Media::CS::CSYUV10_RGB8::CSYUV10_RGB8(NotNullPtr<const Media::ColorProfile> srcC
 	MemCopyNO(&this->yuvParam, colorSess->GetYUVParam().Ptr(), sizeof(YUVPARAM));
 	this->rgbParam.Set(colorSess->GetRGBParam());
 
-	NotNullPtr<Media::ColorProfile> srcProfile;
-	NotNullPtr<Media::ColorProfile> destProfile;
+	NN<Media::ColorProfile> srcProfile;
+	NN<Media::ColorProfile> destProfile;
 
 	if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{
@@ -389,16 +389,16 @@ void Media::CS::CSYUV10_RGB8::Release()
 	this->fbFunc.Delete();
 }
 
-void Media::CS::CSYUV10_RGB8::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuv)
+void Media::CS::CSYUV10_RGB8::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuv)
 {
 	MemCopyNO(&this->yuvParam, yuv.Ptr(), sizeof(YUVPARAM));
 	this->yuvUpdated = true;
 }
 
-void Media::CS::CSYUV10_RGB8::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgb)
+void Media::CS::CSYUV10_RGB8::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgb)
 {
-	NotNullPtr<const Media::ColorProfile> srcColor;
-	NotNullPtr<const Media::ColorProfile> destColor;
+	NN<const Media::ColorProfile> srcColor;
+	NN<const Media::ColorProfile> destColor;
 	if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{
 		srcColor = this->colorSess->GetDefVProfile();

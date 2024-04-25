@@ -140,7 +140,7 @@ void Media::CS::CSYUV420_LRGBC::SetupInterpolationParameter(UOSInt source_length
 
 UInt32 Media::CS::CSYUV420_LRGBC::WorkerThread(AnyType obj)
 {
-	NotNullPtr<CSYUV420_LRGBC> converter = obj.GetNN<CSYUV420_LRGBC>();
+	NN<CSYUV420_LRGBC> converter = obj.GetNN<CSYUV420_LRGBC>();
 	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 	{
@@ -251,7 +251,7 @@ void Media::CS::CSYUV420_LRGBC::WaitForWorker(ThreadState jobStatus)
 	}
 }
 
-Media::CS::CSYUV420_LRGBC::CSYUV420_LRGBC(NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV_LRGBC(srcProfile, destProfile, yuvType, colorSess)
+Media::CS::CSYUV420_LRGBC::CSYUV420_LRGBC(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSYUV_LRGBC(srcProfile, destProfile, yuvType, colorSess)
 {
 	UOSInt i;
 	this->nThread = Sync::ThreadUtil::GetThreadCnt();

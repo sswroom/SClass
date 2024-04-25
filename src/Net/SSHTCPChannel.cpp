@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Net/SSHTCPChannel.h"
 
-Net::SSHTCPChannel::SSHTCPChannel(NotNullPtr<Net::SSHConn> conn, SSHChannelHandle *channel, Text::CStringNN channelName) : IO::Stream(channelName)
+Net::SSHTCPChannel::SSHTCPChannel(NN<Net::SSHConn> conn, SSHChannelHandle *channel, Text::CStringNN channelName) : IO::Stream(channelName)
 {
 	this->conn = conn;
 	this->channel = channel;
@@ -19,7 +19,7 @@ Bool Net::SSHTCPChannel::IsDown() const
 
 UOSInt Net::SSHTCPChannel::Read(const Data::ByteArray &buff)
 {
-	NotNullPtr<Net::TCPClient> cli;
+	NN<Net::TCPClient> cli;
 	UOSInt readSize = 0;
 	while (!this->conn->ChannelTryRead(this->channel, buff.Ptr(), buff.GetSize(), readSize))
 	{

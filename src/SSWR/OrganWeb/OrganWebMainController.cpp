@@ -22,9 +22,9 @@
 
 #include <stdio.h>
 
-Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NotNullPtr<SSWR::OrganWeb::OrganWebMainController> me = NotNullPtr<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebMainController> me = NN<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
 	RequestEnv env;
 	Net::WebServer::WebSessionUsage webSess(me->ParseRequestEnv(req, resp, env, true));
 
@@ -33,12 +33,12 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NotNullPtr<Net::
 	if (req->GetQueryValueI32(CSTR("id"), id) &&
 		req->GetQueryValueI32(CSTR("cateId"), cateId))
 	{
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
-		NotNullPtr<GroupInfo> group;
-		NotNullPtr<CategoryInfo> cate;
+		NN<GroupInfo> group;
+		NN<CategoryInfo> cate;
 		IO::ConfigFile *lang = me->env->LangGet(req);
 		Sync::RWMutexUsage mutUsage;
 		Bool notAdmin = (env.user == 0 || env.user->userType != UserType::Admin);
@@ -64,7 +64,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NotNullPtr<Net::
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST && env.user != 0 && env.user->userType == UserType::Admin)
 		{
 			req->ParseHTTPForm();
-			NotNullPtr<Text::String> action;
+			NN<Text::String> action;
 			Int32 itemId;
 			if (req->GetHTTPFormStr(CSTR("action")).SetTo(action))
 			{
@@ -464,9 +464,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NotNullPtr<Net::
 }
 
 
-Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NotNullPtr<SSWR::OrganWeb::OrganWebMainController> me = NotNullPtr<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebMainController> me = NN<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
 	RequestEnv env;
 	UOSInt i;
 	UOSInt j;
@@ -484,11 +484,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 	if (req->GetQueryValueI32(CSTR("id"), id) &&
 		req->GetQueryValueI32(CSTR("cateId"), cateId))
 	{
-		NotNullPtr<GroupInfo> group;
-		NotNullPtr<CategoryInfo> cate;
+		NN<GroupInfo> group;
+		NN<CategoryInfo> cate;
 		Text::StringBuilderUTF8 sb;
-		NotNullPtr<Text::String> s;
-		NotNullPtr<Text::String> txt;
+		NN<Text::String> s;
+		NN<Text::String> txt;
 		IO::ConfigFile *lang = me->env->LangGet(req);
 
 		Sync::RWMutexUsage mutUsage;
@@ -506,13 +506,13 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 		}
 
 		Text::StringBuilderUTF8 msg;
-		NotNullPtr<Text::String> ename = Text::String::NewEmpty();
-		NotNullPtr<Text::String> cname = ename;
-		NotNullPtr<Text::String> descr = ename;
+		NN<Text::String> ename = Text::String::NewEmpty();
+		NN<Text::String> cname = ename;
+		NN<Text::String> descr = ename;
 		GroupFlags groupFlags = GF_NONE;
 		Int32 groupTypeId = 0;
 		Optional<GroupInfo> modGroup = 0;
-		NotNullPtr<GroupInfo> nnmodGroup;
+		NN<GroupInfo> nnmodGroup;
 		if (req->GetQueryValueI32(CSTR("groupId"), groupId))
 		{
 			modGroup = me->env->GroupGet(mutUsage, groupId);
@@ -527,7 +527,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 		{
 			req->ParseHTTPForm();
-			NotNullPtr<Text::String> task;
+			NN<Text::String> task;
 			if (req->GetHTTPFormStr(CSTR("adminOnly")).SetTo(txt) && txt->v[0] == '1')
 			{
 				groupFlags = (GroupFlags)(groupFlags | GF_ADMIN_ONLY);
@@ -743,7 +743,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 		writer.WriteStrC(UTF8STRC("<input type=\"button\" value=\"New\" onclick=\"document.forms.newgroup.task.value='new';document.forms.newgroup.submit();\"/>"));
 		if (groupId != 0)
 		{
-			NotNullPtr<GroupInfo> modGroup;
+			NN<GroupInfo> modGroup;
 			if (me->env->GroupGet(mutUsage, groupId).SetTo(modGroup) && modGroup->species.GetCount() == 0 && modGroup->groups.GetCount() == 0)
 			{
 				writer.WriteStrC(UTF8STRC("<input type=\"button\" value=\"Delete\" onclick=\"document.forms.newgroup.task.value='delete';document.forms.newgroup.submit();\"/>"));
@@ -772,9 +772,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NotNullPtr<Ne
 	}
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NotNullPtr<SSWR::OrganWeb::OrganWebMainController> me = NotNullPtr<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebMainController> me = NN<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
 	RequestEnv env;
 	Net::WebServer::WebSessionUsage webSess(me->ParseRequestEnv(req, resp, env, true));
 
@@ -783,7 +783,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NotNullPtr<Net
 	if (req->GetQueryValueI32(CSTR("id"), id) &&
 		req->GetQueryValueI32(CSTR("cateId"), cateId))
 	{
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		UOSInt i;
 		UOSInt j;
 		UTF8Char sbuff[512];
@@ -793,9 +793,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NotNullPtr<Net
 		IO::Path::FindFileSession *sess;
 		IO::Path::PathType pt;
 		Text::StringBuilderUTF8 sb;
-		NotNullPtr<SpeciesInfo> species;
-		NotNullPtr<GroupInfo> group;
-		NotNullPtr<CategoryInfo> cate;
+		NN<SpeciesInfo> species;
+		NN<GroupInfo> group;
+		NN<CategoryInfo> cate;
 		BookSpInfo *bookSp;
 		BookInfo *book;
 		UserFileInfo *userFile;
@@ -828,8 +828,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NotNullPtr<Net
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST && env.user != 0 && env.user->userType == UserType::Admin)
 		{
 			req->ParseHTTPForm();
-			NotNullPtr<Text::String> action;
-			NotNullPtr<Text::String> s;
+			NN<Text::String> action;
+			NN<Text::String> s;
 			Int32 userfileId;
 			if (req->GetHTTPFormStr(CSTR("action")).SetTo(action))
 			{
@@ -953,7 +953,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NotNullPtr<Net
 				}
 				else if (action->Equals(UTF8STRC("bookspecies")))
 				{
-					NotNullPtr<Text::String> dispName;
+					NN<Text::String> dispName;
 					UInt32 bookAllowDup = 0;
 					req->GetHTTPFormUInt32(CSTR("bookAllowDup"), bookAllowDup);
 					if (req->GetHTTPFormStr(CSTR("speciesname")).SetTo(dispName) && dispName->leng > 0)
@@ -963,8 +963,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NotNullPtr<Net
 				}
 				else if (action->Equals(UTF8STRC("webfile")))
 				{
-					NotNullPtr<Text::String> srcURL;
-					NotNullPtr<Text::String> imgURL;
+					NN<Text::String> srcURL;
+					NN<Text::String> imgURL;
 					Optional<Text::String> location = req->GetHTTPFormStr(CSTR("location"));
 					if (req->GetHTTPFormStr(CSTR("srcURL")).SetTo(srcURL) && req->GetHTTPFormStr(CSTR("imgURL")).SetTo(imgURL) && srcURL->leng > 0 && imgURL->leng > 0)
 					{
@@ -1493,8 +1493,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NotNullPtr<Net
 		if (refURLList.GetCount() > 0)
 		{
 			writer.WriteLineC(UTF8STRC("Reference URL:<br/>"));
-			NotNullPtr<Text::String> url;
-			Data::ArrayIterator<NotNullPtr<Text::String>> it = refURLList.Iterator();
+			NN<Text::String> url;
+			Data::ArrayIterator<NN<Text::String>> it = refURLList.Iterator();
 			while (it.HasNext())
 			{
 				url = it.Next();
@@ -1572,9 +1572,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NotNullPtr<Net
 	}
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NotNullPtr<SSWR::OrganWeb::OrganWebMainController> me = NotNullPtr<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebMainController> me = NN<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 
@@ -1590,9 +1590,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<
 	if (req->GetQueryValueI32(CSTR("id"), id) &&
 		req->GetQueryValueI32(CSTR("cateId"), cateId))
 	{
-		NotNullPtr<GroupInfo> group;
+		NN<GroupInfo> group;
 		Text::StringBuilderUTF8 sb;
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		IO::ConfigFile *lang = me->env->LangGet(req);
 
 		Sync::RWMutexUsage mutUsage;
@@ -1604,14 +1604,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<
 		}
 
 		Text::StringBuilderUTF8 msg;
-		NotNullPtr<Text::String> cname = Text::String::NewEmpty();
-		NotNullPtr<Text::String> sname = cname;
-		NotNullPtr<Text::String> ename = cname;
-		NotNullPtr<Text::String> descr = cname;
+		NN<Text::String> cname = Text::String::NewEmpty();
+		NN<Text::String> sname = cname;
+		NN<Text::String> ename = cname;
+		NN<Text::String> descr = cname;
 		Bool canDelete = false;
 		const UTF8Char *bookIgn = 0;
 		Optional<SpeciesInfo> species = 0;
-		NotNullPtr<SpeciesInfo> nnspecies;
+		NN<SpeciesInfo> nnspecies;
 		if (req->GetQueryValueI32(CSTR("spId"), spId))
 		{
 			species = me->env->SpeciesGet(mutUsage, spId);
@@ -1627,7 +1627,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 		{
 			req->ParseHTTPForm();
-			NotNullPtr<Text::String> task;
+			NN<Text::String> task;
 			bookIgn = STR_PTR(req->GetQueryValue(CSTR("bookIgn")).OrNull());
 			if (req->GetHTTPFormStr(CSTR("task")).SetTo(task) &&
 				req->GetHTTPFormStr(CSTR("cname")).SetTo(cname) &&
@@ -1865,9 +1865,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NotNullPtr<
 	}
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NotNullPtr<SSWR::OrganWeb::OrganWebMainController> me = NotNullPtr<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebMainController> me = NN<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 
@@ -1879,12 +1879,12 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NotNullPtr<Net::W
 		req->GetQueryValueI32(CSTR("cateId"), cateId))
 	{
 		Bool imageOnly = subReq.Equals(UTF8STRC("/listimage.html"));
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
-		NotNullPtr<GroupInfo> group;
-		NotNullPtr<CategoryInfo> cate;
+		NN<GroupInfo> group;
+		NN<CategoryInfo> cate;
 		IO::ConfigFile *lang = me->env->LangGet(req);
 		Sync::RWMutexUsage mutUsage;
 		Bool notAdmin = (env.user == 0 || env.user->userType != UserType::Admin);
@@ -1934,7 +1934,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NotNullPtr<Net::W
 		Data::StringMap<SpeciesInfo*> spMap;
 		me->env->GetGroupSpecies(mutUsage, group, &spMap, env.user);
 		Data::ArrayList<SpeciesInfo*> speciesTmp;
-		NotNullPtr<const Data::ReadingList<SpeciesInfo*>> spList;
+		NN<const Data::ReadingList<SpeciesInfo*>> spList;
 		spList = spMap.GetValues();
 		if (imageOnly)
 		{
@@ -1960,7 +1960,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NotNullPtr<Net::W
 			j = spList->GetCount();
 		}
 		Data::ArrayListNN<SpeciesInfo> species;
-		NotNullPtr<SpeciesInfo> sp;
+		NN<SpeciesInfo> sp;
 		while (i < j)
 		{
 			if (sp.Set(spList->GetItem(i)))
@@ -2066,9 +2066,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NotNullPtr<Net::W
 	}
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NotNullPtr<SSWR::OrganWeb::OrganWebMainController> me = NotNullPtr<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebMainController> me = NN<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 
@@ -2080,7 +2080,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 		UTF8Char fileName[512];
 		UTF8Char *fileNameEnd;
 		Int32 fileId;
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		UOSInt i;
 		UOSInt j;
 		UTF8Char sbuff[512];
@@ -2091,9 +2091,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 		IO::Path::FindFileSession *sess;
 		IO::Path::PathType pt;
 		Text::StringBuilderUTF8 sb;
-		NotNullPtr<SpeciesInfo> species;
-		NotNullPtr<GroupInfo> group;
-		NotNullPtr<CategoryInfo> cate;
+		NN<SpeciesInfo> species;
+		NN<GroupInfo> group;
+		NN<CategoryInfo> cate;
 		Text::PString sarr[4];
 		WebFileInfo *wfile;
 		IO::ConfigFile *lang = me->env->LangGet(req);
@@ -2147,7 +2147,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 				if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST && env.user && (env.user->userType == UserType::Admin || env.user->id == userFile->webuserId))
 				{
 					req->ParseHTTPForm();
-					NotNullPtr<Text::String> action;
+					NN<Text::String> action;
 					if (req->GetHTTPFormStr(CSTR("action")).SetTo(action))
 					{
 						if (action->Equals(UTF8STRC("setdefault")) && env.user->userType == UserType::Admin)
@@ -2156,7 +2156,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 						}
 						else if (action->Equals(UTF8STRC("setname")))
 						{
-							NotNullPtr<Text::String> desc;
+							NN<Text::String> desc;
 							if (req->GetHTTPFormStr(CSTR("descr")).SetTo(desc))
 							{
 								me->env->UserfileUpdateDesc(mutUsage, fileId, desc->ToCString());
@@ -2497,7 +2497,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 				if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST && env.user && env.user->userType == UserType::Admin)
 				{
 					req->ParseHTTPForm();
-					NotNullPtr<Text::String> action;
+					NN<Text::String> action;
 					if (req->GetHTTPFormStr(CSTR("action")).SetTo(action) && action->Equals(UTF8STRC("setdefault")))
 					{
 						me->env->SpeciesSetPhotoWId(mutUsage, id, fileId, true);
@@ -3086,26 +3086,26 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NotNullPtr
 	return true;
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NotNullPtr<SSWR::OrganWeb::OrganWebMainController> me = NotNullPtr<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebMainController> me = NN<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 
 	Int32 id;
 	Int32 cateId;
-	NotNullPtr<Text::String> searchStr;
+	NN<Text::String> searchStr;
 	req->ParseHTTPForm();
 	if (req->GetQueryValueI32(CSTR("id"), id) &&
 		req->GetQueryValueI32(CSTR("cateId"), cateId) &&
 		req->GetHTTPFormStr(CSTR("searchStr")).SetTo(searchStr))
 	{
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
-		NotNullPtr<GroupInfo> group;
-		NotNullPtr<CategoryInfo> cate;
+		NN<GroupInfo> group;
+		NN<CategoryInfo> cate;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		IO::ConfigFile *lang = me->env->LangGet(req);
@@ -3181,7 +3181,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NotNullPt
 		if (speciesObjs.GetCount() > 0)
 		{
 			Data::ArrayListNN<SpeciesInfo> speciesList;
-			NotNullPtr<SpeciesInfo> sp;
+			NN<SpeciesInfo> sp;
 			i = speciesObjs.GetCount();
 			if (i > 50)
 			{
@@ -3220,7 +3220,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NotNullPt
 		if (groupObjs.GetCount() > 0)
 		{
 			Data::ArrayListNN<GroupInfo> groupList;
-			NotNullPtr<GroupInfo> group;
+			NN<GroupInfo> group;
 			i = groupObjs.GetCount();
 			if (i > 50)
 			{
@@ -3285,27 +3285,27 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NotNullPt
 	}
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreS(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreS(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NotNullPtr<SSWR::OrganWeb::OrganWebMainController> me = NotNullPtr<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebMainController> me = NN<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 
 	Int32 id;
 	UInt32 pageNo;
 	Int32 cateId;
-	NotNullPtr<Text::String> searchStr;
+	NN<Text::String> searchStr;
 	if (req->GetQueryValueI32(CSTR("id"), id) &&
 		req->GetQueryValueI32(CSTR("cateId"), cateId) &&
 		req->GetQueryValueU32(CSTR("pageNo"), pageNo) &&
 		req->GetQueryValue(CSTR("searchStr")).SetTo(searchStr))
 	{
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
-		NotNullPtr<GroupInfo> group;
-		NotNullPtr<CategoryInfo> cate;
+		NN<GroupInfo> group;
+		NN<CategoryInfo> cate;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		IO::ConfigFile *lang = me->env->LangGet(req);
@@ -3381,7 +3381,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreS(NotN
 		if (speciesObjs.GetCount() > pageNo * 50)
 		{
 			Data::ArrayListNN<SpeciesInfo> speciesList;
-			NotNullPtr<SpeciesInfo> sp;
+			NN<SpeciesInfo> sp;
 			j = speciesObjs.GetCount() - pageNo * 50;
 			i = j - 50;
 			if (j < 50)
@@ -3460,27 +3460,27 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreS(NotN
 	}
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NotNullPtr<SSWR::OrganWeb::OrganWebMainController> me = NotNullPtr<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebMainController> me = NN<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 
 	Int32 id;
 	UInt32 pageNo;
 	Int32 cateId;
-	NotNullPtr<Text::String> searchStr;
+	NN<Text::String> searchStr;
 	if (req->GetQueryValueI32(CSTR("id"), id) &&
 		req->GetQueryValueI32(CSTR("cateId"), cateId) &&
 		req->GetQueryValueU32(CSTR("pageNo"), pageNo) &&
 		req->GetQueryValue(CSTR("searchStr")).SetTo(searchStr))
 	{
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
-		NotNullPtr<GroupInfo> group;
-		NotNullPtr<CategoryInfo> cate;
+		NN<GroupInfo> group;
+		NN<CategoryInfo> cate;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		IO::ConfigFile *lang = me->env->LangGet(req);
@@ -3556,7 +3556,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NotN
 		if (groupObjs.GetCount() > 0)
 		{
 			Data::ArrayListNN<GroupInfo> groupList;
-			NotNullPtr<GroupInfo> group;
+			NN<GroupInfo> group;
 			j = groupObjs.GetCount() - pageNo * 50;
 			i = j - 50;
 			if (i < 0)
@@ -3638,9 +3638,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NotN
 	}
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcLogout(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcLogout(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NotNullPtr<SSWR::OrganWeb::OrganWebMainController> me = NotNullPtr<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebMainController> me = NN<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 

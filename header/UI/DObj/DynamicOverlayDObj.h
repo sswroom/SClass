@@ -10,14 +10,14 @@ namespace UI
 		class DynamicOverlayDObj : public DirectObject
 		{
 		private:
-			NotNullPtr<Media::DrawEngine> deng;
+			NN<Media::DrawEngine> deng;
 			Media::DrawImage *bmp1;
 			Media::DrawImage *bmp2;
 			Double alpha;
 			Double a;
 			Data::Random *rnd;
 		public:
-			DynamicOverlayDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString fileName1, Text::CString fileName2, Math::Coord2D<OSInt> tl);
+			DynamicOverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName1, Text::CString fileName2, Math::Coord2D<OSInt> tl);
 			virtual ~DynamicOverlayDObj();
 
 			virtual Bool IsChanged();

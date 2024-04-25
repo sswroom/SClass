@@ -23,7 +23,7 @@ Bool SDCardMgr_ReadId(Text::CStringNN fileName, UInt8 *buff)
 	return ret;
 }
 
-UOSInt IO::SDCardMgr::GetCardList(NotNullPtr<Data::ArrayList<IO::SDCardInfo*>> cardList)
+UOSInt IO::SDCardMgr::GetCardList(NN<Data::ArrayList<IO::SDCardInfo*>> cardList)
 {
 	UTF8Char nameBuff[16];
 	UTF8Char *namePtr;

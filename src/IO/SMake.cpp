@@ -32,7 +32,7 @@ $(<var>) means replace var as value
 !<source> means force compile
 @<source> means skip dependency check
 */
-void IO::SMake::AppendCfgItem(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStringNN val)
+void IO::SMake::AppendCfgItem(NN<Text::StringBuilderUTF8> sb, Text::CStringNN val)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -74,7 +74,7 @@ void IO::SMake::AppendCfgItem(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStr
 	sb->AppendC(&val.v[i], (UOSInt)(valEnd - &val.v[i]));
 }
 
-void IO::SMake::AppendCfgPath(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString path)
+void IO::SMake::AppendCfgPath(NN<Text::StringBuilderUTF8> sb, Text::CString path)
 {
 	if (path.StartsWith(UTF8STRC("~/")))
 	{
@@ -96,7 +96,7 @@ void IO::SMake::AppendCfgPath(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStr
 	}
 }
 
-void IO::SMake::AppendCfg(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CString compileCfgC)
+void IO::SMake::AppendCfg(NN<Text::StringBuilderUTF8> sb, Text::CString compileCfgC)
 {
 	Text::CString compileCfg = compileCfgC;
 	UOSInt i = compileCfg.IndexOf('`');
@@ -555,13 +555,13 @@ Text::PString IO::SMake::ParseCond(Text::PString str1, OutParam<Bool> valid)
 	return str1;
 }
 
-Bool IO::SMake::ParseSource(NotNullPtr<Data::FastStringMap<Int32>> objList,
-	NotNullPtr<Data::FastStringMap<Int32>> libList,
-	NotNullPtr<Data::FastStringMap<Int32>> procList,
+Bool IO::SMake::ParseSource(NN<Data::FastStringMap<Int32>> objList,
+	NN<Data::FastStringMap<Int32>> libList,
+	NN<Data::FastStringMap<Int32>> procList,
 	Optional<Data::ArrayListStringNN> headerList,
 	OutParam<Int64> latestTime,
 	Text::CStringNN sourceFile,
-	NotNullPtr<Text::StringBuilderUTF8> tmpSb)
+	NN<Text::StringBuilderUTF8> tmpSb)
 {
 	Bool skipCheck = false;
 	if (sourceFile.StartsWith('@'))
@@ -663,7 +663,7 @@ Bool IO::SMake::ParseSource(NotNullPtr<Data::FastStringMap<Int32>> objList,
 						}
 						else
 						{
-							NotNullPtr<Text::String> debugObj;
+							NN<Text::String> debugObj;
 							procList->PutNN(prog->name, 1);
 
 							if (debugObj.Set(this->debugObj) && this->messageWriter && prog->name->Equals(debugObj))
@@ -691,10 +691,10 @@ Bool IO::SMake::ParseSource(NotNullPtr<Data::FastStringMap<Int32>> objList,
 								lastTime = thisTime;
 							}
 
-							Data::ArrayIterator<NotNullPtr<Text::String>> it = prog->subItems.Iterator();
+							Data::ArrayIterator<NN<Text::String>> it = prog->subItems.Iterator();
 							while (it.HasNext())
 							{
-								NotNullPtr<Text::String> subItem = it.Next();
+								NN<Text::String> subItem = it.Next();
 								if (debugObj.Set(this->debugObj) && this->messageWriter && subItem->Equals(debugObj))
 								{
 									Text::StringBuilderUTF8 sb2;
@@ -734,14 +734,14 @@ Bool IO::SMake::ParseSource(NotNullPtr<Data::FastStringMap<Int32>> objList,
 	return true;
 }
 
-Bool IO::SMake::ParseHeader(NotNullPtr<Data::FastStringMap<Int32>> objList,
-	NotNullPtr<Data::FastStringMap<Int32>> libList,
-	NotNullPtr<Data::FastStringMap<Int32>> procList,
+Bool IO::SMake::ParseHeader(NN<Data::FastStringMap<Int32>> objList,
+	NN<Data::FastStringMap<Int32>> libList,
+	NN<Data::FastStringMap<Int32>> procList,
 	Optional<Data::ArrayListStringNN> headerList,
 	OutParam<Int64> latestTime,
-	NotNullPtr<Text::String> headerFile,
+	NN<Text::String> headerFile,
 	Text::CStringNN sourceFile,
-	NotNullPtr<Text::StringBuilderUTF8> tmpSb)
+	NN<Text::StringBuilderUTF8> tmpSb)
 {
 	NN<IO::SMake::ConfigItem> cfg;
 	if (!this->cfgMap.Get(CSTR("INCLUDEPATH")).SetTo(cfg))
@@ -755,7 +755,7 @@ Bool IO::SMake::ParseHeader(NotNullPtr<Data::FastStringMap<Int32>> objList,
 	UTF8Char *sptr;
 	UOSInt i;
 	Int64 thisTime;
-	NotNullPtr<Data::ArrayListStringNN> nnheaderList;
+	NN<Data::ArrayListStringNN> nnheaderList;
 	sb2.Append(cfg->value);
 	sarr[1] = sb2;
 	i = 2;
@@ -838,7 +838,7 @@ Bool IO::SMake::ParseHeader(NotNullPtr<Data::FastStringMap<Int32>> objList,
 	return false;
 }
 
-Bool IO::SMake::ParseObject(NotNullPtr<Data::FastStringMap<Int32>> objList, NotNullPtr<Data::FastStringMap<Int32>> libList, NotNullPtr<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, NotNullPtr<Text::String> objectFile, Text::CStringNN sourceFile, NotNullPtr<Text::StringBuilderUTF8> tmpSb)
+Bool IO::SMake::ParseObject(NN<Data::FastStringMap<Int32>> objList, NN<Data::FastStringMap<Int32>> libList, NN<Data::FastStringMap<Int32>> procList, Optional<Data::ArrayListStringNN> headerList, OutParam<Int64> latestTime, NN<Text::String> objectFile, Text::CStringNN sourceFile, NN<Text::StringBuilderUTF8> tmpSb)
 {
 	if (!objectFile->EndsWith(UTF8STRC(".o")))
 	{
@@ -858,11 +858,11 @@ Bool IO::SMake::ParseObject(NotNullPtr<Data::FastStringMap<Int32>> objList, NotN
 	}
 	else
 	{
-		NotNullPtr<Text::String> debugObj;
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = prog->subItems.Iterator();
+		NN<Text::String> debugObj;
+		Data::ArrayIterator<NN<Text::String>> it = prog->subItems.Iterator();
 		while (it.HasNext())
 		{
-			NotNullPtr<Text::String> subItem = it.Next();
+			NN<Text::String> subItem = it.Next();
 			if (debugObj.Set(this->debugObj) && this->messageWriter && subItem->Equals(debugObj))
 			{
 				Text::StringBuilderUTF8 sb2;
@@ -893,7 +893,7 @@ Bool IO::SMake::ParseObject(NotNullPtr<Data::FastStringMap<Int32>> objList, NotN
 			sb2.Append(sourceFile);
 			this->messageWriter->WriteLineC(sb2.ToString(), sb2.GetLength());
 		}
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		if (s.Set(prog->srcFile))
 		{
 			Int64 thisTime;
@@ -913,22 +913,22 @@ Bool IO::SMake::ParseObject(NotNullPtr<Data::FastStringMap<Int32>> objList, NotN
 	}
 }
 
-Bool IO::SMake::ParseProgInternal(NotNullPtr<Data::FastStringMap<Int32>> objList,
-	NotNullPtr<Data::FastStringMap<Int32>> libList,
-	NotNullPtr<Data::FastStringMap<Int32>> procList,
+Bool IO::SMake::ParseProgInternal(NN<Data::FastStringMap<Int32>> objList,
+	NN<Data::FastStringMap<Int32>> libList,
+	NN<Data::FastStringMap<Int32>> procList,
 	Optional<Data::ArrayListStringNN> headerList,
 	OutParam<Int64> latestTime,
 	OutParam<Bool> progGroup,
-	NotNullPtr<const ProgramItem> prog,
-	NotNullPtr<Text::StringBuilderUTF8> tmpSb)
+	NN<const ProgramItem> prog,
+	NN<Text::StringBuilderUTF8> tmpSb)
 {
-	NotNullPtr<Text::String> subItem;
-	NotNullPtr<Text::String> debugObj;
+	NN<Text::String> subItem;
+	NN<Text::String> debugObj;
 	NN<IO::SMake::ProgramItem> subProg;
 	Int64 thisTime;
 	Int64 lastTime = 0;
 	Bool progGrp = true;
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = prog->subItems.Iterator();
+	Data::ArrayIterator<NN<Text::String>> it = prog->subItems.Iterator();
 	while (it.HasNext())
 	{
 		subItem = it.Next();
@@ -1002,7 +1002,7 @@ Bool IO::SMake::ParseProgInternal(NotNullPtr<Data::FastStringMap<Int32>> objList
 
 void IO::SMake::CompileTask(AnyType userObj)
 {
-	NotNullPtr<CompileReq> req = userObj.GetNN<CompileReq>();
+	NN<CompileReq> req = userObj.GetNN<CompileReq>();
 	if (!req->me->ExecuteCmd(req->cmd->ToCString()))
 	{
 		req->me->error = true;
@@ -1019,7 +1019,7 @@ void IO::SMake::CompileObject(Text::CStringNN cmd)
 	this->tasks->AddTask(CompileTask, req);
 }
 
-void IO::SMake::CompileObject(NotNullPtr<Text::String> cmd)
+void IO::SMake::CompileObject(NN<Text::String> cmd)
 {
 	CompileReq *req = MemAlloc(CompileReq, 1);
 	req->cmd = cmd;
@@ -1027,14 +1027,14 @@ void IO::SMake::CompileObject(NotNullPtr<Text::String> cmd)
 	this->tasks->AddTask(CompileTask, req);
 }
 
-Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asmListing, Bool enableTest)
+Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing, Bool enableTest)
 {
 	Data::FastStringMap<Int32> libList;
 	Data::FastStringMap<Int32> objList;
 	Data::FastStringMap<Int32> procList;
 	Int64 latestTime = 0;
 	Int64 thisTime;
-	NotNullPtr<IO::SMake::ProgramItem> subProg;
+	NN<IO::SMake::ProgramItem> subProg;
 	Bool progGroup;
 	if (this->messageWriter)
 	{
@@ -1064,7 +1064,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 		Data::FastStringKeyIterator<Int32> iterator = objList.KeyIterator();
 		while (iterator.HasNext())
 		{
-			NotNullPtr<Text::String> objName = iterator.Next();
+			NN<Text::String> objName = iterator.Next();
 			if (!this->progMap.GetNN(objName).SetTo(subProg))
 			{
 				sb.ClearStr();
@@ -1112,7 +1112,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 	Data::FastStringKeyIterator<Int32> iterator = objList.KeyIterator();
 	while (iterator.HasNext())
 	{
-		NotNullPtr<Text::String> objName = iterator.Next();
+		NN<Text::String> objName = iterator.Next();
 		if (!this->progMap.GetNN(objName).SetTo(subProg))
 		{
 			sb.ClearStr();
@@ -1122,7 +1122,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 			this->SetErrorMsg(sb.ToCString());
 			return false;
 		}
-		NotNullPtr<Text::String> srcFile;
+		NN<Text::String> srcFile;
 		if (!srcFile.Set(subProg->srcFile))
 		{
 			sb.ClearStr();
@@ -1133,7 +1133,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 			return false;
 		}
 
-		Data::ArrayIterator<NotNullPtr<Text::String>> itLibs = subProg->libs.Iterator();
+		Data::ArrayIterator<NN<Text::String>> itLibs = subProg->libs.Iterator();
 		while (itLibs.HasNext())
 		{
 			libList.PutNN(itLibs.Next(), 1);
@@ -1447,7 +1447,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 				return false;
 			}
 			Data::FastStringKeyIterator<Int32> iterator = objList.KeyIterator();
-			NotNullPtr<Text::String> objName;
+			NN<Text::String> objName;
 			sb.ClearStr();
 			while (iterator.HasNext())
 			{
@@ -1539,7 +1539,7 @@ Bool IO::SMake::CompileProgInternal(NotNullPtr<const ProgramItem> prog, Bool asm
 	return true;
 }
 
-Bool IO::SMake::TestProg(NotNullPtr<const ProgramItem> prog, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::SMake::TestProg(NN<const ProgramItem> prog, NN<Text::StringBuilderUTF8> sb)
 {
 	if (this->cmdWriter)
 	{
@@ -1610,7 +1610,7 @@ IO::SMake::~SMake()
 	UOSInt i;
 	UOSInt j;
 	NN<IO::SMake::ConfigItem> cfg;
-	NotNullPtr<const Data::ArrayListNN<IO::SMake::ConfigItem>> cfgList = this->cfgMap.GetValues();
+	NN<const Data::ArrayListNN<IO::SMake::ConfigItem>> cfgList = this->cfgMap.GetValues();
 	i = cfgList->GetCount();
 	while (i-- > 0)
 	{
@@ -1681,7 +1681,7 @@ Bool IO::SMake::HasError() const
 	return this->error;
 }
 
-Bool IO::SMake::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> sb) const
+Bool IO::SMake::GetLastErrorMsg(NN<Text::StringBuilderUTF8> sb) const
 {
 	Bool ret;
 	Sync::MutexUsage mutUsage(this->errorMsgMut);
@@ -1733,7 +1733,7 @@ void IO::SMake::SetAsyncMode(Bool asyncMode)
 void IO::SMake::AsyncPostCompile()
 {
 	this->tasks->WaitForIdle();
-	NotNullPtr<Text::String> cmd;
+	NN<Text::String> cmd;
 	UOSInt i = this->linkCmds.GetCount();
 	while (!this->error)
 	{
@@ -1753,7 +1753,7 @@ void IO::SMake::AsyncPostCompile()
 		if (i > 0)
 		{
 			Text::StringBuilderUTF8 sb;
-			NotNullPtr<const ProgramItem> prog;
+			NN<const ProgramItem> prog;
 			while (i-- > 0)
 			{
 				if (this->testProgs.RemoveAt(i).SetTo(prog))
@@ -1767,7 +1767,7 @@ void IO::SMake::AsyncPostCompile()
 	}
 }
 
-NotNullPtr<const Data::ArrayListNN<IO::SMake::ConfigItem>> IO::SMake::GetConfigList() const
+NN<const Data::ArrayListNN<IO::SMake::ConfigItem>> IO::SMake::GetConfigList() const
 {
 	return this->cfgMap.GetValues();
 }
@@ -1779,7 +1779,7 @@ Bool IO::SMake::HasProg(Text::CStringNN progName) const
 
 Bool IO::SMake::CompileProg(Text::CStringNN progName, Bool asmListing)
 {
-	NotNullPtr<IO::SMake::ProgramItem> prog;
+	NN<IO::SMake::ProgramItem> prog;
 	if (!this->progMap.GetC(progName).SetTo(prog))
 	{
 		Text::StringBuilderUTF8 sb;
@@ -1795,15 +1795,15 @@ Bool IO::SMake::CompileProg(Text::CStringNN progName, Bool asmListing)
 	}
 }
 
-Bool IO::SMake::ParseProg(NotNullPtr<Data::FastStringMap<Int32>> objList,
-	NotNullPtr<Data::FastStringMap<Int32>> libList,
-	NotNullPtr<Data::FastStringMap<Int32>> procList,
+Bool IO::SMake::ParseProg(NN<Data::FastStringMap<Int32>> objList,
+	NN<Data::FastStringMap<Int32>> libList,
+	NN<Data::FastStringMap<Int32>> procList,
 	Optional<Data::ArrayListStringNN> headerList,
 	OutParam<Int64> latestTime,
 	OutParam<Bool> progGroup,
-	NotNullPtr<Text::String> progName)
+	NN<Text::String> progName)
 {
-	NotNullPtr<IO::SMake::ProgramItem> prog;
+	NN<IO::SMake::ProgramItem> prog;
 	Text::StringBuilderUTF8 sb;
 	if (!this->progMap.GetC(progName->ToCString()).SetTo(prog))
 	{
@@ -1842,7 +1842,7 @@ void IO::SMake::CleanFiles()
 	}
 }
 
-UOSInt IO::SMake::GetProgList(NotNullPtr<Data::ArrayListNN<Text::String>> progList)
+UOSInt IO::SMake::GetProgList(NN<Data::ArrayListNN<Text::String>> progList)
 {
 //	Data::ArrayList<Text::String *> *names = this->progMap->GetKeys();
 	NN<Text::String> prog;
@@ -1880,7 +1880,7 @@ Bool IO::SMake::IsProgGroup(Text::CStringNN progName) const
 		return false;
 	}
 
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = prog->subItems.Iterator();;
+	Data::ArrayIterator<NN<Text::String>> it = prog->subItems.Iterator();;
 	while (it.HasNext())
 	{
 		if (it.Next()->EndsWith(UTF8STRC(".o")))

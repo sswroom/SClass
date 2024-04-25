@@ -5,7 +5,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-UTF8Char *Net::SocketUtil::GetAddrName(UTF8Char *buff, NotNullPtr<const Net::SocketUtil::AddressInfo> addr)
+UTF8Char *Net::SocketUtil::GetAddrName(UTF8Char *buff, NN<const Net::SocketUtil::AddressInfo> addr)
 {
 	if (addr->addrType == AddrType::IPv4)
 	{
@@ -78,7 +78,7 @@ UTF8Char *Net::SocketUtil::GetAddrName(UTF8Char *buff, NotNullPtr<const Net::Soc
 	return 0;
 }
 
-WChar *Net::SocketUtil::GetAddrName(WChar *buff, NotNullPtr<const AddressInfo> addr)
+WChar *Net::SocketUtil::GetAddrName(WChar *buff, NN<const AddressInfo> addr)
 {
 	if (addr->addrType == AddrType::IPv4)
 	{
@@ -151,7 +151,7 @@ WChar *Net::SocketUtil::GetAddrName(WChar *buff, NotNullPtr<const AddressInfo> a
 	return 0;
 }
 
-UTF8Char *Net::SocketUtil::GetAddrName(UTF8Char *buff, NotNullPtr<const AddressInfo> addr, UInt16 port)
+UTF8Char *Net::SocketUtil::GetAddrName(UTF8Char *buff, NN<const AddressInfo> addr, UInt16 port)
 {
 	if (addr->addrType == AddrType::IPv4)
 	{
@@ -172,7 +172,7 @@ UTF8Char *Net::SocketUtil::GetAddrName(UTF8Char *buff, NotNullPtr<const AddressI
 	}
 }
 
-WChar *Net::SocketUtil::GetAddrName(WChar *buff, NotNullPtr<const AddressInfo> addr, UInt16 port)
+WChar *Net::SocketUtil::GetAddrName(WChar *buff, NN<const AddressInfo> addr, UInt16 port)
 {
 	if (addr->addrType == AddrType::IPv4)
 	{
@@ -319,13 +319,13 @@ UInt32 Net::SocketUtil::GetDefNetMaskv4(UInt32 ip)
 	}
 }
 
-void Net::SocketUtil::SetAddrInfoV4(NotNullPtr<AddressInfo> addr, UInt32 ipv4)
+void Net::SocketUtil::SetAddrInfoV4(NN<AddressInfo> addr, UInt32 ipv4)
 {
 	addr->addrType = AddrType::IPv4;
 	*(UInt32*)addr->addr = ipv4;
 }
 
-void Net::SocketUtil::SetAddrInfoV6(NotNullPtr<AddressInfo> addr, const UInt8 *ipv6, Int32 zid)
+void Net::SocketUtil::SetAddrInfoV6(NN<AddressInfo> addr, const UInt8 *ipv6, Int32 zid)
 {
 	addr->addrType = AddrType::IPv6;
 	MemCopyNO(addr->addr, ipv6, 16);
@@ -333,7 +333,7 @@ void Net::SocketUtil::SetAddrInfoV6(NotNullPtr<AddressInfo> addr, const UInt8 *i
 }
 
 
-Bool Net::SocketUtil::SetAddrInfo(NotNullPtr<AddressInfo> addr, Text::CStringNN ipName)
+Bool Net::SocketUtil::SetAddrInfo(NN<AddressInfo> addr, Text::CStringNN ipName)
 {
 	UTF8Char sbuff[51];
 	UTF8Char *sarr[9];
@@ -496,13 +496,13 @@ Bool Net::SocketUtil::SetAddrInfo(NotNullPtr<AddressInfo> addr, Text::CStringNN 
 	return true;
 }
 
-void Net::SocketUtil::SetAddrInfoAnyV6(NotNullPtr<AddressInfo> addr)
+void Net::SocketUtil::SetAddrInfoAnyV6(NN<AddressInfo> addr)
 {
 	addr->addrType = AddrType::IPv6;
 	MemClear(addr->addr, 20);
 }
 
-UInt32 Net::SocketUtil::CalcCliId(NotNullPtr<const AddressInfo> addr)
+UInt32 Net::SocketUtil::CalcCliId(NN<const AddressInfo> addr)
 {
 	if (addr->addrType == AddrType::IPv4)
 	{
@@ -628,7 +628,7 @@ UInt32 Net::SocketUtil::IPv4ToBroadcast(UInt32 ipv4)
 	return ipv4 | ~GetDefNetMaskv4(ipv4);
 }
 
-Bool Net::SocketUtil::AddrEquals(NotNullPtr<const Net::SocketUtil::AddressInfo> addr1, NotNullPtr<const Net::SocketUtil::AddressInfo> addr2)
+Bool Net::SocketUtil::AddrEquals(NN<const Net::SocketUtil::AddressInfo> addr1, NN<const Net::SocketUtil::AddressInfo> addr2)
 {
 	if (addr1->addrType != addr2->addrType)
 	{

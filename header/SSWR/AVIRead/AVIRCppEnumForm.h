@@ -16,24 +16,24 @@ namespace SSWR
 		class AVIRCppEnumForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			NotNullPtr<UI::GUILabel> lblType;
-			NotNullPtr<UI::GUIComboBox> cboType;
-			NotNullPtr<UI::GUIButton> btnConv;
-			NotNullPtr<UI::GUIButton> btnConv2;
-			NotNullPtr<UI::GUILabel> lblPrefix;
-			NotNullPtr<UI::GUITextBox> txtPrefix;
-			NotNullPtr<UI::GUITextBox> txtSource;
-			NotNullPtr<UI::GUIHSplitter> hspMain;
-			NotNullPtr<UI::GUITextBox> txtDest;
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUILabel> lblType;
+			NN<UI::GUIComboBox> cboType;
+			NN<UI::GUIButton> btnConv;
+			NN<UI::GUIButton> btnConv2;
+			NN<UI::GUILabel> lblPrefix;
+			NN<UI::GUITextBox> txtPrefix;
+			NN<UI::GUITextBox> txtSource;
+			NN<UI::GUIHSplitter> hspMain;
+			NN<UI::GUITextBox> txtDest;
 
 			static void __stdcall OnConvClicked(AnyType userObj);
 			static void __stdcall OnConv2Clicked(AnyType userObj);
 			void ConvEnum();
 		public:
-			AVIRCppEnumForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRCppEnumForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCppEnumForm();
 
 			virtual void OnMonitorChanged();

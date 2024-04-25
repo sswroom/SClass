@@ -33,12 +33,12 @@
 class ProtoListener : public IO::IProtocolHandler::DataListener
 {
 public:
-	virtual void DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+	virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 	{
 		printf("Received cmdType 0x%x, size=%d\r\n", cmdType, (UInt32)cmdSize);
 	}
 
-	virtual void DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
+	virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
 	{
 
 	}
@@ -368,7 +368,7 @@ Int32 ESRIFeatureServerTest()
 	Optional<Net::SSLEngine> ssl = Net::SSLEngineFactory::Create(sockf, false);
 	{
 		Map::ESRI::ESRIFeatureServer svr(CSTR("https://portal.csdi.gov.hk/server/rest/services/common/hko_rcd_1634958957456_52030/FeatureServer"), sockf, ssl);
-		NotNullPtr<Map::ESRI::ESRIFeatureServer::LayerInfo> info;
+		NN<Map::ESRI::ESRIFeatureServer::LayerInfo> info;
 		if (svr.GetLayerInfo().SetTo(info))
 		{
 			info.Delete();
@@ -387,7 +387,7 @@ Int32 HKOTest()
 
 	if (false)
 	{
-		NotNullPtr<Net::HKOAPI::LocalWeatherForecast> resp;
+		NN<Net::HKOAPI::LocalWeatherForecast> resp;
 		if (Net::HKOAPI::GetLocalWeatherForecast(sockf, ssl, lang).SetTo(resp))
 		{
 			sb.ClearStr();
@@ -399,7 +399,7 @@ Int32 HKOTest()
 
 	if (false)
 	{
-		NotNullPtr<Net::HKOAPI::NineDayWeatherForecast> resp;
+		NN<Net::HKOAPI::NineDayWeatherForecast> resp;
 		if (Net::HKOAPI::Get9DayWeatherForecast(sockf, ssl, lang).SetTo(resp))
 		{
 			sb.ClearStr();
@@ -411,7 +411,7 @@ Int32 HKOTest()
 
 	if (false)
 	{
-		NotNullPtr<Net::HKOAPI::CurrentWeatherReport> resp;
+		NN<Net::HKOAPI::CurrentWeatherReport> resp;
 		if (Net::HKOAPI::GetCurrentWeatherReport(sockf, ssl, lang).SetTo(resp))
 		{
 			sb.ClearStr();
@@ -423,7 +423,7 @@ Int32 HKOTest()
 
 	if (false)
 	{
-		NotNullPtr<Net::HKOAPI::WeatherWarningSummary> resp;
+		NN<Net::HKOAPI::WeatherWarningSummary> resp;
 		if (Net::HKOAPI::GetWeatherWarningSummary(sockf, ssl, lang).SetTo(resp))
 		{
 			sb.ClearStr();
@@ -436,7 +436,7 @@ Int32 HKOTest()
 	/////////////////////////////
 	if (false)
 	{
-		NotNullPtr<Net::HKOAPI::WeatherWarningInfo> resp;
+		NN<Net::HKOAPI::WeatherWarningInfo> resp;
 		if (Net::HKOAPI::GetWeatherWarningInfo(sockf, ssl, lang).SetTo(resp))
 		{
 			sb.ClearStr();
@@ -448,7 +448,7 @@ Int32 HKOTest()
 
 	if (false)
 	{
-		NotNullPtr<Net::HKOAPI::SpecialWeatherTips> resp;
+		NN<Net::HKOAPI::SpecialWeatherTips> resp;
 		if (Net::HKOAPI::GetSpecialWeatherTips(sockf, ssl, lang).SetTo(resp))
 		{
 			sb.ClearStr();
@@ -460,7 +460,7 @@ Int32 HKOTest()
 
 	if (false)
 	{
-		NotNullPtr<Net::HKOAPI::QuickEarthquakeMessages> resp;
+		NN<Net::HKOAPI::QuickEarthquakeMessages> resp;
 		if (Net::HKOAPI::GetQuickEarthquakeMessages(sockf, ssl, lang).SetTo(resp))
 		{
 			sb.ClearStr();
@@ -473,7 +473,7 @@ Int32 HKOTest()
 	//////////////////////////////
 	if (false)
 	{
-		NotNullPtr<Net::HKOAPI::LocallyFeltEarthTremorReport> resp;
+		NN<Net::HKOAPI::LocallyFeltEarthTremorReport> resp;
 		if (Net::HKOAPI::GetLocallyFeltEarthTremorReport(sockf, ssl, lang).SetTo(resp))
 		{
 			sb.ClearStr();
@@ -485,7 +485,7 @@ Int32 HKOTest()
 
 	if (false)
 	{
-		NotNullPtr<Net::HKOAPI::LunarDate> resp;
+		NN<Net::HKOAPI::LunarDate> resp;
 		if (Net::HKOAPI::GetLunarDate(sockf, ssl, Data::Date::Today()).SetTo(resp))
 		{
 			sb.ClearStr();
@@ -496,7 +496,7 @@ Int32 HKOTest()
 	}
 
 	{
-		NotNullPtr<Net::HKOAPI::HourlyRainfall> resp;
+		NN<Net::HKOAPI::HourlyRainfall> resp;
 		if (Net::HKOAPI::GetHourlyRainfall(sockf, ssl, lang).SetTo(resp))
 		{
 			sb.ClearStr();
@@ -512,7 +512,7 @@ Int32 HKOTest()
 
 Int32 WKBTest()
 {
-	NotNullPtr<Math::Geometry::Vector2D> vec;
+	NN<Math::Geometry::Vector2D> vec;
 	Math::WKTReader wkt(2326);
 	if (wkt.ParseWKT(CSTR("POLYGON((0 0,0 1,1 1,1 0))").v).SetTo(vec))
 	{
@@ -523,7 +523,7 @@ Int32 WKBTest()
 		{
 			printf("Write WKB\r\n");
 			Math::WKBReader wkbr(2326);
-			NotNullPtr<Math::Geometry::Vector2D> vec2;
+			NN<Math::Geometry::Vector2D> vec2;
 			if (wkbr.ParseWKB(mstm.GetBuff(), (UOSInt)mstm.GetLength(), 0).SetTo(vec2))
 			{
 				printf("Parsed WKB\r\n");
@@ -537,11 +537,11 @@ Int32 WKBTest()
 	return 0;
 }
 
-Int32 SSHTest(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 SSHTest(NN<Core::IProgControl> progCtrl)
 {
 	Net::OSSocketFactory sockf(false);
 	Net::SSHManager ssh(sockf);
-	NotNullPtr<Net::SSHClient> cli;
+	NN<Net::SSHClient> cli;
 	if (ssh.CreateClient(CSTR("192.168.0.15"), 22, CSTR("sswroom"), CSTR("testing")).SetTo(cli))
 	{
 		if (!cli->CreateForward(11111, CSTR("192.168.0.25"), 12345).IsNull())
@@ -596,7 +596,7 @@ Int32 CurveToLine()
 	return 0;
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UOSInt testType = 12;
 	switch (testType)

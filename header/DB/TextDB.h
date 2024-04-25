@@ -12,7 +12,7 @@ namespace DB
 	public:
 		struct DBData
 		{
-			NotNullPtr<Text::String> name;
+			NN<Text::String> name;
 			Data::ArrayListNN<const UTF8Char> colList;
 			Data::ArrayList<Text::String **> valList;
 		};
@@ -24,11 +24,11 @@ namespace DB
 		TextDB(Text::CStringNN sourceName);
 		virtual ~TextDB();
 
-		virtual UOSInt QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names);
+		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
 		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
-		virtual void CloseReader(NotNullPtr<DBReader> r);
-		virtual void GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str);
+		virtual void CloseReader(NN<DBReader> r);
+		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
 
 		Bool AddTable(Text::CString tableName, Data::ArrayList<const UTF8Char*> *colList);

@@ -21,7 +21,7 @@ Int32 Exporter::DBHTMLExporter::GetName()
 	return *(Int32*)"DHTM";
 }
 
-IO::FileExporter::SupportType Exporter::DBHTMLExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
+IO::FileExporter::SupportType Exporter::DBHTMLExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
 	if (!DB::ReadingDB::IsDBObj(pobj))
 	{
@@ -46,7 +46,7 @@ void Exporter::DBHTMLExporter::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-Bool Exporter::DBHTMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::DBHTMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	if (!DB::ReadingDB::IsDBObj(pobj))
 	{
@@ -54,13 +54,13 @@ Bool Exporter::DBHTMLExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Te
 	}
 
 	Optional<Text::String> name = 0;
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (param.SetTo(para))
 	{
 		DBParam *dbParam = (DBParam*)para.Ptr();
 		name = dbParam->names.GetItem(dbParam->tableIndex);
 	}
-	NotNullPtr<DB::ReadingDB> db = NotNullPtr<DB::ReadingDB>::ConvertFrom(pobj);
+	NN<DB::ReadingDB> db = NN<DB::ReadingDB>::ConvertFrom(pobj);
 	return DB::DBExporter::GenerateHTML(db, CSTR_NULL, Text::String::OrEmpty(name)->ToCString(), 0, stm, this->codePage);
 }
 
@@ -69,11 +69,11 @@ UOSInt Exporter::DBHTMLExporter::GetParamCnt()
 	return 1;
 }
 
-Optional<IO::FileExporter::ParamData> Exporter::DBHTMLExporter::CreateParam(NotNullPtr<IO::ParsedObject> pobj)
+Optional<IO::FileExporter::ParamData> Exporter::DBHTMLExporter::CreateParam(NN<IO::ParsedObject> pobj)
 {
 	DBParam *param;
 	NEW_CLASS(param, DBParam());
-	param->db = NotNullPtr<DB::ReadingDB>::ConvertFrom(pobj);
+	param->db = NN<DB::ReadingDB>::ConvertFrom(pobj);
 	param->db->QueryTableNames(CSTR_NULL, param->names);
 	param->tableIndex = 0;
 	return (ParamData*)param;
@@ -81,7 +81,7 @@ Optional<IO::FileExporter::ParamData> Exporter::DBHTMLExporter::CreateParam(NotN
 
 void Exporter::DBHTMLExporter::DeleteParam(Optional<ParamData> param)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (param.SetTo(para))
 	{
 		DBParam *dbParam = (DBParam*)para.Ptr();
@@ -90,7 +90,7 @@ void Exporter::DBHTMLExporter::DeleteParam(Optional<ParamData> param)
 	}
 }
 
-Bool Exporter::DBHTMLExporter::GetParamInfo(UOSInt index, NotNullPtr<IO::FileExporter::ParamInfo> info)
+Bool Exporter::DBHTMLExporter::GetParamInfo(UOSInt index, NN<IO::FileExporter::ParamInfo> info)
 {
 	if (index == 0)
 	{
@@ -117,7 +117,7 @@ Bool Exporter::DBHTMLExporter::SetParamInt32(Optional<ParamData> param, UOSInt i
 
 Bool Exporter::DBHTMLExporter::SetParamSel(Optional<ParamData> param, UOSInt index, UOSInt selCol)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
 	{
 		DBParam *dbParam = (DBParam*)para.Ptr();
@@ -139,7 +139,7 @@ Int32 Exporter::DBHTMLExporter::GetParamInt32(Optional<ParamData> param, UOSInt 
 
 Int32 Exporter::DBHTMLExporter::GetParamSel(Optional<ParamData> param, UOSInt index)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
 	{
 		DBParam *dbParam = (DBParam*)para.Ptr();
@@ -150,11 +150,11 @@ Int32 Exporter::DBHTMLExporter::GetParamSel(Optional<ParamData> param, UOSInt in
 
 UTF8Char *Exporter::DBHTMLExporter::GetParamSelItems(Optional<ParamData> param, UOSInt index, UOSInt itemIndex, UTF8Char *buff)
 {
-	NotNullPtr<ParamData> para;
+	NN<ParamData> para;
 	if (index == 0 && param.SetTo(para))
 	{
 		DBParam *dbParam = (DBParam*)para.Ptr();
-		NotNullPtr<Text::String> name;
+		NN<Text::String> name;
 		if (dbParam->names.GetItem(itemIndex).SetTo(name) && name->leng > 0)
 		{
 			return name->ConcatTo(buff);

@@ -5,7 +5,7 @@
 #include "Math/Geometry/Point.h"
 #include "Text/UTF8Reader.h"
 
-Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(NotNullPtr<IO::Stream> stm, UInt32 codePage, Text::CStringNN layerName, Text::CString nameCol, Text::CString latCol, Text::CString lonCol, NotNullPtr<Math::CoordinateSystem> csys)
+Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(NN<IO::Stream> stm, UInt32 codePage, Text::CStringNN layerName, Text::CString nameCol, Text::CString latCol, Text::CString lonCol, NN<Math::CoordinateSystem> csys)
 {
 	Text::PString tmpArr[2];
 	const UTF8Char **tmpcArr2;
@@ -16,7 +16,7 @@ Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(NotNullPtr<IO::Stream> stm, U
 	UOSInt nameIndex = INVALID_INDEX;
 	UTF8Char sbuff[2048];
 	Data::ArrayList<const UTF8Char *> colNames;
-	NotNullPtr<IO::Reader> reader;
+	NN<IO::Reader> reader;
 	if (codePage == 65001)
 	{
 		NEW_CLASSNN(reader, Text::UTF8Reader(stm));
@@ -53,7 +53,7 @@ Map::MapDrawLayer *Map::CSVMapParser::ParseAsPoint(NotNullPtr<IO::Stream> stm, U
 	if (latIndex != INVALID_INDEX && lonIndex != INVALID_INDEX)
 	{
 		Map::VectorLayer *lyr;
-		NotNullPtr<Math::Geometry::Point> pt;
+		NN<Math::Geometry::Point> pt;
 		UOSInt i;
 
 		tmpcArr2 = MemAlloc(const UTF8Char*, totalCnt + 1);

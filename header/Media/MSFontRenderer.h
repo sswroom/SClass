@@ -10,7 +10,7 @@ namespace Media
 		UInt8 *fontBuff;
 
 	public:
-		MSFontRenderer(NotNullPtr<Text::String> sourceName, const UInt8 *fontBuff, UOSInt buffSize);
+		MSFontRenderer(NN<Text::String> sourceName, const UInt8 *fontBuff, UOSInt buffSize);
 		virtual ~MSFontRenderer();
 
 		Bool IsError();

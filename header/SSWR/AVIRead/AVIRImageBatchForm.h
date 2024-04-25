@@ -20,33 +20,33 @@ namespace SSWR
 		class AVIRImageBatchForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			NotNullPtr<UI::GUIButton> btnFolder;
-			NotNullPtr<UI::GUILabel> lblFolder;
-			NotNullPtr<UI::GUIProgressBar> prgMain;
-			NotNullPtr<SSWR::AVIRead::AVIRImageControl> icMain;
-			NotNullPtr<UI::GUIHSplitter> hspLeft;
-			NotNullPtr<UI::GUIPanel> pnlImage;
-			NotNullPtr<UI::GUIPictureBoxDD> pbMain;
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUIButton> btnFolder;
+			NN<UI::GUILabel> lblFolder;
+			NN<UI::GUIProgressBar> prgMain;
+			NN<SSWR::AVIRead::AVIRImageControl> icMain;
+			NN<UI::GUIHSplitter> hspLeft;
+			NN<UI::GUIPanel> pnlImage;
+			NN<UI::GUIPictureBoxDD> pbMain;
 
-			NotNullPtr<UI::GUILabel> lblBright;
-			NotNullPtr<UI::GUIHScrollBar> hsbBright;
-			NotNullPtr<UI::GUILabel> lblBrightV;
-			NotNullPtr<UI::GUIButton> btnBrightReset;
-			NotNullPtr<UI::GUILabel> lblContr;
-			NotNullPtr<UI::GUIHScrollBar> hsbContr;
-			NotNullPtr<UI::GUILabel> lblContrV;
-			NotNullPtr<UI::GUILabel> lblGamma;
-			NotNullPtr<UI::GUIHScrollBar> hsbGamma;
-			NotNullPtr<UI::GUILabel> lblGammaV;
-			NotNullPtr<UI::GUIButton> btnGammaReset;
-			NotNullPtr<UI::GUILabel> lblHDRLev;
-			NotNullPtr<UI::GUIHScrollBar> hsbHDRLev;
-			NotNullPtr<UI::GUILabel> lblHDRLevV;
+			NN<UI::GUILabel> lblBright;
+			NN<UI::GUIHScrollBar> hsbBright;
+			NN<UI::GUILabel> lblBrightV;
+			NN<UI::GUIButton> btnBrightReset;
+			NN<UI::GUILabel> lblContr;
+			NN<UI::GUIHScrollBar> hsbContr;
+			NN<UI::GUILabel> lblContrV;
+			NN<UI::GUILabel> lblGamma;
+			NN<UI::GUIHScrollBar> hsbGamma;
+			NN<UI::GUILabel> lblGammaV;
+			NN<UI::GUIButton> btnGammaReset;
+			NN<UI::GUILabel> lblHDRLev;
+			NN<UI::GUIHScrollBar> hsbHDRLev;
+			NN<UI::GUILabel> lblHDRLevV;
 			
-			NotNullPtr<Media::ColorManagerSess> colorSess;
+			NN<Media::ColorManagerSess> colorSess;
 			Media::Resizer::LanczosResizer8_C8 *resizer;
 			Media::StaticImage *dispImage;
 			Media::StaticImage *previewImage;
@@ -62,12 +62,12 @@ namespace SSWR
 			static void __stdcall OnKeyDown(AnyType userObj, UI::GUIControl::GUIKey key);
 			static void __stdcall OnBrightResetClicked(AnyType userObj);
 			static void __stdcall OnGammaResetClicked(AnyType userObj);
-			static void __stdcall OnFilesDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFilesDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 
-			void OpenFolder(NotNullPtr<Text::String> folder);
+			void OpenFolder(NN<Text::String> folder);
 			void UpdatePreview();
 		public:
-			AVIRImageBatchForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRImageBatchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRImageBatchForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

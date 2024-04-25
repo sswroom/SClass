@@ -8,7 +8,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnStreamClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRStreamTermForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamTermForm>();
+	NN<SSWR::AVIRead::AVIRStreamTermForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamTermForm>();
 	if (me->stm)
 	{
 		me->StopStream(true);
@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnStreamClicked(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnSendClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRStreamTermForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamTermForm>();
+	NN<SSWR::AVIRead::AVIRStreamTermForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamTermForm>();
 	if (me->stm)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -102,19 +102,19 @@ void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnSendClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnRecvTypeChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRStreamTermForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamTermForm>();
+	NN<SSWR::AVIRead::AVIRStreamTermForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamTermForm>();
 	me->UpdateRecvDisp();
 }
 
 void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnSendTypeChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRStreamTermForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamTermForm>();
+	NN<SSWR::AVIRead::AVIRStreamTermForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamTermForm>();
 	me->UpdateSendDisp();
 }
 
 void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRStreamTermForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamTermForm>();
+	NN<SSWR::AVIRead::AVIRStreamTermForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamTermForm>();
 	if (me->remoteClosed)
 	{
 		me->remoteClosed = false;
@@ -129,7 +129,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnTimerTick(AnyType userObj)
 
 UInt32 __stdcall SSWR::AVIRead::AVIRStreamTermForm::RecvThread(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRStreamTermForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamTermForm>();
+	NN<SSWR::AVIRead::AVIRStreamTermForm> me = userObj.GetNN<SSWR::AVIRead::AVIRStreamTermForm>();
 	UInt8 buff[2048];
 	UOSInt recvSize;
 	me->threadRunning = true;
@@ -256,7 +256,7 @@ void SSWR::AVIRead::AVIRStreamTermForm::UpdateSendDisp()
 	}
 }
 
-SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 200, ui)
+SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 456, 200, ui)
 {
 	this->SetText(CSTR("Stream Terminal"));
 	this->SetFont(0, 0, 8.25, false);

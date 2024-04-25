@@ -12,7 +12,7 @@ namespace Map
 		typedef void (__stdcall *UpdatedHandler)(AnyType userObj);
 
 		virtual ~MapRenderer(){};
-		virtual void DrawMap(NotNullPtr<Media::DrawImage> img, NotNullPtr<Map::MapView> view, OptOut<UInt32> imgDurMS) = 0;
+		virtual void DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> view, OptOut<UInt32> imgDurMS) = 0;
 		virtual void SetUpdatedHandler(UpdatedHandler updHdlr, AnyType userObj) = 0;
 	};
 }

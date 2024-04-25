@@ -15,25 +15,25 @@ namespace SSWR
 		class AVIRWFSForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblWFSURL;
-			NotNullPtr<UI::GUITextBox> txtWFSURL;
-			NotNullPtr<UI::GUILabel> lblWFSVersion;
-			NotNullPtr<UI::GUIComboBox> cboWFSVersion;
-			NotNullPtr<UI::GUIButton> btnLoad;
-			NotNullPtr<UI::GUILabel> lblStatus;
-			NotNullPtr<UI::GUITextBox> txtStatus;
-			NotNullPtr<UI::GUILabel> lblFeature;
-			NotNullPtr<UI::GUIComboBox> cboFeature;
-			NotNullPtr<UI::GUIButton> btnOK;
+			NN<UI::GUILabel> lblWFSURL;
+			NN<UI::GUITextBox> txtWFSURL;
+			NN<UI::GUILabel> lblWFSVersion;
+			NN<UI::GUIComboBox> cboWFSVersion;
+			NN<UI::GUIButton> btnLoad;
+			NN<UI::GUILabel> lblStatus;
+			NN<UI::GUITextBox> txtStatus;
+			NN<UI::GUILabel> lblFeature;
+			NN<UI::GUIComboBox> cboFeature;
+			NN<UI::GUIButton> btnOK;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Map::WebFeatureService *wfs;
 
 			static void __stdcall OnLoadClicked(AnyType userObj);
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnFeatureSelChg(AnyType userObj);
 		public:
-			AVIRWFSForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRWFSForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWFSForm();
 
 			virtual void OnMonitorChanged();

@@ -79,7 +79,7 @@ void DB::DBClassBuilder::AddItem(const UTF8Char *colName, DB::DBUtil::ColType co
 	}
 }
 
-NotNullPtr<Data::Class> DB::DBClassBuilder::GetResultClass()
+NN<Data::Class> DB::DBClassBuilder::GetResultClass()
 {
 	return this->cls;
 }

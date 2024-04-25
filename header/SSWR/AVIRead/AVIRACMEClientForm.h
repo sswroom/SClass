@@ -14,26 +14,26 @@ namespace SSWR
 		class AVIRACMEClientForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Net::SocketFactory> sockf;
 			Net::ACMEClient *client;
 
-			NotNullPtr<UI::GUILabel> lblHost;
-			NotNullPtr<UI::GUITextBox> txtHost;
-			NotNullPtr<UI::GUILabel> lblKeyFile;
-			NotNullPtr<UI::GUITextBox> txtKeyFile;
-			NotNullPtr<UI::GUIButton> btnStart;
+			NN<UI::GUILabel> lblHost;
+			NN<UI::GUITextBox> txtHost;
+			NN<UI::GUILabel> lblKeyFile;
+			NN<UI::GUITextBox> txtKeyFile;
+			NN<UI::GUIButton> btnStart;
 
-			NotNullPtr<UI::GUILabel> lblTermOfService;
-			NotNullPtr<UI::GUITextBox> txtTermOfService;
-			NotNullPtr<UI::GUILabel> lblWebsite;
-			NotNullPtr<UI::GUITextBox> txtWebsite;
-			NotNullPtr<UI::GUILabel> lblAccount;
-			NotNullPtr<UI::GUITextBox> txtAccount;
+			NN<UI::GUILabel> lblTermOfService;
+			NN<UI::GUITextBox> txtTermOfService;
+			NN<UI::GUILabel> lblWebsite;
+			NN<UI::GUITextBox> txtWebsite;
+			NN<UI::GUILabel> lblAccount;
+			NN<UI::GUITextBox> txtAccount;
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 		public:
-			AVIRACMEClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRACMEClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRACMEClientForm();
 
 			virtual void OnMonitorChanged();

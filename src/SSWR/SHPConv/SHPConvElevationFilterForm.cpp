@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::SHPConv::SHPConvElevationFilterForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::SHPConv::SHPConvElevationFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvElevationFilterForm>();
+	NN<SSWR::SHPConv::SHPConvElevationFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvElevationFilterForm>();
 	Text::StringBuilderUTF8 sb;
 	Int32 height;
 	me->txtHeight->GetText(sb);
@@ -21,11 +21,11 @@ void __stdcall SSWR::SHPConv::SHPConvElevationFilterForm::OnOKClicked(AnyType us
 
 void __stdcall SSWR::SHPConv::SHPConvElevationFilterForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::SHPConv::SHPConvElevationFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvElevationFilterForm>();
+	NN<SSWR::SHPConv::SHPConvElevationFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvElevationFilterForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::SHPConv::SHPConvElevationFilterForm::SHPConvElevationFilterForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, DB::DBFFile *dbf) : UI::GUIForm(parent, 294, 104, ui)
+SSWR::SHPConv::SHPConvElevationFilterForm::SHPConvElevationFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, DB::DBFFile *dbf) : UI::GUIForm(parent, 294, 104, ui)
 {
 	this->SetText(CSTR("Elevation Filter"));
 	this->SetFont(0, 0, 8.25, false);

@@ -27,7 +27,7 @@ void Map::WebFeatureService::LoadXML(Version version)
 		sb.AppendC(UTF8STRC("?SERVICE=WFS&REQUEST=GetCapabilities"));
 		break;
 	}
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->IsError())
 	{
 		cli.Delete();
@@ -42,7 +42,7 @@ void Map::WebFeatureService::LoadXML(Version version)
 	}
 	cli.Delete();
 	mstm.SeekFromBeginning(0);
-	NotNullPtr<Text::String> nodeName;
+	NN<Text::String> nodeName;
 	Text::XMLReader reader(this->encFact, mstm, Text::XMLReader::PM_XML);
 	if (reader.NextElementName().SetTo(nodeName))
 	{
@@ -120,7 +120,7 @@ void Map::WebFeatureService::LoadXML(Version version)
 	this->SetFeature(0);
 }
 
-void Map::WebFeatureService::LoadXMLFeatureType(NotNullPtr<Text::XMLReader> reader)
+void Map::WebFeatureService::LoadXMLFeatureType(NN<Text::XMLReader> reader)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::String *name = 0;
@@ -130,7 +130,7 @@ void Map::WebFeatureService::LoadXMLFeatureType(NotNullPtr<Text::XMLReader> read
 	Bool hasTL = false;
 	Bool hasBR = false;
 	Text::PString sarr[3];
-	NotNullPtr<Text::String> nodeName;
+	NN<Text::String> nodeName;
 	while (reader->NextElementName().SetTo(nodeName))
 	{
 		if (nodeName->Equals(UTF8STRC("Name")) || nodeName->EndsWith(UTF8STRC(":Name")))
@@ -265,7 +265,7 @@ void Map::WebFeatureService::LoadXMLFeatureType(NotNullPtr<Text::XMLReader> read
 	}
 }
 
-Map::WebFeatureService::WebFeatureService(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString wfsURL, Version version)
+Map::WebFeatureService::WebFeatureService(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString wfsURL, Version version)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

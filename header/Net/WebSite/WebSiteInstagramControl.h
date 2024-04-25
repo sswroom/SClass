@@ -16,9 +16,9 @@ namespace Net
 			typedef struct
 			{
 				Int64 id;
-				NotNullPtr<Text::String> shortCode;
+				NN<Text::String> shortCode;
 				Int64 recTime;
-				NotNullPtr<Text::String> message;
+				NN<Text::String> message;
 				Text::String *imgURL;
 				Text::String *videoURL;
 				Bool moreImages;
@@ -33,20 +33,20 @@ namespace Net
 			} ChannelInfo;
 			
 		private:
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 			Optional<Text::EncodingFactory> encFact;
 			Optional<Text::String> userAgent;
 
 			Text::JSONBase *ParsePageJSON(Text::CStringNN url);
 		public:
-			WebSiteInstagramControl(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent);
+			WebSiteInstagramControl(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent);
 			~WebSiteInstagramControl();
 
-			OSInt GetChannelItems(NotNullPtr<Text::String> channelId, OSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);
+			OSInt GetChannelItems(NN<Text::String> channelId, OSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);
 			void FreeItems(Data::ArrayList<ItemData*> *itemList);
 			void FreeChannelInfo(ChannelInfo *chInfo);
-			OSInt GetPageImages(NotNullPtr<Text::String> shortCode, Data::ArrayListStringNN *imageList, Data::ArrayListStringNN *videoList);
+			OSInt GetPageImages(NN<Text::String> shortCode, Data::ArrayListStringNN *imageList, Data::ArrayListStringNN *videoList);
 			Optional<Text::String> GetUserAgent();
 		};
 	}

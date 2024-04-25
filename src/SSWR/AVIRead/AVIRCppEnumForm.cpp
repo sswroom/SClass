@@ -7,13 +7,13 @@
 
 void __stdcall SSWR::AVIRead::AVIRCppEnumForm::OnConvClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCppEnumForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCppEnumForm>();
+	NN<SSWR::AVIRead::AVIRCppEnumForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCppEnumForm>();
 	me->ConvEnum();
 }
 
 void __stdcall SSWR::AVIRead::AVIRCppEnumForm::OnConv2Clicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCppEnumForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCppEnumForm>();
+	NN<SSWR::AVIRead::AVIRCppEnumForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCppEnumForm>();
 	Text::StringBuilderUTF8 sb;
 	UI::Clipboard clipboard(me->GetHandle());
 	if (clipboard.GetString(me->GetHandle(), sb))
@@ -42,8 +42,8 @@ void SSWR::AVIRead::AVIRCppEnumForm::ConvEnum()
 	this->txtSource->GetText(srcSb);
 	if (Text::CPPText::ParseEnum(&enumList, srcSb.ToCString(), sbPrefix))
 	{
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = enumList.Iterator();
-		NotNullPtr<Text::String> s;
+		Data::ArrayIterator<NN<Text::String>> it = enumList.Iterator();
+		NN<Text::String> s;
 		if (type == 0)
 		{
 			while (it.HasNext())
@@ -125,7 +125,7 @@ void SSWR::AVIRead::AVIRCppEnumForm::ConvEnum()
 	enumList.FreeAll();
 }
 
-SSWR::AVIRead::AVIRCppEnumForm::AVIRCppEnumForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRCppEnumForm::AVIRCppEnumForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("C++ Enum to Switch case"));
 	this->SetFont(0, 0, 8.25, false);

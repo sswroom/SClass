@@ -6,7 +6,7 @@ namespace DotNet
 	public __gc __interface DNColorHandler
 	{
 	public:
-		void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
+		void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
 		void RGBParamChanged(const Media::IColorHandler::RGBPARAM *rgbParam);
 	};
 };

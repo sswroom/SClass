@@ -35,7 +35,7 @@ typedef enum
 
 void AVIRPackageForm_TestHandler(const UInt8 *buff, UOSInt buffSize, AnyType userData)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPackageForm::ReadSession> sess = userData.GetNN<SSWR::AVIRead::AVIRPackageForm::ReadSession>();
+	NN<SSWR::AVIRead::AVIRPackageForm::ReadSession> sess = userData.GetNN<SSWR::AVIRead::AVIRPackageForm::ReadSession>();
 	if (sess->hash)
 	{
 		sess->hash->Calc(buff, buffSize);
@@ -45,10 +45,10 @@ void AVIRPackageForm_TestHandler(const UInt8 *buff, UOSInt buffSize, AnyType use
 
 UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPackageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPackageForm>();
+	NN<SSWR::AVIRead::AVIRPackageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPackageForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	NotNullPtr<Text::String> fname;
+	NN<Text::String> fname;
 	Text::CStringNN fileName;
 	ActionType atype = AT_COPY;
 	UOSInt i;
@@ -215,18 +215,18 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPackageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPackageForm>();
+	NN<SSWR::AVIRead::AVIRPackageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPackageForm>();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	if (me->statusChg)
 	{
 		UOSInt k;
 		OSInt scrVPos = me->lvStatus->GetScrollVPos();
-		NotNullPtr<Text::String> fname;
+		NN<Text::String> fname;
 		me->statusChg = false;
 		me->lvStatus->ClearItems();
 		Sync::MutexUsage mutUsage(me->fileMut);
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = me->fileNames.Iterator();
+		Data::ArrayIterator<NN<Text::String>> it = me->fileNames.Iterator();
 		UOSInt i = 0;
 		while (it.HasNext())
 		{
@@ -383,13 +383,13 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRPackageForm::LVDblClick(AnyType userObj, UOSInt index)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPackageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPackageForm>();
+	NN<SSWR::AVIRead::AVIRPackageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPackageForm>();
 	me->OpenItem(index);
 }
 
 void __stdcall SSWR::AVIRead::AVIRPackageForm::OnStatusDblClick(AnyType userObj, UOSInt index)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPackageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPackageForm>();
+	NN<SSWR::AVIRead::AVIRPackageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPackageForm>();
 	Sync::MutexUsage mutUsage(me->fileMut);
 	if (me->fileAction.GetItem(index) == AT_COPYFAIL)
 	{
@@ -405,13 +405,13 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnStatusDblClick(AnyType userObj,
 
 void __stdcall SSWR::AVIRead::AVIRPackageForm::OnFilesRightClick(AnyType userObj, Math::Coord2DDbl coord, UOSInt index)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPackageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPackageForm>();
+	NN<SSWR::AVIRead::AVIRPackageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPackageForm>();
 	me->mnuPopup->ShowMenu(me->lvFiles, Math::Coord2D<OSInt>(Double2OSInt(coord.x), Double2OSInt(coord.y)));
 }
 
-void __stdcall SSWR::AVIRead::AVIRPackageForm::OnFiles(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRPackageForm::OnFiles(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPackageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPackageForm>();
+	NN<SSWR::AVIRead::AVIRPackageForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPackageForm>();
 	UOSInt nFiles = files.GetCount();
 	Data::ArrayListStringNN fileNames(nFiles);
 	UOSInt i = 0;
@@ -426,10 +426,10 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnFiles(AnyType userObj, Data::Da
 void SSWR::AVIRead::AVIRPackageForm::GoUpLevel()
 {
 	Bool needRelease;
-	NotNullPtr<IO::PackageFile> pkg;
+	NN<IO::PackageFile> pkg;
 	if (this->packFile->GetParent(needRelease).SetTo(pkg))
 	{
-		NotNullPtr<Text::String> name = this->packFile->GetSourceNameObj();
+		NN<Text::String> name = this->packFile->GetSourceNameObj();
 		UOSInt i = name->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		this->UpdatePackFile(pkg, needRelease, name->ToCString().Substring(i + 1));
 	}
@@ -447,7 +447,7 @@ void SSWR::AVIRead::AVIRPackageForm::OpenItem(UOSInt index)
 	if (pot == IO::PackageFile::PackObjectType::PackageFileType)
 	{
 		Bool needRelease;
-		NotNullPtr<IO::PackageFile> pkg;
+		NN<IO::PackageFile> pkg;
 		if (this->packFile->GetItemPack(index, needRelease).SetTo(pkg))
 		{
 			this->UpdatePackFile(pkg, needRelease, CSTR_NULL);
@@ -457,7 +457,7 @@ void SSWR::AVIRead::AVIRPackageForm::OpenItem(UOSInt index)
 	else if (pot == IO::PackageFile::PackObjectType::ParsedObject)
 	{
 		Bool needRelease;
-		NotNullPtr<IO::ParsedObject> pobj;
+		NN<IO::ParsedObject> pobj;
 		if (this->packFile->GetItemPObj(index, needRelease).SetTo(pobj))
 		{
 			if (!needRelease)
@@ -469,7 +469,7 @@ void SSWR::AVIRead::AVIRPackageForm::OpenItem(UOSInt index)
 	}
 	else if (pot == IO::PackageFile::PackObjectType::StreamData)
 	{
-		NotNullPtr<IO::StreamData> data;
+		NN<IO::StreamData> data;
 		if (this->packFile->GetItemStmDataNew(index).SetTo(data))
 		{
 			this->core->LoadData(data, this->packFile.Ptr());
@@ -478,12 +478,12 @@ void SSWR::AVIRead::AVIRPackageForm::OpenItem(UOSInt index)
 	}
 }
 
-void SSWR::AVIRead::AVIRPackageForm::TestPackage(NotNullPtr<IO::ActiveStreamReader> reader, NotNullPtr<ReadSession> sess, NotNullPtr<IO::PackageFile> pack)
+void SSWR::AVIRead::AVIRPackageForm::TestPackage(NN<IO::ActiveStreamReader> reader, NN<ReadSession> sess, NN<IO::PackageFile> pack)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	NotNullPtr<IO::PackageFile> innerPack;
-	NotNullPtr<IO::StreamData> stmData;
+	NN<IO::PackageFile> innerPack;
+	NN<IO::StreamData> stmData;
 	UInt64 fileSize;
 	UInt64 storeSize;
 	Bool needDelete;
@@ -651,7 +651,7 @@ void SSWR::AVIRead::AVIRPackageForm::TestPackage(NotNullPtr<IO::ActiveStreamRead
 	}
 }
 
-void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(NotNullPtr<IO::PackageFile> packFile)
+void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(NN<IO::PackageFile> packFile)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -742,7 +742,7 @@ UOSInt SSWR::AVIRead::AVIRPackageForm::PackFileIndex(UOSInt lvIndex)
 	return lvIndex;
 }
 
-void SSWR::AVIRead::AVIRPackageForm::UpdatePackFile(NotNullPtr<IO::PackageFile> packFile, Bool needDelete, Text::CString initSel)
+void SSWR::AVIRead::AVIRPackageForm::UpdatePackFile(NN<IO::PackageFile> packFile, Bool needDelete, Text::CString initSel)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -768,7 +768,7 @@ void SSWR::AVIRead::AVIRPackageForm::UpdatePackFile(NotNullPtr<IO::PackageFile> 
 	this->DisplayPackFile(packFile);
 }
 
-void SSWR::AVIRead::AVIRPackageForm::PasteFiles(NotNullPtr<Data::ArrayListStringNN> files, Bool move)
+void SSWR::AVIRead::AVIRPackageForm::PasteFiles(NN<Data::ArrayListStringNN> files, Bool move)
 {
 	if (move)
 	{
@@ -779,7 +779,7 @@ void SSWR::AVIRead::AVIRPackageForm::PasteFiles(NotNullPtr<Data::ArrayListString
 		else
 		{
 			Sync::MutexUsage mutUsage(this->fileMut);
-			Data::ArrayIterator<NotNullPtr<Text::String>> it = files->Iterator();
+			Data::ArrayIterator<NN<Text::String>> it = files->Iterator();
 			while (it.HasNext())
 			{
 				this->fileNames.Add(it.Next()->Clone());
@@ -793,8 +793,8 @@ void SSWR::AVIRead::AVIRPackageForm::PasteFiles(NotNullPtr<Data::ArrayListString
 		if (this->packFile->GetFileType() == IO::PackageFileType::Virtual)
 		{
 			Bool changed = false;
-			Data::ArrayIterator<NotNullPtr<Text::String>> it = files->Iterator();
-			NotNullPtr<Text::String> s;
+			Data::ArrayIterator<NN<Text::String>> it = files->Iterator();
+			NN<Text::String> s;
 			while (it.HasNext())
 			{
 				s = it.Next();
@@ -822,7 +822,7 @@ void SSWR::AVIRead::AVIRPackageForm::PasteFiles(NotNullPtr<Data::ArrayListString
 		else
 		{
 			Sync::MutexUsage mutUsage(this->fileMut);
-			Data::ArrayIterator<NotNullPtr<Text::String>> it = files->Iterator();
+			Data::ArrayIterator<NN<Text::String>> it = files->Iterator();
 			while (it.HasNext())
 			{
 				this->fileNames.Add(it.Next()->Clone());
@@ -834,7 +834,7 @@ void SSWR::AVIRead::AVIRPackageForm::PasteFiles(NotNullPtr<Data::ArrayListString
 
 }
 
-SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::PackageFile> packFile) : UI::GUIForm(parent, 960, 768, ui)
+SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::PackageFile> packFile) : UI::GUIForm(parent, 960, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	UTF8Char sbuff[512];
@@ -901,8 +901,8 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(Optional<UI::GUIClientControl> p
 	this->lvFiles->HandleDblClk(LVDblClick, this);
 	DisplayPackFile(this->packFile);
 
-	NotNullPtr<UI::GUIMainMenu> mnuMain;
-	NotNullPtr<UI::GUIMenu> mnu;
+	NN<UI::GUIMainMenu> mnuMain;
+	NN<UI::GUIMenu> mnu;
 //	UI::GUIMenu *mnu2;
 	NEW_CLASSNN(mnuMain, UI::GUIMainMenu());
 	mnu = mnuMain->AddSubMenu(CSTR("&File"));
@@ -978,7 +978,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(Optional<UI::GUIClientControl> p
 		this->txtInfo->SetReadOnly(true);
 		this->txtInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 		Text::StringBuilderUTF8 sb;
-		NotNullPtr<IO::VirtualPackageFile>::ConvertFrom(this->packFile)->GetInfoText(sb);
+		NN<IO::VirtualPackageFile>::ConvertFrom(this->packFile)->GetInfoText(sb);
 		this->txtInfo->SetText(sb.ToCString());
 	}
 
@@ -1032,7 +1032,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 			UOSInt i = selIndices.GetCount();
 			if (i > 0)
 			{
-				NotNullPtr<UI::GUIFolderDialog> dlg = this->ui->NewFolderDialog();
+				NN<UI::GUIFolderDialog> dlg = this->ui->NewFolderDialog();
 				if (dlg->ShowDialog(this->GetHandle()) == UI::GUIForm::DR_OK)
 				{
 					UOSInt j;
@@ -1054,7 +1054,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_COPYALLTO:
 		if (packFile->GetCount() > 0)
 		{
-			NotNullPtr<UI::GUIFolderDialog> dlg = this->ui->NewFolderDialog();
+			NN<UI::GUIFolderDialog> dlg = this->ui->NewFolderDialog();
 			if (dlg->ShowDialog(this->GetHandle()) == UI::GUIForm::DR_OK)
 			{
 				UOSInt i = 0;
@@ -1090,7 +1090,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 				}
 				else if (pot == IO::PackageFile::PackObjectType::StreamData)
 				{
-					NotNullPtr<IO::StreamData> fd;
+					NN<IO::StreamData> fd;
 					if (!packFile->GetItemStmDataNew(i).SetTo(fd))
 					{
 						this->ui->ShowMsgOK(CSTR("Error in opening file"), CSTR("Package"), this);
@@ -1098,7 +1098,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 					}
 					else
 					{
-						NotNullPtr<SSWR::AVIRead::AVIRHexViewerForm> frm;
+						NN<SSWR::AVIRead::AVIRHexViewerForm> frm;
 						NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHexViewerForm(0, this->ui, this->core));
 						frm->SetData(fd, IO::FileAnalyse::IFileAnalyse::AnalyseFile(fd));
 						fd.Delete();
@@ -1126,7 +1126,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 				}
 				else if (pot == IO::PackageFile::PackObjectType::StreamData)
 				{
-					NotNullPtr<IO::StreamData> fd;
+					NN<IO::StreamData> fd;
 					if (!packFile->GetItemStmDataNew(i).SetTo(fd))
 					{
 						this->ui->ShowMsgOK(CSTR("Error in opening file"), CSTR("Package"), this);
@@ -1148,7 +1148,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 							fd.Delete();
 							return;
 						}
-						NotNullPtr<UtilUI::TextViewerForm> frm;
+						NN<UtilUI::TextViewerForm> frm;
 						NEW_CLASSNN(frm, UtilUI::TextViewerForm(0, this->ui, this->core->GetMonitorMgr(), this->core->GetDrawEngine(), 0));
 						frm->LoadStreamData(fd);
 						fd.Delete();
@@ -1192,15 +1192,15 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_APPEND_ZIP:
 		if (this->packFile->GetFileType() == IO::PackageFileType::Virtual)
 		{
-			NotNullPtr<IO::VirtualPackageFile> vpkg = NotNullPtr<IO::VirtualPackageFile>::ConvertFrom(this->packFile);
-			NotNullPtr<Parser::ParserList> parsers = this->core->GetParserList();
-			NotNullPtr<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"PackageFileZip", false);
+			NN<IO::VirtualPackageFile> vpkg = NN<IO::VirtualPackageFile>::ConvertFrom(this->packFile);
+			NN<Parser::ParserList> parsers = this->core->GetParserList();
+			NN<UI::GUIFileDialog> dlg = this->ui->NewFileDialog(L"SSWR", L"AVIRead", L"PackageFileZip", false);
 			dlg->SetAllowMultiSel(false);
 			parsers->PrepareSelector(dlg, IO::ParserType::PackageFile);
 			if (dlg->ShowDialog(this->GetHandle()))
 			{
 				IO::StmData::FileData fd(dlg->GetFileName(), false);
-				NotNullPtr<IO::PackageFile> zipPkg;
+				NN<IO::PackageFile> zipPkg;
 				if (zipPkg.Set((IO::PackageFile*)parsers->ParseFileType(fd, IO::ParserType::PackageFile)))
 				{
 					if (!vpkg->MergePackage(zipPkg))

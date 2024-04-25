@@ -14,7 +14,7 @@
 
 #include <stdio.h>
 
-Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Bool noResource)
+Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Bool noResource)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -62,7 +62,7 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, NotNullPtr<Net::Socke
 	else
 	{
 		sptr = Text::StrConcatC(url.ConcatTo(sbuff), UTF8STRC("?f=json"));
-		NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 		IO::MemoryStream mstm;
 		while ((readSize = cli->Read(BYTEARR(buff))) > 0)
 		{
@@ -133,7 +133,7 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, NotNullPtr<Net::Socke
 					{
 						Text::JSONObject *spRef = (Text::JSONObject*)o;
 						UInt32 wkid = (UInt32)spRef->GetObjectInt32(CSTR("wkid"));
-						NotNullPtr<Math::CoordinateSystem> csys;
+						NN<Math::CoordinateSystem> csys;
 						if (csys.Set(Math::CoordinateSystemManager::SRCreateCSys(wkid)))
 						{
 							this->csys.Delete();
@@ -231,7 +231,7 @@ void Map::ESRI::ESRIMapServer::SetSRID(UInt32 srid)
 {
 	if (this->noResource)
 	{
-		NotNullPtr<Math::CoordinateSystem> csys;
+		NN<Math::CoordinateSystem> csys;
 		if (csys.Set(Math::CoordinateSystemManager::SRCreateCSys(srid)))
 		{
 			this->csys.Delete();
@@ -239,7 +239,7 @@ void Map::ESRI::ESRIMapServer::SetSRID(UInt32 srid)
 			const Math::CoordinateSystemManager::SpatialRefInfo *srinfo = Math::CoordinateSystemManager::SRGetSpatialRef(srid);
 			if (csys->IsProjected())
 			{
-				NotNullPtr<Math::CoordinateSystem> wgs84Csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+				NN<Math::CoordinateSystem> wgs84Csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 				Math::Coord2DDbl tl = Math::CoordinateSystem::Convert(wgs84Csys, csys, Math::Coord2DDbl(srinfo->minXGeo, srinfo->minYGeo));
 				Math::Coord2DDbl br = Math::CoordinateSystem::Convert(wgs84Csys, csys, Math::Coord2DDbl(srinfo->maxXGeo, srinfo->maxYGeo));
 				this->bounds = Math::RectAreaDbl(tl, br);
@@ -254,7 +254,7 @@ void Map::ESRI::ESRIMapServer::SetSRID(UInt32 srid)
 	}
 }
 
-NotNullPtr<Text::String> Map::ESRI::ESRIMapServer::GetURL() const
+NN<Text::String> Map::ESRI::ESRIMapServer::GetURL() const
 {
 	return this->url;
 }
@@ -301,7 +301,7 @@ UTF8Char *Map::ESRI::ESRIMapServer::TileGetURL(UTF8Char *sbuff, UOSInt level, In
 	return sbuff;
 }
 
-Bool Map::ESRI::ESRIMapServer::TileGetURL(NotNullPtr<Text::StringBuilderUTF8> sb, UOSInt level, Int32 tileX, Int32 tileY) const
+Bool Map::ESRI::ESRIMapServer::TileGetURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Int32 tileX, Int32 tileY) const
 {
 	sb->Append(this->url);
 	sb->AppendC(UTF8STRC("/tile/"));
@@ -321,7 +321,7 @@ Bool Map::ESRI::ESRIMapServer::TileLoadToStream(IO::Stream *stm, UOSInt level, I
 	UOSInt readSize;
 	sptr = this->TileGetURL(url, level, tileX, tileY);
 
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	Bool succ = cli->GetRespStatus() == Net::WebStatus::SC_OK;
 	while ((readSize = cli->Read(BYTEARR(dataBuff))) > 0)
 	{
@@ -342,7 +342,7 @@ Bool Map::ESRI::ESRIMapServer::TileLoadToFile(Text::CStringNN fileName, UOSInt l
 	UTF8Char *sptr;
 	sptr = this->TileGetURL(url, level, tileX, tileY);
 
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	Bool succ = cli->GetRespStatus() == Net::WebStatus::SC_OK;
 	if (succ)
 	{
@@ -359,12 +359,12 @@ Bool Map::ESRI::ESRIMapServer::TileLoadToFile(Text::CStringNN fileName, UOSInt l
 	return succ;
 }
 
-NotNullPtr<Text::String> Map::ESRI::ESRIMapServer::GetName() const
+NN<Text::String> Map::ESRI::ESRIMapServer::GetName() const
 {
 	return this->name;
 }
 
-NotNullPtr<Math::CoordinateSystem> Map::ESRI::ESRIMapServer::GetCoordinateSystem() const
+NN<Math::CoordinateSystem> Map::ESRI::ESRIMapServer::GetCoordinateSystem() const
 {
 	return this->csys;
 }
@@ -385,7 +385,7 @@ Bool Map::ESRI::ESRIMapServer::CanQuery() const
 	return true;
 }
 
-Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NotNullPtr<Data::ArrayList<UOSInt>> valueOfstList, NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListNN<Text::String>> valueList)
+Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayList<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
 {
 	// https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/identify?geometryType=esriGeometryPoint&geometry=114.2,22.4&sr=4326&tolerance=0&mapExtent=113,22,115,23&imageDisplay=400,300,96&f=json
 	UTF8Char url[1024];
@@ -417,7 +417,7 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 	sptr = Text::StrConcatC(sptr, UTF8STRC("&f=json"));
 
 	Bool succ = false;
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 	{
 		IO::MemoryStream mstm;
@@ -434,7 +434,7 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 			Text::JSONBase *o = json->GetValue(CSTR("results"));
 			if (o && o->GetType() == Text::JSONType::Array)
 			{
-				NotNullPtr<Math::Geometry::Vector2D> vec;
+				NN<Math::Geometry::Vector2D> vec;
 				Text::JSONArray *results = (Text::JSONArray*)o;
 				succ = true;
 				UOSInt i = 0;
@@ -445,10 +445,10 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 					if (o && o->GetType() == Text::JSONType::Object)
 					{
 						Text::JSONObject *result = (Text::JSONObject*)o;
-						NotNullPtr<Text::String> geometryType;
+						NN<Text::String> geometryType;
 						if (result->GetValueString(CSTR("geometryType")).SetTo(geometryType))
 						{
-							NotNullPtr<Text::JSONBase> geometryJSON;
+							NN<Text::JSONBase> geometryJSON;
 							if (geometryJSON.Set(result->GetObjectValue(CSTR("geometry"))) && ParseGeometry(this->csys->GetSRID(), geometryType, geometryJSON).SetTo(vec))
 							{
 								valueOfstList->Add(nameList->GetCount());
@@ -457,10 +457,10 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 								{
 									Text::JSONObject *attr = (Text::JSONObject*)o;
 									Data::ArrayListNN<Text::String> attNames;
-									NotNullPtr<Text::String> name;
+									NN<Text::String> name;
 									Text::StringBuilderUTF8 sb;
 									attr->GetObjectNames(attNames);
-									Data::ArrayIterator<NotNullPtr<Text::String>> it = attNames.Iterator();
+									Data::ArrayIterator<NN<Text::String>> it = attNames.Iterator();
 									while (it.HasNext())
 									{
 										name = it.Next();
@@ -521,12 +521,12 @@ Optional<Media::ImageList> Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl b
 	sptr = Text::StrUOSInt(sptr, height);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("&f=image"));
 
-	NotNullPtr<Text::StringBuilderUTF8> sb;
+	NN<Text::StringBuilderUTF8> sb;
 	if (sbUrl.SetTo(sb))
 		sb->AppendC(url, (UOSInt)(sptr - url));
 
 	Media::ImageList *ret = 0;
-	NotNullPtr<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
+	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	Bool succ = cli->GetRespStatus() == Net::WebStatus::SC_OK;
 	if (succ)
 	{
@@ -543,7 +543,7 @@ Optional<Media::ImageList> Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl b
 	return ret;
 }
 
-Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMapServer::ParseGeometry(UInt32 srid, NotNullPtr<Text::String> geometryType, NotNullPtr<Text::JSONBase> geometry)
+Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMapServer::ParseGeometry(UInt32 srid, NN<Text::String> geometryType, NN<Text::JSONBase> geometry)
 {
 	Text::JSONBase *o;
 	o = geometry->GetValue(CSTR("spatialReference.wkid"));
@@ -557,7 +557,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMapServer::ParseGeometry(UInt3
 		o = geometry->GetValue(CSTR("rings"));
 		if (o && o->GetType() == Text::JSONType::Array)
 		{
-			NotNullPtr<Math::Geometry::LinearRing> lr;
+			NN<Math::Geometry::LinearRing> lr;
 			Math::Geometry::Polygon *pg;
 			NEW_CLASS(pg, Math::Geometry::Polygon(srid));
 			Data::ArrayListA<Math::Coord2DDbl> ptArr;

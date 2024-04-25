@@ -4,7 +4,7 @@
 #include "Net/Email/SMTPClient.h"
 #include "Sync/SimpleThread.h"
 
-Net::Email::SMTPClient::SMTPClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Optional<IO::Writer> logWriter, Data::Duration timeout)
+Net::Email::SMTPClient::SMTPClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Optional<IO::Writer> logWriter, Data::Duration timeout)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -18,7 +18,7 @@ Net::Email::SMTPClient::SMTPClient(NotNullPtr<Net::SocketFactory> sockf, Optiona
 	this->timeout = timeout;
 }
 
-Net::Email::SMTPClient::SMTPClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Optional<IO::LogTool> log, Data::Duration timeout)
+Net::Email::SMTPClient::SMTPClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Net::Email::SMTPConn::ConnType connType, Optional<IO::LogTool> log, Data::Duration timeout)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -30,10 +30,10 @@ Net::Email::SMTPClient::SMTPClient(NotNullPtr<Net::SocketFactory> sockf, Optiona
 	this->authUser = 0;
 	this->authPassword = 0;
 	this->timeout = timeout;
-	NotNullPtr<IO::LogTool> nnlog;
+	NN<IO::LogTool> nnlog;
 	if (log.SetTo(nnlog))
 	{
-		NotNullPtr<IO::LogWriter> writer;
+		NN<IO::LogWriter> writer;
 		NEW_CLASSNN(writer, IO::LogWriter(nnlog, IO::LogHandler::LogLevel::Raw));
 		this->logWriter = writer;
 		this->logRelease = true;
@@ -59,7 +59,7 @@ void Net::Email::SMTPClient::SetPlainAuth(Text::CString userName, Text::CString 
 	this->authPassword = Text::String::NewOrNull(password);
 }
 
-Bool Net::Email::SMTPClient::Send(NotNullPtr<Net::Email::EmailMessage> message)
+Bool Net::Email::SMTPClient::Send(NN<Net::Email::EmailMessage> message)
 {
 	if (!message->CompletedMessage())
 	{
@@ -83,8 +83,8 @@ Bool Net::Email::SMTPClient::Send(NotNullPtr<Net::Email::EmailMessage> message)
 		}
 	}
 	Sync::SimpleThread::Sleep(10);
-	NotNullPtr<Text::String> user;
-	NotNullPtr<Text::String> password;
+	NN<Text::String> user;
+	NN<Text::String> password;
 	if (this->authUser.SetTo(user) && this->authPassword.SetTo(password))
 	{
 		if (!conn.SendAuth(user->ToCString(), password->ToCString()))
@@ -92,13 +92,13 @@ Bool Net::Email::SMTPClient::Send(NotNullPtr<Net::Email::EmailMessage> message)
 			return false;
 		}
 	}
-	NotNullPtr<Net::Email::EmailMessage::EmailAddress> addr;
+	NN<Net::Email::EmailMessage::EmailAddress> addr;
 	if (!message->GetFrom().SetTo(addr) || !conn.SendMailFrom(addr->addr->ToCString()))
 	{
 		return false;
 	}
-	NotNullPtr<const Data::ArrayListNN<Net::Email::EmailMessage::EmailAddress>> recpList = message->GetRecpList();
-	Data::ArrayIterator<NotNullPtr<Net::Email::EmailMessage::EmailAddress>> it = recpList->Iterator();
+	NN<const Data::ArrayListNN<Net::Email::EmailMessage::EmailAddress>> recpList = message->GetRecpList();
+	Data::ArrayIterator<NN<Net::Email::EmailMessage::EmailAddress>> it = recpList->Iterator();
 	while (it.HasNext())
 	{
 		if (!conn.SendRcptTo(it.Next()->addr->ToCString()))

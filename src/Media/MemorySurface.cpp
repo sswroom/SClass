@@ -19,7 +19,7 @@ Media::MemorySurface::MemorySurface(Math::Size2D<UOSInt> size, UOSInt bitPerPixe
 	this->info.par2 = 1.0;
 	this->info.hdpi = dpi;
 	this->info.vdpi = dpi;
-	NotNullPtr<const Media::ColorProfile> colornn;
+	NN<const Media::ColorProfile> colornn;
 	if (colornn.Set(color))
 	{
 		this->info.color.Set(colornn);
@@ -41,9 +41,9 @@ Bool Media::MemorySurface::IsError() const
 	return this->buffPtr == 0;
 }
 
-NotNullPtr<Media::RasterImage> Media::MemorySurface::Clone() const
+NN<Media::RasterImage> Media::MemorySurface::Clone() const
 {
-	NotNullPtr<Media::MemorySurface> surface;
+	NN<Media::MemorySurface> surface;
 	NEW_CLASSNN(surface, Media::MemorySurface(this->info.dispSize, this->info.storeBPP, &this->info.color, this->info.hdpi));
 	return surface;
 }
@@ -106,7 +106,7 @@ Bool Media::MemorySurface::DrawFromBuff()
 	return false;
 }
 
-Bool Media::MemorySurface::DrawFromSurface(NotNullPtr<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn, Bool waitForVBlank)
+Bool Media::MemorySurface::DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn, Bool waitForVBlank)
 {
 	if (surface->info.storeBPP == this->info.storeBPP)
 	{

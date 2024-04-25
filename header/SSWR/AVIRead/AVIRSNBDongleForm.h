@@ -39,9 +39,9 @@ namespace SSWR
 				IO::SNBDongle::ReadingType readingTypes[16];
 			};
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			NotNullPtr<IO::Stream> stm;
+			NN<IO::Stream> stm;
 			IO::SNBDongle *snb;
 			IO::LogTool log;
 			Bool dongleUpdated;
@@ -51,36 +51,36 @@ namespace SSWR
 			Bool devChg;
 			Data::FastMap<UInt64, Int32> devHandlerMap;
 
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpDevice;
-			NotNullPtr<UI::GUIPanel> pnlDevice;
-			NotNullPtr<UI::GUIButton> btnDongleInfo;
-			NotNullPtr<UI::GUILabel> lblDongleId;
-			NotNullPtr<UI::GUITextBox> txtDongleId;
-			NotNullPtr<UI::GUIButton> btnCheckDongle;
-			NotNullPtr<UI::GUIButton> btnCheckDevices;
-			NotNullPtr<UI::GUIButton> btnResetNetwork;
-			NotNullPtr<UI::GUIButton> btnAddDevice;
-			NotNullPtr<UI::GUILabel> lblRemarks;
-			NotNullPtr<UI::GUITextBox> txtRemarks;
-			NotNullPtr<UI::GUILabel> lblURL;
-			NotNullPtr<UI::GUITextBox> txtURL;
-			NotNullPtr<UI::GUIButton> btnUpload;
-			NotNullPtr<UI::GUIGroupBox> grpDevice;
-			NotNullPtr<UI::GUIPanel> pnlDevCtrl;
-			NotNullPtr<UI::GUIButton> btnCopyDevId;
-			NotNullPtr<UI::GUIButton> btnDevReportTime;
-			NotNullPtr<UI::GUIButton> btnDevSetReportTime;
-			NotNullPtr<UI::GUIButton> btnDevOn;
-			NotNullPtr<UI::GUIButton> btnDevOff;
-			NotNullPtr<UI::GUIButton> btnDevStatus;
-			NotNullPtr<UI::GUIListView> lvDevice;
+			NN<UI::GUITabPage> tpDevice;
+			NN<UI::GUIPanel> pnlDevice;
+			NN<UI::GUIButton> btnDongleInfo;
+			NN<UI::GUILabel> lblDongleId;
+			NN<UI::GUITextBox> txtDongleId;
+			NN<UI::GUIButton> btnCheckDongle;
+			NN<UI::GUIButton> btnCheckDevices;
+			NN<UI::GUIButton> btnResetNetwork;
+			NN<UI::GUIButton> btnAddDevice;
+			NN<UI::GUILabel> lblRemarks;
+			NN<UI::GUITextBox> txtRemarks;
+			NN<UI::GUILabel> lblURL;
+			NN<UI::GUITextBox> txtURL;
+			NN<UI::GUIButton> btnUpload;
+			NN<UI::GUIGroupBox> grpDevice;
+			NN<UI::GUIPanel> pnlDevCtrl;
+			NN<UI::GUIButton> btnCopyDevId;
+			NN<UI::GUIButton> btnDevReportTime;
+			NN<UI::GUIButton> btnDevSetReportTime;
+			NN<UI::GUIButton> btnDevOn;
+			NN<UI::GUIButton> btnDevOff;
+			NN<UI::GUIButton> btnDevStatus;
+			NN<UI::GUIListView> lvDevice;
 
-			NotNullPtr<UI::GUITabPage> tpLog;
-			NotNullPtr<UI::GUIListBox> lbLog;
-			NotNullPtr<UI::GUITextBox> txtLog;
-			NotNullPtr<UI::ListBoxLogger> logger;
+			NN<UI::GUITabPage> tpLog;
+			NN<UI::GUIListBox> lbLog;
+			NN<UI::GUITextBox> txtLog;
+			NN<UI::ListBoxLogger> logger;
 
 			static void __stdcall OnProtocolReceived(AnyType userObj, UInt8 cmdType, UOSInt cmdSize, UInt8 *cmd);
 			static void __stdcall OnDongleInfoClicked(AnyType userObj);
@@ -102,7 +102,7 @@ namespace SSWR
 			void LoadFile();
 			void SaveFile();
 		public:
-			AVIRSNBDongleForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::Stream> stm);
+			AVIRSNBDongleForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::Stream> stm);
 			virtual ~AVIRSNBDongleForm();
 
 			virtual void OnMonitorChanged();

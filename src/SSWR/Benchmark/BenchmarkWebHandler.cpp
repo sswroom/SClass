@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 
-Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::BenchmarkWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::BenchmarkWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Bool valid = true;
 	if (req->GetReqMethod() != Net::WebUtil::RequestMethod::HTTP_POST)
@@ -46,7 +46,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 		{
 			const UTF8Char *platform = 0;
 			const UTF8Char *cpu = 0;
-			NotNullPtr<IO::MemoryStream> mstm;
+			NN<IO::MemoryStream> mstm;
 			Text::UTF8Reader *reader;
 			UTF8Char sbuff[512];
 			UTF8Char *sptr;
@@ -181,7 +181,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 	return true;
 }
 
-Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark::BenchmarkWebHandler *me, NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark::BenchmarkWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Text::CString msg = CSTR_NULL;
 	UTF8Char fileName[512];
@@ -440,7 +440,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 	return true;
 }
 
-Bool SSWR::Benchmark::BenchmarkWebHandler::ProcessRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
+Bool SSWR::Benchmark::BenchmarkWebHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	if (this->DoRequest(req, resp, subReq))
 	{

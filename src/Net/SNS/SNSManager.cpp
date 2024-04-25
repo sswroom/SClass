@@ -96,7 +96,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	{
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		Text::UTF8Writer writer(fs);
@@ -155,7 +155,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 		UOSInt retryCnt;
 		UInt64 leng;
 		Text::PString sarr[2];
-		NotNullPtr<Net::HTTPClient> cli;
+		NN<Net::HTTPClient> cli;
 		Data::ByteBuffer tmpBuff(65536);
 
 		sptr = this->dataPath->ConcatTo(sbuff);
@@ -308,10 +308,10 @@ void Net::SNS::SNSManager::ChannelStoreCurr(Net::SNS::SNSManager::ChannelData *c
 	Text::StringBuilderUTF8 sb;
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	Text::UTF8Writer writer(fs);
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = channel->currItems.Iterator();
+	Data::ArrayIterator<NN<Text::String>> it = channel->currItems.Iterator();
 	while (it.HasNext())
 	{
-		NotNullPtr<Text::String> s = it.Next();
+		NN<Text::String> s = it.Next();
 		writer.WriteLineC(s->v, s->leng);
 	}
 }
@@ -373,7 +373,7 @@ void Net::SNS::SNSManager::ChannelReload(Net::SNS::SNSManager::ChannelData *chan
 
 UInt32 __stdcall Net::SNS::SNSManager::ThreadProc(AnyType userObj)
 {
-	NotNullPtr<Net::SNS::SNSManager> me = userObj.GetNN<Net::SNS::SNSManager>();
+	NN<Net::SNS::SNSManager> me = userObj.GetNN<Net::SNS::SNSManager>();
 	Int64 t;
 	UOSInt i;
 	Int32 cnt;
@@ -409,7 +409,7 @@ UInt32 __stdcall Net::SNS::SNSManager::ThreadProc(AnyType userObj)
 	return 0;
 }
 
-Net::SNS::SNSManager::SNSManager(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString userAgent, Text::CString dataPath, NotNullPtr<IO::LogTool> log)
+Net::SNS::SNSManager::SNSManager(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString userAgent, Text::CString dataPath, NN<IO::LogTool> log)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -545,7 +545,7 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNS
 			IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			Text::UTF8Writer writer(fs);
 			writer.WriteLine(Net::SNS::SNSControl::SNSTypeGetName(ctrl->GetSNSType()));
-			NotNullPtr<Text::String> s = ctrl->GetChannelId();
+			NN<Text::String> s = ctrl->GetChannelId();
 			writer.WriteLineC(s->v, s->leng);
 		}
 		Net::SNS::SNSManager::ChannelData *channel = this->ChannelInit(ctrl);
@@ -557,7 +557,7 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNS
 	return ctrl;
 }
 
-void Net::SNS::SNSManager::Use(NotNullPtr<Sync::MutexUsage> mutUsage)
+void Net::SNS::SNSManager::Use(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->mut);
 }

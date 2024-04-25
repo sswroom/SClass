@@ -358,8 +358,8 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 	UOSInt m;
 	UOSInt urlAdd;
 	Text::SpreadSheet::Workbook *wb;
-	NotNullPtr<Text::SpreadSheet::Worksheet> ws;
-	NotNullPtr<Text::SpreadSheet::Worksheet> dataSheet;
+	NN<Text::SpreadSheet::Worksheet> ws;
+	NN<Text::SpreadSheet::Worksheet> dataSheet;
 	TableCell *cols;
 	HeaderInfo *header;
 	Text::StringBuilderUTF8 sb;
@@ -552,7 +552,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 			}
 			if (iconList)
 			{
-				NotNullPtr<Text::StringBuilderUTF8> *sbList = MemAlloc(NotNullPtr<Text::StringBuilderUTF8>, this->colCount);
+				NN<Text::StringBuilderUTF8> *sbList = MemAlloc(NN<Text::StringBuilderUTF8>, this->colCount);
 				l = 0;
 				while (l < this->colCount)
 				{
@@ -939,19 +939,19 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 	}
 }
 
-NotNullPtr<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NotNullPtr<Media::DrawEngine> deng)
+NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::DrawEngine> deng)
 {
-	NotNullPtr<Media::VectorDocument> doc;
-	NotNullPtr<Media::VectorGraph> g;
+	NN<Media::VectorDocument> doc;
+	NN<Media::VectorGraph> g;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Media::PaperSize paperSize(Media::PaperSize::PT_A4);
 	Double border = 10.0;
 	Double fontHeightMM = 3.0;
 	Double fontHeightPt = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_POINT, fontHeightMM);
-	NotNullPtr<Media::DrawFont> f;
-	NotNullPtr<Media::DrawBrush> b;
-	NotNullPtr<Media::DrawPen> p;
+	NN<Media::DrawFont> f;
+	NN<Media::DrawBrush> b;
+	NN<Media::DrawPen> p;
 	Double headerW1;
 	Double headerW2;
 	Double headerW3;
@@ -1406,7 +1406,7 @@ NotNullPtr<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NotN
 						if (icon->fileName)
 						{
 							iconSt = iconStatus.Get(icon->fileName);
-							NotNullPtr<Media::DrawImage> dimg;
+							NN<Media::DrawImage> dimg;
 							if (iconSt && dimg.Set(iconSt->dimg))
 							{
 								Double w = fontHeightMM * UOSInt2Double(dimg->GetWidth()) / UOSInt2Double(dimg->GetHeight());
@@ -1473,7 +1473,7 @@ NotNullPtr<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NotN
 	MemFree(colSize);
 	MemFree(colCurrX);
 
-	NotNullPtr<Media::DrawImage> img;
+	NN<Media::DrawImage> img;
 	i = iconStatus.GetCount();
 	while (i-- > 0)
 	{

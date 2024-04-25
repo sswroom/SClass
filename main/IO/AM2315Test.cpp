@@ -10,10 +10,10 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	NotNullPtr<IO::GPIOPin> sdaPin;
-	NotNullPtr<IO::GPIOPin> sclPin;
+	NN<IO::GPIOPin> sdaPin;
+	NN<IO::GPIOPin> sclPin;
 	IO::Device::AM2315GPIO *am2315;
 	IO::ConsoleWriter console;
 	Double temp;

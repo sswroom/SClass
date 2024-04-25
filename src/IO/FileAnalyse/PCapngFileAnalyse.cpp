@@ -6,9 +6,9 @@
 #include "Net/SocketUtil.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::FileAnalyse::PCapngFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::PCapngFileAnalyse>();
+	NN<IO::FileAnalyse::PCapngFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::PCapngFileAnalyse>();
 	UInt64 ofst;
 	UInt64 dataSize;
 	UInt32 thisSize;
@@ -124,7 +124,7 @@ void __stdcall IO::FileAnalyse::PCapngFileAnalyse::ParseThread(NotNullPtr<Sync::
 	}
 }
 
-IO::FileAnalyse::PCapngFileAnalyse::PCapngFileAnalyse(NotNullPtr<IO::StreamData> fd) : packetBuff(65536), thread(ParseThread, this, CSTR("PCapngFileAnaly"))
+IO::FileAnalyse::PCapngFileAnalyse::PCapngFileAnalyse(NN<IO::StreamData> fd) : packetBuff(65536), thread(ParseThread, this, CSTR("PCapngFileAnaly"))
 {
 	UInt8 buff[16];
 	this->fd = 0;
@@ -172,7 +172,7 @@ UOSInt IO::FileAnalyse::PCapngFileAnalyse::GetFrameCount()
 	return this->blockList.GetCount();
 }
 
-Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::PCapngFileAnalyse::BlockInfo> block;
 	if (index >= this->blockList.GetCount())
@@ -261,7 +261,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<T
 	return true;
 }
 
-Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -840,7 +840,7 @@ UOSInt IO::FileAnalyse::PCapngFileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	NN<IO::FileAnalyse::PCapngFileAnalyse::BlockInfo> block;

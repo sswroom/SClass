@@ -16,9 +16,9 @@ namespace UI
 				TA_RIGHT
 			} TextAlign;
 		private:
-			NotNullPtr<Media::DrawEngine> deng;
+			NN<Media::DrawEngine> deng;
 			Text::String *txt;
-			NotNullPtr<Text::String> fontName;
+			NN<Text::String> fontName;
 			Double fontSize;
 			Media::DrawEngine::DrawFontStyle fontStyle;
 			TextAlign talign;
@@ -31,12 +31,12 @@ namespace UI
 			Data::ArrayListStringNN lines;
 
 		public:
-			TextDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, UInt32 codePage, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size);
+			TextDObj(NN<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, UInt32 codePage, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size);
 			virtual ~TextDObj();
 
 			virtual Bool IsChanged();
 			virtual Bool DoEvents();
-			virtual void DrawObject(NotNullPtr<Media::DrawImage> dimg);
+			virtual void DrawObject(NN<Media::DrawImage> dimg);
 
 			virtual Bool IsObject(Math::Coord2D<OSInt> scnPos);
 			//virtual System::Windows::Forms::Cursor ^GetCursor() override;

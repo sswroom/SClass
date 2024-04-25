@@ -13,8 +13,8 @@
 
 void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientCertTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientCertTestForm>();
-	NotNullPtr<Net::SSLEngine> ssl;
+	NN<SSWR::AVIRead::AVIRHTTPClientCertTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientCertTestForm>();
+	NN<Net::SSLEngine> ssl;
 	if (me->svr || !me->ssl.SetTo(ssl))
 	{
 		return;
@@ -24,8 +24,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(AnyType u
 	Text::StringBuilderUTF8 sb;
 	me->txtPort->GetText(sb);
 	Text::StrToUInt16S(sb.ToString(), port, 0);
-	NotNullPtr<Crypto::Cert::X509Cert> sslCert;
-	NotNullPtr<Crypto::Cert::X509File> sslKey;
+	NN<Crypto::Cert::X509Cert> sslCert;
+	NN<Crypto::Cert::X509File> sslKey;
 	ssl->ServerSetRequireClientCert(Net::SSLEngine::ClientCertType::Optional);
 	sb.ClearStr();
 	me->txtClientCA->GetText(sb);
@@ -36,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(AnyType u
 
 	if (!sslCert.Set(me->sslCert) || !sslKey.Set(me->sslKey))
 	{
-		NotNullPtr<Crypto::Cert::X509Key> key;
+		NN<Crypto::Cert::X509Key> key;
 		if (!ssl->GenerateRSAKey().SetTo(key))
 		{
 			me->ui->ShowMsgOK(CSTR("Error in initializing Key"), CSTR("HTTP Client Cert Test"), me);
@@ -133,7 +133,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(AnyType u
 
 void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStopClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientCertTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientCertTestForm>();
+	NN<SSWR::AVIRead::AVIRHTTPClientCertTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientCertTestForm>();
 	if (me->svr == 0)
 	{
 		return;
@@ -147,7 +147,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStopClick(AnyType us
 
 void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnSSLCertClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHTTPClientCertTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientCertTestForm>();
+	NN<SSWR::AVIRead::AVIRHTTPClientCertTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPClientCertTestForm>();
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
@@ -175,7 +175,7 @@ void SSWR::AVIRead::AVIRHTTPClientCertTestForm::ClearCACerts()
 	this->caCerts.Clear();
 }
 
-SSWR::AVIRead::AVIRHTTPClientCertTestForm::AVIRHTTPClientCertTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRHTTPClientCertTestForm::AVIRHTTPClientCertTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
 	this->SetText(CSTR("HTTP Client Cert Test"));
@@ -228,10 +228,10 @@ void SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRHTTPClientCertTestForm::WebRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
+void SSWR::AVIRead::AVIRHTTPClientCertTestForm::WebRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<Crypto::Cert::X509Cert> cert;
+	NN<Crypto::Cert::X509Cert> cert;
 	if (req->GetClientCert().SetTo(cert))
 	{
 		cert->ToString(sb);

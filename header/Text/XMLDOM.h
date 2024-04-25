@@ -54,14 +54,14 @@ namespace Text
 		XMLNode *SearchFirstNode(Text::CString path);
 		void ReleaseSearch(XMLNode** searchResult);
 
-		void GetInnerXML(NotNullPtr<Text::StringBuilderUTF8> sb);
-		void GetInnerText(NotNullPtr<Text::StringBuilderUTF8> sb);
+		void GetInnerXML(NN<Text::StringBuilderUTF8> sb);
+		void GetInnerText(NN<Text::StringBuilderUTF8> sb);
 	private:
 		void SearchNodeBegin(Text::CString path, Data::ArrayList<XMLNode*> *outArr, Bool singleResult);
 		Bool SearchNodeSub(XMLNode *node, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, Data::ArrayList<XMLNode*> *outArr, Int32 searchType, Bool singleResult);
 		Bool SearchNodeSubElement(XMLNode *node, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, Data::ArrayList<XMLNode*> *outArr, Int32 searchType, Bool singleResult);
 		Bool SearchEqual(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr);
-		Bool SearchEval(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, XMLNode *n, const UTF8Char *nameStart, const UTF8Char *nameEnd, NotNullPtr<Text::StringBuilderUTF8> outSB);
+		Bool SearchEval(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, XMLNode *n, const UTF8Char *nameStart, const UTF8Char *nameEnd, NN<Text::StringBuilderUTF8> outSB);
 	public:
 		static Text::CStringNN NodeTypeGetName(NodeType ntype);
 	};
@@ -72,7 +72,7 @@ namespace Text
 		XMLAttrib(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
 		virtual ~XMLAttrib();
 
-		virtual Bool ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		virtual Bool ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
 
 
@@ -89,9 +89,9 @@ namespace Text
 	public:
 		XMLDocument();
 		virtual ~XMLDocument();
-		Bool ParseBuff(NotNullPtr<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UOSInt size);
-		Bool ParseStream(NotNullPtr<Text::EncodingFactory> encFact, IO::Stream *stm);
-		void AppendXmlDeclaration(NotNullPtr<Text::StringBuilderUTF8> sb);
+		Bool ParseBuff(NN<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UOSInt size);
+		Bool ParseStream(NN<Text::EncodingFactory> encFact, IO::Stream *stm);
+		void AppendXmlDeclaration(NN<Text::StringBuilderUTF8> sb);
 	};
 }
 #endif

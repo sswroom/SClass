@@ -11,7 +11,7 @@ namespace Net
 	class WiFiCapturer
 	{
 	public:
-		typedef void (__stdcall *UpdateHandler)(NotNullPtr<Net::WirelessLAN::BSSInfo> bss, const Data::Timestamp &scanTime, AnyType userObj);
+		typedef void (__stdcall *UpdateHandler)(NN<Net::WirelessLAN::BSSInfo> bss, const Data::Timestamp &scanTime, AnyType userObj);
 	private:
 		Net::WirelessLAN wlan;
 		Sync::Thread thread;
@@ -23,7 +23,7 @@ namespace Net
 		UpdateHandler hdlr;
 		AnyType hdlrObj;
 
-		static void __stdcall ScanThread(NotNullPtr<Sync::Thread> thread);
+		static void __stdcall ScanThread(NN<Sync::Thread> thread);
 	public:
 		WiFiCapturer();
 		~WiFiCapturer();
@@ -36,7 +36,7 @@ namespace Net
 		void Stop();
 
 		void StoreStatus();
-		NotNullPtr<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> GetLogList(NotNullPtr<Sync::MutexUsage> mutUsage);
+		NN<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> GetLogList(NN<Sync::MutexUsage> mutUsage);
 		void SetUpdateHandler(UpdateHandler hdlr, AnyType hdlrObj);
 	};
 }

@@ -45,7 +45,7 @@ void Data::Chart::SetDateFormat(Text::CString format)
 	this->dateFormat = Text::String::New(format);
 }
 
-NotNullPtr<Text::String> Data::Chart::GetDateFormat() const
+NN<Text::String> Data::Chart::GetDateFormat() const
 {
 	return this->dateFormat;
 }
@@ -56,7 +56,7 @@ void Data::Chart::SetTimeFormat(Text::CString format)
 	this->timeFormat = Text::String::New(format);
 }
 
-NotNullPtr<Text::String> Data::Chart::GetTimeFormat() const
+NN<Text::String> Data::Chart::GetTimeFormat() const
 {
 	return this->timeFormat;
 }
@@ -81,7 +81,7 @@ void Data::Chart::SetDblFormat(Text::CString format)
 	}
 }
 
-NotNullPtr<Text::String> Data::Chart::GetDblFormat() const
+NN<Text::String> Data::Chart::GetDblFormat() const
 {
 	return this->dblFormat;
 }
@@ -117,7 +117,7 @@ UOSInt Data::Chart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayLi
 	Double lScale;
 	Double dScale;
 	Double pos;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 
 	sptr = Text::StrDoubleFmt(sbuff, min, dblFormat);
 	locations->Add(0);
@@ -174,7 +174,7 @@ UOSInt Data::Chart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayLi
 	Double lScale;
 	Double dScale;
 	Single pos;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 
 	sptr = Text::StrInt32(sbuff, min);
 	locations->Add(0);
@@ -221,7 +221,7 @@ UOSInt Data::Chart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayLi
 	return retCnt;
 }
 
-UOSInt Data::Chart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, NotNullPtr<Data::DateTime> min, NotNullPtr<Data::DateTime> max, Double leng, Double minLeng, const Char *dateFormat, const Char *timeFormat)
+UOSInt Data::Chart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayListStringNN *labels, NN<Data::DateTime> min, NN<Data::DateTime> max, Double leng, Double minLeng, const Char *dateFormat, const Char *timeFormat)
 {
 	UOSInt retCnt = 2;
 	UTF8Char sbuff[64];

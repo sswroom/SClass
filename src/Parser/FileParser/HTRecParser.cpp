@@ -17,7 +17,7 @@ Int32 Parser::FileParser::HTRecParser::GetName()
 	return *(Int32*)"HTRP";
 }
 
-void Parser::FileParser::HTRecParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::HTRecParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ReadingDB)
 	{
@@ -30,7 +30,7 @@ IO::ParserType Parser::FileParser::HTRecParser::GetParserType()
 	return IO::ParserType::ReadingDB;
 }
 
-IO::ParsedObject *Parser::FileParser::HTRecParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::HTRecParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (*(Int32*)&hdr[0] != *(Int32*)"$#\" ")
 	{

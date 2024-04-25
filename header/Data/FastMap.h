@@ -22,7 +22,7 @@ namespace Data
 		Bool ContainsKey(T key) const;
 
 		void AllocSize(UOSInt cnt);
-		UOSInt AddKeysTo(NotNullPtr<List<T>> list);
+		UOSInt AddKeysTo(NN<List<T>> list);
 		virtual UOSInt GetCount() const;
 		virtual T GetKey(UOSInt index) const;
 		virtual V GetItem(UOSInt index) const;
@@ -125,7 +125,7 @@ namespace Data
 		this->values.EnsureCapacity(newSize);
 	}
 
-	template <class T, class V> UOSInt FastMap<T, V>::AddKeysTo(NotNullPtr<List<T>> list)
+	template <class T, class V> UOSInt FastMap<T, V>::AddKeysTo(NN<List<T>> list)
 	{
 		UOSInt i = 0;
 		UOSInt j = this->values.GetCount();

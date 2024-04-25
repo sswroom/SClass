@@ -8,7 +8,7 @@
 
 #define GDK_VERSION_AFTER(major, minor) (GDK_MAJOR_VERSION > major || (GDK_MAJOR_VERSION == major && GDK_MINOR_VERSION >= minor))
 
-UI::GTK::GTKLabel::GTKLabel(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN label) : UI::GUILabel(ui, parent)
+UI::GTK::GTKLabel::GTKLabel(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN label) : UI::GUILabel(ui, parent)
 {
 	this->hwnd = (ControlHandle*)gtk_label_new((const Char*)label.v);
 	parent->AddChild(*this);

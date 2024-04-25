@@ -5,7 +5,7 @@
 #include "SSWR/OrganWeb/OrganWebPhotoController.h"
 #include "SSWR/OrganWeb/OrganWebPOIController.h"
 
-Bool __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionDel(NotNullPtr<Net::WebServer::IWebSession> sess, AnyType userObj)
+Bool __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionDel(NN<Net::WebServer::IWebSession> sess, AnyType userObj)
 {
 	Data::DateTime *t;
 	Data::ArrayListInt32 *pickObjs;
@@ -16,9 +16,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionDel(NotNullPtr<Net::Web
 	return false;
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionCheck(NotNullPtr<Net::WebServer::IWebSession> sess, AnyType userObj)
+Bool __stdcall SSWR::OrganWeb::OrganWebHandler::OnSessionCheck(NN<Net::WebServer::IWebSession> sess, AnyType userObj)
 {
-	NotNullPtr<Data::DateTime> t;
+	NN<Data::DateTime> t;
 	Data::DateTime currTime;
 	if (t.Set((Data::DateTime*)sess->GetValuePtr(CSTR("LastUseTime"))))
 	{

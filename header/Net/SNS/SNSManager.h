@@ -26,17 +26,17 @@ namespace Net
 			};
 			
 		private:
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 			Optional<Text::EncodingFactory> encFact;
 			Optional<Text::String> userAgent;
-			NotNullPtr<Text::String> dataPath;
+			NN<Text::String> dataPath;
 			Sync::Mutex mut;
 			Data::ArrayList<ChannelData*> channelList;
 			Bool threadToStop;
 			Bool threadRunning;
 			Sync::Event threadEvt;
-			NotNullPtr<IO::LogTool> log;
+			NN<IO::LogTool> log;
 
 			Net::SNS::SNSControl *CreateControl(Net::SNS::SNSControl::SNSType type, Text::CString channelId);
 			ChannelData *ChannelInit(Net::SNS::SNSControl *ctrl);
@@ -47,12 +47,12 @@ namespace Net
 
 			static UInt32 __stdcall ThreadProc(AnyType userObj);
 		public:
-			SNSManager(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString userAgent, Text::CString dataPath, NotNullPtr<IO::LogTool> log);
+			SNSManager(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString userAgent, Text::CString dataPath, NN<IO::LogTool> log);
 			virtual ~SNSManager();
 
 			Net::SNS::SNSControl *AddChannel(Net::SNS::SNSControl::SNSType type, Text::CString channelId);
 
-			void Use(NotNullPtr<Sync::MutexUsage> mutUsage);
+			void Use(NN<Sync::MutexUsage> mutUsage);
 			virtual UOSInt GetCount() const;
 			virtual Net::SNS::SNSControl* GetItem(UOSInt index) const;
 		};

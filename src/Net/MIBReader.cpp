@@ -2,7 +2,7 @@
 #include "Net/MIBReader.h"
 #include "Text/CharUtil.h"
 
-Bool Net::MIBReader::ReadLineInner(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Net::MIBReader::ReadLineInner(NN<Text::StringBuilderUTF8> sb)
 {
 	UOSInt initSize = sb->GetLength();
 	if (!this->reader.ReadLine(sb, 512))
@@ -90,7 +90,7 @@ Bool Net::MIBReader::ReadLineInner(NotNullPtr<Text::StringBuilderUTF8> sb)
 	return true;
 }
 
-Bool Net::MIBReader::ReadWord(NotNullPtr<Text::StringBuilderUTF8> sb, Bool move)
+Bool Net::MIBReader::ReadWord(NN<Text::StringBuilderUTF8> sb, Bool move)
 {
 	while (this->currOfst >= this->sbLine.GetCharCnt())
 	{
@@ -257,7 +257,7 @@ Bool Net::MIBReader::ReadWord(NotNullPtr<Text::StringBuilderUTF8> sb, Bool move)
 	}
 }
 
-Net::MIBReader::MIBReader(NotNullPtr<IO::Stream> stm) : reader(stm)
+Net::MIBReader::MIBReader(NN<IO::Stream> stm) : reader(stm)
 {
 	this->currOfst = 0;
 	this->escapeType = ET_NONE;
@@ -267,17 +267,17 @@ Net::MIBReader::~MIBReader()
 {
 }
 
-Bool Net::MIBReader::PeekWord(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Net::MIBReader::PeekWord(NN<Text::StringBuilderUTF8> sb)
 {
 	return ReadWord(sb, false);
 }
 
-Bool Net::MIBReader::NextWord(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Net::MIBReader::NextWord(NN<Text::StringBuilderUTF8> sb)
 {
 	return ReadWord(sb, true);
 }
 
-Bool Net::MIBReader::ReadLine(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Net::MIBReader::ReadLine(NN<Text::StringBuilderUTF8> sb)
 {
 	if (this->currOfst >= this->sbLine.GetCharCnt())
 	{
@@ -291,7 +291,7 @@ Bool Net::MIBReader::ReadLine(NotNullPtr<Text::StringBuilderUTF8> sb)
 	}
 }
 
-Bool Net::MIBReader::GetLastLineBreak(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Net::MIBReader::GetLastLineBreak(NN<Text::StringBuilderUTF8> sb)
 {
 	return this->reader.GetLastLineBreak(sb);
 }

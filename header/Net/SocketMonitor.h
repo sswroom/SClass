@@ -15,7 +15,7 @@ namespace Net
 		typedef void (__stdcall *RAWDataHdlr)(AnyType userData, const UInt8 *packetData, UOSInt packetSize);
 
 	private:
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Socket *soc;
 		Data::CallbackStorage<RAWDataHdlr> hdlr;
 
@@ -23,10 +23,10 @@ namespace Net
 		UOSInt threadCnt;
 
 	private:
-		static void __stdcall DataThread(NotNullPtr<Sync::Thread> thread);
+		static void __stdcall DataThread(NN<Sync::Thread> thread);
 
 	public:
-		SocketMonitor(NotNullPtr<Net::SocketFactory> sockf, Socket *soc, RAWDataHdlr hdlr, AnyType userData, UOSInt workerCnt);
+		SocketMonitor(NN<Net::SocketFactory> sockf, Socket *soc, RAWDataHdlr hdlr, AnyType userData, UOSInt workerCnt);
 		~SocketMonitor();
 	};
 }

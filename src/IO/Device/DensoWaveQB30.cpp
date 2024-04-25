@@ -9,9 +9,9 @@
 #include "Text/MyString.h"
 #define RECVBUFFSIZE 256
 
-void __stdcall IO::Device::DensoWaveQB30::RecvThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::Device::DensoWaveQB30::RecvThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::Device::DensoWaveQB30> me = thread->GetUserObj().GetNN<IO::Device::DensoWaveQB30>();
+	NN<IO::Device::DensoWaveQB30> me = thread->GetUserObj().GetNN<IO::Device::DensoWaveQB30>();
 	UInt8 buff[256];
 	UTF8Char *sbuff;
 	UOSInt recvSize;
@@ -246,7 +246,7 @@ Bool IO::Device::DensoWaveQB30::WriteCommand(const Char *cmdStr, UOSInt cmdLen)
 	return succ;
 }
 
-IO::Device::DensoWaveQB30::DensoWaveQB30(NotNullPtr<IO::Stream> stm) : IO::CodeScanner(CSTR("Denso Wave QB30")), thread(RecvThread, this, CSTR("DensoWaveQB30"))
+IO::Device::DensoWaveQB30::DensoWaveQB30(NN<IO::Stream> stm) : IO::CodeScanner(CSTR("Denso Wave QB30")), thread(RecvThread, this, CSTR("DensoWaveQB30"))
 {
 	this->stm = stm;
 	this->scanDelay = 1000;

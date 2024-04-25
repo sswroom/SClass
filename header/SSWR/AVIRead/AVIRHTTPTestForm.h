@@ -23,9 +23,9 @@ namespace SSWR
 		class AVIRHTTPTestForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Manage::HiResClock clk;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 			Sync::Thread **threads;
 			Sync::Mutex connMut;
@@ -42,47 +42,47 @@ namespace SSWR
 			Bool enableGZip;
 			Double t;
 
-			NotNullPtr<UI::GUIGroupBox> grpURL;
-			NotNullPtr<UI::GUIPanel> pnlURL;
-			NotNullPtr<UI::GUIPanel> pnlURLCtrl;
-			NotNullPtr<UI::GUIListBox> lbURL;
-			NotNullPtr<UI::GUITextBox> txtURL;
-			NotNullPtr<UI::GUIButton> btnURLAdd;
-			NotNullPtr<UI::GUIButton> btnURLClear;
-			NotNullPtr<UI::GUIPanel> pnlRequest;
-			NotNullPtr<UI::GUILabel> lblConcurrCnt;
-			NotNullPtr<UI::GUITextBox> txtConcurrCnt;
-			NotNullPtr<UI::GUILabel> lblTotalConnCnt;
-			NotNullPtr<UI::GUITextBox> txtTotalConnCnt;
-			NotNullPtr<UI::GUILabel> lblMethod;
-			NotNullPtr<UI::GUIComboBox> cboMethod;
-			NotNullPtr<UI::GUILabel> lblPostSize;
-			NotNullPtr<UI::GUITextBox> txtPostSize;
-			NotNullPtr<UI::GUICheckBox> chkKAConn;
-			NotNullPtr<UI::GUICheckBox> chkGZip;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUIGroupBox> grpStatus;
-			NotNullPtr<UI::GUILabel> lblConnLeftCnt;
-			NotNullPtr<UI::GUITextBox> txtConnLeftCnt;
-			NotNullPtr<UI::GUILabel> lblThreadCnt;
-			NotNullPtr<UI::GUITextBox> txtThreadCnt;
-			NotNullPtr<UI::GUILabel> lblSuccCnt;
-			NotNullPtr<UI::GUITextBox> txtSuccCnt;
-			NotNullPtr<UI::GUILabel> lblFailCnt;
-			NotNullPtr<UI::GUITextBox> txtFailCnt;
-			NotNullPtr<UI::GUILabel> lblTimeUsed;
-			NotNullPtr<UI::GUITextBox> txtTimeUsed;
+			NN<UI::GUIGroupBox> grpURL;
+			NN<UI::GUIPanel> pnlURL;
+			NN<UI::GUIPanel> pnlURLCtrl;
+			NN<UI::GUIListBox> lbURL;
+			NN<UI::GUITextBox> txtURL;
+			NN<UI::GUIButton> btnURLAdd;
+			NN<UI::GUIButton> btnURLClear;
+			NN<UI::GUIPanel> pnlRequest;
+			NN<UI::GUILabel> lblConcurrCnt;
+			NN<UI::GUITextBox> txtConcurrCnt;
+			NN<UI::GUILabel> lblTotalConnCnt;
+			NN<UI::GUITextBox> txtTotalConnCnt;
+			NN<UI::GUILabel> lblMethod;
+			NN<UI::GUIComboBox> cboMethod;
+			NN<UI::GUILabel> lblPostSize;
+			NN<UI::GUITextBox> txtPostSize;
+			NN<UI::GUICheckBox> chkKAConn;
+			NN<UI::GUICheckBox> chkGZip;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUIGroupBox> grpStatus;
+			NN<UI::GUILabel> lblConnLeftCnt;
+			NN<UI::GUITextBox> txtConnLeftCnt;
+			NN<UI::GUILabel> lblThreadCnt;
+			NN<UI::GUITextBox> txtThreadCnt;
+			NN<UI::GUILabel> lblSuccCnt;
+			NN<UI::GUITextBox> txtSuccCnt;
+			NN<UI::GUILabel> lblFailCnt;
+			NN<UI::GUITextBox> txtFailCnt;
+			NN<UI::GUILabel> lblTimeUsed;
+			NN<UI::GUITextBox> txtTimeUsed;
 
 			static void __stdcall OnStartClicked(AnyType userObj);
 			static void __stdcall OnURLAddClicked(AnyType userObj);
 			static void __stdcall OnURLClearClicked(AnyType userObj);
-			static void __stdcall ProcessThread(NotNullPtr<Sync::Thread> thread);
+			static void __stdcall ProcessThread(NN<Sync::Thread> thread);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			void StopThreads();
 			void ClearURLs();
 			Optional<Text::String> GetNextURL();
 		public:
-			AVIRHTTPTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRHTTPTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHTTPTestForm();
 
 			virtual void OnMonitorChanged();

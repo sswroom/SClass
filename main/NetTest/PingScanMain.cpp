@@ -10,7 +10,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-NotNullPtr<Net::SocketFactory> sockf;
+NN<Net::SocketFactory> sockf;
 IO::ConsoleWriter *console;
 Net::ICMPScanner *scanner;
 
@@ -55,14 +55,14 @@ void PingScan(UInt32 ip)
 	///////////////////////////
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	NEW_CLASSNN(sockf, Net::OSSocketFactory(true));
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(scanner, Net::ICMPScanner(sockf));
 
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
-	NotNullPtr<Net::ConnectionInfo> connInfo;
+	NN<Net::ConnectionInfo> connInfo;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;

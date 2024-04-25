@@ -176,11 +176,11 @@ void Text::JSONBuilder::AppendCoord2DArray(const Math::Coord2DDbl *coordList, UO
 	this->sb.AppendUTF8Char(']');
 }
 
-void Text::JSONBuilder::AppendCoordPL(NotNullPtr<Math::Geometry::Polyline> pl)
+void Text::JSONBuilder::AppendCoordPL(NN<Math::Geometry::Polyline> pl)
 {
-	Data::ArrayIterator<NotNullPtr<Math::Geometry::LineString>> it = pl->Iterator();
+	Data::ArrayIterator<NN<Math::Geometry::LineString>> it = pl->Iterator();
 	this->sb.AppendUTF8Char('[');
-	NotNullPtr<Math::Geometry::LineString> ls;
+	NN<Math::Geometry::LineString> ls;
 	if (it.HasNext())
 	{
 		ls = it.Next();
@@ -199,11 +199,11 @@ void Text::JSONBuilder::AppendCoordPL(NotNullPtr<Math::Geometry::Polyline> pl)
 	this->sb.AppendUTF8Char(']');
 }
 
-void Text::JSONBuilder::AppendCoordPG(NotNullPtr<Math::Geometry::Polygon> pg)
+void Text::JSONBuilder::AppendCoordPG(NN<Math::Geometry::Polygon> pg)
 {
-	Data::ArrayIterator<NotNullPtr<Math::Geometry::LinearRing>> it = pg->Iterator();
+	Data::ArrayIterator<NN<Math::Geometry::LinearRing>> it = pg->Iterator();
 	this->sb.AppendUTF8Char('[');
-	NotNullPtr<Math::Geometry::LinearRing> lr;
+	NN<Math::Geometry::LinearRing> lr;
 	if (it.HasNext())
 	{
 		lr = it.Next();
@@ -222,19 +222,19 @@ void Text::JSONBuilder::AppendCoordPG(NotNullPtr<Math::Geometry::Polygon> pg)
 	this->sb.AppendUTF8Char(']');
 }
 
-void Text::JSONBuilder::AppendGeometry(NotNullPtr<Math::Geometry::Vector2D> vec)
+void Text::JSONBuilder::AppendGeometry(NN<Math::Geometry::Vector2D> vec)
 {
 	Math::Geometry::Vector2D::VectorType vecType = vec->GetVectorType();
 	if (vecType == Math::Geometry::Vector2D::VectorType::Point)
 	{
-		NotNullPtr<Math::Geometry::Point> pt = NotNullPtr<Math::Geometry::Point>::ConvertFrom(vec);
+		NN<Math::Geometry::Point> pt = NN<Math::Geometry::Point>::ConvertFrom(vec);
 		this->sb.AppendC(UTF8STRC("{\"type\":\"Point\",\"coordinates\":"));
 		this->AppendCoord2D(pt->GetCenter());
 		this->sb.AppendUTF8Char('}');
 	}
 	else if (vecType == Math::Geometry::Vector2D::VectorType::LineString)
 	{
-		NotNullPtr<Math::Geometry::LineString> ls = NotNullPtr<Math::Geometry::LineString>::ConvertFrom(vec);
+		NN<Math::Geometry::LineString> ls = NN<Math::Geometry::LineString>::ConvertFrom(vec);
 		this->sb.AppendC(UTF8STRC("{\"type\":\"LineString\",\"coordinates\":"));
 		UOSInt nPoints;
 		const Math::Coord2DDbl *ptList = ls->GetPointListRead(nPoints);
@@ -243,25 +243,25 @@ void Text::JSONBuilder::AppendGeometry(NotNullPtr<Math::Geometry::Vector2D> vec)
 	}
 	else if (vecType == Math::Geometry::Vector2D::VectorType::Polyline)
 	{
-		NotNullPtr<Math::Geometry::Polyline> pl = NotNullPtr<Math::Geometry::Polyline>::ConvertFrom(vec);
+		NN<Math::Geometry::Polyline> pl = NN<Math::Geometry::Polyline>::ConvertFrom(vec);
 		this->sb.AppendC(UTF8STRC("{\"type\":\"MultiLineString\",\"coordinates\":"));
 		this->AppendCoordPL(pl);
 		this->sb.AppendUTF8Char('}');
 	}
 	else if (vecType == Math::Geometry::Vector2D::VectorType::Polygon)
 	{
-		NotNullPtr<Math::Geometry::Polygon> pg = NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(vec);
+		NN<Math::Geometry::Polygon> pg = NN<Math::Geometry::Polygon>::ConvertFrom(vec);
 		this->sb.AppendC(UTF8STRC("{\"type\":\"Polygon\",\"coordinates\":"));
 		this->AppendCoordPG(pg);
 		this->sb.AppendUTF8Char('}');
 	}
 	else if (vecType == Math::Geometry::Vector2D::VectorType::MultiPolygon)
 	{
-		NotNullPtr<Math::Geometry::MultiPolygon> mpg = NotNullPtr<Math::Geometry::MultiPolygon>::ConvertFrom(vec);
+		NN<Math::Geometry::MultiPolygon> mpg = NN<Math::Geometry::MultiPolygon>::ConvertFrom(vec);
 		this->sb.AppendC(UTF8STRC("{\"type\":\"MultiPolygon\",\"coordinates\":"));
-		Data::ArrayIterator<NotNullPtr<Math::Geometry::Polygon>> it = mpg->Iterator();
+		Data::ArrayIterator<NN<Math::Geometry::Polygon>> it = mpg->Iterator();
 		this->sb.AppendUTF8Char('[');
-		NotNullPtr<Math::Geometry::Polygon> pg;
+		NN<Math::Geometry::Polygon> pg;
 		if (it.HasNext())
 		{
 			pg = it.Next();
@@ -278,8 +278,8 @@ void Text::JSONBuilder::AppendGeometry(NotNullPtr<Math::Geometry::Vector2D> vec)
 	}
 	else if (vecType == Math::Geometry::Vector2D::VectorType::CurvePolygon)
 	{
-		NotNullPtr<Math::Geometry::CurvePolygon> cpg = NotNullPtr<Math::Geometry::CurvePolygon>::ConvertFrom(vec);
-		NotNullPtr<Math::Geometry::Polygon> pg = NotNullPtr<Math::Geometry::Polygon>::ConvertFrom(cpg->CurveToLine());
+		NN<Math::Geometry::CurvePolygon> cpg = NN<Math::Geometry::CurvePolygon>::ConvertFrom(vec);
+		NN<Math::Geometry::Polygon> pg = NN<Math::Geometry::Polygon>::ConvertFrom(cpg->CurveToLine());
 		this->sb.AppendC(UTF8STRC("{\"type\":\"Polygon\",\"coordinates\":"));
 		this->AppendCoordPG(pg);
 		this->sb.AppendUTF8Char('}');
@@ -409,7 +409,7 @@ Bool Text::JSONBuilder::ArrayAddStr(Text::CString val)
 	return true;
 }
 
-Bool Text::JSONBuilder::ArrayAddStr(NotNullPtr<Text::String> val)
+Bool Text::JSONBuilder::ArrayAddStr(NN<Text::String> val)
 {
 	if (this->currType != OT_ARRAY)
 		return false;
@@ -496,13 +496,13 @@ Bool Text::JSONBuilder::ArrayAddVector3(Math::Vector3 vec3)
 	return true;
 }
 
-Bool Text::JSONBuilder::ArrayAdd(NotNullPtr<Text::JSONArray> arr)
+Bool Text::JSONBuilder::ArrayAdd(NN<Text::JSONArray> arr)
 {
 	if (this->currType != OT_ARRAY)
 		return false;
 	UOSInt i = 0;
 	UOSInt j = arr->GetArrayLength();
-	NotNullPtr<Text::JSONBase> json;
+	NN<Text::JSONBase> json;
 	while (i < j)
 	{
 		if (json.Set(arr->GetArrayValue(i)))
@@ -511,12 +511,12 @@ Bool Text::JSONBuilder::ArrayAdd(NotNullPtr<Text::JSONArray> arr)
 			{
 			case Text::JSONType::Object:
 				this->ArrayBeginObject();
-				this->ObjectAdd(NotNullPtr<Text::JSONObject>::ConvertFrom(json));
+				this->ObjectAdd(NN<Text::JSONObject>::ConvertFrom(json));
 				this->ObjectEnd();
 				break;
 			case Text::JSONType::Array:
 				this->ArrayBeginArray();
-				this->ArrayAdd(NotNullPtr<Text::JSONArray>::ConvertFrom(json));
+				this->ArrayAdd(NN<Text::JSONArray>::ConvertFrom(json));
 				this->ArrayEnd();
 				break;
 			case Text::JSONType::Number:
@@ -698,7 +698,7 @@ Bool Text::JSONBuilder::ObjectAddStr(Text::CStringNN name, Text::PString *val)
 	return true;
 }
 
-Bool Text::JSONBuilder::ObjectAddStr(Text::CStringNN name, NotNullPtr<const Text::String> val)
+Bool Text::JSONBuilder::ObjectAddStr(Text::CStringNN name, NN<const Text::String> val)
 {
 	if (this->currType != OT_OBJECT)
 		return false;
@@ -749,7 +749,7 @@ Bool Text::JSONBuilder::ObjectAddStrOpt(Text::CStringNN name, Optional<Text::Str
 	}
 	this->AppendStr(name);
 	this->sb.AppendC(UTF8STRC(":"));
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (!val.SetTo(s))
 	{
 		this->sb.AppendC(UTF8STRC("null"));
@@ -957,7 +957,7 @@ Bool Text::JSONBuilder::ObjectAddVector3(Text::CStringNN name, Math::Vector3 vec
 	return true;
 }
 
-Bool Text::JSONBuilder::ObjectAddGeometry(Text::CStringNN name, NotNullPtr<Math::Geometry::Vector2D> vec)
+Bool Text::JSONBuilder::ObjectAddGeometry(Text::CStringNN name, NN<Math::Geometry::Vector2D> vec)
 {
 	if (this->currType != OT_OBJECT)
 		return false;
@@ -985,7 +985,7 @@ Bool Text::JSONBuilder::ObjectAddGeometryOpt(Text::CStringNN name, Optional<Math
 	}
 	this->AppendStr(name);
 	this->sb.AppendUTF8Char(':');
-	NotNullPtr<Math::Geometry::Vector2D> nnvec;
+	NN<Math::Geometry::Vector2D> nnvec;
 	if (vec.SetTo(nnvec))
 	{
 		this->AppendGeometry(nnvec);
@@ -997,7 +997,7 @@ Bool Text::JSONBuilder::ObjectAddGeometryOpt(Text::CStringNN name, Optional<Math
 	return true;
 }
 
-Bool Text::JSONBuilder::ObjectAddVarItem(Text::CStringNN name, NotNullPtr<Data::VariItem> item)
+Bool Text::JSONBuilder::ObjectAddVarItem(Text::CStringNN name, NN<Data::VariItem> item)
 {
 	if (this->currType != OT_OBJECT)
 		return false;
@@ -1042,15 +1042,15 @@ Bool Text::JSONBuilder::ObjectAddVarItem(Text::CStringNN name, NotNullPtr<Data::
 	}
 }
 
-Bool Text::JSONBuilder::ObjectAdd(NotNullPtr<Text::JSONObject> obj)
+Bool Text::JSONBuilder::ObjectAdd(NN<Text::JSONObject> obj)
 {
 	if (this->currType != OT_OBJECT)
 		return false;
 	Data::ArrayListNN<Text::String> names;
 	obj->GetObjectNames(names);
-	NotNullPtr<Text::JSONBase> json;
-	NotNullPtr<Text::String> name;
-	Data::ArrayIterator<NotNullPtr<Text::String>> it = names.Iterator();
+	NN<Text::JSONBase> json;
+	NN<Text::String> name;
+	Data::ArrayIterator<NN<Text::String>> it = names.Iterator();
 	while (it.HasNext())
 	{
 		name = it.Next();
@@ -1060,12 +1060,12 @@ Bool Text::JSONBuilder::ObjectAdd(NotNullPtr<Text::JSONObject> obj)
 			{
 			case Text::JSONType::Object:
 				this->ObjectBeginObject(name->ToCString());
-				this->ObjectAdd(NotNullPtr<Text::JSONObject>::ConvertFrom(json));
+				this->ObjectAdd(NN<Text::JSONObject>::ConvertFrom(json));
 				this->ObjectEnd();
 				break;
 			case Text::JSONType::Array:
 				this->ObjectBeginArray(name->ToCString());
-				this->ArrayAdd(NotNullPtr<Text::JSONArray>::ConvertFrom(json));
+				this->ArrayAdd(NN<Text::JSONArray>::ConvertFrom(json));
 				this->ArrayEnd();
 				break;
 			case Text::JSONType::Number:

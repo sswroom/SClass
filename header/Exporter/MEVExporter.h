@@ -24,15 +24,15 @@ namespace Exporter
 		virtual ~MEVExporter();
 
 		virtual Int32 GetName();
-		virtual SupportType IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj);
+		virtual SupportType IsObjectSupported(NN<IO::ParsedObject> pobj);
 		virtual Bool GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff);
-		virtual Bool ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param);
+		virtual Bool ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param);
 
 	private:
-		static void GetMapDirs(NotNullPtr<Map::MapEnv> env, Data::ArrayListString *dirArr, Optional<Map::MapEnv::GroupItem> group);
+		static void GetMapDirs(NN<Map::MapEnv> env, Data::ArrayListString *dirArr, Optional<Map::MapEnv::GroupItem> group);
 		static UInt32 AddString(Data::StringMap<MEVStrRecord*> *strArr, Text::String *strVal, UInt32 fileOfst);
 		static UInt32 AddString(Data::StringMap<MEVStrRecord*> *strArr, const UTF8Char *strVal, UOSInt strLen, UInt32 fileOfst);
-		static void WriteGroupItems(NotNullPtr<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group, UInt32 *stmPos, NotNullPtr<IO::SeekableStream> stm, Data::StringMap<Exporter::MEVExporter::MEVStrRecord*> *strArr, Data::ArrayListString *dirArr);
+		static void WriteGroupItems(NN<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group, UInt32 *stmPos, NN<IO::SeekableStream> stm, Data::StringMap<Exporter::MEVExporter::MEVStrRecord*> *strArr, Data::ArrayListString *dirArr);
 	};
 }
 #endif

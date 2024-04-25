@@ -18,7 +18,7 @@ public:
 		this->p = &p;
 	}
 
-	OutParam(NotNullPtr<T> p)
+	OutParam(NN<T> p)
 	{
 		this->p = p.Ptr();
 	}

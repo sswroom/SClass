@@ -18,7 +18,7 @@ IO::ParsedObject *Media::PDFDocument::SetPObjName(IO::ParsedObject *pobj, UInt32
 	return pobj;
 }
 
-Media::PDFDocument::PDFDocument(NotNullPtr<Text::String> sourceName, Text::CString version) : IO::ParsedObject(sourceName)
+Media::PDFDocument::PDFDocument(NN<Text::String> sourceName, Text::CString version) : IO::ParsedObject(sourceName)
 {
 	this->version = Text::String::New(version);
 }
@@ -60,15 +60,15 @@ Media::PDFObject *Media::PDFDocument::AddObject(UInt32 id)
 	return obj;
 }
 
-Media::ImageList *Media::PDFDocument::CreateImage(UInt32 id, NotNullPtr<Parser::ParserList> parsers)
+Media::ImageList *Media::PDFDocument::CreateImage(UInt32 id, NN<Parser::ParserList> parsers)
 {
 	Media::PDFObject *obj = this->objMap.Get(id);
 	if (obj == 0)
 		return 0;
 	if (!obj->IsImage())
 		return 0;
-	NotNullPtr<IO::StreamData> fd;
-	NotNullPtr<Text::String> filter;
+	NN<IO::StreamData> fd;
+	NN<Text::String> filter;
 	if (fd.Set(obj->GetData()) && obj->GetFilter().SetTo(filter))
 	{
 		if (filter->Equals(UTF8STRC("DCTDecode")))
@@ -84,7 +84,7 @@ Media::ImageList *Media::PDFDocument::CreateImage(UInt32 id, NotNullPtr<Parser::
 			UOSInt bpc = obj->GetBitPerComponent();
 			UOSInt width = obj->GetWidth();
 			UOSInt height = obj->GetHeight();
-			NotNullPtr<Text::String> colorSpace;
+			NN<Text::String> colorSpace;
 			if (bpc == 0 || width == 0 || height == 0)
 				return 0;
 			if (bpc == 8)

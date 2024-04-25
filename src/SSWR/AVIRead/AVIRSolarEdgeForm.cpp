@@ -7,7 +7,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSolarEdgeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSolarEdgeForm>();
+	NN<SSWR::AVIRead::AVIRSolarEdgeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSolarEdgeForm>();
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[64];
@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(AnyType userObj
 			return;
 		}
 		NEW_CLASS(me->seAPI, Net::SolarEdgeAPI(me->core->GetSocketFactory(), me->ssl, sb.ToCString()));
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		if (me->seAPI->GetCurrentVersion().SetTo(s))
 		{
 			me->txtCurrVer->SetText(s->ToCString());
@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(AnyType userObj
 			if (me->seAPI->GetSupportedVersions(&vers))
 			{
 				sb.ClearStr();
-				Data::ArrayIterator<NotNullPtr<Text::String>> it = vers.Iterator();
+				Data::ArrayIterator<NN<Text::String>> it = vers.Iterator();
 				Bool found = false;
 				while (it.HasNext())
 				{
@@ -118,8 +118,8 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteListSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSolarEdgeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSolarEdgeForm>();
-	NotNullPtr<Net::SolarEdgeAPI::Site> site;
+	NN<SSWR::AVIRead::AVIRSolarEdgeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSolarEdgeForm>();
+	NN<Net::SolarEdgeAPI::Site> site;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	if (me->lvSiteList->GetSelectedItem().GetOpt<Net::SolarEdgeAPI::Site>().SetTo(site))
@@ -183,8 +183,8 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteListSelChg(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteEnergyClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSolarEdgeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSolarEdgeForm>();
-	NotNullPtr<Net::SolarEdgeAPI::Site> site;
+	NN<SSWR::AVIRead::AVIRSolarEdgeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSolarEdgeForm>();
+	NN<Net::SolarEdgeAPI::Site> site;
 	if (me->cboSiteEnergySite->GetSelectedItem().GetOpt<Net::SolarEdgeAPI::Site>().SetTo(site) && me->seAPI)
 	{
 		Net::SolarEdgeAPI::TimeUnit timeUnit = (Net::SolarEdgeAPI::TimeUnit)me->cboSiteEnergyInterval->GetSelectedItem().GetUOSInt();
@@ -209,14 +209,14 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteEnergyClicked(AnyType use
 
 void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteEnergySizeChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSolarEdgeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSolarEdgeForm>();
+	NN<SSWR::AVIRead::AVIRSolarEdgeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSolarEdgeForm>();
 	me->UpdateSiteEnergyGraph();
 }
 
 void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSitePowerClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSolarEdgeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSolarEdgeForm>();
-	NotNullPtr<Net::SolarEdgeAPI::Site> site;
+	NN<SSWR::AVIRead::AVIRSolarEdgeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSolarEdgeForm>();
+	NN<Net::SolarEdgeAPI::Site> site;
 	if (me->cboSitePowerSite->GetSelectedItem().GetOpt<Net::SolarEdgeAPI::Site>().SetTo(site) && me->seAPI)
 	{
 		Net::SolarEdgeAPI::TimeUnit timeUnit = Net::SolarEdgeAPI::TimeUnit::QUARTER_OF_AN_HOUR;
@@ -241,7 +241,7 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSitePowerClicked(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSitePowerSizeChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSolarEdgeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSolarEdgeForm>();
+	NN<SSWR::AVIRead::AVIRSolarEdgeForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSolarEdgeForm>();
 	me->UpdateSitePowerGraph();
 }
 
@@ -289,11 +289,11 @@ Data::Timestamp SSWR::AVIRead::AVIRSolarEdgeForm::GetDefaultEndTime(const Data::
 
 void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSiteEnergyGraph()
 {
-	NotNullPtr<Media::DrawEngine> deng = this->core->GetDrawEngine();
+	NN<Media::DrawEngine> deng = this->core->GetDrawEngine();
 	Math::Size2D<UOSInt> size = this->pbSiteEnergy->GetSizeP();
 	if (this->siteEnergyList.GetCount() > 0 && size.x > 0 && size.y > 0)
 	{
-		NotNullPtr<Media::DrawImage> dimg;
+		NN<Media::DrawImage> dimg;
 		if (dimg.Set(deng->CreateImage32(size, Media::AlphaType::AT_NO_ALPHA)))
 		{
 			dimg->SetHDPI(this->GetHDPI() * 96.0 / this->GetDDPI());
@@ -326,11 +326,11 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSiteEnergyGraph()
 
 void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSitePowerGraph()
 {
-	NotNullPtr<Media::DrawEngine> deng = this->core->GetDrawEngine();
+	NN<Media::DrawEngine> deng = this->core->GetDrawEngine();
 	Math::Size2D<UOSInt> size = this->pbSitePower->GetSizeP();
 	if (this->sitePowerList.GetCount() > 0 && size.x > 0 && size.y > 0)
 	{
-		NotNullPtr<Media::DrawImage> dimg;
+		NN<Media::DrawImage> dimg;
 		if (dimg.Set(deng->CreateImage32(size, Media::AlphaType::AT_NO_ALPHA)))
 		{
 			dimg->SetHDPI(this->GetHDPI() * 96.0 / this->GetDDPI());
@@ -361,7 +361,7 @@ void SSWR::AVIRead::AVIRSolarEdgeForm::UpdateSitePowerGraph()
 	}
 }
 
-SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRSolarEdgeForm::AVIRSolarEdgeForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("SolarEdge API"));
 	this->SetFont(0, 0, 8.25, false);

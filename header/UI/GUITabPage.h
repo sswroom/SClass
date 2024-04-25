@@ -9,11 +9,11 @@ namespace UI
 	class GUITabPage : public GUIPanel
 	{
 	private:
-		NotNullPtr<UI::GUITabControl> ctrl;
+		NN<UI::GUITabControl> ctrl;
 		UOSInt index;
 		void *custObj;
 	public:
-		GUITabPage(NotNullPtr<GUICore> ui, Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUITabControl> ctrl, UOSInt index);
+		GUITabPage(NN<GUICore> ui, Optional<UI::GUIClientControl> parent, NN<UI::GUITabControl> ctrl, UOSInt index);
 		virtual ~GUITabPage();
 
 		virtual void *GetFont();

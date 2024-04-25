@@ -13,7 +13,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Text::CStringNN keyB64 = CSTR("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAu1SU1LfVLPHCozMxH2Mo4lgOEePzNm0tRgeLezV6ffAt0gunVTLw7onLRnrq0/IzW7yWR7QkrmBL7jTKEn5u+qKhbwKfBstIs+bMY2Zkp18gnTxKLxoS2tFczGkPLPgizskuemMghRniWaoLcyehkd3qqGElvW/VDL5AaWTg0nLVkjRo9z+40RQzuVaE8AkAFmxZzow3x+VJYKdjykkJ0iT9wCS0DRTXu269V264Vf/3jvredZiKRkgwlL9xNAwxXFg0x/XFw005UWVRIkdgcKWTjpBP2dPwVZ4WWC+9aGVd+Gyn1o0CLelf4rEjGoXbAAEgAqeGUxrcIlbjXfbcmwIDAQAB");
 	Text::StringBuilderUTF8 sb;
@@ -23,7 +23,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	NEW_CLASS(jwt, Crypto::Token::JWTHandler(ssl, Crypto::Token::JWSignature::Algorithm::HS256, UTF8STRC("your-256-bit-secret"), Crypto::Cert::X509Key::KeyType::Unknown));
 
 	Crypto::Token::JWTParam param;
-	NotNullPtr<Text::String> s = Text::String::New(UTF8STRC("1234567890"));
+	NN<Text::String> s = Text::String::New(UTF8STRC("1234567890"));
 	param.SetSubject(s.Ptr());
 	s->Release();
 	param.SetIssuedAt(1516239022);
@@ -93,8 +93,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	else
 	{
 		Optional<Crypto::Cert::X509Key> key = 0;
-		NotNullPtr<Crypto::Cert::X509Key> nnkey;
-		NotNullPtr<Text::String> s = Text::String::New(CSTR("JWTRSAPub.key"));
+		NN<Crypto::Cert::X509Key> nnkey;
+		NN<Text::String> s = Text::String::New(CSTR("JWTRSAPub.key"));
 		Crypto::Cert::X509File *x509;// = Parser::FileParser::X509Parser::ParseBuff(Data::ByteArray(keyBuff, keySize), s);
 		NEW_CLASS(x509, Crypto::Cert::X509PubKey(s, Data::ByteArrayR(keyBuff, keySize)));
 		s->Release();

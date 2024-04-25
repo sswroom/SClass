@@ -19,7 +19,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 
-OSInt __stdcall Map::MapDrawLayer::ObjectCompare(NotNullPtr<ObjectInfo> obj1, NotNullPtr<ObjectInfo> obj2)
+OSInt __stdcall Map::MapDrawLayer::ObjectCompare(NN<ObjectInfo> obj1, NN<ObjectInfo> obj2)
 {
 	if (obj1->objDist > obj2->objDist)
 	{
@@ -43,7 +43,7 @@ OSInt __stdcall Map::MapDrawLayer::ObjectCompare(NotNullPtr<ObjectInfo> obj1, No
 	}
 }
 
-Map::MapDrawLayer::MapDrawLayer(NotNullPtr<Text::String> sourceName, UOSInt nameCol, Text::String *layerName, NotNullPtr<Math::CoordinateSystem> csys) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
+Map::MapDrawLayer::MapDrawLayer(NN<Text::String> sourceName, UOSInt nameCol, Text::String *layerName, NN<Math::CoordinateSystem> csys) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
 {
 	this->nameCol = nameCol;
 	this->layerName = SCOPY_STRING(layerName);
@@ -58,7 +58,7 @@ Map::MapDrawLayer::MapDrawLayer(NotNullPtr<Text::String> sourceName, UOSInt name
 	this->flags = 0;
 }
 
-Map::MapDrawLayer::MapDrawLayer(Text::CStringNN sourceName, UOSInt nameCol, Text::CString layerName, NotNullPtr<Math::CoordinateSystem> csys) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
+Map::MapDrawLayer::MapDrawLayer(Text::CStringNN sourceName, UOSInt nameCol, Text::CString layerName, NN<Math::CoordinateSystem> csys) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
 {
 	this->nameCol = nameCol;
 	this->layerName = Text::String::New(layerName).Ptr();
@@ -98,9 +98,9 @@ Int64 Map::MapDrawLayer::GetTimeEndTS() const
 	return 0;
 }
 
-NotNullPtr<Map::MapView> Map::MapDrawLayer::CreateMapView(Math::Size2DDbl scnSize)
+NN<Map::MapView> Map::MapDrawLayer::CreateMapView(Math::Size2DDbl scnSize)
 {
-	NotNullPtr<Map::MapView> view;
+	NN<Map::MapView> view;
 	Math::RectAreaDbl minMax;
 	this->GetBounds(minMax);
 	NEW_CLASSNN(view, Map::ScaledMapView(scnSize, minMax.GetCenter(), 10000, this->csys->IsProjected()));
@@ -124,7 +124,7 @@ void Map::MapDrawLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 {
 }
 
-UOSInt Map::MapDrawLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt Map::MapDrawLayer::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	if (schemaName.leng != 0)
 		return 0;
@@ -134,7 +134,7 @@ UOSInt Map::MapDrawLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<D
 
 Optional<DB::DBReader> Map::MapDrawLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	NEW_CLASSNN(r, Map::MapLayerReader(*this));
 	return r;
 }
@@ -143,7 +143,7 @@ DB::TableDef *Map::MapDrawLayer::GetTableDef(Text::CString schemaName, Text::CSt
 {
 	DB::TableDef *tab;
 	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
-	NotNullPtr<DB::ColDef> col;
+	NN<DB::ColDef> col;
 	UOSInt i = 0;
 	UOSInt j = this->GetColumnCnt();
 	while (i < j)
@@ -156,13 +156,13 @@ DB::TableDef *Map::MapDrawLayer::GetTableDef(Text::CString schemaName, Text::CSt
 	return tab;
 }
 
-void Map::MapDrawLayer::CloseReader(NotNullPtr<DB::DBReader> r)
+void Map::MapDrawLayer::CloseReader(NN<DB::DBReader> r)
 {
 	Map::MapLayerReader *rdr = (Map::MapLayerReader*)r.Ptr();
 	DEL_CLASS(rdr);
 }
 
-void Map::MapDrawLayer::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void Map::MapDrawLayer::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 }
 
@@ -180,9 +180,9 @@ void Map::MapDrawLayer::SetNameCol(UOSInt nameCol)
 	this->nameCol = nameCol;
 }
 
-NotNullPtr<Text::String> Map::MapDrawLayer::GetName() const
+NN<Text::String> Map::MapDrawLayer::GetName() const
 {
-	NotNullPtr<Text::String> layerName;
+	NN<Text::String> layerName;
 	if (layerName.Set(this->layerName) && this->layerName->leng > 0)
 	{
 		return layerName;
@@ -198,12 +198,12 @@ IO::ParserType Map::MapDrawLayer::GetParserType() const
 	return IO::ParserType::MapLayer;
 }
 
-NotNullPtr<Math::CoordinateSystem> Map::MapDrawLayer::GetCoordinateSystem()
+NN<Math::CoordinateSystem> Map::MapDrawLayer::GetCoordinateSystem()
 {
 	return this->csys;
 }
 
-void Map::MapDrawLayer::SetCoordinateSystem(NotNullPtr<Math::CoordinateSystem> csys)
+void Map::MapDrawLayer::SetCoordinateSystem(NN<Math::CoordinateSystem> csys)
 {
 	this->csys.Delete();
 	this->csys = csys;
@@ -275,7 +275,7 @@ Bool Map::MapDrawLayer::IsError() const
 	return false;
 }
 
-Bool Map::MapDrawLayer::GetPGLabel(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OptOut<Math::Coord2DDbl> outCoord, UOSInt strIndex)
+Bool Map::MapDrawLayer::GetPGLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OptOut<Math::Coord2DDbl> outCoord, UOSInt strIndex)
 {
 	Bool retVal = false;
 
@@ -324,7 +324,7 @@ Bool Map::MapDrawLayer::GetPGLabel(NotNullPtr<Text::StringBuilderUTF8> sb, Math:
 	return retVal;
 }
 
-Bool Map::MapDrawLayer::GetPLLabel(NotNullPtr<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> outCoord, UOSInt strIndex)
+Bool Map::MapDrawLayer::GetPLLabel(NN<Text::StringBuilderUTF8> sb, Math::Coord2DDbl coord, OutParam<Math::Coord2DDbl> outCoord, UOSInt strIndex)
 {
 	Bool retVal = 0;
 	Map::DrawLayerType layerType = this->GetLayerType();
@@ -383,7 +383,7 @@ Bool Map::MapDrawLayer::CanQuery()
 	return false;
 }
 
-Bool Map::MapDrawLayer::QueryInfos(Math::Coord2DDbl coord, NotNullPtr<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NotNullPtr<Data::ArrayList<UOSInt>> valueOfstList, NotNullPtr<Data::ArrayListStringNN> nameList, NotNullPtr<Data::ArrayListNN<Text::String>> valueList)
+Bool Map::MapDrawLayer::QueryInfos(Math::Coord2DDbl coord, NN<Data::ArrayListNN<Math::Geometry::Vector2D>> vecList, NN<Data::ArrayList<UOSInt>> valueOfstList, NN<Data::ArrayListStringNN> nameList, NN<Data::ArrayListNN<Text::String>> valueList)
 {
 	return false;
 }
@@ -427,7 +427,7 @@ Int64 Map::MapDrawLayer::GetNearestObjectId(GetObjectSess *session, Math::Coord2
 	return nearObjId;
 }
 
-OSInt Map::MapDrawLayer::GetNearObjects(GetObjectSess *session, NotNullPtr<Data::ArrayListNN<ObjectInfo>> objList, Math::Coord2DDbl pt, Double maxDist)
+OSInt Map::MapDrawLayer::GetNearObjects(GetObjectSess *session, NN<Data::ArrayListNN<ObjectInfo>> objList, Math::Coord2DDbl pt, Double maxDist)
 {
 	Data::ArrayListInt64 objIds;
 	Int32 blkSize = this->CalBlockSize();
@@ -447,7 +447,7 @@ OSInt Map::MapDrawLayer::GetNearObjects(GetObjectSess *session, NotNullPtr<Data:
 	Math::Coord2DDbl currPt;
 	Math::Coord2DDbl nearPt = Math::Coord2DDbl(0, 0);
 	Double sqrMaxDist = maxDist * maxDist;
-	NotNullPtr<ObjectInfo> objInfo;
+	NN<ObjectInfo> objInfo;
 	OSInt ret = 0;
 
 	while (i-- > 0)
@@ -474,7 +474,7 @@ OSInt Map::MapDrawLayer::GetNearObjects(GetObjectSess *session, NotNullPtr<Data:
 
 	if (ret > 0)
 	{
-		Data::Sort::ArtificialQuickSortFunc<NotNullPtr<ObjectInfo>>::Sort(objList, ObjectCompare);
+		Data::Sort::ArtificialQuickSortFunc<NN<ObjectInfo>>::Sort(objList, ObjectCompare);
 	}
 	else if (nearObjId != -1)
 	{
@@ -488,9 +488,9 @@ OSInt Map::MapDrawLayer::GetNearObjects(GetObjectSess *session, NotNullPtr<Data:
 	return ret;
 }
 
-void Map::MapDrawLayer::FreeObjects(NotNullPtr<Data::ArrayListNN<ObjectInfo>> objList)
+void Map::MapDrawLayer::FreeObjects(NN<Data::ArrayListNN<ObjectInfo>> objList)
 {
-	NotNullPtr<ObjectInfo> objInfo;
+	NN<ObjectInfo> objInfo;
 	UOSInt i;
 	i = objList->GetCount();
 	while (i-- > 0)
@@ -501,17 +501,17 @@ void Map::MapDrawLayer::FreeObjects(NotNullPtr<Data::ArrayListNN<ObjectInfo>> ob
 	objList->Clear();
 }
 
-NotNullPtr<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
+NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	UOSInt *ofsts;
 	const UTF8Char **sptrs;
-	NotNullPtr<Map::VectorLayer> lyr;
+	NN<Map::VectorLayer> lyr;
 	Data::ArrayListInt64 objIds;
 	Math::Geometry::Vector2D *vec;
-	NotNullPtr<Math::Geometry::Vector2D> nnvec;
+	NN<Math::Geometry::Vector2D> nnvec;
 	NameArray *nameArr;
 	GetObjectSess *sess;
 	UOSInt i;
@@ -538,7 +538,7 @@ NotNullPtr<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 			sptrs[i] = 0;
 		}
 	}
-	NotNullPtr<Math::CoordinateSystem> csys = this->csys->Clone();
+	NN<Math::CoordinateSystem> csys = this->csys->Clone();
 	NEW_CLASSNN(lyr, Map::VectorLayer(this->GetLayerType(), this->sourceName, k, (const UTF8Char**)sptrs, csys, this->GetNameCol(), this->layerName));
 
 	sess = this->BeginGetObject();
@@ -620,7 +620,7 @@ Text::SearchIndexer *Map::MapDrawLayer::CreateSearchIndexer(Text::TextAnalyzer *
 	return searching;
 }
 
-UOSInt Map::MapDrawLayer::SearchString(NotNullPtr<Data::ArrayListString> outArr, Text::SearchIndexer *srchInd, NameArray *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex)
+UOSInt Map::MapDrawLayer::SearchString(NN<Data::ArrayListString> outArr, Text::SearchIndexer *srchInd, NameArray *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex)
 {
 	Text::PString s;
 
@@ -659,7 +659,7 @@ UOSInt Map::MapDrawLayer::SearchString(NotNullPtr<Data::ArrayListString> outArr,
 	return resCnt;
 }
 
-void Map::MapDrawLayer::ReleaseSearchStr(NotNullPtr<Data::ArrayListString> strArr)
+void Map::MapDrawLayer::ReleaseSearchStr(NN<Data::ArrayListString> strArr)
 {
 	LIST_FREE_STRING(strArr);
 }
@@ -687,7 +687,7 @@ Math::Geometry::Vector2D *Map::MapDrawLayer::GetVectorByStr(Text::SearchIndexer 
 			}
 			else
 			{
-				NotNullPtr<Math::Geometry::Vector2D> tmpVec;
+				NN<Math::Geometry::Vector2D> tmpVec;
 				if (tmpVec.Set(this->GetNewVectorById(session, objIds.GetItem(i))))
 				{
 					vec->JoinVector(tmpVec);
@@ -726,7 +726,7 @@ void Map::MapDrawLayer::SetPGStyle(UInt32 pgColor)
 	this->pgColor = pgColor;
 }
 
-void Map::MapDrawLayer::SetIconStyle(NotNullPtr<Media::SharedImage> iconImg, OSInt iconSpotX, OSInt iconSpotY)
+void Map::MapDrawLayer::SetIconStyle(NN<Media::SharedImage> iconImg, OSInt iconSpotX, OSInt iconSpotY)
 {
 	this->iconImg.Delete();
 	this->iconImg = iconImg->Clone();
@@ -823,7 +823,7 @@ Int64 Map::MapLayerReader::GetCurrObjId()
 	return this->objIds.GetItem((UOSInt)this->currIndex);
 }
 
-Map::MapLayerReader::MapLayerReader(NotNullPtr<Map::MapDrawLayer> layer) : DB::DBReader()
+Map::MapLayerReader::MapLayerReader(NN<Map::MapDrawLayer> layer) : DB::DBReader()
 {
 	this->layer = layer;
 
@@ -877,7 +877,7 @@ WChar *Map::MapLayerReader::GetStr(UOSInt colIndex, WChar *buff)
 {
 	if (colIndex <= 0)
 	{
-		NotNullPtr<Math::Geometry::Vector2D> vec;
+		NN<Math::Geometry::Vector2D> vec;
 		if (!this->GetVector(0).SetTo(vec))
 			return 0;
 		Math::WKTWriter writer;
@@ -898,11 +898,11 @@ WChar *Map::MapLayerReader::GetStr(UOSInt colIndex, WChar *buff)
 	return 0;
 }
 
-Bool Map::MapLayerReader::GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Map::MapLayerReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	if (colIndex <= 0)
 	{
-		NotNullPtr<Math::Geometry::Vector2D> vec;
+		NN<Math::Geometry::Vector2D> vec;
 		if (!this->GetVector(0).SetTo(vec))
 			return 0;
 		Math::WKTWriter writer;
@@ -917,7 +917,7 @@ Optional<Text::String> Map::MapLayerReader::GetNewStr(UOSInt colIndex)
 {
 	if (colIndex <= 0)
 	{
-		NotNullPtr<Math::Geometry::Vector2D> vec;
+		NN<Math::Geometry::Vector2D> vec;
 		if (!this->GetVector(0).SetTo(vec))
 			return 0;
 		Math::WKTWriter writer;
@@ -940,7 +940,7 @@ UTF8Char *Map::MapLayerReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt bu
 {
 	if (colIndex <= 0)
 	{
-		NotNullPtr<Math::Geometry::Vector2D> vec;
+		NN<Math::Geometry::Vector2D> vec;
 		if (!this->GetVector(0).SetTo(vec))
 			return 0;
 		Math::WKTWriter writer;
@@ -1010,7 +1010,7 @@ Optional<Math::Geometry::Vector2D> Map::MapLayerReader::GetVector(UOSInt colInde
 
 }
 
-Bool Map::MapLayerReader::GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
+Bool Map::MapLayerReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 {
 	return false;
 }
@@ -1037,16 +1037,16 @@ DB::DBUtil::ColType Map::MapLayerReader::GetColType(UOSInt colIndex, OptOut<UOSI
 	return this->layer->GetColumnType(colIndex - 1, colSize);
 }
 
-Bool Map::MapLayerReader::GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Map::MapLayerReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	return GetColDefV(colIndex, colDef, this->layer);
 }
 
-Bool Map::MapLayerReader::GetColDefV(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef, NotNullPtr<Map::MapDrawLayer> layer)
+Bool Map::MapLayerReader::GetColDefV(UOSInt colIndex, NN<DB::ColDef> colDef, NN<Map::MapDrawLayer> layer)
 {
 	if (colIndex == 0)
 	{
-		NotNullPtr<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
+		NN<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
 		colDef->SetColType(DB::DBUtil::CT_Vector);
 		colDef->SetColName(CSTR("Shape"));
 		switch (layer->GetLayerType())

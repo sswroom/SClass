@@ -14,27 +14,27 @@ namespace SSWR
 		class OrganImageWebForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<OrganEnv> env;
+			NN<OrganEnv> env;
 			Text::String *srcURL;
 			Text::String *location;
 
-			NotNullPtr<UI::GUILabel> lblId;
-			NotNullPtr<UI::GUITextBox> txtId;
-			NotNullPtr<UI::GUILabel> lblFileName;
-			NotNullPtr<UI::GUITextBox> txtFileName;
-			NotNullPtr<UI::GUILabel> lblImageURL;
-			NotNullPtr<UI::GUITextBox> txtImageURL;
-			NotNullPtr<UI::GUILabel> lblSourceURL;
-			NotNullPtr<UI::GUITextBox> txtSourceURL;
-			NotNullPtr<UI::GUILabel> lblLocation;
-			NotNullPtr<UI::GUITextBox> txtLocation;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUILabel> lblId;
+			NN<UI::GUITextBox> txtId;
+			NN<UI::GUILabel> lblFileName;
+			NN<UI::GUITextBox> txtFileName;
+			NN<UI::GUILabel> lblImageURL;
+			NN<UI::GUITextBox> txtImageURL;
+			NN<UI::GUILabel> lblSourceURL;
+			NN<UI::GUITextBox> txtSourceURL;
+			NN<UI::GUILabel> lblLocation;
+			NN<UI::GUITextBox> txtLocation;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			OrganImageWebForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env, NN<OrganImageItem> userFile, NN<SSWR::OrganMgr::WebFileInfo> wfile);
+			OrganImageWebForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<OrganEnv> env, NN<OrganImageItem> userFile, NN<SSWR::OrganMgr::WebFileInfo> wfile);
 			virtual ~OrganImageWebForm();
 
 			virtual void OnMonitorChanged();

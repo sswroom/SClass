@@ -30,8 +30,8 @@ namespace Media
 
 		typedef struct
 		{
-			NotNullPtr<Text::String> profileName;
-			NotNullPtr<Text::String> suffix;
+			NN<Text::String> profileName;
+			NN<Text::String> suffix;
 			UInt32 targetSizeX;
 			UInt32 targetSizeY;
 			SizeType sizeType;
@@ -54,7 +54,7 @@ namespace Media
 
 		void ReleaseProfile(ResizeProfile *profile);
 	public:
-		ProfiledResizer(NotNullPtr<Parser::ParserList> parsers, Media::ColorManagerSess *colorSess, NotNullPtr<Media::DrawEngine> deng);
+		ProfiledResizer(NN<Parser::ParserList> parsers, Media::ColorManagerSess *colorSess, NN<Media::DrawEngine> deng);
 		~ProfiledResizer();
 
 		UOSInt GetProfileCount();

@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRPushServerForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPushServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPushServerForm>();
+	NN<SSWR::AVIRead::AVIRPushServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPushServerForm>();
 	if (me->svr)
 	{
 		DEL_CLASS(me->svr);
@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRPushServerForm::OnStartClicked(AnyType userObj
 	me->txtPort->SetReadOnly(true);
 }
 
-SSWR::AVIRead::AVIRPushServerForm::AVIRPushServerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 156, ui)
+SSWR::AVIRead::AVIRPushServerForm::AVIRPushServerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 156, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("PushServer"));

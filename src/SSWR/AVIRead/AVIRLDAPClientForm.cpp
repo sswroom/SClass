@@ -4,7 +4,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLDAPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPClientForm>();
+	NN<SSWR::AVIRead::AVIRLDAPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPClientForm>();
 	if (me->cli)
 	{
 		me->cli->Unbind();
@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(AnyType userO
 	Text::StringBuilderUTF8 sb;
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
-	NotNullPtr<Net::SocketFactory> sockf = me->core->GetSocketFactory();
+	NN<Net::SocketFactory> sockf = me->core->GetSocketFactory();
 	me->txtHost->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
@@ -71,7 +71,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLDAPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPClientForm>();
+	NN<SSWR::AVIRead::AVIRLDAPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPClientForm>();
 	if (me->cli == 0)
 	{
 		return;
@@ -111,8 +111,8 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchClicked(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchResultSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRLDAPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPClientForm>();
-	NotNullPtr<Net::LDAPClient::SearchResObject> obj;
+	NN<SSWR::AVIRead::AVIRLDAPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPClientForm>();
+	NN<Net::LDAPClient::SearchResObject> obj;
 	me->lvSearch->ClearItems();
 	if (me->cboSearchResult->GetSelectedItem().GetOpt<Net::LDAPClient::SearchResObject>().SetTo(obj) && obj->items)
 	{
@@ -135,7 +135,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchResultSelChg(AnyType u
 	}
 }
 
-SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("LDAP Client"));

@@ -80,7 +80,7 @@ public:
 		return Text::StrUTF8_WChar(buff, this->row[colIndex]->v, 0);
 	}
 
-	virtual Bool GetStr(UOSInt colIndex, NotNullPtr<Text::StringBuilderUTF8> sb)
+	virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 	{
 		if (this->row == 0)
 			return false;
@@ -181,7 +181,7 @@ public:
 		return 0;
 	}
 
-	virtual Bool GetUUID(UOSInt colIndex, NotNullPtr<Data::UUID> uuid)
+	virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 	{
 		return false;
 	}
@@ -199,7 +199,7 @@ public:
 
 	virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff)
 	{
-		NotNullPtr<const UTF8Char> name;
+		NN<const UTF8Char> name;
 		if (this->data->colList.GetItem(colIndex).SetTo(name))
 		{
 			return Text::StrConcat(buff, name.Ptr());
@@ -215,14 +215,14 @@ public:
 		return DB::DBUtil::CT_VarUTF8Char;
 	}
 
-	virtual Bool GetColDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+	virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 	{
 		if (colIndex >= this->data->colList.GetCount())
 		{
 			colDef->SetColType(DB::DBUtil::CT_Unknown);
 			return false;
 		}
-		NotNullPtr<const UTF8Char> colName;
+		NN<const UTF8Char> colName;
 		if (!this->data->colList.GetItem(colIndex).SetTo(colName))
 		{
 			colDef->SetColType(DB::DBUtil::CT_Unknown);
@@ -251,10 +251,10 @@ DB::TextDB::~TextDB()
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	NotNullPtr<const Data::ArrayList<DBData*>> dbList = this->dbMap.GetValues();
+	NN<const Data::ArrayList<DBData*>> dbList = this->dbMap.GetValues();
 	DBData *data;
 	Text::String **vals;
-	NotNullPtr<const UTF8Char> sptr;
+	NN<const UTF8Char> sptr;
 	k = dbList->GetCount();
 	while (k-- > 0)
 	{
@@ -281,9 +281,9 @@ DB::TextDB::~TextDB()
 	}
 }
 
-UOSInt DB::TextDB::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt DB::TextDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
-	NotNullPtr<Data::ArrayList<Text::String*>> keys = this->dbMap.GetKeys();
+	NN<Data::ArrayList<Text::String*>> keys = this->dbMap.GetKeys();
 	UOSInt i = 0;
 	UOSInt j = keys->GetCount();
 	while (i < j)
@@ -316,7 +316,7 @@ Optional<DB::DBReader> DB::TextDB::QueryTableData(Text::CString schemaName, Text
 	{
 		return 0;
 	}
-	NotNullPtr<DB::DBReader> reader;
+	NN<DB::DBReader> reader;
 	NEW_CLASSNN(reader, TextDBReader(data));
 	return reader;
 }
@@ -344,9 +344,9 @@ DB::TableDef *DB::TextDB::GetTableDef(Text::CString schemaName, Text::CString ta
 		return 0;
 	}
 	DB::TableDef *tab;
-	NotNullPtr<DB::ColDef> colDef;
+	NN<DB::ColDef> colDef;
 	NEW_CLASS(tab, DB::TableDef(schemaName, data->name->ToCString()));
-	Data::ArrayIterator<NotNullPtr<const UTF8Char>> it = data->colList.Iterator();
+	Data::ArrayIterator<NN<const UTF8Char>> it = data->colList.Iterator();
 	while (it.HasNext())
 	{
 		NEW_CLASSNN(colDef, DB::ColDef(Text::String::NewEmpty()));
@@ -364,13 +364,13 @@ DB::TableDef *DB::TextDB::GetTableDef(Text::CString schemaName, Text::CString ta
 	return tab;
 }
 
-void DB::TextDB::CloseReader(NotNullPtr<DBReader> r)
+void DB::TextDB::CloseReader(NN<DBReader> r)
 {
 	TextDBReader *reader = (TextDBReader*)r.Ptr();
 	DEL_CLASS(reader);
 }
 
-void DB::TextDB::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void DB::TextDB::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 
 }

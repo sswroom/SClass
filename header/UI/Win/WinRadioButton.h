@@ -13,7 +13,7 @@ namespace UI
 
 			void ChangeSelected(Bool selVal);
 		public:
-			WinRadioButton(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool selected);
+			WinRadioButton(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool selected);
 			virtual ~WinRadioButton();
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);

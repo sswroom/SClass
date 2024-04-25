@@ -29,10 +29,10 @@ namespace SSWR
 			} LineLayer;
 
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Media::ColorManagerSess> colorSess;
-			NotNullPtr<Map::MapEnv> env;
-			NotNullPtr<Media::DrawEngine> eng;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Media::ColorManagerSess> colorSess;
+			NN<Map::MapEnv> env;
+			NN<Media::DrawEngine> eng;
 			UOSInt lineStyle;
 			LineLayer *currLayer;
 			Data::ArrayList<LineLayer*> *lineLayers;
@@ -40,32 +40,32 @@ namespace SSWR
 			Media::StaticImage *prevsImage;
 			Bool thickChging;
 
-			NotNullPtr<UI::GUIPanel> pnlButtons;
-			NotNullPtr<UI::GUIPanel> pnlStyle;
-			NotNullPtr<UI::GUIGroupBox> grpLayer;
-			NotNullPtr<UI::GUIPanel> pnlLayers;
-			NotNullPtr<UI::GUIPanel> pnlLayersButton;
-			NotNullPtr<UI::GUIPanel> pnlLayer;
+			NN<UI::GUIPanel> pnlButtons;
+			NN<UI::GUIPanel> pnlStyle;
+			NN<UI::GUIGroupBox> grpLayer;
+			NN<UI::GUIPanel> pnlLayers;
+			NN<UI::GUIPanel> pnlLayersButton;
+			NN<UI::GUIPanel> pnlLayer;
 
-			NotNullPtr<UI::GUIPictureBox> pbPreview;
-			NotNullPtr<UI::GUILabel> lblName;
-			NotNullPtr<UI::GUITextBox> txtName;
-			NotNullPtr<UI::GUIListBox> lbLayer;
-			NotNullPtr<UI::GUIButton> btnNewLayer;
-			NotNullPtr<UI::GUIButton> btnRemoveLayer;
+			NN<UI::GUIPictureBox> pbPreview;
+			NN<UI::GUILabel> lblName;
+			NN<UI::GUITextBox> txtName;
+			NN<UI::GUIListBox> lbLayer;
+			NN<UI::GUIButton> btnNewLayer;
+			NN<UI::GUIButton> btnRemoveLayer;
 
-			NotNullPtr<UI::GUILabel> lblColor;
-			NotNullPtr<UI::GUILabel> lblAlpha;
-			NotNullPtr<UI::GUILabel> lblThick;
-			NotNullPtr<UI::GUILabel> lblPattern;
-			NotNullPtr<UI::GUIPictureBox> pbColor;
-			NotNullPtr<UI::GUIHScrollBar> hsbAlpha;
-			NotNullPtr<UI::GUITextBox> txtThick;
-			NotNullPtr<UI::GUIHScrollBar> hsbThick;
-			NotNullPtr<UI::GUITextBox> txtPattern;
+			NN<UI::GUILabel> lblColor;
+			NN<UI::GUILabel> lblAlpha;
+			NN<UI::GUILabel> lblThick;
+			NN<UI::GUILabel> lblPattern;
+			NN<UI::GUIPictureBox> pbColor;
+			NN<UI::GUIHScrollBar> hsbAlpha;
+			NN<UI::GUITextBox> txtThick;
+			NN<UI::GUIHScrollBar> hsbThick;
+			NN<UI::GUITextBox> txtPattern;
 
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
 			void LineStyleUpdated();
 			void UpdatePreview();
@@ -82,12 +82,12 @@ namespace SSWR
 
 			static void FreeLayer(LineLayer *lyr);
 		public:
-			AVIRGISLineEditForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::MapEnv> env, NotNullPtr<Media::DrawEngine> eng, UOSInt lineStyle);
+			AVIRGISLineEditForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Media::DrawEngine> eng, UOSInt lineStyle);
 			virtual ~AVIRGISLineEditForm();
 
 			virtual void OnMonitorChanged();
-			virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
-			virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgbParam);
+			virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
+			virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam);
 		};
 	}
 }

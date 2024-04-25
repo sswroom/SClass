@@ -8,9 +8,9 @@
 
 #define NMEAMAXSIZE 128
 
-void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(AnyType userObj, NotNullPtr<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates)
+void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(AnyType userObj, NN<Map::GPSTrack::GPSRecord3> record, Data::DataArray<Map::ILocationService::SateStatus> sates)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
+	NN<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	Double dist;
 	Sync::MutexUsage mutUsage(me->recMut);
 	MemCopyNO(&me->recCurr, record.Ptr(), sizeof(Map::GPSTrack::GPSRecord3));
@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(AnyType userObj)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	NotNullPtr<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
+	NN<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	Data::DateTime dt;
 
 	if (me->locSvc->IsDown() != me->lastDown)
@@ -163,7 +163,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKFirmwareClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
+	NN<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	IO::Device::MTKGPSNMEA *mtk = (IO::Device::MTKGPSNMEA*)me->locSvc;
 	if (mtk->QueryFirmware())
 	{
@@ -176,11 +176,11 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKFirmwareClicked(AnyType u
 
 void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKLogDownloadClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
+	NN<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	IO::Device::MTKGPSNMEA *mtk = (IO::Device::MTKGPSNMEA*)me->locSvc;
 	if (me->mapNavi)
 	{
-		NotNullPtr<Map::GPSTrack> gpsTrk;
+		NN<Map::GPSTrack> gpsTrk;
 		NEW_CLASSNN(gpsTrk, Map::GPSTrack(CSTR("MTK_GPS"), true, 0, CSTR_NULL));
 		if (mtk->ParseLog(gpsTrk))
 		{
@@ -196,7 +196,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKLogDownloadClicked(AnyTyp
 
 void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKLogDeleteClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
+	NN<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	IO::Device::MTKGPSNMEA *mtk = (IO::Device::MTKGPSNMEA*)me->locSvc;
 	if (me->ui->ShowMsgYesNo(CSTR("Are you sure to delete GPS log data?"), CSTR("MTK GPS Tracker"), me))
 	{
@@ -213,14 +213,14 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKLogDeleteClicked(AnyType 
 
 void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKTestClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
+	NN<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	IO::Device::MTKGPSNMEA *mtk = (IO::Device::MTKGPSNMEA*)me->locSvc;
 	mtk->GetLogFormat();
 }
 
 void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKFactoryResetClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
+	NN<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	if (me->ui->ShowMsgYesNo(CSTR("Are you sure to factory reset the device?"), CSTR("Question"), me))
 	{
 		IO::Device::MTKGPSNMEA *mtk = (IO::Device::MTKGPSNMEA*)me->locSvc;
@@ -230,7 +230,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKFactoryResetClicked(AnyTy
 
 void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnDispOffClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
+	NN<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	me->dispOffTime = dt.ToTicks();
@@ -240,13 +240,13 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnDispOffClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTopMostChg(AnyType userObj, Bool newState)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
+	NN<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	me->SetAlwaysOnTop(newState);
 }
 
 void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnNMEALine(AnyType userObj, const UTF8Char *line, UOSInt lineLen)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
+	NN<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	Sync::MutexUsage mutUsage(me->nmeaMut);
 	SDEL_STRING(me->nmeaBuff[me->nmeaIndex]);
 	me->nmeaBuff[me->nmeaIndex] = Text::String::New(line, lineLen).Ptr();
@@ -256,18 +256,18 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnNMEALine(AnyType userObj, co
 
 void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::SignalFocusLost(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
+	NN<SSWR::AVIRead::AVIRGPSTrackerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGPSTrackerForm>();
 	me->DispOffFocusLost();
 }
 
-NotNullPtr<UI::GUIButton> SSWR::AVIRead::AVIRGPSTrackerForm::NewDisplayOffButton(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN txt)
+NN<UI::GUIButton> SSWR::AVIRead::AVIRGPSTrackerForm::NewDisplayOffButton(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN txt)
 {
-	NotNullPtr<UI::GUIButton> btn = ui->NewButton(parent, txt);
+	NN<UI::GUIButton> btn = ui->NewButton(parent, txt);
 	btn->HandleFocusLost(SignalFocusLost, this);
 	return btn;
 }
 
-SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Map::ILocationService *locSvc, Bool toRelease) : UI::GUIForm(parent, 340, 540, ui)
+SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Map::ILocationService *locSvc, Bool toRelease) : UI::GUIForm(parent, 340, 540, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("GPS Tracker"));

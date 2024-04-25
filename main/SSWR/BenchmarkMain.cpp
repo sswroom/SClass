@@ -6,11 +6,11 @@
 #include "SSWR/AVIRead/AVIRBenchmarkForm.h"
 #include "UI/GUICore.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	NotNullPtr<UI::GUICore> ui;
+	NN<UI::GUICore> ui;
 	SSWR::AVIRead::AVIRBenchmarkForm *frm;
-	NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+	NN<SSWR::AVIRead::AVIRCore> core;
 	Manage::ExceptionRecorder *exHdlr;
 
 	MemSetLogFile(UTF8STRC("Memory.log"));

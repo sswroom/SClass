@@ -9,9 +9,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::NTPServer::PacketHdlr(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::NTPServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	NotNullPtr<Net::NTPServer> me = userData.GetNN<Net::NTPServer>();
+	NN<Net::NTPServer> me = userData.GetNN<Net::NTPServer>();
 	UInt8 repBuff[48];
 	if (dataSize >= 48)
 	{
@@ -55,9 +55,9 @@ void __stdcall Net::NTPServer::PacketHdlr(NotNullPtr<const Net::SocketUtil::Addr
 	}
 }
 
-void __stdcall Net::NTPServer::CheckThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall Net::NTPServer::CheckThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<Net::NTPServer> me = thread->GetUserObj().GetNN<Net::NTPServer>();
+	NN<Net::NTPServer> me = thread->GetUserObj().GetNN<Net::NTPServer>();
 	Net::SocketUtil::AddressInfo addr;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -107,7 +107,7 @@ void __stdcall Net::NTPServer::CheckThread(NotNullPtr<Sync::Thread> thread)
 	}
 }
 
-void Net::NTPServer::InitServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port)
+void Net::NTPServer::InitServer(NN<Net::SocketFactory> sockf, UInt16 port)
 {
 	Net::UDPServer *svr;
 	NEW_CLASS(svr, Net::UDPServer(sockf, 0, port, CSTR_NULL, PacketHdlr, this, this->log, CSTR_NULL, 2, false));
@@ -121,7 +121,7 @@ void Net::NTPServer::InitServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 por
 	}
 }
 
-Net::NTPServer::NTPServer(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log, Text::CString timeServer) : thread(CheckThread, this, CSTR("NTPServer"))
+Net::NTPServer::NTPServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log, Text::CString timeServer) : thread(CheckThread, this, CSTR("NTPServer"))
 {
 	this->sockf = sockf;
 	this->svr = 0;

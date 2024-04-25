@@ -128,8 +128,8 @@ UOSInt Media::AVIUtl::AUIPlugin::LoadFile(const Char *fileName, Data::ArrayList<
 		return 0;
 	
 	AUIInput *input;
-	NotNullPtr<Media::FrameInfo> frameInfo;
-	NotNullPtr<Media::AudioFormat> audioFormat;
+	NN<Media::FrameInfo> frameInfo;
+	NN<Media::AudioFormat> audioFormat;
 	input = MemAlloc(AUIInput, 1);
 	input->hand = hand;
 	input->useCnt = 0;
@@ -181,7 +181,7 @@ Bool Media::AVIUtl::AUIPlugin::CloseInput(void *hand)
 	return pluginTab->func_close((INPUT_HANDLE)hand) == TRUE;
 }
 
-Bool Media::AVIUtl::AUIPlugin::GetInputVideoInfo(void *hand, NotNullPtr<Media::FrameInfo> frameInfo, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UInt32> frameCnt)
+Bool Media::AVIUtl::AUIPlugin::GetInputVideoInfo(void *hand, NN<Media::FrameInfo> frameInfo, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UInt32> frameCnt)
 {
 	INPUT_PLUGIN_TABLE *pluginTab = (INPUT_PLUGIN_TABLE*)this->plugin->pluginTable;
 	INPUT_INFO info;
@@ -243,7 +243,7 @@ Bool Media::AVIUtl::AUIPlugin::GetInputVideoInfo(void *hand, NotNullPtr<Media::F
 	return true;
 }
 
-Bool Media::AVIUtl::AUIPlugin::GetInputAudioInfo(void *hand, NotNullPtr<Media::AudioFormat> af, OutParam<UInt32> nSamples)
+Bool Media::AVIUtl::AUIPlugin::GetInputAudioInfo(void *hand, NN<Media::AudioFormat> af, OutParam<UInt32> nSamples)
 {
 	INPUT_PLUGIN_TABLE *pluginTab = (INPUT_PLUGIN_TABLE*)this->plugin->pluginTable;
 	INPUT_INFO info;
@@ -288,7 +288,7 @@ Bool Media::AVIUtl::AUIPlugin::ConfigInput(void *hInst, void *hWnd)
 	return pluginTab->func_config((HWND)hWnd, (HINSTANCE)hInst) == TRUE;
 }
 
-void Media::AVIUtl::AUIPlugin::PrepareSelector(NotNullPtr<IO::FileSelector> selector)
+void Media::AVIUtl::AUIPlugin::PrepareSelector(NN<IO::FileSelector> selector)
 {
 	INPUT_PLUGIN_TABLE *pluginTab = (INPUT_PLUGIN_TABLE*)this->plugin->pluginTable;
 	Text::Encoding enc(932);
@@ -307,8 +307,8 @@ void Media::AVIUtl::AUIPlugin::PrepareSelector(NotNullPtr<IO::FileSelector> sele
 		j = Text::StrSplit(sarr, 3, sarr[2], '|');
 		if (j == 1)
 			break;
-		NotNullPtr<Text::String> sptr1 = Text::String::NewNotNull(sarr[1]);
-		NotNullPtr<Text::String> sptr0 = Text::String::NewNotNull(sarr[0]);
+		NN<Text::String> sptr1 = Text::String::NewNotNull(sarr[1]);
+		NN<Text::String> sptr0 = Text::String::NewNotNull(sarr[0]);
 		selector->AddFilter(sptr1->ToCString(), sptr0->ToCString());
 		sptr1->Release();
 		sptr0->Release();

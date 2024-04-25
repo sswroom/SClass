@@ -5,7 +5,7 @@
 
 Optional<IO::BTScanner> IO::BTScanner::CreateScanner()
 {
-	NotNullPtr<IO::RAWBTScanner> rawBT;
+	NN<IO::RAWBTScanner> rawBT;
 	NEW_CLASSNN(rawBT, IO::RAWBTScanner(false));
 	if (!rawBT->IsError())
 	{
@@ -13,7 +13,7 @@ Optional<IO::BTScanner> IO::BTScanner::CreateScanner()
 	}
 	rawBT.Delete();
 
-	NotNullPtr<IO::ProgCtrl::BluetoothCtlProgCtrl> bt;
+	NN<IO::ProgCtrl::BluetoothCtlProgCtrl> bt;
 	NEW_CLASSNN(bt, IO::ProgCtrl::BluetoothCtlProgCtrl());
 	if (bt->WaitForCmdReady())
 	{

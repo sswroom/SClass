@@ -16,8 +16,8 @@ namespace Media
 		private:
 			typedef struct
 			{
-				NotNullPtr<IO::StreamData> data;
-				NotNullPtr<Text::String> fileId;
+				NN<IO::StreamData> data;
+				NN<Text::String> fileId;
 			} DataInfo;
 
 			typedef struct
@@ -29,7 +29,7 @@ namespace Media
 				BatchLoader *me;
 			} ThreadState;
 		private:
-			NotNullPtr<Parser::ParserList> parsers;
+			NN<Parser::ParserList> parsers;
 			Media::Batch::BatchHandler *hdlr;
 			Sync::Event mainEvt;
 			Sync::Mutex ioMut;
@@ -42,11 +42,11 @@ namespace Media
 
 			static UInt32 __stdcall ThreadProc(AnyType userObj);
 		public:
-			BatchLoader(NotNullPtr<Parser::ParserList> parsers, Media::Batch::BatchHandler *hdlr);
+			BatchLoader(NN<Parser::ParserList> parsers, Media::Batch::BatchHandler *hdlr);
 			~BatchLoader();
 			
 			void AddFileName(Text::CString fileName);
-			void AddImageData(NotNullPtr<IO::StreamData> data, Text::CStringNN fileId);
+			void AddImageData(NN<IO::StreamData> data, Text::CStringNN fileId);
 			Bool IsProcessing();
 		};
 	}

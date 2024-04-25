@@ -23,12 +23,12 @@ namespace Parser
 			virtual void SetWebBrowser(Net::WebBrowser *browser);
 			virtual void SetParserList(Parser::ParserList *parsers);
 			virtual void SetEncFactory(Optional<Text::EncodingFactory> encFact);
-			virtual void PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t);
+			virtual void PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
-			virtual IO::ParsedObject *ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
+			virtual IO::ParsedObject *ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
 
 		private:
-			static UOSInt ParseCentDir(NotNullPtr<IO::VirtualPackageFile> pf, Text::Encoding *enc, NotNullPtr<IO::StreamData> fd, Data::ByteArrayR buff, UInt64 ofst);
+			static UOSInt ParseCentDir(NN<IO::VirtualPackageFile> pf, Text::Encoding *enc, NN<IO::StreamData> fd, Data::ByteArrayR buff, UInt64 ofst);
 		};
 	}
 }

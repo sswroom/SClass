@@ -24,7 +24,7 @@ void GUIComboBox_OnChild(GtkWidget *widget, gpointer data)
 	printf("Child name = %s\r\n", gtk_widget_get_name(widget));
 }
 
-UI::GTK::GTKComboBox::GTKComboBox(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool allowEdit) : UI::GUIComboBox(ui, parent)
+UI::GTK::GTKComboBox::GTKComboBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Bool allowEdit) : UI::GUIComboBox(ui, parent)
 {
 	this->model = 0;
 	if (allowEdit)
@@ -60,7 +60,7 @@ void UI::GTK::GTKComboBox::SetText(Text::CStringNN text)
 	else
 	{
 		UOSInt i = this->itemTexts.GetCount();
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		while (i-- > 0)
 		{
 			if (this->itemTexts.GetItem(i).SetTo(s) && s->Equals(text.v, text.leng))
@@ -80,7 +80,7 @@ UTF8Char *UI::GTK::GTKComboBox::GetText(UTF8Char *buff)
 	return buff;
 }
 
-Bool UI::GTK::GTKComboBox::GetText(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool UI::GTK::GTKComboBox::GetText(NN<Text::StringBuilderUTF8> sb)
 {
 	gchar *lbl = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT((GtkWidget*)this->hwnd));
 	sb->AppendSlow((const UTF8Char*)lbl);
@@ -107,7 +107,7 @@ void UI::GTK::GTKComboBox::EndUpdate()
 	this->clsData->model = 0;*/
 }
 
-UOSInt UI::GTK::GTKComboBox::AddItem(NotNullPtr<Text::String> itemText, AnyType itemObj)
+UOSInt UI::GTK::GTKComboBox::AddItem(NN<Text::String> itemText, AnyType itemObj)
 {
 	UOSInt cnt = this->itemTexts.GetCount();
 	this->itemTexts.Add(itemText->Clone());
@@ -141,7 +141,7 @@ UOSInt UI::GTK::GTKComboBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
 	return cnt;
 }
 
-UOSInt UI::GTK::GTKComboBox::InsertItem(UOSInt index, NotNullPtr<Text::String> itemText, AnyType itemObj)
+UOSInt UI::GTK::GTKComboBox::InsertItem(UOSInt index, NN<Text::String> itemText, AnyType itemObj)
 {
 	UOSInt cnt = this->itemTexts.GetCount();
 	if (index >= cnt)

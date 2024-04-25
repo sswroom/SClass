@@ -15,7 +15,7 @@ namespace UI
 		Data::ArrayList<void *> selChgObjs;
 
 	public:
-		GUITabControl(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
+		GUITabControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 		virtual ~GUITabControl();
 
 		virtual Text::CStringNN GetObjectClass() const;
@@ -23,10 +23,10 @@ namespace UI
 		void HandleSelChanged(UIEvent hdlr, void *userObj);
 		void EventSelChange();
 
-		virtual NotNullPtr<GUITabPage> AddTabPage(NotNullPtr<Text::String> itemText) = 0;
-		virtual NotNullPtr<GUITabPage> AddTabPage(Text::CStringNN itemText) = 0;
+		virtual NN<GUITabPage> AddTabPage(NN<Text::String> itemText) = 0;
+		virtual NN<GUITabPage> AddTabPage(Text::CStringNN itemText) = 0;
 		virtual void SetSelectedIndex(UOSInt index) = 0;
-		virtual void SetSelectedPage(NotNullPtr<GUITabPage> page) = 0;
+		virtual void SetSelectedPage(NN<GUITabPage> page) = 0;
 		virtual UOSInt GetSelectedIndex() = 0;
 		virtual Optional<GUITabPage> GetSelectedPage() = 0;
 		virtual void SetTabPageName(UOSInt index, Text::CStringNN name) = 0;

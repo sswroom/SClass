@@ -14,16 +14,16 @@ namespace Map
 		class GoogleWSSearcherXML : public Map::IReverseGeocoder
 		{
 		private:
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 			IO::Writer *errWriter;
 			Data::DateTime lastSrchDate;
 			Sync::Mutex mut;
-			NotNullPtr<Text::EncodingFactory> encFact;
+			NN<Text::EncodingFactory> encFact;
 			Bool lastIsError;
 			
 		public:
-			GoogleWSSearcherXML(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, IO::Writer *errWriter, NotNullPtr<Text::EncodingFactory> encFact);
+			GoogleWSSearcherXML(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, IO::Writer *errWriter, NN<Text::EncodingFactory> encFact);
 			virtual ~GoogleWSSearcherXML();
 
 			UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Text::CString lang); //lang = en-us, zh-cn, zh-tw

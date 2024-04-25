@@ -4,7 +4,7 @@
 #include "IO/ProtoHdlr/ProtoLogCliHandler.h"
 #include "Sync/MutexUsage.h"
 
-IO::ProtoHdlr::ProtoLogCliHandler::ProtoLogCliHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener)
+IO::ProtoHdlr::ProtoLogCliHandler::ProtoLogCliHandler(NN<IO::IProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
 }
@@ -13,16 +13,16 @@ IO::ProtoHdlr::ProtoLogCliHandler::~ProtoLogCliHandler()
 {
 }
 
-AnyType IO::ProtoHdlr::ProtoLogCliHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
+AnyType IO::ProtoHdlr::ProtoLogCliHandler::CreateStreamData(NN<IO::Stream> stm)
 {
 	return 0;
 }
 
-void IO::ProtoHdlr::ProtoLogCliHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, AnyType stmData)
+void IO::ProtoHdlr::ProtoLogCliHandler::DeleteStreamData(NN<IO::Stream> stm, AnyType stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoLogCliHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &buff)
+UOSInt IO::ProtoHdlr::ProtoLogCliHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &buff)
 {
 	Bool found;
 	UInt8 crcVal[4];

@@ -15,9 +15,9 @@ Math::Geometry::Vector2D::VectorType Math::Geometry::CircularString::GetVectorTy
 	return VectorType::CircularString;
 }
 
-NotNullPtr<Math::Geometry::Vector2D> Math::Geometry::CircularString::Clone() const
+NN<Math::Geometry::Vector2D> Math::Geometry::CircularString::Clone() const
 {
-	NotNullPtr<Math::Geometry::CircularString> pl;
+	NN<Math::Geometry::CircularString> pl;
 	NEW_CLASSNN(pl, Math::Geometry::CircularString(this->srid, this->nPoint, this->zArr != 0, this->mArr != 0));
 	MemCopyAC(pl->pointArr, this->pointArr, sizeof(Math::Coord2DDbl) * nPoint);
 	if (this->zArr)

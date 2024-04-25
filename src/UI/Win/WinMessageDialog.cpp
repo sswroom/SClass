@@ -8,7 +8,7 @@
 void UI::Win::WinMessageDialog::ShowOK(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
 {
 	HWND hwnd = 0;
-	NotNullPtr<GUIControl> nnctrl;
+	NN<GUIControl> nnctrl;
 	if (ctrl.SetTo(nnctrl))
 		hwnd = (HWND)nnctrl->GetHandle();
 	const WChar *wmessage = Text::StrToWCharNew(message.v);
@@ -21,7 +21,7 @@ void UI::Win::WinMessageDialog::ShowOK(Text::CStringNN message, Text::CStringNN 
 Bool UI::Win::WinMessageDialog::ShowYesNo(Text::CStringNN message, Text::CStringNN title, Optional<UI::GUIControl> ctrl)
 {
 	HWND hwnd = 0;
-	NotNullPtr<GUIControl> nnctrl;
+	NN<GUIControl> nnctrl;
 	if (ctrl.SetTo(nnctrl))
 		hwnd = (HWND)nnctrl->GetHandle();
 	const WChar *wmessage = Text::StrToWCharNew(message.v);

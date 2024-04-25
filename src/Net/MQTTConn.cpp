@@ -22,7 +22,7 @@
 #endif
 #endif
 
-void Net::MQTTConn::DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void Net::MQTTConn::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 #if defined(DEBUG_PRINT)
 	printf("On MQTT packet: type = %x, size = %d\r\n", cmdType, (UInt32)cmdSize);
@@ -85,25 +85,25 @@ void Net::MQTTConn::DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32
 		MemCopyNO(packet->content, cmd, cmdSize);
 		{
 			Sync::MutexUsage mutUsage(this->packetMut);
-			this->packetList.Add(NotNullPtr<PacketInfo>::FromPtr(packet));
+			this->packetList.Add(NN<PacketInfo>::FromPtr(packet));
 		}
 		this->packetEvt.Set();
 	}
 }
 
-void Net::MQTTConn::DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
+void Net::MQTTConn::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 }
 
 UInt32 __stdcall Net::MQTTConn::RecvThread(AnyType userObj)
 {
-	NotNullPtr<Net::MQTTConn> me = userObj.GetNN<Net::MQTTConn>();
+	NN<Net::MQTTConn> me = userObj.GetNN<Net::MQTTConn>();
 	Sync::ThreadUtil::SetName(CSTR("MQTTConnRecv"));
 	UOSInt maxBuffSize = 9000;
 	UInt8 *buff;
 	UOSInt buffSize;
 	UOSInt readSize;
-	NotNullPtr<IO::Stream> stm;
+	NN<IO::Stream> stm;
 	if (!stm.Set(me->stm))
 	{
 		return 0;
@@ -153,7 +153,7 @@ void Net::MQTTConn::OnPublishMessage(Text::CStringNN topic, const UInt8 *message
 Optional<Net::MQTTConn::PacketInfo> Net::MQTTConn::GetNextPacket(UInt8 packetType, Data::Duration timeout)
 {
 	Manage::HiResClock clk;
-	NotNullPtr<PacketInfo> packet;
+	NN<PacketInfo> packet;
 	Data::Duration t;
 	while (true)
 	{
@@ -188,7 +188,7 @@ Bool Net::MQTTConn::SendPacket(const UInt8 *packet, UOSInt packetSize)
 	return sendSize == packetSize;
 }
 
-void Net::MQTTConn::InitStream(NotNullPtr<IO::Stream> stm)
+void Net::MQTTConn::InitStream(NN<IO::Stream> stm)
 {
 	this->stm = stm.Ptr();
 	this->cliData = this->protoHdlr.CreateStreamData(stm);
@@ -199,7 +199,7 @@ void Net::MQTTConn::InitStream(NotNullPtr<IO::Stream> stm)
 	}
 }
 
-Net::MQTTConn::MQTTConn(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, DisconnectHdlr discHdlr, AnyType discHdlrObj, Data::Duration timeout) : protoHdlr(*this)
+Net::MQTTConn::MQTTConn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, DisconnectHdlr discHdlr, AnyType discHdlrObj, Data::Duration timeout) : protoHdlr(*this)
 {
 	this->recvRunning = false;
 	this->recvStarted = false;
@@ -209,8 +209,8 @@ Net::MQTTConn::MQTTConn(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLE
 	this->cliData = 0;
 	this->stm = 0;
 
-	NotNullPtr<Net::TCPClient> cli;
-	NotNullPtr<Net::SSLEngine> nnssl;
+	NN<Net::TCPClient> cli;
+	NN<Net::SSLEngine> nnssl;
 	if (ssl.SetTo(nnssl))
 	{
 		Net::SSLEngine::ErrorType err;
@@ -241,7 +241,7 @@ Net::MQTTConn::MQTTConn(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLE
 	}
 }
 
-Net::MQTTConn::MQTTConn(NotNullPtr<IO::Stream> stm, DisconnectHdlr discHdlr, AnyType discHdlrObj) : protoHdlr(*this)
+Net::MQTTConn::MQTTConn(NN<IO::Stream> stm, DisconnectHdlr discHdlr, AnyType discHdlrObj) : protoHdlr(*this)
 {
 	this->recvRunning = false;
 	this->recvStarted = false;
@@ -255,7 +255,7 @@ Net::MQTTConn::MQTTConn(NotNullPtr<IO::Stream> stm, DisconnectHdlr discHdlr, Any
 
 Net::MQTTConn::~MQTTConn()
 {
-	NotNullPtr<IO::Stream> stm;
+	NN<IO::Stream> stm;
 	if (stm.Set(this->stm))
 	{
 		if (this->recvRunning)
@@ -458,7 +458,7 @@ Bool Net::MQTTConn::SendDisconnect()
 
 Net::MQTTConn::ConnectStatus Net::MQTTConn::WaitConnAck(Data::Duration timeout)
 {
-	NotNullPtr<PacketInfo> packet;
+	NN<PacketInfo> packet;
 	if (!this->GetNextPacket(0x20, timeout).SetTo(packet))
 		return Net::MQTTConn::CS_TIMEDOUT;
 
@@ -469,7 +469,7 @@ Net::MQTTConn::ConnectStatus Net::MQTTConn::WaitConnAck(Data::Duration timeout)
 
 UInt8 Net::MQTTConn::WaitSubAck(UInt16 packetId, Data::Duration timeout)
 {
-	NotNullPtr<PacketInfo> packet;
+	NN<PacketInfo> packet;
 	if (!this->GetNextPacket(0x90, timeout).SetTo(packet))
 		return 0x80;
 
@@ -502,7 +502,7 @@ UInt64 Net::MQTTConn::GetTotalDownload()
 	return this->totalDownload;
 }
 
-Bool Net::MQTTConn::PublishMessage(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Text::CString topic, Text::CString message, Data::Duration timeout)
+Bool Net::MQTTConn::PublishMessage(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString username, Text::CString password, Text::CString topic, Text::CString message, Data::Duration timeout)
 {
 	Net::MQTTConn *cli;
 	UTF8Char sbuff[64];

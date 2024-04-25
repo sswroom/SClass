@@ -16,18 +16,18 @@ namespace SSWR
 		class AVIRDS18B20Form : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblSN;
-			NotNullPtr<UI::GUITextBox> txtSN;
-			NotNullPtr<UI::GUIButton> btnSN;
-			NotNullPtr<UI::GUILabel> lblTemp;
-			NotNullPtr<UI::GUITextBox> txtTemp;
-			NotNullPtr<UI::GUIButton> btnRead;
-			NotNullPtr<UI::GUICheckBox> chkAutoRead;
-			NotNullPtr<UI::GUILabel> lblStatus;
-			NotNullPtr<UI::GUITextBox> txtStatus;
+			NN<UI::GUILabel> lblSN;
+			NN<UI::GUITextBox> txtSN;
+			NN<UI::GUIButton> btnSN;
+			NN<UI::GUILabel> lblTemp;
+			NN<UI::GUITextBox> txtTemp;
+			NN<UI::GUIButton> btnRead;
+			NN<UI::GUICheckBox> chkAutoRead;
+			NN<UI::GUILabel> lblStatus;
+			NN<UI::GUITextBox> txtStatus;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<IO::IOPin> pin;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<IO::IOPin> pin;
 			IO::OneWireGPIO *oneWire;
 			IO::Device::DS18B20 *ds18b20;
 
@@ -36,7 +36,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(AnyType userObj);
 			void ReadData();
 		public:
-			AVIRDS18B20Form(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::IOPin> pin);
+			AVIRDS18B20Form(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::IOPin> pin);
 			virtual ~AVIRDS18B20Form();
 
 			virtual void OnMonitorChanged();

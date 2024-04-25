@@ -10,7 +10,7 @@
 
 Int32 UI::Win::WinDateTimePicker::useCnt = 0;
 
-UI::Win::WinDateTimePicker::WinDateTimePicker(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool calendarSel) : UI::GUIDateTimePicker(ui, parent)
+UI::Win::WinDateTimePicker::WinDateTimePicker(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Bool calendarSel) : UI::GUIDateTimePicker(ui, parent)
 {
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
@@ -74,7 +74,7 @@ OSInt UI::Win::WinDateTimePicker::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-void UI::Win::WinDateTimePicker::SetValue(NotNullPtr<Data::DateTime> dt)
+void UI::Win::WinDateTimePicker::SetValue(NN<Data::DateTime> dt)
 {
 	SYSTEMTIME t;
 	Int8 tz = dt->GetTimeZoneQHR();
@@ -91,7 +91,7 @@ void UI::Win::WinDateTimePicker::SetValue(const Data::Timestamp &ts)
 	SendMessage((HWND)this->hwnd, DTM_SETSYSTEMTIME, GDT_VALID, (LPARAM)&t);
 }
 
-void UI::Win::WinDateTimePicker::GetSelectedTime(NotNullPtr<Data::DateTime> dt)
+void UI::Win::WinDateTimePicker::GetSelectedTime(NN<Data::DateTime> dt)
 {
 	SYSTEMTIME t;
 	SendMessage((HWND)this->hwnd, DTM_GETSYSTEMTIME, 0, (LPARAM)&t);

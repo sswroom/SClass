@@ -718,10 +718,10 @@ WChar *Text::XML::ToAttrText(WChar *buff, const WChar *text)
 	return buff;
 }
 
-NotNullPtr<Text::String> Text::XML::ToNewXMLText(const UTF8Char *text)
+NN<Text::String> Text::XML::ToNewXMLText(const UTF8Char *text)
 {
 	UOSInt cnt = GetXMLTextLen(text);
-	NotNullPtr<Text::String> s = Text::String::New(cnt);
+	NN<Text::String> s = Text::String::New(cnt);
 	ToXMLText(s->v, text);
 	return s;
 }
@@ -734,10 +734,10 @@ const WChar *Text::XML::ToNewXMLText(const WChar *text)
 	return dptr;
 }
 
-NotNullPtr<Text::String> Text::XML::ToNewXMLTextLite(const UTF8Char *text)
+NN<Text::String> Text::XML::ToNewXMLTextLite(const UTF8Char *text)
 {
 	UOSInt cnt = GetXMLTextLiteLen(text);
-	NotNullPtr<Text::String> s = Text::String::New(cnt);
+	NN<Text::String> s = Text::String::New(cnt);
 	ToXMLTextLite(s->v, text);
 	return s;
 }
@@ -750,18 +750,18 @@ const WChar *Text::XML::ToNewXMLTextLite(const WChar *text)
 	return dptr;
 }
 
-NotNullPtr<Text::String> Text::XML::ToNewHTMLBodyText(const UTF8Char *text)
+NN<Text::String> Text::XML::ToNewHTMLBodyText(const UTF8Char *text)
 {
 	UOSInt cnt = GetHTMLBodyTextLen(text);
-	NotNullPtr<Text::String> s = Text::String::New(cnt);
+	NN<Text::String> s = Text::String::New(cnt);
 	ToHTMLBodyText(s->v, text);
 	return s;
 }
 
-NotNullPtr<Text::String> Text::XML::ToNewHTMLElementText(const UTF8Char *text)
+NN<Text::String> Text::XML::ToNewHTMLElementText(const UTF8Char *text)
 {
 	UOSInt cnt = GetHTMLElementTextLen(text);
-	NotNullPtr<Text::String> s = Text::String::New(cnt);
+	NN<Text::String> s = Text::String::New(cnt);
 	ToHTMLElementText(s->v, text);
 	return s;
 }
@@ -774,9 +774,9 @@ const WChar *Text::XML::ToNewHTMLBodyText(const WChar *text)
 	return dptr;
 }
 
-NotNullPtr<Text::String> Text::XML::ToNewAttrText(const UTF8Char *text)
+NN<Text::String> Text::XML::ToNewAttrText(const UTF8Char *text)
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UTF8Char *buff;
 	if (text == 0)
 	{
@@ -821,7 +821,7 @@ const WChar *Text::XML::ToNewAttrText(const WChar *text)
 	}
 }
 
-NotNullPtr<Text::String> Text::XML::ToNewHTMLTextXMLColor(const UTF8Char *text)
+NN<Text::String> Text::XML::ToNewHTMLTextXMLColor(const UTF8Char *text)
 {
 	Text::StringBuilderUTF8 sb;
 	Bool elementStarted = false;
@@ -1457,7 +1457,7 @@ Bool Text::XML::HTMLAppendCharRef(const UTF8Char *chrRef, UOSInt refSize, IO::St
 	return false;
 }
 
-Bool Text::XML::HTMLAppendCharRef(const UTF8Char *chrRef, UOSInt refSize, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Text::XML::HTMLAppendCharRef(const UTF8Char *chrRef, UOSInt refSize, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[6];
 	UTF32Char wcs;

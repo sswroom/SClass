@@ -16,28 +16,28 @@ namespace SSWR
 		class AVIRJavaClassForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpFileStruct;
-			NotNullPtr<UI::GUITextBox> txtFileStruct;
+			NN<UI::GUITabPage> tpFileStruct;
+			NN<UI::GUITextBox> txtFileStruct;
 
-			NotNullPtr<UI::GUITabPage> tpFields;
-			NotNullPtr<UI::GUIListBox> lbFields;
+			NN<UI::GUITabPage> tpFields;
+			NN<UI::GUIListBox> lbFields;
 
-			NotNullPtr<UI::GUITabPage> tpMethods;
-			NotNullPtr<UI::GUIListBox> lbMethods;
-			NotNullPtr<UI::GUIVSplitter> vspMethods;
-			NotNullPtr<UI::GUITextBox> txtMethods;
+			NN<UI::GUITabPage> tpMethods;
+			NN<UI::GUIListBox> lbMethods;
+			NN<UI::GUIVSplitter> vspMethods;
+			NN<UI::GUITextBox> txtMethods;
 
-			NotNullPtr<UI::GUITabPage> tpDecompile;
-			NotNullPtr<UI::GUITextBox> txtDecompile;
+			NN<UI::GUITabPage> tpDecompile;
+			NN<UI::GUITextBox> txtDecompile;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::JavaClass *clsFile;
 
 			static void __stdcall OnMethodsSelChg(AnyType userObj);
 		public:
-			AVIRJavaClassForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::JavaClass *clsFile);
+			AVIRJavaClassForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::JavaClass *clsFile);
 			virtual ~AVIRJavaClassForm();
 
 			virtual void OnMonitorChanged();

@@ -9,7 +9,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, NotNullPtr<Data::DateTimeUtil::TimeValue> time, UInt32 nanosec, Int32 *lastVal)
+UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, NN<Data::DateTimeUtil::TimeValue> time, UInt32 nanosec, Int32 *lastVal)
 {
 	UTF8Char *currName;
 	switch (this->groupStyle)
@@ -72,7 +72,7 @@ UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, NotNullPtr<Data::DateTimeUti
 	return currName;
 }
 
-void IO::MTFileLog::WriteArr(NotNullPtr<Text::String> *msgArr, Data::Timestamp *dateArr, UOSInt arrCnt)
+void IO::MTFileLog::WriteArr(NN<Text::String> *msgArr, Data::Timestamp *dateArr, UOSInt arrCnt)
 {
 	Bool newFile = false;
 	UTF8Char buff[256];
@@ -154,17 +154,17 @@ void IO::MTFileLog::WriteArr(NotNullPtr<Text::String> *msgArr, Data::Timestamp *
 
 UInt32 __stdcall IO::MTFileLog::FileThread(AnyType userObj)
 {
-	NotNullPtr<IO::MTFileLog> me = userObj.GetNN<IO::MTFileLog>();
+	NN<IO::MTFileLog> me = userObj.GetNN<IO::MTFileLog>();
 	Sync::ThreadUtil::SetName(CSTR("MTFileLog"));
 	UOSInt arrCnt;
-	NotNullPtr<Text::String> *msgArr = 0;
+	NN<Text::String> *msgArr = 0;
 	Data::Timestamp *dateArr = 0;
 	while (!me->closed)
 	{
 		Sync::MutexUsage mutUsage(me->mut);
 		if ((arrCnt = me->msgList.GetCount()) > 0)
 		{
-			msgArr = MemAlloc(NotNullPtr<Text::String>, arrCnt);
+			msgArr = MemAlloc(NN<Text::String>, arrCnt);
 			dateArr = MemAlloc(Data::Timestamp, arrCnt);
 			me->msgList.GetRange(msgArr, 0, arrCnt);
 			me->dateList.GetRange(dateArr, 0, arrCnt);
@@ -184,7 +184,7 @@ UInt32 __stdcall IO::MTFileLog::FileThread(AnyType userObj)
 
 	if ((arrCnt = me->msgList.GetCount()) > 0)
 	{
-		msgArr = MemAlloc(NotNullPtr<Text::String>, arrCnt);
+		msgArr = MemAlloc(NN<Text::String>, arrCnt);
 		dateArr = MemAlloc(Data::Timestamp, arrCnt);
 		me->msgList.GetRange(msgArr, 0, arrCnt);
 		me->dateList.GetRange(dateArr, 0, arrCnt);
@@ -256,7 +256,7 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFor
 	Sync::ThreadUtil::Create(FileThread, this, 0x20000);
 }
 
-IO::MTFileLog::MTFileLog(NotNullPtr<Text::String> fileName, LogType style, LogGroup groupStyle, const Char *dateFormat)
+IO::MTFileLog::MTFileLog(NN<Text::String> fileName, LogType style, LogGroup groupStyle, const Char *dateFormat)
 {
 	this->fileName = fileName->Clone();
 	this->Init(style, groupStyle, dateFormat);

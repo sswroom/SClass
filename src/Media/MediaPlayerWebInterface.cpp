@@ -26,7 +26,7 @@ Media::MediaPlayerWebInterface::~MediaPlayerWebInterface()
 
 }
 
-void Media::MediaPlayerWebInterface::BrowseRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
+void Media::MediaPlayerWebInterface::BrowseRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Optional<Text::String> fname = req->GetQueryValue(CSTR("fname"));
 	if (this->iface->GetOpenedFile() == 0)
@@ -38,7 +38,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(NotNullPtr<Net::WebServer::IW
 	UTF8Char sbuff2[1024];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UOSInt i;
 	UOSInt j;
 	sptr = this->iface->GetOpenedFile()->GetSourceNameObj()->ConcatTo(sbuff);
@@ -146,9 +146,9 @@ void Media::MediaPlayerWebInterface::BrowseRequest(NotNullPtr<Net::WebServer::IW
 	resp->Write(buff, size);
 }
 
-void Media::MediaPlayerWebInterface::WebRequest(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp)
+void Media::MediaPlayerWebInterface::WebRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
-	NotNullPtr<Text::String> reqURI = req->GetRequestURI();
+	NN<Text::String> reqURI = req->GetRequestURI();
 	if (reqURI->Equals(UTF8STRC("/browse")) || reqURI->StartsWith(UTF8STRC("/browse?")))
 	{
 		this->BrowseRequest(req, resp);
@@ -199,7 +199,7 @@ void Media::MediaPlayerWebInterface::WebRequest(NotNullPtr<Net::WebServer::IWebR
 		this->iface->PBIncAVOfst();
 	}
 	UInt8 *buff;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UOSInt size;
 
 	IO::MemoryStream mstm;
@@ -345,7 +345,7 @@ void Media::MediaPlayerWebInterface::WebRequest(NotNullPtr<Net::WebServer::IWebR
 			sb.AppendC(UTF8STRC("Src Gamma: "));
 			sb.AppendDouble(status.color.GetRTranParam()->GetGamma());
 			sb.AppendC(UTF8STRC("<br/>\r\n"));
-			NotNullPtr<Media::ColorProfile::ColorPrimaries> primaries = status.color.GetPrimaries(); 
+			NN<Media::ColorProfile::ColorPrimaries> primaries = status.color.GetPrimaries(); 
 			sb.AppendC(UTF8STRC("Src RGB Primary: "));
 			sb.Append(Media::ColorProfile::ColorTypeGetName(primaries->colorType));
 			sb.AppendC(UTF8STRC("<br/>\r\n"));

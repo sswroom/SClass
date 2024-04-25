@@ -6,7 +6,7 @@
 #include "Text/JSText.h"
 #include "Text/XMLReader.h"
 
-Bool Text::HTMLUtil::HTMLWellFormat(Optional<Text::EncodingFactory> encFact, NotNullPtr<IO::Stream> stm, UOSInt lev, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Text::HTMLUtil::HTMLWellFormat(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, UOSInt lev, NN<Text::StringBuilderUTF8> sb)
 {
 	Text::XMLAttrib *attr;
 	UOSInt i;
@@ -15,7 +15,7 @@ Bool Text::HTMLUtil::HTMLWellFormat(Optional<Text::EncodingFactory> encFact, Not
 	Text::XMLNode::NodeType thisNT;
 	OSInt elementType = 0;
 	const UTF8Char *csptr;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UOSInt strLen;
 	Text::XMLReader reader(encFact, stm, Text::XMLReader::PM_HTML);
 	while (reader.ReadNext())
@@ -148,7 +148,7 @@ Bool Text::HTMLUtil::HTMLWellFormat(Optional<Text::EncodingFactory> encFact, Not
 	return true;
 }
 
-Bool Text::HTMLUtil::CSSWellFormat(const UInt8 *buff, UOSInt buffSize, UOSInt lev, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Text::HTMLUtil::CSSWellFormat(const UInt8 *buff, UOSInt buffSize, UOSInt lev, NN<Text::StringBuilderUTF8> sb)
 {
 	UInt8 c;
 	Bool lineStart = true;
@@ -225,7 +225,7 @@ Bool Text::HTMLUtil::CSSWellFormat(const UInt8 *buff, UOSInt buffSize, UOSInt le
 	return currLev == 0;
 }
 
-Bool Text::HTMLUtil::HTMLGetText(Optional<Text::EncodingFactory> encFact, const UInt8 *buff, UOSInt buffSize, Bool singleLine, NotNullPtr<Text::StringBuilderUTF8> sb, Data::ArrayListStringNN *imgList)
+Bool Text::HTMLUtil::HTMLGetText(Optional<Text::EncodingFactory> encFact, const UInt8 *buff, UOSInt buffSize, Bool singleLine, NN<Text::StringBuilderUTF8> sb, Data::ArrayListStringNN *imgList)
 {
 	UOSInt len;
 	Text::XMLNode::NodeType nt;
@@ -233,7 +233,7 @@ Bool Text::HTMLUtil::HTMLGetText(Optional<Text::EncodingFactory> encFact, const 
 	Bool lastIsSpace = true;
 	const UTF8Char *csptr;
 	const UTF8Char *csptrEnd;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UTF8Char c;
 	IO::MemoryStream wmstm;
 	IO::MemoryReadingStream mstm(buff, buffSize);
@@ -358,7 +358,7 @@ Bool Text::HTMLUtil::HTMLGetText(Optional<Text::EncodingFactory> encFact, const 
 	return true;
 }
 
-Bool Text::HTMLUtil::XMLWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt lev, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool Text::HTMLUtil::XMLWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt lev, NN<Text::StringBuilderUTF8> sb)
 {
 	UOSInt startOfst = 0;
 	UOSInt currOfst = 0;

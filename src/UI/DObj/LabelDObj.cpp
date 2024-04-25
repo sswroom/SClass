@@ -2,7 +2,7 @@
 #include "Sync/MutexUsage.h"
 #include "UI/DObj/LabelDObj.h"
 
-UI::DObj::LabelDObj::LabelDObj(NotNullPtr<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSizePx, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, Math::Coord2D<OSInt> tl, UInt32 codePage) : DirectObject(tl)
+UI::DObj::LabelDObj::LabelDObj(NN<Media::DrawEngine> deng, Text::CString txt, Text::CString fontName, Double fontSizePx, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, Math::Coord2D<OSInt> tl, UInt32 codePage) : DirectObject(tl)
 {
 	this->deng = deng;
 	this->txtChg = true;
@@ -44,15 +44,15 @@ Bool UI::DObj::LabelDObj::DoEvents()
 	return false;
 }
 
-void UI::DObj::LabelDObj::DrawObject(NotNullPtr<Media::DrawImage> dimg)
+void UI::DObj::LabelDObj::DrawObject(NN<Media::DrawImage> dimg)
 {
 	this->txtChg = false;
 	Sync::MutexUsage mutUsage(this->txtMut);
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (s.Set(this->txt))
 	{
-		NotNullPtr<Media::DrawFont> f;
-		NotNullPtr<Media::DrawBrush> b;
+		NN<Media::DrawFont> f;
+		NN<Media::DrawBrush> b;
 		f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSizePx, (Media::DrawEngine::DrawFontStyle)(this->fontStyle | Media::DrawEngine::DFS_ANTIALIAS), this->codePage);
 		b = dimg->NewBrushARGB(this->fontColor);
 		Math::Coord2DDbl tl = this->GetCurrPos().ToDouble();

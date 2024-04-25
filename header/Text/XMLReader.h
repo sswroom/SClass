@@ -22,7 +22,7 @@ namespace Text
 		Text::Encoding *enc;
 		Bool stmEnc;
 		Optional<Text::EncodingFactory> encFact;
-		NotNullPtr<IO::Stream> stm;
+		NN<IO::Stream> stm;
 		UTF8Char *readBuff;
 		UOSInt buffSize;
 		UInt8 *rawBuff;
@@ -44,21 +44,21 @@ namespace Text
 		void InitBuffer();
 		UOSInt FillBuffer();
 	public:
-		XMLReader(Optional<Text::EncodingFactory> encFact, NotNullPtr<IO::Stream> stm, ParseMode mode);
+		XMLReader(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, ParseMode mode);
 		~XMLReader();
 
-		void GetCurrPath(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		void GetCurrPath(NN<Text::StringBuilderUTF8> sb) const;
 		UOSInt GetPathLev() const;
 		Text::XMLNode::NodeType GetNodeType() const;
 		Optional<Text::String> GetNodeText() const; //TextNode = Value, ElementNode = Name
-		NotNullPtr<Text::String> GetNodeTextNN() const; //TextNode = Value, ElementNode = Name
+		NN<Text::String> GetNodeTextNN() const; //TextNode = Value, ElementNode = Name
 		Text::String *GetNodeOriText() const;
 		UOSInt GetAttribCount() const;
 		Text::XMLAttrib *GetAttrib(UOSInt index) const;
 		Text::XMLAttrib *GetAttrib(const UTF8Char *name, UOSInt nameLen) const;
 
 		Bool ReadNext();
-		Bool ReadNodeText(NotNullPtr<Text::StringBuilderUTF8> sb);
+		Bool ReadNodeText(NN<Text::StringBuilderUTF8> sb);
 //		Bool NextElement();
 		Optional<Text::String> NextElementName();
 		Bool SkipElement();
@@ -66,9 +66,9 @@ namespace Text
 		Bool IsComplete() const;
 		Bool HasError() const;
 		UOSInt GetErrorCode() const;
-		Bool ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		Bool ToString(NN<Text::StringBuilderUTF8> sb) const;
 
-		static Bool XMLWellFormat(Optional<Text::EncodingFactory> encFact, NotNullPtr<IO::Stream> stm, UOSInt lev, NotNullPtr<Text::StringBuilderUTF8> sb);
+		static Bool XMLWellFormat(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, UOSInt lev, NN<Text::StringBuilderUTF8> sb);
 	};
 }
 #endif

@@ -424,7 +424,7 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 	}
 }
 
-Net::HTTPMyClient::HTTPMyClient(NotNullPtr<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn), reqMstm(1024)
+Net::HTTPMyClient::HTTPMyClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn), reqMstm(1024)
 {
 	if (userAgent.IsNull())
 	{
@@ -612,7 +612,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		ptr2 = CSTR_NULL;
 		ptr1.ConcatTo(urltmp);
 	}
-	NotNullPtr<Text::String> hostName;
+	NN<Text::String> hostName;
 	if (this->forceHost.SetTo(hostName))
 	{
 		hostName->ConcatTo(urltmp);
@@ -711,7 +711,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 			Net::SocketUtil::GetAddrName(svrname, this->svrAddr);
 			printf("Server IP: %s:%d, t = %d\r\n", svrname, port, (Int32)this->svrAddr.addrType);
 #endif
-			NotNullPtr<Net::SSLEngine> ssl;
+			NN<Net::SSLEngine> ssl;
 			if (secure && this->ssl.SetTo(ssl))
 			{
 				Net::SSLEngine::ErrorType err;
@@ -1086,7 +1086,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 			UTF8Char *ptrs[3];
 			UTF8Char *ptr;
 			UTF8Char *ptrEnd;
-			NotNullPtr<Text::String> s;
+			NN<Text::String> s;
 			UOSInt i;
 			i = Text::StrIndexOfC(this->dataBuff, this->buffSize, UTF8STRC("\r\n"));
 			MemCopyNO(buff, this->dataBuff, i);
@@ -1164,7 +1164,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 									UOSInt j = s->IndexOf('"', i + 10);
 									if (j > 0)
 									{
-										NotNullPtr<Text::String> tmpS = Text::String::New(&s->v[i + 10], j - i - 10);
+										NN<Text::String> tmpS = Text::String::New(&s->v[i + 10], j - i - 10);
 										this->SetSourceName(tmpS);
 										tmpS->Release();
 									}
@@ -1252,9 +1252,9 @@ Bool Net::HTTPMyClient::IsSecureConn() const
 	return this->cli->IsSSL();
 }
 
-Bool Net::HTTPMyClient::SetClientCert(NotNullPtr<Crypto::Cert::X509Cert> cert, NotNullPtr<Crypto::Cert::X509File> key)
+Bool Net::HTTPMyClient::SetClientCert(NN<Crypto::Cert::X509Cert> cert, NN<Crypto::Cert::X509File> key)
 {
-	NotNullPtr<Net::SSLEngine> ssl;
+	NN<Net::SSLEngine> ssl;
 	if (!this->ssl.SetTo(ssl))
 		return false;
 	return ssl->ClientSetCertASN1(cert, key);

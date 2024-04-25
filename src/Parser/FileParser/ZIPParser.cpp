@@ -50,7 +50,7 @@ void Parser::FileParser::ZIPParser::SetEncFactory(Optional<Text::EncodingFactory
 	this->encFact = encFact;
 }
 
-void Parser::FileParser::ZIPParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::ZIPParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
@@ -77,7 +77,7 @@ typedef struct
 	UInt32 commentSize;
 } ZIPInfoEntry;
 
-IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -96,9 +96,9 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 	{
 		return 0;
 	}
-	NotNullPtr<IO::VirtualPackageFile> pf;
+	NN<IO::VirtualPackageFile> pf;
 	IO::VirtualPackageFile *pf2;
-	NotNullPtr<IO::PackageFile> pf3;
+	NN<IO::PackageFile> pf3;
 	Text::Encoding enc(this->codePage);
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
@@ -449,7 +449,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 				break;
 			}
 		}
-		NotNullPtr<const Data::ArrayList<ZIPInfoEntry*>> zipInfoList = zipInfos.GetValues();
+		NN<const Data::ArrayList<ZIPInfoEntry*>> zipInfoList = zipInfos.GetValues();
 		ui = zipInfoList->GetCount();
 		while (ui-- > 0)
 		{
@@ -466,7 +466,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 			sptr = pf->GetItemName(sbuff, ui);
 			if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".kml")) && pf->GetItemType(ui) == IO::PackageFile::PackObjectType::StreamData)
 			{
-				NotNullPtr<IO::StreamData> stmData;
+				NN<IO::StreamData> stmData;
 				IO::ParsedObject *pobj = 0;
 				if (pf->GetItemStmDataNew(ui).SetTo(stmData))
 				{
@@ -504,10 +504,10 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NotNullPtr<IO::Str
 	return pf.Ptr();
 }
 
-UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NotNullPtr<IO::VirtualPackageFile> pf, Text::Encoding *enc, NotNullPtr<IO::StreamData> fd, Data::ByteArrayR buff, UInt64 ofst)
+UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NN<IO::VirtualPackageFile> pf, Text::Encoding *enc, NN<IO::StreamData> fd, Data::ByteArrayR buff, UInt64 ofst)
 {
 	IO::VirtualPackageFile *pf2;
-	NotNullPtr<IO::PackageFile> pf3;
+	NN<IO::PackageFile> pf3;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *sptrEnd;

@@ -3,9 +3,9 @@
 #include "Data/DataModelUtil.h"
 #include <stdio.h>
 
-Bool Data::DataModelUtil::FillFromDBReader(NotNullPtr<Data::Class> cls, AnyType value, NotNullPtr<DB::DBReader> r)
+Bool Data::DataModelUtil::FillFromDBReader(NN<Data::Class> cls, AnyType value, NN<DB::DBReader> r)
 {
-	NotNullPtr<Data::Class::FieldInfo> field;
+	NN<Data::Class::FieldInfo> field;
 	UOSInt i;
 	UOSInt j = r->ColCount();
 	if (j != cls->GetFieldCount())
@@ -135,7 +135,7 @@ Bool Data::DataModelUtil::FillFromDBReader(NotNullPtr<Data::Class> cls, AnyType 
 				}
 			case Data::VariItem::ItemType::Vector:
 				{
-					NotNullPtr<Math::Geometry::Vector2D> vec;
+					NN<Math::Geometry::Vector2D> vec;
 					if (r->GetVector(i).SetTo(vec))
 					{
 						item.SetVectorDirect(vec);

@@ -2,7 +2,7 @@
 #include "Core/Core.h"
 #include "Math/Coord2DDbl.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Math::Coord2DDbl coord1 = Math::Coord2DDbl(1, 1);
 	Math::Coord2DDbl coord2 = Math::Coord2DDbl(2, 2);

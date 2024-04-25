@@ -25,9 +25,9 @@ namespace Media
 	class IPrintHandler
 	{
 	public:
-		virtual Bool BeginPrint(NotNullPtr<IPrintDocument> doc) = 0;
-		virtual Bool PrintPage(NotNullPtr<Media::DrawImage> printPage) = 0; //return has more pages 
-		virtual Bool EndPrint(NotNullPtr<IPrintDocument> doc) = 0;
+		virtual Bool BeginPrint(NN<IPrintDocument> doc) = 0;
+		virtual Bool PrintPage(NN<Media::DrawImage> printPage) = 0; //return has more pages 
+		virtual Bool EndPrint(NN<IPrintDocument> doc) = 0;
 	};
 }
 #endif

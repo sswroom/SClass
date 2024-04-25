@@ -13,24 +13,24 @@ namespace Map
 	class MapServerHandler : public Net::WebServer::WebServiceHandler
 	{
 	private:
-		NotNullPtr<Parser::ParserList> parsers;
+		NN<Parser::ParserList> parsers;
 		Data::ArrayListNN<IO::ParsedObject> assets;
 		Data::FastStringMap<Map::MapDrawLayer*> layerMap;
 		Text::String *cesiumScenePath;
 		Double cesiumMinError;
 		Math::GeographicCoordinateSystem *wgs84;
 
-		static Bool __stdcall GetLayersFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> me);
-		static Bool __stdcall GetLayerDataFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> me);
-		static Bool __stdcall CesiumDataFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> me);
-		static Bool __stdcall CesiumB3DMFunc(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<WebServiceHandler> me);
+		static Bool __stdcall GetLayersFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);
+		static Bool __stdcall GetLayerDataFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);
+		static Bool __stdcall CesiumDataFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);
+		static Bool __stdcall CesiumB3DMFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);
 
-		void CheckObject(Text::JSONBase *obj, Double x1, Double y1, Double x2, Double y2, Double minErr, NotNullPtr<Text::String> fileName, NotNullPtr<Text::StringBuilderUTF8> tmpSb);
+		void CheckObject(Text::JSONBase *obj, Double x1, Double y1, Double x2, Double y2, Double minErr, NN<Text::String> fileName, NN<Text::StringBuilderUTF8> tmpSb);
 		Bool InObjectRange(Text::JSONBase *obj, Double x1, Double y1, Double x2, Double y2);
 		Bool InSphereRange(Text::JSONBase *sphere, Double x1, Double y1, Double x2, Double y2);
-		void AddLayer(NotNullPtr<Map::MapDrawLayer> layer);
+		void AddLayer(NN<Map::MapDrawLayer> layer);
 	public:
-		MapServerHandler(NotNullPtr<Parser::ParserList> parsers);
+		MapServerHandler(NN<Parser::ParserList> parsers);
 		virtual ~MapServerHandler();
 
 		Bool AddAsset(Text::CStringNN filePath);

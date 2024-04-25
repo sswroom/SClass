@@ -45,7 +45,7 @@ namespace Media
 			static UInt32 __stdcall WorkerThread(AnyType obj);
 			void WaitForWorker(Int32 jobStatus);
 		public:
-			CSAYUV444_10_LRGBC(NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess);
+			CSAYUV444_10_LRGBC(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess);
 			virtual ~CSAYUV444_10_LRGBC();
 
 			virtual void ConvertV2(UInt8 *const*srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst);
@@ -53,8 +53,8 @@ namespace Media
 
 			virtual void UpdateTable();
 
-			virtual void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuv);
-			virtual void RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgb);
+			virtual void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuv);
+			virtual void RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgb);
 			virtual UOSInt GetDestFrameSize(UOSInt width, UOSInt height);
 		};
 	}

@@ -10,14 +10,14 @@
 #define DBUSER CSTR("user")
 #define DBPASSWORD CSTR("password")
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	IO::ConsoleLogHandler logHdlr(console);
 	IO::LogTool log;
 	log.AddLogHandler(logHdlr, IO::LogHandler::LogLevel::Raw);
 	Text::StringBuilderUTF8 errMsg;
-	NotNullPtr<DB::DBConn> conn;
+	NN<DB::DBConn> conn;
 	if (DB::MSSQLConn::OpenConnTCP(
 		DBHOST,
 		DBPORT,
@@ -29,7 +29,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		&errMsg
 	).SetTo(conn))
 	{
-		NotNullPtr<DB::DBReader> r;
+		NN<DB::DBReader> r;
 		if (conn->ExecuteReader(CSTR("select * from table")).SetTo(r))
 		{
 			while (r->ReadNext())

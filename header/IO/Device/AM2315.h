@@ -9,11 +9,11 @@ namespace IO
 		class AM2315
 		{
 		private:
-			NotNullPtr<IO::I2CChannel> channel;
+			NN<IO::I2CChannel> channel;
 			Bool toRelease;
 			Optional<IO::I2C> i2c;
 		public:
-			AM2315(NotNullPtr<IO::I2CChannel> channel, Bool toRelease);
+			AM2315(NN<IO::I2CChannel> channel, Bool toRelease);
 			~AM2315();
 
 			Bool IsError();

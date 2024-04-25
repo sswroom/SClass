@@ -41,7 +41,7 @@ struct Net::WinSSLClient::ClassData
 	Data::ArrayListNN<Crypto::Cert::Certificate> *remoteCerts;
 };
 
-Net::WinSSLClient::WinSSLClient(NotNullPtr<Net::SocketFactory> sockf, Socket *s, void *ctxt) : SSLClient(sockf, s)
+Net::WinSSLClient::WinSSLClient(NN<Net::SocketFactory> sockf, Socket *s, void *ctxt) : SSLClient(sockf, s)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->ctxt = *(CredHandle*)ctxt;
@@ -71,7 +71,7 @@ Net::WinSSLClient::WinSSLClient(NotNullPtr<Net::SocketFactory> sockf, Socket *s,
 	if (serverCert)
 	{
 		DWORD dwVerificationFlags = 0;
-		NotNullPtr<Crypto::Cert::X509Cert> cert;
+		NN<Crypto::Cert::X509Cert> cert;
 		NEW_CLASS(this->clsData->remoteCerts, Data::ArrayListNN<Crypto::Cert::Certificate>());
 		NEW_CLASSNN(cert, Crypto::Cert::X509Cert(CSTR("RemoteCert"), Data::ByteArrayR(serverCert->pbCertEncoded, serverCert->cbCertEncoded)));
 		this->clsData->remoteCerts->Add(cert);
@@ -109,7 +109,7 @@ Net::WinSSLClient::~WinSSLClient()
 		UOSInt i = this->clsData->remoteCerts->GetCount();
 		while (i-- > 0)
 		{
-			NotNullPtr<Crypto::Cert::Certificate> cert = this->clsData->remoteCerts->GetItemNoCheck(i);
+			NN<Crypto::Cert::Certificate> cert = this->clsData->remoteCerts->GetItemNoCheck(i);
 			cert.Delete();
 		}
 		DEL_CLASS(this->clsData->remoteCerts);

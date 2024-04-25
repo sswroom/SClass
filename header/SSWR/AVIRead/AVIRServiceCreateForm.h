@@ -15,24 +15,24 @@ namespace SSWR
 		class AVIRServiceCreateForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblName;
-			NotNullPtr<UI::GUITextBox> txtName;
-			NotNullPtr<UI::GUILabel> lblDesc;
-			NotNullPtr<UI::GUITextBox> txtDesc;
-			NotNullPtr<UI::GUILabel> lblState;
-			NotNullPtr<UI::GUIComboBox> cboState;
-			NotNullPtr<UI::GUILabel> lblCmdLine;
-			NotNullPtr<UI::GUITextBox> txtCmdLine;
-			NotNullPtr<UI::GUIButton> btnCreate;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUILabel> lblName;
+			NN<UI::GUITextBox> txtName;
+			NN<UI::GUILabel> lblDesc;
+			NN<UI::GUITextBox> txtDesc;
+			NN<UI::GUILabel> lblState;
+			NN<UI::GUIComboBox> cboState;
+			NN<UI::GUILabel> lblCmdLine;
+			NN<UI::GUITextBox> txtCmdLine;
+			NN<UI::GUIButton> btnCreate;
+			NN<UI::GUIButton> btnCancel;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::ServiceManager svcMgr;
 
 			static void __stdcall OnCreateClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			AVIRServiceCreateForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRServiceCreateForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRServiceCreateForm();
 
 			virtual void OnMonitorChanged();

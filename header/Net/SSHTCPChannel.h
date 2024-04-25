@@ -7,10 +7,10 @@ namespace Net
 	class SSHTCPChannel : public IO::Stream
 	{
 	private:
-		NotNullPtr<Net::SSHConn> conn;
+		NN<Net::SSHConn> conn;
 		SSHChannelHandle *channel;
 	public:
-		SSHTCPChannel(NotNullPtr<Net::SSHConn> conn, SSHChannelHandle *channel, Text::CStringNN channelName);
+		SSHTCPChannel(NN<Net::SSHConn> conn, SSHChannelHandle *channel, Text::CStringNN channelName);
 		virtual ~SSHTCPChannel();
 
 		virtual Bool IsDown() const;

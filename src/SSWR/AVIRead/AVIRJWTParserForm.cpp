@@ -6,7 +6,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRJWTParserForm::OnParseClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRJWTParserForm> me = userObj.GetNN<SSWR::AVIRead::AVIRJWTParserForm>();
+	NN<SSWR::AVIRead::AVIRJWTParserForm> me = userObj.GetNN<SSWR::AVIRead::AVIRJWTParserForm>();
 	Text::StringBuilderUTF8 sbJWT;
 	Text::StringBuilderUTF8 sbErr;
 	Bool succ = false;
@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRJWTParserForm::OnParseClicked(AnyType userObj)
 			me->txtJWTId->SetText(Text::String::OrEmpty(param.GetJWTId())->ToCString());
 
 			me->lvPayload->ClearItems();
-			NotNullPtr<Text::String> name;
+			NN<Text::String> name;
 			UOSInt i = 0;
 			UOSInt j = result->GetCount();
 			while (i < j)
@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRJWTParserForm::OnParseClicked(AnyType userObj)
 				}
 				else
 				{
-					NotNullPtr<Text::String> kid;
+					NN<Text::String> kid;
 					if (!json->GetValueString(CSTR("kid")).SetTo(kid))
 					{
 						me->txtVerifyStatus->SetText(CSTR("kid not found"));
@@ -130,7 +130,7 @@ void __stdcall SSWR::AVIRead::AVIRJWTParserForm::OnParseClicked(AnyType userObj)
 	me->txtVerifyType->SetText(Crypto::Token::JWToken::VerifyTypeGetName(me->verifyType));
 }
 
-SSWR::AVIRead::AVIRJWTParserForm::AVIRJWTParserForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRJWTParserForm::AVIRJWTParserForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("JWT Parser"));

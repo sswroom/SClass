@@ -11,7 +11,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRVoiceModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVoiceModemForm>();
+	NN<SSWR::AVIRead::AVIRVoiceModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVoiceModemForm>();
 	if (me->toneChg)
 	{
 		me->toneChg = false;
@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnTimerTick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnDialClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRVoiceModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVoiceModemForm>();
+	NN<SSWR::AVIRead::AVIRVoiceModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVoiceModemForm>();
 	if (!me->isConnected)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -112,7 +112,7 @@ void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnDialClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnHangUpClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRVoiceModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVoiceModemForm>();
+	NN<SSWR::AVIRead::AVIRVoiceModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVoiceModemForm>();
 	if (me->isConnected)
 	{
 		if (me->modem->HangUp())
@@ -129,7 +129,7 @@ void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnHangUpClicked(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnModemEvent(AnyType userObj, UInt8 evtType)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRVoiceModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVoiceModemForm>();
+	NN<SSWR::AVIRead::AVIRVoiceModemForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVoiceModemForm>();
 	switch (evtType)
 	{
 	case 'b':
@@ -166,7 +166,7 @@ void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnModemEvent(AnyType userObj, 
 	}
 }
 
-SSWR::AVIRead::AVIRVoiceModemForm::AVIRVoiceModemForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::Device::RockwellModemController> modem, NotNullPtr<IO::ATCommandChannel> channel, NotNullPtr<IO::Stream> port) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRVoiceModemForm::AVIRVoiceModemForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::Device::RockwellModemController> modem, NN<IO::ATCommandChannel> channel, NN<IO::Stream> port) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Voice Modem"));
 	this->SetFont(0, 0, 8.25, false);

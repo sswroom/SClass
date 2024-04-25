@@ -28,7 +28,7 @@ namespace UI
 			void DrawXorBar(HDC hdc, OSInt x, OSInt y);
 			void CalDragRange();
 		public:
-			WinHSplitter(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Int32 width, Bool isRight);
+			WinHSplitter(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Int32 width, Bool isRight);
 			virtual ~WinHSplitter();
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);

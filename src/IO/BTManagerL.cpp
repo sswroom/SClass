@@ -15,10 +15,10 @@ IO::BTManager::~BTManager()
 	
 }
 
-UOSInt IO::BTManager::CreateControllers(NotNullPtr<Data::ArrayListNN<IO::BTController>> ctrlList)
+UOSInt IO::BTManager::CreateControllers(NN<Data::ArrayListNN<IO::BTController>> ctrlList)
 {
 	UOSInt ret = 0;
-	NotNullPtr<IO::BTController> btCtrl;
+	NN<IO::BTController> btCtrl;
 	int i = 0;
 	int res;
 	hci_dev_info di;

@@ -10,35 +10,35 @@ namespace Crypto
 		class X509Cert : public Crypto::Cert::X509File, public Crypto::Cert::Certificate
 		{
 		public:
-			X509Cert(NotNullPtr<Text::String> sourceName, Data::ByteArrayR buff);
+			X509Cert(NN<Text::String> sourceName, Data::ByteArrayR buff);
 			X509Cert(Text::CStringNN sourceName, Data::ByteArrayR buff);
 			virtual ~X509Cert();
 
-			Bool GetSubjectCN(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+			Bool GetSubjectCN(NN<Text::StringBuilderUTF8> sb) const;
 			UTF8Char *GetSubjectCN(UTF8Char *sbuff) const;
-			Bool GetIssuerCN(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+			Bool GetIssuerCN(NN<Text::StringBuilderUTF8> sb) const;
 			void SetDefaultSourceName();
 			
 			virtual FileType GetFileType() const;
-			virtual void ToShortName(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+			virtual void ToShortName(NN<Text::StringBuilderUTF8> sb) const;
 
 			virtual UOSInt GetCertCount();
-			virtual Bool GetCertName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual Bool GetCertName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
 			virtual Optional<X509Cert> GetNewCert(UOSInt index);
-			virtual ValidStatus IsValid(NotNullPtr<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const;
+			virtual ValidStatus IsValid(NN<Net::SSLEngine> ssl, Optional<Crypto::Cert::CertStore> trustStore) const;
 
-			virtual NotNullPtr<ASN1Data> Clone() const;
+			virtual NN<ASN1Data> Clone() const;
 			virtual Optional<X509Cert> CreateX509Cert() const;
-			virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
-			virtual NotNullPtr<Net::ASN1Names> CreateNames() const;
+			virtual void ToString(NN<Text::StringBuilderUTF8> sb) const;
+			virtual NN<Net::ASN1Names> CreateNames() const;
 
-			Bool GetIssuerNames(NotNullPtr<CertNames> names) const;
-			Bool GetSubjNames(NotNullPtr<CertNames> names) const;
-			Bool GetExtensions(NotNullPtr<CertExtensions> ext) const;
+			Bool GetIssuerNames(NN<CertNames> names) const;
+			Bool GetSubjNames(NN<CertNames> names) const;
+			Bool GetExtensions(NN<CertExtensions> ext) const;
 			Crypto::Cert::X509Key *GetNewPublicKey() const;
 			Bool GetKeyId(const Data::ByteArray &keyId) const; //20 bytes
-			Bool GetNotBefore(NotNullPtr<Data::DateTime> dt) const;
-			Bool GetNotAfter(NotNullPtr<Data::DateTime> dt) const;
+			Bool GetNotBefore(NN<Data::DateTime> dt) const;
+			Bool GetNotAfter(NN<Data::DateTime> dt) const;
 			Bool DomainValid(Text::CString domain) const;
 			Bool IsSelfSigned() const;
 			UOSInt GetCRLDistributionPoints(Data::ArrayList<Text::CString> *crlDistributionPoints) const;

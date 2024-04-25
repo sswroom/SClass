@@ -15,9 +15,9 @@
 #define FFTAVG 1
 //#define SHOWLOG
 
-void __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<Media::AudioFilter::DTMFDecoder> me = thread->GetUserObj().GetNN<Media::AudioFilter::DTMFDecoder>();
+	NN<Media::AudioFilter::DTMFDecoder> me = thread->GetUserObj().GetNN<Media::AudioFilter::DTMFDecoder>();
 
 	Double *avgData = MemAlloc(Double, me->sampleCnt);
 	UInt8 *tmpBuff = MemAlloc(UInt8, me->sampleBuffSize);
@@ -433,7 +433,7 @@ void Media::AudioFilter::DTMFDecoder::ResetStatus()
 	this->currTone = 0;
 }
 
-Media::AudioFilter::DTMFDecoder::DTMFDecoder(NotNullPtr<Media::IAudioSource> audSrc, UOSInt calcInt) : Media::IAudioFilter(audSrc), thread(CalcThread, this, CSTR("DTMFDecoder"))
+Media::AudioFilter::DTMFDecoder::DTMFDecoder(NN<Media::IAudioSource> audSrc, UOSInt calcInt) : Media::IAudioFilter(audSrc), thread(CalcThread, this, CSTR("DTMFDecoder"))
 {
 	UOSInt i;
 	Media::AudioFormat fmt;

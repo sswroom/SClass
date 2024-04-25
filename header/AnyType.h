@@ -14,14 +14,14 @@ struct AnyType
 		this->p = p;
 	}
 
-	template<typename T> AnyType(NotNullPtr<T> p)
+	template<typename T> AnyType(NN<T> p)
 	{
 		this->p = p.Ptr();
 	}
 
-	template<typename T> NotNullPtr<T> GetNN() const
+	template<typename T> NN<T> GetNN() const
 	{
-		return NotNullPtr<T>::FromPtr((T*)this->p);
+		return NN<T>::FromPtr((T*)this->p);
 	}
 
 	template<typename T> Optional<T> GetOpt() const

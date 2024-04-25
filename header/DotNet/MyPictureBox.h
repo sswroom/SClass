@@ -45,7 +45,7 @@ namespace DotNet
 
 		void SetImage(Media::Image *currImage);
 
-		void YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuvParam);
+		void YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam);
 		void RGBParamChanged(const Media::IColorHandler::RGBPARAM *rgbParam);
 		void SetAllowEnlarge(Bool allowEnlarge);
 	};

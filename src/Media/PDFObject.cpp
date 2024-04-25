@@ -17,14 +17,14 @@ Media::PDFObject::~PDFObject()
 	SDEL_CLASS(this->parameter);
 }
 
-void Media::PDFObject::SetStream(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 len)
+void Media::PDFObject::SetStream(NN<IO::StreamData> fd, UInt64 ofst, UInt64 len)
 {
 	SDEL_CLASS(this->fd);
 	this->streamData = true;
 	this->fd = fd->GetPartialData(ofst, len).Ptr();
 }
 
-void Media::PDFObject::SetData(NotNullPtr<IO::StreamData> fd, UInt64 ofst, UInt64 len)
+void Media::PDFObject::SetData(NN<IO::StreamData> fd, UInt64 ofst, UInt64 len)
 {
 	SDEL_CLASS(this->fd);
 	this->streamData = false;
@@ -76,7 +76,7 @@ Optional<Text::String> Media::PDFObject::GetFilter() const
 {
 	if (this->parameter == 0)
 		return 0;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UOSInt i = this->parameter->GetEntryIndex(CSTR("Filter"));
 	if (i != INVALID_INDEX)
 	{
@@ -92,7 +92,7 @@ Optional<Text::String> Media::PDFObject::GetColorSpace() const
 {
 	if (this->parameter == 0)
 		return 0;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UOSInt i = this->parameter->GetEntryIndex(CSTR("ColorSpace"));
 	if (i != INVALID_INDEX)
 	{
@@ -108,7 +108,7 @@ UOSInt Media::PDFObject::GetBitPerComponent() const
 {
 	if (this->parameter == 0)
 		return 0;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (this->parameter->GetEntryValue(CSTR("BitPerComponent")).SetTo(s))
 		return s->ToUOSInt();
 	return 0;
@@ -118,7 +118,7 @@ UOSInt Media::PDFObject::GetWidth() const
 {
 	if (this->parameter == 0)
 		return 0;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (this->parameter->GetEntryValue(CSTR("Width")).SetTo(s))
 		return s->ToUOSInt();
 	return 0;
@@ -128,7 +128,7 @@ UOSInt Media::PDFObject::GetHeight() const
 {
 	if (this->parameter == 0)
 		return 0;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (this->parameter->GetEntryValue(CSTR("Height")).SetTo(s))
 		return s->ToUOSInt();
 	return 0;
@@ -149,12 +149,12 @@ Bool Media::PDFObject::SaveFile(Text::CStringNN fileName)
 	return false;
 }
 
-Bool Media::PDFObject::SaveStream(NotNullPtr<IO::Stream> stm)
+Bool Media::PDFObject::SaveStream(NN<IO::Stream> stm)
 {
-	NotNullPtr<IO::StreamData> fd;
+	NN<IO::StreamData> fd;
 	if (fd.Set(this->fd))
 	{
-		NotNullPtr<Text::String> filter;
+		NN<Text::String> filter;
 		if (this->GetFilter().SetTo(filter) && filter->Equals(UTF8STRC("FlateDecode")))
 		{
 			Data::Compress::InflateStream infStm(stm, true);

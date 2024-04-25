@@ -36,9 +36,9 @@ OSInt SSWR::OrganMgr::BookArrayList::Compare(NN<OrganBook> book1, NN<OrganBook> 
 	return CompareBook(book1, book2);
 }
 
-void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPublishChg(AnyType userObj, NotNullPtr<Data::DateTime> newDate)
+void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPublishChg(AnyType userObj, NN<Data::DateTime> newDate)
 {
-	NotNullPtr<OrganBookForm> me = userObj.GetNN<OrganBookForm>();
+	NN<OrganBookForm> me = userObj.GetNN<OrganBookForm>();
 	Data::Timestamp currTime = Data::DateTime(newDate->GetYear(), 1, 1, 0, 0, 0).ToTimestamp();
 	OSInt i = 0;
 	OSInt j = (OSInt)me->bookList.GetCount() - 1;
@@ -90,7 +90,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPublishChg(AnyType userObj, 
 
 void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookAddClicked(AnyType userObj)
 {
-	NotNullPtr<OrganBookForm> me = userObj.GetNN<OrganBookForm>();
+	NN<OrganBookForm> me = userObj.GetNN<OrganBookForm>();
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	Text::StringBuilderUTF8 sb3;
@@ -135,7 +135,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookAddClicked(AnyType userObj)
 
 void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPasteClicked(AnyType userObj)
 {
-	NotNullPtr<OrganBookForm> me = userObj.GetNN<OrganBookForm>();
+	NN<OrganBookForm> me = userObj.GetNN<OrganBookForm>();
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	Data::DateTime dt;
@@ -278,7 +278,7 @@ void SSWR::OrganMgr::OrganBookForm::UpdateBookList()
 	}
 }
 
-SSWR::OrganMgr::OrganBookForm::OrganBookForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::OrganMgr::OrganBookForm::OrganBookForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<OrganEnv> env) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->env = env;
 	this->changed = false;

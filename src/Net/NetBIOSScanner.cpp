@@ -4,9 +4,9 @@
 #include "Net/NetBIOSUtil.h"
 #include "Sync/MutexUsage.h"
 
-void __stdcall Net::NetBIOSScanner::OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall Net::NetBIOSScanner::OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	NotNullPtr<Net::NetBIOSScanner> me = userData.GetNN<Net::NetBIOSScanner>();
+	NN<Net::NetBIOSScanner> me = userData.GetNN<Net::NetBIOSScanner>();
 	UInt32 sortableIP = ReadMUInt32(addr->addr);
 	if (dataSize < 56)
 	{
@@ -67,7 +67,7 @@ void Net::NetBIOSScanner::FreeAnswer(NameAnswer *ans)
 	MemFree(ans);
 }
 
-Net::NetBIOSScanner::NetBIOSScanner(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log)
+Net::NetBIOSScanner::NetBIOSScanner(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log)
 {
 	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, OnUDPPacket, this, log, CSTR_NULL, 2, false));
 	this->hdlr = 0;
@@ -113,7 +113,7 @@ void Net::NetBIOSScanner::SetAnswerHandler(AnswerUpdated hdlr, AnyType userObj)
 	this->hdlr = {hdlr, userObj};
 }
 
-NotNullPtr<const Data::ReadingList<Net::NetBIOSScanner::NameAnswer*>> Net::NetBIOSScanner::GetAnswers(NotNullPtr<Sync::MutexUsage> mutUsage) const
+NN<const Data::ReadingList<Net::NetBIOSScanner::NameAnswer*>> Net::NetBIOSScanner::GetAnswers(NN<Sync::MutexUsage> mutUsage) const
 {
 	mutUsage->ReplaceMutex(this->ansMut);
 	return this->answers;

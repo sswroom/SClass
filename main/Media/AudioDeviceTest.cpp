@@ -6,11 +6,11 @@
 #include "Media/AudioFilter/AudioSweepFilter.h"
 #include "Sync/SimpleThread.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	Media::AudioDevice *dev;
-	NotNullPtr<Media::SilentSource> audSrc;
+	NN<Media::SilentSource> audSrc;
 	Media::AudioFilter::AudioSweepFilter *sweepFilter;
 	Media::IAudioRenderer *renderer;
 	NEW_CLASS(dev, Media::AudioDevice());

@@ -8,7 +8,7 @@
 
 Int32 UI::GUICalendar::useCnt = 0;
 
-UI::GUICalendar::GUICalendar(NotNullPtr<UI::GUICore> ui, Optional<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
+UI::GUICalendar::GUICalendar(NN<UI::GUICore> ui, Optional<UI::GUIClientControl> parent) : UI::GUIControl(ui, parent)
 {
 	if (Sync::Interlocked::IncrementI32(useCnt) == 1)
 	{
@@ -18,12 +18,12 @@ UI::GUICalendar::GUICalendar(NotNullPtr<UI::GUICore> ui, Optional<UI::GUIClientC
 	}
 
 	Int32 style = WS_BORDER | WS_TABSTOP | WS_CHILD;
-	NotNullPtr<UI::GUIClientControl> nnparent;
+	NN<UI::GUIClientControl> nnparent;
 	if (parent.SetTo(nnparent) && nnparent->IsChildVisible())
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(NotNullPtr<UI::Win::WinCore>::ConvertFrom(ui)->GetHInst(), parent, MONTHCAL_CLASS, (const UTF8Char*)"", style, WS_EX_CLIENTEDGE, 0, 0, 200, 200);
+	this->InitControl(NN<UI::Win::WinCore>::ConvertFrom(ui)->GetHInst(), parent, MONTHCAL_CLASS, (const UTF8Char*)"", style, WS_EX_CLIENTEDGE, 0, 0, 200, 200);
 }
 
 UI::GUICalendar::~GUICalendar()
@@ -57,7 +57,7 @@ OSInt UI::GUICalendar::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-void UI::GUICalendar::GetSelectedTime(NotNullPtr<Data::DateTime> dt)
+void UI::GUICalendar::GetSelectedTime(NN<Data::DateTime> dt)
 {
 	SYSTEMTIME t;
 	SendMessage((HWND)this->hwnd, MCM_GETCURSEL, 0, (LPARAM)&t);

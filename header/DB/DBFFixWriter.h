@@ -19,7 +19,7 @@ namespace DB
 		} DBFColumn;
 
 	private:
-		NotNullPtr<IO::SeekableStream> stm;
+		NN<IO::SeekableStream> stm;
 		UOSInt colCnt;
 		DBFColumn *columns;
 		UOSInt rowCnt;
@@ -29,7 +29,7 @@ namespace DB
 		UOSInt recSize;
 
 	public:
-		DBFFixWriter(NotNullPtr<IO::SeekableStream> stm, UOSInt nCol, Text::String **colNames, const UOSInt *colSize, const UOSInt *dp, DB::DBUtil::ColType *colTypes, UInt32 codePage);
+		DBFFixWriter(NN<IO::SeekableStream> stm, UOSInt nCol, Text::String **colNames, const UOSInt *colSize, const UOSInt *dp, DB::DBUtil::ColType *colTypes, UInt32 codePage);
 		~DBFFixWriter();
 		void AddRecord(const UTF8Char **rowValues);
 

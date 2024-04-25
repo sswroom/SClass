@@ -9,26 +9,26 @@ namespace Net
 		class PKIX1Implicit88
 		{
 		public:
-			static void AuthorityKeyIdentifier(NotNullPtr<ASN1Names> names);
-			static void AuthorityKeyIdentifierCont(NotNullPtr<ASN1Names> names);
-			static void SubjectKeyIdentifier(NotNullPtr<ASN1Names> names);
-			static void KeyUsage(NotNullPtr<ASN1Names> names);
-			static void CertificatePolicies(NotNullPtr<ASN1Names> names);
-			static void CertificatePoliciesCont(NotNullPtr<ASN1Names> names);
-			static void PolicyInformationCont(NotNullPtr<ASN1Names> names);
-			static void PolicyQualifiers(NotNullPtr<ASN1Names> names);
-			static void PolicyQualifierInfoCont(NotNullPtr<ASN1Names> names);
-			static void GeneralNames(NotNullPtr<ASN1Names> names);
-			static void GeneralNameCont(NotNullPtr<ASN1Names> names);
-			static void BasicConstraints(NotNullPtr<ASN1Names> names);
-			static void BasicConstraintsCont(NotNullPtr<ASN1Names> names);
-			static void CRLDistributionPoints(NotNullPtr<ASN1Names> names);
-			static void CRLDistributionPointsCont(NotNullPtr<ASN1Names> names);
-			static void DistributionPointCont(NotNullPtr<ASN1Names> names);
-			static void DistributionPointName(NotNullPtr<ASN1Names> names);
-			static void ReasonFlags(NotNullPtr<ASN1Names> names);
-			static void ExtKeyUsageSyntax(NotNullPtr<ASN1Names> names);
-			static void ExtKeyUsageSyntaxCont(NotNullPtr<ASN1Names> names);
+			static void AuthorityKeyIdentifier(NN<ASN1Names> names);
+			static void AuthorityKeyIdentifierCont(NN<ASN1Names> names);
+			static void SubjectKeyIdentifier(NN<ASN1Names> names);
+			static void KeyUsage(NN<ASN1Names> names);
+			static void CertificatePolicies(NN<ASN1Names> names);
+			static void CertificatePoliciesCont(NN<ASN1Names> names);
+			static void PolicyInformationCont(NN<ASN1Names> names);
+			static void PolicyQualifiers(NN<ASN1Names> names);
+			static void PolicyQualifierInfoCont(NN<ASN1Names> names);
+			static void GeneralNames(NN<ASN1Names> names);
+			static void GeneralNameCont(NN<ASN1Names> names);
+			static void BasicConstraints(NN<ASN1Names> names);
+			static void BasicConstraintsCont(NN<ASN1Names> names);
+			static void CRLDistributionPoints(NN<ASN1Names> names);
+			static void CRLDistributionPointsCont(NN<ASN1Names> names);
+			static void DistributionPointCont(NN<ASN1Names> names);
+			static void DistributionPointName(NN<ASN1Names> names);
+			static void ReasonFlags(NN<ASN1Names> names);
+			static void ExtKeyUsageSyntax(NN<ASN1Names> names);
+			static void ExtKeyUsageSyntaxCont(NN<ASN1Names> names);
 		};
 	}
 }

@@ -36,7 +36,7 @@ private:
 
 	static UInt32 __stdcall CheckThread(AnyType userObj)
 	{
-		NotNullPtr<ProgressHandler> me = userObj.GetNN<ProgressHandler>();
+		NN<ProgressHandler> me = userObj.GetNN<ProgressHandler>();
 		UInt64 lastDispCount = 0;
 		Double lastDispTime = 0;
 		UInt64 currCount;
@@ -184,7 +184,7 @@ Bool VerifyMD5(const UTF8Char *fileName, UOSInt fileNameLen)
 	}
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UOSInt cmdCnt;
 	UTF8Char sbuff[512];
@@ -212,8 +212,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 	{
 		ProgressHandler progress;
 		IO::FileCheck *fileChk = 0;
-		NotNullPtr<IO::FileCheck> thisChk;
-		NotNullPtr<IO::FileCheck> nnfileChk;
+		NN<IO::FileCheck> thisChk;
+		NN<IO::FileCheck> nnfileChk;
 		IO::Path::FindFileSession *sess;
 		Text::StringBuilderUTF8 sb;
 		IO::Path::PathType pt;

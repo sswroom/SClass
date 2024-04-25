@@ -14,26 +14,26 @@ namespace SSWR
 		class AVIRLogExtractForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<UI::GUILabel> lblSFile;
-			NotNullPtr<UI::GUITextBox> txtSFile;
-			NotNullPtr<UI::GUIButton> btnSFile;
-			NotNullPtr<UI::GUILabel> lblPrefix;
-			NotNullPtr<UI::GUITextBox> txtPrefix;
-			NotNullPtr<UI::GUILabel> lblOFile;
-			NotNullPtr<UI::GUITextBox> txtOFile;
-			NotNullPtr<UI::GUIButton> btnOFile;
-			NotNullPtr<UI::GUILabel> lblType;
-			NotNullPtr<UI::GUIComboBox> cboType;
-			NotNullPtr<UI::GUILabel> lblSuffix;
-			NotNullPtr<UI::GUITextBox> txtSuffix;
-			NotNullPtr<UI::GUIButton> btnExtract;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<UI::GUILabel> lblSFile;
+			NN<UI::GUITextBox> txtSFile;
+			NN<UI::GUIButton> btnSFile;
+			NN<UI::GUILabel> lblPrefix;
+			NN<UI::GUITextBox> txtPrefix;
+			NN<UI::GUILabel> lblOFile;
+			NN<UI::GUITextBox> txtOFile;
+			NN<UI::GUIButton> btnOFile;
+			NN<UI::GUILabel> lblType;
+			NN<UI::GUIComboBox> cboType;
+			NN<UI::GUILabel> lblSuffix;
+			NN<UI::GUITextBox> txtSuffix;
+			NN<UI::GUIButton> btnExtract;
 
 			static void __stdcall OnSFileClicked(AnyType userObj);
 			static void __stdcall OnOFileClicked(AnyType userObj);
 			static void __stdcall OnExtractClicked(AnyType userObj);
 		public:
-			AVIRLogExtractForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRLogExtractForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRLogExtractForm();
 
 			virtual void OnMonitorChanged();

@@ -17,12 +17,12 @@ namespace SSWR
 		class AVIRGISSearchForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUITextBox> txtSearchStr;
-			NotNullPtr<UI::GUIListBox> lbResults;
+			NN<UI::GUITextBox> txtSearchStr;
+			NN<UI::GUIListBox> lbResults;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IMapNavigator *navi;
-			NotNullPtr<Map::MapDrawLayer> layer;
+			NN<Map::MapDrawLayer> layer;
 			Text::SearchIndexer *searching;
 			Data::ArrayListString dispList;
 			Data::ArrayListInt64 objIds;
@@ -37,7 +37,7 @@ namespace SSWR
 			void UpdateResults();
 
 		public:
-			AVIRGISSearchForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi, NotNullPtr<Map::MapDrawLayer> layer, Text::SearchIndexer *searching, UOSInt strIndex, Int32 flags);
+			AVIRGISSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi, NN<Map::MapDrawLayer> layer, Text::SearchIndexer *searching, UOSInt strIndex, Int32 flags);
 			virtual ~AVIRGISSearchForm();
 
 			virtual void OnMonitorChanged();

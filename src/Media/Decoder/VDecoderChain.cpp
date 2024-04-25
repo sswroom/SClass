@@ -7,7 +7,7 @@ void Media::Decoder::VDecoderChain::ProcVideoFrame(Data::Duration frameTime, UIn
 	this->frameCb(frameTime, frameNum, imgData, dataSize, frameStruct, this->frameCbData, frameType, flags, ycOfst);
 }
 
-Media::Decoder::VDecoderChain::VDecoderChain(NotNullPtr<IVideoSource> sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
+Media::Decoder::VDecoderChain::VDecoderChain(NN<IVideoSource> sourceVideo) : Media::Decoder::VDecoderBase(sourceVideo)
 {
 }
 
@@ -34,7 +34,7 @@ Text::CStringNN Media::Decoder::VDecoderChain::GetFilterName()
 	return CSTR("VDecoderChain");
 }
 
-void Media::Decoder::VDecoderChain::AddDecoder(NotNullPtr<Media::IVideoSource> decoder)
+void Media::Decoder::VDecoderChain::AddDecoder(NN<Media::IVideoSource> decoder)
 {
 	this->srcFilters.Add(decoder.Ptr());
 }
@@ -64,7 +64,7 @@ void Media::Decoder::VDecoderChain::EnumFrameInfos(FrameInfoCallback cb, AnyType
 	this->sourceVideo->EnumFrameInfos(cb, userData);
 }
 
-Bool Media::Decoder::VDecoderChain::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::Decoder::VDecoderChain::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	return this->sourceVideo->GetVideoInfo(info, frameRateNorm, frameRateDenorm, maxFrameSize);
 }

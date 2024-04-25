@@ -13,14 +13,14 @@ namespace SSWR
 		class AVIRGISHKTrafficForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
-			NotNullPtr<UI::GUILabel> lblRoadCenterline;
-			NotNullPtr<UI::GUITextBox> txtRoadCenterline;
-			NotNullPtr<UI::GUIButton> btnRoadCenterline;
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUILabel> lblRoadCenterline;
+			NN<UI::GUITextBox> txtRoadCenterline;
+			NN<UI::GUIButton> btnRoadCenterline;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
 			Map::MapDrawLayer *lyr;
 
@@ -28,7 +28,7 @@ namespace SSWR
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			AVIRGISHKTrafficForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRGISHKTrafficForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRGISHKTrafficForm();
 
 			virtual void OnMonitorChanged();

@@ -17,10 +17,10 @@
 
 UInt32 __stdcall Net::LogClient::RecvThread(AnyType userObj)
 {
-	NotNullPtr<Net::LogClient> me = userObj.GetNN<Net::LogClient>();
+	NN<Net::LogClient> me = userObj.GetNN<Net::LogClient>();
 	UOSInt recvSize = 0;
 	UOSInt readSize;
-	NotNullPtr<Net::TCPClient> cli;
+	NN<Net::TCPClient> cli;
 	me->recvRunning = true;
 	{
 		Data::ByteBuffer recvBuff(BUFFSIZE);
@@ -72,11 +72,11 @@ UInt32 __stdcall Net::LogClient::RecvThread(AnyType userObj)
 
 UInt32 __stdcall Net::LogClient::SendThread(AnyType userObj)
 {
-	NotNullPtr<Net::LogClient> me = userObj.GetNN<Net::LogClient>();
+	NN<Net::LogClient> me = userObj.GetNN<Net::LogClient>();
 	Net::TCPClient *cli;
 	Int64 t;
 	Int64 msgTime;
-	NotNullPtr<Text::String> msg;
+	NN<Text::String> msg;
 	UOSInt msgLen;
 	Int64 nextKATime = 0;
 	UInt8 kaBuff[10];
@@ -143,7 +143,7 @@ UInt32 __stdcall Net::LogClient::SendThread(AnyType userObj)
 	return 0;
 }
 
-Net::LogClient::LogClient(NotNullPtr<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout) : protoHdlr(*this)
+Net::LogClient::LogClient(NN<Net::SocketFactory> sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::Duration timeout) : protoHdlr(*this)
 {
 	this->sockf = sockf;
 	this->addr = *addr;
@@ -197,7 +197,7 @@ void Net::LogClient::LogAdded(const Data::Timestamp &time, Text::CStringNN logMs
 	this->sendEvt.Set();
 }
 
-void Net::LogClient::DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
+void Net::LogClient::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 	switch (cmdType)
 	{
@@ -220,6 +220,6 @@ void Net::LogClient::DataParsed(NotNullPtr<IO::Stream> stm, AnyType stmObj, Int3
 	}
 }
 
-void Net::LogClient::DataSkipped(NotNullPtr<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
+void Net::LogClient::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 }

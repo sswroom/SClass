@@ -27,14 +27,14 @@ namespace UI
 		~Clipboard();
 
 		UOSInt GetDataFormats(Data::ArrayList<UInt32> *dataTypes);
-		Bool GetDataText(UInt32 fmtId, NotNullPtr<Text::StringBuilderUTF8> sb);
+		Bool GetDataText(UInt32 fmtId, NN<Text::StringBuilderUTF8> sb);
 		FilePasteType GetDataFiles(Data::ArrayListStringNN *fileNames);
 		void FreeDataFiles(Data::ArrayListStringNN *fileNames);
 
 	public:
-		static Bool GetDataTextH(void *hand, UInt32 fmtId, NotNullPtr<Text::StringBuilderUTF8> sb, UInt32 tymed);
+		static Bool GetDataTextH(void *hand, UInt32 fmtId, NN<Text::StringBuilderUTF8> sb, UInt32 tymed);
 		static Bool SetString(ControlHandle *hWndOwner, Text::CString s);
-		static Bool GetString(ControlHandle *hWndOwner, NotNullPtr<Text::StringBuilderUTF8> sb);
+		static Bool GetString(ControlHandle *hWndOwner, NN<Text::StringBuilderUTF8> sb);
 		static UTF8Char *GetFormatName(UInt32 fmtId, UTF8Char *sbuff, UOSInt buffSize);
 	};
 }

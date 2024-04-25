@@ -4,9 +4,9 @@
 #include "UI/GUICore.h"
 #include "UI/GUIForm.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	NotNullPtr<UI::GUICore> core;
+	NN<UI::GUICore> core;
 	if (progCtrl->CreateGUICore(progCtrl).SetTo(core))
 	{
 		UI::GUIForm *frm;

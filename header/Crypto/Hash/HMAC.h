@@ -9,8 +9,8 @@ namespace Crypto
 		class HMAC : public IHash
 		{
 		private:
-			NotNullPtr<Crypto::Hash::IHash> hashInner;
-			NotNullPtr<Crypto::Hash::IHash> hashOuter;
+			NN<Crypto::Hash::IHash> hashInner;
+			NN<Crypto::Hash::IHash> hashOuter;
 			UInt8 *key;
 			UOSInt keySize;
 
@@ -19,11 +19,11 @@ namespace Crypto
 			UOSInt padSize;
 
 		public:
-			HMAC(NotNullPtr<Crypto::Hash::IHash> hash, const UInt8 *key, UOSInt keySize);
+			HMAC(NN<Crypto::Hash::IHash> hash, const UInt8 *key, UOSInt keySize);
 			virtual ~HMAC();
 
 			virtual UTF8Char *GetName(UTF8Char *sbuff) const;
-			virtual NotNullPtr<IHash> Clone() const;
+			virtual NN<IHash> Clone() const;
 			virtual void Clear();
 			virtual void Calc(const UInt8 *buff, UOSInt buffSize);
 			virtual void GetValue(UInt8 *buff) const;

@@ -28,23 +28,23 @@ namespace Net
 	{
 	private:
 		struct ClassData;
-		NotNullPtr<ClassData> clsData;
+		NN<ClassData> clsData;
 		Optional<Net::TCPClient> cli;
-		NotNullPtr<Net::SocketFactory> sockf;
+		NN<Net::SocketFactory> sockf;
 		Int32 lastError;
 	public:
-		SSHConn(NotNullPtr<Net::SocketFactory> sockf, Text::CStringNN host, UInt16 port, Data::Duration timeout);
+		SSHConn(NN<Net::SocketFactory> sockf, Text::CStringNN host, UInt16 port, Data::Duration timeout);
 		~SSHConn();
 
 		Bool IsError() const;
 		Int32 GetLastError() const;
-		NotNullPtr<Net::SocketFactory> GetSocketFactory() const;
+		NN<Net::SocketFactory> GetSocketFactory() const;
 		Optional<Net::TCPClient> GetTCPClient() const;
 
 		Bool GetHostKeySHA1(UInt8 *buff); //20 bytes
 		const UTF8Char *GetBanner();
 		const UTF8Char *GetActiveAlgorithm(SSHMethodType method);
-		Bool GetAuthMethods(Text::CStringNN userName, NotNullPtr<Data::ArrayListStringNN> authMeth);
+		Bool GetAuthMethods(Text::CStringNN userName, NN<Data::ArrayListStringNN> authMeth);
 		Bool AuthPassword(Text::CStringNN userName, Text::CStringNN password);
 		Optional<SSHTCPChannel> RemoteConnect(Socket *sourceSoc, Text::CStringNN remoteHost, UInt16 remotePort);
 		Bool ChannelTryRead(SSHChannelHandle *channel, UInt8 *buff, UOSInt maxSize, OutParam<UOSInt> size);

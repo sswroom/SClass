@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRASN1OIDForm::OnConvertClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRASN1OIDForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1OIDForm>();
+	NN<SSWR::AVIRead::AVIRASN1OIDForm> me = userObj.GetNN<SSWR::AVIRead::AVIRASN1OIDForm>();
 	Text::StringBuilderUTF8 sbCPP;
 	Text::StringBuilderUTF8 sb;
 	me->txtSource->GetText(sb);
@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1OIDForm::OnConvertClicked(AnyType userObj)
 	me->tcMain->SetSelectedIndex(1);
 }
 
-SSWR::AVIRead::AVIRASN1OIDForm::AVIRASN1OIDForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRASN1OIDForm::AVIRASN1OIDForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("ASN.1 OID"));

@@ -7,7 +7,7 @@ namespace UI
 	class GUILabel : public GUIControl
 	{
 	public:
-		GUILabel(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
+		GUILabel(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 		virtual ~GUILabel();
 
 		virtual Text::CStringNN GetObjectClass() const;

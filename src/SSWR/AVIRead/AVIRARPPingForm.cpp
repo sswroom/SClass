@@ -9,7 +9,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnARPHandler(const UInt8 *hwAddr, UInt32 ipAddr, AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRARPPingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPPingForm>();
+	NN<SSWR::AVIRead::AVIRARPPingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPPingForm>();
 	if (me->requested)
 	{
 		UInt32 reqIP = ReadNUInt32(me->targetAddr.addr);
@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnARPHandler(const UInt8 *hwAddr,
 
 void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRARPPingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPPingForm>();
+	NN<SSWR::AVIRead::AVIRARPPingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPPingForm>();
 	if (me->arpHdlr && me->targetAddr.addrType != Net::AddrType::Unknown)
 	{
 		SDEL_CLASS(me->arpHdlr);
@@ -53,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(AnyType userObj)
 			me->ui->ShowMsgOK(CSTR("Error, target name is not valid"), CSTR("Error"), me);
 			return;
 		}
-		NotNullPtr<SSWR::AVIRead::AVIRARPPingForm::AdapterInfo> adapter;
+		NN<SSWR::AVIRead::AVIRARPPingForm::AdapterInfo> adapter;
 		if (!me->cboAdapter->GetSelectedItem().GetOpt<SSWR::AVIRead::AVIRARPPingForm::AdapterInfo>().SetTo(adapter))
 		{
 			me->ui->ShowMsgOK(CSTR("Error, no adapter is selected"), CSTR("Error"), me);
@@ -104,7 +104,7 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRARPPingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPPingForm>();
+	NN<SSWR::AVIRead::AVIRARPPingForm> me = userObj.GetNN<SSWR::AVIRead::AVIRARPPingForm>();
 	if (me->arpHdlr && me->targetAddr.addrType != Net::AddrType::Unknown)
 	{
 		Double t;
@@ -119,7 +119,7 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("ARP Ping"));
@@ -163,7 +163,7 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(Optional<UI::GUIClientControl> p
 	NEW_CLASS(this->adapters, Data::ArrayList<SSWR::AVIRead::AVIRARPPingForm::AdapterInfo*>());
 
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
-	NotNullPtr<Net::ConnectionInfo> connInfo;
+	NN<Net::ConnectionInfo> connInfo;
 	SSWR::AVIRead::AVIRARPPingForm::AdapterInfo *adapter;
 	UInt8 hwAddr[32];
 	UTF8Char sbuff[128];

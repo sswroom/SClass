@@ -17,19 +17,19 @@ namespace SSWR
 		class OrganTripForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIPanel> pnlDetail;
-			NotNullPtr<UI::GUILabel> lblFrom;
-			NotNullPtr<UI::GUILabel> lblTo;
-			NotNullPtr<UI::GUILabel> lblLocation;
-			NotNullPtr<UI::GUIDateTimePicker> dtpFrom;
-			NotNullPtr<UI::GUIDateTimePicker> dtpTo;
-			NotNullPtr<UI::GUIButton> btnDate1Hr;
-			NotNullPtr<UI::GUITextBox> txtLocation;
-			NotNullPtr<UI::GUIButton> btnLocation;
-			NotNullPtr<UI::GUIButton> btnLocationLast;
-			NotNullPtr<UI::GUIButton> btnAdd;
-			NotNullPtr<UI::GUIListBox> lbTrips;
-			NotNullPtr<OrganEnv> env;
+			NN<UI::GUIPanel> pnlDetail;
+			NN<UI::GUILabel> lblFrom;
+			NN<UI::GUILabel> lblTo;
+			NN<UI::GUILabel> lblLocation;
+			NN<UI::GUIDateTimePicker> dtpFrom;
+			NN<UI::GUIDateTimePicker> dtpTo;
+			NN<UI::GUIButton> btnDate1Hr;
+			NN<UI::GUITextBox> txtLocation;
+			NN<UI::GUIButton> btnLocation;
+			NN<UI::GUIButton> btnLocationLast;
+			NN<UI::GUIButton> btnAdd;
+			NN<UI::GUIListBox> lbTrips;
+			NN<OrganEnv> env;
 			Int32 locId;
 			Bool updating;
 			Data::Timestamp refTime;
@@ -41,7 +41,7 @@ namespace SSWR
 			static void __stdcall OnDate1HrClicked(AnyType userObj);
 			static void __stdcall OnLocationLastClicked(AnyType userObj);
 		public:
-			OrganTripForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<OrganEnv> env);
+			OrganTripForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<OrganEnv> env);
 			~OrganTripForm();
 
 			virtual void OnMonitorChanged();

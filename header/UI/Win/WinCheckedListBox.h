@@ -9,7 +9,7 @@ namespace UI
 		class WinCheckedListBox : public GUICheckedListBox
 		{
 		public:
-			WinCheckedListBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent);
+			WinCheckedListBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
 			virtual ~WinCheckedListBox();
 
 			virtual Bool GetItemChecked(UOSInt index);

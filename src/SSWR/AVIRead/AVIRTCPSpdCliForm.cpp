@@ -12,7 +12,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTCPSpdCliForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPSpdCliForm>();
+	NN<SSWR::AVIRead::AVIRTCPSpdCliForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPSpdCliForm>();
 	Text::StringBuilderUTF8 sb;
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTCPSpdCliForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPSpdCliForm>();
+	NN<SSWR::AVIRead::AVIRTCPSpdCliForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPSpdCliForm>();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	if (me->connected)
@@ -112,7 +112,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnTimerTick(AnyType userObj)
 
 UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::ProcThread(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTCPSpdCliForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPSpdCliForm>();
+	NN<SSWR::AVIRead::AVIRTCPSpdCliForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPSpdCliForm>();
 	UInt8 *sendBuff;
 	UOSInt sendSize;
 	UOSInt sendBuffSize = SENDBUFFSIZE;
@@ -149,7 +149,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::ProcThread(AnyType userObj)
 
 UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::RecvThread(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRTCPSpdCliForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPSpdCliForm>();
+	NN<SSWR::AVIRead::AVIRTCPSpdCliForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPSpdCliForm>();
 	UOSInt recvSize;
 	me->recvRunning = true;
 	me->mainEvt.Set();
@@ -184,7 +184,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::RecvThread(AnyType userObj)
 	return 0;
 }
 
-SSWR::AVIRead::AVIRTCPSpdCliForm::AVIRTCPSpdCliForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 320, 240, ui)
+SSWR::AVIRead::AVIRTCPSpdCliForm::AVIRTCPSpdCliForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 320, 240, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("TCP Speed Client"));

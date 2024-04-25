@@ -13,14 +13,14 @@ namespace SSWR
 		class AVIRFileChkForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIMainMenu> mnu;
-			NotNullPtr<UI::GUIListView> lvFileChk;
+			NN<UI::GUIMainMenu> mnu;
+			NN<UI::GUIListView> lvFileChk;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<IO::FileCheck> fileChk;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<IO::FileCheck> fileChk;
 
 		public:
-			AVIRFileChkForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<IO::FileCheck> fileChk);
+			AVIRFileChkForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::FileCheck> fileChk);
 			virtual ~AVIRFileChkForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

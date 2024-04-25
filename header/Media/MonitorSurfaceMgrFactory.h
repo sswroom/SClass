@@ -9,8 +9,8 @@ namespace Media
 	class MonitorSurfaceMgrFactory
 	{
 	public:
-		static NotNullPtr<MonitorSurfaceMgr> Create(Media::MonitorMgr *monMgr, Media::ColorManagerSess *colorSess);
-		static NotNullPtr<MonitorSurfaceMgr> Create(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr);
+		static NN<MonitorSurfaceMgr> Create(Media::MonitorMgr *monMgr, Media::ColorManagerSess *colorSess);
+		static NN<MonitorSurfaceMgr> Create(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr);
 	};
 }
 #endif

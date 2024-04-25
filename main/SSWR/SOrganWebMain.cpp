@@ -14,7 +14,7 @@
 #include "Net/SSLEngineFactory.h"
 #include "SSWR/OrganWeb/OrganWebEnv.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Manage::ExceptionRecorder exHdlr(CSTR("Error.txt"), Manage::ExceptionRecorder::EA_RESTART);
 	{
@@ -25,7 +25,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 		Net::OSSocketFactory sockf(true);
 		Optional<Net::SSLEngine> ssl = 0;
 		IO::LogTool log;
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		Text::CString osmCacheDir;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
@@ -45,15 +45,15 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				if (s->ToUInt16(sslPort) && sslPort != 0)
 				{
 					ssl = Net::SSLEngineFactory::Create(sockf, false);
-					NotNullPtr<Net::SSLEngine> nnssl;
+					NN<Net::SSLEngine> nnssl;
 					if (!ssl.SetTo(nnssl))
 					{
 						console.WriteLineC(UTF8STRC("Error in initializing SSL engine"));
 					}
 					else
 					{
-						NotNullPtr<Text::String> certFile;
-						NotNullPtr<Text::String> keyFile;
+						NN<Text::String> certFile;
+						NN<Text::String> keyFile;
 						if (!cfg->GetValue(CSTR("SSLCert")).SetTo(certFile))
 						{
 							console.WriteLineC(UTF8STRC("SSLCert not found"));
@@ -113,8 +113,8 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 				sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMTile"));
 				osmCacheDir = CSTRP(sbuff, sptr);
 			}
-			NotNullPtr<Text::String> imageDir;
-			NotNullPtr<Text::String> dataDir;
+			NN<Text::String> imageDir;
+			NN<Text::String> dataDir;
 			if (!cfg->GetValue(CSTR("ImageDir")).SetTo(imageDir))
 			{
 				console.WriteLineC(UTF8STRC("Config ImageDir not found"));

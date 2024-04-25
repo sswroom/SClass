@@ -25,7 +25,7 @@ namespace Manage
 
 		virtual UOSInt GetRegisterCnt() const = 0;
 		virtual UTF8Char *GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount) const = 0;
-		virtual void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const = 0;
+		virtual void ToString(NN<Text::StringBuilderUTF8> sb) const = 0;
 		virtual ContextType GetType() const = 0;
 		virtual UOSInt GetThreadId() const = 0;
 		virtual UOSInt GetProcessId() const = 0;
@@ -35,7 +35,7 @@ namespace Manage
 		virtual void SetInstAddr(UOSInt instAddr) = 0;
 		virtual void SetStackAddr(UOSInt stackAddr) = 0;
 		virtual void SetFrameAddr(UOSInt frameAddr) = 0;
-		virtual NotNullPtr<ThreadContext> Clone() const = 0;
+		virtual NN<ThreadContext> Clone() const = 0;
 		virtual Bool GetRegs(Manage::Dasm::Dasm_Regs *regs) const = 0;
 
 		virtual Manage::Dasm *CreateDasm() const = 0;

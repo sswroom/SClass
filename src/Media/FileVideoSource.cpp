@@ -8,7 +8,7 @@
 
 UInt32 __stdcall Media::FileVideoSource::PlayThread(AnyType userObj)
 {
-	NotNullPtr<Media::FileVideoSource> me = userObj.GetNN<Media::FileVideoSource>();
+	NN<Media::FileVideoSource> me = userObj.GetNN<Media::FileVideoSource>();
 	UInt8 *frameBuff;
 	UInt8 *frameBuff2;
 	UInt32 lastFrameNum;
@@ -163,7 +163,7 @@ UInt32 __stdcall Media::FileVideoSource::PlayThread(AnyType userObj)
 
 UInt32 __stdcall Media::FileVideoSource::OutputThread(AnyType userObj)
 {
-	NotNullPtr<Media::FileVideoSource> me = userObj.GetNN<Media::FileVideoSource>();
+	NN<Media::FileVideoSource> me = userObj.GetNN<Media::FileVideoSource>();
 	OSInt nextIndex;
 	me->outputRunning = true;
 	me->mainEvt.Set();
@@ -194,7 +194,7 @@ UInt32 __stdcall Media::FileVideoSource::OutputThread(AnyType userObj)
 	return 0;
 }
 
-Media::FileVideoSource::FileVideoSource(NotNullPtr<IO::StreamData> data, NotNullPtr<const Media::FrameInfo> frameInfo, UInt32 frameRateNorm, UInt32 frameRateDenorm, Bool timeBased)
+Media::FileVideoSource::FileVideoSource(NN<IO::StreamData> data, NN<const Media::FrameInfo> frameInfo, UInt32 frameRateNorm, UInt32 frameRateDenorm, Bool timeBased)
 {
 	this->frameInfo.Set(frameInfo);
 	this->data = data->GetPartialData(0, data->GetDataSize());
@@ -261,7 +261,7 @@ Text::CStringNN Media::FileVideoSource::GetFilterName()
 	return CSTR("FileVideoSource");
 }
 
-Bool Media::FileVideoSource::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::FileVideoSource::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	info->Set(this->frameInfo);
 	frameRateNorm.Set(this->frameRateNorm);

@@ -21,18 +21,18 @@ namespace Media
 		Double focalLength;
 		Data::DateTime *photoDate;
 
-		void ParseXMF(NotNullPtr<Text::XMLDocument> xmf);
+		void ParseXMF(NN<Text::XMLDocument> xmf);
 		Double ParseFraction(Text::String *s);
 	public:
-		PhotoInfo(NotNullPtr<IO::StreamData> fd);
+		PhotoInfo(NN<IO::StreamData> fd);
 		~PhotoInfo();
 
 		Bool HasInfo() const;
-		Bool GetPhotoDate(NotNullPtr<Data::DateTime> dt) const;
+		Bool GetPhotoDate(NN<Data::DateTime> dt) const;
 		UInt32 GetWidth() const;
 		UInt32 GetHeight() const;
 
-		void ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
 }
 #endif

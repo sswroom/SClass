@@ -7,7 +7,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnPasteJDBCClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMSSQLConnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMSSQLConnForm>();
+	NN<SSWR::AVIRead::AVIRMSSQLConnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMSSQLConnForm>();
 	Text::StringBuilderUTF8 sb;
 	if (UI::Clipboard::GetString(me->GetHandle(), sb))
 	{
@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnPasteJDBCClicked(AnyType user
 
 void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMSSQLConnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMSSQLConnForm>();
+	NN<SSWR::AVIRead::AVIRMSSQLConnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMSSQLConnForm>();
 	Text::StringBuilderUTF8 sbServer;
 	Text::StringBuilderUTF8 sbPort;
 	Text::StringBuilderUTF8 sbDatabase;
@@ -95,11 +95,11 @@ void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnOKClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMSSQLConnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMSSQLConnForm>();
+	NN<SSWR::AVIRead::AVIRMSSQLConnForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMSSQLConnForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRMSSQLConnForm::AVIRMSSQLConnForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 220, ui)
+SSWR::AVIRead::AVIRMSSQLConnForm::AVIRMSSQLConnForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 220, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("MSSQL Connection"));
@@ -151,7 +151,7 @@ SSWR::AVIRead::AVIRMSSQLConnForm::AVIRMSSQLConnForm(Optional<UI::GUIClientContro
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
 
-	NotNullPtr<Text::String> driverName;
+	NN<Text::String> driverName;
 	if (DB::MSSQLConn::GetDriverNameNew().SetTo(driverName))
 	{
 		this->txtDriver->SetText(driverName->ToCString());

@@ -32,7 +32,7 @@ Media::CS::TransferParam::TransferParam()
 	this->paramCnt = 0;
 }
 
-Media::CS::TransferParam::TransferParam(NotNullPtr<const TransferParam> tran)
+Media::CS::TransferParam::TransferParam(NN<const TransferParam> tran)
 {
 	if (tran->lut)
 	{
@@ -62,7 +62,7 @@ Media::CS::TransferParam::TransferParam(TransferType tranType, Double gamma)
 	this->paramCnt = 0;
 }
 
-Media::CS::TransferParam::TransferParam(NotNullPtr<const Media::LUT> lut)
+Media::CS::TransferParam::TransferParam(NN<const Media::LUT> lut)
 {
 	this->lut = lut->Clone();
 	this->tranType = Media::CS::TRANT_LUT;
@@ -107,7 +107,7 @@ void Media::CS::TransferParam::Set(TransferType tranType, Double *params, UOSInt
 	MemCopyNO(this->params, params, sizeof(Double) * paramCnt);
 }
 
-void Media::CS::TransferParam::Set(NotNullPtr<Media::LUT> lut)
+void Media::CS::TransferParam::Set(NN<Media::LUT> lut)
 {
 	SDEL_CLASS(this->lut);
 	if (this->params)
@@ -119,7 +119,7 @@ void Media::CS::TransferParam::Set(NotNullPtr<Media::LUT> lut)
 	this->tranType = Media::CS::TRANT_LUT;
 }
 
-void Media::CS::TransferParam::Set(NotNullPtr<const TransferParam> tran)
+void Media::CS::TransferParam::Set(NN<const TransferParam> tran)
 {
 	SDEL_CLASS(this->lut);
 	if (this->params)
@@ -141,7 +141,7 @@ void Media::CS::TransferParam::Set(NotNullPtr<const TransferParam> tran)
 	this->gamma = tran->gamma;
 }
 
-Bool Media::CS::TransferParam::Equals(NotNullPtr<const TransferParam> tran) const
+Bool Media::CS::TransferParam::Equals(NN<const TransferParam> tran) const
 {
 	if (this->tranType != tran->tranType)
 		return false;
@@ -237,7 +237,7 @@ Media::CS::TransferFunc::TransferFunc(TransferType tranType, Double gamma) : par
 {
 }
 
-Media::CS::TransferFunc::TransferFunc(NotNullPtr<const Media::LUT> lut) : param(lut)
+Media::CS::TransferFunc::TransferFunc(NN<const Media::LUT> lut) : param(lut)
 {
 }
 
@@ -255,14 +255,14 @@ Double Media::CS::TransferFunc::GetTransferGamma()
 	return this->param.GetGamma();
 }
 
-NotNullPtr<const Media::CS::TransferParam> Media::CS::TransferFunc::GetTransferParam()
+NN<const Media::CS::TransferParam> Media::CS::TransferFunc::GetTransferParam()
 {
 	return this->param;
 }
 
-NotNullPtr<Media::CS::TransferFunc> Media::CS::TransferFunc::CreateFunc(NotNullPtr<const Media::CS::TransferParam> param)
+NN<Media::CS::TransferFunc> Media::CS::TransferFunc::CreateFunc(NN<const Media::CS::TransferParam> param)
 {
-	NotNullPtr<Media::CS::TransferFunc> func;
+	NN<Media::CS::TransferFunc> func;
 	switch (param->GetTranType())
 	{
 	case Media::CS::TRANT_sRGB:
@@ -312,7 +312,7 @@ NotNullPtr<Media::CS::TransferFunc> Media::CS::TransferFunc::CreateFunc(NotNullP
 		return func;
 	case Media::CS::TRANT_LUT:
 	{
-		NotNullPtr<const Media::LUT> lut;
+		NN<const Media::LUT> lut;
 		if (lut.Set(param->GetLUTRead()))
 		{
 			NEW_CLASSNN(func, Media::CS::TransferFuncLUT(lut));
@@ -349,7 +349,7 @@ NotNullPtr<Media::CS::TransferFunc> Media::CS::TransferFunc::CreateFunc(NotNullP
 	}
 }
 
-Double Media::CS::TransferFunc::GetRefLuminance(NotNullPtr<const Media::CS::TransferParam> param)
+Double Media::CS::TransferFunc::GetRefLuminance(NN<const Media::CS::TransferParam> param)
 {
 	if (param->GetTranType() == Media::CS::TRANT_BT2100)
 	{

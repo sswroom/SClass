@@ -13,12 +13,12 @@ namespace SSWR
 		class AVIRHexViewerGoToForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUILabel> lblMessage;
-			NotNullPtr<UI::GUITextBox> txtInput;
-			NotNullPtr<UI::GUIButton> btnCancel;
-			NotNullPtr<UI::GUIButton> btnOK;
+			NN<UI::GUILabel> lblMessage;
+			NN<UI::GUITextBox> txtInput;
+			NN<UI::GUIButton> btnCancel;
+			NN<UI::GUIButton> btnOK;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			UInt64 currOfst;
 			UInt64 fileLen;
 
@@ -27,7 +27,7 @@ namespace SSWR
 			static void __stdcall OnCancelClicked(AnyType userObj);
 
 		public:
-			AVIRHexViewerGoToForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, UInt64 currOfst, UInt64 fileLen);
+			AVIRHexViewerGoToForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, UInt64 currOfst, UInt64 fileLen);
 			virtual ~AVIRHexViewerGoToForm();
 
 			virtual void OnMonitorChanged();

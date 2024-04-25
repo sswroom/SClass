@@ -10,7 +10,7 @@ namespace Media
 		class APEFile
 		{
 		public:
-			static Media::MediaFile *ParseData(NotNullPtr<IO::StreamData> data);
+			static Media::MediaFile *ParseData(NN<IO::StreamData> data);
 		};
 	};
 };

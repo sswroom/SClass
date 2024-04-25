@@ -7,21 +7,21 @@
 
 void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRCodeProjectForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCodeProjectForm>();
+	NN<SSWR::AVIRead::AVIRCodeProjectForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCodeProjectForm>();
 	Optional<Text::CodeProjectCfg> cfg = me->cboConfig->GetSelectedItem().GetOpt<Text::CodeProjectCfg>();
-	NotNullPtr<UI::GUITreeView::TreeItem> tvi;
+	NN<UI::GUITreeView::TreeItem> tvi;
 	if (me->tvMain->GetSelectedItem().SetTo(tvi))
 	{
-		NotNullPtr<Text::CodeObject> obj = tvi->GetItemObj().GetNN<Text::CodeObject>();
+		NN<Text::CodeObject> obj = tvi->GetItemObj().GetNN<Text::CodeObject>();
 		if (obj->GetObjectType() == Text::CodeObject::OT_FILE)
 		{
 			Text::Cpp::CppEnv *env;
 			Text::Cpp::CppParseStatus *status;
 			Text::Cpp::CppCodeParser *parser;
-			NotNullPtr<Text::CodeFile> file = NotNullPtr<Text::CodeFile>::ConvertFrom(obj);
+			NN<Text::CodeFile> file = NN<Text::CodeFile>::ConvertFrom(obj);
 			UTF8Char sbuff[512];
 			UTF8Char *sptr;
-			NotNullPtr<Text::String> s;
+			NN<Text::String> s;
 			sptr = me->proj->GetSourceName(sbuff);
 			s = file->GetFileName();
 			sptr = IO::Path::AppendPath(sbuff, sptr, s->ToCString());
@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(AnyType userOb
 				if (errMsgs.GetCount() > 0)
 				{
 					sb.AppendC(UTF8STRC("Parse Error:\r\n"));
-					Data::ArrayIterator<NotNullPtr<Text::String>> it = errMsgs.Iterator();
+					Data::ArrayIterator<NN<Text::String>> it = errMsgs.Iterator();
 					while (it.HasNext())
 					{
 						sb.Append(it.Next());
@@ -71,7 +71,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(AnyType userOb
 				}
 				else
 				{
-					Data::ArrayIterator<NotNullPtr<Text::String>> it = errMsgs.Iterator();
+					Data::ArrayIterator<NN<Text::String>> it = errMsgs.Iterator();
 					while (it.HasNext())
 					{
 						sb.Append(it.Next());
@@ -96,7 +96,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(AnyType userOb
 	}
 }
 
-void SSWR::AVIRead::AVIRCodeProjectForm::DisplayStatus(NotNullPtr<Text::StringBuilderUTF8> sb, Text::Cpp::CppParseStatus *status)
+void SSWR::AVIRead::AVIRCodeProjectForm::DisplayStatus(NN<Text::StringBuilderUTF8> sb, Text::Cpp::CppParseStatus *status)
 {
 	UOSInt i;
 	UOSInt j;
@@ -146,7 +146,7 @@ void SSWR::AVIRead::AVIRCodeProjectForm::DisplayStatus(NotNullPtr<Text::StringBu
 void SSWR::AVIRead::AVIRCodeProjectForm::AddTreeObj(Optional<UI::GUITreeView::TreeItem> parent, Text::CodeContainer *container)
 {
 	Optional<UI::GUITreeView::TreeItem> tviLast = 0;
-	NotNullPtr<UI::GUITreeView::TreeItem> tvi;
+	NN<UI::GUITreeView::TreeItem> tvi;
 	Text::CodeObject *obj;
 	UOSInt i;
 	UOSInt j;
@@ -159,7 +159,7 @@ void SSWR::AVIRead::AVIRCodeProjectForm::AddTreeObj(Optional<UI::GUITreeView::Tr
 		if (obj->GetObjectType() == Text::CodeObject::OT_FILE)
 		{
 			Text::CodeFile *file = (Text::CodeFile*)obj;
-			NotNullPtr<Text::String> fileName = file->GetFileName();
+			NN<Text::String> fileName = file->GetFileName();
 			k = fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 			tviLast = this->tvMain->InsertItem(parent, tviLast, fileName->ToCString().Substring(k + 1), obj);
 		}
@@ -177,7 +177,7 @@ void SSWR::AVIRead::AVIRCodeProjectForm::AddTreeObj(Optional<UI::GUITreeView::Tr
 	}
 }
 
-SSWR::AVIRead::AVIRCodeProjectForm::AVIRCodeProjectForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Text::CodeProject *proj) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRCodeProjectForm::AVIRCodeProjectForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::CodeProject *proj) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Code Project"));
 	this->SetFont(0, 0, 8.25, false);
@@ -204,7 +204,7 @@ SSWR::AVIRead::AVIRCodeProjectForm::AVIRCodeProjectForm(Optional<UI::GUIClientCo
 	this->txtMessage->SetReadOnly(true);
 	this->txtMessage->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	NotNullPtr<UI::GUITreeView::TreeItem> tvi;
+	NN<UI::GUITreeView::TreeItem> tvi;
 	if (this->tvMain->InsertItem(0, 0, proj->GetContainerName(), proj).SetTo(tvi))
 	{
 		AddTreeObj(tvi, proj);

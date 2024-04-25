@@ -18,7 +18,7 @@ namespace Net
 		void AddItem(const UTF8Char *item, UOSInt itemLen);
 		UOSInt GetCount() const;
 		Optional<Text::String> GetItem(UOSInt index) const;
-		Data::ArrayIterator<NotNullPtr<Text::String>> Iterator() const;
+		Data::ArrayIterator<NN<Text::String>> Iterator() const;
 
 		UTF8Char *GetNetworkName(UTF8Char *buff);
 		UTF8Char *GetCountryCode(UTF8Char *buff);

@@ -48,8 +48,8 @@ namespace IO
 		~ActiveStreamReader();
 
 		void SetUserData(AnyType userData);
-		void ReadStream(NotNullPtr<IO::Stream> stm, OptOut<BottleNeckType> bnt);
-		void ReadStreamData(NotNullPtr<IO::StreamData> stmData, OptOut<BottleNeckType> bnt);
+		void ReadStream(NN<IO::Stream> stm, OptOut<BottleNeckType> bnt);
+		void ReadStreamData(NN<IO::StreamData> stmData, OptOut<BottleNeckType> bnt);
 	};
 }
 #endif

@@ -7,7 +7,7 @@
 void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverSelChg(AnyType userObj)
 {
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<SSWR::AVIRead::AVIRODBCStrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRODBCStrForm>();
+	NN<SSWR::AVIRead::AVIRODBCStrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRODBCStrForm>();
 	me->cboDriver->GetText(sb);
 	if (sb.GetCharCnt() > 0)
 	{
@@ -22,11 +22,11 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverSelChg(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverInfoClicked(AnyType userObj)
 {
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<SSWR::AVIRead::AVIRODBCStrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRODBCStrForm>();
+	NN<SSWR::AVIRead::AVIRODBCStrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRODBCStrForm>();
 	me->cboDriver->GetText(sb);
 	if (sb.GetCharCnt() > 0)
 	{
-		NotNullPtr<IO::ConfigFile> driver;
+		NN<IO::ConfigFile> driver;
 		if (DB::ODBCConn::GetDriverInfo(sb.ToCString()).SetTo(driver))
 		{
 			Data::ArrayListStringNN keys;
@@ -35,10 +35,10 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverInfoClicked(AnyType userO
 			sarr[1] = (const UTF8Char*)"Value";
 			SSWR::AVIRead::AVIRTableMsgForm frm(0, me->ui, me->core, sb.ToCString(), 2, sarr);
 			driver->GetKeys(CSTR(""), keys);
-			Data::ArrayIterator<NotNullPtr<Text::String>> it = keys.Iterator();
+			Data::ArrayIterator<NN<Text::String>> it = keys.Iterator();
 			while (it.HasNext())
 			{
-				NotNullPtr<Text::String> s = it.Next();
+				NN<Text::String> s = it.Next();
 				sarr[0] = s->v;
 				sarr[1] = Text::String::OrEmpty(driver->GetValue(s))->v;
 				frm.AddRow(sarr);
@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverInfoClicked(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnOKClicked(AnyType userObj)
 {
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<SSWR::AVIRead::AVIRODBCStrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRODBCStrForm>();
+	NN<SSWR::AVIRead::AVIRODBCStrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRODBCStrForm>();
 	me->txtConnStr->GetText(sb);
 
 	DB::ODBCConn *conn;
@@ -72,11 +72,11 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnOKClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRODBCStrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRODBCStrForm>();
+	NN<SSWR::AVIRead::AVIRODBCStrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRODBCStrForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRODBCStrForm::AVIRODBCStrForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 108, ui)
+SSWR::AVIRead::AVIRODBCStrForm::AVIRODBCStrForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 108, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("ODBC String Connection"));

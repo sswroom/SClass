@@ -4,7 +4,7 @@
 #include "Net/Names/PKCS9.h"
 #include "Net/Names/RFC8551.h"
 
-void Net::Names::InformationFramework::AttributeCont(NotNullPtr<ASN1Names> names)
+void Net::Names::InformationFramework::AttributeCont(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_OID)->NextValue(CSTR("attrId"));
 //	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.9.1"), Net::ASN1Util::IT_SET)->Container(CSTR("attrValues"), AttributeEmailAddress);

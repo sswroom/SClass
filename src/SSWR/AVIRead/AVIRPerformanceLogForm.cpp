@@ -14,7 +14,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRPerformanceLogForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPerformanceLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPerformanceLogForm>();
+	NN<SSWR::AVIRead::AVIRPerformanceLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPerformanceLogForm>();
 	if (me->testBuff)
 	{
 		me->Stop();
@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRPerformanceLogForm::OnStartClicked(AnyType use
 
 void __stdcall SSWR::AVIRead::AVIRPerformanceLogForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRPerformanceLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPerformanceLogForm>();
+	NN<SSWR::AVIRead::AVIRPerformanceLogForm> me = userObj.GetNN<SSWR::AVIRead::AVIRPerformanceLogForm>();
 	if (me->testBuff)
 	{
 		if (Data::Timestamp::UtcNow().DiffMS(me->testTime) >= 600000)
@@ -47,7 +47,7 @@ Bool SSWR::AVIRead::AVIRPerformanceLogForm::Start()
 	if (this->testBuff)
 		return false;
 
-	NotNullPtr<IO::FileStream> fs;
+	NN<IO::FileStream> fs;
 	NEW_CLASSNN(fs, IO::FileStream(CSTR("Performance.log"), IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
 	this->logStream = fs.Ptr();
 	if (this->logStream->IsError())
@@ -97,7 +97,7 @@ void SSWR::AVIRead::AVIRPerformanceLogForm::TestSpeed()
 	this->txtCurrWRate->SetText(sb.ToCString());
 }
 
-SSWR::AVIRead::AVIRPerformanceLogForm::AVIRPerformanceLogForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRPerformanceLogForm::AVIRPerformanceLogForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetText(CSTR("Performance Log"));
 	this->SetFont(0, 0, 8.25, false);

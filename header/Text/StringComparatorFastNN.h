@@ -5,10 +5,10 @@
 
 namespace Text
 {
-	class StringComparatorFastNN : public Data::Comparator<NotNullPtr<Text::String>>
+	class StringComparatorFastNN : public Data::Comparator<NN<Text::String>>
 	{
 	public:
-		virtual OSInt Compare(NotNullPtr<Text::String> a, NotNullPtr<Text::String> b) const
+		virtual OSInt Compare(NN<Text::String> a, NN<Text::String> b) const
 		{
 			return a->CompareToFast(b->ToCString());
 		}

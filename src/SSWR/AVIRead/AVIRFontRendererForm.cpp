@@ -3,7 +3,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRFontRendererForm::OnCharSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFontRendererForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFontRendererForm>();
+	NN<SSWR::AVIRead::AVIRFontRendererForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFontRendererForm>();
 	Math::Size2D<UOSInt> sz = me->pbChar->GetSizeP();
 	Optional<Media::StaticImage> newImg = me->font->CreateImage((UTF32Char)(OSInt)me->lbChar->GetSelectedItem().p, sz);
 	me->pbChar->SetImage(newImg, false);
@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRFontRendererForm::OnCharSelChg(AnyType userObj
 	me->currImg = newImg;
 }
 
-SSWR::AVIRead::AVIRFontRendererForm::AVIRFontRendererForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Media::FontRenderer> font) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRFontRendererForm::AVIRFontRendererForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::FontRenderer> font) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;

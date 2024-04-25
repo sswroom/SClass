@@ -18,11 +18,11 @@ void Net::WebServer::WebRequest::ParseQuery()
 	UTF8Char *sbuff;
 	UTF8Char *sbuff2;
 	UTF8Char *sptr;
-	NotNullPtr<Text::String> url = this->GetRequestURI();
+	NN<Text::String> url = this->GetRequestURI();
 	UOSInt urlLen = url->leng;
 	Text::PString strs1[2];
 	Text::PString strs2[2];
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	Optional<Text::String> opts;
 
 	sbuff = MemAlloc(UTF8Char, urlLen);
@@ -71,16 +71,16 @@ void Net::WebServer::WebRequest::ParseQuery()
 	MemFree(sbuff);
 }
 
-void Net::WebServer::WebRequest::ParseFormStr(NotNullPtr<Data::FastStringMapNN<Text::String>> formMap, const UInt8 *buff, UOSInt buffSize)
+void Net::WebServer::WebRequest::ParseFormStr(NN<Data::FastStringMapNN<Text::String>> formMap, const UInt8 *buff, UOSInt buffSize)
 {
 	UInt8 *tmpBuff;
 	UInt8 b;
 	UInt8 b2;
-	NotNullPtr<Text::String> tmpStr;
+	NN<Text::String> tmpStr;
 	UTF8Char *tmpName;
 	UOSInt tmpNameLen;
 	UOSInt nameLen = 0;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UOSInt buffPos;
 	UOSInt charCnt;
 
@@ -255,7 +255,7 @@ void Net::WebServer::WebRequest::ParseFormPart(UInt8 *data, UOSInt dataSize, UOS
 
 	if (contType == 1)
 	{
-		NotNullPtr<Text::String> s;
+		NN<Text::String> s;
 		if (formName.v && dataSize >= i)
 		{
 			Text::CStringNN formNameNN = formName.OrEmpty();
@@ -274,7 +274,7 @@ void Net::WebServer::WebRequest::ParseFormPart(UInt8 *data, UOSInt dataSize, UOS
 	{
 		if (formName.v)
 		{
-			NotNullPtr<FormFileInfo> info = MemAllocNN(FormFileInfo);
+			NN<FormFileInfo> info = MemAllocNN(FormFileInfo);
 			info->ofst = startOfst + i;
 			info->leng = dataSize - i;
 			info->formName = Text::String::New(formName);
@@ -305,7 +305,7 @@ Text::CString Net::WebServer::WebRequest::ParseHeaderVal(UTF8Char *headerData, U
 	return {outStr, dataLen};
 }
 
-Net::WebServer::WebRequest::WebRequest(Text::CStringNN requestURI, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, NotNullPtr<Net::TCPClient> cli, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort)
+Net::WebServer::WebRequest::WebRequest(Text::CStringNN requestURI, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, NN<Net::TCPClient> cli, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort)
 {
 	this->requestURI = Text::String::New(requestURI);
 	this->reqMeth = reqMeth;
@@ -340,7 +340,7 @@ Net::WebServer::WebRequest::~WebRequest()
 	}
 	if (this->formFileList)
 	{
-		NotNullPtr<FormFileInfo> fileInfo;
+		NN<FormFileInfo> fileInfo;
 		i = this->formFileList->GetCount();
 		while (i-- > 0)
 		{
@@ -373,7 +373,7 @@ Optional<Text::String> Net::WebServer::WebRequest::GetSHeader(Text::CStringNN na
 
 UTF8Char *Net::WebServer::WebRequest::GetHeader(UTF8Char *sbuff, Text::CStringNN name, UOSInt buffLen) const
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	if (this->headers.GetC(name).SetTo(s))
 	{
 		return s->ConcatToS(sbuff, buffLen);
@@ -384,18 +384,18 @@ UTF8Char *Net::WebServer::WebRequest::GetHeader(UTF8Char *sbuff, Text::CStringNN
 	}
 }
 
-Bool Net::WebServer::WebRequest::GetHeaderC(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStringNN name) const
+Bool Net::WebServer::WebRequest::GetHeaderC(NN<Text::StringBuilderUTF8> sb, Text::CStringNN name) const
 {
-	NotNullPtr<Text::String> hdr;
+	NN<Text::String> hdr;
 	if (!this->headers.GetC(name).SetTo(hdr))
 		return false;
 	sb->Append(hdr);
 	return true;
 }
 
-UOSInt Net::WebServer::WebRequest::GetHeaderNames(NotNullPtr<Data::ArrayListStringNN> names) const
+UOSInt Net::WebServer::WebRequest::GetHeaderNames(NN<Data::ArrayListStringNN> names) const
 {
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UOSInt i = 0;
 	UOSInt j = this->headers.GetCount();
 	names->EnsureCapacity(j);
@@ -423,7 +423,7 @@ Optional<Text::String> Net::WebServer::WebRequest::GetHeaderValue(UOSInt index) 
 	return this->headers.GetItem(index);
 }
 
-NotNullPtr<Text::String> Net::WebServer::WebRequest::GetRequestURI() const
+NN<Text::String> Net::WebServer::WebRequest::GetRequestURI() const
 {
 	return this->requestURI;
 }
@@ -472,7 +472,7 @@ void Net::WebServer::WebRequest::ParseHTTPForm()
 	{
 		if (sb.StartsWith(UTF8STRC("application/x-www-form-urlencoded")))
 		{
-			NotNullPtr<Data::FastStringMapNN<Text::String>> formMap;
+			NN<Data::FastStringMapNN<Text::String>> formMap;
 			NEW_CLASSNN(formMap, Data::FastStringMapNN<Text::String>());
 			this->formMap = formMap.Ptr();
 			ParseFormStr(formMap, this->reqData, this->reqDataSize);
@@ -547,7 +547,7 @@ const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(Text::CStringNN formNam
 	UOSInt j = this->formFileList->GetCount();
 	while (i < j)
 	{
-		NotNullPtr<FormFileInfo> info = this->formFileList->GetItemNoCheck(i);
+		NN<FormFileInfo> info = this->formFileList->GetItemNoCheck(i);
 		if (info->formName->Equals(formName.v, formName.leng))
 		{
 			if (index == 0)
@@ -566,10 +566,10 @@ const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(Text::CStringNN formNam
 	return 0;
 }
 
-void Net::WebServer::WebRequest::GetRequestURLBase(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Net::WebServer::WebRequest::GetRequestURLBase(NN<Text::StringBuilderUTF8> sb)
 {
 	UInt16 defPort;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	switch (this->reqProto)
 	{
 	case RequestProtocol::HTTP1_0:
@@ -602,12 +602,12 @@ void Net::WebServer::WebRequest::GetRequestURLBase(NotNullPtr<Text::StringBuilde
 	}
 }
 
-NotNullPtr<const Net::SocketUtil::AddressInfo> Net::WebServer::WebRequest::GetClientAddr() const
+NN<const Net::SocketUtil::AddressInfo> Net::WebServer::WebRequest::GetClientAddr() const
 {
 	return this->cliAddr;
 }
 
-NotNullPtr<Net::NetConnection> Net::WebServer::WebRequest::GetNetConn() const
+NN<Net::NetConnection> Net::WebServer::WebRequest::GetNetConn() const
 {
 	return this->cli;
 }
@@ -633,7 +633,7 @@ Optional<Crypto::Cert::X509Cert> Net::WebServer::WebRequest::GetClientCert()
 		return 0;
 	}
 	Net::SSLClient *cli = (Net::SSLClient*)this->cli.Ptr();
-	NotNullPtr<Crypto::Cert::Certificate> cert;
+	NN<Crypto::Cert::Certificate> cert;
 	if (cli->GetRemoteCert().SetTo(cert))
 	{
 		this->remoteCert = cert->CreateX509Cert();
@@ -658,7 +658,7 @@ const UInt8 *Net::WebServer::WebRequest::GetReqData(OutParam<UOSInt> dataSize)
 
 Bool Net::WebServer::WebRequest::HasData()
 {
-	NotNullPtr<Text::String> contLeng;
+	NN<Text::String> contLeng;
 	if (!this->GetSHeader(CSTR("Content-Length")).SetTo(contLeng))
 	{
 		if (this->GetReqMethod() != Net::WebUtil::RequestMethod::HTTP_POST)

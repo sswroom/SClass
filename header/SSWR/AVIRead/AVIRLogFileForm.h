@@ -12,17 +12,17 @@ namespace SSWR
 		class AVIRLogFileForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIListView> lvLogs;
-			NotNullPtr<UI::GUIMainMenu> mnuMain;
+			NN<UI::GUIListView> lvLogs;
+			NN<UI::GUIMainMenu> mnuMain;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::LogFile *logFile;
 			IO::LogHandler::LogLevel logLevel;
 
 			void UpdateLogMessages();
 			static void __stdcall OnLogsDblClk(AnyType userObj, UOSInt itemIndex);
 		public:
-			AVIRLogFileForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::LogFile *logFile);
+			AVIRLogFileForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::LogFile *logFile);
 			virtual ~AVIRLogFileForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

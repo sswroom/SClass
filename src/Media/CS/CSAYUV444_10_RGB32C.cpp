@@ -16,7 +16,7 @@ void Media::CS::CSAYUV444_10_RGB32C::SetupRGB13_LR()
 	Double thisV;
 	UInt16 v[4];
 
-	NotNullPtr<Media::ColorProfile> srcProfile;
+	NN<Media::ColorProfile> srcProfile;
 	if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
 	{
 		srcProfile = this->colorSess->GetDefPProfile();
@@ -38,9 +38,9 @@ void Media::CS::CSAYUV444_10_RGB32C::SetupRGB13_LR()
 		srcProfile = this->srcProfile;
 	}
 
-	NotNullPtr<Media::CS::TransferFunc> rtFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetRTranParam());
-	NotNullPtr<Media::CS::TransferFunc> gtFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetGTranParam());
-	NotNullPtr<Media::CS::TransferFunc> btFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetBTranParam());
+	NN<Media::CS::TransferFunc> rtFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetRTranParam());
+	NN<Media::CS::TransferFunc> gtFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetGTranParam());
+	NN<Media::CS::TransferFunc> btFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetBTranParam());
 	Math::Matrix3 mat1;
 	if (this->destProfile.GetPrimaries()->colorType == Media::ColorProfile::CT_DISPLAY)
 	{
@@ -266,7 +266,7 @@ void Media::CS::CSAYUV444_10_RGB32C::SetupYUV_RGB13()
 
 UInt32 Media::CS::CSAYUV444_10_RGB32C::WorkerThread(AnyType obj)
 {
-	NotNullPtr<CSAYUV444_10_RGB32C> converter = obj.GetNN<CSAYUV444_10_RGB32C>();
+	NN<CSAYUV444_10_RGB32C> converter = obj.GetNN<CSAYUV444_10_RGB32C>();
 	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
 	{
@@ -317,7 +317,7 @@ void Media::CS::CSAYUV444_10_RGB32C::WaitForWorker(Int32 jobStatus)
 	}
 }
 
-Media::CS::CSAYUV444_10_RGB32C::CSAYUV444_10_RGB32C(NotNullPtr<const Media::ColorProfile> srcProfile, NotNullPtr<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess, Media::PixelFormat destPF) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
+Media::CS::CSAYUV444_10_RGB32C::CSAYUV444_10_RGB32C(NN<const Media::ColorProfile> srcProfile, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess, Media::PixelFormat destPF) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
 {
 	UOSInt i;
 	this->yuvType = yuvType;
@@ -449,13 +449,13 @@ void Media::CS::CSAYUV444_10_RGB32C::UpdateTable()
 	}
 }
 
-void Media::CS::CSAYUV444_10_RGB32C::YUVParamChanged(NotNullPtr<const Media::IColorHandler::YUVPARAM> yuv)
+void Media::CS::CSAYUV444_10_RGB32C::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuv)
 {
 	MemCopyNO(&this->yuvParam, yuv.Ptr(), sizeof(YUVPARAM));
 	this->yuvUpdated = true;
 }
 
-void Media::CS::CSAYUV444_10_RGB32C::RGBParamChanged(NotNullPtr<const Media::IColorHandler::RGBPARAM2> rgb)
+void Media::CS::CSAYUV444_10_RGB32C::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgb)
 {
 	this->rgbParam.Set(rgb);
 	this->rgbUpdated = true;

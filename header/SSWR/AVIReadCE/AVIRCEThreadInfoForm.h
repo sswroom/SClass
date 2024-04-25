@@ -23,29 +23,29 @@ namespace SSWR
 		class AVIRCEThreadInfoForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUITabControl> tcMain;
-			NotNullPtr<UI::GUITabPage> tpInfo;
-			NotNullPtr<UI::GUITabPage> tpContext;
-			NotNullPtr<UI::GUITabPage> tpStack;
-			NotNullPtr<UI::GUITabPage> tpMyStack;
+			NN<UI::GUITabControl> tcMain;
+			NN<UI::GUITabPage> tpInfo;
+			NN<UI::GUITabPage> tpContext;
+			NN<UI::GUITabPage> tpStack;
+			NN<UI::GUITabPage> tpMyStack;
 
-			NotNullPtr<UI::GUILabel> lblThreadId;
-			NotNullPtr<UI::GUITextBox> txtThreadId;
-			NotNullPtr<UI::GUILabel> lblStartAddr;
-			NotNullPtr<UI::GUITextBox> txtStartAddr;
-			NotNullPtr<UI::GUILabel> lblStartName;
-			NotNullPtr<UI::GUITextBox> txtStartName;
+			NN<UI::GUILabel> lblThreadId;
+			NN<UI::GUITextBox> txtThreadId;
+			NN<UI::GUILabel> lblStartAddr;
+			NN<UI::GUITextBox> txtStartAddr;
+			NN<UI::GUILabel> lblStartName;
+			NN<UI::GUITextBox> txtStartName;
 
-			NotNullPtr<UI::GUIListView> lvContext;
+			NN<UI::GUIListView> lvContext;
 
-			NotNullPtr<UI::GUIListView> lvStack;
+			NN<UI::GUIListView> lvStack;
 
-			NotNullPtr<UI::GUIListBox> lbMyStack;
-			NotNullPtr<UI::GUIHSplitter> hspMyStack;
-			NotNullPtr<UI::GUIPanel> pnlMyStack;
-			NotNullPtr<UI::GUITextBox> txtMyStackMem;
-			NotNullPtr<UI::GUIVSplitter> vspMyStack;
-			NotNullPtr<UI::GUIListView> lvMyStack;
+			NN<UI::GUIListBox> lbMyStack;
+			NN<UI::GUIHSplitter> hspMyStack;
+			NN<UI::GUIPanel> pnlMyStack;
+			NN<UI::GUITextBox> txtMyStackMem;
+			NN<UI::GUIVSplitter> vspMyStack;
+			NN<UI::GUIListView> lvMyStack;
 
 			Data::ArrayListStringNN stacks;
 			Data::ArrayListStringNN stacksMem;
@@ -55,7 +55,7 @@ namespace SSWR
 			static void __stdcall OnMyStackChg(void *userObj);
 			static void __stdcall OnMyStackDblClk(void *userObj, UOSInt index);
 		public:
-			AVIRCEThreadInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, Manage::Process *proc, Manage::SymbolResolver *symbol, Int32 threadId);
+			AVIRCEThreadInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, Manage::Process *proc, Manage::SymbolResolver *symbol, Int32 threadId);
 			virtual ~AVIRCEThreadInfoForm();
 		};
 	}

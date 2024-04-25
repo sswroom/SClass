@@ -15,10 +15,10 @@ namespace SSWR
 		class AVIRGISRandomLocForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIButton> btnArea;
-			NotNullPtr<UI::GUIButton> btnRandom;
+			NN<UI::GUIButton> btnArea;
+			NN<UI::GUIButton> btnRandom;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Math::Coord2DDbl selPt1;
 			Math::Coord2DDbl selPt2;
 			Bool selecting;
@@ -35,7 +35,7 @@ namespace SSWR
 			static void __stdcall OnRandomClicked(AnyType userObj);
 
 		public:
-			AVIRGISRandomLocForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi);
+			AVIRGISRandomLocForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi);
 			virtual ~AVIRGISRandomLocForm();
 
 			virtual void OnMonitorChanged();

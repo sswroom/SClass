@@ -25,7 +25,7 @@ typedef struct
 {
 	BTControllerInfo *ctrlInfo;
 	UInt8 addr[6];
-	NotNullPtr<Text::String> name;
+	NN<Text::String> name;
 } BTDeviceInfo;
 
 IO::BTController::BTDevice::BTDevice(void *internalData, void *hRadio, void *devInfo)
@@ -51,7 +51,7 @@ IO::BTController::BTDevice::~BTDevice()
 	MemFree(this->devInfo);
 }
 
-NotNullPtr<Text::String> IO::BTController::BTDevice::GetName() const
+NN<Text::String> IO::BTController::BTDevice::GetName() const
 {
 	BTDeviceInfo *dev = (BTDeviceInfo*)this->devInfo;
 	return dev->name;
@@ -124,7 +124,7 @@ Bool IO::BTController::BTDevice::EnableService(void *guid, Bool toEnable)
 
 UInt32 __stdcall IO::BTController::LEScanThread(AnyType userObj)
 {
-	NotNullPtr<IO::BTController> me = userObj.GetNN<IO::BTController>();
+	NN<IO::BTController> me = userObj.GetNN<IO::BTController>();
 	BTControllerInfo *info = (BTControllerInfo*)me->hand;
 	UInt8 buf[HCI_MAX_EVENT_SIZE];
 	UInt8 *ptr;
@@ -301,14 +301,14 @@ IO::BTController::~BTController()
 	this->name->Release();
 }
 
-OSInt IO::BTController::CreateDevices(NotNullPtr<Data::ArrayListNN<BTDevice>> devList, Bool toSearch)
+OSInt IO::BTController::CreateDevices(NN<Data::ArrayListNN<BTDevice>> devList, Bool toSearch)
 {
 	BTControllerInfo *info = (BTControllerInfo*)this->hand;
 	OSInt ret = 0;
 	OSInt i;
 	inquiry_info *ii;
 	BTDeviceInfo devInfo;
-	NotNullPtr<BTDevice> dev;
+	NN<BTDevice> dev;
 	if (toSearch)
 	{
 		devInfo.ctrlInfo = info;
@@ -337,7 +337,7 @@ UInt8 *IO::BTController::GetAddress()
 	return this->addr;
 }
 
-NotNullPtr<Text::String> IO::BTController::GetName() const
+NN<Text::String> IO::BTController::GetName() const
 {
 	return this->name;
 }

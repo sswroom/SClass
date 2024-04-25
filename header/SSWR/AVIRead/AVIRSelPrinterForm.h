@@ -17,20 +17,20 @@ namespace SSWR
 			Media::Printer *printer;
 		private:
 			Media::Printer *currPrinter;
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<UI::GUILabel> lblPrinter;
-			NotNullPtr<UI::GUIComboBox> cboPrinter;
-			NotNullPtr<UI::GUIButton> btnSetting;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<UI::GUILabel> lblPrinter;
+			NN<UI::GUIComboBox> cboPrinter;
+			NN<UI::GUIButton> btnSetting;
 
-			NotNullPtr<UI::GUIButton> btnOK;
-			NotNullPtr<UI::GUIButton> btnCancel;
+			NN<UI::GUIButton> btnOK;
+			NN<UI::GUIButton> btnCancel;
 
 			static void __stdcall OnSettingClick(AnyType userObj);
 			static void __stdcall OnPrinterChg(AnyType userObj);
 			static void __stdcall OnOKClick(AnyType userObj);
 			static void __stdcall OnCancelClick(AnyType userObj);
 		public:
-			AVIRSelPrinterForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRSelPrinterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSelPrinterForm();
 
 			virtual void OnMonitorChanged();

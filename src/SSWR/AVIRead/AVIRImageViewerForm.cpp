@@ -21,9 +21,9 @@ typedef enum
 	MNU_IMAGE_INFO
 } MenuEvent;
 
-void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
+	NN<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
 	UOSInt i;
 	UOSInt fileCnt = files.GetCount();
 	Bool succ;
@@ -40,10 +40,10 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnFileDrop(AnyType userObj, D
 
 void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
+	NN<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
 	if (me->pkgFile && me->fileIndex != (UOSInt)-1)
 	{
-		NotNullPtr<IO::StreamData> fd;
+		NN<IO::StreamData> fd;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		UOSInt i;
@@ -108,10 +108,10 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
+	NN<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
 	if (me->pkgFile && me->fileIndex != (UOSInt)-1)
 	{
-		NotNullPtr<IO::StreamData> fd;
+		NN<IO::StreamData> fd;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		UOSInt i;
@@ -172,7 +172,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
+	NN<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
 	if (me->noMoveCount++ > 4 && !me->hideCursor)
 	{
 		me->hideCursor = true;
@@ -182,7 +182,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnTimerTick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnAniTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
+	NN<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
 	if (me->imgTimeoutTick != 0 && me->imgList != 0)
 	{
 		Data::DateTime dt;
@@ -206,7 +206,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnAniTimerTick(AnyType userOb
 
 Bool __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos, MouseButton btn)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
+	NN<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
 	if (me->hideCursor)
 	{
 		me->ShowMouseCursor(true);
@@ -232,7 +232,7 @@ Bool SSWR::AVIRead::AVIRImageViewerForm::IsImageFileName(Text::CString fileName)
 	return false;
 }
 
-SSWR::AVIRead::AVIRImageViewerForm::AVIRImageViewerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRImageViewerForm::AVIRImageViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Image Viewer"));
@@ -246,7 +246,7 @@ SSWR::AVIRead::AVIRImageViewerForm::AVIRImageViewerForm(Optional<UI::GUIClientCo
 	this->hideCursor = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NotNullPtr<UI::GUIMenu> mnu;
+	NN<UI::GUIMenu> mnu;
 	NEW_CLASSNN(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Setting"));
 	mnu->AddItem(CSTR("Set &Monitor Color"), MNU_MON_COLOR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -297,7 +297,7 @@ void SSWR::AVIRead::AVIRImageViewerForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_IMAGE_SAVE:
 	{
-		NotNullPtr<Media::ImageList> imgList;
+		NN<Media::ImageList> imgList;
 		if (imgList.Set(this->imgList))
 		{
 			this->core->SaveData(this, imgList, L"SaveImage");
@@ -433,10 +433,10 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Media::ImageList *imgList, Boo
 	}
 }
 
-Bool SSWR::AVIRead::AVIRImageViewerForm::ParseFile(NotNullPtr<IO::StreamData> fd)
+Bool SSWR::AVIRead::AVIRImageViewerForm::ParseFile(NN<IO::StreamData> fd)
 {
 	IO::ParsedObject *pobj;
-	NotNullPtr<IO::StreamData> fd2;
+	NN<IO::StreamData> fd2;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 

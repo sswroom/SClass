@@ -8,8 +8,8 @@
 
 void __stdcall SSWR::AVIRead::AVIRMACGenForm::OnGenerateClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMACGenForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACGenForm>();
-	NotNullPtr<Data::ArrayList<Net::MACInfo::MACEntry*>> macArr;
+	NN<SSWR::AVIRead::AVIRMACGenForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACGenForm>();
+	NN<Data::ArrayList<Net::MACInfo::MACEntry*>> macArr;
 	UTF8Char sbuff[20];
 	UTF8Char *sptr;
 	UInt64 iMAC;
@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRMACGenForm::OnGenerateClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRMACGenForm::OnAdapterSetClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRMACGenForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACGenForm>();
+	NN<SSWR::AVIRead::AVIRMACGenForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACGenForm>();
 	UInt8 buff[12];
 	Text::StringBuilderUTF8 sb1;
 	Text::StringBuilderUTF8 sb2;
@@ -60,7 +60,7 @@ OSInt __stdcall SSWR::AVIRead::AVIRMACGenForm::ListCompare(Data::ArrayList<Net::
 	return Text::StrCompare(list1->GetItem(0)->name, list2->GetItem(0)->name);
 }
 
-SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 480, 136, ui)
+SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 480, 136, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("MAC Generator"));
@@ -134,9 +134,9 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(Optional<UI::GUIClientControl> par
 		this->cboVendor->SetSelectedIndex(0);
 	}
 
-	NotNullPtr<Net::SocketFactory> sockf = this->core->GetSocketFactory();
+	NN<Net::SocketFactory> sockf = this->core->GetSocketFactory();
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
-	NotNullPtr<Net::ConnectionInfo> connInfo;
+	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UOSInt j;

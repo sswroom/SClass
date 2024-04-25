@@ -79,7 +79,7 @@ Text::CString Media::AndroidVideoCapture::GetFilterName()
 	return CSTR("AndroidVideoCapture");
 }
 
-Bool Media::AndroidVideoCapture::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::AndroidVideoCapture::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	if (this->camWidth == 0 || this->camHeight == 0)
 		return false;
@@ -297,7 +297,7 @@ UOSInt Media::AndroidVideoCapture::GetSupportedFormats(VideoFormat *fmtArr, UOSI
 	return ret;
 }
 
-void Media::AndroidVideoCapture::GetInfo(NotNullPtr<Text::StringBuilderUTF8> sb)
+void Media::AndroidVideoCapture::GetInfo(NN<Text::StringBuilderUTF8> sb)
 {
 	ACameraMetadata *metadataObj;
 	if (ACAMERA_OK != ACameraManager_getCameraCharacteristics((ACameraManager*)this->cameraMgr, this->cameraId, &metadataObj))

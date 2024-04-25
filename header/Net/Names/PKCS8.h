@@ -9,10 +9,10 @@ namespace Net
 		class PKCS8
 		{
 			public:
-			static void PrivateKeyInfo(NotNullPtr<ASN1Names> names);
-			static void PrivateKeyInfoCont(NotNullPtr<ASN1Names> names);
-			static void EncryptedPrivateKeyInfo(NotNullPtr<ASN1Names> names);
-			static void EncryptedPrivateKeyInfoCont(NotNullPtr<ASN1Names> names);
+			static void PrivateKeyInfo(NN<ASN1Names> names);
+			static void PrivateKeyInfoCont(NN<ASN1Names> names);
+			static void EncryptedPrivateKeyInfo(NN<ASN1Names> names);
+			static void EncryptedPrivateKeyInfoCont(NN<ASN1Names> names);
 		};
 	}
 }

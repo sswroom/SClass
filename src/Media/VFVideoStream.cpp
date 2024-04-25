@@ -10,7 +10,7 @@
 
 UInt32 __stdcall Media::VFVideoStream::PlayThread(AnyType userObj)
 {
-	NotNullPtr<Media::VFVideoStream> me = userObj.GetNN<Media::VFVideoStream>();
+	NN<Media::VFVideoStream> me = userObj.GetNN<Media::VFVideoStream>();
 	UInt8 *frameBuff;
 	UInt32 frameTime;
 	Media::FrameType ft;
@@ -45,7 +45,7 @@ UInt32 __stdcall Media::VFVideoStream::PlayThread(AnyType userObj)
 	return 0;
 }
 
-Media::VFVideoStream::VFVideoStream(NotNullPtr<Media::VFMediaFile> mfile)
+Media::VFVideoStream::VFVideoStream(NN<Media::VFMediaFile> mfile)
 {
 	this->mfile = mfile;
 	{
@@ -153,7 +153,7 @@ Text::CStringNN Media::VFVideoStream::GetFilterName()
 	return CSTR("VFVideoStream");
 }
 
-Bool Media::VFVideoStream::GetVideoInfo(NotNullPtr<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
+Bool Media::VFVideoStream::GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize)
 {
 	info->Set(this->info);
 	maxFrameSize.Set(this->info.storeSize.x * this->info.storeSize.y * (this->info.storeBPP >> 3));

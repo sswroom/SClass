@@ -21,7 +21,7 @@
 
 UInt32 __stdcall Net::LDAPClient::RecvThread(AnyType userObj)
 {
-	NotNullPtr<Net::LDAPClient> me = userObj.GetNN<Net::LDAPClient>();
+	NN<Net::LDAPClient> me = userObj.GetNN<Net::LDAPClient>();
 	UOSInt buffSize;
 	UOSInt recvSize;
 	UOSInt i;
@@ -548,7 +548,7 @@ const UTF8Char *Net::LDAPClient::ParseFilter(Net::ASN1PDUBuilder *pdu, const UTF
 	}
 }
 
-Net::LDAPClient::LDAPClient(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Duration timeout)
+Net::LDAPClient::LDAPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Duration timeout)
 {
 	this->sockf = sockf;
 	this->recvRunning = false;
@@ -785,7 +785,7 @@ void Net::LDAPClient::SearchResObjectFree(Net::LDAPClient::SearchResObject *obj)
 	MemFree(obj);
 }
 
-void Net::LDAPClient::SearchResDisplay(Text::CString type, Text::CString value, NotNullPtr<Text::StringBuilderUTF8> sb)
+void Net::LDAPClient::SearchResDisplay(Text::CString type, Text::CString value, NN<Text::StringBuilderUTF8> sb)
 {
 	if (type.Equals(UTF8STRC("objectGUID")) || type.EndsWith(UTF8STRC("Guid")))
 	{

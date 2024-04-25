@@ -24,43 +24,43 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				NotNullPtr<IO::BTController> bt;
-				NotNullPtr<Data::ArrayListNN<IO::BTController::BTDevice>> devList;
+				NN<IO::BTController> bt;
+				NN<Data::ArrayListNN<IO::BTController::BTDevice>> devList;
 			} BTStatus;
 		private:
-			NotNullPtr<UI::GUIListBox> lbCtrl;
-			NotNullPtr<UI::GUIHSplitter> hspMain;
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUIListBox> lbCtrl;
+			NN<UI::GUIHSplitter> hspMain;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpInfo;
-			NotNullPtr<UI::GUILabel> lblRadioName;
-			NotNullPtr<UI::GUITextBox> txtRadioName;
-			NotNullPtr<UI::GUILabel> lblAddr;
-			NotNullPtr<UI::GUITextBox> txtAddr;
-			NotNullPtr<UI::GUILabel> lblManu;
-			NotNullPtr<UI::GUITextBox> txtManu;
-			NotNullPtr<UI::GUILabel> lblSubver;
-			NotNullPtr<UI::GUITextBox> txtSubver;
-			NotNullPtr<UI::GUILabel> lblClass;
-			NotNullPtr<UI::GUITextBox> txtClass;
+			NN<UI::GUITabPage> tpInfo;
+			NN<UI::GUILabel> lblRadioName;
+			NN<UI::GUITextBox> txtRadioName;
+			NN<UI::GUILabel> lblAddr;
+			NN<UI::GUITextBox> txtAddr;
+			NN<UI::GUILabel> lblManu;
+			NN<UI::GUITextBox> txtManu;
+			NN<UI::GUILabel> lblSubver;
+			NN<UI::GUITextBox> txtSubver;
+			NN<UI::GUILabel> lblClass;
+			NN<UI::GUITextBox> txtClass;
 
-			NotNullPtr<UI::GUITabPage> tpDevice;
-			NotNullPtr<UI::GUIPanel> pnlDevice;
-			NotNullPtr<UI::GUIButton> btnDeviceSrch;
-			NotNullPtr<UI::GUIButton> btnDeviceUpdate;
-			NotNullPtr<UI::GUIPanel> pnlDevDetail;
-			NotNullPtr<UI::GUIVSplitter> vspDevice;
-			NotNullPtr<UI::GUIPanel> pnlDevCtrl;
-			NotNullPtr<UI::GUIButton> btnDevAuthen;
-			NotNullPtr<UI::GUIButton> btnDevUnauthen;
-			NotNullPtr<UI::GUIListBox> lbDevServices;
-			NotNullPtr<UI::GUIListView> lvDevice;
+			NN<UI::GUITabPage> tpDevice;
+			NN<UI::GUIPanel> pnlDevice;
+			NN<UI::GUIButton> btnDeviceSrch;
+			NN<UI::GUIButton> btnDeviceUpdate;
+			NN<UI::GUIPanel> pnlDevDetail;
+			NN<UI::GUIVSplitter> vspDevice;
+			NN<UI::GUIPanel> pnlDevCtrl;
+			NN<UI::GUIButton> btnDevAuthen;
+			NN<UI::GUIButton> btnDevUnauthen;
+			NN<UI::GUIListBox> lbDevServices;
+			NN<UI::GUIListView> lvDevice;
 
 			Data::ArrayListNN<BTStatus> btList;
 			Optional<IO::BTController::BTDevice> currDev;
 			Data::ArrayList<void *> guidList;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
 			static void __stdcall OnCtrlChanged(AnyType userObj);
 			static void __stdcall OnDeviceSrchClicked(AnyType userObj);
@@ -70,9 +70,9 @@ namespace SSWR
 			static void __stdcall OnDevUnauthenClicked(AnyType userObj);
 
 			void ClearGUIDs();
-			void UpdateDevList(NotNullPtr<BTStatus> btStatus);
+			void UpdateDevList(NN<BTStatus> btStatus);
 		public:
-			AVIRBluetoothForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRBluetoothForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRBluetoothForm();
 
 			virtual void OnMonitorChanged();

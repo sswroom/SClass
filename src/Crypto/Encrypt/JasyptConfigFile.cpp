@@ -2,7 +2,7 @@
 #include "Crypto/Encrypt/JasyptConfigFile.h"
 #include "Text/StringTool.h"
 
-Crypto::Encrypt::JasyptConfigFile::JasyptConfigFile(NotNullPtr<IO::ConfigFile> cfg, Crypto::Encrypt::JasyptEncryptor::KeyAlgorithm keyAlg, Crypto::Encrypt::JasyptEncryptor::CipherAlgorithm cipherAlg, Data::ByteArrayR key) : enc(keyAlg, cipherAlg, key)
+Crypto::Encrypt::JasyptConfigFile::JasyptConfigFile(NN<IO::ConfigFile> cfg, Crypto::Encrypt::JasyptEncryptor::KeyAlgorithm keyAlg, Crypto::Encrypt::JasyptEncryptor::CipherAlgorithm cipherAlg, Data::ByteArrayR key) : enc(keyAlg, cipherAlg, key)
 {
 	this->cfg = cfg;
 }
@@ -11,7 +11,7 @@ Crypto::Encrypt::JasyptConfigFile::~JasyptConfigFile()
 {
 	UOSInt i;
 	UOSInt j;
-	NotNullPtr<Data::FastStringMapNN<Text::String>> cate;
+	NN<Data::FastStringMapNN<Text::String>> cate;
 	i = this->decVals.GetCount();
 	while (i-- > 0)
 	{
@@ -26,11 +26,11 @@ Crypto::Encrypt::JasyptConfigFile::~JasyptConfigFile()
 	this->cfg.Delete();
 }
 
-Optional<Text::String> Crypto::Encrypt::JasyptConfigFile::GetCateValue(NotNullPtr<Text::String> category, NotNullPtr<Text::String> name)
+Optional<Text::String> Crypto::Encrypt::JasyptConfigFile::GetCateValue(NN<Text::String> category, NN<Text::String> name)
 {
 	UTF8Char sbuff[512];
-	NotNullPtr<Text::String> s;
-	NotNullPtr<Data::FastStringMapNN<Text::String>> cate;
+	NN<Text::String> s;
+	NN<Data::FastStringMapNN<Text::String>> cate;
 	if (this->decVals.GetNN(category).SetTo(cate))
 	{
 		if (cate->GetNN(name).SetTo(s))
@@ -66,8 +66,8 @@ Optional<Text::String> Crypto::Encrypt::JasyptConfigFile::GetCateValue(NotNullPt
 Optional<Text::String> Crypto::Encrypt::JasyptConfigFile::GetCateValue(Text::CStringNN category, Text::CStringNN name)
 {
 	UTF8Char sbuff[512];
-	NotNullPtr<Text::String> s;
-	NotNullPtr<Data::FastStringMapNN<Text::String>> cate;
+	NN<Text::String> s;
+	NN<Data::FastStringMapNN<Text::String>> cate;
 	if (this->decVals.GetC(category).SetTo(cate))
 	{
 		if (cate->GetC(name).SetTo(s))

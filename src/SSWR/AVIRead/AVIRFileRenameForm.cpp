@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRFileRenameForm::OnRenameClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFileRenameForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileRenameForm>();
+	NN<SSWR::AVIRead::AVIRFileRenameForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileRenameForm>();
 	Text::StringBuilderUTF8 sbName;
 	Text::StringBuilderUTF8 sbExt;
 	Text::StringBuilderUTF8 sbPath;
@@ -44,11 +44,11 @@ void __stdcall SSWR::AVIRead::AVIRFileRenameForm::OnRenameClicked(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRFileRenameForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFileRenameForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileRenameForm>();
+	NN<SSWR::AVIRead::AVIRFileRenameForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileRenameForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRFileRenameForm::AVIRFileRenameForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Text::String> fileName) : UI::GUIForm(parent, 532, 120, ui)
+SSWR::AVIRead::AVIRFileRenameForm::AVIRFileRenameForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Text::String> fileName) : UI::GUIForm(parent, 532, 120, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->fileName = fileName->Clone();
@@ -101,7 +101,7 @@ void SSWR::AVIRead::AVIRFileRenameForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-NotNullPtr<Text::String> SSWR::AVIRead::AVIRFileRenameForm::GetFileName() const
+NN<Text::String> SSWR::AVIRead::AVIRFileRenameForm::GetFileName() const
 {
 	return this->fileName;
 }

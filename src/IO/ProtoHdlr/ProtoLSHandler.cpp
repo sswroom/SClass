@@ -3,7 +3,7 @@
 #include "Crypto/Hash/CRC32R.h"
 #include "IO/ProtoHdlr/ProtoLSHandler.h"
 
-IO::ProtoHdlr::ProtoLSHandler::ProtoLSHandler(NotNullPtr<IO::IProtocolHandler::DataListener> listener)
+IO::ProtoHdlr::ProtoLSHandler::ProtoLSHandler(NN<IO::IProtocolHandler::DataListener> listener)
 {
 	this->listener = listener;
 }
@@ -12,16 +12,16 @@ IO::ProtoHdlr::ProtoLSHandler::~ProtoLSHandler()
 {
 }
 
-void *IO::ProtoHdlr::ProtoLSHandler::CreateStreamData(NotNullPtr<IO::Stream> stm)
+void *IO::ProtoHdlr::ProtoLSHandler::CreateStreamData(NN<IO::Stream> stm)
 {
 	return 0;
 }
 
-void IO::ProtoHdlr::ProtoLSHandler::DeleteStreamData(NotNullPtr<IO::Stream> stm, void *stmData)
+void IO::ProtoHdlr::ProtoLSHandler::DeleteStreamData(NN<IO::Stream> stm, void *stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoLSHandler::ParseProtocol(NotNullPtr<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &srcBuff)
+UOSInt IO::ProtoHdlr::ProtoLSHandler::ParseProtocol(NN<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &srcBuff)
 {
 	Bool found;
 	Data::ByteArrayR buff = srcBuff;

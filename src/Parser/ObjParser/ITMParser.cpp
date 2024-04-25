@@ -23,7 +23,7 @@ void Parser::ObjParser::ITMParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::ObjParser::ITMParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::ObjParser::ITMParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::ReadingDB)
 	{
@@ -36,13 +36,13 @@ IO::ParserType Parser::ObjParser::ITMParser::GetParserType()
 	return IO::ParserType::ReadingDB;
 }
 
-IO::ParsedObject *Parser::ObjParser::ITMParser::ParseObject(NotNullPtr<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
+IO::ParsedObject *Parser::ObjParser::ITMParser::ParseObject(NN<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	if (pobj->GetParserType() != IO::ParserType::PackageFile)
 		return 0;
 	if (this->parsers == 0)
 		return 0;
-	NotNullPtr<IO::PackageFile> pkg = NotNullPtr<IO::PackageFile>::ConvertFrom(pobj);
+	NN<IO::PackageFile> pkg = NN<IO::PackageFile>::ConvertFrom(pobj);
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UOSInt i;
@@ -56,7 +56,7 @@ IO::ParsedObject *Parser::ObjParser::ITMParser::ParseObject(NotNullPtr<IO::Parse
 		{
 			if (pkg->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{
-				NotNullPtr<IO::StreamData> fd;
+				NN<IO::StreamData> fd;
 				IO::ParsedObject *pobj2 = 0;
 				if (pkg->GetItemStmDataNew(i).SetTo(fd))
 				{

@@ -4,17 +4,17 @@
 #include "Net/Names/PKIX1Implicit88.h"
 #include "Net/Names/PKIX1Explicit88.h"
 
-void Net::Names::PKCS7::AddContentInfo(NotNullPtr<Net::ASN1Names> names, Text::CStringNN name)
+void Net::Names::PKCS7::AddContentInfo(NN<Net::ASN1Names> names, Text::CStringNN name)
 {
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(name, ContentInfoCont);
 }
 
-void Net::Names::PKCS7::ContentInfo(NotNullPtr<ASN1Names> names)
+void Net::Names::PKCS7::ContentInfo(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("ContentInfo"), ContentInfoCont);
 }
 
-void Net::Names::PKCS7::ContentInfoCont(NotNullPtr<ASN1Names> names)
+void Net::Names::PKCS7::ContentInfoCont(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_OID)->NextValue(CSTR("content-type"));
 	names->LastOIDAndTypeIs(CSTR("1.2.840.113549.1.7.1"), Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("pkcs7-content"), Data);
@@ -27,17 +27,17 @@ void Net::Names::PKCS7::ContentInfoCont(NotNullPtr<ASN1Names> names)
 	names->NextValue(CSTR("pkcs7-content")); ////////////////////////
 }
 
-void Net::Names::PKCS7::Data(NotNullPtr<ASN1Names> names)
+void Net::Names::PKCS7::Data(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_OCTET_STRING)->NextValue(CSTR("data"));
 }
 
-void Net::Names::PKCS7::SignedData(NotNullPtr<ASN1Names> names)
+void Net::Names::PKCS7::SignedData(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("signed-data"), SignedDataCont);
 }
 
-void Net::Names::PKCS7::SignedDataCont(NotNullPtr<ASN1Names> names)
+void Net::Names::PKCS7::SignedDataCont(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("version"));
 	names->TypeIs(Net::ASN1Util::IT_SET)->Container(CSTR("digestAlgorithms"), DigestAlgorithmIdentifiers);
@@ -47,29 +47,29 @@ void Net::Names::PKCS7::SignedDataCont(NotNullPtr<ASN1Names> names)
 	names->TypeIs(Net::ASN1Util::IT_SET)->Container(CSTR("signerInfos"), SignerInfos);
 }
 
-void Net::Names::PKCS7::DigestAlgorithmIdentifiers(NotNullPtr<ASN1Names> names)
+void Net::Names::PKCS7::DigestAlgorithmIdentifiers(NN<ASN1Names> names)
 {
 	names->RepeatIfTypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("DigestAlgorithmIdentifier"), PKIX1Explicit88::AlgorithmIdentifierCont);
 }
 
-void Net::Names::PKCS7::CertificateSet(NotNullPtr<ASN1Names> names)
+void Net::Names::PKCS7::CertificateSet(NN<ASN1Names> names)
 {
 	names->RepeatIfTypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("certificate"), PKIX1Explicit88::CertificateCont);
 	names->RepeatIfTypeIs(Net::ASN1Util::IT_CHOICE_0)->NextValue(CSTR("extendedCertificate"));//, ExtendedCertificate);
 	names->RepeatIfTypeIs(Net::ASN1Util::IT_CHOICE_1)->NextValue(CSTR("attributeCertificate"));//, AttributeCertificate);
 }
 
-void Net::Names::PKCS7::CertificateRevocationLists(NotNullPtr<ASN1Names> names)
+void Net::Names::PKCS7::CertificateRevocationLists(NN<ASN1Names> names)
 {
 	names->RepeatIfTypeIs(Net::ASN1Util::IT_SEQUENCE)->NextValue(CSTR("CertificateRevocationLists"));//, CertificateListCont);
 }
 
-void Net::Names::PKCS7::SignerInfos(NotNullPtr<ASN1Names> names)
+void Net::Names::PKCS7::SignerInfos(NN<ASN1Names> names)
 {
 	names->RepeatIfTypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("SignerInfo"), SignerInfoCont);
 }
 
-void Net::Names::PKCS7::SignerInfoCont(NotNullPtr<ASN1Names> names)
+void Net::Names::PKCS7::SignerInfoCont(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("version"));
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("signerIdentifier"), IssuerAndSerialNumberCont);
@@ -81,29 +81,29 @@ void Net::Names::PKCS7::SignerInfoCont(NotNullPtr<ASN1Names> names)
 	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_1)->Container(CSTR("unauthenticatedAttributes"), PKCS10::AttributesCont);
 }
 
-void Net::Names::PKCS7::IssuerAndSerialNumberCont(NotNullPtr<ASN1Names> names)
+void Net::Names::PKCS7::IssuerAndSerialNumberCont(NN<ASN1Names> names)
 {
 	PKIX1Explicit88::AddName(names, CSTR("issuer"));
 	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("serialNumber"));
 }
 
-void Net::Names::PKCS7::AddDigestInfo(NotNullPtr<Net::ASN1Names> names, Text::CStringNN name)
+void Net::Names::PKCS7::AddDigestInfo(NN<Net::ASN1Names> names, Text::CStringNN name)
 {
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(name, DigestInfoCont);
 }
 
-void Net::Names::PKCS7::DigestInfoCont(NotNullPtr<ASN1Names> names)
+void Net::Names::PKCS7::DigestInfoCont(NN<ASN1Names> names)
 {
 	PKIX1Explicit88::AddAlgorithmIdentifier(names, CSTR("digestAlgorithm"));
 	names->NextValue(CSTR("digest")); ////////////////////////
 }
 
-void Net::Names::PKCS7::EnvelopedData(NotNullPtr<ASN1Names> names)
+void Net::Names::PKCS7::EnvelopedData(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("enveloped-data"), EnvelopedDataCont);
 }
 
-void Net::Names::PKCS7::EnvelopedDataCont(NotNullPtr<ASN1Names> names)
+void Net::Names::PKCS7::EnvelopedDataCont(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("version"));
 	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("originatorInfo"), OriginatorInfoCont);
@@ -112,20 +112,20 @@ void Net::Names::PKCS7::EnvelopedDataCont(NotNullPtr<ASN1Names> names)
 	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_1)->Container(CSTR("unprotectedAttributes"), PKCS10::AttributesCont);
 }
 
-void Net::Names::PKCS7::OriginatorInfoCont(NotNullPtr<ASN1Names> names)
+void Net::Names::PKCS7::OriginatorInfoCont(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)->Container(CSTR("certificates"), CertificateSet);
 	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_1)->Container(CSTR("crls"), CertificateRevocationLists);
 }
 
-void Net::Names::PKCS7::RecipientInfos(NotNullPtr<ASN1Names> names)
+void Net::Names::PKCS7::RecipientInfos(NN<ASN1Names> names)
 {
 	names->RepeatIfTypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("keyTransportRecipientInfo"), KeyTransportRecipientInfoCont);
 	names->RepeatIfTypeIs(Net::ASN1Util::IT_CHOICE_0)->NextValue(CSTR("keyAgreementRecipientInfo"));//, KeyAgreementRecipientInfo);
 	names->RepeatIfTypeIs(Net::ASN1Util::IT_CHOICE_1)->NextValue(CSTR("keyEncryptionKeyRecipientInfo"));//, KeyEncryptionKeyRecipientInfo);
 }
 
-void Net::Names::PKCS7::KeyTransportRecipientInfoCont(NotNullPtr<ASN1Names> names)
+void Net::Names::PKCS7::KeyTransportRecipientInfoCont(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("version"));
 	names->//TypeIs(Net::ASN1Util::IT_INTEGER)->
@@ -134,12 +134,12 @@ void Net::Names::PKCS7::KeyTransportRecipientInfoCont(NotNullPtr<ASN1Names> name
 	names->TypeIs(Net::ASN1Util::IT_OCTET_STRING)->NextValue(CSTR("encryptedKey"));
 }
 
-void Net::Names::PKCS7::SignedAndEnvelopedData(NotNullPtr<ASN1Names> names)
+void Net::Names::PKCS7::SignedAndEnvelopedData(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("signed-data"), SignedAndEnvelopedDataCont);
 }
 
-void Net::Names::PKCS7::SignedAndEnvelopedDataCont(NotNullPtr<ASN1Names> names)
+void Net::Names::PKCS7::SignedAndEnvelopedDataCont(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("version"));
 	names->TypeIs(Net::ASN1Util::IT_SET)->NextValue(CSTR("recipientInfos"));
@@ -150,36 +150,36 @@ void Net::Names::PKCS7::SignedAndEnvelopedDataCont(NotNullPtr<ASN1Names> names)
 	names->TypeIs(Net::ASN1Util::IT_SET)->Container(CSTR("signerInfos"), SignerInfos);
 }
 
-void Net::Names::PKCS7::DigestedData(NotNullPtr<ASN1Names> names)
+void Net::Names::PKCS7::DigestedData(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("signed-data"), DigestedDataCont);
 }
 
-void Net::Names::PKCS7::DigestedDataCont(NotNullPtr<ASN1Names> names)
+void Net::Names::PKCS7::DigestedDataCont(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("signed-data"), DigestedDataCont);
 }
 
-void Net::Names::PKCS7::EncryptedData(NotNullPtr<ASN1Names> names)
+void Net::Names::PKCS7::EncryptedData(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("encrypted-data"), EncryptedDataCont);
 }
 
-void Net::Names::PKCS7::EncryptedDataCont(NotNullPtr<ASN1Names> names)
+void Net::Names::PKCS7::EncryptedDataCont(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_INTEGER)->NextValue(CSTR("version"));
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("encryptedContentInfo"), EncryptedContentInfoCont);
 	names->TypeIs(Net::ASN1Util::IT_CONTEXT_SPECIFIC_1)->Container(CSTR("unprotectedAttributes"), PKCS10::AttributesCont);
 }
 
-void Net::Names::PKCS7::EncryptedContentInfoCont(NotNullPtr<ASN1Names> names)
+void Net::Names::PKCS7::EncryptedContentInfoCont(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_OID)->NextValue(CSTR("contentType"));
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("contentEncryptionAlgorithm"), PKIX1Explicit88::AlgorithmIdentifierCont);
 	names->TypeIs(Net::ASN1Util::IT_CHOICE_0)->NextValue(CSTR("encryptedContent"));
 }
 
-void Net::Names::PKCS7::AuthenticatedData(NotNullPtr<ASN1Names> names)
+void Net::Names::PKCS7::AuthenticatedData(NN<ASN1Names> names)
 {
 	names->TypeIs(Net::ASN1Util::IT_SEQUENCE)->Container(CSTR("signed-data"), AuthenticatedData);
 }

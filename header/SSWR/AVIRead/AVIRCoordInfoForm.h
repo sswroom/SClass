@@ -16,17 +16,17 @@ namespace SSWR
 		class AVIRCoordInfoForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIPanel> pnlCoord;
-			NotNullPtr<UI::GUILabel> lblSRID;
-			NotNullPtr<UI::GUITextBox> txtSRID;
-			NotNullPtr<UI::GUIButton> btnSRID;
-			NotNullPtr<UI::GUIButton> btnSRIDPrev;
-			NotNullPtr<UI::GUIButton> btnSRIDNext;
-			NotNullPtr<UI::GUITextBox> txtWKT;
-			NotNullPtr<UI::GUIHSplitter> hspWKT;
-			NotNullPtr<UI::GUITextBox> txtDisp;
+			NN<UI::GUIPanel> pnlCoord;
+			NN<UI::GUILabel> lblSRID;
+			NN<UI::GUITextBox> txtSRID;
+			NN<UI::GUIButton> btnSRID;
+			NN<UI::GUIButton> btnSRIDPrev;
+			NN<UI::GUIButton> btnSRIDNext;
+			NN<UI::GUITextBox> txtWKT;
+			NN<UI::GUIHSplitter> hspWKT;
+			NN<UI::GUITextBox> txtDisp;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
 			static void __stdcall OnSRIDClicked(AnyType userObj);
 			static void __stdcall OnSRIDPrevClicked(AnyType userObj);
@@ -34,7 +34,7 @@ namespace SSWR
 
 			void ShowInfo(const Math::CoordinateSystemManager::SpatialRefInfo *srinfo);
 		public:
-			AVIRCoordInfoForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRCoordInfoForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCoordInfoForm();
 
 			virtual void OnMonitorChanged();

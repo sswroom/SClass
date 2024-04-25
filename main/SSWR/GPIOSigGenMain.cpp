@@ -31,11 +31,11 @@ UInt32 __stdcall ThreadFunc(AnyType userObj)
 	return 0;
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	UInt16 pinNum;
 	if (cfg)
 	{

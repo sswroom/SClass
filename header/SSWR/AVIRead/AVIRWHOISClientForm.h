@@ -17,21 +17,21 @@ namespace SSWR
 		class AVIRWHOISClientForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 
-			NotNullPtr<UI::GUIPanel> pnlRequest;
-			NotNullPtr<UI::GUILabel> lblIP;
-			NotNullPtr<UI::GUITextBox> txtIP;
-			NotNullPtr<UI::GUILabel> lblRespTime;
-			NotNullPtr<UI::GUITextBox> txtRespTime;
-			NotNullPtr<UI::GUIButton> btnRequest;
-			NotNullPtr<UI::GUIListBox> lbResponse;
+			NN<UI::GUIPanel> pnlRequest;
+			NN<UI::GUILabel> lblIP;
+			NN<UI::GUITextBox> txtIP;
+			NN<UI::GUILabel> lblRespTime;
+			NN<UI::GUITextBox> txtRespTime;
+			NN<UI::GUIButton> btnRequest;
+			NN<UI::GUIListBox> lbResponse;
 
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 
 			static void __stdcall OnRequestClicked(AnyType userObj);
 		public:
-			AVIRWHOISClientForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRWHOISClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRWHOISClientForm();
 
 			virtual void OnMonitorChanged();

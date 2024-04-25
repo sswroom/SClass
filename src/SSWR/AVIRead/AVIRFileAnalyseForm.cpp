@@ -8,9 +8,9 @@
 
 #define PER_PAGE 10000
 
-void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
+	NN<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
 	UOSInt i;
 	UOSInt nFiles = files.GetCount();
 	i = 0;
@@ -24,8 +24,8 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnFileDrop(AnyType userObj, D
 
 void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnFileClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"MPEGTool", false);
+	NN<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"MPEGTool", false);
 	IO::FileAnalyse::IFileAnalyse::AddFilters(dlg);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
@@ -36,9 +36,9 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnFileClicked(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTrimPaddingClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
+	NN<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
 	Text::StringBuilderUTF8 sb;
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"MPEGTrimPadding", true);
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"MPEGTrimPadding", true);
 	dlg->AddFilter(CSTR("*.mpg"), CSTR("MPEG System Stream"));
 	me->txtFile->GetText(sb);
 	dlg->SetFileName(sb.ToCString());
@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTrimPaddingClicked(AnyType 
 
 void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
+	NN<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	if (me->file)
@@ -117,7 +117,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTimerTick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackListChanged(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
+	NN<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	UOSInt j;
@@ -142,7 +142,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackListChanged(AnyType use
 
 void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackItemChanged(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
+	NN<SSWR::AVIRead::AVIRFileAnalyseForm> me = userObj.GetNN<SSWR::AVIRead::AVIRFileAnalyseForm>();
 	Text::StringBuilderUTF8 sb;
 	UOSInt i = (UOSInt)me->lbPackItems->GetSelectedIndex();
 	if (i == (UOSInt)-1)
@@ -158,7 +158,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackItemChanged(AnyType use
 
 Bool SSWR::AVIRead::AVIRFileAnalyseForm::OpenFile(Text::CStringNN fileName)
 {
-	NotNullPtr<IO::FileAnalyse::IFileAnalyse> file;
+	NN<IO::FileAnalyse::IFileAnalyse> file;
 	IO::StmData::FileData fd(fileName, false);
 	if (IO::FileAnalyse::IFileAnalyse::AnalyseFile(fd).SetTo(file))
 	{
@@ -173,7 +173,7 @@ Bool SSWR::AVIRead::AVIRFileAnalyseForm::OpenFile(Text::CStringNN fileName)
 	return false;
 }
 
-SSWR::AVIRead::AVIRFileAnalyseForm::AVIRFileAnalyseForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)
+SSWR::AVIRead::AVIRFileAnalyseForm::AVIRFileAnalyseForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetText(CSTR("File Analyse"));
 	this->SetFont(0, 0, 8.25, false);

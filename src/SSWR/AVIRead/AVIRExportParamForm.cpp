@@ -6,7 +6,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnOKClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRExportParamForm> me = userObj.GetNN<SSWR::AVIRead::AVIRExportParamForm>();
+	NN<SSWR::AVIRead::AVIRExportParamForm> me = userObj.GetNN<SSWR::AVIRead::AVIRExportParamForm>();
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	UOSInt i;
@@ -50,11 +50,11 @@ void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnOKClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRExportParamForm> me = userObj.GetNN<SSWR::AVIRead::AVIRExportParamForm>();
+	NN<SSWR::AVIRead::AVIRExportParamForm> me = userObj.GetNN<SSWR::AVIRead::AVIRExportParamForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, IO::FileExporter *exporter, Optional<IO::FileExporter::ParamData> param) : UI::GUIForm(parent, 298, 88, ui)
+SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::FileExporter *exporter, Optional<IO::FileExporter::ParamData> param) : UI::GUIForm(parent, 298, 88, ui)
 {
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -67,7 +67,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(Optional<UI::GUIClientCo
 	UTF8Char *sptr;
 	UOSInt cnt = this->exporter->GetParamCnt();
 	UOSInt i;
-	NotNullPtr<UI::GUILabel> lbl;
+	NN<UI::GUILabel> lbl;
 	IO::FileExporter::ParamInfo pi;
 
 	SetSize(298, (Int32)(88 + cnt * 24));
@@ -83,7 +83,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(Optional<UI::GUIClientCo
 
 		if (pi.paramType == ::IO::FileExporter::ParamType::INT32)
 		{
-			NotNullPtr<UI::GUITextBox> txt;
+			NN<UI::GUITextBox> txt;
 			sptr = Text::StrInt32(sbuff, this->exporter->GetParamInt32(this->param, i));
 			txt = ui->NewTextBox(*this, CSTRP(sbuff, sptr));
 			txt->SetRect(140, (Int32)i * 24, 120, 23, false);
@@ -94,7 +94,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(Optional<UI::GUIClientCo
 		}
 		else if (pi.paramType == ::IO::FileExporter::ParamType::SELECTION)
 		{
-			NotNullPtr<UI::GUIComboBox> cbo;
+			NN<UI::GUIComboBox> cbo;
 			cbo = ui->NewComboBox(*this, false);
 
 			UOSInt j;
@@ -111,8 +111,8 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(Optional<UI::GUIClientCo
 		i++;
 	}
 
-	NotNullPtr<UI::GUIPanel> pnl;
-	NotNullPtr<UI::GUIButton> btn;
+	NN<UI::GUIPanel> pnl;
+	NN<UI::GUIButton> btn;
 	pnl = ui->NewPanel(*this);
 	pnl->SetRect(0, 0, 292, 48, false);
 	pnl->SetDockType(UI::GUIControl::DOCK_BOTTOM);

@@ -28,17 +28,17 @@ namespace IO
 			Bool pauseParsing;
 			Sync::Thread thread;
 
-			UOSInt ParseScriptDataVal(UInt8 *data, UOSInt ofst, UOSInt endOfst, NotNullPtr<Text::StringBuilderUTF8> sb);
-			void ParseScriptData(UInt8 *data, UOSInt ofst, UOSInt endOfst, UOSInt frameOfst, NotNullPtr<IO::FileAnalyse::FrameDetailHandler> frame);
-			static void __stdcall ParseThread(NotNullPtr<Sync::Thread> thread);
+			UOSInt ParseScriptDataVal(UInt8 *data, UOSInt ofst, UOSInt endOfst, NN<Text::StringBuilderUTF8> sb);
+			void ParseScriptData(UInt8 *data, UOSInt ofst, UOSInt endOfst, UOSInt frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame);
+			static void __stdcall ParseThread(NN<Sync::Thread> thread);
 		public:
-			FLVFileAnalyse(NotNullPtr<IO::StreamData> fd);
+			FLVFileAnalyse(NN<IO::StreamData> fd);
 			virtual ~FLVFileAnalyse();
 
 			virtual Text::CStringNN GetFormatName();
 			virtual UOSInt GetFrameCount();
-			virtual Bool GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
-			virtual Bool GetFrameDetail(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb);
+			virtual Bool GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
+			virtual Bool GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst);
 			virtual Optional<FrameDetail> GetFrameDetail(UOSInt index);
 

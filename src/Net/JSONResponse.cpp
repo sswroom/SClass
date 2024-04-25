@@ -56,19 +56,19 @@ void Net::JSONResponse::FindMissingFields()
 {
 	if (this->json->GetType() == Text::JSONType::Object)
 	{
-		NotNullPtr<Text::JSONObject> obj = NotNullPtr<Text::JSONObject>::ConvertFrom(this->json);
+		NN<Text::JSONObject> obj = NN<Text::JSONObject>::ConvertFrom(this->json);
 
 		Text::StringBuilderUTF8 sb;
 		Text::StringBuilderUTF8 sbSuggest;
 		Text::StringBuilderUTF8 sbGet;
 		Data::ArrayListStringNN nameList;
 		obj->GetObjectNames(nameList);
-		Data::Sort::ArtificialQuickSort::Sort<NotNullPtr<Text::String>>(&nameList, nameList);
-		NotNullPtr<Text::String> name;
-		NotNullPtr<Text::String> s;
+		Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(&nameList, nameList);
+		NN<Text::String> name;
+		NN<Text::String> s;
 		Bool hasObj = false;
 		Field *field;
-		Data::ArrayIterator<NotNullPtr<Text::String>> itName = nameList.Iterator();
+		Data::ArrayIterator<NN<Text::String>> itName = nameList.Iterator();
 		while (itName.HasNext())
 		{
 			name = itName.Next();
@@ -290,7 +290,7 @@ void Net::JSONResponse::FindMissingFields()
 	}
 }
 
-void Net::JSONResponse::AppendFuncName(NotNullPtr<Text::StringBuilderUTF8> sb, Bool boolFunc, NotNullPtr<Text::String> fieldName)
+void Net::JSONResponse::AppendFuncName(NN<Text::StringBuilderUTF8> sb, Bool boolFunc, NN<Text::String> fieldName)
 {
 	if (boolFunc)
 	{
@@ -448,7 +448,7 @@ void Net::JSONResponse::AddFieldArrStr(Text::CStringNN name, Bool optional, Bool
 	}
 }
 
-Net::JSONResponse::JSONResponse(NotNullPtr<Text::JSONBase> json, Text::CStringNN clsName)
+Net::JSONResponse::JSONResponse(NN<Text::JSONBase> json, Text::CStringNN clsName)
 {
 	this->clsName = clsName;
 	this->json = json;
@@ -477,17 +477,17 @@ Bool Net::JSONResponse::IsValid() const
 	return this->valid;
 }
 
-void Net::JSONResponse::ToString(NotNullPtr<Text::StringBuilderUTF8> sb, Text::CStringNN linePrefix) const
+void Net::JSONResponse::ToString(NN<Text::StringBuilderUTF8> sb, Text::CStringNN linePrefix) const
 {
 	Text::StringBuilderUTF8 sbTmp;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	Data::ArrayListStringNN keys;
 	Data::FastStringKeyIterator<Field*> it = this->fieldMap.KeyIterator();
 	while (it.HasNext())
 		keys.Add(it.Next());
-	Data::Sort::ArtificialQuickSort::Sort<NotNullPtr<Text::String>>(&keys, keys);
+	Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(&keys, keys);
 	Field *field;
-	Data::ArrayIterator<NotNullPtr<Text::String>> itKey = keys.Iterator();
+	Data::ArrayIterator<NN<Text::String>> itKey = keys.Iterator();
 	while (itKey.HasNext())
 	{
 		field = this->fieldMap.GetNN(itKey.Next());
@@ -498,7 +498,7 @@ void Net::JSONResponse::ToString(NotNullPtr<Text::StringBuilderUTF8> sb, Text::C
 			case Text::JSONType::Object:
 				{
 					ObjectField *ofield = (ObjectField*)field;
-					NotNullPtr<Net::JSONResponse> subObj;
+					NN<Net::JSONResponse> subObj;
 					if (ofield->GetValue().SetTo(subObj))
 					{
 						sbTmp.ClearStr();
@@ -521,8 +521,8 @@ void Net::JSONResponse::ToString(NotNullPtr<Text::StringBuilderUTF8> sb, Text::C
 					if (afield->GetArrType() == Text::JSONType::Object)
 					{
 						ArrayNNField<Net::JSONResponse> *anfield = (ArrayNNField<Net::JSONResponse>*)afield;
-						NotNullPtr<const Data::ArrayListNN<Net::JSONResponse>> arr = anfield->GetValue();
-						NotNullPtr<Net::JSONResponse> subObj;
+						NN<const Data::ArrayListNN<Net::JSONResponse>> arr = anfield->GetValue();
+						NN<Net::JSONResponse> subObj;
 						UOSInt i = 0;
 						UOSInt j = arr->GetCount();
 						while (i < j)
@@ -544,7 +544,7 @@ void Net::JSONResponse::ToString(NotNullPtr<Text::StringBuilderUTF8> sb, Text::C
 					else if (afield->GetArrType() == Text::JSONType::String)
 					{
 						ArrayStrField *anfield = (ArrayStrField*)afield;
-						NotNullPtr<const Data::ArrayListStringNN> arr = anfield->GetValue();
+						NN<const Data::ArrayListStringNN> arr = anfield->GetValue();
 						if (arr->GetCount() == 0)
 						{
 							sb->Append(linePrefix);
@@ -556,7 +556,7 @@ void Net::JSONResponse::ToString(NotNullPtr<Text::StringBuilderUTF8> sb, Text::C
 							sb->Append(linePrefix);
 							sb->Append(field->GetName());
 							sb->Append(CSTR(" = [\r\n"));
-							Data::ArrayIterator<NotNullPtr<Text::String>> it = arr->Iterator();
+							Data::ArrayIterator<NN<Text::String>> it = arr->Iterator();
 							while (it.HasNext())
 							{
 								sb->AppendUTF8Char('\t');
@@ -570,7 +570,7 @@ void Net::JSONResponse::ToString(NotNullPtr<Text::StringBuilderUTF8> sb, Text::C
 					else if (afield->GetArrType() == Text::JSONType::Number)
 					{
 						ArrayNativeField<Double> *anfield = (ArrayNativeField<Double>*)afield;
-						NotNullPtr<const Data::ArrayList<Double>> arr = anfield->GetValue();
+						NN<const Data::ArrayList<Double>> arr = anfield->GetValue();
 						UOSInt i = 0;
 						UOSInt j = arr->GetCount();
 						if (j < 10)
@@ -652,7 +652,7 @@ void Net::JSONResponse::ToString(NotNullPtr<Text::StringBuilderUTF8> sb, Text::C
 	}
 }
 
-void Net::JSONResponse::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Net::JSONResponse::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	this->ToString(sb, CSTR(""));
 }

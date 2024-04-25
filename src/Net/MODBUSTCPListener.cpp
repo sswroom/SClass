@@ -8,13 +8,13 @@
 
 void __stdcall Net::MODBUSTCPListener::OnClientConn(Socket *s, AnyType userObj)
 {
-	NotNullPtr<Net::MODBUSTCPListener> me = userObj.GetNN<Net::MODBUSTCPListener>();
-	NotNullPtr<Net::TCPClient> cli;
+	NN<Net::MODBUSTCPListener> me = userObj.GetNN<Net::MODBUSTCPListener>();
+	NN<Net::TCPClient> cli;
 	NEW_CLASSNN(cli, Net::TCPClient(me->sockf, s));
 	me->cliMgr->AddClient(cli, 0);
 }
 
-void __stdcall Net::MODBUSTCPListener::OnClientEvent(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
+void __stdcall Net::MODBUSTCPListener::OnClientEvent(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType)
 {
 	if (evtType == Net::TCPClientMgr::TCP_EVENT_DISCONNECT)
 	{
@@ -22,14 +22,14 @@ void __stdcall Net::MODBUSTCPListener::OnClientEvent(NotNullPtr<Net::TCPClient> 
 	}
 }
 
-void __stdcall Net::MODBUSTCPListener::OnClientData(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
+void __stdcall Net::MODBUSTCPListener::OnClientData(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
 {
 	if (buff.GetSize() <= 6)
 	{
 		return;
 	}
 	UInt8 retBuff[256];
-	NotNullPtr<Net::MODBUSTCPListener> me = userObj.GetNN<Net::MODBUSTCPListener>();
+	NN<Net::MODBUSTCPListener> me = userObj.GetNN<Net::MODBUSTCPListener>();
 	UInt16 tranId = ReadMUInt16(&buff[0]);
 	UInt16 protoId = ReadMUInt16(&buff[2]);
 	UInt16 packetSize = ReadMUInt16(&buff[4]);
@@ -292,12 +292,12 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(NotNullPtr<Net::TCPClient> c
 	}
 }
 
-void __stdcall Net::MODBUSTCPListener::OnClientTimeout(NotNullPtr<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
+void __stdcall Net::MODBUSTCPListener::OnClientTimeout(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData)
 {
 
 }
 
-Net::MODBUSTCPListener::MODBUSTCPListener(NotNullPtr<Net::SocketFactory> sockf, UInt16 port, NotNullPtr<IO::LogTool> log, Bool autoStart)
+Net::MODBUSTCPListener::MODBUSTCPListener(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log, Bool autoStart)
 {
 	this->sockf = sockf;
 	this->delay = 0;

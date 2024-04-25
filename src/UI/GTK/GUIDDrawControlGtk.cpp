@@ -210,7 +210,7 @@ void UI::GUIDDrawControl::Deinit(InstanceHandle *hInst)
 
 void __stdcall UI::GUIDDrawControl::OnResized(AnyType userObj)
 {
-	NotNullPtr<ResizedData> data = userObj.GetNN<ResizedData>();
+	NN<ResizedData> data = userObj.GetNN<ResizedData>();
 	if (data->me->switching)
 		return;
 	if (data->me->currScnMode == SM_FS)
@@ -437,7 +437,7 @@ void UI::GUIDDrawControl::EndUpdateSize()
 	this->switching = false;
 }
 
-UI::GUIDDrawControl::GUIDDrawControl(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Bool directMode, NotNullPtr<Media::ColorManagerSess> colorSess) : UI::GUIControl(ui, parent)
+UI::GUIDDrawControl::GUIDDrawControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Bool directMode, NN<Media::ColorManagerSess> colorSess) : UI::GUIControl(ui, parent)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->pSurfaceUpdated = true;
@@ -506,7 +506,7 @@ void UI::GUIDDrawControl::SetUserFSMode(ScreenMode fullScnMode)
 
 void UI::GUIDDrawControl::DrawToScreen()
 {
-	NotNullPtr<Media::MonitorSurface> buffSurface;
+	NN<Media::MonitorSurface> buffSurface;
 	if (this->primarySurface && buffSurface.Set(this->buffSurface))
 	{
 		if (this->clsData->drawPause)
@@ -536,7 +536,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 	}
 }
 
-void UI::GUIDDrawControl::DisplayFromSurface(NotNullPtr<Media::MonitorSurface> surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn)
+void UI::GUIDDrawControl::DisplayFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn)
 {
 	Sync::MutexUsage mutUsage(this->surfaceMut);
 	if (this->primarySurface)
@@ -693,12 +693,12 @@ void *UI::GUIDDrawControl::GetPixBuf()
 	return this->clsData->pixBuf;
 }
 
-void UI::GUIDDrawControl::UseDrawSurface(NotNullPtr<Sync::MutexUsage> mutUsage)
+void UI::GUIDDrawControl::UseDrawSurface(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->surfaceMut);
 }
 
-void UI::GUIDDrawControl::UnuseDrawSurface(NotNullPtr<Sync::MutexUsage> mutUsage)
+void UI::GUIDDrawControl::UnuseDrawSurface(NN<Sync::MutexUsage> mutUsage)
 {
 	this->clsData->drawPause = 0;
 	mutUsage->EndUse();

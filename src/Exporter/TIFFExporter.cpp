@@ -7,7 +7,7 @@
 #include "Media/ImageUtil.h"
 #include "Text/MyString.h"
 
-void Exporter::TIFFExporter::GenSubExifBuff(NotNullPtr<IO::SeekableStream> stm, UInt64 buffOfst, NotNullPtr<Media::EXIFData> exif)
+void Exporter::TIFFExporter::GenSubExifBuff(NN<IO::SeekableStream> stm, UInt64 buffOfst, NN<Media::EXIFData> exif)
 {
 	UInt64 currOfst = buffOfst;
 	Data::ArrayListUInt32 ids;
@@ -15,7 +15,7 @@ void Exporter::TIFFExporter::GenSubExifBuff(NotNullPtr<IO::SeekableStream> stm, 
 	UOSInt j;
 	UInt8 *ifd;
 	UInt32 exifId;
-	NotNullPtr<Media::EXIFData::EXIFItem> exifItem;
+	NN<Media::EXIFData::EXIFItem> exifItem;
 	exif->GetExifIds(ids);
 	i = 0;
 	j = ids.GetCount();
@@ -179,11 +179,11 @@ Int32 Exporter::TIFFExporter::GetName()
 	return *(Int32*)"TIFE";
 }
 
-IO::FileExporter::SupportType Exporter::TIFFExporter::IsObjectSupported(NotNullPtr<IO::ParsedObject> pobj)
+IO::FileExporter::SupportType Exporter::TIFFExporter::IsObjectSupported(NN<IO::ParsedObject> pobj)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
-	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
+	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
 	Media::RasterImage *img = imgList->GetImage(0, 0);
@@ -246,11 +246,11 @@ void Exporter::TIFFExporter::SetCodePage(UInt32 codePage)
 {
 }
 
-Bool Exporter::TIFFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text::CStringNN fileName, NotNullPtr<IO::ParsedObject> pobj, Optional<ParamData> param)
+Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStringNN fileName, NN<IO::ParsedObject> pobj, Optional<ParamData> param)
 {
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return false;
-	NotNullPtr<Media::ImageList> imgList = NotNullPtr<Media::ImageList>::ConvertFrom(pobj);
+	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	UInt8 buff[54];
 
 	buff[0] = 'I';
@@ -274,7 +274,7 @@ Bool Exporter::TIFFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 			continue;
 
 
-		NotNullPtr<Media::EXIFData> newExif;
+		NN<Media::EXIFData> newExif;
 		if (img->exif.SetTo(newExif))
 		{
 			newExif = newExif->Clone();
@@ -698,7 +698,7 @@ Bool Exporter::TIFFExporter::ExportFile(NotNullPtr<IO::SeekableStream> stm, Text
 		UInt64 stripOfst = 0;
 		UInt64 stripCntOfst = 0;
 		UInt32 exifId;
-		NotNullPtr<Media::EXIFData::EXIFItem> exifItem;
+		NN<Media::EXIFData::EXIFItem> exifItem;
 		ids.Clear();
 		newExif->GetExifIds(ids);
 		k = 0;

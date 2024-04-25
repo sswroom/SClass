@@ -21,10 +21,10 @@ namespace Net
 				S_DOMAIN_NOT_RESOLVED
 			};
 		private:
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<Net::SocketFactory> sockf;
 			Net::DNSClient *dnsClient;
 		public:
-			EmailValidator(NotNullPtr<Net::SocketFactory> sockf, NotNullPtr<IO::LogTool> log);
+			EmailValidator(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log);
 			~EmailValidator();
 
 			Status Validate(Text::CStringNN emailAddr);

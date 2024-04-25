@@ -24,7 +24,7 @@ void Media::AudioFilter::AudioLevelMeter::ResetStatus()
 	mutUsage.EndUse();
 }
 
-Media::AudioFilter::AudioLevelMeter::AudioLevelMeter(NotNullPtr<Media::IAudioSource> sourceAudio) : Media::IAudioFilter(sourceAudio)
+Media::AudioFilter::AudioLevelMeter::AudioLevelMeter(NN<Media::IAudioSource> sourceAudio) : Media::IAudioFilter(sourceAudio)
 {
 	Media::AudioFormat fmt;
 	this->soundBuff = 0;

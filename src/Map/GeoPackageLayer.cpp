@@ -6,7 +6,7 @@
 Map::GeoPackageLayer::StringSession *Map::GeoPackageLayer::StringSessCreate()
 {
 	StringSession *sess = MemAlloc(StringSession, 1);
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	sess->r = this->gpkg->QueryTableData(CSTR_NULL, this->layerContent->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
 	if (sess->r.SetTo(r) && r->ReadNext())
 	{
@@ -21,7 +21,7 @@ Map::GeoPackageLayer::StringSession *Map::GeoPackageLayer::StringSessCreate()
 
 Bool Map::GeoPackageLayer::StringSessGoRow(StringSession *sess, UOSInt index)
 {
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (sess->thisId == index)
 	{
 		return true;
@@ -57,7 +57,7 @@ Bool Map::GeoPackageLayer::StringSessGoRow(StringSession *sess, UOSInt index)
 	}
 }
 
-Map::GeoPackageLayer::GeoPackageLayer(Map::GeoPackage *gpkg, NotNullPtr<Map::GeoPackage::ContentInfo> layerContent) : Map::MapDrawLayer(gpkg->GetSourceNameObj(), 0, layerContent->tableName.Ptr(), Math::CoordinateSystemManager::SRCreateCSysOrDef((UInt32)layerContent->srsId))
+Map::GeoPackageLayer::GeoPackageLayer(Map::GeoPackage *gpkg, NN<Map::GeoPackage::ContentInfo> layerContent) : Map::MapDrawLayer(gpkg->GetSourceNameObj(), 0, layerContent->tableName.Ptr(), Math::CoordinateSystemManager::SRCreateCSysOrDef((UInt32)layerContent->srsId))
 {
 	this->gpkg = gpkg;
 	this->layerContent = layerContent;
@@ -66,8 +66,8 @@ Map::GeoPackageLayer::GeoPackageLayer(Map::GeoPackage *gpkg, NotNullPtr<Map::Geo
 	this->mixedData = MixedData::AllData;
 	if (this->tabDef)
 	{
-		NotNullPtr<DB::ColDef> col;
-		Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = this->tabDef->ColIterator();
+		NN<DB::ColDef> col;
+		Data::ArrayIterator<NN<DB::ColDef>> it = this->tabDef->ColIterator();
 		UOSInt i = 0;
 		while (it.HasNext())
 		{
@@ -82,7 +82,7 @@ Map::GeoPackageLayer::GeoPackageLayer(Map::GeoPackage *gpkg, NotNullPtr<Map::Geo
 
 		if (this->geomCol != INVALID_INDEX)
 		{
-			NotNullPtr<DB::DBReader> r;
+			NN<DB::DBReader> r;
 			if (this->gpkg->QueryTableData(CSTR_NULL, this->layerContent->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 			{
 				while (r->ReadNext())
@@ -118,7 +118,7 @@ void Map::GeoPackageLayer::SetMixedData(MixedData mixedData)
 	this->mixedData = mixedData;
 }
 
-UOSInt Map::GeoPackageLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr)
+UOSInt Map::GeoPackageLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr)
 {
 	if (nameArr) *nameArr = (NameArray*)this->StringSessCreate();
 	UOSInt i;
@@ -164,12 +164,12 @@ UOSInt Map::GeoPackageLayer::GetAllObjectIds(NotNullPtr<Data::ArrayListInt64> ou
 	}
 }
 
-UOSInt Map::GeoPackageLayer::GetObjectIds(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
+UOSInt Map::GeoPackageLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Double mapRate, Math::RectArea<Int32> rect, Bool keepEmpty)
 {
 	return GetObjectIdsMapXY(outArr, nameArr, rect.ToDouble() * mapRate, keepEmpty);
 }
 
-UOSInt Map::GeoPackageLayer::GetObjectIdsMapXY(NotNullPtr<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
+UOSInt Map::GeoPackageLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArray **nameArr, Math::RectAreaDbl rect, Bool keepEmpty)
 {
 	if (nameArr) *nameArr = (NameArray*)this->StringSessCreate();
 	UOSInt i;
@@ -228,16 +228,16 @@ void Map::GeoPackageLayer::ReleaseNameArr(NameArray *nameArr)
 	StringSession *sess = (StringSession*)nameArr;
 	if (sess)
 	{
-		NotNullPtr<DB::DBReader> r;
+		NN<DB::DBReader> r;
 		if (sess->r.SetTo(r)) this->gpkg->CloseReader(r);
 		MemFree(sess);
 	}
 }
 
-Bool Map::GeoPackageLayer::GetString(NotNullPtr<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
+Bool Map::GeoPackageLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
 	StringSession *sess = (StringSession*)nameArr;
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (sess && sess->r.SetTo(r))
 	{
 		if (!StringSessGoRow(sess, (UOSInt)id))
@@ -257,7 +257,7 @@ UTF8Char *Map::GeoPackageLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 {
 	if (this->tabDef == 0)
 		return 0;
-	NotNullPtr<DB::ColDef> col;
+	NN<DB::ColDef> col;
 	if (!this->tabDef->GetCol(colIndex).SetTo(col))
 		return 0;
 	return col->GetColName()->ConcatTo(buff);
@@ -267,18 +267,18 @@ DB::DBUtil::ColType Map::GeoPackageLayer::GetColumnType(UOSInt colIndex, OptOut<
 {
 	if (this->tabDef == 0)
 		return DB::DBUtil::CT_Unknown;
-	NotNullPtr<DB::ColDef> col;
+	NN<DB::ColDef> col;
 	if (!this->tabDef->GetCol(colIndex).SetTo(col))
 		return DB::DBUtil::CT_Unknown;
 	colSize.Set(col->GetColSize());
 	return col->GetColType();
 }
 
-Bool Map::GeoPackageLayer::GetColumnDef(UOSInt colIndex, NotNullPtr<DB::ColDef> colDef)
+Bool Map::GeoPackageLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	if (this->tabDef == 0)
 		return false;
-	NotNullPtr<DB::ColDef> col;
+	NN<DB::ColDef> col;
 	if (!this->tabDef->GetCol(colIndex).SetTo(col))
 		return false;
 	colDef->Set(col);
@@ -313,7 +313,7 @@ Math::Geometry::Vector2D *Map::GeoPackageLayer::GetNewVectorById(GetObjectSess *
 	return 0;
 }
 
-UOSInt Map::GeoPackageLayer::QueryTableNames(Text::CString schemaName, NotNullPtr<Data::ArrayListStringNN> names)
+UOSInt Map::GeoPackageLayer::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	return this->gpkg->QueryTableNames(schemaName, names);
 }
@@ -328,12 +328,12 @@ DB::TableDef *Map::GeoPackageLayer::GetTableDef(Text::CString schemaName, Text::
 	return this->gpkg->GetTableDef(schemaName, tableName);
 }
 
-void Map::GeoPackageLayer::CloseReader(NotNullPtr<DB::DBReader> r)
+void Map::GeoPackageLayer::CloseReader(NN<DB::DBReader> r)
 {
 	this->gpkg->CloseReader(r);
 }
 
-void Map::GeoPackageLayer::GetLastErrorMsg(NotNullPtr<Text::StringBuilderUTF8> str)
+void Map::GeoPackageLayer::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 {
 	this->gpkg->GetLastErrorMsg(str);
 }

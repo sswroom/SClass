@@ -5,7 +5,7 @@
 
 #include <windows.h>
 
-UI::Win::WinCheckBox::WinCheckBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN initText, Bool checked) : UI::GUICheckBox(ui, parent)
+UI::Win::WinCheckBox::WinCheckBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool checked) : UI::GUICheckBox(ui, parent)
 {
 	this->checked = false;
 	UInt32 style = WS_TABSTOP | WS_CHILD | BS_CHECKBOX;

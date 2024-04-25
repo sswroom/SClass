@@ -456,7 +456,7 @@ namespace Data
 			return Data::DateTimeUtil::SetAsComputerTime(this->inst.sec, this->inst.nanosec);
 		}
 
-		void ToTimeValue(NotNullPtr<Data::DateTimeUtil::TimeValue> tval) const
+		void ToTimeValue(NN<Data::DateTimeUtil::TimeValue> tval) const
 		{
 			Data::DateTimeUtil::Instant2TimeValue(this->inst.sec, this->inst.nanosec, tval, this->tzQhr);
 		}
@@ -547,7 +547,7 @@ namespace Data
 			}
 		}
 
-		static Timestamp FromTimeValue(NotNullPtr<const Data::DateTimeUtil::TimeValue> tval, UInt32 nanosec, Int8 tzQhr)
+		static Timestamp FromTimeValue(NN<const Data::DateTimeUtil::TimeValue> tval, UInt32 nanosec, Int8 tzQhr)
 		{
 			return Timestamp(Data::TimeInstant(Data::DateTimeUtil::TimeValue2Secs(tval, tzQhr), nanosec), tzQhr);
 		}

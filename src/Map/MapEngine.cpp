@@ -158,7 +158,7 @@ typedef struct
 	MyLabel* mapLabels;
 
 	Media::DrawImage *img;
-	NotNullPtr<Media::DrawEngine> eng;
+	NN<Media::DrawEngine> eng;
 } MapVars;
 
 void ReleaseLine(MapVars *map, MyStyle *style)

@@ -11,18 +11,18 @@ namespace IO
 	class UDPFileLog : public IO::UDPLog
 	{
 	private:
-		NotNullPtr<IO::StreamData> fd;
+		NN<IO::StreamData> fd;
 		Data::ArrayListUInt64 logPos;
 		Data::ArrayListUInt32 logSize;
 		Data::ByteBuffer logBuff;
 
 	public:
-		UDPFileLog(NotNullPtr<IO::StreamData> fd);
+		UDPFileLog(NN<IO::StreamData> fd);
 		virtual ~UDPFileLog();
 
 		virtual UOSInt GetCount(IO::LogHandler::LogLevel logLevel) const;
-		virtual Bool GetLogMessage(IO::LogHandler::LogLevel logLevel, UOSInt index, Data::Timestamp *ts, NotNullPtr<Text::StringBuilderUTF8> sb, Text::LineBreakType lineBreak) const;
-		virtual Bool GetLogDescription(IO::LogHandler::LogLevel logLevel, UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb) const;
+		virtual Bool GetLogMessage(IO::LogHandler::LogLevel logLevel, UOSInt index, Data::Timestamp *ts, NN<Text::StringBuilderUTF8> sb, Text::LineBreakType lineBreak) const;
+		virtual Bool GetLogDescription(IO::LogHandler::LogLevel logLevel, UOSInt index, NN<Text::StringBuilderUTF8> sb) const;
 	};
 }
 #endif

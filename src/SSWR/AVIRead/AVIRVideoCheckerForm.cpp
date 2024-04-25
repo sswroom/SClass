@@ -13,9 +13,9 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnFileHandler(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnFileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRVideoCheckerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoCheckerForm>();
+	NN<SSWR::AVIRead::AVIRVideoCheckerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoCheckerForm>();
 	UOSInt i = 0;
 	UOSInt j;
 	UOSInt nFiles = files.GetCount();
@@ -38,19 +38,19 @@ void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnFileHandler(AnyType userOb
 
 void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnCancelClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRVideoCheckerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoCheckerForm>();
+	NN<SSWR::AVIRead::AVIRVideoCheckerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoCheckerForm>();
 	me->CancelQueues();
 }
 
 void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnAllowTimeSkipChange(AnyType userObj, Bool newVal)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRVideoCheckerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoCheckerForm>();
+	NN<SSWR::AVIRead::AVIRVideoCheckerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoCheckerForm>();
 	me->checker.SetAllowTimeSkip(newVal);
 }
 
 void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRVideoCheckerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoCheckerForm>();
+	NN<SSWR::AVIRead::AVIRVideoCheckerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoCheckerForm>();
 	while (me->updateList.GetCount() > 0)
 	{
 		UpdateQueue *update;
@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnTimerTick(AnyType userObj)
 
 UInt32 __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::ProcessThread(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRVideoCheckerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoCheckerForm>();
+	NN<SSWR::AVIRead::AVIRVideoCheckerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoCheckerForm>();
 	FileQueue *file;
 	UpdateQueue *update;
 	Media::MediaFile *mediaFile;
@@ -157,7 +157,7 @@ void SSWR::AVIRead::AVIRVideoCheckerForm::CancelQueues()
 	}
 }
 
-SSWR::AVIRead::AVIRVideoCheckerForm::AVIRVideoCheckerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui), checker(false)
+SSWR::AVIRead::AVIRVideoCheckerForm::AVIRVideoCheckerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui), checker(false)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Video Checker"));

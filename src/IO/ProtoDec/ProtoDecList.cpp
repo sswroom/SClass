@@ -7,7 +7,7 @@
 
 IO::ProtoDec::ProtoDecList::ProtoDecList()
 {
-	NotNullPtr<IO::ProtoDec::IProtocolDecoder> protoDec;
+	NN<IO::ProtoDec::IProtocolDecoder> protoDec;
 	NEW_CLASSNN(protoDec, IO::ProtoDec::TK109ProtocolDecoder());
 	this->decList.Add(protoDec);
 	NEW_CLASSNN(protoDec, IO::ProtoDec::TSProtocolDecoder());
@@ -18,7 +18,7 @@ IO::ProtoDec::ProtoDecList::ProtoDecList()
 
 IO::ProtoDec::ProtoDecList::~ProtoDecList()
 {
-	NotNullPtr<IO::ProtoDec::IProtocolDecoder> protoDec;
+	NN<IO::ProtoDec::IProtocolDecoder> protoDec;
 	UOSInt i;
 	i = this->decList.GetCount();
 	while (i-- > 0)
@@ -38,7 +38,7 @@ Optional<IO::ProtoDec::IProtocolDecoder> IO::ProtoDec::ProtoDecList::GetItem(UOS
 	return this->decList.GetItem(index);
 }
 
-NotNullPtr<IO::ProtoDec::IProtocolDecoder> IO::ProtoDec::ProtoDecList::GetItemNoCheck(UOSInt index) const
+NN<IO::ProtoDec::IProtocolDecoder> IO::ProtoDec::ProtoDecList::GetItemNoCheck(UOSInt index) const
 {
 	return this->decList.GetItemNoCheck(index);
 }

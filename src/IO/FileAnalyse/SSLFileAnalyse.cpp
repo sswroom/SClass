@@ -7,9 +7,9 @@
 #include "Net/ASN1Util.h"
 #include "Net/SSLUtil.h"
 
-void __stdcall IO::FileAnalyse::SSLFileAnalyse::ParseThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall IO::FileAnalyse::SSLFileAnalyse::ParseThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<IO::FileAnalyse::SSLFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::SSLFileAnalyse>();
+	NN<IO::FileAnalyse::SSLFileAnalyse> me = thread->GetUserObj().GetNN<IO::FileAnalyse::SSLFileAnalyse>();
 	NN<PackInfo> pack;
 	UInt8 buff[16];
 	UInt64 ofst = 0;
@@ -43,7 +43,7 @@ void IO::FileAnalyse::SSLFileAnalyse::FreePackInfo(NN<PackInfo> pack)
 	MemFreeNN(pack);
 }
 
-UOSInt IO::FileAnalyse::SSLFileAnalyse::AppendExtension(NotNullPtr<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UOSInt ofst, UOSInt totalLeng)
+UOSInt IO::FileAnalyse::SSLFileAnalyse::AppendExtension(NN<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR buff, UOSInt ofst, UOSInt totalLeng)
 {
 	UInt16 extType = buff.ReadMU16(ofst);
 	UOSInt extLen = buff.ReadMU16(ofst + 2);
@@ -71,7 +71,7 @@ UOSInt IO::FileAnalyse::SSLFileAnalyse::AppendExtension(NotNullPtr<IO::FileAnaly
 	return ofst + 4 + extLen;
 }
 
-IO::FileAnalyse::SSLFileAnalyse::SSLFileAnalyse(NotNullPtr<IO::StreamData> fd) : thread(ParseThread, this, CSTR("SSLFileAnalyse"))
+IO::FileAnalyse::SSLFileAnalyse::SSLFileAnalyse(NN<IO::StreamData> fd) : thread(ParseThread, this, CSTR("SSLFileAnalyse"))
 {
 	this->fd = 0;
 	this->pauseParsing = false;
@@ -97,7 +97,7 @@ UOSInt IO::FileAnalyse::SSLFileAnalyse::GetFrameCount()
 	return this->packs.GetCount();
 }
 
-Bool IO::FileAnalyse::SSLFileAnalyse::GetFrameName(UOSInt index, NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool IO::FileAnalyse::SSLFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
@@ -138,7 +138,7 @@ UOSInt IO::FileAnalyse::SSLFileAnalyse::GetFrameIndex(UInt64 ofst)
 
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SSLFileAnalyse::GetFrameDetail(UOSInt index)
 {
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<PackInfo> pack;
 	if (!this->packs.GetItem(index).SetTo(pack))
 		return 0;

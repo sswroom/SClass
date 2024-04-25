@@ -2,7 +2,7 @@
 #include "Data/VariObject.h"
 #include "Text/JSText.h"
 
-void Data::VariObject::SetItem(const UTF8Char *name, NotNullPtr<Data::VariItem> item)
+void Data::VariObject::SetItem(const UTF8Char *name, NN<Data::VariItem> item)
 {
 	if (item.Set(this->items.Put(name, item.Ptr())))
 	{
@@ -17,7 +17,7 @@ Data::VariObject::VariObject(NameType nameType)
 
 Data::VariObject::~VariObject()
 {
-	NotNullPtr<const Data::ArrayList<Data::VariItem*>> itemList = this->items.GetValues();
+	NN<const Data::ArrayList<Data::VariItem*>> itemList = this->items.GetValues();
 	UOSInt i = itemList->GetCount();
 	while (i-- > 0)
 	{
@@ -153,13 +153,13 @@ void Data::VariObject::SetItemUUIDDirect(const UTF8Char *name, Data::UUID *uuid)
 	this->SetItem(name, Data::VariItem::NewUUIDDirect(uuid));
 }
 
-void Data::VariObject::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Data::VariObject::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	sb->AppendUTF8Char('{');
-	NotNullPtr<Data::ArrayList<const UTF8Char*>> keys = this->items.GetKeys();
-	NotNullPtr<const Data::ArrayList<VariItem*>> values = this->items.GetValues();
+	NN<Data::ArrayList<const UTF8Char*>> keys = this->items.GetKeys();
+	NN<const Data::ArrayList<VariItem*>> values = this->items.GetValues();
 	UOSInt i = 0;
 	UOSInt j = keys->GetCount();
 	while (i < j)
@@ -200,8 +200,8 @@ Data::Class *Data::VariObject::CreateClass() const
 	Data::Class *cls;
 	OSInt currPos = 0;
 	NEW_CLASS(cls, Data::Class(0));
-	NotNullPtr<Data::ArrayList<const UTF8Char*>> keys = this->items.GetKeys();
-	NotNullPtr<const Data::ArrayList<VariItem*>> values = this->items.GetValues();
+	NN<Data::ArrayList<const UTF8Char*>> keys = this->items.GetKeys();
+	NN<const Data::ArrayList<VariItem*>> values = this->items.GetValues();
 	UOSInt i = 0;
 	UOSInt j = keys->GetCount();
 	while (i < j)

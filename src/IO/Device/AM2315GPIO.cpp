@@ -190,7 +190,7 @@ Bool IO::Device::AM2315GPIO::ReadWord(UInt8 regAddr, UInt8 *data)
 	}
 }
 
-IO::Device::AM2315GPIO::AM2315GPIO(NotNullPtr<IO::IOPin> sdaPin, NotNullPtr<IO::IOPin> sclPin)
+IO::Device::AM2315GPIO::AM2315GPIO(NN<IO::IOPin> sdaPin, NN<IO::IOPin> sclPin)
 {
 	this->sdaPin = sdaPin;
 	this->sclPin = sclPin;

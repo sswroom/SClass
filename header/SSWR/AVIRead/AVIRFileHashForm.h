@@ -23,38 +23,38 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				NotNullPtr<Text::String> fileName;
+				NN<Text::String> fileName;
 				Int32 status;
 				IO::FileCheck *fchk;
 			} FileStatus;
 
 		private:
-			NotNullPtr<UI::GUIPanel> pnlCheckType;
-			NotNullPtr<UI::GUILabel> lblCheckType;
-			NotNullPtr<UI::GUIComboBox> cboCheckType;
-			NotNullPtr<UI::GUITabControl> tcMain;
-			NotNullPtr<UI::GUITabPage> tpStatus;
-			NotNullPtr<UI::GUITabPage> tpTasks;
-			NotNullPtr<UI::GUITabPage> tpFiles;
+			NN<UI::GUIPanel> pnlCheckType;
+			NN<UI::GUILabel> lblCheckType;
+			NN<UI::GUIComboBox> cboCheckType;
+			NN<UI::GUITabControl> tcMain;
+			NN<UI::GUITabPage> tpStatus;
+			NN<UI::GUITabPage> tpTasks;
+			NN<UI::GUITabPage> tpFiles;
 
-			NotNullPtr<UI::GUIPanel> pnlStatus;
-			NotNullPtr<UI::GUIPanel> pnlStatusFile;
-			NotNullPtr<UI::GUILabel> lblFile;
-			NotNullPtr<UI::GUITextBox> txtFileName;
-			NotNullPtr<UI::GUILabel> lblSpeed;
-			NotNullPtr<UI::GUITextBox> txtSpeed;
-			NotNullPtr<UI::GUILabel> lblTotalSize;
-			NotNullPtr<UI::GUITextBox> txtTotalSize;
-			NotNullPtr<UI::GUIProgressBar> prgFile;
-			NotNullPtr<UI::GUIRealtimeLineChart> rlcSpeed;
+			NN<UI::GUIPanel> pnlStatus;
+			NN<UI::GUIPanel> pnlStatusFile;
+			NN<UI::GUILabel> lblFile;
+			NN<UI::GUITextBox> txtFileName;
+			NN<UI::GUILabel> lblSpeed;
+			NN<UI::GUITextBox> txtSpeed;
+			NN<UI::GUILabel> lblTotalSize;
+			NN<UI::GUITextBox> txtTotalSize;
+			NN<UI::GUIProgressBar> prgFile;
+			NN<UI::GUIRealtimeLineChart> rlcSpeed;
 
-			NotNullPtr<UI::GUIPanel> pnlTasks;
-			NotNullPtr<UI::GUIButton> btnTasksClear;
-			NotNullPtr<UI::GUIListView> lvTasks;
+			NN<UI::GUIPanel> pnlTasks;
+			NN<UI::GUIButton> btnTasksClear;
+			NN<UI::GUIListView> lvTasks;
 
-			NotNullPtr<UI::GUIListView> lvFiles;
+			NN<UI::GUIListView> lvFiles;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Sync::Event fileEvt;
 			Int32 threadStatus;
 			Bool threadToStop;
@@ -72,14 +72,14 @@ namespace SSWR
 			UInt64 progLastCount;
 			Crypto::Hash::HashType currHashType;
 
-			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files);
+			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnTimerTick(AnyType userObj);
 			static void __stdcall OnCheckTypeChg(AnyType userObj);
 			static UInt32 __stdcall HashThread(AnyType userObj);
 			void AddFile(Text::CString fileName);
 			void UpdateUI();
 		public:
-			AVIRFileHashForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRFileHashForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRFileHashForm();
 
 			virtual void OnMonitorChanged();

@@ -9,9 +9,9 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnUDPPacket(NotNullPtr<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
+void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRUDPTestForm> me = userData.GetNN<SSWR::AVIRead::AVIRUDPTestForm>();
+	NN<SSWR::AVIRead::AVIRUDPTestForm> me = userData.GetNN<SSWR::AVIRead::AVIRUDPTestForm>();
 	if (me->autoReply)
 	{
 		me->udp->SendTo(addr, port, buff, dataSize);
@@ -24,13 +24,13 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnUDPPacket(NotNullPtr<const Net:
 
 void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnAutoReplyChanged(AnyType userObj, Bool newVal)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRUDPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPTestForm>();
+	NN<SSWR::AVIRead::AVIRUDPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPTestForm>();
 	me->autoReply = newVal;
 }
 
 void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRUDPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPTestForm>();
+	NN<SSWR::AVIRead::AVIRUDPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPTestForm>();
 	if (me->udp)
 	{
 		DEL_CLASS(me->udp);
@@ -63,7 +63,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnStartClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnSendClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRUDPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPTestForm>();
+	NN<SSWR::AVIRead::AVIRUDPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPTestForm>();
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
 	UInt32 cnt;
@@ -110,7 +110,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnSendClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRUDPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPTestForm>();
+	NN<SSWR::AVIRead::AVIRUDPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUDPTestForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UInt64 thisRecvCnt = me->recvCnt;
@@ -165,7 +165,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnTimerTick(AnyType userObj)
 
 UInt32 __stdcall SSWR::AVIRead::AVIRUDPTestForm::ProcThread(AnyType userObj)
 {
-	NotNullPtr<ThreadStatus> t = userObj.GetNN<ThreadStatus>();
+	NN<ThreadStatus> t = userObj.GetNN<ThreadStatus>();
 	UInt8 buff[32];
 	UOSInt i;
 	Net::SocketUtil::AddressInfo destAddr;
@@ -209,7 +209,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRUDPTestForm::ProcThread(AnyType userObj)
 	return 0;
 }
 
-SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 384, ui)
+SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 384, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("UDP Test"));

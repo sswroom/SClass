@@ -5,7 +5,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRServiceForm::OnServiceSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRServiceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRServiceForm>();
+	NN<SSWR::AVIRead::AVIRServiceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRServiceForm>();
 	Text::String *s = me->lvService->GetSelectedItemTextNew();
 	if (s)
 	{
@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRServiceForm::OnServiceSelChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRServiceForm::OnStartClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRServiceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRServiceForm>();
+	NN<SSWR::AVIRead::AVIRServiceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRServiceForm>();
 	Text::String *s = me->lvService->GetSelectedItemTextNew();
 	if (s)
 	{
@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRServiceForm::OnStartClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRServiceForm::OnStopClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRServiceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRServiceForm>();
+	NN<SSWR::AVIRead::AVIRServiceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRServiceForm>();
 	Text::String *s = me->lvService->GetSelectedItemTextNew();
 	if (s)
 	{
@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRServiceForm::OnStopClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRServiceForm::OnEnableClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRServiceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRServiceForm>();
+	NN<SSWR::AVIRead::AVIRServiceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRServiceForm>();
 	Text::String *s = me->lvService->GetSelectedItemTextNew();
 	if (s)
 	{
@@ -80,7 +80,7 @@ void __stdcall SSWR::AVIRead::AVIRServiceForm::OnEnableClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRServiceForm::OnDisableClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRServiceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRServiceForm>();
+	NN<SSWR::AVIRead::AVIRServiceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRServiceForm>();
 	Text::String *s = me->lvService->GetSelectedItemTextNew();
 	if (s)
 	{
@@ -94,7 +94,7 @@ void __stdcall SSWR::AVIRead::AVIRServiceForm::OnDisableClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRServiceForm::OnDeleteClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRServiceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRServiceForm>();
+	NN<SSWR::AVIRead::AVIRServiceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRServiceForm>();
 	Text::String *s = me->lvService->GetSelectedItemTextNew();
 	if (s)
 	{
@@ -120,7 +120,7 @@ void __stdcall SSWR::AVIRead::AVIRServiceForm::OnDeleteClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRServiceForm::OnCreateClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRServiceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRServiceForm>();
+	NN<SSWR::AVIRead::AVIRServiceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRServiceForm>();
 	SSWR::AVIRead::AVIRServiceCreateForm frm(0, me->ui, me->core);
 	if (frm.ShowDialog(me))
 	{
@@ -157,7 +157,7 @@ void SSWR::AVIRead::AVIRServiceForm::UpdateSvcList()
 	this->svcMgr.FreeServiceList(&svcList);
 }
 
-SSWR::AVIRead::AVIRServiceForm::AVIRServiceForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRServiceForm::AVIRServiceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Service Info"));

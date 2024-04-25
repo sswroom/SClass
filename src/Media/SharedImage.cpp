@@ -6,7 +6,7 @@
 #include "Media/Resizer/LanczosResizer8_C8.h"
 #include "Sync/MutexUsage.h"
 
-Media::SharedImage::SharedImage(NotNullPtr<Media::SharedImage::ImageStatus> status)
+Media::SharedImage::SharedImage(NN<Media::SharedImage::ImageStatus> status)
 {
 	this->imgStatus = status;
 	Sync::MutexUsage mutUsage(this->imgStatus->mut);
@@ -14,9 +14,9 @@ Media::SharedImage::SharedImage(NotNullPtr<Media::SharedImage::ImageStatus> stat
 	mutUsage.EndUse();
 }
 
-Media::SharedImage::SharedImage(NotNullPtr<Media::ImageList> imgList, Bool genPreview)
+Media::SharedImage::SharedImage(NN<Media::ImageList> imgList, Bool genPreview)
 {
-	NotNullPtr<Media::StaticImage> img;
+	NN<Media::StaticImage> img;
 	UOSInt imgCnt = imgList->GetCount();
 	NEW_CLASSNN(this->imgStatus, ImageStatus());
 	this->imgStatus->imgList = imgList;
@@ -36,7 +36,7 @@ Media::SharedImage::SharedImage(NotNullPtr<Media::ImageList> imgList, Bool genPr
 		{
 			UOSInt currWidth = img->info.dispSize.x;
 			UOSInt currHeight = img->info.dispSize.y;
-			NotNullPtr<Media::StaticImage> simg;
+			NN<Media::StaticImage> simg;
 			Media::Resizer::LanczosResizer8_C8 resizer(3, 3, img->info.color, img->info.color, 0, img->info.atype);
 			img->To32bpp();
 			NEW_CLASS(this->imgStatus->prevList, Data::ArrayListNN<Media::StaticImage>());
@@ -70,7 +70,7 @@ Media::SharedImage::~SharedImage()
 		if (this->imgStatus->prevList)
 		{
 			UOSInt i;
-			NotNullPtr<Media::StaticImage> simg;
+			NN<Media::StaticImage> simg;
 			i = this->imgStatus->prevList->GetCount();
 			while (i-- > 0)
 			{
@@ -83,9 +83,9 @@ Media::SharedImage::~SharedImage()
 	}
 }
 
-NotNullPtr<Media::SharedImage> Media::SharedImage::Clone() const
+NN<Media::SharedImage> Media::SharedImage::Clone() const
 {
-	NotNullPtr<Media::SharedImage> newImg;
+	NN<Media::SharedImage> newImg;
 	NEW_CLASSNN(newImg, Media::SharedImage(this->imgStatus));
 	return newImg;
 }
@@ -136,7 +136,7 @@ Optional<Media::StaticImage> Media::SharedImage::GetPrevImage(Double width, Doub
 	{
 		return this->GetImage(imgTimeMS);
 	}
-	NotNullPtr<Media::StaticImage> currImg;
+	NN<Media::StaticImage> currImg;
 	UOSInt i;
 	Optional<Media::StaticImage> minImg = 0;
 	UOSInt minWidth = 0;

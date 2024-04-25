@@ -49,7 +49,7 @@ Media::ColorProfile::ColorPrimaries::~ColorPrimaries()
 {
 }
 
-void Media::ColorProfile::ColorPrimaries::Set(NotNullPtr<const ColorPrimaries> primaries)
+void Media::ColorProfile::ColorPrimaries::Set(NN<const ColorPrimaries> primaries)
 {
 	this->colorType = primaries->colorType;
 	this->r = primaries->r;
@@ -279,7 +279,7 @@ Math::Double2D Media::ColorProfile::ColorPrimaries::GetWhitexy() const
 	return this->w;
 }
 
-void Media::ColorProfile::ColorPrimaries::GetConvMatrix(NotNullPtr<Math::Matrix3> matrix) const
+void Media::ColorProfile::ColorPrimaries::GetConvMatrix(NN<Math::Matrix3> matrix) const
 {
 	Double Sr;
 	Double Sg;
@@ -333,7 +333,7 @@ void Media::ColorProfile::ColorPrimaries::GetConvMatrix(NotNullPtr<Math::Matrix3
 	matrix->vec[2].val[2] = Sb * Zb;
 }
 
-void Media::ColorProfile::ColorPrimaries::SetConvMatrix(NotNullPtr<const Math::Matrix3> matrix)
+void Media::ColorProfile::ColorPrimaries::SetConvMatrix(NN<const Math::Matrix3> matrix)
 {
 	Double Sr = matrix->vec[1].val[0];
 	Double Sg = matrix->vec[1].val[1];
@@ -363,7 +363,7 @@ void Media::ColorProfile::ColorPrimaries::SetConvMatrix(NotNullPtr<const Math::M
 	this->w.x = X * this->w.y;
 }
 
-Bool Media::ColorProfile::ColorPrimaries::Equals(NotNullPtr<const ColorPrimaries> primaries) const
+Bool Media::ColorProfile::ColorPrimaries::Equals(NN<const ColorPrimaries> primaries) const
 {
 	return this->r == primaries->r && this->g == primaries->g && this->b == primaries->b && this->w == primaries->w;
 }
@@ -449,14 +449,14 @@ Math::Vector3 Media::ColorProfile::ColorPrimaries::GetWhitePointXYZ(WhitePointTy
 	return xyYToXYZ(Math::Vector3(GetWhitePointXY(wpType), 1.0));
 }
 
-void Media::ColorProfile::ColorPrimaries::GetMatrixBradford(NotNullPtr<Math::Matrix3> mat)
+void Media::ColorProfile::ColorPrimaries::GetMatrixBradford(NN<Math::Matrix3> mat)
 {
 	mat->vec[0].Set( 0.8951,  0.2664, -0.1614);
 	mat->vec[1].Set(-0.7502,  1.7135,  0.0367);
 	mat->vec[2].Set( 0.0389, -0.0685,  1.0296);
 }
 
-void Media::ColorProfile::ColorPrimaries::GetMatrixVonKries(NotNullPtr<Math::Matrix3> mat)
+void Media::ColorProfile::ColorPrimaries::GetMatrixVonKries(NN<Math::Matrix3> mat)
 {
 	mat->vec[0].Set( 0.40024,  0.70760, -0.08081);
 	mat->vec[1].Set(-0.22630,  1.16532,  0.04570);
@@ -475,7 +475,7 @@ Math::Vector3 Media::ColorProfile::ColorPrimaries::XYZToxyY(const Math::Vector3 
 	return Math::Vector3(XYZ.val[0] / sum, XYZ.val[1] / sum, XYZ.val[1]);
 }
 
-void Media::ColorProfile::ColorPrimaries::GetAdaptationMatrix(NotNullPtr<Math::Matrix3> mat, WhitePointType srcWP, WhitePointType destWP)
+void Media::ColorProfile::ColorPrimaries::GetAdaptationMatrix(NN<Math::Matrix3> mat, WhitePointType srcWP, WhitePointType destWP)
 {
 	Math::Matrix3 mat2;
 	Math::Matrix3 mat3;
@@ -502,7 +502,7 @@ Media::ColorProfile::ColorProfile()
 	this->rawICC = 0;
 }
 
-Media::ColorProfile::ColorProfile(NotNullPtr<const ColorProfile> profile)
+Media::ColorProfile::ColorProfile(NN<const ColorProfile> profile)
 {
 	this->rawICC = 0;
 	this->Set(profile);
@@ -529,7 +529,7 @@ Media::ColorProfile::~ColorProfile()
 	}
 }
 
-void Media::ColorProfile::Set(NotNullPtr<const ColorProfile> profile)
+void Media::ColorProfile::Set(NN<const ColorProfile> profile)
 {
 	this->rtransfer.Set(profile->rtransfer);
 	this->gtransfer.Set(profile->gtransfer);
@@ -664,9 +664,9 @@ void Media::ColorProfile::RGB32ToXYZ(Int32 rgb, OutParam<Double> X, OutParam<Dou
 {
 	Math::Matrix3 matrix;
 	this->primaries.GetConvMatrix(matrix);
-	NotNullPtr<Media::CS::TransferFunc> rtrant = Media::CS::TransferFunc::CreateFunc(this->rtransfer);
-	NotNullPtr<Media::CS::TransferFunc> gtrant = Media::CS::TransferFunc::CreateFunc(this->gtransfer);
-	NotNullPtr<Media::CS::TransferFunc> btrant = Media::CS::TransferFunc::CreateFunc(this->btransfer);
+	NN<Media::CS::TransferFunc> rtrant = Media::CS::TransferFunc::CreateFunc(this->rtransfer);
+	NN<Media::CS::TransferFunc> gtrant = Media::CS::TransferFunc::CreateFunc(this->gtransfer);
+	NN<Media::CS::TransferFunc> btrant = Media::CS::TransferFunc::CreateFunc(this->btransfer);
 	Double mul = 1 / 255.0;
 	Double r = rtrant->InverseTransfer(((rgb >> 16) & 255) * mul);
 	Double g = gtrant->InverseTransfer(((rgb >> 8) & 255) * mul);
@@ -686,9 +686,9 @@ Int32 Media::ColorProfile::XYZToRGB32(Double a, Double X, Double Y, Double Z) co
 	Int32 outVal;
 	Int32 iVal;
 	this->primaries.GetConvMatrix(matrix);
-	NotNullPtr<Media::CS::TransferFunc> rtrant = Media::CS::TransferFunc::CreateFunc(this->rtransfer);
-	NotNullPtr<Media::CS::TransferFunc> gtrant = Media::CS::TransferFunc::CreateFunc(this->gtransfer);
-	NotNullPtr<Media::CS::TransferFunc> btrant = Media::CS::TransferFunc::CreateFunc(this->btransfer);
+	NN<Media::CS::TransferFunc> rtrant = Media::CS::TransferFunc::CreateFunc(this->rtransfer);
+	NN<Media::CS::TransferFunc> gtrant = Media::CS::TransferFunc::CreateFunc(this->gtransfer);
+	NN<Media::CS::TransferFunc> btrant = Media::CS::TransferFunc::CreateFunc(this->btransfer);
 	matrix.Inverse();
 	matrix.Multiply(X, Y, Z, R, G, B);
 	R = rtrant->ForwardTransfer(R);
@@ -748,52 +748,52 @@ void Media::ColorProfile::XYZWPTransform(WhitePointType srcWP, Double srcX, Doub
 	mat2.Multiply(srcX, srcY, srcZ, outX, outY, outZ);
 }
 
-Bool Media::ColorProfile::Equals(NotNullPtr<const ColorProfile> profile) const
+Bool Media::ColorProfile::Equals(NN<const ColorProfile> profile) const
 {
 	return this->primaries.Equals(profile->primaries) && this->rtransfer.Equals(profile->rtransfer) && this->gtransfer.Equals(profile->gtransfer) && this->btransfer.Equals(profile->btransfer);
 }
 
-NotNullPtr<Media::CS::TransferParam> Media::ColorProfile::GetRTranParam()
+NN<Media::CS::TransferParam> Media::ColorProfile::GetRTranParam()
 {
 	return this->rtransfer;
 }
 
-NotNullPtr<Media::CS::TransferParam> Media::ColorProfile::GetGTranParam()
+NN<Media::CS::TransferParam> Media::ColorProfile::GetGTranParam()
 {
 	return this->gtransfer;
 }
 
-NotNullPtr<Media::CS::TransferParam> Media::ColorProfile::GetBTranParam()
+NN<Media::CS::TransferParam> Media::ColorProfile::GetBTranParam()
 {
 	return this->btransfer;
 }
 
-NotNullPtr<const Media::CS::TransferParam> Media::ColorProfile::GetRTranParamRead() const
+NN<const Media::CS::TransferParam> Media::ColorProfile::GetRTranParamRead() const
 {
 	return this->rtransfer;
 }
 
-NotNullPtr<const Media::CS::TransferParam> Media::ColorProfile::GetGTranParamRead() const
+NN<const Media::CS::TransferParam> Media::ColorProfile::GetGTranParamRead() const
 {
 	return this->gtransfer;
 }
 
-NotNullPtr<const Media::CS::TransferParam> Media::ColorProfile::GetBTranParamRead() const
+NN<const Media::CS::TransferParam> Media::ColorProfile::GetBTranParamRead() const
 {
 	return this->btransfer;
 }
 
-NotNullPtr<Media::ColorProfile::ColorPrimaries> Media::ColorProfile::GetPrimaries()
+NN<Media::ColorProfile::ColorPrimaries> Media::ColorProfile::GetPrimaries()
 {
 	return this->primaries;
 }
 
-NotNullPtr<const Media::ColorProfile::ColorPrimaries> Media::ColorProfile::GetPrimariesRead() const
+NN<const Media::ColorProfile::ColorPrimaries> Media::ColorProfile::GetPrimariesRead() const
 {
 	return this->primaries;
 }
 
-void Media::ColorProfile::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Media::ColorProfile::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	sb->AppendC(UTF8STRC("-R Transfer: "));
 	sb->Append(Media::CS::TransferTypeGetName(this->GetRTranParamRead()->GetTranType()));
@@ -803,7 +803,7 @@ void Media::ColorProfile::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 	sb->Append(Media::CS::TransferTypeGetName(this->GetBTranParamRead()->GetTranType()));
 	sb->AppendC(UTF8STRC("\r\n-Gamma: "));
 	Text::SBAppendF64(sb, this->GetRTranParamRead()->GetGamma());
-	NotNullPtr<const Media::ColorProfile::ColorPrimaries> primaries = this->GetPrimariesRead(); 
+	NN<const Media::ColorProfile::ColorPrimaries> primaries = this->GetPrimariesRead(); 
 	sb->AppendC(UTF8STRC("\r\n-RGB Primary: "));
 	sb->Append(Media::ColorProfile::ColorTypeGetName(primaries->colorType));
 	sb->AppendC(UTF8STRC("\r\n-Red:   "));
@@ -826,7 +826,7 @@ void Media::ColorProfile::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
 
 	if (this->rawICC)
 	{
-		NotNullPtr<Media::ICCProfile> icc;
+		NN<Media::ICCProfile> icc;
 		if (Media::ICCProfile::Parse(Data::ByteArrayR(rawICC, ReadMUInt32(this->rawICC))).SetTo(icc))
 		{
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -1081,12 +1081,12 @@ void Media::ColorProfile::YUV2RGB(YUVType yuvType, Double y, Double u, Double v,
 
 void Media::ColorProfile::RGB2RGB(Media::ColorProfile *srcColor, Media::ColorProfile *destColor, Double srcR, Double srcG, Double srcB, Double *destR, Double *destG, Double *destB)
 {
-	NotNullPtr<Media::CS::TransferFunc> func1r;
-	NotNullPtr<Media::CS::TransferFunc> func1g;
-	NotNullPtr<Media::CS::TransferFunc> func1b;
-	NotNullPtr<Media::CS::TransferFunc> func2r;
-	NotNullPtr<Media::CS::TransferFunc> func2g;
-	NotNullPtr<Media::CS::TransferFunc> func2b;
+	NN<Media::CS::TransferFunc> func1r;
+	NN<Media::CS::TransferFunc> func1g;
+	NN<Media::CS::TransferFunc> func1b;
+	NN<Media::CS::TransferFunc> func2r;
+	NN<Media::CS::TransferFunc> func2g;
+	NN<Media::CS::TransferFunc> func2b;
 	Math::Matrix3 mat;
 	Math::Matrix3 mat2;
 	Double v1;
@@ -1116,7 +1116,7 @@ void Media::ColorProfile::RGB2RGB(Media::ColorProfile *srcColor, Media::ColorPro
 	func2b.Delete();
 }
 
-void Media::ColorProfile::GetConvMatrix(NotNullPtr<Math::Matrix3> mat, NotNullPtr<const ColorProfile::ColorPrimaries> srcColor, NotNullPtr<const ColorProfile::ColorPrimaries> destColor)
+void Media::ColorProfile::GetConvMatrix(NN<Math::Matrix3> mat, NN<const ColorProfile::ColorPrimaries> srcColor, NN<const ColorProfile::ColorPrimaries> destColor)
 {
 	Math::Matrix3 mat2;
 	Math::Matrix3 mat3;

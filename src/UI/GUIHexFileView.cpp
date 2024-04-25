@@ -6,7 +6,7 @@
 #include "Text/MyStringW.h"
 #include "UI/GUIHexFileView.h"
 
-UI::GUIHexFileView::GUIHexFileView(NotNullPtr<UI::GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, NotNullPtr<Media::DrawEngine> deng) : UI::GUITextView(ui, parent, deng)
+UI::GUIHexFileView::GUIHexFileView(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng) : UI::GUITextView(ui, parent, deng)
 {
 	this->fs = 0;
 	this->fd = 0;
@@ -168,9 +168,9 @@ void UI::GUIHexFileView::EventTimerTick()
 	}
 }
 
-void UI::GUIHexFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
+void UI::GUIHexFileView::DrawImage(NN<Media::DrawImage> dimg)
 {
-	NotNullPtr<Media::DrawBrush> b = dimg->NewBrushARGB(this->bgColor);
+	NN<Media::DrawBrush> b = dimg->NewBrushARGB(this->bgColor);
 	dimg->DrawRect(Math::Coord2DDbl(0, 0), dimg->GetSize().ToDouble(), 0, b);
 	dimg->DelBrush(b);
 	OSInt vPos = this->GetScrollVPos();
@@ -181,13 +181,13 @@ void UI::GUIHexFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
 		UTF8Char *sptr;
 		UInt64 currOfst = ((UInt64)(UOSInt)vPos) * 16;
 		Media::DrawFont *f = this->CreateDrawFont(dimg);
-		NotNullPtr<Media::DrawFont> fnt;
-		NotNullPtr<Media::DrawBrush> lineNumBrush = dimg->NewBrushARGB(this->lineNumColor);
-		NotNullPtr<Media::DrawBrush> textBrush = dimg->NewBrushARGB(this->txtColor);
-		NotNullPtr<Media::DrawBrush> selBrush = dimg->NewBrushARGB(this->selColor);
-		NotNullPtr<Media::DrawBrush> selTextBrush = dimg->NewBrushARGB(this->selTextColor);
-		NotNullPtr<Media::DrawBrush> frameBrush = dimg->NewBrushARGB(this->frameColor);
-		NotNullPtr<Media::DrawBrush> fieldBrush = dimg->NewBrushARGB(this->fieldColor);
+		NN<Media::DrawFont> fnt;
+		NN<Media::DrawBrush> lineNumBrush = dimg->NewBrushARGB(this->lineNumColor);
+		NN<Media::DrawBrush> textBrush = dimg->NewBrushARGB(this->txtColor);
+		NN<Media::DrawBrush> selBrush = dimg->NewBrushARGB(this->selColor);
+		NN<Media::DrawBrush> selTextBrush = dimg->NewBrushARGB(this->selTextColor);
+		NN<Media::DrawBrush> frameBrush = dimg->NewBrushARGB(this->frameColor);
+		NN<Media::DrawBrush> fieldBrush = dimg->NewBrushARGB(this->fieldColor);
 		Math::Coord2DDbl currPos = Math::Coord2DDbl(0, 0);
 		Double hHeight = this->pageLineHeight * 0.5;
 		Double dHeight = UOSInt2Double(dimg->GetHeight());
@@ -204,7 +204,7 @@ void UI::GUIHexFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
 		UInt64 drawOfst;
 		Optional<const IO::FileAnalyse::FrameDetail::FieldInfo> fieldInfo = 0;
 		NN<const IO::FileAnalyse::FrameDetail::FieldInfo> nnfieldInfo;
-		NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+		NN<IO::FileAnalyse::FrameDetail> frame;
 		if (this->frame.SetTo(frame))
 		{
 			Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo> fieldList;
@@ -287,7 +287,7 @@ void UI::GUIHexFileView::DrawImage(NotNullPtr<Media::DrawImage> dimg)
 						}
 					}
 				}
-				NotNullPtr<Media::DrawBrush> tBrush = textBrush;
+				NN<Media::DrawBrush> tBrush = textBrush;
 				if (this->currOfst == drawOfst)
 				{
 					dimg->DrawRect(currPos, Math::Size2DDbl(this->pageLineHeight, this->pageLineHeight), 0, selBrush);
@@ -412,7 +412,7 @@ Bool UI::GUIHexFileView::LoadFile(Text::CStringNN fileName, Bool dynamicSize)
 	}
 	else
 	{
-		NotNullPtr<IO::StmData::FileData> fd;
+		NN<IO::StmData::FileData> fd;
 		NEW_CLASSNN(fd, IO::StmData::FileData(fileName, false));
 		if (fd->IsError())
 		{
@@ -434,14 +434,14 @@ Bool UI::GUIHexFileView::LoadFile(Text::CStringNN fileName, Bool dynamicSize)
 	return true;
 }
 
-Bool UI::GUIHexFileView::LoadData(NotNullPtr<IO::StreamData> data, Optional<IO::FileAnalyse::IFileAnalyse> fileAnalyse)
+Bool UI::GUIHexFileView::LoadData(NN<IO::StreamData> data, Optional<IO::FileAnalyse::IFileAnalyse> fileAnalyse)
 {
 	this->analyse.Delete();
 	SDEL_CLASS(this->fs);
 	SDEL_CLASS(this->fd);
 	this->frame.Delete();
 	this->fd = data.Ptr();
-	NotNullPtr<IO::FileAnalyse::IFileAnalyse> nnfileAnalyse;
+	NN<IO::FileAnalyse::IFileAnalyse> nnfileAnalyse;
 	if (fileAnalyse.SetTo(nnfileAnalyse))
 	{
 		this->analyse = nnfileAnalyse;
@@ -511,8 +511,8 @@ void UI::GUIHexFileView::GoToOffset(UInt64 ofst)
 	{
 		return;
 	}
-	NotNullPtr<IO::FileAnalyse::IFileAnalyse> analyse;
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::IFileAnalyse> analyse;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	if (this->analyse.SetTo(analyse))
 	{
 		if (!this->frame.SetTo(frame) || ofst < frame->GetOffset() || ofst >= frame->GetOffset() + frame->GetSize())
@@ -580,7 +580,7 @@ void UI::GUIHexFileView::HandleOffsetChg(OffsetChgHandler hdlr, AnyType hdlrObj)
 
 Text::CString UI::GUIHexFileView::GetAnalyzerName()
 {
-	NotNullPtr<IO::FileAnalyse::IFileAnalyse> analyse;
+	NN<IO::FileAnalyse::IFileAnalyse> analyse;
 	if (this->analyse.SetTo(analyse))
 	{
 		return analyse->GetFormatName();
@@ -588,9 +588,9 @@ Text::CString UI::GUIHexFileView::GetAnalyzerName()
 	return CSTR_NULL;
 }
 
-Bool UI::GUIHexFileView::GetFrameName(NotNullPtr<Text::StringBuilderUTF8> sb)
+Bool UI::GUIHexFileView::GetFrameName(NN<Text::StringBuilderUTF8> sb)
 {
-	NotNullPtr<IO::FileAnalyse::IFileAnalyse> analyse;
+	NN<IO::FileAnalyse::IFileAnalyse> analyse;
 	if (!this->analyse.SetTo(analyse))
 	{
 		return false;
@@ -603,10 +603,10 @@ Bool UI::GUIHexFileView::GetFrameName(NotNullPtr<Text::StringBuilderUTF8> sb)
 	return analyse->GetFrameName(index, sb);
 }
 
-UOSInt UI::GUIHexFileView::GetFieldInfos(NotNullPtr<Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo>> fieldList)
+UOSInt UI::GUIHexFileView::GetFieldInfos(NN<Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo>> fieldList)
 {
-	NotNullPtr<IO::FileAnalyse::IFileAnalyse> analyse;
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::IFileAnalyse> analyse;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	if (this->frame.SetTo(frame) && this->analyse.SetTo(analyse))
 	{
 		UOSInt i = frame->GetFieldInfos(this->currOfst, fieldList);
@@ -641,9 +641,9 @@ UOSInt UI::GUIHexFileView::GetFieldInfos(NotNullPtr<Data::ArrayListNN<const IO::
 	return 0;
 }
 
-UOSInt UI::GUIHexFileView::GetAreaInfos(NotNullPtr<Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo>> areaList)
+UOSInt UI::GUIHexFileView::GetAreaInfos(NN<Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo>> areaList)
 {
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	if (this->frame.SetTo(frame))
 	{
 		return frame->GetAreaInfos(this->currOfst, areaList);
@@ -653,7 +653,7 @@ UOSInt UI::GUIHexFileView::GetAreaInfos(NotNullPtr<Data::ArrayListNN<const IO::F
 
 Bool UI::GUIHexFileView::GoToNextUnkField()
 {
-	NotNullPtr<IO::FileAnalyse::IFileAnalyse> analyse;
+	NN<IO::FileAnalyse::IFileAnalyse> analyse;
 	if (!this->analyse.SetTo(analyse))
 	{
 		return false;
@@ -664,7 +664,7 @@ Bool UI::GUIHexFileView::GoToNextUnkField()
 	{
 		return true;
 	}
-	NotNullPtr<IO::FileAnalyse::FrameDetail> frame;
+	NN<IO::FileAnalyse::FrameDetail> frame;
 	Data::ArrayListNN<const IO::FileAnalyse::FrameDetail::FieldInfo> fieldList;
 	NN<const IO::FileAnalyse::FrameDetail::FieldInfo> field;
 	if (!analyse->GetFrameDetail(index).SetTo(frame))

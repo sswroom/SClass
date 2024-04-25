@@ -20,24 +20,24 @@ namespace SSWR
 		class AVIRElectronicScaleForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Media::DrawEngine> eng;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Media::DrawEngine> eng;
 			Media::DrawImage *dimg;
 
-			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			NotNullPtr<UI::GUIGroupBox> grpStream;
-			NotNullPtr<UI::GUILabel> lblStream;
-			NotNullPtr<UI::GUITextBox> txtStream;
-			NotNullPtr<UI::GUIButton> btnStream;
-			NotNullPtr<UI::GUILabel> lblWeight;
-			NotNullPtr<UI::GUITextBox> txtWeight;
-			NotNullPtr<UI::GUITabControl> tcMain;
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUIGroupBox> grpStream;
+			NN<UI::GUILabel> lblStream;
+			NN<UI::GUITextBox> txtStream;
+			NN<UI::GUIButton> btnStream;
+			NN<UI::GUILabel> lblWeight;
+			NN<UI::GUITextBox> txtWeight;
+			NN<UI::GUITabControl> tcMain;
 
-			NotNullPtr<UI::GUITabPage> tpHistory;
-			NotNullPtr<UI::GUIRealtimeLineChart> rlcHistory;
+			NN<UI::GUITabPage> tpHistory;
+			NN<UI::GUIRealtimeLineChart> rlcHistory;
 
-			NotNullPtr<UI::GUITabPage> tpDisplay;
-			NotNullPtr<UI::GUIPictureBoxSimple> pbsDisplay;
+			NN<UI::GUITabPage> tpDisplay;
+			NN<UI::GUIPictureBoxSimple> pbsDisplay;
 
 			IO::Stream *stm;
 			Bool threadRunning;
@@ -55,7 +55,7 @@ namespace SSWR
 
 			void StopStream();
 		public:
-			AVIRElectronicScaleForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRElectronicScaleForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRElectronicScaleForm();
 
 			virtual void OnMonitorChanged();

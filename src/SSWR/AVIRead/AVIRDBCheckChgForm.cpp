@@ -21,10 +21,10 @@
 
 void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataFileClk(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
+	NN<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtDataFile->GetText(sb);
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"DBCheckChg", false);
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"DBCheckChg", false);
 	dlg->SetAllowMultiSel(false);
 	if (sb.GetLength() > 0)
 	{
@@ -38,9 +38,9 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataFileClk(AnyType userObj)
 	dlg.Delete();
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnFiles(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnFiles(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
+	NN<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
 	UOSInt i = 0;
 	UOSInt nFiles = files.GetCount();
 	while (i < nFiles)
@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnFiles(AnyType userObj, Data:
 
 void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataCheckClk(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
+	NN<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
 	if (!me->CheckDataFile())
 	{
 		return;
@@ -64,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataCheckClk(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnSQLClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
+	NN<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	if (me->dataFile == 0)
@@ -74,7 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnSQLClicked(AnyType userObj)
 	}
 	DB::SQLType sqlType = (DB::SQLType)me->cboDBType->GetSelectedItem().GetOSInt();
 	Bool axisAware = me->chkAxisAware->IsChecked();
-	NotNullPtr<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"DBCheckChgSQL", true);
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"DBCheckChgSQL", true);
 	dlg->SetAllowMultiSel(false);
 	dlg->AddFilter(CSTR("*.sql"), CSTR("SQL File"));
 	sptr = sbuff;
@@ -125,20 +125,20 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnSQLClicked(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnExecuteClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
+	NN<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
 	if (me->dataFile == 0)
 	{
 		me->ui->ShowMsgOK(CSTR("Please load data file first"), CSTR("Check Table Changes"), me);
 		return;
 	}
-	NotNullPtr<DB::DBConn> db;
+	NN<DB::DBConn> db;
 	if (me->db->IsFullConn())
 	{
-		db = NotNullPtr<DB::DBConn>::ConvertFrom(me->db);
+		db = NN<DB::DBConn>::ConvertFrom(me->db);
 	}
 	else if (me->db->IsDBTool())
 	{
-		db = NotNullPtr<DB::ReadingDBTool>::ConvertFrom(me->db)->GetDBConn();
+		db = NN<DB::ReadingDBTool>::ConvertFrom(me->db)->GetDBConn();
 	}
 	else
 	{
@@ -199,7 +199,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnExecuteClicked(AnyType userO
 
 void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataTableChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
+	NN<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
 	if (me->dataFile == 0)
 	{
 		//me->ui->ShowMsgOK(CSTR("Please load data file first"), CSTR("Check Table Changes"), me);
@@ -211,7 +211,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataTableChg(AnyType userObj
 		//me->ui->ShowMsgOK(CSTR("Error in getting table name"), CSTR("Check Table Changes"), me);
 		return;
 	}
-	NotNullPtr<DB::TableDef> table;
+	NN<DB::TableDef> table;
 	if (!table.Set(me->db->GetTableDef(me->schema, me->table)))
 	{
 		return;
@@ -222,8 +222,8 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataTableChg(AnyType userObj
 
 void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnAssignColClicked(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
-	NotNullPtr<DB::ReadingDB> dataFile;
+	NN<SSWR::AVIRead::AVIRDBCheckChgForm> me = userObj.GetNN<SSWR::AVIRead::AVIRDBCheckChgForm>();
+	NN<DB::ReadingDB> dataFile;
 	if (!dataFile.Set(me->dataFile))
 	{
 		//me->ui->ShowMsgOK(CSTR("Please load data file first"), CSTR("Check Table Changes"), me);
@@ -235,7 +235,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnAssignColClicked(AnyType use
 		//me->ui->ShowMsgOK(CSTR("Error in getting table name"), CSTR("Check Table Changes"), me);
 		return;
 	}
-	NotNullPtr<DB::TableDef> table;
+	NN<DB::TableDef> table;
 	if (!table.Set(me->db->GetTableDef(me->schema, me->table)))
 	{
 		return;
@@ -261,7 +261,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 		DB::CSVFile *csv;
 		NEW_CLASS(csv, DB::CSVFile(fileName, 65001))
 		if (noHeader) csv->SetNoHeader(true);
-		NotNullPtr<DB::DBReader> r;
+		NN<DB::DBReader> r;
 		if (!csv->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 		{
 			DEL_CLASS(csv);
@@ -288,7 +288,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 		else if (pt == IO::Path::PathType::Directory)
 		{
 			IO::DirectoryPackage pkg(fileName);
-			NotNullPtr<Parser::ParserList> parsers = this->core->GetParserList();
+			NN<Parser::ParserList> parsers = this->core->GetParserList();
 			db = (DB::ReadingDB*)parsers->ParseObjectType(pkg, IO::ParserType::ReadingDB);
 		}
 		if (db)
@@ -312,8 +312,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 	if (tableNames.GetCount() > 0)
 	{
 		UOSInt tableIndex = 0;
-		NotNullPtr<Text::String> name;
-		Data::ArrayIterator<NotNullPtr<Text::String>> it = tableNames.Iterator();
+		NN<Text::String> name;
+		Data::ArrayIterator<NN<Text::String>> it = tableNames.Iterator();
 		UOSInt i = 0;
 		while (it.HasNext())
 		{
@@ -331,7 +331,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRDBCheckChgForm::GetColIndex(NotNullPtr<Data::ArrayList<UOSInt>> colInd, NotNullPtr<DB::TableDef> destTable, Text::CString srcSchema, Text::CStringNN srcTable)
+Bool SSWR::AVIRead::AVIRDBCheckChgForm::GetColIndex(NN<Data::ArrayList<UOSInt>> colInd, NN<DB::TableDef> destTable, Text::CString srcSchema, Text::CStringNN srcTable)
 {
 	colInd->Clear();
 	UOSInt i = 0;
@@ -340,8 +340,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GetColIndex(NotNullPtr<Data::ArrayList<U
 	UOSInt srcCnt;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	NotNullPtr<DB::ColDef> col;
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::ColDef> col;
+	NN<DB::DBReader> r;
 	while (i < destCnt)
 	{
 		colInd->Add(this->dataFileNoHeader?i:UNKNOWN_COL);
@@ -398,7 +398,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GetColIndex(NotNullPtr<Data::ArrayList<U
 	return true;
 }
 
-Bool SSWR::AVIRead::AVIRDBCheckChgForm::IsColIndexValid(NotNullPtr<Data::ArrayList<UOSInt>> colInd, NotNullPtr<DB::TableDef> destTable)
+Bool SSWR::AVIRead::AVIRDBCheckChgForm::IsColIndexValid(NN<Data::ArrayList<UOSInt>> colInd, NN<DB::TableDef> destTable)
 {
 	UOSInt j = colInd->GetCount();
 	if (j == 0)
@@ -406,7 +406,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::IsColIndexValid(NotNullPtr<Data::ArrayLi
 		this->ui->ShowMsgOK(CSTR("Error in reading database structure"), CSTR("DB Check Change"), this);
 		return false;
 	}
-	NotNullPtr<DB::ColDef> col;
+	NN<DB::ColDef> col;
 	UOSInt i = 0;
 	while (i < j)
 	{
@@ -474,7 +474,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	}
 	Int8 csvTZ = this->db->GetTzQhr();
 	this->dataFileTz = csvTZ;
-	NotNullPtr<DB::TableDef> table;;
+	NN<DB::TableDef> table;;
 	if (!table.Set(this->db->GetTableDef(this->schema, this->table)))
 	{
 		SDEL_CLASS(srcDBCond);
@@ -492,8 +492,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	UOSInt srcCnt;
 	Data::FastStringMap<Text::String**> csvData;
 	Text::String** rowData;
-	NotNullPtr<DB::ColDef> col;
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::ColDef> col;
+	NN<DB::DBReader> r;
 	if (!this->IsColIndexValid(this->colInd, table))
 	{
 		SDEL_CLASS(srcDBCond);
@@ -551,7 +551,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	UOSInt newRowCnt = 0;
 	UOSInt delRowCnt = 0;
 	Bool succ = true;
-	NotNullPtr<Text::String> id;
+	NN<Text::String> id;
 	Text::StringBuilderUTF8 sbId;
 	while (r->ReadNext())
 	{
@@ -821,11 +821,11 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 								break;
 							case DB::DBUtil::CT_Vector:
 								{
-									NotNullPtr<Math::Geometry::Vector2D> vec1;
+									NN<Math::Geometry::Vector2D> vec1;
 									if (r->GetVector(i).SetTo(vec1))
 									{
 										vec1->SetSRID(col->GetGeometrySRID());
-										NotNullPtr<Math::Geometry::Vector2D> vec2;
+										NN<Math::Geometry::Vector2D> vec2;
 										Math::WKTReader reader(vec1->GetSRID());
 										if (!reader.ParseWKT(rowData[i]->v).SetTo(vec2))
 										{
@@ -936,7 +936,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	}
 }
 
-Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool axisAware, NotNullPtr<SQLSession> sess)
+Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool axisAware, NN<SQLSession> sess)
 {
 	Text::CString nullStr = this->GetNullText();
 	if (this->dataFile == 0)
@@ -975,7 +975,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 			return false;
 		}
 	}
-	NotNullPtr<DB::TableDef> table;
+	NN<DB::TableDef> table;
 	if (!table.Set(this->db->GetTableDef(this->schema, this->table)))
 	{
 		this->ui->ShowMsgOK(CSTR("Error in getting table structure"), CSTR("Check Table Changes"), this);
@@ -985,7 +985,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	}
 	Bool succ = true;
 	Bool intKey = false;
-	NotNullPtr<DB::ColDef> col;
+	NN<DB::ColDef> col;
 	Text::StringBuilderUTF8 sbId;
 	UOSInt keyCol1 = this->cboKeyCol1->GetSelectedItem().GetUOSInt();
 	UOSInt keyDCol1;
@@ -1035,7 +1035,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	UOSInt srcCnt;
 	Data::FastStringMap<Text::String**> csvData;
 	Text::String** rowData;
-	NotNullPtr<DB::DBReader> r;
+	NN<DB::DBReader> r;
 	if (!this->IsColIndexValid(this->colInd, table))
 	{
 		SDEL_CLASS(srcDBCond);
@@ -1089,9 +1089,9 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	DB::SQLBuilder sql(sqlType, axisAware, Data::DateTimeUtil::GetLocalTzQhr());
 	Bool genInsert;
 	Bool colFound;
-	NotNullPtr<Text::String> s;
+	NN<Text::String> s;
 	Optional<Text::String> ops;
-//	NotNullPtr<Text::String> id;
+//	NN<Text::String> id;
 	while (r->ReadNext())
 	{
 		if (r->ColCount() >= srcCnt)
@@ -1254,7 +1254,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 		}
 		else
 		{
-			NotNullPtr<Text::String> id1;
+			NN<Text::String> id1;
 			Optional<Text::String> id2;
 			Data::ArrayListStringNN idList;
 			while (r->ReadNext())
@@ -1427,7 +1427,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 										break;
 									case DB::DBUtil::CT_Vector:
 										{
-											NotNullPtr<Math::Geometry::Vector2D> vec2;;
+											NN<Math::Geometry::Vector2D> vec2;;
 											Math::WKTReader reader(SRID);
 											if (!reader.ParseWKT(rowData[i]->v).SetTo(vec2))
 											{
@@ -1636,8 +1636,8 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 								break;
 							case DB::DBUtil::CT_Vector:
 								{
-									NotNullPtr<Math::Geometry::Vector2D> vec1;
-									NotNullPtr<Math::Geometry::Vector2D> vec2;
+									NN<Math::Geometry::Vector2D> vec1;
+									NN<Math::Geometry::Vector2D> vec2;
 									if (r->GetVector(i).SetTo(vec1))
 									{
 										vec1->SetSRID(col->GetGeometrySRID());
@@ -1763,7 +1763,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 
 			if (succ)
 			{
-				Data::Sort::ArtificialQuickSort::Sort<NotNullPtr<Text::String>>(&idList, idList);
+				Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(&idList, idList);
 				k = 0;
 				srcCnt = csvData.GetCount();
 				while (k < srcCnt)
@@ -1836,9 +1836,9 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 	return succ;
 }
 
-Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CStringNN sql, NotNullPtr<SQLSession> sess)
+Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CStringNN sql, NN<SQLSession> sess)
 {
-		NotNullPtr<DB::DBConn> db;
+		NN<DB::DBConn> db;
 	if (sess->mode == 0)
 	{
 		if (sess->stm->Write(sql.v, sql.leng) != sql.leng)
@@ -1933,7 +1933,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::NextSQL(Text::CStringNN sql, NotNullPtr<
 	}
 }
 
-void SSWR::AVIRead::AVIRDBCheckChgForm::UpdateStatus(NotNullPtr<SQLSession> sess)
+void SSWR::AVIRead::AVIRDBCheckChgForm::UpdateStatus(NN<SQLSession> sess)
 {
 	Data::Timestamp t = Data::Timestamp::UtcNow();
 	if (t.DiffSecDbl(sess->lastUpdateTime) >= 1)
@@ -1947,9 +1947,9 @@ void SSWR::AVIRead::AVIRDBCheckChgForm::UpdateStatus(NotNullPtr<SQLSession> sess
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::AppendCol(NotNullPtr<DB::SQLBuilder> sql, NotNullPtr<DB::ColDef> col, Optional<Text::String> s, Int8 tzQhr)
+void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::AppendCol(NN<DB::SQLBuilder> sql, NN<DB::ColDef> col, Optional<Text::String> s, Int8 tzQhr)
 {
-	NotNullPtr<Text::String> nns;
+	NN<Text::String> nns;
 	if (!s.SetTo(nns))
 	{
 		sql->AppendStr(0);
@@ -2048,11 +2048,11 @@ DB::SQLType SSWR::AVIRead::AVIRDBCheckChgForm::GetDBSQLType()
 {
 	if (this->db->IsDBTool())
 	{
-		return NotNullPtr<DB::ReadingDBTool>::ConvertFrom(this->db)->GetSQLType();
+		return NN<DB::ReadingDBTool>::ConvertFrom(this->db)->GetSQLType();
 	}
 	else if (this->db->IsFullConn())
 	{
-		return NotNullPtr<DB::DBConn>::ConvertFrom(this->db)->GetSQLType();
+		return NN<DB::DBConn>::ConvertFrom(this->db)->GetSQLType();
 	}
 	else
 	{
@@ -2060,7 +2060,7 @@ DB::SQLType SSWR::AVIRead::AVIRDBCheckChgForm::GetDBSQLType()
 	}
 }
 
-SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<DB::ReadingDB> db, Text::CString schema, Text::CStringNN table) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN table) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Check Table Changes"));
@@ -2203,8 +2203,8 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientCont
 	if (tableDef)
 	{
 		Bool hasKey = false;
-		Data::ArrayIterator<NotNullPtr<DB::ColDef>> it = tableDef->ColIterator();
-		NotNullPtr<DB::ColDef> col;
+		Data::ArrayIterator<NN<DB::ColDef>> it = tableDef->ColIterator();
+		NN<DB::ColDef> col;
 		UOSInt i = 0;
 		while (it.HasNext())
 		{

@@ -244,8 +244,8 @@ namespace Text
 	UTF8Char *StrTrimWSCRLFC(UTF8Char* str1, UOSInt len);
 	UTF8Char *StrRemoveChar(UTF8Char *str1, UTF8Char c);
 
-	NotNullPtr<const UTF8Char> StrCopyNew(const UTF8Char *str1);
-	NotNullPtr<const UTF8Char> StrCopyNewC(const UTF8Char *str1, UOSInt strLen);
+	NN<const UTF8Char> StrCopyNew(const UTF8Char *str1);
+	NN<const UTF8Char> StrCopyNewC(const UTF8Char *str1, UOSInt strLen);
 	void StrDelNew(const UTF8Char *newStr);
 	Bool StrStartsWith(const UTF8Char *str1, const UTF8Char *str2);
 	FORCEINLINE Bool StrStartsWithC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);

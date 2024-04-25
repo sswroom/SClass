@@ -6,7 +6,7 @@
 #include "Net/SNMPInfo.h"
 #include "SSWR/AVIRead/AVIRSNMPWalkForm.h"
 
-SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<const Net::SocketUtil::AddressInfo> addr, NotNullPtr<Text::String> community) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<const Net::SocketUtil::AddressInfo> addr, NN<Text::String> community) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;

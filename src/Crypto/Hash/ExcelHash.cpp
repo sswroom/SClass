@@ -19,9 +19,9 @@ UTF8Char *Crypto::Hash::ExcelHash::GetName(UTF8Char *sbuff) const
 	return Text::StrConcatC(sbuff, UTF8STRC("Excel Hash"));
 }
 
-NotNullPtr<Crypto::Hash::IHash> Crypto::Hash::ExcelHash::Clone() const
+NN<Crypto::Hash::IHash> Crypto::Hash::ExcelHash::Clone() const
 {
-	NotNullPtr<Crypto::Hash::ExcelHash> hash;
+	NN<Crypto::Hash::ExcelHash> hash;
 	NEW_CLASSNN(hash, Crypto::Hash::ExcelHash());
 	hash->currVal = this->currVal;
 	hash->charCnt = this->charCnt;

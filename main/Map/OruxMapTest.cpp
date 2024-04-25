@@ -7,15 +7,15 @@
 #include "Map/OSM/OSMLocalTileMap.h"
 #include "Parser/FullParserList.h"
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Text::CStringNN fileName = CSTR("/media/sswroom/Extreme SSD/Map/HKTIle.spk");
 	Text::CStringNN destFile = CSTR("/media/sswroom/Extreme SSD/Map/Temp/Temp.otrk2.xml");
-	NotNullPtr<Parser::ParserList> parsers;
+	NN<Parser::ParserList> parsers;
 	IO::PackageFile *pkg;
-	NotNullPtr<IO::PackageFile> pkgFile;
-	NotNullPtr<Map::OSM::OSMLocalTileMap> tileMap;
-	NotNullPtr<Map::TileMapLayer> mapLyr;
+	NN<IO::PackageFile> pkgFile;
+	NN<Map::OSM::OSMLocalTileMap> tileMap;
+	NN<Map::TileMapLayer> mapLyr;
 	NEW_CLASSNN(parsers, Parser::FullParserList());
 
 	{

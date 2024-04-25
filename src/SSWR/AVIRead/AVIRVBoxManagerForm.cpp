@@ -3,7 +3,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRVBoxManagerForm::OnVMSSelChg(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRVBoxManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVBoxManagerForm>();
+	NN<SSWR::AVIRead::AVIRVBoxManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVBoxManagerForm>();
 	me->UpdateVMInfo();
 }
 
@@ -42,7 +42,7 @@ void SSWR::AVIRead::AVIRVBoxManagerForm::UpdateVMInfo()
 	}
 }
 
-SSWR::AVIRead::AVIRVBoxManagerForm::AVIRVBoxManagerForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui)
+SSWR::AVIRead::AVIRVBoxManagerForm::AVIRVBoxManagerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("VirtualBox Manager"));

@@ -5,15 +5,15 @@
 #include "Net/WiFiCapturer.h"
 #include "Sync/Interlocked.h"
 
-void __stdcall Net::WiFiCapturer::ScanThread(NotNullPtr<Sync::Thread> thread)
+void __stdcall Net::WiFiCapturer::ScanThread(NN<Sync::Thread> thread)
 {
-	NotNullPtr<Net::WiFiCapturer> me = thread->GetUserObj().GetNN<Net::WiFiCapturer>();
-	NotNullPtr<Net::WirelessLAN::Interface> interf;
+	NN<Net::WiFiCapturer> me = thread->GetUserObj().GetNN<Net::WiFiCapturer>();
+	NN<Net::WirelessLAN::Interface> interf;
 	if (!me->interf.SetTo(interf))
 	{
 		return;
 	}
-	NotNullPtr<Net::WirelessLAN::BSSInfo> bss;
+	NN<Net::WirelessLAN::BSSInfo> bss;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -21,7 +21,7 @@ void __stdcall Net::WiFiCapturer::ScanThread(NotNullPtr<Sync::Thread> thread)
 	UInt64 imac;
 	UInt8 mac[8];
 	const UInt8 *macPtr;
-	NotNullPtr<Net::WiFiLogFile::LogFileEntry> entry;
+	NN<Net::WiFiLogFile::LogFileEntry> entry;
 	UInt64 maxIMAC;
 	Int32 maxRSSI;
 	Data::Timestamp lastStoreTime;
@@ -196,9 +196,9 @@ Bool Net::WiFiCapturer::Start()
 	}
 	this->interf.Delete();
 	UOSInt i;
-	NotNullPtr<Text::String> namePtr;
+	NN<Text::String> namePtr;
 	Data::ArrayListNN<Net::WirelessLAN::Interface> interfaces;
-	NotNullPtr<Net::WirelessLAN::Interface> ifObj;
+	NN<Net::WirelessLAN::Interface> ifObj;
 	this->wlan.GetInterfaces(interfaces);
 	i = interfaces.GetCount();
 	Bool found = false;
@@ -266,7 +266,7 @@ void Net::WiFiCapturer::StoreStatus()
 	}
 }
 
-NotNullPtr<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> Net::WiFiCapturer::GetLogList(NotNullPtr<Sync::MutexUsage> mutUsage)
+NN<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> Net::WiFiCapturer::GetLogList(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->logMut);
 	return this->wifiLog.GetLogList();

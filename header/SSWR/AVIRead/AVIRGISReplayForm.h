@@ -20,28 +20,28 @@ namespace SSWR
 		class AVIRGISReplayForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<UI::GUIListBox> lbRecord;
-			NotNullPtr<UI::GUITextBox> txtGPSTime;
-			NotNullPtr<UI::GUITextBox> txtLatitude;
-			NotNullPtr<UI::GUITextBox> txtLongitude;
-			NotNullPtr<UI::GUITextBox> txtAltitude;
-			NotNullPtr<UI::GUITextBox> txtSpeedKnot;
-			NotNullPtr<UI::GUITextBox> txtSpeedKM;
-			NotNullPtr<UI::GUITextBox> txtHeading;
-			NotNullPtr<UI::GUITextBox> txtValid;
-			NotNullPtr<UI::GUITextBox> txtNSateView;
-			NotNullPtr<UI::GUITextBox> txtNSateUsed;
-			NotNullPtr<UI::GUITextBox> txtEndMark;
-			NotNullPtr<UI::GUITextBox> txtStartMark;
+			NN<UI::GUIListBox> lbRecord;
+			NN<UI::GUITextBox> txtGPSTime;
+			NN<UI::GUITextBox> txtLatitude;
+			NN<UI::GUITextBox> txtLongitude;
+			NN<UI::GUITextBox> txtAltitude;
+			NN<UI::GUITextBox> txtSpeedKnot;
+			NN<UI::GUITextBox> txtSpeedKM;
+			NN<UI::GUITextBox> txtHeading;
+			NN<UI::GUITextBox> txtValid;
+			NN<UI::GUITextBox> txtNSateView;
+			NN<UI::GUITextBox> txtNSateUsed;
+			NN<UI::GUITextBox> txtEndMark;
+			NN<UI::GUITextBox> txtStartMark;
 			UI::GUIPopupMenu *mnuRecord;
-			NotNullPtr<UI::GUITextBox> txtAddress;
-			NotNullPtr<UI::GUILabel> lblAddress;
-			NotNullPtr<UI::GUIComboBox> cboName;
-			NotNullPtr<UI::GUILabel> lblDist;
-			NotNullPtr<UI::GUIListView> lvExtra;
+			NN<UI::GUITextBox> txtAddress;
+			NN<UI::GUILabel> lblAddress;
+			NN<UI::GUIComboBox> cboName;
+			NN<UI::GUILabel> lblDist;
+			NN<UI::GUIListView> lvExtra;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Map::GPSTrack> track;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Map::GPSTrack> track;
 			IMapNavigator *navi;
 			UOSInt startMark;
 			UOSInt endMark;
@@ -59,7 +59,7 @@ namespace SSWR
 			void FreeNames();
 
 		public:
-			AVIRGISReplayForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, NotNullPtr<Map::GPSTrack> track, IMapNavigator *navi);
+			AVIRGISReplayForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::GPSTrack> track, IMapNavigator *navi);
 			virtual ~AVIRGISReplayForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);

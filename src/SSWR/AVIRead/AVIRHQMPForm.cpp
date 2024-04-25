@@ -172,9 +172,9 @@ typedef enum
 	MNU_PB_CHAPTERS = 1000
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnFileDrop(AnyType userObj, Data::DataArray<NotNullPtr<Text::String>> files)
+void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHQMPForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPForm>();
+	NN<SSWR::AVIRead::AVIRHQMPForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPForm>();
 	UOSInt i;
 	UOSInt nFiles = files.GetCount();
 
@@ -190,7 +190,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnFileDrop(AnyType userObj, Data::Da
 
 void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHQMPForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPForm>();
+	NN<SSWR::AVIRead::AVIRHQMPForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPForm>();
 	if (me->dbgFrm)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -296,7 +296,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(AnyType userObj)
 		sb.AppendC(UTF8STRC("Src Gamma: "));
 		sb.AppendDouble(dbg.color.GetRTranParam()->GetGamma());
 		sb.AppendC(UTF8STRC("\r\n"));
-		NotNullPtr<Media::ColorProfile::ColorPrimaries> primaries = dbg.color.GetPrimaries(); 
+		NN<Media::ColorProfile::ColorPrimaries> primaries = dbg.color.GetPrimaries(); 
 		sb.AppendC(UTF8STRC("Src RGB Primary: "));
 		sb.Append(Media::ColorProfile::ColorTypeGetName(primaries->colorType));
 		sb.AppendC(UTF8STRC("\r\n"));
@@ -369,21 +369,21 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnDebugClosed(AnyType userObj, NotNullPtr<UI::GUIForm> frm)
+void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnDebugClosed(AnyType userObj, NN<UI::GUIForm> frm)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHQMPForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPForm>();
+	NN<SSWR::AVIRead::AVIRHQMPForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPForm>();
 	me->dbgFrm = 0;
 }
 
 void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnVideoEnd(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHQMPForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPForm>();
+	NN<SSWR::AVIRead::AVIRHQMPForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPForm>();
 	me->pbEnd = true;
 }
 
 void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnMouseAction(AnyType userObj, UI::GUIVideoBoxDD::MouseAction ma, Math::Coord2D<OSInt> scnPos)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRHQMPForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPForm>();
+	NN<SSWR::AVIRead::AVIRHQMPForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHQMPForm>();
 	if (ma == UI::GUIVideoBoxDD::MA_START)
 	{
 		me->PBStart();
@@ -519,7 +519,7 @@ void SSWR::AVIRead::AVIRHQMPForm::OnMediaClosed()
 	this->UpdateMenu();
 }
 
-SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, QualityMode qMode) : UI::GUIForm(parent, 1024, 768, ui), Media::MediaPlayerInterface(core->GetParserList())
+SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, QualityMode qMode) : UI::GUIForm(parent, 1024, 768, ui), Media::MediaPlayerInterface(core->GetParserList())
 {
 	this->core = core;
 	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
@@ -557,9 +557,9 @@ SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(Optional<UI::GUIClientControl> parent,
 #endif
 	this->playlist = 0;
 
-	NotNullPtr<UI::GUIMenu> mnu;
-	NotNullPtr<UI::GUIMenu> mnu2;
-	NotNullPtr<UI::GUIMenu> mnu3;
+	NN<UI::GUIMenu> mnu;
+	NN<UI::GUIMenu> mnu2;
+	NN<UI::GUIMenu> mnu3;
 	NEW_CLASSNN(this->mnu, UI::GUIMainMenu());
 	mnu = this->mnu->AddSubMenu(CSTR("&File"));
 	mnu->AddItem(CSTR("&Open..."), MNU_FILE_OPEN, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_O);
@@ -804,7 +804,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIROpenFileForm dlg(0, this->ui, this->core, IO::ParserType::MediaFile);
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				NotNullPtr<Text::String> fname = dlg.GetFileName();
+				NN<Text::String> fname = dlg.GetFileName();
 				UOSInt i = fname->IndexOf(':');
 				if (i == 1 || i == INVALID_INDEX)
 				{
@@ -876,7 +876,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILE_INFO:
 		if (this->dbgFrm == 0)
 		{
-			NotNullPtr<UI::GUIForm> frm;
+			NN<UI::GUIForm> frm;
 			NEW_CLASSNN(frm, UI::GUIForm(0, 320, 444, ui));
 			this->dbgFrm = frm.Ptr();
 			this->txtDebug = ui->NewTextBox(frm, CSTR(""), true);
@@ -894,7 +894,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILE_HTTP_ENABLE:
 		if (this->listener == 0)
 		{
-			NotNullPtr<Media::MediaPlayerWebInterface> hdlr;
+			NN<Media::MediaPlayerWebInterface> hdlr;
 			NEW_CLASSNN(hdlr, Media::MediaPlayerWebInterface(this, true));
 			NEW_CLASS(this->listener, Net::WebServer::WebListener(this->core->GetSocketFactory(), 0, hdlr, 8080, 10, 1, 2, CSTR("HQMP/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 			if (this->listener->IsError())

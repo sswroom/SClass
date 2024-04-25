@@ -23,7 +23,7 @@ Int32 Parser::FileParser::EVTXParser::GetName()
 	return *(Int32*)"EVTX";
 }
 
-void Parser::FileParser::EVTXParser::PrepareSelector(NotNullPtr<IO::FileSelector> selector, IO::ParserType t)
+void Parser::FileParser::EVTXParser::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::LogFile)
 	{
@@ -36,7 +36,7 @@ IO::ParserType Parser::FileParser::EVTXParser::GetParserType()
 	return IO::ParserType::LogFile;
 }
 
-IO::ParsedObject *Parser::FileParser::EVTXParser::ParseFileHdr(NotNullPtr<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+IO::ParsedObject *Parser::FileParser::EVTXParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	if (*(UInt64*)hdr != *(UInt64*)"ElfFile" || ReadUInt32(&hdr[32]) != 128 || ReadUInt16(&hdr[40]) != 4096)
 	{
@@ -86,7 +86,7 @@ IO::ParsedObject *Parser::FileParser::EVTXParser::ParseFileHdr(NotNullPtr<IO::St
 	return logFile;
 }
 
-UOSInt Parser::FileParser::EVTXParser::ParseBinXML(const UInt8 *chunk, UOSInt ofst, UOSInt endOfst, NotNullPtr<Text::StringBuilderUTF8> sb, const UTF16Char *elementName, UOSInt nNameChar)
+UOSInt Parser::FileParser::EVTXParser::ParseBinXML(const UInt8 *chunk, UOSInt ofst, UOSInt endOfst, NN<Text::StringBuilderUTF8> sb, const UTF16Char *elementName, UOSInt nNameChar)
 {
 	UOSInt dataOfst;
 	UInt32 dataSize;

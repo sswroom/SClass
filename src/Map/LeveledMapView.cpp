@@ -20,7 +20,7 @@ void Map::LeveledMapView::UpdateVals()
 	this->br = this->centMap + diff;
 }
 
-Map::LeveledMapView::LeveledMapView(Bool projected, Math::Size2DDbl scnSize, Math::Coord2DDbl center, NotNullPtr<const Data::ArrayListDbl> scales) : Map::MapView(scnSize)
+Map::LeveledMapView::LeveledMapView(Bool projected, Math::Size2DDbl scnSize, Math::Coord2DDbl center, NN<const Data::ArrayListDbl> scales) : Map::MapView(scnSize)
 {
 	this->projected = projected;
 	this->hdpi = 96.0;
@@ -263,9 +263,9 @@ Math::Coord2DDbl Map::LeveledMapView::ScnXYToMapXY(Math::Coord2DDbl scnPos) cons
 	return Math::Coord2DDbl(this->tl.x + v.x, this->br.y - v.y);
 }
 
-NotNullPtr<Map::MapView> Map::LeveledMapView::Clone() const
+NN<Map::MapView> Map::LeveledMapView::Clone() const
 {
-	NotNullPtr<Map::LeveledMapView> view;
+	NN<Map::LeveledMapView> view;
 	NEW_CLASSNN(view, Map::LeveledMapView(this->projected, this->scnSize, this->centMap, this->scales));
 	return view;
 }

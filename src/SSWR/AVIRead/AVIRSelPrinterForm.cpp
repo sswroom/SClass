@@ -3,7 +3,7 @@
 
 void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnSettingClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSelPrinterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelPrinterForm>();
+	NN<SSWR::AVIRead::AVIRSelPrinterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelPrinterForm>();
 	if (me->currPrinter)
 	{
 		me->currPrinter->ShowPrintSettings(0);
@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnPrinterChg(AnyType userObj)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	NotNullPtr<SSWR::AVIRead::AVIRSelPrinterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelPrinterForm>();
+	NN<SSWR::AVIRead::AVIRSelPrinterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelPrinterForm>();
 	if ((sptr = me->cboPrinter->GetSelectedItemText(sbuff)) != 0)
 	{
 		SDEL_CLASS(me->currPrinter);
@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnPrinterChg(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnOKClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSelPrinterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelPrinterForm>();
+	NN<SSWR::AVIRead::AVIRSelPrinterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelPrinterForm>();
 	if (me->currPrinter)
 	{
 		me->printer = me->currPrinter;
@@ -40,11 +40,11 @@ void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnOKClick(AnyType userObj)
 
 void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnCancelClick(AnyType userObj)
 {
-	NotNullPtr<SSWR::AVIRead::AVIRSelPrinterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelPrinterForm>();
+	NN<SSWR::AVIRead::AVIRSelPrinterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSelPrinterForm>();
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRSelPrinterForm::AVIRSelPrinterForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 512, 104, ui)
+SSWR::AVIRead::AVIRSelPrinterForm::AVIRSelPrinterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 512, 104, ui)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr = 0;

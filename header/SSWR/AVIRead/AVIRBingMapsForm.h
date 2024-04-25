@@ -15,19 +15,19 @@ namespace SSWR
 		class AVIRBingMapsForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 
-			NotNullPtr<UI::GUILabel> lblKey;
-			NotNullPtr<UI::GUITextBox> txtKey;
-			NotNullPtr<UI::GUILabel> lblImagerySet;
-			NotNullPtr<UI::GUIComboBox> cboImagerySet;
-			NotNullPtr<UI::GUIButton> btnOK;
+			NN<UI::GUILabel> lblKey;
+			NN<UI::GUITextBox> txtKey;
+			NN<UI::GUILabel> lblImagerySet;
+			NN<UI::GUIComboBox> cboImagerySet;
+			NN<UI::GUIButton> btnOK;
 			Map::TileMap *tileMap;
 
 			static void __stdcall OnOKClicked(AnyType userObj);
 		public:
-			AVIRBingMapsForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl);
+			AVIRBingMapsForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl);
 			virtual ~AVIRBingMapsForm();
 
 			virtual void OnMonitorChanged();

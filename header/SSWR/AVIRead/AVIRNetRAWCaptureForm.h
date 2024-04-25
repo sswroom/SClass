@@ -15,27 +15,27 @@ namespace SSWR
 		class AVIRNetRAWCaptureForm : public UI::GUIForm
 		{
 		private:
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
-			NotNullPtr<Net::SocketFactory> sockf;
+			NN<SSWR::AVIRead::AVIRCore> core;
+			NN<Net::SocketFactory> sockf;
 			Net::RAWCapture *capture;
 			UInt64 currCnt;
 			UInt64 currDataSize;
 
-			NotNullPtr<UI::GUILabel> lblIP;
-			NotNullPtr<UI::GUIComboBox> cboIP;
-			NotNullPtr<UI::GUILabel> lblType;
-			NotNullPtr<UI::GUIComboBox> cboType;
-			NotNullPtr<UI::GUILabel> lblFormat;
-			NotNullPtr<UI::GUIComboBox> cboFormat;
-			NotNullPtr<UI::GUILabel> lblFileName;
-			NotNullPtr<UI::GUITextBox> txtFileName;
-			NotNullPtr<UI::GUIButton> btnAutoGen;
-			NotNullPtr<UI::GUIButton> btnBrowse;
-			NotNullPtr<UI::GUIButton> btnStart;
-			NotNullPtr<UI::GUILabel> lblPacketCnt;
-			NotNullPtr<UI::GUITextBox> txtPacketCnt;
-			NotNullPtr<UI::GUILabel> lblDataSize;
-			NotNullPtr<UI::GUITextBox> txtDataSize;
+			NN<UI::GUILabel> lblIP;
+			NN<UI::GUIComboBox> cboIP;
+			NN<UI::GUILabel> lblType;
+			NN<UI::GUIComboBox> cboType;
+			NN<UI::GUILabel> lblFormat;
+			NN<UI::GUIComboBox> cboFormat;
+			NN<UI::GUILabel> lblFileName;
+			NN<UI::GUITextBox> txtFileName;
+			NN<UI::GUIButton> btnAutoGen;
+			NN<UI::GUIButton> btnBrowse;
+			NN<UI::GUIButton> btnStart;
+			NN<UI::GUILabel> lblPacketCnt;
+			NN<UI::GUITextBox> txtPacketCnt;
+			NN<UI::GUILabel> lblDataSize;
+			NN<UI::GUITextBox> txtDataSize;
 
 			static void __stdcall OnAutoGenClicked(AnyType userObj);
 			static void __stdcall OnBrowseClicked(AnyType userObj);
@@ -43,7 +43,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(AnyType userObj);
 
 		public:
-			AVIRNetRAWCaptureForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRNetRAWCaptureForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRNetRAWCaptureForm();
 
 			virtual void OnMonitorChanged();

@@ -8,7 +8,7 @@
 #include "Text/StringBuilderUTF8.h"
 
 IO::ConsoleWriter *console;
-NotNullPtr<Net::SocketFactory> sockf;
+NN<Net::SocketFactory> sockf;
 
 void __stdcall ARPHandler(const UInt8 *hwAddr, UInt32 ipv4, AnyType userData)
 {
@@ -24,7 +24,7 @@ void __stdcall ARPHandler(const UInt8 *hwAddr, UInt32 ipv4, AnyType userData)
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 }
 
-Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
+Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Net::ARPHandler *arp = 0;
 	NEW_CLASS(console, IO::ConsoleWriter());
@@ -32,7 +32,7 @@ Int32 MyMain(NotNullPtr<Core::IProgControl> progCtrl)
 
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
-	NotNullPtr<Net::ConnectionInfo> connInfo;
+	NN<Net::ConnectionInfo> connInfo;
 	Net::IPType ipType;
 	UInt8 hwAddr[32];
 	UTF8Char sbuff[64];

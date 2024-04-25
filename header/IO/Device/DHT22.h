@@ -9,9 +9,9 @@ namespace IO
 		class DHT22
 		{
 		private:
-			NotNullPtr<IO::IOPin> pin;
+			NN<IO::IOPin> pin;
 		public:
-			DHT22(NotNullPtr<IO::IOPin> pin);
+			DHT22(NN<IO::IOPin> pin);
 			~DHT22();
 
 			Bool ReadData(OutParam<Double> temp, OutParam<Double> rh);

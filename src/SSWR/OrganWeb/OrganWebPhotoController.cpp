@@ -11,9 +11,9 @@
 #include "SSWR/OrganWeb/OrganWebPhotoController.h"
 #include "Text/UTF8Reader.h"
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhoto(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhoto(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NotNullPtr<SSWR::OrganWeb::OrganWebPhotoController> me = NotNullPtr<SSWR::OrganWeb::OrganWebPhotoController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebPhotoController> me = NN<SSWR::OrganWeb::OrganWebPhotoController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 
@@ -50,9 +50,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhoto(NotNullPtr<Net:
 	return true;
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhotoDown(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhotoDown(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NotNullPtr<SSWR::OrganWeb::OrganWebPhotoController> me = NotNullPtr<SSWR::OrganWeb::OrganWebPhotoController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebPhotoController> me = NN<SSWR::OrganWeb::OrganWebPhotoController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 
@@ -106,9 +106,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhotoDown(NotNullPtr<
 	}
 }
 
-Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcFavicon(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NotNullPtr<Net::WebServer::WebController> parent)
+Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcFavicon(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<Net::WebServer::WebController> parent)
 {
-	NotNullPtr<SSWR::OrganWeb::OrganWebPhotoController> me = NotNullPtr<SSWR::OrganWeb::OrganWebPhotoController>::ConvertFrom(parent);
+	NN<SSWR::OrganWeb::OrganWebPhotoController> me = NN<SSWR::OrganWeb::OrganWebPhotoController>::ConvertFrom(parent);
 	RequestEnv env;
 	me->ParseRequestEnv(req, resp, env, false);
 
@@ -116,10 +116,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcFavicon(NotNullPtr<Ne
 	return true;
 }
 
-void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, WebUserInfo *user, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, const UTF8Char *fileName)
+void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, WebUserInfo *user, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, const UTF8Char *fileName)
 {
-	NotNullPtr<CategoryInfo> cate;
-	NotNullPtr<SpeciesInfo> sp;
+	NN<CategoryInfo> cate;
+	NN<SpeciesInfo> sp;
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
 	UTF8Char *sptr2;
@@ -133,7 +133,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NotNullPtr<Net::WebS
 		if (this->env->CateGet(mutUsage, sp->cateId).SetTo(cate) && ((cate->flags & 1) == 0 || !notAdmin))
 		{
 			Text::StringBuilderUTF8 sb;
-			NotNullPtr<Text::String> cacheDir = Text::String::OrEmpty(this->env->GetCacheDir());
+			NN<Text::String> cacheDir = Text::String::OrEmpty(this->env->GetCacheDir());
 			if (cacheDir->leng > 0 && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 			{
 				sptr = cacheDir->ConcatTo(sbuff);
@@ -241,7 +241,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NotNullPtr<Net::WebS
 			Media::ImageList *imgList;
 			Media::StaticImage *simg;
 			Media::StaticImage *lrimg;
-			NotNullPtr<Media::StaticImage> lrimgnn;
+			NN<Media::StaticImage> lrimgnn;
 			Media::StaticImage *dimg;
 			{
 				IO::StmData::FileData fd(sb.ToCString(), false);
@@ -421,9 +421,9 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NotNullPtr<Net::WebS
 	}
 }
 
-void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, WebUserInfo *reqUser, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 fileId)
+void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, WebUserInfo *reqUser, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 fileId)
 {
-	NotNullPtr<SpeciesInfo> sp;
+	NN<SpeciesInfo> sp;
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -439,7 +439,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 			this->env->SpeciesUpdateDefPhoto(mutUsage, sp->speciesId);
 		}
 
-		NotNullPtr<Text::String> cacheDir = Text::String::OrEmpty(this->env->GetCacheDir());
+		NN<Text::String> cacheDir = Text::String::OrEmpty(this->env->GetCacheDir());
 		Data::DateTime dt;
 		WebUserInfo *user;
 		user = this->env->UserGet(mutUsage, userFile->webuserId);
@@ -502,7 +502,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 		Media::ImageList *imgList;
 		Media::StaticImage *simg;
 		Media::StaticImage *lrimg;
-		NotNullPtr<Media::StaticImage> lrimgnn;
+		NN<Media::StaticImage> lrimgnn;
 		Media::StaticImage *dimg;
 		{
 			IO::StmData::FileData fd({sbuff, (UOSInt)(sptr - sbuff)}, false);
@@ -585,7 +585,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 			{
 				dimg = 0;
 			}
-			NotNullPtr<Media::StaticImage> nndimg;
+			NN<Media::StaticImage> nndimg;
 			if (nndimg.Set(dimg))
 			{
 				UInt8 *buff;
@@ -607,7 +607,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 
 				if (user && user->watermark->leng > 0)
 				{
-					NotNullPtr<Media::DrawImage> gimg;
+					NN<Media::DrawImage> gimg;
 					if (gimg.Set(this->env->GetDrawEngine()->ConvImage(nndimg)))
 					{
 						if ((cacheDir->v && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize()) || user != reqUser)
@@ -618,9 +618,9 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 							Math::Size2DDbl sz;
 							UInt32 iWidth;
 							UInt32 iHeight;
-							NotNullPtr<Media::DrawImage> gimg2;
-							NotNullPtr<Media::DrawBrush> b = gimg->NewBrushARGB(0xffffffff);
-							NotNullPtr<Media::DrawFont> f;
+							NN<Media::DrawImage> gimg2;
+							NN<Media::DrawBrush> b = gimg->NewBrushARGB(0xffffffff);
+							NN<Media::DrawFont> f;
 							while (true)
 							{
 								f = gimg->NewFontPx(CSTR("Arial"), fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
@@ -733,9 +733,9 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NotNullPtr<Net::We
 	}
 }
 
-void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NotNullPtr<Net::WebServer::IWebRequest> req, NotNullPtr<Net::WebServer::IWebResponse> resp, WebUserInfo *reqUser, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 fileWId)
+void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, WebUserInfo *reqUser, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 fileWId)
 {
-	NotNullPtr<SpeciesInfo> sp;
+	NN<SpeciesInfo> sp;
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -749,7 +749,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NotNullPtr<Net::W
 		if (wfile)
 		{
 			Data::DateTime dt;
-			NotNullPtr<Text::String> cacheDir = Text::String::OrEmpty(this->env->GetCacheDir());
+			NN<Text::String> cacheDir = Text::String::OrEmpty(this->env->GetCacheDir());
 			sptr = cacheDir->ConcatTo(sbuff2);
 			sptr = IO::Path::AppendPath(sbuff2, sptr, CSTR("WebFile"));
 			*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -795,7 +795,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NotNullPtr<Net::W
 			Media::ImageList *imgList;
 			Media::StaticImage *simg;
 			Media::StaticImage *lrimg;
-			NotNullPtr<Media::StaticImage> lrimgnn;
+			NN<Media::StaticImage> lrimgnn;
 			Media::StaticImage *dimg;
 			{
 				IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);

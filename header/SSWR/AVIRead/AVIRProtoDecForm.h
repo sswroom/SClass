@@ -26,18 +26,18 @@ namespace SSWR
 				UOSInt size;
 			} ProtocolItem;
 		private:
-			NotNullPtr<UI::GUIPanel> pnlCtrl;
-			NotNullPtr<UI::GUILabel> lblFile;
-			NotNullPtr<UI::GUITextBox> txtFile;
-			NotNullPtr<UI::GUIButton> btnFile;
-			NotNullPtr<UI::GUILabel> lblDecoder;
-			NotNullPtr<UI::GUIComboBox> cboDecoder;
-			NotNullPtr<UI::GUIButton> btnLoad;
-			NotNullPtr<UI::GUIListView> lvLogs;
-			NotNullPtr<UI::GUIVSplitter> vspLogs;
-			NotNullPtr<UI::GUITextBox> txtLogs;
+			NN<UI::GUIPanel> pnlCtrl;
+			NN<UI::GUILabel> lblFile;
+			NN<UI::GUITextBox> txtFile;
+			NN<UI::GUIButton> btnFile;
+			NN<UI::GUILabel> lblDecoder;
+			NN<UI::GUIComboBox> cboDecoder;
+			NN<UI::GUIButton> btnLoad;
+			NN<UI::GUIListView> lvLogs;
+			NN<UI::GUIVSplitter> vspLogs;
+			NN<UI::GUITextBox> txtLogs;
 
-			NotNullPtr<SSWR::AVIRead::AVIRCore> core;
+			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::FileStream *currFile;
 			Optional<IO::ProtoDec::IProtocolDecoder> currDec;
 			IO::ProtoDec::ProtoDecList decList;
@@ -49,7 +49,7 @@ namespace SSWR
 			static void __stdcall OnProtocolEntry(AnyType userObj, UInt64 fileOfst, UOSInt size, Text::CStringNN typeName);
 			void ClearList();
 		public:
-			AVIRProtoDecForm(Optional<UI::GUIClientControl> parent, NotNullPtr<UI::GUICore> ui, NotNullPtr<SSWR::AVIRead::AVIRCore> core);
+			AVIRProtoDecForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRProtoDecForm();
 
 			virtual void OnMonitorChanged();

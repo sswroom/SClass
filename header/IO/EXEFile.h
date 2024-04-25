@@ -95,19 +95,19 @@ namespace IO
 
 		typedef struct
 		{
-			NotNullPtr<Text::String> moduleName;
+			NN<Text::String> moduleName;
 			Data::ArrayListStringNN *funcs;
 		} ImportInfo;
 
 		typedef struct
 		{
-			NotNullPtr<Text::String> funcName;
+			NN<Text::String> funcName;
 		} ExportInfo;
 
 		typedef struct
 		{
 			ResourceType rt;
-			NotNullPtr<Text::String> name;
+			NN<Text::String> name;
 			UInt32 codePage;
 			const UInt8 *data;
 			UOSInt dataSize;
@@ -122,7 +122,7 @@ namespace IO
 		ProgramEnvDOS *envDOS;
 
 	public:
-		EXEFile(NotNullPtr<Text::String> fileName);
+		EXEFile(NN<Text::String> fileName);
 		virtual ~EXEFile();
 
 		virtual IO::ParserType GetParserType() const;
@@ -158,7 +158,7 @@ namespace IO
 		static Bool GetFileTime(Text::CStringNN fileName, Data::DateTime *fileTimeOut);
 		static Data::Timestamp GetFileTime(Text::CStringNN fileName);
 		static Text::CString GetResourceTypeName(ResourceType rt);
-		static void GetResourceDesc(NotNullPtr<const ResourceInfo> res, NotNullPtr<Text::StringBuilderUTF8> sb);
+		static void GetResourceDesc(NN<const ResourceInfo> res, NN<Text::StringBuilderUTF8> sb);
 	};
 }
 

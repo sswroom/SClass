@@ -6,12 +6,12 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(NotNullPtr<Text::String> sourceName, UInt32 srid, Text::CString csysName, NotNullPtr<Math::CoordinateSystem> baseCSys) : Math::CoordinateSystem(sourceName, srid, csysName)
+Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(NN<Text::String> sourceName, UInt32 srid, Text::CString csysName, NN<Math::CoordinateSystem> baseCSys) : Math::CoordinateSystem(sourceName, srid, csysName)
 {
 	this->baseCSys = baseCSys;
 }
 
-Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CString csysName, NotNullPtr<Math::CoordinateSystem> baseCSys) : Math::CoordinateSystem(sourceName, srid, csysName)
+Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(Text::CStringNN sourceName, UInt32 srid, Text::CString csysName, NN<Math::CoordinateSystem> baseCSys) : Math::CoordinateSystem(sourceName, srid, csysName)
 {
 	this->baseCSys = baseCSys;
 }
@@ -109,9 +109,9 @@ Double Math::PointMappingCoordinateSystem::CalSurfaceDistance(Math::Coord2DDbl p
 	return this->baseCSys->CalSurfaceDistance(ptList[0], ptList[1], unit);
 }
 
-Double Math::PointMappingCoordinateSystem::CalLineStringDistance(NotNullPtr<Math::Geometry::LineString> lineString, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const
+Double Math::PointMappingCoordinateSystem::CalLineStringDistance(NN<Math::Geometry::LineString> lineString, Bool include3D, Math::Unit::Distance::DistanceUnit unit) const
 {
-	NotNullPtr<Math::Geometry::LineString> tmpLS = NotNullPtr<Math::Geometry::LineString>::ConvertFrom(lineString->Clone());
+	NN<Math::Geometry::LineString> tmpLS = NN<Math::Geometry::LineString>::ConvertFrom(lineString->Clone());
 	Double ret = 0;
 	UOSInt i;
 	Math::Coord2DDbl *ptList = tmpLS->GetPointList(i);
@@ -124,9 +124,9 @@ Double Math::PointMappingCoordinateSystem::CalLineStringDistance(NotNullPtr<Math
 	return ret;
 }
 
-NotNullPtr<Math::CoordinateSystem> Math::PointMappingCoordinateSystem::Clone() const
+NN<Math::CoordinateSystem> Math::PointMappingCoordinateSystem::Clone() const
 {
-	NotNullPtr<Math::PointMappingCoordinateSystem> csys;
+	NN<Math::PointMappingCoordinateSystem> csys;
 	UOSInt i;
 	UOSInt j;
 	Double *ptItem;
@@ -152,7 +152,7 @@ Bool Math::PointMappingCoordinateSystem::IsProjected() const
 	return this->baseCSys->IsProjected();
 }
 
-void Math::PointMappingCoordinateSystem::ToString(NotNullPtr<Text::StringBuilderUTF8> sb) const
+void Math::PointMappingCoordinateSystem::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	UOSInt i;
 	UOSInt j;
@@ -181,7 +181,7 @@ void Math::PointMappingCoordinateSystem::ToString(NotNullPtr<Text::StringBuilder
 	this->baseCSys->ToString(sb);
 }
 
-Bool Math::PointMappingCoordinateSystem::Equals(NotNullPtr<const CoordinateSystem> csys) const
+Bool Math::PointMappingCoordinateSystem::Equals(NN<const CoordinateSystem> csys) const
 {
 	if (csys->GetCoordSysType() != Math::CoordinateSystem::CoordinateSystemType::PointMapping)
 	{

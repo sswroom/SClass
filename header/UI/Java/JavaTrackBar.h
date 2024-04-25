@@ -9,7 +9,7 @@ namespace UI
 		class JavaTrackBar : public GUITrackBar
 		{
 		public:
-			JavaTrackBar(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal);
+			JavaTrackBar(NN<GUICore> ui, NN<UI::GUIClientControl> parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal);
 			virtual ~JavaTrackBar();
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);

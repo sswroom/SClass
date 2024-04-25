@@ -9,7 +9,7 @@ namespace UI
 		class JavaGroupBox : public GUIGroupBox
 		{
 		public:
-			JavaGroupBox(NotNullPtr<GUICore> ui, NotNullPtr<UI::GUIClientControl> parent, Text::CStringNN name);
+			JavaGroupBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN name);
 			virtual ~JavaGroupBox();
 
 			virtual Math::Coord2DDbl GetClientOfst();
