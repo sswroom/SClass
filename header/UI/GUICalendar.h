@@ -9,12 +9,12 @@ namespace UI
 	class GUICalendar : public GUIControl
 	{
 	public:
-		typedef void (__stdcall *DateChangedHandler)(void *userObj, Data::DateTime *newDate);
+		typedef void (__stdcall *DateChangedHandler)(AnyType userObj, Data::DateTime *newDate);
 	private:
 		static Int32 useCnt;
 
 		Data::ArrayList<DateChangedHandler> dateChangedHdlrs;
-		Data::ArrayList<void*> dateChangedObjs;
+		Data::ArrayList<AnyType> dateChangedObjs;
 	public:
 		GUICalendar(NN<GUICore> ui, Optional<UI::GUIClientControl> parent);
 		virtual ~GUICalendar();
@@ -23,7 +23,7 @@ namespace UI
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		void GetSelectedTime(NN<Data::DateTime> dt);
-		void HandleDateChange(DateChangedHandler hdlr, void *obj);
+		void HandleDateChange(DateChangedHandler hdlr, AnyType obj);
 	};
 }
 #endif

@@ -19,7 +19,7 @@ void *UI::GUITabControl::GetTabPageFont()
 	return this->GetFont();
 }
 
-void UI::GUITabControl::HandleSelChanged(UIEvent hdlr, void *userObj)
+void UI::GUITabControl::HandleSelChanged(UIEvent hdlr, AnyType userObj)
 {
 	this->selChgHdlrs.Add(hdlr);
 	this->selChgObjs.Add(userObj);

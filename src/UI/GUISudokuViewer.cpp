@@ -225,7 +225,7 @@ void UI::GUISudokuViewer::OnDraw(NN<Media::DrawImage> img)
 	img->DelFont(f);
 }
 
-void UI::GUISudokuViewer::HandleNumberInput(NumberInputEvent hdlr, void *userObj)
+void UI::GUISudokuViewer::HandleNumberInput(NumberInputEvent hdlr, AnyType userObj)
 {
 	this->numInputHdlr.Add(hdlr);
 	this->numInputObj.Add(userObj);

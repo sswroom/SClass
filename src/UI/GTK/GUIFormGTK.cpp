@@ -89,13 +89,13 @@ void UI::GUIForm::UpdateHAcc()
 	if (this->menu.SetTo(menu))
 	{
 		UOSInt i;
-		Data::ArrayList<UI::GUIMenu::ShortcutKey*> keys;
-		UI::GUIMenu::ShortcutKey *key;
+		Data::ArrayListNN<UI::GUIMenu::ShortcutKey> keys;
+		NN<UI::GUIMenu::ShortcutKey> key;
 		menu->GetAllKeys(keys);
 		i = keys.GetCount();
 		while (i-- > 0)
 		{
-			key = keys.GetItem(i);
+			key = keys.GetItemNoCheck(i);
 			GdkModifierType mods = (GdkModifierType)0;
 			if (key->keyModifier & UI::GUIMenu::KM_ALT)
 				mods = (GdkModifierType)(mods | GDK_MOD1_MASK);

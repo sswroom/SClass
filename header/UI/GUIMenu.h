@@ -30,8 +30,8 @@ namespace UI
 	private:
 		Data::ArrayListNN<GUIMenu> subMenus;
 		UOSInt itemCnt;
-		Data::ArrayList<ShortcutKey*> keys;
-		Data::ArrayList<void *> items;
+		Data::ArrayListNN<ShortcutKey> keys;
+		Data::ArrayList<AnyType> items;
 		Double hdpi;
 		Double ddpi;
 
@@ -49,7 +49,7 @@ namespace UI
 		void AddSeperator();
 		NN<GUIMenu> AddSubMenu(Text::CString name);
 		void *GetHMenu();
-		UOSInt GetAllKeys(NN<Data::ArrayList<ShortcutKey*>> keys);
+		UOSInt GetAllKeys(NN<Data::ArrayListNN<ShortcutKey>> keys);
 		UOSInt GetShortcutKeyCnt();
 		Optional<ShortcutKey> GetShortcutKey(UOSInt index);
 		void SetItemEnabled(UInt16 cmdId, Bool enabled); /////////////////////////

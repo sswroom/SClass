@@ -13,11 +13,11 @@ namespace UI
 		Bool noBGColor;
 		NN<Media::DrawEngine> eng;
 		Data::ArrayList<MouseEventHandler> mouseDownHdlrs;
-		Data::ArrayList<void *> mouseDownObjs;
+		Data::ArrayList<AnyType > mouseDownObjs;
 		Data::ArrayList<MouseEventHandler> mouseMoveHdlrs;
-		Data::ArrayList<void *> mouseMoveObjs;
+		Data::ArrayList<AnyType> mouseMoveObjs;
 		Data::ArrayList<MouseEventHandler> mouseUpHdlrs;
-		Data::ArrayList<void *> mouseUpObjs;
+		Data::ArrayList<AnyType> mouseUpObjs;
 
 	public:
 		GUIPictureBoxSimple(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Bool hasBorder);
@@ -30,9 +30,9 @@ namespace UI
 		virtual Text::CStringNN GetObjectClass() const;
 		void SetNoBGColor(Bool noBGColor);
 
-		void HandleMouseDown(MouseEventHandler hdlr, void *userObj);
-		void HandleMouseMove(MouseEventHandler hdlr, void *userObj);
-		void HandleMouseUp(MouseEventHandler hdlr, void *userObj);
+		void HandleMouseDown(MouseEventHandler hdlr, AnyType userObj);
+		void HandleMouseMove(MouseEventHandler hdlr, AnyType userObj);
+		void HandleMouseUp(MouseEventHandler hdlr, AnyType userObj);
 
 		void EventButtonDown(Math::Coord2D<OSInt> pos, UI::GUIControl::MouseButton btn);
 		void EventButtonUp(Math::Coord2D<OSInt> pos, UI::GUIControl::MouseButton btn);

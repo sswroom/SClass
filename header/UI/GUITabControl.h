@@ -12,7 +12,7 @@ namespace UI
 	{
 	protected:
 		Data::ArrayList<UIEvent> selChgHdlrs;
-		Data::ArrayList<void *> selChgObjs;
+		Data::ArrayList<AnyType> selChgObjs;
 
 	public:
 		GUITabControl(NN<GUICore> ui, NN<UI::GUIClientControl> parent);
@@ -20,7 +20,7 @@ namespace UI
 
 		virtual Text::CStringNN GetObjectClass() const;
 		void *GetTabPageFont();
-		void HandleSelChanged(UIEvent hdlr, void *userObj);
+		void HandleSelChanged(UIEvent hdlr, AnyType userObj);
 		void EventSelChange();
 
 		virtual NN<GUITabPage> AddTabPage(NN<Text::String> itemText) = 0;

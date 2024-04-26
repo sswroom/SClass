@@ -18,7 +18,7 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Game::Sudoku::SudokuBoard *board;
 
-			static void __stdcall EventNumInput(void *userObj, UOSInt selX, UOSInt selY, UInt8 num);
+			static void __stdcall EventNumInput(AnyType userObj, UOSInt selX, UOSInt selY, UInt8 num);
 		public:
 			AVIRSudokuForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRSudokuForm();

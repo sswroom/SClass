@@ -22,19 +22,19 @@ void UI::GUIPictureBoxSimple::SetNoBGColor(Bool noBGColor)
 	this->noBGColor = noBGColor;
 }
 
-void UI::GUIPictureBoxSimple::HandleMouseDown(MouseEventHandler hdlr, void *userObj)
+void UI::GUIPictureBoxSimple::HandleMouseDown(MouseEventHandler hdlr, AnyType userObj)
 {
 	this->mouseDownHdlrs.Add(hdlr);
 	this->mouseDownObjs.Add(userObj);
 }
 
-void UI::GUIPictureBoxSimple::HandleMouseMove(MouseEventHandler hdlr, void *userObj)
+void UI::GUIPictureBoxSimple::HandleMouseMove(MouseEventHandler hdlr, AnyType userObj)
 {
 	this->mouseMoveHdlrs.Add(hdlr);
 	this->mouseMoveObjs.Add(userObj);
 }
 
-void UI::GUIPictureBoxSimple::HandleMouseUp(MouseEventHandler hdlr, void *userObj)
+void UI::GUIPictureBoxSimple::HandleMouseUp(MouseEventHandler hdlr, AnyType userObj)
 {
 	this->mouseUpHdlrs.Add(hdlr);
 	this->mouseUpObjs.Add(userObj);

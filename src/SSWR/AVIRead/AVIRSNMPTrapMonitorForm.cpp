@@ -210,7 +210,6 @@ SSWR::AVIRead::AVIRSNMPTrapMonitorForm::~AVIRSNMPTrapMonitorForm()
 	DEL_CLASS(this->mon);
 	NN<SNMPPacket> packet;
 	UOSInt i = this->packetList.GetCount();
-	UOSInt j;
 	while (i-- > 0)
 	{
 		packet = this->packetList.GetItemNoCheck(i);

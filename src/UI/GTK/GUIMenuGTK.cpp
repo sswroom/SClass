@@ -450,19 +450,15 @@ UI::GUIMenu::GUIMenu(Bool isPopup)
 
 UI::GUIMenu::~GUIMenu()
 {
-	MenuItemInfo *menuItem;
+	NN<MenuItemInfo> menuItem;
 	UOSInt i;
-	i = this->keys.GetCount();
-	while (i-- > 0)
-	{
-		MemFree(this->keys.GetItem(i));
-	}
+	this->keys.MemFreeAll();
 	this->subMenus.DeleteAll();
 	i = this->items.GetCount();
 	while (i-- > 0)
 	{
-		menuItem = (MenuItemInfo*)this->items.GetItem(i);
-		MemFree(menuItem);
+		menuItem = this->items.GetItem(i).GetNN<MenuItemInfo>();
+		MemFreeNN(menuItem);
 	}
 }
 
@@ -473,7 +469,7 @@ UOSInt UI::GUIMenu::AddItem(Text::CString name, UInt16 cmdId, KeyModifier keyMod
 	Char *sptr = buff;
 	Char c;
 	Bool hasUL = false;
-	MenuItemInfo *mnuItem;
+	NN<MenuItemInfo> mnuItem;
 	GtkWidget *menuItem;
 	name.ConcatTo((UTF8Char*)buff);
 	while (true)
@@ -494,7 +490,7 @@ UOSInt UI::GUIMenu::AddItem(Text::CString name, UInt16 cmdId, KeyModifier keyMod
 	{
 		gtk_menu_item_set_use_underline(GTK_MENU_ITEM(menuItem), TRUE);
 	}
-	mnuItem = MemAlloc(MenuItemInfo, 1);
+	mnuItem = MemAllocNN(MenuItemInfo);
 	mnuItem->mnu = this;
 	mnuItem->cmdId = cmdId;
 	mnuItem->mnuItem = menuItem;
@@ -502,7 +498,7 @@ UOSInt UI::GUIMenu::AddItem(Text::CString name, UInt16 cmdId, KeyModifier keyMod
 
 	if (shortcutKey)
 	{
-		ShortcutKey *key = MemAlloc(ShortcutKey, 1);
+		NN<ShortcutKey> key = MemAllocNN(ShortcutKey);
 		key->cmdId = cmdId;
 		key->keyModifier = keyModifier;
 		key->shortcutKey = shortcutKey;
@@ -510,7 +506,7 @@ UOSInt UI::GUIMenu::AddItem(Text::CString name, UInt16 cmdId, KeyModifier keyMod
 		this->keys.Add(key);
 	}
 	gtk_menu_shell_append(GTK_MENU_SHELL(this->hMenu), menuItem);
-	g_signal_connect(menuItem, "activate", G_CALLBACK(GUIMenu_Clicked), mnuItem);
+	g_signal_connect(menuItem, "activate", G_CALLBACK(GUIMenu_Clicked), mnuItem.Ptr());
 	gtk_widget_show(menuItem);
 	return id;
 }
@@ -570,7 +566,7 @@ void *UI::GUIMenu::GetHMenu()
 	return this->hMenu;
 }
 
-UOSInt UI::GUIMenu::GetAllKeys(NN<Data::ArrayList<ShortcutKey*>> keys)
+UOSInt UI::GUIMenu::GetAllKeys(NN<Data::ArrayListNN<ShortcutKey>> keys)
 {
 	UOSInt keyCnt = this->keys.GetCount();
 	keys->AddAll(this->keys);
@@ -595,20 +591,15 @@ void UI::GUIMenu::SetItemEnabled(UInt16 cmdId, Bool enabled)
 
 void UI::GUIMenu::ClearItems()
 {
-	MenuItemInfo *menuItem;
+	NN<MenuItemInfo> menuItem;
 	UOSInt i;
-	i = this->keys.GetCount();
-	while (i-- > 0)
-	{
-		MemFree(this->keys.GetItem(i));
-	}
-	this->keys.Clear();
+	this->keys.MemFreeAll();
 	this->subMenus.DeleteAll();
 	i = this->items.GetCount();
 	while (i-- > 0)
 	{
-		menuItem = (MenuItemInfo*)this->items.GetItem(i);
-		MemFree(menuItem);
+		menuItem = this->items.GetItem(i).GetNN<MenuItemInfo>();
+		MemFreeNN(menuItem);
 	}
 	this->items.Clear();
 	gtk_container_foreach(GTK_CONTAINER((GtkWidget*)this->hMenu), GUIMenu_RemoveChild, this->hMenu);

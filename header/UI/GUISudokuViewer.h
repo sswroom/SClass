@@ -8,14 +8,14 @@ namespace UI
 	class GUISudokuViewer : public UI::GUICustomDraw
 	{
 	public:
-		typedef void (__stdcall *NumberInputEvent)(void *userObj, UOSInt x, UOSInt y, UInt8 num);
+		typedef void (__stdcall *NumberInputEvent)(AnyType userObj, UOSInt x, UOSInt y, UInt8 num);
 
 	private:
 		Game::Sudoku::SudokuBoard *board;
 		UOSInt selX;
 		UOSInt selY;
 		Data::ArrayList<NumberInputEvent> numInputHdlr;
-		Data::ArrayList<void *> numInputObj;
+		Data::ArrayList<AnyType> numInputObj;
 
 	public:
 		GUISudokuViewer(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> eng, Game::Sudoku::SudokuBoard *board);
@@ -25,7 +25,7 @@ namespace UI
 		virtual Bool OnKeyDown(UI::GUIControl::GUIKey key);
 		virtual void OnDraw(NN<Media::DrawImage> img);
 
-		void HandleNumberInput(NumberInputEvent hdlr, void *userObj);
+		void HandleNumberInput(NumberInputEvent hdlr, AnyType userObj);
 
 	};
 }
