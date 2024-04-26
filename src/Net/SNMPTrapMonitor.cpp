@@ -6,27 +6,19 @@ void __stdcall Net::SNMPTrapMonitor::OnSNMPPacket(NN<const Net::SocketUtil::Addr
 {
 	NN<Net::SNMPTrapMonitor> me = userData.GetNN<Net::SNMPTrapMonitor>();
 	Net::SNMPUtil::TrapInfo trap;
-	Data::ArrayList<Net::SNMPUtil::BindingItem*> itemList;
+	Data::ArrayListNN<Net::SNMPUtil::BindingItem> itemList;
 	Net::SNMPUtil::ErrorStatus err;
-	err = Net::SNMPUtil::PDUParseTrapMessage(buff, dataSize, &trap, &itemList);
+	err = Net::SNMPUtil::PDUParseTrapMessage(buff, dataSize, trap, itemList);
 	if (err == Net::SNMPUtil::ES_NOERROR)
 	{
 		if (!me->hdlr(me->hdlrObj, addr, port, trap, itemList))
 		{
-			UOSInt i = itemList.GetCount();
-			while (i-- > 0)
-			{
-				Net::SNMPUtil::FreeBindingItem(itemList.GetItem(i));
-			}
+			itemList.FreeAll(Net::SNMPUtil::FreeBindingItem);
 		}
 	}
 	else
 	{
-		UOSInt i = itemList.GetCount();
-		while (i-- > 0)
-		{
-			Net::SNMPUtil::FreeBindingItem(itemList.GetItem(i));
-		}
+		itemList.FreeAll(Net::SNMPUtil::FreeBindingItem);
 	}
 }
 

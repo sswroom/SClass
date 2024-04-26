@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1ParseForm::OnParseClicked(AnyType userObj)
 		return;
 	}
 	UInt32 baseLen;
-	UOSInt ofst = Net::ASN1Util::PDUParseLen(buff.Ptr(), 1, len, &baseLen);
+	UOSInt ofst = Net::ASN1Util::PDUParseLen(buff.Ptr(), 1, len, baseLen);
 	if (ofst + baseLen == len)
 	{
 		Crypto::Cert::X509File *x509 = 0;

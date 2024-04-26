@@ -1,6 +1,6 @@
 #ifndef _SM_NET_SNMPMANAGER
 #define _SM_NET_SNMPMANAGER
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "Net/SNMPClient.h"
 #include "SSWR/SMonitor/ISMonitorCore.h"
 #include "SSWR/SMonitor/SAnalogSensor.h"
@@ -37,29 +37,29 @@ namespace Net
 			Text::String *vendor;
 			Text::String *cpuName;
 			UInt8 mac[6];
-			Data::ArrayList<ReadingInfo *> *readingList;
+			Data::ArrayListNN<ReadingInfo> readingList;
 		} AgentInfo;
 		
 	private:
 		Net::SNMPClient *cli;
 		Sync::Mutex agentMut;
-		Data::ArrayList<AgentInfo *> agentList;
-		Data::FastMap<UInt32, AgentInfo*> ipv4Agents;
+		Data::ArrayListNN<AgentInfo> agentList;
+		Data::FastMapNN<UInt32, AgentInfo> ipv4Agents;
 
-		static void FreeAllItems(Data::ArrayList<Net::SNMPUtil::BindingItem*> *itemList);
+		static void FreeAllItems(NN<Data::ArrayListNN<Net::SNMPUtil::BindingItem>> itemList);
 	public:
 		SNMPManager(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log);
 		~SNMPManager();
 
 		Bool IsError();
 		void UpdateValues();
-		UOSInt GetAgentList(NN<Data::ArrayList<AgentInfo*>> agentList);
+		UOSInt GetAgentList(NN<Data::ArrayListNN<AgentInfo>> agentList);
 
-		AgentInfo *AddAgent(NN<const Net::SocketUtil::AddressInfo> addr, NN<Text::String> community);
-		UOSInt AddAgents(NN<const Net::SocketUtil::AddressInfo> addr, NN<Text::String> community, Data::ArrayList<AgentInfo*> *agentList, Bool scanIP);
+		Optional<AgentInfo> AddAgent(NN<const Net::SocketUtil::AddressInfo> addr, NN<Text::String> community);
+		UOSInt AddAgents(NN<const Net::SocketUtil::AddressInfo> addr, NN<Text::String> community, NN<Data::ArrayListNN<AgentInfo>> agentList, Bool scanIP);
 
-		static void Agent2Record(const AgentInfo *agent, SSWR::SMonitor::ISMonitorCore::DevRecord2 *rec, Int64 *cliId);
-		static Int64 Agent2CliId(const AgentInfo *agent);
+		static void Agent2Record(NN<const AgentInfo> agent, NN<SSWR::SMonitor::ISMonitorCore::DevRecord2> rec, OutParam<Int64> cliId);
+		static Int64 Agent2CliId(NN<const AgentInfo> agent);
 	};
 }
 #endif

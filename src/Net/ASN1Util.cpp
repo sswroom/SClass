@@ -7,11 +7,11 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/StringTool.h"
 
-UOSInt Net::ASN1Util::PDUParseLen(const UInt8 *pdu, UOSInt ofst, UOSInt pduSize, UInt32 *len)
+UOSInt Net::ASN1Util::PDUParseLen(const UInt8 *pdu, UOSInt ofst, UOSInt pduSize, OutParam<UInt32> len)
 {
 	if (ofst >= pduSize)
 	{
-		*len = 0;
+		len.Set(0);
 		return pduSize + 1;
 	}
 	if (pdu[ofst] & 0x80)
@@ -20,63 +20,63 @@ UOSInt Net::ASN1Util::PDUParseLen(const UInt8 *pdu, UOSInt ofst, UOSInt pduSize,
 		{
 			if (ofst + 2 > pduSize)
 			{
-				*len = 0;
+				len.Set(0);
 				return pduSize + 1;
 			}
-			*len = pdu[ofst + 1];
+			len.Set(pdu[ofst + 1]);
 			return ofst + 2;
 		}
 		else if (pdu[ofst] == 0x82)
 		{
 			if (ofst + 3 > pduSize)
 			{
-				*len = 0;
+				len.Set(0);
 				return pduSize + 1;
 			}
-			*len = ReadMUInt16(&pdu[ofst + 1]);
+			len.Set(ReadMUInt16(&pdu[ofst + 1]));
 			return ofst + 3;
 		}
 		else if (pdu[ofst] == 0x83)
 		{
 			if (ofst + 4 > pduSize)
 			{
-				*len = 0;
+				len.Set(0);
 				return pduSize + 1;
 			}
-			*len = ReadMUInt24(&pdu[ofst + 1]);
+			len.Set(ReadMUInt24(&pdu[ofst + 1]));
 			return ofst + 4;
 		}
 		else if (pdu[ofst] == 0x84)
 		{
 			if (ofst + 5 > pduSize)
 			{
-				*len = 0;
+				len.Set(0);
 				return pduSize + 1;
 			}
-			*len = ReadMUInt32(&pdu[ofst + 1]);
+			len.Set(ReadMUInt32(&pdu[ofst + 1]));
 			return ofst + 5;
 		}
 		else if (pdu[ofst] == 0x80)
 		{
-			*len = 0;
+			len.Set(0);
 			return ofst + 1;
 		}
-		*len = 0;
+		len.Set(0);
 		return pduSize + 1;
 	}
 	else
 	{
-		*len = pdu[ofst];
+		len.Set(pdu[ofst]);
 		return ofst + 1;
 	}
 }
 
-const UInt8 *Net::ASN1Util::PDUParseSeq(const UInt8 *pdu, const UInt8 *pduEnd, UInt8 *type, const UInt8 **seqEnd)
+const UInt8 *Net::ASN1Util::PDUParseSeq(const UInt8 *pdu, const UInt8 *pduEnd, OutParam<UInt8> type, const UInt8 **seqEnd)
 {
 	UOSInt len;
 	if (pduEnd - pdu < 2)
 		return 0;
-	*type = pdu[0];
+	type.Set(pdu[0]);
 	if (pdu[1] < 0x80)
 	{
 		len = pdu[1];
@@ -268,7 +268,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, NN<Text::
 		UOSInt size;
 
 		size = (UOSInt)(pduEnd - pdu);
-		ofst = PDUParseLen(pdu, 1, size, &len);
+		ofst = PDUParseLen(pdu, 1, size, len);
 		if (ofst > size)
 		{
 			return false;
@@ -748,7 +748,7 @@ Bool Net::ASN1Util::PDUDSizeEnd(const UInt8 *pdu, const UInt8 *pduEnd, const UIn
 	while (pdu < pduEnd)
 	{
 		size = (UOSInt)(pduEnd - pdu);
-		ofst = PDUParseLen(pdu, 1, size, &itemLen);
+		ofst = PDUParseLen(pdu, 1, size, itemLen);
 		if (ofst > size)
 		{
 			return false;
@@ -817,7 +817,7 @@ const UInt8 *Net::ASN1Util::PDUGetItemRAW(const UInt8 *pdu, const UInt8 *pduEnd,
 	while (pdu < pduEnd)
 	{
 		size = (UOSInt)(pduEnd - pdu);
-		ofst = PDUParseLen(pdu, 1, size, &itemLen);
+		ofst = PDUParseLen(pdu, 1, size, itemLen);
 		if (ofst > size)
 		{
 			return 0;
@@ -916,7 +916,7 @@ UOSInt Net::ASN1Util::PDUCountItem(const UInt8 *pdu, const UInt8 *pduEnd, const 
 		while (pdu < pduEnd)
 		{
 			size = (UOSInt)(pduEnd - pdu);
-			ofst = PDUParseLen(pdu, 1, size, &len);
+			ofst = PDUParseLen(pdu, 1, size, len);
 			if (ofst > size)
 			{
 				return 0;
@@ -969,7 +969,7 @@ UOSInt Net::ASN1Util::PDUCountItem(const UInt8 *pdu, const UInt8 *pduEnd, const 
 	while (pdu < pduEnd)
 	{
 		size = (UOSInt)(pduEnd - pdu);
-		ofst = PDUParseLen(pdu, 1, size, &len);
+		ofst = PDUParseLen(pdu, 1, size, len);
 		if (ofst > size)
 		{
 			return 0;
@@ -1018,7 +1018,7 @@ Bool Net::ASN1Util::PDUIsValid(const UInt8 *pdu, const UInt8 *pduEnd)
 	while (pdu < pduEnd)
 	{
 		size = (UOSInt)(pduEnd - pdu);
-		ofst = PDUParseLen(pdu, 1, size, &len);
+		ofst = PDUParseLen(pdu, 1, size, len);
 		if (ofst > size)
 		{
 			return false;

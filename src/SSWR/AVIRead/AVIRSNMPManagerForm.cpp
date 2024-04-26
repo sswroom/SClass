@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
+#include "Data/FastMap.h"
 #include "Net/ASN1OIDDB.h"
 #include "Net/ASN1Util.h"
 #include "Net/ConnectionInfo.h"
@@ -33,9 +34,9 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(AnyType use
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	Data::ArrayList<Net::SNMPManager::AgentInfo *> agentList;
+	Data::ArrayListNN<Net::SNMPManager::AgentInfo> agentList;
 	NN<Text::String> community = Text::String::New(sb.ToString(), sb.GetLength());
-	j = me->mgr->AddAgents(addr, community, &agentList, me->chkAgentScan->IsChecked());
+	j = me->mgr->AddAgents(addr, community, agentList, me->chkAgentScan->IsChecked());
 	community->Release();
 	if (j <= 0)
 	{
@@ -43,12 +44,12 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(AnyType use
 	}
 	else
 	{
-		Net::SNMPManager::AgentInfo *agent;
+		NN<Net::SNMPManager::AgentInfo> agent;
 		if (me->chkSendToSvr->IsChecked())
 		{
 			Int64 cliId;
 			UOSInt l;
-			Net::SNMPManager::ReadingInfo *reading;
+			NN<Net::SNMPManager::ReadingInfo> reading;
 			Data::FastMap<UInt32, UInt16> readingMap;
 			UInt16 currId;
 			me->SendAgentValues(agentList);
@@ -56,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(AnyType use
 			i = 0;
 			while (i < j)
 			{
-				agent = agentList.GetItem(i);
+				agent = agentList.GetItemNoCheck(i);
 				cliId = me->mgr->Agent2CliId(agent);
 				if (agent->name)
 				{
@@ -82,10 +83,10 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(AnyType use
 					me->redir->SendDevPlatform(cliId, agent->cpuName->v, agent->cpuName->leng);
 				}
 				k = 0;
-				l = agent->readingList->GetCount();
+				l = agent->readingList.GetCount();
 				while (k < l)
 				{
-					reading = agent->readingList->GetItem(k);
+					reading = agent->readingList.GetItemNoCheck(k);
 					currId = readingMap.Get((UInt32)reading->index);
 					readingMap.Put((UInt32)reading->index, (UInt16)(currId + 1));
 					me->redir->SendDevReadingName(cliId, k, (UInt16)reading->index, currId, reading->name->v, reading->name->leng);
@@ -97,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(AnyType use
 		i = 0;
 		while (i < j)
 		{
-			agent = agentList.GetItem(i);
+			agent = agentList.GetItemNoCheck(i);
 			sptr = Net::SocketUtil::GetAddrName(sbuff, agent->addr);
 			k = me->lbAgent->AddItem(CSTRP(sbuff, sptr), agent);
 			if (i == 0)
@@ -172,11 +173,11 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(AnyType userObj
 		}
 		me->lvAgentReading->ClearItems();
 		UOSInt i = 0;
-		UOSInt j = agent->readingList->GetCount();
-		Net::SNMPManager::ReadingInfo *reading;
+		UOSInt j = agent->readingList.GetCount();
+		NN<Net::SNMPManager::ReadingInfo> reading;
 		while (i < j)
 		{
-			reading = agent->readingList->GetItem(i);
+			reading = agent->readingList.GetItemNoCheck(i);
 			me->lvAgentReading->AddItem(reading->name, reading);
 			sptr = Text::StrUOSInt(sbuff, reading->index);
 			me->lvAgentReading->SetSubItem(i, 1, CSTRP(sbuff, sptr));
@@ -237,7 +238,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnTimerTick(AnyType userObj)
 		}
 		if (me->chkSendToSvr->IsChecked())
 		{
-			Data::ArrayList<Net::SNMPManager::AgentInfo*> agentList;
+			Data::ArrayListNN<Net::SNMPManager::AgentInfo> agentList;
 			me->mgr->GetAgentList(agentList);
 			if (agentList.GetCount() > 0)
 			{
@@ -260,17 +261,17 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentWalkClicked(AnyType us
 	}
 }
 
-void SSWR::AVIRead::AVIRSNMPManagerForm::SendAgentValues(NN<Data::ArrayList<Net::SNMPManager::AgentInfo *>> agentList)
+void SSWR::AVIRead::AVIRSNMPManagerForm::SendAgentValues(NN<Data::ArrayListNN<Net::SNMPManager::AgentInfo>> agentList)
 {
-	Net::SNMPManager::AgentInfo *agent;
+	NN<Net::SNMPManager::AgentInfo> agent;
 	SSWR::SMonitor::ISMonitorCore::DevRecord2 devRec;
 	Int64 cliId;
 	UOSInt i = agentList->GetCount();
 	while (i-- > 0)
 	{
-		agent = agentList->GetItem(i);
-		Net::SNMPManager::Agent2Record(agent, &devRec, &cliId);
-		this->redir->SendDevReading(cliId, &devRec, 30, 30);
+		agent = agentList->GetItemNoCheck(i);
+		Net::SNMPManager::Agent2Record(agent, devRec, cliId);
+		this->redir->SendDevReading(cliId, devRec, 30, 30);
 	}
 }
 

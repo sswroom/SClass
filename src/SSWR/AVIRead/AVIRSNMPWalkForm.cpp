@@ -38,13 +38,13 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(Optional<UI::GUIClientControl>
 	NEW_CLASS(cli, Net::SNMPClient(this->core->GetSocketFactory(), this->core->GetLog()));
 	if (!cli->IsError())
 	{
-		Data::ArrayList<Net::SNMPUtil::BindingItem*> itemList;
+		Data::ArrayListNN<Net::SNMPUtil::BindingItem> itemList;
 		Net::SNMPUtil::ErrorStatus err;
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
-		Net::SNMPUtil::BindingItem *item;
-		err = cli->V1Walk(addr, community, UTF8STRC("1.3.6.1.2.1"), &itemList);
+		NN<Net::SNMPUtil::BindingItem> item;
+		err = cli->V1Walk(addr, community, UTF8STRC("1.3.6.1.2.1"), itemList);
 		this->lvResults->ClearItems();
 		if (err != Net::SNMPUtil::ES_NOERROR)
 		{
@@ -55,7 +55,7 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(Optional<UI::GUIClientControl>
 			j = itemList.GetCount();
 			while (i < j)
 			{
-				item = itemList.GetItem(i);
+				item = itemList.GetItemNoCheck(i);
 				sb.ClearStr();
 				Net::ASN1Util::OIDToString(item->oid, item->oidLen, sb);
 				this->lvResults->AddItem(sb.ToCString(), 0);
@@ -72,11 +72,7 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(Optional<UI::GUIClientControl>
 				i++;
 			}
 		}
-		i = itemList.GetCount();
-		while (i-- > 0)
-		{
-			Net::SNMPUtil::FreeBindingItem(itemList.GetItem(i));
-		}
+		itemList.FreeAll(Net::SNMPUtil::FreeBindingItem);
 	}
 	DEL_CLASS(cli);
 }

@@ -164,7 +164,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 	msgBuff = Net::ASN1Util::PDUParseUInt32(msgBuff, msgEnd, msgId);
 	if (msgBuff == 0)
 		return;
-	msgBuff = Net::ASN1Util::PDUParseSeq(msgBuff, msgEnd, &seqType, &seqEnd);
+	msgBuff = Net::ASN1Util::PDUParseSeq(msgBuff, msgEnd, seqType, &seqEnd);
 	if (msgBuff == 0)
 		return;
 	#if defined(VERBOSE)
@@ -219,7 +219,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 			obj->name = Text::String::New(sb.ToString(), sb.GetLength());
 			obj->isRef = false;
 			NEW_CLASS(obj->items, Data::ArrayList<Net::LDAPClient::SearchResItem*>());
-			msgBuff = Net::ASN1Util::PDUParseSeq(msgBuff, seqEnd, &type, &attrEnd);
+			msgBuff = Net::ASN1Util::PDUParseSeq(msgBuff, seqEnd, type, &attrEnd);
 			if (msgBuff == 0 || type != 0x30)
 			{
 				printf("LDAPMessage: searchResEntry, end 1\r\n");
@@ -228,7 +228,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 			}
 			while (msgBuff < attrEnd && msgBuff[0] == 0x30)
 			{
-				msgBuff = Net::ASN1Util::PDUParseSeq(msgBuff, attrEnd, &type, &itemEnd);
+				msgBuff = Net::ASN1Util::PDUParseSeq(msgBuff, attrEnd, type, &itemEnd);
 				if (msgBuff == 0)
 				{
 					printf("LDAPMessage: searchResEntry, end 2\r\n");
@@ -245,7 +245,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 				}
 				if (msgBuff[0] == 0x31)
 				{
-					msgBuff = Net::ASN1Util::PDUParseSeq(msgBuff, itemEnd, &type, &valEnd);
+					msgBuff = Net::ASN1Util::PDUParseSeq(msgBuff, itemEnd, type, &valEnd);
 					if (msgBuff == 0)
 					{
 						break;

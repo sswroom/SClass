@@ -90,7 +90,7 @@ public:
 		delete p;
 	}
 
-	void CopyFrom(NN<T> p)
+	void CopyFrom(NN<const T> p)
 	{
 		MemCopyNO(this->p, p.Ptr(), sizeof(T));
 	}

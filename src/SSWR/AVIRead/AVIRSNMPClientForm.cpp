@@ -31,25 +31,25 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(AnyType userO
 		return;
 	}
 	UOSInt i = me->cboCommandType->GetSelectedIndex();
-	Data::ArrayList<Net::SNMPUtil::BindingItem*> itemList;
+	Data::ArrayListNN<Net::SNMPUtil::BindingItem> itemList;
 	Net::SNMPUtil::ErrorStatus err;
 	NN<Text::String> community = Text::String::New(sbComm.ToString(), sbComm.GetLength());
 	if (i == 0)
 	{
-		err = me->cli->V1GetRequest(addr, community, sbOID.ToString(), sbOID.GetLength(), &itemList);
+		err = me->cli->V1GetRequest(addr, community, sbOID.ToString(), sbOID.GetLength(), itemList);
 	}
 	else if (i == 1)
 	{
-		err = me->cli->V1GetNextRequest(addr, community, sbOID.ToString(), sbOID.GetLength(), &itemList);
+		err = me->cli->V1GetNextRequest(addr, community, sbOID.ToString(), sbOID.GetLength(), itemList);
 	}
 	else
 	{
-		err = me->cli->V1Walk(addr, community, sbOID.ToString(), sbOID.GetLength(), &itemList);
+		err = me->cli->V1Walk(addr, community, sbOID.ToString(), sbOID.GetLength(), itemList);
 	}
 	community->Release();
 	UOSInt j;
 	Text::StringBuilderUTF8 sb;
-	Net::SNMPUtil::BindingItem *item;
+	NN<Net::SNMPUtil::BindingItem> item;
 	me->lvResults->ClearItems();
 	if (err != Net::SNMPUtil::ES_NOERROR)
 	{
@@ -64,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(AnyType userO
 		j = itemList.GetCount();
 		while (i < j)
 		{
-			item = itemList.GetItem(i);
+			item = itemList.GetItemNoCheck(i);
 			sb.ClearStr();
 			Net::ASN1Util::OIDToString(item->oid, item->oidLen, sb);
 			me->lvResults->AddItem(sb.ToCString(), 0);
@@ -81,11 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(AnyType userO
 			i++;
 		}
 	}
-	i = itemList.GetCount();
-	while (i-- > 0)
-	{
-		Net::SNMPUtil::FreeBindingItem(itemList.GetItem(i));
-	}
+	itemList.FreeAll(Net::SNMPUtil::FreeBindingItem);
 }
 
 void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnTimerTick(AnyType userObj)

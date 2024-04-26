@@ -91,7 +91,7 @@ Bool SSWR::SMonitor::SMonitorRedir::IsError()
 	return this->svr->IsError();
 }
 
-Bool SSWR::SMonitor::SMonitorRedir::SendDevReading(Int64 cliId, const SSWR::SMonitor::ISMonitorCore::DevRecord2 *rec, Int32 reportInterval, Int32 kaInterval)
+Bool SSWR::SMonitor::SMonitorRedir::SendDevReading(Int64 cliId, NN<const SSWR::SMonitor::ISMonitorCore::DevRecord2> rec, Int32 reportInterval, Int32 kaInterval)
 {
 	UInt8 buff[1024];
 	buff[0] = 'S';

@@ -22,14 +22,14 @@ namespace SSWR
 				UInt16 port;
 				Int64 t;
 				Net::SNMPUtil::TrapInfo trap;
-				Data::ArrayList<Net::SNMPUtil::BindingItem*> *itemList;
+				Data::ArrayListNN<Net::SNMPUtil::BindingItem> itemList;
 			} SNMPPacket;
 			
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Net::SNMPTrapMonitor *mon;
 			Sync::Mutex packetMut;
-			Data::ArrayList<SNMPPacket*> packetList;
+			Data::ArrayListNN<SNMPPacket> packetList;
 
 			NN<UI::GUIListBox> lbResults;
 			NN<UI::GUIHSplitter> hspResults;
@@ -59,7 +59,7 @@ namespace SSWR
 
 			static void __stdcall OnResultSelChg(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
-			static Bool __stdcall OnSNMPTrapPacket(AnyType userObj, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NN<const Net::SNMPUtil::TrapInfo> trap, NN<Data::ArrayList<Net::SNMPUtil::BindingItem*>> itemList);
+			static Bool __stdcall OnSNMPTrapPacket(AnyType userObj, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NN<const Net::SNMPUtil::TrapInfo> trap, NN<Data::ArrayListNN<Net::SNMPUtil::BindingItem>> itemList);
 
 		public:
 			AVIRSNMPTrapMonitorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);

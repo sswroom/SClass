@@ -471,6 +471,7 @@ Bool Data::QueryConditions::DoubleCondition::TestValid(NN<Data::VariItem> item)
 	case Data::VariItem::ItemType::U16:
 		dVal = item->GetItemValue().u16;
 		break;
+	case Data::VariItem::ItemType::NI32:
 	case Data::VariItem::ItemType::I32:
 		dVal = item->GetItemValue().i32;
 		break;
@@ -628,6 +629,7 @@ Bool Data::QueryConditions::StringInCondition::TestValid(NN<Data::VariItem> item
 	case Data::VariItem::ItemType::U8:
 	case Data::VariItem::ItemType::I16:
 	case Data::VariItem::ItemType::U16:
+	case Data::VariItem::ItemType::NI32:
 	case Data::VariItem::ItemType::I32:
 	case Data::VariItem::ItemType::U32:
 	case Data::VariItem::ItemType::I64:
@@ -757,6 +759,7 @@ Bool Data::QueryConditions::StringNotInCondition::TestValid(NN<Data::VariItem> i
 	case Data::VariItem::ItemType::U8:
 	case Data::VariItem::ItemType::I16:
 	case Data::VariItem::ItemType::U16:
+	case Data::VariItem::ItemType::NI32:
 	case Data::VariItem::ItemType::I32:
 	case Data::VariItem::ItemType::U32:
 	case Data::VariItem::ItemType::I64:
@@ -833,6 +836,7 @@ Bool Data::QueryConditions::StringContainsCondition::TestValid(NN<Data::VariItem
 	case Data::VariItem::ItemType::U8:
 	case Data::VariItem::ItemType::I16:
 	case Data::VariItem::ItemType::U16:
+	case Data::VariItem::ItemType::NI32:
 	case Data::VariItem::ItemType::I32:
 	case Data::VariItem::ItemType::U32:
 	case Data::VariItem::ItemType::I64:
@@ -973,6 +977,7 @@ Bool Data::QueryConditions::BooleanCondition::TestValid(NN<Data::VariItem> item)
 	case Data::VariItem::ItemType::U16:
 		bVal = (item->GetItemValue().u16 != 0);
 		break;
+	case Data::VariItem::ItemType::NI32:
 	case Data::VariItem::ItemType::I32:
 		bVal = (item->GetItemValue().i32 != 0);
 		break;
@@ -1036,6 +1041,7 @@ Bool Data::QueryConditions::NotNullCondition::TestValid(NN<Data::VariItem> item)
 	case Data::VariItem::ItemType::U8:
 	case Data::VariItem::ItemType::I16:
 	case Data::VariItem::ItemType::U16:
+	case Data::VariItem::ItemType::NI32:
 	case Data::VariItem::ItemType::I32:
 	case Data::VariItem::ItemType::U32:
 	case Data::VariItem::ItemType::I64:

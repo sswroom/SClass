@@ -54,13 +54,13 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnResultSelChg(AnyType us
 	sptr = Text::StrUInt32(sbuff, packet->trap.timeStamp);
 	me->txtTrapTime->SetText(CSTRP(sbuff, sptr));
 
-	Net::SNMPUtil::BindingItem *item;
+	NN<Net::SNMPUtil::BindingItem> item;
 	me->lvResults->ClearItems();
 	i = 0;
-	j = packet->itemList->GetCount();
+	j = packet->itemList.GetCount();
 	while (i < j)
 	{
-		item = packet->itemList->GetItem(i);
+		item = packet->itemList.GetItemNoCheck(i);
 		sb.ClearStr();
 		Net::ASN1Util::OIDToString(item->oid, item->oidLen, sb);
 		me->lvResults->AddItem(sb.ToCString(), 0);
@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnTimerTick(AnyType userO
 	NN<SSWR::AVIRead::AVIRSNMPTrapMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPTrapMonitorForm>();
 	UOSInt i = me->lbResults->GetCount();
 	UOSInt j = me->packetList.GetCount();
-	SNMPPacket *packet;
+	NN<SNMPPacket> packet;
 	if (i < j)
 	{
 		Data::DateTime dt;
@@ -92,7 +92,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnTimerTick(AnyType userO
 		Sync::MutexUsage mutUsage(me->packetMut);
 		while (i < j)
 		{
-			packet = me->packetList.GetItem(i);
+			packet = me->packetList.GetItemNoCheck(i);
 			dt.SetTicks(packet->t);
 			dt.ToLocalTime();
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
@@ -102,19 +102,18 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnTimerTick(AnyType userO
 	}
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnSNMPTrapPacket(AnyType userObj, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NN<const Net::SNMPUtil::TrapInfo> trap, NN<Data::ArrayList<Net::SNMPUtil::BindingItem*>> itemList)
+Bool __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnSNMPTrapPacket(AnyType userObj, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, NN<const Net::SNMPUtil::TrapInfo> trap, NN<Data::ArrayListNN<Net::SNMPUtil::BindingItem>> itemList)
 {
 	NN<SSWR::AVIRead::AVIRSNMPTrapMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNMPTrapMonitorForm>();
-	SNMPPacket *packet;
+	NN<SNMPPacket> packet;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
-	packet = MemAlloc(SNMPPacket, 1);
+	NEW_CLASSNN(packet, SNMPPacket());
 	packet->t = dt.ToTicks();
 	packet->addr = addr.Ptr()[0];
 	packet->port = port;
 	MemCopyNO(&packet->trap, trap.Ptr(), sizeof(Net::SNMPUtil::TrapInfo));
-	NEW_CLASS(packet->itemList, Data::ArrayList<Net::SNMPUtil::BindingItem*>());
-	packet->itemList->AddAll(itemList);
+	packet->itemList.AddAll(itemList);
 	Sync::MutexUsage mutUsage(me->packetMut);
 	me->packetList.Add(packet);
 	return true;
@@ -209,19 +208,14 @@ SSWR::AVIRead::AVIRSNMPTrapMonitorForm::AVIRSNMPTrapMonitorForm(Optional<UI::GUI
 SSWR::AVIRead::AVIRSNMPTrapMonitorForm::~AVIRSNMPTrapMonitorForm()
 {
 	DEL_CLASS(this->mon);
-	SNMPPacket *packet;
+	NN<SNMPPacket> packet;
 	UOSInt i = this->packetList.GetCount();
 	UOSInt j;
 	while (i-- > 0)
 	{
-		packet = this->packetList.GetItem(i);
-		j = packet->itemList->GetCount();
-		while (j-- > 0)
-		{
-			Net::SNMPUtil::FreeBindingItem(packet->itemList->GetItem(j));
-		}
-		DEL_CLASS(packet->itemList);
-		MemFree(packet);
+		packet = this->packetList.GetItemNoCheck(i);
+		packet->itemList.FreeAll(Net::SNMPUtil::FreeBindingItem);
+		packet.Delete();
 	}
 }
 

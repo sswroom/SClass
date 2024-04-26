@@ -32,7 +32,7 @@ namespace SSWR
 
 			Bool IsError();
 
-			Bool SendDevReading(Int64 cliId, const SSWR::SMonitor::ISMonitorCore::DevRecord2 *rec, Int32 reportInterval, Int32 kaInterval);
+			Bool SendDevReading(Int64 cliId, NN<const SSWR::SMonitor::ISMonitorCore::DevRecord2> rec, Int32 reportInterval, Int32 kaInterval);
 			Bool SendDevName(Int64 cliId, const UTF8Char *name, UOSInt nameLen);
 			Bool SendDevPlatform(Int64 cliId, const UTF8Char *platform, UOSInt nameLen);
 			Bool SendDevCPUName(Int64 cliId, const UTF8Char *cpuName, UOSInt nameLen);

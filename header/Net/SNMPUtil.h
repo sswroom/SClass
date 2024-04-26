@@ -1,6 +1,6 @@
 #ifndef _SM_NET_SNMPUTIL
 #define _SM_NET_SNMPUTIL
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Text/CString.h"
 
 namespace Net
@@ -41,12 +41,12 @@ namespace Net
 		} ErrorStatus;
 
 	public:
-		static ErrorStatus PDUParseMessage(const UInt8 *pdu, UOSInt pduSize, Int32 *reqId, Data::ArrayList<BindingItem*> *itemList);
-		static ErrorStatus PDUParseTrapMessage(const UInt8 *pdu, UOSInt pduSize, TrapInfo *trap, Data::ArrayList<BindingItem*> *itemList);
+		static ErrorStatus PDUParseMessage(const UInt8 *pdu, UOSInt pduSize, OutParam<Int32> reqId, NN<Data::ArrayListNN<BindingItem>> itemList);
+		static ErrorStatus PDUParseTrapMessage(const UInt8 *pdu, UOSInt pduSize, NN<TrapInfo> trap, NN<Data::ArrayListNN<BindingItem>> itemList);
 
 		static Text::CStringNN TypeGetName(UInt8 type);
-		static Bool ValueToInt32(UInt8 type, const UInt8 *pduBuff, UOSInt valLen, Int32 *outVal);
-		static void FreeBindingItem(BindingItem *item);
+		static Bool ValueToInt32(UInt8 type, const UInt8 *pduBuff, UOSInt valLen, OutParam<Int32> outVal);
+		static void FreeBindingItem(NN<BindingItem> item);
 		static Text::CStringNN ErrorStatusToString(ErrorStatus err);
 	};
 }
