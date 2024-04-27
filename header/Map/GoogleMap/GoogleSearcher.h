@@ -22,13 +22,13 @@ namespace Map
 			Optional<Net::SSLEngine> ssl;
 			Data::DateTime lastSrchDate;
 			Sync::Mutex mut;
-			IO::Writer *errWriter;
+			NN<IO::Writer> errWriter;
 			Int32 lastIsError;
 			UInt32 srchCnt;
 			
 		public:
-			GoogleSearcher(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey, IO::Writer *errWriter);
-			GoogleSearcher(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey, IO::Writer *errWriter);
+			GoogleSearcher(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey, NN<IO::Writer> errWriter);
+			GoogleSearcher(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey, NN<IO::Writer> errWriter);
 			virtual ~GoogleSearcher();
 
 			UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, Text::CString lang); //lang = en-us, zh-cn, zh-tw

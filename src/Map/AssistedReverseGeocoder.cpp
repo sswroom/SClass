@@ -5,7 +5,7 @@
 #include "Math/Math.h"
 #include "Sync/MutexUsage.h"
 
-Map::AssistedReverseGeocoder::AssistedReverseGeocoder(NN<DB::DBTool> db, IO::Writer *errWriter)
+Map::AssistedReverseGeocoder::AssistedReverseGeocoder(NN<DB::DBTool> db, NN<IO::Writer> errWriter)
 {
 	this->conn = db;
 	this->errWriter = errWriter;
@@ -14,13 +14,7 @@ Map::AssistedReverseGeocoder::AssistedReverseGeocoder(NN<DB::DBTool> db, IO::Wri
 
 Map::AssistedReverseGeocoder::~AssistedReverseGeocoder()
 {
-	UOSInt i = this->revGeos.GetCount();
-	while (i-- > 0)
-	{
-		Map::IReverseGeocoder *revGeo;
-		revGeo = this->revGeos.RemoveAt(i);
-		DEL_CLASS(revGeo);
-	}
+	this->revGeos.DeleteAll();
 	this->conn.Delete();
 }
 
@@ -57,7 +51,7 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 	UOSInt i = this->revGeos.GetCount();
 	while (i-- > 0)
 	{
-		sptr = this->revGeos.GetItem(this->nextCoder)->SearchName(buff, buffSize, pos, lcid);
+		sptr = this->revGeos.GetItemNoCheck(this->nextCoder)->SearchName(buff, buffSize, pos, lcid);
 		if (sptr == 0 || buff[0] == 0)
 		{
 			this->nextCoder = (this->nextCoder + 1) % this->revGeos.GetCount();
@@ -122,7 +116,7 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 	UOSInt i = this->revGeos.GetCount();
 	while (i-- > 0)
 	{
-		sptr = this->revGeos.GetItem(this->nextCoder)->CacheName(buff, buffSize, pos, lcid);
+		sptr = this->revGeos.GetItemNoCheck(this->nextCoder)->CacheName(buff, buffSize, pos, lcid);
 		if (sptr == 0 || buff[0] == 0)
 		{
 			this->nextCoder = (this->nextCoder + 1) % this->revGeos.GetCount();
@@ -158,7 +152,7 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 	}
 }
 
-void Map::AssistedReverseGeocoder::AddReverseGeocoder(Map::IReverseGeocoder *revGeo)
+void Map::AssistedReverseGeocoder::AddReverseGeocoder(NN<Map::IReverseGeocoder> revGeo)
 {
 	this->revGeos.Add(revGeo);
 }

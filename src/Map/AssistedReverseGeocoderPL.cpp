@@ -12,7 +12,7 @@ Map::AssistedReverseGeocoderPL::AddressComparator::~AddressComparator()
 {
 }
 
-OSInt Map::AssistedReverseGeocoderPL::AddressComparator::Compare(AddressEntry *a, AddressEntry *b) const
+OSInt Map::AssistedReverseGeocoderPL::AddressComparator::Compare(NN<AddressEntry> a, NN<AddressEntry> b) const
 {
 	if (a->keyx > b->keyx)
 	{
@@ -36,7 +36,7 @@ OSInt Map::AssistedReverseGeocoderPL::AddressComparator::Compare(AddressEntry *a
 	}
 }
 
-Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(NN<DB::DBTool> db, IO::Writer *errWriter)
+Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(NN<DB::DBTool> db, NN<IO::Writer> errWriter)
 {
 	this->conn = db;
 	this->errWriter = errWriter;
@@ -49,13 +49,13 @@ Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(NN<DB::DBTool> db, IO:
 	{
 		UInt32 lcid;
 		Text::String *addr;
-		LCIDInfo *lcidInfo;
-		AddressEntry *entry;
+		NN<LCIDInfo> lcidInfo;
+		NN<AddressEntry> entry;
 		Text::StringBuilderUTF8 sb;
 		while (r->ReadNext())
 		{
 			lcid = (UInt32)r->GetInt32(0);
-			entry = MemAlloc(AddressEntry, 1);
+			entry = MemAllocNN(AddressEntry);
 			entry->keyx = r->GetInt32(1);
 			entry->keyy = r->GetInt32(2);
 			sb.ClearStr();
@@ -69,10 +69,9 @@ Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(NN<DB::DBTool> db, IO:
 			}
 			entry->address = addr;
 			
-			lcidInfo = this->lcidMap.Get(lcid);
-			if (lcidInfo == 0)
+			if (!this->lcidMap.Get(lcid).SetTo(lcidInfo))
 			{
-				NEW_CLASS(lcidInfo, LCIDInfo());
+				NEW_CLASSNN(lcidInfo, LCIDInfo());
 				lcidInfo->lcid = lcid;
 				this->lcidMap.Put(lcid, lcidInfo);
 			}
@@ -84,7 +83,7 @@ Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(NN<DB::DBTool> db, IO:
 		UOSInt i = this->lcidMap.GetCount();
 		while (i-- > 0)
 		{
-			Data::Sort::ArtificialQuickSort::Sort<AddressEntry*>(&this->lcidMap.GetItem(i)->mainList, comparator);
+			Data::Sort::ArtificialQuickSort::Sort<NN<AddressEntry>>(&this->lcidMap.GetItemNoCheck(i)->mainList, comparator);
 		}
 	}
 	printf("Time used = %lf, t1 = %lf\r\n", clk.GetTimeDiff(), t1);
@@ -92,15 +91,10 @@ Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(NN<DB::DBTool> db, IO:
 
 Map::AssistedReverseGeocoderPL::~AssistedReverseGeocoderPL()
 {
-	UOSInt i = this->revGeos.GetCount();
+	UOSInt i;
 	UOSInt j;
-	LCIDInfo *lcid;
-	while (i-- > 0)
-	{
-		Map::IReverseGeocoder *revGeo;
-		revGeo = this->revGeos.RemoveAt(i);
-		DEL_CLASS(revGeo);
-	}
+	NN<LCIDInfo> lcid;
+	this->revGeos.DeleteAll();
 	this->conn.Delete();
 	Text::String **strArr = this->strMap.ToArray(&j);
 	i = 0;
@@ -113,13 +107,9 @@ Map::AssistedReverseGeocoderPL::~AssistedReverseGeocoderPL()
 	i = this->lcidMap.GetCount();
 	while (i-- > 0)
 	{
-		lcid = this->lcidMap.GetItem(i);
-		j = lcid->mainList.GetCount();
-		while (j-- > 0)
-		{
-			MemFree(lcid->mainList.GetItem(j));
-		}
-		DEL_CLASS(lcid);
+		lcid = this->lcidMap.GetItemNoCheck(i);
+		lcid->mainList.MemFreeAll();
+		lcid.Delete();
 	}
 }
 
@@ -132,22 +122,21 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 		return 0;
 
 	Text::String *addr;
-	LCIDInfo *lcidInfo;
-	AddressEntry *entry;
+	NN<LCIDInfo> lcidInfo;
+	NN<AddressEntry> entry;
 	OSInt index;
 
 	Sync::MutexUsage mutUsage(this->mut);
-	lcidInfo = this->lcidMap.Get(lcid);
-	if (lcidInfo == 0)
+	if (!this->lcidMap.Get(lcid).SetTo(lcidInfo))
 	{
-		NEW_CLASS(lcidInfo, LCIDInfo());
+		NEW_CLASSNN(lcidInfo, LCIDInfo());
 		lcidInfo->lcid = lcid;
 		this->lcidMap.Put(lcid, lcidInfo);
 	}
-	index = AddressIndexOf(&lcidInfo->mainList, keyx, keyy);
+	index = AddressIndexOf(lcidInfo->mainList, keyx, keyy);
 	if (index >= 0)
 	{
-		entry = lcidInfo->mainList.GetItem((UOSInt)index);
+		entry = lcidInfo->mainList.GetItemNoCheck((UOSInt)index);
 		mutUsage.EndUse();
 		return entry->address->ConcatToS(buff, buffSize);
 	}
@@ -155,7 +144,7 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 	UOSInt i = this->revGeos.GetCount();
 	while (i-- > 0)
 	{
-		sptr = this->revGeos.GetItem(this->nextCoder)->SearchName(buff, buffSize, pos, lcid);
+		sptr = this->revGeos.GetItemNoCheck(this->nextCoder)->SearchName(buff, buffSize, pos, lcid);
 		if (sptr == 0 || buff[0] == 0)
 		{
 			this->nextCoder = (this->nextCoder + 1) % this->revGeos.GetCount();
@@ -192,7 +181,7 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 			addr = s.Ptr();
 			this->strMap.Put(s, addr);
 		}
-		entry = MemAlloc(AddressEntry, 1);
+		entry = MemAllocNN(AddressEntry);
 		entry->keyx = keyx;
 		entry->keyy = keyy;
 		entry->address = addr;
@@ -210,21 +199,21 @@ UTF8Char *Map::AssistedReverseGeocoderPL::CacheName(UTF8Char *buff, UOSInt buffS
 	return this->SearchName(buff, buffSize, pos, lcid);
 }
 
-void Map::AssistedReverseGeocoderPL::AddReverseGeocoder(Map::IReverseGeocoder *revGeo)
+void Map::AssistedReverseGeocoderPL::AddReverseGeocoder(NN<Map::IReverseGeocoder> revGeo)
 {
 	this->revGeos.Add(revGeo);
 }
 
-OSInt Map::AssistedReverseGeocoderPL::AddressIndexOf(Data::ArrayList<AddressEntry *> *list, Int32 keyx, Int32 keyy)
+OSInt Map::AssistedReverseGeocoderPL::AddressIndexOf(NN<Data::ArrayListNN<AddressEntry>> list, Int32 keyx, Int32 keyy)
 {
 	OSInt i = 0;
 	OSInt j = (OSInt)list->GetCount() - 1;
 	OSInt k;
-	AddressEntry *entry;
+	NN<AddressEntry> entry;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		entry = list->GetItem((UOSInt)k);
+		entry = list->GetItemNoCheck((UOSInt)k);
 		if (entry->keyx > keyx)
 		{
 			j = k - 1;

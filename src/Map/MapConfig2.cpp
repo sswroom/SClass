@@ -2254,25 +2254,25 @@ UInt32 Map::MapConfig2::ToColor(const UTF8Char *str)
 	return 0xff000000 | ((v & 0xff) << 16) | (v & 0xff00) | ((v >> 16) & 0xff);
 }
 
-Map::MapDrawLayer *Map::MapConfig2::GetDrawLayer(Text::CStringNN name, Data::ArrayList<Map::MapDrawLayer*> *layerList, IO::Writer *errWriter)
+Optional<Map::MapDrawLayer> Map::MapConfig2::GetDrawLayer(Text::CStringNN name, NN<Data::ArrayListNN<Map::MapDrawLayer>> layerList, NN<IO::Writer> errWriter)
 {
-	Map::CIPLayer2 *cip;
+	NN<Map::CIPLayer2> cip;
 	UOSInt i = layerList->GetCount();
 	while (i-- > 0)
 	{
-		Map::MapDrawLayer *lyr;
-		lyr = layerList->GetItem(i);
+		NN<Map::MapDrawLayer> lyr;
+		lyr = layerList->GetItemNoCheck(i);
 		if (IO::Path::FileNameCompare(name.v, lyr->GetName()->v) == 0)
 		{
 			return lyr;
 		}
 	}
-	NEW_CLASS(cip, Map::CIPLayer2(name));
+	NEW_CLASSNN(cip, Map::CIPLayer2(name));
 	if (cip->IsError())
 	{
 		errWriter->WriteStrC(UTF8STRC("Error in loading "));
 		errWriter->WriteLineC(name.v, name.leng);
-		DEL_CLASS(cip);
+		cip.Delete();
 		return 0;
 	}
 	layerList->Add(cip);
@@ -2291,9 +2291,7 @@ void Map::MapConfig2::DrawPoints(NN<Media::DrawImage> img, MapLayerStyle *lyrs, 
 	Math::RectAreaDbl *objPtr = &objBounds[*objCnt];
 #endif
 	Map::GetObjectSess *session;
-	NN<Map::MapDrawLayer> lyr;
-	if (!lyr.Set(lyrs->lyr))
-		return;
+	NN<Map::MapDrawLayer> lyr = lyrs->lyr;
 
 #ifndef NOSCH
 	sch->SetDrawType(lyr, 0, 0, lyrs->img, UOSInt2Double(lyrs->img->GetWidth()) * 0.5, UOSInt2Double(lyrs->img->GetHeight()) * 0.5, isLayerEmpty);
@@ -3879,7 +3877,7 @@ void Map::MapConfig2::DrawLabels(NN<Media::DrawImage> img, MapLabels2 *labels, U
 		lastLbl->Release();
 }
 
-Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng, Data::ArrayList<Map::MapDrawLayer*> *layerList, Parser::ParserList *parserList, Text::CString forceBase, IO::Writer *errWriter, Int32 maxScale, Int32 minScale)
+Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng, NN<Data::ArrayListNN<Map::MapDrawLayer>> layerList, Parser::ParserList *parserList, Text::CString forceBase, NN<IO::Writer> errWriter, Int32 maxScale, Int32 minScale)
 {
 	UTF8Char lineBuff[1024];
 	UTF8Char layerName[512];
@@ -4022,49 +4020,52 @@ Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng,
 				break;
 			case 6:
 				{
-					currLayer = MemAlloc(MapLayerStyle, 1);
-					currLayer->drawType = 6;
-					currLayer->minScale = Text::StrToInt32(strs[2].v);
-					currLayer->maxScale = Text::StrToInt32(strs[3].v);
-					currLayer->img = 0;
-
+					NN<Map::MapDrawLayer> lyr;
 					layerNameEnd = strs[1].ConcatTo(baseDir);
-					currLayer->lyr = GetDrawLayer(CSTRP(layerName, layerNameEnd), layerList, errWriter);
-					if (currLayer->lyr == 0)
+					if (GetDrawLayer(CSTRP(layerName, layerNameEnd), layerList, errWriter).SetTo(lyr))
 					{
-						MemFree(currLayer);
-					}
-					else
-					{
+						currLayer = MemAlloc(MapLayerStyle, 1);
+						currLayer->drawType = 6;
+						currLayer->minScale = Text::StrToInt32(strs[2].v);
+						currLayer->maxScale = Text::StrToInt32(strs[3].v);
+						currLayer->img = 0;
+						currLayer->lyr = lyr;
 						currLayer->style = Text::StrToUInt32(strs[4].v);
 						currLayer->bkColor = 0;
 						if (currLayer->style < this->nLine)
 						{
 							this->drawList->Add(currLayer);
 						}
+						else
+						{
+							lyr.Delete();
+							MemFree(currLayer);
+						}
 					}
 				}
 				break;
 			case 7:
 				{
-					currLayer = MemAlloc(MapLayerStyle, 1);
-					currLayer->drawType = 7;
-					currLayer->minScale = Text::StrToInt32(strs[2].v);
-					currLayer->maxScale = Text::StrToInt32(strs[3].v);
-					currLayer->img = 0;
+					NN<Map::MapDrawLayer> lyr;
 					layerNameEnd = strs[1].ConcatTo(baseDir);
-					currLayer->lyr = GetDrawLayer(CSTRP(layerName, layerNameEnd), layerList, errWriter);
-					if (currLayer->lyr == 0)
+					if (GetDrawLayer(CSTRP(layerName, layerNameEnd), layerList, errWriter).SetTo(lyr))
 					{
-						MemFree(currLayer);
-					}
-					else
-					{
+						currLayer = MemAlloc(MapLayerStyle, 1);
+						currLayer->drawType = 7;
+						currLayer->minScale = Text::StrToInt32(strs[2].v);
+						currLayer->maxScale = Text::StrToInt32(strs[3].v);
+						currLayer->img = 0;
+						currLayer->lyr = lyr;
 						currLayer->style = Text::StrToUInt32(strs[4].v);
 						currLayer->bkColor = ToColor(strs[5].v);
 						if (currLayer->style < this->nLine)
 						{
 							this->drawList->Add(currLayer);
+						}
+						else
+						{
+							lyr.Delete();
+							MemFree(currLayer);
 						}
 					}
 				}
@@ -4075,25 +4076,27 @@ Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng,
 				break;
 			case 9:
 				{
-					currLayer = MemAlloc(MapLayerStyle, 1);
-					currLayer->drawType = 9;
-					currLayer->minScale = Text::StrToInt32(strs[2].v);
-					currLayer->maxScale = Text::StrToInt32(strs[3].v);
-					currLayer->img = 0;
+					NN<Map::MapDrawLayer> lyr;
 					layerNameEnd = strs[1].ConcatTo(baseDir);
-					currLayer->lyr = GetDrawLayer(CSTRP(layerName, layerNameEnd), layerList, errWriter);
-					if (currLayer->lyr == 0)
+					if (GetDrawLayer(CSTRP(layerName, layerNameEnd), layerList, errWriter).SetTo(lyr))
 					{
-						MemFree(currLayer);
-					}
-					else
-					{
+						currLayer = MemAlloc(MapLayerStyle, 1);
+						currLayer->drawType = 9;
+						currLayer->minScale = Text::StrToInt32(strs[2].v);
+						currLayer->maxScale = Text::StrToInt32(strs[3].v);
+						currLayer->img = 0;
+						currLayer->lyr = lyr;
 						currLayer->priority = Text::StrToInt32(strs[4].v);
 						currLayer->style = Text::StrToUInt32(strs[5].v);
 						currLayer->bkColor = Text::StrToUInt32(strs[6].v);
 						if (currLayer->style < this->nFont)
 						{
 							this->drawList->Add(currLayer);
+						}
+						else
+						{
+							lyr.Delete();
+							MemFree(currLayer);
 						}
 					}
 				}
@@ -4159,8 +4162,7 @@ Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng,
 				else
 				{
 					layerNameEnd = strs[1].ConcatTo(baseDir);
-					currLayer->lyr = GetDrawLayer(CSTRP(layerName, layerNameEnd), layerList, errWriter);
-					if (currLayer->lyr == 0)
+					if (!GetDrawLayer(CSTRP(layerName, layerNameEnd), layerList, errWriter).SetTo(currLayer->lyr))
 					{
 						this->drawEng->DeleteImage(img);
 						MemFree(currLayer);
@@ -4501,184 +4503,180 @@ UTF8Char *Map::MapConfig2::DrawMap(NN<Media::DrawImage> img, NN<Map::MapView> vi
 			clk.Start();
 			if (lyrs->drawType == 7)
 			{
-				if (lyr.Set(lyrs->lyr))
+				lyr = lyrs->lyr;
+				arr.Clear();
+				Math::RectAreaDbl rect = view->GetVerticalRect();
+				lyr->GetObjectIdsMapXY(arr, 0, rect, true);
+
+				if ((i = arr.GetCount()) > 0)
 				{
-					arr.Clear();
-					Math::RectAreaDbl rect = view->GetVerticalRect();
-					lyr->GetObjectIdsMapXY(arr, 0, rect, true);
+#ifdef NOSCH
+					Data::ArrayList<Map::DrawObjectL*> drawArr;
+#else
+					mapSch->SetDrawType(lyr, pen = CreatePen(img, lyrs->style, 0), brush = img->NewBrushARGB(lyrs->bkColor), 0, 0, 0, isLayerEmpty);
+#endif
 
-					if ((i = arr.GetCount()) > 0)
+					session = lyr->BeginGetObject();
+					lastId = -1;
+					while (i-- > 0)
 					{
-#ifdef NOSCH
-						Data::ArrayList<Map::DrawObjectL*> drawArr;
-#else
-						mapSch->SetDrawType(lyr, pen = CreatePen(img, lyrs->style, 0), brush = img->NewBrushARGB(lyrs->bkColor), 0, 0, 0, isLayerEmpty);
-#endif
-
-						session = lyr->BeginGetObject();
-						lastId = -1;
-						while (i-- > 0)
+						thisId = arr.GetItem(i);
+						if (thisId != lastId)
 						{
-							thisId = arr.GetItem(i);
-							if (thisId != lastId)
+							lastId = thisId;
+							if (vec.Set(lyr->GetNewVectorById(session, thisId)))
 							{
-								lastId = thisId;
-								if (vec.Set(lyr->GetNewVectorById(session, thisId)))
-								{
 #ifndef NOSCH
-									mapSch->Draw(vec);
+								mapSch->Draw(vec);
 #else
-									if (view->MapXYToScnXY(dobj->pointArr, dobj->pointArr, dobj->nPoint, Math::Coord2DDbl(0, 0)))
-										*isLayerEmpty = false;
-									drawArr.Add(dobj);
+								if (view->MapXYToScnXY(dobj->pointArr, dobj->pointArr, dobj->nPoint, Math::Coord2DDbl(0, 0)))
+									*isLayerEmpty = false;
+								drawArr.Add(dobj);
 #endif
-								}
 							}
 						}
-						lyr->EndGetObject(session);
-#ifdef NOSCH
-						pen = CreatePen(img, lyrs->style, 0);
-						brush = img->NewBrushARGB(lyrs->bkColor);
-						i = drawArr.GetCount();
-						while (i-- > 0)
-						{
-							dobj = drawArr.GetItem(i);
-							k = dobj->nPtOfst;
-							j = 1;
-							while (j < k)
-							{
-								dobj->ptOfstArr[j - 1] = dobj->ptOfstArr[j] - dobj->ptOfstArr[j - 1];
-								j++;
-							}
-							dobj->ptOfstArr[k - 1] = dobj->nPoint - dobj->ptOfstArr[k - 1];
-
-							img->DrawPolyPolygon(dobj->pointArr, dobj->ptOfstArr, dobj->nPtOfst, pen, brush);
-						}
-						img->DelPen(pen);
-						img->DelBrush(brush);
-
-						if (pen)
-						{
-							index2 = 1;
-							while (pen = CreatePen(img, lyrs->style, index2++))
-							{
-								i = drawArr.GetCount();
-								while (i-- > 0)
-								{
-									dobj = drawArr.GetItem(i);
-									k = dobj->nPtOfst;
-									j = 1;
-									while (j < k)
-									{
-										dobj->ptOfstArr[j - 1] = dobj->ptOfstArr[j] - dobj->ptOfstArr[j - 1];
-										j++;
-									}
-									dobj->ptOfstArr[k - 1] = dobj->nPoint - dobj->ptOfstArr[k - 1];
-
-									img->DrawPolyPolygon(dobj->pointArr, dobj->ptOfstArr, dobj->nPtOfst, pen, 0);
-								}
-								img->DelPen(pen);
-							}
-						}
-
-						i = drawArr.GetCount();
-						while (i-- > 0)
-						{
-							dobj = drawArr.RemoveAt(i);
-							lyr->ReleaseObject(session, dobj);
-						}
-#else
-						if (!pen.IsNull())
-						{
-							index2 = 1;
-							while (!(pen = CreatePen(img, lyrs->style, index2++)).IsNull())
-							{
-								mapSch->DrawNextType(pen, 0);
-							}
-						}
-						mapSch->WaitForFinish();
-#endif
 					}
-				}
-			}
-			else if (lyrs->drawType == 6)
-			{
-				if (lyr.Set(lyrs->lyr))
-				{
-					arr.Clear();
-					Math::RectAreaDbl rect = view->GetVerticalRect();
-					lyr->GetObjectIdsMapXY(arr, 0, rect, true);
-
-					if ((i = arr.GetCount()) > 0)
+					lyr->EndGetObject(session);
+#ifdef NOSCH
+					pen = CreatePen(img, lyrs->style, 0);
+					brush = img->NewBrushARGB(lyrs->bkColor);
+					i = drawArr.GetCount();
+					while (i-- > 0)
 					{
-#ifdef NOSCH
-						Data::ArrayList<Map::DrawObjectL*> drawArr;
-#else
-						mapSch->SetDrawType(lyr, pen = CreatePen(img, lyrs->style, 0), 0, 0, 0, 0, isLayerEmpty);
-#endif
-
-						session = lyr->BeginGetObject();
-						lastId = -1;
-						while (i-- > 0)
+						dobj = drawArr.GetItem(i);
+						k = dobj->nPtOfst;
+						j = 1;
+						while (j < k)
 						{
-							thisId = arr.GetItem(i);
-							if (thisId != lastId)
-							{
-								lastId = thisId;
-								if (vec.Set(lyr->GetNewVectorById(session, thisId)))
-								{
-#ifndef NOSCH
-									mapSch->Draw(vec);
-#else
-									if (view->MapXYToScnXY(dobj->pointArr, dobj->pointArr, dobj->nPoint, Math::Coord2DDbl(0, 0)))
-										*isLayerEmpty = false;
-									drawArr.Add(dobj);
-#endif
-								}
-							}
+							dobj->ptOfstArr[j - 1] = dobj->ptOfstArr[j] - dobj->ptOfstArr[j - 1];
+							j++;
 						}
-						lyr->EndGetObject(session);
+						dobj->ptOfstArr[k - 1] = dobj->nPoint - dobj->ptOfstArr[k - 1];
 
-#ifdef NOSCH
-						index2 = 0;
-						while (pen = CreatePen(img, lyrs->style, index2))
+						img->DrawPolyPolygon(dobj->pointArr, dobj->ptOfstArr, dobj->nPtOfst, pen, brush);
+					}
+					img->DelPen(pen);
+					img->DelBrush(brush);
+
+					if (pen)
+					{
+						index2 = 1;
+						while (pen = CreatePen(img, lyrs->style, index2++))
 						{
-							index2++;
 							i = drawArr.GetCount();
 							while (i-- > 0)
 							{
 								dobj = drawArr.GetItem(i);
-
 								k = dobj->nPtOfst;
 								j = 1;
 								while (j < k)
 								{
-									img->DrawPolyline(&dobj->pointArr[dobj->ptOfstArr[j-1]], dobj->ptOfstArr[j] - dobj->ptOfstArr[j - 1], pen);
+									dobj->ptOfstArr[j - 1] = dobj->ptOfstArr[j] - dobj->ptOfstArr[j - 1];
 									j++;
 								}
-								img->DrawPolyline(&dobj->pointArr[dobj->ptOfstArr[k-1] << 1], dobj->nPoint - dobj->ptOfstArr[k - 1], pen);
+								dobj->ptOfstArr[k - 1] = dobj->nPoint - dobj->ptOfstArr[k - 1];
+
+								img->DrawPolyPolygon(dobj->pointArr, dobj->ptOfstArr, dobj->nPtOfst, pen, 0);
 							}
 							img->DelPen(pen);
 						}
+					}
 
+					i = drawArr.GetCount();
+					while (i-- > 0)
+					{
+						dobj = drawArr.RemoveAt(i);
+						lyr->ReleaseObject(session, dobj);
+					}
+#else
+					if (!pen.IsNull())
+					{
+						index2 = 1;
+						while (!(pen = CreatePen(img, lyrs->style, index2++)).IsNull())
+						{
+							mapSch->DrawNextType(pen, 0);
+						}
+					}
+					mapSch->WaitForFinish();
+#endif
+				}
+			}
+			else if (lyrs->drawType == 6)
+			{
+				lyr = lyrs->lyr;
+				arr.Clear();
+				Math::RectAreaDbl rect = view->GetVerticalRect();
+				lyr->GetObjectIdsMapXY(arr, 0, rect, true);
+
+				if ((i = arr.GetCount()) > 0)
+				{
+#ifdef NOSCH
+					Data::ArrayList<Map::DrawObjectL*> drawArr;
+#else
+					mapSch->SetDrawType(lyr, pen = CreatePen(img, lyrs->style, 0), 0, 0, 0, 0, isLayerEmpty);
+#endif
+
+					session = lyr->BeginGetObject();
+					lastId = -1;
+					while (i-- > 0)
+					{
+						thisId = arr.GetItem(i);
+						if (thisId != lastId)
+						{
+							lastId = thisId;
+							if (vec.Set(lyr->GetNewVectorById(session, thisId)))
+							{
+#ifndef NOSCH
+								mapSch->Draw(vec);
+#else
+								if (view->MapXYToScnXY(dobj->pointArr, dobj->pointArr, dobj->nPoint, Math::Coord2DDbl(0, 0)))
+									*isLayerEmpty = false;
+								drawArr.Add(dobj);
+#endif
+							}
+						}
+					}
+					lyr->EndGetObject(session);
+
+#ifdef NOSCH
+					index2 = 0;
+					while (pen = CreatePen(img, lyrs->style, index2))
+					{
+						index2++;
 						i = drawArr.GetCount();
 						while (i-- > 0)
 						{
-							dobj = drawArr.RemoveAt(i);
-							lyr->ReleaseObject(session, dobj);
-						}
-#else
-						if (!pen.IsNull())
-						{
-							index2 = 1;
-							while (!(pen = CreatePen(img, lyrs->style, index2++)).IsNull())
+							dobj = drawArr.GetItem(i);
+
+							k = dobj->nPtOfst;
+							j = 1;
+							while (j < k)
 							{
-								mapSch->DrawNextType(pen, 0);
+								img->DrawPolyline(&dobj->pointArr[dobj->ptOfstArr[j-1]], dobj->ptOfstArr[j] - dobj->ptOfstArr[j - 1], pen);
+								j++;
 							}
+							img->DrawPolyline(&dobj->pointArr[dobj->ptOfstArr[k-1] << 1], dobj->nPoint - dobj->ptOfstArr[k - 1], pen);
 						}
-						mapSch->WaitForFinish();
-#endif
+						img->DelPen(pen);
 					}
+
+					i = drawArr.GetCount();
+					while (i-- > 0)
+					{
+						dobj = drawArr.RemoveAt(i);
+						lyr->ReleaseObject(session, dobj);
+					}
+#else
+					if (!pen.IsNull())
+					{
+						index2 = 1;
+						while (!(pen = CreatePen(img, lyrs->style, index2++)).IsNull())
+						{
+							mapSch->DrawNextType(pen, 0);
+						}
+					}
+					mapSch->WaitForFinish();
+#endif
 				}
 			}
 			else if (lyrs->drawType == 9)
@@ -4797,14 +4795,7 @@ Int32 Map::MapConfig2::QueryMCC(Math::Coord2DDbl pos)
 	return 0;
 }
 
-void Map::MapConfig2::ReleaseLayers(Data::ArrayList<Map::MapDrawLayer*> *layerList)
+void Map::MapConfig2::ReleaseLayers(NN<Data::ArrayListNN<Map::MapDrawLayer>> layerList)
 {
-	Map::MapDrawLayer *lyr;
-	UOSInt i;
-	i = layerList->GetCount();
-	while (i-- > 0)
-	{
-		lyr = layerList->GetItem(i);
-		DEL_CLASS(lyr);
-	}
+	layerList->DeleteAll();
 }

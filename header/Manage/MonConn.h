@@ -45,13 +45,13 @@ namespace Manage
 		Data::DateTime lastKATime;
 		Data::Duration timeout;
 		AnyType userObj;
-		IO::Writer *msgWriter;
+		NN<IO::Writer> msgWriter;
 
 		static UInt32 __stdcall ConnTThread(AnyType conn);
 		static UInt32 __stdcall ConnRThread(AnyType conn);
 		void AddCommand(UInt8 *data, UOSInt dataSize, UInt16 cmdType);
 	public:
-		MonConn(EventHandler hdlr, AnyType userObj, NN<Net::SocketFactory> sockf, IO::Writer *msgWriter, Data::Duration timeout);
+		MonConn(EventHandler hdlr, AnyType userObj, NN<Net::SocketFactory> sockf, NN<IO::Writer> msgWriter, Data::Duration timeout);
 		~MonConn();
 
 		Bool IsError();

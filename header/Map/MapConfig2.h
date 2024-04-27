@@ -56,7 +56,7 @@ namespace Map
 		static void DrawCharsL(NN<Media::DrawImage> img, Text::CStringNN str1, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Math::RectAreaDbl *realBounds);
 		static void GetCharsSize(NN<Media::DrawImage> img, OutParam<Math::Coord2DDbl> size, Text::CStringNN label, Data::ArrayList<MapFontStyle*> *fontStyle, Double scaleW, Double scaleH);
 		static UInt32 ToColor(const UTF8Char *str);
-		static Map::MapDrawLayer *GetDrawLayer(Text::CStringNN name, Data::ArrayList<Map::MapDrawLayer*> *layerList, IO::Writer *errWriter);
+		static Optional<Map::MapDrawLayer> GetDrawLayer(Text::CStringNN name, NN<Data::ArrayListNN<Map::MapDrawLayer>> layerList, NN<IO::Writer> errWriter);
 		static void DrawPoints(NN<Media::DrawImage> img, MapLayerStyle *lyrs, NN<Map::MapView> view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, NN<Media::DrawEngine> eng, Media::IImgResizer *resizer, Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxObjCnt);
 		static void DrawString(NN<Media::DrawImage> img, MapLayerStyle *lyrs, NN<Map::MapView> view, Data::ArrayList<MapFontStyle*> **fonts, MapLabels2 *labels, UInt32 maxLabels, UInt32 *labelCnt, Bool *isLayerEmpty);
 		static UInt32 NewLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Int32 priority);
@@ -67,7 +67,7 @@ namespace Map
 		static void LoadLabels(Media::DrawImage *img, Map::MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, NN<Media::DrawEngine> drawEng, Math::RectAreaDbl *objBounds, UOSInt *objCnt, const WChar *fileName, Int32 xId, Int32 yId, Int32 xOfst, Int32 yOfst, const WChar *dbName);
 
 	public:
-		MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng, Data::ArrayList<Map::MapDrawLayer*> *layerList, Parser::ParserList *parserList, Text::CString forceBase, IO::Writer *errWriter, Int32 maxScale, Int32 minScale);
+		MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng, NN<Data::ArrayListNN<Map::MapDrawLayer>> layerList, Parser::ParserList *parserList, Text::CString forceBase, NN<IO::Writer> errWriter, Int32 maxScale, Int32 minScale);
 		~MapConfig2();
 
 		Bool IsError();
@@ -77,7 +77,7 @@ namespace Map
 		UInt32 GetBGColor();
 		Bool SupportMCC(Int32 mcc);
 		Int32 QueryMCC(Math::Coord2DDbl pos);
-		static void ReleaseLayers(Data::ArrayList<Map::MapDrawLayer*> *layerList);
+		static void ReleaseLayers(NN<Data::ArrayListNN<Map::MapDrawLayer>> layerList);
 	};
 }
 #endif

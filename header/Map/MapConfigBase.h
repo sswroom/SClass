@@ -32,7 +32,7 @@ namespace Map
 		UInt32 bkColor;
 		Int32 priority;
 		Media::DrawImage *img;
-		Map::MapDrawLayer *lyr;
+		NN<Map::MapDrawLayer> lyr;
 	} MapLayerStyle;
 }
 #endif

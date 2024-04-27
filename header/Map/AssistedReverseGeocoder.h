@@ -12,18 +12,18 @@ namespace Map
 	class AssistedReverseGeocoder : public Map::IAssistedReverseGeocoder
 	{
 	private:
-		Data::ArrayList<Map::IReverseGeocoder *> revGeos;
+		Data::ArrayListNN<Map::IReverseGeocoder> revGeos;
 		UOSInt nextCoder;
 		NN<DB::DBTool> conn;
-		IO::Writer *errWriter;
+		NN<IO::Writer> errWriter;
 		Sync::Mutex mut;
 	public:
-		AssistedReverseGeocoder(NN<DB::DBTool> db, IO::Writer *errWriter);
+		AssistedReverseGeocoder(NN<DB::DBTool> db, NN<IO::Writer> errWriter);
 		virtual ~AssistedReverseGeocoder();
 
 		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
 		virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
-		virtual void AddReverseGeocoder(Map::IReverseGeocoder *revGeo);
+		virtual void AddReverseGeocoder(NN<Map::IReverseGeocoder> revGeo);
 	};
 }
 #endif

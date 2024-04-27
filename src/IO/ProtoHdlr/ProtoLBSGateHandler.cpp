@@ -12,16 +12,16 @@ IO::ProtoHdlr::ProtoLBSGateHandler::~ProtoLBSGateHandler()
 {
 }
 
-void *IO::ProtoHdlr::ProtoLBSGateHandler::CreateStreamData(NN<IO::Stream> stm)
+AnyType IO::ProtoHdlr::ProtoLBSGateHandler::CreateStreamData(NN<IO::Stream> stm)
 {
 	return 0;
 }
 
-void IO::ProtoHdlr::ProtoLBSGateHandler::DeleteStreamData(NN<IO::Stream> stm, void *stmData)
+void IO::ProtoHdlr::ProtoLBSGateHandler::DeleteStreamData(NN<IO::Stream> stm, AnyType stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoLBSGateHandler::ParseProtocol(NN<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &srcBuff)
+UOSInt IO::ProtoHdlr::ProtoLBSGateHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
 {
 	Bool found;
 	UInt32 crcVal;
@@ -60,7 +60,7 @@ UOSInt IO::ProtoHdlr::ProtoLBSGateHandler::ParseProtocol(NN<IO::Stream> stm, voi
 	return buff.GetSize();
 }
 
-UOSInt IO::ProtoHdlr::ProtoLBSGateHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)
+UOSInt IO::ProtoHdlr::ProtoLBSGateHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, AnyType stmData)
 {
 	*(Int16*)buff = *(Int16*)"lg";
 	*(Int16*)&buff[2] = (Int16)(cmdSize + 8);
@@ -73,6 +73,5 @@ UOSInt IO::ProtoHdlr::ProtoLBSGateHandler::BuildPacket(UInt8 *buff, Int32 cmdTyp
 	this->crc.Clear();
 	this->crc.Calc(buff, cmdSize + 6);
 	this->crc.GetValue(&buff[cmdSize + 6]);
-	mutUsage.EndUse();
 	return cmdSize + 8;
 }

@@ -9,7 +9,7 @@ namespace Map
 	public:
 		virtual ~IAssistedReverseGeocoder() {};
 
-		virtual void AddReverseGeocoder(Map::IReverseGeocoder *revGeo) = 0;
+		virtual void AddReverseGeocoder(NN<Map::IReverseGeocoder> revGeo) = 0;
 	};
 }
 #endif

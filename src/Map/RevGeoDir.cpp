@@ -4,7 +4,7 @@
 #include "IO/Path.h"
 #include "Map/RevGeoDir.h"
 
-Map::RevGeoDir::RevGeoDir(Text::CString cfgDir, UInt32 defLCID, IO::Writer *errWriter)
+Map::RevGeoDir::RevGeoDir(Text::CString cfgDir, UInt32 defLCID, NN<IO::Writer> errWriter)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -35,10 +35,10 @@ Map::RevGeoDir::RevGeoDir(Text::CString cfgDir, UInt32 defLCID, IO::Writer *errW
 			errWriter->WriteStrC(UTF8STRC("..."));
 			
 			Map::RevGeoCfg *revGeo;
-			RevGeoFile *file;
+			NN<RevGeoFile> file;
 			UOSInt i;
 			NEW_CLASS(revGeo, Map::RevGeoCfg(CSTRP(sbuff, sptr2), &this->mapSrchMgr));
-			file = MemAlloc(RevGeoFile, 1);
+			file = MemAllocNN(RevGeoFile);
 			file->cfg = revGeo;
 			i = Text::StrIndexOfChar(sptr, '.');
 			if (i != INVALID_INDEX && i >= 7)
@@ -61,26 +61,26 @@ Map::RevGeoDir::RevGeoDir(Text::CString cfgDir, UInt32 defLCID, IO::Writer *errW
 
 Map::RevGeoDir::~RevGeoDir()
 {
-	RevGeoFile *file;
+	NN<RevGeoFile> file;
 	UOSInt i = this->files.GetCount();
 	while (i-- > 0)
 	{
-		file = this->files.GetItem(i);
+		file = this->files.GetItemNoCheck(i);
 		DEL_CLASS(file->cfg);
-		MemFree(file);
+		MemFreeNN(file);
 	}
 }
 
 UTF8Char *Map::RevGeoDir::SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)
 {
 	UOSInt i;
-	RevGeoFile *file;
-	RevGeoFile *tmpFile;
+	Optional<RevGeoFile> file;
+	NN<RevGeoFile> tmpFile;
 	file = this->files.GetItem(0);
 	i = this->files.GetCount();
 	while (i-- > 0)
 	{
-		tmpFile = this->files.GetItem(i);
+		tmpFile = this->files.GetItemNoCheck(i);
 		if (tmpFile->lcid == lcid)
 		{
 			file = tmpFile;
@@ -91,9 +91,9 @@ UTF8Char *Map::RevGeoDir::SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coor
 			file = tmpFile;
 		}
 	}
-	if (file == 0)
+	if (!file.SetTo(tmpFile))
 		return 0;
-	return file->cfg->GetStreetName(buff, buffSize, pos);
+	return tmpFile->cfg->GetStreetName(buff, buffSize, pos);
 }
 
 UTF8Char *Map::RevGeoDir::CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid)

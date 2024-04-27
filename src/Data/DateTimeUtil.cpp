@@ -1541,7 +1541,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 			Secs2TimeValue(GetCurrTimeSecHighP(nanosec), tval, defTzQhr);
 			if (!strs[0].ToUInt8(tval->hour))
 				tval->hour = 0;
-			if (!strs[0].ToUInt8(tval->minute))
+			if (!strs[1].ToUInt8(tval->minute))
 				tval->minute = 0;
 			tval->second = 0;
 			nanosec.Set(0);

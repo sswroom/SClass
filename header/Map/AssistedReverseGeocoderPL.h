@@ -1,9 +1,9 @@
 #ifndef _SM_MAP_ASSISTEDREVERSEGEOCODERPL
 #define _SM_MAP_ASSISTEDREVERSEGEOCODERPL
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Data/BTreeMap.h"
 #include "Data/Comparator.h"
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "DB/DBTool.h"
 #include "IO/LogTool.h"
 #include "IO/Writer.h"
@@ -25,33 +25,33 @@ namespace Map
 		struct LCIDInfo
 		{
 			UInt32 lcid;
-			Data::ArrayList<AddressEntry *> mainList;
+			Data::ArrayListNN<AddressEntry> mainList;
 		};
 
-		class AddressComparator : public Data::Comparator<AddressEntry*>
+		class AddressComparator : public Data::Comparator<NN<AddressEntry>>
 		{
 		public:
 			virtual ~AddressComparator();
 
-			virtual OSInt Compare(AddressEntry *a, AddressEntry *b) const;
+			virtual OSInt Compare(NN<AddressEntry> a, NN<AddressEntry> b) const;
 		};
 	private:
-		Data::ArrayList<Map::IReverseGeocoder *> revGeos;
+		Data::ArrayListNN<Map::IReverseGeocoder> revGeos;
 		UOSInt nextCoder;
 		NN<DB::DBTool> conn;
-		IO::Writer *errWriter;
+		NN<IO::Writer> errWriter;
 		Data::BTreeMap<Text::String *> strMap;
-		Data::FastMap<UInt32, LCIDInfo *> lcidMap;
+		Data::FastMapNN<UInt32, LCIDInfo> lcidMap;
 		Sync::Mutex mut;
 	public:
-		AssistedReverseGeocoderPL(NN<DB::DBTool> db, IO::Writer *errWriter);
+		AssistedReverseGeocoderPL(NN<DB::DBTool> db, NN<IO::Writer> errWriter);
 		virtual ~AssistedReverseGeocoderPL();
 
 		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
 		virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Math::Coord2DDbl pos, UInt32 lcid);
-		virtual void AddReverseGeocoder(Map::IReverseGeocoder *revGeo);
+		virtual void AddReverseGeocoder(NN<Map::IReverseGeocoder> revGeo);
 	private:
-		OSInt AddressIndexOf(Data::ArrayList<AddressEntry *> *list, Int32 keyx, Int32 keyy);
+		OSInt AddressIndexOf(NN<Data::ArrayListNN<AddressEntry>> list, Int32 keyx, Int32 keyy);
 	};
 }
 #endif

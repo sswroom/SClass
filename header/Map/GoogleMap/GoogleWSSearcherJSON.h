@@ -17,7 +17,7 @@ namespace Map
 		private:
 			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
-			IO::Writer *errWriter;
+			NN<IO::Writer> errWriter;
 			Data::DateTime lastSrchDate;
 			Sync::Mutex mut;
 			Optional<Text::EncodingFactory> encFact;
@@ -29,7 +29,7 @@ namespace Map
 			Optional<Text::String> gooAPIKey;
 
 		public:
-			GoogleWSSearcherJSON(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, IO::Writer *errWriter, Optional<Text::EncodingFactory> encFact);
+			GoogleWSSearcherJSON(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<IO::Writer> errWriter, Optional<Text::EncodingFactory> encFact);
 			virtual ~GoogleWSSearcherJSON();
 
 			void SetGoogleClientId(Text::String *gooCliId, Text::String *gooPrivKey);
