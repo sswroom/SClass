@@ -30,7 +30,7 @@ namespace SSWR
 			IO::SiLabDriver *siLabDriver;
 			Optional<Net::SSLEngine> ssl;
 			IO::DeviceManager devMgr;
-			Data::ArrayList<IO::DeviceInfo*> devList;
+			Data::ArrayListNN<IO::DeviceInfo> devList;
 
 			NN<UI::GUIPanel> pnlStreamType;
 			NN<UI::GUILabel> lblStreamType;

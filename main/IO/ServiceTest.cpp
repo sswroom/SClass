@@ -24,9 +24,9 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Text::CString svcName = CSTR("mariadb");
 	IO::ServiceManager svcMgr;
-	Data::ArrayList<IO::ServiceManager::ServiceItem*> svcList;
-	svcMgr.QueryServiceList(&svcList);
-	svcMgr.FreeServiceList(&svcList);
+	Data::ArrayListNN<IO::ServiceManager::ServiceItem> svcList;
+	svcMgr.QueryServiceList(svcList);
+	svcMgr.FreeServiceList(svcList);
 
 	PrintSvcDetail(&svcMgr, svcName);
 	svcMgr.ServiceStop(svcName);

@@ -1,6 +1,6 @@
 #ifndef _SM_IO_DBUSMANAGER
 #define _SM_IO_DBUSMANAGER
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Text/StringBuilderC.h"
 
 namespace IO
@@ -144,8 +144,8 @@ namespace IO
 			const Char *interface;
 			const Char *member;
 			const Char *argument;
-			Data::ArrayList<ListenerCallbacks*> *callbacks;
-			Data::ArrayList<ListenerCallbacks*> *processed;
+			Data::ArrayListNN<ListenerCallbacks> *callbacks;
+			Data::ArrayListNN<ListenerCallbacks> *processed;
 			UOSInt nameWatch;
 			Bool lock;
 			Bool registered;

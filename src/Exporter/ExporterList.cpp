@@ -42,134 +42,126 @@
 
 Exporter::ExporterList::ExporterList()
 {
-	IO::FileExporter *exporter;
-	NEW_CLASS(this->exporters, Data::ArrayList<IO::FileExporter*>());
+	NN<IO::FileExporter> exporter;
 
-	NEW_CLASS(exporter, Exporter::MapCSVExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::KMLExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::GPXExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::CIPExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::MEVExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::SHPExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::PLTExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::SPKExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::OruxMapExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::DocHTMLExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::ZIPExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::PEMExporter());
-	this->exporters->Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::MapCSVExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::KMLExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::GPXExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::CIPExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::MEVExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::SHPExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::PLTExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::SPKExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::OruxMapExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::DocHTMLExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::ZIPExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::PEMExporter());
+	this->exporters.Add(exporter);
 
-	NEW_CLASS(exporter, Exporter::DBCSVExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::DBHTMLExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::DBExcelXMLExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::DBPListExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::ExcelXMLExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::MDBExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::SQLiteExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::DBFExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::XLSXExporter());
-	this->exporters->Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::DBCSVExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::DBHTMLExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::DBExcelXMLExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::DBPListExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::ExcelXMLExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::MDBExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::SQLiteExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::DBFExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::XLSXExporter());
+	this->exporters.Add(exporter);
 
-	NEW_CLASS(exporter, Exporter::TIFFExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::BMPExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::GIFExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::PNGExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::CURExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::ICOExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::WAVExporter());
-	this->exporters->Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::TIFFExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::BMPExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::GIFExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::PNGExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::CURExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::ICOExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::WAVExporter());
+	this->exporters.Add(exporter);
 
-	NEW_CLASS(exporter, Exporter::MD5Exporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::MD4Exporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::SHA1Exporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::SFVExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::WebPExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::HEIFExporter());
-	this->exporters->Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::MD5Exporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::MD4Exporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::SHA1Exporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::SFVExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::WebPExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::HEIFExporter());
+	this->exporters.Add(exporter);
 
-	NEW_CLASS(exporter, Exporter::GUIJPGExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::GUIGIFExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::GUIPNGExporter());
-	this->exporters->Add(exporter);
-	NEW_CLASS(exporter, Exporter::GUITIFExporter());
-	this->exporters->Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::GUIJPGExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::GUIGIFExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::GUIPNGExporter());
+	this->exporters.Add(exporter);
+	NEW_CLASSNN(exporter, Exporter::GUITIFExporter());
+	this->exporters.Add(exporter);
 }
 
 Exporter::ExporterList::~ExporterList()
 {
-	UOSInt i = this->exporters->GetCount();
-	IO::FileExporter *exporter;
-	while (i-- > 0)
-	{
-		exporter = this->exporters->GetItem(i);
-		DEL_CLASS(exporter);
-	}
-	DEL_CLASS(this->exporters);
+	this->exporters.DeleteAll();
 }
 
 void Exporter::ExporterList::SetCodePage(UInt32 codePage)
 {
-	UOSInt i = this->exporters->GetCount();
-	IO::FileExporter *exporter;
+	UOSInt i = this->exporters.GetCount();
+	NN<IO::FileExporter> exporter;
 	while (i-- > 0)
 	{
-		exporter = this->exporters->GetItem(i);
+		exporter = this->exporters.GetItemNoCheck(i);
 		exporter->SetCodePage(codePage);
 	}
 }
 
 void Exporter::ExporterList::SetEncFactory(Optional<Text::EncodingFactory> encFact)
 {
-	UOSInt i = this->exporters->GetCount();
-	IO::FileExporter *exporter;
+	UOSInt i = this->exporters.GetCount();
+	NN<IO::FileExporter> exporter;
 	while (i-- > 0)
 	{
-		exporter = this->exporters->GetItem(i);
+		exporter = this->exporters.GetItemNoCheck(i);
 		exporter->SetEncFactory(encFact);
 	}
 }
 
-UOSInt Exporter::ExporterList::GetSupportedExporters(Data::ArrayList<IO::FileExporter*> *exporters, NN<IO::ParsedObject> obj)
+UOSInt Exporter::ExporterList::GetSupportedExporters(NN<Data::ArrayListNN<IO::FileExporter>> exporters, NN<IO::ParsedObject> obj)
 {
 	UOSInt cnt = 0;
 	UOSInt i = 0;
-	UOSInt j = this->exporters->GetCount();
-	IO::FileExporter *exporter;
+	UOSInt j = this->exporters.GetCount();
+	NN<IO::FileExporter> exporter;
 	while (i < j)
 	{
-		exporter = this->exporters->GetItem(i);
+		exporter = this->exporters.GetItemNoCheck(i);
 		if (exporter->IsObjectSupported(obj) != IO::FileExporter::SupportType::NotSupported)
 		{
 			exporters->Add(exporter);

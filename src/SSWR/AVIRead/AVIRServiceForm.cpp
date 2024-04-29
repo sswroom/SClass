@@ -131,18 +131,18 @@ void __stdcall SSWR::AVIRead::AVIRServiceForm::OnCreateClicked(AnyType userObj)
 
 void SSWR::AVIRead::AVIRServiceForm::UpdateSvcList()
 {
-	Data::ArrayList<IO::ServiceManager::ServiceItem*> svcList;
+	Data::ArrayListNN<IO::ServiceManager::ServiceItem> svcList;
 	UOSInt i;
 	UOSInt j;
-	IO::ServiceManager::ServiceItem *svc;
-	this->svcMgr.QueryServiceList(&svcList);
+	NN<IO::ServiceManager::ServiceItem> svc;
+	this->svcMgr.QueryServiceList(svcList);
 	IO::ServiceManager::ServiceComparator comparator;
-	Data::Sort::ArtificialQuickSort::Sort<IO::ServiceManager::ServiceItem*>(&svcList, comparator);
+	Data::Sort::ArtificialQuickSort::Sort<NN<IO::ServiceManager::ServiceItem>>(&svcList, comparator);
 	i = 0;
 	j = svcList.GetCount();
 	while (i < j)
 	{
-		svc = svcList.GetItem(i);
+		svc = svcList.GetItemNoCheck(i);
 		this->lvService->AddItem(svc->name, 0);
 		if (svc->state == IO::ServiceInfo::ServiceState::Unknown)
 		{
@@ -154,7 +154,7 @@ void SSWR::AVIRead::AVIRServiceForm::UpdateSvcList()
 		}
 		i++;
 	}
-	this->svcMgr.FreeServiceList(&svcList);
+	this->svcMgr.FreeServiceList(svcList);
 }
 
 SSWR::AVIRead::AVIRServiceForm::AVIRServiceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)

@@ -1,7 +1,7 @@
 //need setupapi.lib
 #ifndef _SM_IO_DEVICEMANAGER
 #define _SM_IO_DEVICEMANAGER
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "IO/DeviceInfo.h"
 
 namespace IO
@@ -12,8 +12,8 @@ namespace IO
 		DeviceManager();
 		~DeviceManager();
 
-		UOSInt QueryHIDDevices(Data::ArrayList<IO::DeviceInfo*> *devList);
-		void FreeDevices(Data::ArrayList<IO::DeviceInfo*> *devList);
+		UOSInt QueryHIDDevices(NN<Data::ArrayListNN<IO::DeviceInfo>> devList);
+		void FreeDevices(NN<Data::ArrayListNN<IO::DeviceInfo>> devList);
 	};
 }
 #endif

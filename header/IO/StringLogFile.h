@@ -14,7 +14,7 @@ namespace IO
 			Optional<Text::String> desc;
 		};
 
-		Data::ArrayList<LogItem*> items;
+		Data::ArrayListNN<LogItem> items;
 	public:
 		StringLogFile(NN<Text::String> sourceName);
 		virtual ~StringLogFile();

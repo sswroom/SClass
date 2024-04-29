@@ -3,7 +3,7 @@
 #include "Data/ArrayList.h"
 #include "Data/ArrayListUInt32.h"
 #include "Data/ArrayListStrUTF8.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/StringMapNN.h"
 #include "IO/FileExporter.h"
 #include "Map/MapEnv.h"
 
@@ -30,9 +30,9 @@ namespace Exporter
 
 	private:
 		static void GetMapDirs(NN<Map::MapEnv> env, Data::ArrayListString *dirArr, Optional<Map::MapEnv::GroupItem> group);
-		static UInt32 AddString(Data::StringMap<MEVStrRecord*> *strArr, Text::String *strVal, UInt32 fileOfst);
-		static UInt32 AddString(Data::StringMap<MEVStrRecord*> *strArr, const UTF8Char *strVal, UOSInt strLen, UInt32 fileOfst);
-		static void WriteGroupItems(NN<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group, UInt32 *stmPos, NN<IO::SeekableStream> stm, Data::StringMap<Exporter::MEVExporter::MEVStrRecord*> *strArr, Data::ArrayListString *dirArr);
+		static UInt32 AddString(NN<Data::StringMapNN<MEVStrRecord>> strArr, Text::String *strVal, UInt32 fileOfst);
+		static UInt32 AddString(NN<Data::StringMapNN<MEVStrRecord>> strArr, const UTF8Char *strVal, UOSInt strLen, UInt32 fileOfst);
+		static void WriteGroupItems(NN<Map::MapEnv> env, Optional<Map::MapEnv::GroupItem> group, UInt32 *stmPos, NN<IO::SeekableStream> stm, NN<Data::StringMapNN<Exporter::MEVExporter::MEVStrRecord>> strArr, Data::ArrayListString *dirArr);
 	};
 }
 #endif

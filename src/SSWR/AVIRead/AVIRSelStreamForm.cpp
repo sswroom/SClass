@@ -665,12 +665,12 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(Optional<UI::GUIClientContro
 	this->tpHID = tcConfig->AddTabPage(CSTR("HID"));
 	this->lbHIDDevice = ui->NewListBox(this->tpHID, false);
 	this->lbHIDDevice->SetDockType(UI::GUIControl::DOCK_FILL);
-	IO::DeviceInfo *dev;
-	j = this->devMgr.QueryHIDDevices(&this->devList);
+	NN<IO::DeviceInfo> dev;
+	j = this->devMgr.QueryHIDDevices(this->devList);
 	i = 0;
 	while (i < j)
 	{
-		dev = this->devList.GetItem(i);
+		dev = this->devList.GetItemNoCheck(i);
 		Text::String *name = dev->GetName();
 		this->lbHIDDevice->AddItem(name->ToCString(), dev);
 		i++;
@@ -683,7 +683,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(Optional<UI::GUIClientContro
 
 SSWR::AVIRead::AVIRSelStreamForm::~AVIRSelStreamForm()
 {
-	this->devMgr.FreeDevices(&this->devList);
+	this->devMgr.FreeDevices(this->devList);
 }
 
 void SSWR::AVIRead::AVIRSelStreamForm::OnMonitorChanged()

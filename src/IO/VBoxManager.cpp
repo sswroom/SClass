@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 
-UOSInt IO::VBoxManager::GetVMList(Data::ArrayList<VMId*> *vms)
+UOSInt IO::VBoxManager::GetVMList(NN<Data::ArrayListNN<VMId>> vms)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.Append(this->progPath);
@@ -13,7 +13,7 @@ UOSInt IO::VBoxManager::GetVMList(Data::ArrayList<VMId*> *vms)
 	Manage::Process::ExecuteProcess(sb.ToCString(), sbResult);
 	UOSInt lineCnt;
 	Text::PString sarr[2];
-	VMId *vm;
+	NN<VMId> vm;
 	UOSInt ret = 0;
 	UOSInt i;
 	sarr[1] = sbResult;
@@ -22,7 +22,7 @@ UOSInt IO::VBoxManager::GetVMList(Data::ArrayList<VMId*> *vms)
 		lineCnt = Text::StrSplitLineP(sarr, 2, sarr[1]);
 		if (sarr[0].v[0] == '"' && (i = sarr[0].IndexOf(UTF8STRC("\" {"), 1)) >= 0)
 		{
-			NEW_CLASS(vm, VMId());
+			NEW_CLASSNN(vm, VMId());
 			vm->name = Text::String::New(&sarr[0].v[1], i - 1);
 			vm->uuid.SetValue(sarr[0].ToCString().Substring(i + 2));
 			vms->Add(vm);
@@ -45,7 +45,7 @@ IO::VBoxManager::VBoxManager()
 		sb.TrimWSCRLF();
 		this->progPath = Text::String::New(UTF8STRC("vboxmanage")).Ptr();
 		this->version = Text::String::New(sb.ToCString()).Ptr();
-		this->GetVMList(&this->vms);
+		this->GetVMList(this->vms);
 	}
 }
 
@@ -54,12 +54,12 @@ IO::VBoxManager::~VBoxManager()
 	SDEL_STRING(this->progPath);
 	SDEL_STRING(this->version);
 	UOSInt i = this->vms.GetCount();
-	VMId *vm;
+	NN<VMId> vm;
 	while (i-- > 0)
 	{
-		vm = this->vms.GetItem(i);
+		vm = this->vms.GetItemNoCheck(i);
 		vm->name->Release();
-		DEL_CLASS(vm);
+		vm.Delete();
 	}
 }
 
@@ -68,12 +68,12 @@ Text::String *IO::VBoxManager::GetVersion() const
 	return this->version;
 }
 
-const Data::ArrayList<IO::VBoxManager::VMId*> *IO::VBoxManager::GetVMS() const
+NN<const Data::ArrayListNN<IO::VBoxManager::VMId>> IO::VBoxManager::GetVMS() const
 {
-	return &this->vms;
+	return this->vms;
 }
 
-IO::VBoxVMInfo *IO::VBoxManager::GetVMInfo(VMId *vm) const
+Optional<IO::VBoxVMInfo> IO::VBoxManager::GetVMInfo(NN<VMId> vm) const
 {
 	Text::StringBuilderUTF8 sb;
 	sb.Append(this->progPath);

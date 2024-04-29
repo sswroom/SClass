@@ -1,8 +1,8 @@
 #ifndef _SM_EXPORTER_CIPEXPORTER
 #define _SM_EXPORTER_CIPEXPORTER
-#include "Map/MapDrawLayer.h"
+#include "Data/ArrayListNN.h"
 #include "IO/FileExporter.h"
-#include "Data/ArrayList.h"
+#include "Map/MapDrawLayer.h"
 
 namespace Exporter
 {
@@ -26,7 +26,7 @@ namespace Exporter
 		{
 			Int32 blockX;
 			Int32 blockY;
-			Data::ArrayList<CIPStrRecord*> *records;
+			Data::ArrayListNN<CIPStrRecord> records;
 		} CIPBlock;
 
 	public:

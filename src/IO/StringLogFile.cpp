@@ -7,14 +7,14 @@ IO::StringLogFile::StringLogFile(NN<Text::String> sourceName) : IO::LogFile(sour
 
 IO::StringLogFile::~StringLogFile()
 {
-	LogItem *item;
+	NN<LogItem> item;
 	UOSInt i = this->items.GetCount();
 	while (i-- > 0)
 	{
-		item = this->items.GetItem(i);
+		item = this->items.GetItemNoCheck(i);
 		OPTSTR_DEL(item->message);
 		OPTSTR_DEL(item->desc);
-		MemFree(item);
+		MemFreeNN(item);
 	}
 }
 
@@ -25,8 +25,8 @@ UOSInt IO::StringLogFile::GetCount(IO::LogHandler::LogLevel logLevel) const
 
 Bool IO::StringLogFile::GetLogMessage(IO::LogHandler::LogLevel logLevel, UOSInt index, Data::Timestamp *ts, NN<Text::StringBuilderUTF8> sb, Text::LineBreakType lineBreak) const
 {
-	LogItem *item = this->items.GetItem(index);
-	if (item == 0)
+	NN<LogItem> item;
+	if (!this->items.GetItem(index).SetTo(item))
 	{
 		return false;
 	}
@@ -41,8 +41,8 @@ Bool IO::StringLogFile::GetLogMessage(IO::LogHandler::LogLevel logLevel, UOSInt 
 
 Bool IO::StringLogFile::GetLogDescription(IO::LogHandler::LogLevel logLevel, UOSInt index, NN<Text::StringBuilderUTF8> sb) const
 {
-	LogItem *item = this->items.GetItem(index);
-	if (item == 0)
+	NN<LogItem> item;
+	if (!this->items.GetItem(index).SetTo(item))
 	{
 		return false;
 	}
@@ -56,7 +56,7 @@ Bool IO::StringLogFile::GetLogDescription(IO::LogHandler::LogLevel logLevel, UOS
 
 UOSInt IO::StringLogFile::AddLog(const Data::Timestamp &ts, Text::CString message, Text::CString desc)
 {
-	LogItem *item = MemAlloc(LogItem, 1);
+	NN<LogItem> item = MemAllocNN(LogItem);
 	item->ts = ts;
 	item->message = Text::String::NewOrNull(message);
 	item->desc = Text::String::NewOrNull(desc);

@@ -12,18 +12,17 @@ void SSWR::AVIRead::AVIRVBoxManagerForm::UpdateVMInfo()
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UOSInt i = this->lbVMS->GetSelectedIndex();
-	IO::VBoxManager::VMId *vm = (IO::VBoxManager::VMId*)this->lbVMS->GetItem(i).p;
-	IO::VBoxVMInfo *info;
-	if (vm)
+	NN<IO::VBoxManager::VMId> vm;
+	NN<IO::VBoxVMInfo> info;
+	if (this->lbVMS->GetItem(i).GetOpt<IO::VBoxManager::VMId>().SetTo(vm))
 	{
 		Bool needUpdate = vm->name->Equals(UTF8STRC("<inaccessible>"));
-		info = this->vbox.GetVMInfo(vm);
-		if (info)
+		if (this->vbox.GetVMInfo(vm).SetTo(info))
 		{
 			this->txtState->SetText(IO::VBoxVMInfo::StateGetName(info->GetState()));
 			sptr = info->GetStateSince().ToLocalTime().ToStringNoZone(sbuff);
 			this->txtStateSince->SetText(CSTRP(sbuff, sptr));
-			DEL_CLASS(info);
+			info.Delete();
 			if (needUpdate)
 			{
 				this->lbVMS->SetItemText(i, vm->name->ToCString());
@@ -83,13 +82,13 @@ SSWR::AVIRead::AVIRVBoxManagerForm::AVIRVBoxManagerForm(Optional<UI::GUIClientCo
 	{
 		this->txtVersion->SetText(version->ToCString());
 	}
-	const Data::ArrayList<IO::VBoxManager::VMId*> *vms = this->vbox.GetVMS();
-	IO::VBoxManager::VMId *vm;
+	NN<const Data::ArrayListNN<IO::VBoxManager::VMId>> vms = this->vbox.GetVMS();
+	NN<IO::VBoxManager::VMId> vm;
 	UOSInt i = 0;
 	UOSInt j = vms->GetCount();
 	while (i < j)
 	{
-		vm = vms->GetItem(i);
+		vm = vms->GetItemNoCheck(i);
 		this->lbVMS->AddItem(vm->name, vm);
 		i++;
 	}

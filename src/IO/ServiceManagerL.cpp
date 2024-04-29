@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 
-OSInt IO::ServiceManager::ServiceComparator::Compare(ServiceItem* a, ServiceItem* b) const
+OSInt IO::ServiceManager::ServiceComparator::Compare(NN<ServiceItem> a, NN<ServiceItem> b) const
 {
 	return a->name->CompareTo(b->name);
 }
@@ -401,7 +401,7 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail *
 	return true;
 }
 
-UOSInt IO::ServiceManager::QueryServiceList(Data::ArrayList<ServiceItem*> *svcList)
+UOSInt IO::ServiceManager::QueryServiceList(NN<Data::ArrayListNN<ServiceItem>> svcList)
 {
 	Text::StringBuilderUTF8 sb;
 	Manage::Process::ExecuteProcess(CSTR("systemctl list-unit-files --no-pager"), sb);
@@ -411,7 +411,7 @@ UOSInt IO::ServiceManager::QueryServiceList(Data::ArrayList<ServiceItem*> *svcLi
 	UOSInt lineCnt;
 	UOSInt stateIndex;
 	UOSInt ret = 0;
-	ServiceItem *svc;
+	NN<ServiceItem> svc;
 	lineCnt = Text::StrSplitLineP(lines, 2, sb);
 	if (!lines[0].StartsWith(UTF8STRC("UNIT FILE")))
 	{
@@ -435,7 +435,7 @@ UOSInt IO::ServiceManager::QueryServiceList(Data::ArrayList<ServiceItem*> *svcLi
 			{
 				states[1] = lines[0].SubstrTrim(stateIndex);
 				Text::StrSplitWSP(states, 2, states[1]);
-				svc = MemAlloc(ServiceItem, 1);
+				svc = MemAllocNN(ServiceItem);
 				svc->name = Text::String::New(svcName.ToCString());
 				svc->state = IO::ServiceInfo::ServiceState::Unknown;
 				svc->runStatus = IO::ServiceInfo::RunStatus::Unknown;
@@ -488,15 +488,15 @@ UOSInt IO::ServiceManager::QueryServiceList(Data::ArrayList<ServiceItem*> *svcLi
 	return ret;
 }
 
-void IO::ServiceManager::FreeServiceList(Data::ArrayList<ServiceItem*> *svcList)
+void IO::ServiceManager::FreeServiceList(NN<Data::ArrayListNN<ServiceItem>> svcList)
 {
 	UOSInt i = svcList->GetCount();
-	ServiceItem *svc;
+	NN<ServiceItem> svc;
 	while (i-- > 0)
 	{
-		svc = svcList->GetItem(i);
+		svc = svcList->GetItemNoCheck(i);
 		svc->name->Release();
-		MemFree(svc);
+		MemFreeNN(svc);
 	}
 	svcList->Clear();
 }

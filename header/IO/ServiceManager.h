@@ -1,6 +1,6 @@
 #ifndef _SM_IO_SERVICEMANAGER
 #define _SM_IO_SERVICEMANAGER
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Data/Comparator.h"
 #include "Data/Timestamp.h"
 #include "IO/ServiceInfo.h"
@@ -27,9 +27,9 @@ namespace IO
 			IO::ServiceInfo::ServiceState enabled;
 		};
 
-		class ServiceComparator : public Data::Comparator<ServiceItem*>
+		class ServiceComparator : public Data::Comparator<NN<ServiceItem>>
 		{
-			virtual OSInt Compare(ServiceItem* a, ServiceItem* b) const;
+			virtual OSInt Compare(NN<ServiceItem> a, NN<ServiceItem> b) const;
 		};
 	private:
 		struct ClassData;
@@ -48,8 +48,8 @@ namespace IO
 		Bool ServiceDisable(Text::CString svcName);
 		Bool ServiceGetDetail(Text::CString svcName, ServiceDetail *svcDetail);
 
-		UOSInt QueryServiceList(Data::ArrayList<ServiceItem*> *svcList);
-		void FreeServiceList(Data::ArrayList<ServiceItem*> *svcList);
+		UOSInt QueryServiceList(NN<Data::ArrayListNN<ServiceItem>> svcList);
+		void FreeServiceList(NN<Data::ArrayListNN<ServiceItem>> svcList);
 	};
 }
 #endif

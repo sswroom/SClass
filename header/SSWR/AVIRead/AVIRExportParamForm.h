@@ -18,7 +18,7 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<IO::FileExporter::ParamData> param;
-			IO::FileExporter *exporter;
+			NN<IO::FileExporter> exporter;
 			UI::GUIControl **ctrls;
 			UOSInt ctrlsCnt;
 
@@ -26,7 +26,7 @@ namespace SSWR
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			AVIRExportParamForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::FileExporter *exporter, Optional<IO::FileExporter::ParamData> param);
+			AVIRExportParamForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::FileExporter> exporter, Optional<IO::FileExporter::ParamData> param);
 			virtual ~AVIRExportParamForm();
 
 			virtual void OnMonitorChanged();

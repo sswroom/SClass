@@ -265,20 +265,20 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, NN<IO::ParsedO
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	Data::ArrayList<IO::FileExporter*> exp;
-	this->exporters.GetSupportedExporters(&exp, pobj);
+	Data::ArrayListNN<IO::FileExporter> exp;
+	this->exporters.GetSupportedExporters(exp, pobj);
 	if (exp.GetCount() == 0)
 	{
 		this->ui->ShowMsgOK(CSTR("No supported exporter found"), CSTR("Save"), ownerForm);
 	}
 	else
 	{
-		IO::FileExporter *fileExp;
+		NN<IO::FileExporter> fileExp;
 		UTF8Char sbuff1[256];
 		UTF8Char sbuff2[256];
 		UTF8Char sbuff3[256];
 		UTF8Char *sptr;
-		Data::ArrayList<IO::FileExporter*> exp2;
+		Data::ArrayListNN<IO::FileExporter> exp2;
 		Text::StringBuilderUTF8 sb;
 
 		NN<UI::GUIFileDialog> sfd = this->ui->NewFileDialog(L"SSWR", L"AVIRead", dialogName, true);
@@ -286,7 +286,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, NN<IO::ParsedO
 		j = exp.GetCount();
 		while (i < j)
 		{
-			fileExp = exp.GetItem(i);
+			fileExp = exp.GetItemNoCheck(i);
 			k = 0;
 			while (fileExp->GetOutputName(k, sbuff1, sbuff2))
 			{
@@ -308,7 +308,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, NN<IO::ParsedO
 		if (sfd->ShowDialog(ownerForm->GetHandle()))
 		{
 			IO::FileExporter::SupportType suppType;
-			fileExp = exp2.GetItem((UOSInt)sfd->GetFilterIndex());
+			fileExp = exp2.GetItemNoCheck((UOSInt)sfd->GetFilterIndex());
 			suppType = fileExp->IsObjectSupported(pobj);
 			if (fileExp->GetParamCnt() > 0)
 			{
