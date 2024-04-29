@@ -606,9 +606,9 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 //-------------------------------------------------------------------------------
 	{
 		Media::VideoCaptureMgr *videoMgr;
-		Data::ArrayList<Media::VideoCaptureMgr::DeviceInfo*> devList;
-		Media::VideoCaptureMgr::DeviceInfo *dev;
-		Media::IVideoCapture *capture;
+		Data::ArrayListNN<Media::VideoCaptureMgr::DeviceInfo> devList;
+		NN<Media::VideoCaptureMgr::DeviceInfo> dev;
+		NN<Media::IVideoCapture> capture;
 		Media::IVideoCapture::VideoFormat fmts[512];
 		Char fmtName[5];
 		console->WriteLine();
@@ -616,7 +616,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		console->WriteLineC(UTF8STRC("Video Capture Info:"));
 		writer->WriteLineC(UTF8STRC("Video Capture Info:"));
 		NEW_CLASS(videoMgr, Media::VideoCaptureMgr());
-		videoMgr->GetDeviceList(&devList);
+		videoMgr->GetDeviceList(devList);
 		i = 0;
 		j = devList.GetCount();
 		if (j > 0)
@@ -624,7 +624,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			fmtName[4] = 0;
 			while (i < j)
 			{
-				dev = devList.GetItem(i);
+				dev = devList.GetItemNoCheck(i);
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Device "));
 				sb.AppendUOSInt(i);
@@ -635,8 +635,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				console->WriteLineC(sb.ToString(), sb.GetLength());
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 
-				capture = videoMgr->CreateDevice(dev->devType, dev->devId);
-				if (capture)
+				if (videoMgr->CreateDevice(dev->devType, dev->devId).SetTo(capture))
 				{
 					sb.ClearStr();
 					capture->GetInfo(sb);
@@ -671,13 +670,13 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 						writer->WriteLineC(sb.ToString(), sb.GetLength());
 						k++;
 					}
-					DEL_CLASS(capture);
+					capture.Delete();
 				}
 
 				i++;
 			}
 		}
-		videoMgr->FreeDeviceList(&devList);
+		videoMgr->FreeDeviceList(devList);
 
 		DEL_CLASS(videoMgr);
 	}

@@ -141,7 +141,7 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, NN<IO::StreamData> data, UInt32 codeP
 	else if (*(Int32*)&shpHdr[32] == 3)
 	{
 		this->layerType = Map::DRAW_LAYER_POLYLINE;
-		NEW_CLASS(this->recs, Data::ArrayList<Map::SHPData::RecHdr*>());
+		NEW_CLASS(this->recs, Data::ArrayList<Optional<Map::SHPData::RecHdr>>());
 		NEW_CLASS(this->recsMut, Sync::Mutex());
 		while (data->GetRealData(currOfst, 8, BYTEARR(shpBuff)) == 8)
 		{
@@ -180,7 +180,7 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, NN<IO::StreamData> data, UInt32 codeP
 	else if (*(Int32*)&shpHdr[32] == 5)
 	{
 		this->layerType = Map::DRAW_LAYER_POLYGON;
-		NEW_CLASS(this->recs, Data::ArrayList<Map::SHPData::RecHdr*>());
+		NEW_CLASS(this->recs, Data::ArrayList<Optional<Map::SHPData::RecHdr>>());
 		NEW_CLASS(this->recsMut, Sync::Mutex());
 		while (data->GetRealData(currOfst, 8, BYTEARR(shpBuff)) == 8)
 		{
@@ -247,7 +247,7 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, NN<IO::StreamData> data, UInt32 codeP
 	else if (*(Int32*)&shpHdr[32] == 13)
 	{
 		this->layerType = Map::DRAW_LAYER_POLYLINE3D;
-		NEW_CLASS(this->recs, Data::ArrayList<Map::SHPData::RecHdr*>());
+		NEW_CLASS(this->recs, Data::ArrayList<Optional<Map::SHPData::RecHdr>>());
 		NEW_CLASS(this->recsMut, Sync::Mutex());
 		while (data->GetRealData(currOfst, 8, BYTEARR(shpBuff)) == 8)
 		{
@@ -286,7 +286,7 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, NN<IO::StreamData> data, UInt32 codeP
 	else if (*(Int32*)&shpHdr[32] == 15)
 	{
 		this->layerType = Map::DRAW_LAYER_POLYGON;
-		NEW_CLASS(this->recs, Data::ArrayList<Map::SHPData::RecHdr*>());
+		NEW_CLASS(this->recs, Data::ArrayList<Optional<Map::SHPData::RecHdr>>());
 		NEW_CLASS(this->recsMut, Sync::Mutex());
 		while (data->GetRealData(currOfst, 8, BYTEARR(shpBuff)) == 8)
 		{
@@ -367,11 +367,11 @@ Map::SHPData::~SHPData()
 		UOSInt i = this->recs->GetCount();
 		while (i-- > 0)
 		{
-			RecHdr *obj;
-			if ((obj = this->recs->RemoveAt(i)) != 0)
+			NN<RecHdr> obj;
+			if (this->recs->RemoveAt(i).SetTo(obj))
 			{
 				SDEL_CLASS(obj->vec);
-				MemFree(obj);
+				MemFreeNN(obj);
 			}
 		}
 		DEL_CLASS(this->recs);
@@ -458,12 +458,11 @@ UOSInt Map::SHPData::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, NameArra
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POLYGON || this->layerType == Map::DRAW_LAYER_POLYLINE || this->layerType == Map::DRAW_LAYER_POLYLINE3D)
 	{
-		Map::SHPData::RecHdr *rec;
+		NN<Map::SHPData::RecHdr> rec;
 		j = this->recs->GetCount();
 		while (i < j)
 		{
-			rec = (Map::SHPData::RecHdr*)this->recs->GetItem(i);
-			if (rec)
+			if (this->recs->GetItem(i).SetTo(rec))
 			{
 				if (rec->x2 >= rect.min.x && rec->x1 <= rect.max.x && rec->y2 >= rect.min.y && rec->y1 <= rect.max.y)
 				{
@@ -550,7 +549,7 @@ void Map::SHPData::EndGetObject(GetObjectSess *session)
 
 Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
-	Map::SHPData::RecHdr *rec;
+	NN<Map::SHPData::RecHdr> rec;
 	NN<Sync::Mutex> mut;
 
 	UInt32 srid = this->csys->GetSRID();
@@ -578,8 +577,7 @@ Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session,
 	{
 		Math::Geometry::Polygon *pg;
 		Sync::MutexUsage mutUsage(mut);
-		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
-		if (rec == 0)
+		if (!this->recs->GetItem((UOSInt)id).SetTo(rec))
 			return 0;
 		if (rec->vec) return rec->vec->Clone().Ptr();
 		NEW_CLASS(pg, Math::Geometry::Polygon(srid));
@@ -597,8 +595,7 @@ Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session,
 	{
 		Math::Geometry::Polyline *pl;
 		Sync::MutexUsage mutUsage(mut);
-		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
-		if (rec == 0)
+		if (!this->recs->GetItem((UOSInt)id).SetTo(rec))
 			return 0;
 		if (rec->vec) return rec->vec->Clone().Ptr();
 		NEW_CLASS(pl, Math::Geometry::Polyline(srid));
@@ -616,8 +613,7 @@ Math::Geometry::Vector2D *Map::SHPData::GetNewVectorById(GetObjectSess *session,
 	{
 		Math::Geometry::Polyline *pl;
 		Sync::MutexUsage mutUsage(mut);
-		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
-		if (rec == 0)
+		if (!this->recs->GetItem((UOSInt)id).SetTo(rec))
 			return 0;
 		if (rec->vec) return rec->vec->Clone().Ptr();
 		NEW_CLASS(pl, Math::Geometry::Polyline(srid));

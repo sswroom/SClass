@@ -45,7 +45,7 @@ namespace Map
 		static MapInfo maps[];
 	public:
 		static const MapInfo *GetMapInfos(UOSInt *cnt);
-		static Map::MapDrawLayer *OpenMap(NN<const MapInfo> map, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NN<Parser::ParserList> parsers, Net::WebBrowser *browser, NN<Math::CoordinateSystem> envCSys);
+		static Optional<Map::MapDrawLayer> OpenMap(NN<const MapInfo> map, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NN<Parser::ParserList> parsers, Net::WebBrowser *browser, NN<Math::CoordinateSystem> envCSys);
 		static Text::CStringNN MapTypeGetName(MapType mapType);
 	};
 }

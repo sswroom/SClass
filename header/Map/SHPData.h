@@ -32,7 +32,7 @@ namespace Map
 		Data::ArrayListDbl *ptY;
 		Data::ArrayListDbl *ptZ;
 		Sync::Mutex *recsMut;
-		Data::ArrayList<RecHdr*> *recs;
+		Data::ArrayList<Optional<RecHdr>> *recs;
 
 		Bool isPoint;
 		Math::Coord2DDbl max;

@@ -15,7 +15,7 @@ Map::RevGeoCfg::RevGeoCfg(Text::CStringNN fileName, Map::MapSearchManager *mapSr
 	UTF8Char *sptr;
 	Int32 srchType;
 	Int32 srchLyr;
-	Map::RevGeoCfg::SearchLayer *layer;
+	NN<Map::RevGeoCfg::SearchLayer> layer;
 	Map::MapSearchLayer *mdata;
 
 	filePathName = filePath;
@@ -45,7 +45,7 @@ Map::RevGeoCfg::RevGeoCfg(Text::CStringNN fileName, Map::MapSearchManager *mapSr
 						mdata = mapSrchMgr->LoadLayer(CSTRP(filePath, filePathNameEnd));
 						if (!mdata->IsError())
 						{
-							layer = MemAlloc(Map::RevGeoCfg::SearchLayer, 1);
+							layer = MemAllocNN(Map::RevGeoCfg::SearchLayer);
 							layer->layerName = Text::String::NewP(filePath, filePathNameEnd);
 							layer->searchType = srchType;
 							layer->strIndex = 0;
@@ -64,17 +64,17 @@ Map::RevGeoCfg::~RevGeoCfg()
 {
 	UOSInt i = REVGEO_MAXID;
 	UOSInt j;
-	Map::RevGeoCfg::SearchLayer *layer;
+	NN<Map::RevGeoCfg::SearchLayer> layer;
 	while (i-- > 0)
 	{
 		j = this->layers[i].GetCount();
 		while (j-- > 0)
 		{
-			layer = this->layers[i].GetItem(j);
+			layer = this->layers[i].GetItemNoCheck(j);
 			if (--layer->usedCnt <= 0)
 			{
 				layer->layerName->Release();
-				MemFree(layer);
+				MemFreeNN(layer);
 			}
 		}
 	}
@@ -99,17 +99,17 @@ Bool Map::RevGeoCfg::GetStreetName(NN<Text::StringBuilderUTF8> sb, Math::Coord2D
 	Math::Coord2DDbl posOut;
 	Double minDist;
 	Double thisDist;
-	Map::RevGeoCfg::SearchLayer *layer;
-	Data::ArrayList<Map::RevGeoCfg::SearchLayer*> *layers;
+	NN<Map::RevGeoCfg::SearchLayer> layer;
+	NN<Data::ArrayListNN<Map::RevGeoCfg::SearchLayer>> layers;
 	while (i < REVGEO_MAXID)
 	{
-		layers = &this->layers[i];
+		layers = this->layers[i];
 		minDist = -1;
 		j = 0;
 		k = layers->GetCount();
 		while (j < k)
 		{
-			layer = layers->GetItem(j);
+			layer = layers->GetItemNoCheck(j);
 			if (layer->searchType == 1)
 			{
 				sbTmp.ClearStr();

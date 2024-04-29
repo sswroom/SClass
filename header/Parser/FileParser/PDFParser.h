@@ -30,12 +30,12 @@ namespace Parser
 			struct PDFParseEnv;
 
 			Bool IsComment(const UTF8Char *buff, UOSInt size);
-			Bool NextLine(PDFParseEnv *env, NN<Text::StringBuilderUTF8> sb, Bool skipComment);
-			Bool NextLineFixed(PDFParseEnv *env, UOSInt size);
-			void ParseStartxref(PDFParseEnv *env, NN<Text::StringBuilderUTF8> sb);
-			Bool ParseObject(PDFParseEnv *env, NN<Text::StringBuilderUTF8> sb, Media::PDFDocument *doc, PDFXRef *xref);
-			Bool ParseObjectStream(PDFParseEnv *env, NN<Text::StringBuilderUTF8> sb, Media::PDFObject *obj, PDFXRef *xref);
-			PDFXRef *ParseXRef(PDFParseEnv *env, NN<Text::StringBuilderUTF8> sb);
+			Bool NextLine(NN<PDFParseEnv> env, NN<Text::StringBuilderUTF8> sb, Bool skipComment);
+			Bool NextLineFixed(NN<PDFParseEnv> env, UOSInt size);
+			void ParseStartxref(NN<PDFParseEnv> env, NN<Text::StringBuilderUTF8> sb);
+			Bool ParseObject(NN<PDFParseEnv> env, NN<Text::StringBuilderUTF8> sb, NN<Media::PDFDocument> doc, PDFXRef *xref);
+			Bool ParseObjectStream(NN<PDFParseEnv> env, NN<Text::StringBuilderUTF8> sb, NN<Media::PDFObject> obj, PDFXRef *xref);
+			PDFXRef *ParseXRef(NN<PDFParseEnv> env, NN<Text::StringBuilderUTF8> sb);
 			void FreeXRef(PDFXRef *xref);
 		public:
 			PDFParser();

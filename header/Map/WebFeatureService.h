@@ -35,8 +35,8 @@ namespace Map
 		Optional<Net::SSLEngine> ssl;
 
 		Text::String *version;
-		Data::ArrayList<FeatureType*> features;
-		FeatureType *currFeature;
+		Data::ArrayListNN<FeatureType> features;
+		Optional<FeatureType> currFeature;
 
 		void LoadXML(Version version);
 		void LoadXMLFeatureType(NN<Text::XMLReader> reader);
@@ -48,7 +48,7 @@ namespace Map
 		void SetFeature(UOSInt index);
 		UOSInt GetFeatureNames(Data::ArrayListStringNN *nameList) const;
 
-		Map::MapDrawLayer *LoadAsLayer();
+		Optional<Map::MapDrawLayer> LoadAsLayer();
 	};
 }
 #endif

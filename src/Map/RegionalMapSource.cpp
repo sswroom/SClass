@@ -278,7 +278,7 @@ const Map::RegionalMapSource::MapInfo *Map::RegionalMapSource::GetMapInfos(UOSIn
 	return maps;
 }
 
-Map::MapDrawLayer *Map::RegionalMapSource::OpenMap(NN<const MapInfo> map, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NN<Parser::ParserList> parsers, Net::WebBrowser *browser, NN<Math::CoordinateSystem> envCSys)
+Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> map, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, NN<Parser::ParserList> parsers, Net::WebBrowser *browser, NN<Math::CoordinateSystem> envCSys)
 {
 	Map::MapDrawLayer *layer;
 	switch (map->mapType)

@@ -19,11 +19,7 @@ Media::AudioFilter::FileMixFilter::FileMixFilter(NN<IAudioSource> sourceAudio, N
 
 Media::AudioFilter::FileMixFilter::~FileMixFilter()
 {
-	if (this->fileSrc)
-	{
-		DEL_CLASS(this->fileSrc);
-		this->fileSrc = 0;
-	}
+	this->fileSrc.Delete();
 }
 
 void Media::AudioFilter::FileMixFilter::GetFormat(AudioFormat *format)
@@ -34,7 +30,8 @@ void Media::AudioFilter::FileMixFilter::GetFormat(AudioFormat *format)
 UOSInt Media::AudioFilter::FileMixFilter::ReadBlock(Data::ByteArray blk)
 {
 	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
-	if (this->mixing)
+	NN<Media::IAudioSource> fileSrc;
+	if (this->mixing && this->fileSrc.SetTo(fileSrc))
 	{
 		UOSInt sampleCnt = readSize / this->format.align;
 		UOSInt readCnt;
@@ -46,7 +43,7 @@ UOSInt Media::AudioFilter::FileMixFilter::ReadBlock(Data::ByteArray blk)
 		if (this->chMix)
 		{
 			Data::ByteBuffer fileBuff(sampleCnt * this->format.bitpersample);
-			readCnt = this->fileSrc->ReadSample(this->mixOfst, sampleCnt, fileBuff);
+			readCnt = fileSrc->ReadSample(this->mixOfst, sampleCnt, fileBuff);
 			if (this->format.bitpersample == 16)
 			{
 				i = 0;
@@ -84,7 +81,7 @@ UOSInt Media::AudioFilter::FileMixFilter::ReadBlock(Data::ByteArray blk)
 		else
 		{
 			Data::ByteBuffer fileBuff(sampleCnt * this->format.align);
-			readCnt = this->fileSrc->ReadSample(this->mixOfst, sampleCnt, fileBuff);
+			readCnt = fileSrc->ReadSample(this->mixOfst, sampleCnt, fileBuff);
 			if (this->format.bitpersample == 16)
 			{
 				i = 0;
@@ -129,23 +126,22 @@ Bool Media::AudioFilter::FileMixFilter::LoadFile(NN<Text::String> fileName)
 	if (mf)
 	{
 		this->StopMix();
-		Media::IMediaSource *mediaSrc;
-		Media::IAudioSource *audSrc;
+		NN<Media::IMediaSource> mediaSrc;
+		NN<Media::IAudioSource> audSrc;
 		Int32 syncTime;
 		UOSInt i;
 		Bool found = false;
 		i = 0;
 		while (true)
 		{
-			mediaSrc = mf->GetStream(i, &syncTime);
-			if (mediaSrc == 0)
+			if (!mf->GetStream(i, syncTime).SetTo(mediaSrc))
 			{
 				break;
 			}
 			else if (mediaSrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 			{
 				Media::AudioFormat fmt;
-				audSrc = (Media::IAudioSource*)mediaSrc;
+				audSrc = NN<Media::IAudioSource>::ConvertFrom(mediaSrc);
 				audSrc->GetFormat(fmt);
 				if (audSrc->SupportSampleRead() && fmt.frequency == this->format.frequency && this->format.bitpersample == fmt.bitpersample)
 				{
@@ -155,11 +151,8 @@ Bool Media::AudioFilter::FileMixFilter::LoadFile(NN<Text::String> fileName)
 						this->chMix = (this->format.nChannels != fmt.nChannels);
 						mf->KeepStream(i, true);
 						DEL_CLASS(mf);
-						if (this->fileSrc)
-						{
-							DEL_CLASS(this->fileSrc);
-						}
-						this->fileSrc = (Media::IAudioSource*)mediaSrc;
+						this->fileSrc.Delete();
+						this->fileSrc = NN<Media::IAudioSource>::ConvertFrom(mediaSrc);
 						return true;
 					}
 				}
@@ -180,7 +173,7 @@ Bool Media::AudioFilter::FileMixFilter::LoadFile(NN<Text::String> fileName)
 
 Bool Media::AudioFilter::FileMixFilter::StartMix()
 {
-	if (this->fileSrc)
+	if (this->fileSrc.NotNull())
 	{
 		this->mixOfst = 0;
 		this->mixing = true;

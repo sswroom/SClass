@@ -13,7 +13,7 @@ namespace Text
 		private:
 			static UInt8 URIAllow[];
 		public:
-			static void FormEncode(NN<Text::StringBuilderUTF8> sb, const UTF8Char *uri, UOSInt uriLen);
+			static void FormEncode(NN<Text::StringBuilderUTF8> sb, Text::CStringNN uri);
 			static UTF8Char *FormEncode(UTF8Char *buff, const UTF8Char *uri);
 			static UTF8Char *FormDecode(UTF8Char *buff, const UTF8Char *uri);
 			

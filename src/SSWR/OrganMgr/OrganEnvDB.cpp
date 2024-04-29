@@ -1835,10 +1835,10 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 			if (pobj->GetParserType() == IO::ParserType::MediaFile)
 			{
 				Media::MediaFile *mediaFile = (Media::MediaFile*)pobj;
-				Media::IMediaSource *msrc = mediaFile->GetStream(0, 0);
-				if (msrc && msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
+				NN<Media::IMediaSource> msrc;
+				if (mediaFile->GetStream(0, 0).SetTo(msrc) && msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 				{
-					graphImg = Media::FrequencyGraph::CreateGraph(this->drawEng, (Media::IAudioSource *)msrc, 2048, 2048, Math::FFTCalc::WT_BLACKMANN_HARRIS, 12);
+					graphImg = Media::FrequencyGraph::CreateGraph(this->drawEng, (Media::IAudioSource *)msrc.Ptr(), 2048, 2048, Math::FFTCalc::WT_BLACKMANN_HARRIS, 12);
 					if (graphImg)
 					{
 						valid = true;

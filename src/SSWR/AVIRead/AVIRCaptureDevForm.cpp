@@ -6,7 +6,8 @@
 void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnOKClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRCaptureDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCaptureDevForm>();
-	if (me->currCapture == 0)
+	NN<Media::IVideoCapture> currCapture;
+	if (!me->currCapture.SetTo(currCapture))
 	{
 		me->ui->ShowMsgOK(CSTR("Please select a device"), CSTR("Select Capture Device"), me);
 		return;
@@ -18,8 +19,8 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnOKClick(AnyType userObj)
 		return;
 	}
 
-	me->currCapture->SetPreferSize(fmt->size, fmt->fourcc, fmt->bpp, fmt->frameRateNumer, fmt->frameRateDenom);
-	me->capture = me->currCapture;
+	currCapture->SetPreferSize(fmt->size, fmt->fourcc, fmt->bpp, fmt->frameRateNumer, fmt->frameRateDenom);
+	me->capture = currCapture;
 	me->currCapture = 0;
 
 	me->SetDialogResult(UI::GUIForm::DR_OK);
@@ -34,10 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnCancelClick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRCaptureDevForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCaptureDevForm>();
-	if (me->currCapture)
-	{
-		DEL_CLASS(me->currCapture);
-	}
+	me->currCapture.Delete();
 	me->ReleaseFormats();
 
 	Media::VideoCaptureMgr::DeviceInfo *devInfo = (Media::VideoCaptureMgr::DeviceInfo*)me->lbDevice->GetSelectedItem().p;
@@ -50,7 +48,8 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(AnyType userObj)
 		me->currCapture = 0;
 	}
 	me->cboFormat->ClearItems();
-	if (me->currCapture)
+	NN<Media::IVideoCapture> currCapture;
+	if (me->currCapture.SetTo(currCapture))
 	{
 		Data::ArrayListUInt32 supportedCS;
 		UTF8Char sbuff[128];
@@ -58,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(AnyType userObj)
 		Text::StringBuilderUTF8 devInfo;
 		Text::StringBuilderUTF8 sb;
 		Media::IVideoCapture::VideoFormat fmts[80];
-		SSWR::AVIRead::AVIRCaptureDevForm::CaptureFormat *cfmt;
+		NN<SSWR::AVIRead::AVIRCaptureDevForm::CaptureFormat> cfmt;
 		UOSInt bestSize = 0;
 		UInt32 bestFmt = 0;
 		UOSInt bestBPP = 0;
@@ -69,16 +68,16 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(AnyType userObj)
 		Media::CS::CSConverter::GetSupportedCS(&supportedCS);
 
 		devInfo.AppendC(UTF8STRC("Name: "));
-		sptr = me->currCapture->GetSourceName(sbuff);
+		sptr = currCapture->GetSourceName(sbuff);
 		devInfo.AppendP(sbuff, sptr);
 		devInfo.AppendC(UTF8STRC("\r\n"));
-		me->currCapture->GetInfo(devInfo);
+		currCapture->GetInfo(devInfo);
 		devInfo.AppendC(UTF8STRC("Supported Formats:\r\n"));
-		fmtCnt = me->currCapture->GetSupportedFormats(fmts, 80);
+		fmtCnt = currCapture->GetSupportedFormats(fmts, 80);
 		i = 0;
 		while (i < fmtCnt)
 		{
-			cfmt = MemAlloc(SSWR::AVIRead::AVIRCaptureDevForm::CaptureFormat, 1);
+			cfmt = MemAllocNN(SSWR::AVIRead::AVIRCaptureDevForm::CaptureFormat);
 			cfmt->size = fmts[i].info.dispSize;
 			cfmt->fourcc = fmts[i].info.fourcc;
 			cfmt->bpp = fmts[i].info.storeBPP;
@@ -163,11 +162,7 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(AnyType userObj)
 
 void SSWR::AVIRead::AVIRCaptureDevForm::ReleaseFormats()
 {
-	UOSInt i = this->currFormats.GetCount();
-	while (i-- > 0)
-	{
-		MemFree(this->currFormats.RemoveAt(i));
-	}
+	this->currFormats.MemFreeAll();
 }
 
 SSWR::AVIRead::AVIRCaptureDevForm::AVIRCaptureDevForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 768, 200, ui)
@@ -202,7 +197,7 @@ SSWR::AVIRead::AVIRCaptureDevForm::AVIRCaptureDevForm(Optional<UI::GUIClientCont
 
 	this->currCapture = 0;
 	this->capture = 0;
-	this->captureMgr.GetDeviceList(&this->devInfoList);
+	this->captureMgr.GetDeviceList(this->devInfoList);
 	UOSInt cnt = this->devInfoList.GetCount();
 	if (cnt == 0)
 	{
@@ -212,7 +207,7 @@ SSWR::AVIRead::AVIRCaptureDevForm::AVIRCaptureDevForm(Optional<UI::GUIClientCont
 	i = 0;
 	while (i < cnt)
 	{
-		Media::VideoCaptureMgr::DeviceInfo *dev = this->devInfoList.GetItem(i);
+		NN<Media::VideoCaptureMgr::DeviceInfo> dev = this->devInfoList.GetItemNoCheck(i);
 		this->lbDevice->AddItem({dev->devName, Text::StrCharCnt(dev->devName)}, dev);
 		i++;
 	}
@@ -222,12 +217,8 @@ SSWR::AVIRead::AVIRCaptureDevForm::AVIRCaptureDevForm(Optional<UI::GUIClientCont
 SSWR::AVIRead::AVIRCaptureDevForm::~AVIRCaptureDevForm()
 {
 	this->ClearChildren();
-	this->captureMgr.FreeDeviceList(&this->devInfoList);
-	if (this->currCapture)
-	{
-		DEL_CLASS(this->currCapture);
-		this->currCapture = 0;
-	}
+	this->captureMgr.FreeDeviceList(this->devInfoList);
+	this->currCapture.Delete();
 	this->ReleaseFormats();
 }
 

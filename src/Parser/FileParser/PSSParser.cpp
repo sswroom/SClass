@@ -689,8 +689,8 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::StreamData>
 	NN<Media::IVideoSource> nnvstm;
 	if (nnvstm.Set(vstm))
 	{
-		Media::Decoder::MP2GDecoder *mp2g;
-		NEW_CLASS(mp2g, Media::Decoder::MP2GDecoder(nnvstm, true));
+		NN<Media::Decoder::MP2GDecoder> mp2g;
+		NEW_CLASSNN(mp2g, Media::Decoder::MP2GDecoder(nnvstm, true));
 		file->AddSource(mp2g, 0);
 	}
 
@@ -702,55 +702,52 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::StreamData>
 		{
 			if (formats[i]->formatId == 1)
 			{
-				Media::IAudioSource *as;
-				NEW_CLASS(as, Media::LPCMSource(stmFD, 0, stmFD->GetDataSize(), formats[i], fd->GetFullName()));
+				NN<Media::IAudioSource> as;
+				NEW_CLASSNN(as, Media::LPCMSource(stmFD, 0, stmFD->GetDataSize(), formats[i], fd->GetFullName()));
 				file->AddSource(as, audDelay[i]);
 				stmFD.Delete();
 			}
 			else if (formats[i]->formatId == 0x50)
 			{
-				Media::IAudioSource *as;
+				NN<Media::IAudioSource> as;
 				Media::BlockParser::MP2BlockParser mp2Parser;
-				as = mp2Parser.ParseStreamData(stmFD);
-				stmFD.Delete();
-				if (as)
+				if (as.Set(mp2Parser.ParseStreamData(stmFD)))
 				{
 					file->AddSource(as, audDelay[i]);
 				}
+				stmFD.Delete();
 			}
 			else if (formats[i]->formatId == 0x55)
 			{
-				Media::IAudioSource *as;
+				NN<Media::IAudioSource> as;
 				Media::BlockParser::MP3BlockParser mp3Parser;
-				as = mp3Parser.ParseStreamData(stmFD);
-				stmFD.Delete();
-				if (as)
+				if (as.Set(mp3Parser.ParseStreamData(stmFD)))
 				{
 					file->AddSource(as, audDelay[i]);
 				}
+				stmFD.Delete();
 			}
 			else if (formats[i]->formatId == 0x2000)
 			{
-				Media::IAudioSource *as;
+				NN<Media::IAudioSource> as;
 				Media::BlockParser::AC3BlockParser ac3Parser;
-				as = ac3Parser.ParseStreamData(stmFD);
-				stmFD.Delete();
-				if (as)
+				if (as.Set(ac3Parser.ParseStreamData(stmFD)))
 				{
 					file->AddSource(as, audDelay[i]);
 				}
+				stmFD.Delete();
 			}
 			else if (formats[i]->formatId == 0x2080)
 			{
-				Media::IAudioSource *as;
-				NEW_CLASS(as, Media::AudioFixBlockSource(stmFD, 0, stmFD->GetDataSize(), formats[i], fd->GetFullName()));
+				NN<Media::IAudioSource> as;
+				NEW_CLASSNN(as, Media::AudioFixBlockSource(stmFD, 0, stmFD->GetDataSize(), formats[i], fd->GetFullName()));
 				file->AddSource(as, audDelay[i]);
 				stmFD.Delete();
 			}
 			else if (formats[i]->formatId == 0x2081)
 			{
-				Media::IAudioSource *as;
-				NEW_CLASS(as, Media::AudioFixBlockSource(stmFD, 0, stmFD->GetDataSize(), formats[i], fd->GetFullName()));
+				NN<Media::IAudioSource> as;
+				NEW_CLASSNN(as, Media::AudioFixBlockSource(stmFD, 0, stmFD->GetDataSize(), formats[i], fd->GetFullName()));
 				file->AddSource(as, audDelay[i]);
 				stmFD.Delete();
 			}

@@ -28,8 +28,8 @@ IO::FileExporter::SupportType Exporter::WAVExporter::IsObjectSupported(NN<IO::Pa
 	NN<Media::MediaFile> file = NN<Media::MediaFile>::ConvertFrom(pobj);
 	if (file->GetStream(1, 0) != 0)
 		return IO::FileExporter::SupportType::NotSupported;
-	Media::IMediaSource *stm = file->GetStream(0, 0);
-	if (stm == 0)
+	NN<Media::IMediaSource> stm;
+	if (!file->GetStream(0, 0).SetTo(stm))
 		return IO::FileExporter::SupportType::NotSupported;
 	if (stm->GetMediaType() != Media::MEDIA_TYPE_AUDIO)
 		return IO::FileExporter::SupportType::NotSupported;
@@ -62,13 +62,13 @@ Bool Exporter::WAVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	NN<Media::MediaFile> file = NN<Media::MediaFile>::ConvertFrom(pobj);
 	if (file->GetStream(1, 0) != 0)
 		return false;
-	Media::IMediaSource *src = file->GetStream(0, 0);
-	if (src == 0)
+	NN<Media::IMediaSource> src;
+	if (!file->GetStream(0, 0).SetTo(src))
 		return false;
 	if (src->GetMediaType() != Media::MEDIA_TYPE_AUDIO)
 		return false;
 
-	Media::IAudioSource *audio = (Media::IAudioSource*)src;
+	NN<Media::IAudioSource> audio = NN<Media::IAudioSource>::ConvertFrom(src);
 	Media::AudioFormat format;
 	audio->GetFormat(format);
 	UInt64 fileSize = 0;

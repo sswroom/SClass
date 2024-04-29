@@ -45,20 +45,20 @@ IO::ParsedObject *Parser::FileParser::ID3Parser::ParseFileHdr(NN<IO::StreamData>
 		return 0;
 	
 	headerSize = ReadUSInt32(&hdr[6]);
-	Media::AudioBlockSource *src = 0;
+	NN<Media::AudioBlockSource> src;
 	Media::MediaFile *vid;
 	Media::BlockParser::MP3BlockParser mp3Parser;
 	NN<IO::StreamData> data = fd->GetPartialData(headerSize + 10, fd->GetDataSize() - headerSize - 10);
-	src = mp3Parser.ParseStreamData(data);
-	data.Delete();
-	if (src)
+	if (src.Set(mp3Parser.ParseStreamData(data)))
 	{
+		data.Delete();
 		NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
 		vid->AddSource(src, 0);
 		return vid;
 	}
 	else
 	{
+		data.Delete();
 		return 0;
 	}
 }

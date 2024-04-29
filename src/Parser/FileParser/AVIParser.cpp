@@ -466,8 +466,8 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::StreamData>
 				info.ycOfst = Media::YCOFST_C_CENTER_LEFT;
 				info.rotateType = Media::RotateType::None;
 
-				Media::FileVideoSource *vstm;
-				NEW_CLASS(vstm, Media::FileVideoSource(fd, info, strl[i].strh.dwRate, strl[i].strh.dwScale, false));
+				NN<Media::FileVideoSource> vstm;
+				NEW_CLASSNN(vstm, Media::FileVideoSource(fd, info, strl[i].strh.dwRate, strl[i].strh.dwScale, false));
 				UInt32 scale = strl[i].strh.dwScale;
 				UInt32 rate = strl[i].strh.dwRate;
 				k = (UInt32)ofsts->GetCount();
@@ -655,13 +655,14 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::StreamData>
 			audioList->Add(new AudioStream((WAVEFORMATEX*)strl[i].strf, dsList, audsName, audDelay));*/
 			/////////////////////////////////
 			audsName->Release();
-			if (audsData)
+			NN<Media::IMediaSource> src;
+			if (src.Set(audsData))
 			{
-				mf->AddSource(audsData, audDelay);
+				mf->AddSource(src, audDelay);
 			}
-			else if (lpcmData)
+			else if (src.Set(lpcmData))
 			{
-				mf->AddSource(lpcmData, audDelay);
+				mf->AddSource(src, audDelay);
 			}
 		}
 		else

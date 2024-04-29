@@ -65,13 +65,13 @@ Bool Media::MediaPlayerInterface::OpenVideo(Media::MediaFile *mf)
 
 	Bool hasAudio = false;
 	Bool hasVideo = false;
-	Media::IMediaSource *msrc;
+	NN<Media::IMediaSource> msrc;
 	Media::MediaType mt;
 	IO::Path::PathType pt;
 	UInt64 fileSize;
 	IO::Path::FindFileSession *sess;
 	i = 0;
-	while ((msrc = mf->GetStream(i++, 0)) != 0)
+	while (mf->GetStream(i++, 0).SetTo(msrc))
 	{
 		mt = msrc->GetMediaType();
 		if (mt == Media::MEDIA_TYPE_VIDEO)
@@ -130,7 +130,7 @@ Bool Media::MediaPlayerInterface::OpenVideo(Media::MediaFile *mf)
 								{
 									Int32 syncTime;
 									k = 0;
-									while ((msrc = audFile->GetStream(k, &syncTime)) != 0)
+									while (audFile->GetStream(k, syncTime).SetTo(msrc))
 									{
 										audFile->KeepStream(k, true);
 										mf->AddSource(msrc, syncTime);

@@ -99,7 +99,7 @@ void SSWR::AVIRead::AVIRWFSForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Map::MapDrawLayer *SSWR::AVIRead::AVIRWFSForm::LoadLayer()
+Optional<Map::MapDrawLayer> SSWR::AVIRead::AVIRWFSForm::LoadLayer()
 {
 	return this->wfs->LoadAsLayer();
 }

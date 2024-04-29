@@ -90,16 +90,17 @@ void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV:
 	lastCnt = thisCnt;
 }
 
-Media::IVideoCapture *OpenCapture(UOSInt defIndex)
+Optional<Media::IVideoCapture> OpenCapture(UOSInt defIndex)
 {
-	Media::IVideoCapture *capture = 0;
+	Optional<Media::IVideoCapture> capture = 0;
+	NN<Media::IVideoCapture> nncapture;
 	Media::VideoCaptureMgr *videoCap;
-	Data::ArrayList<Media::VideoCaptureMgr::DeviceInfo*> devList;
+	Data::ArrayListNN<Media::VideoCaptureMgr::DeviceInfo> devList;
 	UOSInt i;
 	UOSInt j;
-	Media::VideoCaptureMgr::DeviceInfo *dev;
+	NN<Media::VideoCaptureMgr::DeviceInfo> dev;
 	NEW_CLASS(videoCap, Media::VideoCaptureMgr());
-	videoCap->GetDeviceList(&devList);
+	videoCap->GetDeviceList(devList);
 	if (devList.GetCount())
 	{
 		Media::IVideoCapture::VideoFormat *formats;
@@ -114,17 +115,15 @@ Media::IVideoCapture *OpenCapture(UOSInt defIndex)
 			formats[i].frameRateNorm = 0;
 			i++;
 		}
-		dev = devList.GetItem(defIndex);
-		if (dev)
+		if (devList.GetItem(defIndex).SetTo(dev))
 		{
 			capture = videoCap->CreateDevice(dev->devType, dev->devId);
-			if (capture->GetSupportedFormats(formats, 512) <= 0)
+			if (!capture.SetTo(nncapture) || nncapture->GetSupportedFormats(formats, 512) <= 0)
 			{
-				DEL_CLASS(capture);
-				capture = 0;
+				capture.Delete();
 			}
 		}
-		if (capture == 0)
+		if (capture.IsNull())
 		{
 			i = 0;
 			j = devList.GetCount();
@@ -132,14 +131,13 @@ Media::IVideoCapture *OpenCapture(UOSInt defIndex)
 			{
 				if (defIndex != i)
 				{
-					dev = devList.GetItem(i);
+					dev = devList.GetItemNoCheck(i);
 					capture = videoCap->CreateDevice(dev->devType, dev->devId);
-					if (capture->GetSupportedFormats(formats, 512) > 0)
+					if (capture.SetTo(nncapture) && nncapture->GetSupportedFormats(formats, 512) > 0)
 					{
 						break;
 					}
-					DEL_CLASS(capture);
-					capture = 0;
+					capture.Delete();
 				}
 				i++;
 			}
@@ -154,7 +152,7 @@ Media::IVideoCapture *OpenCapture(UOSInt defIndex)
 		}
 		MemFree(formats);
 	}
-	videoCap->FreeDeviceList(&devList);
+	videoCap->FreeDeviceList(devList);
 	DEL_CLASS(videoCap);
 	return capture;
 }
@@ -233,7 +231,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	}
 
 	console->WriteLineC(UTF8STRC("Starting OpenCVPeopleCounting"));
-	if (capture.Set(OpenCapture(defIndex)))
+	if (OpenCapture(defIndex).SetTo(capture))
 	{
 		Text::StringBuilderUTF8 sb;
 		capture->GetInfo(sb);

@@ -26,13 +26,13 @@ namespace SSWR
 				UInt32 frameRateDenom;
 			} CaptureFormat;
 		public:
-			Media::IVideoCapture *capture;
+			Optional<Media::IVideoCapture> capture;
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Media::VideoCaptureMgr captureMgr;
-			Media::IVideoCapture *currCapture;
-			Data::ArrayList<Media::VideoCaptureMgr::DeviceInfo*> devInfoList;
-			Data::ArrayList<CaptureFormat*> currFormats;
+			Optional<Media::IVideoCapture> currCapture;
+			Data::ArrayListNN<Media::VideoCaptureMgr::DeviceInfo> devInfoList;
+			Data::ArrayListNN<CaptureFormat> currFormats;
 			NN<UI::GUILabel> lblDevice;
 			NN<UI::GUIListBox> lbDevice;
 			NN<UI::GUILabel> lblFormat;

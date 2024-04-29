@@ -53,8 +53,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Media::VideoCaptureMgr *mgr;
 	Media::ColorManager *colorMgr;
 	NN<Media::ColorManagerSess> colorSess;
-	Data::ArrayList<Media::VideoCaptureMgr::DeviceInfo *> devList;
-	Media::VideoCaptureMgr::DeviceInfo *devInfo;
+	Data::ArrayListNN<Media::VideoCaptureMgr::DeviceInfo> devList;
+	NN<Media::VideoCaptureMgr::DeviceInfo> devInfo;
 	UOSInt cnt;
 	UOSInt i;
 	UOSInt j;
@@ -98,7 +98,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	NEW_CLASS(mgr, Media::VideoCaptureMgr());
 
 	colorSess = colorMgr->CreateSess(0);
-	cnt = mgr->GetDeviceList(&devList);
+	cnt = mgr->GetDeviceList(devList);
 	if (cnt > 0)
 	{
 		sb.ClearStr();
@@ -108,7 +108,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		i = 0;
 		while (i < cnt)
 		{
-			devInfo = devList.GetItem(i);
+			devInfo = devList.GetItemNoCheck(i);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Type = "));
 			sb.AppendI32(devInfo->devType);
@@ -124,11 +124,11 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		devNo = 0;
 		while (devNo < cnt)
 		{
-			devInfo = devList.GetItem(devNo);
-			Media::IVideoCapture *capture = mgr->CreateDevice(devInfo->devType, devInfo->devId);
+			devInfo = devList.GetItemNoCheck(devNo);
+			NN<Media::IVideoCapture> capture;
 			succ = false;
 			
-			if (capture)
+			if (mgr->CreateDevice(devInfo->devType, devInfo->devId).SetTo(capture))
 			{
 				UInt32 maxFmt = 0;
 				UInt32 maxBpp = 0;
@@ -338,7 +338,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				}
 
 				SDEL_CLASS(converter);
-				DEL_CLASS(capture);
+				capture.Delete();
 			}
 
 			if (succ)
@@ -356,7 +356,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	{
 		console->WriteLineC(UTF8STRC("No capture device found"));
 	}
-	mgr->FreeDeviceList(&devList);
+	mgr->FreeDeviceList(devList);
 	colorMgr->DeleteSess(colorSess);
 
 	DEL_CLASS(mgr);

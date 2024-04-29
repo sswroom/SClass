@@ -206,7 +206,7 @@ void Map::TileMapServiceSource::LoadXML()
 					{
 						if (nodeText->Equals(UTF8STRC("TileSet")))
 						{
-							TileLayer *lyr;
+							NN<TileLayer> lyr;
 							Text::String *href = 0;
 							Double unitPerPixel= 0;
 							UOSInt order = INVALID_INDEX;
@@ -248,7 +248,7 @@ void Map::TileMapServiceSource::LoadXML()
 							}
 							if (href && order != INVALID_INDEX && unitPerPixel != 0)
 							{
-								lyr = MemAlloc(TileLayer, 1);
+								lyr = MemAllocNN(TileLayer);
 								lyr->url = href->Clone();
 								lyr->unitPerPixel = unitPerPixel;
 								lyr->order = order;
@@ -305,13 +305,13 @@ Map::TileMapServiceSource::~TileMapServiceSource()
 	SDEL_STRING(this->tileExt);
 	this->cacheDir->Release();
 	this->csys.Delete();
-	TileLayer *layer;
+	NN<TileLayer> layer;
 	UOSInt i = this->layers.GetCount();
 	while (i-- > 0)
 	{
-		layer = this->layers.GetItem(i);
+		layer = this->layers.GetItemNoCheck(i);
 		layer->url->Release();
-		MemFree(layer);
+		MemFreeNN(layer);
 	}
 }
 
@@ -342,8 +342,8 @@ UOSInt Map::TileMapServiceSource::GetMaxLevel() const
 
 Double Map::TileMapServiceSource::GetLevelScale(UOSInt level) const
 {
-	TileLayer *layer = this->layers.GetItem(level);
-	if (layer == 0)
+	NN<TileLayer> layer;
+	if (!this->layers.GetItem(level).SetTo(layer))
 	{
 		return 0;
 	}
@@ -356,13 +356,13 @@ UOSInt Map::TileMapServiceSource::GetNearestLevel(Double scale) const
 	Double minDiff = 1.0E+100;
 	UOSInt minLevel = 0;
 	UOSInt i = this->layers.GetCount();
-	TileLayer *layer;
+	NN<TileLayer> layer;
 	Double layerScale;
 	Double thisDiff;
 	Double scaleDiv = Map::TileMapUtil::CalcScaleDiv(this->csys);
 	while (i-- > 0)
 	{
-		layer = this->layers.GetItem(i);
+		layer = this->layers.GetItemNoCheck(i);
 		layerScale = layer->unitPerPixel / scaleDiv;
 		thisDiff = Math_Ln(scale / layerScale);
 		if (thisDiff < 0)
@@ -411,8 +411,8 @@ Map::TileMap::ImageType Map::TileMapServiceSource::GetImageType() const
 
 UOSInt Map::TileMapServiceSource::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rect, Data::ArrayList<Math::Coord2D<Int32>> *ids)
 {
-	TileLayer *layer = this->layers.GetItem(level);
-	if (layer == 0)
+	NN<TileLayer> layer;
+	if (!this->layers.GetItem(level).SetTo(layer))
 	{
 		return 0;
 	}
@@ -462,8 +462,8 @@ Media::ImageList *Map::TileMapServiceSource::LoadTileImage(UOSInt level, Math::C
 
 UTF8Char *Map::TileMapServiceSource::GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
 {
-	TileLayer *layer = this->layers.GetItem(level);
-	if (layer)
+	NN<TileLayer> layer;
+	if (this->layers.GetItem(level).SetTo(layer))
 	{
 		sbuff = layer->url->ConcatTo(sbuff);
 		*sbuff++ = '/';
@@ -479,8 +479,8 @@ UTF8Char *Map::TileMapServiceSource::GetTileImageURL(UTF8Char *sbuff, UOSInt lev
 
 Bool Map::TileMapServiceSource::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
 {
-	TileLayer *layer = this->layers.GetItem(level);
-	if (layer)
+	NN<TileLayer> layer;
+	if (this->layers.GetItem(level).SetTo(layer))
 	{
 		sb->Append(layer->url);
 		sb->AppendUTF8Char('/');
@@ -506,8 +506,8 @@ Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UOSInt lev
 	Data::DateTime currTime;
 	NN<Net::HTTPClient> cli;
 	NN<IO::StreamData> fd;
-	TileLayer *layer = this->layers.GetItem(level);
-	if (layer == 0)
+	NN<TileLayer> layer;
+	if (!this->layers.GetItem(level).SetTo(layer))
 		return 0;
 	Double x1 = tileId.x * layer->unitPerPixel * UOSInt2Double(this->tileWidth) + this->csysOrigin.x;
 	Double y1 = tileId.y * layer->unitPerPixel * UOSInt2Double(this->tileHeight) + this->csysOrigin.y;

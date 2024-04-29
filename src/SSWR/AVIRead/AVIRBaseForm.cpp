@@ -1000,12 +1000,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_CAP_DEV:
 		{
 			SSWR::AVIRead::AVIRCaptureDevForm dlg(0, this->ui, this->core);
-			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
+			NN<Media::IVideoCapture> capture;
+			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK && dlg.capture.SetTo(capture))
 			{
 				NN<Media::MediaFile> mf;
-				sptr = dlg.capture->GetSourceName(sbuff);
+				sptr = capture->GetSourceName(sbuff);
 				NEW_CLASSNN(mf, Media::MediaFile(CSTRP(sbuff, sptr)));
-				mf->AddSource(dlg.capture, 0);
+				mf->AddSource(capture, 0);
 				this->core->OpenObject(mf);
 			}
 		}
@@ -2741,7 +2742,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRRegionalMapForm frm(0, this->ui, this->core, this->ssl, csys);
 			if (frm.ShowDialog(this))
 			{
-				if (mapLyr.Set(frm.GetMapLayer()))
+				if (frm.GetMapLayer().SetTo(mapLyr))
 					this->core->OpenObject(mapLyr);
 			}
 			csys.Delete();

@@ -14,15 +14,16 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnCaptureDevClicked(An
 {
 	NN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRConsoleMediaPlayerForm>();
 	SSWR::AVIRead::AVIRCaptureDevForm dlg(0, me->ui, me->core);
+	NN<Media::IVideoCapture> capture;
 	me->player->CloseFile();
-	if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
+	if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK && dlg.capture.SetTo(capture))
 	{
 		UTF8Char sbuff[256];
 		UTF8Char *sptr;
 		Media::MediaFile *mf;
-		sptr = dlg.capture->GetSourceName(sbuff);
+		sptr = capture->GetSourceName(sbuff);
 		NEW_CLASS(mf, Media::MediaFile(CSTRP(sbuff, sptr)));
-		mf->AddSource(dlg.capture, 0);
+		mf->AddSource(capture, 0);
 		if (me->player->OpenVideo(mf))
 		{
 			me->UpdateColorDisp();

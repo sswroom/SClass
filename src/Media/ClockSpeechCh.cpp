@@ -21,7 +21,7 @@ void Media::ClockSpeechCh::AppendWAV(NN<Media::AudioConcatSource> source, NN<Par
 		NN<Media::IMediaSource> msrc;
 		Int32 syncTime;
 		UOSInt i = 0;
-		while (msrc.Set(file->GetStream(i++, &syncTime)))
+		while (file->GetStream(i++, syncTime).SetTo(msrc))
 		{
 			if (msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 			{

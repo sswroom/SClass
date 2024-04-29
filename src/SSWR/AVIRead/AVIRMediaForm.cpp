@@ -59,7 +59,7 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateStreamList()
 	{
 		mFile = this->files->GetItem(i);
 		k = 0;
-		while (medSource.Set(mFile->GetStream(k++, &syncTime)))
+		while (mFile->GetStream(k++, syncTime).SetTo(medSource))
 		{
 			Media::MediaType mtype = medSource->GetMediaType();
 			sptr = sbuff;

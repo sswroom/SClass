@@ -27,11 +27,11 @@ Media::PDFDocument::~PDFDocument()
 {
 	this->version->Release();
 	UOSInt i = this->objMap.GetCount();
-	Media::PDFObject *obj;
+	NN<Media::PDFObject> obj;
 	while (i-- > 0)
 	{
-		obj = this->objMap.GetItem(i);
-		DEL_CLASS(obj);
+		obj = this->objMap.GetItemNoCheck(i);
+		obj.Delete();
 	}
 }
 
@@ -45,25 +45,30 @@ UOSInt Media::PDFDocument::GetCount() const
 	return this->objMap.GetCount();
 }
 
-Media::PDFObject *Media::PDFDocument::GetItem(UOSInt index) const
+NN<Media::PDFObject> Media::PDFDocument::GetItemNoCheck(UOSInt index) const
+{
+	return this->objMap.GetItemNoCheck(index);
+}
+
+Optional<Media::PDFObject> Media::PDFDocument::GetItem(UOSInt index) const
 {
 	return this->objMap.GetItem(index);
 }
 
-Media::PDFObject *Media::PDFDocument::AddObject(UInt32 id)
+NN<Media::PDFObject> Media::PDFDocument::AddObject(UInt32 id)
 {
-	Media::PDFObject *obj = this->objMap.Get(id);
-	if (obj)
+	NN<Media::PDFObject> obj;
+	if (this->objMap.Get(id).SetTo(obj))
 		return obj;
-	NEW_CLASS(obj, Media::PDFObject(id));
+	NEW_CLASSNN(obj, Media::PDFObject(id));
 	this->objMap.Put(id, obj);
 	return obj;
 }
 
 Media::ImageList *Media::PDFDocument::CreateImage(UInt32 id, NN<Parser::ParserList> parsers)
 {
-	Media::PDFObject *obj = this->objMap.Get(id);
-	if (obj == 0)
+	NN<Media::PDFObject> obj;
+	if (!this->objMap.Get(id).SetTo(obj))
 		return 0;
 	if (!obj->IsImage())
 		return 0;

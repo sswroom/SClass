@@ -931,16 +931,16 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoDetail(NN<Net::Web
 					if (mediaFile)
 					{
 						json.ObjectAddUInt64(CSTR("fileSize"), fileSize);
-						Media::IMediaSource *msrc = mediaFile->GetStream(0, 0);
+						NN<Media::IMediaSource> msrc;
 						Data::Duration stmTime;
-						if (msrc)
+						if (mediaFile->GetStream(0, 0).SetTo(msrc))
 						{
 							stmTime = msrc->GetStreamTime();
 							json.ObjectAddInt64(CSTR("stmTime"), stmTime.GetTotalMS());
 
 							if (msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 							{
-								Media::IAudioSource *asrc = (Media::IAudioSource*)msrc;
+								NN<Media::IAudioSource> asrc = NN<Media::IAudioSource>::ConvertFrom(msrc);
 								Media::AudioFormat format;
 								asrc->GetFormat(format);
 								json.ObjectAddUInt64(CSTR("frequency"), format.frequency);

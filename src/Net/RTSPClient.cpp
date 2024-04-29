@@ -434,8 +434,8 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(NN<Net::SocketFactory> sockf, Text::
 		Media::MediaFile *mediaFile;
 		NEW_CLASS(mediaFile, Media::MediaFile(url));
 		Data::ArrayList<Net::RTPCliChannel *> chList;
-		Media::IVideoSource *vid;
-		Media::IAudioSource *aud;
+		NN<Media::IVideoSource> vid;
+		NN<Media::IAudioSource> aud;
 		i = 0;
 		j = sdp->GetMediaCount();
 		while (i < j)
@@ -460,7 +460,7 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(NN<Net::SocketFactory> sockf, Text::
 			if (rtp->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 			{
 				k = 0;
-				while ((vid = rtp->CreateShadowVideo(k++)) != 0)
+				while (vid.Set(rtp->CreateShadowVideo(k++)))
 				{
 					mediaFile->AddSource(vid, 0);
 				}
@@ -468,7 +468,7 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(NN<Net::SocketFactory> sockf, Text::
 			else if (rtp->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 			{
 				k = 0;
-				while ((aud = rtp->CreateShadowAudio(k++)) != 0)
+				while (aud.Set(rtp->CreateShadowAudio(k++)))
 				{
 					mediaFile->AddSource(aud, 0);
 				}

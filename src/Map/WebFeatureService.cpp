@@ -249,8 +249,8 @@ void Map::WebFeatureService::LoadXMLFeatureType(NN<Text::XMLReader> reader)
 	}
 	if (name && title && crs && hasTL && hasBR)
 	{
-		FeatureType *feature;
-		feature = MemAllocA(FeatureType, 1);
+		NN<FeatureType> feature;
+		feature = MemAllocANN(FeatureType);
 		feature->name = Text::String::OrEmpty(name);
 		feature->title = Text::String::OrEmpty(title);
 		feature->crs = Text::String::OrEmpty(crs);
@@ -279,15 +279,15 @@ Map::WebFeatureService::~WebFeatureService()
 {
 	this->wfsURL->Release();
 	SDEL_STRING(this->version);
-	FeatureType *feature;
+	NN<FeatureType> feature;
 	UOSInt i = this->features.GetCount();
 	while (i-- > 0)
 	{
-		feature = this->features.GetItem(i);
+		feature = this->features.GetItemNoCheck(i);
 		feature->name->Release();
 		feature->title->Release();
 		feature->crs->Release();
-		MemFreeA(feature);
+		MemFreeANN(feature);
 	}
 }
 
@@ -307,36 +307,37 @@ UOSInt Map::WebFeatureService::GetFeatureNames(Data::ArrayListStringNN *nameList
 	UOSInt j = this->features.GetCount();
 	while (i < j)
 	{
-		nameList->Add(this->features.GetItem(i)->name);
+		nameList->Add(this->features.GetItemNoCheck(i)->name);
 		i++;
 	}
 	return j;
 }
 
-Map::MapDrawLayer *Map::WebFeatureService::LoadAsLayer()
+Optional<Map::MapDrawLayer> Map::WebFeatureService::LoadAsLayer()
 {
 	Bool needSwapXY = false;
-	if (this->currFeature)
+	NN<FeatureType> currFeature;
+	if (this->currFeature.SetTo(currFeature))
 	{
 		Text::StringBuilderUTF8 sb;
 		if (this->version->Equals(UTF8STRC("1.0.0")))
 		{
 			sb.Append(this->wfsURL);
 			sb.AppendC(UTF8STRC("?service=wfs&version=1.0.0&request=GetFeature&outputFormat=GML2&typeName="));
-			Text::TextBinEnc::FormEncoding::FormEncode(sb, this->currFeature->name->v, this->currFeature->name->leng);
+			Text::TextBinEnc::FormEncoding::FormEncode(sb, currFeature->name->ToCString());
 		}
 		else if (this->version->Equals(UTF8STRC("1.1.0")))
 		{
 			sb.Append(this->wfsURL);
 			sb.AppendC(UTF8STRC("?service=wfs&version=1.1.0&request=GetFeature&outputFormat=GML2&typeName="));
-			Text::TextBinEnc::FormEncoding::FormEncode(sb, this->currFeature->name->v, this->currFeature->name->leng);
+			Text::TextBinEnc::FormEncoding::FormEncode(sb, currFeature->name->ToCString());
 			needSwapXY = true;
 		}
 		else if (this->version->Equals(UTF8STRC("2.0.0")))
 		{
 			sb.Append(this->wfsURL);
 			sb.AppendC(UTF8STRC("?service=wfs&version=2.0.0&request=GetFeature&outputFormat=GML2&typeName="));
-			Text::TextBinEnc::FormEncoding::FormEncode(sb, this->currFeature->name->v, this->currFeature->name->leng);
+			Text::TextBinEnc::FormEncoding::FormEncode(sb, currFeature->name->ToCString());
 			needSwapXY = true;
 		}
 		else
@@ -350,7 +351,7 @@ Map::MapDrawLayer *Map::WebFeatureService::LoadAsLayer()
 		}
 		mstm.SeekFromBeginning(0);
 		sb.ClearStr();
-		sb.Append(this->currFeature->title);
+		sb.Append(currFeature->title);
 		sb.AppendC(UTF8STRC(".gml"));
 		IO::ParsedObject *pobj = Parser::FileParser::XMLParser::ParseStream(this->encFact, mstm, sb.ToCString(), 0, 0, 0);
 		if (pobj)

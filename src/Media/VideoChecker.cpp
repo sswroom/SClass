@@ -55,7 +55,7 @@ Bool Media::VideoChecker::IsValid(Media::MediaFile *mediaFile)
 	Data::Duration videoTime = 0;
 	while (true)
 	{
-		if (!msrc.Set(mediaFile->GetStream(i, &syncTime)))
+		if (!mediaFile->GetStream(i, syncTime).SetTo(msrc))
 		{
 			break;
 		}
@@ -139,7 +139,7 @@ Bool Media::VideoChecker::IsValid(Media::MediaFile *mediaFile)
 		while (i-- > 0)
 		{
 			status = statusList.GetItem(i);
-			if (msrc.Set(mediaFile->GetStream(i, &syncTime)))
+			if (mediaFile->GetStream(i, syncTime).SetTo(msrc))
 			{
 				if (msrc->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 				{
@@ -160,7 +160,7 @@ Bool Media::VideoChecker::IsValid(Media::MediaFile *mediaFile)
 			SDEL_CLASS(status->vdecoder);
 			SDEL_CLASS(status->adecoder);
 
-			if (msrc.Set(mediaFile->GetStream(i, &syncTime)))
+			if (mediaFile->GetStream(i, syncTime).SetTo(msrc))
 			{
 				if (msrc->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 				{

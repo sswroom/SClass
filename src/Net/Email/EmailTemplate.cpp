@@ -77,7 +77,7 @@ Bool Net::Email::EmailTemplate::ParseTemplate(NN<Text::StringBuilderUTF8> sbOut,
 				else if (tpl.v[i] == '^')
 				{
 					sb.ClearStr();
-					Text::TextBinEnc::FormEncoding::FormEncode(sb, sbParam.v, sbParam.leng);
+					Text::TextBinEnc::FormEncoding::FormEncode(sb, sbParam.ToCString());
 					sbParam.ClearStr();
 					sb.Append(sbParam);
 				}

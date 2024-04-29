@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_VIDEOCAPTUREMGR
 #define _SM_MEDIA_VIDEOCAPTUREMGR
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Media/IVideoCapture.h"
 #include "Text/CString.h"
 
@@ -22,9 +22,9 @@ namespace Media
 		VideoCaptureMgr();
 		~VideoCaptureMgr();
 
-		UOSInt GetDeviceList(Data::ArrayList<DeviceInfo *> *devList);
-		void FreeDeviceList(Data::ArrayList<DeviceInfo *> *devList);
-		Media::IVideoCapture *CreateDevice(Int32 devType, UOSInt devId);
+		UOSInt GetDeviceList(NN<Data::ArrayListNN<DeviceInfo>> devList);
+		void FreeDeviceList(NN<Data::ArrayListNN<DeviceInfo>> devList);
+		Optional<Media::IVideoCapture> CreateDevice(Int32 devType, UOSInt devId);
 
 		Text::CString GetDevTypeName(Int32 devType);
 	};

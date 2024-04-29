@@ -119,7 +119,7 @@ Media::MediaFile *Parser::FileParser::QTParser::ParseMoovAtom(NN<IO::StreamData>
 	Int32 vTrackDelay = 0;
 	Int32 vTrackSkip = 0;
 	Media::MediaFile *file;
-	Media::IMediaSource *src;
+	NN<Media::IMediaSource> src;
 	NEW_CLASS(file, Media::MediaFile(fd->GetFullName()));
 	i = 8;
 	while (i < size)
@@ -147,8 +147,7 @@ Media::MediaFile *Parser::FileParser::QTParser::ParseMoovAtom(NN<IO::StreamData>
 		}
 		else if (*(Int32*)&hdr[4] == *(Int32*)"trak")
 		{
-			src = ParseTrakAtom(fd, ofst + i, atomSize, &trackDelay, &trackSkip, mvTimeScale);
-			if (src)
+			if (src.Set(ParseTrakAtom(fd, ofst + i, atomSize, &trackDelay, &trackSkip, mvTimeScale)))
 			{
 				if (src->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 				{
@@ -188,7 +187,7 @@ Media::MediaFile *Parser::FileParser::QTParser::ParseMoovAtom(NN<IO::StreamData>
 		}
 		i += atomSize;
 	}
-	if (file->GetStream(0, 0) == 0)
+	if (file->GetStream(0, 0).IsNull())
 	{
 		DEL_CLASS(file);
 		file = 0;

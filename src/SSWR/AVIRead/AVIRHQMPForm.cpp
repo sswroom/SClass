@@ -835,14 +835,15 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILE_CAPTURE_DEVICE:
 		{
 			SSWR::AVIRead::AVIRCaptureDevForm dlg(0, this->ui, this->core);
-			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK)
+			NN<Media::IVideoCapture> capture;
+			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK && dlg.capture.SetTo(capture))
 			{
 				UTF8Char sbuff[256];
 				UTF8Char *sptr;
 				Media::MediaFile *mf;
-				sptr = dlg.capture->GetSourceName(sbuff);
+				sptr = capture->GetSourceName(sbuff);
 				NEW_CLASS(mf, Media::MediaFile(CSTRP(sbuff, sptr)));
-				mf->AddSource(dlg.capture, 0);
+				mf->AddSource(capture, 0);
 				this->OpenVideo(mf);
 			}
 		}

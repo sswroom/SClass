@@ -90,18 +90,18 @@ IO::ParsedObject *Parser::FileParser::NWAParser::ParseFileHdr(NN<IO::StreamData>
 
 	if (compLevel == -1)
 	{
-		Media::LPCMSource *asrc;
+		NN<Media::LPCMSource> asrc;
 		Media::MediaFile *file;
-		NEW_CLASS(asrc, Media::LPCMSource(fd, 0x2c, compDataSize - 0x2c, afmt, fd->GetFullName()));
+		NEW_CLASSNN(asrc, Media::LPCMSource(fd, 0x2c, compDataSize - 0x2c, afmt, fd->GetFullName()));
 		NEW_CLASS(file, Media::MediaFile(fd->GetFullName()));
 		file->AddSource(asrc, 0);
 		return file;
 	}
 	else
 	{
-		Media::NWASource *asrc;
+		NN<Media::NWASource> asrc;
 		Media::MediaFile *file;
-		NEW_CLASS(asrc, Media::NWASource(fd, sampleCount, blockSize, (UInt32)compLevel, nBlocks, afmt, fd->GetFullName()));
+		NEW_CLASSNN(asrc, Media::NWASource(fd, sampleCount, blockSize, (UInt32)compLevel, nBlocks, afmt, fd->GetFullName()));
 		NEW_CLASS(file, Media::MediaFile(fd->GetFullName()));
 		file->AddSource(asrc, 0);
 		return file;

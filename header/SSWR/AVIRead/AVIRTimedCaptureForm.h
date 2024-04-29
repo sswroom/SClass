@@ -35,9 +35,9 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Media::VideoCaptureMgr *captureMgr;
-			Media::IVideoCapture *currCapture;
-			Data::ArrayList<Media::VideoCaptureMgr::DeviceInfo*> *devInfoList;
-			Data::ArrayList<CaptureFormat*> *currFormats;
+			Optional<Media::IVideoCapture> currCapture;
+			Data::ArrayListNN<Media::VideoCaptureMgr::DeviceInfo> devInfoList;
+			Data::ArrayListNN<CaptureFormat> currFormats;
 			Media::FrameInfo videoInfo;
 			Media::CS::CSConverter *csConv;
 			Exporter::GUIJPGExporter *exporter;

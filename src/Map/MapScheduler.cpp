@@ -25,7 +25,7 @@ UInt32 __stdcall Map::MapScheduler::MapThread(AnyType obj)
 			j = me->tasks.GetCount();
 			while (j-- > 0)
 			{
-				if (vec.Set(me->tasks.GetItem(j)))
+				if (me->tasks.GetItem(j).SetTo(vec))
 					vec.Delete();
 			}
 			me->tasks.Clear();
@@ -42,7 +42,7 @@ UInt32 __stdcall Map::MapScheduler::MapThread(AnyType obj)
 				j = me->tasks.GetCount();
 				if (i < j)
 				{
-					if (vec.Set(me->tasks.GetItem(i)))
+					if (me->tasks.GetItem(i).SetTo(vec))
 					{
 						mutUsage.EndUse();
 						i++;

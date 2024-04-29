@@ -429,7 +429,7 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 	{
 		sb.Append(this->wmsURL);
 		sb.AppendC(UTF8STRC("?service=WMS&version=1.1.1&request=GetFeatureInfo&layers="));
-		Text::TextBinEnc::FormEncoding::FormEncode(sb, layer->name->v, layer->name->leng);
+		Text::TextBinEnc::FormEncoding::FormEncode(sb, layer->name->ToCString());
 		sb.AppendC(UTF8STRC("&bbox="));
 		sb.AppendDouble(bounds.min.x);
 		sb.AppendC(UTF8STRC("%2C"));
@@ -443,13 +443,13 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 		sb.AppendC(UTF8STRC("&height="));
 		sb.AppendU32(height);
 		sb.AppendC(UTF8STRC("&srs="));
-		Text::TextBinEnc::FormEncoding::FormEncode(sb, currCRS->name->v, currCRS->name->leng);
+		Text::TextBinEnc::FormEncoding::FormEncode(sb, currCRS->name->ToCString());
 		sb.AppendC(UTF8STRC("&styles=&format="));
-		Text::TextBinEnc::FormEncoding::FormEncode(sb, imgFormat->v, imgFormat->leng);
+		Text::TextBinEnc::FormEncoding::FormEncode(sb, imgFormat->ToCString());
 		sb.AppendC(UTF8STRC("&QUERY_LAYERS="));
-		Text::TextBinEnc::FormEncoding::FormEncode(sb, layer->name->v, layer->name->leng);
+		Text::TextBinEnc::FormEncoding::FormEncode(sb, layer->name->ToCString());
 		sb.AppendC(UTF8STRC("&INFO_FORMAT="));
-		Text::TextBinEnc::FormEncoding::FormEncode(sb, infoFormat->v, infoFormat->leng);
+		Text::TextBinEnc::FormEncoding::FormEncode(sb, infoFormat->ToCString());
 		sb.AppendC(UTF8STRC("&FEATURE_COUNT=5"));
 		sb.AppendC(UTF8STRC("&X="));
 		sb.AppendI32(Double2Int32(x));
@@ -460,7 +460,7 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 	{
 		sb.Append(this->wmsURL);
 		sb.AppendC(UTF8STRC("?service=WMS&version=1.3.0&request=GetFeatureInfo&layers="));
-		Text::TextBinEnc::FormEncoding::FormEncode(sb, layer->name->v, layer->name->leng);
+		Text::TextBinEnc::FormEncoding::FormEncode(sb, layer->name->ToCString());
 		sb.AppendC(UTF8STRC("&bbox="));
 		sb.AppendDouble(bounds.min.x);
 		sb.AppendC(UTF8STRC("%2C"));
@@ -474,13 +474,13 @@ Bool Map::WebMapService::QueryInfos(Math::Coord2DDbl coord, Math::RectAreaDbl bo
 		sb.AppendC(UTF8STRC("&height="));
 		sb.AppendU32(height);
 		sb.AppendC(UTF8STRC("&CRS="));
-		Text::TextBinEnc::FormEncoding::FormEncode(sb, currCRS->name->v, currCRS->name->leng);
+		Text::TextBinEnc::FormEncoding::FormEncode(sb, currCRS->name->ToCString());
 		sb.AppendC(UTF8STRC("&styles=&format="));
-		Text::TextBinEnc::FormEncoding::FormEncode(sb, imgFormat->v, imgFormat->leng);
+		Text::TextBinEnc::FormEncoding::FormEncode(sb, imgFormat->ToCString());
 		sb.AppendC(UTF8STRC("&QUERY_LAYERS="));
-		Text::TextBinEnc::FormEncoding::FormEncode(sb, layer->name->v, layer->name->leng);
+		Text::TextBinEnc::FormEncoding::FormEncode(sb, layer->name->ToCString());
 		sb.AppendC(UTF8STRC("&INFO_FORMAT="));
-		Text::TextBinEnc::FormEncoding::FormEncode(sb, infoFormat->v, infoFormat->leng);
+		Text::TextBinEnc::FormEncoding::FormEncode(sb, infoFormat->ToCString());
 		sb.AppendC(UTF8STRC("&FEATURE_COUNT=5"));
 		sb.AppendC(UTF8STRC("&I="));
 		sb.AppendI32(Double2Int32(x));
@@ -561,7 +561,7 @@ Optional<Media::ImageList> Map::WebMapService::DrawMap(Math::RectAreaDbl bounds,
 		// http://127.0.0.1:8080/geoserver/Dev/wms?service=WMS&version=1.1.0&request=GetMap&layers=Dev%3Athreed_burial_poly&bbox=113.9587574553149%2C22.34255390361735%2C114.1047088037185%2C22.3992408177216&width=768&height=330&srs=EPSG%3A4326&styles=&format=image%2Fpng
 		sb.Append(this->wmsURL);
 		sb.AppendC(UTF8STRC("?service=WMS&version=1.1.1&request=GetMap&layers="));
-		Text::TextBinEnc::FormEncoding::FormEncode(sb, layer->name->v, layer->name->leng);
+		Text::TextBinEnc::FormEncoding::FormEncode(sb, layer->name->ToCString());
 		sb.AppendC(UTF8STRC("&bbox="));
 		sb.AppendDouble(bounds.min.x);
 		sb.AppendC(UTF8STRC("%2C"));
@@ -576,15 +576,15 @@ Optional<Media::ImageList> Map::WebMapService::DrawMap(Math::RectAreaDbl bounds,
 		sb.AppendU32(height);
 		sb.AppendC(UTF8STRC("&TRANSPARENT=TRUE"));
 		sb.AppendC(UTF8STRC("&srs="));
-		Text::TextBinEnc::FormEncoding::FormEncode(sb, currCRS->name->v, currCRS->name->leng);
+		Text::TextBinEnc::FormEncoding::FormEncode(sb, currCRS->name->ToCString());
 		sb.AppendC(UTF8STRC("&styles=&format="));
-		Text::TextBinEnc::FormEncoding::FormEncode(sb, imgFormat->v, imgFormat->leng);
+		Text::TextBinEnc::FormEncoding::FormEncode(sb, imgFormat->ToCString());
 	}
 	else if (this->version->Equals(UTF8STRC("1.3.0")))
 	{
 		sb.Append(this->wmsURL);
 		sb.AppendC(UTF8STRC("?service=WMS&version=1.3.0&request=GetMap&layers="));
-		Text::TextBinEnc::FormEncoding::FormEncode(sb, layer->name->v, layer->name->leng);
+		Text::TextBinEnc::FormEncoding::FormEncode(sb, layer->name->ToCString());
 		sb.AppendC(UTF8STRC("&bbox="));
 		sb.AppendDouble(bounds.min.x);
 		sb.AppendC(UTF8STRC("%2C"));
@@ -599,9 +599,9 @@ Optional<Media::ImageList> Map::WebMapService::DrawMap(Math::RectAreaDbl bounds,
 		sb.AppendU32(height);
 		sb.AppendC(UTF8STRC("&TRANSPARENT=TRUE"));
 		sb.AppendC(UTF8STRC("&CRS="));
-		Text::TextBinEnc::FormEncoding::FormEncode(sb, currCRS->name->v, currCRS->name->leng);
+		Text::TextBinEnc::FormEncoding::FormEncode(sb, currCRS->name->ToCString());
 		sb.AppendC(UTF8STRC("&styles=&format="));
-		Text::TextBinEnc::FormEncoding::FormEncode(sb, imgFormat->v, imgFormat->leng);
+		Text::TextBinEnc::FormEncoding::FormEncode(sb, imgFormat->ToCString());
 	}
 	NN<Text::StringBuilderUTF8> nnsb;
 	if (sbUrl.SetTo(nnsb))

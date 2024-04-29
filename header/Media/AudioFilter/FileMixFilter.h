@@ -13,7 +13,7 @@ namespace Media
 		private:
 			AudioFormat format;
 			NN<Parser::ParserList> parsers;
-			Media::IAudioSource *fileSrc;
+			Optional<Media::IAudioSource> fileSrc;
 			Bool mixing;
 			UInt64 mixOfst;
 			Bool chMix;

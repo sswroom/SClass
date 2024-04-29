@@ -191,7 +191,7 @@ void __stdcall PlayThread(NN<Sync::Thread> thread)
 			}
 			file = (Media::MediaFile*)stmList.GetItem(currStm);
 
-			if (audOut->BindAudio((Media::IAudioSource*)file->GetStream(0, 0)))
+			if (audOut->BindAudio((Media::IAudioSource*)file->GetStream(0, 0).OrNull()))
 			{
 				audOut->AudioInit(clk);
 				audOut->Start();

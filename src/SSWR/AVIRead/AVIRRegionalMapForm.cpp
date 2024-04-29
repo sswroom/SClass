@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRRegionalMapForm::OnMapsDblClk(AnyType userObj,
 	if (me->lvMaps->GetItem(index).GetOpt<const Map::RegionalMapSource::MapInfo>().SetTo(map))
 	{
 		me->layer = Map::RegionalMapSource::OpenMap(map, me->core->GetSocketFactory(), me->ssl, me->core->GetEncFactory(), me->core->GetParserList(), me->core->GetWebBrowser(), me->envCSys);
-		if (me->layer)
+		if (me->layer.NotNull())
 		{
 			me->SetDialogResult(UI::GUIForm::DR_OK);
 		}
@@ -76,7 +76,7 @@ void SSWR::AVIRead::AVIRRegionalMapForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Map::MapDrawLayer *SSWR::AVIRead::AVIRRegionalMapForm::GetMapLayer()
+Optional<Map::MapDrawLayer> SSWR::AVIRead::AVIRRegionalMapForm::GetMapLayer()
 {
 	return this->layer;
 }

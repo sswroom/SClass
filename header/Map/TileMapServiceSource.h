@@ -30,7 +30,7 @@ namespace Map
 		NN<Text::String> cacheDir;
 		NN<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;
-		Data::ArrayList<TileLayer*> layers;
+		Data::ArrayListNN<TileLayer> layers;
 		NN<Math::CoordinateSystem> csys;
 		UOSInt concurrCnt;
 

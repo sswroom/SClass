@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_REVGEOCFG
 #define _SM_MAP_REVGEOCFG
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Map/MapSearchManager.h"
 #include "Text/String.h"
 
@@ -21,7 +21,7 @@ namespace Map
 		} SearchLayer;
 
 	private:
-		Data::ArrayList<SearchLayer*> layers[REVGEO_MAXID];
+		Data::ArrayListNN<SearchLayer> layers[REVGEO_MAXID];
 
 	public:
 		RevGeoCfg(Text::CStringNN fileName, Map::MapSearchManager *mapSrchMgr);

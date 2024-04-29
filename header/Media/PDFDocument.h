@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_PDFDOCUMENT
 #define _SM_MEDIA_PDFDOCUMENT
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "IO/ParsedObject.h"
 #include "Media/ImageList.h"
 #include "Media/PDFObject.h"
@@ -8,10 +8,10 @@
 
 namespace Media
 {
-	class PDFDocument : public IO::ParsedObject, public Data::ReadingList<PDFObject*>
+	class PDFDocument : public IO::ParsedObject, public Data::ReadingListNN<PDFObject>
 	{
 	private:
-		Data::UInt32FastMap<PDFObject*> objMap;
+		Data::UInt32FastMapNN<PDFObject> objMap;
 		NN<Text::String> version;
 
 		IO::ParsedObject *SetPObjName(IO::ParsedObject *pobj, UInt32 objId, Text::CString ext);
@@ -21,9 +21,10 @@ namespace Media
 
 		virtual IO::ParserType GetParserType() const;
 		virtual UOSInt GetCount() const;
-		virtual PDFObject *GetItem(UOSInt index) const;
+		virtual NN<PDFObject> GetItemNoCheck(UOSInt index) const;
+		virtual Optional<PDFObject> GetItem(UOSInt index) const;
 		
-		PDFObject *AddObject(UInt32 id);
+		NN<PDFObject> AddObject(UInt32 id);
 		Media::ImageList *CreateImage(UInt32 id, NN<Parser::ParserList> parsers);
 	};
 }

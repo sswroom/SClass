@@ -11,7 +11,7 @@ namespace Media
 	class MediaFile : public IO::ParsedObject
 	{
 	private:
-		Data::ArrayList<Media::IMediaSource*> sources;
+		Data::ArrayListNN<Media::IMediaSource> sources;
 		Data::ArrayListInt32 keepSources;
 		Data::ArrayListInt32 syncTime;
 		Bool releaseChapter;
@@ -24,8 +24,8 @@ namespace Media
 
 		virtual IO::ParserType GetParserType() const;
 
-		virtual UOSInt AddSource(Media::IMediaSource *src, Int32 syncTime); //-1 = fail
-		virtual Media::IMediaSource *GetStream(UOSInt index, Int32 *syncTime);
+		virtual UOSInt AddSource(NN<Media::IMediaSource> src, Int32 syncTime); //-1 = fail
+		virtual Optional<Media::IMediaSource> GetStream(UOSInt index, OptOut<Int32> syncTime);
 		virtual void KeepStream(UOSInt index, Bool toKeep);
 
 		Media::ChapterInfo *GetChapterInfo() const;

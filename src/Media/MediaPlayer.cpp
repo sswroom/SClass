@@ -232,7 +232,7 @@ Bool Media::MediaPlayer::LoadMedia(Media::MediaFile *file)
 	{
 		Media::MediaType mt;
 		NN<Media::IMediaSource> msrc;
-		if (!msrc.Set(this->currFile->GetStream(i, &syncTime)))
+		if (!this->currFile->GetStream(i, syncTime).SetTo(msrc))
 			break;
 		mt = msrc->GetMediaType();
 		if (mt == Media::MEDIA_TYPE_VIDEO && !videoFound)
@@ -319,7 +319,7 @@ Bool Media::MediaPlayer::SwitchAudio(UOSInt index)
 	{
 		Media::MediaType mt;
 		NN<Media::IMediaSource> msrc;
-		if (!msrc.Set(this->currFile->GetStream(i, &syncTime)))
+		if (!this->currFile->GetStream(i, syncTime).SetTo(msrc))
 			break;
 		mt = msrc->GetMediaType();
 		if (mt == Media::MEDIA_TYPE_AUDIO)

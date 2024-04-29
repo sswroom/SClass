@@ -61,8 +61,8 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(AnyType userObj)
 		return;
 	}
 	Int32 syncTime;
-	Media::IMediaSource *mediaSrc = me->currFile->GetStream((UOSInt)i, &syncTime);
-	if (mediaSrc == 0)
+	NN<Media::IMediaSource> mediaSrc;
+	if (!me->currFile->GetStream((UOSInt)i, syncTime).SetTo(mediaSrc))
 	{
 		me->txtStream->SetText(CSTR(""));
 		return;
@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(AnyType userObj)
 	sb.AppendC(UTF8STRC("\r\n"));
 	if (mediaSrc->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 	{
-		Media::IVideoSource *videoSrc = (Media::IVideoSource*)mediaSrc;
+		NN<Media::IVideoSource> videoSrc = NN<Media::IVideoSource>::ConvertFrom(mediaSrc);
 		Media::FrameInfo frameInfo;
 		UInt32 rateNorm;
 		UInt32 rateDenorm;
@@ -121,7 +121,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(AnyType userObj)
 	else if (mediaSrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 	{
 		Media::AudioFormat fmt;
-		Media::IAudioSource *audioSrc = (Media::IAudioSource*)mediaSrc;
+		NN<Media::IAudioSource> audioSrc = NN<Media::IAudioSource>::ConvertFrom(mediaSrc);
 		sb.AppendC(UTF8STRC("Media Type = Audio\r\n"));
 		sb.AppendC(UTF8STRC("Sample Count = "));
 		sb.AppendI64(audioSrc->GetSampleCount());
@@ -168,7 +168,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(AnyType userObj
 	Int32 syncTime;
 	while (true)
 	{
-		if (!msrc.Set(me->currFile->GetStream(i, &syncTime)))
+		if (!me->currFile->GetStream(i, syncTime).SetTo(msrc))
 		{
 			break;
 		}
@@ -280,12 +280,11 @@ Bool SSWR::AVIRead::AVIRVideoInfoForm::OpenFile(Text::CStringNN fileName)
 	UOSInt i;
 	Int32 syncTime;
 	Text::StringBuilderUTF8 sb;
-	Media::IMediaSource *mediaSrc;
+	NN<Media::IMediaSource> mediaSrc;
 	i = 0;
 	while (true)
 	{
-		mediaSrc = mediaFile->GetStream(i, &syncTime);
-		if (mediaSrc == 0)
+		if (!mediaFile->GetStream(i, syncTime).SetTo(mediaSrc))
 			break;
 		
 		sb.ClearStr();

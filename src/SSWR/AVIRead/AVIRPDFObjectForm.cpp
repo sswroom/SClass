@@ -80,7 +80,7 @@ SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(Optional<UI::GUIClientContro
 	mnu->AddItem(CSTR("Save Selected"), MNU_SAVE_SELECTED, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->SetMenu(this->mnuMain);
 	
-	Media::PDFObject *obj;
+	NN<Media::PDFObject> obj;
 	Optional<Text::String> type;
 	NN<Text::String> s;
 	UTF8Char sbuff[128];
@@ -89,7 +89,7 @@ SSWR::AVIRead::AVIRPDFObjectForm::AVIRPDFObjectForm(Optional<UI::GUIClientContro
 	UOSInt j = this->doc->GetCount();
 	while (i < j)
 	{
-		obj = this->doc->GetItem(i);
+		obj = this->doc->GetItemNoCheck(i);
 		sptr = Text::StrUInt32(sbuff, obj->GetId());
 		type = obj->GetType();
 		if (type.SetTo(s) && s->Equals(UTF8STRC("XObject")))
@@ -126,12 +126,12 @@ void SSWR::AVIRead::AVIRPDFObjectForm::EventMenuClicked(UInt16 cmdId)
 			if (i != INVALID_INDEX)
 				fileName = fileName.Substring(i + 1);
 			Text::StringBuilderUTF8 sb;
-			Media::PDFObject *obj;
+			NN<Media::PDFObject> obj;
 			i = 0;
 			UOSInt j = this->doc->GetCount();
 			while (i < j)
 			{
-				obj = this->doc->GetItem(i);
+				obj = this->doc->GetItemNoCheck(i);
 				if (obj->IsImage())
 				{
 					NN<Text::String> filter;

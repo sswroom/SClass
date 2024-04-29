@@ -24,5 +24,5 @@ void Net::GoogleQRCode::GetImageURL(NN<Text::StringBuilderUTF8> sb)
 	sb->AppendUTF8Char('x');
 	sb->AppendUOSInt(this->height);
 	sb->AppendC(UTF8STRC("&chl="));
-	Text::TextBinEnc::FormEncoding::FormEncode(sb, dataStr->v, dataStr->leng);
+	Text::TextBinEnc::FormEncoding::FormEncode(sb, dataStr->ToCString());
 }

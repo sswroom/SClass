@@ -23,13 +23,13 @@ Media::MediaFile::MediaFile(Text::CStringNN name) : IO::ParsedObject(name)
 Media::MediaFile::~MediaFile()
 {
 	UOSInt i = this->sources.GetCount();
-	Media::IMediaSource *src;
+	NN<Media::IMediaSource> src;
 	while (i-- > 0)
 	{
 		if (this->keepSources.GetItem(i) == 0)
 		{
-			src = this->sources.GetItem(i);
-			DEL_CLASS(src);
+			src = this->sources.GetItemNoCheck(i);
+			src.Delete();
 		}
 	}
 	if (this->chapters && this->releaseChapter)
@@ -43,7 +43,7 @@ IO::ParserType Media::MediaFile::GetParserType() const
 	return IO::ParserType::MediaFile;
 }
 
-UOSInt Media::MediaFile::AddSource(Media::IMediaSource *src, Int32 syncTime)
+UOSInt Media::MediaFile::AddSource(NN<Media::IMediaSource> src, Int32 syncTime)
 {
 	UOSInt ret = this->sources.Add(src);
 	this->syncTime.Add(syncTime);
@@ -51,13 +51,10 @@ UOSInt Media::MediaFile::AddSource(Media::IMediaSource *src, Int32 syncTime)
 	return ret;
 }
 
-Media::IMediaSource *Media::MediaFile::GetStream(UOSInt index, Int32 *syncTime)
+Optional<Media::IMediaSource> Media::MediaFile::GetStream(UOSInt index, OptOut<Int32> syncTime)
 {
-	if (syncTime)
-	{
-		*syncTime = this->syncTime.GetItem(index);
-	}
-	return (Media::IMediaSource *)this->sources.GetItem(index);
+	syncTime.Set(this->syncTime.GetItem(index));
+	return this->sources.GetItem(index);
 }
 
 void Media::MediaFile::KeepStream(UOSInt index, Bool toKeep)
@@ -89,10 +86,10 @@ Bool Media::MediaFile::TrimFile(UInt32 trimTimeStart, Int32 trimTimeEnd)
 		return true;
 	Int32 syncTime;
 	UOSInt i = this->sources.GetCount();
-	Media::IMediaSource *src;
+	NN<Media::IMediaSource> src;
 	while (i-- > 0)
 	{
-		src = this->sources.GetItem(i);
+		src = this->sources.GetItemNoCheck(i);
 		syncTime = this->syncTime.GetItem(i);
 		if (trimTimeEnd == -1)
 		{

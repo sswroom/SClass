@@ -9,10 +9,7 @@
 void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRTimedCaptureForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTimedCaptureForm>();
-	if (me->currCapture)
-	{
-		DEL_CLASS(me->currCapture);
-	}
+	me->currCapture.Delete();
 	me->ReleaseFormats();
 
 	Media::VideoCaptureMgr::DeviceInfo *dev = (Media::VideoCaptureMgr::DeviceInfo*)me->lbDevice->GetSelectedItem().p;
@@ -25,13 +22,14 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(AnyType userObj)
 		me->currCapture = 0;
 	}
 	me->cboFormat->ClearItems();
-	if (me->currCapture)
+	NN<Media::IVideoCapture> currCapture;
+	if (me->currCapture.SetTo(currCapture))
 	{
 		Data::ArrayListUInt32 supportedCS;
 		Text::StringBuilderUTF8 devInfo;
 		Text::StringBuilderUTF8 sb;
 		Media::IVideoCapture::VideoFormat fmts[80];
-		CaptureFormat *cfmt;
+		NN<CaptureFormat> cfmt;
 		UOSInt bestSize = 0;
 		UInt32 bestFmt = 0;
 		UOSInt bestBPP = 0;
@@ -44,15 +42,15 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(AnyType userObj)
 		UTF8Char sbuff[128];
 		UTF8Char *sptr;
 		devInfo.AppendC(UTF8STRC("Name: "));
-		sptr = me->currCapture->GetSourceName(sbuff);
+		sptr = currCapture->GetSourceName(sbuff);
 		devInfo.AppendP(sbuff, sptr);
 		devInfo.AppendC(UTF8STRC("\r\n"));
 		devInfo.AppendC(UTF8STRC("Supported Formats:\r\n"));
-		fmtCnt = me->currCapture->GetSupportedFormats(fmts, 80);
+		fmtCnt = currCapture->GetSupportedFormats(fmts, 80);
 		i = 0;
 		while (i < fmtCnt)
 		{
-			cfmt = MemAlloc(CaptureFormat, 1);
+			cfmt = MemAllocNN(CaptureFormat);
 			cfmt->size = fmts[i].info.dispSize;
 			cfmt->fourcc = fmts[i].info.fourcc;
 			cfmt->bpp = fmts[i].info.storeBPP;
@@ -100,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(AnyType userObj)
 			sb.AppendC(UTF8STRC(")"));
 
 			me->cboFormat->AddItem(sb.ToCString(), cfmt);
-			me->currFormats->Add(cfmt);
+			me->currFormats.Add(cfmt);
 
 			devInfo.AppendUOSInt(cfmt->size.x);
 			devInfo.AppendC(UTF8STRC(" x "));
@@ -147,7 +145,8 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(AnyType userO
 	else
 	{
 		NN<CaptureFormat> cfmt;
-		if (me->cboFormat->GetSelectedItem().GetOpt<CaptureFormat>().SetTo(cfmt) && me->currCapture)
+		NN<Media::IVideoCapture> currCapture;
+		if (me->cboFormat->GetSelectedItem().GetOpt<CaptureFormat>().SetTo(cfmt) && me->currCapture.SetTo(currCapture))
 		{
 			Text::StringBuilderUTF8 sb;
 			me->txtInterval->GetText(sb);
@@ -165,9 +164,9 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(AnyType userO
 			{
 				return;
 			}
-			me->currCapture->Init(OnVideoFrame, OnVideoChange, me);
-			me->currCapture->SetPreferFrameType(Media::FT_NON_INTERLACE);
-			me->currCapture->SetPreferSize(cfmt->size, cfmt->fourcc, cfmt->bpp, cfmt->frameRateNumer, cfmt->frameRateDenom);
+			currCapture->Init(OnVideoFrame, OnVideoChange, me);
+			currCapture->SetPreferFrameType(Media::FT_NON_INTERLACE);
+			currCapture->SetPreferSize(cfmt->size, cfmt->fourcc, cfmt->bpp, cfmt->frameRateNumer, cfmt->frameRateDenom);
 
 			sb.ClearStr();
 			me->txtFileName->GetText(sb);
@@ -182,7 +181,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(AnyType userO
 			UInt32 norm;
 			UInt32 denorm;
 			UOSInt frameSize;
-			me->currCapture->GetVideoInfo(me->videoInfo, norm, denorm, frameSize);
+			currCapture->GetVideoInfo(me->videoInfo, norm, denorm, frameSize);
 			me->lastSaveTime = (UInt32)-(Int32)me->interval;
 			me->frameCnt = 0;
 			me->saveCnt = 0;
@@ -194,7 +193,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(AnyType userO
 				me->timedImageList = 0;
 				return;
 			}
-			if (me->currCapture->Start())
+			if (currCapture->Start())
 			{
 				me->isStarted = true;
 				me->lbDevice->SetEnabled(false);
@@ -269,7 +268,9 @@ void SSWR::AVIRead::AVIRTimedCaptureForm::StopCapture()
 {
 	if (this->isStarted)
 	{
-		this->currCapture->Stop();
+		NN<Media::IVideoCapture> currCapture;
+		if (this->currCapture.SetTo(currCapture))
+			currCapture->Stop();
 		SDEL_CLASS(this->csConv);
 		SDEL_CLASS(this->timedImageList);
 		this->isStarted = false;
@@ -278,11 +279,7 @@ void SSWR::AVIRead::AVIRTimedCaptureForm::StopCapture()
 
 void SSWR::AVIRead::AVIRTimedCaptureForm::ReleaseFormats()
 {
-	UOSInt i = this->currFormats->GetCount();
-	while (i-- > 0)
-	{
-		MemFree(this->currFormats->RemoveAt(i));
-	}
+	this->currFormats.MemFreeAll();
 }
 
 SSWR::AVIRead::AVIRTimedCaptureForm::AVIRTimedCaptureForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 652, 480, ui)
@@ -345,21 +342,19 @@ SSWR::AVIRead::AVIRTimedCaptureForm::AVIRTimedCaptureForm(Optional<UI::GUIClient
 	this->txtSaveCnt->SetRect(104, 28, 100, 23, false);
 
 	NEW_CLASS(this->captureMgr, Media::VideoCaptureMgr());
-	NEW_CLASS(this->devInfoList, Data::ArrayList<Media::VideoCaptureMgr::DeviceInfo*>());
-	NEW_CLASS(this->currFormats, Data::ArrayList<CaptureFormat*>());
 	this->currCapture = 0;
 	this->captureMgr->GetDeviceList(this->devInfoList);
-	UOSInt cnt = this->devInfoList->GetCount();
+	UOSInt cnt = this->devInfoList.GetCount();
 	if (cnt == 0)
 	{
 		return;
 	}
-	Media::VideoCaptureMgr::DeviceInfo *dev;
+	NN<Media::VideoCaptureMgr::DeviceInfo> dev;
 	UOSInt i;
 	i = 0;
 	while (i < cnt)
 	{
-		dev = this->devInfoList->GetItem(i);
+		dev = this->devInfoList.GetItemNoCheck(i);
 		this->lbDevice->AddItem({dev->devName, Text::StrCharCnt(dev->devName)}, dev);
 		i++;
 	}
@@ -370,15 +365,9 @@ SSWR::AVIRead::AVIRTimedCaptureForm::AVIRTimedCaptureForm(Optional<UI::GUIClient
 SSWR::AVIRead::AVIRTimedCaptureForm::~AVIRTimedCaptureForm()
 {
 	this->StopCapture();
-	if (this->currCapture)
-	{
-		DEL_CLASS(this->currCapture);
-		this->currCapture = 0;
-	}
+	this->currCapture.Delete();
 	this->ReleaseFormats();
-	DEL_CLASS(this->currFormats);
 	this->captureMgr->FreeDeviceList(this->devInfoList);
-	DEL_CLASS(this->devInfoList);
 	DEL_CLASS(this->exporter);
 	DEL_CLASS(this->captureMgr);
 }

@@ -18,7 +18,7 @@ namespace SSWR
 
 			NN<UI::GUITextBox> txtDesc;
 			NN<UI::GUIListView> lvMaps;
-			Map::MapDrawLayer *layer;
+			Optional<Map::MapDrawLayer> layer;
 			
 			static void __stdcall OnMapsSelChg(AnyType userObj);
 			static void __stdcall OnMapsDblClk(AnyType userObj, UOSInt index);
@@ -28,7 +28,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			Map::MapDrawLayer *GetMapLayer();
+			Optional<Map::MapDrawLayer> GetMapLayer();
 		};
 	}
 }

@@ -43,7 +43,7 @@ namespace Map
 		UOSInt maxCnt;
 
 		Sync::Mutex taskMut;
-		Data::ArrayList<Math::Geometry::Vector2D*> tasks;
+		Data::ArrayList<Optional<Math::Geometry::Vector2D>> tasks;
 		Bool toStop;
 		Sync::Event taskEvt;
 		Sync::Event finishEvt;
