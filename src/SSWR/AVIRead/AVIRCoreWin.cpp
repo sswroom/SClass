@@ -156,7 +156,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	case IO::ParserType::CodeProject:
 		{
 			NN<SSWR::AVIRead::AVIRCodeProjectForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCodeProjectForm(0, this->ui, *this, (Text::CodeProject*)pobj.Ptr()));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRCodeProjectForm(0, this->ui, *this, NN<Text::CodeProject>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}
@@ -180,7 +180,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	case IO::ParserType::MIMEObject:
 		{
 			NN<SSWR::AVIRead::AVIRMIMEViewerForm> frm;
-			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMIMEViewerForm(0, this->ui, *this, (Text::IMIMEObj *)pobj.Ptr()));
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMIMEViewerForm(0, this->ui, *this, NN<Text::IMIMEObj>::ConvertFrom(pobj)));
 			InitForm(frm);
 			frm->Show();
 		}

@@ -56,18 +56,18 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 		return;
 	}
 	UInt64 sessId = (((UInt64)ReadMUInt32(addr->addr)) << 16) | port;
-	SessionInfo *sess;
+	NN<SessionInfo> sess;
 	Sync::MutexUsage mutUsage(me->mut);
-	sess = me->sessMap.Get(sessId);
-	mutUsage.EndUse();
-	if (sess)
+	if (me->sessMap.Get(sessId).SetTo(sess))
 	{
+		mutUsage.EndUse();
 		WriteMInt16(&repBuff[0], 5);
 		WriteMInt16(&repBuff[2], 4);
 		i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("Already started")) - repBuff + 1);
 		me->svr->SendTo(addr, port, repBuff, i);
 		return;
 	}
+	mutUsage.EndUse();
 	
 	Text::StringBuilderUTF8 sb;
 	sb.Append(me->path);
@@ -91,7 +91,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 			}
 			Data::DateTime dt;
 			dt.SetCurrTimeUTC();
-			sess = MemAlloc(SessionInfo, 1);
+			sess = MemAllocNN(SessionInfo);
 			sess->sessId = sessId;
 			sess->lastSignalTime = dt.ToTicks();
 			sess->stm = fs;
@@ -166,7 +166,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(NN<const Net::SocketUtil::Addres
 			}
 			Data::DateTime dt;
 			dt.SetCurrTimeUTC();
-			sess = MemAlloc(SessionInfo, 1);
+			sess = MemAllocNN(SessionInfo);
 			sess->sessId = sessId;
 			sess->lastSignalTime = dt.ToTicks();
 			sess->stm = fs;
@@ -210,12 +210,11 @@ void __stdcall Net::TFTPServer::OnDataPacket(NN<const Net::SocketUtil::AddressIn
 {
 	NN<Net::TFTPServer> me = userData.GetNN<Net::TFTPServer>();
 	UInt64 sessId = (((UInt64)ReadMUInt32(addr->addr)) << 16) | port;
-	SessionInfo *sess;
+	NN<SessionInfo> sess;
 	UInt8 repBuff[32];
 	UTF8Char *sptr;
 	Sync::MutexUsage mutUsage(me->mut);
-	sess = me->sessMap.Get(sessId);
-	if (sess == 0)
+	if (!me->sessMap.Get(sessId).SetTo(sess))
 	{
 		mutUsage.EndUse();
 		if (ReadMUInt16(buff) == 3)
@@ -318,7 +317,7 @@ void __stdcall Net::TFTPServer::OnDataPacket(NN<const Net::SocketUtil::AddressIn
 UInt32 __stdcall Net::TFTPServer::CheckThread(AnyType userObj)
 {
 	NN<Net::TFTPServer> me = userObj.GetNN<Net::TFTPServer>();
-	SessionInfo *sess;
+	NN<SessionInfo> sess;
 	UOSInt i;
 	Int64 currTime;
 	me->threadRunning = true;
@@ -329,7 +328,7 @@ UInt32 __stdcall Net::TFTPServer::CheckThread(AnyType userObj)
 		i = me->sessMap.GetCount();
 		while (i-- > 0)
 		{
-			sess = me->sessMap.GetItem(i);
+			sess = me->sessMap.GetItemNoCheck(i);
 			if (currTime - sess->lastSignalTime >= 10000)
 			{
 				me->sessMap.Remove(sess->sessId);
@@ -348,11 +347,11 @@ UInt32 __stdcall Net::TFTPServer::CheckThread(AnyType userObj)
 	return 0;
 }
 
-void Net::TFTPServer::ReleaseSess(SessionInfo *sess)
+void Net::TFTPServer::ReleaseSess(NN<SessionInfo> sess)
 {
 	sess->fileName->Release();
 	DEL_CLASS(sess->stm);
-	MemFree(sess);
+	MemFreeNN(sess);
 }
 
 Net::TFTPServer::TFTPServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log, Text::CString path)
@@ -404,7 +403,7 @@ Net::TFTPServer::~TFTPServer()
 	i = this->sessMap.GetCount();
 	while (i-- > 0)
 	{
-		ReleaseSess(this->sessMap.GetItem(i));
+		ReleaseSess(this->sessMap.GetItemNoCheck(i));
 	}
 	this->path->Release();
 }

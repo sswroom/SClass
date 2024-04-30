@@ -41,9 +41,9 @@ Net::SNS::SNSControl::SNSType Net::SNS::SNSControl::SNSTypeFromName(Text::CStrin
 	return Net::SNS::SNSControl::ST_UNKNOWN;
 }
 
-Net::SNS::SNSControl::SNSItem *Net::SNS::SNSControl::CreateItem(NN<Text::String> id, Int64 msgTime, Text::String *title, NN<Text::String> message, Text::String *msgLink, Text::String *imgURL, Text::String *videoURL)
+NN<Net::SNS::SNSControl::SNSItem> Net::SNS::SNSControl::CreateItem(NN<Text::String> id, Int64 msgTime, Text::String *title, NN<Text::String> message, Text::String *msgLink, Text::String *imgURL, Text::String *videoURL)
 {
-	Net::SNS::SNSControl::SNSItem *item = MemAlloc(Net::SNS::SNSControl::SNSItem, 1);
+	NN<Net::SNS::SNSControl::SNSItem> item = MemAllocNN(Net::SNS::SNSControl::SNSItem);
 	item->id = id->Clone();
 	item->msgTime = msgTime;
 	item->title = SCOPY_STRING(title);
@@ -54,7 +54,7 @@ Net::SNS::SNSControl::SNSItem *Net::SNS::SNSControl::CreateItem(NN<Text::String>
 	return item;
 }
 
-void Net::SNS::SNSControl::FreeItem(Net::SNS::SNSControl::SNSItem *item)
+void Net::SNS::SNSControl::FreeItem(NN<Net::SNS::SNSControl::SNSItem> item)
 {
 	item->id->Release();
 	SDEL_STRING(item->title);
@@ -62,5 +62,5 @@ void Net::SNS::SNSControl::FreeItem(Net::SNS::SNSControl::SNSItem *item)
 	SDEL_STRING(item->msgLink);
 	SDEL_STRING(item->imgURL);
 	SDEL_STRING(item->videoURL);
-	MemFree(item);
+	MemFreeNN(item);
 }

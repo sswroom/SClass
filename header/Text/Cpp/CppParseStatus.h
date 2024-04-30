@@ -1,7 +1,8 @@
 #ifndef _SM_TEXT_CPP_CPPPARSESTATUS
 #define _SM_TEXT_CPP_CPPPARSESTATUS
 #include "Data/ArrayListICaseString.h"
-#include "Data/FastStringMap.h"
+#include "Data/ArrayListNN.h"
+#include "Data/FastStringMapNN.h"
 #include "Data/StringUTF8Map.h"
 #include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
@@ -53,27 +54,27 @@ namespace Text
 				Bool lineStart;
 				ParserMode currMode;
 				Int32 modeStatus;
-				Data::ArrayList<Int32> *ifValid;
-				Data::ArrayList<ParserMode> *pastModes;
-				NN<Text::StringBuilderUTF8> lineBuffSB;
+				Data::ArrayList<Int32> ifValid;
+				Data::ArrayList<ParserMode> pastModes;
+				Text::StringBuilderUTF8 lineBuffSB;
 				UTF8Char *lineBuffWS;
 			} FileParseStatus;
 		private:
 			NN<Text::String> fileName;
-			Data::FastStringMap<DefineInfo*> defines;
-			Data::ArrayList<FileParseStatus*> statuses;
+			Data::FastStringMapNN<DefineInfo> defines;
+			Data::ArrayListNN<FileParseStatus> statuses;
 			Data::ArrayListICaseString fileNames;
 
-			void FreeDefineInfo(DefineInfo *definfo);
-			void FreeFileStatus(FileParseStatus *fileStatus);
+			static void FreeDefineInfo(NN<DefineInfo> definfo);
+			static void FreeFileStatus(NN<FileParseStatus> fileStatus);
 		public:
 			CppParseStatus(NN<Text::String> rootFile);
 			CppParseStatus(Text::CString rootFile);
 			~CppParseStatus();
 
-			FileParseStatus *GetFileStatus();
+			Optional<FileParseStatus> GetFileStatus();
 			Bool BeginParseFile(Text::CString fileName);
-			Bool EndParseFile(const UTF8Char *fileName, UOSInt fileNameLen);
+			Bool EndParseFile(Text::CStringNN fileName);
 
 			Bool IsDefined(Text::CStringNN defName);
 			Bool AddGlobalDef(Text::CStringNN defName, Text::CString defVal);
@@ -82,7 +83,7 @@ namespace Text
 			Bool GetDefineVal(Text::CStringNN defName, Text::CString defParams, NN<Text::StringBuilderUTF8> sb);
 
 			UOSInt GetDefineCount();
-			Bool GetDefineInfo(UOSInt index, DefineInfo *defInfo);
+			Bool GetDefineInfo(UOSInt index, NN<DefineInfo> defInfo);
 
 			UOSInt GetFileCount();
 			Text::String *GetFileName(UOSInt index);

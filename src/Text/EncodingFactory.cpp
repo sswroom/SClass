@@ -211,7 +211,7 @@ Text::EncodingFactory::EncodingFactory()
 				len = Text::StrCharCnt(encInfo[i].internetNames[j]);
 				s = Text::String::New(len);
 				Text::StrToLowerC(s->v, (const UTF8Char*)encInfo[i].internetNames[j], len);
-				this->encMap.PutNN(s, &encInfo[i]);
+				this->encMap.PutNN(s, encInfo[i]);
 				s->Release();
 			}
 			else
@@ -235,8 +235,8 @@ UInt32 Text::EncodingFactory::GetCodePage(Text::CString shortName)
 	}
 	UTF8Char sbuff[MAX_SHORT_LEN + 1];
 	Text::StrToLowerC(sbuff, shortName.v, shortName.leng);
-	Text::EncodingFactory::EncodingInfo *encInfo = this->encMap.GetC({sbuff, shortName.leng});
-	if (encInfo)
+	NN<Text::EncodingFactory::EncodingInfo> encInfo;
+	if (this->encMap.GetC({sbuff, shortName.leng}).SetTo(encInfo))
 	{
 		return encInfo->codePage;
 	}
@@ -365,7 +365,7 @@ UInt32 Text::EncodingFactory::GetSystemLCID()
 	return 0x0409;
 }
 
-void Text::EncodingFactory::GetCodePages(Data::ArrayList<UInt32> *codePages)
+void Text::EncodingFactory::GetCodePages(NN<Data::ArrayList<UInt32>> codePages)
 {
 	codePages->Add(1200);
 	codePages->Add(1201);

@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_SPREADSHEET_OFFICECHART
 #define _SM_TEXT_SPREADSHEET_OFFICECHART
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Math/Unit/Distance.h"
 #include "Text/String.h"
 #include "Text/SpreadSheet/OfficeChartAxis.h"
@@ -46,10 +46,10 @@ namespace Text
 			Bool legendOverlay;
 			BlankAs displayBlankAs;
 			ChartType chartType;
-			OfficeChartAxis *categoryAxis;
-			OfficeChartAxis *valueAxis;
-			Data::ArrayList<OfficeChartAxis *> *axes;
-			Data::ArrayList<OfficeChartSeries*> *series;
+			Optional<OfficeChartAxis> categoryAxis;
+			Optional<OfficeChartAxis> valueAxis;
+			Data::ArrayListNN<OfficeChartAxis> axes;
+			Data::ArrayListNN<OfficeChartSeries> series;
 
 		public:
 			OfficeChart(Math::Unit::Distance::DistanceUnit du, Double x, Double y, Double w, Double h);
@@ -72,20 +72,21 @@ namespace Text
 			void SetDisplayBlankAs(BlankAs displayBlankAs);
 			BlankAs GetDisplayBlankAs();
 
-			void InitChart(ChartType chartType, OfficeChartAxis *categoryAxis, OfficeChartAxis *valueAxis);
+			void InitChart(ChartType chartType, NN<OfficeChartAxis> categoryAxis, NN<OfficeChartAxis> valueAxis);
 			void InitLineChart(Text::CString leftAxisName, Text::CString bottomAxisName, AxisType bottomAxisType);
 			ChartType GetChartType();
-			OfficeChartAxis *CreateAxis(AxisType axisType, AxisPosition axisPos);
+			NN<OfficeChartAxis> CreateAxis(AxisType axisType, AxisPosition axisPos);
 			UOSInt GetAxisCount();
-			OfficeChartAxis *GetAxis(UOSInt index);
-			UOSInt GetAxisIndex(OfficeChartAxis *axis);
-			OfficeChartAxis *GetCategoryAxis();
-			OfficeChartAxis *GetValueAxis();
+			Optional<OfficeChartAxis> GetAxis(UOSInt index);
+			UOSInt GetAxisIndex(NN<OfficeChartAxis> axis);
+			Optional<OfficeChartAxis> GetCategoryAxis();
+			Optional<OfficeChartAxis> GetValueAxis();
 
 			void AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, Text::String *name, Bool showMarker);
 			void AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, Text::CString name, Bool showMarker);
-			UOSInt GetSeriesCount();
-			OfficeChartSeries *GetSeries(UOSInt index);
+			UOSInt GetSeriesCount() const;
+			NN<OfficeChartSeries> GetSeriesNoCheck(UOSInt index) const;
+			Optional<OfficeChartSeries> GetSeries(UOSInt index) const;
 		};
 	}
 }

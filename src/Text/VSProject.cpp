@@ -8,7 +8,7 @@ Text::VSFile::VSFile(NN<Text::String> fileName)
 	this->fileName = fileName->Clone();
 }
 
-Text::VSFile::VSFile(Text::CString fileName)
+Text::VSFile::VSFile(Text::CStringNN fileName)
 {
 	this->fileName = Text::String::New(fileName);
 }
@@ -28,22 +28,15 @@ Text::VSContainer::VSContainer(NN<Text::String> contName)
 	this->contName = contName->Clone();
 }
 
-Text::VSContainer::VSContainer(Text::CString contName)
+Text::VSContainer::VSContainer(Text::CStringNN contName)
 {
 	this->contName = Text::String::New(contName);
 }
 
 Text::VSContainer::~VSContainer()
 {
-	Text::CodeObject *child;
-	UOSInt i;
 	this->contName->Release();
-	i = this->childList.GetCount();
-	while (i-- > 0)
-	{
-		child = this->childList.GetItem(i);
-		DEL_CLASS(child);
-	}
+	this->childList.DeleteAll();
 }
 
 void Text::VSContainer::SetContainerName(Text::CString contName)
@@ -65,12 +58,17 @@ UOSInt Text::VSContainer::GetChildCount() const
 	return this->childList.GetCount();
 }
 
-Text::CodeObject *Text::VSContainer::GetChildObj(UOSInt index) const
+NN<Text::CodeObject> Text::VSContainer::GetChildNoCheck(UOSInt index) const
+{
+	return this->childList.GetItemNoCheck(index);
+}
+
+Optional<Text::CodeObject> Text::VSContainer::GetChildObj(UOSInt index) const
 {
 	return this->childList.GetItem(index);
 }
 
-void Text::VSContainer::AddChild(Text::CodeObject *obj)
+void Text::VSContainer::AddChild(NN<Text::CodeObject> obj)
 {
 	this->childList.Add(obj);
 }
@@ -94,15 +92,8 @@ Text::VSProject::VSProject(Text::CStringNN name, VisualStudioVersion ver) : Text
 
 Text::VSProject::~VSProject()
 {
-	UOSInt i;
-	Text::CodeObject *child;
 	this->projName->Release();
-	i = this->childList.GetCount();
-	while (i-- > 0)
-	{
-		child = this->childList.GetItem(i);
-		DEL_CLASS(child);
-	}
+	this->childList.DeleteAll();
 }
 
 Text::CodeProject::ProjectType Text::VSProject::GetProjectType() const
@@ -138,12 +129,17 @@ UOSInt Text::VSProject::GetChildCount() const
 	return this->childList.GetCount();
 }
 
-Text::CodeObject *Text::VSProject::GetChildObj(UOSInt index) const
+NN<Text::CodeObject> Text::VSProject::GetChildNoCheck(UOSInt index) const
+{
+	return this->childList.GetItemNoCheck(index);
+}
+
+Optional<Text::CodeObject> Text::VSProject::GetChildObj(UOSInt index) const
 {
 	return this->childList.GetItem(index);
 }
 
-void Text::VSProject::AddChild(Text::CodeObject *obj)
+void Text::VSProject::AddChild(NN<Text::CodeObject> obj)
 {
 	this->childList.Add(obj);
 }

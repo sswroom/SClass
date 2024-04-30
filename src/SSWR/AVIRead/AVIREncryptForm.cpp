@@ -104,15 +104,15 @@ SSWR::AVIRead::AVIREncryptForm::AVIREncryptForm(Optional<UI::GUIClientControl> p
 	this->txtDest->SetReadOnly(true);
 	this->txtDest->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	Data::ArrayList<Text::TextBinEnc::ITextBinEnc*> *encs = this->encList.GetEncList();
-	Text::TextBinEnc::ITextBinEnc *enc;
+	NN<Data::ArrayListNN<Text::TextBinEnc::ITextBinEnc>> encs = this->encList.GetEncList();
+	NN<Text::TextBinEnc::ITextBinEnc> enc;
 	UOSInt i;
 	UOSInt j;
 	i = 0;
 	j = encs->GetCount();
 	while (i < j)
 	{
-		enc = encs->GetItem(i);
+		enc = encs->GetItemNoCheck(i);
 		this->cboSrc->AddItem(enc->GetName(), enc);
 		this->cboDest->AddItem(enc->GetName(), enc);
 		i++;

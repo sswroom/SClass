@@ -8,13 +8,6 @@ namespace UI
 	{
 		class WinHScrollBar : public GUIHScrollBar
 		{
-		public:
-			typedef void (__stdcall *PosChgEvent)(void *userObj, UOSInt newPos);
-
-		private:
-			Data::ArrayList<PosChgEvent> posChgHdlrs;
-			Data::ArrayList<void *> posChgObjs;
-
 		private:
 			static Int32 useCnt;
 

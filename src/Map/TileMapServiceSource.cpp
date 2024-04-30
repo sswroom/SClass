@@ -34,7 +34,7 @@ void Map::TileMapServiceSource::LoadXML()
 		if (valid)
 		{
 			Text::StringBuilderUTF8 sb;
-			Text::XMLAttrib *attr;
+			NN<Text::XMLAttrib> attr;
 			UOSInt i;
 			while (reader.NextElementName().SetTo(nodeText))
 			{
@@ -81,7 +81,7 @@ void Map::TileMapServiceSource::LoadXML()
 					i = reader.GetAttribCount();
 					while (i-- > 0)
 					{
-						attr = reader.GetAttrib(i);
+						attr = reader.GetAttribNoCheck(i);
 						if (attr->name->Equals(UTF8STRC("minx")))
 						{
 							this->bounds.min.x = attr->value->ToDouble();
@@ -118,7 +118,7 @@ void Map::TileMapServiceSource::LoadXML()
 					i = reader.GetAttribCount();
 					while (i-- > 0)
 					{
-						attr = reader.GetAttrib(i);
+						attr = reader.GetAttribNoCheck(i);
 						if (attr->name->Equals(UTF8STRC("x")))
 						{
 							this->origin.x = attr->value->ToDouble();
@@ -141,7 +141,7 @@ void Map::TileMapServiceSource::LoadXML()
 					i = reader.GetAttribCount();
 					while (i-- > 0)
 					{
-						attr = reader.GetAttrib(i);
+						attr = reader.GetAttribNoCheck(i);
 						if (attr->name->Equals(UTF8STRC("x")))
 						{
 							this->origin.x = attr->value->ToDouble();
@@ -164,7 +164,7 @@ void Map::TileMapServiceSource::LoadXML()
 					i = reader.GetAttribCount();
 					while (i-- > 0)
 					{
-						attr = reader.GetAttrib(i);
+						attr = reader.GetAttribNoCheck(i);
 						if (attr->name->Equals(UTF8STRC("width")))
 						{
 							this->tileWidth = attr->value->ToUInt32();
@@ -214,7 +214,7 @@ void Map::TileMapServiceSource::LoadXML()
 							i = reader.GetAttribCount();
 							while (i-- > 0)
 							{
-								attr = reader.GetAttrib(i);
+								attr = reader.GetAttribNoCheck(i);
 								if (attr->name->Equals(UTF8STRC("href")))
 								{
 									SDEL_STRING(href);

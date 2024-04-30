@@ -62,7 +62,7 @@ void Win32::WindowsBTScanner::ReceivedHandler(winrt::Windows::Devices::Bluetooth
 	txPower = 0;
 #endif
 
-	IO::BTScanLog::ScanRecord3 *rec = this->DeviceGet(args.BluetoothAddress(), addrType);
+	NN<IO::BTScanLog::ScanRecord3> rec = this->DeviceGet(args.BluetoothAddress(), addrType);
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	rec->lastSeenTime = dt.ToTicks();
@@ -103,24 +103,25 @@ void Win32::WindowsBTScanner::StoppedHandler(winrt::Windows::Devices::Bluetooth:
 		TypedEventHandler<struct winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementWatcher, struct winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementReceivedEventArgs>
 			<class Win32::WindowsBTScanner, void(__cdecl Win32::WindowsBTScanner::*)(struct winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementWatcher const&, struct winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementReceivedEventArgs const&)>
 				(class Win32::WindowsBTScanner*, void(__cdecl Win32::WindowsBTScanner::*)(struct winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementWatcher const&, struct winrt::Windows::Devices::Bluetooth::Advertisement::BluetoothLEAdvertisementReceivedEventArgs const&))*/
-IO::BTScanLog::ScanRecord3 *Win32::WindowsBTScanner::DeviceGet(UInt64 mac, IO::BTScanLog::AddressType addrType)
+NN<IO::BTScanLog::ScanRecord3> Win32::WindowsBTScanner::DeviceGet(UInt64 mac, IO::BTScanLog::AddressType addrType)
 {
 	Sync::MutexUsage mutUsage(this->devMut);
-	IO::BTScanLog::ScanRecord3 *rec;
+	NN<IO::BTScanLog::ScanRecord3> rec;
+	Optional<IO::BTScanLog::ScanRecord3> optrec;
 	if (addrType == IO::BTScanLog::AT_RANDOM)
 	{
-		rec = this->randDevMap.Get(mac);
+		optrec = this->randDevMap.Get(mac);
 	}
 	else
 	{
-		rec = this->pubDevMap.Get(mac);
+		optrec = this->pubDevMap.Get(mac);
 	}
-	if (rec)
+	if (optrec.SetTo(rec))
 	{
 		return rec;
 	}
-	rec = MemAlloc(IO::BTScanLog::ScanRecord3, 1);
-	MemClear(rec, sizeof(IO::BTScanLog::ScanRecord3));
+	rec = MemAllocNN(IO::BTScanLog::ScanRecord3);
+	rec.ZeroContent();
 	UInt8 buff[8];
 	rec->macInt = mac;
 	WriteMUInt64(buff, mac);
@@ -169,9 +170,9 @@ struct LE_SCAN_REQUEST
 };
 #endif
 
-UInt32 __stdcall Win32::WindowsBTScanner::ScanThread(void *userObj)
+UInt32 __stdcall Win32::WindowsBTScanner::ScanThread(AnyType userObj)
 {
-	Win32::WindowsBTScanner *me = (Win32::WindowsBTScanner*)userObj;
+	NN<Win32::WindowsBTScanner> me = userObj.GetNN<Win32::WindowsBTScanner>();
 	BLUETOOTH_FIND_RADIO_PARAMS param;
 	param.dwSize = sizeof(param);
 	HANDLE handle;
@@ -263,11 +264,11 @@ Win32::WindowsBTScanner::WindowsBTScanner()
 Win32::WindowsBTScanner::~WindowsBTScanner()
 {
 	this->Close();
-	LIST_CALL_FUNC(&this->pubDevMap, DeviceFree);
-	LIST_CALL_FUNC(&this->randDevMap, DeviceFree);
+	this->pubDevMap.FreeAll(DeviceFree);
+	this->randDevMap.FreeAll(DeviceFree);
 }
 
-void Win32::WindowsBTScanner::HandleRecordUpdate(RecordHandler hdlr, void *userObj)
+void Win32::WindowsBTScanner::HandleRecordUpdate(RecordHandler hdlr, AnyType userObj)
 {
 	this->recHdlrObj = userObj;
 	this->recHdlr = hdlr;
@@ -321,13 +322,13 @@ Bool Win32::WindowsBTScanner::SetScanMode(ScanMode scanMode)
 	return false;
 }
 
-NN<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> Win32::WindowsBTScanner::GetPublicMap(NN<Sync::MutexUsage> mutUsage)
+NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> Win32::WindowsBTScanner::GetPublicMap(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->devMut);
 	return this->pubDevMap;
 }
 
-NN<Data::FastMap<UInt64, IO::BTScanLog::ScanRecord3*>> Win32::WindowsBTScanner::GetRandomMap(NN<Sync::MutexUsage> mutUsage)
+NN<Data::FastMapNN<UInt64, IO::BTScanLog::ScanRecord3>> Win32::WindowsBTScanner::GetRandomMap(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->devMut);
 	return this->randDevMap;

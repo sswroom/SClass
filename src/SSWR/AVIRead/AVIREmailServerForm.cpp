@@ -214,9 +214,10 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnEmailDblClicked(AnyType use
 	NN<Net::Email::EmailStore::EmailInfo> email;
 	if (me->lvEmail->GetItem(index).GetOpt<Net::Email::EmailStore::EmailInfo>().SetTo(email))
 	{
-		Text::MIMEObj::MailMessage *mail;
+		Optional<Text::MIMEObj::MailMessage> mail;
+		NN<Text::MIMEObj::MailMessage> nnmail;
 		NN<IO::StreamData> fd;
-		if (fd.Set(me->store->OpenEmailData(email->id)))
+		if (me->store->OpenEmailData(email->id).SetTo(fd))
 		{
 			mail = Text::MIMEObj::MailMessage::ParseFile(fd);
 			fd.Delete();
@@ -225,9 +226,9 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnEmailDblClicked(AnyType use
 		{
 			mail = 0;
 		}
-		if (mail)
+		if (mail.SetTo(nnmail))
 		{
-			SSWR::AVIRead::AVIRMIMEViewerForm frm(0, me->ui, me->core, mail);
+			SSWR::AVIRead::AVIRMIMEViewerForm frm(0, me->ui, me->core, nnmail);
 			frm.ShowDialog(me);
 		}
 		else
@@ -280,9 +281,11 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISMailReceived(AnyType us
 	cli->GetRemoteAddr(remoteAddr);
 	me->store->NewEmail(id, remoteAddr, SERVER_DOMAIN, mail);
 	me->mailChanged = true;
+	NN<Text::IMIMEObj> content;
+	if (mail->GetContent().SetTo(content))
 	{
 		IO::MemoryStream mstm;
-		mail->GetContent()->WriteStream(&mstm);
+		content->WriteStream(mstm);
 		me->totalSize += (UOSInt)mstm.GetLength();
 	}
 }
@@ -302,7 +305,7 @@ Bool __stdcall SSWR::AVIRead::AVIREmailServerForm::OnMailLogin(AnyType userObj, 
 void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIREmailServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIREmailServerForm>();
-	Net::Email::EmailStore::EmailInfo *email;
+	NN<Net::Email::EmailStore::EmailInfo> email;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -314,15 +317,15 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnTimerTick(AnyType userObj)
 	if (me->mailChanged)
 	{
 		me->mailChanged = false;
-		Data::ArrayList<Net::Email::EmailStore::EmailInfo*> emailList;
+		Data::ArrayListNN<Net::Email::EmailStore::EmailInfo> emailList;
 		Data::ArrayListStringNN rcptList;
-		me->store->GetAllEmails(&emailList);
+		me->store->GetAllEmails(emailList);
 		me->lvEmail->ClearItems();
 		i = 0;
 		j = emailList.GetCount();
 		while (i < j)
 		{
-			email = emailList.GetItem(i);
+			email = emailList.GetItemNoCheck(i);
 			sb.ClearStr();
 			sb.AppendI64(email->id);
 			k = me->lvEmail->AddItem(sb.ToCString(), email);
@@ -668,7 +671,7 @@ UOSInt SSWR::AVIRead::AVIREmailServerForm::GetMessageStat(Int32 userId, UOSInt *
 {
 	Net::Email::EmailStore::MessageStat stat;
 	Optional<Text::String> userName = this->GetUserName(userId);
-	this->store->GetMessageStat(OPTSTR_CSTR(userName), &stat);
+	this->store->GetMessageStat(OPTSTR_CSTR(userName), stat);
 	*size = (UOSInt)stat.unreadSize;
 	return stat.unreadCount;
 }
@@ -677,7 +680,7 @@ Bool SSWR::AVIRead::AVIREmailServerForm::GetUnreadList(Int32 userId, Data::Array
 {
 	Data::ArrayList<UOSInt> unreadIndices;
 	Optional<Text::String> userName = this->GetUserName(userId);
-	this->store->GetUnreadIndices(OPTSTR_CSTR(userName), &unreadIndices);
+	this->store->GetUnreadIndices(OPTSTR_CSTR(userName), unreadIndices);
 	UOSInt i = 0;
 	UOSInt j = unreadIndices.GetCount();
 	while (i < j)
@@ -691,8 +694,8 @@ Bool SSWR::AVIRead::AVIREmailServerForm::GetUnreadList(Int32 userId, Data::Array
 Bool SSWR::AVIRead::AVIREmailServerForm::GetMessageInfo(Int32 userId, UInt32 msgId, MessageInfo *info)
 {
 	Optional<Text::String> userName = this->GetUserName(userId);
-	Net::Email::EmailStore::EmailInfo *email = this->store->GetEmailByIndex(OPTSTR_CSTR(userName), msgId);
-	if (email == 0)
+	NN<Net::Email::EmailStore::EmailInfo> email;
+	if (!this->store->GetEmailByIndex(OPTSTR_CSTR(userName), msgId).SetTo(email))
 		return false;
 	info->size = email->fileSize;
 	info->uid = this->store->GetEmailUid(email->id);
@@ -702,11 +705,11 @@ Bool SSWR::AVIRead::AVIREmailServerForm::GetMessageInfo(Int32 userId, UInt32 msg
 Bool SSWR::AVIRead::AVIREmailServerForm::GetMessageContent(Int32 userId, UInt32 msgId, IO::Stream *stm)
 {
 	Optional<Text::String> userName = this->GetUserName(userId);
-	Net::Email::EmailStore::EmailInfo *email = this->store->GetEmailByIndex(OPTSTR_CSTR(userName), msgId);
-	if (email == 0)
+	NN<Net::Email::EmailStore::EmailInfo> email;
+	if (!this->store->GetEmailByIndex(OPTSTR_CSTR(userName), msgId).SetTo(email))
 		return false;
-	IO::StreamData *fd = this->store->OpenEmailData(email->id);
-	if (fd == 0)
+	NN<IO::StreamData> fd;
+	if (!this->store->OpenEmailData(email->id).SetTo(fd))
 		return false;
 	
 	Bool succ = false;
@@ -749,7 +752,7 @@ Bool SSWR::AVIRead::AVIREmailServerForm::GetMessageContent(Int32 userId, UInt32 
 			ofst += readSize;
 		}
 	}
-	DEL_CLASS(fd);
+	fd.Delete();
 
 	return succ;
 }

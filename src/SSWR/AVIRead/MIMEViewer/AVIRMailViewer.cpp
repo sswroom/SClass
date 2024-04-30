@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/MIMEViewer/AVIRMailViewer.h"
 
-SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, Text::MIMEObj::MailMessage *mail) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, mail)
+SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, NN<Text::MIMEObj::MailMessage> mail) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, mail)
 {
 	this->mail = mail;
 
@@ -55,7 +55,12 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NN<SSWR::AVIRead::AVIR
 
 	this->pnlContent = ui->NewPanel(ctrl);
 	this->pnlContent->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->viewer = SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::CreateViewer(this->core, ui, this->pnlContent, sess, this->mail->GetRAWContent());
+	this->viewer = 0;
+	NN<Text::IMIMEObj> content;
+	if (this->mail->GetRAWContent().SetTo(content))
+	{
+		this->viewer = SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::CreateViewer(this->core, ui, this->pnlContent, sess, content);
+	}
 
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -73,8 +78,8 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NN<SSWR::AVIRead::AVIR
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
 		this->txtDate->SetText(CSTRP(sbuff, sptr));
 	}
-	Data::ArrayList<Text::MIMEObj::MailMessage::MailAddress *> addrList;
-	Text::MIMEObj::MailMessage::MailAddress *addr;
+	Data::ArrayListNN<Text::MIMEObj::MailMessage::MailAddress> addrList;
+	NN<Text::MIMEObj::MailMessage::MailAddress> addr;
 	NN<Text::String> s;
 	UOSInt i;
 	UOSInt j;
@@ -84,7 +89,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NN<SSWR::AVIRead::AVIR
 	j = addrList.GetCount();
 	while (i < j)
 	{
-		addr = addrList.GetItem(i);
+		addr = addrList.GetItemNoCheck(i);
 		if (addr->type == Text::MIMEObj::MailMessage::AT_TO)
 		{
 			k = this->lvRecp->AddItem(CSTR("To"), 0);
@@ -117,5 +122,5 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(NN<SSWR::AVIRead::AVIR
 
 SSWR::AVIRead::MIMEViewer::AVIRMailViewer::~AVIRMailViewer()
 {
-	SDEL_CLASS(this->viewer);
+	this->viewer.Delete();
 }

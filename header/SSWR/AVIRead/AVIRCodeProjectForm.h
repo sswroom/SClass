@@ -19,7 +19,7 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Text::CodeProject *proj;
+			NN<Text::CodeProject> proj;
 
 			NN<UI::GUIPanel> pnlCtrl;
 			NN<UI::GUILabel> lblConfig;
@@ -29,10 +29,10 @@ namespace SSWR
 			NN<UI::GUITextBox> txtMessage;
 
 			static void __stdcall OnItemSelected(AnyType userObj);
-			void DisplayStatus(NN<Text::StringBuilderUTF8> sb, Text::Cpp::CppParseStatus *status);
-			void AddTreeObj(Optional<UI::GUITreeView::TreeItem> parent, Text::CodeContainer *container);
+			void DisplayStatus(NN<Text::StringBuilderUTF8> sb, NN<Text::Cpp::CppParseStatus> status);
+			void AddTreeObj(Optional<UI::GUITreeView::TreeItem> parent, NN<Text::CodeContainer> container);
 		public:
-			AVIRCodeProjectForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::CodeProject *proj);
+			AVIRCodeProjectForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Text::CodeProject> proj);
 			virtual ~AVIRCodeProjectForm();
 
 			virtual void OnMonitorChanged();

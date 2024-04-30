@@ -103,13 +103,13 @@ SSWR::AVIRead::AVIRTextHashForm::AVIRTextHashForm(Optional<UI::GUIClientControl>
 		}
 		currHash = (Crypto::Hash::HashType)((OSInt)currHash + 1);
 	}
-	Data::ArrayList<Text::TextBinEnc::ITextBinEnc*> *encs = this->encList.GetEncList();
-	Text::TextBinEnc::ITextBinEnc *enc;
+	NN<Data::ArrayListNN<Text::TextBinEnc::ITextBinEnc>> encs = this->encList.GetEncList();
+	NN<Text::TextBinEnc::ITextBinEnc> enc;
 	i = 0;
 	j = encs->GetCount();
 	while (i < j)
 	{
-		enc = encs->GetItem(i);
+		enc = encs->GetItemNoCheck(i);
 		this->cboEncrypt->AddItem(enc->GetName(), enc);
 		i++;
 	}

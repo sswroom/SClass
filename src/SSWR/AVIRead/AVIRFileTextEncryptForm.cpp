@@ -141,15 +141,15 @@ SSWR::AVIRead::AVIRFileTextEncryptForm::AVIRFileTextEncryptForm(Optional<UI::GUI
 	this->btnConvert->SetRect(104, 100, 75, 23, false);
 	this->btnConvert->HandleButtonClick(OnConvertClicked, this);
 
-	Data::ArrayList<Text::TextBinEnc::ITextBinEnc*> *encs = this->encList.GetEncList();
-	Text::TextBinEnc::ITextBinEnc *enc;
+	NN<Data::ArrayListNN<Text::TextBinEnc::ITextBinEnc>> encs = this->encList.GetEncList();
+	NN<Text::TextBinEnc::ITextBinEnc> enc;
 	UOSInt i;
 	UOSInt j;
 	i = 0;
 	j = encs->GetCount();
 	while (i < j)
 	{
-		enc = encs->GetItem(i);
+		enc = encs->GetItemNoCheck(i);
 		this->cboEncrypt->AddItem(enc->GetName(), enc);
 		i++;
 	}

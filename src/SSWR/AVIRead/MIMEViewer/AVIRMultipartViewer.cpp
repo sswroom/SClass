@@ -12,13 +12,13 @@
 
 #include <stdio.h>
 
-SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, Text::MIMEObj::MultipartMIMEObj *obj) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, obj)
+SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, NN<Text::MIMEObj::MultipartMIMEObj> obj) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, obj)
 {
 	UInt8 hashBuff[64];
 	UOSInt i;
 	UOSInt j;
-	Text::IMIMEObj *subObj;
-	Text::MIMEObj::MIMEMessage *part;
+	NN<Text::IMIMEObj> subObj;
+	NN<Text::MIMEObj::MIMEMessage> part;
 	this->obj = obj;
 
 	if (obj->GetContentType().StartsWith(UTF8STRC("multipart/signed")))
@@ -33,17 +33,15 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NN<SSWR::AVI
 		this->txtSignState->SetReadOnly(true);
 
 		j = this->obj->GetPartCount();
-		if (j == 2)
+		if (j == 2 && this->obj->GetPart(0).SetTo(part))
 		{
-			part = this->obj->GetPart(0);
 			IO::MemoryStream mstm;
-			part->WriteStream(&mstm);
+			part->WriteStream(mstm);
 			
-			subObj = this->obj->GetPartContent(1);
-			if (subObj->GetContentType().StartsWith(UTF8STRC("application/pkcs7-signature")))
+			if (this->obj->GetPartContent(1).SetTo(subObj) && subObj->GetContentType().StartsWith(UTF8STRC("application/pkcs7-signature")))
 			{
 				UOSInt dataSize;
-				const UInt8 *data = ((Text::MIMEObj::UnknownMIMEObj*)subObj)->GetRAWData(&dataSize);
+				const UInt8 *data = NN<Text::MIMEObj::UnknownMIMEObj>::ConvertFrom(subObj)->GetRAWData(dataSize);
 				Net::ASN1Data *asn1 = Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR(data, dataSize), subObj->GetSourceNameObj());
 				if (asn1)
 				{
@@ -176,7 +174,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NN<SSWR::AVI
 		}
 	}
 	NN<UI::GUITabPage> tp;
-	SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *viewer;
+	NN<SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer> viewer;
 	this->tcParts = ui->NewTabControl(ctrl);
 	this->tcParts->SetDockType(UI::GUIControl::DOCK_FILL);
 
@@ -194,22 +192,17 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NN<SSWR::AVI
 	j = obj->GetPartCount();
 	while (i < j)
 	{
-		subObj = obj->GetPartContent(i);
-		tp = this->tcParts->AddTabPage(subObj->GetSourceNameObj());
-		viewer = SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::CreateViewer(core, ui, tp, sess, subObj);
-		this->subViewers.Add(viewer);
+		if (obj->GetPartContent(i).SetTo(subObj))
+		{
+			tp = this->tcParts->AddTabPage(subObj->GetSourceNameObj());
+			if (SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::CreateViewer(core, ui, tp, sess, subObj).SetTo(viewer))
+				this->subViewers.Add(viewer);
+		}
 		i++;
 	}
 }
 
 SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::~AVIRMultipartViewer()
 {
-	SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *viewer;
-	UOSInt i;
-	i = this->subViewers.GetCount();
-	while (i-- > 0)
-	{
-		viewer = this->subViewers.GetItem(i);
-		DEL_CLASS(viewer);
-	}
+	this->subViewers.DeleteAll();
 }

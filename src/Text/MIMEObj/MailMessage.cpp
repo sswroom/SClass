@@ -21,14 +21,14 @@ Text::CStringNN Text::MIMEObj::MailMessage::GetClassName() const
 	return CSTR("MailMessage");
 }
 
-Text::IMIMEObj *Text::MIMEObj::MailMessage::Clone() const
+NN<Text::IMIMEObj> Text::MIMEObj::MailMessage::Clone() const
 {
-	Text::MIMEObj::MailMessage *msg;
+	NN<Text::MIMEObj::MailMessage> msg;
 	UOSInt i;
 	UOSInt j;
 	NN<Text::String> name;
 	NN<Text::String> value;
-	NEW_CLASS(msg, Text::MIMEObj::MailMessage());
+	NEW_CLASSNN(msg, Text::MIMEObj::MailMessage());
 	i = 0;
 	j = this->headerName.GetCount();
 	while (i < j)
@@ -39,9 +39,10 @@ Text::IMIMEObj *Text::MIMEObj::MailMessage::Clone() const
 		}
 		i++;
 	}
-	if (this->content)
+	NN<IMIMEObj> content;
+	if (this->content.SetTo(content))
 	{
-		msg->SetContent(this->content->Clone());
+		msg->SetContent(content->Clone());
 	}
 	return msg;
 }
@@ -79,7 +80,7 @@ UTF8Char *Text::MIMEObj::MailMessage::GetReplyTo(UTF8Char *sbuff) const
 	return ParseHeaderStr(sbuff, hdr->v);
 }
 
-UOSInt Text::MIMEObj::MailMessage::GetRecpList(NN<Data::ArrayList<MailAddress*>> recpList) const
+UOSInt Text::MIMEObj::MailMessage::GetRecpList(NN<Data::ArrayListNN<MailAddress>> recpList) const
 {
 	UOSInt i = 0;
 	NN<Text::String> hdr;
@@ -90,40 +91,42 @@ UOSInt Text::MIMEObj::MailMessage::GetRecpList(NN<Data::ArrayList<MailAddress*>>
 	return i;
 }
 
-void Text::MIMEObj::MailMessage::FreeRecpList(NN<Data::ArrayList<MailAddress*>> recpList) const
+void Text::MIMEObj::MailMessage::FreeRecpList(NN<Data::ArrayListNN<MailAddress>> recpList) const
 {
-	MailAddress *addr;
+	NN<MailAddress> addr;
 	UOSInt i;
 	i = recpList->GetCount();
 	while (i-- > 0)
 	{
-		addr = recpList->RemoveAt(i);
+		addr = recpList->GetItemNoCheck(i);
 		if (addr->name)
 			addr->name->Release();
 		addr->address->Release();
-		MemFree(addr);
+		MemFreeNN(addr);
 	}
+	recpList->Clear();
 }
 
-Text::MIMEObj::TextMIMEObj *Text::MIMEObj::MailMessage::GetContentText() const
+Optional<Text::MIMEObj::TextMIMEObj> Text::MIMEObj::MailMessage::GetContentText() const
 {
-	if (this->content == 0)
+	NN<IMIMEObj> content;
+	if (!this->content.SetTo(content))
 		return 0;
-	Text::CString clsName = this->content->GetClassName();
+	Text::CString clsName = content->GetClassName();
 	if (clsName.Equals(UTF8STRC("TextMIMEObj")))
-		return (Text::MIMEObj::TextMIMEObj*)this->content;
+		return NN<Text::MIMEObj::TextMIMEObj>::ConvertFrom(content);
 	if (clsName.Equals(UTF8STRC("MultipartMIMEObj")))
 	{
-		Text::CString contType = this->content->GetContentType();
+		Text::CString contType = content->GetContentType();
 		if (contType.StartsWith(UTF8STRC("multipart/mixed")))
 		{
-			Text::MIMEObj::MultipartMIMEObj *mpart = (Text::MIMEObj::MultipartMIMEObj*)this->content;
-			Text::IMIMEObj *obj = mpart->GetPartContent(0);
-			if (obj)
+			NN<Text::MIMEObj::MultipartMIMEObj> mpart = NN<Text::MIMEObj::MultipartMIMEObj>::ConvertFrom(content);
+			NN<Text::IMIMEObj> obj;
+			if (mpart->GetPartContent(0).SetTo(obj))
 			{
 				if (clsName.Equals(UTF8STRC("TextMIMEObj")))
 				{
-					return (Text::MIMEObj::TextMIMEObj*)obj;
+					return NN<Text::MIMEObj::TextMIMEObj>::ConvertFrom(obj);
 				}
 			}
 		}
@@ -131,17 +134,21 @@ Text::MIMEObj::TextMIMEObj *Text::MIMEObj::MailMessage::GetContentText() const
 	return 0;
 }
 
-Text::IMIMEObj *Text::MIMEObj::MailMessage::GetContentMajor() const
+Optional<Text::IMIMEObj> Text::MIMEObj::MailMessage::GetContentMajor() const
 {
-	if (this->content == 0)
+	NN<IMIMEObj> content;
+	if (!this->content.SetTo(content))
 		return 0;
-	Text::IMIMEObj *obj = content;
-	Text::CString contType = obj->GetContentType();
-	Text::CString clsName = obj->GetClassName();
+	Optional<Text::IMIMEObj> obj = content;
+	Text::CString contType = content->GetContentType();
+	Text::CString clsName = content->GetClassName();
 	if (clsName.Equals(UTF8STRC("MultipartMIMEObj")) && contType.StartsWith(UTF8STRC("multipart/mixed")))
 	{
-		obj = ((Text::MIMEObj::MultipartMIMEObj*)obj)->GetPartContent(0);
-		clsName = obj->GetClassName();
+		obj = NN<Text::MIMEObj::MultipartMIMEObj>::ConvertFrom(content)->GetPartContent(0);
+		if (obj.SetTo(content))
+		{
+			clsName = content->GetClassName();
+		}
 	}
 	if (clsName.Equals(UTF8STRC("TextMIMEObj")))
 		return obj;
@@ -149,19 +156,19 @@ Text::IMIMEObj *Text::MIMEObj::MailMessage::GetContentMajor() const
 		return obj;
 	if (clsName.Equals(UTF8STRC("MultipartMIMEObj")))
 	{
-		contType = obj->GetContentType();
+		contType = content->GetContentType();
 		if (contType.StartsWith(UTF8STRC("multipart/related")))
 			return obj;
 		if (contType.StartsWith(UTF8STRC("multipart/alternative")))
 		{
-			Text::MIMEObj::MultipartMIMEObj *mpart = (Text::MIMEObj::MultipartMIMEObj*)obj;
+			NN<Text::MIMEObj::MultipartMIMEObj> mpart = NN<Text::MIMEObj::MultipartMIMEObj>::ConvertFrom(content);
 			return mpart->GetPartContent(mpart->GetPartCount() - 1);
 		}
 	}
 	return 0;
 }
 
-Text::IMIMEObj *Text::MIMEObj::MailMessage::GetAttachment(OSInt index, NN<Text::StringBuilderUTF8> name) const
+Optional<Text::IMIMEObj> Text::MIMEObj::MailMessage::GetAttachment(OSInt index, NN<Text::StringBuilderUTF8> name) const
 {
 	UOSInt i;
 	UOSInt j;
@@ -170,58 +177,61 @@ Text::IMIMEObj *Text::MIMEObj::MailMessage::GetAttachment(OSInt index, NN<Text::
 	NN<Text::String> s;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	Text::MIMEObj::MIMEMessage *part;
-	if (this->content == 0)
+	NN<Text::MIMEObj::MIMEMessage> part;
+	NN<IMIMEObj> content;
+	if (!this->content.SetTo(content))
 		return 0;
-	if (this->content->GetClassName().Equals(UTF8STRC("MultipartMIMEObj")))
+	if (content->GetClassName().Equals(UTF8STRC("MultipartMIMEObj")))
 	{
-		Text::CString contType = this->content->GetContentType();
+		Text::CString contType = content->GetContentType();
 		if (Text::StrStartsWithC(contType.v, contType.leng, UTF8STRC("multipart/mixed")))
 		{
-			Text::MIMEObj::MultipartMIMEObj *mpart = (Text::MIMEObj::MultipartMIMEObj*)this->content;
+			NN<Text::MIMEObj::MultipartMIMEObj> mpart = NN<Text::MIMEObj::MultipartMIMEObj>::ConvertFrom(content);
 			i = 0;
 			j = mpart->GetPartCount();
 			while (i < j)
 			{
-				part = mpart->GetPart(i);
-				if (part->GetHeader(UTF8STRC("Content-Disposition")).SetTo(s) && s->StartsWith(UTF8STRC("attachment")))
+				if (mpart->GetPart(i).SetTo(part))
 				{
-					if (index == 0)
+					if (part->GetHeader(UTF8STRC("Content-Disposition")).SetTo(s) && s->StartsWith(UTF8STRC("attachment")))
 					{
-						sptr = ParseHeaderStr(sbuff, s->v);
-						k = Text::StrIndexOfC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("filename="));
-						if (k != INVALID_INDEX)
+						if (index == 0)
 						{
-							if (sbuff[k + 9] == '\"')
+							sptr = ParseHeaderStr(sbuff, s->v);
+							k = Text::StrIndexOfC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("filename="));
+							if (k != INVALID_INDEX)
 							{
-								l = Text::StrIndexOfChar(&sbuff[k + 10], '\"');
-								if (l != INVALID_INDEX)
+								if (sbuff[k + 9] == '\"')
 								{
-									name->AppendC(&sbuff[k + 10], l);
+									l = Text::StrIndexOfChar(&sbuff[k + 10], '\"');
+									if (l != INVALID_INDEX)
+									{
+										name->AppendC(&sbuff[k + 10], l);
+									}
+									else
+									{
+										name->AppendC(&sbuff[k + 10], (UOSInt)(sptr - &sbuff[k + 10]));
+									}
 								}
 								else
 								{
-									name->AppendC(&sbuff[k + 10], (UOSInt)(sptr - &sbuff[k + 10]));
+									l = Text::StrIndexOfChar(&sbuff[k + 9], ' ');
+									if (l != INVALID_INDEX)
+									{
+										name->AppendC(&sbuff[k + 9], l);
+									}
+									else
+									{
+										name->AppendC(&sbuff[k + 9], (UOSInt)(sptr - &sbuff[k + 9]));
+									}
 								}
 							}
-							else
-							{
-								l = Text::StrIndexOfChar(&sbuff[k + 9], ' ');
-								if (l != INVALID_INDEX)
-								{
-									name->AppendC(&sbuff[k + 9], l);
-								}
-								else
-								{
-									name->AppendC(&sbuff[k + 9], (UOSInt)(sptr - &sbuff[k + 9]));
-								}
-							}
+							return part->GetContent();
 						}
-						return part->GetContent();
-					}
-					else
-					{
-						index--;
+						else
+						{
+							index--;
+						}
 					}
 				}
 				i++;
@@ -231,24 +241,24 @@ Text::IMIMEObj *Text::MIMEObj::MailMessage::GetAttachment(OSInt index, NN<Text::
 	return 0;
 }
 
-Text::IMIMEObj *Text::MIMEObj::MailMessage::GetRAWContent() const
+Optional<Text::IMIMEObj> Text::MIMEObj::MailMessage::GetRAWContent() const
 {
 	return this->content;
 }
 
-Text::MIMEObj::MailMessage *Text::MIMEObj::MailMessage::ParseFile(NN<IO::StreamData> fd)
+Optional<Text::MIMEObj::MailMessage> Text::MIMEObj::MailMessage::ParseFile(NN<IO::StreamData> fd)
 {
-	Text::MIMEObj::MailMessage *mail;
-	NEW_CLASS(mail, Text::MIMEObj::MailMessage());
+	NN<Text::MIMEObj::MailMessage> mail;
+	NEW_CLASSNN(mail, Text::MIMEObj::MailMessage());
 	if (!mail->ParseFromData(fd))
 	{
-		DEL_CLASS(mail);
+		mail.Delete();
 		return 0;
 	}
 	return mail;
 }
 
-UOSInt Text::MIMEObj::MailMessage::ParseAddrList(const UTF8Char *hdr, UOSInt hdrLen, NN<Data::ArrayList<MailAddress*>> recpList, AddressType type) const
+UOSInt Text::MIMEObj::MailMessage::ParseAddrList(const UTF8Char *hdr, UOSInt hdrLen, NN<Data::ArrayListNN<MailAddress>> recpList, AddressType type) const
 {
 	UTF8Char *sbuff;
 	UTF8Char *sptr;
@@ -259,7 +269,7 @@ UOSInt Text::MIMEObj::MailMessage::ParseAddrList(const UTF8Char *hdr, UOSInt hdr
 	UTF8Char c;
 	Bool isEnd;
 	Bool quoted;
-	MailAddress *addr;
+	NN<MailAddress> addr;
 	sbuff = MemAlloc(UTF8Char, hdrLen + 1);
 	this->ParseHeaderStr(sbuff, hdr);
 
@@ -289,7 +299,7 @@ UOSInt Text::MIMEObj::MailMessage::ParseAddrList(const UTF8Char *hdr, UOSInt hdr
 		}
 		*sptr = 0;
 
-		addr = MemAlloc(MailAddress, 1);
+		addr = MemAllocNN(MailAddress);
 		addr->type = type;
 		quoted = false;
 		ptr2 = ptr1;

@@ -16,13 +16,13 @@ namespace Text
 
 		virtual Text::CStringNN GetClassName() const = 0;
 		virtual Text::CStringNN GetContentType() const = 0;
-		virtual UOSInt WriteStream(IO::Stream *stm) const = 0;
-		virtual IMIMEObj *Clone() const = 0;
+		virtual UOSInt WriteStream(NN<IO::Stream> stm) const = 0;
+		virtual NN<IMIMEObj> Clone() const = 0;
 
 		virtual IO::ParserType GetParserType() const;
 
-		static Text::IMIMEObj *ParseFromData(NN<IO::StreamData> data, Text::CStringNN contentType);
-		static Text::IMIMEObj *ParseFromFile(Text::CStringNN fileName);
+		static Optional<Text::IMIMEObj> ParseFromData(NN<IO::StreamData> data, Text::CStringNN contentType);
+		static Optional<Text::IMIMEObj> ParseFromFile(Text::CStringNN fileName);
 	};
 }
 #endif

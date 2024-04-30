@@ -8,7 +8,7 @@
 
 Bool Text::HTMLUtil::HTMLWellFormat(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, UOSInt lev, NN<Text::StringBuilderUTF8> sb)
 {
-	Text::XMLAttrib *attr;
+	NN<Text::XMLAttrib> attr;
 	UOSInt i;
 	UOSInt j;
 	Bool toWrite;
@@ -130,7 +130,7 @@ Bool Text::HTMLUtil::HTMLWellFormat(Optional<Text::EncodingFactory> encFact, NN<
 					j = reader.GetAttribCount();
 					while (i < j)
 					{
-						attr = reader.GetAttrib(i);
+						attr = reader.GetAttribNoCheck(i);
 						if (attr->name->Equals(UTF8STRC("type")) && attr->value != 0)
 						{
 							if (attr->value->Equals(UTF8STRC("application/ld+json")))
@@ -330,10 +330,10 @@ Bool Text::HTMLUtil::HTMLGetText(Optional<Text::EncodingFactory> encFact, const 
 				{
 					UOSInt i = 0;
 					UOSInt j = reader.GetAttribCount();
-					Text::XMLAttrib *attr;
+					NN<Text::XMLAttrib> attr;
 					while (i < j)
 					{
-						attr = reader.GetAttrib(i);
+						attr = reader.GetAttribNoCheck(i);
 						if (attr->name->EqualsICase(UTF8STRC("SRC")) && attr->value)
 						{
 							imgList->Add(attr->value->Clone());

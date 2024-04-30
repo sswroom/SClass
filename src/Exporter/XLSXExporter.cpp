@@ -618,6 +618,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 					sb.AppendC(UTF8STRC("<c:layout/>"));
 					if (drawing->chart->GetChartType() != ChartType::Unknown)
 					{
+						NN<Text::SpreadSheet::OfficeChartAxis> nnaxis;
 						switch (drawing->chart->GetChartType())
 						{
 						case ChartType::LineChart:
@@ -630,19 +631,19 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 						n = drawing->chart->GetSeriesCount();
 						while (m < n)
 						{
-							AppendSeries(sb, drawing->chart->GetSeries(m), m);
+							AppendSeries(sb, drawing->chart->GetSeriesNoCheck(m), m);
 							m++;
 						}
-						if (drawing->chart->GetCategoryAxis())
+						if (drawing->chart->GetCategoryAxis().SetTo(nnaxis))
 						{
 							sb.AppendC(UTF8STRC("<c:axId val=\""));
-							sb.AppendUOSInt(drawing->chart->GetAxisIndex(drawing->chart->GetCategoryAxis()));
+							sb.AppendUOSInt(drawing->chart->GetAxisIndex(nnaxis));
 							sb.AppendC(UTF8STRC("\"/>"));
 						}
-						if (drawing->chart->GetValueAxis())
+						if (drawing->chart->GetValueAxis().SetTo(nnaxis))
 						{
 							sb.AppendC(UTF8STRC("<c:axId val=\""));
-							sb.AppendUOSInt(drawing->chart->GetAxisIndex(drawing->chart->GetValueAxis()));
+							sb.AppendUOSInt(drawing->chart->GetAxisIndex(nnaxis));
 							sb.AppendC(UTF8STRC("\"/>"));
 						}
 						switch (drawing->chart->GetChartType())
@@ -1263,12 +1264,13 @@ void Exporter::XLSXExporter::AppendShapeProp(NN<Text::StringBuilderUTF8> sb, Tex
 	sb->AppendC(UTF8STRC("</c:spPr>"));
 }
 
-void Exporter::XLSXExporter::AppendAxis(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeChartAxis *axis, UOSInt index)
+void Exporter::XLSXExporter::AppendAxis(NN<Text::StringBuilderUTF8> sb, Optional<Text::SpreadSheet::OfficeChartAxis> axis, UOSInt index)
 {
-	if (axis == 0)
+	NN<Text::SpreadSheet::OfficeChartAxis> nnaxis;
+	if (!axis.SetTo(nnaxis))
 		return;
 	NN<Text::String> s;	
-	switch (axis->GetAxisType())
+	switch (nnaxis->GetAxisType())
 	{
 	case AxisType::Category:
 		sb->AppendC(UTF8STRC("<c:catAx>"));
@@ -1290,7 +1292,7 @@ void Exporter::XLSXExporter::AppendAxis(NN<Text::StringBuilderUTF8> sb, Text::Sp
 	sb->AppendC(UTF8STRC("<c:orientation val=\"minMax\"/>"));
 	sb->AppendC(UTF8STRC("</c:scaling>"));
 	sb->AppendC(UTF8STRC("<c:delete val=\"false\"/>"));
-	switch (axis->GetAxisPos())
+	switch (nnaxis->GetAxisPos())
 	{
 	case AxisPosition::Left:
 		sb->AppendC(UTF8STRC("<c:axPos val=\"l\"/>"));
@@ -1305,19 +1307,19 @@ void Exporter::XLSXExporter::AppendAxis(NN<Text::StringBuilderUTF8> sb, Text::Sp
 		sb->AppendC(UTF8STRC("<c:axPos val=\"b\"/>"));
 		break;
 	}
-	if (axis->GetMajorGridProp())
+	if (nnaxis->GetMajorGridProp())
 	{
 		sb->AppendC(UTF8STRC("<c:majorGridlines>"));
-		AppendShapeProp(sb, axis->GetMajorGridProp());
+		AppendShapeProp(sb, nnaxis->GetMajorGridProp());
 		sb->AppendC(UTF8STRC("</c:majorGridlines>"));
 	}
-	if (axis->GetTitle().SetTo(s))
+	if (nnaxis->GetTitle().SetTo(s))
 	{
 		AppendTitle(sb, s->v);
 	}
 	sb->AppendC(UTF8STRC("<c:majorTickMark val=\"cross\"/>"));
 	sb->AppendC(UTF8STRC("<c:minorTickMark val=\"none\"/>"));
-	switch (axis->GetTickLblPos())
+	switch (nnaxis->GetTickLblPos())
 	{
 	case TickLabelPosition::High:
 		sb->AppendC(UTF8STRC("<c:tickLblPos val=\"high\"/>"));
@@ -1332,11 +1334,11 @@ void Exporter::XLSXExporter::AppendAxis(NN<Text::StringBuilderUTF8> sb, Text::Sp
 		sb->AppendC(UTF8STRC("<c:tickLblPos val=\"none\"/>"));
 		break;
 	}
-	AppendShapeProp(sb, axis->GetShapeProp());
+	AppendShapeProp(sb, nnaxis->GetShapeProp());
 // 	sb->AppendC(UTF8STRC("<c:crossAx val=\"1\"/>");
 	sb->AppendC(UTF8STRC("<c:crosses val=\"autoZero\"/>"));
 	sb->AppendC(UTF8STRC("<c:crossBetween val=\"midCat\"/>"));
-	switch (axis->GetAxisType())
+	switch (nnaxis->GetAxisType())
 	{
 	case AxisType::Category:
 		sb->AppendC(UTF8STRC("</c:catAx>"));
@@ -1353,7 +1355,7 @@ void Exporter::XLSXExporter::AppendAxis(NN<Text::StringBuilderUTF8> sb, Text::Sp
 	}
 }
 
-void Exporter::XLSXExporter::AppendSeries(NN<Text::StringBuilderUTF8> sb, Text::SpreadSheet::OfficeChartSeries *series, UOSInt index)
+void Exporter::XLSXExporter::AppendSeries(NN<Text::StringBuilderUTF8> sb, NN<Text::SpreadSheet::OfficeChartSeries> series, UOSInt index)
 {
 	NN<Text::String> s;
 	sb->AppendC(UTF8STRC("<c:ser>"));

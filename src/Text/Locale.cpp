@@ -193,7 +193,7 @@ Text::Locale::Locale()
 	{
 		if (this->locales[i].shortName[0] != 0)
 		{
-			this->names.PutC({this->locales[i].shortName, this->locales[i].shortNameLen}, &this->locales[i]);
+			this->names.PutC({this->locales[i].shortName, this->locales[i].shortNameLen}, this->locales[i]);
 		}
 	}
 }
@@ -202,7 +202,7 @@ Text::Locale::~Locale()
 {
 }
 
-Text::Locale::LocaleEntry *Text::Locale::GetLocaleEntryByName(Text::CString name)
+Optional<Text::Locale::LocaleEntry> Text::Locale::GetLocaleEntryByName(Text::CStringNN name)
 {
 	UTF8Char sbuff[6];
 	if (name.leng > 5)
@@ -210,5 +210,5 @@ Text::Locale::LocaleEntry *Text::Locale::GetLocaleEntryByName(Text::CString name
 		return 0;
 	}
 	Text::StrToLowerC(sbuff, name.v, name.leng);
-	return this->names.GetC({sbuff, name.leng});
+	return this->names.GetC(Text::CStringNN(sbuff, name.leng));
 }

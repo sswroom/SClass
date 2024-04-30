@@ -26,7 +26,7 @@ Net::SNS::SNSRSS::SNSRSS(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> 
 	this->timeout = 30000;
 
 	Net::RSS *rss;
-	SNSItem *snsItem;
+	NN<SNSItem> snsItem;
 	Net::RSSItem *item;
 	NEW_CLASS(rss, Net::RSS(this->channelId->ToCString(), this->userAgent, this->sockf, this->ssl, this->timeout, this->log));
 	if (rss->GetTitle())
@@ -95,7 +95,7 @@ Net::SNS::SNSRSS::~SNSRSS()
 	i = this->itemMap.GetCount();
 	while (i-- > 0)
 	{
-		FreeItem(this->itemMap.GetItem(i));
+		FreeItem(this->itemMap.GetItemNoCheck(i));
 	}
 }
 
@@ -128,14 +128,14 @@ UTF8Char *Net::SNS::SNSRSS::GetDirName(UTF8Char *dirName)
 	return dirName;
 }
 
-UOSInt Net::SNS::SNSRSS::GetCurrItems(NN<Data::ArrayList<SNSItem*>> itemList)
+UOSInt Net::SNS::SNSRSS::GetCurrItems(NN<Data::ArrayListNN<SNSItem>> itemList)
 {
 	UOSInt initCnt = itemList->GetCount();
 	itemList->AddAll(this->itemMap);
 	return itemList->GetCount() - initCnt;
 }
 
-UTF8Char *Net::SNS::SNSRSS::GetItemShortId(UTF8Char *buff, SNSItem *item)
+UTF8Char *Net::SNS::SNSRSS::GetItemShortId(UTF8Char *buff, NN<SNSItem> item)
 {
 	UInt8 crcVal[4];
 	this->CalcCRC(item->id->v, item->id->leng, crcVal);
@@ -149,7 +149,7 @@ Int32 Net::SNS::SNSRSS::GetMinIntevalMS()
 
 Bool Net::SNS::SNSRSS::Reload()
 {
-	SNSItem *snsItem;
+	NN<SNSItem> snsItem;
 	OSInt si;
 	Net::RSSItem *item;
 	Data::ArrayListString idList;
@@ -224,9 +224,11 @@ Bool Net::SNS::SNSRSS::Reload()
 		i = idList.GetCount();
 		while (i-- > 0)
 		{
-			snsItem = this->itemMap.Remove(idList.GetItem(i));
-			FreeItem(snsItem);
-			changed = true;
+			if (this->itemMap.Remove(idList.GetItem(i)).SetTo(snsItem))
+			{
+				FreeItem(snsItem);
+				changed = true;
+			}
 		}
 	}
 	else

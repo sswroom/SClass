@@ -10,7 +10,7 @@ Net::SNS::SNSInstagram::SNSInstagram(NN<Net::SocketFactory> sockf, Optional<Net:
 	this->chDesc = 0;
 	this->chError = false;
 
-	SNSItem *snsItem;
+	NN<SNSItem> snsItem;
 	Net::WebSite::WebSiteInstagramControl::ItemData *item;
 	Net::WebSite::WebSiteInstagramControl::ChannelInfo chInfo;
 	Data::ArrayList<Net::WebSite::WebSiteInstagramControl::ItemData*> itemList;
@@ -82,7 +82,7 @@ Net::SNS::SNSInstagram::~SNSInstagram()
 	i = this->itemMap.GetCount();
 	while (i-- > 0)
 	{
-		FreeItem(this->itemMap.GetItem(i));
+		FreeItem(this->itemMap.GetItemNoCheck(i));
 	}
 }
 
@@ -113,14 +113,14 @@ UTF8Char *Net::SNS::SNSInstagram::GetDirName(UTF8Char *dirName)
 	return dirName;
 }
 
-UOSInt Net::SNS::SNSInstagram::GetCurrItems(NN<Data::ArrayList<SNSItem*>> itemList)
+UOSInt Net::SNS::SNSInstagram::GetCurrItems(NN<Data::ArrayListNN<SNSItem>> itemList)
 {
 	UOSInt initCnt = itemList->GetCount();
 	itemList->AddAll(this->itemMap);
 	return itemList->GetCount() - initCnt;
 }
 
-UTF8Char *Net::SNS::SNSInstagram::GetItemShortId(UTF8Char *buff, SNSItem *item)
+UTF8Char *Net::SNS::SNSInstagram::GetItemShortId(UTF8Char *buff, NN<SNSItem> item)
 {
 	return item->id->ConcatTo(buff);
 }
@@ -132,7 +132,7 @@ Int32 Net::SNS::SNSInstagram::GetMinIntevalMS()
 
 Bool Net::SNS::SNSInstagram::Reload()
 {
-	SNSItem *snsItem;
+	NN<SNSItem> snsItem;
 	OSInt si;
 	Net::WebSite::WebSiteInstagramControl::ItemData *item;
 	Data::ArrayList<Net::WebSite::WebSiteInstagramControl::ItemData*> itemList;
@@ -204,9 +204,11 @@ Bool Net::SNS::SNSInstagram::Reload()
 		i = idList.GetCount();
 		while (i-- > 0)
 		{
-			snsItem = this->itemMap.Remove(idList.GetItem(i));
-			FreeItem(snsItem);
-			changed = true;
+			if (this->itemMap.Remove(idList.GetItem(i)).SetTo(snsItem))
+			{
+				FreeItem(snsItem);
+				changed = true;
+			}
 		}
 	}
 	return changed;

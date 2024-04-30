@@ -12,7 +12,7 @@ Net::SNS::SNSTwitter::SNSTwitter(NN<Net::SocketFactory> sockf, Optional<Net::SSL
 
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	SNSItem *snsItem;
+	NN<SNSItem> snsItem;
 	Net::WebSite::WebSiteTwitterControl::ItemData *item;
 	Net::WebSite::WebSiteTwitterControl::ChannelInfo chInfo;
 	Data::ArrayList<Net::WebSite::WebSiteTwitterControl::ItemData*> itemList;
@@ -57,7 +57,7 @@ Net::SNS::SNSTwitter::~SNSTwitter()
 	i = this->itemMap.GetCount();
 	while (i-- > 0)
 	{
-		FreeItem(this->itemMap.GetItem(i));
+		FreeItem(this->itemMap.GetItemNoCheck(i));
 	}
 }
 
@@ -88,12 +88,12 @@ UTF8Char *Net::SNS::SNSTwitter::GetDirName(UTF8Char *dirName)
 	return dirName;
 }
 
-UOSInt Net::SNS::SNSTwitter::GetCurrItems(NN<Data::ArrayList<SNSItem*>> itemList)
+UOSInt Net::SNS::SNSTwitter::GetCurrItems(NN<Data::ArrayListNN<SNSItem>> itemList)
 {
 	return itemList->AddAll(this->itemMap);
 }
 
-UTF8Char *Net::SNS::SNSTwitter::GetItemShortId(UTF8Char *buff, SNSItem *item)
+UTF8Char *Net::SNS::SNSTwitter::GetItemShortId(UTF8Char *buff, NN<SNSItem> item)
 {
 	return item->id->ConcatTo(buff);
 }
@@ -107,7 +107,7 @@ Bool Net::SNS::SNSTwitter::Reload()
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	SNSItem *snsItem;
+	NN<SNSItem> snsItem;
 	OSInt si;
 	Net::WebSite::WebSiteTwitterControl::ItemData *item;
 	Data::ArrayList<Net::WebSite::WebSiteTwitterControl::ItemData*> itemList;
@@ -150,9 +150,11 @@ Bool Net::SNS::SNSTwitter::Reload()
 		i = idList.GetCount();
 		while (i-- > 0)
 		{
-			snsItem = this->itemMap.Remove(idList.GetItem(i));
-			FreeItem(snsItem);
-			changed = true;
+			if (this->itemMap.Remove(idList.GetItem(i)).SetTo(snsItem))
+			{
+				FreeItem(snsItem);
+				changed = true;
+			}
 		}
 	}
 	return changed;

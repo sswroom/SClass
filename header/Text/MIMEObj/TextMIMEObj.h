@@ -23,8 +23,8 @@ namespace Text
 
 			virtual Text::CStringNN GetClassName() const;
 			virtual Text::CStringNN GetContentType() const;
-			virtual UOSInt WriteStream(IO::Stream *stm) const;
-			virtual IMIMEObj *Clone() const;
+			virtual UOSInt WriteStream(NN<IO::Stream> stm) const;
+			virtual NN<IMIMEObj> Clone() const;
 
 			void GetText(NN<Text::StringBuilderUTF8> sb) const;
 			UInt32 GetCodePage() const;

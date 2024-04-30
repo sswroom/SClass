@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_ORGANWEB_ORGANWEBENV
 #define _SM_SSWR_ORGANWEB_ORGANWEBENV
 #include "Data/ArrayListDbl.h"
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "Data/StringUTF8Map.h"
 #include "DB/DBTool.h"
 #include "IO/ConfigFile.h"
@@ -42,7 +42,7 @@ namespace SSWR
 			Net::WebServer::WebListener *sslListener;
 			Sync::Mutex parserMut;
 			Parser::FullParserList parsers;
-			BookInfo *selectedBook;
+			Optional<BookInfo> selectedBook;
 
 			Media::ColorManager colorMgr;
 			NN<Media::ColorManagerSess> colorSess;
@@ -51,20 +51,20 @@ namespace SSWR
 			NN<Net::WebServer::NodeModuleHandler> nodeHdlr;
 			SSWR::OrganWeb::OrganWebHandler *webHdlr;
 
-			Data::FastStringMap<CategoryInfo*> cateSMap;
-			Data::FastMap<Int32, CategoryInfo*> cateMap;
+			Data::FastStringMapNN<CategoryInfo> cateSMap;
+			Data::FastMapNN<Int32, CategoryInfo> cateMap;
 
 			Sync::RWMutex dataMut;
-			Data::FastMap<Int32, SpeciesInfo*> spMap;
-			Data::FastStringMap<SpeciesInfo*> spNameMap;
-			Data::FastMap<Int32, GroupInfo*> groupMap;
-			Data::FastMap<Int32, BookInfo*> bookMap;
-			Data::FastMap<Int32, WebUserInfo*> userMap;
-			Data::FastStringMap<WebUserInfo*> userNameMap;
-			Data::FastMap<Int32, UserFileInfo*> userFileMap;
-			Data::FastMap<UInt32, IO::ConfigFile*> langMap;
-			Data::FastMap<Int32, LocationInfo*> locMap;
-			Data::FastMap<Int32, DataFileInfo*> dataFileMap;
+			Data::FastMapNN<Int32, SpeciesInfo> spMap;
+			Data::FastStringMapNN<SpeciesInfo> spNameMap;
+			Data::FastMapNN<Int32, GroupInfo> groupMap;
+			Data::FastMapNN<Int32, BookInfo> bookMap;
+			Data::FastMapNN<Int32, WebUserInfo> userMap;
+			Data::FastStringMapNN<WebUserInfo> userNameMap;
+			Data::FastMapNN<Int32, UserFileInfo> userFileMap;
+			Data::FastMapNN<UInt32, IO::ConfigFile> langMap;
+			Data::FastMapNN<Int32, LocationInfo> locMap;
+			Data::FastMapNN<Int32, DataFileInfo> dataFileMap;
 			Text::Locale locale;
 
 			void LoadLangs();
@@ -76,7 +76,7 @@ namespace SSWR
 			void LoadLocations();
 			void FreeSpecies();
 			void FreeGroups();
-			void FreeGroup(GroupInfo *group);
+			void FreeGroup(NN<GroupInfo> group);
 			void FreeBooks();
 			void FreeUsers();
 			void ClearUsers();
@@ -98,23 +98,23 @@ namespace SSWR
 			NN<Media::DrawEngine> GetDrawEngine() const;
 
 			void CalcGroupCount(NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group);
-			void GetGroupSpecies(NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group, Data::DataMap<Text::String*, SpeciesInfo*> *spMap, WebUserInfo *user);
-			void SearchInGroup(NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group, const UTF8Char *searchStr, UOSInt searchStrLen, NN<Data::ArrayListDbl> speciesIndice, NN<Data::ArrayListNN<SpeciesInfo>> speciesObjs, NN<Data::ArrayListDbl> groupIndice, NN<Data::ArrayListNN<GroupInfo>> groupObjs, WebUserInfo *user);
+			void GetGroupSpecies(NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group, NN<Data::DataMapNN<Text::String*, SpeciesInfo>> spMap, Optional<WebUserInfo> user);
+			void SearchInGroup(NN<Sync::RWMutexUsage> mutUsage, NN<GroupInfo> group, const UTF8Char *searchStr, UOSInt searchStrLen, NN<Data::ArrayListDbl> speciesIndice, NN<Data::ArrayListNN<SpeciesInfo>> speciesObjs, NN<Data::ArrayListDbl> groupIndice, NN<Data::ArrayListNN<GroupInfo>> groupObjs, Optional<WebUserInfo> user);
 			Bool GroupIsAdmin(NN<GroupInfo> group);
 			UTF8Char *PasswordEnc(UTF8Char *buff, Text::CString pwd);
 
-			BookInfo *BookGet(NN<Sync::RWMutexUsage> mutUsage, Int32 id);
-			BookInfo *BookGetSelected(NN<Sync::RWMutexUsage> mutUsage);
-			void BookSelect(BookInfo *book);
+			Optional<BookInfo> BookGet(NN<Sync::RWMutexUsage> mutUsage, Int32 id);
+			Optional<BookInfo> BookGetSelected(NN<Sync::RWMutexUsage> mutUsage);
+			void BookSelect(Optional<BookInfo> book);
 			UTF8Char *BookGetPath(UTF8Char *sbuff, Int32 bookId);
-			void BookGetList(NN<Sync::RWMutexUsage> mutUsage, NN<Data::ArrayList<BookInfo*>> bookList);
+			void BookGetList(NN<Sync::RWMutexUsage> mutUsage, NN<Data::ArrayListNN<BookInfo>> bookList);
 			Bool BookFileExist(NN<BookInfo> book);
 			Bool BookSetPhoto(NN<Sync::RWMutexUsage> mutUsage, Int32 bookId, Int32 userfileId);
-			BookInfo *BookAdd(NN<Sync::RWMutexUsage> mutUsage, NN<Text::String> title, NN<Text::String> author, NN<Text::String> press, Data::Timestamp pubDate, NN<Text::String> url);
+			Optional<BookInfo> BookAdd(NN<Sync::RWMutexUsage> mutUsage, NN<Text::String> title, NN<Text::String> author, NN<Text::String> press, Data::Timestamp pubDate, NN<Text::String> url);
 			Bool BookAddSpecies(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, NN<Text::String> bookspecies, Bool allowDuplicate);
 
 			Bool UserGPSGetPos(NN<Sync::RWMutexUsage> mutUsage, Int32 userId, const Data::Timestamp &t, Double *lat, Double *lon);
-			WebUserInfo *UserGet(NN<Sync::RWMutexUsage> mutUsage, Int32 id);
+			Optional<WebUserInfo> UserGet(NN<Sync::RWMutexUsage> mutUsage, Int32 id);
 			Optional<WebUserInfo> UserGetByName(NN<Sync::RWMutexUsage> mutUsage, NN<Text::String> name);
 
 			Optional<SpeciesInfo> SpeciesGet(NN<Sync::RWMutexUsage> mutUsage, Int32 id);
@@ -129,22 +129,22 @@ namespace SSWR
 			Bool SpeciesDelete(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId);
 			Bool SpeciesMerge(NN<Sync::RWMutexUsage> mutUsage, Int32 srcSpeciesId, Int32 destSpeciesId, Int32 cateId);
 			Bool SpeciesAddWebfile(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Text::CStringNN imgURL, Text::CStringNN sourceURL, Text::CString location);
-			UserFileInfo *UserfileGetCheck(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId, WebUserInfo *currUser, UTF8Char **filePathOut);
-			UserFileInfo *UserfileGet(NN<Sync::RWMutexUsage> mutUsage, Int32 id);
-			UTF8Char *UserfileGetPath(UTF8Char *sbuff, const UserFileInfo *userfile);
+			Optional<UserFileInfo> UserfileGetCheck(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId, Optional<WebUserInfo> currUser, UTF8Char **filePathOut);
+			Optional<UserFileInfo> UserfileGet(NN<Sync::RWMutexUsage> mutUsage, Int32 id);
+			UTF8Char *UserfileGetPath(UTF8Char *sbuff, NN<const UserFileInfo> userfile);
 			Int32 UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 userId, Int32 spId, Text::CStringNN fileName, const UInt8 *fileCont, UOSInt fileSize, Bool mustHaveCamera, Text::String *location);
 			Bool UserfileMove(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId);
 			Bool UserfileUpdateDesc(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Text::CString descr);
 			Bool UserfileUpdateRotType(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 rotType);
 			Bool UserfileUpdatePos(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Data::Timestamp captureTime, Double lat, Double lon, LocType locType);
 			Bool SpeciesBookIsExist(NN<Sync::RWMutexUsage> mutUsage, Text::CString speciesName, NN<Text::StringBuilderUTF8> bookNameOut);
-			void UserFilePrevUpdated(NN<Sync::RWMutexUsage> mutUsage, UserFileInfo *userFile);
-			void WebFilePrevUpdated(NN<Sync::RWMutexUsage> mutUsage, WebFileInfo *userFile);
+			void UserFilePrevUpdated(NN<Sync::RWMutexUsage> mutUsage, NN<UserFileInfo> userFile);
+			void WebFilePrevUpdated(NN<Sync::RWMutexUsage> mutUsage, NN<WebFileInfo> userFile);
 			Bool GPSFileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, const UInt8 *fileCont, UOSInt fileSize, NN<Map::GPSTrack> gpsTrk, OutParam<Text::CString> errMsg);
 
 			Bool DataFileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, DataFileType fileType, const UInt8 *fileCont, UOSInt fileSize, OutParam<Text::CString> errMsg);
 			IO::ParsedObject *DataFileParse(NN<DataFileInfo> dataFile);
-			DataFileInfo *DataFileGet(NN<Sync::RWMutexUsage> mutUsage, Int32 datafileId);
+			Optional<DataFileInfo> DataFileGet(NN<Sync::RWMutexUsage> mutUsage, Int32 datafileId);
 
 			Optional<GroupInfo> GroupGet(NN<Sync::RWMutexUsage> mutUsage, Int32 id);
 			Int32 GroupAdd(NN<Sync::RWMutexUsage> mutUsage, Text::CString engName, Text::CString chiName, Int32 parentId, Text::CString descr, Int32 groupTypeId, Int32 cateId, GroupFlags flags);
@@ -158,13 +158,13 @@ namespace SSWR
 
 			Optional<CategoryInfo> CateGet(NN<Sync::RWMutexUsage> mutUsage, Int32 id);
 			Optional<CategoryInfo> CateGetByName(NN<Sync::RWMutexUsage> mutUsage, NN<Text::String> name);
-			Data::ReadingList<CategoryInfo*> *CateGetList(NN<Sync::RWMutexUsage> mutUsage);
+			NN<Data::ReadingListNN<CategoryInfo>> CateGetList(NN<Sync::RWMutexUsage> mutUsage);
 
 			UOSInt PeakGetUnfin(NN<Sync::RWMutexUsage> mutUsage, NN<Data::ArrayListNN<PeakInfo>> peaks);
 			Bool PeakUpdateStatus(NN<Sync::RWMutexUsage> mutUsage, Int32 id, Int32 status);
 			void PeakFreeAll(NN<Data::ArrayListNN<PeakInfo>> peaks);
 
-			IO::ConfigFile *LangGet(NN<Net::WebServer::IWebRequest> req);
+			Optional<IO::ConfigFile> LangGet(NN<Net::WebServer::IWebRequest> req);
 		};
 	}
 }

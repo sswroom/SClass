@@ -31,7 +31,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 	sb.AppendC(UTF8STRC("https://twitter.com/"));
 	sb.Append(channelId);
 	ItemData *item;
-	Text::XMLAttrib *attr;
+	NN<Text::XMLAttrib> attr;
 	Int64 conversationId;
 	Int64 recTime;
 	Text::String *message;
@@ -66,8 +66,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 #endif
 		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeTextNN()->Equals(UTF8STRC("div")))
 		{
-			attr = reader.GetAttrib((UOSInt)0);
-			if (attr && attr->name->Equals(UTF8STRC("class")) && attr->value && attr->value->Equals(UTF8STRC("stream-item-header")))
+			if (reader.GetAttrib((UOSInt)0).SetTo(attr) && attr->name->Equals(UTF8STRC("class")) && attr->value && attr->value->Equals(UTF8STRC("stream-item-header")))
 			{
 #if defined(VERBOSE)
 				printf("stream-item-header found\r\n");
@@ -81,8 +80,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 				{
 					if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeTextNN()->Equals(UTF8STRC("small")) && reader.GetAttribCount() > 0)
 					{
-						attr = reader.GetAttrib((UOSInt)0);
-						if (attr && attr->name->Equals(UTF8STRC("class")) && attr->value && attr->value->Equals(UTF8STRC("time")))
+						if (reader.GetAttrib((UOSInt)0).SetTo(attr) && attr->name->Equals(UTF8STRC("class")) && attr->value && attr->value->Equals(UTF8STRC("time")))
 						{
 							UOSInt smallPathLev = reader.GetPathLev();
 							while (reader.ReadNext() && reader.GetPathLev() > smallPathLev)
@@ -93,7 +91,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 									j = reader.GetAttribCount();
 									while (i < j)
 									{
-										attr = reader.GetAttrib(i);
+										attr = reader.GetAttribNoCheck(i);
 										if (attr->name->Equals(UTF8STRC("data-conversation-id")) && attr->value)
 										{
 											conversationId = attr->value->ToInt64();
@@ -110,7 +108,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 									j = reader.GetAttribCount();
 									while (i < j)
 									{
-										attr = reader.GetAttrib(i);
+										attr = reader.GetAttribNoCheck(i);
 										if (attr->name->Equals(UTF8STRC("data-time-ms")) && attr->value)
 										{
 											recTime = attr->value->ToInt64();
@@ -126,7 +124,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 					}
 				}
 			}
-			else if (attr && attr->name->Equals(UTF8STRC("class")) && attr->value && attr->value->Equals(UTF8STRC("js-tweet-text-container")))
+			else if (reader.GetAttrib((UOSInt)0).SetTo(attr) && attr->name->Equals(UTF8STRC("class")) && attr->value && attr->value->Equals(UTF8STRC("js-tweet-text-container")))
 			{
 #if defined(VERBOSE)
 				printf("js-tweet-text-container found\r\n");
@@ -152,7 +150,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 									j = reader.GetAttribCount();
 									while (i < j)
 									{
-										attr = reader.GetAttrib(i);
+										attr = reader.GetAttribNoCheck(i);
 										if (attr->name->Equals(UTF8STRC("alt")) && attr->value)
 										{
 											sb.Append(attr->value);
@@ -162,8 +160,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 								}
 								else if (reader.GetNodeTextNN()->Equals(UTF8STRC("a")) && reader.GetAttribCount() > 0)
 								{
-									attr = reader.GetAttrib((UOSInt)0);
-									if (attr && attr->name->Equals(UTF8STRC("href")) && attr->value && attr->value->Equals(UTF8STRC("https://")))
+									if (reader.GetAttrib((UOSInt)0).SetTo(attr) && attr->name->Equals(UTF8STRC("href")) && attr->value && attr->value->Equals(UTF8STRC("https://")))
 									{
 										reader.SkipElement();
 									}
@@ -175,7 +172,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 					}
 				}
 			}
-			else if (attr && attr->name->Equals(UTF8STRC("class")) && attr->value && attr->value->Equals(UTF8STRC("AdaptiveMediaOuterContainer")))
+			else if (reader.GetAttrib((UOSInt)0).SetTo(attr) && attr->name->Equals(UTF8STRC("class")) && attr->value && attr->value->Equals(UTF8STRC("AdaptiveMediaOuterContainer")))
 			{
 #if defined(VERBOSE)
 				printf("AdaptiveMediaOuterContainer found\r\n");
@@ -189,7 +186,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 						j = reader.GetAttribCount();
 						while (i < j)
 						{
-							attr = reader.GetAttrib(i);
+							attr = reader.GetAttribNoCheck(i);
 							if (attr->name->Equals(UTF8STRC("data-image-url")) && attr->value)
 							{
 								if (imgURL == 0)
@@ -211,7 +208,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 					}
 				}
 			}
-			else if (attr && attr->name->Equals(UTF8STRC("class")) && attr->value && attr->value->Equals(UTF8STRC("stream-item-footer")))
+			else if (reader.GetAttrib((UOSInt)0).SetTo(attr) && attr->name->Equals(UTF8STRC("class")) && attr->value && attr->value->Equals(UTF8STRC("stream-item-footer")))
 			{
 #if defined(VERBOSE)
 				printf("stream-item-footer found\r\n");
@@ -229,7 +226,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 					retCnt++;
 				}
 			}
-			else if (attr && attr->name->Equals(UTF8STRC("class")) && attr->value && attr->value->Equals(UTF8STRC("ProfileHeaderCard")))
+			else if (reader.GetAttrib((UOSInt)0).SetTo(attr) && attr->name->Equals(UTF8STRC("class")) && attr->value && attr->value->Equals(UTF8STRC("ProfileHeaderCard")))
 			{
 				UOSInt pathLev = reader.GetPathLev();
 				while (reader.ReadNext() && reader.GetPathLev() > pathLev)
@@ -253,7 +250,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 							j = reader.GetAttribCount();
 							while (i < j)
 							{
-								attr = reader.GetAttrib(i);
+								attr = reader.GetAttribNoCheck(i);
 								if (attr->name->Equals(UTF8STRC("class")) && attr->value && attr->value->StartsWith(UTF8STRC("ProfileHeaderCard-bio")))
 								{
 									sb.ClearStr();

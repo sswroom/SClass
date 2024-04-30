@@ -17,25 +17,25 @@ namespace Net
 
 		typedef struct
 		{
-			const UTF8Char *name;
-			const UTF8Char *val;
+			NN<Text::String> name;
+			NN<Text::String> val;
 		} ParamInfo;
 	private:
 		NN<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;
-		Text::String *serviceAddr;
-		const UTF8Char *serviceName;
-		const UTF8Char *targetNS;
-		const UTF8Char *soapAction;
-		Data::ArrayList<ParamInfo*> *paramList;
-		const UTF8Char *responseVal;
+		NN<Text::String> serviceAddr;
+		NN<Text::String> serviceName;
+		NN<Text::String> targetNS;
+		Optional<Text::String> soapAction;
+		Data::ArrayListNN<ParamInfo> paramList;
+		Optional<Text::String> responseVal;
 
 	public:
-		WebServiceClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString serviceAddr, const UTF8Char *serviceName, const UTF8Char *targetNS);
+		WebServiceClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN serviceAddr, Text::CStringNN serviceName, Text::CStringNN targetNS);
 		~WebServiceClient();
 
-		void AddParam(const UTF8Char *paramName, const UTF8Char *paramVal);
-		void SetSOAPAction(const UTF8Char *soapAction);
+		void AddParam(Text::CStringNN paramName, Text::CStringNN paramVal);
+		void SetSOAPAction(Text::CString soapAction);
 		Bool Request(RequestType rt);
 		const UTF8Char *GetResponseVal();
 	};

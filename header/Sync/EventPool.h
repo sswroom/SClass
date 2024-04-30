@@ -1,6 +1,8 @@
 #ifndef _SM_SYNC_EVENTPOOL
 #define _SM_SYNC_EVENTPOOL
+#include "AnyType.h"
 #include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 
@@ -10,8 +12,8 @@ namespace Sync
 	{
 	private:
 		Data::ArrayList<void *> handList;
-		Data::ArrayList<Sync::Event*> evtList;
-		Data::ArrayList<void *> objList;
+		Data::ArrayListNN<Sync::Event> evtList;
+		Data::ArrayList<AnyType> objList;
 		Sync::Mutex mut;
 		Sync::Event mainEvt;
 		Int32 state; //0 = normal, 1 = changing, 2 = closing
@@ -19,8 +21,8 @@ namespace Sync
 	public:
 		EventPool();
 		~EventPool();
-		void AddEvent(Sync::Event *evt, void *obj);
-		void RemoveEvent(Sync::Event *evt);
+		void AddEvent(NN<Sync::Event> evt, AnyType obj);
+		void RemoveEvent(NN<Sync::Event> evt);
 		void *Wait(Int32 timeout);
 	};
 }

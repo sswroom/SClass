@@ -20,13 +20,13 @@ namespace Text
 			Bool InitVSEnv(Text::VSProject::VisualStudioVersion vsv);
 		public:
 			CppEnv(Text::VSProject::VisualStudioVersion vsv);
-			CppEnv(Text::CodeProject *proj, Optional<IO::ConfigFile> cfg);
+			CppEnv(NN<Text::CodeProject> proj, Optional<IO::ConfigFile> cfg);
 			~CppEnv();
 
 			void AddIncludePath(Text::CString includePath);
 			UTF8Char *GetIncludeFilePath(UTF8Char *buff, Text::CString includeFile, Text::String *sourceFile);
 
-			void InitEnvStatus(Text::Cpp::CppParseStatus *status);
+			void InitEnvStatus(NN<Text::Cpp::CppParseStatus> status);
 
 			static CppEnv *LoadVSEnv(Text::VSProject::VisualStudioVersion vsv);
 			static CppEnv *LoadVSEnv();

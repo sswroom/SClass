@@ -37,11 +37,11 @@ namespace SSWR
 
 				NN<UI::GUIPanel> pnlContent;
 
-				Text::MIMEObj::MailMessage *mail;
-				SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *viewer;
+				NN<Text::MIMEObj::MailMessage> mail;
+				Optional<SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer> viewer;
 
 			public:
-				AVIRMailViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, Text::MIMEObj::MailMessage *mail);
+				AVIRMailViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, NN<Text::MIMEObj::MailMessage> mail);
 				virtual ~AVIRMailViewer();
 			};
 		}

@@ -198,12 +198,12 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NN<Text::XMLReader> reader,
 	Math::Geometry::Vector2D *vec = 0;
 	UOSInt i;
 	UOSInt j;
-	Text::XMLAttrib *attr;
+	NN<Text::XMLAttrib> attr;
 	UOSInt dimension = 0;
 	i = reader->GetAttribCount();
 	while (i-- > 0)
 	{
-		attr = reader->GetAttrib(i);
+		attr = reader->GetAttribNoCheck(i);
 		if (attr->name->Equals(UTF8STRC("srsName")) && env->csys == 0)
 		{
 			env->csys = Math::CoordinateSystemManager::CreateFromName(attr->value->ToCString());

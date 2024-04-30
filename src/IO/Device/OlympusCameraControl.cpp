@@ -12,7 +12,7 @@ void IO::Device::OlympusCameraControl::GetCommandList()
 	UTF8Char *sptr;
 	NN<Net::HTTPClient> cli;
 	Text::StringBuilderUTF8 sb;
-	Text::XMLAttrib *attr;
+	NN<Text::XMLAttrib> attr;
 	UOSInt i;
 	OSInt j;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
@@ -52,7 +52,7 @@ void IO::Device::OlympusCameraControl::GetCommandList()
 					i = reader.GetAttribCount();
 					while (i-- > 0)
 					{
-						attr = reader.GetAttrib(i);
+						attr = reader.GetAttribNoCheck(i);
 						if (attr->value && attr->name->Equals(UTF8STRC("name")))
 						{
 							j = this->cmdList.SortedIndexOf(Text::String::OrEmpty(attr->value));

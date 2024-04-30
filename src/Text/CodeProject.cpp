@@ -45,17 +45,10 @@ Text::CodeProject::CodeProject(Text::CStringNN name) : IO::ParsedObject(name)
 
 Text::CodeProject::~CodeProject()
 {
-	UOSInt i;
-	CodeProjectCfg *cfg;
-	i = this->cfgList.GetCount();
-	while (i-- > 0)
-	{
-		cfg = this->cfgList.GetItem(i);
-		DEL_CLASS(cfg);
-	}
+	this->cfgList.DeleteAll();
 }
 
-void Text::CodeProject::AddConfig(Text::CodeProjectCfg *cfg)
+void Text::CodeProject::AddConfig(NN<Text::CodeProjectCfg> cfg)
 {
 	this->cfgList.Add(cfg);
 }
@@ -65,7 +58,7 @@ UOSInt Text::CodeProject::GetConfigCnt() const
 	return this->cfgList.GetCount();
 }
 
-Text::CodeProjectCfg *Text::CodeProject::GetConfig(UOSInt index) const
+Optional<Text::CodeProjectCfg> Text::CodeProject::GetConfig(UOSInt index) const
 {
 	return this->cfgList.GetItem(index);
 }

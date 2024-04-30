@@ -2,20 +2,17 @@
 #include "Text/MyString.h"
 #include "Text/Cpp/CppParseStatus.h"
 
-void Text::Cpp::CppParseStatus::FreeDefineInfo(Text::Cpp::CppParseStatus::DefineInfo *defInfo)
+void Text::Cpp::CppParseStatus::FreeDefineInfo(NN<Text::Cpp::CppParseStatus::DefineInfo> defInfo)
 {
 	defInfo->defineName->Release();
 	SDEL_STRING(defInfo->defineVal);
 	SDEL_STRING(defInfo->defineParam);
-	MemFree(defInfo);
+	MemFreeNN(defInfo);
 }
 
-void Text::Cpp::CppParseStatus::FreeFileStatus(FileParseStatus *fileStatus)
+void Text::Cpp::CppParseStatus::FreeFileStatus(NN<FileParseStatus> fileStatus)
 {
-	fileStatus->lineBuffSB.Delete();
-	DEL_CLASS(fileStatus->pastModes);
-	DEL_CLASS(fileStatus->ifValid);
-	MemFree(fileStatus);
+	fileStatus.Delete();
 }
 
 Text::Cpp::CppParseStatus::CppParseStatus(NN<Text::String> rootFile)
@@ -32,24 +29,16 @@ Text::Cpp::CppParseStatus::~CppParseStatus()
 {
 	UOSInt i;
 	this->fileName->Release();
-	i = this->statuses.GetCount();
-	while (i-- > 0)
-	{
-		FreeFileStatus(this->statuses.GetItem(i));
-	}
+	this->statuses.FreeAll(FreeFileStatus);
 	i = this->fileNames.GetCount();
 	while (i-- > 0)
 	{
 		this->fileNames.GetItem(i)->Release();
 	}
-	i = this->defines.GetCount();
-	while (i-- > 0)
-	{
-		FreeDefineInfo(this->defines.GetItem(i));
-	}
+	this->defines.FreeAll(FreeDefineInfo);
 }
 
-Text::Cpp::CppParseStatus::FileParseStatus *Text::Cpp::CppParseStatus::GetFileStatus()
+Optional<Text::Cpp::CppParseStatus::FileParseStatus> Text::Cpp::CppParseStatus::GetFileStatus()
 {
 	return this->statuses.GetItem(this->statuses.GetCount() - 1);
 }
@@ -68,32 +57,29 @@ Bool Text::Cpp::CppParseStatus::BeginParseFile(Text::CString fileName)
 		this->fileNames.Insert((UOSInt)~i, fname.Ptr());
 	}
 
-	FileParseStatus *status = MemAlloc(FileParseStatus, 1);
+	NN<FileParseStatus> status;
+	NEW_CLASSNN(status, FileParseStatus());
 	this->statuses.Add(status);
 	status->currMode = PM_NORMAL;
 	status->fileName = fname;
 	status->lineNum = 0;
 	status->lineStart = true;
 	status->modeStatus = 0;
-	NEW_CLASSNN(status->lineBuffSB, Text::StringBuilderUTF8());
-	NEW_CLASS(status->pastModes, Data::ArrayList<ParserMode>());
-	NEW_CLASS(status->ifValid, Data::ArrayList<Int32>());
 	return true;
 }
 
-Bool Text::Cpp::CppParseStatus::EndParseFile(const UTF8Char *fileName, UOSInt fileNameLen)
+Bool Text::Cpp::CppParseStatus::EndParseFile(Text::CStringNN fileName)
 {
-	FileParseStatus *status;
+	NN<FileParseStatus> status;
 	UOSInt i = this->statuses.GetCount() - 1;
-	status = this->statuses.GetItem(i);
-	if (status == 0)
+	if (!this->statuses.GetItem(i).SetTo(status))
 		return false;
-	if (!status->fileName->Equals(fileName, fileNameLen))
+	if (!status->fileName->Equals(fileName))
 	{
 		return false;
 	}
 	Bool valid = true;
-	if (status->ifValid->GetCount() > 0)
+	if (status->ifValid.GetCount() > 0)
 	{
 		valid = false;
 	}
@@ -108,8 +94,8 @@ Bool Text::Cpp::CppParseStatus::EndParseFile(const UTF8Char *fileName, UOSInt fi
 
 Bool Text::Cpp::CppParseStatus::IsDefined(Text::CStringNN defName)
 {
-	DefineInfo *defInfo = this->defines.GetC(defName);
-	if (defInfo == 0)
+	NN<DefineInfo> defInfo;
+	if (!this->defines.GetC(defName).SetTo(defInfo))
 		return false;
 	if (defInfo->undefined)
 		return false;
@@ -118,9 +104,8 @@ Bool Text::Cpp::CppParseStatus::IsDefined(Text::CStringNN defName)
 
 Bool Text::Cpp::CppParseStatus::AddGlobalDef(Text::CStringNN defName, Text::CString defVal)
 {
-	DefineInfo *defInfo;
-	defInfo = this->defines.GetC(defName);
-	if (defInfo)
+	NN<DefineInfo> defInfo;
+	if (this->defines.GetC(defName).SetTo(defInfo))
 	{
 		if (defInfo->undefined)
 		{
@@ -146,7 +131,7 @@ Bool Text::Cpp::CppParseStatus::AddGlobalDef(Text::CStringNN defName, Text::CStr
 	}
 	else
 	{
-		defInfo = MemAlloc(DefineInfo, 1);
+		defInfo = MemAllocNN(DefineInfo);
 		defInfo->defineName = Text::String::New(defName);
 		defInfo->fileName = 0;
 		defInfo->lineNum = 0;
@@ -167,10 +152,11 @@ Bool Text::Cpp::CppParseStatus::AddGlobalDef(Text::CStringNN defName, Text::CStr
 
 Bool Text::Cpp::CppParseStatus::AddDef(Text::CStringNN defName, Text::CString defParam, Text::CString defVal, Int32 lineNum)
 {
-	FileParseStatus *fStatus = GetFileStatus();
-	DefineInfo *defInfo;
-	defInfo = this->defines.GetC(defName);
-	if (defInfo)
+	NN<FileParseStatus> fStatus;
+	NN<DefineInfo> defInfo;
+	if (!GetFileStatus().SetTo(fStatus))
+		return false;
+	if (this->defines.GetC(defName).SetTo(defInfo))
 	{
 		if (defInfo->undefined)
 		{
@@ -216,7 +202,7 @@ Bool Text::Cpp::CppParseStatus::AddDef(Text::CStringNN defName, Text::CString de
 	}
 	else
 	{
-		defInfo = MemAlloc(DefineInfo, 1);
+		defInfo = MemAllocNN(DefineInfo);
 		defInfo->defineName = Text::String::New(defName);
 		defInfo->fileName = fStatus->fileName.Ptr();
 		defInfo->lineNum = fStatus->lineNum;
@@ -245,8 +231,8 @@ Bool Text::Cpp::CppParseStatus::AddDef(Text::CStringNN defName, Text::CString de
 
 Bool Text::Cpp::CppParseStatus::Undefine(Text::CStringNN defName)
 {
-	DefineInfo *defInfo = this->defines.GetC(defName);
-	if (defInfo)
+	NN<DefineInfo> defInfo;
+	if (this->defines.GetC(defName).SetTo(defInfo))
 	{
 		if (!defInfo->undefined)
 		{
@@ -260,8 +246,8 @@ Bool Text::Cpp::CppParseStatus::Undefine(Text::CStringNN defName)
 
 Bool Text::Cpp::CppParseStatus::GetDefineVal(Text::CStringNN defName, Text::CString defParam, NN<Text::StringBuilderUTF8> sbOut)
 {
-	DefineInfo *defInfo = this->defines.GetC(defName);
-	if (defInfo)
+	NN<DefineInfo> defInfo;
+	if (this->defines.GetC(defName).SetTo(defInfo))
 	{
 		if (!defInfo->undefined)
 		{
@@ -325,12 +311,12 @@ UOSInt Text::Cpp::CppParseStatus::GetDefineCount()
 	return this->defines.GetCount();
 }
 
-Bool Text::Cpp::CppParseStatus::GetDefineInfo(UOSInt index, DefineInfo *defInfo)
+Bool Text::Cpp::CppParseStatus::GetDefineInfo(UOSInt index, NN<DefineInfo> defInfo)
 {
-	DefineInfo *def = this->defines.GetItem(index);
-	if (def == 0)
+	NN<DefineInfo> def;
+	if (!this->defines.GetItem(index).SetTo(def))
 		return false;
-	MemCopyNO(defInfo, def, sizeof(DefineInfo));
+	defInfo.CopyFrom(def);
 	return true;
 }
 
@@ -349,7 +335,7 @@ NN<Text::String> Text::Cpp::CppParseStatus::GetCurrCodeFile() const
 	UOSInt i = this->statuses.GetCount();
 	if (i > 0)
 	{
-		return this->statuses.GetItem(i - 1)->fileName;
+		return this->statuses.GetItemNoCheck(i - 1)->fileName;
 	}
 	return this->fileName;
 }

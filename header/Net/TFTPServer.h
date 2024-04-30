@@ -1,7 +1,7 @@
 #ifndef _SM_NET_TFTPSERVER
 #define _SM_NET_TFTPSERVER
 #include "AnyType.h"
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "IO/LogTool.h"
 #include "Net/UDPServer.h"
 #include "Sync/Mutex.h"
@@ -30,7 +30,7 @@ namespace Net
 		Net::UDPServer *dataSvr;
 		NN<Text::String> path;
 		Sync::Mutex mut;
-		Data::FastMap<UInt64, SessionInfo*> sessMap;
+		Data::FastMapNN<UInt64, SessionInfo> sessMap;
 		Bool threadToStop;
 		Bool threadRunning;
 		Sync::Event chkEvt;
@@ -38,7 +38,7 @@ namespace Net
 		static void __stdcall OnCommandPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
 		static void __stdcall OnDataPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
 		static UInt32 __stdcall CheckThread(AnyType userObj);
-		void ReleaseSess(SessionInfo *sess);
+		void ReleaseSess(NN<SessionInfo> sess);
 	public:
 		TFTPServer(NN<Net::SocketFactory> sockf, UInt16 port, NN<IO::LogTool> log, Text::CString path);
 		~TFTPServer();

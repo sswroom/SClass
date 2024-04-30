@@ -22,11 +22,11 @@ namespace SSWR
 				NN<UI::GUILabel> lblSignState;
 				NN<UI::GUITextBox> txtSignState;
 
-				Data::ArrayList<SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer*> subViewers;
-				Text::MIMEObj::MultipartMIMEObj *obj;
+				Data::ArrayListNN<SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer> subViewers;
+				NN<Text::MIMEObj::MultipartMIMEObj> obj;
 
 			public:
-				AVIRMultipartViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, Text::MIMEObj::MultipartMIMEObj *obj);
+				AVIRMultipartViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, NN<Text::MIMEObj::MultipartMIMEObj> obj);
 				virtual ~AVIRMultipartViewer();
 			};
 		}

@@ -55,20 +55,20 @@ Text::CStringNN Text::MIMEObj::UnknownMIMEObj::GetContentType() const
 	return this->contType->ToCString();
 }
 
-UOSInt Text::MIMEObj::UnknownMIMEObj::WriteStream(IO::Stream *stm) const
+UOSInt Text::MIMEObj::UnknownMIMEObj::WriteStream(NN<IO::Stream> stm) const
 {
 	return stm->Write(this->dataBuff, this->buffSize);
 }
 
-Text::IMIMEObj *Text::MIMEObj::UnknownMIMEObj::Clone() const
+NN<Text::IMIMEObj> Text::MIMEObj::UnknownMIMEObj::Clone() const
 {
-	Text::MIMEObj::UnknownMIMEObj *newObj;
-	NEW_CLASS(newObj, Text::MIMEObj::UnknownMIMEObj(this->dataBuff, this->buffSize, this->contType->ToCString()));
+	NN<Text::MIMEObj::UnknownMIMEObj> newObj;
+	NEW_CLASSNN(newObj, Text::MIMEObj::UnknownMIMEObj(this->dataBuff, this->buffSize, this->contType->ToCString()));
 	return newObj;
 }
 
-const UInt8 *Text::MIMEObj::UnknownMIMEObj::GetRAWData(UOSInt *dataSize) const
+const UInt8 *Text::MIMEObj::UnknownMIMEObj::GetRAWData(OutParam<UOSInt> dataSize) const
 {
-	*dataSize = this->buffSize;
+	dataSize.Set(this->buffSize);
 	return this->dataBuff;
 }

@@ -12,7 +12,7 @@ UOSInt Net::SAMLUtil::DecryptEncryptedKey(NN<Net::SSLEngine> ssl, NN<Crypto::Cer
 	NN<Text::String> nodeName;
 	Crypto::Encrypt::RSACipher::Padding rsaPadding = Crypto::Encrypt::RSACipher::Padding::PKCS1;
 	Bool algFound = false;
-	Text::XMLAttrib *attr;
+	NN<Text::XMLAttrib> attr;
 	UOSInt keySize = 0;
 	while (reader->NextElementName().SetTo(nodeName))
 	{
@@ -21,7 +21,7 @@ UOSInt Net::SAMLUtil::DecryptEncryptedKey(NN<Net::SSLEngine> ssl, NN<Crypto::Cer
 			UOSInt i = reader->GetAttribCount();
 			while (i-- > 0)
 			{
-				attr = reader->GetAttrib(i);
+				attr = reader->GetAttribNoCheck(i);
 				if (attr->name->Equals(UTF8STRC("Algorithm")))
 				{
 					if (attr->value->Equals(UTF8STRC("http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p")))
@@ -122,7 +122,7 @@ Bool Net::SAMLUtil::DecryptEncryptedData(NN<Net::SSLEngine> ssl, NN<Crypto::Cert
 	Bool headingIV = false;
 	MemClear(keyBuff, sizeof(keyBuff));
 	Crypto::Encrypt::BlockCipher *cipher = 0;
-	Text::XMLAttrib *attr;
+	NN<Text::XMLAttrib> attr;
 	NN<Text::String> nodeName;
 	while (reader->NextElementName().SetTo(nodeName))
 	{
@@ -137,7 +137,7 @@ Bool Net::SAMLUtil::DecryptEncryptedData(NN<Net::SSLEngine> ssl, NN<Crypto::Cert
 			UOSInt i = reader->GetAttribCount();
 			while (i-- > 0)
 			{
-				attr = reader->GetAttrib(i);
+				attr = reader->GetAttribNoCheck(i);
 				if (attr->name->Equals(UTF8STRC("Algorithm")))
 				{
 					if (attr->value->Equals(UTF8STRC("http://www.w3.org/2001/04/xmlenc#aes256-cbc")))

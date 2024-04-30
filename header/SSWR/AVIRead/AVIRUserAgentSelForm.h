@@ -29,7 +29,7 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			const UTF8Char *currUserAgent;
 			UOSInt currUserAgentLen;
-			Data::ArrayList<OSItem*> *osList;
+			Data::ArrayListNN<OSItem> osList;
 
 			NN<UI::GUIPanel> pnlFilter;
 			NN<UI::GUILabel> lblFilterOS;

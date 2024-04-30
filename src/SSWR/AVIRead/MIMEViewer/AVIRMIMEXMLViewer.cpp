@@ -4,7 +4,7 @@
 #include "Text/XML.h"
 #include "Text/XMLReader.h"
 
-SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, Text::MIMEObj::UnknownMIMEObj *obj) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, obj)
+SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, NN<Text::MIMEObj::UnknownMIMEObj> obj) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, obj)
 {
 	this->obj = obj;
 
@@ -16,11 +16,11 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(NN<SSWR::AVIRead
 	this->lvXML->AddColumn(CSTR("Value"), 300);
 
 	UOSInt size;
-	const UInt8 *buff = obj->GetRAWData(&size);
+	const UInt8 *buff = obj->GetRAWData(size);
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbPath;
 	Text::StringBuilderUTF8 sbCont;
-	Text::XMLAttrib *attr;
+	NN<Text::XMLAttrib> attr;
 	NN<Text::String> s;
 	UOSInt i;
 	UOSInt j;
@@ -48,7 +48,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(NN<SSWR::AVIRead
 			j = reader.GetAttribCount();
 			while (i < j)
 			{
-				attr = reader.GetAttrib(i);
+				attr = reader.GetAttribNoCheck(i);
 				sbCont.AppendUTF8Char(' ');
 				sbCont.Append(attr->name);
 				if (attr->value)
@@ -118,7 +118,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(NN<SSWR::AVIRead
 			j = reader.GetAttribCount();
 			while (i < j)
 			{
-				attr = reader.GetAttrib(i);
+				attr = reader.GetAttribNoCheck(i);
 				sbCont.AppendUTF8Char(' ');
 				sbCont.Append(attr->name);
 				if (attr->value)

@@ -23,15 +23,14 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 	this->lon = 0;
 
 	Text::StringBuilderUTF8 sb;
-	Text::XMLAttrib *attr;
+	NN<Text::XMLAttrib> attr;
 	UOSInt i;
 	UOSInt j;
 	i = 0;
 	j = itemNode->GetAttribCnt();
 	while (i < j)
 	{
-		attr = itemNode->GetAttrib(i);
-		if (attr->name->EqualsICase(UTF8STRC("rdf:about")) && attr->value)
+		if (itemNode->GetAttrib(i).SetTo(attr) && attr->name->EqualsICase(UTF8STRC("rdf:about")) && attr->value)
 		{
 			SDEL_STRING(this->guid);
 			this->guid = attr->value->Clone().Ptr();
@@ -43,7 +42,7 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 	j = itemNode->GetChildCnt();
 	while (i < j)
 	{
-		Text::XMLNode *node = itemNode->GetChild(i);
+		NN<Text::XMLNode> node = itemNode->GetChildNoCheck(i);
 		if (node->GetNodeType() == Text::XMLNode::NodeType::Element)
 		{
 			if (node->name->EqualsICase(UTF8STRC("title")))
@@ -60,8 +59,7 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 					UOSInt k = node->GetAttribCnt();
 					while (k-- > 0)
 					{
-						attr = node->GetAttrib(k);
-						if (attr->name->Equals(UTF8STRC("href")) && attr->value)
+						if (node->GetAttrib(k).SetTo(attr) && attr->name->Equals(UTF8STRC("href")) && attr->value)
 						{
 							SDEL_STRING(this->link);
 							this->link = attr->value->Clone().Ptr();
@@ -173,10 +171,10 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 			else if (node->name->EqualsICase(UTF8STRC("media:group")))
 			{
 				UOSInt k = node->GetChildCnt();
-				Text::XMLNode *node2;
+				NN<Text::XMLNode> node2;
 				while (k-- > 0)
 				{
-					node2 = node->GetChild(k);
+					node2 = node->GetChildNoCheck(k);
 					if (node2->GetNodeType() == Text::XMLNode::NodeType::Element)
 					{
 						if (node2->name->Equals(UTF8STRC("media:description")))
@@ -221,7 +219,7 @@ Net::RSSItem::RSSItem(NN<Text::XMLReader> reader)
 
 	Bool descHTML = reader->GetNodeTextNN()->Equals(UTF8STRC("item"));
 	Text::StringBuilderUTF8 sb;
-	Text::XMLAttrib *attr;
+	NN<Text::XMLAttrib> attr;
 	NN<Text::String> name;
 	UOSInt i;
 	UOSInt j;
@@ -229,7 +227,7 @@ Net::RSSItem::RSSItem(NN<Text::XMLReader> reader)
 	j = reader->GetAttribCount();
 	while (i < j)
 	{
-		attr = reader->GetAttrib(i);
+		attr = reader->GetAttribNoCheck(i);
 		if (attr->name->EqualsICase(UTF8STRC("rdf:about")) && attr->value)
 		{
 			SDEL_STRING(this->guid);
@@ -253,7 +251,7 @@ Net::RSSItem::RSSItem(NN<Text::XMLReader> reader)
 			UOSInt k = reader->GetAttribCount();
 			while (k-- > 0)
 			{
-				attr = reader->GetAttrib(k);
+				attr = reader->GetAttribNoCheck(k);
 				if (attr->name->Equals(UTF8STRC("href")) && attr->value)
 				{
 					SDEL_STRING(this->link);
@@ -1028,7 +1026,7 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::Soc
 		}
 		else if (name->EqualsICase(UTF8STRC("feed")))
 		{
-			Text::XMLAttrib *attr;
+			NN<Text::XMLAttrib> attr;
 			while (reader.NextElementName().SetTo(name))
 			{
 				if (name->EqualsICase(UTF8STRC("title")))
@@ -1052,7 +1050,7 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::Soc
 					UOSInt l = reader.GetAttribCount();
 					while (k < l)
 					{
-						attr = reader.GetAttrib(k);
+						attr = reader.GetAttribNoCheck(k);
 						if (attr->name->Equals(UTF8STRC("rel")) && attr->value)
 						{
 							if (attr->value->Equals(UTF8STRC("self")))

@@ -56,9 +56,9 @@ namespace SSWR
 		private:
 			DB::DBTool *db;
 			Int32 cateId;
-			Data::ArrayList<Trip*> *trips;
-			Data::ArrayList<Location*> *locs;
-			Data::ArrayList<LocationType*> *locType;
+			Data::ArrayListNN<Trip> *trips;
+			Data::ArrayListNN<Location> *locs;
+			Data::ArrayListNN<LocationType> *locType;
 
 			void FreeTrips();
 		public:
@@ -67,11 +67,11 @@ namespace SSWR
 			void ReloadTrips(Int32 cateId);
 			OSInt GetTripIndex(Data::DateTime *d);
 			Trip *GetTrip(Int32 userId, Data::DateTime *d);
-			Data::ArrayList<Trip*> *GetTripList();
+			Data::ArrayListNN<Trip> *GetTripList();
 			Bool AddTrip(Data::DateTime *fromDate, Data::DateTime *toDate, Int32 locId);
 			OSInt GetLocIndex(Int32 locId);
 			Location *GetLocation(Int32 locId);
-			Data::ArrayList<Location*> *GetLocSub(Int32 locId);
+			Data::ArrayListNN<Location> *GetLocSub(Int32 locId);
 			Bool UpdateLoc(Int32 locId, const UTF8Char *engName, const UTF8Char *chiName);
 			Bool AddLoc(Int32 locId, const UTF8Char *engName, const UTF8Char *chiName);
 			OSInt GetLocTypeIndex(Int32 lType);

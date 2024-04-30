@@ -37,7 +37,8 @@ namespace Text
 
 		virtual NN<Text::String> GetContainerName() const = 0;
 		virtual UOSInt GetChildCount() const = 0;
-		virtual CodeObject *GetChildObj(UOSInt index) const = 0;
+		virtual NN<CodeObject> GetChildNoCheck(UOSInt index) const = 0;
+		virtual Optional<CodeObject> GetChildObj(UOSInt index) const = 0;
 	};
 
 	class CodeProjectCfg : public IO::ConfigFile
@@ -59,14 +60,14 @@ namespace Text
 			PROJT_VSPROJECT
 		} ProjectType;
 	private:
-		Data::ArrayList<CodeProjectCfg*> cfgList;
+		Data::ArrayListNN<CodeProjectCfg> cfgList;
 	public:
 		CodeProject(Text::CStringNN name);
 		virtual ~CodeProject();
 
-		void AddConfig(Text::CodeProjectCfg *cfg);
+		void AddConfig(NN<Text::CodeProjectCfg> cfg);
 		UOSInt GetConfigCnt() const;
-		CodeProjectCfg *GetConfig(UOSInt index) const;
+		Optional<CodeProjectCfg> GetConfig(UOSInt index) const;
 
 		virtual ProjectType GetProjectType() const = 0;
 		virtual IO::ParserType GetParserType() const;

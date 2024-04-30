@@ -1024,9 +1024,9 @@ void Map::HKTrafficLayer::ReloadData()
 			mstm.Write(buff, readSize);
 		}
 		const UInt8 *xmlBuff = mstm.GetBuff(readSize);
-		Text::XMLNode *node1;
-		Text::XMLNode *node2;
-		Text::XMLNode *node3;
+		NN<Text::XMLNode> node1;
+		NN<Text::XMLNode> node2;
+		NN<Text::XMLNode> node3;
 		Text::XMLDocument doc;
 //		printf(".");
 		if (doc.ParseBuff(this->encFact, xmlBuff, readSize))
@@ -1039,14 +1039,14 @@ void Map::HKTrafficLayer::ReloadData()
 			UTF8Char *sarr[2];
 			while (i < j)
 			{
-				node1 = doc.GetChild(i);
+				node1 = doc.GetChildNoCheck(i);
 				if (node1->GetNodeType() == Text::XMLNode::NodeType::Element && node1->name->EqualsICase(UTF8STRC("jtis_speedlist")))
 				{
 					i = 0;
 					j = node1->GetChildCnt();
 					while (i < j)
 					{
-						node2 = node1->GetChild(i);
+						node2 = node1->GetChildNoCheck(i);
 						if (node2->GetNodeType() == Text::XMLNode::NodeType::Element && node2->name->EqualsICase(UTF8STRC("jtis_speedmap")))
 						{
 							Int32 fromId = 0;
@@ -1057,7 +1057,7 @@ void Map::HKTrafficLayer::ReloadData()
 							k = node2->GetChildCnt();
 							while (k-- > 0)
 							{
-								node3 = node2->GetChild(k);
+								node3 = node2->GetChildNoCheck(k);
 								if (node3->GetNodeType() == Text::XMLNode::NodeType::Element && node3->name->EqualsICase(UTF8STRC("LINK_ID")))
 								{
 									sb.ClearStr();

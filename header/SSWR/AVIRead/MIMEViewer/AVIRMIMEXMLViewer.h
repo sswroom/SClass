@@ -16,10 +16,10 @@ namespace SSWR
 			private:
 				NN<UI::GUIListView> lvXML;
 
-				Text::MIMEObj::UnknownMIMEObj *obj;
+				NN<Text::MIMEObj::UnknownMIMEObj> obj;
 
 			public:
-				AVIRMIMEXMLViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, Text::MIMEObj::UnknownMIMEObj *obj);
+				AVIRMIMEXMLViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, NN<Text::MIMEObj::UnknownMIMEObj> obj);
 				virtual ~AVIRMIMEXMLViewer();
 			};
 		}

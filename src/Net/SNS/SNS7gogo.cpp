@@ -12,7 +12,7 @@ Net::SNS::SNS7gogo::SNS7gogo(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngi
 
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	SNSItem *snsItem;
+	NN<SNSItem> snsItem;
 	Net::WebSite::WebSite7gogoControl::ItemData *item;
 	Net::WebSite::WebSite7gogoControl::ChannelInfo chInfo;
 	Data::ArrayList<Net::WebSite::WebSite7gogoControl::ItemData*> itemList;
@@ -62,7 +62,7 @@ Net::SNS::SNS7gogo::~SNS7gogo()
 	i = this->itemMap.GetCount();
 	while (i-- > 0)
 	{
-		FreeItem(this->itemMap.GetItem(i));
+		FreeItem(this->itemMap.GetItemNoCheck(i));
 	}
 }
 
@@ -93,14 +93,14 @@ UTF8Char *Net::SNS::SNS7gogo::GetDirName(UTF8Char *dirName)
 	return dirName;
 }
 
-UOSInt Net::SNS::SNS7gogo::GetCurrItems(NN<Data::ArrayList<SNSItem*>> itemList)
+UOSInt Net::SNS::SNS7gogo::GetCurrItems(NN<Data::ArrayListNN<SNSItem>> itemList)
 {
 	UOSInt initCnt = itemList->GetCount();
 	itemList->AddAll(this->itemMap);
 	return itemList->GetCount() - initCnt;
 }
 
-UTF8Char *Net::SNS::SNS7gogo::GetItemShortId(UTF8Char *buff, SNSItem *item)
+UTF8Char *Net::SNS::SNS7gogo::GetItemShortId(UTF8Char *buff, NN<SNSItem> item)
 {
 	return item->id->ConcatTo(buff);
 }
@@ -114,7 +114,7 @@ Bool Net::SNS::SNS7gogo::Reload()
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	SNSItem *snsItem;
+	NN<SNSItem> snsItem;
 	OSInt si;
 	Net::WebSite::WebSite7gogoControl::ItemData *item;
 	Data::ArrayList<Net::WebSite::WebSite7gogoControl::ItemData*> itemList;
@@ -157,9 +157,11 @@ Bool Net::SNS::SNS7gogo::Reload()
 		i = idList.GetCount();
 		while (i-- > 0)
 		{
-			snsItem = this->itemMap.Remove(idList.GetItem(i));
-			FreeItem(snsItem);
-			changed = true;
+			if (this->itemMap.Remove(idList.GetItem(i)).SetTo(snsItem))
+			{
+				FreeItem(snsItem);
+				changed = true;
+			}
 		}
 	}
 	return changed;

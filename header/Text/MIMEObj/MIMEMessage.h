@@ -14,25 +14,25 @@ namespace Text
 		protected:
 			Data::ArrayListStringNN headerName;
 			Data::ArrayListStringNN headerValue;
-			Text::IMIMEObj *content;
+			Optional<Text::IMIMEObj> content;
 			UInt8 *transferData;
 			UOSInt transferSize;
 
 		public:
 			MIMEMessage();
-			MIMEMessage(Text::IMIMEObj *content);
+			MIMEMessage(Optional<Text::IMIMEObj> content);
 			virtual ~MIMEMessage();
 
 			virtual Text::CStringNN GetClassName() const;
 			virtual Text::CStringNN GetContentType() const;
-			virtual UOSInt WriteStream(IO::Stream *stm) const;
-			virtual IMIMEObj *Clone() const;
+			virtual UOSInt WriteStream(NN<IO::Stream> stm) const;
+			virtual NN<IMIMEObj> Clone() const;
 
-			void SetContent(Text::IMIMEObj *content);
-			Text::IMIMEObj *GetContent() const;
+			void SetContent(Optional<Text::IMIMEObj> content);
+			Optional<Text::IMIMEObj> GetContent() const;
 			void SetTransferData(const UInt8 *data, UOSInt dataSize);
 
-			void AddHeader(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
+			void AddHeader(Text::CStringNN name, Text::CStringNN value);
 			void AddHeader(NN<Text::String> name, NN<Text::String> value);
 			Optional<Text::String> GetHeader(const UTF8Char *name, UOSInt nameLen) const;
 			UOSInt GetHeaderCount() const;

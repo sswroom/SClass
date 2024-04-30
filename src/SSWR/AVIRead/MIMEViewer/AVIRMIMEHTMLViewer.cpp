@@ -3,7 +3,7 @@
 #include "SSWR/AVIRead/MIMEViewer/AVIRMIMEHTMLViewer.h"
 #include "Text/HTMLUtil.h"
 
-SSWR::AVIRead::MIMEViewer::AVIRMIMEHTMLViewer::AVIRMIMEHTMLViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, Text::MIMEObj::UnknownMIMEObj *obj) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, obj)
+SSWR::AVIRead::MIMEViewer::AVIRMIMEHTMLViewer::AVIRMIMEHTMLViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, NN<Text::MIMEObj::UnknownMIMEObj> obj) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, obj)
 {
 	this->obj = obj;
 
@@ -12,7 +12,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEHTMLViewer::AVIRMIMEHTMLViewer(NN<SSWR::AVIRe
 	this->txtHTML->SetReadOnly(true);
 
 	UOSInt size;
-	const UInt8 *buff = obj->GetRAWData(&size);
+	const UInt8 *buff = obj->GetRAWData(size);
 	IO::MemoryReadingStream mstm(buff, size);
 	Text::StringBuilderUTF8 sb;
 	Text::HTMLUtil::HTMLWellFormat(core->GetEncFactory(), mstm, 0, sb);

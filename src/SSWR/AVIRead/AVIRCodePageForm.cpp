@@ -56,7 +56,7 @@ SSWR::AVIRead::AVIRCodePageForm::AVIRCodePageForm(Optional<UI::GUIClientControl>
 	UInt32 codePage;
 	UInt32 currCodePage = this->core->GetCurrCodePage();
 	Data::ArrayListUInt32 codePages;
-	Text::EncodingFactory::GetCodePages(&codePages);
+	Text::EncodingFactory::GetCodePages(codePages);
 	i = 0;
 	j = codePages.GetCount();
 	while (i < j)

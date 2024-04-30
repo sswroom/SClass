@@ -13,16 +13,16 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Text::IMIMEObj *obj;
-			SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *viewer;
+			NN<Text::IMIMEObj> obj;
+			Optional<SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer> viewer;
 			NN<Media::ColorManagerSess> sess;
 
 		public:
-			AVIRMIMEViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::IMIMEObj *obj);
+			AVIRMIMEViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Text::IMIMEObj> obj);
 			virtual ~AVIRMIMEViewerForm();
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

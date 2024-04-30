@@ -9,21 +9,21 @@ SSWR::VAMS::VAMSBTList::VAMSBTList()
 
 SSWR::VAMS::VAMSBTList::~VAMSBTList()
 {
-	Data::FastStringMap<AvlBleItem*> *item;
-	AvlBleItem *bleItem;
+	NN<Data::FastStringMapNN<AvlBleItem>> item;
+	NN<AvlBleItem> bleItem;
 	UOSInt i = this->itemMap.GetCount();
 	UOSInt j;
 	while (i-- > 0)
 	{
-		item = this->itemMap.GetItem(i);
+		item = this->itemMap.GetItemNoCheck(i);
 		j = item->GetCount();
 		while (j-- > 0)
 		{
-			bleItem = item->GetItem(j);
+			bleItem = item->GetItemNoCheck(j);
 			bleItem->avlNo->Release();
-			MemFree(bleItem);
+			MemFreeNN(bleItem);
 		}
-		DEL_CLASS(item);
+		item.Delete();
 	}
 }
 
@@ -36,16 +36,16 @@ void SSWR::VAMS::VAMSBTList::AddItem(NN<Text::String> avlNo, Int32 progId, Int64
 		return;
 	}
 	Sync::MutexUsage mutUsage(this->mut);
-	Data::FastStringMap<AvlBleItem*> *progMap = this->itemMap.Get(progId);
-	if (progMap == 0)
+	NN<Data::FastStringMapNN<AvlBleItem>> progMap;
+	if (!this->itemMap.Get(progId).SetTo(progMap))
 	{
-		NEW_CLASS(progMap, Data::FastStringMap<AvlBleItem*>());
+		NEW_CLASSNN(progMap, Data::FastStringMapNN<AvlBleItem>());
 		this->itemMap.Put(progId, progMap);
 	}
-	AvlBleItem *item = progMap->GetNN(avlNo);
-	if (item == 0)
+	NN<AvlBleItem> item;
+	if (!progMap->GetNN(avlNo).SetTo(item))
 	{
-		item = MemAlloc(AvlBleItem, 1);
+		item = MemAllocNN(AvlBleItem);
 		item->avlNo = avlNo->Clone();
 		item->progId = progId;
 		item->lastDevTS = ts;
@@ -60,13 +60,13 @@ void SSWR::VAMS::VAMSBTList::AddItem(NN<Text::String> avlNo, Int32 progId, Int64
 	}
 }
 
-UOSInt SSWR::VAMS::VAMSBTList::QueryByProgId(Data::ArrayList<AvlBleItem *> *itemList, Int32 progId, Int32 timeoutIntervalMs)
+UOSInt SSWR::VAMS::VAMSBTList::QueryByProgId(NN<Data::ArrayListNN<AvlBleItem>> itemList, Int32 progId, Int32 timeoutIntervalMs)
 {
 	UOSInt ret = 0;
-	AvlBleItem *item;
+	NN<AvlBleItem> item;
 	Sync::MutexUsage mutUsage(this->mut);
-	Data::FastStringMap<AvlBleItem *> *progMap = this->itemMap.Get(progId);
-	if (progMap == 0)
+	NN<Data::FastStringMapNN<AvlBleItem>> progMap;
+	if (!this->itemMap.Get(progId).SetTo(progMap))
 	{
 		return 0;
 	}
@@ -78,7 +78,7 @@ UOSInt SSWR::VAMS::VAMSBTList::QueryByProgId(Data::ArrayList<AvlBleItem *> *item
 	UOSInt j = progMap->GetCount();
 	while (i < j)
 	{
-		item = progMap->GetItem(i);
+		item = progMap->GetItemNoCheck(i);
 		if (item->lastDevTS >= fromTime)
 		{
 			itemList->Add(item);

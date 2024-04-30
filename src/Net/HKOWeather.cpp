@@ -99,9 +99,9 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(NN<Net::SocketF
 	mbuff = mstm.GetBuff(i);
 	Text::XMLDocument doc;
 	doc.ParseBuff(encFact, mbuff, i);
-	Text::XMLNode **nodes = doc.SearchNode(CSTR("/rss/channel/item/description"), &i);
-	Text::XMLNode *n;
-	Text::XMLNode *n2;
+	NN<Text::XMLNode> *nodes = doc.SearchNode(CSTR("/rss/channel/item/description"), i);
+	NN<Text::XMLNode> n;
+	NN<Text::XMLNode> n2;
 
 	signal = Net::HKOWeather::WS_UNKNOWN;
 	if (i > 0)
@@ -110,7 +110,7 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(NN<Net::SocketF
 		i = n->GetChildCnt();
 		while (i-- > 0)
 		{
-			n2 = n->GetChild(i);
+			n2 = n->GetChildNoCheck(i);
 			if (n2->GetNodeType() == Text::XMLNode::NodeType::CData)
 			{
 				signal = String2Signal(n2->value);

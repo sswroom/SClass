@@ -17,7 +17,7 @@
 #include "Text/UTF8Writer.h"
 #include <stdio.h>
 
-Net::SNS::SNSControl *Net::SNS::SNSManager::CreateControl(Net::SNS::SNSControl::SNSType type, Text::CString channelId)
+Optional<Net::SNS::SNSControl> Net::SNS::SNSManager::CreateControl(Net::SNS::SNSControl::SNSType type, Text::CString channelId)
 {
 	Net::SNS::SNSControl *ctrl = 0;
 	if (type == Net::SNS::SNSControl::ST_TWITTER)
@@ -44,10 +44,10 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::CreateControl(Net::SNS::SNSControl::
 	return ctrl;
 }
 
-Net::SNS::SNSManager::ChannelData *Net::SNS::SNSManager::ChannelInit(Net::SNS::SNSControl *ctrl)
+NN<Net::SNS::SNSManager::ChannelData> Net::SNS::SNSManager::ChannelInit(NN<Net::SNS::SNSControl> ctrl)
 {
-	Net::SNS::SNSManager::ChannelData *channel;
-	NEW_CLASS(channel, Net::SNS::SNSManager::ChannelData());
+	NN<Net::SNS::SNSManager::ChannelData> channel;
+	NEW_CLASSNN(channel, Net::SNS::SNSManager::ChannelData());
 	channel->ctrl = ctrl;
 	channel->lastLoadTime = Data::DateTimeUtil::GetCurrTimeMillis();
 
@@ -76,7 +76,7 @@ Net::SNS::SNSManager::ChannelData *Net::SNS::SNSManager::ChannelInit(Net::SNS::S
 	return channel;
 }
 
-void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *channel, Net::SNS::SNSControl::SNSItem *item)
+void Net::SNS::SNSManager::ChannelAddMessage(NN<Net::SNS::SNSManager::ChannelData> channel, NN<Net::SNS::SNSControl::SNSItem> item)
 {
 	Data::DateTime dt;
 	dt.SetTicks(item->msgTime);
@@ -292,7 +292,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 	}
 }
 
-void Net::SNS::SNSManager::ChannelStoreCurr(Net::SNS::SNSManager::ChannelData *channel)
+void Net::SNS::SNSManager::ChannelStoreCurr(NN<Net::SNS::SNSManager::ChannelData> channel)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -316,10 +316,10 @@ void Net::SNS::SNSManager::ChannelStoreCurr(Net::SNS::SNSManager::ChannelData *c
 	}
 }
 
-void Net::SNS::SNSManager::ChannelUpdate(Net::SNS::SNSManager::ChannelData *channel)
+void Net::SNS::SNSManager::ChannelUpdate(NN<Net::SNS::SNSManager::ChannelData> channel)
 {
-	Data::ArrayList<Net::SNS::SNSControl::SNSItem*> itemList;
-	Net::SNS::SNSControl::SNSItem *item;
+	Data::ArrayListNN<Net::SNS::SNSControl::SNSItem> itemList;
+	NN<Net::SNS::SNSControl::SNSItem> item;
 	Bool updated = false;
 	channel->ctrl->GetCurrItems(itemList);
 	Data::ArrayListStringNN oldItems;
@@ -331,7 +331,7 @@ void Net::SNS::SNSManager::ChannelUpdate(Net::SNS::SNSManager::ChannelData *chan
 	j = itemList.GetCount();
 	while (i < j)
 	{
-		item = itemList.GetItem(i);
+		item = itemList.GetItemNoCheck(i);
 		si = oldItems.SortedIndexOf(item->id);
 		if (si >= 0)
 		{
@@ -362,7 +362,7 @@ void Net::SNS::SNSManager::ChannelUpdate(Net::SNS::SNSManager::ChannelData *chan
 	}
 }
 
-void Net::SNS::SNSManager::ChannelReload(Net::SNS::SNSManager::ChannelData *channel)
+void Net::SNS::SNSManager::ChannelReload(NN<Net::SNS::SNSManager::ChannelData> channel)
 {
 	printf("Reload %s\r\n", channel->ctrl->GetChannelId()->v);
 	if (channel->ctrl->Reload())
@@ -377,7 +377,7 @@ UInt32 __stdcall Net::SNS::SNSManager::ThreadProc(AnyType userObj)
 	Int64 t;
 	UOSInt i;
 	Int32 cnt;
-	Net::SNS::SNSManager::ChannelData *channel;
+	NN<Net::SNS::SNSManager::ChannelData> channel;
 	me->threadRunning = true;
 	{
 		Data::FastMap<Int32, Int32> cntMap;
@@ -389,7 +389,7 @@ UInt32 __stdcall Net::SNS::SNSManager::ThreadProc(AnyType userObj)
 			i = me->channelList.GetCount();
 			while (i-- > 0)
 			{
-				channel = me->channelList.GetItem(i);
+				channel = me->channelList.GetItemNoCheck(i);
 				if (t - channel->lastLoadTime >= channel->ctrl->GetMinIntevalMS())
 				{
 					cnt = cntMap.Get((Int32)channel->ctrl->GetSNSType());
@@ -463,10 +463,10 @@ Net::SNS::SNSManager::SNSManager(NN<Net::SocketFactory> sockf, Optional<Net::SSL
 				{
 					if (sb.GetLength() > 0)
 					{
-						Net::SNS::SNSControl *ctrl = this->CreateControl(type, sb.ToCString());
-						if (ctrl)
+						NN<Net::SNS::SNSControl> ctrl;
+						if (this->CreateControl(type, sb.ToCString()).SetTo(ctrl))
 						{
-							Net::SNS::SNSManager::ChannelData *channel = this->ChannelInit(ctrl);
+							NN<Net::SNS::SNSManager::ChannelData> channel = this->ChannelInit(ctrl);
 							this->channelList.Add(channel);
 							this->ChannelUpdate(channel);
 						}
@@ -488,7 +488,7 @@ Net::SNS::SNSManager::~SNSManager()
 {
 	UOSInt i;
 	UOSInt j;
-	Net::SNS::SNSManager::ChannelData *channel;
+	NN<Net::SNS::SNSManager::ChannelData> channel;
 	this->threadToStop = true;
 	this->threadEvt.Set();
 	while (this->threadRunning)
@@ -501,27 +501,27 @@ Net::SNS::SNSManager::~SNSManager()
 	i = this->channelList.GetCount();
 	while (i-- > 0)
 	{
-		channel = this->channelList.GetItem(i);
-		DEL_CLASS(channel->ctrl);
+		channel = this->channelList.GetItemNoCheck(i);
+		channel->ctrl.Delete();
 		j = channel->currItems.GetCount();
 		while (j-- > 0)
 		{
 			OPTSTR_DEL(channel->currItems.GetItem(j));
 		}
-		DEL_CLASS(channel);
+		channel.Delete();
 	}
 }
 
-Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNSType type, Text::CString channelId)
+Optional<Net::SNS::SNSControl> Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNSType type, Text::CString channelId)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	Net::SNS::SNSControl *ctrl;
+	NN<Net::SNS::SNSControl> ctrl;
 	UOSInt i = 0;
 	UOSInt j = this->channelList.GetCount();
 	while (i < j)
 	{
-		ctrl = this->channelList.GetItem(i)->ctrl;
+		ctrl = this->channelList.GetItemNoCheck(i)->ctrl;
 		if (ctrl->GetSNSType() == type && ctrl->GetChannelId()->Equals(channelId.v, channelId.leng))
 		{
 			return 0;
@@ -529,8 +529,7 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNS
 		i++;
 	}
 
-	ctrl = CreateControl(type, channelId);
-	if (ctrl)
+	if (CreateControl(type, channelId).SetTo(ctrl))
 	{
 		sptr = this->dataPath->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
@@ -548,13 +547,14 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNS
 			NN<Text::String> s = ctrl->GetChannelId();
 			writer.WriteLineC(s->v, s->leng);
 		}
-		Net::SNS::SNSManager::ChannelData *channel = this->ChannelInit(ctrl);
+		NN<Net::SNS::SNSManager::ChannelData> channel = this->ChannelInit(ctrl);
 		Sync::MutexUsage mutUsage(this->mut);
 		this->channelList.Add(channel);
 		this->ChannelUpdate(channel);
 		mutUsage.EndUse();
+		return ctrl;
 	}
-	return ctrl;
+	return 0;
 }
 
 void Net::SNS::SNSManager::Use(NN<Sync::MutexUsage> mutUsage)
@@ -567,7 +567,15 @@ UOSInt Net::SNS::SNSManager::GetCount() const
 	return this->channelList.GetCount();
 }
 
-Net::SNS::SNSControl *Net::SNS::SNSManager::GetItem(UOSInt index) const
+NN<Net::SNS::SNSControl> Net::SNS::SNSManager::GetItemNoCheck(UOSInt index) const
 {
-	return this->channelList.GetItem(index)->ctrl;
+	return this->channelList.GetItemNoCheck(index)->ctrl;
+}
+
+Optional<Net::SNS::SNSControl> Net::SNS::SNSManager::GetItem(UOSInt index) const
+{
+	NN<ChannelData> data;
+	if (this->channelList.GetItem(index).SetTo(data))
+		return data->ctrl;
+	return 0;
 }

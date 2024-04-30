@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ArrayListICaseString.h"
 #include "Data/ByteBuffer.h"
+#include "Data/StringMapNN.h"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "Exporter/GUIJPGExporter.h"
 #include "IO/Path.h"
@@ -39,9 +40,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 		Text::StringBuilderUTF8 sb;
 		NN<GroupInfo> group;
 		NN<CategoryInfo> cate;
-		IO::ConfigFile *lang = me->env->LangGet(req);
+		Optional<IO::ConfigFile> lang = me->env->LangGet(req);
+		NN<WebUserInfo> user;
 		Sync::RWMutexUsage mutUsage;
-		Bool notAdmin = (env.user == 0 || env.user->userType != UserType::Admin);
+		Bool notAdmin = (!env.user.SetTo(user) || user->userType != UserType::Admin);
 		if (!me->env->GroupGet(mutUsage, id).SetTo(group) || group->cateId != cateId)
 		{
 			mutUsage.EndUse();
@@ -61,7 +63,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 			return true;
 		}
 
-		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST && env.user != 0 && env.user->userType == UserType::Admin)
+		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST && env.user.SetTo(user) && user->userType == UserType::Admin)
 		{
 			req->ParseHTTPForm();
 			NN<Text::String> action;
@@ -79,7 +81,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 						j = group->groups.GetCount();
 						while (i < j)
 						{
-							env.pickObjs->SortedInsert(group->groups.GetItem(i)->id);
+							env.pickObjs->SortedInsert(group->groups.GetItemNoCheck(i)->id);
 							i++;
 						}
 					}
@@ -92,7 +94,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 						j = group->species.GetCount();
 						while (i < j)
 						{
-							env.pickObjs->SortedInsert(group->species.GetItem(i)->speciesId);
+							env.pickObjs->SortedInsert(group->species.GetItemNoCheck(i)->speciesId);
 							i++;
 						}
 					}
@@ -108,7 +110,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 						j = group->groups.GetCount();
 						while (i < j)
 						{
-							itemId = group->groups.GetItem(i)->id;
+							itemId = group->groups.GetItemNoCheck(i)->id;
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("group"));
 							sb.AppendI32(itemId);
@@ -128,7 +130,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 						j = group->species.GetCount();
 						while (i < j)
 						{
-							itemId = group->species.GetItem(i)->speciesId;
+							itemId = group->species.GetItemNoCheck(i)->speciesId;
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("species"));
 							sb.AppendI32(itemId);
@@ -362,12 +364,12 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 		}
 		if (group->groups.GetCount())
 		{
-			GroupInfo *sgroup;
-			Data::StringMap<Optional<GroupInfo>> groups;
+			NN<GroupInfo> sgroup;
+			Data::StringMapNN<GroupInfo> groups;
 			i = group->groups.GetCount();
 			while (i-- > 0)
 			{
-				sgroup = group->groups.GetItem(i);
+				sgroup = group->groups.GetItemNoCheck(i);
 				if ((sgroup->flags & 1) == 0 || !notAdmin)
 				{
 					groups.PutNN(sgroup->engName, sgroup);
@@ -382,12 +384,12 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 		}
 		if (group->species.GetCount())
 		{
-			SpeciesInfo *sp;
-			Data::StringMap<Optional<SpeciesInfo>> species;
+			NN<SpeciesInfo> sp;
+			Data::StringMapNN<SpeciesInfo> species;
 			i = group->species.GetCount();
 			while (i-- > 0)
 			{
-				sp = group->species.GetItem(i);
+				sp = group->species.GetItemNoCheck(i);
 				species.PutNN(sp->sciName, sp);
 			}
 			me->WriteSpeciesTable(mutUsage, &writer, species.GetValues(), env.scnWidth, group->cateId, !notAdmin, !notAdmin);
@@ -403,7 +405,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 		{
 			writer.WriteLineC(UTF8STRC("</form>"));
 		}
-		if (env.user != 0 && env.user->userType == UserType::Admin)
+		if (env.user.SetTo(user) && user->userType == UserType::Admin)
 		{
 			writer.WriteLineC(UTF8STRC("Pick Objects:<br/>"));
 			writer.WriteLineC(UTF8STRC("<input type=\"button\" value=\"Pick Selected\" onclick=\"document.forms.groupform.action.value='picksel';document.forms.groupform.submit();\"/>"));
@@ -443,7 +445,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroup(NN<Net::WebServe
 			writer.WriteStr(LangGetValue(lang, CSTR("Back")));
 			writer.WriteStrC(UTF8STRC("</a>"));
 		}
-		if (env.user != 0 && env.user->userType == UserType::Admin)
+		if (env.user.SetTo(user) && user->userType == UserType::Admin)
 		{
 			writer.WriteLineC(UTF8STRC("<br/>"));
 
@@ -468,11 +470,12 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NN<Net::WebSe
 {
 	NN<SSWR::OrganWeb::OrganWebMainController> me = NN<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
 	RequestEnv env;
+	NN<WebUserInfo> user;
 	UOSInt i;
 	UOSInt j;
 	me->ParseRequestEnv(req, resp, env, false);
 
-	if (env.user == 0 || env.user->userType != UserType::Admin)
+	if (!env.user.SetTo(user) || user->userType != UserType::Admin)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 		return true;
@@ -489,7 +492,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NN<Net::WebSe
 		Text::StringBuilderUTF8 sb;
 		NN<Text::String> s;
 		NN<Text::String> txt;
-		IO::ConfigFile *lang = me->env->LangGet(req);
+		Optional<IO::ConfigFile> lang = me->env->LangGet(req);
 
 		Sync::RWMutexUsage mutUsage;
 		if (!me->env->GroupGet(mutUsage, id).SetTo(group))
@@ -545,7 +548,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NN<Net::WebSe
 					i = group->groups.GetCount();
 					while (i-- > 0)
 					{
-						if (group->groups.GetItem(i)->engName->Equals(ename))
+						if (group->groups.GetItemNoCheck(i)->engName->Equals(ename))
 						{
 							found = true;
 							break;
@@ -582,7 +585,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NN<Net::WebSe
 					i = group->groups.GetCount();
 					while (i-- > 0)
 					{
-						if (group->groups.GetItem(i) != nnmodGroup.Ptr() && group->groups.GetItem(i)->engName->Equals(ename))
+						if (group->groups.GetItem(i) != nnmodGroup.Ptr() && group->groups.GetItemNoCheck(i)->engName->Equals(ename))
 						{
 							found = true;
 							break;
@@ -680,12 +683,12 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcGroupMod(NN<Net::WebSe
 		writer.WriteLineC(UTF8STRC("<input type=\"hidden\" name=\"task\"/>"));
 		writer.WriteLineC(UTF8STRC("<table border=\"0\">"));
 		writer.WriteLineC(UTF8STRC("<tr><td>Category</td><td><select name=\"groupType\">"));
-		GroupTypeInfo *groupType;
+		NN<GroupTypeInfo> groupType;
 		i = 0;
 		j = cate->groupTypes.GetCount();
 		while (i < j)
 		{
-			groupType = cate->groupTypes.GetItem(i);
+			groupType = cate->groupTypes.GetItemNoCheck(i);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("<option value=\""));
 			sb.AppendI32(groupType->id);
@@ -796,11 +799,12 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 		NN<SpeciesInfo> species;
 		NN<GroupInfo> group;
 		NN<CategoryInfo> cate;
-		BookSpInfo *bookSp;
-		BookInfo *book;
-		UserFileInfo *userFile;
-		WebFileInfo *wfile;
-		IO::ConfigFile *lang = me->env->LangGet(req);
+		NN<BookSpInfo> bookSp;
+		NN<BookInfo> book;
+		NN<UserFileInfo> userFile;
+		NN<WebFileInfo> wfile;
+		NN<WebUserInfo> user;
+		Optional<IO::ConfigFile> lang = me->env->LangGet(req);
 		Data::DateTime dt;
 
 		Sync::RWMutexUsage mutUsage;
@@ -811,7 +815,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 			return true;
 		}
 
-		Bool notAdmin = (env.user == 0 || env.user->userType != UserType::Admin);
+		Bool notAdmin = (!env.user.SetTo(user) || user->userType != UserType::Admin);
 		if (!me->env->GroupGet(mutUsage, species->groupId).SetTo(group) || group->cateId != cateId || (me->env->GroupIsAdmin(group) && notAdmin))
 		{
 			mutUsage.EndUse();
@@ -825,7 +829,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 			return true;
 		}
 
-		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST && env.user != 0 && env.user->userType == UserType::Admin)
+		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST && env.user.SetTo(user) && user->userType == UserType::Admin)
 		{
 			req->ParseHTTPForm();
 			NN<Text::String> action;
@@ -842,7 +846,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 					j = species->files.GetCount();
 					while (i < j)
 					{
-						env.pickObjs->SortedInsert(species->files.GetItem(i)->id);
+						env.pickObjs->SortedInsert(species->files.GetItemNoCheck(i)->id);
 						i++;
 					}
 				}
@@ -855,7 +859,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 					j = species->files.GetCount();
 					while (i < j)
 					{
-						userfileId = species->files.GetItem(i)->id;
+						userfileId = species->files.GetItemNoCheck(i)->id;
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("userfile"));
 						sb.AppendI32(userfileId);
@@ -1007,7 +1011,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 			i = species->files.GetCount();
 			while (i-- > 0)
 			{
-				userFile = species->files.GetItem(i);
+				userFile = species->files.GetItemNoCheck(i);
 				if (userFile->captureTimeTicks)
 				{
 					dt.SetTicks(userFile->captureTimeTicks);
@@ -1045,9 +1049,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 			j = species->books.GetCount();
 			while (i < j)
 			{
-				bookSp = species->books.GetItem(i);
-				book = me->env->BookGet(mutUsage, bookSp->bookId);
-				if (book != 0)
+				bookSp = species->books.GetItemNoCheck(i);
+				if (me->env->BookGet(mutUsage, bookSp->bookId).SetTo(book))
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("<tr><td><a href=\"book.html?id="));
@@ -1082,7 +1085,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 		writer.WriteLineC(UTF8STRC("</td><td>"));
 		me->WriteLocator(mutUsage, &writer, group, cate);
 		writer.WriteLineC(UTF8STRC("</td></tr></table>"));
-		if (env.user != 0 || me->env->GroupIsPublic(mutUsage, group->id))
+		if (env.user.NotNull() || me->env->GroupIsPublic(mutUsage, group->id))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("<a href=\"map/index.html?species="));
@@ -1093,7 +1096,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 			writer.WriteLineC(sb.ToString(), sb.GetLength());
 		}
 		writer.WriteLineC(UTF8STRC("<hr/>"));
-		if (env.user && env.user->userType == UserType::Admin && (book = me->env->BookGetSelected(mutUsage)) != 0)
+		if (env.user.SetTo(user) && user->userType == UserType::Admin && me->env->BookGetSelected(mutUsage).SetTo(book))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("<form name=\"bookspecies\" action=\"species.html?id="));
@@ -1195,7 +1198,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 		if (fileNameList.GetCount() > 0 || species->files.GetCount() > 0 || species->wfiles.GetCount() > 0)
 		{
 			currColumn = 0;
-			if (env.user != 0 && env.user->userType == UserType::Admin)
+			if (env.user.SetTo(user) && user->userType == UserType::Admin)
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("<form name=\"userfiles\" action=\"species.html?id="));
@@ -1208,18 +1211,18 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 			}
 			writer.WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
 
-			Data::ArrayList<UserFileInfo*> fileList;
+			Data::ArrayListNN<UserFileInfo> fileList;
 			fileList.AddAll(species->files);
 			if (env.user != 0)
 			{
-				UserFileDescComparator comparator(&env);
-				Data::Sort::ArtificialQuickSort::Sort<UserFileInfo*>(&fileList, comparator);
+				UserFileDescComparator comparator(env);
+				Data::Sort::ArtificialQuickSort::Sort<NN<UserFileInfo>>(&fileList, comparator);
 			}
 			i = 0;
 			j = fileList.GetCount();
 			while (i < j)
 			{
-				userFile = fileList.GetItem(i);
+				userFile = fileList.GetItemNoCheck(i);
 				if (currColumn == 0)
 				{
 					writer.WriteLineC(UTF8STRC("<tr>"));
@@ -1263,9 +1266,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 				writer.WriteStrC(UTF8STRC("</a><br/>"));
 				dt.SetTicks(userFile->fileTimeTicks);
 				dt.ToLocalTime();
-				if (env.user != 0 && (env.user->userType == UserType::Admin || userFile->webuserId == env.user->id))
+				if (env.user.SetTo(user) && (user->userType == UserType::Admin || userFile->webuserId == user->id))
 				{
-					if (env.user->userType == UserType::Admin)
+					if (user->userType == UserType::Admin)
 					{
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("<input type=\"checkbox\" id=\"userfile"));
@@ -1279,7 +1282,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 					}
 					sptr2 = dt.ToString(sbuff2, "yyyy-MM-dd HH:mm:ss zzzz");
 					writer.WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
-					if (userFile->webuserId == env.user->id)
+					if (userFile->webuserId == user->id)
 					{
 						if (userFile->location.SetTo(s))
 						{
@@ -1296,14 +1299,14 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 						writer.WriteStrC(s->v, s->leng);
 						s->Release();
 					}
-					if (userFile->webuserId == env.user->id)
+					if (userFile->webuserId == user->id)
 					{
 						writer.WriteStrC(UTF8STRC("<br/>"));
 						s = Text::XML::ToNewHTMLBodyText(userFile->oriFileName->v);
 						writer.WriteStrC(s->v, s->leng);
 						s->Release();
 					}
-					if (env.user->userType == UserType::Admin)
+					if (user->userType == UserType::Admin)
 					{
 						writer.WriteStrC(UTF8STRC("</label>"));
 					}
@@ -1344,7 +1347,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 			j = species->wfiles.GetCount();
 			while (i < j)
 			{
-				wfile = species->wfiles.GetItem(i);
+				wfile = species->wfiles.GetItemNoCheck(i);
 				if (currColumn == 0)
 				{
 					writer.WriteLineC(UTF8STRC("<tr>"));
@@ -1386,7 +1389,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 				s->Release();
 				writer.WriteStrC(UTF8STRC(" border=\"0\">"));
 				writer.WriteStrC(UTF8STRC("</a>"));
-				if (env.user && env.user->userType == UserType::Admin)
+				if (env.user.SetTo(user) && user->userType == UserType::Admin)
 				{
 					if (wfile->location->leng > 0)
 					{
@@ -1485,7 +1488,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 				writer.WriteLineC(UTF8STRC("</tr>"));
 			}
 			writer.WriteLineC(UTF8STRC("</table><hr/>"));
-			if (env.user != 0 && env.user->userType == UserType::Admin)
+			if (env.user.SetTo(user) && user->userType == UserType::Admin)
 			{
 				writer.WriteLineC(UTF8STRC("</form>"));
 			}
@@ -1513,7 +1516,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 			}
 			writer.WriteLineC(UTF8STRC("<hr/>"));
 		}
-		if (env.user != 0 && env.user->userType == UserType::Admin)
+		if (env.user.SetTo(user) && user->userType == UserType::Admin)
 		{
 			writer.WriteLineC(UTF8STRC("Pick Objects:<br/>"));
 			writer.WriteLineC(UTF8STRC("<input type=\"button\" value=\"Pick Selected\" onclick=\"document.forms.userfiles.action.value='picksel';document.forms.userfiles.submit();\"/>"));
@@ -1539,7 +1542,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpecies(NN<Net::WebSer
 		writer.WriteStr(LangGetValue(lang, CSTR("Back")));
 		writer.WriteStrC(UTF8STRC("</a>"));
 
-		if (env.user != 0 && env.user->userType == UserType::Admin)
+		if (env.user.SetTo(user) && user->userType == UserType::Admin)
 		{
 			writer.WriteLineC(UTF8STRC("<br/>"));
 			writer.WriteLineC(UTF8STRC("<hr/>"));
@@ -1576,9 +1579,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NN<Net::Web
 {
 	NN<SSWR::OrganWeb::OrganWebMainController> me = NN<SSWR::OrganWeb::OrganWebMainController>::ConvertFrom(parent);
 	RequestEnv env;
+	NN<WebUserInfo> user;
 	me->ParseRequestEnv(req, resp, env, false);
 
-	if (env.user == 0 || env.user->userType != UserType::Admin)
+	if (!env.user.SetTo(user) || user->userType != UserType::Admin)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 		return true;
@@ -1593,7 +1597,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSpeciesMod(NN<Net::Web
 		NN<GroupInfo> group;
 		Text::StringBuilderUTF8 sb;
 		NN<Text::String> s;
-		IO::ConfigFile *lang = me->env->LangGet(req);
+		Optional<IO::ConfigFile> lang = me->env->LangGet(req);
 
 		Sync::RWMutexUsage mutUsage;
 		if (!me->env->GroupGet(mutUsage, id).SetTo(group))
@@ -1885,9 +1889,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NN<Net::WebServer
 		Text::StringBuilderUTF8 sb;
 		NN<GroupInfo> group;
 		NN<CategoryInfo> cate;
-		IO::ConfigFile *lang = me->env->LangGet(req);
+		Optional<IO::ConfigFile> lang = me->env->LangGet(req);
+		NN<WebUserInfo> user;
 		Sync::RWMutexUsage mutUsage;
-		Bool notAdmin = (env.user == 0 || env.user->userType != UserType::Admin);
+		Bool notAdmin = (!env.user.SetTo(user) || user->userType != UserType::Admin);
 		if (!me->env->GroupGet(mutUsage, id).SetTo(group) || group->cateId != cateId)
 		{
 			mutUsage.EndUse();
@@ -1931,19 +1936,19 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NN<Net::WebServer
 		writer.WriteLineC(UTF8STRC("<br/>"));
 		writer.WriteLineC(UTF8STRC("<hr/>"));
 
-		Data::StringMap<SpeciesInfo*> spMap;
-		me->env->GetGroupSpecies(mutUsage, group, &spMap, env.user);
-		Data::ArrayList<SpeciesInfo*> speciesTmp;
-		NN<const Data::ReadingList<SpeciesInfo*>> spList;
+		Data::StringMapNN<SpeciesInfo> spMap;
+		me->env->GetGroupSpecies(mutUsage, group, spMap, env.user);
+		Data::ArrayListNN<SpeciesInfo> speciesTmp;
+		NN<const Data::ReadingListNN<SpeciesInfo>> spList;
 		spList = spMap.GetValues();
 		if (imageOnly)
 		{
-			SpeciesInfo *sp;
+			NN<SpeciesInfo> sp;
 			i = 0;
 			j = spList->GetCount();
 			while (i < j)
 			{
-				sp = spList->GetItem(i);
+				sp = spList->GetItemNoCheck(i);
 				if ((sp->flags & 9) != 0)
 				{
 					speciesTmp.Add(sp);
@@ -1963,13 +1968,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcList(NN<Net::WebServer
 		NN<SpeciesInfo> sp;
 		while (i < j)
 		{
-			if (sp.Set(spList->GetItem(i)))
-			{
-				species.Add(sp);
-			}
+			sp = spList->GetItemNoCheck(i);
+			species.Add(sp);
 			i++;
 		}
-		me->WriteSpeciesTable(mutUsage, &writer, species, env.scnWidth, group->cateId, false, (env.user && env.user->userType == UserType::Admin));
+		me->WriteSpeciesTable(mutUsage, &writer, species, env.scnWidth, group->cateId, false, (env.user.SetTo(user) && user->userType == UserType::Admin));
 		writer.WriteLineC(UTF8STRC("<hr/>"));
 
 		if (imageOnly)
@@ -2094,9 +2097,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 		NN<SpeciesInfo> species;
 		NN<GroupInfo> group;
 		NN<CategoryInfo> cate;
+		NN<WebUserInfo> user;
 		Text::PString sarr[4];
-		WebFileInfo *wfile;
-		IO::ConfigFile *lang = me->env->LangGet(req);
+		NN<WebFileInfo> wfile;
+		Optional<IO::ConfigFile> lang = me->env->LangGet(req);
 
 		Sync::RWMutexUsage mutUsage;
 		if (!me->env->SpeciesGet(mutUsage, id).SetTo(species) || species->cateId != cateId)
@@ -2129,12 +2133,12 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 		if (req->GetQueryValueI32(CSTR("fileId"), fileId))
 		{
 			Bool found = false;
-			UserFileInfo *userFile;
+			NN<UserFileInfo> userFile;
 			i = 0;
 			j = species->files.GetCount();
 			while (i < j)
 			{
-				userFile = species->files.GetItem(i);
+				userFile = species->files.GetItemNoCheck(i);
 				if (userFile->id == fileId)
 				{
 					found = true;
@@ -2144,13 +2148,13 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 			}
 			if (found)
 			{
-				if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST && env.user && (env.user->userType == UserType::Admin || env.user->id == userFile->webuserId))
+				if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST && env.user.SetTo(user) && (user->userType == UserType::Admin || user->id == userFile->webuserId))
 				{
 					req->ParseHTTPForm();
 					NN<Text::String> action;
 					if (req->GetHTTPFormStr(CSTR("action")).SetTo(action))
 					{
-						if (action->Equals(UTF8STRC("setdefault")) && env.user->userType == UserType::Admin)
+						if (action->Equals(UTF8STRC("setdefault")) && user->userType == UserType::Admin)
 						{
 							me->env->SpeciesSetPhotoId(mutUsage, id, fileId);
 						}
@@ -2199,11 +2203,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 					sb.AppendC(UTF8STRC("&cateId="));
 					sb.AppendI32(species->cateId);
 					sb.AppendC(UTF8STRC("&fileId="));
-					sb.AppendI32(species->files.GetItem(i + 1)->id);
+					sb.AppendI32(species->files.GetItemNoCheck(i + 1)->id);
 				}
 				else if (species->wfiles.GetCount() != 0)
 				{
-					wfile = species->wfiles.GetItem(0);
+					wfile = species->wfiles.GetItemNoCheck(0);
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("photodetail.html?id="));
 					sb.AppendI32(species->speciesId);
@@ -2407,7 +2411,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 					}
 				}
 
-				if (env.user && (userFile->webuserId == env.user->id || env.user->userType == UserType::Admin))
+				if (env.user.SetTo(user) && (userFile->webuserId == user->id || user->userType == UserType::Admin))
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("photodown.html?id="));
@@ -2434,7 +2438,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 					sb.AppendC(UTF8STRC("&amp;fileId="));
 					sb.AppendI32(fileId);
 					sb.AppendC(UTF8STRC("\"><input type=\"hidden\" name=\"action\" value=\"setname\"/>"));
-					if (env.user->userType == UserType::Admin)
+					if (user->userType == UserType::Admin)
 					{
 						sb.AppendC(UTF8STRC("<input type=\"button\" value=\"Set As Species Photo\" onclick=\"document.forms.photo.action.value='setdefault';document.forms.photo.submit();\"/>"));
 					}
@@ -2455,7 +2459,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 					writer.WriteLineC(sb.ToString(), sb.GetLength());
 				}
 
-				if (env.user && env.user->userType == UserType::Admin)
+				if (env.user.SetTo(user) && user->userType == UserType::Admin)
 				{
 					
 				}
@@ -2491,10 +2495,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 		}
 		else if (req->GetQueryValueI32(CSTR("fileWId"), fileId))
 		{
-			wfile = species->wfiles.Get(fileId);
-			if (wfile)
+			if (species->wfiles.Get(fileId).SetTo(wfile))
 			{
-				if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST && env.user && env.user->userType == UserType::Admin)
+				if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST && env.user.SetTo(user) && user->userType == UserType::Admin)
 				{
 					req->ParseHTTPForm();
 					NN<Text::String> action;
@@ -2668,7 +2671,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 				writer.WriteStrC(wfile->srcUrl->v, wfile->srcUrl->leng);
 				writer.WriteStrC(UTF8STRC("</a><br/>"));
 
-				if (env.user && env.user->userType == UserType::Admin)
+				if (env.user.SetTo(user) && user->userType == UserType::Admin)
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("<form name=\"photo\" method=\"POST\" action=\"photodetail.html?id="));
@@ -3106,11 +3109,12 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NN<Net::W
 		Text::StringBuilderUTF8 sb;
 		NN<GroupInfo> group;
 		NN<CategoryInfo> cate;
+		NN<WebUserInfo> user;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
-		IO::ConfigFile *lang = me->env->LangGet(req);
+		Optional<IO::ConfigFile> lang = me->env->LangGet(req);
 		Sync::RWMutexUsage mutUsage;
-		Bool notAdmin = (env.user == 0 || env.user->userType != UserType::Admin);
+		Bool notAdmin = (!env.user.SetTo(user) || user->userType != UserType::Admin);
 		if (!me->env->GroupGet(mutUsage, id).SetTo(group) || group->cateId != cateId || (me->env->GroupIsAdmin(group) && notAdmin))
 		{
 			mutUsage.EndUse();
@@ -3196,7 +3200,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NN<Net::W
 				if (speciesObjs.GetItem(i).SetTo(sp))
 					speciesList.Add(sp);
 			}
-			me->WriteSpeciesTable(mutUsage, &writer, speciesList, env.scnWidth, group->cateId, false, (env.user && env.user->userType == UserType::Admin));
+			me->WriteSpeciesTable(mutUsage, &writer, speciesList, env.scnWidth, group->cateId, false, (env.user.SetTo(user) && user->userType == UserType::Admin));
 			if (j > 0)
 			{
 				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
@@ -3235,7 +3239,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInside(NN<Net::W
 				if (groupObjs.GetItem(i).SetTo(group))
 					groupList.Add(group);
 			}
-			me->WriteGroupTable(mutUsage, &writer, groupList, env.scnWidth, false, env.user != 0 && env.user->userType == UserType::Admin);
+			me->WriteGroupTable(mutUsage, &writer, groupList, env.scnWidth, false, env.user.SetTo(user) && user->userType == UserType::Admin);
 			if (groupList.GetLast().SetTo(group))
 			{
 				if (j > 0)
@@ -3308,9 +3312,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreS(NN<N
 		NN<CategoryInfo> cate;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
-		IO::ConfigFile *lang = me->env->LangGet(req);
+		NN<WebUserInfo> user;
+		Optional<IO::ConfigFile> lang = me->env->LangGet(req);
 		Sync::RWMutexUsage mutUsage;
-		Bool notAdmin = (env.user == 0 || env.user->userType != UserType::Admin);
+		Bool notAdmin = (!env.user.SetTo(user) || user->userType != UserType::Admin);
 		if (!me->env->GroupGet(mutUsage, id).SetTo(group) || group->cateId != cateId || (me->env->GroupIsAdmin(group) && notAdmin))
 		{
 			mutUsage.EndUse();
@@ -3393,7 +3398,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreS(NN<N
 				if (speciesObjs.GetItem(j).SetTo(sp))
 					speciesList.Add(sp);
 			}
-			me->WriteSpeciesTable(mutUsage, &writer, speciesList, env.scnWidth, group->cateId, false, (env.user && env.user->userType == UserType::Admin));
+			me->WriteSpeciesTable(mutUsage, &writer, speciesList, env.scnWidth, group->cateId, false, (env.user.SetTo(user) && user->userType == UserType::Admin));
 			if (pageNo > 0)
 			{
 				sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
@@ -3481,11 +3486,12 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NN<N
 		Text::StringBuilderUTF8 sb;
 		NN<GroupInfo> group;
 		NN<CategoryInfo> cate;
+		NN<WebUserInfo> user;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
-		IO::ConfigFile *lang = me->env->LangGet(req);
+		Optional<IO::ConfigFile> lang = me->env->LangGet(req);
 		Sync::RWMutexUsage mutUsage;
-		Bool notAdmin = (env.user == 0 || env.user->userType != UserType::Admin);
+		Bool notAdmin = (!env.user.SetTo(user) || user->userType != UserType::Admin);
 		if (!me->env->GroupGet(mutUsage, id).SetTo(group) || group->cateId != cateId || (me->env->GroupIsAdmin(group) && notAdmin))
 		{
 			mutUsage.EndUse();
@@ -3568,7 +3574,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcSearchInsideMoreG(NN<N
 				if (groupObjs.GetItem(j).SetTo(group))
 					groupList.Add(group);
 			}
-			me->WriteGroupTable(mutUsage, &writer, groupList, env.scnWidth, false, env.user && env.user->userType == UserType::Admin);
+			me->WriteGroupTable(mutUsage, &writer, groupList, env.scnWidth, false, env.user.SetTo(user) && user->userType == UserType::Admin);
 			if (groupList.GetLast().SetTo(group))
 			{
 				if (pageNo > 0)

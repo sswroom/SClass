@@ -36,7 +36,7 @@ namespace SSWR
 			Sync::RWMutex svrMut;
 			Data::FastMapNN<Int32, ServerInfo> svrMap;
 
-			Data::ArrayList<SyncClient*> syncCliList;
+			Data::ArrayListNN<SyncClient> syncCliList;
 
 			static void __stdcall OnClientConn(Socket *s, AnyType userObj);
 			static void __stdcall OnClientEvent(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);

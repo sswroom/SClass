@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_VSPROJECT
 #define _SM_TEXT_VSPROJECT
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Text/CodeProject.h"
 
 namespace Text
@@ -11,7 +11,7 @@ namespace Text
 		NN<Text::String> fileName;
 	public:
 		VSFile(NN<Text::String> fileName);
-		VSFile(Text::CString fileName);
+		VSFile(Text::CStringNN fileName);
 		virtual ~VSFile();
 
 		virtual NN<Text::String> GetFileName() const;
@@ -20,26 +20,27 @@ namespace Text
 	class VSProjContainer
 	{
 	public:
-		virtual void AddChild(Text::CodeObject *obj) = 0;
+		virtual void AddChild(NN<Text::CodeObject> obj) = 0;
 	};
 
 	class VSContainer : public Text::CodeContainer, public VSProjContainer
 	{
 	private:
 		NN<Text::String> contName;
-		Data::ArrayList<CodeObject*> childList;
+		Data::ArrayListNN<CodeObject> childList;
 	public:
 		VSContainer(NN<Text::String> contName);
-		VSContainer(Text::CString contName);
+		VSContainer(Text::CStringNN contName);
 		virtual ~VSContainer();
 
 		virtual void SetContainerName(Text::CString contName);
 		virtual NN<Text::String> GetContainerName() const;
 
 		virtual UOSInt GetChildCount() const;
-		virtual CodeObject *GetChildObj(UOSInt index) const;
+		virtual NN<CodeObject> GetChildNoCheck(UOSInt index) const;
+		virtual Optional<CodeObject> GetChildObj(UOSInt index) const;
 
-		virtual void AddChild(Text::CodeObject *obj);
+		virtual void AddChild(NN<Text::CodeObject> obj);
 	};
 
 	class VSProject : public Text::CodeProject, public VSProjContainer 
@@ -59,7 +60,7 @@ namespace Text
 	private:
 		VisualStudioVersion ver;
 		NN<Text::String> projName;
-		Data::ArrayList<CodeObject*> childList;
+		Data::ArrayListNN<CodeObject> childList;
 	public:
 		VSProject(Text::CStringNN name, VisualStudioVersion ver);
 		virtual ~VSProject();
@@ -70,9 +71,10 @@ namespace Text
 		virtual NN<Text::String> GetContainerName() const;
 
 		virtual UOSInt GetChildCount() const;
-		virtual CodeObject *GetChildObj(UOSInt index) const;
+		virtual NN<CodeObject> GetChildNoCheck(UOSInt index) const;
+		virtual Optional<CodeObject> GetChildObj(UOSInt index) const;
 
-		virtual void AddChild(Text::CodeObject *obj);
+		virtual void AddChild(NN<Text::CodeObject> obj);
 		VisualStudioVersion GetVSVersion() const;
 	};
 }

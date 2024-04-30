@@ -115,7 +115,7 @@ SSWR::DataSync::SyncServer::SyncServer(NN<Net::SocketFactory> sockf, NN<IO::LogT
 		UOSInt j;
 		Text::PString sarr[2];
 		Text::PString sarr2[2];
-		SyncClient *syncCli;
+		NN<SyncClient> syncCli;
 		Text::StringBuilderUTF8 sb;
 		UInt16 port;
 		sb.Append(syncClients);
@@ -130,7 +130,7 @@ SSWR::DataSync::SyncServer::SyncServer(NN<Net::SocketFactory> sockf, NN<IO::LogT
 				{
 					if (port > 0)
 					{
-						NEW_CLASS(syncCli, SyncClient(this->sockf, serverId, serverName, sarr2[0].ToCString(), port, cliTimeout));
+						NEW_CLASSNN(syncCli, SyncClient(this->sockf, serverId, serverName, sarr2[0].ToCString(), port, cliTimeout));
 						this->syncCliList.Add(syncCli);
 					}
 				}
@@ -158,12 +158,12 @@ SSWR::DataSync::SyncServer::~SyncServer()
 		Text::StrDelNew(svrInfo->serverName);
 		svrInfo.Delete();
 	}
-	SyncClient *syncCli;
+	NN<SyncClient> syncCli;
 	i = this->syncCliList.GetCount();
 	while (i-- > 0)
 	{
-		syncCli = this->syncCliList.GetItem(i);
-		DEL_CLASS(syncCli);
+		syncCli = this->syncCliList.GetItemNoCheck(i);
+		syncCli.Delete();
 	}
 }
 
@@ -189,7 +189,7 @@ void SSWR::DataSync::SyncServer::SendUserData(const UInt8 *dataBuff, UOSInt data
 	UOSInt i = this->syncCliList.GetCount();
 	while (i-- > 0)
 	{
-		this->syncCliList.GetItem(i)->AddUserData(dataBuff, dataSize);
+		this->syncCliList.GetItemNoCheck(i)->AddUserData(dataBuff, dataSize);
 	}
 }
 

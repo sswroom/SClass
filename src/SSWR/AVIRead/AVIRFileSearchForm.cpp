@@ -195,15 +195,15 @@ SSWR::AVIRead::AVIRFileSearchForm::AVIRFileSearchForm(Optional<UI::GUIClientCont
 	this->lblEncoding->SetRect(4, 28, 100, 23, false);
 	this->cboEncoding = ui->NewComboBox(this->pnlControl, false);
 	this->cboEncoding->SetRect(104, 28, 200, 23, false);
-	Data::ArrayList<Text::TextBinEnc::ITextBinEnc*> *encs = this->encList.GetEncList();
-	Text::TextBinEnc::ITextBinEnc *enc;
+	NN<Data::ArrayListNN<Text::TextBinEnc::ITextBinEnc>> encs = this->encList.GetEncList();
+	NN<Text::TextBinEnc::ITextBinEnc> enc;
 	UOSInt i;
 	UOSInt j;
 	i = 0;
 	j = encs->GetCount();
 	while (i < j)
 	{
-		enc = encs->GetItem(i);
+		enc = encs->GetItemNoCheck(i);
 		this->cboEncoding->AddItem(enc->GetName(), enc);
 		i++;
 	}

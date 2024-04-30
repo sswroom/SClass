@@ -145,9 +145,9 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListItem(NN<Net::WebServer::IWebReq
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 		return true;
 	}
-	Data::ArrayList<SSWR::VAMS::VAMSBTList::AvlBleItem*> itemList;
-	SSWR::VAMS::VAMSBTList::AvlBleItem *item;
-	me->btList->QueryByProgId(&itemList, progId, 30000);
+	Data::ArrayListNN<SSWR::VAMS::VAMSBTList::AvlBleItem> itemList;
+	NN<SSWR::VAMS::VAMSBTList::AvlBleItem> item;
+	me->btList->QueryByProgId(itemList, progId, 30000);
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
 	UTF8Char sbuff[64];
@@ -163,7 +163,7 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListItem(NN<Net::WebServer::IWebReq
 	j = itemList.GetCount();
 	while (i < j)
 	{
-		item = itemList.GetItem(i);
+		item = itemList.GetItemNoCheck(i);
 		sb.AppendC(UTF8STRC("<tr><td>"));
 		sb.Append(item->avlNo);
 		sb.AppendC(UTF8STRC("</td><td>"));

@@ -16,11 +16,11 @@ namespace SSWR
 			private:
 				NN<UI::GUIPictureBoxDD> pbContent;
 
-				Text::MIMEObj::UnknownMIMEObj *obj;
+				NN<Text::MIMEObj::UnknownMIMEObj> obj;
 				Media::ImageList *imgList;
 
 			public:
-				AVIRMIMEImageViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, Text::MIMEObj::UnknownMIMEObj *obj);
+				AVIRMIMEImageViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, NN<Text::MIMEObj::UnknownMIMEObj> obj);
 				virtual ~AVIRMIMEImageViewer();
 			};
 		}

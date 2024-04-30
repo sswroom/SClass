@@ -10,7 +10,7 @@
 #include "SSWR/AVIRead/MIMEViewer/AVIRMultipartViewer.h"
 #include "SSWR/AVIRead/MIMEViewer/AVIRUnknownViewer.h"
 
-SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::AVIRMIMEViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUIClientControl> ctrl, Text::IMIMEObj *obj)
+SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::AVIRMIMEViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUIClientControl> ctrl, NN<Text::IMIMEObj> obj)
 {
 	this->core = core;
 	this->ctrl = ctrl;
@@ -20,27 +20,23 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::~AVIRMIMEViewer()
 {
 }
 
-SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::CreateViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, Text::IMIMEObj *obj)
+Optional<SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer> SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::CreateViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, NN<Text::IMIMEObj> obj)
 {
-	SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *viewer;
-	if (obj == 0)
-	{
-		return 0;
-	}
+	NN<SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer> viewer;
 	Text::CString clsName = obj->GetClassName();
 	if (clsName.Equals(UTF8STRC("MailMessage")))
 	{
-		NEW_CLASS(viewer, SSWR::AVIRead::MIMEViewer::AVIRMailViewer(core, ui, ctrl, sess, (Text::MIMEObj::MailMessage*)obj));
+		NEW_CLASSNN(viewer, SSWR::AVIRead::MIMEViewer::AVIRMailViewer(core, ui, ctrl, sess, NN<Text::MIMEObj::MailMessage>::ConvertFrom(obj)));
 		return viewer;
 	}
 	else if (clsName.Equals(UTF8STRC("TextMIMEObj")))
 	{
-		NEW_CLASS(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMETextViewer(core, ui, ctrl, sess, (Text::MIMEObj::TextMIMEObj*)obj));
+		NEW_CLASSNN(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMETextViewer(core, ui, ctrl, sess, NN<Text::MIMEObj::TextMIMEObj>::ConvertFrom(obj)));
 		return viewer;
 	}
 	else if (clsName.Equals(UTF8STRC("MultipartMIMEObj")))
 	{
-		NEW_CLASS(viewer, SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer(core, ui, ctrl, sess, (Text::MIMEObj::MultipartMIMEObj*)obj));
+		NEW_CLASSNN(viewer, SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer(core, ui, ctrl, sess, NN<Text::MIMEObj::MultipartMIMEObj>::ConvertFrom(obj)));
 		return viewer;
 	}
 	else
@@ -48,37 +44,37 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *SSWR::AVIRead::MIMEViewer::AVIRMIMEVi
 		Text::CString contType = obj->GetContentType();
 		if (contType.StartsWith(UTF8STRC("image/jpeg")) || contType.StartsWith(UTF8STRC("image/png")) || contType.StartsWith(UTF8STRC("image/jpg")))
 		{
-			NEW_CLASS(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMEImageViewer(core, ui, ctrl, sess, (Text::MIMEObj::UnknownMIMEObj*)obj));
+			NEW_CLASSNN(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMEImageViewer(core, ui, ctrl, sess, NN<Text::MIMEObj::UnknownMIMEObj>::ConvertFrom(obj)));
 			return viewer;
 		}
 		else if (contType.StartsWith(UTF8STRC("text/xml")))
 		{
-			NEW_CLASS(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer(core, ui, ctrl, sess, (Text::MIMEObj::UnknownMIMEObj*)obj));
+			NEW_CLASSNN(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer(core, ui, ctrl, sess, NN<Text::MIMEObj::UnknownMIMEObj>::ConvertFrom(obj)));
 			return viewer;
 		}
 		else if (contType.StartsWith(UTF8STRC("application/json")))
 		{
-			NEW_CLASS(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMEJSONViewer(core, ui, ctrl, sess, (Text::MIMEObj::UnknownMIMEObj*)obj));
+			NEW_CLASSNN(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMEJSONViewer(core, ui, ctrl, sess, NN<Text::MIMEObj::UnknownMIMEObj>::ConvertFrom(obj)));
 			return viewer;
 		}
 		else if (contType.StartsWith(UTF8STRC("text/json")))
 		{
-			NEW_CLASS(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMEJSONViewer(core, ui, ctrl, sess, (Text::MIMEObj::UnknownMIMEObj*)obj));
+			NEW_CLASSNN(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMEJSONViewer(core, ui, ctrl, sess, NN<Text::MIMEObj::UnknownMIMEObj>::ConvertFrom(obj)));
 			return viewer;
 		}
 		else if (contType.StartsWith(UTF8STRC("text/html")))
 		{
-			NEW_CLASS(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMEHTMLViewer(core, ui, ctrl, sess, (Text::MIMEObj::UnknownMIMEObj*)obj));
+			NEW_CLASSNN(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMEHTMLViewer(core, ui, ctrl, sess, NN<Text::MIMEObj::UnknownMIMEObj>::ConvertFrom(obj)));
 			return viewer;
 		}
 		else if (contType.StartsWith(UTF8STRC("application/pkcs7-signature")))
 		{
-			NEW_CLASS(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMEX509Viewer(core, ui, ctrl, sess, (Text::MIMEObj::UnknownMIMEObj*)obj));
+			NEW_CLASSNN(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMEX509Viewer(core, ui, ctrl, sess, NN<Text::MIMEObj::UnknownMIMEObj>::ConvertFrom(obj)));
 			return viewer;
 		}
 		else
 		{
-			NEW_CLASS(viewer, SSWR::AVIRead::MIMEViewer::AVIRUnknownViewer(core, ui, ctrl, sess, obj));
+			NEW_CLASSNN(viewer, SSWR::AVIRead::MIMEViewer::AVIRUnknownViewer(core, ui, ctrl, sess, obj));
 			return viewer;
 		}
 	}

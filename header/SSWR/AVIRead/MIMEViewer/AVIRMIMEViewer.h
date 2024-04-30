@@ -17,10 +17,10 @@ namespace SSWR
 				NN<UI::GUIClientControl> ctrl;
 
 			public:
-				AVIRMIMEViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUIClientControl> ctrl, Text::IMIMEObj *obj);
+				AVIRMIMEViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUIClientControl> ctrl, NN<Text::IMIMEObj> obj);
 				virtual ~AVIRMIMEViewer();
 
-				static AVIRMIMEViewer *CreateViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, Text::IMIMEObj *obj);
+				static Optional<AVIRMIMEViewer> CreateViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, NN<Text::IMIMEObj> obj);
 			};
 		}
 	}

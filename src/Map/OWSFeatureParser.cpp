@@ -418,7 +418,7 @@ Bool Map::OWSFeatureParser::ParseOGC_WMS_XML(Text::CStringNN xml, UInt32 srid, M
 	IO::MemoryReadingStream mstm(xml.v, xml.leng);
 	NN<Text::String> nodeText;
 	NN<Math::Geometry::Vector2D> vec;
-	Text::XMLAttrib *attr;
+	NN<Text::XMLAttrib> attr;
 	Bool found = false;
 	UOSInt i;
 	UOSInt j;
@@ -438,7 +438,7 @@ Bool Map::OWSFeatureParser::ParseOGC_WMS_XML(Text::CStringNN xml, UInt32 srid, M
 					j = reader.GetAttribCount();
 					while (i < j)
 					{
-						attr = reader.GetAttrib(i);
+						attr = reader.GetAttribNoCheck(i);
 						nameList->Add(attr->name->Clone());
 						valueList->Add(Text::String::OrEmpty(Text::String::CopyOrNull(attr->value)));
 						i++;

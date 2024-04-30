@@ -9,8 +9,8 @@ void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelAddClicked(AnyType us
 	Net::SNS::SNSControl::SNSType typ = (Net::SNS::SNSControl::SNSType)me->cboChannel->GetSelectedItem().GetOSInt();
 	Text::StringBuilderUTF8 sb;
 	me->txtChannelId->GetText(sb);
-	Net::SNS::SNSControl *ctrl = me->mgr->AddChannel(typ, sb.ToCString());
-	if (ctrl)
+	NN<Net::SNS::SNSControl> ctrl;
+	if (me->mgr->AddChannel(typ, sb.ToCString()).SetTo(ctrl))
 	{
 		me->lbChannels->AddItem(ctrl->GetName(), ctrl);
 	}
@@ -23,8 +23,8 @@ void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelsSelChg(AnyType userO
 	me->lvCurrItems->ClearItems();
 	if (ctrl)
 	{
-		Net::SNS::SNSControl::SNSItem *item;
-		Data::ArrayList<Net::SNS::SNSControl::SNSItem *> itemList;
+		NN<Net::SNS::SNSControl::SNSItem> item;
+		Data::ArrayListNN<Net::SNS::SNSControl::SNSItem> itemList;
 		UOSInt i;
 		UOSInt j;
 		Data::DateTime dt;
@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelsSelChg(AnyType userO
 		i = itemList.GetCount();
 		while (i-- > 0)
 		{
-			item = itemList.GetItem(i);
+			item = itemList.GetItemNoCheck(i);
 			j = me->lvCurrItems->AddItem(item->id, 0);
 			dt.SetTicks(item->msgTime);
 			dt.ToLocalTime();
@@ -102,12 +102,12 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(Optional<UI::GUIClientCont
 
 	Sync::MutexUsage mutUsage;
 	this->mgr->Use(mutUsage);
-	Net::SNS::SNSControl *ctrl;
+	NN<Net::SNS::SNSControl> ctrl;
 	UOSInt j = this->mgr->GetCount();
 	i = 0;
 	while (i < j)
 	{
-		ctrl = this->mgr->GetItem(i);
+		ctrl = this->mgr->GetItemNoCheck(i);
 		this->lbChannels->AddItem(ctrl->GetName(), ctrl);
 		i++;
 	}

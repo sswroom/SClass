@@ -1,7 +1,7 @@
 #ifndef _SM_NET_SNS_SNSRSS
 #define _SM_NET_SNS_SNSRSS
 #include "Crypto/Hash/CRC32R.h"
-#include "Data/FastStringMap.h"
+#include "Data/FastStringMapNN.h"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
 #include "Net/SNS/SNSControl.h"
@@ -22,7 +22,7 @@ namespace Net
 			NN<Text::String> channelId;
 			NN<Text::String> chName;
 			Text::String *chDesc;
-			Data::FastStringMap<SNSItem *> itemMap;
+			Data::FastStringMapNN<SNSItem> itemMap;
 			Sync::Mutex crcMut;
 			Crypto::Hash::CRC32R crc;
 			Data::Duration timeout;
@@ -38,8 +38,8 @@ namespace Net
 			virtual NN<Text::String> GetChannelId() const;
 			virtual NN<Text::String> GetName() const;
 			virtual UTF8Char *GetDirName(UTF8Char *dirName);
-			virtual UOSInt GetCurrItems(NN<Data::ArrayList<SNSItem*>> itemList);
-			virtual UTF8Char *GetItemShortId(UTF8Char *buff, SNSItem *item);
+			virtual UOSInt GetCurrItems(NN<Data::ArrayListNN<SNSItem>> itemList);
+			virtual UTF8Char *GetItemShortId(UTF8Char *buff, NN<SNSItem> item);
 			virtual Int32 GetMinIntevalMS();
 			virtual Bool Reload();
 		};

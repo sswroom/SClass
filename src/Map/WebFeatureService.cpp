@@ -49,10 +49,10 @@ void Map::WebFeatureService::LoadXML(Version version)
 		if (nodeName->Equals(UTF8STRC("WFS_Capabilities")) || nodeName->EndsWith(UTF8STRC(":WFS_Capabilities")))
 		{
 			UOSInt i = reader.GetAttribCount();
-			Text::XMLAttrib *attr;
+			NN<Text::XMLAttrib> attr;
 			while (i-- > 0)
 			{
-				attr = reader.GetAttrib(i);
+				attr = reader.GetAttribNoCheck(i);
 				if (attr->name->Equals(UTF8STRC("version")))
 				{
 					SDEL_STRING(this->version);
@@ -218,10 +218,10 @@ void Map::WebFeatureService::LoadXMLFeatureType(NN<Text::XMLReader> reader)
 		else if (nodeName->Equals(UTF8STRC("LatLongBoundingBox")))
 		{
 			UOSInt i = reader->GetAttribCount();
-			Text::XMLAttrib *attr;
+			NN<Text::XMLAttrib> attr;
 			while (i-- > 0)
 			{
-				attr = reader->GetAttrib(i);
+				attr = reader->GetAttribNoCheck(i);
 				if (attr->name->Equals(UTF8STRC("minx")) && attr->value != 0)
 				{
 					hasTL = attr->value->ToDouble(wgs84Bounds.min.x);

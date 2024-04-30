@@ -49,7 +49,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 {
 	KMLStyle *style;
 	UOSInt i;
-	Text::XMLAttrib *attr;
+	NN<Text::XMLAttrib> attr;
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
 	UTF8Char sbuff[512];
@@ -256,7 +256,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 			i = reader->GetAttribCount();
 			while (i-- > 0)
 			{
-				attr = reader->GetAttrib(i);
+				attr = reader->GetAttribNoCheck(i);
 				if (attr->name->EqualsICase(UTF8STRC("ID")))
 				{
 					styleId = attr->value->Clone().Ptr();
@@ -327,7 +327,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 							i = reader->GetAttribCount();
 							while (i-- > 0)
 							{
-								attr = reader->GetAttrib(i);
+								attr = reader->GetAttribNoCheck(i);
 								if (attr->name->EqualsICase(UTF8STRC("X")))
 								{
 									style->iconSpotX = attr->value->ToInt32();
@@ -400,7 +400,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 			i = reader->GetAttribCount();
 			while (i-- > 0)
 			{
-				attr = reader->GetAttrib(i);
+				attr = reader->GetAttribNoCheck(i);
 				if (attr->name->EqualsICase(UTF8STRC("ID")))
 				{
 					styleId = attr->value->Clone().Ptr();
@@ -575,7 +575,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 					i = reader->GetAttribCount();
 					while (i-- > 0)
 					{
-						attr = reader->GetAttrib(i);
+						attr = reader->GetAttribNoCheck(i);
 						if (attr->name->EqualsICase(UTF8STRC("X")))
 						{
 							minX = attr->value->ToDouble();
@@ -592,7 +592,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 					i = reader->GetAttribCount();
 					while (i-- > 0)
 					{
-						attr = reader->GetAttrib(i);
+						attr = reader->GetAttribNoCheck(i);
 						if (attr->name->EqualsICase(UTF8STRC("X")))
 						{
 							oX = attr->value->ToDouble();
@@ -609,7 +609,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 					i = reader->GetAttribCount();
 					while (i--)
 					{
-						attr = reader->GetAttrib(i);
+						attr = reader->GetAttribNoCheck(i);
 						if (attr->name->EqualsICase(UTF8STRC("X")))
 						{
 							sizeX = attr->value->ToDouble();
@@ -955,7 +955,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 									{
 										if (nodeName->EqualsICase(UTF8STRC("GX:SIMPLEARRAYDATA")))
 										{
-											Text::XMLAttrib *attr;
+											NN<Text::XMLAttrib> attr;
 											Text::StringBuilderUTF8 sb;
 											Bool found = false;
 											UOSInt i;
@@ -963,7 +963,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 											i = reader->GetAttribCount();
 											while (i-- > 0)
 											{
-												attr = reader->GetAttrib(i);
+												attr = reader->GetAttribNoCheck(i);
 												if (attr->name->EqualsICase(UTF8STRC("NAME")))
 												{
 													if (attr->value->EqualsICase(UTF8STRC("SPEED")))

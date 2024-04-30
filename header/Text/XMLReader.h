@@ -31,7 +31,7 @@ namespace Text
 		UOSInt parseError; //Max = 52
 		ParseMode mode;
 
-		Data::ArrayList<Text::XMLAttrib *> attrList;
+		Data::ArrayListNN<Text::XMLAttrib> attrList;
 		Text::XMLNode::NodeType nt;
 		Data::ArrayListStringNN pathList;
 		Text::String *nodeText;
@@ -54,8 +54,9 @@ namespace Text
 		NN<Text::String> GetNodeTextNN() const; //TextNode = Value, ElementNode = Name
 		Text::String *GetNodeOriText() const;
 		UOSInt GetAttribCount() const;
-		Text::XMLAttrib *GetAttrib(UOSInt index) const;
-		Text::XMLAttrib *GetAttrib(const UTF8Char *name, UOSInt nameLen) const;
+		NN<Text::XMLAttrib> GetAttribNoCheck(UOSInt index) const;
+		Optional<Text::XMLAttrib> GetAttrib(UOSInt index) const;
+		Optional<Text::XMLAttrib> GetAttrib(Text::CStringNN name) const;
 
 		Bool ReadNext();
 		Bool ReadNodeText(NN<Text::StringBuilderUTF8> sb);

@@ -32,17 +32,17 @@ namespace Text
 			Text::Cpp::CppEnv *env;
 			
 			static UTF8Char *RemoveSpace(UTF8Char *sptr);
-			void LogError(Text::Cpp::CppParseStatus *status, const UTF8Char *errMsg, UOSInt msgLen, Data::ArrayListStringNN *errMsgs);
-			Bool ParseSharpIfParam(Text::CString cond, Text::Cpp::CppParseStatus *status, Data::ArrayListStringNN *errMsgs, Data::ArrayListStringNN *codePhases, UOSInt cpIndex);
-			Bool EvalSharpIfVal(Data::ArrayListStringNN *codePhases, Text::Cpp::CppParseStatus *status, Data::ArrayListStringNN *errMsgs, UOSInt cpIndex, Int32 *outVal, OSInt priority);
-			Bool EvalSharpIf(Text::CString cond, Text::Cpp::CppParseStatus *status, Data::ArrayListStringNN *errMsgs, Bool *result);
-			Bool ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffEnd, Text::Cpp::CppParseStatus *status, Data::ArrayListStringNN *errMsgs);
+			void LogError(NN<Text::Cpp::CppParseStatus> status, Text::CStringNN errMsg, NN<Data::ArrayListStringNN> errMsgs);
+			Bool ParseSharpIfParam(Text::CString cond, NN<Text::Cpp::CppParseStatus> status, NN<Data::ArrayListStringNN> errMsgs, NN<Data::ArrayListStringNN> codePhases, UOSInt cpIndex);
+			Bool EvalSharpIfVal(NN<Data::ArrayListStringNN> codePhases, NN<Text::Cpp::CppParseStatus> status, NN<Data::ArrayListStringNN> errMsgs, UOSInt cpIndex, OutParam<Int32> outVal, OSInt priority);
+			Bool EvalSharpIf(Text::CString cond, NN<Text::Cpp::CppParseStatus> status, NN<Data::ArrayListStringNN> errMsgs, OutParam<Bool> result);
+			Bool ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffEnd, NN<Text::Cpp::CppParseStatus> status, NN<Data::ArrayListStringNN> errMsgs);
 		public:
 			CppCodeParser(Text::Cpp::CppEnv *env);
 			~CppCodeParser();
 
-			Bool ParseFile(const UTF8Char *fileName, UOSInt fileNameLen, Data::ArrayListStringNN *errMsgs, Text::Cpp::CppParseStatus *parseStatus);
-			void FreeErrMsgs(Data::ArrayListStringNN *errMsgs);
+			Bool ParseFile(Text::CStringNN fileName, NN<Data::ArrayListStringNN> errMsgs, NN<Text::Cpp::CppParseStatus> parseStatus);
+			void FreeErrMsgs(NN<Data::ArrayListStringNN> errMsgs);
 		};
 	}
 }

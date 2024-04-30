@@ -20,7 +20,7 @@ Sync::EventPool::~EventPool()
 	this->mut.Unlock();
 }
 
-void Sync::EventPool::AddEvent(Sync::Event *evt, void *obj)
+void Sync::EventPool::AddEvent(NN<Sync::Event> evt, AnyType obj)
 {
 	this->state = 1;
 	this->mainEvt.Set();
@@ -33,7 +33,7 @@ void Sync::EventPool::AddEvent(Sync::Event *evt, void *obj)
 	this->mainEvt.Set();
 }
 
-void Sync::EventPool::RemoveEvent(Sync::Event *evt)
+void Sync::EventPool::RemoveEvent(NN<Sync::Event> evt)
 {
 	OSInt i;
 	this->state = 1;

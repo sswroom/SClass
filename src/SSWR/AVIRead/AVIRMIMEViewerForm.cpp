@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "SSWR/AVIRead/AVIRMIMEViewerForm.h"
 
-SSWR::AVIRead::AVIRMIMEViewerForm::AVIRMIMEViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::IMIMEObj *obj) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRMIMEViewerForm::AVIRMIMEViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Text::IMIMEObj> obj) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("MIME Viewer"));
 	this->SetFont(0, 0, 8.25, false);
@@ -17,8 +17,8 @@ SSWR::AVIRead::AVIRMIMEViewerForm::~AVIRMIMEViewerForm()
 {
 	this->ClearChildren();
 
-	SDEL_CLASS(this->viewer);
-	SDEL_CLASS(this->obj);
+	this->viewer.Delete();
+	this->obj.Delete();
 	this->core->GetColorMgr()->DeleteSess(this->sess);
 }
 

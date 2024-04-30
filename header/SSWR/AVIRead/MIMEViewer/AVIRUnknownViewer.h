@@ -16,10 +16,10 @@ namespace SSWR
 			private:
 				NN<UI::GUILabel> lblMessage;
 
-				Text::IMIMEObj *obj;
+				NN<Text::IMIMEObj> obj;
 
 			public:
-				AVIRUnknownViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, Text::IMIMEObj *obj);
+				AVIRUnknownViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, NN<Text::IMIMEObj> obj);
 				virtual ~AVIRUnknownViewer();
 			};
 		}

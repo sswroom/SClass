@@ -2,12 +2,12 @@
 #include "IO/StmData/MemoryDataRef.h"
 #include "SSWR/AVIRead/MIMEViewer/AVIRMIMEImageViewer.h"
 
-SSWR::AVIRead::MIMEViewer::AVIRMIMEImageViewer::AVIRMIMEImageViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, Text::MIMEObj::UnknownMIMEObj *obj) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, obj)
+SSWR::AVIRead::MIMEViewer::AVIRMIMEImageViewer::AVIRMIMEImageViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, NN<Text::MIMEObj::UnknownMIMEObj> obj) : SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer(core, ctrl, obj)
 {
 	this->obj = obj;
 	this->imgList = 0;
 	UOSInt buffSize;
-	const UInt8 *buff = this->obj->GetRAWData(&buffSize);
+	const UInt8 *buff = this->obj->GetRAWData(buffSize);
 	{
 		IO::StmData::MemoryDataRef data(buff, buffSize);
 		this->imgList = (Media::ImageList*)core->GetParserList()->ParseFileType(data, IO::ParserType::ImageList);

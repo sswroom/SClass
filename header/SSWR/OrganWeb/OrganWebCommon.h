@@ -3,7 +3,7 @@
 #include "Data/ArrayListInt32.h"
 #include "Data/ArrayListInt64.h"
 #include "Data/Comparator.h"
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "Data/Timestamp.h"
 #include "Text/String.h"
 
@@ -79,7 +79,7 @@ namespace SSWR
 			Optional<Text::String> url;
 			Int32 userfileId;
 
-			Data::ArrayList<BookSpInfo*> species;
+			Data::ArrayListNN<BookSpInfo> species;
 		};
 
 		typedef struct
@@ -160,10 +160,10 @@ namespace SSWR
 			NN<Text::String> watermark;
 			UserType userType;
 			Data::ArrayListInt64 userFileIndex;
-			Data::ArrayList<UserFileInfo*> userFileObj;
-			Data::FastMap<Int32, Data::FastMap<Int64, TripInfo*>*> tripCates;
-			Data::FastMap<Data::Timestamp, DataFileInfo*> gpsDataFiles;
-			Data::FastMap<Data::Timestamp, DataFileInfo*> tempDataFiles;
+			Data::ArrayListNN<UserFileInfo> userFileObj;
+			Data::FastMapNN<Int32, Data::FastMapNN<Int64, TripInfo>> tripCates;
+			Data::FastMapNN<Data::Timestamp, DataFileInfo> gpsDataFiles;
+			Data::FastMapNN<Data::Timestamp, DataFileInfo> tempDataFiles;
 			Int32 unorganSpId;
 		} WebUserInfo;
 
@@ -186,9 +186,9 @@ namespace SSWR
 			Int32 photoWId;
 			Optional<Text::String> poiImg;
 
-			Data::ArrayList<BookSpInfo*> books;
-			Data::ArrayList<UserFileInfo*> files;
-			Data::FastMap<Int32, WebFileInfo*> wfiles;
+			Data::ArrayListNN<BookSpInfo> books;
+			Data::ArrayListNN<UserFileInfo> files;
+			Data::FastMapNN<Int32, WebFileInfo> wfiles;
 		};
 
 		class GroupInfo
@@ -209,9 +209,9 @@ namespace SSWR
 			UOSInt photoCount;
 			UOSInt myPhotoCount;
 			UOSInt totalCount;
-			SpeciesInfo *photoSpObj;
-			Data::ArrayList<SpeciesInfo*> species;
-			Data::ArrayList<GroupInfo *> groups;
+			Optional<SpeciesInfo> photoSpObj;
+			Data::ArrayListNN<SpeciesInfo> species;
+			Data::ArrayListNN<GroupInfo> groups;
 		};
 
 		typedef struct
@@ -228,15 +228,15 @@ namespace SSWR
 			NN<Text::String> dirName;
 			NN<Text::String> srcDir;
 			Int32 flags;
-			Data::FastMap<Int32, GroupTypeInfo *> groupTypes;
-			Data::ArrayList<GroupInfo*> groups;
+			Data::FastMapNN<Int32, GroupTypeInfo> groupTypes;
+			Data::ArrayListNN<GroupInfo> groups;
 		};
 
 		typedef struct
 		{
 			UInt32 scnWidth;
 			Bool isMobile;
-			WebUserInfo *user;
+			Optional<WebUserInfo> user;
 			Data::ArrayListInt32 *pickObjs;
 			PickObjType pickObjType;
 		} RequestEnv;
@@ -255,12 +255,12 @@ namespace SSWR
 			Optional<Text::String> type;
 		};
 
-		class SpeciesSciNameComparator : public Data::Comparator<SpeciesInfo*>
+		class SpeciesSciNameComparator : public Data::Comparator<NN<SpeciesInfo>>
 		{
 		public:
 			virtual ~SpeciesSciNameComparator(){};
 
-			virtual OSInt Compare(SpeciesInfo *a, SpeciesInfo *b) const
+			virtual OSInt Compare(NN<SpeciesInfo> a, NN<SpeciesInfo> b) const
 			{
 				if (a->sciNameHash > b->sciNameHash)
 				{
@@ -277,11 +277,11 @@ namespace SSWR
 			}
 		};
 
-		class UserFileTimeComparator : public Data::Comparator<UserFileInfo*>
+		class UserFileTimeComparator : public Data::Comparator<NN<UserFileInfo>>
 		{
 		public:
 			virtual ~UserFileTimeComparator(){};
-			virtual OSInt Compare(UserFileInfo *a, UserFileInfo *b) const
+			virtual OSInt Compare(NN<UserFileInfo> a, NN<UserFileInfo> b) const
 			{
 				if (a->webuserId > b->webuserId)
 				{
@@ -306,27 +306,28 @@ namespace SSWR
 			}
 		};
 
-		class UserFileDescComparator : public Data::Comparator<UserFileInfo*>
+		class UserFileDescComparator : public Data::Comparator<NN<UserFileInfo>>
 		{
 		private:
-			RequestEnv *env;
+			NN<RequestEnv> env;
 		public:
-			UserFileDescComparator(RequestEnv *env)
+			UserFileDescComparator(NN<RequestEnv> env)
 			{
 				this->env = env;
 			}
 			virtual ~UserFileDescComparator(){}
-			virtual OSInt Compare(UserFileInfo *a, UserFileInfo *b) const
+			virtual OSInt Compare(NN<UserFileInfo> a, NN<UserFileInfo> b) const
 			{
 				Bool aDesc = false;
 				Bool bDesc = false;
 				NN<Text::String> aStr;
 				NN<Text::String> bStr;
-				if (env->user != 0)
+				NN<WebUserInfo> user;
+				if (env->user.SetTo(user))
 				{
-					if (a->descript.SetTo(aStr) && aStr->leng > 0 && (env->user->userType == UserType::Admin || a->webuserId == env->user->id))
+					if (a->descript.SetTo(aStr) && aStr->leng > 0 && (user->userType == UserType::Admin || a->webuserId == user->id))
 						aDesc = true;
-					if (b->descript.SetTo(bStr) && bStr->leng > 0 && (env->user->userType == UserType::Admin || b->webuserId == env->user->id))
+					if (b->descript.SetTo(bStr) && bStr->leng > 0 && (user->userType == UserType::Admin || b->webuserId == user->id))
 						bDesc = true;
 				}
 				if (aDesc && bDesc && a->descript.SetTo(aStr) && b->descript.SetTo(bStr))

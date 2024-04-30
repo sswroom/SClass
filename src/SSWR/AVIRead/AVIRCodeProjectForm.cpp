@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(AnyType userOb
 		if (obj->GetObjectType() == Text::CodeObject::OT_FILE)
 		{
 			Text::Cpp::CppEnv *env;
-			Text::Cpp::CppParseStatus *status;
+			NN<Text::Cpp::CppParseStatus> status;
 			Text::Cpp::CppCodeParser *parser;
 			NN<Text::CodeFile> file = NN<Text::CodeFile>::ConvertFrom(obj);
 			UTF8Char sbuff[512];
@@ -31,11 +31,11 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(AnyType userOb
 				Data::ArrayListStringNN errMsgs;
 				NEW_CLASS(env, Text::Cpp::CppEnv(me->proj, cfg));
 				NEW_CLASS(parser, Text::Cpp::CppCodeParser(env));
-				NEW_CLASS(status, Text::Cpp::CppParseStatus(me->proj->GetSourceNameObj()));
+				NEW_CLASSNN(status, Text::Cpp::CppParseStatus(me->proj->GetSourceNameObj()));
 				env->InitEnvStatus(status);
 				status->AddGlobalDef(CSTR("__STDC__"), CSTR("0"));
 				status->AddGlobalDef(CSTR("__cplusplus"), CSTR("201103"));
-				parser->ParseFile(sbuff, (UOSInt)(sptr - sbuff), &errMsgs, status);
+				parser->ParseFile(CSTRP(sbuff, sptr), errMsgs, status);
 				if (errMsgs.GetCount() > 0)
 				{
 					sb.AppendC(UTF8STRC("Parse Error:\r\n"));
@@ -50,8 +50,8 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(AnyType userOb
 				}
 				me->DisplayStatus(sb, status);
 				me->txtMessage->SetText(sb.ToCString());
-				parser->FreeErrMsgs(&errMsgs);
-				DEL_CLASS(status);
+				parser->FreeErrMsgs(errMsgs);
+				status.Delete();
 				DEL_CLASS(parser);
 				DEL_CLASS(env);
 			}
@@ -61,10 +61,10 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(AnyType userOb
 				Data::ArrayListStringNN errMsgs;
 				NEW_CLASS(env, Text::Cpp::CppEnv(me->proj, cfg));
 				NEW_CLASS(parser, Text::Cpp::CppCodeParser(env));
-				NEW_CLASS(status, Text::Cpp::CppParseStatus(me->proj->GetSourceNameObj()));
+				NEW_CLASSNN(status, Text::Cpp::CppParseStatus(me->proj->GetSourceNameObj()));
 				env->InitEnvStatus(status);
 				status->AddGlobalDef(CSTR("__STDC__"), CSTR("1"));
-				parser->ParseFile(sbuff, (UOSInt)(sptr - sbuff), &errMsgs, status);
+				parser->ParseFile(CSTRP(sbuff, sptr), errMsgs, status);
 				if (errMsgs.GetCount() == 0)
 				{
 					me->DisplayStatus(sb, status);
@@ -79,8 +79,8 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(AnyType userOb
 					}
 				}
 				me->txtMessage->SetText(sb.ToCString());
-				parser->FreeErrMsgs(&errMsgs);
-				DEL_CLASS(status);
+				parser->FreeErrMsgs(errMsgs);
+				status.Delete();
 				DEL_CLASS(parser);
 				DEL_CLASS(env);
 			}
@@ -96,7 +96,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(AnyType userOb
 	}
 }
 
-void SSWR::AVIRead::AVIRCodeProjectForm::DisplayStatus(NN<Text::StringBuilderUTF8> sb, Text::Cpp::CppParseStatus *status)
+void SSWR::AVIRead::AVIRCodeProjectForm::DisplayStatus(NN<Text::StringBuilderUTF8> sb, NN<Text::Cpp::CppParseStatus> status)
 {
 	UOSInt i;
 	UOSInt j;
@@ -122,7 +122,7 @@ void SSWR::AVIRead::AVIRCodeProjectForm::DisplayStatus(NN<Text::StringBuilderUTF
 		sb->AppendC(UTF8STRC("Defines:\r\n"));
 		while (i < j)
 		{
-			status->GetDefineInfo(i, &defInfo);
+			status->GetDefineInfo(i, defInfo);
 			sb->Append(defInfo.defineName);
 			sb->AppendC(UTF8STRC("\t"));
 			if (defInfo.fileName == 0)
@@ -143,11 +143,11 @@ void SSWR::AVIRead::AVIRCodeProjectForm::DisplayStatus(NN<Text::StringBuilderUTF
 	}
 }
 
-void SSWR::AVIRead::AVIRCodeProjectForm::AddTreeObj(Optional<UI::GUITreeView::TreeItem> parent, Text::CodeContainer *container)
+void SSWR::AVIRead::AVIRCodeProjectForm::AddTreeObj(Optional<UI::GUITreeView::TreeItem> parent, NN<Text::CodeContainer> container)
 {
 	Optional<UI::GUITreeView::TreeItem> tviLast = 0;
 	NN<UI::GUITreeView::TreeItem> tvi;
-	Text::CodeObject *obj;
+	NN<Text::CodeObject> obj;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -155,17 +155,17 @@ void SSWR::AVIRead::AVIRCodeProjectForm::AddTreeObj(Optional<UI::GUITreeView::Tr
 	j = container->GetChildCount();
 	while (i < j)
 	{
-		obj = container->GetChildObj(i);
+		obj = container->GetChildNoCheck(i);
 		if (obj->GetObjectType() == Text::CodeObject::OT_FILE)
 		{
-			Text::CodeFile *file = (Text::CodeFile*)obj;
+			NN<Text::CodeFile> file = NN<Text::CodeFile>::ConvertFrom(obj);
 			NN<Text::String> fileName = file->GetFileName();
 			k = fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 			tviLast = this->tvMain->InsertItem(parent, tviLast, fileName->ToCString().Substring(k + 1), obj);
 		}
 		else if (obj->GetObjectType() == Text::CodeObject::OT_CONTAINER)
 		{
-			Text::CodeContainer *childCont = (Text::CodeContainer*)obj;
+			NN<Text::CodeContainer> childCont = NN<Text::CodeContainer>::ConvertFrom(obj);
 			if (this->tvMain->InsertItem(parent, tviLast, childCont->GetContainerName(), obj).SetTo(tvi))
 			{
 				tviLast = tvi;
@@ -177,7 +177,7 @@ void SSWR::AVIRead::AVIRCodeProjectForm::AddTreeObj(Optional<UI::GUITreeView::Tr
 	}
 }
 
-SSWR::AVIRead::AVIRCodeProjectForm::AVIRCodeProjectForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Text::CodeProject *proj) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRCodeProjectForm::AVIRCodeProjectForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Text::CodeProject> proj) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Code Project"));
 	this->SetFont(0, 0, 8.25, false);
@@ -212,14 +212,15 @@ SSWR::AVIRead::AVIRCodeProjectForm::AVIRCodeProjectForm(Optional<UI::GUIClientCo
 	}
 	UOSInt i;
 	UOSInt j;
-	Text::CodeProjectCfg *cfg;
+	NN<Text::CodeProjectCfg> cfg;
 	i = 0;
 	j = this->proj->GetConfigCnt();
 	while (i < j)
 	{
-		cfg = this->proj->GetConfig(i);
-		this->cboConfig->AddItem(cfg->GetCfgName(), cfg);
-		
+		if (this->proj->GetConfig(i).SetTo(cfg))
+		{
+			this->cboConfig->AddItem(cfg->GetCfgName(), cfg);
+		}
 		i++;
 	}
 	if (j > 0)
@@ -230,7 +231,7 @@ SSWR::AVIRead::AVIRCodeProjectForm::AVIRCodeProjectForm(Optional<UI::GUIClientCo
 
 SSWR::AVIRead::AVIRCodeProjectForm::~AVIRCodeProjectForm()
 {
-	DEL_CLASS(this->proj);
+	this->proj.Delete();
 }
 
 void SSWR::AVIRead::AVIRCodeProjectForm::OnMonitorChanged()

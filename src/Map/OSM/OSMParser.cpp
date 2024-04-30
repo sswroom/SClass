@@ -91,7 +91,7 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> reade
 		CSTR("Marina"),
 		CSTR("SwimmingPool"),
 	};
-	Text::XMLAttrib *attr;
+	NN<Text::XMLAttrib> attr;
 	UOSInt i;
 	Int64 id;
 	Double lat;
@@ -112,7 +112,7 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> reade
 			i = reader->GetAttribCount();
 			while (i-- > 0)
 			{
-				attr = reader->GetAttrib(i);
+				attr = reader->GetAttribNoCheck(i);
 				if (attr->name->Equals(UTF8STRC("id")) && attr->value)
 				{
 					id = attr->value->ToInt64();
@@ -153,7 +153,7 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> reade
 							i = reader->GetAttribCount();
 							while (i-- > 0)
 							{
-								attr = reader->GetAttrib(i);
+								attr = reader->GetAttribNoCheck(i);
 								if (attr->name->Equals(UTF8STRC("k")))
 								{
 									kName = attr->value;
@@ -685,7 +685,7 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> reade
 					i = reader->GetAttribCount();
 					while (i-- > 0)
 					{
-						attr = reader->GetAttrib(i);
+						attr = reader->GetAttribNoCheck(i);
 						if (attr->name->Equals(UTF8STRC("ref")))
 						{
 							nodeId = attr->value->ToInt64();
@@ -711,7 +711,7 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> reade
 					i = reader->GetAttribCount();
 					while (i-- > 0)
 					{
-						attr = reader->GetAttrib(i);
+						attr = reader->GetAttribNoCheck(i);
 						if (attr->name->Equals(UTF8STRC("k")))
 						{
 							kName = attr->value;

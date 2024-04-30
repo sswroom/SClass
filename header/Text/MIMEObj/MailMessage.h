@@ -35,25 +35,25 @@ namespace Text
 			virtual ~MailMessage();
 
 			virtual Text::CStringNN GetClassName() const;
-			virtual IMIMEObj *Clone() const;
+			virtual NN<IMIMEObj> Clone() const;
 
 			Bool GetDate(Data::DateTime *dt) const;
 			UTF8Char *GetFromAddr(UTF8Char *sbuff) const;
 			UTF8Char *GetSubject(UTF8Char *sbuff) const;
 			UTF8Char *GetReplyTo(UTF8Char *sbuff) const;
-			UOSInt GetRecpList(NN<Data::ArrayList<MailAddress*>> recpList) const;
-			void FreeRecpList(NN<Data::ArrayList<MailAddress*>> recpList) const;
+			UOSInt GetRecpList(NN<Data::ArrayListNN<MailAddress>> recpList) const;
+			void FreeRecpList(NN<Data::ArrayListNN<MailAddress>> recpList) const;
 
-			Text::MIMEObj::TextMIMEObj *GetContentText() const;
-			Text::IMIMEObj *GetContentMajor() const;
-			Text::IMIMEObj *GetAttachment(OSInt index, NN<Text::StringBuilderUTF8> name) const;
+			Optional<Text::MIMEObj::TextMIMEObj> GetContentText() const;
+			Optional<Text::IMIMEObj> GetContentMajor() const;
+			Optional<Text::IMIMEObj> GetAttachment(OSInt index, NN<Text::StringBuilderUTF8> name) const;
 			
-			Text::IMIMEObj *GetRAWContent() const;
+			Optional<Text::IMIMEObj> GetRAWContent() const;
 
-			static MailMessage *ParseFile(NN<IO::StreamData> fd);
+			static Optional<MailMessage> ParseFile(NN<IO::StreamData> fd);
 
 		private:
-			UOSInt ParseAddrList(const UTF8Char *hdr, UOSInt hdrLen, NN<Data::ArrayList<MailAddress*>> recpList, AddressType type) const;
+			UOSInt ParseAddrList(const UTF8Char *hdr, UOSInt hdrLen, NN<Data::ArrayListNN<MailAddress>> recpList, AddressType type) const;
 		};
 	}
 }

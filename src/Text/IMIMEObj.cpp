@@ -23,9 +23,9 @@ IO::ParserType Text::IMIMEObj::GetParserType() const
 	return IO::ParserType::MIMEObject;
 }
 
-Text::IMIMEObj *Text::IMIMEObj::ParseFromData(NN<IO::StreamData> data, Text::CStringNN contentType)
+Optional<Text::IMIMEObj> Text::IMIMEObj::ParseFromData(NN<IO::StreamData> data, Text::CStringNN contentType)
 {
-	Text::IMIMEObj *obj;
+	NN<Text::IMIMEObj> obj;
 	UOSInt buffSize;
 	if (data->GetDataSize() > 104857600)
 	{
@@ -36,13 +36,12 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(NN<IO::StreamData> data, Text::CSt
 		buffSize = (UOSInt)data->GetDataSize();
 		Data::ByteBuffer buff(buffSize);
 		data->GetRealData(0, buffSize, buff);
-		NEW_CLASS(obj, Text::MIMEObj::TextMIMEObj(buff.Ptr(), buffSize, 0));
+		NEW_CLASSNN(obj, Text::MIMEObj::TextMIMEObj(buff.Ptr(), buffSize, 0));
 		return obj;
 	}
 	else if (contentType.StartsWith(UTF8STRC("message/rfc822")))
 	{
-		obj = Text::MIMEObj::MailMessage::ParseFile(data);
-		if (obj)
+		if (Optional<IMIMEObj>::ConvertFrom(Text::MIMEObj::MailMessage::ParseFile(data)).SetTo(obj))
 			return obj;
 	}
 	else if (contentType.StartsWith(UTF8STRC("text/plain")))
@@ -66,7 +65,7 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(NN<IO::StreamData> data, Text::CSt
 		buffSize = (UOSInt)data->GetDataSize();
 		Data::ByteBuffer buff(buffSize);
 		data->GetRealData(0, buffSize, buff);
-		NEW_CLASS(obj, Text::MIMEObj::TextMIMEObj(buff.Ptr(), buffSize, codePage));
+		NEW_CLASSNN(obj, Text::MIMEObj::TextMIMEObj(buff.Ptr(), buffSize, codePage));
 		return obj;
 	}
 	else if (contentType.StartsWith(UTF8STRC("multipart/mixed;")) ||
@@ -74,21 +73,20 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(NN<IO::StreamData> data, Text::CSt
 			 contentType.StartsWith(UTF8STRC("multipart/signed;")) ||
 			 contentType.StartsWith(UTF8STRC("multipart/alternative;")))
 	{
-		obj = Text::MIMEObj::MultipartMIMEObj::ParseFile(contentType, data);
-		if (obj)
+		if (Optional<IMIMEObj>::ConvertFrom(Text::MIMEObj::MultipartMIMEObj::ParseFile(contentType, data)).SetTo(obj))
 			return obj;
 	}
 	buffSize = (UOSInt)data->GetDataSize();
 	Data::ByteBuffer buff(buffSize);
 	data->GetRealData(0, buffSize, buff);
-	NEW_CLASS(obj, Text::MIMEObj::UnknownMIMEObj(buff.Ptr(), buffSize, contentType));
+	NEW_CLASSNN(obj, Text::MIMEObj::UnknownMIMEObj(buff.Ptr(), buffSize, contentType));
 	return obj;
 }
 
-Text::IMIMEObj *Text::IMIMEObj::ParseFromFile(Text::CStringNN fileName)
+Optional<Text::IMIMEObj> Text::IMIMEObj::ParseFromFile(Text::CStringNN fileName)
 {
 	Text::CStringNN contentType;
-	Text::IMIMEObj *obj;
+	Optional<Text::IMIMEObj> obj;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	sptr = IO::Path::GetFileExt(sbuff, fileName.v, fileName.leng);

@@ -16,10 +16,10 @@ namespace SSWR
 			private:
 				NN<UI::GUITextBox> txtContent;
 
-				Text::MIMEObj::TextMIMEObj *txt;
+				NN<Text::MIMEObj::TextMIMEObj> txt;
 
 			public:
-				AVIRMIMETextViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, Text::MIMEObj::TextMIMEObj *txt);
+				AVIRMIMETextViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, NN<Text::MIMEObj::TextMIMEObj> txt);
 				virtual ~AVIRMIMETextViewer();
 			};
 		}

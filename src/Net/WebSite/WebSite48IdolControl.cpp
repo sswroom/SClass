@@ -38,10 +38,10 @@ OSInt Net::WebSite::WebSite48IdolControl::GetTVPageItems(OSInt pageNo, Data::Arr
 		sb.AppendOSInt(pageNo);
 	}
 	ItemData *item;
-	Text::XMLAttrib *attr;
-	Text::XMLAttrib *attr1;
-	Text::XMLAttrib *attr2;
-	Text::XMLAttrib *attr3;
+	NN<Text::XMLAttrib> attr;
+	NN<Text::XMLAttrib> attr1;
+	NN<Text::XMLAttrib> attr2;
+	NN<Text::XMLAttrib> attr3;
 	Data::DateTime dt;
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
 	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
@@ -50,22 +50,17 @@ OSInt Net::WebSite::WebSite48IdolControl::GetTVPageItems(OSInt pageNo, Data::Arr
 	{
 		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeTextNN()->Equals(UTF8STRC("main")) && reader.GetAttribCount() == 2)
 		{
-			attr = reader.GetAttrib((UOSInt)0);
-			if (attr && attr->name->Equals(UTF8STRC("id")) && attr->value && attr->value->Equals(UTF8STRC("main-content")))
+			if (reader.GetAttrib((UOSInt)0).SetTo(attr) && attr->name->Equals(UTF8STRC("id")) && attr->value && attr->value->Equals(UTF8STRC("main-content")))
 			{
 				UOSInt pathLev = reader.GetPathLev();
 				while (reader.ReadNext() && reader.GetPathLev() > pathLev)
 				{
 					if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeTextNN()->Equals(UTF8STRC("a")) && reader.GetAttribCount() == 4)
 					{
-						attr = reader.GetAttrib((UOSInt)0);
-						attr1 = reader.GetAttrib(1);
-						attr2 = reader.GetAttrib(2);
-						attr3 = reader.GetAttrib(3);
-						if (attr &&
-							attr1 &&
-							attr2 &&
-							attr3 &&
+						if (reader.GetAttrib((UOSInt)0).SetTo(attr) &&
+							reader.GetAttrib(1).SetTo(attr1) &&
+							reader.GetAttrib(2).SetTo(attr2) &&
+							reader.GetAttrib(3).SetTo(attr3) &&
 							attr->name->Equals(UTF8STRC("data-post-id")) &&
 							attr1->name->Equals(UTF8STRC("href")) &&
 							attr2->name->Equals(UTF8STRC("title")) &&
@@ -109,7 +104,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 		sb.AppendOSInt(pageNo);
 	}
 	ItemData *item;
-	Text::XMLAttrib *attr;
+	NN<Text::XMLAttrib> attr;
 	Data::DateTime dt;
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
 	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
@@ -118,8 +113,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 	{
 		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeTextNN()->Equals(UTF8STRC("div")))
 		{
-			attr = reader.GetAttrib((UOSInt)0);
-			if (attr && attr->name->Equals(UTF8STRC("class")) && attr->value && attr->value->Equals(UTF8STRC("post-des")))
+			if (reader.GetAttrib((UOSInt)0).SetTo(attr) && attr->name->Equals(UTF8STRC("class")) && attr->value && attr->value->Equals(UTF8STRC("post-des")))
 			{
 				UOSInt pathLev = reader.GetPathLev();
 				Bool lastIsH6 = false;
@@ -137,8 +131,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 						}
 						else if (lastIsH6 && reader.GetNodeTextNN()->Equals(UTF8STRC("a")))
 						{
-							attr = reader.GetAttrib((UOSInt)0);
-							if (reader.GetAttribCount() == 1 && attr && attr->name->Equals(UTF8STRC("href")) && attr->value && attr->value->StartsWith(UTF8STRC(BASEURL)))
+							if (reader.GetAttribCount() == 1 && reader.GetAttrib((UOSInt)0).SetTo(attr) && attr->name->Equals(UTF8STRC("href")) && attr->value && attr->value->StartsWith(UTF8STRC(BASEURL)))
 							{
 								id = Text::StrToInt32(&attr->value->v[sizeof(BASEURL) + 5]);
 								sb.ClearStr();
@@ -152,8 +145,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 							lastIsH6 = false;
 							if (reader.GetNodeTextNN()->Equals(UTF8STRC("p")))
 							{
-								attr = reader.GetAttrib((UOSInt)0);
-								if (attr && attr->name->Equals(UTF8STRC("class")) && attr->value && attr->value->Equals(UTF8STRC("pull-left")))
+								if (reader.GetAttrib((UOSInt)0).SetTo(attr) && attr->name->Equals(UTF8STRC("class")) && attr->value && attr->value->Equals(UTF8STRC("pull-left")))
 								{
 									pullLeftLev = reader.GetPathLev();
 								}
@@ -214,7 +206,7 @@ Bool Net::WebSite::WebSite48IdolControl::GetDownloadLink(Int32 videoId, Int32 li
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC(BASEURL "video/"));
 	sb.AppendI32(videoId);
-	Text::XMLAttrib *attr;
+	NN<Text::XMLAttrib> attr;
 	Bool found = false;
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
 	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
@@ -223,11 +215,10 @@ Bool Net::WebSite::WebSite48IdolControl::GetDownloadLink(Int32 videoId, Int32 li
 	{
 		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeTextNN()->Equals(UTF8STRC("button")) && reader.GetAttribCount() > 0)
 		{
-			attr = reader.GetAttrib((UOSInt)0);
+			attr = reader.GetAttribNoCheck((UOSInt)0);
 			if (attr->name->Equals(UTF8STRC("id")) && attr->value && attr->value->Equals(UTF8STRC("ddb")))
 			{
-				attr = reader.GetAttrib(1);
-				if (attr && attr->name->Equals(UTF8STRC("onclick")) && attr->value && attr->value->StartsWith(UTF8STRC("window.open('")))
+				if (reader.GetAttrib(1).SetTo(attr) && attr->name->Equals(UTF8STRC("onclick")) && attr->value && attr->value->StartsWith(UTF8STRC("window.open('")))
 				{
 					if (linkId == 0)
 					{
@@ -255,7 +246,7 @@ Bool Net::WebSite::WebSite48IdolControl::GetVideoName(Int32 videoId, NN<Text::St
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC(BASEURL "video/"));
 	sb.AppendI32(videoId);
-	Text::XMLAttrib *attr;
+	NN<Text::XMLAttrib> attr;
 	Bool found = false;
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
 	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
@@ -264,7 +255,7 @@ Bool Net::WebSite::WebSite48IdolControl::GetVideoName(Int32 videoId, NN<Text::St
 	{
 		if (reader.GetNodeType() == Text::XMLNode::NodeType::Element && reader.GetNodeTextNN()->Equals(UTF8STRC("div")) && reader.GetAttribCount() > 0)
 		{
-			attr = reader.GetAttrib((UOSInt)0);
+			attr = reader.GetAttribNoCheck((UOSInt)0);
 			if (attr->name->Equals(UTF8STRC("class")) && attr->value && attr->value->Equals(UTF8STRC("post-title")))
 			{
 				UOSInt initLev = reader.GetPathLev();

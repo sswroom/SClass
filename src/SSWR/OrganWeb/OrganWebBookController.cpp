@@ -8,6 +8,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookView(NN<Net::WebSe
 {
 	NN<SSWR::OrganWeb::OrganWebBookController> me = NN<SSWR::OrganWeb::OrganWebBookController>::ConvertFrom(parent);
 	RequestEnv env;
+	NN<WebUserInfo> user;
 	me->ParseRequestEnv(req, resp, env, false);
 
 	Int32 id;
@@ -15,16 +16,15 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookView(NN<Net::WebSe
 	{
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
-		BookInfo *book;
+		NN<BookInfo> book;
 		Sync::RWMutexUsage mutUsage;
-		book = me->env->BookGet(mutUsage, id);
-		if (env.user == 0 || env.user->userType != UserType::Admin)
+		if (!env.user.SetTo(user) || user->userType != UserType::Admin)
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_UNAUTHORIZED);
 			return true;
 		}
-		else if (book == 0)
+		else if (!me->env->BookGet(mutUsage, id).SetTo(book))
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
@@ -81,17 +81,17 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NN<Net::WebS
 	{
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
-		BookInfo *book;
+		NN<BookInfo> book;
 		NN<CategoryInfo> cate;
 		Sync::RWMutexUsage mutUsage;
-		book = me->env->BookGet(mutUsage, id);
-		if (env.user == 0 || env.user->userType != UserType::Admin)
+		NN<WebUserInfo> user;
+		if (!env.user.SetTo(user) || user->userType != UserType::Admin)
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_UNAUTHORIZED);
 			return true;
 		}
-		else if (book == 0 || !me->env->CateGet(mutUsage, cateId).SetTo(cate) || env.pickObjType != PickObjType::POT_USERFILE)
+		else if (!me->env->BookGet(mutUsage, id).SetTo(book) || !me->env->CateGet(mutUsage, cateId).SetTo(cate) || env.pickObjType != PickObjType::POT_USERFILE)
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
@@ -128,8 +128,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NN<Net::WebS
 
 		if (book->userfileId != 0)
 		{
-			UserFileInfo *userFile = me->env->UserfileGet(mutUsage, book->userfileId);
-			if (userFile)
+			NN<UserFileInfo> userFile;
+			if (me->env->UserfileGet(mutUsage, book->userfileId).SetTo(userFile))
 			{
 				NN<SpeciesInfo> sp;
 				if (me->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(sp))
@@ -195,7 +195,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NN<Net::WebS
 		}
 
 		writer.WriteLineC(UTF8STRC("<hr/>"));
-		UserFileInfo *userFile;
+		NN<UserFileInfo> userFile;
 		UOSInt colCount = env.scnWidth / GetPreviewSize();
 		UOSInt colWidth = 100 / colCount;
 		UInt32 currColumn;
@@ -209,56 +209,58 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NN<Net::WebS
 			currColumn = 0;
 			while (i < j)
 			{
-				userFile = me->env->UserfileGet(mutUsage, env.pickObjs->GetItem(i));
-				if (currColumn == 0)
+				if (me->env->UserfileGet(mutUsage, env.pickObjs->GetItem(i)).SetTo(userFile))
 				{
-					writer.WriteLineC(UTF8STRC("<tr>"));
-				}
-				sb.ClearStr();
-				sb.AppendC(UTF8STRC("<td width=\""));
-				sb.AppendUOSInt(colWidth);
-				sb.AppendC(UTF8STRC("%\">"));
-				writer.WriteLineC(sb.ToString(), sb.GetLength());
-				sb.ClearStr();
-				sb.AppendC(UTF8STRC("<center><a href=\"bookphoto.html?id="));
-				sb.AppendI32(book->id);
-				sb.AppendC(UTF8STRC("&amp;cateId="));
-				sb.AppendI32(cate->cateId);
-				sb.AppendC(UTF8STRC("&amp;fileId="));
-				sb.AppendI32(userFile->id);
-				sb.AppendC(UTF8STRC("\">"));
-				writer.WriteLineC(sb.ToString(), sb.GetLength());
-
-				writer.WriteStrC(UTF8STRC("<img src="));
-				NN<SpeciesInfo> sp;
-				sb.ClearStr();
-				sb.AppendC(UTF8STRC("photo.html?id="));
-				sb.AppendI32(userFile->speciesId);
-				sb.AppendC(UTF8STRC("&cateId="));
-				if (me->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(sp))
-					sb.AppendI32(sp->cateId);
-				else
+					if (currColumn == 0)
+					{
+						writer.WriteLineC(UTF8STRC("<tr>"));
+					}
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("<td width=\""));
+					sb.AppendUOSInt(colWidth);
+					sb.AppendC(UTF8STRC("%\">"));
+					writer.WriteLineC(sb.ToString(), sb.GetLength());
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("<center><a href=\"bookphoto.html?id="));
+					sb.AppendI32(book->id);
+					sb.AppendC(UTF8STRC("&amp;cateId="));
 					sb.AppendI32(cate->cateId);
-				sb.AppendC(UTF8STRC("&width="));
-				sb.AppendUOSInt(GetPreviewSize());
-				sb.AppendC(UTF8STRC("&height="));
-				sb.AppendUOSInt(GetPreviewSize());
-				sb.AppendC(UTF8STRC("&fileId="));
-				sb.AppendI32(userFile->id);
-				s = Text::XML::ToNewAttrText(sb.ToString());
-				writer.WriteStrC(s->v, s->leng);
-				s->Release();
-				writer.WriteStrC(UTF8STRC(" border=\"0\""));
-				writer.WriteLineC(UTF8STRC("><br/>"));
+					sb.AppendC(UTF8STRC("&amp;fileId="));
+					sb.AppendI32(userFile->id);
+					sb.AppendC(UTF8STRC("\">"));
+					writer.WriteLineC(sb.ToString(), sb.GetLength());
 
-				writer.WriteLineC(UTF8STRC("</a>"));
-				writer.WriteLineC(UTF8STRC("</center></td>"));
+					writer.WriteStrC(UTF8STRC("<img src="));
+					NN<SpeciesInfo> sp;
+					sb.ClearStr();
+					sb.AppendC(UTF8STRC("photo.html?id="));
+					sb.AppendI32(userFile->speciesId);
+					sb.AppendC(UTF8STRC("&cateId="));
+					if (me->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(sp))
+						sb.AppendI32(sp->cateId);
+					else
+						sb.AppendI32(cate->cateId);
+					sb.AppendC(UTF8STRC("&width="));
+					sb.AppendUOSInt(GetPreviewSize());
+					sb.AppendC(UTF8STRC("&height="));
+					sb.AppendUOSInt(GetPreviewSize());
+					sb.AppendC(UTF8STRC("&fileId="));
+					sb.AppendI32(userFile->id);
+					s = Text::XML::ToNewAttrText(sb.ToString());
+					writer.WriteStrC(s->v, s->leng);
+					s->Release();
+					writer.WriteStrC(UTF8STRC(" border=\"0\""));
+					writer.WriteLineC(UTF8STRC("><br/>"));
 
-				currColumn++;
-				if (currColumn >= colCount)
-				{
-					writer.WriteLineC(UTF8STRC("</tr>"));
-					currColumn = 0;
+					writer.WriteLineC(UTF8STRC("</a>"));
+					writer.WriteLineC(UTF8STRC("</center></td>"));
+
+					currColumn++;
+					if (currColumn >= colCount)
+					{
+						writer.WriteLineC(UTF8STRC("</tr>"));
+						currColumn = 0;
+					}
 				}
 				i++;
 			}
@@ -309,8 +311,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NN<Net::WebSer
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		NN<CategoryInfo> cate;
+		NN<WebUserInfo> user;
 		Sync::RWMutexUsage mutUsage;
-		if (env.user == 0 || env.user->userType != UserType::Admin)
+		if (!env.user.SetTo(user) || user->userType != UserType::Admin)
 		{
 			mutUsage.EndUse();
 			resp->ResponseError(req, Net::WebStatus::SC_UNAUTHORIZED);
@@ -364,7 +367,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NN<Net::WebSer
 			}
 			else
 			{
-				if (me->env->BookAdd(mutUsage, title, author, press, ts, url))
+				if (me->env->BookAdd(mutUsage, title, author, press, ts, url).NotNull())
 				{
 					sptr = Text::StrConcatC(sbuff, UTF8STRC("booklist.html?id="));
 					sptr = Text::StrInt32(sptr, cate->cateId);

@@ -1506,7 +1506,7 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(Optional<UI::GUIClientControl> p
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Data::ArrayList<UInt32> codePages;
-	Text::EncodingFactory::GetCodePages(&codePages);
+	Text::EncodingFactory::GetCodePages(codePages);
 	UOSInt i;
 	i = this->lstLang->AddItem(CSTR("utf16"), (void*)1200);
 	if (sysCP == 1200)

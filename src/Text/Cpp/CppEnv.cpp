@@ -144,13 +144,13 @@ Text::Cpp::CppEnv::CppEnv(Text::VSProject::VisualStudioVersion vsv)
 	this->baseFile = 0;
 }
 
-Text::Cpp::CppEnv::CppEnv(Text::CodeProject *proj, Optional<IO::ConfigFile> cfg)
+Text::Cpp::CppEnv::CppEnv(NN<Text::CodeProject> proj, Optional<IO::ConfigFile> cfg)
 {
 	this->pt = proj->GetProjectType();
 	this->baseFile = proj->GetSourceNameObj()->Clone().Ptr();
 	if (this->pt == Text::CodeProject::PROJT_VSPROJECT)
 	{
-		this->vsv = ((Text::VSProject*)proj)->GetVSVersion();
+		this->vsv = NN<Text::VSProject>::ConvertFrom(proj)->GetVSVersion();
 		NN<IO::ConfigFile> nncfg;
 		if (cfg.SetTo(nncfg))
 		{
@@ -232,7 +232,7 @@ UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, Text::CString in
 	return 0;
 }
 
-void Text::Cpp::CppEnv::InitEnvStatus(Text::Cpp::CppParseStatus *status)
+void Text::Cpp::CppEnv::InitEnvStatus(NN<Text::Cpp::CppParseStatus> status)
 {
 	if (this->pt == Text::CodeProject::PROJT_VSPROJECT)
 	{

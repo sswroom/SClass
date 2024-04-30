@@ -15,12 +15,12 @@ namespace Net
 {
 	namespace SNS
 	{
-		class SNSManager : public Data::ReadingList<Net::SNS::SNSControl*>
+		class SNSManager : public Data::ReadingListNN<Net::SNS::SNSControl>
 		{
 		private:
 			struct ChannelData
 			{
-				Net::SNS::SNSControl *ctrl;
+				NN<Net::SNS::SNSControl> ctrl;
 				Data::ArrayListStringNN currItems;
 				Int64 lastLoadTime;
 			};
@@ -32,29 +32,30 @@ namespace Net
 			Optional<Text::String> userAgent;
 			NN<Text::String> dataPath;
 			Sync::Mutex mut;
-			Data::ArrayList<ChannelData*> channelList;
+			Data::ArrayListNN<ChannelData> channelList;
 			Bool threadToStop;
 			Bool threadRunning;
 			Sync::Event threadEvt;
 			NN<IO::LogTool> log;
 
-			Net::SNS::SNSControl *CreateControl(Net::SNS::SNSControl::SNSType type, Text::CString channelId);
-			ChannelData *ChannelInit(Net::SNS::SNSControl *ctrl);
-			void ChannelAddMessage(ChannelData *channel, Net::SNS::SNSControl::SNSItem *item);
-			void ChannelStoreCurr(ChannelData *channel);
-			void ChannelUpdate(ChannelData *channel);
-			void ChannelReload(ChannelData *channel);
+			Optional<Net::SNS::SNSControl> CreateControl(Net::SNS::SNSControl::SNSType type, Text::CString channelId);
+			NN<ChannelData> ChannelInit(NN<Net::SNS::SNSControl> ctrl);
+			void ChannelAddMessage(NN<ChannelData> channel, NN<Net::SNS::SNSControl::SNSItem> item);
+			void ChannelStoreCurr(NN<ChannelData> channel);
+			void ChannelUpdate(NN<ChannelData> channel);
+			void ChannelReload(NN<ChannelData> channel);
 
 			static UInt32 __stdcall ThreadProc(AnyType userObj);
 		public:
 			SNSManager(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString userAgent, Text::CString dataPath, NN<IO::LogTool> log);
 			virtual ~SNSManager();
 
-			Net::SNS::SNSControl *AddChannel(Net::SNS::SNSControl::SNSType type, Text::CString channelId);
+			Optional<Net::SNS::SNSControl> AddChannel(Net::SNS::SNSControl::SNSType type, Text::CString channelId);
 
 			void Use(NN<Sync::MutexUsage> mutUsage);
 			virtual UOSInt GetCount() const;
-			virtual Net::SNS::SNSControl* GetItem(UOSInt index) const;
+			virtual NN<Net::SNS::SNSControl> GetItemNoCheck(UOSInt index) const;
+			virtual Optional<Net::SNS::SNSControl> GetItem(UOSInt index) const;
 		};
 	}
 }

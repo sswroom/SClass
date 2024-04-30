@@ -35,11 +35,11 @@ IO::ParserType Parser::FileParser::MIMEFileParser::GetParserType()
 IO::ParsedObject *Parser::FileParser::MIMEFileParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
 {
 	NN<Text::String> name = fd->GetFullName();
-	Text::IMIMEObj *obj;
+	Optional<Text::IMIMEObj> obj;
 	if (name->EndsWithICase(UTF8STRC(".eml")))
 	{
 		obj = Text::MIMEObj::MailMessage::ParseFile(fd);
-		return obj;
+		return obj.OrNull();
 	}
 	return 0;
 }

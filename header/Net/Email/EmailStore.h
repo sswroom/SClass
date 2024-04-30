@@ -31,25 +31,25 @@ namespace Net
 				UInt64 unreadSize;
 			};
 		protected:
-			Data::ArrayList<EmailInfo*> mailList;
+			Data::ArrayListNN<EmailInfo> mailList;
 			Sync::Mutex mailMut;
 
 		public:
 			EmailStore();
 			virtual ~EmailStore();
 
-			UOSInt GetAllEmails(Data::ArrayList<EmailInfo*> *emailList);
+			UOSInt GetAllEmails(NN<Data::ArrayListNN<EmailInfo>> emailList);
 
 			virtual Int64 NextEmailId() = 0;
 			virtual Bool NewEmail(Int64 id, NN<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CStringNN serverName, NN<const Net::Email::SMTPServer::MailStatus> mail) = 0;
 			virtual Bool NewEmail(Int64 id, NN<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CStringNN serverName, NN<const Text::MIMEObj::MailMessage> mail) = 0;
-			virtual IO::StreamData *OpenEmailData(Int64 id) = 0;
+			virtual Optional<IO::StreamData> OpenEmailData(Int64 id) = 0;
 			virtual const UTF8Char *GetEmailUid(Int64 id) = 0;
 			virtual UOSInt GetRcptList(Int64 id, NN<Data::ArrayListStringNN> rcptList) = 0;
 			virtual Net::Email::MailController::RemoveStatus RemoveMessage(Text::CString userName, UOSInt msgIndex) = 0;
-			virtual Net::Email::EmailStore::EmailInfo *GetEmailByIndex(Text::CString userName, UOSInt msgIndex) = 0;
-			virtual void GetMessageStat(Text::CString userName, MessageStat *stat) = 0;
-			virtual UOSInt GetUnreadIndices(Text::CString userName, Data::ArrayList<UOSInt> *indices) = 0;
+			virtual Optional<Net::Email::EmailStore::EmailInfo> GetEmailByIndex(Text::CString userName, UOSInt msgIndex) = 0;
+			virtual void GetMessageStat(Text::CString userName, NN<MessageStat> stat) = 0;
+			virtual UOSInt GetUnreadIndices(Text::CString userName, NN<Data::ArrayList<UOSInt>> indices) = 0;
 		};
 	}
 }

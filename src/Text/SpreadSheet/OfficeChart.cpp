@@ -34,28 +34,14 @@ Text::SpreadSheet::OfficeChart::OfficeChart(Math::Unit::Distance::DistanceUnit d
 	this->chartType = ChartType::Unknown;
 	this->categoryAxis = 0;
 	this->valueAxis = 0;
-	NEW_CLASS(this->axes, Data::ArrayList<OfficeChartAxis*>());
-	NEW_CLASS(this->series, Data::ArrayList<OfficeChartSeries*>());
 }
 
 Text::SpreadSheet::OfficeChart::~OfficeChart()
 {
 	SDEL_STRING(this->titleText);
 	SDEL_CLASS(this->shapeProp);
-	UOSInt i = this->axes->GetCount();
-	while (i-- > 0)
-	{
-		OfficeChartAxis *axis = this->axes->GetItem(i);
-		DEL_CLASS(axis);
-	}
-	DEL_CLASS(this->axes);
-	i = this->series->GetCount();
-	while (i-- > 0)
-	{
-		OfficeChartSeries *series = this->series->GetItem(i);
-		DEL_CLASS(series);
-	}
-	DEL_CLASS(this->series);
+	this->axes.DeleteAll();
+	this->series.DeleteAll();
 }
 
 Double Text::SpreadSheet::OfficeChart::GetXInch()
@@ -132,7 +118,7 @@ Text::SpreadSheet::BlankAs Text::SpreadSheet::OfficeChart::GetDisplayBlankAs()
 	return this->displayBlankAs;
 }
 
-void Text::SpreadSheet::OfficeChart::InitChart(ChartType chartType, OfficeChartAxis *categoryAxis, OfficeChartAxis *valueAxis)
+void Text::SpreadSheet::OfficeChart::InitChart(ChartType chartType, NN<OfficeChartAxis> categoryAxis, NN<OfficeChartAxis> valueAxis)
 {
 	this->chartType = chartType;
 	this->categoryAxis = categoryAxis;
@@ -141,12 +127,12 @@ void Text::SpreadSheet::OfficeChart::InitChart(ChartType chartType, OfficeChartA
 
 void Text::SpreadSheet::OfficeChart::InitLineChart(Text::CString leftAxisName, Text::CString bottomAxisName, AxisType bottomType)
 {
-	OfficeChartAxis *leftAxis = this->CreateAxis(AxisType::Numeric, AxisPosition::Left);
+	NN<OfficeChartAxis> leftAxis = this->CreateAxis(AxisType::Numeric, AxisPosition::Left);
 	if (leftAxisName.leng > 0) leftAxis->SetTitle(leftAxisName);
 	leftAxis->SetCrosses(AxisCrosses::AutoZero);
 	leftAxis->SetMajorGridProp(NEW_CLASS_D(OfficeShapeProp(NEW_CLASS_D(OfficeLineStyle(OfficeFill::NewSolidFill(OfficeColor::NewPreset(PresetColor::LightGray)))))));
 	leftAxis->SetShapeProp(NEW_CLASS_D(OfficeShapeProp(NEW_CLASS_D(OfficeLineStyle(OfficeFill::NewSolidFill(OfficeColor::NewPreset(PresetColor::Black)))))));
-	OfficeChartAxis *bottomAxis = this->CreateAxis(bottomType, AxisPosition::Bottom);
+	NN<OfficeChartAxis> bottomAxis = this->CreateAxis(bottomType, AxisPosition::Bottom);
 	if (bottomAxisName.leng > 0) bottomAxis->SetTitle(bottomAxisName);
 	bottomAxis->SetShapeProp(NEW_CLASS_D(OfficeShapeProp(NEW_CLASS_D(OfficeLineStyle(OfficeFill::NewSolidFill(OfficeColor::NewPreset(PresetColor::Black)))))));
 	bottomAxis->SetTickLblPos(TickLabelPosition::Low);
@@ -159,42 +145,44 @@ Text::SpreadSheet::ChartType Text::SpreadSheet::OfficeChart::GetChartType()
 	return this->chartType;
 }
 
-Text::SpreadSheet::OfficeChartAxis *Text::SpreadSheet::OfficeChart::CreateAxis(AxisType axisType, AxisPosition axisPos)
+NN<Text::SpreadSheet::OfficeChartAxis> Text::SpreadSheet::OfficeChart::CreateAxis(AxisType axisType, AxisPosition axisPos)
 {
-	OfficeChartAxis *axis = NEW_CLASS_D(OfficeChartAxis(axisType, axisPos));
-	this->axes->Add(axis);
+	NN<OfficeChartAxis> axis;
+	NEW_CLASSNN(axis, OfficeChartAxis(axisType, axisPos));
+	this->axes.Add(axis);
 	return axis;
 }
 
 UOSInt Text::SpreadSheet::OfficeChart::GetAxisCount()
 {
-	return this->axes->GetCount();
+	return this->axes.GetCount();
 }
 
-OfficeChartAxis *Text::SpreadSheet::OfficeChart::GetAxis(UOSInt index)
+Optional<OfficeChartAxis> Text::SpreadSheet::OfficeChart::GetAxis(UOSInt index)
 {
-	return this->axes->GetItem(index);
+	return this->axes.GetItem(index);
 }
 
-UOSInt Text::SpreadSheet::OfficeChart::GetAxisIndex(OfficeChartAxis *axis)
+UOSInt Text::SpreadSheet::OfficeChart::GetAxisIndex(NN<OfficeChartAxis> axis)
 {
-	return this->axes->IndexOf(axis);
+	return this->axes.IndexOf(axis);
 }
 
-OfficeChartAxis *Text::SpreadSheet::OfficeChart::GetCategoryAxis()
+Optional<OfficeChartAxis> Text::SpreadSheet::OfficeChart::GetCategoryAxis()
 {
 	return this->categoryAxis;
 }
 
-OfficeChartAxis *Text::SpreadSheet::OfficeChart::GetValueAxis()
+Optional<OfficeChartAxis> Text::SpreadSheet::OfficeChart::GetValueAxis()
 {
 	return this->valueAxis;
 }
 
 void Text::SpreadSheet::OfficeChart::AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, Text::String *name, Bool showMarker)
 {
-	UOSInt i = this->series->GetCount();
-	OfficeChartSeries *series = NEW_CLASS_D(OfficeChartSeries(categoryData, valueData));
+	UOSInt i = this->series.GetCount();
+	NN<OfficeChartSeries> series;
+	NEW_CLASSNN(series, OfficeChartSeries(categoryData, valueData));
 	if (name)
 		series->SetTitle(name, 0);
 	series->SetSmooth(false);
@@ -208,13 +196,14 @@ void Text::SpreadSheet::OfficeChart::AddSeries(WorkbookDataSource *categoryData,
 		series->SetMarkerStyle(MarkerStyle::None);
 	}
 	series->SetLineStyle(NEW_CLASS_D(OfficeLineStyle(OfficeFill::NewSolidFill(OfficeColor::NewPreset(seriesColor[i % (sizeof(seriesColor) / sizeof(seriesColor[0]))])))));
-	this->series->Add(series);
+	this->series.Add(series);
 }
 
 void Text::SpreadSheet::OfficeChart::AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, Text::CString name, Bool showMarker)
 {
-	UOSInt i = this->series->GetCount();
-	OfficeChartSeries *series = NEW_CLASS_D(OfficeChartSeries(categoryData, valueData));
+	UOSInt i = this->series.GetCount();
+	NN<OfficeChartSeries> series;
+	NEW_CLASSNN(series, OfficeChartSeries(categoryData, valueData));
 	if (name.leng > 0)
 		series->SetTitle(name, 0);
 	series->SetSmooth(false);
@@ -228,15 +217,20 @@ void Text::SpreadSheet::OfficeChart::AddSeries(WorkbookDataSource *categoryData,
 		series->SetMarkerStyle(MarkerStyle::None);
 	}
 	series->SetLineStyle(NEW_CLASS_D(OfficeLineStyle(OfficeFill::NewSolidFill(OfficeColor::NewPreset(seriesColor[i % (sizeof(seriesColor) / sizeof(seriesColor[0]))])))));
-	this->series->Add(series);
+	this->series.Add(series);
 }
 
-UOSInt Text::SpreadSheet::OfficeChart::GetSeriesCount()
+UOSInt Text::SpreadSheet::OfficeChart::GetSeriesCount() const
 {
-	return this->series->GetCount();
+	return this->series.GetCount();
 }
 
-OfficeChartSeries *Text::SpreadSheet::OfficeChart::GetSeries(UOSInt index)
+NN<OfficeChartSeries> Text::SpreadSheet::OfficeChart::GetSeriesNoCheck(UOSInt index) const
 {
-	return this->series->GetItem(index);
+	return this->series.GetItemNoCheck(index);
+}
+
+Optional<OfficeChartSeries> Text::SpreadSheet::OfficeChart::GetSeries(UOSInt index) const
+{
+	return this->series.GetItem(index);
 }

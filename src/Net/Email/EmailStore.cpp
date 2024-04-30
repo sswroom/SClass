@@ -9,18 +9,18 @@ Net::Email::EmailStore::EmailStore()
 
 Net::Email::EmailStore::~EmailStore()
 {
-	EmailInfo *email;
+	NN<EmailInfo> email;
 	UOSInt i;
 	i = this->mailList.GetCount();
 	while (i-- > 0)
 	{
-		email = this->mailList.GetItem(i);
+		email = this->mailList.GetItemNoCheck(i);
 		email->fromAddr->Release();
-		MemFree(email);
+		MemFreeNN(email);
 	}
 }
 
-UOSInt Net::Email::EmailStore::GetAllEmails(Data::ArrayList<EmailInfo*> *emailList)
+UOSInt Net::Email::EmailStore::GetAllEmails(NN<Data::ArrayListNN<EmailInfo>> emailList)
 {
 	Sync::MutexUsage mutUsage(this->mailMut);
 	emailList->AddAll(this->mailList);

@@ -10,12 +10,12 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/Clipboard.h"
 
-void SSWR::AVIRead::AVIRExeForm::ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess *sess, Data::ArrayListStringNN *codes, Data::ArrayList<ExeB16Addr*> *parts, Data::ArrayListInt32 *partInd, ExeB16Addr *startAddr, Manage::DasmX86_16 *dasm, UOSInt codeSize)
+void SSWR::AVIRead::AVIRExeForm::ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess *sess, NN<Data::ArrayListStringNN> codes, Data::ArrayListNN<ExeB16Addr> *parts, Data::ArrayListInt32 *partInd, NN<ExeB16Addr> startAddr, Manage::DasmX86_16 *dasm, UOSInt codeSize)
 {
 	UTF8Char buff[512];
 	UTF8Char *sptr;
 	UOSInt buffSize;
-	ExeB16Addr *eaddr;
+	NN<ExeB16Addr> eaddr;
 	UOSInt i;
 	UInt16 oriIP;
 	while (true)
@@ -74,7 +74,7 @@ void SSWR::AVIRead::AVIRExeForm::ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess
 			i = parts->GetCount();
 			while (i-- > 0)
 			{
-				eaddr = parts->GetItem(i);
+				eaddr = parts->GetItemNoCheck(i);
 				if (sess->regs.IP >= eaddr->addr && sess->regs.IP < eaddr->endAddr)
 				{
 					found = true;
@@ -83,9 +83,9 @@ void SSWR::AVIRead::AVIRExeForm::ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess
 			}
 			if (found)
 				break;
-			NEW_CLASS(codes, Data::ArrayListStringNN());
+			NEW_CLASSNN(codes, Data::ArrayListStringNN());
 			this->codesList->Add(codes);
-			startAddr = MemAlloc(ExeB16Addr, 1);
+			startAddr = MemAllocNN(ExeB16Addr);
 			startAddr->segm = sess->regs.CS;
 			startAddr->addr = sess->regs.IP;
 			startAddr->endAddr = startAddr->addr;
@@ -105,12 +105,12 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 	Manage::DasmX86_16::DasmX86_16_Regs regs;
 	Manage::DasmX86_16 *dasm;
 	Manage::DasmX86_16::DasmX86_16_Sess *sess;
-	Data::ArrayListStringNN *codes;
-	Data::ArrayList<ExeB16Addr*> *parts;
+	NN<Data::ArrayListStringNN> codes;
+	Data::ArrayListNN<ExeB16Addr> *parts;
 	Data::ArrayListInt32 *partInd;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	ExeB16Addr *eaddr;
+	NN<ExeB16Addr> eaddr;
 	UOSInt codeSize;
 	UOSInt i;
 	UOSInt j;
@@ -118,12 +118,12 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 	Data::ArrayListUInt32 *nfuncCalls;
 
 	this->exeFile->GetDOSInitRegs(&regs);
-	NEW_CLASS(parts, Data::ArrayList<ExeB16Addr*>());
+	NEW_CLASS(parts, Data::ArrayListNN<ExeB16Addr>());
 	NEW_CLASS(partInd, Data::ArrayListInt32());
-	NEW_CLASS(this->codesList, Data::ArrayList<Data::ArrayListStringNN*>());
-	NEW_CLASS(codes, Data::ArrayListStringNN());
+	NEW_CLASS(this->codesList, Data::ArrayListNN<Data::ArrayListStringNN>());
+	NEW_CLASSNN(codes, Data::ArrayListStringNN());
 	this->codesList->Add(codes);
-	eaddr = MemAlloc(ExeB16Addr, 1);
+	eaddr = MemAllocNN(ExeB16Addr);
 	eaddr->segm = regs.CS;
 	eaddr->addr = eaddr->endAddr = regs.IP;
 	eaddr->codeList = codes;
@@ -155,9 +155,9 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 				funcCalls->Insert((UOSInt)-si - 1, faddr);
 				sess = dasm->CreateSess(&regs, this->exeFile->GetDOSCodePtr(codeSize), this->exeFile->GetDOSCodeSegm());
 				sess->regs.IP = (::UInt16)faddr;
-				NEW_CLASS(codes, Data::ArrayListStringNN());
+				NEW_CLASSNN(codes, Data::ArrayListStringNN());
 				this->codesList->Add(codes);
-				eaddr = MemAlloc(ExeB16Addr, 1);
+				eaddr = MemAllocNN(ExeB16Addr);
 				eaddr->segm = sess->regs.CS;
 				eaddr->addr = eaddr->endAddr = sess->regs.IP;
 				eaddr->codeList = codes;
@@ -179,13 +179,14 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 	DEL_CLASS(partInd);
 	this->parts = parts;
 
-	ExeB16Addr *lastAddr = 0;
+	Optional<ExeB16Addr> lastAddr = 0;
+	NN<ExeB16Addr> addr;
 	i = 0;
 	j = parts->GetCount();
 	while (i < j)
 	{
-		eaddr = parts->GetItem(i);
-		if (lastAddr && lastAddr->segm == eaddr->segm && lastAddr->addr < eaddr->addr && lastAddr->endAddr >= eaddr->endAddr)
+		eaddr = parts->GetItemNoCheck(i);
+		if (lastAddr.SetTo(addr) && addr->segm == eaddr->segm && addr->addr < eaddr->addr && addr->endAddr >= eaddr->endAddr)
 		{
 		}
 		else
@@ -422,28 +423,28 @@ SSWR::AVIRead::AVIRExeForm::~AVIRExeForm()
 	DEL_CLASS(this->exeFile);
 	if (this->parts)
 	{
-		ExeB16Addr *addr;
+		NN<ExeB16Addr> addr;
 		i = this->parts->GetCount();
 		while (i-- > 0)
 		{
-			addr = this->parts->GetItem(i);
-			MemFree(addr);
+			addr = this->parts->GetItemNoCheck(i);
+			MemFreeNN(addr);
 		}
 		DEL_CLASS(this->parts);
 	}
 	if (this->codesList)
 	{
-		Data::ArrayListStringNN *codes;
+		NN<Data::ArrayListStringNN> codes;
 		i = this->codesList->GetCount();
 		while (i-- > 0)
 		{
-			codes = this->codesList->GetItem(i);
+			codes = this->codesList->GetItemNoCheck(i);
 			j = codes->GetCount();
 			while (j-- > 0)
 			{
 				OPTSTR_DEL(codes->GetItem(j));
 			}
-			DEL_CLASS(codes);
+			codes.Delete();
 		}
 		DEL_CLASS(this->codesList);
 	}

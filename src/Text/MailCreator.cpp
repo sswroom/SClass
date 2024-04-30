@@ -84,15 +84,15 @@ void Text::MailCreator::AppendStr(NN<Text::StringBuilderUTF8> sbc, const WChar *
 	}
 }
 
-Text::IMIMEObj *Text::MailCreator::ParseContentHTML(const UInt8 *buff, UOSInt buffSize, UInt32 codePage, Text::CString htmlPath)
+Optional<Text::IMIMEObj> Text::MailCreator::ParseContentHTML(const UInt8 *buff, UOSInt buffSize, UInt32 codePage, Text::CString htmlPath)
 {
 	UOSInt j;
 	UOSInt endOfst = buffSize - 6;
 	UOSInt i;
 	UOSInt k;
 	UOSInt l;
-	Data::ArrayList<Text::IMIMEObj*> imgs;
-	Text::IMIMEObj *obj;
+	Data::ArrayListNN<Text::IMIMEObj> imgs;
+	NN<Text::IMIMEObj> obj;
 	Text::StringBuilderUTF8 sbc;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -151,8 +151,7 @@ Text::IMIMEObj *Text::MailCreator::ParseContentHTML(const UInt8 *buff, UOSInt bu
 					if (!found)
 					{
 						*sptr = 0;
-						obj = Text::IMIMEObj::ParseFromFile(CSTRP(sbuff, sptr));
-						if (obj)
+						if (Text::IMIMEObj::ParseFromFile(CSTRP(sbuff, sptr)).SetTo(obj))
 						{
 							imgs.Add(obj);
 							sbc.AppendC((const UTF8Char*)&buff[j], i - j);
@@ -175,33 +174,33 @@ Text::IMIMEObj *Text::MailCreator::ParseContentHTML(const UInt8 *buff, UOSInt bu
 	
 	if (imgs.GetCount() == 0)
 	{
-		NEW_CLASS(obj, Text::MIMEObj::HTMLMIMEObj(sbc.ToString(), sbc.GetLength(), 65001));
+		NEW_CLASSNN(obj, Text::MIMEObj::HTMLMIMEObj(sbc.ToString(), sbc.GetLength(), 65001));
 		return obj;
 	}
 	else
 	{
 		Text::MIMEObj::MultipartMIMEObj *mpart;
 		NEW_CLASS(mpart, Text::MIMEObj::MultipartMIMEObj(CSTR("multipart/related"), CSTR_NULL));
-		NEW_CLASS(obj, Text::MIMEObj::HTMLMIMEObj(sbc.ToString(), sbc.GetLength(), 65001));
+		NEW_CLASSNN(obj, Text::MIMEObj::HTMLMIMEObj(sbc.ToString(), sbc.GetLength(), 65001));
 		i = mpart->AddPart(obj);
-		Text::CString contType = obj->GetContentType();
-		mpart->AddPartHeader(i, UTF8STRC("Content-Type"), contType.v, contType.leng);
-		mpart->AddPartHeader(i, UTF8STRC("Content-Transfer-Encoding"), UTF8STRC("8bit"));
+		Text::CStringNN contType = obj->GetContentType();
+		mpart->AddPartHeader(i, CSTR("Content-Type"), contType);
+		mpart->AddPartHeader(i, CSTR("Content-Transfer-Encoding"), CSTR("8bit"));
 
 		i = 0;
 		j = imgs.GetCount();
 		while (i < j)
 		{
-			obj = imgs.GetItem(i);
+			obj = imgs.GetItemNoCheck(i);
 			k = mpart->AddPart(obj);
 			contType = obj->GetContentType();
-			mpart->AddPartHeader(k, UTF8STRC("Content-Type"), contType.v, contType.leng);
-			mpart->AddPartHeader(k, UTF8STRC("Content-Transfer-Encoding"), UTF8STRC("base64"));
+			mpart->AddPartHeader(k, CSTR("Content-Type"), contType);
+			mpart->AddPartHeader(k, CSTR("Content-Transfer-Encoding"), CSTR("base64"));
 			sbc.ClearStr();
 			sbc.AppendC(UTF8STRC("<image"));
 			sbc.AppendUOSInt(i + 1);
 			sbc.AppendC(UTF8STRC(">"));
-			mpart->AddPartHeader(k, UTF8STRC("Content-ID"), sbc.ToString(), sbc.GetLength());
+			mpart->AddPartHeader(k, CSTR("Content-ID"), sbc.ToCString());
 
 			i++;
 		}
@@ -221,18 +220,18 @@ Text::MailCreator::MailCreator()
 Text::MailCreator::~MailCreator()
 {
 	UOSInt i;
-	Text::IMIMEObj *obj;
+	NN<Text::IMIMEObj> obj;
 
 	SDEL_STRING(this->from);
 	SDEL_STRING(this->replyTo);
 	SDEL_STRING(this->subject);
-	SDEL_CLASS(this->content);
+	this->content.Delete();
 	i = this->attachName.GetCount();
 	while (i-- > 0)
 	{
 		OPTSTR_DEL(this->attachName.GetItem(i));
-		obj = this->attachObj.GetItem(i);
-		DEL_CLASS(obj);
+		obj = this->attachObj.GetItemNoCheck(i);
+		obj.Delete();
 	}
 }
 
@@ -415,49 +414,48 @@ void Text::MailCreator::SetSubject(NN<Text::String> subj)
 
 void Text::MailCreator::SetContentHTML(const WChar *content, Text::CString htmlPath)
 {
-	Text::IMIMEObj *obj;
+	NN<Text::IMIMEObj> obj;
 	UOSInt strLen = Text::StrCharCnt(content);
 	UOSInt buffSize = Text::StrWChar_UTF8CntC(content, strLen);
 	UInt8 *buff = MemAlloc(UInt8, buffSize + 1);
 	Text::StrWChar_UTF8C(buff, content, strLen);
-	obj = ParseContentHTML(buff, buffSize, 65001, htmlPath);
-	MemFree(buff);
-	if (obj)
+	if (ParseContentHTML(buff, buffSize, 65001, htmlPath).SetTo(obj))
 	{
-		SDEL_CLASS(this->content);
+		this->content.Delete();
 		this->content = obj;
 	}
+	MemFree(buff);
 }
 
 void Text::MailCreator::SetContentHTML(NN<Text::String> content, Text::CString htmlPath)
 {
-	Text::IMIMEObj *obj = ParseContentHTML(content->v, content->leng, 65001, htmlPath);
-	if (obj)
+	NN<Text::IMIMEObj> obj;
+	if (ParseContentHTML(content->v, content->leng, 65001, htmlPath).SetTo(obj))
 	{
-		SDEL_CLASS(this->content);
+		this->content.Delete();
 		this->content = obj;
 	}
 }
 
 void Text::MailCreator::SetContentText(const WChar *content, UInt32 codePage)
 {
-	Text::MIMEObj::TextMIMEObj *obj;
-	NEW_CLASS(obj, Text::MIMEObj::TextMIMEObj(content, codePage));
-	SDEL_CLASS(this->content);
+	NN<Text::MIMEObj::TextMIMEObj> obj;
+	NEW_CLASSNN(obj, Text::MIMEObj::TextMIMEObj(content, codePage));
+	this->content.Delete();
 	this->content = obj;
 }
 
 void Text::MailCreator::SetContentText(NN<Text::String> content)
 {
-	Text::MIMEObj::TextMIMEObj *obj;
-	NEW_CLASS(obj, Text::MIMEObj::TextMIMEObj(content->v, content->leng, 65001));
-	SDEL_CLASS(this->content);
+	NN<Text::MIMEObj::TextMIMEObj> obj;
+	NEW_CLASSNN(obj, Text::MIMEObj::TextMIMEObj(content->v, content->leng, 65001));
+	this->content.Delete();
 	this->content = obj;
 }
 
 Bool Text::MailCreator::SetContentFile(Text::CStringNN filePath)
 {
-	Text::IMIMEObj *obj;
+	NN<Text::IMIMEObj> obj;
 	UOSInt buffSize;
 	UInt8 *buff;
 	{
@@ -470,24 +468,25 @@ Bool Text::MailCreator::SetContentFile(Text::CStringNN filePath)
 		buff = MemAlloc(UInt8, buffSize);
 		fs.Read(Data::ByteArray(buff, buffSize));
 	}
-	obj = ParseContentHTML(buff, buffSize, 65001, filePath);
-	MemFree(buff);
-	if (obj)
+	if (ParseContentHTML(buff, buffSize, 65001, filePath).SetTo(obj))
 	{
-		SDEL_CLASS(this->content);
+		MemFree(buff);
+		this->content.Delete();
 		this->content = obj;
 		return true;
 	}
-
+	MemFree(buff);
 	return false;
 }
 
 void Text::MailCreator::AddAttachment(Text::CStringNN fileName)
 {
-	Text::IMIMEObj *obj = Text::IMIMEObj::ParseFromFile(fileName);
-
-	this->attachObj.Add(obj);
-	this->attachName.Add(Text::String::New(fileName.v, fileName.leng));
+	NN<Text::IMIMEObj> obj;
+	if (Text::IMIMEObj::ParseFromFile(fileName).SetTo(obj))
+	{
+		this->attachObj.Add(obj);
+		this->attachName.Add(Text::String::New(fileName));
+	}
 }
 
 NN<Text::MIMEObj::MailMessage> Text::MailCreator::CreateMail()
@@ -496,41 +495,41 @@ NN<Text::MIMEObj::MailMessage> Text::MailCreator::CreateMail()
 	NEW_CLASSNN(msg, Text::MIMEObj::MailMessage());
 	if (this->from)
 	{
-		msg->AddHeader(UTF8STRC("From"), this->from->v, this->from->leng);
+		msg->AddHeader(CSTR("From"), this->from->ToCString());
 	}
 	if (this->toVals.GetLength() > 0)
 	{
-		msg->AddHeader(UTF8STRC("To"), this->toVals.ToString(), this->toVals.GetLength());
+		msg->AddHeader(CSTR("To"), this->toVals.ToCString());
 	}
 	if (this->replyTo)
 	{
-		msg->AddHeader(UTF8STRC("Reply-To"), this->replyTo->v, this->replyTo->leng);
+		msg->AddHeader(CSTR("Reply-To"), this->replyTo->ToCString());
 	}
 	if (this->ccVals.GetLength() > 0)
 	{
-		msg->AddHeader(UTF8STRC("CC"), this->ccVals.ToString(), this->ccVals.GetLength());
+		msg->AddHeader(CSTR("CC"), this->ccVals.ToCString());
 	}
 	if (this->subject)
 	{
-		msg->AddHeader(UTF8STRC("Subject"), this->subject->v, this->subject->leng);
+		msg->AddHeader(CSTR("Subject"), this->subject->ToCString());
 	}
 	if (this->attachName.GetCount() > 0)
 	{
 		Text::MIMEObj::MultipartMIMEObj *mpart;
-		Text::IMIMEObj *obj;
+		NN<Text::IMIMEObj> obj;
 		Text::StringBuilderUTF8 sbc;
-		Text::CString contType;
+		Text::CStringNN contType;
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
 		UOSInt l;
 		NN<Text::String> fname;
 		NEW_CLASS(mpart, Text::MIMEObj::MultipartMIMEObj(CSTR("multipart/mixed"), CSTR("This is a multi-part message in MIME format.")));
-		if (this->content)
+		if (this->content.SetTo(obj))
 		{
-			i = mpart->AddPart(this->content->Clone());
-			contType = this->content->GetContentType();
-			mpart->AddPartHeader(i, UTF8STRC("Content-Type"), contType.v, contType.leng);
+			i = mpart->AddPart(obj->Clone());
+			contType = obj->GetContentType();
+			mpart->AddPartHeader(i, CSTR("Content-Type"), contType);
 		}
 
 		i = 0;
@@ -539,7 +538,7 @@ NN<Text::MIMEObj::MailMessage> Text::MailCreator::CreateMail()
 		{
 			if (this->attachName.GetItem(i).SetTo(fname))
 			{
-				obj = this->attachObj.GetItem(i);
+				obj = this->attachObj.GetItemNoCheck(i);
 				k = mpart->AddPart(obj->Clone());
 				l = fname->LastIndexOf(IO::Path::PATH_SEPERATOR);
 				sbc.ClearStr();
@@ -548,28 +547,29 @@ NN<Text::MIMEObj::MailMessage> Text::MailCreator::CreateMail()
 				sbc.AppendC(UTF8STRC(";\r\n\tname=\""));
 				this->AppendStr(sbc, fname->ToCString().Substring(l + 1));
 				sbc.AppendC(UTF8STRC("\""));
-				mpart->AddPartHeader(k, UTF8STRC("Content-Type"), sbc.ToString(), sbc.GetLength());
-				mpart->AddPartHeader(k, UTF8STRC("Content-Transfer-Encoding"), UTF8STRC("base64"));
+				mpart->AddPartHeader(k, CSTR("Content-Type"), sbc.ToCString());
+				mpart->AddPartHeader(k, CSTR("Content-Transfer-Encoding"), CSTR("base64"));
 				sbc.ClearStr();
 				sbc.AppendC(UTF8STRC("attachment; \r\n\tfilename=\""));
 				this->AppendStr(sbc, fname->ToCString().Substring(l + 1));
 				sbc.AppendC(UTF8STRC("\""));
-				mpart->AddPartHeader(k, UTF8STRC("Content-Disposition"), sbc.ToString(), sbc.GetLength());
+				mpart->AddPartHeader(k, CSTR("Content-Disposition"), sbc.ToCString());
 			}
 			i++;
 		}
 		msg->SetContent(mpart);
 
 		contType = mpart->GetContentType();
-		msg->AddHeader(UTF8STRC("Content-Type"), contType.v, contType.leng);
+		msg->AddHeader(CSTR("Content-Type"), contType);
 	}
 	else
 	{
-		if (this->content)
+		NN<Text::IMIMEObj> content;
+		if (this->content.SetTo(content))
 		{
-			Text::CString contType = this->content->GetContentType();
-			msg->AddHeader(UTF8STRC("Content-Type"), contType.v, contType.leng);
-			msg->SetContent(this->content->Clone());
+			Text::CStringNN contType = content->GetContentType();
+			msg->AddHeader(CSTR("Content-Type"), contType);
+			msg->SetContent(content->Clone());
 		}
 	}
 	return msg;

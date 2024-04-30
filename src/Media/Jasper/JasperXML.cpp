@@ -13,7 +13,7 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NN<Text
 	UOSInt i;
 	UOSInt j;
 	UInt32 uval;
-	Text::XMLAttrib *attr;
+	NN<Text::XMLAttrib> attr;
 	Text::XMLNode::NodeType nodeType;
 	NN<Text::String> nodeText;
 	Media::Jasper::JasperReport *report;
@@ -24,7 +24,7 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NN<Text
 	j = reader->GetAttribCount();
 	while (i < j)
 	{
-		attr = reader->GetAttrib(i);
+		attr = reader->GetAttribNoCheck(i);
 		if (attr->name->Equals(UTF8STRC("xmlns")))
 		{
 
@@ -139,7 +139,7 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NN<Text
 			j = reader->GetAttribCount();
 			while (i < j)
 			{
-				attr = reader->GetAttrib(i);
+				attr = reader->GetAttribNoCheck(i);
 				if (attr->name->Equals(UTF8STRC("name")))
 				{
 					name = attr->value;
@@ -172,7 +172,7 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NN<Text
 			j = reader->GetAttribCount();
 			while (i < j)
 			{
-				attr = reader->GetAttrib(i);
+				attr = reader->GetAttribNoCheck(i);
 				if (attr->name->Equals(UTF8STRC("value")))
 				{
 					value = attr->value;
@@ -205,7 +205,7 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NN<Text
 			j = reader->GetAttribCount();
 			while (i < j)
 			{
-				attr = reader->GetAttrib(i);
+				attr = reader->GetAttribNoCheck(i);
 				if (attr->name->Equals(UTF8STRC("name")))
 				{
 					name = attr->value;
@@ -245,7 +245,7 @@ Media::Jasper::JasperReport *Media::Jasper::JasperXML::ParseJasperReport(NN<Text
 			j = reader->GetAttribCount();
 			while (i < j)
 			{
-				attr = reader->GetAttrib(i);
+				attr = reader->GetAttribNoCheck(i);
 				printf("JasperXML: Unknown attr in queryString (%s)\r\n", attr->name->v);
 				i++;
 			}
@@ -329,7 +329,7 @@ Optional<Media::Jasper::JasperBand> Media::Jasper::JasperXML::ParseBand(NN<Text:
 	UOSInt j = reader->GetAttribCount();
 	while (i < j)
 	{
-		Text::XMLAttrib *attr = reader->GetAttrib(i);
+		NN<Text::XMLAttrib> attr = reader->GetAttribNoCheck(i);
 		if (attr->name->Equals(UTF8STRC("splitType")))
 		{
 			band->SetSplitType(attr->value);

@@ -21,58 +21,49 @@
 
 Text::TextBinEnc::TextBinEncList::TextBinEncList()
 {
-	Text::TextBinEnc::ITextBinEnc *enc;
-	NEW_CLASS(this->encList, Data::ArrayList<Text::TextBinEnc::ITextBinEnc*>());
-	NEW_CLASS(enc, Text::TextBinEnc::Base64Enc());
-	this->encList->Add(enc);
-	NEW_CLASS(enc, Text::TextBinEnc::ANSITextBinEnc());
-	this->encList->Add(enc);
-	NEW_CLASS(enc, Text::TextBinEnc::UTF8TextBinEnc());
-	this->encList->Add(enc);
-	NEW_CLASS(enc, Text::TextBinEnc::UTF8LCaseTextBinEnc());
-	this->encList->Add(enc);
-	NEW_CLASS(enc, Text::TextBinEnc::UTF8UCaseTextBinEnc());
-	this->encList->Add(enc);
-	NEW_CLASS(enc, Text::TextBinEnc::CPPByteArrBinEnc());
-	this->encList->Add(enc);
-	NEW_CLASS(enc, Text::TextBinEnc::CPPTextBinEnc());
-	this->encList->Add(enc);
-	NEW_CLASS(enc, Text::TextBinEnc::HexTextBinEnc());
-	this->encList->Add(enc);
-	NEW_CLASS(enc, Text::TextBinEnc::QuotedPrintableEnc());
-	this->encList->Add(enc);
-	NEW_CLASS(enc, Text::TextBinEnc::UCS2TextBinEnc());
-	this->encList->Add(enc);
-	NEW_CLASS(enc, Text::TextBinEnc::UTF16BETextBinEnc());
-	this->encList->Add(enc);
-	NEW_CLASS(enc, Text::TextBinEnc::ASN1OIDBinEnc());
-	this->encList->Add(enc);
-	NEW_CLASS(enc, Text::TextBinEnc::FormEncoding());
-	this->encList->Add(enc);
-	NEW_CLASS(enc, Text::TextBinEnc::URIEncoding());
-	this->encList->Add(enc);
-	NEW_CLASS(enc, Text::TextBinEnc::Punycode());
-	this->encList->Add(enc);
-	NEW_CLASS(enc, Text::TextBinEnc::IntegerMSBEnc());
-	this->encList->Add(enc);
-	NEW_CLASS(enc, Text::TextBinEnc::ASCII85Enc());
-	this->encList->Add(enc);
+	NN<Text::TextBinEnc::ITextBinEnc> enc;
+	NEW_CLASSNN(enc, Text::TextBinEnc::Base64Enc());
+	this->encList.Add(enc);
+	NEW_CLASSNN(enc, Text::TextBinEnc::ANSITextBinEnc());
+	this->encList.Add(enc);
+	NEW_CLASSNN(enc, Text::TextBinEnc::UTF8TextBinEnc());
+	this->encList.Add(enc);
+	NEW_CLASSNN(enc, Text::TextBinEnc::UTF8LCaseTextBinEnc());
+	this->encList.Add(enc);
+	NEW_CLASSNN(enc, Text::TextBinEnc::UTF8UCaseTextBinEnc());
+	this->encList.Add(enc);
+	NEW_CLASSNN(enc, Text::TextBinEnc::CPPByteArrBinEnc());
+	this->encList.Add(enc);
+	NEW_CLASSNN(enc, Text::TextBinEnc::CPPTextBinEnc());
+	this->encList.Add(enc);
+	NEW_CLASSNN(enc, Text::TextBinEnc::HexTextBinEnc());
+	this->encList.Add(enc);
+	NEW_CLASSNN(enc, Text::TextBinEnc::QuotedPrintableEnc());
+	this->encList.Add(enc);
+	NEW_CLASSNN(enc, Text::TextBinEnc::UCS2TextBinEnc());
+	this->encList.Add(enc);
+	NEW_CLASSNN(enc, Text::TextBinEnc::UTF16BETextBinEnc());
+	this->encList.Add(enc);
+	NEW_CLASSNN(enc, Text::TextBinEnc::ASN1OIDBinEnc());
+	this->encList.Add(enc);
+	NEW_CLASSNN(enc, Text::TextBinEnc::FormEncoding());
+	this->encList.Add(enc);
+	NEW_CLASSNN(enc, Text::TextBinEnc::URIEncoding());
+	this->encList.Add(enc);
+	NEW_CLASSNN(enc, Text::TextBinEnc::Punycode());
+	this->encList.Add(enc);
+	NEW_CLASSNN(enc, Text::TextBinEnc::IntegerMSBEnc());
+	this->encList.Add(enc);
+	NEW_CLASSNN(enc, Text::TextBinEnc::ASCII85Enc());
+	this->encList.Add(enc);
 }
 
 Text::TextBinEnc::TextBinEncList::~TextBinEncList()
 {
-	UOSInt i;
-	Text::TextBinEnc::ITextBinEnc *enc;
-	i = this->encList->GetCount();
-	while (i-- > 0)
-	{
-		enc = this->encList->GetItem(i);
-		DEL_CLASS(enc);
-	}
-	DEL_CLASS(this->encList);
+	this->encList.DeleteAll();
 }
 
-Data::ArrayList<Text::TextBinEnc::ITextBinEnc*> *Text::TextBinEnc::TextBinEncList::GetEncList()
+NN<Data::ArrayListNN<Text::TextBinEnc::ITextBinEnc>> Text::TextBinEnc::TextBinEncList::GetEncList()
 {
 	return this->encList;
 }

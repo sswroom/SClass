@@ -65,11 +65,10 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhotoDown(NN<Net::Web
 	{
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
-		UserFileInfo *userFile;
+		NN<UserFileInfo> userFile;
 		Sync::RWMutexUsage mutUsage;
 		sptr = sbuff;
-		userFile = me->env->UserfileGetCheck(mutUsage, fileId, spId, cateId, env.user, &sptr);
-		if (userFile)
+		if (me->env->UserfileGetCheck(mutUsage, fileId, spId, cateId, env.user, &sptr).SetTo(userFile))
 		{
 			UOSInt buffSize;
 			IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
@@ -116,7 +115,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcFavicon(NN<Net::WebSe
 	return true;
 }
 
-void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, WebUserInfo *user, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, const UTF8Char *fileName)
+void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Optional<WebUserInfo> user, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, const UTF8Char *fileName)
 {
 	NN<CategoryInfo> cate;
 	NN<SpeciesInfo> sp;
@@ -127,7 +126,8 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::I
 	UTF8Char *sptr;
 	UTF8Char *sptrEnd = sbuff;
 	Sync::RWMutexUsage mutUsage;
-	Bool notAdmin = (user == 0 || user->userType != UserType::Admin);
+	NN<WebUserInfo> nnuser;
+	Bool notAdmin = (!user.SetTo(nnuser) || nnuser->userType != UserType::Admin);
 	if (this->env->SpeciesGet(mutUsage, speciesId).SetTo(sp) && sp->cateId == cateId)
 	{
 		if (this->env->CateGet(mutUsage, sp->cateId).SetTo(cate) && ((cate->flags & 1) == 0 || !notAdmin))
@@ -421,18 +421,17 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::I
 	}
 }
 
-void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, WebUserInfo *reqUser, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 fileId)
+void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Optional<WebUserInfo> reqUser, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 fileId)
 {
 	NN<SpeciesInfo> sp;
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
-	UserFileInfo *userFile;
+	NN<UserFileInfo> userFile;
 	Int32 rotateType = 0;
 	Sync::RWMutexUsage mutUsage;
-	userFile = this->env->UserfileGet(mutUsage, fileId);
-	if (this->env->SpeciesGet(mutUsage, speciesId).SetTo(sp) && sp->cateId == cateId && userFile && userFile->speciesId == speciesId && (userFile->fileType == FileType::Image || userFile->fileType == FileType::Audio))
+	if (this->env->SpeciesGet(mutUsage, speciesId).SetTo(sp) && sp->cateId == cateId && this->env->UserfileGet(mutUsage, fileId).SetTo(userFile) && userFile->speciesId == speciesId && (userFile->fileType == FileType::Image || userFile->fileType == FileType::Audio))
 	{
 		if (sp->photoId == fileId && userFile->speciesId != sp->speciesId)
 		{
@@ -441,7 +440,8 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 
 		NN<Text::String> cacheDir = Text::String::OrEmpty(this->env->GetCacheDir());
 		Data::DateTime dt;
-		WebUserInfo *user;
+		Optional<WebUserInfo> user;
+		NN<WebUserInfo> nnuser;
 		user = this->env->UserGet(mutUsage, userFile->webuserId);
 		dt.SetTicks(userFile->fileTimeTicks);
 		dt.ToUTCTime();
@@ -605,7 +605,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 					nndimg->RotateImage(Media::StaticImage::RotateType::CW270);
 				}
 
-				if (user && user->watermark->leng > 0)
+				if (user.SetTo(nnuser) && nnuser->watermark->leng > 0)
 				{
 					NN<Media::DrawImage> gimg;
 					if (gimg.Set(this->env->GetDrawEngine()->ConvImage(nndimg)))
@@ -624,7 +624,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 							while (true)
 							{
 								f = gimg->NewFontPx(CSTR("Arial"), fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
-								sz = gimg->GetTextSize(f, user->watermark->ToCString());
+								sz = gimg->GetTextSize(f, nnuser->watermark->ToCString());
 								if (!sz.HasArea())
 								{
 									gimg->DelFont(f);
@@ -638,7 +638,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 									iHeight = (UInt32)Double2Int32(sz.y);
 									if (gimg2.Set(this->env->GetDrawEngine()->CreateImage32(Math::Size2D<UOSInt>(iWidth, iHeight), Media::AT_NO_ALPHA)))
 									{
-										gimg2->DrawString(Math::Coord2DDbl(0, 0), user->watermark->ToCString(), f, b);
+										gimg2->DrawString(Math::Coord2DDbl(0, 0), nnuser->watermark->ToCString(), f, b);
 										gimg2->SetAlphaType(Media::AT_ALPHA);
 										{
 											Bool revOrder;
@@ -733,20 +733,19 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 	}
 }
 
-void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, WebUserInfo *reqUser, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 fileWId)
+void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Optional<WebUserInfo> reqUser, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 fileWId)
 {
 	NN<SpeciesInfo> sp;
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
-	WebFileInfo *wfile;
+	NN<WebFileInfo> wfile;
 	Int32 rotateType = 0;
 	Sync::RWMutexUsage mutUsage;
 	if (this->env->SpeciesGet(mutUsage, speciesId).SetTo(sp) && sp->cateId == cateId)
 	{
-		wfile = sp->wfiles.Get(fileWId);
-		if (wfile)
+		if (sp->wfiles.Get(fileWId).SetTo(wfile))
 		{
 			Data::DateTime dt;
 			NN<Text::String> cacheDir = Text::String::OrEmpty(this->env->GetCacheDir());

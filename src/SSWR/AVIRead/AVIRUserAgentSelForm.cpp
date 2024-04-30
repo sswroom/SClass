@@ -113,7 +113,6 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(Optional<UI::GUIClient
 	this->core = core;
 	this->currUserAgent = currUserAgent.v;
 	this->currUserAgentLen = currUserAgent.leng;
-	NEW_CLASS(this->osList, Data::ArrayList<SSWR::AVIRead::AVIRUserAgentSelForm::OSItem*>());
 
 	this->pnlFilter = ui->NewPanel(*this);
 	this->pnlFilter->SetRect(0, 0, 100, 31, false);
@@ -154,14 +153,14 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(Optional<UI::GUIClient
 	UOSInt j;
 	UOSInt k;
 	Bool found;
-	SSWR::AVIRead::AVIRUserAgentSelForm::OSItem *osItem;
+	NN<SSWR::AVIRead::AVIRUserAgentSelForm::OSItem> osItem;
 	Text::StringBuilderUTF8 sb;
 	Net::UserAgentDB::UAEntry *uaList = Net::UserAgentDB::GetUAEntryList(&j);
-	osItem = MemAlloc(SSWR::AVIRead::AVIRUserAgentSelForm::OSItem, 1);
+	osItem = MemAllocNN(SSWR::AVIRead::AVIRUserAgentSelForm::OSItem);
 	osItem->os = Manage::OSInfo::OT_UNKNOWN;
 	osItem->osVer = 0;
 	osItem->osVerLen = 0 ;
-	this->osList->Add(osItem);
+	this->osList.Add(osItem);
 	sb.ClearStr();
 	Manage::OSInfo::GetCommonName(sb, osItem->os, {osItem->osVer, osItem->osVerLen});
 	i = this->cboFilterOS->AddItem(sb.ToCString(), osItem);
@@ -170,10 +169,10 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(Optional<UI::GUIClient
 	while (i < j)
 	{
 		found = false;
-		k = this->osList->GetCount();
+		k = this->osList.GetCount();
 		while (k-- > 0)
 		{
-			osItem = this->osList->GetItem(k);
+			osItem = this->osList.GetItemNoCheck(k);
 			if (osItem->os == uaList[i].os && osItem->osVer == 0)
 			{
 				found = true;
@@ -182,11 +181,11 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(Optional<UI::GUIClient
 		}
 		if (!found)
 		{
-			osItem = MemAlloc(SSWR::AVIRead::AVIRUserAgentSelForm::OSItem, 1);
+			osItem = MemAllocNN(SSWR::AVIRead::AVIRUserAgentSelForm::OSItem);
 			osItem->os = uaList[i].os;
 			osItem->osVer = 0;
 			osItem->osVerLen = 0;
-			this->osList->Add(osItem);
+			this->osList.Add(osItem);
 			sb.ClearStr();
 			Manage::OSInfo::GetCommonName(sb, osItem->os, {osItem->osVer, osItem->osVerLen});
 			this->cboFilterOS->AddItem(sb.ToCString(), osItem);
@@ -195,10 +194,10 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(Optional<UI::GUIClient
 		if (uaList[i].osVer)
 		{
 			found = false;
-			k = this->osList->GetCount();
+			k = this->osList.GetCount();
 			while (k-- > 0)
 			{
-				osItem = this->osList->GetItem(k);
+				osItem = this->osList.GetItemNoCheck(k);
 				if (osItem->os == uaList[i].os && osItem->osVer != 0 && Text::StrEquals(osItem->osVer, uaList[i].osVer))
 				{
 					found = true;
@@ -207,11 +206,11 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(Optional<UI::GUIClient
 			}
 			if (!found)
 			{
-				osItem = MemAlloc(SSWR::AVIRead::AVIRUserAgentSelForm::OSItem, 1);
+				osItem = MemAllocNN(SSWR::AVIRead::AVIRUserAgentSelForm::OSItem);
 				osItem->os = uaList[i].os;
 				osItem->osVer = uaList[i].osVer;
 				osItem->osVerLen = uaList[i].osVerLen;
-				this->osList->Add(osItem);
+				this->osList.Add(osItem);
 				sb.ClearStr();
 				Manage::OSInfo::GetCommonName(sb, osItem->os, {osItem->osVer, osItem->osVerLen});
 				this->cboFilterOS->AddItem(sb.ToCString(), osItem);
@@ -232,13 +231,7 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(Optional<UI::GUIClient
 
 SSWR::AVIRead::AVIRUserAgentSelForm::~AVIRUserAgentSelForm()
 {
-	UOSInt i;
-	i = this->osList->GetCount();
-	while (i-- > 0)
-	{
-		MemFree(this->osList->GetItem(i));
-	}
-	DEL_CLASS(this->osList);
+	this->osList.MemFreeAll();
 }
 
 void SSWR::AVIRead::AVIRUserAgentSelForm::OnMonitorChanged()

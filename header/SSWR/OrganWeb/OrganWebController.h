@@ -29,17 +29,17 @@ namespace SSWR
 			static void ResponseMstm(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, NN<IO::MemoryStream> mstm, Text::CStringNN contType);
 
 			void WriteHeaderPart1(IO::Writer *writer, const UTF8Char *title, Bool isMobile);
-			void WriteHeaderPart2(IO::Writer *writer, WebUserInfo *user, const UTF8Char *onLoadFunc);
-			void WriteHeader(IO::Writer *writer, const UTF8Char *title, WebUserInfo *user, Bool isMobile);
+			void WriteHeaderPart2(IO::Writer *writer, Optional<WebUserInfo> user, const UTF8Char *onLoadFunc);
+			void WriteHeader(IO::Writer *writer, const UTF8Char *title, Optional<WebUserInfo> user, Bool isMobile);
 			void WriteFooter(IO::Writer *writer);
 			void WriteLocator(NN<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NN<GroupInfo> group, NN<CategoryInfo> cate);
 			void WriteLocatorText(NN<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NN<GroupInfo> group, NN<CategoryInfo> cate);
 			void WriteGroupTable(NN<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NN<const Data::ReadingList<Optional<GroupInfo>>> groupList, UInt32 scnWidth, Bool showSelect, Bool showAll);
 			void WriteSpeciesTable(NN<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NN<const Data::ReadingList<Optional<SpeciesInfo>>> spList, UInt32 scnWidth, Int32 cateId, Bool showSelect, Bool showModify);
 			void WritePickObjs(NN<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, RequestEnv *env, const UTF8Char *url, Bool allowMerge);
-			void WriteDataFiles(IO::Writer *writer, Data::FastMap<Data::Timestamp, DataFileInfo*> *fileMap, Int64 startTimeTicks, Int64 endTimeTicks);
+			void WriteDataFiles(IO::Writer *writer, Data::FastMapNN<Data::Timestamp, DataFileInfo> *fileMap, Int64 startTimeTicks, Int64 endTimeTicks);
 
-			static Text::CStringNN LangGetValue(IO::ConfigFile *lang, Text::CStringNN name);
+			static Text::CStringNN LangGetValue(Optional<IO::ConfigFile> lang, Text::CStringNN name);
 		public:
 			OrganWebController(Net::WebServer::MemoryWebSessionManager *sessMgr, OrganWebEnv *env, UInt32 scnSize);
 			virtual ~OrganWebController();

@@ -50,10 +50,10 @@ void Map::WebMapService::LoadXML(Version version)
 		if (nodeName->Equals(UTF8STRC("WMS_Capabilities")) || nodeName->Equals(UTF8STRC("WMT_MS_Capabilities")))
 		{
 			UOSInt i = reader.GetAttribCount();
-			Text::XMLAttrib *attr;
+			NN<Text::XMLAttrib> attr;
 			while (i-- > 0)
 			{
-				attr = reader.GetAttrib(i);
+				attr = reader.GetAttribNoCheck(i);
 				if (attr->name->Equals(UTF8STRC("version")))
 				{
 					SDEL_STRING(this->version);
@@ -197,11 +197,11 @@ void Map::WebMapService::LoadXMLLayers(NN<Text::XMLReader> reader)
 			Data::ArrayListNN<LayerCRS> layerCRS;
 			NN<LayerCRS> crs;
 			UOSInt i;
-			Text::XMLAttrib *attr;
+			NN<Text::XMLAttrib> attr;
 			i = reader->GetAttribCount();
 			while (i-- > 0)
 			{
-				attr = reader->GetAttrib(i);
+				attr = reader->GetAttribNoCheck(i);
 				if (attr->name->Equals(UTF8STRC("queryable")))
 				{
 					queryable = (attr->value != 0 && attr->value->Equals(UTF8STRC("1")));
@@ -235,7 +235,7 @@ void Map::WebMapService::LoadXMLLayers(NN<Text::XMLReader> reader)
 					i = reader->GetAttribCount();
 					while (i-- > 0)
 					{
-						attr = reader->GetAttrib(i);
+						attr = reader->GetAttribNoCheck(i);
 						if (attr->value)
 						{
 							if (attr->name->Equals(UTF8STRC("minx")))

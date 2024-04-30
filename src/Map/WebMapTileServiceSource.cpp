@@ -178,14 +178,17 @@ void Map::WebMapTileServiceSource::ReadLayer(NN<Text::XMLReader> reader)
 		}
 		else if (name->Equals(UTF8STRC("ResourceURL")))
 		{
-			Text::XMLAttrib *formatAttr = 0;
-			Text::XMLAttrib *resourceTypeAttr = 0;
-			Text::XMLAttrib *templateAttr = 0;
-			Text::XMLAttrib *attr;
+			Optional<Text::XMLAttrib> formatAttr = 0;
+			Optional<Text::XMLAttrib> resourceTypeAttr = 0;
+			Optional<Text::XMLAttrib> templateAttr = 0;
+			NN<Text::XMLAttrib> nnformatAttr;
+			NN<Text::XMLAttrib> nnresourceTypeAttr;
+			NN<Text::XMLAttrib> nntemplateAttr;
+			NN<Text::XMLAttrib> attr;
 			i = reader->GetAttribCount();
 			while (i-- > 0)
 			{
-				attr = reader->GetAttrib(i);
+				attr = reader->GetAttribNoCheck(i);
 				if (attr->name->Equals(UTF8STRC("format")))
 				{
 					formatAttr = attr;
@@ -199,16 +202,16 @@ void Map::WebMapTileServiceSource::ReadLayer(NN<Text::XMLReader> reader)
 					templateAttr = attr;
 				}
 			}
-			if (formatAttr && resourceTypeAttr && templateAttr && formatAttr->value && resourceTypeAttr->value && templateAttr->value)
+			if (formatAttr.SetTo(nnformatAttr) && resourceTypeAttr.SetTo(nnresourceTypeAttr) && templateAttr.SetTo(nntemplateAttr) && nnformatAttr->value && nnresourceTypeAttr->value && nntemplateAttr->value)
 			{
 				NN<ResourceURL> resource = MemAllocNN(ResourceURL);
-				resource->format = formatAttr->value->Clone();
-				resource->templateURL = templateAttr->value->Clone();
-				if (resourceTypeAttr->value->Equals(UTF8STRC("tile")))
+				resource->format = nnformatAttr->value->Clone();
+				resource->templateURL = nntemplateAttr->value->Clone();
+				if (nnresourceTypeAttr->value->Equals(UTF8STRC("tile")))
 				{
 					resource->resourceType = ResourceType::Tile;
 				}
-				else if (resourceTypeAttr->value->Equals(UTF8STRC("FeatureInfo")))
+				else if (nnresourceTypeAttr->value->Equals(UTF8STRC("FeatureInfo")))
 				{
 					resource->resourceType = ResourceType::FeatureInfo;
 				}

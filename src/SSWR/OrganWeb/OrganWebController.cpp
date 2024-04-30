@@ -85,7 +85,7 @@ void SSWR::OrganWeb::OrganWebController::WriteHeaderPart1(IO::Writer *writer, co
 	writer->WriteLineC(UTF8STRC("</title>"));
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteHeaderPart2(IO::Writer *writer, WebUserInfo *user, const UTF8Char *onLoadFunc)
+void SSWR::OrganWeb::OrganWebController::WriteHeaderPart2(IO::Writer *writer, Optional<WebUserInfo> user, const UTF8Char *onLoadFunc)
 {
 	NN<Text::String> s;
 	writer->WriteLineC(UTF8STRC("</HEAD>"));
@@ -99,17 +99,18 @@ void SSWR::OrganWeb::OrganWebController::WriteHeaderPart2(IO::Writer *writer, We
 		s->Release();
 	}
 	writer->WriteLineC(UTF8STRC(">"));
-	if (user)
+	NN<WebUserInfo> nnuser;
+	if (user.SetTo(nnuser))
 	{
 		writer->WriteStrC(UTF8STRC("<p align=\"right\">"));
-		s = Text::XML::ToNewHTMLBodyText(user->userName->v);
+		s = Text::XML::ToNewHTMLBodyText(nnuser->userName->v);
 		writer->WriteStrC(s->v, s->leng);
 		s->Release();
 		writer->WriteLineC(UTF8STRC("<a href=\"logout\">Logout</a></p>"));
 	}
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteHeader(IO::Writer *writer, const UTF8Char *title, WebUserInfo *user, Bool isMobile)
+void SSWR::OrganWeb::OrganWebController::WriteHeader(IO::Writer *writer, const UTF8Char *title, Optional<WebUserInfo> user, Bool isMobile)
 {
 	this->WriteHeaderPart1(writer, title, isMobile);
 	this->WriteHeaderPart2(writer, user, 0);
@@ -123,7 +124,7 @@ void SSWR::OrganWeb::OrganWebController::WriteFooter(IO::Writer *writer)
 
 void SSWR::OrganWeb::OrganWebController::WriteLocator(NN<Sync::RWMutexUsage> mutUsage, IO::Writer *writer, NN<GroupInfo> group, NN<CategoryInfo> cate)
 {
-	GroupTypeInfo *grpType;
+	NN<GroupTypeInfo> grpType;
 	NN<Text::String> s;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[12];
@@ -160,9 +161,8 @@ void SSWR::OrganWeb::OrganWebController::WriteLocator(NN<Sync::RWMutexUsage> mut
 	{
 		if (groupList.GetItem(i).SetTo(group))
 		{
-			grpType = cate->groupTypes.Get(group->groupType);
 			writer->WriteLineC(UTF8STRC("<tr>"));
-			if (grpType)
+			if (cate->groupTypes.Get(group->groupType).SetTo(grpType))
 			{
 				writer->WriteStrC(UTF8STRC("<td>"));
 				s = Text::XML::ToNewHTMLBodyText(grpType->chiName->v);
@@ -250,6 +250,7 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NN<Sync::RWMutexUsage> 
 {
 	NN<GroupInfo> group;
 	NN<Text::String> s;
+	NN<SpeciesInfo> photoSpObj;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
@@ -288,14 +289,14 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NN<Sync::RWMutexUsage> 
 					sb.AppendC(UTF8STRC("\">"));
 					writer->WriteLineC(sb.ToString(), sb.GetCharCnt());
 
-					if (group->photoSpObj && (!group->photoSpObj->photo.IsNull() || group->photoSpObj->photoId != 0 || group->photoSpObj->photoWId != 0))
+					if (group->photoSpObj.SetTo(photoSpObj) && (!photoSpObj->photo.IsNull() || photoSpObj->photoId != 0 || photoSpObj->photoWId != 0))
 					{
-						if (group->photoSpObj->photoId != 0)
+						if (photoSpObj->photoId != 0)
 						{
 							writer->WriteStrC(UTF8STRC("<img src="));
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("photo.html?id="));
-							sb.AppendI32(group->photoSpObj->speciesId);
+							sb.AppendI32(photoSpObj->speciesId);
 							sb.AppendC(UTF8STRC("&cateId="));
 							sb.AppendI32(group->cateId);
 							sb.AppendC(UTF8STRC("&width="));
@@ -303,7 +304,7 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NN<Sync::RWMutexUsage> 
 							sb.AppendC(UTF8STRC("&height="));
 							sb.AppendI32(PREVIEW_SIZE);
 							sb.AppendC(UTF8STRC("&fileId="));
-							sb.AppendI32(group->photoSpObj->photoId);
+							sb.AppendI32(photoSpObj->photoId);
 							s = Text::XML::ToNewAttrText(sb.ToString());
 							writer->WriteStrC(s->v, s->leng);
 							s->Release();
@@ -313,12 +314,12 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NN<Sync::RWMutexUsage> 
 							s->Release();
 							writer->WriteLineC(UTF8STRC("><br/>"));
 						}
-						else if (group->photoSpObj->photoWId != 0)
+						else if (photoSpObj->photoWId != 0)
 						{
 							writer->WriteStrC(UTF8STRC("<img src="));
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("photo.html?id="));
-							sb.AppendI32(group->photoSpObj->speciesId);
+							sb.AppendI32(photoSpObj->speciesId);
 							sb.AppendC(UTF8STRC("&cateId="));
 							sb.AppendI32(group->cateId);
 							sb.AppendC(UTF8STRC("&width="));
@@ -326,7 +327,7 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NN<Sync::RWMutexUsage> 
 							sb.AppendC(UTF8STRC("&height="));
 							sb.AppendI32(PREVIEW_SIZE);
 							sb.AppendC(UTF8STRC("&fileWId="));
-							sb.AppendI32(group->photoSpObj->photoWId);
+							sb.AppendI32(photoSpObj->photoWId);
 							s = Text::XML::ToNewAttrText(sb.ToString());
 							writer->WriteStrC(s->v, s->leng);
 							s->Release();
@@ -341,7 +342,7 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NN<Sync::RWMutexUsage> 
 							writer->WriteStrC(UTF8STRC("<img src="));
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("photo.html?id="));
-							sb.AppendI32(group->photoSpObj->speciesId);
+							sb.AppendI32(photoSpObj->speciesId);
 							sb.AppendC(UTF8STRC("&cateId="));
 							sb.AppendI32(group->cateId);
 							sb.AppendC(UTF8STRC("&width="));
@@ -349,7 +350,7 @@ void SSWR::OrganWeb::OrganWebController::WriteGroupTable(NN<Sync::RWMutexUsage> 
 							sb.AppendC(UTF8STRC("&height="));
 							sb.AppendI32(PREVIEW_SIZE);
 							sb.AppendC(UTF8STRC("&file="));
-							sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, Text::String::OrEmpty(group->photoSpObj->photo)->v);
+							sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, Text::String::OrEmpty(photoSpObj->photo)->v);
 							sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 							s = Text::XML::ToNewAttrText(sb.ToString());
 							writer->WriteStrC(s->v, s->leng);
@@ -675,12 +676,13 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NN<Sync::RWMutexUsage> mu
 	UInt32 colCount = env->scnWidth / PREVIEW_SIZE;
 	UInt32 colWidth = 100 / colCount;
 	UInt32 currColumn;
-	UserFileInfo *userFile;
+	NN<WebUserInfo> user;
+	NN<UserFileInfo> userFile;
 	NN<SpeciesInfo> species;
 	Data::DateTime dt;
 	UTF8Char sbuff2[64];
 	UTF8Char *sptr2;
-	if (env->pickObjType == POT_USERFILE && env->pickObjs->GetCount() > 0)
+	if (env->pickObjType == POT_USERFILE && env->pickObjs->GetCount() > 0 && env->user.SetTo(user))
 	{
 		currColumn = 0;
 		sb.ClearStr();
@@ -697,8 +699,7 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NN<Sync::RWMutexUsage> mu
 		j = env->pickObjs->GetCount();
 		while (i < j)
 		{
-			userFile = this->env->UserfileGet(mutUsage, env->pickObjs->GetItem(i));
-			if (userFile && this->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(species))
+			if (this->env->UserfileGet(mutUsage, env->pickObjs->GetItem(i)).SetTo(userFile) && this->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(species))
 			{
 				if (currColumn == 0)
 				{
@@ -761,7 +762,7 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NN<Sync::RWMutexUsage> mu
 
 				sptr2 = dt.ToString(sbuff2, "yyyy-MM-dd HH:mm:ss zzzz");
 				writer->WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
-				if (userFile->webuserId == env->user->id)
+				if (userFile->webuserId == user->id)
 				{
 					if (userFile->location.SetTo(s))
 					{
@@ -778,7 +779,7 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NN<Sync::RWMutexUsage> mu
 					writer->WriteStrC(s->v, s->leng);
 					s->Release();
 				}
-				if (userFile->webuserId == env->user->id)
+				if (userFile->webuserId == user->id)
 				{
 					writer->WriteStrC(UTF8STRC("<br/>"));
 					s = Text::XML::ToNewHTMLBodyText(userFile->oriFileName->v);
@@ -896,7 +897,7 @@ void SSWR::OrganWeb::OrganWebController::WritePickObjs(NN<Sync::RWMutexUsage> mu
 	}
 }
 
-void SSWR::OrganWeb::OrganWebController::WriteDataFiles(IO::Writer *writer, Data::FastMap<Data::Timestamp, DataFileInfo*> *fileMap, Int64 startTimeTicks, Int64 endTimeTicks)
+void SSWR::OrganWeb::OrganWebController::WriteDataFiles(IO::Writer *writer, Data::FastMapNN<Data::Timestamp, DataFileInfo> *fileMap, Int64 startTimeTicks, Int64 endTimeTicks)
 {
 	OSInt startIndex;
 	OSInt endIndex;
@@ -904,14 +905,14 @@ void SSWR::OrganWeb::OrganWebController::WriteDataFiles(IO::Writer *writer, Data
 	startIndex = fileMap->GetIndex(Data::Timestamp(startTimeTicks, 0));
 	if (startIndex < 0)
 		startIndex = ~startIndex;
-	if (startIndex > 0 && fileMap->GetItem((UOSInt)startIndex - 1)->endTime.ToTicks() > startTimeTicks)
+	if (startIndex > 0 && fileMap->GetItemNoCheck((UOSInt)startIndex - 1)->endTime.ToTicks() > startTimeTicks)
 		startIndex--;
 	endIndex = fileMap->GetIndex(Data::Timestamp(endTimeTicks, 0));
 	if (endIndex < 0)
 		endIndex = ~endIndex;
 	while (startIndex < endIndex)
 	{
-		DataFileInfo *dataFile = fileMap->GetItem((UOSInt)startIndex);
+		NN<DataFileInfo> dataFile = fileMap->GetItemNoCheck((UOSInt)startIndex);
 		sb.ClearStr();
 		//sb.AppendC(UTF8STRC("<a href=\"datafile.html\">"));
 		if (dataFile->fileType == DataFileType::GPSTrack)
@@ -935,12 +936,13 @@ void SSWR::OrganWeb::OrganWebController::WriteDataFiles(IO::Writer *writer, Data
 	}
 }
 
-Text::CStringNN SSWR::OrganWeb::OrganWebController::LangGetValue(IO::ConfigFile *lang, Text::CStringNN name)
+Text::CStringNN SSWR::OrganWeb::OrganWebController::LangGetValue(Optional<IO::ConfigFile> lang, Text::CStringNN name)
 {
-	if (lang == 0)
+	NN<IO::ConfigFile> nnlang;
+	if (!lang.SetTo(nnlang))
 		return name;
 	NN<Text::String> s;
-	if (lang->GetValue(name).SetTo(s))
+	if (nnlang->GetValue(name).SetTo(s))
 		return s->ToCString();
 	return name;
 }

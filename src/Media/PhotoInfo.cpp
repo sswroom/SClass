@@ -10,25 +10,25 @@
 
 void Media::PhotoInfo::ParseXMF(NN<Text::XMLDocument> xmf)
 {
-	Text::XMLNode *node;
-	if ((node = xmf->SearchFirstNode(CSTR("//@exif:ExposureTime"))) != 0)
+	NN<Text::XMLNode> node;
+	if (xmf->SearchFirstNode(CSTR("//@exif:ExposureTime")).SetTo(node))
 	{
 		this->expTime = ParseFraction(node->value);
 	}
-	if ((node = xmf->SearchFirstNode(CSTR("//@exif:FNumber"))) != 0)
+	if (xmf->SearchFirstNode(CSTR("//@exif:FNumber")).SetTo(node))
 	{
 		this->fNumber = ParseFraction(node->value);
 	}
-	if ((node = xmf->SearchFirstNode(CSTR("//@aux:Lens"))) != 0)
+	if (xmf->SearchFirstNode(CSTR("//@aux:Lens")).SetTo(node))
 	{
 		OPTSTR_DEL(this->lens);
 		this->lens = node->value->Clone();
 	}
-	if ((node = xmf->SearchFirstNode(CSTR("//@exif:FocalLength"))) != 0)
+	if (xmf->SearchFirstNode(CSTR("//@exif:FocalLength")).SetTo(node))
 	{
 		this->focalLength = ParseFraction(node->value);
 	}
-	if ((node = xmf->SearchFirstNode(CSTR("//exif:ISOSpeedRatings"))) != 0)
+	if (xmf->SearchFirstNode(CSTR("//exif:ISOSpeedRatings")).SetTo(node))
 	{
 		Text::StringBuilderUTF8 sb;
 		node->GetInnerText(sb);

@@ -397,7 +397,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnViewClicked(AnyType userObj)
 			{
 				contType = CSTR("application/octet-stream");
 			}
-			if (mimeObj.Set(Text::IMIMEObj::ParseFromData(md, contType)))
+			if (Text::IMIMEObj::ParseFromData(md, contType).SetTo(mimeObj))
 			{
 				me->core->OpenObject(mimeObj);
 			}

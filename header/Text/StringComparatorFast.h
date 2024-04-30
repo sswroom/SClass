@@ -5,10 +5,10 @@
 
 namespace Text
 {
-	class StringComparatorFast : public Data::Comparator<Text::String*>
+	class StringComparatorFast : public Data::Comparator<NN<Text::String>>
 	{
 	public:
-		virtual OSInt Compare(Text::String *a, Text::String *b) const
+		virtual OSInt Compare(NN<Text::String> a, NN<Text::String> b) const
 		{
 			return a->CompareToFast(b->ToCString());
 		}

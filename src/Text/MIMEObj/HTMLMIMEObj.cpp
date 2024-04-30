@@ -43,15 +43,15 @@ Text::CStringNN Text::MIMEObj::HTMLMIMEObj::GetContentType() const
 	return this->contType->ToCString();
 }
 
-UOSInt Text::MIMEObj::HTMLMIMEObj::WriteStream(IO::Stream *stm) const
+UOSInt Text::MIMEObj::HTMLMIMEObj::WriteStream(NN<IO::Stream> stm) const
 {
 	return stm->Write(this->textBuff, this->buffSize);
 }
 
-Text::IMIMEObj *Text::MIMEObj::HTMLMIMEObj::Clone() const
+NN<Text::IMIMEObj> Text::MIMEObj::HTMLMIMEObj::Clone() const
 {
-	Text::MIMEObj::HTMLMIMEObj *txt;
-	NEW_CLASS(txt, Text::MIMEObj::HTMLMIMEObj(this->textBuff, this->buffSize, this->codePage));
+	NN<Text::MIMEObj::HTMLMIMEObj> txt;
+	NEW_CLASSNN(txt, Text::MIMEObj::HTMLMIMEObj(this->textBuff, this->buffSize, this->codePage));
 	return txt;
 }
 

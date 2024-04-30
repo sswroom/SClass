@@ -1,7 +1,7 @@
 #ifndef _SM_TEXT_ENCODINGFACTORY
 #define _SM_TEXT_ENCODINGFACTORY
 #include "Data/ArrayListInt32.h"
-#include "Data/FastStringMap.h"
+#include "Data/FastStringMapNN.h"
 
 namespace Text
 {
@@ -17,7 +17,7 @@ namespace Text
 		} EncodingInfo;
 
 	private:
-		Data::FastStringMap<EncodingInfo*> encMap;
+		Data::FastStringMapNN<EncodingInfo> encMap;
 		static EncodingInfo encInfo[];
 	public:
 		EncodingFactory();
@@ -30,7 +30,7 @@ namespace Text
 		static UTF8Char *GetDotNetName(UTF8Char *buff, UInt32 codePage);
 		static UInt32 GetSystemCodePage();
 		static UInt32 GetSystemLCID();
-		static void GetCodePages(Data::ArrayList<UInt32> *codePages);
+		static void GetCodePages(NN<Data::ArrayList<UInt32>> codePages);
 	};
 }
 #endif
