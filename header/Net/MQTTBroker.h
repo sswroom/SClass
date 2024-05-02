@@ -62,13 +62,13 @@ namespace Net
 	private:
 		NN<Net::SocketFactory> sockf;
 		NN<IO::LogTool> log;
-		Data::ArrayList<Listener*> listeners;
+		Data::ArrayListNN<Listener> listeners;
 		IO::ProtoHdlr::ProtoMQTTHandler protoHdlr;
 		Net::WebServer::WebSocketHandler wsHdlr;
 		Sync::Mutex topicMut;
-		Data::FastStringMap<TopicInfo*> topicMap;
+		Data::FastStringMapNN<TopicInfo> topicMap;
 		Sync::Mutex subscribeMut;
-		Data::ArrayList<SubscribeInfo*> subscribeList;
+		Data::ArrayListNN<SubscribeInfo> subscribeList;
 		Int64 infoTotalRecv;
 		UInt64 infoTotalSent;
 		Int64 infoCliDisconn;
@@ -103,7 +103,7 @@ namespace Net
 		virtual void DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
 		virtual void DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt8 *buff, UOSInt buffSize);
 		void UpdateTopic(Text::CStringNN topic, const UInt8 *message, UOSInt msgSize, Bool suppressUnchg);
-		Bool TopicSend(NN<IO::Stream> stm, AnyType stmData, const TopicInfo *topic);
+		Bool TopicSend(NN<IO::Stream> stm, AnyType stmData, NN<const TopicInfo> topic);
 
 		virtual AnyType StreamCreated(NN<IO::Stream> stm);
 		virtual void StreamData(NN<IO::Stream> stm, AnyType stmData, const Data::ByteArrayR &buff);

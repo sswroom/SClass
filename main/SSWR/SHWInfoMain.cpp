@@ -851,8 +851,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	}
 //-------------------------------------------------------------------------------
 	{
-		Data::ArrayList<IO::USBInfo*> usbList;
-		IO::USBInfo *usb;
+		Data::ArrayListNN<IO::USBInfo> usbList;
+		NN<IO::USBInfo> usb;
 		const IO::DeviceDB::USBDeviceInfo *dev;
 		IO::USBInfo::GetUSBList(usbList);
 		console->WriteLine();
@@ -863,7 +863,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		j = usbList.GetCount();
 		while (i < j)
 		{
-			usb = usbList.GetItem(i);
+			usb = usbList.GetItemNoCheck(i);
 			dev = IO::DeviceDB::GetUSBInfo(usb->GetVendorId(), usb->GetProductId(), usb->GetRevision());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("USB "));
@@ -912,14 +912,14 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
-			DEL_CLASS(usb);
+			usb.Delete();
 			i++;
 		}
 	}
 //-------------------------------------------------------------------------------
 	{
-		Data::ArrayList<IO::PCIInfo*> pciList;
-		IO::PCIInfo *pci;
+		Data::ArrayListNN<IO::PCIInfo> pciList;
+		NN<IO::PCIInfo> pci;
 		const IO::DeviceDB::DeviceInfo *dev;
 		IO::PCIInfo::GetPCIList(pciList);
 		console->WriteLine();
@@ -930,7 +930,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		j = pciList.GetCount();
 		while (i < j)
 		{
-			pci = pciList.GetItem(i);
+			pci = pciList.GetItemNoCheck(i);
 			dev = IO::DeviceDB::GetPCIInfo(pci->GetVendorId(), pci->GetProductId());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("PCI "));
@@ -975,14 +975,14 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
-			DEL_CLASS(pci);
+			pci.Delete();
 			i++;
 		}
 	}
 //-------------------------------------------------------------------------------
 	{
-		Data::ArrayList<IO::SDCardInfo*> sdList;
-		IO::SDCardInfo *sdcard;
+		Data::ArrayListNN<IO::SDCardInfo> sdList;
+		NN<IO::SDCardInfo> sdcard;
 		IO::SDCardMgr::GetCardList(sdList);
 		console->WriteLine();
 		writer->WriteLine();
@@ -994,7 +994,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		{
 			UTF8Char oemId[6];
 
-			sdcard = sdList.GetItem(i);
+			sdcard = sdList.GetItemNoCheck(i);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("SD Card "));
 			sb.AppendUOSInt(i);
@@ -1074,7 +1074,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 			console->WriteLine();
 			writer->WriteLine();
-			DEL_CLASS(sdcard);
+			sdcard.Delete();
 			i++;
 		}
 	}

@@ -67,7 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRFileSizePackForm::OnMoveClicked(AnyType userOb
 			return;
 		if (sptr2 != sptr)
 		{
-			SSWR::AVIRead::AVIRFileSizePackForm::MyFile *file;
+			NN<SSWR::AVIRead::AVIRFileSizePackForm::MyFile> file;
 			UOSInt i;
 			IO::Path::CreateDirectory(CSTRP(sbuff, sptr2));
 			sptr = sptr2;
@@ -80,7 +80,7 @@ void __stdcall SSWR::AVIRead::AVIRFileSizePackForm::OnMoveClicked(AnyType userOb
 			i = me->packList.GetCount();
 			while (i-- > 0)
 			{
-				file = me->packList.GetItem(i);
+				file = me->packList.GetItemNoCheck(i);
 				sptrEnd = file->GetName()->ConcatTo(sptr);
 				sptr2End = file->GetName()->ConcatTo(sptr2);
 				IO::FileUtil::MoveFile(CSTRP(sbuff2, sptr2End), CSTRP(sbuff, sptrEnd), IO::FileUtil::FileExistAction::Fail, 0, 0);
@@ -106,15 +106,7 @@ void __stdcall SSWR::AVIRead::AVIRFileSizePackForm::OnMoveClicked(AnyType userOb
 
 void SSWR::AVIRead::AVIRFileSizePackForm::ReleaseObjects()
 {
-	SSWR::AVIRead::AVIRFileSizePackForm::MyFile *file;
-	UOSInt i;
-	i = this->fileList.GetCount();
-	while (i-- > 0)
-	{
-		file = this->fileList.GetItem(i);
-		DEL_CLASS(file);
-	}
-	this->fileList.Clear();
+	this->fileList.DeleteAll();
 	this->packList.Clear();
 }
 
@@ -126,7 +118,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
-	SSWR::AVIRead::AVIRFileSizePackForm::MyFile *file;
+	NN<SSWR::AVIRead::AVIRFileSizePackForm::MyFile> file;
 	IO::Path::FindFileSession *sess;
 	UOSInt i;
 	UOSInt j;
@@ -177,7 +169,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 		{
 			if (pt == IO::Path::PathType::File)
 			{
-				NEW_CLASS(file, MyFile(CSTRP(sptr, sptr2), fileSize));
+				NEW_CLASSNN(file, MyFile(CSTRP(sptr, sptr2), fileSize));
 				this->fileList.Add(file);
 				totalFileSize += fileSize;
 			}
@@ -190,7 +182,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 		i = 0;
 		while (i < arrSize)
 		{
-			file = this->fileList.GetItem(i);
+			file = this->fileList.GetItemNoCheck(i);
 			sb.ClearStr();
 			file->ToString(sb);
 			this->lbFileDir->AddItem(sb.ToCString(), file);
@@ -210,7 +202,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 		j = this->fileList.GetCount();
 		while (i < j)
 		{
-			file = this->fileList.GetItem(i);
+			file = this->fileList.GetItemNoCheck(i);
 			sb.ClearStr();
 			file->ToString(sb);
 			this->lbFilePack->AddItem(sb.ToCString(), file);
@@ -224,7 +216,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 
 	UInt64 dirSize;
 	this->packList.Clear();
-	dirSize = NewCalc(&this->fileList, &this->packList, maxSize, minSize);
+	dirSize = NewCalc(this->fileList, this->packList, maxSize, minSize);
 
 	if (this->packList.GetCount() > 0)
 	{
@@ -233,7 +225,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 		j = this->packList.GetCount();
 		while (i < j)
 		{
-			file = this->packList.GetItem(i);
+			file = this->packList.GetItemNoCheck(i);
 			sb.ClearStr();
 			file->ToString(sb);
 			this->lbFilePack->AddItem(sb.ToCString(), file);
@@ -249,7 +241,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 	}
 }
 
-UInt64 SSWR::AVIRead::AVIRFileSizePackForm::NewCalc(Data::ArrayList<SSWR::AVIRead::AVIRFileSizePackForm::MyFile *> *fileList, Data::ArrayList<SSWR::AVIRead::AVIRFileSizePackForm::MyFile *> *packList, UInt64 maxSize, UInt64 minSize)
+UInt64 SSWR::AVIRead::AVIRFileSizePackForm::NewCalc(NN<Data::ArrayListNN<SSWR::AVIRead::AVIRFileSizePackForm::MyFile>> fileList, NN<Data::ArrayListNN<SSWR::AVIRead::AVIRFileSizePackForm::MyFile>> packList, UInt64 maxSize, UInt64 minSize)
 {
 	UInt64 currMaxSize = 0;
 	UOSInt leng = fileList->GetCount();
@@ -257,12 +249,12 @@ UInt64 SSWR::AVIRead::AVIRFileSizePackForm::NewCalc(Data::ArrayList<SSWR::AVIRea
 	UOSInt listCount = 0;
 	UOSInt j;
 	UInt64 currSize = 0;
-	MyFile *currItem;
+	NN<MyFile> currItem;
     list[0] = 0;
     listCount = 1;
 	while (listCount >= 1)
 	{
-		currItem = fileList->GetItem(list[listCount - 1]);
+		currItem = fileList->GetItemNoCheck(list[listCount - 1]);
         currSize += currItem->GetSize();
         if (currSize > maxSize)
 		{
@@ -275,7 +267,7 @@ UInt64 SSWR::AVIRead::AVIRFileSizePackForm::NewCalc(Data::ArrayList<SSWR::AVIRea
 				{
                     break;
 				}
-                currItem = fileList->GetItem(list[listCount - 1]);
+                currItem = fileList->GetItemNoCheck(list[listCount - 1]);
                 currSize -= currItem->GetSize();
                 list[listCount - 1] += 1;
 			}
@@ -289,7 +281,7 @@ UInt64 SSWR::AVIRead::AVIRFileSizePackForm::NewCalc(Data::ArrayList<SSWR::AVIRea
                 j = 0;
                 while (j < listCount)
 				{
-					packList->Add(fileList->GetItem(list[j]));
+					packList->Add(fileList->GetItemNoCheck(list[j]));
                     j++;
 				}
 
@@ -301,7 +293,7 @@ UInt64 SSWR::AVIRead::AVIRFileSizePackForm::NewCalc(Data::ArrayList<SSWR::AVIRea
 			}
             if (listCount == leng)
 			{
-                currItem = fileList->GetItem(list[listCount - 1]);
+                currItem = fileList->GetItemNoCheck(list[listCount - 1]);
                 currSize -= currItem->GetSize();
                 list[listCount - 1] += 1;
                 while (list[listCount - 1] >= leng)
@@ -311,7 +303,7 @@ UInt64 SSWR::AVIRead::AVIRFileSizePackForm::NewCalc(Data::ArrayList<SSWR::AVIRea
 					{
                         break;
 					}
-                    currItem = fileList->GetItem(list[listCount - 1]);
+                    currItem = fileList->GetItemNoCheck(list[listCount - 1]);
                     currSize -= currItem->GetSize();
                     list[listCount - 1] += 1;
 				}
@@ -328,7 +320,7 @@ UInt64 SSWR::AVIRead::AVIRFileSizePackForm::NewCalc(Data::ArrayList<SSWR::AVIRea
 						{
                             break;
 						}
-                        currItem = fileList->GetItem(list[listCount]);
+                        currItem = fileList->GetItemNoCheck(list[listCount]);
                         currSize -= currItem->GetSize();
                         list[listCount] += 1;
 					}

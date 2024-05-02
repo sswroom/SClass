@@ -166,7 +166,7 @@ UInt8 *Text::SMSMessage::ToPDUPhone(UInt8 *buff, const UTF16Char *phoneNum, UInt
 	return buff;
 }
 
-Text::SMSMessage::SMSMessage(const UTF16Char *address, const UTF16Char *smsc, SMSUserData *ud)
+Text::SMSMessage::SMSMessage(const UTF16Char *address, const UTF16Char *smsc, Optional<SMSUserData> ud)
 {
 	if (Text::SMSUtil::IsPhone(address) && (smsc == 0 || Text::SMSUtil::IsPhone(smsc)))
 	{
@@ -195,10 +195,7 @@ Text::SMSMessage::SMSMessage(const UTF16Char *address, const UTF16Char *smsc, SM
 
 Text::SMSMessage::~SMSMessage()
 {
-	if (this->ud)
-	{
-		DEL_CLASS(this->ud);
-	}
+	this->ud.Delete();
 	if (this->address)
 	{
 		Text::StrDelNew(this->address);
@@ -256,13 +253,17 @@ const UTF16Char *Text::SMSMessage::GetSMSC()
 
 const UTF16Char *Text::SMSMessage::GetContent()
 {
-	if (this->ud)
-		return this->ud->GetMessage();
+	NN<SMSUserData> ud;
+	if (this->ud.SetTo(ud))
+		return ud->GetMessage();
 	return 0;
 }
 
 UOSInt Text::SMSMessage::ToSubmitPDU(UInt8 *buff)
 {
+	NN<SMSUserData> ud;
+	if (!this->ud.SetTo(ud))
+		return 0;
 	UInt8 *currPtr = buff;
 	*currPtr++ = 0;
 	currPtr[0] = 1;
@@ -270,7 +271,7 @@ UOSInt Text::SMSMessage::ToSubmitPDU(UInt8 *buff)
 		currPtr[0] |= 4;
 	if (this->replyPath)
 		currPtr[0] |= 128;
-	if (this->ud->HasUDH())
+	if (ud->HasUDH())
 		currPtr[0] |= 64;
 	if (this->statusReport)
 		currPtr[0] |= 32;
@@ -290,7 +291,7 @@ Text::SMSMessage *Text::SMSMessage::CreateFromPDU(const UInt8 *pduBytes)
 	UTF16Char *smsc;
 	UTF16Char *address;
 	Data::DateTime msgTime;
-	Text::SMSUserData *ud;
+	Optional<Text::SMSUserData> ud;
 	Text::SMSMessage *msg;
 
 	if (pduBytes[0] == 0)

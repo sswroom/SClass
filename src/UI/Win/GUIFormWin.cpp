@@ -368,8 +368,8 @@ void UI::GUIForm::UpdateHAcc()
 	{
 		UOSInt i;
 		ACCEL *accels;
-		Data::ArrayList<UI::GUIMenu::ShortcutKey*> keys;
-		UI::GUIMenu::ShortcutKey *key;
+		Data::ArrayListNN<UI::GUIMenu::ShortcutKey> keys;
+		NN<UI::GUIMenu::ShortcutKey> key;
 		menu->GetAllKeys(keys);
 		i = keys.GetCount();
 		if (i > 0)
@@ -377,7 +377,7 @@ void UI::GUIForm::UpdateHAcc()
 			accels = MemAlloc(ACCEL, i);
 			while (i-- > 0)
 			{
-				key = keys.GetItem(i);
+				key = keys.GetItemNoCheck(i);
 				accels[i].fVirt = FVIRTKEY;
 				if (key->keyModifier & UI::GUIMenu::KM_ALT)
 					accels[i].fVirt |= FALT;

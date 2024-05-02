@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_BENCHMARK_BENCHMARKTEST
 #define _SM_SSWR_BENCHMARK_BENCHMARKTEST
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 
 namespace SSWR
 {
@@ -52,8 +52,8 @@ namespace SSWR
 			Int64 testTime;
 			Int64 totalMemSize;
 			Int64 totalUsableMemSize;
-			Data::ArrayList<RAMInfo*> *ramList;
-			Data::ArrayList<MonitorInfo*> *monList;
+			Data::ArrayListNN<RAMInfo> *ramList;
+			Data::ArrayListNN<MonitorInfo> *monList;
 			Double apiTimeGetTime;
 			Double apiTimeGetThreadId;
 			Double apiTimeMutexLockUnlock;

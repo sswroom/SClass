@@ -15,13 +15,13 @@ namespace UtilUI
 		NN<UI::GUITextBox> txtLine;
 		NN<UI::GUIButton> btnOk;
 		NN<UI::GUIButton> btnCancel;
-		Media::MonitorMgr *monMgr;
+		NN<Media::MonitorMgr> monMgr;
 		UOSInt currLine;
 
 		static void __stdcall OnOKClicked(AnyType userObj);
 		static void __stdcall OnCancelClicked(AnyType userObj);
 	public:
-		TextGotoDialog(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, Media::MonitorMgr *monMgr);
+		TextGotoDialog(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::MonitorMgr> monMgr);
 		virtual ~TextGotoDialog();
 
 		virtual void OnShow();

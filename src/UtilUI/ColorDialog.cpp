@@ -1425,7 +1425,7 @@ void UtilUI::ColorDialog::UpdateColor()
 	srcBTran.Delete();
 }
 
-UtilUI::ColorDialog::ColorDialog(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, Media::ColorManager *colorMgr, NN<Media::DrawEngine> eng, ColorCorrType colorCorr, NN<const Media::ColorProfile> colorProfile, Media::MonitorMgr *monMgr) : UI::GUIForm(parent, 756, 640, ui)
+UtilUI::ColorDialog::ColorDialog(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::ColorManager> colorMgr, NN<Media::DrawEngine> eng, ColorCorrType colorCorr, NN<const Media::ColorProfile> colorProfile, Optional<Media::MonitorMgr> monMgr) : UI::GUIForm(parent, 756, 640, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Color Setting"));
@@ -1444,9 +1444,10 @@ UtilUI::ColorDialog::ColorDialog(Optional<UI::GUIClientControl> parent, NN<UI::G
 	this->textUpdating = CT_UNKNOWN;
 	this->colorCorr = colorCorr;
 	NEW_CLASS(this->colorProfile, Media::ColorProfile(colorProfile));
-	if (this->monMgr)
+	NN<Media::MonitorMgr> nnmonMgr;
+	if (this->monMgr.SetTo(nnmonMgr))
 	{
-		this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
+		this->SetDPI(nnmonMgr->GetMonitorHDPI(this->GetHMonitor()), nnmonMgr->GetMonitorDDPI(this->GetHMonitor()));
 	}
 
 	this->pbMain = ui->NewPictureBox(*this, eng, true, false);
@@ -1694,9 +1695,10 @@ void UtilUI::ColorDialog::ShowAlpha()
 void UtilUI::ColorDialog::OnMonitorChanged()
 {
 	this->colorSess->ChangeMonitor(this->GetHMonitor());
-	if (this->monMgr)
+	NN<Media::MonitorMgr> nnmonMgr;
+	if (this->monMgr.SetTo(nnmonMgr))
 	{
-		this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
+		this->SetDPI(nnmonMgr->GetMonitorHDPI(this->GetHMonitor()), nnmonMgr->GetMonitorDDPI(this->GetHMonitor()));
 
 		Media::ColorProfile color;
 		color.SetCommonProfile(Media::ColorProfile::CPT_SRGB);

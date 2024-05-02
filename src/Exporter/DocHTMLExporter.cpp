@@ -128,7 +128,7 @@ a:hover {color:#FF00FF;}
 	j = doc->GetCount();
 	while (i < j)
 	{
-		WriteItems(writer, doc->GetItem(i), UTF8STRC("body"));
+		WriteItems(writer, doc->GetItemNoCheck(i), CSTR("body"));
 		i++;
 	}
 
@@ -149,38 +149,38 @@ void Exporter::DocHTMLExporter::WriteColor(IO::Writer *writer, UInt32 color)
 	writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff)); 
 }
 
-void Exporter::DocHTMLExporter::WriteItems(IO::Writer *writer, Data::ReadingList<Text::Doc::DocItem *> *items, const UTF8Char *parentNodeName, UOSInt nameLen)
+void Exporter::DocHTMLExporter::WriteItems(IO::Writer *writer, NN<Data::ReadingListNN<Text::Doc::DocItem>> items, Text::CStringNN parentNodeName)
 {
-	Text::Doc::DocItem *item;
+	NN<Text::Doc::DocItem> item;
 	UOSInt i = 0;
 	UOSInt j = items->GetCount();
 	NN<Text::String> s;
 	Text::Doc::DocItem::HorizontalAlign halign;
-	Text::Doc::DocHeading *heading;
+	NN<Text::Doc::DocHeading> heading;
 	while (i < j)
 	{
-		item = items->GetItem(i);
+		item = items->GetItemNoCheck(i);
 		switch (item->GetItemType())
 		{
 		case Text::Doc::DocItem::DIT_URL:
-			if (Text::StrEqualsC(parentNodeName, nameLen, UTF8STRC("body")))
+			if (parentNodeName.Equals(CSTR("body")))
 			{
 				writer->WriteStrC(UTF8STRC("<p>"));
 			}
-			s = Text::XML::ToNewAttrText(((Text::Doc::DocLink*)item)->GetLink());
+			s = Text::XML::ToNewAttrText(NN<Text::Doc::DocLink>::ConvertFrom(item)->GetLink());
 			writer->WriteStrC(UTF8STRC("<a href="));
 			writer->WriteStrC(s->v, s->leng);
 			s->Release();
 			writer->WriteStrC(UTF8STRC(">"));
-			WriteItems(writer, item, UTF8STRC("a"));
+			WriteItems(writer, item, CSTR("a"));
 			writer->WriteStrC(UTF8STRC("</a>"));
-			if (Text::StrEqualsC(parentNodeName, nameLen, UTF8STRC("body")))
+			if (parentNodeName.Equals(UTF8STRC("body")))
 			{
 				writer->WriteStrC(UTF8STRC("</p>"));
 			}
 			break;
 		case Text::Doc::DocItem::DIT_HEADING:
-			heading = (Text::Doc::DocHeading*)item;
+			heading = NN<Text::Doc::DocHeading>::ConvertFrom(item);
 			halign = heading->GetHAlignment();
 			writer->WriteStrC(UTF8STRC("<h1"));
 			switch (halign)
@@ -193,11 +193,11 @@ void Exporter::DocHTMLExporter::WriteItems(IO::Writer *writer, Data::ReadingList
 				break;
 			}
 			writer->WriteStrC(UTF8STRC(">"));
-			WriteItems(writer, heading, UTF8STRC("h1"));
+			WriteItems(writer, heading, CSTR("h1"));
 			writer->WriteStrC(UTF8STRC("</h1>"));
 			break;
 		case Text::Doc::DocItem::DIT_TEXT:
-			s = Text::XML::ToNewXMLText(((Text::Doc::DocText*)item)->GetText());
+			s = Text::XML::ToNewXMLText(NN<Text::Doc::DocText>::ConvertFrom(item)->GetText());
 			writer->WriteStrC(s->v, s->leng);
 			s->Release();
 			break;
@@ -209,7 +209,7 @@ void Exporter::DocHTMLExporter::WriteItems(IO::Writer *writer, Data::ReadingList
 			break;
 		case Text::Doc::DocItem::DIT_HORICENTER:
 			writer->WriteStrC(UTF8STRC("<center>"));
-			s = Text::XML::ToNewXMLText(((Text::Doc::DocText*)item)->GetText());
+			s = Text::XML::ToNewXMLText(NN<Text::Doc::DocText>::ConvertFrom(item)->GetText());
 			writer->WriteStrC(s->v, s->leng);
 			s->Release();
 			writer->WriteStrC(UTF8STRC("</center>"));

@@ -58,7 +58,7 @@ namespace SSWR
 
 			Data::ArrayListNN<BTStatus> btList;
 			Optional<IO::BTController::BTDevice> currDev;
-			Data::ArrayList<void *> guidList;
+			Data::ArrayListNN<Data::UUID> guidList;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 

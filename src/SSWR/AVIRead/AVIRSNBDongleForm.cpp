@@ -67,8 +67,8 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnLogClicked(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSNBDongleForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSNBDongleForm>();
-	Data::ArrayList<DeviceInfo*> devList;
-	DeviceInfo *dev;
+	Data::ArrayListNN<DeviceInfo> devList;
+	NN<DeviceInfo> dev;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	Data::DateTime dt;
@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(AnyType userObj)
 		j = devList.GetCount();
 		while (i < j)
 		{
-			dev = devList.GetItem(i);
+			dev = devList.GetItemNoCheck(i);
 			dev->mut.LockRead();
 			dev->readingChg = false;
 			
@@ -142,7 +142,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(AnyType userObj)
 		j = devList.GetCount();
 		while (i < j)
 		{
-			dev = devList.GetItem(i);
+			dev = devList.GetItemNoCheck(i);
 			dev->mut.LockRead();
 			if (dev->shortAddrChg)
 			{
@@ -278,13 +278,11 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDeviceDblClk(AnyType userObj,
 		UInt64 devId = s->ToUInt64();
 		s->Release();
 
-		DeviceInfo *dev;
+		NN<DeviceInfo> dev;
 		me->devMut.LockRead();
-		dev = me->devMap.Get(devId);
-		me->devMut.UnlockRead();
-
-		if (dev)
+		if (me->devMap.Get(devId).SetTo(dev))
 		{
+			me->devMut.UnlockRead();
 			SSWR::AVIRead::AVIRSNBHandlerForm frm(0, me->ui, me->core, dev->handType);
 			if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 			{
@@ -296,6 +294,10 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDeviceDblClk(AnyType userObj,
 				me->lvDevice->SetSubItem(index, 2, IO::SNBDongle::GetHandleName(dev->handType));
 			}
 	//		me->snb->SendSetReportTime(devId, 3, true);
+		}
+		else
+		{
+			me->devMut.UnlockRead();
 		}
 	}
 }
@@ -337,7 +339,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(AnyType userObj
 	sb.AppendC(UTF8STRC("\r\n"));
 	sb.AppendC(UTF8STRC("sensor_list="));
 	me->devMut.LockRead();
-	DeviceInfo *dev;
+	NN<DeviceInfo> dev;
 	UOSInt i;
 	UOSInt j;
 	if (me->devMap.GetCount() == 0)
@@ -350,7 +352,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(AnyType userObj
 	j = me->devMap.GetCount();
 	while (i < j)
 	{
-		dev = me->devMap.GetItem(i);
+		dev = me->devMap.GetItemNoCheck(i);
 		if (dev->readingTime == 0 || dev->nReading == 0)
 		{
 			me->devMut.UnlockRead();
@@ -576,13 +578,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::~AVIRSNBDongleForm()
 	DEL_CLASS(this->snb);
 	this->log.RemoveLogHandler(this->logger);
 	this->logger.Delete();
-	DeviceInfo *dev;
-	UOSInt i = this->devMap.GetCount();
-	while (i-- > 0)
-	{
-		dev = this->devMap.GetItem(i);
-		DEL_CLASS(dev);
-	}
+	this->devMap.DeleteAll();
 	this->ssl.Delete();
 }
 
@@ -593,12 +589,11 @@ void SSWR::AVIRead::AVIRSNBDongleForm::OnMonitorChanged()
 
 void SSWR::AVIRead::AVIRSNBDongleForm::DeviceAdded(UInt64 devId)
 {
-	DeviceInfo *dev;
+	NN<DeviceInfo> dev;
 	this->devMut.LockWrite();
-	dev = this->devMap.Get(devId);
-	if (dev == 0)
+	if (!this->devMap.Get(devId).SetTo(dev))
 	{
-		NEW_CLASS(dev, DeviceInfo());
+		NEW_CLASSNN(dev, DeviceInfo());
 		dev->devId = devId;
 		dev->shortAddr = 0;
 		dev->handType = (IO::SNBDongle::HandleType)this->devHandlerMap.Get(devId);
@@ -617,12 +612,11 @@ void SSWR::AVIRead::AVIRSNBDongleForm::DeviceAdded(UInt64 devId)
 
 void SSWR::AVIRead::AVIRSNBDongleForm::DeviceSensor(UInt64 devId, IO::SNBDongle::SensorType sensorType, UOSInt nReading, IO::SNBDongle::ReadingType *readingTypes, Double *readingVals)
 {
-	DeviceInfo *dev;
+	NN<DeviceInfo> dev;
 	this->devMut.LockRead();
-	dev = this->devMap.Get(devId);
-	this->devMut.UnlockRead();
-	if (dev)
+	if (this->devMap.Get(devId).SetTo(dev))
 	{
+		this->devMut.UnlockRead();
 		Data::DateTime dt;
 		UOSInt i;
 		dt.SetCurrTimeUTC();
@@ -641,20 +635,27 @@ void SSWR::AVIRead::AVIRSNBDongleForm::DeviceSensor(UInt64 devId, IO::SNBDongle:
 		}
 		dev->mut.UnlockWrite();
 	}
+	else
+	{
+		this->devMut.UnlockRead();
+	}
 }
 
 void SSWR::AVIRead::AVIRSNBDongleForm::DeviceUpdated(UInt64 devId, UInt16 shortAddr)
 {
-	DeviceInfo *dev;
+	NN<DeviceInfo> dev;
 	this->devMut.LockRead();
-	dev = this->devMap.Get(devId);
-	this->devMut.UnlockRead();
-	if (dev)
+	if (this->devMap.Get(devId).SetTo(dev))
 	{
+		this->devMut.UnlockRead();
 		dev->mut.LockWrite();
 		dev->shortAddr = shortAddr;
 		dev->shortAddrChg = true;
 		dev->mut.UnlockWrite();
+	}
+	else
+	{
+		this->devMut.UnlockRead();
 	}
 }
 

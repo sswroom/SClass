@@ -504,9 +504,10 @@ Bool Parser::FileParser::CFBParser::ParseWorkbook(NN<IO::StreamData> fd, UInt64 
 					if (j)
 					{
 						font = status.fontList.GetItem(j);
-						if (font)
+						NN<Text::SpreadSheet::WorkbookFont> wbfont;
+						if (font && wb->GetFont(j).SetTo(wbfont))
 						{
-							style->SetFont(wb->GetFont(j));
+							style->SetFont(wbfont);
 						}
 					}
 					j = ReadUInt16(&readBuff[i + 6]);

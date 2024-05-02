@@ -142,7 +142,7 @@ Bool __stdcall Net::PushServerHandler::UsersHandler(NN<Net::WebServer::IWebReque
 	json.ObjectBeginArray(CSTR("users"));
 	Sync::MutexUsage mutUsage;
 	Data::ArrayListStringNN userList;
-	me->mgr->GetUsers(&userList, mutUsage);
+	me->mgr->GetUsers(userList, mutUsage);
 	Data::ArrayIterator<NN<Text::String>> it = userList.Iterator();
 	while (it.HasNext())
 	{
@@ -170,13 +170,13 @@ Bool __stdcall Net::PushServerHandler::ListDevicesHandler(NN<Net::WebServer::IWe
 		UTF8Char sbuff[128];
 		UTF8Char *sptr;
 		Sync::MutexUsage mutUsage;
-		NN<const Data::ReadingList<Net::PushManager::DeviceInfo2*>> devList = me->mgr->GetDevices(mutUsage);
-		Net::PushManager::DeviceInfo2 *dev;
+		NN<const Data::ReadingListNN<Net::PushManager::DeviceInfo2>> devList = me->mgr->GetDevices(mutUsage);
+		NN<Net::PushManager::DeviceInfo2> dev;
 		UOSInt i = 0;
 		UOSInt j = devList->GetCount();
 		while (i < j)
 		{
-			dev = devList->GetItem(i);
+			dev = devList->GetItemNoCheck(i);
 			body->BeginTableRow();
 			body->AddTableData(dev->userName->ToCString());
 			body->AddTableData(STR_CSTR(dev->devModel));
@@ -231,7 +231,7 @@ void Net::PushServerHandler::ParseJSONSend(Text::JSONBase *sendJson)
 		}
 		if (succ && message.SetTo(s) && userList.GetCount() > 0)
 		{
-			this->mgr->Send(&userList, s);
+			this->mgr->Send(userList, s);
 		}
 	}
 }

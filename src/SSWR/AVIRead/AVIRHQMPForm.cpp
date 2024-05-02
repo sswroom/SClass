@@ -759,9 +759,9 @@ SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(Optional<UI::GUIClientControl> parent,
 	this->uOfst = 0;
 	this->vOfst = 0;
 
-	NEW_CLASS(this->bgFilter, Media::ImageFilter::BGImgFilter());
+	NEW_CLASSNN(this->bgFilter, Media::ImageFilter::BGImgFilter());
 	this->vbox->AddImgFilter(this->bgFilter);
-	NEW_CLASS(this->bwFilter, Media::ImageFilter::BWImgFilter(false));
+	NEW_CLASSNN(this->bwFilter, Media::ImageFilter::BWImgFilter(false));
 	this->vbox->AddImgFilter(this->bwFilter);
 
 	Media::MediaPlayer *player;

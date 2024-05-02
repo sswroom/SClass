@@ -1,6 +1,6 @@
 #ifndef _SM_IO_USBINFO
 #define _SM_IO_USBINFO
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Text/CString.h"
 
 namespace IO
@@ -11,9 +11,9 @@ namespace IO
 		struct ClassData;
 
 	private:
-		ClassData *clsData;
+		NN<ClassData> clsData;
 	public:
-		USBInfo(ClassData *info);
+		USBInfo(NN<ClassData> info);
 		~USBInfo();
 
 		UInt16 GetVendorId();
@@ -21,7 +21,7 @@ namespace IO
 		UInt16 GetRevision();
 		Text::CString GetDispName();
 
-		static UOSInt GetUSBList(NN<Data::ArrayList<USBInfo*>> usbList);
+		static UOSInt GetUSBList(NN<Data::ArrayListNN<USBInfo>> usbList);
 	};
 }
 

@@ -26,13 +26,13 @@ void PingScan(UInt32 ip)
 	
 	if (scanner->Scan(ip))
 	{
-		const Data::ReadingList<Net::ICMPScanner::ScanResult*> *results = scanner->GetResults();
-		Net::ICMPScanner::ScanResult *result;
+		NN<const Data::ReadingListNN<Net::ICMPScanner::ScanResult>> results = scanner->GetResults();
+		NN<Net::ICMPScanner::ScanResult> result;
 		UOSInt i = 0;
 		UOSInt j = results->GetCount();
 		while (i < j)
 		{
-			result = results->GetItem(i);
+			result = results->GetItemNoCheck(i);
 			sb.ClearStr();
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, result->ip);
 			sb.AppendP(sbuff, sptr);

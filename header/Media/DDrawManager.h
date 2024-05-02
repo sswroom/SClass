@@ -17,7 +17,7 @@ namespace Media
 		void ReleaseAll();
 	public:
 		DDrawManager(Media::MonitorMgr *monMgr, Media::ColorManagerSess *colorSess);
-		DDrawManager(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr);
+		DDrawManager(NN<Media::MonitorMgr> monMgr, NN<Media::ColorManager> colorMgr);
 		virtual ~DDrawManager();
 
 		Bool IsError();

@@ -21,7 +21,6 @@ Media::VFPManager::VFPManager()
 	WChar wbuff[256];
 	WChar wbuff2[256];
 	WChar *wptr;
-	NEW_CLASS(this->plugins, Data::ArrayList<VFPluginFile*>());
 	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"VFPlugin");
 	while (reg->GetName(wbuff, i))
 	{
@@ -70,11 +69,11 @@ Media::VFPManager::VFPManager()
 
 }
 
-UOSInt Media::VFPManager::LoadFile(const UTF8Char *fileName, Data::ArrayList<Media::IMediaSource *> *outArr)
+UOSInt Media::VFPManager::LoadFile(const UTF8Char *fileName, NN<Data::ArrayListNN<Media::IMediaSource>> outArr)
 {
 	Char *cFile;
 	Text::Encoding enc;
-	VFPluginFile *plugin;
+	NN<VFPluginFile> plugin;
 	VF_PluginFunc *funcs;
 	VF_FileHandle fhand;
 	VF_FileInfo finfo;
@@ -82,10 +81,10 @@ UOSInt Media::VFPManager::LoadFile(const UTF8Char *fileName, Data::ArrayList<Med
 	UOSInt charCnt = enc.UTF8CountBytes(fileName);
 	cFile = MemAlloc(Char, charCnt + 1);
 	enc.UTF8ToBytes((UInt8*)cFile, fileName);
-	UOSInt i = this->plugins->GetCount();
+	UOSInt i = this->plugins.GetCount();
 	while (i-- > 0)
 	{
-		plugin = this->plugins->GetItem(i);
+		plugin = this->plugins.GetItemNoCheck(i);
 		if (IO::Path::FilePathMatchW(wbuff, plugin->searchPattern))
 		{
 			funcs = (VF_PluginFunc*)plugin->funcs;
@@ -97,7 +96,7 @@ UOSInt Media::VFPManager::LoadFile(const UTF8Char *fileName, Data::ArrayList<Med
 					UOSInt outCnt = 0;
 					NN<VFMediaFile> mfile;
 					NEW_CLASSNN(mfile, VFMediaFile());
-					mfile->vfpmgr = this;
+					mfile->vfpmgr = *this;
 					mfile->plugin = plugin;
 					mfile->file = fhand;
 					mfile->fileName = Text::StrCopyNew(wbuff);
@@ -106,15 +105,15 @@ UOSInt Media::VFPManager::LoadFile(const UTF8Char *fileName, Data::ArrayList<Med
 
 					if (finfo.dwHasStreams & VF_STREAM_VIDEO)
 					{
-						VFVideoStream *vfs;
-						NEW_CLASS(vfs, VFVideoStream(mfile));
+						NN<VFVideoStream> vfs;
+						NEW_CLASSNN(vfs, VFVideoStream(mfile));
 						outArr->Add(vfs);
 						outCnt++;
 					}
 					if (finfo.dwHasStreams & VF_STREAM_AUDIO)
 					{
-						VFAudioStream *vfs;
-						NEW_CLASS(vfs, VFAudioStream(mfile));
+						NN<VFAudioStream> vfs;
+						NEW_CLASSNN(vfs, VFAudioStream(mfile));
 						outArr->Add(vfs);
 						outCnt++;
 					}
@@ -143,20 +142,19 @@ UOSInt Media::VFPManager::LoadFile(const UTF8Char *fileName, Data::ArrayList<Med
 
 Media::VFPManager::~VFPManager()
 {
-	VFPluginFile *plugin;
-	UOSInt i = this->plugins->GetCount();
+	NN<VFPluginFile> plugin;
+	UOSInt i = this->plugins.GetCount();
 	while (i-- > 0)
 	{
-		plugin = plugins->GetItem(i);
+		plugin = plugins.GetItemNoCheck(i);
 		MemFree(plugin->funcs);
 		if (plugin->searchPattern)
 		{
 			Text::StrDelNew(plugin->searchPattern);
 		}
 		FreeLibrary((HMODULE)plugin->hMod);
-		MemFree(plugin);
+		MemFreeNN(plugin);
 	}
-	DEL_CLASS(plugins);
 }
 
 void Media::VFPManager::Release()
@@ -169,7 +167,7 @@ void Media::VFPManager::Release()
 
 void Media::VFPManager::PrepareSelector(NN<IO::FileSelector> selector)
 {
-	VFPluginFile *plugin;
+	NN<VFPluginFile> plugin;
 	VF_GetPluginInfo GetInfo;
 	VF_PluginInfo info;
 	Text::Encoding enc(932);
@@ -177,10 +175,10 @@ void Media::VFPManager::PrepareSelector(NN<IO::FileSelector> selector)
 	WChar *wptr;
 	UOSInt k;
 	UOSInt j;
-	UOSInt i = this->plugins->GetCount();
+	UOSInt i = this->plugins.GetCount();
 	while (i-- > 0)
 	{
-		plugin = plugins->GetItem(i);
+		plugin = plugins.GetItemNoCheck(i);
 		GetInfo = (VF_GetPluginInfo)plugin->getInfo;
 		info.dwSize = sizeof(info);
 		if (GetInfo(&info) == VF_OK)
@@ -249,7 +247,7 @@ void Media::VFPManager::LoadPlugin(const WChar *fileName)
 	Text::Encoding enc;
 	enc.WFromBytes(wbuff, (UInt8*)info.cFileType, Text::StrCharCnt(info.cFileType), 0);
 	
-	VFPluginFile *plugin = MemAlloc(VFPluginFile, 1);
+	NN<VFPluginFile> plugin = MemAllocNN(VFPluginFile);
 	plugin->hMod = hMod;
 	plugin->getFunc = (void*)GetFunc;
 	plugin->getInfo = (void*)GetInfo;
@@ -262,5 +260,5 @@ void Media::VFPManager::LoadPlugin(const WChar *fileName)
 	{
 		plugin->searchPattern = 0;
 	}
-	this->plugins->Add(plugin);
+	this->plugins.Add(plugin);
 }

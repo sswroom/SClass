@@ -119,11 +119,11 @@ Bool __stdcall SSWR::AVIRead::AVIRANPRForm::OnImgDown(AnyType userObj, Math::Coo
 void __stdcall SSWR::AVIRead::AVIRANPRForm::OnANPRResult(AnyType userObj, NN<Media::StaticImage> simg, Math::RectArea<UOSInt> area, NN<Text::String> result, Double maxTileAngle, Double pxArea, UOSInt confidence, NN<Media::StaticImage> plateImg)
 {
 	NN<SSWR::AVIRead::AVIRANPRForm> me = userObj.GetNN<SSWR::AVIRead::AVIRANPRForm>();
-	ResultInfo *res;
+	NN<ResultInfo> res;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	UOSInt i;
-	res = MemAlloc(ResultInfo, 1);
+	res = MemAllocNN(ResultInfo);
 	res->area = area;
 	res->result = result->Clone();
 	res->maxTileAngle = maxTileAngle;
@@ -142,14 +142,14 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnANPRResult(AnyType userObj, NN<Med
 
 void SSWR::AVIRead::AVIRANPRForm::ClearResults()
 {
-	ResultInfo *res;
+	NN<ResultInfo> res;
 	UOSInt i = this->results.GetCount();
 	while (i-- > 0)
 	{
-		res = this->results.GetItem(i);
+		res = this->results.GetItemNoCheck(i);
 		res->result->Release();
 		res->plateImg.Delete();
-		MemFree(res);
+		MemFreeNN(res);
 	}
 	this->results.Clear();
 }

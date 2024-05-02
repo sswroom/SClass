@@ -9,7 +9,7 @@
 #include "Text/UTF8Reader.h"
 #include <stdio.h>
 
-Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::BenchmarkWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
+Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(NN<SSWR::Benchmark::BenchmarkWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Bool valid = true;
 	if (req->GetReqMethod() != Net::WebUtil::RequestMethod::HTTP_POST)
@@ -17,7 +17,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 		valid = false;
 	}
 	Text::StringBuilderUTF8 sb;
-	if (req->GetHeaderC(sb, UTF8STRC("Content-Type")))
+	if (req->GetHeaderC(sb, CSTR("Content-Type")))
 	{
 		if (!sb.Equals(UTF8STRC("text/plain")))
 		{
@@ -34,7 +34,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 	{
 		UOSInt leng;
 		const UInt8 *data;
-		data = req->GetReqData(&leng);
+		data = req->GetReqData(leng);
 		if (leng <= 128 || leng >= 65536)
 		{
 			printf("leng out of range: %d\r\n", (UInt32)leng);
@@ -44,11 +44,11 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 		{
 			const UTF8Char *platform = 0;
 			const UTF8Char *cpu = 0;
-			IO::MemoryStream *mstm;
+			NN<IO::MemoryStream> mstm;
 			Text::UTF8Reader *reader;
 			UTF8Char sbuff[512];
 			UTF8Char *sptr;
-			NEW_CLASS(mstm, IO::MemoryStream(leng, UTF8STRC("BenchmarkWebHandler.UploadReq.mstm")));
+			NEW_CLASSNN(mstm, IO::MemoryStream(leng));
 			mstm->Write(data, leng);
 			mstm->SeekFromBeginning(0);
 			NEW_CLASS(reader, Text::UTF8Reader(mstm));
@@ -93,7 +93,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 				{
 					if (sb.StartsWith(UTF8STRC("Platform: ")))
 					{
-						platform = Text::StrCopyNew(sb.ToString() + 10);
+						platform = Text::StrCopyNew(sb.ToString() + 10).Ptr();
 					}
 					else
 					{
@@ -115,7 +115,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 				{
 					if (sb.StartsWith(UTF8STRC("CPU: ")))
 					{
-						cpu = Text::StrCopyNewC(sb.ToString() + 5, sb.GetLength() - 5);
+						cpu = Text::StrCopyNewC(sb.ToString() + 5, sb.GetLength() - 5).Ptr();
 					}
 					else
 					{
@@ -131,7 +131,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 			}
 
 			DEL_CLASS(reader);
-			DEL_CLASS(mstm);
+			mstm.Delete();
 
 			if (valid)
 			{
@@ -179,7 +179,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 	return true;
 }
 
-Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark::BenchmarkWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
+Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchmark::BenchmarkWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Text::CString msg = CSTR_NULL;
 	UTF8Char fileName[512];
@@ -199,7 +199,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 		if (fileSize > 0)
 		{
 			UInt8 *fileBuff = MemAlloc(UInt8, fileSize);
-			fs.Read(fileBuff, fileSize);
+			fs.Read(Data::ByteArray(fileBuff, fileSize));
 
 			resp->SetStatusCode(Net::WebStatus::SC_OK);
 			resp->AddDefHeaders(req);
@@ -215,14 +215,14 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 		Int32 cpuFamily = 0;
 		Int32 cpuModel = 0;
 		Int32 cpuStepping = 0;
-		req->GetQueryValueI32(CSTR("family"), &cpuFamily);
-		req->GetQueryValueI32(CSTR("modelId"), &cpuModel);
-		req->GetQueryValueI32(CSTR("stepping"), &cpuStepping);
+		req->GetQueryValueI32(CSTR("family"), cpuFamily);
+		req->GetQueryValueI32(CSTR("modelId"), cpuModel);
+		req->GetQueryValueI32(CSTR("stepping"), cpuStepping);
 		if (cpuFamily != 0 && cpuModel != 0 && cpuStepping != 0)
 		{
 			req->GetHeader(fileName, CSTR("Content-Length"), 512);
 			UOSInt reqSize;
-			const UInt8 *reqData = req->GetReqData(&reqSize);
+			const UInt8 *reqData = req->GetReqData(reqSize);
 			if (reqSize > 0 && reqSize <= 128)
 			{
 				sptr = IO::Path::GetProcessFileName(path);
@@ -253,13 +253,13 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 			const UInt8 *fileBuff;
 			if (req->GetQueryValueStr(CSTR("file"), fileName, 512))
 			{
-				fileBuff = req->GetReqData(&fileSize);
+				fileBuff = req->GetReqData(fileSize);
 				fileNameEnd = Text::StrConcatC(fileName, UTF8STRC("cpuinfo"));
 			}
 			else
 			{
 				req->ParseHTTPForm();
-				fileBuff = req->GetHTTPFormFile(CSTR("uploadfile"), 0, fileName, 512, &fileNameEnd, &fileSize);
+				fileBuff = req->GetHTTPFormFile(CSTR("uploadfile"), 0, fileName, 512, fileNameEnd, fileSize);
 			}
 			if (fileBuff == 0)
 			{
@@ -277,10 +277,10 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 			{
 				Text::CString cpuModel;
 				{
-					IO::MemoryStream mstm(fileSize, UTF8STRC("SSWR.Benchmark.BenchmarkWebHandler.CPUInfoReq.mstm"));
+					IO::MemoryStream mstm(fileSize);
 					mstm.Write(fileBuff, fileSize);
 					mstm.SeekFromBeginning(0);
-					cpuModel = Manage::CPUDB::ParseCPUInfo(&mstm);
+					cpuModel = Manage::CPUDB::ParseCPUInfo(mstm);
 				}
 
 				if (cpuModel.v)
@@ -429,16 +429,16 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 	return true;
 }
 
-Bool SSWR::Benchmark::BenchmarkWebHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
+Bool SSWR::Benchmark::BenchmarkWebHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	if (this->DoRequest(req, resp, subReq))
 	{
 		return true;
 	}
-	RequestHandler reqHdlr = this->reqMap->GetC(subReq);
+	RequestHandler reqHdlr = this->reqMap.GetC(subReq);
 	if (reqHdlr)
 	{
-		return reqHdlr(this, req, resp);
+		return reqHdlr(*this, req, resp);
 	}
 	resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 	return true;
@@ -446,12 +446,10 @@ Bool SSWR::Benchmark::BenchmarkWebHandler::ProcessRequest(Net::WebServer::IWebRe
 
 SSWR::Benchmark::BenchmarkWebHandler::BenchmarkWebHandler()
 {
-	NEW_CLASS(this->reqMap, Data::FastStringMap<RequestHandler>());
-	this->reqMap->PutC(CSTR("/upload"), UploadReq);
-	this->reqMap->PutC(CSTR("/cpuinfo"), CPUInfoReq);
+	this->reqMap.PutC(CSTR("/upload"), UploadReq);
+	this->reqMap.PutC(CSTR("/cpuinfo"), CPUInfoReq);
 }
 
 SSWR::Benchmark::BenchmarkWebHandler::~BenchmarkWebHandler()
 {
-	DEL_CLASS(this->reqMap);
 }

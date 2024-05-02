@@ -10,7 +10,7 @@ namespace Parser
 		class AUIParser : public IO::FileParser
 		{
 		private:
-			Media::AVIUtl::AUIManager *auiMgr;
+			NN<Media::AVIUtl::AUIManager> auiMgr;
 		public:
 			AUIParser();
 			virtual ~AUIParser();

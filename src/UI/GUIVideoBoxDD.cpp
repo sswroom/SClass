@@ -82,7 +82,7 @@ void UI::GUIVideoBoxDD::EndUpdateSize()
 	this->switching = false;
 }
 
-UI::GUIVideoBoxDD::GUIVideoBoxDD(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::ColorManagerSess> colorSess, UOSInt buffCnt, UOSInt threadCnt) : UI::GUIDDrawControl(ui, parent, false, colorSess), Media::VideoRenderer(colorSess.Ptr(), this->UI::GUIDDrawControl::surfaceMgr, buffCnt, threadCnt)
+UI::GUIVideoBoxDD::GUIVideoBoxDD(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::ColorManagerSess> colorSess, UOSInt buffCnt, UOSInt threadCnt) : UI::GUIDDrawControl(ui, parent, false, colorSess), Media::VideoRenderer(colorSess, this->UI::GUIDDrawControl::surfaceMgr, buffCnt, threadCnt)
 {
 	this->UpdateRefreshRate(this->GetRefreshRate());
 	this->debugLog = 0;

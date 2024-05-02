@@ -9,7 +9,7 @@ namespace Text
 {
 	namespace Doc
 	{
-		class TextDocument : public IO::ParsedObject, public Data::ReadingList<DocSection*>, public Media::IPrintHandler
+		class TextDocument : public IO::ParsedObject, public Data::ReadingListNN<DocSection>, public Media::IPrintHandler
 		{
 		private:
 			typedef enum
@@ -36,7 +36,7 @@ namespace Text
 			UInt32 visitedLinkColor;
 
 			PrintStatus pStatus;
-			Data::ArrayList<DocSection*> *items;
+			Data::ArrayListNN<DocSection> items;
 		public:
 			TextDocument();
 			TextDocument(Text::CStringNN name);
@@ -57,9 +57,10 @@ namespace Text
 			void SetVisitedLinkColor(UInt32 visitedLinkColor);
 			Bool GetVisitedLinkColor(UInt32 *visitedLinkColor) const;
 
-			virtual UOSInt Add(DocSection *section);
+			virtual UOSInt Add(NN<DocSection> section);
 			virtual UOSInt GetCount() const;
-			virtual DocSection *GetItem(UOSInt Index) const;
+			virtual NN<DocSection> GetItemNoCheck(UOSInt Index) const;
+			virtual Optional<DocSection> GetItem(UOSInt Index) const;
 
 			virtual Bool BeginPrint(NN<Media::IPrintDocument> doc);
 			virtual Bool PrintPage(NN<Media::DrawImage> printPage); 

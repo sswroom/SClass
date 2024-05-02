@@ -4,7 +4,7 @@
 #include "Sync/Interlocked.h"
 #include <windows.h>
 
-Media::AVIUtl::AUIAudio::AUIAudio(Media::AVIUtl::AUIPlugin *plugin, Media::AVIUtl::AUIPlugin::AUIInput *input, NN<Media::AudioFormat> format, UOSInt nSamples)
+Media::AVIUtl::AUIAudio::AUIAudio(NN<Media::AVIUtl::AUIPlugin> plugin, NN<Media::AVIUtl::AUIPlugin::AUIInput> input, NN<Media::AudioFormat> format, UOSInt nSamples)
 {
 	this->plugin = plugin;
 	this->input = input;
@@ -18,9 +18,9 @@ Media::AVIUtl::AUIAudio::~AUIAudio()
 	if (Sync::Interlocked::DecrementU32(this->input->useCnt) == 0)
 	{
 		this->plugin->CloseInput(this->input->hand);
-		MemFree(this->input);
+		MemFreeNN(this->input);
 	}
-	DEL_CLASS(this->plugin);
+	this->plugin.Delete();
 	this->format.Delete();
 }
 

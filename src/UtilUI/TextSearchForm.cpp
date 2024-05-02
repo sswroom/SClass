@@ -20,7 +20,7 @@ void __stdcall UtilUI::TextSearchForm::OnCloseClicked(AnyType userObj)
 	me->Close();
 }
 
-UtilUI::TextSearchForm::TextSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, Media::MonitorMgr *monMgr, UtilUI::TextViewerForm *mainFrm) : UI::GUIForm(parent, 320, 120, ui)
+UtilUI::TextSearchForm::TextSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::MonitorMgr> monMgr, UtilUI::TextViewerForm *mainFrm) : UI::GUIForm(parent, 320, 120, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Search"));

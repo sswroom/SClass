@@ -37,24 +37,9 @@ Text::SpreadSheet::Workbook::Workbook() : IO::ParsedObject(CSTR("Untitled"))
 
 Text::SpreadSheet::Workbook::~Workbook()
 {
-	Text::SpreadSheet::WorkbookFont *font;
-	UOSInt i = this->sheets.GetCount();
-	while (i-- > 0)
-	{
-		this->sheets.GetItem(i).Delete();
-	}
-	i = this->styles.GetCount();
-	while (i-- > 0)
-	{
-		this->styles.GetItem(i).Delete();
-	}
-	i = this->fonts.GetCount();
-	while (i-- > 0)
-	{
-		font = this->fonts.GetItem(i);
-		DEL_CLASS(font);
-	}
-
+	this->sheets.DeleteAll();
+	this->styles.DeleteAll();
+	this->fonts.DeleteAll();
 	SDEL_TEXT(this->author);
 	SDEL_TEXT(this->lastAuthor);
 	SDEL_TEXT(this->company);
@@ -109,7 +94,7 @@ Text::SpreadSheet::Workbook *Text::SpreadSheet::Workbook::Clone() const
 	j = this->fonts.GetCount();
 	while (i < j)
 	{
-		newWB->fonts.Add(this->fonts.GetItem(i)->Clone());
+		newWB->fonts.Add(this->fonts.GetItemNoCheck(i)->Clone());
 		i++;
 	}
 	return newWB;
@@ -495,22 +480,27 @@ Optional<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::GetWorksheet
 	return 0;
 }
 
-UOSInt Text::SpreadSheet::Workbook::GetFontCount()
+UOSInt Text::SpreadSheet::Workbook::GetFontCount() const
 {
 	return this->fonts.GetCount();
 }
 
-Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::Workbook::GetFont(UOSInt index)
+NN<Text::SpreadSheet::WorkbookFont> Text::SpreadSheet::Workbook::GetFontNoCheckc(UOSInt index) const
+{
+	return this->fonts.GetItemNoCheck(index);
+}
+
+Optional<Text::SpreadSheet::WorkbookFont> Text::SpreadSheet::Workbook::GetFont(UOSInt index) const
 {
 	return this->fonts.GetItem(index);
 }
 
-UOSInt Text::SpreadSheet::Workbook::GetFontIndex(WorkbookFont *font)
+UOSInt Text::SpreadSheet::Workbook::GetFontIndex(NN<WorkbookFont> font)
 {
 	UOSInt i = this->fonts.GetCount();
 	while (i-- > 0)
 	{
-		if (this->fonts.GetItem(i) == font)
+		if (this->fonts.GetItemNoCheck(i) == font)
 		{
 			return i;
 		}
@@ -520,8 +510,8 @@ UOSInt Text::SpreadSheet::Workbook::GetFontIndex(WorkbookFont *font)
 
 Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::Workbook::NewFont(Text::CString name, Double size, Bool bold)
 {
-	Text::SpreadSheet::WorkbookFont *font;
-	NEW_CLASS(font, Text::SpreadSheet::WorkbookFont());
+	NN<Text::SpreadSheet::WorkbookFont> font;
+	NEW_CLASSNN(font, Text::SpreadSheet::WorkbookFont());
 	this->fonts.Add(font);
 	return font->SetName(name)->SetSize(size)->SetBold(bold);
 }

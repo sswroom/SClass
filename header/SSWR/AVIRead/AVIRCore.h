@@ -63,7 +63,7 @@ namespace SSWR
 			SSWR::AVIRead::AVIRGISForm *gisForm;
 
 			Bool batchLoad;
-			Data::ArrayList<Map::MapDrawLayer*> *batchLyrs;
+			Optional<Data::ArrayListNN<Map::MapDrawLayer>> batchLyrs;
 
 		protected:
 			static void __stdcall FormClosed(AnyType userObj, NN<UI::GUIForm> frm);
@@ -88,7 +88,7 @@ namespace SSWR
 
 			NN<Parser::ParserList> GetParserList();
 			Map::MapManager *GetMapManager();
-			Media::ColorManager *GetColorMgr();
+			NN<Media::ColorManager> GetColorMgr();
 			NN<Net::SocketFactory> GetSocketFactory();
 			NN<Media::DrawEngine> GetDrawEngine();
 			NN<Text::EncodingFactory> GetEncFactory();
@@ -105,7 +105,7 @@ namespace SSWR
 			void SetMonitorHDPI(MonitorHandle *hMonitor, Double monitorHDPI);
 			Double GetMonitorDDPI(MonitorHandle *hMonitor);
 			void SetMonitorDDPI(MonitorHandle *hMonitor, Double monitorDDPI);
-			Media::MonitorMgr *GetMonitorMgr();
+			NN<Media::MonitorMgr> GetMonitorMgr();
 			
 			void SetAudioDeviceList(Data::ArrayListStringNN *audDevList);
 			Data::ArrayListStringNN *GetAudioDeviceList();

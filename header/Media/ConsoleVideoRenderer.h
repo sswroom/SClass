@@ -17,7 +17,7 @@ namespace Media
 		Sync::Mutex mut;
 
 	public:
-		ConsoleVideoRenderer(NN<Media::MonitorSurfaceMgr> surfaceMgr, Media::ColorManagerSess *colorSess);
+		ConsoleVideoRenderer(NN<Media::MonitorSurfaceMgr> surfaceMgr, NN<Media::ColorManagerSess> colorSess);
 		virtual ~ConsoleVideoRenderer();
 
 		Bool IsError();

@@ -37,12 +37,12 @@ namespace SSWR
 			NN<Net::SocketFactory> sockf;
 			Net::ARPHandler *arpHdlr;
 			Net::SocketUtil::AddressInfo targetAddr;
-			Manage::HiResClock *clk;
+			Manage::HiResClock clk;
 			Bool requested;
 			Sync::Event *reqEvt;
-			IO::LogTool *log;
+			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;
-			Data::ArrayList<AdapterInfo*> *adapters;
+			Data::ArrayListNN<AdapterInfo> adapters;
 
 			NN<UI::GUIPanel> pnlRequest;
 			NN<UI::GUIVSplitter> vspRequest;

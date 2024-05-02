@@ -8,6 +8,7 @@
 #include "IO/ModemController.h"
 #include "IO/Path.h"
 #include "IO/Registry.h"
+#include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/SSLEngineFactory.h"
@@ -159,25 +160,28 @@ void SSWR::AVIRead::AVIRCore::BeginLoad()
 void SSWR::AVIRead::AVIRCore::EndLoad()
 {
 	this->batchLoad = false;
-	if (this->batchLyrs)
+	NN<Data::ArrayListNN<Map::MapDrawLayer>> batchLyrs;
+	if (this->batchLyrs.SetTo(batchLyrs))
 	{
 		NN<AVIRead::AVIRGISForm> gisForm;
 		NN<Map::MapEnv> env;
 		NN<Map::MapView> view;
-		NN<Math::CoordinateSystem> csys = this->batchLyrs->GetItem(0)->GetCoordinateSystem();
-		NEW_CLASSNN(env, Map::MapEnv(CSTR("Untitled"), 0xffc0c0ff, csys->Clone()));
-		if (this->batchLyrs->GetCount() > 0)
+		NN<Math::CoordinateSystem> csys;
+		if (batchLyrs->GetCount() > 0)
 		{
-			view = this->batchLyrs->GetItem(0)->CreateMapView(Math::Size2DDbl(320, 240));
-		}
+			csys = batchLyrs->GetItemNoCheck(0)->GetCoordinateSystem();
+			view = batchLyrs->GetItemNoCheck(0)->CreateMapView(Math::Size2DDbl(320, 240));
+			NEW_CLASSNN(env, Map::MapEnv(CSTR("Untitled"), 0xffc0c0ff, csys->Clone()));
+	}
 		else
 		{
+			csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+			NEW_CLASSNN(env, Map::MapEnv(CSTR("Untitled"), 0xffc0c0ff, csys->Clone()));
 			view = env->CreateMapView(Math::Size2DDbl(320, 240));
 		}
 		NEW_CLASSNN(gisForm, AVIRead::AVIRGISForm(0, this->ui, *this, env, view));
-		gisForm->AddLayers(this->batchLyrs);
-		DEL_CLASS(this->batchLyrs);
-		this->batchLyrs = 0;
+		gisForm->AddLayers(batchLyrs);
+		this->batchLyrs.Delete();
 		InitForm(gisForm);
 		gisForm->Show();
 	}
@@ -221,9 +225,9 @@ Map::MapManager *SSWR::AVIRead::AVIRCore::GetMapManager()
 	return &this->mapMgr;
 }
 
-Media::ColorManager *SSWR::AVIRead::AVIRCore::GetColorMgr()
+NN<Media::ColorManager> SSWR::AVIRead::AVIRCore::GetColorMgr()
 {
-	return &this->colorMgr;
+	return this->colorMgr;
 }
 
 NN<Net::SocketFactory> SSWR::AVIRead::AVIRCore::GetSocketFactory()
@@ -325,9 +329,9 @@ void SSWR::AVIRead::AVIRCore::SetMonitorDDPI(MonitorHandle *hMonitor, Double mon
 	}
 }
 
-Media::MonitorMgr *SSWR::AVIRead::AVIRCore::GetMonitorMgr()
+NN<Media::MonitorMgr> SSWR::AVIRead::AVIRCore::GetMonitorMgr()
 {
-	return &this->monMgr;
+	return this->monMgr;
 }
 
 void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Data::ArrayListStringNN *devList)

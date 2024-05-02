@@ -53,11 +53,12 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 	case IO::ParserType::MapLayer:
 		if (this->batchLoad)
 		{
-			if (this->batchLyrs == 0)
+			NN<Data::ArrayListNN<Map::MapDrawLayer>> batchLyrs;
+			if (!this->batchLyrs.SetTo(batchLyrs))
 			{
-				NEW_CLASS(this->batchLyrs, Data::ArrayList<Map::MapDrawLayer*>());
+				NEW_CLASSNN(batchLyrs, Data::ArrayListNN<Map::MapDrawLayer>());
 			}
-			this->batchLyrs->Add((Map::MapDrawLayer *)pobj.Ptr());
+			batchLyrs->Add(NN<Map::MapDrawLayer>::ConvertFrom(pobj));
 		}
 		else
 		{

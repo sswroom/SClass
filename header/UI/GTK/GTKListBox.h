@@ -12,7 +12,7 @@ namespace UI
 		public:
 			struct ItemData;
 		private:
-			Data::ArrayList<ItemData *> items;
+			Data::ArrayListNN<ItemData> items;
 			Bool mulSel;
 			GtkWidget *listbox;
 			Bool isShown;

@@ -42,7 +42,7 @@ Media::StaticImage *Media::ScreenCapturer::CaptureScreen(MonitorHandle *hMon)
 	return retImg;
 }*/
 
-Media::ScreenCapturer::ScreenCapturer(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr)
+Media::ScreenCapturer::ScreenCapturer(NN<Media::MonitorMgr> monMgr, NN<Media::ColorManager> colorMgr)
 {
 	this->monMgr = monMgr;
 	this->colorMgr = colorMgr;

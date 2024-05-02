@@ -7,7 +7,6 @@ Text::Doc::TextDocument::TextDocument() : IO::ParsedObject(CSTR("Untitled"))
 {
 	this->docName = 0;
 	this->pflags = (Text::Doc::TextDocument::PropertiesFlags)0;
-	NEW_CLASS(items, Data::ArrayList<DocSection*>());
 	SetDocumentName(CSTR("Untitled"));
 }
 
@@ -15,20 +14,12 @@ Text::Doc::TextDocument::TextDocument(Text::CStringNN name) : IO::ParsedObject(n
 {
 	this->docName = 0;
 	this->pflags = (Text::Doc::TextDocument::PropertiesFlags)0;
-	NEW_CLASS(items, Data::ArrayList<DocSection*>());
 	SetDocumentName(name);
 }
 
 Text::Doc::TextDocument::~TextDocument()
 {
-	DocSection *item;
-	UOSInt i = this->items->GetCount();
-	while (i-- > 0)
-	{
-		item = this->items->GetItem(i);
-		DEL_CLASS(item);
-	}
-	DEL_CLASS(this->items);
+	this->items.DeleteAll();
 	SDEL_STRING(this->docName);
 }
 
@@ -145,30 +136,35 @@ Bool Text::Doc::TextDocument::GetVisitedLinkColor(UInt32 *visitedLinkColor) cons
 	}
 }
 
-UOSInt Text::Doc::TextDocument::Add(Text::Doc::DocSection *val)
+UOSInt Text::Doc::TextDocument::Add(NN<Text::Doc::DocSection> val)
 {
-	return this->items->Add(val);
+	return this->items.Add(val);
 }
 
 UOSInt Text::Doc::TextDocument::GetCount() const
 {
-	return this->items->GetCount();
+	return this->items.GetCount();
 }
 
-Text::Doc::DocSection *Text::Doc::TextDocument::GetItem(UOSInt index) const
+NN<Text::Doc::DocSection> Text::Doc::TextDocument::GetItemNoCheck(UOSInt index) const
 {
-	return this->items->GetItem(index);
+	return this->items.GetItemNoCheck(index);
+}
+
+Optional<Text::Doc::DocSection> Text::Doc::TextDocument::GetItem(UOSInt index) const
+{
+	return this->items.GetItem(index);
 }
 
 Bool Text::Doc::TextDocument::BeginPrint(NN<Media::IPrintDocument> doc)
 {
-	Text::Doc::DocSection *section;
+	NN<Text::Doc::DocSection> section;
 	Media::PaperSize *paper;
-	if (this->items->GetCount() == 0)
+	if (this->items.GetCount() == 0)
 		return false;
 	pStatus.currSection = 0;
 	doc->SetDocName(this->docName);
-	section = this->items->GetItem(0);
+	section = this->items.GetItemNoCheck(0);
 	NEW_CLASS(paper, Media::PaperSize(section->GetPaperType()));
 	doc->SetNextPagePaperSizeMM(paper->GetWidthMM(), paper->GetHeightMM());
 	doc->SetNextPageOrientation(section->IsLandscape()?Media::IPrintDocument::PageOrientation::Landscape:Media::IPrintDocument::PageOrientation::Portrait);

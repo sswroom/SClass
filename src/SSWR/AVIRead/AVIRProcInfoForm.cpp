@@ -351,8 +351,8 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcThreads()
 	else
 	{
 		Manage::Process proc(this->currProc, false);
-		Data::ArrayList<Manage::ThreadInfo *> threadList;
-		Manage::ThreadInfo *t;
+		Data::ArrayListNN<Manage::ThreadInfo> threadList;
+		NN<Manage::ThreadInfo> t;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		UOSInt i;
@@ -367,7 +367,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcThreads()
 		j = threadList.GetCount();
 		while (i < j)
 		{
-			t = threadList.GetItem(i);
+			t = threadList.GetItemNoCheck(i);
 			sptr = Text::StrUOSInt(sbuff, t->GetThreadId());
 			k = this->lvDetThread->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)t->GetThreadId(), 0);
 			sptr = t->GetName(sbuff);
@@ -388,7 +388,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcThreads()
 					this->lvDetThread->SetSubItem(k, 3, CSTRP(&sbuff[l + 1], sptr));
 				}
 			}
-			DEL_CLASS(t);
+			t.Delete();
 			i++;
 		}
 	}	
@@ -410,7 +410,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeaps()
 		UOSInt i;
 		UOSInt j;
 
-		proc.GetHeapLists(&heapList);
+		proc.GetHeapLists(heapList);
 
 		this->lbDetHeap->ClearItems();
 		i = 0;
@@ -438,8 +438,8 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeapDetail(UInt32 heapId)
 	else
 	{
 		Manage::Process proc(this->currProc, false);
-		Data::ArrayList<Manage::Process::HeapInfo*> heapList;
-		Manage::Process::HeapInfo *heap;
+		Data::ArrayListNN<Manage::Process::HeapInfo> heapList;
+		NN<Manage::Process::HeapInfo> heap;
 		UTF8Char sbuff[20];
 		UTF8Char *sptr;
 		UOSInt i;
@@ -447,14 +447,14 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeapDetail(UInt32 heapId)
 		UOSInt k;
 		Text::CStringNN tStr;
 
-		proc.GetHeaps(&heapList, heapId, 257);
+		proc.GetHeaps(heapList, heapId, 257);
 
 		this->lvDetHeap->ClearItems();
 		i = 0;
 		j = heapList.GetCount();
 		while (i < j)
 		{
-			heap = heapList.GetItem(i);
+			heap = heapList.GetItemNoCheck(i);
 			sptr = Text::StrHexValOS(Text::StrConcatC(sbuff, UTF8STRC("0x")), heap->startAddr);
 			k = this->lvDetHeap->AddItem(CSTRP(sbuff, sptr), (void*)heap->startAddr, 0);
 			sptr = Text::StrUOSInt(sbuff, heap->size);
@@ -480,7 +480,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeapDetail(UInt32 heapId)
 			if (i > 256)
 				break;
 		}
-		proc.FreeHeaps(&heapList);
+		proc.FreeHeaps(heapList);
 	}
 	
 }
@@ -503,7 +503,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHandles()
 		UOSInt i;
 		UOSInt j;
 
-		proc.GetHandles(&handleList);
+		proc.GetHandles(handleList);
 
 		this->lvDetHandle->ClearItems();
 		i = 0;
@@ -519,7 +519,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHandles()
 				this->lvDetHandle->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 			}
 			sb.ClearStr();
-			if (proc.GetHandleDetail(hinfo.id, &handleType, sb))
+			if (proc.GetHandleDetail(hinfo.id, handleType, sb))
 			{
 				this->lvDetHandle->SetSubItem(i, 2, Manage::HandleTypeGetName(handleType));
 				this->lvDetHandle->SetSubItem(i, 3, sb.ToCString());

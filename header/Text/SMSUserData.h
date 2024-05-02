@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_SMSUSERDATA
 #define _SM_TEXT_SMSUSERDATA
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Text/SMSUtil.h"
 
 namespace Text
@@ -24,9 +24,9 @@ namespace Text
 		const UInt8 *GetUDH();
 		const UTF16Char *GetMessage();
 
-		static OSInt CreateSMSs(Data::ArrayList<Text::SMSUserData*> *smsList, const UTF8Char *smsMessage);
-		static Text::SMSUserData *CreateSMSTrim(const UTF16Char *smsMessage, UInt8 *udh);
-		static Text::SMSUserData *CreateSMSFromBytes(const UInt8 *bytes, Bool hasUDH, Text::SMSUtil::DCS dcs);
+		static UOSInt CreateSMSs(NN<Data::ArrayListNN<Text::SMSUserData>> smsList, const UTF8Char *smsMessage);
+		static Optional<Text::SMSUserData> CreateSMSTrim(const UTF16Char *smsMessage, UInt8 *udh);
+		static Optional<Text::SMSUserData> CreateSMSFromBytes(const UInt8 *bytes, Bool hasUDH, Text::SMSUtil::DCS dcs);
 	};
 };
 #endif

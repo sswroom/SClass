@@ -46,8 +46,8 @@ namespace SSWR
 
 		private:
 			SSWR::DiscDB::DiscDBEnv *env;
-			BurntFile *selectedFile;
-			Data::ArrayList<BurntFile*> *fileList;
+			Optional<BurntFile> selectedFile;
+			Data::ArrayListNN<BurntFile> fileList;
 
 			NN<UI::GUIPanel> pnlTop;
 			NN<UI::GUIPanel> pnlBurntDisc;
@@ -88,17 +88,17 @@ namespace SSWR
 			void UpdateAnimeName();
 			void UpdateSeries(); 
 			void UpdateVolume();
-			Bool UpdateFileInfo();
+			Bool UpdateFileInfo(NN<BurntFile> selectedFile);
 			void UpdateType();
 			void SetVideoField(Int32 videoId);
 			UInt64 SearchSubDir(const UTF8Char *absPath, const UTF8Char *relPath, UInt64 maxSize);
 
-			void BurntFileUpdateVideo(BurntFile *file);
-			BurntFile *BurntFileNew(Text::CString fileName, Text::CString relPath, UInt64 fileSize);
-			void BurntFileFree(BurntFile *file);
+			void BurntFileUpdateVideo(NN<BurntFile> file);
+			NN<BurntFile> BurntFileNew(Text::CString fileName, Text::CString relPath, UInt64 fileSize);
+			static void BurntFileFree(NN<BurntFile> file);
 
 			MovieCols *MovieColsNew(Text::CString fileName); //
-			void MovieColsFree(MovieCols *anime);
+			static void MovieColsFree(MovieCols *anime);
 
 			static void __stdcall OnBrowseClicked(AnyType userObj);
 			static void __stdcall OnFileNameSelChg(AnyType userObj); //

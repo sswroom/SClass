@@ -84,8 +84,8 @@ namespace Media
 		Data::ArrayListNN<VectorFontStyle> fontStyles;
 		Data::ArrayListNN<VectorBrushStyle> brushStyles;
 
-		Data::ArrayList<VectorStyles*> itemStyle;
-		Data::ArrayList<Math::Geometry::Vector2D *> items;
+		Data::ArrayListNN<VectorStyles> itemStyle;
+		Data::ArrayListNN<Math::Geometry::Vector2D> items;
 		Media::DrawEngine::DrawPos align;
 		
 	public:

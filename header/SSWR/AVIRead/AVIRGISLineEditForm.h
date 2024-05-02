@@ -34,8 +34,8 @@ namespace SSWR
 			NN<Map::MapEnv> env;
 			NN<Media::DrawEngine> eng;
 			UOSInt lineStyle;
-			LineLayer *currLayer;
-			Data::ArrayList<LineLayer*> *lineLayers;
+			Optional<LineLayer> currLayer;
+			Data::ArrayListNN<LineLayer> lineLayers;
 			Media::DrawImage *prevImage;
 			Media::StaticImage *prevsImage;
 			Bool thickChging;
@@ -80,7 +80,7 @@ namespace SSWR
 			static void __stdcall OKClicked(AnyType userObj);
 			static void __stdcall CancelClicked(AnyType userObj);
 
-			static void FreeLayer(LineLayer *lyr);
+			static void FreeLayer(NN<LineLayer> lyr);
 		public:
 			AVIRGISLineEditForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Map::MapEnv> env, NN<Media::DrawEngine> eng, UOSInt lineStyle);
 			virtual ~AVIRGISLineEditForm();

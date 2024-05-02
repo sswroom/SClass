@@ -5,7 +5,7 @@
 #include "Media/RGBLUTGen.h"
 #include "Media/CS/TransferFunc.h"
 
-Media::RGBLUTGen::RGBLUTGen(Media::ColorSess *colorSess)
+Media::RGBLUTGen::RGBLUTGen(Optional<Media::ColorSess> colorSess)
 {
 	this->colorSess = colorSess;
 }
@@ -17,9 +17,10 @@ Media::RGBLUTGen::~RGBLUTGen()
 void Media::RGBLUTGen::SetSrcTrans(NN<Media::CS::TransferParam> rTran, NN<Media::CS::TransferParam> gTran, NN<Media::CS::TransferParam> bTran, NN<const Media::ColorProfile> srcProfile)
 {
 	Media::CS::TransferType tranType = srcProfile->GetRTranParamRead()->GetTranType();
+	NN<Media::ColorSess> colorSess;
 	if (tranType == Media::CS::TRANT_VDISPLAY || tranType == Media::CS::TRANT_PDISPLAY)
 	{
-		if (this->colorSess == 0)
+		if (!this->colorSess.SetTo(colorSess))
 		{
 			rTran->Set(Media::CS::TRANT_sRGB, 2.2);
 			gTran->Set(Media::CS::TRANT_sRGB, 2.2);
@@ -27,7 +28,7 @@ void Media::RGBLUTGen::SetSrcTrans(NN<Media::CS::TransferParam> rTran, NN<Media:
 		}
 		else
 		{
-			NN<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
+			NN<const Media::IColorHandler::RGBPARAM2> rgbParam = colorSess->GetRGBParam();
 			rTran->Set(rgbParam->monProfile.GetRTranParamRead());
 			gTran->Set(rgbParam->monProfile.GetGTranParamRead());
 			bTran->Set(rgbParam->monProfile.GetBTranParamRead());
@@ -35,7 +36,7 @@ void Media::RGBLUTGen::SetSrcTrans(NN<Media::CS::TransferParam> rTran, NN<Media:
 	}
 	else if (tranType == Media::CS::TRANT_VUNKNOWN)
 	{
-		if (this->colorSess == 0)
+		if (!this->colorSess.SetTo(colorSess))
 		{
 			rTran->Set(Media::CS::TRANT_sRGB, 2.2);
 			gTran->Set(Media::CS::TRANT_sRGB, 2.2);
@@ -43,7 +44,7 @@ void Media::RGBLUTGen::SetSrcTrans(NN<Media::CS::TransferParam> rTran, NN<Media:
 		}
 		else
 		{
-			NN<Media::ColorProfile> defProfile = this->colorSess->GetDefVProfile();
+			NN<Media::ColorProfile> defProfile = colorSess->GetDefVProfile();
 			rTran->Set(NN<const Media::CS::TransferParam>(defProfile->GetRTranParam()));
 			gTran->Set(NN<const Media::CS::TransferParam>(defProfile->GetGTranParam()));
 			bTran->Set(NN<const Media::CS::TransferParam>(defProfile->GetBTranParam()));
@@ -51,7 +52,7 @@ void Media::RGBLUTGen::SetSrcTrans(NN<Media::CS::TransferParam> rTran, NN<Media:
 	}
 	else if (tranType == Media::CS::TRANT_PUNKNOWN)
 	{
-		if (this->colorSess == 0)
+		if (!this->colorSess.SetTo(colorSess))
 		{
 			rTran->Set(Media::CS::TRANT_sRGB, 2.2);
 			gTran->Set(Media::CS::TRANT_sRGB, 2.2);
@@ -59,7 +60,7 @@ void Media::RGBLUTGen::SetSrcTrans(NN<Media::CS::TransferParam> rTran, NN<Media:
 		}
 		else
 		{
-			NN<Media::ColorProfile> defProfile = this->colorSess->GetDefPProfile();
+			NN<Media::ColorProfile> defProfile = colorSess->GetDefPProfile();
 			rTran->Set(NN<const Media::CS::TransferParam>(defProfile->GetRTranParam()));
 			gTran->Set(NN<const Media::CS::TransferParam>(defProfile->GetGTranParam()));
 			bTran->Set(NN<const Media::CS::TransferParam>(defProfile->GetBTranParam()));
@@ -76,15 +77,15 @@ void Media::RGBLUTGen::SetSrcTrans(NN<Media::CS::TransferParam> rTran, NN<Media:
 Media::CS::TransferType Media::RGBLUTGen::SetDestTrans(NN<Media::CS::TransferParam> rTran, NN<Media::CS::TransferParam> gTran, NN<Media::CS::TransferParam> bTran, NN<const Media::ColorProfile> destProfile)
 {
 	Media::CS::TransferType tranType = destProfile->GetRTranParamRead()->GetTranType();
-
-	if (tranType == Media::CS::TRANT_VDISPLAY && this->colorSess == 0)
+	NN<Media::ColorSess> colorSess;
+	if (tranType == Media::CS::TRANT_VDISPLAY && this->colorSess.IsNull())
 	{
 		tranType = Media::CS::TRANT_sRGB;
 		rTran->Set(Media::CS::TRANT_sRGB, 2.2);
 		gTran->Set(Media::CS::TRANT_sRGB, 2.2);
 		bTran->Set(Media::CS::TRANT_sRGB, 2.2);
 	}
-	else if (tranType == Media::CS::TRANT_PDISPLAY && this->colorSess == 0)
+	else if (tranType == Media::CS::TRANT_PDISPLAY && this->colorSess.IsNull())
 	{
 		tranType = Media::CS::TRANT_sRGB;
 		rTran->Set(Media::CS::TRANT_sRGB, 2.2);
@@ -93,7 +94,7 @@ Media::CS::TransferType Media::RGBLUTGen::SetDestTrans(NN<Media::CS::TransferPar
 	}
 	else if (tranType == Media::CS::TRANT_VUNKNOWN)
 	{
-		if (this->colorSess == 0)
+		if (!this->colorSess.SetTo(colorSess))
 		{
 			rTran->Set(Media::CS::TRANT_sRGB, 2.2);
 			gTran->Set(Media::CS::TRANT_sRGB, 2.2);
@@ -101,7 +102,7 @@ Media::CS::TransferType Media::RGBLUTGen::SetDestTrans(NN<Media::CS::TransferPar
 		}
 		else
 		{
-			NN<Media::ColorProfile> defProfile = this->colorSess->GetDefVProfile();
+			NN<Media::ColorProfile> defProfile = colorSess->GetDefVProfile();
 			rTran->Set(NN<const Media::CS::TransferParam>(defProfile->GetRTranParam()));
 			gTran->Set(NN<const Media::CS::TransferParam>(defProfile->GetGTranParam()));
 			bTran->Set(NN<const Media::CS::TransferParam>(defProfile->GetBTranParam()));
@@ -109,7 +110,7 @@ Media::CS::TransferType Media::RGBLUTGen::SetDestTrans(NN<Media::CS::TransferPar
 	}
 	else if (tranType == Media::CS::TRANT_PUNKNOWN)
 	{
-		if (this->colorSess == 0)
+		if (!this->colorSess.SetTo(colorSess))
 		{
 			rTran->Set(Media::CS::TRANT_sRGB, 2.2);
 			gTran->Set(Media::CS::TRANT_sRGB, 2.2);
@@ -117,15 +118,15 @@ Media::CS::TransferType Media::RGBLUTGen::SetDestTrans(NN<Media::CS::TransferPar
 		}
 		else
 		{
-			NN<Media::ColorProfile> defProfile = this->colorSess->GetDefPProfile();
+			NN<Media::ColorProfile> defProfile = colorSess->GetDefPProfile();
 			rTran->Set(NN<const Media::CS::TransferParam>(defProfile->GetRTranParam()));
 			gTran->Set(NN<const Media::CS::TransferParam>(defProfile->GetGTranParam()));
 			bTran->Set(NN<const Media::CS::TransferParam>(defProfile->GetBTranParam()));
 		}
 	}
-	else if (tranType == Media::CS::TRANT_VDISPLAY || tranType == Media::CS::TRANT_PDISPLAY)
+	else if ((tranType == Media::CS::TRANT_VDISPLAY || tranType == Media::CS::TRANT_PDISPLAY) && this->colorSess.SetTo(colorSess))
 	{
-		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
+		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = colorSess->GetRGBParam();
 		rTran->Set(rgbParam->monProfile.GetRTranParamRead());
 		gTran->Set(rgbParam->monProfile.GetGTranParamRead());
 		bTran->Set(rgbParam->monProfile.GetBTranParamRead());
@@ -174,11 +175,12 @@ void Media::RGBLUTGen::GenRGBA8_LRGBC(Int64 *rgbTable, NN<const Media::ColorProf
 	NN<Media::CS::TransferFunc> ibFunc = Media::CS::TransferFunc::CreateFunc(bTran);
 
 	Math::Matrix3 mat1;
+	NN<Media::ColorSess> colorSess;
 	if (destPrimaries->colorType == Media::ColorProfile::CT_DISPLAY)
 	{
-		if (this->colorSess)
+		if (this->colorSess.SetTo(colorSess))
 		{
-			Media::ColorProfile::GetConvMatrix(mat1, srcProfile->primaries, this->colorSess->GetRGBParam()->monProfile.GetPrimariesRead());
+			Media::ColorProfile::GetConvMatrix(mat1, srcProfile->primaries, colorSess->GetRGBParam()->monProfile.GetPrimariesRead());
 		}
 		else
 		{
@@ -245,12 +247,13 @@ void Media::RGBLUTGen::GenRGB16_LRGBC(Int64 *rgbTable, NN<const Media::ColorProf
 	NN<Media::CS::TransferFunc> igFunc = Media::CS::TransferFunc::CreateFunc(gTran);
 	NN<Media::CS::TransferFunc> ibFunc = Media::CS::TransferFunc::CreateFunc(bTran);
 
+	NN<Media::ColorSess> colorSess;
 	Math::Matrix3 mat1;
 	if (destPrimaries->colorType == Media::ColorProfile::CT_DISPLAY)
 	{
-		if (this->colorSess)
+		if (this->colorSess.SetTo(colorSess))
 		{
-			Media::ColorProfile::GetConvMatrix(mat1, srcProfile->GetPrimariesRead(), this->colorSess->GetRGBParam()->monProfile.GetPrimariesRead());
+			Media::ColorProfile::GetConvMatrix(mat1, srcProfile->GetPrimariesRead(), colorSess->GetRGBParam()->monProfile.GetPrimariesRead());
 		}
 		else
 		{
@@ -330,10 +333,11 @@ void Media::RGBLUTGen::GenLRGB_BGRA8(UInt8 *rgbTable, NN<const Media::ColorProfi
 	Media::CS::TransferParam gTran;
 	Media::CS::TransferParam bTran;
 	Media::CS::TransferType tranType = this->SetDestTrans(rTran, gTran, bTran, destProfile);
+	NN<Media::ColorSess> colorSess;
 
-	if (tranType == Media::CS::TRANT_VDISPLAY)
+	if (tranType == Media::CS::TRANT_VDISPLAY && this->colorSess.SetTo(colorSess))
 	{
-		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
+		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = colorSess->GetRGBParam();
 
 		rGammaVal = rgbParam->MonRGamma;
 		gGammaVal = rgbParam->MonGGamma;
@@ -356,9 +360,9 @@ void Media::RGBLUTGen::GenLRGB_BGRA8(UInt8 *rgbTable, NN<const Media::ColorProfi
 			bMul = bMul * srcRefLuminance / rgbParam->monLuminance;
 		}
 	}
-	else if (tranType == Media::CS::TRANT_PDISPLAY)
+	else if (tranType == Media::CS::TRANT_PDISPLAY && this->colorSess.SetTo(colorSess))
 	{
-		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
+		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = colorSess->GetRGBParam();
 
 		rGammaVal = rgbParam->MonRGamma;
 		gGammaVal = rgbParam->MonGGamma;
@@ -458,10 +462,11 @@ void Media::RGBLUTGen::GenLRGB_RGB16(UInt8 *rgbTable, NN<const Media::ColorProfi
 	Media::CS::TransferParam gTran;
 	Media::CS::TransferParam bTran;
 	Media::CS::TransferType tranType = this->SetDestTrans(rTran, gTran, bTran, destProfile);
+	NN<Media::ColorSess> colorSess;
 
-	if (tranType == Media::CS::TRANT_VDISPLAY)
+	if (tranType == Media::CS::TRANT_VDISPLAY && this->colorSess.SetTo(colorSess))
 	{
-		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
+		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = colorSess->GetRGBParam();
 
 		rGammaVal = rgbParam->MonRGamma;
 		gGammaVal = rgbParam->MonGGamma;
@@ -484,9 +489,9 @@ void Media::RGBLUTGen::GenLRGB_RGB16(UInt8 *rgbTable, NN<const Media::ColorProfi
 			bMul = bMul * srcRefLuminance / rgbParam->monLuminance;
 		}
 	}
-	else if (tranType == Media::CS::TRANT_PDISPLAY)
+	else if (tranType == Media::CS::TRANT_PDISPLAY && this->colorSess.SetTo(colorSess))
 	{
-		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
+		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = colorSess->GetRGBParam();
 
 		rGammaVal = rgbParam->MonRGamma;
 		gGammaVal = rgbParam->MonGGamma;
@@ -595,10 +600,11 @@ void Media::RGBLUTGen::GenLRGB_A2B10G10R10(UInt8 *rgbTable, NN<const Media::Colo
 	Media::CS::TransferParam gTran;
 	Media::CS::TransferParam bTran;
 	Media::CS::TransferType tranType = this->SetDestTrans(rTran, gTran, bTran, destProfile);
+	NN<Media::ColorSess> colorSess;
 
-	if (tranType == Media::CS::TRANT_VDISPLAY)
+	if (tranType == Media::CS::TRANT_VDISPLAY && this->colorSess.SetTo(colorSess))
 	{
-		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
+		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = colorSess->GetRGBParam();
 
 		rGammaVal = rgbParam->MonRGamma;
 		gGammaVal = rgbParam->MonGGamma;
@@ -621,9 +627,9 @@ void Media::RGBLUTGen::GenLRGB_A2B10G10R10(UInt8 *rgbTable, NN<const Media::Colo
 			bMul = bMul * srcRefLuminance / rgbParam->monLuminance;
 		}
 	}
-	else if (tranType == Media::CS::TRANT_PDISPLAY)
+	else if (tranType == Media::CS::TRANT_PDISPLAY && this->colorSess.SetTo(colorSess))
 	{
-		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
+		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = colorSess->GetRGBParam();
 
 		rGammaVal = rgbParam->MonRGamma;
 		gGammaVal = rgbParam->MonGGamma;
@@ -732,10 +738,11 @@ void Media::RGBLUTGen::GenLARGB_A2B10G10R10(UInt8 *rgbTable, NN<const Media::Col
 	Media::CS::TransferParam gTran;
 	Media::CS::TransferParam bTran;
 	Media::CS::TransferType tranType = this->SetDestTrans(rTran, gTran, bTran, destProfile);
+	NN<Media::ColorSess> colorSess;
 
-	if (tranType == Media::CS::TRANT_VDISPLAY)
+	if (tranType == Media::CS::TRANT_VDISPLAY && this->colorSess.SetTo(colorSess))
 	{
-		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
+		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = colorSess->GetRGBParam();
 
 		rGammaVal = rgbParam->MonRGamma;
 		gGammaVal = rgbParam->MonGGamma;
@@ -758,9 +765,9 @@ void Media::RGBLUTGen::GenLARGB_A2B10G10R10(UInt8 *rgbTable, NN<const Media::Col
 			bMul = bMul * srcRefLuminance / rgbParam->monLuminance;
 		}
 	}
-	else if (tranType == Media::CS::TRANT_PDISPLAY)
+	else if (tranType == Media::CS::TRANT_PDISPLAY && this->colorSess.SetTo(colorSess))
 	{
-		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
+		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = colorSess->GetRGBParam();
 
 		rGammaVal = rgbParam->MonRGamma;
 		gGammaVal = rgbParam->MonGGamma;
@@ -875,10 +882,11 @@ void Media::RGBLUTGen::GenLARGB_B8G8R8A8(UInt8 *rgbTable, NN<const Media::ColorP
 	Media::CS::TransferParam gTran;
 	Media::CS::TransferParam bTran;
 	Media::CS::TransferType tranType = this->SetDestTrans(rTran, gTran, bTran, destProfile);
+	NN<Media::ColorSess> colorSess;
 
-	if (tranType == Media::CS::TRANT_VDISPLAY)
+	if (tranType == Media::CS::TRANT_VDISPLAY && this->colorSess.SetTo(colorSess))
 	{
-		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
+		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = colorSess->GetRGBParam();
 
 		rGammaVal = rgbParam->MonRGamma;
 		gGammaVal = rgbParam->MonGGamma;
@@ -901,9 +909,9 @@ void Media::RGBLUTGen::GenLARGB_B8G8R8A8(UInt8 *rgbTable, NN<const Media::ColorP
 			bMul = bMul * srcRefLuminance / rgbParam->monLuminance;
 		}
 	}
-	else if (tranType == Media::CS::TRANT_PDISPLAY)
+	else if (tranType == Media::CS::TRANT_PDISPLAY && this->colorSess.SetTo(colorSess))
 	{
-		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = this->colorSess->GetRGBParam();
+		NN<const Media::IColorHandler::RGBPARAM2> rgbParam = colorSess->GetRGBParam();
 
 		rGammaVal = rgbParam->MonRGamma;
 		gGammaVal = rgbParam->MonGGamma;

@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Media/ScreenCapturer.h"
 
-Media::ScreenCapturer::ScreenCapturer(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr)
+Media::ScreenCapturer::ScreenCapturer(NN<Media::MonitorMgr> monMgr, NN<Media::ColorManager> colorMgr)
 {
 	this->monMgr = monMgr;
 	this->colorMgr = colorMgr;

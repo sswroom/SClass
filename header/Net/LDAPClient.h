@@ -1,7 +1,7 @@
 #ifndef _SM_NET_LDAPCLIENT
 #define _SM_NET_LDAPCLIENT
 #include "AnyType.h"
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "Net/ASN1PDUBuilder.h"
 #include "Net/TCPClient.h"
 #include "Sync/Mutex.h"
@@ -38,7 +38,7 @@ namespace Net
 		{
 			NN<Text::String> name;
 			Bool isRef;
-			Data::ArrayList<SearchResItem*> *items;
+			Optional<Data::ArrayListNN<SearchResItem>> items;
 		} SearchResObject;
 
 	private:
@@ -47,7 +47,7 @@ namespace Net
 			UInt32 msgId;
 			Bool isFin;
 			UInt32 resultCode;
-			Data::ArrayList<SearchResObject *> *searchObjs;
+			Optional<Data::ArrayListNN<SearchResObject>> searchObjs;
 		} ReqStatus;
 
 	private:
@@ -55,7 +55,7 @@ namespace Net
 		Net::TCPClient *cli;
 		
 		Sync::Mutex reqMut;
-		Data::FastMap<UInt32, ReqStatus*> reqMap;
+		Data::FastMapNN<UInt32, ReqStatus> reqMap;
 
 		Sync::Mutex msgIdMut;
 		UInt32 lastMsgId;
@@ -76,10 +76,10 @@ namespace Net
 		Bool Bind(Text::CString userDN, Text::CString password);
 		Bool Unbind();
 
-		Bool Search(Text::CStringNN baseObject, ScopeType scope, DerefType derefAliases, UInt32 sizeLimit, UInt32 timeLimit, Bool typesOnly, const UTF8Char *filter, Data::ArrayList<SearchResObject*> *results);
+		Bool Search(Text::CStringNN baseObject, ScopeType scope, DerefType derefAliases, UInt32 sizeLimit, UInt32 timeLimit, Bool typesOnly, const UTF8Char *filter, NN<Data::ArrayListNN<SearchResObject>> results);
 
-		static void SearchResultsFree(Data::ArrayList<SearchResObject*> *results);
-		static void SearchResObjectFree(SearchResObject *obj);
+		static void SearchResultsFree(NN<Data::ArrayListNN<SearchResObject>> results);
+		static void SearchResObjectFree(NN<SearchResObject> obj);
 		static void SearchResDisplay(Text::CString type, Text::CString value, NN<Text::StringBuilderUTF8> sb);
 	};
 }

@@ -42,8 +42,8 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnStoreClicked(AnyType userObj
 void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(AnyType userObj, UOSInt index)
 {
 	NN<SSWR::AVIRead::AVIRMACManagerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMACManagerForm>();
-	SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry *log = me->logList.GetItem(index);
-	if (log == 0)
+	NN<SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry> log;
+	if (!me->logList.GetItem(index).SetTo(log))
 		return;
 	const Net::MACInfo::MACEntry *entry = me->macList.GetEntry(log->macInt);
 	Text::CString name;
@@ -69,7 +69,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(AnyType us
 		j = me->logList.GetCount();
 		while (i < j)
 		{
-			log = me->logList.GetItem(i);
+			log = me->logList.GetItemNoCheck(i);
 			if (log->macInt >= entry->rangeStart && log->macInt <= entry->rangeEnd)
 			{
 				me->lvContent->SetSubItem(i, 1, {entry->name, entry->nameLen});
@@ -163,13 +163,13 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(AnyType userObj
 		me->UpdateStatus();
 		entry = me->macList.GetItem(i);
 
-		SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry *log;
+		NN<SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry> log;
 		UOSInt j;
 		i = 0;
 		j = me->logList.GetCount();
 		while (i < j)
 		{
-			log = me->logList.GetItem(i);
+			log = me->logList.GetItemNoCheck(i);
 			if (log->macInt >= entry->rangeStart && log->macInt <= entry->rangeEnd)
 			{
 				me->lvContent->SetSubItem(i, 1, {entry->name, entry->nameLen});
@@ -291,7 +291,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CStringNN fileName)
 		UInt8 buff[8];
 		UOSInt i;
 		UOSInt j;
-		SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry *log;
+		NN<SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry> log;
 		Text::StringBuilderUTF8 sb;
 		{
 			Text::UTF8Reader reader(fs);
@@ -306,7 +306,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CStringNN fileName)
 				{
 					if (Text::StrSplitP(sarr2, 7, sarr[0], ':') == 6)
 					{
-						log = MemAlloc(SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry, 1);
+						log = MemAllocNN(SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry);
 						MemClear(log->neighbour, sizeof(log->neighbour));
 						log->mac[0] = Text::StrHex2UInt8C(sarr2[0].v);
 						log->mac[1] = Text::StrHex2UInt8C(sarr2[1].v);
@@ -410,7 +410,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CStringNN fileName)
 		j = this->logList.GetCount();
 		while (i < j)
 		{
-			log = this->logList.GetItem(i);
+			log = this->logList.GetItemNoCheck(i);
 			sptr = Text::StrHexBytes(sbuff, log->mac, 6, ':');
 			this->lvContent->AddItem(CSTRP(sbuff, sptr), log);
 			entry = this->macList.GetEntry(log->macInt);
@@ -459,10 +459,10 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CStringNN fileName)
 void SSWR::AVIRead::AVIRMACManagerForm::LogFileClear()
 {
 	UOSInt i = this->logList.GetCount();
-	SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry *log;
+	NN<SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry> log;
 	while (i-- > 0)
 	{
-		log = this->logList.GetItem(i);
+		log = this->logList.GetItemNoCheck(i);
 		log->ssid->Release();
 		SDEL_STRING(log->manuf);
 		SDEL_STRING(log->model);
@@ -472,7 +472,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileClear()
 		{
 			MemFree(log->ieBuff);
 		}
-		MemFree(log);
+		MemFreeNN(log);
 	}
 	this->logList.Clear();
 }

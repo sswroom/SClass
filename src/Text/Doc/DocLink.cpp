@@ -18,14 +18,14 @@ Text::Doc::DocItem::DocItemType Text::Doc::DocLink::GetItemType()
 	return Text::Doc::DocItem::DIT_URL;
 }
 
-UOSInt Text::Doc::DocLink::Add(Text::Doc::DocItem *item)
+UOSInt Text::Doc::DocLink::Add(NN<Text::Doc::DocItem> item)
 {
 	if (item->GetItemType() == Text::Doc::DocItem::DIT_URL)
 	{
-		DEL_CLASS(item);
+		item.Delete();
 		return (UOSInt)-1;
 	}
-	return this->items->Add(item);
+	return this->items.Add(item);
 }
 
 const UTF8Char *Text::Doc::DocLink::GetLink()

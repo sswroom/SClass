@@ -83,7 +83,7 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 	this->lastCnt = 0;
 	this->currCnt = 0;
 
-	NEW_CLASS(this->proxy, Net::DNSProxy(this->sockf, true, this->log));
+	NEW_CLASSNN(this->proxy, Net::DNSProxy(this->sockf, true, this->log));
 	this->proxy->HandleDNSRequest(OnDNSRequest, this);
 
 	if (this->proxy->IsError())
@@ -196,7 +196,7 @@ SSWR::SDNSProxy::SDNSProxyCore::~SDNSProxyCore()
 	SDEL_CLASS(this->listener);
 	SDEL_CLASS(this->hdlr);
 
-	DEL_CLASS(this->proxy);
+	this->proxy.Delete();
 	i = this->cliInfos.GetCount();
 	while (i-- > 0)
 	{
@@ -214,7 +214,7 @@ SSWR::SDNSProxy::SDNSProxyCore::~SDNSProxyCore()
 
 Bool SSWR::SDNSProxy::SDNSProxyCore::IsError()
 {
-	return this->listener == 0 || this->proxy == 0 || this->proxy->IsError();
+	return this->listener == 0 || this->proxy->IsError();
 }
 
 void SSWR::SDNSProxy::SDNSProxyCore::Run(NN<Core::IProgControl> progCtrl)

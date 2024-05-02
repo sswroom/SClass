@@ -3,14 +3,14 @@
 #include "Media/FBSurface.h"
 #include "Media/MemorySurface.h"
 
-Media::FBMonitorSurfaceMgr::FBMonitorSurfaceMgr(Media::MonitorMgr *monMgr, Media::ColorManagerSess *colorSess)
+Media::FBMonitorSurfaceMgr::FBMonitorSurfaceMgr(Optional<Media::MonitorMgr> monMgr, NN<Media::ColorManagerSess> colorSess)
 {
 	this->monMgr = 0;
 	this->colorMgr = 0;
 	this->colorSess = colorSess;
 }
 
-Media::FBMonitorSurfaceMgr::FBMonitorSurfaceMgr(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr)
+Media::FBMonitorSurfaceMgr::FBMonitorSurfaceMgr(NN<Media::MonitorMgr> monMgr, NN<Media::ColorManager> colorMgr)
 {
 	this->monMgr = monMgr;
 	this->colorMgr = colorMgr;
@@ -29,36 +29,41 @@ Double Media::FBMonitorSurfaceMgr::GetMonitorDPI(MonitorHandle *hMonitor)
 		return 96.0;
 	}
 
-	if (this->monMgr)
+	NN<Media::MonitorMgr> monMgr;
+	if (this->monMgr.SetTo(monMgr))
 	{
-		return this->monMgr->GetMonitorHDPI(hMonitor);
+		return monMgr->GetMonitorHDPI(hMonitor);
 	}
 	return 96.0;
 }
 
 const Media::ColorProfile *Media::FBMonitorSurfaceMgr::GetMonitorColor(MonitorHandle *hMonitor)
 {
-	if (this->colorMgr)
+	NN<Media::ColorManager> colorMgr;
+	NN<Media::ColorManagerSess> colorSess;
+	if (this->colorMgr.SetTo(colorMgr))
 	{
-		NN<Media::MonitorColorManager> monColor = this->colorMgr->GetMonColorManager(hMonitor);
+		NN<Media::MonitorColorManager> monColor = colorMgr->GetMonColorManager(hMonitor);
 		return &monColor->GetRGBParam()->monProfile;
 	}
-	else if (this->colorSess)
+	else if (this->colorSess.SetTo(colorSess))
 	{
-		return &this->colorSess->GetRGBParam()->monProfile;
+		return &colorSess->GetRGBParam()->monProfile;
 	}
 	return 0;
 }
 
 Bool Media::FBMonitorSurfaceMgr::Is10BitColor(MonitorHandle *hMonitor)
 {
-	if (this->colorMgr)
+	NN<Media::ColorManager> colorMgr;
+	NN<Media::ColorManagerSess> colorSess;
+	if (this->colorMgr.SetTo(colorMgr))
 	{
-		return this->colorMgr->GetMonColorManager(hMonitor)->Get10BitColor();
+		return colorMgr->GetMonColorManager(hMonitor)->Get10BitColor();
 	}
-	else if (this->colorSess)
+	else if (this->colorSess.SetTo(colorSess))
 	{
-		return this->colorSess->Get10BitColor();
+		return colorSess->Get10BitColor();
 	}
 	return false;
 }

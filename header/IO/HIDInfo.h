@@ -1,6 +1,6 @@
 #ifndef _SM_IO_HIDINFO
 #define _SM_IO_HIDINFO
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "IO/Stream.h"
 #include "Text/String.h"
 
@@ -18,9 +18,9 @@ namespace IO
 	private:
 		struct ClassData;
 
-		ClassData *clsData;
+		NN<ClassData> clsData;
 
-		HIDInfo(ClassData *clsData);
+		HIDInfo(NN<ClassData> clsData);
 	public:
 		~HIDInfo();
 
@@ -31,7 +31,7 @@ namespace IO
 
 		IO::Stream *OpenHID();
 
-		static OSInt GetHIDList(NN<Data::ArrayList<HIDInfo*>> hidList);
+		static OSInt GetHIDList(NN<Data::ArrayListNN<HIDInfo>> hidList);
 	};
 };
 

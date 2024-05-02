@@ -9,8 +9,8 @@ struct Media::DDrawManager::ClassData
 {
 	Data::FastMap<OSInt, LPDIRECTDRAW7> monMap;
 	LPDIRECTDRAW7 defDD;
-	Media::MonitorMgr *monMgr;
-	Media::ColorManager *colorMgr;
+	Optional<Media::MonitorMgr> monMgr;
+	Optional<Media::ColorManager> colorMgr;
 	Media::ColorManagerSess *colorSess;
 };
 
@@ -71,7 +71,7 @@ Media::DDrawManager::DDrawManager(Media::MonitorMgr *monMgr, Media::ColorManager
 	this->RecheckMonitor();
 }
 
-Media::DDrawManager::DDrawManager(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr)
+Media::DDrawManager::DDrawManager(NN<Media::MonitorMgr> monMgr, NN<Media::ColorManager> colorMgr)
 {
 	NEW_CLASS(this->clsData, ClassData());
 	this->clsData->defDD = 0;

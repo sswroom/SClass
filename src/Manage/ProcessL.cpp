@@ -445,7 +445,7 @@ Bool Manage::Process::SetMemorySize(UOSInt minSize, UOSInt maxSize)
 	return false;
 }
 
-UOSInt Manage::Process::GetThreadIds(Data::ArrayList<UInt32> *threadList)
+UOSInt Manage::Process::GetThreadIds(NN<Data::ArrayList<UInt32>> threadList)
 {
 	return 0;
 }
@@ -602,13 +602,13 @@ UOSInt Manage::Process::GetModules(NN<Data::ArrayListNN<Manage::ModuleInfo>> mod
 	}
 }
 
-UOSInt Manage::Process::GetThreads(NN<Data::ArrayList<Manage::ThreadInfo *>> threadList)
+UOSInt Manage::Process::GetThreads(NN<Data::ArrayListNN<Manage::ThreadInfo>> threadList)
 {
 	UTF8Char sbuff[128];
 	DIR *dir;
 	UOSInt retCnt = 0;
 	UInt32 threadId;
-	Manage::ThreadInfo *thread;
+	NN<Manage::ThreadInfo> thread;
 	Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/task"));
 	dir = opendir((Char*)sbuff);
 	if (dir)
@@ -619,7 +619,7 @@ UOSInt Manage::Process::GetThreads(NN<Data::ArrayList<Manage::ThreadInfo *>> thr
 			threadId = Text::StrToUInt32(dirent->d_name);
 			if (threadId != 0)
 			{
-				NEW_CLASS(thread, Manage::ThreadInfo(this->procId, threadId));
+				NEW_CLASSNN(thread, Manage::ThreadInfo(this->procId, threadId));
 				threadList->Add(thread);
 				retCnt++;
 			}
@@ -629,18 +629,18 @@ UOSInt Manage::Process::GetThreads(NN<Data::ArrayList<Manage::ThreadInfo *>> thr
 	return retCnt;
 }
 
-UOSInt Manage::Process::GetHeapLists(Data::ArrayList<UInt32> *heapList)
+UOSInt Manage::Process::GetHeapLists(NN<Data::ArrayList<UInt32>> heapList)
 {
 	return 0;
 }
 
-UOSInt Manage::Process::GetHeaps(Data::ArrayList<HeapInfo*> *heapList, UInt32 heapListId, UOSInt maxCount)
+UOSInt Manage::Process::GetHeaps(NN<Data::ArrayListNN<HeapInfo>> heapList, UInt32 heapListId, UOSInt maxCount)
 {
 	return 0;
 
 }
 
-void Manage::Process::FreeHeaps(Data::ArrayList<HeapInfo*> *heapList)
+void Manage::Process::FreeHeaps(NN<Data::ArrayListNN<HeapInfo>> heapList)
 {
 }
 
@@ -651,7 +651,7 @@ Data::Timestamp Manage::Process::GetStartTime()
 	return IO::Path::GetModifyTime(sbuff);
 }
 
-UOSInt Manage::Process::GetHandles(Data::ArrayList<HandleInfo> *handleList)
+UOSInt Manage::Process::GetHandles(NN<Data::ArrayList<HandleInfo>> handleList)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -676,7 +676,7 @@ UOSInt Manage::Process::GetHandles(Data::ArrayList<HandleInfo> *handleList)
 	return ret;
 }
 
-Bool Manage::Process::GetHandleDetail(Int32 id, HandleType *handleType, NN<Text::StringBuilderUTF8> sbDetail)
+Bool Manage::Process::GetHandleDetail(Int32 id, OutParam<HandleType> handleType, NN<Text::StringBuilderUTF8> sbDetail)
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
@@ -688,47 +688,47 @@ Bool Manage::Process::GetHandleDetail(Int32 id, HandleType *handleType, NN<Text:
 		sbuff2[size] = 0;
 		if (Text::StrEqualsC(sbuff2, (UOSInt)size, UTF8STRC("anon_inode:[eventfd]")))
 		{
-			*handleType = HandleType::Event;
+			handleType.Set(HandleType::Event);
 			sbDetail->AppendUTF8Char('-');
 		}
 		else if (Text::StrEqualsC(sbuff2, (UOSInt)size, UTF8STRC("anon_inode:[eventpoll]")))
 		{
-			*handleType = HandleType::EPoll;
+			handleType.Set(HandleType::EPoll);
 			sbDetail->AppendUTF8Char('-');
 		}
 		else if (Text::StrEqualsC(sbuff2, (UOSInt)size, UTF8STRC("anon_inode:[signalfd]")))
 		{
-			*handleType = HandleType::Signal;
+			handleType.Set(HandleType::Signal);
 			sbDetail->AppendUTF8Char('-');
 		}
 		else if (Text::StrEqualsC(sbuff2, (UOSInt)size, UTF8STRC("anon_inode:inotify")))
 		{
-			*handleType = HandleType::INotify;
+			handleType.Set(HandleType::INotify);
 			sbDetail->AppendUTF8Char('-');
 		}
 		else if (Text::StrStartsWithC(sbuff2, (UOSInt)size, UTF8STRC("socket:[")) && sbuff2[size - 1] == ']')
 		{
-			*handleType = HandleType::Socket;
+			handleType.Set(HandleType::Socket);
 			sbDetail->AppendC(&sbuff2[8], (UOSInt)size - 9);
 		}
 		else if (Text::StrStartsWithC(sbuff2, (UOSInt)size, UTF8STRC("pipe:[")) && sbuff2[size - 1] == ']')
 		{
-			*handleType = HandleType::Pipe;
+			handleType.Set(HandleType::Pipe);
 			sbDetail->AppendC(&sbuff2[6], (UOSInt)size - 7);
 		}
 		else if (Text::StrStartsWithC(sbuff2, (UOSInt)size, UTF8STRC("/memfd:")))
 		{
-			*handleType = HandleType::Memory;
+			handleType.Set(HandleType::Memory);
 			sbDetail->AppendC(sbuff2 + 7, (UOSInt)size - 7);
 		}
 		else if (Text::StrStartsWithC(sbuff2, (UOSInt)size, UTF8STRC("/dev/")))
 		{
-			*handleType = HandleType::Device;
+			handleType.Set(HandleType::Device);
 			sbDetail->AppendC(sbuff2, (UOSInt)size);
 		}
 		else
 		{
-			*handleType = HandleType::File;
+			handleType.Set(HandleType::File);
 			sbDetail->AppendC(sbuff2, (UOSInt)size);
 		}
 		return true;

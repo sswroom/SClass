@@ -32,7 +32,7 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Media::MediaFile *currFile;
-			Data::ArrayList<DecodeStatus*> *decStatus;
+			Data::ArrayListNN<DecodeStatus> decStatus;
 
 			NN<UI::GUIPanel> pnlFile;
 			NN<UI::GUILabel> lblFile;

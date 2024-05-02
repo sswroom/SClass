@@ -46,13 +46,13 @@ namespace SSWR
 		NN<UI::GUILabel> lblProgPath;
 		NN<UI::GUITextBox> txtProgPath;
 
-		Data::ArrayList<ProgInfo*> *progList;
-		IO::LogTool *log;
+		Data::ArrayListNN<ProgInfo> progList;
+		IO::LogTool log;
 		NN<UI::ListBoxLogger> logger;
 		Text::String *notifyCmd;
 
 		void AddProg(Text::CString progName, Text::CString progPath);
-		Bool SearchProcId(ProgInfo *prog);
+		Bool SearchProcId(NN<ProgInfo> prog);
 		void SetByProcId(ProgInfo *prog, UOSInt procId);
 		void LoadProgList();
 		void SaveProgList();

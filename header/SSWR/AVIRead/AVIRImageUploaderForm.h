@@ -32,7 +32,7 @@ namespace SSWR
 			};
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Data::ArrayList<FileItem *> *items;
+			Data::ArrayListNN<FileItem> items;
 
 			NN<UI::GUIPanel> pnlCtrl;
 			NN<UI::GUILabel> lblUsername;
@@ -45,7 +45,7 @@ namespace SSWR
 
 			static void __stdcall OnFileDrop(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 			static void __stdcall OnUploadClicked(AnyType userObj);
-			static void FreeItem(FileItem *item);
+			static void FreeItem(NN<FileItem> item);
 		public:
 			AVIRImageUploaderForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRImageUploaderForm();

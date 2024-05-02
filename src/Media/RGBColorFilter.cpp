@@ -68,7 +68,7 @@ void Media::RGBColorFilter::WaitForThread(Int32 stat)
 	}
 }
 
-Media::RGBColorFilter::RGBColorFilter(Media::ColorManager *colorMgr)
+Media::RGBColorFilter::RGBColorFilter(NN<Media::ColorManager> colorMgr)
 {
 	this->colorMgr = colorMgr;
 	this->lut = 0;

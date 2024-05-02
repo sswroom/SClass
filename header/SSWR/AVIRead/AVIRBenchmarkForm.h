@@ -34,7 +34,7 @@ namespace SSWR
 			} TestResult;
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Data::ArrayList<TestResult*> *resultList;
+			Data::ArrayListNN<TestResult> resultList;
 			Bool processing;
 
 			NN<UI::GUIPanel> pnlCtrl;

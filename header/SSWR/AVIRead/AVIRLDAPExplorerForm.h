@@ -22,7 +22,7 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Net::LDAPClient *cli;
-			Data::ArrayList<Net::LDAPClient::SearchResObject*> *dispResults;
+			Data::ArrayListNN<Net::LDAPClient::SearchResObject> dispResults;
 			UOSInt rootLev;
 
 			NN<UI::GUIPanel> pnlRequest;

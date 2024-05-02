@@ -105,18 +105,18 @@ Bool IO::BTController::BTDevice::Unpair()
 	return false;
 }
 
-UOSInt IO::BTController::BTDevice::QueryServices(Data::ArrayList<void*> *guidList)
+UOSInt IO::BTController::BTDevice::QueryServices(NN<Data::ArrayListNN<Data::UUID>> guidList)
 {
 	///////////////////////////////
 	return 0;
 }
 
-void IO::BTController::BTDevice::FreeServices(Data::ArrayList<void*> *guidList)
+void IO::BTController::BTDevice::FreeServices(NN<Data::ArrayListNN<Data::UUID>> guidList)
 {
 	///////////////////////////////
 }
 
-Bool IO::BTController::BTDevice::EnableService(void *guid, Bool toEnable)
+Bool IO::BTController::BTDevice::EnableService(NN<Data::UUID> guid, Bool toEnable)
 {
 	///////////////////////////////
 	return false;

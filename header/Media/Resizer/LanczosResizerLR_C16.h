@@ -66,7 +66,7 @@ namespace Media
 			UInt8 *buffPtr;
 
 			Media::ColorProfile destColor;
-			Media::ColorManagerSess *colorSess;
+			Optional<Media::ColorManagerSess> colorSess;
 			Double srcRefLuminance;
 			Bool rgbChanged;
 			UInt8 *rgbTable;
@@ -84,7 +84,7 @@ namespace Media
 			void DestoryHori();
 			void DestoryVert();
 		public:
-			LanczosResizerLR_C16(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> destColor, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance);
+			LanczosResizerLR_C16(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> destColor, Optional<Media::ColorManagerSess> colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance);
 			virtual ~LanczosResizerLR_C16();
 
 			virtual void Resize(const UInt8 *src, OSInt sbpl, Double swidth, Double sheight, Double xOfst, Double yOfst, UInt8 *dest, OSInt dbpl, UOSInt dwidth, UOSInt dheight);

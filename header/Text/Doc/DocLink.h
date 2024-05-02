@@ -16,7 +16,7 @@ namespace Text
 
 			virtual DocItemType GetItemType();
 
-			virtual UOSInt Add(DocItem *item);
+			virtual UOSInt Add(NN<DocItem> item);
 
 			const UTF8Char *GetLink();
 		};

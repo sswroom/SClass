@@ -78,27 +78,27 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchClicked(AnyType userOb
 	}
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
-	Data::ArrayList<Net::LDAPClient::SearchResObject*> results;
+	Data::ArrayListNN<Net::LDAPClient::SearchResObject> results;
 	me->txtSearchBase->GetText(sb);
 	me->txtSearchFilter->GetText(sb2);
-	if (!me->cli->Search(sb.ToCString(), (Net::LDAPClient::ScopeType)me->cboSearchScope->GetSelectedItem().GetOSInt(), (Net::LDAPClient::DerefType)me->cboSearchDerefAliases->GetSelectedItem().GetOSInt(), 0, 0, false, sb2.ToString(), &results))
+	if (!me->cli->Search(sb.ToCString(), (Net::LDAPClient::ScopeType)me->cboSearchScope->GetSelectedItem().GetOSInt(), (Net::LDAPClient::DerefType)me->cboSearchDerefAliases->GetSelectedItem().GetOSInt(), 0, 0, false, sb2.ToString(), results))
 	{
 		me->ui->ShowMsgOK(CSTR("Error in searching from server"), CSTR("LDAP Client"), me);
 	}
 	else
 	{
 		Net::LDAPClient::SearchResultsFree(me->dispResults);
-		me->dispResults->AddAll(results);
+		me->dispResults.AddAll(results);
 		me->lvSearch->ClearItems();
 		me->cboSearchResult->ClearItems();
-		Net::LDAPClient::SearchResObject *obj;
+		NN<Net::LDAPClient::SearchResObject> obj;
 		UOSInt i;
 		UOSInt j;
 		i = 0;
-		j = me->dispResults->GetCount();
+		j = me->dispResults.GetCount();
 		while (i < j)
 		{
-			obj = me->dispResults->GetItem(i);
+			obj = me->dispResults.GetItemNoCheck(i);
 			me->cboSearchResult->AddItem(obj->name, obj);
 			i++;
 		}
@@ -113,19 +113,20 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchResultSelChg(AnyType u
 {
 	NN<SSWR::AVIRead::AVIRLDAPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPClientForm>();
 	NN<Net::LDAPClient::SearchResObject> obj;
+	NN<Data::ArrayListNN<Net::LDAPClient::SearchResItem>> items;
 	me->lvSearch->ClearItems();
-	if (me->cboSearchResult->GetSelectedItem().GetOpt<Net::LDAPClient::SearchResObject>().SetTo(obj) && obj->items)
+	if (me->cboSearchResult->GetSelectedItem().GetOpt<Net::LDAPClient::SearchResObject>().SetTo(obj) && obj->items.SetTo(items))
 	{
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
-		Net::LDAPClient::SearchResItem *item;
+		NN<Net::LDAPClient::SearchResItem> item;
 		Text::StringBuilderUTF8 sb;
 		i = 0;
-		j = obj->items->GetCount();
+		j = items->GetCount();
 		while (i < j)
 		{
-			item = obj->items->GetItem(i);
+			item = items->GetItemNoCheck(i);
 			k = me->lvSearch->AddItem(item->type, 0);
 			sb.ClearStr();
 			Net::LDAPClient::SearchResDisplay(item->type->ToCString(), item->value->ToCString(), sb);
@@ -219,14 +220,12 @@ SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(Optional<UI::GUIClientCont
 	this->lvSearch->AddColumn(CSTR("Value"), 500);
 
 	this->cli = 0;
-	NEW_CLASS(this->dispResults, Data::ArrayList<Net::LDAPClient::SearchResObject*>());
 }
 
 SSWR::AVIRead::AVIRLDAPClientForm::~AVIRLDAPClientForm()
 {
 	SDEL_CLASS(this->cli);
 	Net::LDAPClient::SearchResultsFree(this->dispResults);
-	DEL_CLASS(this->dispResults);
 }
 
 void SSWR::AVIRead::AVIRLDAPClientForm::OnMonitorChanged()

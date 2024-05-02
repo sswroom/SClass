@@ -117,7 +117,7 @@ namespace SSWR
 
 			NN<UI::GUIMainMenu> mnuMain;
 
-			Media::ColorManager *colorMgr;
+			NN<Media::ColorManager> colorMgr;
 			NN<Media::ColorManagerSess> colorSess;
 			NN<OrganEnv> env;
 			NN<OrganGroup> rootGroup;

@@ -435,12 +435,7 @@ UI::GUIMenu::GUIMenu(Bool isPopup)
 
 UI::GUIMenu::~GUIMenu()
 {
-	UOSInt i;
-	i = this->keys.GetCount();
-	while (i-- > 0)
-	{
-		MemFree(this->keys.GetItem(i));
-	}
+	this->keys.MemFreeAll();
 	this->subMenus.DeleteAll();
 	DestroyMenu((HMENU)this->hMenu);
 }
@@ -458,7 +453,7 @@ UOSInt UI::GUIMenu::AddItem(Text::CString name, UInt16 cmdId, KeyModifier keyMod
 		ToKeyDisplay(sbuff, keyModifier, shortcutKey);
 		wptr = Text::StrUTF8_WChar(wptr, sbuff, 0);
 		AppendMenuW((HMENU)this->hMenu, 0, cmdId, wbuff);
-		ShortcutKey *key = MemAlloc(ShortcutKey, 1);
+		NN<ShortcutKey> key = MemAllocNN(ShortcutKey);
 		key->cmdId = cmdId;
 		key->keyModifier = keyModifier;
 		key->shortcutKey = shortcutKey;
@@ -497,7 +492,7 @@ void *UI::GUIMenu::GetHMenu()
 	return this->hMenu;
 }
 
-UOSInt UI::GUIMenu::GetAllKeys(NN<Data::ArrayList<ShortcutKey*>> keys)
+UOSInt UI::GUIMenu::GetAllKeys(NN<Data::ArrayListNN<ShortcutKey>> keys)
 {
 	UOSInt keyCnt = this->keys.GetCount();
 	keys->AddAll(this->keys);
@@ -523,12 +518,7 @@ void UI::GUIMenu::SetItemEnabled(UInt16 cmdId, Bool enabled)
 void UI::GUIMenu::ClearItems()
 {
 	UOSInt i;
-	i = this->keys.GetCount();
-	while (i-- > 0)
-	{
-		MemFree(this->keys.GetItem(i));
-	}
-	this->keys.Clear();
+	this->keys.MemFreeAll();
 	this->subMenus.DeleteAll();
 
 #ifdef _WIN32_WCE

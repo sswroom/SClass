@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRHIDDeviceForm::OnDevicesSelChg(AnyType userObj
 	}
 }
 
-OSInt __stdcall SSWR::AVIRead::AVIRHIDDeviceForm::ItemCompare(IO::HIDInfo *item1, IO::HIDInfo *item2)
+OSInt __stdcall SSWR::AVIRead::AVIRHIDDeviceForm::ItemCompare(NN<IO::HIDInfo> item1, NN<IO::HIDInfo> item2)
 {
 	if (item1->GetVendorId() > item2->GetVendorId())
 	{
@@ -84,20 +84,20 @@ SSWR::AVIRead::AVIRHIDDeviceForm::AVIRHIDDeviceForm(Optional<UI::GUIClientContro
 
 	this->OnMonitorChanged();
 
-	IO::HIDInfo *hid;
+	NN<IO::HIDInfo> hid;
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 
 	IO::HIDInfo::GetHIDList(this->hidList);
-	Data::Sort::ArtificialQuickSortFunc<IO::HIDInfo*>::Sort(this->hidList, ItemCompare);
+	Data::Sort::ArtificialQuickSortFunc<NN<IO::HIDInfo>>::Sort(this->hidList, ItemCompare);
 	
 	i = 0;
 	j = this->hidList.GetCount();
 	while (i < j)
 	{
-		hid = this->hidList.GetItem(i);
+		hid = this->hidList.GetItemNoCheck(i);
 		sptr = Text::StrHexVal16(sbuff, hid->GetVendorId());
 		*sptr++ = ':';
 		sptr = Text::StrHexVal16(sptr, hid->GetProductId());
@@ -108,13 +108,7 @@ SSWR::AVIRead::AVIRHIDDeviceForm::AVIRHIDDeviceForm(Optional<UI::GUIClientContro
 
 SSWR::AVIRead::AVIRHIDDeviceForm::~AVIRHIDDeviceForm()
 {
-	IO::HIDInfo *hid;
-	UOSInt i = this->hidList.GetCount();
-	while (i-- > 0)
-	{
-		hid = this->hidList.GetItem(i);
-		DEL_CLASS(hid);
-	}
+	this->hidList.DeleteAll();
 }
 
 void SSWR::AVIRead::AVIRHIDDeviceForm::OnMonitorChanged()

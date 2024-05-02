@@ -867,7 +867,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			k = workbook->GetFontCount();
 			while (i < k)
 			{
-				Text::SpreadSheet::WorkbookFont *font = workbook->GetFont(i);
+				NN<Text::SpreadSheet::WorkbookFont> font = workbook->GetFontNoCheckc(i);
 				sb.AppendC(UTF8STRC("<font>"));
 				if (font->GetSize() != 0)
 				{
@@ -1592,7 +1592,8 @@ void Exporter::XLSXExporter::AppendXF(NN<Text::StringBuilderUTF8> sb, NN<Text::S
 	UOSInt k;
 	const UTF8Char *csptr;
 	BorderInfo *border;
-	Text::SpreadSheet::WorkbookFont *font = style->GetFont();
+	Optional<Text::SpreadSheet::WorkbookFont> font = style->GetFont();
+	NN<Text::SpreadSheet::WorkbookFont> nnfont;
 	NN<Text::String> optS;
 	if (!style->GetDataFormat().SetTo(optS))
 	{
@@ -1605,13 +1606,13 @@ void Exporter::XLSXExporter::AppendXF(NN<Text::StringBuilderUTF8> sb, NN<Text::S
 	sb->AppendC(UTF8STRC("<xf numFmtId=\""));
 	sb->AppendUOSInt(numFmtMap->Get(csptr) + 164);
 	sb->AppendC(UTF8STRC("\" fontId=\""));
-	if (font == 0)
+	if (!font.SetTo(nnfont))
 	{
 		sb->AppendUTF8Char('0');
 	}
 	else
 	{
-		sb->AppendUOSInt(workbook->GetFontIndex(font));
+		sb->AppendUOSInt(workbook->GetFontIndex(nnfont));
 	}
 	sb->AppendC(UTF8STRC("\" fillId=\"0\" borderId=\""));
 	k = borders->GetCount();
@@ -1632,7 +1633,7 @@ void Exporter::XLSXExporter::AppendXF(NN<Text::StringBuilderUTF8> sb, NN<Text::S
 	}
 	sb->AppendUOSInt(k);
 	sb->AppendC(UTF8STRC("\" xfId=\"0\" applyFont=\""));
-	if (font)
+	if (font.NotNull())
 	{
 		sb->AppendC(UTF8STRC("true"));
 	}

@@ -89,12 +89,12 @@ namespace Net
 		~SolarEdgeAPI();
 
 		Optional<Text::String> GetCurrentVersion();
-		Bool GetSupportedVersions(Data::ArrayListStringNN *versions);
-		Bool GetSiteList(Data::ArrayList<Site*> *versions, UOSInt maxCount, UOSInt startOfst, UOSInt *totalCount);
-		void FreeSiteList(Data::ArrayList<Site*> *versions);
-		Bool GetSiteOverview(Int32 siteId, SiteOverview *overview);
-		Bool GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, TimeUnit timeUnit, Data::ArrayList<TimedValue> *values);
-		Bool GetSitePower(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, Data::ArrayList<TimedValue> *values);
+		Bool GetSupportedVersions(NN<Data::ArrayListStringNN> versions);
+		Bool GetSiteList(NN<Data::ArrayListNN<Site>> versions, UOSInt maxCount, UOSInt startOfst, OptOut<UOSInt> totalCount);
+		void FreeSiteList(NN<Data::ArrayListNN<Site>> versions);
+		Bool GetSiteOverview(Int32 siteId, NN<SiteOverview> overview);
+		Bool GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, TimeUnit timeUnit, NN<Data::ArrayList<TimedValue>> values);
+		Bool GetSitePower(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, NN<Data::ArrayList<TimedValue>> values);
 
 		static void AppendFormDate(NN<Text::StringBuilderUTF8> sb, Data::Timestamp ts, Bool hasTime);
 		static Text::CStringNN TimeUnitGetName(TimeUnit timeUnit);

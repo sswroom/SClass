@@ -1,13 +1,13 @@
 #ifndef _SM_TEXT_DOC_DOCITEM
 #define _SM_TEXT_DOC_DOCITEM
+#include "Data/ArrayListNN.h"
 #include "IO/ParsedObject.h"
-#include "Data/ArrayList.h"
 
 namespace Text
 {
 	namespace Doc
 	{
-		class DocItem : public Data::ReadingList<DocItem*>
+		class DocItem : public Data::ReadingListNN<DocItem>
 		{
 		public:
 			typedef enum
@@ -24,16 +24,17 @@ namespace Text
 				HALIGN_CENTER
 			} HorizontalAlign;
 		protected:
-			Data::ArrayList<DocItem*> *items;
+			Data::ArrayListNN<DocItem> items;
 		public:
 			DocItem();
 			virtual ~DocItem();
 
 			virtual DocItemType GetItemType() = 0;
 
-			virtual UOSInt Add(DocItem *item);
+			virtual UOSInt Add(NN<DocItem> item);
 			virtual UOSInt GetCount() const;
-			virtual DocItem *GetItem(UOSInt index) const;
+			virtual NN<DocItem> GetItemNoCheck(UOSInt index) const;
+			virtual Optional<DocItem> GetItem(UOSInt index) const;
 		};
 	}
 }

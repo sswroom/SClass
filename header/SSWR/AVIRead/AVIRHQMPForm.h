@@ -42,8 +42,8 @@ namespace SSWR
 			Bool pbEnd;
 			Net::WebServer::WebListener *listener;
 
-			Media::ImageFilter::BWImgFilter *bwFilter;
-			Media::ImageFilter::BGImgFilter *bgFilter;
+			NN<Media::ImageFilter::BWImgFilter> bwFilter;
+			NN<Media::ImageFilter::BGImgFilter> bgFilter;
 
 			UI::GUIVideoBoxDD *vbox;
 			NN<UI::GUIMainMenu> mnu;

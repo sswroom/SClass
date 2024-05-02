@@ -112,14 +112,14 @@ Media::AVIUtl::AUIPlugin::~AUIPlugin()
 	}
 }
 
-Media::AVIUtl::AUIPlugin *Media::AVIUtl::AUIPlugin::Clone() const
+NN<Media::AVIUtl::AUIPlugin> Media::AVIUtl::AUIPlugin::Clone() const
 {
-	Media::AVIUtl::AUIPlugin *plugin;
-	NEW_CLASS(plugin, Media::AVIUtl::AUIPlugin(this));
+	NN<Media::AVIUtl::AUIPlugin> plugin;
+	NEW_CLASSNN(plugin, Media::AVIUtl::AUIPlugin(this));
 	return plugin;
 }
 
-UOSInt Media::AVIUtl::AUIPlugin::LoadFile(const Char *fileName, Data::ArrayList<Media::IMediaSource*> *outArr)
+UOSInt Media::AVIUtl::AUIPlugin::LoadFile(const Char *fileName, NN<Data::ArrayListNN<Media::IMediaSource>> outArr)
 {
 	INPUT_HANDLE hand;
 	INPUT_PLUGIN_TABLE *pluginTab = (INPUT_PLUGIN_TABLE*)this->plugin->pluginTable;
@@ -127,23 +127,23 @@ UOSInt Media::AVIUtl::AUIPlugin::LoadFile(const Char *fileName, Data::ArrayList<
 	if (hand == 0)
 		return 0;
 	
-	AUIInput *input;
+	NN<AUIInput> input;
 	NN<Media::FrameInfo> frameInfo;
 	NN<Media::AudioFormat> audioFormat;
-	input = MemAlloc(AUIInput, 1);
+	input = MemAllocNN(AUIInput);
 	input->hand = hand;
 	input->useCnt = 0;
 	NEW_CLASSNN(frameInfo, Media::FrameInfo());
 	NEW_CLASSNN(audioFormat, Media::AudioFormat());
 
-	Media::IMediaSource *media;
+	NN<Media::IMediaSource> media;
 
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
 	UInt32 frameCnt;
 	if (this->GetInputVideoInfo(input->hand, frameInfo, frameRateNorm, frameRateDenorm, frameCnt))
 	{
-		NEW_CLASS(media, Media::AVIUtl::AUIVideo(this->Clone(), input, frameInfo, frameRateNorm, frameRateDenorm, frameCnt));
+		NEW_CLASSNN(media, Media::AVIUtl::AUIVideo(this->Clone(), input, frameInfo, frameRateNorm, frameRateDenorm, frameCnt));
 		outArr->Add(media);
 		input->useCnt++;
 	}
@@ -154,7 +154,7 @@ UOSInt Media::AVIUtl::AUIPlugin::LoadFile(const Char *fileName, Data::ArrayList<
 	UInt32 nSamples;
 	if (this->GetInputAudioInfo(input->hand, audioFormat, nSamples))
 	{
-		NEW_CLASS(media, Media::AVIUtl::AUIAudio(this->Clone(), input, audioFormat, nSamples));
+		NEW_CLASSNN(media, Media::AVIUtl::AUIAudio(this->Clone(), input, audioFormat, nSamples));
 		outArr->Add(media);
 		input->useCnt++;
 	}
@@ -166,7 +166,7 @@ UOSInt Media::AVIUtl::AUIPlugin::LoadFile(const Char *fileName, Data::ArrayList<
 	if (input->useCnt == 0)
 	{
 		this->CloseInput(input->hand);
-		MemFree(input);
+		MemFreeNN(input);
 		return 0;
 	}
 	else
@@ -318,7 +318,7 @@ void Media::AVIUtl::AUIPlugin::PrepareSelector(NN<IO::FileSelector> selector)
 	MemFree(wptr);
 }
 
-Media::AVIUtl::AUIPlugin *Media::AVIUtl::AUIPlugin::LoadPlugin(const WChar *fileName)
+Optional<Media::AVIUtl::AUIPlugin> Media::AVIUtl::AUIPlugin::LoadPlugin(const WChar *fileName)
 {
 	HMODULE hMod = LoadLibraryW(fileName);
 	if (hMod == 0)
@@ -343,8 +343,8 @@ Media::AVIUtl::AUIPlugin *Media::AVIUtl::AUIPlugin::LoadPlugin(const WChar *file
 		return 0;
 	}
 
-	Media::AVIUtl::AUIPlugin *plugin;
-	NEW_CLASS(plugin, Media::AVIUtl::AUIPlugin());
+	NN<Media::AVIUtl::AUIPlugin> plugin;
+	NEW_CLASSNN(plugin, Media::AVIUtl::AUIPlugin());
 	plugin->plugin->hMod = hMod;
 	plugin->plugin->pluginTable = pluginTable;
 	return plugin;

@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRSDCardForm::OnDevicesSelChg(AnyType userObj)
 	}
 }
 
-OSInt __stdcall SSWR::AVIRead::AVIRSDCardForm::ItemCompare(IO::SDCardInfo *item1, IO::SDCardInfo *item2)
+OSInt __stdcall SSWR::AVIRead::AVIRSDCardForm::ItemCompare(NN<IO::SDCardInfo> item1, NN<IO::SDCardInfo> item2)
 {
 	return item1->GetName()->CompareTo(item1->GetName());
 }
@@ -163,7 +163,7 @@ SSWR::AVIRead::AVIRSDCardForm::AVIRSDCardForm(Optional<UI::GUIClientControl> par
 
 	this->OnMonitorChanged();
 
-	IO::SDCardInfo *sdCard;
+	NN<IO::SDCardInfo> sdCard;
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[32];
@@ -171,13 +171,13 @@ SSWR::AVIRead::AVIRSDCardForm::AVIRSDCardForm(Optional<UI::GUIClientControl> par
 
 
 	IO::SDCardMgr::GetCardList(this->sdCardList);
-	Data::Sort::ArtificialQuickSortFunc<IO::SDCardInfo*>::Sort(this->sdCardList, ItemCompare);
+	Data::Sort::ArtificialQuickSortFunc<NN<IO::SDCardInfo>>::Sort(this->sdCardList, ItemCompare);
 	
 	i = 0;
 	j = this->sdCardList.GetCount();
 	while (i < j)
 	{
-		sdCard = this->sdCardList.GetItem(i);
+		sdCard = this->sdCardList.GetItemNoCheck(i);
 		sptr = Text::StrUOSInt(sbuff, i);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(" - "));
 		sptr = sdCard->GetName()->ConcatTo(sptr);
@@ -188,13 +188,7 @@ SSWR::AVIRead::AVIRSDCardForm::AVIRSDCardForm(Optional<UI::GUIClientControl> par
 
 SSWR::AVIRead::AVIRSDCardForm::~AVIRSDCardForm()
 {
-	IO::SDCardInfo *sdCard;
-	UOSInt i = this->sdCardList.GetCount();
-	while (i-- > 0)
-	{
-		sdCard = this->sdCardList.GetItem(i);
-		DEL_CLASS(sdCard);
-	}
+	this->sdCardList.DeleteAll();
 }
 
 void SSWR::AVIRead::AVIRSDCardForm::OnMonitorChanged()

@@ -1,6 +1,6 @@
 #ifndef _SM_UI_GTK_GTKDRAGDROP
 #define _SM_UI_GTK_GTKDRAGDROP
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "Data/StringUTF8Map.h"
 #include "Text/String.h"
 #include "UI/GUIControl.h"
@@ -17,7 +17,7 @@ namespace UI
 			void *context;
 			UInt32 time;
 			Data::StringUTF8Map<OSInt> targetMap;
-			Data::FastMap<Int32, Text::String*> targetText;
+			Data::FastMapNN<Int32, Text::String> targetText;
 
 			static void AppendWC(NN<Text::StringBuilderUTF8> sb, const UTF16Char *s, UOSInt slen);
 

@@ -10,15 +10,15 @@ namespace Media
 		class AUIAudio : public Media::IAudioSource
 		{
 		private:
-			Media::AVIUtl::AUIPlugin *plugin;
-			Media::AVIUtl::AUIPlugin::AUIInput *input;
+			NN<Media::AVIUtl::AUIPlugin> plugin;
+			NN<Media::AVIUtl::AUIPlugin::AUIInput> input;
 			NN<Media::AudioFormat> format;
 			UOSInt nSamples;
 			UOSInt currSample;
 			Sync::Event *playEvt;
 
 		public:
-			AUIAudio(Media::AVIUtl::AUIPlugin *plugin, Media::AVIUtl::AUIPlugin::AUIInput *input, NN<Media::AudioFormat> format, UOSInt nSamples);
+			AUIAudio(NN<Media::AVIUtl::AUIPlugin> plugin, NN<Media::AVIUtl::AUIPlugin::AUIInput> input, NN<Media::AudioFormat> format, UOSInt nSamples);
 			~AUIAudio();
 
 			virtual UTF8Char *GetSourceName(UTF8Char *buff);

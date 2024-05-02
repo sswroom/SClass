@@ -1,6 +1,6 @@
 #ifndef _SM_IO_SDCARDMGR
 #define _SM_IO_SDCARDMGR
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "IO/SDCardInfo.h"
 
 namespace IO
@@ -8,7 +8,7 @@ namespace IO
 	class SDCardMgr
 	{
 	public:
-		static UOSInt GetCardList(NN<Data::ArrayList<IO::SDCardInfo*>> cardList);
+		static UOSInt GetCardList(NN<Data::ArrayListNN<IO::SDCardInfo>> cardList);
 	};
 }
 #endif

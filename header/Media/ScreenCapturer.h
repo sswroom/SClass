@@ -12,11 +12,11 @@ namespace Media
 	{
 	private:
 		Media::MonitorSurfaceMgr *surfaceMgr;
-		Media::MonitorMgr *monMgr;
-		Media::ColorManager *colorMgr;
+		NN<Media::MonitorMgr> monMgr;
+		NN<Media::ColorManager> colorMgr;
 
 	public:
-		ScreenCapturer(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr);
+		ScreenCapturer(NN<Media::MonitorMgr> monMgr, NN<Media::ColorManager> colorMgr);
 		~ScreenCapturer();
 
 		Media::StaticImage *CaptureScreen(MonitorHandle *hMon);

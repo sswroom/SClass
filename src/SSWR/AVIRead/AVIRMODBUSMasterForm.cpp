@@ -306,7 +306,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(AnyType userObj)
 	{
 		UTF8Char sbuff[64];
 		UTF8Char *sptr;
-		MODBUSEntry *entry;
+		NN<MODBUSEntry> entry;
 		UOSInt i = 0;
 		UOSInt j = me->entryList.GetCount();
 		while (i < j)
@@ -315,7 +315,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(AnyType userObj)
 			Int32 i32Val;
 			UInt16 u16Val;
 			UInt8 u8Val;
-			entry = me->entryList.GetItem(i);
+			entry = me->entryList.GetItemNoCheck(i);
 			switch (entry->dt)
 			{
 			case IO::MODBUSController::DT_F32:
@@ -514,7 +514,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnMODBUSEntry(AnyType userOb
 	NN<SSWR::AVIRead::AVIRMODBUSMasterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMODBUSMasterForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	MODBUSEntry *entry = MemAlloc(MODBUSEntry, 1);
+	NN<MODBUSEntry> entry = MemAllocNN(MODBUSEntry);
 	entry->name = Text::String::New(name);
 	entry->devAddr = devAddr;
 	entry->regAddr = regAddr;
@@ -726,13 +726,13 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(Optional<UI::GUIClient
 SSWR::AVIRead::AVIRMODBUSMasterForm::~AVIRMODBUSMasterForm()
 {
 	StopStream(false);
-	MODBUSEntry *entry;
+	NN<MODBUSEntry> entry;
 	UOSInt i = this->entryList.GetCount();
 	while (i-- > 0)
 	{
-		entry = this->entryList.GetItem(i);
+		entry = this->entryList.GetItemNoCheck(i);
 		entry->name->Release();
-		MemFree(entry);
+		MemFreeNN(entry);
 	}
 	this->log.RemoveLogHandler(this->logger);
 	this->logger.Delete();

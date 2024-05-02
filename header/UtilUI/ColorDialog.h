@@ -99,9 +99,9 @@ namespace UtilUI
 		Double mainZ;
 		Media::StaticImage *mainImg;
 		Media::StaticImage *subImg;
-		Media::ColorManager *colorMgr;
+		NN<Media::ColorManager> colorMgr;
 		NN<Media::ColorManagerSess> colorSess;
-		Media::MonitorMgr *monMgr;
+		Optional<Media::MonitorMgr> monMgr;
 		Bool subDowned;
 		Bool mainDowned;
 
@@ -153,7 +153,7 @@ namespace UtilUI
 		void LoadColor();
 		void UpdateColor();
 	public:
-		ColorDialog(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, Media::ColorManager *colorMgr, NN<Media::DrawEngine> eng, ColorCorrType colorCorr, NN<const Media::ColorProfile> colorProfile, Media::MonitorMgr *monMgr);
+		ColorDialog(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::ColorManager> colorMgr, NN<Media::DrawEngine> eng, ColorCorrType colorCorr, NN<const Media::ColorProfile> colorProfile, Optional<Media::MonitorMgr> monMgr);
 		virtual ~ColorDialog();
 
 		void SetColor32(UInt32 color);

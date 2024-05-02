@@ -636,7 +636,7 @@ Bool SSWR::SDNSProxy::SDNSProxyWebHandler::ProcessRequest(NN<Net::WebServer::IWe
 	return true;
 }
 
-SSWR::SDNSProxy::SDNSProxyWebHandler::SDNSProxyWebHandler(Net::DNSProxy *proxy, NN<IO::LogTool> log, SDNSProxyCore *core)
+SSWR::SDNSProxy::SDNSProxyWebHandler::SDNSProxyWebHandler(NN<Net::DNSProxy> proxy, NN<IO::LogTool> log, SDNSProxyCore *core)
 {
 	this->proxy = proxy;
 	this->core = core;

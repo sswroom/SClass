@@ -240,7 +240,7 @@ const UTF16Char *Text::SMSUserData::GetMessage()
 	return this->msg;
 }
 
-OSInt Text::SMSUserData::CreateSMSs(Data::ArrayList<Text::SMSUserData*> *smsList, const UTF8Char *osmsMessage)
+UOSInt Text::SMSUserData::CreateSMSs(NN<Data::ArrayListNN<Text::SMSUserData>> smsList, const UTF8Char *osmsMessage)
 {
 	UInt8 udh[6];
 	UTF16Char sbuff[161];
@@ -253,10 +253,10 @@ OSInt Text::SMSUserData::CreateSMSs(Data::ArrayList<Text::SMSUserData*> *smsList
 	u16Msg = u16MsgPtr;
 	Text::StrUTF8_UTF16(u16MsgPtr, osmsMessage, 0);
 	Text::SMSUtil::GetTextInfo(u16Msg, &dcs, &msgLeng);
-	OSInt cnt = 0;
+	UOSInt cnt = 0;
 	UInt8 refId = (UInt8)(u16Msg[0] & 0xff);
 	UInt8 totalCnt;
-	Text::SMSUserData *ud;
+	NN<Text::SMSUserData> ud;
 	const UTF16Char *sptr;
 
 	if (dcs == Text::SMSUtil::DCS_UCS2)
@@ -289,7 +289,7 @@ OSInt Text::SMSUserData::CreateSMSs(Data::ArrayList<Text::SMSUserData*> *smsList
 				udh[3] = refId;
 				udh[4] = totalCnt;
 				udh[5] = (UInt8)(cnt + 1);
-				NEW_CLASS(ud, Text::SMSUserData(sbuff, dcs, udh));
+				NEW_CLASSNN(ud, Text::SMSUserData(sbuff, dcs, udh));
 				smsList->Add(ud);
 				cnt++;
 				u16Msg = &u16Msg[charCnt];
@@ -299,7 +299,7 @@ OSInt Text::SMSUserData::CreateSMSs(Data::ArrayList<Text::SMSUserData*> *smsList
 		}
 		else
 		{
-			NEW_CLASS(ud, Text::SMSUserData(u16Msg, dcs, 0));
+			NEW_CLASSNN(ud, Text::SMSUserData(u16Msg, dcs, 0));
 			smsList->Add(ud);
 			MemFree(u16MsgPtr);
 			return 1;
@@ -330,7 +330,7 @@ OSInt Text::SMSUserData::CreateSMSs(Data::ArrayList<Text::SMSUserData*> *smsList
 				udh[3] = refId;
 				udh[4] = totalCnt;
 				udh[5] = (UInt8)(cnt + 1);
-				NEW_CLASS(ud, Text::SMSUserData(sbuff, dcs, udh));
+				NEW_CLASSNN(ud, Text::SMSUserData(sbuff, dcs, udh));
 				smsList->Add(ud);
 				cnt++;
 				u16Msg = &u16Msg[sptr - sbuff];
@@ -340,7 +340,7 @@ OSInt Text::SMSUserData::CreateSMSs(Data::ArrayList<Text::SMSUserData*> *smsList
 		}
 		else
 		{
-			NEW_CLASS(ud, Text::SMSUserData(u16Msg, dcs, 0));
+			NEW_CLASSNN(ud, Text::SMSUserData(u16Msg, dcs, 0));
 			smsList->Add(ud);
 			MemFree(u16MsgPtr);
 			return 1;
@@ -353,7 +353,7 @@ OSInt Text::SMSUserData::CreateSMSs(Data::ArrayList<Text::SMSUserData*> *smsList
 	}
 }
 
-Text::SMSUserData *Text::SMSUserData::CreateSMSTrim(const UTF16Char *smsMessage, UInt8 *udh)
+Optional<Text::SMSUserData> Text::SMSUserData::CreateSMSTrim(const UTF16Char *smsMessage, UInt8 *udh)
 {
 	UTF16Char sbuff[161];
 	UInt32 udhSize;
@@ -405,7 +405,7 @@ Text::SMSUserData *Text::SMSUserData::CreateSMSTrim(const UTF16Char *smsMessage,
 	}
 }
 
-Text::SMSUserData *Text::SMSUserData::CreateSMSFromBytes(const UInt8 *bytes, Bool hasUDH, Text::SMSUtil::DCS dcs)
+Optional<Text::SMSUserData> Text::SMSUserData::CreateSMSFromBytes(const UInt8 *bytes, Bool hasUDH, Text::SMSUtil::DCS dcs)
 {
 	UTF16Char sbuff[161];
 	UTF16Char *sptr = sbuff;
@@ -413,7 +413,7 @@ Text::SMSUserData *Text::SMSUserData::CreateSMSFromBytes(const UInt8 *bytes, Boo
 	const UInt8 *srcPtr = &bytes[1];
 	UInt8 size = bytes[0];
 	const UInt8 *udh = 0;
-	Text::SMSUserData *ud;
+	NN<Text::SMSUserData> ud;
 	Bool lastIs1B;
 	Int32 v = 0;
 
@@ -497,7 +497,7 @@ Text::SMSUserData *Text::SMSUserData::CreateSMSFromBytes(const UInt8 *bytes, Boo
 			}
 		}
 		*sptr = 0;
-		NEW_CLASS(ud, Text::SMSUserData(sbuff, Text::SMSUtil::DCS_GSM7BIT, udh));
+		NEW_CLASSNN(ud, Text::SMSUserData(sbuff, Text::SMSUtil::DCS_GSM7BIT, udh));
 		return ud;
 	}
 	else if (dcs == Text::SMSUtil::DCS_UCS2)
@@ -515,7 +515,7 @@ Text::SMSUserData *Text::SMSUserData::CreateSMSFromBytes(const UInt8 *bytes, Boo
 			srcPtr += 2;
 		}
 		*sptr = 0;
-		NEW_CLASS(ud, Text::SMSUserData(sbuff, Text::SMSUtil::DCS_UCS2, udh));
+		NEW_CLASSNN(ud, Text::SMSUserData(sbuff, Text::SMSUtil::DCS_UCS2, udh));
 		return ud;
 	}
 	else

@@ -65,7 +65,7 @@ Net::ARPInfo::ARPType Net::ARPInfo::GetARPType()
 	return this->arpType;
 }
 
-UOSInt Net::ARPInfo::GetARPInfoList(Data::ArrayList<Net::ARPInfo*> *arpInfoList)
+UOSInt Net::ARPInfo::GetARPInfoList(NN<Data::ArrayListNN<Net::ARPInfo>> arpInfoList)
 {
 	int sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP);
 	if (sock == -1)
@@ -99,7 +99,7 @@ UOSInt Net::ARPInfo::GetARPInfoList(Data::ArrayList<Net::ARPInfo*> *arpInfoList)
 	Text::StringBuilderUTF8 sb;
 	ARPData data;
 	Int32 flags;
-	Net::ARPInfo *arp;
+	NN<Net::ARPInfo> arp;
 	IO::FileStream fs(CSTR("/proc/net/arp"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
 	{
@@ -133,7 +133,7 @@ UOSInt Net::ARPInfo::GetARPInfoList(Data::ArrayList<Net::ARPInfo*> *arpInfoList)
 						data.addr[3] = Text::StrHex2UInt8C(sarr2[3]);
 						data.addr[4] = Text::StrHex2UInt8C(sarr2[4]);
 						data.addr[5] = Text::StrHex2UInt8C(sarr2[5]);
-						NEW_CLASS(arp, Net::ARPInfo(&data));
+						NEW_CLASSNN(arp, Net::ARPInfo(&data));
 						arpInfoList->Add(arp);
 						ret++;
 					}

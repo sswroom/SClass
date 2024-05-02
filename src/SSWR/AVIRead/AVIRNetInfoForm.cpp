@@ -397,15 +397,15 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateARPStats()
 	UOSInt v;
 
 
-	Data::ArrayList<Net::ARPInfo *> arpList;
-	Net::ARPInfo *arp;
+	Data::ArrayListNN<Net::ARPInfo> arpList;
+	NN<Net::ARPInfo> arp;
 	this->lvARPInfo->ClearItems();
-	Net::ARPInfo::GetARPInfoList(&arpList);
+	Net::ARPInfo::GetARPInfoList(arpList);
 	i = 0;
 	j = arpList.GetCount();
 	while (i < j)
 	{
-		arp = arpList.GetItem(i);
+		arp = arpList.GetItemNoCheck(i);
 		ipAddr = arp->GetIPAddress();
 		sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipAddr);
 		k = this->lvARPInfo->AddItem(CSTRP(sbuff, sptr), 0);
@@ -438,8 +438,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateARPStats()
 			this->lvARPInfo->SetSubItem(k, 3, CSTR("Other"));
 			break;
 		}
-		
-		DEL_CLASS(arp);
+		arp.Delete();
 		i++;
 	}
 }

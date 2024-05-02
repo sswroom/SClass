@@ -94,11 +94,11 @@ namespace Text
 			CellData *CloneCell(CellData *cell, const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl);
 			void FreeDrawing(WorksheetDrawing *drawing);
 		public:
-			Worksheet(NN<Text::String> name);
+			Worksheet(NotNullPtr<Text::String> name);
 			Worksheet(Text::CStringNN name);
 			~Worksheet();
 
-			NN<Worksheet> Clone(const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl);
+			NotNullPtr<Worksheet> Clone(const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl);
 
 			void SetOptions(UInt16 options);
 			UInt16 GetOptions();
@@ -126,11 +126,11 @@ namespace Text
 			void SetDefRowHeightPt(Double defRowHeightPt);
 			Double GetDefRowHeightPt();
 
-			NN<Text::String> GetName() const;
-			Bool SetCellString(UOSInt row, UOSInt col, NN<Text::String> val);
+			NotNullPtr<Text::String> GetName() const;
+			Bool SetCellString(UOSInt row, UOSInt col, NotNullPtr<Text::String> val);
 			Bool SetCellString(UOSInt row, UOSInt col, Text::CStringNN val);
 			Bool SetCellTS(UOSInt row, UOSInt col, Data::Timestamp val);
-			Bool SetCellDateTime(UOSInt row, UOSInt col, NN<Data::DateTime> val);
+			Bool SetCellDateTime(UOSInt row, UOSInt col, NotNullPtr<Data::DateTime> val);
 			Bool SetCellDouble(UOSInt row, UOSInt col, Double val);
 			Bool SetCellInt32(UOSInt row, UOSInt col, Int32 val);
 			Bool SetCellInt64(UOSInt row, UOSInt col, Int64 val);
@@ -139,10 +139,10 @@ namespace Text
 			Bool SetCellStyleBorderBottom(UOSInt row, UOSInt col, IStyleCtrl *wb, UInt32 color, BorderType borderType);
 			Bool SetCellURL(UOSInt row, UOSInt col, Text::String *url);
 			Bool SetCellURL(UOSInt row, UOSInt col, Text::CString url);
-			Bool SetCellString(UOSInt row, UOSInt col, Optional<CellStyle> style, NN<Text::String> val);
+			Bool SetCellString(UOSInt row, UOSInt col, Optional<CellStyle> style, NotNullPtr<Text::String> val);
 			Bool SetCellString(UOSInt row, UOSInt col, Optional<CellStyle> style, Text::CStringNN val);
 			Bool SetCellTS(UOSInt row, UOSInt col, CellStyle *style, Data::Timestamp val);
-			Bool SetCellDateTime(UOSInt row, UOSInt col, CellStyle *style, NN<Data::DateTime> val);
+			Bool SetCellDateTime(UOSInt row, UOSInt col, CellStyle *style, NotNullPtr<Data::DateTime> val);
 			Bool SetCellDouble(UOSInt row, UOSInt col, CellStyle *style, Double val);
 			Bool SetCellInt32(UOSInt row, UOSInt col, CellStyle *style, Int32 val);
 			Bool SetCellInt64(UOSInt row, UOSInt col, CellStyle *style, Int64 val);
@@ -164,7 +164,7 @@ namespace Text
 			Double GetColWidth(UOSInt col, Math::Unit::Distance::DistanceUnit unit);
 
 			const CellData *GetCellDataRead(UOSInt row, UOSInt col) const;
-			Bool GetCellString(const CellData *cell, NN<Text::StringBuilderUTF8> sb);
+			Bool GetCellString(const CellData *cell, NotNullPtr<Text::StringBuilderUTF8> sb);
 
 			UOSInt GetDrawingCount();
 			WorksheetDrawing *GetDrawing(UOSInt index);

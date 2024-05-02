@@ -30,7 +30,7 @@ void __stdcall UtilUI::TextViewerForm::OnSearchClosed(AnyType userObj, NN<UI::GU
 	me->srchFrm = 0;
 }
 
-UtilUI::TextViewerForm::TextViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, Media::MonitorMgr *monMgr, NN<Media::DrawEngine> deng, UInt32 codePage) : UI::GUIForm(parent, 1024, 768, ui)
+UtilUI::TextViewerForm::TextViewerForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::MonitorMgr> monMgr, NN<Media::DrawEngine> deng, UInt32 codePage) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	NN<UI::GUIMenu> mnu;
 	this->SetFont(0, 0, 8.25, false);

@@ -62,7 +62,7 @@ UOSInt Media::AVIUtl::AUIVideo::GetMaxFrameSize()
 	}
 }
 
-Media::AVIUtl::AUIVideo::AUIVideo(Media::AVIUtl::AUIPlugin *plugin, Media::AVIUtl::AUIPlugin::AUIInput *input, NN<const Media::FrameInfo> frameInfo, UInt32 frameRateNorm, UInt32 frameRateDenorm, UInt32 frameCnt)
+Media::AVIUtl::AUIVideo::AUIVideo(NN<Media::AVIUtl::AUIPlugin> plugin, NN<Media::AVIUtl::AUIPlugin::AUIInput> input, NN<const Media::FrameInfo> frameInfo, UInt32 frameRateNorm, UInt32 frameRateDenorm, UInt32 frameCnt)
 {
 	this->plugin = plugin;
 	this->input = input;
@@ -98,9 +98,9 @@ Media::AVIUtl::AUIVideo::~AUIVideo()
 	if (Sync::Interlocked::DecrementU32(this->input->useCnt) == 0)
 	{
 		this->plugin->CloseInput(this->input->hand);
-		MemFree(this->input);
+		MemFreeNN(this->input);
 	}
-	DEL_CLASS(this->plugin);
+	this->plugin.Delete();
 }
 
 UTF8Char *Media::AVIUtl::AUIVideo::GetSourceName(UTF8Char *buff)

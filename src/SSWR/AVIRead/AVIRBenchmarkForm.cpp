@@ -39,7 +39,7 @@ void SSWR::AVIRead::AVIRBenchmarkForm::StartTest(UOSInt startSize, UOSInt buffSi
 	UInt8 *buff2;
 	UOSInt loopCnt;
 	UOSInt currSize;
-	SSWR::AVIRead::AVIRBenchmarkForm::TestResult *result;
+	NN<SSWR::AVIRead::AVIRBenchmarkForm::TestResult> result;
 
 	UOSInt testCnt = 0;
 	currSize = startSize;
@@ -83,11 +83,11 @@ void SSWR::AVIRead::AVIRBenchmarkForm::StartTest(UOSInt startSize, UOSInt buffSi
 				sptr = Text::StrDoubleFmt(sbuff, rate, "0.0");
 				this->lvCopy->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 
-				result = MemAlloc(SSWR::AVIRead::AVIRBenchmarkForm::TestResult, 1);
+				result = MemAllocNN(SSWR::AVIRead::AVIRBenchmarkForm::TestResult);
 				result->tt = TT_COPY;
 				result->testSize = currSize;
 				result->resultRate = rate;
-				this->resultList->Add(result);
+				this->resultList.Add(result);
 				break;
 			}
 			else
@@ -123,11 +123,11 @@ void SSWR::AVIRead::AVIRBenchmarkForm::StartTest(UOSInt startSize, UOSInt buffSi
 				sptr = Text::StrDoubleFmt(sbuff, rate, "0.0");
 				this->lvWrite->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 
-				result = MemAlloc(SSWR::AVIRead::AVIRBenchmarkForm::TestResult, 1);
+				result = MemAllocNN(SSWR::AVIRead::AVIRBenchmarkForm::TestResult);
 				result->tt = TT_WRITE;
 				result->testSize = currSize;
 				result->resultRate = rate;
-				this->resultList->Add(result);
+				this->resultList.Add(result);
 				break;
 			}
 			else
@@ -163,11 +163,11 @@ void SSWR::AVIRead::AVIRBenchmarkForm::StartTest(UOSInt startSize, UOSInt buffSi
 				sptr = Text::StrDoubleFmt(sbuff, rate, "0.0");
 				this->lvRead->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 
-				result = MemAlloc(SSWR::AVIRead::AVIRBenchmarkForm::TestResult, 1);
+				result = MemAllocNN(SSWR::AVIRead::AVIRBenchmarkForm::TestResult);
 				result->tt = TT_READ;
 				result->testSize = currSize;
 				result->resultRate = rate;
-				this->resultList->Add(result);
+				this->resultList.Add(result);
 				break;
 			}
 			else
@@ -190,12 +190,7 @@ void SSWR::AVIRead::AVIRBenchmarkForm::StartTest(UOSInt startSize, UOSInt buffSi
 
 void SSWR::AVIRead::AVIRBenchmarkForm::ClearResult()
 {
-	UOSInt i = this->resultList->GetCount();
-	while (i-- > 0)
-	{
-		MemFree(this->resultList->GetItem(i));
-	}
-	this->resultList->Clear();
+	this->resultList.MemFreeAll();
 }
 
 void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnStartClicked(AnyType userObj)
@@ -221,12 +216,12 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(AnyType userObj)
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
-	SSWR::AVIRead::AVIRBenchmarkForm::TestResult *result;
+	NN<SSWR::AVIRead::AVIRBenchmarkForm::TestResult> result;
 
 	if (me->processing)
 		return;
 
-	if (me->resultList->GetCount() <= 0)
+	if (me->resultList.GetCount() <= 0)
 	{
 		me->ui->ShowMsgOK(CSTR("No result"), CSTR("Error"), me);
 		return;
@@ -305,10 +300,10 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(AnyType userObj)
 
 		writer.WriteLineC(UTF8STRC("Result:"));
 		i = 0;
-		j = me->resultList->GetCount();
+		j = me->resultList.GetCount();
 		while (i < j)
 		{
-			result = me->resultList->GetItem(i);
+			result = me->resultList.GetItemNoCheck(i);
 			sb.ClearStr();
 			switch (result->tt)
 			{
@@ -343,7 +338,6 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(Optional<UI::GUIClientContro
 
 	this->core = core;
 	this->processing = false;
-	NEW_CLASS(this->resultList, Data::ArrayList<SSWR::AVIRead::AVIRBenchmarkForm::TestResult*>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlCtrl = ui->NewPanel(*this);
@@ -484,7 +478,6 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(Optional<UI::GUIClientContro
 SSWR::AVIRead::AVIRBenchmarkForm::~AVIRBenchmarkForm()
 {
 	this->ClearResult();
-	DEL_CLASS(this->resultList);
 }
 
 void SSWR::AVIRead::AVIRBenchmarkForm::OnMonitorChanged()

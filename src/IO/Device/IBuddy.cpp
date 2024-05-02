@@ -8,20 +8,20 @@
 
 UOSInt IO::Device::IBuddy::GetNumDevice()
 {
-	Data::ArrayList<IO::HIDInfo *> hidList;
+	Data::ArrayListNN<IO::HIDInfo> hidList;
 	IO::HIDInfo::GetHIDList(hidList);
-	IO::HIDInfo *hid;
+	NN<IO::HIDInfo> hid;
 	UOSInt ret = 0;
 	UOSInt i = 0;
 	UOSInt j = hidList.GetCount();
 	while (i < j)
 	{
-		hid = hidList.GetItem(i);
+		hid = hidList.GetItemNoCheck(i);
 		if (hid->GetBusType() == IO::HIDInfo::BT_USB && hid->GetVendorId() == 0x1130)
 		{
 			ret++;
 		}
-		DEL_CLASS(hid);
+		hid.Delete();
 		i++;
 	}
 	return ret;
@@ -30,15 +30,15 @@ UOSInt IO::Device::IBuddy::GetNumDevice()
 IO::Device::IBuddy::IBuddy(UOSInt devNo)
 {
 	this->stm = 0;
-	Data::ArrayList<IO::HIDInfo *> hidList;
+	Data::ArrayListNN<IO::HIDInfo> hidList;
 	IO::HIDInfo::GetHIDList(hidList);
-	IO::HIDInfo *hid;
+	NN<IO::HIDInfo> hid;
 	UOSInt ret = 0;
 	UOSInt i = 0;
 	UOSInt j = hidList.GetCount();
 	while (i < j)
 	{
-		hid = hidList.GetItem(i);
+		hid = hidList.GetItemNoCheck(i);
 		if (hid->GetBusType() == IO::HIDInfo::BT_USB && hid->GetVendorId() == 0x1130)
 		{
 			if (ret == devNo)
@@ -47,7 +47,7 @@ IO::Device::IBuddy::IBuddy(UOSInt devNo)
 			}
 			ret++;
 		}
-		DEL_CLASS(hid);
+		hid.Delete();
 		i++;
 	}
 }

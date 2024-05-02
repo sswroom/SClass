@@ -4,6 +4,7 @@
 #include "Data/ArrayList.h"
 #include "Data/ArrayListNN.h"
 #include "Data/DateTime.h"
+#include "Data/UUID.h"
 #include "Text/String.h"
 
 namespace IO
@@ -36,9 +37,9 @@ namespace IO
 			Bool Pair(const UTF8Char *key);
 			Bool Unpair();
 
-			UOSInt QueryServices(Data::ArrayList<void*> *guidList);
-			void FreeServices(Data::ArrayList<void*> *guidList);
-			Bool EnableService(void *guid, Bool toEnable);
+			UOSInt QueryServices(NN<Data::ArrayListNN<Data::UUID>> guidList);
+			void FreeServices(NN<Data::ArrayListNN<Data::UUID>> guidList);
+			Bool EnableService(NN<Data::UUID> guid, Bool toEnable);
 		};
 	private:
 		void *internalData;

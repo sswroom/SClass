@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 
-Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::BenchmarkWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(NN<SSWR::Benchmark::BenchmarkWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Bool valid = true;
 	if (req->GetReqMethod() != Net::WebUtil::RequestMethod::HTTP_POST)
@@ -181,7 +181,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 	return true;
 }
 
-Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark::BenchmarkWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
+Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchmark::BenchmarkWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Text::CString msg = CSTR_NULL;
 	UTF8Char fileName[512];
@@ -449,7 +449,7 @@ Bool SSWR::Benchmark::BenchmarkWebHandler::ProcessRequest(NN<Net::WebServer::IWe
 	RequestHandler reqHdlr = this->reqMap.GetC(subReq);
 	if (reqHdlr)
 	{
-		return reqHdlr(this, req, resp);
+		return reqHdlr(*this, req, resp);
 	}
 	resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 	return true;

@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRCOVID19FORM
 #define _SM_SSWR_AVIREAD_AVIRCOVID19FORM
-#include "Data/FastMap.h"
-#include "Data/StringMap.h"
+#include "Data/FastMapNN.h"
+#include "Data/StringMapNN.h"
 #include "Net/SSLEngine.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
@@ -30,13 +30,13 @@ namespace SSWR
 				NN<Text::String> isoCode;
 				NN<Text::String> name;
 				Double population;
-				Data::FastMap<Int64, DailyRecord*> *records;
+				Data::FastMapNN<Int64, DailyRecord> records;
 			} CountryInfo;
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
-			Data::StringMap<CountryInfo*> countries;
+			Data::StringMapNN<CountryInfo> countries;
 
 			NN<UI::GUIPanel> pnlRequest;
 			NN<UI::GUIButton> btnFile;

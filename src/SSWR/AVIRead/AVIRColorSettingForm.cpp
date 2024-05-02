@@ -476,8 +476,8 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(Optional<UI::GUIClient
 	this->normalClose = false;
 	this->inited = false;
 	this->monColor = this->colorMgr->GetMonColorManager(monInfo.GetMonitorID());
-	Text::String *s = this->monColor->GetMonProfileFile();
-	if (s)
+	NN<Text::String> s;
+	if (this->monColor->GetMonProfileFile().SetTo(s))
 	{
 		this->monFileName = s->Clone().Ptr();
 	}

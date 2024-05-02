@@ -66,7 +66,7 @@ Optional<Text::String> Net::SolarEdgeAPI::GetCurrentVersion()
 	return s;
 }
 
-Bool Net::SolarEdgeAPI::GetSupportedVersions(Data::ArrayListStringNN *versions)
+Bool Net::SolarEdgeAPI::GetSupportedVersions(NN<Data::ArrayListStringNN> versions)
 {
 	Text::StringBuilderUTF8 sbURL;
 	this->BuildURL(sbURL, CSTR("/version/supported"));
@@ -100,7 +100,7 @@ Bool Net::SolarEdgeAPI::GetSupportedVersions(Data::ArrayListStringNN *versions)
 	return false;
 }
 
-Bool Net::SolarEdgeAPI::GetSiteList(Data::ArrayList<Site*> *siteList, UOSInt maxCount, UOSInt startOfst, UOSInt *totalCount)
+Bool Net::SolarEdgeAPI::GetSiteList(NN<Data::ArrayListNN<Site>> siteList, UOSInt maxCount, UOSInt startOfst, OptOut<UOSInt> totalCount)
 {
 	Text::StringBuilderUTF8 sbURL;
 	this->BuildURL(sbURL, CSTR("/sites/list"));
@@ -119,9 +119,9 @@ Bool Net::SolarEdgeAPI::GetSiteList(Data::ArrayList<Site*> *siteList, UOSInt max
 	Text::JSONBase *sites = json->GetValue(CSTR("sites.site"));
 	if (count && sites && (count->GetType() == Text::JSONType::Number || count->GetType() == Text::JSONType::INT32) && sites->GetType() == Text::JSONType::Array)
 	{
-		if (totalCount)
+		if (totalCount.IsNotNull())
 		{
-			*totalCount = (UOSInt)count->GetAsInt32();
+			totalCount.SetNoCheck((UOSInt)count->GetAsInt32());
 		}
 		Text::JSONArray *siteArr = (Text::JSONArray*)sites;
 		UOSInt i = 0;
@@ -129,11 +129,11 @@ Bool Net::SolarEdgeAPI::GetSiteList(Data::ArrayList<Site*> *siteList, UOSInt max
 		while (i < j)
 		{
 			Text::JSONObject *siteObj = (Text::JSONObject*)siteArr->GetArrayValue(i);
-			Site *site;
+			NN<Site> site;
 			NN<Text::String> s;
 			if (siteObj->GetType() == Text::JSONType::Object)
 			{
-				site = MemAlloc(Site, 1);
+				site = MemAllocNN(Site);
 				site->id = siteObj->GetObjectInt32(CSTR("id"));
 				site->name = siteObj->GetObjectNewString(CSTR("name"));
 				site->accountId = siteObj->GetObjectInt32(CSTR("accountId"));
@@ -177,13 +177,13 @@ Bool Net::SolarEdgeAPI::GetSiteList(Data::ArrayList<Site*> *siteList, UOSInt max
 	}
 }
 
-void Net::SolarEdgeAPI::FreeSiteList(Data::ArrayList<Site*> *siteList)
+void Net::SolarEdgeAPI::FreeSiteList(NN<Data::ArrayListNN<Site>> siteList)
 {
-	Site *site;
+	NN<Site> site;
 	UOSInt i = siteList->GetCount();
 	while (i-- > 0)
 	{
-		site = siteList->GetItem(i);
+		site = siteList->GetItemNoCheck(i);
 		OPTSTR_DEL(site->name);
 		OPTSTR_DEL(site->status);
 		OPTSTR_DEL(site->currency);
@@ -197,12 +197,12 @@ void Net::SolarEdgeAPI::FreeSiteList(Data::ArrayList<Site*> *siteList)
 		OPTSTR_DEL(site->timeZone);
 		OPTSTR_DEL(site->countryCode);
 		OPTSTR_DEL(site->publicName);
-		MemFree(site);
+		MemFreeNN(site);
 	}
 	siteList->Clear();
 }
 
-Bool Net::SolarEdgeAPI::GetSiteOverview(Int32 siteId, SiteOverview *overview)
+Bool Net::SolarEdgeAPI::GetSiteOverview(Int32 siteId, NN<SiteOverview> overview)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -229,7 +229,7 @@ Bool Net::SolarEdgeAPI::GetSiteOverview(Int32 siteId, SiteOverview *overview)
 	return true;
 }
 
-Bool Net::SolarEdgeAPI::GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, TimeUnit timeUnit, Data::ArrayList<TimedValue> *values)
+Bool Net::SolarEdgeAPI::GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, TimeUnit timeUnit, NN<Data::ArrayList<TimedValue>> values)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -272,7 +272,7 @@ Bool Net::SolarEdgeAPI::GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, D
 	return succ;
 }
 
-Bool Net::SolarEdgeAPI::GetSitePower(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, Data::ArrayList<TimedValue> *values)
+Bool Net::SolarEdgeAPI::GetSitePower(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, NN<Data::ArrayList<TimedValue>> values)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;

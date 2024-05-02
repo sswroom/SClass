@@ -40,7 +40,7 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Media::ANPR anpr;
 			NN<Media::ColorManagerSess> colorSess;
-			Data::ArrayList<ResultInfo*> results;
+			Data::ArrayListNN<ResultInfo> results;
 			Media::StaticImage *currImg;
 			ActionType selectMode;
 			Data::ArrayListA<Math::Coord2DDbl> points;

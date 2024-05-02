@@ -95,7 +95,7 @@ SSWR::AVIRead::AVIRGenImageForm::AVIRGenImageForm(Optional<UI::GUIClientControl>
 	j = this->imgGenMgr->GetCount();
 	while (i < j)
 	{
-		Media::ImageGenerator *imgGen = this->imgGenMgr->GetGenerator(i);
+		NN<Media::ImageGenerator> imgGen = this->imgGenMgr->GetItemNoCheck(i);
 		this->cboGenerator->AddItem(imgGen->GetName(), imgGen);
 
 		i++;

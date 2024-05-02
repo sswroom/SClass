@@ -285,7 +285,7 @@ void Media::Resizer::LanczosResizerLR_C16::DestoryVert()
 	vsStep = 0;
 }
 
-Media::Resizer::LanczosResizerLR_C16::LanczosResizerLR_C16(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> destColor, Media::ColorManagerSess *colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance) : Media::IImgResizer(srcAlphaType), destColor(destColor)
+Media::Resizer::LanczosResizerLR_C16::LanczosResizerLR_C16(UOSInt hnTap, UOSInt vnTap, NN<const Media::ColorProfile> destColor, Optional<Media::ColorManagerSess> colorSess, Media::AlphaType srcAlphaType, Double srcRefLuminance) : Media::IImgResizer(srcAlphaType), destColor(destColor)
 {
 	UOSInt i;
 	nThread = Sync::ThreadUtil::GetThreadCnt();
@@ -297,10 +297,11 @@ Media::Resizer::LanczosResizerLR_C16::LanczosResizerLR_C16(UOSInt hnTap, UOSInt 
 	this->hnTap = hnTap << 1;
 	this->vnTap = vnTap << 1;
 	this->rgbChanged = true;
-	if (colorSess)
+	NN<Media::ColorManagerSess> nncolorSess;
+	if (colorSess.SetTo(nncolorSess))
 	{
-		this->colorSess = colorSess;
-		this->colorSess->AddHandler(*this);
+		this->colorSess = nncolorSess;
+		nncolorSess->AddHandler(*this);
 	}
 	else
 	{
@@ -340,9 +341,10 @@ Media::Resizer::LanczosResizerLR_C16::LanczosResizerLR_C16(UOSInt hnTap, UOSInt 
 
 Media::Resizer::LanczosResizerLR_C16::~LanczosResizerLR_C16()
 {
-	if (this->colorSess)
+	NN<Media::ColorManagerSess> nncolorSess;
+	if (this->colorSess.SetTo(nncolorSess))
 	{
-		this->colorSess->RemoveHandler(*this);
+		nncolorSess->RemoveHandler(*this);
 	}
 	DEL_CLASS(this->ptask);
 	MemFree(this->params);

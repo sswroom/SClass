@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_VFPMANAGER
 #define _SM_MEDIA_VFPMANAGER
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "IO/FileSelector.h"
 #include "Media/IMediaSource.h"
 #include "Sync/Mutex.h"
@@ -20,8 +20,8 @@ namespace Media
 
 	struct VFMediaFile
 	{
-		Media::VFPManager *vfpmgr;
-		Media::VFPluginFile *plugin;
+		NN<Media::VFPManager> vfpmgr;
+		NN<Media::VFPluginFile> plugin;
 		UInt32 file;
 		const WChar *fileName;
 		UInt32 useCnt;
@@ -31,11 +31,11 @@ namespace Media
 	class VFPManager
 	{
 	private:
-		Data::ArrayList<VFPluginFile*> *plugins;
+		Data::ArrayListNN<VFPluginFile> plugins;
 		Int32 useCnt;
 	public:
 		VFPManager();
-		UOSInt LoadFile(const UTF8Char *fileName, Data::ArrayList<Media::IMediaSource*> *outArr);
+		UOSInt LoadFile(const UTF8Char *fileName, NN<Data::ArrayListNN<Media::IMediaSource>> outArr);
 		void Release();
 		void PrepareSelector(NN<IO::FileSelector> selector);
 

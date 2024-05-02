@@ -19,19 +19,19 @@ namespace SSWR
 			NN<UI::GUIComboBox> cboFilter;
 			NN<UI::GUIButton> btnOK;
 			NN<UI::GUIButton> btnCancel;
-			DB::DBFFile *dbf;
+			NN<DB::DBFFile> dbf;
 			NN<Media::DrawEngine> deng;
-			Media::MonitorMgr *monMgr;
-			MapFilter *filter;
+			NN<Media::MonitorMgr> monMgr;
+			Optional<MapFilter> filter;
 
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			SHPConvAddFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, DB::DBFFile *dbf, NN<Media::DrawEngine> deng);
+			SHPConvAddFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<DB::DBFFile> dbf, NN<Media::DrawEngine> deng);
 			virtual ~SHPConvAddFilterForm();
 
 			virtual void OnMonitorChanged();
-			MapFilter *GetFilter();
+			Optional<MapFilter> GetFilter();
 		};
 	};
 };

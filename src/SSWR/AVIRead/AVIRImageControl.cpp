@@ -443,16 +443,15 @@ Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(Text::CStringNN cameraNa
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	SSWR::AVIRead::AVIRImageControl::CameraCorr *camera;
+	NN<SSWR::AVIRead::AVIRImageControl::CameraCorr> camera;
 	Sync::MutexUsage mutUsage(this->cameraMut);
-	camera = this->cameraMap.Get(cameraName);
-	if (camera)
+	if (this->cameraMap.Get(cameraName).SetTo(camera))
 	{
 		mutUsage.EndUse();
 		gammaCnt.Set(camera->gammaCnt);
 		return camera->gammaParam;
 	}
-	camera = MemAlloc(SSWR::AVIRead::AVIRImageControl::CameraCorr, 1);
+	camera = MemAllocNN(SSWR::AVIRead::AVIRImageControl::CameraCorr);
 	camera->gammaCnt = 0;
 	camera->gammaParam = 0;
 	this->cameraMap.Put(cameraName, camera);
@@ -532,17 +531,17 @@ SSWR::AVIRead::AVIRImageControl::~AVIRImageControl()
 		this->folderCtrlEvt.Wait(10);
 	}
 	UOSInt i;
-	NN<const Data::ArrayList<SSWR::AVIRead::AVIRImageControl::CameraCorr *>> cameraList = this->cameraMap.GetValues();
-	CameraCorr *camera;
+	NN<const Data::ArrayListNN<SSWR::AVIRead::AVIRImageControl::CameraCorr>> cameraList = this->cameraMap.GetValues();
+	NN<CameraCorr> camera;
 	i = cameraList->GetCount();
 	while (i-- > 0)
 	{
-		camera = cameraList->GetItem(i);
+		camera = cameraList->GetItemNoCheck(i);
 		if (camera->gammaParam)
 		{
 			MemFree(camera->gammaParam);
 		}
-		MemFree(camera);
+		MemFreeNN(camera);
 	}
 
 	DEL_CLASS(this->dispResizer);

@@ -12,8 +12,8 @@ namespace Media
 		class AUIVideo : public Media::VideoSourceBase
 		{
 		private:
-			Media::AVIUtl::AUIPlugin *plugin;
-			Media::AVIUtl::AUIPlugin::AUIInput *input;
+			NN<Media::AVIUtl::AUIPlugin> plugin;
+			NN<Media::AVIUtl::AUIPlugin::AUIInput> input;
 			NN<const Media::FrameInfo> frameInfo;
 			UInt32 frameRateNorm;
 			UInt32 frameRateDenorm;
@@ -32,7 +32,7 @@ namespace Media
 			static UInt32 __stdcall PlayThread(AnyType userObj);
 			UOSInt GetMaxFrameSize();
 		public:
-			AUIVideo(Media::AVIUtl::AUIPlugin *plugin, Media::AVIUtl::AUIPlugin::AUIInput *input, NN<const Media::FrameInfo> frameInfo, UInt32 frameRateNorm, UInt32 frameRateDenorm, UInt32 frameCnt);
+			AUIVideo(NN<Media::AVIUtl::AUIPlugin> plugin, NN<Media::AVIUtl::AUIPlugin::AUIInput> input, NN<const Media::FrameInfo> frameInfo, UInt32 frameRateNorm, UInt32 frameRateDenorm, UInt32 frameCnt);
 			~AUIVideo();
 
 			virtual UTF8Char *GetSourceName(UTF8Char *buff);

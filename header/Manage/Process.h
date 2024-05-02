@@ -91,16 +91,16 @@ namespace Manage
 		Bool GetTrueProgramPath(NN<Text::StringBuilderUTF8> sb);
 		UOSInt GetMemorySize();
 		Bool SetMemorySize(UOSInt minSize, UOSInt maxSize);
-		UOSInt GetThreadIds(Data::ArrayList<UInt32> *threadList);
+		UOSInt GetThreadIds(NN<Data::ArrayList<UInt32>> threadList);
 		void *GetHandle();
 		UOSInt GetModules(NN<Data::ArrayListNN<Manage::ModuleInfo>> modList);
-		UOSInt GetThreads(NN<Data::ArrayList<Manage::ThreadInfo *>> threadList);
-		UOSInt GetHeapLists(Data::ArrayList<UInt32> *heapList);
-		UOSInt GetHeaps(Data::ArrayList<HeapInfo*> *heapList, UInt32 heapListId, UOSInt maxCount);
-		void FreeHeaps(Data::ArrayList<HeapInfo*> *heapList);
+		UOSInt GetThreads(NN<Data::ArrayListNN<Manage::ThreadInfo>> threadList);
+		UOSInt GetHeapLists(NN<Data::ArrayList<UInt32>> heapList);
+		UOSInt GetHeaps(NN<Data::ArrayListNN<HeapInfo>> heapList, UInt32 heapListId, UOSInt maxCount);
+		void FreeHeaps(NN<Data::ArrayListNN<HeapInfo>> heapList);
 		Data::Timestamp GetStartTime();
-		UOSInt GetHandles(Data::ArrayList<HandleInfo> *handleList);
-		Bool GetHandleDetail(Int32 id, HandleType *handleType, NN<Text::StringBuilderUTF8> sbDetail);
+		UOSInt GetHandles(NN<Data::ArrayList<HandleInfo>> handleList);
+		Bool GetHandleDetail(Int32 id, OutParam<HandleType> handleType, NN<Text::StringBuilderUTF8> sbDetail);
 
 		Bool GetWorkingSetSize(UOSInt *minSize, UOSInt *maxSize);
 		Bool GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, UOSInt *pagedPoolUsage, UOSInt *nonPagedPoolUsage, UOSInt *pageFileUsage);

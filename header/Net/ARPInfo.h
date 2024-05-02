@@ -1,6 +1,6 @@
 #ifndef _SM_NET_ARPINFO
 #define _SM_NET_ARPINFO
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 //requires iphlpapi.lib
 
 namespace Net
@@ -30,7 +30,7 @@ namespace Net
 		UInt32 GetIPAddress();
 		ARPType GetARPType();
 
-		static UOSInt GetARPInfoList(Data::ArrayList<Net::ARPInfo*> *arpInfoList);
+		static UOSInt GetARPInfoList(NN<Data::ArrayListNN<Net::ARPInfo>> arpInfoList);
 	};
 }
 #endif

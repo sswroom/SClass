@@ -5,33 +5,29 @@
 
 Text::Doc::DocItem::DocItem()
 {
-	NEW_CLASS(this->items, Data::ArrayList<Text::Doc::DocItem*>());
 }
 
 Text::Doc::DocItem::~DocItem()
 {
-	DocItem *item;
-	UOSInt i;
-	i = this->items->GetCount();
-	while (i-- > 0)
-	{
-		item = this->items->RemoveAt(i);
-		DEL_CLASS(item);
-	}
-	DEL_CLASS(this->items);
+	this->items.DeleteAll();
 }
 
-UOSInt Text::Doc::DocItem::Add(Text::Doc::DocItem *item)
+UOSInt Text::Doc::DocItem::Add(NN<Text::Doc::DocItem> item)
 {
-	return this->items->Add(item);
+	return this->items.Add(item);
 }
 
 UOSInt Text::Doc::DocItem::GetCount() const
 {
-	return this->items->GetCount();
+	return this->items.GetCount();
 }
 
-Text::Doc::DocItem *Text::Doc::DocItem::GetItem(UOSInt index) const
+NN<Text::Doc::DocItem> Text::Doc::DocItem::GetItemNoCheck(UOSInt index) const
 {
-	return this->items->GetItem(index);
+	return this->items.GetItemNoCheck(index);
+}
+
+Optional<Text::Doc::DocItem> Text::Doc::DocItem::GetItem(UOSInt index) const
+{
+	return this->items.GetItem(index);
 }

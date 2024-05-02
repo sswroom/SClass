@@ -13,13 +13,13 @@ namespace Media
 	{
 	private:
 		NN<Media::MonitorSurfaceMgr> surfaceMgr;
-		Media::ColorManager *colorMgr;
-		Media::ColorManagerSess *colorSess;
+		NN<Media::ColorManager> colorMgr;
+		NN<Media::ColorManagerSess> colorSess;
 		Media::ConsoleVideoRenderer *renderer;
 
 		virtual void OnMediaOpened();
 	public:
-		ConsoleMediaPlayer(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr, NN<Parser::ParserList> parsers, Media::AudioDevice *audioDev);
+		ConsoleMediaPlayer(NN<Media::MonitorMgr> monMgr, NN<Media::ColorManager> colorMgr, NN<Parser::ParserList> parsers, Media::AudioDevice *audioDev);
 		virtual ~ConsoleMediaPlayer();
 
 		Bool IsError();

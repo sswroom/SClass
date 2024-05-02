@@ -89,7 +89,7 @@ namespace SSWR
 			AnyType keyObj;
 
 			Sync::Mutex cameraMut;
-			Data::StringMap<CameraCorr*> cameraMap;
+			Data::StringMapNN<CameraCorr> cameraMap;
 
 			Int32 threadState; //0 = not started, 1 = idle, 2 = initDir, 3 = exporting
 			Int32 threadCtrlCode; //0 = no control, 1 = initDir, 2 = stop thread, 3 = force idle

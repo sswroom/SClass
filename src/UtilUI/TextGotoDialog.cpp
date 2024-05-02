@@ -25,7 +25,7 @@ void __stdcall UtilUI::TextGotoDialog::OnCancelClicked(AnyType userObj)
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-UtilUI::TextGotoDialog::TextGotoDialog(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, Media::MonitorMgr *monMgr) : UI::GUIForm(parent, 320, 120, ui)
+UtilUI::TextGotoDialog::TextGotoDialog(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::MonitorMgr> monMgr) : UI::GUIForm(parent, 320, 120, ui)
 {
 	this->currLine = 0;
 	this->SetFont(0, 0, 8.25, false);

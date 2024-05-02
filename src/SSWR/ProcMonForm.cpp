@@ -11,8 +11,8 @@
 
 void SSWR::ProcMonForm::AddProg(Text::CString progName, Text::CString progPath)
 {
-	SSWR::ProcMonForm::ProgInfo *prog;
-	prog = MemAlloc(ProgInfo, 1);
+	NN<SSWR::ProcMonForm::ProgInfo> prog;
+	prog = MemAllocNN(ProgInfo);
 	prog->progName = Text::String::New(progName);
 	prog->procId = 0;
 	if (progPath.leng > 0)
@@ -23,7 +23,7 @@ void SSWR::ProcMonForm::AddProg(Text::CString progName, Text::CString progPath)
 	{
 		prog->progPath = 0;
 	}
-	this->progList->Add(prog);
+	this->progList.Add(prog);
 	this->lbProg->AddItem(prog->progName, prog);
 
 	if (progPath.leng > 0)
@@ -32,7 +32,7 @@ void SSWR::ProcMonForm::AddProg(Text::CString progName, Text::CString progPath)
 	}
 }
 
-Bool SSWR::ProcMonForm::SearchProcId(SSWR::ProcMonForm::ProgInfo *prog)
+Bool SSWR::ProcMonForm::SearchProcId(NN<SSWR::ProcMonForm::ProgInfo> prog)
 {
 	NN<Text::String> progPath;
 	if (!progPath.Set(prog->progPath))
@@ -62,7 +62,7 @@ Bool SSWR::ProcMonForm::SearchProcId(SSWR::ProcMonForm::ProgInfo *prog)
 					sb.Append(prog->progName);
 					sb.AppendC(UTF8STRC(": Updated procId as "));
 					sb.AppendUOSInt(prog->procId);
-					this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
+					this->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 					break;
 				}
 			}
@@ -130,17 +130,17 @@ void SSWR::ProcMonForm::SaveProgList()
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	UOSInt j;
-	ProgInfo *prog;
+	NN<ProgInfo> prog;
 
 	IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("prg"));
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyAll, IO::FileStream::BufferType::NoWriteBuffer);
 	Text::UTF8Writer writer(fs);
 	i = 0;
-	j = this->progList->GetCount();
+	j = this->progList.GetCount();
 	while (i < j)
 	{
-		prog = this->progList->GetItem(i);
+		prog = this->progList.GetItemNoCheck(i);
 		sb.ClearStr();
 		sb.Append(prog->progName);
 		sb.AppendC(UTF8STRC(","));
@@ -233,11 +233,11 @@ void __stdcall SSWR::ProcMonForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::ProcMonForm> me = userObj.GetNN<SSWR::ProcMonForm>();
 	UOSInt i;
-	ProgInfo *prog;
-	i = me->progList->GetCount();
+	NN<ProgInfo> prog;
+	i = me->progList.GetCount();
 	while (i-- > 0)
 	{
-		prog = me->progList->GetItem(i);
+		prog = me->progList.GetItemNoCheck(i);
 		if (prog->progPath != 0)
 		{
 			if (prog->procId != 0)
@@ -250,7 +250,7 @@ void __stdcall SSWR::ProcMonForm::OnTimerTick(AnyType userObj)
 					sb.AppendC(UTF8STRC("Prog "));
 					sb.Append(prog->progName);
 					sb.AppendC(UTF8STRC(" stopped"));
-					me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
+					me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 				}
 			}
 			if (prog->procId == 0)
@@ -266,7 +266,7 @@ void __stdcall SSWR::ProcMonForm::OnTimerTick(AnyType userObj)
 						sb.Append(prog->progName);
 						sb.AppendC(UTF8STRC(" restarted, procId = "));
 						sb.AppendUOSInt(prog->procId);
-						me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
+						me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 						
 						if (me->notifyCmd)
 						{
@@ -339,11 +339,9 @@ SSWR::ProcMonForm::ProcMonForm(Optional<UI::GUIClientControl> parent, NN<UI::GUI
 	sb.AppendC(UTF8STRC("Log"));
 	sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	sb.AppendC(UTF8STRC("ProgLog"));
-	NEW_CLASS(this->log, IO::LogTool());
-	this->log->AddFileLog(sb.ToCString(), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
+	this->log.AddFileLog(sb.ToCString(), IO::LogHandler::LogType::PerDay, IO::LogHandler::LogGroup::PerMonth, IO::LogHandler::LogLevel::Raw, "yyyy-MM-dd HH:mm:ss.fff", false);
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 512, false));
-	this->log->AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
-	NEW_CLASS(this->progList, Data::ArrayList<ProgInfo*>());
+	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 	this->LoadProgList();
 
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
@@ -361,17 +359,15 @@ SSWR::ProcMonForm::ProcMonForm(Optional<UI::GUIClientControl> parent, NN<UI::GUI
 
 SSWR::ProcMonForm::~ProcMonForm()
 {
-	ProgInfo *prog;
-	UOSInt i = this->progList->GetCount();
+	NN<ProgInfo> prog;
+	UOSInt i = this->progList.GetCount();
 	while (i-- > 0)
 	{
-		prog = this->progList->GetItem(i);
+		prog = this->progList.GetItemNoCheck(i);
 		SDEL_STRING(prog->progPath);
 		prog->progName->Release();
-		MemFree(prog);
+		MemFreeNN(prog);
 	}
-	DEL_CLASS(this->progList);
-	DEL_CLASS(this->log);
 	this->logger.Delete();
 	SDEL_STRING(this->notifyCmd);
 }

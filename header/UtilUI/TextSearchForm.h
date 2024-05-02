@@ -16,13 +16,13 @@ namespace UtilUI
 		NN<UI::GUITextBox> txtSearch;
 		NN<UI::GUIButton> btnSearch;
 		NN<UI::GUIButton> btnClose;
-		Media::MonitorMgr *monMgr;
+		NN<Media::MonitorMgr> monMgr;
 		UtilUI::TextViewerForm *mainFrm;
 
 		static void __stdcall OnSearchClicked(AnyType userObj);
 		static void __stdcall OnCloseClicked(AnyType userObj);
 	public:
-		TextSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, Media::MonitorMgr *monMgr, UtilUI::TextViewerForm *mainFrm);
+		TextSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::MonitorMgr> monMgr, UtilUI::TextViewerForm *mainFrm);
 		virtual ~TextSearchForm();
 
 		virtual void OnShow();

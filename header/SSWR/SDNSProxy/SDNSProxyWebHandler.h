@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_SDNSPROXY_SDNSPROXYWEBHANDLER
 #define _SM_SSWR_SDNSPROXY_SDNSPROXYWEBHANDLER
+#include "Data/FastStringMap.h"
 #include "IO/CyclicLogBuffer.h"
 #include "IO/LogTool.h"
 #include "Net/DNSProxy.h"
@@ -18,7 +19,7 @@ namespace SSWR
 		private:
 			typedef Bool (__stdcall *RequestHandler)(SSWR::SDNSProxy::SDNSProxyWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
 		private:
-			Net::DNSProxy *proxy;
+			NN<Net::DNSProxy> proxy;
 			NN<IO::LogTool> log;
 			Data::FastStringMap<RequestHandler> reqMap;
 			NN<IO::CyclicLogBuffer> logBuff;
@@ -41,7 +42,7 @@ namespace SSWR
 			virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 
 		public:
-			SDNSProxyWebHandler(Net::DNSProxy *proxy, NN<IO::LogTool> log, SDNSProxyCore *core);
+			SDNSProxyWebHandler(NN<Net::DNSProxy> proxy, NN<IO::LogTool> log, SDNSProxyCore *core);
 			virtual ~SDNSProxyWebHandler();
 
 			virtual void Release();

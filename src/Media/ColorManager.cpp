@@ -85,7 +85,7 @@ Media::MonitorColorManager::~MonitorColorManager()
 	{
 		this->sessList.GetItem(i).Delete();
 	}
-	SDEL_STRING(this->monProfileFile);
+	OPTSTR_DEL(this->monProfileFile);
 	OPTSTR_DEL(this->profileName);
 }
 
@@ -182,14 +182,14 @@ Bool Media::MonitorColorManager::Load()
 
 		if (reg->GetValueStr(L"MonProfileFile", wbuff))
 		{
-			SDEL_STRING(this->monProfileFile);
-			this->monProfileFile = Text::String::NewNotNull(wbuff).Ptr();
+			OPTSTR_DEL(this->monProfileFile);
+			this->monProfileFile = Text::String::NewNotNull(wbuff);
 		}
 		if (reg->GetValueI32(L"MonProfileType", tmpVal))
 		{
 			this->rgb.monProfileType = (Media::ColorProfile::CommonProfileType)tmpVal;
 			NN<Text::String> fileName;
-			if (this->rgb.monProfileType == Media::ColorProfile::CPT_FILE && fileName.Set(this->monProfileFile))
+			if (this->rgb.monProfileType == Media::ColorProfile::CPT_FILE && this->monProfileFile.SetTo(fileName))
 			{
 				if (!SetFromProfileFile(fileName))
 				{
@@ -292,9 +292,10 @@ Bool Media::MonitorColorManager::Save()
 		reg->SetValue(L"MonWY", Double2Int32(this->rgb.monProfile.GetPrimaries()->w.y * 1000000000.0));
 
 		reg->SetValue(L"MonProfileType", (Int32)this->rgb.monProfileType);
-		if (this->monProfileFile)
+		NN<Text::String> monProfileFile;
+		if (this->monProfileFile.SetTo(monProfileFile))
 		{
-			const WChar *wptr = Text::StrToWCharNew(this->monProfileFile->v);
+			const WChar *wptr = Text::StrToWCharNew(monProfileFile->v);
 			reg->SetValue(L"MonProfileFile", wptr);
 			Text::StrDelNew(wptr);
 		}
@@ -523,7 +524,7 @@ void Media::MonitorColorManager::SetMonProfileType(Media::ColorProfile::CommonPr
 	{
 		this->rgb.monProfileType = newVal;
 		NN<Text::String> fileName;
-		if (this->rgb.monProfileType == Media::ColorProfile::CPT_FILE && fileName.Set(this->monProfileFile))
+		if (this->rgb.monProfileType == Media::ColorProfile::CPT_FILE && this->monProfileFile.SetTo(fileName))
 		{
 			if (SetFromProfileFile(fileName))
 			{
@@ -552,8 +553,8 @@ Bool Media::MonitorColorManager::SetMonProfileFile(NN<Text::String> fileName)
 {
 	if (SetFromProfileFile(fileName))
 	{
-		SDEL_STRING(this->monProfileFile);
-		this->monProfileFile = fileName->Clone().Ptr();
+		OPTSTR_DEL(this->monProfileFile);
+		this->monProfileFile = fileName->Clone();
 		this->rgb.monProfileType = Media::ColorProfile::CPT_FILE;
 		this->RGBUpdated();
 		return true;
@@ -571,7 +572,7 @@ void Media::MonitorColorManager::SetMonProfile(NN<const Media::ColorProfile> col
 	this->RGBUpdated();
 }
 
-Text::String *Media::MonitorColorManager::GetMonProfileFile()
+Optional<Text::String> Media::MonitorColorManager::GetMonProfileFile()
 {
 	return this->monProfileFile;
 }
@@ -749,12 +750,12 @@ Media::ColorManager::ColorManager()
 
 Media::ColorManager::~ColorManager()
 {
-	MonitorColorManager *monColor;
+	NN<MonitorColorManager> monColor;
 	UOSInt i = this->monColor.GetCount();
 	while (i-- > 0)
 	{
-		monColor = this->monColor.GetItem(i);
-		DEL_CLASS(monColor);
+		monColor = this->monColor.GetItemNoCheck(i);
+		monColor.Delete();
 	}
 }
 
@@ -868,7 +869,7 @@ Media::ColorProfile::YUVType Media::ColorManager::GetDefYUVType()
 
 NN<Media::MonitorColorManager> Media::ColorManager::GetMonColorManager(Text::String *profileName)
 {
-	Media::MonitorColorManager *monColor;
+	Optional<Media::MonitorColorManager> monColor;
 	NN<Media::MonitorColorManager> nnmonColor;
 	Sync::MutexUsage mutUsage(this->mut);
 	if (profileName == 0)
@@ -879,16 +880,16 @@ NN<Media::MonitorColorManager> Media::ColorManager::GetMonColorManager(Text::Str
 	{
 		monColor = this->monColor.Get(profileName);
 	}
-	if (!nnmonColor.Set(monColor))
+	if (!monColor.SetTo(nnmonColor))
 	{
 		NEW_CLASSNN(nnmonColor, Media::MonitorColorManager(profileName));
 		if (profileName == 0)
 		{
-			this->monColor.PutNN(Text::String::NewEmpty(), nnmonColor.Ptr());
+			this->monColor.PutNN(Text::String::NewEmpty(), nnmonColor);
 		}
 		else
 		{
-			this->monColor.Put(profileName, nnmonColor.Ptr());
+			this->monColor.Put(profileName, nnmonColor);
 		}
 		return nnmonColor;
 	}

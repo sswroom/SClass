@@ -1,7 +1,7 @@
 #ifndef _SM_UI_DOBJ_ROLLINGMESSAGEDOBJ
 #define _SM_UI_DOBJ_ROLLINGMESSAGEDOBJ
 #include "Data/DateTime.h"
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "UI/DObj/DirectObject.h"
 
 namespace UI
@@ -26,16 +26,16 @@ namespace UI
 			Data::DateTime startTime;
 			UInt32 nextMsgId;
 			Sync::Mutex msgMut;
-			MessageInfo *lastMessage;
-			MessageInfo *thisMessage;
-			Data::FastMap<UInt32, MessageInfo*> msgMap;
+			Optional<MessageInfo> lastMessage;
+			Optional<MessageInfo> thisMessage;
+			Data::FastMapNN<UInt32, MessageInfo> msgMap;
 			UOSInt nextMsgIndex;
 			OSInt lastMsgOfst;
 
 		protected:
 			virtual Media::DrawImage *GenerateImage(NN<Media::DrawEngine> deng, NN<Text::String> message, Math::Size2D<UOSInt> drawSize, NN<Media::DrawImage> scnImg) = 0;
 		private:
-			void FreeMessage(MessageInfo *msg);
+			void FreeMessage(NN<MessageInfo> msg);
 		public:
 			RollingMessageDObj(NN<Media::DrawEngine> deng, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> size, Double rollSpeed);
 			virtual ~RollingMessageDObj();

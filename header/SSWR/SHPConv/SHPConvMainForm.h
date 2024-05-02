@@ -86,8 +86,8 @@ namespace SSWR
 			NN<UI::GUILabel> lblProgress;
 
 			NN<Media::DrawEngine> deng;
-			Media::MonitorMgr *monMgr;
-			Data::ArrayList<MapFilter *> globalFilters;
+			NN<Media::MonitorMgr> monMgr;
+			Data::ArrayListNN<MapFilter> globalFilters;
 			Text::CString progressName;
 			UInt64 totalVal;
 			UOSInt currGroup;
@@ -104,8 +104,8 @@ namespace SSWR
 			static void __stdcall OnConvertClicked(AnyType userObj);
 			static void __stdcall OnFile(AnyType userObj, Data::DataArray<NN<Text::String>> files);
 
-			Int32 GroupConvert(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NN<Data::ArrayList<MapFilter*>> filters, IO::ProgressHandler *progress, UOSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, NN<Data::ArrayList<UInt32>> dbCols2);
-			Int32 ConvertShp(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NN<Data::ArrayList<MapFilter*>> filters, IO::ProgressHandler *progress, NN<Data::ArrayList<UInt32>> dbCols2);
+			Int32 GroupConvert(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NN<Data::ArrayListNN<MapFilter>> filters, IO::ProgressHandler *progress, UOSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, NN<Data::ArrayList<UInt32>> dbCols2);
+			Int32 ConvertShp(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NN<Data::ArrayListNN<MapFilter>> filters, IO::ProgressHandler *progress, NN<Data::ArrayList<UInt32>> dbCols2);
 			Int32 LoadShape(Text::CStringNN fileName, Bool updateTxt);
 			void ClearFilter();
 
@@ -114,7 +114,7 @@ namespace SSWR
 			virtual NN<Text::String> GetNewDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, UOSInt currRec, NN<Data::ArrayList<UInt32>> dbcols2);
 
 		public:
-			SHPConvMainForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::DrawEngine> deng, Media::MonitorMgr *monMgr);
+			SHPConvMainForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::DrawEngine> deng, NN<Media::MonitorMgr> monMgr);
 			virtual ~SHPConvMainForm();
 
 			virtual void OnMonitorChanged();

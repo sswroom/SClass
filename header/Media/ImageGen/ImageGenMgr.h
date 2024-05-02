@@ -1,22 +1,23 @@
 #ifndef _SM_MEDIA_IMAGEGEN_IMAGEGENMGR
 #define _SM_MEDIA_IMAGEGEN_IMAGEGENMGR
+#include "Data/ArrayListNN.h"
 #include "Media/ImageGenerator.h"
-#include "Data/ArrayList.h"
 
 namespace Media
 {
 	namespace ImageGen
 	{
-		class ImageGenMgr
+		class ImageGenMgr : public Data::ReadingListNN<Media::ImageGenerator>
 		{
 		private:
-			Data::ArrayList<Media::ImageGenerator*> *imgGenArr;
+			Data::ArrayListNN<Media::ImageGenerator> imgGenArr;
 		public:
 			ImageGenMgr();
-			~ImageGenMgr();
+			virtual ~ImageGenMgr();
 
-			UOSInt GetCount();
-			Media::ImageGenerator *GetGenerator(UOSInt index);
+			virtual UOSInt GetCount() const;
+			virtual NN<Media::ImageGenerator> GetItemNoCheck(UOSInt index) const;
+			virtual Optional<Media::ImageGenerator> GetItem(UOSInt index) const;
 		};
 	}
 }

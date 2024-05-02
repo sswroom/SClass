@@ -83,20 +83,20 @@ UI::GTK::GTKListBox::GTKListBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> par
 
 UI::GTK::GTKListBox::~GTKListBox()
 {
-	ItemData *item;
+	NN<ItemData> item;
 	UOSInt i;
 	i = this->items.GetCount();
 	while (i-- > 0)
 	{
-		item = this->items.GetItem(i);
+		item = this->items.GetItemNoCheck(i);
 		item->txt->Release();
-		MemFree(item);
+		MemFreeNN(item);
 	}
 }
 
 UOSInt UI::GTK::GTKListBox::AddItem(NN<Text::String> itemText, AnyType itemObj)
 {
-	ItemData *item = MemAlloc(ItemData, 1);
+	NN<ItemData> item = MemAllocNN(ItemData);
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
 	item->userData = itemObj;
 	item->txt = itemText->Clone();
@@ -121,7 +121,7 @@ UOSInt UI::GTK::GTKListBox::AddItem(NN<Text::String> itemText, AnyType itemObj)
 
 UOSInt UI::GTK::GTKListBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
 {
-	ItemData *item = MemAlloc(ItemData, 1);
+	NN<ItemData> item = MemAllocNN(ItemData);
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
 	item->userData = itemObj;
 	item->txt = Text::String::New(itemText.v, itemText.leng);
@@ -146,7 +146,7 @@ UOSInt UI::GTK::GTKListBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
 
 UOSInt UI::GTK::GTKListBox::InsertItem(UOSInt index, Text::String *itemText, AnyType itemObj)
 {
-	ItemData *item = MemAlloc(ItemData, 1);
+	NN<ItemData> item = MemAllocNN(ItemData);
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
 	item->userData = itemObj;
 	item->txt = itemText->Clone();
@@ -179,7 +179,7 @@ UOSInt UI::GTK::GTKListBox::InsertItem(UOSInt index, Text::String *itemText, Any
 
 UOSInt UI::GTK::GTKListBox::InsertItem(UOSInt index, Text::CStringNN itemText, AnyType itemObj)
 {
-	ItemData *item = MemAlloc(ItemData, 1);
+	NN<ItemData> item = MemAllocNN(ItemData);
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
 	item->userData = itemObj;
 	item->txt = Text::String::New(itemText.v, itemText.leng);
@@ -212,21 +212,21 @@ UOSInt UI::GTK::GTKListBox::InsertItem(UOSInt index, Text::CStringNN itemText, A
 
 AnyType UI::GTK::GTKListBox::RemoveItem(UOSInt index)
 {
-	ItemData *item = this->items.GetItem(index);
-	if (item == 0)
+	NN<ItemData> item;
+	if (!this->items.GetItem(index).SetTo(item))
 		return 0;
 	gtk_container_remove(GTK_CONTAINER(this->listbox), (GtkWidget*)item->row);
 	AnyType ret = item->userData;
 	item->txt->Release();
-	MemFree(item);
+	MemFreeNN(item);
 	this->items.RemoveAt(index);
 	return ret;
 }
 
 AnyType UI::GTK::GTKListBox::GetItem(UOSInt index)
 {
-	ItemData *item = this->items.GetItem(index);
-	if (item == 0)
+	NN<ItemData> item;
+	if (!this->items.GetItem(index).SetTo(item))
 		return 0;
 	return item->userData;
 }
@@ -242,13 +242,13 @@ void UI::GTK::GTKListBox::ClearItems()
 	}
 	g_list_free(list);
 	UOSInt i;
-	ItemData *item;
+	NN<ItemData> item;
 	i = this->items.GetCount();
 	while (i-- > 0)
 	{
-		item = this->items.GetItem(i);
+		item = this->items.GetItemNoCheck(i);
 		item->txt->Release();
-		MemFree(item);
+		MemFreeNN(item);
 	}
 	this->items.Clear();
 }
@@ -260,8 +260,8 @@ UOSInt UI::GTK::GTKListBox::GetCount()
 
 void UI::GTK::GTKListBox::SetSelectedIndex(UOSInt index)
 {
-	ItemData *item = this->items.GetItem(index);
-	if (item == 0)
+	NN<ItemData> item;
+	if (!this->items.GetItem(index).SetTo(item))
 		return;
 	this->isShown = true;
 	this->showTime = 0;
@@ -335,16 +335,16 @@ Optional<Text::String> UI::GTK::GTKListBox::GetSelectedItemTextNew()
 
 UTF8Char *UI::GTK::GTKListBox::GetItemText(UTF8Char *buff, UOSInt index)
 {
-	ItemData *item = this->items.GetItem(index);
-	if (item == 0)
+	NN<ItemData> item;
+	if (!this->items.GetItem(index).SetTo(item))
 		return 0;
 	return Text::StrConcatC(buff, item->txt->v, item->txt->leng);
 }
 
 void UI::GTK::GTKListBox::SetItemText(UOSInt index, Text::CStringNN text)
 {
-	ItemData *item = this->items.GetItem(index);
-	if (item == 0)
+	NN<ItemData> item;
+	if (!this->items.GetItem(index).SetTo(item))
 		return;
 	gtk_label_set_text((GtkLabel*)item->lbl, (const Char*)text.v);
 	item->txt->Release();
@@ -353,8 +353,8 @@ void UI::GTK::GTKListBox::SetItemText(UOSInt index, Text::CStringNN text)
 
 Optional<Text::String> UI::GTK::GTKListBox::GetItemTextNew(UOSInt index)
 {
-	ItemData *item = this->items.GetItem(index);
-	if (item == 0)
+	NN<ItemData> item;
+	if (!this->items.GetItem(index).SetTo(item))
 		return 0;
 	return item->txt->Clone();
 }

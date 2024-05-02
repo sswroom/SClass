@@ -121,7 +121,6 @@ SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(Optional<UI::GUIClientControl> par
 	this->SetNoResize(true);
 	
 	this->core = core;
-	NEW_CLASS(this->buddyList, Data::ArrayList<IO::Device::IBuddy*>());
 	this->currBuddy = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
@@ -171,21 +170,21 @@ SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(Optional<UI::GUIClientControl> par
 	UOSInt i;
 	UOSInt j;
 	UOSInt k = 0;
-	IO::Device::IBuddy *buddy;
+	NN<IO::Device::IBuddy> buddy;
 	j = IO::Device::IBuddy::GetNumDevice();
 	i = 0;
 	while (i < j)
 	{
-		NEW_CLASS(buddy, IO::Device::IBuddy(i));
+		NEW_CLASSNN(buddy, IO::Device::IBuddy(i));
 		if (buddy->IsError())
 		{
-			DEL_CLASS(buddy);
+			buddy.Delete();
 		}
 		else
 		{
 			sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Device ")), k);
 			k++;
-			this->buddyList->Add(buddy);
+			this->buddyList.Add(buddy);
 			this->lbDevice->AddItem(CSTRP(sbuff, sptr), buddy);
 		}
 		i++;
@@ -194,14 +193,7 @@ SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(Optional<UI::GUIClientControl> par
 
 SSWR::AVIRead::AVIRIBuddyForm::~AVIRIBuddyForm()
 {
-	UOSInt i = this->buddyList->GetCount();
-	IO::Device::IBuddy *buddy;
-	while (i-- > 0)
-	{
-		buddy = this->buddyList->GetItem(i);
-		DEL_CLASS(buddy);
-	}
-	DEL_CLASS(this->buddyList);
+	this->buddyList.DeleteAll();
 }
 
 void SSWR::AVIRead::AVIRIBuddyForm::OnMonitorChanged()

@@ -1,5 +1,6 @@
 #ifndef _SM_TEXT_DOC_DOCSECTION
 #define _SM_TEXT_DOC_DOCSECTION
+#include "Data/ArrayListNN.h"
 #include "Media/PaperSize.h"
 #include "Text/Doc/DocItem.h"
 
@@ -7,10 +8,10 @@ namespace Text
 {
 	namespace Doc
 	{
-		class DocSection : public Data::ReadingList<DocItem*>
+		class DocSection : public Data::ReadingListNN<DocItem>
 		{
 		private:
-			Data::ArrayList<DocItem*> *items;
+			Data::ArrayListNN<DocItem> items;
 			Media::PaperSize::PaperType paperType;
 			Bool isLandscape;
 		public:
@@ -20,9 +21,10 @@ namespace Text
 			Media::PaperSize::PaperType GetPaperType();
 			Bool IsLandscape();
 
-			virtual UOSInt Add(DocItem *item);
+			virtual UOSInt Add(NN<DocItem> item);
 			virtual UOSInt GetCount() const;
-			virtual DocItem *GetItem(UOSInt index) const;
+			virtual NN<DocItem> GetItemNoCheck(UOSInt index) const;
+			virtual Optional<DocItem> GetItem(UOSInt index) const;
 		};
 	}
 }

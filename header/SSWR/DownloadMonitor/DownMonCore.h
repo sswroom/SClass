@@ -2,8 +2,8 @@
 #define _SM_SSWR_DOWNLOADMONITOR_DOWNMONCORE
 #include "AnyType.h"
 #include "Handles.h"
-#include "Data/FastMap.h"
-#include "Data/FastStringMap.h"
+#include "Data/FastMapNN.h"
+#include "Data/FastStringMapNN.h"
 #include "Media/VideoChecker.h"
 #include "Parser/ParserList.h"
 #include "Sync/Event.h"
@@ -66,8 +66,8 @@ namespace SSWR
 			Media::VideoChecker checker;
 
 			Sync::Mutex fileMut;
-			Data::FastMap<Int32, FileInfo*> fileTypeMap;
-			Data::FastStringMap<FileInfo*> fileNameMap;
+			Data::FastMapNN<Int32, FileInfo> fileTypeMap;
+			Data::FastStringMapNN<FileInfo> fileNameMap;
 
 			Bool FFMPEGMux(const UTF8Char *videoFile, const UTF8Char *audioFile, const UTF8Char *outFile);
 			Bool FFMPEGMuxAAC(const UTF8Char *videoFile, const UTF8Char *audioFile, const UTF8Char *outFile);
@@ -87,10 +87,10 @@ namespace SSWR
 			void SetFileEndHandler(FileEndHandler hdlr, void *userObj);
 			Text::String *GetListFile();
 
-			void FileFree(FileInfo *file);
+			static void FileFree(NN<FileInfo> file);
 			Bool FileAdd(Int32 id, Int32 webType, NN<Text::String> dbName);
-			FileInfo *FileGet(Int32 id, Int32 webType, NN<Sync::MutexUsage> mutUsage);
-			Int32 FileGetByName(Text::CStringNN fileName, Int32 *webType);
+			Optional<FileInfo> FileGet(Int32 id, Int32 webType, NN<Sync::MutexUsage> mutUsage);
+			Int32 FileGetByName(Text::CStringNN fileName, OutParam<Int32> webType);
 			Bool FileEnd(Int32 id, Int32 webType);
 			Bool FileStart(Int32 id, Int32 webType, ControlHandle *formHand);
 			Int32 FileGetMaxId(Int32 webType);

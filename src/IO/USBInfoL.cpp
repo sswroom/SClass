@@ -15,9 +15,9 @@ struct IO::USBInfo::ClassData
 	Text::CString dispName;
 };
 
-IO::USBInfo::USBInfo(ClassData *info)
+IO::USBInfo::USBInfo(NN<ClassData> info)
 {
-	ClassData *clsData = MemAlloc(ClassData, 1);
+	NN<ClassData> clsData = MemAllocNN(ClassData);
 	clsData->idVendor = info->idVendor;
 	clsData->idProduct = info->idProduct;
 	clsData->bcdDevice = info->bcdDevice;
@@ -29,7 +29,7 @@ IO::USBInfo::USBInfo(ClassData *info)
 IO::USBInfo::~USBInfo()
 {
 	Text::StrDelNew(this->clsData->dispName.v);
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 UInt16 IO::USBInfo::GetVendorId()
@@ -74,10 +74,10 @@ UInt16 USBInfo_ReadI16(Text::CStringNN fileName)
 	return (UInt16)(Text::StrHex2Int32C((const UTF8Char*)buff) & 0xffff);
 }
 
-UOSInt IO::USBInfo::GetUSBList(NN<Data::ArrayList<USBInfo*>> usbList)
+UOSInt IO::USBInfo::GetUSBList(NN<Data::ArrayListNN<USBInfo>> usbList)
 {
 	ClassData clsData;
-	IO::USBInfo *usb;
+	NN<IO::USBInfo> usb;
 	Text::StringBuilderUTF8 sb;
 	UOSInt ret = 0;
 	UTF8Char sbuff[512];
@@ -170,7 +170,7 @@ UOSInt IO::USBInfo::GetUSBList(NN<Data::ArrayList<USBInfo*>> usbList)
 					{
 						clsData.dispName = CSTR("USB Device");
 					}
-					NEW_CLASS(usb, IO::USBInfo(&clsData));
+					NEW_CLASSNN(usb, IO::USBInfo(clsData));
 					usbList->Add(usb);
 					ret++;
 				}

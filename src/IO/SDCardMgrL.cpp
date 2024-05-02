@@ -23,7 +23,7 @@ Bool SDCardMgr_ReadId(Text::CStringNN fileName, UInt8 *buff)
 	return ret;
 }
 
-UOSInt IO::SDCardMgr::GetCardList(NN<Data::ArrayList<IO::SDCardInfo*>> cardList)
+UOSInt IO::SDCardMgr::GetCardList(NN<Data::ArrayListNN<IO::SDCardInfo>> cardList)
 {
 	UTF8Char nameBuff[16];
 	UTF8Char *namePtr;
@@ -36,7 +36,7 @@ UOSInt IO::SDCardMgr::GetCardList(NN<Data::ArrayList<IO::SDCardInfo*>> cardList)
 	UInt8 csd[16];
 	IO::Path::PathType pt;
 	UOSInt ret = 0;
-	IO::SDCardInfo *sdcard;
+	NN<IO::SDCardInfo> sdcard;
 
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/class/mmc_host/"));
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
@@ -67,7 +67,7 @@ UOSInt IO::SDCardMgr::GetCardList(NN<Data::ArrayList<IO::SDCardInfo*>> cardList)
 								valid = false;
 							if (valid)
 							{
-								NEW_CLASS(sdcard, IO::SDCardInfo(CSTRP(nameBuff, namePtr), cid, csd));
+								NEW_CLASSNN(sdcard, IO::SDCardInfo(CSTRP(nameBuff, namePtr), cid, csd));
 								cardList->Add(sdcard);
 								ret++;
 							}

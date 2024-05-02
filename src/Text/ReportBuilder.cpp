@@ -65,28 +65,28 @@ Text::ReportBuilder::ReportBuilder(Text::CString name, UOSInt colCount, const UT
 
 Text::ReportBuilder::~ReportBuilder()
 {
-	ColURLLatLon *url;
-	Text::ReportBuilder::ColIcon *icon;
-	TableCell *cols;
-	HeaderInfo *header;
-	Data::ArrayList<Text::ReportBuilder::ColIcon*> *iconList;
+	NN<ColURLLatLon> url;
+	NN<Text::ReportBuilder::ColIcon> icon;
+	UnsafeArray<TableCell> cols;
+	NN<HeaderInfo> header;
+	NN<Data::ArrayListNN<Text::ReportBuilder::ColIcon>> iconList;
 	UOSInt i;
 	UOSInt j;
 	j = this->headers.GetCount();
 	while (j-- > 0)
 	{
-		header = this->headers.GetItem(j);
+		header = this->headers.GetItemNoCheck(j);
 		header->name->Release();
 		header->value->Release();
-		MemFree(header);
+		MemFreeNN(header);
 	}
 	j = this->preheaders.GetCount();
 	while (j-- > 0)
 	{
-		header = this->preheaders.GetItem(j);
+		header = this->preheaders.GetItemNoCheck(j);
 		header->name->Release();
 		header->value->Release();
-		MemFree(header);
+		MemFreeNN(header);
 	}
 	j = this->tableContent.GetCount();
 	while (j-- > 0)
@@ -97,29 +97,28 @@ Text::ReportBuilder::~ReportBuilder()
 		{
 			SDEL_STRING(cols[i].val);
 		}
-		MemFree(cols);
+		MemFreeArr(cols);
 	}
 	i = this->urlList.GetCount();
 	while (i-- > 0)
 	{
-		url = this->urlList.GetItem(i);
-		MemFree(url);
+		url = this->urlList.GetItemNoCheck(i);
+		MemFreeNN(url);
 	}
 	i = this->icons.GetCount();
 	while (i-- > 0)
 	{
-		iconList = this->icons.GetItem(i);
-		if (iconList)
+		if (this->icons.GetItem(i).SetTo(iconList))
 		{
 			j = iconList->GetCount();
 			while (j-- > 0)
 			{
-				icon = iconList->GetItem(j);
+				icon = iconList->GetItemNoCheck(j);
 				SDEL_STRING(icon->fileName);
 				SDEL_STRING(icon->name);
-				MemFree(icon);
+				MemFreeNN(icon);
 			}
-			DEL_CLASS(iconList);
+			iconList.Delete();
 		}
 	}
 	SDEL_CLASS(this->chart);
@@ -175,7 +174,7 @@ void Text::ReportBuilder::AddPreHeader(Text::CString name, Text::CString val)
 
 void Text::ReportBuilder::AddPreHeader(Text::CString name, UOSInt nameCellCnt, Text::CString val, UOSInt valCellCnt, Bool valUnderline, Bool right)
 {
-	HeaderInfo *header = MemAlloc(HeaderInfo, 1);
+	NN<HeaderInfo> header = MemAllocNN(HeaderInfo);
 	header->name = Text::String::New(name);
 	header->nameCellCnt = nameCellCnt;
 	header->value = Text::String::New(val);
@@ -192,7 +191,7 @@ void Text::ReportBuilder::AddHeader(Text::CString name, Text::CString val)
 
 void Text::ReportBuilder::AddHeader(Text::CString name, UOSInt nameCellCnt, Text::CString val, UOSInt valCellCnt, Bool valUnderline, Bool right)
 {
-	HeaderInfo *header = MemAlloc(HeaderInfo, 1);
+	NN<HeaderInfo> header = MemAllocNN(HeaderInfo);
 	header->name = Text::String::New(name);
 	header->nameCellCnt = nameCellCnt;
 	header->value = Text::String::New(val);
@@ -204,7 +203,7 @@ void Text::ReportBuilder::AddHeader(Text::CString name, UOSInt nameCellCnt, Text
 
 void Text::ReportBuilder::AddTableHeader(const UTF8Char **content)
 {
-	TableCell *cols;
+	UnsafeArray<TableCell> cols;
 	UOSInt i;
 	cols = MemAlloc(TableCell, this->colCount);
 	i = 0;
@@ -274,19 +273,18 @@ void Text::ReportBuilder::AddTableSummary(const UTF8Char **content)
 void Text::ReportBuilder::AddIcon(UOSInt index, Text::CString fileName, Text::CString name)
 {
 	UOSInt cnt = this->tableContent.GetCount() - 1;
-	Data::ArrayList<Text::ReportBuilder::ColIcon*> *iconList;
-	Text::ReportBuilder::ColIcon *icon;
+	NN<Data::ArrayListNN<Text::ReportBuilder::ColIcon>> iconList;
+	NN<Text::ReportBuilder::ColIcon> icon;
 	while (this->icons.GetCount() < cnt)
 	{
 		this->icons.Add(0);
 	}
-	iconList = this->icons.GetItem(cnt);
-	if (iconList == 0)
+	if (!this->icons.GetItem(cnt).SetTo(iconList))
 	{
-		NEW_CLASS(iconList, Data::ArrayList<Text::ReportBuilder::ColIcon*>());
+		NEW_CLASSNN(iconList, Data::ArrayListNN<Text::ReportBuilder::ColIcon>());
 		this->icons.Add(iconList);
 	}
-	icon = MemAlloc(Text::ReportBuilder::ColIcon, 1);
+	icon = MemAllocNN(Text::ReportBuilder::ColIcon);
 	icon->col = index;
 	if (fileName.v)
 	{
@@ -327,8 +325,8 @@ void Text::ReportBuilder::SetColumnType(UOSInt index, ColType colType)
 
 void Text::ReportBuilder::SetColURLLatLon(UOSInt index, Math::Coord2DDbl pos)
 {
-	ColURLLatLon *url;
-	url = MemAlloc(ColURLLatLon, 1);
+	NN<ColURLLatLon> url;
+	url = MemAllocNN(ColURLLatLon);
 	url->col = index;
 	url->row = this->tableContent.GetCount();
 	url->lat = pos.GetLat();
@@ -340,7 +338,7 @@ void Text::ReportBuilder::SetColHAlign(UOSInt index, HAlignment hAlign)
 {
 	if (index >= this->colCount)
 		return;
-	TableCell *cols = this->tableContent.GetItem(this->tableContent.GetCount() - 1);
+	UnsafeArray<TableCell> cols = this->tableContent.GetItem(this->tableContent.GetCount() - 1);
 	cols[index].hAlign = hAlign;
 }
 
@@ -360,12 +358,12 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 	Text::SpreadSheet::Workbook *wb;
 	NN<Text::SpreadSheet::Worksheet> ws;
 	NN<Text::SpreadSheet::Worksheet> dataSheet;
-	TableCell *cols;
-	HeaderInfo *header;
+	UnsafeArray<TableCell> cols;
+	NN<HeaderInfo> header;
 	Text::StringBuilderUTF8 sb;
-	ColURLLatLon *url;
-	Data::ArrayList<Text::ReportBuilder::ColIcon *> *iconList;
-	Text::ReportBuilder::ColIcon *icon;
+	NN<ColURLLatLon> url;
+	NN<Data::ArrayListNN<Text::ReportBuilder::ColIcon>> iconList;
+	NN<Text::ReportBuilder::ColIcon> icon;
 	RowType lastRowType;
 	RowType currRowType;
 	Text::SpreadSheet::CellStyle *styleSummary = 0;
@@ -391,7 +389,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 		j = this->preheaders.GetCount();
 		while (i < j)
 		{
-			header = this->preheaders.GetItem(i);
+			header = this->preheaders.GetItemNoCheck(i);
 			if (header->isRight)
 			{
 				if (!lastRight && k > 0)
@@ -466,7 +464,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 		j = this->headers.GetCount();
 		while (i < j)
 		{
-			header = this->headers.GetItem(i);
+			header = this->headers.GetItemNoCheck(i);
 			if (header->isRight)
 			{
 				if (!lastRight && k > 0)
@@ -524,7 +522,6 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 		j = this->tableContent.GetCount();
 		while (i < j)
 		{
-			iconList = this->icons.GetItem(i);
 			cols = this->tableContent.GetItem(i);
 			currRowType = this->tableRowType.GetItem(i);
 			if (tableStyle)
@@ -550,7 +547,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 					l++;
 				}
 			}
-			if (iconList)
+			if (this->icons.GetItem(i).SetTo(iconList))
 			{
 				NN<Text::StringBuilderUTF8> *sbList = MemAlloc(NN<Text::StringBuilderUTF8>, this->colCount);
 				l = 0;
@@ -567,7 +564,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				l = 0;
 				while (l < m)
 				{
-					icon = iconList->GetItem(l);
+					icon = iconList->GetItemNoCheck(l);
 					if (sbList[icon->col]->GetLength() > 0)
 					{
 						sbList[icon->col]->AppendC(UTF8STRC(", "));
@@ -650,7 +647,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 		j = this->urlList.GetCount();
 		while (i < j)
 		{
-			url = this->urlList.GetItem(i);
+			url = this->urlList.GetItemNoCheck(i);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("https://www.google.com/maps/place/"));
 			sb.AppendDouble(url->lat);
@@ -681,7 +678,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 		j = this->preheaders.GetCount();
 		while (i < j)
 		{
-			header = this->preheaders.GetItem(i);
+			header = this->preheaders.GetItemNoCheck(i);
 			if (header->isRight)
 			{
 				if (!lastRight && k > 0)
@@ -751,7 +748,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 		j = this->headers.GetCount();
 		while (i < j)
 		{
-			header = this->headers.GetItem(i);
+			header = this->headers.GetItemNoCheck(i);
 			if (header->isRight)
 			{
 				if (!lastRight && k > 0)
@@ -959,8 +956,8 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 	Math::Size2DDbl sz;
 	Double currY;
 	Double nextY;
-	TableCell *cols;
-	HeaderInfo *header;
+	UnsafeArray<TableCell> cols;
+	NN<HeaderInfo> header;
 	Bool lastRight;
 	UOSInt i;
 	UOSInt j;
@@ -983,10 +980,10 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 	colSize = MemAlloc(Double, this->colCount);
 	colCurrX = MemAlloc(Double, this->colCount);
 
-	Data::ArrayList<Text::ReportBuilder::ColIcon *> *iconList;
+	NN<Data::ArrayListNN<Text::ReportBuilder::ColIcon>> iconList;
 	Data::FastStringMap<IconStatus *> iconStatus;
 	IconStatus *iconSt;
-	Text::ReportBuilder::ColIcon *icon;
+	NN<Text::ReportBuilder::ColIcon> icon;
 
 	lastRowType = RT_UNKNOWN;
 	sptr = Text::StrInt32(sbuff, id);
@@ -1007,7 +1004,7 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 	i = this->headers.GetCount();
 	while (i-- > 0)
 	{
-		header = this->headers.GetItem(i);
+		header = this->headers.GetItemNoCheck(i);
 		if (header->isRight)
 		{
 			sz = g->GetTextSize(f, header->name->ToCString());
@@ -1030,7 +1027,7 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 	i = this->preheaders.GetCount();
 	while (i-- > 0)
 	{
-		header = this->preheaders.GetItem(i);
+		header = this->preheaders.GetItemNoCheck(i);
 		if (header->isRight)
 		{
 			sz = g->GetTextSize(f, header->name->ToCString());
@@ -1064,7 +1061,6 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 	while (i-- > 0)
 	{
 		cols = this->tableContent.GetItem(i);
-		iconList = this->icons.GetItem(i);
 		j = this->colCount;
 		while (j-- > 0)
 		{
@@ -1076,12 +1072,12 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 			}
 		}
 
-		if (iconList)
+		if (this->icons.GetItem(i).SetTo(iconList))
 		{
 			j = iconList->GetCount();
 			while (j-- > 0)
 			{
-				icon = iconList->GetItem(j);
+				icon = iconList->GetItemNoCheck(j);
 				if (icon->fileName)
 				{
 					iconSt = iconStatus.Get(icon->fileName);
@@ -1165,7 +1161,7 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 		j = this->preheaders.GetCount();
 		while (i < j)
 		{
-			header = this->preheaders.GetItem(i);
+			header = this->preheaders.GetItemNoCheck(i);
 			if (header->isRight)
 			{
 				if (!lastRight && i > 0)
@@ -1199,7 +1195,7 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 		j = this->headers.GetCount();
 		while (i < j)
 		{
-			header = this->headers.GetItem(i);
+			header = this->headers.GetItemNoCheck(i);
 			if (header->isRight)
 			{
 				if (!lastRight && i > 0)
@@ -1253,7 +1249,7 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 					{
 						if (this->tableBorders)
 						{
-							TableCell *cols2;
+							UnsafeArray<TableCell> cols2;
 							n = m - 1;
 							while (true)
 							{
@@ -1333,7 +1329,7 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 						{
 							if (this->tableBorders)
 							{
-								TableCell *cols2;
+								UnsafeArray<TableCell> cols2;
 								n = m - 1;
 								while (true)
 								{
@@ -1379,8 +1375,7 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 					}
 				}
 
-				iconList = this->icons.GetItem(k);
-				if (iconList)
+				if (this->icons.GetItem(k).SetTo(iconList))
 				{
 					i = 0;
 					j = this->colCount;
@@ -1402,7 +1397,7 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 					j = iconList->GetCount();
 					while (i < j)
 					{
-						icon = iconList->GetItem(i);
+						icon = iconList->GetItemNoCheck(i);
 						if (icon->fileName)
 						{
 							iconSt = iconStatus.Get(icon->fileName);

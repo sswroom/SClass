@@ -19,20 +19,20 @@ namespace SSWR
 			NN<UI::GUIButton> btnOK;
 			NN<UI::GUIButton> btnAdd;
 			NN<UI::GUIButton> btnDelete;
-			DB::DBFFile *dbf;
+			NN<DB::DBFFile> dbf;
 			NN<Media::DrawEngine> deng;
-			Media::MonitorMgr *monMgr;
-			Data::ArrayList<MapFilter*> *filters;
+			NN<Media::MonitorMgr> monMgr;
+			NN<Data::ArrayListNN<MapFilter>> filters;
 
 			static void __stdcall OnAddClicked(AnyType userObj);
 			static void __stdcall OnDeleteClicked(AnyType userObj);
 			static void __stdcall OnOkClicked(AnyType userObj);
 		public:
-			SHPConvCurrFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, DB::DBFFile *dbf, Data::ArrayList<MapFilter*> *filters, NN<Media::DrawEngine> deng);
+			SHPConvCurrFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<DB::DBFFile> dbf, NN<Data::ArrayListNN<MapFilter>> filters, NN<Media::DrawEngine> deng);
 			virtual ~SHPConvCurrFilterForm();
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

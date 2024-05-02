@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRWIFICAPTURELITEFORM
 #define _SM_SSWR_AVIREAD_AVIRWIFICAPTURELITEFORM
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "IO/FileStream.h"
 #include "Net/WirelessLAN.h"
 #include "SSWR/AVIRead/AVIRCore.h"
@@ -50,8 +50,8 @@ namespace SSWR
 			Net::WirelessLAN *wlan;
 			Optional<Net::WirelessLAN::Interface> wlanInterf;
 			OSInt wlanScan;
-			Data::FastMap<UInt64, BSSStatus*> bssMap;
-			Data::FastMap<UInt64, WifiLog*> wifiLogMap;
+			Data::FastMapNN<UInt64, BSSStatus> bssMap;
+			Data::FastMapNN<UInt64, WifiLog> wifiLogMap;
 			Int64 lastTimeTick;
 
 			NN<UI::GUITabControl> tcMain;

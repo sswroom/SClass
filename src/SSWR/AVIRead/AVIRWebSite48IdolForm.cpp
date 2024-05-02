@@ -18,14 +18,14 @@ void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnRequestPageClicked(AnyTyp
 		Data::DateTime dt;
 		UOSInt i;
 		UOSInt j;
-		Data::ArrayList<Net::WebSite::WebSite48IdolControl::ItemData*> itemList;
-		Net::WebSite::WebSite48IdolControl::ItemData *item;
-		me->ctrl->GetTVPageItems(pageNo, &itemList);
+		Data::ArrayListNN<Net::WebSite::WebSite48IdolControl::ItemData> itemList;
+		NN<Net::WebSite::WebSite48IdolControl::ItemData> item;
+		me->ctrl->GetTVPageItems(pageNo, itemList);
 		i = 0;
 		j = itemList.GetCount();
 		while (i < j)
 		{
-			item = itemList.GetItem(i);
+			item = itemList.GetItemNoCheck(i);
 			sptr = Text::StrInt32(sbuff, item->id);
 			me->lvItems->AddItem(CSTRP(sbuff, sptr), 0);
 			dt.SetTicks(item->recTime);
@@ -36,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnRequestPageClicked(AnyTyp
 			me->lvItems->SetSubItem(i, 2, sb.ToCString());
 			i++;
 		}
-		me->ctrl->FreeItems(&itemList);
+		me->ctrl->FreeItems(itemList);
 	}
 }
 

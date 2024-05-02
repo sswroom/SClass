@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Media/ConsoleVideoRenderer.h"
 
-Media::ConsoleVideoRenderer::ConsoleVideoRenderer(NN<Media::MonitorSurfaceMgr> surfaceMgr, Media::ColorManagerSess *colorSess) : Media::VideoRenderer(colorSess, surfaceMgr, 6, 2)
+Media::ConsoleVideoRenderer::ConsoleVideoRenderer(NN<Media::MonitorSurfaceMgr> surfaceMgr, NN<Media::ColorManagerSess> colorSess) : Media::VideoRenderer(colorSess, surfaceMgr, 6, 2)
 {
 	this->surfaceMgr = surfaceMgr;
 	this->primarySurface = this->surfaceMgr->CreatePrimarySurface(this->surfaceMgr->GetMonitorHandle(0), 0, Media::RotateType::None);

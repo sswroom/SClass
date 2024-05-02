@@ -54,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRVideoInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoInfoForm>();
 	UOSInt i = me->lbStream->GetSelectedIndex();
-	SSWR::AVIRead::AVIRVideoInfoForm::DecodeStatus *decStatus;
+	NN<SSWR::AVIRead::AVIRVideoInfoForm::DecodeStatus> decStatus;
 	if (me->currFile == 0)
 	{
 		me->txtStream->SetText(CSTR(""));
@@ -109,8 +109,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(AnyType userObj)
 			sb.AppendC(UTF8STRC("\r\n"));
 			frameInfo.ToString(sb);
 		}
-		decStatus = me->decStatus->GetItem(i);
-		if (decStatus)
+		if (me->decStatus.GetItem(i).SetTo(decStatus))
 		{
 			sb.AppendC(UTF8STRC("\r\nDecoded Frame Count = "));
 			sb.AppendU64(decStatus->sampleCnt);
@@ -134,8 +133,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(AnyType userObj)
 		sb.AppendC(UTF8STRC("\r\n"));
 		audioSrc->GetFormat(fmt);
 		fmt.ToString(sb);
-		decStatus = me->decStatus->GetItem(i);
-		if (decStatus)
+		if (me->decStatus.GetItem(i).SetTo(decStatus))
 		{
 			sb.AppendC(UTF8STRC("\r\nDecoded sample Count = "));
 			sb.AppendU64(decStatus->sampleCnt);
@@ -150,11 +148,11 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRVideoInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoInfoForm>();
-	if (me->decStatus->GetCount() > 0 || me->currFile == 0)
+	if (me->decStatus.GetCount() > 0 || me->currFile == 0)
 	{
 		return;
 	}
-	SSWR::AVIRead::AVIRVideoInfoForm::DecodeStatus *status;
+	NN<SSWR::AVIRead::AVIRVideoInfoForm::DecodeStatus> status;
 	NN<Media::IMediaSource> msrc;
 	
 	Sync::Event *evt;
@@ -172,7 +170,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(AnyType userObj
 		{
 			break;
 		}
-		status = MemAlloc(SSWR::AVIRead::AVIRVideoInfoForm::DecodeStatus, 1);
+		status = MemAllocNN(SSWR::AVIRead::AVIRVideoInfoForm::DecodeStatus);
 		status->sampleCnt = 0;
 		status->lastSampleTime = 0;
 		status->isEnd = false;
@@ -208,13 +206,13 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(AnyType userObj
 			}
 		}
 
-		me->decStatus->Add(status);
+		me->decStatus.Add(status);
 		i++;
 	}
-	i = me->decStatus->GetCount();
+	i = me->decStatus.GetCount();
 	while (i-- > 0)
 	{
-		status = me->decStatus->GetItem(i);
+		status = me->decStatus.GetItemNoCheck(i);
 		if (status->vdecoder)
 		{
 			status->vdecoder->Start();
@@ -228,10 +226,10 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(AnyType userObj
 	while (!isEnd)
 	{
 		isEnd = true;
-		i = me->decStatus->GetCount();
+		i = me->decStatus.GetCount();
 		while (i-- > 0)
 		{
-			status = me->decStatus->GetItem(i);
+			status = me->decStatus.GetItemNoCheck(i);
 			if (!status->isEnd)
 			{
 				isEnd = false;
@@ -241,10 +239,10 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(AnyType userObj
 			break;
 		evt->Wait(1000);
 	}
-	i = me->decStatus->GetCount();
+	i = me->decStatus.GetCount();
 	while (i-- > 0)
 	{
-		status = me->decStatus->GetItem(i);
+		status = me->decStatus.GetItemNoCheck(i);
 		if (status->renderer)
 		{
 			status->sampleCnt = status->renderer->GetSampleCnt();
@@ -310,14 +308,7 @@ Bool SSWR::AVIRead::AVIRVideoInfoForm::OpenFile(Text::CStringNN fileName)
 
 void SSWR::AVIRead::AVIRVideoInfoForm::ClearDecode()
 {
-	SSWR::AVIRead::AVIRVideoInfoForm::DecodeStatus *status;
-	UOSInt i = this->decStatus->GetCount();
-	while (i-- > 0)
-	{
-		status = this->decStatus->GetItem(i);
-		MemFree(status);
-	}
-	this->decStatus->Clear();
+	this->decStatus.MemFreeAll();
 	this->lblDecode->SetText(CSTR(""));
 }
 
@@ -328,7 +319,6 @@ SSWR::AVIRead::AVIRVideoInfoForm::AVIRVideoInfoForm(Optional<UI::GUIClientContro
 	
 	this->core = core;
 	this->currFile = 0;
-	NEW_CLASS(this->decStatus, Data::ArrayList<SSWR::AVIRead::AVIRVideoInfoForm::DecodeStatus*>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlFile = ui->NewPanel(*this);
@@ -360,7 +350,6 @@ SSWR::AVIRead::AVIRVideoInfoForm::~AVIRVideoInfoForm()
 {
 	this->ClearDecode();
 	SDEL_CLASS(this->currFile);
-	DEL_CLASS(this->decStatus);
 }
 
 void SSWR::AVIRead::AVIRVideoInfoForm::OnMonitorChanged()

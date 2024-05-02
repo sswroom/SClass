@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(AnyType userObj
 	UTF8Char *sptr;
 	if (me->seAPI)
 	{
-		me->seAPI->FreeSiteList(&me->siteList);
+		me->seAPI->FreeSiteList(me->siteList);
 		DEL_CLASS(me->seAPI);
 		me->seAPI = 0;
 		me->btnAPIKey->SetText(CSTR("Start"));
@@ -36,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(AnyType userObj
 			s->Release();
 
 			Data::ArrayListStringNN vers;
-			if (me->seAPI->GetSupportedVersions(&vers))
+			if (me->seAPI->GetSupportedVersions(vers))
 			{
 				sb.ClearStr();
 				Data::ArrayIterator<NN<Text::String>> it = vers.Iterator();
@@ -56,26 +56,26 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnAPIKeyClicked(AnyType userObj
 				me->txtSuppVer->SetText(CSTR(""));
 			}
 			UOSInt totalCount;
-			Net::SolarEdgeAPI::Site *site;
+			NN<Net::SolarEdgeAPI::Site> site;
 			me->lvSiteList->ClearItems();
 			me->cboSiteEnergySite->ClearItems();
 			me->cboSitePowerSite->ClearItems();
-			if (me->seAPI->GetSiteList(&me->siteList, 20, 0, &totalCount))
+			if (me->seAPI->GetSiteList(me->siteList, 20, 0, totalCount))
 			{
 				i = 0;
 				j = me->siteList.GetCount();
 				while (i < j)
 				{
-					site = me->siteList.GetItem(i);
+					site = me->siteList.GetItemNoCheck(i);
 					sptr = Text::StrInt32(sbuff, site->id);
-					me->lvSiteList->AddItem(CSTRP(sbuff, sptr), (void*)site);
+					me->lvSiteList->AddItem(CSTRP(sbuff, sptr), site);
 					if (site->name.SetTo(s))
 					{
 						me->lvSiteList->SetSubItem(i, 1, s);
 						*sptr++ = ' ';
 						sptr = s->ConcatTo(sptr);
-						me->cboSiteEnergySite->AddItem(CSTRP(sbuff, sptr), (void*)site);
-						me->cboSitePowerSite->AddItem(CSTRP(sbuff, sptr), (void*)site);
+						me->cboSiteEnergySite->AddItem(CSTRP(sbuff, sptr), site);
+						me->cboSitePowerSite->AddItem(CSTRP(sbuff, sptr), site);
 					}
 					sptr = Text::StrInt32(sbuff, site->accountId);
 					me->lvSiteList->SetSubItem(i, 2, CSTRP(sbuff, sptr));
@@ -135,7 +135,7 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteListSelChg(AnyType userOb
 		me->txtSitePublicName->SetText(Text::String::OrEmpty(site->publicName)->ToCString());
 
 		Net::SolarEdgeAPI::SiteOverview overview;
-		if (me->seAPI && me->seAPI->GetSiteOverview(site->id, &overview))
+		if (me->seAPI && me->seAPI->GetSiteOverview(site->id, overview))
 		{
 			sptr = Text::StrConcatC(Math::Unit::Count::WellFormat(sbuff, overview.lifeTimeEnergy_Wh), UTF8STRC("Wh"));
 			me->txtSiteLifetimeEnergy->SetText(CSTRP(sbuff, sptr));
@@ -198,7 +198,7 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSiteEnergyClicked(AnyType use
 		Data::Timestamp startTime = GetDefaultStartTime(Data::Timestamp::FromTimeValue(timeVal, 0, Data::DateTimeUtil::GetLocalTzQhr()), timeUnit);
 		Data::Timestamp endTime = GetDefaultEndTime(startTime, timeUnit);
 		Data::ArrayList<Net::SolarEdgeAPI::TimedValue> values;
-		if (me->seAPI->GetSiteEnergy(site->id, startTime, endTime, timeUnit, &values))
+		if (me->seAPI->GetSiteEnergy(site->id, startTime, endTime, timeUnit, values))
 		{
 			me->siteEnergyList.Clear();
 			me->siteEnergyList.AddAll(values);
@@ -230,7 +230,7 @@ void __stdcall SSWR::AVIRead::AVIRSolarEdgeForm::OnSitePowerClicked(AnyType user
 		Data::Timestamp startTime = GetDefaultStartTime(Data::Timestamp::FromTimeValue(timeVal, 0, Data::DateTimeUtil::GetLocalTzQhr()), timeUnit);
 		Data::Timestamp endTime = startTime.AddMinute(24 * 60 - 15);
 		Data::ArrayList<Net::SolarEdgeAPI::TimedValue> values;
-		if (me->seAPI->GetSitePower(site->id, startTime, endTime, &values))
+		if (me->seAPI->GetSitePower(site->id, startTime, endTime, values))
 		{
 			me->sitePowerList.Clear();
 			me->sitePowerList.AddAll(values);
@@ -559,7 +559,7 @@ SSWR::AVIRead::AVIRSolarEdgeForm::~AVIRSolarEdgeForm()
 {
 	if (this->seAPI)
 	{
-		this->seAPI->FreeSiteList(&this->siteList);
+		this->seAPI->FreeSiteList(this->siteList);
 		DEL_CLASS(this->seAPI);
 		this->seAPI = 0;
 	}

@@ -15,11 +15,11 @@ void __stdcall SSWR::AVIRead::AVIRImageUploaderForm::OnFileDrop(AnyType userObj,
 		UInt64 fileSize = IO::Path::GetFileSize(files[i]->v);
 		if (fileSize > 0)
 		{
-			FileItem *file = MemAlloc(FileItem, 1);
+			NN<FileItem> file = MemAllocNN(FileItem);
 			file->fileName = files[i]->Clone();
 			file->fileSize = fileSize;
 			file->status = FileStatus::Pending;
-			me->items->Add(file);
+			me->items.Add(file);
 			j = me->lvStatus->AddItem(file->fileName, file);
 			sptr = Text::StrUInt64(sbuff, file->fileSize);
 			me->lvStatus->SetSubItem(j, 1, CSTRP(sbuff, sptr));
@@ -34,12 +34,12 @@ void __stdcall SSWR::AVIRead::AVIRImageUploaderForm::OnUploadClicked(AnyType use
 	NN<SSWR::AVIRead::AVIRImageUploaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageUploaderForm>();
 	Net::WebBrowser *browser;
 	Bool errorCont = me->chkErrorCont->IsChecked();
-	FileItem *item;
+	NN<FileItem> item;
 	UOSInt i = 0;
-	UOSInt j = me->items->GetCount();
+	UOSInt j = me->items.GetCount();
 	while (i < j)
 	{
-		item = me->items->GetItem(i);
+		item = me->items.GetItemNoCheck(i);
 		if (item->status == FileStatus::Pending)
 		{
 			///////////////////////////
@@ -48,10 +48,10 @@ void __stdcall SSWR::AVIRead::AVIRImageUploaderForm::OnUploadClicked(AnyType use
 	}
 }
 
-void SSWR::AVIRead::AVIRImageUploaderForm::FreeItem(FileItem *item)
+void SSWR::AVIRead::AVIRImageUploaderForm::FreeItem(NN<FileItem> item)
 {
 	item->fileName->Release();
-	MemFree(item);
+	MemFreeNN(item);
 }
 
 SSWR::AVIRead::AVIRImageUploaderForm::AVIRImageUploaderForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 480, 240, ui)
@@ -60,7 +60,6 @@ SSWR::AVIRead::AVIRImageUploaderForm::AVIRImageUploaderForm(Optional<UI::GUIClie
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
-	NEW_CLASS(this->items, Data::ArrayList<FileItem*>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
 	this->pnlCtrl = ui->NewPanel(*this);
@@ -89,8 +88,7 @@ SSWR::AVIRead::AVIRImageUploaderForm::AVIRImageUploaderForm(Optional<UI::GUIClie
 
 SSWR::AVIRead::AVIRImageUploaderForm::~AVIRImageUploaderForm()
 {
-	LIST_FREE_FUNC(this->items, FreeItem);
-	DEL_CLASS(this->items);
+	this->items.FreeAll(FreeItem);
 }
 
 void SSWR::AVIRead::AVIRImageUploaderForm::OnMonitorChanged()

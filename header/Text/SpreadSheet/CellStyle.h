@@ -75,7 +75,7 @@ namespace Text
 			BorderStyle borderRight;
 			BorderStyle borderTop;
 
-			WorkbookFont *font;
+			Optional<WorkbookFont> font;
 			UInt32 fillColor;
 			FillPattern fillPattern;
 			Optional<Text::String> dataFormat;
@@ -95,7 +95,7 @@ namespace Text
 			CellStyle *SetVAlign(VAlignment valign);
 			CellStyle *SetWordWrap(Bool wordWrap);
 			CellStyle *SetFillColor(UInt32 color, FillPattern pattern);
-			CellStyle *SetFont(WorkbookFont *font);
+			CellStyle *SetFont(Optional<WorkbookFont> font);
 			CellStyle *SetBorderLeft(const BorderStyle &border);
 			CellStyle *SetBorderRight(const BorderStyle &border);
 			CellStyle *SetBorderTop(const BorderStyle &border);
@@ -110,7 +110,7 @@ namespace Text
 			Bool GetWordWrap() const;
 			UInt32 GetFillColor() const;
 			FillPattern GetFillPattern() const;
-			WorkbookFont *GetFont() const;
+			Optional<WorkbookFont> GetFont() const;
 			BorderStyle GetBorderLeft() const;
 			BorderStyle GetBorderRight() const;
 			BorderStyle GetBorderTop() const;

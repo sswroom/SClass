@@ -109,18 +109,20 @@ Bool Text::SpreadSheet::CellStyle::Equals(NN<const CellStyle> style) const
 	if (style->borderTop != this->borderTop)
 		return false;
 
-	if (this->font == 0)
+	NN<WorkbookFont> nnfont;
+	NN<WorkbookFont> sfont;
+	if (!this->font.SetTo(nnfont))
 	{
-		if (style->font != 0)
+		if (style->font.NotNull())
 			return false;
 	}
-	else if (style->font == 0)
+	else if (!style->font.SetTo(sfont))
 	{
 		return false;
 	}
 	else
 	{
-		if (!style->font->Equals(this->font))
+		if (!sfont->Equals(nnfont))
 			return false;
 	}
 	if (style->fillColor != this->fillColor)
@@ -174,7 +176,7 @@ Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetFillColor(UInt32 
 	return this;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetFont(Text::SpreadSheet::WorkbookFont *font)
+Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetFont(Optional<Text::SpreadSheet::WorkbookFont> font)
 {
 	this->font = font;
 	return this;
@@ -253,7 +255,7 @@ Text::SpreadSheet::CellStyle::FillPattern Text::SpreadSheet::CellStyle::GetFillP
 	return this->fillPattern;
 }
 
-Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::CellStyle::GetFont() const
+Optional<Text::SpreadSheet::WorkbookFont> Text::SpreadSheet::CellStyle::GetFont() const
 {
 	return this->font;
 }

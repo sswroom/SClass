@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRIPScanForm::OnStartClicked(AnyType userObj)
 	UInt8 buff[8];
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	Net::ICMPScanner::ScanResult *result;
+	NN<Net::ICMPScanner::ScanResult> result;
 	UOSInt i;
 	UOSInt j;
 	UInt32 ip = (UInt32)me->cboIP->GetSelectedItem().GetOSInt();
@@ -34,12 +34,12 @@ void __stdcall SSWR::AVIRead::AVIRIPScanForm::OnStartClicked(AnyType userObj)
 		me->scanner->Scan(ip);
 
 		me->lvIP->ClearItems();
-		const Data::ReadingList<Net::ICMPScanner::ScanResult*> *resultList = me->scanner->GetResults();
+		NN<const Data::ReadingListNN<Net::ICMPScanner::ScanResult>> resultList = me->scanner->GetResults();
 		i = 0;
 		j = resultList->GetCount();
 		while (i < j)
 		{
-			result = resultList->GetItem(i);
+			result = resultList->GetItemNoCheck(i);
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, result->ip);
 			me->lvIP->AddItem(CSTRP(sbuff, sptr), result);
 			sptr = Text::StrHexBytes(sbuff, result->mac, 6, ':');

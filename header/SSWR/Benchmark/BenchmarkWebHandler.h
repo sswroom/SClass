@@ -11,12 +11,12 @@ namespace SSWR
 		class BenchmarkWebHandler : public Net::WebServer::WebStandardHandler
 		{
 		private:
-			typedef Bool (__stdcall *RequestHandler)(SSWR::Benchmark::BenchmarkWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			typedef Bool (__stdcall *RequestHandler)(NN<SSWR::Benchmark::BenchmarkWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
 		private:
 			Data::FastStringMap<RequestHandler> reqMap;
 
-			static Bool __stdcall UploadReq(SSWR::Benchmark::BenchmarkWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
-			static Bool __stdcall CPUInfoReq(SSWR::Benchmark::BenchmarkWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall UploadReq(NN<SSWR::Benchmark::BenchmarkWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
+			static Bool __stdcall CPUInfoReq(NN<SSWR::Benchmark::BenchmarkWebHandler> me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
 
 			virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 

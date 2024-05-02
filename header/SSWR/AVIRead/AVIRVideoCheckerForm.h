@@ -36,9 +36,9 @@ namespace SSWR
 			NN<UI::GUICheckBox> chkAllowTimeSkip;
 			NN<UI::GUIListView> lvFiles;
 
-			Data::ArrayList<FileQueue*> fileList;
+			Data::ArrayListNN<FileQueue> fileList;
 			Sync::Mutex fileMut;
-			Data::ArrayList<UpdateQueue*> updateList;
+			Data::ArrayListNN<UpdateQueue> updateList;
 			Sync::Mutex updateMut;
 			Media::VideoChecker checker;
 			Bool threadRunning;

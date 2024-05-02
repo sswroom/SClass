@@ -33,7 +33,7 @@ namespace Net
 		struct UserInfo
 		{
 			NN<Text::String> userName;
-			Data::FastStringMap<DeviceInfo2*> devMap;
+			Data::FastStringMapNN<DeviceInfo2> devMap;
 		};
 
 		NN<Net::SocketFactory> sockf;
@@ -43,10 +43,10 @@ namespace Net
 
 		Sync::Mutex dataMut;
 		Bool loading;
-		Data::FastStringMap<UserInfo*> userMap;
-		Data::FastStringMap<DeviceInfo2*> devMap;
+		Data::FastStringMapNN<UserInfo> userMap;
+		Data::FastStringMapNN<DeviceInfo2> devMap;
 
-		UserInfo *GetUser(Text::CStringNN userName);
+		NN<UserInfo> GetUser(Text::CStringNN userName);
 		void LoadData();
 		void SaveData();
 	public:
@@ -55,9 +55,9 @@ namespace Net
 
 		Bool Subscribe(Text::CStringNN token, Text::CStringNN userName, DeviceType devType, NN<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CString devModel);
 		Bool Unsubscribe(Text::CStringNN token);
-		Bool Send(Data::ArrayListStringNN *userNames, NN<Text::String> message);
-		UOSInt GetUsers(Data::ArrayListStringNN *users, NN<Sync::MutexUsage> mutUsage);
-		NN<const Data::ReadingList<DeviceInfo2*>> GetDevices(NN<Sync::MutexUsage> mutUsage);
+		Bool Send(NN<Data::ArrayListStringNN> userNames, NN<Text::String> message);
+		UOSInt GetUsers(NN<Data::ArrayListStringNN> users, NN<Sync::MutexUsage> mutUsage);
+		NN<const Data::ReadingListNN<DeviceInfo2>> GetDevices(NN<Sync::MutexUsage> mutUsage);
 		void LogMessage(Text::CStringNN msg, IO::LogHandler::LogLevel logLev);
 
 		static Text::CString DeviceTypeGetName(DeviceType devType);

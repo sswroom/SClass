@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(AnyType use
 	NN<Media::DrawImage> dimg;
 	if (dimg.Set(deng->CreateImage32(sz, Media::AT_NO_ALPHA)))
 	{
-		SSWR::AVIRead::AVIRCOVID19Form::DailyRecord *record;
+		NN<SSWR::AVIRead::AVIRCOVID19Form::DailyRecord> record;
 		UOSInt i;
 		UOSInt j;
 		Int64 lastCount = 0;
@@ -80,12 +80,12 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(AnyType use
 			chart.SetFontHeightPt(9.0);
 			chart.SetDateFormat(CSTR("yyyy-MM-dd"));
 			i = 0;
-			j = country->records->GetCount();
+			j = country->records.GetCount();
 			counts = MemAlloc(Int32, j);
 			dates = MemAlloc(Int64, j);
 			while (i < j)
 			{
-				record = country->records->GetItem(i);
+				record = country->records.GetItemNoCheck(i);
 				counts[i] = (Int32)(record->totalCases - lastCount);
 				lastCount = record->totalCases;
 				dates[i] = record->timeTicks;
@@ -104,22 +104,21 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(AnyType use
 
 void SSWR::AVIRead::AVIRCOVID19Form::ClearRecords()
 {
-	SSWR::AVIRead::AVIRCOVID19Form::CountryInfo *country;
-	NN<const Data::ArrayList<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo*>> countryList = this->countries.GetValues();
+	NN<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo> country;
+	NN<const Data::ArrayListNN<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo>> countryList = this->countries.GetValues();
 	UOSInt i = countryList->GetCount();
 	UOSInt j;
 	while (i-- > 0)
 	{
-		country = countryList->GetItem(i);
+		country = countryList->GetItemNoCheck(i);
 		country->isoCode->Release();
 		country->name->Release();
-		j = country->records->GetCount();
+		country->records.GetCount();
 		while (j-- > 0)
 		{
-			MemFree(country->records->GetItem(j));
+			MemFreeNN(country->records.GetItemNoCheck(j));
 		}
-		DEL_CLASS(country->records);
-		MemFree(country);
+		country.Delete();
 	}
 	this->countries.Clear();
 	this->lvCountry->ClearItems();
@@ -138,8 +137,8 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(NN<IO::SeekableStream> stm)
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	SSWR::AVIRead::AVIRCOVID19Form::CountryInfo *country;
-	SSWR::AVIRead::AVIRCOVID19Form::DailyRecord *record;
+	NN<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo> country;
+	NN<SSWR::AVIRead::AVIRCOVID19Form::DailyRecord> record;
 	this->ClearRecords();
 	{
 		DB::CSVFile csv(stm, 65001);
@@ -190,42 +189,40 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(NN<IO::SeekableStream> stm)
 		while (r->ReadNext())
 		{
 			sptr = r->GetStr(colIsoCode, sbuff, sizeof(sbuff));
-			country = this->countries.Get(CSTRP(sbuff, sptr));
-			if (country == 0)
+			if (!this->countries.Get(CSTRP(sbuff, sptr)).SetTo(country))
 			{
-				country = MemAlloc(SSWR::AVIRead::AVIRCOVID19Form::CountryInfo, 1);
+				NEW_CLASSNN(country, SSWR::AVIRead::AVIRCOVID19Form::CountryInfo());
 				country->isoCode = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 				sptr = r->GetStr(colLocation, sbuff, sizeof(sbuff));
 				country->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 				r->GetStr(colPopulation, sbuff, sizeof(sbuff));
 				country->population = Text::StrToDouble(sbuff);
-				NEW_CLASS(country->records, Data::Int64FastMap<SSWR::AVIRead::AVIRCOVID19Form::DailyRecord *>());
 				this->countries.PutNN(country->isoCode, country);
 			}
 			t = r->GetTimestamp(colDate).ToTicks();
-			if (country->records->Get(t) == 0)
+			if (country->records.Get(t).IsNull())
 			{
-				record = MemAlloc(SSWR::AVIRead::AVIRCOVID19Form::DailyRecord, 1);
+				record = MemAllocNN(SSWR::AVIRead::AVIRCOVID19Form::DailyRecord);
 				record->timeTicks = t;
 				r->GetStr(colTotalCases, sbuff, sizeof(sbuff));
 				record->totalCases = Text::StrToInt64(sbuff);
 				r->GetStr(colTotalDeath, sbuff, sizeof(sbuff));
 				record->totalDeaths = Text::StrToInt64(sbuff);
-				country->records->Put(record->timeTicks, record);
+				country->records.Put(record->timeTicks, record);
 			}
 		}
 		csv.CloseReader(r);
 	}
-	NN<const Data::ArrayList<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo *>> countryList;
+	NN<const Data::ArrayListNN<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo>> countryList;
 	countryList = this->countries.GetValues();
 	i = 0;
 	j = countryList->GetCount();
 	while (i < j)
 	{
-		country = countryList->GetItem(i);
+		country = countryList->GetItemNoCheck(i);
 		k = this->lvCountry->AddItem(country->isoCode->ToCString(), country);
 		this->lvCountry->SetSubItem(k, 1, country->name);
-		record = country->records->GetItem(country->records->GetCount() - 1);
+		record = country->records.GetItemNoCheck(country->records.GetCount() - 1);
 		sptr = Text::StrInt64(sbuff, record->totalCases);
 		this->lvCountry->SetSubItem(k, 2, CSTRP(sbuff, sptr));
 		sptr = Text::StrInt64(sbuff, record->totalDeaths);

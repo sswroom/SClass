@@ -1,7 +1,7 @@
 #ifndef _SM_DB_DBCACHE
 #define _SM_DB_DBCACHE
 #include "Data/ArrayListNN.h"
-#include "Data/ICaseStringMap.h"
+#include "Data/ICaseStringMapNN.h"
 #include "DB/DBModel.h"
 #include "DB/DBRow.h"
 #include "DB/PageRequest.h"
@@ -22,22 +22,22 @@ namespace DB
 		NN<DB::DBTool> db;
 		NN<DB::DBModel> model;
 		Sync::Mutex tableMut;
-		Data::ICaseStringMap<TableInfo*> tableMap;
+		Data::ICaseStringMapNN<TableInfo> tableMap;
 		UOSInt cacheCnt;
 
-		TableInfo *GetTableInfo(Text::CString tableName);
-		TableInfo *GetTableInfo(NN<TableDef> tableDef);
+		Optional<TableInfo> GetTableInfo(Text::CStringNN tableName);
+		Optional<TableInfo> GetTableInfo(NN<TableDef> tableDef);
 	public:
         DBCache(NN<DB::DBModel> model, NN<DB::DBTool> db);
         ~DBCache();
 
-		OSInt GetRowCount(Text::CString tableName); //-1 = table not found
-		UOSInt QueryTableData(NN<Data::ArrayListNN<DB::DBRow>> outRows, Text::CString tableName, DB::PageRequest *page);
-		DB::DBRow *GetTableItem(Text::CString tableName, Int64 pk);
+		OSInt GetRowCount(Text::CStringNN tableName); //-1 = table not found
+		UOSInt QueryTableData(NN<Data::ArrayListNN<DB::DBRow>> outRows, Text::CStringNN tableName, DB::PageRequest *page);
+		DB::DBRow *GetTableItem(Text::CStringNN tableName, Int64 pk);
 		void FreeTableData(NN<Data::ArrayListNN<DB::DBRow>> rows);
 		void FreeTableItem(NN<DB::DBRow> row);
 
-		Bool IsTableExist(Text::CString tableName);
+		Bool IsTableExist(Text::CStringNN tableName);
 	};
 }
 #endif

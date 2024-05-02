@@ -68,11 +68,11 @@ typedef enum
 	MNU_EXIT
 } MenuItems;
 
-void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::FileHandler(void *userObj, const UTF8Char **files, OSInt nFiles)
+void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::FileHandler(AnyType userObj, const UTF8Char **files, UOSInt nFiles)
 {
-	SSWR::AVIReadCE::AVIRCEBaseForm *me = (AVIReadCE::AVIRCEBaseForm*)userObj;
+	NN<SSWR::AVIReadCE::AVIRCEBaseForm> me = userObj.GetNN<AVIReadCE::AVIRCEBaseForm>();
 	IO::Path::PathType pt;
-	IO::DirectoryPackage *pkg;
+	NN<IO::DirectoryPackage> pkg;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Cannot parse:"));
 	Bool found = false;
@@ -81,10 +81,10 @@ void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::FileHandler(void *userObj, const
 	while (i < nFiles)
 	{
 		UOSInt fileNameLen = Text::StrCharCnt(files[i]);
-		pt = IO::Path::GetPathType(Text::CString(files[i], fileNameLen));
+		pt = IO::Path::GetPathType(Text::CStringNN(files[i], fileNameLen));
 		if (pt == IO::Path::PathType::Directory)
 		{
-			NEW_CLASS(pkg, IO::DirectoryPackage({files[i], fileNameLen}));
+			NEW_CLASSNN(pkg, IO::DirectoryPackage({files[i], fileNameLen}));
 			me->core->OpenObject(pkg);
 		}
 		else if (pt == IO::Path::PathType::File)
@@ -102,47 +102,47 @@ void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::FileHandler(void *userObj, const
 	me->core->EndLoad();
 	if (found)
 	{
-		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Error"), me);
+		me->ui->ShowMsgOK(sb.ToCString(), CSTR("Error"), me);
 	}
 }
 
-void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::OnCategoryChg(void *userObj)
+void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::OnCategoryChg(AnyType userObj)
 {
-	SSWR::AVIReadCE::AVIRCEBaseForm *me = (SSWR::AVIReadCE::AVIRCEBaseForm*)userObj;
-	Int32 item = (Int32)(OSInt)me->lbCategory->GetSelectedItem();
-	Data::ArrayList<MenuInfo*> *menu = me->menuItems->Get(item);
-	MenuInfo *info;
-	OSInt i;
-	OSInt j;
+	NN<SSWR::AVIReadCE::AVIRCEBaseForm> me = userObj.GetNN<AVIReadCE::AVIRCEBaseForm>();
+	Int32 item = (Int32)me->lbCategory->GetSelectedItem().GetOSInt();
+	NN<Data::ArrayListNN<MenuInfo>> menu;
+	NN<MenuInfo> info;
+	UOSInt i;
+	UOSInt j;
 	me->lbContent->ClearItems();
-	if (menu)
+	if (me->menuItems.Get(item).SetTo(menu))
 	{
 		i = 0;
 		j = menu->GetCount();
 		while (i < j)
 		{
-			info = menu->GetItem(i);
+			info = menu->GetItemNoCheck(i);
 			me->lbContent->AddItem(info->name, (void*)info->item);
 			i++;
 		}
 	}
 }
 
-void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::OnContentClick(void *userObj)
+void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::OnContentClick(AnyType userObj)
 {
-	SSWR::AVIReadCE::AVIRCEBaseForm *me = (SSWR::AVIReadCE::AVIRCEBaseForm*)userObj;
-	Int32 item = (Int32)(OSInt)me->lbContent->GetSelectedItem();
+	NN<SSWR::AVIReadCE::AVIRCEBaseForm> me = userObj.GetNN<AVIReadCE::AVIRCEBaseForm>();
+	Int32 item = (Int32)me->lbContent->GetSelectedItem().GetOSInt();
 	if (item)
 	{
 		me->EventMenuClicked((UInt16)item);
 	}
 }
 
-SSWR::AVIReadCE::AVIRCEBaseForm::MenuInfo *__stdcall SSWR::AVIReadCE::AVIRCEBaseForm::NewMenuItem(const WChar *name, Int32 item)
+NN<SSWR::AVIReadCE::AVIRCEBaseForm::MenuInfo> __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::NewMenuItem(Text::CStringNN name, Int32 item)
 {
-	MenuInfo *info;
-	info = MemAlloc(MenuInfo, 1);
-	info->name = name;
+	NN<MenuInfo> info;
+	info = MemAllocNN(MenuInfo);
+	info->name = Text::String::New(name);
 	info->item = item;
 	return info;
 }
@@ -154,30 +154,27 @@ SSWR::AVIReadCE::AVIRCEBaseForm::AVIRCEBaseForm(Optional<UI::GUIClientControl> p
 	this->SetFont(0, 0, 8.75, false);
 	this->SetFormState(UI::GUIForm::FS_MAXIMIZED);
 
-	Data::ArrayList<MenuInfo*> *menu;
-	NEW_CLASS(this->menuItems, Data::Int32FastMap<Data::ArrayList<MenuInfo*>*>());
+	NN<Data::ArrayListNN<MenuInfo>> menu;
 
-	UOSInt w;
-	UOSInt h;
-	this->GetSizeP(&w, &h);
-	NEW_CLASS(this->lbCategory = ui->NewListBox(this, true));
-	this->lbCategory->SetRect(0, 0, (w >> 1) - 3, 23, false);
+	Math::Size2D<UOSInt> sz = this->GetSizeP();
+	this->lbCategory = ui->NewListBox(*this, true);
+	this->lbCategory->SetRect(0, 0, (sz.x >> 1) - 3, 23, false);
 	this->lbCategory->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbCategory->HandleSelectionChange(OnCategoryChg, this);
-	NEW_CLASS(this->hspMain = ui->NewHSplitter(this, 3, false));
-	NEW_CLASS(this->lbContent = ui->NewListBox(this, true));
+	this->hspMain = ui->NewHSplitter(*this, 3, false);
+	this->lbContent = ui->NewListBox(*this, true);
 	this->lbContent->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbContent->HandleDoubleClicked(OnContentClick, this);
 	
-	NEW_CLASS(menu, Data::ArrayList<MenuInfo*>());
-	menu->Add(NewMenuItem(L"Process Info"), MNU_PROC_INFO));
-	menu->Add(NewMenuItem(L"Exit"), MNU_EXIT));
-	this->menuItems->Put(MNU_MISC, menu);
-	this->lbCategory->AddItem(L"Misc", (void*)MNU_MISC);
-	NEW_CLASS(menu, Data::ArrayList<MenuInfo*>());
-	menu->Add(NewMenuItem(L"About"), MNU_ABOUT));
-	this->menuItems->Put(MNU_HELP, menu);
-	this->lbCategory->AddItem(L"Help", (void*)MNU_HELP);
+	NEW_CLASSNN(menu, Data::ArrayListNN<MenuInfo>());
+	menu->Add(NewMenuItem(CSTR("Process Info"), MNU_PROC_INFO));
+	menu->Add(NewMenuItem(CSTR("Exit"), MNU_EXIT));
+	this->menuItems.Put(MNU_MISC, menu);
+	this->lbCategory->AddItem(CSTR("Misc"), (void*)MNU_MISC);
+	NEW_CLASSNN(menu, Data::ArrayListNN<MenuInfo>());
+	menu->Add(NewMenuItem(CSTR("About"), MNU_ABOUT));
+	this->menuItems.Put(MNU_HELP, menu);
+	this->lbCategory->AddItem(CSTR("Help"), (void*)MNU_HELP);
 
 /*	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(L"M&isc");
@@ -254,23 +251,23 @@ SSWR::AVIReadCE::AVIRCEBaseForm::AVIRCEBaseForm(Optional<UI::GUIClientControl> p
 
 SSWR::AVIReadCE::AVIRCEBaseForm::~AVIRCEBaseForm()
 {
-	Data::ArrayList<MenuInfo*> *menu;
-	MenuInfo *info;
-	OSInt i;
-	OSInt j;
-	i = this->menuItems->GetCount();
+	NN<Data::ArrayListNN<MenuInfo>> menu;
+	NN<MenuInfo> info;
+	UOSInt i;
+	UOSInt j;
+	i = this->menuItems.GetCount();
 	while (i-- > 0)
 	{
-		menu = this->menuItems->GetItem(i);
+		menu = this->menuItems.GetItemNoCheck(i);
 		j = menu->GetCount();
 		while (j-- > 0)
 		{
-			info = menu->GetItem(j);
-			MemFree(info);
+			info = menu->GetItemNoCheck(j);
+			info->name->Release();
+			MemFreeNN(info);
 		}
-		DEL_CLASS(menu);
+		menu.Delete();
 	}
-	DEL_CLASS(this->menuItems);
 }
 
 void SSWR::AVIReadCE::AVIRCEBaseForm::EventMenuClicked(UInt16 cmdId)
@@ -284,8 +281,8 @@ void SSWR::AVIReadCE::AVIRCEBaseForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_PROC_INFO:
 		{
-			SSWR::AVIReadCE::AVIRCEProcInfoForm *frm;
-			NEW_CLASS(frm, SSWR::AVIReadCE::AVIRCEProcInfoForm(0, this->ui, this->core));
+			NN<SSWR::AVIReadCE::AVIRCEProcInfoForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIReadCE::AVIRCEProcInfoForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

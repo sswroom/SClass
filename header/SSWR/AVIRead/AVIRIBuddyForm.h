@@ -17,7 +17,7 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Data::ArrayList<IO::Device::IBuddy*> *buddyList;
+			Data::ArrayListNN<IO::Device::IBuddy> buddyList;
 			IO::Device::IBuddy *currBuddy;
 			IO::Device::IBuddy::IBuddyBodyEffect currTurn;
 			IO::Device::IBuddy::IBuddyWingEffect currWing;

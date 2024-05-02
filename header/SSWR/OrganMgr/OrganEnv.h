@@ -220,8 +220,8 @@ namespace SSWR
 			NN<Parser::ParserList> GetParserList();
 			NN<Net::SocketFactory> GetSocketFactory();
 			Optional<Net::SSLEngine> GetSSLEngine();
-			Media::ColorManager *GetColorMgr();
-			Media::MonitorMgr *GetMonitorMgr();
+			NN<Media::ColorManager> GetColorMgr();
+			NN<Media::MonitorMgr> GetMonitorMgr();
 			ErrorType GetErrorType();
 			Text::CStringNN GetLang(Text::CStringNN name);
 			virtual Text::String *GetCacheDir() = 0;

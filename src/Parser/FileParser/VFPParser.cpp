@@ -35,8 +35,8 @@ IO::ParsedObject *Parser::FileParser::VFPParser::ParseFileHdr(NN<IO::StreamData>
 {
 	if (!fd->IsFullFile())
 		return 0;
-	Data::ArrayList<Media::IMediaSource *> mediaArr;
-	if (vfpMgr->LoadFile(fd->GetFullFileName()->v, &mediaArr) > 0)
+	Data::ArrayListNN<Media::IMediaSource> mediaArr;
+	if (vfpMgr->LoadFile(fd->GetFullFileName()->v, mediaArr) > 0)
 	{
 		Media::MediaFile *file;
 		NEW_CLASS(file, Media::MediaFile(fd->GetFullName()));
@@ -44,7 +44,7 @@ IO::ParsedObject *Parser::FileParser::VFPParser::ParseFileHdr(NN<IO::StreamData>
 		UOSInt j = mediaArr.GetCount();
 		while (i < j)
 		{
-			file->AddSource(mediaArr.GetItem(i++), 0);
+			file->AddSource(mediaArr.GetItemNoCheck(i++), 0);
 		}
 		return file;
 	}

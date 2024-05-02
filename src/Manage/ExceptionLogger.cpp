@@ -396,8 +396,8 @@ Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode
 	}
 
 	{
-		Data::ArrayList<Manage::ThreadInfo*> threadList;
-		Manage::ThreadInfo *thread;
+		Data::ArrayListNN<Manage::ThreadInfo> threadList;
+		NN<Manage::ThreadInfo> thread;
 		NN<Manage::ThreadContext> tCont;
 		UInt64 startAddr;
 		proc.GetThreads(threadList);
@@ -405,7 +405,7 @@ Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode
 		j = threadList.GetCount();
 		while (i < j)
 		{
-			thread = threadList.GetItem(i);
+			thread = threadList.GetItemNoCheck(i);
 
 			sb.ClearStr();
 			writer.WriteLine();
@@ -462,6 +462,7 @@ Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode
 
 			i++;
 		}
+		threadList.DeleteAll();
 	}
 
 	{
@@ -484,15 +485,15 @@ Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode
 	}
 
 	{
-		Data::ArrayList<Manage::ThreadInfo*> threadList;
-		Manage::ThreadInfo *thread;
+		Data::ArrayListNN<Manage::ThreadInfo> threadList;
+		NN<Manage::ThreadInfo> thread;
 		NN<Manage::ThreadContext> tCont;
 		proc.GetThreads(threadList);
 		i = 0;
 		j = threadList.GetCount();
 		while (i < j)
 		{
-			thread = threadList.GetItem(i);
+			thread = threadList.GetItemNoCheck(i);
 
 			if (!thread->IsCurrThread())
 			{
@@ -509,7 +510,7 @@ Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode
 					tCont.Delete();
 				}
 			}
-			DEL_CLASS(thread);
+			thread.Delete();
 			i++;
 		}
 	}

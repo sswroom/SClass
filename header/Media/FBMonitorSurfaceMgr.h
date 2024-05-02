@@ -9,13 +9,13 @@ namespace Media
 	class FBMonitorSurfaceMgr : public MonitorSurfaceMgr
 	{
 	private:
-		Media::MonitorMgr *monMgr;
-		Media::ColorManager *colorMgr;
-		Media::ColorManagerSess *colorSess;
+		Optional<Media::MonitorMgr> monMgr;
+		Optional<Media::ColorManager> colorMgr;
+		Optional<Media::ColorManagerSess> colorSess;
 
 	public:
-		FBMonitorSurfaceMgr(Media::MonitorMgr *monMgr, Media::ColorManagerSess *colorSess);
-		FBMonitorSurfaceMgr(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr);
+		FBMonitorSurfaceMgr(Optional<Media::MonitorMgr> monMgr, NN<Media::ColorManagerSess> colorSess);
+		FBMonitorSurfaceMgr(NN<Media::MonitorMgr> monMgr, NN<Media::ColorManager> colorMgr);
 		virtual ~FBMonitorSurfaceMgr();
 
 		Double GetMonitorDPI(MonitorHandle *hMonitor);

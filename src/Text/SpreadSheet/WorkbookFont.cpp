@@ -98,10 +98,10 @@ Text::SpreadSheet::FontFamily Text::SpreadSheet::WorkbookFont::GetFamily() const
 	return this->family;
 }
 
-Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::Clone() const
+NN<Text::SpreadSheet::WorkbookFont> Text::SpreadSheet::WorkbookFont::Clone() const
 {
-	Text::SpreadSheet::WorkbookFont *font;
-	NEW_CLASS(font, Text::SpreadSheet::WorkbookFont());
+	NN<Text::SpreadSheet::WorkbookFont> font;
+	NEW_CLASSNN(font, Text::SpreadSheet::WorkbookFont());
 	font->name = Text::String::CopyOrNull(this->name);
 	font->size = this->size;
 	font->bold = this->bold;
@@ -112,7 +112,7 @@ Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::Clone() const
 	return font;
 }
 
-Bool Text::SpreadSheet::WorkbookFont::Equals(WorkbookFont *font) const
+Bool Text::SpreadSheet::WorkbookFont::Equals(NN<WorkbookFont> font) const
 {
 	return Text::StringTool::Equals(this->name, font->name) &&
 		this->size == font->size &&

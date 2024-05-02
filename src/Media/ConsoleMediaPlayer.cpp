@@ -8,13 +8,12 @@ void Media::ConsoleMediaPlayer::OnMediaOpened()
 	this->PBStart();
 }
 
-Media::ConsoleMediaPlayer::ConsoleMediaPlayer(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr, NN<Parser::ParserList> parsers, Media::AudioDevice *audioDev) : Media::MediaPlayerInterface(parsers)
+Media::ConsoleMediaPlayer::ConsoleMediaPlayer(NN<Media::MonitorMgr> monMgr, NN<Media::ColorManager> colorMgr, NN<Parser::ParserList> parsers, Media::AudioDevice *audioDev) : Media::MediaPlayerInterface(parsers)
 {
 	this->colorMgr = colorMgr;
 	this->surfaceMgr = Media::MonitorSurfaceMgrFactory::Create(monMgr, colorMgr);
-	this->colorSess = 0;
 	this->renderer = 0;
-	this->colorSess = this->colorMgr->CreateSess(this->surfaceMgr->GetMonitorHandle(0)).Ptr();
+	this->colorSess = this->colorMgr->CreateSess(this->surfaceMgr->GetMonitorHandle(0));
 	NEW_CLASS(this->renderer, Media::ConsoleVideoRenderer(this->surfaceMgr, this->colorSess));
 	if (this->renderer && !this->renderer->IsError())
 	{
@@ -31,12 +30,7 @@ Media::ConsoleMediaPlayer::~ConsoleMediaPlayer()
 		this->player->Close();
 	}
 	SDEL_CLASS(this->renderer);
-	NN<Media::ColorManagerSess> colorSess;
-	if (colorSess.Set(this->colorSess))
-	{
-		this->colorMgr->DeleteSess(colorSess);
-		this->colorSess = 0;
-	}
+	this->colorMgr->DeleteSess(this->colorSess);
 	this->surfaceMgr.Delete();
 }
 

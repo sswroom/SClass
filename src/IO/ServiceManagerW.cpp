@@ -28,7 +28,7 @@ IO::ServiceInfo::RunStatus ServiceManager_CurrentState2RunStatus(DWORD dwCurrent
 
 }
 
-OSInt IO::ServiceManager::ServiceComparator::Compare(ServiceItem* a, ServiceItem* b) const
+OSInt IO::ServiceManager::ServiceComparator::Compare(NN<ServiceItem> a, NN<ServiceItem> b) const
 {
 	return a->name->CompareTo(b->name);
 }
@@ -227,7 +227,7 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail* 
 	return succ;
 }
 
-UOSInt IO::ServiceManager::QueryServiceList(Data::ArrayList<ServiceItem*>* svcList)
+UOSInt IO::ServiceManager::QueryServiceList(NN<Data::ArrayListNN<ServiceItem>> svcList)
 {
 	DWORD bytesNeeded;
 	DWORD nServices;
@@ -241,14 +241,14 @@ UOSInt IO::ServiceManager::QueryServiceList(Data::ArrayList<ServiceItem*>* svcLi
 		return 0;
 	}
 	UOSInt ret = 0;
-	ServiceItem *svc;
+	NN<ServiceItem> svc;
 	ENUM_SERVICE_STATUSW* services = (ENUM_SERVICE_STATUSW*)MAlloc(bytesNeeded);
 	if (EnumServicesStatusW((SC_HANDLE)this->clsData, SERVICE_WIN32, SERVICE_STATE_ALL, services, bytesNeeded, &bytesNeeded, &nServices, 0))
 	{
 		UOSInt i = 0;
 		while (i < nServices)
 		{
-			svc = MemAlloc(ServiceItem, 1);
+			svc = MemAllocNN(ServiceItem);
 			svc->name = Text::String::NewNotNull(services[i].lpServiceName);
 			svc->state = IO::ServiceInfo::ServiceState::Unknown;
 			svc->runStatus = ServiceManager_CurrentState2RunStatus(services[i].ServiceStatus.dwCurrentState);
@@ -261,15 +261,15 @@ UOSInt IO::ServiceManager::QueryServiceList(Data::ArrayList<ServiceItem*>* svcLi
 	return ret;
 }
 
-void IO::ServiceManager::FreeServiceList(Data::ArrayList<ServiceItem*>* svcList)
+void IO::ServiceManager::FreeServiceList(NN<Data::ArrayListNN<ServiceItem>> svcList)
 {
-	ServiceItem *svc;
+	NN<ServiceItem> svc;
 	UOSInt i = svcList->GetCount();
 	while (i-- > 0)
 	{
-		svc = svcList->GetItem(i);
+		svc = svcList->GetItemNoCheck(i);
 		svc->name->Release();
-		MemFree(svc);
+		MemFreeNN(svc);
 	}
 	svcList->Clear();
 }

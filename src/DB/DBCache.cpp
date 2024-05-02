@@ -5,20 +5,19 @@
 #include "DB/SQLGenerator.h"
 #include "Sync/MutexUsage.h"
 
-DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(Text::CString tableName)
+Optional<DB::DBCache::TableInfo> DB::DBCache::GetTableInfo(Text::CStringNN tableName)
 {
-	DB::DBCache::TableInfo *table;
+	NN<DB::DBCache::TableInfo> table;
 	Sync::MutexUsage mutUsage(this->tableMut);
-	table = this->tableMap.Get(tableName);
-	mutUsage.EndUse();
-	if (table)
+	if (this->tableMap.Get(tableName).SetTo(table))
 		return table;
+	mutUsage.EndUse();
 	NN<DB::TableDef> def;
-	if (!def.Set(this->model->GetTable(tableName)))
+	if (!this->model->GetTable(tableName).SetTo(def))
 	{
 		return 0;
 	}
-	table = MemAlloc(DB::DBCache::TableInfo, 1);
+	table = MemAllocNN(DB::DBCache::TableInfo);
 	table->tableName = Text::String::New(tableName);
 	table->def = def;
 	table->dataCnt = 0;
@@ -35,26 +34,26 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(Text::CString tableName)
 		this->db->CloseReader(r);
 	}
 	mutUsage.BeginUse();
-	DB::DBCache::TableInfo *oldTable = this->tableMap.PutNN(table->tableName, table);
-	mutUsage.EndUse();
-	if (oldTable)
+	NN<DB::DBCache::TableInfo> oldTable;
+	if (this->tableMap.PutNN(table->tableName, table).SetTo(oldTable))
 	{
 		oldTable->tableName->Release();
-		MemFree(oldTable);
+		MemFreeNN(oldTable);
 	}
+	mutUsage.EndUse();
 	return table;
 }
 
-DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(NN<DB::TableDef> tableDef)
+Optional<DB::DBCache::TableInfo> DB::DBCache::GetTableInfo(NN<DB::TableDef> tableDef)
 {
-	DB::DBCache::TableInfo *table;
+	NN<DB::DBCache::TableInfo> table;
 	UOSInt i;
 	Sync::MutexUsage mutUsage(this->tableMut);
-	NN<const Data::ArrayList<DB::DBCache::TableInfo*>> tableList = this->tableMap.GetValues();
+	NN<const Data::ArrayListNN<DB::DBCache::TableInfo>> tableList = this->tableMap.GetValues();
 	i = tableList->GetCount();
 	while (i-- > 0)
 	{
-		table = tableList->GetItem(i);
+		table = tableList->GetItemNoCheck(i);
 		if (table->def == tableDef)
 		{
 			return table;
@@ -72,21 +71,21 @@ DB::DBCache::DBCache(NN<DB::DBModel> model, NN<DB::DBTool> db)
 
 DB::DBCache::~DBCache()
 {
-	NN<const Data::ArrayList<DB::DBCache::TableInfo*>> tableList = this->tableMap.GetValues();
-	DB::DBCache::TableInfo *table;
+	NN<const Data::ArrayListNN<DB::DBCache::TableInfo>> tableList = this->tableMap.GetValues();
+	NN<DB::DBCache::TableInfo> table;
 	UOSInt i = tableList->GetCount();
 	while (i-- > 0)
 	{
-		table = tableList->GetItem(i);
+		table = tableList->GetItemNoCheck(i);
 		table->tableName->Release();
-		MemFree(table);
+		MemFreeNN(table);
 	}
 }
 
-OSInt DB::DBCache::GetRowCount(Text::CString tableName)
+OSInt DB::DBCache::GetRowCount(Text::CStringNN tableName)
 {
-	DB::DBCache::TableInfo *table = this->GetTableInfo(tableName);
-	if (table)
+	NN<DB::DBCache::TableInfo> table;
+	if (this->GetTableInfo(tableName).SetTo(table))
 	{
 		return (OSInt)table->dataCnt;
 	}
@@ -96,10 +95,10 @@ OSInt DB::DBCache::GetRowCount(Text::CString tableName)
 	}
 }
 
-UOSInt DB::DBCache::QueryTableData(NN<Data::ArrayListNN<DB::DBRow>> outRows, Text::CString tableName, DB::PageRequest *page)
+UOSInt DB::DBCache::QueryTableData(NN<Data::ArrayListNN<DB::DBRow>> outRows, Text::CStringNN tableName, DB::PageRequest *page)
 {
-	DB::DBCache::TableInfo *tableInfo = this->GetTableInfo(tableName);
-	if (tableInfo == 0)
+	NN<DB::DBCache::TableInfo> tableInfo;
+	if (!this->GetTableInfo(tableName).SetTo(tableInfo))
 		return 0;
 	UOSInt ret = 0;
 	DB::SQLBuilder sql(this->db);
@@ -138,10 +137,10 @@ UOSInt DB::DBCache::QueryTableData(NN<Data::ArrayListNN<DB::DBRow>> outRows, Tex
 	return ret;
 }
 
-DB::DBRow *DB::DBCache::GetTableItem(Text::CString tableName, Int64 pk)
+DB::DBRow *DB::DBCache::GetTableItem(Text::CStringNN tableName, Int64 pk)
 {
-	DB::DBCache::TableInfo *tableInfo = this->GetTableInfo(tableName);
-	if (tableInfo == 0)
+	NN<DB::DBCache::TableInfo> tableInfo;
+	if (!this->GetTableInfo(tableName).SetTo(tableInfo))
 		return 0;
 	NN<DB::ColDef> col;
 	if (!tableInfo->def->GetSinglePKCol().SetTo(col))
@@ -204,14 +203,21 @@ void DB::DBCache::FreeTableData(NN<Data::ArrayListNN<DB::DBRow>> rows)
 	if (rows->GetCount() > 0 && rows->GetItem(0).SetTo(row))
 	{
 		NN<DB::TableDef> table = row->GetTableDef();
-		DB::DBCache::TableInfo *tableInfo = this->GetTableInfo(table);
-		if (tableInfo->dataCnt >= this->cacheCnt)
+		NN<DB::DBCache::TableInfo> tableInfo;
+		if (this->GetTableInfo(table).SetTo(tableInfo))
 		{
-			rows->DeleteAll();
+			if (tableInfo->dataCnt >= this->cacheCnt)
+			{
+				rows->DeleteAll();
+			}
+			else
+			{
+				/////////////////////////////
+				rows->DeleteAll();
+			}
 		}
 		else
 		{
-			/////////////////////////////
 			rows->DeleteAll();
 		}
 	}
@@ -222,7 +228,7 @@ void DB::DBCache::FreeTableItem(NN<DB::DBRow> row)
 	row.Delete();
 }
 
-Bool DB::DBCache::IsTableExist(Text::CString tableName)
+Bool DB::DBCache::IsTableExist(Text::CStringNN tableName)
 {
-	return this->GetTableInfo(tableName) != 0;
+	return this->GetTableInfo(tableName).NotNull();
 }

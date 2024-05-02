@@ -297,7 +297,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 					{
 						sptr2 = succPath->ConcatTo(sbuff2);
 						Int32 webType = 0;
-						Int32 id = this->FileGetByName({sptr, (UOSInt)(sptrEnd - sptr)}, &webType);
+						Int32 id = this->FileGetByName({sptr, (UOSInt)(sptrEnd - sptr)}, webType);
 						if (id != 0 && webType != 0)
 						{
 							this->FileEnd(id, webType);
@@ -343,7 +343,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 							Text::StrConcatC(sbuff, sbuff2, (UOSInt)(sptr2 - sbuff2));
 
 							Int32 webType = 0;
-							Int32 id = this->FileGetByName({sptr, (UOSInt)(sptrEnd - sptr)}, &webType);
+							Int32 id = this->FileGetByName({sptr, (UOSInt)(sptrEnd - sptr)}, webType);
 							if (id != 0 && webType != 0)
 							{
 								this->FileEnd(id, webType);
@@ -408,7 +408,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 								Text::StrConcatC(sbuff, sbuff2, (UOSInt)(sptr2 - sbuff2));
 
 								Int32 webType = 0;
-								Int32 id = this->FileGetByName({sptr, (UOSInt)(sptrEnd - sptr)}, &webType);
+								Int32 id = this->FileGetByName({sptr, (UOSInt)(sptrEnd - sptr)}, webType);
 								if (id != 0 && webType != 0)
 								{
 									this->FileEnd(id, webType);
@@ -519,13 +519,7 @@ SSWR::DownloadMonitor::DownMonCore::~DownMonCore()
 	this->thread.Stop();
 	DEL_CLASS(this->parsers);
 
-	UOSInt i;
-	i = this->fileTypeMap.GetCount();
-	while (i-- > 0)
-	{
-		this->FileFree(this->fileTypeMap.GetItem(i));
-	}
-
+	this->fileTypeMap.FreeAll(FileFree);
 	this->ssl.Delete();
 	this->sockf.Delete();
 }
@@ -561,25 +555,24 @@ Text::String *SSWR::DownloadMonitor::DownMonCore::GetListFile()
 	return this->listFile;
 }
 
-void SSWR::DownloadMonitor::DownMonCore::FileFree(SSWR::DownloadMonitor::DownMonCore::FileInfo *file)
+void SSWR::DownloadMonitor::DownMonCore::FileFree(NN<SSWR::DownloadMonitor::DownMonCore::FileInfo> file)
 {
 	file->dbName->Release();
 	file->fileName->Release();
-	DEL_CLASS(file);
+	file.Delete();
 }
 
 Bool SSWR::DownloadMonitor::DownMonCore::FileAdd(Int32 id, Int32 webType, NN<Text::String> dbName)
 {
-	SSWR::DownloadMonitor::DownMonCore::FileInfo *file;
+	NN<SSWR::DownloadMonitor::DownMonCore::FileInfo> file;
 	Text::StringBuilderUTF8 sb;
 	Sync::MutexUsage mutUsage(this->fileMut);
-	file = this->fileTypeMap.Get((webType << 24) | id);
-	if (file)
+	if (this->fileTypeMap.Get((webType << 24) | id).SetTo(file))
 	{
 		return false;
 	}
 
-	NEW_CLASS(file, SSWR::DownloadMonitor::DownMonCore::FileInfo());
+	NEW_CLASSNN(file, SSWR::DownloadMonitor::DownMonCore::FileInfo());
 	file->id = id;
 	file->webType = webType;
 	file->dbName = dbName->Clone();
@@ -593,28 +586,28 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileAdd(Int32 id, Int32 webType, NN<Tex
 	return true;
 }
 
-SSWR::DownloadMonitor::DownMonCore::FileInfo *SSWR::DownloadMonitor::DownMonCore::FileGet(Int32 id, Int32 webType, NN<Sync::MutexUsage> mutUsage)
+Optional<SSWR::DownloadMonitor::DownMonCore::FileInfo> SSWR::DownloadMonitor::DownMonCore::FileGet(Int32 id, Int32 webType, NN<Sync::MutexUsage> mutUsage)
 {
-	SSWR::DownloadMonitor::DownMonCore::FileInfo *file;
+	Optional<SSWR::DownloadMonitor::DownMonCore::FileInfo> file;
+	NN<SSWR::DownloadMonitor::DownMonCore::FileInfo> nnfile;
 	mutUsage->ReplaceMutex(this->fileMut);
 	file = this->fileTypeMap.Get((webType << 24) | id);
-	if (file != 0)
+	if (file.SetTo(nnfile))
 	{
-		mutUsage->ReplaceMutex(file->mut);
+		mutUsage->ReplaceMutex(nnfile->mut);
 	}
 	return file;
 }
 
-Int32 SSWR::DownloadMonitor::DownMonCore::FileGetByName(Text::CStringNN fileName, Int32 *webType)
+Int32 SSWR::DownloadMonitor::DownMonCore::FileGetByName(Text::CStringNN fileName, OutParam<Int32> webType)
 {
 	Int32 id = 0;
-	SSWR::DownloadMonitor::DownMonCore::FileInfo *file;
+	NN<SSWR::DownloadMonitor::DownMonCore::FileInfo> file;
 	Sync::MutexUsage mutUsage(this->fileMut);
-	file = this->fileNameMap.GetC(fileName);
-	if (file)
+	if (this->fileNameMap.GetC(fileName).SetTo(file))
 	{
 		id = file->id;
-		*webType = file->webType;
+		webType.Set(file->webType);
 	}
 	return id;
 }
@@ -622,10 +615,9 @@ Int32 SSWR::DownloadMonitor::DownMonCore::FileGetByName(Text::CStringNN fileName
 Bool SSWR::DownloadMonitor::DownMonCore::FileEnd(Int32 id, Int32 webType)
 {
 	Bool ret = false;
-	SSWR::DownloadMonitor::DownMonCore::FileInfo *file;
+	NN<SSWR::DownloadMonitor::DownMonCore::FileInfo> file;
 	Sync::MutexUsage mutUsage(this->fileMut);
-	file = this->fileTypeMap.Remove((webType << 24) | id);
-	if (file)
+	if (this->fileTypeMap.Remove((webType << 24) | id).SetTo(file))
 	{
 		if (this->fileNameMap.GetNN(file->fileName) == file)
 		{
@@ -640,10 +632,9 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileEnd(Int32 id, Int32 webType)
 Bool SSWR::DownloadMonitor::DownMonCore::FileStart(Int32 id, Int32 webType, ControlHandle *formHand)
 {
 	Bool ret = false;
-	SSWR::DownloadMonitor::DownMonCore::FileInfo *file;
+	NN<SSWR::DownloadMonitor::DownMonCore::FileInfo> file;
 	Sync::MutexUsage mutUsage(this->fileMut);
-	file = this->fileTypeMap.Get((webType << 24) | id);
-	if (file)
+	if (this->fileTypeMap.Get((webType << 24) | id).SetTo(file))
 	{
 		UI::Clipboard::SetString(formHand, file->fileName->ToCString());
 		Text::StringBuilderUTF8 sb;

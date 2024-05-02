@@ -18,9 +18,9 @@ Text::Doc::DocItem::DocItemType Text::Doc::DocText::GetItemType()
 	return Text::Doc::DocItem::DIT_TEXT;
 }
 
-UOSInt Text::Doc::DocText::Add(Text::Doc::DocItem *item)
+UOSInt Text::Doc::DocText::Add(NN<Text::Doc::DocItem> item)
 {
-	DEL_CLASS(item);
+	item.Delete();
 	return (UOSInt)-1;
 }
 

@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRPCIDeviceForm::OnDevicesSelChg(AnyType userObj
 	}
 }
 
-OSInt __stdcall SSWR::AVIRead::AVIRPCIDeviceForm::ItemCompare(IO::PCIInfo *item1, IO::PCIInfo *item2)
+OSInt __stdcall SSWR::AVIRead::AVIRPCIDeviceForm::ItemCompare(NN<IO::PCIInfo> item1, NN<IO::PCIInfo> item2)
 {
 	if (item1->GetVendorId() > item2->GetVendorId())
 	{
@@ -108,20 +108,20 @@ SSWR::AVIRead::AVIRPCIDeviceForm::AVIRPCIDeviceForm(Optional<UI::GUIClientContro
 
 	this->OnMonitorChanged();
 
-	IO::PCIInfo *pci;
+	NN<IO::PCIInfo> pci;
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 
 	IO::PCIInfo::GetPCIList(this->pciList);
-	Data::Sort::ArtificialQuickSortFunc<IO::PCIInfo*>::Sort(this->pciList, ItemCompare);
+	Data::Sort::ArtificialQuickSortFunc<NN<IO::PCIInfo>>::Sort(this->pciList, ItemCompare);
 	
 	i = 0;
 	j = this->pciList.GetCount();
 	while (i < j)
 	{
-		pci = this->pciList.GetItem(i);
+		pci = this->pciList.GetItemNoCheck(i);
 		sptr = Text::StrHexVal16(sbuff, pci->GetVendorId());
 		*sptr++ = ':';
 		sptr = Text::StrHexVal16(sptr, pci->GetProductId());
@@ -132,13 +132,7 @@ SSWR::AVIRead::AVIRPCIDeviceForm::AVIRPCIDeviceForm(Optional<UI::GUIClientContro
 
 SSWR::AVIRead::AVIRPCIDeviceForm::~AVIRPCIDeviceForm()
 {
-	IO::PCIInfo *pci;
-	UOSInt i = this->pciList.GetCount();
-	while (i-- > 0)
-	{
-		pci = this->pciList.GetItem(i);
-		DEL_CLASS(pci);
-	}
+	this->pciList.DeleteAll();
 }
 
 void SSWR::AVIRead::AVIRPCIDeviceForm::OnMonitorChanged()

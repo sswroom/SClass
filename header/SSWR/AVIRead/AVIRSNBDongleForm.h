@@ -47,7 +47,7 @@ namespace SSWR
 			Bool dongleUpdated;
 
 			Sync::RWMutex devMut;
-			Data::FastMap<UInt64, DeviceInfo*> devMap;
+			Data::FastMapNN<UInt64, DeviceInfo> devMap;
 			Bool devChg;
 			Data::FastMap<UInt64, Int32> devHandlerMap;
 

@@ -2,7 +2,7 @@
 #define _SM_MEDIA_COLORMANAGER
 #include "Handles.h"
 #include "Data/ArrayListNN.h"
-#include "Data/FastStringMap.h"
+#include "Data/FastStringMapNN.h"
 #include "Media/ColorSess.h"
 #include "Sync/Mutex.h"
 #include "Sync/RWMutex.h"
@@ -19,7 +19,7 @@ namespace Media
 
 		Media::IColorHandler::YUVPARAM yuv;
 		Media::IColorHandler::RGBPARAM2 rgb;
-		Text::String *monProfileFile;
+		Optional<Text::String> monProfileFile;
 		Bool color10Bit;
 
 		Data::ArrayListNN<Media::ColorManagerSess> sessList;
@@ -62,7 +62,7 @@ namespace Media
 		void SetMonProfileType(Media::ColorProfile::CommonProfileType newVal);
 		Bool SetMonProfileFile(NN<Text::String> fileName);
 		void SetMonProfile(NN<const Media::ColorProfile> color);
-		Text::String *GetMonProfileFile();
+		Optional<Text::String> GetMonProfileFile();
 		void SetMonLuminance(Double newVal);
 		Bool Get10BitColor();
 		void Set10BitColor(Bool color10Bit);
@@ -82,7 +82,7 @@ namespace Media
 	class ColorManager
 	{
 	private:
-		Data::FastStringMap<MonitorColorManager*> monColor;
+		Data::FastStringMapNN<MonitorColorManager> monColor;
 		Sync::Mutex mut;
 
 		Media::ColorProfile::YUVType defYUVType;

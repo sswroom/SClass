@@ -61,7 +61,7 @@ namespace SSWR
 			IO::Stream *devStm;
 			IO::MODBUSMaster *modbus;
 			IO::MODBUSController *modbusCtrl;
-			Data::ArrayList<MODBUSEntry*> entryList;
+			Data::ArrayListNN<MODBUSEntry> entryList;
 			Sync::Mutex recvMut;
 			Data::CircularByteBuff recvBuff;
 			Bool recvUpdated;

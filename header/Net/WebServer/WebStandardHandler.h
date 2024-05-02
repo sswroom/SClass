@@ -1,7 +1,7 @@
 #ifndef _SM_NET_WEBSERVER_WEBSTANDARDHANDLER
 #define _SM_NET_WEBSERVER_WEBSTANDARDHANDLER
 #include "Data/ArrayListNN.h"
-#include "Data/FastStringMap.h"
+#include "Data/FastStringMapNN.h"
 #include "Net/WebServer/IWebHandler.h"
 
 namespace Net
@@ -11,7 +11,7 @@ namespace Net
 		class WebStandardHandler : public Net::WebServer::IWebHandler
 		{
 		protected:
-			Data::FastStringMap<Net::WebServer::WebStandardHandler *> hdlrs;
+			Data::FastStringMapNN<Net::WebServer::WebStandardHandler> hdlrs;
 			Data::ArrayListNN<Net::WebServer::WebStandardHandler> relHdlrs;
 			Optional<Text::String> allowOrigin;
 

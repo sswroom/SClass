@@ -24,7 +24,7 @@ namespace Media
 		} ThreadStat;
 
 	private:
-		Media::ColorManager *colorMgr;
+		NN<Media::ColorManager> colorMgr;
 		Double brightness;
 		Double contrast;
 		Double gamma;
@@ -43,7 +43,7 @@ namespace Media
 		static UInt32 __stdcall ProcessThread(AnyType userObj);
 		void WaitForThread(Int32 stat);
 	public:
-		RGBColorFilter(Media::ColorManager *colorMgr);
+		RGBColorFilter(NN<Media::ColorManager> colorMgr);
 		~RGBColorFilter();
 
 		void SetGammaCorr(Double *gammaParam, UOSInt gammaCnt);

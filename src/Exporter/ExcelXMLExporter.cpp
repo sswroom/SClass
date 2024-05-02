@@ -364,9 +364,9 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 					writer.WriteLineC(sb.ToString(), sb.GetLength());
 				}
 
-				if (style->GetFont() != 0)
+				NN<Text::SpreadSheet::WorkbookFont> font;
+				if (style->GetFont().SetTo(font))
 				{
-					Text::SpreadSheet::WorkbookFont *font = style->GetFont();
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("   <Font ss:FontName="));
 					s = Text::XML::ToNewAttrText(OPTSTR_CSTR(font->GetName()).v);

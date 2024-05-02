@@ -45,13 +45,13 @@ void Map::NetworkLinkLayer::CheckLinks(Bool manualRequest)
 	UOSInt i;
 	Data::Timestamp currTime = Data::Timestamp::UtcNow();
 	Sync::RWMutexUsage mutUsage(this->linkMut, false);
+	NN<LinkInfo> link;
 	i = this->links.GetCount();
 	mutUsage.EndUse();
 	while (i-- > 0)
 	{
-		LinkInfo *link;
 		mutUsage.BeginUse(false);
-		link = this->links.GetItem(i);
+		link = this->links.GetItemNoCheck(i);
 		mutUsage.EndUse();
 
 		if (link->lastUpdated.IsNull())
@@ -85,7 +85,7 @@ void Map::NetworkLinkLayer::CheckLinks(Bool manualRequest)
 	}
 }
 
-void Map::NetworkLinkLayer::LoadLink(LinkInfo *link)
+void Map::NetworkLinkLayer::LoadLink(NN<LinkInfo> link)
 {
 	IO::StreamData *data = 0;
 	if (link->viewFormat.IsNull())
@@ -218,16 +218,16 @@ Map::NetworkLinkLayer::~NetworkLinkLayer()
 		Sync::SimpleThread::Sleep(10);
 	}
 	UOSInt i;
-	LinkInfo *link;
+	NN<LinkInfo> link;
 	i = this->links.GetCount();
 	while (i-- > 0)
 	{
-		link = this->links.GetItem(i);
+		link = this->links.GetItemNoCheck(i);
 		SDEL_CLASS(link->innerLayer);
 		link->url->Release();
 		OPTSTR_DEL(link->viewFormat);
 		OPTSTR_DEL(link->layerName);
-		DEL_CLASS(link);
+		link.Delete();
 	}
 }
 
@@ -239,7 +239,7 @@ void Map::NetworkLinkLayer::SetCurrScale(Double scale)
 	i = this->links.GetCount();
 	while (i-- > 0)
 	{
-		LinkInfo *link = this->links.GetItem(i);
+		NN<LinkInfo> link = this->links.GetItemNoCheck(i);
 		if (link->innerLayer)
 		{
 			link->innerLayer->SetCurrScale(scale);
@@ -255,7 +255,7 @@ void Map::NetworkLinkLayer::SetCurrTimeTS(Int64 timeStamp)
 	i = this->links.GetCount();
 	while (i-- > 0)
 	{
-		LinkInfo *link = this->links.GetItem(i);
+		NN<LinkInfo> link = this->links.GetItemNoCheck(i);
 		if (link->innerLayer)
 		{
 			link->innerLayer->SetCurrTimeTS(timeStamp);
@@ -273,7 +273,7 @@ Int64 Map::NetworkLinkLayer::GetTimeStartTS() const
 	i = this->links.GetCount();
 	while (i-- > 0)
 	{
-		LinkInfo *link = this->links.GetItem(i);
+		NN<LinkInfo> link = this->links.GetItemNoCheck(i);
 		if (link->innerLayer)
 		{
 			if (first)
@@ -304,7 +304,7 @@ Int64 Map::NetworkLinkLayer::GetTimeEndTS() const
 	i = this->links.GetCount();
 	while (i-- > 0)
 	{
-		LinkInfo *link = this->links.GetItem(i);
+		NN<LinkInfo> link = this->links.GetItemNoCheck(i);
 		if (link->innerLayer)
 		{
 			if (first)
@@ -347,7 +347,7 @@ UOSInt Map::NetworkLinkLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, N
 	j = this->links.GetCount();
 	while (i < j)
 	{
-		LinkInfo *link = this->links.GetItem(i);
+		NN<LinkInfo> link = this->links.GetItemNoCheck(i);
 		if (link->innerLayer)
 		{
 			maxId = link->innerLayer->GetObjectIdMax();
@@ -394,7 +394,7 @@ UOSInt Map::NetworkLinkLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, Name
 	j = this->links.GetCount();
 	while (i < j)
 	{
-		LinkInfo *link = this->links.GetItem(i);
+		NN<LinkInfo> link = this->links.GetItemNoCheck(i);
 		if (link->innerLayer)
 		{
 			maxId = link->innerLayer->GetObjectIdMax();
@@ -440,7 +440,7 @@ UOSInt Map::NetworkLinkLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr,
 	j = this->links.GetCount();
 	while (i < j)
 	{
-		LinkInfo *link = this->links.GetItem(i);
+		NN<LinkInfo> link = this->links.GetItemNoCheck(i);
 		if (link->innerLayer)
 		{
 			maxId = link->innerLayer->GetObjectIdMax();
@@ -469,7 +469,7 @@ Int64 Map::NetworkLinkLayer::GetObjectIdMax() const
 	i = this->links.GetCount();
 	while (i-- > 0)
 	{
-		LinkInfo *link = this->links.GetItem(i);
+		NN<LinkInfo> link = this->links.GetItemNoCheck(i);
 		if (link->innerLayer)
 		{
 			maxId = link->innerLayer->GetObjectIdMax();
@@ -496,7 +496,7 @@ Bool Map::NetworkLinkLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray 
 	j = this->links.GetCount();
 	while (i < j)
 	{
-		LinkInfo *link = this->links.GetItem(i);
+		NN<LinkInfo> link = this->links.GetItemNoCheck(i);
 		if (link->innerLayer)
 		{
 			maxId = link->innerLayer->GetObjectIdMax();
@@ -551,7 +551,7 @@ Bool Map::NetworkLinkLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 	i = this->links.GetCount();
 	while (i-- > 0)
 	{
-		LinkInfo *link = this->links.GetItem(i);
+		NN<LinkInfo> link = this->links.GetItemNoCheck(i);
 		if (link->innerLayer)
 		{
 			if (isFirst)
@@ -599,7 +599,7 @@ Map::GetObjectSess *Map::NetworkLinkLayer::BeginGetObject()
 	i = this->links.GetCount();
 	while (i-- > 0)
 	{
-		LinkInfo *link = this->links.GetItem(i);
+		NN<LinkInfo> link = this->links.GetItemNoCheck(i);
 		if (link->innerLayer)
 		{
 			link->sess = link->innerLayer->BeginGetObject();
@@ -613,7 +613,7 @@ void Map::NetworkLinkLayer::EndGetObject(GetObjectSess *session)
 	i = this->links.GetCount();
 	while (i-- > 0)
 	{
-		LinkInfo *link = this->links.GetItem(i);
+		NN<LinkInfo> link = this->links.GetItemNoCheck(i);
 		if (link->innerLayer)
 		{
 			link->innerLayer->EndGetObject(link->sess);
@@ -634,7 +634,7 @@ Math::Geometry::Vector2D *Map::NetworkLinkLayer::GetNewVectorById(GetObjectSess 
 	j = this->links.GetCount();
 	while (i < j)
 	{
-		LinkInfo *link = this->links.GetItem(i);
+		NN<LinkInfo> link = this->links.GetItemNoCheck(i);
 		if (link->innerLayer)
 		{
 			maxId = link->innerLayer->GetObjectIdMax();
@@ -670,11 +670,11 @@ NN<Math::CoordinateSystem> Map::NetworkLinkLayer::GetCoordinateSystem()
 {
 	UOSInt i;
 	Sync::RWMutexUsage mutUsage(this->linkMut, false);
+	NN<LinkInfo> link;
 	i = this->links.GetCount();
 	while (i-- > 0)
 	{
-		LinkInfo *link;
-		link = this->links.GetItem(i);
+		link = this->links.GetItemNoCheck(i);
 		if (link->innerLayer)
 		{
 			return link->innerLayer->GetCoordinateSystem();
@@ -690,7 +690,7 @@ void Map::NetworkLinkLayer::SetCoordinateSystem(NN<Math::CoordinateSystem> csys)
 	i = this->links.GetCount();
 	while (i-- > 0)
 	{
-		LinkInfo *link = this->links.GetItem(i);
+		NN<LinkInfo> link = this->links.GetItemNoCheck(i);
 		if (link->innerLayer)
 		{
 			link->innerLayer->SetCoordinateSystem(csys->Clone());
@@ -703,13 +703,13 @@ void Map::NetworkLinkLayer::SetCoordinateSystem(NN<Math::CoordinateSystem> csys)
 void Map::NetworkLinkLayer::AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 {
 	UOSInt i;
-	LinkInfo *link;
+	NN<LinkInfo> link;
 	Sync::RWMutexUsage mutUsage(this->linkMut, true);
 	this->updHdlrs.Add({hdlr, obj});
 	i = this->links.GetCount();
 	while (i-- > 0)
 	{
-		link = this->links.GetItem(i);
+		link = this->links.GetItemNoCheck(i);
 		if (link->innerLayer)
 		{
 			link->innerLayer->AddUpdatedHandler(hdlr, obj);
@@ -720,7 +720,7 @@ void Map::NetworkLinkLayer::AddUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 void Map::NetworkLinkLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj)
 {
 	UOSInt i;
-	LinkInfo *link;
+	NN<LinkInfo> link;
 	Bool chg = false;
 	Sync::RWMutexUsage mutUsage(this->linkMut, true);
 	i = this->updHdlrs.GetCount();
@@ -738,7 +738,7 @@ void Map::NetworkLinkLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType ob
 		i = this->links.GetCount();
 		while (i-- > 0)
 		{
-			link = this->links.GetItem(i);
+			link = this->links.GetItemNoCheck(i);
 			if (link->innerLayer)
 			{
 				link->innerLayer->RemoveUpdatedHandler(hdlr, obj);
@@ -753,8 +753,8 @@ UOSInt Map::NetworkLinkLayer::AddLink(Text::CString name, Text::CStringNN url, T
 	sb.Append(this->GetSourceNameObj());
 	sb.AllocLeng(url.leng);
 	sb.SetEndPtr(Text::URLString::AppendURLPath(sb.v, sb.GetEndPtr(), url));
-	LinkInfo *link;
-	NEW_CLASS(link, LinkInfo());
+	NN<LinkInfo> link;
+	NEW_CLASSNN(link, LinkInfo());
 	link->innerLayer = 0;
 	link->innerLayerType = Map::DRAW_LAYER_UNKNOWN;
 	link->url = Text::String::New(sb.ToCString());

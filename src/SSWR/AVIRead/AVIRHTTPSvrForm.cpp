@@ -86,7 +86,7 @@ void SSWR::AVIRead::AVIRHTTPLog::Use(NN<Sync::MutexUsage> mutUsage)
 	mutUsage->ReplaceMutex(this->entMut);
 }
 
-void SSWR::AVIRead::AVIRHTTPLog::GetEntries(Data::ArrayList<LogEntry*> *logs, Data::ArrayList<UOSInt> *logIndex)
+void SSWR::AVIRead::AVIRHTTPLog::GetEntries(NN<Data::ArrayListNN<LogEntry>> logs, NN<Data::ArrayList<UOSInt>> logIndex)
 {
 	UOSInt i;
 	if (this->entries[this->currEnt].reqTime == 0)
@@ -94,7 +94,7 @@ void SSWR::AVIRead::AVIRHTTPLog::GetEntries(Data::ArrayList<LogEntry*> *logs, Da
 		i = 0;
 		while (i < this->currEnt)
 		{
-			logs->Add(&this->entries[i]);
+			logs->Add(this->entries[i]);
 			logIndex->Add(i);
 			i++;
 		}
@@ -104,23 +104,23 @@ void SSWR::AVIRead::AVIRHTTPLog::GetEntries(Data::ArrayList<LogEntry*> *logs, Da
 		i = this->currEnt;
 		while (i < this->logCnt)
 		{
-			logs->Add(&this->entries[i]);
+			logs->Add(this->entries[i]);
 			logIndex->Add(i);
 			i++;
 		}
 		i = 0;
 		while (i < this->currEnt)
 		{
-			logs->Add(&this->entries[i]);
+			logs->Add(this->entries[i]);
 			logIndex->Add(i);
 			i++;
 		}
 	}
 }
 
-SSWR::AVIRead::AVIRHTTPLog::LogEntry *SSWR::AVIRead::AVIRHTTPLog::GetEntry(UOSInt index)
+NN<SSWR::AVIRead::AVIRHTTPLog::LogEntry> SSWR::AVIRead::AVIRHTTPLog::GetEntry(UOSInt index)
 {
-	return &this->entries[index];
+	return this->entries[index];
 }
 
 void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(AnyType userObj)
@@ -364,22 +364,22 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(AnyType userObj)
 	i = me->reqLog->GetNextIndex();
 	if (i != me->lastAccessIndex)
 	{
-		Data::ArrayList<SSWR::AVIRead::AVIRHTTPLog::LogEntry *> logs;
+		Data::ArrayListNN<SSWR::AVIRead::AVIRHTTPLog::LogEntry> logs;
 		Data::ArrayList<UOSInt> logIndex;
-		SSWR::AVIRead::AVIRHTTPLog::LogEntry *log;
+		NN<SSWR::AVIRead::AVIRHTTPLog::LogEntry> log;
 		Text::StringBuilderUTF8 sb;
 		Sync::MutexUsage mutUsage;
 
 		me->lastAccessIndex = i;
 		me->reqLog->Use(mutUsage);
-		me->reqLog->GetEntries(&logs, &logIndex);
+		me->reqLog->GetEntries(logs, logIndex);
 		me->lbAccess->ClearItems();
 		me->txtAccess->SetText(CSTR(""));
 		i = 0;
 		j = logs.GetCount();
 		while (i < j)
 		{
-			log = logs.GetItem(i);
+			log = logs.GetItemNoCheck(i);
 			sb.ClearStr();
 			sb.AppendTSNoZone(Data::Timestamp(log->reqTime, Data::DateTimeUtil::GetLocalTzQhr()));
 			sb.AppendC(UTF8STRC(" "));
@@ -402,7 +402,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnAccessSelChg(AnyType userObj)
 	me->reqLog->Use(mutUsage);
 	UOSInt i = (UOSInt)me->lbAccess->GetSelectedItem().p;
 	UOSInt j;
-	SSWR::AVIRead::AVIRHTTPLog::LogEntry *log;
+	NN<SSWR::AVIRead::AVIRHTTPLog::LogEntry> log;
 	log = me->reqLog->GetEntry(i);
 	sb.AppendTSNoZone(Data::Timestamp(log->reqTime, Data::DateTimeUtil::GetLocalTzQhr()));
 	sb.AppendC(UTF8STRC(" "));

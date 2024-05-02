@@ -126,261 +126,261 @@
 
 Parser::FullParserList::FullParserList() : Parser::ParserList()
 {
-	IO::FileParser *parser;
-	NEW_CLASS(parser, Parser::FileParser::WAVParser())
+	NN<IO::FileParser> parser;
+	NEW_CLASSNN(parser, Parser::FileParser::WAVParser())
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::BMPParser());
+	NEW_CLASSNN(parser, Parser::FileParser::BMPParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::MMSParser());
+	NEW_CLASSNN(parser, Parser::FileParser::MMSParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::AFSParser());
+	NEW_CLASSNN(parser, Parser::FileParser::AFSParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::ICOParser());
+	NEW_CLASSNN(parser, Parser::FileParser::ICOParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::ANIParser());
+	NEW_CLASSNN(parser, Parser::FileParser::ANIParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::TGAParser())
+	NEW_CLASSNN(parser, Parser::FileParser::TGAParser())
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::MRGParser())
+	NEW_CLASSNN(parser, Parser::FileParser::MRGParser())
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::IPACParser())
+	NEW_CLASSNN(parser, Parser::FileParser::IPACParser())
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::ZWEIParser())
+	NEW_CLASSNN(parser, Parser::FileParser::ZWEIParser())
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::X13Parser())
+	NEW_CLASSNN(parser, Parser::FileParser::X13Parser())
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::DCPackParser())
+	NEW_CLASSNN(parser, Parser::FileParser::DCPackParser())
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::XPCMParser())
+	NEW_CLASSNN(parser, Parser::FileParser::XPCMParser())
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::MAIPackParser())
+	NEW_CLASSNN(parser, Parser::FileParser::MAIPackParser())
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::SM2MPXParser())
+	NEW_CLASSNN(parser, Parser::FileParser::SM2MPXParser())
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::EXEParser())
+	NEW_CLASSNN(parser, Parser::FileParser::EXEParser())
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::ELFParser())
+	NEW_CLASSNN(parser, Parser::FileParser::ELFParser())
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::TIFFParser());
+	NEW_CLASSNN(parser, Parser::FileParser::TIFFParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::PNGParser());
+	NEW_CLASSNN(parser, Parser::FileParser::PNGParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::GIFParser());
+	NEW_CLASSNN(parser, Parser::FileParser::GIFParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::ADXParser());
+	NEW_CLASSNN(parser, Parser::FileParser::ADXParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::MPGParser());
+	NEW_CLASSNN(parser, Parser::FileParser::MPGParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::PSSParser());
+	NEW_CLASSNN(parser, Parser::FileParser::PSSParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::CSVParser());
+	NEW_CLASSNN(parser, Parser::FileParser::CSVParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::SHPParser());
+	NEW_CLASSNN(parser, Parser::FileParser::SHPParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::CIPParser());
+	NEW_CLASSNN(parser, Parser::FileParser::CIPParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::SPDParser());
+	NEW_CLASSNN(parser, Parser::FileParser::SPDParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::DBFParser());
+	NEW_CLASSNN(parser, Parser::FileParser::DBFParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::MEVParser());
+	NEW_CLASSNN(parser, Parser::FileParser::MEVParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::RLOCParser());
+	NEW_CLASSNN(parser, Parser::FileParser::RLOCParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::GLOCParser());
+	NEW_CLASSNN(parser, Parser::FileParser::GLOCParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::SLOCParser());
+	NEW_CLASSNN(parser, Parser::FileParser::SLOCParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::SMDLParser());
+	NEW_CLASSNN(parser, Parser::FileParser::SMDLParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::SPREDParser());
+	NEW_CLASSNN(parser, Parser::FileParser::SPREDParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::MD5Parser());
+	NEW_CLASSNN(parser, Parser::FileParser::MD5Parser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::SFVParser());
+	NEW_CLASSNN(parser, Parser::FileParser::SFVParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::ID3Parser());
+	NEW_CLASSNN(parser, Parser::FileParser::ID3Parser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::AVIParser());
+	NEW_CLASSNN(parser, Parser::FileParser::AVIParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::PLTParser());
+	NEW_CLASSNN(parser, Parser::FileParser::PLTParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::WPTParser());
+	NEW_CLASSNN(parser, Parser::FileParser::WPTParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::MDBParser());
+	NEW_CLASSNN(parser, Parser::FileParser::MDBParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::QTParser());
+	NEW_CLASSNN(parser, Parser::FileParser::QTParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::UDPParser());
+	NEW_CLASSNN(parser, Parser::FileParser::UDPParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::PCXParser());
+	NEW_CLASSNN(parser, Parser::FileParser::PCXParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::LUTParser());
+	NEW_CLASSNN(parser, Parser::FileParser::LUTParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::CFBParser());
+	NEW_CLASSNN(parser, Parser::FileParser::CFBParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::SQLiteParser());
+	NEW_CLASSNN(parser, Parser::FileParser::SQLiteParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::ZIPParser());
+	NEW_CLASSNN(parser, Parser::FileParser::ZIPParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::MKVParser());
+	NEW_CLASSNN(parser, Parser::FileParser::MKVParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::NFPParser());
+	NEW_CLASSNN(parser, Parser::FileParser::NFPParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::MLHParser());
+	NEW_CLASSNN(parser, Parser::FileParser::MLHParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::MajiroArcParser());
+	NEW_CLASSNN(parser, Parser::FileParser::MajiroArcParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::SZSParser());
+	NEW_CLASSNN(parser, Parser::FileParser::SZSParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::HTRecParser());
+	NEW_CLASSNN(parser, Parser::FileParser::HTRecParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::IS2Parser());
+	NEW_CLASSNN(parser, Parser::FileParser::IS2Parser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::TSPParser());
+	NEW_CLASSNN(parser, Parser::FileParser::TSPParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::JSONParser());
+	NEW_CLASSNN(parser, Parser::FileParser::JSONParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::OziMapParser());
+	NEW_CLASSNN(parser, Parser::FileParser::OziMapParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::PCAPParser());
+	NEW_CLASSNN(parser, Parser::FileParser::PCAPParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::PCAPNGParser());
+	NEW_CLASSNN(parser, Parser::FileParser::PCAPNGParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::ClassParser());
+	NEW_CLASSNN(parser, Parser::FileParser::ClassParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::X509Parser());
+	NEW_CLASSNN(parser, Parser::FileParser::X509Parser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::JP2Parser());
+	NEW_CLASSNN(parser, Parser::FileParser::JP2Parser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::WebPParser());
+	NEW_CLASSNN(parser, Parser::FileParser::WebPParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::HEIFParser());
+	NEW_CLASSNN(parser, Parser::FileParser::HEIFParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::EVTXParser());
+	NEW_CLASSNN(parser, Parser::FileParser::EVTXParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::RAR5Parser()); ///////////////////////////////
+	NEW_CLASSNN(parser, Parser::FileParser::RAR5Parser()); ///////////////////////////////
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::CABParser()); ///////////////////////////////
+	NEW_CLASSNN(parser, Parser::FileParser::CABParser()); ///////////////////////////////
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::NMEAParser()); ///////////////////////////////
+	NEW_CLASSNN(parser, Parser::FileParser::NMEAParser()); ///////////////////////////////
 	this->AddFileParser(parser);
 	
-	NEW_CLASS(parser, Parser::FileParser::CUEParser());
+	NEW_CLASSNN(parser, Parser::FileParser::CUEParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::TARParser());
+	NEW_CLASSNN(parser, Parser::FileParser::TARParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::GZIPParser());
+	NEW_CLASSNN(parser, Parser::FileParser::GZIPParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::XMLParser());
+	NEW_CLASSNN(parser, Parser::FileParser::XMLParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::TXTParser());
+	NEW_CLASSNN(parser, Parser::FileParser::TXTParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::LOGParser());
+	NEW_CLASSNN(parser, Parser::FileParser::LOGParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::NS2Parser());
+	NEW_CLASSNN(parser, Parser::FileParser::NS2Parser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::PFS2Parser());
+	NEW_CLASSNN(parser, Parser::FileParser::PFS2Parser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::B3DMParser());
-	this->AddFileParser(parser);
-
-//	NEW_CLASS(parser, Parser::FileParser::M2VParser());
-	NEW_CLASS(parser, Parser::FileParser::M2VStmParser());
-	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::AC3Parser());
-	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::DTSParser());
-	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::MP2Parser());
-	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::CDXAParser());
-	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::IMGParser());
-	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::OZF2Parser());
-	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::SPKParser());
-	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::TILParser());
-	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::JKSParser());
+	NEW_CLASSNN(parser, Parser::FileParser::B3DMParser());
 	this->AddFileParser(parser);
 
-	NEW_CLASS(parser, Parser::FileParser::GUIImgParser());
+//	NEW_CLASSNN(parser, Parser::FileParser::M2VParser());
+	NEW_CLASSNN(parser, Parser::FileParser::M2VStmParser());
+	this->AddFileParser(parser);
+	NEW_CLASSNN(parser, Parser::FileParser::AC3Parser());
+	this->AddFileParser(parser);
+	NEW_CLASSNN(parser, Parser::FileParser::DTSParser());
+	this->AddFileParser(parser);
+	NEW_CLASSNN(parser, Parser::FileParser::MP2Parser());
+	this->AddFileParser(parser);
+	NEW_CLASSNN(parser, Parser::FileParser::CDXAParser());
+	this->AddFileParser(parser);
+	NEW_CLASSNN(parser, Parser::FileParser::IMGParser());
+	this->AddFileParser(parser);
+	NEW_CLASSNN(parser, Parser::FileParser::OZF2Parser());
+	this->AddFileParser(parser);
+	NEW_CLASSNN(parser, Parser::FileParser::SPKParser());
+	this->AddFileParser(parser);
+	NEW_CLASSNN(parser, Parser::FileParser::TILParser());
+	this->AddFileParser(parser);
+	NEW_CLASSNN(parser, Parser::FileParser::JKSParser());
+	this->AddFileParser(parser);
+
+	NEW_CLASSNN(parser, Parser::FileParser::GUIImgParser());
 	this->AddFileParser(parser);
 #if (defined(_MSC_VER) || defined(__MINGW32__)) && !defined(_WIN32_WCE)
 #ifndef DISABLE_VFP
-	NEW_CLASS(parser, Parser::FileParser::VFPParser());
+	NEW_CLASSNN(parser, Parser::FileParser::VFPParser());
 	this->AddFileParser(parser);
 #endif
-	NEW_CLASS(parser, Parser::FileParser::AUIParser());
+	NEW_CLASSNN(parser, Parser::FileParser::AUIParser());
 	this->AddFileParser(parser);
 #endif
 #ifdef ENABLE_APE
-	NEW_CLASS(parser, Parser::FileParser::APEParser());
+	NEW_CLASSNN(parser, Parser::FileParser::APEParser());
 	this->AddFileParser(parser);
 #endif
 
-	NEW_CLASS(parser, Parser::FileParser::SEGPackParser())
+	NEW_CLASSNN(parser, Parser::FileParser::SEGPackParser())
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::COMParser());
+	NEW_CLASSNN(parser, Parser::FileParser::COMParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::SakuotoArcParser());
+	NEW_CLASSNN(parser, Parser::FileParser::SakuotoArcParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::MEDParser());
+	NEW_CLASSNN(parser, Parser::FileParser::MEDParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::PACParser());
+	NEW_CLASSNN(parser, Parser::FileParser::PACParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::AOSParser());
+	NEW_CLASSNN(parser, Parser::FileParser::AOSParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::BSAParser());
+	NEW_CLASSNN(parser, Parser::FileParser::BSAParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::TsuyoshiArcParser());
+	NEW_CLASSNN(parser, Parser::FileParser::TsuyoshiArcParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::YKCParser());
+	NEW_CLASSNN(parser, Parser::FileParser::YKCParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::GamedatPac2Parser());
+	NEW_CLASSNN(parser, Parser::FileParser::GamedatPac2Parser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::LinkArcParser());
+	NEW_CLASSNN(parser, Parser::FileParser::LinkArcParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::PAC2Parser());
+	NEW_CLASSNN(parser, Parser::FileParser::PAC2Parser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::BurikoArcParser());
+	NEW_CLASSNN(parser, Parser::FileParser::BurikoArcParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::BurikoPackFileParser());
+	NEW_CLASSNN(parser, Parser::FileParser::BurikoPackFileParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::NOAParser());
+	NEW_CLASSNN(parser, Parser::FileParser::NOAParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::NWAParser());
+	NEW_CLASSNN(parser, Parser::FileParser::NWAParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::ISOParser());
+	NEW_CLASSNN(parser, Parser::FileParser::ISOParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::MIMEFileParser());
+	NEW_CLASSNN(parser, Parser::FileParser::MIMEFileParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::SMakeParser());
+	NEW_CLASSNN(parser, Parser::FileParser::SMakeParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::ASN1Parser());
+	NEW_CLASSNN(parser, Parser::FileParser::ASN1Parser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::MTKGPSParser());
+	NEW_CLASSNN(parser, Parser::FileParser::MTKGPSParser());
 	this->AddFileParser(parser);
-	NEW_CLASS(parser, Parser::FileParser::PDFParser());
+	NEW_CLASSNN(parser, Parser::FileParser::PDFParser());
 	this->AddFileParser(parser);
 
-	IO::ObjectParser *oparser;
-	NEW_CLASS(oparser, Parser::ObjParser::MPGXAParser());
+	NN<IO::ObjectParser> oparser;
+	NEW_CLASSNN(oparser, Parser::ObjParser::MPGXAParser());
 	this->AddObjectParser(oparser);
-	NEW_CLASS(oparser, Parser::ObjParser::DBITParser());
+	NEW_CLASSNN(oparser, Parser::ObjParser::DBITParser());
 	this->AddObjectParser(oparser);
-	NEW_CLASS(oparser, Parser::ObjParser::FileGDB2Parser());
+	NEW_CLASSNN(oparser, Parser::ObjParser::FileGDB2Parser());
 	this->AddObjectParser(oparser);
-	NEW_CLASS(oparser, Parser::ObjParser::ISO9660Parser());
+	NEW_CLASSNN(oparser, Parser::ObjParser::ISO9660Parser());
 	this->AddObjectParser(oparser);
-	NEW_CLASS(oparser, Parser::ObjParser::ITMParser());
+	NEW_CLASSNN(oparser, Parser::ObjParser::ITMParser());
 	this->AddObjectParser(oparser);
-	NEW_CLASS(oparser, Parser::ObjParser::KMZParser());
+	NEW_CLASSNN(oparser, Parser::ObjParser::KMZParser());
 	this->AddObjectParser(oparser);
-	NEW_CLASS(oparser, Parser::ObjParser::OSMMapParser());
+	NEW_CLASSNN(oparser, Parser::ObjParser::OSMMapParser());
 	this->AddObjectParser(oparser);
 
 	this->SetArcGISPRJParser(&this->prjParser);

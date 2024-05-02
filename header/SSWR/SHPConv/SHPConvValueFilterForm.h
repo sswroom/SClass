@@ -26,18 +26,18 @@ namespace SSWR
 			NN<UI::GUITextBox> txtValue;
 			NN<UI::GUIButton> btnOK;
 			NN<UI::GUIButton> btnCancel;
-			DB::DBFFile *dbf;
-			Media::MonitorMgr *monMgr;
-			MapFilter *filter;
+			NN<DB::DBFFile> dbf;
+			NN<Media::MonitorMgr> monMgr;
+			Optional<MapFilter> filter;
 
 			static void __stdcall OnOKClicked(AnyType userObj);
 			static void __stdcall OnCancelClicked(AnyType userObj);
 		public:
-			SHPConvValueFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, DB::DBFFile *dbf);
+			SHPConvValueFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<DB::DBFFile> dbf);
 			virtual ~SHPConvValueFilterForm();
 
 			virtual void OnMonitorChanged();
-			MapFilter *GetFilter();
+			Optional<MapFilter> GetFilter();
 		};
 	}
 }

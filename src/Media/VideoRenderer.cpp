@@ -694,7 +694,7 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 	}
 }
 
-Media::IImgResizer *Media::VideoRenderer::CreateResizer(Media::ColorManagerSess *colorSess, UInt32 bitDepth, Double srcRefLuminance)
+Media::IImgResizer *Media::VideoRenderer::CreateResizer(NN<Media::ColorManagerSess> colorSess, UInt32 bitDepth, Double srcRefLuminance)
 {
 	Media::IImgResizer *resizer;
 	Media::ColorProfile destColor(Media::ColorProfile::CPT_VDISPLAY);
@@ -899,7 +899,7 @@ void __stdcall Media::VideoRenderer::OnVideoFrame(Data::Duration frameTime, UInt
 	j = me->imgFilters.GetCount();
 	while (i < j)
 	{
-		me->imgFilters.GetItem(i)->ProcessImage(imgData[0], me->videoInfo.fourcc, me->videoInfo.storeBPP, me->videoInfo.pf, me->videoInfo.dispSize.x, me->videoInfo.dispSize.y, frameType, ycOfst);
+		me->imgFilters.GetItemNoCheck(i)->ProcessImage(imgData[0], me->videoInfo.fourcc, me->videoInfo.storeBPP, me->videoInfo.pf, me->videoInfo.dispSize.x, me->videoInfo.dispSize.y, frameType, ycOfst);
 		i++;
 	}
 
@@ -1731,7 +1731,7 @@ void Media::VideoRenderer::UpdateDispInfo(Math::Size2D<UOSInt> outputSize, UInt3
 	this->outputPf = pf;
 }
 
-Media::VideoRenderer::VideoRenderer(Media::ColorManagerSess *colorSess, NN<Media::MonitorSurfaceMgr> surfaceMgr, UOSInt buffCnt, UOSInt threadCnt) : srcColor(Media::ColorProfile::CPT_VUNKNOWN), ivtc(0), uvOfst(0), autoCrop(0)
+Media::VideoRenderer::VideoRenderer(NN<Media::ColorManagerSess> colorSess, NN<Media::MonitorSurfaceMgr> surfaceMgr, UOSInt buffCnt, UOSInt threadCnt) : srcColor(Media::ColorProfile::CPT_VUNKNOWN), ivtc(0), uvOfst(0), autoCrop(0)
 {
 	UOSInt i;
 	this->colorSess = colorSess;
@@ -1902,13 +1902,7 @@ Media::VideoRenderer::~VideoRenderer()
 		}
 		SDEL_CLASS(buffs[i].destSurface);
 	}
-	Media::IImgFilter *imgFilter;
-	i = this->imgFilters.GetCount();
-	while (i-- > 0)
-	{
-		imgFilter = this->imgFilters.GetItem(i);
-		DEL_CLASS(imgFilter);
-	}
+	this->imgFilters.DeleteAll();
 
 	MemFree(this->procDelayBuff);
 	MemFree(this->dispDelayBuff);
@@ -2255,7 +2249,7 @@ void Media::VideoRenderer::SetIgnoreFrameTime(Bool ignoreFrameTime)
 	this->ignoreFrameTime = ignoreFrameTime;
 }
 
-void Media::VideoRenderer::AddImgFilter(Media::IImgFilter *imgFilter)
+void Media::VideoRenderer::AddImgFilter(NN<Media::IImgFilter> imgFilter)
 {
 	this->imgFilters.Add(imgFilter);
 }

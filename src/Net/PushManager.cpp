@@ -8,12 +8,12 @@
 
 #define FILENAME CSTR("PushServer.dat")
 
-Net::PushManager::UserInfo *Net::PushManager::GetUser(Text::CStringNN userName)
+NN<Net::PushManager::UserInfo> Net::PushManager::GetUser(Text::CStringNN userName)
 {
-	UserInfo *user = this->userMap.GetC(userName);
-	if (user == 0)
+	NN<UserInfo> user;
+	if (!this->userMap.GetC(userName).SetTo(user))
 	{
-		NEW_CLASS(user, UserInfo());
+		NEW_CLASSNN(user, UserInfo());
 		user->userName = Text::String::New(userName);
 		this->userMap.PutNN(user->userName, user);
 	}
@@ -56,8 +56,8 @@ void Net::PushManager::LoadData()
 						this->Subscribe(sarr[2].ToCString(), sarr[4].ToCString(), devType, addr, sarr[1].ToCString());
 						{
 							Sync::MutexUsage mutUsage(this->dataMut);
-							DeviceInfo2 *dev = this->devMap.GetC(sarr[2].ToCString());
-							if (dev)
+							NN<DeviceInfo2> dev;
+							if (this->devMap.GetC(sarr[2].ToCString()).SetTo(dev))
 							{
 								dev->lastSubscribeTime = Data::Timestamp(sarr[0].ToInt64(), Data::DateTimeUtil::GetLocalTzQhr());
 							}
@@ -95,14 +95,14 @@ void Net::PushManager::SaveData()
 	if (!fs.IsError())
 	{
 		Text::StringBuilderUTF8 sb;
-		DeviceInfo2 *dev;
+		NN<DeviceInfo2> dev;
 		Text::UTF8Writer writer(fs);
 		Sync::MutexUsage mutUsage(this->dataMut);
 		UOSInt i = 0;
 		UOSInt j = this->devMap.GetCount();
 		while (i < j)
 		{
-			dev = this->devMap.GetItem(i);
+			dev = this->devMap.GetItemNoCheck(i);
 			sb.ClearStr();
 			sb.AppendI64(dev->lastSubscribeTime.ToTicks());
 			sb.AppendUTF8Char(',');
@@ -147,18 +147,18 @@ Net::PushManager::~PushManager()
 	i = this->userMap.GetCount();
 	while (i-- > 0)
 	{
-		UserInfo *user = this->userMap.GetItem(i);
+		NN<UserInfo> user = this->userMap.GetItemNoCheck(i);
 		user->userName->Release();
-		DEL_CLASS(user);
+		user.Delete();
 	}
 	i = this->devMap.GetCount();
 	while (i-- > 0)
 	{
-		DeviceInfo2 *dev = this->devMap.GetItem(i);
+		NN<DeviceInfo2> dev = this->devMap.GetItemNoCheck(i);
 		dev->token->Release();
 		dev->userName->Release();
 		SDEL_STRING(dev->devModel);
-		MemFree(dev);
+		MemFreeNN(dev);
 	}
 	this->fcmKey->Release();
 }
@@ -166,9 +166,9 @@ Net::PushManager::~PushManager()
 Bool Net::PushManager::Subscribe(Text::CStringNN token, Text::CStringNN userName, DeviceType devType, NN<const Net::SocketUtil::AddressInfo> remoteAddr, Text::CString devModel)
 {
 	Sync::MutexUsage mutUsage(this->dataMut);
-	DeviceInfo2 *dev = this->devMap.GetC(token);
-	UserInfo *user;
-	if (dev)
+	NN<DeviceInfo2> dev;
+	NN<UserInfo> user;
+	if (this->devMap.GetC(token).SetTo(dev))
 	{
 		if (dev->userName->Equals(userName.v, userName.leng))
 		{
@@ -188,8 +188,7 @@ Bool Net::PushManager::Subscribe(Text::CStringNN token, Text::CStringNN userName
 			}
 			return true;
 		}
-		user = this->userMap.Get(dev->userName);
-		if (user)
+		if (this->userMap.Get(dev->userName).SetTo(user))
 		{
 			user->devMap.RemoveC(token);
 		}
@@ -197,7 +196,7 @@ Bool Net::PushManager::Subscribe(Text::CStringNN token, Text::CStringNN userName
 	}
 	else
 	{
-		dev = MemAlloc(DeviceInfo2, 1);
+		dev = MemAllocNN(DeviceInfo2);
 		dev->token = Text::String::New(token);
 		dev->userName = 0;
 		dev->devType = devType;
@@ -231,19 +230,18 @@ Bool Net::PushManager::Subscribe(Text::CStringNN token, Text::CStringNN userName
 Bool Net::PushManager::Unsubscribe(Text::CStringNN token)
 {
 	Sync::MutexUsage mutUsage(this->dataMut);
-	DeviceInfo2 *dev = this->devMap.RemoveC(token);
-	UserInfo *user;
-	if (dev)
+	NN<DeviceInfo2> dev;
+	NN<UserInfo> user;
+	if (this->devMap.RemoveC(token).SetTo(dev))
 	{
-		user = this->userMap.Get(dev->userName);
-		if (user)
+		if (this->userMap.Get(dev->userName).SetTo(user))
 		{
 			user->devMap.RemoveC(token);
 		}
 		dev->userName->Release();
 		dev->token->Release();
 		SDEL_STRING(dev->devModel);
-		MemFree(dev);
+		MemFreeNN(dev);
 		this->SaveData();
 		return true;
 	}
@@ -253,21 +251,20 @@ Bool Net::PushManager::Unsubscribe(Text::CStringNN token)
 	}
 }
 
-Bool Net::PushManager::Send(Data::ArrayListStringNN *userNames, NN<Text::String> message)
+Bool Net::PushManager::Send(NN<Data::ArrayListStringNN> userNames, NN<Text::String> message)
 {
 	Sync::MutexUsage mutUsage(this->dataMut);
-	UserInfo *user;
+	NN<UserInfo> user;
 	Data::ArrayListStringNN tokenList;
 	Data::ArrayIterator<NN<Text::String>> it = userNames->Iterator();
 	while (it.HasNext())
 	{
-		user = this->userMap.GetNN(it.Next());
-		if (user)
+		if (this->userMap.GetNN(it.Next()).SetTo(user))
 		{
 			UOSInt k = user->devMap.GetCount();
 			while (k-- > 0)
 			{
-				tokenList.Add(user->devMap.GetItem(k)->token->Clone());
+				tokenList.Add(user->devMap.GetItemNoCheck(k)->token->Clone());
 			}
 		}
 	}
@@ -292,16 +289,16 @@ Bool Net::PushManager::Send(Data::ArrayListStringNN *userNames, NN<Text::String>
 	}
 }
 
-UOSInt Net::PushManager::GetUsers(Data::ArrayListStringNN *users, NN<Sync::MutexUsage> mutUsage)
+UOSInt Net::PushManager::GetUsers(NN<Data::ArrayListStringNN> users, NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->dataMut);
 	UOSInt i = 0;
 	UOSInt j = this->userMap.GetCount();
 	UOSInt ret = 0;
-	UserInfo *user;
+	NN<UserInfo> user;
 	while (i < j)
 	{
-		user = this->userMap.GetItem(i);
+		user = this->userMap.GetItemNoCheck(i);
 		if (user->devMap.GetCount() > 0)
 		{
 			users->Add(user->userName);
@@ -312,7 +309,7 @@ UOSInt Net::PushManager::GetUsers(Data::ArrayListStringNN *users, NN<Sync::Mutex
 	return ret;
 }
 
-NN<const Data::ReadingList<Net::PushManager::DeviceInfo2*>> Net::PushManager::GetDevices(NN<Sync::MutexUsage> mutUsage)
+NN<const Data::ReadingListNN<Net::PushManager::DeviceInfo2>> Net::PushManager::GetDevices(NN<Sync::MutexUsage> mutUsage)
 {
 	mutUsage->ReplaceMutex(this->dataMut);
 	return this->devMap;

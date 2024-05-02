@@ -33,8 +33,8 @@ namespace SSWR
 			};
 
 		private:
-			Data::ArrayList<MyFile *> fileList;
-			Data::ArrayList<MyFile *> packList;
+			Data::ArrayListNN<MyFile> fileList;
+			Data::ArrayListNN<MyFile> packList;
 			const UTF8Char *filePath;
 			NN<SSWR::AVIRead::AVIRCore> core;
 
@@ -58,7 +58,7 @@ namespace SSWR
 
 			void ReleaseObjects();
 			void GenList();
-			UInt64 NewCalc(Data::ArrayList<MyFile *> *fileList, Data::ArrayList<MyFile *> *packList, UInt64 maxSize, UInt64 minSize);
+			UInt64 NewCalc(NN<Data::ArrayListNN<MyFile>> fileList, NN<Data::ArrayListNN<MyFile>> packList, UInt64 maxSize, UInt64 minSize);
 		public:
 			AVIRFileSizePackForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRFileSizePackForm();

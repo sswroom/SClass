@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_AVIUTL_AUIPLUGIN
 #define _SM_MEDIA_AVIUTL_AUIPLUGIN
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "IO/FileSelector.h"
 #include "Media/AudioFormat.h"
 #include "Media/FrameInfo.h"
@@ -35,8 +35,8 @@ namespace Media
 		public:
 			~AUIPlugin();
 
-			AUIPlugin *Clone() const;
-			UOSInt LoadFile(const Char *fileName, Data::ArrayList<Media::IMediaSource*> *outArr);
+			NN<AUIPlugin> Clone() const;
+			UOSInt LoadFile(const Char *fileName, NN<Data::ArrayListNN<Media::IMediaSource>> outArr);
 
 			Bool CloseInput(void *hand);
 			Bool GetInputVideoInfo(void *hand, NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UInt32> frameCnt);
@@ -47,7 +47,7 @@ namespace Media
 			Bool ConfigInput(void *hInst, void *hWnd);
 			void PrepareSelector(NN<IO::FileSelector> selector);
 
-			static AUIPlugin *LoadPlugin(const WChar *fileName);
+			static Optional<AUIPlugin> LoadPlugin(const WChar *fileName);
 		};
 	}
 }

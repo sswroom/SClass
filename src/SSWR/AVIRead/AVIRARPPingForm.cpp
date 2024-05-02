@@ -15,14 +15,14 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnARPHandler(const UInt8 *hwAddr,
 		UInt32 reqIP = ReadNUInt32(me->targetAddr.addr);
 		if (reqIP == ipAddr)
 		{
-			Double t = me->clk->GetTimeDiff() * 1000;
+			Double t = me->clk.GetTimeDiff() * 1000;
 			Text::StringBuilderUTF8 sb;
 			me->requested = false;
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Ping time: round trip = "));
 			sb.AppendDouble(t);
 			sb.AppendC(UTF8STRC("ms"));
-			me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
+			me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 			me->rlcPing->AddSample(&t);
 			if (me->reqEvt)
 			{
@@ -79,7 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(AnyType userObj)
 		{
 			NEW_CLASS(me->reqEvt, Sync::Event(true));
 			me->requested = true;
-			me->clk->Start();
+			me->clk.Start();
 			if (me->arpHdlr->MakeRequest(ReadNUInt32(me->targetAddr.addr)))
 			{
 				me->reqEvt->Wait(1000);
@@ -87,14 +87,14 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(AnyType userObj)
 				me->arpHdlr = 0;
 				if (me->requested)
 				{
-					me->log->LogMessage(CSTR("Ping: no response from target"), IO::LogHandler::LogLevel::Command);
+					me->log.LogMessage(CSTR("Ping: no response from target"), IO::LogHandler::LogLevel::Command);
 				}
 			}
 			else
 			{
 				DEL_CLASS(me->arpHdlr);
 				me->arpHdlr = 0;
-				me->log->LogMessage(CSTR("Ping: Cannot send request to target"), IO::LogHandler::LogLevel::Command);
+				me->log.LogMessage(CSTR("Ping: Cannot send request to target"), IO::LogHandler::LogLevel::Command);
 			}
 			DEL_CLASS(me->reqEvt);
 			me->reqEvt = 0;
@@ -114,7 +114,7 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnTimerTick(AnyType userObj)
 			me->rlcPing->AddSample(&t);
 		}
 		me->requested = true;
-		me->clk->Start();
+		me->clk.Start();
 		me->arpHdlr->MakeRequest(ReadNUInt32(me->targetAddr.addr));
 	}
 }
@@ -127,10 +127,8 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(Optional<UI::GUIClientControl> p
 	this->core = core;
 	this->arpHdlr = 0;
 	this->reqEvt = 0;
-	NEW_CLASS(this->clk, Manage::HiResClock());
 	this->sockf = core->GetSocketFactory();
 	this->targetAddr.addrType = Net::AddrType::Unknown;
-	NEW_CLASS(this->log, IO::LogTool());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->pnlRequest = ui->NewPanel(*this);
@@ -160,11 +158,9 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(Optional<UI::GUIClientControl> p
 	this->lbLog = ui->NewListBox(*this, false);
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	NEW_CLASS(this->adapters, Data::ArrayList<SSWR::AVIRead::AVIRARPPingForm::AdapterInfo*>());
-
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
 	NN<Net::ConnectionInfo> connInfo;
-	SSWR::AVIRead::AVIRARPPingForm::AdapterInfo *adapter;
+	NN<SSWR::AVIRead::AVIRARPPingForm::AdapterInfo> adapter;
 	UInt8 hwAddr[32];
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -181,27 +177,27 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(Optional<UI::GUIClientControl> p
 		{
 			if (connInfo->GetPhysicalAddress(hwAddr, 32) == 6)
 			{
-				adapter = MemAlloc(SSWR::AVIRead::AVIRARPPingForm::AdapterInfo, 1);
+				adapter = MemAllocNN(SSWR::AVIRead::AVIRARPPingForm::AdapterInfo);
 				ip = connInfo->GetIPAddress(0);
 				sbuff[0] = 0;
 				sptr = connInfo->GetName(sbuff);
 				adapter->ifName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 				adapter->ipAddr = ip;
 				MemCopyNO(adapter->hwAddr, hwAddr, 6);
-				this->adapters->Add(adapter);
+				this->adapters.Add(adapter);
 				this->cboAdapter->AddItem(adapter->ifName, adapter);
 			}
 		}
 		connInfo.Delete();
 		i++;
 	}
-	if (this->adapters->GetCount() > 0)
+	if (this->adapters.GetCount() > 0)
 	{
 		this->cboAdapter->SetSelectedIndex(0);
 	}
 
 	NEW_CLASSNN(this->logger, UI::ListBoxLogger(*this, this->lbLog, 500, true));
-	this->log->AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
+	this->log.AddLogHandler(this->logger, IO::LogHandler::LogLevel::Raw);
 	this->SetDefaultButton(this->btnPing);
 
 	this->AddTimer(1000, OnTimerTick, this);
@@ -211,18 +207,14 @@ SSWR::AVIRead::AVIRARPPingForm::~AVIRARPPingForm()
 {
 	SDEL_CLASS(this->arpHdlr);
 	UOSInt i;
-	SSWR::AVIRead::AVIRARPPingForm::AdapterInfo *adapter;
-	i = this->adapters->GetCount();
+	NN<SSWR::AVIRead::AVIRARPPingForm::AdapterInfo> adapter;
+	i = this->adapters.GetCount();
 	while (i-- > 0)
 	{
-		adapter = this->adapters->GetItem(i);
+		adapter = this->adapters.GetItemNoCheck(i);
 		adapter->ifName->Release();
-		MemFree(adapter);
+		MemFreeNN(adapter);
 	}
-	DEL_CLASS(this->adapters);
-
-	DEL_CLASS(this->clk);
-	DEL_CLASS(this->log);
 	this->logger.Delete();
 }
 

@@ -21,7 +21,7 @@ Net::WebSite::WebSite48IdolControl::~WebSite48IdolControl()
 	SDEL_STRING(this->userAgent);
 }
 
-OSInt Net::WebSite::WebSite48IdolControl::GetTVPageItems(OSInt pageNo, Data::ArrayList<Net::WebSite::WebSite48IdolControl::ItemData*> *itemList)
+OSInt Net::WebSite::WebSite48IdolControl::GetTVPageItems(OSInt pageNo, NN<Data::ArrayListNN<Net::WebSite::WebSite48IdolControl::ItemData>> itemList)
 {
 	Text::StringBuilderUTF8 sb;
 	OSInt retCnt = 0;
@@ -37,7 +37,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetTVPageItems(OSInt pageNo, Data::Arr
 		sb.AppendC(UTF8STRC("/page/"));
 		sb.AppendOSInt(pageNo);
 	}
-	ItemData *item;
+	NN<ItemData> item;
 	NN<Text::XMLAttrib> attr;
 	NN<Text::XMLAttrib> attr1;
 	NN<Text::XMLAttrib> attr2;
@@ -71,7 +71,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetTVPageItems(OSInt pageNo, Data::Arr
 							attr3->value &&
 							attr3->value->Equals(UTF8STRC("blog-img")))
 						{
-							item = MemAlloc(ItemData, 1);
+							item = MemAllocNN(ItemData);
 							item->id = attr->value->ToInt32();
 							item->recTime = 0;
 							item->title = attr2->value->Clone();
@@ -87,7 +87,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetTVPageItems(OSInt pageNo, Data::Arr
 	return retCnt;
 }
 
-OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::ArrayList<Net::WebSite::WebSite48IdolControl::ItemData*> *itemList)
+OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, NN<Data::ArrayListNN<Net::WebSite::WebSite48IdolControl::ItemData>> itemList)
 {
 	Text::StringBuilderUTF8 sb;
 	OSInt retCnt = 0;
@@ -103,7 +103,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 		sb.AppendC(UTF8STRC("videos?page="));
 		sb.AppendOSInt(pageNo);
 	}
-	ItemData *item;
+	NN<ItemData> item;
 	NN<Text::XMLAttrib> attr;
 	Data::DateTime dt;
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
@@ -172,7 +172,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 				NN<Text::String> titleStr;
 				if (id != 0 && time != 0 && titleStr.Set(title))
 				{
-					item = MemAlloc(ItemData, 1);
+					item = MemAllocNN(ItemData);
 					item->id = id;
 					item->recTime = time;
 					item->title = titleStr;
@@ -188,15 +188,15 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 	return retCnt;
 }
 
-void Net::WebSite::WebSite48IdolControl::FreeItems(Data::ArrayList<Net::WebSite::WebSite48IdolControl::ItemData*> *itemList)
+void Net::WebSite::WebSite48IdolControl::FreeItems(NN<Data::ArrayListNN<Net::WebSite::WebSite48IdolControl::ItemData>> itemList)
 {
-	ItemData *item;
+	NN<ItemData> item;
 	UOSInt i = itemList->GetCount();
 	while (i-- > 0)
 	{
-		item = itemList->GetItem(i);
+		item = itemList->GetItemNoCheck(i);
 		item->title->Release();
-		MemFree(item);
+		MemFreeNN(item);
 	}
 	itemList->Clear();
 }

@@ -9,10 +9,10 @@ DB::DBModel::DBModel()
 
 DB::DBModel::~DBModel()
 {
-	LIST_FREE_FUNC(&this->tables, DEL_CLASS);
+	this->tables.DeleteAll();
 }
 
-Bool DB::DBModel::LoadDatabase(DB::DBTool *db, Text::CString dbName, Text::CString schemaName)
+Bool DB::DBModel::LoadDatabase(NN<DB::DBTool> db, Text::CString dbName, Text::CString schemaName)
 {
 	if (dbName.v && !db->ChangeDatabase(dbName))
 	{
@@ -20,15 +20,14 @@ Bool DB::DBModel::LoadDatabase(DB::DBTool *db, Text::CString dbName, Text::CStri
 	}
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayListStringNN tableNames;
-	DB::TableDef *table;
+	NN<DB::TableDef> table;
 	NN<Text::String> tableName;
 	UOSInt j;
 	db->QueryTableNames(schemaName, tableNames);
 	Data::ArrayIterator<NN<Text::String>> it = tableNames.Iterator();
 	while (it.HasNext())
 	{
-		table = db->GetTableDef(schemaName, it.Next()->ToCString());
-		if (table)
+		if (table.Set(db->GetTableDef(schemaName, it.Next()->ToCString())))
 		{
 			table->SetDatabaseName(dbName);
 			this->tables.Add(table);
@@ -49,12 +48,12 @@ Bool DB::DBModel::LoadDatabase(DB::DBTool *db, Text::CString dbName, Text::CStri
 	return true;
 }
 
-DB::TableDef *DB::DBModel::GetTable(Text::CString tableName)
+Optional<DB::TableDef> DB::DBModel::GetTable(Text::CStringNN tableName)
 {
 	return this->tableMap.Get(tableName);
 }
 
-UOSInt DB::DBModel::GetTableNames(Data::ArrayList<Text::CString> *tableNames)
+UOSInt DB::DBModel::GetTableNames(NN<Data::ArrayList<Text::CString>> tableNames)
 {
 	NN<Data::ArrayList<Text::String*>> keys = this->tableMap.GetKeys();
 	UOSInt i = 0;

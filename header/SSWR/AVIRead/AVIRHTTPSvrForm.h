@@ -47,8 +47,8 @@ namespace SSWR
 			virtual void LogRequest(NN<Net::WebServer::IWebRequest> req);
 			UOSInt GetNextIndex();
 			void Use(NN<Sync::MutexUsage> mutUsage);
-			void GetEntries(Data::ArrayList<LogEntry*> *logs, Data::ArrayList<UOSInt> *logIndex);
-			LogEntry *GetEntry(UOSInt index);
+			void GetEntries(NN<Data::ArrayListNN<LogEntry>> logs, NN<Data::ArrayList<UOSInt>> logIndex);
+			NN<LogEntry> GetEntry(UOSInt index);
 		};
 
 		class AVIRHTTPSvrForm : public UI::GUIForm

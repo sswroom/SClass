@@ -102,7 +102,6 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 {
 	Data::ArrayListNN<Net::SNMPUtil::BindingItem> itemList;
 	Net::SNMPUtil::ErrorStatus err;
-	NN<Net::SNMPManager::AgentInfo> agent;
 	Optional<Net::SNMPManager::AgentInfo> optagent = 0;
 	NN<Net::SNMPUtil::BindingItem> item;
 	UTF8Char sbuff[64];
@@ -113,9 +112,10 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 		UInt32 ipv4 = ReadMUInt32(addr->addr);
 		if (this->ipv4Agents.ContainsKey(ipv4))
 		{
-			return nullptr;
+			return Optional<AgentInfo>(nullptr);
 		}
 	}
+	NN<Net::SNMPManager::AgentInfo> agent;
 	err = this->cli->V1GetRequest(addr, community, UTF8STRC("1.3.6.1.2.1.1.1.0"), itemList); //sysDescr
 	i = itemList.GetCount();
 	if (err == Net::SNMPUtil::ES_NOERROR && i == 1)

@@ -125,8 +125,8 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(AnyTy
 				if (me->core->FileAdd(id, webType, s))
 				{
 					Sync::MutexUsage mutUsage;
-					SSWR::DownloadMonitor::DownMonCore::FileInfo *file = me->core->FileGet(id, webType, mutUsage);
-					if (file != 0)
+					NN<SSWR::DownloadMonitor::DownMonCore::FileInfo> file;
+					if (me->core->FileGet(id, webType, mutUsage).SetTo(file))
 					{
 						sptr = Text::StrInt32(sbuff, file->id);
 						j = me->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)((file->webType << 24) | file->id));
@@ -251,8 +251,8 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(AnyTyp
 						if (me->core->FileAdd(id, webType, s))
 						{
 							Sync::MutexUsage mutUsage;
-							SSWR::DownloadMonitor::DownMonCore::FileInfo *file = me->core->FileGet(id, 3, mutUsage);
-							if (file != 0)
+							NN<SSWR::DownloadMonitor::DownMonCore::FileInfo> file;
+							if (me->core->FileGet(id, 3, mutUsage).SetTo(file))
 							{
 								sptr = Text::StrInt32(sbuff, file->id);
 								j = me->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)((file->webType << 24) | file->id));
@@ -285,8 +285,8 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnCopyTableClicked(AnyTyp
 	{
 		Int32 id = (Int32)me->lvFiles->GetItem(i).GetOSInt();
 		Sync::MutexUsage mutUsage;
-		SSWR::DownloadMonitor::DownMonCore::FileInfo *file = me->core->FileGet(id & 0xffffff, id >> 24, mutUsage);
-		if (file != 0)
+		NN<SSWR::DownloadMonitor::DownMonCore::FileInfo> file;
+		if (me->core->FileGet(id & 0xffffff, id >> 24, mutUsage).SetTo(file))
 		{
 			if (file->webType == 2)
 			{
@@ -350,9 +350,9 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(AnyTyp
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	UOSInt i;
-	Data::ArrayList<Net::WebSite::WebSite48IdolControl::ItemData*> pageList;
-	Data::ArrayList<Net::WebSite::WebSite48IdolControl::ItemData*> totalList;
-	Net::WebSite::WebSite48IdolControl::ItemData *item;
+	Data::ArrayListNN<Net::WebSite::WebSite48IdolControl::ItemData> pageList;
+	Data::ArrayListNN<Net::WebSite::WebSite48IdolControl::ItemData> totalList;
+	NN<Net::WebSite::WebSite48IdolControl::ItemData> item;
 	Net::WebSite::WebSite48IdolControl *ctrl;
 	NN<Text::EncodingFactory> encFact;
 	Text::CString userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
@@ -362,7 +362,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(AnyTyp
 	ua->Release();
 	while (true)
 	{
-		ctrl->GetTVPageItems(currPage, &pageList);
+		ctrl->GetTVPageItems(currPage, pageList);
 		i = pageList.GetCount();
 		printf("Page %d get, %d items found\r\n", (Int32)currPage, (Int32)i);
 		if (i <= 0)
@@ -371,16 +371,17 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(AnyTyp
 		}
 		while (pageList.GetCount() > 0)
 		{
-			item = pageList.GetItem(0);
+			item = pageList.GetItemNoCheck(0);
 			if (item->id <= maxId)
 			{
 				break;
 			}
-			totalList.Add(pageList.RemoveAt(0));
+			totalList.Add(item);
+			pageList.RemoveAt(0);
 		}
 		if (maxId == 0 || pageList.GetCount() > 0)
 		{
-			ctrl->FreeItems(&pageList);
+			ctrl->FreeItems(pageList);
 			break;
 		}
 		currPage++;
@@ -391,13 +392,13 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(AnyTyp
 		Bool changed = false;
 		while (i-- > 0)
 		{
-			item = totalList.GetItem(i);
+			item = totalList.GetItemNoCheck(i);
 			if (me->core->FileAdd(item->id, webType, item->title))
 			{
 				Sync::MutexUsage mutUsage;
-				SSWR::DownloadMonitor::DownMonCore::FileInfo *file = me->core->FileGet(item->id, webType, mutUsage);
+				NN<SSWR::DownloadMonitor::DownMonCore::FileInfo> file;
 				UOSInt j;
-				if (file != 0)
+				if (me->core->FileGet(item->id, webType, mutUsage).SetTo(file))
 				{
 					sptr = Text::StrInt32(sbuff, file->id);
 					j = me->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)((file->webType << 24) | file->id));
@@ -406,7 +407,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(AnyTyp
 				}
 			}
 		}
-		ctrl->FreeItems(&totalList);
+		ctrl->FreeItems(totalList);
 		if (changed)
 		{
 			me->SaveList();
@@ -520,8 +521,8 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 					if (this->core->FileAdd(id, webType, s))
 					{
 						Sync::MutexUsage mutUsage;
-						SSWR::DownloadMonitor::DownMonCore::FileInfo *file = this->core->FileGet(id, webType, mutUsage);
-						if (file != 0)
+						NN<SSWR::DownloadMonitor::DownMonCore::FileInfo> file;
+						if (this->core->FileGet(id, webType, mutUsage).SetTo(file))
 						{
 							sptr = Text::StrInt32(sbuff, file->id);
 							i = this->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)((file->webType << 24) | file->id));
@@ -563,8 +564,8 @@ void SSWR::DownloadMonitor::DownMonMainForm::SaveList()
 	{
 		Int32 id = (Int32)this->lvFiles->GetItem(i).GetOSInt();
 		Sync::MutexUsage mutUsage;
-		SSWR::DownloadMonitor::DownMonCore::FileInfo *file = this->core->FileGet(id & 0xffffff, id >> 24, mutUsage);
-		if (file != 0)
+		NN<SSWR::DownloadMonitor::DownMonCore::FileInfo> file;
+		if (this->core->FileGet(id & 0xffffff, id >> 24, mutUsage).SetTo(file))
 		{
 			sb.ClearStr();
 			if (file->webType == 2)

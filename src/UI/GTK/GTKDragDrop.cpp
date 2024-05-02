@@ -60,7 +60,7 @@ UI::GTK::GTKDropData::~GTKDropData()
 	UOSInt i = this->targetText.GetCount();
 	while (i-- > 0)
 	{
-		this->targetText.GetItem(i)->Release();
+		this->targetText.GetItemNoCheck(i)->Release();
 	}
 }
 
@@ -90,8 +90,8 @@ Bool UI::GTK::GTKDropData::GetDataText(const UTF8Char *name, NN<Text::StringBuil
 	OSInt fmt = this->targetMap.Get(name);
 	if (fmt == 0)
 		return false;
-	Text::String *txt = this->targetText.Get((Int32)fmt);
-	if (txt)
+	NN<Text::String> txt;
+	if (this->targetText.Get((Int32)fmt).SetTo(txt))
 	{
 		sb->Append(txt);
 		return true;
@@ -126,7 +126,7 @@ void UI::GTK::GTKDropData::OnDataReceived(void *selData)
 	}
 	GdkAtom sel = gtk_selection_data_get_selection((GtkSelectionData*)selData);
 //	printf("Selection = %d, Target = %d (%s), Data Type = %d (%s), size = %d\r\n", sel, itarget, csptr, (Int32)(OSInt)dataType, csptr2, (Int32)dataSize);
-	if (this->targetText.Get(itarget))
+	if (this->targetText.ContainsKey(itarget))
 	{
 		return;
 	}
@@ -188,11 +188,11 @@ void UI::GTK::GTKDropData::OnDataReceived(void *selData)
 		{
 			sb.AppendC((const UTF8Char*)data, dataSize);
 		}
-		this->targetText.Put(itarget, Text::String::New(sb.ToString(), sb.GetLength()).Ptr());
+		this->targetText.Put(itarget, Text::String::New(sb.ToString(), sb.GetLength()));
 	}
 	else
 	{
-		this->targetText.Put(itarget, Text::String::NewEmpty().Ptr());
+		this->targetText.Put(itarget, Text::String::NewEmpty());
 	}
 	
 }

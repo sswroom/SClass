@@ -9,9 +9,8 @@
 void __stdcall SSWR::AVIRead::AVIRUSBDeviceForm::OnDevicesSelChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRUSBDeviceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRUSBDeviceForm>();
-	IO::USBInfo *usb;
-	usb = (IO::USBInfo*)me->lbDevices->GetSelectedItem().p;
-	if (usb == 0)
+	NN<IO::USBInfo> usb;
+	if (!me->lbDevices->GetSelectedItem().GetOpt<IO::USBInfo>().SetTo(usb))
 	{
 		me->txtVendorId->SetText(CSTR(""));
 		me->txtVendorName->SetText(CSTR(""));
@@ -55,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRUSBDeviceForm::OnDevicesSelChg(AnyType userObj
 	}
 }
 
-OSInt __stdcall SSWR::AVIRead::AVIRUSBDeviceForm::ItemCompare(IO::USBInfo *item1, IO::USBInfo *item2)
+OSInt __stdcall SSWR::AVIRead::AVIRUSBDeviceForm::ItemCompare(NN<IO::USBInfo> item1, NN<IO::USBInfo> item2)
 {
 	if (item1->GetVendorId() > item2->GetVendorId())
 	{
@@ -134,20 +133,20 @@ SSWR::AVIRead::AVIRUSBDeviceForm::AVIRUSBDeviceForm(Optional<UI::GUIClientContro
 
 	this->OnMonitorChanged();
 
-	IO::USBInfo *usb;
+	NN<IO::USBInfo> usb;
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 
 	IO::USBInfo::GetUSBList(this->usbList);
-	Data::Sort::ArtificialQuickSortFunc<IO::USBInfo*>::Sort(this->usbList, ItemCompare);
+	Data::Sort::ArtificialQuickSortFunc<NN<IO::USBInfo>>::Sort(this->usbList, ItemCompare);
 	
 	i = 0;
 	j = this->usbList.GetCount();
 	while (i < j)
 	{
-		usb = this->usbList.GetItem(i);
+		usb = this->usbList.GetItemNoCheck(i);
 		sptr = Text::StrHexVal16(sbuff, usb->GetVendorId());
 		*sptr++ = ':';
 		sptr = Text::StrHexVal16(sptr, usb->GetProductId());
@@ -158,13 +157,7 @@ SSWR::AVIRead::AVIRUSBDeviceForm::AVIRUSBDeviceForm(Optional<UI::GUIClientContro
 
 SSWR::AVIRead::AVIRUSBDeviceForm::~AVIRUSBDeviceForm()
 {
-	IO::USBInfo *usb;
-	UOSInt i = this->usbList.GetCount();
-	while (i-- > 0)
-	{
-		usb = this->usbList.GetItem(i);
-		DEL_CLASS(usb);
-	}
+	this->usbList.DeleteAll();
 }
 
 void SSWR::AVIRead::AVIRUSBDeviceForm::OnMonitorChanged()

@@ -15,7 +15,7 @@ NN<Text::String> devPath;
 };
 
 
-IO::HIDInfo::HIDInfo(ClassData *clsData)
+IO::HIDInfo::HIDInfo(NN<ClassData> clsData)
 {
 	this->clsData = clsData;
 }
@@ -23,7 +23,7 @@ IO::HIDInfo::HIDInfo(ClassData *clsData)
 IO::HIDInfo::~HIDInfo()
 {
 	this->clsData->devPath->Release();
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 IO::HIDInfo::BusType IO::HIDInfo::GetBusType()
@@ -61,7 +61,7 @@ IO::Stream *IO::HIDInfo::OpenHID()
 	}
 }
 
-OSInt IO::HIDInfo::GetHIDList(NN<Data::ArrayList<HIDInfo*>> hidList)
+OSInt IO::HIDInfo::GetHIDList(NN<Data::ArrayListNN<HIDInfo>> hidList)
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
@@ -70,11 +70,11 @@ OSInt IO::HIDInfo::GetHIDList(NN<Data::ArrayList<HIDInfo*>> hidList)
 	UTF8Char *sptr3;
 	IO::Path::FindFileSession *sess;
 	IO::Path::FindFileSession *sess2;
-	ClassData *clsData;
+	NN<ClassData> clsData;
 	IO::Path::PathType pt;
 	OSInt ret = 0;
 	Int32 busType;
-	IO::HIDInfo *hid;
+	NN<IO::HIDInfo> hid;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/bus/hid/devices/"));
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
@@ -84,7 +84,7 @@ OSInt IO::HIDInfo::GetHIDList(NN<Data::ArrayList<HIDInfo*>> hidList)
 		{
 			if ((sptr2 - sptr) == 19 && sptr[4] == ':' && sptr[9] == ':' && sptr[14] == '.' && sptr[19] == 0)
 			{
-				clsData = MemAlloc(ClassData, 1);
+				clsData = MemAllocNN(ClassData);
 				sptr[4] = 0;
 				busType = Text::StrHex2Int16C(sptr);
 				sptr[4] = ':';
@@ -115,19 +115,19 @@ OSInt IO::HIDInfo::GetHIDList(NN<Data::ArrayList<HIDInfo*>> hidList)
 					{
 						sptr3 = Text::StrConcatC(Text::StrConcatC(sbuff2, UTF8STRC("/dev/")), sptr2, (UOSInt)(sptr3 - sptr2));
 						clsData->devPath = Text::String::New(sbuff2, (UOSInt)(sptr3 - sbuff2));
-						NEW_CLASS(hid, IO::HIDInfo(clsData));
+						NEW_CLASSNN(hid, IO::HIDInfo(clsData));
 						hidList->Add(hid);
 						ret++;
 					}
 					else
 					{
-						MemFree(clsData);
+						MemFreeNN(clsData);
 					}					
 					IO::Path::FindFileClose(sess2);
 				}
 				else
 				{
-					MemFree(clsData);
+					MemFreeNN(clsData);
 				}
 				
 			}

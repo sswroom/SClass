@@ -83,7 +83,7 @@ UInt32 __stdcall Net::MQTTBroker::SysInfoThread(AnyType userObj)
 	UOSInt i;
 	UOSInt j;
 	UOSInt totalCnt;
-	Listener *listener;
+	NN<Listener> listener;
 	NEW_CLASS(dt, Data::DateTime());
 
 	dt->SetCurrTimeUTC();
@@ -106,7 +106,7 @@ UInt32 __stdcall Net::MQTTBroker::SysInfoThread(AnyType userObj)
 		j = me->listeners.GetCount();
 		while (j-- > 0)
 		{
-			listener = me->listeners.GetItem(j);
+			listener = me->listeners.GetItemNoCheck(j);
 			if (listener->cliMgr)
 			{
 				totalCnt += listener->cliMgr->GetClientCount();
@@ -655,7 +655,7 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 
 			if (cs == CS_ACCEPTED)
 			{
-				SubscribeInfo *subscribe = MemAlloc(SubscribeInfo, 1);
+				NN<SubscribeInfo> subscribe = MemAllocNN(SubscribeInfo);
 				subscribe->topic = Text::String::New(sbTopic.ToCString());
 				subscribe->stm = stm;
 				subscribe->cliData = data;
@@ -663,13 +663,13 @@ void Net::MQTTBroker::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTy
 				this->subscribeList.Add(subscribe);
 				subscribeMutUsage.EndUse();
 
-				TopicInfo *topicInfo;
+				NN<TopicInfo> topicInfo;
 				Sync::MutexUsage topicMutUsage(this->topicMut);
 				i = 0;
 				j = this->topicMap.GetCount();
 				while (i < j)
 				{
-					topicInfo = this->topicMap.GetItem(i);
+					topicInfo = this->topicMap.GetItemNoCheck(i);
 					if (Net::MQTTUtil::TopicMatch(topicInfo->topic->v, topicInfo->topic->leng, sbTopic.ToString(), sbTopic.GetLength()))
 					{
 						this->TopicSend(stm, data->cliData, topicInfo);
@@ -768,13 +768,12 @@ void Net::MQTTBroker::DataSkipped(NN<IO::Stream> stm, AnyType stmObj, const UInt
 
 void Net::MQTTBroker::UpdateTopic(Text::CStringNN topic, const UInt8 *message, UOSInt msgSize, Bool suppressUnchg)
 {
-	TopicInfo *topicInfo;
+	NN<TopicInfo> topicInfo;
 	Bool unchanged = false;
 	Sync::MutexUsage topicMutUsage(this->topicMut);
-	topicInfo = this->topicMap.GetC(topic);
-	if (topicInfo == 0)
+	if (!this->topicMap.GetC(topic).SetTo(topicInfo))
 	{
-		topicInfo = MemAlloc(TopicInfo, 1);
+		topicInfo = MemAllocNN(TopicInfo);
 		topicInfo->topic = Text::String::New(topic);
 		topicInfo->message = MemAlloc(UInt8, msgSize);
 		MemCopyNO(topicInfo->message, message, msgSize);
@@ -823,13 +822,13 @@ void Net::MQTTBroker::UpdateTopic(Text::CStringNN topic, const UInt8 *message, U
 		this->topicUpdHdlr(this->topicUpdObj, topic, message, msgSize);
 	}
 
-	SubscribeInfo *subscribe;
+	NN<SubscribeInfo> subscribe;
 	UOSInt i;
 	Sync::MutexUsage subscribeMutUsage(this->subscribeMut);
 	i = this->subscribeList.GetCount();
 	while (i-- > 0)
 	{
-		subscribe = this->subscribeList.GetItem(i);
+		subscribe = this->subscribeList.GetItemNoCheck(i);
 		if (Net::MQTTUtil::TopicMatch(topic.v, topic.leng, subscribe->topic->v, subscribe->topic->leng))
 		{
 			topicMutUsage.BeginUse();
@@ -839,7 +838,7 @@ void Net::MQTTBroker::UpdateTopic(Text::CStringNN topic, const UInt8 *message, U
 	}
 }
 
-Bool Net::MQTTBroker::TopicSend(NN<IO::Stream> stm, AnyType stmData, const TopicInfo *topic)
+Bool Net::MQTTBroker::TopicSend(NN<IO::Stream> stm, AnyType stmData, NN<const TopicInfo> topic)
 {
 	UInt8 packet1[128];
 	UInt8 packet2[128];
@@ -936,17 +935,17 @@ void Net::MQTTBroker::StreamClosed(NN<IO::Stream> stm, AnyType stmData)
 	MemFree(data.Ptr());
 
 	UOSInt i;
-	SubscribeInfo *subscribe;
+	NN<SubscribeInfo> subscribe;
 	Sync::MutexUsage mutUsage(this->subscribeMut);
 	i = this->subscribeList.GetCount();
 	while (i-- > 0)
 	{
-		subscribe = this->subscribeList.GetItem(i);
+		subscribe = this->subscribeList.GetItemNoCheck(i);
 		if (subscribe->stm == stm)
 		{
 			this->subscribeList.RemoveAt(i);
 			subscribe->topic->Release();
-			MemFree(subscribe);
+			MemFreeNN(subscribe);
 		}
 	}
 }
@@ -1001,10 +1000,10 @@ Net::MQTTBroker::~MQTTBroker()
 		}
 	}
 	UOSInt i = this->listeners.GetCount();
-	Listener *listener;
+	NN<Listener> listener;
 	while (i-- > 0)
 	{
-		listener = this->listeners.GetItem(i);
+		listener = this->listeners.GetItemNoCheck(i);
 		if (listener->svr)
 		{
 			DEL_CLASS(listener->svr);
@@ -1014,31 +1013,31 @@ Net::MQTTBroker::~MQTTBroker()
 		{
 			DEL_CLASS(listener->listener);
 		}
-		MemFree(listener);
+		MemFreeNN(listener);
 	}
-	TopicInfo *topic;
+	NN<TopicInfo> topic;
 	i = this->topicMap.GetCount();
 	while (i-- > 0)
 	{
-		topic = this->topicMap.GetItem(i);
+		topic = this->topicMap.GetItemNoCheck(i);
 		topic->topic->Release();
 		MemFree(topic->message);
-		MemFree(topic);
+		MemFreeNN(topic);
 	}
 
-	SubscribeInfo *subscribe;
+	NN<SubscribeInfo> subscribe;
 	i = this->subscribeList.GetCount();
 	while (i-- > 0)
 	{
-		subscribe = this->subscribeList.GetItem(i);
+		subscribe = this->subscribeList.GetItemNoCheck(i);
 		subscribe->topic->Release();
-		MemFree(subscribe);
+		MemFreeNN(subscribe);
 	}
 }
 
 Bool Net::MQTTBroker::AddListener(Optional<Net::SSLEngine> ssl, UInt16 port, Bool autoStart)
 {
-	Listener *listener = MemAlloc(Listener, 1);
+	NN<Listener> listener = MemAllocNN(Listener);
 	listener->me = this;
 	listener->ssl = ssl;
 	listener->listener = 0;
@@ -1050,7 +1049,7 @@ Bool Net::MQTTBroker::AddListener(Optional<Net::SSLEngine> ssl, UInt16 port, Boo
 		listener->svr = 0;
 		DEL_CLASS(listener->cliMgr);
 		listener->cliMgr = 0;
-		MemFree(listener);
+		MemFreeNN(listener);
 		return false;
 	}
 	else
@@ -1062,7 +1061,7 @@ Bool Net::MQTTBroker::AddListener(Optional<Net::SSLEngine> ssl, UInt16 port, Boo
 
 Bool Net::MQTTBroker::AddWSListener(Optional<Net::SSLEngine> ssl, UInt16 port, Bool autoStart)
 {
-	Listener *listener = MemAlloc(Listener, 1);
+	NN<Listener> listener = MemAllocNN(Listener);
 	listener->me = this;
 	listener->ssl = 0;
 	listener->cliMgr = 0;
@@ -1071,7 +1070,7 @@ Bool Net::MQTTBroker::AddWSListener(Optional<Net::SSLEngine> ssl, UInt16 port, B
 	if (listener->listener->IsError())
 	{
 		DEL_CLASS(listener->listener);
-		MemFree(listener);
+		MemFreeNN(listener);
 		return false;
 	}
 	else
@@ -1084,11 +1083,11 @@ Bool Net::MQTTBroker::AddWSListener(Optional<Net::SSLEngine> ssl, UInt16 port, B
 Bool Net::MQTTBroker::Start()
 {
 	Bool found = false;
-	Listener *listener;
+	NN<Listener> listener;
 	UOSInt i = this->listeners.GetCount();
 	while (i-- > 0)
 	{
-		listener = this->listeners.GetItem(i);
+		listener = this->listeners.GetItemNoCheck(i);
 		if (listener->svr)
 		{
 			found = true;
@@ -1135,7 +1134,7 @@ void Net::MQTTBroker::HandleTopicUpdate(TopicUpdateHandler topicUpdHdlr, AnyType
 
 	if (this->topicUpdHdlr)
 	{
-		TopicInfo *topic;
+		NN<TopicInfo> topic;
 		UOSInt i;
 		UOSInt j;
 		Sync::MutexUsage mutUsage(this->topicMut);
@@ -1143,7 +1142,7 @@ void Net::MQTTBroker::HandleTopicUpdate(TopicUpdateHandler topicUpdHdlr, AnyType
 		j = this->topicMap.GetCount();
 		while (i < j)
 		{
-			topic = this->topicMap.GetItem(i);
+			topic = this->topicMap.GetItemNoCheck(i);
 			this->topicUpdHdlr(this->topicUpdObj, topic->topic->ToCString(), topic->message, topic->msgSize);
 			i++;
 		}

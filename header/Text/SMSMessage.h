@@ -10,7 +10,7 @@ namespace Text
 	private:
 		const UTF16Char *smsc;
 		const UTF16Char *address;
-		SMSUserData *ud;
+		Optional<SMSUserData> ud;
 		Data::DateTime msgTime;
 		Bool mms;
 		Bool replyPath;
@@ -24,7 +24,7 @@ namespace Text
 		static void ParseTimestamp(const UInt8 *buff, NN<Data::DateTime> time);
 		static UInt8 *ToPDUPhone(UInt8 *buff, const UTF16Char *phoneNum, UInt8 *byteSize, UInt8 *phoneSize);
 	public:
-		SMSMessage(const UTF16Char *address, const UTF16Char *smsc, SMSUserData *ud);
+		SMSMessage(const UTF16Char *address, const UTF16Char *smsc, Optional<SMSUserData> ud);
 		~SMSMessage();
 
 		void SetMessageTime(NN<Data::DateTime> msgTime);

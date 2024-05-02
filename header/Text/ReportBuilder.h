@@ -69,12 +69,12 @@ namespace Text
 		Text::HAlignment nameHAlign;
 		NN<Text::String> fontName;
 		UOSInt colCount;
-		Data::ArrayList<HeaderInfo*> preheaders;
-		Data::ArrayList<HeaderInfo*> headers;
-		Data::ArrayList<TableCell*> tableContent;
+		Data::ArrayListNN<HeaderInfo> preheaders;
+		Data::ArrayListNN<HeaderInfo> headers;
+		Data::ArrayList<UnsafeArray<TableCell>> tableContent;
 		Data::ArrayList<RowType> tableRowType;
-		Data::ArrayList<ColURLLatLon*> urlList;
-		Data::ArrayList<Data::ArrayList<ColIcon*>*> icons;
+		Data::ArrayListNN<ColURLLatLon> urlList;
+		Data::ArrayList<Optional<Data::ArrayListNN<ColIcon>>> icons;
 		Bool tableBorders;
 		Double *colWidthPts;
 		ColType *colTypes;

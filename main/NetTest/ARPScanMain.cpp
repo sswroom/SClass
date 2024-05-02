@@ -49,7 +49,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	NEW_CLASS(ipList, Data::ArrayListUInt32());
 
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<Net::ARPInfo *> arpList;
+	Data::ArrayListNN<Net::ARPInfo> arpList;
 
 	UInt8 hwAddr[32];
 	UTF8Char sbuff[64];
@@ -58,14 +58,14 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UOSInt j;
 	const Net::MACInfo::MACEntry *macEntry;
 	Net::ARPInfo::ARPType arpType;
-	Net::ARPInfo *arp;
-	Net::ARPInfo::GetARPInfoList(&arpList);
+	NN<Net::ARPInfo> arp;
+	Net::ARPInfo::GetARPInfoList(arpList);
 	console->WriteLineC(UTF8STRC("OS ARP:"));
 	i = 0;
 	j = arpList.GetCount();
 	while (i < j)
 	{
-		arp = arpList.GetItem(i);
+		arp = arpList.GetItemNoCheck(i);
 		arpType = arp->GetARPType();
 		if (arpType == Net::ARPInfo::ARPT_STATIC || arpType == Net::ARPInfo::ARPT_DYNAMIC)
 		{
@@ -86,8 +86,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			ipList->SortedInsert(arp->GetIPAddress());
 		}
-
-		DEL_CLASS(arp);
+		arp.Delete();
 		i++;
 	}
 

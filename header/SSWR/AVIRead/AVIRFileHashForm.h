@@ -58,7 +58,7 @@ namespace SSWR
 			Sync::Event fileEvt;
 			Int32 threadStatus;
 			Bool threadToStop;
-			Data::ArrayList<FileStatus*> fileList;
+			Data::ArrayListNN<FileStatus> fileList;
 			Sync::Mutex fileMut;
 			Bool fileListChg;
 			Data::DateTime lastTimerTime;

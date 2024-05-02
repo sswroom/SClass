@@ -57,7 +57,7 @@ void UI::GUIPictureList::OnDraw(NN<Media::DrawImage> img)
 					img->DrawRect(Math::Coord2DDbl(0, OSInt2Double(ofst)), Math::Size2DDbl(UOSInt2Double(w), UOSInt2Double(this->iconSize.y + ICONPADDING)), 0, b);
 					img->DelBrush(b);
 				}
-				if (gimg.Set(this->imgList.GetItem(i)))
+				if (this->imgList.GetItem(i).SetTo(gimg))
 				{
 					x = (OSInt)(w - gimg->GetWidth()) >> 1;
 					y = (OSInt)((this->iconSize.y + ICONPADDING - gimg->GetHeight()) >> 1) + ofst;
@@ -93,7 +93,7 @@ void UI::GUIPictureList::OnDraw(NN<Media::DrawImage> img)
 						img->DrawRect(Math::Coord2DDbl(UOSInt2Double((this->iconSize.x + ICONPADDING) * k), OSInt2Double(ofst)), this->iconSize.ToDouble() + ICONPADDING, 0, b);
 						img->DelBrush(b);
 					}
-					if (gimg.Set(this->imgList.GetItem(i + k)))
+					if (this->imgList.GetItem(i + k).SetTo(gimg))
 					{
 						x = (OSInt)(((this->iconSize.x + ICONPADDING - gimg->GetWidth()) >> 1) + (this->iconSize.x + ICONPADDING) * k);
 						y = (OSInt)((OSInt)((this->iconSize.y + ICONPADDING - gimg->GetHeight()) >> 1) + ofst);
@@ -166,9 +166,13 @@ void UI::GUIPictureList::Add(Media::RasterImage *img)
 {
 	NN<Media::StaticImage> simg = img->CreateStaticImage();
 	NN<Media::StaticImage> nsimg;
+	NN<Media::DrawImage> dimg;
 	if (nsimg.Set(this->resizer->ProcessToNew(simg)))
 	{
-		this->imgList.Add(this->deng->ConvImage(nsimg));
+		if (dimg.Set(this->deng->ConvImage(nsimg)))
+		{
+			this->imgList.Add(dimg);
+		}
 		nsimg.Delete();
 	}
 	simg.Delete();
@@ -182,7 +186,7 @@ UOSInt UI::GUIPictureList::GetCount()
 void UI::GUIPictureList::RemoveAt(UOSInt index)
 {
 	NN<Media::DrawImage> img;
-	if (img.Set(this->imgList.RemoveAt(index)))
+	if (this->imgList.RemoveAt(index).SetTo(img))
 	{
 		this->deng->DeleteImage(img);
 	}
@@ -194,7 +198,7 @@ void UI::GUIPictureList::Clear()
 	while (i-- > 0)
 	{
 		NN<Media::DrawImage> img;
-		if(img.Set(this->imgList.RemoveAt(i)))
+		if(this->imgList.RemoveAt(i).SetTo(img))
 			this->deng->DeleteImage(img);
 	}
 }

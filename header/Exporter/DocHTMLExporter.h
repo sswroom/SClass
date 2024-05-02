@@ -23,7 +23,7 @@ namespace Exporter
 
 	private:
 		static void WriteColor(IO::Writer *writer, UInt32 color);
-		static void WriteItems(IO::Writer *writer, Data::ReadingList<Text::Doc::DocItem *> *items, const UTF8Char *parentNodeName, UOSInt nameLen);
+		static void WriteItems(IO::Writer *writer, NN<Data::ReadingListNN<Text::Doc::DocItem>> items, Text::CStringNN parentNodeName);
 	};
 }
 #endif

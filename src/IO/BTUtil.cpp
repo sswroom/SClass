@@ -1293,20 +1293,11 @@ Text::CString IO::BTUtil::GetUUIDName(UInt16 uuid)
 	return CSTR("Unknown");
 }
 
-void IO::BTUtil::GetServiceName(NN<Text::StringBuilderUTF8> sb, void *serviceUUID)
+void IO::BTUtil::GetServiceName(NN<Text::StringBuilderUTF8> sb, NN<Data::UUID> serviceUUID)
 {
-	UInt8 *uuid = (UInt8*)serviceUUID;
-	sb->Append(GetUUIDName(ReadUInt16(uuid)));
+	sb->Append(GetUUIDName((UInt16)serviceUUID->GetTimeLow()));
 	sb->AppendC(UTF8STRC(" ("));
-	sb->AppendHexBuff(uuid, 4, 0, Text::LineBreakType::None);
-	sb->AppendC(UTF8STRC("-"));
-	sb->AppendHexBuff(&uuid[4], 2, 0, Text::LineBreakType::None);
-	sb->AppendC(UTF8STRC("-"));
-	sb->AppendHexBuff(&uuid[6], 2, 0, Text::LineBreakType::None);
-	sb->AppendC(UTF8STRC("-"));
-	sb->AppendHexBuff(&uuid[8], 2, 0, Text::LineBreakType::None);
-	sb->AppendC(UTF8STRC("-"));
-	sb->AppendHexBuff(&uuid[10], 6, 0, Text::LineBreakType::None);
+	serviceUUID->ToString(sb);
 	sb->AppendC(UTF8STRC(")"));
 }
 

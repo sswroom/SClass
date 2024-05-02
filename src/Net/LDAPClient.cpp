@@ -159,7 +159,8 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 	const UInt8 *msgEnd = msgBuff + msgLen;
 	UInt8 seqType;
 	const UInt8 *seqEnd;
-	Net::LDAPClient::ReqStatus *req;
+	NN<Net::LDAPClient::ReqStatus> req;
+	NN<Data::ArrayListNN<SearchResObject>> searchObjs;
 
 	msgBuff = Net::ASN1Util::PDUParseUInt32(msgBuff, msgEnd, msgId);
 	if (msgBuff == 0)
@@ -190,8 +191,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 			printf("LDAPMessage: BindResponse, resultCode = %d, matchedDN = %s, errorMessage = %s\r\n", resultCode, sb.ToString(), sb2.ToString());
 			#endif
 			Sync::MutexUsage mutUsage(this->reqMut);
-			req = this->reqMap.Get(msgId);
-			if (req)
+			if (this->reqMap.Get(msgId).SetTo(req))
 			{
 				req->resultCode = resultCode;
 				req->isFin = true;
@@ -203,7 +203,8 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 		{
 			Text::StringBuilderUTF8 sb;
 			Text::StringBuilderUTF8 sb2;
-			Net::LDAPClient::SearchResObject *obj;
+			NN<Net::LDAPClient::SearchResObject> obj;
+			NN<Data::ArrayListNN<Net::LDAPClient::SearchResItem>> items;
 			const UInt8 *attrEnd;
 			const UInt8 *itemEnd;
 			const UInt8 *valEnd;
@@ -215,10 +216,11 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 			Text::StringBuilderUTF8 sb3;
 			printf("LDAPMessage: searchResEntry, objectName = %s\r\n", sb.ToString());
 			#endif
-			obj = MemAlloc(Net::LDAPClient::SearchResObject, 1);
+			obj = MemAllocNN(Net::LDAPClient::SearchResObject);
 			obj->name = Text::String::New(sb.ToString(), sb.GetLength());
 			obj->isRef = false;
-			NEW_CLASS(obj->items, Data::ArrayList<Net::LDAPClient::SearchResItem*>());
+			NEW_CLASSNN(items, Data::ArrayListNN<Net::LDAPClient::SearchResItem>());
+			obj->items = items;
 			msgBuff = Net::ASN1Util::PDUParseSeq(msgBuff, seqEnd, type, &attrEnd);
 			if (msgBuff == 0 || type != 0x30)
 			{
@@ -264,11 +266,11 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 						SearchResDisplay(sb.ToCString(), sb2.ToCString(), sb3);
 						printf("LDAPMessage: searchResEntry: -%s = %s\r\n", sb.ToString(), sb3.ToString());
 						#endif
-						Net::LDAPClient::SearchResItem *item;
-						item = MemAlloc(Net::LDAPClient::SearchResItem, 1);
+						NN<Net::LDAPClient::SearchResItem> item;
+						item = MemAllocNN(Net::LDAPClient::SearchResItem);
 						item->type = Text::String::New(sb.ToCString());
 						item->value = Text::String::New(sb2.ToCString()).Ptr();
-						obj->items->Add(item);
+						items->Add(item);
 					}
 				}
 				else
@@ -280,10 +282,9 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 			}
 			printf("LDAPMessage: searchResEntry, end 5\r\n");
 			Sync::MutexUsage mutUsage(this->reqMut);
-			req = this->reqMap.Get(msgId);
-			if (req && req->searchObjs)
+			if (this->reqMap.Get(msgId).SetTo(req) && req->searchObjs.SetTo(searchObjs))
 			{
-				req->searchObjs->Add(obj);
+				searchObjs->Add(obj);
 			}
 			else
 			{
@@ -309,8 +310,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 			printf("LDAPMessage: searchResDone, resultCode = %d, matchedDN = %s, errorMessage = %s\r\n", resultCode, sb.ToString(), sb2.ToString());
 			#endif
 			Sync::MutexUsage mutUsage(this->reqMut);
-			req = this->reqMap.Get(msgId);
-			if (req)
+			if (this->reqMap.Get(msgId).SetTo(req))
 			{
 				req->resultCode = resultCode;
 				req->isFin = true;
@@ -328,15 +328,14 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 				printf("LDAPMessage: searchResRef, LDAPURL = %s\r\n", sb.ToString());
 				#endif
 				Sync::MutexUsage mutUsage(this->reqMut);
-				req = this->reqMap.Get(msgId);
-				if (req && req->searchObjs)
+				if (this->reqMap.Get(msgId).SetTo(req) && req->searchObjs.SetTo(searchObjs))
 				{
-					Net::LDAPClient::SearchResObject *obj;
-					obj = MemAlloc(Net::LDAPClient::SearchResObject, 1);
+					NN<Net::LDAPClient::SearchResObject> obj;
+					obj = MemAllocNN(Net::LDAPClient::SearchResObject);
 					obj->isRef = true;
 					obj->name = Text::String::New(sb.ToString(), sb.GetLength());
 					obj->items = 0;
-					req->searchObjs->Add(obj);
+					searchObjs->Add(obj);
 				}
 			}
 		}
@@ -619,7 +618,7 @@ Bool Net::LDAPClient::Bind(Text::CString userDN, Text::CString password)
 	status.resultCode = 0;
 	status.searchObjs = 0;
 	Sync::MutexUsage mutUsage(this->reqMut);
-	this->reqMap.Put(status.msgId, &status);
+	this->reqMap.Put(status.msgId, status);
 	mutUsage.EndUse();
 
 	valid = (this->cli->Write(buff, buffSize) == buffSize);
@@ -670,13 +669,13 @@ Bool Net::LDAPClient::Unbind()
 	return valid;
 }
 
-Bool Net::LDAPClient::Search(Text::CStringNN baseObject, ScopeType scope, DerefType derefAliases, UInt32 sizeLimit, UInt32 timeLimit, Bool typesOnly, const UTF8Char *filter, Data::ArrayList<Net::LDAPClient::SearchResObject*> *results)
+Bool Net::LDAPClient::Search(Text::CStringNN baseObject, ScopeType scope, DerefType derefAliases, UInt32 sizeLimit, UInt32 timeLimit, Bool typesOnly, const UTF8Char *filter, NN<Data::ArrayListNN<Net::LDAPClient::SearchResObject>> results)
 {
 	Net::ASN1PDUBuilder *pdu;
 	UOSInt buffSize;
 	const UInt8 *buff;
 	Net::LDAPClient::ReqStatus status;
-	Data::ArrayList<Net::LDAPClient::SearchResObject*> resObjs;
+	Data::ArrayListNN<Net::LDAPClient::SearchResObject> resObjs;
 	Bool valid;
 	NEW_CLASS(pdu, ASN1PDUBuilder())
 	pdu->BeginSequence();
@@ -684,7 +683,7 @@ Bool Net::LDAPClient::Search(Text::CStringNN baseObject, ScopeType scope, DerefT
 	status.msgId = ++(this->lastMsgId);
 	pdu->AppendUInt32(status.msgId);
 	msgIdMutUsage.EndUse();
-	status.searchObjs = &resObjs;
+	status.searchObjs = resObjs;
 
 	pdu->BeginOther(0x63); //SearchRequest
 	pdu->AppendOctetStringC(baseObject);
@@ -721,7 +720,7 @@ Bool Net::LDAPClient::Search(Text::CStringNN baseObject, ScopeType scope, DerefT
 	status.isFin = false;
 	status.resultCode = 0;
 	Sync::MutexUsage mutUsage(this->reqMut);
-	this->reqMap.Put(status.msgId, &status);
+	this->reqMap.Put(status.msgId, status);
 	mutUsage.EndUse();
 
 	valid = (this->cli->Write(buff, buffSize) == buffSize);
@@ -749,40 +748,34 @@ Bool Net::LDAPClient::Search(Text::CStringNN baseObject, ScopeType scope, DerefT
 	}
 	else
 	{
-		this->SearchResultsFree(&resObjs);
+		this->SearchResultsFree(resObjs);
 	}
 	return valid;
 }
 
-void Net::LDAPClient::SearchResultsFree(Data::ArrayList<Net::LDAPClient::SearchResObject*> *results)
+void Net::LDAPClient::SearchResultsFree(NN<Data::ArrayListNN<Net::LDAPClient::SearchResObject>> results)
 {
-	Net::LDAPClient::SearchResObject *obj;
-	UOSInt i = results->GetCount();
-	while (i-- > 0)
-	{
-		obj = results->GetItem(i);
-		SearchResObjectFree(obj);
-	}
-	results->Clear();
+	results->FreeAll(SearchResObjectFree);
 }
 
-void Net::LDAPClient::SearchResObjectFree(Net::LDAPClient::SearchResObject *obj)
+void Net::LDAPClient::SearchResObjectFree(NN<Net::LDAPClient::SearchResObject> obj)
 {
 	obj->name->Release();
-	if (obj->items)
+	NN<Data::ArrayListNN<SearchResItem>> items;
+	if (obj->items.SetTo(items))
 	{
-		Net::LDAPClient::SearchResItem *item;
-		UOSInt i = obj->items->GetCount();
+		NN<Net::LDAPClient::SearchResItem> item;
+		UOSInt i = items->GetCount();
 		while (i-- > 0)
 		{
-			item = obj->items->GetItem(i);
+			item = items->GetItemNoCheck(i);
 			item->type->Release();
 			item->value->Release();
-			MemFree(item);
+			MemFreeNN(item);
 		}
-		DEL_CLASS(obj->items);
+		obj->items.Delete();
 	}
-	MemFree(obj);
+	MemFreeNN(obj);
 }
 
 void Net::LDAPClient::SearchResDisplay(Text::CString type, Text::CString value, NN<Text::StringBuilderUTF8> sb)

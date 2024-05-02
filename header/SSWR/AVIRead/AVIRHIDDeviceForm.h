@@ -16,7 +16,7 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Data::ArrayList<IO::HIDInfo*> hidList;
+			Data::ArrayListNN<IO::HIDInfo> hidList;
 
 			NN<UI::GUIListBox> lbDevices;
 			NN<UI::GUIHSplitter> hspDevices;
@@ -29,7 +29,7 @@ namespace SSWR
 			NN<UI::GUITextBox> txtDevPath;
 			
 			static void __stdcall OnDevicesSelChg(AnyType userObj);
-			static OSInt __stdcall ItemCompare(IO::HIDInfo *item1, IO::HIDInfo *item2);
+			static OSInt __stdcall ItemCompare(NN<IO::HIDInfo> item1, NN<IO::HIDInfo> item2);
 		public:
 			AVIRHIDDeviceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRHIDDeviceForm();

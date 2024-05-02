@@ -202,14 +202,14 @@ Optional<Net::SSLEngine> SSWR::OrganMgr::OrganEnv::GetSSLEngine()
 	return this->ssl;
 }
 
-Media::ColorManager *SSWR::OrganMgr::OrganEnv::GetColorMgr()
+NN<Media::ColorManager> SSWR::OrganMgr::OrganEnv::GetColorMgr()
 {
-	return &this->colorMgr;
+	return this->colorMgr;
 }
 
-Media::MonitorMgr *SSWR::OrganMgr::OrganEnv::GetMonitorMgr()
+NN<Media::MonitorMgr> SSWR::OrganMgr::OrganEnv::GetMonitorMgr()
 {
-	return &this->monMgr;
+	return this->monMgr;
 }
 
 SSWR::OrganMgr::OrganEnv::ErrorType SSWR::OrganMgr::OrganEnv::GetErrorType()

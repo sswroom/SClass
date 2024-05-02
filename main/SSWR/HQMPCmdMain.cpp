@@ -23,7 +23,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			Parser::FullParserList parsers;
 			Media::AudioDevice audioDev;
 			{
-				Media::ConsoleMediaPlayer player(&monMgr, &colorMgr, parsers, &audioDev);
+				Media::ConsoleMediaPlayer player(monMgr, colorMgr, parsers, &audioDev);
 				if (player.IsError())
 				{
 					console.WriteLineC(UTF8STRC("Error in initiaizing player, no Permission?"));

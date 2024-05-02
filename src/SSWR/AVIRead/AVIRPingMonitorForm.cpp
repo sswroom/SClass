@@ -10,15 +10,14 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(AnyType userData
 	NN<SSWR::AVIRead::AVIRPingMonitorForm> me = userData.GetNN<SSWR::AVIRead::AVIRPingMonitorForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt32 sortableIP = Net::SocketUtil::IPv4ToSortable(srcIP);
-	IPInfo *ipInfo;
+	NN<IPInfo> ipInfo;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Sync::MutexUsage mutUsage(me->ipMut);
-	ipInfo = me->ipMap.Get(sortableIP);
-	if (ipInfo == 0)
+	if (!me->ipMap.Get(sortableIP).SetTo(ipInfo))
 	{
 		Net::WhoisRecord *rec;
-		ipInfo = MemAlloc(IPInfo, 1);
+		ipInfo = MemAllocNN(IPInfo);
 		ipInfo->ip = srcIP;
 		ipInfo->count = 0;
 		rec = me->whois.RequestIP(srcIP);
@@ -42,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(AnyType userData
 		me->ipListUpdated = true;
 	}
 	ipInfo->count++;
-	if (me->currIP == ipInfo)
+	if (me->currIP == ipInfo.Ptr())
 	{
 		me->ipContUpdated = true;
 	}
@@ -186,7 +185,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(AnyType userObj)
 	}
 	if (me->ipListUpdated)
 	{
-		IPInfo *ipInfo;
+		NN<IPInfo> ipInfo;
 		UOSInt i;
 		UOSInt j;
 		me->ipListUpdated = false;
@@ -196,10 +195,10 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(AnyType userObj)
 		j = me->ipMap.GetCount();
 		while (i < j)
 		{
-			ipInfo = me->ipMap.GetItem(i);
+			ipInfo = me->ipMap.GetItemNoCheck(i);
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipInfo->ip);
 			me->lbIP->AddItem(CSTRP(sbuff, sptr), ipInfo);
-			if (ipInfo == me->currIP)
+			if (ipInfo.Ptr() == me->currIP)
 			{
 				me->lbIP->SetSelectedIndex(i);
 			}
@@ -336,15 +335,15 @@ SSWR::AVIRead::AVIRPingMonitorForm::~AVIRPingMonitorForm()
 	this->log.RemoveLogHandler(this->logger);
 	this->logger.Delete();
 
-	IPInfo *ipInfo;
+	NN<IPInfo> ipInfo;
 	UOSInt i;
 	i = this->ipMap.GetCount();
 	while (i-- > 0)
 	{
-		ipInfo = this->ipMap.GetItem(i);
+		ipInfo = this->ipMap.GetItemNoCheck(i);
 		ipInfo->name->Release();
 		ipInfo->country->Release();
-		MemFree(ipInfo);
+		MemFreeNN(ipInfo);
 	}
 }
 

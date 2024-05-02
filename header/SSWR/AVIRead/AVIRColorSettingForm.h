@@ -23,7 +23,7 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Media::ColorManager *colorMgr;
+			NN<Media::ColorManager> colorMgr;
 			NN<Media::MonitorColorManager> monColor;
 			Bool normalClose;
 			Text::String *monFileName;

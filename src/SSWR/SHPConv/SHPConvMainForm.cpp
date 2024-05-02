@@ -162,7 +162,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnFilterClicked(AnyType userObj)
 	DB::DBFFile dbf(fd, (UInt32)(UOSInt)me->lstLang->GetSelectedItem().p);
 	if (!dbf.IsError())
 	{
-		SSWR::SHPConv::SHPConvCurrFilterForm frm(0, me->ui, &dbf, &me->globalFilters, me->deng);
+		SSWR::SHPConv::SHPConvCurrFilterForm frm(0, me->ui, dbf, me->globalFilters, me->deng);
 		frm.ShowDialog(me);
 	}
 }
@@ -245,7 +245,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnFile(AnyType userObj, Data::Dat
 	me->txtBlkScale->SetText(CSTRP(sbuff, sptr));
 }
 
-Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NN<Data::ArrayList<MapFilter*>> filters, IO::ProgressHandler *progress, UOSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, NN<Data::ArrayList<UInt32>> dbCols2)
+Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NN<Data::ArrayListNN<MapFilter>> filters, IO::ProgressHandler *progress, UOSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, NN<Data::ArrayList<UInt32>> dbCols2)
 {
 	UOSInt i;
 	OSInt si;
@@ -279,7 +279,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CStringNN sourceFile, T
 	}
 
 	Text::StringBuilderUTF8 sb2;
-	Data::ArrayList<MapFilter*> newFilters;
+	Data::ArrayListNN<MapFilter> newFilters;
 	newFilters.AddAll(filters);
 	i = names.GetCount();
 	while (i-- > 0)
@@ -296,7 +296,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CStringNN sourceFile, T
 
 		{
 			SSWR::SHPConv::ValueFilter filter(groupCol, s->ToCString(), 3);
-			newFilters.Add(&filter);
+			newFilters.Add(filter);
 			sb2.ClearStr();
 			sb2.Append(outFilePrefix);
 			sb2.AppendUTF8Char('_');
@@ -313,7 +313,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CStringNN sourceFile, T
 	return shpType;
 }
 
-Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NN<Data::ArrayList<MapFilter*>> filters, IO::ProgressHandler *progress, NN<Data::ArrayList<UInt32>> dbCols2)
+Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, NN<Data::ArrayListNN<MapFilter>> filters, IO::ProgressHandler *progress, NN<Data::ArrayList<UInt32>> dbCols2)
 {
 	Text::StringBuilderUTF8 sb;
 	UInt8 buff[259];
@@ -467,7 +467,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 						chkVal = false;
 					}
 
-					MapFilter *f;
+					NN<MapFilter> f;
 					if (chkVal && dbfr.SetTo(r))
 					{
 						if (r->ReadNext())
@@ -475,7 +475,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 							i = filters->GetCount();
 							while (i-- > 0)
 							{
-								f = filters->GetItem(i);
+								f = filters->GetItemNoCheck(i);
 								chkVal = chkVal && f->IsValid(xMin, yMin, xMax, yMax, r);
 							}
 						}
@@ -847,6 +847,8 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 						r->ReadNext();
 					}
 					chkVal = false;
+					currX = 0;
+					currY = 0;
 				}
 				else
 				{
@@ -867,7 +869,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 						currY = ReadDouble(&buff[20]);
 					}
 
-					MapFilter *f;
+					NN<MapFilter> f;
 					if (dbfr.SetTo(r))
 					{
 						if (r->ReadNext())
@@ -875,7 +877,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CStringNN sourceFile, Tex
 							i = filters->GetCount();
 							while (i-- > 0)
 							{
-								f = filters->GetItem(i);
+								f = filters->GetItemNoCheck(i);
 								chkVal = chkVal && f->IsValid(currX, currY, currX, currY, r);
 							}
 						}
@@ -1221,14 +1223,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::LoadShape(Text::CStringNN fileName, Bool u
 
 void SSWR::SHPConv::SHPConvMainForm::ClearFilter()
 {
-	MapFilter *filter;
-	UOSInt i = this->globalFilters.GetCount();
-	while (i-- > 0)
-	{
-		filter = this->globalFilters.GetItem(i);
-		DEL_CLASS(filter);
-	}
-	this->globalFilters.Clear();
+	this->globalFilters.DeleteAll();
 }
 
 void SSWR::SHPConv::SHPConvMainForm::ParseLabelStr(Text::CString labelStr, Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<UInt32> *dbCols2)
@@ -1370,7 +1365,7 @@ NN<Text::String> SSWR::SHPConv::SHPConvMainForm::GetNewDBFName(DB::DBFFile *dbf,
 	return Text::String::NewNotNull(output.ToString());
 }
 
-SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::DrawEngine> deng, Media::MonitorMgr *monMgr) : UI::GUIForm(parent, 576, 464, ui)
+SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<Media::DrawEngine> deng, NN<Media::MonitorMgr> monMgr) : UI::GUIForm(parent, 576, 464, ui)
 {
 	this->SetText(CSTR("SHPConv"));
 	this->SetFont(0, 0, 8.25, false);

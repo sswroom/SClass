@@ -35,7 +35,7 @@ namespace Map
 		Net::WebBrowser *browser;
 		Parser::ParserList *parsers;
 		Sync::RWMutex linkMut;
-		Data::ArrayList<LinkInfo*> links;
+		Data::ArrayListNN<LinkInfo> links;
 		Map::DrawLayerType innerLayerType;
 
 		Double currScale;
@@ -58,7 +58,7 @@ namespace Map
 		static void __stdcall InnerUpdated(AnyType userObj);
 		static UInt32 __stdcall ControlThread(AnyType userObj);
 		void CheckLinks(Bool manualRequest);
-		void LoadLink(LinkInfo *link);
+		void LoadLink(NN<LinkInfo> link);
 	public:
 		NetworkLinkLayer(Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, Text::CString layerName);
 		virtual ~NetworkLinkLayer();

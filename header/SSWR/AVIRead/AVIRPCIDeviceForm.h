@@ -16,7 +16,7 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Data::ArrayList<IO::PCIInfo*> pciList;
+			Data::ArrayListNN<IO::PCIInfo> pciList;
 
 			NN<UI::GUIListBox> lbDevices;
 			NN<UI::GUIHSplitter> hspDevices;
@@ -33,7 +33,7 @@ namespace SSWR
 			NN<UI::GUITextBox> txtDBName;
 			
 			static void __stdcall OnDevicesSelChg(AnyType userObj);
-			static OSInt __stdcall ItemCompare(IO::PCIInfo *item1, IO::PCIInfo *item2);
+			static OSInt __stdcall ItemCompare(NN<IO::PCIInfo> item1, NN<IO::PCIInfo> item2);
 		public:
 			AVIRPCIDeviceForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRPCIDeviceForm();

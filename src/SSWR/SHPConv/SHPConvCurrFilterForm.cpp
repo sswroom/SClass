@@ -6,11 +6,11 @@ void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnAddClicked(AnyType userOb
 {
 	NN<SSWR::SHPConv::SHPConvCurrFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvCurrFilterForm>();
 	SSWR::SHPConv::SHPConvAddFilterForm frm(0, me->ui, me->dbf, me->deng);
-	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
+	NN<MapFilter> filter;
+	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK && frm.GetFilter().SetTo(filter))
 	{
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
-		MapFilter *filter = frm.GetFilter();
 		me->filters->Add(filter);
 		sptr = filter->ToString(sbuff);
 		me->lbFilters->AddItem(CSTRP(sbuff, sptr), filter);
@@ -20,12 +20,12 @@ void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnAddClicked(AnyType userOb
 void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnDeleteClicked(AnyType userObj)
 {
 	NN<SSWR::SHPConv::SHPConvCurrFilterForm> me = userObj.GetNN<SSWR::SHPConv::SHPConvCurrFilterForm>();
+	NN<MapFilter> filter;
 	UOSInt i = me->lbFilters->GetSelectedIndex();
-	if (i != INVALID_INDEX)
+	if (i != INVALID_INDEX && me->filters->RemoveAt(i).SetTo(filter))
 	{
-		MapFilter *filter = me->filters->RemoveAt(i);
 		me->lbFilters->RemoveItem(i);
-		DEL_CLASS(filter);
+		filter.Delete();
 	}
 }
 
@@ -35,12 +35,12 @@ void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnOkClicked(AnyType userObj
 	me->Close();
 }
 
-SSWR::SHPConv::SHPConvCurrFilterForm::SHPConvCurrFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, DB::DBFFile *dbf, Data::ArrayList<MapFilter*> *filters, NN<Media::DrawEngine> deng) : UI::GUIForm(parent, 414, 298, ui)
+SSWR::SHPConv::SHPConvCurrFilterForm::SHPConvCurrFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<DB::DBFFile> dbf, NN<Data::ArrayListNN<MapFilter>> filters, NN<Media::DrawEngine> deng) : UI::GUIForm(parent, 414, 298, ui)
 {
 	this->SetText(CSTR("Current Filters"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
-	NEW_CLASS(this->monMgr, Media::MonitorMgr());
+	NEW_CLASSNN(this->monMgr, Media::MonitorMgr());
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 	this->deng = deng;
 	this->dbf = dbf;
@@ -62,12 +62,12 @@ SSWR::SHPConv::SHPConvCurrFilterForm::SHPConvCurrFilterForm(Optional<UI::GUIClie
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
-	MapFilter *filter;
+	NN<MapFilter> filter;
 	i = 0;
 	j = this->filters->GetCount();
 	while (i < j)
 	{
-		filter = this->filters->GetItem(i);
+		filter = this->filters->GetItemNoCheck(i);
 		sptr = filter->ToString(sbuff);
 		this->lbFilters->AddItem(CSTRP(sbuff, sptr), filter);
 		i++;
@@ -76,7 +76,7 @@ SSWR::SHPConv::SHPConvCurrFilterForm::SHPConvCurrFilterForm(Optional<UI::GUIClie
 
 SSWR::SHPConv::SHPConvCurrFilterForm::~SHPConvCurrFilterForm()
 {
-	DEL_CLASS(this->monMgr);
+	this->monMgr.Delete();
 }
 
 void SSWR::SHPConv::SHPConvCurrFilterForm::OnMonitorChanged()

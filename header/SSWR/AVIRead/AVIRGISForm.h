@@ -105,7 +105,7 @@ namespace SSWR
 			virtual void OnFocus();
 
 			void AddLayer(NN<Map::MapDrawLayer> layer);
-			void AddLayers(::Data::ArrayList<Map::MapDrawLayer*> *layers);
+			void AddLayers(NN<::Data::ArrayListNN<Map::MapDrawLayer>> layers);
 //			void AddLayerColl(Map::MapLayerCollection *lyrColl);
 			void AddSubForm(NN<UI::GUIForm> frm);
 

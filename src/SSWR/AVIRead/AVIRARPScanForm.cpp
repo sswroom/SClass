@@ -150,15 +150,15 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(Optional<UI::GUIClientControl> p
 	UOSInt i;
 	UOSInt j;
 	NN<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo> ipInfo;
-	Data::ArrayList<Net::ARPInfo *> arpList;
+	Data::ArrayListNN<Net::ARPInfo> arpList;
 	Net::ARPInfo::ARPType arpType;
-	Net::ARPInfo *arp;
-	Net::ARPInfo::GetARPInfoList(&arpList);
+	NN<Net::ARPInfo> arp;
+	Net::ARPInfo::GetARPInfoList(arpList);
 	i = 0;
 	j = arpList.GetCount();
 	while (i < j)
 	{
-		arp = arpList.GetItem(i);
+		arp = arpList.GetItemNoCheck(i);
 		arpType = arp->GetARPType();
 		if (arpType == Net::ARPInfo::ARPT_STATIC || arpType == Net::ARPInfo::ARPT_DYNAMIC)
 		{
@@ -170,8 +170,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(Optional<UI::GUIClientControl> p
 				MemFreeNN(ipInfo);
 			}
 		}
-
-		DEL_CLASS(arp);
+		arp.Delete();
 		i++;
 	}
 	this->UpdateARPList();

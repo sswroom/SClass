@@ -16,7 +16,8 @@ Bool Net::WebServer::WebStandardHandler::DoRequest(NN<Net::WebServer::IWebReques
 	UTF8Char *sbuff;
 	UTF8Char c;
 	UOSInt i = 1;
-	Net::WebServer::WebStandardHandler *subHdlr;
+	Optional<Net::WebServer::WebStandardHandler> subHdlr;
+	NN<Net::WebServer::WebStandardHandler> nnsubHdlr;
 
 	while (true)
 	{
@@ -56,9 +57,9 @@ Bool Net::WebServer::WebStandardHandler::DoRequest(NN<Net::WebServer::IWebReques
 		}
 		i++;
 	}
-	if (subHdlr)
+	if (subHdlr.SetTo(nnsubHdlr))
 	{
-		return subHdlr->ProcessRequest(req, resp, subReq);
+		return nnsubHdlr->ProcessRequest(req, resp, subReq);
 	}
 	return false;
 }
@@ -181,7 +182,7 @@ void Net::WebServer::WebStandardHandler::HandlePath(Text::CStringNN relativePath
 	UTF8Char *sbuff;
 	if (i == INVALID_INDEX)
 	{
-		this->hdlrs.PutC(relativePath.Substring(1), hdlr.Ptr());
+		this->hdlrs.PutC(relativePath.Substring(1), hdlr);
 		if (needRelease)
 		{
 			this->relHdlrs.Add(hdlr);
@@ -193,10 +194,10 @@ void Net::WebServer::WebStandardHandler::HandlePath(Text::CStringNN relativePath
 		MemCopyNO(sbuff, &relativePath.v[1], sizeof(UTF8Char) * (i - 1));
 		sbuff[i] = 0;
 
-		if (!subHdlr.Set(this->hdlrs.GetC({sbuff, i - 1})))
+		if (!this->hdlrs.GetC({sbuff, i - 1}).SetTo(subHdlr))
 		{
 			NEW_CLASSNN(subHdlr, Net::WebServer::WebStandardHandler());
-			this->hdlrs.PutC({sbuff, i - 1}, subHdlr.Ptr());
+			this->hdlrs.PutC({sbuff, i - 1}, subHdlr);
 			this->relHdlrs.Add(subHdlr);
 		}
 		MemFree(sbuff);

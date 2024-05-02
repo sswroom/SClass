@@ -7,10 +7,10 @@ namespace Media
 	class RGBLUTGen
 	{
 	private:
-		Media::ColorSess *colorSess;
+		Optional<Media::ColorSess> colorSess;
 
 	public:
-		RGBLUTGen(Media::ColorSess *colorSess);
+		RGBLUTGen(Optional<Media::ColorSess> colorSess);
 		~RGBLUTGen();
 
 		void SetSrcTrans(NN<Media::CS::TransferParam> rTran, NN<Media::CS::TransferParam> gTran, NN<Media::CS::TransferParam> bTran, NN<const Media::ColorProfile> srcProfile);

@@ -29,7 +29,7 @@ namespace Text
 
 			Data::ArrayListNN<Worksheet> sheets;
 			Data::ArrayListNN<CellStyle> styles;
-			Data::ArrayList<WorkbookFont*> fonts;
+			Data::ArrayListNN<WorkbookFont> fonts;
 
 			static const UInt32 defPalette[56];
 		public:
@@ -92,9 +92,10 @@ namespace Text
 			void RemoveAt(UOSInt index);
 			Optional<Worksheet> GetWorksheetByName(Text::CString name);
 
-			UOSInt GetFontCount();
-			WorkbookFont *GetFont(UOSInt index);
-			UOSInt GetFontIndex(WorkbookFont *font);
+			UOSInt GetFontCount() const;
+			NN<WorkbookFont> GetFontNoCheckc(UOSInt index) const;
+			Optional<WorkbookFont> GetFont(UOSInt index) const;
+			UOSInt GetFontIndex(NN<WorkbookFont> font);
 			WorkbookFont *NewFont(Text::CString name, Double size, Bool bold);
 
 			static void GetDefPalette(UInt32 *palette);

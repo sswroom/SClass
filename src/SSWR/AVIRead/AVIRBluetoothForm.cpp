@@ -92,13 +92,13 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnDeviceSelChg(AnyType userObj)
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
-		void *guid;
-		dev->QueryServices(&me->guidList);
+		NN<Data::UUID> guid;
+		dev->QueryServices(me->guidList);
 		i = 0;
 		j = me->guidList.GetCount();
 		while (i < j)
 		{
-			guid = me->guidList.GetItem(i);
+			guid = me->guidList.GetItemNoCheck(i);
 			sb.ClearStr();
 			IO::BTUtil::GetServiceName(sb, guid);
 			me->lbDevServices->AddItem(sb.ToCString(), guid);
@@ -138,7 +138,7 @@ void SSWR::AVIRead::AVIRBluetoothForm::ClearGUIDs()
 	NN<IO::BTController::BTDevice> currDev;
 	if (this->currDev.SetTo(currDev))
 	{
-		currDev->FreeServices(&this->guidList);
+		currDev->FreeServices(this->guidList);
 		this->lbDevServices->ClearItems();
 	}
 }

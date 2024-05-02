@@ -12,40 +12,36 @@
 
 Media::ImageGen::ImageGenMgr::ImageGenMgr()
 {
-	Media::ImageGenerator *imgGen;
-	NEW_CLASS(this->imgGenArr, Data::ArrayList<Media::ImageGenerator*>());
-
-	NEW_CLASS(imgGen, Media::ImageGen::GammaImageGen());
-	this->imgGenArr->Add(imgGen);
-	NEW_CLASS(imgGen, Media::ImageGen::Gamma64ImageGen());
-	this->imgGenArr->Add(imgGen);
-	NEW_CLASS(imgGen, Media::ImageGen::ColorImageGen());
-	this->imgGenArr->Add(imgGen);
-	NEW_CLASS(imgGen, Media::ImageGen::RingsImageGen());
-	this->imgGenArr->Add(imgGen);
-	NEW_CLASS(imgGen, Media::ImageGen::LinesImageGen());
-	this->imgGenArr->Add(imgGen);
-	NEW_CLASS(imgGen, Media::ImageGen::Gradian32ImageGen());
-	this->imgGenArr->Add(imgGen);
+	NN<Media::ImageGenerator> imgGen;
+	NEW_CLASSNN(imgGen, Media::ImageGen::GammaImageGen());
+	this->imgGenArr.Add(imgGen);
+	NEW_CLASSNN(imgGen, Media::ImageGen::Gamma64ImageGen());
+	this->imgGenArr.Add(imgGen);
+	NEW_CLASSNN(imgGen, Media::ImageGen::ColorImageGen());
+	this->imgGenArr.Add(imgGen);
+	NEW_CLASSNN(imgGen, Media::ImageGen::RingsImageGen());
+	this->imgGenArr.Add(imgGen);
+	NEW_CLASSNN(imgGen, Media::ImageGen::LinesImageGen());
+	this->imgGenArr.Add(imgGen);
+	NEW_CLASSNN(imgGen, Media::ImageGen::Gradian32ImageGen());
+	this->imgGenArr.Add(imgGen);
 }
 Media::ImageGen::ImageGenMgr::~ImageGenMgr()
 {
-	Media::ImageGenerator *imgGen;
-	UOSInt i = this->imgGenArr->GetCount();
-	while (i-- > 0)
-	{
-		imgGen = this->imgGenArr->GetItem(i);
-		DEL_CLASS(imgGen);
-	}
-	DEL_CLASS(imgGenArr);
+	this->imgGenArr.DeleteAll();
 }
 
-UOSInt Media::ImageGen::ImageGenMgr::GetCount()
+UOSInt Media::ImageGen::ImageGenMgr::GetCount() const
 {
-	return this->imgGenArr->GetCount();
+	return this->imgGenArr.GetCount();
 }
 
-Media::ImageGenerator *Media::ImageGen::ImageGenMgr::GetGenerator(UOSInt index)
+NN<Media::ImageGenerator> Media::ImageGen::ImageGenMgr::GetItemNoCheck(UOSInt index) const
 {
-	return this->imgGenArr->GetItem(index);
+	return this->imgGenArr.GetItemNoCheck(index);
+}
+
+Optional<Media::ImageGenerator> Media::ImageGen::ImageGenMgr::GetItem(UOSInt index) const
+{
+	return this->imgGenArr.GetItem(index);
 }

@@ -43,12 +43,12 @@ void __stdcall SSWR::SHPConv::SHPConvAddFilterForm::OnCancelClicked(AnyType user
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::SHPConv::SHPConvAddFilterForm::SHPConvAddFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, DB::DBFFile *dbf, NN<Media::DrawEngine> deng) : UI::GUIForm(parent, 222, 118, ui)
+SSWR::SHPConv::SHPConvAddFilterForm::SHPConvAddFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<DB::DBFFile> dbf, NN<Media::DrawEngine> deng) : UI::GUIForm(parent, 222, 118, ui)
 {
 	this->SetText(CSTR("Add Filter"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
-	NEW_CLASS(this->monMgr, Media::MonitorMgr());
+	NEW_CLASSNN(this->monMgr, Media::MonitorMgr());
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 	this->deng = deng;
 	this->dbf = dbf;
@@ -72,7 +72,7 @@ SSWR::SHPConv::SHPConvAddFilterForm::SHPConvAddFilterForm(Optional<UI::GUIClient
 
 SSWR::SHPConv::SHPConvAddFilterForm::~SHPConvAddFilterForm()
 {
-	DEL_CLASS(this->monMgr);
+	this->monMgr.Delete();
 }
 
 void SSWR::SHPConv::SHPConvAddFilterForm::OnMonitorChanged()
@@ -80,7 +80,7 @@ void SSWR::SHPConv::SHPConvAddFilterForm::OnMonitorChanged()
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-SSWR::SHPConv::MapFilter *SSWR::SHPConv::SHPConvAddFilterForm::GetFilter()
+Optional<SSWR::SHPConv::MapFilter> SSWR::SHPConv::SHPConvAddFilterForm::GetFilter()
 {
 	return this->filter;
 }

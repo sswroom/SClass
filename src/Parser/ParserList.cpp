@@ -14,28 +14,17 @@ Parser::ParserList::ParserList()
 
 Parser::ParserList::~ParserList()
 {
-	IO::ParserBase *parser;
-	UOSInt i = this->filePArr.GetCount();
-	while (i-- > 0)
-	{
-		parser = this->filePArr.GetItem(i);
-		DEL_CLASS(parser);
-	}
-	i = this->objPArr.GetCount();
-	while (i-- > 0)
-	{
-		parser = this->objPArr.GetItem(i);
-		DEL_CLASS(parser);
-	}
+	this->filePArr.DeleteAll();
+	this->objPArr.DeleteAll();
 }
 
-void Parser::ParserList::AddFileParser(IO::FileParser *parser)
+void Parser::ParserList::AddFileParser(NN<IO::FileParser> parser)
 {
 	this->filePArr.Add(parser);
 	parser->SetParserList(this);
 }
 
-void Parser::ParserList::AddObjectParser(IO::ObjectParser *parser)
+void Parser::ParserList::AddObjectParser(NN<IO::ObjectParser> parser)
 {
 	this->objPArr.Add(parser);
 	parser->SetParserList(this);
@@ -43,115 +32,115 @@ void Parser::ParserList::AddObjectParser(IO::ObjectParser *parser)
 
 void Parser::ParserList::SetCodePage(UInt32 codePage)
 {
-	IO::ParserBase *parser;
+	NN<IO::ParserBase> parser;
 	UOSInt i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->filePArr.GetItem(i);
+		parser = this->filePArr.GetItemNoCheck(i);
 		parser->SetCodePage(codePage);
 	}
 	i = this->objPArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->objPArr.GetItem(i);
+		parser = this->objPArr.GetItemNoCheck(i);
 		parser->SetCodePage(codePage);
 	}
 }
 
 void Parser::ParserList::SetMapManager(Map::MapManager *mapMgr)
 {
-	IO::ParserBase *parser;
+	NN<IO::ParserBase> parser;
 	UOSInt i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->filePArr.GetItem(i);
+		parser = this->filePArr.GetItemNoCheck(i);
 		parser->SetMapManager(mapMgr);
 	}
 	i = this->objPArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->objPArr.GetItem(i);
+		parser = this->objPArr.GetItemNoCheck(i);
 		parser->SetMapManager(mapMgr);
 	}
 }
 
 void Parser::ParserList::SetEncFactory(Optional<Text::EncodingFactory> encFact)
 {
-	IO::ParserBase *parser;
+	NN<IO::ParserBase> parser;
 	UOSInt i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->filePArr.GetItem(i);
+		parser = this->filePArr.GetItemNoCheck(i);
 		parser->SetEncFactory(encFact);
 	}
 	i = this->objPArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->objPArr.GetItem(i);
+		parser = this->objPArr.GetItemNoCheck(i);
 		parser->SetEncFactory(encFact);
 	}
 }
 
 void Parser::ParserList::SetWebBrowser(Net::WebBrowser *browser)
 {
-	IO::ParserBase *parser;
+	NN<IO::ParserBase> parser;
 	UOSInt i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->filePArr.GetItem(i);
+		parser = this->filePArr.GetItemNoCheck(i);
 		parser->SetWebBrowser(browser);
 	}
 	i = this->objPArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->objPArr.GetItem(i);
+		parser = this->objPArr.GetItemNoCheck(i);
 		parser->SetWebBrowser(browser);
 	}
 }
 
 void Parser::ParserList::SetSocketFactory(NN<Net::SocketFactory> sockf)
 {
-	IO::ParserBase *parser;
+	NN<IO::ParserBase> parser;
 	UOSInt i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->filePArr.GetItem(i);
+		parser = this->filePArr.GetItemNoCheck(i);
 		parser->SetSocketFactory(sockf);
 	}
 	i = this->objPArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->objPArr.GetItem(i);
+		parser = this->objPArr.GetItemNoCheck(i);
 		parser->SetSocketFactory(sockf);
 	}
 }
 
 void Parser::ParserList::SetSSLEngine(Optional<Net::SSLEngine> ssl)
 {
-	IO::ParserBase *parser;
+	NN<IO::ParserBase> parser;
 	UOSInt i = this->filePArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->filePArr.GetItem(i);
+		parser = this->filePArr.GetItemNoCheck(i);
 		parser->SetSSLEngine(ssl);
 	}
 	i = this->objPArr.GetCount();
 	while (i-- > 0)
 	{
-		parser = this->objPArr.GetItem(i);
+		parser = this->objPArr.GetItemNoCheck(i);
 		parser->SetSSLEngine(ssl);
 	}
 }
 
 void Parser::ParserList::SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser)
 {
-	IO::ParserBase *parser;
+	NN<IO::ParserBase> parser;
 	UOSInt i;
 	UOSInt j = this->filePArr.GetCount();
 	i = 0;
 	while (i < j)
 	{
-		parser = this->filePArr.GetItem(i);
+		parser = this->filePArr.GetItemNoCheck(i);
 		parser->SetArcGISPRJParser(prjParser);
 		i++;
 	}
@@ -159,7 +148,7 @@ void Parser::ParserList::SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser)
 	j = this->objPArr.GetCount();
 	while (i < j)
 	{
-		parser = this->objPArr.GetItem(i);
+		parser = this->objPArr.GetItemNoCheck(i);
 		parser->SetArcGISPRJParser(prjParser);
 		i++;
 	}
@@ -167,13 +156,13 @@ void Parser::ParserList::SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser)
 
 void Parser::ParserList::SetLogTool(IO::LogTool *log)
 {
-	IO::ParserBase *parser;
+	NN<IO::ParserBase> parser;
 	UOSInt i;
 	UOSInt j = this->filePArr.GetCount();
 	i = 0;
 	while (i < j)
 	{
-		parser = this->filePArr.GetItem(i);
+		parser = this->filePArr.GetItemNoCheck(i);
 		parser->SetLogTool(log);
 		i++;
 	}
@@ -181,7 +170,7 @@ void Parser::ParserList::SetLogTool(IO::LogTool *log)
 	j = this->objPArr.GetCount();
 	while (i < j)
 	{
-		parser = this->objPArr.GetItem(i);
+		parser = this->objPArr.GetItemNoCheck(i);
 		parser->SetLogTool(log);
 		i++;
 	}
@@ -189,13 +178,13 @@ void Parser::ParserList::SetLogTool(IO::LogTool *log)
 
 void Parser::ParserList::PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t)
 {
-	IO::ParserBase *parser;
+	NN<IO::ParserBase> parser;
 	UOSInt i;
 	UOSInt j = this->filePArr.GetCount();
 	i = 0;
 	while (i < j)
 	{
-		parser = this->filePArr.GetItem(i);
+		parser = this->filePArr.GetItemNoCheck(i);
 		parser->PrepareSelector(selector, t);
 		i++;
 	}
@@ -203,7 +192,7 @@ void Parser::ParserList::PrepareSelector(NN<IO::FileSelector> selector, IO::Pars
 	j = this->objPArr.GetCount();
 	while (i < j)
 	{
-		parser = this->objPArr.GetItem(i);
+		parser = this->objPArr.GetItemNoCheck(i);
 		parser->PrepareSelector(selector, t);
 		i++;
 	}
@@ -213,7 +202,7 @@ IO::ParsedObject *Parser::ParserList::ParseFile(NN<IO::StreamData> fd, IO::Packa
 {
 	UOSInt i = 0;
 	UOSInt j = this->filePArr.GetCount();
-	IO::FileParser *parser;
+	NN<IO::FileParser> parser;
 	IO::ParsedObject *result;
 	if (fd->GetDataSize() <= 0)
 		return 0;
@@ -246,7 +235,7 @@ IO::ParsedObject *Parser::ParserList::ParseFile(NN<IO::StreamData> fd, IO::Packa
 	}
 	while (i < j)
 	{
-		parser = this->filePArr.GetItem(i);
+		parser = this->filePArr.GetItemNoCheck(i);
 		if ((result = parser->ParseFileHdr(fd, pkgFile, targetType, hdr.Ptr())) != 0)
 		{
 			return result;
@@ -289,11 +278,11 @@ IO::ParsedObject *Parser::ParserList::ParseObjectType(NN<IO::ParsedObject> pobj,
 {
 	UOSInt i = 0;
 	UOSInt j = this->objPArr.GetCount();
-	IO::ObjectParser *parser;
+	NN<IO::ObjectParser> parser;
 	IO::ParsedObject *result;
 	while (i < j)
 	{
-		parser = this->objPArr.GetItem(i);
+		parser = this->objPArr.GetItemNoCheck(i);
 		if ((result = parser->ParseObject(pobj, 0, targetType)) != 0)
 		{
 			return result;

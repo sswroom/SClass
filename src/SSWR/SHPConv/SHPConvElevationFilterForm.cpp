@@ -13,7 +13,9 @@ void __stdcall SSWR::SHPConv::SHPConvElevationFilterForm::OnOKClicked(AnyType us
 	{
 		if (height > 0)
 		{
-			NEW_CLASS(me->filter, SSWR::SHPConv::ElevationFilter((UOSInt)me->cboCol->GetSelectedIndex(), height));
+			NN<ElevationFilter> filter;
+			NEW_CLASSNN(filter, SSWR::SHPConv::ElevationFilter((UOSInt)me->cboCol->GetSelectedIndex(), height));
+			me->filter = filter;
 			me->SetDialogResult(UI::GUIForm::DR_OK);
 		}
 	}
@@ -25,12 +27,12 @@ void __stdcall SSWR::SHPConv::SHPConvElevationFilterForm::OnCancelClicked(AnyTyp
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::SHPConv::SHPConvElevationFilterForm::SHPConvElevationFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, DB::DBFFile *dbf) : UI::GUIForm(parent, 294, 104, ui)
+SSWR::SHPConv::SHPConvElevationFilterForm::SHPConvElevationFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<DB::DBFFile> dbf) : UI::GUIForm(parent, 294, 104, ui)
 {
 	this->SetText(CSTR("Elevation Filter"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
-	NEW_CLASS(this->monMgr, Media::MonitorMgr());
+	NEW_CLASSNN(this->monMgr, Media::MonitorMgr());
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 	this->dbf = dbf;
 	this->filter = 0;
@@ -68,7 +70,7 @@ SSWR::SHPConv::SHPConvElevationFilterForm::SHPConvElevationFilterForm(Optional<U
 
 SSWR::SHPConv::SHPConvElevationFilterForm::~SHPConvElevationFilterForm()
 {
-	DEL_CLASS(this->monMgr);
+	this->monMgr.Delete();
 }
 
 void SSWR::SHPConv::SHPConvElevationFilterForm::OnMonitorChanged()
@@ -76,7 +78,7 @@ void SSWR::SHPConv::SHPConvElevationFilterForm::OnMonitorChanged()
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-SSWR::SHPConv::MapFilter *SSWR::SHPConv::SHPConvElevationFilterForm::GetFilter()
+Optional<SSWR::SHPConv::MapFilter> SSWR::SHPConv::SHPConvElevationFilterForm::GetFilter()
 {
 	return this->filter;
 }

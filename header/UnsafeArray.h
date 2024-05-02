@@ -45,6 +45,11 @@ public:
 		return this->p;
 	}
 
+	Bool operator==(UnsafeArray<T> ptr)
+	{
+		return this->p == ptr.p;
+	}
+	
 	UnsafeArray<T> operator++(int)
 	{
 		T *tmp = this->p;

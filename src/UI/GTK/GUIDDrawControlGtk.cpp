@@ -443,7 +443,7 @@ UI::GUIDDrawControl::GUIDDrawControl(NN<GUICore> ui, NN<UI::GUIClientControl> pa
 	this->clsData->pSurfaceUpdated = true;
 	this->clsData->drawPause = 0;
 	
-	NEW_CLASSNN(this->surfaceMgr, Media::FBMonitorSurfaceMgr(ui->GetMonitorMgr(), colorSess.Ptr()));
+	NEW_CLASSNN(this->surfaceMgr, Media::FBMonitorSurfaceMgr(ui->GetMonitorMgr(), colorSess));
 	this->inited = false;
 	this->primarySurface = 0;
 	this->buffSurface = 0;

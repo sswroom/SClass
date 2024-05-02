@@ -135,7 +135,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 	NN<Parser::ParserList> parsers = me->core->GetParserList();
 	IO::ParsedObject *pobj;
 	NN<IO::ParsedObject> nnpobj;
-	Data::ArrayList<Map::MapDrawLayer *> *layers;
+	NN<Data::ArrayListNN<Map::MapDrawLayer>> layers;
 	Math::Size2D<UOSInt> sz;
 	Math::Coord2D<OSInt> mousePos = me->ui->GetCursorPos();
 	Math::Coord2D<OSInt> scnPos = me->mapCtrl->GetScreenPosP();
@@ -151,7 +151,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 		mousePos.y = (OSInt)(sz.y >> 1);
 	}
 
-	NEW_CLASS(layers, Data::ArrayList<Map::MapDrawLayer*>());
+	NEW_CLASSNN(layers, Data::ArrayListNN<Map::MapDrawLayer>());
 	UOSInt i = 0;
 	UOSInt nFiles = files.GetCount();
 	while (i < nFiles)
@@ -173,7 +173,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 			IO::ParserType pt = nnpobj->GetParserType();
 			if (pt == IO::ParserType::MapLayer)
 			{
-				layers->Add((Map::MapDrawLayer*)pobj);
+				layers->Add(NN<Map::MapDrawLayer>::ConvertFrom(nnpobj));
 			}
 			else if (pt == IO::ParserType::MapEnv)
 			{
@@ -184,11 +184,11 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 			{
 				Math::Coord2DDbl pt1;
 				Math::Coord2DDbl pt2;
-				Map::VectorLayer *lyr;
+				NN<Map::VectorLayer> lyr;
 				NN<Media::SharedImage> simg;
 				NN<Math::Geometry::VectorImage> vimg;
 				Media::RasterImage *stimg;
-				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, files[i]->ToCString(), 0, 0, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, 0, 0, 0, CSTR_NULL));
+				NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, files[i]->ToCString(), 0, 0, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, 0, 0, 0, CSTR_NULL));
 				stimg = ((Media::ImageList*)pobj)->GetImage(0, 0);
 				Double calcImgW;
 				Double calcImgH;
@@ -252,7 +252,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 	{
 		me->AddLayers(layers);
 	}
-	DEL_CLASS(layers);
+	layers.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseMove(AnyType userObj, Math::Coord2D<OSInt> scnPos)
@@ -1790,7 +1790,7 @@ void SSWR::AVIRead::AVIRGISForm::AddLayer(NN<Map::MapDrawLayer> layer)
 	this->UpdateTimeRange();
 }
 
-void SSWR::AVIRead::AVIRGISForm::AddLayers(::Data::ArrayList<Map::MapDrawLayer*> *layers)
+void SSWR::AVIRead::AVIRGISForm::AddLayers(NN<::Data::ArrayListNN<Map::MapDrawLayer>> layers)
 {
 	NN<Map::MapDrawLayer> layer;
 	Bool needPan = this->env->GetItemCount(0) == 0;
@@ -1800,7 +1800,7 @@ void SSWR::AVIRead::AVIRGISForm::AddLayers(::Data::ArrayList<Map::MapDrawLayer*>
 
 	if (needPan)
 	{
-		if (layer.Set(layers->GetItem(0)))
+		if (layers->GetItem(0).SetTo(layer))
 		{
 			layer->GetBounds(bounds);
 		}
@@ -1810,7 +1810,7 @@ void SSWR::AVIRead::AVIRGISForm::AddLayers(::Data::ArrayList<Map::MapDrawLayer*>
 	j = layers->GetCount();
 	while (i < j)
 	{
-		if (layer.Set(layers->GetItem(i)))
+		if (layers->GetItem(i).SetTo(layer))
 		{
 			layer->AddUpdatedHandler(OnMapLayerUpdated, this);
 			this->env->AddLayer(0, layer, true);

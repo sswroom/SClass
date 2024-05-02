@@ -45,8 +45,8 @@ namespace Text
 			UInt32 GetColor() const;
 			FontFamily GetFamily() const;
 
-			WorkbookFont *Clone() const;
-			Bool Equals(WorkbookFont *font) const;
+			NN<WorkbookFont> Clone() const;
+			Bool Equals(NN<WorkbookFont> font) const;
 		};
 	}
 }

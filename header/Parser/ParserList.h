@@ -1,6 +1,6 @@
 #ifndef _SM_PARSER_PARSERLIST
 #define _SM_PARSER_PARSERLIST
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "IO/FileParser.h"
 #include "IO/FileSelector.h"
 #include "IO/ObjectParser.h"
@@ -12,16 +12,16 @@ namespace Parser
 	class ParserList
 	{
 	private:
-		Data::ArrayList<IO::FileParser*> filePArr;
-		Data::ArrayList<IO::ObjectParser*> objPArr;
+		Data::ArrayListNN<IO::FileParser> filePArr;
+		Data::ArrayListNN<IO::ObjectParser> objPArr;
 
 	protected:
 		ParserList();
 	public:
 		virtual ~ParserList();
 
-		void AddFileParser(IO::FileParser *parser);
-		void AddObjectParser(IO::ObjectParser *parser);
+		void AddFileParser(NN<IO::FileParser> parser);
+		void AddObjectParser(NN<IO::ObjectParser> parser);
 
 		void SetCodePage(UInt32 codePage);
 		void SetMapManager(Map::MapManager *mapMgr);

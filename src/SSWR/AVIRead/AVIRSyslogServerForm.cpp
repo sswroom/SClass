@@ -64,12 +64,11 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnLogSelChg(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnClientLog(AnyType userObj, UInt32 ip, Text::CString message)
 {
 	NN<SSWR::AVIRead::AVIRSyslogServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSyslogServerForm>();
-	IPLog *ipLog;
+	NN<IPLog> ipLog;
 	Sync::MutexUsage mutUsage(me->ipMut);
-	ipLog = me->ipMap.Get(ip);
-	if (ipLog == 0)
+	if (!me->ipMap.Get(ip).SetTo(ipLog))
 	{
-		ipLog = MemAlloc(IPLog, 1);
+		ipLog = MemAllocNN(IPLog);
 		ipLog->ip = ip;
 		NEW_CLASS(ipLog->logMessage, Data::ArrayListStringNN());
 		me->ipMap.Put(ip, ipLog);
@@ -104,18 +103,17 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnTimerTick(AnyType userObj)
 		while (i < j)
 		{
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, me->ipMap.GetKey(i));
-			me->lbClient->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)me->ipMap.GetItem(i));
+			me->lbClient->AddItem(CSTRP(sbuff, sptr), me->ipMap.GetItemNoCheck(i));
 			i++;
 		}
 	}
 	if (me->msgListUpd)
 	{
 		me->msgListUpd = false;
-		IPLog *ipLog;
+		NN<IPLog> ipLog;
 		Sync::MutexUsage mutUsage(me->ipMut);
 		me->lbLog->ClearItems();
-		ipLog = me->ipMap.Get(me->currIP);
-		if (ipLog)
+		if (me->ipMap.Get(me->currIP).SetTo(ipLog))
 		{
 			i = ipLog->logMessage->GetCount();
 			while (i-- > 0)
@@ -169,19 +167,19 @@ SSWR::AVIRead::AVIRSyslogServerForm::~AVIRSyslogServerForm()
 {
 	SDEL_CLASS(this->svr);
 
-	IPLog *ipLog;
+	NN<IPLog> ipLog;
 	UOSInt i = this->ipMap.GetCount();
 	UOSInt j;
 	while (i-- > 0)
 	{
-		ipLog = this->ipMap.GetItem(i);
+		ipLog = this->ipMap.GetItemNoCheck(i);
 		j = ipLog->logMessage->GetCount();
 		while (j-- > 0)
 		{
 			OPTSTR_DEL(ipLog->logMessage->GetItem(j));
 		}
 		DEL_CLASS(ipLog->logMessage);
-		MemFree(ipLog);
+		MemFreeNN(ipLog);
 	}
 }
 

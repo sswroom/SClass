@@ -37,7 +37,7 @@ namespace SSWR
 
 		private:
 			IO::Writer *console;
-			Net::DNSProxy *proxy;
+			NN<Net::DNSProxy> proxy;
 			NN<Net::SocketFactory> sockf;
 
 			Sync::Mutex cliInfoMut;

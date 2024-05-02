@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREADCE_AVIRCEBASEFORM
 #define _SM_SSWR_AVIREADCE_AVIRCEBASEFORM
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIHSplitter.h"
@@ -15,7 +15,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				const WChar *name;
+				NN<Text::String> name;
 				Int32 item;
 			} MenuInfo;
 		private:
@@ -23,20 +23,20 @@ namespace SSWR
 			NN<UI::GUIListBox> lbCategory;
 			NN<UI::GUIHSplitter> hspMain;
 			NN<UI::GUIListBox> lbContent;
-			Data::Int32FastMap<Data::ArrayList<MenuInfo*>*> *menuItems;
+			Data::Int32FastMapNN<Data::ArrayListNN<MenuInfo>> menuItems;
 
 		private:
-			static void __stdcall FileHandler(void *userObj, const UTF8Char **files, OSInt nFiles);
-			static void __stdcall OnCategoryChg(void *userObj);
-			static void __stdcall OnContentClick(void *userObj);
+			static void __stdcall FileHandler(AnyType userObj, const UTF8Char **files, UOSInt nFiles);
+			static void __stdcall OnCategoryChg(AnyType userObj);
+			static void __stdcall OnContentClick(AnyType userObj);
 
-			static MenuInfo *__stdcall NewMenuItem(const WChar *name, Int32 item);
+			static NN<MenuInfo> __stdcall NewMenuItem(Text::CStringNN name, Int32 item);
 		public:
 			AVIRCEBaseForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core);
 			virtual ~AVIRCEBaseForm();
 
 			virtual void EventMenuClicked(UInt16 cmdId);
 		};
-	};
-};
+	}
+}
 #endif

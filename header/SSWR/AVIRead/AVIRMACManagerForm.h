@@ -60,7 +60,7 @@ namespace SSWR
 			NN<UI::GUITabPage> tpWireshark;
 			NN<UI::GUIButton> btnWireshark;
 
-			Data::ArrayList<LogFileEntry*> logList;
+			Data::ArrayListNN<LogFileEntry> logList;
 			Net::MACInfoList macList;
 
 			static void __stdcall OnFileClicked(AnyType userObj);

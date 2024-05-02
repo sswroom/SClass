@@ -113,7 +113,7 @@ namespace Media
 			Double resizerSrcRefLuminance;
 		} ThreadStat;
 	protected:
-		Media::ColorManagerSess *colorSess;
+		NN<Media::ColorManagerSess> colorSess;
 		Media::IVideoSource *video;
 		Media::FrameInfo videoInfo;
 		NN<Media::MonitorSurfaceMgr> surfaceMgr;
@@ -190,7 +190,7 @@ namespace Media
 		Media::VideoFilter::IVTCFilter ivtc;
 		Media::VideoFilter::UVOffsetFilter uvOfst;
 		Media::VideoFilter::AutoCropFilter autoCrop;
-		Data::ArrayList<Media::IImgFilter*> imgFilters;
+		Data::ArrayListNN<Media::IImgFilter> imgFilters;
 
 		Int32 picCnt;
 		EndNotifier endHdlr;
@@ -199,7 +199,7 @@ namespace Media
 		void CalDisplayRect(UOSInt srcWidth, UOSInt srcHeight, DrawRect *rect);
 
 		virtual void ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, VideoBuff *vbuff2);
-		virtual Media::IImgResizer *CreateResizer(Media::ColorManagerSess *colorSess, UInt32 bitDepth, Double srcRefLuminance);
+		virtual Media::IImgResizer *CreateResizer(NN<Media::ColorManagerSess> colorSess, UInt32 bitDepth, Double srcRefLuminance);
 		virtual void CreateCSConv(NN<ThreadStat> tstat, Media::FrameInfo *info);
 		virtual void CreateThreadResizer(NN<ThreadStat> tstat);
 
@@ -226,7 +226,7 @@ namespace Media
 		virtual void LockUpdateSize(NN<Sync::MutexUsage> mutUsage) = 0;
 		virtual void DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn) = 0;
 	public:
-		VideoRenderer(Media::ColorManagerSess *colorSess, NN<Media::MonitorSurfaceMgr> surfaceMgr, UOSInt buffCnt, UOSInt threadCnt);
+		VideoRenderer(NN<Media::ColorManagerSess> colorSess, NN<Media::MonitorSurfaceMgr> surfaceMgr, UOSInt buffCnt, UOSInt threadCnt);
 		virtual ~VideoRenderer();
 
 		void SetVideo(Media::IVideoSource *video);
@@ -259,7 +259,7 @@ namespace Media
 		virtual void SetRotateType(Media::RotateType rotateType) = 0;
 		virtual Media::RotateType GetRotateType() const = 0;
 
-		void AddImgFilter(Media::IImgFilter *imgFilter);
+		void AddImgFilter(NN<Media::IImgFilter> imgFilter);
 		void Snapshot();
 		void GetStatus(NN<RendererStatus2> status);
 		NN<Media::MonitorSurfaceMgr> GetSurfaceMgr();

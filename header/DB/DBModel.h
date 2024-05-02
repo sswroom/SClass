@@ -1,6 +1,6 @@
 #ifndef _SM_DB_DBMODEL
 #define _SM_DB_DBMODEL
-#include "Data/ICaseStringMap.h"
+#include "Data/ICaseStringMapNN.h"
 #include "DB/DBTool.h"
 #include "DB/TableDef.h"
 
@@ -9,16 +9,16 @@ namespace DB
 	class DBModel
 	{
 	private:
-		Data::ArrayList<TableDef*> tables;
-		Data::ICaseStringMap<TableDef*> tableMap;
+		Data::ArrayListNN<TableDef> tables;
+		Data::ICaseStringMapNN<TableDef> tableMap;
 
 	public:
 		DBModel();
 		~DBModel();
 
-		Bool LoadDatabase(DB::DBTool *db, Text::CString dbName, Text::CString schemaName);
-		TableDef *GetTable(Text::CString tableName);
-		UOSInt GetTableNames(Data::ArrayList<Text::CString> *tableNames);
+		Bool LoadDatabase(NN<DB::DBTool> db, Text::CString dbName, Text::CString schemaName);
+		Optional<TableDef> GetTable(Text::CStringNN tableName);
+		UOSInt GetTableNames(NN<Data::ArrayList<Text::CString>> tableNames);
 	};
 }
 #endif

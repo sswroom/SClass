@@ -421,7 +421,7 @@ Bool Manage::Process::SetMemorySize(UOSInt minSize, UOSInt maxSize)
 #endif
 }
 
-UOSInt Manage::Process::GetThreadIds(Data::ArrayList<UInt32> *threadList)
+UOSInt Manage::Process::GetThreadIds(NN<Data::ArrayList<UInt32>> threadList)
 {
 	THREADENTRY32 threadEntry;
 	UOSInt threadCnt = 0;
@@ -502,9 +502,9 @@ UOSInt Manage::Process::GetModules(NN<Data::ArrayListNN<Manage::ModuleInfo>> mod
 #endif
 }
 
-UOSInt Manage::Process::GetThreads(NN<Data::ArrayList<Manage::ThreadInfo *>> threadList)
+UOSInt Manage::Process::GetThreads(NN<Data::ArrayListNN<Manage::ThreadInfo>> threadList)
 {
-	Manage::ThreadInfo *tInfo;
+	NN<Manage::ThreadInfo> tInfo;
 	UOSInt threadCnt = 0;
 	THREADENTRY32 threadEntry;
 	HANDLE hSnapShot;
@@ -522,7 +522,7 @@ UOSInt Manage::Process::GetThreads(NN<Data::ArrayList<Manage::ThreadInfo *>> thr
 			{
 				if (threadEntry.th32OwnerProcessID == this->procId)
 				{
-					NEW_CLASS(tInfo, Manage::ThreadInfo(this->procId, threadEntry.th32ThreadID));
+					NEW_CLASSNN(tInfo, Manage::ThreadInfo(this->procId, threadEntry.th32ThreadID));
 					threadList->Add(tInfo);
 					threadCnt++;
 				}
@@ -538,7 +538,7 @@ UOSInt Manage::Process::GetThreads(NN<Data::ArrayList<Manage::ThreadInfo *>> thr
 	return threadCnt;
 }
 
-UOSInt Manage::Process::GetHeapLists(Data::ArrayList<UInt32> *heapList)
+UOSInt Manage::Process::GetHeapLists(NN<Data::ArrayList<UInt32>> heapList)
 {
 	HEAPLIST32 heapListInfo;
 	HANDLE hSnapShot;
@@ -566,10 +566,10 @@ UOSInt Manage::Process::GetHeapLists(Data::ArrayList<UInt32> *heapList)
 	return i;
 }
 
-UOSInt Manage::Process::GetHeaps(Data::ArrayList<HeapInfo*> *heapList, UInt32 heapListId, UOSInt maxCount)
+UOSInt Manage::Process::GetHeaps(NN<Data::ArrayListNN<HeapInfo>> heapList, UInt32 heapListId, UOSInt maxCount)
 {
 	HEAPENTRY32 ent;
-	HeapInfo *heap;
+	NN<HeapInfo> heap;
 	UOSInt cnt = 0;
 	if (maxCount <= 0)
 	{
@@ -585,7 +585,7 @@ UOSInt Manage::Process::GetHeaps(Data::ArrayList<HeapInfo*> *heapList, UInt32 he
 		{
 			while (true)
 			{
-				heap = MemAlloc(HeapInfo, 1);
+				heap = MemAllocNN(HeapInfo);
 				heap->startAddr = ent.dwAddress;
 				heap->size = ent.dwBlockSize;
 				switch (ent.dwFlags)
@@ -616,7 +616,7 @@ UOSInt Manage::Process::GetHeaps(Data::ArrayList<HeapInfo*> *heapList, UInt32 he
 	{
 		while (true)
 		{
-			heap = MemAlloc(HeapInfo, 1);
+			heap = MemAllocNN(HeapInfo);
 			heap->startAddr = ent.dwAddress;
 			heap->size = ent.dwBlockSize;
 			switch (ent.dwFlags)
@@ -645,14 +645,9 @@ UOSInt Manage::Process::GetHeaps(Data::ArrayList<HeapInfo*> *heapList, UInt32 he
 
 }
 
-void Manage::Process::FreeHeaps(Data::ArrayList<HeapInfo*> *heapList)
+void Manage::Process::FreeHeaps(NN<Data::ArrayListNN<HeapInfo>> heapList)
 {
-	UOSInt i;
-	i = heapList->GetCount();
-	while (i-- > 0)
-	{
-		MemFree(heapList->RemoveAt(i));
-	}
+	heapList->DeleteAll();
 }
 
 Data::Timestamp Manage::Process::GetStartTime()
@@ -669,7 +664,7 @@ Data::Timestamp Manage::Process::GetStartTime()
 	}
 }
 
-UOSInt Manage::Process::GetHandles(Data::ArrayList<HandleInfo>* handleList)
+UOSInt Manage::Process::GetHandles(NN<Data::ArrayList<HandleInfo>> handleList)
 {
 	IO::Library lib((const UTF8Char*)"Ntdll.dll");
 	NtQuerySystemInformationFunc qsi = (NtQuerySystemInformationFunc)lib.GetFunc("NtQuerySystemInformation");
@@ -708,7 +703,7 @@ UOSInt Manage::Process::GetHandles(Data::ArrayList<HandleInfo>* handleList)
 	return ret;
 }
 
-Bool Manage::Process::GetHandleDetail(Int32 id, HandleType* handleType, NN<Text::StringBuilderUTF8> sbDetail)
+Bool Manage::Process::GetHandleDetail(Int32 id, OutParam<HandleType> handleType, NN<Text::StringBuilderUTF8> sbDetail)
 {
 	HANDLE dupHandle;
 	HANDLE dupHandle2;
@@ -730,7 +725,7 @@ Bool Manage::Process::GetHandleDetail(Int32 id, HandleType* handleType, NN<Text:
 	{
 		if ((status = dhand((HANDLE)this->handle, (HANDLE)(OSInt)id, GetCurrentProcess(), &dupHandle, 0, 0, 0)) < 0)
 		{
-			*handleType = HandleType::Unknown;
+			handleType.Set(HandleType::Unknown);
 			sbDetail->AppendC(UTF8STRC("Error in duplicate handle: 0x"));
 			sbDetail->AppendHex32((UInt32)status);
 			sbDetail->AppendC(UTF8STRC(" ("));
@@ -746,7 +741,7 @@ Bool Manage::Process::GetHandleDetail(Int32 id, HandleType* handleType, NN<Text:
 	if ((status = qryObj(dupHandle, ObjectTypeInformation, objectTypeInfo, sizeof(buff), 0)) < 0)
 	{
 		if (needClose) CloseHandle(dupHandle);
-		*handleType = HandleType::Unknown;
+		handleType.Set(HandleType::Unknown);
 		sbDetail->AppendC(UTF8STRC("Error in getting handle type: 0x"));
 		sbDetail->AppendHex32((UInt32)status);
 		sbDetail->AppendC(UTF8STRC(" ("));
@@ -759,64 +754,64 @@ Bool Manage::Process::GetHandleDetail(Int32 id, HandleType* handleType, NN<Text:
 	ProcessNameType nameType = ProcessNameType::Default;
 	if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Event")))
 	{
-		*handleType = HandleType::Event;
+		handleType.Set(HandleType::Event);
 		nameType = ProcessNameType::NoName;
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Key")))
 	{
-		*handleType = HandleType::Key;
+		handleType.Set(HandleType::Key);
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("WaitCompletionPacket")))
 	{
-		*handleType = HandleType::WaitCompletionPacket;
+		handleType.Set(HandleType::WaitCompletionPacket);
 		nameType = ProcessNameType::NoName;
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("IoCompletion")))
 	{
-		*handleType = HandleType::IoCompletion;
+		handleType.Set(HandleType::IoCompletion);
 		nameType = ProcessNameType::NoName;
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Mutant")))
 	{
-		*handleType = HandleType::Mutant;
+		handleType.Set(HandleType::Mutant);
 		nameType = ProcessNameType::NoName;
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("TpWorkerFactory")))
 	{
-		*handleType = HandleType::TpWorkerFactory;
+		handleType.Set(HandleType::TpWorkerFactory);
 		nameType = ProcessNameType::NoName;
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Section")))
 	{
-		*handleType = HandleType::Section;
+		handleType.Set(HandleType::Section);
 		nameType = ProcessNameType::NoName;
  	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("IRTimer")))
 	{
-		*handleType = HandleType::IRTimer;
+		handleType.Set(HandleType::IRTimer);
 		nameType = ProcessNameType::NoName;
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Directory")))
 	{
-		*handleType = HandleType::Directory;
+		handleType.Set(HandleType::Directory);
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("File")))
 	{
-		*handleType = HandleType::File;
+		handleType.Set(HandleType::File);
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ALPC Port")))
 	{
-		*handleType = HandleType::ALPC_Port;
+		handleType.Set(HandleType::ALPC_Port);
 		nameType = ProcessNameType::NoName;
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Semaphore")))
 	{
-		*handleType = HandleType::Semaphore;
+		handleType.Set(HandleType::Semaphore);
 		nameType = ProcessNameType::NoName;
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Thread")))
 	{
-		*handleType = HandleType::Thread;
+		handleType.Set(HandleType::Thread);
 		if (dhand((HANDLE)this->handle, (HANDLE)(OSInt)id, GetCurrentProcess(), &dupHandle2, THREAD_QUERY_LIMITED_INFORMATION, 0, 0) >= 0)
 		{
 			sbDetail->AppendU32(GetThreadId((HANDLE)dupHandle2));
@@ -826,28 +821,28 @@ Bool Manage::Process::GetHandleDetail(Int32 id, HandleType* handleType, NN<Text:
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("IoCompletionReserve")))
 	{
-		*handleType = HandleType::IoCompletionReserve;
+		handleType.Set(HandleType::IoCompletionReserve);
 		nameType = ProcessNameType::NoName;
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("WindowStation")))
 	{
-		*handleType = HandleType::WindowStation;
+		handleType.Set(HandleType::WindowStation);
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Desktop")))
 	{
-		*handleType = HandleType::Desktop;
+		handleType.Set(HandleType::Desktop);
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Timer")))
 	{
-		*handleType = HandleType::Timer;
+		handleType.Set(HandleType::Timer);
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Token")))
 	{
-		*handleType = HandleType::Token;
+		handleType.Set(HandleType::Token);
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Process")))
 	{
-		*handleType = HandleType::Process;
+		handleType.Set(HandleType::Process);
 		if (dhand((HANDLE)this->handle, (HANDLE)(OSInt)id, GetCurrentProcess(), &dupHandle2, PROCESS_QUERY_LIMITED_INFORMATION, 0, 0) >= 0)
 		{
 			sbDetail->AppendU32(GetProcessId((HANDLE)dupHandle2));
@@ -857,16 +852,16 @@ Bool Manage::Process::GetHandleDetail(Int32 id, HandleType* handleType, NN<Text:
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("DxgkCompositionObject")))
 	{
-		*handleType = HandleType::DxgkCompositionObject;
+		handleType.Set(HandleType::DxgkCompositionObject);
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("EtwRegistration")))
 	{
-		*handleType = HandleType::EtwRegistration;
+		handleType.Set(HandleType::EtwRegistration);
 		nameType = ProcessNameType::NoName;
 	}
 	else
 	{
-		*handleType = HandleType::Unknown;
+		handleType.Set(HandleType::Unknown);
 		sbDetail->AppendC(UTF8STRC("Unknown Type name: "));
 		sbDetail->AppendP(sbuff, sptr);
 		nameType = ProcessNameType::NameDone;

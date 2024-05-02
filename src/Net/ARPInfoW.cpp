@@ -41,7 +41,7 @@ Net::ARPInfo::ARPType Net::ARPInfo::GetARPType()
 	return this->arpType;
 }
 
-UOSInt Net::ARPInfo::GetARPInfoList(Data::ArrayList<Net::ARPInfo*> *arpInfoList)
+UOSInt Net::ARPInfo::GetARPInfoList(NN<Data::ArrayListNN<Net::ARPInfo>> arpInfoList)
 {
 	UInt32 size;
 	UOSInt cnt;
@@ -49,7 +49,7 @@ UOSInt Net::ARPInfo::GetARPInfoList(Data::ArrayList<Net::ARPInfo*> *arpInfoList)
 	size = 0;
 	if (GetIpNetTable(0, (ULONG*)&size, TRUE) == ERROR_INSUFFICIENT_BUFFER)
 	{
-		Net::ARPInfo *arp;
+		NN<Net::ARPInfo> arp;
 		MIB_IPNETTABLE *addrTable = (MIB_IPNETTABLE*)MAlloc(size);
 		cnt = 0;
 		if (GetIpNetTable(addrTable, (ULONG*)&size, TRUE) == NO_ERROR)
@@ -58,7 +58,7 @@ UOSInt Net::ARPInfo::GetARPInfoList(Data::ArrayList<Net::ARPInfo*> *arpInfoList)
 			cnt = addrTable->dwNumEntries;
 			while (i < cnt)
 			{
-				NEW_CLASS(arp, Net::ARPInfo(&addrTable->table[i]));
+				NEW_CLASSNN(arp, Net::ARPInfo(&addrTable->table[i]));
 				arpInfoList->Add(arp);
 				i++;
 			}

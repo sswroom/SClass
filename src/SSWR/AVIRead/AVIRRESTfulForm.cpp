@@ -95,7 +95,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(AnyType userObj)
 			UOSInt i;
 			UOSInt j;
 			UOSInt k;
-			me->dbModel->GetTableNames(&tableNames);
+			me->dbModel->GetTableNames(tableNames);
 			i = 0;
 			j = tableNames.GetCount();
 			while (i < j)
@@ -182,7 +182,7 @@ void SSWR::AVIRead::AVIRRESTfulForm::InitDB()
 		NEW_CLASSNN(dbModel, DB::DBModel());
 		this->db = db.Ptr();
 		this->dbModel = dbModel.Ptr();
-		this->dbModel->LoadDatabase(this->db, CSTR_NULL, CSTR_NULL);
+		this->dbModel->LoadDatabase(db, CSTR_NULL, CSTR_NULL);
 		NEW_CLASS(this->dbCache, DB::DBCache(dbModel, db));
 		this->txtDatabase->SetText(sb.ToCString());
 	}

@@ -17,7 +17,9 @@ void __stdcall SSWR::SHPConv::SHPConvValueFilterForm::OnOKClicked(AnyType userOb
 	{
 		typ = 0;
 	}
-	NEW_CLASS(me->filter, ValueFilter((UOSInt)me->cboCol->GetSelectedIndex(), sb.ToCString(), typ));
+	NN<ValueFilter> filter;
+	NEW_CLASSNN(filter, ValueFilter((UOSInt)me->cboCol->GetSelectedIndex(), sb.ToCString(), typ));
+	me->filter = filter;
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
@@ -27,12 +29,12 @@ void __stdcall SSWR::SHPConv::SHPConvValueFilterForm::OnCancelClicked(AnyType us
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::SHPConv::SHPConvValueFilterForm::SHPConvValueFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, DB::DBFFile *dbf) : UI::GUIForm(parent, 256, 152, ui)
+SSWR::SHPConv::SHPConvValueFilterForm::SHPConvValueFilterForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<DB::DBFFile> dbf) : UI::GUIForm(parent, 256, 152, ui)
 {
 	this->SetText(CSTR("Value Filter"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
-	NEW_CLASS(this->monMgr, Media::MonitorMgr());
+	NEW_CLASSNN(this->monMgr, Media::MonitorMgr());
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 	this->dbf = dbf;
 	this->filter = 0;
@@ -76,7 +78,7 @@ SSWR::SHPConv::SHPConvValueFilterForm::SHPConvValueFilterForm(Optional<UI::GUICl
 
 SSWR::SHPConv::SHPConvValueFilterForm::~SHPConvValueFilterForm()
 {
-	DEL_CLASS(this->monMgr);
+	this->monMgr.Delete();
 }
 
 void SSWR::SHPConv::SHPConvValueFilterForm::OnMonitorChanged()
@@ -84,7 +86,7 @@ void SSWR::SHPConv::SHPConvValueFilterForm::OnMonitorChanged()
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-SSWR::SHPConv::MapFilter *SSWR::SHPConv::SHPConvValueFilterForm::GetFilter()
+Optional<SSWR::SHPConv::MapFilter> SSWR::SHPConv::SHPConvValueFilterForm::GetFilter()
 {
 	return this->filter;
 }

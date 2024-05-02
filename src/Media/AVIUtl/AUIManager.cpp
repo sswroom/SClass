@@ -7,18 +7,16 @@ Media::AVIUtl::AUIManager::AUIManager()
 {
 	WChar wbuff[512];
 	IO::Path::PathType pt;
-	Media::AVIUtl::AUIPlugin *plugin;
-	NEW_CLASS(this->plugins, Data::ArrayList<Media::AVIUtl::AUIPlugin *>());
+	NN<Media::AVIUtl::AUIPlugin> plugin;
 
 	IO::Path::FindFileSession *sess = IO::Path::FindFileW(L"*.aui");
 	if (sess)
 	{
 		while (IO::Path::FindNextFileW(wbuff, sess, 0, &pt, 0))
 		{
-			plugin = Media::AVIUtl::AUIPlugin::LoadPlugin(wbuff);
-			if (plugin)
+			if (Media::AVIUtl::AUIPlugin::LoadPlugin(wbuff).SetTo(plugin))
 			{
-				this->plugins->Add(plugin);
+				this->plugins.Add(plugin);
 			}
 		}
 		IO::Path::FindFileClose(sess);
@@ -27,18 +25,10 @@ Media::AVIUtl::AUIManager::AUIManager()
 
 Media::AVIUtl::AUIManager::~AUIManager()
 {
-	Media::AVIUtl::AUIPlugin *plugin;
-	UOSInt i;
-	i = this->plugins->GetCount();
-	while (i-- > 0)
-	{
-		plugin = this->plugins->GetItem(i);
-		DEL_CLASS(plugin);
-	}
-	DEL_CLASS(this->plugins);
+	this->plugins.DeleteAll();
 }
 
-UOSInt Media::AVIUtl::AUIManager::LoadFile(const UTF8Char *fileName, Data::ArrayList<Media::IMediaSource*> *outArr)
+UOSInt Media::AVIUtl::AUIManager::LoadFile(const UTF8Char *fileName, NN<Data::ArrayListNN<Media::IMediaSource>> outArr)
 {
 	Char sbuff[512];
 	Text::Encoding enc;
@@ -46,10 +36,10 @@ UOSInt Media::AVIUtl::AUIManager::LoadFile(const UTF8Char *fileName, Data::Array
 
 	UOSInt retSize = 0;
 	UOSInt i;
-	i = this->plugins->GetCount();
+	i = this->plugins.GetCount();
 	while (i-- > 0)
 	{
-		retSize = this->plugins->GetItem(i)->LoadFile(sbuff, outArr);
+		retSize = this->plugins.GetItemNoCheck(i)->LoadFile(sbuff, outArr);
 		if (retSize > 0)
 			return retSize;
 	}
@@ -59,9 +49,9 @@ UOSInt Media::AVIUtl::AUIManager::LoadFile(const UTF8Char *fileName, Data::Array
 void Media::AVIUtl::AUIManager::PrepareSelector(NN<IO::FileSelector> selector)
 {
 	UOSInt i;
-	i = this->plugins->GetCount();
+	i = this->plugins.GetCount();
 	while (i-- > 0)
 	{
-		this->plugins->GetItem(i)->PrepareSelector(selector);
+		this->plugins.GetItemNoCheck(i)->PrepareSelector(selector);
 	}
 }
