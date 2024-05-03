@@ -215,7 +215,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		IO::Path::PathType pt;
 		UOSInt i;
 		UOSInt j = 1;
-		while (!showHelp && j < cmdCnt)
+		while (j < cmdCnt && (!foundFiles || !showHelp))
 		{
 			if (cmdLines[j][0] == '-')
 			{
@@ -300,7 +300,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			}
 			j++;
 		}
-		if (md5File.v == 0)
+		if (md5File.leng == 0)
 		{
 			console->WriteLineC(UTF8STRC("MD5 file missing"));
 		}
