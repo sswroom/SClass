@@ -137,9 +137,9 @@ public:
 	}
 };
 
-Bool VerifyMD5(const UTF8Char *fileName, UOSInt fileNameLen)
+Bool VerifyMD5(Text::CStringNN fileName, Bool flagCont)
 {
-	if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".MD5")))
+	if (fileName.EndsWithICase(UTF8STRC(".MD5")))
 	{
 		IO::FileStream fs(CSTR("difffiles.txt"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		Text::UTF8Writer diffLog(fs);
@@ -147,7 +147,7 @@ Bool VerifyMD5(const UTF8Char *fileName, UOSInt fileNameLen)
 		Bool succ = true;
 		IO::FileCheck *fileChk;
 		{
-			IO::StmData::FileData fd({fileName, fileNameLen}, false);
+			IO::StmData::FileData fd(fileName, false);
 			fileChk = (IO::FileCheck *)parser.ParseFile(fd, 0, IO::ParserType::FileCheck);
 		}
 		if (fileChk == 0)
@@ -172,11 +172,12 @@ Bool VerifyMD5(const UTF8Char *fileName, UOSInt fileNameLen)
 					sb.AppendOpt(fileChk->GetEntryName(i));
 					succ = false;
 					console->WriteLineC(sb.v, sb.leng);
+					if (!flagCont)
+						break;
 					if (fileChk->GetEntryName(i).SetTo(entryName))
 					{
 						diffLog.WriteLineC(entryName->v, entryName->leng);
 					}
-					break;
 				}
 				i++;
 			}
@@ -200,25 +201,12 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UTF8Char **cmdLines = progCtrl->GetCommandLines(progCtrl, cmdCnt);
 	NEW_CLASS(console, IO::ConsoleWriter());
 	showHelp = true;
-	if (cmdCnt == 2)
+	if (cmdCnt >= 2)
 	{
-		UOSInt cmdLen = Text::StrCharCnt(cmdLines[1]);
-		IO::Path::PathType pt = IO::Path::GetPathType({cmdLines[1], cmdLen});
-		if (pt == IO::Path::PathType::Unknown)
-		{
-			console->WriteLineC(UTF8STRC("File not found"));
-		}
-		else
-		{
-			if (VerifyMD5(cmdLines[1], cmdLen))
-			{
-				showHelp = false;
-			}
-		}
-	}
-	else if (cmdCnt >= 3)
-	{
+		Bool flagCont = false;
+		Bool foundFiles = false;
 		ProgressHandler progress;
+		Text::CString md5File = CSTR_NULL;
 		IO::FileCheck *fileChk = 0;
 		NN<IO::FileCheck> thisChk;
 		NN<IO::FileCheck> nnfileChk;
@@ -226,82 +214,117 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		Text::StringBuilderUTF8 sb;
 		IO::Path::PathType pt;
 		UOSInt i;
-		UOSInt j = 2;
-		showHelp = false;
+		UOSInt j = 1;
 		while (!showHelp && j < cmdCnt)
 		{
-			sptr = Text::StrConcat(sbuff, cmdLines[2]);
-			i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
-			Text::CStringNN cstr = CSTRP(sbuff, sptr).Substring(i + 1);
-			if (cstr.IndexOf('*') != INVALID_INDEX || cstr.IndexOf('?') != INVALID_INDEX)
+			if (cmdLines[j][0] == '-')
 			{
-				sess = IO::Path::FindFile(CSTRP(sbuff, sptr));
-				if (sess)
+				if (cmdLines[j][1] == 'c')
 				{
-					while ((sptr = IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, &pt, 0)) != 0)
-					{
-						if (sbuff[i + 1] == '.' && (sbuff[i + 2] == 0 || (sbuff[i + 2] == '.' && sbuff[i + 3] == 0)))
-						{
-
-						}
-						else
-						{
-							sb.ClearStr();
-							sb.AppendC(UTF8STRC("Checking "));
-							sb.AppendP(&sbuff[i + 1], sptr);
-							console->WriteLineC(sb.ToString(), sb.GetLength());
-							if (!thisChk.Set(IO::FileCheck::CreateCheck(CSTRP(sbuff, sptr), Crypto::Hash::HashType::MD5, &progress, false)))
-							{
-								SDEL_CLASS(fileChk);
-								showHelp = true;
-								break;
-							}
-							else if (fileChk)
-							{
-								fileChk->MergeFrom(thisChk);
-								thisChk.Delete();
-							}
-							else
-							{
-								fileChk = thisChk.Ptr();
-							}
-						}
-					}
-					IO::Path::FindFileClose(sess);
+					flagCont = true;
 				}
-				else
-				{
-					sb.ClearStr();
-					sb.AppendC(UTF8STRC("Error in searching for path: "));
-					sb.AppendP(sbuff, sptr);
-					console->WriteLineC(sb.ToString(), sb.GetLength());
-				}
+			}
+			else if (md5File.v == 0)
+			{
+				md5File = Text::CStringNN::FromPtr(cmdLines[j]);
+				showHelp = false;
 			}
 			else
 			{
-				if (!thisChk.Set(IO::FileCheck::CreateCheck(CSTRP(sbuff, sptr), Crypto::Hash::HashType::MD5, &progress, false)))
+				foundFiles = true;
+				sptr = Text::StrConcat(sbuff, cmdLines[j]);
+				i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+				Text::CStringNN cstr = CSTRP(sbuff, sptr).Substring(i + 1);
+				if (cstr.IndexOf('*') != INVALID_INDEX || cstr.IndexOf('?') != INVALID_INDEX)
 				{
-					SDEL_CLASS(fileChk);
-					showHelp = true;
-				}
-				else if (fileChk)
-				{
-					fileChk->MergeFrom(thisChk);
-					thisChk.Delete();
+					sess = IO::Path::FindFile(CSTRP(sbuff, sptr));
+					if (sess)
+					{
+						while ((sptr = IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, &pt, 0)) != 0)
+						{
+							if (sbuff[i + 1] == '.' && (sbuff[i + 2] == 0 || (sbuff[i + 2] == '.' && sbuff[i + 3] == 0)))
+							{
+
+							}
+							else
+							{
+								sb.ClearStr();
+								sb.AppendC(UTF8STRC("Checking "));
+								sb.AppendP(&sbuff[i + 1], sptr);
+								console->WriteLineC(sb.ToString(), sb.GetLength());
+								if (!thisChk.Set(IO::FileCheck::CreateCheck(CSTRP(sbuff, sptr), Crypto::Hash::HashType::MD5, &progress, false)))
+								{
+									SDEL_CLASS(fileChk);
+									showHelp = true;
+									break;
+								}
+								else if (fileChk)
+								{
+									fileChk->MergeFrom(thisChk);
+									thisChk.Delete();
+								}
+								else
+								{
+									fileChk = thisChk.Ptr();
+								}
+							}
+						}
+						IO::Path::FindFileClose(sess);
+					}
+					else
+					{
+						sb.ClearStr();
+						sb.AppendC(UTF8STRC("Error in searching for path: "));
+						sb.AppendP(sbuff, sptr);
+						console->WriteLineC(sb.ToString(), sb.GetLength());
+					}
 				}
 				else
 				{
-					fileChk = thisChk.Ptr();
+					if (!thisChk.Set(IO::FileCheck::CreateCheck(CSTRP(sbuff, sptr), Crypto::Hash::HashType::MD5, &progress, false)))
+					{
+						SDEL_CLASS(fileChk);
+						showHelp = true;
+					}
+					else if (fileChk)
+					{
+						fileChk->MergeFrom(thisChk);
+						thisChk.Delete();
+					}
+					else
+					{
+						fileChk = thisChk.Ptr();
+					}
+					console->WriteLine();
 				}
-				console->WriteLine();
 			}
 			j++;
 		}
-		if (nnfileChk.Set(fileChk))
+		if (md5File.v == 0)
+		{
+			console->WriteLineC(UTF8STRC("MD5 file missing"));
+		}
+		else if (!foundFiles)
+		{
+			IO::Path::PathType pt = IO::Path::GetPathType(md5File.OrEmpty());
+			if (pt == IO::Path::PathType::Unknown)
+			{
+				console->WriteLineC(UTF8STRC("MD5 File not found"));
+			}
+			else
+			{
+				if (VerifyMD5(md5File.OrEmpty(), flagCont))
+				{
+					showHelp = false;
+				}
+			}
+
+		}
+		else if (nnfileChk.Set(fileChk))
 		{
 			Exporter::MD5Exporter exporter;
 			{
-				IO::FileStream fs(Text::CStringNN::FromPtr(cmdLines[1]), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+				IO::FileStream fs(md5File.OrEmpty(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				exporter.ExportFile(fs, sb.ToCString(), nnfileChk, 0);
 			}
 			nnfileChk.Delete();
@@ -322,8 +345,9 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	}
 	if (showHelp)
 	{
-		console->WriteLineC(UTF8STRC("Usage: SMD5 [MD5 file] (Base directory is same as MD5 file)"));
-		console->WriteLineC(UTF8STRC("       SMD5 [MD5 file] [files to read]"));
+		console->WriteLineC(UTF8STRC("Usage: SMD5 [options] [MD5 file] (Base directory is same as MD5 file)"));
+		console->WriteLineC(UTF8STRC("       SMD5 [options] [MD5 file] [files to read]"));
+		console->WriteLineC(UTF8STRC("Options: -c   Continue on verify error"));
 	}
 	DEL_CLASS(console);
 	return 0;

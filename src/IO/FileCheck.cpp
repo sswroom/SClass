@@ -7,7 +7,7 @@
 #include "IO/Path.h"
 #include "Text/MyString.h"
 
-//#define VERBOSE
+#define VERBOSE
 #if defined(VERBOSE)
 #include <stdio.h>
 #endif
