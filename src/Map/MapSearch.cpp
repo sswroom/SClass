@@ -26,11 +26,11 @@ Map::MapSearch::MapSearch(Text::CStringNN fileName, Map::MapSearchManager *manag
 
 	this->baseDir = 0;
 	this->concatType = 0;
-	this->layersArr = MemAlloc(Data::ArrayList<Map::MapSearchLayerInfo*>*, MAPSEARCH_LAYER_TYPES);
+	this->layersArr = MemAlloc(NN<Data::ArrayListNN<Map::MapSearchLayerInfo>>, MAPSEARCH_LAYER_TYPES);
 	i = MAPSEARCH_LAYER_TYPES;
 	while (i-- > 0)
 	{
-		NEW_CLASS(this->layersArr[i], Data::ArrayList<Map::MapSearchLayerInfo*>());
+		NEW_CLASSNN(this->layersArr[i], Data::ArrayListNN<Map::MapSearchLayerInfo>());
 	}
 
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -67,10 +67,10 @@ Map::MapSearch::MapSearch(Text::CStringNN fileName, Map::MapSearchManager *manag
 			layerType = strs[0].ToInt32();
 			if (this->baseDir && layerId >= 0 && layerId < MAPSEARCH_LAYER_TYPES)
 			{
-				Map::MapSearchLayerInfo *lyr;
+				NN<Map::MapSearchLayerInfo> lyr;
 				tmp = this->baseDir->ConcatTo(sbuff2);
 				tmp = strs[2].ConcatTo(tmp);
-				lyr = MemAlloc(Map::MapSearchLayerInfo, 1);
+				lyr = MemAllocNN(Map::MapSearchLayerInfo);
 				lyr->searchType = layerType;
 				lyr->searchDist = 0;
 				lyr->mapLayer = manager->LoadLayer(CSTRP(sbuff2, tmp));
@@ -87,10 +87,10 @@ Map::MapSearch::MapSearch(Text::CStringNN fileName, Map::MapSearchManager *manag
 			layerDist = strs[3].ToDouble();
 			if (this->baseDir && layerId >= 0 && layerId < MAPSEARCH_LAYER_TYPES)
 			{
-				Map::MapSearchLayerInfo *lyr;
+				NN<Map::MapSearchLayerInfo> lyr;
 				tmp = this->baseDir->ConcatTo(sbuff2);
 				tmp = strs[2].ConcatTo(tmp);
-				lyr = MemAlloc(Map::MapSearchLayerInfo, 1);
+				lyr = MemAllocNN(Map::MapSearchLayerInfo);
 				lyr->searchType = layerType;
 				lyr->searchDist = layerDist;
 				lyr->mapLayer = manager->LoadLayer(CSTRP(sbuff2, tmp));
@@ -107,10 +107,10 @@ Map::MapSearch::MapSearch(Text::CStringNN fileName, Map::MapSearchManager *manag
 			layerDist = strs[3].ToDouble();
 			if (this->baseDir && layerId >= 0 && layerId < MAPSEARCH_LAYER_TYPES)
 			{
-				Map::MapSearchLayerInfo *lyr;
+				NN<Map::MapSearchLayerInfo> lyr;
 				tmp = this->baseDir->ConcatTo(sbuff2);
 				tmp = strs[2].ConcatTo(tmp);
-				lyr = MemAlloc(Map::MapSearchLayerInfo, 1);
+				lyr = MemAllocNN(Map::MapSearchLayerInfo);
 				lyr->searchType = layerType;
 				lyr->searchDist = layerDist;
 				lyr->mapLayer = manager->LoadLayer(CSTRP(sbuff2, tmp));
@@ -146,14 +146,15 @@ Map::MapSearch::~MapSearch()
 		j = this->layersArr[i]->GetCount();
 		while (j-- > 0)
 		{
-			Map::MapSearchLayerInfo *lyr = (Map::MapSearchLayerInfo*)this->layersArr[i]->RemoveAt(j);
+			NN<Map::MapSearchLayerInfo> lyr = this->layersArr[i]->GetItemNoCheck(j);
 			if (lyr->searchStr)
 			{
 				lyr->searchStr->Release();
 			}
-			MemFree(lyr);
+			MemFreeNN(lyr);
+			this->layersArr[i]->RemoveAt(j);
 		}
-		DEL_CLASS(this->layersArr[i]);
+		this->layersArr[i].Delete();
 	}
 	MemFree(this->layersArr);
 }
@@ -197,7 +198,7 @@ Int32 Map::MapSearch::SearchNames(UTF8Char *buff, Text::PString *outArrs, Math::
 		k = 0;
 		while (k < j)
 		{
-			Map::MapSearchLayerInfo *lyr = this->layersArr[i]->GetItem(k++);
+			NN<Map::MapSearchLayerInfo> lyr = this->layersArr[i]->GetItemNoCheck(k++);
 			if (lyr->searchType == 2)
 			{
 				sbTmp.ClearStr();

@@ -17,6 +17,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
+#include "Text/UTF8Writer.h"
 
 IO::ConsoleWriter *console;
 Bool showHelp;
@@ -140,6 +141,8 @@ Bool VerifyMD5(const UTF8Char *fileName, UOSInt fileNameLen)
 {
 	if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".MD5")))
 	{
+		IO::FileStream fs(CSTR("difffiles.txt"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		Text::UTF8Writer diffLog(fs);
 		Parser::FileParser::MD5Parser parser;
 		Bool succ = true;
 		IO::FileCheck *fileChk;
@@ -156,6 +159,7 @@ Bool VerifyMD5(const UTF8Char *fileName, UOSInt fileNameLen)
 			UInt8 hash[32];
 			UOSInt i;
 			UOSInt j;
+			NN<Text::String> entryName;
 			
 			i = 0;
 			j = fileChk->GetCount();
@@ -168,6 +172,10 @@ Bool VerifyMD5(const UTF8Char *fileName, UOSInt fileNameLen)
 					sb.AppendOpt(fileChk->GetEntryName(i));
 					succ = false;
 					console->WriteLineC(sb.v, sb.leng);
+					if (fileChk->GetEntryName(i).SetTo(entryName))
+					{
+						diffLog.WriteLineC(entryName->v, entryName->leng);
+					}
 					break;
 				}
 				i++;

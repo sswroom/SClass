@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/WPDManager.h"
 #include "Text/MyString.h"
@@ -8,7 +8,7 @@
 #include <PortableDeviceTypes.h>
 #include <PortableDeviceApi.h>
 
-IO::WPDeviceInfo::WPDeviceInfo(WPDManager *mgr, const WChar *devId)
+IO::WPDeviceInfo::WPDeviceInfo(NN<WPDManager> mgr, const WChar *devId)
 {
 	Text::StringBuilderW sb;
 	this->mgr = mgr;
@@ -56,10 +56,10 @@ IO::WPDManager::~WPDManager()
 	CoUninitialize();
 }
 
-OSInt IO::WPDManager::GetDevices(Data::ArrayList<WPDeviceInfo*> *devList)
+OSInt IO::WPDManager::GetDevices(NN<Data::ArrayListNN<WPDeviceInfo>> devList)
 {
 	WChar **sarr;
-	WPDeviceInfo *dev;
+	NN<WPDeviceInfo> dev;
 	UInt32 devCnt;
 	UInt32 i;
 	IPortableDeviceManager *pPortableDeviceManager = (IPortableDeviceManager*)this->mgr;
@@ -80,7 +80,7 @@ OSInt IO::WPDManager::GetDevices(Data::ArrayList<WPDeviceInfo*> *devList)
 	i = 0;
 	while (i < devCnt)
 	{
-		NEW_CLASS(dev, WPDeviceInfo(this, sarr[i]));
+		NEW_CLASSNN(dev, WPDeviceInfo(*this, sarr[i]));
 		devList->Add(dev);
 		i++;
 	}
@@ -88,7 +88,7 @@ OSInt IO::WPDManager::GetDevices(Data::ArrayList<WPDeviceInfo*> *devList)
 	return (OSInt)devCnt;
 }
 
-Bool IO::WPDManager::GetDevName(const WChar *devId, Text::StringBuilderUTF *sb)
+Bool IO::WPDManager::GetDevName(const WChar *devId, NN<Text::StringBuilderUTF8> sb)
 {
 	IPortableDeviceManager *pPortableDeviceManager = (IPortableDeviceManager*)this->mgr;
 	HRESULT hr;
@@ -108,7 +108,7 @@ Bool IO::WPDManager::GetDevName(const WChar *devId, Text::StringBuilderUTF *sb)
 	return true;
 }
 
-Bool IO::WPDManager::GetDevDesc(const WChar *devId, Text::StringBuilderUTF *sb)
+Bool IO::WPDManager::GetDevDesc(const WChar *devId, NN<Text::StringBuilderUTF8> sb)
 {
 	IPortableDeviceManager *pPortableDeviceManager = (IPortableDeviceManager*)this->mgr;
 	HRESULT hr;
@@ -128,7 +128,7 @@ Bool IO::WPDManager::GetDevDesc(const WChar *devId, Text::StringBuilderUTF *sb)
 	return true;
 }
 
-Bool IO::WPDManager::GetDevManu(const WChar *devId, Text::StringBuilderUTF *sb)
+Bool IO::WPDManager::GetDevManu(const WChar *devId, NN<Text::StringBuilderUTF8> sb)
 {
 	IPortableDeviceManager *pPortableDeviceManager = (IPortableDeviceManager*)this->mgr;
 	HRESULT hr;

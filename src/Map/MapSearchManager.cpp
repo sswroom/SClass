@@ -12,24 +12,20 @@ Map::MapSearchManager::MapSearchManager()
 
 Map::MapSearchManager::~MapSearchManager()
 {
-	UOSInt i = this->nameArr.GetCount();
-	while (i-- > 0)
-	{
-		this->nameArr.RemoveAt(i)->Release();
-		DEL_CLASS(this->layerArr.RemoveAt(i));
-	}
+	this->nameArr.FreeAll();
+	this->layerArr.DeleteAll();
 }
 
-Map::MapSearchLayer *Map::MapSearchManager::LoadLayer(Text::CStringNN fileName)
+NN<Map::MapSearchLayer> Map::MapSearchManager::LoadLayer(Text::CStringNN fileName)
 {
-	OSInt i = this->nameArr.SortedIndexOfPtr(fileName.v, fileName.leng);
+	OSInt i = this->nameArr.SortedIndexOfC(fileName);
 	if (i >= 0)
 	{
-		return this->layerArr.GetItem((UOSInt)i);
+		return this->layerArr.GetItemNoCheck((UOSInt)i);
 	}
-	i = (OSInt)this->nameArr.SortedInsert(Text::String::New(fileName).Ptr());
-	Map::MapLayerData *lyr;
-	NEW_CLASS(lyr, Map::MapLayerData(fileName));
+	i = (OSInt)this->nameArr.SortedInsert(Text::String::New(fileName));
+	NN<Map::MapLayerData> lyr;
+	NEW_CLASSNN(lyr, Map::MapLayerData(fileName));
 	this->layerArr.Insert((UOSInt)i, lyr);
 	return lyr;
 }

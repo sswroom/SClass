@@ -16,7 +16,7 @@ namespace Map
 			NN<Text::String> layerName;
 			Int32 searchType;
 			Int32 usedCnt;
-			Map::MapSearchLayer *data;
+			NN<Map::MapSearchLayer> data;
 			UOSInt strIndex;
 		} SearchLayer;
 

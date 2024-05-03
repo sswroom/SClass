@@ -39,8 +39,8 @@ namespace Map
 		NN<Text::String> layerName;
 		Int64 maxId;
 
-		Data::FastMap<Int32, CIPFileObject*> *lastObjs;
-		Data::FastMap<Int32, CIPFileObject*> *currObjs;
+		Optional<Data::FastMapNN<Int32, CIPFileObject>> lastObjs;
+		Optional<Data::FastMapNN<Int32, CIPFileObject>> currObjs;
 
 		Sync::Mutex mut;
 	public:
@@ -65,8 +65,8 @@ namespace Map
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
 
 	private:
-		CIPFileObject *GetFileObject(void *session, Int32 id);
-		void ReleaseFileObjs(Data::FastMap<Int32, CIPFileObject*> *objs);
+		Optional<CIPFileObject> GetFileObject(void *session, Int32 id);
+		void ReleaseFileObjs(NN<Data::FastMapNN<Int32, CIPFileObject>> objs);
 
 	public:
 		virtual GetObjectSess *BeginGetObject();

@@ -708,10 +708,10 @@ Bool DB::DBMS::StrLike(const UTF8Char *val, const UTF8Char *likeStr)
 	}
 }
 
-Bool DB::DBMS::SysVarExist(DB::DBMS::SessionInfo *sess, const UTF8Char *varName, AccessType atype)
+Bool DB::DBMS::SysVarExist(NN<DB::DBMS::SessionInfo> sess, Text::CStringNN varName, AccessType atype)
 {
 #if defined(VERBOSE)
-	printf("SysVarExist: %s\r\n", varName);
+	printf("SysVarExist: %s\r\n", varName.v);
 #endif
 	OSInt i = 0;
 	OSInt j = sizeof(sysVarList) / sizeof(sysVarList[0]) - 1;
@@ -720,7 +720,7 @@ Bool DB::DBMS::SysVarExist(DB::DBMS::SessionInfo *sess, const UTF8Char *varName,
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		l = Text::StrCompareICase((const UTF8Char*)sysVarList[k], varName);
+		l = Text::StrCompareICase((const UTF8Char*)sysVarList[k], varName.v);
 		if (l > 0)
 		{
 			j = k - 1;
@@ -737,47 +737,46 @@ Bool DB::DBMS::SysVarExist(DB::DBMS::SessionInfo *sess, const UTF8Char *varName,
 	return false;
 }
 
-const UTF8Char *DB::DBMS::SysVarGet(NN<Text::StringBuilderUTF8> sb, DB::DBMS::SessionInfo *sess, const UTF8Char *varName, UOSInt nameLen)
+Bool DB::DBMS::SysVarGet(NN<Text::StringBuilderUTF8> sb, NN<DB::DBMS::SessionInfo> sess, Text::CStringNN varName)
 {
 //	Bool isGlobal = false;
-	if (Text::StrStartsWithICaseC(varName, nameLen, UTF8STRC("GLOBAL.")))
+	if (varName.EqualsICase(UTF8STRC("GLOBAL.")))
 	{
+		varName = varName.Substring(7);
 //		isGlobal = true;
-		varName += 7;
-		nameLen -= 7;
 	}
 
-	if (Text::StrEqualsICaseC(varName, nameLen, UTF8STRC("autocommit")))
+	if (varName.EqualsICase(UTF8STRC("autocommit")))
 	{
 		sb->AppendChar(sess->autoCommit?'1':'0', 1);
-		return varName + 10;
+		return true;
 	}
-	else if (Text::StrEqualsICaseC(varName, nameLen, UTF8STRC("auto_increment_increment")))
+	else if (varName.EqualsICase(UTF8STRC("auto_increment_increment")))
 	{
 		sb->AppendI32(sess->autoIncInc);
-		return varName + 24;
+		return true;
 	}
-	else if (Text::StrEqualsICaseC(varName, nameLen, UTF8STRC("character_set_server")))
+	else if (varName.EqualsICase(UTF8STRC("character_set_server")))
 	{
 		sb->AppendC(UTF8STRC("utf8mb4"));
-		return varName + 20;
+		return true;
 	}
-	else if (Text::StrEqualsICaseC(varName, nameLen, UTF8STRC("collation_server")))
+	else if (varName.EqualsICase(UTF8STRC("collation_server")))
 	{
 		sb->AppendC(UTF8STRC("utf8mb4_0900_ai_ci"));
-		return varName + 16;
+		return true;
 	}
-	else if (Text::StrEqualsICaseC(varName, nameLen, UTF8STRC("lower_case_table_names")))
+	else if (varName.EqualsICase(UTF8STRC("lower_case_table_names")))
 	{
 		sb->AppendI32(1);
-		return varName + 22;
+		return true;
 	}
-	else if (Text::StrEqualsICaseC(varName, nameLen, UTF8STRC("max_allowed_packet")))
+	else if (varName.EqualsICase(UTF8STRC("max_allowed_packet")))
 	{
 		sb->AppendU32(sess->params.clientMaxPacketSize);
-		return varName + 18;
+		return true;
 	}
-	else if (Text::StrEqualsICaseC(varName, nameLen, UTF8STRC("sql_mode")))
+	else if (varName.EqualsICase(UTF8STRC("sql_mode")))
 	{
 		Bool found = false;
 		if (sess->sqlModes & SQLM_ALLOW_INVALID_DATES)
@@ -894,9 +893,9 @@ const UTF8Char *DB::DBMS::SysVarGet(NN<Text::StringBuilderUTF8> sb, DB::DBMS::Se
 			found = true;
 			sb->AppendC(UTF8STRC("TIME_TRUNCATE_FRACTIONAL"));
 		}
-		return varName + 8;
+		return true;
 	}
-	else if (Text::StrEqualsICaseC(varName, nameLen, UTF8STRC("system_time_zone")) || Text::StrEqualsICaseC(varName, nameLen, UTF8STRC("time_zone")))
+	else if (varName.EqualsICase(UTF8STRC("system_time_zone")) || varName.EqualsICase(UTF8STRC("time_zone")))
 	{
 		Data::DateTime dt;
 		dt.SetCurrTime();
@@ -920,9 +919,9 @@ const UTF8Char *DB::DBMS::SysVarGet(NN<Text::StringBuilderUTF8> sb, DB::DBMS::Se
 		{
 			sb->AppendC(UTF8STRC("00"));
 		}
-		return varName + 16;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 void DB::DBMS::SysVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8Char *varName, Text::CString colName)
@@ -984,10 +983,9 @@ void DB::DBMS::SysVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8C
 	reader->SetColumn(colIndex, colName, DB::DBUtil::CT_VarUTF8Char);
 }
 
-Bool DB::DBMS::SysVarSet(DB::DBMS::SessionInfo *sess, Bool isGlobal, const UTF8Char *varName, Text::String *val)
+Bool DB::DBMS::SysVarSet(NN<DB::DBMS::SessionInfo> sess, Bool isGlobal, Text::CStringNN varName, Text::String *val)
 {
-	UOSInt varNameLen = Text::StrCharCnt(varName);
-	if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("autocommit")))
+	if (varName.EqualsICase(UTF8STRC("autocommit")))
 	{
 		Bool v;
 		if (val == 0)
@@ -1008,7 +1006,7 @@ Bool DB::DBMS::SysVarSet(DB::DBMS::SessionInfo *sess, Bool isGlobal, const UTF8C
 		}
 		return true;
 	}
-	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("auto_increment_incremnt")))
+	else if (varName.EqualsICase(UTF8STRC("auto_increment_incremnt")))
 	{
 		Int32 v;
 		if (val == 0)
@@ -1038,19 +1036,19 @@ Bool DB::DBMS::SysVarSet(DB::DBMS::SessionInfo *sess, Bool isGlobal, const UTF8C
 		}
 		return true;
 	}
-	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("character_set_server")))
+	else if (varName.EqualsICase(UTF8STRC("character_set_server")))
 	{
 	}
-	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("collation_server")))
+	else if (varName.EqualsICase(UTF8STRC("collation_server")))
 	{
 	}
-	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("lower_case_table_names")))
+	else if (varName.EqualsICase(UTF8STRC("lower_case_table_names")))
 	{
 	}
-	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("max_allowed_packet")))
+	else if (varName.EqualsICase(UTF8STRC("max_allowed_packet")))
 	{
 	}
-	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("sql_mode")))
+	else if (varName.EqualsICase(UTF8STRC("sql_mode")))
 	{
 		SQLMODE sqlMode = (SQLMODE)0;
 		Text::StringBuilderUTF8 sb;
@@ -1141,25 +1139,25 @@ Bool DB::DBMS::SysVarSet(DB::DBMS::SessionInfo *sess, Bool isGlobal, const UTF8C
 		}
 		sess->sqlModes = sqlMode;
 	}
-	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("system_time_zone")))
+	else if (varName.EqualsICase(UTF8STRC("system_time_zone")))
 	{
 	}
-	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("time_zone")))
+	else if (varName.EqualsICase(UTF8STRC("time_zone")))
 	{
 	}
 	return false;
 
 }
 
-const UTF8Char *DB::DBMS::UserVarGet(NN<Text::StringBuilderUTF8> sb, DB::DBMS::SessionInfo *sess, const UTF8Char *varName)
+Bool DB::DBMS::UserVarGet(NN<Text::StringBuilderUTF8> sb, NN<DB::DBMS::SessionInfo> sess, Text::CStringNN varName)
 {
-	Text::String *val = sess->userVars->Get(varName);
-	UOSInt i = Text::StrCharCnt(varName);
-	if (val)
+	NN<Text::String> val;
+	if (sess->userVars.Get(varName).SetTo(val))
 	{
 		sb->Append(val);
+		return true;
 	}
-	return varName + i;
+	return false;
 }
 
 void DB::DBMS::UserVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8Char *varName, Text::CString colName)
@@ -1175,27 +1173,23 @@ void DB::DBMS::UserVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8
 	reader->SetColumn(colIndex, colName, DB::DBUtil::CT_VarUTF8Char);
 }
 
-Bool DB::DBMS::UserVarSet(DB::DBMS::SessionInfo *sess, const UTF8Char *varName, Text::String *val)
+Bool DB::DBMS::UserVarSet(NN<DB::DBMS::SessionInfo> sess, Text::CStringNN varName, Optional<Text::String> val)
 {
-	if (sess->userVars->ContainsKey(varName))
+	NN<Text::String> nnval;
+	if (val.SetTo(nnval))
 	{
-		if (val)
-		{
-			sess->userVars->Put(varName, val->Clone().Ptr())->Release();
-		}
-		else
-		{
-			sess->userVars->Remove(varName)->Release();
-		}
+		if (sess->userVars.Put(varName, nnval->Clone()).SetTo(nnval))
+			nnval->Release();
 	}
-	else if (val)
+	else
 	{
-		sess->userVars->Put(varName, val->Clone().Ptr());
+		if (sess->userVars.Remove(varName).SetTo(nnval))
+			nnval->Release();
 	}
 	return true;
 }
 
-Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *sess, DB::DBMSReader *reader, UOSInt colIndex, Text::CString colName, Bool *valid)
+Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, NN<DB::DBMS::SessionInfo> sess, DB::DBMSReader *reader, UOSInt colIndex, Text::CString colName, Bool *valid)
 {
 	const UTF8Char *val = *valPtr;
 	if (Text::StrStartsWith(val, (const UTF8Char*)"@@"))
@@ -1240,7 +1234,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 		{
 			this->SysVarColumn(reader, colIndex, sb2.ToString(), colName);
 		}
-		if (this->SysVarGet(sb, sess, sb2.ToString(), sb2.GetLength()) == 0)
+		if (this->SysVarGet(sb, sess, sb2.ToCString()) == 0)
 		{
 			*valid = false;
 
@@ -1263,13 +1257,14 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 			this->UserVarColumn(reader, colIndex, val + 1, colName);
 		}
 		Text::StringBuilderUTF8 sb;
-		if ((val = this->UserVarGet(sb, sess, val + 1)) == 0)
+		Text::CStringNN s = Text::CStringNN::FromPtr(val + 1);
+		if (!this->UserVarGet(sb, sess, s))
 		{
 			return 0;
 		}
 		else
 		{
-			*valPtr = val;
+			*valPtr = s.GetEndPtr();
 			return Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 		}
 	}
@@ -1772,28 +1767,27 @@ DB::DBMS::DBMS(Text::CString versionStr, NN<IO::LogTool> log)
 DB::DBMS::~DBMS()
 {
 	this->versionStr->Release();
-	DB::DBMS::LoginInfo *login;
-	DB::DBMS::UserInfo *user;
+	NN<DB::DBMS::LoginInfo> login;
+	NN<DB::DBMS::UserInfo> user;
 	UOSInt i = this->loginMap.GetCount();
 	UOSInt j;
 	while (i-- > 0)
 	{
-		login = this->loginMap.GetItem(i);
-		j = login->userList->GetCount();
+		login = this->loginMap.GetItemNoCheck(i);
+		j = login->userList.GetCount();
 		while (j-- > 0)
 		{
-			user = login->userList->GetItem(j);
-			MemFree(user);
+			user = login->userList.GetItemNoCheck(j);
+			MemFreeNN(user);
 		}
-		DEL_CLASS(login->userList);
 		login->login->Release();
-		MemFree(login);
+		login.Delete();
 	}
 
 	i = this->sessMap.GetCount();
 	while (i-- > 0)
 	{
-		this->SessDelete(this->sessMap.GetItem(i));
+		this->SessDelete(this->sessMap.GetItemNoCheck(i));
 	}
 }
 
@@ -1809,38 +1803,36 @@ NN<IO::LogTool> DB::DBMS::GetLogTool()
 
 Bool DB::DBMS::UserAdd(Int32 userId, Text::CStringNN userName, Text::CString password, Text::CString host)
 {
-	DB::DBMS::LoginInfo *login;
-	DB::DBMS::UserInfo *user;
+	NN<DB::DBMS::LoginInfo> login;
+	NN<DB::DBMS::UserInfo> user;
 	UOSInt i;
 	Bool succ;
 	#if defined(VERBOSE)
 	printf("UserAdd %s/%s@%s\r\n", userName.v, password.v, host.v);
 	#endif
 	Sync::MutexUsage mutUsage(this->loginMut);
-	login = this->loginMap.GetC(userName);
-	if (login == 0)
+	if (!this->loginMap.GetC(userName).SetTo(login))
 	{
-		login = MemAlloc(DB::DBMS::LoginInfo, 1);
+		NEW_CLASSNN(login, DB::DBMS::LoginInfo());
 		login->login = Text::String::New(userName);
-		NEW_CLASS(login->userList, Data::ArrayList<DB::DBMS::UserInfo*>());
 		this->loginMap.PutC(userName, login);
 
-		user = MemAlloc(DB::DBMS::UserInfo, 1);
+		user = MemAllocNN(DB::DBMS::UserInfo);
 		user->hostLen = (UOSInt)(host.ConcatTo(user->host) - user->host);
 		this->loginSHA1.Clear();
 		this->loginSHA1.Calc(password.v, password.leng);
 		this->loginSHA1.GetValue(user->pwdSha1);
 		user->userId = userId;
-		login->userList->Add(user);
+		login->userList.Add(user);
 		succ = true;
 	}
 	else
 	{
 		succ = true;
-		i = login->userList->GetCount();
+		i = login->userList.GetCount();
 		while (i-- > 0)
 		{
-			user = login->userList->GetItem(i);
+			user = login->userList.GetItemNoCheck(i);
 			if (host.Equals(user->host, user->hostLen))
 			{
 				succ = false;
@@ -1849,13 +1841,13 @@ Bool DB::DBMS::UserAdd(Int32 userId, Text::CStringNN userName, Text::CString pas
 		}
 		if (succ)
 		{
-			user = MemAlloc(DB::DBMS::UserInfo, 1);
+			user = MemAllocNN(DB::DBMS::UserInfo);
 			user->hostLen = (UOSInt)(host.ConcatTo(user->host) - user->host);
 			this->loginSHA1.Clear();
 			this->loginSHA1.Calc(password.v, password.leng);
 			this->loginSHA1.GetValue(user->pwdSha1);
 			user->userId = userId;
-			login->userList->Add(user);
+			login->userList.Add(user);
 		}
 	}
 	mutUsage.EndUse();
@@ -1864,8 +1856,8 @@ Bool DB::DBMS::UserAdd(Int32 userId, Text::CStringNN userName, Text::CString pas
 
 Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, Text::CStringNN userName, const UInt8 *randomData, const UInt8 *passHash, NN<const Net::SocketUtil::AddressInfo> addr, const DB::DBMS::SessionParam *param, const UTF8Char *database)
 {
-	DB::DBMS::LoginInfo *login;
-	DB::DBMS::UserInfo *user;
+	NN<DB::DBMS::LoginInfo> login;
+	NN<DB::DBMS::UserInfo> user;
 	UInt8 hashBuff[20];
 	UOSInt j;
 	Int32 userId = 0;
@@ -1873,13 +1865,12 @@ Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, Text::CStringNN userName, const UIn
 	printf("mysql_native_password auth\r\n");
 	#endif
 	Sync::MutexUsage mutUsage(this->loginMut);
-	login = this->loginMap.GetC(userName);
-	if (login)
+	if (this->loginMap.GetC(userName).SetTo(login))
 	{
-		UOSInt i = login->userList->GetCount();
+		UOSInt i = login->userList.GetCount();
 		while (i-- > 0)
 		{
-			user = login->userList->GetItem(i);
+			user = login->userList.GetItemNoCheck(i);
 			this->loginSHA1.Clear();
 			this->loginSHA1.Calc(user->pwdSha1, 20);
 			this->loginSHA1.GetValue(hashBuff);
@@ -1914,12 +1905,11 @@ Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, Text::CStringNN userName, const UIn
 
 			if (userId != 0)
 			{
-				DB::DBMS::SessionInfo *sess;
+				NN<DB::DBMS::SessionInfo> sess;
 				Sync::MutexUsage mutUsage(this->sessMut);
-				sess = this->sessMap.Get(sessId);
-				if (sess == 0)
+				if (!this->sessMap.Get(sessId).SetTo(sess))
 				{
-					sess = MemAlloc(DB::DBMS::SessionInfo, 1);
+					NEW_CLASSNN(sess, DB::DBMS::SessionInfo());
 					sess->sessId = sessId;
 					sess->lastError = 0;
 					sess->autoCommit = 1;
@@ -1931,7 +1921,6 @@ Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, Text::CStringNN userName, const UIn
 						sess->database = Text::String::NewNotNullSlow(database).Ptr();
 					}
 					MemCopyNO(&sess->params, param, sizeof(DB::DBMS::SessionParam));
-					NEW_CLASS(sess->userVars, Data::StringUTF8Map<Text::String*>());
 					this->sessMap.Put(sessId, sess);
 				}
 				sess->user = user;
@@ -1960,9 +1949,8 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 	UOSInt j;
 	UTF8Char nameBuff[128];
 	UTF8Char nameBuff2[128];
-	DB::DBMS::SessionInfo *sess;
-	sess = this->SessGet(sessId);
-	if (sess == 0)
+	NN<DB::DBMS::SessionInfo> sess;
+	if (!this->SessGet(sessId).SetTo(sess))
 	{
 		return 0;
 	}
@@ -1985,7 +1973,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 				while (i-- > 0)
 				{
 					col = cols.GetItem(i);
-					SDEL_TEXT(col->name);
+					col->name->Release();
 					SDEL_STRING(col->asName);
 					MemFree(col);
 				}
@@ -2002,7 +1990,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 			if (*sptr1 == ',' || *sptr1 == 0)
 			{
 				col = MemAlloc(DB::DBMS::SQLColumn, 1);
-				col->name = Text::StrCopyNew(nameBuff).Ptr();
+				col->name = Text::String::NewNotNullSlow(nameBuff);
 				col->asName = 0;
 				col->sqlPtr = sptr2;
 				cols.Add(col);
@@ -2026,7 +2014,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 					while (i-- > 0)
 					{
 						col = cols.GetItem(i);
-						SDEL_TEXT(col->name);
+						col->name->Release();
 						SDEL_STRING(col->asName);
 						MemFree(col);
 					}
@@ -2043,7 +2031,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 				if (*sptr1 == ',' || *sptr1 == 0)
 				{
 					col = MemAlloc(DB::DBMS::SQLColumn, 1);
-					col->name = Text::StrCopyNew(nameBuff).Ptr();
+					col->name = Text::String::NewNotNullSlow(nameBuff);
 					col->asName = Text::String::NewNotNullSlow(nameBuff2).Ptr();
 					col->sqlPtr = sptr2;
 					cols.Add(col);
@@ -2068,7 +2056,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 					while (i-- > 0)
 					{
 						col = cols.GetItem(i);
-						SDEL_TEXT(col->name);
+						col->name->Release();
 						SDEL_STRING(col->asName);
 						MemFree(col);
 					}
@@ -2097,7 +2085,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 					while (i-- > 0)
 					{
 						col = cols.GetItem(i);
-						SDEL_TEXT(col->name);
+						col->name->Release();
 						SDEL_STRING(col->asName);
 						MemFree(col);
 					}
@@ -2114,7 +2102,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 				if (*sptr1 == ',' || *sptr1 == 0)
 				{
 					col = MemAlloc(DB::DBMS::SQLColumn, 1);
-					col->name = Text::StrCopyNew(nameBuff).Ptr();
+					col->name = Text::String::NewNotNullSlow(nameBuff);
 					col->asName = Text::String::NewNotNullSlow(nameBuff2).Ptr();
 					col->sqlPtr = sptr2;
 					cols.Add(col);
@@ -2139,7 +2127,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 					while (i-- > 0)
 					{
 						col = cols.GetItem(i);
-						SDEL_TEXT(col->name);
+						col->name->Release();
 						SDEL_STRING(col->asName);
 						MemFree(col);
 					}
@@ -2163,7 +2151,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 			while (i-- > 0)
 			{
 				col = cols.GetItem(i);
-				SDEL_TEXT(col->name);
+				col->name->Release();
 				SDEL_STRING(col->asName);
 				MemFree(col);
 			}
@@ -2189,13 +2177,13 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 			while (i < j && valid)
 			{
 				col = cols.GetItem(i);
-				val = col->name;
+				val = col->name->v;
 				#if defined(VERBOSE)
 				printf("Column %d is %s\r\n", (int)i, val);
 				#endif
 				colVals[i] = this->Evals(&val, sess, reader, i, col->asName->ToCString(), &valid);
 
-				SDEL_TEXT(col->name);
+				col->name->Release();
 				SDEL_STRING(col->asName);
 				MemFree(col);
 				i++;
@@ -2209,7 +2197,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 			{
 				col = cols.GetItem(i);
 				colVals[i] = 0;
-				SDEL_TEXT(col->name);
+				col->name->Release();
 				SDEL_STRING(col->asName);
 				MemFree(col);
 				i++;
@@ -2274,7 +2262,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 							while (i-- > 0)
 							{
 								col = cols.GetItem(i);
-								SDEL_TEXT(col->name);
+								col->name->Release();
 								SDEL_STRING(col->asName);
 								MemFree(col);
 							}
@@ -2312,7 +2300,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 							while (i-- > 0)
 							{
 								col = cols.GetItem(i);
-								SDEL_TEXT(col->name);
+								col->name->Release();
 								SDEL_STRING(col->asName);
 								MemFree(col);
 							}
@@ -2326,7 +2314,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 					}
 				}
 				*namePtr = 0;
-				if (this->SysVarExist(sess, nameBuff, isGlobal?(DB::DBMS::AT_SET_GLOBAL):(DB::DBMS::AT_SET_SESSION)))
+				if (this->SysVarExist(sess, CSTRP(nameBuff, namePtr), isGlobal?(DB::DBMS::AT_SET_GLOBAL):(DB::DBMS::AT_SET_SESSION)))
 				{
 					while (Text::CharUtil::PtrIsWS(&sptr1));
 					Bool valid = true;
@@ -2337,7 +2325,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 						while (i-- > 0)
 						{
 							col = cols.GetItem(i);
-							SDEL_TEXT(col->name);
+							col->name->Release();
 							SDEL_STRING(col->asName);
 							MemFree(col);
 						}
@@ -2347,7 +2335,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 					nameBuff2[0] = isGlobal?'!':'#';
 					Text::StrConcat(&nameBuff2[1], nameBuff);
 					col = MemAlloc(DB::DBMS::SQLColumn, 1);
-					col->name = Text::StrCopyNew(nameBuff2).Ptr();
+					col->name = Text::String::NewNotNullSlow(nameBuff2);
 					col->asName = val;
 					cols.Add(col);
 
@@ -2362,19 +2350,19 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 						while (i-- > 0)
 						{
 							col = cols.GetItem(i);
-							if (col->name[0] == '!')
+							if (col->name->v[0] == '!')
 							{
-								this->SysVarSet(sess, true, col->name + 1, col->asName);
+								this->SysVarSet(sess, true, col->name->ToCString().Substring(1), col->asName);
 							}
-							else if (col->name[0] == '@')
+							else if (col->name->v[0] == '@')
 							{
-								this->UserVarSet(sess, col->name + 1,  col->asName);
+								this->UserVarSet(sess, col->name->ToCString().Substring(1), col->asName);
 							}
-							else if (col->name[0] == '#')
+							else if (col->name->v[0] == '#')
 							{
-								this->SysVarSet(sess, false, col->name + 1, col->asName);
+								this->SysVarSet(sess, false, col->name->ToCString().Substring(1), col->asName);
 							}
-							SDEL_TEXT(col->name);
+							col->name->Release();
 							SDEL_STRING(col->asName);
 							MemFree(col);
 						}
@@ -2626,7 +2614,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 						while (i-- > 0)
 						{
 							col = cols.GetItem(i);
-							SDEL_TEXT(col->name);
+							col->name->Release();
 							SDEL_STRING(col->asName);
 							MemFree(col);
 						}
@@ -2642,7 +2630,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 						return 0;
 					}
 					col = MemAlloc(DB::DBMS::SQLColumn, 1);
-					col->name = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
+					col->name = Text::String::New(sb.ToCString());
 					col->asName = val;
 					cols.Add(col);
 
@@ -2658,19 +2646,19 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 						while (i-- > 0)
 						{
 							col = cols.GetItem(i);
-							if (col->name[0] == '!')
+							if (col->name->v[0] == '!')
 							{
-								this->SysVarSet(sess, true, col->name + 1, col->asName);
+								this->SysVarSet(sess, true, col->name->ToCString().Substring(1), col->asName);
 							}
-							else if (col->name[0] == '@')
+							else if (col->name->v[0] == '@')
 							{
-								this->UserVarSet(sess, col->name + 1,  col->asName);
+								this->UserVarSet(sess, col->name->ToCString().Substring(1),  col->asName);
 							}
-							else if (col->name[0] == '#')
+							else if (col->name->v[0] == '#')
 							{
-								this->SysVarSet(sess, false, col->name + 1, col->asName);
+								this->SysVarSet(sess, false, col->name->ToCString().Substring(1), col->asName);
 							}
-							SDEL_TEXT(col->name);
+							col->name->Release();
 							SDEL_STRING(col->asName);
 							MemFree(col);
 						}
@@ -2686,7 +2674,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 					while (i-- > 0)
 					{
 						col = cols.GetItem(i);
-						SDEL_TEXT(col->name);
+						col->name->Release();
 						SDEL_STRING(col->asName);
 						MemFree(col);
 					}
@@ -2727,7 +2715,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 							while (i-- > 0)
 							{
 								col = cols.GetItem(i);
-								SDEL_TEXT(col->name);
+								col->name->Release();
 								SDEL_STRING(col->asName);
 								MemFree(col);
 							}
@@ -2741,7 +2729,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 					}
 				}
 				*namePtr = 0;
-				if (this->SysVarExist(sess, nameBuff + 1, DB::DBMS::AT_SET_SESSION))
+				if (this->SysVarExist(sess, CSTRP(nameBuff + 1, namePtr), DB::DBMS::AT_SET_SESSION))
 				{
 					while (Text::CharUtil::PtrIsWS(&sptr1));
 					Bool valid = true;
@@ -2752,7 +2740,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 						while (i-- > 0)
 						{
 							col = cols.GetItem(i);
-							SDEL_TEXT(col->name);
+							col->name->Release();
 							SDEL_STRING(col->asName);
 							MemFree(col);
 						}
@@ -2761,7 +2749,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 						return 0;
 					}
 					col = MemAlloc(DB::DBMS::SQLColumn, 1);
-					col->name = Text::StrCopyNew(nameBuff).Ptr();
+					col->name = Text::String::NewP(nameBuff, namePtr);
 					col->asName = val;
 					cols.Add(col);
 
@@ -2776,19 +2764,19 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 						while (i-- > 0)
 						{
 							col = cols.GetItem(i);
-							if (col->name[0] == '!')
+							if (col->name->v[0] == '!')
 							{
-								this->SysVarSet(sess, true, col->name + 1, col->asName);
+								this->SysVarSet(sess, true, col->name->ToCString().Substring(1), col->asName);
 							}
-							else if (col->name[0] == '@')
+							else if (col->name->v[0] == '@')
 							{
-								this->UserVarSet(sess, col->name + 1,  col->asName);
+								this->UserVarSet(sess, col->name->ToCString().Substring(1),  col->asName);
 							}
-							else if (col->name[0] == '#')
+							else if (col->name->v[0] == '#')
 							{
-								this->SysVarSet(sess, false, col->name + 1, col->asName);
+								this->SysVarSet(sess, false, col->name->ToCString().Substring(1), col->asName);
 							}
-							SDEL_TEXT(col->name);
+							col->name->Release();
 							SDEL_STRING(col->asName);
 							MemFree(col);
 						}
@@ -2804,7 +2792,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 					while (i-- > 0)
 					{
 						col = cols.GetItem(i);
-						SDEL_TEXT(col->name);
+						col->name->Release();
 						SDEL_STRING(col->asName);
 						MemFree(col);
 					}
@@ -2822,7 +2810,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 				while (i-- > 0)
 				{
 					col = cols.GetItem(i);
-					SDEL_TEXT(col->name);
+					col->name->Release();
 					SDEL_STRING(col->asName);
 					MemFree(col);
 				}
@@ -2890,7 +2878,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 				{
 					row[0] = Text::String::NewNotNullSlow((const UTF8Char*)sysVarList[i]).Ptr();
 					sb.ClearStr();
-					SysVarGet(sb, sess, row[0]->v, row[0]->leng);
+					SysVarGet(sb, sess, row[0]->ToCString());
 					row[1] = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 					reader->AddRow(row);
 					i++;
@@ -2931,7 +2919,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 							{
 								sb.ClearStr();
 								row[0] = Text::String::NewNotNullSlow((const UTF8Char*)sysVarList[i]).Ptr();
-								SysVarGet(sb, sess, row[0]->v, row[0]->leng);
+								SysVarGet(sb, sess, row[0]->ToCString());
 								row[1] = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 								reader->AddRow(row);
 							}
@@ -3004,10 +2992,9 @@ void DB::DBMS::CloseReader(DB::DBReader *r)
 
 UTF8Char *DB::DBMS::GetErrMessage(Int32 sessId, UTF8Char *msgBuff)
 {
-	DB::DBMS::SessionInfo *sess;
+	NN<DB::DBMS::SessionInfo> sess;
 	Sync::MutexUsage mutUsage(this->sessMut);
-	sess = this->sessMap.Get(sessId);
-	if (sess && sess->lastError)
+	if (this->sessMap.Get(sessId).SetTo(sess) && sess->lastError)
 	{
 		msgBuff = sess->lastError->ConcatTo(msgBuff);
 	}
@@ -3015,43 +3002,38 @@ UTF8Char *DB::DBMS::GetErrMessage(Int32 sessId, UTF8Char *msgBuff)
 	return msgBuff;
 }
 
-DB::DBMS::SessionInfo *DB::DBMS::SessGet(Int32 sessId)
+Optional<DB::DBMS::SessionInfo> DB::DBMS::SessGet(Int32 sessId)
 {
-	DB::DBMS::SessionInfo *sess;
 	Sync::MutexUsage mutUsage(this->sessMut);
-	sess = this->sessMap.Get(sessId);
-	mutUsage.EndUse();
-	return sess;
+	return this->sessMap.Get(sessId);
 }
 
 void DB::DBMS::SessEnd(Int32 sessId)
 {
-	DB::DBMS::SessionInfo *sess;
+	NN<DB::DBMS::SessionInfo> sess;
 	if (sessId == 0)
 	{
 		return;
 	}
 	Sync::MutexUsage mutUsage(this->sessMut);
-	sess = this->sessMap.Remove(sessId);
-	mutUsage.EndUse();
-	if (sess)
+	if (this->sessMap.Remove(sessId).SetTo(sess))
 	{
+		mutUsage.EndUse();
 		this->SessDelete(sess);
 	}
 }
 
-void DB::DBMS::SessDelete(DB::DBMS::SessionInfo *sess)
+void DB::DBMS::SessDelete(NN<DB::DBMS::SessionInfo> sess)
 {
-	NN<const Data::ArrayList<Text::String*>> varList = sess->userVars->GetValues();
+	NN<const Data::ArrayListNN<Text::String>> varList = sess->userVars.GetValues();
 	UOSInt i = varList->GetCount();
-	Text::String *var;
+	NN<Text::String> var;
 	while (i-- > 0)
 	{
-		var = varList->GetItem(i);
-		SDEL_STRING(var);
+		var = varList->GetItemNoCheck(i);
+		var->Release();
 	}
-	DEL_CLASS(sess->userVars);
 	SDEL_STRING(sess->lastError);
 	SDEL_STRING(sess->database);
-	MemFree(sess);
+	sess.Delete();
 }

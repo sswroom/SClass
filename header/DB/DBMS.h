@@ -1,9 +1,9 @@
 #ifndef _SM_DB_DBMS
 #define _SM_DB_DBMS
 #include "Crypto/Hash/SHA1.h"
-#include "Data/FastMap.h"
-#include "Data/FastStringMap.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/FastMapNN.h"
+#include "Data/FastStringMapNN.h"
+#include "Data/StringMapNN.h"
 #include "DB/DBReader.h"
 #include "IO/LogTool.h"
 #include "Net/SocketUtil.h"
@@ -69,13 +69,13 @@ namespace DB
 		typedef struct
 		{
 			NN<Text::String> login;
-			Data::ArrayList<UserInfo*> *userList;
+			Data::ArrayListNN<UserInfo> userList;
 		} LoginInfo;
 		
 		typedef struct
 		{
 			Int32 sessId;
-			UserInfo *user;
+			NN<UserInfo> user;
 			Text::String *lastError;
 
 			Bool autoCommit;
@@ -83,12 +83,12 @@ namespace DB
 			SQLMODE sqlModes;
 			SessionParam params;
 			Text::String *database;
-			Data::StringUTF8Map<Text::String*> *userVars;
+			Data::StringMapNN<Text::String> userVars;
 		} SessionInfo;
 
 		typedef struct
 		{
-			const UTF8Char *name;
+			NN<Text::String> name;
 			const UTF8Char *sqlPtr;
 			Text::String *asName;
 		} SQLColumn;
@@ -107,23 +107,23 @@ namespace DB
 		NN<IO::LogTool> log;
 		Sync::Mutex loginMut;
 		Crypto::Hash::SHA1 loginSHA1;
-		Data::FastStringMap<LoginInfo*> loginMap;
+		Data::FastStringMapNN<LoginInfo> loginMap;
 		Sync::Mutex sessMut;
-		Data::FastMap<Int32, SessionInfo*> sessMap;
+		Data::FastMapNN<Int32, SessionInfo> sessMap;
 
 		static const UTF8Char *SQLParseName(UTF8Char *nameBuff, const UTF8Char *sql);
 		static Bool StrLike(const UTF8Char *val, const UTF8Char *likeStr);
 
-		Bool SysVarExist(SessionInfo *sess, const UTF8Char *varName, AccessType atype);
-		const UTF8Char *SysVarGet(NN<Text::StringBuilderUTF8> sb, SessionInfo *sess, const UTF8Char *varName, UOSInt nameLen);
+		Bool SysVarExist(NN<SessionInfo> sess, Text::CStringNN varName, AccessType atype);
+		Bool SysVarGet(NN<Text::StringBuilderUTF8> sb, NN<SessionInfo> sess, Text::CStringNN varName);
 		void SysVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8Char *varName, Text::CString colName);
-		Bool SysVarSet(SessionInfo *sess, Bool isGlobal, const UTF8Char *varName, Text::String *val);
+		Bool SysVarSet(NN<SessionInfo> sess, Bool isGlobal, Text::CStringNN varName, Text::String *val);
 
-		const UTF8Char *UserVarGet(NN<Text::StringBuilderUTF8> sb, SessionInfo *sess, const UTF8Char *varName);
+		Bool UserVarGet(NN<Text::StringBuilderUTF8> sb, NN<SessionInfo> sess, Text::CStringNN varName);
 		void UserVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8Char *varName, Text::CString colName);
-		Bool UserVarSet(SessionInfo *sess, const UTF8Char *varName, Text::String *val);
+		Bool UserVarSet(NN<SessionInfo> sess, Text::CStringNN varName, Optional<Text::String> val);
 
-		Text::String *Evals(const UTF8Char **valPtr, SessionInfo *sess, DB::DBMSReader *reader, UOSInt colIndex, Text::CString colName, Bool *valid);
+		Text::String *Evals(const UTF8Char **valPtr, NN<SessionInfo> sess, DB::DBMSReader *reader, UOSInt colIndex, Text::CString colName, Bool *valid);
 	public:
 		DBMS(Text::CString versionStr, NN<IO::LogTool> log);
 		virtual ~DBMS();
@@ -138,10 +138,10 @@ namespace DB
 		void CloseReader(DB::DBReader *r);
 		UTF8Char *GetErrMessage(Int32 sessId, UTF8Char *msgBuff);
 
-		SessionInfo *SessGet(Int32 sessId);
+		Optional<SessionInfo> SessGet(Int32 sessId);
 		void SessEnd(Int32 sessId);
 	private:
-		void SessDelete(SessionInfo *sess);
+		void SessDelete(NN<SessionInfo> sess);
 	};
 }
 #endif

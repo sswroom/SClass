@@ -183,15 +183,13 @@ Map::CIPLayer2::~CIPLayer2()
 		blks = 0;
 	}
 	this->layerName->Release();
-	if (this->lastObjs)
+	NN<Data::FastMapNN<Int32, CIPFileObject>> objs;
+	if (this->lastObjs.SetTo(objs))
 	{
-		this->ReleaseFileObjs(this->lastObjs);
-		DEL_CLASS(this->lastObjs);
+		this->ReleaseFileObjs(objs);
+		this->lastObjs.Delete();
 	}
-	if (this->currObjs)
-	{
-		DEL_CLASS(this->currObjs);
-	}
+	this->currObjs.Delete();
 }
 
 Bool Map::CIPLayer2::IsError() const
@@ -610,24 +608,26 @@ Bool Map::CIPLayer2::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 	}
 }
 
-Map::CIPLayer2::CIPFileObject *Map::CIPLayer2::GetFileObject(void *session, Int32 id)
+Optional<Map::CIPLayer2::CIPFileObject> Map::CIPLayer2::GetFileObject(void *session, Int32 id)
 {
 	IO::FileStream *cip = (IO::FileStream*)session;
-	Map::CIPLayer2::CIPFileObject *obj;
+	NN<Map::CIPLayer2::CIPFileObject> obj;
 	Int32 buff[2];
+	NN<Data::FastMapNN<Int32, CIPFileObject>> objs;
 
-	if (this->lastObjs)
+	if (this->lastObjs.SetTo(objs))
 	{
-		obj = this->lastObjs->Get(id);
-		if (obj)
+		if (objs->Get(id).SetTo(obj))
 		{
-			this->lastObjs->Put(id, 0);
-			this->currObjs->Put(id, obj);
+			objs->Remove(id);
+			if (this->currObjs.SetTo(objs))
+				objs->Put(id, obj);
 			return obj;
 		}
 	}
-	obj = this->currObjs->Get(id);
-	if (obj)
+	if (!this->currObjs.SetTo(objs))
+		return 0;
+	if (objs->Get(id).SetTo(obj))
 		return obj;
 	if (id > this->maxId)
 		return 0;
@@ -638,7 +638,7 @@ Map::CIPLayer2::CIPFileObject *Map::CIPLayer2::GetFileObject(void *session, Int3
 	{
 		return 0;
 	}
-	obj = MemAlloc(Map::CIPLayer2::CIPFileObject, 1);
+	obj = MemAllocNN(Map::CIPLayer2::CIPFileObject);
 	obj->id = buff[0];
 	obj->nPtOfst = (UInt32)buff[1];
 	if (buff[1] > 0)
@@ -653,29 +653,26 @@ Map::CIPLayer2::CIPFileObject *Map::CIPLayer2::GetFileObject(void *session, Int3
 	cip->Read(Data::ByteArray((UInt8*)&obj->nPoint, 4));
 	obj->pointArr = MemAlloc(Int32, obj->nPoint * 2);
 	cip->Read(Data::ByteArray((UInt8*)obj->pointArr, obj->nPoint * 8));
-	this->currObjs->Put(id, obj);
+	objs->Put(id, obj);
 	return obj;
 }
 
-void Map::CIPLayer2::ReleaseFileObjs(Data::FastMap<Int32, Map::CIPLayer2::CIPFileObject*> *objs)
+void Map::CIPLayer2::ReleaseFileObjs(NN<Data::FastMapNN<Int32, Map::CIPLayer2::CIPFileObject>> objs)
 {
-	Map::CIPLayer2::CIPFileObject *obj;
+	NN<Map::CIPLayer2::CIPFileObject> obj;
 	UOSInt i = objs->GetCount();
 	while (i-- > 0)
 	{
-		obj = objs->GetItem(i);
-		if (obj)
+		obj = objs->GetItemNoCheck(i);
+		if (obj->ptOfstArr)
 		{
-			if (obj->ptOfstArr)
-			{
-				MemFree(obj->ptOfstArr);
-			}
-			if (obj->pointArr)
-			{
-				MemFree(obj->pointArr);
-			}
-			MemFree(obj);
+			MemFree(obj->ptOfstArr);
 		}
+		if (obj->pointArr)
+		{
+			MemFree(obj->pointArr);
+		}
+		MemFreeNN(obj);
 	}
 	objs->Clear();
 }
@@ -688,9 +685,11 @@ Map::GetObjectSess *Map::CIPLayer2::BeginGetObject()
 	sptr = this->layerName->ConcatTo(fileName);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".cip"));
 	this->mut.Lock();
-	if (this->currObjs == 0)
+	if (this->currObjs.IsNull())
 	{
-		NEW_CLASS(this->currObjs, Data::Int32FastMap<Map::CIPLayer2::CIPFileObject*>());
+		NN<Data::FastMapNN<Int32, CIPFileObject>> objs;
+		NEW_CLASSNN(objs, Data::Int32FastMapNN<Map::CIPLayer2::CIPFileObject>());
+		this->currObjs = objs;
 	}
 	NEW_CLASS(cip, IO::FileStream({fileName, (UOSInt)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	return (GetObjectSess*)cip;
@@ -700,10 +699,11 @@ void Map::CIPLayer2::EndGetObject(GetObjectSess *session)
 {
 	IO::FileStream *cip = (IO::FileStream*)session;
 	DEL_CLASS(cip);
-	Data::FastMap<Int32, Map::CIPLayer2::CIPFileObject*> *tmpObjs;
-	if (this->lastObjs)
+	Optional<Data::FastMapNN<Int32, Map::CIPLayer2::CIPFileObject>> tmpObjs;
+	NN<Data::FastMapNN<Int32, Map::CIPLayer2::CIPFileObject>> objs;
+	if (this->lastObjs.SetTo(objs))
 	{
-		this->ReleaseFileObjs(this->lastObjs);
+		this->ReleaseFileObjs(objs);
 	}
 	tmpObjs = this->lastObjs;
 	this->lastObjs = this->currObjs;
@@ -713,8 +713,8 @@ void Map::CIPLayer2::EndGetObject(GetObjectSess *session)
 
 Math::Geometry::Vector2D *Map::CIPLayer2::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
-	Map::CIPLayer2::CIPFileObject *fobj = this->GetFileObject(session, (Int32)id);
-	if (fobj == 0)
+	NN<Map::CIPLayer2::CIPFileObject> fobj;
+	if (!this->GetFileObject(session, (Int32)id).SetTo(fobj))
 	{
 		return 0;
 	}

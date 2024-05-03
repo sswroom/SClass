@@ -15,7 +15,7 @@ namespace Map
 	{
 		Int32 searchType;
 		Double searchDist;
-		Map::MapSearchLayer *mapLayer;
+		NN<Map::MapSearchLayer> mapLayer;
 		Text::String *searchStr;
 		UOSInt strIndex;
 	} MapSearchLayerInfo;
@@ -25,7 +25,7 @@ namespace Map
 	private:
 		Text::String *baseDir;
 		Int32 concatType;
-		Data::ArrayList<Map::MapSearchLayerInfo*> **layersArr;
+		NN<Data::ArrayListNN<Map::MapSearchLayerInfo>> *layersArr;
 
 	public:
 		MapSearch(Text::CStringNN fileName, Map::MapSearchManager *manager);

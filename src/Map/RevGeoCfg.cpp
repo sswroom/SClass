@@ -16,7 +16,7 @@ Map::RevGeoCfg::RevGeoCfg(Text::CStringNN fileName, Map::MapSearchManager *mapSr
 	Int32 srchType;
 	Int32 srchLyr;
 	NN<Map::RevGeoCfg::SearchLayer> layer;
-	Map::MapSearchLayer *mdata;
+	NN<Map::MapSearchLayer> mdata;
 
 	filePathName = filePath;
 

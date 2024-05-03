@@ -10,13 +10,13 @@ namespace IO
 	class WPDeviceInfo
 	{
 	private:
-		WPDManager *mgr;
+		NN<WPDManager> mgr;
 		const WChar *devId;
 		const WChar *devName;
 		const WChar *devDesc;
 		const WChar *devManu;
 	public:
-		WPDeviceInfo(WPDManager *mgr, const WChar *devId);
+		WPDeviceInfo(NN<WPDManager> mgr, const WChar *devId);
 		~WPDeviceInfo();
 	};
 
@@ -29,7 +29,7 @@ namespace IO
 		WPDManager();
 		~WPDManager();
 
-		OSInt GetDevices(Data::ArrayList<WPDeviceInfo*> *devList);
+		OSInt GetDevices(NN<Data::ArrayListNN<WPDeviceInfo>> devList);
 		Bool GetDevName(const WChar *devId, NN<Text::StringBuilderUTF8> sb);
 		Bool GetDevDesc(const WChar *devId, NN<Text::StringBuilderUTF8> sb);
 		Bool GetDevManu(const WChar *devId, NN<Text::StringBuilderUTF8> sb);
