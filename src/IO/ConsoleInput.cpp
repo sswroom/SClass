@@ -41,7 +41,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputInt32(IO::ConsoleWriter
 		state.currX = 0;
 		state.currY += 1;
 	}
-	console->WriteStrC(UTF8STRC("           "));
+	console->Write(CSTR("           "));
 	console->SetCursorPos(state.currX, state.currY);
 
 	UTF8Char cbuff[12];
@@ -53,7 +53,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputInt32(IO::ConsoleWriter
 	{
 		currSize = (UOSInt)(Text::StrInt32(cbuff, *output) - cbuff);
 		currPos = currSize;
-		console->WriteStrC(cbuff, currSize);
+		console->Write(Text::CStringNN(cbuff, currSize));
 	}
 	while (true)
 	{
@@ -87,7 +87,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputInt32(IO::ConsoleWriter
 					currPos++;
 					currSize++;
 					console->SetCursorPos(state.currX, state.currY);
-					console->WriteStrC(cbuff, currSize);
+					console->Write(Text::CStringNN(cbuff, currSize));
 					console->SetCursorPos(state.currX + (UInt32)currPos, state.currY);
 				}
 			}
@@ -115,7 +115,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputInt32(IO::ConsoleWriter
 				currPos++;
 				currSize++;
 				console->SetCursorPos(state.currX, state.currY);
-				console->WriteStrC(cbuff, currSize);
+				console->Write(Text::CStringNN(cbuff, currSize));
 				console->SetCursorPos(state.currX + (UInt32)currPos, state.currY);
 			}
 		}
@@ -136,8 +136,8 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputInt32(IO::ConsoleWriter
 				cbuff[currSize] = 0;
 
 				console->SetCursorPos(state.currX, state.currY);
-				console->WriteStrC(cbuff, currSize);
-				console->WriteStrC(UTF8STRC(" "));
+				console->Write(Text::CStringNN(cbuff, currSize));
+				console->Write(CSTR(" "));
 				console->SetCursorPos(state.currX + (UInt32)currPos, state.currY);
 			}
 		}
@@ -227,11 +227,11 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputBool(IO::ConsoleWriter 
 	{
 		if (o)
 		{
-			console->WriteStrC(UTF8STRC("True "));
+			console->Write(CSTR("True "));
 		}
 		else
 		{
-			console->WriteStrC(UTF8STRC("False"));
+			console->Write(CSTR("False"));
 		}
 		console->SetCursorPos(state.currX, state.currY);
 
@@ -312,11 +312,11 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputSelect(IO::ConsoleWrite
 
 	while (true)
 	{
-		console->WriteStrC(names[k]->v, names[k]->leng);
+		console->Write(names[k]->ToCString());
 		j = (maxStrSize - names[k]->leng);
 		while (j-- > 0)
 		{
-			console->WriteStrC(UTF8STRC(" "));
+			console->Write(CSTR(" "));
 		}
 		console->SetCursorPos(state.currX, state.currY);
 
@@ -486,52 +486,52 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputDateTime(IO::ConsoleWri
 			*sptr++ = ' ';
 		}
 		*sptr = 0;
-		console->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+		console->Write(CSTRP(sbuff, sptr));
 		console->ResetTextColor();
 //		console->SetTextColor(state.fgColor, state.bgColor);
-		console->WriteStrC(UTF8STRC("-"));
+		console->Write(CSTR("-"));
 		console->SetBGColor(Text::StandardColor::Blue);
 		console->SetTextColor(Text::StandardColor::White);
 		sptr = Text::StrInt32(sbuff, values[1]);
 		if ((sptr - sbuff) == 1)
-			console->WriteStrC(UTF8STRC(" "));
-		console->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			console->Write(CSTR(" "));
+		console->Write(CSTRP(sbuff, sptr));
 		console->ResetTextColor();
 //		console->SetTextColor(state.fgColor, state.bgColor);
-		console->WriteStrC(UTF8STRC("-"));
+		console->Write(CSTR("-"));
 		console->SetBGColor(Text::StandardColor::Blue);
 		console->SetTextColor(Text::StandardColor::White);
 		sptr = Text::StrInt32(sbuff, values[2]);
 		if ((sptr - sbuff) == 1)
-			console->WriteStrC(UTF8STRC(" "));
-		console->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			console->Write(CSTR(" "));
+		console->Write(CSTRP(sbuff, sptr));
 		console->ResetTextColor();
 //		console->SetTextColor(state.fgColor, state.bgColor);
-		console->WriteStrC(UTF8STRC(" "));
+		console->Write(CSTR(" "));
 		console->SetBGColor(Text::StandardColor::Blue);
 		console->SetTextColor(Text::StandardColor::White);
 		sptr = Text::StrInt32(sbuff, values[3]);
 		if ((sptr - sbuff) == 1)
-			console->WriteStrC(UTF8STRC(" "));
-		console->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			console->Write(CSTR(" "));
+		console->Write(CSTRP(sbuff, sptr));
 		console->ResetTextColor();
 //		console->SetTextColor(state.fgColor, state.bgColor);
-		console->WriteStrC(UTF8STRC(":"));
+		console->Write(CSTR(":"));
 		console->SetBGColor(Text::StandardColor::Blue);
 		console->SetTextColor(Text::StandardColor::White);
 		sptr = Text::StrInt32(sbuff, values[4]);
 		if ((sptr - sbuff) == 1)
-			console->WriteStrC(UTF8STRC(" "));
-		console->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			console->Write(CSTR(" "));
+		console->Write(CSTRP(sbuff, sptr));
 		console->ResetTextColor();
 //		console->SetTextColor(state.fgColor, state.bgColor);
-		console->WriteStrC(UTF8STRC(":"));
+		console->Write(CSTR(":"));
 		console->SetBGColor(Text::StandardColor::Blue);
 		console->SetTextColor(Text::StandardColor::White);
 		sptr = Text::StrInt32(sbuff, values[5]);
 		if ((sptr - sbuff) == 1)
-			console->WriteStrC(UTF8STRC(" "));
-		console->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			console->Write(CSTR(" "));
+		console->Write(CSTRP(sbuff, sptr));
 
 		if (currPos == 0)
 		{
@@ -659,7 +659,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(IO::ConsoleWri
 	i = buffSize;
 	while (i-- > 0)
 	{
-		console->WriteStrC(UTF8STRC("  "));
+		console->Write(CSTR("  "));
 	}
 	console->SetCursorPos(state.currX, state.currY);
 
@@ -692,7 +692,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(IO::ConsoleWri
 				currPos++;
 				currSize++;
 				console->SetCursorPos(state.currX, state.currY);
-				console->WriteStrC(cbuff, currSize);
+				console->Write(Text::CStringNN(cbuff, currSize));
 				console->SetCursorPos(state.currX + currPos, state.currY);
 			}
 		}
@@ -713,7 +713,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(IO::ConsoleWri
 				currPos++;
 				currSize++;
 				console->SetCursorPos(state.currX, state.currY);
-				console->WriteStrC(cbuff, currSize);
+				console->Write(Text::CStringNN(cbuff, currSize));
 				console->SetCursorPos(state.currX + currPos, state.currY);
 			}
 		}
@@ -734,7 +734,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(IO::ConsoleWri
 				currPos++;
 				currSize++;
 				console->SetCursorPos(state.currX, state.currY);
-				console->WriteStrC(cbuff, currSize);
+				console->Write(Text::CStringNN(cbuff, currSize));
 				console->SetCursorPos(state.currX + currPos, state.currY);
 			}
 		}
@@ -755,8 +755,8 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(IO::ConsoleWri
 				cbuff[currSize] = 0;
 
 				console->SetCursorPos(state.currX, state.currY);
-				console->WriteStrC(cbuff, currSize);
-				console->WriteStrC(UTF8STRC(" "));
+				console->Write(Text::CStringNN(cbuff, currSize));
+				console->Write(CSTR(" "));
 				console->SetCursorPos(state.currX + currPos, state.currY);
 			}
 		}
@@ -838,7 +838,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputString(IO::ConsoleWrite
 	i = maxCharCnt;
 	while (i-- > 0)
 	{
-		console->WriteStrC(UTF8STRC(" "));
+		console->Write(CSTR(" "));
 	}
 	console->SetCursorPos(state.currX, state.currY);
 
@@ -873,8 +873,8 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputString(IO::ConsoleWrite
 				cbuff[currSize] = 0;
 
 				console->SetCursorPos(state.currX, state.currY);
-				console->WriteStrC(cbuff, currSize);
-				console->WriteStrC(UTF8STRC(" "));
+				console->Write(Text::CStringNN(cbuff, currSize));
+				console->Write(CSTR(" "));
 				console->SetCursorPos(state.currX + currPos, state.currY);
 			}
 		}
@@ -915,7 +915,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputString(IO::ConsoleWrite
 				currPos++;
 				currSize++;
 				console->SetCursorPos(state.currX, state.currY);
-				console->WriteStrC(cbuff, currSize);
+				console->Write(Text::CStringNN(cbuff, currSize));
 				console->SetCursorPos(state.currX + currPos, state.currY);
 			}
 		}

@@ -29,18 +29,18 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_REALTIME);
 	sb.AppendC(UTF8STRC("Run using GPIO pin "));
 	sb.AppendI32(pinNum);
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 	IO::GPIOControl gpioCtrl;
 	IO::GPIOPin pin(gpioCtrl, pinNum);
 	NEW_CLASS(oneWire, IO::OneWireGPIO(pin));
 	NEW_CLASS(sensor, IO::Device::DS18B20(oneWire));
 	if (gpioCtrl.IsError() || pin.IsError())
 	{
-		console.WriteLineC(UTF8STRC("Error in opening GPIO, root permission?"));
+		console.WriteLine(CSTR("Error in opening GPIO, root permission?"));
 	}
 	else if (!sensor->ReadSensorID(sensorId))
 	{
-		console.WriteLineC(UTF8STRC("Sensor not found"));
+		console.WriteLine(CSTR("Sensor not found"));
 	}
 	else
 	{
@@ -49,24 +49,24 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		sb.AppendHex8(sensorId[0]);
 		sb.AppendC(UTF8STRC("-"));
 		sb.AppendHexBuff(&sensorId[1], 6, 0, Text::LineBreakType::None);
-		console.WriteLineC(sb.ToString(), sb.GetLength());
+		console.WriteLine(sb.ToCString());
 
 		while (true)
 		{
 			if (!sensor->ConvTemp())
 			{
-				console.WriteLineC(UTF8STRC("Error in converting temperature"));
+				console.WriteLine(CSTR("Error in converting temperature"));
 			}
 			else if (!sensor->ReadTemp(&temp))
 			{
-				console.WriteLineC(UTF8STRC("Error in reading temperature"));
+				console.WriteLine(CSTR("Error in reading temperature"));
 			}
 			else
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Temperature = "));
 				sb.AppendDouble(temp);
-				console.WriteLineC(sb.ToString(), sb.GetLength());
+				console.WriteLine(sb.ToCString());
 			}
 			Sync::SimpleThread::Sleep(3000);
 		}

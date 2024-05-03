@@ -30,28 +30,28 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	j = mongoDB->GetDatabaseNames(dbList);
 	if (j <= 0)
 	{
-		console->WriteLineC(UTF8STRC("Error in getting Database List:"));
+		console->WriteLine(CSTR("Error in getting Database List:"));
 		sb.ClearStr();
 		mongoDB->GetLastErrorMsg(sb);
-		console->WriteLineC(sb.ToString(), sb.GetLength());
+		console->WriteLine(sb.ToCString());
 	}
 	else
 	{
-		console->WriteLineC(UTF8STRC("Database List:"));
+		console->WriteLine(CSTR("Database List:"));
 		it = dbList.Iterator();
 		while (it.HasNext())
 		{
-			console->WriteLineCStr(it.Next()->ToCString());
+			console->WriteLine(it.Next()->ToCString());
 		}
 		mongoDB->FreeDatabaseNames(dbList);
 	}
 	console->WriteLine();
-	console->WriteLineC(UTF8STRC("Table List:"));
+	console->WriteLine(CSTR("Table List:"));
 	mongoDB->QueryTableNames(CSTR_NULL, tableList);
 	it = tableList.Iterator();
 	while (it.HasNext())
 	{
-		console->WriteLineCStr(it.Next()->ToCString());
+		console->WriteLine(it.Next()->ToCString());
 	}
 	tableList.FreeAll();
 

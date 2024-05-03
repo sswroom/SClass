@@ -146,15 +146,15 @@ void Net::WebServer::WebStandardHandler::WebRequest(NN<Net::WebServer::IWebReque
 
 			IO::MemoryStream mstm;
 			Text::UTF8Writer writer(mstm);
-			writer.WriteLineC(UTF8STRC("<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">"));
-			writer.WriteLineC(UTF8STRC("<html><head>"));
-			writer.WriteLineC(UTF8STRC("<title>404 Not Found</title>"));
-			writer.WriteLineC(UTF8STRC("</head><body>"));
-			writer.WriteLineC(UTF8STRC("<h1>Not Found</h1>"));
-			writer.WriteStrC(UTF8STRC("<p>The requested URL "));
-			writer.WriteStrC(reqURL->v, reqURL->leng);
-			writer.WriteLineC(UTF8STRC(" was not found on this server.</p>"));
-			writer.WriteLineC(UTF8STRC("</body></html>"));
+			writer.WriteLine(CSTR("<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">"));
+			writer.WriteLine(CSTR("<html><head>"));
+			writer.WriteLine(CSTR("<title>404 Not Found</title>"));
+			writer.WriteLine(CSTR("</head><body>"));
+			writer.WriteLine(CSTR("<h1>Not Found</h1>"));
+			writer.Write(CSTR("<p>The requested URL "));
+			writer.Write(reqURL->ToCString());
+			writer.WriteLine(CSTR(" was not found on this server.</p>"));
+			writer.WriteLine(CSTR("</body></html>"));
 			resp->AddContentType(CSTR("text/html"));
 			mstm.SeekFromBeginning(0);
 			Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("text/html"), mstm.GetLength(), mstm);

@@ -22,7 +22,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	//UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &cmdCnt);
 /*	if (cmdCnt != 4)
 	{
-		console.WriteLineC(UTF8STRC("Error in parameters, should be ImageResize [srcFile] [destFile] [size]");
+		console.WriteLine(CSTR("Error in parameters, should be ImageResize [srcFile] [destFile] [size]");
 		return 1;
 	}*/
 
@@ -35,7 +35,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error in parsing size: "));
 		sb.Append(argv[3]);
-		console.WriteLineC(sb.ToString(), sb.GetLength());
+		console.WriteLine(sb.ToCString());
 		return 1;
 	}*/
 	
@@ -53,14 +53,14 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Error in opening srcFile: "));
 			sb.Append(srcFile);
-			console.WriteLineC(sb.ToString(), sb.GetLength());
+			console.WriteLine(sb.ToCString());
 		}
 		else if (!imgList.Set((Media::ImageList*)parser.ParseFile(fd, 0, IO::ParserType::ImageList)))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Error in parsing srcFile: "));
 			sb.Append(srcFile);
-			console.WriteLineC(sb.ToString(), sb.GetLength());
+			console.WriteLine(sb.ToCString());
 		}
 		else
 		{
@@ -95,7 +95,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Error in saving destFile: "));
 					sb.Append(destFile);
-					console.WriteLineC(sb.ToString(), sb.GetLength());
+					console.WriteLine(sb.ToCString());
 				}
 				imgList.Delete();
 			}
@@ -104,7 +104,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Error in resizing image: "));
 				sb.Append(srcFile);
-				console.WriteLineC(sb.ToString(), sb.GetLength());
+				console.WriteLine(sb.ToCString());
 			}
 		}
 	}
@@ -113,7 +113,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	sb.AppendC(UTF8STRC("Time used = "));
 	sb.AppendDouble(t);
 	sb.AppendC(UTF8STRC("s"));
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 
 	return ret;
 }

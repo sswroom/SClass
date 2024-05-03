@@ -10,20 +10,20 @@ namespace Text
 	public:
 		virtual ~StyledTextWriter() {};
 
-		virtual Bool WriteStrC(const UTF8Char *str, UOSInt nChar)
+		virtual Bool Write(Text::CStringNN str)
 		{
 			UOSInt i = 0;
-			while (i < nChar)
+			while (i < str.leng)
 			{
-				if (!WriteChar(str[i])) return false;
+				if (!WriteChar(str.v[i])) return false;
 				i++;
 			}
 			return true;
 		}
 
-		virtual Bool WriteLineC(const UTF8Char *str, UOSInt nChar)
+		virtual Bool WriteLine(Text::CStringNN str)
 		{
-			return WriteStrC(str, nChar) && WriteChar('\r') && WriteChar('\n');
+			return Write(str) && WriteChar('\r') && WriteChar('\n');
 		}
 
 		virtual Bool WriteLine()

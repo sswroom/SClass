@@ -18,6 +18,6 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	sb.AppendC(UTF8STRC("Time used: "));
 	sb.AppendDouble(t);
 	IO::ConsoleWriter console;
-	console.WriteLineCStr(sb.ToCString());
+	console.WriteLine(sb.ToCString());
 	return 0;
 }

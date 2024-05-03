@@ -52,13 +52,13 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	NN<PrintObj> prtobj;
 
 	NEW_CLASS(console, IO::ConsoleWriter());
-	console->WriteLineC(UTF8STRC("Found Printers:"));
+	console->WriteLine(CSTR("Found Printers:"));
 	i = 0;
 	j = Media::Printer::GetPrinterCount();
 	while (i < j)
 	{
 		sptr = Media::Printer::GetPrinterName(sbuff, i);
-		console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+		console->WriteLine(CSTRP(sbuff, sptr));
 		i++;
 	}
 	eng = Media::DrawEngineFactory::CreateDrawEngine();

@@ -281,7 +281,7 @@ Net::RTSPClient::~RTSPClient()
 	}
 }
 
-Bool Net::RTSPClient::GetOptions(Text::CString url, Data::ArrayList<const UTF8Char *> *options)
+Bool Net::RTSPClient::GetOptions(Text::CStringNN url, Data::ArrayList<const UTF8Char *> *options)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -297,13 +297,13 @@ Bool Net::RTSPClient::GetOptions(Text::CString url, Data::ArrayList<const UTF8Ch
 		IO::MemoryStream stm;
 		{
 			Text::UTF8Writer writer(stm);
-			writer.WriteStrC(UTF8STRC("OPTIONS "));
-			writer.WriteStr(url);
-			writer.WriteLineC(UTF8STRC(" RTSP/1.0"));
-			writer.WriteStrC(UTF8STRC("CSeq: "));
+			writer.Write(CSTR("OPTIONS "));
+			writer.Write(url);
+			writer.WriteLine(CSTR(" RTSP/1.0"));
+			writer.Write(CSTR("CSeq: "));
 			sptr = Text::StrInt32(sbuff, reqId);
-			writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-			writer.WriteLineC(UTF8STRC("User-Agent: RTSPClient"));
+			writer.WriteLine(CSTRP(sbuff, sptr));
+			writer.WriteLine(CSTR("User-Agent: RTSPClient"));
 			writer.WriteLine();
 		}
 		buff = stm.GetBuff(buffSize);
@@ -332,7 +332,7 @@ Bool Net::RTSPClient::GetOptions(Text::CString url, Data::ArrayList<const UTF8Ch
 	return ret;
 }
 
-Net::SDPFile *Net::RTSPClient::GetMediaInfo(Text::CString url)
+Net::SDPFile *Net::RTSPClient::GetMediaInfo(Text::CStringNN url)
 {
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
@@ -346,13 +346,13 @@ Net::SDPFile *Net::RTSPClient::GetMediaInfo(Text::CString url)
 		IO::MemoryStream stm;
 		{
 			Text::UTF8Writer writer(stm);
-			writer.WriteStrC(UTF8STRC("DESCRIBE "));
-			writer.WriteStr(url);
-			writer.WriteLineC(UTF8STRC(" RTSP/1.0"));
-			writer.WriteStrC(UTF8STRC("CSeq: "));
+			writer.Write(CSTR("DESCRIBE "));
+			writer.Write(url);
+			writer.WriteLine(CSTR(" RTSP/1.0"));
+			writer.Write(CSTR("CSeq: "));
 			sptr = Text::StrInt32(sbuff, reqId);
-			writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-			writer.WriteLineC(UTF8STRC("Content-Type: application/sdp"));
+			writer.WriteLine(CSTRP(sbuff, sptr));
+			writer.WriteLine(CSTR("Content-Type: application/sdp"));
 			writer.WriteLine();
 		}
 		buff = stm.GetBuff(buffSize);
@@ -370,7 +370,7 @@ Net::SDPFile *Net::RTSPClient::GetMediaInfo(Text::CString url)
 	return sdp;
 }
 
-UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, Text::CString url, NN<Net::RTPCliChannel> rtpChannel)
+UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, Text::CStringNN url, NN<Net::RTPCliChannel> rtpChannel)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -384,15 +384,15 @@ UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, Text::CString url, NN<N
 		IO::MemoryStream stm;
 		{
 			Text::UTF8Writer writer(stm);
-			writer.WriteStrC(UTF8STRC("SETUP "));
-			writer.WriteStr(url);
-			writer.WriteLineC(UTF8STRC(" RTSP/1.0"));
-			writer.WriteStrC(UTF8STRC("CSeq: "));
+			writer.Write(CSTR("SETUP "));
+			writer.Write(url);
+			writer.WriteLine(CSTR(" RTSP/1.0"));
+			writer.Write(CSTR("CSeq: "));
 			sptr = Text::StrInt32(sbuff, reqId);
-			writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-			writer.WriteStrC(UTF8STRC("Transport: "));
+			writer.WriteLine(CSTRP(sbuff, sptr));
+			writer.Write(CSTR("Transport: "));
 			sptr = rtpChannel->GetTransportDesc(sbuff);
-			writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteLine(CSTRP(sbuff, sptr));
 			writer.WriteLine();
 		}
 		buff = stm.GetBuff(buffSize);
@@ -495,7 +495,7 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(NN<Net::SocketFactory> sockf, Text::
 	}
 }
 
-Bool Net::RTSPClient::Play(Text::CString url, Text::CString sessId)
+Bool Net::RTSPClient::Play(Text::CStringNN url, Text::CStringNN sessId)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -509,13 +509,13 @@ Bool Net::RTSPClient::Play(Text::CString url, Text::CString sessId)
 		IO::MemoryStream stm;
 		{
 			Text::UTF8Writer writer(stm);
-			writer.WriteStrC(UTF8STRC("PLAY "));
-			writer.WriteStr(url);
-			writer.WriteLineC(UTF8STRC(" RTSP/1.0"));
-			writer.WriteStrC(UTF8STRC("CSeq: "));
+			writer.Write(CSTR("PLAY "));
+			writer.Write(url);
+			writer.WriteLine(CSTR(" RTSP/1.0"));
+			writer.Write(CSTR("CSeq: "));
 			sptr = Text::StrInt32(sbuff, reqId);
-			writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-			writer.WriteStrC(UTF8STRC("Session: "));
+			writer.WriteLine(CSTRP(sbuff, sptr));
+			writer.Write(CSTR("Session: "));
 			writer.WriteLine(sessId);
 			writer.WriteLine();
 		}
@@ -534,7 +534,7 @@ Bool Net::RTSPClient::Play(Text::CString url, Text::CString sessId)
 	return ret;
 }
 
-Bool Net::RTSPClient::Close(Text::CString url, Text::CString sessId)
+Bool Net::RTSPClient::Close(Text::CStringNN url, Text::CStringNN sessId)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -548,13 +548,13 @@ Bool Net::RTSPClient::Close(Text::CString url, Text::CString sessId)
 		IO::MemoryStream stm;
 		{
 			Text::UTF8Writer writer(stm);
-			writer.WriteStrC(UTF8STRC("TEARDOWN "));
-			writer.WriteStr(url);
-			writer.WriteLineC(UTF8STRC(" RTSP/1.0"));
-			writer.WriteStrC(UTF8STRC("CSeq: "));
+			writer.Write(CSTR("TEARDOWN "));
+			writer.Write(url);
+			writer.WriteLine(CSTR(" RTSP/1.0"));
+			writer.Write(CSTR("CSeq: "));
 			sptr = Text::StrInt32(sbuff, reqId);
-			writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-			writer.WriteStrC(UTF8STRC("Session: "));
+			writer.WriteLine(CSTRP(sbuff, sptr));
+			writer.Write(CSTR("Session: "));
 			writer.WriteLine(sessId);
 			writer.WriteLine();
 		}

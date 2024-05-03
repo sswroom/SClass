@@ -38,7 +38,7 @@ UInt32 __stdcall Map::ReverseGeocoderClient::ClientThread(void *userObj)
 			{
 				me->lastKASent.SetCurrTimeUTC();
 				me->lastKARecv.SetCurrTimeUTC();
-				me->errWriter->WriteLineC(UTF8STRC("ReverseGeocoder connected"));
+				me->errWriter->WriteLine(CSTR("ReverseGeocoder connected"));
 				me->cli = cli.Ptr();
 			}
 		}
@@ -51,7 +51,7 @@ UInt32 __stdcall Map::ReverseGeocoderClient::ClientThread(void *userObj)
 				DEL_CLASS(me->cli);
 				me->cli = 0;
 				mutUsage.EndUse();
-				me->errWriter->WriteLineC(UTF8STRC("ReverseGeocoder disconnected"));
+				me->errWriter->WriteLine(CSTR("ReverseGeocoder disconnected"));
 			}
 			else
 			{
@@ -96,7 +96,7 @@ UInt32 __stdcall Map::ReverseGeocoderClient::MonThread(void *userObj)
 			Sync::MutexUsage mutUsage(me->cliMut);
 			if (me->cli)
 			{
-				me->errWriter->WriteLineC(UTF8STRC("ReverseGeocoder timed out"));
+				me->errWriter->WriteLine(CSTR("ReverseGeocoder timed out"));
 				me->cli->Close();
 			}
 		}
@@ -107,7 +107,7 @@ UInt32 __stdcall Map::ReverseGeocoderClient::MonThread(void *userObj)
 			{
 				me->cli->Write(kaBuff, me->protocol.BuildPacket(kaBuff, 4, 0, 0, 0, 0));
 				me->lastKASent.SetCurrTimeUTC();
-//				me->errWriter->WriteLineC(UTF8STRC("KA sent"));
+//				me->errWriter->WriteLine(CSTR("KA sent"));
 			}
 		}
 		me->monEvt.Wait(1000);
@@ -224,7 +224,7 @@ void Map::ReverseGeocoderClient::DataParsed(NN<IO::Stream> stm, void *stmObj, In
 	}
 	else if (cmdType == 4)
 	{
-//		this->errWriter->WriteLineC(UTF8STRC("KA Received");
+//		this->errWriter->WriteLine(CSTR("KA Received");
 		this->lastKARecv.SetCurrTimeUTC();
 	}
 }

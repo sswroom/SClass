@@ -65,19 +65,19 @@ void Media::MediaPlayerWebInterface::BrowseRequest(NN<Net::WebServer::IWebReques
 	{
 		Text::UTF8Writer writer(mstm);
 
-		writer.WriteLineC(UTF8STRC("<html>"));
-		writer.WriteLineC(UTF8STRC("<head><title>HQMP Control</title>"));
-		writer.WriteLineC(UTF8STRC("</head>"));
-		writer.WriteLineC(UTF8STRC("<body>"));
-		writer.WriteLineC(UTF8STRC("<a href=\"/\">Back</a><br/><br/>"));
-		writer.WriteStrC(UTF8STRC("<b>Current File: </b>"));
+		writer.WriteLine(CSTR("<html>"));
+		writer.WriteLine(CSTR("<head><title>HQMP Control</title>"));
+		writer.WriteLine(CSTR("</head>"));
+		writer.WriteLine(CSTR("<body>"));
+		writer.WriteLine(CSTR("<a href=\"/\">Back</a><br/><br/>"));
+		writer.Write(CSTR("<b>Current File: </b>"));
 		s = Text::XML::ToNewHTMLBodyText(this->iface->GetOpenedFile()->GetSourceNameObj()->v);
-		writer.WriteStrC(s->v, s->leng);
+		writer.Write(s->ToCString());
 		s->Release();
-		writer.WriteLineC(UTF8STRC("<hr/>"));
+		writer.WriteLine(CSTR("<hr/>"));
 
-		writer.WriteLineC(UTF8STRC("<table border=\"0\">"));
-		writer.WriteLineC(UTF8STRC("<tr><td>Name</td><td>Size</td><td>MIME Type</td></tr>"));
+		writer.WriteLine(CSTR("<table border=\"0\">"));
+		writer.WriteLine(CSTR("<tr><td>Name</td><td>Size</td><td>MIME Type</td></tr>"));
 
 		sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 		sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
@@ -106,36 +106,36 @@ void Media::MediaPlayerWebInterface::BrowseRequest(NN<Net::WebServer::IWebReques
 			{
 				vfile = fileList.GetItem(i);
 
-				writer.WriteStrC(UTF8STRC("<tr><td>"));
-				writer.WriteStrC(UTF8STRC("<a href=\"/browse?fname="));
+				writer.Write(CSTR("<tr><td>"));
+				writer.Write(CSTR("<a href=\"/browse?fname="));
 				Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, vfile->fileName->v);
 				s = Text::XML::ToNewXMLText(sbuff2);
-				writer.WriteStrC(s->v, s->leng);
+				writer.Write(s->ToCString());
 				s->Release();
-				writer.WriteStrC(UTF8STRC("\">"));
+				writer.Write(CSTR("\">"));
 
 				s = Text::XML::ToNewHTMLBodyText(vfile->fileName->v);
-				writer.WriteStrC(s->v, s->leng);
+				writer.Write(s->ToCString());
 				s->Release();
-				writer.WriteStrC(UTF8STRC("</a></td><td>"));
+				writer.Write(CSTR("</a></td><td>"));
 				sptr2 = Text::StrUInt64(sbuff2, vfile->fileSize);
-				writer.WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff));
-				writer.WriteStrC(UTF8STRC("</td><td>"));
+				writer.Write(CSTRP(sbuff2, sptr2));
+				writer.Write(CSTR("</td><td>"));
 
 				sptr2 = IO::Path::GetFileExt(sbuff2, vfile->fileName->v, vfile->fileName->leng);
-				Text::CString mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff2, sptr2));
-				writer.WriteStrC(mime.v, mime.leng);
-				writer.WriteLineC(UTF8STRC("</td></tr>"));
+				Text::CStringNN mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff2, sptr2));
+				writer.Write(mime);
+				writer.WriteLine(CSTR("</td></tr>"));
 
 				vfile->fileName->Release();
 				MemFree(vfile);
 				i++;
 			}
 		}
-		writer.WriteLineC(UTF8STRC("</table>"));
+		writer.WriteLine(CSTR("</table>"));
 
-		writer.WriteLineC(UTF8STRC("</body>"));
-		writer.WriteLineC(UTF8STRC("</html>"));
+		writer.WriteLine(CSTR("</body>"));
+		writer.WriteLine(CSTR("</html>"));
 	}
 
 	resp->AddDefHeaders(req);
@@ -206,44 +206,44 @@ void Media::MediaPlayerWebInterface::WebRequest(NN<Net::WebServer::IWebRequest> 
 	{
 		Text::UTF8Writer writer(mstm);
 
-		writer.WriteLineC(UTF8STRC("<html>"));
-		writer.WriteLineC(UTF8STRC("<head><title>HQMP Control</title>"));
-		writer.WriteLineC(UTF8STRC("</head>"));
-		writer.WriteLineC(UTF8STRC("<body>"));
-		writer.WriteLineC(UTF8STRC("<a href=\"/\">Refresh</a><br/><br/>"));
-		writer.WriteStrC(UTF8STRC("<b>Current File: </b>"));
+		writer.WriteLine(CSTR("<html>"));
+		writer.WriteLine(CSTR("<head><title>HQMP Control</title>"));
+		writer.WriteLine(CSTR("</head>"));
+		writer.WriteLine(CSTR("<body>"));
+		writer.WriteLine(CSTR("<a href=\"/\">Refresh</a><br/><br/>"));
+		writer.Write(CSTR("<b>Current File: </b>"));
 		if (this->iface->GetOpenedFile())
 		{
 			s = Text::XML::ToNewHTMLBodyText(this->iface->GetOpenedFile()->GetSourceNameObj()->v);
-			writer.WriteStrC(s->v, s->leng);
+			writer.Write(s->ToCString());
 			s->Release();
 
-			writer.WriteStrC(UTF8STRC(" <a href=\"/browse\">Browse</a>"));
+			writer.Write(CSTR(" <a href=\"/browse\">Browse</a>"));
 		}
 		else
 		{
-			writer.WriteStrC(UTF8STRC("-"));
+			writer.Write(CSTR("-"));
 		}
-		writer.WriteLineC(UTF8STRC("<br/>"));
+		writer.WriteLine(CSTR("<br/>"));
 
-		writer.WriteLineC(UTF8STRC("<input type=\"button\" value=\"Stop\" onclick=\"document.location.replace('/stop')\"/>"));
-		writer.WriteLineC(UTF8STRC("<input type=\"button\" value=\"Start\" onclick=\"document.location.replace('/start')\"/>"));
-		writer.WriteLineC(UTF8STRC("<input type=\"button\" value=\"Pause\" onclick=\"document.location.replace('/pause')\"/>"));
-		writer.WriteLineC(UTF8STRC("<br/>"));
-		writer.WriteLineC(UTF8STRC("<a href=\"/backward60\">Backward 1 Minute</a>"));
-		writer.WriteLineC(UTF8STRC("<a href=\"/backward10\">Backward 10 Seconds</a>"));
-		writer.WriteLineC(UTF8STRC("<a href=\"/forward10\">Forward 10 Seconds</a>"));
-		writer.WriteLineC(UTF8STRC("<a href=\"/forward60\">Forward 1 Minute</a>"));
-		writer.WriteLineC(UTF8STRC("<br/>"));
-		writer.WriteLineC(UTF8STRC("<a href=\"/prevchap\">Previous Chapter</a>"));
-		writer.WriteLineC(UTF8STRC("<a href=\"/nextchap\">Next Chapter</a>"));
-		writer.WriteLineC(UTF8STRC("<a href=\"/avofstdec\">A/V Offset Decrease</a>"));
-		writer.WriteLineC(UTF8STRC("<a href=\"/avofstinc\">A/V Offset Increase</a>"));
+		writer.WriteLine(CSTR("<input type=\"button\" value=\"Stop\" onclick=\"document.location.replace('/stop')\"/>"));
+		writer.WriteLine(CSTR("<input type=\"button\" value=\"Start\" onclick=\"document.location.replace('/start')\"/>"));
+		writer.WriteLine(CSTR("<input type=\"button\" value=\"Pause\" onclick=\"document.location.replace('/pause')\"/>"));
+		writer.WriteLine(CSTR("<br/>"));
+		writer.WriteLine(CSTR("<a href=\"/backward60\">Backward 1 Minute</a>"));
+		writer.WriteLine(CSTR("<a href=\"/backward10\">Backward 10 Seconds</a>"));
+		writer.WriteLine(CSTR("<a href=\"/forward10\">Forward 10 Seconds</a>"));
+		writer.WriteLine(CSTR("<a href=\"/forward60\">Forward 1 Minute</a>"));
+		writer.WriteLine(CSTR("<br/>"));
+		writer.WriteLine(CSTR("<a href=\"/prevchap\">Previous Chapter</a>"));
+		writer.WriteLine(CSTR("<a href=\"/nextchap\">Next Chapter</a>"));
+		writer.WriteLine(CSTR("<a href=\"/avofstdec\">A/V Offset Decrease</a>"));
+		writer.WriteLine(CSTR("<a href=\"/avofstinc\">A/V Offset Increase</a>"));
 		{
 			Text::StringBuilderUTF8 sb;
 			Media::VideoRenderer::RendererStatus2 status;
 
-			writer.WriteLineC(UTF8STRC("<hr/>"));
+			writer.WriteLine(CSTR("<hr/>"));
 			this->iface->GetVideoRenderer()->GetStatus(status);
 			sb.AppendC(UTF8STRC("Curr Time: "));
 			sb.AppendDur(status.currTime);
@@ -369,11 +369,11 @@ void Media::MediaPlayerWebInterface::WebRequest(NN<Net::WebServer::IWebRequest> 
 			sb.AppendC(UTF8STRC(", "));
 			sb.AppendDouble(primaries->w.y);
 			sb.AppendC(UTF8STRC("<br/>\r\n"));
-			writer.WriteStrC(sb.ToString(), sb.GetLength());
+			writer.Write(sb.ToCString());
 		}
 
-		writer.WriteLineC(UTF8STRC("</body>"));
-		writer.WriteLineC(UTF8STRC("</html>"));
+		writer.WriteLine(CSTR("</body>"));
+		writer.WriteLine(CSTR("</html>"));
 	}
 
 	resp->AddDefHeaders(req);

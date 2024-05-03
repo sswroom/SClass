@@ -148,9 +148,9 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	sptr = Text::StrConcatC(sptr, UTF8STRC("<Folder>"));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("<name>Points</name>"));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("<open>1</open>"));
-	writer.WriteStrC(sbuff2, (UOSInt)(sptr - sbuff2));
+	writer.Write(CSTRP(sbuff2, sptr));
 
-	writer.WriteStrC(UTF8STRC("<Style id=\"lineLabel\"><LineStyle><gx:labelVisibility>1</gx:labelVisibility></LineStyle></Style>"));
+	writer.Write(CSTR("<Style id=\"lineLabel\"><LineStyle><gx:labelVisibility>1</gx:labelVisibility></LineStyle></Style>"));
 
 	Data::ArrayListInt64 ids;
 	layer->GetAllObjectIds(ids, &nameArr);
@@ -210,7 +210,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 					sptr = Text::StrDouble(sptr, z);
 					sptr = Text::StrConcatC(sptr, UTF8STRC("</coordinates></Point>"));
 					sptr = Text::StrConcatC(sptr, UTF8STRC("</Placemark>"));
-					writer.WriteLineC(sbuff2, (UOSInt)(sptr - sbuff2));
+					writer.WriteLine(CSTRP(sbuff2, sptr));
 				}
 				else if (vecType == Math::Geometry::Vector2D::VectorType::LineString)
 				{
@@ -315,7 +315,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 					}
 
 					sb.AppendC(UTF8STRC("</coordinates></LineString></Placemark>"));
-					writer.WriteLineC(sb.ToString(), sb.GetLength());					
+					writer.WriteLine(sb.ToCString());					
 				}
 				else if (vecType == Math::Geometry::Vector2D::VectorType::Polyline)
 				{
@@ -426,7 +426,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 						i++;
 					}
 					sb.AppendC(UTF8STRC("</coordinates></LineString></Placemark>"));
-					writer.WriteLineC(sb.ToString(), sb.GetLength());
+					writer.WriteLine(sb.ToCString());
 				}
 				else if (vecType == Math::Geometry::Vector2D::VectorType::Polygon)
 				{
@@ -502,7 +502,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 
 					sb.AppendC(UTF8STRC("</Polygon>"));
 					sb.AppendC(UTF8STRC("</Placemark>"));
-					writer.WriteLineC(sb.ToString(), sb.GetLength());
+					writer.WriteLine(sb.ToCString());
 				}
 				else if (vecType == Math::Geometry::Vector2D::VectorType::Image)
 				{
@@ -593,7 +593,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 						sb.AppendC(UTF8STRC("\" xunits=\"fraction\" yunits=\"fraction\"/>"));
 
 						sb.AppendC(UTF8STRC("</ScreenOverlay>"));
-						writer.WriteLineC(sb.ToString(), sb.GetLength());
+						writer.WriteLine(sb.ToCString());
 					}
 					else
 					{
@@ -677,7 +677,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 						}
 
 						sb.AppendC(UTF8STRC("</GroundOverlay>"));
-						writer.WriteLineC(sb.ToString(), sb.GetLength());
+						writer.WriteLine(sb.ToCString());
 					}
 				}
 			}
@@ -694,7 +694,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	sptr = Text::StrConcatC(sbuff2, UTF8STRC("</Folder>"));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("</Document>"));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("</kml>"));
-	writer.WriteStrC(sbuff2, (UOSInt)(sptr - sbuff2));
+	writer.Write(CSTRP(sbuff2, sptr));
 	return true;
 }
 

@@ -148,10 +148,10 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		i++;
 	}
 	sb.AppendC(UTF8STRC("}"));
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("t = "));
 	sb.AppendDouble(t);
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 	return 0;
 }

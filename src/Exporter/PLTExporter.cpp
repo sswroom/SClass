@@ -71,12 +71,12 @@ Bool Exporter::PLTExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	Text::UTF8Writer writer(stm);
 	refTime.SetValue(1899, 12, 30, 0, 0, 0, 0);
 
-	writer.WriteLineC(UTF8STRC("OziExplorer Track Point File Version 2.0"));
-	writer.WriteLineC(UTF8STRC("WGS 84"));
-	writer.WriteLineC(UTF8STRC("Altitude is in Feet"));
-	writer.WriteLineC(UTF8STRC("Reserved 3"));
-	writer.WriteLineC(UTF8STRC("0,2,255,Ozi Track Log File,1")); //0,<line width>,<line color>,<description>,<track skip value>,<type: 0=normal, 10=closed polygon, 20=alarm zone>,<fill style>,<fill color>
-	writer.WriteLineC(UTF8STRC("0")); //number of points
+	writer.WriteLine(CSTR("OziExplorer Track Point File Version 2.0"));
+	writer.WriteLine(CSTR("WGS 84"));
+	writer.WriteLine(CSTR("Altitude is in Feet"));
+	writer.WriteLine(CSTR("Reserved 3"));
+	writer.WriteLine(CSTR("0,2,255,Ozi Track Log File,1")); //0,<line width>,<line color>,<description>,<track skip value>,<type: 0=normal, 10=closed polygon, 20=alarm zone>,<fill style>,<fill color>
+	writer.WriteLine(CSTR("0")); //number of points
 	
 	i = 0;
 	j = track->GetTrackCnt();
@@ -107,7 +107,7 @@ Bool Exporter::PLTExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 			sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
 			sptr = dt.ToString(sptr, "hh:mm:ss tt");
 
-			writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+			writer.WriteLine(CSTRP(sbuff, sptr));
 
 			k++;
 		}

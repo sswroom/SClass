@@ -25,7 +25,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	sb.AppendUOSInt(i);
 	sb.AppendC(UTF8STRC(" controller found:"));
 	j = 0;
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 	while (i-- > 0)
 	{
 		btCtrl = btCtrlList.GetItemNoCheck(i);
@@ -34,37 +34,37 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		sb.AppendC(UTF8STRC("Controller "));
 		sb.AppendUOSInt(j);
 		sb.AppendC(UTF8STRC(":"));
-		console.WriteLineC(sb.ToString(), sb.GetLength());
+		console.WriteLine(sb.ToCString());
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Name: "));
 		sb.Append(btCtrl->GetName());
-		console.WriteLineC(sb.ToString(), sb.GetLength());
+		console.WriteLine(sb.ToCString());
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Address: "));
 		IO::BTUtil::GetAddrText(sb, btCtrl->GetAddress());
-		console.WriteLineC(sb.ToString(), sb.GetLength());
+		console.WriteLine(sb.ToCString());
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Manufacturer: "));
 		sb.Append(IO::BTUtil::GetManufacturerName(btCtrl->GetManufacturer()));
 		sb.AppendC(UTF8STRC(" (0x"));
 		sb.AppendHex16(btCtrl->GetManufacturer());
 		sb.AppendC(UTF8STRC(")"));
-		console.WriteLineC(sb.ToString(), sb.GetLength());
+		console.WriteLine(sb.ToCString());
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Subversion: 0x"));
 		sb.AppendHex16(btCtrl->GetSubversion());
-		console.WriteLineC(sb.ToString(), sb.GetLength());
+		console.WriteLine(sb.ToCString());
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Class of Device: 0x"));
 		sb.AppendHex32(btCtrl->GetDevClass());
-		console.WriteLineC(sb.ToString(), sb.GetLength());
+		console.WriteLine(sb.ToCString());
 
 		console.WriteLine();
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Controller "));
 		sb.AppendUOSInt(j);
 		sb.AppendC(UTF8STRC(" - Devices:"));
-		console.WriteLineC(sb.ToString(), sb.GetLength());
+		console.WriteLine(sb.ToCString());
 
 		btCtrl->CreateDevices(btDevList, false);
 		k = 0;
@@ -77,19 +77,19 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			sb.AppendUOSInt(j);
 			sb.AppendC(UTF8STRC(" Device "));
 			sb.AppendUOSInt(k);
-			console.WriteLineC(sb.ToString(), sb.GetLength());
+			console.WriteLine(sb.ToCString());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Name: "));
 			sb.Append(btDev->GetName());
-			console.WriteLineC(sb.ToString(), sb.GetLength());
+			console.WriteLine(sb.ToCString());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Address: "));
 			IO::BTUtil::GetAddrText(sb, btDev->GetAddress());
-			console.WriteLineC(sb.ToString(), sb.GetLength());
+			console.WriteLine(sb.ToCString());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Class of Device: 0x"));
 			sb.AppendHex32(btDev->GetDevClass());
-			console.WriteLineC(sb.ToString(), sb.GetLength());
+			console.WriteLine(sb.ToCString());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Is Connected: "));
 			if (btDev->IsConnected())
@@ -100,7 +100,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			{
 				sb.AppendC(UTF8STRC("FALSE"));
 			}
-			console.WriteLineC(sb.ToString(), sb.GetLength());
+			console.WriteLine(sb.ToCString());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Is Remembered: "));
 			if (btDev->IsRemembered())
@@ -111,7 +111,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			{
 				sb.AppendC(UTF8STRC("FALSE"));
 			}
-			console.WriteLineC(sb.ToString(), sb.GetLength());
+			console.WriteLine(sb.ToCString());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Is Authenticated: "));
 			if (btDev->IsAuthenticated())
@@ -122,19 +122,19 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			{
 				sb.AppendC(UTF8STRC("FALSE"));
 			}
-			console.WriteLineC(sb.ToString(), sb.GetLength());
+			console.WriteLine(sb.ToCString());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Last Seen: "));
 			btDev->GetLastSeen(&dt);
 			dt.ToLocalTime();
 			sb.AppendDateTime(dt);
-			console.WriteLineC(sb.ToString(), sb.GetLength());
+			console.WriteLine(sb.ToCString());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Last Used: "));
 			btDev->GetLastUsed(&dt);
 			dt.ToLocalTime();
 			sb.AppendDateTime(dt);
-			console.WriteLineC(sb.ToString(), sb.GetLength());
+			console.WriteLine(sb.ToCString());
 
 			btDev.Delete();
 			k++;

@@ -125,7 +125,7 @@ void Net::PushManager::SaveData()
 				sb.AppendC(UTF8STRC(",android,"));
 			}
 			sb.Append(dev->userName);
-			writer.WriteLineCStr(sb.ToCString());
+			writer.WriteLine(sb.ToCString());
 			i++;
 		}
 	}
@@ -320,7 +320,7 @@ void Net::PushManager::LogMessage(Text::CStringNN msg, IO::LogHandler::LogLevel 
 	this->log->LogMessage(msg, logLev);
 }
 
-Text::CString Net::PushManager::DeviceTypeGetName(DeviceType devType)
+Text::CStringNN Net::PushManager::DeviceTypeGetName(DeviceType devType)
 {
 	switch (devType)
 	{

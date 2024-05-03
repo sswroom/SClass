@@ -76,70 +76,70 @@ Bool Exporter::GPXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	IO::BufferedOutputStream cstm(stm, 65536);
 	IO::StreamWriter writer(cstm, &enc);
 
-	writer.WriteStrC(UTF8STRC("<?xml version=\"1.0\" encoding=\""));
+	writer.Write(CSTR("<?xml version=\"1.0\" encoding=\""));
 	sptr = Text::EncodingFactory::GetInternetName(sbuff, this->codePage);
-	writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-	writer.WriteLineC(UTF8STRC("\"?>"));
-	writer.WriteLineC(UTF8STRC("<gpx version=\"v1.0\" creator=\"iTravel Tech Inc. - http://www.itravel-tech.com\">"));
-	writer.WriteLineC(UTF8STRC("<trk>"));
-	writer.WriteLineC(UTF8STRC("<name>Track</name>"));
+	writer.Write(CSTRP(sbuff, sptr));
+	writer.WriteLine(CSTR("\"?>"));
+	writer.WriteLine(CSTR("<gpx version=\"v1.0\" creator=\"iTravel Tech Inc. - http://www.itravel-tech.com\">"));
+	writer.WriteLine(CSTR("<trk>"));
+	writer.WriteLine(CSTR("<name>Track</name>"));
 	i = 0;
 	j = track->GetTrackCnt();
 	while (i < j)
 	{
-		writer.WriteLineC(UTF8STRC("<trkseg>"));
+		writer.WriteLine(CSTR("<trkseg>"));
 		k = 0;
 		recs = track->GetTrack(i, l);
 		while (k < l)
 		{
-			writer.WriteStrC(UTF8STRC("<trkpt lat=\""));
+			writer.Write(CSTR("<trkpt lat=\""));
 			sptr = Text::StrDouble(sbuff, recs[k].pos.GetLat());
-			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer.WriteStrC(UTF8STRC("\" lon=\""));
+			writer.Write(CSTRP(sbuff, sptr));
+			writer.Write(CSTR("\" lon=\""));
 			sptr = Text::StrDouble(sbuff, recs[k].pos.GetLon());
-			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer.WriteLineC(UTF8STRC("\">"));
+			writer.Write(CSTRP(sbuff, sptr));
+			writer.WriteLine(CSTR("\">"));
 			
-			writer.WriteStrC(UTF8STRC("<ele>"));
+			writer.Write(CSTR("<ele>"));
 			sptr = Text::StrDouble(sbuff, recs[k].altitude);
-			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer.WriteLineC(UTF8STRC("</ele>"));
+			writer.Write(CSTRP(sbuff, sptr));
+			writer.WriteLine(CSTR("</ele>"));
 
-			writer.WriteStrC(UTF8STRC("<time>"));
+			writer.Write(CSTR("<time>"));
 			dt.SetInstant(recs[k].recTime);
 			sptr = dt.ToString(sbuff, "yyyy-MM-ddTHH:mm:ssZ");
-			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer.WriteLineC(UTF8STRC("</time>"));
+			writer.Write(CSTRP(sbuff, sptr));
+			writer.WriteLine(CSTR("</time>"));
 
-			writer.WriteStrC(UTF8STRC("<desc>lat.="));
+			writer.Write(CSTR("<desc>lat.="));
 			sptr = Text::StrDoubleFmt(sbuff, recs[k].pos.GetLat(), "0.000000");
-			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer.WriteStrC(UTF8STRC(", lon.="));
+			writer.Write(CSTRP(sbuff, sptr));
+			writer.Write(CSTR(", lon.="));
 			sptr = Text::StrDoubleFmt(sbuff, recs[k].pos.GetLon(), "0.000000");
-			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer.WriteStrC(UTF8STRC(", Alt.="));
+			writer.Write(CSTRP(sbuff, sptr));
+			writer.Write(CSTR(", Alt.="));
 			sptr = Text::StrDoubleFmt(sbuff, recs[k].altitude, "0.000000");
-			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer.WriteStrC(UTF8STRC("m, Speed="));
+			writer.Write(CSTRP(sbuff, sptr));
+			writer.Write(CSTR("m, Speed="));
 			sptr = Text::StrDoubleFmt(sbuff, recs[k].speed * 1.852, "0.000000");
-			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer.WriteLineC(UTF8STRC("m/h.</desc>"));
+			writer.Write(CSTRP(sbuff, sptr));
+			writer.WriteLine(CSTR("m/h.</desc>"));
 
-			writer.WriteStrC(UTF8STRC("<speed>"));
+			writer.Write(CSTR("<speed>"));
 			sptr = Text::StrDoubleFmt(sbuff, recs[k].speed * 1.852 / 3.6, "0.000000");
-			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer.WriteLineC(UTF8STRC("</speed>"));
+			writer.Write(CSTRP(sbuff, sptr));
+			writer.WriteLine(CSTR("</speed>"));
 
-			writer.WriteLineC(UTF8STRC("</trkpt>"));
+			writer.WriteLine(CSTR("</trkpt>"));
 
 			k++;
 		}
 
-		writer.WriteLineC(UTF8STRC("</trkseg>"));
+		writer.WriteLine(CSTR("</trkseg>"));
 		i++;
 	}
 
-	writer.WriteLineC(UTF8STRC("</trk>"));
-	writer.WriteLineC(UTF8STRC("</gpx>"));
+	writer.WriteLine(CSTR("</trk>"));
+	writer.WriteLine(CSTR("</gpx>"));
 	return true;
 }

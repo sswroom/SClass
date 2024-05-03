@@ -148,7 +148,7 @@ void SSWR::ProcMonForm::SaveProgList()
 		{
 			sb.Append(prog->progPath);
 		}
-		writer.WriteLineC(sb.ToString(), sb.GetLength());
+		writer.WriteLine(sb.ToCString());
 		i++;
 	}
 }

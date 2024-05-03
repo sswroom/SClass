@@ -654,15 +654,15 @@ void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool include
 					photoParsed += thisPhotoCnt;
 					speciesParsed += thisSpeciesCnt;
 
-					writer.WriteStrC(UTF8STRC("<a href="));
+					writer.Write(CSTR("<a href="));
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("indexhd/grp"));
 					sb.AppendI32(grp->GetGroupId());
 					sb.AppendC(UTF8STRC("/index.html"));
 					s = Text::XML::ToNewAttrText(sb.ToString());
-					writer.WriteStrC(s->v, s->leng);
+					writer.Write(s->ToCString());
 					s->Release();
-					writer.WriteStrC(UTF8STRC(">"));
+					writer.Write(CSTR(">"));
 
 					sb.ClearStr();
 					sb.AppendOpt(grp->GetCName());
@@ -674,9 +674,9 @@ void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool include
 					sb.AppendUOSInt(thisSpeciesCnt);
 					sb.AppendC(UTF8STRC(")"));
 					s = Text::XML::ToNewXMLText(sb.ToString());
-					writer.WriteStrC(s->v, s->leng);
+					writer.Write(s->ToCString());
 					s->Release();
-					writer.WriteLineC(UTF8STRC("</a><br/>"));
+					writer.WriteLine(CSTR("</a><br/>"));
 				}
 
 				i++;
@@ -724,26 +724,26 @@ void SSWR::OrganMgr::OrganEnv::FreeSpeciesTree(NN<Data::FastMapNN<Int32, Data::A
 void SSWR::OrganMgr::OrganEnv::ExportBeginPage(NN<IO::Writer> writer, const UTF8Char *title)
 {
 	NN<Text::String> s;
-	writer->WriteLineC(UTF8STRC("<HTML>"));
-	writer->WriteLineC(UTF8STRC("<HEAD>"));
-	writer->WriteLineC(UTF8STRC("<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf8\">"));
-	writer->WriteStrC(UTF8STRC("<title>"));
+	writer->WriteLine(CSTR("<HTML>"));
+	writer->WriteLine(CSTR("<HEAD>"));
+	writer->WriteLine(CSTR("<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf8\">"));
+	writer->Write(CSTR("<title>"));
 	s = Text::XML::ToNewXMLText(title);
-	writer->WriteStrC(s->v, s->leng);
-	writer->WriteLineC(UTF8STRC("</title>"));
-	writer->WriteLineC(UTF8STRC("</HEAD>"));
+	writer->Write(s->ToCString());
+	writer->WriteLine(CSTR("</title>"));
+	writer->WriteLine(CSTR("</HEAD>"));
 	writer->WriteLine();
-	writer->WriteLineC(UTF8STRC("<BODY TEXT=\"#c0e0ff\" LINK=\"#6080ff\" VLINK=\"#4060ff\" ALINK=\"#4040FF\" bgcolor=\"#000000\">"));
-	writer->WriteStrC(UTF8STRC("<center><h1>"));
-	writer->WriteStrC(s->v, s->leng);
-	writer->WriteLineC(UTF8STRC("</h1></center>"));
+	writer->WriteLine(CSTR("<BODY TEXT=\"#c0e0ff\" LINK=\"#6080ff\" VLINK=\"#4060ff\" ALINK=\"#4040FF\" bgcolor=\"#000000\">"));
+	writer->Write(CSTR("<center><h1>"));
+	writer->Write(s->ToCString());
+	writer->WriteLine(CSTR("</h1></center>"));
 	s->Release();
 }
 
 void SSWR::OrganMgr::OrganEnv::ExportEndPage(NN<IO::Writer> writer)
 {
-	writer->WriteLineC(UTF8STRC("</BODY>"));
-	writer->WriteLineC(UTF8STRC("</HTML>"));
+	writer->WriteLine(CSTR("</BODY>"));
+	writer->WriteLine(CSTR("</HTML>"));
 }
 
 void SSWR::OrganMgr::OrganEnv::ExportGroup(NN<OrganGroup> grp, NN<Data::FastMapNN<Int32, Data::ArrayListNN<OrganGroup>>> grpTree, NN<Data::FastMapNN<Int32, Data::ArrayListNN<OrganSpecies>>> spTree, const UTF8Char *backURL, UTF8Char *fullPath, UTF8Char *pathAppend, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, UOSInt *speciesCnt, UOSInt *phSpeciesCnt)
@@ -806,15 +806,15 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(NN<OrganGroup> grp, NN<Data::FastMapN
 					ExportBeginPage(nnwriter, sb.ToString());
 				}
 
-				writer->WriteStrC(UTF8STRC("<a href="));
+				writer->Write(CSTR("<a href="));
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("../grp"));
 				sb.AppendI32(myGrp->GetGroupId());
 				sb.AppendC(UTF8STRC("/index.html"));
 				s = Text::XML::ToNewAttrText(sb.ToString());
-				writer->WriteStrC(s->v, s->leng);
+				writer->Write(s->ToCString());
 				s->Release();
-				writer->WriteStrC(UTF8STRC(">"));
+				writer->Write(CSTR(">"));
 
 				sb.ClearStr();
 				sb.AppendOpt(myGrp->GetCName());
@@ -826,9 +826,9 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(NN<OrganGroup> grp, NN<Data::FastMapN
 				sb.AppendUOSInt(thisSpecies);
 				sb.AppendC(UTF8STRC(")"));
 				s = Text::XML::ToNewXMLText(sb.ToString());
-				writer->WriteStrC(s->v, s->leng);
+				writer->Write(s->ToCString());
 				s->Release();
-				writer->WriteLineC(UTF8STRC("</a><br/>"));
+				writer->WriteLine(CSTR("</a><br/>"));
 			}
 
 			i++;
@@ -875,10 +875,10 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(NN<OrganGroup> grp, NN<Data::FastMapN
 				sb.AppendC(UTF8STRC("/"));
 				sb.Append(str);
 				sb.AppendC(UTF8STRC("/index.html"));
-				writer->WriteStrC(UTF8STRC("<a href="));
+				writer->Write(CSTR("<a href="));
 				s = Text::XML::ToNewAttrText(sb.ToString());
-				writer->WriteStrC(s->v, s->leng);
-				writer->WriteStrC(UTF8STRC(">"));
+				writer->Write(s->ToCString());
+				writer->Write(CSTR(">"));
 				s->Release();
 				sb.ClearStr();
 				sb.AppendOpt(sp->GetSName());
@@ -890,9 +890,9 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(NN<OrganGroup> grp, NN<Data::FastMapN
 					sb.Append(s);
 				}
 				s = Text::XML::ToNewXMLText(sb.ToString());
-				writer->WriteStrC(s->v, s->leng);
+				writer->Write(s->ToCString());
 				s->Release();
-				writer->WriteLineC(UTF8STRC("</a><br/>"));
+				writer->WriteLine(CSTR("</a><br/>"));
 
 				totalPhoto += thisPhoto;
 				totalSpecies++;
@@ -908,9 +908,9 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(NN<OrganGroup> grp, NN<Data::FastMapN
 	if (fs && nnwriter.Set(writer))
 	{
 		writer->WriteLineW(L"<br/><a href=\"list.html\">すべて</a><br>");
-		writer->WriteStrC(UTF8STRC("<br><a href="));
+		writer->Write(CSTR("<br><a href="));
 		s = Text::XML::ToNewAttrText(backURL);
-		writer->WriteStrC(s->v, s->leng);
+		writer->Write(s->ToCString());
 		s->Release();
 		writer->WriteLineW(L">戻る</a>");
 
@@ -999,9 +999,9 @@ Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(NN<OrganSpecies> sp, const UTF8Char
 	}
 
 
-	writer.WriteStrC(UTF8STRC("<a href="));
+	writer.Write(CSTR("<a href="));
 	s = Text::XML::ToNewAttrText(backURL);
-	writer.WriteStrC(s->v, s->leng);
+	writer.Write(s->ToCString());
 	s->Release();
 	writer.WriteW(L">戻る</a><br/>");
 

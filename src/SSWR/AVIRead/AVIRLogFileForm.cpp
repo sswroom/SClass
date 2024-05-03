@@ -105,8 +105,8 @@ void SSWR::AVIRead::AVIRLogFileForm::EventMenuClicked(UInt16 cmdId)
 					sb.AppendC(UTF8STRC("\t"));
 					this->logFile->GetLogMessage(this->logLevel, i, &ts, sb, Text::LineBreakType::CRLF);
 					sptr = ts.ToLocalTime().ToString(sbuff);
-					writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-					writer.WriteLineC(sb.ToString(), sb.GetLength());
+					writer.Write(CSTRP(sbuff, sptr));
+					writer.WriteLine(sb.ToCString());
 					i++;
 				}
 			}

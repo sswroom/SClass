@@ -11,19 +11,9 @@ namespace IO
 	public:
 		virtual ~Writer() {};
 
-		virtual Bool WriteStrC(const UTF8Char *str, UOSInt nChar) = 0;
-		virtual Bool WriteLineC(const UTF8Char *str, UOSInt nChar) = 0;
+		virtual Bool Write(Text::CStringNN str) = 0;
+		virtual Bool WriteLine(Text::CStringNN str) = 0;
 		virtual Bool WriteLine() = 0;
-
-		Bool WriteStr(Text::CString str)
-		{
-			return WriteStrC(str.v, str.leng);
-		}
-
-		Bool WriteLineCStr(Text::CString str)
-		{
-			return WriteLineC(str.v, str.leng);
-		}
 
 		Bool WriteLines(Data::ArrayIterator<NN<Text::String>> it)
 		{
@@ -31,7 +21,7 @@ namespace IO
 			while (it.HasNext())
 			{
 				s = it.Next();
-				if (!WriteLineC(s->v, s->leng))
+				if (!WriteLine(s->ToCString()))
 					return false;
 			}
 			return true;

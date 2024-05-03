@@ -43,22 +43,22 @@ IO::SimpleFileWriter::~SimpleFileWriter()
 	}
 }
 
-Bool IO::SimpleFileWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
+Bool IO::SimpleFileWriter::Write(Text::CStringNN str)
 {
 	UOSInt writeCnt;
-	writeCnt = WriteBuff(str, nChar);
-	return writeCnt == nChar;
+	writeCnt = WriteBuff(str.v, str.leng);
+	return writeCnt == str.leng;
 }
 
-Bool IO::SimpleFileWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
+Bool IO::SimpleFileWriter::WriteLine(Text::CStringNN str)
 {
 	UOSInt writeCnt;
 	UInt8 buff[2];
 	buff[0] = 13;
 	buff[1] = 10;
-	writeCnt = WriteBuff(str, nChar);
+	writeCnt = WriteBuff(str.v, str.leng);
 	writeCnt += WriteBuff(buff, 2);
-	return writeCnt == nChar + 2;
+	return writeCnt == str.leng + 2;
 }
 
 Bool IO::SimpleFileWriter::WriteW(const WChar *str, UOSInt nChar)

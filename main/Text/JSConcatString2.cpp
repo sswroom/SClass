@@ -43,7 +43,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	IO::ConsoleWriter *console;
 	NEW_CLASS(console, IO::ConsoleWriter());
 	sptr = Text::StrConcatC(Text::StrDouble(sbuff, t1), UTF8STRC(" s"));
-	console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+	console->WriteLine(CSTRP(sbuff, sptr));
 	DEL_CLASS(console);
 
 	DEL_CLASS(clk);

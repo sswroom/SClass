@@ -404,12 +404,12 @@ void IO::ConsoleWriter::FixWrite(const WChar *str, UOSInt displayWidth)
 	if (width <= displayWidth)
 	{
 		NN<Text::String> s = Text::String::NewNotNull(str);
-		this->WriteStr(s->ToCString());
+		this->Write(s->ToCString());
 		s->Release();
 		while (width < displayWidth)
 		{
 			width++;
-			WriteStrC(UTF8STRC(" "));
+			Write(CSTR(" "));
 		}
 		return;
 	}
@@ -425,13 +425,13 @@ void IO::ConsoleWriter::FixWrite(const WChar *str, UOSInt displayWidth)
 			width += GetDisplayCharWidth(*str);
 			if (width > displayWidth)
 			{
-				WriteStrC(UTF8STRC(" "));
+				Write(CSTR(" "));
 				return;
 			}
 			wbuff[0] = str[0];
 			wbuff[1] = 0;
 			NN<Text::String> s = Text::String::NewNotNull(wbuff);
-			this->WriteStr(s->ToCString());
+			this->Write(s->ToCString());
 			s->Release();
 			str++;
 		}
@@ -446,13 +446,13 @@ void IO::ConsoleWriter::FixWrite(const WChar *str, UOSInt displayWidth)
 			wbuff[0] = str[0];
 			wbuff[1] = 0;
 			NN<Text::String> s = Text::String::NewNotNull(wbuff);
-			this->WriteStr(s->ToCString());
+			this->Write(s->ToCString());
 			s->Release();
 			str++;
 		}
 		while (width < displayWidth)
 		{
-			this->WriteStrC(UTF8STRC("."));
+			this->Write(CSTR("."));
 			width++;
 		}
 	}

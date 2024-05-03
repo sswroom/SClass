@@ -13,8 +13,8 @@ namespace Text
 		UTF8Writer(NN<IO::Stream> stm);
 		virtual ~UTF8Writer();
 
-		virtual Bool WriteStrC(const UTF8Char *str, UOSInt nChar);
-		virtual Bool WriteLineC(const UTF8Char *str, UOSInt nChar);
+		virtual Bool Write(Text::CStringNN str);
+		virtual Bool WriteLine(Text::CStringNN str);
 		virtual Bool WriteW(const UTF16Char *str, UOSInt nChar);
 		virtual Bool WriteW(const UTF16Char *str);
 		virtual Bool WriteLineW(const UTF16Char *str, UOSInt nChar);
@@ -28,16 +28,6 @@ namespace Text
 		void WriteSignature();
 		Int32 Flush();
 		void Close();
-
-		Bool WriteStr(Text::CString str)
-		{
-			return WriteStrC(str.v, str.leng);
-		}
-
-		Bool WriteLine(Text::CString str)
-		{
-			return WriteLineC(str.v, str.leng);
-		}
 	};
 }
 #endif

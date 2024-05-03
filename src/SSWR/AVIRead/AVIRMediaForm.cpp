@@ -254,7 +254,7 @@ Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFrameTime(Data::Duration frameTim
 	UTF8Char *sptr;
 	NN<IO::Writer> writer = userData.GetNN<IO::Writer>();
 	sptr = Text::StrInt64(sbuff, frameTime.GetTotalMS());
-	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+	writer->WriteLine(CSTRP(sbuff, sptr));
 	return true;
 }
 
@@ -592,7 +592,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 				video = (Media::IVideoSource*)this->popMedia;
 				IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				Text::UTF8Writer writer(fs);
-				writer.WriteLineC(UTF8STRC("# timecode format v2"));
+				writer.WriteLine(CSTR("# timecode format v2"));
 				j = video->GetFrameCount();
 				if (j >= 0)
 				{
@@ -600,7 +600,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 					while (i < j)
 					{
 						sptr = Text::StrInt64(sbuff, video->GetFrameTime(i).GetTotalMS());
-						writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+						writer.WriteLine(CSTRP(sbuff, sptr));
 						i++;
 					}
 				}

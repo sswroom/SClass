@@ -68,12 +68,12 @@ void Map::TileMapGenerator::AppendDBFile(IO::Writer *writer, Int32 x, Int32 y, U
 		sptr = Text::StrInt32(sptr, xOfst);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrInt32(sptr, yOfst);
-		writer->WriteLineC(sbuff2, (UOSInt)(sptr - sbuff2));
+		writer->WriteLine(CSTRP(sbuff2, sptr));
 
 		while ((sptr = reader.ReadLine(sbuff2, 509)) != 0)
 		{
 			sptr = reader.GetLastLineBreak(sptr);
-			writer->WriteStr(CSTRP(sbuff2, sptr));
+			writer->Write(CSTRP(sbuff2, sptr));
 		}
 	}
 }

@@ -60,7 +60,7 @@ namespace Net
 		NN<const Data::ReadingListNN<DeviceInfo2>> GetDevices(NN<Sync::MutexUsage> mutUsage);
 		void LogMessage(Text::CStringNN msg, IO::LogHandler::LogLevel logLev);
 
-		static Text::CString DeviceTypeGetName(DeviceType devType);
+		static Text::CStringNN DeviceTypeGetName(DeviceType devType);
 	};
 }
 #endif

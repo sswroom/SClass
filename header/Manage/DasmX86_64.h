@@ -125,7 +125,7 @@ namespace Manage
 		DasmX86_64();
 		virtual ~DasmX86_64();
 
-		virtual Text::CString GetHeader(Bool fullRegs) const;
+		virtual Text::CStringNN GetHeader(Bool fullRegs) const;
 		virtual Bool Disasm64(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt64 *currRip, UInt64 *currRsp, UInt64 *currRbp, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
 		Bool Disasm64In(NN<Text::StringBuilderUTF8> outStr, Manage::AddressResolver *addrResol, UInt64 *currRip, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::IMemoryReader *memReader); // true = succ
 		virtual Dasm_Regs *CreateRegs() const;

@@ -7955,7 +7955,7 @@ void Manage::DasmX86_16::DeleteSess(Manage::DasmX86_16::DasmX86_16_Sess *sess)
 	}
 }
 
-Text::CString Manage::DasmX86_16::GetHeader(Bool fullRegs) const
+Text::CStringNN Manage::DasmX86_16::GetHeader(Bool fullRegs) const
 {
 	return CSTR("EAX\tEDX\tECX\tEBX");
 }

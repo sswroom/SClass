@@ -231,7 +231,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(Data::Duration frameTime, UIn
 		sb.AppendChar(fType, 1);
 		sb.AppendC(UTF8STRC("\t"));
 		sb.AppendOSInt(dataSize);
-		data->dbgWriter->WriteLineC(sb.ToString(), sb.GetLength());
+		data->dbgWriter->WriteLine(sb.ToCString());
 	}
 #endif
 	if (frameStruct != Media::IVideoSource::FS_N)

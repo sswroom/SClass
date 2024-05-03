@@ -34,14 +34,14 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	sb.AppendC(UTF8STRC(" (SDA) and "));
 	sb.AppendI32(pinNum2);
 	sb.AppendC(UTF8STRC(" (SCL)"));
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 	IO::GPIOControl gpioCtrl;
 	NEW_CLASSNN(sdaPin, IO::GPIOPin(gpioCtrl, pinNum1));
 	NEW_CLASSNN(sclPin, IO::GPIOPin(gpioCtrl, pinNum2));
 	NEW_CLASS(am2315, IO::Device::AM2315GPIO(sdaPin, sclPin));
 	if (gpioCtrl.IsError() || sdaPin->IsError() || sclPin->IsError())
 	{
-		console.WriteLineC(UTF8STRC("Error in opening GPIO, root permission?"));
+		console.WriteLine(CSTR("Error in opening GPIO, root permission?"));
 	}
 	else
 	{
@@ -52,7 +52,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Temp = "));
 				sb.AppendDouble(temp);
-				console.WriteLineC(sb.ToString(), sb.GetLength());
+				console.WriteLine(sb.ToCString());
 
 				if (am2315->ReadRH(rh))
 				{
@@ -60,16 +60,16 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					sb.AppendC(UTF8STRC("RH = "));
 					sb.AppendDouble(rh);
 					sb.AppendC(UTF8STRC("%"));
-					console.WriteLineC(sb.ToString(), sb.GetLength());
+					console.WriteLine(sb.ToCString());
 				}
 				else
 				{
-					console.WriteLineC(UTF8STRC("Error in reading from AM2315"));
+					console.WriteLine(CSTR("Error in reading from AM2315"));
 				}
 			}
 			else
 			{
-				console.WriteLineC(UTF8STRC("Error in reading from AM2315"));
+				console.WriteLine(CSTR("Error in reading from AM2315"));
 			}
 			Sync::SimpleThread::Sleep(2000);
 		}

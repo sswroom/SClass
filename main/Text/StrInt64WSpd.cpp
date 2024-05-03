@@ -60,7 +60,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	sb.AppendDouble(t1b);
 	sb.AppendC(UTF8STRC(", t2b = "));
 	sb.AppendDouble(t2b);
-	console->WriteLineC(sb.ToString(), sb.GetLength());
+	console->WriteLine(sb.ToCString());
 	DEL_CLASS(console);
 	return 0;
 }

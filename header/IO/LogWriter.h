@@ -20,8 +20,8 @@ namespace IO
 		LogWriter(NN<IO::LogTool> log, IO::LogHandler::LogLevel logLev);
 		virtual ~LogWriter();
 
-		virtual Bool WriteStrC(const UTF8Char *str, UOSInt nChar);
-		virtual Bool WriteLineC(const UTF8Char *str, UOSInt nChar);
+		virtual Bool Write(Text::CStringNN str);
+		virtual Bool WriteLine(Text::CStringNN str);
 		virtual Bool WriteLine();
 	};
 }

@@ -233,7 +233,7 @@ void __stdcall UI::GUIDDrawControl::OnResized(AnyType userObj)
 			sb.AppendUOSInt(data->me->dispSize.y);
 			sb.AppendC(UTF8STRC(", hMon="));
 			sb.AppendOSInt((OSInt)data->me->GetHMonitor());
-			data->me->debugWriter->WriteLineC(sb.ToString(), sb.GetLength());
+			data->me->debugWriter->WriteLine(sb.ToCString());
 		}
 		if (data->me->inited)
 		{
@@ -266,7 +266,7 @@ Bool UI::GUIDDrawControl::CreateSurface()
 
 	if (this->debugWriter)
 	{
-		this->debugWriter->WriteLineC(UTF8STRC("Create Surface");
+		this->debugWriter->WriteLine(CSTR("Create Surface");
 	}
 
 	if (this->currScnMode == SM_FS)
@@ -315,7 +315,7 @@ Bool UI::GUIDDrawControl::CreateSurface()
 				sb.AppendOSInt((OSInt)this->surfaceMon);
 				sb.AppendC(UTF8STRC(", hWnd = "));
 				sb.AppendOSInt((OSInt)hWnd);
-				this->debugWriter->WriteLineC(sb.ToString(), sb.GetLength());
+				this->debugWriter->WriteLine(sb.ToCString());
 			}
 			this->bitDepth = this->primarySurface->info.storeBPP;
 			this->scnW = this->primarySurface->info.dispSize.x;
@@ -489,7 +489,7 @@ UI::GUIDDrawControl::~GUIDDrawControl()
 	SDEL_CLASS(this->imgCopy);
 	if (this->debugWriter)
 	{
-		this->debugWriter->WriteLineC(UTF8STRC("Release DDraw"));
+		this->debugWriter->WriteLine(CSTR("Release DDraw"));
 		DEL_CLASS(this->debugWriter);
 		DEL_CLASS(this->debugFS);
 		this->debugFS = 0;

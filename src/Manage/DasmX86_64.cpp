@@ -1113,29 +1113,29 @@ Int32 __stdcall DasmX86_64_GetFuncStack(Manage::DasmX86_64::DasmX86_64_Sess* ses
 				buffSize = 256;
 			buff = MemAlloc(UInt8, buffSize);
 			console.WriteLine();
-			console.WriteStrC(sb.ToString(), sb.GetLength());
+			console.Write(sb.ToCString());
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Func Buff 0x"));
 			sb.AppendHex64(funcAddr);
 			sb.AppendC(UTF8STRC(" "));
 			tmpSess.addrResol->ResolveNameSB(sb, funcAddr);
-			console.WriteLineC(sb.ToString(), sb.GetLength());
+			console.WriteLine(sb.ToCString());
 			buffSize = tmpSess.memReader->ReadMemory(funcAddr, buff, (UOSInt)(tmpSess.regs.rip - funcAddr));
 			if (buffSize > 0)
 			{
 				sb.ClearStr();
 				sb.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);
-				console.WriteLineC(sb.ToString(), sb.GetLength());
+				console.WriteLine(sb.ToCString());
 			}
 
-			console.WriteLineC(UTF8STRC("Unknown opcode"));
+			console.WriteLine(CSTR("Unknown opcode"));
 			buffSize = tmpSess.memReader->ReadMemory(tmpSess.regs.rip, buff, 256);
 			if (buffSize > 0)
 			{
 				sb.ClearStr();
 				sb.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);
-				console.WriteLineC(sb.ToString(), sb.GetLength());
+				console.WriteLine(sb.ToCString());
 			}
 			MemFree(buff);
 			return -1;
@@ -19431,7 +19431,7 @@ Manage::DasmX86_64::~DasmX86_64()
 	MemFree(this->codes0f3a);
 }
 
-Text::CString Manage::DasmX86_64::GetHeader(Bool fullRegs) const
+Text::CStringNN Manage::DasmX86_64::GetHeader(Bool fullRegs) const
 {
 	if (fullRegs)
 	{
@@ -19529,11 +19529,11 @@ Bool Manage::DasmX86_64::Disasm64(NN<IO::Writer> writer, Manage::AddressResolver
 				outStr.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 			}
 			outStr.AppendC(UTF8STRC("\r\n"));
-			writer->WriteStrC(outStr.ToString(), outStr.GetLength());
+			writer->Write(outStr.ToCString());
 			return false;
 		}
 		outStr.AppendSlow(sbuff);
-		writer->WriteStrC(outStr.ToString(), outStr.GetLength());
+		writer->Write(outStr.ToCString());
 		if (sess.endType == Manage::DasmX86_64::ET_JMP && (UInt64)sess.retAddr >= *blockStart && (UInt64)sess.retAddr <= sess.regs.rip)
 		{
 			UOSInt i;
@@ -19633,7 +19633,7 @@ Bool Manage::DasmX86_64::Disasm64In(NN<Text::StringBuilderUTF8> outStr, Manage::
 		sess.sbuff = sbuff;
 		Bool ret = this->codes[sess.memReader->ReadMemUInt8(sess.regs.rip)](&sess);
 		UOSInt sbuffLen = Text::StrCharCnt(sbuff);
-		console.WriteStrC(sbuff, sbuffLen);
+		console.Write(Text::CStringNN(sbuff, sbuffLen));
 		outStr->AppendC(sbuff, sbuffLen);
 		if (!ret)
 		{

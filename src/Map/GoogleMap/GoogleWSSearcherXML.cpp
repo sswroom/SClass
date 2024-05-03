@@ -82,14 +82,14 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt
 					else
 					{
 						this->lastIsError = true;
-						errWriter->WriteStrC(UTF8STRC("Google respose status invalid: "));
-						errWriter->WriteLineC(sb.ToString(), sb.GetLength());
+						errWriter->Write(CSTR("Google respose status invalid: "));
+						errWriter->WriteLine(sb.ToCString());
 					}
 				}
 				else
 				{
 					this->lastIsError = true;
-					errWriter->WriteLineC(UTF8STRC("Invalid google response content"));
+					errWriter->WriteLine(CSTR("Invalid google response content"));
 				}
 				if (result)
 				{

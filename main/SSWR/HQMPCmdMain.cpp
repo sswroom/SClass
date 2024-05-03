@@ -26,13 +26,13 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				Media::ConsoleMediaPlayer player(monMgr, colorMgr, parsers, &audioDev);
 				if (player.IsError())
 				{
-					console.WriteLineC(UTF8STRC("Error in initiaizing player, no Permission?"));
+					console.WriteLine(CSTR("Error in initiaizing player, no Permission?"));
 				}
 				else
 				{
 					if (!player.OpenFile({cmdLines[1], Text::StrCharCnt(cmdLines[1])}, IO::ParserType::MediaFile))
 					{
-						console.WriteLineC(UTF8STRC("Error in loading file"));
+						console.WriteLine(CSTR("Error in loading file"));
 					}
 					else
 					{
@@ -46,7 +46,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	}
 	else
 	{
-		console.WriteLineC(UTF8STRC("Missing file name parameter"));
+		console.WriteLine(CSTR("Missing file name parameter"));
 	}
 
 	return 0;

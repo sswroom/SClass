@@ -28,12 +28,12 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Trying Port "));
 	sb.AppendUOSInt(portNum);
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 
 	IO::SerialPort port(portNum, baudRate, IO::SerialPort::PARITY_NONE, true);
 	if (port.IsError())
 	{
-		console.WriteLineC(UTF8STRC("Error in opening the port"));
+		console.WriteLine(CSTR("Error in opening the port"));
 	}
 	else
 	{

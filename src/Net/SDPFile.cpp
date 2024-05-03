@@ -328,7 +328,7 @@ Bool Net::SDPFile::BuildBuff()
 
 	sb.AppendC(UTF8STRC("v="));
 	sb.AppendI32(this->version);
-	writer.WriteLineC(sb.ToString(), sb.GetLength());
+	writer.WriteLine(sb.ToCString());
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("o="));
@@ -341,12 +341,12 @@ Bool Net::SDPFile::BuildBuff()
 	sb.Append(this->userAddrType);
 	sb.AppendC(UTF8STRC(" "));
 	sb.Append(this->userAddrHost);
-	writer.WriteLineC(sb.ToString(), sb.GetLength());
+	writer.WriteLine(sb.ToCString());
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("s="));
 	sb.Append(this->sessName);
-	writer.WriteLineC(sb.ToString(), sb.GetLength());
+	writer.WriteLine(sb.ToCString());
 
 	Data::ArrayIterator<NN<Text::String>> it = this->sessDesc.Iterator();
 	i = 0;
@@ -363,47 +363,47 @@ Bool Net::SDPFile::BuildBuff()
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("c=IN IP4 0.0.0.0"));
-	writer.WriteLineC(sb.ToString(), sb.GetLength());
+	writer.WriteLine(sb.ToCString());
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("t="));
 	sb.AppendI64(this->startTime);
 	sb.AppendC(UTF8STRC(" "));
 	sb.AppendI64(this->endTime);
-	writer.WriteLineC(sb.ToString(), sb.GetLength());
+	writer.WriteLine(sb.ToCString());
 
 	if (this->sessTool)
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("a=tool:"));
 		sb.Append(this->sessTool);
-		writer.WriteLineC(sb.ToString(), sb.GetLength());
+		writer.WriteLine(sb.ToCString());
 	}
 	if (this->sessSend && !this->sessRecv)
 	{
-		writer.WriteLineC(UTF8STRC("a=sendonly"));
+		writer.WriteLine(CSTR("a=sendonly"));
 	}
 	else if (this->sessSend && this->sessRecv)
 	{
-		writer.WriteLineC(UTF8STRC("a=sendrecv"));
+		writer.WriteLine(CSTR("a=sendrecv"));
 	}
 	else
 	{
-		writer.WriteLineC(UTF8STRC("a=recvonly"));
+		writer.WriteLine(CSTR("a=recvonly"));
 	}
 	if (this->sessCharset)
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("a=charset:"));
 		sb.Append(this->sessCharset);
-		writer.WriteLineC(sb.ToString(), sb.GetLength());
+		writer.WriteLine(sb.ToCString());
 	}
 	if (this->sessControl)
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("a=control:"));
 		sb.Append(this->sessControl);
-		writer.WriteLineC(sb.ToString(), sb.GetLength());
+		writer.WriteLine(sb.ToCString());
 	}
 
 	i = 0;
@@ -434,7 +434,7 @@ Bool Net::SDPFile::BuildBuff()
 
 			k++;
 		}
-		writer.WriteLineC(sb.ToString(), sb.GetLength());
+		writer.WriteLine(sb.ToCString());
 
 		k = 0;
 		l = media->GetSDPDataCount();
@@ -449,7 +449,7 @@ Bool Net::SDPFile::BuildBuff()
 			sb.SetEndPtr(data->GetSDPDataType(sb.GetEndPtr()));
 			sb.AppendC(UTF8STRC("/"));
 			sb.AppendU32(data->GetSDPDataFreq());
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLine(sb.ToCString());
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("a=fmtp:"));
@@ -457,7 +457,7 @@ Bool Net::SDPFile::BuildBuff()
 			sb.AppendC(UTF8STRC(" "));
 			sb.AllocLeng(512);
 			sb.SetEndPtr(data->GetSDPDataFormat(sb.GetEndPtr()));
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLine(sb.ToCString());
 			k++;
 		}
 
@@ -467,7 +467,7 @@ Bool Net::SDPFile::BuildBuff()
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("a=control:"));
 			sb.Append(ctrlURL);
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLine(sb.ToCString());
 		}
 
 		i++;

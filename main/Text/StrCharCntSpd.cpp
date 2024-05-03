@@ -43,6 +43,6 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	sb.AppendDouble(t1);
 	sb.AppendC(UTF8STRC(", t1 = "));
 	sb.AppendDouble(t2);
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 	return 0;
 }

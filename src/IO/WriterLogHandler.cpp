@@ -24,5 +24,5 @@ void IO::WriterLogHandler::LogClosed()
 }
 void IO::WriterLogHandler::LogAdded(const Data::Timestamp &time, Text::CStringNN logMsg, LogLevel logLev)
 {
-	this->writer->WriteLineCStr(logMsg);
+	this->writer->WriteLine(logMsg);
 }

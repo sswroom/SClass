@@ -18,7 +18,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 	UOSInt i;
 
 	context->ToString(sb);
-	writer->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLine(sb.ToCString());
 
 	Manage::Process proc;
 	UOSInt size;
@@ -50,7 +50,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 				size = 0;
 			}
 		}
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLine(sb.ToCString());
 	}
 	if ((size = proc.ReadMemory(context->GetStackAddr(), buff, STACKDUMPSIZE)) != 0)
 	{
@@ -79,7 +79,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 				size = 0;
 			}
 		}
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLine(sb.ToCString());
 	}
 
 	Manage::Dasm *dasm = context->CreateDasm();
@@ -102,7 +102,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 			NEW_CLASS(jmpAddrs, Data::ArrayListUInt32());
 			Bool retVal = true;
 			writer->WriteLine();
-			writer->WriteLineC(UTF8STRC("Disassembly:"));
+			writer->WriteLine(CSTR("Disassembly:"));
 
 			Data::ArrayListUInt32 *blkStarts;
 			Data::ArrayListUInt32 *blkEnds;
@@ -117,7 +117,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 			{
 				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				sb.AppendC(UTF8STRC(")"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLine(sb.ToCString());
 			}
 
 			stm->Flush();
@@ -151,10 +151,10 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 							size = 0;
 						}
 					}
-					writer->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLine(sb.ToCString());
 				}
 
-				writer->WriteLineCStr(dasm32->GetHeader(true));
+				writer->WriteLine(dasm32->GetHeader(true));
 				retVal = dasm32->Disasm32(writer, addrResol.Ptr(), &currInst, &currStack, &currFrame, callAddrs, jmpAddrs, &blockStart, &blockEnd, regs, &proc, true);
 				if (!retVal)
 				{
@@ -177,13 +177,13 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 				callAddrs->Clear();
 				jmpAddrs->Clear();
 
-	//			writer->WriteLineC(sb.ToString(), sb.GetLength());
+	//			writer->WriteLine(sb.ToCString());
 				writer->WriteLine();
-				writer->WriteLineC(UTF8STRC("\r\nCalled by:"));
+				writer->WriteLine(CSTR("\r\nCalled by:"));
 
 				sb.ClearStr();
 				sb.AppendHex32(currInst);
-				writer->WriteStrC(sb.ToString(), sb.GetLength());
+				writer->Write(sb.ToCString());
 
 				sb.ClearStr();
 				if ((sptr = addrResol->ResolveName(sbuff, currInst)) != 0)
@@ -191,7 +191,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 					sb.AppendC(UTF8STRC(" ("));
 					sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 					sb.AppendC(UTF8STRC(")"));
-					writer->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLine(sb.ToCString());
 				}
 				else
 				{
@@ -201,7 +201,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 				sb.ClearStr();
 			}
 			dasm32->FreeRegs(regs);
-			writer->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLine(sb.ToCString());
 			DEL_CLASS(callAddrs);
 			DEL_CLASS(jmpAddrs);
 			DEL_CLASS(blkStarts);
@@ -224,7 +224,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 			NEW_CLASS(jmpAddrs, Data::ArrayListUInt64());
 			Bool retVal = true;
 			writer->WriteLine();
-			writer->WriteLineC(UTF8STRC("Disassembly:"));
+			writer->WriteLine(CSTR("Disassembly:"));
 
 			Data::ArrayListUInt64 *blkStarts;
 			Data::ArrayListUInt64 *blkEnds;
@@ -239,7 +239,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 			{
 				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				sb.AppendC(UTF8STRC(")"));
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLine(sb.ToCString());
 			}
 
 			stm->Flush();
@@ -273,10 +273,10 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 							size = 0;
 						}
 					}
-					writer->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLine(sb.ToCString());
 				}
 
-				writer->WriteLineCStr(dasm64->GetHeader(true));
+				writer->WriteLine(dasm64->GetHeader(true));
 				retVal = dasm64->Disasm64(writer, addrResol.Ptr(), &currInst, &currStack, &currFrame, callAddrs, jmpAddrs, &blockStart, &blockEnd, regs, &proc, true);
 				if (!retVal)
 				{
@@ -299,13 +299,13 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 				callAddrs->Clear();
 				jmpAddrs->Clear();
 
-	//			writer->WriteLineC(sb.ToString(), sb.GetLength());
+	//			writer->WriteLine(sb.ToCString());
 				writer->WriteLine();
-				writer->WriteLineC(UTF8STRC("\r\nCalled by:"));
+				writer->WriteLine(CSTR("\r\nCalled by:"));
 
 				sb.ClearStr();
 				sb.AppendHex64(currInst);
-				writer->WriteStrC(sb.ToString(), sb.GetLength());
+				writer->Write(sb.ToCString());
 
 				sb.ClearStr();
 				if ((sptr = addrResol->ResolveName(sbuff, currInst)) != 0)
@@ -313,7 +313,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 					sb.AppendC(UTF8STRC(" ("));
 					sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 					sb.AppendC(UTF8STRC(")"));
-					writer->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLine(sb.ToCString());
 				}
 				else
 				{
@@ -323,7 +323,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 				sb.ClearStr();
 			}
 			dasm64->FreeRegs(regs);
-			writer->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLine(sb.ToCString());
 			DEL_CLASS(callAddrs);
 			DEL_CLASS(jmpAddrs);
 			DEL_CLASS(blkStarts);
@@ -339,7 +339,7 @@ void Manage::ExceptionLogger::WriteStackTrace(NN<IO::Writer> writer, NN<Manage::
 	if (tracer->IsSupported())
 	{
 		Text::StringBuilderUTF8 sb;
-		writer->WriteLineC(UTF8STRC("Stack trace (OS):"));
+		writer->WriteLine(CSTR("Stack trace (OS):"));
 
 		while (tracer->GoToNextLevel())
 		{
@@ -347,7 +347,7 @@ void Manage::ExceptionLogger::WriteStackTrace(NN<IO::Writer> writer, NN<Manage::
 			sb.AppendHex64(tracer->GetCurrentAddr());
 			sb.AppendC(UTF8STRC(" "));
 			addrResol->ResolveNameSB(sb, tracer->GetCurrentAddr());
-			writer->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLine(sb.ToCString());
 		}
 	}
 #endif
@@ -366,7 +366,7 @@ Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode
 	UOSInt i;
 	UOSInt j;
 	Manage::SymbolResolver symResol(proc);
-	writer.WriteLineC(UTF8STRC("----------------------------------"));
+	writer.WriteLine(CSTR("----------------------------------"));
 	sb.AppendC(UTF8STRC("Exception occurs: Code = 0x"));
 	sb.AppendHex32(exCode);
 	sb.AppendC(UTF8STRC(" at "));
@@ -375,11 +375,11 @@ Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode
 	sb.AppendTSNoZone(d);
 	sb.AppendC(UTF8STRC(", Type = "));
 	sb.Append(exName);
-	writer.WriteLineC(sb.ToString(), sb.GetLength());
+	writer.WriteLine(sb.ToCString());
 
 	NN<Text::String> s;
 	j = symResol.GetModuleCount();
-	writer.WriteLineC(UTF8STRC("\r\nLoaded modules:"));
+	writer.WriteLine(CSTR("\r\nLoaded modules:"));
 	i = 0;
 	while (i < j)
 	{
@@ -390,7 +390,7 @@ Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode
 		sb.AppendHexOS((UOSInt)symResol.GetModuleAddr(i));
 		sb.AppendC(UTF8STRC(",size="));
 		sb.AppendHexOS((UOSInt)symResol.GetModuleSize(i));
-		writer.WriteLineC(sb.ToString(), sb.GetLength());
+		writer.WriteLine(sb.ToCString());
 
 		i++;
 	}
@@ -422,7 +422,7 @@ Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode
 			{
 				sb.AppendC(UTF8STRC(" current thread"));
 			}
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLine(sb.ToCString());
 
 			startAddr = thread->GetStartAddress();
 			if (startAddr != 0)
@@ -432,7 +432,7 @@ Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode
 				sb.AppendHex64(startAddr);
 				sb.AppendC(UTF8STRC(" "));
 				symResol.ResolveNameSB(sb, startAddr);
-				writer.WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLine(sb.ToCString());
 			}
 
 			if (!thread->IsCurrThread())
@@ -445,7 +445,7 @@ Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode
 					sb.AppendHexOS(tCont->GetInstAddr());
 					sb.AppendC(UTF8STRC(" "));
 					symResol.ResolveNameSB(sb, tCont->GetInstAddr());
-					writer.WriteLineC(sb.ToString(), sb.GetLength());
+					writer.WriteLine(sb.ToCString());
 
 					{
 						Manage::StackTracer tracer(tCont);
@@ -457,7 +457,7 @@ Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode
 			}
 			else
 			{
-				writer.WriteLineC(UTF8STRC("Current Thread"));
+				writer.WriteLine(CSTR("Current Thread"));
 			}
 
 			i++;
@@ -467,7 +467,7 @@ Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode
 
 	{
 		writer.WriteLine();
-		writer.WriteLineC(UTF8STRC("Exception Thread:"));
+		writer.WriteLine(CSTR("Exception Thread:"));
 		{
 			Manage::StackTracer tracer(context);
 			WriteStackTrace(writer, tracer, symResol);
@@ -502,7 +502,7 @@ Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode
 				sb.AppendC(UTF8STRC("Running threads: (0x"));
 				sb.AppendHex32((UInt32)thread->GetThreadId());
 				sb.AppendC(UTF8STRC(")"));
-				writer.WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLine(sb.ToCString());
 
 				if (tCont.Set(thread->GetThreadContext()))
 				{

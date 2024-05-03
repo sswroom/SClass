@@ -185,7 +185,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 		else if (status == 602)
 		{
 			this->lastIsError = 1;
-			errWriter->WriteLineC(UTF8STRC("Google 602 error"));
+			errWriter->WriteLine(CSTR("Google 602 error"));
 			*buff = 0;
 		}
 		else
@@ -194,7 +194,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 			sptr = Text::StrConcatC(url, UTF8STRC("Google "));
 			sptr = Text::StrInt32(sptr, status);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(" Error"));
-			errWriter->WriteLineC(url, (UOSInt)(sptr - url));
+			errWriter->WriteLine(CSTRP(url, sptr));
 			*buff = 0;
 		}
 	}
@@ -205,7 +205,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 		*buff = 0;
 		sb.AppendC(UTF8STRC("Cannot connect: "));
 		sb.AppendC(url, (UOSInt)(sptr - url));
-		errWriter->WriteLineC(sb.ToString(), sb.GetLength());
+		errWriter->WriteLine(sb.ToCString());
 	}
 	this->lastSrchDate.SetCurrTimeUTC();
 	cli.Delete();

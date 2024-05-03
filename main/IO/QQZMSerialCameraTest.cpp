@@ -30,7 +30,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	NEW_CLASS(port, IO::SerialPort(portNum, baudRate, IO::SerialPort::PARITY_NONE, false));
 	if (port->IsError())
 	{
-		console->WriteLineC(UTF8STRC("Error in opening the port"));
+		console->WriteLine(CSTR("Error in opening the port"));
 	}
 	else
 	{
@@ -39,11 +39,11 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		IO::MemoryStream mstm;
 		if (camera->CapturePhoto(&mstm))
 		{
-			console->WriteLineC(UTF8STRC("Capture Image succeeded"));
+			console->WriteLine(CSTR("Capture Image succeeded"));
 		}
 		else
 		{
-			console->WriteLineC(UTF8STRC("Error in capturing image"));
+			console->WriteLine(CSTR("Error in capturing image"));
 		}
 		DEL_CLASS(camera);
 	}

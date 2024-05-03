@@ -185,7 +185,7 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListStore()
 		Data::ArrayIterator<NN<Text::String>> it = this->rssList.Iterator();
 		while (it.HasNext())
 		{
-			writer.WriteLineCStr(it.Next()->ToCString());
+			writer.WriteLine(it.Next()->ToCString());
 		}
 	}
 }

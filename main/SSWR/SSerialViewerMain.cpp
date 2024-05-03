@@ -31,10 +31,10 @@ static UInt32 __stdcall SerialViewer(AnyType userObj)
 			}
 			sb.ClearStr();
 			sb.AppendTSNoZone(Data::Timestamp::Now());
-			console->WriteLineC(sb.ToString(), sb.GetLength());
+			console->WriteLine(sb.ToCString());
 			sb.ClearStr();
 			sb.AppendHexBuff(readBuff, readSize, ' ', Text::LineBreakType::CRLF);
-			console->WriteLineC(sb.ToString(), sb.GetLength());
+			console->WriteLine(sb.ToCString());
 			console->WriteLine();
 		}
 	}
@@ -51,7 +51,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc <= 1)
 	{
-		console->WriteLineC(UTF8STRC("Usage: SSwerialViewer [portNo] [baudRate]"));
+		console->WriteLine(CSTR("Usage: SSwerialViewer [portNo] [baudRate]"));
 	}
 	else
 	{
@@ -59,7 +59,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		Text::StrToUInt32(argv[1], portNo);
 		if (portNo == 0)
 		{
-			console->WriteLineC(UTF8STRC("PortNo is not correct"));
+			console->WriteLine(CSTR("PortNo is not correct"));
 		}
 		else
 		{
@@ -79,14 +79,14 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			NEW_CLASS(port, IO::SerialPort(portNo, baudRate, IO::SerialPort::PARITY_NONE, false));
 			if (port->IsError())
 			{
-				console->WriteLineC(UTF8STRC("Error in opening serial port"));
+				console->WriteLine(CSTR("Error in opening serial port"));
 			}
 			else
 			{
-				console->WriteLineC(UTF8STRC("Running"));
+				console->WriteLine(CSTR("Running"));
 				Sync::ThreadUtil::Create(SerialViewer, 0);
 				progCtrl->WaitForExit(progCtrl);
-				console->WriteLineC(UTF8STRC("Exiting"));
+				console->WriteLine(CSTR("Exiting"));
 				port->Close();
 				while (running)
 				{

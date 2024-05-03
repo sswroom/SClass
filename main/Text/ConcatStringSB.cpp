@@ -29,7 +29,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Double t1 = clk.GetTimeDiff();
 	IO::ConsoleWriter console;
 	sptr = Text::StrConcatC(Text::StrDouble(sbuff, t1), UTF8STRC(" s"));
-	console.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+	console.WriteLine(CSTRP(sbuff, sptr));
 
 	return 0;
 }

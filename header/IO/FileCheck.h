@@ -6,6 +6,7 @@
 #include "IO/ActiveStreamReader.h"
 #include "IO/ParsedObject.h"
 #include "IO/ProgressHandler.h"
+#include "IO/Writer.h"
 #include "Crypto/Hash/IHash.h"
 
 namespace IO
@@ -36,7 +37,7 @@ namespace IO
 		Optional<Text::String> GetEntryName(UOSInt index) const;
 		Bool GetEntryHash(UOSInt index, UInt8 *hashVal) const;
 		void AddEntry(Text::CStringNN fileName, UInt8 *hashVal);
-		Bool CheckEntryHash(UOSInt index, UInt8 *hashVal) const;
+		Bool CheckEntryHash(UOSInt index, UInt8 *hashVal, Optional<IO::Writer> verboseWriter) const;
 		Bool MergeFrom(NN<FileCheck> chk);
 
 		virtual IO::ParserType GetParserType() const;

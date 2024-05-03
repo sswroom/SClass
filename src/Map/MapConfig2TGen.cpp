@@ -115,7 +115,7 @@ public:
 		{
 			sptr = Text::StrConcatC(sptr, UTF8STRC("0"));
 		}
-		this->writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+		this->writer->WriteLine(CSTRP(sbuff, sptr));
 	}
 
 	void AddStringL(const UTF8Char *label, Math::Coord2DDbl *mapPts, Math::Coord2D<Int32> *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, UInt32 fontStyle, Bool isAlign, const Math::RectAreaDbl *bounds)
@@ -161,7 +161,7 @@ public:
 		{
 			sptr = Text::StrConcatC(sptr, UTF8STRC("0"));
 		}
-		this->writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+		this->writer->Write(CSTRP(sbuff, sptr));
 		i = 0;
 		while (i < nPoints)
 		{
@@ -176,7 +176,7 @@ public:
 			sptr = Text::StrConcatC(sptr, UTF8STRC("}"));
 			mapPts += 1;
 			scnPts += 1;
-			this->writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			this->writer->Write(CSTRP(sbuff, sptr));
 			i++;
 		}
 
@@ -2409,8 +2409,8 @@ Optional<Map::MapDrawLayer> Map::MapConfig2TGen::GetDrawLayer(Text::CStringNN na
 	NEW_CLASSNN(cip, Map::CIPLayer2(name));
 	if (cip->IsError())
 	{
-		errWriter->WriteStrC(UTF8STRC("Error in loading "));
-		errWriter->WriteLineC(name.v, name.leng);
+		errWriter->Write(CSTR("Error in loading "));
+		errWriter->WriteLine(name);
 		cip.Delete();
 		return 0;
 	}

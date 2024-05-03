@@ -63,7 +63,7 @@ namespace IO
 		void AppendCfgPath(NN<Text::StringBuilderUTF8> sb, Text::CString path);
 		void AppendCfg(NN<Text::StringBuilderUTF8> sb, Text::CString compileCfg);
 
-		Bool ExecuteCmd(Text::CString cmd);
+		Bool ExecuteCmd(Text::CStringNN cmd);
 		Bool LoadConfigFile(Text::CStringNN cfgFile);
 
 		Text::PString ParseCond(Text::PString str1, OutParam<Bool> valid);

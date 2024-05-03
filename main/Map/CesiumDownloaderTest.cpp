@@ -452,7 +452,7 @@ void TestURL(IO::Writer *console, CesiumDownloader *downloader, Text::CString ur
 	sb.AppendU64(downloader->GetTotalUploadSize());
 	sb.AppendC(UTF8STRC("\r\nTotal Content Size: "));
 	sb.AppendU64(downloader->GetTotalContentSize());
-	console->WriteLineCStr(sb.ToCString());
+	console->WriteLine(sb.ToCString());
 	downloader->ClearStat();
 	FilesComparator comparator;
 	Data::ArrayList<CesiumDownloader::FileEntry*> filesList;

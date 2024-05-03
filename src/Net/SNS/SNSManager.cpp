@@ -144,7 +144,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(NN<Net::SNS::SNSManager::ChannelDat
 		{
 			sb.AppendChar('"', 2);
 		}
-		writer.WriteLineC(sb.ToString(), sb.GetLength());
+		writer.WriteLine(sb.ToCString());
 	}
 
 	if (item->imgURL && item->imgURL->v[0])
@@ -312,7 +312,7 @@ void Net::SNS::SNSManager::ChannelStoreCurr(NN<Net::SNS::SNSManager::ChannelData
 	while (it.HasNext())
 	{
 		NN<Text::String> s = it.Next();
-		writer.WriteLineC(s->v, s->leng);
+		writer.WriteLine(s->ToCString());
 	}
 }
 
@@ -545,7 +545,7 @@ Optional<Net::SNS::SNSControl> Net::SNS::SNSManager::AddChannel(Net::SNS::SNSCon
 			Text::UTF8Writer writer(fs);
 			writer.WriteLine(Net::SNS::SNSControl::SNSTypeGetName(ctrl->GetSNSType()));
 			NN<Text::String> s = ctrl->GetChannelId();
-			writer.WriteLineC(s->v, s->leng);
+			writer.WriteLine(s->ToCString());
 		}
 		NN<Net::SNS::SNSManager::ChannelData> channel = this->ChannelInit(ctrl);
 		Sync::MutexUsage mutUsage(this->mut);

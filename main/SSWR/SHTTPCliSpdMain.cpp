@@ -21,7 +21,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc <= 1)
 	{
-		console->WriteLineC(UTF8STRC("Usage: SHTTPCliSpd [URL]"));
+		console->WriteLine(CSTR("Usage: SHTTPCliSpd [URL]"));
 	}
 	else
 	{
@@ -44,7 +44,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR("Test/1.0"), false, url.StartsWith(UTF8STRC("https://")));
 			if (!cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, &respTimeDNS, &respTimeConn, false))
 			{
-				console->WriteLineC(UTF8STRC("Error in requesting to server"));
+				console->WriteLine(CSTR("Error in requesting to server"));
 			}
 			else
 			{
@@ -56,7 +56,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				httpStatus = cli->GetRespStatus();
 				if (httpStatus == 0)
 				{
-					console->WriteLineC(UTF8STRC("Error in requesting to server"));
+					console->WriteLine(CSTR("Error in requesting to server"));
 				}
 				else
 				{
@@ -71,43 +71,43 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Server response "));
 					sb.AppendI32(httpStatus);
-					console->WriteLineC(sb.ToString(), sb.GetLength());
+					console->WriteLine(sb.ToCString());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Received "));
 					sb.AppendU64(totalReadSize);
 					sb.AppendC(UTF8STRC(" bytes from server"));
-					console->WriteLineC(sb.ToString(), sb.GetLength());
+					console->WriteLine(sb.ToCString());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("DNS Time = "));
 					sb.AppendDouble(respTimeDNS);
-					console->WriteLineC(sb.ToString(), sb.GetLength());
+					console->WriteLine(sb.ToCString());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Conn Time = "));
 					sb.AppendDouble(respTimeConn - respTimeDNS);
-					console->WriteLineC(sb.ToString(), sb.GetLength());
+					console->WriteLine(sb.ToCString());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Request Time = "));
 					sb.AppendDouble(respTimeReq - respTimeConn);
-					console->WriteLineC(sb.ToString(), sb.GetLength());
+					console->WriteLine(sb.ToCString());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Response Time = "));
 					sb.AppendDouble(respTimeResp - respTimeReq);
-					console->WriteLineC(sb.ToString(), sb.GetLength());
+					console->WriteLine(sb.ToCString());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Download Time = "));
 					sb.AppendDouble(respTimeTotal - respTimeResp);
-					console->WriteLineC(sb.ToString(), sb.GetLength());
+					console->WriteLine(sb.ToCString());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Total Time = "));
 					sb.AppendDouble(respTimeTotal);
-					console->WriteLineC(sb.ToString(), sb.GetLength());
+					console->WriteLine(sb.ToCString());
 				}
 			}
 			cli.Delete();
@@ -115,7 +115,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		}
 		else
 		{
-			console->WriteLineC(UTF8STRC("Only support http url"));
+			console->WriteLine(CSTR("Only support http url"));
 		}
 	}
 

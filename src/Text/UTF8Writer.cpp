@@ -15,20 +15,20 @@ Text::UTF8Writer::~UTF8Writer()
 {
 }
 
-Bool Text::UTF8Writer::WriteStrC(const UTF8Char *str, UOSInt nChar)
+Bool Text::UTF8Writer::Write(Text::CStringNN str)
 {
-	return this->stm->Write(str, nChar) == nChar;
+	return this->stm->Write(str.v, str.leng) == str.leng;
 }
 
-Bool Text::UTF8Writer::WriteLineC(const UTF8Char *str, UOSInt nChar)
+Bool Text::UTF8Writer::WriteLine(Text::CStringNN str)
 {
 	const UTF8Char crlf[2] = {13, 10};
-	UOSInt ret = this->stm->Write(str, nChar);
-	if (ret == nChar)
+	UOSInt ret = this->stm->Write(str.v, str.leng);
+	if (ret == str.leng)
 	{
 		ret += this->stm->Write(crlf, 2);
 	}
-	return ret == nChar + 2;
+	return ret == str.leng + 2;
 }
 
 Bool Text::UTF8Writer::WriteW(const UTF16Char *str, UOSInt nChar)

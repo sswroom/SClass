@@ -139,11 +139,11 @@ void IO::SMake::AppendCfg(NN<Text::StringBuilderUTF8> sb, Text::CString compileC
 	}
 }
 
-Bool IO::SMake::ExecuteCmd(Text::CString cmd)
+Bool IO::SMake::ExecuteCmd(Text::CStringNN cmd)
 {
 	if (this->cmdWriter)
 	{
-		this->cmdWriter->WriteLineC(cmd.v, cmd.leng);
+		this->cmdWriter->WriteLine(cmd);
 	}
 	Text::StringBuilderUTF8 sbRet;
 	Int32 ret = Manage::Process::ExecuteProcess(cmd, sbRet);
@@ -156,7 +156,7 @@ Bool IO::SMake::ExecuteCmd(Text::CString cmd)
 	{
 		if (this->cmdWriter)
 		{
-			this->cmdWriter->WriteLineC(sbRet.ToString(), sbRet.GetLength());
+			this->cmdWriter->WriteLine(sbRet.ToCString());
 		}
 	}
 	return true;
@@ -170,7 +170,7 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Loading "));
 		sb.Append(cfgFile);
-		this->messageWriter->WriteLineC(sb.ToString(), sb.GetLength());
+		this->messageWriter->WriteLine(sb.ToCString());
 	}
 	IO::FileStream fs(cfgFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
@@ -674,7 +674,7 @@ Bool IO::SMake::ParseSource(NN<Data::FastStringMap<Int32>> objList,
 								sb2.Append(debugObj);
 								sb2.AppendC(UTF8STRC(" found in "));
 								sb2.Append(sourceFile);
-								this->messageWriter->WriteLineC(sb2.ToString(), sb2.GetLength());
+								this->messageWriter->WriteLine(sb2.ToCString());
 							}
 #if defined(VERBOSE)
 							printf("Parsing header \"%s\" in source %s\r\n", prog->name->v, sourceFile.v);
@@ -703,7 +703,7 @@ Bool IO::SMake::ParseSource(NN<Data::FastStringMap<Int32>> objList,
 									sb2.Append(debugObj);
 									sb2.AppendC(UTF8STRC(" found in "));
 									sb2.Append(sourceFile);
-									this->messageWriter->WriteLineC(sb2.ToString(), sb2.GetLength());
+									this->messageWriter->WriteLine(sb2.ToCString());
 								}
 								if (objList->PutNN(subItem, 1) != 1)
 								{
@@ -871,7 +871,7 @@ Bool IO::SMake::ParseObject(NN<Data::FastStringMap<Int32>> objList, NN<Data::Fas
 				sb2.Append(debugObj);
 				sb2.AppendC(UTF8STRC(" found in "));
 				sb2.Append(sourceFile);
-				this->messageWriter->WriteLineC(sb2.ToString(), sb2.GetLength());
+				this->messageWriter->WriteLine(sb2.ToCString());
 			}
 			if (objList->PutNN(subItem, 1) != 1)
 			{
@@ -893,7 +893,7 @@ Bool IO::SMake::ParseObject(NN<Data::FastStringMap<Int32>> objList, NN<Data::Fas
 			sb2.Append(debugObj);
 			sb2.AppendC(UTF8STRC(" found in "));
 			sb2.Append(sourceFile);
-			this->messageWriter->WriteLineC(sb2.ToString(), sb2.GetLength());
+			this->messageWriter->WriteLine(sb2.ToCString());
 		}
 		NN<Text::String> s;
 		if (s.Set(prog->srcFile))
@@ -944,7 +944,7 @@ Bool IO::SMake::ParseProgInternal(NN<Data::FastStringMap<Int32>> objList,
 			tmpSb->Append(debugObj);
 			tmpSb->AppendC(UTF8STRC(" depends by "));
 			tmpSb->Append(prog->name);
-			this->messageWriter->WriteLineC(tmpSb->ToString(), tmpSb->GetLength());
+			this->messageWriter->WriteLine(tmpSb->ToCString());
 		}
 		objList->PutNN(subItem, 1);
 	}
@@ -1043,7 +1043,7 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Compiling Program "));
 		sb.Append(prog->name);
-		this->messageWriter->WriteLineC(sb.ToString(), sb.GetLength());
+		this->messageWriter->WriteLine(sb.ToCString());
 	}
 
 	if (!enableTest && prog->name->Equals(UTF8STRC("test")))
@@ -1189,7 +1189,7 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 				{
 					sb.AppendTSNoZone(Data::Timestamp(lastTime, Data::DateTimeUtil::GetLocalTzQhr()));
 				}
-				this->messageWriter->WriteLineC(sb.ToString(), sb.GetLength());
+				this->messageWriter->WriteLine(sb.ToCString());
 			}
 			if (thisTime && thisTime > lastTime)
 			{
@@ -1219,7 +1219,7 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 						dt1 = Data::Timestamp(lastTime, Data::DateTimeUtil::GetLocalTzQhr());
 						sb.AppendTSNoZone(dt1);
 						sb.AppendC(UTF8STRC(", Skip"));
-						this->messageWriter->WriteLineC(sb.ToString(), sb.GetLength());
+						this->messageWriter->WriteLine(sb.ToCString());
 					}
 				}
 			}
@@ -1238,7 +1238,7 @@ Bool IO::SMake::CompileProgInternal(NN<const ProgramItem> prog, Bool asmListing,
 				sb.Append(subProg->name);
 				sb.AppendC(UTF8STRC(" creating from "));
 				sb.Append(srcFile);
-				this->messageWriter->WriteLineC(sb.ToString(), sb.GetLength());
+				this->messageWriter->WriteLine(sb.ToCString());
 			}
 			if (srcFile->EndsWith(UTF8STRC(".cpp")))
 			{
@@ -1548,7 +1548,7 @@ Bool IO::SMake::TestProg(NN<const ProgramItem> prog, NN<Text::StringBuilderUTF8>
 		sb->ClearStr();
 		sb->AppendC(UTF8STRC("Testing "));
 		sb->Append(prog->name);
-		this->cmdWriter->WriteLineC(sb->ToString(), sb->GetLength());
+		this->cmdWriter->WriteLine(sb->ToCString());
 	}
 	sb->ClearStr();
 	sb->Append(this->basePath);

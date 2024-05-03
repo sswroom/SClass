@@ -27,14 +27,14 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	NN<Net::SSLEngine> nnssl;
 	if (!ssl.SetTo(nnssl))
 	{
-		console->WriteLineC(UTF8STRC("Error in initializing SSL"));
+		console->WriteLine(CSTR("Error in initializing SSL"));
 		succ = false;
 	}
 	else if (!nnssl->ServerSetCerts(sslCert, sslKey))
 	{
-		console->WriteLineC(UTF8STRC("Error in loading Cert/Key"));
+		console->WriteLine(CSTR("Error in loading Cert/Key"));
 		sptr = nnssl->GetErrorDetail(sbuff);
-		console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+		console->WriteLine(CSTRP(sbuff, sptr));
 		succ = false;
 	}
 
@@ -46,12 +46,12 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		NEW_CLASS(svr, Net::WebServer::WebListener(sockf, ssl, hdlr, port, 120, 1, 4, CSTR("sswr/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 		if (!svr->IsError())
 		{
-			console->WriteLineC(UTF8STRC("HTTP Forwarding started"));
+			console->WriteLine(CSTR("HTTP Forwarding started"));
 			progCtrl->WaitForExit(progCtrl);
 		}
 		else
 		{
-			console->WriteLineC(UTF8STRC("Error in listening port"));
+			console->WriteLine(CSTR("Error in listening port"));
 		}
 		DEL_CLASS(svr);
 		hdlr.Delete();

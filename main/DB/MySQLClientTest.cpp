@@ -396,7 +396,7 @@ void TextReadAll(DB::DBTool *db)
 	}
 	else
 	{
-		console->WriteLineC(UTF8STRC("Error in loading reading table"));
+		console->WriteLine(CSTR("Error in loading reading table"));
 	}
 }
 
@@ -423,13 +423,13 @@ void TestBinaryRead(DB::DBTool *db)
 		{
 			rowCnt++;
 			sptr = Text::StrConcatC(Text::StrUOSInt(sbuff, rowCnt), UTF8STRC(" rows read"));
-			console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+			console->WriteLine(CSTRP(sbuff, sptr));
 		}
 		conn->CloseReader(r);*/
 	}
 	else
 	{
-		console->WriteLineC(UTF8STRC("Error in loading reading table"));
+		console->WriteLine(CSTR("Error in loading reading table"));
 	}
 }
 
@@ -456,9 +456,9 @@ void TempTest(NN<Net::SocketFactory> sockf, IO::Writer *console)
 			while (r->ReadNext())
 			{
 				sptr = r->GetTimestamp(1).ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-				console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+				console->WriteLine(CSTRP(sbuff, sptr));
 				sptr = r->GetTimestamp(2).ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-				console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+				console->WriteLine(CSTRP(sbuff, sptr));
 			}
 			db->CloseReader(r);
 		}
@@ -492,7 +492,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	}
 	else
 	{
-		console->WriteLineC(UTF8STRC("Error in opening database"));
+		console->WriteLine(CSTR("Error in opening database"));
 	}
 	DEL_CLASS(console);
 	return 0;

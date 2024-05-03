@@ -22,7 +22,7 @@ void TestEmpty()
 	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, 0))
 	{
 		IO::ConsoleWriter console;
-		console.WriteLineC(UTF8STRC("Error in writing to file"));
+		console.WriteLine(CSTR("Error in writing to file"));
 	}
 }
 
@@ -92,7 +92,7 @@ void TestChart()
 	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, 0))
 	{
 		IO::ConsoleWriter console;
-		console.WriteLineC(UTF8STRC("Error in writing to file"));
+		console.WriteLine(CSTR("Error in writing to file"));
 	}
 }
 
@@ -118,7 +118,7 @@ void TestCols()
 	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, 0))
 	{
 		IO::ConsoleWriter console;
-		console.WriteLineC(UTF8STRC("Error in writing to file"));
+		console.WriteLine(CSTR("Error in writing to file"));
 	}
 }
 
@@ -143,7 +143,7 @@ void TestColWidth()
 	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, 0))
 	{
 		IO::ConsoleWriter console;
-		console.WriteLineC(UTF8STRC("Error in writing to file"));
+		console.WriteLine(CSTR("Error in writing to file"));
 	}
 }
 
@@ -172,7 +172,7 @@ void TestBorder()
 	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, 0))
 	{
 		IO::ConsoleWriter console;
-		console.WriteLineC(UTF8STRC("Error in writing to file"));
+		console.WriteLine(CSTR("Error in writing to file"));
 	}
 }
 

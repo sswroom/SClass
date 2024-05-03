@@ -22,7 +22,7 @@ void __stdcall Net::MQTTStaticClient::KAThread(NN<Sync::Thread> thread)
 		else
 		{
 			mutUsage.EndUse();
-			if (me->errLog) me->errLog->WriteLineC(UTF8STRC("MQTT: Reconnecting to server"));
+			if (me->errLog) me->errLog->WriteLine(CSTR("MQTT: Reconnecting to server"));
 			me->Connect();
 		}
 		thread->Wait((UOSInt)me->kaSeconds * 500);
@@ -55,7 +55,7 @@ void Net::MQTTStaticClient::Connect()
 		if (ws->IsDown())
 		{
 			ws.Delete();
-			if (errLog) errLog->WriteLineC(UTF8STRC("MQTT: Error in initializing websocket"));
+			if (errLog) errLog->WriteLine(CSTR("MQTT: Error in initializing websocket"));
 			return;
 		}
 		NEW_CLASS(conn, Net::MQTTConn(ws, 0, 0));
@@ -66,7 +66,7 @@ void Net::MQTTStaticClient::Connect()
 	}
 	if (conn->IsError())
 	{
-		if (errLog) errLog->WriteLineC(UTF8STRC("MQTT: Error in connecting to server"));
+		if (errLog) errLog->WriteLine(CSTR("MQTT: Error in connecting to server"));
 		DEL_CLASS(conn);
 		return;
 	}
@@ -91,14 +91,14 @@ void Net::MQTTStaticClient::Connect()
 	if (!succ)
 	{
 		DEL_CLASS(conn);
-		if (errLog) errLog->WriteLineC(UTF8STRC("MQTT: Error in sending connect packet"));
+		if (errLog) errLog->WriteLine(CSTR("MQTT: Error in sending connect packet"));
 	}
 	else
 	{
 		mutUsage.ReplaceMutex(this->connMut);
 		if (conn->IsError())
 		{
-			if (errLog) errLog->WriteLineC(UTF8STRC("MQTT: Connection is error"));
+			if (errLog) errLog->WriteLine(CSTR("MQTT: Connection is error"));
 			DEL_CLASS(conn);
 			return;
 		}

@@ -135,7 +135,7 @@ void IO::MTFileLog::WriteArr(NN<Text::String> *msgArr, Data::Timestamp *dateArr,
 			log->WriteSignature();
 
 			sptr = Text::StrConcatC(time.ToString(buff, (const Char*)this->dateFormat), UTF8STRC("Program running"));
-			log->WriteLineC(buff, (UOSInt)(sptr - buff));
+			log->WriteLine(CSTRP(buff, sptr));
 			newFile = false;
 			this->hasNewFile = true;
 		}
@@ -144,7 +144,7 @@ void IO::MTFileLog::WriteArr(NN<Text::String> *msgArr, Data::Timestamp *dateArr,
 		sb.ClearStr();
 		sb.AppendC(buff, (UOSInt)(sptr - buff));
 		sb.Append(msgArr[i]);
-		log->WriteLineC(sb.ToString(), sb.GetLength());
+		log->WriteLine(sb.ToCString());
 
 		msgArr[i]->Release();
 		i++;

@@ -75,7 +75,7 @@ Bool Exporter::SHA1Exporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		sptr = Text::StrConcatC(sptr, UTF8STRC(" *"));
 		if (fchk->GetEntryName(i).SetTo(name))
 			sptr = name->ConcatTo(sptr);
-		writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+		writer.WriteLine(CSTRP(sbuff, sptr));
 		i++;
 	}
 	return true;

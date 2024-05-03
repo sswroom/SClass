@@ -20,30 +20,30 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			IO::GPIOControl gpio;
 			if (gpio.SetPinState((UInt8)pinNum, val != 0))
 			{
-				console.WriteLineC(UTF8STRC("GPIO set"));
+				console.WriteLine(CSTR("GPIO set"));
 			}
 			else
 			{
-				console.WriteLineC(UTF8STRC("Error in setting GPIO"));
+				console.WriteLine(CSTR("Error in setting GPIO"));
 			}			
 		}
 		else
 		{
-			console.WriteLineC(UTF8STRC("Error in parameter"));
+			console.WriteLine(CSTR("Error in parameter"));
 		}
 	}
 	else
 	{
-		console.WriteStrC(UTF8STRC("Usage: "));
+		console.Write(CSTR("Usage: "));
 		if (argc >= 1)
 		{
-			console.WriteStr(Text::CString::FromPtr(argv[0]));
+			console.Write(Text::CStringNN::FromPtr(argv[0]));
 		}
 		else
 		{
-			console.WriteStrC(UTF8STRC("GPIOOutput"));
+			console.Write(CSTR("GPIOOutput"));
 		}
-		console.WriteLineC(UTF8STRC(" [Pin Num] [1/0]"));
+		console.WriteLine(CSTR(" [Pin Num] [1/0]"));
 	}
 
 	return 0;

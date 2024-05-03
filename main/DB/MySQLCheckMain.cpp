@@ -16,7 +16,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg == 0)
 	{
-		console.WriteLineC(UTF8STRC("Config file not found\r\n"));
+		console.WriteLine(CSTR("Config file not found\r\n"));
 		return 1;
 	}
 	static const Char *cfgList[] = {
@@ -48,7 +48,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			sb.AppendC(UTF8STRC("Config "));
 			sb.AppendC((const UTF8Char*)cptr, len);
 			sb.AppendC(UTF8STRC(" not found"));
-			console.WriteLineC(sb.ToString(), sb.GetLength());
+			console.WriteLine(sb.ToCString());
 			DEL_CLASS(cfg);
 			return 2;
 		}
@@ -77,49 +77,49 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	if (!cfg->GetValue(CSTR("SMTPType")).SetTo(smtpType))
 	{
 		DEL_CLASS(cfg);
-		console.WriteLineC(UTF8STRC("SMTPType cannot be empty"));
+		console.WriteLine(CSTR("SMTPType cannot be empty"));
 		return 3;
 	}
 	if (!cfg->GetValue(CSTR("MySQLServer")).SetTo(mysqlServer))
 	{
 		DEL_CLASS(cfg);
-		console.WriteLineC(UTF8STRC("MySQLServer cannot be empty"));
+		console.WriteLine(CSTR("MySQLServer cannot be empty"));
 		return 3;
 	}
 	if (!cfg->GetValue(CSTR("MySQLPort")).SetTo(mysqlPort))
 	{
 		DEL_CLASS(cfg);
-		console.WriteLineC(UTF8STRC("MySQLPort cannot be empty"));
+		console.WriteLine(CSTR("MySQLPort cannot be empty"));
 		return 3;
 	}
 	if (!cfg->GetValue(CSTR("MySQLSchemas")).SetTo(mysqlSchemas))
 	{
 		DEL_CLASS(cfg);
-		console.WriteLineC(UTF8STRC("MySQLSchemas cannot be empty"));
+		console.WriteLine(CSTR("MySQLSchemas cannot be empty"));
 		return 3;
 	}
 	if (!cfg->GetValue(CSTR("SMTPHost")).SetTo(smtpHost))
 	{
 		DEL_CLASS(cfg);
-		console.WriteLineC(UTF8STRC("SMTPHost cannot be empty"));
+		console.WriteLine(CSTR("SMTPHost cannot be empty"));
 		return 3;
 	}
 	if (!cfg->GetValue(CSTR("SMTPPort")).SetTo(smtpPort))
 	{
 		DEL_CLASS(cfg);
-		console.WriteLineC(UTF8STRC("SMTPPort cannot be empty"));
+		console.WriteLine(CSTR("SMTPPort cannot be empty"));
 		return 3;
 	}
 	if (!cfg->GetValue(CSTR("SMTPFrom")).SetTo(smtpFrom))
 	{
 		DEL_CLASS(cfg);
-		console.WriteLineC(UTF8STRC("SMTPFrom cannot be empty"));
+		console.WriteLine(CSTR("SMTPFrom cannot be empty"));
 		return 3;
 	}
 	if (!cfg->GetValue(CSTR("SMTPTo")).SetTo(smtpTo))
 	{
 		DEL_CLASS(cfg);
-		console.WriteLineC(UTF8STRC("SMTPTo cannot be empty"));
+		console.WriteLine(CSTR("SMTPTo cannot be empty"));
 		return 3;
 	}
 	if (smtpType->EqualsICase(UTF8STRC("PLAIN")))
@@ -137,7 +137,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	else
 	{
 		DEL_CLASS(cfg);
-		console.WriteLineC(UTF8STRC("SMTPType must be PLAIN/SSL/STARTTLS"));
+		console.WriteLine(CSTR("SMTPType must be PLAIN/SSL/STARTTLS"));
 		return 3;
 	}
 
@@ -145,17 +145,17 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Net::OSSocketFactory sockf(false);
 	if (!sockf.DNSResolveIP(mysqlServer->ToCString(), addr))
 	{
-		console.WriteLineC(UTF8STRC("MySQLServer cannot be resolved"));
+		console.WriteLine(CSTR("MySQLServer cannot be resolved"));
 		return 4;
 	}
 	else if (!mysqlPort->ToUInt16(port))
 	{
-		console.WriteLineC(UTF8STRC("MySQLPort is not valid"));
+		console.WriteLine(CSTR("MySQLPort is not valid"));
 		return 5;
 	}
 	else if (!smtpPort->ToUInt16(smtpIPort))
 	{
-		console.WriteLineC(UTF8STRC("SMTPPort is not valid"));
+		console.WriteLine(CSTR("SMTPPort is not valid"));
 		return 6;
 	}
 	else
@@ -163,7 +163,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		NEW_CLASS(cli, Net::MySQLTCPClient(sockf, addr, port, Text::String::OrEmpty(mysqlUser), Text::String::OrEmpty(mysqlPassword), 0));
 		if (cli->IsError())
 		{
-			console.WriteLineC(UTF8STRC("Error in connecting to MySQL server"));
+			console.WriteLine(CSTR("Error in connecting to MySQL server"));
 			DEL_CLASS(cli);
 			retNum = 7;
 		}

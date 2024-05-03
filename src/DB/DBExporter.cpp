@@ -99,7 +99,7 @@ Bool DB::DBExporter::GenerateCSV(NN<DB::ReadingDB> db, Text::CString schema, Tex
 		}
 		i++;
 	}
-	if (!writer.WriteLineC(lineBuff2, (UOSInt)(sptr - lineBuff2)))
+	if (!writer.WriteLine(CSTRP(lineBuff2, sptr)))
 	{
 		MemFree(lineBuff2);
 		MemFree(lineBuff1);
@@ -135,7 +135,7 @@ Bool DB::DBExporter::GenerateCSV(NN<DB::ReadingDB> db, Text::CString schema, Tex
 			}
 			i++;
 		}
-		if (!writer.WriteLineC(lineBuff2, (UOSInt)(sptr - lineBuff2)))
+		if (!writer.WriteLine(CSTRP(lineBuff2, sptr)))
 		{
 			MemFree(lineBuff2);
 			MemFree(lineBuff1);
@@ -235,27 +235,27 @@ Bool DB::DBExporter::GenerateHTML(NN<DB::ReadingDB> db, Text::CString schema, Te
 	lineBuff1 = MemAlloc(UTF8Char, 65536);
 	lineBuff2 = MemAlloc(UTF8Char, 65536);
 
-	writer.WriteLineC(UTF8STRC("<html>"));
-	writer.WriteLineC(UTF8STRC("<head>"));
-	writer.WriteStrC(UTF8STRC("<title>"));
+	writer.WriteLine(CSTR("<html>"));
+	writer.WriteLine(CSTR("<head>"));
+	writer.Write(CSTR("<title>"));
 	sptr2 = db->GetSourceName(lineBuff1);
 	sptr = lineBuff1;
 	if ((i = Text::StrLastIndexOfCharC(sptr, (UOSInt)(sptr2 - sptr), '\\')) != INVALID_INDEX)
 		sptr = &sptr[i + 1];
 	sptr2 = Text::XML::ToXMLText(lineBuff2, sptr);
-	writer.WriteLineC(lineBuff2, (UOSInt)(sptr2 - lineBuff2));
-	writer.WriteLineC(UTF8STRC("</title>"));
+	writer.WriteLine(CSTRP(lineBuff2, sptr2));
+	writer.WriteLine(CSTR("</title>"));
 	sptr = Text::StrConcatC(Text::EncodingFactory::GetInternetName(Text::StrConcatC(lineBuff1, UTF8STRC("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=")), codePage), UTF8STRC("\">"));
-	writer.WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
-	writer.WriteLineC(UTF8STRC("</head>"));
+	writer.WriteLine(CSTRP(lineBuff1, sptr));
+	writer.WriteLine(CSTR("</head>"));
 	sptr2 = db->GetSourceName(lineBuff2);
 	sptr = lineBuff2;
 	if ((i = Text::StrLastIndexOfCharC(sptr, (UOSInt)(sptr2 - sptr), '\\')) != INVALID_INDEX)
 		sptr = &sptr[i + 1];
 	sptr = Text::XML::ToXMLText(Text::StrConcatC(lineBuff1, UTF8STRC("<body><h1>")), sptr);
-	writer.WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
-	writer.WriteLineC(UTF8STRC("</h1>"));
-	writer.WriteLineC(UTF8STRC("<table border=1 cellspacing=1 cellpadding=0><tr>"));
+	writer.WriteLine(CSTRP(lineBuff1, sptr));
+	writer.WriteLine(CSTR("</h1>"));
+	writer.WriteLine(CSTR("<table border=1 cellspacing=1 cellpadding=0><tr>"));
 
 	sptr = lineBuff2;
 	colCnt = r->ColCount();
@@ -271,11 +271,11 @@ Bool DB::DBExporter::GenerateHTML(NN<DB::ReadingDB> db, Text::CString schema, Te
 		i++;
 	}
 	sptr = Text::StrConcatC(sptr, UTF8STRC("</tr>"));
-	writer.WriteLineC(lineBuff2, (UOSInt)(sptr - lineBuff2));
+	writer.WriteLine(CSTRP(lineBuff2, sptr));
 
 	while (r->ReadNext())
 	{
-		writer.WriteLineC(UTF8STRC("<tr>"));
+		writer.WriteLine(CSTR("<tr>"));
 		sptr = lineBuff2;
 		colCnt = r->ColCount();
 		i = 0;
@@ -289,14 +289,14 @@ Bool DB::DBExporter::GenerateHTML(NN<DB::ReadingDB> db, Text::CString schema, Te
 			sptr = Text::StrConcatC(sptr, UTF8STRC("</td>"));
 			i++;
 		}
-		writer.WriteLineC(lineBuff2, (UOSInt)(sptr - lineBuff2));
+		writer.WriteLine(CSTRP(lineBuff2, sptr));
 	}
 	
 	MemFree(lineBuff2);
 	MemFree(lineBuff1);
 
-	writer.WriteLineC(UTF8STRC("</table>"));
-	writer.WriteLineC(UTF8STRC("</body></html>"));
+	writer.WriteLine(CSTR("</table>"));
+	writer.WriteLine(CSTR("</body></html>"));
 
 	db->CloseReader(r);
 	return true;
@@ -323,16 +323,16 @@ Bool DB::DBExporter::GeneratePList(NN<DB::ReadingDB> db, Text::CString schema, T
 	lineBuff2 = MemAlloc(UTF8Char, 65536);
 
 	sptr = Text::StrConcatC(Text::EncodingFactory::GetInternetName(Text::StrConcatC(lineBuff1, UTF8STRC("<?xml version=\"1.0\" encoding=\"")), codePage), UTF8STRC("\"?>"));
-	writer.WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
-	writer.WriteLineC(UTF8STRC("<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">"));
-	writer.WriteLineC(UTF8STRC("<plist version=\"1.0\">"));
-	writer.WriteLineC(UTF8STRC("<array>"));
+	writer.WriteLine(CSTRP(lineBuff1, sptr));
+	writer.WriteLine(CSTR("<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">"));
+	writer.WriteLine(CSTR("<plist version=\"1.0\">"));
+	writer.WriteLine(CSTR("<array>"));
 
 	sptr = lineBuff2;
 	colCnt = r->ColCount();
 	while (r->ReadNext())
 	{
-		writer.WriteLineC(UTF8STRC("    <dict>"));
+		writer.WriteLine(CSTR("    <dict>"));
 		sptr = lineBuff2;
 		colCnt = r->ColCount();
 		i = 0;
@@ -340,7 +340,7 @@ Bool DB::DBExporter::GeneratePList(NN<DB::ReadingDB> db, Text::CString schema, T
 		{
 			r->GetName(i, lineBuff1);
 			sptr2 = Text::StrConcatC(Text::XML::ToXMLText(Text::StrConcatC(lineBuff2, UTF8STRC("        <key>")), lineBuff1), UTF8STRC("</key>"));
-			writer.WriteLineC(lineBuff2, (UOSInt)(sptr2 - lineBuff2));
+			writer.WriteLine(CSTRP(lineBuff2, sptr2));
 
 			DB::DBUtil::ColType ct = r->GetColType(i, colSize);
 			switch (ct)
@@ -348,29 +348,29 @@ Bool DB::DBExporter::GeneratePList(NN<DB::ReadingDB> db, Text::CString schema, T
 			case DB::DBUtil::CT_DateTimeTZ:
 			case DB::DBUtil::CT_DateTime:
 				sptr = Text::StrConcatC(r->GetTimestamp(i).ToString(Text::StrConcatC(lineBuff1, UTF8STRC("        <string>")), "yyyy-MM-dd HH:mm:ss"), UTF8STRC("</string>"));
-				writer.WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
+				writer.WriteLine(CSTRP(lineBuff1, sptr));
 				break;
 			case DB::DBUtil::CT_Date:
 				sptr = Text::StrConcatC(r->GetDate(i).ToString(Text::StrConcatC(lineBuff1, UTF8STRC("        <string>")), "yyyy-MM-dd"), UTF8STRC("</string>"));
-				writer.WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
+				writer.WriteLine(CSTRP(lineBuff1, sptr));
 				break;
 			case DB::DBUtil::CT_Double:
 			case DB::DBUtil::CT_Float:
 			case DB::DBUtil::CT_Decimal:
 				sptr = Text::StrConcatC(Text::StrDouble(Text::StrConcatC(lineBuff1, UTF8STRC("        <string>")), r->GetDbl(i)), UTF8STRC("</string>"));
-				writer.WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
+				writer.WriteLine(CSTRP(lineBuff1, sptr));
 				break;
 			case DB::DBUtil::CT_Int16:
 			case DB::DBUtil::CT_Int32:
 			case DB::DBUtil::CT_UInt16:
 				sptr = Text::StrConcatC(Text::StrInt32(Text::StrConcatC(lineBuff1, UTF8STRC("        <integer>")), r->GetInt32(i)), UTF8STRC("</integer>"));
-				writer.WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
+				writer.WriteLine(CSTRP(lineBuff1, sptr));
 				break;
 			case DB::DBUtil::CT_Int64:
 			case DB::DBUtil::CT_UInt32:
 			case DB::DBUtil::CT_UInt64:
 				sptr = Text::StrConcatC(Text::StrInt64(Text::StrConcatC(lineBuff1, UTF8STRC("        <integer>")), r->GetInt64(i)), UTF8STRC("</integer>"));
-				writer.WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
+				writer.WriteLine(CSTRP(lineBuff1, sptr));
 				break;
 			case DB::DBUtil::CT_Bool:
 			case DB::DBUtil::CT_Byte:
@@ -394,20 +394,20 @@ Bool DB::DBExporter::GeneratePList(NN<DB::ReadingDB> db, Text::CString schema, T
 				{
 					sptr = Text::StrConcatC(lineBuff1, UTF8STRC("        <string>(null)</string>"));
 				}
-				writer.WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
+				writer.WriteLine(CSTRP(lineBuff1, sptr));
 				break;
 			}
 
 			i++;
 		}
-		writer.WriteLineC(UTF8STRC("    </dict>"));
+		writer.WriteLine(CSTR("    </dict>"));
 	}
 	
 	MemFree(lineBuff2);
 	MemFree(lineBuff1);
 
-	writer.WriteLineC(UTF8STRC("</array>"));
-	writer.WriteLineC(UTF8STRC("</plist>"));
+	writer.WriteLine(CSTR("</array>"));
+	writer.WriteLine(CSTR("</plist>"));
 
 	db->CloseReader(r);
 	return true;
@@ -555,12 +555,12 @@ Bool DB::DBExporter::GenerateExcelXMLAllTables(NN<DB::ReadingDB> db, Text::CStri
 	NN<DB::DBReader> r;
 
 	sptr = Text::StrConcatC(Text::EncodingFactory::GetInternetName(Text::StrConcatC(lineBuff1, UTF8STRC("<?xml version=\"1.0\" encoding=\"")), codePage), UTF8STRC("\"?>"));
-	writer.WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
-	writer.WriteLineC(UTF8STRC("<?mso-application progid=\"Excel.Sheet\"?>"));
-	writer.WriteLineC(UTF8STRC("<Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\""));
-	writer.WriteLineC(UTF8STRC(" xmlns:x=\"urn:schemas-microsoft-com:office:excel\""));
-	writer.WriteLineC(UTF8STRC(" xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\""));
-	writer.WriteLineC(UTF8STRC(" xmlns:html=\"http://www.w3.org/TR/REC-html40\">"));
+	writer.WriteLine(CSTRP(lineBuff1, sptr));
+	writer.WriteLine(CSTR("<?mso-application progid=\"Excel.Sheet\"?>"));
+	writer.WriteLine(CSTR("<Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\""));
+	writer.WriteLine(CSTR(" xmlns:x=\"urn:schemas-microsoft-com:office:excel\""));
+	writer.WriteLine(CSTR(" xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\""));
+	writer.WriteLine(CSTR(" xmlns:html=\"http://www.w3.org/TR/REC-html40\">"));
 
 	Data::ArrayListStringNN names;
 	db->QueryTableNames(CSTR_NULL, names);
@@ -574,10 +574,10 @@ Bool DB::DBExporter::GenerateExcelXMLAllTables(NN<DB::ReadingDB> db, Text::CStri
 			sptr = Text::StrConcatC(Text::XML::ToAttrText(Text::StrConcatC(lineBuff1, UTF8STRC(" <Worksheet ss:Name=")), &tableName->v[ind + 1]), UTF8STRC(">"));
 			Text::StrReplace(lineBuff1, '?', '_');
 			Text::StrReplace(lineBuff1, '\\', '_');
-			writer.WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
-			writer.WriteLineC(UTF8STRC("  <Table>"));
+			writer.WriteLine(CSTRP(lineBuff1, sptr));
+			writer.WriteLine(CSTR("  <Table>"));
 
-			writer.WriteLineC(UTF8STRC("   <Row>"));
+			writer.WriteLine(CSTR("   <Row>"));
 			colCnt = r->ColCount();
 			i = 0;
 			while (i < colCnt)
@@ -585,19 +585,19 @@ Bool DB::DBExporter::GenerateExcelXMLAllTables(NN<DB::ReadingDB> db, Text::CStri
 				if (r->GetName(i, lineBuff1))
 				{
 					sptr = Text::StrConcatC(Text::XML::ToXMLText(Text::StrConcatC(lineBuff2, UTF8STRC("    <Cell><Data ss:Type=\"String\">")), lineBuff1), UTF8STRC("</Data></Cell>"));
-					writer.WriteLineC(lineBuff2, (UOSInt)(sptr - lineBuff2));
+					writer.WriteLine(CSTRP(lineBuff2, sptr));
 				}
 				else
 				{
-					writer.WriteLineC(UTF8STRC("    <Cell><Data ss:Type=\"String\"></Data></Cell>"));
+					writer.WriteLine(CSTR("    <Cell><Data ss:Type=\"String\"></Data></Cell>"));
 				}
 				i++;
 			}
-			writer.WriteLineC(UTF8STRC("   </Row>"));
+			writer.WriteLine(CSTR("   </Row>"));
 
 			while (r->ReadNext())
 			{
-				writer.WriteLineC(UTF8STRC("   <Row>"));
+				writer.WriteLine(CSTR("   <Row>"));
 				colCnt = r->ColCount();
 				i = 0;
 				while (i < colCnt)
@@ -610,29 +610,29 @@ Bool DB::DBExporter::GenerateExcelXMLAllTables(NN<DB::ReadingDB> db, Text::CStri
 					case DB::DBUtil::CT_DateTime:
 					case DB::DBUtil::CT_DateTimeTZ:
 						sptr = Text::StrConcatC(r->GetTimestamp(i).ToString(Text::StrConcatC(lineBuff1, UTF8STRC("    <Cell><Data ss:Type=\"DateTime\">")), "yyyy-MM-ddTHH:mm:ss.fff"), UTF8STRC("</Data></Cell>"));
-						writer.WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
+						writer.WriteLine(CSTRP(lineBuff1, sptr));
 						break;
 					case DB::DBUtil::CT_Double:
 					case DB::DBUtil::CT_Float:
 					case DB::DBUtil::CT_Decimal:
 						sptr = Text::StrConcatC(Text::StrDouble(Text::StrConcatC(lineBuff1, UTF8STRC("    <Cell><Data ss:Type=\"Number\">")), r->GetDbl(i)), UTF8STRC("</Data></Cell>"));
-						writer.WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
+						writer.WriteLine(CSTRP(lineBuff1, sptr));
 						break;
 					case DB::DBUtil::CT_Byte:
 					case DB::DBUtil::CT_Int16:
 					case DB::DBUtil::CT_Int32:
 					case DB::DBUtil::CT_UInt16:
 						sptr = Text::StrConcatC(Text::StrInt32(Text::StrConcatC(lineBuff1, UTF8STRC("    <Cell><Data ss:Type=\"Number\">")), r->GetInt32(i)), UTF8STRC("</Data></Cell>"));
-						writer.WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
+						writer.WriteLine(CSTRP(lineBuff1, sptr));
 						break;
 					case DB::DBUtil::CT_Int64:
 					case DB::DBUtil::CT_UInt32:
 						sptr = Text::StrConcatC(Text::StrInt64(Text::StrConcatC(lineBuff1, UTF8STRC("    <Cell><Data ss:Type=\"Number\">")), r->GetInt64(i)), UTF8STRC("</Data></Cell>"));
-						writer.WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
+						writer.WriteLine(CSTRP(lineBuff1, sptr));
 						break;
 					case DB::DBUtil::CT_UInt64:
 						sptr = Text::StrConcatC(Text::StrUInt64(Text::StrConcatC(lineBuff1, UTF8STRC("    <Cell><Data ss:Type=\"Number\">")), (UInt64)r->GetInt64(i)), UTF8STRC("</Data></Cell>"));
-						writer.WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
+						writer.WriteLine(CSTRP(lineBuff1, sptr));
 						break;
 					case DB::DBUtil::CT_UTF8Char:
 					case DB::DBUtil::CT_UTF16Char:
@@ -649,21 +649,21 @@ Bool DB::DBExporter::GenerateExcelXMLAllTables(NN<DB::ReadingDB> db, Text::CStri
 						lineBuff2[0] = 0;
 						r->GetStr(i, lineBuff2, 65536);
 						sptr = Text::StrConcatC(Text::XML::ToXMLText(Text::StrConcatC(lineBuff1, UTF8STRC("    <Cell><Data ss:Type=\"String\">")), lineBuff2), UTF8STRC("</Data></Cell>"));
-						writer.WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
+						writer.WriteLine(CSTRP(lineBuff1, sptr));
 						break;
 					}
 
 					i++;
 				}
-				writer.WriteLineC(UTF8STRC("   </Row>"));
+				writer.WriteLine(CSTR("   </Row>"));
 			}
 			
-			writer.WriteLineC(UTF8STRC("  </Table>"));
-			writer.WriteLineC(UTF8STRC(" </Worksheet>"));
+			writer.WriteLine(CSTR("  </Table>"));
+			writer.WriteLine(CSTR(" </Worksheet>"));
 			db->CloseReader(r);
 		}
 	}
-	writer.WriteLineC(UTF8STRC("</Workbook>"));
+	writer.WriteLine(CSTR("</Workbook>"));
 	names.FreeAll();
 
 	MemFree(lineBuff2);

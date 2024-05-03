@@ -21,8 +21,8 @@ namespace IO
 		StreamWriter(NN<IO::Stream> stm, UInt32 codePage);
 		virtual ~StreamWriter();
 
-		virtual Bool WriteStrC(const UTF8Char *str, UOSInt nChar);
-		virtual Bool WriteLineC(const UTF8Char *str, UOSInt nChar);
+		virtual Bool Write(Text::CStringNN str);
+		virtual Bool WriteLine(Text::CStringNN str);
 		virtual Bool WriteW(const WChar *str, UOSInt nChar);
 		virtual Bool WriteW(const WChar *str);
 		virtual Bool WriteLineW(const WChar *str, UOSInt nChar);

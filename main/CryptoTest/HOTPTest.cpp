@@ -18,18 +18,18 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	random.NextBytes(key, 10);
 	IO::ConsoleWriter console;
 	Text::StringBuilderUTF8 sb;
-	console.WriteLineC(UTF8STRC("HOTP key:"));
+	console.WriteLine(CSTR("HOTP key:"));
 	sb.AppendHexBuff(key, 10, 0, Text::LineBreakType::None);
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 	Text::TextBinEnc::Base32Enc b32;
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("B32: "));
 	b32.EncodeBin(sb, key, 10);
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 	UOSInt decLen = b32.DecodeBin(sb.ToString() + 5, sb.GetLength() - 5, decKey);
 	sb.ClearStr();
 	sb.AppendHexBuff(decKey, decLen, 0, Text::LineBreakType::None);
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 	console.WriteLine();
 	
 	Crypto::HOTP hotp(key, 10, 1);
@@ -42,7 +42,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		sb.AppendC(UTF8STRC(": "));
 		sptr = hotp.CodeString(sbuff, hotp.NextCode());
 		sb.AppendP(sbuff, sptr);
-		console.WriteLineC(sb.ToString(), sb.GetLength());
+		console.WriteLine(sb.ToCString());
 		i++;
 	}
 	sb.ClearStr();
@@ -50,6 +50,6 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Net::GoogleQRCode qrCode(200, 200, sb.ToCString());
 	sb.ClearStr();
 	qrCode.GetImageURL(sb);
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 	return 0;
 }

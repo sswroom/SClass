@@ -9,9 +9,9 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
 	Text::StringBuilderUTF8 sb;
-	console.WriteLineC(UTF8STRC("Start Execute"));
+	console.WriteLine(CSTR("Start Execute"));
 	Manage::Process::ExecuteProcess(CSTR("getprop"), sb);
-	console.WriteLineC(UTF8STRC("End Execute"));
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(CSTR("End Execute"));
+	console.WriteLine(sb.ToCString());
 	return 0;
 }

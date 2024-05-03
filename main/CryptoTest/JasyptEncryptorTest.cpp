@@ -22,11 +22,11 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Username = "));
 	sb.AppendC(decBuff, decSize);
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 	decSize = enc.DecryptB64(password, decBuff);
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Password = "));
 	sb.AppendC(decBuff, decSize);
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 	return 0;
 }

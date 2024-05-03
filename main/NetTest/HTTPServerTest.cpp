@@ -26,7 +26,7 @@ private:
 		NN<MyHandler> me = userObj.GetNN<MyHandler>();
 		Sync::MutexUsage mutUsage(me->sseMut);
 		me->sseConns.Remove(resp);
-		console->WriteLineC(UTF8STRC("Disconnected"));
+		console->WriteLine(CSTR("Disconnected"));
 	}
 
 	static Bool __stdcall SSEHandler(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me)
@@ -72,7 +72,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	{
 		if (!Text::StrToUInt16(argv[1], port))
 		{
-			console->WriteLineC(UTF8STRC("Error in parsing port number, use default port"));
+			console->WriteLine(CSTR("Error in parsing port number, use default port"));
 			port = 0;
 		}
 	}
@@ -92,14 +92,14 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	NN<Net::SSLEngine> nnssl;
 	if (!ssl.SetTo(nnssl))
 	{
-		console->WriteLineC(UTF8STRC("Error in initializing SSL engine"));
+		console->WriteLine(CSTR("Error in initializing SSL engine"));
 		succ = false;
 	}
 	else if (!nnssl->ServerSetCerts(CSTR("test.crt"), CSTR("test.key")))
 	{
-		console->WriteLineC(UTF8STRC("Error in initializing SSL"));
+		console->WriteLine(CSTR("Error in initializing SSL"));
 		sptr = nnssl->GetErrorDetail(sbuff);
-		console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+		console->WriteLine(CSTRP(sbuff, sptr));
 		succ = false;
 	}
 #else
@@ -111,7 +111,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Listening to port "));
 		sb.AppendU16(port);
-		console->WriteLineC(sb.ToString(), sb.GetLength());
+		console->WriteLine(sb.ToCString());
 		NN<Net::WebServer::WebStandardHandler> hdlr;
 		NN<MyHandler> myHdlr;
 		NEW_CLASSNN(hdlr, Net::WebServer::HTTPDirectoryHandler(CSTR("wwwroot"), true, 0, true));
@@ -124,7 +124,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		}
 		else
 		{
-			console->WriteLineC(UTF8STRC("Error in listening port"));
+			console->WriteLine(CSTR("Error in listening port"));
 		}
 		DEL_CLASS(svr);
 		hdlr.Delete();

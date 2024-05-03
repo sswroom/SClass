@@ -131,7 +131,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	NEW_CLASS(console, IO::ConsoleWriter());
 #endif
 	NEW_CLASSNN(sockf, Net::OSSocketFactory(true));
-	console->WriteLineC(UTF8STRC("PingMonitor Started"));
+	console->WriteLine(CSTR("PingMonitor Started"));
 	rawSock = sockf->CreateRAWSocket();
 	if (rawSock)
 	{
@@ -158,7 +158,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	}
 	else
 	{
-		console->WriteLineC(UTF8STRC("Error in creating RAW socket"));
+		console->WriteLine(CSTR("Error in creating RAW socket"));
 	}
 	sockf.Delete();
 	DEL_CLASS(console);

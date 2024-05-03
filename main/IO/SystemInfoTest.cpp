@@ -31,7 +31,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	{
 		sb.AppendC(UTF8STRC("Unknown"));
 	}
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Platform Name = "));
@@ -43,7 +43,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	{
 		sb.AppendC(UTF8STRC("Unknown"));
 	}
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 
 	i = 0;
 	while (cpuInfo->GetCPUTemp(i, &temp))
@@ -53,12 +53,12 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		sb.AppendUOSInt(i);
 		sb.AppendC(UTF8STRC(" = "));
 		sb.AppendDouble(temp);
-		console.WriteLineC(sb.ToString(), sb.GetLength());
+		console.WriteLine(sb.ToCString());
 		i++;
 	}
 	if (i == 0)
 	{
-		console.WriteLineC(UTF8STRC("Error in reading CPU temperature"));
+		console.WriteLine(CSTR("Error in reading CPU temperature"));
 	}
 	DEL_CLASS(cpuInfo);
 	DEL_CLASS(sysInfo);

@@ -405,7 +405,7 @@ void __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(NN<Sync::Thread> thre
 				sb.AppendUOSInt(maxLoInd * me->frequency / me->sampleCnt);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendUOSInt(maxHiInd * me->frequency / me->sampleCnt);
-				debugWriter.WriteLineCStr(sb.ToCString());
+				debugWriter.WriteLine(sb.ToCString());
 #endif
 
 				if (me->currTone != tone && tone != '?')

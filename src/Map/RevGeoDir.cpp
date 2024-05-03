@@ -30,9 +30,9 @@ Map::RevGeoDir::RevGeoDir(Text::CString cfgDir, UInt32 defLCID, NN<IO::Writer> e
 	{
 		if (Text::StrStartsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC("REVGEO_")))
 		{
-			errWriter->WriteStrC(UTF8STRC("Loading search file "));
-			errWriter->WriteStrC(sptr, (UOSInt)(sptr2 - sptr));
-			errWriter->WriteStrC(UTF8STRC("..."));
+			errWriter->Write(CSTR("Loading search file "));
+			errWriter->Write(CSTRP(sptr, sptr2));
+			errWriter->Write(CSTR("..."));
 			
 			Map::RevGeoCfg *revGeo;
 			NN<RevGeoFile> file;
@@ -51,7 +51,7 @@ Map::RevGeoDir::RevGeoDir(Text::CString cfgDir, UInt32 defLCID, NN<IO::Writer> e
 				file->lcid = 0;
 			}
 			this->files.Add(file);
-			errWriter->WriteLineC(UTF8STRC("Success"));
+			errWriter->WriteLine(CSTR("Success"));
 
 		}
 	}

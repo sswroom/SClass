@@ -22,7 +22,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		SSWR::SMonitor::SMonitorSvrCore core(console, Media::DrawEngineFactory::CreateDrawEngine());
 		if (!core.IsError())
 		{
-			console.WriteLineC(UTF8STRC("SMonitorSvr running"));
+			console.WriteLine(CSTR("SMonitorSvr running"));
 			progCtrl->WaitForExit(progCtrl);
 		}
 	}

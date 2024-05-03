@@ -75,7 +75,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 						sptr5 = cert->GetSubjectCN(sbuff5);
 						if (sptr5 == 0)
 						{
-							console.WriteLineC(UTF8STRC("Error in getting CN from ADFSCert.crt"));
+							console.WriteLine(CSTR("Error in getting CN from ADFSCert.crt"));
 						}
 						else
 						{
@@ -89,28 +89,28 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					}
 					else
 					{
-						console.WriteLineC(UTF8STRC("ADFSCert.crt is not a cert file"));
+						console.WriteLine(CSTR("ADFSCert.crt is not a cert file"));
 					}
 				}
 				else
 				{
-					console.WriteLineC(UTF8STRC("ADFSCert.crt is not a cert file"));
+					console.WriteLine(CSTR("ADFSCert.crt is not a cert file"));
 				}
 				DEL_CLASS(pobj);
 			}
 			else
 			{
-				console.WriteLineC(UTF8STRC("Error in parsing ADFSCert.crt"));
+				console.WriteLine(CSTR("Error in parsing ADFSCert.crt"));
 			}
 		}
 		else
 		{
-			console.WriteLineC(UTF8STRC("Error in loading ADFSCert.crt/ADFSCert.key file"));
+			console.WriteLine(CSTR("Error in loading ADFSCert.crt/ADFSCert.key file"));
 		}
 	}
 	else
 	{
-		console.WriteLineC(UTF8STRC("Error in initializing SSL Engine"));
+		console.WriteLine(CSTR("Error in initializing SSL Engine"));
 	}
 	if (initSucc)
 	{
@@ -129,13 +129,13 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		Net::WebServer::WebListener listener(sockf, ssl, logHdlr, PORTNUM, 120, 1, 4, CSTR("ADFSTest/1.0"), false, Net::WebServer::KeepAlive::Default, true);
 		if (listener.IsError())
 		{
-			console.WriteLineC(UTF8STRC("Error in listening to port " STR(PORTNUM)));
+			console.WriteLine(CSTR("Error in listening to port " STR(PORTNUM)));
 		}
 		else
 		{
-			console.WriteLineC(UTF8STRC("Listening to port " STR(PORTNUM) " (https)"));
+			console.WriteLine(CSTR("Listening to port " STR(PORTNUM) " (https)"));
 			progCtrl->WaitForExit(progCtrl);
-			console.WriteLineC(UTF8STRC("Server stopping"));
+			console.WriteLine(CSTR("Server stopping"));
 		}
 		logHdlr.Delete();
 		DEL_CLASS(svcHdlr);

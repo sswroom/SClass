@@ -22,7 +22,7 @@ void PingScan(UInt32 ip)
 	sb.AppendC(UTF8STRC("Scanning with interface ip "));
 	sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
 	sb.AppendP(sbuff, sptr);
-	console->WriteLineC(sb.ToString(), sb.GetLength());
+	console->WriteLine(sb.ToCString());
 	
 	if (scanner->Scan(ip))
 	{
@@ -43,14 +43,14 @@ void PingScan(UInt32 ip)
 			sb.AppendUTF8Char('\t');
 			const Net::MACInfo::MACEntry *macEntry = Net::MACInfo::GetMACInfoBuff(result->mac);
 			sb.AppendC(macEntry->name, macEntry->nameLen);
-			console->WriteLineC(sb.ToString(), sb.GetLength());
+			console->WriteLine(sb.ToCString());
 			i++;
 		}
 		console->WriteLine();
 	}
 	else
 	{
-		console->WriteLineC(UTF8STRC("Scan failed"));
+		console->WriteLine(CSTR("Scan failed"));
 	}
 	///////////////////////////
 }

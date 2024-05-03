@@ -579,7 +579,7 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(Data::Duration frameTime, UInt32 fr
 								sptr = Text::StrOSInt(sptr, pFieldStat.field3Cnt);
 								sptr = Text::StrConcatC(sptr, UTF8STRC("\t");
 								sptr = Text::StrOSInt(sptr, pFieldStat.field4Cnt);*/
-								this->debugLog->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+								this->debugLog->WriteLine(CSTRP(sbuff, sptr));
 							}
 #endif
 						}
@@ -1183,7 +1183,7 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(Data::Duration frameTime, UInt32 fr
 						sptr = Text::StrConcatC(sptr, UTF8STRC("Interlaced (No deinterlace)"));
 						break;
 					}
-					this->debugLog->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+					this->debugLog->WriteLine(CSTRP(sbuff, sptr));
 				}
 #endif
 			}

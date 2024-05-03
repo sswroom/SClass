@@ -344,7 +344,7 @@ Bool Net::WiFiLogFile::StoreFile(Text::CStringNN fileName)
 			{
 				sb.AppendHexBuff(log->ieBuff, log->ieLen, 0, Text::LineBreakType::None);
 			}
-			if (!writer.WriteLineC(sb.ToString(), sb.GetLength()))
+			if (!writer.WriteLine(sb.ToCString()))
 			{
 				succ = false;
 			}

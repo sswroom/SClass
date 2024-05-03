@@ -24,7 +24,7 @@ UInt32 __stdcall RecvThread(AnyType userObj)
 		if (buffSize > 0)
 		{
 			buff[buffSize] = 0;
-			console->WriteStrC(buff, buffSize);
+			console->Write(Text::CStringNN(buff, buffSize));
 		}
 	}
 	threadRunning = false;
@@ -42,16 +42,16 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 	if (argc != 3)
 	{
-		console->WriteStrC(UTF8STRC("Usage: "));
+		console->Write(CSTR("Usage: "));
 		if (argc >= 1)
 		{
-			console->WriteStr(Text::CString::FromPtr(argv[0]));
+			console->Write(Text::CStringNN::FromPtr(argv[0]));
 		}
 		else
 		{
-			console->WriteStrC(UTF8STRC("SerialTerminal"));
+			console->Write(CSTR("SerialTerminal"));
 		}
-		console->WriteLineC(UTF8STRC(" [PortNum] [BaudRate]"));
+		console->WriteLine(CSTR(" [PortNum] [BaudRate]"));
 	}
 	else
 	{
@@ -62,7 +62,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			NEW_CLASS(port, IO::SerialPort(portNum, baudRate, IO::SerialPort::PARITY_NONE, false));
 			if (port->IsError())
 			{
-				console->WriteLineC(UTF8STRC("Error in opening serial port"));
+				console->WriteLine(CSTR("Error in opening serial port"));
 			}
 			else
 			{
@@ -90,7 +90,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		}
 		else
 		{
-			console->WriteLineC(UTF8STRC("Parameter error"));
+			console->WriteLine(CSTR("Parameter error"));
 		}
 	}
 	DEL_CLASS(console);

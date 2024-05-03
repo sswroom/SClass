@@ -75,7 +75,7 @@ private:
 					sb.AppendC(UTF8STRC(")"));
 				}
 				mutUsage.EndUse();
-				console->WriteStrC(sb.ToString(), sb.GetLength());
+				console->Write(sb.ToCString());
 			}
 		}
 		me->threadRunning = false;
@@ -137,7 +137,7 @@ public:
 	}
 };
 
-Bool VerifyMD5(Text::CStringNN fileName, Bool flagCont)
+Bool VerifyMD5(Text::CStringNN fileName, Bool flagCont, Bool flagVerbose)
 {
 	if (fileName.EndsWithICase(UTF8STRC(".MD5")))
 	{
@@ -152,7 +152,7 @@ Bool VerifyMD5(Text::CStringNN fileName, Bool flagCont)
 		}
 		if (fileChk == 0)
 		{
-			console->WriteLineC(UTF8STRC("Error in parsing the file"));
+			console->WriteLine(CSTR("Error in parsing the file"));
 		}
 		else
 		{
@@ -165,18 +165,18 @@ Bool VerifyMD5(Text::CStringNN fileName, Bool flagCont)
 			j = fileChk->GetCount();
 			while (i < j)
 			{
-				if (!fileChk->CheckEntryHash(i, hash))
+				if (!fileChk->CheckEntryHash(i, hash, flagVerbose?console:0))
 				{
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("File validation failed: "));
 					sb.AppendOpt(fileChk->GetEntryName(i));
 					succ = false;
-					console->WriteLineC(sb.v, sb.leng);
+					console->WriteLine(sb.ToCString());
 					if (!flagCont)
 						break;
 					if (fileChk->GetEntryName(i).SetTo(entryName))
 					{
-						diffLog.WriteLineC(entryName->v, entryName->leng);
+						diffLog.WriteLine(entryName->ToCString());
 					}
 				}
 				i++;
@@ -188,7 +188,7 @@ Bool VerifyMD5(Text::CStringNN fileName, Bool flagCont)
 	}
 	else
 	{
-		console->WriteLineC(UTF8STRC("File is not MD5 file"));
+		console->WriteLine(CSTR("File is not MD5 file"));
 		return false;
 	}
 }
@@ -204,6 +204,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	if (cmdCnt >= 2)
 	{
 		Bool flagCont = false;
+		Bool flagVerbose = false;
 		Bool foundFiles = false;
 		ProgressHandler progress;
 		Text::CString md5File = CSTR_NULL;
@@ -222,6 +223,10 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				if (cmdLines[j][1] == 'c')
 				{
 					flagCont = true;
+				}
+				else if (cmdLines[j][1] == 'v')
+				{
+					flagVerbose = true;
 				}
 			}
 			else if (md5File.v == 0)
@@ -251,7 +256,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 								sb.ClearStr();
 								sb.AppendC(UTF8STRC("Checking "));
 								sb.AppendP(&sbuff[i + 1], sptr);
-								console->WriteLineC(sb.ToString(), sb.GetLength());
+								console->WriteLine(sb.ToCString());
 								if (!thisChk.Set(IO::FileCheck::CreateCheck(CSTRP(sbuff, sptr), Crypto::Hash::HashType::MD5, &progress, false)))
 								{
 									SDEL_CLASS(fileChk);
@@ -276,7 +281,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("Error in searching for path: "));
 						sb.AppendP(sbuff, sptr);
-						console->WriteLineC(sb.ToString(), sb.GetLength());
+						console->WriteLine(sb.ToCString());
 					}
 				}
 				else
@@ -302,18 +307,18 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		}
 		if (md5File.leng == 0)
 		{
-			console->WriteLineC(UTF8STRC("MD5 file missing"));
+			console->WriteLine(CSTR("MD5 file missing"));
 		}
 		else if (!foundFiles)
 		{
 			IO::Path::PathType pt = IO::Path::GetPathType(md5File.OrEmpty());
 			if (pt == IO::Path::PathType::Unknown)
 			{
-				console->WriteLineC(UTF8STRC("MD5 File not found"));
+				console->WriteLine(CSTR("MD5 File not found"));
 			}
 			else
 			{
-				if (VerifyMD5(md5File.OrEmpty(), flagCont))
+				if (VerifyMD5(md5File.OrEmpty(), flagCont, flagVerbose))
 				{
 					showHelp = false;
 				}
@@ -332,7 +337,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		}
 		else
 		{
-			console->WriteLineC(UTF8STRC("Error in calculating MD5"));
+			console->WriteLine(CSTR("Error in calculating MD5"));
 		}
 	}
 	else
@@ -341,13 +346,14 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		sptr = Text::StrUOSInt(sptr, cmdCnt);
 		*sptr++ = ')';
 		*sptr = 0;
-		console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+		console->WriteLine(CSTRP(sbuff, sptr));
 	}
 	if (showHelp)
 	{
-		console->WriteLineC(UTF8STRC("Usage: SMD5 [options] [MD5 file] (Base directory is same as MD5 file)"));
-		console->WriteLineC(UTF8STRC("       SMD5 [options] [MD5 file] [files to read]"));
-		console->WriteLineC(UTF8STRC("Options: -c   Continue on verify error"));
+		console->WriteLine(CSTR("Usage: SMD5 [options] [MD5 file] (Base directory is same as MD5 file)"));
+		console->WriteLine(CSTR("       SMD5 [options] [MD5 file] [files to read]"));
+		console->WriteLine(CSTR("Options: -c   Continue on verify error"));
+		console->WriteLine(CSTR("         -v   Verbose"));
 	}
 	DEL_CLASS(console);
 	return 0;

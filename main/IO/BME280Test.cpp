@@ -15,14 +15,14 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	NN<IO::I2CChannel> channel;
 	if (!channel.Set(IO::Device::BME280::CreateDefChannel(1)))
 	{
-		console.WriteLineC(UTF8STRC("I2C bus not found"));
+		console.WriteLine(CSTR("I2C bus not found"));
 	}
 	else
 	{
 		NEW_CLASS(bme280, IO::Device::BME280(channel, true));
 		if (bme280->IsError())
 		{
-			console.WriteLineC(UTF8STRC("BME280 not found"));
+			console.WriteLine(CSTR("BME280 not found"));
 		}
 		else
 		{
@@ -35,7 +35,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				Double pressure;
 				if (!bme280->ReadAll(temp, rh, pressure))
 				{
-					console.WriteLineC(UTF8STRC("Error in reading all"));
+					console.WriteLine(CSTR("Error in reading all"));
 				}
 				else
 				{
@@ -46,7 +46,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					sb.AppendDouble(rh);
 					sb.AppendC(UTF8STRC(", Pressure = "));
 					sb.AppendDouble(pressure);
-					console.WriteLineC(sb.ToString(), sb.GetLength());
+					console.WriteLine(sb.ToCString());
 				}
 				Sync::SimpleThread::Sleep(2000);
 			}

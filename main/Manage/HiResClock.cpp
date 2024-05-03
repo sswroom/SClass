@@ -26,12 +26,12 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 #else
 	sb.AppendC(UTF8STRC("Not defined"));
 #endif
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Finest time in HiResClock = "));
 	sb.AppendDouble(t);
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 
 	clk.Start();
 	i = 10000;
@@ -42,7 +42,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Time per request in HiResClock = "));
 	sb.AppendDouble(t / 10000.0);
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 
 #if defined(__linux__)
 	struct timeval tval;
@@ -57,7 +57,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Time per request in gettimeofday = "));
 	sb.AppendDouble(t / 10000.0);
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 
 	struct timespec ts;
 #if __cplusplus >= 201112L && !defined(__FreeBSD__) && defined(__USE_ISOC11)
@@ -71,7 +71,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Time per request in timespec_get = "));
 	sb.AppendDouble(t / 10000.0);
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 #endif
 
 	clk.Start();
@@ -84,7 +84,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Time per request in clock = "));
 	sb.AppendDouble(t / 10000.0);
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 
 	clk.Start();
 	i = 10000;
@@ -96,7 +96,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Time per request in clock_gettime(CLOCK_REALTIME) = "));
 	sb.AppendDouble(t / 10000.0);
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 
 	clk.Start();
 	i = 10000;
@@ -108,7 +108,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Time per request in clock_gettime(CLOCK_MONOTONIC) = "));
 	sb.AppendDouble(t / 10000.0);
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 #endif
 	return 0;
 }

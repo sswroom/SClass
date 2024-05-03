@@ -11,16 +11,16 @@ Text::StringBuilderWriter::~StringBuilderWriter()
 {
 }
 
-Bool Text::StringBuilderWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
+Bool Text::StringBuilderWriter::Write(Text::CStringNN str)
 {
-	this->sb->AppendC(str, nChar);
+	this->sb->Append(str);
 	return true;
 }
 
-Bool Text::StringBuilderWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
+Bool Text::StringBuilderWriter::WriteLine(Text::CStringNN str)
 {
-	this->sb->AppendC(str, nChar);
-	this->sb->AppendC(UTF8STRC("\r\n"));
+	this->sb->Append(str);
+	this->sb->Append(CSTR("\r\n"));
 	return true;
 }
 

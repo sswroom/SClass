@@ -78,7 +78,7 @@ Bool Exporter::MD5Exporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		if (fchk->GetEntryName(i).SetTo(s))
 			sptr = s->ConcatTo(sptr);
 		Text::StrReplace(sptr2, '/', '\\');
-		writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+		writer.WriteLine(CSTRP(sbuff, sptr));
 		i++;
 	}
 	return true;

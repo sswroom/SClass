@@ -1197,7 +1197,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 	}
 	if (cfg == 0)
 	{
-		writer->WriteLineC(UTF8STRC("Config file not found"));
+		writer->WriteLine(CSTR("Config file not found"));
 	}
 	else
 	{
@@ -1222,7 +1222,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 		}
 		else
 		{
-			writer->WriteLineC(UTF8STRC("NotifyPwd not found"));
+			writer->WriteLine(CSTR("NotifyPwd not found"));
 			this->initErr = true;
 		}
 		if (cfg->GetValue(CSTR("DataDir")).SetTo(s))
@@ -1246,7 +1246,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 			NEW_CLASS(this->dbMut, Sync::Mutex());
 			if (this->db == 0)
 			{
-				writer->WriteLineC(UTF8STRC("Error in connecting to mysql database"));
+				writer->WriteLine(CSTR("Error in connecting to mysql database"));
 			}
 			else
 			{
@@ -1261,7 +1261,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 				NEW_CLASS(this->dbMut, Sync::Mutex());
 				if (this->db == 0)
 				{
-					writer->WriteLineC(UTF8STRC("Error in connecting to odbc database"));
+					writer->WriteLine(CSTR("Error in connecting to odbc database"));
 				}
 				else
 				{
@@ -1270,7 +1270,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 			}
 			else
 			{
-				writer->WriteLineC(UTF8STRC("Config DSN/MySQLServer not found"));
+				writer->WriteLine(CSTR("Config DSN/MySQLServer not found"));
 			}
 		}
 
@@ -1318,7 +1318,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 						DEL_CLASS(this->listener);
 						this->listener = 0;
 						this->initErr = true;
-						writer->WriteLineC(UTF8STRC("Error in listening web port"));
+						writer->WriteLine(CSTR("Error in listening web port"));
 					}
 					else
 					{
@@ -1329,7 +1329,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 							NEW_CLASS(this->notifyUDP, Net::UDPServer(this->sockf, 0, port, CSTR_NULL, OnNotifyUDPPacket, this, this->log, CSTR("Not: "), 2, false));
 							if (this->notifyUDP->IsError())
 							{
-								writer->WriteLineC(UTF8STRC("Error in listening web(notify) port"));
+								writer->WriteLine(CSTR("Error in listening web(notify) port"));
 								DEL_CLASS(this->notifyUDP);
 								this->notifyUDP = 0;
 							}
@@ -1338,17 +1338,17 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 				}
 				else
 				{
-					writer->WriteLineC(UTF8STRC("Config WebPort invalid"));
+					writer->WriteLine(CSTR("Config WebPort invalid"));
 				}
 			}
 			else
 			{
-				writer->WriteLineC(UTF8STRC("Config HTTPFiles not valid"));
+				writer->WriteLine(CSTR("Config HTTPFiles not valid"));
 			}
 		}
 		else
 		{
-			writer->WriteLineC(UTF8STRC("Config WebPort not found"));
+			writer->WriteLine(CSTR("Config WebPort not found"));
 		}
 
 		if (cfg->GetValue(CSTR("ClientPort")).SetTo(s))
@@ -1362,17 +1362,17 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 					DEL_CLASS(this->cliSvr);
 					this->cliSvr = 0;
 					this->initErr = true;
-					writer->WriteLineC(UTF8STRC("Error in listening client port"));
+					writer->WriteLine(CSTR("Error in listening client port"));
 				}
 			}
 			else
 			{
-				writer->WriteLineC(UTF8STRC("Config ClientPort invalid"));
+				writer->WriteLine(CSTR("Config ClientPort invalid"));
 			}
 		}
 		else
 		{
-			writer->WriteLineC(UTF8STRC("Config ClientPort not found"));
+			writer->WriteLine(CSTR("Config ClientPort not found"));
 		}
 
 		if (cfg->GetValue(CSTR("DataUDPPort")).SetTo(s))
@@ -1387,17 +1387,17 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(NN<IO::Writer> writer, NN<Media
 				{
 					DEL_CLASS(this->dataUDP);
 					this->dataUDP = 0;
-					writer->WriteLineC(UTF8STRC("Error in listening data UDP port"));
+					writer->WriteLine(CSTR("Error in listening data UDP port"));
 				}
 			}
 			else
 			{
-				writer->WriteLineC(UTF8STRC("Config DataUDPPort invalid"));
+				writer->WriteLine(CSTR("Config DataUDPPort invalid"));
 			}
 		}
 		else
 		{
-			writer->WriteLineC(UTF8STRC("Config DataUDPPort not found"));
+			writer->WriteLine(CSTR("Config DataUDPPort not found"));
 		}
 
 		DEL_CLASS(cfg);

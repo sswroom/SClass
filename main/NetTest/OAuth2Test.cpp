@@ -18,13 +18,13 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	NEW_CLASS(listener, Net::WebServer::WebListener(sockf, 0, hdlr, 8889, 30, 1, 4, CSTR("OAuthTest/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (!listener->IsError())
 	{
-		console.WriteLineC(UTF8STRC("OAuth2 Test running at port 8889"));
+		console.WriteLine(CSTR("OAuth2 Test running at port 8889"));
 		progCtrl->WaitForExit(progCtrl);
-		console.WriteLineC(UTF8STRC("OAuth2 Test is stopping"));
+		console.WriteLine(CSTR("OAuth2 Test is stopping"));
 	}
 	else
 	{
-		console.WriteLineC(UTF8STRC("Error in listening to port 8889"));
+		console.WriteLine(CSTR("Error in listening to port 8889"));
 	}
 	DEL_CLASS(listener);
 	hdlr.Delete();

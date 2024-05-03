@@ -87,18 +87,18 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 	sptr = Text::XML::ToAttrText(sbuff2, sbuff);
 	sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
 	sb.AppendC(UTF8STRC("?>"));
-	writer.WriteLineC(sb.ToString(), sb.GetLength());
+	writer.WriteLine(sb.ToCString());
 
-	writer.WriteLineC(UTF8STRC("<?mso-application progid=\"Excel.Sheet\"?>"));
-	writer.WriteLineC(UTF8STRC("<Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\""));
-	writer.WriteLineC(UTF8STRC(" xmlns:o=\"urn:schemas-microsoft-com:office:office\""));
-	writer.WriteLineC(UTF8STRC(" xmlns:x=\"urn:schemas-microsoft-com:office:excel\""));
-	writer.WriteLineC(UTF8STRC(" xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\""));
-	writer.WriteLineC(UTF8STRC(" xmlns:html=\"http://www.w3.org/TR/REC-html40\">"));
+	writer.WriteLine(CSTR("<?mso-application progid=\"Excel.Sheet\"?>"));
+	writer.WriteLine(CSTR("<Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\""));
+	writer.WriteLine(CSTR(" xmlns:o=\"urn:schemas-microsoft-com:office:office\""));
+	writer.WriteLine(CSTR(" xmlns:x=\"urn:schemas-microsoft-com:office:excel\""));
+	writer.WriteLine(CSTR(" xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\""));
+	writer.WriteLine(CSTR(" xmlns:html=\"http://www.w3.org/TR/REC-html40\">"));
 
 	if (wb->HasInfo())
 	{
-		writer.WriteLineC(UTF8STRC(" <DocumentProperties xmlns=\"urn:schemas-microsoft-com:office:office\">"));
+		writer.WriteLine(CSTR(" <DocumentProperties xmlns=\"urn:schemas-microsoft-com:office:office\">"));
 		text = wb->GetAuthor();
 		if (text)
 		{
@@ -108,7 +108,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 			sb.Append(s);
 			sb.AppendC(UTF8STRC("</Author>"));
 			s->Release();
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLine(sb.ToCString());
 		}
 		text = wb->GetLastAuthor();
 		if (text)
@@ -119,7 +119,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 			sb.Append(s);
 			sb.AppendC(UTF8STRC("</LastAuthor>"));
 			s->Release();
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLine(sb.ToCString());
 		}
 		dt = wb->GetCreateTime();
 		if (dt)
@@ -129,7 +129,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 			sb.AppendC(UTF8STRC("  <Created>"));
 			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			sb.AppendC(UTF8STRC("</Created>"));
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLine(sb.ToCString());
 		}
 		dt = wb->GetModifyTime();
 		if (dt)
@@ -139,7 +139,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 			sb.AppendC(UTF8STRC("  <LastSaved>"));
 			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			sb.AppendC(UTF8STRC("</LastSaved>"));
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLine(sb.ToCString());
 		}
 		text = wb->GetCompany();
 		if (text)
@@ -150,7 +150,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 			sb.Append(s);
 			sb.AppendC(UTF8STRC("</Company>"));
 			s->Release();
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLine(sb.ToCString());
 		}
 		ver = wb->GetVersion();
 		if (ver)
@@ -159,21 +159,21 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 			sb.AppendC(UTF8STRC("  <Version>"));
 			sb.AppendDouble(ver);
 			sb.AppendC(UTF8STRC("</Version>"));
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLine(sb.ToCString());
 		}
-		writer.WriteLineC(UTF8STRC(" </DocumentProperties>"));
+		writer.WriteLine(CSTR(" </DocumentProperties>"));
 	}
 
 	if (wb->HasWindowInfo() != 0)
 	{
-		writer.WriteLineC(UTF8STRC(" <ExcelWorkbook xmlns=\"urn:schemas-microsoft-com:office:excel\">"));
+		writer.WriteLine(CSTR(" <ExcelWorkbook xmlns=\"urn:schemas-microsoft-com:office:excel\">"));
 		if (wb->GetWindowHeight() != 0)
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("  <WindowHeight>"));
 			sb.AppendI32(wb->GetWindowHeight());
 			sb.AppendC(UTF8STRC("</WindowHeight>"));
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLine(sb.ToCString());
 		}
 		if (wb->GetWindowWidth() != 0)
 		{
@@ -181,7 +181,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 			sb.AppendC(UTF8STRC("  <WindowWidth>"));
 			sb.AppendI32(wb->GetWindowWidth());
 			sb.AppendC(UTF8STRC("</WindowWidth>"));
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLine(sb.ToCString());
 		}
 		if (wb->GetWindowTopX() != 0)
 		{
@@ -189,7 +189,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 			sb.AppendC(UTF8STRC("  <WindowTopX>"));
 			sb.AppendI32(wb->GetWindowTopX());
 			sb.AppendC(UTF8STRC("</WindowTopX>"));
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLine(sb.ToCString());
 		}
 		if (wb->GetWindowTopY() != 0)
 		{
@@ -197,7 +197,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 			sb.AppendC(UTF8STRC("  <WindowTopY>"));
 			sb.AppendI32(wb->GetWindowTopY());
 			sb.AppendC(UTF8STRC("</WindowTopY>"));
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLine(sb.ToCString());
 		}
 		if (wb->GetActiveSheet() != 0)
 		{
@@ -205,9 +205,9 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 			sb.AppendC(UTF8STRC("  <ActiveSheet>"));
 			sb.AppendUOSInt(wb->GetActiveSheet());
 			sb.AppendC(UTF8STRC("</ActiveSheet>"));
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLine(sb.ToCString());
 		}
-		writer.WriteLineC(UTF8STRC(" </ExcelWorkbook>"));
+		writer.WriteLine(CSTR(" </ExcelWorkbook>"));
 	}
 
 	wb->GetPalette(pal);
@@ -222,33 +222,33 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 			if (!found)
 			{
 				found = true;
-				writer.WriteLineC(UTF8STRC(" <OfficeDocumentSettings xmlns=\"urn:schemas-microsoft-com:office:office\">"));
-				writer.WriteLineC(UTF8STRC("  <Colors>"));
+				writer.WriteLine(CSTR(" <OfficeDocumentSettings xmlns=\"urn:schemas-microsoft-com:office:office\">"));
+				writer.WriteLine(CSTR("  <Colors>"));
 			}
-			writer.WriteLineC(UTF8STRC("   <Color>"));
+			writer.WriteLine(CSTR("   <Color>"));
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("    <Index>"));
 			sb.AppendUOSInt(k);
 			sb.AppendC(UTF8STRC("</Index>"));
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLine(sb.ToCString());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("    <RGB>#"));
 			sb.AppendHex24(pal[k]);
 			sb.AppendC(UTF8STRC("</RGB>"));
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
-			writer.WriteLineC(UTF8STRC("   </Color>"));
+			writer.WriteLine(sb.ToCString());
+			writer.WriteLine(CSTR("   </Color>"));
 		}
 		k++;
 	}
 	if (found)
 	{
-		writer.WriteLineC(UTF8STRC("  </Colors>"));
-		writer.WriteLineC(UTF8STRC(" </OfficeDocumentSettings>"));
+		writer.WriteLine(CSTR("  </Colors>"));
+		writer.WriteLine(CSTR(" </OfficeDocumentSettings>"));
 	}
 
 	if (wb->HasCellStyle())
 	{
-		writer.WriteLineC(UTF8STRC(" <Styles>"));
+		writer.WriteLine(CSTR(" <Styles>"));
 		k = 0;
 		l = wb->GetStyleCount();
 		while (k < l)
@@ -272,7 +272,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 				sb.Append(s);
 				s->Release();
 				sb.AppendC(UTF8STRC(">"));
-				writer.WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLine(sb.ToCString());
 
 				if (style->GetHAlign() != Text::HAlignment::Unknown || (style->GetVAlign() != Text::VAlignment::Center && style->GetVAlign() != Text::VAlignment::Unknown) || style->GetWordWrap())
 				{
@@ -322,7 +322,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 						sb.AppendC(UTF8STRC(" ss:WrapText=\"1\""));
 					}
 					sb.AppendC(UTF8STRC("/>"));
-					writer.WriteLineC(sb.ToString(), sb.GetLength());
+					writer.WriteLine(sb.ToCString());
 				}
 				if (style->GetBorderLeft().borderType != Text::SpreadSheet::BorderType::None ||
 					style->GetBorderTop().borderType != Text::SpreadSheet::BorderType::None ||
@@ -330,7 +330,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 					style->GetBorderBottom().borderType != Text::SpreadSheet::BorderType::None)
 				{
 					Text::SpreadSheet::CellStyle::BorderStyle border;
-					writer.WriteLineC(UTF8STRC("   <Borders>"));
+					writer.WriteLine(CSTR("   <Borders>"));
 					border = style->GetBorderBottom();
 					if (border.borderType != Text::SpreadSheet::BorderType::None)
 					{
@@ -351,7 +351,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 					{
 						WriteBorderStyle(writer, (const UTF8Char*)"Top", border);
 					}
-					writer.WriteLineC(UTF8STRC("   </Borders>"));
+					writer.WriteLine(CSTR("   </Borders>"));
 				}
 
 				if ((style->GetFillColor() & 0xffffff) != 0xffffff)
@@ -361,7 +361,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 					sptr = Text::StrHexVal32(sbuff, style->GetFillColor());
 					sb.AppendC(&sbuff[2], (UOSInt)(sptr - &sbuff[2]));
 					sb.AppendC(UTF8STRC("\" ss:Pattern=\"Solid\"/>"));
-					writer.WriteLineC(sb.ToString(), sb.GetLength());
+					writer.WriteLine(sb.ToCString());
 				}
 
 				NN<Text::SpreadSheet::WorkbookFont> font;
@@ -390,7 +390,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 						sb.AppendC(UTF8STRC(" ss:Bold=\"1\""));
 					}
 					sb.AppendC(UTF8STRC("/>"));
-					writer.WriteLineC(sb.ToString(), sb.GetLength());
+					writer.WriteLine(sb.ToCString());
 				}
 
 				if (style->GetDataFormat().SetTo(s))
@@ -401,14 +401,14 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 					sb.Append(s);
 					s->Release();
 					sb.AppendC(UTF8STRC("/>"));
-					writer.WriteLineC(sb.ToString(), sb.GetLength());
+					writer.WriteLine(sb.ToCString());
 				}
 
-				writer.WriteLineC(UTF8STRC("  </Style>"));
+				writer.WriteLine(CSTR("  </Style>"));
 			}
 			k++;
 		}
-		writer.WriteLineC(UTF8STRC(" </Styles>"));
+		writer.WriteLine(CSTR(" </Styles>"));
 	}
 
 	Data::ArrayIterator<NN<Text::SpreadSheet::Worksheet>> it = wb->Iterator();
@@ -421,7 +421,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 		sb.Append(s);
 		sb.AppendC(UTF8STRC(">"));
 		s->Release();
-		writer.WriteLineC(sb.ToString(), sb.GetLength());
+		writer.WriteLine(sb.ToCString());
 
 		if (ws->GetCount() > 0)
 		{
@@ -429,7 +429,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 			UOSInt lastDispCol;
 			Text::SpreadSheet::Worksheet::RowData *row;
 			Text::SpreadSheet::Worksheet::CellData *cell;
-			writer.WriteLineC(UTF8STRC("  <Table>"));
+			writer.WriteLine(CSTR("  <Table>"));
 
 			Double lastColWidth = -1;
 			UOSInt lastColIndex = INVALID_INDEX;
@@ -466,7 +466,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 							needIndex = false;
 						}
 						sb.AppendC(UTF8STRC("/>"));
-						writer.WriteLineC(sb.ToString(), sb.GetLength());
+						writer.WriteLine(sb.ToCString());
 					}
 					else if (k == 1)
 					{
@@ -497,7 +497,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 					sb.AppendC(UTF8STRC("\""));
 				}
 				sb.AppendC(UTF8STRC("/>"));
-				writer.WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLine(sb.ToCString());
 			}
 
 			k = 0;
@@ -545,12 +545,12 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 					if (row->cells->GetCount() == 0)
 					{
 						sb.AppendC(UTF8STRC("/>"));
-						writer.WriteLineC(sb.ToString(), sb.GetLength());
+						writer.WriteLine(sb.ToCString());
 					}
 					else
 					{
 						sb.AppendC(UTF8STRC(">"));
-						writer.WriteLineC(sb.ToString(), sb.GetLength());
+						writer.WriteLine(sb.ToCString());
 
 						lastDispCol = INVALID_INDEX;
 						m = 0;
@@ -641,21 +641,21 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 									}
 								}
 								sb.AppendC(UTF8STRC("</Cell>"));
-								writer.WriteLineC(sb.ToString(), sb.GetLength());
+								writer.WriteLine(sb.ToCString());
 							}
 							m++;
 						}
 
-						writer.WriteLineC(UTF8STRC("   </Row>"));
+						writer.WriteLine(CSTR("   </Row>"));
 					}
 				}
 				k++;
 			}
-			writer.WriteLineC(UTF8STRC("  </Table>"));
+			writer.WriteLine(CSTR("  </Table>"));
 		}
 		else
 		{
-			writer.WriteLineC(UTF8STRC("  <Table x:FullColumns=\"1\" x:FullRows=\"1\"/>"));
+			writer.WriteLine(CSTR("  <Table x:FullColumns=\"1\" x:FullRows=\"1\"/>"));
 		}
 
 		found = false;
@@ -663,17 +663,17 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 		{
 			if (!found)
 			{
-				writer.WriteLineC(UTF8STRC("  <WorksheetOptions xmlns=\"urn:schemas-microsoft-com:office:excel\">"));
+				writer.WriteLine(CSTR("  <WorksheetOptions xmlns=\"urn:schemas-microsoft-com:office:excel\">"));
 				found = true;
 			}
-			writer.WriteLineC(UTF8STRC("   <PageSetup>"));
+			writer.WriteLine(CSTR("   <PageSetup>"));
 			if (ws->GetMarginHeader() != 1.3)
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("    <Header x:Margin=\""));
 				sb.AppendDouble(ws->GetMarginHeader());
 				sb.AppendC(UTF8STRC("\"/>"));
-				writer.WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLine(sb.ToCString());
 			}
 			if (ws->GetMarginFooter() != 1.3)
 			{
@@ -681,7 +681,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 				sb.AppendC(UTF8STRC("    <Footer x:Margin=\""));
 				sb.AppendDouble(ws->GetMarginFooter());
 				sb.AppendC(UTF8STRC("\"/>"));
-				writer.WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLine(sb.ToCString());
 			}
 			if (ws->GetMarginTop() != 2.5 || ws->GetMarginBottom() != 2.5 || ws->GetMarginLeft() != 2.0 || ws->GetMarginBottom() != 2.0)
 			{
@@ -695,115 +695,115 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 				sb.AppendC(UTF8STRC("\" x:Top=\""));
 				sb.AppendDouble(ws->GetMarginTop());
 				sb.AppendC(UTF8STRC("\"/>"));
-				writer.WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLine(sb.ToCString());
 
 			}
-			writer.WriteLineC(UTF8STRC("   </PageSetup>"));
+			writer.WriteLine(CSTR("   </PageSetup>"));
 		}
 		if ((v = ws->GetZoom()) != 0)
 		{
 			if (!found)
 			{
-				writer.WriteLineC(UTF8STRC("  <WorksheetOptions xmlns=\"urn:schemas-microsoft-com:office:excel\">"));
+				writer.WriteLine(CSTR("  <WorksheetOptions xmlns=\"urn:schemas-microsoft-com:office:excel\">"));
 				found = true;
 			}
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("   <Zoom>"));
 			sb.AppendUOSInt(v);
 			sb.AppendC(UTF8STRC("</Zoom>"));
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLine(sb.ToCString());
 		}
 		if ((v = ws->GetFreezeHori()) != 0)
 		{
 			if (!found)
 			{
-				writer.WriteLineC(UTF8STRC("  <WorksheetOptions xmlns=\"urn:schemas-microsoft-com:office:excel\">"));
+				writer.WriteLine(CSTR("  <WorksheetOptions xmlns=\"urn:schemas-microsoft-com:office:excel\">"));
 				found = true;
 			}
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("   <SplitVertical>"));
 			sb.AppendU32(v);
 			sb.AppendC(UTF8STRC("</SplitVertical>"));
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLine(sb.ToCString());
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("   <LeftColumnRightPane>"));
 			sb.AppendU32(v);
 			sb.AppendC(UTF8STRC("</LeftColumnRightPane>"));
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLine(sb.ToCString());
 		}
 		if ((v = ws->GetFreezeVert()) != 0)
 		{
 			if (!found)
 			{
-				writer.WriteLineC(UTF8STRC("  <WorksheetOptions xmlns=\"urn:schemas-microsoft-com:office:excel\">"));
+				writer.WriteLine(CSTR("  <WorksheetOptions xmlns=\"urn:schemas-microsoft-com:office:excel\">"));
 				found = true;
 			}
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("   <SplitHorizontal>"));
 			sb.AppendU32(v);
 			sb.AppendC(UTF8STRC("</SplitHorizontal>"));
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLine(sb.ToCString());
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("   <TopRowBottomPane>"));
 			sb.AppendU32(v);
 			sb.AppendC(UTF8STRC("</TopRowBottomPane>"));
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLine(sb.ToCString());
 		}
 		v = ws->GetOptions();
 		if (v & 0x8)
 		{
 			if (!found)
 			{
-				writer.WriteLineC(UTF8STRC("  <WorksheetOptions xmlns=\"urn:schemas-microsoft-com:office:excel\">"));
+				writer.WriteLine(CSTR("  <WorksheetOptions xmlns=\"urn:schemas-microsoft-com:office:excel\">"));
 				found = true;
 			}
-			writer.WriteLineC(UTF8STRC("   <FreezePanes/>"));
+			writer.WriteLine(CSTR("   <FreezePanes/>"));
 		}
 		if (v & 0x100)
 		{
 			if (!found)
 			{
-				writer.WriteLineC(UTF8STRC("  <WorksheetOptions xmlns=\"urn:schemas-microsoft-com:office:excel\">"));
+				writer.WriteLine(CSTR("  <WorksheetOptions xmlns=\"urn:schemas-microsoft-com:office:excel\">"));
 				found = true;
 			}
-			writer.WriteLineC(UTF8STRC("   <FrozenNoSplit/>"));
+			writer.WriteLine(CSTR("   <FrozenNoSplit/>"));
 		}
 		if (v & 0x200)
 		{
 			if (!found)
 			{
-				writer.WriteLineC(UTF8STRC("  <WorksheetOptions xmlns=\"urn:schemas-microsoft-com:office:excel\">"));
+				writer.WriteLine(CSTR("  <WorksheetOptions xmlns=\"urn:schemas-microsoft-com:office:excel\">"));
 				found = true;
 			}
-			writer.WriteLineC(UTF8STRC("   <Selected/>"));
+			writer.WriteLine(CSTR("   <Selected/>"));
 		}
 		if ((v & 0x2) == 0)
 		{
 			if (!found)
 			{
-				writer.WriteLineC(UTF8STRC("  <WorksheetOptions xmlns=\"urn:schemas-microsoft-com:office:excel\">"));
+				writer.WriteLine(CSTR("  <WorksheetOptions xmlns=\"urn:schemas-microsoft-com:office:excel\">"));
 				found = true;
 			}
-			writer.WriteLineC(UTF8STRC("   <DoNotDisplayGridlines/>"));
+			writer.WriteLine(CSTR("   <DoNotDisplayGridlines/>"));
 		}
 		if ((v & 0x80) == 0)
 		{
 			if (!found)
 			{
-				writer.WriteLineC(UTF8STRC("  <WorksheetOptions xmlns=\"urn:schemas-microsoft-com:office:excel\">"));
+				writer.WriteLine(CSTR("  <WorksheetOptions xmlns=\"urn:schemas-microsoft-com:office:excel\">"));
 				found = true;
 			}
-			writer.WriteLineC(UTF8STRC("   <DoNotDisplayOutline/>"));
+			writer.WriteLine(CSTR("   <DoNotDisplayOutline/>"));
 		}
 		if (found)
 		{
-			writer.WriteLineC(UTF8STRC("  </WorksheetOptions>"));
+			writer.WriteLine(CSTR("  </WorksheetOptions>"));
 		}
-		writer.WriteLineC(UTF8STRC(" </Worksheet>"));
+		writer.WriteLine(CSTR(" </Worksheet>"));
 	}
-	writer.WriteLineC(UTF8STRC("</Workbook>"));
+	writer.WriteLine(CSTR("</Workbook>"));
 	return true;
 }
 
@@ -878,7 +878,7 @@ void Exporter::ExcelXMLExporter::WriteBorderStyle(NN<IO::Writer> writer, const U
 
 	if (border.borderColor & 0xffffff)
 	{
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLine(sb.ToCString());
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("     ss:Color=\"#"));
 		sptr = Text::StrHexVal32(sbuff, border.borderColor);
@@ -886,5 +886,5 @@ void Exporter::ExcelXMLExporter::WriteBorderStyle(NN<IO::Writer> writer, const U
 		sb.AppendC(UTF8STRC("\""));
 	}
 	sb.AppendC(UTF8STRC("/>"));
-	writer->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLine(sb.ToCString());
 }

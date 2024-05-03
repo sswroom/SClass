@@ -12,7 +12,7 @@ UOSInt Test::TestModem::ListPorts(IO::Writer *writer)
 	UOSInt j;
 	Data::ArrayList<IO::SerialPort::SerialPortType> portTypes;
 	IO::SerialPort::GetAvailablePorts(ports, &portTypes);
-	writer->WriteLineC(UTF8STRC("Available Serial Ports:"));
+	writer->WriteLine(CSTR("Available Serial Ports:"));
 	i = 0;
 	j = ports.GetCount();
 	while (i < j)
@@ -22,7 +22,7 @@ UOSInt Test::TestModem::ListPorts(IO::Writer *writer)
 		sb.AppendUOSInt(ports.GetItem(i));
 		sb.AppendC(UTF8STRC(" - "));
 		sb.Append(IO::SerialPort::GetPortTypeName(portTypes.GetItem(i)));
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLine(sb.ToCString());
 		i++;
 	}
 	return ports.GetItem(0);
@@ -41,11 +41,11 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Manufacturer: "));
 		sb.AppendP(sbuff, sptr);
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLine(sb.ToCString());
 	}
 	else
 	{
-		writer->WriteLineC(UTF8STRC("Manufacturer: Error in getting the value"));
+		writer->WriteLine(CSTR("Manufacturer: Error in getting the value"));
 	}
 
 	if ((sptr = modem->GSMGetModelIdent(sbuff)) != 0)
@@ -53,11 +53,11 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Model: "));
 		sb.AppendP(sbuff, sptr);
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLine(sb.ToCString());
 	}
 	else
 	{
-		writer->WriteLineC(UTF8STRC("Model: Error in getting the value"));
+		writer->WriteLine(CSTR("Model: Error in getting the value"));
 	}
 
 	if ((sptr = modem->GSMGetModemVer(sbuff)) != 0)
@@ -65,11 +65,11 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Modem Ver: "));
 		sb.AppendP(sbuff, sptr);
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLine(sb.ToCString());
 	}
 	else
 	{
-		writer->WriteLineC(UTF8STRC("Modem Ver: Error in getting the value"));
+		writer->WriteLine(CSTR("Modem Ver: Error in getting the value"));
 	}
 
 	if ((sptr = modem->GSMGetIMEI(sbuff)) != 0)
@@ -77,11 +77,11 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("IMEI: "));
 		sb.AppendP(sbuff, sptr);
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLine(sb.ToCString());
 	}
 	else
 	{
-		writer->WriteLineC(UTF8STRC("IMEI: Error in getting the value"));
+		writer->WriteLine(CSTR("IMEI: Error in getting the value"));
 	}
 
 	if ((sptr = modem->GSMGetTECharset(sbuff)) != 0)
@@ -89,11 +89,11 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("TE Charset: "));
 		sb.AppendP(sbuff, sptr);
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLine(sb.ToCString());
 	}
 	else
 	{
-		writer->WriteLineC(UTF8STRC("TE Charset: Error in getting the value"));
+		writer->WriteLine(CSTR("TE Charset: Error in getting the value"));
 	}
 
 	if ((sptr = modem->GSMGetIMSI(sbuff)) != 0)
@@ -101,11 +101,11 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("IMSI: "));
 		sb.AppendP(sbuff, sptr);
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLine(sb.ToCString());
 	}
 	else
 	{
-		writer->WriteLineC(UTF8STRC("IMSI: Error in getting the value"));
+		writer->WriteLine(CSTR("IMSI: Error in getting the value"));
 	}
 
 	if ((sptr = modem->GSMGetCurrOperator(sbuff)) != 0)
@@ -113,11 +113,11 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Operator: "));
 		sb.AppendP(sbuff, sptr);
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLine(sb.ToCString());
 	}
 	else
 	{
-		writer->WriteLineC(UTF8STRC("Operator: Error in getting the value"));
+		writer->WriteLine(CSTR("Operator: Error in getting the value"));
 	}
 
 	if ((sptr = modem->GSMGetCurrPLMN(sbuff)) != 0)
@@ -125,11 +125,11 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("PLMN: "));
 		sb.AppendP(sbuff, sptr);
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLine(sb.ToCString());
 	}
 	else
 	{
-		writer->WriteLineC(UTF8STRC("PLMN: Error in getting the value"));
+		writer->WriteLine(CSTR("PLMN: Error in getting the value"));
 	}
 
 	if (!quick)
@@ -139,7 +139,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 		if (modem->GSMGetAllowedOperators(operList))
 		{
 
-			writer->WriteLineC(UTF8STRC("Operator List:"));
+			writer->WriteLine(CSTR("Operator List:"));
 			i = 0;
 			j = operList.GetCount();
 			while (i < j)
@@ -156,21 +156,21 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 				sb.Append(IO::GSMModemController::OperStatusGetName(oper->status));
 				sb.AppendC(UTF8STRC(", "));
 				sb.AppendI32(oper->netact);
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLine(sb.ToCString());
 				i++;
 			}
 			modem->GSMFreeOperators(operList);
 		}
 		else
 		{
-			writer->WriteLineC(UTF8STRC("Operator List: Error in getting the value"));
+			writer->WriteLine(CSTR("Operator List: Error in getting the value"));
 		}
 	}
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("SIM Status: "));
 	sb.Append(IO::GSMModemController::SIMStatusGetName(modem->GSMGetSIMStatus()));
-	writer->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLine(sb.ToCString());
 
 	IO::GSMModemController::RSSI rssi;
 	IO::GSMModemController::BER ber;
@@ -183,11 +183,11 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 		sb.AppendC(UTF8STRC(", BER: "));
 		sptr = IO::GSMModemController::BERGetName(sbuff, ber);
 		sb.AppendP(sbuff, sptr);
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLine(sb.ToCString());
 	}
 	else
 	{
-		writer->WriteLineC(UTF8STRC("RSSI: Error in getting the value"));
+		writer->WriteLine(CSTR("RSSI: Error in getting the value"));
 	}
 
 	Data::DateTime dt;
@@ -196,11 +196,11 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Clock: "));
 		sb.AppendDateTime(dt);
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLine(sb.ToCString());
 	}
 	else
 	{
-		writer->WriteLineC(UTF8STRC("Clock: Error in getting the value"));
+		writer->WriteLine(CSTR("Clock: Error in getting the value"));
 	}
 
 	if ((sptr = modem->SMSGetSMSC(sbuff)) != 0)
@@ -208,11 +208,11 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("SMSC: "));
 		sb.AppendP(sbuff, sptr);
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLine(sb.ToCString());
 	}
 	else
 	{
-		writer->WriteLineC(UTF8STRC("SMSC: Error in getting the value"));
+		writer->WriteLine(CSTR("SMSC: Error in getting the value"));
 	}
 
 	Data::ArrayListNN<IO::GSMModemController::SMSMessage> smsList;
@@ -220,7 +220,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 	if (modem->SMSListMessages(smsList, IO::GSMModemController::SMSS_ALL))
 	{
 
-		writer->WriteLineC(UTF8STRC("SMS List:"));
+		writer->WriteLine(CSTR("SMS List:"));
 		i = 0;
 		j = smsList.GetCount();
 		while (i < j)
@@ -233,13 +233,13 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 			sb.AppendHexBuff(sms->pduMessage, sms->pduLeng, 0, Text::LineBreakType::None);
 			sb.AppendC(UTF8STRC(", "));
 			sb.AppendI32(sms->status);
-			writer->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLine(sb.ToCString());
 			i++;
 		}
 		modem->SMSFreeMessages(smsList);
 	}
 	else
 	{
-		writer->WriteLineC(UTF8STRC("SMS List: Error in getting the value"));
+		writer->WriteLine(CSTR("SMS List: Error in getting the value"));
 	}
 }

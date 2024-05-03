@@ -15,7 +15,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg == 0)
 	{
-		console.WriteLineC(UTF8STRC("Config file not found"));
+		console.WriteLine(CSTR("Config file not found"));
 		return 1;
 	}
 	NN<Text::String> sPort;
@@ -23,20 +23,20 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	if (!cfg->GetValue(CSTR("Port")).SetTo(sPort))
 	{
 		DEL_CLASS(cfg);
-		console.WriteLineC(UTF8STRC("Config Port missing"));
+		console.WriteLine(CSTR("Config Port missing"));
 		return 2;
 	}
 	UInt16 port;
 	if (!sPort->ToUInt16(port))
 	{
 		DEL_CLASS(cfg);
-		console.WriteLineC(UTF8STRC("Error in parsing port number"));
+		console.WriteLine(CSTR("Error in parsing port number"));
 		return 3;
 	}
 	if (!cfg->GetValue(CSTR("FCMKey")).SetTo(fcmKey))
 	{
 		DEL_CLASS(cfg);
-		console.WriteLineC(UTF8STRC("Config FCMKey missing"));
+		console.WriteLine(CSTR("Config FCMKey missing"));
 		return 4;
 	}
 	UTF8Char sbuff[512];
@@ -53,11 +53,11 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		Net::PushServer svr(sockf, ssl, port, fcmKey->ToCString(), log);
 		if (svr.IsError())
 		{
-			console.WriteLineC(UTF8STRC("Error in listening to port"));
+			console.WriteLine(CSTR("Error in listening to port"));
 		}
 		else
 		{
-			console.WriteLineC(UTF8STRC("PushServer started"));
+			console.WriteLine(CSTR("PushServer started"));
 			progCtrl->WaitForExit(progCtrl);
 		}
 	}

@@ -2270,8 +2270,8 @@ Optional<Map::MapDrawLayer> Map::MapConfig2::GetDrawLayer(Text::CStringNN name, 
 	NEW_CLASSNN(cip, Map::CIPLayer2(name));
 	if (cip->IsError())
 	{
-		errWriter->WriteStrC(UTF8STRC("Error in loading "));
-		errWriter->WriteLineC(name.v, name.leng);
+		errWriter->Write(CSTR("Error in loading "));
+		errWriter->WriteLine(name);
 		cip.Delete();
 		return 0;
 	}

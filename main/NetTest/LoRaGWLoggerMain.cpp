@@ -33,9 +33,9 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		Net::LoRaGWMonitor lora(sockf, 1700, OnMessage, &log);
 		if (!lora.IsError())
 		{
-			console.WriteLineC(UTF8STRC("Listening to LoRa Gateway data"));
+			console.WriteLine(CSTR("Listening to LoRa Gateway data"));
 			progCtrl->WaitForExit(progCtrl);
-			console.WriteLineC(UTF8STRC("End listening"));
+			console.WriteLine(CSTR("End listening"));
 		}
 	}
 	return 0;

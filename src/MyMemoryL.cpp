@@ -288,9 +288,9 @@ Int32 MemCheckError()
 		UTF8Char *sptr;
 		sptr = Text::StrInt32(buff, mcMemoryCnt);
 		console = MemOpenWriter();
-		console->WriteStrC(UTF8STRC("Memory leaks occurs for "));
-		console->WriteStrC(buff, (UOSInt)(sptr - buff));
-		console->WriteLineC(UTF8STRC(" times"));
+		console->Write(CSTR("Memory leaks occurs for "));
+		console->Write(CSTRP(buff, sptr));
+		console->WriteLine(CSTR(" times"));
 		delete console;
 		found = true;
 	}

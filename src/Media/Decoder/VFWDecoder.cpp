@@ -190,7 +190,7 @@ void Media::Decoder::VFWDecoder::ProcVideoFrame(Data::Duration frameTime, UInt32
 	}
 	else
 	{
-//		writer.WriteLineC(UTF8STRC("Cannot decode frame"));
+//		writer.WriteLine(CSTR("Cannot decode frame"));
 	}
 }
 

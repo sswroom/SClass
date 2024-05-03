@@ -22,17 +22,17 @@ IO::StreamWriter::~StreamWriter()
 	MemFree(this->buff);
 }
 
-Bool IO::StreamWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
+Bool IO::StreamWriter::Write(Text::CStringNN str)
 {
 	if (this->enc.GetEncCodePage() == 65001)
 	{
-		return this->stm->Write(str, nChar) == nChar;
+		return this->stm->Write(str.v, str.leng) == str.leng;
 	}
 	else
 	{
-		UOSInt wnChar = Text::StrUTF8_WCharCntC(str, nChar);
+		UOSInt wnChar = Text::StrUTF8_WCharCntC(str.v, str.leng);
 		WChar *ws = MemAlloc(WChar, wnChar + 1);
-		Text::StrUTF8_WCharC(ws, str, nChar, 0);
+		Text::StrUTF8_WCharC(ws, str.v, str.leng, 0);
 
 		UOSInt strSize = 3 * wnChar;
 		if (strSize > buffSize)
@@ -44,19 +44,19 @@ Bool IO::StreamWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
 			MemFree(this->buff);
 			this->buff = MemAlloc(UInt8, this->buffSize);
 		}
-		nChar = enc.WToBytesC(this->buff, ws, wnChar);
+		UOSInt nChar = enc.WToBytesC(this->buff, ws, wnChar);
 		MemFree(ws);
 		return this->stm->Write(this->buff, nChar) == nChar;
 	}
 }
 
-Bool IO::StreamWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
+Bool IO::StreamWriter::WriteLine(Text::CStringNN str)
 {
 	if (this->enc.GetEncCodePage() == 65001)
 	{
 		const UTF8Char crlf[2] = {13, 10};
-		UOSInt ret = this->stm->Write(str, nChar);
-		if (ret == nChar)
+		UOSInt ret = this->stm->Write(str.v, str.leng);
+		if (ret == str.leng)
 		{
 			ret += this->stm->Write(crlf, 2);
 			return true;
@@ -65,9 +65,9 @@ Bool IO::StreamWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 	}
 	else
 	{
-		UOSInt wnChar = Text::StrUTF8_WCharCntC(str, nChar);
+		UOSInt wnChar = Text::StrUTF8_WCharCntC(str.v, str.leng);
 		WChar *ws = MemAlloc(WChar, wnChar + 2);
-		Text::StrUTF8_WCharC(ws, str, nChar, 0);
+		Text::StrUTF8_WCharC(ws, str.v, str.leng, 0);
 		ws[wnChar] = 13;
 		ws[wnChar + 1] = 10;
 
@@ -81,7 +81,7 @@ Bool IO::StreamWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 			MemFree(this->buff);
 			this->buff = MemAlloc(UInt8, this->buffSize);
 		}
-		nChar = enc.WToBytesC(this->buff, ws, wnChar + 2);
+		UOSInt nChar = enc.WToBytesC(this->buff, ws, wnChar + 2);
 		MemFree(ws);
 		return this->stm->Write(this->buff, nChar) == nChar;
 	}

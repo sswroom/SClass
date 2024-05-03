@@ -31,7 +31,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	sb.AppendOSInt(val);
 	sb.AppendC(UTF8STRC(", t = "));
 	sb.AppendDouble(spd1);
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 
 	i = 10000000;
 	clk->Start();
@@ -45,7 +45,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	sb.AppendOSInt(val2);
 	sb.AppendC(UTF8STRC(", t = "));
 	sb.AppendDouble(spd2);
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 
 	DEL_CLASS(clk);
 

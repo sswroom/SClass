@@ -50,16 +50,16 @@ namespace Net
 		~RTSPClient();
 
 
-		Bool GetOptions(Text::CString url, Data::ArrayList<const UTF8Char *> *options);
-		Net::SDPFile *GetMediaInfo(Text::CString url);
+		Bool GetOptions(Text::CStringNN url, Data::ArrayList<const UTF8Char *> *options);
+		Net::SDPFile *GetMediaInfo(Text::CStringNN url);
 
 		static IO::ParsedObject *ParseURL(NN<Net::SocketFactory> sockf, Text::CStringNN url, Data::Duration timeout, NN<IO::LogTool> log);
 
 	private:
-		UTF8Char *SetupRTP(UTF8Char *sessIdOut, Text::CString url, NN<Net::RTPCliChannel> rtpChannel);
+		UTF8Char *SetupRTP(UTF8Char *sessIdOut, Text::CStringNN url, NN<Net::RTPCliChannel> rtpChannel);
 
-		Bool Play(Text::CString url, Text::CString sessId);
-		Bool Close(Text::CString url, Text::CString sessId);
+		Bool Play(Text::CStringNN url, Text::CStringNN sessId);
+		Bool Close(Text::CStringNN url, Text::CStringNN sessId);
 
 	public:
 		virtual Bool Init(NN<Net::RTPCliChannel> rtpChannel);

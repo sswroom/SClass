@@ -181,7 +181,7 @@ namespace Manage
 		virtual ~Dasm();
 
 		virtual RegBitDepth GetRegBitDepth() const = 0;
-		virtual Text::CString GetHeader(Bool fullRegs) const = 0;
+		virtual Text::CStringNN GetHeader(Bool fullRegs) const = 0;
 		virtual Dasm_Regs *CreateRegs() const = 0;
 		virtual void FreeRegs(Dasm_Regs *regs) const = 0;
 	};

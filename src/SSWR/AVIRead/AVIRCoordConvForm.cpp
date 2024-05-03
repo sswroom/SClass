@@ -300,7 +300,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 	sarr[colCnt + 1] = (const UTF8Char*)"OutY";
 	sb.ClearStr();
 	sb.AppendCSV(sarr, colCnt + 2);
-	writer.WriteLineC(sb.ToString(), sb.GetLength());
+	writer.WriteLine(sb.ToCString());
 
 	Double inX;
 	Double inY;
@@ -339,7 +339,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 		}
 		sb.ClearStr();
 		sb.AppendCSV(sarr, colCnt + 2);
-		writer.WriteLineC(sb.ToString(), sb.GetLength());
+		writer.WriteLine(sb.ToCString());
 	}
 	db->CloseReader(reader);
 

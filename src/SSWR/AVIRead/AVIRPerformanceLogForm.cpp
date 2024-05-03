@@ -90,7 +90,7 @@ void SSWR::AVIRead::AVIRPerformanceLogForm::TestSpeed()
 	sb.AppendTSNoZone(this->testTime);
 	sb.AppendC(UTF8STRC("\t"));
 	sb.AppendDouble(spd);
-	this->writer->WriteLineC(sb.ToString(), sb.GetLength());
+	this->writer->WriteLine(sb.ToCString());
 	this->rlcWRate->AddSample(&spd);
 	sb.ClearStr();
 	sb.AppendDouble(spd);

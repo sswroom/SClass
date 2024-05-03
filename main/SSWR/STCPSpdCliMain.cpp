@@ -54,7 +54,7 @@ UInt32 __stdcall DispThread(AnyType userObj)
 			sptr = Text::StrConcatC(sptr, UTF8STRC("Bps\tRecv: "));
 			sptr = Text::StrDouble(sptr, (Double)(currRecvSize - lastRecvSize) / (currTime - lastTime));
 			sptr = Text::StrConcatC(sptr, UTF8STRC("Bps       "));
-			console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+			console->WriteLine(CSTRP(sbuff, sptr));
 		}
 		lastTime = currTime;
 		lastRecvSize = currRecvSize;
@@ -145,7 +145,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc <= 2)
 	{
-		console->WriteLineC(UTF8STRC("Usage: STCPSpdCli [IP] [Port]"));
+		console->WriteLine(CSTR("Usage: STCPSpdCli [IP] [Port]"));
 	}
 	else
 	{
@@ -188,17 +188,17 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 		if (!sockf->DNSResolveIP(Text::CStringNN::FromPtr(argv[1]), addr))
 		{
-			console->WriteLineC(UTF8STRC("Host is not valid"));
+			console->WriteLine(CSTR("Host is not valid"));
 			valid = false;
 		}
 		if (!Text::StrToUInt16(argv[2], port))
 		{
-			console->WriteLineC(UTF8STRC("Port is not a number"));
+			console->WriteLine(CSTR("Port is not a number"));
 			valid = false;
 		}
 		if (port <= 0 || port > 65535)
 		{
-			console->WriteLineC(UTF8STRC("Port is out of range"));
+			console->WriteLine(CSTR("Port is out of range"));
 			valid = false;
 		}
 
@@ -208,7 +208,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			if (c->IsConnectError())
 			{
 				DEL_CLASS(c);
-				console->WriteLineC(UTF8STRC("Error in connect to server"));
+				console->WriteLine(CSTR("Error in connect to server"));
 				valid = false;
 			}
 			else
@@ -226,7 +226,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				dispEvt->Set();
 			}
 
-			console->WriteLineC(UTF8STRC("Running"));
+			console->WriteLine(CSTR("Running"));
 			progCtrl->WaitForExit(progCtrl);
 		}
 

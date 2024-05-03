@@ -356,17 +356,17 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(AnyType userObj)
 			IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			Text::UTF8Writer writer(fs);
 			writer.WriteSignature();
-			writer.WriteStrC(UTF8STRC("From: "));
+			writer.Write(CSTR("From: "));
 			writer.WriteLineW(smsMsg->GetAddress());
 			if (smsMsg->GetSMSC())
 			{
-				writer.WriteStrC(UTF8STRC("SMSC: "));
+				writer.Write(CSTR("SMSC: "));
 				writer.WriteLineW(smsMsg->GetSMSC());
 			}
-			writer.WriteStrC(UTF8STRC("Date: "));
+			writer.Write(CSTR("Date: "));
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
-			writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-			writer.WriteLineC(UTF8STRC("Content: "));
+			writer.WriteLine(CSTRP(sbuff, sptr));
+			writer.WriteLine(CSTR("Content: "));
 			writer.WriteLineW(smsMsg->GetContent());
 		}
 		dlg.Delete();
@@ -431,17 +431,17 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(AnyType userOb
 				IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				Text::UTF8Writer writer(fs);
 				writer.WriteSignature();
-				writer.WriteStrC(UTF8STRC("From: "));
+				writer.Write(CSTR("From: "));
 				writer.WriteLineW(smsMsg->GetAddress());
 				if (smsMsg->GetSMSC())
 				{
-					writer.WriteStrC(UTF8STRC("SMSC: "));
+					writer.Write(CSTR("SMSC: "));
 					writer.WriteLineW(smsMsg->GetSMSC());
 				}
-				writer.WriteStrC(UTF8STRC("Date: "));
+				writer.Write(CSTR("Date: "));
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
-				writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-				writer.WriteLineC(UTF8STRC("Content: "));
+				writer.WriteLine(CSTRP(sbuff, sptr));
+				writer.WriteLine(CSTR("Content: "));
 				writer.WriteLineW(smsMsg->GetContent());
 				i++;
 			}

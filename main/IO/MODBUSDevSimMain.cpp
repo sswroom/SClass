@@ -17,7 +17,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg == 0)
 	{
-		console.WriteLineC(UTF8STRC("Config file not found"));
+		console.WriteLine(CSTR("Config file not found"));
 		return 1;
 	}
 	UInt16 modbusPort = 0;
@@ -26,25 +26,25 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	NN<Text::String> s;
 	if (!cfg->GetValue(CSTR("MODBUSPort")).SetTo(s) || !s->ToUInt16(modbusPort))
 	{
-		console.WriteLineC(UTF8STRC("Config MODBUSPort not valid"));
+		console.WriteLine(CSTR("Config MODBUSPort not valid"));
 		DEL_CLASS(cfg);
 		return 1;
 	}
 	if (!cfg->GetValue(CSTR("CtrlPort")).SetTo(s) || !s->ToUInt16(ctrlPort))
 	{
-		console.WriteLineC(UTF8STRC("Config CtrlPort not valid"));
+		console.WriteLine(CSTR("Config CtrlPort not valid"));
 		DEL_CLASS(cfg);
 		return 1;
 	}
 	if (!cfg->GetValue(CSTR("DevAddr")).SetTo(s) || !s->ToUInt8(devAddr))
 	{
-		console.WriteLineC(UTF8STRC("Config DevAddr not valid"));
+		console.WriteLine(CSTR("Config DevAddr not valid"));
 		DEL_CLASS(cfg);
 		return 1;
 	}
 	if (!cfg->GetValue(CSTR("DevType")).SetTo(s))
 	{
-		console.WriteLineC(UTF8STRC("Config DevType not found"));
+		console.WriteLine(CSTR("Config DevType not found"));
 		DEL_CLASS(cfg);
 		return 1;
 	}
@@ -67,7 +67,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	}
 	else
 	{
-		console.WriteLineC(UTF8STRC("Unknown DevType in config file"));
+		console.WriteLine(CSTR("Unknown DevType in config file"));
 		DEL_CLASS(cfg);
 		return 1;
 	}
@@ -79,7 +79,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Net::MODBUSTCPListener modbusListener(sockf, modbusPort, log, false);
 	if (modbusListener.IsError())
 	{
-		console.WriteLineC(UTF8STRC("Error in listening to MODBUSPort"));
+		console.WriteLine(CSTR("Error in listening to MODBUSPort"));
 		DEL_CLASS(dev);
 		return 1;
 	}
@@ -90,20 +90,20 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		Net::WebServer::WebListener webListener(sockf, 0, devHdlr, ctrlPort, 120, 1, 2, CSTR("MODBUSSim/1.0"), false, Net::WebServer::KeepAlive::Default, false);
 		if (webListener.IsError())
 		{
-			console.WriteLineC(UTF8STRC("Error in listening to CtrlPort"));
+			console.WriteLine(CSTR("Error in listening to CtrlPort"));
 			ret = 1;
 		}
 		else if (!modbusListener.Start())
 		{
-			console.WriteLineC(UTF8STRC("Error in starting MODBUSPort"));
+			console.WriteLine(CSTR("Error in starting MODBUSPort"));
 		}
 		else if (!webListener.Start())
 		{
-			console.WriteLineC(UTF8STRC("Error in starting CtrlPort"));
+			console.WriteLine(CSTR("Error in starting CtrlPort"));
 		}
 		else
 		{
-			console.WriteLineC(UTF8STRC("MODBUS Device Simulator started"));
+			console.WriteLine(CSTR("MODBUS Device Simulator started"));
 			progCtrl->WaitForExit(progCtrl);
 		}
 	}

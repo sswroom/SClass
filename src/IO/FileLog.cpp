@@ -216,7 +216,7 @@ void IO::FileLog::LogAdded(const Data::Timestamp &time, Text::CStringNN logMsg, 
 		log->WriteSignature();
 
 		sptr = Text::StrConcatC(time.ToString(buff, this->dateFormat), UTF8STRC("Program running"));
-		log->WriteLineC(buff, (UOSInt)(sptr - buff));
+		log->WriteLine(CSTRP(buff, sptr));
 		fileStm->Flush();
 	}
 
@@ -226,7 +226,7 @@ void IO::FileLog::LogAdded(const Data::Timestamp &time, Text::CStringNN logMsg, 
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(buff, (UOSInt)(sptr - buff));
 		sb.Append(logMsg);
-		log->WriteLineC(sb.ToString(), sb.GetLength());
+		log->WriteLine(sb.ToCString());
 	}
 	mutUsage.EndUse();
 }

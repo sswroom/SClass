@@ -90,7 +90,7 @@ namespace Manage
 		DasmARM64();
 		virtual ~DasmARM64();
 
-		virtual Text::CString GetHeader(Bool fullRegs) const;
+		virtual Text::CStringNN GetHeader(Bool fullRegs) const;
 		virtual Bool Disasm64(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt64 *currInst, UInt64 *currStack, UInt64 *currFrame, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
 		virtual Dasm_Regs *CreateRegs() const;
 		virtual void FreeRegs(Dasm_Regs *regs) const;

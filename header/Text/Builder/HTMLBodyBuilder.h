@@ -28,16 +28,16 @@ namespace Text
 			void BeginTableRow();
 			void BeginTableRowPixelHeight(UOSInt pxHeight);
 			void EndElement();
-			void AddTableHeader(Text::CString content);
-			void AddTableData(Text::CString content);
-			void AddTableData(Text::CString content, UOSInt colSpan, UOSInt rowSpan, HAlignment halign, VAlignment valign);
+			void AddTableHeader(Text::CStringNN content);
+			void AddTableData(Text::CStringNN content);
+			void AddTableData(Text::CStringNN content, UOSInt colSpan, UOSInt rowSpan, HAlignment halign, VAlignment valign);
 			void AddInputText(Text::CString id, Text::CString name, Text::CString value);
 			void AddInputButton(Text::CString id, Text::CString label, Text::CString onClick);
 
-			void WriteHeading1(Text::CString content);
-			void WriteHeading2(Text::CString content);
-			void WriteHeading3(Text::CString content);
-			void WriteHeading4(Text::CString content);
+			void WriteHeading1(Text::CStringNN content);
+			void WriteHeading2(Text::CStringNN content);
+			void WriteHeading3(Text::CStringNN content);
+			void WriteHeading4(Text::CStringNN content);
 		};
 	}
 }

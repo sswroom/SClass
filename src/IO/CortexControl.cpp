@@ -15,13 +15,13 @@ UInt32 __stdcall IO::CortexControl::RecvThread(AnyType userObj)
 	UInt8 buff[260];
 	UOSInt buffSize = 0;
 	UOSInt recvSize;
-	if (me->errWriter) me->errWriter->WriteLineC(UTF8STRC("Thread started"));
+	if (me->errWriter) me->errWriter->WriteLine(CSTR("Thread started"));
 	me->recvRunning = true;
 	while (!me->recvToStop)
 	{
-		if (me->errWriter) me->errWriter->WriteLineC(UTF8STRC("Start Receive"));
+		if (me->errWriter) me->errWriter->WriteLine(CSTR("Start Receive"));
 		recvSize = me->stm->Read(Data::ByteArray(&buff[buffSize], 260 - buffSize));
-		if (me->errWriter) me->errWriter->WriteLineC(UTF8STRC("End Receive"));
+		if (me->errWriter) me->errWriter->WriteLine(CSTR("End Receive"));
 		if (recvSize <= 0)
 		{
 			if (me->recvToStop)
@@ -36,7 +36,7 @@ UInt32 __stdcall IO::CortexControl::RecvThread(AnyType userObj)
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Recv: "));
 				sb.AppendHexBuff(&buff[buffSize], recvSize, ' ', Text::LineBreakType::CRLF);
-				me->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
+				me->errWriter->WriteLine(sb.ToCString());
 			}
 			buffSize += recvSize;
 			recvSize = me->protoHdlr.ParseProtocol(me->stm, 0, 0, Data::ByteArrayR(buff, buffSize));
@@ -54,7 +54,7 @@ UInt32 __stdcall IO::CortexControl::RecvThread(AnyType userObj)
 			}
 		}
 	}
-	if (me->errWriter) me->errWriter->WriteLineC(UTF8STRC("Thread End"));
+	if (me->errWriter) me->errWriter->WriteLine(CSTR("Thread End"));
 	me->recvRunning = false;
 	return 0;
 }
@@ -223,7 +223,7 @@ Bool IO::CortexControl::GetFWVersion(Int32 *majorVer, Int32 *minorVer)
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Send: "));
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
-		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
+		this->errWriter->WriteLine(sb.ToCString());
 	}
 	this->stm->Write(buff, packetSize);
 	while (!this->sendHasResult)
@@ -259,7 +259,7 @@ Bool IO::CortexControl::ReadDIO(Int32 *dioValues)
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Send: "));
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
-		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
+		this->errWriter->WriteLine(sb.ToCString());
 	}
 	this->stm->Write(buff, packetSize);
 	while (!this->sendHasResult)
@@ -297,7 +297,7 @@ Bool IO::CortexControl::WriteDIO(Int32 outVal, Int32 outMask)
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Send: "));
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
-		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
+		this->errWriter->WriteLine(sb.ToCString());
 	}
 	this->stm->Write(buff, packetSize);
 	while (!this->sendHasResult)
@@ -331,7 +331,7 @@ Bool IO::CortexControl::ReadVin(Int32 *voltage)
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Send: "));
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
-		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
+		this->errWriter->WriteLine(sb.ToCString());
 	}
 	this->stm->Write(buff, packetSize);
 	while (!this->sendHasResult)
@@ -366,7 +366,7 @@ Bool IO::CortexControl::ReadVBatt(Int32 *voltage)
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Send: "));
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
-		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
+		this->errWriter->WriteLine(sb.ToCString());
 	}
 	this->stm->Write(buff, packetSize);
 	while (!this->sendHasResult)
@@ -401,7 +401,7 @@ Bool IO::CortexControl::ReadOdometerCounter(Int32 *odoCount)
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Send: "));
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
-		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
+		this->errWriter->WriteLine(sb.ToCString());
 	}
 	this->stm->Write(buff, packetSize);
 	while (!this->sendHasResult)
@@ -436,7 +436,7 @@ Bool IO::CortexControl::ResetOdometerCounter()
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Send: "));
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
-		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
+		this->errWriter->WriteLine(sb.ToCString());
 	}
 	this->stm->Write(buff, packetSize);
 	while (!this->sendHasResult)
@@ -470,7 +470,7 @@ Bool IO::CortexControl::ReadEnvBrightness(Int32 *brightness)
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Send: "));
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
-		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
+		this->errWriter->WriteLine(sb.ToCString());
 	}
 	this->stm->Write(buff, packetSize);
 	while (!this->sendHasResult)
@@ -505,7 +505,7 @@ Bool IO::CortexControl::ReadTemperature(Int32 *temperature)
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Send: "));
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
-		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
+		this->errWriter->WriteLine(sb.ToCString());
 	}
 	this->stm->Write(buff, packetSize);
 	while (!this->sendHasResult)
@@ -540,7 +540,7 @@ Bool IO::CortexControl::PowerOff()
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Send: "));
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
-		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
+		this->errWriter->WriteLine(sb.ToCString());
 	}
 	this->stm->Write(buff, packetSize);
 	while (!this->sendHasResult)
@@ -576,7 +576,7 @@ Bool IO::CortexControl::HDACodecPower(Bool turnOn)
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Send: "));
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
-		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
+		this->errWriter->WriteLine(sb.ToCString());
 	}
 	this->stm->Write(buff, packetSize);
 	while (!this->sendHasResult)
@@ -610,7 +610,7 @@ Bool IO::CortexControl::SetWatchdogTimeout(UInt8 timeout)
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Send: "));
 		sb.AppendHexBuff(buff, packetSize, ' ', Text::LineBreakType::CRLF);
-		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
+		this->errWriter->WriteLine(sb.ToCString());
 	}
 	this->stm->Write(buff, packetSize);
 	while (!this->sendHasResult)

@@ -15,7 +15,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		fs.Write((const UInt8*)"Start", 5);
 	}
-	console.WriteLineC(UTF8STRC("SignalTest Started"));
+	console.WriteLine(CSTR("SignalTest Started"));
 	progCtrl->WaitForExit(progCtrl);
 
 	sptr = IO::Path::GetProcessFileName(sbuff);

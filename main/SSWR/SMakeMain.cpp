@@ -35,10 +35,10 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	IO::SMake smake(CSTR("SMake.cfg"), 0, verbose?&console:0);
 	if (smake.IsLoadFailed())
 	{
-		console.WriteLineC(UTF8STRC("Error in loading SMake.cfg"));
+		console.WriteLine(CSTR("Error in loading SMake.cfg"));
 		Text::StringBuilderUTF8 sb;
 		smake.GetLastErrorMsg(sb);
-		console.WriteLineC(sb.ToString(), sb.GetLength());
+		console.WriteLine(sb.ToCString());
 	}
 	else
 	{
@@ -67,7 +67,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 						sb.Append(cfg->name);
 						sb.AppendC(UTF8STRC(" = "));
 						sb.Append(cfg->value);
-						console.WriteLineC(sb.ToString(), sb.GetLength());
+						console.WriteLine(sb.ToCString());
 						j++;
 					}
 				}
@@ -116,7 +116,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 							Text::StringBuilderUTF8 sb;
 							smake.GetLastErrorMsg(sb);
 							console.SetTextColor(Text::StandardColor::Red);
-							console.WriteLineC(sb.ToString(), sb.GetLength());
+							console.WriteLine(sb.ToCString());
 							console.ResetTextColor();
 						}
 					}
@@ -127,7 +127,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 						sb.AppendC(cmdLines[i], cmdLineLen);
 						sb.AppendC(UTF8STRC(" not found"));
 						console.SetTextColor(Text::StandardColor::Red);
-						console.WriteLineC(sb.ToString(), sb.GetLength());
+						console.WriteLine(sb.ToCString());
 						console.ResetTextColor();
 					}
 				}
@@ -142,21 +142,21 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				Text::StringBuilderUTF8 sb;
 				smake.GetLastErrorMsg(sb);
 				console.SetTextColor(Text::StandardColor::Red);
-				console.WriteLineC(sb.ToString(), sb.GetLength());
+				console.WriteLine(sb.ToCString());
 				console.ResetTextColor();
 			}
 		}
 	}
 	if (showHelp)
 	{
-		console.WriteLineC(UTF8STRC("Usage: smake [Options] [File To Compile]"));
-		console.WriteLineC(UTF8STRC("Options:"));
-		console.WriteLineC(UTF8STRC("-D[object name]    Display object related file"));
-		console.WriteLineC(UTF8STRC("-V                 Verbose"));
-		console.WriteLineC(UTF8STRC("-a                 Assembly listing"));
-		console.WriteLineC(UTF8STRC("-q                 Quiet"));
-		console.WriteLineC(UTF8STRC("-s                 Single Thread"));
-		console.WriteLineC(UTF8STRC("-S                 Sync Mode (disable Async Mode)"));
+		console.WriteLine(CSTR("Usage: smake [Options] [File To Compile]"));
+		console.WriteLine(CSTR("Options:"));
+		console.WriteLine(CSTR("-D[object name]    Display object related file"));
+		console.WriteLine(CSTR("-V                 Verbose"));
+		console.WriteLine(CSTR("-a                 Assembly listing"));
+		console.WriteLine(CSTR("-q                 Quiet"));
+		console.WriteLine(CSTR("-s                 Single Thread"));
+		console.WriteLine(CSTR("-S                 Sync Mode (disable Async Mode)"));
 	}
 	return 0;
 }

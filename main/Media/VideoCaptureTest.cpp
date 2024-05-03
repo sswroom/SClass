@@ -104,7 +104,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Device Count = "));
 		sb.AppendUOSInt(cnt);
-		console->WriteLineC(sb.ToString(), sb.GetLength());
+		console->WriteLine(sb.ToCString());
 		i = 0;
 		while (i < cnt)
 		{
@@ -116,7 +116,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			sb.AppendUOSInt(devInfo->devId);
 			sb.AppendC(UTF8STRC(", Name = "));
 			sb.AppendSlow(devInfo->devName);
-			console->WriteLineC(sb.ToString(), sb.GetLength());
+			console->WriteLine(sb.ToCString());
 
 			i++;
 		}
@@ -150,9 +150,9 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				sb.AppendC(UTF8STRC("Capture using "));
 				sptr = capture->GetSourceName(sbuff);
 				sb.AppendP(sbuff, sptr);
-				console->WriteLineC(sb.ToString(), sb.GetLength());
+				console->WriteLine(sb.ToCString());
 
-				console->WriteLineC(UTF8STRC("Supported Formats:"));
+				console->WriteLine(CSTR("Supported Formats:"));
 				formats = MemAlloc(Media::IVideoCapture::VideoFormat, 128);
 				i = 0;
 				j = 128;
@@ -191,7 +191,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					sb.AppendC(UTF8STRC(" ("));
 					sb.AppendDouble(formats[i].frameRateNorm / (Double)formats[i].frameRateDenorm);
 					sb.AppendC(UTF8STRC(")"));
-					console->WriteLineC(sb.ToString(), sb.GetLength());
+					console->WriteLine(sb.ToCString());
 					thisSize = formats[i].info.dispSize.CalcArea();
 					if (formats[i].info.fourcc == *(UInt32*)"MJPG")
 					{
@@ -242,7 +242,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					sb.AppendUOSInt(maxHeight);
 					sb.AppendC(UTF8STRC(", bpp = "));
 					sb.AppendU32(maxBpp);
-					console->WriteLineC(sb.ToString(), sb.GetLength());
+					console->WriteLine(sb.ToCString());
 					capture->SetPreferSize(Math::Size2D<UOSInt>(maxWidth, maxHeight), maxFmt, maxBpp, maxRateNumer, maxRateDenom);
 				}
 
@@ -283,29 +283,29 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					sb.AppendC(UTF8STRC(" ("));
 					sb.AppendDouble(frameRateNorm / (Double)frameRateDenorm);
 					sb.AppendC(UTF8STRC(")"));
-					console->WriteLineC(sb.ToString(), sb.GetLength());
+					console->WriteLine(sb.ToCString());
 				}
 				else
 				{
-					console->WriteLineC(UTF8STRC("Error in getting format"));
+					console->WriteLine(CSTR("Error in getting format"));
 				}
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Frame Delay = "));
 				sb.AppendI32(frameCnt);
-				console->WriteLineC(sb.ToString(), sb.GetLength());
+				console->WriteLine(sb.ToCString());
 				converter = Media::CS::CSConverter::NewConverter(info.fourcc, info.storeBPP, info.pf, info.color, 0, 32, Media::PF_B8G8R8A8, color, info.yuvType, colorSess.Ptr());
 				if (converter == 0)
 				{
-					console->WriteLineC(UTF8STRC("Converter is null"));
+					console->WriteLine(CSTR("Converter is null"));
 				}
 				else if (converter)
 				{
-					console->WriteLineC(UTF8STRC("Converter is found"));
+					console->WriteLine(CSTR("Converter is found"));
 				}
 				isRunning = capture->Init(CaptureTest, FrameChangeHdlr, 0);
 				if (!isRunning)
 				{
-					console->WriteLineC(UTF8STRC("Error in initializing capture"));
+					console->WriteLine(CSTR("Error in initializing capture"));
 				}
 				else
 				{
@@ -323,18 +323,18 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("Capture device stopped, count = "));
 						sb.AppendI32(frameCnt);
-						console->WriteLineC(sb.ToString(), sb.GetLength());
+						console->WriteLine(sb.ToCString());
 					}
 					else
 					{
-						console->WriteLineC(UTF8STRC("File captured"));
+						console->WriteLine(CSTR("File captured"));
 						succ = true;
 						capture->Stop();
 					}				
 				}
 				else
 				{
-					console->WriteLineC(UTF8STRC("Error in starting capture"));
+					console->WriteLine(CSTR("Error in starting capture"));
 				}
 
 				SDEL_CLASS(converter);
@@ -354,7 +354,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	}
 	else
 	{
-		console->WriteLineC(UTF8STRC("No capture device found"));
+		console->WriteLine(CSTR("No capture device found"));
 	}
 	mgr->FreeDeviceList(devList);
 	colorMgr->DeleteSess(colorSess);

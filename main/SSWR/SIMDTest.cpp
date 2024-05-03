@@ -30,7 +30,7 @@ void UInt8x4Cmp(UInt8x4 u8x4, const UTF8Char *funcName, UOSInt nameLen, UInt8 va
 	}
 	if (!failOnly || !succ)
 	{
-		console->WriteLineC(sb.ToString(), sb.GetLength());
+		console->WriteLine(sb.ToCString());
 	}
 }
 
@@ -54,7 +54,7 @@ void UInt8x8Cmp(UInt8x8 u8x8, const UTF8Char *funcName, UOSInt nameLen, UInt8 va
 	}
 	if (!failOnly || !succ)
 	{
-		console->WriteLineC(sb.ToString(), sb.GetLength());
+		console->WriteLine(sb.ToCString());
 	}
 }
 
@@ -80,7 +80,7 @@ void UInt8x16Cmp(UInt8x16 u8x16, const UTF8Char *funcName, UOSInt nameLen, UInt8
 	}
 	if (!failOnly || !succ)
 	{
-		console->WriteLineC(sb.ToString(), sb.GetLength());
+		console->WriteLine(sb.ToCString());
 	}
 }
 
@@ -104,7 +104,7 @@ void Int16x4Cmp(Int16x4 i16x4, const UTF8Char *funcName, UOSInt nameLen, Int16 v
 	}
 	if (!failOnly || !succ)
 	{
-		console->WriteLineC(sb.ToString(), sb.GetLength());
+		console->WriteLine(sb.ToCString());
 	}
 }
 
@@ -128,7 +128,7 @@ void UInt16x4Cmp(UInt16x4 u16x4, const UTF8Char *funcName, UOSInt nameLen, UInt1
 	}
 	if (!failOnly || !succ)
 	{
-		console->WriteLineC(sb.ToString(), sb.GetLength());
+		console->WriteLine(sb.ToCString());
 	}
 }
 
@@ -152,7 +152,7 @@ void Int16x8Cmp(Int16x8 i16x8, const UTF8Char *funcName, UOSInt nameLen, Int16 v
 	}
 	if (!failOnly || !succ)
 	{
-		console->WriteLineC(sb.ToString(), sb.GetLength());
+		console->WriteLine(sb.ToCString());
 	}
 }
 
@@ -176,7 +176,7 @@ void UInt16x8Cmp(UInt16x8 u16x8, const UTF8Char *funcName, UOSInt nameLen, UInt1
 	}
 	if (!failOnly || !succ)
 	{
-		console->WriteLineC(sb.ToString(), sb.GetLength());
+		console->WriteLine(sb.ToCString());
 	}
 }
 
@@ -200,7 +200,7 @@ void Int32x4Cmp(Int32x4 i32x4, const UTF8Char *funcName, UOSInt nameLen, Int32 v
 	}
 	if (!failOnly || !succ)
 	{
-		console->WriteLineC(sb.ToString(), sb.GetLength());
+		console->WriteLine(sb.ToCString());
 	}
 }
 
@@ -219,7 +219,7 @@ void CmpResult(Bool result, const UTF8Char *funcName, UOSInt nameLen)
 			sb.AppendC(funcName, nameLen);
 			sb.AppendC(UTF8STRC(" failed"));
 		}
-		console->WriteLineC(sb.ToString(), sb.GetLength());
+		console->WriteLine(sb.ToCString());
 	}
 }
 

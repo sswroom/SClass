@@ -18,6 +18,6 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	outSize = rc2.Encrypt(dataBuff, 8, outBuff);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendHexBuff(outBuff, outSize, ' ', Text::LineBreakType::None);
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 	return 0;
 }

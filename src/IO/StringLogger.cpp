@@ -51,7 +51,7 @@ void IO::StringLogger::WriteLogs(IO::Writer *writer)
 	while (i < j)
 	{
 		s = this->strList.GetItem(i);
-		writer->WriteLineC(s->v, s->leng);
+		writer->WriteLine(s->ToCString());
 		i++;
 	}
 }

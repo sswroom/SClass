@@ -29,7 +29,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Parse success, t = "));
 		sb.AppendDouble(t);
-		console.WriteLineC(sb.ToString(), sb.GetLength());
+		console.WriteLine(sb.ToCString());
 		DEL_CLASS(pobj);
 	}
 	else
@@ -37,7 +37,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Parse failed, t = "));
 		sb.AppendDouble(t);
-		console.WriteLineC(sb.ToString(), sb.GetLength());
+		console.WriteLine(sb.ToCString());
 	}
 	return 0;
 }

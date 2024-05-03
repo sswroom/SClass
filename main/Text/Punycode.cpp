@@ -13,12 +13,12 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	WChar wbuff[256];
 	IO::ConsoleWriter console;
 	sptr = Text::TextBinEnc::Punycode::Decode(sbuff, UTF8STRC("xn--d9juau41awczczp"));
-	console.WriteStrC(UTF8STRC("UTF8: "));
-	console.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+	console.Write(CSTR("UTF8: "));
+	console.WriteLine(CSTRP(sbuff, sptr));
 
 	Text::TextBinEnc::Punycode::Decode(wbuff, L"xn--d9juau41awczczp");
-	console.WriteStrC(UTF8STRC("WChar: "));
+	console.Write(CSTR("WChar: "));
 	sptr = Text::StrWChar_UTF8(sbuff, wbuff);
-	console.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+	console.WriteLine(CSTRP(sbuff, sptr));
 	return 0;
 }

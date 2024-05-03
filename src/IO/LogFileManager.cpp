@@ -107,7 +107,7 @@ void IO::LogFileManager::WriteLogText(NN<IO::Stream> fs, Text::StyledTextWriter 
 		reader.GetLastLineBreak(sb);
 		if (sb.leng <= 20)
 		{
-			writer->WriteStr(sb.ToCString());
+			writer->Write(sb.ToCString());
 		}
 		else if (sb.v[4] == '-' && sb.v[7] == '-' && sb.v[10] == ' ')
 		{
@@ -115,19 +115,19 @@ void IO::LogFileManager::WriteLogText(NN<IO::Stream> fs, Text::StyledTextWriter 
 			if (i != INVALID_INDEX)
 			{
 				writer->SetTextColor(Text::StandardColor::Blue);
-				writer->WriteStrC(sb.v, i);
+				writer->Write(Text::CStringNN(sb.v, i));
 				writer->ResetTextColor();
 				writer->WriteChar(' ');
-				writer->WriteStr(sb.ToCString().Substring(i + 1));
+				writer->Write(sb.ToCString().Substring(i + 1));
 			}
 			else
 			{
-				writer->WriteStr(sb.ToCString());
+				writer->Write(sb.ToCString());
 			}
 		}
 		else
 		{
-			writer->WriteStr(sb.ToCString());
+			writer->Write(sb.ToCString());
 		}
 		sb.ClearStr();
 	}

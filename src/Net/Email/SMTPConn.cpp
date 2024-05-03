@@ -32,11 +32,11 @@ UInt32 __stdcall Net::Email::SMTPConn::SMTPThread(AnyType userObj)
 			sptr = reader.ReadLine(sbuff, 2048);
 			if (sptr == 0)
 			{
-				if (me->logWriter.SetTo(lwriter)) lwriter->WriteLineC(UTF8STRC("Connection Closed"));
+				if (me->logWriter.SetTo(lwriter)) lwriter->WriteLine(CSTR("Connection Closed"));
 				break;
 			}
 
-			if (me->logWriter.SetTo(lwriter)) lwriter->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+			if (me->logWriter.SetTo(lwriter)) lwriter->WriteLine(CSTRP(sbuff, sptr));
 	#ifdef VERBOSE
 			printf("SMTP Read: %s\r\n", sbuff);
 	#endif
@@ -138,28 +138,28 @@ Net::Email::SMTPConn::SMTPConn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEn
 		NEW_CLASSNN(this->cli, Net::TCPClient(sockf, addr, port, timeout));
 		this->cli->SetTimeout(2000);
 		buffSize = this->cli->Read(BYTEARR(buff));
-		if (this->logWriter.SetTo(lwriter)) lwriter->WriteStrC(buff, buffSize);
+		if (this->logWriter.SetTo(lwriter)) lwriter->Write(Text::CStringNN(buff, buffSize));
 		if (buffSize > 2 && Text::StrStartsWithC(buff, buffSize, UTF8STRC("220 ")) && buff[buffSize - 2] == '\r' && buff[buffSize - 1] == '\n')
 		{
-			if (this->logWriter.SetTo(lwriter)) lwriter->WriteLineC(UTF8STRC("STARTTLS"));
+			if (this->logWriter.SetTo(lwriter)) lwriter->WriteLine(CSTR("STARTTLS"));
 			this->cli->Write((const UInt8*)"STARTTLS\r\n", 10);
 			buffSize = this->cli->Read(BYTEARR(buff));
-			if (this->logWriter.SetTo(lwriter)) lwriter->WriteStrC(buff, buffSize);
+			if (this->logWriter.SetTo(lwriter)) lwriter->Write(Text::CStringNN(buff, buffSize));
 			if (buffSize > 0 && Text::StrStartsWithC(buff, buffSize, UTF8STRC("220 ")) && buff[buffSize - 2] == '\r' && buff[buffSize - 1] == '\n')
 			{
-				if (this->logWriter.SetTo(lwriter)) lwriter->WriteLineC(UTF8STRC("SSL Handshake begin"));
+				if (this->logWriter.SetTo(lwriter)) lwriter->WriteLine(CSTR("SSL Handshake begin"));
 				Socket *s = this->cli->RemoveSocket();
 				NN<Net::TCPClient> cli;
 				NN<Net::SSLEngine> nnssl;
 				if (ssl.SetTo(nnssl) && cli.Set(nnssl->ClientInit(s, host, 0)))
 				{
-					if (this->logWriter.SetTo(lwriter)) lwriter->WriteLineC(UTF8STRC("SSL Handshake success"));
+					if (this->logWriter.SetTo(lwriter)) lwriter->WriteLine(CSTR("SSL Handshake success"));
 					this->cli.Delete();
 					this->cli = cli;
 				}
 				else
 				{
-					if (this->logWriter.SetTo(lwriter)) lwriter->WriteLineC(UTF8STRC("SSL Handshake failed"));
+					if (this->logWriter.SetTo(lwriter)) lwriter->WriteLine(CSTR("SSL Handshake failed"));
 				}
 			}
 			else
@@ -191,7 +191,7 @@ Net::Email::SMTPConn::SMTPConn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEn
 		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb.AppendC(UTF8STRC("):"));
 		sb.AppendU16(port);
-		lwriter->WriteLineC(sb.ToString(), sb.GetLength());
+		lwriter->WriteLine(sb.ToCString());
 	}
 	Sync::ThreadUtil::Create(SMTPThread, this);
 	while (!this->threadStarted)
@@ -201,7 +201,7 @@ Net::Email::SMTPConn::SMTPConn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEn
 	if (connType == ConnType::STARTTLS)
 	{
 		this->initCode = 220;
-		if (this->logWriter.SetTo(lwriter)) lwriter->WriteLineC(UTF8STRC("Connected"));
+		if (this->logWriter.SetTo(lwriter)) lwriter->WriteLine(CSTR("Connected"));
 	}
 	else
 	{
@@ -238,8 +238,8 @@ Bool Net::Email::SMTPConn::SendHelo(Text::CString cliName)
 	UTF8Char *sptr;
 	sptr = cliName.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HELO ")));
 	this->statusChg = false;
-	if (this->logWriter.SetTo(lwriter)) lwriter->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+	if (this->logWriter.SetTo(lwriter)) lwriter->WriteLine(CSTRP(sbuff, sptr));
+	writer->WriteLine(CSTRP(sbuff, sptr));
 	UInt32 code = WaitForResult(0);
 	return code == 250;
 }
@@ -255,8 +255,8 @@ Bool Net::Email::SMTPConn::SendEHlo(Text::CString cliName)
 	this->statusChg = false;
 	returnMsg[0] = 0;
 	this->msgRet = returnMsg;
-	if (this->logWriter.SetTo(lwriter)) lwriter->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-	writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+	if (this->logWriter.SetTo(lwriter)) lwriter->Write(CSTRP(sbuff, sptr));
+	writer->Write(CSTRP(sbuff, sptr));
 	UInt32 code = WaitForResult(&returnMsgEnd);
 	if (code == 0)
 	{
@@ -265,7 +265,7 @@ Bool Net::Email::SMTPConn::SendEHlo(Text::CString cliName)
 #endif
 		this->statusChg = false;
 		this->msgRet = returnMsg;
-		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+		writer->Write(CSTRP(sbuff, sptr));
 		code = WaitForResult(&returnMsgEnd);
 	}
 #ifdef VERBOSE
@@ -331,8 +331,8 @@ Bool Net::Email::SMTPConn::SendAuth(Text::CString userName, Text::CString passwo
 		b64.EncodeBin(sbCmd, pwdBuff, (UOSInt)(sptr2 - pwdBuff));
 		
 		this->statusChg = false;
-		if (this->logWriter.SetTo(lwriter)) lwriter->WriteLineC(UTF8STRC("[Authentication message hidden]"));
-		writer->WriteLineC(sbCmd.ToString(), sbCmd.GetLength());
+		if (this->logWriter.SetTo(lwriter)) lwriter->WriteLine(CSTR("[Authentication message hidden]"));
+		writer->WriteLine(sbCmd.ToCString());
 		UInt32 code = WaitForResult(0);
 		return code == 235;
 	}
@@ -346,8 +346,8 @@ Bool Net::Email::SMTPConn::SendAuth(Text::CString userName, Text::CString passwo
 		retBuff[0] = 0;
 		this->statusChg = false;
 		this->msgRet = retBuff;
-		if (this->logWriter.SetTo(lwriter)) lwriter->WriteLineC(UTF8STRC("AUTH LOGIN"));
-		writer->WriteLineC(UTF8STRC("AUTH LOGIN"));
+		if (this->logWriter.SetTo(lwriter)) lwriter->WriteLine(CSTR("AUTH LOGIN"));
+		writer->WriteLine(CSTR("AUTH LOGIN"));
 		code = WaitForResult(&retBuffEnd);
 		if (code != 334 || !Text::StrEqualsC(retBuff, (UOSInt)(retBuffEnd - retBuff), UTF8STRC("VXNlcm5hbWU6")))
 		{
@@ -360,8 +360,8 @@ Bool Net::Email::SMTPConn::SendAuth(Text::CString userName, Text::CString passwo
 		b64.EncodeBin(sbCmd, userName.v, userName.leng);
 		this->statusChg = false;
 		this->msgRet = retBuff;
-		if (this->logWriter.SetTo(lwriter)) lwriter->WriteLineC(sbCmd.ToString(), sbCmd.GetLength());
-		writer->WriteLineC(sbCmd.ToString(), sbCmd.GetLength());
+		if (this->logWriter.SetTo(lwriter)) lwriter->WriteLine(sbCmd.ToCString());
+		writer->WriteLine(sbCmd.ToCString());
 		code = WaitForResult(&retBuffEnd);
 		if (code != 334 || !Text::StrEqualsC(retBuff, (UOSInt)(retBuffEnd - retBuff), UTF8STRC("UGFzc3dvcmQ6")))
 		{
@@ -374,8 +374,8 @@ Bool Net::Email::SMTPConn::SendAuth(Text::CString userName, Text::CString passwo
 		b64.EncodeBin(sbCmd, password.v, password.leng);
 		this->statusChg = false;
 		this->msgRet = retBuff;
-		if (this->logWriter.SetTo(lwriter)) lwriter->WriteLineC(UTF8STRC("[Password hidden]"));
-		writer->WriteLineC(sbCmd.ToString(), sbCmd.GetLength());
+		if (this->logWriter.SetTo(lwriter)) lwriter->WriteLine(CSTR("[Password hidden]"));
+		writer->WriteLine(sbCmd.ToCString());
 		code = WaitForResult(0);
 		return code == 235;
 	}
@@ -392,8 +392,8 @@ Bool Net::Email::SMTPConn::SendMailFrom(Text::CString fromEmail)
 	UTF8Char *sptr;
 	sptr = Text::StrConcatC(fromEmail.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("MAIL FROM: <"))), UTF8STRC(">"));
 	this->statusChg = false;
-	if (this->logWriter.SetTo(lwriter)) lwriter->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+	if (this->logWriter.SetTo(lwriter)) lwriter->WriteLine(CSTRP(sbuff, sptr));
+	writer->WriteLine(CSTRP(sbuff, sptr));
 	UInt32 code = WaitForResult(0);
 	return code == 250;
 }
@@ -405,8 +405,8 @@ Bool Net::Email::SMTPConn::SendRcptTo(Text::CString toEmail)
 	UTF8Char *sptr;
 	sptr = Text::StrConcatC(toEmail.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("RCPT TO: <"))), UTF8STRC(">"));
 	this->statusChg = false;
-	if (this->logWriter.SetTo(lwriter)) lwriter->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+	if (this->logWriter.SetTo(lwriter)) lwriter->WriteLine(CSTRP(sbuff, sptr));
+	writer->WriteLine(CSTRP(sbuff, sptr));
 	UInt32 code = WaitForResult(0);
 	return code == 250;
 }
@@ -415,8 +415,8 @@ Bool Net::Email::SMTPConn::SendQuit()
 {
 	NN<IO::Writer> lwriter;
 	this->statusChg = false;
-	if (this->logWriter.SetTo(lwriter)) lwriter->WriteLineC(UTF8STRC("QUIT"));
-	writer->WriteLineC(UTF8STRC("QUIT"));
+	if (this->logWriter.SetTo(lwriter)) lwriter->WriteLine(CSTR("QUIT"));
+	writer->WriteLine(CSTR("QUIT"));
 	UInt32 code = WaitForResult(0);
 	return code == 221;
 }
@@ -425,8 +425,8 @@ Bool Net::Email::SMTPConn::SendData(const UTF8Char *buff, UOSInt buffSize)
 {
 	NN<IO::Writer> lwriter;
 	this->statusChg = false;
-	if (this->logWriter.SetTo(lwriter)) lwriter->WriteLineC(UTF8STRC("DATA"));
-	writer->WriteLineC(UTF8STRC("DATA"));
+	if (this->logWriter.SetTo(lwriter)) lwriter->WriteLine(CSTR("DATA"));
+	writer->WriteLine(CSTR("DATA"));
 	UInt32 code = WaitForResult(0);
 	if (code != 354)
 	{
@@ -440,7 +440,7 @@ Bool Net::Email::SMTPConn::SendData(const UTF8Char *buff, UOSInt buffSize)
 		writeSize = this->cli->Write(buff, buffSize);
 		if (writeSize == 0)
 		{
-			if (this->logWriter.SetTo(lwriter)) lwriter->WriteLineC(UTF8STRC("Error in writing to SMTP Server"));
+			if (this->logWriter.SetTo(lwriter)) lwriter->WriteLine(CSTR("Error in writing to SMTP Server"));
 			break;
 		}
 		buff += writeSize;
@@ -454,7 +454,7 @@ Bool Net::Email::SMTPConn::SendData(const UTF8Char *buff, UOSInt buffSize)
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Write "));
 		sptr = Text::StrUOSInt(sptr, totalSize);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes"));
-		if (this->logWriter.SetTo(lwriter)) lwriter->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+		if (this->logWriter.SetTo(lwriter)) lwriter->WriteLine(CSTRP(sbuff, sptr));
 	}
 	this->cli->Write((const UInt8*)"\r\n.\r\n", 5);
 	code = WaitForResult(0);

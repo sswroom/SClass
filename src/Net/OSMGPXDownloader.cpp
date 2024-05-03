@@ -71,7 +71,7 @@ void Net::OSMGPXDownloader::ItemAdded(Net::RSSItem *item)
 
 		sb.AppendC(UTF8STRC("Downloading: "));
 		sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
-		this->writer->WriteLineC(sb.ToString(), sb.GetLength());
+		this->writer->WriteLine(sb.ToCString());
 
 		while (retryCnt-- > 0)
 		{

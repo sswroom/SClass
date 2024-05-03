@@ -83,7 +83,7 @@ Bool Exporter::MapCSVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 		UOSInt j = track->GetTrackCnt();
 		Data::DateTime d;
 
-		writer.WriteLineC(UTF8STRC("INDEX, UTC DATE, UTC TIME, VALID, LATITUDE, N/S, LONGITUDE, E/W, HEIGHT, SPEED, HEADING, NSAT(USED/VIEW)"));
+		writer.WriteLine(CSTR("INDEX, UTC DATE, UTC TIME, VALID, LATITUDE, N/S, LONGITUDE, E/W, HEIGHT, SPEED, HEADING, NSAT(USED/VIEW)"));
 
 		while (i < j)
 		{
@@ -138,7 +138,7 @@ Bool Exporter::MapCSVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 				sptr = Text::StrInt32(sptr, rec[k].nSateUsedGPS);
 				sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 				sptr = Text::StrInt32(sptr, rec[k].nSateViewGPS);
-				writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+				writer.WriteLine(CSTRP(sbuff, sptr));
 
 				currInd++;
 				k++;
@@ -158,7 +158,7 @@ Bool Exporter::MapCSVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 		UOSInt k;
 		UOSInt l;
 
-		writer.WriteLineC(UTF8STRC("INDEX, LATITUDE, N/S, LONGITUDE, E/W"));
+		writer.WriteLine(CSTR("INDEX, LATITUDE, N/S, LONGITUDE, E/W"));
 
 		Data::ArrayListInt64 objIds;
 		Map::GetObjectSess *sess = layer->BeginGetObject();
@@ -197,7 +197,7 @@ Bool Exporter::MapCSVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 					sptr = Text::StrDouble(sptr, v);
 					sptr = Text::StrConcatC(sptr, UTF8STRC(",E"));
 				}
-				writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+				writer.WriteLine(CSTRP(sbuff, sptr));
 				currInd++;
 				k++;
 			}

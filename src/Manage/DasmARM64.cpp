@@ -2551,7 +2551,7 @@ Manage::DasmARM64::~DasmARM64()
 	MemFree(this->codes);
 }
 
-Text::CString Manage::DasmARM64::GetHeader(Bool fullRegs) const
+Text::CStringNN Manage::DasmARM64::GetHeader(Bool fullRegs) const
 {
 	if (fullRegs)
 	{
@@ -2681,11 +2681,11 @@ Bool Manage::DasmARM64::Disasm64(NN<IO::Writer> writer, Manage::AddressResolver 
 				outStr.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 			}
 			outStr.AppendC(UTF8STRC("\r\n"));
-			writer->WriteStrC(outStr.ToString(), outStr.GetLength());
+			writer->Write(outStr.ToCString());
 			return false;
 		}
 		outStr.AppendSlow(sbuff);
-		writer->WriteStrC(outStr.ToString(), outStr.GetLength());
+		writer->Write(outStr.ToCString());
 		if (sess.endType == Manage::DasmARM64::ET_JMP && (UInt32)sess.retAddr >= *blockStart && (UInt32)sess.retAddr <= sess.regs.PC)
 		{
 			UOSInt i;

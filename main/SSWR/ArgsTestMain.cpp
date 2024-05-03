@@ -17,7 +17,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		sb.AppendUOSInt(i);
 		sb.AppendUTF8Char('\t');
 		sb.AppendSlow(argv[i]);
-		console.WriteLineC(sb.ToString(), sb.GetLength());
+		console.WriteLine(sb.ToCString());
 		i++;
 	}
 	return 0;

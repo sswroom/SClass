@@ -73,7 +73,7 @@ private:
 					sb.AppendC(UTF8STRC(")"));
 				}
 				mutUsage.EndUse();
-				console->WriteStrC(sb.ToString(), sb.GetLength());
+				console->Write(sb.ToCString());
 			}
 		}
 		me->threadRunning = false;
@@ -149,7 +149,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		IO::Path::PathType pt = IO::Path::GetPathType({cmdLines[1], cmdLen});
 		if (pt == IO::Path::PathType::Unknown)
 		{
-			console->WriteLineC(UTF8STRC("File not found"));
+			console->WriteLine(CSTR("File not found"));
 		}
 		else
 		{
@@ -163,7 +163,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				}
 				if (fileChk == 0)
 				{
-					console->WriteLineC(UTF8STRC("Error in parsing the file"));
+					console->WriteLine(CSTR("Error in parsing the file"));
 				}
 				else
 				{
@@ -174,7 +174,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					j = fileChk->GetCount();
 					while (i < j)
 					{
-						fileChk->CheckEntryHash(i, hash);
+						fileChk->CheckEntryHash(i, hash, 0);
 					}
 					showHelp = false;
 					DEL_CLASS(fileChk);
@@ -202,14 +202,14 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				}
 				else
 				{
-					console->WriteLineC(UTF8STRC("Error in calculating CRC"));
+					console->WriteLine(CSTR("Error in calculating CRC"));
 				}
 			}
 		}
 	}
 	if (showHelp)
 	{
-		console->WriteLineC(UTF8STRC("Usage: SCRC [File to check]"));
+		console->WriteLine(CSTR("Usage: SCRC [File to check]"));
 	}
 	DEL_CLASS(console);
 	return 0;

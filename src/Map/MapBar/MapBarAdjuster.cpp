@@ -145,7 +145,7 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 
 		if (!valid)
 		{
-			this->errWriter->WriteLineC(UTF8STRC("Request result not valid"));
+			this->errWriter->WriteLine(CSTR("Request result not valid"));
 		}
 
 		currPoint = nextPoint;

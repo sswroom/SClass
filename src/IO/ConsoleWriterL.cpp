@@ -22,15 +22,15 @@ IO::ConsoleWriter::~ConsoleWriter()
 {
 }
 
-Bool IO::ConsoleWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
+Bool IO::ConsoleWriter::Write(Text::CStringNN str)
 {
-	printf("%s", str);
+	printf("%s", str.v);
 	return true;
 }
 
-Bool IO::ConsoleWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
+Bool IO::ConsoleWriter::WriteLine(Text::CStringNN str)
 {
-	printf("%s\n", str);
+	printf("%s\n", str.v);
 	return true;
 }
 

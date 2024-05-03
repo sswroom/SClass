@@ -242,7 +242,7 @@ void __stdcall UI::GUIDDrawControl::OnResized(AnyType userObj)
 			sb.AppendUOSInt(me->dispSize.y);
 			sb.AppendC(UTF8STRC(", hMon="));
 			sb.AppendOSInt((OSInt)me->GetHMonitor());
-			me->debugWriter->WriteLineC(sb.ToString(), sb.GetLength());
+			me->debugWriter->WriteLine(sb.ToCString());
 		}
 		if (me->inited)
 		{
@@ -294,7 +294,7 @@ Bool UI::GUIDDrawControl::CreateSurface()
 
 	if (this->debugWriter)
 	{
-		this->debugWriter->WriteLineC(UTF8STRC("Create Surface"));
+		this->debugWriter->WriteLine(CSTR("Create Surface"));
 	}
 
 	if (this->currScnMode == SM_FS)
@@ -345,7 +345,7 @@ Bool UI::GUIDDrawControl::CreateSurface()
 				sb.AppendOSInt((OSInt)this->surfaceMon);
 				sb.AppendC(UTF8STRC(", hWnd = "));
 				sb.AppendOSInt((OSInt)hWnd);
-				this->debugWriter->WriteLineC(sb.ToString(), sb.GetLength());
+				this->debugWriter->WriteLine(sb.ToCString());
 			}
 			this->bitDepth = this->primarySurface->info.storeBPP;
 			this->scnW = this->primarySurface->info.dispSize.x;
@@ -372,7 +372,7 @@ void UI::GUIDDrawControl::CreateSubSurface()
 	GetDrawingRect(&rc);
 	if (this->debugWriter)
 	{
-		this->debugWriter->WriteLineC(UTF8STRC("Create Subsurface"));
+		this->debugWriter->WriteLine(CSTR("Create Subsurface"));
 	}
 
 	if (rc.right <= rc.left || rc.bottom <= rc.top)
@@ -391,7 +391,7 @@ void UI::GUIDDrawControl::CreateSubSurface()
 				sb.AppendU32(w);
 				sb.AppendC(UTF8STRC(" x "));
 				sb.AppendU32(h);
-				this->debugWriter->WriteLineC(sb.ToString(), sb.GetLength());
+				this->debugWriter->WriteLine(sb.ToCString());
 			}
 			this->dispSize = Math::Size2D<UOSInt>(w, h);
 		}
@@ -556,7 +556,7 @@ UI::GUIDDrawControl::~GUIDDrawControl()
 	SDEL_CLASS(this->imgCopy);
 	if (this->debugWriter)
 	{
-		this->debugWriter->WriteLineC(UTF8STRC("Release DDraw"));
+		this->debugWriter->WriteLine(CSTR("Release DDraw"));
 		DEL_CLASS(this->debugWriter);
 		DEL_CLASS(this->debugFS);
 		this->debugFS = 0;
@@ -579,7 +579,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("DrawToScreen "));
 		sb.AppendTSNoZone(Data::Timestamp::Now());
-		this->debugWriter->WriteLineC(sb.ToString(), sb.GetLength());
+		this->debugWriter->WriteLine(sb.ToCString());
 	}
 	if (this->currScnMode == SM_FS)
 	{
@@ -596,7 +596,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 			{
 				if (this->debugWriter)
 				{
-					this->debugWriter->WriteLineC(UTF8STRC("DrawToScreen: failed"));
+					this->debugWriter->WriteLine(CSTR("DrawToScreen: failed"));
 				}
 			}
 		}
@@ -606,7 +606,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("DrawToScreen: surface not found: "));
-				this->debugWriter->WriteLineC(sb.ToString(), sb.GetLength());
+				this->debugWriter->WriteLine(sb.ToCString());
 			}
 		}
 	}
@@ -631,7 +631,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 				{
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("DrawToScreen: Surface not found wind: "));
-					this->debugWriter->WriteLineC(sb.ToString(), sb.GetLength());
+					this->debugWriter->WriteLine(sb.ToCString());
 				}
 			}
 //			ValidateRect((HWND)this->hwnd, &rcSrc);
@@ -657,7 +657,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 		sb.AppendI32(vfs?1:0);
 		sb.AppendC(UTF8STRC(", hMon="));
 		sb.AppendOSInt((OSInt)this->GetHMonitor());
-		this->debugWriter->WriteLineC(sb.ToString(), sb.GetLength());
+		this->debugWriter->WriteLine(sb.ToCString());
 	}
 	if (fullScn)
 	{
@@ -739,7 +739,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 			sb.AppendI32(rc.right);
 			sb.AppendC(UTF8STRC(", "));
 			sb.AppendI32(rc.bottom);
-			this->debugWriter->WriteLineC(sb.ToString(), sb.GetLength());
+			this->debugWriter->WriteLine(sb.ToCString());
 			this->rootForm->ToFullScn();
 			this->currScnMode = SM_VFS;
 			GetClientRect((HWND)this->hwnd, &rc);
@@ -754,7 +754,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 			sb.AppendI32(rc.right);
 			sb.AppendC(UTF8STRC(", "));
 			sb.AppendI32(rc.bottom);
-			this->debugWriter->WriteLineC(sb.ToString(), sb.GetLength());
+			this->debugWriter->WriteLine(sb.ToCString());
 			this->rootForm->SetFormState(UI::GUIForm::FS_MAXIMIZED);
 			GetClientRect((HWND)this->hwnd, &rc);
 			ClientToScreen((HWND)this->hwnd, (POINT*)&rc.left);
@@ -768,7 +768,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 			sb.AppendI32(rc.right);
 			sb.AppendC(UTF8STRC(", "));
 			sb.AppendI32(rc.bottom);
-			this->debugWriter->WriteLineC(sb.ToString(), sb.GetLength());
+			this->debugWriter->WriteLine(sb.ToCString());
 		}
 		else
 		{

@@ -107,9 +107,9 @@ Int32 MemCheckError()
 		UTF8Char *sptr;
 		sptr = Text::StrInt32(buff, mcMemoryCnt);
 		IO::ConsoleWriter writer;
-		writer.WriteStrC(UTF8STRC("Memory leaks occurs for "));
+		writer.Write(CSTR("Memory leaks occurs for "));
 		writer.WriteStrC(buff, (UOSInt)(sptr - buff));
-		writer.WriteLineC(UTF8STRC(" times"));
+		writer.WriteLine(CSTR(" times"));
 		found = true;
 	}
 #if defined(MSC_VER) && !defined(_WIN32_WCE)

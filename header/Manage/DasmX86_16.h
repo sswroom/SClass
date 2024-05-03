@@ -36,7 +36,7 @@ namespace Manage
 		DasmX86_16_Sess *CreateSess(DasmX86_16_Regs *regs, UInt8 *code, UInt16 codeSegm);
 		void DeleteSess(DasmX86_16_Sess *sess);
 
-		virtual Text::CString GetHeader(Bool fullRegs) const;
+		virtual Text::CStringNN GetHeader(Bool fullRegs) const;
 		virtual Bool Disasm16(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt16 *currInst, UInt16 *currStack, UInt16 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt16 *blockStart, UInt16 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
 		virtual Dasm_Regs *CreateRegs() const;
 		virtual void FreeRegs(Dasm_Regs *regs) const;

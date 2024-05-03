@@ -225,8 +225,8 @@ DB::DBQueue::~DBQueue()
 					NEW_CLASS(writer, Text::UTF8Writer(nnfs));
 				}
 				NN<Text::String> sql = ((DB::DBQueue::SQLCmd*)c)->GetSQL();
-				writer->WriteStrC(sql->v, sql->leng);
-				writer->WriteLineC(UTF8STRC(";"));
+				writer->Write(sql->ToCString());
+				writer->WriteLine(CSTR(";"));
 			}
 			DEL_CLASS(c);
 		}
@@ -249,8 +249,8 @@ DB::DBQueue::~DBQueue()
 						NEW_CLASS(writer, Text::UTF8Writer(nnfs));
 					}
 					NN<Text::String> sql = ((DB::DBQueue::SQLCmd*)c)->GetSQL();
-					writer->WriteStrC(sql->v, sql->leng);
-					writer->WriteLineC(UTF8STRC(";"));
+					writer->Write(sql->ToCString());
+					writer->WriteLine(CSTR(";"));
 				}
 				DEL_CLASS(c);
 			}
@@ -578,8 +578,8 @@ void DB::DBHandler::WriteError(const UTF8Char *errMsg, NN<Text::String> sqlCmd)
 	{
 		IO::FileStream fs(CSTR("FailSQL.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		Text::UTF8Writer writer(fs);
-		writer.WriteStrC(sqlCmd->v, sqlCmd->leng);
-		writer.WriteLineC(UTF8STRC(";"));
+		writer.Write(sqlCmd->ToCString());
+		writer.WriteLine(CSTR(";"));
 	}
 	mutUsage.EndUse();
 }

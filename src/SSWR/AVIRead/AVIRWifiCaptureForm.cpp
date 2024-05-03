@@ -68,7 +68,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 				sb.ClearStr();
 				sb.AppendTSNoZone(ts);
 				sb.AppendC(UTF8STRC("\tMotion:Moving"));
-				me->captureWriter->WriteLineC(sb.ToString(), sb.GetLength());
+				me->captureWriter->WriteLine(sb.ToCString());
 			}
 			mutUsage.EndUse();
 		}
@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 				sb.ClearStr();
 				sb.AppendTSNoZone(ts);
 				sb.AppendC(UTF8STRC("\tMotion:Stopped"));
-				me->captureWriter->WriteLineC(sb.ToString(), sb.GetLength());
+				me->captureWriter->WriteLine(sb.ToCString());
 			}
 			mutUsage.EndUse();
 		}
@@ -148,7 +148,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(AnyType userObj)
 						sb.AppendDouble(bss->GetFreq() / 1000000.0);
 						i++;
 					}
-					me->captureWriter->WriteLineC(sb.ToString(), sb.GetLength());
+					me->captureWriter->WriteLine(sb.ToCString());
 					me->ui->UseDevice(true, false);
 				}
 				mutUsage.EndUse();
@@ -631,7 +631,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveClicked(AnyType 
 					sb.AppendHex64(wifiLog->neighbour[k]);
 					k++;
 				}
-				if (!writer.WriteLineC(sb.ToString(), sb.GetLength()))
+				if (!writer.WriteLine(sb.ToCString()))
 				{
 					succ = false;
 				}
@@ -700,7 +700,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveFClicked(AnyType
 					sb.AppendI32(wifiLog->phyType);
 					sb.AppendC(UTF8STRC("\t"));
 					sb.AppendDouble(wifiLog->freq);
-					if (!writer.WriteLineC(sb.ToString(), sb.GetLength()))
+					if (!writer.WriteLine(sb.ToCString()))
 					{
 						succ = false;
 					}
@@ -764,7 +764,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(AnyType userObj, NN
 				sb.AppendC(UTF8STRC(","));
 				sb.AppendDouble(record->altitude);
 			}
-			me->captureWriter->WriteLineC(sb.ToString(), sb.GetLength());
+			me->captureWriter->WriteLine(sb.ToCString());
 		}
 		mutUsage.EndUse();
 	}

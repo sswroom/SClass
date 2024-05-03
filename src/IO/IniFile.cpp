@@ -126,10 +126,10 @@ Bool IO::IniFile::SaveConfig(IO::Writer *writer, IO::ConfigFile *cfg)
 	while (it.HasNext())
 	{
 		s = it.Next();
-		writer->WriteStrC(s->v, s->leng);
-		writer->WriteStrC(UTF8STRC("="));
+		writer->Write(s->ToCString());
+		writer->Write(CSTR("="));
 		if (cfg->GetValue(s).SetTo(s2))
-			writer->WriteLineC(s2->v, s2->leng);
+			writer->WriteLine(s2->ToCString());
 		else
 			writer->WriteLine();
 	}
@@ -139,9 +139,9 @@ Bool IO::IniFile::SaveConfig(IO::Writer *writer, IO::ConfigFile *cfg)
 	{
 		s2 = itCate.Next();
 		writer->WriteLine();
-		writer->WriteStrC(UTF8STRC("["));
-		writer->WriteStrC(s2->v, s2->leng);
-		writer->WriteLineC(UTF8STRC("]"));
+		writer->Write(CSTR("["));
+		writer->Write(s2->ToCString());
+		writer->WriteLine(CSTR("]"));
 
 		keyList.Clear();
 		cfg->GetKeys(s2, keyList);
@@ -149,10 +149,10 @@ Bool IO::IniFile::SaveConfig(IO::Writer *writer, IO::ConfigFile *cfg)
 		while (it.HasNext())
 		{
 			s = it.Next();
-			writer->WriteStrC(s->v, s->leng);
-			writer->WriteStrC(UTF8STRC("="));
+			writer->Write(s->ToCString());
+			writer->Write(CSTR("="));
 			if (cfg->GetCateValue(s2, s).SetTo(s3))
-				writer->WriteLineC(s3->v, s3->leng);
+				writer->WriteLine(s3->ToCString());
 			else
 				writer->WriteLine();
 		}

@@ -53,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRMSGraphEmailForm::OnReadClicked(AnyType userOb
         if (cli.MailFoldersGet(token, userName, false, folderList))
         {
 			Text::StringBuilderUTF8 sb;
-            console.WriteLineCStr(CSTR("Mail folders Get:"));
+            console.WriteLine(CSTR("Mail folders Get:"));
 			Data::ArrayIterator<NN<Net::MSGraphMailFolder>> it = folderList.Iterator();
 			while (it.HasNext())
 			{
@@ -63,13 +63,13 @@ void __stdcall SSWR::AVIRead::AVIRMSGraphEmailForm::OnReadClicked(AnyType userOb
 				sb.AppendC(UTF8STRC(" ("));
 				sb.AppendOpt(folder->GetId());
 				sb.AppendUTF8Char(')');
-				console.WriteLineCStr(sb.ToCString());
+				console.WriteLine(sb.ToCString());
 			}
             folderList.DeleteAll();
         }
         else
         {
-            console.WriteLineCStr(CSTR("Error in getting mail folders"));
+            console.WriteLine(CSTR("Error in getting mail folders"));
         }*/
         
         token.Delete();

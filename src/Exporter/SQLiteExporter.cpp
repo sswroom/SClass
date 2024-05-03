@@ -120,7 +120,7 @@ Bool Exporter::SQLiteExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 				{
 					IO::FileStream debugFS(CSTR("Debug.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 					Text::UTF8Writer debugWriter(debugFS);
-					debugWriter.WriteLineCStr(sql.ToCString());
+					debugWriter.WriteLine(sql.ToCString());
 				}
 				succ = false;
 				destDB->EndTrans(true);
@@ -134,7 +134,7 @@ Bool Exporter::SQLiteExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 				{
 					IO::FileStream debugFS(CSTR("Debug.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 					Text::UTF8Writer debugWriter(debugFS);
-					debugWriter.WriteLineCStr(sql.ToCString());
+					debugWriter.WriteLine(sql.ToCString());
 				}
 
 				DEL_CLASS(tabDef);
@@ -163,8 +163,8 @@ Bool Exporter::SQLiteExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 
 					IO::FileStream debugFS(CSTR("Debug.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 					Text::UTF8Writer debugWriter(debugFS);
-					debugWriter.WriteLineCStr(sql.ToCString());
-					debugWriter.WriteLineCStr(sb.ToCString());
+					debugWriter.WriteLine(sql.ToCString());
+					debugWriter.WriteLine(sb.ToCString());
 					succ = false;
 					break;
 				}

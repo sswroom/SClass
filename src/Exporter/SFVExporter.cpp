@@ -68,7 +68,7 @@ Bool Exporter::SFVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		sptr = Text::String::OrEmpty(fchk->GetEntryName(i))->ConcatTo(sbuff);
 		*sptr++ = ' ';
 		sptr = Text::StrHexVal32(sptr, ReadMUInt32(buff));
-		writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+		writer.WriteLine(CSTRP(sbuff, sptr));
 		i++;
 	}
 	return true;

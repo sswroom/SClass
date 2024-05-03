@@ -449,7 +449,7 @@ Bool Net::EthernetAnalyzer::PacketNull(const UInt8 *packet, UOSInt packetSize)
 			this->isFirst = false;
 			Text::StringBuilderUTF8 sb;
 			sb.AppendHexBuff(packet, packetSize, ' ', Text::LineBreakType::CRLF);
-			this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
+			this->errWriter->WriteLine(sb.ToCString());
 		}
 	}
 	Sync::Interlocked::IncrementU64(this->packetCnt);
@@ -485,7 +485,7 @@ Bool Net::EthernetAnalyzer::PacketEthernet(const UInt8 *packet, UOSInt packetSiz
 			this->isFirst = false;
 			Text::StringBuilderUTF8 sb;
 			sb.AppendHexBuff(packet, packetSize, ' ', Text::LineBreakType::CRLF);
-			this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
+			this->errWriter->WriteLine(sb.ToCString());
 		}
 	}
 	Sync::Interlocked::IncrementU64(this->packetCnt);
@@ -537,7 +537,7 @@ Bool Net::EthernetAnalyzer::PacketLinux(const UInt8 *packet, UOSInt packetSize)
 			this->isFirst = false;
 			Text::StringBuilderUTF8 sb;
 			sb.AppendHexBuff(packet, packetSize, ' ', Text::LineBreakType::CRLF);
-			this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
+			this->errWriter->WriteLine(sb.ToCString());
 		}
 	}
 	Sync::Interlocked::IncrementU64(this->packetCnt);
@@ -1562,12 +1562,12 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 										mac->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
 /*										NetBIOSDecName(&ipData[57], 32);
 										console->Write(&ipData[23]);
-										console->WriteStrC(UTF8STRC(", ");
+										console->Write(CSTR(", ");
 										console->Write(&ipData[57]);
-										console->WriteStrC(UTF8STRC(", ");
+										console->Write(CSTR(", ");
 										Net::SocketUtil::GetIPv4Name(&ipData[23], ip->srcIP);
 										console->Write(&ipData[23]);
-										console->WriteStrC(UTF8STRC(", ");
+										console->Write(CSTR(", ");
 										Net::SocketUtil::GetIPv4Name(&ipData[23], ip->destIP);
 										console->WriteLine(&ipData[23]);*/
 									}

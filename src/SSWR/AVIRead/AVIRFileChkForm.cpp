@@ -83,7 +83,7 @@ void SSWR::AVIRead::AVIRFileChkForm::EventMenuClicked(UInt16 cmdId)
 			j = this->fileChk->GetCount();
 			while (i < j)
 			{
-				if (this->fileChk->CheckEntryHash(i, hash))
+				if (this->fileChk->CheckEntryHash(i, hash, 0))
 				{
 					sptr = Text::StrHexBytes(sbuff, hash, hashSize, 0);
 					this->lvFileChk->SetSubItem(i, 2, CSTRP(sbuff, sptr));

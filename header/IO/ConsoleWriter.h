@@ -35,8 +35,8 @@ namespace IO
 		ConsoleWriter();
 		virtual ~ConsoleWriter();
 
-		virtual Bool WriteStrC(const UTF8Char *str, UOSInt nChar);
-		virtual Bool WriteLineC(const UTF8Char *str, UOSInt nChar);
+		virtual Bool Write(Text::CStringNN str);
+		virtual Bool WriteLine(Text::CStringNN str);
 		virtual Bool WriteLine();
 		virtual Bool WriteChar(UTF8Char c);
 

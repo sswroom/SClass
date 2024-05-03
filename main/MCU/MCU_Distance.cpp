@@ -42,7 +42,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				sptr = Text::StrConcatC(sbuff, UTF8STRC("distance(mm) = "));
 				sptr = Text::StrInt32(sptr, distSensor.ConvDistanceMM_RoomTemp(t0));
 
-				console.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+				console.WriteLine(CSTRP(sbuff, sptr));
 			}
 		}
 		Sync::SimpleThread::Sleep(1000);

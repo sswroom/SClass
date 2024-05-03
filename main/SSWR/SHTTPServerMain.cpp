@@ -47,7 +47,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Listening to port "));
 	sb.AppendI32(port);
-	console->WriteLineC(sb.ToString(), sb.GetLength());
+	console->WriteLine(sb.ToCString());
 	Net::OSSocketFactory sockf(true);
 	NN<Net::WebServer::WebStandardHandler> hdlr;
 	NEW_CLASSNN(hdlr, Net::WebServer::HTTPDirectoryHandler(path, true, 65536, true));
@@ -58,7 +58,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	}
 	else
 	{
-		console->WriteLineC(UTF8STRC("Error in listening port"));
+		console->WriteLine(CSTR("Error in listening port"));
 	}
 	DEL_CLASS(svr);
 	hdlr.Delete();

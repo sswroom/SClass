@@ -40,18 +40,18 @@ void IO::DebugWriter::Flush()
 	}
 }
 
-Bool IO::DebugWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
+Bool IO::DebugWriter::Write(Text::CStringNN str)
 {
-	Text::StrConcatC(&this->clsData->buff[this->clsData->buffSize], str, nChar);
-	this->clsData->buffSize += nChar;
+	str.ConcatTo(&this->clsData->buff[this->clsData->buffSize]);
+	this->clsData->buffSize += str.leng;
 	this->Flush();
 	return true;
 }
 
-Bool IO::DebugWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
+Bool IO::DebugWriter::WriteLine(Text::CStringNN str)
 {
-	Text::StrConcatC(&this->clsData->buff[this->clsData->buffSize], str, nChar);
-	this->clsData->buffSize += nChar;
+	str.ConcatTo(&this->clsData->buff[this->clsData->buffSize]);
+	this->clsData->buffSize += str.leng;
 	this->Flush();
 	syslog(LOG_DEBUG, "%s", (const Char*)this->clsData->buff);
 	this->clsData->buff[0] = 0;

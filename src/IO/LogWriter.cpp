@@ -28,20 +28,20 @@ IO::LogWriter::~LogWriter()
 {
 }
 
-Bool IO::LogWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
+Bool IO::LogWriter::Write(Text::CStringNN str)
 {
 	{
 		Sync::MutexUsage mutUsage(this->mut);
-		this->sb.AppendC(str, nChar);
+		this->sb.Append(str);
 	}
 	this->CheckLines();
 	return true;
 }
 
-Bool IO::LogWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
+Bool IO::LogWriter::WriteLine(Text::CStringNN str)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	this->sb.AppendC(str, nChar);
+	this->sb.Append(str);
 	this->CheckLines();
 	if (this->sb.GetLength() > 0)
 	{

@@ -23,7 +23,7 @@ void TestEncode(UInt32 val, UOSInt bitCnt, IO::Writer *writer)
 	sb.AppendU32(val);
 	sb.AppendChar(' ', 9 - sb.GetLength());
 	sb.AppendHexBuff(outBuff, outSize, ' ', Text::LineBreakType::None);
-	writer->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLine(sb.ToCString());
 }
 
 //RFC 6229
@@ -33,7 +33,7 @@ void TestAllForBit(UOSInt bitCnt, IO::Writer *writer)
 	sb.AppendC(UTF8STRC("Key Length: "));
 	sb.AppendUOSInt(bitCnt);
 	sb.AppendC(UTF8STRC(" bits"));
-	writer->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLine(sb.ToCString());
 	TestEncode(0, bitCnt, writer);
 	TestEncode(16, bitCnt, writer);
 	TestEncode(240, bitCnt, writer);

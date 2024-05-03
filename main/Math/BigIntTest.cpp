@@ -34,42 +34,42 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Test();
 
 	val1 = 1000000000;
-	console.WriteLineC(UTF8STRC("Assign Int 1000000000"));
+	console.WriteLine(CSTR("Assign Int 1000000000"));
 	sptr = val1.ToString(sbuff);
-	console.WriteStrC(UTF8STRC("ToString "));
-	console.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+	console.Write(CSTR("ToString "));
+	console.WriteLine(CSTRP(sbuff, sptr));
 
 	val1.Neg();
 	sptr = val1.ToString(sbuff);
-	console.WriteStrC(UTF8STRC("Neg "));
-	console.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+	console.Write(CSTR("Neg "));
+	console.WriteLine(CSTRP(sbuff, sptr));
 
 	val2 = -1000000000;
-	console.WriteLineC(UTF8STRC("Assign Int -1000000000"));
+	console.WriteLine(CSTR("Assign Int -1000000000"));
 	sptr = val2.ToString(sbuff);
-	console.WriteStrC(UTF8STRC("ToString "));
-	console.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+	console.Write(CSTR("ToString "));
+	console.WriteLine(CSTRP(sbuff, sptr));
 
 	val2 *= 1234567890;
-	console.WriteStrC(UTF8STRC("-1000000000 * 1234567890 = "));
+	console.Write(CSTR("-1000000000 * 1234567890 = "));
 	sptr = val2.ToString(sbuff);
-	console.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+	console.WriteLine(CSTRP(sbuff, sptr));
 
-	console.WriteStrC(UTF8STRC("520! = "));
+	console.Write(CSTR("520! = "));
 	if (val1.SetFactorial(520))
 	{
-		console.WriteStrC(UTF8STRC("(Overflow) "));
+		console.Write(CSTR("(Overflow) "));
 	}
 	sptr = val1.ToString(sbuff);
-	console.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+	console.WriteLine(CSTRP(sbuff, sptr));
 
 	UInt32 i = 520;
-	console.WriteStrC(UTF8STRC("Divide test: "));
+	console.Write(CSTR("Divide test: "));
 	while (i > 1)
 	{
 		if (val1.DivideBy(i) != 0)
 		{
-			console.WriteLineC(UTF8STRC("Failed"));
+			console.WriteLine(CSTR("Failed"));
 			break;
 		}
 		i--;
@@ -78,11 +78,11 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	{
 		if (val1.EqualsToI32(1))
 		{
-			console.WriteLineC(UTF8STRC("Success"));
+			console.WriteLine(CSTR("Success"));
 		}
 		else
 		{
-			console.WriteLineC(UTF8STRC("Failed"));
+			console.WriteLine(CSTR("Failed"));
 		}
 	}
 	

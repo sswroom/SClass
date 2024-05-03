@@ -29,12 +29,12 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_REALTIME);
 	sb.AppendC(UTF8STRC("Run using GPIO pin "));
 	sb.AppendI32(pinNum);
-	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLine(sb.ToCString());
 	IO::GPIOControl gpioCtrl;
 	IO::GPIOPin pin(gpioCtrl, pinNum);
 	if (gpioCtrl.IsError() || pin.IsError())
 	{
-		console.WriteLineC(UTF8STRC("Error in opening pin."));
+		console.WriteLine(CSTR("Error in opening pin."));
 	}
 	else
 	{
@@ -48,11 +48,11 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			sb.AppendC(UTF8STRC(", RH = "));
 			sb.AppendDouble(rh);
 			sb.AppendC(UTF8STRC("%"));
-			console.WriteLineC(sb.ToString(), sb.GetLength());
+			console.WriteLine(sb.ToCString());
 		}
 		else
 		{
-			console.WriteLineC(UTF8STRC("Error in reading from DHT22"));
+			console.WriteLine(CSTR("Error in reading from DHT22"));
 		}
 
 		Data::ArrayList<Double> times;
@@ -63,7 +63,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		{
 			IO::FileStream fs(CSTR("Capture.csv"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			Text::UTF8Writer writer(fs);
-			writer.WriteLineC(UTF8STRC("Time, State"));
+			writer.WriteLine(CSTR("Time, State"));
 			i = 0;
 			j = times.GetCount();
 			while (i < j)
@@ -72,7 +72,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				sb.AppendDouble(times.GetItem(i));
 				sb.AppendC(UTF8STRC(", "));
 				sb.AppendI32(isHighs.GetItem(i));
-				writer.WriteLineC(sb.ToString(), sb.GetLength());
+				writer.WriteLine(sb.ToCString());
 				i++;
 			}		
 		}

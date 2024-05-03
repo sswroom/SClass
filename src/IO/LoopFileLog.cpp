@@ -148,7 +148,7 @@ void IO::LoopFileLog::LogAdded(const Data::Timestamp &time, Text::CStringNN logM
 		log->WriteSignature();
 
 		sptr = Text::StrConcatC(time.ToString(buff, "yyyy-MM-dd HH:mm:ss.fff\t"), UTF8STRC("Program running"));
-		log->WriteLineC(buff, (UOSInt)(sptr - buff));
+		log->WriteLine(CSTRP(buff, sptr));
 		fileStm->Flush();
 	}
 
@@ -158,6 +158,6 @@ void IO::LoopFileLog::LogAdded(const Data::Timestamp &time, Text::CStringNN logM
 		Text::StringBuilderUTF8 sb;
 		sb.AppendP(buff, sptr);
 		sb.Append(logMsg);
-		log->WriteLineC(sb.ToString(), sb.GetLength());
+		log->WriteLine(sb.ToCString());
 	}
 }

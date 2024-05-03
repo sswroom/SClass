@@ -128,7 +128,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnResultSaveClicked(AnyType u
 			sb.AppendUOSInt(fi->codeCnt);
 			sb.AppendUTF8Char('\t');
 			sb.Append(fi->fileName);
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLine(sb.ToCString());
 			i++;
 		}
 	}

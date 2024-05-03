@@ -790,37 +790,37 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				sb.ClearStr();
 				sb.AppendUOSInt(dataList.GetCount());
 				sb.AppendC(UTF8STRC(" rows of records loaded"));
-				console.WriteLineC(sb.ToString(), sb.GetLength());
+				console.WriteLine(sb.ToCString());
 
 				sptr = IO::Path::GetRealPath(sbuff, UTF8STRC("~/Progs/Temp/LamppostData.ddf"));
 				if (DB::DBDataFile<LamppostData>::SaveFile(CSTRP(sbuff, sptr), dataList, cls))
 				{
-					console.WriteLineC(UTF8STRC("File saved"));
+					console.WriteLine(CSTR("File saved"));
 				}
 				if (DB::DBDataFile<LamppostData>::LoadFile(CSTRP(sbuff, sptr), cls, dataList2))
 				{
 					sb.ClearStr();
 					sb.AppendUOSInt(dataList2.GetCount());
 					sb.AppendC(UTF8STRC(" rows of records loaded from file"));
-					console.WriteLineC(sb.ToString(), sb.GetLength());
+					console.WriteLine(sb.ToCString());
 				}
 				if (dataList.GetCount() == dataList2.GetCount())
 				{
 					Bool succ = true;
-					console.WriteLineC(UTF8STRC("Comparing two sets of data"));
+					console.WriteLine(CSTR("Comparing two sets of data"));
 					i = dataList.GetCount();
 					while (i-- > 0)
 					{
 						if (!cls->Equals(dataList.GetItemNoCheck(i), dataList2.GetItemNoCheck(i)))
 						{
-							console.WriteLineC(UTF8STRC("Data not match"));
+							console.WriteLine(CSTR("Data not match"));
 							succ = false;
 							break;
 						}
 					}
 					if (succ)
 					{
-						console.WriteLineC(UTF8STRC("Data matched"));
+						console.WriteLine(CSTR("Data matched"));
 					}
 				}
 			}
@@ -832,13 +832,13 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		}
 		else
 		{
-			console.WriteLineC(UTF8STRC("Error in opening DB connection"));
+			console.WriteLine(CSTR("Error in opening DB connection"));
 		}
 		cfg.Delete();
 	}
 	else
 	{
-		console.WriteLineC(UTF8STRC("Error in loading application.properties"));
+		console.WriteLine(CSTR("Error in loading application.properties"));
 	}
 	return 0;
 }

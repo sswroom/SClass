@@ -42,7 +42,7 @@ UInt32 __stdcall WatchdogThread(AnyType userObj)
 		{
 			if (i-- > 0)
 			{
-				consoleWriter->WriteLineC(UTF8STRC("Keep Alive"));
+				consoleWriter->WriteLine(CSTR("Keep Alive"));
 				wd->Keepalive();
 			}
 			if (am2315->ReadTemperature(tempVal))
@@ -54,7 +54,7 @@ UInt32 __stdcall WatchdogThread(AnyType userObj)
 					sb.AppendDouble(tempVal);
 					sb.AppendC(UTF8STRC(", RH = "));
 					sb.AppendDouble(rhVal);
-					consoleWriter->WriteLineC(sb.ToString(), sb.GetLength());
+					consoleWriter->WriteLine(sb.ToCString());
 				}
 				else
 				{
@@ -62,12 +62,12 @@ UInt32 __stdcall WatchdogThread(AnyType userObj)
 					sb.AppendC(UTF8STRC("AM2315: Temp = "));
 					sb.AppendDouble(tempVal);
 					sb.AppendC(UTF8STRC(", RH = error"));
-					consoleWriter->WriteLineC(sb.ToString(), sb.GetLength());
+					consoleWriter->WriteLine(sb.ToCString());
 				}
 			}
 			else
 			{
-				consoleWriter->WriteLineC(UTF8STRC("Fail in reading from AM2315"));
+				consoleWriter->WriteLine(CSTR("Fail in reading from AM2315"));
 			}
 			
 			evt->Wait(2000);
@@ -85,8 +85,8 @@ UInt32 __stdcall HTTPThread(AnyType userObj)
 		httpRunning = true;
 		while (!toStop)
 		{
-			consoleWriter->WriteStrC(UTF8STRC("Requesting to "));
-			consoleWriter->WriteLineC(UTF8STRC(TESTURL));
+			consoleWriter->Write(CSTR("Requesting to "));
+			consoleWriter->WriteLine(CSTR(TESTURL));
 			cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR(USERAGENT), false, Text::StrStartsWithC(UTF8STRC(TESTURL), UTF8STRC("https://")));
 			cli->Connect(CSTR(TESTURL), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, false);
 			cli->AddHeaderC(CSTR("User-Agent"), CSTR(USERAGENT));
@@ -96,7 +96,7 @@ UInt32 __stdcall HTTPThread(AnyType userObj)
 			
 			if (cli->IsError())
 			{
-				consoleWriter->WriteLineC(UTF8STRC("Error in requesting to server"));
+				consoleWriter->WriteLine(CSTR("Error in requesting to server"));
 			}
 			else
 			{
@@ -105,7 +105,7 @@ UInt32 __stdcall HTTPThread(AnyType userObj)
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Resp Code = "));
 				sb.AppendI32(respCode);
-				consoleWriter->WriteLineC(sb.ToString(), sb.GetLength());
+				consoleWriter->WriteLine(sb.ToCString());
 			}
 			cli.Delete();
 			httpEvt->Wait(1000);
@@ -130,7 +130,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	NN<IO::I2CChannel> channel;
 	if (!channel.Set(IO::Device::AM2315::CreateDefChannel(1)))
 	{
-		console.WriteLineC(UTF8STRC("I2C Bus not found"));
+		console.WriteLine(CSTR("I2C Bus not found"));
 		return 0;
 	}
 	NEW_CLASS(am2315, IO::Device::AM2315(channel, true));
@@ -138,7 +138,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	{
 		DEL_CLASS(am2315);
 		am2315 = 0;
-		console.WriteLineC(UTF8STRC("AM2315 not found"));
+		console.WriteLine(CSTR("AM2315 not found"));
 		return 0;
 	}
 
@@ -156,7 +156,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	
 	if (wd == 0)
 	{
-		console.WriteLineC(UTF8STRC("Watchdog not found"));
+		console.WriteLine(CSTR("Watchdog not found"));
 	}
 	else
 	{
@@ -168,25 +168,25 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Timeout = "));
 			sb.AppendI32(timeoutSec);
-			console.WriteLineC(sb.ToString(), sb.GetLength());
+			console.WriteLine(sb.ToCString());
 		}
 		else
 		{
-			console.WriteLineC(UTF8STRC("Error in getting timeout value"));
+			console.WriteLine(CSTR("Error in getting timeout value"));
 		}
 
 		if (wd->Enable())
 		{
-			console.WriteLineC(UTF8STRC("Watchdog enabled"));
+			console.WriteLine(CSTR("Watchdog enabled"));
 			Sync::ThreadUtil::Create(WatchdogThread, 0);
 			Sync::ThreadUtil::Create(HTTPThread, 0);
 			while (!running)
 			{
 				Sync::SimpleThread::Sleep(10);
 			}
-			console.WriteLineC(UTF8STRC("Running"));
+			console.WriteLine(CSTR("Running"));
 			progCtrl->WaitForExit(progCtrl);
-			console.WriteLineC(UTF8STRC("Exiting"));
+			console.WriteLine(CSTR("Exiting"));
 			toStop = true;
 			evt->Set();
 			httpEvt->Set();
@@ -197,7 +197,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		}
 		else
 		{
-			console.WriteLineC(UTF8STRC("Error in enabling watchdog"));
+			console.WriteLine(CSTR("Error in enabling watchdog"));
 		}
 		DEL_CLASS(wd);
 	}

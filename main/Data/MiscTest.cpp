@@ -143,7 +143,7 @@ Int32 Test1()
 							}
 						}
 						sb.AppendC(UTF8STRC("},"));
-						writer.WriteLineCStr(sb.ToCString());
+						writer.WriteLine(sb.ToCString());
 					}
 				}
 				break;

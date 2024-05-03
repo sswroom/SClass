@@ -587,7 +587,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::SaveList()
 			sb.AppendI32(file->id);
 			sb.AppendUTF8Char('\t');
 			sb.Append(file->dbName);
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLine(sb.ToCString());
 		}
 		i++;
 	}

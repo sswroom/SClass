@@ -17,35 +17,35 @@ void IO::ConsoleLogHandler::LogAdded(const Data::Timestamp &logTime, Text::CStri
 	sptr = logTime.ToString(sbuff, "HH:mm:ss.fff ");
 	this->console->SetBGColor(Text::StandardColor::Black);
 	this->console->SetTextColor(Text::StandardColor::Gray);
-	this->console->WriteStr(CSTRP(sbuff, sptr));
+	this->console->Write(CSTRP(sbuff, sptr));
 	if (logLev == IO::LogHandler::LogLevel::Raw)
 	{
 		this->console->SetTextColor(Text::StandardColor::White);
-		this->console->WriteLineCStr(logMsg);
+		this->console->WriteLine(logMsg);
 	}
 	else if (logLev == IO::LogHandler::LogLevel::Command)
 	{
 		this->console->SetTextColor(Text::StandardColor::Lime);
-		this->console->WriteLineCStr(logMsg);
+		this->console->WriteLine(logMsg);
 	}
 	else if (logLev == IO::LogHandler::LogLevel::Action)
 	{
 		this->console->SetTextColor(Text::StandardColor::Yellow);
-		this->console->WriteLineCStr(logMsg);
+		this->console->WriteLine(logMsg);
 	}
 	else if (logLev == IO::LogHandler::LogLevel::Error)
 	{
 		this->console->SetTextColor(Text::StandardColor::Red);
-		this->console->WriteLineCStr(logMsg);
+		this->console->WriteLine(logMsg);
 	}
 	else if (logLev == IO::LogHandler::LogLevel::ErrorDetail)
 	{
 		this->console->SetTextColor(Text::StandardColor::DarkRed);
-		this->console->WriteLineCStr(logMsg);
+		this->console->WriteLine(logMsg);
 	}
 	else
 	{
-		this->console->WriteLineCStr(logMsg);
+		this->console->WriteLine(logMsg);
 	}
 }
 

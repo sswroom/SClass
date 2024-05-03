@@ -201,12 +201,12 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 							}
 							else
 							{
-								errWriter->WriteLineC(UTF8STRC("Google JSON empty results"));
+								errWriter->WriteLine(CSTR("Google JSON empty results"));
 							}
 						}
 						else
 						{
-							errWriter->WriteLineC(UTF8STRC("Google JSON results not found"));
+							errWriter->WriteLine(CSTR("Google JSON results not found"));
 						}
 					}
 					else
@@ -221,21 +221,21 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 							sptr = Text::StrConcatC(url, UTF8STRC("Google JSON Status "));
 							sptr = jstr->GetValue()->ConcatTo(sptr);
 							sptr = Text::StrConcatC(sptr, UTF8STRC(" Error"));
-							errWriter->WriteLineC(url, (UOSInt)(sptr - url));
+							errWriter->WriteLine(CSTRP(url, sptr));
 							this->lastIsError = 1;
 						}
 					}
 				}
 				else
 				{
-					errWriter->WriteLineC(UTF8STRC("Google JSON invalid status"));
+					errWriter->WriteLine(CSTR("Google JSON invalid status"));
 					this->lastIsError = 1;
 				}
 				obj->EndUse();
 			}
 			else
 			{
-				errWriter->WriteLineC(UTF8STRC("Google non-json Error"));
+				errWriter->WriteLine(CSTR("Google non-json Error"));
 				IO::FileStream fs(CSTR("nonjsonerr.txt"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				fs.Write(sb.ToString(), sb.GetLength());
 				this->lastIsError = 1;
@@ -243,11 +243,11 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 		}
 		else
 		{
-			errWriter->WriteLineC(url, (UOSInt)(sptr - url));
+			errWriter->WriteLine(CSTRP(url, sptr));
 			sptr = Text::StrConcatC(url, UTF8STRC("Google HTTP "));
 			sptr = Text::StrInt32(sptr, status);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(" Error"));
-			errWriter->WriteLineC(url, (UOSInt)(sptr - url));
+			errWriter->WriteLine(CSTRP(url, sptr));
 			*buff = 0;
 			this->lastIsError = 1;
 		}
@@ -259,7 +259,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 		this->lastIsError = 2;
 		sb.AppendC(UTF8STRC("Cannot connect: "));
 		sb.AppendC(url, (UOSInt)(sptr - url));
-		errWriter->WriteLineC(sb.ToString(), sb.GetLength());
+		errWriter->WriteLine(sb.ToCString());
 	}
 
 	this->lastSrchDate.SetCurrTimeUTC();

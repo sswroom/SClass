@@ -23,7 +23,7 @@ Bool Manage::DasmNull::Disasm32(IO::Writer *writer, Manage::AddressResolver *add
 	sb.AppendC(UTF8STRC("Unknown opcode "));
 	sb.AppendHexBuff((const UInt8*)(OSInt)*currInst, 16, ' ', Text::LineBreakType::None);
 	sb.AppendC(UTF8STRC("\r\n"));
-	writer->WriteStrC(sb.ToString(), sb.GetLength());
+	writer->Write(sb.ToCString());
 	return false;
 }
 

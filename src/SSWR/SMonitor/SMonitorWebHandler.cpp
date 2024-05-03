@@ -69,17 +69,17 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
 		WriteHeaderBegin(writer);
 		WriteHeaderEnd(writer);
-		writer->WriteLineC(UTF8STRC("<body onload=\"document.getElementById('pwd').focus()\"><center>"));
-		writer->WriteLineC(UTF8STRC("<form name=\"createForm\" method=\"POST\" action=\"index\">"));
-		writer->WriteLineC(UTF8STRC("<table>"));
-		writer->WriteLineC(UTF8STRC("<tr><td></td><td>Password for admin</td></tr>"));
-		writer->WriteLineC(UTF8STRC("<tr><td>Password</td><td><input type=\"password\" name=\"password\" id=\"pwd\"/></td></tr>"));
-		writer->WriteLineC(UTF8STRC("<tr><td>Retype</td><td><input type=\"password\" name=\"retype\"/></td></tr>"));
-		writer->WriteLineC(UTF8STRC("<tr><td></td><td><input type=\"submit\"/></td></tr>"));
-		writer->WriteLineC(UTF8STRC("</table>"));
-		writer->WriteLineC(UTF8STRC("</form"));
-		writer->WriteLineC(UTF8STRC("</center></body>"));
-		writer->WriteLineC(UTF8STRC("</html>"));
+		writer->WriteLine(CSTR("<body onload=\"document.getElementById('pwd').focus()\"><center>"));
+		writer->WriteLine(CSTR("<form name=\"createForm\" method=\"POST\" action=\"index\">"));
+		writer->WriteLine(CSTR("<table>"));
+		writer->WriteLine(CSTR("<tr><td></td><td>Password for admin</td></tr>"));
+		writer->WriteLine(CSTR("<tr><td>Password</td><td><input type=\"password\" name=\"password\" id=\"pwd\"/></td></tr>"));
+		writer->WriteLine(CSTR("<tr><td>Retype</td><td><input type=\"password\" name=\"retype\"/></td></tr>"));
+		writer->WriteLine(CSTR("<tr><td></td><td><input type=\"submit\"/></td></tr>"));
+		writer->WriteLine(CSTR("</table>"));
+		writer->WriteLine(CSTR("</form"));
+		writer->WriteLine(CSTR("</center></body>"));
+		writer->WriteLine(CSTR("</html>"));
 	}
 	else
 	{
@@ -87,10 +87,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
 		WriteHeaderBegin(writer);
 		WriteHeaderEnd(writer);
-		writer->WriteLineC(UTF8STRC("<body onload=\"window.setTimeout(new Function('document.location.replace(\\'index\\')'), 60000)\">"));
-		writer->WriteLineC(UTF8STRC("<table width=\"100%\"><tr><td width=\"100\" class=\"menu\">"));
+		writer->WriteLine(CSTR("<body onload=\"window.setTimeout(new Function('document.location.replace(\\'index\\')'), 60000)\">"));
+		writer->WriteLine(CSTR("<table width=\"100%\"><tr><td width=\"100\" class=\"menu\">"));
 		me->WriteMenu(writer, sess);
-		writer->WriteLineC(UTF8STRC("</td><td>"));
+		writer->WriteLine(CSTR("</td><td>"));
 		Int32 userId;
 		Int32 userType;
 		if (sess)
@@ -131,15 +131,15 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 		UOSInt j;
 		UOSInt k;
 		UOSInt l;
-		writer->WriteLineC(UTF8STRC("<h2>Home</h2>"));
-		writer->WriteLineC(UTF8STRC("<table width=\"100%\" border=\"1\"><tr><td>Device Name</td><td>Last Reading Time</td><td>Readings Today</td><td>Digitals</td><td>Output</td></tr>"));
+		writer->WriteLine(CSTR("<h2>Home</h2>"));
+		writer->WriteLine(CSTR("<table width=\"100%\" border=\"1\"><tr><td>Device Name</td><td>Last Reading Time</td><td>Readings Today</td><td>Digitals</td><td>Output</td></tr>"));
 		i = 0;
 		j = devList.GetCount();
 		while (i < j)
 		{
 			dev = devList.GetItemNoCheck(i);
 			Sync::RWMutexUsage mutUsage(dev->mut, false);
-			writer->WriteStrC(UTF8STRC("<tr><td>"));
+			writer->Write(CSTR("<tr><td>"));
 			if (dev->devName.SetTo(s))
 			{
 				WriteHTMLText(writer, s);
@@ -148,61 +148,61 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 			{
 				WriteHTMLText(writer, dev->platformName);
 			}
-			writer->WriteStrC(UTF8STRC("</td><td>"));
+			writer->Write(CSTR("</td><td>"));
 			if (dev->readingTime == 0)
 			{
-				writer->WriteStrC(UTF8STRC("-"));
+				writer->Write(CSTR("-"));
 			}
 			else
 			{
 				dt.SetTicks(dev->readingTime);
 				dt.ToLocalTime();
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
-				writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+				writer->Write(CSTRP(sbuff, sptr));
 			}
-			writer->WriteStrC(UTF8STRC("</td><td>"));
+			writer->Write(CSTR("</td><td>"));
 			k = 0;
 			l = dev->nReading;
 			while (k < l)
 			{
-				writer->WriteStrC(UTF8STRC("<img src=\"devreadingimg?id="));
+				writer->Write(CSTR("<img src=\"devreadingimg?id="));
 				sptr = Text::StrInt64(sbuff, dev->cliId);
-				writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-				writer->WriteStrC(UTF8STRC("&sensor="));
+				writer->Write(CSTRP(sbuff, sptr));
+				writer->Write(CSTR("&sensor="));
 				sptr = Text::StrInt32(sbuff, ReadInt16(dev->readings[k].status));
-				writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-				writer->WriteStrC(UTF8STRC("&reading="));
+				writer->Write(CSTRP(sbuff, sptr));
+				writer->Write(CSTR("&reading="));
 				sptr = Text::StrInt32(sbuff, ReadInt16(&dev->readings[k].status[4]));
-				writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-				writer->WriteStrC(UTF8STRC("&readingType="));
+				writer->Write(CSTRP(sbuff, sptr));
+				writer->Write(CSTR("&readingType="));
 				sptr = Text::StrInt32(sbuff, ReadInt16(&dev->readings[k].status[6]));
-				writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-				writer->WriteStrC(UTF8STRC("\"/>"));
+				writer->Write(CSTRP(sbuff, sptr));
+				writer->Write(CSTR("\"/>"));
 
 				if (ReadInt16(&dev->readings[k].status[6]) == SSWR::SMonitor::SAnalogSensor::RT_RHUMIDITY)
 				{
-					writer->WriteStrC(UTF8STRC("<br/>"));
-					writer->WriteStrC(UTF8STRC("<img src=\"devreadingimg?id="));
+					writer->Write(CSTR("<br/>"));
+					writer->Write(CSTR("<img src=\"devreadingimg?id="));
 					sptr = Text::StrInt64(sbuff, dev->cliId);
-					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-					writer->WriteStrC(UTF8STRC("&sensor="));
+					writer->Write(CSTRP(sbuff, sptr));
+					writer->Write(CSTR("&sensor="));
 					sptr = Text::StrInt32(sbuff, ReadInt16(dev->readings[k].status));
-					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-					writer->WriteStrC(UTF8STRC("&reading="));
+					writer->Write(CSTRP(sbuff, sptr));
+					writer->Write(CSTR("&reading="));
 					sptr = Text::StrInt32(sbuff, ReadInt16(&dev->readings[k].status[4]));
-					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-					writer->WriteStrC(UTF8STRC("&readingType="));
+					writer->Write(CSTRP(sbuff, sptr));
+					writer->Write(CSTR("&readingType="));
 					sptr = Text::StrInt32(sbuff, SSWR::SMonitor::SAnalogSensor::RT_AHUMIDITY);
-					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-					writer->WriteStrC(UTF8STRC("\"/>"));
+					writer->Write(CSTRP(sbuff, sptr));
+					writer->Write(CSTR("\"/>"));
 				}
 				k++;
 				if (k != l)
 				{
-					writer->WriteStrC(UTF8STRC("<br/>"));
+					writer->Write(CSTR("<br/>"));
 				}
 			}
-			writer->WriteStrC(UTF8STRC("</td><td>"));
+			writer->Write(CSTR("</td><td>"));
 			k = 0;
 			l = dev->ndigital;
 			while (k < l)
@@ -213,57 +213,57 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 				}
 				else
 				{
-					writer->WriteStrC(UTF8STRC("Digital "));
+					writer->Write(CSTR("Digital "));
 					sptr = Text::StrUOSInt(sbuff, k);
-					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer->Write(CSTRP(sbuff, sptr));
 				}
-				writer->WriteStrC(UTF8STRC(": "));
-				writer->WriteStrC((dev->digitalVals & (UInt32)(1 << k))?(const UTF8Char*)"1":(const UTF8Char*)"0", 1);
+				writer->Write(CSTR(": "));
+				writer->Write((dev->digitalVals & (UInt32)(1 << k))?CSTR("1"):CSTR("0"));
 				k++;
 				if (k != l)
 				{
-					writer->WriteStrC(UTF8STRC("<br/>"));
+					writer->Write(CSTR("<br/>"));
 				}
 			}
 
-			writer->WriteStrC(UTF8STRC("</td><td>"));
+			writer->Write(CSTR("</td><td>"));
 			k = 0;
 			l = dev->nOutput;
 			while (k < l)
 			{
-				writer->WriteStrC(UTF8STRC("Output "));
+				writer->Write(CSTR("Output "));
 				sptr = Text::StrUOSInt(sbuff, k);
-				writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-				writer->WriteStrC(UTF8STRC(": "));
-				writer->WriteStrC(UTF8STRC("<a href=\"index?devid="));
+				writer->Write(CSTRP(sbuff, sptr));
+				writer->Write(CSTR(": "));
+				writer->Write(CSTR("<a href=\"index?devid="));
 				sptr = Text::StrInt64(sbuff, dev->cliId);
-				writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-				writer->WriteStrC(UTF8STRC("&output="));
+				writer->Write(CSTRP(sbuff, sptr));
+				writer->Write(CSTR("&output="));
 				sptr = Text::StrUOSInt(sbuff, k);
-				writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-				writer->WriteStrC(UTF8STRC(",1\">On</a> <a href=\"index?devid="));
+				writer->Write(CSTRP(sbuff, sptr));
+				writer->Write(CSTR(",1\">On</a> <a href=\"index?devid="));
 				sptr = Text::StrInt64(sbuff, dev->cliId);
-				writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-				writer->WriteStrC(UTF8STRC("&output="));
+				writer->Write(CSTRP(sbuff, sptr));
+				writer->Write(CSTR("&output="));
 				sptr = Text::StrUOSInt(sbuff, k);
-				writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-				writer->WriteStrC(UTF8STRC(",0\">Off</a>"));
+				writer->Write(CSTRP(sbuff, sptr));
+				writer->Write(CSTR(",0\">Off</a>"));
 				k++;
 				if (k != l)
 				{
-					writer->WriteStrC(UTF8STRC("<br/>"));
+					writer->Write(CSTR("<br/>"));
 				}
 			}
 			mutUsage.EndUse();
-			writer->WriteLineC(UTF8STRC("</td></tr>"));
+			writer->WriteLine(CSTR("</td></tr>"));
 			
 			i++;
 		}
-		writer->WriteLineC(UTF8STRC("</table>"));
+		writer->WriteLine(CSTR("</table>"));
 
-		writer->WriteLineC(UTF8STRC("</td></tr></table>"));
-		writer->WriteLineC(UTF8STRC("</body>"));
-		writer->WriteLineC(UTF8STRC("</html>"));
+		writer->WriteLine(CSTR("</td></tr></table>"));
+		writer->WriteLine(CSTR("</body>"));
+		writer->WriteLine(CSTR("</html>"));
 		if (sess)
 		{
 			sess->EndUse();
@@ -326,26 +326,26 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMon
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
-	writer->WriteLineC(UTF8STRC("<body onload=\"document.getElementById('user').focus()\">"));
-	writer->WriteLineC(UTF8STRC("<table width=\"100%\"><tr><td width=\"100\" class=\"menu\">"));
+	writer->WriteLine(CSTR("<body onload=\"document.getElementById('user').focus()\">"));
+	writer->WriteLine(CSTR("<table width=\"100%\"><tr><td width=\"100\" class=\"menu\">"));
 	me->WriteMenu(writer, 0);
-	writer->WriteLineC(UTF8STRC("</td><td><center>"));
-	writer->WriteLineC(UTF8STRC("<form name=\"loginForm\" method=\"POST\" action=\"login\">"));
-	writer->WriteLineC(UTF8STRC("<input type=\"hidden\" name=\"action\" value=\"login\"/>"));
-	writer->WriteLineC(UTF8STRC("<table>"));
-	writer->WriteLineC(UTF8STRC("<tr><td>User name</td><td><input type=\"text\" name=\"user\" id=\"user\" /></td></tr>"));
-	writer->WriteLineC(UTF8STRC("<tr><td>Password</td><td><input type=\"password\" name=\"pwd\" id=\"pwd\"/></td></tr>"));
-	writer->WriteLineC(UTF8STRC("<tr><td></td><td><input type=\"submit\"/></td></tr>"));
+	writer->WriteLine(CSTR("</td><td><center>"));
+	writer->WriteLine(CSTR("<form name=\"loginForm\" method=\"POST\" action=\"login\">"));
+	writer->WriteLine(CSTR("<input type=\"hidden\" name=\"action\" value=\"login\"/>"));
+	writer->WriteLine(CSTR("<table>"));
+	writer->WriteLine(CSTR("<tr><td>User name</td><td><input type=\"text\" name=\"user\" id=\"user\" /></td></tr>"));
+	writer->WriteLine(CSTR("<tr><td>Password</td><td><input type=\"password\" name=\"pwd\" id=\"pwd\"/></td></tr>"));
+	writer->WriteLine(CSTR("<tr><td></td><td><input type=\"submit\"/></td></tr>"));
 	if (msg)
 	{
-		writer->WriteLineC(UTF8STRC("<tr><td></td><td>"));
+		writer->WriteLine(CSTR("<tr><td></td><td>"));
 		WriteHTMLText(writer, msg);
-		writer->WriteLineC(UTF8STRC("</td></tr>"));
+		writer->WriteLine(CSTR("</td></tr>"));
 	}
-	writer->WriteLineC(UTF8STRC("</table>"));
-	writer->WriteLineC(UTF8STRC("</form>"));
-	writer->WriteLineC(UTF8STRC("</center></td></tr></table></body>"));
-	writer->WriteLineC(UTF8STRC("</html>"));
+	writer->WriteLine(CSTR("</table>"));
+	writer->WriteLine(CSTR("</form>"));
+	writer->WriteLine(CSTR("</center></td></tr></table></body>"));
+	writer->WriteLine(CSTR("</html>"));
 	DEL_CLASS(writer);
 	buff = mstm.GetBuff(buffSize);
 	resp->AddDefHeaders(req);
@@ -393,10 +393,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
-	writer->WriteLineC(UTF8STRC("<body onload=\"window.setTimeout(new Function('document.location.reload()'), 60000)\">"));
-	writer->WriteLineC(UTF8STRC("<table width=\"100%\"><tr><td width=\"100\" class=\"menu\">"));
+	writer->WriteLine(CSTR("<body onload=\"window.setTimeout(new Function('document.location.reload()'), 60000)\">"));
+	writer->WriteLine(CSTR("<table width=\"100%\"><tr><td width=\"100\" class=\"menu\">"));
 	me->WriteMenu(writer, sess);
-	writer->WriteLineC(UTF8STRC("</td><td>"));
+	writer->WriteLine(CSTR("</td><td>"));
 
 	Data::ArrayListNN<ISMonitorCore::DeviceInfo> devList;
 	NN<ISMonitorCore::DeviceInfo> dev;
@@ -406,14 +406,14 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	writer->WriteLineC(UTF8STRC("<h2>Device</h2>"));
-	writer->WriteLineC(UTF8STRC("<table width=\"100%\" border=\"1\"><tr><td>Device Name</td><td>Platform Name</td><td>CPU Name</td><td>Version</td><td>Reading Time</td><td>Readings</td><td>Digitals</td><td>Action</td></tr>"));
+	writer->WriteLine(CSTR("<h2>Device</h2>"));
+	writer->WriteLine(CSTR("<table width=\"100%\" border=\"1\"><tr><td>Device Name</td><td>Platform Name</td><td>CPU Name</td><td>Version</td><td>Reading Time</td><td>Readings</td><td>Digitals</td><td>Action</td></tr>"));
 	i = 0;
 	j = devList.GetCount();
 	while (i < j)
 	{
 		dev = devList.GetItemNoCheck(i);
-		writer->WriteStrC(UTF8STRC("<tr><td>"));
+		writer->Write(CSTR("<tr><td>"));
 		Sync::RWMutexUsage mutUsage(dev->mut, false);
 		if (dev->devName.SetTo(s))
 		{
@@ -423,35 +423,35 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 		{
 			WriteHTMLText(writer, dev->platformName);
 		}
-		writer->WriteStrC(UTF8STRC("</a></td><td>"));
+		writer->Write(CSTR("</a></td><td>"));
 		WriteHTMLText(writer, dev->platformName);
-		writer->WriteStrC(UTF8STRC("</td><td>"));
+		writer->Write(CSTR("</td><td>"));
 		WriteHTMLText(writer, dev->cpuName);
-		writer->WriteStrC(UTF8STRC("</td><td>"));
+		writer->Write(CSTR("</td><td>"));
 		if (dev->version == 0)
 		{
-			writer->WriteStrC(UTF8STRC("-"));
+			writer->Write(CSTR("-"));
 		}
 		else
 		{
 			dt.SetTicks(dev->version);
 			dt.ToLocalTime();
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer->Write(CSTRP(sbuff, sptr));
 		}
-		writer->WriteStrC(UTF8STRC("</td><td>"));
+		writer->Write(CSTR("</td><td>"));
 		if (dev->readingTime == 0)
 		{
-			writer->WriteStrC(UTF8STRC("-"));
+			writer->Write(CSTR("-"));
 		}
 		else
 		{
 			dt.SetTicks(dev->readingTime);
 			dt.ToLocalTime();
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer->Write(CSTRP(sbuff, sptr));
 		}
-		writer->WriteStrC(UTF8STRC("</td><td>"));
+		writer->Write(CSTR("</td><td>"));
 		k = 0;
 		l = dev->nReading;
 		while (k < l)
@@ -462,23 +462,23 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 			}
 			else
 			{
-				writer->WriteStrC(UTF8STRC("Sensor "));
+				writer->Write(CSTR("Sensor "));
 				sptr = Text::StrInt32(sbuff, ReadInt16(dev->readings[k].status));
-				writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-				writer->WriteStrC(UTF8STRC(" "));
-				writer->WriteStr(SSWR::SMonitor::SAnalogSensor::GetReadingTypeName((SSWR::SMonitor::SAnalogSensor::ReadingType)ReadUInt16(&dev->readings[k].status[6])));
+				writer->Write(CSTRP(sbuff, sptr));
+				writer->Write(CSTR(" "));
+				writer->Write(SSWR::SMonitor::SAnalogSensor::GetReadingTypeName((SSWR::SMonitor::SAnalogSensor::ReadingType)ReadUInt16(&dev->readings[k].status[6])));
 			}
 
-			writer->WriteStrC(UTF8STRC(" = "));
+			writer->Write(CSTR(" = "));
 			sptr = Text::StrDouble(sbuff, dev->readings[k].reading);
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer->Write(CSTRP(sbuff, sptr));
 			k++;
 			if (k != l)
 			{
-				writer->WriteStrC(UTF8STRC("<br/>"));
+				writer->Write(CSTR("<br/>"));
 			}
 		}
-		writer->WriteStrC(UTF8STRC("</td><td>"));
+		writer->Write(CSTR("</td><td>"));
 		k = 0;
 		l = dev->ndigital;
 		while (k < l)
@@ -489,40 +489,40 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 			}
 			else
 			{
-				writer->WriteStrC(UTF8STRC("Digital "));
+				writer->Write(CSTR("Digital "));
 				sptr = Text::StrUOSInt(sbuff, k);
-				writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+				writer->Write(CSTRP(sbuff, sptr));
 			}
-			writer->WriteStrC(UTF8STRC(": "));
-			writer->WriteStrC((dev->digitalVals & (UInt32)(1 << k))?(const UTF8Char*)"1":(const UTF8Char*)"0", 1);
+			writer->Write(CSTR(": "));
+			writer->Write((dev->digitalVals & (UInt32)(1 << k))?CSTR("1"):CSTR("0"));
 			k++;
 			if (k != l)
 			{
-				writer->WriteStrC(UTF8STRC("<br/>"));
+				writer->Write(CSTR("<br/>"));
 			}
 		}
-		writer->WriteStrC(UTF8STRC("</td><td><a href=\"devedit?id="));
+		writer->Write(CSTR("</td><td><a href=\"devedit?id="));
 		sptr = Text::StrInt64(sbuff, dev->cliId);
-		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer->WriteStrC(UTF8STRC("\">Edit</a><br/>"));
-		writer->WriteStrC(UTF8STRC("<a href=\"devreading?id="));
-		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer->WriteStrC(UTF8STRC("\">Reading Names</a><br/>"));
-		writer->WriteStrC(UTF8STRC("<a href=\"devdigitals?id="));
-		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer->WriteStrC(UTF8STRC("\">Digital Names</a><br/>"));
-		writer->WriteStrC(UTF8STRC("<a href=\"device?photo="));
-		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer->WriteStrC(UTF8STRC("\">Capture Photo</a>"));
+		writer->Write(CSTRP(sbuff, sptr));
+		writer->Write(CSTR("\">Edit</a><br/>"));
+		writer->Write(CSTR("<a href=\"devreading?id="));
+		writer->Write(CSTRP(sbuff, sptr));
+		writer->Write(CSTR("\">Reading Names</a><br/>"));
+		writer->Write(CSTR("<a href=\"devdigitals?id="));
+		writer->Write(CSTRP(sbuff, sptr));
+		writer->Write(CSTR("\">Digital Names</a><br/>"));
+		writer->Write(CSTR("<a href=\"device?photo="));
+		writer->Write(CSTRP(sbuff, sptr));
+		writer->Write(CSTR("\">Capture Photo</a>"));
 		mutUsage.EndUse();
-		writer->WriteLineC(UTF8STRC("</td></tr>"));
+		writer->WriteLine(CSTR("</td></tr>"));
 		
 		i++;
 	}
-	writer->WriteLineC(UTF8STRC("</table>"));
+	writer->WriteLine(CSTR("</table>"));
 
-	writer->WriteLineC(UTF8STRC("</td></tr></table></body>"));
-	writer->WriteLineC(UTF8STRC("</html>"));
+	writer->WriteLine(CSTR("</td></tr></table></body>"));
+	writer->WriteLine(CSTR("</html>"));
 	sess->EndUse();
 
 	DEL_CLASS(writer);
@@ -598,50 +598,50 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
-	writer->WriteLineC(UTF8STRC("<body onload=\"document.forms[0].devName.focus()\">"));
-	writer->WriteLineC(UTF8STRC("<table width=\"100%\"><tr><td width=\"100\" class=\"menu\">"));
+	writer->WriteLine(CSTR("<body onload=\"document.forms[0].devName.focus()\">"));
+	writer->WriteLine(CSTR("<table width=\"100%\"><tr><td width=\"100\" class=\"menu\">"));
 	me->WriteMenu(writer, sess);
-	writer->WriteLineC(UTF8STRC("</td><td>"));
+	writer->WriteLine(CSTR("</td><td>"));
 
-	writer->WriteLineC(UTF8STRC("<h2>Edit Device</h2>"));
-	writer->WriteStrC(UTF8STRC("<form name=\"modifyForm\" method=\"POST\" action=\"devedit?id="));
+	writer->WriteLine(CSTR("<h2>Edit Device</h2>"));
+	writer->Write(CSTR("<form name=\"modifyForm\" method=\"POST\" action=\"devedit?id="));
 	sptr = Text::StrInt64(sbuff, cliId);
-	writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-	writer->WriteLineC(UTF8STRC("\">"));
-	writer->WriteLineC(UTF8STRC("<table width=\"100%\" border=\"1\">"));
-	writer->WriteStrC(UTF8STRC("<input type=\"hidden\" name=\"action\" value=\"modify\"/>"));
+	writer->Write(CSTRP(sbuff, sptr));
+	writer->WriteLine(CSTR("\">"));
+	writer->WriteLine(CSTR("<table width=\"100%\" border=\"1\">"));
+	writer->Write(CSTR("<input type=\"hidden\" name=\"action\" value=\"modify\"/>"));
 	Sync::RWMutexUsage mutUsage(dev->mut, false);
-	writer->WriteStrC(UTF8STRC("<tr><td>Platform Name</td><td>"));
+	writer->Write(CSTR("<tr><td>Platform Name</td><td>"));
 	WriteHTMLText(writer, dev->platformName);
-	writer->WriteLineC(UTF8STRC("</td></tr>"));
-	writer->WriteStrC(UTF8STRC("<tr><td>CPU Name</td><td>"));
+	writer->WriteLine(CSTR("</td></tr>"));
+	writer->Write(CSTR("<tr><td>CPU Name</td><td>"));
 	WriteHTMLText(writer, dev->cpuName);
-	writer->WriteLineC(UTF8STRC("</td></tr>"));
+	writer->WriteLine(CSTR("</td></tr>"));
 
-	writer->WriteStrC(UTF8STRC("<tr><td>Device Name</td><td><input type=\"text\" name=\"devName\" "));
+	writer->Write(CSTR("<tr><td>Device Name</td><td><input type=\"text\" name=\"devName\" "));
 	if (dev->devName.SetTo(s))
 	{
-		writer->WriteStrC(UTF8STRC(" value="));
+		writer->Write(CSTR(" value="));
 		WriteAttrText(writer, s);
 	}
-	writer->WriteLineC(UTF8STRC("/></td></tr>"));
-	writer->WriteStrC(UTF8STRC("<tr><td>Flags</td><td><input type=\"checkbox\" name=\"anonymous\" id=\"anonymous\" value=\"1\""));
+	writer->WriteLine(CSTR("/></td></tr>"));
+	writer->Write(CSTR("<tr><td>Flags</td><td><input type=\"checkbox\" name=\"anonymous\" id=\"anonymous\" value=\"1\""));
 	if (dev->flags & 1)
 	{
-		writer->WriteStrC(UTF8STRC(" checked"));
+		writer->Write(CSTR(" checked"));
 	}
-	writer->WriteLineC(UTF8STRC("/><label for=\"anonymous\">Anonymous Access</label><br/><input type=\"checkbox\" name=\"removed\" id=\"removed\" value=\"1\""));
+	writer->WriteLine(CSTR("/><label for=\"anonymous\">Anonymous Access</label><br/><input type=\"checkbox\" name=\"removed\" id=\"removed\" value=\"1\""));
 	if (dev->flags & 2)
 	{
-		writer->WriteStrC(UTF8STRC(" checked"));
+		writer->Write(CSTR(" checked"));
 	}
-	writer->WriteStrC(UTF8STRC("/><label for=\"removed\">Removed</label></td></tr>"));
-	writer->WriteLineC(UTF8STRC("<tr><td></td><td><input type=\"submit\"/></td></tr>"));
-	writer->WriteLineC(UTF8STRC("</table></form>"));
+	writer->Write(CSTR("/><label for=\"removed\">Removed</label></td></tr>"));
+	writer->WriteLine(CSTR("<tr><td></td><td><input type=\"submit\"/></td></tr>"));
+	writer->WriteLine(CSTR("</table></form>"));
 	mutUsage.EndUse();
 
-	writer->WriteLineC(UTF8STRC("</td></tr></table></body>"));
-	writer->WriteLineC(UTF8STRC("</html>"));
+	writer->WriteLine(CSTR("</td></tr></table></body>"));
+	writer->WriteLine(CSTR("</html>"));
 	sess->EndUse();
 
 	DEL_CLASS(writer);
@@ -727,61 +727,61 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
-	writer->WriteLineC(UTF8STRC("<body onload=\"document.forms[0].readingName0.focus()\">"));
-	writer->WriteLineC(UTF8STRC("<table width=\"100%\"><tr><td width=\"100\" class=\"menu\">"));
+	writer->WriteLine(CSTR("<body onload=\"document.forms[0].readingName0.focus()\">"));
+	writer->WriteLine(CSTR("<table width=\"100%\"><tr><td width=\"100\" class=\"menu\">"));
 	me->WriteMenu(writer, sess);
-	writer->WriteLineC(UTF8STRC("</td><td>"));
+	writer->WriteLine(CSTR("</td><td>"));
 
-	writer->WriteLineC(UTF8STRC("<h2>Reading Names</h2>"));
-	writer->WriteStrC(UTF8STRC("<form name=\"modifyForm\" method=\"POST\" action=\"devreading?id="));
+	writer->WriteLine(CSTR("<h2>Reading Names</h2>"));
+	writer->Write(CSTR("<form name=\"modifyForm\" method=\"POST\" action=\"devreading?id="));
 	sptr = Text::StrInt64(sbuff, cliId);
-	writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-	writer->WriteLineC(UTF8STRC("\">"));
-	writer->WriteStrC(UTF8STRC("<input type=\"hidden\" name=\"action\" value=\"reading\"/>"));
-	writer->WriteLineC(UTF8STRC("<table width=\"100%\" border=\"1\">"));
+	writer->Write(CSTRP(sbuff, sptr));
+	writer->WriteLine(CSTR("\">"));
+	writer->Write(CSTR("<input type=\"hidden\" name=\"action\" value=\"reading\"/>"));
+	writer->WriteLine(CSTR("<table width=\"100%\" border=\"1\">"));
 	Sync::RWMutexUsage mutUsage(dev->mut, false);
 	j = dev->nReading;
 	i = 0;
 	while (i < j)
 	{
-		writer->WriteStrC(UTF8STRC("<tr><td>Reading "));
+		writer->Write(CSTR("<tr><td>Reading "));
 		sptr = Text::StrUOSInt(sbuff, i);
-		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer->WriteStrC(UTF8STRC("</td><td><input type=\"text\" name=\"readingName"));
-		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer->WriteStrC(UTF8STRC("\" "));
+		writer->Write(CSTRP(sbuff, sptr));
+		writer->Write(CSTR("</td><td><input type=\"text\" name=\"readingName"));
+		writer->Write(CSTRP(sbuff, sptr));
+		writer->Write(CSTR("\" "));
 
 		if (dev->readingNames[i])
 		{
-			writer->WriteStrC(UTF8STRC(" value="));
+			writer->Write(CSTR(" value="));
 			WriteAttrText(writer, dev->readingNames[i]);
 		}
-		writer->WriteStrC(UTF8STRC("/></td><td>Sensor "));
+		writer->Write(CSTR("/></td><td>Sensor "));
 		sptr = Text::StrInt32(sbuff, ReadInt16(&dev->readings[i].status[0]));
-		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+		writer->Write(CSTRP(sbuff, sptr));
 		if (ReadInt16(&dev->readings[i].status[2]) != SSWR::SMonitor::SAnalogSensor::ST_UNKNOWN)
 		{
-			writer->WriteStrC(UTF8STRC(" ("));
-			writer->WriteStr(SSWR::SMonitor::SAnalogSensor::GetSensorTypeName((SSWR::SMonitor::SAnalogSensor::SensorType)ReadInt16(&dev->readings[i].status[2])));
-			writer->WriteStrC(UTF8STRC(")"));
+			writer->Write(CSTR(" ("));
+			writer->Write(SSWR::SMonitor::SAnalogSensor::GetSensorTypeName((SSWR::SMonitor::SAnalogSensor::SensorType)ReadInt16(&dev->readings[i].status[2])));
+			writer->Write(CSTR(")"));
 		}
-		writer->WriteStrC(UTF8STRC(" Reading "));
+		writer->Write(CSTR(" Reading "));
 		sptr = Text::StrInt32(sbuff, ReadInt16(&dev->readings[i].status[4]));
-		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+		writer->Write(CSTRP(sbuff, sptr));
 		if (ReadInt16(&dev->readings[i].status[6]) != SSWR::SMonitor::SAnalogSensor::RT_UNKNOWN)
 		{
-			writer->WriteStrC(UTF8STRC(" "));
-			writer->WriteStr(SSWR::SMonitor::SAnalogSensor::GetReadingTypeName((SSWR::SMonitor::SAnalogSensor::ReadingType)ReadInt16(&dev->readings[i].status[6])));
+			writer->Write(CSTR(" "));
+			writer->Write(SSWR::SMonitor::SAnalogSensor::GetReadingTypeName((SSWR::SMonitor::SAnalogSensor::ReadingType)ReadInt16(&dev->readings[i].status[6])));
 		}
-		writer->WriteLineC(UTF8STRC("</td></tr>"));
+		writer->WriteLine(CSTR("</td></tr>"));
 		i++;
 	}
-	writer->WriteLineC(UTF8STRC("<tr><td></td><td><input type=\"submit\"/></td></tr>"));
-	writer->WriteLineC(UTF8STRC("</table></form>"));
+	writer->WriteLine(CSTR("<tr><td></td><td><input type=\"submit\"/></td></tr>"));
+	writer->WriteLine(CSTR("</table></form>"));
 	mutUsage.EndUse();
 
-	writer->WriteLineC(UTF8STRC("</td></tr></table></body>"));
-	writer->WriteLineC(UTF8STRC("</html>"));
+	writer->WriteLine(CSTR("</td></tr></table></body>"));
+	writer->WriteLine(CSTR("</html>"));
 	sess->EndUse();
 
 	DEL_CLASS(writer);
@@ -867,44 +867,44 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
-	writer->WriteLineC(UTF8STRC("<body onload=\"document.forms[0].digitalName0.focus()\">"));
-	writer->WriteLineC(UTF8STRC("<table width=\"100%\"><tr><td width=\"100\" class=\"menu\">"));
+	writer->WriteLine(CSTR("<body onload=\"document.forms[0].digitalName0.focus()\">"));
+	writer->WriteLine(CSTR("<table width=\"100%\"><tr><td width=\"100\" class=\"menu\">"));
 	me->WriteMenu(writer, sess);
-	writer->WriteLineC(UTF8STRC("</td><td>"));
+	writer->WriteLine(CSTR("</td><td>"));
 
-	writer->WriteLineC(UTF8STRC("<h2>Digital Names</h2>"));
-	writer->WriteStrC(UTF8STRC("<form name=\"modifyForm\" method=\"POST\" action=\"devdigitals?id="));
+	writer->WriteLine(CSTR("<h2>Digital Names</h2>"));
+	writer->Write(CSTR("<form name=\"modifyForm\" method=\"POST\" action=\"devdigitals?id="));
 	sptr = Text::StrInt64(sbuff, cliId);
-	writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-	writer->WriteLineC(UTF8STRC("\">"));
-	writer->WriteStrC(UTF8STRC("<input type=\"hidden\" name=\"action\" value=\"digitals\"/>"));
-	writer->WriteLineC(UTF8STRC("<table width=\"100%\" border=\"1\">"));
+	writer->Write(CSTRP(sbuff, sptr));
+	writer->WriteLine(CSTR("\">"));
+	writer->Write(CSTR("<input type=\"hidden\" name=\"action\" value=\"digitals\"/>"));
+	writer->WriteLine(CSTR("<table width=\"100%\" border=\"1\">"));
 	Sync::RWMutexUsage mutUsage(dev->mut, false);
 	j = dev->ndigital;
 	i = 0;
 	while (i < j)
 	{
-		writer->WriteStrC(UTF8STRC("<tr><td>Digital "));
+		writer->Write(CSTR("<tr><td>Digital "));
 		sptr = Text::StrUOSInt(sbuff, i);
-		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer->WriteStrC(UTF8STRC("</td><td><input type=\"text\" name=\"digitalName"));
-		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer->WriteStrC(UTF8STRC("\" "));
+		writer->Write(CSTRP(sbuff, sptr));
+		writer->Write(CSTR("</td><td><input type=\"text\" name=\"digitalName"));
+		writer->Write(CSTRP(sbuff, sptr));
+		writer->Write(CSTR("\" "));
 
 		if (dev->digitalNames[i])
 		{
-			writer->WriteStrC(UTF8STRC(" value="));
+			writer->Write(CSTR(" value="));
 			WriteAttrText(writer, dev->digitalNames[i]);
 		}
-		writer->WriteStrC(UTF8STRC("/></td></tr>"));
+		writer->Write(CSTR("/></td></tr>"));
 		i++;
 	}
-	writer->WriteLineC(UTF8STRC("<tr><td></td><td><input type=\"submit\"/></td></tr>"));
-	writer->WriteLineC(UTF8STRC("</table></form>"));
+	writer->WriteLine(CSTR("<tr><td></td><td><input type=\"submit\"/></td></tr>"));
+	writer->WriteLine(CSTR("</table></form>"));
 	mutUsage.EndUse();
 
-	writer->WriteLineC(UTF8STRC("</td></tr></table></body>"));
-	writer->WriteLineC(UTF8STRC("</html>"));
+	writer->WriteLine(CSTR("</td></tr></table></body>"));
+	writer->WriteLine(CSTR("</html>"));
 	sess->EndUse();
 
 	DEL_CLASS(writer);
@@ -1477,23 +1477,23 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMoni
 	IO::MemoryStream mstm;
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
-	writer->WriteLineC(UTF8STRC("<script type=\"text/javascript\">"));
-	writer->WriteLineC(UTF8STRC("var clients = new Object();"));
-	writer->WriteLineC(UTF8STRC("var cli;"));
-	writer->WriteLineC(UTF8STRC("var reading;"));
+	writer->WriteLine(CSTR("<script type=\"text/javascript\">"));
+	writer->WriteLine(CSTR("var clients = new Object();"));
+	writer->WriteLine(CSTR("var cli;"));
+	writer->WriteLine(CSTR("var reading;"));
 	me->core->UserGetDevices(userId, userType, devList);
 	i = 0;
 	j = devList.GetCount();
 	while (i < j)
 	{
 		dev = devList.GetItemNoCheck(i);
-		writer->WriteLineC(UTF8STRC("cli = new Object();"));
-		writer->WriteStrC(UTF8STRC("cli.cliId = "));
+		writer->WriteLine(CSTR("cli = new Object();"));
+		writer->Write(CSTR("cli.cliId = "));
 		sptr = Text::StrInt64(sbuff, dev->cliId);
-		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer->WriteLineC(UTF8STRC(";"));
+		writer->Write(CSTRP(sbuff, sptr));
+		writer->WriteLine(CSTR(";"));
 		Sync::RWMutexUsage mutUsage(dev->mut, false);
-		writer->WriteStrC(UTF8STRC("cli.name = "));
+		writer->Write(CSTR("cli.name = "));
 		if (dev->devName.SetTo(s))
 		{
 			WriteJSText(writer, s);
@@ -1502,14 +1502,14 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMoni
 		{
 			WriteJSText(writer, dev->platformName);
 		}
-		writer->WriteLineC(UTF8STRC(";"));
-		writer->WriteLineC(UTF8STRC("cli.readings = new Array();"));
+		writer->WriteLine(CSTR(";"));
+		writer->WriteLine(CSTR("cli.readings = new Array();"));
 		k = 0;
 		l = dev->nReading;
 		while (k < l)
 		{
-			writer->WriteLineC(UTF8STRC("reading = new Object();"));
-			writer->WriteStrC(UTF8STRC("reading.name = "));
+			writer->WriteLine(CSTR("reading = new Object();"));
+			writer->Write(CSTR("reading.name = "));
 			if (dev->readingNames[k])
 			{
 				WriteJSText(writer, dev->readingNames[k]);
@@ -1519,40 +1519,40 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMoni
 				Text::StrInt32(Text::StrConcatC(Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Sensor ")), ReadInt16(dev->readings[k].status)), UTF8STRC(" Reading ")), ReadInt16(&dev->readings[k].status[4]));
 				WriteJSText(writer, sbuff);
 			}
-			writer->WriteLineC(UTF8STRC(";"));
-			writer->WriteStrC(UTF8STRC("reading.sensor = "));
+			writer->WriteLine(CSTR(";"));
+			writer->Write(CSTR("reading.sensor = "));
 			sptr = Text::StrInt32(sbuff, ReadInt16(dev->readings[k].status));
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteLineC(UTF8STRC(";"));
-			writer->WriteStrC(UTF8STRC("reading.reading = "));
+			writer->Write(CSTRP(sbuff, sptr));
+			writer->WriteLine(CSTR(";"));
+			writer->Write(CSTR("reading.reading = "));
 			sptr = Text::StrInt32(sbuff, ReadInt16(&dev->readings[k].status[4]));
-			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteLineC(UTF8STRC(";"));
+			writer->Write(CSTRP(sbuff, sptr));
+			writer->WriteLine(CSTR(";"));
 
-			writer->WriteLineC(UTF8STRC("cli.readings.push(reading);"));
+			writer->WriteLine(CSTR("cli.readings.push(reading);"));
 			k++;
 		}
-		writer->WriteLineC(UTF8STRC("clients[cli.cliId] = cli;"));
+		writer->WriteLine(CSTR("clients[cli.cliId] = cli;"));
 		mutUsage.EndUse();
 		i++;
 	}
 
-	writer->WriteLineC(UTF8STRC("</script>"));
-	writer->WriteLineC(UTF8STRC("<script type=\"text/javascript\" src=\"files/pastdata.js\">"));
-	writer->WriteLineC(UTF8STRC("</script>"));
+	writer->WriteLine(CSTR("</script>"));
+	writer->WriteLine(CSTR("<script type=\"text/javascript\" src=\"files/pastdata.js\">"));
+	writer->WriteLine(CSTR("</script>"));
 	WriteHeaderEnd(writer);
-	writer->WriteLineC(UTF8STRC("<body onload=\"afterLoad()\">"));
-	writer->WriteLineC(UTF8STRC("<table width=\"100%\"><tr><td width=\"100\" class=\"menu\">"));
+	writer->WriteLine(CSTR("<body onload=\"afterLoad()\">"));
+	writer->WriteLine(CSTR("<table width=\"100%\"><tr><td width=\"100\" class=\"menu\">"));
 	me->WriteMenu(writer, sess);
-	writer->WriteLineC(UTF8STRC("</td><td>"));
-	writer->WriteLineC(UTF8STRC("<h2>Past Data</h2>"));
-	writer->WriteLineC(UTF8STRC("Device Name<select name=\"cliId\" id=\"cliId\" onchange=\"devChg()\"></select><br/>"));
-	writer->WriteLineC(UTF8STRC("Reading<select name=\"reading\" id=\"reading\" onchange=\"selChg()\"></select><br/>"));
-	writer->WriteLineC(UTF8STRC("Date<select name=\"year\" id=\"year\" onchange=\"selChg()\"></select><select name=\"month\" id=\"month\" onchange=\"selChg()\"></select><select name=\"day\" id=\"day\" onchange=\"selChg()\"></select><br/>"));
-	writer->WriteLineC(UTF8STRC("<img src=\"about:blank\" id=\"dataimg\"/>"));
+	writer->WriteLine(CSTR("</td><td>"));
+	writer->WriteLine(CSTR("<h2>Past Data</h2>"));
+	writer->WriteLine(CSTR("Device Name<select name=\"cliId\" id=\"cliId\" onchange=\"devChg()\"></select><br/>"));
+	writer->WriteLine(CSTR("Reading<select name=\"reading\" id=\"reading\" onchange=\"selChg()\"></select><br/>"));
+	writer->WriteLine(CSTR("Date<select name=\"year\" id=\"year\" onchange=\"selChg()\"></select><select name=\"month\" id=\"month\" onchange=\"selChg()\"></select><select name=\"day\" id=\"day\" onchange=\"selChg()\"></select><br/>"));
+	writer->WriteLine(CSTR("<img src=\"about:blank\" id=\"dataimg\"/>"));
 
-	writer->WriteLineC(UTF8STRC("</td></tr></table></body>"));
-	writer->WriteLineC(UTF8STRC("</html>"));
+	writer->WriteLine(CSTR("</td></tr></table></body>"));
+	writer->WriteLine(CSTR("</html>"));
 	if (sess)
 	{
 		sess->EndUse();
@@ -1845,24 +1845,24 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonito
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
-	writer->WriteLineC(UTF8STRC("<body onload=\"document.getElementById('password').focus()\">"));
-	writer->WriteLineC(UTF8STRC("<table width=\"100%\"><tr><td width=\"100\" class=\"menu\">"));
+	writer->WriteLine(CSTR("<body onload=\"document.getElementById('password').focus()\">"));
+	writer->WriteLine(CSTR("<table width=\"100%\"><tr><td width=\"100\" class=\"menu\">"));
 	me->WriteMenu(writer, sess);
-	writer->WriteLineC(UTF8STRC("</td><td>"));
-	writer->WriteLineC(UTF8STRC("<h2>Modify Password</h2>"));
-	writer->WriteLineC(UTF8STRC("<center>"));
-	writer->WriteLineC(UTF8STRC("<form method=\"POST\" action=\"userpassword\">"));
-	writer->WriteLineC(UTF8STRC("<table border=\"0\"><tr><td>Password</td><td><input type=\"password\" name=\"password\" id=\"password\"/></td></tr>"));
-	writer->WriteLineC(UTF8STRC("<tr><td>Retype</td><td><input type=\"password\" name=\"retype\" id=\"retype\"/></td></tr>"));
-	writer->WriteLineC(UTF8STRC("<tr><td></td><td><input type=\"submit\"/></td></tr>"));
-	writer->WriteLineC(UTF8STRC("</table>"));
+	writer->WriteLine(CSTR("</td><td>"));
+	writer->WriteLine(CSTR("<h2>Modify Password</h2>"));
+	writer->WriteLine(CSTR("<center>"));
+	writer->WriteLine(CSTR("<form method=\"POST\" action=\"userpassword\">"));
+	writer->WriteLine(CSTR("<table border=\"0\"><tr><td>Password</td><td><input type=\"password\" name=\"password\" id=\"password\"/></td></tr>"));
+	writer->WriteLine(CSTR("<tr><td>Retype</td><td><input type=\"password\" name=\"retype\" id=\"retype\"/></td></tr>"));
+	writer->WriteLine(CSTR("<tr><td></td><td><input type=\"submit\"/></td></tr>"));
+	writer->WriteLine(CSTR("</table>"));
 	if (msg.v)
 	{
 		WriteHTMLText(writer, msg);
 	}
-	writer->WriteLineC(UTF8STRC("</form></center>"));
-	writer->WriteLineC(UTF8STRC("</td></tr></table></body>"));
-	writer->WriteLineC(UTF8STRC("</html>"));
+	writer->WriteLine(CSTR("</form></center>"));
+	writer->WriteLine(CSTR("</td></tr></table></body>"));
+	writer->WriteLine(CSTR("</html>"));
 	sess->EndUse();
 
 	DEL_CLASS(writer);
@@ -1902,35 +1902,35 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(SSWR::SMonitor::SMon
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
-	writer->WriteLineC(UTF8STRC("<body>"));
-	writer->WriteLineC(UTF8STRC("<table width=\"100%\"><tr><td width=\"100\" class=\"menu\">"));
+	writer->WriteLine(CSTR("<body>"));
+	writer->WriteLine(CSTR("<table width=\"100%\"><tr><td width=\"100\" class=\"menu\">"));
 	me->WriteMenu(writer, sess);
-	writer->WriteLineC(UTF8STRC("</td><td>"));
-	writer->WriteLineC(UTF8STRC("<h2>Users</h2>"));
-	writer->WriteLineC(UTF8STRC("<a href=\"useradd\">Add User</a><br/>"));
-	writer->WriteLineC(UTF8STRC("<table border=\"1\"><tr><td>User Name</td><td>Action</td></tr>"));
+	writer->WriteLine(CSTR("</td><td>"));
+	writer->WriteLine(CSTR("<h2>Users</h2>"));
+	writer->WriteLine(CSTR("<a href=\"useradd\">Add User</a><br/>"));
+	writer->WriteLine(CSTR("<table border=\"1\"><tr><td>User Name</td><td>Action</td></tr>"));
 	i = 0;
 	j = userList.GetCount();
 	while (i < j)
 	{
 		user = userList.GetItemNoCheck(i);
-		writer->WriteStrC(UTF8STRC("<tr><td>"));
+		writer->Write(CSTR("<tr><td>"));
 		Sync::RWMutexUsage mutUsage(user->mut, false);
 		sptr = Text::StrInt32(sbuff, user->userId);
 		WriteHTMLText(writer, user->userName);
 		mutUsage.EndUse();
-		writer->WriteStrC(UTF8STRC("</td><td><a href=\"userreset?id="));
-		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer->WriteStrC(UTF8STRC("\">Reset Password</a>"));
-		writer->WriteStrC(UTF8STRC("<br/><a href=\"userassign?id="));
-		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer->WriteStrC(UTF8STRC("\">Assign Devices</a>"));
-		writer->WriteLineC(UTF8STRC("</td></tr>"));
+		writer->Write(CSTR("</td><td><a href=\"userreset?id="));
+		writer->Write(CSTRP(sbuff, sptr));
+		writer->Write(CSTR("\">Reset Password</a>"));
+		writer->Write(CSTR("<br/><a href=\"userassign?id="));
+		writer->Write(CSTRP(sbuff, sptr));
+		writer->Write(CSTR("\">Assign Devices</a>"));
+		writer->WriteLine(CSTR("</td></tr>"));
 		i++;
 	}
-	writer->WriteLineC(UTF8STRC("</table>"));
-	writer->WriteLineC(UTF8STRC("</td></tr></table></body>"));
-	writer->WriteLineC(UTF8STRC("</html>"));
+	writer->WriteLine(CSTR("</table>"));
+	writer->WriteLine(CSTR("</td></tr></table></body>"));
+	writer->WriteLine(CSTR("</html>"));
 	sess->EndUse();
 
 	DEL_CLASS(writer);
@@ -1982,18 +1982,18 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(SSWR::SMonitor::SM
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
-	writer->WriteLineC(UTF8STRC("<body onload=\"document.getElementById('username').focus()\">"));
-	writer->WriteLineC(UTF8STRC("<table width=\"100%\"><tr><td width=\"100\" class=\"menu\">"));
+	writer->WriteLine(CSTR("<body onload=\"document.getElementById('username').focus()\">"));
+	writer->WriteLine(CSTR("<table width=\"100%\"><tr><td width=\"100\" class=\"menu\">"));
 	me->WriteMenu(writer, sess);
-	writer->WriteLineC(UTF8STRC("</td><td>"));
-	writer->WriteLineC(UTF8STRC("<h2>Add User</h2>"));
-	writer->WriteLineC(UTF8STRC("<form name=\"adduser\" method=\"POST\" action=\"useradd\">"));
-	writer->WriteLineC(UTF8STRC("<input type=\"hidden\" name=\"action\" value=\"adduser\"/>"));
-	writer->WriteLineC(UTF8STRC("<table border=\"1\"><tr><td>User Name</td><td><input type=\"text\" name=\"username\" id=\"username\" /></td></tr>"));
-	writer->WriteLineC(UTF8STRC("<tr><td></td><td><input type=\"submit\" /></td></tr>"));
-	writer->WriteLineC(UTF8STRC("</table>"));
-	writer->WriteLineC(UTF8STRC("</td></tr></table></body>"));
-	writer->WriteLineC(UTF8STRC("</html>"));
+	writer->WriteLine(CSTR("</td><td>"));
+	writer->WriteLine(CSTR("<h2>Add User</h2>"));
+	writer->WriteLine(CSTR("<form name=\"adduser\" method=\"POST\" action=\"useradd\">"));
+	writer->WriteLine(CSTR("<input type=\"hidden\" name=\"action\" value=\"adduser\"/>"));
+	writer->WriteLine(CSTR("<table border=\"1\"><tr><td>User Name</td><td><input type=\"text\" name=\"username\" id=\"username\" /></td></tr>"));
+	writer->WriteLine(CSTR("<tr><td></td><td><input type=\"submit\" /></td></tr>"));
+	writer->WriteLine(CSTR("</table>"));
+	writer->WriteLine(CSTR("</td></tr></table></body>"));
+	writer->WriteLine(CSTR("</html>"));
 	sess->EndUse();
 
 	DEL_CLASS(writer);
@@ -2081,40 +2081,40 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
-	writer->WriteLineC(UTF8STRC("<body onload=\"document.getElementById('username').focus()\">"));
-	writer->WriteLineC(UTF8STRC("<table width=\"100%\"><tr><td width=\"100\" class=\"menu\">"));
+	writer->WriteLine(CSTR("<body onload=\"document.getElementById('username').focus()\">"));
+	writer->WriteLine(CSTR("<table width=\"100%\"><tr><td width=\"100\" class=\"menu\">"));
 	me->WriteMenu(writer, sess);
-	writer->WriteLineC(UTF8STRC("</td><td>"));
-	writer->WriteLineC(UTF8STRC("<h2>User Assign</h2>"));
-	writer->WriteStrC(UTF8STRC("User Name: "));
+	writer->WriteLine(CSTR("</td><td>"));
+	writer->WriteLine(CSTR("<h2>User Assign</h2>"));
+	writer->Write(CSTR("User Name: "));
 	Sync::RWMutexUsage userMutUsage(user->mut, false);
 	WriteHTMLText(writer, user->userName);
-	writer->WriteLineC(UTF8STRC("<br/>"));
-	writer->WriteStrC(UTF8STRC("<form name=\"userassign\" method=\"POST\" action=\"userassign?id="));
+	writer->WriteLine(CSTR("<br/>"));
+	writer->Write(CSTR("<form name=\"userassign\" method=\"POST\" action=\"userassign?id="));
 	sptr = Text::StrInt32(sbuff, user->userId);
-	writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-	writer->WriteLineC(UTF8STRC("\">"));
-	writer->WriteLineC(UTF8STRC("<input type=\"hidden\" name=\"action\" value=\"userassign\"/>"));
-	writer->WriteLineC(UTF8STRC("Device List<br/>"));
+	writer->Write(CSTRP(sbuff, sptr));
+	writer->WriteLine(CSTR("\">"));
+	writer->WriteLine(CSTR("<input type=\"hidden\" name=\"action\" value=\"userassign\"/>"));
+	writer->WriteLine(CSTR("Device List<br/>"));
 	i = 0;
 	j = devList.GetCount();
 	while (i < j)
 	{
 		dev = devList.GetItemNoCheck(i);
 		Sync::RWMutexUsage devMutUsage(dev->mut, false);
-		writer->WriteStrC(UTF8STRC("<input type=\"checkbox\" name=\"device\" id=\"device"));
+		writer->Write(CSTR("<input type=\"checkbox\" name=\"device\" id=\"device"));
 		sptr = Text::StrInt64(sbuff, dev->cliId);
-		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer->WriteStrC(UTF8STRC("\" value=\""));
-		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer->WriteStrC(UTF8STRC("\""));
+		writer->Write(CSTRP(sbuff, sptr));
+		writer->Write(CSTR("\" value=\""));
+		writer->Write(CSTRP(sbuff, sptr));
+		writer->Write(CSTR("\""));
 		if (user->devMap.Get(dev->cliId).NotNull())
 		{
-			writer->WriteStrC(UTF8STRC(" checked"));
+			writer->Write(CSTR(" checked"));
 		}
-		writer->WriteStrC(UTF8STRC("/><label for=\"device"));
-		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer->WriteStrC(UTF8STRC("\">"));
+		writer->Write(CSTR("/><label for=\"device"));
+		writer->Write(CSTRP(sbuff, sptr));
+		writer->Write(CSTR("\">"));
 		if (dev->devName.SetTo(s))
 		{
 			WriteHTMLText(writer, s);
@@ -2123,14 +2123,14 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 		{
 			WriteHTMLText(writer, dev->platformName);
 		}
-		writer->WriteStrC(UTF8STRC("</label><br/>"));
+		writer->Write(CSTR("</label><br/>"));
 		devMutUsage.EndUse();
 		i++;
 	}
 	userMutUsage.EndUse();
-	writer->WriteLineC(UTF8STRC("<input type=\"submit\" />"));
-	writer->WriteLineC(UTF8STRC("</td></tr></table></body>"));
-	writer->WriteLineC(UTF8STRC("</html>"));
+	writer->WriteLine(CSTR("<input type=\"submit\" />"));
+	writer->WriteLine(CSTR("</td></tr></table></body>"));
+	writer->WriteLine(CSTR("</html>"));
 	sess->EndUse();
 
 	DEL_CLASS(writer);
@@ -2145,17 +2145,17 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHeaderBegin(IO::Writer *writer)
 {
-	writer->WriteLineC(UTF8STRC("<html><head><title>Monitor</title>"));
-	writer->WriteLineC(UTF8STRC("<style>"));
-	writer->WriteLineC(UTF8STRC(".menu {"));
-	writer->WriteLineC(UTF8STRC("	vertical-align: top;"));
-	writer->WriteLineC(UTF8STRC("}"));
-	writer->WriteLineC(UTF8STRC("</style>"));
+	writer->WriteLine(CSTR("<html><head><title>Monitor</title>"));
+	writer->WriteLine(CSTR("<style>"));
+	writer->WriteLine(CSTR(".menu {"));
+	writer->WriteLine(CSTR("	vertical-align: top;"));
+	writer->WriteLine(CSTR("}"));
+	writer->WriteLine(CSTR("</style>"));
 }
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHeaderEnd(IO::Writer *writer)
 {
-	writer->WriteLineC(UTF8STRC("</head>"));
+	writer->WriteLine(CSTR("</head>"));
 }
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteMenu(IO::Writer *writer, Optional<Net::WebServer::IWebSession> sess)
@@ -2169,86 +2169,86 @@ void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteMenu(IO::Writer *writer,
 	}
 	if (userType == 0)
 	{
-		writer->WriteLineC(UTF8STRC("<a href=\"login\">Login</a><br/>"));
+		writer->WriteLine(CSTR("<a href=\"login\">Login</a><br/>"));
 	}
 	if (userType != 0)
 	{
-		writer->WriteLineC(UTF8STRC("<a href=\"logout\">Logout</a><br/>"));
+		writer->WriteLine(CSTR("<a href=\"logout\">Logout</a><br/>"));
 	}
-	writer->WriteLineC(UTF8STRC("<br/>"));
-	writer->WriteLineC(UTF8STRC("<a href=\"index\">Home</a><br/>"));
+	writer->WriteLine(CSTR("<br/>"));
+	writer->WriteLine(CSTR("<a href=\"index\">Home</a><br/>"));
 	if (userType != 0)
 	{
-		writer->WriteLineC(UTF8STRC("<a href=\"device\">Devices</a><br/>"));
-		writer->WriteLineC(UTF8STRC("<a href=\"userpassword\">Password</a><br/>"));
+		writer->WriteLine(CSTR("<a href=\"device\">Devices</a><br/>"));
+		writer->WriteLine(CSTR("<a href=\"userpassword\">Password</a><br/>"));
 	}
-	writer->WriteLineC(UTF8STRC("<a href=\"pastdata\">Past Data</a><br/>"));
+	writer->WriteLine(CSTR("<a href=\"pastdata\">Past Data</a><br/>"));
 	if (userType == 1)
 	{
-		writer->WriteLineC(UTF8STRC("<a href=\"users\">Users</a><br/>"));
+		writer->WriteLine(CSTR("<a href=\"users\">Users</a><br/>"));
 	}
 }
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(IO::Writer *writer, const UTF8Char *txt)
 {
 	NN<Text::String> xmlTxt = Text::XML::ToNewHTMLBodyText(txt);
-	writer->WriteStrC(xmlTxt->v, xmlTxt->leng);
+	writer->Write(xmlTxt->ToCString());
 	xmlTxt->Release();
 }
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(IO::Writer *writer, NN<Text::String> txt)
 {
 	NN<Text::String> xmlTxt = Text::XML::ToNewHTMLBodyText(txt->v);
-	writer->WriteStrC(xmlTxt->v, xmlTxt->leng);
+	writer->Write(xmlTxt->ToCString());
 	xmlTxt->Release();
 }
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(IO::Writer *writer, Text::CString txt)
 {
 	NN<Text::String> xmlTxt = Text::XML::ToNewHTMLBodyText(txt.v);
-	writer->WriteStrC(xmlTxt->v, xmlTxt->leng);
+	writer->Write(xmlTxt->ToCString());
 	xmlTxt->Release();
 }
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteAttrText(IO::Writer *writer, const UTF8Char *txt)
 {
 	NN<Text::String> xmlTxt = Text::XML::ToNewAttrText(txt);
-	writer->WriteStrC(xmlTxt->v, xmlTxt->leng);
+	writer->Write(xmlTxt->ToCString());
 	xmlTxt->Release();
 }
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteAttrText(IO::Writer *writer, Text::String *txt)
 {
 	NN<Text::String> xmlTxt = Text::XML::ToNewAttrText(STR_PTR(txt));
-	writer->WriteStrC(xmlTxt->v, xmlTxt->leng);
+	writer->Write(xmlTxt->ToCString());
 	xmlTxt->Release();
 }
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteAttrText(IO::Writer *writer, NN<Text::String> txt)
 {
 	NN<Text::String> xmlTxt = Text::XML::ToNewAttrText(txt->v);
-	writer->WriteStrC(xmlTxt->v, xmlTxt->leng);
+	writer->Write(xmlTxt->ToCString());
 	xmlTxt->Release();
 }
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteJSText(IO::Writer *writer, const UTF8Char *txt)
 {
 	NN<Text::String> jsTxt = Text::JSText::ToNewJSText(txt);
-	writer->WriteStrC(jsTxt->v, jsTxt->leng);
+	writer->Write(jsTxt->ToCString());
 	jsTxt->Release();
 }
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteJSText(IO::Writer *writer, Text::String *txt)
 {
 	NN<Text::String> jsTxt = Text::JSText::ToNewJSText(txt);
-	writer->WriteStrC(jsTxt->v, jsTxt->leng);
+	writer->Write(jsTxt->ToCString());
 	jsTxt->Release();
 }
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteJSText(IO::Writer *writer, NN<Text::String> txt)
 {
 	NN<Text::String> jsTxt = Text::JSText::ToNewJSText(txt);
-	writer->WriteStrC(jsTxt->v, jsTxt->leng);
+	writer->Write(jsTxt->ToCString());
 	jsTxt->Release();
 }
 

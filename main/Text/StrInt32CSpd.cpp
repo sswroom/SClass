@@ -36,9 +36,9 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	IO::ConsoleWriter *console;
 	NEW_CLASS(console, IO::ConsoleWriter());
 	sptr = Text::StrConcatC(Text::StrDouble(Text::StrConcatC(sbuff, UTF8STRC("t1 = ")), t1), UTF8STRC(" s"));
-	console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+	console->WriteLine(CSTRP(sbuff, sptr));
 	sptr = Text::StrConcatC(Text::StrDouble(Text::StrConcatC(sbuff, UTF8STRC("t2 = ")), t2), UTF8STRC(" s"));
-	console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+	console->WriteLine(CSTRP(sbuff, sptr));
 	DEL_CLASS(console);
 	return 0;
 }

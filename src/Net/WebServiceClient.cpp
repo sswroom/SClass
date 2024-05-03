@@ -78,48 +78,48 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 		Text::UTF8Writer *writer;
 		NEW_CLASSNN(mstm, IO::MemoryStream());
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
-		writer->WriteStrC(UTF8STRC("<?xml version=\"1.0\" encoding=\"utf-8\"?>"));
-		writer->WriteStrC(UTF8STRC("<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">"));
-		writer->WriteStrC(UTF8STRC("<soap:Body>"));
-		writer->WriteStrC(UTF8STRC("<"));
+		writer->Write(CSTR("<?xml version=\"1.0\" encoding=\"utf-8\"?>"));
+		writer->Write(CSTR("<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">"));
+		writer->Write(CSTR("<soap:Body>"));
+		writer->Write(CSTR("<"));
 		s = Text::XML::ToNewXMLText(this->serviceName->v);
-		writer->WriteStrC(s->v, s->leng);
+		writer->Write(s->ToCString());
 		s->Release();
-		writer->WriteStrC(UTF8STRC(" xmlns="));
+		writer->Write(CSTR(" xmlns="));
 		s = Text::XML::ToNewAttrText(this->targetNS->v);
-		writer->WriteStrC(s->v, s->leng);
+		writer->Write(s->ToCString());
 		s->Release();
-		writer->WriteStrC(UTF8STRC(">"));
+		writer->Write(CSTR(">"));
 
 		i = 0;
 		j = this->paramList.GetCount();
 		while (i < j)
 		{
 			param = this->paramList.GetItemNoCheck(i);
-			writer->WriteStrC(UTF8STRC("<"));
+			writer->Write(CSTR("<"));
 			s = Text::XML::ToNewXMLText(param->name->v);
-			writer->WriteStrC(s->v, s->leng);
+			writer->Write(s->ToCString());
 			s->Release();
-			writer->WriteStrC(UTF8STRC(">"));
+			writer->Write(CSTR(">"));
 
 			s = Text::XML::ToNewXMLTextLite(param->val->v);
-			writer->WriteStrC(s->v, s->leng);
+			writer->Write(s->ToCString());
 			s->Release();
 			
-			writer->WriteStrC(UTF8STRC("</"));
+			writer->Write(CSTR("</"));
 			s = Text::XML::ToNewXMLText(param->name->v);
-			writer->WriteStrC(s->v, s->leng);
+			writer->Write(s->ToCString());
 			s->Release();
-			writer->WriteStrC(UTF8STRC(">"));
+			writer->Write(CSTR(">"));
 			i++;
 		}
-		writer->WriteStrC(UTF8STRC("</"));
+		writer->Write(CSTR("</"));
 		s = Text::XML::ToNewXMLText(this->serviceName->v);
-		writer->WriteStrC(s->v, s->leng);
+		writer->Write(s->ToCString());
 		s->Release();
-		writer->WriteStrC(UTF8STRC(">"));
-		writer->WriteStrC(UTF8STRC("</soap:Body>"));
-		writer->WriteStrC(UTF8STRC("</soap:Envelope>"));
+		writer->Write(CSTR(">"));
+		writer->Write(CSTR("</soap:Body>"));
+		writer->Write(CSTR("</soap:Envelope>"));
 		DEL_CLASS(writer);
 
 		cli = Net::HTTPClient::CreateConnect(sockf, this->ssl, this->serviceAddr->ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, false);
@@ -231,48 +231,48 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 		Text::UTF8Writer *writer;
 		NEW_CLASSNN(mstm, IO::MemoryStream());
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
-		writer->WriteStrC(UTF8STRC("<?xml version=\"1.0\" encoding=\"utf-8\"?>"));
-		writer->WriteStrC(UTF8STRC("<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">"));
-		writer->WriteStrC(UTF8STRC("<soap12:Body>"));
-		writer->WriteStrC(UTF8STRC("<"));
+		writer->Write(CSTR("<?xml version=\"1.0\" encoding=\"utf-8\"?>"));
+		writer->Write(CSTR("<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">"));
+		writer->Write(CSTR("<soap12:Body>"));
+		writer->Write(CSTR("<"));
 		s = Text::XML::ToNewXMLText(this->serviceName->v);
-		writer->WriteStrC(s->v, s->leng);
+		writer->Write(s->ToCString());
 		s->Release();
-		writer->WriteStrC(UTF8STRC(" xmlns="));
+		writer->Write(CSTR(" xmlns="));
 		s = Text::XML::ToNewAttrText(this->targetNS->v);
-		writer->WriteStrC(s->v, s->leng);
+		writer->Write(s->ToCString());
 		s->Release();
-		writer->WriteStrC(UTF8STRC(">"));
+		writer->Write(CSTR(">"));
 
 		i = 0;
 		j = this->paramList.GetCount();
 		while (i < j)
 		{
 			param = this->paramList.GetItemNoCheck(i);
-			writer->WriteStrC(UTF8STRC("<"));
+			writer->Write(CSTR("<"));
 			s = Text::XML::ToNewXMLText(param->name->v);
-			writer->WriteStrC(s->v, s->leng);
+			writer->Write(s->ToCString());
 			s->Release();
-			writer->WriteStrC(UTF8STRC(">"));
+			writer->Write(CSTR(">"));
 
 			s = Text::XML::ToNewXMLTextLite(param->val->v);
-			writer->WriteStrC(s->v, s->leng);
+			writer->Write(s->ToCString());
 			s->Release();
 			
-			writer->WriteStrC(UTF8STRC("</"));
+			writer->Write(CSTR("</"));
 			s = Text::XML::ToNewXMLText(param->name->v);
-			writer->WriteStrC(s->v, s->leng);
+			writer->Write(s->ToCString());
 			s->Release();
-			writer->WriteStrC(UTF8STRC(">"));
+			writer->Write(CSTR(">"));
 			i++;
 		}
-		writer->WriteStrC(UTF8STRC("</"));
+		writer->Write(CSTR("</"));
 		s = Text::XML::ToNewXMLText(this->serviceName->v);
-		writer->WriteStrC(s->v, s->leng);
+		writer->Write(s->ToCString());
 		s->Release();
-		writer->WriteStrC(UTF8STRC(">"));
-		writer->WriteStrC(UTF8STRC("</soap12:Body>"));
-		writer->WriteStrC(UTF8STRC("</soap12:Envelope>"));
+		writer->Write(CSTR(">"));
+		writer->Write(CSTR("</soap12:Body>"));
+		writer->Write(CSTR("</soap12:Envelope>"));
 		DEL_CLASS(writer);
 
 		cli = Net::HTTPClient::CreateConnect(sockf, this->ssl, this->serviceAddr->ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, false);

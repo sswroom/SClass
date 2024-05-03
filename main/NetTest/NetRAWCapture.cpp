@@ -30,12 +30,12 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	NEW_CLASS(analyzer, Net::RAWAnalyzer(sockf, portNum, console, Net::EthernetAnalyzer::AT_ALL));
 	if (!analyzer->IsError())
 	{
-		console->WriteLineC(UTF8STRC("NetRAWCapture Started"));
+		console->WriteLine(CSTR("NetRAWCapture Started"));
 		progCtrl->WaitForExit(progCtrl);
 	}
 	else
 	{
-		console->WriteLineC(UTF8STRC("Error in listening to the port"));
+		console->WriteLine(CSTR("Error in listening to the port"));
 	}
 	
 	DEL_CLASS(analyzer);

@@ -964,7 +964,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				Data::VariObject *obj = r->CreateVariObject();
 				sb.ClearStr();
 				obj->ToString(sb);
-				console.WriteLineC(sb.ToString(), sb.GetLength());
+				console.WriteLine(sb.ToCString());
 				DEL_CLASS(obj);
 			}
 			fileGDB->CloseReader(r);
@@ -1021,7 +1021,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			sb.AppendUOSInt(lamppostList.GetCount());
 			sb.AppendC(UTF8STRC(", CSV count = "));
 			sb.AppendUOSInt(lamppostListCSV.GetCount());
-			console.WriteLineC(sb.ToString(), sb.GetLength());
+			console.WriteLine(sb.ToCString());
 			
 /*			if (lamppostList.GetCount() == lamppostListCSV.GetCount())
 			{
@@ -1036,15 +1036,15 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					lamppost2 = lamppostListCSV.GetItem(i);
 					if (!cls->Equals(lamppost, lamppost2))
 					{
-						console.WriteLineC(UTF8STRC("Not equals:");
-						console.WriteLineC(UTF8STRC("FileGDB:");
+						console.WriteLine(CSTR("Not equals:");
+						console.WriteLine(CSTR("FileGDB:");
 						sb.ClearStr();
 						Text::StringTool::BuildString(sb, lamppost, cls);
-						console.WriteLineC(sb.ToString(), sb.GetLength());
-						console.WriteLineC(UTF8STRC("CSV:");
+						console.WriteLine(sb.ToCString());
+						console.WriteLine(CSTR("CSV:");
 						sb.ClearStr();
 						Text::StringTool::BuildString(sb, lamppost2, cls);
-						console.WriteLineC(sb.ToString(), sb.GetLength());
+						console.WriteLine(sb.ToCString());
 						break;
 					}
 					i++;
@@ -1053,7 +1053,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			}*/
 /*			sb.ClearStr();
 			Text::StringTool::BuildString(sb, &lamppostList, cls, (const UTF8Char*)"Lamppost");
-			console.WriteLineC(sb.ToString(), sb.GetLength());*/
+			console.WriteLine(sb.ToCString());*/
 
 			lamppostList.DeleteAll();
 			lamppostListCSV.DeleteAll();
@@ -1067,7 +1067,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			sb.AppendDouble(t3);
 /*			sb.AppendC(UTF8STRC(", t4 = "));
 			sb.AppendDouble(t4);*/
-			console.WriteLineC(sb.ToString(), sb.GetLength());
+			console.WriteLine(sb.ToCString());
 		}
 		cls.Delete();
 

@@ -124,6 +124,6 @@ void IO::SizeRotateFileLog::LogAdded(const Data::Timestamp &logTime, Text::CStri
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(buff, (UOSInt)(sptr - buff));
 		sb.Append(logMsg);
-		log->WriteLineC(sb.ToString(), sb.GetLength());
+		log->WriteLine(sb.ToCString());
 	}
 }

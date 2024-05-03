@@ -7,11 +7,6 @@
 #include "IO/Path.h"
 #include "Text/MyString.h"
 
-#define VERBOSE
-#if defined(VERBOSE)
-#include <stdio.h>
-#endif
-
 typedef struct
 {
 	Crypto::Hash::IHash *hash;
@@ -317,25 +312,27 @@ void IO::FileCheck::AddEntry(Text::CStringNN fileName, UInt8 *hashVal)
 	MemCopyNO(&this->chkValues[index * this->hashSize], hashVal, this->hashSize);
 }
 
-Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal) const
+Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal, Optional<IO::Writer> verboseWriter) const
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *sptrEnd;
 	UOSInt i;
 	Crypto::Hash::IHash *hash;
+	NN<IO::Writer> writer;
 
 	NN<Text::String> fileName;
 	if (!this->fileNames.GetItem(index).SetTo(fileName))
 	{
-#if defined(VERBOSE)
-		printf("Unknown file name\r\n");
-#endif
+		if (verboseWriter.SetTo(writer))
+			writer->WriteLine(CSTR("Unknown file name"));
 		return false;
 	}
-#if defined(VERBOSE)
-	printf("Checking file: %s\r\n", fileName->v);
-#endif
+	if (verboseWriter.SetTo(writer))
+	{
+		writer->Write(CSTR("Checking file: "));
+		writer->WriteLine(fileName->ToCString());
+	}
 	sptr = this->sourceName->ConcatTo(sbuff);
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	if (i == INVALID_INDEX)
@@ -367,18 +364,19 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal) const
 	hash = Crypto::Hash::HashCreator::CreateHash(this->chkType);
 	if (hash == 0)
 	{
-#if defined(VERBOSE)
-		printf("Error in creating hash calculator\r\n");
-#endif
+		if (verboseWriter.SetTo(writer))
+			writer->WriteLine(CSTR("Error in creating hash calculator"));
 		return false;
 	}
 
 	IO::FileStream fs(CSTRP(sbuff, sptrEnd), IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer);
 	if (fs.IsError())
 	{
-#if defined(VERBOSE)
-		printf("Error in opening file: %s\r\n", sbuff);
-#endif
+		if (verboseWriter.SetTo(writer))
+		{
+			writer->Write(CSTR("Error in opening file: "));
+			writer->WriteLine(CSTRP(sbuff, sptrEnd));
+		}
 		DEL_CLASS(hash);
 		return false;
 	}
@@ -403,9 +401,11 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal) const
 		}
 		else
 		{
-#if defined(VERBOSE)
-			printf("Error in reading file: %s\r\n", sbuff);
-#endif
+			if (verboseWriter.SetTo(writer))
+			{
+				writer->Write(CSTR("Error in reading file: "));
+				writer->WriteLine(CSTRP(sbuff, sptrEnd));
+			}
 		}
 		DEL_CLASS(hash);
 		return ret;

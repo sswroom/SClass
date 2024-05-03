@@ -15,11 +15,11 @@ void Test::TestSIM7000::SIM7000Info(IO::Writer *writer, IO::Device::SIM7000 *mod
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("CCID: "));
 		sb.AppendP(sbuff, sptr);
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLine(sb.ToCString());
 	}
 	else
 	{
-		writer->WriteLineC(UTF8STRC("CCID: Error in getting the value"));
+		writer->WriteLine(CSTR("CCID: Error in getting the value"));
 	}
 
 	if (modem->SIMCOMReadADC(adc))
@@ -27,33 +27,33 @@ void Test::TestSIM7000::SIM7000Info(IO::Writer *writer, IO::Device::SIM7000 *mod
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("ADC: "));
 		sb.AppendI32(adc);
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLine(sb.ToCString());
 	}
 	else
 	{
-		writer->WriteLineC(UTF8STRC("ADC: Error in getting the value"));
+		writer->WriteLine(CSTR("ADC: Error in getting the value"));
 	}
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Flash Device Type:\r\n"));
 	if (modem->SIMCOMGetFlashDeviceType(sb))
 	{
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLine(sb.ToCString());
 	}
 	else
 	{
-		writer->WriteLineC(UTF8STRC("Flash Device Type: Error in getting the value"));
+		writer->WriteLine(CSTR("Flash Device Type: Error in getting the value"));
 	}
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Device Product ID:\r\n"));
 	if (modem->SIMCOMGetDeviceProductID(sb))
 	{
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLine(sb.ToCString());
 	}
 	else
 	{
-		writer->WriteLineC(UTF8STRC("Device Product ID: Error in getting the value"));
+		writer->WriteLine(CSTR("Device Product ID: Error in getting the value"));
 	}
 
 	if ((sptr = modem->SIMCOMGetUESysInfo(sbuff)) != 0)
@@ -61,11 +61,11 @@ void Test::TestSIM7000::SIM7000Info(IO::Writer *writer, IO::Device::SIM7000 *mod
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("UE Sys Info: "));
 		sb.AppendP(sbuff, sptr);
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLine(sb.ToCString());
 	}
 	else
 	{
-		writer->WriteLineC(UTF8STRC("UE Sys Info: Error in getting the value"));
+		writer->WriteLine(CSTR("UE Sys Info: Error in getting the value"));
 	}
 
 	if ((sptr = modem->SIMCOMGetNetworkAPN(sbuff)) != 0)
@@ -73,11 +73,11 @@ void Test::TestSIM7000::SIM7000Info(IO::Writer *writer, IO::Device::SIM7000 *mod
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Network APN: "));
 		sb.AppendP(sbuff, sptr);
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLine(sb.ToCString());
 	}
 	else
 	{
-		writer->WriteLineC(UTF8STRC("Network APN: Error in getting the value"));
+		writer->WriteLine(CSTR("Network APN: Error in getting the value"));
 	}
 
 }

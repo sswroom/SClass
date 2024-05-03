@@ -74,7 +74,7 @@ Bool Exporter::MD4Exporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		sptr = Text::StrHexBytes(sbuff, buff, 16, 0);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(" *"));
 		sptr = Text::String::OrEmpty(fchk->GetEntryName(i))->ConcatTo(sptr);
-		writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+		writer.WriteLine(CSTRP(sbuff, sptr));
 		i++;
 	}
 	return true;

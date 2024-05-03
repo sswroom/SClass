@@ -65,8 +65,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	}
 	else
 	{
-		console.WriteLineCStr(CSTR("Error in connecting to database"));
-		console.WriteLineCStr(errMsg.ToCString());
+		console.WriteLine(CSTR("Error in connecting to database"));
+		console.WriteLine(errMsg.ToCString());
 	}
 	return 0;
 }

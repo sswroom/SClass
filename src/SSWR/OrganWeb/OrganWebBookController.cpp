@@ -120,11 +120,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NN<Net::WebS
 		sb.AppendC(UTF8STRC(" - "));
 		sb.Append(book->title);
 		me->WriteHeader(&writer, sb.ToString(), env.user, env.isMobile);
-		writer.WriteStrC(UTF8STRC("<center><h1>"));
+		writer.Write(CSTR("<center><h1>"));
 		s = Text::XML::ToNewHTMLBodyText(sb.ToString());
-		writer.WriteStrC(s->v, s->leng);
+		writer.Write(s->ToCString());
 		s->Release();
-		writer.WriteLineC(UTF8STRC("</h1></center>"));
+		writer.WriteLine(CSTR("</h1></center>"));
 
 		if (book->userfileId != 0)
 		{
@@ -134,7 +134,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NN<Net::WebS
 				NN<SpeciesInfo> sp;
 				if (me->env->SpeciesGet(mutUsage, userFile->speciesId).SetTo(sp))
 				{
-					writer.WriteStrC(UTF8STRC("<img src="));
+					writer.Write(CSTR("<img src="));
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("photo.html?id="));
 					sb.AppendI32(userFile->speciesId);
@@ -147,54 +147,54 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NN<Net::WebS
 					sb.AppendC(UTF8STRC("&fileId="));
 					sb.AppendI32(userFile->id);
 					s = Text::XML::ToNewAttrText(sb.ToString());
-					writer.WriteStrC(s->v, s->leng);
+					writer.Write(s->ToCString());
 					s->Release();
-					writer.WriteStrC(UTF8STRC(" border=\"0\" style=\"float: left;\"/>"));
+					writer.Write(CSTR(" border=\"0\" style=\"float: left;\"/>"));
 				}
 			}
 		}
 
-		writer.WriteStrC(UTF8STRC("<b>Book Name:</b> "));
+		writer.Write(CSTR("<b>Book Name:</b> "));
 		s = Text::XML::ToNewHTMLBodyText(book->title->v);
 		sb.ClearStr();
 		sb.Append(s);
 		s->Release();
 		sb.ReplaceStr(UTF8STRC("[i]"), UTF8STRC("<i>"));
 		sb.ReplaceStr(UTF8STRC("[/i]"), UTF8STRC("</i>"));
-		writer.WriteStrC(sb.ToString(), sb.GetLength());
-		writer.WriteLineC(UTF8STRC("<br/>"));
+		writer.Write(sb.ToCString());
+		writer.WriteLine(CSTR("<br/>"));
 
-		writer.WriteStrC(UTF8STRC("<b>Author:</b> "));
+		writer.Write(CSTR("<b>Author:</b> "));
 		s = Text::XML::ToNewHTMLBodyText(book->author->v);
-		writer.WriteStrC(s->v, s->leng);
+		writer.Write(s->ToCString());
 		s->Release();
-		writer.WriteLineC(UTF8STRC("<br/>"));
+		writer.WriteLine(CSTR("<br/>"));
 
-		writer.WriteStrC(UTF8STRC("<b>Press:</b> "));
+		writer.Write(CSTR("<b>Press:</b> "));
 		s = Text::XML::ToNewHTMLBodyText(book->press->v);
-		writer.WriteStrC(s->v, s->leng);
+		writer.Write(s->ToCString());
 		s->Release();
-		writer.WriteLineC(UTF8STRC("<br/>"));
+		writer.WriteLine(CSTR("<br/>"));
 
-		writer.WriteStrC(UTF8STRC("<b>Publish Date:</b> "));
+		writer.Write(CSTR("<b>Publish Date:</b> "));
 		sptr = Data::Timestamp(book->publishDate, 0).ToString(sbuff, "yyyy-MM-dd");
-		writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer.WriteLineC(UTF8STRC("<br/>"));
+		writer.Write(CSTRP(sbuff, sptr));
+		writer.WriteLine(CSTR("<br/>"));
 
 		if (book->url.SetTo(s2))
 		{
-			writer.WriteStrC(UTF8STRC("<b>URL:</b> <a href="));
+			writer.Write(CSTR("<b>URL:</b> <a href="));
 			s = Text::XML::ToNewAttrText(s2->v);
-			writer.WriteStrC(s->v, s->leng);
+			writer.Write(s->ToCString());
 			s->Release();
-			writer.WriteStrC(UTF8STRC(">"));
+			writer.Write(CSTR(">"));
 			s = Text::XML::ToNewHTMLBodyText(s2->v);
-			writer.WriteStrC(s->v, s->leng);
+			writer.Write(s->ToCString());
 			s->Release();
-			writer.WriteLineC(UTF8STRC("</a><br/>"));
+			writer.WriteLine(CSTR("</a><br/>"));
 		}
 
-		writer.WriteLineC(UTF8STRC("<hr/>"));
+		writer.WriteLine(CSTR("<hr/>"));
 		NN<UserFileInfo> userFile;
 		UOSInt colCount = env.scnWidth / GetPreviewSize();
 		UOSInt colWidth = 100 / colCount;
@@ -205,7 +205,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NN<Net::WebS
 		j = env.pickObjs->GetCount();
 		if (j > 0)
 		{
-			writer.WriteLineC(UTF8STRC("<table border=\"0\" width=\"100%\">"));
+			writer.WriteLine(CSTR("<table border=\"0\" width=\"100%\">"));
 			currColumn = 0;
 			while (i < j)
 			{
@@ -213,13 +213,13 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NN<Net::WebS
 				{
 					if (currColumn == 0)
 					{
-						writer.WriteLineC(UTF8STRC("<tr>"));
+						writer.WriteLine(CSTR("<tr>"));
 					}
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("<td width=\""));
 					sb.AppendUOSInt(colWidth);
 					sb.AppendC(UTF8STRC("%\">"));
-					writer.WriteLineC(sb.ToString(), sb.GetLength());
+					writer.WriteLine(sb.ToCString());
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("<center><a href=\"bookphoto.html?id="));
 					sb.AppendI32(book->id);
@@ -228,9 +228,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NN<Net::WebS
 					sb.AppendC(UTF8STRC("&amp;fileId="));
 					sb.AppendI32(userFile->id);
 					sb.AppendC(UTF8STRC("\">"));
-					writer.WriteLineC(sb.ToString(), sb.GetLength());
+					writer.WriteLine(sb.ToCString());
 
-					writer.WriteStrC(UTF8STRC("<img src="));
+					writer.Write(CSTR("<img src="));
 					NN<SpeciesInfo> sp;
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("photo.html?id="));
@@ -247,18 +247,18 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NN<Net::WebS
 					sb.AppendC(UTF8STRC("&fileId="));
 					sb.AppendI32(userFile->id);
 					s = Text::XML::ToNewAttrText(sb.ToString());
-					writer.WriteStrC(s->v, s->leng);
+					writer.Write(s->ToCString());
 					s->Release();
-					writer.WriteStrC(UTF8STRC(" border=\"0\""));
-					writer.WriteLineC(UTF8STRC("><br/>"));
+					writer.Write(CSTR(" border=\"0\""));
+					writer.WriteLine(CSTR("><br/>"));
 
-					writer.WriteLineC(UTF8STRC("</a>"));
-					writer.WriteLineC(UTF8STRC("</center></td>"));
+					writer.WriteLine(CSTR("</a>"));
+					writer.WriteLine(CSTR("</center></td>"));
 
 					currColumn++;
 					if (currColumn >= colCount)
 					{
-						writer.WriteLineC(UTF8STRC("</tr>"));
+						writer.WriteLine(CSTR("</tr>"));
 						currColumn = 0;
 					}
 				}
@@ -272,20 +272,20 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookPhoto(NN<Net::WebS
 				sb.AppendC(UTF8STRC("%\"></td>"));
 				while (currColumn < colCount)
 				{
-					writer.WriteLineC(sb.ToString(), sb.GetLength());
+					writer.WriteLine(sb.ToCString());
 					currColumn++;
 				}
-				writer.WriteLineC(UTF8STRC("</tr>"));
+				writer.WriteLine(CSTR("</tr>"));
 			}
-			writer.WriteLineC(UTF8STRC("</table>"));
+			writer.WriteLine(CSTR("</table>"));
 		}
-		writer.WriteLineC(UTF8STRC("<hr/>"));
+		writer.WriteLine(CSTR("<hr/>"));
 
-		writer.WriteStrC(UTF8STRC("<a href=\"booklist.html?id="));
+		writer.Write(CSTR("<a href=\"booklist.html?id="));
 		sptr = Text::StrInt32(sbuff, cate->cateId);
-		writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer.WriteStrC(UTF8STRC("\">"));
-		writer.WriteStrC(UTF8STRC("Book List</a>"));
+		writer.Write(CSTRP(sbuff, sptr));
+		writer.Write(CSTR("\">"));
+		writer.Write(CSTR("Book List</a>"));
 
 		me->WriteFooter(&writer);
 		mutUsage.EndUse();
@@ -384,82 +384,82 @@ Bool __stdcall SSWR::OrganWeb::OrganWebBookController::SvcBookAdd(NN<Net::WebSer
 		NN<Text::String> s;
 
 		me->WriteHeader(&writer, cate->chiName->v, env.user, env.isMobile);
-		writer.WriteStrC(UTF8STRC("<center><h1>New Book"));
-		writer.WriteLineC(UTF8STRC("</h1></center>"));
+		writer.Write(CSTR("<center><h1>New Book"));
+		writer.WriteLine(CSTR("</h1></center>"));
 
-		writer.WriteStrC(UTF8STRC("<form name=\"newBook\" method=\"POST\" action=\"bookadd.html?id="));
+		writer.Write(CSTR("<form name=\"newBook\" method=\"POST\" action=\"bookadd.html?id="));
 		sptr = Text::StrInt32(sbuff, cate->cateId);
-		writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer.WriteStrC(UTF8STRC("\">"));
+		writer.Write(CSTRP(sbuff, sptr));
+		writer.Write(CSTR("\">"));
 
-		writer.WriteStrC(UTF8STRC("<b>Book Name:</b> <input type=\"text\" name=\"title\""));
+		writer.Write(CSTR("<b>Book Name:</b> <input type=\"text\" name=\"title\""));
 		if (title->leng > 0)
 		{
 			s = Text::XML::ToNewAttrText(title->v);
-			writer.WriteStrC(UTF8STRC(" value="));
-			writer.WriteStrC(s->v, s->leng);
+			writer.Write(CSTR(" value="));
+			writer.Write(s->ToCString());
 			s->Release();
 		}
-		writer.WriteLineC(UTF8STRC(" /><br/>"));
+		writer.WriteLine(CSTR(" /><br/>"));
 
-		writer.WriteStrC(UTF8STRC("<b>Author:</b> <input type=\"text\" name=\"author\""));
+		writer.Write(CSTR("<b>Author:</b> <input type=\"text\" name=\"author\""));
 		if (author->leng > 0)
 		{
 			s = Text::XML::ToNewAttrText(author->v);
-			writer.WriteStrC(UTF8STRC(" value="));
-			writer.WriteStrC(s->v, s->leng);
+			writer.Write(CSTR(" value="));
+			writer.Write(s->ToCString());
 			s->Release();
 		}
-		writer.WriteLineC(UTF8STRC(" /><br/>"));
+		writer.WriteLine(CSTR(" /><br/>"));
 
-		writer.WriteStrC(UTF8STRC("<b>Publish Date:</b> <input type=\"text\" name=\"pubDate\""));
+		writer.Write(CSTR("<b>Publish Date:</b> <input type=\"text\" name=\"pubDate\""));
 		if (pubDate->leng > 0)
 		{
 			s = Text::XML::ToNewAttrText(pubDate->v);
-			writer.WriteStrC(UTF8STRC(" value="));
-			writer.WriteStrC(s->v, s->leng);
+			writer.Write(CSTR(" value="));
+			writer.Write(s->ToCString());
 			s->Release();
 		}
 		else
 		{
 			sptr = Data::Timestamp::Now().ToString(sbuff, "yyyy-MM-dd");
-			writer.WriteStrC(UTF8STRC(" value=\""));
-			writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer.WriteStrC(UTF8STRC("\""));
+			writer.Write(CSTR(" value=\""));
+			writer.Write(CSTRP(sbuff, sptr));
+			writer.Write(CSTR("\""));
 		}
-		writer.WriteLineC(UTF8STRC(" /><br/>"));
+		writer.WriteLine(CSTR(" /><br/>"));
 
-		writer.WriteStrC(UTF8STRC("<b>Press:</b> <input type=\"text\" name=\"press\""));
+		writer.Write(CSTR("<b>Press:</b> <input type=\"text\" name=\"press\""));
 		if (press->leng > 0)
 		{
 			s = Text::XML::ToNewAttrText(press->v);
-			writer.WriteStrC(UTF8STRC(" value="));
-			writer.WriteStrC(s->v, s->leng);
+			writer.Write(CSTR(" value="));
+			writer.Write(s->ToCString());
 			s->Release();
 		}
-		writer.WriteLineC(UTF8STRC(" /><br/>"));
+		writer.WriteLine(CSTR(" /><br/>"));
 
-		writer.WriteStrC(UTF8STRC("<b>URL:</b> <input type=\"text\" name=\"url\""));
+		writer.Write(CSTR("<b>URL:</b> <input type=\"text\" name=\"url\""));
 		if (url->leng > 0)
 		{
 			s = Text::XML::ToNewAttrText(url->v);
-			writer.WriteStrC(UTF8STRC(" value="));
-			writer.WriteStrC(s->v, s->leng);
+			writer.Write(CSTR(" value="));
+			writer.Write(s->ToCString());
 			s->Release();
 		}
-		writer.WriteLineC(UTF8STRC(" /><br/>"));
+		writer.WriteLine(CSTR(" /><br/>"));
 
-		writer.WriteLineC(UTF8STRC("<input type=\"submit\"/></form>"));
+		writer.WriteLine(CSTR("<input type=\"submit\"/></form>"));
 		if (errMsg.leng > 0)
 		{
-			writer.WriteLineC(errMsg.v, errMsg.leng);
-			writer.WriteLineC(UTF8STRC("<br/>"));
+			writer.WriteLine(errMsg.OrEmpty());
+			writer.WriteLine(CSTR("<br/>"));
 		}
-		writer.WriteStrC(UTF8STRC("<a href=\"booklist.html?id="));
+		writer.Write(CSTR("<a href=\"booklist.html?id="));
 		sptr = Text::StrInt32(sbuff, cate->cateId);
-		writer.WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		writer.WriteStrC(UTF8STRC("\">"));
-		writer.WriteStrC(UTF8STRC("Book List</a>"));
+		writer.Write(CSTRP(sbuff, sptr));
+		writer.Write(CSTR("\">"));
+		writer.Write(CSTR("Book List</a>"));
 
 		me->WriteFooter(&writer);
 		mutUsage.EndUse();

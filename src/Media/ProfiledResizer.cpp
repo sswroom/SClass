@@ -268,7 +268,7 @@ Bool Media::ProfiledResizer::SaveProfile(Text::CStringNN fileName)
 		sptr = Text::StrInt32(sptr, (Int32)profile->sizeType) + 1;
 
 		sptr = Text::StrCSVJoin(sbuff, cols, 8);
-		writer.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+		writer.WriteLine(CSTRP(sbuff, sptr));
 
 		i++;
 	}

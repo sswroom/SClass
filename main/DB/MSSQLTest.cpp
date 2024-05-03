@@ -627,14 +627,14 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			sb.AppendDouble(t);
 			sb.AppendC(UTF8STRC(", rows read = "));
 			sb.AppendUOSInt(cnt);
-			console.WriteLineCStr(sb.ToCString());
+			console.WriteLine(sb.ToCString());
 			cls.Delete();
 		}
 		db.Delete();
 	}
 	else
 	{
-		console.WriteLineC(UTF8STRC("Error in connecting to database"));
+		console.WriteLine(CSTR("Error in connecting to database"));
 	}
 	return 0;
 }

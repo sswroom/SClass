@@ -50,7 +50,7 @@ void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV:
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("People detected, cnt = "));
 		sb.AppendUOSInt(thisCnt);
-		console->WriteLineC(sb.ToString(), sb.GetLength());
+		console->WriteLine(sb.ToCString());
 
 		Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
 		if (csConv == 0)
@@ -230,18 +230,18 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		DEL_CLASS(cfg);
 	}
 
-	console->WriteLineC(UTF8STRC("Starting OpenCVPeopleCounting"));
+	console->WriteLine(CSTR("Starting OpenCVPeopleCounting"));
 	if (OpenCapture(defIndex).SetTo(capture))
 	{
 		Text::StringBuilderUTF8 sb;
 		capture->GetInfo(sb);
-		console->WriteLineC(sb.ToString(), sb.GetLength());
+		console->WriteLine(sb.ToCString());
 
 		Media::OpenCV::OCVObjectDetector *objDetect;
 		NEW_CLASS(objDetect, Media::OpenCV::OCVObjectDetector((const UTF8Char*)"haarcascades", (const UTF8Char*)"haarcascade_frontalface_alt.xml"));
 		if (objDetect->IsError())
 		{
-			console->WriteLineC(UTF8STRC("Error in initializing object detector"));
+			console->WriteLine(CSTR("Error in initializing object detector"));
 		}
 		else
 		{
@@ -252,13 +252,13 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			objDetect->HandleDetectResult(OnDetectResult, console);
 			if (!feeder->Start())
 			{
-				console->WriteLineC(UTF8STRC("Error in starting feeder"));
+				console->WriteLine(CSTR("Error in starting feeder"));
 			}
 			else
 			{
-				console->WriteLineC(UTF8STRC("Inited"));
+				console->WriteLine(CSTR("Inited"));
 				progCtrl->WaitForExit(progCtrl);
-				console->WriteLineC(UTF8STRC("Exiting"));
+				console->WriteLine(CSTR("Exiting"));
 			}
 			DEL_CLASS(feeder);
 		}
@@ -267,7 +267,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	}
 	else
 	{
-		console->WriteLineC(UTF8STRC("Error in opening video capture"));
+		console->WriteLine(CSTR("Error in opening video capture"));
 	}
 	SDEL_CLASS(csConv);
 	SDEL_CLASS(exporter);

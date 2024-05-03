@@ -32,7 +32,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	}
 	else
 	{
-		console->WriteLineC(UTF8STRC("Error in opening config file"));
+		console->WriteLine(CSTR("Error in opening config file"));
 	}
 
 	DEL_CLASS(console);

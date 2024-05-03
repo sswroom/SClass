@@ -74,7 +74,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	memSize = sysInfo.GetTotalMemSize();
 	sptr = ByteDisp(sbuff, memSize);
 	sb.AppendP(sbuff, sptr);
-	console->WriteLineC(sb.ToString(), sb.GetLength());
+	console->WriteLine(sb.ToCString());
 
 
 	sb.ClearStr();
@@ -87,8 +87,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	{
 		sb.AppendC(UTF8STRC("-"));
 	}
-	writer->WriteLineC(sb.ToString(), sb.GetLength());
-	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLine(sb.ToCString());
+	console->WriteLine(sb.ToCString());
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("CPU: "));
@@ -100,8 +100,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	{
 		sb.AppendC(UTF8STRC("-"));
 	}
-	writer->WriteLineC(sb.ToString(), sb.GetLength());
-	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLine(sb.ToCString());
+	console->WriteLine(sb.ToCString());
 
 	Data::ArrayList<IO::SystemInfo::RAMInfo*> ramList;
 	IO::SystemInfo::RAMInfo *ram;
@@ -130,15 +130,15 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		sb.AppendU32(ram->totalWidth);
 		sb.AppendC(UTF8STRC("\t"));
 		sb.AppendU64(ram->memorySize);
-		writer->WriteLineC(sb.ToString(), sb.GetLength());
-		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLine(sb.ToCString());
+		console->WriteLine(sb.ToCString());
 		i++;
 	}
 	sysInfo.FreeRAMInfo(&ramList);
 
-	writer->WriteLineC(UTF8STRC("Result:"));
-	console->WriteLineC(UTF8STRC("Result:"));
-	console->WriteLineC(UTF8STRC("Type\tSize\tData Rate\tLoop Count\tUsed Time"));
+	writer->WriteLine(CSTR("Result:"));
+	console->WriteLine(CSTR("Result:"));
+	console->WriteLine(CSTR("Type\tSize\tData Rate\tLoop Count\tUsed Time"));
 
 	Double oriT;
 	Double t;
@@ -181,7 +181,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				sb.AppendUOSInt(currSize);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendDouble(rate);
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLine(sb.ToCString());
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Copy\t"));
@@ -194,7 +194,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendDouble(t);
-				console->WriteLineC(sb.ToString(), sb.GetLength());
+				console->WriteLine(sb.ToCString());
 				break;
 			}
 			else
@@ -227,7 +227,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				sb.AppendUOSInt(currSize);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendDouble(rate);
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLine(sb.ToCString());
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Write\t"));
@@ -240,7 +240,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendDouble(t);
-				console->WriteLineC(sb.ToString(), sb.GetLength());
+				console->WriteLine(sb.ToCString());
 				break;
 			}
 			else
@@ -273,7 +273,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				sb.AppendUOSInt(currSize);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendDouble(rate);
-				writer->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLine(sb.ToCString());
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Read\t"));
@@ -286,7 +286,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendDouble(t);
-				console->WriteLineC(sb.ToString(), sb.GetLength());
+				console->WriteLine(sb.ToCString());
 				break;
 			}
 			else

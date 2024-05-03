@@ -170,7 +170,7 @@ void Media::M2VStreamSource::SubmitFrame(UOSInt frameSize, UOSInt frameStart, UO
 						sb.AppendDur((this->thisFrameTime + fieldAdd));
 						sb.AppendC(UTF8STRC(" skipped"));
 						Sync::MutexUsage debugMutUsage(debugMut);
-						this->debugLog->WriteLineC(sb.ToString(), sb.GetLength());
+						this->debugLog->WriteLine(sb.ToCString());
 					}
 #endif
 					break;
@@ -187,7 +187,7 @@ void Media::M2VStreamSource::SubmitFrame(UOSInt frameSize, UOSInt frameStart, UO
 					sb.AppendC(UTF8STRC("Add to Play buff "));
 					sb.AppendDur((this->thisFrameTime + fieldAdd));
 					Sync::MutexUsage debugMutUsage(debugMut);
-					this->debugLog->WriteLineC(sb.ToString(), sb.GetLength());
+					this->debugLog->WriteLine(sb.ToCString());
 				}
 #endif
 				Sync::MutexUsage mutUsage(this->playMut);
@@ -388,7 +388,7 @@ UInt32 __stdcall Media::M2VStreamSource::PlayThread(AnyType userObj)
 				sb.AppendC(UTF8STRC("Output frame "));
 				sb.AppendDur(frameTime);
 				Sync::MutexUsage debugMutUsage(debugMut);
-				me->debugLog->WriteLineC(sb.ToString(), sb.GetLength());
+				me->debugLog->WriteLine(sb.ToCString());
 			}
 #endif
 			me->frameCb(frameTime, frameNum, &frameBuff, frameSize, fs, me->frameCbData, ft, (frameNum == 0)?Media::IVideoSource::FF_DISCONTTIME:Media::IVideoSource::FF_NONE, Media::YCOFST_C_CENTER_LEFT);
@@ -504,7 +504,7 @@ Bool Media::M2VStreamSource::Start()
 	if (this->debugLog && debugMut.Set(this->debugMut))
 	{
 		Sync::MutexUsage debugMutUsage(debugMut);
-		this->debugLog->WriteLineC(UTF8STRC("Start"));
+		this->debugLog->WriteLine(CSTR("Start"));
 	}
 #endif
 	Sync::MutexUsage mutUsage(this->pbcMut);
@@ -650,7 +650,7 @@ void Media::M2VStreamSource::SetStreamTime(Data::Duration time)
 		sb.AppendC(UTF8STRC("Set Stream Time "));
 		sb.AppendDur(time);
 		Sync::MutexUsage debugMutUsage(debugMut);
-		this->debugLog->WriteLineC(sb.ToString(), sb.GetLength());
+		this->debugLog->WriteLine(sb.ToCString());
 	}
 #endif
 	this->syncFrameTime = time;
@@ -678,7 +678,7 @@ void Media::M2VStreamSource::WriteFrameStream(UInt8 *buff, UOSInt buffSize)
 		sb.AppendC(UTF8STRC("WriteFrameStream "));
 		sb.AppendOSInt(buffSize);
 		Sync::MutexUsage debugMutUsage(debugMut);
-		this->debugLog->WriteLineC(sb.ToString(), sb.GetLength());
+		this->debugLog->WriteLine(sb.ToCString());
 	}
 #endif
 

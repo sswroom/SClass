@@ -15,8 +15,8 @@ namespace IO
 		SimpleFileWriter(const UTF8Char *fileName, IO::FileMode mode, IO::FileShare share);
 		virtual ~SimpleFileWriter();
 
-		virtual Bool WriteStrC(const UTF8Char *str, UOSInt nChar);
-		virtual Bool WriteLineC(const UTF8Char *str, UOSInt nChar);
+		virtual Bool Write(Text::CStringNN str);
+		virtual Bool WriteLine(Text::CStringNN str);
 		virtual Bool WriteW(const WChar *str, UOSInt nChar);
 		virtual Bool WriteW(const WChar *str);
 		virtual Bool WriteLineW(const WChar *str, UOSInt nChar);

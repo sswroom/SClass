@@ -930,7 +930,7 @@ Bool SSWR::AVIRead::AVIRImageControl::SaveSetting()
 		sb.AppendDouble(status->setting.contrast);
 		sb.AppendC(UTF8STRC("\t"));
 		sb.AppendDouble(status->setting.gamma);
-		writer.WriteLineC(sb.ToString(), sb.GetLength());
+		writer.WriteLine(sb.ToCString());
 		i++;
 	}
 	mutUsage.EndUse();

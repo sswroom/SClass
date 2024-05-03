@@ -269,7 +269,7 @@ Bool IO::BTDevLog::StoreFile(Text::CStringNN fileName)
 		sb.AppendI32(log->measurePower);
 		sb.AppendUTF8Char('\t');
 		sb.AppendU32((UInt32)log->advType);
-		writer.WriteLineC(sb.ToString(), sb.GetLength());
+		writer.WriteLine(sb.ToCString());
 		i++;
 	}
 	return true;

@@ -241,7 +241,7 @@ Bool Net::MACInfoList::Store()
 			sb.AppendC(UTF8STRC("LL, UTF8STRC("));
 			Text::CPPText::ToCPPString(sb, entry->name);
 			sb.AppendC(UTF8STRC(")},"));
-			writer.WriteLineC(sb.ToString(), sb.GetLength());
+			writer.WriteLine(sb.ToCString());
 			i++;
 		}
 	}

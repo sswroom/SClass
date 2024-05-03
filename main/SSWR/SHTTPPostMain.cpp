@@ -20,7 +20,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	argv = progCtrl->GetCommandLines(progCtrl, argc);
 	if (argc <= 2)
 	{
-		console->WriteLineC(UTF8STRC("Usage: SHTTPPost [URL] [File]"));
+		console->WriteLine(CSTR("Usage: SHTTPPost [URL] [File]"));
 	}
 	else
 	{
@@ -40,7 +40,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			fileBuff = MemAlloc(UInt8, fileSize);
 			if (fs->Read(Data::ByteArray(fileBuff, fileSize)) != fileSize)
 			{
-				console->WriteLineC(UTF8STRC("Error in reading file"));
+				console->WriteLine(CSTR("Error in reading file"));
 				fileSize = 0;
 				MemFree(fileBuff);
 				fileBuff = 0;
@@ -48,7 +48,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		}
 		else
 		{
-			console->WriteLineC(UTF8STRC("Error in opening file"));
+			console->WriteLine(CSTR("Error in opening file"));
 		}
 		DEL_CLASS(fs);
 
@@ -81,7 +81,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				writeSize = cli->Write(&fileBuff[totalSize], fileSize - totalSize);
 				if (writeSize <= 0)
 				{
-					console->WriteLineC(UTF8STRC("Error in uploading to server"));
+					console->WriteLine(CSTR("Error in uploading to server"));
 					break;
 				}
 				else
@@ -93,14 +93,14 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			httpStatus = cli->GetRespStatus();
 			if (httpStatus == 0)
 			{
-				console->WriteLineC(UTF8STRC("Error in requesting to server"));
+				console->WriteLine(CSTR("Error in requesting to server"));
 			}
 			else
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Server response "));
 				sb.AppendI32(httpStatus);
-				console->WriteLineC(sb.ToString(), sb.GetLength());
+				console->WriteLine(sb.ToCString());
 
 				IO::MemoryStream mstm;
 				UOSInt readSize;
@@ -111,7 +111,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				}
 				if (mstm.GetLength() == 0)
 				{
-					console->WriteLineC(UTF8STRC("Received 0 bytes from server"));
+					console->WriteLine(CSTR("Received 0 bytes from server"));
 				}
 				else
 				{
@@ -140,7 +140,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					sb.AppendC(UTF8STRC("Received "));
 					sb.AppendU64(mstm.GetLength());
 					sb.AppendC(UTF8STRC(" bytes from server"));
-					console->WriteLineC(sb.ToString(), sb.GetLength());
+					console->WriteLine(sb.ToCString());
 
 /*					IO::FileStream *fs;
 					UInt8 *fileBuff;
@@ -150,7 +150,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					DEL_CLASS(fs);
 					if (argc != mstm->GetLength())
 					{
-						console->WriteLineC(UTF8STRC("Error in writing to file"));
+						console->WriteLine(CSTR("Error in writing to file"));
 					}*/
 					fileName->Release();
 				}
@@ -160,7 +160,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		}
 		else
 		{
-			console->WriteLineC(UTF8STRC("Only support http url"));
+			console->WriteLine(CSTR("Only support http url"));
 		}
 		if (fileBuff)
 		{

@@ -35,7 +35,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 		if (cfg == 0)
 		{
-			console.WriteLineC(UTF8STRC("Error in loading config file"));
+			console.WriteLine(CSTR("Error in loading config file"));
 		}
 		else
 		{
@@ -48,7 +48,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					NN<Net::SSLEngine> nnssl;
 					if (!ssl.SetTo(nnssl))
 					{
-						console.WriteLineC(UTF8STRC("Error in initializing SSL engine"));
+						console.WriteLine(CSTR("Error in initializing SSL engine"));
 					}
 					else
 					{
@@ -56,17 +56,17 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 						NN<Text::String> keyFile;
 						if (!cfg->GetValue(CSTR("SSLCert")).SetTo(certFile))
 						{
-							console.WriteLineC(UTF8STRC("SSLCert not found"));
+							console.WriteLine(CSTR("SSLCert not found"));
 							ssl.Delete();
 						}
 						else if (!cfg->GetValue(CSTR("SSLKey")).SetTo(keyFile))
 						{
-							console.WriteLineC(UTF8STRC("SSLKey not found"));
+							console.WriteLine(CSTR("SSLKey not found"));
 							ssl.Delete();
 						}
 						else if (!nnssl->ServerSetCerts(certFile->ToCString(), keyFile->ToCString()))
 						{
-							console.WriteLineC(UTF8STRC("Error in loading SSL Cert/key"));
+							console.WriteLine(CSTR("Error in loading SSL Cert/key"));
 							ssl.Delete();
 						}
 					}
@@ -117,11 +117,11 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			NN<Text::String> dataDir;
 			if (!cfg->GetValue(CSTR("ImageDir")).SetTo(imageDir))
 			{
-				console.WriteLineC(UTF8STRC("Config ImageDir not found"));
+				console.WriteLine(CSTR("Config ImageDir not found"));
 			}
 			else if (!cfg->GetValue(CSTR("DataDir")).SetTo(dataDir))
 			{
-				console.WriteLineC(UTF8STRC("Config DataDir not found"));
+				console.WriteLine(CSTR("Config DataDir not found"));
 			}
 			else
 			{
@@ -129,11 +129,11 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 				if (env.IsError())
 				{
-					console.WriteLineC(UTF8STRC("Error in starting server"));
+					console.WriteLine(CSTR("Error in starting server"));
 				}
 				else
 				{
-					console.WriteLineC(UTF8STRC("SOrganWeb started"));
+					console.WriteLine(CSTR("SOrganWeb started"));
 					progCtrl->WaitForExit(progCtrl);
 				}
 			}

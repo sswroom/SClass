@@ -27,7 +27,7 @@ void Net::WebServer::PrintLogWebHandler::WebRequest(NN<IWebRequest> req, NN<IWeb
 	sb.Append(req->GetRequestURI());
 	sb.AppendUTF8Char(' ');
 	sb.Append(Net::WebServer::IWebRequest::RequestProtocolGetName(req->GetProtocol()));
-	this->writer->WriteLineC(sb.ToString(), sb.GetLength());
+	this->writer->WriteLine(sb.ToCString());
 	Data::ArrayListStringNN headers;
 	req->GetHeaderNames(headers);
 	NN<Text::String> header;
@@ -40,9 +40,9 @@ void Net::WebServer::PrintLogWebHandler::WebRequest(NN<IWebRequest> req, NN<IWeb
 		sb.Append(header);
 		sb.AppendC(UTF8STRC(": "));
 		req->GetHeaderC(sb, header->ToCString());
-		this->writer->WriteLineC(sb.ToString(), sb.GetLength());
+		this->writer->WriteLine(sb.ToCString());
 	}
-	this->writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+	this->writer->WriteLine(CSTRP(sbuff, sptr));
 	Net::WebServer::PrintLogWebResponse plResp(resp, this->writer, CSTRP(sbuff, sptr));
 	this->hdlr->WebRequest(req, plResp);
 }

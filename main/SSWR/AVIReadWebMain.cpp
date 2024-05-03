@@ -28,12 +28,12 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		Net::WebServer::WebListener listener(sockf, 0, baseHdlr, 5080, 60, 2, 8, CSTR("AVIReadWeb/1.0"), false, Net::WebServer::KeepAlive::Default, true);
 		if (!listener.IsError())
 		{
-			console.WriteLineC(UTF8STRC("AVIReadWeb started"));
+			console.WriteLine(CSTR("AVIReadWeb started"));
 			progCtrl->WaitForExit(progCtrl);
 		}
 		else
 		{
-			console.WriteLineC(UTF8STRC("Error in listening to port 5080"));
+			console.WriteLine(CSTR("Error in listening to port 5080"));
 		}
 	}
 	return 0;

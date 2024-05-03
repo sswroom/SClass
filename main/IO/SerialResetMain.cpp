@@ -13,16 +13,16 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 	if (argc != 2)
 	{
-		console.WriteStrC(UTF8STRC("Usage: "));
+		console.Write(CSTR("Usage: "));
 		if (argc >= 1)
 		{
-			console.WriteStr(Text::CString::FromPtr(argv[0]));
+			console.Write(Text::CStringNN::FromPtr(argv[0]));
 		}
 		else
 		{
-			console.WriteStrC(UTF8STRC("SerialReset"));
+			console.Write(CSTR("SerialReset"));
 		}
-		console.WriteLineC(UTF8STRC(" [PortNum]"));
+		console.WriteLine(CSTR(" [PortNum]"));
 	}
 	else
 	{
@@ -31,17 +31,17 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		{
 			if (IO::SerialPort::ResetPort(portNum))
 			{
-				console.WriteLineC(UTF8STRC("Serial port resetted"));
+				console.WriteLine(CSTR("Serial port resetted"));
 			}
 			else
 			{
-				console.WriteLineC(UTF8STRC("Error in opening serial port"));
+				console.WriteLine(CSTR("Error in opening serial port"));
 
 			}			
 		}
 		else
 		{
-			console.WriteLineC(UTF8STRC("Parameter error"));
+			console.WriteLine(CSTR("Parameter error"));
 		}
 	}
 	return 0;

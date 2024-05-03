@@ -16,7 +16,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		{
 			break;
 		}
-		console.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+		console.WriteLine(CSTRP(sbuff, sptr));
 	}
 	return 0;
 }

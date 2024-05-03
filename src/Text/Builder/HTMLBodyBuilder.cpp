@@ -94,21 +94,21 @@ void Text::Builder::HTMLBodyBuilder::EndElement()
 	}	
 }
 
-void Text::Builder::HTMLBodyBuilder::AddTableHeader(Text::CString content)
+void Text::Builder::HTMLBodyBuilder::AddTableHeader(Text::CStringNN content)
 {
 	this->sb->AppendC(UTF8STRC("<th>"));
-	this->WriteStr(content);
+	this->Write(content);
 	this->sb->AppendC(UTF8STRC("</th>"));
 }
 
-void Text::Builder::HTMLBodyBuilder::AddTableData(Text::CString content)
+void Text::Builder::HTMLBodyBuilder::AddTableData(Text::CStringNN content)
 {
 	this->sb->AppendC(UTF8STRC("<td>"));
-	this->WriteStr(content);
+	this->Write(content);
 	this->sb->AppendC(UTF8STRC("</td>"));
 }
 
-void Text::Builder::HTMLBodyBuilder::AddTableData(Text::CString content, UOSInt colSpan, UOSInt rowSpan, HAlignment halign, VAlignment valign)
+void Text::Builder::HTMLBodyBuilder::AddTableData(Text::CStringNN content, UOSInt colSpan, UOSInt rowSpan, HAlignment halign, VAlignment valign)
 {
 	this->sb->AppendC(UTF8STRC("<td"));
 	if (colSpan > 1)
@@ -159,7 +159,7 @@ void Text::Builder::HTMLBodyBuilder::AddTableData(Text::CString content, UOSInt 
 		break;
 	}
 	this->sb->AppendUTF8Char('>');
-	this->WriteStr(content);
+	this->Write(content);
 	this->sb->AppendC(UTF8STRC("</td>"));
 }
 
@@ -219,30 +219,30 @@ void Text::Builder::HTMLBodyBuilder::AddInputButton(Text::CString id, Text::CStr
 	this->sb->AppendC(UTF8STRC("/>"));
 }
 
-void Text::Builder::HTMLBodyBuilder::WriteHeading1(Text::CString content)
+void Text::Builder::HTMLBodyBuilder::WriteHeading1(Text::CStringNN content)
 {
 	this->BeginHeading1();
-	this->WriteStr(content);
+	this->Write(content);
 	this->EndElement();
 }
 
-void Text::Builder::HTMLBodyBuilder::WriteHeading2(Text::CString content)
+void Text::Builder::HTMLBodyBuilder::WriteHeading2(Text::CStringNN content)
 {
 	this->BeginHeading2();
-	this->WriteStr(content);
+	this->Write(content);
 	this->EndElement();
 }
 
-void Text::Builder::HTMLBodyBuilder::WriteHeading3(Text::CString content)
+void Text::Builder::HTMLBodyBuilder::WriteHeading3(Text::CStringNN content)
 {
 	this->BeginHeading3();
-	this->WriteStr(content);
+	this->Write(content);
 	this->EndElement();
 }
 
-void Text::Builder::HTMLBodyBuilder::WriteHeading4(Text::CString content)
+void Text::Builder::HTMLBodyBuilder::WriteHeading4(Text::CStringNN content)
 {
 	this->BeginHeading4();
-	this->WriteStr(content);
+	this->Write(content);
 	this->EndElement();
 }

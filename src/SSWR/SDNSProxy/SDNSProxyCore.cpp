@@ -88,7 +88,7 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 
 	if (this->proxy->IsError())
 	{
-		console->WriteLineC(UTF8STRC("Error in listening to DNS port"));
+		console->WriteLine(CSTR("Error in listening to DNS port"));
 	}
 
 	this->listener = 0;
@@ -167,7 +167,7 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 			NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, hdlr, managePort, 60, 1, 4, CSTR("SDNSProxy/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 			if (this->listener->IsError())
 			{
-				console->WriteLineC(UTF8STRC("Error in listening to ManagePort"));
+				console->WriteLine(CSTR("Error in listening to ManagePort"));
 				DEL_CLASS(this->listener);
 				this->listener = 0;
 				hdlr.Delete();
@@ -179,12 +179,12 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 		}
 		else
 		{
-			console->WriteLineC(UTF8STRC("Config ManagePort not found"));
+			console->WriteLine(CSTR("Config ManagePort not found"));
 		}
 	}
 	else
 	{
-		console->WriteLineC(UTF8STRC("Config file not found"));
+		console->WriteLine(CSTR("Config file not found"));
 	}
 }
 
@@ -219,9 +219,9 @@ Bool SSWR::SDNSProxy::SDNSProxyCore::IsError()
 
 void SSWR::SDNSProxy::SDNSProxyCore::Run(NN<Core::IProgControl> progCtrl)
 {
-	this->console->WriteLineC(UTF8STRC("SDNSProxy running"));
+	this->console->WriteLine(CSTR("SDNSProxy running"));
 	progCtrl->WaitForExit(progCtrl);
-	this->console->WriteLineC(UTF8STRC("SDNSProxy exiting"));
+	this->console->WriteLine(CSTR("SDNSProxy exiting"));
 }
 
 UOSInt SSWR::SDNSProxy::SDNSProxyCore::GetClientList(NN<Data::ArrayListNN<SSWR::SDNSProxy::SDNSProxyCore::ClientInfo>> cliList)
