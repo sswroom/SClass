@@ -10,15 +10,13 @@ Map::PathSearcher::PointNode::PointNode(Double x, Double y, Int32 ix, Int32 iy)
 	this->iy = iy;
 	this->x = x;
 	this->y = y;
-	NEW_CLASS(this->nearNodes, Data::ArrayList<Math::ShortestPath::PathNode*>());
 }
 
 Map::PathSearcher::PointNode::~PointNode()
 {
-	DEL_CLASS(this->nearNodes);
 }
 
-Data::ArrayList<Math::ShortestPath::PathNode*> *Map::PathSearcher::PointNode::GetNeighbourNodes()
+NN<Data::ArrayListNN<Math::ShortestPath::PathNode>> Map::PathSearcher::PointNode::GetNeighbourNodes()
 {
 	return this->nearNodes;
 }
@@ -82,10 +80,10 @@ Map::PathSearcher::PathSearcher(Map::MapDrawLayer *layer, Double minAngleRad)
 		return;
 	}
 
-	Data::ArrayListInt64 *objIds;
-	void *nameArr;
+	Data::ArrayListInt64 objIds;
+	Map::NameArray *nameArr;
 	Math::Geometry::Polyline *pl;
-	void *sess;
+	Map::GetObjectSess *sess;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -94,20 +92,19 @@ Map::PathSearcher::PathSearcher(Map::MapDrawLayer *layer, Double minAngleRad)
 	PointNode *currNode;
 
 	NEW_CLASS(nodes, Data::ArrayList<Math::ShortestPath::PathNode*>());
-	NEW_CLASS(objIds, Data::ArrayListInt64());
 	sess = layer->BeginGetObject();
 	layer->GetAllObjectIds(objIds, &nameArr);
 
-	i = objIds->GetCount();
+	i = objIds.GetCount();
 	while (i-- > 0)
 	{
-		pl = (Math::Geometry::Polyline*)layer->GetNewVectorById(sess, objIds->GetItem(i));
+		pl = (Math::Geometry::Polyline*)layer->GetNewVectorById(sess, objIds.GetItem(i));
 		if (pl)
 		{
 			Math::Coord2DDbl *points;
 			UInt32 *parts;
-			points = pl->GetPointList(&k);
-			parts = pl->GetPtOfstList(&j);
+			points = pl->GetPointList(k);
+			parts = pl->GetPtOfstList(j);
 			while (j-- > 0)
 			{
 				lastNode = 0;
@@ -117,8 +114,8 @@ Map::PathSearcher::PathSearcher(Map::MapDrawLayer *layer, Double minAngleRad)
 					currNode = GetNode(points[k].x, points[k].y, true);
 					if (lastNode)
 					{
-						lastNode->nearNodes->Add(currNode);
-						currNode->nearNodes->Add(lastNode);
+						lastNode->nearNodes.Add(currNode);
+						currNode->nearNodes.Add(lastNode);
 					}
 					lastNode = currNode;
 				}
@@ -128,7 +125,6 @@ Map::PathSearcher::PathSearcher(Map::MapDrawLayer *layer, Double minAngleRad)
 		}
 	}
 
-	DEL_CLASS(objIds);
 	layer->EndGetObject(sess);
 }
 
@@ -225,25 +221,21 @@ Bool Map::PathSearcher::IsError()
 	return this->nodes == 0;
 }
 
-Math::Geometry::Polyline *Map::PathSearcher::ToPolyline(Math::ShortestPath::Path *path)
+NN<Math::Geometry::LineString> Map::PathSearcher::ToPolyline(NN<Math::ShortestPath::Path> path)
 {
-	Math::Geometry::Polyline *pl;
-	Map::PathSearcher::PointNode *n;
-
-	if (path == 0)
-		return 0;
+	NN<Math::Geometry::LineString> pl;
+	NN<Map::PathSearcher::PointNode> n;
 
 	Math::Coord2DDbl *points;
 	UOSInt i;
-	NEW_CLASS(pl, Math::Geometry::Polyline(0, 1, path->nodes->GetCount(), false, false));
-	pl->GetPtOfstList(&i)[0] = 0;
-	points = pl->GetPointList(&i);
+	NEW_CLASSNN(pl, Math::Geometry::LineString(0, path->nodes.GetCount(), false, false));
+	points = pl->GetPointList(i);
 
 	i = 0;
-	OSInt j = path->nodes->GetCount();
+	UOSInt j = path->nodes.GetCount();
 	while (i < j)
 	{
-		n = (Map::PathSearcher::PointNode*)path->nodes->GetItem(i);
+		n = path->nodes.GetItemNoCheck(i);
 		points[i].x = n->x;
 		points[i].y = n->y;
 		i++;

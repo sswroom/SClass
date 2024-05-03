@@ -49,7 +49,7 @@ Map::HKSpeedLimit *Map::HKRoadNetwork2::CreateSpeedLimit()
 {
 	if (this->fgdb)
 	{
-		return NEW_CLASS_D(Map::HKSpeedLimit(this));
+		return NEW_CLASS_D(Map::HKSpeedLimit(*this));
 	}
 	return 0;
 }

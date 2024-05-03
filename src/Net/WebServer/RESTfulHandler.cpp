@@ -22,22 +22,22 @@ void Net::WebServer::RESTfulHandler::BuildJSON(NN<Text::JSONBuilder> json, NN<DB
 	while (it.HasNext())
 	{
 		col = it.Next();
-		dtype = row->GetFieldDataType(col->GetColName()->v);
+		dtype = row->GetFieldDataType(col->GetColName()->ToCString());
 		sb.ClearStr();
 		row->AppendVarNameForm(sb, col->GetColName()->v);
 		switch (dtype)
 		{
 		case DB::DBRow::DT_STRING:
-			json->ObjectAddStrUTF8(sb.ToCString(), row->GetValueStr(col->GetColName()->v));
+			json->ObjectAddStrUTF8(sb.ToCString(), row->GetValueStr(col->GetColName()->ToCString()));
 			break;
 		case DB::DBRow::DT_DOUBLE:
-			json->ObjectAddFloat64(sb.ToCString(), row->GetValueDouble(col->GetColName()->v));
+			json->ObjectAddFloat64(sb.ToCString(), row->GetValueDouble(col->GetColName()->ToCString()));
 			break;
 		case DB::DBRow::DT_INT64:
-			json->ObjectAddInt64(sb.ToCString(), row->GetValueInt64(col->GetColName()->v));
+			json->ObjectAddInt64(sb.ToCString(), row->GetValueInt64(col->GetColName()->ToCString()));
 			break;
 		case DB::DBRow::DT_DATETIME:
-			ts = row->GetValueDate(col->GetColName()->v);
+			ts = row->GetValueDate(col->GetColName()->ToCString());
 			if (!ts.IsNull())
 			{
 				ts.ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fffzzzz");
@@ -49,7 +49,7 @@ void Net::WebServer::RESTfulHandler::BuildJSON(NN<Text::JSONBuilder> json, NN<DB
 			}
 			break;
 		case DB::DBRow::DT_VECTOR:
-			if (vec.Set(row->GetValueVector(col->GetColName()->v)))
+			if (vec.Set(row->GetValueVector(col->GetColName()->ToCString())))
 				this->AppendVector(json, sb.ToCString(), vec);
 			else
 				json->ObjectAddNull(sb.ToCString());
@@ -166,7 +166,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(NN<Net::WebServer::IWebReque
 					row = it.Next();
 					json.ArrayBeginObject();
 					this->BuildJSON(json, row);
-					if (!this->noLinks && row->GetSinglePKI64(&ikey))
+					if (!this->noLinks && row->GetSinglePKI64(ikey))
 					{
 						sbURI.ClearStr();
 						req->GetRequestURLBase(sbURI);

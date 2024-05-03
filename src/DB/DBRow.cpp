@@ -3,7 +3,7 @@
 #include "DB/DBRow.h"
 #include "Math/WKTWriter.h"
 
-void DB::DBRow::FreeField(DB::DBRow::Field *field)
+void DB::DBRow::FreeField(NN<DB::DBRow::Field> field)
 {
 	DataType dtype = GetDataType(field);
 	if (dtype == DT_STRING)
@@ -21,10 +21,10 @@ void DB::DBRow::FreeField(DB::DBRow::Field *field)
 		SMEMFREE(field->committedData.bin);
 		SMEMFREE(field->currentData.bin);
 	}
-	MemFree(field);
+	MemFreeNN(field);
 }
 
-DB::DBRow::DataType DB::DBRow::GetDataType(DB::DBRow::Field *field) const
+DB::DBRow::DataType DB::DBRow::GetDataType(NN<DB::DBRow::Field> field)
 {
 	switch (field->def->GetColType())
 	{
@@ -63,7 +63,7 @@ DB::DBRow::DataType DB::DBRow::GetDataType(DB::DBRow::Field *field) const
 	return DT_UNKNOWN;
 }
 
-Bool DB::DBRow::SetFieldNull(DB::DBRow::Field *field)
+Bool DB::DBRow::SetFieldNull(NN<DB::DBRow::Field> field)
 {
 	DB::DBRow::DataType dtype = this->GetDataType(field);
 	switch (dtype)
@@ -88,7 +88,7 @@ Bool DB::DBRow::SetFieldNull(DB::DBRow::Field *field)
 	return true;
 }
 
-Bool DB::DBRow::SetFieldStr(DB::DBRow::Field *field, const UTF8Char *strValue)
+Bool DB::DBRow::SetFieldStr(NN<DB::DBRow::Field> field, const UTF8Char *strValue)
 {
 	DB::DBRow::DataType dtype = this->GetDataType(field);
 	if (dtype != DT_STRING)
@@ -102,7 +102,7 @@ Bool DB::DBRow::SetFieldStr(DB::DBRow::Field *field, const UTF8Char *strValue)
 	return true;
 }
 
-Bool DB::DBRow::SetFieldInt64(DB::DBRow::Field *field, Int64 intValue)
+Bool DB::DBRow::SetFieldInt64(NN<DB::DBRow::Field> field, Int64 intValue)
 {
 	DB::DBRow::DataType dtype = this->GetDataType(field);
 	if (dtype != DT_INT64)
@@ -115,7 +115,7 @@ Bool DB::DBRow::SetFieldInt64(DB::DBRow::Field *field, Int64 intValue)
 	return true;
 }
 
-Bool DB::DBRow::SetFieldDouble(DB::DBRow::Field *field, Double dblValue)
+Bool DB::DBRow::SetFieldDouble(NN<DB::DBRow::Field> field, Double dblValue)
 {
 	DB::DBRow::DataType dtype = this->GetDataType(field);
 	if (dtype != DT_DOUBLE)
@@ -128,7 +128,7 @@ Bool DB::DBRow::SetFieldDouble(DB::DBRow::Field *field, Double dblValue)
 	return true;
 }
 
-Bool DB::DBRow::SetFieldDate(DB::DBRow::Field *field, const Data::Timestamp &ts)
+Bool DB::DBRow::SetFieldDate(NN<DB::DBRow::Field> field, const Data::Timestamp &ts)
 {
 	DB::DBRow::DataType dtype = this->GetDataType(field);
 	if (dtype != DT_DATETIME)
@@ -148,7 +148,7 @@ Bool DB::DBRow::SetFieldDate(DB::DBRow::Field *field, const Data::Timestamp &ts)
 	return true;
 }
 
-Bool DB::DBRow::SetFieldVector(DB::DBRow::Field *field, Optional<Math::Geometry::Vector2D> vec)
+Bool DB::DBRow::SetFieldVector(NN<DB::DBRow::Field> field, Optional<Math::Geometry::Vector2D> vec)
 {
 	DB::DBRow::DataType dtype = this->GetDataType(field);
 	if (dtype != DT_VECTOR)
@@ -170,7 +170,7 @@ Bool DB::DBRow::SetFieldVector(DB::DBRow::Field *field, Optional<Math::Geometry:
 	return true;
 }
 
-Bool DB::DBRow::SetFieldBinary(DB::DBRow::Field *field, const UInt8 *buff, UOSInt buffSize)
+Bool DB::DBRow::SetFieldBinary(NN<DB::DBRow::Field> field, const UInt8 *buff, UOSInt buffSize)
 {
 	DB::DBRow::DataType dtype = this->GetDataType(field);
 	if (dtype != DT_BINARY)
@@ -193,7 +193,7 @@ Bool DB::DBRow::SetFieldBinary(DB::DBRow::Field *field, const UInt8 *buff, UOSIn
 	return true;
 }
 
-Bool DB::DBRow::IsFieldNull(DB::DBRow::Field *field) const
+Bool DB::DBRow::IsFieldNull(NN<DB::DBRow::Field> field) const
 {
 	if (field->currentChanged)
 	{
@@ -205,7 +205,7 @@ Bool DB::DBRow::IsFieldNull(DB::DBRow::Field *field) const
 	}
 }
 
-const UTF8Char *DB::DBRow::GetFieldStr(DB::DBRow::Field *field) const
+const UTF8Char *DB::DBRow::GetFieldStr(NN<DB::DBRow::Field> field) const
 {
 	DataType dtype = this->GetDataType(field);
 	if (dtype != DT_STRING)
@@ -222,7 +222,7 @@ const UTF8Char *DB::DBRow::GetFieldStr(DB::DBRow::Field *field) const
 	}	
 }
 
-Int64 DB::DBRow::GetFieldInt64(DB::DBRow::Field *field) const
+Int64 DB::DBRow::GetFieldInt64(NN<DB::DBRow::Field> field) const
 {
 	DataType dtype = this->GetDataType(field);
 	if (dtype != DT_INT64)
@@ -239,7 +239,7 @@ Int64 DB::DBRow::GetFieldInt64(DB::DBRow::Field *field) const
 	}
 }
 
-Double DB::DBRow::GetFieldDouble(DB::DBRow::Field *field) const
+Double DB::DBRow::GetFieldDouble(NN<DB::DBRow::Field> field) const
 {
 	DataType dtype = this->GetDataType(field);
 	if (dtype != DT_DOUBLE)
@@ -256,7 +256,7 @@ Double DB::DBRow::GetFieldDouble(DB::DBRow::Field *field) const
 	}
 }
 
-Data::Timestamp DB::DBRow::GetFieldDate(DB::DBRow::Field *field) const
+Data::Timestamp DB::DBRow::GetFieldDate(NN<DB::DBRow::Field> field) const
 {
 	DataType dtype = this->GetDataType(field);
 	if (dtype != DT_DATETIME)
@@ -273,7 +273,7 @@ Data::Timestamp DB::DBRow::GetFieldDate(DB::DBRow::Field *field) const
 	}
 }
 
-Math::Geometry::Vector2D *DB::DBRow::GetFieldVector(DB::DBRow::Field *field) const
+Math::Geometry::Vector2D *DB::DBRow::GetFieldVector(NN<DB::DBRow::Field> field) const
 {
 	DataType dtype = this->GetDataType(field);
 	if (dtype != DT_VECTOR)
@@ -290,7 +290,7 @@ Math::Geometry::Vector2D *DB::DBRow::GetFieldVector(DB::DBRow::Field *field) con
 	}	
 }
 
-const UInt8 *DB::DBRow::GetFieldBinary(DB::DBRow::Field *field, UOSInt *buffSize) const
+const UInt8 *DB::DBRow::GetFieldBinary(NN<DB::DBRow::Field> field, UOSInt *buffSize) const
 {
 	DataType dtype = this->GetDataType(field);
 	if (dtype != DT_BINARY)
@@ -323,39 +323,37 @@ DB::DBRow::DBRow(NN<TableDef> table)
 {
 	this->table = table;
 	NN<DB::ColDef> col;
-	DB::DBRow::Field *field;
+	NN<DB::DBRow::Field> field;
 	Data::ArrayIterator<NN<DB::ColDef>> it = table->ColIterator();
 	while (it.HasNext())
 	{
 		col = it.Next();
-		field = MemAlloc(DB::DBRow::Field, 1);
+		field = MemAllocNN(DB::DBRow::Field);
 		field->def = col.Ptr();
 		field->currentNull = true;
 		field->currentData.iVal = 0;
 		field->currentChanged = false;
 		field->committedNull = true;
 		field->committedData.iVal = 0;
-		this->dataMap.Put(field->def->GetColName()->v, field);
+		this->dataMap.PutNN(field->def->GetColName(), field);
 	}
 }
 
 DB::DBRow::~DBRow()
 {
-	NN<const Data::ArrayList<Field*>> fieldList = this->dataMap.GetValues();
-	LIST_CALL_FUNC(fieldList, this->FreeField);
+	this->dataMap.FreeAll(FreeField);
 }
 
 Bool DB::DBRow::SetByReader(NN<DB::DBReader> r, Bool commit)
 {
 	NN<DB::ColDef> col;
-	DB::DBRow::Field *field;
+	NN<DB::DBRow::Field> field;
 	Data::ArrayIterator<NN<DB::ColDef>> it = table->ColIterator();
 	UOSInt i = 0;
 	while (it.HasNext())
 	{
 		col = it.Next();
-		field = this->dataMap.Get(col->GetColName()->v);
-		if (field == 0)
+		if (!this->dataMap.GetNN(col->GetColName()).SetTo(field))
 		{
 			return false;
 		}
@@ -413,10 +411,10 @@ Bool DB::DBRow::SetByReader(NN<DB::DBReader> r, Bool commit)
 	return true;
 }
 
-DB::ColDef *DB::DBRow::GetFieldType(const UTF8Char *fieldName) const
+DB::ColDef *DB::DBRow::GetFieldType(Text::CStringNN fieldName) const
 {
-	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
-	if (field)
+	NN<DB::DBRow::Field> field;
+	if (this->dataMap.Get(fieldName).SetTo(field))
 	{
 		return field->def;
 	}
@@ -426,150 +424,150 @@ DB::ColDef *DB::DBRow::GetFieldType(const UTF8Char *fieldName) const
 	}
 }
 
-DB::DBRow::DataType DB::DBRow::GetFieldDataType(const UTF8Char *fieldName) const
+DB::DBRow::DataType DB::DBRow::GetFieldDataType(Text::CStringNN fieldName) const
 {
-	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
-	if (field)
+	NN<DB::DBRow::Field> field;
+	if (this->dataMap.Get(fieldName).SetTo(field))
 	{
 		return this->GetDataType(field);
 	}
 	return DT_UNKNOWN;
 }
 
-Bool DB::DBRow::SetValueNull(const UTF8Char *fieldName)
+Bool DB::DBRow::SetValueNull(Text::CStringNN fieldName)
 {
-	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
-	if (field == 0)
+	NN<DB::DBRow::Field> field;
+	if (!this->dataMap.Get(fieldName).SetTo(field))
 	{
 		return false;
 	}
 	return this->SetFieldNull(field);
 }
 
-Bool DB::DBRow::SetValueStr(const UTF8Char *fieldName, const UTF8Char *strValue)
+Bool DB::DBRow::SetValueStr(Text::CStringNN fieldName, const UTF8Char *strValue)
 {
-	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
-	if (field == 0)
+	NN<DB::DBRow::Field> field;
+	if (!this->dataMap.Get(fieldName).SetTo(field))
 	{
 		return false;
 	}
 	return this->SetFieldStr(field, strValue);
 }
 
-Bool DB::DBRow::SetValueInt64(const UTF8Char *fieldName, Int64 intValue)
+Bool DB::DBRow::SetValueInt64(Text::CStringNN fieldName, Int64 intValue)
 {
-	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
-	if (field == 0)
+	NN<DB::DBRow::Field> field;
+	if (!this->dataMap.Get(fieldName).SetTo(field))
 	{
 		return false;
 	}
 	return this->SetFieldInt64(field, intValue);
 }
 
-Bool DB::DBRow::SetValueDouble(const UTF8Char *fieldName, Double dblValue)
+Bool DB::DBRow::SetValueDouble(Text::CStringNN fieldName, Double dblValue)
 {
-	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
-	if (field == 0)
+	NN<DB::DBRow::Field> field;
+	if (!this->dataMap.Get(fieldName).SetTo(field))
 	{
 		return false;
 	}
 	return this->SetFieldDouble(field, dblValue);
 }
 
-Bool DB::DBRow::SetValueDate(const UTF8Char *fieldName, const Data::Timestamp &ts)
+Bool DB::DBRow::SetValueDate(Text::CStringNN fieldName, const Data::Timestamp &ts)
 {
-	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
-	if (field == 0)
+	NN<DB::DBRow::Field> field;
+	if (!this->dataMap.Get(fieldName).SetTo(field))
 	{
 		return false;
 	}
 	return this->SetFieldDate(field, ts);
 }
 
-Bool DB::DBRow::SetValueVector(const UTF8Char *fieldName, Math::Geometry::Vector2D *vec)
+Bool DB::DBRow::SetValueVector(Text::CStringNN fieldName, Math::Geometry::Vector2D *vec)
 {
-	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
-	if (field == 0)
+	NN<DB::DBRow::Field> field;
+	if (!this->dataMap.Get(fieldName).SetTo(field))
 	{
 		return false;
 	}
 	return this->SetFieldVector(field, vec);
 }
 
-Bool DB::DBRow::SetValueBinary(const UTF8Char *fieldName, const UInt8 *buff, UOSInt buffSize)
+Bool DB::DBRow::SetValueBinary(Text::CStringNN fieldName, const UInt8 *buff, UOSInt buffSize)
 {
-	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
-	if (field == 0)
+	NN<DB::DBRow::Field> field;
+	if (!this->dataMap.Get(fieldName).SetTo(field))
 	{
 		return false;
 	}
 	return this->SetFieldBinary(field, buff, buffSize);
 }
 
-Bool DB::DBRow::IsNull(const UTF8Char *fieldName) const
+Bool DB::DBRow::IsNull(Text::CStringNN fieldName) const
 {
-	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
-	if (field == 0)
+	NN<DB::DBRow::Field> field;
+	if (!this->dataMap.Get(fieldName).SetTo(field))
 	{
 		return true;
 	}
 	return this->IsFieldNull(field);
 }
 
-const UTF8Char *DB::DBRow::GetValueStr(const UTF8Char *fieldName) const
+const UTF8Char *DB::DBRow::GetValueStr(Text::CStringNN fieldName) const
 {
-	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
-	if (field == 0)
+	NN<DB::DBRow::Field> field;
+	if (!this->dataMap.Get(fieldName).SetTo(field))
 	{
 		return 0;
 	}
 	return this->GetFieldStr(field);
 }
 
-Int64 DB::DBRow::GetValueInt64(const UTF8Char *fieldName) const
+Int64 DB::DBRow::GetValueInt64(Text::CStringNN fieldName) const
 {
-	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
-	if (field == 0)
+	NN<DB::DBRow::Field> field;
+	if (!this->dataMap.Get(fieldName).SetTo(field))
 	{
 		return 0;
 	}
 	return this->GetFieldInt64(field);
 }
 
-Double DB::DBRow::GetValueDouble(const UTF8Char *fieldName) const
+Double DB::DBRow::GetValueDouble(Text::CStringNN fieldName) const
 {
-	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
-	if (field == 0)
+	NN<DB::DBRow::Field> field;
+	if (!this->dataMap.Get(fieldName).SetTo(field))
 	{
 		return 0;
 	}
 	return this->GetFieldDouble(field);
 }
 
-Data::Timestamp DB::DBRow::GetValueDate(const UTF8Char *fieldName) const
+Data::Timestamp DB::DBRow::GetValueDate(Text::CStringNN fieldName) const
 {
-	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
-	if (field == 0)
+	NN<DB::DBRow::Field> field;
+	if (!this->dataMap.Get(fieldName).SetTo(field))
 	{
 		return Data::Timestamp(0);
 	}
 	return this->GetFieldDate(field);
 }
 
-Math::Geometry::Vector2D *DB::DBRow::GetValueVector(const UTF8Char *fieldName) const
+Math::Geometry::Vector2D *DB::DBRow::GetValueVector(Text::CStringNN fieldName) const
 {
-	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
-	if (field == 0)
+	NN<DB::DBRow::Field> field;
+	if (!this->dataMap.Get(fieldName).SetTo(field))
 	{
 		return 0;
 	}
 	return this->GetFieldVector(field);
 }
 
-const UInt8 *DB::DBRow::GetValueBinary(const UTF8Char *fieldName, UOSInt *buffSize) const
+const UInt8 *DB::DBRow::GetValueBinary(Text::CStringNN fieldName, UOSInt *buffSize) const
 {
-	DB::DBRow::Field *field = this->dataMap.Get(fieldName);
-	if (field == 0)
+	NN<DB::DBRow::Field> field;
+	if (!this->dataMap.Get(fieldName).SetTo(field))
 	{
 		return 0;
 	}
@@ -578,12 +576,11 @@ const UInt8 *DB::DBRow::GetValueBinary(const UTF8Char *fieldName, UOSInt *buffSi
 
 void DB::DBRow::Commit()
 {
-	NN<const Data::ArrayList<DB::DBRow::Field*>> fieldList = this->dataMap.GetValues();
-	DB::DBRow::Field *field;
-	UOSInt i = fieldList->GetCount();
+	NN<DB::DBRow::Field> field;
+	UOSInt i = this->dataMap.GetCount();
 	while (i-- > 0)
 	{
-		field = fieldList->GetItem(i);
+		field = this->dataMap.GetItemNoCheck(i);
 		if (field->currentChanged)
 		{
 			DataType dtype = this->GetDataType(field);
@@ -631,12 +628,11 @@ void DB::DBRow::Commit()
 
 void DB::DBRow::Rollback()
 {
-	NN<const Data::ArrayList<DB::DBRow::Field*>> fieldList = this->dataMap.GetValues();
-	DB::DBRow::Field *field;
-	UOSInt i = fieldList->GetCount();
+	NN<DB::DBRow::Field> field;
+	UOSInt i = this->dataMap.GetCount();
 	while (i-- > 0)
 	{
-		field = fieldList->GetItem(i);
+		field = this->dataMap.GetItemNoCheck(i);
 		if (field->currentChanged)
 		{
 			DataType dtype = this->GetDataType(field);
@@ -671,15 +667,14 @@ void DB::DBRow::Rollback()
 	}
 }
 
-Bool DB::DBRow::GetSinglePKI64(Int64 *key) const
+Bool DB::DBRow::GetSinglePKI64(OutParam<Int64> key) const
 {
 	Bool hasKey = false;
-	NN<const Data::ArrayList<DB::DBRow::Field*>> fieldList = this->dataMap.GetValues();
-	DB::DBRow::Field *field;
-	UOSInt i = fieldList->GetCount();
+	NN<DB::DBRow::Field> field;
+	UOSInt i = this->dataMap.GetCount();
 	while (i-- > 0)
 	{
-		field = fieldList->GetItem(i);
+		field = this->dataMap.GetItemNoCheck(i);
 		if (field->def->IsPK())
 		{
 			if (hasKey)
@@ -694,7 +689,7 @@ Bool DB::DBRow::GetSinglePKI64(Int64 *key) const
 			{
 				return false;
 			}
-			*key = this->GetFieldInt64(field);
+			key.Set(this->GetFieldInt64(field));
 			hasKey = true;
 		}
 	}
@@ -706,7 +701,7 @@ void DB::DBRow::ToString(NN<Text::StringBuilderUTF8> sb) const
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	NN<DB::ColDef> col;
-	DB::DBRow::Field *field;
+	NN<DB::DBRow::Field> field;
 	const UInt8 *buff;
 	Math::WKTWriter wkt;
 	NN<Math::Geometry::Vector2D> vec;
@@ -720,8 +715,7 @@ void DB::DBRow::ToString(NN<Text::StringBuilderUTF8> sb) const
 	while (it.HasNext())
 	{
 		col = it.Next();
-		field = this->dataMap.Get(col->GetColName()->v);
-		if (field)
+		if (this->dataMap.Get(col->GetColName()->ToCString()).SetTo(field))
 		{
 			if (found)
 				sb->AppendC(UTF8STRC(", "));

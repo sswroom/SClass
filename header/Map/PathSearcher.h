@@ -16,11 +16,11 @@ namespace Map
 			Double y;
 			Int32 ix;
 			Int32 iy;
-			Data::ArrayList<Math::ShortestPath::PathNode*> *nearNodes;
+			Data::ArrayListNN<Math::ShortestPath::PathNode> nearNodes;
 
 			PointNode(Double x, Double y, Int32 ix, Int32 iy);
 			virtual ~PointNode();
-			virtual Data::ArrayList<Math::ShortestPath::PathNode*> *GetNeighbourNodes();
+			virtual NN<Data::ArrayListNN<Math::ShortestPath::PathNode>> GetNeighbourNodes();
 		};
 	private:
 		Data::ArrayList<Math::ShortestPath::PathNode*> *nodes;
@@ -36,7 +36,7 @@ namespace Map
 		virtual Bool PathValid(PathNode *lastNode, PathNode *currNode, PathNode *nextNode);
 		Math::ShortestPath::PathNode *GetNearestNode(Double x, Double y);
 		Bool IsError();
-		static Math::Geometry::Polyline *ToPolyline(Math::ShortestPath::Path *path);
+		static NN<Math::Geometry::LineString> ToPolyline(NN<Math::ShortestPath::Path> path);
 	};
 };
 #endif

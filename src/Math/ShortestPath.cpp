@@ -1,43 +1,43 @@
-#include "stdafx.h"
+#include "Stdafx.h"
 #include "MyMemory.h"
 #include "Math/ShortestPath.h"
 #include "Data/ArrayListCmp.h"
 
 Math::ShortestPath::Path::Path()
 {
-	totalDistance = 0;
-	NEW_CLASS(nodes, Data::ArrayList<Math::ShortestPath::PathNode*>());
+	this->totalDistance = 0;
+	this->lastNode = 0;
 }
 
 Math::ShortestPath::Path::~Path()
 {
-	DEL_CLASS(nodes);
 }
 
-Math::ShortestPath::Path *Math::ShortestPath::Path::Clone()
+NN<Math::ShortestPath::Path> Math::ShortestPath::Path::Clone() const
 {
-	Math::ShortestPath::Path *newPath;
-	NEW_CLASS(newPath, Math::ShortestPath::Path());
-	newPath->nodes->AddRange(nodes);
+	NN<Math::ShortestPath::Path> newPath;
+	NEW_CLASSNN(newPath, Math::ShortestPath::Path());
+	newPath->nodes.AddAll(this->nodes);
 	newPath->totalDistance = totalDistance;
 	newPath->lastNode = lastNode;
 	return newPath;
 }
 
-Bool Math::ShortestPath::Path::AddNode(Math::ShortestPath::PathNode *node, Double distance)
+Bool Math::ShortestPath::Path::AddNode(NN<Math::ShortestPath::PathNode> node, Double distance)
 {
-	OSInt i = nodes->GetCount();
+	UOSInt i = this->nodes.GetCount();
 	while (i-- > 0)
 	{
-		if (nodes->GetItem(i) == node)
+		if (this->nodes.GetItem(i) == node)
 			return false;
 	}
-	nodes->Add(this->lastNode = node);
+	this->nodes.Add(node);
+	this->lastNode = node;
 	totalDistance += distance;
 	return true;
 }
 
-Int32 Math::ShortestPath::Path::CompareTo(Data::IComparable *obj)
+OSInt Math::ShortestPath::Path::CompareTo(Data::IComparable *obj) const
 {
 	Math::ShortestPath::Path *path2 = (Math::ShortestPath::Path*)obj;
 	if (this->totalDistance > path2->totalDistance)
@@ -54,36 +54,35 @@ Int32 Math::ShortestPath::Path::CompareTo(Data::IComparable *obj)
 	}
 }
 
-Math::ShortestPath::Path *Math::ShortestPath::GetShortestPath(Math::ShortestPath::PathNode *fromNode, Math::ShortestPath::PathNode *toNode)
+Optional<Math::ShortestPath::Path> Math::ShortestPath::GetShortestPath(NN<Math::ShortestPath::PathNode> fromNode, NN<Math::ShortestPath::PathNode> toNode) const
 {
-	Math::ShortestPath::Path *path;
-	Math::ShortestPath::Path *tmpPath;
-	Math::ShortestPath::PathNode *currNode;
-	Math::ShortestPath::PathNode *nextNode;
+	NN<Math::ShortestPath::Path> path;
+	NN<Math::ShortestPath::Path> tmpPath;
+	Optional<Math::ShortestPath::PathNode> currNode;
+	Optional<Math::ShortestPath::PathNode> nextNode;
 	Data::ArrayList<Math::ShortestPath::PathNode*> *neighbourNodes;
-	Data::ArrayListCmp *paths;
+	Data::ArrayListNN<Path> paths;
 	Double distance;
 	OSInt cnt;
 	OSInt i;
 
-	NEW_CLASS(paths, Data::ArrayListCmp());
-	NEW_CLASS(path, Math::ShortestPath::Path());
+	NEW_CLASSNN(path, Math::ShortestPath::Path());
 	path->AddNode(fromNode, 0);
-	paths->Add(path);
+	paths.Add(path);
 
 	while (true)
 	{
-		cnt = paths->GetCount();
-		path = (Math::ShortestPath::Path*)paths->RemoveAt(cnt - 1);
+		cnt = paths.GetCount();
+		path = paths.GetItemNoCheck(cnt - 1);
+		paths.RemoveAt(cnt - 1);
 		if (path->lastNode == toNode)
 		{
 			cnt--;
 			while (cnt-- > 0)
 			{
-				tmpPath = (Math::ShortestPath::Path*)paths->GetItem(cnt);
-				DEL_CLASS(tmpPath);
+				tmpPath = paths.GetItemNoCheck(cnt);
+				tmpPath.Delete();
 			}
-			DEL_CLASS(paths);
 			return path;
 		}
 
@@ -93,8 +92,8 @@ Math::ShortestPath::Path *Math::ShortestPath::GetShortestPath(Math::ShortestPath
 		i = neighbourNodes->GetCount();
 		while (i-- > 0)
 		{
-			nextNode = (Math::ShortestPath::PathNode*)neighbourNodes->GetItem(i);
-			if (this->PathValid(path->nodes->GetItem(path->nodes->GetCount() - 2), currNode, nextNode))
+			nextNode = neighbourNodes->GetItem(i);
+			if (this->PathValid(path->nodes.GetItemNoCheck(path->nodes.GetCount() - 2), currNode, nextNode))
 			{
 				distance = this->CalNodeDistance(currNode, nextNode);
 				if (distance >= 0)
@@ -103,18 +102,17 @@ Math::ShortestPath::Path *Math::ShortestPath::GetShortestPath(Math::ShortestPath
 					{
 						paths->SortedInsert(tmpPath);
 						tmpPath = path->Clone();
-						if (paths->GetCount() >= 10000)
+						if (paths.GetCount() >= 10000)
 							break;
 					}
 				}
 			}
 		}
-		DEL_CLASS(path);
-		DEL_CLASS(tmpPath);
+		path.Delete();
+		tmpPath.Delete();
 
-		if (paths->GetCount() == 0)
+		if (paths.GetCount() == 0)
 		{
-			DEL_CLASS(paths);
 			return 0;
 		}
 	}

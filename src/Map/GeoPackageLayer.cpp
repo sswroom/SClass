@@ -87,7 +87,7 @@ Map::GeoPackageLayer::GeoPackageLayer(Map::GeoPackage *gpkg, NN<Map::GeoPackage:
 			{
 				while (r->ReadNext())
 				{
-					this->vecList.Add(r->GetVector(this->geomCol).OrNull());
+					this->vecList.Add(r->GetVector(this->geomCol));
 				}
 				this->gpkg->CloseReader(r);
 			}
@@ -99,12 +99,12 @@ Map::GeoPackageLayer::~GeoPackageLayer()
 {
 	this->gpkg->Release();
 	SDEL_CLASS(this->tabDef);
-	Math::Geometry::Vector2D *vec;
+	Optional<Math::Geometry::Vector2D> vec;
 	UOSInt i = this->vecList.GetCount();
 	while (i-- > 0)
 	{
 		vec = this->vecList.GetItem(i);
-		SDEL_CLASS(vec);
+		vec.Delete();
 	}
 }
 
@@ -124,7 +124,7 @@ UOSInt Map::GeoPackageLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, Na
 	UOSInt i;
 	UOSInt j;
 	UOSInt initCnt;
-	Math::Geometry::Vector2D *vec;
+	NN<Math::Geometry::Vector2D> vec;
 	switch (this->mixedData)
 	{
 	default:
@@ -143,8 +143,7 @@ UOSInt Map::GeoPackageLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, Na
 		j = this->vecList.GetCount();
 		while (i < j)
 		{
-			vec = this->vecList.GetItem(i);
-			if (vec && Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()))
+			if (this->vecList.GetItem(i).SetTo(vec) && Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()))
 				outArr->Add((Int64)i);
 			i++;
 		}
@@ -155,8 +154,7 @@ UOSInt Map::GeoPackageLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, Na
 		j = this->vecList.GetCount();
 		while (i < j)
 		{
-			vec = this->vecList.GetItem(i);
-			if (vec && !Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()))
+			if (this->vecList.GetItem(i).SetTo(vec) && !Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()))
 				outArr->Add((Int64)i);
 			i++;
 		}
@@ -175,7 +173,7 @@ UOSInt Map::GeoPackageLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, 
 	UOSInt i;
 	UOSInt j;
 	UOSInt initCnt;
-	Math::Geometry::Vector2D *vec;
+	NN<Math::Geometry::Vector2D> vec;
 	switch (this->mixedData)
 	{
 	default:
@@ -185,8 +183,7 @@ UOSInt Map::GeoPackageLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, 
 		j = this->vecList.GetCount();
 		while (i < j)
 		{
-			vec = this->vecList.GetItem(i);
-			if (vec && rect.OverlapOrTouch(vec->GetBounds()))
+			if (this->vecList.GetItem(i).SetTo(vec) && rect.OverlapOrTouch(vec->GetBounds()))
 				outArr->Add((Int64)i);
 			i++;
 		}
@@ -197,8 +194,7 @@ UOSInt Map::GeoPackageLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, 
 		j = this->vecList.GetCount();
 		while (i < j)
 		{
-			vec = this->vecList.GetItem(i);
-			if (vec && Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) && rect.OverlapOrTouch(vec->GetBounds()))
+			if (this->vecList.GetItem(i).SetTo(vec) && Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) && rect.OverlapOrTouch(vec->GetBounds()))
 				outArr->Add((Int64)i);
 			i++;
 		}
@@ -209,8 +205,7 @@ UOSInt Map::GeoPackageLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, 
 		j = this->vecList.GetCount();
 		while (i < j)
 		{
-			vec = this->vecList.GetItem(i);
-			if (vec && !Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) && rect.OverlapOrTouch(vec->GetBounds()))
+			if (this->vecList.GetItem(i).SetTo(vec) && !Math::Geometry::Vector2D::VectorTypeIsPoint(vec->GetVectorType()) && rect.OverlapOrTouch(vec->GetBounds()))
 				outArr->Add((Int64)i);
 			i++;
 		}
@@ -307,8 +302,8 @@ void Map::GeoPackageLayer::EndGetObject(GetObjectSess *session)
 
 Math::Geometry::Vector2D *Map::GeoPackageLayer::GetNewVectorById(GetObjectSess *session, Int64 id)
 {
-	Math::Geometry::Vector2D *vec = this->vecList.GetItem((UOSInt)id);
-	if (vec)
+	NN<Math::Geometry::Vector2D> vec;
+	if (this->vecList.GetItem((UOSInt)id).SetTo(vec))
 		return vec->Clone().Ptr();
 	return 0;
 }
@@ -351,8 +346,10 @@ Map::MapDrawLayer::ObjectClass Map::GeoPackageLayer::GetObjectClass() const
 void Map::GeoPackageLayer::MultiplyCoordinates(Double v)
 {
 	UOSInt i = this->vecList.GetCount();
+	NN<Math::Geometry::Vector2D> vec;
 	while (i-- > 0)
 	{
-		this->vecList.GetItem(i)->MultiplyCoordinatesXY(v);
+		if (this->vecList.GetItem(i).SetTo(vec))
+			vec->MultiplyCoordinatesXY(v);
 	}
 }

@@ -1,6 +1,6 @@
 #ifndef _SM_IO_VIRTUALPACKAGEFILEFAST
 #define _SM_IO_VIRTUALPACKAGEFILEFAST
-#include "Data/FastStringMap.h"
+#include "Data/FastStringMapNN.h"
 #include "IO/VirtualPackageFile.h"
 
 namespace IO
@@ -8,7 +8,7 @@ namespace IO
 	class VirtualPackageFileFast : public VirtualPackageFile
 	{
 	private:
-		Data::FastStringMap<PackFileItem *> namedItems;
+		Data::FastStringMapNN<PackFileItem> namedItems;
 
 		VirtualPackageFileFast(NN<const VirtualPackageFileFast> pkg);
 	public:

@@ -36,7 +36,7 @@ Optional<const IO::PackFileItem> IO::VirtualPackageFileFast::GetItemByName(Text:
 
 void IO::VirtualPackageFileFast::PutItem(NN<Text::String> name, NN<PackFileItem> item)
 {
-	this->namedItems.PutNN(name, item.Ptr());
+	this->namedItems.PutNN(name, item);
 }
 
 void IO::VirtualPackageFileFast::RemoveItem(NN<Text::String> name)

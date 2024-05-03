@@ -11,16 +11,16 @@ IO::ProtoHdlr::ProtoRodBinHandler::~ProtoRodBinHandler()
 {
 }
 
-void *IO::ProtoHdlr::ProtoRodBinHandler::CreateStreamData(NN<IO::Stream> stm)
+AnyType IO::ProtoHdlr::ProtoRodBinHandler::CreateStreamData(NN<IO::Stream> stm)
 {
 	return 0;
 }
 
-void IO::ProtoHdlr::ProtoRodBinHandler::DeleteStreamData(NN<IO::Stream> stm, void *stmData)
+void IO::ProtoHdlr::ProtoRodBinHandler::DeleteStreamData(NN<IO::Stream> stm, AnyType stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoRodBinHandler::ParseProtocol(NN<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &srcBuff)
+UOSInt IO::ProtoHdlr::ProtoRodBinHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
 {
 	Bool found;
 	Data::ByteArrayR buff = srcBuff;
@@ -54,7 +54,7 @@ UOSInt IO::ProtoHdlr::ProtoRodBinHandler::ParseProtocol(NN<IO::Stream> stm, void
 	return buff.GetSize();
 }
 
-UOSInt IO::ProtoHdlr::ProtoRodBinHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)
+UOSInt IO::ProtoHdlr::ProtoRodBinHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, AnyType stmData)
 {
 	*(Int16*)buff = *(Int16*)"Af";
 	*(Int16*)&buff[2] = cmdType;
