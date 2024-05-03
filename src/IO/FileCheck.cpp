@@ -337,6 +337,14 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal) const
 	printf("Checking file: %s\r\n", fileName->v);
 #endif
 	sptr = this->sourceName->ConcatTo(sbuff);
+	if (IO::Path::PATH_SEPERATOR == '/')
+	{
+		Text::StrReplace(sbuff, '\\', '/');
+	}
+	else
+	{
+		Text::StrReplace(sbuff, '/', '\\');
+	}
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	if (i == INVALID_INDEX)
 	{
@@ -346,21 +354,13 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal) const
 		return false;
 	}
 	sptr = &sbuff[i];
-	if (fileName->v[0] == '/' || fileName->v[0] == '\\')
+	if (fileName->v[0] == IO::Path::PATH_SEPERATOR)
 	{
 		sptrEnd = fileName->ConcatTo(sptr);
 	}
 	else
 	{
 		sptrEnd = fileName->ConcatTo(sptr + 1);
-	}
-	if (IO::Path::PATH_SEPERATOR == '/')
-	{
-		Text::StrReplace(sptr, '\\', '/');
-	}
-	else
-	{
-		Text::StrReplace(sptr, '/', '\\');
 	}
 	hash = Crypto::Hash::HashCreator::CreateHash(this->chkType);
 	if (hash == 0)
