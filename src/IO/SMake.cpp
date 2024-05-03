@@ -352,6 +352,7 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 						nnprog->compileCfg = 0;
 						nnprog->compiled = false;
 						this->progMap.PutNN(nnprog->name, nnprog);
+						prog = nnprog;
 					}
 				}
 				else
@@ -380,6 +381,7 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 						nnprog->compileCfg = 0;
 						nnprog->compiled = false;
 						this->progMap.PutNN(nnprog->name, nnprog);
+						prog = nnprog;
 					}
 				}
 			}
