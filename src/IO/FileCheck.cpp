@@ -337,30 +337,32 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal) const
 	printf("Checking file: %s\r\n", fileName->v);
 #endif
 	sptr = this->sourceName->ConcatTo(sbuff);
-	if (IO::Path::PATH_SEPERATOR == '/')
-	{
-		Text::StrReplace(sbuff, '\\', '/');
-	}
-	else
-	{
-		Text::StrReplace(sbuff, '/', '\\');
-	}
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	if (i == INVALID_INDEX)
 	{
-#if defined(VERBOSE)
-		printf("Seperator not found: %s\r\n", sbuff);
-#endif
-		return false;
-	}
-	sptr = &sbuff[i];
-	if (fileName->v[0] == IO::Path::PATH_SEPERATOR)
-	{
-		sptrEnd = fileName->ConcatTo(sptr);
+		sptr = sbuff;
+		*sptr++ = '.';
+		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	else
 	{
+		sptr = &sbuff[i + 1];
+	}
+	if (fileName->v[0] == '/' || fileName->v[0] == '\\')
+	{
 		sptrEnd = fileName->ConcatTo(sptr + 1);
+	}
+	else
+	{
+		sptrEnd = fileName->ConcatTo(sptr);
+	}
+	if (IO::Path::PATH_SEPERATOR == '/')
+	{
+		Text::StrReplace(sptr, '\\', '/');
+	}
+	else
+	{
+		Text::StrReplace(sptr, '/', '\\');
 	}
 	hash = Crypto::Hash::HashCreator::CreateHash(this->chkType);
 	if (hash == 0)
