@@ -6,7 +6,7 @@
 #include "Math/Geometry/Polyline.h"
 #include "Text/MyStringFloat.h"
 
-Map::HKTDVehRestrict::HKTDVehRestrict(Map::MapDrawLayer *routeLyr, DB::DBTool *db)
+Map::HKTDVehRestrict::HKTDVehRestrict(NN<Map::MapDrawLayer> routeLyr, NN<DB::DBTool> db)
 {
 	this->db = db;
 	this->csys = routeLyr->GetCoordinateSystem()->Clone();
@@ -21,7 +21,7 @@ Map::HKTDVehRestrict::HKTDVehRestrict(Map::MapDrawLayer *routeLyr, DB::DBTool *d
 		UOSInt i;
 		UOSInt j;
 		OSInt idCol = -1;
-		RouteInfo *route;
+		NN<RouteInfo> route;
 		Math::Geometry::Vector2D *vec;
 
 		routeLyr->GetAllObjectIds(idArr, &nameArr);
@@ -55,14 +55,13 @@ Map::HKTDVehRestrict::HKTDVehRestrict(Map::MapDrawLayer *routeLyr, DB::DBTool *d
 					{
 						if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::Polyline)
 						{
-							route = MemAlloc(RouteInfo, 1);
+							route = MemAllocNN(RouteInfo);
 							route->routeId = sb.ToInt32();
 							route->pl = (Math::Geometry::Polyline*)vec;
-							route = this->routeMap.Put(route->routeId, route);
-							if (route)
+							if (this->routeMap.Put(route->routeId, route).SetTo(route))
 							{
 								DEL_CLASS(route->pl);
-								MemFree(route);
+								MemFreeNN(route);
 							}
 						}
 						else
@@ -78,22 +77,22 @@ Map::HKTDVehRestrict::HKTDVehRestrict(Map::MapDrawLayer *routeLyr, DB::DBTool *d
 		routeLyr->ReleaseNameArr(nameArr);
 		routeLyr->EndGetObject(sess);
 	}
-	DEL_CLASS(routeLyr);
+	routeLyr.Delete();
 }
 
 Map::HKTDVehRestrict::~HKTDVehRestrict()
 {
 	UOSInt i;
-	RouteInfo *route;
+	NN<RouteInfo> route;
 	this->csys.Delete();
-	DEL_CLASS(this->db);
+	this->db.Delete();
 
 	i = this->routeMap.GetCount();
 	while (i-- > 0)
 	{
-		route = this->routeMap.GetItem(i);
+		route = this->routeMap.GetItemNoCheck(i);
 		DEL_CLASS(route->pl);
-		MemFree(route);
+		MemFreeNN(route);
 	}
 }
 
@@ -162,14 +161,13 @@ Map::MapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
 				Double location = r->GetDbl((UOSInt)locationCol);
 				Int32 vrId = r->GetInt32((UOSInt)vrIdCol);
 				Double maxWeight = r->GetDbl((UOSInt)maxWeightCol);
-				RouteInfo *route;
+				NN<RouteInfo> route;
 				NN<Math::Geometry::Point> pt;
 				Math::Coord2DDbl coord;
 				sbuff[0] = 0;
 				r->GetStr((UOSInt)remarksCol, sbuff, sizeof(sbuff));
 
-				route = this->routeMap.Get(roadRouteId);
-				if (route)
+				if (this->routeMap.Get(roadRouteId).SetTo(route))
 				{
 					coord = route->pl->CalcPosAtDistance(location);
 					strs[0] = sbuff2;

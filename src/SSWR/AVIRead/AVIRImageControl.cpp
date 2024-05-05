@@ -190,12 +190,12 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 				{
 					NN<Media::StaticImage> simg;
 					imgList->ToStaticImage(0);
-					if (simg.Set((Media::StaticImage*)imgList->GetImage(0, 0)))
+					if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(simg))
 					{
-						Media::StaticImage *simg2;
+						NN<Media::StaticImage> simg2;
 						sptr2End = Text::StrConcatC(Text::StrConcatC(sptr2, sptr, (UOSInt)(sptr3 - sptr)), UTF8STRC(".png"));
 						simg->To32bpp();
-						simg2 = resizer.ProcessToNew(simg);
+						if (simg2.Set(resizer.ProcessToNew(simg)))
 						{
 							Media::ImageList imgList(CSTRP(sptr2, sptr2End));
 							imgList.AddImage(simg2, 0);
@@ -954,6 +954,7 @@ Media::StaticImage *SSWR::AVIRead::AVIRImageControl::LoadImage(const UTF8Char *f
 	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
 	Media::StaticImage *outImg = 0;
 	Media::ImageList *imgList = 0;
+	NN<Media::RasterImage> img;
 
 	Sync::MutexUsage mutUsage(this->imgMut);
 	status = this->imgMap.Get(fileName);
@@ -968,7 +969,10 @@ Media::StaticImage *SSWR::AVIRead::AVIRImageControl::LoadImage(const UTF8Char *f
 
 	if (imgList)
 	{
-		outImg = imgList->GetImage(0, 0)->CreateStaticImage().Ptr();
+		if (imgList->GetImage(0, 0).SetTo(img))
+		{
+			outImg = img->CreateStaticImage().Ptr();
+		}
 		DEL_CLASS(imgList);
 	}
 
@@ -984,6 +988,7 @@ Media::StaticImage *SSWR::AVIRead::AVIRImageControl::LoadOriImage(const UTF8Char
 	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
 	Media::StaticImage *outImg = 0;
 	Media::ImageList *imgList = 0;
+	NN<Media::RasterImage> img;
 
 	Sync::MutexUsage mutUsage(this->imgMut);
 	status = this->imgMap.Get(fileName);
@@ -998,7 +1003,10 @@ Media::StaticImage *SSWR::AVIRead::AVIRImageControl::LoadOriImage(const UTF8Char
 
 	if (imgList)
 	{
-		outImg = imgList->GetImage(0, 0)->CreateStaticImage().Ptr();
+		if (imgList->GetImage(0, 0).SetTo(img))
+		{
+			outImg = img->CreateStaticImage().Ptr();
+		}
 		DEL_CLASS(imgList);
 	}
 	return outImg;

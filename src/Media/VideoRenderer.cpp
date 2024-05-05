@@ -114,8 +114,8 @@ void Media::VideoRenderer::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, 
 			UTF8Char sbuff[512];
 			UTF8Char *sptr;
 			UOSInt i;
-			Media::StaticImage *simg;
-			NEW_CLASS(simg, Media::StaticImage(info->dispSize, 0, 32, Media::PF_B8G8R8A8, 0, color, yuvType, Media::AT_NO_ALPHA, vbuff->ycOfst));
+			NN<Media::StaticImage> simg;
+			NEW_CLASSNN(simg, Media::StaticImage(info->dispSize, 0, 32, Media::PF_B8G8R8A8, 0, color, yuvType, Media::AT_NO_ALPHA, vbuff->ycOfst));
 			csconv->ConvertV2(&vbuff->srcBuff, simg->data, info->dispSize.x, info->dispSize.y, info->storeSize.x, info->storeSize.y, (OSInt)simg->GetDataBpl(), vbuff->frameType, vbuff->ycOfst);
 			ImageUtil_ImageFillAlpha32(simg->data, info->dispSize.x, info->dispSize.y, simg->GetDataBpl(), 0xff);
 			sptr = this->video->GetSourceName(sbuff);

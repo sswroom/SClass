@@ -118,6 +118,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::StreamData>
 	Bool headerValid = true;
 
 	Media::StaticImage *outImg = 0;
+	NN<Media::StaticImage> nnimg;
 
 	if (*(Int16*)hdr != *(Int16*)"BM")
 	{
@@ -1870,11 +1871,11 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::StreamData>
 		}
 	}
 
-	if (outImg)
+	if (nnimg.Set(outImg))
 	{
 		Media::ImageList *imgList;
 		NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
-		imgList->AddImage(outImg, 0);
+		imgList->AddImage(nnimg, 0);
 		return imgList;
 	}
 	else

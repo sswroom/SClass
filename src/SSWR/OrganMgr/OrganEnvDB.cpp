@@ -1560,8 +1560,8 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				valid = true;
 
 				Media::ImageList *imgList = (Media::ImageList*)pobj;
-				Media::RasterImage *img = imgList->GetImage(0, 0);
-				if (img)
+				NN<Media::RasterImage> img;
+				if (imgList->GetImage(0, 0).SetTo(img))
 				{
 					NN<Media::EXIFData> exif;
 					if (img->exif.SetTo(exif))
@@ -3991,22 +3991,24 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(NN<OrganImageItem> img,
 				if (nnuserFile->rotType != 0)
 				{
 					UOSInt i = imgList->GetCount();
-					Media::StaticImage *simg;
+					NN<Media::StaticImage> simg;
 					while (i-- > 0)
 					{
 						imgList->ToStaticImage(i);
-						simg = (Media::StaticImage*)imgList->GetImage(i, 0);
-						if (nnuserFile->rotType == 1)
+						if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(i, 0)).SetTo(simg))
 						{
-							simg->RotateImage(Media::StaticImage::RotateType::CW90);
-						}
-						else if (nnuserFile->rotType == 2)
-						{
-							simg->RotateImage(Media::StaticImage::RotateType::CW180);
-						}
-						else if (nnuserFile->rotType == 3)
-						{
-							simg->RotateImage(Media::StaticImage::RotateType::CW270);
+							if (nnuserFile->rotType == 1)
+							{
+								simg->RotateImage(Media::StaticImage::RotateType::CW90);
+							}
+							else if (nnuserFile->rotType == 2)
+							{
+								simg->RotateImage(Media::StaticImage::RotateType::CW180);
+							}
+							else if (nnuserFile->rotType == 3)
+							{
+								simg->RotateImage(Media::StaticImage::RotateType::CW270);
+							}
 						}
 					}
 				}
@@ -4267,22 +4269,24 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseFileImage(NN<UserFileInfo> us
 		if (userFile->rotType != 0)
 		{
 			UOSInt i = imgList->GetCount();
-			Media::StaticImage *simg;
+			NN<Media::StaticImage> simg;
 			while (i-- > 0)
 			{
 				imgList->ToStaticImage(i);
-				simg = (Media::StaticImage*)imgList->GetImage(i, 0);
-				if (userFile->rotType == 1)
+				if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(i, 0)).SetTo(simg))
 				{
-					simg->RotateImage(Media::StaticImage::RotateType::CW90);
-				}
-				else if (userFile->rotType == 2)
-				{
-					simg->RotateImage(Media::StaticImage::RotateType::CW180);
-				}
-				else if (userFile->rotType == 3)
-				{
-					simg->RotateImage(Media::StaticImage::RotateType::CW270);
+					if (userFile->rotType == 1)
+					{
+						simg->RotateImage(Media::StaticImage::RotateType::CW90);
+					}
+					else if (userFile->rotType == 2)
+					{
+						simg->RotateImage(Media::StaticImage::RotateType::CW180);
+					}
+					else if (userFile->rotType == 3)
+					{
+						simg->RotateImage(Media::StaticImage::RotateType::CW270);
+					}
 				}
 			}
 		}
@@ -5207,16 +5211,15 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 					if (nnimgList.Set(imgList))
 					{
 						nnimgList->ToStaticImage(0);
-						Media::StaticImage *newImg;
+						NN<Media::StaticImage> newImg;
 						NN<Media::StaticImage> simg;
-						if (simg.Set((Media::StaticImage*)nnimgList->GetImage(0, 0)))
+						if (Optional<Media::StaticImage>::ConvertFrom(nnimgList->GetImage(0, 0)).SetTo(simg))
 						{
 							if (simg->info.dispSize.x > 1920 || simg->info.dispSize.y > 1920)
 							{
 								resizer.SetTargetSize(Math::Size2D<UOSInt>(1920, 1920));
 								resizer.SetResizeAspectRatio(Media::IImgResizer::RAR_KEEPAR);
-								newImg = resizer.ProcessToNew(simg);
-								if (newImg)
+								if (newImg.Set(resizer.ProcessToNew(simg)))
 								{
 									nnimgList->ReplaceImage(0, newImg);
 								}

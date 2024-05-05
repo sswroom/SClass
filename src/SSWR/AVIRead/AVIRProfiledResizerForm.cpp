@@ -189,8 +189,8 @@ void SSWR::AVIRead::AVIRProfiledResizerForm::UpdateProfileDisp()
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	const Media::ProfiledResizer::ResizeProfile *profile = this->resizer->GetCurrProfile();
-	if (profile == 0)
+	NN<const Media::ProfiledResizer::ResizeProfile> profile;
+	if (!this->resizer->GetCurrProfile().SetTo(profile))
 	{
 		this->lblProfile->SetText(CSTR("Profile: --"));
 	}
@@ -203,14 +203,14 @@ void SSWR::AVIRead::AVIRProfiledResizerForm::UpdateProfileDisp()
 
 void SSWR::AVIRead::AVIRProfiledResizerForm::UpdateProfileList()
 {
-	const Media::ProfiledResizer::ResizeProfile *profile;
+	NN<const Media::ProfiledResizer::ResizeProfile> profile;
 	UOSInt i = 0;
 	UOSInt j = this->resizer->GetProfileCount();
 	this->lbProfile->ClearItems();
 	while (i < j)
 	{
-		profile = this->resizer->GetProfile(i);
-		this->lbProfile->AddItem(profile->profileName->ToCString(), (void*)profile);
+		profile = this->resizer->GetProfileNoCheck(i);
+		this->lbProfile->AddItem(profile->profileName->ToCString(), NN<Media::ProfiledResizer::ResizeProfile>::ConvertFrom(profile));
 		i++;
 	}
 

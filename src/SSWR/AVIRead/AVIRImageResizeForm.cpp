@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnCancelClicked(AnyType userO
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRImageResizeForm::AVIRImageResizeForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::RasterImage *srcImg) : UI::GUIForm(parent, 480, 240, ui)
+SSWR::AVIRead::AVIRImageResizeForm::AVIRImageResizeForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::RasterImage> srcImg) : UI::GUIForm(parent, 480, 240, ui)
 {
 	this->SetText(CSTR("Image Resize"));
 	this->SetFont(0, 0, 8.25, false);
@@ -120,7 +120,7 @@ void SSWR::AVIRead::AVIRImageResizeForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Media::StaticImage *SSWR::AVIRead::AVIRImageResizeForm::GetNewImage()
+Optional<Media::StaticImage> SSWR::AVIRead::AVIRImageResizeForm::GetNewImage()
 {
 	return this->outImg;
 }

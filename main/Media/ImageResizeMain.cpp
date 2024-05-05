@@ -65,13 +65,12 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		else
 		{
 			imgList->ToStaticImage(0);
-			Media::RasterImage *img = imgList->GetImage(0, 0);
-			Media::Resizer::LanczosResizer8_C8 resizer(4, 4, img->info.color, img->info.color, 0, img->info.atype);
-			resizer.SetTargetSize(Math::Size2D<UOSInt>(pxSize, pxSize));
 			NN<Media::StaticImage> simg;
 			Media::StaticImage *newImg;
-			if (simg.Set((Media::StaticImage*)img))
+			if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(simg))
 			{
+				Media::Resizer::LanczosResizer8_C8 resizer(4, 4, simg->info.color, simg->info.color, 0, simg->info.atype);
+				resizer.SetTargetSize(Math::Size2D<UOSInt>(pxSize, pxSize));
 				simg->To32bpp();
 				newImg = resizer.ProcessToNew(simg);
 			}
@@ -80,11 +79,11 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				newImg = 0;
 			}
 			imgList.Delete();
-			if (newImg)
+			if (simg.Set(newImg))
 			{
 				Exporter::GUIJPGExporter exporter;
 				NEW_CLASSNN(imgList, Media::ImageList(destFile));
-				imgList->AddImage(newImg, 0);
+				imgList->AddImage(simg, 0);
 				IO::FileStream fs(destFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				if (exporter.ExportFile(fs, destFile, imgList, 0))
 				{

@@ -22,7 +22,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UOSInt dWidth = 3840;
 	UOSInt dHeight = 2160;
 	NN<Media::StaticImage> simg;
-	Media::StaticImage *simg2;
+	Optional<Media::StaticImage> simg2;
 	Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
 	IO::ConsoleWriter console;
 	Media::ImageGen::RingsImageGen imgGen;
@@ -42,7 +42,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	resizer->SetTargetSize(Math::Size2D<UOSInt>(dWidth, dHeight));
 	resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_IGNOREAR);
 
-	if (simg.Set((Media::StaticImage*)imgGen.GenerateImage(srgb, Math::Size2D<UOSInt>(sWidth, sHeight))))
+	if (Optional<Media::StaticImage>::ConvertFrom(imgGen.GenerateImage(srgb, Math::Size2D<UOSInt>(sWidth, sHeight))).SetTo(simg))
 	{
 		t0 = clk.GetTimeDiff();
 		clk.Start();
@@ -50,17 +50,17 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	//	simg->To64bpp();
 		t1 = clk.GetTimeDiff();
 		simg2 = resizer->ProcessToNew(simg);
-		SDEL_CLASS(simg2);
+		simg2.Delete();
 		clk.Start();
 		simg2 = resizer->ProcessToNew(simg);
 		t2 = clk.GetTimeDiff();
-
-		if (simg2)
+		simg.Delete();
+		if (simg2.SetTo(simg))
 		{
 			Exporter::TIFFExporter exporter;
 			NN<Media::ImageList> imgList;
 			NEW_CLASSNN(imgList, Media::ImageList(CSTR("Test.tif")));
-			imgList->AddImage(simg2, 0);
+			imgList->AddImage(simg, 0);
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("NearestNeighbourTest.tif"));
 			{
@@ -69,7 +69,6 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			}
 			imgList.Delete();
 		}
-		simg.Delete();
 	}
 	else
 	{

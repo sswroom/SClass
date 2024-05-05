@@ -63,7 +63,7 @@ heif_error HEIFExporter_Write(struct heif_context* ctx, const void* data, size_t
 	}
 }
 
-heif_image *HEIFExporter_CreateImage(Media::RasterImage *img)
+heif_image *HEIFExporter_CreateImage(NN<Media::RasterImage> img)
 {
 	heif_chroma chroma;
 	switch (img->info.pf)
@@ -230,6 +230,7 @@ Bool Exporter::HEIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 		quality = 90;
 	}
 	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
+	NN<Media::RasterImage> nnimg;
 	heif_context *ctx = heif_context_alloc();
 	heif_encoder* encoder;
 	heif_context_get_encoder_for_format(ctx, heif_compression_HEVC, &encoder);
@@ -239,11 +240,14 @@ Bool Exporter::HEIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	UOSInt j = imgList->GetCount();
 	while (i < j)
 	{
-		heif_image *img = HEIFExporter_CreateImage(imgList->GetImage(i, 0));
-		if (img)
+		if (imgList->GetImage(i, 0).SetTo(nnimg))
 		{
-			heif_context_encode_image(ctx, img, encoder, 0, 0);
-//			heif_image_release(img);
+			heif_image *img = HEIFExporter_CreateImage(nnimg);
+			if (img)
+			{
+				heif_context_encode_image(ctx, img, encoder, 0, 0);
+	//			heif_image_release(img);
+			}
 		}
 		i++;
 	}

@@ -4122,7 +4122,7 @@ Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng,
 							{
 								imgList->ToStaticImage(0);
 								NN<Media::StaticImage> img;
-								if (img.Set((Media::StaticImage*)imgList->GetImage(0, 0)))
+								if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img))
 								{
 									if (img->To32bpp())
 									{

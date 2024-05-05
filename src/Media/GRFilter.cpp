@@ -15,44 +15,35 @@ extern "C"
 
 Media::GRFilter::GRFilter()
 {
-	NEW_CLASS(this->layers, Data::ArrayList<LayerSetting*>());
 }
 
 Media::GRFilter::~GRFilter()
 {
-	LayerSetting *lyr;
-	UOSInt i;
-	i = this->layers->GetCount();
-	while (i-- > 0)
-	{
-		lyr = this->layers->GetItem(i);
-		MemFree(lyr);
-	}
-	DEL_CLASS(this->layers);
+	this->layers.MemFreeAll();
 }
 
 UOSInt Media::GRFilter::GetLayerCount()
 {
-	return this->layers->GetCount();
+	return this->layers.GetCount();
 }
 
 UOSInt Media::GRFilter::AddLayer()
 {
-	LayerSetting *layer;
-	layer = MemAlloc(LayerSetting, 1);
+	NN<LayerSetting> layer;
+	layer = MemAllocNN(LayerSetting);
 	layer->hOfst = 0;
 	layer->vOfst = 0;
 	layer->level = 0;
 	layer->status = 0;
-	return this->layers->Add(layer);
+	return this->layers.Add(layer);
 }
 
 Bool Media::GRFilter::RemoveLayer(UOSInt layer)
 {
-	LayerSetting *lyr = this->layers->RemoveAt(layer);
-	if (lyr)
+	NN<LayerSetting> lyr;
+	if (this->layers.RemoveAt(layer).SetTo(lyr))
 	{
-		MemFree(lyr);
+		MemFreeNN(lyr);
 		return true;
 	}
 	else
@@ -63,8 +54,8 @@ Bool Media::GRFilter::RemoveLayer(UOSInt layer)
 
 void Media::GRFilter::SetParameter(UOSInt layer, OSInt hOfst, OSInt vOfst, OSInt level, Int32 status)
 {
-	LayerSetting *lyr = this->layers->GetItem(layer);
-	if (lyr)
+	NN<LayerSetting> lyr;
+	if (this->layers.GetItem(layer).SetTo(lyr))
 	{
 		lyr->hOfst = hOfst;
 		lyr->vOfst = vOfst;
@@ -73,27 +64,15 @@ void Media::GRFilter::SetParameter(UOSInt layer, OSInt hOfst, OSInt vOfst, OSInt
 	}
 }
 
-Bool Media::GRFilter::GetParameter(UOSInt layer, OSInt *hOfst, OSInt *vOfst, OSInt *level, Int32 *status)
+Bool Media::GRFilter::GetParameter(UOSInt layer, OptOut<OSInt> hOfst, OptOut<OSInt> vOfst, OptOut<OSInt> level, OptOut<Int32> status)
 {
-	LayerSetting *lyr = this->layers->GetItem(layer);
-	if (lyr)
+	NN<LayerSetting> lyr;
+	if (this->layers.GetItem(layer).SetTo(lyr))
 	{
-		if (hOfst)
-		{
-			*hOfst = lyr->hOfst;
-		}
-		if (vOfst)
-		{
-			*vOfst = lyr->vOfst;
-		}
-		if (level)
-		{
-			*level = lyr->level;
-		}
-		if (status)
-		{
-			*status = lyr->status;
-		}
+		hOfst.Set(lyr->hOfst);
+		vOfst.Set(lyr->vOfst);
+		level.Set(lyr->level);
+		status.Set(lyr->status);
 		return true;
 	}
 	else
@@ -106,7 +85,7 @@ void Media::GRFilter::ProcessImage32(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width
 {
 	UOSInt i;
 	UOSInt j;
-	LayerSetting *lyr;
+	NN<LayerSetting> lyr;
 	UInt8 *tmpPtr1 = srcPtr;
 	UInt8 *tmpPtr2 = destPtr;
 	i = height;
@@ -118,10 +97,10 @@ void Media::GRFilter::ProcessImage32(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width
 	}
 
 	i = 0;
-	j = this->layers->GetCount();
+	j = this->layers.GetCount();
 	while (i < j)
 	{
-		lyr = this->layers->GetItem(i);
+		lyr = this->layers.GetItemNoCheck(i);
 		if (lyr->level != 0 && (lyr->status & 4) == 0)
 		{
 			if ((lyr->status & 3) == 0)
@@ -145,7 +124,7 @@ void Media::GRFilter::ProcessImage64(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width
 {
 	UOSInt i;
 	UOSInt j;
-	LayerSetting *lyr;
+	NN<LayerSetting> lyr;
 	UInt8 *tmpPtr1 = srcPtr;
 	UInt8 *tmpPtr2 = destPtr;
 	i = height;
@@ -157,10 +136,10 @@ void Media::GRFilter::ProcessImage64(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width
 	}
 
 	i = 0;
-	j = this->layers->GetCount();
+	j = this->layers.GetCount();
 	while (i < j)
 	{
-		lyr = this->layers->GetItem(i);
+		lyr = this->layers.GetItemNoCheck(i);
 		if (lyr->level != 0 && (lyr->status & 4) == 0)
 		{
 			if ((lyr->status & 3) == 0)

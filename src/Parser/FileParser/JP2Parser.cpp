@@ -102,11 +102,11 @@ IO::ParsedObject *Parser::FileParser::JP2Parser::ParseFileHdr(NN<IO::StreamData>
 	Bool succ = false;
 	Media::ImageList *imgList = 0;
 #if 1
-	Media::StaticImage *img;
+	NN<Media::StaticImage> img;
 	UOSInt w = (UInt32)(imgInfo->x1 - imgInfo->x0);
 	UOSInt h = (UInt32)(imgInfo->y1 - imgInfo->y0);
 	UInt32 dataSize = (UInt32)(w * h * 3);
-	NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>(w, h), 0, 24, Media::PF_B8G8R8, dataSize, Media::ColorProfile(), Media::ColorProfile::YUVT_BT709, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(w, h), 0, 24, Media::PF_B8G8R8, dataSize, Media::ColorProfile(), Media::ColorProfile::YUVT_BT709, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	UInt8 *dataBuff = 0;
 	UOSInt dataBuffSize = 0;
 	while (true)
@@ -195,7 +195,7 @@ IO::ParsedObject *Parser::FileParser::JP2Parser::ParseFileHdr(NN<IO::StreamData>
 	}
 	else
 	{
-		DEL_CLASS(img);
+		img.Delete();
 	}
 #else
 	if (!opj_decode(codec, stm, imgInfo))

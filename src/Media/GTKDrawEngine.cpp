@@ -73,7 +73,7 @@ Media::DrawImage *Media::GTKDrawEngine::LoadImage(Text::CStringNN fileName)
 
 	Media::DrawImage *dimg = 0;
 	NN<Media::RasterImage> img;
-	if (img.Set(imgList->GetImage(0, 0)))
+	if (imgList->GetImage(0, 0).SetTo(img))
 	{
 		dimg = this->ConvImage(img);
 	}

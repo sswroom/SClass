@@ -74,7 +74,7 @@ Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 	UOSInt size;
 	UInt8 *edid;
 	Media::DDCReader reader(hMonitor);
-	edid = reader.GetEDID(&size);
+	edid = reader.GetEDID(size);
 	if (edid)
 	{
 		Media::EDID::EDIDInfo info;

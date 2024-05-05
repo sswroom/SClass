@@ -507,14 +507,17 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseUp(AnyType userObj, Math
 		{
 			pt1 = me->pbImg->Scn2ImagePos(rect[0]);
 			pt2 = me->pbImg->Scn2ImagePos(rect[1]);
-			Media::RasterImage *img = me->dispImage->GetImage(0, 0);
-			if (me->dispImageUF.SetTo(userFile))
+			NN<Media::RasterImage> img;
+			if (me->dispImage->GetImage(0, 0).SetTo(img))
 			{
-				me->env->UpdateUserFileCrop(userFile, pt1.x, pt1.y, UOSInt2Double(img->info.dispSize.x) - pt2.x, UOSInt2Double(img->info.dispSize.y) - pt2.y);
-			}
-			else if (me->dispImageWF.SetTo(wfile))
-			{
-				me->env->UpdateWebFileCrop(wfile, pt1.x, pt1.y, UOSInt2Double(img->info.dispSize.x) - pt2.x, UOSInt2Double(img->info.dispSize.y) - pt2.y);
+				if (me->dispImageUF.SetTo(userFile))
+				{
+					me->env->UpdateUserFileCrop(userFile, pt1.x, pt1.y, UOSInt2Double(img->info.dispSize.x) - pt2.x, UOSInt2Double(img->info.dispSize.y) - pt2.y);
+				}
+				else if (me->dispImageWF.SetTo(wfile))
+				{
+					me->env->UpdateWebFileCrop(wfile, pt1.x, pt1.y, UOSInt2Double(img->info.dispSize.x) - pt2.x, UOSInt2Double(img->info.dispSize.y) - pt2.y);
+				}
 			}
 		}
 
@@ -548,49 +551,55 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(AnyType userObj, UInt8 *
 		NN<WebFileInfo> wfile;
 		if (me->dispImageUF.SetTo(userFile))
 		{
+			NN<Media::RasterImage> img;
 			if (userFile->cropLeft != 0 || userFile->cropTop != 0 || userFile->cropRight != 0 || userFile->cropBottom)
 			{
-				Media::RasterImage *img = me->dispImage->GetImage(0, 0);
-				pos1 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(userFile->cropLeft, userFile->cropTop));
-				pos2 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(UOSInt2Double(img->info.dispSize.x) - userFile->cropRight, UOSInt2Double(img->info.dispSize.y) - userFile->cropBottom));
-				if (pos2.x < 0 || pos1.x >= UOSInt2Double(w) || pos2.y < 0 || pos1.y >= UOSInt2Double(h))
+				if (me->dispImage->GetImage(0, 0).SetTo(img))
 				{
+					pos1 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(userFile->cropLeft, userFile->cropTop));
+					pos2 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(UOSInt2Double(img->info.dispSize.x) - userFile->cropRight, UOSInt2Double(img->info.dispSize.y) - userFile->cropBottom));
+					if (pos2.x < 0 || pos1.x >= UOSInt2Double(w) || pos2.y < 0 || pos1.y >= UOSInt2Double(h))
+					{
 
-				}
-				else if (pos1.x < 0 || pos2.x >= UOSInt2Double(w) || pos1.y < 0 || pos2.y >= UOSInt2Double(h))
-				{
-					Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Double2OSInt(pos1.y), Double2OSInt(pos1.x), Double2OSInt(pos2.x), 0xff4040ff);
-					Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Double2OSInt(pos2.y), Double2OSInt(pos1.x), Double2OSInt(pos2.x), 0xff4040ff);
-					Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Double2OSInt(pos1.x), Double2OSInt(pos1.y), Double2OSInt(pos2.y), 0xff4040ff);
-					Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Double2OSInt(pos2.x), Double2OSInt(pos1.y), Double2OSInt(pos2.y), 0xff4040ff);
-				}
-				else
-				{
-					ImageUtil_DrawRectNA32(imgPtr + bpl * (UInt32)Double2Int32(pos1.y) + (UInt32)Double2Int32(pos1.x) * 4, (UInt32)Double2Int32(pos2.x - pos1.x), (UInt32)Double2Int32(pos2.y - pos1.y), bpl, 0xff4040ff);
+					}
+					else if (pos1.x < 0 || pos2.x >= UOSInt2Double(w) || pos1.y < 0 || pos2.y >= UOSInt2Double(h))
+					{
+						Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Double2OSInt(pos1.y), Double2OSInt(pos1.x), Double2OSInt(pos2.x), 0xff4040ff);
+						Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Double2OSInt(pos2.y), Double2OSInt(pos1.x), Double2OSInt(pos2.x), 0xff4040ff);
+						Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Double2OSInt(pos1.x), Double2OSInt(pos1.y), Double2OSInt(pos2.y), 0xff4040ff);
+						Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Double2OSInt(pos2.x), Double2OSInt(pos1.y), Double2OSInt(pos2.y), 0xff4040ff);
+					}
+					else
+					{
+						ImageUtil_DrawRectNA32(imgPtr + bpl * (UInt32)Double2Int32(pos1.y) + (UInt32)Double2Int32(pos1.x) * 4, (UInt32)Double2Int32(pos2.x - pos1.x), (UInt32)Double2Int32(pos2.y - pos1.y), bpl, 0xff4040ff);
+					}
 				}
 			}
 		}
 		else if (me->dispImageWF.SetTo(wfile))
 		{
+			NN<Media::RasterImage> img;
 			if (wfile->cropLeft != 0 || wfile->cropTop != 0 || wfile->cropRight != 0 || wfile->cropBottom)
 			{
-				Media::RasterImage *img = me->dispImage->GetImage(0, 0);
-				pos1 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(wfile->cropLeft, wfile->cropTop));
-				pos2 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(UOSInt2Double(img->info.dispSize.x) - wfile->cropRight, UOSInt2Double(img->info.dispSize.y) - wfile->cropBottom));
-				if (pos2.x < 0 || pos1.x >= UOSInt2Double(w) || pos2.y < 0 || pos1.y >= UOSInt2Double(h))
+				if (me->dispImage->GetImage(0, 0).SetTo(img))
 				{
+					pos1 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(wfile->cropLeft, wfile->cropTop));
+					pos2 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(UOSInt2Double(img->info.dispSize.x) - wfile->cropRight, UOSInt2Double(img->info.dispSize.y) - wfile->cropBottom));
+					if (pos2.x < 0 || pos1.x >= UOSInt2Double(w) || pos2.y < 0 || pos1.y >= UOSInt2Double(h))
+					{
 
-				}
-				else if (pos1.x < 0 || pos2.x >= UOSInt2Double(w) || pos1.y < 0 || pos2.y >= UOSInt2Double(h))
-				{
-					Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Double2OSInt(pos1.y), Double2OSInt(pos1.x), Double2OSInt(pos2.x), 0xff4040ff);
-					Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Double2OSInt(pos2.y), Double2OSInt(pos1.x), Double2OSInt(pos2.x), 0xff4040ff);
-					Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Double2OSInt(pos1.x), Double2OSInt(pos1.y), Double2OSInt(pos2.y), 0xff4040ff);
-					Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Double2OSInt(pos2.x), Double2OSInt(pos1.y), Double2OSInt(pos2.y), 0xff4040ff);
-				}
-				else
-				{
-					ImageUtil_DrawRectNA32(imgPtr + bpl * (UInt32)Double2Int32(pos1.y) + (UInt32)Double2Int32(pos1.x) * 4, (UInt32)Double2Int32(pos2.x - pos1.x), (UInt32)Double2Int32(pos2.y - pos1.y), bpl, 0xff4040ff);
+					}
+					else if (pos1.x < 0 || pos2.x >= UOSInt2Double(w) || pos1.y < 0 || pos2.y >= UOSInt2Double(h))
+					{
+						Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Double2OSInt(pos1.y), Double2OSInt(pos1.x), Double2OSInt(pos2.x), 0xff4040ff);
+						Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Double2OSInt(pos2.y), Double2OSInt(pos1.x), Double2OSInt(pos2.x), 0xff4040ff);
+						Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Double2OSInt(pos1.x), Double2OSInt(pos1.y), Double2OSInt(pos2.y), 0xff4040ff);
+						Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Double2OSInt(pos2.x), Double2OSInt(pos1.y), Double2OSInt(pos2.y), 0xff4040ff);
+					}
+					else
+					{
+						ImageUtil_DrawRectNA32(imgPtr + bpl * (UInt32)Double2Int32(pos1.y) + (UInt32)Double2Int32(pos1.x) * 4, (UInt32)Double2Int32(pos2.x - pos1.x), (UInt32)Double2Int32(pos2.y - pos1.y), bpl, 0xff4040ff);
+					}
 				}
 			}
 		}
@@ -1619,7 +1628,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(AnyType userObj, Ma
 					{
 						imgList->ToStaticImage(0);
 						NN<Media::StaticImage> img;
-						if (img.Set((Media::StaticImage*)imgList->GetImage(0, 0)))
+						if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img))
 						{
 							Media::StaticImage *nimg;
 							img->To32bpp();
@@ -1710,7 +1719,11 @@ Bool SSWR::OrganMgr::OrganMainForm::CalcCropRect(Math::Coord2D<OSInt> *rect)
 		return false;
 	}
 
-	Media::RasterImage *img = this->dispImage->GetImage(0, 0);
+	NN<Media::RasterImage> img;
+	if (!this->dispImage->GetImage(0, 0).SetTo(img))
+	{
+		return false;
+	}
 	if ((OSInt)img->info.dispSize.x * drawHeight > (OSInt)img->info.dispSize.y * drawWidth)
 	{
 		drawHeight = MulDivOS(drawWidth, (OSInt)img->info.dispSize.y, (OSInt)img->info.dispSize.x);
@@ -2441,7 +2454,7 @@ NN<SSWR::OrganMgr::OrganSpImgLayer> SSWR::OrganMgr::OrganMainForm::GetImgLayer(U
 	{
 		return lyr;
 	}
-	Media::StaticImage *stimg;
+	NN<Media::StaticImage> stimg;
 	Media::ImageList *imgList;
 	Map::MapEnv::LayerItem sett;
 	UTF8Char sbuff[32];
@@ -2450,7 +2463,7 @@ NN<SSWR::OrganMgr::OrganSpImgLayer> SSWR::OrganMgr::OrganMainForm::GetImgLayer(U
 	UOSInt lyrInd;
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
 	NEW_CLASSNN(lyr, OrganSpImgLayer());
-	NEW_CLASS(stimg, Media::StaticImage(Math::Size2D<UOSInt>(7, 7), 0, 32, Media::PF_B8G8R8A8, 0, srcColor, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASSNN(stimg, Media::StaticImage(Math::Size2D<UOSInt>(7, 7), 0, 32, Media::PF_B8G8R8A8, 0, srcColor, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	lyr->SetCoordinateSystem(this->mapEnv->GetCoordinateSystem()->Clone());
 	stimg->FillColor(mapColor);
 	NEW_CLASS(imgList, Media::ImageList(CSTR("PointImage")));

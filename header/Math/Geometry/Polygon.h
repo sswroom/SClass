@@ -21,7 +21,7 @@ namespace Math
 			virtual Bool JoinVector(NN<const Math::Geometry::Vector2D> vec);
 			virtual Bool InsideOrTouch(Math::Coord2DDbl coord) const;
 /*			Bool HasJunction() const;
-			void SplitByJunction(Data::ArrayList<Math::Geometry::Polygon*> *results);*/
+			void SplitByJunction(NN<Data::ArrayListNN<Math::Geometry::Polygon>> results);*/
 			NN<Math::Geometry::MultiPolygon> CreateMultiPolygon() const;
 			void AddFromPtOfst(UInt32 *ptOfstList, UOSInt nPtOfst, Math::Coord2DDbl *pointList, UOSInt nPoint, Double *zList, Double *mList);
 			UOSInt FillPointOfstList(Math::Coord2DDbl *pointList, UInt32 *ptOfstList, Double *zList, Double *mList) const;

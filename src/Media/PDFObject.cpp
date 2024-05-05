@@ -80,7 +80,7 @@ Optional<Text::String> Media::PDFObject::GetFilter() const
 	UOSInt i = this->parameter->GetEntryIndex(CSTR("Filter"));
 	if (i != INVALID_INDEX)
 	{
-		Media::PDFParameter::ParamEntry *entry = this->parameter->GetItem(i);
+		NN<Media::PDFParameter::ParamEntry> entry = this->parameter->GetItemNoCheck(i);
 		if (entry->value.SetTo(s))
 			return s;
 		return this->parameter->GetEntryType(i + 1);
@@ -96,7 +96,7 @@ Optional<Text::String> Media::PDFObject::GetColorSpace() const
 	UOSInt i = this->parameter->GetEntryIndex(CSTR("ColorSpace"));
 	if (i != INVALID_INDEX)
 	{
-		Media::PDFParameter::ParamEntry *entry = this->parameter->GetItem(i);
+		NN<Media::PDFParameter::ParamEntry> entry = this->parameter->GetItemNoCheck(i);
 		if (entry->value.SetTo(s))
 			return s;
 		return this->parameter->GetEntryType(i + 1);

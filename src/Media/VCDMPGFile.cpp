@@ -21,7 +21,7 @@ UInt32 __stdcall Media::VCDMPGFile::PlayThread(AnyType userData)
 //	Int32 muxRate;
 	Int64 initScr = -1;
 	Int64 last_scr_base = -1;
-	Media::IMediaStream *mstm;
+	NN<Media::IMediaStream> mstm;
 	Int32 lastFrameTime = 0;
 
 	me->playStarted = true;
@@ -124,8 +124,7 @@ UInt32 __stdcall Media::VCDMPGFile::PlayThread(AnyType userData)
 					{
 					}
 					UInt8 stmType = me->readBuff[currOfst + 3] & 0x1f;
-					mstm = me->dataStms.Get(stmType);
-					if (mstm)
+					if (me->dataStms.Get(stmType).SetTo(mstm))
 					{
 						if (firstAudio && dts != 0)
 						{
@@ -321,16 +320,16 @@ Media::VCDMPGFile::VCDMPGFile(NN<IO::ISectorData> data, UInt64 startSector, UInt
 					}
 
 					Int32 stmId = this->readBuff[currOfst + 3] & 0x1f;
-					Media::IMediaStream *mstm = this->dataStms.Get(stmId);
-					if (mstm == 0)
+					NN<Media::IMediaStream> mstm;
+					if (!this->dataStms.Get(stmId).SetTo(mstm))
 					{
 //						Int32 v = ReadMInt32(&this->readBuff[j]);
 						if (this->readBuff[j] == 0xff && ((this->readBuff[j + 1] & 0xfe) == 0xfc || (this->readBuff[j + 1] & 0xfe) == 0xfa))
 						{
-							Media::MPAStreamSource *mstm = (Media::MPAStreamSource*)this->dataStms.Get(stmId);
-							if (mstm == 0)
+							NN<Media::MPAStreamSource> mstm;
+							if (!Optional<Media::MPAStreamSource>::ConvertFrom(this->dataStms.Get(stmId)).SetTo(mstm))
 							{
-								NEW_CLASS(mstm, Media::MPAStreamSource(*this));
+								NEW_CLASSNN(mstm, Media::MPAStreamSource(*this));
 								this->dataStms.Put(stmId, mstm);
 								this->audStms.Add(mstm);
 							}
@@ -415,29 +414,28 @@ Media::VCDMPGFile::~VCDMPGFile()
 	{
 		this->StopPlay();
 	}
-	Media::IMediaStream *stm;
+	NN<Media::IMediaStream> stm;
 	UOSInt i;
 	i = this->dataStms.GetCount();
 	while (i-- > 0)
 	{
-		stm = this->dataStms.GetItem(i);
-		DEL_CLASS(stm);
+		stm = this->dataStms.GetItemNoCheck(i);
+		stm.Delete();
 	}
 	SDEL_CLASS(this->vstm);
 	this->data.Delete();
 }
 
-UOSInt Media::VCDMPGFile::AddSource(Media::IMediaSource *src, Int32 syncTime)
+UOSInt Media::VCDMPGFile::AddSource(NN<Media::IMediaSource> src, Int32 syncTime)
 {
 	return (UOSInt)-1;
 }
 
-Media::IMediaSource *Media::VCDMPGFile::GetStream(UOSInt index, Int32 *syncTime)
+Optional<Media::IMediaSource> Media::VCDMPGFile::GetStream(UOSInt index, OptOut<Int32> syncTime)
 {
 	if (index > this->audStms.GetCount())
 		return 0;
-	if (syncTime)
-		*syncTime = 0;
+	syncTime.Set(0);
 	if (index == 0)
 		return this->vstm;
 	else

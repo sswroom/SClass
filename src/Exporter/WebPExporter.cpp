@@ -60,7 +60,9 @@ Bool Exporter::WebPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	}
 	UInt8 *vp8 = 0;
 	size_t vp8len;
-	Media::RasterImage *img = imgList->GetImage(0, 0);
+	NN<Media::RasterImage> img;
+	if (!imgList->GetImage(0, 0).SetTo(img))
+		return false;
 	if (img->info.pf == Media::PF_B8G8R8)
 	{
 		UOSInt bpl = img->GetDataBpl();

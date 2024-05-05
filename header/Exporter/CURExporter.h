@@ -8,7 +8,7 @@ namespace Exporter
 	class CURExporter : public IO::FileExporter
 	{
 	public:
-		static Bool ImageSupported(Media::RasterImage *img);
+		static Bool ImageSupported(NN<Media::RasterImage> img);
 		static UOSInt CalcBuffSize(NN<Media::ImageList> imgList);
 		static UOSInt BuildBuff(UInt8 *buff, NN<Media::ImageList> imgList, Bool hasHotSpot);
 		

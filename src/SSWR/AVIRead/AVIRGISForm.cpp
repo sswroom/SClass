@@ -187,52 +187,58 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 				NN<Map::VectorLayer> lyr;
 				NN<Media::SharedImage> simg;
 				NN<Math::Geometry::VectorImage> vimg;
-				Media::RasterImage *stimg;
-				NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, files[i]->ToCString(), 0, 0, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, 0, 0, 0, CSTR_NULL));
-				stimg = ((Media::ImageList*)pobj)->GetImage(0, 0);
-				Double calcImgW;
-				Double calcImgH;
-				if (stimg->HasHotSpot())
+				NN<Media::RasterImage> stimg;
+				if (((Media::ImageList*)pobj)->GetImage(0, 0).SetTo(stimg))
 				{
-					Double hsX;
-					Double hsY;
-					if (stimg->info.par2 > 1)
+					NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, files[i]->ToCString(), 0, 0, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, 0, 0, 0, CSTR_NULL));
+					Double calcImgW;
+					Double calcImgH;
+					if (stimg->HasHotSpot())
 					{
-						hsX = OSInt2Double(stimg->GetHotSpotX());
-						hsY = OSInt2Double(stimg->GetHotSpotY()) * stimg->info.par2;
-						calcImgW = UOSInt2Double(stimg->info.dispSize.x);
-						calcImgH = UOSInt2Double(stimg->info.dispSize.y) * stimg->info.par2;
+						Double hsX;
+						Double hsY;
+						if (stimg->info.par2 > 1)
+						{
+							hsX = OSInt2Double(stimg->GetHotSpotX());
+							hsY = OSInt2Double(stimg->GetHotSpotY()) * stimg->info.par2;
+							calcImgW = UOSInt2Double(stimg->info.dispSize.x);
+							calcImgH = UOSInt2Double(stimg->info.dispSize.y) * stimg->info.par2;
+						}
+						else
+						{
+							hsX = OSInt2Double(stimg->GetHotSpotX()) / stimg->info.par2;
+							hsY = OSInt2Double(stimg->GetHotSpotY());
+							calcImgW = UOSInt2Double(stimg->info.dispSize.x) / stimg->info.par2;
+							calcImgH = UOSInt2Double(stimg->info.dispSize.y);
+						}
+						pt1 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(OSInt2Double(mousePos.x) - hsX, OSInt2Double(mousePos.y) - hsY));
+						pt2 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(OSInt2Double(mousePos.x) + calcImgW - hsX, OSInt2Double(mousePos.y) + calcImgH - hsY));
 					}
 					else
 					{
-						hsX = OSInt2Double(stimg->GetHotSpotX()) / stimg->info.par2;
-						hsY = OSInt2Double(stimg->GetHotSpotY());
-						calcImgW = UOSInt2Double(stimg->info.dispSize.x) / stimg->info.par2;
-						calcImgH = UOSInt2Double(stimg->info.dispSize.y);
+						if (stimg->info.par2 > 1)
+						{
+							calcImgW = UOSInt2Double(stimg->info.dispSize.x);
+							calcImgH = UOSInt2Double(stimg->info.dispSize.y) * stimg->info.par2;
+						}
+						else
+						{
+							calcImgW = UOSInt2Double(stimg->info.dispSize.x) / stimg->info.par2;
+							calcImgH = UOSInt2Double(stimg->info.dispSize.y);
+						}
+						pt1 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(OSInt2Double(mousePos.x) - calcImgW * 0.5, OSInt2Double(mousePos.y) - calcImgH * 0.5));
+						pt2 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(OSInt2Double(mousePos.x) + calcImgW * 0.5, OSInt2Double(mousePos.y) + calcImgH * 0.5));
 					}
-					pt1 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(OSInt2Double(mousePos.x) - hsX, OSInt2Double(mousePos.y) - hsY));
-					pt2 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(OSInt2Double(mousePos.x) + calcImgW - hsX, OSInt2Double(mousePos.y) + calcImgH - hsY));
+					NEW_CLASSNN(simg, Media::SharedImage(NN<Media::ImageList>::ConvertFrom(nnpobj), true));
+					NEW_CLASSNN(vimg, Math::Geometry::VectorImage(me->env->GetSRID(), simg, pt1, pt2, pt2 - pt1, false, files[i].Ptr(), 0, 0));
+					simg.Delete();
+					lyr->AddVector(vimg, (const UTF8Char**)0);
+					layers->Add(lyr);
 				}
 				else
 				{
-					if (stimg->info.par2 > 1)
-					{
-						calcImgW = UOSInt2Double(stimg->info.dispSize.x);
-						calcImgH = UOSInt2Double(stimg->info.dispSize.y) * stimg->info.par2;
-					}
-					else
-					{
-						calcImgW = UOSInt2Double(stimg->info.dispSize.x) / stimg->info.par2;
-						calcImgH = UOSInt2Double(stimg->info.dispSize.y);
-					}
-					pt1 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(OSInt2Double(mousePos.x) - calcImgW * 0.5, OSInt2Double(mousePos.y) - calcImgH * 0.5));
-					pt2 = me->mapCtrl->ScnXYD2MapXY(Math::Coord2DDbl(OSInt2Double(mousePos.x) + calcImgW * 0.5, OSInt2Double(mousePos.y) + calcImgH * 0.5));
+					DEL_CLASS(pobj);
 				}
-				NEW_CLASSNN(simg, Media::SharedImage(NN<Media::ImageList>::ConvertFrom(nnpobj), true));
-				NEW_CLASSNN(vimg, Math::Geometry::VectorImage(me->env->GetSRID(), simg, pt1, pt2, pt2 - pt1, false, files[i].Ptr(), 0, 0));
-				simg.Delete();
-				lyr->AddVector(vimg, (const UTF8Char**)0);
-				layers->Add(lyr);
 			}
 			else
 			{

@@ -266,14 +266,14 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(AnyType userObj)
 		}
 		writer.WriteLine(sb.ToCString());
 
-		Data::ArrayList<IO::SystemInfo::RAMInfo*> ramList;
-		IO::SystemInfo::RAMInfo *ram;
-		sysInfo.GetRAMInfo(&ramList);
+		Data::ArrayListNN<IO::SystemInfo::RAMInfo> ramList;
+		NN<IO::SystemInfo::RAMInfo> ram;
+		sysInfo.GetRAMInfo(ramList);
 		i = 0;
 		j = ramList.GetCount();
 		while (i < j)
 		{
-			ram = ramList.GetItem(i);
+			ram = ramList.GetItemNoCheck(i);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("RAM: "));
 			sb.AppendOpt(ram->deviceLocator);
@@ -296,7 +296,7 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(AnyType userObj)
 			writer.WriteLine(sb.ToCString());
 			i++;
 		}
-		sysInfo.FreeRAMInfo(&ramList);
+		sysInfo.FreeRAMInfo(ramList);
 
 		writer.WriteLine(CSTR("Result:"));
 		i = 0;
@@ -430,9 +430,9 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(Optional<UI::GUIClientContro
 	{
 		this->txtCPU->SetText(CSTR("-"));
 	}
-	Data::ArrayList<IO::SystemInfo::RAMInfo*> ramList;
-	IO::SystemInfo::RAMInfo *ram;
-	sysInfo.GetRAMInfo(&ramList);
+	Data::ArrayListNN<IO::SystemInfo::RAMInfo> ramList;
+	NN<IO::SystemInfo::RAMInfo> ram;
+	sysInfo.GetRAMInfo(ramList);
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -440,7 +440,7 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(Optional<UI::GUIClientContro
 	j = ramList.GetCount();
 	while (i < j)
 	{
-		ram = ramList.GetItem(i);
+		ram = ramList.GetItemNoCheck(i);
 		k = this->lvRAM->AddItem(Text::String::OrEmpty(ram->deviceLocator), 0);
 		this->lvRAM->SetSubItem(k, 1, Text::String::OrEmpty(ram->manufacturer));
 		this->lvRAM->SetSubItem(k, 2, Text::String::OrEmpty(ram->partNo));
@@ -472,7 +472,7 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(Optional<UI::GUIClientContro
 		this->lvRAM->SetSubItem(k, 8, CSTRP(sbuff, sptr));
 		i++;
 	}
-	sysInfo.FreeRAMInfo(&ramList);
+	sysInfo.FreeRAMInfo(ramList);
 }
 
 SSWR::AVIRead::AVIRBenchmarkForm::~AVIRBenchmarkForm()

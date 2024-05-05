@@ -138,8 +138,8 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::StreamData>
 					{
 						UInt32 imageWidth = ReadUInt32(&currBuff[12]);
 						UInt32 imageHeight = ReadUInt32(&currBuff[16]);
-						Media::StaticImage *img;
-						NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>(imageWidth, imageHeight), 0, 32, Media::PF_B8G8R8A8, imageWidth * imageHeight * 4, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_TOP_CENTER));
+						NN<Media::StaticImage> img;
+						NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(imageWidth, imageHeight), 0, 32, Media::PF_B8G8R8A8, imageWidth * imageHeight * 4, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_TOP_CENTER));
 						UInt8 *dataPtr = img->data;
 						Data::ByteArray currBuffPtr = currBuff + 60;
 						UInt32 cnt = imageWidth * imageHeight;
@@ -193,8 +193,8 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::StreamData>
 						Int32 minVal = ReadInt16(&currBuff[60]); //?
 						Int32 maxVal = ReadInt16(&currBuff[62]); //?
 						Int32 valDiff = maxVal - minVal;
-						Media::StaticImage *img;
-						NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>(imageWidth, imageHeight), 0, 16, Media::PF_LE_W16, imageWidth * imageHeight * 2, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_TOP_CENTER));
+						NN<Media::StaticImage> img;
+						NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(imageWidth, imageHeight), 0, 16, Media::PF_LE_W16, imageWidth * imageHeight * 2, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_TOP_CENTER));
 						UInt8 *dataPtr = img->data;
 						Data::ByteArray currBuffPtr = currBuff + 64;
 						UInt32 cnt = imageWidth * imageHeight;
@@ -219,8 +219,8 @@ IO::ParsedObject *Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::StreamData>
 					{
 						UInt32 imageWidth = ReadUInt32(&currBuff[20]);
 						UInt32 imageHeight = ReadUInt32(&currBuff[24]);
-						Media::StaticImage *img;
-						NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>(imageWidth, imageHeight), 0, 32, Media::PF_B8G8R8A8, imageWidth * imageHeight * 4, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_TOP_CENTER));
+						NN<Media::StaticImage> img;
+						NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(imageWidth, imageHeight), 0, 32, Media::PF_B8G8R8A8, imageWidth * imageHeight * 4, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_TOP_CENTER));
 						UInt8 *dataPtr = img->data;
 						Data::ByteArray currBuffPtr = currBuff + 56;
 						UInt32 cnt = imageWidth * imageHeight;

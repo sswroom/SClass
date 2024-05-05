@@ -1,6 +1,7 @@
 #ifndef _SM_IO_SMBIOS
 #define _SM_IO_SMBIOS
 #include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "IO/StreamData.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -92,8 +93,8 @@ namespace IO
 		SMBIOS(const UInt8 *smbiosBuff, UOSInt smbiosBuffSize, UInt8 *relPtr);
 		~SMBIOS();
 
-		UOSInt GetMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList) const;
-		void FreeMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList) const;
+		UOSInt GetMemoryInfo(NN<Data::ArrayListNN<MemoryDeviceInfo>> memList) const;
+		void FreeMemoryInfo(NN<Data::ArrayListNN<MemoryDeviceInfo>> memList) const;
 
 		UTF8Char *GetPlatformName(UTF8Char *buff) const;
 		UTF8Char *GetPlatformSN(UTF8Char *buff) const;

@@ -105,12 +105,13 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO::StreamDa
 			cptr = gdk_pixbuf_get_option(pixBuf, "y-dpi");
 			if (cptr) Text::StrToDouble(cptr, ydpi);
 
-			Media::StaticImage *img = 0;
+			Optional<Media::StaticImage> optimg = 0;
+			NN<Media::StaticImage> img;
 			Media::AlphaType aType = (isImage == 2||!hasAlpha)?Media::AT_NO_ALPHA:Media::AT_ALPHA;
 
 			if (nChannels == 3 && bps == 8 && !hasAlpha)
 			{
-				NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 24, Media::PF_R8G8B8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 24, Media::PF_R8G8B8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
 				UInt8 *imgDest = (UInt8*)img->data;
 				if (imgDest)
 				{
@@ -118,16 +119,16 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO::StreamDa
 					NEW_CLASSNN(nnimgList, Media::ImageList(fd->GetFullName()));
 					nnimgList->AddImage(img, 0);
 					imgList = nnimgList;
+					optimg = img;
 				}
 				else
 				{
-					DEL_CLASS(img);
-					img = 0;
+					img.Delete();
 				}
 			}
 			else if (nChannels == 3 && bps == 8 && hasAlpha)
 			{
-				NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 32, Media::PF_R8G8B8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 32, Media::PF_R8G8B8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
 				UInt8 *imgDest = (UInt8*)img->data;
 				if (imgDest)
 				{
@@ -135,16 +136,16 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO::StreamDa
 					NEW_CLASSNN(nnimgList, Media::ImageList(fd->GetFullName()));
 					nnimgList->AddImage(img, 0);
 					imgList = nnimgList;
+					optimg = img;
 				}
 				else
 				{
-					DEL_CLASS(img);
-					img = 0;
+					img.Delete();
 				}
 			}
 			else if (nChannels == 4 && bps == 8 && hasAlpha)
 			{
-				NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 32, Media::PF_R8G8B8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>((UOSInt)width, (UOSInt)height), 0, 32, Media::PF_R8G8B8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, aType, Media::YCOFST_C_CENTER_LEFT));
 				UInt8 *imgDest = (UInt8*)img->data;
 				if (imgDest)
 				{
@@ -152,11 +153,11 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO::StreamDa
 					NEW_CLASSNN(nnimgList, Media::ImageList(fd->GetFullName()));
 					nnimgList->AddImage(img, 0);
 					imgList = nnimgList;
+					optimg = img;
 				}
 				else
 				{
-					DEL_CLASS(img);
-					img = 0;
+					img.Delete();
 				}
 			}
 			else
@@ -164,7 +165,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO::StreamDa
 				printf("GUIImgParser: unsupport: width = %d, height = %d, nChannels = %d, bps = %d, bpl = %d, xdpi = %lf, ydpi = %lf\r\n", width, height, nChannels, bps, bpl, xdpi, ydpi);
 			}
 
-			if (img && imgList.SetTo(nnimgList))
+			if (optimg.SetTo(img) && imgList.SetTo(nnimgList))
 			{
 				img->info.hdpi = xdpi;
 				img->info.vdpi = ydpi;
@@ -178,9 +179,9 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO::StreamDa
 		g_input_stream_close(inpStream, 0, 0);
 	}
 
-	if (targetType != IO::ParserType::ImageList && imgList.SetTo(nnimgList) && nnimgList->GetCount() >= 1)
+	NN<Media::StaticImage> img;
+	if (targetType != IO::ParserType::ImageList && imgList.SetTo(nnimgList) && nnimgList->GetCount() >= 1 && Optional<Media::StaticImage>::ConvertFrom(nnimgList->GetImage(0, 0)).SetTo(img))
 	{
-		Media::StaticImage *img = (Media::StaticImage*)nnimgList->GetImage(0, 0);
 		Double minX;
 		Double minY;
 		Double maxX;

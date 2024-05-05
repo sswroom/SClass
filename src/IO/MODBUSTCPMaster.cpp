@@ -18,7 +18,7 @@ UInt32 __stdcall IO::MODBUSTCPMaster::ThreadProc(AnyType userObj)
 	UOSInt readSize;
 	UOSInt i;
 	Bool incomplete;
-	AddrResultCb *cb;
+	NN<AddrResultCb> cb;
 	Sync::ThreadUtil::SetName(CSTR("MODBUSTCP"));
 	{
 		me->threadRunning = true;
@@ -54,8 +54,7 @@ UInt32 __stdcall IO::MODBUSTCPMaster::ThreadProc(AnyType userObj)
 							case 4:
 								if (3 + buff[i + 8] == packetSize)
 								{
-									cb = me->cbMap.Get(buff[i + 6]);
-									if (cb && cb->readFunc)
+									if (me->cbMap.Get(buff[i + 6]).SetTo(cb) && cb->readFunc)
 									{
 										cb->readFunc(cb->userObj, buff[i + 7], &buff[i + 9], buff[i + 8]);
 									}
@@ -72,8 +71,7 @@ UInt32 __stdcall IO::MODBUSTCPMaster::ThreadProc(AnyType userObj)
 							case 16:
 								if (packetSize == 6)
 								{
-									cb = me->cbMap.Get(buff[i + 6]);
-									if (cb && cb->setFunc)
+									if (me->cbMap.Get(buff[i + 6]).SetTo(cb) && cb->setFunc)
 									{
 										cb->setFunc(cb->userObj, buff[i + 7], ReadMUInt16(&buff[i + 8]), ReadMUInt16(&buff[i + 10]));
 									}
@@ -150,12 +148,12 @@ IO::MODBUSTCPMaster::~MODBUSTCPMaster()
 			Sync::SimpleThread::Sleep(10);
 		}
 	}
-	AddrResultCb *cb;
+	NN<AddrResultCb> cb;
 	i = this->cbMap.GetCount();
 	while (i-- > 0)
 	{
-		cb = this->cbMap.GetItem(i);
-		MemFree(cb);
+		cb = this->cbMap.GetItemNoCheck(i);
+		MemFreeNN(cb);
 	}
 }
 
@@ -367,8 +365,8 @@ Bool IO::MODBUSTCPMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, U
 
 void IO::MODBUSTCPMaster::HandleReadResult(UInt8 addr, ReadResultFunc readFunc, SetResultFunc setFunc, AnyType userObj)
 {
-	AddrResultCb *cb = this->cbMap.Get(addr);
-	if (cb)
+	NN<AddrResultCb> cb;
+	if (this->cbMap.Get(addr).SetTo(cb))
 	{
 		cb->readFunc = readFunc;
 		cb->setFunc = setFunc;
@@ -376,7 +374,7 @@ void IO::MODBUSTCPMaster::HandleReadResult(UInt8 addr, ReadResultFunc readFunc, 
 	}
 	else
 	{
-		cb = MemAlloc(AddrResultCb, 1);
+		cb = MemAllocNN(AddrResultCb);
 		cb->readFunc = readFunc;
 		cb->setFunc = setFunc;
 		cb->userObj = userObj;

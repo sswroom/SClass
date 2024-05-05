@@ -7,7 +7,7 @@
 #include "Media/StaticImage.h"
 #include "Text/MyString.h"
 
-Bool Exporter::CURExporter::ImageSupported(Media::RasterImage *img)
+Bool Exporter::CURExporter::ImageSupported(NN<Media::RasterImage> img)
 {
 	if (img->info.dispSize.x <= 0 || img->info.dispSize.x > 256 || img->info.dispSize.y <= 0 || img->info.dispSize.y > 256)
 	{
@@ -46,14 +46,13 @@ UOSInt Exporter::CURExporter::CalcBuffSize(NN<Media::ImageList> imgList)
 	UOSInt j;
 	UOSInt imgSize;
 	UOSInt maskSize;
-	Media::RasterImage *img;
+	NN<Media::RasterImage> img;
 	UOSInt retSize = 6;
 	i = 0;
 	j = imgList->GetCount();
 	while (i < j)
 	{
-		img = imgList->GetImage(i, 0);
-		if (img->info.fourcc != 0)
+		if (!imgList->GetImage(i, 0).SetTo(img) || img->info.fourcc != 0)
 		{
 			return 0;
 		}
@@ -154,7 +153,7 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgLis
 	UOSInt maskSize;
 	UOSInt imgAdd;
 	UOSInt maskAdd;
-	Media::StaticImage *img;
+	NN<Media::StaticImage> img;
 	UOSInt retSize = 6;
 	i = 0;
 	j = imgList->GetCount();
@@ -175,7 +174,10 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, NN<Media::ImageList> imgLis
 	while (i < j)
 	{
 		imgList->ToStaticImage(i);
-		img = (Media::StaticImage*)imgList->GetImage(i, 0);
+		if (!Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(i, 0)).SetTo(img))
+		{
+			return 0;
+		}
 		if (img->info.fourcc != 0)
 		{
 			return 0;
@@ -686,7 +688,7 @@ IO::FileExporter::SupportType Exporter::CURExporter::IsObjectSupported(NN<IO::Pa
 	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
 	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
-	Media::RasterImage *img;
+	NN<Media::RasterImage> img;
 	UOSInt i = imgList->GetCount();
 	if (i <= 0)
 	{
@@ -695,10 +697,12 @@ IO::FileExporter::SupportType Exporter::CURExporter::IsObjectSupported(NN<IO::Pa
 	
 	while (i-- > 0)
 	{
-		img = imgList->GetImage(0, 0);
-		if (!img->HasHotSpot() || !ImageSupported(img))
+		if (imgList->GetImage(0, 0).SetTo(img))
 		{
-			return IO::FileExporter::SupportType::NotSupported;
+			if (!img->HasHotSpot() || !ImageSupported(img))
+			{
+				return IO::FileExporter::SupportType::NotSupported;
+			}
 		}
 	}
 	return IO::FileExporter::SupportType::NormalStream;

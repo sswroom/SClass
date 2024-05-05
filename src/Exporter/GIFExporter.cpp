@@ -27,8 +27,8 @@ IO::FileExporter::SupportType Exporter::GIFExporter::IsObjectSupported(NN<IO::Pa
 	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
-	Media::RasterImage *img = imgList->GetImage(0, 0);
-	if (img->info.fourcc != 0)
+	NN<Media::RasterImage> img;
+	if (!imgList->GetImage(0, 0).SetTo(img) || img->info.fourcc != 0)
 		return IO::FileExporter::SupportType::NotSupported;
 	if (img->info.pf == Media::PF_PAL_8 || img->info.pf == Media::PF_PAL_W8)
 	{
@@ -80,7 +80,9 @@ Bool Exporter::GIFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		return false;
 	UInt8 buff[256];
 	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
-	Media::RasterImage *img = imgList->GetImage(0, 0);
+	NN<Media::RasterImage> img;
+	if (!imgList->GetImage(0, 0).SetTo(img))
+		return false;
 	UOSInt transparentIndex = INVALID_INDEX;
 	UOSInt i;
 	UOSInt j;

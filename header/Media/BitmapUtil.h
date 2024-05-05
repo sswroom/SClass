@@ -7,7 +7,7 @@ namespace Media
 	class BitmapUtil
 	{
 	public:
-		static Media::StaticImage *ParseDIBBuffer(const UInt8 *dataBuff, UOSInt dataSize);
+		static Optional<Media::StaticImage> ParseDIBBuffer(const UInt8 *dataBuff, UOSInt dataSize);
 	};
 }
 #endif

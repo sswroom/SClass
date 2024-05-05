@@ -1355,8 +1355,9 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 										while (j-- > 0)
 										{
 											imgList->ToStaticImage(j);
-											Media::StaticImage *img = (Media::StaticImage *)imgList->GetImage(j, 0);
-											img->MultiplyColor(style->iconColor);
+											NN<Media::StaticImage> img;
+											if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(j, 0)).SetTo(img))
+												img->MultiplyColor(style->iconColor);
 										}
 									}
 									NEW_CLASS(style->img, Media::SharedImage(imgList, false));
@@ -1365,9 +1366,9 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 							}
 						}
 						NN<Media::SharedImage> shimg;
-						if (shimg.Set(style->img))
+						NN<Media::StaticImage> img;
+						if (shimg.Set(style->img) && shimg->GetImage(0).SetTo(img))
 						{
-							Media::RasterImage *img = shimg->GetImage(0);
 							if (style->iconSpotX == -1 || style->iconSpotY == -1)
 							{
 								lyr->SetIconStyle(shimg, (OSInt)(img->info.dispSize.x >> 1), (OSInt)(img->info.dispSize.y >> 1));

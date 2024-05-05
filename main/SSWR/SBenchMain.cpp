@@ -291,14 +291,14 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	writer->WriteLine(sb.ToCString());
 
 	{
-		Data::ArrayList<IO::SystemInfo::RAMInfo*> ramList;
-		IO::SystemInfo::RAMInfo *ram;
-		sysInfo.GetRAMInfo(&ramList);
+		Data::ArrayListNN<IO::SystemInfo::RAMInfo> ramList;
+		NN<IO::SystemInfo::RAMInfo> ram;
+		sysInfo.GetRAMInfo(ramList);
 		i = 0;
 		j = ramList.GetCount();
 		while (i < j)
 		{
-			ram = ramList.GetItem(i);
+			ram = ramList.GetItemNoCheck(i);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("RAM: "));
 			sb.AppendOpt(ram->deviceLocator);
@@ -322,21 +322,21 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			writer->WriteLine(sb.ToCString());
 			i++;
 		}
-		sysInfo.FreeRAMInfo(&ramList);
+		sysInfo.FreeRAMInfo(ramList);
 	}
 
 	{
-		Data::ArrayList<Media::DDCReader *> readerList;
-		Media::DDCReader *reader;
-		Media::DDCReader::CreateDDCReaders(&readerList);
+		Data::ArrayListNN<Media::DDCReader> readerList;
+		NN<Media::DDCReader> reader;
+		Media::DDCReader::CreateDDCReaders(readerList);
 		UOSInt edidSize;
 		UInt8 *edid;
 		i = 0;
 		j = readerList.GetCount();
 		while (i < j)
 		{
-			reader = readerList.GetItem(i);
-			edid = reader->GetEDID(&edidSize);
+			reader = readerList.GetItemNoCheck(i);
+			edid = reader->GetEDID(edidSize);
 			if (edid)
 			{
 				Media::EDID::EDIDInfo edidInfo;
@@ -421,7 +421,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					writer->WriteLine(sb.ToCString());
 				}
 			}
-			DEL_CLASS(reader);
+			reader.Delete();
 			i++;
 		}
 	}
@@ -1528,7 +1528,9 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 		UOSInt imgWidth;
 		UOSInt imgHeight;
-		Media::StaticImage *srcImg;
+		Optional<Media::StaticImage> srcImg;
+		NN<Media::StaticImage> nnsrcImg;
+		NN<Media::StaticImage> newImg;
 		UInt8 *tmpBuff;
 		Media::CS::CSConverter *csconv;
 
@@ -1547,10 +1549,10 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		NEW_CLASS(imgGen, Media::ImageGen::RingsImageGen());
 
 		clk->Start();
-		srcImg = (Media::StaticImage*)imgGen->GenerateImage(color, Math::Size2D<UOSInt>(imgWidth, imgHeight));
+		srcImg = Optional<Media::StaticImage>::ConvertFrom(imgGen->GenerateImage(color, Math::Size2D<UOSInt>(imgWidth, imgHeight)));
 		t = clk->GetTimeDiff();
 		DEL_CLASS(imgGen);
-		if (srcImg == 0)
+		if (!srcImg.SetTo(nnsrcImg))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Generate Rings Image: Error, size = "));
@@ -1562,7 +1564,6 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		}
 		else
 		{
-			Media::StaticImage *newImg;
 			Media::IImgResizer *resizer;
 			UOSInt cnt;
 
@@ -1574,7 +1575,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			sb.AppendC(UTF8STRC(" x "));
 			sb.AppendUOSInt(imgHeight);
 			sb.AppendC(UTF8STRC(" "));
-			sb.AppendU32(srcImg->info.storeBPP);
+			sb.AppendU32(nnsrcImg->info.storeBPP);
 			sb.AppendC(UTF8STRC(" bpp"));
 			console->WriteLine(sb.ToCString());
 			writer->WriteLine(sb.ToCString());
@@ -1584,7 +1585,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, cstr = CSTR("RingsImage64.tif"));
 			NEW_CLASS(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-			imgList->AddImage(srcImg, 0);
+			imgList->AddImage(nnsrcImg, 0);
 			exporter.ExportFile(efs, cstr, imgList, 0);
 			imgList->RemoveImage(0, false);
 			DEL_CLASS(efs);
@@ -1593,7 +1594,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			tmpBuff = MemAllocA(UInt8, imgWidth * imgHeight * 8);
 
 			clk->Start();
-			NEW_CLASS(newImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth >> 1, imgHeight >> 1), 0, 64, Media::PF_LE_B16G16R16A16, 0, color, Media::ColorProfile::YUVT_BT709, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASSNN(newImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth >> 1, imgHeight >> 1), 0, 64, Media::PF_LE_B16G16R16A16, 0, color, Media::ColorProfile::YUVT_BT709, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Create Image: t = "));
@@ -1622,7 +1623,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
-			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(nnsrcImg->data, (OSInt)nnsrcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
@@ -1638,7 +1639,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(nnsrcImg->data, (OSInt)nnsrcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
 			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
@@ -1671,7 +1672,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			writer->WriteLine(sb.ToCString());
 
 			clk->Start();
-			NEW_CLASS(newImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth >> 1, imgHeight >> 1), 0, 32, Media::PF_B8G8R8A8, 0, color, Media::ColorProfile::YUVT_BT709, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASSNN(newImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth >> 1, imgHeight >> 1), 0, 32, Media::PF_B8G8R8A8, 0, color, Media::ColorProfile::YUVT_BT709, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Create Image: t = "));
@@ -1693,7 +1694,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
-			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(nnsrcImg->data, (OSInt)nnsrcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
@@ -1709,7 +1710,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(nnsrcImg->data, (OSInt)nnsrcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
 			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
@@ -1733,7 +1734,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
-			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(nnsrcImg->data, (OSInt)nnsrcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
@@ -1749,7 +1750,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(nnsrcImg->data, (OSInt)nnsrcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
 			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
@@ -1810,7 +1811,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
-			csconv->ConvertV2(&srcImg->data, tmpBuff, srcImg->info.dispSize.x, srcImg->info.dispSize.y, srcImg->info.storeSize.x, srcImg->info.storeSize.y, (OSInt)srcImg->info.dispSize.x << 3, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+			csconv->ConvertV2(&nnsrcImg->data, tmpBuff, nnsrcImg->info.dispSize.x, nnsrcImg->info.dispSize.y, nnsrcImg->info.storeSize.x, nnsrcImg->info.storeSize.y, (OSInt)nnsrcImg->info.dispSize.x << 3, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("CSConv (1st): t = "));
@@ -1826,7 +1827,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			i = cnt;
 			while (i-- > 0)
 			{
-				csconv->ConvertV2(&srcImg->data, tmpBuff, srcImg->info.dispSize.x, srcImg->info.dispSize.y, srcImg->info.storeSize.x, srcImg->info.storeSize.y, (OSInt)srcImg->info.dispSize.x << 3, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+				csconv->ConvertV2(&nnsrcImg->data, tmpBuff, nnsrcImg->info.dispSize.x, nnsrcImg->info.dispSize.y, nnsrcImg->info.storeSize.x, nnsrcImg->info.storeSize.y, (OSInt)nnsrcImg->info.dispSize.x << 3, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 			}
 			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
@@ -1937,7 +1938,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 #endif
 
 			clk->Start();
-			srcImg->To32bpp();
+			nnsrcImg->To32bpp();
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("To 32bpp: t = "));
@@ -1954,7 +1955,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			sptr = IO::Path::AppendPath(sbuff, sptr, cstr = CSTR("OriImage_32.tif"));
 			NEW_CLASS(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 			imgList->RemoveImage(0, false);
-			imgList->AddImage(srcImg, 0);
+			imgList->AddImage(nnsrcImg, 0);
 			exporter.ExportFile(efs, cstr, imgList, 0);
 			imgList->RemoveImage(0, false);
 			imgList->AddImage(newImg, 0);
@@ -1967,7 +1968,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
-			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(nnsrcImg->data, (OSInt)nnsrcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
@@ -1983,7 +1984,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(nnsrcImg->data, (OSInt)nnsrcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
 			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
@@ -2008,7 +2009,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
-			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(nnsrcImg->data, (OSInt)nnsrcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
@@ -2024,7 +2025,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(nnsrcImg->data, (OSInt)nnsrcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
 			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
@@ -2049,7 +2050,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
-			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(nnsrcImg->data, (OSInt)nnsrcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
@@ -2065,7 +2066,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(nnsrcImg->data, (OSInt)nnsrcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
 			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
@@ -2090,7 +2091,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			console->WriteLine(CSTR("Initialized"));
 
 			clk->Start();
-			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(nnsrcImg->data, (OSInt)nnsrcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
@@ -2106,7 +2107,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(nnsrcImg->data, (OSInt)nnsrcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
 			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
@@ -2140,7 +2141,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			writer->WriteLine(sb.ToCString());
 
 			clk->Start();
-			DEL_CLASS(srcImg);
+			srcImg.Delete();
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Delete Image: t = "));

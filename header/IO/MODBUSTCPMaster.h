@@ -1,7 +1,7 @@
 #ifndef _SM_IO_MODBUSTCPMASTER
 #define _SM_IO_MODBUSTCPMASTER
 #include "AnyType.h"
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "IO/MODBUSMaster.h"
 #include "IO/Stream.h"
 #include "Manage/HiResClock.h"
@@ -26,7 +26,7 @@ namespace IO
 		Bool threadToStop;
 		Manage::HiResClock clk;
 		Sync::Mutex stmMut;
-		Data::FastMap<Int32, AddrResultCb*> cbMap;
+		Data::FastMapNN<Int32, AddrResultCb> cbMap;
 
 		static UInt32 __stdcall ThreadProc(AnyType userObj);
 	public:

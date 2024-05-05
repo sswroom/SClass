@@ -31,7 +31,9 @@ IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(NN<IO::Pa
 	imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
-	Media::RasterImage *img = imgList->GetImage(0, 0);
+	NN<Media::RasterImage> img;
+	if (!imgList->GetImage(0, 0).SetTo(img))
+		return IO::FileExporter::SupportType::NotSupported;
 	if (img->info.fourcc != 0)
 		return IO::FileExporter::SupportType::NotSupported;
 	switch (img->info.pf)
@@ -89,8 +91,8 @@ void *Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, UInt8 **relBuff)
 		return 0;
 	}
 	imgList->ToStaticImage(0);
-	Media::StaticImage *img = (Media::StaticImage*)imgList->GetImage(0, 0);
-	if (img == 0 || img->info.fourcc != 0)
+	NN<Media::StaticImage> img;
+	if (!Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img) || img->info.fourcc != 0)
 	{
 		return 0;
 	}

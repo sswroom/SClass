@@ -463,11 +463,13 @@ Bool Media::VectorGraph::DrawStringRotB(Math::Coord2DDbl center, Text::CStringNN
 Bool Media::VectorGraph::DrawImagePt(NN<DrawImage> img, Math::Coord2DDbl tl)
 {
 	NN<VectorStyles> style;
-	Media::StaticImage *stImg;
+	NN<Media::StaticImage> stImg;
 	NN<Math::Geometry::VectorImage> vimg;
 	NN<Media::ImageList> imgList;
+	if (!stImg.Set(img->ToStaticImage()))
+		return false;
 	NEW_CLASSNN(imgList, Media::ImageList(CSTR("VectorGraphImage")));
-	imgList->AddImage(stImg = img->ToStaticImage(), 0);
+	imgList->AddImage(stImg, 0);
 	Media::SharedImage simg(imgList, false);
 	NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, simg, tl, Math::Coord2DDbl(tl.x + UOSInt2Double(stImg->info.dispSize.x) * this->GetHDPI() / stImg->info.hdpi, tl.y + UOSInt2Double(stImg->info.dispSize.y) * stImg->info.par2 * this->GetVDPI() / stImg->info.vdpi), true, CSTR_NULL, 0, 0));
 	style = MemAllocNN(VectorStyles);
@@ -500,11 +502,13 @@ Bool Media::VectorGraph::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2DD
 Bool Media::VectorGraph::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize)
 {
 	NN<VectorStyles> style;
-	Media::StaticImage *stImg;
+	NN<Media::StaticImage> stImg;
 	NN<Math::Geometry::VectorImage> vimg;
 	NN<Media::ImageList> imgList;
+	if (!stImg.Set(img->ToStaticImage()))
+		return false;
 	NEW_CLASSNN(imgList, Media::ImageList(CSTR("VectorGraphImage")));
-	imgList->AddImage(stImg = img->ToStaticImage(), 0);
+	imgList->AddImage(stImg, 0);
 	Media::SharedImage simg(imgList, false);
 	NEW_CLASSNN(vimg, Math::Geometry::VectorImage(this->srid, simg, destTL, Math::Coord2DDbl(destTL.x + UOSInt2Double(stImg->info.dispSize.x) * this->GetHDPI() / stImg->info.hdpi, destTL.y + UOSInt2Double(stImg->info.dispSize.y) * stImg->info.par2 * this->GetVDPI() / stImg->info.vdpi), true, CSTR_NULL, 0, 0));
 	style = MemAllocNN(VectorStyles);
@@ -851,7 +855,7 @@ void Media::VectorGraph::DrawTo(NN<Media::DrawImage> dimg, OptOut<UInt32> imgDur
 			UInt32 thisTimeMS;
 			bounds = vimg->GetBounds();
 			NN<Media::StaticImage> simg;
-			if (simg.Set(vimg->GetImage(thisTimeMS)))
+			if (vimg->GetImage(thisTimeMS).SetTo(simg))
 			{
 				dimg->DrawImagePt2(simg, bounds.min * scale);
 				if (imgTimeMS == 0)

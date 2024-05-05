@@ -42,7 +42,7 @@ namespace Media
 		Bool MultiplyColor(UInt32 color);
 		Bool Resize(Media::IImgResizer *resizer, Math::Size2D<UOSInt> newSize);
 		Bool RotateImage(RotateType rtype);
-		Double CalcPSNR(Media::StaticImage *simg) const;
+		Double CalcPSNR(NN<Media::StaticImage> simg) const;
 		Double CalcAvgContrast(UOSInt *bgPxCnt) const;
 		Double CalcColorRate() const;
 		UInt8 *CreateNearPixelMask(Math::Coord2D<UOSInt> pxCoord, Int32 maxRate);

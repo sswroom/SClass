@@ -1405,28 +1405,29 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 								DrawShapesPoint(denv, layer.layer, layer.imgIndex);
 							if (layer.flags & Map::MapEnv::SFLG_SHOWLABEL)
 							{
-								Media::RasterImage *pimg = 0;
+								Optional<Media::StaticImage> pimg = 0;
+								NN<Media::StaticImage> nnimg;
 								Double spotX;
 								Double spotY;
 								NN<Media::SharedImage> shimg;
 								if (layer.layer->HasIconStyle() && layer.layer->GetIconStyleImg().SetTo(shimg))
 								{
-									pimg = shimg->GetImage(0);
 									spotX = OSInt2Double(layer.layer->GetIconStyleSpotX());
 									spotY = OSInt2Double(layer.layer->GetIconStyleSpotY());
-									if (pimg != 0 && (spotX == -1 || spotY == -1))
+									if (shimg->GetImage(0).SetTo(nnimg) && (spotX == -1 || spotY == -1))
 									{
-										spotX = UOSInt2Double(pimg->info.dispSize.x) * 0.5;
-										spotY = UOSInt2Double(pimg->info.dispSize.y) * 0.5;
+										spotX = UOSInt2Double(nnimg->info.dispSize.x) * 0.5;
+										spotY = UOSInt2Double(nnimg->info.dispSize.y) * 0.5;
+										pimg = nnimg;
 									}
 								}
-								if (pimg == 0)
+								if (pimg.IsNull())
 								{
-									pimg = denv->env->GetImage(layer.imgIndex, 0);
-									if (pimg)
+									if (denv->env->GetImage(layer.imgIndex, 0).SetTo(nnimg))
 									{
-										spotX = UOSInt2Double(pimg->info.dispSize.x) * 0.5;
-										spotY = UOSInt2Double(pimg->info.dispSize.y) * 0.5;
+										spotX = UOSInt2Double(nnimg->info.dispSize.x) * 0.5;
+										spotY = UOSInt2Double(nnimg->info.dispSize.y) * 0.5;
+										pimg = nnimg;
 									}
 									else
 									{
@@ -1439,9 +1440,9 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 								{
 									if (layer.fontStyle < denv->fontStyleCnt)
 									{
-										if (pimg)
+										if (pimg.SetTo(nnimg))
 										{
-											DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispSize.x) * denv->img->GetHDPI() / pimg->info.hdpi), (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispSize.y) * denv->img->GetVDPI() / pimg->info.vdpi), layer.fontType);
+											DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, (UOSInt)Double2Int32(UOSInt2Double(nnimg->info.dispSize.x) * denv->img->GetHDPI() / nnimg->info.hdpi), (UOSInt)Double2Int32(UOSInt2Double(nnimg->info.dispSize.y) * denv->img->GetVDPI() / nnimg->info.vdpi), layer.fontType);
 										}
 										else
 										{
@@ -1456,9 +1457,9 @@ void Map::DrawMapRenderer::DrawLayers(NN<Map::DrawMapRenderer::DrawEnv> denv, Op
 									NN<Media::DrawBrush> b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 									denv->layerFont.Add(f);
 									denv->layerFontColor.Add(b);
-									if (pimg)
+									if (pimg.SetTo(nnimg))
 									{
-										DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispSize.x) * denv->img->GetHDPI() / pimg->info.hdpi), (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispSize.y) * denv->img->GetVDPI() / pimg->info.vdpi), layer.fontType);
+										DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, (UOSInt)Double2Int32(UOSInt2Double(nnimg->info.dispSize.x) * denv->img->GetHDPI() / nnimg->info.hdpi), (UOSInt)Double2Int32(UOSInt2Double(nnimg->info.dispSize.y) * denv->img->GetVDPI() / nnimg->info.vdpi), layer.fontType);
 									}
 									else
 									{
@@ -1667,25 +1668,25 @@ void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> den
 	Double spotY;
 	UOSInt maxLabel = denv->env->GetNString();
 
-	Media::RasterImage *img = 0;
-	NN<Media::RasterImage> nnimg;
+	Optional<Media::StaticImage> img = 0;
+	NN<Media::StaticImage> nnimg;
 	NN<Media::SharedImage> shimg;
 	UInt32 imgTimeMS = 0;
 	if (layer->HasIconStyle() && layer->GetIconStyleImg().SetTo(shimg))
 	{
-		img = shimg->GetImage(imgTimeMS);
 		spotX = OSInt2Double(layer->GetIconStyleSpotX());
 		spotY = OSInt2Double(layer->GetIconStyleSpotY());
-		if (img != 0 && (spotX == -1 || spotY == -1))
+		if (shimg->GetImage(imgTimeMS).SetTo(nnimg) && (spotX == -1 || spotY == -1))
 		{
-			spotX = UOSInt2Double(img->info.dispSize.x) * 0.5;
-			spotY = UOSInt2Double(img->info.dispSize.y) * 0.5;
+			spotX = UOSInt2Double(nnimg->info.dispSize.x) * 0.5;
+			spotY = UOSInt2Double(nnimg->info.dispSize.y) * 0.5;
+			img = nnimg;
 		}
 	}
-	if (!nnimg.Set(img))
+	if (!img.SetTo(nnimg))
 	{
 		img = denv->env->GetImage(imgIndex, imgTimeMS);
-		if (!nnimg.Set(img))
+		if (!img.SetTo(nnimg))
 			return;
 		spotX = UOSInt2Double(nnimg->info.dispSize.x) * 0.5;
 		spotY = UOSInt2Double(nnimg->info.dispSize.y) * 0.5;

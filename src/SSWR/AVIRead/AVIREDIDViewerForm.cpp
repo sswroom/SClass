@@ -230,7 +230,7 @@ void SSWR::AVIRead::AVIREDIDViewerForm::OnMonitorChanged()
 
 	{
 		Media::DDCReader reader(hMon);
-		edid = reader.GetEDID(&edidSize);
+		edid = reader.GetEDID(edidSize);
 
 		if (edid)
 		{

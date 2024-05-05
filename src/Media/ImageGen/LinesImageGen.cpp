@@ -18,7 +18,7 @@ Text::CStringNN Media::ImageGen::LinesImageGen::GetName() const
 	return CSTR("Lines Image");
 }
 
-Media::RasterImage *Media::ImageGen::LinesImageGen::GenerateImage(NN<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size)
+Optional<Media::RasterImage> Media::ImageGen::LinesImageGen::GenerateImage(NN<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size)
 {
 	Media::StaticImage *outImage;
 	Int64 *imgPtr;

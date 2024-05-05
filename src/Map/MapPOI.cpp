@@ -67,11 +67,11 @@ static UInt8 MapPOI_Parking[] = {
 0x1A, 0x26, 0x71, 0xFF, 0x1A, 0x26, 0x71, 0xFF, 0x1A, 0x26, 0x71, 0xFF, 0x1A, 0x26, 0x71, 0xFF, 
 0x1A, 0x26, 0x71, 0xFF, 0x1A, 0x26, 0x71, 0xFF, 0x1A, 0x26, 0x71, 0xFF, 0x1A, 0x26, 0x71, 0xFF};
 
-Media::StaticImage *Map::MapPOI::CreateParkingPOI()
+NN<Media::StaticImage> Map::MapPOI::CreateParkingPOI()
 {
 	Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-	Media::StaticImage *retImg;
-	NEW_CLASS(retImg, Media::StaticImage(Math::Size2D<UOSInt>(16, 16), 0, 32, Media::PF_R8G8B8A8, 1024, color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+	NN<Media::StaticImage> retImg;
+	NEW_CLASSNN(retImg, Media::StaticImage(Math::Size2D<UOSInt>(16, 16), 0, 32, Media::PF_R8G8B8A8, 1024, color, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	MemCopyNO(retImg->data, MapPOI_Parking, 1024);
 	return retImg;
 }

@@ -422,14 +422,13 @@ IO::ParsedObject *Parser::FileParser::HEIFParser::ParseFileHdr(NN<IO::StreamData
 	if (err.code == heif_error_Ok)
 	{
 		heif_image_handle *imgHdlr;
-		Media::StaticImage *simg;
+		NN<Media::StaticImage> simg;
 		NEW_CLASS(imgList, Media::ImageList(fd->GetFullFileName()));
 		int nImages = heif_context_get_number_of_top_level_images(ctx);
 		if (nImages == 1)
 		{
 			heif_context_get_primary_image_handle(ctx, &imgHdlr);
-			simg = HEIFParser_DecodeImage(imgHdlr);
-			if (simg)
+			if (simg.Set(HEIFParser_DecodeImage(imgHdlr)))
 			{
 				imgList->AddImage(simg, 0);
 			}
@@ -443,8 +442,7 @@ IO::ParsedObject *Parser::FileParser::HEIFParser::ParseFileHdr(NN<IO::StreamData
 			while (i < nImages)
 			{
 				heif_context_get_image_handle(ctx, idArr[i], &imgHdlr);
-				simg = HEIFParser_DecodeImage(imgHdlr);
-				if (simg)
+				if (simg.Set(HEIFParser_DecodeImage(imgHdlr)))
 				{
 					imgList->AddImage(simg, 0);
 				}

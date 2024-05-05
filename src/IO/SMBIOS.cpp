@@ -41,12 +41,12 @@ IO::SMBIOS::~SMBIOS()
 	}
 }
 
-UOSInt IO::SMBIOS::GetMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList) const
+UOSInt IO::SMBIOS::GetMemoryInfo(NN<Data::ArrayListNN<MemoryDeviceInfo>> memList) const
 {
 	Data::ArrayList<const UInt8 *> dataList;
 	const UInt8 *dataBuff;
 	const Char *carr[8];
-	MemoryDeviceInfo *mem;
+	NN<MemoryDeviceInfo> mem;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -81,8 +81,8 @@ UOSInt IO::SMBIOS::GetMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList) co
 			}
 		}
 
-		mem = MemAlloc(MemoryDeviceInfo, 1);
-		MemClear(mem, sizeof(MemoryDeviceInfo));
+		mem = MemAllocNN(MemoryDeviceInfo);
+		mem.ZeroContent();
 		if (dataBuff[1] >= 6)
 			mem->memArrayHandle = ReadUInt16(&dataBuff[4]);
 		if (dataBuff[1] >= 8)
@@ -144,14 +144,9 @@ UOSInt IO::SMBIOS::GetMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList) co
 	return ret;
 }
 
-void IO::SMBIOS::FreeMemoryInfo(Data::ArrayList<MemoryDeviceInfo*> *memList) const
+void IO::SMBIOS::FreeMemoryInfo(NN<Data::ArrayListNN<MemoryDeviceInfo>> memList) const
 {
-	UOSInt i = memList->GetCount();
-	while (i-- > 0)
-	{
-		MemFree(memList->GetItem(i));
-	}
-	memList->Clear();
+	memList->MemFreeAll();
 }
 
 UTF8Char *IO::SMBIOS::GetPlatformName(UTF8Char *buff) const

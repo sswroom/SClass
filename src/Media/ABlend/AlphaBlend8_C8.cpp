@@ -102,26 +102,27 @@ void Media::ABlend::AlphaBlend8_C8::MTBlendPA(UInt8 *dest, OSInt dbpl, const UIn
 
 void Media::ABlend::AlphaBlend8_C8::UpdateLUT()
 {
-	if (this->lutList)
+	NN<Data::ArrayListNN<LUTInfo>> lutList;
+	if (this->lutList.SetTo(lutList))
 	{
-		LUTInfo *lut;
+		NN<LUTInfo> lut;
 		UOSInt i;
-		i = this->lutList->GetCount();
+		i = lutList->GetCount();
 		while (i-- > 0)
 		{
-			lut = this->lutList->GetItem(i);
+			lut = lutList->GetItemNoCheck(i);
 			if (lut->sProfile.Equals(this->sProfile) && lut->dProfile.Equals(this->dProfile) && lut->oProfile.Equals(this->oProfile))
 			{
 				this->rgbTable = lut->rgbTable;
 				return;
 			}
 		}
-		NEW_CLASS(lut, LUTInfo());
+		NEW_CLASSNN(lut, LUTInfo());
 		lut->sProfile.Set(this->sProfile);
 		lut->dProfile.Set(this->dProfile);
 		lut->oProfile.Set(this->oProfile);
 		lut->rgbTable = MemAlloc(UInt8, 262144 + 8192 + 8192);
-		this->lutList->Add(lut);
+		lutList->Add(lut);
 		this->rgbTable = lut->rgbTable;
 	}
 
@@ -178,7 +179,9 @@ Media::ABlend::AlphaBlend8_C8::AlphaBlend8_C8(Media::ColorSess *colorSess, Bool 
 	}
 	if (multiProfile)
 	{
-		NEW_CLASS(this->lutList, Data::ArrayList<LUTInfo*>());
+		NN<Data::ArrayListNN<LUTInfo>> lutList;
+		NEW_CLASSNN(lutList, Data::ArrayListNN<LUTInfo>());
+		this->lutList = lutList;
 		this->rgbTable = 0;
 	}
 	else
@@ -251,17 +254,18 @@ Media::ABlend::AlphaBlend8_C8::~AlphaBlend8_C8()
 		this->colorSess->RemoveHandler(*this);
 	}
 
-	if (this->lutList)
+	NN<Data::ArrayListNN<LUTInfo>> lutList;
+	if (this->lutList.SetTo(lutList))
 	{
-		LUTInfo *lut;
-		i = this->lutList->GetCount();
+		NN<LUTInfo> lut;
+		i = lutList->GetCount();
 		while (i-- > 0)
 		{
-			lut = this->lutList->GetItem(i);
+			lut = lutList->GetItemNoCheck(i);
 			MemFree(lut->rgbTable);
-			DEL_CLASS(lut);
+			lut.Delete();
 		}
-		DEL_CLASS(this->lutList);
+		this->lutList.Delete();
 	}
 	else
 	{
@@ -334,19 +338,20 @@ void Media::ABlend::AlphaBlend8_C8::YUVParamChanged(NN<const Media::IColorHandle
 
 void Media::ABlend::AlphaBlend8_C8::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
-	if (this->lutList)
+	NN<Data::ArrayListNN<LUTInfo>> lutList;
+	if (this->lutList.SetTo(lutList))
 	{
 		Sync::MutexUsage mutUsage(this->mut);
-		LUTInfo *lut;
+		NN<LUTInfo> lut;
 		UOSInt i;
-		i = this->lutList->GetCount();
+		i = lutList->GetCount();
 		while (i-- > 0)
 		{
-			lut = this->lutList->GetItem(i);
+			lut = lutList->GetItemNoCheck(i);
 			MemFree(lut->rgbTable);
-			DEL_CLASS(lut);
+			lut.Delete();
 		}
-		this->lutList->Clear();
+		lutList->Clear();
 		this->changed = true;
 	}
 	else

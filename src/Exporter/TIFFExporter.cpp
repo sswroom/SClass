@@ -186,8 +186,8 @@ IO::FileExporter::SupportType Exporter::TIFFExporter::IsObjectSupported(NN<IO::P
 	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
-	Media::RasterImage *img = imgList->GetImage(0, 0);
-	if (img && img->info.fourcc == 0)
+	NN<Media::RasterImage> img;
+	if (imgList->GetImage(0, 0).SetTo(img) && img->info.fourcc == 0)
 	{
 		if (img->info.pf == Media::PF_PAL_W1)
 			return IO::FileExporter::SupportType::NormalStream;
@@ -266,8 +266,13 @@ Bool Exporter::TIFFExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 	i = 0;
 	while (i < j)
 	{
-		Media::RasterImage *img = imgList->GetImage(i, 0);
+		NN<Media::RasterImage> img;
 		UInt32 stripCnt = 1;
+		if (!imgList->GetImage(i, 0).SetTo(img))
+		{
+			i++;
+			continue;
+		}
 		i++;
 
 		if (img->info.fourcc != 0)

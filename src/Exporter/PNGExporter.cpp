@@ -14,7 +14,7 @@ UOSInt PNGExporter_EstimateSize(const UInt8 *data, UOSInt dataSize, UInt8 *tmpBu
 	return Data::Compress::Inflate::Compress(data, dataSize, tmpBuff, false, Data::Compress::Inflate::CompressionLevel::BestSpeed);	
 }
 
-UOSInt PNGExporter_WritePal(NN<IO::Stream> stm, Media::StaticImage *img, Crypto::Hash::CRC32R *crc)
+UOSInt PNGExporter_WritePal(NN<IO::Stream> stm, NN<Media::StaticImage> img, NN<Crypto::Hash::CRC32R> crc)
 {
 	UInt8 *palPtr = img->pal;
 	if (palPtr == 0)
@@ -1379,7 +1379,9 @@ IO::FileExporter::SupportType Exporter::PNGExporter::IsObjectSupported(NN<IO::Pa
 	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
-	Media::RasterImage *img = imgList->GetImage(0, 0);
+	NN<Media::RasterImage> img;
+	if (!imgList->GetImage(0, 0).SetTo(img))
+		return IO::FileExporter::SupportType::NotSupported;
 	if (img->info.fourcc != 0)
 		return IO::FileExporter::SupportType::NotSupported;
 	if (img->info.pf == Media::PF_B8G8R8)
@@ -1432,7 +1434,9 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		return false;
 	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	imgList->ToStaticImage(0);
-	Media::StaticImage *img = (Media::StaticImage*)imgList->GetImage(0, 0);
+	NN<Media::StaticImage> img;
+	if (!Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img))
+		return false;
 	UInt8 *tmpBuff;
 	UInt8 *tmpBuff2;
 	UInt8 *imgPtr1;
@@ -1622,7 +1626,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	switch (img->info.pf)
 	{
 	case Media::PF_PAL_1:
-		PNGExporter_WritePal(stm, img, &crc);
+		PNGExporter_WritePal(stm, img, crc);
 	case Media::PF_PAL_W1:
 		k = ((img->info.dispSize.x + 7) >> 3);
 		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
@@ -1653,7 +1657,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		MemFree(tmpBuff);
 		break;
 	case Media::PF_PAL_2:
-		PNGExporter_WritePal(stm, img, &crc);
+		PNGExporter_WritePal(stm, img, crc);
 	case Media::PF_PAL_W2:
 		k = ((img->info.dispSize.x + 3) >> 2);
 		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
@@ -1684,7 +1688,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		MemFree(tmpBuff);
 		break;
 	case Media::PF_PAL_4:
-		PNGExporter_WritePal(stm, img, &crc);
+		PNGExporter_WritePal(stm, img, crc);
 	case Media::PF_PAL_W4:
 		k = ((img->info.dispSize.x + 1) >> 1);
 		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);
@@ -1715,7 +1719,7 @@ Bool Exporter::PNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		MemFree(tmpBuff);
 		break;
 	case Media::PF_PAL_8:
-		PNGExporter_WritePal(stm, img, &crc);
+		PNGExporter_WritePal(stm, img, crc);
 	case Media::PF_PAL_W8:
 		k = img->info.dispSize.x;
 		tmpBuff = MemAlloc(UInt8, (k + 1) * img->info.dispSize.y);

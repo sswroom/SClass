@@ -29,7 +29,7 @@ namespace Media
 		~SharedImage();
 
 		NN<SharedImage> Clone() const;
-		Media::StaticImage *GetImage(OptOut<UInt32> imgTimeMS) const;
+		Optional<Media::StaticImage> GetImage(OptOut<UInt32> imgTimeMS) const;
 		Optional<Media::StaticImage> GetPrevImage(Double width, Double height, OptOut<UInt32> imgTimeMS) const;
 	};
 }

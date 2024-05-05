@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_GRFILTER
 #define _SM_MEDIA_GRFILTER
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 
 namespace Media
 {
@@ -16,7 +16,7 @@ namespace Media
 		} LayerSetting;
 
 	private:
-		Data::ArrayList<LayerSetting*> *layers;
+		Data::ArrayListNN<LayerSetting> layers;
 
 	public:
 		GRFilter();
@@ -26,7 +26,7 @@ namespace Media
 		UOSInt AddLayer();
 		Bool RemoveLayer(UOSInt layer);
 		void SetParameter(UOSInt layer, OSInt hOfst, OSInt vOfst, OSInt level, Int32 status);
-		Bool GetParameter(UOSInt layer, OSInt *hOfst, OSInt *vOfst, OSInt *level, Int32 *status);
+		Bool GetParameter(UOSInt layer, OptOut<OSInt> hOfst, OptOut<OSInt> vOfst, OptOut<OSInt> level, OptOut<Int32> status);
 
 		void ProcessImage32(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl);
 		void ProcessImage64(UInt8 *srcPtr, UInt8 *destPtr, UOSInt width, UOSInt height, OSInt sbpl, OSInt dbpl);

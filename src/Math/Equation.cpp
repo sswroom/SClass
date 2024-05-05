@@ -3,7 +3,7 @@
 #include "Math/Equation.h"
 #include "Text/MyString.h"
 
-Int32 Math::Equation::ParseEquation(Data::ArrayListInt32 *equOut, UTF8Char *equation, OSInt nChars, UTF8Char **endPos)
+Int32 Math::Equation::ParseEquation(NN<Data::ArrayListInt32> equOut, UTF8Char *equation, OSInt nChars, UTF8Char **endPos)
 {
 //	UTF8Char name[128];
 	UTF8Char *currPtr = equation;
@@ -71,15 +71,11 @@ Math::Equation::~Equation()
 	i = this->equationVari.GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->equationVari.GetItem(i));
+		this->equationVari.GetItemNoCheck(i)->Release();
 	}
 
-	i = this->equationLeft.GetCount();
-	while (i-- > 0)
-	{
-		DEL_CLASS(this->equationLeft.GetItem(i));
-		DEL_CLASS(this->equationRight.GetItem(i));
-	}
+	this->equationLeft.DeleteAll();
+	this->equationRight.DeleteAll();
 }
 
 UOSInt Math::Equation::AddEquation(UTF8Char *equation)
@@ -117,20 +113,20 @@ UOSInt Math::Equation::AddEquation(UTF8Char *equation)
 		return INVALID_INDEX;
 	}
 
-	Data::ArrayListInt32 *right;
-	Data::ArrayListInt32 *left;
-	NEW_CLASS(right, Data::ArrayListInt32());
-	NEW_CLASS(left, Data::ArrayListInt32());
+	NN<Data::ArrayListInt32> right;
+	NN<Data::ArrayListInt32> left;
+	NEW_CLASSNN(right, Data::ArrayListInt32());
+	NEW_CLASSNN(left, Data::ArrayListInt32());
 	if (ParseEquation(right, rightStart, currPtr - rightStart - 1, 0) != 0)
 	{
-		DEL_CLASS(right);
-		DEL_CLASS(left);
+		right.Delete();
+		left.Delete();
 		return INVALID_INDEX;
 	}
 	if (ParseEquation(left, leftStart, signStart - leftStart, 0) != 0)
 	{
-		DEL_CLASS(right);
-		DEL_CLASS(left);
+		right.Delete();
+		left.Delete();
 		return INVALID_INDEX;
 	}
 	Int32 sign;

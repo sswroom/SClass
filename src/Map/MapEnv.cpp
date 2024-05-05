@@ -1065,7 +1065,7 @@ UOSInt Map::MapEnv::GetImageCnt() const
 	}
 }
 
-Media::StaticImage *Map::MapEnv::GetImage(UOSInt index, OptOut<UInt32> imgDurMS) const
+Optional<Media::StaticImage> Map::MapEnv::GetImage(UOSInt index, OptOut<UInt32> imgDurMS) const
 {
 	UOSInt i;
 	NN<ImageInfo> imgInfo;
@@ -1079,7 +1079,7 @@ Media::StaticImage *Map::MapEnv::GetImage(UOSInt index, OptOut<UInt32> imgDurMS)
 			{
 				UInt32 imgTimeMS;
 				Int64 currTimeTick;
-				Media::StaticImage *simg;
+				Optional<Media::StaticImage> simg;
 				currTimeTick = Data::DateTimeUtil::GetCurrTimeMillis();
 				if (currTimeTick >= imgInfo->aniLastTimeTick)
 				{
@@ -1088,12 +1088,12 @@ Media::StaticImage *Map::MapEnv::GetImage(UOSInt index, OptOut<UInt32> imgDurMS)
 					{
 						imgInfo->aniIndex = 0;
 					}
-					simg = (Media::StaticImage*)imgInfo->imgs->GetImage(imgInfo->aniIndex, imgTimeMS);
+					simg = Optional<Media::StaticImage>::ConvertFrom(imgInfo->imgs->GetImage(imgInfo->aniIndex, imgTimeMS));
 					imgInfo->aniLastTimeTick = currTimeTick + (Int64)imgTimeMS;
 				}
 				else
 				{
-					simg = (Media::StaticImage*)imgInfo->imgs->GetImage(imgInfo->aniIndex, 0);
+					simg = Optional<Media::StaticImage>::ConvertFrom(imgInfo->imgs->GetImage(imgInfo->aniIndex, 0));
 					imgTimeMS = (UInt32)(imgInfo->aniLastTimeTick - currTimeTick);
 				}
 				imgDurMS.Set(imgTimeMS);
@@ -1101,7 +1101,7 @@ Media::StaticImage *Map::MapEnv::GetImage(UOSInt index, OptOut<UInt32> imgDurMS)
 			}
 			else
 			{
-				return (Media::StaticImage*)imgInfo->imgs->GetImage(index - imgInfo->index, imgDurMS);
+				return Optional<Media::StaticImage>::ConvertFrom(imgInfo->imgs->GetImage(index - imgInfo->index, imgDurMS));
 			}
 		}
 	}
@@ -1111,6 +1111,7 @@ Media::StaticImage *Map::MapEnv::GetImage(UOSInt index, OptOut<UInt32> imgDurMS)
 OSInt Map::MapEnv::AddImage(Text::CStringNN fileName, NN<Parser::ParserList> parserList)
 {
 	Sync::MutexUsage mutUsage(this->mut);
+	NN<Media::StaticImage> simg;
 	NN<ImageInfo> imgInfo;
 	if (this->images.Get(fileName).SetTo(imgInfo))
 	{
@@ -1140,7 +1141,8 @@ OSInt Map::MapEnv::AddImage(Text::CStringNN fileName, NN<Parser::ParserList> par
 			{
 				UInt32 imgTime;
 				imgList->ToStaticImage(i);
-				((Media::StaticImage*)imgList->GetImage(i, imgTime))->To32bpp();
+				if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(i, imgTime)).SetTo(simg))
+					simg->To32bpp();
 			}
 			if (imgInfo->isAni)
 			{
@@ -1162,6 +1164,7 @@ OSInt Map::MapEnv::AddImage(Text::CStringNN fileName, NN<Parser::ParserList> par
 UOSInt Map::MapEnv::AddImage(Text::CStringNN fileName, Media::ImageList *imgList)
 {
 	Sync::MutexUsage mutUsage(this->mut);
+	NN<Media::StaticImage> simg;
 	NN<ImageInfo> imgInfo;
 	if (this->images.Get(fileName).SetTo(imgInfo))
 	{
@@ -1182,10 +1185,13 @@ UOSInt Map::MapEnv::AddImage(Text::CStringNN fileName, Media::ImageList *imgList
 	{
 		UInt32 imgTime;
 		imgList->ToStaticImage(i);
-		((Media::StaticImage*)imgList->GetImage(i, imgTime))->To32bpp();
-		if (imgTime != 0)
+		if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(i, imgTime)).SetTo(simg))
 		{
-			imgInfo->isAni = true;
+			simg->To32bpp();
+			if (imgTime != 0)
+			{
+				imgInfo->isAni = true;
+			}
 		}
 	}
 	this->images.PutNN(imgInfo->fileName, imgInfo);
@@ -1208,13 +1214,13 @@ UOSInt Map::MapEnv::AddImageSquare(UInt32 color, UOSInt size)
 	imgInfo->isAni = false;
 	imgInfo->aniIndex = (UOSInt)-1;
 	imgInfo->aniLastTimeTick = 0;
-	Media::StaticImage *simg;
+	NN<Media::StaticImage> simg;
 	Media::AlphaType atype;
 	if ((color & 0xff000000) == 0xff000000)
 		atype = Media::AlphaType::AT_NO_ALPHA;
 	else
 		atype = Media::AlphaType::AT_ALPHA;
-	NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>(size, size), 0, 32, Media::PixelFormat::PF_B8G8R8A8, size * size * 4, Media::ColorProfile(Media::ColorProfile::CPT_SRGB), Media::ColorProfile::YUVT_BT601, atype, Media::YCOFST_C_CENTER_LEFT));
+	NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UOSInt>(size, size), 0, 32, Media::PixelFormat::PF_B8G8R8A8, size * size * 4, Media::ColorProfile(Media::ColorProfile::CPT_SRGB), Media::ColorProfile::YUVT_BT601, atype, Media::YCOFST_C_CENTER_LEFT));
 	ImageUtil_ColorFill32(simg->data, size * size, color);
 	imgInfo->imgs->AddImage(simg, 0);
 	this->images.PutNN(imgInfo->fileName, imgInfo);

@@ -2,7 +2,7 @@
 #define _SM_MEDIA_VCDMPGFILE
 #include "AnyType.h"
 #include "Data/ByteBuffer.h"
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "IO/ISectorData.h"
 #include "Media/IAudioSource.h"
 #include "Media/M2VStreamSource.h"
@@ -19,8 +19,8 @@ namespace Media
 		UInt64 fleng;
 		Data::Duration startTime;
 		Media::M2VStreamSource *vstm;
-		Data::FastMap<Int32, Media::IMediaStream*> dataStms;
-		Data::ArrayList<Media::IAudioSource*> audStms;
+		Data::FastMapNN<Int32, Media::IMediaStream> dataStms;
+		Data::ArrayListNN<Media::IAudioSource> audStms;
 
 		Int32 playing;
 		Bool playStarted;
@@ -34,8 +34,8 @@ namespace Media
 		VCDMPGFile(NN<IO::ISectorData> data, UInt64 startSector, UInt64 endSector);
 		virtual ~VCDMPGFile();
 		
-		virtual UOSInt AddSource(Media::IMediaSource *src, Int32 syncTime);
-		virtual Media::IMediaSource *GetStream(UOSInt index, Int32 *syncTime);
+		virtual UOSInt AddSource(NN<Media::IMediaSource> src, Int32 syncTime);
+		virtual Optional<Media::IMediaSource> GetStream(UOSInt index, OptOut<Int32> syncTime);
 		virtual void KeepStream(UOSInt index, Bool toKeep);
 
 		virtual UTF8Char *GetMediaName(UTF8Char *buff);

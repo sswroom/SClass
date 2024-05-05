@@ -27,7 +27,7 @@ IO::FileExporter::SupportType Exporter::ICOExporter::IsObjectSupported(NN<IO::Pa
 		return IO::FileExporter::SupportType::NotSupported;
 	NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	UInt32 imgTime;
-	Media::RasterImage *img;
+	NN<Media::RasterImage> img;
 	UOSInt i = imgList->GetCount();
 	if (i <= 0)
 	{
@@ -36,8 +36,7 @@ IO::FileExporter::SupportType Exporter::ICOExporter::IsObjectSupported(NN<IO::Pa
 	
 	while (i-- > 0)
 	{
-		img = imgList->GetImage(0, imgTime);
-		if (!Exporter::CURExporter::ImageSupported(img))
+		if (imgList->GetImage(0, imgTime).SetTo(img) && !Exporter::CURExporter::ImageSupported(img))
 		{
 			return IO::FileExporter::SupportType::NotSupported;
 		}

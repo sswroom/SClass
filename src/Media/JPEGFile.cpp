@@ -13,7 +13,7 @@
 //http://stackoverflow.com/questions/662565/how-to-create-huffman-tree-from-ffc4-dht-header-in-jpeg-file
 //http://u88.n24.queensu.ca/exiftool/forum/index.php?topic=4898.0 FLIR
 
-Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, Media::RasterImage *img, NN<Media::ImageList> imgList, Parser::ParserList *parsers)
+Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, NN<Media::RasterImage> img, NN<Media::ImageList> imgList, Parser::ParserList *parsers)
 {
 	UInt64 ofst;
 	UInt64 nextOfst;
@@ -158,7 +158,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, Media::RasterImage 
 					if (tagBuff[blkOfst] == 3) // JPG
 					{
 						Media::ImageList *innerImgList;
-						Media::RasterImage *innerImg;
+						NN<Media::RasterImage> innerImg;
 						{
 							IO::StmData::MemoryDataRef mfd(tagBuff.SubArray(blkOfst + 13, blkSize - 32));
 							innerImgList = (Media::ImageList*)parsers->ParseFileType(mfd, IO::ParserType::ImageList);
@@ -169,8 +169,10 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, Media::RasterImage 
 							i = 0;
 							while (i < k)
 							{
-								innerImg = innerImgList->GetImage(i, delay);
-								imgList->AddImage(innerImg->CreateStaticImage(), delay);
+								if (innerImgList->GetImage(i, delay).SetTo(innerImg))
+								{
+									imgList->AddImage(innerImg->CreateStaticImage(), delay);
+								}
 								i++;
 							}
 							DEL_CLASS(innerImgList);
@@ -187,7 +189,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, Media::RasterImage 
 						else if (tagBuff[blkOfst + 32] == 0x89 && tagBuff[blkOfst + 33] == 0x50 && tagBuff[blkOfst + 34] == 0x4e && tagBuff[blkOfst + 35] == 0x47)
 						{
 							Media::ImageList *innerImgList;
-							Media::RasterImage *innerImg;
+							NN<Media::RasterImage> innerImg;
 							NN<Media::StaticImage> stImg;
 							{
 								IO::StmData::MemoryDataRef mfd(&tagBuff[blkOfst + 32], blkSize - 32);
@@ -199,20 +201,22 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, Media::RasterImage 
 								i = 0;
 								while (i < k)
 								{
-									innerImg = innerImgList->GetImage(i, delay);
-									stImg = innerImg->CreateStaticImage();
-									if (stImg->info.pf == Media::PF_LE_W16)
+									if (innerImgList->GetImage(i, delay).SetTo(innerImg))
 									{
-										UInt8 *imgPtr = stImg->data;
-										UOSInt pixelCnt = stImg->info.dispSize.CalcArea();
-										while (pixelCnt-- > 0)
+										stImg = innerImg->CreateStaticImage();
+										if (stImg->info.pf == Media::PF_LE_W16)
 										{
-											WriteInt16(imgPtr, ReadMInt16(imgPtr));
-											imgPtr += 2;
+											UInt8 *imgPtr = stImg->data;
+											UOSInt pixelCnt = stImg->info.dispSize.CalcArea();
+											while (pixelCnt-- > 0)
+											{
+												WriteInt16(imgPtr, ReadMInt16(imgPtr));
+												imgPtr += 2;
+											}
+											imgList->SetThermoImage(stImg->info.dispSize, 16, stImg->data, 0.95, 0, 0, Media::ImageList::TT_FLIR);
 										}
-										imgList->SetThermoImage(stImg->info.dispSize, 16, stImg->data, 0.95, 0, 0, Media::ImageList::TT_FLIR);
+										imgList->AddImage(stImg, delay);
 									}
-									imgList->AddImage(stImg, delay);
 									i++;
 								}
 								DEL_CLASS(innerImgList);
@@ -430,9 +434,10 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NN<IO::StreamData> fd, OutParam<Optional<
 	return true;
 }
 
-void Media::JPEGFile::WriteJPGBuffer(NN<IO::Stream> stm, const UInt8 *jpgBuff, UOSInt buffSize, Media::RasterImage *oriImg)
+void Media::JPEGFile::WriteJPGBuffer(NN<IO::Stream> stm, const UInt8 *jpgBuff, UOSInt buffSize, Optional<Media::RasterImage> oriImg)
 {
-	if (oriImg != 0 && (!oriImg->exif.IsNull() || oriImg->info.color.GetRAWICC() != 0) && jpgBuff[0] == 0xff && jpgBuff[1] == 0xd8)
+	NN<Media::RasterImage> nnimg;
+	if (oriImg.SetTo(nnimg) && (!nnimg->exif.IsNull() || nnimg->info.color.GetRAWICC() != 0) && jpgBuff[0] == 0xff && jpgBuff[1] == 0xd8)
 	{
 		UOSInt i;
 		UOSInt j;
@@ -451,7 +456,7 @@ void Media::JPEGFile::WriteJPGBuffer(NN<IO::Stream> stm, const UInt8 *jpgBuff, U
 			}
 			if (jpgBuff[i + 1] == 0xdb)
 			{
-				const UInt8 *iccBuff = oriImg->info.color.GetRAWICC();
+				const UInt8 *iccBuff = nnimg->info.color.GetRAWICC();
 				if (iccBuff)
 				{
 					UOSInt iccLeng = ReadMUInt32(iccBuff);
@@ -466,7 +471,7 @@ void Media::JPEGFile::WriteJPGBuffer(NN<IO::Stream> stm, const UInt8 *jpgBuff, U
 					stm->Write(iccBuff, iccLeng);
 				}
 				NN<Media::EXIFData> exif;
-				if (oriImg->exif.SetTo(exif))
+				if (nnimg->exif.SetTo(exif))
 				{
 					/////////////////////////////////////
 					exif = exif->Clone();

@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_DDCREADER
 #define _SM_MEDIA_DDCREADER
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 
 namespace Media
 {
@@ -17,9 +17,9 @@ namespace Media
 		DDCReader(UInt8 *edid, UOSInt edidSize);
 		~DDCReader();
 
-		UInt8 *GetEDID(UOSInt *size);
+		UInt8 *GetEDID(OutParam<UOSInt> size);
 
-		static UOSInt CreateDDCReaders(Data::ArrayList<DDCReader*> *readerList);
+		static UOSInt CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> readerList);
 	};
 }
 #endif

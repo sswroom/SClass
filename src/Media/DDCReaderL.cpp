@@ -186,21 +186,18 @@ Media::DDCReader::~DDCReader()
 	}
 }
 
-UInt8 *Media::DDCReader::GetEDID(UOSInt *size)
+UInt8 *Media::DDCReader::GetEDID(OutParam<UOSInt> size)
 {
-	if (size)
-	{
-		*size = this->edidSize;
-	}
+	size.Set(this->edidSize);
 	return this->edid;
 }
 
-UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerList)
+UOSInt Media::DDCReader::CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> readerList)
 {
 	UTF8Char sbuff[512];
 	UOSInt edidSize;
 	UInt8 edid[1025];
-	Media::DDCReader *reader;
+	NN<Media::DDCReader> reader;
 	UOSInt ret = 0;
 
 	// Intel GPU
@@ -240,7 +237,7 @@ UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerLis
 							edidSize = fs.Read(Data::ByteArray(edid, 1024));
 							if (edidSize > 0)
 							{
-								NEW_CLASS(reader, Media::DDCReader(edid, edidSize));
+								NEW_CLASSNN(reader, Media::DDCReader(edid, edidSize));
 								readerList->Add(reader);
 								ret++;
 							}
@@ -274,7 +271,7 @@ UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerLis
 										edidSize = fs.Read(Data::ByteArray(edid, 1024));
 										if (edidSize > 0)
 										{
-											NEW_CLASS(reader, Media::DDCReader(edid, edidSize));
+											NEW_CLASSNN(reader, Media::DDCReader(edid, edidSize));
 											readerList->Add(reader);
 											ret++;
 										}
@@ -303,7 +300,7 @@ UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerLis
 			edidSize = fs.Read(Data::ByteArray(edid, 1024));
 			if (edidSize > 0)
 			{
-				NEW_CLASS(reader, Media::DDCReader(edid, edidSize));
+				NEW_CLASSNN(reader, Media::DDCReader(edid, edidSize));
 				readerList->Add(reader);
 				ret++;
 			}
@@ -322,7 +319,7 @@ UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerLis
 				UInt8 *edidData = MemAlloc(UInt8, edidSize >> 1);
 				edid[edidSize] = 0;
 				edidSize = Text::StrHex2Bytes((const Char*)edid, edidData);
-				NEW_CLASS(reader, Media::DDCReader(edidData, edidSize));
+				NEW_CLASSNN(reader, Media::DDCReader(edidData, edidSize));
 				readerList->Add(reader);
 				MemFree(edidData);
 				ret++;

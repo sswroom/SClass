@@ -12,12 +12,12 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 
-void Media::ProfiledResizer::ReleaseProfile(Media::ProfiledResizer::ResizeProfile *profile)
+void Media::ProfiledResizer::ReleaseProfile(NN<Media::ProfiledResizer::ResizeProfile> profile)
 {
 	profile->profileName->Release();
 	profile->suffix->Release();
 	SDEL_STRING(profile->watermark);
-	MemFree(profile);
+	MemFreeNN(profile);
 }
 
 Media::ProfiledResizer::ProfiledResizer(NN<Parser::ParserList> parsers, Media::ColorManagerSess *colorSess, NN<Media::DrawEngine> deng)
@@ -36,17 +36,12 @@ Media::ProfiledResizer::ProfiledResizer(NN<Parser::ParserList> parsers, Media::C
 
 Media::ProfiledResizer::~ProfiledResizer()
 {
-	UOSInt i;
 	while (loader->IsProcessing())
 	{
 		Sync::SimpleThread::Sleep(100);
 	}
 
-	i = this->profiles.GetCount();
-	while (i-- > 0)
-	{
-		ReleaseProfile(this->profiles.GetItem(i));
-	}
+	this->profiles.FreeAll(ReleaseProfile);
 	DEL_CLASS(this->loader);
 	DEL_CLASS(this->conv);
 	DEL_CLASS(this->limiter);
@@ -56,7 +51,7 @@ Media::ProfiledResizer::~ProfiledResizer()
 	SDEL_CLASS(this->saver);
 }
 
-UOSInt Media::ProfiledResizer::GetProfileCount()
+UOSInt Media::ProfiledResizer::GetProfileCount() const
 {
 	return this->profiles.GetCount();
 }
@@ -66,7 +61,7 @@ UOSInt Media::ProfiledResizer::GetCurrProfileIndex()
 	return this->currProfile;
 }
 
-const Media::ProfiledResizer::ResizeProfile *Media::ProfiledResizer::GetCurrProfile()
+Optional<const Media::ProfiledResizer::ResizeProfile> Media::ProfiledResizer::GetCurrProfile()
 {
 	return this->profiles.GetItem(this->currProfile);
 }
@@ -83,7 +78,7 @@ void Media::ProfiledResizer::SetCurrentProfile(UOSInt index)
 		Sync::SimpleThread::Sleep(100);
 	}
 	this->currProfile = index;
-	const ResizeProfile *profile = this->profiles.GetItem(index);
+	NN<const ResizeProfile> profile = this->profiles.GetItemNoCheck(index);
 	bresizer->ClearTargetSizes();
 	if (profile->sizeType == ST_MAXSIZE)
 	{
@@ -122,14 +117,19 @@ void Media::ProfiledResizer::SetCurrentProfile(UOSInt index)
 	this->watermarker->SetHandler(this->saver);
 }
 
-const Media::ProfiledResizer::ResizeProfile *Media::ProfiledResizer::GetProfile(UOSInt index)
+Optional<const Media::ProfiledResizer::ResizeProfile> Media::ProfiledResizer::GetProfile(UOSInt index) const
 {
 	return this->profiles.GetItem(index);
 }
 
+NN<const Media::ProfiledResizer::ResizeProfile> Media::ProfiledResizer::GetProfileNoCheck(UOSInt index) const
+{
+	return this->profiles.GetItemNoCheck(index);
+}
+
 Bool Media::ProfiledResizer::AddProfile(Text::CString profileName, Text::CString suffix, UInt32 targetSizeX, UInt32 targetSizeY, OutputType outType, UInt32 outParam, Text::CString watermark, SizeType sizeType)
 {
-	ResizeProfile *profile;
+	NN<ResizeProfile> profile;
 	if (outType == OT_TIFF)
 	{
 		
@@ -158,7 +158,7 @@ Bool Media::ProfiledResizer::AddProfile(Text::CString profileName, Text::CString
 		return false;
 	}
 
-	profile = MemAlloc(ResizeProfile, 1);
+	profile = MemAllocNN(ResizeProfile);
 	profile->profileName = Text::String::New(profileName);
 	profile->suffix = Text::String::New(suffix);
 	profile->targetSizeX = targetSizeX;
@@ -189,7 +189,8 @@ Bool Media::ProfiledResizer::RemoveProfile(UOSInt index)
 			Sync::SimpleThread::Sleep(100);
 		}
 	}
-	ReleaseProfile(this->profiles.RemoveAt(index));
+	ReleaseProfile(this->profiles.GetItemNoCheck(index));
+	this->profiles.RemoveAt(index);
 	if (index < this->currProfile)
 	{
 		this->currProfile--;
@@ -227,7 +228,7 @@ Bool Media::ProfiledResizer::SaveProfile(Text::CStringNN fileName)
 	const UTF8Char *cols[8];
 	UOSInt i;
 	UOSInt j;
-	ResizeProfile *profile;
+	NN<ResizeProfile> profile;
 	if (fileName.leng == 0)
 	{
 		IO::Path::GetProcessFileName(sbuff);
@@ -245,7 +246,7 @@ Bool Media::ProfiledResizer::SaveProfile(Text::CStringNN fileName)
 	j = this->profiles.GetCount();
 	while (i < j)
 	{
-		profile = this->profiles.GetItem(i);
+		profile = this->profiles.GetItemNoCheck(i);
 		cols[0] = profile->profileName->v;
 		cols[1] = profile->suffix->v;
 		cols[2] = sbuff2;
@@ -302,7 +303,6 @@ Bool Media::ProfiledResizer::LoadProfile(Text::CStringNN fileName)
 	NN<DB::DBReader> r;
 	if (csv->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
-		UOSInt i;
 		while (loader->IsProcessing())
 		{
 			Sync::SimpleThread::Sleep(100);
@@ -310,11 +310,7 @@ Bool Media::ProfiledResizer::LoadProfile(Text::CStringNN fileName)
 
 		this->currProfile = (UOSInt)-1;
 		bresizer->ClearTargetSizes();
-		i = this->profiles.GetCount();
-		while (i-- > 0)
-		{
-			ReleaseProfile(this->profiles.RemoveAt(i));
-		}
+		this->profiles.FreeAll(ReleaseProfile);
 
 		while (r->ReadNext())
 		{

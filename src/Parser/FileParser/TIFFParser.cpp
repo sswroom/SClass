@@ -82,7 +82,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::StreamData
 		return 0;
 	}
 	NN<Media::ImageList> imgList;
-	Media::StaticImage *img;
+	NN<Media::StaticImage> img;
 	Optional<Media::EXIFData> exif;
 	NN<Media::EXIFData> nnexif;
 	UInt16 fmt = bo->GetUInt16(&hdr[2]);
@@ -103,7 +103,6 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::StreamData
 	NEW_CLASSNN(imgList, Media::ImageList(fd->GetFullName()));
 	while (nextOfst)
 	{
-		img = 0;
 		if (fmt == 42)
 		{
 			exif = Media::EXIFData::ParseIFD(fd, nextOfst, bo, nextOfst, 0);
@@ -265,21 +264,23 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::StreamData
 				jpgFd.Delete();
 				if (innerImgList)
 				{
-					Media::RasterImage *innerImg;
+					NN<Media::RasterImage> innerImg;
 					NN<Media::StaticImage> innerSImg;
 					UInt32 imgDelay;
 					i = 0;
 					j = innerImgList->GetCount();
 					while (i < j)
 					{
-						innerImg = innerImgList->GetImage(i, imgDelay);
-						innerSImg = innerImg->CreateStaticImage();
-						if (exif.SetTo(nnexif))
+						if (innerImgList->GetImage(i, imgDelay).SetTo(innerImg))
 						{
-							innerSImg->SetEXIFData(nnexif).Delete();
-							exif = 0;
+							innerSImg = innerImg->CreateStaticImage();
+							if (exif.SetTo(nnexif))
+							{
+								innerSImg->SetEXIFData(nnexif).Delete();
+								exif = 0;
+							}
+							innerSImg.Delete();
 						}
-						innerSImg.Delete();
 						i++;
 					}
 					DEL_CLASS(innerImgList);
@@ -419,7 +420,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::StreamData
 				}
 			}
 
-			NEW_CLASS(img, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, storeBPP, pf, 0, color, Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32 || bpp == 64)?Media::AT_ALPHA:Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, storeBPP, pf, 0, color, Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32 || bpp == 64)?Media::AT_ALPHA:Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			Data::ByteArray imgData;
 			UInt8 *planarBuff = 0;
 			if (sampleFormat == 3)
@@ -1510,9 +1511,8 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::StreamData
 		}
 	}
 
-	if (imgList->GetCount() == 1 && targetType != IO::ParserType::ImageList)
+	if (imgList->GetCount() == 1 && targetType != IO::ParserType::ImageList && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img))
 	{
-		Media::StaticImage *img = (Media::StaticImage*)imgList->GetImage(0, 0);
 		Double minX;
 		Double minY;
 		Double maxX;

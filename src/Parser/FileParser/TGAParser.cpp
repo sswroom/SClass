@@ -346,11 +346,12 @@ rle32exit:
 		}
 	}
 
-	if (outImg)
+	NN<Media::StaticImage> nnimg;
+	if (nnimg.Set(outImg))
 	{
 		Media::ImageList *imgList;
 		NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
-		imgList->AddImage(outImg, 0);
+		imgList->AddImage(nnimg, 0);
 		return imgList;
 	}
 	else

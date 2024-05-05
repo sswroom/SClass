@@ -293,14 +293,14 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		writer->WriteLine(sb.ToCString());
 
 		{
-			Data::ArrayList<IO::SystemInfo::RAMInfo*> ramList;
-			IO::SystemInfo::RAMInfo *ram;
-			sysInfo.GetRAMInfo(&ramList);
+			Data::ArrayListNN<IO::SystemInfo::RAMInfo> ramList;
+			NN<IO::SystemInfo::RAMInfo> ram;
+			sysInfo.GetRAMInfo(ramList);
 			i = 0;
 			j = ramList.GetCount();
 			while (i < j)
 			{
-				ram = ramList.GetItem(i);
+				ram = ramList.GetItemNoCheck(i);
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("RAM: "));
 				sb.AppendOpt(ram->deviceLocator);
@@ -324,21 +324,21 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				writer->WriteLine(sb.ToCString());
 				i++;
 			}
-			sysInfo.FreeRAMInfo(&ramList);
+			sysInfo.FreeRAMInfo(ramList);
 		}
 	}
 	{
-		Data::ArrayList<Media::DDCReader *> readerList;
-		Media::DDCReader *reader;
-		Media::DDCReader::CreateDDCReaders(&readerList);
+		Data::ArrayListNN<Media::DDCReader> readerList;
+		NN<Media::DDCReader> reader;
+		Media::DDCReader::CreateDDCReaders(readerList);
 		UOSInt edidSize;
 		UInt8 *edid;
 		i = 0;
 		j = readerList.GetCount();
 		while (i < j)
 		{
-			reader = readerList.GetItem(i);
-			edid = reader->GetEDID(&edidSize);
+			reader = readerList.GetItemNoCheck(i);
+			edid = reader->GetEDID(edidSize);
 			if (edid)
 			{
 				Media::EDID::EDIDInfo edidInfo;
@@ -423,7 +423,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					writer->WriteLine(sb.ToCString());
 				}
 			}
-			DEL_CLASS(reader);
+			reader.Delete();
 			i++;
 		}
 	}

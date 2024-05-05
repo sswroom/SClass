@@ -20,13 +20,13 @@ void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectSelChg(AnyType userObj)
 		Media::PDFParameter *param = obj->GetParameter();
 		if (param)
 		{
-			Media::PDFParameter::ParamEntry *entry;
+			NN<Media::PDFParameter::ParamEntry> entry;
 			NN<Text::String> s;
 			UOSInt i = 0;
 			UOSInt j = param->GetCount();
 			while (i < j)
 			{
-				entry = param->GetItem(i);
+				entry = param->GetItemNoCheck(i);
 				me->lvParameter->AddItem(entry->type, 0);
 				if (entry->value.SetTo(s))
 					me->lvParameter->SetSubItem(i, 1, s);

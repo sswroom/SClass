@@ -103,14 +103,14 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	writer->WriteLine(sb.ToCString());
 	console->WriteLine(sb.ToCString());
 
-	Data::ArrayList<IO::SystemInfo::RAMInfo*> ramList;
-	IO::SystemInfo::RAMInfo *ram;
-	sysInfo.GetRAMInfo(&ramList);
+	Data::ArrayListNN<IO::SystemInfo::RAMInfo> ramList;
+	NN<IO::SystemInfo::RAMInfo> ram;
+	sysInfo.GetRAMInfo(ramList);
 	i = 0;
 	j = ramList.GetCount();
 	while (i < j)
 	{
-		ram = ramList.GetItem(i);
+		ram = ramList.GetItemNoCheck(i);
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("RAM: "));
 		sb.AppendOpt(ram->deviceLocator);
@@ -134,7 +134,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		console->WriteLine(sb.ToCString());
 		i++;
 	}
-	sysInfo.FreeRAMInfo(&ramList);
+	sysInfo.FreeRAMInfo(ramList);
 
 	writer->WriteLine(CSTR("Result:"));
 	console->WriteLine(CSTR("Result:"));

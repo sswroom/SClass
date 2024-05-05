@@ -32,7 +32,7 @@ Media::SharedImage::SharedImage(NN<Media::ImageList> imgList, Bool genPreview)
 	}
 	if (genPreview && imgCnt == 1)
 	{
-		if (img.Set((Media::StaticImage*)imgList->GetImage(0, 0)) && (img->info.dispSize.x >= 640 || img->info.dispSize.y >= 640))
+		if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img) && (img->info.dispSize.x >= 640 || img->info.dispSize.y >= 640))
 		{
 			UOSInt currWidth = img->info.dispSize.x;
 			UOSInt currHeight = img->info.dispSize.y;
@@ -90,14 +90,14 @@ NN<Media::SharedImage> Media::SharedImage::Clone() const
 	return newImg;
 }
 
-Media::StaticImage *Media::SharedImage::GetImage(OptOut<UInt32> imgTimeMS) const
+Optional<Media::StaticImage> Media::SharedImage::GetImage(OptOut<UInt32> imgTimeMS) const
 {
 	UInt32 currDelay;
-	Media::StaticImage *img;
+	Optional<Media::StaticImage> img;
 	Int64 currTimeTick;
 	if (this->imgStatus->imgDelay == 0)
 	{
-		img = (Media::StaticImage*)this->imgStatus->imgList->GetImage(this->imgStatus->imgIndex, currDelay);
+		img = Optional<Media::StaticImage>::ConvertFrom(this->imgStatus->imgList->GetImage(this->imgStatus->imgIndex, currDelay));
 		if (currDelay == 0)
 		{
 			imgTimeMS.Set(0);
@@ -116,7 +116,7 @@ Media::StaticImage *Media::SharedImage::GetImage(OptOut<UInt32> imgTimeMS) const
 		{
 			this->imgStatus->imgIndex = 0;
 		}
-		img = (Media::StaticImage*)this->imgStatus->imgList->GetImage(this->imgStatus->imgIndex, currDelay);
+		img = Optional<Media::StaticImage>::ConvertFrom(this->imgStatus->imgList->GetImage(this->imgStatus->imgIndex, currDelay));
 		this->imgStatus->lastTimeTick = currTimeTick;
 		this->imgStatus->imgDelay = currDelay;
 		imgTimeMS.Set(this->imgStatus->imgDelay);
@@ -124,7 +124,7 @@ Media::StaticImage *Media::SharedImage::GetImage(OptOut<UInt32> imgTimeMS) const
 	}
 	else
 	{
-		img = (Media::StaticImage*)this->imgStatus->imgList->GetImage(this->imgStatus->imgIndex, currDelay);
+		img = Optional<Media::StaticImage>::ConvertFrom(this->imgStatus->imgList->GetImage(this->imgStatus->imgIndex, currDelay));
 		imgTimeMS.Set((UInt32)(this->imgStatus->imgDelay - (UInt64)(currTimeTick - this->imgStatus->lastTimeTick)));
 		return img;
 	}
@@ -156,5 +156,5 @@ Optional<Media::StaticImage> Media::SharedImage::GetPrevImage(Double width, Doub
 	imgTimeMS.Set(0);
 	if (minImg.NotNull())
 		return minImg;
-	return (Media::StaticImage*)this->imgStatus->imgList->GetImage(0, 0);
+	return Optional<Media::StaticImage>::ConvertFrom(this->imgStatus->imgList->GetImage(0, 0));
 }

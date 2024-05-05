@@ -197,7 +197,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnAniTimerTick(AnyType userOb
 			{
 				me->imgIndex = 0;
 			}
-			Media::StaticImage *simg = (Media::StaticImage*)me->imgList->GetImage(me->imgIndex, imgDurMS);
+			Optional<Media::StaticImage> simg = Optional<Media::StaticImage>::ConvertFrom(me->imgList->GetImage(me->imgIndex, imgDurMS));
 			me->imgTimeoutTick = currTimeTick + imgDurMS;
 			me->pbImage->SetImage(simg, true);
 		}

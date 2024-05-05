@@ -62,8 +62,8 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnCompareClicked(AnyType userOb
 	}
 	Media::ImageList *imgList1 = 0;
 	Media::ImageList *imgList2 = 0;
-	Media::StaticImage *simg1;
-	Media::StaticImage *simg2;
+	NN<Media::StaticImage> simg1;
+	NN<Media::StaticImage> simg2;
 	{
 		IO::StmData::FileData fd(sb.ToCString(), false);
 		imgList1 = (Media::ImageList*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
@@ -76,9 +76,10 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnCompareClicked(AnyType userOb
 	{
 		imgList1->ToStaticImage(0);
 		imgList2->ToStaticImage(0);
-		simg1 = (Media::StaticImage*)imgList1->GetImage(0, 0);
-		simg2 = (Media::StaticImage*)imgList2->GetImage(0, 0);
-		if (simg1->info.storeSize.x == simg2->info.storeSize.x && simg1->info.dispSize.y == simg2->info.dispSize.y)
+		if (Optional<Media::StaticImage>::ConvertFrom(imgList1->GetImage(0, 0)).SetTo(simg1) && 
+			Optional<Media::StaticImage>::ConvertFrom(imgList2->GetImage(0, 0)).SetTo(simg2) &&
+			simg1->info.storeSize.x == simg2->info.storeSize.x &&
+			simg1->info.dispSize.y == simg2->info.dispSize.y)
 		{
 			Double psnr;
 			if (me->radMode16Bit->IsSelected())

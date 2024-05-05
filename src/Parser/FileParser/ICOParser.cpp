@@ -41,7 +41,7 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::StreamData>
 	UInt32 icoCnt;
 	UOSInt i;
 	Media::ImageList *imgList;
-	Media::StaticImage *currImg;
+	NN<Media::StaticImage> currImg;
 	UInt32 imgWidth;
 	UInt32 imgHeight;
 	UInt32 nextOfst;
@@ -66,7 +66,6 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::StreamData>
 
 	nextOfst = 6 + (icoCnt << 4);
 	NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
-	currImg = 0;
 	i = 0;
 	while (i < icoCnt)
 	{
@@ -118,7 +117,7 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::StreamData>
 					return 0;
 				}
 
-				NEW_CLASS(currImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, 2, Media::PF_PAL_1_A1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(currImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, 2, Media::PF_PAL_1_A1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				dbits = currImg->data;
 				MemCopyNO(currImg->pal, pal, 8);
 
@@ -170,7 +169,7 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::StreamData>
 					return 0;
 				}
 
-				NEW_CLASS(currImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, 5, Media::PF_PAL_4_A1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(currImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, 5, Media::PF_PAL_4_A1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				dbits = currImg->data;
 				MemCopyNO(currImg->pal, pal, 64);
 
@@ -221,7 +220,7 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::StreamData>
 					return 0;
 				}
 
-				NEW_CLASS(currImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, 9, Media::PF_PAL_8_A1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(currImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, 9, Media::PF_PAL_8_A1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				dbits = currImg->data;
 				MemCopyNO(currImg->pal, pal, 1024);
 
@@ -272,7 +271,7 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::StreamData>
 					return 0;
 				}
 
-				NEW_CLASS(currImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, 32, Media::PF_B8G8R8A1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(currImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, 32, Media::PF_B8G8R8A1, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				dbits = currImg->data;
 
 				dbits += dbpl * (OSInt)imgHeight;
@@ -338,13 +337,12 @@ IO::ParsedObject *Parser::FileParser::ICOParser::ParseFileHdr(NN<IO::StreamData>
 					return 0;
 				}
 
-				NEW_CLASS(currImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASSNN(currImg, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, 32, Media::PF_B8G8R8A8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				dbits = currImg->data;
 				ImageCopy_ImgCopy(imgWidth * 4 * (imgHeight - 1) + (UInt8*)pal, dbits, imgWidth * 4, imgHeight, -(OSInt)imgWidth * 4, (OSInt)imgWidth * 4);
 			}
 			break;
 		default:
-			DEL_CLASS(currImg);
 			DEL_CLASS(imgList);
 			return 0;
 		}

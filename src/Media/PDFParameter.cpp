@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ArrayList.h"
 #include "Media/PDFParameter.h"
 
 Media::PDFParameter::PDFParameter()
@@ -8,78 +9,78 @@ Media::PDFParameter::PDFParameter()
 
 Media::PDFParameter::~PDFParameter()
 {
-	ParamEntry *entry;
+	NN<ParamEntry> entry;
 	UOSInt i = this->entries.GetCount();
 	while (i-- > 0)
 	{
-		entry = this->entries.GetItem(i);
+		entry = this->entries.GetItemNoCheck(i);
 		entry->type->Release();
 		OPTSTR_DEL(entry->value);
-		MemFree(entry);
+		MemFreeNN(entry);
 	}
 }
 
-void Media::PDFParameter::AddEntry(Text::CString type, Text::CString value)
+void Media::PDFParameter::AddEntry(Text::CStringNN type, Text::CString value)
 {
-	ParamEntry *entry = MemAlloc(ParamEntry, 1);
+	NN<ParamEntry> entry = MemAllocNN(ParamEntry);
 	entry->type = Text::String::New(type);
 	entry->value = Text::String::NewOrNull(value);
 	this->entries.Add(entry);
 }
 
-Optional<Text::String> Media::PDFParameter::GetEntryValue(Text::CString type) const
+Optional<Text::String> Media::PDFParameter::GetEntryValue(Text::CStringNN type) const
 {
-	ParamEntry *entry = this->GetEntry(type);
-	if (entry)
+	NN<ParamEntry> entry;
+	if (this->GetEntry(type).SetTo(entry))
 		return entry->value;
 	return 0;
 }
 
 Optional<Text::String> Media::PDFParameter::GetEntryType(UOSInt index) const
 {
-	ParamEntry *entry = this->GetItem(index);
-	if (entry)
+	NN<ParamEntry> entry;
+	if (this->GetItem(index).SetTo(entry))
 		return entry->type;
 	return 0;
 }
 
 Optional<Text::String> Media::PDFParameter::GetEntryValue(UOSInt index) const
 {
-	ParamEntry *entry = this->GetItem(index);
-	if (entry)
+	NN<ParamEntry> entry;
+	if (this->GetItem(index).SetTo(entry))
 		return entry->value;
 	return 0;
 }
 
-Bool Media::PDFParameter::ContainsEntry(Text::CString type) const
+Bool Media::PDFParameter::ContainsEntry(Text::CStringNN type) const
 {
-	return this->GetEntry(type) != 0;
+	return this->GetEntry(type).NotNull();
 }
 
-Media::PDFParameter::ParamEntry *Media::PDFParameter::GetEntry(Text::CString type) const
+Optional<Media::PDFParameter::ParamEntry> Media::PDFParameter::GetEntry(Text::CStringNN type) const
 {
-	ParamEntry *entry;
+	NN<ParamEntry> entry;
 	UOSInt i = 0;
 	UOSInt j = this->entries.GetCount();
 	while (i < j)
 	{
-		entry = this->entries.GetItem(i);
-		if (entry->type->Equals(type.v, type.leng))
+		entry = this->entries.GetItemNoCheck(i);
+		if (entry->type->Equals(type))
 			return entry;
 		i++;
 	}
 	return 0;
 }
 
-UOSInt Media::PDFParameter::GetEntryIndex(Text::CString type) const
+UOSInt Media::PDFParameter::GetEntryIndex(Text::CStringNN type) const
 {
-	ParamEntry *entry;
+	NN<ParamEntry> entry;
 	UOSInt i = 0;
 	UOSInt j = this->entries.GetCount();
 	while (i < j)
 	{
-		entry = this->entries.GetItem(i);
-		if (entry->type->Equals(type.v, type.leng))
+		entry = this->entries.GetItemNoCheck(i);
+		if (entry->type->Equals(type))
 			return i;
 		i++;
 	}
@@ -91,7 +92,12 @@ UOSInt Media::PDFParameter::GetCount() const
 	return this->entries.GetCount();
 }
 
-Media::PDFParameter::ParamEntry *Media::PDFParameter::GetItem(UOSInt index) const
+NN<Media::PDFParameter::ParamEntry> Media::PDFParameter::GetItemNoCheck(UOSInt index) const
+{
+	return this->entries.GetItemNoCheck(index);
+}
+
+Optional<Media::PDFParameter::ParamEntry> Media::PDFParameter::GetItem(UOSInt index) const
 {
 	return this->entries.GetItem(index);
 }
@@ -121,11 +127,11 @@ Media::PDFParameter *Media::PDFParameter::Parse(Text::CString parameter)
 				k--;
 			if (startValue == 0 || k == endType)
 			{
-				param->AddEntry(Text::CString(&parameter.v[startType], k - startType), CSTR_NULL);
+				param->AddEntry(Text::CStringNN(&parameter.v[startType], k - startType), CSTR_NULL);
 			}
 			else
 			{
-				param->AddEntry(Text::CString(&parameter.v[startType], endType - startType), Text::CString(&parameter.v[startValue], k - startValue));
+				param->AddEntry(Text::CStringNN(&parameter.v[startType], endType - startType), Text::CString(&parameter.v[startValue], k - startValue));
 			}
 			startType = i + 1;
 			endType = 0;

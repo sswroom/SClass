@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_ABLEND_ALPHABLEND8_C8
 #define _SM_MEDIA_ABLEND_ALPHABLEND8_C8
 #include "AnyType.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Media/ColorProfile.h"
 #include "Media/ColorSess.h"
 #include "Media/ImageAlphaBlend.h"
@@ -39,7 +39,7 @@ namespace Media
 				UInt8 *rgbTable;
 			};
 		private:
-			Data::ArrayList<LUTInfo*> *lutList;
+			Optional<Data::ArrayListNN<LUTInfo>> lutList;
 			UInt8 *rgbTable;
 			Media::ColorSess *colorSess;
 			ThreadStat *stats;

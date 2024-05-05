@@ -8,7 +8,7 @@ namespace Map
 	class MapPOI
 	{
 	public:
-		static Media::StaticImage *CreateParkingPOI();
+		static NN<Media::StaticImage> CreateParkingPOI();
 	};
 }
 #endif

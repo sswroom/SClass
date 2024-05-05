@@ -2212,8 +2212,8 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 				valid = !mustHaveCamera;
 
 				Media::ImageList *imgList = (Media::ImageList*)pobj;
-				Media::RasterImage *img = imgList->GetImage(0, 0);
-				if (img)
+				NN<Media::RasterImage> img;
+				if (imgList->GetImage(0, 0).SetTo(img))
 				{
 					NN<Media::EXIFData> exif;
 					if (img->exif.SetTo(exif))

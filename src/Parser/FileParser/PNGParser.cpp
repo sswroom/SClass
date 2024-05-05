@@ -1877,7 +1877,7 @@ UInt8 *PNGParser_ParsePixelsAW32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 
 void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, UInt8 *dataBuff, NN<Media::FrameInfo> info, Media::ImageList *imgList, UInt32 imgDelay, UInt32 imgX, UInt32 imgY, UInt32 imgW, UInt32 imgH, UInt8 interlaceMeth, UInt8 *palette)
 {
-	Media::StaticImage *simg;
+	NN<Media::StaticImage> simg;
 	switch (colorType)
 	{
 	case 0: //Grayscale
@@ -1946,7 +1946,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				info->storeBPP = 1;
 				info->pf = Media::PF_PAL_W1;
 				info->byteSize = storeWidth * info->storeSize.y >> 3;
-				NEW_CLASS(simg, Media::StaticImage(info));
+				NEW_CLASSNN(simg, Media::StaticImage(info));
 				WriteUInt32(&simg->pal[0], 0xff000000);
 				WriteUInt32(&simg->pal[4], 0xffffffff);
 
@@ -1966,7 +1966,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				info->storeBPP = 2;
 				info->pf = Media::PF_PAL_W2;
 				info->byteSize = storeWidth * info->storeSize.y >> 2;
-				NEW_CLASS(simg, Media::StaticImage(info));
+				NEW_CLASSNN(simg, Media::StaticImage(info));
 				WriteUInt32(&simg->pal[0], 0xff000000);
 				WriteUInt32(&simg->pal[4], 0xff555555);
 				WriteUInt32(&simg->pal[8], 0xffaaaaaa);
@@ -1988,7 +1988,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				info->storeBPP = 4;
 				info->pf = Media::PF_PAL_W4;
 				info->byteSize = storeWidth * info->storeSize.y >> 1;
-				NEW_CLASS(simg, Media::StaticImage(info));
+				NEW_CLASSNN(simg, Media::StaticImage(info));
 				WriteUInt32(&simg->pal[0], 0xff000000);
 				WriteUInt32(&simg->pal[4], 0xff111111);
 				WriteUInt32(&simg->pal[8], 0xff222222);
@@ -2029,7 +2029,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			info->storeBPP = 8;
 			info->pf = Media::PF_PAL_W8;
 			info->byteSize = info->storeSize.CalcArea();
-			NEW_CLASS(simg, Media::StaticImage(info));
+			NEW_CLASSNN(simg, Media::StaticImage(info));
 			pxId = 0;
 			while (pxId < 256)
 			{
@@ -2074,14 +2074,13 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			info->pf = Media::PF_LE_W16;
 			info->byteSize = info->storeSize.CalcArea() * 2;
 			lineAdd = imgList->GetCount();
-			if (lineAdd > 0)
+			if (lineAdd > 0 && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(lineAdd - 1, 0)).SetTo(simg))
 			{
-				simg = (Media::StaticImage*)imgList->GetImage(lineAdd - 1, 0);
-				simg = (Media::StaticImage*)simg->Clone().Ptr();
+				simg = NN<Media::StaticImage>::ConvertFrom(simg->Clone());
 			}
 			else
 			{
-				NEW_CLASS(simg, Media::StaticImage(info));
+				NEW_CLASSNN(simg, Media::StaticImage(info));
 			}
 
 			UOSInt bpl = simg->GetDataBpl();
@@ -2119,14 +2118,13 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			info->pf = Media::PF_B8G8R8;
 			info->byteSize = info->storeSize.CalcArea() * 3;
 			lineAdd = imgList->GetCount();
-			if (lineAdd > 0)
+			if (lineAdd > 0 && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(lineAdd - 1, 0)).SetTo(simg))
 			{
-				simg = (Media::StaticImage*)imgList->GetImage(lineAdd - 1, 0);
-				simg = (Media::StaticImage*)simg->Clone().Ptr();
+				simg = NN<Media::StaticImage>::ConvertFrom(simg->Clone());
 			}
 			else
 			{
-				NEW_CLASS(simg, Media::StaticImage(info));
+				NEW_CLASSNN(simg, Media::StaticImage(info));
 			}
 			UOSInt bpl = simg->GetDataBpl();
 			if (interlaceMeth == 1)
@@ -2161,14 +2159,13 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			info->pf = Media::PF_LE_B16G16R16;
 			info->byteSize = info->storeSize.CalcArea() * 3;
 			lineAdd = imgList->GetCount();
-			if (lineAdd > 0)
+			if (lineAdd > 0 && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(lineAdd - 1, 0)).SetTo(simg))
 			{
-				simg = (Media::StaticImage*)imgList->GetImage(lineAdd - 1, 0);
-				simg = (Media::StaticImage*)simg->Clone().Ptr();
+				simg = NN<Media::StaticImage>::ConvertFrom(simg->Clone());
 			}
 			else
 			{
-				NEW_CLASS(simg, Media::StaticImage(info));
+				NEW_CLASSNN(simg, Media::StaticImage(info));
 			}
 			UOSInt bpl = simg->GetDataBpl();
 			if (interlaceMeth == 1)
@@ -2210,7 +2207,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 					info->storeBPP = 1;
 					info->pf = Media::PF_PAL_1;
 					info->byteSize = storeWidth * info->storeSize.y >> 3;
-					NEW_CLASS(simg, Media::StaticImage(info));
+					NEW_CLASSNN(simg, Media::StaticImage(info));
 					MemCopyNO(simg->pal, palette, 8);
 
 					lineStart = simg->data;
@@ -2245,7 +2242,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 					info->storeBPP = 2;
 					info->pf = Media::PF_PAL_2;
 					info->byteSize = storeWidth * info->storeSize.y >> 2;
-					NEW_CLASS(simg, Media::StaticImage(info));
+					NEW_CLASSNN(simg, Media::StaticImage(info));
 					MemCopyNO(simg->pal, palette, 16);
 
 					lineStart = simg->data;
@@ -2279,7 +2276,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 					info->storeBPP = 4;
 					info->pf = Media::PF_PAL_4;
 					info->byteSize = storeWidth * info->storeSize.y >> 1;
-					NEW_CLASS(simg, Media::StaticImage(info));
+					NEW_CLASSNN(simg, Media::StaticImage(info));
 					MemCopyNO(simg->pal, palette, 64);
 
 					lineStart = simg->data;
@@ -2316,7 +2313,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				info->storeBPP = 8;
 				info->pf = Media::PF_PAL_8;
 				info->byteSize = info->storeSize.CalcArea();
-				NEW_CLASS(simg, Media::StaticImage(info));
+				NEW_CLASSNN(simg, Media::StaticImage(info));
 				MemCopyNO(simg->pal, palette, 1024);
 
 				if (interlaceMeth == 1)
@@ -2357,15 +2354,14 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				info->pf = Media::PF_W8A8;
 				info->byteSize = info->storeSize.CalcArea() * 2;
 				lineAdd = imgList->GetCount();
-				if (lineAdd > 0)
+				if (lineAdd > 0 && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(lineAdd - 1, 0)).SetTo(simg))
 				{
-					simg = (Media::StaticImage*)imgList->GetImage(lineAdd - 1, 0);
-					simg = (Media::StaticImage*)simg->Clone().Ptr();
+					simg = NN<Media::StaticImage>::ConvertFrom(simg->Clone());
 					simg->FillColor(0);
 				}
 				else
 				{
-					NEW_CLASS(simg, Media::StaticImage(info));
+					NEW_CLASSNN(simg, Media::StaticImage(info));
 				}
 				UOSInt bpl = simg->GetDataBpl();
 				if (interlaceMeth == 1)
@@ -2404,15 +2400,14 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				info->pf = Media::PF_LE_W16A16;
 				info->byteSize = info->storeSize.CalcArea() * 4;
 				lineAdd = imgList->GetCount();
-				if (lineAdd > 0)
+				if (lineAdd > 0 && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(lineAdd - 1, 0)).SetTo(simg))
 				{
-					simg = (Media::StaticImage*)imgList->GetImage(lineAdd - 1, 0);
-					simg = (Media::StaticImage*)simg->Clone().Ptr();
+					simg = NN<Media::StaticImage>::ConvertFrom(simg->Clone());
 					simg->FillColor(0);
 				}
 				else
 				{
-					NEW_CLASS(simg, Media::StaticImage(info));
+					NEW_CLASSNN(simg, Media::StaticImage(info));
 				}
 				UOSInt bpl = simg->GetDataBpl();
 				if (interlaceMeth == 1)
@@ -2456,15 +2451,14 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				info->pf = Media::PF_B8G8R8A8;
 				info->byteSize = info->storeSize.CalcArea() * 4;
 				lineAdd = imgList->GetCount();
-				if (lineAdd > 0)
+				if (lineAdd > 0 && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(lineAdd - 1, 0)).SetTo(simg))
 				{
-					simg = (Media::StaticImage*)imgList->GetImage(lineAdd - 1, 0);
-					simg = (Media::StaticImage*)simg->Clone().Ptr();
+					simg = NN<Media::StaticImage>::ConvertFrom(simg->Clone());
 					simg->FillColor(0);
 				}
 				else
 				{
-					NEW_CLASS(simg, Media::StaticImage(info));
+					NEW_CLASSNN(simg, Media::StaticImage(info));
 				}
 				UOSInt bpl = simg->GetDataBpl();
 				if (interlaceMeth == 1)
@@ -2503,15 +2497,14 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				info->pf = Media::PF_LE_B16G16R16A16;
 				info->byteSize = info->storeSize.CalcArea() * 8;
 				lineAdd = imgList->GetCount();
-				if (lineAdd > 0)
+				if (lineAdd > 0 && Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(lineAdd - 1, 0)).SetTo(simg))
 				{
-					simg = (Media::StaticImage*)imgList->GetImage(lineAdd - 1, 0);
-					simg = (Media::StaticImage*)simg->Clone().Ptr();
+					simg = NN<Media::StaticImage>::ConvertFrom(simg->Clone());
 					simg->FillColor(0);
 				}
 				else
 				{
-					NEW_CLASS(simg, Media::StaticImage(info));
+					NEW_CLASSNN(simg, Media::StaticImage(info));
 				}
 				UOSInt bpl = simg->GetDataBpl();
 				if (interlaceMeth == 1)

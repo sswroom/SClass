@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_HKTDVEHRESTRICT
 #define _SM_MAP_HKTDVEHRESTRICT
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "DB/DBTool.h"
 #include "Map/MapDrawLayer.h"
 
@@ -15,12 +15,12 @@ namespace Map
 			Math::Geometry::Polyline *pl;
 		} RouteInfo;
 	private:
-		DB::DBTool *db;
+		NN<DB::DBTool> db;
 		NN<Math::CoordinateSystem> csys;
-		Data::FastMap<Int32, RouteInfo*> routeMap;
+		Data::FastMapNN<Int32, RouteInfo> routeMap;
 
 	public:
-		HKTDVehRestrict(Map::MapDrawLayer *routeLyr, DB::DBTool *db);
+		HKTDVehRestrict(NN<Map::MapDrawLayer> routeLyr, NN<DB::DBTool> db);
 		~HKTDVehRestrict();
 
 		Map::MapDrawLayer *CreateTonnesSignLayer();

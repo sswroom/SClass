@@ -29,10 +29,10 @@ void __stdcall CaptureTest(Data::Duration frameTime, UInt32 frameNum, UInt8 **im
 	if (fnum == 1)
 	{
 		Exporter::TIFFExporter exporter;
-		Media::StaticImage *simg;
+		NN<Media::StaticImage> simg;
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 		Text::CStringNN fileName = CSTR("Capture.tif");
-		NEW_CLASS(simg, Media::StaticImage(info.dispSize, 0, 32, Media::PF_B8G8R8A8, 0, color, Media::ColorProfile::YUVT_BT601, info.atype, info.ycOfst));
+		NEW_CLASSNN(simg, Media::StaticImage(info.dispSize, 0, 32, Media::PF_B8G8R8A8, 0, color, Media::ColorProfile::YUVT_BT601, info.atype, info.ycOfst));
 		Media::ImageList imgList(fileName);
 		imgList.AddImage(simg, 0);
 

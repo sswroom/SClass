@@ -395,9 +395,9 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnFileDrop(AnyType userObj, Dat
 		Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
 		if (imgList)
 		{
-			Media::RasterImage *img = imgList->GetImage(0, 0);
+			NN<Media::RasterImage> img;
 			NN<Media::EXIFData> exif;
-			if (img && img->exif.SetTo(exif) && exif->GetPhotoLocation(lat, lon, altitude, gpsTimeTick))
+			if (imgList->GetImage(0, 0).SetTo(img) && img->exif.SetTo(exif) && exif->GetPhotoLocation(lat, lon, altitude, gpsTimeTick))
 			{
 				sb.ClearStr();
 				sb.Append(imgList->GetSourceNameObj());

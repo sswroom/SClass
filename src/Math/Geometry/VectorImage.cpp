@@ -419,7 +419,15 @@ Int32 Math::Geometry::VectorImage::GetZIndex() const
 
 void Math::Geometry::VectorImage::GetScreenBounds(UOSInt scnWidth, UOSInt scnHeight, Double hdpi, Double vdpi, Double *x1, Double *y1, Double *x2, Double *y2) const
 {
-	Media::StaticImage *simg = this->img->GetImage(0);
+	NN<Media::StaticImage> simg;
+	if (!this->img->GetImage(0).SetTo(simg))
+	{
+		*x1 = 0;
+		*y1 = 0;
+		*x2 = 0;
+		*y2 = 0;
+		return;
+	}
 	Double scnX;
 	Double scnY;
 	Double sizeX;
@@ -473,7 +481,7 @@ void Math::Geometry::VectorImage::SetBounds(Double minX, Double minY, Double max
 	this->br.y = maxY;
 }
 
-Media::StaticImage *Math::Geometry::VectorImage::GetImage(OptOut<UInt32> imgTimeMS) const
+Optional<Media::StaticImage> Math::Geometry::VectorImage::GetImage(OptOut<UInt32> imgTimeMS) const
 {
 	return this->img->GetImage(imgTimeMS);
 }

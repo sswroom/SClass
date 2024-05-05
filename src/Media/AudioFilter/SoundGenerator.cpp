@@ -9,22 +9,15 @@
 Media::AudioFilter::SoundGenerator::SoundGenerator(NN<IAudioSource> sourceAudio) : Media::IAudioFilter(sourceAudio)
 {
 	sourceAudio->GetFormat(this->format);
-	Media::AudioFilter::SoundGen::ISoundGen *sndGen;
+	NN<Media::AudioFilter::SoundGen::ISoundGen> sndGen;
 
-	NEW_CLASS(sndGen, Media::AudioFilter::SoundGen::BellSoundGen(this->format.frequency));
+	NEW_CLASSNN(sndGen, Media::AudioFilter::SoundGen::BellSoundGen(this->format.frequency));
 	this->sndGenMap.Put(sndGen->GetSoundType(), sndGen);
 }
 
 Media::AudioFilter::SoundGenerator::~SoundGenerator()
 {
-	Media::AudioFilter::SoundGen::ISoundGen *sndGen;
-	UOSInt i;
-	i = this->sndGenMap.GetCount();
-	while (i-- > 0)
-	{
-		sndGen = this->sndGenMap.GetItem(i);
-		DEL_CLASS(sndGen);
-	}
+	this->sndGenMap.DeleteAll();
 }
 
 void Media::AudioFilter::SoundGenerator::GetFormat(NN<AudioFormat> format)
@@ -35,7 +28,7 @@ void Media::AudioFilter::SoundGenerator::GetFormat(NN<AudioFormat> format)
 UOSInt Media::AudioFilter::SoundGenerator::ReadBlock(Data::ByteArray blk)
 {
 	UOSInt readSize = this->sourceAudio->ReadBlock(blk);
-	Media::AudioFilter::SoundGen::ISoundGen *sndGen;
+	NN<Media::AudioFilter::SoundGen::ISoundGen> sndGen;
 	UOSInt sampleCnt = readSize / (this->format.align);
 	Double *sndBuff;
 	UOSInt i;
@@ -48,7 +41,7 @@ UOSInt Media::AudioFilter::SoundGenerator::ReadBlock(Data::ByteArray blk)
 	MemClear(sndBuff, sizeof(Double) * sampleCnt);
 	while (i-- > 0)
 	{
-		sndGen = this->sndGenMap.GetItem(i);
+		sndGen = this->sndGenMap.GetItemNoCheck(i);
 		sndGen->GenSignals(sndBuff, sampleCnt);
 	}
 	if (this->format.bitpersample == 16)
@@ -123,8 +116,8 @@ UOSInt Media::AudioFilter::SoundGenerator::ReadBlock(Data::ByteArray blk)
 
 Bool Media::AudioFilter::SoundGenerator::GenSound(Media::AudioFilter::SoundGen::ISoundGen::SoundType sndType, Double sampleVol)
 {
-	Media::AudioFilter::SoundGen::ISoundGen *sndGen = this->sndGenMap.Get(sndType);
-	if (sndGen)
+	NN<Media::AudioFilter::SoundGen::ISoundGen> sndGen;
+	if (this->sndGenMap.Get(sndType).SetTo(sndGen))
 	{
 		return sndGen->GenSound(sampleVol);
 	}

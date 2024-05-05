@@ -55,7 +55,7 @@ IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFileHdr(NN<IO::StreamData
 	UInt64 fileSize;
 	
 	Media::ImageList *imgList;
-	Media::StaticImage *outImg;
+	NN<Media::StaticImage> outImg;
 
 	fileSize = fd->GetDataSize();
 	if (fileSize > 0xffffffffLL)
@@ -108,80 +108,77 @@ IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFileHdr(NN<IO::StreamData
 		yCnt = ReadUInt16(&tmpBuff[10]);
 		if (thisImgWidth == imgWidth && thisImgHeight == imgHeight)
 		{
-			NEW_CLASS(outImg, Media::StaticImage(Math::Size2D<UOSInt>(thisImgWidth, thisImgHeight), 0, 8, Media::PF_PAL_8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-			if (outImg)
-			{
-				MemCopyNO(outImg->pal, &tmpBuff[12], 1024);
+			NEW_CLASSNN(outImg, Media::StaticImage(Math::Size2D<UOSInt>(thisImgWidth, thisImgHeight), 0, 8, Media::PF_PAL_8, 0, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			MemCopyNO(outImg->pal, &tmpBuff[12], 1024);
 
-				Data::ByteBuffer ptrBuff(4 * (xCnt * yCnt + 1));
-				fd->GetRealData(ReadUInt32(&scaleTable[i * 4]) + 1036, 4 * (xCnt * yCnt + 1), ptrBuff);
-				j = 0;
-				currY = 0;
-				while (currY < yCnt)
+			Data::ByteBuffer ptrBuff(4 * (xCnt * yCnt + 1));
+			fd->GetRealData(ReadUInt32(&scaleTable[i * 4]) + 1036, 4 * (xCnt * yCnt + 1), ptrBuff);
+			j = 0;
+			currY = 0;
+			while (currY < yCnt)
+			{
+				currX = 0;
+				while (currX < xCnt)
 				{
-					currX = 0;
-					while (currX < xCnt)
+					thisOfst = ReadUInt32(&ptrBuff[j * 4]);
+					nextOfst = ReadUInt32(&ptrBuff[(j + 1) * 4]);
+					if ((nextOfst - thisOfst) <= 8192)
 					{
-						thisOfst = ReadUInt32(&ptrBuff[j * 4]);
-						nextOfst = ReadUInt32(&ptrBuff[(j + 1) * 4]);
-						if ((nextOfst - thisOfst) <= 8192)
+						fd->GetRealData(thisOfst, nextOfst - thisOfst, srcBuff);
+						if (srcBuff[0] == 0x78 && srcBuff[1] == 0xda)
 						{
-							fd->GetRealData(thisOfst, nextOfst - thisOfst, srcBuff);
-							if (srcBuff[0] == 0x78 && srcBuff[1] == 0xda)
+							inf.Decompress(imgBuff, decSize, srcBuff.SubArray(0, nextOfst - thisOfst));
+							if (decSize == 4096)
 							{
-								inf.Decompress(imgBuff, decSize, srcBuff.SubArray(0, nextOfst - thisOfst));
-								if (decSize == 4096)
+								imgX1 = (OSInt)currX << 6;
+								imgY1 = (OSInt)currY << 6;
+								imgX2 = imgX1 + 64;
+								imgY2 = imgY1 + 64;
+								if (imgX1 >= (OSInt)thisImgWidth || imgY1 >= (OSInt)thisImgHeight)
 								{
-									imgX1 = (OSInt)currX << 6;
-									imgY1 = (OSInt)currY << 6;
-									imgX2 = imgX1 + 64;
-									imgY2 = imgY1 + 64;
-									if (imgX1 >= (OSInt)thisImgWidth || imgY1 >= (OSInt)thisImgHeight)
+								}
+								else
+								{
+									if (imgY2 > (OSInt)thisImgHeight)
 									{
+										imgY2 = (OSInt)thisImgHeight;
+									}
+									if (imgX2 > (OSInt)thisImgWidth)
+									{
+										Data::ByteArray srcPtr = imgBuff + 4096;
+										Data::ByteArray destPtr = outImg->GetDataArray() + (OSInt)thisImgWidth * imgY1 + imgX1;
+										UOSInt w = thisImgWidth - (UOSInt)imgX1;
+										while (imgY1 < imgY2)
+										{
+											srcPtr -= 64;
+											destPtr.CopyFrom(srcPtr.WithSize(w));
+											destPtr += thisImgWidth;
+											imgY1++;
+										}
 									}
 									else
 									{
-										if (imgY2 > (OSInt)thisImgHeight)
+										Data::ByteArray srcPtr = imgBuff + 4096;
+										Data::ByteArray destPtr = outImg->GetDataArray() + (OSInt)thisImgWidth * imgY1 + imgX1;
+										while (imgY1 < imgY2)
 										{
-											imgY2 = (OSInt)thisImgHeight;
-										}
-										if (imgX2 > (OSInt)thisImgWidth)
-										{
-											Data::ByteArray srcPtr = imgBuff + 4096;
-											Data::ByteArray destPtr = outImg->GetDataArray() + (OSInt)thisImgWidth * imgY1 + imgX1;
-											UOSInt w = thisImgWidth - (UOSInt)imgX1;
-											while (imgY1 < imgY2)
-											{
-												srcPtr -= 64;
-												destPtr.CopyFrom(srcPtr.WithSize(w));
-												destPtr += thisImgWidth;
-												imgY1++;
-											}
-										}
-										else
-										{
-											Data::ByteArray srcPtr = imgBuff + 4096;
-											Data::ByteArray destPtr = outImg->GetDataArray() + (OSInt)thisImgWidth * imgY1 + imgX1;
-											while (imgY1 < imgY2)
-											{
-												srcPtr -= 64;
-												destPtr.CopyFrom(srcPtr.WithSize(64));
-												destPtr += thisImgWidth;
-												imgY1++;
-											}
+											srcPtr -= 64;
+											destPtr.CopyFrom(srcPtr.WithSize(64));
+											destPtr += thisImgWidth;
+											imgY1++;
 										}
 									}
 								}
 							}
 						}
-						j++;
-						currX++;
 					}
-					currY++;
+					j++;
+					currX++;
 				}
-
-				imgList->AddImage(outImg, 0);
+				currY++;
 			}
+
+			imgList->AddImage(outImg, 0);
 		}
 		i++;
 	}

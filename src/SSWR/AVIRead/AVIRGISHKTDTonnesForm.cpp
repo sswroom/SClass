@@ -68,13 +68,15 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(AnyType userObj
 			lyr = (Map::MapDrawLayer*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::MapLayer);
 		}
 		DB::DBTool *db = DB::MDBFileConn::CreateDBTool(sb2.ToCString(), me->core->GetLog(), CSTR_NULL);
-		if (lyr && db)
+		NN<DB::DBTool> nndb;
+		NN<Map::MapDrawLayer> nnlyr;
+		if (nnlyr.Set(lyr) && nndb.Set(db))
 		{
 			Map::DrawLayerType lyrType = lyr->GetLayerType();
 			if (lyrType == Map::DRAW_LAYER_POLYLINE || lyrType == Map::DRAW_LAYER_POLYLINE3D)
 			{
 				Map::HKTDVehRestrict *vehRestrict;
-				NEW_CLASS(vehRestrict, Map::HKTDVehRestrict(lyr, db));
+				NEW_CLASS(vehRestrict, Map::HKTDVehRestrict(nnlyr, nndb));
 				me->lyr = vehRestrict->CreateTonnesSignLayer();
 				if (me->lyr)
 				{

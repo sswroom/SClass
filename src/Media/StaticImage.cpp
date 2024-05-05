@@ -1076,7 +1076,7 @@ Bool Media::StaticImage::RotateImage(RotateType rtype)
 	return false;
 }
 
-Double Media::StaticImage::CalcPSNR(Media::StaticImage *simg) const
+Double Media::StaticImage::CalcPSNR(NN<Media::StaticImage> simg) const
 {
 //	printf("CalcPSNR\r\n");
 	if (simg->info.dispSize != this->info.dispSize)

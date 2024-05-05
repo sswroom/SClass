@@ -126,24 +126,27 @@ void Map::WebImageLayer::LoadImage(NN<Map::WebImageLayer::ImageStat> stat)
 		{
 			NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(nnpobj);
 			imgList->ToStaticImage(0);
-			Media::StaticImage *simg = (Media::StaticImage*)imgList->GetImage(0, 0);
-			if (stat->alpha > 0 && stat->alpha != 1)
+			NN<Media::StaticImage> simg;
+			if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(simg))
 			{
-				simg->MultiplyAlpha(stat->alpha);
-			}
-			NEW_CLASS(stat->simg, Media::SharedImage(imgList, true));
-			Sync::RWMutexUsage loadedMutUsage(this->loadedMut, true);
-			this->loadedList.Insert((UOSInt)~this->GetImageStatIndex(stat->id), stat);
-			loadedMutUsage.EndUse();
+				if (stat->alpha > 0 && stat->alpha != 1)
+				{
+					simg->MultiplyAlpha(stat->alpha);
+				}
+				NEW_CLASS(stat->simg, Media::SharedImage(imgList, true));
+				Sync::RWMutexUsage loadedMutUsage(this->loadedMut, true);
+				this->loadedList.Insert((UOSInt)~this->GetImageStatIndex(stat->id), stat);
+				loadedMutUsage.EndUse();
 
-			Sync::MutexUsage mutUsage(this->updMut);
-			UOSInt i = this->updHdlrs.GetCount();
-			while (i-- > 0)
-			{
-				Data::CallbackStorage<UpdatedHandler> cb = this->updHdlrs.GetItem(i);
-				cb.func(cb.userObj);
+				Sync::MutexUsage mutUsage(this->updMut);
+				UOSInt i = this->updHdlrs.GetCount();
+				while (i-- > 0)
+				{
+					Data::CallbackStorage<UpdatedHandler> cb = this->updHdlrs.GetItem(i);
+					cb.func(cb.userObj);
+				}
+				mutUsage.EndUse();
 			}
-			mutUsage.EndUse();
 		}
 	}
 }
@@ -181,24 +184,27 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(AnyType userObj)
 				{
 					NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(nnpobj);
 					imgList->ToStaticImage(0);
-					Media::StaticImage *simg = (Media::StaticImage*)imgList->GetImage(0, 0);
-					if (stat->alpha > 0 && stat->alpha != 1)
+					NN<Media::StaticImage> simg;
+					if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(simg))
 					{
-						simg->MultiplyAlpha(stat->alpha);
-					}
-					NEW_CLASS(stat->simg, Media::SharedImage(imgList, true));
-					Sync::RWMutexUsage loadedMutUsage(me->loadedMut, true);
-					me->loadedList.Insert((UOSInt)~me->GetImageStatIndex(stat->id), stat);
-					loadedMutUsage.EndUse();
+						if (stat->alpha > 0 && stat->alpha != 1)
+						{
+							simg->MultiplyAlpha(stat->alpha);
+						}
+						NEW_CLASS(stat->simg, Media::SharedImage(imgList, true));
+						Sync::RWMutexUsage loadedMutUsage(me->loadedMut, true);
+						me->loadedList.Insert((UOSInt)~me->GetImageStatIndex(stat->id), stat);
+						loadedMutUsage.EndUse();
 
-					Sync::MutexUsage mutUsage(me->updMut);
-					UOSInt j = me->updHdlrs.GetCount();
-					while (j-- > 0)
-					{
-						Data::CallbackStorage<UpdatedHandler> cb = me->updHdlrs.GetItem(j);
-						cb.func(cb.userObj);
+						Sync::MutexUsage mutUsage(me->updMut);
+						UOSInt j = me->updHdlrs.GetCount();
+						while (j-- > 0)
+						{
+							Data::CallbackStorage<UpdatedHandler> cb = me->updHdlrs.GetItem(j);
+							cb.func(cb.userObj);
+						}
+						mutUsage.EndUse();
 					}
-					mutUsage.EndUse();
 				}
 			}
 		}

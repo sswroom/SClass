@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_PROFILEDRESIZER
 #define _SM_MEDIA_PROFILEDRESIZER
+#include "Data/ArrayListNN.h"
 #include "Parser/ParserList.h"
 #include "Media/Batch/BatchLimiter.h"
 #include "Media/Batch/BatchLoader.h"
@@ -41,7 +42,7 @@ namespace Media
 		} ResizeProfile;
 
 	private:
-		Data::ArrayList<ResizeProfile *> profiles;
+		Data::ArrayListNN<ResizeProfile> profiles;
 		UOSInt currProfile;
 
 		Media::Resizer::LanczosResizerLR_C32 *resizer;
@@ -52,16 +53,17 @@ namespace Media
 		Media::Batch::BatchWatermarker *watermarker;
 		Media::Batch::BatchSaver *saver;
 
-		void ReleaseProfile(ResizeProfile *profile);
+		static void ReleaseProfile(NN<ResizeProfile> profile);
 	public:
 		ProfiledResizer(NN<Parser::ParserList> parsers, Media::ColorManagerSess *colorSess, NN<Media::DrawEngine> deng);
 		~ProfiledResizer();
 
-		UOSInt GetProfileCount();
+		UOSInt GetProfileCount() const;
 		UOSInt GetCurrProfileIndex();
-		const ResizeProfile *GetCurrProfile();
+		Optional<const ResizeProfile> GetCurrProfile();
 		void SetCurrentProfile(UOSInt index);
-		const ResizeProfile *GetProfile(UOSInt index);
+		Optional<const ResizeProfile> GetProfile(UOSInt index) const;
+		NN<const ResizeProfile> GetProfileNoCheck(UOSInt index) const;
 		Bool AddProfile(Text::CString profileName, Text::CString suffix, UInt32 targetWidth, UInt32 targetHeight, OutputType outType, UInt32 outParam, Text::CString watermark, SizeType sizeType);
 		Bool RemoveProfile(UOSInt index);
 

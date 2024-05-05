@@ -9,19 +9,15 @@
 
 #define BUFFSIZE 1024
 
-void Media::JPEGExif::FreeExif(ExifValue *exif)
+void Media::JPEGExif::FreeExif(NN<ExifValue> exif)
 {
 	if (exif->t == EXIF_TYPE_GROUP)
 	{
 		if (exif->s)
 		{
 			OSInt i;
-			Data::ArrayList<ExifValue*> *exifArr = (Data::ArrayList<ExifValue*> *)exif->s;
-			i = exifArr->GetCount();
-			while (i-- > 0)
-			{
-				FreeExif((Media::JPEGExif::ExifValue*)exifArr->GetItem(i));
-			}
+			Data::ArrayListNN<ExifValue> *exifArr = (Data::ArrayListNN<ExifValue> *)exif->s;
+			exifArr->FreeAll(FreeExif);
 			DEL_CLASS(exifArr);
 		}
 	}
@@ -30,13 +26,13 @@ void Media::JPEGExif::FreeExif(ExifValue *exif)
 		if (exif->s)
 			MemFree(exif->s);
 	}
-	MemFree(exif);
+	MemFreeNN(exif);
 }
 
-Media::JPEGExif::ExifValue *Media::JPEGExif::DupExif(ExifValue *exif)
+NN<Media::JPEGExif::ExifValue> Media::JPEGExif::DupExif(NN<ExifValue> exif)
 {
-	Media::JPEGExif::ExifValue *nexif;
-	nexif = MemAlloc(Media::JPEGExif::ExifValue, 1);
+	NN<Media::JPEGExif::ExifValue> nexif;
+	nexif = MemAllocNN(Media::JPEGExif::ExifValue);
 	nexif->id = exif->id;
 	nexif->numerator = exif->numerator;
 	nexif->denominator = exif->denominator;
@@ -55,14 +51,14 @@ Media::JPEGExif::ExifValue *Media::JPEGExif::DupExif(ExifValue *exif)
 		else if (exif->t == Media::JPEGExif::EXIF_TYPE_GROUP)
 		{
 			Int32 i;
-			Data::ArrayList<ExifValue*> *tmpArr;
-			Data::ArrayList<ExifValue*> *tmpArr2 = (Data::ArrayList<ExifValue*>*)exif->s;
-			NEW_CLASS(tmpArr, Data::ArrayList<ExifValue*>());
+			Data::ArrayListNN<ExifValue> *tmpArr;
+			Data::ArrayListNN<ExifValue> *tmpArr2 = (Data::ArrayListNN<ExifValue>*)exif->s;
+			NEW_CLASS(tmpArr, Data::ArrayListNN<ExifValue>());
 			nexif->s = (Char*)tmpArr;
 			i = 0;
 			while (i < tmpArr2->GetCount())
 			{
-				tmpArr->Add(DupExif(tmpArr2->GetItem(i)));
+				tmpArr->Add(DupExif(tmpArr2->GetItemNoCheck(i)));
 			}
 		}
 		else
@@ -78,27 +74,27 @@ Media::JPEGExif::ExifValue *Media::JPEGExif::DupExif(ExifValue *exif)
 	return nexif;
 }
 
-Media::JPEGExif::ExifValue *Media::JPEGExif::GetExif(ExifValue *grp, Int32 id)
+NN<Media::JPEGExif::ExifValue> Media::JPEGExif::GetExif(Optional<ExifValue> grp, Int32 id)
 {
-	Data::ArrayList<ExifValue*> *exifArr;
-	if (grp)
+	NN<Media::JPEGExif::ExifValue> exif;
+	Data::ArrayListNN<ExifValue> *exifArr;
+	if (grp.SetTo(exif))
 	{
-		exifArr = (Data::ArrayList<ExifValue*>*)grp->s;
+		exifArr = (Data::ArrayListNN<ExifValue>*)exif->s;
 	}
 	else
 	{
-		exifArr = this->exifs;
+		exifArr = &this->exifs;
 	}
 
-	OSInt i = exifArr->GetCount();
-	Media::JPEGExif::ExifValue *exif;
+	UOSInt i = exifArr->GetCount();
 	while (i-- > 0)
 	{
-		exif = exifArr->GetItem(i);
+		exif = exifArr->GetItemNoCheck(i);
 		if (exif->id == id)
 			return exif;
 	}
-	exif = MemAlloc(Media::JPEGExif::ExifValue, 1);
+	exif = MemAllocNN(Media::JPEGExif::ExifValue);
 	exif->id = id;
 	exif->numerator = 0;
 	exif->denominator = 0;
@@ -107,19 +103,19 @@ Media::JPEGExif::ExifValue *Media::JPEGExif::GetExif(ExifValue *grp, Int32 id)
 	return exif;
 }
 
-void Media::JPEGExif::CalExifSize(Data::ArrayList<ExifValue*> *exifArr, UOSInt *size, UOSInt *endOfst)
+void Media::JPEGExif::CalExifSize(NN<Data::ArrayListNN<ExifValue>> exifArr, OutParam<UOSInt> size, OutParam<UOSInt> endOfst)
 {
 	UOSInt i = 6;
 	UOSInt j = 6;
 	UOSInt k;
 	UOSInt l;
 	UOSInt m;
-	Media::JPEGExif::ExifValue *exif;
+	NN<Media::JPEGExif::ExifValue> exif;
 
 	k = exifArr->GetCount();
 	while (k-- > 0)
 	{
-		exif = (Media::JPEGExif::ExifValue *)exifArr->GetItem(k);
+		exif = exifArr->GetItemNoCheck(k);
 		if (exif->t == Media::JPEGExif::EXIF_TYPE_NUM)
 		{
 			i += 12;
@@ -177,30 +173,30 @@ void Media::JPEGExif::CalExifSize(Data::ArrayList<ExifValue*> *exifArr, UOSInt *
 		{
 			i += 12;
 			j += 12;
-			CalExifSize((Data::ArrayList<ExifValue*>*)exif->s, &l, &m);
+			CalExifSize(NN<Data::ArrayListNN<ExifValue>>::FromPtr((Data::ArrayListNN<ExifValue>*)exif->s), l, m);
 			i += m;
 			j += l;
 		}
 	}
-	*size = j;
-	*endOfst = i;
+	size.Set(j);
+	endOfst.Set(i);
 }
 
-void Media::JPEGExif::GenExifBuff(UInt8 *buff, Data::ArrayList<ExifValue*> *exifArr, UOSInt *startOfst, UOSInt *otherOfst)
+void Media::JPEGExif::GenExifBuff(UInt8 *buff, NN<Data::ArrayListNN<ExifValue>> exifArr, InOutParam<UOSInt> startOfst, InOutParam<UOSInt> otherOfst)
 {
 	UOSInt objCnt;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	Media::JPEGExif::ExifValue *exif;
+	NN<Media::JPEGExif::ExifValue> exif;
 
 	objCnt = 0;
-	k = *otherOfst;
-	j = *startOfst + 2;
+	k = otherOfst.Get();
+	j = startOfst.Get() + 2;
 	i = 0;
 	while (i < exifArr->GetCount())
 	{
-		exif = (Media::JPEGExif::ExifValue *)exifArr->GetItem(i);
+		exif = exifArr->GetItemNoCheck(i);
 		if (exif->t == Media::JPEGExif::EXIF_TYPE_NUM)
 		{
 			*(Int16*)&buff[j] = exif->id;
@@ -315,55 +311,49 @@ void Media::JPEGExif::GenExifBuff(UInt8 *buff, Data::ArrayList<ExifValue*> *exif
 		i++;
 	}
 	*(Int32*)&buff[j] = 0;
-	*(Int16*)&buff[*startOfst] = objCnt;
+	*(Int16*)&buff[startOfst.Get()] = objCnt;
 	j += 4;
 
 	i = 0;
 	while (i < exifArr->GetCount())
 	{
-		exif = (Media::JPEGExif::ExifValue *)exifArr->GetItem(i);
+		exif = exifArr->GetItemNoCheck(i);
 		if (exif->t == Media::JPEGExif::EXIF_TYPE_GROUP)
 		{
 			*(Int32*)&buff[exif->numerator] = j;
-			GenExifBuff(buff, (Data::ArrayList<ExifValue*>*)exif->s, &j, &k);
+			GenExifBuff(buff, NN<Data::ArrayListNN<ExifValue>>::FromPtr((Data::ArrayListNN<ExifValue>*)exif->s), j, k);
 		}
 		i++;
 	}
-	*startOfst = j;
-	*otherOfst = k;
+	startOfst.Set(j);
+	otherOfst.Set(k);
 }
 
 Media::JPEGExif::JPEGExif()
 {
-	NEW_CLASS(this->exifs, Data::ArrayList<ExifValue*>());
 }
 
 Media::JPEGExif::~JPEGExif()
 {
-	OSInt i = this->exifs->GetCount();
-	while (i-- > 0)
-	{
-		FreeExif((Media::JPEGExif::ExifValue*)this->exifs->GetItem(i));
-	}
-	DEL_CLASS(this->exifs);
+	this->exifs.FreeAll(FreeExif);
 }
 
-Media::JPEGExif::ExifValue *Media::JPEGExif::AddExifGroup(Int32 id)
+NN<Media::JPEGExif::ExifValue> Media::JPEGExif::AddExifGroup(Int32 id)
 {
-	Media::JPEGExif::ExifValue *val;
-	Data::ArrayList<ExifValue*> *exifArr;
-	val = MemAlloc(Media::JPEGExif::ExifValue, 1);
+	NN<Media::JPEGExif::ExifValue> val;
+	Data::ArrayListNN<ExifValue> *exifArr;
+	val = MemAllocNN(Media::JPEGExif::ExifValue);
 	val->id = id;
 	val->t = Media::JPEGExif::EXIF_TYPE_GROUP;
-	NEW_CLASS(exifArr, Data::ArrayList<ExifValue*>());
+	NEW_CLASS(exifArr, Data::ArrayListNN<ExifValue>());
 	val->s = (Char*)exifArr;
-	this->exifs->Add(val);
+	this->exifs.Add(val);
 	return val;
 }
 
-void Media::JPEGExif::SetExif(Media::JPEGExif::ExifValue *grp, Int32 id, Int32 numerator, Int32 denominator)
+void Media::JPEGExif::SetExif(Optional<Media::JPEGExif::ExifValue> grp, Int32 id, Int32 numerator, Int32 denominator)
 {
-	Media::JPEGExif::ExifValue *val = GetExif(grp, id);
+	NN<Media::JPEGExif::ExifValue> val = GetExif(grp, id);
 	if (val->s)
 	{
 		MemFree(val->s);
@@ -374,9 +364,9 @@ void Media::JPEGExif::SetExif(Media::JPEGExif::ExifValue *grp, Int32 id, Int32 n
 	val->denominator = denominator;
 }
 
-void Media::JPEGExif::SetExif(Media::JPEGExif::ExifValue *grp, Int32 id, const Char *s)
+void Media::JPEGExif::SetExif(Optional<Media::JPEGExif::ExifValue> grp, Int32 id, const Char *s)
 {
-	Media::JPEGExif::ExifValue *val = GetExif(grp, id);
+	NN<Media::JPEGExif::ExifValue> val = GetExif(grp, id);
 	if (val->s)
 	{
 		MemFree(val->s);
@@ -387,9 +377,9 @@ void Media::JPEGExif::SetExif(Media::JPEGExif::ExifValue *grp, Int32 id, const C
 	Text::StrConcat(val->s, s);
 }
 
-void Media::JPEGExif::SetExif(Media::JPEGExif::ExifValue *grp, Int32 id, const UInt8 *s, Int32 size)
+void Media::JPEGExif::SetExif(Optional<Media::JPEGExif::ExifValue> grp, Int32 id, const UInt8 *s, Int32 size)
 {
-	Media::JPEGExif::ExifValue *val = GetExif(grp, id);
+	NN<Media::JPEGExif::ExifValue> val = GetExif(grp, id);
 	if (val->s)
 	{
 		MemFree(val->s);
@@ -401,9 +391,9 @@ void Media::JPEGExif::SetExif(Media::JPEGExif::ExifValue *grp, Int32 id, const U
 	MemCopyNO(val->s, s, size);
 }
 
-void Media::JPEGExif::SetExifUnk(Media::JPEGExif::ExifValue *grp, Int32 id, const UInt8 *s, Int32 size)
+void Media::JPEGExif::SetExifUnk(Optional<Media::JPEGExif::ExifValue> grp, Int32 id, const UInt8 *s, Int32 size)
 {
-	Media::JPEGExif::ExifValue *val = GetExif(grp, id);
+	NN<Media::JPEGExif::ExifValue> val = GetExif(grp, id);
 	if (val->s)
 	{
 		MemFree(val->s);
@@ -415,9 +405,9 @@ void Media::JPEGExif::SetExifUnk(Media::JPEGExif::ExifValue *grp, Int32 id, cons
 	MemCopyNO(val->s, s, size);
 }
 
-void Media::JPEGExif::SetExif(Media::JPEGExif::ExifValue *grp, Int32 id, UInt16 val)
+void Media::JPEGExif::SetExif(Optional<Media::JPEGExif::ExifValue> grp, Int32 id, UInt16 val)
 {
-	Media::JPEGExif::ExifValue *exif = GetExif(grp, id);
+	NN<Media::JPEGExif::ExifValue> exif = GetExif(grp, id);
 	if (exif->s)
 	{
 		MemFree(exif->s);
@@ -427,9 +417,9 @@ void Media::JPEGExif::SetExif(Media::JPEGExif::ExifValue *grp, Int32 id, UInt16 
 	exif->numerator = val;
 }
 
-void Media::JPEGExif::SetExif(Media::JPEGExif::ExifValue *grp, Int32 id, UInt32 val)
+void Media::JPEGExif::SetExif(Optional<Media::JPEGExif::ExifValue> grp, Int32 id, UInt32 val)
 {
-	Media::JPEGExif::ExifValue *exif = GetExif(grp, id);
+	NN<Media::JPEGExif::ExifValue> exif = GetExif(grp, id);
 	if (exif->s)
 	{
 		MemFree(exif->s);
@@ -439,9 +429,9 @@ void Media::JPEGExif::SetExif(Media::JPEGExif::ExifValue *grp, Int32 id, UInt32 
 	exif->numerator = val;
 }
 
-void Media::JPEGExif::SetExif(Media::JPEGExif::ExifValue *grp, Int32 id, const Int32 *val, Int32 cnt)
+void Media::JPEGExif::SetExif(Optional<Media::JPEGExif::ExifValue> grp, Int32 id, const Int32 *val, Int32 cnt)
 {
-	Media::JPEGExif::ExifValue *exif = GetExif(grp, id);
+	NN<Media::JPEGExif::ExifValue> exif = GetExif(grp, id);
 	if (exif->s)
 	{
 		MemFree(exif->s);
@@ -453,9 +443,9 @@ void Media::JPEGExif::SetExif(Media::JPEGExif::ExifValue *grp, Int32 id, const I
 	MemCopyNO(exif->s, val, cnt * 8);
 }
 
-void Media::JPEGExif::DelExif(ExifValue *grp, Int32 id)
+void Media::JPEGExif::DelExif(Optional<ExifValue> grp, Int32 id)
 {
-	Media::JPEGExif::ExifValue *val = GetExif(grp, id);
+	NN<Media::JPEGExif::ExifValue> val = GetExif(grp, id);
 	if (val->s)
 	{
 		MemFree(val->s);
@@ -464,7 +454,7 @@ void Media::JPEGExif::DelExif(ExifValue *grp, Int32 id)
 	val->t = Media::JPEGExif::EXIF_TYPE_DEL;
 }
 
-Bool Media::JPEGExif::WriteExif(IO::Stream *input, IO::Stream *output)
+Bool Media::JPEGExif::WriteExif(NN<IO::Stream> input, NN<IO::Stream> output)
 {
 	UInt8 hdr[4];
 	UInt8 *buff;
@@ -479,7 +469,7 @@ Bool Media::JPEGExif::WriteExif(IO::Stream *input, IO::Stream *output)
 	UOSInt l;
 	Bool found;
 
-	input->Read(hdr, 2);
+	input->Read(Data::ByteArray(hdr, 2));
 	if (*(UInt16*)hdr != 0xD8FF)
 		return false;
 
@@ -488,7 +478,7 @@ Bool Media::JPEGExif::WriteExif(IO::Stream *input, IO::Stream *output)
 	buff = MemAlloc(UInt8, BUFFSIZE);
 	found = false;
 
-	while ((hdrSize = input->Read(hdr, 4)) == 4)
+	while ((hdrSize = input->Read(Data::ByteArray(hdr, 4))) == 4)
 	{
 		if (hdr[0] != 0xff)
 		{
@@ -504,7 +494,7 @@ Bool Media::JPEGExif::WriteExif(IO::Stream *input, IO::Stream *output)
 		if (hdr[1] == 0xe1)
 		{
 			excont = MemAlloc(UInt8, j);
-			input->Read(excont, j);
+			input->Read(Data::ByteArray(excont, j));
 			if (*(Int32*)excont == *(Int32*)"Exif")
 			{
 				if (*(Int16*)&excont[6] == *(Int16*)"II")
@@ -512,7 +502,7 @@ Bool Media::JPEGExif::WriteExif(IO::Stream *input, IO::Stream *output)
 					found = true;
 					oexcont = excont;
 					oexsize = (Int32)j;
-					hdrSize = input->Read(hdr, 4);
+					hdrSize = input->Read(Data::ByteArray(hdr, 4));
 					if (true)
 						oexsize = 16;
 					MemFree(excont);
@@ -537,7 +527,7 @@ Bool Media::JPEGExif::WriteExif(IO::Stream *input, IO::Stream *output)
 			output->Write(hdr, 4);
 			while (j > BUFFSIZE)
 			{
-				k = input->Read(buff, BUFFSIZE);
+				k = input->Read(Data::ByteArray(buff, BUFFSIZE));
 				if (k == 0)
 				{
 					break;
@@ -551,7 +541,7 @@ Bool Media::JPEGExif::WriteExif(IO::Stream *input, IO::Stream *output)
 			}
 			else if (j <= BUFFSIZE)
 			{
-				k = input->Read(buff, j);
+				k = input->Read(Data::ByteArray(buff, j));
 				output->Write(buff, k);
 			}
 			else
@@ -560,7 +550,7 @@ Bool Media::JPEGExif::WriteExif(IO::Stream *input, IO::Stream *output)
 		}
 	}
 
-	CalExifSize(this->exifs, &j, &i);
+	CalExifSize(this->exifs, j, i);
 	if (found)
 	{
 		i += oexsize - 16;
@@ -579,7 +569,7 @@ Bool Media::JPEGExif::WriteExif(IO::Stream *input, IO::Stream *output)
 	*(Int32*)&excont[14] = 8;
 	k = 8;
 	l = i + 8;
-	GenExifBuff(&excont[10], this->exifs, &k, &l);
+	GenExifBuff(&excont[10], this->exifs, k, l);
 	output->Write(excont, j + 24);
 	MemFree(excont);
 
@@ -587,7 +577,7 @@ Bool Media::JPEGExif::WriteExif(IO::Stream *input, IO::Stream *output)
 
 	while (true)
 	{
-		k = input->Read(buff, BUFFSIZE);
+		k = input->Read(Data::ByteArray(buff, BUFFSIZE));
 		if (k == 0)
 			break;
 		output->Write(buff, k);

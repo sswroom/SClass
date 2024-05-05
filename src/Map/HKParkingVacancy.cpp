@@ -248,7 +248,7 @@ Map::HKParkingVacancy::HKParkingVacancy(NN<Net::SocketFactory> sockf, Optional<N
 	this->bounds = Math::RectAreaDbl(Math::Coord2DDbl(0, 0), Math::Coord2DDbl(0, 0));
 	this->LoadParkingInfo();
 	this->LoadVacancy();
-	Media::StaticImage *simg = Map::MapPOI::CreateParkingPOI();
+	NN<Media::StaticImage> simg = Map::MapPOI::CreateParkingPOI();
 	NN<Media::ImageList> imgList;
 	NEW_CLASSNN(imgList, Media::ImageList(CSTR("ParkingPOI")));
 	imgList->AddImage(simg, 0);

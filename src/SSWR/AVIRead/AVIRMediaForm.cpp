@@ -632,12 +632,19 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 				UTF8Char sbuff[512];
 				UTF8Char *sptr;
 				NN<Media::ImageList> imgList;
-				Media::StaticImage *simg = img->ToStaticImage();
-				this->core->GetDrawEngine()->DeleteImage(img);
-				sptr = audio->GetSourceName(sbuff);
-				NEW_CLASSNN(imgList, Media::ImageList(CSTRP(sbuff, sptr)));
-				imgList->AddImage(simg, 0);
-				this->core->OpenObject(imgList);
+				NN<Media::StaticImage> simg;
+				if (simg.Set(img->ToStaticImage()))
+				{
+					this->core->GetDrawEngine()->DeleteImage(img);
+					sptr = audio->GetSourceName(sbuff);
+					NEW_CLASSNN(imgList, Media::ImageList(CSTRP(sbuff, sptr)));
+					imgList->AddImage(simg, 0);
+					this->core->OpenObject(imgList);
+				}
+				else
+				{
+					this->core->GetDrawEngine()->DeleteImage(img);
+				}
 			}
 		}
 		break;

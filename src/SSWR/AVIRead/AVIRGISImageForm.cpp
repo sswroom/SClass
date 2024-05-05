@@ -47,12 +47,14 @@ void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnFileDrop(AnyType userObj, Data
 
 void SSWR::AVIRead::AVIRGISImageForm::UpdateImages()
 {
+	NN<Media::StaticImage> simg;
 	UOSInt i = 0;
 	UOSInt j = this->env->GetImageCnt();
 	this->plIcons->Clear();
 	while (i < j)
 	{
-		this->plIcons->Add(this->env->GetImage(i, 0));
+		if (this->env->GetImage(i, 0).SetTo(simg))
+			this->plIcons->Add(simg);
 		i++;
 	}
 }

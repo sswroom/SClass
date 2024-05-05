@@ -164,7 +164,7 @@ void SSWR::AVIRead::AVIRHQMPPlaylistForm::UpdatePlaylist()
 	j = this->playlist->GetCount();
 	while (i < j)
 	{
-		Text::String *title = this->playlist->GetTitle(i);
+		Optional<Text::String> title = this->playlist->GetTitle(i);
 		this->lbPlaylist->AddItem(Text::String::OrEmpty(title), (void*)i);
 		i++;
 	}
@@ -203,9 +203,10 @@ SSWR::AVIRead::AVIRHQMPPlaylistForm::AVIRHQMPPlaylistForm(Optional<UI::GUIClient
 	this->HandleDropFiles(OnFileDrop, this);
 
 	NEW_CLASS(this->playlist, Media::Playlist(CSTR("HQMP"), this->core->GetParserList()));
-	if (playlist)
+	NN<Media::Playlist> nnplaylist;
+	if (nnplaylist.Set(playlist))
 	{
-		this->playlist->AppendPlaylist(playlist);
+		this->playlist->AppendPlaylist(nnplaylist);
 	}
 	this->UpdatePlaylist();
 

@@ -159,7 +159,7 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::StreamData>
 					}
 					mstm.SeekFromBeginning(0);
 					Data::Compress::LZWDecStream *lzw;
-					Media::StaticImage *simg;
+					NN<Media::StaticImage> simg;
 					NEW_CLASS(lzw, Data::Compress::LZWDecStream(&mstm, true, blockType, 12, 0));
 					
 					Data::ByteArray tmpPtr;
@@ -248,7 +248,7 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::StreamData>
 					Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
 					if (!scnImg32.IsNull())
 					{
-						NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>(scnWidth, scnHeight), 0, 32, Media::PF_B8G8R8A8, scnWidth * scnHeight * 4, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+						NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UOSInt>(scnWidth, scnHeight), 0, 32, Media::PF_B8G8R8A8, scnWidth * scnHeight * 4, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 						imgData.ChangeSize(imgW * imgH);
 						readSize = lzw->Read(imgData);
 						if (!localColorTable.IsNull())
@@ -509,7 +509,7 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::StreamData>
 					}
 					else
 					{
-						NEW_CLASS(simg, Media::StaticImage(Math::Size2D<UOSInt>(scnWidth, scnHeight), 0, 8, Media::PF_PAL_8, scnWidth * scnHeight, color, Media::ColorProfile::YUVT_UNKNOWN, (globalTransparentIndex == -1)?Media::AT_NO_ALPHA:Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+						NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UOSInt>(scnWidth, scnHeight), 0, 8, Media::PF_PAL_8, scnWidth * scnHeight, color, Media::ColorProfile::YUVT_UNKNOWN, (globalTransparentIndex == -1)?Media::AT_NO_ALPHA:Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 						if (imgDesc[8] & 0x40)
 						{
 							imgData.ChangeSize(imgW * imgH);

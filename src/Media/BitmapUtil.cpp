@@ -4,7 +4,7 @@
 #include "Math/Unit/Distance.h"
 #include "Media/BitmapUtil.h"
 
-Media::StaticImage *Media::BitmapUtil::ParseDIBBuffer(const UInt8 *dataBuff, UOSInt dataSize)
+Optional<Media::StaticImage> Media::BitmapUtil::ParseDIBBuffer(const UInt8 *dataBuff, UOSInt dataSize)
 {
 	OSInt imgWidth;
 	OSInt imgHeight;

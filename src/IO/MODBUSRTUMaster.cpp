@@ -18,7 +18,7 @@ UInt32 __stdcall IO::MODBUSRTUMaster::ThreadProc(AnyType userObj)
 	UOSInt readSize;
 	UOSInt i;
 	Bool incomplete;
-	AddrResultCb *cb;
+	NN<AddrResultCb> cb;
 	me->threadRunning = true;
 	{
 	//	Text::StringBuilderUTF8 sb;
@@ -48,8 +48,7 @@ UInt32 __stdcall IO::MODBUSRTUMaster::ThreadProc(AnyType userObj)
 							{
 								if (me->IsCRCValid(&buff[i], 5 + (UOSInt)buff[i + 2]))
 								{
-									cb = me->cbMap.Get(buff[i]);
-									if (cb && cb->readFunc)
+									if (me->cbMap.Get(buff[i]).SetTo(cb) && cb->readFunc)
 									{
 										cb->readFunc(cb->userObj, buff[i + 1], &buff[i + 3], buff[i + 2]);
 									}
@@ -79,8 +78,7 @@ UInt32 __stdcall IO::MODBUSRTUMaster::ThreadProc(AnyType userObj)
 						{
 							if (me->IsCRCValid(&buff[i], 8))
 							{
-								cb = me->cbMap.Get(buff[i]);
-								if (cb && cb->setFunc)
+								if (me->cbMap.Get(buff[i]).SetTo(cb) && cb->setFunc)
 								{
 									cb->setFunc(cb->userObj, buff[i + 1], ReadMUInt16(&buff[i + 2]), ReadMUInt16(&buff[i + 4]));
 								}
@@ -180,12 +178,12 @@ IO::MODBUSRTUMaster::~MODBUSRTUMaster()
 			Sync::SimpleThread::Sleep(10);
 		}
 	}
-	AddrResultCb *cb;
+	NN<AddrResultCb> cb;
 	i = this->cbMap.GetCount();
 	while (i-- > 0)
 	{
-		cb = this->cbMap.GetItem(i);
-		MemFree(cb);
+		cb = this->cbMap.GetItemNoCheck(i);
+		MemFreeNN(cb);
 	}
 	DEL_CLASS(this->crc);
 }
@@ -412,8 +410,8 @@ Bool IO::MODBUSRTUMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, U
 
 void IO::MODBUSRTUMaster::HandleReadResult(UInt8 addr, ReadResultFunc readFunc, SetResultFunc setFunc, AnyType userObj)
 {
-	AddrResultCb *cb = this->cbMap.Get(addr);
-	if (cb)
+	NN<AddrResultCb> cb;
+	if (this->cbMap.Get(addr).SetTo(cb))
 	{
 		cb->readFunc = readFunc;
 		cb->setFunc = setFunc;
@@ -421,7 +419,7 @@ void IO::MODBUSRTUMaster::HandleReadResult(UInt8 addr, ReadResultFunc readFunc, 
 	}
 	else
 	{
-		cb = MemAlloc(AddrResultCb, 1);
+		cb = MemAllocNN(AddrResultCb);
 		cb->readFunc = readFunc;
 		cb->setFunc = setFunc;
 		cb->userObj = userObj;

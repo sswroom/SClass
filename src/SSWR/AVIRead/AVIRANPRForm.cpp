@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnFileHandler(AnyType userObj, Data:
 		{
 			imgList->ToStaticImage(0);
 			NN<Media::StaticImage> img;
-			if (img.Set((Media::StaticImage*)imgList->GetImage(0, 0)))
+			if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img))
 			{
 				SDEL_CLASS(me->currImg);
 				me->currImg = img.Ptr();

@@ -19,14 +19,14 @@ namespace Media
 			Data::Duration timeEnd;
 		} PlaylistEntry;
 
-		Data::ArrayList<PlaylistEntry*> entries;
+		Data::ArrayListNN<PlaylistEntry> entries;
 		NN<Parser::ParserList> parsers;
 		Media::IMediaPlayer *player;
 		Media::MediaFile *currFile;
 		Bool playing;
 
 		static void __stdcall OnPBEnd(AnyType userObj);
-		void FreeEntry(PlaylistEntry* ent);
+		static void FreeEntry(NN<PlaylistEntry> ent);
 	public:
 		Playlist(Text::CStringNN sourceName, NN<Parser::ParserList> parsers);
 		virtual ~Playlist();
@@ -34,13 +34,13 @@ namespace Media
 		virtual IO::ParserType GetParserType() const;
 		Bool AddFile(Text::CStringNN fileName);
 		Bool RemoveEntry(UOSInt index);
-		Bool AppendPlaylist(Media::Playlist *playlist);
+		Bool AppendPlaylist(NN<Media::Playlist> playlist);
 		void ClearFiles();
 
 		UOSInt GetCount() const;
-		Text::String *GetTitle(UOSInt index) const;
+		Optional<Text::String> GetTitle(UOSInt index) const;
 		Text::String *GetArtist(UOSInt index) const;
-		Text::String *GetFileName(UOSInt index) const;
+		Optional<Text::String> GetFileName(UOSInt index) const;
 		Data::Duration GetTimeStart(UOSInt index) const;
 		Data::Duration GetTimeEnd(UOSInt index) const;
 

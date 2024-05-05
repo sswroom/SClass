@@ -1,3 +1,6 @@
+#ifndef _SM_MEDIA_JPEGEXIF
+#define _SM_MEDIA_JPEGEXIF
+#include "Data/ArrayListNN.h"
 namespace Media
 {
 	class JPEGExif
@@ -27,27 +30,28 @@ namespace Media
 		} ExifValue;
 
 	private:
-		Data::ArrayList<ExifValue*> *exifs;
+		Data::ArrayListNN<ExifValue> exifs;
 
-		void FreeExif(ExifValue *exif);
-		ExifValue *DupExif(ExifValue *exif);
-		ExifValue *GetExif(ExifValue *grp, Int32 id);
-		void CalExifSize(Data::ArrayList<ExifValue*> *exifArr, UOSInt *size, UOSInt *endOfst);
-		void GenExifBuff(UInt8 *buff, Data::ArrayList<ExifValue*> *exifArr, UOSInt *startOfst, UOSInt *otherOfst);
+		static void FreeExif(NN<ExifValue> exif);
+		NN<ExifValue> DupExif(NN<ExifValue> exif);
+		NN<ExifValue> GetExif(Optional<ExifValue> grp, Int32 id);
+		void CalExifSize(NN<Data::ArrayListNN<ExifValue>> exifArr, OutParam<UOSInt> size, OutParam<UOSInt> endOfst);
+		void GenExifBuff(UInt8 *buff, NN<Data::ArrayListNN<ExifValue>> exifArr, InOutParam<UOSInt> startOfst, InOutParam<UOSInt> otherOfst);
 	public:
 		JPEGExif();
 		~JPEGExif();
 
-		ExifValue *AddExifGroup(Int32 id);
-		void SetExif(ExifValue *grp, Int32 id, Int32 numerator, Int32 denominator);
-		void SetExif(ExifValue *grp, Int32 id, const Char *s);
-		void SetExif(ExifValue *grp, Int32 id, const UInt8 *s, Int32 size);
-		void SetExifUnk(ExifValue *grp, Int32 id, const UInt8 *s, Int32 size);
-		void SetExif(ExifValue *grp, Int32 id, UInt16 val);
-		void SetExif(ExifValue *grp, Int32 id, UInt32 val);
-		void SetExif(ExifValue *grp, Int32 id, const Int32 *val, Int32 cnt);
-		void DelExif(ExifValue *grp, Int32 id);
+		NN<ExifValue> AddExifGroup(Int32 id);
+		void SetExif(Optional<ExifValue> grp, Int32 id, Int32 numerator, Int32 denominator);
+		void SetExif(Optional<ExifValue> grp, Int32 id, const Char *s);
+		void SetExif(Optional<ExifValue> grp, Int32 id, const UInt8 *s, Int32 size);
+		void SetExifUnk(Optional<ExifValue> grp, Int32 id, const UInt8 *s, Int32 size);
+		void SetExif(Optional<ExifValue> grp, Int32 id, UInt16 val);
+		void SetExif(Optional<ExifValue> grp, Int32 id, UInt32 val);
+		void SetExif(Optional<ExifValue> grp, Int32 id, const Int32 *val, Int32 cnt);
+		void DelExif(Optional<ExifValue> grp, Int32 id);
 
-		Bool WriteExif(IO::Stream *input, IO::Stream *output);
+		Bool WriteExif(NN<IO::Stream> input, NN<IO::Stream> output);
 	};
-};
+}
+#endif

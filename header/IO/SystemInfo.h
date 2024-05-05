@@ -1,6 +1,6 @@
 #ifndef _SM_IO_SYSTEMINFO
 #define _SM_IO_SYSTEMINFO
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Text/String.h"
 
 namespace IO
@@ -72,8 +72,8 @@ namespace IO
 		UInt64 GetTotalUsableMemSize();
 		ChassisType GetChassisType();
 
-		UOSInt GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList);
-		void FreeRAMInfo(Data::ArrayList<RAMInfo*> *ramList);
+		UOSInt GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList);
+		void FreeRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList);
 	};
 }
 

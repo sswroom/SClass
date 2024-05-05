@@ -283,8 +283,8 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceDblClk(AnyType userObj)
 		NN<const IO::EXEFile::ResourceInfo> res = item.GetNN<const IO::EXEFile::ResourceInfo>();
 		if (res->rt == IO::EXEFile::RT_BITMAP)
 		{
-			Media::StaticImage *simg = Media::BitmapUtil::ParseDIBBuffer(res->data, res->dataSize);
-			if (simg)
+			NN<Media::StaticImage> simg;
+			if (Media::BitmapUtil::ParseDIBBuffer(res->data, res->dataSize).SetTo(simg))
 			{
 				NN<Media::ImageList> imgList;
 				NEW_CLASSNN(imgList, Media::ImageList(res->name));

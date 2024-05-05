@@ -25,8 +25,8 @@ void __stdcall SSWR::AVIRead::AVIRGenImageForm::GenerateClicked(AnyType userObj)
 		NN<Media::ImageGenerator> imgGen = me->cboGenerator->GetItem(i).GetNN<Media::ImageGenerator>();
 		Media::ColorProfile colorProfile((Media::ColorProfile::CommonProfileType)me->cboColorProfile->GetSelectedItem().GetOSInt());
 
-		Media::RasterImage *img = imgGen->GenerateImage(colorProfile, Math::Size2D<UOSInt>(width, height));
-		if (img)
+		NN<Media::RasterImage> img;
+		if (imgGen->GenerateImage(colorProfile, Math::Size2D<UOSInt>(width, height)).SetTo(img))
 		{
 			NN<Media::ImageList> imgList;
 			NEW_CLASSNN(imgList, Media::ImageList(imgGen->GetName()));

@@ -18,7 +18,7 @@ Text::CStringNN Media::ImageGen::GammaImageGen::GetName() const
 	return CSTR("Gamma Test");
 }
 
-Media::RasterImage *Media::ImageGen::GammaImageGen::GenerateImage(NN<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size)
+Optional<Media::RasterImage> Media::ImageGen::GammaImageGen::GenerateImage(NN<const Media::ColorProfile> colorProfile, Math::Size2D<UOSInt> size)
 {
 	Media::StaticImage *outImage;
 	UInt8 *imgPtr;

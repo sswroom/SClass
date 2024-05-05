@@ -22,11 +22,8 @@ Media::ImageList::ImageList(Text::CStringNN fileName) : IO::ParsedObject(fileNam
 
 Media::ImageList::~ImageList()
 {
-	UOSInt i = this->imgList.GetCount();
-	while (i-- > 0)
-	{
-		DEL_CLASS(this->imgList.RemoveAt(i));
-	}
+	UOSInt i;
+	this->imgList.DeleteAll();
 	i = this->valStr.GetCount();
 	while (i-- > 0)
 	{
@@ -50,38 +47,24 @@ UOSInt Media::ImageList::AddImage(NN<Media::RasterImage> img, UInt32 imageDelay)
 {
 	this->imgTimes.Add(imageDelay);
 	this->imgTypeList.Add(Media::ImageList::IT_UNKNOWN);
-	return this->imgList.Add(img.Ptr());
-}
-
-UOSInt Media::ImageList::AddImage(Media::RasterImage *img, UInt32 imageDelay)
-{
-	this->imgTimes.Add(imageDelay);
-	this->imgTypeList.Add(Media::ImageList::IT_UNKNOWN);
 	return this->imgList.Add(img);
 }
 
 void Media::ImageList::ReplaceImage(UOSInt index, NN<Media::RasterImage> img)
 {
-	Media::RasterImage *oldImg = this->imgList.GetItem(index);
-	this->imgList.SetItem(index, img.Ptr());
-	SDEL_CLASS(oldImg);
-}
-
-void Media::ImageList::ReplaceImage(UOSInt index, Media::RasterImage *img)
-{
-	Media::RasterImage *oldImg = this->imgList.GetItem(index);
+	Optional<Media::RasterImage> oldImg = this->imgList.GetItem(index);
 	this->imgList.SetItem(index, img);
-	SDEL_CLASS(oldImg);
+	oldImg.Delete();
 }
 
 Bool  Media::ImageList::RemoveImage(UOSInt index, Bool toRelease)
 {
-	Media::RasterImage *oldImg = this->imgList.RemoveAt(index);
-	if (oldImg == 0)
+	NN<Media::RasterImage> oldImg;
+	if (!this->imgList.RemoveAt(index).SetTo(oldImg))
 		return false;
 	if (toRelease)
 	{
-		DEL_CLASS(oldImg);
+		oldImg.Delete();
 	}
 	return true;
 }
@@ -91,7 +74,7 @@ UOSInt Media::ImageList::GetCount() const
 	return this->imgList.GetCount();
 }
 
-Media::RasterImage *Media::ImageList::GetImage(UOSInt index, OptOut<UInt32> imageDelay) const
+Optional<Media::RasterImage> Media::ImageList::GetImage(UOSInt index, OptOut<UInt32> imageDelay) const
 {
 	imageDelay.Set(this->imgTimes.GetItem(index));
 	return this->imgList.GetItem(index);
@@ -118,12 +101,12 @@ void Media::ImageList::SetImageType(UOSInt index, ImageType imgType)
 
 void Media::ImageList::ToStaticImage(UOSInt index)
 {
-	Media::RasterImage *img = this->imgList.GetItem(index);
-	if (img == 0 || img->GetImageType() == Media::RasterImage::ImageType::Static)
+	NN<Media::RasterImage> img;
+	if (!this->imgList.GetItem(index).SetTo(img) || img->GetImageType() == Media::RasterImage::ImageType::Static)
 		return;
 	NN<Media::StaticImage> simg = img->CreateStaticImage();
-	this->imgList.SetItem(index, simg.Ptr());
-	DEL_CLASS(img);
+	this->imgList.SetItem(index, simg);
+	img.Delete();
 }
 
 void Media::ImageList::SetAuthor(const UTF8Char *name)
@@ -335,14 +318,13 @@ Bool Media::ImageList::ToValueString(NN<Text::StringBuilderUTF8> sb) const
 void Media::ImageList::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	Bool hasData = this->ToValueString(sb);
-	Media::RasterImage *img;
+	NN<Media::RasterImage> img;
 	UInt32 delay;
 	UOSInt i = 0;
 	UOSInt j = this->GetCount();
 	while (i < j)
 	{
-		img = this->GetImage(i, delay);
-		if (img)
+		if (this->GetImage(i, delay).SetTo(img))
 		{
 			if (hasData)
 			{

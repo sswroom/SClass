@@ -54,7 +54,8 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 
 	if (buff)
 	{
-		Media::RasterImage *srcImg = 0;
+		Optional<Media::RasterImage> srcImg = 0;
+		NN<Media::RasterImage> nnimg;
 		Media::ImageList *imgList;
 		UInt8 *pngBuff;
 		UOSInt pngSize;
@@ -65,10 +66,10 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 		}
 		pngBuff = (UInt8*)buff;
 		pngSize = buffSize;
-		if (srcImg != 0 && pngBuff[0] == 0x89 && pngBuff[1] == 0x50 && pngBuff[2] == 0x4e && pngBuff[3] == 0x47)
+		if (srcImg.SetTo(nnimg) && pngBuff[0] == 0x89 && pngBuff[1] == 0x50 && pngBuff[2] == 0x4e && pngBuff[3] == 0x47)
 		{
 			UInt8 tmpBuff[64];
-			const UInt8 *iccBuff = srcImg->info.color.GetRAWICC();
+			const UInt8 *iccBuff = nnimg->info.color.GetRAWICC();
 			UInt32 chunkSize;
 			Int32 chunkType;
 			UOSInt i;
@@ -120,7 +121,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 					}
 					else
 					{
-						if (srcImg->info.color.GetRTranParamRead()->GetTranType() == Media::CS::TRANT_sRGB)
+						if (nnimg->info.color.GetRTranParamRead()->GetTranType() == Media::CS::TRANT_sRGB)
 						{
 							WriteMUInt32(&tmpBuff[0], 1);
 							WriteInt32(&tmpBuff[4], ReadInt32("sRGB"));
@@ -129,7 +130,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 							stm->Write(tmpBuff, 13);
 						}
 
-						NN<const Media::ColorProfile::ColorPrimaries> prim = srcImg->info.color.GetPrimariesRead();
+						NN<const Media::ColorProfile::ColorPrimaries> prim = nnimg->info.color.GetPrimariesRead();
 						WriteMUInt32(&tmpBuff[0], 32);
 						WriteInt32(&tmpBuff[4], ReadInt32("cHRM"));
 						WriteMInt32(&tmpBuff[8], Double2Int32(prim->w.x * 100000));
@@ -143,10 +144,10 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 						WriteMUInt32(&tmpBuff[40], crc.CalcDirect(&tmpBuff[4], 36));
 						stm->Write(tmpBuff, 44);
 					}
-					if (srcImg->info.hdpi != 72.0 || srcImg->info.vdpi != 72.0)
+					if (nnimg->info.hdpi != 72.0 || nnimg->info.vdpi != 72.0)
 					{
-						Int32 hVal = Double2Int32(1.0 / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, 1.0 / srcImg->info.hdpi));
-						Int32 vVal = Double2Int32(1.0 / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, 1.0 / srcImg->info.vdpi));
+						Int32 hVal = Double2Int32(1.0 / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, 1.0 / nnimg->info.hdpi));
+						Int32 vVal = Double2Int32(1.0 / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, 1.0 / nnimg->info.vdpi));
 						WriteMInt32(&tmpBuff[0], 9);
 						*(Int32*)&tmpBuff[4] = *(Int32*)"pHYs";
 						WriteMInt32(&tmpBuff[8], hVal);

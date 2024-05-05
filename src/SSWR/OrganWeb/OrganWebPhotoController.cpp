@@ -239,163 +239,174 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::I
 			}
 
 			Media::ImageList *imgList;
-			Media::StaticImage *simg;
-			Media::StaticImage *lrimg;
+			NN<Media::RasterImage> rimg;
+			NN<Media::StaticImage> simg;
+			Optional<Media::StaticImage> lrimg;
 			NN<Media::StaticImage> lrimgnn;
-			Media::StaticImage *dimg;
+			Optional<Media::StaticImage> dimg;
 			{
 				IO::StmData::FileData fd(sb.ToCString(), false);
 				imgList = (Media::ImageList*)this->env->ParseFileType(fd, IO::ParserType::ImageList);
 			}
 			if (imgList)
 			{
-				simg = imgList->GetImage(0, 0)->CreateStaticImage().Ptr();
-				DEL_CLASS(imgList);
-				Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-				NEW_CLASS(lrimg, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-				Sync::MutexUsage mutUsage(this->csconvMut);
-				if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color.Equals(this->csconvColor))
+				if (imgList->GetImage(0, 0).SetTo(rimg))
 				{
-					SDEL_CLASS(this->csconv);
-					this->csconvFCC = simg->info.fourcc;
-					this->csconvBpp = simg->info.storeBPP;
-					this->csconvPF = simg->info.pf;
-					this->csconvColor.Set(simg->info.color);
-					this->csconv = Media::CS::CSConverter::NewConverter(this->csconvFCC, this->csconvBpp, this->csconvPF, this->csconvColor, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, Media::ColorProfile::YUVT_UNKNOWN, this->env->GetColorSess().Ptr());
-				}
-				if (this->csconv)
-				{
-					this->csconv->ConvertV2(&simg->data, lrimg->data, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.storeSize.x, simg->info.storeSize.y, (OSInt)lrimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
-				}
-				else
-				{
-					SDEL_CLASS(lrimg);
-				}
-				mutUsage.EndUse();
-				DEL_CLASS(simg);
-
-				if (lrimgnn.Set(lrimg))
-				{
-					this->lrgbLimiter.LimitImageLRGB(lrimg->data, lrimg->info.dispSize.x, lrimg->info.dispSize.y);
-					Sync::MutexUsage mutUsage(this->resizerMut);
-					resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
-					resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
-					dimg = resizerLR->ProcessToNew(lrimgnn);
-					mutUsage.EndUse();
-					DEL_CLASS(lrimg)
-				}
-				else
-				{
-					dimg = 0;
-				}
-				if (dimg)
-				{
-					UInt8 *buff;
-					UOSInt buffSize;
-					dimg->info.color.SetRAWICC(Media::ICCProfile::GetSRGBICCData());
-					if (rotateType == 1)
+					simg = rimg->CreateStaticImage();
+					DEL_CLASS(imgList);
+					Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
+					NEW_CLASSNN(lrimgnn, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+					lrimg = lrimgnn;
+					Sync::MutexUsage mutUsage(this->csconvMut);
+					if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color.Equals(this->csconvColor))
 					{
-						dimg->RotateImage(Media::StaticImage::RotateType::CW90);
+						SDEL_CLASS(this->csconv);
+						this->csconvFCC = simg->info.fourcc;
+						this->csconvBpp = simg->info.storeBPP;
+						this->csconvPF = simg->info.pf;
+						this->csconvColor.Set(simg->info.color);
+						this->csconv = Media::CS::CSConverter::NewConverter(this->csconvFCC, this->csconvBpp, this->csconvPF, this->csconvColor, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, Media::ColorProfile::YUVT_UNKNOWN, this->env->GetColorSess().Ptr());
 					}
-					else if (rotateType == 2)
+					if (this->csconv)
 					{
-						dimg->RotateImage(Media::StaticImage::RotateType::CW180);
-					}
-					else if (rotateType == 3)
-					{
-						dimg->RotateImage(Media::StaticImage::RotateType::CW270);
-					}
-
-					if (false)//this->watermark && !Text::StrStartsWith(fileName, (const UTF8Char*)"web") && fileName[3] != IO::Path::PATH_SEPERATOR && fileName[3] != '\\')
-					{
-/*						Int32 xRand;
-						Int32 yRand;
-						Int16 fontSize = imgWidth / 12;
-						OSInt leng = this->watermark->leng;
-						Double sz[2];
-						Int32 iWidth;
-						Int32 iHeight;
-						Media::DrawImage *gimg = (Media::DrawImage*)this->eng->ConvImage(dimg);
-						Media::DrawImage *gimg2;
-						Media::DrawBrush *b = gimg->NewBrushARGB(0xffffffff);
-						Media::DrawFont *f;
-						while (true)
-						{
-							f = gimg->NewFontW(L"Arial", fontSize, Media::DrawEngine::DFS_NORMAL);
-							if (!gimg->GetTextSize(f, this->watermark, leng, sz))
-							{
-								gimg->DelFont(f);
-								break;
-							}
-							if (sz[0] <= dimg->info.dispSize.x && sz[1] <= dimg->info.dispSize.y)
-							{
-								xRand = Double2Int32(dimg->info.dispSize.x - sz[0]);
-								yRand = Double2Int32(dimg->info.dispSize.y - sz[1]);
-								iWidth = Double2Int32(sz[0]);
-								iHeight = Double2Int32(sz[1]);
-								gimg2 = this->eng->CreateImage32(iWidth, iHeight, Media::AT_NO_ALPHA);
-								gimg2->DrawString(0, 0, this->watermark, f, b);
-								gimg2->SetAlphaType(Media::AT_ALPHA);
-								{
-									Bool revOrder;
-									UInt8 *bits = gimg2->GetImgBits(&revOrder);
-									Int32 col = (this->random->NextInt30() & 0xffffff) | 0x5f808080;
-									ImageUtil_ColorReplace32(bits, iWidth, iHeight, col);
-								}
-								gimg->DrawImagePt(gimg2, Double2Int32(this->random->NextDouble() * xRand), Double2Int32(this->random->NextDouble() * yRand));
-								this->eng->DeleteImage(gimg2);
-								gimg->DelFont(f);
-								break;
-
-							}
-							else
-							{
-								gimg->DelFont(f);
-								fontSize--;
-							}
-						}
-						gimg->DelBrush(b);
-						NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganWeb::OrganWebHandler.WebRequest"));
-						gimg->SaveJPG(mstm);
-						buff = mstm->GetBuff(&buffSize);
-						resp->AddDefHeaders(req);
-						resp->AddContentLength(buffSize);
-						resp->AddContentType((const UTF8Char*)"image/jpeg"));
-						resp->Write(buff, buffSize);
-
-						if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE && buffSize > 0)
-						{
-							IO::FileStream fs(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-							fs.Write(buff, buffSize);
-						}
-
-						DEL_CLASS(mstm);
-						DEL_CLASS(dimg);
-						this->eng->DeleteImage(gimg);*/
+						this->csconv->ConvertV2(&simg->data, lrimgnn->data, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.storeSize.x, simg->info.storeSize.y, (OSInt)lrimgnn->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 					}
 					else
 					{
-						Optional<IO::FileExporter::ParamData> param;
-						Media::ImageList nimgList(CSTR("Temp"));
-						IO::MemoryStream mstm;
-						nimgList.AddImage(dimg, 0);
-						Exporter::GUIJPGExporter exporter;
-						param = exporter.CreateParam(nimgList);
-						exporter.SetParamInt32(param, 0, 95);
-						exporter.ExportFile(mstm, CSTR(""), nimgList, param);
-						exporter.DeleteParam(param);
-						ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
+						lrimg.Delete();
+					}
+					mutUsage.EndUse();
+					simg.Delete();
 
-						if (cacheDir->leng > 0 && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize() && mstm.GetLength() > 0)
+					if (lrimg.SetTo(lrimgnn))
+					{
+						this->lrgbLimiter.LimitImageLRGB(lrimgnn->data, lrimgnn->info.dispSize.x, lrimgnn->info.dispSize.y);
+						Sync::MutexUsage mutUsage(this->resizerMut);
+						resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
+						resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
+						dimg = resizerLR->ProcessToNew(lrimgnn);
+						mutUsage.EndUse();
+						lrimg.Delete();
+					}
+					else
+					{
+						dimg = 0;
+					}
+					if (dimg.SetTo(simg))
+					{
+						UInt8 *buff;
+						UOSInt buffSize;
+						simg->info.color.SetRAWICC(Media::ICCProfile::GetSRGBICCData());
+						if (rotateType == 1)
 						{
-							IO::FileStream fs({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-							buff = mstm.GetBuff(buffSize);
-							fs.Write(buff, buffSize);
+							simg->RotateImage(Media::StaticImage::RotateType::CW90);
 						}
+						else if (rotateType == 2)
+						{
+							simg->RotateImage(Media::StaticImage::RotateType::CW180);
+						}
+						else if (rotateType == 3)
+						{
+							simg->RotateImage(Media::StaticImage::RotateType::CW270);
+						}
+
+						if (false)//this->watermark && !Text::StrStartsWith(fileName, (const UTF8Char*)"web") && fileName[3] != IO::Path::PATH_SEPERATOR && fileName[3] != '\\')
+						{
+	/*						Int32 xRand;
+							Int32 yRand;
+							Int16 fontSize = imgWidth / 12;
+							OSInt leng = this->watermark->leng;
+							Double sz[2];
+							Int32 iWidth;
+							Int32 iHeight;
+							Media::DrawImage *gimg = (Media::DrawImage*)this->eng->ConvImage(dimg);
+							Media::DrawImage *gimg2;
+							Media::DrawBrush *b = gimg->NewBrushARGB(0xffffffff);
+							Media::DrawFont *f;
+							while (true)
+							{
+								f = gimg->NewFontW(L"Arial", fontSize, Media::DrawEngine::DFS_NORMAL);
+								if (!gimg->GetTextSize(f, this->watermark, leng, sz))
+								{
+									gimg->DelFont(f);
+									break;
+								}
+								if (sz[0] <= dimg->info.dispSize.x && sz[1] <= dimg->info.dispSize.y)
+								{
+									xRand = Double2Int32(dimg->info.dispSize.x - sz[0]);
+									yRand = Double2Int32(dimg->info.dispSize.y - sz[1]);
+									iWidth = Double2Int32(sz[0]);
+									iHeight = Double2Int32(sz[1]);
+									gimg2 = this->eng->CreateImage32(iWidth, iHeight, Media::AT_NO_ALPHA);
+									gimg2->DrawString(0, 0, this->watermark, f, b);
+									gimg2->SetAlphaType(Media::AT_ALPHA);
+									{
+										Bool revOrder;
+										UInt8 *bits = gimg2->GetImgBits(&revOrder);
+										Int32 col = (this->random->NextInt30() & 0xffffff) | 0x5f808080;
+										ImageUtil_ColorReplace32(bits, iWidth, iHeight, col);
+									}
+									gimg->DrawImagePt(gimg2, Double2Int32(this->random->NextDouble() * xRand), Double2Int32(this->random->NextDouble() * yRand));
+									this->eng->DeleteImage(gimg2);
+									gimg->DelFont(f);
+									break;
+
+								}
+								else
+								{
+									gimg->DelFont(f);
+									fontSize--;
+								}
+							}
+							gimg->DelBrush(b);
+							NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganWeb::OrganWebHandler.WebRequest"));
+							gimg->SaveJPG(mstm);
+							buff = mstm->GetBuff(&buffSize);
+							resp->AddDefHeaders(req);
+							resp->AddContentLength(buffSize);
+							resp->AddContentType((const UTF8Char*)"image/jpeg"));
+							resp->Write(buff, buffSize);
+
+							if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE && buffSize > 0)
+							{
+								IO::FileStream fs(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+								fs.Write(buff, buffSize);
+							}
+
+							DEL_CLASS(mstm);
+							DEL_CLASS(dimg);
+							this->eng->DeleteImage(gimg);*/
+						}
+						else
+						{
+							Optional<IO::FileExporter::ParamData> param;
+							Media::ImageList nimgList(CSTR("Temp"));
+							IO::MemoryStream mstm;
+							nimgList.AddImage(simg, 0);
+							Exporter::GUIJPGExporter exporter;
+							param = exporter.CreateParam(nimgList);
+							exporter.SetParamInt32(param, 0, 95);
+							exporter.ExportFile(mstm, CSTR(""), nimgList, param);
+							exporter.DeleteParam(param);
+							ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
+
+							if (cacheDir->leng > 0 && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize() && mstm.GetLength() > 0)
+							{
+								IO::FileStream fs({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+								buff = mstm.GetBuff(buffSize);
+								fs.Write(buff, buffSize);
+							}
+						}
+					}
+					else
+					{
+						resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+						return;
 					}
 				}
 				else
 				{
+					DEL_CLASS(imgList);
 					resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 					return;
 				}
@@ -500,173 +511,208 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 		mutUsage.EndUse();
 
 		Media::ImageList *imgList;
-		Media::StaticImage *simg;
-		Media::StaticImage *lrimg;
+		NN<Media::RasterImage> rimg;
+		NN<Media::StaticImage> simg;
+		Optional<Media::StaticImage> lrimg;
 		NN<Media::StaticImage> lrimgnn;
-		Media::StaticImage *dimg;
+		Optional<Media::StaticImage> dimg;
 		{
 			IO::StmData::FileData fd({sbuff, (UOSInt)(sptr - sbuff)}, false);
 			imgList = (Media::ImageList*)this->env->ParseFileType(fd, IO::ParserType::ImageList);
 		}
 		if (imgList)
 		{
-			simg = imgList->GetImage(0, 0)->CreateStaticImage().Ptr();
-			DEL_CLASS(imgList);
-			Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-			NEW_CLASS(lrimg, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			if (imgList->GetImage(0, 0).SetTo(rimg))
 			{
-				Sync::MutexUsage mutUsage(this->csconvMut);
-				if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color.Equals(this->csconvColor))
+				simg = rimg->CreateStaticImage();
+				DEL_CLASS(imgList);
+				Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
+				NEW_CLASSNN(lrimgnn, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				lrimg = lrimgnn;
 				{
-					SDEL_CLASS(this->csconv);
-					this->csconvFCC = simg->info.fourcc;
-					this->csconvBpp = simg->info.storeBPP;
-					this->csconvPF = simg->info.pf;
-					this->csconvColor.Set(simg->info.color);
-					this->csconv = Media::CS::CSConverter::NewConverter(this->csconvFCC, this->csconvBpp, this->csconvPF, this->csconvColor, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, Media::ColorProfile::YUVT_UNKNOWN, this->env->GetColorSess().Ptr());
+					Sync::MutexUsage mutUsage(this->csconvMut);
+					if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color.Equals(this->csconvColor))
+					{
+						SDEL_CLASS(this->csconv);
+						this->csconvFCC = simg->info.fourcc;
+						this->csconvBpp = simg->info.storeBPP;
+						this->csconvPF = simg->info.pf;
+						this->csconvColor.Set(simg->info.color);
+						this->csconv = Media::CS::CSConverter::NewConverter(this->csconvFCC, this->csconvBpp, this->csconvPF, this->csconvColor, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, Media::ColorProfile::YUVT_UNKNOWN, this->env->GetColorSess().Ptr());
+					}
+					if (this->csconv)
+					{
+						this->csconv->ConvertV2(&simg->data, lrimgnn->data, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.storeSize.x, simg->info.storeSize.y, (OSInt)lrimgnn->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+					}
+					else
+					{
+						lrimg.Delete();
+					}
 				}
-				if (this->csconv)
-				{
-					this->csconv->ConvertV2(&simg->data, lrimg->data, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.storeSize.x, simg->info.storeSize.y, (OSInt)lrimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
-				}
-				else
-				{
-					SDEL_CLASS(lrimg);
-				}
-			}
-			DEL_CLASS(simg);
+				simg.Delete();
 
-			if (lrimgnn.Set(lrimg))
-			{
-				this->lrgbLimiter.LimitImageLRGB(lrimg->data, lrimg->info.dispSize.x, lrimg->info.dispSize.y);
-				if (imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
+				if (lrimg.SetTo(lrimgnn))
 				{
-					Sync::MutexUsage mutUsage(this->resizerMut);
-					resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
-					resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
-					Double x1 = userFile->cropLeft;
-					Double y1 = userFile->cropTop;
-					Double x2 = UOSInt2Double(lrimg->info.dispSize.x) - userFile->cropRight;
-					Double y2 = UOSInt2Double(lrimg->info.dispSize.y) - userFile->cropBottom;
-					if (userFile->cropLeft < 0)
+					this->lrgbLimiter.LimitImageLRGB(lrimgnn->data, lrimgnn->info.dispSize.x, lrimgnn->info.dispSize.y);
+					if (imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 					{
-						x1 = 0;
-						x2 = UOSInt2Double(lrimg->info.dispSize.x) - userFile->cropRight - userFile->cropLeft;
-					}
-					else if (userFile->cropRight < 0)
-					{
-						x1 = userFile->cropLeft + userFile->cropRight;
-						x2 = UOSInt2Double(lrimg->info.dispSize.x);
-					}
-					if (userFile->cropTop < 0)
-					{
-						y1 = 0;
-						y2 = UOSInt2Double(lrimg->info.dispSize.y) - userFile->cropBottom - userFile->cropTop;
-					}
-					else if (userFile->cropBottom < 0)
-					{
-						y1 = userFile->cropBottom + userFile->cropTop;
-						y2 = UOSInt2Double(lrimg->info.dispSize.y);
-					}
-					dimg = resizerLR->ProcessToNewPartial(lrimgnn, Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2));
-					mutUsage.EndUse();
-				}
-				else
-				{
-					Sync::MutexUsage mutUsage(this->resizerMut);
-					resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
-					resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
-					dimg = resizerLR->ProcessToNew(lrimgnn);
-					mutUsage.EndUse();
-				}
-				DEL_CLASS(lrimg)
-			}
-			else
-			{
-				dimg = 0;
-			}
-			NN<Media::StaticImage> nndimg;
-			if (nndimg.Set(dimg))
-			{
-				UInt8 *buff;
-				UOSInt buffSize;
-				nndimg->info.color.SetRAWICC(Media::ICCProfile::GetSRGBICCData());
-
-				if (rotateType == 1)
-				{
-					nndimg->RotateImage(Media::StaticImage::RotateType::CW90);
-				}
-				else if (rotateType == 2)
-				{
-					nndimg->RotateImage(Media::StaticImage::RotateType::CW180);
-				}
-				else if (rotateType == 3)
-				{
-					nndimg->RotateImage(Media::StaticImage::RotateType::CW270);
-				}
-
-				if (user.SetTo(nnuser) && nnuser->watermark->leng > 0)
-				{
-					NN<Media::DrawImage> gimg;
-					if (gimg.Set(this->env->GetDrawEngine()->ConvImage(nndimg)))
-					{
-						if ((cacheDir->v && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize()) || user != reqUser)
+						Sync::MutexUsage mutUsage(this->resizerMut);
+						resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
+						resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
+						Double x1 = userFile->cropLeft;
+						Double y1 = userFile->cropTop;
+						Double x2 = UOSInt2Double(lrimgnn->info.dispSize.x) - userFile->cropRight;
+						Double y2 = UOSInt2Double(lrimgnn->info.dispSize.y) - userFile->cropBottom;
+						if (userFile->cropLeft < 0)
 						{
-							Int32 xRand;
-							Int32 yRand;
-							UInt32 fontSizePx = imgWidth / 12;
-							Math::Size2DDbl sz;
-							UInt32 iWidth;
-							UInt32 iHeight;
-							NN<Media::DrawImage> gimg2;
-							NN<Media::DrawBrush> b = gimg->NewBrushARGB(0xffffffff);
-							NN<Media::DrawFont> f;
-							while (true)
-							{
-								f = gimg->NewFontPx(CSTR("Arial"), fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
-								sz = gimg->GetTextSize(f, nnuser->watermark->ToCString());
-								if (!sz.HasArea())
-								{
-									gimg->DelFont(f);
-									break;
-								}
-								if (sz.x <= UOSInt2Double(dimg->info.dispSize.x) && sz.y <= UOSInt2Double(dimg->info.dispSize.y))
-								{
-									xRand = Double2Int32(UOSInt2Double(dimg->info.dispSize.x) - sz.x);
-									yRand = Double2Int32(UOSInt2Double(dimg->info.dispSize.y) - sz.y);
-									iWidth = (UInt32)Double2Int32(sz.x);
-									iHeight = (UInt32)Double2Int32(sz.y);
-									if (gimg2.Set(this->env->GetDrawEngine()->CreateImage32(Math::Size2D<UOSInt>(iWidth, iHeight), Media::AT_NO_ALPHA)))
-									{
-										gimg2->DrawString(Math::Coord2DDbl(0, 0), nnuser->watermark->ToCString(), f, b);
-										gimg2->SetAlphaType(Media::AT_ALPHA);
-										{
-											Bool revOrder;
-											UInt8 *bits = gimg2->GetImgBits(revOrder);
-											UInt32 col = (this->random.NextInt30() & 0xffffff) | 0x5f808080;
-											if (bits)
-											{
-												ImageUtil_ColorReplace32(bits, iWidth, iHeight, col);
-											}
-										}
-										gimg->DrawImagePt(gimg2, Math::Coord2DDbl(this->random.NextDouble() * xRand, this->random.NextDouble() * yRand));
-										this->env->GetDrawEngine()->DeleteImage(gimg2);
-									}
-									gimg->DelFont(f);
-									break;
+							x1 = 0;
+							x2 = UOSInt2Double(lrimgnn->info.dispSize.x) - userFile->cropRight - userFile->cropLeft;
+						}
+						else if (userFile->cropRight < 0)
+						{
+							x1 = userFile->cropLeft + userFile->cropRight;
+							x2 = UOSInt2Double(lrimgnn->info.dispSize.x);
+						}
+						if (userFile->cropTop < 0)
+						{
+							y1 = 0;
+							y2 = UOSInt2Double(lrimgnn->info.dispSize.y) - userFile->cropBottom - userFile->cropTop;
+						}
+						else if (userFile->cropBottom < 0)
+						{
+							y1 = userFile->cropBottom + userFile->cropTop;
+							y2 = UOSInt2Double(lrimgnn->info.dispSize.y);
+						}
+						dimg = resizerLR->ProcessToNewPartial(lrimgnn, Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2));
+						mutUsage.EndUse();
+					}
+					else
+					{
+						Sync::MutexUsage mutUsage(this->resizerMut);
+						resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
+						resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
+						dimg = resizerLR->ProcessToNew(lrimgnn);
+						mutUsage.EndUse();
+					}
+					lrimg.Delete();
+				}
+				else
+				{
+					dimg = 0;
+				}
+				if (dimg.SetTo(simg))
+				{
+					UInt8 *buff;
+					UOSInt buffSize;
+					simg->info.color.SetRAWICC(Media::ICCProfile::GetSRGBICCData());
 
-								}
-								else
+					if (rotateType == 1)
+					{
+						simg->RotateImage(Media::StaticImage::RotateType::CW90);
+					}
+					else if (rotateType == 2)
+					{
+						simg->RotateImage(Media::StaticImage::RotateType::CW180);
+					}
+					else if (rotateType == 3)
+					{
+						simg->RotateImage(Media::StaticImage::RotateType::CW270);
+					}
+
+					if (user.SetTo(nnuser) && nnuser->watermark->leng > 0)
+					{
+						NN<Media::DrawImage> gimg;
+						if (gimg.Set(this->env->GetDrawEngine()->ConvImage(simg)))
+						{
+							if ((cacheDir->v && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize()) || user != reqUser)
+							{
+								Int32 xRand;
+								Int32 yRand;
+								UInt32 fontSizePx = imgWidth / 12;
+								Math::Size2DDbl sz;
+								UInt32 iWidth;
+								UInt32 iHeight;
+								NN<Media::DrawImage> gimg2;
+								NN<Media::DrawBrush> b = gimg->NewBrushARGB(0xffffffff);
+								NN<Media::DrawFont> f;
+								while (true)
 								{
-									gimg->DelFont(f);
-									fontSizePx--;
+									f = gimg->NewFontPx(CSTR("Arial"), fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
+									sz = gimg->GetTextSize(f, nnuser->watermark->ToCString());
+									if (!sz.HasArea())
+									{
+										gimg->DelFont(f);
+										break;
+									}
+									if (sz.x <= UOSInt2Double(simg->info.dispSize.x) && sz.y <= UOSInt2Double(simg->info.dispSize.y))
+									{
+										xRand = Double2Int32(UOSInt2Double(simg->info.dispSize.x) - sz.x);
+										yRand = Double2Int32(UOSInt2Double(simg->info.dispSize.y) - sz.y);
+										iWidth = (UInt32)Double2Int32(sz.x);
+										iHeight = (UInt32)Double2Int32(sz.y);
+										if (gimg2.Set(this->env->GetDrawEngine()->CreateImage32(Math::Size2D<UOSInt>(iWidth, iHeight), Media::AT_NO_ALPHA)))
+										{
+											gimg2->DrawString(Math::Coord2DDbl(0, 0), nnuser->watermark->ToCString(), f, b);
+											gimg2->SetAlphaType(Media::AT_ALPHA);
+											{
+												Bool revOrder;
+												UInt8 *bits = gimg2->GetImgBits(revOrder);
+												UInt32 col = (this->random.NextInt30() & 0xffffff) | 0x5f808080;
+												if (bits)
+												{
+													ImageUtil_ColorReplace32(bits, iWidth, iHeight, col);
+												}
+											}
+											gimg->DrawImagePt(gimg2, Math::Coord2DDbl(this->random.NextDouble() * xRand, this->random.NextDouble() * yRand));
+											this->env->GetDrawEngine()->DeleteImage(gimg2);
+										}
+										gimg->DelFont(f);
+										break;
+
+									}
+									else
+									{
+										gimg->DelFont(f);
+										fontSizePx--;
+									}
+								}
+								gimg->DelBrush(b);
+							}
+
+							IO::MemoryStream mstm;
+							gimg->SaveJPG(mstm);
+							ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
+
+							if (cacheDir->leng > 0 && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
+							{
+								IO::FileStream fs({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+								buff = mstm.GetBuff(buffSize);
+								fs.Write(buff, buffSize);
+								if (userFile->prevUpdated)
+								{
+									this->env->UserFilePrevUpdated(mutUsage, userFile);
 								}
 							}
-							gimg->DelBrush(b);
-						}
 
+							dimg.Delete();
+							this->env->GetDrawEngine()->DeleteImage(gimg);
+						}
+						else
+						{
+							resp->ResponseError(req, Net::WebStatus::SC_INTERNAL_SERVER_ERROR);
+						}
+					}
+					else
+					{
+						Optional<IO::FileExporter::ParamData> param;
+						Media::ImageList nimgList(CSTR("Temp"));
 						IO::MemoryStream mstm;
-						gimg->SaveJPG(mstm);
+						nimgList.AddImage(simg, 0);
+						Exporter::GUIJPGExporter exporter;
+						param = exporter.CreateParam(nimgList);
+						exporter.SetParamInt32(param, 0, 95);
+						exporter.ExportFile(mstm, CSTR(""), nimgList, param);
+						exporter.DeleteParam(param);
 						ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
 
 						if (cacheDir->leng > 0 && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
@@ -679,42 +725,17 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 								this->env->UserFilePrevUpdated(mutUsage, userFile);
 							}
 						}
-
-						DEL_CLASS(dimg);
-						this->env->GetDrawEngine()->DeleteImage(gimg);
-					}
-					else
-					{
-						resp->ResponseError(req, Net::WebStatus::SC_INTERNAL_SERVER_ERROR);
 					}
 				}
 				else
 				{
-					Optional<IO::FileExporter::ParamData> param;
-					Media::ImageList nimgList(CSTR("Temp"));
-					IO::MemoryStream mstm;
-					nimgList.AddImage(dimg, 0);
-					Exporter::GUIJPGExporter exporter;
-					param = exporter.CreateParam(nimgList);
-					exporter.SetParamInt32(param, 0, 95);
-					exporter.ExportFile(mstm, CSTR(""), nimgList, param);
-					exporter.DeleteParam(param);
-					ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
-
-					if (cacheDir->leng > 0 && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
-					{
-						IO::FileStream fs({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-						buff = mstm.GetBuff(buffSize);
-						fs.Write(buff, buffSize);
-						if (userFile->prevUpdated)
-						{
-							this->env->UserFilePrevUpdated(mutUsage, userFile);
-						}
-					}
+					resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+					return;
 				}
 			}
 			else
 			{
+				DEL_CLASS(imgList);
 				resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 				return;
 			}
@@ -792,134 +813,145 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer
 			mutUsage.EndUse();;
 
 			Media::ImageList *imgList;
-			Media::StaticImage *simg;
-			Media::StaticImage *lrimg;
+			NN<Media::RasterImage> rimg;
+			NN<Media::StaticImage> simg;
+			Optional<Media::StaticImage> lrimg;
 			NN<Media::StaticImage> lrimgnn;
-			Media::StaticImage *dimg;
+			Optional<Media::StaticImage> dimg;
 			{
 				IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
 				imgList = (Media::ImageList*)this->env->ParseFileType(fd, IO::ParserType::ImageList);
 			}
 			if (imgList)
 			{
-				simg = imgList->GetImage(0, 0)->CreateStaticImage().Ptr();
-				DEL_CLASS(imgList);
-				Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-				NEW_CLASS(lrimg, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				if (imgList->GetImage(0, 0).SetTo(rimg))
 				{
-					Sync::MutexUsage mutUsage(this->csconvMut);
-					if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color.Equals(this->csconvColor))
+					simg = rimg->CreateStaticImage();
+					DEL_CLASS(imgList);
+					Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
+					NEW_CLASSNN(lrimgnn, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+					lrimg = lrimgnn;
 					{
-						SDEL_CLASS(this->csconv);
-						this->csconvFCC = simg->info.fourcc;
-						this->csconvBpp = simg->info.storeBPP;
-						this->csconvPF = simg->info.pf;
-						this->csconvColor.Set(simg->info.color);
-						this->csconv = Media::CS::CSConverter::NewConverter(this->csconvFCC, this->csconvBpp, this->csconvPF, this->csconvColor, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, Media::ColorProfile::YUVT_UNKNOWN, this->env->GetColorSess().Ptr());
+						Sync::MutexUsage mutUsage(this->csconvMut);
+						if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color.Equals(this->csconvColor))
+						{
+							SDEL_CLASS(this->csconv);
+							this->csconvFCC = simg->info.fourcc;
+							this->csconvBpp = simg->info.storeBPP;
+							this->csconvPF = simg->info.pf;
+							this->csconvColor.Set(simg->info.color);
+							this->csconv = Media::CS::CSConverter::NewConverter(this->csconvFCC, this->csconvBpp, this->csconvPF, this->csconvColor, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, Media::ColorProfile::YUVT_UNKNOWN, this->env->GetColorSess().Ptr());
+						}
+						if (this->csconv)
+						{
+							this->csconv->ConvertV2(&simg->data, lrimgnn->data, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.storeSize.x, simg->info.storeSize.y, (OSInt)lrimgnn->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+						}
+						else
+						{
+							lrimg.Delete();
+						}
 					}
-					if (this->csconv)
+					simg.Delete();
+
+					if (lrimg.SetTo(lrimgnn))
 					{
-						this->csconv->ConvertV2(&simg->data, lrimg->data, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.storeSize.x, simg->info.storeSize.y, (OSInt)lrimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+						this->lrgbLimiter.LimitImageLRGB(lrimgnn->data, lrimgnn->info.dispSize.x, lrimgnn->info.dispSize.y);
+						if (imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
+						{
+							Sync::MutexUsage mutUsage(this->resizerMut);
+							resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
+							resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
+							Double x1 = wfile->cropLeft;
+							Double y1 = wfile->cropTop;
+							Double x2 = UOSInt2Double(lrimgnn->info.dispSize.x) - wfile->cropRight;
+							Double y2 = UOSInt2Double(lrimgnn->info.dispSize.y) - wfile->cropBottom;
+							if (wfile->cropLeft < 0)
+							{
+								x1 = 0;
+								x2 = UOSInt2Double(lrimgnn->info.dispSize.x) - wfile->cropRight - wfile->cropLeft;
+							}
+							else if (wfile->cropRight < 0)
+							{
+								x1 = wfile->cropLeft + wfile->cropRight;
+								x2 = UOSInt2Double(lrimgnn->info.dispSize.x);
+							}
+							if (wfile->cropTop < 0)
+							{
+								y1 = 0;
+								y2 = UOSInt2Double(lrimgnn->info.dispSize.y) - wfile->cropBottom - wfile->cropTop;
+							}
+							else if (wfile->cropBottom < 0)
+							{
+								y1 = wfile->cropBottom + wfile->cropTop;
+								y2 = UOSInt2Double(lrimgnn->info.dispSize.y);
+							}
+							dimg = resizerLR->ProcessToNewPartial(lrimgnn, Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2));
+							mutUsage.EndUse();
+						}
+						else
+						{
+							Sync::MutexUsage mutUsage(this->resizerMut);
+							resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
+							resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
+							dimg = resizerLR->ProcessToNew(lrimgnn);
+							mutUsage.EndUse();
+						}
+						lrimg.Delete();
 					}
 					else
 					{
-						SDEL_CLASS(lrimg);
+						dimg = 0;
 					}
-				}
-				DEL_CLASS(simg);
-
-				if (lrimgnn.Set(lrimg))
-				{
-					this->lrgbLimiter.LimitImageLRGB(lrimg->data, lrimg->info.dispSize.x, lrimg->info.dispSize.y);
-					if (imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
+					if (dimg.SetTo(simg))
 					{
-						Sync::MutexUsage mutUsage(this->resizerMut);
-						resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
-						resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
-						Double x1 = wfile->cropLeft;
-						Double y1 = wfile->cropTop;
-						Double x2 = UOSInt2Double(lrimg->info.dispSize.x) - wfile->cropRight;
-						Double y2 = UOSInt2Double(lrimg->info.dispSize.y) - wfile->cropBottom;
-						if (wfile->cropLeft < 0)
+						UInt8 *buff;
+						UOSInt buffSize;
+						simg->info.color.SetRAWICC(Media::ICCProfile::GetSRGBICCData());
+
+						if (rotateType == 1)
 						{
-							x1 = 0;
-							x2 = UOSInt2Double(lrimg->info.dispSize.x) - wfile->cropRight - wfile->cropLeft;
+							simg->RotateImage(Media::StaticImage::RotateType::CW90);
 						}
-						else if (wfile->cropRight < 0)
+						else if (rotateType == 2)
 						{
-							x1 = wfile->cropLeft + wfile->cropRight;
-							x2 = UOSInt2Double(lrimg->info.dispSize.x);
+							simg->RotateImage(Media::StaticImage::RotateType::CW180);
 						}
-						if (wfile->cropTop < 0)
+						else if (rotateType == 3)
 						{
-							y1 = 0;
-							y2 = UOSInt2Double(lrimg->info.dispSize.y) - wfile->cropBottom - wfile->cropTop;
+							simg->RotateImage(Media::StaticImage::RotateType::CW270);
 						}
-						else if (wfile->cropBottom < 0)
+
+						Optional<IO::FileExporter::ParamData> param;
+						Media::ImageList nimgList(CSTR("Temp"));
+						IO::MemoryStream mstm;
+						nimgList.AddImage(simg, 0);
+						Exporter::GUIJPGExporter exporter;
+						param = exporter.CreateParam(nimgList);
+						exporter.SetParamInt32(param, 0, 95);
+						exporter.ExportFile(mstm, CSTR(""), nimgList, param);
+						exporter.DeleteParam(param);
+						ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
+
+						if (cacheDir->leng > 0 && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
 						{
-							y1 = wfile->cropBottom + wfile->cropTop;
-							y2 = UOSInt2Double(lrimg->info.dispSize.y);
+							IO::FileStream fs({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+							buff = mstm.GetBuff(buffSize);
+							fs.Write(buff, buffSize);
+							if (wfile->prevUpdated)
+							{
+								this->env->WebFilePrevUpdated(mutUsage, wfile);
+							}
 						}
-						dimg = resizerLR->ProcessToNewPartial(lrimgnn, Math::Coord2DDbl(x1, y1), Math::Coord2DDbl(x2, y2));
-						mutUsage.EndUse();
 					}
 					else
 					{
-						Sync::MutexUsage mutUsage(this->resizerMut);
-						resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
-						resizerLR->SetTargetSize(Math::Size2D<UOSInt>(imgWidth, imgHeight));
-						dimg = resizerLR->ProcessToNew(lrimgnn);
-						mutUsage.EndUse();
-					}
-					DEL_CLASS(lrimg)
-				}
-				else
-				{
-					dimg = 0;
-				}
-				if (dimg)
-				{
-					UInt8 *buff;
-					UOSInt buffSize;
-					dimg->info.color.SetRAWICC(Media::ICCProfile::GetSRGBICCData());
-
-					if (rotateType == 1)
-					{
-						dimg->RotateImage(Media::StaticImage::RotateType::CW90);
-					}
-					else if (rotateType == 2)
-					{
-						dimg->RotateImage(Media::StaticImage::RotateType::CW180);
-					}
-					else if (rotateType == 3)
-					{
-						dimg->RotateImage(Media::StaticImage::RotateType::CW270);
-					}
-
-					Optional<IO::FileExporter::ParamData> param;
-					Media::ImageList nimgList(CSTR("Temp"));
-					IO::MemoryStream mstm;
-					nimgList.AddImage(dimg, 0);
-					Exporter::GUIJPGExporter exporter;
-					param = exporter.CreateParam(nimgList);
-					exporter.SetParamInt32(param, 0, 95);
-					exporter.ExportFile(mstm, CSTR(""), nimgList, param);
-					exporter.DeleteParam(param);
-					ResponseMstm(req, resp, mstm, CSTR("image/jpeg"));
-
-					if (cacheDir->leng > 0 && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize())
-					{
-						IO::FileStream fs({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-						buff = mstm.GetBuff(buffSize);
-						fs.Write(buff, buffSize);
-						if (wfile->prevUpdated)
-						{
-							this->env->WebFilePrevUpdated(mutUsage, wfile);
-						}
+						resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+						return;
 					}
 				}
 				else
 				{
+					DEL_CLASS(imgList);
 					resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 					return;
 				}

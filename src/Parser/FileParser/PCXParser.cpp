@@ -50,6 +50,7 @@ IO::ParsedObject *Parser::FileParser::PCXParser::ParseFileHdr(NN<IO::StreamData>
 	UInt32 ncp;
 
 	Media::StaticImage *outImg;
+	NN<Media::StaticImage> nnimg;
 
 	if (hdr[0] != 10 || hdr[2] != 1)
 	{
@@ -185,11 +186,11 @@ lop24:
 		};*/
 	}
 
-	if (outImg)
+	if (nnimg.Set(outImg))
 	{
 		Media::ImageList *imgList;
 		NEW_CLASS(imgList, Media::ImageList(fd->GetFullName()));
-		imgList->AddImage(outImg, 0);
+		imgList->AddImage(nnimg, 0);
 		return imgList;
 	}
 	else

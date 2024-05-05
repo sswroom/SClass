@@ -43,7 +43,7 @@ namespace Media
 			TT_FLIR
 		} ThermoType;
 	public:
-		Data::ArrayList<Media::RasterImage*> imgList;
+		Data::ArrayListNN<Media::RasterImage> imgList;
 		Data::ArrayList<ImageType> imgTypeList;
 		Data::ArrayListUInt32 imgTimes;
 		const UTF8Char *author;
@@ -70,12 +70,10 @@ namespace Media
 		virtual IO::ParserType GetParserType() const;
 
 		UOSInt AddImage(NN<Media::RasterImage> img, UInt32 imageDelay);
-		UOSInt AddImage(Media::RasterImage *img, UInt32 imageDelay);
 		void ReplaceImage(UOSInt index, NN<Media::RasterImage> img);
-		void ReplaceImage(UOSInt index, Media::RasterImage *img);
 		Bool RemoveImage(UOSInt index, Bool toRelease);
 		UOSInt GetCount() const;
-		Media::RasterImage *GetImage(UOSInt index, OptOut<UInt32> imageDelay) const;
+		Optional<Media::RasterImage> GetImage(UOSInt index, OptOut<UInt32> imageDelay) const;
 		UInt32 GetImageDelay(UOSInt index) const;
 		ImageType GetImageType(UOSInt index) const;
 		void SetImageType(UOSInt index, ImageType imgType);

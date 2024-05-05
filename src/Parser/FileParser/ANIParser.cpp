@@ -101,10 +101,13 @@ IO::ParsedObject *Parser::FileParser::ANIParser::ParseFileHdr(NN<IO::StreamData>
 				tmp = *(UInt32*)&buff[0];
 				if (tmp == *(UInt32*)"icon")
 				{
+					NN<Media::RasterImage> img;
 					if (currImage)
 					{
-						NN<Media::RasterImage> img = currImage->GetImage(0, 0)->Clone();
-						imgList->AddImage(img, MulDivU32(displayRate, 1000, 60));
+						if (currImage->GetImage(0, 0).SetTo(img))
+						{
+							imgList->AddImage(img->Clone(), MulDivU32(displayRate, 1000, 60));
+						}
 						DEL_CLASS(currImage);
 					}
 					NN<IO::StreamData> data = fd->GetPartialData(currOfst + 20 + buffOfst, *(UInt32*)&buff[4]);
@@ -121,8 +124,11 @@ IO::ParsedObject *Parser::FileParser::ANIParser::ParseFileHdr(NN<IO::StreamData>
 
 			if (currImage)
 			{
-				NN<Media::RasterImage> img = currImage->GetImage(0, 0)->Clone();
-				imgList->AddImage(img, MulDivU32(displayRate, 1000, 60));
+				NN<Media::RasterImage> img;
+				if (currImage->GetImage(0, 0).SetTo(img))
+				{
+					imgList->AddImage(img->Clone(), MulDivU32(displayRate, 1000, 60));
+				}
 				DEL_CLASS(currImage);
 				currImage = 0;
 			}
