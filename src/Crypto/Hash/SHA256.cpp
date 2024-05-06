@@ -86,7 +86,7 @@ void Crypto::Hash::SHA256::Calc(const UInt8 *buff, UOSInt buffSize)
 	}
 }
 
-void Crypto::Hash::SHA256::GetValue(UInt8 *buff) const
+void Crypto::Hash::SHA256::GetValue(UnsafeArray<UInt8> buff) const
 {
 	UInt8 calBuff[64];
 	UInt32 intHash[8];

@@ -86,7 +86,7 @@ IO::ParsedObject *Parser::FileParser::EVTXParser::ParseFileHdr(NN<IO::StreamData
 	return logFile;
 }
 
-UOSInt Parser::FileParser::EVTXParser::ParseBinXML(const UInt8 *chunk, UOSInt ofst, UOSInt endOfst, NN<Text::StringBuilderUTF8> sb, const UTF16Char *elementName, UOSInt nNameChar)
+UOSInt Parser::FileParser::EVTXParser::ParseBinXML(UnsafeArray<const UInt8> chunk, UOSInt ofst, UOSInt endOfst, NN<Text::StringBuilderUTF8> sb, const UTF16Char *elementName, UOSInt nNameChar)
 {
 	UOSInt dataOfst;
 	UInt32 dataSize;

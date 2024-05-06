@@ -17,7 +17,7 @@ namespace Text
 
 			void BuildContentType();
 		public:
-			TextMIMEObj(const UInt8 *textBuff, UOSInt buffSize, UInt32 codePage);
+			TextMIMEObj(UnsafeArray<const UInt8> textBuff, UOSInt buffSize, UInt32 codePage);
 			TextMIMEObj(const WChar *txt, UInt32 codePage);
 			virtual ~TextMIMEObj();
 

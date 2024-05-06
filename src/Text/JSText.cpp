@@ -863,7 +863,7 @@ void Text::JSText::FreeNewText(const WChar *s)
 	MemFree((void*)s);
 }
 
-Bool Text::JSText::JSONWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt initLev, NN<Text::StringBuilderUTF8> sb)
+Bool Text::JSText::JSONWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffSize, UOSInt initLev, NN<Text::StringBuilderUTF8> sb)
 {
 	UOSInt lev = initLev;
 	UOSInt i = 0;
@@ -954,7 +954,7 @@ Bool Text::JSText::JSONWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt 
 	return lev == initLev;
 }
 
-Bool Text::JSText::JSWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt initLev, NN<Text::StringBuilderUTF8> sb)
+Bool Text::JSText::JSWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffSize, UOSInt initLev, NN<Text::StringBuilderUTF8> sb)
 {
 	Data::ArrayList<Int32> lastType;
 	UOSInt lev = initLev;

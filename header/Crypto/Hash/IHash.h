@@ -50,7 +50,7 @@ namespace Crypto
 			virtual NN<IHash> Clone() const = 0;
 			virtual void Clear() = 0;
 			virtual void Calc(const UInt8 *buff, UOSInt buffSize) = 0;
-			virtual void GetValue(UInt8 *buff) const = 0;
+			virtual void GetValue(UnsafeArray<UInt8> buff) const = 0;
 			virtual UOSInt GetBlockSize() const = 0;
 			virtual UOSInt GetResultSize() const = 0;
 		};

@@ -6,8 +6,8 @@ namespace Data
 	template <class T> class ArrayCollection
 	{
 	public:
-		virtual T* GetPtr(OutParam<UOSInt> arraySize) const = 0;
-		virtual T* Ptr() const = 0;
+		virtual UnsafeArray<T> GetPtr(OutParam<UOSInt> arraySize) const = 0;
+		virtual UnsafeArray<T> Ptr() const = 0;
 		virtual UOSInt GetCount() const = 0;
 
 		ArrayIterator<T> Iterator() const

@@ -159,7 +159,7 @@ IO::ZIPBuilder::~ZIPBuilder()
 	}
 }
 
-Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, const UInt8 *fileContent, UOSInt fileSize, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel, UInt32 unixAttr)
+Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, UnsafeArray<const UInt8> fileContent, UOSInt fileSize, Data::Timestamp lastModTime, Data::Timestamp lastAccessTime, Data::Timestamp createTime, Data::Compress::Inflate::CompressionLevel compLevel, UInt32 unixAttr)
 {
 	UInt8 hdrBuff[512];
 	UOSInt hdrLen;
@@ -171,9 +171,9 @@ Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, const UInt8 *fileContent,
 	}
 	else
 	{
-		compSize = (UOSInt)Data::Compress::Inflate::Compress(fileContent, fileSize, outBuff, false, compLevel);
+		compSize = (UOSInt)Data::Compress::Inflate::Compress(fileContent.Ptr(), fileSize, outBuff, false, compLevel);
 	}
-	UInt32 crcVal = this->crc.CalcDirect(fileContent, fileSize);
+	UInt32 crcVal = this->crc.CalcDirect(fileContent.Ptr(), fileSize);
 	Data::DateTime dt(lastModTime.inst, lastModTime.tzQhr);
 	WriteUInt32(&hdrBuff[0], 0x04034b50);
 	hdrBuff[4] = 20; //Verison (2.0)

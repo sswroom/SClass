@@ -13,7 +13,7 @@ namespace Data
 		public:
 			typedef OSInt (__stdcall *CompareFunc)(T obj1, T obj2);
 		private:
-			static void PreSort(T *arr, CompareFunc func, OSInt left, OSInt right)
+			static void PreSort(UnsafeArray<T> arr, CompareFunc func, OSInt left, OSInt right)
 			{
 				T temp;
 
@@ -30,7 +30,7 @@ namespace Data
 				}
 			}
 
-			static void PreSortInv(T *arr, CompareFunc func, OSInt left, OSInt right)
+			static void PreSortInv(UnsafeArray<T> arr, CompareFunc func, OSInt left, OSInt right)
 			{
 				T temp;
 
@@ -47,7 +47,7 @@ namespace Data
 				}
 			}
 
-			static void ISortB(T *arr, CompareFunc func, OSInt left, OSInt right)
+			static void ISortB(UnsafeArray<T> arr, CompareFunc func, OSInt left, OSInt right)
 			{
 				OSInt i;
 				OSInt j;
@@ -89,7 +89,7 @@ namespace Data
 				}
 			}
 
-			static void ISort(T *arr, CompareFunc func, OSInt left, OSInt right)
+			static void ISort(UnsafeArray<T> arr, CompareFunc func, OSInt left, OSInt right)
 			{
 				OSInt i;
 				OSInt j;
@@ -123,7 +123,7 @@ namespace Data
 				}
 			}
 
-			static void ISortInv(T *arr, CompareFunc func, OSInt left, OSInt right)
+			static void ISortInv(UnsafeArray<T> arr, CompareFunc func, OSInt left, OSInt right)
 			{
 				OSInt i;
 				OSInt j;
@@ -158,7 +158,7 @@ namespace Data
 			}
 
 		public:
-			static void Sort(T *arr, CompareFunc func, OSInt firstIndex, OSInt lastIndex)
+			static void Sort(UnsafeArray<T> arr, CompareFunc func, OSInt firstIndex, OSInt lastIndex)
 			{
 #if _OSINT_SIZE == 16
 				OSInt levi[256];
@@ -242,7 +242,7 @@ namespace Data
 #endif
 			}
 
-			static void SortInv(T *arr, CompareFunc func, OSInt firstIndex, OSInt lastIndex)
+			static void SortInv(UnsafeArray<T> arr, CompareFunc func, OSInt firstIndex, OSInt lastIndex)
 			{
 				OSInt levi[256];
 				OSInt desni[256];
@@ -321,7 +321,7 @@ namespace Data
 			static void Sort(NN<Data::ArrayCollection<T>> arr, CompareFunc func)
 			{
 				UOSInt j;
-				T *a = arr->GetPtr(j);
+				UnsafeArray<T> a = arr->GetPtr(j);
 				Sort(a, func, 0, (OSInt)j - 1);
 			}
 		};

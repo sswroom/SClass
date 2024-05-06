@@ -200,9 +200,9 @@ const UInt8 Media::ICCProfile::srgbICC[] = {
 	0xFF, 0xFF, 0xFB, 0xA1, 0xFF, 0xFF, 0xFD, 0xA2, 0x00, 0x00, 0x03, 0xDB, 0x00, 0x00, 0xC0, 0x75
 };
 
-Media::ICCProfile::ICCProfile(const UInt8 *iccBuff) : iccBuff(ReadMUInt32(iccBuff))
+Media::ICCProfile::ICCProfile(UnsafeArray<const UInt8> iccBuff) : iccBuff(ReadMUInt32(iccBuff.Ptr()))
 {
-	UOSInt leng = ReadMUInt32(iccBuff);
+	UOSInt leng = ReadMUInt32(iccBuff.Ptr());
 	this->iccBuff.CopyFrom(Data::ByteArrayR(iccBuff, leng));
 }
 
@@ -833,7 +833,7 @@ Bool Media::ICCProfile::SetToColorProfile(NN<Media::ColorProfile> colorProfile)
 		this->GetBlueTransferParam(colorProfile->GetBTranParam()) &&
 		this->GetColorPrimaries(colorProfile->GetPrimaries()))
 	{
-		colorProfile->SetRAWICC(this->iccBuff.Ptr());
+		colorProfile->SetRAWICC(this->iccBuff.Ptr().Ptr());
 		return true;	
 	}
 	return false;
@@ -936,11 +936,11 @@ Optional<Media::ICCProfile> Media::ICCProfile::Parse(Data::ByteArrayR buff)
 	return profile;
 }
 
-Bool Media::ICCProfile::ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, const UInt8 *buff, UOSInt buffSize)
+Bool Media::ICCProfile::ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	if (ReadMUInt32(buff) != buffSize)
+	if (ReadMUInt32(buff.Ptr()) != buffSize)
 		return false;
 	if (ReadMInt32(&buff[36]) != 0x61637370)
 		return false;

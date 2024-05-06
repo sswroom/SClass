@@ -236,7 +236,7 @@ IO::ParsedObject *Parser::ParserList::ParseFile(NN<IO::StreamData> fd, IO::Packa
 	while (i < j)
 	{
 		parser = this->filePArr.GetItemNoCheck(i);
-		if ((result = parser->ParseFileHdr(fd, pkgFile, targetType, hdr.Ptr())) != 0)
+		if ((result = parser->ParseFileHdr(fd, pkgFile, targetType, hdr.Ptr().Ptr())) != 0)
 		{
 			return result;
 		}

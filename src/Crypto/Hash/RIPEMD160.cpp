@@ -89,7 +89,7 @@ void Crypto::Hash::RIPEMD160::Calc(const UInt8 *buff, UOSInt buffSize)
 	h4 = keys[4];
 }
 
-void Crypto::Hash::RIPEMD160::GetValue(UInt8 *buff) const
+void Crypto::Hash::RIPEMD160::GetValue(UnsafeArray<UInt8> buff) const
 {
 	UInt8 calBuff[64];
 	*(UInt32*)&buff[0] = h0;
@@ -108,7 +108,7 @@ void Crypto::Hash::RIPEMD160::GetValue(UInt8 *buff) const
 			calBuff[i++] = 0;
 		}
 		*(UInt64*)&calBuff[56] = msgLeng;
-		RMD160_CalcBlock((UInt32*)buff, calBuff);
+		RMD160_CalcBlock((UInt32*)buff.Ptr(), calBuff);
 	}
 	else
 	{
@@ -119,11 +119,11 @@ void Crypto::Hash::RIPEMD160::GetValue(UInt8 *buff) const
 		{
 			calBuff[i++] = 0;
 		}
-		RMD160_CalcBlock((UInt32*)buff, calBuff);
+		RMD160_CalcBlock((UInt32*)buff.Ptr(), calBuff);
 
 		MemClear(calBuff, 56);
 		*(UInt64*)&calBuff[56] = msgLeng;
-		RMD160_CalcBlock((UInt32*)buff, calBuff);
+		RMD160_CalcBlock((UInt32*)buff.Ptr(), calBuff);
 	}
 }
 

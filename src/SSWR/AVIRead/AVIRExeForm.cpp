@@ -141,7 +141,7 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 		nfuncCalls->AddAll(sess->callAddrs);
 		nfuncCalls->AddAll(sess->jmpAddrs);
 		UOSInt arrSize;
-		UInt32 *tmpArr = nfuncCalls->GetPtr(arrSize);
+		UInt32 *tmpArr = nfuncCalls->GetPtr(arrSize).Ptr();
 		ArtificialQuickSort_SortUInt32(tmpArr, 0, (OSInt)arrSize - 1);
 		dasm->DeleteSess(sess);
 
@@ -167,7 +167,7 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 				this->ParseSess16(sess, codes, parts, partInd, eaddr, dasm, codeSize);
 				nfuncCalls->AddAll(sess->callAddrs);
 				nfuncCalls->AddAll(sess->jmpAddrs);
-				tmpArr = nfuncCalls->GetPtr(arrSize);
+				tmpArr = nfuncCalls->GetPtr(arrSize).Ptr();
 				ArtificialQuickSort_SortUInt32(tmpArr, 0, (OSInt)arrSize - 1);
 				dasm->DeleteSess(sess);
 			}

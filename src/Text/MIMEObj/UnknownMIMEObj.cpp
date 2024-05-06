@@ -4,12 +4,12 @@
 #include "Text/MIMEObj/MIMEMessage.h"
 #include "Text/MIMEObj/UnknownMIMEObj.h"
 
-Text::MIMEObj::UnknownMIMEObj::UnknownMIMEObj(UInt8 *dataBuff, UOSInt buffSize, Text::CStringNN contentType) : Text::IMIMEObj(contentType)
+Text::MIMEObj::UnknownMIMEObj::UnknownMIMEObj(UnsafeArray<UInt8> dataBuff, UOSInt buffSize, Text::CStringNN contentType) : Text::IMIMEObj(contentType)
 {
 	this->buffSize = buffSize;
 	this->dataBuff = MemAlloc(UInt8, buffSize);
 	this->contType = Text::String::New(contentType);
-	MemCopyNO(this->dataBuff, dataBuff, buffSize);
+	MemCopyNO(this->dataBuff, dataBuff.Ptr(), buffSize);
 	const UTF8Char *tmpPtr = Text::StrCopyNewC(contentType.v, this->contType->leng).Ptr();
 	UOSInt i;
 	UOSInt j;

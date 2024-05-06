@@ -38,7 +38,7 @@ UOSInt IO::ProtoHdlr::ProtoSyncHandler::ParseProtocol(NN<IO::Stream> stm, AnyTyp
 				if (packetSize > buff.GetSize())
 					return buff.GetSize();
 
-				crcVal = this->crc.CalcDirect(buff.Ptr(), packetSize - 2);
+				crcVal = this->crc.CalcDirect(buff.Ptr().Ptr(), packetSize - 2);
 				if ((crcVal & 0xffff) == ReadUInt16(&buff[packetSize - 2]))
 				{
 					Int32 cmdType = ReadUInt16(&buff[4]);

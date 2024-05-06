@@ -99,7 +99,7 @@ namespace DB
 			UOSInt byteSize = GetBinarySize(colIndex);
 			NN<Data::ByteBuffer> buff;
 			NEW_CLASSNN(buff, Data::ByteBuffer(byteSize));
-			if (GetBinary(byteSize, buff->Ptr()) == byteSize)
+			if (GetBinary(byteSize, buff->Ptr().Ptr()) == byteSize)
 				return buff;
 			buff.Delete();
 			return 0;

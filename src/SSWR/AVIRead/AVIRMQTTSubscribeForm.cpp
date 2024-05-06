@@ -257,7 +257,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(AnyType us
 	sb.AppendC(UTF8STRC("Received message, topic = "));
 	sb.Append(topic);
 	sb.AppendC(UTF8STRC(", message = "));
-	sb.AppendC((const UTF8Char*)message.Ptr(), message.GetSize());
+	sb.AppendC(message.Ptr(), message.GetSize());
 	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 
 	Data::DateTime dt;

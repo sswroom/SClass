@@ -17,14 +17,14 @@ namespace Data
 
 		~ByteBufferA()
 		{
-			if (this->buff)
-				MemFreeA(this->buff);
+			if (this->buff.Ptr())
+				MemFreeAArr(this->buff);
 		}
 
 		void ReplaceBy(ByteBufferA &buff)
 		{
-			if (this->buff)
-				MemFreeA(this->buff);
+			if (this->buff.Ptr())
+				MemFreeAArr(this->buff);
 			this->buff = buff.buff;
 			this->buffSize = buff.buffSize;
 #if defined(CHECK_RANGE)
@@ -36,8 +36,8 @@ namespace Data
 
 		void ChangeSize(UOSInt buffSize)
 		{
-			if (this->buff)
-				MemFreeA(this->buff);
+			if (this->buff.Ptr())
+				MemFreeAArr(this->buff);
 			this->buff = MemAllocA(UInt8, buffSize);
 			this->buffSize = buffSize;
 #if defined(CHECK_RANGE)
@@ -47,8 +47,8 @@ namespace Data
 
 		void Delete()
 		{
-			if (this->buff)
-				MemFreeA(this->buff);
+			if (this->buff.Ptr())
+				MemFreeAArr(this->buff);
 			this->buff = 0;
 			this->buffSize = 0;
 #if defined(CHECK_RANGE)

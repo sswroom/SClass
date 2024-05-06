@@ -40,9 +40,9 @@ void Crypto::Hash::DJB2a::Calc(const UInt8 *buff, UOSInt buffSize)
 	this->currVal = DJB2a_Calc(buff, buffSize, this->currVal);
 }
 
-void Crypto::Hash::DJB2a::GetValue(UInt8 *buff) const
+void Crypto::Hash::DJB2a::GetValue(UnsafeArray<UInt8> buff) const
 {
-	*(UInt32*)buff = this->currVal;
+	*(UInt32*)buff.Ptr() = this->currVal;
 }
 
 UOSInt Crypto::Hash::DJB2a::GetBlockSize() const

@@ -425,7 +425,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 						}
 						else
 						{
-							ts = Data::Timestamp::FromFILETIME((void*)packPtr.Ptr(), 0);
+							ts = Data::Timestamp::FromFILETIME((void*)packPtr.Ptr().Ptr(), 0);
 							packPtr += 8;
 						}
 						sb->AppendC(UTF8STRC(", mtime = "));
@@ -440,7 +440,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 						}
 						else
 						{
-							ts = Data::Timestamp::FromFILETIME((void*)packPtr.Ptr(), 0);
+							ts = Data::Timestamp::FromFILETIME((void*)packPtr.Ptr().Ptr(), 0);
 							packPtr += 8;
 						}
 						sb->AppendC(UTF8STRC(", ctime = "));
@@ -455,7 +455,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 						}
 						else
 						{
-							ts = Data::Timestamp::FromFILETIME((void*)packPtr.Ptr(), 0);
+							ts = Data::Timestamp::FromFILETIME((void*)packPtr.Ptr().Ptr(), 0);
 							packPtr += 8;
 						}
 						sb->AppendC(UTF8STRC(", atime = "));
@@ -769,7 +769,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RAR5FileAnalyse::GetFram
 						}
 						else
 						{
-							dt.SetValueFILETIME((void*)packPtr.Ptr());
+							dt.SetValueFILETIME((void*)packPtr.Ptr().Ptr());
 							nextPtr2 = packPtr + 8;
 						}
 						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
@@ -785,7 +785,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RAR5FileAnalyse::GetFram
 						}
 						else
 						{
-							dt.SetValueFILETIME((void*)packPtr.Ptr());
+							dt.SetValueFILETIME((void*)packPtr.Ptr().Ptr());
 							nextPtr2 = packPtr + 8;
 						}
 						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
@@ -801,7 +801,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RAR5FileAnalyse::GetFram
 						}
 						else
 						{
-							dt.SetValueFILETIME((void*)packPtr.Ptr());
+							dt.SetValueFILETIME((void*)packPtr.Ptr().Ptr());
 							nextPtr2 = packPtr + 8;
 						}
 						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");

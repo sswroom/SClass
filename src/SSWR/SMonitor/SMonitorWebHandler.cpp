@@ -1390,11 +1390,11 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 				NEW_CLASS(chart, Data::LineChart(sb.ToCString()));
 				if (dateList2.GetCount() >= 2)
 				{
-					chart->AddXDataDate(dateList2.Ptr(), dateList2.GetCount());
-					chart->AddYData(CSTR("Yesterday"), valList2.Ptr(), valList2.GetCount(), 0xffcccccc, Data::LineChart::LS_LINE);
+					chart->AddXDataDate(dateList2.Ptr().Ptr(), dateList2.GetCount());
+					chart->AddYData(CSTR("Yesterday"), valList2.Ptr().Ptr(), valList2.GetCount(), 0xffcccccc, Data::LineChart::LS_LINE);
 				}
-				chart->AddXDataDate(dateList.Ptr(), dateList.GetCount());
-				chart->AddYData(CSTR("Reading"), valList.Ptr(), valList.GetCount(), 0xffff0000, Data::LineChart::LS_LINE);
+				chart->AddXDataDate(dateList.Ptr().Ptr(), dateList.GetCount());
+				chart->AddYData(CSTR("Reading"), valList.Ptr().Ptr(), valList.GetCount(), 0xffff0000, Data::LineChart::LS_LINE);
 
 				chart->SetDateFormat(CSTR(""));
 				chart->SetFontHeightPt(10);
@@ -1745,8 +1745,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 			if (dateList.GetCount() >= 2)
 			{
 				NEW_CLASS(chart, Data::LineChart(sb.ToCString()));
-				chart->AddXDataDate(dateList.Ptr(), dateList.GetCount());
-				chart->AddYData(CSTR("Reading"), valList.Ptr(), valList.GetCount(), 0xffff0000, Data::LineChart::LS_LINE);
+				chart->AddXDataDate(dateList.Ptr().Ptr(), dateList.GetCount());
+				chart->AddYData(CSTR("Reading"), valList.Ptr().Ptr(), valList.GetCount(), 0xffff0000, Data::LineChart::LS_LINE);
 				chart->SetDateFormat(CSTR(""));
 				chart->SetFontHeightPt(10);
 				chart->SetTimeZoneQHR(32);

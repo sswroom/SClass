@@ -16,7 +16,7 @@ namespace Net
 		public:
 			static Bool MIMEToCompress(Text::CStringNN mime);
 			static Bool SendContent(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN mime, UInt64 contLeng, NN<IO::Stream> stm);
-			static Bool SendContent(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN mime, UInt64 contLeng, const UInt8 *buff);
+			static Bool SendContent(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN mime, UInt64 contLeng, UnsafeArray<const UInt8> buff);
 			static Bool SendContent(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN mime, Text::CStringNN cont);
 			static Bool ResponseFile(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN fileName, OSInt cacheAge);
 

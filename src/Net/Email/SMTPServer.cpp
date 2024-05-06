@@ -85,9 +85,9 @@ void __stdcall Net::Email::SMTPServer::ClientData(NN<Net::TCPClient> cli, AnyTyp
 		{
 			if (me->rawLog)
 			{
-				me->rawLog->Write(buff.Ptr(), 4096 - cliStatus->buffSize);
+				me->rawLog->Write(buff.Ptr().Ptr(), 4096 - cliStatus->buffSize);
 			}
-			MemCopyNO(&cliStatus->buff[cliStatus->buffSize], buff.Ptr(), 4096 - cliStatus->buffSize);
+			MemCopyNO(&cliStatus->buff[cliStatus->buffSize], buff.Ptr().Ptr(), 4096 - cliStatus->buffSize);
 			buff += 4096 - cliStatus->buffSize;
 			cliStatus->buffSize = 4096;
 		}
@@ -95,9 +95,9 @@ void __stdcall Net::Email::SMTPServer::ClientData(NN<Net::TCPClient> cli, AnyTyp
 		{
 			if (me->rawLog)
 			{
-				me->rawLog->Write(buff.Ptr(), buff.GetSize());
+				me->rawLog->Write(buff.Ptr().Ptr(), buff.GetSize());
 			}
-			MemCopyNO(&cliStatus->buff[cliStatus->buffSize], buff.Ptr(), buff.GetSize());
+			MemCopyNO(&cliStatus->buff[cliStatus->buffSize], buff.Ptr().Ptr(), buff.GetSize());
 			cliStatus->buffSize += buff.GetSize();
 			buff += buff.GetSize();
 		}

@@ -9,7 +9,7 @@ namespace Data
 		virtual ~List(){};
 
 		virtual UOSInt Add(T val) = 0;
-		virtual UOSInt AddRange(const T *arr, UOSInt cnt) = 0;
+		virtual UOSInt AddRange(UnsafeArray<const T> arr, UOSInt cnt) = 0;
 		virtual Bool Remove(T val) = 0;
 		virtual T RemoveAt(UOSInt index) = 0;
 		virtual void Insert(UOSInt index, T val) = 0;

@@ -125,13 +125,13 @@ UTF32Char MyString_StrHexArrU32[] = {
 	'E','0','E','1','E','2','E','3','E','4','E','5','E','6','E','7','E','8','E','9','E','A','E','B','E','C','E','D','E','E','E','F',
 	'F','0','F','1','F','2','F','3','F','4','F','5','F','6','F','7','F','8','F','9','F','A','F','B','F','C','F','D','F','E','F','F'};
 
-UTF8Char *Text::StrConcat(UTF8Char *oriStr, const UTF8Char *strToJoin)
+UTF8Char *Text::StrConcat(UTF8Char *oriStr, UnsafeArray<const UTF8Char> strToJoin)
 {
 	while ((*oriStr++ = *strToJoin++) != 0);
 	return oriStr - 1;
 }
 
-UTF8Char *Text::StrConcatS(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt buffSize)
+UTF8Char *Text::StrConcatS(UTF8Char *oriStr, UnsafeArray<const UTF8Char> strToJoin, UOSInt buffSize)
 {
 	if (buffSize <= 1)
 	{
@@ -1443,7 +1443,7 @@ UTF8Char *Text::StrToCapital(UTF8Char *oriStr, const UTF8Char *strToJoin)
 	return oriStr;
 }
 
-Bool Text::StrEquals(UnsafeArray<const UTF8Char> str1, const UTF8Char *str2)
+Bool Text::StrEquals(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2)
 {
 	UTF8Char c;
 	while ((c = *str1++) != 0)
@@ -1454,7 +1454,7 @@ Bool Text::StrEquals(UnsafeArray<const UTF8Char> str1, const UTF8Char *str2)
 	return *str2 == 0;
 }
 
-Bool Text::StrEqualsN(const UTF8Char *str1, const UTF8Char *str2)
+Bool Text::StrEqualsN(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2)
 {
 	if (str1 == str2)
 		return true;
@@ -1463,7 +1463,7 @@ Bool Text::StrEqualsN(const UTF8Char *str1, const UTF8Char *str2)
 	return StrEquals(str1, str2);
 }
 
-Bool Text::StrEqualsICase(const UTF8Char *str1, const UTF8Char *str2)
+Bool Text::StrEqualsICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2)
 {
 	UOSInt c1;
 	while ((c1 = *str1++) != 0)
@@ -1477,7 +1477,7 @@ Bool Text::StrEqualsICase(const UTF8Char *str1, const UTF8Char *str2)
 	return *str2 == 0;
 }
 
-Bool Text::StrEqualsICaseC(const UTF8Char *str1, UOSInt str1Len, const UTF8Char *str2, UOSInt str2Len)
+Bool Text::StrEqualsICaseC(UnsafeArray<const UTF8Char> str1, UOSInt str1Len, UnsafeArray<const UTF8Char> str2, UOSInt str2Len)
 {
 	if (str1Len != str2Len)
 	{
@@ -1485,8 +1485,8 @@ Bool Text::StrEqualsICaseC(const UTF8Char *str1, UOSInt str1Len, const UTF8Char 
 	}
 	while (str2Len >= 4)
 	{
-		UInt32 v1 = ReadNUInt32(str1);
-		UInt32 v2 = ReadNUInt32(str2);
+		UInt32 v1 = ReadNUInt32(str1.Ptr());
+		UInt32 v2 = ReadNUInt32(str2.Ptr());
 		if (MyString_StrUpperArr[v1 & 0xff] != MyString_StrUpperArr[v2 & 0xff])
 		{
 			return false;
@@ -1810,7 +1810,7 @@ UTF8Char *Text::StrHexByte(UTF8Char *oriStr, UInt8 val)
 	return &oriStr[2];
 }
 
-UTF8Char *Text::StrHexBytes(UTF8Char *oriStr, const UInt8 *buff, UOSInt buffSize, UTF8Char seperator)
+UTF8Char *Text::StrHexBytes(UTF8Char *oriStr, UnsafeArray<const UInt8> buff, UOSInt buffSize, UTF8Char seperator)
 {
 	UOSInt val;
 	if (seperator == 0)
@@ -2057,7 +2057,7 @@ UTF8Char *Text::StrHexByteLC(UTF8Char *oriStr, UInt8 val)
 	return &oriStr[2];
 }
 
-UTF8Char *Text::StrHexBytesLC(UTF8Char *oriStr, const UInt8 *buff, UOSInt buffSize, UTF8Char seperator)
+UTF8Char *Text::StrHexBytesLC(UTF8Char *oriStr, UnsafeArray<const UInt8> buff, UOSInt buffSize, UTF8Char seperator)
 {
 	UOSInt val;
 	if (seperator == 0)
@@ -3003,11 +3003,11 @@ Bool Text::StrToBool(const UTF8Char *str)
 	}
 }
 
-UOSInt Text::StrIndexOf(const UTF8Char *str1, const UTF8Char *str2)
+UOSInt Text::StrIndexOf(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2)
 {
-	const UTF8Char *ptr = str1;
-	const UTF8Char *ptr2;
-	const UTF8Char *ptr3;
+	UnsafeArray<const UTF8Char> ptr = str1;
+	UnsafeArray<const UTF8Char> ptr2;
+	UnsafeArray<const UTF8Char> ptr3;
 	UTF8Char c;
 	while (*ptr)
 	{
@@ -3030,9 +3030,9 @@ UOSInt Text::StrIndexOf(const UTF8Char *str1, const UTF8Char *str2)
 	return INVALID_INDEX;
 }
 
-UOSInt Text::StrIndexOfChar(const UTF8Char *str1, UTF8Char c)
+UOSInt Text::StrIndexOfChar(UnsafeArray<const UTF8Char> str1, UTF8Char c)
 {
-	REGVAR const UTF8Char *ptr = str1;
+	REGVAR UnsafeArray<const UTF8Char> ptr = str1;
 	REGVAR UTF8Char c2;
 	while ((c2 = *ptr) != 0)
 		if (c2 == c)
@@ -3042,9 +3042,9 @@ UOSInt Text::StrIndexOfChar(const UTF8Char *str1, UTF8Char c)
 	return INVALID_INDEX;
 }
 
-UOSInt Text::StrIndexOfCharC(const UTF8Char *str1, UOSInt len1, UTF8Char c)
+UOSInt Text::StrIndexOfCharC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UTF8Char c)
 {
-	REGVAR const UTF8Char *ptr = str1;
+	REGVAR UnsafeArray<const UTF8Char> ptr = str1;
 	REGVAR UInt16 c2;
 
 	while (len1 >= 4)
@@ -3062,7 +3062,7 @@ UOSInt Text::StrIndexOfCharC(const UTF8Char *str1, UOSInt len1, UTF8Char c)
 	}
 	if (len1 >= 2)
 	{
-		c2 = ReadUInt16(ptr);
+		c2 = ReadUInt16(&ptr[0]);
 		if ((UTF8Char)(c2 & 0xff) == c)
 			return (UOSInt)(ptr - str1);
 		if ((UTF8Char)(c2 >> 8) == c)
@@ -3077,7 +3077,7 @@ UOSInt Text::StrIndexOfCharC(const UTF8Char *str1, UOSInt len1, UTF8Char c)
 	return INVALID_INDEX;
 }
 
-UOSInt Text::StrIndexOfC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2)
+UOSInt Text::StrIndexOfC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2)
 {
 	if (len1 < len2)
 	{
@@ -3087,9 +3087,9 @@ UOSInt Text::StrIndexOfC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2
 	{
 
 	}
-	const UTF8Char *ptr = str1;
-	const UTF8Char *ptr2;
-	const UTF8Char *ptr3;
+	UnsafeArray<const UTF8Char> ptr = str1;
+	UnsafeArray<const UTF8Char> ptr2;
+	UnsafeArray<const UTF8Char> ptr3;
 	UTF8Char c;
 	UInt8 v1;
 	UInt16 v2;
@@ -3108,29 +3108,29 @@ UOSInt Text::StrIndexOfC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2
 		}
 		return INVALID_INDEX;
 	case 2:
-		v2 = ReadNUInt16(str2);
+		v2 = ReadNUInt16(&str2[0]);
 		while (len1-- > 1)
 		{
-			if (ReadNUInt16(ptr) == v2)
+			if (ReadNUInt16(&ptr[0]) == v2)
 				return (UOSInt)(ptr - str1);
 			ptr++;
 		}
 		return INVALID_INDEX;
 	case 3:
-		v2 = ReadNUInt16(str2);
+		v2 = ReadNUInt16(&str2[0]);
 		v1 = str2[2];
 		while (len1-- > 2)
 		{
-			if (ReadNUInt16(ptr) == v2 && ptr[2] == v1)
+			if (ReadNUInt16(&ptr[0]) == v2 && ptr[2] == v1)
 				return (UOSInt)(ptr - str1);
 			ptr++;
 		}
 		return INVALID_INDEX;
 	case 4:
-		v3 = ReadNUInt32(str2);
+		v3 = ReadNUInt32(&str2[0]);
 		while (len1-- > 3)
 		{
-			if (ReadNUInt32(ptr) == v3)
+			if (ReadNUInt32(&ptr[0]) == v3)
 				return (UOSInt)(ptr - str1);
 			ptr++;
 		}
@@ -3158,11 +3158,11 @@ UOSInt Text::StrIndexOfC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2
 	}
 }
 
-UOSInt Text::StrIndexOfICase(const UTF8Char *str1, const UTF8Char *str2)
+UOSInt Text::StrIndexOfICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2)
 {
-	const UTF8Char *ptr = str1;
-	const UTF8Char *ptr2;
-	const UTF8Char *ptr3;
+	UnsafeArray<const UTF8Char> ptr = str1;
+	UnsafeArray<const UTF8Char> ptr2;
+	UnsafeArray<const UTF8Char> ptr3;
 	UTF8Char c2;
 	UTF8Char c3;
 	Int32 i;
@@ -3465,7 +3465,7 @@ void Text::StrDelNew(const UTF8Char *newStr)
 	MemFree((void*)newStr);
 }
 
-Bool Text::StrStartsWith(const UTF8Char *str1, const UTF8Char *str2)
+Bool Text::StrStartsWith(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2)
 {
 	while (*str2)
 	{
@@ -3475,7 +3475,7 @@ Bool Text::StrStartsWith(const UTF8Char *str1, const UTF8Char *str2)
 	return true;
 }
 
-Bool Text::StrStartsWithICase(const UTF8Char *str1, const UTF8Char *str2)
+Bool Text::StrStartsWithICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2)
 {
 	UTF8Char c1;
 	UTF8Char c2;
@@ -3507,7 +3507,7 @@ Bool Text::StrStartsWithICase(const UTF8Char *str1, const UTF8Char *str2)
 	return true;
 }
 
-Bool Text::StrStartsWithICaseC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2)
+Bool Text::StrStartsWithICaseC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2)
 {
 	if (len1 < len2)
 	{
@@ -3516,8 +3516,8 @@ Bool Text::StrStartsWithICaseC(const UTF8Char *str1, UOSInt len1, const UTF8Char
 	REGVAR UInt8 *upperArr = MyString_StrUpperArr;
 	while (len2 >= 4)
 	{
-		REGVAR UInt32 v1 = ReadNUInt32(str1);
-		REGVAR UInt32 v2 = ReadNUInt32(str2);
+		REGVAR UInt32 v1 = ReadNUInt32(str1.Ptr());
+		REGVAR UInt32 v2 = ReadNUInt32(str2.Ptr());
 		if (v1 != v2)
 		{
 			if (upperArr[v1 & 0xff] != upperArr[v2 & 0xff])
@@ -3535,8 +3535,8 @@ Bool Text::StrStartsWithICaseC(const UTF8Char *str1, UOSInt len1, const UTF8Char
 	}
 	if (len2 >= 2)
 	{
-		REGVAR UInt16 v1 = ReadNUInt16(str1);
-		REGVAR UInt16 v2 = ReadNUInt16(str2);
+		REGVAR UInt16 v1 = ReadNUInt16(str1.Ptr());
+		REGVAR UInt16 v2 = ReadNUInt16(str2.Ptr());
 		if (v1 != v2)
 		{
 			if (upperArr[v1 & 0xff] != upperArr[v2 & 0xff] ||
@@ -3554,10 +3554,10 @@ Bool Text::StrStartsWithICaseC(const UTF8Char *str1, UOSInt len1, const UTF8Char
 	return true;
 }
 
-Bool Text::StrEndsWith(const UTF8Char *str1, const UTF8Char *str2)
+Bool Text::StrEndsWith(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2)
 {
-	const UTF8Char *ptr1 = str1;
-	const UTF8Char *ptr2 = str2;
+	UnsafeArray<const UTF8Char> ptr1 = str1;
+	UnsafeArray<const UTF8Char> ptr2 = str2;
 	while (*ptr1++) ;
 	while (*ptr2++) ;
 	if ((ptr1 - str1) < (ptr2 - str2))
@@ -3572,7 +3572,7 @@ Bool Text::StrEndsWith(const UTF8Char *str1, const UTF8Char *str2)
 	return true;
 }
 
-Bool Text::StrEndsWithC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2)
+Bool Text::StrEndsWithC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2)
 {
 	if (len1 < len2)
 	{
@@ -3606,10 +3606,10 @@ Bool Text::StrEndsWithC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2,
 	}
 }
 
-Bool Text::StrEndsWithICase(const UTF8Char *str1, const UTF8Char *str2)
+Bool Text::StrEndsWithICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2)
 {
-	const UTF8Char *ptr1 = str1;
-	const UTF8Char *ptr2 = str2;
+	UnsafeArray<const UTF8Char> ptr1 = str1;
+	UnsafeArray<const UTF8Char> ptr2 = str2;
 	UTF8Char c1;
 	UTF8Char c2;
 	while (*ptr1++) ;
@@ -3636,7 +3636,7 @@ Bool Text::StrEndsWithICase(const UTF8Char *str1, const UTF8Char *str2)
 	return true;
 }
 
-Bool Text::StrEndsWithICaseC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2)
+Bool Text::StrEndsWithICaseC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2)
 {
 	if (len1 < len2)
 	{

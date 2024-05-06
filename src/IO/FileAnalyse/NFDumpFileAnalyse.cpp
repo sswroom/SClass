@@ -63,7 +63,7 @@ void __stdcall IO::FileAnalyse::NFDumpFileAnalyse::ParseThread(NN<Sync::Thread> 
 	}
 }
 
-UOSInt IO::FileAnalyse::NFDumpFileAnalyse::LZODecompBlock(UInt8 *srcBlock, UOSInt srcSize, UInt8 *outBlock, UOSInt maxOutSize)
+UOSInt IO::FileAnalyse::NFDumpFileAnalyse::LZODecompBlock(UnsafeArray<UInt8> srcBlock, UOSInt srcSize, UnsafeArray<UInt8> outBlock, UOSInt maxOutSize)
 {
 	Data::Compress::LZODecompressor dec;
 	UOSInt destSize;

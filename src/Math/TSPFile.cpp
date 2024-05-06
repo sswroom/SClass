@@ -155,7 +155,7 @@ UInt8 *Math::TSPFile::GetRowPtr(UOSInt row) const
 	return &this->ptBuff[this->rowSize * row];
 }
 
-UInt8 *Math::TSPFile::GetHdrPtr() const
+UnsafeArray<UInt8> Math::TSPFile::GetHdrPtr() const
 {
 	return this->hdrBuff.Ptr();
 }

@@ -446,7 +446,7 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr(Text::CStringNN jsonStr)
 	return ParseJSONStr2(jsonStr.v, jsonStr.GetEndPtr(), endPtr, sbEnv);
 }
 
-Text::JSONBase *Text::JSONBase::ParseJSONBytes(const UInt8 *jsonBytes, UOSInt len)
+Text::JSONBase *Text::JSONBase::ParseJSONBytes(UnsafeArray<const UInt8> jsonBytes, UOSInt len)
 {
 	UTF8Char *s = MemAlloc(UTF8Char, len + 1);
 	const UTF8Char *endPtr;

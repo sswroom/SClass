@@ -64,7 +64,7 @@ IO::ParsedObject *Parser::FileParser::PCAPParser::ParseFileHdr(NN<IO::StreamData
 			}
 			if (fd->GetRealData(currOfst + 16, inclLen, packetBuff) != inclLen)
 				break;
-			analyzer->PacketData(linkType, packetBuff.Ptr(), origLen);
+			analyzer->PacketData(linkType, packetBuff.Ptr().Ptr(), origLen);
 			currOfst += 16 + inclLen;
 		}
 		return analyzer;
@@ -89,7 +89,7 @@ IO::ParsedObject *Parser::FileParser::PCAPParser::ParseFileHdr(NN<IO::StreamData
 			}
 			if (fd->GetRealData(currOfst + 16, inclLen, packetBuff) != inclLen)
 				break;
-			analyzer->PacketData(linkType, packetBuff.Ptr(), origLen);
+			analyzer->PacketData(linkType, packetBuff.Ptr().Ptr(), origLen);
 			currOfst += 16 + inclLen;
 		}
 		return analyzer;

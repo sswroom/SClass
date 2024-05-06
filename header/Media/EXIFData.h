@@ -155,7 +155,7 @@ namespace Media
 		static Optional<EXIFData> ParseIFD64(NN<IO::StreamData> fd, UInt64 ofst, NN<Data::ByteOrder> byteOrder, OptOut<UInt64> nextOfst, UInt64 readBase);
 		static Bool ParseEXIFFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt frameOfst, NN<IO::StreamData> fd, UInt64 ofst);
 		static Bool ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt frameOfst, NN<IO::StreamData> fd, UInt64 ofst, NN<Data::ByteOrder> byteOrder, OptOut<UInt32> nextOfst, UInt32 ifdId, UInt64 readBase);
-		static Optional<EXIFData> ParseExif(const UInt8 *buff, UOSInt buffSize);
+		static Optional<EXIFData> ParseExif(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 	};
 }
 #endif

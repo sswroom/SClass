@@ -93,8 +93,8 @@ namespace Text
 		}
 	}
 
-	UTF8Char *StrConcat(UTF8Char *oriStr, const UTF8Char *strToJoin);
-	UTF8Char *StrConcatS(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt buffSize);
+	UTF8Char *StrConcat(UTF8Char *oriStr, UnsafeArray<const UTF8Char> strToJoin);
+	UTF8Char *StrConcatS(UTF8Char *oriStr, UnsafeArray<const UTF8Char> strToJoin, UOSInt buffSize);
 	UTF8Char *StrConcatASCII(UTF8Char *oriStr, const Char *strToJoin);
 
 	UTF8Char *StrInt16(UTF8Char *oriStr, Int16 val);
@@ -116,22 +116,22 @@ namespace Text
 	UTF8Char *StrToLowerC(UTF8Char *oriStr, const UTF8Char *strToProc, UOSInt strLen);
 	UTF8Char *StrToCapital(UTF8Char *oriStr, const UTF8Char *strToProc);
 
-	Bool StrEquals(UnsafeArray<const UTF8Char> str1, const UTF8Char *str2);
-	Bool StrEqualsN(const UTF8Char *str1, const UTF8Char *str2);
-	FORCEINLINE Bool StrEqualsC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
-	Bool StrEqualsICase(const UTF8Char *str1, const UTF8Char *str2);
-	Bool StrEqualsICaseC(const UTF8Char *str1, UOSInt str1Len, const UTF8Char *str2, UOSInt str2Len);
+	Bool StrEquals(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2);
+	Bool StrEqualsN(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2);
+	FORCEINLINE Bool StrEqualsC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2);
+	Bool StrEqualsICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2);
+	Bool StrEqualsICaseC(UnsafeArray<const UTF8Char> str1, UOSInt str1Len, UnsafeArray<const UTF8Char> str2, UOSInt str2Len);
 
 	FORCEINLINE OSInt StrCompare(const UTF8Char *str1, const UTF8Char *str2) { return MyString_StrCompare(str1, str2); }
 	FORCEINLINE OSInt StrCompareICase(const UTF8Char *str1, const UTF8Char *str2) { return MyString_StrCompareICase(str1, str2); }
 	OSInt StrCompareFastC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
 
-	FORCEINLINE UOSInt StrCharCnt(const UTF8Char *str)
+	FORCEINLINE UOSInt StrCharCnt(UnsafeArray<const UTF8Char> str)
 	{
 #if 0 //defined(__GNUC__)
 		return (UOSInt)strlen((const Char*)str);
 #else
-		return MyString_StrCharCnt(str);
+		return MyString_StrCharCnt(str.Ptr());
 #endif
 	}
 	UOSInt StrCharCntS(const UTF8Char *str, UOSInt maxLen);
@@ -150,13 +150,13 @@ namespace Text
 	UTF8Char *StrHexVal24(UTF8Char *oriStr, UInt32 val);
 	UTF8Char *StrHexVal16(UTF8Char *oriStr, UInt16 val);
 	UTF8Char *StrHexByte(UTF8Char *oriStr, UInt8 val);
-	UTF8Char *StrHexBytes(UTF8Char *oriStr, const UInt8 *buff, UOSInt buffSize, UTF8Char seperator);
+	UTF8Char *StrHexBytes(UTF8Char *oriStr, UnsafeArray<const UInt8> buff, UOSInt buffSize, UTF8Char seperator);
 	UTF8Char *StrHexVal32VLC(UTF8Char *oriStr, UInt32 val);
 	UTF8Char *StrHexVal32LC(UTF8Char *oriStr, UInt32 val);
 	UTF8Char *StrHexVal24LC(UTF8Char *oriStr, UInt32 val);
 	UTF8Char *StrHexVal16LC(UTF8Char *oriStr, UInt16 val);
 	UTF8Char *StrHexByteLC(UTF8Char *oriStr, UInt8 val);
-	UTF8Char *StrHexBytesLC(UTF8Char *oriStr, const UInt8 *buff, UOSInt buffSize, UTF8Char seperator);
+	UTF8Char *StrHexBytesLC(UTF8Char *oriStr, UnsafeArray<const UInt8> buff, UOSInt buffSize, UTF8Char seperator);
 	Int64 StrHex2Int64C(const UTF8Char *str);
 	Bool StrHex2Int64V(const UTF8Char *str, OutParam<Int64> outVal);
 	Bool StrHex2Int64S(const UTF8Char *str, OutParam<Int64> outVal, Int64 failVal);
@@ -226,11 +226,11 @@ namespace Text
 	UOSInt StrToUOSInt(const UTF8Char *str);
 	Bool StrToUOSInt(const UTF8Char *intStr, OutParam<UOSInt> outVal);
 	Bool StrToBool(const UTF8Char *str);
-	UOSInt StrIndexOf(const UTF8Char *str1, const UTF8Char *str2);
-	UOSInt StrIndexOfChar(const UTF8Char *str1, UTF8Char c);
-	UOSInt StrIndexOfCharC(const UTF8Char *str1, UOSInt len1, UTF8Char c);
-	UOSInt StrIndexOfC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
-	UOSInt StrIndexOfICase(const UTF8Char *str1, const UTF8Char *str2);
+	UOSInt StrIndexOf(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2);
+	UOSInt StrIndexOfChar(UnsafeArray<const UTF8Char> str1, UTF8Char c);
+	UOSInt StrIndexOfCharC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UTF8Char c);
+	UOSInt StrIndexOfC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2);
+	UOSInt StrIndexOfICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2);
 	UOSInt StrLastIndexOfChar(const UTF8Char *str1, UTF8Char c);
 	UOSInt StrLastIndexOfCharC(const UTF8Char *str1, UOSInt len1, UTF8Char c);
 	UOSInt StrLastIndexOfC(const UTF8Char *str1, UOSInt len1, UTF8Char c);
@@ -247,14 +247,14 @@ namespace Text
 	NN<const UTF8Char> StrCopyNew(const UTF8Char *str1);
 	NN<const UTF8Char> StrCopyNewC(const UTF8Char *str1, UOSInt strLen);
 	void StrDelNew(const UTF8Char *newStr);
-	Bool StrStartsWith(const UTF8Char *str1, const UTF8Char *str2);
-	FORCEINLINE Bool StrStartsWithC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
-	Bool StrStartsWithICase(const UTF8Char *str1, const UTF8Char *str2);
-	Bool StrStartsWithICaseC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
-	Bool StrEndsWith(const UTF8Char *str1, const UTF8Char *str2);
-	Bool StrEndsWithC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
-	Bool StrEndsWithICase(const UTF8Char *str1, const UTF8Char *str2);
-	Bool StrEndsWithICaseC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
+	Bool StrStartsWith(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2);
+	FORCEINLINE Bool StrStartsWithC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2);
+	Bool StrStartsWithICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2);
+	Bool StrStartsWithICaseC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2);
+	Bool StrEndsWith(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2);
+	Bool StrEndsWithC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2);
+	Bool StrEndsWithICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2);
+	Bool StrEndsWithICaseC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2);
 	Bool StrIsInt32(const UTF8Char *str1);
 	UOSInt StrReplace(UTF8Char *str1, UTF8Char oriC, UTF8Char destC);
 	UOSInt StrReplace(UTF8Char *str1, const UTF8Char *replaceFrom, const UTF8Char *replaceTo);
@@ -305,7 +305,7 @@ namespace Text
 	FORCEINLINE Char *StrHexVal24(Char *oriStr, UInt32 val) { return (Char*)StrHexVal24((UTF8Char*)oriStr, val); }
 	FORCEINLINE Char *StrHexVal16(Char *oriStr, UInt16 val) { return (Char*)StrHexVal16((UTF8Char*)oriStr, val); }
 	FORCEINLINE Char *StrHexByte(Char *oriStr, UInt8 val) { return (Char*)StrHexByte((UTF8Char*)oriStr, val); }
-	FORCEINLINE Char *StrHexBytes(Char *oriStr, const UInt8 *buff, UOSInt buffSize, Char seperator) { return (Char*)StrHexBytes((UTF8Char*)oriStr, buff, buffSize, (UTF8Char)seperator); };
+	FORCEINLINE Char *StrHexBytes(Char *oriStr, UnsafeArray<const UInt8> buff, UOSInt buffSize, Char seperator) { return (Char*)StrHexBytes((UTF8Char*)oriStr, buff, buffSize, (UTF8Char)seperator); };
 	FORCEINLINE Int64 StrHex2Int64C(const Char *str) { return StrHex2Int64C((const UTF8Char*)str); };
 	FORCEINLINE Int32 StrHex2Int32C(const Char *str) { return StrHex2Int32C((const UTF8Char*)str); }
 	FORCEINLINE UInt32 StrHex2UInt32C(const Char *str) { return (UInt32)StrHex2Int32C((const UTF8Char*)str); }
@@ -395,7 +395,7 @@ namespace Text
 	FORCEINLINE Char *StrRemoveANSIEscapes(Char *str1) { return (Char*)StrRemoveANSIEscapes((UTF8Char*)str1); };
 }
 
-Bool Text::StrEqualsC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2)
+Bool Text::StrEqualsC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2)
 {
 	if (len1 != len2)
 	{
@@ -404,8 +404,8 @@ Bool Text::StrEqualsC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, U
 #if _OSINT_SIZE == 64
 	while (len2 >= 8)
 	{
-		UInt64 v = ReadNUInt64(str1);
-		if (v != ReadNUInt64(str2))
+		UInt64 v = ReadNUInt64(str1.Ptr());
+		if (v != ReadNUInt64(str2.Ptr()))
 		{
 			return false;
 		}
@@ -421,8 +421,8 @@ Bool Text::StrEqualsC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, U
 #else
 	while (len2 >= 8)
 	{
-		UInt32 v = ReadNUInt32(str1);
-		if (v != ReadNUInt32(str2))
+		UInt32 v = ReadNUInt32(str1.Ptr());
+		if (v != ReadNUInt32(str2.Ptr()))
 		{
 			return false;
 		}
@@ -449,33 +449,33 @@ Bool Text::StrEqualsC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, U
 	switch (len2)
 	{
 /*	case 15:
-		return ReadNUInt64(str1) == ReadNUInt64(str2) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]) && ReadNUInt16(&str1[12]) == ReadNUInt16(&str2[12]) && str1[14] == str2[14];
+		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]) && ReadNUInt16(&str1[12]) == ReadNUInt16(&str2[12]) && str1[14] == str2[14];
 	case 14:
-		return ReadNUInt64(str1) == ReadNUInt64(str2) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]) && ReadNUInt16(&str1[12]) == ReadNUInt16(&str2[12]);
+		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]) && ReadNUInt16(&str1[12]) == ReadNUInt16(&str2[12]);
 	case 13:
-		return ReadNUInt64(str1) == ReadNUInt64(str2) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]) && str1[12] == str2[12];
+		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]) && str1[12] == str2[12];
 	case 12:
-		return ReadNUInt64(str1) == ReadNUInt64(str2) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]);
+		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]);
 	case 11:
-		return ReadNUInt64(str1) == ReadNUInt64(str2) && ReadNUInt16(&str1[8]) == ReadNUInt16(&str2[8]) && str1[10] == str2[10];
+		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && ReadNUInt16(&str1[8]) == ReadNUInt16(&str2[8]) && str1[10] == str2[10];
 	case 10:
-		return ReadNUInt64(str1) == ReadNUInt64(str2) && ReadNUInt16(&str1[8]) == ReadNUInt16(&str2[8]);
+		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && ReadNUInt16(&str1[8]) == ReadNUInt16(&str2[8]);
 	case 9:
-		return ReadNUInt64(str1) == ReadNUInt64(str2) && str1[8] == str2[8];
+		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && str1[8] == str2[8];
 	case 8:
-		return ReadNUInt64(str1) == ReadNUInt64(str2);*/
+		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr());*/
 	case 7:
-		return ReadNUInt32(str1) == ReadNUInt32(str2) && ReadNUInt16(&str1[4]) == ReadNUInt16(&str2[4]) && str1[6] == str2[6];
+		return ReadNUInt32(str1.Ptr()) == ReadNUInt32(str2.Ptr()) && ReadNUInt16(&str1[4]) == ReadNUInt16(&str2[4]) && str1[6] == str2[6];
 	case 6:
-		return ReadNUInt32(str1) == ReadNUInt32(str2) && ReadNUInt16(&str1[4]) == ReadNUInt16(&str2[4]);
+		return ReadNUInt32(str1.Ptr()) == ReadNUInt32(str2.Ptr()) && ReadNUInt16(&str1[4]) == ReadNUInt16(&str2[4]);
 	case 5:
-		return ReadNUInt32(str1) == ReadNUInt32(str2) && str1[4] == str2[4];
+		return ReadNUInt32(str1.Ptr()) == ReadNUInt32(str2.Ptr()) && str1[4] == str2[4];
 	case 4:
-		return ReadNUInt32(str1) == ReadNUInt32(str2);
+		return ReadNUInt32(str1.Ptr()) == ReadNUInt32(str2.Ptr());
 	case 3:
-		return ReadNUInt16(str1) == ReadNUInt16(str2) && str1[2] == str2[2];
+		return ReadNUInt16(str1.Ptr()) == ReadNUInt16(str2.Ptr()) && str1[2] == str2[2];
 	case 2:
-		return ReadNUInt16(str1) == ReadNUInt16(str2);
+		return ReadNUInt16(str1.Ptr()) == ReadNUInt16(str2.Ptr());
 	case 1:
 		return str1[0] == str2[0];
 	default:
@@ -483,7 +483,7 @@ Bool Text::StrEqualsC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, U
 	}
 }
 
-Bool Text::StrStartsWithC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2)
+Bool Text::StrStartsWithC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2)
 {
 	if (len1 < len2)
 	{
@@ -492,7 +492,7 @@ Bool Text::StrStartsWithC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str
 #if _OSINT_SIZE == 64
 	while (len2 >= 8)
 	{
-		if (ReadNUInt64(str1) != ReadNUInt64(str2))
+		if (ReadNUInt64(str1.Ptr()) != ReadNUInt64(str2.Ptr()))
 			return false;
 		str1 += 8;
 		str2 += 8;
@@ -513,33 +513,33 @@ Bool Text::StrStartsWithC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str
 	switch (len2)
 	{
 /*	case 15:
-		return ReadNUInt64(str1) == ReadNUInt64(str2) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]) && ReadNUInt16(&str1[12]) == ReadNUInt16(&str2[12]) && str1[14] == str2[14];
+		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]) && ReadNUInt16(&str1[12]) == ReadNUInt16(&str2[12]) && str1[14] == str2[14];
 	case 14:
-		return ReadNUInt64(str1) == ReadNUInt64(str2) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]) && ReadNUInt16(&str1[12]) == ReadNUInt16(&str2[12]);
+		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]) && ReadNUInt16(&str1[12]) == ReadNUInt16(&str2[12]);
 	case 13:
-		return ReadNUInt64(str1) == ReadNUInt64(str2) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]) && str1[12] == str2[12];
+		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]) && str1[12] == str2[12];
 	case 12:
-		return ReadNUInt64(str1) == ReadNUInt64(str2) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]);
+		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && ReadNUInt32(&str1[8]) == ReadNUInt32(&str2[8]);
 	case 11:
-		return ReadNUInt64(str1) == ReadNUInt64(str2) && ReadNUInt16(&str1[8]) == ReadNUInt16(&str2[8]) && str1[10] == str2[10];
+		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && ReadNUInt16(&str1[8]) == ReadNUInt16(&str2[8]) && str1[10] == str2[10];
 	case 10:
-		return ReadNUInt64(str1) == ReadNUInt64(str2) && ReadNUInt16(&str1[8]) == ReadNUInt16(&str2[8]);
+		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && ReadNUInt16(&str1[8]) == ReadNUInt16(&str2[8]);
 	case 9:
-		return ReadNUInt64(str1) == ReadNUInt64(str2) && str1[8] == str2[8];
+		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr()) && str1[8] == str2[8];
 	case 8:
-		return ReadNUInt64(str1) == ReadNUInt64(str2);*/
+		return ReadNUInt64(str1.Ptr()) == ReadNUInt64(str2.Ptr());*/
 	case 7:
-		return ReadNUInt32(str1) == ReadNUInt32(str2) && ReadNUInt16(&str1[4]) == ReadNUInt16(&str2[4]) && str1[6] == str2[6];
+		return ReadNUInt32(str1.Ptr()) == ReadNUInt32(str2.Ptr()) && ReadNUInt16(&str1[4]) == ReadNUInt16(&str2[4]) && str1[6] == str2[6];
 	case 6:
-		return ReadNUInt32(str1) == ReadNUInt32(str2) && ReadNUInt16(&str1[4]) == ReadNUInt16(&str2[4]);
+		return ReadNUInt32(str1.Ptr()) == ReadNUInt32(str2.Ptr()) && ReadNUInt16(&str1[4]) == ReadNUInt16(&str2[4]);
 	case 5:
-		return ReadNUInt32(str1) == ReadNUInt32(str2) && str1[4] == str2[4];
+		return ReadNUInt32(str1.Ptr()) == ReadNUInt32(str2.Ptr()) && str1[4] == str2[4];
 	case 4:
-		return ReadNUInt32(str1) == ReadNUInt32(str2);
+		return ReadNUInt32(str1.Ptr()) == ReadNUInt32(str2.Ptr());
 	case 3:
-		return ReadNUInt16(str1) == ReadNUInt16(str2) && str1[2] == str2[2];
+		return ReadNUInt16(str1.Ptr()) == ReadNUInt16(str2.Ptr()) && str1[2] == str2[2];
 	case 2:
-		return ReadNUInt16(str1) == ReadNUInt16(str2);
+		return ReadNUInt16(str1.Ptr()) == ReadNUInt16(str2.Ptr());
 	case 1:
 		return str1[0] == str2[0];
 	default:

@@ -29,7 +29,7 @@ namespace Media
 		VOBAC3StreamSource(NN<Media::IStreamControl> pbc);
 		virtual ~VOBAC3StreamSource();
 
-		Bool ParseHeader(UInt8 *buff, UOSInt buffSize);
+		Bool ParseHeader(UnsafeArray<UInt8> buff, UOSInt buffSize);
 		Bool IsReady();
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);

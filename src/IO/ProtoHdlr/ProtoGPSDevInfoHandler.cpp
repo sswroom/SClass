@@ -40,7 +40,7 @@ UOSInt IO::ProtoHdlr::ProtoGPSDevInfoHandler::ParseProtocol(NN<IO::Stream> stm, 
 
 				Sync::MutexUsage mutUsage(this->crcMut);
 				this->crc.Clear();
-				this->crc.Calc(buff.Ptr(), packetSize - 2);
+				this->crc.Calc(buff.Ptr().Ptr(), packetSize - 2);
 				this->crc.GetValue(crcVal);
 				mutUsage.EndUse();
 				if (ReadMUInt16(&crcVal[2]) == ReadUInt16(&buff[packetSize - 2]))

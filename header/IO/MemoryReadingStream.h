@@ -10,7 +10,7 @@ namespace IO
 		Data::ByteArrayR buff;
 		UOSInt currPtr;
 	public:
-		MemoryReadingStream(const UInt8 *buff, UOSInt buffSize);
+		MemoryReadingStream(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 		MemoryReadingStream(Data::ByteArrayR buff);
 		virtual ~MemoryReadingStream();
 

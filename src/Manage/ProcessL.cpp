@@ -1190,7 +1190,7 @@ Int32 Manage::Process::ExecuteProcess(Text::CString cmd, NN<Text::StringBuilderU
 	*pptr = 0;
 	args.Add(0);
 	UOSInt argc;
-	UTF8Char **arr = args.GetPtr(argc);
+	UnsafeArray<UTF8Char*> arr = args.GetPtr(argc);
 
 	static Int32 Process_Id = 0;
 	UTF8Char tmpFile[512];
@@ -1213,7 +1213,7 @@ Int32 Manage::Process::ExecuteProcess(Text::CString cmd, NN<Text::StringBuilderU
 	if (pid == 0)
 	{
 		dup2(fd, 1);
-		ret = execvp((Char*)arr[0], (Char**)arr);
+		ret = execvp((Char*)arr[0], (Char**)arr.Ptr());
 		exit(ret);
 	}
 	int status = -1;

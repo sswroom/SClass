@@ -23,7 +23,7 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NN<Text::XMLReader> reade
 	Text::StringBuilderUTF8 sb;
 	Map::VectorLayer *lyr = 0;
 	Map::DrawLayerType layerType = Map::DRAW_LAYER_UNKNOWN;
-	const UTF8Char **ccols;
+	UnsafeArray<const UTF8Char*> ccols;
 	UOSInt i;
 	Math::Geometry::Vector2D *newVec;
 	while (reader->NextElementName().SetTo(nodeText))
@@ -144,14 +144,14 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NN<Text::XMLReader> reade
 						{
 							csys = Math::CoordinateSystemManager::CreateDefaultCsys();
 						}
-						NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, ccols, csys, 0, CSTR_NULL));
+						NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, ccols.Ptr(), csys, 0, CSTR_NULL));
 					}
 
 					if (colCnt == valList.GetCount())
 					{
-						Text::String **scols;
+						UnsafeArray<Text::String*> scols;
 						scols = valList.Ptr();
-						lyr->AddVector(nnvec, scols);
+						lyr->AddVector(nnvec, scols.Ptr());
 					}
 					else
 					{

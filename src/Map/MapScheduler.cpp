@@ -264,7 +264,7 @@ void Map::MapScheduler::DrawPolygon(NN<Math::Geometry::Polygon> pg)
 		ptOfstArr[i] = (UInt32)nPoint;
 		i++;
 	}
-	this->img->DrawPolyPolygon(ptList.Ptr(), ptOfstArr, nPtOfst, this->p, this->b);
+	this->img->DrawPolyPolygon(ptList.Ptr().Ptr(), ptOfstArr, nPtOfst, this->p, this->b);
 	if (relArr)
 	{
 		MemFree(relArr);
@@ -317,9 +317,9 @@ void Map::MapScheduler::DrawCurvePolygon(NN<Math::Geometry::CurvePolygon> cp)
 	}
 	if (ptList.GetCount() > 0)
 	{
-		Math::Coord2DDbl *pointArr = ptList.GetPtr(nPoint);
+		Math::Coord2DDbl *pointArr = ptList.GetPtr(nPoint).Ptr();
 		UOSInt nPtOfst;
-		UInt32 *ptOfstArr = ptOfst.GetPtr(nPtOfst);
+		UInt32 *ptOfstArr = ptOfst.GetPtr(nPtOfst).Ptr();
 		if (this->isFirst)
 		{
 			UOSInt k;

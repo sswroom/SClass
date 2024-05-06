@@ -95,7 +95,7 @@ Text::CString IO::FileAnalyse::ZIPFileAnalyse::GetCompName(UInt16 comp)
 	return CSTR_NULL;
 }
 
-UOSInt IO::FileAnalyse::ZIPFileAnalyse::ParseCentDir(const UInt8 *buff, UOSInt buffSize, UInt64 ofst)
+UOSInt IO::FileAnalyse::ZIPFileAnalyse::ParseCentDir(UnsafeArray<const UInt8> buff, UOSInt buffSize, UInt64 ofst)
 {
 	UInt64 compSize;
 	UInt64 uncompSize;
@@ -185,7 +185,7 @@ UOSInt IO::FileAnalyse::ZIPFileAnalyse::ParseCentDir(const UInt8 *buff, UOSInt b
 	return i;
 }
 
-UOSInt IO::FileAnalyse::ZIPFileAnalyse::AddCentDir(const UInt8 *buff, UOSInt buffSize, UInt64 ofst)
+UOSInt IO::FileAnalyse::ZIPFileAnalyse::AddCentDir(UnsafeArray<const UInt8> buff, UOSInt buffSize, UInt64 ofst)
 {
 	UInt32 recType;
 	UInt16 fnameLen;

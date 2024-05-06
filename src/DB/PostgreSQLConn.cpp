@@ -402,7 +402,7 @@ public:
 					break;
 				}
 			}
-			Int16 *bytes = arr.GetPtr(scnt);
+			Int16 *bytes = arr.GetPtr(scnt).Ptr();
 			item->SetByteArr((const UInt8*)bytes, scnt * sizeof(v));
 			return true;
 		}
@@ -432,7 +432,7 @@ public:
 					break;
 				}
 			}
-			Int32 *bytes = arr.GetPtr(scnt);
+			Int32 *bytes = arr.GetPtr(scnt).Ptr();
 			item->SetByteArr((const UInt8*)bytes, scnt * sizeof(v));
 			return true;
 		}
@@ -462,7 +462,7 @@ public:
 					break;
 				}
 			}
-			Int64 *bytes = arr.GetPtr(scnt);
+			Int64 *bytes = arr.GetPtr(scnt).Ptr();
 			item->SetByteArr((const UInt8*)bytes, scnt * sizeof(v));
 			return true;
 		}
@@ -492,7 +492,7 @@ public:
 					break;
 				}
 			}
-			Single *bytes = arr.GetPtr(scnt);
+			Single *bytes = arr.GetPtr(scnt).Ptr();
 			item->SetByteArr((const UInt8*)bytes, scnt * sizeof(Single));
 			return true;
 		}
@@ -536,7 +536,7 @@ public:
 					break;
 				}
 			}
-			Int16 *bytes = arr.GetPtr(scnt);
+			Int16 *bytes = arr.GetPtr(scnt).Ptr();
 			item->SetByteArr((const UInt8*)bytes, scnt * sizeof(v));
 			return true;
 		}
@@ -561,7 +561,7 @@ public:
 					break;
 				}
 			}
-			Int32 *bytes = arr.GetPtr(scnt);
+			Int32 *bytes = arr.GetPtr(scnt).Ptr();
 			item->SetByteArr((const UInt8*)bytes, scnt * sizeof(v));
 			return true;
 		}

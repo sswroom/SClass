@@ -28,8 +28,8 @@ namespace IO
 			Bool pauseParsing;
 			Sync::Thread thread;
 
-			UOSInt ParseScriptDataVal(UInt8 *data, UOSInt ofst, UOSInt endOfst, NN<Text::StringBuilderUTF8> sb);
-			void ParseScriptData(UInt8 *data, UOSInt ofst, UOSInt endOfst, UOSInt frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame);
+			UOSInt ParseScriptDataVal(UnsafeArray<UInt8> data, UOSInt ofst, UOSInt endOfst, NN<Text::StringBuilderUTF8> sb);
+			void ParseScriptData(UnsafeArray<UInt8> data, UOSInt ofst, UOSInt endOfst, UOSInt frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame);
 			static void __stdcall ParseThread(NN<Sync::Thread> thread);
 		public:
 			FLVFileAnalyse(NN<IO::StreamData> fd);

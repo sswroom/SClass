@@ -27,7 +27,7 @@ namespace Media
 
 		Data::ByteBuffer iccBuff;
 
-		ICCProfile(const UInt8 *iccBuff);
+		ICCProfile(UnsafeArray<const UInt8> iccBuff);
 	public:
 		~ICCProfile();
 
@@ -60,7 +60,7 @@ namespace Media
 		void ToString(NN<Text::StringBuilderUTF8> sb) const;
 
 		static Optional<ICCProfile> Parse(Data::ByteArrayR buff);
-		static Bool ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, const UInt8 *buff, UOSInt buffSize);
+		static Bool ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, UnsafeArray<const UInt8> buff, UOSInt buffSize);
 
 		static void ReadDateTimeNumber(const UInt8 *buff, NN<Data::DateTime> dt);
 		static CIEXYZ ReadXYZNumber(const UInt8 *buff);

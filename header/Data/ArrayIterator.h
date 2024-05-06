@@ -6,11 +6,11 @@ namespace Data
 	template <class T> class ArrayIterator
 	{
 	private:
-		const T *arr;
+		UnsafeArray<const T> arr;
 		UOSInt cnt;
 	public:
 		ArrayIterator() = default;
-		ArrayIterator(const T *arr, UOSInt cnt)
+		ArrayIterator(UnsafeArray<const T> arr, UOSInt cnt)
 		{
 			this->arr = arr;
 			this->cnt = cnt;

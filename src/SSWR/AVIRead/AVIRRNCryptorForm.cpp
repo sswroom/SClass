@@ -74,7 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnProcessClicked(AnyType userOb
 				if (srcFS.Read(fileBuff) == fileLen)
 				{
 					Text::StringBuilderUTF8 sb;
-					enc.EncodeBin(sb, fileBuff.Ptr(), fileBuff.GetSize());
+					enc.EncodeBin(sb, fileBuff.Ptr().Ptr(), fileBuff.GetSize());
 					IO::MemoryReadingStream mstm(sb.v, sb.leng);
 					IO::FileStream destFS(sbSrcFile.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 					succ = Crypto::Encrypt::RNCryptor::Encrypt(mstm, destFS, sbPassword.ToCString());

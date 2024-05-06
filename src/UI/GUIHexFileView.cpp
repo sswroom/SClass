@@ -260,7 +260,7 @@ void UI::GUIHexFileView::DrawImage(NN<Media::DrawImage> dimg)
 				k = readBuffSize;
 			}
 			readBuffSize -= k;
-			textPtr = currPtr.Ptr();
+			textPtr = currPtr.Ptr().Ptr();
 			j = 0;
 			while (j < k)
 			{

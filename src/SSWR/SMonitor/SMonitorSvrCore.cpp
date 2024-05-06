@@ -70,7 +70,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientData(NN<Net::TCPClient> 
 {
 	NN<SSWR::SMonitor::SMonitorSvrCore> me = userObj.GetNN<SSWR::SMonitor::SMonitorSvrCore>();
 	NN<ClientStatus> status = cliData.GetNN<ClientStatus>();
-	MemCopyNO(&status->dataBuff[status->dataSize], buff.Ptr(), buff.GetSize());
+	MemCopyNO(&status->dataBuff[status->dataSize], buff.Ptr().Ptr(), buff.GetSize());
 	status->dataSize += buff.GetSize();
 
 	UOSInt retSize = me->protoHdlr.ParseProtocol(cli, status, status->stmData, Data::ByteArrayR(status->dataBuff, status->dataSize));

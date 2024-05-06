@@ -8,7 +8,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XMLDOM.h"
 
-void Net::HKTrafficImage::Init(NN<Text::EncodingFactory> encFact, const UInt8 *buff, UOSInt buffSize)
+void Net::HKTrafficImage::Init(NN<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	NN<Text::XMLNode> node1;
 	NN<Text::XMLNode> node2;
@@ -112,7 +112,7 @@ void Net::HKTrafficImage::Init(NN<Text::EncodingFactory> encFact, const UInt8 *b
 	}
 }
 
-Net::HKTrafficImage::HKTrafficImage(NN<Text::EncodingFactory> encFact, const UInt8 *buff, UOSInt buffSize)
+Net::HKTrafficImage::HKTrafficImage(NN<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	this->Init(encFact, buff, buffSize);
 }

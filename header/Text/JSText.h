@@ -24,8 +24,8 @@ namespace Text
 		static const WChar *FromNewJSText(const WChar *s);
 		static void FreeNewText(const WChar *s);
 
-		static Bool JSONWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt lev, NN<Text::StringBuilderUTF8> sb);
-		static Bool JSWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt lev, NN<Text::StringBuilderUTF8> sb);
+		static Bool JSONWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffSize, UOSInt lev, NN<Text::StringBuilderUTF8> sb);
+		static Bool JSWellFormat(UnsafeArray<const UTF8Char> buff, UOSInt buffSize, UOSInt lev, NN<Text::StringBuilderUTF8> sb);
 	};
 }
 #endif

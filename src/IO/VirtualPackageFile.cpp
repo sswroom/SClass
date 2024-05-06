@@ -924,7 +924,7 @@ Bool IO::VirtualPackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool f
 				if (succ)
 				{
 					IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-					succ = (fs.Write(tmpBuff.Ptr(), (UOSInt)fileSize) == fileSize);
+					succ = (fs.Write(tmpBuff.Ptr().Ptr(), (UOSInt)fileSize) == fileSize);
 				}
 			}
 			else
@@ -948,7 +948,7 @@ Bool IO::VirtualPackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool f
 							succ = false;
 							break;
 						}
-						if (fs.Write(tmpBuff.Ptr(), readSize) != readSize)
+						if (fs.Write(tmpBuff.Ptr().Ptr(), readSize) != readSize)
 						{
 							succ = false;
 							break;

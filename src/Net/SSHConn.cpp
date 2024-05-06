@@ -183,9 +183,9 @@ Optional<Net::SSHTCPChannel> Net::SSHConn::RemoteConnect(Socket *sourceSoc, Text
 	return ch;
 }
 
-Bool Net::SSHConn::ChannelTryRead(SSHChannelHandle *channel, UInt8 *buff, UOSInt maxSize, OutParam<UOSInt> size)
+Bool Net::SSHConn::ChannelTryRead(SSHChannelHandle *channel, UnsafeArray<UInt8> buff, UOSInt maxSize, OutParam<UOSInt> size)
 {
-	ssize_t sz = libssh2_channel_read_ex((LIBSSH2_CHANNEL*)channel, 0, (Char*)buff, (size_t)maxSize);
+	ssize_t sz = libssh2_channel_read_ex((LIBSSH2_CHANNEL*)channel, 0, (Char*)buff.Ptr(), (size_t)maxSize);
 	if (sz == LIBSSH2_ERROR_EAGAIN)
 		return false;
 	if (sz < 0)

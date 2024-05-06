@@ -62,7 +62,7 @@ void __stdcall SSWR::DataSync::SyncServer::OnClientData(NN<Net::TCPClient> cli, 
 	UOSInt sizeLeft;
 	while (data->buffSize + buff.GetSize() > BUFFSIZE)
 	{
-		MemCopyNO(&data->buff[data->buffSize], buff.Ptr(), BUFFSIZE - data->buffSize);
+		MemCopyNO(&data->buff[data->buffSize], buff.Ptr().Ptr(), BUFFSIZE - data->buffSize);
 		buff += BUFFSIZE - data->buffSize;
 		data->buffSize = BUFFSIZE;
 
@@ -77,7 +77,7 @@ void __stdcall SSWR::DataSync::SyncServer::OnClientData(NN<Net::TCPClient> cli, 
 			data->buffSize = sizeLeft;
 		}
 	}
-	MemCopyNO(&data->buff[data->buffSize], buff.Ptr(), buff.GetSize());
+	MemCopyNO(&data->buff[data->buffSize], buff.Ptr().Ptr(), buff.GetSize());
 	data->buffSize += buff.GetSize();
 	sizeLeft = me->protoHdlr.ParseProtocol(cli, data, data->stmData, Data::ByteArrayR(data->buff, data->buffSize));
 	if (sizeLeft == 0)

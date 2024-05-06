@@ -23,7 +23,7 @@ UInt32 __stdcall Media::M2VFile::PlayThread(AnyType userData)
 			me->stm->EndFrameStream();
 			break;
 		}
-		me->stm->WriteFrameStream(me->readBuff.Ptr(), buffSize);
+		me->stm->WriteFrameStream(me->readBuff.Ptr().Ptr(), buffSize);
 		me->readOfst += buffSize;
 		buffSize = 0;
 	}
@@ -44,9 +44,9 @@ Media::M2VFile::M2VFile(NN<IO::StreamData> stmData) : Media::MediaFile(stmData->
 	UInt32 frameRateNorm;
 	UInt32 frameRateDenorm;
 	Media::FrameInfo info;
-	Media::MPEGVideoParser::GetFrameInfo(this->readBuff.Ptr(), 1024, info, frameRateNorm, frameRateDenorm, &this->bitRate, false);
+	Media::MPEGVideoParser::GetFrameInfo(this->readBuff.Ptr().Ptr(), 1024, info, frameRateNorm, frameRateDenorm, &this->bitRate, false);
 	NEW_CLASS(this->stm, Media::M2VStreamSource(*this));
-	this->stm->DetectStreamInfo(this->readBuff.Ptr(), buffSize);
+	this->stm->DetectStreamInfo(this->readBuff.Ptr().Ptr(), buffSize);
 }
 
 Media::M2VFile::~M2VFile()

@@ -30,8 +30,8 @@ namespace IO
 
 			static Text::CString GetTagName(UInt32 tagType);
 			static Text::CString GetCompName(UInt16 comp);
-			UOSInt ParseCentDir(const UInt8 *buff, UOSInt buffSize, UInt64 ofst);
-			UOSInt AddCentDir(const UInt8 *buff, UOSInt buffSize, UInt64 ofst);
+			UOSInt ParseCentDir(UnsafeArray<const UInt8> buff, UOSInt buffSize, UInt64 ofst);
+			UOSInt AddCentDir(UnsafeArray<const UInt8> buff, UOSInt buffSize, UInt64 ofst);
 			static void __stdcall ParseThread(NN<Sync::Thread> thread);
 			static void ParseExtraTag(NN<IO::FileAnalyse::FrameDetail> frame, Data::ByteArrayR tagData, UOSInt extraStart, UOSInt extraLen, UOSInt tagSize, UInt32 compSize, UInt32 uncompSize, UInt32 ofst);
 		public:

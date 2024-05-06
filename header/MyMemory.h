@@ -47,10 +47,12 @@ void MemDecCounter(void *ptr);
 #define MemAllocA(T, cnt) (T*)MAllocA64(sizeof(T) * (cnt))
 #define MemAllocANN(T) NN<T>::FromPtr((T*)MAllocA64(sizeof(T)))
 #define MemAllocA64(T, cnt) (T*)MAllocA64(sizeof(T) * (cnt))
+#define MemAllocAArr(T, cnt) UnsafeArray<T>((T*)MAllocA64(sizeof(T) * (cnt)))
 #define MemFreeA64(ptr) MemFreeA(ptr)
 #define MemFreeNN(ptr) MemFree(ptr.Ptr())
 #define MemFreeANN(ptr) MemFreeA(ptr.Ptr())
 #define MemFreeArr(ptr) MemFree(ptr.Ptr())
+#define MemFreeAArr(ptr) MemFreeA(ptr.Ptr())
 
 void MemPtrChk(void *ptr);
 void MemInit();

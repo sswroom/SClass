@@ -313,7 +313,7 @@ IO::SPackageFile::SPackageFile(Text::CStringNN fileName)
 					this->stm->SeekFromBeginning(this->currOfst);
 					this->stm->Read(dirBuff);
 					this->stm->SeekFromBeginning(this->currOfst);
-					this->mstm.Write(dirBuff.Ptr(), (UOSInt)dirSize);
+					this->mstm.Write(dirBuff.Ptr().Ptr(), (UOSInt)dirSize);
 
 					UOSInt i;
 					UOSInt nameSize;
@@ -514,7 +514,7 @@ Bool IO::SPackageFile::AddFile(NN<IO::StreamData> fd, Text::CString fileName, co
 	return succ;
 }
 
-Bool IO::SPackageFile::AddFile(const UInt8 *fileBuff, UOSInt fileSize, Text::CString fileName, const Data::Timestamp &modTime)
+Bool IO::SPackageFile::AddFile(UnsafeArray<const UInt8> fileBuff, UOSInt fileSize, Text::CString fileName, const Data::Timestamp &modTime)
 {
 	UInt8 dataBuff[512];
 	Bool needCommit = false;

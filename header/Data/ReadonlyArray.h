@@ -7,11 +7,11 @@ namespace Data
 	template <class T> class ReadonlyArray
 	{
 	protected:
-		T *arr;
+		UnsafeArray<T> arr;
 		UOSInt cnt;
 
 	public:
-		ReadonlyArray(const T *arr, UOSInt cnt);
+		ReadonlyArray(UnsafeArray<const T> arr, UOSInt cnt);
 		~ReadonlyArray();
 
 		UOSInt GetCount() const;
@@ -22,16 +22,16 @@ namespace Data
 		Bool Equals(ReadonlyArray<T> *arr2) const;
 	};
 
-	template <class T> ReadonlyArray<T>::ReadonlyArray(const T *arr, UOSInt cnt)
+	template <class T> ReadonlyArray<T>::ReadonlyArray(UnsafeArray<const T> arr, UOSInt cnt)
 	{
-		this->arr = MemAlloc(T, cnt);
-		MemCopyNO(this->arr, arr, cnt * sizeof(T));
+		this->arr = MemAllocArr(T, cnt);
+		this->arr.CopyFromNO(arr, cnt);
 		this->cnt = cnt;
 	}
 
 	template <class T> ReadonlyArray<T>::~ReadonlyArray()
 	{
-		MemFree(this->arr);
+		MemFreeArr(this->arr);
 	}
 
 	template <class T> UOSInt ReadonlyArray<T>::GetCount() const
@@ -41,7 +41,7 @@ namespace Data
 
 	template <class T> const T *ReadonlyArray<T>::GetArray() const
 	{
-		return this->arr;
+		return this->arr.Ptr();
 	}
 
 	template <class T> T ReadonlyArray<T>::GetItem(UOSInt index) const

@@ -28,7 +28,7 @@ IO::StmData::MemoryDataCopy::MemoryDataCopy(const Data::ByteArrayR &data)
 	this->stat = MemAlloc(MemoryStats, 1);
 	this->stat->data = MemAlloc(UInt8, data.GetSize());
 	this->stat->dataLength = data.GetSize();
-	MemCopyNO(this->stat->data, data.GetPtr(), data.GetSize());
+	MemCopyNO(this->stat->data, data.GetPtr().Ptr(), data.GetSize());
 	this->stat->useCnt = 1;
 	this->stat->fullName = 0;
 	this->data = this->stat->data;

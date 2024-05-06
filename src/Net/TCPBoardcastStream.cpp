@@ -76,13 +76,13 @@ void __stdcall Net::TCPBoardcastStream::ClientData(NN<Net::TCPClient> cli, AnyTy
 	{
 		if (me->readBuffPtr2 + size > 16384)
 		{
-			MemCopyNO(&me->readBuff[me->readBuffPtr2], buff.Ptr(), 16384 - me->readBuffPtr2);
+			MemCopyNO(&me->readBuff[me->readBuffPtr2], buff.Ptr().Ptr(), 16384 - me->readBuffPtr2);
 			MemCopyNO(me->readBuff, &buff[16384 - me->readBuffPtr2], size - (16384 - me->readBuffPtr2));
 			me->readBuffPtr2 = size - (16384 - me->readBuffPtr2);
 		}
 		else
 		{
-			MemCopyNO(&me->readBuff[me->readBuffPtr2], buff.Ptr(), size);
+			MemCopyNO(&me->readBuff[me->readBuffPtr2], buff.Ptr().Ptr(), size);
 			me->readBuffPtr2 += size;
 			if (me->readBuffPtr2 >= 16384)
 			{

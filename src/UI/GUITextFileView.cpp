@@ -525,7 +525,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(AnyType userObj)
 							break;
 						}
 
-						srchIndex = Text::StrIndexOfC(srchBuff.Ptr(), currSize, srchTxt, srchTxtLen);
+						srchIndex = Text::StrIndexOfC(srchBuff.Ptr().Ptr(), currSize, srchTxt, srchTxtLen);
 						if (srchIndex != INVALID_INDEX)
 						{
 							me->GetPosFromByteOfst(currOfst + srchIndex, &srchCaretX, &srchCaretY);
@@ -602,13 +602,13 @@ void UI::GUITextFileView::EnsureCaretVisible()
 			Data::ByteBuffer rbuff((UOSInt)(nextOfst - lineOfst));
 			this->fs->SeekFromBeginning(lineOfst);
 			this->fs->Read(rbuff);
-			UOSInt charCnt = enc.CountWChars(rbuff.Ptr(), (UOSInt)(nextOfst - lineOfst));
+			UOSInt charCnt = enc.CountWChars(rbuff.Ptr().Ptr(), (UOSInt)(nextOfst - lineOfst));
 			if (charCnt < this->caretX)
 			{
 				this->caretX = (UInt32)charCnt;
 			}
 			line = MemAlloc(WChar, charCnt + 1);
-			enc.WFromBytes(line, rbuff.Ptr(), (UOSInt)(nextOfst - lineOfst), 0);
+			enc.WFromBytes(line, rbuff.Ptr().Ptr(), (UOSInt)(nextOfst - lineOfst), 0);
 			Text::StrReplace(line, '\t', ' ');
 			this->GetDrawSize(line, this->caretX, &drawW, &drawH);
 			xPos = this->dispLineNumW + (UInt32)drawW;
@@ -811,9 +811,9 @@ UOSInt UI::GUITextFileView::GetLineCharCnt(UOSInt lineNum)
 		Data::ByteBuffer rbuff((UOSInt)(nextOfst - lineOfst));
 		this->fs->SeekFromBeginning(lineOfst);
 		this->fs->Read(rbuff);
-		UOSInt charCnt = enc.CountWChars(rbuff.Ptr(), (UOSInt)(nextOfst - lineOfst));
+		UOSInt charCnt = enc.CountWChars(rbuff.Ptr().Ptr(), (UOSInt)(nextOfst - lineOfst));
 		WChar *line = MemAlloc(WChar, charCnt + 1);
-		enc.WFromBytes(line, rbuff.Ptr(), (UOSInt)(nextOfst - lineOfst), 0);
+		enc.WFromBytes(line, rbuff.Ptr().Ptr(), (UOSInt)(nextOfst - lineOfst), 0);
 		charCnt -= 1;
 		if (charCnt > 0 && (line[charCnt - 1] == 0x0d || line[charCnt - 1] == 0x0a))
 		{
@@ -846,7 +846,7 @@ void UI::GUITextFileView::GetPosFromByteOfst(UInt64 byteOfst, UInt32 *txtPosX, U
 	this->fs->SeekFromBeginning(thisOfst);
 	this->fs->Read(rbuff);
 	mutUsage.EndUse();
-	*txtPosX = (UInt32)enc.CountWChars(rbuff.Ptr(), buffSize);
+	*txtPosX = (UInt32)enc.CountWChars(rbuff.Ptr().Ptr(), buffSize);
 	*txtPosY = (UOSInt)lineNum;
 }
 
@@ -1490,13 +1490,13 @@ void UI::GUITextFileView::UpdateCaretPos()
 			Data::ByteBuffer rbuff((UOSInt)(nextOfst - lineOfst));
 			this->fs->SeekFromBeginning(lineOfst);
 			this->fs->Read(rbuff);
-			UOSInt charCnt = enc.CountWChars(rbuff.Ptr(), (UOSInt)(nextOfst - lineOfst));
+			UOSInt charCnt = enc.CountWChars(rbuff.Ptr().Ptr(), (UOSInt)(nextOfst - lineOfst));
 			if (charCnt < this->caretX)
 			{
 				this->caretX = (UInt32)charCnt;
 			}
 			line = MemAlloc(WChar, charCnt + 1);
-			enc.WFromBytes(line, rbuff.Ptr(), (UOSInt)(nextOfst - lineOfst), 0);
+			enc.WFromBytes(line, rbuff.Ptr().Ptr(), (UOSInt)(nextOfst - lineOfst), 0);
 			Text::StrReplace(line, '\t', ' ');
 			this->GetDrawSize(line, this->caretX, &drawW, &drawH);
 			xPos = this->dispLineNumW + (UInt32)drawW;
@@ -1614,9 +1614,9 @@ void UI::GUITextFileView::GetTextPos(OSInt scnPosX, OSInt scnPosY, OutParam<UInt
 			Data::ByteBuffer rbuff((UOSInt)(nextOfst - lineOfst));
 			this->fs->SeekFromBeginning(lineOfst);
 			this->fs->Read(rbuff);
-			UOSInt charCnt = enc.CountWChars(rbuff.Ptr(), (UOSInt)(nextOfst - lineOfst));
+			UOSInt charCnt = enc.CountWChars(rbuff.Ptr().Ptr(), (UOSInt)(nextOfst - lineOfst));
 			line = MemAlloc(WChar, charCnt + 1);
-			enc.WFromBytes(line, rbuff.Ptr(), (UOSInt)(nextOfst - lineOfst), 0);
+			enc.WFromBytes(line, rbuff.Ptr().Ptr(), (UOSInt)(nextOfst - lineOfst), 0);
 			Text::StrReplace(line, '\t', ' ');
 			charCnt -= 1;
 			if (charCnt > 0 && (line[charCnt] == 0xd || line[charCnt] == 0xa))

@@ -158,14 +158,14 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 	UInt32 msgId;
 	const UInt8 *msgEnd = msgBuff + msgLen;
 	UInt8 seqType;
-	const UInt8 *seqEnd;
+	UnsafeArray<const UInt8> seqEnd;
 	NN<Net::LDAPClient::ReqStatus> req;
 	NN<Data::ArrayListNN<SearchResObject>> searchObjs;
 
 	msgBuff = Net::ASN1Util::PDUParseUInt32(msgBuff, msgEnd, msgId);
 	if (msgBuff == 0)
 		return;
-	msgBuff = Net::ASN1Util::PDUParseSeq(msgBuff, msgEnd, seqType, &seqEnd);
+	msgBuff = Net::ASN1Util::PDUParseSeq(msgBuff, msgEnd, seqType, seqEnd);
 	if (msgBuff == 0)
 		return;
 	#if defined(VERBOSE)
@@ -205,9 +205,9 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 			Text::StringBuilderUTF8 sb2;
 			NN<Net::LDAPClient::SearchResObject> obj;
 			NN<Data::ArrayListNN<Net::LDAPClient::SearchResItem>> items;
-			const UInt8 *attrEnd;
-			const UInt8 *itemEnd;
-			const UInt8 *valEnd;
+			UnsafeArray<const UInt8> attrEnd;
+			UnsafeArray<const UInt8> itemEnd;
+			UnsafeArray<const UInt8> valEnd;
 			UInt8 type;
 			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb);
 			if (msgBuff == 0)
@@ -221,7 +221,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 			obj->isRef = false;
 			NEW_CLASSNN(items, Data::ArrayListNN<Net::LDAPClient::SearchResItem>());
 			obj->items = items;
-			msgBuff = Net::ASN1Util::PDUParseSeq(msgBuff, seqEnd, type, &attrEnd);
+			msgBuff = Net::ASN1Util::PDUParseSeq(msgBuff, seqEnd, type, attrEnd);
 			if (msgBuff == 0 || type != 0x30)
 			{
 				printf("LDAPMessage: searchResEntry, end 1\r\n");
@@ -230,7 +230,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 			}
 			while (msgBuff < attrEnd && msgBuff[0] == 0x30)
 			{
-				msgBuff = Net::ASN1Util::PDUParseSeq(msgBuff, attrEnd, type, &itemEnd);
+				msgBuff = Net::ASN1Util::PDUParseSeq(msgBuff, attrEnd, type, itemEnd);
 				if (msgBuff == 0)
 				{
 					printf("LDAPMessage: searchResEntry, end 2\r\n");
@@ -247,7 +247,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 				}
 				if (msgBuff[0] == 0x31)
 				{
-					msgBuff = Net::ASN1Util::PDUParseSeq(msgBuff, itemEnd, type, &valEnd);
+					msgBuff = Net::ASN1Util::PDUParseSeq(msgBuff, itemEnd, type, valEnd);
 					if (msgBuff == 0)
 					{
 						break;

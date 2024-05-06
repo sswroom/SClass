@@ -107,7 +107,7 @@ Bool IO::Stream::WriteFromData(NN<IO::StreamData> data, UOSInt buffSize)
 	return totalSize == data->GetDataSize();
 }
 
-UOSInt IO::Stream::WriteCont(const UInt8 *buff, UOSInt size)
+UOSInt IO::Stream::WriteCont(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	UOSInt totalWrite = 0;
 	UOSInt writeSize;

@@ -179,7 +179,7 @@ IO::StreamData *Net::WebBrowser::GetData(Text::CStringNN url, Bool forceReload, 
 			sptr = Text::TextBinEnc::URIEncoding::URIDecode(strTemp, urlPtr + 7);
 			binSize = b64.CalcBinSize(strTemp, (UOSInt)(sptr - strTemp));
 			Data::ByteBuffer binTemp(binSize);
-			b64.DecodeBin(strTemp, (UOSInt)(sptr - strTemp), binTemp.Ptr());
+			b64.DecodeBin(strTemp, (UOSInt)(sptr - strTemp), binTemp.Ptr().Ptr());
 			NEW_CLASS(fd, IO::StmData::MemoryDataCopy(binTemp));
 			MemFree(strTemp);
 			return fd;

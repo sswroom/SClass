@@ -58,7 +58,7 @@ UOSInt Media::AudioFilter::AudioSampleRipper::ReadBlock(Data::ByteArray blk)
 		{
 			thisSize = this->soundBuffLeng - this->soundBuffOfst;
 		}
-		MemCopyNO(&this->soundBuff[this->soundBuffOfst], blk.Ptr(), thisSize);
+		MemCopyNO(&this->soundBuff[this->soundBuffOfst], blk.Ptr().Ptr(), thisSize);
 		this->soundBuffOfst = (UInt32)(this->soundBuffOfst + thisSize) % this->soundBuffLeng;
 		sizeLeft -= thisSize;
 		blk += thisSize;

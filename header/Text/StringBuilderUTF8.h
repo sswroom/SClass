@@ -102,10 +102,10 @@ namespace Text
 			return *this;
 		}
 
-		NN<StringBuilderUTF8> AppendC(const UTF8Char *s, UOSInt charCnt)
+		NN<StringBuilderUTF8> AppendC(UnsafeArray<const UTF8Char> s, UOSInt charCnt)
 		{
 			this->AllocLeng(charCnt);
-			MemCopyNOShort(&this->v[this->leng], s, charCnt);
+			MemCopyNOShort(&this->v[this->leng], s.Ptr(), charCnt);
 			this->leng += charCnt;
 			this->v[this->leng] = 0;
 			return *this;
@@ -381,7 +381,7 @@ namespace Text
 		#endif
 		}
 
-		NN<StringBuilderUTF8> AppendHexBuff(const UInt8 *buff, UOSInt buffSize, UTF8Char seperator, Text::LineBreakType lineBreak)
+		NN<StringBuilderUTF8> AppendHexBuff(UnsafeArray<const UInt8> buff, UOSInt buffSize, UTF8Char seperator, Text::LineBreakType lineBreak)
 		{
 			if (buffSize == 0)
 				return *this;

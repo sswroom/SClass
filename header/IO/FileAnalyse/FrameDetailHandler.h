@@ -39,11 +39,11 @@ namespace IO
 			void AddHex8Name(UOSInt frameOfst, Text::CStringNN name, UInt8 v, Text::CString vName);
 			void AddHex16Name(UOSInt frameOfst, Text::CStringNN name, UInt16 v, Text::CString vName);
 			void AddHex32Name(UOSInt frameOfst, Text::CStringNN name, UInt32 v, Text::CString vName);
-			void AddStrC(UOSInt frameOfst, UOSInt size, Text::CStringNN name, const UTF8Char *vBuff);
-			void AddStrS(UOSInt frameOfst, UOSInt size, Text::CStringNN name, const UTF8Char *vBuff);
-			void AddStrZ(UOSInt frameOfst, Text::CStringNN name, const UTF8Char *vBuff);
-			void AddHexBuff(UOSInt frameOfst, UOSInt size, Text::CStringNN name, const UInt8 *vBuff, Bool multiLine);
-			void AddHexBuff(UOSInt frameOfst, UOSInt size, Text::CStringNN name, const UInt8 *vBuff, UTF8Char seperator, Bool multiLine);
+			void AddStrC(UOSInt frameOfst, UOSInt size, Text::CStringNN name, UnsafeArray<const UTF8Char> vBuff);
+			void AddStrS(UOSInt frameOfst, UOSInt size, Text::CStringNN name, UnsafeArray<const UTF8Char> vBuff);
+			void AddStrZ(UOSInt frameOfst, Text::CStringNN name, UnsafeArray<const UTF8Char> vBuff);
+			void AddHexBuff(UOSInt frameOfst, UOSInt size, Text::CStringNN name, UnsafeArray<const UInt8> vBuff, Bool multiLine);
+			void AddHexBuff(UOSInt frameOfst, UOSInt size, Text::CStringNN name, UnsafeArray<const UInt8> vBuff, UTF8Char seperator, Bool multiLine);
 			void AddHexBuff(UOSInt frameOfst, Text::CStringNN name, Data::ByteArrayR vBuff, Bool multiLine);
 			void AddHexBuff(UOSInt frameOfst, Text::CStringNN name, Data::ByteArrayR vBuff, UTF8Char seperator, Bool multiLine);
 			void AddIPv4(UOSInt frameOfst, Text::CStringNN name, const UInt8 *vBuff);
@@ -51,7 +51,7 @@ namespace IO
 			void AddMACAddr(UOSInt frameOfst, Text::CStringNN name, const UInt8 *macBuff, Bool showVendor);
 			void AddNetBIOSName(UOSInt frameOfst, UOSInt size, Text::CStringNN name, Text::CStringNN nbName);
 
-			void AddTextHexBuff(UOSInt frameOfst, UOSInt size, const UInt8 *vBuff, Bool multiLine);
+			void AddTextHexBuff(UOSInt frameOfst, UOSInt size, UnsafeArray<const UInt8> vBuff, Bool multiLine);
 		};
 	}
 }

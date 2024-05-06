@@ -25,14 +25,14 @@ void Data::ArrayListInt64::AddRangeI32(Int32 *arr, UOSInt cnt)
 	UOSInt j;
 	while (this->objCnt + cnt >= this->capacity)
 	{
-		Int64 *newArr = MemAlloc(Int64, this->capacity * 2);
+		UnsafeArray<Int64> newArr = MemAllocArr(Int64, this->capacity * 2);
 		i = objCnt;
 		while (i-- > 0)
 		{
 			newArr[i] = this->arr[i];
 		}
 		this->capacity = this->capacity << 1;
-		MemFree(this->arr);
+		MemFreeArr(this->arr);
 		this->arr = newArr;
 	}
 	i = objCnt + cnt;
@@ -50,14 +50,14 @@ void Data::ArrayListInt64::AddRangeI32(const Data::ArrayList<Int32> *arr)
 	UOSInt j;
 	while (this->objCnt + arr->GetCount() >= this->capacity)
 	{
-		Int64 *newArr = MemAlloc(Int64, this->capacity * 2);
+		UnsafeArray<Int64> newArr = MemAllocArr(Int64, this->capacity * 2);
 		i = objCnt;
 		while (i-- > 0)
 		{
 			newArr[i] = this->arr[i];
 		}
 		this->capacity = this->capacity << 1;
-		MemFree(this->arr);
+		MemFreeArr(this->arr);
 		this->arr = newArr;
 	}
 	i = objCnt + arr->GetCount();

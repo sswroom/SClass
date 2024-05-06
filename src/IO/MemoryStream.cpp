@@ -38,13 +38,13 @@ IO::MemoryStream::~MemoryStream()
 
 UInt8 *IO::MemoryStream::GetBuff()
 {
-	return this->buff.GetPtr();
+	return this->buff.GetPtr().Ptr();
 }
 
 UInt8 *IO::MemoryStream::GetBuff(OutParam<UOSInt> buffSize)
 {
 	buffSize.Set(this->currSize);
-	return this->buff.GetPtr();
+	return this->buff.GetPtr().Ptr();
 }
 
 Data::ByteArray IO::MemoryStream::GetArray() const

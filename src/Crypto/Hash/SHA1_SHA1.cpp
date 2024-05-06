@@ -40,7 +40,7 @@ void Crypto::Hash::SHA1_SHA1::Calc(const UInt8 *buff, UOSInt buffSize)
 	this->sha1->Calc(buff, buffSize);
 }
 
-void Crypto::Hash::SHA1_SHA1::GetValue(UInt8 *buff) const
+void Crypto::Hash::SHA1_SHA1::GetValue(UnsafeArray<UInt8> buff) const
 {
 	UInt8 hashBuff[32];
 	Crypto::Hash::SHA1 innerSha1;

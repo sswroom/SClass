@@ -106,11 +106,11 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngine> eng, 
 
 			if (fmt.bitpersample == 16)
 			{
-				fft.ForwardBits(samples.Ptr(), freqs, Math::FFTCalc::ST_I16, fmt.nChannels, 1.0);
+				fft.ForwardBits(samples.Ptr().Ptr(), freqs, Math::FFTCalc::ST_I16, fmt.nChannels, 1.0);
 			}
 			else if (fmt.bitpersample == 24)
 			{
-				fft.ForwardBits(samples.Ptr(), freqs, Math::FFTCalc::ST_I24, fmt.nChannels, 1.0);
+				fft.ForwardBits(samples.Ptr().Ptr(), freqs, Math::FFTCalc::ST_I24, fmt.nChannels, 1.0);
 			}
 			if (i == 0)
 			{

@@ -806,5 +806,5 @@ UInt32 Media::HTRecFile::GetAdjRecInterval()
 
 const UInt8 *Media::HTRecFile::GetRecBuff()
 {
-	return this->recBuff.Ptr();
+	return this->recBuff.Ptr().Ptr();
 }

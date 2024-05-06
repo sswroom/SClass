@@ -85,7 +85,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO::StreamDa
 	{
 		Data::ByteBuffer data((UOSInt)dataSize);
 		fd->GetRealData(0, (UOSInt)dataSize, data);
-		GInputStream *inpStream = g_memory_input_stream_new_from_data(data.GetPtr(), (gssize)dataSize, 0);
+		GInputStream *inpStream = g_memory_input_stream_new_from_data(data.GetPtr().Ptr(), (gssize)dataSize, 0);
 		GdkPixbuf *pixBuf = gdk_pixbuf_new_from_stream(inpStream, 0, 0);
 		if (pixBuf)
 		{

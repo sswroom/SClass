@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/MemoryReadingStream.h"
 
-IO::MemoryReadingStream::MemoryReadingStream(const UTF8Char *buff, UOSInt buffSize) : IO::SeekableStream(CSTR("MemoryReadingStream")), buff(buff, buffSize)
+IO::MemoryReadingStream::MemoryReadingStream(UnsafeArray<const UTF8Char> buff, UOSInt buffSize) : IO::SeekableStream(CSTR("MemoryReadingStream")), buff(buff, buffSize)
 {
 	this->currPtr = 0;
 }

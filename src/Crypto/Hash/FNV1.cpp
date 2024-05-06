@@ -40,9 +40,9 @@ void Crypto::Hash::FNV1::Calc(const UInt8 *buff, UOSInt buffSize)
 	this->currVal = FNV1_Calc(buff, buffSize, this->currVal);
 }
 
-void Crypto::Hash::FNV1::GetValue(UInt8 *buff) const
+void Crypto::Hash::FNV1::GetValue(UnsafeArray<UInt8> buff) const
 {
-	*(UInt32*)buff = this->currVal;
+	*(UInt32*)buff.Ptr() = this->currVal;
 }
 
 UOSInt Crypto::Hash::FNV1::GetBlockSize() const

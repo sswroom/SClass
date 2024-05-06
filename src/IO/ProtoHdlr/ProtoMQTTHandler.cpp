@@ -49,7 +49,7 @@ UOSInt IO::ProtoHdlr::ProtoMQTTHandler::ParseProtocol(NN<IO::Stream> stm, AnyTyp
 	{
 		if (cliData->packetSize - cliData->packetDataSize <= buff.GetSize())
 		{
-			MemCopyNO(&cliData->packetBuff[cliData->packetDataSize], buff.Ptr(), cliData->packetSize - cliData->packetDataSize);
+			MemCopyNO(&cliData->packetBuff[cliData->packetDataSize], buff.Ptr().Ptr(), cliData->packetSize - cliData->packetDataSize);
 			this->listener->DataParsed(stm, stmObj, cliData->packetType, 0, cliData->packetBuff, cliData->packetSize);
 			MemFree(cliData->packetBuff);
 			cliData->packetBuff = 0;
@@ -61,7 +61,7 @@ UOSInt IO::ProtoHdlr::ProtoMQTTHandler::ParseProtocol(NN<IO::Stream> stm, AnyTyp
 		}
 		else
 		{
-			MemCopyNO(&cliData->packetBuff[cliData->packetDataSize], buff.Ptr(), buff.GetSize());
+			MemCopyNO(&cliData->packetBuff[cliData->packetDataSize], buff.Ptr().Ptr(), buff.GetSize());
 			cliData->packetDataSize += buff.GetSize();
 			return 0;
 		}

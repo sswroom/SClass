@@ -66,7 +66,7 @@ UOSInt Media::SOXRFilter::ReadBlock(Data::ByteArray blk)
 		}
 		UOSInt actSize = this->sourceAudio->ReadBlock(Data::ByteArray(this->clsData->inReadBuff, readBlkSize));
 		size_t outSize;
-		this->clsData->error = soxr_process(this->clsData->soxr, this->clsData->inReadBuff, (actSize >> 2) / this->clsData->afmt.nChannels, 0, blk.Ptr(), (blk.GetSize() >> 2) / this->clsData->afmt.nChannels, &outSize);
+		this->clsData->error = soxr_process(this->clsData->soxr, this->clsData->inReadBuff, (actSize >> 2) / this->clsData->afmt.nChannels, 0, blk.Ptr().Ptr(), (blk.GetSize() >> 2) / this->clsData->afmt.nChannels, &outSize);
 		return (UOSInt)outSize * 4 * this->clsData->afmt.nChannels;
 	}
 	else
@@ -104,7 +104,7 @@ UOSInt Media::SOXRFilter::ReadBlock(Data::ByteArray blk)
 		case 16:
 			AudioUtil_ConvI16_F32(this->clsData->inReadBuff, this->clsData->inFloatBuff, actReadSize >> 1);
 			this->clsData->error = soxr_process(this->clsData->soxr, this->clsData->inFloatBuff, (actReadSize >> 1) / this->clsData->afmt.nChannels, 0, this->clsData->outFloatBuff, (outFloatSize >> 2) / this->clsData->afmt.nChannels, &outSize);
-			AudioUtil_ConvF32_I16(this->clsData->outFloatBuff, blk.Ptr(), (UOSInt)outSize);
+			AudioUtil_ConvF32_I16(this->clsData->outFloatBuff, blk.Ptr().Ptr(), (UOSInt)outSize);
 			return (UOSInt)outSize * 2 * this->clsData->afmt.nChannels;
 		}
 		return 0;

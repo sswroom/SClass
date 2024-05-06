@@ -57,14 +57,14 @@ namespace Data
 			void SortUInt32(UInt32 *arr, OSInt firstIndex, OSInt lastIndex);
 			void SortStr(UTF8Char **arr, OSInt firstIndex, OSInt lastIndex);
 
-			template <class T> static void PreSort(T *arr, NN<Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex);
-			template <class T> static void Sort(T *arr, NN<Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex);
+			template <class T> static void PreSort(UnsafeArray<T> arr, NN<Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex);
+			template <class T> static void Sort(UnsafeArray<T> arr, NN<Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex);
 			template <class T> static void Sort(Data::ArrayCollection<T> *list, NN<Data::Comparator<T>> comparator);
 		};
 	}
 }
 
-template <class T> void Data::Sort::ArtificialQuickSort::PreSort(T *arr, NN<Data::Comparator<T>> comparator, OSInt left, OSInt right)
+template <class T> void Data::Sort::ArtificialQuickSort::PreSort(UnsafeArray<T> arr, NN<Data::Comparator<T>> comparator, OSInt left, OSInt right)
 {
 	T temp = arr[left];
 	T temp2;
@@ -82,7 +82,7 @@ template <class T> void Data::Sort::ArtificialQuickSort::PreSort(T *arr, NN<Data
 	}
 }
 
-template <class T> void Data::Sort::ArtificialQuickSort::Sort(T *arr, NN<Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex)
+template <class T> void Data::Sort::ArtificialQuickSort::Sort(UnsafeArray<T> arr, NN<Data::Comparator<T>> comparator, OSInt firstIndex, OSInt lastIndex)
 {
 #if _OSINT_SIZE == 16
 	OSInt levi[256];
@@ -169,7 +169,7 @@ template <class T> void Data::Sort::ArtificialQuickSort::Sort(T *arr, NN<Data::C
 template <class T> void Data::Sort::ArtificialQuickSort::Sort(Data::ArrayCollection<T> *list, NN<Data::Comparator<T>> comparator)
 {
 	UOSInt len;
-	T *arr = list->GetPtr(len);
+	UnsafeArray<T> arr = list->GetPtr(len);
 	Sort(arr, comparator, 0, (OSInt)len - 1);
 }
 #endif

@@ -26,7 +26,7 @@ namespace Crypto
 			virtual NN<IHash> Clone() const;
 			virtual void Clear();
 			virtual void Calc(const UInt8 *buff, UOSInt buffSize);
-			virtual void GetValue(UInt8 *buff) const; //20 bytes
+			virtual void GetValue(UnsafeArray<UInt8> buff) const; //20 bytes
 			virtual UOSInt GetBlockSize() const;
 			virtual UOSInt GetResultSize() const;
 		};

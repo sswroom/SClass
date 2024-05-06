@@ -157,7 +157,7 @@ void DB::SQLBuilder::AppendVector(Optional<Math::Geometry::Vector2D> vec)
 	this->sb.SetEndPtr(DB::DBUtil::SDBVector(this->sb.GetEndPtr(), vec, this->sqlType, this->axisAware));
 }
 
-void DB::SQLBuilder::AppendBinary(const UInt8 *buff, UOSInt buffSize)
+void DB::SQLBuilder::AppendBinary(UnsafeArrayOpt<const UInt8> buff, UOSInt buffSize)
 {
 	this->sb.AllocLeng(DB::DBUtil::SDBBinLeng(buff, buffSize, this->sqlType));
 	this->sb.SetEndPtr(DB::DBUtil::SDBBin(this->sb.GetEndPtr(), buff, buffSize, this->sqlType));

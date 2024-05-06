@@ -630,7 +630,7 @@ UOSInt Media::Decoder::MP2Decoder::ReadBlock(Data::ByteArray blk)
 		}
 		else
 		{
-			kjmp2_decode_frame((kjmp2_context_t*)this->context, srcBuff, (Int16*)blk.Ptr());
+			kjmp2_decode_frame((kjmp2_context_t*)this->context, srcBuff, (Int16*)blk.Ptr().Ptr());
 			blk += 4608;
 			outSize += 4608;
 		}

@@ -150,7 +150,7 @@ IO::ParsedObject *Parser::FileParser::WAVParser::ParseFileHdr(NN<IO::StreamData>
 				else if (*(Int16*)&fmt[12] > 1)
 				{
 					Media::AudioFormat af;
-					af.FromWAVEFORMATEX(fmt.Ptr());
+					af.FromWAVEFORMATEX(fmt.Ptr().Ptr());
 					
 					NN<Media::AudioFixBlockSource> src;
 					NEW_CLASSNN(src, Media::AudioFixBlockSource(fd, currPos + 8, ReadUInt32(&chunkBuff[4]), af, fd->GetFullName()));

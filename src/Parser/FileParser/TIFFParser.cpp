@@ -446,7 +446,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::StreamData
 				{
 					Data::ByteBuffer compImgData(stripLeng);
 					lengLeft = fd->GetRealData(stripOfst, stripLeng, compImgData);
-					Data::Compress::PackBits::Decompress(imgData.GetPtr(), &destSize, compImgData.GetPtr(), lengLeft);
+					Data::Compress::PackBits::Decompress(imgData.GetPtr(), destSize, compImgData.GetPtr(), lengLeft);
 				}
 				else
 				{
@@ -467,7 +467,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::StreamData
 						//imgData += stripLengs[i];
 
 						lengLeft = fd->GetRealData(stripOfsts[i], stripLengs[i], compImgData);
-						Data::Compress::PackBits::Decompress(imgData.GetPtr(), &destSize, compImgData.GetPtr(), lengLeft);
+						Data::Compress::PackBits::Decompress(imgData.GetPtr(), destSize, compImgData.GetPtr(), lengLeft);
 						imgData = imgData.SubArray(destSize);
 
 						i++;
@@ -578,7 +578,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::StreamData
 			if (sampleFormat == 3 && predictor == 3)
 			{
 				UInt8 *tmpBuff;
-				UInt8 *tmpPtr;
+				UnsafeArray<UInt8> tmpPtr;
 				UInt8 *tmpPtr2;
 				Data::ByteArray tmpArray;
 				UInt8 lastPx[4];

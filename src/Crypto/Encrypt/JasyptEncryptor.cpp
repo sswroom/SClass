@@ -43,7 +43,7 @@ UOSInt Crypto::Encrypt::JasyptEncryptor::GetEncKey(const UInt8 *salt, UInt8 *key
 	case KA_PBEWITHHMACSHA512:
 		{
 			Crypto::Hash::SHA512 sha512;
-			Crypto::Hash::HMAC hmac(sha512, this->key.Ptr(), this->key.GetSize());
+			Crypto::Hash::HMAC hmac(sha512, this->key.Ptr().Ptr(), this->key.GetSize());
 			Crypto::PBKDF2::Calc(salt, this->saltSize, this->iterCnt, this->dkLen, hmac, key);
 		}
 		return this->dkLen;
@@ -182,7 +182,7 @@ UOSInt Crypto::Encrypt::JasyptEncryptor::EncryptAsB64(NN<Text::StringBuilderUTF8
 	{
 		destLen = (nBlock + 1) * this->ivSize;
 		srcTmpBuff = MemAlloc(UInt8, destLen);
-		MemCopyNO(srcTmpBuff, srcBuff.Ptr(), srcBuff.GetSize());
+		MemCopyNO(srcTmpBuff, srcBuff.Ptr().Ptr(), srcBuff.GetSize());
 		MemFillB(&srcTmpBuff[srcBuff.GetSize()], destLen - srcBuff.GetSize(), (UInt8)(destLen - srcBuff.GetSize()));
 		srcBuff = Data::ByteArrayR(srcTmpBuff, destLen);
 	}
@@ -225,7 +225,7 @@ UOSInt Crypto::Encrypt::JasyptEncryptor::EncryptAsB64(NN<Text::StringBuilderUTF8
 	UInt8 *key = MemAlloc(UInt8, this->dkLen);
 	this->GetEncKey(salt, key);
 	NN<Crypto::Encrypt::ICrypto> enc = this->CreateCrypto(iv, key);
-	destOfst += enc->Encrypt(srcBuff.Ptr(), destLen - destOfst, &destBuff[destOfst]);
+	destOfst += enc->Encrypt(srcBuff.Ptr().Ptr(), destLen - destOfst, &destBuff[destOfst]);
 	enc.Delete();
 	MemFree(key);
 	if (srcTmpBuff)

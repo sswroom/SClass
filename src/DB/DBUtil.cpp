@@ -1601,10 +1601,10 @@ UOSInt DB::DBUtil::SDBBoolLeng(Bool val, DB::SQLType sqlType)
 }
 
 
-UTF8Char *DB::DBUtil::SDBBin(UTF8Char *sqlstr, const UInt8 *buff, UOSInt size, DB::SQLType sqlType)
+UTF8Char *DB::DBUtil::SDBBin(UTF8Char *sqlstr, UnsafeArrayOpt<const UInt8> buff, UOSInt size, DB::SQLType sqlType)
 {
 	UTF8Char *sptr;
-	if (buff == 0)
+	if (buff.Ptr() == 0)
 	{
 		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
 	}
@@ -1628,9 +1628,9 @@ UTF8Char *DB::DBUtil::SDBBin(UTF8Char *sqlstr, const UInt8 *buff, UOSInt size, D
 	}
 }
 
-UOSInt DB::DBUtil::SDBBinLeng(const UInt8 *buff, UOSInt size, DB::SQLType sqlType)
+UOSInt DB::DBUtil::SDBBinLeng(UnsafeArrayOpt<const UInt8> buff, UOSInt size, DB::SQLType sqlType)
 {
-	if (buff == 0)
+	if (buff.Ptr() == 0)
 	{
 		return 4;
 	}

@@ -72,7 +72,7 @@ UOSInt IO::SiLabSerialPort::Read(const Data::ByteArray &buff)
 	ol.Offset = 0;
 	ol.OffsetHigh = 0;
 	this->reading = true;
-	this->driver->SI_Read(h, buff.Ptr(), (UInt32)buff.GetSize(), &readCnt, &ol);
+	this->driver->SI_Read(h, buff.Ptr().Ptr(), (UInt32)buff.GetSize(), &readCnt, &ol);
 #if defined(_WIN32) && !defined(_WIN32_WCE)
 	this->rdEvt.Wait();
 	if (this->handle == 0)
@@ -150,7 +150,7 @@ void *IO::SiLabSerialPort::BeginRead(const Data::ByteArray &buff, Sync::Event *e
 		return 0;
 
 	ReadEvent *re = MemAlloc(ReadEvent, 1);
-	re->buff = buff.Ptr();
+	re->buff = buff.Ptr().Ptr();
 	re->evt = evt;
 	re->size = buff.GetSize();
 	re->ol.hEvent = evt->hand;
@@ -158,7 +158,7 @@ void *IO::SiLabSerialPort::BeginRead(const Data::ByteArray &buff, Sync::Event *e
 	re->ol.InternalHigh = 0;
 	re->ol.Offset = 0;
 	re->ol.OffsetHigh = 0;
-	this->driver->SI_Read(h, (void*)buff.Ptr(), (UInt32)buff.GetSize(), &re->readSize, &re->ol);
+	this->driver->SI_Read(h, (void*)buff.Ptr().Ptr(), (UInt32)buff.GetSize(), &re->readSize, &re->ol);
 	return re;
 }
 

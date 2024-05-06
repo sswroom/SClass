@@ -695,7 +695,7 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
 
 		sb->AppendC(UTF8STRC("Name = "));
-		sb->AppendS(packBuff.Ptr(), 8);
+		sb->AppendS(packBuff.Ptr().Ptr(), 8);
 		sb->AppendC(UTF8STRC("\r\nVirtualSize = "));
 		sb->AppendU32(ReadUInt32(&packBuff[8]));
 		sb->AppendC(UTF8STRC("\r\nVirtualAddress = 0x"));

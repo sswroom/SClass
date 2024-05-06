@@ -14,7 +14,7 @@ namespace IO
 			Text::String *name;
 
 		public:
-			MemoryDataRef(const UInt8 *data, UOSInt dataLength);
+			MemoryDataRef(UnsafeArray<const UInt8> data, UOSInt dataLength);
 			MemoryDataRef(const Data::ByteArrayR &data);
 			virtual ~MemoryDataRef();
 

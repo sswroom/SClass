@@ -3,7 +3,7 @@
 #include "IO/Path.h"
 #include "IO/StmData/MemoryDataRef.h"
 
-IO::StmData::MemoryDataRef::MemoryDataRef(const UInt8 *data, UOSInt dataLength) : data(data, dataLength)
+IO::StmData::MemoryDataRef::MemoryDataRef(UnsafeArray<const UInt8> data, UOSInt dataLength) : data(data, dataLength)
 {
 	this->name = 0;
 }
@@ -63,7 +63,7 @@ UInt64 IO::StmData::MemoryDataRef::GetDataSize()
 
 const UInt8 *IO::StmData::MemoryDataRef::GetPointer()
 {
-	return this->data.Ptr();
+	return this->data.Ptr().Ptr();
 }
 
 NN<IO::StreamData> IO::StmData::MemoryDataRef::GetPartialData(UInt64 offset, UInt64 length)

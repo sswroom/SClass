@@ -54,7 +54,7 @@ Bool Media::IVideoSource::ReadFrameEnd()
 	return true;
 }
 
-void Media::IVideoSource::SetProp(Int32 propName, const UInt8 *propBuff, UInt32 propBuffSize)
+void Media::IVideoSource::SetProp(Int32 propName, UnsafeArray<const UInt8> propBuff, UInt32 propBuffSize)
 {
 	UInt8 *prop;
 	if (this->propBuffs == 0)
@@ -65,7 +65,7 @@ void Media::IVideoSource::SetProp(Int32 propName, const UInt8 *propBuff, UInt32 
 	}
 	OSInt i = this->propNames->SortedIndexOf(propName);
 	prop = MemAlloc(UInt8, propBuffSize);
-	MemCopyNO(prop, propBuff, propBuffSize);
+	MemCopyNO(prop, propBuff.Ptr(), propBuffSize);
 	if (i >= 0)
 	{
 		MemFree(this->propBuffs->GetItem((UOSInt)i));

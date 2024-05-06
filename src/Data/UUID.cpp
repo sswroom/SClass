@@ -21,9 +21,9 @@ Data::UUID::~UUID()
 {
 }
 
-void Data::UUID::SetValue(const UInt8 *buff)
+void Data::UUID::SetValue(UnsafeArray<const UInt8> buff)
 {
-	MemCopyNO(this->data, buff, 16);
+	MemCopyNO(this->data, buff.Ptr(), 16);
 }
 
 void Data::UUID::SetValue(NN<UUID> uuid)

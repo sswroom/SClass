@@ -1,14 +1,12 @@
 #ifndef _SM_UNSAFEARRAY
 #define _SM_UNSAFEARRAY
-#include "MyMemory.h"
+#include "UnsafeArrayOpt.h"
 #include <stdio.h>
 
-template <typename T> struct UnsafeArray
+template <typename T> struct UnsafeArray : public UnsafeArrayOpt<T>
 {
 private:
-	T *p;
-private:
-	void SetPtr(T *p)
+	virtual void SetPtr(T *p)
 	{
 		if (p == 0)
 		{
@@ -35,107 +33,14 @@ public:
 		this->SetPtr(p);
 	}
 
+	template<typename V> UnsafeArray(UnsafeArrayOpt<V> p)
+	{
+		this->SetPtr(p.Ptr());
+	}
+
 	template<typename V> UnsafeArray(UnsafeArray<V> p)
 	{
 		this->p = p.Ptr();
-	}
-
-	T *Ptr() const
-	{
-		return this->p;
-	}
-
-	Bool operator==(UnsafeArray<T> ptr)
-	{
-		return this->p == ptr.p;
-	}
-
-	UnsafeArray<T> operator++(int)
-	{
-		T *tmp = this->p;
-		this->p++;
-		return tmp;
-	}
-
-	T &operator[] (UOSInt index) const
-	{
-		return this->p[index];
-	}
-
-	T &operator[] (OSInt index) const
-	{
-		return this->p[index];
-	}
-
-	UnsafeArray<T> operator+(OSInt val) const
-	{
-		return UnsafeArray<T>(this->p + val);
-	}
-
-	UnsafeArray<T> operator+(UOSInt val) const
-	{
-		return UnsafeArray<T>(this->p + val);
-	}
-
-	UnsafeArray<T> &operator+=(OSInt val)
-	{
-		this->p += val;
-		return *this;
-	}
-
-	UnsafeArray<T> &operator+=(UOSInt val)
-	{
-		this->p += val;
-		return *this;
-	}
-
-#if _OSINT_SIZE == 64
-	T &operator[] (UInt32 index) const
-	{
-		return this->p[index];
-	}
-
-	T &operator[] (Int32 index) const
-	{
-		return this->p[index];
-	}
-
-	UnsafeArray<T> operator+(Int32 val) const
-	{
-		return UnsafeArray<T>(this->p + val);
-	}
-
-	UnsafeArray<T> operator+(UInt32 val) const
-	{
-		return UnsafeArray<T>(this->p + val);
-	}
-
-	UnsafeArray<T> &operator+=(Int32 val)
-	{
-		this->p += val;
-		return *this;
-	}
-
-	UnsafeArray<T> &operator+=(UInt32 val)
-	{
-		this->p += val;
-		return *this;
-	}
-#endif
-
-	OSInt operator-(UnsafeArray<T> p)
-	{
-		return this->p - p.p;
-	}
-
-	T &operator*() const
-	{
-		return this->p[0];
-	}
-
-	void CopyFromNO(UnsafeArray<T> srcArr, UOSInt arrSize)
-	{
-		MemCopyNO(this->p, srcArr.p, arrSize * sizeof(T));
 	}
 
 	template <typename V> static UnsafeArray<T> ConvertFrom(UnsafeArray<V> ptr)
@@ -145,9 +50,4 @@ public:
 		return ret;
 	}
 };
-
-template<typename V> OSInt operator-(V *p1, UnsafeArray<V> p2)
-{
-	return p1 - p2.Ptr();
-}
 #endif

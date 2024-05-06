@@ -48,7 +48,7 @@ void Crypto::Hash::ExcelHash::Calc(const UInt8 *buff, UOSInt buffSize)
 	}
 }
 
-void Crypto::Hash::ExcelHash::GetValue(UInt8 *buff) const
+void Crypto::Hash::ExcelHash::GetValue(UnsafeArray<UInt8> buff) const
 {
 	WriteMInt16(buff, this->currVal ^ 0xCE4B ^ this->charCnt);
 }

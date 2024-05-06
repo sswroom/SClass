@@ -119,7 +119,7 @@ UOSInt IO::FileStream::Read(const Data::ByteArray &buff)
 {
 	if (this->handle == 0)
 		return 0;
-	OSInt readSize = read((int)(OSInt)this->handle, buff.GetPtr(), buff.GetSize());
+	OSInt readSize = read((int)(OSInt)this->handle, buff.GetPtr().Ptr(), buff.GetSize());
 	if (readSize >= 0)
 	{
 		this->currPos += (UOSInt)readSize;

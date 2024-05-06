@@ -3,7 +3,7 @@
 #include "Media/MSFontRenderer.h"
 #include "Media/StaticImage.h"
 
-Media::MSFontRenderer::MSFontRenderer(NN<Text::String> sourceName, const UInt8 *fontBuff, UOSInt buffSize) : Media::FontRenderer(sourceName)
+Media::MSFontRenderer::MSFontRenderer(NN<Text::String> sourceName, UnsafeArray<const UInt8> fontBuff, UOSInt buffSize) : Media::FontRenderer(sourceName)
 {
 	this->fontBuff = 0;
 	UOSInt ver = ReadUInt16(&fontBuff[0]);
@@ -24,7 +24,7 @@ Media::MSFontRenderer::MSFontRenderer(NN<Text::String> sourceName, const UInt8 *
 	if (buffSize >= fontSize && hdrSize < fontSize)
 	{
 		this->fontBuff = MemAlloc(UInt8, fontSize);
-		MemCopyNO(this->fontBuff, fontBuff, fontSize);
+		MemCopyNO(this->fontBuff, fontBuff.Ptr(), fontSize);
 	}
 }
 

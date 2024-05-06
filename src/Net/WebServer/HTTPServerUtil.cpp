@@ -189,7 +189,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::IWebRequest>
 	return succ;
 }
 
-Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN mime, UInt64 contLeng, const UInt8 *buff)
+Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN mime, UInt64 contLeng, UnsafeArray<const UInt8> buff)
 {
 	UOSInt i;
 	UOSInt j;
@@ -227,7 +227,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(NN<Net::WebServer::IWebRequest>
 					succ = (resp->Write(compBuff, 10) == 10);
 
 					Crypto::Hash::CRC32RIEEE crc;
-					crc.Calc(buff, (UOSInt)contLeng);
+					crc.Calc(buff.Ptr(), (UOSInt)contLeng);
 
 					IO::MemoryReadingStream mstm(buff, (UOSInt)contLeng);
 					Data::Compress::DeflateStream dstm(mstm, contLeng, 0, compLevel, false);

@@ -44,7 +44,7 @@ namespace DB
 		void AppendNDbl(Double val);
 		void AppendBool(Bool val);
 		void AppendVector(Optional<Math::Geometry::Vector2D> vec);
-		void AppendBinary(const UInt8 *buff, UOSInt buffSize);
+		void AppendBinary(UnsafeArrayOpt<const UInt8> buff, UOSInt buffSize);
 
 		void AppendTableName(NN<DB::TableDef> table);
 		void AppendCol(const UTF8Char *val);

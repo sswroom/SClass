@@ -154,9 +154,9 @@ Bool Map::MapDrawUtil::DrawCurvePolygon(NN<Math::Geometry::CurvePolygon> cp, NN<
 	}
 	if (ptList.GetCount() > 0)
 	{
-		Math::Coord2DDbl *pointArr = ptList.GetPtr(nPoint);
+		Math::Coord2DDbl *pointArr = ptList.GetPtr(nPoint).Ptr();
 		UOSInt nPtOfst;
-		UInt32 *ptOfstArr = ptOfst.GetPtr(nPtOfst);
+		UInt32 *ptOfstArr = ptOfst.GetPtr(nPtOfst).Ptr();
 		Math::Coord2DDbl *dpoints = MemAllocA(Math::Coord2DDbl, nPoint);
 		UOSInt k;
 		UOSInt l;

@@ -903,7 +903,7 @@ void Net::MQTTBroker::StreamData(NN<IO::Stream> stm, AnyType stmData, const Data
 	UOSInt i;
 	if (data->buffSize > 0)
 	{
-		MemCopyNO(&data->recvBuff[data->buffSize], buff.Ptr(), buff.GetSize());
+		MemCopyNO(&data->recvBuff[data->buffSize], buff.Ptr().Ptr(), buff.GetSize());
 		data->buffSize += buff.GetSize();
 		i = this->protoHdlr.ParseProtocol(stm, data, data->cliData, Data::ByteArrayR(data->recvBuff, data->buffSize));
 		if (i > 0)

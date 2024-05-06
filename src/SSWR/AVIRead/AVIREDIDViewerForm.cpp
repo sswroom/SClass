@@ -165,7 +165,7 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(AnyType userObj, Da
 					}
 					me->edid = MemAlloc(UInt8, fileSize);
 					me->edidSize = fileSize;
-					MemCopyNO(me->edid, fileCont.Ptr(), fileSize);
+					MemCopyNO(me->edid, fileCont.Ptr().Ptr(), fileSize);
 					found = true;
 				}
 			}

@@ -227,14 +227,14 @@ void IO::FileAnalyse::FrameDetailHandler::AddHex32Name(UOSInt frameOfst, Text::C
 	this->AddField(frameOfst, 4, name, sb.ToCString());
 }
 
-void IO::FileAnalyse::FrameDetailHandler::AddStrC(UOSInt frameOfst, UOSInt size, Text::CStringNN name, const UTF8Char *vBuff)
+void IO::FileAnalyse::FrameDetailHandler::AddStrC(UOSInt frameOfst, UOSInt size, Text::CStringNN name, UnsafeArray<const UTF8Char> vBuff)
 {
 	NN<Text::String> s = Text::String::New(vBuff, size);
 	this->AddField(frameOfst, size, name, s->ToCString());
 	s->Release();
 }
 
-void IO::FileAnalyse::FrameDetailHandler::AddStrS(UOSInt frameOfst, UOSInt size, Text::CStringNN name, const UTF8Char *vBuff)
+void IO::FileAnalyse::FrameDetailHandler::AddStrS(UOSInt frameOfst, UOSInt size, Text::CStringNN name, UnsafeArray<const UTF8Char> vBuff)
 {
 	UTF8Char *sbuff = MemAlloc(UTF8Char, size + 1);
 	UTF8Char *sptr;
@@ -243,18 +243,18 @@ void IO::FileAnalyse::FrameDetailHandler::AddStrS(UOSInt frameOfst, UOSInt size,
 	MemFree(sbuff);
 }
 
-void IO::FileAnalyse::FrameDetailHandler::AddStrZ(UOSInt frameOfst, Text::CStringNN name, const UTF8Char *vBuff)
+void IO::FileAnalyse::FrameDetailHandler::AddStrZ(UOSInt frameOfst, Text::CStringNN name, UnsafeArray<const UTF8Char> vBuff)
 {
 	UOSInt strlen = Text::StrCharCnt(vBuff);
 	this->AddField(frameOfst, strlen + 1, name, Text::CStringNN(vBuff, strlen));
 }
 
-void IO::FileAnalyse::FrameDetailHandler::AddHexBuff(UOSInt frameOfst, UOSInt size, Text::CStringNN name, const UInt8 *vBuff, Bool multiLine)
+void IO::FileAnalyse::FrameDetailHandler::AddHexBuff(UOSInt frameOfst, UOSInt size, Text::CStringNN name, UnsafeArray<const UInt8> vBuff, Bool multiLine)
 {
 	this->AddHexBuff(frameOfst, size, name, vBuff, ' ', multiLine);
 }
 
-void IO::FileAnalyse::FrameDetailHandler::AddHexBuff(UOSInt frameOfst, UOSInt size, Text::CStringNN name, const UTF8Char *vBuff, UTF8Char seperator, Bool multiLine)
+void IO::FileAnalyse::FrameDetailHandler::AddHexBuff(UOSInt frameOfst, UOSInt size, Text::CStringNN name, UnsafeArray<const UTF8Char> vBuff, UTF8Char seperator, Bool multiLine)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendHexBuff(vBuff, size, seperator, multiLine?Text::LineBreakType::CRLF:Text::LineBreakType::None);
@@ -330,7 +330,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddNetBIOSName(UOSInt frameOfst, UOSIn
 	this->AddField(frameOfst, size, name, sb.ToCString());
 }
 
-void IO::FileAnalyse::FrameDetailHandler::AddTextHexBuff(UOSInt frameOfst, UOSInt size, const UInt8 *vBuff, Bool multiLine)
+void IO::FileAnalyse::FrameDetailHandler::AddTextHexBuff(UOSInt frameOfst, UOSInt size, UnsafeArray<const UInt8> vBuff, Bool multiLine)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendHexBuff(vBuff, size, ' ', multiLine?Text::LineBreakType::CRLF:Text::LineBreakType::None);

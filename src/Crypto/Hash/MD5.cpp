@@ -82,7 +82,7 @@ void Crypto::Hash::MD5::Calc(const UInt8 *buff, UOSInt buffSize)
 	}
 }
 
-void Crypto::Hash::MD5::GetValue(UInt8 *buff) const
+void Crypto::Hash::MD5::GetValue(UnsafeArray<UInt8> buff) const
 {
 	UInt8 calBuff[64];
 	UInt32 v[4];

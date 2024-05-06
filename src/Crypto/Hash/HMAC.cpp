@@ -66,12 +66,12 @@ void Crypto::Hash::HMAC::Calc(const UInt8 *buff, UOSInt buffSize)
 	this->hashInner->Calc(buff, buffSize);
 }
 
-void Crypto::Hash::HMAC::GetValue(UInt8 *buff) const
+void Crypto::Hash::HMAC::GetValue(UnsafeArray<UInt8> buff) const
 {
 	this->hashInner->GetValue(buff);
 	this->hashOuter->Clear();
 	this->hashOuter->Calc(oPad, padSize);
-	this->hashOuter->Calc(buff, hashInner->GetResultSize());
+	this->hashOuter->Calc(buff.Ptr(), hashInner->GetResultSize());
 	this->hashOuter->GetValue(buff);
 }
 

@@ -1222,6 +1222,7 @@ sdefs.h:
 Stdafx.h:
 SIMD.h:
 UnsafeArray.h:
+UnsafeArrayOpt.h:
 
 Core/ConsoleControl.h:
 Core/Core.h:

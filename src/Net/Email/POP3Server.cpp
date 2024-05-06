@@ -82,7 +82,7 @@ void __stdcall Net::Email::POP3Server::ClientData(NN<Net::TCPClient> cli, AnyTyp
 	NN<MailStatus> cliStatus = cliData.GetNN<MailStatus>();
 	if (me->rawLog)
 	{
-		me->rawLog->Write(buff.Ptr(), buff.GetSize());
+		me->rawLog->Write(buff.Ptr().Ptr(), buff.GetSize());
 	}
 	if (buff.GetSize() > 2048)
 	{
@@ -92,12 +92,12 @@ void __stdcall Net::Email::POP3Server::ClientData(NN<Net::TCPClient> cli, AnyTyp
 	else if (cliStatus->buffSize + buff.GetSize() > 2048)
 	{
 		MemCopyO(cliStatus->buff, &cliStatus->buff[cliStatus->buffSize - 2048 + buff.GetSize()], 2048 - buff.GetSize());
-		MemCopyNO(&cliStatus->buff[2048 - buff.GetSize()], buff.Ptr(), buff.GetSize());
+		MemCopyNO(&cliStatus->buff[2048 - buff.GetSize()], buff.Ptr().Ptr(), buff.GetSize());
 		cliStatus->buffSize = 2048;
 	}
 	else
 	{
-		MemCopyNO(&cliStatus->buff[cliStatus->buffSize], buff.Ptr(), buff.GetSize());
+		MemCopyNO(&cliStatus->buff[cliStatus->buffSize], buff.Ptr().Ptr(), buff.GetSize());
 		cliStatus->buffSize += buff.GetSize();
 	}
 	UOSInt i;

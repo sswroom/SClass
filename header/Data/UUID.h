@@ -15,7 +15,7 @@ namespace Data
 		UUID(Text::CStringNN str);
 		~UUID();
 
-		void SetValue(const UInt8 *buff);
+		void SetValue(UnsafeArray<const UInt8> buff);
 		void SetValue(NN<UUID> uuid);
 		void SetValue(Text::CStringNN str);
 		UOSInt GetValue(UInt8 *buff) const;

@@ -29,14 +29,14 @@ namespace Text
 			return s;
 		}
 
-		static NN<String> New(const UTF8Char *str, UOSInt len)
+		static NN<String> New(UnsafeArray<const UTF8Char> str, UOSInt len)
 		{
 			if (len == 0) return NewEmpty();
 			NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MAlloc(len + sizeof(String)));
 			s->v = s->vbuff;
 			s->leng = len;
 			s->useCnt = 1;
-			MemCopyNO(s->v, str, len);
+			MemCopyNO(s->v, str.Ptr(), len);
 			s->v[len] = 0;
 			return s;
 		}

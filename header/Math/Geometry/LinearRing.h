@@ -10,7 +10,7 @@ namespace Math
 		{
 		public:
 			LinearRing(UInt32 srid, UOSInt nPoint, Bool hasZ, Bool hasM);
-			LinearRing(UInt32 srid, const Math::Coord2DDbl *pointArr, UOSInt nPoint, Double *zArr, Double *mArr);
+			LinearRing(UInt32 srid, UnsafeArray<const Math::Coord2DDbl> pointArr, UOSInt nPoint, Double *zArr, Double *mArr);
 			virtual ~LinearRing();
 
 			virtual VectorType GetVectorType() const;

@@ -71,7 +71,7 @@ IO::ParsedObject *Parser::FileParser::FNTParser::ParseFile(NN<IO::StreamData> fd
 	return font;
 }
 
-Media::FontRenderer *Parser::FileParser::FNTParser::ParseFontBuff(NN<Text::String> sourceName, const UInt8 *fontBuff, UOSInt buffSize)
+Media::FontRenderer *Parser::FileParser::FNTParser::ParseFontBuff(NN<Text::String> sourceName, UnsafeArray<const UInt8> fontBuff, UOSInt buffSize)
 {
 	UInt32 ver;
 	if (buffSize < 118)

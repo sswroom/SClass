@@ -27,9 +27,9 @@ namespace Net
 	private:
 		Data::FastStringMapNN<GroupInfo> groupMap;
 
-		void Init(NN<Text::EncodingFactory> encFact, const UInt8 *buff, UOSInt buffSize);
+		void Init(NN<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UOSInt buffSize);
 	public:
-		HKTrafficImage(NN<Text::EncodingFactory> encFact, const UInt8 *buff, UOSInt buffSize);
+		HKTrafficImage(NN<Text::EncodingFactory> encFact, UnsafeArray<const UInt8> buff, UOSInt buffSize);
 		HKTrafficImage(NN<Text::EncodingFactory> encFact, Text::CStringNN fileName);
 		~HKTrafficImage();
 

@@ -28,7 +28,7 @@ namespace Math
 		virtual void Reconnect();
 
 		UInt8 *GetRowPtr(UOSInt row) const;
-		UInt8 *GetHdrPtr() const;
+		UnsafeArray<UInt8> GetHdrPtr() const;
 		UOSInt GetRowCnt() const;
 		UOSInt GetRowSize() const;
 	};

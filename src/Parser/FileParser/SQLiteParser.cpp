@@ -78,7 +78,7 @@ IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFileHdr(NN<IO::StreamDa
 				readSize = fd->GetRealData(currOfst, 1048576, buff);
 				if (readSize <= 0)
 					break;
-				if (fs.Write(buff.Ptr(), readSize) != readSize)
+				if (fs.Write(buff.Ptr().Ptr(), readSize) != readSize)
 				{
 					valid = false;
 				}

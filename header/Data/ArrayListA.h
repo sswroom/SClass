@@ -10,7 +10,7 @@ namespace Data
 	template <class T> class ArrayListA : public List<T>, public ArrayCollection<T>
 	{
 	protected:
-		T* arr;
+		UnsafeArray<T> arr;
 		UOSInt objCnt;
 		UOSInt capacity;
 
@@ -22,7 +22,7 @@ namespace Data
 
 		virtual UOSInt Add(T val);
 		UOSInt AddAll(NN<const ReadingList<T>> arr);
-		virtual UOSInt AddRange(const T *arr, UOSInt cnt);
+		virtual UOSInt AddRange(UnsafeArray<const T> arr, UOSInt cnt);
 		virtual Bool Remove(T val);
 		virtual T RemoveAt(UOSInt index);
 		virtual void Insert(UOSInt index, T val);
@@ -37,10 +37,10 @@ namespace Data
 		virtual T GetItem(UOSInt index) const;
 		virtual void SetItem(UOSInt index, T val);
 		void CopyItems(UOSInt destIndex, UOSInt srcIndex, UOSInt count);
-		UOSInt GetRange(T *outArr, UOSInt index, UOSInt cnt) const;
+		UOSInt GetRange(UnsafeArray<T> outArr, UOSInt index, UOSInt cnt) const;
 		UOSInt RemoveRange(UOSInt index, UOSInt cnt);
-		virtual T *GetPtr(OutParam<UOSInt> arraySize) const;
-		virtual T *Ptr() const;
+		virtual UnsafeArray<T> GetPtr(OutParam<UOSInt> arraySize) const;
+		virtual UnsafeArray<T> Ptr() const;
 		T Pop();
 	};
 
@@ -64,7 +64,7 @@ namespace Data
 
 	template <class T> ArrayListA<T>::~ArrayListA()
 	{
-		MemFreeA(arr);
+		MemFreeAArr(arr);
 		arr = 0;
 	}
 
@@ -73,10 +73,10 @@ namespace Data
 		UOSInt ret;
 		if (objCnt == this->capacity)
 		{
-			T *newArr = MemAllocA(T, this->capacity * 2);
-			MemCopyAC(newArr, arr, this->objCnt * sizeof(T));
+			UnsafeArray<T> newArr = MemAllocAArr(T, this->capacity * 2);
+			MemCopyAC(newArr.Ptr(), arr.Ptr(), this->objCnt * sizeof(T));
 			this->capacity = this->capacity << 1;
-			MemFreeA(arr);
+			MemFreeAArr(arr);
 			arr = newArr;
 		}
 		arr[ret = objCnt++] = val;
@@ -92,12 +92,12 @@ namespace Data
 			{
 				this->capacity = this->capacity << 1;
 			}
-			T *newArr = MemAllocA(T, this->capacity);
+			UnsafeArray<T> newArr = MemAllocAArr(T, this->capacity);
 			if (objCnt > 0)
 			{
-				MemCopyAC(newArr, this->arr, objCnt * sizeof(T));
+				MemCopyAC(newArr.Ptr(), this->arr.Ptr(), objCnt * sizeof(T));
 			}
-			MemFreeA(this->arr);
+			MemFreeAArr(this->arr);
 			this->arr = newArr;
 		}
 		UOSInt i = 0;
@@ -110,7 +110,7 @@ namespace Data
 		return cnt;
 	}
 
-	template <class T> UOSInt ArrayListA<T>::AddRange(const T *arr, UOSInt cnt)
+	template <class T> UOSInt ArrayListA<T>::AddRange(UnsafeArray<const T> arr, UOSInt cnt)
 	{
 		if (objCnt + cnt >= this->capacity)
 		{
@@ -118,15 +118,15 @@ namespace Data
 			{
 				this->capacity = this->capacity << 1;
 			}
-			T *newArr = MemAllocA(T, this->capacity);
+			UnsafeArray<T> newArr = MemAllocAArr(T, this->capacity);
 			if (objCnt > 0)
 			{
-				MemCopyAC(newArr, this->arr, objCnt * sizeof(T));
+				MemCopyAC(newArr.Ptr(), this->arr.Ptr(), objCnt * sizeof(T));
 			}
-			MemFreeA(this->arr);
+			MemFreeAArr(this->arr);
 			this->arr = newArr;
 		}
-		MemCopyNO(&this->arr[objCnt], arr, cnt * sizeof(T));
+		MemCopyNO(&this->arr[objCnt], arr.Ptr(), cnt * sizeof(T));
 		this->objCnt += cnt;
 		return cnt;
 	}
@@ -179,10 +179,10 @@ namespace Data
 	{
 		if (objCnt == this->capacity)
 		{
-			T *newArr = MemAllocA(T, this->capacity * 2);
+			UnsafeArray<T> newArr = MemAllocAArr(T, this->capacity * 2);
 			if (Index > 0)
 			{
-				MemCopyAC(newArr, this->arr, Index * sizeof(T));
+				MemCopyAC(newArr.Ptr(), this->arr.Ptr(), Index * sizeof(T));
 			}
 			newArr[Index] = Val;
 			if (Index < this->objCnt)
@@ -190,7 +190,7 @@ namespace Data
 				MemCopyNO(&newArr[Index + 1], &this->arr[Index], (this->objCnt - Index) * sizeof(T));
 			}
 			this->capacity = this->capacity << 1;
-			MemFreeA(arr);
+			MemFreeAArr(arr);
 			arr = newArr;
 		}
 		else
@@ -252,9 +252,9 @@ namespace Data
 				this->capacity = this->capacity << 1;
 			}
 
-			T *newArr = MemAllocA(T, this->capacity);
-			MemCopyAC(newArr, this->arr, this->objCnt * sizeof(T));
-			MemFreeA(this->arr);
+			UnsafeArray<T> newArr = MemAllocAArr(T, this->capacity);
+			MemCopyAC(newArr.Ptr(), this->arr.Ptr(), this->objCnt * sizeof(T));
+			MemFreeAArr(this->arr);
 			this->arr = newArr;
 		}
 	}
@@ -287,7 +287,7 @@ namespace Data
 		MemCopyO(&this->arr[destIndex], &this->arr[srcIndex], count * sizeof(this->arr[0]));
 	}
 
-	template <class T> UOSInt ArrayListA<T>::GetRange(T *outArr, UOSInt Index, UOSInt cnt) const
+	template <class T> UOSInt ArrayListA<T>::GetRange(UnsafeArray<T> outArr, UOSInt Index, UOSInt cnt) const
 	{
 		UOSInt startIndex = Index;
 		UOSInt endIndex = Index + cnt;
@@ -301,7 +301,7 @@ namespace Data
 		{
 			return 0;
 		}
-		MemCopyNO(outArr, &arr[startIndex], sizeof(T) * (endIndex - startIndex));
+		MemCopyNO(outArr.Ptr(), &arr[startIndex], sizeof(T) * (endIndex - startIndex));
 		return endIndex - startIndex;
 	}
 
@@ -333,13 +333,13 @@ namespace Data
 		return endIndex - startIndex;
 	}
 
-	template <class T> T* ArrayListA<T>::GetPtr(OutParam<UOSInt> arraySize) const
+	template <class T> UnsafeArray<T> ArrayListA<T>::GetPtr(OutParam<UOSInt> arraySize) const
 	{
 		arraySize.Set(this->objCnt);
 		return this->arr;
 	}
 	
-	template <class T> T* ArrayListA<T>::Ptr() const
+	template <class T> UnsafeArray<T> ArrayListA<T>::Ptr() const
 	{
 		return this->arr;
 	}

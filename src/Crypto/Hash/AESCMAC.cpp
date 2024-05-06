@@ -105,7 +105,7 @@ void Crypto::Hash::AESCMAC::Calc(const UInt8 *buff, UOSInt buffSize)
 	this->buffSize = buffSize;
 }
 
-void Crypto::Hash::AESCMAC::GetValue(UInt8 *buff) const
+void Crypto::Hash::AESCMAC::GetValue(UnsafeArray<UInt8> buff) const
 {
 	UInt8 y[16];
 	UOSInt i;
@@ -116,13 +116,13 @@ void Crypto::Hash::AESCMAC::GetValue(UInt8 *buff) const
 		y[0] = 0x80;
 		WriteNUInt64(&y[0], ReadNUInt64(&this->x[0]) ^ ReadNUInt64(&y[0]) ^ ReadNUInt64(&this->k2[0]));
 		WriteNUInt64(&y[8], ReadNUInt64(&this->x[8]) ^ ReadNUInt64(&y[8]) ^ ReadNUInt64(&this->k2[8]));
-		this->aes.EncryptBlock(y, buff);
+		this->aes.EncryptBlock(y, buff.Ptr());
 	}
 	else if (this->buffSize == 16)
 	{
 		WriteNUInt64(&y[0], ReadNUInt64(&this->x[0]) ^ ReadNUInt64(&this->buff[0]) ^ ReadNUInt64(&this->k1[0]));
 		WriteNUInt64(&y[8], ReadNUInt64(&this->x[8]) ^ ReadNUInt64(&this->buff[8]) ^ ReadNUInt64(&this->k1[8]));
-		this->aes.EncryptBlock(y, buff);
+		this->aes.EncryptBlock(y, buff.Ptr());
 	}
 	else
 	{
@@ -136,7 +136,7 @@ void Crypto::Hash::AESCMAC::GetValue(UInt8 *buff) const
 		}
 		WriteNUInt64(&y[0], ReadNUInt64(&this->x[0]) ^ ReadNUInt64(&y[0]) ^ ReadNUInt64(&this->k2[0]));
 		WriteNUInt64(&y[8], ReadNUInt64(&this->x[8]) ^ ReadNUInt64(&y[8]) ^ ReadNUInt64(&this->k2[8]));
-		this->aes.EncryptBlock(y, buff);
+		this->aes.EncryptBlock(y, buff.Ptr());
 	}
 }
 

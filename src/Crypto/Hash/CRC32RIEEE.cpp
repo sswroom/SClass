@@ -52,9 +52,9 @@ void Crypto::Hash::CRC32RIEEE::Calc(const UInt8 *buff, UOSInt buffSize)
 	this->currVal = CRC32R_Calc(buff, buffSize, crctab, this->currVal);
 }
 
-void Crypto::Hash::CRC32RIEEE::GetValue(UInt8 *buff) const
+void Crypto::Hash::CRC32RIEEE::GetValue(UnsafeArray<UInt8> buff) const
 {
-	WriteMUInt32(buff, ~currVal);
+	WriteMUInt32(buff.Ptr(), ~currVal);
 }
 
 UOSInt Crypto::Hash::CRC32RIEEE::GetBlockSize() const

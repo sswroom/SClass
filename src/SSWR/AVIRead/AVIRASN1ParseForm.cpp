@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1ParseForm::OnParseClicked(AnyType userObj)
 	Text::TextBinEnc::Base64Enc b64;
 	UOSInt len = b64.CalcBinSize(sb.ToString(), sb.GetLength());
 	Data::ByteBuffer buff(len);
-	if (b64.DecodeBin(sb.ToString(), sb.GetLength(), buff.Ptr()) != len)
+	if (b64.DecodeBin(sb.ToString(), sb.GetLength(), buff.Ptr().Ptr()) != len)
 	{
 		me->ui->ShowMsgOK(CSTR("Error in decoding Base64 data"), CSTR("ASN.1 Parse"), me);
 		return;

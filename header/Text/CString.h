@@ -31,9 +31,9 @@ namespace Text
 			this->leng = 0;
 		}
 
-		CString(const UTF8Char *v, UOSInt leng)
+		CString(UnsafeArray<const UTF8Char> v, UOSInt leng)
 		{
-			this->v = v;
+			this->v = v.Ptr();
 			this->leng = leng;
 		}
 
@@ -94,7 +94,7 @@ namespace Text
 	struct CStringNN : public CString
 	{
 		CStringNN() = default;
-		CStringNN(const UTF8Char *v, UOSInt leng) : CString(v, leng)
+		CStringNN(UnsafeArray<const UTF8Char> v, UOSInt leng) : CString(v, leng)
 		{
 		}
 

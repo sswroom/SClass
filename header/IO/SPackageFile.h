@@ -43,7 +43,7 @@ namespace IO
 		~SPackageFile();
 
 		Bool AddFile(NN<IO::StreamData> fd, Text::CString fileName, const Data::Timestamp &modTime);
-		Bool AddFile(const UInt8 *fileBuff, UOSInt fileSize, Text::CString fileName, const Data::Timestamp &modTime);
+		Bool AddFile(UnsafeArray<const UInt8> fileBuff, UOSInt fileSize, Text::CString fileName, const Data::Timestamp &modTime);
 		Bool AddPackage(NN<IO::PackageFile> pkg, UTF8Char pathSeperator);
 		Bool Commit();
 		Bool OptimizeFile(Text::CStringNN newFile);

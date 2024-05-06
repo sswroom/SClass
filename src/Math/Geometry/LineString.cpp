@@ -30,11 +30,11 @@ Math::Geometry::LineString::LineString(UInt32 srid, UOSInt nPoint, Bool hasZ, Bo
 	}
 }
 
-Math::Geometry::LineString::LineString(UInt32 srid, const Math::Coord2DDbl *pointArr, UOSInt nPoint, Double *zArr, Double *mArr) : Vector2D(srid)
+Math::Geometry::LineString::LineString(UInt32 srid, UnsafeArray<const Math::Coord2DDbl> pointArr, UOSInt nPoint, Double *zArr, Double *mArr) : Vector2D(srid)
 {
 	this->pointArr = MemAllocA(Math::Coord2DDbl, nPoint);
 	this->nPoint = nPoint;
-	MemCopyAC(this->pointArr, pointArr, nPoint * sizeof(Math::Coord2DDbl));
+	MemCopyAC(this->pointArr, pointArr.Ptr(), nPoint * sizeof(Math::Coord2DDbl));
 	if (zArr)
 	{
 		this->zArr = MemAllocA(Double, nPoint);

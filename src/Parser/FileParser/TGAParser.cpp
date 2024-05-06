@@ -176,8 +176,8 @@ rle32exit:
 #else
 			case 32:
 				{
-					UInt8 *tmpSPtr;
-					UInt8 *tmpDPtr;
+					UnsafeArray<UInt8> tmpSPtr;
+					UnsafeArray<UInt8> tmpDPtr;
 					UOSInt cnt = imgHeight * imgWidth;
 					UInt32 tmpVal;
 					tmpSPtr = tmpBuff.GetPtr();
@@ -192,7 +192,7 @@ rle32exit:
 							tmpSPtr++;
 							while (tmpVal-- > 0)
 							{
-								*(Int32*)tmpDPtr = *(Int32*)tmpSPtr;
+								*(Int32*)tmpDPtr.Ptr() = *(Int32*)tmpSPtr.Ptr();
 								tmpDPtr += 4;
 							}
 							tmpSPtr += 4;
@@ -204,7 +204,7 @@ rle32exit:
 							cnt -= tmpVal;
 							while (tmpVal-- > 0)
 							{
-								*(Int32*)tmpDPtr = *(Int32*)tmpSPtr;
+								*(Int32*)tmpDPtr.Ptr() = *(Int32*)tmpSPtr.Ptr();
 								tmpDPtr += 4;
 								tmpSPtr += 4;
 							}

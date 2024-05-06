@@ -14,7 +14,7 @@ namespace Text
 			NN<Text::String> contType;
 
 		public:
-			UnknownMIMEObj(UInt8 *dataBuff, UOSInt buffSize, Text::CStringNN contentType);
+			UnknownMIMEObj(UnsafeArray<UInt8> dataBuff, UOSInt buffSize, Text::CStringNN contentType);
 			virtual ~UnknownMIMEObj();
 
 			virtual Text::CStringNN GetClassName() const;

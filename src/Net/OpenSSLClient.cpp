@@ -90,7 +90,7 @@ UOSInt Net::OpenSSLClient::Read(const Data::ByteArray &buff)
 {
 	if (s && (this->flags & 6) == 0)
 	{
-		int ret = SSL_read(this->clsData->ssl, buff.Ptr(), (int)(OSInt)buff.GetSize());
+		int ret = SSL_read(this->clsData->ssl, buff.Ptr().Ptr(), (int)(OSInt)buff.GetSize());
 		if (ret > 0)
 		{
 #if defined(VERBOSE)

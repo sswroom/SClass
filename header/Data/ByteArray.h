@@ -10,7 +10,8 @@ namespace Data
 	template <typename T> class ByteArrayBase : public DataArray<T>
 	{
 	protected:
-		ByteArrayBase(T *buff, UOSInt buffSize) : DataArray<T>(buff, buffSize)
+		ByteArrayBase() = default;
+		ByteArrayBase(UnsafeArrayOpt<T> buff, UOSInt buffSize) : DataArray<T>(buff, buffSize)
 		{
 		}
 
@@ -23,22 +24,22 @@ namespace Data
 
 		Bool operator<=(const ByteArrayBase<T> &buff) const
 		{
-			return this->buff <= buff.buff;
+			return this->buff.Ptr() <= buff.buff;
 		}
 
 		Bool operator<(const ByteArrayBase<T> &buff) const
 		{
-			return this->buff < buff.buff;
+			return this->buff.Ptr() < buff.buff;
 		}
 
 		Bool operator>=(const ByteArrayBase<T> &buff) const
 		{
-			return this->buff >= buff.buff;
+			return this->buff.Ptr() >= buff.buff;
 		}
 
 		Bool operator>(const ByteArrayBase<T> &buff) const
 		{
-			return this->buff > buff.buff;
+			return this->buff.Ptr() > buff.buff;
 		}
 
 		Int16 ReadI16(UOSInt index) const
@@ -193,21 +194,15 @@ namespace Data
 	private:
 		static void FORCEINLINE CopyArray(Data::ByteArray destArr, const ByteArrayR &srcArr);
 #if defined(CHECK_RANGE)
-		ByteArray(UInt8 *buff, UOSInt buffSize, UOSInt prevSize) : ByteArrayBase(buff, buffSize)
+		ByteArray(UnsafeArray<UInt8> buff, UOSInt buffSize, UOSInt prevSize) : ByteArrayBase(buff, buffSize)
 		{
 			this->prevSize = prevSize;
 		}
 #endif
 
 	public:
-		ByteArray() : ByteArrayBase(0, 0)
-		{
-#if defined(CHECK_RANGE)
-			this->prevSize = 0;
-#endif
-		}
-
-		ByteArray(UInt8 *buff, UOSInt buffSize) : ByteArrayBase(buff, buffSize)
+		ByteArray() = default;
+		ByteArray(UnsafeArrayOpt<UInt8> buff, UOSInt buffSize) : ByteArrayBase(buff, buffSize)
 		{
 #if defined(CHECK_RANGE)
 			this->prevSize = 0;
@@ -252,7 +247,7 @@ namespace Data
 		void CopyFrom(UOSInt destIndex, const ByteArray &srcArr) const
 		{
 			CheckError(destIndex + srcArr.GetSize());
-			MemCopyNO(&buff[destIndex], srcArr.GetPtr(), srcArr.GetSize());
+			MemCopyNO(&buff[destIndex], srcArr.GetPtr().Ptr(), srcArr.GetSize());
 		}
 
 		void FORCEINLINE CopyFrom(UOSInt destIndex, const ByteArrayR &srcArr) const
@@ -514,7 +509,7 @@ namespace Data
 	{
 #if defined(CHECK_RANGE)
 	private:
-		ByteArrayR(const UInt8 *buff, UOSInt buffSize, UOSInt prevSize) : ByteArrayBase(buff, buffSize)
+		ByteArrayR(UnsafeArray<const UInt8> buff, UOSInt buffSize, UOSInt prevSize) : ByteArrayBase(buff, buffSize)
 		{
 			this->prevSize = prevSize;
 		}
@@ -528,7 +523,7 @@ namespace Data
 #endif
 		}
 
-		ByteArrayR(const UInt8 *buff, UOSInt buffSize) : ByteArrayBase(buff, buffSize)
+		ByteArrayR(UnsafeArray<const UInt8> buff, UOSInt buffSize) : ByteArrayBase(buff, buffSize)
 		{
 #if defined(CHECK_RANGE)
 			this->prevSize = 0;
@@ -622,7 +617,7 @@ namespace Data
 	void FORCEINLINE ByteArray::CopyArray(Data::ByteArray destArr, const ByteArrayR &srcArr)
 	{
 		destArr.CheckError(srcArr.GetSize());
-		MemCopyNO(destArr.buff, srcArr.GetPtr(), srcArr.GetSize());
+		MemCopyNO(destArr.buff.Ptr(), srcArr.GetPtr().Ptr(), srcArr.GetSize());
 	}
 }
 #define BYTEARR(var) Data::ByteArray(var, sizeof(var))

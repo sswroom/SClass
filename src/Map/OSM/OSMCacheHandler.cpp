@@ -117,7 +117,7 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 					mutUsage->ReplaceMutex(ioMut);
 				}
 				NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyRead, IO::FileStream::BufferType::NoWriteBuffer));
-				fs->Write(imgBuff.Ptr(), (UOSInt)contLeng);
+				fs->Write(imgBuff.Ptr().Ptr(), (UOSInt)contLeng);
 				if (cli->GetLastModified(dt))
 				{
 					currTime.SetCurrTimeUTC();

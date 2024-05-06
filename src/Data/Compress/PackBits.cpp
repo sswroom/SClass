@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Data/Compress/PackBits.h"
 
-Bool Data::Compress::PackBits::Decompress(UInt8 *destBuff, UOSInt *destBuffSize, UInt8 *srcBuff, UOSInt srcBuffSize)
+Bool Data::Compress::PackBits::Decompress(UnsafeArray<UInt8> destBuff, OutParam<UOSInt> destBuffSize, UnsafeArray<UInt8> srcBuff, UOSInt srcBuffSize)
 {
 	UInt8 b;
 	UInt8 b2;
@@ -52,6 +52,6 @@ Bool Data::Compress::PackBits::Decompress(UInt8 *destBuff, UOSInt *destBuffSize,
 			}
 		}
 	}
-	*destBuffSize = writeCnt;
+	destBuffSize.Set(writeCnt);
 	return true;
 }

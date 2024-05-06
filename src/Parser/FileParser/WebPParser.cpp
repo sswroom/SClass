@@ -56,7 +56,7 @@ IO::ParsedObject *Parser::FileParser::WebPParser::ParseFileHdr(NN<IO::StreamData
 		return 0;
 	}
 	WebPData data;
-	data.bytes = fileData.Ptr();
+	data.bytes = fileData.Ptr().Ptr();
 	data.size = (size_t)fileLen;
 	WebPDemuxer* demux = WebPDemux(&data);
 	if (demux == 0)

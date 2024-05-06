@@ -91,7 +91,7 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientData(NN<Net::TCPClie
 	sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes"));
 	me->log.LogMessage(CSTRP(sbuff, sptr), IO::LogHandler::LogLevel::Action);
 
-	MemCopyNO(&data->recvBuff[data->buffSize], buff.Ptr(), buff.GetSize());
+	MemCopyNO(&data->recvBuff[data->buffSize], buff.Ptr().Ptr(), buff.GetSize());
 	data->buffSize += buff.GetSize();
 	
 	UOSInt size = me->protoHdlr->ParseProtocol(cli, data, data->cliData, Data::ByteArrayR(data->recvBuff, data->buffSize));

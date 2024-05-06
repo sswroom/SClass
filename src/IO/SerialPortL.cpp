@@ -413,7 +413,7 @@ UOSInt IO::SerialPort::Read(const Data::ByteArray &buff)
 	{
 		if (this->handle == 0)
 			break;
-		readCnt = read((int)h, buff.GetPtr(), buff.GetSize());
+		readCnt = read((int)h, buff.GetPtr().Ptr(), buff.GetSize());
 		if (readCnt == -1)
 		{
 			if (errno == EAGAIN)

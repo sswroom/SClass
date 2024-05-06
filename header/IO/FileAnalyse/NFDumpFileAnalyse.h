@@ -29,7 +29,7 @@ namespace IO
 			Bool pauseParsing;
 			Sync::Thread thread;
 			static void __stdcall ParseThread(NN<Sync::Thread> thread);
-			UOSInt LZODecompBlock(UInt8 *srcBlock, UOSInt srcSize, UInt8 *outBlock, UOSInt maxOutSize);
+			UOSInt LZODecompBlock(UnsafeArray<UInt8> srcBlock, UOSInt srcSize, UnsafeArray<UInt8> outBlock, UOSInt maxOutSize);
 		public:
 			NFDumpFileAnalyse(NN<IO::StreamData> fd);
 			virtual ~NFDumpFileAnalyse();

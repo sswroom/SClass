@@ -537,7 +537,7 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFileHdr(NN<IO::StreamData>
 							}
 							else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".rsrc")))
 							{
-								ParseResource(exef, 0, sbuff, sbuff, &exeImage[virtAddr], 0, exeImage.Ptr());
+								ParseResource(exef, 0, sbuff, sbuff, &exeImage[virtAddr], 0, exeImage.Ptr().Ptr());
 								sbuff[0] = 0;
 							}
 							else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".reloc")))
@@ -847,7 +847,7 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFileHdr(NN<IO::StreamData>
 						fd->GetRealData((UInt64)(ReadUInt16(&nameTable[j]) << ReadUInt16(&nameTable[0])), resSize, resBuff);
 
 						sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("Resource 0x")), ReadUInt16(&nameTable[j + 6]));
-						exef->AddResource(CSTRP(sbuff, sptr), resBuff.Ptr(), resSize, 0, rt);
+						exef->AddResource(CSTRP(sbuff, sptr), resBuff.Ptr().Ptr(), resSize, 0, rt);
 						j += 12;
 					}
 				}

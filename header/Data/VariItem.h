@@ -171,7 +171,7 @@ namespace Data
 		void SetI64(Int64 val);
 		void SetU64(UInt64 val);
 		void SetBool(Bool val);
-		void SetByteArr(const UInt8 *arr, UOSInt cnt);
+		void SetByteArr(UnsafeArray<const UInt8> arr, UOSInt cnt);
 		void SetByteArr(Data::ReadonlyArray<UInt8> *arr);
 		void SetVector(NN<Math::Geometry::Vector2D> vec);
 		void SetUUID(NN<Data::UUID> uuid);

@@ -30,7 +30,7 @@ Media::VOBAC3StreamSource::~VOBAC3StreamSource()
 	}
 }
 
-Bool Media::VOBAC3StreamSource::ParseHeader(UInt8 *buff, UOSInt buffSize)
+Bool Media::VOBAC3StreamSource::ParseHeader(UnsafeArray<UInt8> buff, UOSInt buffSize)
 {
 	if (this->fmt.bitRate == 0)
 	{

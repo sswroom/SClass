@@ -64,7 +64,7 @@ namespace Text
 		Bool GetAsBool();
 
 		static JSONBase *ParseJSONStr(Text::CStringNN jsonStr);
-		static JSONBase *ParseJSONBytes(const UInt8 *jsonBytes, UOSInt len);
+		static JSONBase *ParseJSONBytes(UnsafeArray<const UInt8> jsonBytes, UOSInt len);
 		static JSONBase *ParseJSONBytes(const Data::ByteArrayR &jsonBytes);
 
 	private:

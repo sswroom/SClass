@@ -12,7 +12,7 @@ namespace Data
 	template <typename T> class DataArray : public Data::ReadingList<T>
 	{
 	protected:
-		T *buff;
+		UnsafeArrayOpt<T> buff;
 		UOSInt buffSize;
 #if defined(CHECK_RANGE)
 		UOSInt prevSize;
@@ -35,7 +35,8 @@ namespace Data
 		}
 
 	public:
-		DataArray(T *buff, UOSInt buffSize)
+		DataArray() = default;
+		DataArray(UnsafeArrayOpt<T> buff, UOSInt buffSize)
 		{
 			this->buff = buff;
 			this->buffSize = buffSize;
@@ -80,24 +81,24 @@ namespace Data
 		}
 #endif
 
-		T *GetPtr() const
+		UnsafeArray<T> GetPtr() const
 		{
 			return this->buff;
 		}
 
-		T *Ptr() const
+		UnsafeArray<T> Ptr() const
 		{
 			return this->buff;
 		}
 
-		T *PtrEnd() const
+		UnsafeArray<T> PtrEnd() const
 		{
 			return &this->buff[this->buffSize];
 		}
 
 		Bool IsNull() const
 		{
-			return this->buff == 0;
+			return this->buff.Ptr() == 0;
 		}
 
 		UOSInt GetSize() const

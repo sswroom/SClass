@@ -32,7 +32,7 @@ Bool Net::ASN1Data::ToASN1String(NN<Text::StringBuilderUTF8> sb) const
 
 const UInt8 *Net::ASN1Data::GetASN1Buff() const
 {
-	return this->buff.GetPtr();
+	return this->buff.GetPtr().Ptr();
 }
 
 UOSInt Net::ASN1Data::GetASN1BuffSize() const
