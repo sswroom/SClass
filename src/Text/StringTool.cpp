@@ -4,31 +4,20 @@
 #include "Text/JSText.h"
 #include "Text/StringTool.h"
 
-void Text::StringTool::BuildString(NN<Text::StringBuilderUTF8> sb, Text::String *s)
+void Text::StringTool::BuildJSONString(NN<Text::StringBuilderUTF8> sb, Optional<Text::String> s)
 {
-	if (s == 0)
+	NN<Text::String> nns;
+	if (!s.SetTo(nns))
 	{
 		sb->AppendC(UTF8STRC("null"));
 	}
 	else
 	{
-		Text::JSText::ToJSTextDQuote(sb, s->v);
+		Text::JSText::ToJSTextDQuote(sb, nns->v);
 	}
 }
 
-void Text::StringTool::BuildString(NN<Text::StringBuilderUTF8> sb, const UTF8Char *s)
-{
-	if (s == 0)
-	{
-		sb->AppendC(UTF8STRC("null"));
-	}
-	else
-	{
-		Text::JSText::ToJSTextDQuote(sb, s);
-	}
-}
-
-void Text::StringTool::BuildString(NN<Text::StringBuilderUTF8> sb, Data::StringMap<Text::String*> *map)
+void Text::StringTool::BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::StringMap<Text::String*> *map)
 {
 	if (map == 0)
 	{
@@ -47,69 +36,15 @@ void Text::StringTool::BuildString(NN<Text::StringBuilderUTF8> sb, Data::StringM
 			sb->AppendUTF8Char(',');
 			sb->AppendUTF8Char(' ');
 		}
-		BuildString(sb, keys->GetItem(i));
+		BuildJSONString(sb, keys->GetItem(i));
 		sb->AppendUTF8Char(':');
-		BuildString(sb, vals->GetItem(i));
+		BuildJSONString(sb, vals->GetItem(i));
 		i++;
 	}
 	sb->AppendUTF8Char('}');
 }
 
-void Text::StringTool::BuildString(NN<Text::StringBuilderUTF8> sb, Data::StringUTF8Map<Text::String*> *map)
-{
-	if (map == 0)
-	{
-		sb->AppendC(UTF8STRC("null"));
-		return;
-	}
-	sb->AppendUTF8Char('{');
-	NN<Data::ArrayList<const UTF8Char *>> keys = map->GetKeys();
-	NN<const Data::ArrayList<Text::String *>> vals = map->GetValues();
-	UOSInt i = 0;
-	UOSInt j = keys->GetCount();
-	while (i < j)
-	{
-		if (i > 0)
-		{
-			sb->AppendUTF8Char(',');
-			sb->AppendUTF8Char(' ');
-		}
-		BuildString(sb, keys->GetItem(i));
-		sb->AppendUTF8Char(':');
-		BuildString(sb, vals->GetItem(i));
-		i++;
-	}
-	sb->AppendUTF8Char('}');
-}
-
-void Text::StringTool::BuildString(NN<Text::StringBuilderUTF8> sb, Data::StringUTF8Map<const UTF8Char*> *map)
-{
-	if (map == 0)
-	{
-		sb->AppendC(UTF8STRC("null"));
-		return;
-	}
-	sb->AppendUTF8Char('{');
-	NN<Data::ArrayList<const UTF8Char *>> keys = map->GetKeys();
-	NN<const Data::ArrayList<const UTF8Char *>> vals = map->GetValues();
-	UOSInt i = 0;
-	UOSInt j = keys->GetCount();
-	while (i < j)
-	{
-		if (i > 0)
-		{
-			sb->AppendUTF8Char(',');
-			sb->AppendUTF8Char(' ');
-		}
-		BuildString(sb, keys->GetItem(i));
-		sb->AppendUTF8Char(':');
-		BuildString(sb, vals->GetItem(i));
-		i++;
-	}
-	sb->AppendUTF8Char('}');
-}
-
-void Text::StringTool::BuildString(NN<Text::StringBuilderUTF8> sb, Data::ReadingList<const UTF8Char*> *list)
+void Text::StringTool::BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::ReadingList<Text::String*> *list)
 {
 	if (list == 0)
 	{
@@ -126,30 +61,7 @@ void Text::StringTool::BuildString(NN<Text::StringBuilderUTF8> sb, Data::Reading
 			sb->AppendUTF8Char(',');
 			sb->AppendUTF8Char(' ');
 		}
-		BuildString(sb, list->GetItem(i));
-		i++;
-	}
-	sb->AppendUTF8Char(']');
-}
-
-void Text::StringTool::BuildString(NN<Text::StringBuilderUTF8> sb, Data::ReadingList<Text::String*> *list)
-{
-	if (list == 0)
-	{
-		sb->AppendC(UTF8STRC("null"));
-		return;
-	}
-	sb->AppendUTF8Char('[');
-	UOSInt i = 0;
-	UOSInt j = list->GetCount();
-	while (i < j)
-	{
-		if (i > 0)
-		{
-			sb->AppendUTF8Char(',');
-			sb->AppendUTF8Char(' ');
-		}
-		BuildString(sb, list->GetItem(i));
+		BuildJSONString(sb, list->GetItem(i));
 		i++;
 	}
 	sb->AppendUTF8Char(']');

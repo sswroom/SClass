@@ -119,8 +119,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnLogSelChg(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRMQTTBrokerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTBrokerForm>();
-	NN<const Data::ArrayList<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus*>> topicList;
-	SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus *topicSt;
+	NN<const Data::ArrayListNN<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus>> topicList;
+	NN<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus> topicSt;
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	UOSInt j;
@@ -155,7 +155,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(AnyType userObj)
 		me->lvTopic->ClearItems();
 		while (i < j)
 		{
-			topicSt = topicList->GetItem(i);
+			topicSt = topicList->GetItemNoCheck(i);
 			topicSt->updated = false;
 			me->lvTopic->AddItem(topicSt->topic, topicSt);
 			sb.ClearStr();
@@ -171,7 +171,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(AnyType userObj)
 	{
 		while (i < j)
 		{
-			topicSt = topicList->GetItem(i);
+			topicSt = topicList->GetItemNoCheck(i);
 			if (topicSt->updated)
 			{
 				topicSt->updated = false;
@@ -187,16 +187,15 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(AnyType userObj, Text::CString topic, const UInt8 *message, UOSInt msgSize)
+void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(AnyType userObj, Text::CStringNN topic, const UInt8 *message, UOSInt msgSize)
 {
 	NN<SSWR::AVIRead::AVIRMQTTBrokerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRMQTTBrokerForm>();
-	SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus *topicSt;
+	NN<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus> topicSt;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	Sync::Interlocked::IncrementU64(me->totalCount);
 	Sync::MutexUsage mutUsage(me->topicMut);
-	topicSt = me->topicMap.Get(topic);
-	if (topicSt)
+	if (me->topicMap.Get(topic).SetTo(topicSt))
 	{
 		if (topicSt->msgSize != msgSize)
 		{
@@ -210,7 +209,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(AnyType userObj,
 	}
 	else
 	{
-		topicSt = MemAlloc(SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus, 1);
+		topicSt = MemAllocNN(SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus);
 		topicSt->topic = Text::String::New(topic);
 		topicSt->message = MemAlloc(UInt8, msgSize);
 		topicSt->msgSize = msgSize;
@@ -312,15 +311,15 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::~AVIRMQTTBrokerForm()
 	this->ServerStop();
 	this->log.RemoveLogHandler(this->logger);
 	this->logger.Delete();
-	NN<const Data::ArrayList<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus*>> topicList = this->topicMap.GetValues();
-	SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus *topic;
+	NN<const Data::ArrayListNN<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus>> topicList = this->topicMap.GetValues();
+	NN<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus> topic;
 	UOSInt i = topicList->GetCount();
 	while (i-- > 0)
 	{
-		topic = topicList->GetItem(i);
+		topic = topicList->GetItemNoCheck(i);
 		topic->topic->Release();
 		MemFree(topic->message);
-		MemFree(topic);
+		MemFreeNN(topic);
 	}
 	this->ssl.Delete();
 	SDEL_CLASS(this->sslCert);

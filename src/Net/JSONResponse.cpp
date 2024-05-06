@@ -67,12 +67,12 @@ void Net::JSONResponse::FindMissingFields()
 		NN<Text::String> name;
 		NN<Text::String> s;
 		Bool hasObj = false;
-		Field *field;
+		NN<Field> field;
 		Data::ArrayIterator<NN<Text::String>> itName = nameList.Iterator();
 		while (itName.HasNext())
 		{
 			name = itName.Next();
-			if (this->fieldMap.GetNN(name) == 0 && !this->allowAll)
+			if (this->fieldMap.GetNN(name).IsNull() && !this->allowAll)
 			{
 				Text::JSONBase *val = obj->GetObjectValue(name->ToCString());
 				Text::JSONArray *arr;
@@ -255,7 +255,7 @@ void Net::JSONResponse::FindMissingFields()
 		UOSInt j = this->fieldMap.GetCount();
 		while (i < j)
 		{
-			field = this->fieldMap.GetItem(i);
+			field = this->fieldMap.GetItemNoCheck(i);
 			if (field->IsOptional() || this->json->GetValue(field->GetName()) != 0)
 			{
 			}
@@ -352,12 +352,11 @@ void Net::JSONResponse::AppendFuncName(NN<Text::StringBuilderUTF8> sb, Bool bool
 
 void Net::JSONResponse::AddField(Text::CStringNN name, Text::JSONType fieldType, Bool optional, Bool allowNull)
 {
-	Field *field;
-	NEW_CLASS(field, Field(name, fieldType, optional, allowNull));
-	field = this->fieldMap.PutC(name, field);
-	if (field)
+	NN<Field> field;
+	NEW_CLASSNN(field, Field(name, fieldType, optional, allowNull));
+	if (this->fieldMap.PutC(name, field).SetTo(field))
 	{
-		DEL_CLASS(field);
+		field.Delete();
 	}
 
 }
@@ -365,8 +364,8 @@ void Net::JSONResponse::AddField(Text::CStringNN name, Text::JSONType fieldType,
 void Net::JSONResponse::AddFieldArrDbl(Text::CStringNN name, Bool optional, Bool allowNull)
 {
 	Bool hasError = false;
-	ArrayNativeField<Double> *field;
-	NEW_CLASS(field, ArrayNativeField<Double>(name, optional, allowNull, Text::JSONType::Number));
+	NN<ArrayNativeField<Double>> field;
+	NEW_CLASSNN(field, ArrayNativeField<Double>(name, optional, allowNull, Text::JSONType::Number));
 	Text::JSONArray *arr = this->json->GetValueArray(name);
 	if (arr == 0)
 	{
@@ -398,18 +397,18 @@ void Net::JSONResponse::AddFieldArrDbl(Text::CStringNN name, Bool optional, Bool
 		}
 		i++;
 	}
-	Field *orifield = this->fieldMap.PutC(name, field);
-	if (orifield)
+	NN<Field> orifield;
+	if (this->fieldMap.PutC(name, field).SetTo(orifield))
 	{
-		DEL_CLASS(orifield);
+		orifield.Delete();
 	}
 }
 
 void Net::JSONResponse::AddFieldArrStr(Text::CStringNN name, Bool optional, Bool allowNull)
 {
 	Bool hasError = false;
-	ArrayStrField *field;
-	NEW_CLASS(field, ArrayStrField(name, optional, allowNull));
+	NN<ArrayStrField> field;
+	NEW_CLASSNN(field, ArrayStrField(name, optional, allowNull));
 	Text::JSONArray *arr = this->json->GetValueArray(name);
 	if (arr == 0)
 	{
@@ -441,10 +440,10 @@ void Net::JSONResponse::AddFieldArrStr(Text::CStringNN name, Bool optional, Bool
 		}
 		i++;
 	}
-	Field *orifield = this->fieldMap.PutC(name, field);
-	if (orifield)
+	NN<Field> orifield;
+	if (this->fieldMap.PutC(name, field).SetTo(orifield))
 	{
-		DEL_CLASS(orifield);
+		orifield.Delete();
 	}
 }
 
@@ -467,8 +466,8 @@ Net::JSONResponse::~JSONResponse()
 	UOSInt i = this->fieldMap.GetCount();
 	while (i-- > 0)
 	{
-		Field *field = this->fieldMap.GetItem(i);
-		DEL_CLASS(field);
+		NN<Field> field = this->fieldMap.GetItemNoCheck(i);
+		field.Delete();
 	}
 }
 
@@ -482,22 +481,21 @@ void Net::JSONResponse::ToString(NN<Text::StringBuilderUTF8> sb, Text::CStringNN
 	Text::StringBuilderUTF8 sbTmp;
 	NN<Text::String> s;
 	Data::ArrayListStringNN keys;
-	Data::FastStringKeyIterator<Field*> it = this->fieldMap.KeyIterator();
+	Data::FastStringNNKeyIterator<Field> it = this->fieldMap.KeyIterator();
 	while (it.HasNext())
 		keys.Add(it.Next());
 	Data::Sort::ArtificialQuickSort::Sort<NN<Text::String>>(&keys, keys);
-	Field *field;
+	NN<Field> field;
 	Data::ArrayIterator<NN<Text::String>> itKey = keys.Iterator();
 	while (itKey.HasNext())
 	{
-		field = this->fieldMap.GetNN(itKey.Next());
-		if (field)
+		if (this->fieldMap.GetNN(itKey.Next()).SetTo(field))
 		{
 			switch (field->GetFieldType())
 			{
 			case Text::JSONType::Object:
 				{
-					ObjectField *ofield = (ObjectField*)field;
+					NN<ObjectField> ofield = NN<ObjectField>::ConvertFrom(field);
 					NN<Net::JSONResponse> subObj;
 					if (ofield->GetValue().SetTo(subObj))
 					{
@@ -517,10 +515,10 @@ void Net::JSONResponse::ToString(NN<Text::StringBuilderUTF8> sb, Text::CStringNN
 				break;
 			case Text::JSONType::Array:
 				{
-					ArrayField *afield = (ArrayField*)field;
+					NN<ArrayField> afield = NN<ArrayField>::ConvertFrom(field);
 					if (afield->GetArrType() == Text::JSONType::Object)
 					{
-						ArrayNNField<Net::JSONResponse> *anfield = (ArrayNNField<Net::JSONResponse>*)afield;
+						NN<ArrayNNField<Net::JSONResponse>> anfield = NN<ArrayNNField<Net::JSONResponse>>::ConvertFrom(afield);
 						NN<const Data::ArrayListNN<Net::JSONResponse>> arr = anfield->GetValue();
 						NN<Net::JSONResponse> subObj;
 						UOSInt i = 0;
@@ -543,7 +541,7 @@ void Net::JSONResponse::ToString(NN<Text::StringBuilderUTF8> sb, Text::CStringNN
 					}
 					else if (afield->GetArrType() == Text::JSONType::String)
 					{
-						ArrayStrField *anfield = (ArrayStrField*)afield;
+						NN<ArrayStrField> anfield = NN<ArrayStrField>::ConvertFrom(afield);
 						NN<const Data::ArrayListStringNN> arr = anfield->GetValue();
 						if (arr->GetCount() == 0)
 						{
@@ -569,7 +567,7 @@ void Net::JSONResponse::ToString(NN<Text::StringBuilderUTF8> sb, Text::CStringNN
 					}
 					else if (afield->GetArrType() == Text::JSONType::Number)
 					{
-						ArrayNativeField<Double> *anfield = (ArrayNativeField<Double>*)afield;
+						NN<ArrayNativeField<Double>> anfield = NN<ArrayNativeField<Double>>::ConvertFrom(afield);
 						NN<const Data::ArrayList<Double>> arr = anfield->GetValue();
 						UOSInt i = 0;
 						UOSInt j = arr->GetCount();

@@ -82,7 +82,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(NN<IO::ParsedObject> pobj)
 		frm->Show();
 		break;
 	case IO::ParserType::MediaFile:
-		NEW_CLASSNN(frm, AVIRead::AVIRMediaForm(0, this->ui, *this, (Media::MediaFile*)pobj.Ptr()));
+		NEW_CLASSNN(frm, AVIRead::AVIRMediaForm(0, this->ui, *this, NN<Media::MediaFile>::ConvertFrom(pobj)));
 		InitForm(frm);
 		frm->Show();
 		break;

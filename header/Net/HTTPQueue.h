@@ -1,6 +1,6 @@
 #ifndef _SM_NET_HTTPQUEUE
 #define _SM_NET_HTTPQUEUE
-#include "Data/StringUTF8Map.h"
+#include "Data/StringMapNN.h"
 #include "Net/HTTPClient.h"
 #include "Net/SSLEngine.h"
 #include "Sync/Event.h"
@@ -19,7 +19,7 @@ namespace Net
 	private:
 		NN<Net::SocketFactory> sockf;
 		Optional<Net::SSLEngine> ssl;
-		Data::StringUTF8Map<DomainStatus*> statusMap;
+		Data::StringMapNN<DomainStatus> statusMap;
 		Sync::Mutex statusMut;
 		Sync::Event statusEvt;
 

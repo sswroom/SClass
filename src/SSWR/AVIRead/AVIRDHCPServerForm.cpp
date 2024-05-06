@@ -145,12 +145,12 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(AnyType userObj)
 		UInt8 mac[8];
 		UOSInt i;
 		UOSInt j;
-		Net::DHCPServer::DeviceStatus *dhcp;
+		NN<Net::DHCPServer::DeviceStatus> dhcp;
 		const Net::MACInfo::MACEntry *macInfo;
 		NN<Text::String> s;
 		Sync::MutexUsage mutUsage;
 		me->svr->UseStatus(mutUsage);
-		const Data::ReadingList<Net::DHCPServer::DeviceStatus*> *dhcpList = me->svr->StatusGetList();
+		NN<const Data::ReadingListNN<Net::DHCPServer::DeviceStatus>> dhcpList = me->svr->StatusGetList();
 		if (dhcpList->GetCount() != me->lvDevices->GetCount())
 		{
 			Optional<Net::DHCPServer::DeviceStatus> currSel = me->lvDevices->GetSelectedItem().GetOpt<Net::DHCPServer::DeviceStatus>();
@@ -159,13 +159,13 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(AnyType userObj)
 			j = dhcpList->GetCount();
 			while (i < j)
 			{
-				dhcp = dhcpList->GetItem(i);
+				dhcp = dhcpList->GetItemNoCheck(i);
 				WriteMUInt64(mac, dhcp->hwAddr);
 				sptr = Text::StrHexBytes(sbuff, &mac[2], 6, ':');
 				me->lvDevices->AddItem(CSTRP(sbuff, sptr), dhcp);
 				macInfo = Net::MACInfo::GetMACInfo(dhcp->hwAddr);
 				me->lvDevices->SetSubItem(i, 1, {macInfo->name, macInfo->nameLen});
-				if (dhcp == currSel.OrNull())
+				if (dhcp.Ptr() == currSel.OrNull())
 				{
 					me->lvDevices->SetSelectedIndex(i);
 				}
@@ -178,7 +178,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(AnyType userObj)
 		j = dhcpList->GetCount();
 		while (i < j)
 		{
-			dhcp = dhcpList->GetItem(i);
+			dhcp = dhcpList->GetItemNoCheck(i);
 			if (dhcp->updated)
 			{
 				Data::DateTime dt;

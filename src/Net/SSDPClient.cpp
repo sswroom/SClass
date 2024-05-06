@@ -61,11 +61,11 @@ void __stdcall Net::SSDPClient::OnPacketRecv(NN<const Net::SocketUtil::AddressIn
 			{
 				Sync::MutexUsage mutUsage(me->mut);
 				UInt32 ip = ReadNUInt32(addr->addr);
-				SSDPDevice *dev = me->devMap.Get(ip);
-				SSDPService *svc;
-				if (dev == 0)
+				NN<SSDPDevice> dev;
+				NN<SSDPService> svc;
+				if (!me->devMap.Get(ip).SetTo(dev))
 				{
-					NEW_CLASS(dev, SSDPDevice());
+					NEW_CLASSNN(dev, SSDPDevice());
 					dev->addr = addr.Ptr()[0];
 					me->devMap.Put(ip, dev);
 				}
@@ -73,7 +73,7 @@ void __stdcall Net::SSDPClient::OnPacketRecv(NN<const Net::SocketUtil::AddressIn
 				UOSInt i = dev->services.GetCount();
 				while (i-- > 0)
 				{
-					svc = dev->services.GetItem(i);
+					svc = dev->services.GetItemNoCheck(i);
 					if (usn.Equals(svc->usn))
 					{
 						found = true;
@@ -81,7 +81,7 @@ void __stdcall Net::SSDPClient::OnPacketRecv(NN<const Net::SocketUtil::AddressIn
 				}
 				if (!found)
 				{
-					svc = MemAlloc(SSDPService, 1);
+					svc = MemAllocNN(SSDPService);
 					if (time.leng > 0)
 					{
 						Data::DateTime dt;
@@ -105,7 +105,7 @@ void __stdcall Net::SSDPClient::OnPacketRecv(NN<const Net::SocketUtil::AddressIn
 	}
 }
 
-void Net::SSDPClient::SSDPServiceFree(SSDPService *svc)
+void Net::SSDPClient::SSDPServiceFree(NN<SSDPService> svc)
 {
 	OPTSTR_DEL(svc->location);
 	OPTSTR_DEL(svc->opt);
@@ -113,13 +113,13 @@ void Net::SSDPClient::SSDPServiceFree(SSDPService *svc)
 	OPTSTR_DEL(svc->st);
 	svc->usn->Release();
 	OPTSTR_DEL(svc->userAgent);
-	MemFree(svc);
+	MemFreeNN(svc);
 }
 
-void Net::SSDPClient::SSDPDeviceFree(SSDPDevice *dev)
+void Net::SSDPClient::SSDPDeviceFree(NN<SSDPDevice> dev)
 {
-	LIST_FREE_FUNC(&dev->services, SSDPServiceFree);
-	DEL_CLASS(dev);
+	dev->services.FreeAll(SSDPServiceFree);
+	dev.Delete();
 }
 
 Net::SSDPClient::SSDPClient(NN<Net::SocketFactory> sockf, Text::CString userAgent, NN<IO::LogTool> log)
@@ -133,7 +133,7 @@ Net::SSDPClient::~SSDPClient()
 {
 	DEL_CLASS(this->udp);
 	OPTSTR_DEL(this->userAgent);
-	LIST_CALL_FUNC(&this->devMap, SSDPDeviceFree);
+	this->devMap.FreeAll(SSDPDeviceFree);
 }
 
 Bool Net::SSDPClient::IsError() const
@@ -162,17 +162,17 @@ Bool Net::SSDPClient::Scan()
 	return this->udp->SendTo(addr, 1900, sb.ToString(), sb.GetLength());
 }
 
-const Data::ReadingList<Net::SSDPClient::SSDPDevice*> *Net::SSDPClient::GetDevices(NN<Sync::MutexUsage> mutUsage) const
+NN<const Data::ReadingListNN<Net::SSDPClient::SSDPDevice>> Net::SSDPClient::GetDevices(NN<Sync::MutexUsage> mutUsage) const
 {
 	mutUsage->ReplaceMutex(this->mut);
-	return &this->devMap;
+	return this->devMap;
 }
 
 #define SET_VALUE(v) SDEL_STRING(v); sb.ClearStr(); reader.ReadNodeText(sb); v = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
-Net::SSDPClient::SSDPRoot *Net::SSDPClient::SSDPRootParse(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm)
+NN<Net::SSDPClient::SSDPRoot> Net::SSDPClient::SSDPRootParse(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm)
 {
-	SSDPRoot *root = MemAlloc(SSDPRoot, 1);
-	MemClear(root, sizeof(SSDPRoot));
+	NN<SSDPRoot> root = MemAllocNN(SSDPRoot);
+	root.ZeroContent();
 	Text::XMLReader reader(encFact, stm, Text::XMLReader::PM_XML);
 	Text::StringBuilderUTF8 sb;
 	NN<Text::String> nodeText;
@@ -250,7 +250,7 @@ Net::SSDPClient::SSDPRoot *Net::SSDPClient::SSDPRootParse(Optional<Text::Encodin
 	return root;
 }
 
-void Net::SSDPClient::SSDPRootFree(SSDPRoot *root)
+void Net::SSDPClient::SSDPRootFree(NN<SSDPRoot> root)
 {
 	SDEL_STRING(root->udn);
 	SDEL_STRING(root->friendlyName);
@@ -263,5 +263,5 @@ void Net::SSDPClient::SSDPRootFree(SSDPRoot *root)
 	SDEL_STRING(root->presentationURL);
 	SDEL_STRING(root->deviceType);
 	SDEL_STRING(root->deviceURL);
-	MemFree(root);
+	MemFreeNN(root);
 }

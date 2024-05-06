@@ -43,9 +43,9 @@ namespace Net
 			WebSiteInstagramControl(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent);
 			~WebSiteInstagramControl();
 
-			OSInt GetChannelItems(NN<Text::String> channelId, OSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);
-			void FreeItems(Data::ArrayList<ItemData*> *itemList);
-			void FreeChannelInfo(ChannelInfo *chInfo);
+			OSInt GetChannelItems(NN<Text::String> channelId, OSInt pageNo, NN<Data::ArrayListNN<ItemData>> itemList, Optional<ChannelInfo> chInfo);
+			void FreeItems(NN<Data::ArrayListNN<ItemData>> itemList);
+			void FreeChannelInfo(NN<ChannelInfo> chInfo);
 			OSInt GetPageImages(NN<Text::String> shortCode, Data::ArrayListStringNN *imageList, Data::ArrayListStringNN *videoList);
 			Optional<Text::String> GetUserAgent();
 		};

@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(AnyType userObj)
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[12];
 	UTF8Char *sptr;
-	ProcessInfo *procInfo;
+	NN<ProcessInfo> procInfo;
 	Manage::Process::ProcessInfo proc;
 	UOSInt i;
 	OSInt si;
@@ -93,7 +93,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(AnyType userObj)
 		i = me->procList.GetCount();
 		while (i-- > 0)
 		{
-			procInfo = me->procList.GetItem(i);
+			procInfo = me->procList.GetItemNoCheck(i);
 			procInfo->found = false;
 		}
 
@@ -102,13 +102,13 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(AnyType userObj)
 			si = me->procIds.SortedIndexOf(proc.processId);
 			if (si >= 0)
 			{
-				procInfo = me->procList.GetItem((UOSInt)si);
+				procInfo = me->procList.GetItemNoCheck((UOSInt)si);
 				procInfo->found = true;
 			}
 			else
 			{
 				i = (UOSInt)~si;
-				procInfo = MemAlloc(ProcessInfo, 1);
+				procInfo = MemAllocNN(ProcessInfo);
 				procInfo->found = true;
 				procInfo->procId = proc.processId;
 				procInfo->parentProcId = proc.parentId;
@@ -165,11 +165,11 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(AnyType userObj)
 		i = me->procList.GetCount();
 		while (i-- > 0)
 		{
-			procInfo = me->procList.GetItem(i);
+			procInfo = me->procList.GetItemNoCheck(i);
 			if (!procInfo->found)
 			{
 				procInfo->procName->Release();
-				MemFree(procInfo);
+				MemFreeNN(procInfo);
 				me->lvSummary->RemoveItem(i);
 				me->lbDetail->RemoveItem(i);
 				me->procList.RemoveAt(i);
@@ -733,14 +733,14 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(Optional<UI::GUIClientControl>
 
 SSWR::AVIRead::AVIRProcInfoForm::~AVIRProcInfoForm()
 {
-	ProcessInfo *procInfo;
+	NN<ProcessInfo> procInfo;
 	UOSInt i;
 	i = this->procList.GetCount();
 	while (i-- > 0)
 	{
-		procInfo = this->procList.GetItem(i);
+		procInfo = this->procList.GetItemNoCheck(i);
 		procInfo->procName->Release();
-		MemFree(procInfo);
+		MemFreeNN(procInfo);
 	}
 	SDEL_CLASS(this->currProcRes);
 	SDEL_CLASS(this->currProcObj);

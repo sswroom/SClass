@@ -34,7 +34,7 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(AnyType obj)
 				Int64 reqTime;
 				Int64 lastTime;
 				UInt64 iMAC;
-				Net::IPScanDetector::AdapterStatus *adapter;
+				NN<Net::IPScanDetector::AdapterStatus> adapter;
 				Data::DateTime dt;
 				dt.SetCurrTimeUTC();
 				reqTime = dt.ToTicks();
@@ -44,8 +44,7 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(AnyType obj)
 				iMAC = ReadMUInt64(macBuff);
 				ip = ReadMUInt32(&buff[38]);
 				Sync::MutexUsage mutUsage(stat->me->adapterMut);
-				adapter = stat->me->adapterMap.Get(iMAC);
-				if (adapter)
+				if (stat->me->adapterMap.Get(iMAC).SetTo(adapter))
 				{
 					if (adapter->lastDetectTime + TIMEDETECTRANGE < reqTime)
 					{
@@ -68,7 +67,7 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(AnyType obj)
 				}
 				else
 				{
-					NEW_CLASS(adapter, Net::IPScanDetector::AdapterStatus());
+					NEW_CLASSNN(adapter, Net::IPScanDetector::AdapterStatus());
 					adapter->iMAC = iMAC;
 					adapter->lastDetectTime = reqTime;
 					adapter->detectCnt = 1;
@@ -83,7 +82,7 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(AnyType obj)
 				Int64 reqTime;
 				Int64 lastTime;
 				UInt64 iMAC;
-				Net::IPScanDetector::AdapterStatus *adapter;
+				NN<Net::IPScanDetector::AdapterStatus> adapter;
 				Data::DateTime dt;
 				dt.SetCurrTimeUTC();
 				reqTime = dt.ToTicks();
@@ -93,8 +92,7 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(AnyType obj)
 				iMAC = ReadMUInt64(macBuff);
 				ip = ReadMUInt32(&buff[28]);
 				Sync::MutexUsage mutUsage(stat->me->adapterMut);
-				adapter = stat->me->adapterMap.Get(iMAC);
-				if (adapter)
+				if (stat->me->adapterMap.Get(iMAC).SetTo(adapter))
 				{
 					if (adapter->lastDetectTime + TIMEDETECTRANGE < reqTime)
 					{
@@ -117,7 +115,7 @@ UInt32 __stdcall Net::IPScanDetector::DataThread(AnyType obj)
 				}
 				else
 				{
-					NEW_CLASS(adapter, Net::IPScanDetector::AdapterStatus());
+					NEW_CLASSNN(adapter, Net::IPScanDetector::AdapterStatus());
 					adapter->iMAC = iMAC;
 					adapter->lastDetectTime = reqTime;
 					adapter->detectCnt = 1;
@@ -233,12 +231,12 @@ Net::IPScanDetector::~IPScanDetector()
 		this->soc = 0;
 	}
 
-	Net::IPScanDetector::AdapterStatus *adapter;
+	NN<Net::IPScanDetector::AdapterStatus> adapter;
 	i = this->adapterMap.GetCount();
 	while (i-- > 0)
 	{
-		adapter = this->adapterMap.GetItem(i);
-		DEL_CLASS(adapter);
+		adapter = this->adapterMap.GetItemNoCheck(i);
+		adapter.Delete();
 	}
 	SDEL_CLASS(this->ctrlEvt);
 }

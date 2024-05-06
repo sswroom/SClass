@@ -901,11 +901,11 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::Soc
 						}
 						else if (name->EqualsICase(UTF8STRC("item")))
 						{
-							RSSItem *itm;
-							NEW_CLASS(itm, Net::RSSItem(reader));
+							NN<RSSItem> itm;
+							NEW_CLASSNN(itm, Net::RSSItem(reader));
 							if (itm->IsError())
 							{
-								DEL_CLASS(itm);
+								itm.Delete();
 							}
 							else
 							{
@@ -1007,11 +1007,11 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::Soc
 				}
 				else if (name->EqualsICase(UTF8STRC("item")))
 				{
-					RSSItem *itm;
-					NEW_CLASS(itm, Net::RSSItem(reader));
+					NN<RSSItem> itm;
+					NEW_CLASSNN(itm, Net::RSSItem(reader));
 					if (itm->IsError())
 					{
-						DEL_CLASS(itm);
+						itm.Delete();
 					}
 					else
 					{
@@ -1132,11 +1132,11 @@ Net::RSS::RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::Soc
 				}
 				else if (name->EqualsICase(UTF8STRC("entry")))
 				{
-					RSSItem *itm;
-					NEW_CLASS(itm, Net::RSSItem(reader));
+					NN<RSSItem> itm;
+					NEW_CLASSNN(itm, Net::RSSItem(reader));
 					if (itm->IsError())
 					{
-						DEL_CLASS(itm);
+						itm.Delete();
 					}
 					else
 					{
@@ -1169,11 +1169,11 @@ Net::RSS::~RSS()
 	SDEL_STRING(this->generator);
 	SDEL_STRING(this->docs);
 	UOSInt i = this->items.GetCount();
-	RSSItem *item;
+	NN<RSSItem> item;
 	while (i-- > 0)
 	{
-		item = this->items.GetItem(i);
-		DEL_CLASS(item);
+		item = this->items.GetItemNoCheck(i);
+		item.Delete();
 	}
 }
 
@@ -1182,7 +1182,7 @@ Bool Net::RSS::IsError()
 	return this->items.GetCount() == 0;
 }
 
-UOSInt Net::RSS::Add(Net::RSSItem* val)
+UOSInt Net::RSS::Add(NN<Net::RSSItem> val)
 {
 	return this->items.Add(val);
 }
@@ -1192,7 +1192,12 @@ UOSInt Net::RSS::GetCount() const
 	return this->items.GetCount();
 }
 
-Net::RSSItem *Net::RSS::GetItem(UOSInt Index) const
+NN<Net::RSSItem> Net::RSS::GetItemNoCheck(UOSInt Index) const
+{
+	return this->items.GetItemNoCheck(Index);
+}
+
+Optional<Net::RSSItem> Net::RSS::GetItem(UOSInt Index) const
 {
 	return this->items.GetItem(Index);
 }

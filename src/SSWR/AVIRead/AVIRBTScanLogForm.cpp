@@ -107,7 +107,7 @@ Bool SSWR::AVIRead::AVIRBTScanLogForm::LogFileStore()
 
 void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 {
-	const Net::MACInfo::MACEntry *entry;
+	NN<const Net::MACInfo::MACEntry> entry;
 	Text::StringBuilderUTF8 sb;
 	NN<IO::BTScanLog::DevEntry> log;
 	Data::ArrayListNN<IO::BTScanLog::DevEntry> logList;
@@ -169,8 +169,7 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 		}
 		else
 		{
-			entry = this->macList->GetEntry(log->macInt);
-			if (entry)
+			if (this->macList->GetEntry(log->macInt).SetTo(entry))
 			{
 				this->lvContent->SetSubItem(l, 4, {entry->name, entry->nameLen});
 			}

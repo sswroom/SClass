@@ -8,7 +8,8 @@ Bool Net::WebServer::MODBUSDevSimHandler::ProcessRequest(NN<Net::WebServer::IWeb
 {
 	if (subReq.Equals(UTF8STRC("/device")))
 	{
-		if (this->dev)
+		NN<IO::MODBUSDevSim> dev;
+		if (this->dev.SetTo(dev))
 		{
 			NN<Text::String> s;
 			if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
@@ -20,7 +21,7 @@ Bool Net::WebServer::MODBUSDevSimHandler::ProcessRequest(NN<Net::WebServer::IWeb
 				{
 					if (s->Equals(UTF8STRC("toggle")) && req->GetHTTPFormUInt16(CSTR("index"), toggleIndex))
 					{
-						this->dev->ToggleValue(toggleIndex);
+						dev->ToggleValue(toggleIndex);
 					}
 					else if (s->Equals(UTF8STRC("delay")) && req->GetHTTPFormUInt32(CSTR("delay"), delay))
 					{
@@ -32,7 +33,7 @@ Bool Net::WebServer::MODBUSDevSimHandler::ProcessRequest(NN<Net::WebServer::IWeb
 			Text::StringBuilderUTF8 sb2;
 			sb.AppendC(UTF8STRC("<html>"));
 			sb.AppendC(UTF8STRC("<head><title>MODBUS Device Simulator - "));
-			sb.Append(this->dev->GetName());
+			sb.Append(dev->GetName());
 			sb.AppendC(UTF8STRC("</title>"));
 			sb.AppendC(UTF8STRC("<script type=\"application/javascript\">\r\n"));
 			sb.AppendC(UTF8STRC("function submitToggle(i){document.forms[0].index.value=i;document.forms[0].submit();}\r\n"));
@@ -52,16 +53,16 @@ Bool Net::WebServer::MODBUSDevSimHandler::ProcessRequest(NN<Net::WebServer::IWeb
 
 			sb.AppendC(UTF8STRC("<table border=\"1\"><tr><td>Name</td><td>Value</td><td>Action</td></tr>\r\n"));
 			UOSInt i = 0;
-			UOSInt j = this->dev->GetValueCount();
+			UOSInt j = dev->GetValueCount();
 			while (i < j)
 			{
 				sb.AppendC(UTF8STRC("<tr><td>"));
-				s = Text::XML::ToNewHTMLBodyText(this->dev->GetValueName(i).v);
+				s = Text::XML::ToNewHTMLBodyText(dev->GetValueName(i).v);
 				sb.Append(s);
 				s->Release();
 				sb.AppendC(UTF8STRC("</td><td>"));
 				sb2.ClearStr();
-				this->dev->GetValue(i, sb2);
+				dev->GetValue(i, sb2);
 				s = Text::XML::ToNewHTMLBodyText(sb2.ToString());
 				sb.Append(s);
 				s->Release();
@@ -91,7 +92,7 @@ Bool Net::WebServer::MODBUSDevSimHandler::ProcessRequest(NN<Net::WebServer::IWeb
 	return this->DoRequest(req, resp, subReq);
 }
 
-Net::WebServer::MODBUSDevSimHandler::MODBUSDevSimHandler(NN<Net::MODBUSTCPListener> listener, IO::MODBUSDevSim *dev)
+Net::WebServer::MODBUSDevSimHandler::MODBUSDevSimHandler(NN<Net::MODBUSTCPListener> listener, Optional<IO::MODBUSDevSim> dev)
 {
 	this->listener = listener;
 	this->dev = dev;

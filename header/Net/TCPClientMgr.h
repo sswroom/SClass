@@ -3,8 +3,8 @@
 #include "AnyType.h"
 #include "Data/ArrayList.h"
 #include "Data/ByteArray.h"
-#include "Data/FastMap.h"
-#include "Data/SyncCircularBuff.h"
+#include "Data/FastMapNN.h"
+#include "Data/SyncCircularBuffNN.h"
 #include "Data/Timestamp.h"
 #include "IO/SMTCWriter.h"
 #include "Net/TCPClient.h"
@@ -77,12 +77,12 @@ namespace Net
 		Bool toStop;
 		Bool clientThreadRunning;
 
-		Data::UInt64FastMap<TCPClientStatus*> cliMap;
+		Data::UInt64FastMapNN<TCPClientStatus> cliMap;
 		Sync::Mutex cliMut;
 
 		WorkerStatus *workers;
 		UOSInt workerCnt;
-		Data::SyncCircularBuff<TCPClientStatus*> workerTasks;
+		Data::SyncCircularBuffNN<TCPClientStatus> workerTasks;
 
 		IO::SMTCWriter *logWriter;
 
@@ -103,7 +103,7 @@ namespace Net
 		void UseGetClient(NN<Sync::MutexUsage> mutUsage);
 		UOSInt GetClientCount() const;
 		void ExtendTimeout(NN<Net::TCPClient> cli);
-		Net::TCPClient *GetClient(UOSInt index, OutParam<AnyType> cliData);
+		Optional<Net::TCPClient> GetClient(UOSInt index, OutParam<AnyType> cliData);
 		IO::SMTCWriter *GetLogWriter() const;
 	};
 }

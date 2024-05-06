@@ -73,12 +73,11 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnLogSelChg(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnClientLog(AnyType userObj, UInt32 ip, Text::CString message)
 {
 	NN<SSWR::AVIRead::AVIRLogServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLogServerForm>();
-	IPLog *ipLog;
+	NN<IPLog> ipLog;
 	Sync::MutexUsage mutUsage(me->ipMut);
-	ipLog = me->ipMap.Get(ip);
-	if (ipLog == 0)
+	if (!me->ipMap.Get(ip).SetTo(ipLog))
 	{
-		NEW_CLASS(ipLog, IPLog());
+		NEW_CLASSNN(ipLog, IPLog());
 		ipLog->ip = ip;
 		me->ipMap.Put(ip, ipLog);
 		me->ipListUpd = true;
@@ -120,11 +119,10 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnTimerTick(AnyType userObj)
 	if (me->msgListUpd)
 	{
 		me->msgListUpd = false;
-		IPLog *ipLog;
+		NN<IPLog> ipLog;
 		Sync::MutexUsage mutUsage(me->ipMut);
 		me->lbLog->ClearItems();
-		ipLog = me->ipMap.Get(me->currIP);
-		if (ipLog)
+		if (me->ipMap.Get(me->currIP).SetTo(ipLog))
 		{
 			i = ipLog->logMessage.GetCount();
 			while (i-- > 0)
@@ -178,18 +176,18 @@ SSWR::AVIRead::AVIRLogServerForm::~AVIRLogServerForm()
 {
 	SDEL_CLASS(this->svr);
 
-	IPLog *ipLog;
+	NN<IPLog> ipLog;
 	UOSInt i = this->ipMap.GetCount();
 	UOSInt j;
 	while (i-- > 0)
 	{
-		ipLog = this->ipMap.GetItem(i);
+		ipLog = this->ipMap.GetItemNoCheck(i);
 		j = ipLog->logMessage.GetCount();
 		while (j-- > 0)
 		{
 			OPTSTR_DEL(ipLog->logMessage.GetItem(j));
 		}
-		DEL_CLASS(ipLog);
+		ipLog.Delete();
 	}
 }
 

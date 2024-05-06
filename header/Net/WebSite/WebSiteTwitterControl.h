@@ -35,8 +35,8 @@ namespace Net
 			WebSiteTwitterControl(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent);
 			~WebSiteTwitterControl();
 
-			UOSInt GetChannelItems(NN<Text::String> channelId, UOSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);
-			void FreeItems(Data::ArrayList<ItemData*> *itemList);
+			UOSInt GetChannelItems(NN<Text::String> channelId, UOSInt pageNo, NN<Data::ArrayListNN<ItemData>> itemList, Optional<ChannelInfo> chInfo);
+			void FreeItems(NN<Data::ArrayListNN<ItemData>> itemList);
 			Optional<Text::String> GetUserAgent();
 		};
 	}

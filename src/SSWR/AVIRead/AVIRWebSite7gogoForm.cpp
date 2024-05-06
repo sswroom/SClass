@@ -18,16 +18,16 @@ void __stdcall SSWR::AVIRead::AVIRWebSite7gogoForm::OnRequestPageClicked(AnyType
 		UOSInt j;
 		Net::WebSite::WebSite7gogoControl::ChannelInfo chInfo;
 		MemClear(&chInfo, sizeof(chInfo));
-		Data::ArrayList<Net::WebSite::WebSite7gogoControl::ItemData*> itemList;
-		Net::WebSite::WebSite7gogoControl::ItemData *item;
+		Data::ArrayListNN<Net::WebSite::WebSite7gogoControl::ItemData> itemList;
+		NN<Net::WebSite::WebSite7gogoControl::ItemData> item;
 		NN<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
-		me->ctrl->GetChannelItems(s, 0, &itemList, &chInfo);
+		me->ctrl->GetChannelItems(s, 0, itemList, chInfo);
 		s->Release();
 		i = 0;
 		j = itemList.GetCount();
 		while (i < j)
 		{
-			item = itemList.GetItem(i);
+			item = itemList.GetItemNoCheck(i);
 			sptr = Text::StrInt64(sbuff, item->id);
 			me->lvItems->AddItem(CSTRP(sbuff, sptr), 0);
 			dt.SetTicks(item->recTime);
@@ -48,8 +48,8 @@ void __stdcall SSWR::AVIRead::AVIRWebSite7gogoForm::OnRequestPageClicked(AnyType
 			me->lvItems->SetSubItem(i, 3, sb.ToCString());
 			i++;
 		}
-		me->ctrl->FreeItems(&itemList);
-		me->ctrl->FreeChannelInfo(&chInfo);
+		me->ctrl->FreeItems(itemList);
+		me->ctrl->FreeChannelInfo(chInfo);
 	}
 }
 

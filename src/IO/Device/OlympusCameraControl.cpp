@@ -89,7 +89,7 @@ void IO::Device::OlympusCameraControl::GetImageList()
 		Text::UTF8Reader *reader;
 		Text::StringBuilderUTF8 sb;
 		NN<IO::CameraControl::FileInfo> file;
-		UTF8Char *sarr[7];
+		Text::PString sarr[7];
 		Data::DateTime dt;
 		Int32 dateVal;
 		Int32 timeVal;
@@ -105,18 +105,20 @@ void IO::Device::OlympusCameraControl::GetImageList()
 			{
 				break;
 			}
-			if (Text::StrSplit(sarr, 7, sb.v, ',') == 6)
+			if (Text::StrSplitP(sarr, 7, sb, ',') == 6)
 			{
 				file = MemAllocNN(IO::Device::OlympusCameraControl::FileInfo);
-				Text::StrConcat(file->fileName, sarr[1]);
-				Text::StrConcat(file->filePath, sarr[0]);
-				file->fileSize = Text::StrToUInt64(sarr[2]);
-				dateVal = Text::StrToInt32(sarr[4]);
-				timeVal = Text::StrToInt32(sarr[5]);
+				sarr[1].ConcatTo(file->fileName2);
+				file->fileNameLen = sarr[1].leng;
+				sarr[0].ConcatTo(file->filePath2);
+				file->filePathLen = sarr[0].leng;
+				file->fileSize = sarr[2].ToUInt64();
+				dateVal = sarr[4].ToInt32();
+				timeVal = sarr[5].ToInt32();
 				dt.ToLocalTime();
 				dt.SetValue((UInt16)(1980 + (dateVal >> 9)), (dateVal >> 5) & 15, dateVal & 31, timeVal >> 11, (timeVal >> 5) & 63, (timeVal & 31) << 1, 0);
 				file->fileTimeTicks = dt.ToTicks();
-				if (Text::StrEndsWithICase(file->fileName, (const UTF8Char*)".MOV"))
+				if (Text::StrEndsWithICaseC(file->fileName2, file->fileNameLen, UTF8STRC(".MOV")))
 				{
 					file->fileType = IO::CameraControl::FT_MOVIE;
 				}
@@ -144,7 +146,7 @@ void IO::Device::OlympusCameraControl::GetGPSLogList()
 	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
 	NN<IO::CameraControl::FileInfo> file;
-	UTF8Char *sarr[11];
+	Text::PString sarr[11];
 	Data::DateTime dt;
 	Int32 dateVal;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
@@ -159,17 +161,19 @@ void IO::Device::OlympusCameraControl::GetGPSLogList()
 		{
 			break;
 		}
-		if (Text::StrSplit(sarr, 11, sb.v, ',') == 10)
+		if (Text::StrSplitP(sarr, 11, sb, ',') == 10)
 		{
-			if (Text::StrCharCnt(sarr[6]) == 8 && Text::StrCharCnt(sarr[7]) == 6)
+			if (sarr[6].leng == 8 && sarr[7].leng == 6)
 			{
 				file = MemAllocNN(IO::CameraControl::FileInfo);
-				Text::StrConcat(file->fileName, sarr[1]);
-				Text::StrConcat(file->filePath, sarr[0]);
-				file->fileSize = Text::StrToUInt64(sarr[2]);
-				dateVal = Text::StrToInt32(sarr[6]);
+				sarr[1].ConcatTo(file->fileName2);
+				file->fileNameLen = sarr[1].leng;
+				sarr[0].ConcatTo(file->filePath2);
+				file->filePathLen = sarr[0].leng;
+				file->fileSize = sarr[2].ToUInt64();
+				dateVal = sarr[6].ToInt32();
 				dt.ToUTCTime();
-				dt.SetValue((UInt16)(dateVal / 10000), (dateVal / 100) % 100, dateVal % 100, (sarr[7][0] - 48) * 10 + (sarr[7][1] - 48), (sarr[7][2] - 48) * 10 + (sarr[7][3] - 48), (sarr[7][4] - 48) * 10 + (sarr[7][5] - 48), 0);
+				dt.SetValue((UInt16)(dateVal / 10000), (dateVal / 100) % 100, dateVal % 100, (sarr[7].v[0] - 48) * 10 + (sarr[7].v[1] - 48), (sarr[7].v[2] - 48) * 10 + (sarr[7].v[3] - 48), (sarr[7].v[4] - 48) * 10 + (sarr[7].v[5] - 48), 0);
 				file->fileTimeTicks = dt.ToTicks();
 				file->fileType = IO::CameraControl::FT_GPSLOG;
 				this->fileList->Add(file);
@@ -193,7 +197,7 @@ void IO::Device::OlympusCameraControl::GetSNSLogList()
 	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
 	NN<IO::CameraControl::FileInfo> file;
-	UTF8Char *sarr[11];
+	Text::PString sarr[11];
 	Data::DateTime dt;
 	Int32 dateVal;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
@@ -208,17 +212,19 @@ void IO::Device::OlympusCameraControl::GetSNSLogList()
 		{
 			break;
 		}
-		if (Text::StrSplit(sarr, 11, sb.v, ',') == 10)
+		if (Text::StrSplitP(sarr, 11, sb, ',') == 10)
 		{
-			if (Text::StrCharCnt(sarr[6]) == 8 && Text::StrCharCnt(sarr[7]) == 6)
+			if (sarr[6].leng == 8 && sarr[7].leng == 6)
 			{
 				file = MemAllocNN(IO::CameraControl::FileInfo);
-				Text::StrConcat(file->fileName, sarr[1]);
-				Text::StrConcat(file->filePath, sarr[0]);
-				file->fileSize = Text::StrToUInt64(sarr[2]);
-				dateVal = Text::StrToInt32(sarr[6]);
+				sarr[1].ConcatTo(file->fileName2);
+				file->fileNameLen = sarr[1].leng;
+				sarr[0].ConcatTo(file->filePath2);
+				file->filePathLen = sarr[0].leng;
+				file->fileSize = sarr[2].ToUInt64();
+				dateVal = sarr[6].ToInt32();
 				dt.ToUTCTime();
-				dt.SetValue((UInt16)(dateVal / 10000), (dateVal / 100) % 100, dateVal % 100, (sarr[7][0] - 48) * 10 + (sarr[7][1] - 48), (sarr[7][2] - 48) * 10 + (sarr[7][3] - 48), (sarr[7][4] - 48) * 10 + (sarr[7][5] - 48), 0);
+				dt.SetValue((UInt16)(dateVal / 10000), (dateVal / 100) % 100, dateVal % 100, (sarr[7].v[0] - 48) * 10 + (sarr[7].v[1] - 48), (sarr[7].v[2] - 48) * 10 + (sarr[7].v[3] - 48), (sarr[7].v[4] - 48) * 10 + (sarr[7].v[5] - 48), 0);
 				file->fileTimeTicks = dt.ToTicks();
 				file->fileType = IO::CameraControl::FT_SENSORLOG;
 				this->fileList->Add(file);
@@ -313,11 +319,11 @@ Bool IO::Device::OlympusCameraControl::GetFile(NN<IO::Device::OlympusCameraContr
 	NN<Net::HTTPClient> cli;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
 	sptr = Net::SocketUtil::GetAddrName(sptr, this->addr);
-	if (Text::StrEndsWith(file->fileName, (const UTF8Char*)".SNS"))
+	if (Text::StrEndsWithC(file->fileName2, file->fileNameLen, UTF8STRC(".SNS")))
 	{
 		sptr = Text::StrConcatC(sptr, UTF8STRC("/SNSLOG/"));
 	}
-	else if (Text::StrEndsWith(file->fileName, (const UTF8Char*)".LOG"))
+	else if (Text::StrEndsWithC(file->fileName2, file->fileNameLen, UTF8STRC(".LOG")))
 	{
 		sptr = Text::StrConcatC(sptr, UTF8STRC("/GPSLOG/"));
 	}
@@ -325,7 +331,7 @@ Bool IO::Device::OlympusCameraControl::GetFile(NN<IO::Device::OlympusCameraContr
 	{
 		sptr = Text::StrConcatC(sptr, UTF8STRC("/DCIM/100OLYMP/"));
 	}
-	sptr = Text::StrConcat(sptr, file->fileName);
+	sptr = Text::StrConcatC(sptr, file->fileName2, file->fileNameLen);
 	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	while ((readSize = cli->Read(BYTEARR(sbuff))) > 0)
 	{
@@ -343,18 +349,18 @@ Bool IO::Device::OlympusCameraControl::GetThumbnailFile(NN<IO::Device::OlympusCa
 	UInt64 totalSize = 0;
 	UTF8Char *sptr;
 	NN<Net::HTTPClient> cli;
-	if (Text::StrEndsWith(file->fileName, (const UTF8Char*)".SNS"))
+	if (Text::StrEndsWithC(file->fileName2, file->fileNameLen, UTF8STRC(".SNS")))
 	{
 		return false;
 	}
-	else if (Text::StrEndsWith(file->fileName, (const UTF8Char*)".LOG"))
+	else if (Text::StrEndsWithC(file->fileName2, file->fileNameLen, UTF8STRC(".LOG")))
 	{
 		return false;
 	}
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
 	sptr = Net::SocketUtil::GetAddrName(sptr, this->addr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/get_thumbnail.cgi?DIR=/DCIM/100OLYMP/"));
-	sptr = Text::StrConcat(sptr, file->fileName);
+	sptr = Text::StrConcatC(sptr, file->fileName2, file->fileNameLen);
 	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	while ((readSize = cli->Read(BYTEARR(sbuff))) > 0)
 	{

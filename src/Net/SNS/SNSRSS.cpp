@@ -27,7 +27,7 @@ Net::SNS::SNSRSS::SNSRSS(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> 
 
 	Net::RSS *rss;
 	NN<SNSItem> snsItem;
-	Net::RSSItem *item;
+	NN<Net::RSSItem> item;
 	NEW_CLASS(rss, Net::RSS(this->channelId->ToCString(), this->userAgent, this->sockf, this->ssl, this->timeout, this->log));
 	if (rss->GetTitle())
 	{
@@ -46,7 +46,7 @@ Net::SNS::SNSRSS::SNSRSS(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> 
 	Text::StringBuilderUTF8 sb2;
 	while (i-- > 0)
 	{
-		item = rss->GetItem(i);
+		item = rss->GetItemNoCheck(i);
 		if (item->descHTML)
 		{
 			Data::ArrayListStringNN imgList;
@@ -151,7 +151,7 @@ Bool Net::SNS::SNSRSS::Reload()
 {
 	NN<SNSItem> snsItem;
 	OSInt si;
-	Net::RSSItem *item;
+	NN<Net::RSSItem> item;
 	Data::ArrayListString idList;
 	Bool changed = false;
 	UOSInt i;
@@ -173,7 +173,7 @@ Bool Net::SNS::SNSRSS::Reload()
 	{
 		while (i-- > 0)
 		{
-			item = rss->GetItem(i);
+			item = rss->GetItemNoCheck(i);
 			si = idList.SortedIndexOf(item->guid);
 			if (si >= 0)
 			{

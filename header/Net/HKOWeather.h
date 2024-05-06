@@ -146,7 +146,7 @@ namespace Net
 			Int32 seaTemp;
 			Optional<Text::String> seaTempPlace;
 			Data::Timestamp seaTempTime;
-			Data::ArrayList<DayForecast*> forecast;
+			Data::ArrayListNN<DayForecast> forecast;
 		};
 
 		struct LocalForecast
@@ -185,18 +185,18 @@ namespace Net
 	public:
 		static WeatherSignal GetSignalSummary(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact);
 		static Bool GetCurrentTempRH(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, OutParam<Int32> temperature, OutParam<Int32> rh, NN<IO::LogTool> log);
-		static Bool GetWeatherForecast(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang, WeatherForecast *weatherForecast);
-		static void FreeWeatherForecast(WeatherForecast *weatherForecast);
-		static Bool GetLocalForecast(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang, LocalForecast *localForecast);
-		static void FreeLocalForecast(LocalForecast *localForecast);
-		static Bool GetWarningSummary(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Data::ArrayList<WarningSummary*> *warnings);
-		static void FreeWarningSummary(Data::ArrayList<WarningSummary*> *warnings);
+		static Bool GetWeatherForecast(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang, NN<WeatherForecast> weatherForecast);
+		static void FreeWeatherForecast(NN<WeatherForecast> weatherForecast);
+		static Bool GetLocalForecast(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang, NN<LocalForecast> localForecast);
+		static void FreeLocalForecast(NN<LocalForecast> localForecast);
+		static Bool GetWarningSummary(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Data::ArrayListNN<WarningSummary>> warnings);
+		static void FreeWarningSummary(NN<Data::ArrayListNN<WarningSummary>> warnings);
 
 		HKOWeather(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact, UpdateHandler hdlr, NN<IO::LogTool> log);
 		virtual ~HKOWeather();
 
-		virtual void ItemAdded(Net::RSSItem *item);
-		virtual void ItemRemoved(Net::RSSItem *item);
+		virtual void ItemAdded(NN<Net::RSSItem> item);
+		virtual void ItemRemoved(NN<Net::RSSItem> item);
 		WeatherSignal GetCurrentSignal();
 
 		static PSR PSRParse(Text::CString psr);

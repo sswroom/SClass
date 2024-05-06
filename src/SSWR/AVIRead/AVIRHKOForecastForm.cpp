@@ -14,12 +14,12 @@ void SSWR::AVIRead::AVIRHKOForecastForm::Reload(Net::HKOWeather::Language lang)
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	Net::HKOWeather::WeatherForecast weather;
-	Net::HKOWeather::DayForecast *forecast;
+	NN<Net::HKOWeather::DayForecast> forecast;
 	Data::Timestamp reqTime = Data::Timestamp::Now();
 	sptr = reqTime.ToStringNoZone(sbuff);
 	this->txtReqTime->SetText(CSTRP(sbuff, sptr));
 	this->lvForecast->ClearItems();
-	if (Net::HKOWeather::GetWeatherForecast(this->core->GetSocketFactory(), this->ssl, lang, &weather))
+	if (Net::HKOWeather::GetWeatherForecast(this->core->GetSocketFactory(), this->ssl, lang, weather))
 	{
 		sptr = weather.updateTime.ToStringNoZone(sbuff);
 		this->txtUpdateTime->SetText(CSTRP(sbuff, sptr));
@@ -34,7 +34,7 @@ void SSWR::AVIRead::AVIRHKOForecastForm::Reload(Net::HKOWeather::Language lang)
 		UOSInt j = weather.forecast.GetCount();
 		while (i < j)
 		{
-			forecast = weather.forecast.GetItem(i);
+			forecast = weather.forecast.GetItemNoCheck(i);
 			sptr = Data::DateTimeUtil::DispYear(sbuff, forecast->date.year);
 			*sptr++ = '-';
 			sptr = Text::StrUInt16(sptr, forecast->date.month);
@@ -57,7 +57,7 @@ void SSWR::AVIRead::AVIRHKOForecastForm::Reload(Net::HKOWeather::Language lang)
 			
 			i++;
 		}
-		Net::HKOWeather::FreeWeatherForecast(&weather);
+		Net::HKOWeather::FreeWeatherForecast(weather);
 	}
 	else
 	{

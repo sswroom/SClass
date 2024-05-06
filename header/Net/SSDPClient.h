@@ -1,6 +1,6 @@
 #ifndef _SM_NET_SSDPCLIENT
 #define _SM_NET_SSDPCLIENT
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "Net/UDPServer.h"
 #include "Sync/MutexUsage.h"
 #include "Text/EncodingFactory.h"
@@ -25,7 +25,7 @@ namespace Net
 		struct SSDPDevice
 		{
 			Net::SocketUtil::AddressInfo addr;
-			Data::ArrayList<SSDPService*> services;
+			Data::ArrayListNN<SSDPService> services;
 		};
 
 		struct SSDPRoot
@@ -46,22 +46,22 @@ namespace Net
 		Net::UDPServer *udp;
 		Optional<Text::String> userAgent;
 		Sync::Mutex mut;
-		Data::FastMap<UInt32, SSDPDevice *> devMap;
+		Data::FastMapNN<UInt32, SSDPDevice> devMap;
 
 		static void __stdcall OnPacketRecv(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
 
-		void SSDPServiceFree(SSDPService *svc);
-		void SSDPDeviceFree(SSDPDevice *dev);
+		static void SSDPServiceFree(NN<SSDPService> svc);
+		static void SSDPDeviceFree(NN<SSDPDevice> dev);
 	public:
 		SSDPClient(NN<Net::SocketFactory> sockf, Text::CString userAgent, NN<IO::LogTool> log);
 		~SSDPClient();
 
 		Bool IsError() const;
 		Bool Scan();
-		const Data::ReadingList<SSDPDevice*> *GetDevices(NN<Sync::MutexUsage> mutUsage) const;
+		NN<const Data::ReadingListNN<SSDPDevice>> GetDevices(NN<Sync::MutexUsage> mutUsage) const;
 
-		static SSDPRoot *SSDPRootParse(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm);
-		static void SSDPRootFree(SSDPRoot *root);
+		static NN<SSDPRoot> SSDPRootParse(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm);
+		static void SSDPRootFree(NN<SSDPRoot> root);
 	};
 }
 #endif

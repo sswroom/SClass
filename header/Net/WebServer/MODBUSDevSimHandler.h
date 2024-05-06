@@ -11,13 +11,13 @@ namespace Net
 		class MODBUSDevSimHandler : public Net::WebServer::WebStandardHandler
 		{
 		private:
-			IO::MODBUSDevSim *dev;
+			Optional<IO::MODBUSDevSim> dev;
 			NN<Net::MODBUSTCPListener> listener;
 
 		protected:
 			virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 		public:
-			MODBUSDevSimHandler(NN<Net::MODBUSTCPListener> listener, IO::MODBUSDevSim *dev);
+			MODBUSDevSimHandler(NN<Net::MODBUSTCPListener> listener, Optional<IO::MODBUSDevSim> dev);
 			virtual ~MODBUSDevSimHandler();
 		};
 	}

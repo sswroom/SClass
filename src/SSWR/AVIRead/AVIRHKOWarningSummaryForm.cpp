@@ -10,16 +10,16 @@ void SSWR::AVIRead::AVIRHKOWarningSummaryForm::Reload()
 	sptr = reqTime.ToStringNoZone(sbuff);
 	this->txtReqTime->SetText(CSTRP(sbuff, sptr));
 
-	Net::HKOWeather::WarningSummary *warning;
-	Data::ArrayList<Net::HKOWeather::WarningSummary*> warnings;
+	NN<Net::HKOWeather::WarningSummary> warning;
+	Data::ArrayListNN<Net::HKOWeather::WarningSummary> warnings;
 	this->lvWarning->ClearItems();
-	if (Net::HKOWeather::GetWarningSummary(this->core->GetSocketFactory(), this->ssl, &warnings))
+	if (Net::HKOWeather::GetWarningSummary(this->core->GetSocketFactory(), this->ssl, warnings))
 	{
 		UOSInt i = 0;
 		UOSInt j = warnings.GetCount();
 		while (i < j)
 		{
-			warning = warnings.GetItem(i);
+			warning = warnings.GetItemNoCheck(i);
 			this->lvWarning->AddItem(Net::HKOWeather::WeatherWarningGetCode(warning->code), 0);
 			this->lvWarning->SetSubItem(i, 1, Net::HKOWeather::WeatherWarningGetName(warning->code));
 			this->lvWarning->SetSubItem(i, 2, Net::HKOWeather::SignalActionGetName(warning->actionCode));
@@ -31,7 +31,7 @@ void SSWR::AVIRead::AVIRHKOWarningSummaryForm::Reload()
 			this->lvWarning->SetSubItem(i, 5, CSTRP(sbuff, sptr));
 			i++;
 		}
-		Net::HKOWeather::FreeWarningSummary(&warnings);
+		Net::HKOWeather::FreeWarningSummary(warnings);
 	}
 }
 

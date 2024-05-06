@@ -5,49 +5,50 @@
 
 Net::WebServer::WebServiceHandler::~WebServiceHandler()
 {
-	Net::WebServer::WebServiceHandler::ServiceInfo *service;
+	NN<Net::WebServer::WebServiceHandler::ServiceInfo> service;
 	UOSInt i = this->services.GetCount();
 	while (i-- > 0)
 	{
-		service = this->services.GetItem(i);
+		service = this->services.GetItemNoCheck(i);
 		service->svcPath->Release();
-		DEL_CLASS(service);
+		service.Delete();
 	}
 }
 
 Bool Net::WebServer::WebServiceHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
-	Net::WebServer::WebServiceHandler::ServiceInfo *service;
+	Optional<Net::WebServer::WebServiceHandler::ServiceInfo> service;
+	NN<Net::WebServer::WebServiceHandler::ServiceInfo> nnservice;
 	service = this->services.GetC(subReq);
-	if (service == 0 && (subReq.Equals(UTF8STRC("/")) || (subReq.leng == 0)))
+	if (service.IsNull() && (subReq.Equals(UTF8STRC("/")) || (subReq.leng == 0)))
 	{
-		if (service == 0) service = this->services.GetC(CSTR("/Default.htm"));
-		if (service == 0) service = this->services.GetC(CSTR("/Default.asp"));
-		if (service == 0) service = this->services.GetC(CSTR("/index.htm"));
-		if (service == 0) service = this->services.GetC(CSTR("/index.html"));
-		if (service == 0) service = this->services.GetC(CSTR("/iisstart.htm"));
-		if (service == 0) service = this->services.GetC(CSTR("/default.aspx"));
+		if (service.IsNull()) service = this->services.GetC(CSTR("/Default.htm"));
+		if (service.IsNull()) service = this->services.GetC(CSTR("/Default.asp"));
+		if (service.IsNull()) service = this->services.GetC(CSTR("/index.htm"));
+		if (service.IsNull()) service = this->services.GetC(CSTR("/index.html"));
+		if (service.IsNull()) service = this->services.GetC(CSTR("/iisstart.htm"));
+		if (service.IsNull()) service = this->services.GetC(CSTR("/default.aspx"));
 	}
-	if (service != 0)
+	if (service.SetTo(nnservice))
 	{
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_OPTIONS)
 		{
 			Text::StringBuilderUTF8 sb;
 			UOSInt i = 0;
-			UOSInt j = service->funcs.GetCount();
+			UOSInt j = nnservice->funcs.GetCount();
 			while (i < j)
 			{
 				if (i > 0)
 				{
 					sb.AppendC(UTF8STRC(", "));
 				}
-				Text::CString name = Net::WebUtil::RequestMethodGetName((Net::WebUtil::RequestMethod)service->funcs.GetKey(i));
+				Text::CString name = Net::WebUtil::RequestMethodGetName((Net::WebUtil::RequestMethod)nnservice->funcs.GetKey(i));
 				sb.AppendC(name.v, name.leng);
 				i++;
 			}
 			return this->ResponseAllowOptions(req, resp, 86400, sb.ToCString());
 		}
-		ServiceFunc func = service->funcs.Get((Int32)req->GetReqMethod());
+		ServiceFunc func = nnservice->funcs.Get((Int32)req->GetReqMethod());
 		if (func)
 		{
 			return func(req, resp, subReq, *this);
@@ -56,14 +57,14 @@ Bool Net::WebServer::WebServiceHandler::ProcessRequest(NN<Net::WebServer::IWebRe
 		{
 			Text::StringBuilderUTF8 sb;
 			UOSInt i = 0;
-			UOSInt j = service->funcs.GetCount();
+			UOSInt j = nnservice->funcs.GetCount();
 			while (i < j)
 			{
 				if (i > 0)
 				{
 					sb.AppendC(UTF8STRC(", "));
 				}
-				Text::CString name = Net::WebUtil::RequestMethodGetName((Net::WebUtil::RequestMethod)service->funcs.GetKey(i));
+				Text::CString name = Net::WebUtil::RequestMethodGetName((Net::WebUtil::RequestMethod)nnservice->funcs.GetKey(i));
 				sb.AppendC(name.v, name.leng);
 				i++;
 			}
@@ -93,13 +94,12 @@ Net::WebServer::WebServiceHandler::WebServiceHandler(Text::CStringNN rootDir) : 
 
 void Net::WebServer::WebServiceHandler::AddService(Text::CStringNN svcPath, Net::WebUtil::RequestMethod reqMeth, ServiceFunc func)
 {
-	Net::WebServer::WebServiceHandler::ServiceInfo *service;
+	NN<Net::WebServer::WebServiceHandler::ServiceInfo> service;
 	if (svcPath.leng == 0 || svcPath.v[0] != '/')
 		return;
-	service = this->services.GetC(svcPath);
-	if (service == 0)
+	if (!this->services.GetC(svcPath).SetTo(service))
 	{
-		NEW_CLASS(service, Net::WebServer::WebServiceHandler::ServiceInfo());
+		NEW_CLASSNN(service, Net::WebServer::WebServiceHandler::ServiceInfo());
 		service->svcPath = Text::String::New(svcPath);
 		this->services.PutNN(service->svcPath, service);
 	}

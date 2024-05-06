@@ -45,7 +45,7 @@ namespace Net
 		Bool IsError();
 		void UseGetCli(NN<Sync::MutexUsage> mutUsage);
 		UOSInt GetCliCount();
-		Net::TCPClient *GetClient(UOSInt index, OutParam<AnyType> cliObj);
+		Optional<Net::TCPClient> GetClient(UOSInt index, OutParam<AnyType> cliObj);
 	};
 }
 #endif

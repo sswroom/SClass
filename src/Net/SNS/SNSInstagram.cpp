@@ -11,11 +11,11 @@ Net::SNS::SNSInstagram::SNSInstagram(NN<Net::SocketFactory> sockf, Optional<Net:
 	this->chError = false;
 
 	NN<SNSItem> snsItem;
-	Net::WebSite::WebSiteInstagramControl::ItemData *item;
+	NN<Net::WebSite::WebSiteInstagramControl::ItemData> item;
 	Net::WebSite::WebSiteInstagramControl::ChannelInfo chInfo;
-	Data::ArrayList<Net::WebSite::WebSiteInstagramControl::ItemData*> itemList;
+	Data::ArrayListNN<Net::WebSite::WebSiteInstagramControl::ItemData> itemList;
 	MemClear(&chInfo, sizeof(chInfo));
-	this->ctrl->GetChannelItems(this->channelId, 0, &itemList, &chInfo);
+	this->ctrl->GetChannelItems(this->channelId, 0, itemList, &chInfo);
 	if (chInfo.full_name)
 	{
 		this->chName = chInfo.full_name->Clone();
@@ -29,12 +29,12 @@ Net::SNS::SNSInstagram::SNSInstagram(NN<Net::SocketFactory> sockf, Optional<Net:
 	{
 		this->chDesc = chInfo.biography->Clone().Ptr();
 	}
-	this->ctrl->FreeChannelInfo(&chInfo);
+	this->ctrl->FreeChannelInfo(chInfo);
 	UOSInt i = itemList.GetCount();
 	Text::StringBuilderUTF8 sb;
 	while (i-- > 0)
 	{
-		item = itemList.GetItem(i);
+		item = itemList.GetItemNoCheck(i);
 		if (item->moreImages)
 		{
 			Data::ArrayListStringNN imgList;
@@ -70,7 +70,7 @@ Net::SNS::SNSInstagram::SNSInstagram(NN<Net::SocketFactory> sockf, Optional<Net:
 		s->Release();
 		this->itemMap.PutNN(item->shortCode, snsItem);
 	}
-	this->ctrl->FreeItems(&itemList);
+	this->ctrl->FreeItems(itemList);
 }
 
 Net::SNS::SNSInstagram::~SNSInstagram()
@@ -134,8 +134,8 @@ Bool Net::SNS::SNSInstagram::Reload()
 {
 	NN<SNSItem> snsItem;
 	OSInt si;
-	Net::WebSite::WebSiteInstagramControl::ItemData *item;
-	Data::ArrayList<Net::WebSite::WebSiteInstagramControl::ItemData*> itemList;
+	NN<Net::WebSite::WebSiteInstagramControl::ItemData> item;
+	Data::ArrayListNN<Net::WebSite::WebSiteInstagramControl::ItemData> itemList;
 	Data::ArrayListString idList;
 	Bool changed = false;
 	UOSInt i = 0;
@@ -147,14 +147,14 @@ Bool Net::SNS::SNSInstagram::Reload()
 		i++;
 	}
 
-	this->ctrl->GetChannelItems(this->channelId, 0, &itemList, 0);
+	this->ctrl->GetChannelItems(this->channelId, 0, itemList, 0);
 	i = itemList.GetCount();
 	if (i > 0)
 	{
 		Text::StringBuilderUTF8 sb;
 		while (i-- > 0)
 		{
-			item = itemList.GetItem(i);
+			item = itemList.GetItemNoCheck(i);
 			si = idList.SortedIndexOf(item->shortCode.Ptr());
 			if (si >= 0)
 			{
@@ -199,7 +199,7 @@ Bool Net::SNS::SNSInstagram::Reload()
 				changed = true;
 			}
 		}
-		this->ctrl->FreeItems(&itemList);
+		this->ctrl->FreeItems(itemList);
 
 		i = idList.GetCount();
 		while (i-- > 0)

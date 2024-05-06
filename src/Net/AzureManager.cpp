@@ -19,7 +19,7 @@ Net::AzureManager::~AzureManager()
 		UOSInt i = this->keyMap->GetCount();
 		while (i-- > 0)
 		{
-			this->keyMap->GetItem(i)->Release();
+			this->keyMap->GetItemNoCheck(i)->Release();
 		}
 		DEL_CLASS(this->keyMap);
 	}
@@ -29,7 +29,7 @@ Crypto::Cert::X509Key *Net::AzureManager::CreateKey(Text::CStringNN kid)
 {
 	if (this->keyMap == 0)
 	{
-		NEW_CLASS(this->keyMap, Data::FastStringMap<Text::String*>());
+		NEW_CLASS(this->keyMap, Data::FastStringMapNN<Text::String>());
 		Text::StringBuilderUTF8 sb;
 		if (Net::HTTPClient::LoadContent(this->sockf, this->ssl, CSTR("https://login.microsoftonline.com/common/discovery/v2.0/keys"), sb, 1048576))
 		{
@@ -48,7 +48,7 @@ Crypto::Cert::X509Key *Net::AzureManager::CreateKey(Text::CStringNN kid)
 						NN<Text::String> cert;
 						if (key->GetValueString(CSTR("kid")).SetTo(kid) && key->GetValueString(CSTR("x5c[0]")).SetTo(cert))
 						{
-							this->keyMap->PutNN(kid, cert->Clone().Ptr());
+							this->keyMap->PutNN(kid, cert->Clone());
 						}
 						i++;
 					}
@@ -57,8 +57,8 @@ Crypto::Cert::X509Key *Net::AzureManager::CreateKey(Text::CStringNN kid)
 			}
 		}
 	}
-	Text::String *s = this->keyMap->GetC(kid);
-	if (s == 0)
+	NN<Text::String> s;
+	if (!this->keyMap->GetC(kid).SetTo(s))
 	{
 		return 0;
 	}

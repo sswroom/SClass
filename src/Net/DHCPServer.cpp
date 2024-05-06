@@ -24,7 +24,7 @@ void __stdcall Net::DHCPServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo
 		UInt32 j;
 		UInt8 t;
 		UInt8 len;
-		DeviceStatus *dev;
+		NN<DeviceStatus> dev;
 		Text::StringBuilderUTF8 sbHostName;
 		Text::StringBuilderUTF8 sbVendorClass;
 		i = 240;
@@ -76,14 +76,13 @@ void __stdcall Net::DHCPServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo
 			WriteMUInt64(&repBuff[26], hwAddr);
 			WriteNUInt32(&repBuff[20], me->infIP);
 			Sync::MutexUsage mutUsage(me->devMut);
-			dev = me->devMap.Get(hwAddr);
-			if (dev)
+			if (me->devMap.Get(hwAddr).SetTo(dev))
 			{
 				reqIP = dev->assignedIP;
 			}
 			else
 			{
-				dev = MemAlloc(DeviceStatus, 1);
+				dev = MemAllocNN(DeviceStatus);
 				dev->hwAddr = hwAddr;
 				dev->hostName = 0;
 				dev->vendorClass = 0;
@@ -198,8 +197,7 @@ void __stdcall Net::DHCPServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo
 			WriteMUInt32(&repBuff[4], transactionId);
 			WriteMUInt64(&repBuff[26], hwAddr);
 			Sync::MutexUsage mutUsage(me->devMut);
-			dev = me->devMap.Get(hwAddr);
-			if (dev == 0)
+			if (!me->devMap.Get(hwAddr).SetTo(dev))
 			{
 				mutUsage.EndUse();
 				return;
@@ -336,14 +334,14 @@ Net::DHCPServer::~DHCPServer()
 		DEL_CLASS(this->svr);
 		this->svr = 0;
 
-		DeviceStatus *dev;
+		NN<DeviceStatus> dev;
 		UOSInt i = this->devMap.GetCount();
 		while (i-- > 0)
 		{
-			dev = this->devMap.GetItem(i);
+			dev = this->devMap.GetItemNoCheck(i);
 			SDEL_STRING(dev->hostName);
 			SDEL_STRING(dev->vendorClass);
-			MemFree(dev);
+			MemFreeNN(dev);
 		}
 		MemFree(this->devUsed);
 	}
@@ -363,9 +361,9 @@ void Net::DHCPServer::UseStatus(NN<Sync::MutexUsage> mutUsage) const
 	mutUsage->ReplaceMutex(this->devMut);
 }
 
-const Data::ReadingList<Net::DHCPServer::DeviceStatus*> *Net::DHCPServer::StatusGetList() const
+NN<const Data::ReadingListNN<Net::DHCPServer::DeviceStatus>> Net::DHCPServer::StatusGetList() const
 {
-	return &this->devMap;
+	return this->devMap;
 }
 
 UInt32 Net::DHCPServer::GetIPLeaseTime() const

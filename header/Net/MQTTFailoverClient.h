@@ -1,6 +1,6 @@
 #ifndef _SM_NET_MQTTFAILOVERCLIENT
 #define _SM_NET_MQTTFAILOVERCLIENT
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Data/CallbackStorage.h"
 #include "Net/FailoverHandler.h"
 #include "Net/MQTTClient.h"
@@ -14,7 +14,7 @@ namespace Net
 	private:
 		struct ClientInfo
 		{
-			Net::MQTTStaticClient *client;
+			NN<Net::MQTTStaticClient> client;
 			MQTTFailoverClient *me;
 		};
 	private:
@@ -24,9 +24,9 @@ namespace Net
 		UInt16 kaSeconds;
 		Sync::Mutex hdlrMut;
 		Data::ArrayList<Data::CallbackStorage<Net::MQTTConn::PublishMessageHdlr>> hdlrList;
-		Data::ArrayList<ClientInfo*> cliList;
+		Data::ArrayListNN<ClientInfo> cliList;
 		
-		void FreeClient(ClientInfo *cliInfo);
+		static void FreeClient(NN<ClientInfo> cliInfo);
 		static void __stdcall OnMessage(AnyType userObj, Text::CStringNN topic, const Data::ByteArrayR &buff);
 	public:
 		MQTTFailoverClient(Net::FailoverType foType, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, UInt16 kaSeconds);

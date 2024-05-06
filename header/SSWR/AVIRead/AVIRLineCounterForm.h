@@ -47,7 +47,7 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Data::ArrayListStringNN extList;
-			Data::ArrayList<FileInfo *> resList;
+			Data::ArrayListNN<FileInfo> resList;
 
 			static void __stdcall OnExtensionsAddClicked(AnyType userObj);
 			static void __stdcall OnExtensionsRemoveClicked(AnyType userObj);

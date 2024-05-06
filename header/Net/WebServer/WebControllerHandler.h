@@ -1,6 +1,6 @@
 #ifndef _SM_NET_WEBSERVER_WEBCONTROLLERHANDLER
 #define _SM_NET_WEBSERVER_WEBCONTROLLERHANDLER
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Net/WebServer/HTTPDirectoryHandler.h"
 #include "Net/WebServer/WebController.h"
 
@@ -11,7 +11,7 @@ namespace Net
 		class WebControllerHandler : public Net::WebServer::HTTPDirectoryHandler
 		{
 		private:
-			Data::ArrayList<WebController *> ctrlList;
+			Data::ArrayListNN<WebController> ctrlList;
 
 		protected:
 			virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
@@ -20,7 +20,7 @@ namespace Net
 			WebControllerHandler(Text::CStringNN rootDir);
 			virtual ~WebControllerHandler();
 
-			void AddController(WebController *ctrl);
+			void AddController(NN<WebController> ctrl);
 		};
 	}
 }

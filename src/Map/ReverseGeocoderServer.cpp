@@ -14,7 +14,7 @@ Net::TCPClient *Map::ReverseGeocoderServer::GetLatestClient(UOSInt retryCnt)
 	Data::DateTime dt;
 	Int64 maxTime = -1;
 	UOSInt maxIndex = 0;
-	Net::TCPClient *cli;
+	NN<Net::TCPClient> cli;
 	AnyType cliObj;
 	NN<ClientStatus> stat;
 
@@ -31,8 +31,7 @@ Net::TCPClient *Map::ReverseGeocoderServer::GetLatestClient(UOSInt retryCnt)
 
 	while (i-- > 0)
 	{
-		cli = this->ctrl->GetClient(i, cliObj);
-		if (cli)
+		if (this->ctrl->GetClient(i, cliObj).SetTo(cli))
 		{
 			stat = cliObj.GetNN<ClientStatus>();
 			if (currTime - stat->lastReqTime > maxTime)
@@ -42,15 +41,15 @@ Net::TCPClient *Map::ReverseGeocoderServer::GetLatestClient(UOSInt retryCnt)
 			}
 		}
 	}
-	cli = 0;
 	if (maxTime >= 0)
 	{
-		cli = this->ctrl->GetClient(maxIndex, cliObj);
-		stat = cliObj.GetNN<ClientStatus>();
-		stat->lastReqTime = currTime;
+		if (this->ctrl->GetClient(maxIndex, cliObj).SetTo(cli))
+		{
+			stat = cliObj.GetNN<ClientStatus>();
+			stat->lastReqTime = currTime;
+		}
 	}
-	mutUsage.EndUse();
-	return cli;
+	return 0;
 }
 
 Map::ReverseGeocoderServer::ReverseGeocoderServer(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log, UInt16 port) : protocol(*this)

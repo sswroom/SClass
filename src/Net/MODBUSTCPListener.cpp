@@ -42,8 +42,8 @@ void __stdcall Net::MODBUSTCPListener::OnClientData(NN<Net::TCPClient> cli, AnyT
 	{
 		UInt8 addr = buff[6];
 		Sync::MutexUsage mutUsage(me->devMut);
-		IO::MODBUSDevSim *dev = me->devMap.Get(addr);
-		if (dev)
+		NN<IO::MODBUSDevSim> dev;
+		if (me->devMap.Get(addr).SetTo(dev))
 		{
 			switch (buff[7])
 			{
@@ -311,11 +311,11 @@ Net::MODBUSTCPListener::~MODBUSTCPListener()
 	DEL_CLASS(this->cliMgr);
 
 	UOSInt i = this->devMap.GetCount();
-	IO::MODBUSDevSim *dev;
+	NN<IO::MODBUSDevSim> dev;
 	while (i-- > 0)
 	{
-		dev = this->devMap.GetItem(i);
-		DEL_CLASS(dev);
+		dev = this->devMap.GetItemNoCheck(i);
+		dev.Delete();
 	}
 }
 
@@ -329,19 +329,24 @@ Bool Net::MODBUSTCPListener::IsError()
 	return this->svr->IsV4Error();
 }
 
-void Net::MODBUSTCPListener::AddDevice(UInt8 addr, IO::MODBUSDevSim *dev)
+void Net::MODBUSTCPListener::AddDevice(UInt8 addr, NN<IO::MODBUSDevSim> dev)
 {
 	Sync::MutexUsage mutUsage(this->devMut);
-	dev = this->devMap.Put(addr, dev);
-	SDEL_CLASS(dev);
+	if (this->devMap.Put(addr, dev).SetTo(dev))
+		dev.Delete();
 }
 
-UOSInt Net::MODBUSTCPListener::GetDeviceCount()
+UOSInt Net::MODBUSTCPListener::GetDeviceCount() const
 {
 	return this->devMap.GetCount();
 }
 
-IO::MODBUSDevSim *Net::MODBUSTCPListener::GetDevice(UOSInt index)
+NN<IO::MODBUSDevSim> Net::MODBUSTCPListener::GetDeviceNoCheck(UOSInt index) const
+{
+	return this->devMap.GetItemNoCheck(index);
+}
+
+Optional<IO::MODBUSDevSim> Net::MODBUSTCPListener::GetDevice(UOSInt index) const
 {
 	return this->devMap.GetItem(index);
 }

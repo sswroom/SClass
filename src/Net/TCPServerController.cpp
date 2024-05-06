@@ -117,12 +117,12 @@ UOSInt Net::TCPServerController::GetCliCount()
 	return this->cliMgr->GetClientCount();
 }
 
-Net::TCPClient *Net::TCPServerController::GetClient(UOSInt index, OutParam<AnyType> cliObj)
+Optional<Net::TCPClient> Net::TCPServerController::GetClient(UOSInt index, OutParam<AnyType> cliObj)
 {
 	AnyType cliData;
 	NN<Net::TCPServerController::ClientData> data;
-	Net::TCPClient *cli = this->cliMgr->GetClient(index, cliData);
-	if (cli == 0)
+	NN<Net::TCPClient> cli;
+	if (!this->cliMgr->GetClient(index, cliData).SetTo(cli))
 		return 0;
 	data = cliData.GetNN<Net::TCPServerController::ClientData>();
 	cliObj.Set(data->cliObj);

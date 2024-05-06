@@ -8,18 +8,18 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSSDPClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSDPClientForm>();
 	Sync::MutexUsage mutUsage;
-	const Data::ReadingList<Net::SSDPClient::SSDPDevice*> *devList = me->ssdp->GetDevices(mutUsage);
+	NN<const Data::ReadingListNN<Net::SSDPClient::SSDPDevice>> devList = me->ssdp->GetDevices(mutUsage);
 	UInt8 sbuff[128];
 	UTF8Char *sptr;
 	if (devList->GetCount() != me->lbDevice->GetCount())
 	{
 		UOSInt i = 0;
 		UOSInt j = devList->GetCount();
-		Net::SSDPClient::SSDPDevice *dev;
+		NN<Net::SSDPClient::SSDPDevice> dev;
 		me->lbDevice->ClearItems();
 		while (i < j)
 		{
-			dev = devList->GetItem(i);
+			dev = devList->GetItemNoCheck(i);
 			sptr = Net::SocketUtil::GetAddrName(sbuff, dev->addr);
 			me->lbDevice->AddItem(CSTRP(sbuff, sptr), dev);
 			i++;
@@ -38,12 +38,12 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnDeviceSelChg(AnyType userObj
 	{
 		return;
 	}
-	Net::SSDPClient::SSDPService *svc;
+	NN<Net::SSDPClient::SSDPService> svc;
 	UOSInt i = 0;
 	UOSInt j = dev->services.GetCount();
 	while (i < j)
 	{
-		svc = dev->services.GetItem(i);
+		svc = dev->services.GetItemNoCheck(i);
 		me->lbService->AddItem(Text::String::OrEmpty(svc->st), svc);
 		i++;
 	}
@@ -81,14 +81,14 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnServiceSelChg(AnyType userOb
 
 		if (svc->location.SetTo(s))
 		{
-			Net::SSDPClient::SSDPRoot *root = me->rootMap->GetNN(s);
-			if (root == 0)
+			NN<Net::SSDPClient::SSDPRoot> root;
+			if (!me->rootMap.GetNN(s).SetTo(root))
 			{
 				NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(me->sockf, me->ssl, s->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 				if (cli->IsError())
 				{
-					root = MemAlloc(Net::SSDPClient::SSDPRoot, 1);
-					MemClear(root, sizeof(Net::SSDPClient::SSDPRoot));
+					root = MemAllocNN(Net::SSDPClient::SSDPRoot);
+					root.ZeroContent();
 					cli.Delete();
 				}
 				else
@@ -96,7 +96,7 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnServiceSelChg(AnyType userOb
 					root = Net::SSDPClient::SSDPRootParse(me->core->GetEncFactory(), cli);
 					cli.Delete();
 				}
-				me->rootMap->PutNN(s, root);
+				me->rootMap.PutNN(s, root);
 			}
 
 			me->txtUDN->SetText(Text::String::OrEmpty(root->udn)->ToCString());
@@ -159,7 +159,6 @@ SSWR::AVIRead::AVIRSSDPClientForm::AVIRSSDPClientForm(Optional<UI::GUIClientCont
 	this->sockf = this->core->GetSocketFactory();
 	this->ssl = Net::SSLEngineFactory::Create(this->sockf, false);
 	NEW_CLASS(this->ssdp, Net::SSDPClient(this->sockf, CSTR_NULL, this->core->GetLog()));
-	NEW_CLASS(this->rootMap, Data::FastStringMap<Net::SSDPClient::SSDPRoot*>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->lbDevice = ui->NewListBox(*this, false);
@@ -280,8 +279,7 @@ SSWR::AVIRead::AVIRSSDPClientForm::AVIRSSDPClientForm(Optional<UI::GUIClientCont
 SSWR::AVIRead::AVIRSSDPClientForm::~AVIRSSDPClientForm()
 {
 	DEL_CLASS(this->ssdp);
-	LIST_FREE_FUNC(this->rootMap, Net::SSDPClient::SSDPRootFree);
-	DEL_CLASS(this->rootMap);
+	this->rootMap.FreeAll(Net::SSDPClient::SSDPRootFree);
 	this->ssl.Delete();
 }
 

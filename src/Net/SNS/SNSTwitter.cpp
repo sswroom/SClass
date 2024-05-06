@@ -13,11 +13,11 @@ Net::SNS::SNSTwitter::SNSTwitter(NN<Net::SocketFactory> sockf, Optional<Net::SSL
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	NN<SNSItem> snsItem;
-	Net::WebSite::WebSiteTwitterControl::ItemData *item;
+	NN<Net::WebSite::WebSiteTwitterControl::ItemData> item;
 	Net::WebSite::WebSiteTwitterControl::ChannelInfo chInfo;
-	Data::ArrayList<Net::WebSite::WebSiteTwitterControl::ItemData*> itemList;
+	Data::ArrayListNN<Net::WebSite::WebSiteTwitterControl::ItemData> itemList;
 	MemClear(&chInfo, sizeof(chInfo));
-	this->ctrl->GetChannelItems(this->channelId, 0, &itemList, &chInfo);
+	this->ctrl->GetChannelItems(this->channelId, 0, itemList, chInfo);
 	if (!this->chName.Set(chInfo.name))
 	{
 		this->chName = this->channelId->Clone();
@@ -31,7 +31,7 @@ Net::SNS::SNSTwitter::SNSTwitter(NN<Net::SocketFactory> sockf, Optional<Net::SSL
 	Text::StringBuilderUTF8 sb;
 	while (i-- > 0)
 	{
-		item = itemList.GetItem(i);
+		item = itemList.GetItemNoCheck(i);
 		sptr = Text::StrInt64(sbuff, item->id);
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("https://twitter.com/"));
@@ -45,7 +45,7 @@ Net::SNS::SNSTwitter::SNSTwitter(NN<Net::SocketFactory> sockf, Optional<Net::SSL
 		s2->Release();
 		this->itemMap.Put(item->id, snsItem);
 	}
-	this->ctrl->FreeItems(&itemList);
+	this->ctrl->FreeItems(itemList);
 }
 
 Net::SNS::SNSTwitter::~SNSTwitter()
@@ -109,20 +109,20 @@ Bool Net::SNS::SNSTwitter::Reload()
 	UTF8Char *sptr;
 	NN<SNSItem> snsItem;
 	OSInt si;
-	Net::WebSite::WebSiteTwitterControl::ItemData *item;
-	Data::ArrayList<Net::WebSite::WebSiteTwitterControl::ItemData*> itemList;
+	NN<Net::WebSite::WebSiteTwitterControl::ItemData> item;
+	Data::ArrayListNN<Net::WebSite::WebSiteTwitterControl::ItemData> itemList;
 	Data::ArrayListInt64 idList;
 	Bool changed = false;
 	this->itemMap.AddKeysTo(idList);
 
-	this->ctrl->GetChannelItems(this->channelId, 0, &itemList, 0);
+	this->ctrl->GetChannelItems(this->channelId, 0, itemList, 0);
 	UOSInt i = itemList.GetCount();
 	if (i > 0)
 	{
 		Text::StringBuilderUTF8 sb;
 		while (i-- > 0)
 		{
-			item = itemList.GetItem(i);
+			item = itemList.GetItemNoCheck(i);
 			si = idList.SortedIndexOf(item->id);
 			if (si >= 0)
 			{
@@ -145,7 +145,7 @@ Bool Net::SNS::SNSTwitter::Reload()
 				changed = true;
 			}
 		}
-		this->ctrl->FreeItems(&itemList);
+		this->ctrl->FreeItems(itemList);
 
 		i = idList.GetCount();
 		while (i-- > 0)

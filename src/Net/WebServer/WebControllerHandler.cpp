@@ -4,12 +4,12 @@
 
 Net::WebServer::WebControllerHandler::~WebControllerHandler()
 {
-	WebController *ctrl;
+	NN<WebController> ctrl;
 	UOSInt i = this->ctrlList.GetCount();
 	while (i-- > 0)
 	{
-		ctrl = this->ctrlList.GetItem(i);
-		DEL_CLASS(ctrl);
+		ctrl = this->ctrlList.GetItemNoCheck(i);
+		ctrl.Delete();
 	}
 }
 
@@ -19,7 +19,7 @@ Bool Net::WebServer::WebControllerHandler::ProcessRequest(NN<Net::WebServer::IWe
 	UOSInt j = this->ctrlList.GetCount();
 	while (i < j)
 	{
-		if (this->ctrlList.GetItem(i)->ProcessRequest(req, resp, subReq))
+		if (this->ctrlList.GetItemNoCheck(i)->ProcessRequest(req, resp, subReq))
 			return true;
 		i++;
 	}
@@ -42,7 +42,7 @@ Net::WebServer::WebControllerHandler::WebControllerHandler(Text::CStringNN rootD
 {
 }
 
-void Net::WebServer::WebControllerHandler::AddController(WebController *ctrl)
+void Net::WebServer::WebControllerHandler::AddController(NN<WebController> ctrl)
 {
 	this->ctrlList.Add(ctrl);
 }

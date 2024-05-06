@@ -13,11 +13,11 @@ Net::SNS::SNS7gogo::SNS7gogo(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngi
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	NN<SNSItem> snsItem;
-	Net::WebSite::WebSite7gogoControl::ItemData *item;
+	NN<Net::WebSite::WebSite7gogoControl::ItemData> item;
 	Net::WebSite::WebSite7gogoControl::ChannelInfo chInfo;
-	Data::ArrayList<Net::WebSite::WebSite7gogoControl::ItemData*> itemList;
+	Data::ArrayListNN<Net::WebSite::WebSite7gogoControl::ItemData> itemList;
 	MemClear(&chInfo, sizeof(chInfo));
-	this->ctrl->GetChannelItems(this->channelId, 0, &itemList, &chInfo);
+	this->ctrl->GetChannelItems(this->channelId, 0, itemList, chInfo);
 	if (chInfo.name)
 	{
 		this->chName = chInfo.name->Clone();
@@ -31,12 +31,12 @@ Net::SNS::SNS7gogo::SNS7gogo(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngi
 	{
 		this->chDesc = chInfo.detail->Clone().Ptr();
 	}
-	this->ctrl->FreeChannelInfo(&chInfo);
+	this->ctrl->FreeChannelInfo(chInfo);
 	UOSInt i = itemList.GetCount();
 	Text::StringBuilderUTF8 sb;
 	while (i-- > 0)
 	{
-		item = itemList.GetItem(i);
+		item = itemList.GetItemNoCheck(i);
 		sptr = Text::StrInt64(sbuff, item->id);
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("https://7gogo.jp/"));
@@ -50,7 +50,7 @@ Net::SNS::SNS7gogo::SNS7gogo(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngi
 		s2->Release();
 		this->itemMap.Put(item->id, snsItem);
 	}
-	this->ctrl->FreeItems(&itemList);
+	this->ctrl->FreeItems(itemList);
 }
 
 Net::SNS::SNS7gogo::~SNS7gogo()
@@ -116,20 +116,20 @@ Bool Net::SNS::SNS7gogo::Reload()
 	UTF8Char *sptr;
 	NN<SNSItem> snsItem;
 	OSInt si;
-	Net::WebSite::WebSite7gogoControl::ItemData *item;
-	Data::ArrayList<Net::WebSite::WebSite7gogoControl::ItemData*> itemList;
+	NN<Net::WebSite::WebSite7gogoControl::ItemData> item;
+	Data::ArrayListNN<Net::WebSite::WebSite7gogoControl::ItemData> itemList;
 	Data::ArrayListInt64 idList;
 	Bool changed = false;
 	this->itemMap.AddKeysTo(idList);
 	
-	this->ctrl->GetChannelItems(this->channelId, 0, &itemList, 0);
+	this->ctrl->GetChannelItems(this->channelId, 0, itemList, 0);
 	UOSInt i = itemList.GetCount();
 	if (i > 0)
 	{
 		Text::StringBuilderUTF8 sb;
 		while (i-- > 0)
 		{
-			item = itemList.GetItem(i);
+			item = itemList.GetItemNoCheck(i);
 			si = idList.SortedIndexOf(item->id);
 			if (si >= 0)
 			{
@@ -152,7 +152,7 @@ Bool Net::SNS::SNS7gogo::Reload()
 				changed = true;
 			}
 		}
-		this->ctrl->FreeItems(&itemList);
+		this->ctrl->FreeItems(itemList);
 
 		i = idList.GetCount();
 		while (i-- > 0)

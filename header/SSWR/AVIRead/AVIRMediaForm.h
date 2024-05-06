@@ -32,7 +32,7 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Media::ColorManagerSess> colorSess;
-			Data::ArrayList<Media::MediaFile *> *files;
+			Data::ArrayListNN<Media::MediaFile> files;
 			Media::IMediaSource *popMedia;
 
 			Media::Decoder::AudioDecoderFinder *adecoders;
@@ -62,12 +62,12 @@ namespace SSWR
 			void PBStop();
 			Bool PBIsPlaying();
 		public:
-			AVIRMediaForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::MediaFile *mediaFile);
+			AVIRMediaForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::MediaFile> mediaFile);
 			virtual ~AVIRMediaForm();
 		
 			virtual void EventMenuClicked(UInt16 cmdId);
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

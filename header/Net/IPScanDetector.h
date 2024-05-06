@@ -2,6 +2,7 @@
 #define _SM_NET_IPSCANDETECTOR
 #include "AnyType.h"
 #include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "Net/SocketFactory.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
@@ -34,7 +35,7 @@ namespace Net
 		Socket *soc;
 		IPScanHandler hdlr;
 		AnyType userData;
-		Data::FastMap<UInt64, AdapterStatus*> adapterMap;
+		Data::FastMapNN<UInt64, AdapterStatus> adapterMap;
 		Sync::Mutex adapterMut;
 
 		ThreadStat *threadStats;

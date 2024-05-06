@@ -57,15 +57,15 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(AnyType 
 	NN<const IO::BTDevLog::DevEntry> log;
 	if (!me->lvContent->GetItem(index).GetOpt<const IO::BTDevLog::DevEntry>().SetTo(log))
 		return;
-	const Net::MACInfo::MACEntry *entry = me->macList.GetEntry(log->macInt);
-	Text::CString name = entry?Text::CString(entry->name, entry->nameLen):CSTR_NULL;
+	NN<const Net::MACInfo::MACEntry> entry;
+	Text::CString name = me->macList.GetEntry(log->macInt).SetTo(entry)?Text::CString(entry->name, entry->nameLen):CSTR_NULL;
 	SSWR::AVIRead::AVIRMACManagerEntryForm frm(0, me->ui, me->core, log->mac, name);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		NN<Text::String> name = frm.GetNameNew();
 		UOSInt i = me->macList.SetEntry(log->macInt, name->ToCString());
 		name->Release();
-		entry = me->macList.GetItem(i);
+		entry = me->macList.GetItemNoCheck(i);
 		me->UpdateStatus();
 
 		UOSInt j;
@@ -104,7 +104,8 @@ Bool SSWR::AVIRead::AVIRBluetoothLogForm::LogFileStore()
 
 void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 {
-	const Net::MACInfo::MACEntry *entry;
+	Optional<const Net::MACInfo::MACEntry> entry;
+	NN<const Net::MACInfo::MACEntry> nnentry;
 	NN<IO::BTDevLog::DevEntry> log;
 	Data::ArrayListNN<IO::BTDevLog::DevEntry> logList;
 	logList.AddAll(this->btLog.GetPublicList());
@@ -123,7 +124,7 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 	{
 		log = logList.GetItemNoCheck(i);
 		entry = this->macList.GetEntry(log->macInt);
-		if (unkOnly && (entry != 0 && entry->nameLen != 0) && log->addrType != IO::BTScanLog::AT_RANDOM)
+		if (unkOnly && (entry.SetTo(nnentry) && nnentry->nameLen != 0) && log->addrType != IO::BTScanLog::AT_RANDOM)
 		{
 
 		}
@@ -153,9 +154,9 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 			}
 			else
 			{
-				if (entry)
+				if (entry.SetTo(nnentry))
 				{
-					this->lvContent->SetSubItem(l, 3, {entry->name, entry->nameLen});
+					this->lvContent->SetSubItem(l, 3, {nnentry->name, nnentry->nameLen});
 				}
 				else
 				{

@@ -1,5 +1,6 @@
 #ifndef _SM_NET_WEBSERVER_WELLKNOWNHANDLER
 #define _SM_NET_WEBSERVER_WELLKNOWNHANDLER
+#include "Data/FastStringMapNN.h"
 #include "Net/WebServer/WebServiceHandler.h"
 
 namespace Net
@@ -10,7 +11,7 @@ namespace Net
 		{
 		private:
 			Sync::Mutex acmeMut;
-			Data::FastStringMap<Text::String*> acmeMap;
+			Data::FastStringMapNN<Text::String> acmeMap;
 		protected:
 			virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 		private:

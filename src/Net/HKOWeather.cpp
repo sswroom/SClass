@@ -138,7 +138,7 @@ Bool Net::HKOWeather::GetCurrentTempRH(NN<Net::SocketFactory> sockf, Optional<Ne
 			temperature.Set(INVALID_READING);
 			rh.Set(INVALID_READING);
 			UOSInt i;
-			Net::RSSItem *item = rss->GetItem(0);
+			NN<Net::RSSItem> item = rss->GetItemNoCheck(0);
 			IO::MemoryReadingStream mstm(item->description->v, item->description->leng);
 			Text::UTF8Reader reader(mstm);
 			Text::StringBuilderUTF8 sb;
@@ -172,7 +172,7 @@ Bool Net::HKOWeather::GetCurrentTempRH(NN<Net::SocketFactory> sockf, Optional<Ne
 	return succ;
 }
 
-Bool Net::HKOWeather::GetWeatherForecast(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang, WeatherForecast *weatherForecast)
+Bool Net::HKOWeather::GetWeatherForecast(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang, NN<WeatherForecast> weatherForecast)
 {
 	Text::CStringNN url;
 	switch (lang)
@@ -229,7 +229,7 @@ Bool Net::HKOWeather::GetWeatherForecast(NN<Net::SocketFactory> sockf, Optional<
 				weatherForecastItem->GetValueString(CSTR("forecastWeather")).SetTo(sWeather) &&
 				weatherForecastItem->GetValueString(CSTR("PSR")).SetTo(sPSR) && sDate->leng == 8)
 			{
-				DayForecast *forecast = MemAlloc(DayForecast, 1);
+				NN<DayForecast> forecast = MemAllocNN(DayForecast);
 				UInt32 dateVal = sDate->ToUInt32();
 				forecast->date.year = (UInt16)(dateVal / 10000);
 				forecast->date.month = (UInt8)((dateVal / 100) % 100);
@@ -259,22 +259,22 @@ Bool Net::HKOWeather::GetWeatherForecast(NN<Net::SocketFactory> sockf, Optional<
 	return false;
 }
 
-void Net::HKOWeather::FreeWeatherForecast(WeatherForecast *weatherForecast)
+void Net::HKOWeather::FreeWeatherForecast(NN<WeatherForecast> weatherForecast)
 {
 	OPTSTR_DEL(weatherForecast->generalSituation);
 	OPTSTR_DEL(weatherForecast->seaTempPlace);
-	DayForecast *forecast;
+	NN<DayForecast> forecast;
 	UOSInt i = weatherForecast->forecast.GetCount();
 	while (i-- > 0)
 	{
-		forecast = weatherForecast->forecast.GetItem(i);
+		forecast = weatherForecast->forecast.GetItemNoCheck(i);
 		forecast->wind->Release();
 		forecast->weather->Release();
-		MemFree(forecast);
+		MemFreeNN(forecast);
 	}
 }
 
-Bool Net::HKOWeather::GetLocalForecast(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang, LocalForecast *localForecast)
+Bool Net::HKOWeather::GetLocalForecast(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Language lang, NN<LocalForecast> localForecast)
 {
 	Text::CStringNN url;
 	switch (lang)
@@ -324,7 +324,7 @@ Bool Net::HKOWeather::GetLocalForecast(NN<Net::SocketFactory> sockf, Optional<Ne
 	return false;
 }
 
-void Net::HKOWeather::FreeLocalForecast(LocalForecast *localForecast)
+void Net::HKOWeather::FreeLocalForecast(NN<LocalForecast> localForecast)
 {
 	OPTSTR_DEL(localForecast->generalSituation);
 	OPTSTR_DEL(localForecast->tcInfo);
@@ -334,7 +334,7 @@ void Net::HKOWeather::FreeLocalForecast(LocalForecast *localForecast)
 	OPTSTR_DEL(localForecast->outlook);
 }
 
-Bool Net::HKOWeather::GetWarningSummary(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Data::ArrayList<WarningSummary*> *warnings)
+Bool Net::HKOWeather::GetWarningSummary(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Data::ArrayListNN<WarningSummary>> warnings)
 {
 	Text::JSONBase *json = Net::HTTPJSONReader::Read(sockf, ssl, CSTR("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum&lang=en"));
 	if (json)
@@ -361,7 +361,7 @@ Bool Net::HKOWeather::GetWarningSummary(NN<Net::SocketFactory> sockf, Optional<N
 						warnObj->GetValueString(CSTR("issueTime")).SetTo(sIssueTime) &&
 						warnObj->GetValueString(CSTR("updateTime")).SetTo(sUpdateTime))
 					{
-						WarningSummary *summary = MemAlloc(WarningSummary, 1);
+						NN<WarningSummary> summary = MemAllocNN(WarningSummary);
 						summary->code = WeatherWarningParse(sCode->ToCString());
 						summary->actionCode = SignalActionParse(sActionCode->ToCString());
 						summary->issueTime = Data::Timestamp::FromStr(sIssueTime->ToCString(), Data::DateTimeUtil::GetLocalTzQhr());
@@ -392,9 +392,9 @@ Bool Net::HKOWeather::GetWarningSummary(NN<Net::SocketFactory> sockf, Optional<N
 
 }
 
-void Net::HKOWeather::FreeWarningSummary(Data::ArrayList<WarningSummary*> *warnings)
+void Net::HKOWeather::FreeWarningSummary(NN<Data::ArrayListNN<WarningSummary>> warnings)
 {
-	LIST_FREE_FUNC(warnings, MemFree);
+	warnings->MemFreeAll();
 }
 
 Net::HKOWeather::HKOWeather(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Text::EncodingFactory> encFact, UpdateHandler hdlr, NN<IO::LogTool> log)
@@ -411,7 +411,7 @@ Net::HKOWeather::~HKOWeather()
 	DEL_CLASS(this->rss);
 }
 
-void Net::HKOWeather::ItemAdded(Net::RSSItem *item)
+void Net::HKOWeather::ItemAdded(NN<Net::RSSItem> item)
 {
 	WeatherSignal signal = String2Signal(item->description);
 	if (signal != this->currSignal)
@@ -421,7 +421,7 @@ void Net::HKOWeather::ItemAdded(Net::RSSItem *item)
 	}
 }
 
-void Net::HKOWeather::ItemRemoved(Net::RSSItem *item)
+void Net::HKOWeather::ItemRemoved(NN<Net::RSSItem> item)
 {
 }
 

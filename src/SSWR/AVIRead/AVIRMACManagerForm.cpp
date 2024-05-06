@@ -45,9 +45,9 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(AnyType us
 	NN<SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry> log;
 	if (!me->logList.GetItem(index).SetTo(log))
 		return;
-	const Net::MACInfo::MACEntry *entry = me->macList.GetEntry(log->macInt);
+	NN<const Net::MACInfo::MACEntry> entry;
 	Text::CString name;
-	if (entry)
+	if (me->macList.GetEntry(log->macInt).SetTo(entry))
 	{
 		name = {entry->name, entry->nameLen};
 	}
@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(AnyType us
 		NN<Text::String> name = frm.GetNameNew();
 		UOSInt i = me->macList.SetEntry(log->macInt, name->ToCString());
 		name->Release();
-		entry = me->macList.GetItem(i);
+		entry = me->macList.GetItemNoCheck(i);
 		me->UpdateStatus();
 
 		UOSInt j;
@@ -144,9 +144,9 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(AnyType userObj
 		i++;
 	}
 	UInt64 macInt = ReadMUInt64(buff);
-	const Net::MACInfo::MACEntry *entry = me->macList.GetEntry(macInt);
+	NN<const Net::MACInfo::MACEntry> entry;
 	Text::CString name;
-	if (entry)
+	if (me->macList.GetEntry(macInt).SetTo(entry))
 	{
 		name = {entry->name, entry->nameLen};
 	}
@@ -161,7 +161,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(AnyType userObj
 		i = me->macList.SetEntry(macInt, name->ToCString());
 		name->Release();
 		me->UpdateStatus();
-		entry = me->macList.GetItem(i);
+		entry = me->macList.GetItemNoCheck(i);
 
 		NN<SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry> log;
 		UOSInt j;
@@ -257,12 +257,12 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(AnyType use
 
 					if (succ)
 					{
-						const Net::MACInfo::MACEntry *entry = me->macList.GetEntry(startAddr);
+						NN<const Net::MACInfo::MACEntry> entry;
 						if (sarr[2].Equals(UTF8STRC("IEEE Registration Authority")))
 						{
 
 						}
-						else if (entry && (entry->rangeStart != startAddr || entry->rangeEnd != endAddr))
+						else if (me->macList.GetEntry(startAddr).SetTo(entry) && (entry->rangeStart != startAddr || entry->rangeEnd != endAddr))
 						{
 							printf("Range mismatch: %llx - %llx\r\n", startAddr, endAddr);
 						}
@@ -402,7 +402,8 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CStringNN fileName)
 			this->txtFile->SetText(fileName);
 		}
 
-		const Net::MACInfo::MACEntry *entry;
+		NN<const Net::MACInfo::MACEntry> entry;
+		const Net::MACInfo::MACEntry *pentry;
 		NN<Text::String> s;
 		this->lvContent->BeginUpdate();
 		this->lvContent->ClearItems();
@@ -413,8 +414,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CStringNN fileName)
 			log = this->logList.GetItemNoCheck(i);
 			sptr = Text::StrHexBytes(sbuff, log->mac, 6, ':');
 			this->lvContent->AddItem(CSTRP(sbuff, sptr), log);
-			entry = this->macList.GetEntry(log->macInt);
-			if (entry)
+			if (this->macList.GetEntry(log->macInt).SetTo(entry))
 			{
 				this->lvContent->SetSubItem(i, 1, {entry->name, entry->nameLen});
 			}
@@ -435,18 +435,18 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CStringNN fileName)
 				this->lvContent->SetSubItem(i, 7, s);
 			if (log->ouis[0][0] != 0 || log->ouis[0][1] != 0 || log->ouis[0][2] != 0)
 			{
-				entry = Net::MACInfo::GetMACInfoOUI(log->ouis[0]);
-				this->lvContent->SetSubItem(i, 8, {entry->name, entry->nameLen});
+				pentry = Net::MACInfo::GetMACInfoOUI(log->ouis[0]);
+				this->lvContent->SetSubItem(i, 8, {pentry->name, pentry->nameLen});
 			}
 			if (log->ouis[1][0] != 0 || log->ouis[1][1] != 0 || log->ouis[1][2] != 0)
 			{
-				entry = Net::MACInfo::GetMACInfoOUI(log->ouis[1]);
-				this->lvContent->SetSubItem(i, 9, {entry->name, entry->nameLen});
+				pentry = Net::MACInfo::GetMACInfoOUI(log->ouis[1]);
+				this->lvContent->SetSubItem(i, 9, {pentry->name, pentry->nameLen});
 			}
 			if (log->ouis[2][0] != 0 || log->ouis[2][1] != 0 || log->ouis[2][2] != 0)
 			{
-				entry = Net::MACInfo::GetMACInfoOUI(log->ouis[2]);
-				this->lvContent->SetSubItem(i, 10, {entry->name, entry->nameLen});
+				pentry = Net::MACInfo::GetMACInfoOUI(log->ouis[2]);
+				this->lvContent->SetSubItem(i, 10, {pentry->name, pentry->nameLen});
 			}
 			if (s.Set(log->country))
 				this->lvContent->SetSubItem(i, 11, s);

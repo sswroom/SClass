@@ -414,7 +414,7 @@ namespace Data
 	{
 		this->Clear();
 		this->EnsureCapacity(v.capacity);
-		this->AddAll(&v);
+		this->AddAll(v);
 		return *this;
 	}
 

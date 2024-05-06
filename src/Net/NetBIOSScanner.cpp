@@ -20,12 +20,11 @@ void __stdcall Net::NetBIOSScanner::OnUDPPacket(NN<const Net::SocketUtil::Addres
 		UInt8 nName = buff[56];
 		if (dataLen >= 7 + nName * 18)
 		{
-			NameAnswer *ans;
+			NN<NameAnswer> ans;
 			Sync::MutexUsage mutUsage(me->ansMut);
-			ans = me->answers.Get(sortableIP);
-			if (ans == 0)
+			if (!me->answers.Get(sortableIP).SetTo(ans))
 			{
-				ans = MemAlloc(NameAnswer, 1);
+				ans = MemAllocNN(NameAnswer);
 				ans->sortableIP = sortableIP;
 				ans->names = 0;
 				ans->namesCnt = 0;
@@ -58,13 +57,13 @@ void __stdcall Net::NetBIOSScanner::OnUDPPacket(NN<const Net::SocketUtil::Addres
 	}
 }
 
-void Net::NetBIOSScanner::FreeAnswer(NameAnswer *ans)
+void Net::NetBIOSScanner::FreeAnswer(NN<NameAnswer> ans)
 {
 	if (ans->names)
 	{
 		MemFree(ans->names);
 	}
-	MemFree(ans);
+	MemFreeNN(ans);
 }
 
 Net::NetBIOSScanner::NetBIOSScanner(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log)
@@ -80,7 +79,7 @@ Net::NetBIOSScanner::NetBIOSScanner(NN<Net::SocketFactory> sockf, NN<IO::LogTool
 Net::NetBIOSScanner::~NetBIOSScanner()
 {
 	DEL_CLASS(this->svr);
-	LIST_CALL_FUNC(&this->answers, FreeAnswer);
+	this->answers.FreeAll(FreeAnswer);
 }
 
 Bool Net::NetBIOSScanner::IsError() const
@@ -113,7 +112,7 @@ void Net::NetBIOSScanner::SetAnswerHandler(AnswerUpdated hdlr, AnyType userObj)
 	this->hdlr = {hdlr, userObj};
 }
 
-NN<const Data::ReadingList<Net::NetBIOSScanner::NameAnswer*>> Net::NetBIOSScanner::GetAnswers(NN<Sync::MutexUsage> mutUsage) const
+NN<const Data::ReadingListNN<Net::NetBIOSScanner::NameAnswer>> Net::NetBIOSScanner::GetAnswers(NN<Sync::MutexUsage> mutUsage) const
 {
 	mutUsage->ReplaceMutex(this->ansMut);
 	return this->answers;

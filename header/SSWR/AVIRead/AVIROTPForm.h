@@ -27,7 +27,7 @@ namespace SSWR
 			
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Data::ArrayList<EntryInfo*> *entryList;
+			Data::ArrayListNN<EntryInfo> entryList;
 
 			NN<UI::GUIGroupBox> grpNew;
 			NN<UI::GUILabel> lblName;

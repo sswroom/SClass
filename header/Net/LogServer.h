@@ -1,7 +1,7 @@
 #ifndef _SM_NET_LOGSERVER
 #define _SM_NET_LOGSERVER
 #include "AnyType.h"
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "IO/FileStream.h"
 #include "IO/ProtoHdlr/ProtoLogCliHandler.h"
 #include "Net/SocketFactory.h"
@@ -25,7 +25,7 @@ namespace Net
 		{
 			UInt8 *buff;
 			UOSInt buffSize;
-			IPStatus *status;
+			Optional<IPStatus> status;
 		} ClientStatus;
 
 		typedef void (__stdcall *ClientLogHandler)(AnyType userObj, UInt32 ip, Text::CString logMessage);
@@ -38,7 +38,7 @@ namespace Net
 		NN<IO::LogTool> log;
 		Bool redirLog;
 		Sync::Mutex ipMut;
-		Data::FastMap<UInt32, IPStatus*> ipMap;
+		Data::FastMapNN<UInt32, IPStatus> ipMap;
 		ClientLogHandler logHdlr;
 		AnyType logHdlrObj;
 
@@ -47,7 +47,7 @@ namespace Net
 		static void __stdcall ClientData(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
 		static void __stdcall ClientTimeout(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
 
-		IPStatus *GetIPStatus(NN<const Net::SocketUtil::AddressInfo> addr);
+		Optional<IPStatus> GetIPStatus(NN<const Net::SocketUtil::AddressInfo> addr);
 	public:
 		LogServer(NN<Net::SocketFactory> sockf, UInt16 port, Text::CString logPath, NN<IO::LogTool> svrLog, Bool redirLog, Bool autoStart);
 		virtual ~LogServer();

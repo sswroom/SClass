@@ -17,7 +17,7 @@ void SSWR::AVIRead::AVIRHKOLocalForecastForm::Reload(Net::HKOWeather::Language l
 	Data::Timestamp reqTime = Data::Timestamp::Now();
 	sptr = reqTime.ToStringNoZone(sbuff);
 	this->txtReqTime->SetText(CSTRP(sbuff, sptr));
-	if (Net::HKOWeather::GetLocalForecast(this->core->GetSocketFactory(), this->ssl, lang, &forecast))
+	if (Net::HKOWeather::GetLocalForecast(this->core->GetSocketFactory(), this->ssl, lang, forecast))
 	{
 		sptr = forecast.updateTime.ToStringNoZone(sbuff);
 		this->txtUpdateTime->SetText(CSTRP(sbuff, sptr));
@@ -27,7 +27,7 @@ void SSWR::AVIRead::AVIRHKOLocalForecastForm::Reload(Net::HKOWeather::Language l
 		this->txtForecastPeriod->SetText(Text::String::OrEmpty(forecast.forecastPeriod)->ToCString());
 		this->txtForecastDesc->SetText(Text::String::OrEmpty(forecast.forecastDesc)->ToCString());
 		this->txtOutlook->SetText(Text::String::OrEmpty(forecast.outlook)->ToCString());
-		Net::HKOWeather::FreeLocalForecast(&forecast);
+		Net::HKOWeather::FreeLocalForecast(forecast);
 	}
 	else
 	{

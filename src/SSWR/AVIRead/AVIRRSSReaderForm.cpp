@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(AnyType userOb
 		UOSInt j;
 		OSInt si;
 		Net::RSS *rss;
-		Net::RSSItem *item;
+		NN<Net::RSSItem> item;
 		Text::CString userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
 		NN<Text::String> ua = Text::String::New(userAgent);
 		NEW_CLASS(rss, Net::RSS(sb.ToCString(), ua.Ptr(), me->core->GetSocketFactory(), me->ssl, 30000, me->core->GetLog()));
@@ -106,7 +106,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(AnyType userOb
 			j = rss->GetCount();
 			while (i < j)
 			{
-				item = rss->GetItem(i);
+				item = rss->GetItemNoCheck(i);
 				me->lvItems->AddItem(Text::String::OrEmpty(item->title), item);
 				if (!item->pubDate.IsNull())
 				{

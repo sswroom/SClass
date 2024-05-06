@@ -49,7 +49,7 @@ public:
 	{
 		return this->p == ptr.p;
 	}
-	
+
 	UnsafeArray<T> operator++(int)
 	{
 		T *tmp = this->p;
@@ -131,6 +131,11 @@ public:
 	T &operator*() const
 	{
 		return this->p[0];
+	}
+
+	void CopyFromNO(UnsafeArray<T> srcArr, UOSInt arrSize)
+	{
+		MemCopyNO(this->p, srcArr.p, arrSize * sizeof(T));
 	}
 
 	template <typename V> static UnsafeArray<T> ConvertFrom(UnsafeArray<V> ptr)

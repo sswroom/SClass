@@ -56,31 +56,31 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSTCPSimForm::OnDevAddClicked(AnyType user
 	me->txtAddr->GetText(sb);
 	if (sb.ToUInt8(addr))
 	{
-		IO::MODBUSDevSim *dev;
+		NN<IO::MODBUSDevSim> dev;
 		switch (devType)
 		{
 		case DeviceType::Print:
-			NEW_CLASS(dev, IO::PrintMODBUSDevSim());
+			NEW_CLASSNN(dev, IO::PrintMODBUSDevSim());
 			me->listener->AddDevice(addr, dev);
 			me->UpdateDevList();
 			break;
 		case DeviceType::ED516:
-			NEW_CLASS(dev, IO::ED516Sim());
+			NEW_CLASSNN(dev, IO::ED516Sim());
 			me->listener->AddDevice(addr, dev);
 			me->UpdateDevList();
 			break;
 		case DeviceType::ED527:
-			NEW_CLASS(dev, IO::ED527Sim());
+			NEW_CLASSNN(dev, IO::ED527Sim());
 			me->listener->AddDevice(addr, dev);
 			me->UpdateDevList();
 			break;
 		case DeviceType::ED538:
-			NEW_CLASS(dev, IO::ED538Sim());
+			NEW_CLASSNN(dev, IO::ED538Sim());
 			me->listener->AddDevice(addr, dev);
 			me->UpdateDevList();
 			break;
 		case DeviceType::ED588:
-			NEW_CLASS(dev, IO::ED588Sim());
+			NEW_CLASSNN(dev, IO::ED588Sim());
 			me->listener->AddDevice(addr, dev);
 			me->UpdateDevList();
 			break;
@@ -154,7 +154,7 @@ void SSWR::AVIRead::AVIRMODBUSTCPSimForm::UpdateDevList()
 		UOSInt j = this->listener->GetDeviceCount();
 		while (i < j)
 		{
-			IO::MODBUSDevSim *dev = this->listener->GetDevice(i);
+			NN<IO::MODBUSDevSim> dev = this->listener->GetDeviceNoCheck(i);
 			sb.ClearStr();
 			sb.AppendU32(this->listener->GetDeviceAddr(i));
 			sb.AppendC(UTF8STRC(", "));

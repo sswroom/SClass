@@ -14,7 +14,7 @@ namespace UI
 
 		private:
 			WNDPROC wndproc;
-			Data::ArrayList<ItemData *> items;
+			Data::ArrayListNN<ItemData> items;
 			Bool mulSel;
 
 			static OSInt __stdcall LBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);

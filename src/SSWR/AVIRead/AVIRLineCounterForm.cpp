@@ -73,12 +73,12 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnCalcClicked(AnyType userObj
 	UOSInt totalLine = 0;
 	UOSInt nonEmpty = 0;
 	UOSInt codeCnt = 0;
-	FileInfo *fi;
+	NN<FileInfo> fi;
 	i = 0;
 	j = me->resList.GetCount();
 	while (i < j)
 	{
-		fi = me->resList.GetItem(i);
+		fi = me->resList.GetItemNoCheck(i);
 		sptr = Text::StrUOSInt(sbuff, fi->totalLineCnt);
 		k = me->lvResult->AddItem(CSTRP(sbuff, sptr), fi);
 		sptr = Text::StrUOSInt(sbuff, fi->nonEmpyCnt);
@@ -110,7 +110,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnResultSaveClicked(AnyType u
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		Text::StringBuilderUTF8 sb;
-		FileInfo *fi;
+		NN<FileInfo> fi;
 		UOSInt i;
 		UOSInt j;
 		IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -119,7 +119,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnResultSaveClicked(AnyType u
 		j = me->resList.GetCount();
 		while (i < j)
 		{
-			fi = me->resList.GetItem(i);
+			fi = me->resList.GetItemNoCheck(i);
 			sb.ClearStr();
 			sb.AppendUOSInt(fi->totalLineCnt);
 			sb.AppendUTF8Char('\t');
@@ -146,7 +146,7 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 	UOSInt codeCnt;
 	UOSInt i;
 	Bool found;
-	FileInfo *fi;
+	NN<FileInfo> fi;
 
 	*pathBuffEnd++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(pathBuffEnd, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
@@ -206,7 +206,7 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 						}
 					}
 
-					fi = MemAlloc(FileInfo, 1);
+					fi = MemAllocNN(FileInfo);
 					fi->totalLineCnt = lineCnt;
 					fi->nonEmpyCnt = nonEmptyCnt;
 					fi->codeCnt = codeCnt;
@@ -228,14 +228,14 @@ void SSWR::AVIRead::AVIRLineCounterForm::ClearExts(Bool inclDisp)
 void SSWR::AVIRead::AVIRLineCounterForm::ClearResult(Bool inclDisp)
 {
 	UOSInt i;
-	FileInfo *fi;
+	NN<FileInfo> fi;
 	if (inclDisp) this->lvResult->ClearItems();
 	i = this->resList.GetCount();
 	while (i-- > 0)
 	{
-		fi = this->resList.GetItem(i);
+		fi = this->resList.GetItemNoCheck(i);
 		fi->fileName->Release();
-		MemFree(fi);
+		MemFreeNN(fi);
 	}
 	this->resList.Clear();
 }

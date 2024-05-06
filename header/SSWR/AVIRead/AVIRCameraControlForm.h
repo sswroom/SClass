@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRCAMERACONTROLFORM
 #define _SM_SSWR_AVIREAD_AVIRCAMERACONTROLFORM
+#include "Data/StringMapNN.h"
 #include "IO/CameraControl.h"
 #include "Media/ImageList.h"
 #include "SSWR/AVIRead/AVIRCore.h"
@@ -28,7 +29,7 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 			IO::CameraControl *camera;
-			Data::StringUTF8Map<Media::ImageList *> previewMap;
+			Data::StringMapNN<Media::ImageList> previewMap;
 
 			static void __stdcall OnDownloadClicked(AnyType userObj);
 			static void __stdcall OnFilesDblClick(AnyType userObj, UOSInt index);

@@ -16,16 +16,16 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteTwitterForm::OnRequestPageClicked(AnyTy
 		Data::DateTime dt;
 		UOSInt i;
 		UOSInt j;
-		Data::ArrayList<Net::WebSite::WebSiteTwitterControl::ItemData*> itemList;
-		Net::WebSite::WebSiteTwitterControl::ItemData *item;
+		Data::ArrayListNN<Net::WebSite::WebSiteTwitterControl::ItemData> itemList;
+		NN<Net::WebSite::WebSiteTwitterControl::ItemData> item;
 		NN<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
-		me->ctrl->GetChannelItems(s, 0, &itemList, 0);
+		me->ctrl->GetChannelItems(s, 0, itemList, 0);
 		s->Release();
 		i = 0;
 		j = itemList.GetCount();
 		while (i < j)
 		{
-			item = itemList.GetItem(i);
+			item = itemList.GetItemNoCheck(i);
 			sptr = Text::StrInt64(sbuff, item->id);
 			me->lvItems->AddItem(CSTRP(sbuff, sptr), 0);
 			dt.SetTicks(item->recTime);
@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteTwitterForm::OnRequestPageClicked(AnyTy
 			me->lvItems->SetSubItem(i, 3, sb.ToCString());
 			i++;
 		}
-		me->ctrl->FreeItems(&itemList);
+		me->ctrl->FreeItems(itemList);
 	}
 }
 

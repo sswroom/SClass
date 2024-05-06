@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRMQTTBROKERFORM
 #define _SM_SSWR_AVIREAD_AVIRMQTTBROKERFORM
-#include "Data/StringUTF8Map.h"
+#include "Data/StringMapNN.h"
 #include "Net/MQTTBroker.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
@@ -41,7 +41,7 @@ namespace SSWR
 			Net::MQTTBroker *broker;
 			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;
-			Data::StringMap<TopicStatus*> topicMap;
+			Data::StringMapNN<TopicStatus> topicMap;
 			Sync::Mutex topicMut;
 			Bool topicListUpdated;
 			UInt64 totalCount;
@@ -74,7 +74,7 @@ namespace SSWR
 			static void __stdcall OnSSLCertClicked(AnyType userObj);
 			static void __stdcall OnLogSelChg(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
-			static void __stdcall OnTopicUpdate(AnyType userObj, Text::CString topic, const UInt8 *message, UOSInt msgSize);
+			static void __stdcall OnTopicUpdate(AnyType userObj, Text::CStringNN topic, const UInt8 *message, UOSInt msgSize);
 
 			void ServerStop();
 			void ClearCACerts();

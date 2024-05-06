@@ -11,8 +11,8 @@ namespace Net
 	class RSSHandler
 	{
 	public:
-		virtual void ItemAdded(Net::RSSItem *item) = 0;
-		virtual void ItemRemoved(Net::RSSItem *item) = 0;
+		virtual void ItemAdded(NN<Net::RSSItem> item) = 0;
+		virtual void ItemRemoved(NN<Net::RSSItem> item) = 0;
 	};
 
 	class RSSReader
@@ -21,7 +21,7 @@ namespace Net
 		typedef struct
 		{
 			Bool exist;
-			Net::RSSItem *item;
+			NN<Net::RSSItem> item;
 		} RSSStatus;
 	private:
 		NN<Text::String> url;
@@ -29,7 +29,7 @@ namespace Net
 		Optional<Net::SSLEngine> ssl;
 		NN<IO::LogTool> log;
 		RSSHandler *hdlr;
-		Data::FastStringMap<RSSStatus *> *currRSSMaps;
+		Data::FastStringMapNN<RSSStatus> currRSSMaps;
 		Data::DateTime nextDT;
 		Net::RSS *lastRSS;
 		UInt32 refreshSecond;

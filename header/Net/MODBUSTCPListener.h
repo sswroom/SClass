@@ -1,6 +1,6 @@
 #ifndef _SM_NET_MODBUSTCPLISTENER
 #define _SM_NET_MODBUSTCPLISTENER
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "IO/MODBUSDevSim.h"
 #include "Net/SocketFactory.h"
 #include "Net/TCPClientMgr.h"
@@ -17,7 +17,7 @@ namespace Net
 		Net::TCPClientMgr *cliMgr;
 		UInt32 delay;
 		Sync::Mutex devMut;
-		Data::FastMap<UInt32, IO::MODBUSDevSim*> devMap;
+		Data::FastMapNN<UInt32, IO::MODBUSDevSim> devMap;
 
 		static void __stdcall OnClientConn(Socket *s, AnyType userObj);
 		static void __stdcall OnClientEvent(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
@@ -30,9 +30,10 @@ namespace Net
 		Bool Start();
 		Bool IsError();
 
-		void AddDevice(UInt8 addr, IO::MODBUSDevSim *dev);
-		UOSInt GetDeviceCount();
-		IO::MODBUSDevSim *GetDevice(UOSInt index);
+		void AddDevice(UInt8 addr, NN<IO::MODBUSDevSim> dev);
+		UOSInt GetDeviceCount() const;
+		NN<IO::MODBUSDevSim> GetDeviceNoCheck(UOSInt index) const;
+		Optional<IO::MODBUSDevSim> GetDevice(UOSInt index) const;
 		UInt32 GetDeviceAddr(UOSInt index);
 		UInt32 GetDelay();
 		void SetDelay(UInt32 delay);

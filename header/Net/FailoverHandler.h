@@ -1,6 +1,6 @@
 #ifndef _SM_NET_FAILOVERHANDLER
 #define _SM_NET_FAILOVERHANDLER
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
 
@@ -18,17 +18,17 @@ namespace Net
 	private:
 		Net::FailoverType foType;
 		UOSInt lastIndex;
-		Data::ArrayList<T *> channelList;
+		Data::ArrayListNN<T> channelList;
 		Sync::Mutex mut;
 	public:
 		FailoverHandler(FailoverType foType);
 		~FailoverHandler();
 
-		T *GetCurrChannel();
-		void GetOtherChannels(Data::ArrayList<T *> *chList);
-		void SetCurrChannel(T *channel);
-		void GetAllChannels(Data::ArrayList<T *> *chList);
-		void AddChannel(T *channel);
+		Optional<T> GetCurrChannel();
+		void GetOtherChannels(NN<Data::ArrayListNN<T>> chList);
+		void SetCurrChannel(NN<T> channel);
+		void GetAllChannels(NN<Data::ArrayListNN<T>> chList);
+		void AddChannel(NN<T> channel);
 	};
 
 	template <class T> FailoverHandler<T>::FailoverHandler(Net::FailoverType foType)
@@ -39,16 +39,16 @@ namespace Net
 
 	template <class T> FailoverHandler<T>::~FailoverHandler()
 	{
-		T *channel;
+		NN<T> channel;
 		UOSInt i = this->channelList.GetCount();
 		while (i-- > 0)
 		{
-			channel = this->channelList.GetItem(i);
-			DEL_CLASS(channel);
+			channel = this->channelList.GetItemNoCheck(i);
+			channel.Delete();
 		}
 	}
 
-	template <class T> T *FailoverHandler<T>::GetCurrChannel()
+	template <class T> Optional<T> FailoverHandler<T>::GetCurrChannel()
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		if (this->channelList.GetCount() == 0)
@@ -57,7 +57,7 @@ namespace Net
 		}
 		UOSInt initIndex;
 		UOSInt currIndex;
-		T *channel;
+		NN<T> channel;
 		switch (this->foType)
 		{
 		case Net::FT_ACTIVE_PASSIVE:
@@ -72,7 +72,7 @@ namespace Net
 		default:
 			return 0;
 		}
-		channel = this->channelList.GetItem(initIndex);
+		channel = this->channelList.GetItemNoCheck(initIndex);
 		if (!channel->ChannelFailure())
 		{
 			this->lastIndex = initIndex;
@@ -81,7 +81,7 @@ namespace Net
 		currIndex = (initIndex + 1) % this->channelList.GetCount();
 		while (currIndex != initIndex)
 		{
-			channel = this->channelList.GetItem(currIndex);
+			channel = this->channelList.GetItemNoCheck(currIndex);
 			if (!channel->ChannelFailure())
 			{
 				this->lastIndex = currIndex;
@@ -92,15 +92,15 @@ namespace Net
 		return 0;
 	}
 
-	template <class T> void FailoverHandler<T>::GetOtherChannels(Data::ArrayList<T *> *chList)
+	template <class T> void FailoverHandler<T>::GetOtherChannels(NN<Data::ArrayListNN<T>> chList)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
-		T *channel;
+		NN<T> channel;
 		UOSInt j = this->channelList.GetCount();
 		UOSInt i = (this->lastIndex + 1) % j;
 		while (i != this->lastIndex)
 		{
-			channel = this->channelList.GetItem(i);
+			channel = this->channelList.GetItemNoCheck(i);
 			if (!channel->ChannelFailure())
 			{
 				chList->Add(channel);
@@ -109,7 +109,7 @@ namespace Net
 		}
 	}
 
-	template <class T> void FailoverHandler<T>::SetCurrChannel(T *channel)
+	template <class T> void FailoverHandler<T>::SetCurrChannel(NN<T> channel)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		UOSInt i = this->channelList.IndexOf(channel);
@@ -120,13 +120,13 @@ namespace Net
 
 	}
 
-	template <class T> void FailoverHandler<T>::GetAllChannels(Data::ArrayList<T *> *chList)
+	template <class T> void FailoverHandler<T>::GetAllChannels(NN<Data::ArrayListNN<T>> chList)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		chList->AddAll(this->channelList);
 	}
 
-	template <class T> void FailoverHandler<T>::AddChannel(T *channel)
+	template <class T> void FailoverHandler<T>::AddChannel(NN<T> channel)
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		this->channelList.Add(channel);

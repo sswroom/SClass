@@ -1,7 +1,7 @@
 #ifndef _SM_NET_NETBIOSSCANNER
 #define _SM_NET_NETBIOSSCANNER
 #include "Data/CallbackStorage.h"
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "Net/UDPServer.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
@@ -31,11 +31,11 @@ namespace Net
 	private:
 		Net::UDPServer *svr;
 		Sync::Mutex ansMut;
-		Data::FastMap<UInt32, NameAnswer*> answers;
+		Data::FastMapNN<UInt32, NameAnswer> answers;
 		Data::CallbackStorage<AnswerUpdated> hdlr;
 
 		static void __stdcall OnUDPPacket(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
-		static void FreeAnswer(NameAnswer *ans);
+		static void FreeAnswer(NN<NameAnswer> ans);
 	public:
 		NetBIOSScanner(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log);
 		~NetBIOSScanner();
@@ -43,7 +43,7 @@ namespace Net
 		Bool IsError() const;
 		void SendRequest(UInt32 ip);
 		void SetAnswerHandler(AnswerUpdated hdlr, AnyType userObj);
-		NN<const Data::ReadingList<NameAnswer*>> GetAnswers(NN<Sync::MutexUsage> mutUsage) const;
+		NN<const Data::ReadingListNN<NameAnswer>> GetAnswers(NN<Sync::MutexUsage> mutUsage) const;
 	};
 }
 #endif

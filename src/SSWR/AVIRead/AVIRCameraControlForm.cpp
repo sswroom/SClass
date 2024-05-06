@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(AnyType u
 	{
 		NN<IO::CameraControl::FileInfo> file = me->lvFiles->GetItem(selIndices.GetItem(0)).GetNN<IO::CameraControl::FileInfo>();
 		NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"CameraControlFile", true);
-		dlg->SetFileName(Text::CString::FromPtr(file->fileName));
+		dlg->SetFileName(Text::CString(file->fileName2, file->fileNameLen));
 		if (dlg->ShowDialog(me->GetHandle()))
 		{
 			Data::DateTime dt;
@@ -64,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(AnyType u
 				{
 					sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				}
-				sb.AppendSlow(file->fileName);
+				sb.AppendC(file->fileName2, file->fileNameLen);
 
 				{
 					IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -80,7 +80,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(AnyType u
 					IO::Path::DeleteFile(sb.ToString());
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Error in downloading "));
-					sb.AppendSlow(file->fileName);
+					sb.AppendC(file->fileName2, file->fileNameLen);
 					sb.AppendC(UTF8STRC(", continue?"));
 					if (!me->ui->ShowMsgYesNo(sb.ToCString(), CSTR("Camera Control"), me))
 					{
@@ -106,7 +106,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(AnyType use
 		return;
 	if (file->fileType == IO::CameraControl::FT_IMAGE)
 	{
-		if (Text::StrEndsWithICase(file->fileName, (const UTF8Char*)".JPG"))
+		if (Text::StrEndsWithICaseC(file->fileName2, file->fileNameLen, UTF8STRC(".JPG")))
 		{
 			IO::MemoryStream mstm;
 			if (me->camera->GetFile(file, mstm))
@@ -124,13 +124,13 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(AnyType use
 	}
 	else if (file->fileType == IO::CameraControl::FT_GPSLOG)
 	{
-		if (Text::StrEndsWithICase(file->fileName, (const UTF8Char*)".LOG"))
+		if (Text::StrEndsWithICaseC(file->fileName2, file->fileNameLen, UTF8STRC(".LOG")))
 		{
 			IO::MemoryStream mstm;
 			if (me->camera->GetFile(file, mstm))
 			{
 				mstm.SeekFromBeginning(0);
-				NN<Map::GPSTrack> trk = IO::GPSNMEA::NMEA2Track(mstm, {file->fileName, Text::StrCharCnt(file->fileName)});
+				NN<Map::GPSTrack> trk = IO::GPSNMEA::NMEA2Track(mstm, Text::CStringNN(file->fileName2, file->fileNameLen));
 				SSWR::AVIRead::AVIRGISForm *frm = me->core->GetGISForm();
 				if (frm)
 				{
@@ -151,8 +151,8 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesSelChg(AnyType userO
 	NN<IO::CameraControl::FileInfo> file;
 	if (!me->lvFiles->GetSelectedItem().GetOpt<IO::CameraControl::FileInfo>().SetTo(file))
 		return;
-	Media::ImageList *previewImg = me->previewMap.Get(file->fileName);
-	if (previewImg)
+	NN<Media::ImageList> previewImg;
+	if (me->previewMap.Get(Text::CStringNN(file->fileName2, file->fileNameLen)).SetTo(previewImg))
 	{
 		me->pbPreview->SetImage(Optional<Media::StaticImage>::ConvertFrom(previewImg->GetImage(0, 0)));
 		return;
@@ -162,14 +162,11 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesSelChg(AnyType userO
 	{
 		UOSInt size;
 		UInt8 *buff = mstm.GetBuff(size);
-		{
-			IO::StmData::MemoryDataRef fd(buff, size);
-			previewImg = (Media::ImageList*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
-		}
-		if (previewImg)
+		IO::StmData::MemoryDataRef fd(buff, size);
+		if (previewImg.Set((Media::ImageList*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList)))
 		{
 			previewImg->ToStaticImage(0);
-			me->previewMap.Put(file->fileName, previewImg);
+			me->previewMap.Put(Text::CStringNN(file->fileName2, file->fileNameLen), previewImg);
 			me->pbPreview->SetImage(Optional<Media::StaticImage>::ConvertFrom(previewImg->GetImage(0, 0)));
 		}
 	}
@@ -236,8 +233,8 @@ SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(Optional<UI::GUIClie
 	while (i < j)
 	{
 		file = fileList.GetItemNoCheck(i);
-		this->lvFiles->AddItem({file->fileName, Text::StrCharCnt(file->fileName)}, file);
-		this->lvFiles->SetSubItem(i, 1, Text::CStringNN::FromPtr(file->filePath));
+		this->lvFiles->AddItem(Text::CStringNN(file->fileName2, file->fileNameLen), file);
+		this->lvFiles->SetSubItem(i, 1, Text::CStringNN(file->filePath2, file->filePathLen));
 		sptr = Text::StrUInt64(sbuff, file->fileSize);
 		this->lvFiles->SetSubItem(i, 2, CSTRP(sbuff, sptr));
 		if (file->fileTimeTicks)
@@ -260,13 +257,13 @@ SSWR::AVIRead::AVIRCameraControlForm::~AVIRCameraControlForm()
 {
 	this->ClearChildren();
 	DEL_CLASS(this->camera);
-	NN<const Data::ArrayList<Media::ImageList*>> previewList = this->previewMap.GetValues();
+	NN<const Data::ArrayListNN<Media::ImageList>> previewList = this->previewMap.GetValues();
 	UOSInt i = previewList->GetCount();
-	Media::ImageList *previewImg;
+	NN<Media::ImageList> previewImg;
 	while (i-- > 0)
 	{
-		previewImg = previewList->GetItem(i);
-		DEL_CLASS(previewImg);
+		previewImg = previewList->GetItemNoCheck(i);
+		previewImg.Delete();
 	}
 }
 

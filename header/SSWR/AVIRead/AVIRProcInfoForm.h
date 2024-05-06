@@ -106,7 +106,7 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 
 			Data::ArrayListUInt32 procIds;
-			Data::ArrayList<ProcessInfo*> procList;
+			Data::ArrayListNN<ProcessInfo> procList;
 
 			UOSInt currProc;
 			Manage::Process *currProcObj;

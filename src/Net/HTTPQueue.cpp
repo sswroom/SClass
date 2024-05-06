@@ -18,15 +18,15 @@ Net::HTTPQueue::~HTTPQueue()
 NN<Net::HTTPClient> Net::HTTPQueue::MakeRequest(Text::CStringNN url, Net::WebUtil::RequestMethod method, Bool noShutdown)
 {
 	UTF8Char sbuff[512];
-	Text::URLString::GetURLDomain(sbuff, url, 0);
+	UTF8Char *sptr;
+	sptr = Text::URLString::GetURLDomain(sbuff, url, 0);
 	Bool found = false;;
-	DomainStatus *status;
+	NN<DomainStatus> status;
 	NN<Net::HTTPClient> cli;
 	while (true)
 	{
 		Sync::MutexUsage mutUsage(this->statusMut);
-		status = this->statusMap.Get(sbuff);
-		if (status)
+		if (this->statusMap.Get(CSTRP(sbuff, sptr)).SetTo(status))
 		{
 			if (status->req1 == 0)
 			{
@@ -43,12 +43,12 @@ NN<Net::HTTPClient> Net::HTTPQueue::MakeRequest(Text::CStringNN url, Net::WebUti
 		}
 		else
 		{
-			status = MemAlloc(DomainStatus, 1);
+			status = MemAllocNN(DomainStatus);
 			status->req1 = 0;
 			status->req2 = 0;
 			cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, method, noShutdown);
 			status->req1 = cli.Ptr();
-			this->statusMap.Put(sbuff, status);
+			this->statusMap.Put(CSTRP(sbuff, sptr), status);
 			found = true;
 		}
 		mutUsage.EndUse();
@@ -62,13 +62,13 @@ NN<Net::HTTPClient> Net::HTTPQueue::MakeRequest(Text::CStringNN url, Net::WebUti
 void Net::HTTPQueue::EndRequest(Net::HTTPClient *cli)
 {
 	UTF8Char sbuff[512];
-	DomainStatus *status;
+	UTF8Char *sptr;
+	NN<DomainStatus> status;
 	Text::String *url = cli->GetURL();
-	Text::URLString::GetURLDomain(sbuff, url->ToCString(), 0);
+	sptr = Text::URLString::GetURLDomain(sbuff, url->ToCString(), 0);
 
 	Sync::MutexUsage mutUsage(this->statusMut);
-	status = this->statusMap.Get(sbuff);
-	if (status)
+	if (this->statusMap.Get(CSTRP(sbuff, sptr)).SetTo(status))
 	{
 		if (status->req1 == cli)
 		{
@@ -81,8 +81,8 @@ void Net::HTTPQueue::EndRequest(Net::HTTPClient *cli)
 		DEL_CLASS(cli);
 		if (status->req1 == 0 && status->req2 == 0)
 		{
-			MemFree(status);
-			this->statusMap.Remove(sbuff);
+			MemFreeNN(status);
+			this->statusMap.Remove(CSTRP(sbuff, sptr));
 		}
 		this->statusEvt.Set();
 	}
@@ -95,8 +95,8 @@ void Net::HTTPQueue::EndRequest(Net::HTTPClient *cli)
 
 void Net::HTTPQueue::Clear()
 {
-	NN<const Data::ArrayList<DomainStatus*>> statusList;
-	DomainStatus *status;
+	NN<const Data::ArrayListNN<DomainStatus>> statusList;
+	NN<DomainStatus> status;
 	UOSInt i;
 
 	Sync::MutexUsage mutUsage(this->statusMut);
@@ -104,7 +104,7 @@ void Net::HTTPQueue::Clear()
 	i = statusList->GetCount();
 	while (i-- > 0)
 	{
-		status = statusList->GetItem(i);
+		status = statusList->GetItemNoCheck(i);
 		if (status->req1)
 		{
 			status->req1->Close();

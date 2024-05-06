@@ -19,8 +19,10 @@ namespace IO
 
 		typedef struct
 		{
-			UTF8Char fileName[20];
-			UTF8Char filePath[64];
+			UTF8Char fileName2[20];
+			UOSInt fileNameLen;
+			UTF8Char filePath2[64];
+			UOSInt filePathLen;
 			UInt64 fileSize;
 			Int64 fileTimeTicks;
 			FileType fileType;

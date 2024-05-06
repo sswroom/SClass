@@ -10,7 +10,7 @@ namespace Net
 	{
 	public:
 		static Bool SendMessage(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString apiKey, Text::CString devToken, Text::CString message, Text::StringBuilderUTF8 *sbResult);
-		static Bool SendMessages(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString apiKey, Data::ArrayList<Text::String*> *devTokens, Text::CString message, Text::StringBuilderUTF8 *sbResult);
+		static Bool SendMessages(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString apiKey, NN<Data::ArrayListNN<Text::String>> devTokens, Text::CString message, Text::StringBuilderUTF8 *sbResult);
 	};
 }
 #endif

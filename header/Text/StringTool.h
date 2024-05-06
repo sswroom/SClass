@@ -15,15 +15,11 @@ namespace Text
 	class StringTool
 	{
 	public:
-		static void BuildString(NN<Text::StringBuilderUTF8> sb, Text::String *s);
-		static void BuildString(NN<Text::StringBuilderUTF8> sb, const UTF8Char *s);
-		static void BuildString(NN<Text::StringBuilderUTF8> sb, Data::StringMap<Text::String*> *map);
-		static void BuildString(NN<Text::StringBuilderUTF8> sb, Data::StringUTF8Map<Text::String*> *map);
-		static void BuildString(NN<Text::StringBuilderUTF8> sb, Data::StringUTF8Map<const UTF8Char*> *map);
-		static void BuildString(NN<Text::StringBuilderUTF8> sb, Data::ReadingList<const UTF8Char*> *list);
-		static void BuildString(NN<Text::StringBuilderUTF8> sb, Data::ReadingList<Text::String*> *list);
-		template <class T> static void BuildString(NN<Text::StringBuilderUTF8> sb, T *obj, Data::NamedClass<T> *cls);
-		template <class T> static void BuildString(NN<Text::StringBuilderUTF8> sb, Data::List<T*> *list, Data::NamedClass<T> *cls, const UTF8Char *clsName, UOSInt nameLen);
+		static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, Optional<Text::String> s);
+		static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::StringMap<Text::String*> *map);
+		static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::ReadingList<Text::String*> *list);
+		template <class T> static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, T *obj, Data::NamedClass<T> *cls);
+		template <class T> static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::List<T*> *list, Data::NamedClass<T> *cls, const UTF8Char *clsName, UOSInt nameLen);
 		static void Int32Join(NN<Text::StringBuilderUTF8> sb, Data::List<Int32> *list, Text::CString seperator);
 		static Bool IsNonASCII(const UTF8Char *s);
 		static Bool IsASCIIText(const Data::ByteArrayR &buff);
@@ -40,7 +36,7 @@ namespace Text
 	};
 }
 
-template <class T> void Text::StringTool::BuildString(NN<Text::StringBuilderUTF8> sb, T *obj, Data::NamedClass<T> *cls)
+template <class T> void Text::StringTool::BuildJSONString(NN<Text::StringBuilderUTF8> sb, T *obj, Data::NamedClass<T> *cls)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -73,7 +69,7 @@ template <class T> void Text::StringTool::BuildString(NN<Text::StringBuilderUTF8
 	sb->AppendUTF8Char('}');
 }
 
-template <class T> void Text::StringTool::BuildString(NN<Text::StringBuilderUTF8> sb, Data::List<T*> *list, Data::NamedClass<T> *cls, const UTF8Char *clsName, UOSInt nameLen)
+template <class T> void Text::StringTool::BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::List<T*> *list, Data::NamedClass<T> *cls, const UTF8Char *clsName, UOSInt nameLen)
 {
 	if (list == 0)
 	{

@@ -46,7 +46,7 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateStreamList()
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	Media::MediaFile *mFile;
+	NN<Media::MediaFile> mFile;
 	NN<Media::IMediaSource> medSource;
 	Int32 syncTime;
 	UTF8Char sbuff[512];
@@ -54,10 +54,10 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateStreamList()
 
 	this->lbFiles->ClearItems();
 	i = 0;
-	j = this->files->GetCount();
+	j = this->files.GetCount();
 	while (i < j)
 	{
-		mFile = this->files->GetItem(i);
+		mFile = this->files.GetItemNoCheck(i);
 		k = 0;
 		while (mFile->GetStream(k++, syncTime).SetTo(medSource))
 		{
@@ -307,7 +307,7 @@ Bool SSWR::AVIRead::AVIRMediaForm::PBIsPlaying()
 	return false;
 }
 
-SSWR::AVIRead::AVIRMediaForm::AVIRMediaForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Media::MediaFile *mediaFile) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRMediaForm::AVIRMediaForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<Media::MediaFile> mediaFile) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	UTF8Char sbuff[512];
@@ -320,8 +320,7 @@ SSWR::AVIRead::AVIRMediaForm::AVIRMediaForm(Optional<UI::GUIClientControl> paren
 	this->activeVideo = 0;
 	this->activeAudio = 0;
 	this->audRenderer = 0;
-	NEW_CLASS(this->files, Data::ArrayList<Media::MediaFile*>());
-	this->files->Add(mediaFile);
+	this->files.Add(mediaFile);
 	this->currChapters = mediaFile->GetChapterInfo();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
@@ -394,13 +393,7 @@ SSWR::AVIRead::AVIRMediaForm::~AVIRMediaForm()
 	SDEL_CLASS(this->currADecoder);
 	DEL_CLASS(this->decoders);
 	DEL_CLASS(this->adecoders);
-	UOSInt i = this->files->GetCount();
-	while (i-- > 0)
-	{
-		Media::MediaFile *file = this->files->GetItem(i);
-		DEL_CLASS(file);
-	}
-	DEL_CLASS(this->files);
+	this->files.DeleteAll();
 	DEL_CLASS(this->clk);
 
 	this->mnuAudio.Delete();

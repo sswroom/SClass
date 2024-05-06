@@ -8,7 +8,7 @@
 #include "Text/XMLReader.h"
 #include <stdio.h>
 
-Net::WebSite::WebSite7gogoControl::ItemData *Net::WebSite::WebSite7gogoControl::ParsePost(Text::JSONObject *postObj)
+Optional<Net::WebSite::WebSite7gogoControl::ItemData> Net::WebSite::WebSite7gogoControl::ParsePost(Text::JSONObject *postObj)
 {
 	Text::JSONBase *jsBase;
 	Text::JSONString *str1;
@@ -17,8 +17,8 @@ Net::WebSite::WebSite7gogoControl::ItemData *Net::WebSite::WebSite7gogoControl::
 	Int32 bodyType;
 	UOSInt i;
 	UOSInt j;
-	Net::WebSite::WebSite7gogoControl::ItemData *item = MemAlloc(Net::WebSite::WebSite7gogoControl::ItemData, 1);
-	MemClear(item, sizeof(Net::WebSite::WebSite7gogoControl::ItemData));
+	NN<Net::WebSite::WebSite7gogoControl::ItemData> item = MemAllocNN(Net::WebSite::WebSite7gogoControl::ItemData);
+	item.ZeroContent();
 	item->id = postObj->GetObjectInt64(CSTR("postId"));
 	item->recTime = postObj->GetObjectInt64(CSTR("time")) * 1000;
 	item->message = Text::String::NewEmpty();
@@ -96,7 +96,7 @@ Net::WebSite::WebSite7gogoControl::ItemData *Net::WebSite::WebSite7gogoControl::
 	{
 		SDEL_STRING(item->imgURL);
 		item->message->Release();
-		MemFree(item);
+		MemFreeNN(item);
 		return 0;
 	}
 }
@@ -113,13 +113,13 @@ Net::WebSite::WebSite7gogoControl::~WebSite7gogoControl()
 	OPTSTR_DEL(this->userAgent);
 }
 
-OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NN<Text::String> channelId, OSInt pageNo, Data::ArrayList<Net::WebSite::WebSite7gogoControl::ItemData*> *itemList, Net::WebSite::WebSite7gogoControl::ChannelInfo *chInfo)
+OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NN<Text::String> channelId, OSInt pageNo, NN<Data::ArrayListNN<Net::WebSite::WebSite7gogoControl::ItemData>> itemList, Optional<Net::WebSite::WebSite7gogoControl::ChannelInfo> chInfo)
 {
 	Text::StringBuilderUTF8 sb;
 	OSInt retCnt = 0;
 	sb.AppendC(UTF8STRC("https://7gogo.jp/"));
 	sb.Append(channelId);
-	Net::WebSite::WebSite7gogoControl::ItemData *item;
+	NN<Net::WebSite::WebSite7gogoControl::ItemData> item;
 	Data::ArrayListInt64 idList;
 //	printf("Requesting to URL %s\r\n", sb.ToString());
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, OPTSTR_CSTR(this->userAgent), true, true);
@@ -147,7 +147,8 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NN<Text::String> channe
 						UOSInt j;
 						UOSInt k;
 						OSInt si;
-						if (chInfo)
+						NN<ChannelInfo> nnchInfo;
+						if (chInfo.SetTo(nnchInfo))
 						{
 							jsBase = baseObj->GetObjectValue(CSTR("page:talk:service:entity:talk"));
 							if (jsBase && jsBase->GetType() == Text::JSONType::Object)
@@ -156,33 +157,33 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NN<Text::String> channe
 								if ((jsBase = obj1->GetObjectValue(CSTR("talkCode"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 								{
 									str1 = (Text::JSONString*)jsBase;
-									SDEL_STRING(chInfo->talkCode);
-									chInfo->talkCode = str1->GetValue()->Clone().Ptr();
+									SDEL_STRING(nnchInfo->talkCode);
+									nnchInfo->talkCode = str1->GetValue()->Clone().Ptr();
 								}
 								if ((jsBase = obj1->GetObjectValue(CSTR("name"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 								{
 									str1 = (Text::JSONString*)jsBase;
-									SDEL_STRING(chInfo->name);
-									chInfo->name = str1->GetValue()->Clone().Ptr();
+									SDEL_STRING(nnchInfo->name);
+									nnchInfo->name = str1->GetValue()->Clone().Ptr();
 								}
 								if ((jsBase = obj1->GetObjectValue(CSTR("detail"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 								{
 									str1 = (Text::JSONString*)jsBase;
-									SDEL_STRING(chInfo->detail);
-									chInfo->detail = str1->GetValue()->Clone().Ptr();
+									SDEL_STRING(nnchInfo->detail);
+									nnchInfo->detail = str1->GetValue()->Clone().Ptr();
 								}
 								if ((jsBase = obj1->GetObjectValue(CSTR("imagePath"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 								{
 									str1 = (Text::JSONString*)jsBase;
-									SDEL_STRING(chInfo->imagePath);
-									chInfo->imagePath = str1->GetValue()->Clone().Ptr();
+									SDEL_STRING(nnchInfo->imagePath);
+									nnchInfo->imagePath = str1->GetValue()->Clone().Ptr();
 								}
-								chInfo->editDate = obj1->GetObjectInt64(CSTR("editDate")) * 1000;
+								nnchInfo->editDate = obj1->GetObjectInt64(CSTR("editDate")) * 1000;
 								if ((jsBase = obj1->GetObjectValue(CSTR("screenName"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 								{
 									str1 = (Text::JSONString*)jsBase;
-									SDEL_STRING(chInfo->screenName);
-									chInfo->screenName = str1->GetValue()->Clone().Ptr();
+									SDEL_STRING(nnchInfo->screenName);
+									nnchInfo->screenName = str1->GetValue()->Clone().Ptr();
 								}
 							}
 						}
@@ -202,15 +203,14 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NN<Text::String> channe
 										obj1 = (Text::JSONObject*)jsBase;
 										if ((jsBase = obj1->GetObjectValue(CSTR("post"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
 										{
-											item = ParsePost((Text::JSONObject*)jsBase);
-											if (item)
+											if (ParsePost((Text::JSONObject*)jsBase).SetTo(item))
 											{
 												si = idList.SortedIndexOf(item->id);
 												if (si >= 0)
 												{
 													item->message->Release();
 													SDEL_STRING(item->imgURL);
-													MemFree(item);
+													MemFreeNN(item);
 												}
 												else
 												{
@@ -241,15 +241,14 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NN<Text::String> channe
 										obj1 = (Text::JSONObject*)jsBase;
 										if ((jsBase = obj1->GetObjectValue(CSTR("post"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
 										{
-											item = ParsePost((Text::JSONObject*)jsBase);
-											if (item)
+											if (ParsePost((Text::JSONObject*)jsBase).SetTo(item))
 											{
 												si = idList.SortedIndexOf(item->id);
 												if (si >= 0)
 												{
 													item->message->Release();
 													SDEL_STRING(item->imgURL);
-													MemFree(item);
+													MemFreeNN(item);
 												}
 												else
 												{
@@ -283,16 +282,16 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(NN<Text::String> channe
 	return retCnt;
 }
 
-void Net::WebSite::WebSite7gogoControl::FreeItems(Data::ArrayList<Net::WebSite::WebSite7gogoControl::ItemData*> *itemList)
+void Net::WebSite::WebSite7gogoControl::FreeItems(NN<Data::ArrayListNN<Net::WebSite::WebSite7gogoControl::ItemData>> itemList)
 {
-	Net::WebSite::WebSite7gogoControl::ItemData *item;
+	NN<Net::WebSite::WebSite7gogoControl::ItemData> item;
 	UOSInt i = itemList->GetCount();
 	while (i-- > 0)
 	{
-		item = itemList->GetItem(i);
+		item = itemList->GetItemNoCheck(i);
 		item->message->Release();
 		SDEL_STRING(item->imgURL);
-		MemFree(item);
+		MemFreeNN(item);
 	}
 	itemList->Clear();
 }
@@ -302,7 +301,7 @@ Optional<Text::String> Net::WebSite::WebSite7gogoControl::GetUserAgent()
 	return this->userAgent;
 }
 
-void Net::WebSite::WebSite7gogoControl::FreeChannelInfo(Net::WebSite::WebSite7gogoControl::ChannelInfo *chInfo)
+void Net::WebSite::WebSite7gogoControl::FreeChannelInfo(NN<Net::WebSite::WebSite7gogoControl::ChannelInfo> chInfo)
 {
 	SDEL_STRING(chInfo->talkCode);
 	SDEL_STRING(chInfo->name);

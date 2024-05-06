@@ -68,14 +68,14 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentDblClicked(AnyTyp
 		{
 			UOSInt i = me->macList->SetEntry(log->macInt, sb.ToCString());
 			me->UpdateStatus();
-			me->EntryUpdated(me->macList->GetItem(i));
+			me->EntryUpdated(me->macList->GetItemNoCheck(i));
 		}
 	}
 	else
 	{
-		const Net::MACInfo::MACEntry *entry = me->macList->GetEntry(log->macInt);
+		NN<const Net::MACInfo::MACEntry> entry;
 		Text::CString name;
-		if (entry)
+		if (me->macList->GetEntry(log->macInt).SetTo(entry))
 		{
 			name = {entry->name, entry->nameLen};
 		}
@@ -89,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentDblClicked(AnyTyp
 			NN<Text::String> name = frm.GetNameNew();
 			UOSInt i = me->macList->SetEntry(log->macInt, name->ToCString());
 			name->Release();
-			entry = me->macList->GetItem(i);
+			entry = me->macList->GetItemNoCheck(i);
 			me->UpdateStatus();
 			me->EntryUpdated(entry);
 		}
@@ -146,8 +146,8 @@ Bool SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileStore()
 
 void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 {
-	const Net::MACInfo::MACEntry *entry;
-	const Net::MACInfo::MACEntry *entry2;
+	Optional<const Net::MACInfo::MACEntry> entry;
+	NN<const Net::MACInfo::MACEntry> entry2;
 	NN<Net::WiFiLogFile::LogFileEntry> log;
 	NN<Data::ArrayListNN<Net::WiFiLogFile::LogFileEntry>> logList = this->wifiLogFile->GetLogList();
 	Bool unkOnly = this->chkUnkOnly->IsChecked();
@@ -170,7 +170,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 		log = logList->GetItemNoCheck(i);
 		entry = this->macList->GetEntry(log->macInt);
 		valid = true;
-		if (unkOnly && (entry != 0 && entry->nameLen != 0))
+		if (unkOnly && (entry.SetTo(entry2) && entry2->nameLen != 0))
 		{
 			valid = false;
 		}
@@ -185,7 +185,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 			{
 				valid = true;
 			}
-			else if (entry && Text::StrIndexOfICase(entry->name, filterText->v) != INVALID_INDEX)
+			else if (entry.SetTo(entry2) && Text::StrIndexOfICase(entry2->name, filterText->v) != INVALID_INDEX)
 			{
 				valid = true;
 			}
@@ -193,24 +193,21 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 			{
 				if (!valid && (log->ouis[0][0] != 0 || log->ouis[0][1] != 0 || log->ouis[0][2] != 0))
 				{
-					entry2 = this->macList->GetEntryOUI(log->ouis[0]);
-					if (entry2 && Text::StrIndexOfICase(entry2->name, filterText->v) != INVALID_INDEX)
+					if (this->macList->GetEntryOUI(log->ouis[0]).SetTo(entry2) && Text::StrIndexOfICase(entry2->name, filterText->v) != INVALID_INDEX)
 					{
 						valid = true;
 					}
 				}
 				if (!valid && (log->ouis[1][0] != 0 || log->ouis[1][1] != 0 || log->ouis[1][2] != 0))
 				{
-					entry2 = this->macList->GetEntryOUI(log->ouis[1]);
-					if (entry2 && Text::StrIndexOfICase(entry2->name, filterText->v) != INVALID_INDEX)
+					if (this->macList->GetEntryOUI(log->ouis[1]).SetTo(entry2) && Text::StrIndexOfICase(entry2->name, filterText->v) != INVALID_INDEX)
 					{
 						valid = true;
 					}
 				}
 				if (!valid && (log->ouis[2][0] != 0 || log->ouis[2][1] != 0 || log->ouis[2][2] != 0))
 				{
-					entry2 = this->macList->GetEntryOUI(log->ouis[2]);
-					if (entry2 && Text::StrIndexOfICase(entry2->name, filterText->v) != INVALID_INDEX)
+					if (this->macList->GetEntryOUI(log->ouis[2]).SetTo(entry2) && Text::StrIndexOfICase(entry2->name, filterText->v) != INVALID_INDEX)
 					{
 						valid = true;
 					}
@@ -222,9 +219,9 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 		{
 			sptr = Text::StrHexBytes(sbuff, log->mac, 6, ':');
 			l = this->lvContent->AddItem(CSTRP(sbuff, sptr), log);
-			if (entry)
+			if (entry.SetTo(entry2))
 			{
-				this->lvContent->SetSubItem(l, 1, {entry->name, entry->nameLen});
+				this->lvContent->SetSubItem(l, 1, {entry2->name, entry2->nameLen});
 			}
 			else
 			{
@@ -293,7 +290,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 	}
 }
 
-void SSWR::AVIRead::AVIRWiFiLogManagerForm::EntryUpdated(const Net::MACInfo::MACEntry *entry)
+void SSWR::AVIRead::AVIRWiFiLogManagerForm::EntryUpdated(NN<const Net::MACInfo::MACEntry> entry)
 {
 	NN<const Net::WiFiLogFile::LogFileEntry> log;
 	UOSInt i;

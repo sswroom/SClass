@@ -15,11 +15,11 @@ Net::MACInfoList::MACInfoList()
 	this->modified = false;
 	UOSInt cnt;
 	Net::MACInfo::MACEntry *ents = Net::MACInfo::GetMACEntryList(&cnt);
-	Net::MACInfo::MACEntry *entry;
+	NN<Net::MACInfo::MACEntry> entry;
 	UOSInt i = 0;
 	while (i < cnt)
 	{
-		entry = MemAlloc(Net::MACInfo::MACEntry, 1);
+		entry = MemAllocNN(Net::MACInfo::MACEntry);
 		entry->rangeStart = ents[i].rangeStart;
 		entry->rangeEnd = ents[i].rangeEnd;
 		entry->name = Text::StrCopyNewC(ents[i].name, ents[i].nameLen).Ptr();
@@ -38,22 +38,27 @@ Net::MACInfoList::~MACInfoList()
 	}
 
 	UOSInt i;
-	Net::MACInfo::MACEntry *entry;
+	NN<Net::MACInfo::MACEntry> entry;
 	i = this->dataList.GetCount();
 	while (i-- > 0)
 	{
-		entry = this->dataList.GetItem(i);
+		entry = this->dataList.GetItemNoCheck(i);
 		SDEL_TEXT(entry->name);
-		MemFree(entry);
+		MemFreeNN(entry);
 	}
 }
 
-UOSInt Net::MACInfoList::GetCount()
+UOSInt Net::MACInfoList::GetCount() const
 {
 	return this->dataList.GetCount();
 }
 
-const Net::MACInfo::MACEntry *Net::MACInfoList::GetItem(UOSInt index)
+NN<const Net::MACInfo::MACEntry> Net::MACInfoList::GetItemNoCheck(UOSInt index) const
+{
+	return this->dataList.GetItemNoCheck(index);
+}
+
+Optional<const Net::MACInfo::MACEntry> Net::MACInfoList::GetItem(UOSInt index) const
 {
 	return this->dataList.GetItem(index);
 }
@@ -63,13 +68,13 @@ OSInt Net::MACInfoList::GetIndex(UInt64 macInt)
 	OSInt i;
 	OSInt j;
 	OSInt k;
-	Net::MACInfo::MACEntry *entry;
+	NN<Net::MACInfo::MACEntry> entry;
 	i = 0;
 	j = (OSInt)this->dataList.GetCount() - 1;
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		entry = this->dataList.GetItem((UOSInt)k);
+		entry = this->dataList.GetItemNoCheck((UOSInt)k);
 		if (entry->rangeStart > macInt)
 		{
 			j = k - 1;
@@ -86,7 +91,7 @@ OSInt Net::MACInfoList::GetIndex(UInt64 macInt)
 	return ~i;
 }
 
-const Net::MACInfo::MACEntry *Net::MACInfoList::GetEntry(UInt64 macInt)
+Optional<const Net::MACInfo::MACEntry> Net::MACInfoList::GetEntry(UInt64 macInt)
 {
 	OSInt si = this->GetIndex(macInt);
 	if (si >= 0)
@@ -96,7 +101,7 @@ const Net::MACInfo::MACEntry *Net::MACInfoList::GetEntry(UInt64 macInt)
 	return 0;
 }
 
-const Net::MACInfo::MACEntry *Net::MACInfoList::GetEntryOUI(const UInt8 *oui)
+Optional<const Net::MACInfo::MACEntry> Net::MACInfoList::GetEntryOUI(const UInt8 *oui)
 {
 	UInt8 macBuff[8];
 	macBuff[0] = 0;
@@ -123,12 +128,12 @@ UOSInt Net::MACInfoList::SetEntry(UInt64 macInt, Text::CString name)
 
 UOSInt Net::MACInfoList::SetEntry(UInt64 rangeStart, UInt64 rangeEnd, Text::CString name)
 {
-	Net::MACInfo::MACEntry *entry;
+	NN<Net::MACInfo::MACEntry> entry;
 	this->modified = true;
 	OSInt si = this->GetIndex(rangeStart);
 	if (si >= 0)
 	{
-		entry = this->dataList.GetItem((UOSInt)si);
+		entry = this->dataList.GetItemNoCheck((UOSInt)si);
 		SDEL_TEXT(entry->name);
 		entry->name = Text::StrCopyNewC(name.v, name.leng).Ptr();
 		entry->nameLen = name.leng;
@@ -136,7 +141,7 @@ UOSInt Net::MACInfoList::SetEntry(UInt64 rangeStart, UInt64 rangeEnd, Text::CStr
 	}
 	else
 	{
-		entry = MemAlloc(Net::MACInfo::MACEntry, 1);
+		entry = MemAllocNN(Net::MACInfo::MACEntry);
 		entry->rangeStart = rangeStart;
 		entry->rangeEnd = rangeEnd;
 		entry->name = Text::StrCopyNewC(name.v, name.leng).Ptr();
@@ -224,7 +229,7 @@ Bool Net::MACInfoList::Store()
 	else
 	{
 		Text::StringBuilderUTF8 sb;
-		Net::MACInfo::MACEntry *entry;
+		NN<Net::MACInfo::MACEntry> entry;
 		IO::BufferedOutputStream cstm(fs, 8192);
 		Text::UTF8Writer writer(cstm);
 		writer.WriteSignature();
@@ -232,7 +237,7 @@ Bool Net::MACInfoList::Store()
 		j = this->dataList.GetCount();
 		while (i < j)
 		{
-			entry = this->dataList.GetItem(i);
+			entry = this->dataList.GetItemNoCheck(i);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("\t{0x"));
 			sb.AppendHex64(entry->rangeStart);

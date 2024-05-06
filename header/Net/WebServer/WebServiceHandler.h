@@ -1,7 +1,7 @@
 #ifndef _SM_NET_WEBSERVER_WEBSERVICEHANDLER
 #define _SM_NET_WEBSERVER_WEBSERVICEHANDLER
 #include "Data/FastMap.h"
-#include "Data/FastStringMap.h"
+#include "Data/FastStringMapNN.h"
 #include "Net/WebServer/HTTPDirectoryHandler.h"
 
 namespace Net
@@ -19,7 +19,7 @@ namespace Net
 				Data::FastMap<Int32, ServiceFunc> funcs;
 			} ServiceInfo;
 			
-			Data::FastStringMap<ServiceInfo *> services;
+			Data::FastStringMapNN<ServiceInfo> services;
 
 		protected:
 			virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);

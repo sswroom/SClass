@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "Net/MQTTFailoverClient.h"
 
-void Net::MQTTFailoverClient::FreeClient(ClientInfo *cliInfo)
+void Net::MQTTFailoverClient::FreeClient(NN<ClientInfo> cliInfo)
 {
-	MemFree(cliInfo);
+	MemFreeNN(cliInfo);
 }
 
 void __stdcall Net::MQTTFailoverClient::OnMessage(AnyType userObj, Text::CStringNN topic, const Data::ByteArrayR &buff)
@@ -30,14 +30,14 @@ Net::MQTTFailoverClient::MQTTFailoverClient(Net::FailoverType foType, NN<Net::So
 
 Net::MQTTFailoverClient::~MQTTFailoverClient()
 {
-	LIST_FREE_FUNC(&this->cliList, this->FreeClient);
+	this->cliList.FreeAll(FreeClient);
 }
 
 void Net::MQTTFailoverClient::AddClient(Text::CString host, UInt16 port, Text::CString username, Text::CString password, Bool webSocket)
 {
-	ClientInfo *cliInfo = MemAlloc(ClientInfo, 1);
+	NN<ClientInfo> cliInfo = MemAllocNN(ClientInfo);
 	cliInfo->me = this;
-	NEW_CLASS(cliInfo->client, Net::MQTTStaticClient(this->sockf, this->ssl, host, port, username, password, webSocket, OnMessage, cliInfo, this->kaSeconds, 0));
+	NEW_CLASSNN(cliInfo->client, Net::MQTTStaticClient(this->sockf, this->ssl, host, port, username, password, webSocket, OnMessage, cliInfo, this->kaSeconds, 0));
 	this->cliList.Add(cliInfo);
 	this->foHdlr.AddChannel(cliInfo->client);
 }
@@ -50,20 +50,20 @@ void Net::MQTTFailoverClient::HandlePublishMessage(Net::MQTTConn::PublishMessage
 
 Bool Net::MQTTFailoverClient::Subscribe(Text::CString topic)
 {
-	Data::ArrayList<Net::MQTTStaticClient*> cliList;
-	this->foHdlr.GetAllChannels(&cliList);
+	Data::ArrayListNN<Net::MQTTStaticClient> cliList;
+	this->foHdlr.GetAllChannels(cliList);
 	UOSInt i = cliList.GetCount();
 	while (i-- > 0)
 	{
-		cliList.GetItem(i)->Subscribe(topic);
+		cliList.GetItemNoCheck(i)->Subscribe(topic);
 	}
 	return true;
 }
 
 Bool Net::MQTTFailoverClient::Publish(Text::CString topic, Text::CString message)
 {
-	Net::MQTTStaticClient *cli = this->foHdlr.GetCurrChannel();
-	if (cli == 0)
+	NN<Net::MQTTStaticClient> cli;
+	if (!this->foHdlr.GetCurrChannel().SetTo(cli))
 	{
 		return false;
 	}
@@ -71,15 +71,15 @@ Bool Net::MQTTFailoverClient::Publish(Text::CString topic, Text::CString message
 	{
 		return true;
 	}
-	Data::ArrayList<Net::MQTTStaticClient*> cliList;
-	this->foHdlr.GetOtherChannels(&cliList);
+	Data::ArrayListNN<Net::MQTTStaticClient> cliList;
+	this->foHdlr.GetOtherChannels(cliList);
 	UOSInt i = 0;
 	UOSInt j = cliList.GetCount();
 	while (i < j)
 	{
-		if (cliList.GetItem(i)->Publish(topic, message))
+		if (cliList.GetItemNoCheck(i)->Publish(topic, message))
 		{
-			this->foHdlr.SetCurrChannel(cliList.GetItem(i));
+			this->foHdlr.SetCurrChannel(cliList.GetItemNoCheck(i));
 			return true;
 		}
 		i++;

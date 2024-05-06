@@ -24,7 +24,7 @@ namespace Text
 				Int32 modeStatus;
 				Bool lineStart;
 				Data::ArrayList<ParserMode> *pastModes;
-				Data::StringMap<DefineInfo*> *defines;
+				Data::StringMapNN<DefineInfo> *defines;
 				Data::ArrayList<Int32> *ifValid;
 				Text::StringBuilderW *sb;
 			} ParseStatus;*/

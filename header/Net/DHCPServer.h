@@ -1,7 +1,7 @@
 #ifndef _SM_NET_DHCPSERVER
 #define _SM_NET_DHCPSERVER
 #include "Data/ArrayList.h"
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "Net/UDPServer.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
@@ -36,7 +36,7 @@ namespace Net
 
 		Sync::Mutex devMut;
 		UInt8 *devUsed;
-		Data::FastMap<UInt64, DeviceStatus*> devMap;
+		Data::FastMapNN<UInt64, DeviceStatus> devMap;
 
 		static void __stdcall PacketHdlr(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, AnyType userData);
 	public:
@@ -46,7 +46,7 @@ namespace Net
 		Bool IsError() const;
 
 		void UseStatus(NN<Sync::MutexUsage> mutUsage) const;
-		const Data::ReadingList<DeviceStatus*> *StatusGetList() const;
+		NN<const Data::ReadingListNN<DeviceStatus>> StatusGetList() const;
 		UInt32 GetIPLeaseTime() const;
 	};
 }

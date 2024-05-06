@@ -62,8 +62,8 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnNewClicked(AnyType userObj)
 	UOSInt keySize;
 	Text::TextBinEnc::Base32Enc b32;
 	keySize = b32.DecodeBin(sbKey.ToString(), sbKey.GetLength(), buff);
-	EntryInfo *entry;
-	entry = MemAlloc(EntryInfo, 1);
+	NN<EntryInfo> entry;
+	entry = MemAllocNN(EntryInfo);
 	entry->name = Text::String::New(sbName.ToCString());
 	if (type == 0)
 	{
@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnNewClicked(AnyType userObj)
 		NEW_CLASS(entry->otp, Crypto::TOTP(buff, keySize));
 		entry->lastCounter = 0;
 	}
-	me->entryList->Add(entry);
+	me->entryList.Add(entry);
 	UOSInt i = me->lvEntry->AddItem(entry->name, entry);
 	me->lvEntry->SetSubItem(i, 1, CSTR("-"));
 }
@@ -85,8 +85,8 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnEntryDblClicked(AnyType userObj, UO
 	NN<SSWR::AVIRead::AVIROTPForm> me = userObj.GetNN<SSWR::AVIRead::AVIROTPForm>();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	EntryInfo *entry = me->entryList->GetItem(index);
-	if (entry->otp->GetType() == Crypto::OTP::OTPType::HOTP)
+	NN<EntryInfo> entry;
+	if (me->entryList.GetItem(index).SetTo(entry) && entry->otp->GetType() == Crypto::OTP::OTPType::HOTP)
 	{
 		sptr = entry->otp->CodeString(sbuff, entry->otp->NextCode());
 		entry->lastCounter = entry->otp->GetCounter();
@@ -99,11 +99,11 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnTimerTick(AnyType userObj)
 	NN<SSWR::AVIRead::AVIROTPForm> me = userObj.GetNN<SSWR::AVIRead::AVIROTPForm>();
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
-	EntryInfo *entry;
-	UOSInt i = me->entryList->GetCount();
+	NN<EntryInfo> entry;
+	UOSInt i = me->entryList.GetCount();
 	while (i-- > 0)
 	{
-		entry = me->entryList->GetItem(i);
+		entry = me->entryList.GetItemNoCheck(i);
 		if (entry->lastCounter != entry->otp->GetCounter())
 		{
 			sptr = entry->otp->CodeString(sbuff, entry->otp->NextCode());
@@ -119,8 +119,6 @@ SSWR::AVIRead::AVIROTPForm::AVIROTPForm(Optional<UI::GUIClientControl> parent, N
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
-	NEW_CLASS(this->entryList, Data::ArrayList<EntryInfo*>());
-
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->grpNew = ui->NewGroupBox(*this, CSTR("New Entry"));
@@ -161,16 +159,15 @@ SSWR::AVIRead::AVIROTPForm::AVIROTPForm(Optional<UI::GUIClientControl> parent, N
 
 SSWR::AVIRead::AVIROTPForm::~AVIROTPForm()
 {
-	EntryInfo *entry;
-	UOSInt i = this->entryList->GetCount();
+	NN<EntryInfo> entry;
+	UOSInt i = this->entryList.GetCount();
 	while (i-- > 0)
 	{
-		entry = this->entryList->GetItem(i);
+		entry = this->entryList.GetItemNoCheck(i);
 		entry->name->Release();
 		DEL_CLASS(entry->otp);
-		MemFree(entry);
+		MemFreeNN(entry);
 	}
-	DEL_CLASS(this->entryList);
 }
 
 void SSWR::AVIRead::AVIROTPForm::OnMonitorChanged()

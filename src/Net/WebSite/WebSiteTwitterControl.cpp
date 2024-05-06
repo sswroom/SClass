@@ -22,7 +22,7 @@ Net::WebSite::WebSiteTwitterControl::~WebSiteTwitterControl()
 	OPTSTR_DEL(this->userAgent);
 }
 
-UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> channelId, UOSInt pageNo, Data::ArrayList<Net::WebSite::WebSiteTwitterControl::ItemData*> *itemList, Net::WebSite::WebSiteTwitterControl::ChannelInfo *chInfo)
+UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> channelId, UOSInt pageNo, NN<Data::ArrayListNN<Net::WebSite::WebSiteTwitterControl::ItemData>> itemList, Optional<Net::WebSite::WebSiteTwitterControl::ChannelInfo> chInfo)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt retCnt = 0;
@@ -30,7 +30,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 	UOSInt j;
 	sb.AppendC(UTF8STRC("https://twitter.com/"));
 	sb.Append(channelId);
-	ItemData *item;
+	NN<ItemData> item;
 	NN<Text::XMLAttrib> attr;
 	Int64 conversationId;
 	Int64 recTime;
@@ -215,7 +215,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 #endif				
 				if (conversationId != 0 && recTime != 0 && message != 0)
 				{
-					item = MemAlloc(ItemData, 1);
+					item = MemAllocNN(ItemData);
 					item->id = conversationId;
 					item->recTime = recTime;
 					item->message = message;
@@ -228,6 +228,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 			}
 			else if (reader.GetAttrib((UOSInt)0).SetTo(attr) && attr->name->Equals(UTF8STRC("class")) && attr->value && attr->value->Equals(UTF8STRC("ProfileHeaderCard")))
 			{
+				NN<ChannelInfo> nnchInfo;
 				UOSInt pathLev = reader.GetPathLev();
 				while (reader.ReadNext() && reader.GetPathLev() > pathLev)
 				{
@@ -238,10 +239,10 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 							sb.ClearStr();
 							reader.ReadNodeText(sb);
 							sb.TrimWSCRLF();
-							if (chInfo)
+							if (chInfo.SetTo(nnchInfo))
 							{
-								SDEL_STRING(chInfo->name);
-								chInfo->name = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+								SDEL_STRING(nnchInfo->name);
+								nnchInfo->name = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 							}
 						}
 						else if (reader.GetNodeTextNN()->Equals(UTF8STRC("p")))
@@ -256,10 +257,10 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 									sb.ClearStr();
 									reader.ReadNodeText(sb);
 									sb.TrimWSCRLF();
-									if (chInfo)
+									if (chInfo.SetTo(nnchInfo))
 									{
-										SDEL_STRING(chInfo->bio);
-										chInfo->bio = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+										SDEL_STRING(nnchInfo->bio);
+										nnchInfo->bio = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
 									}
 									break;
 								}
@@ -284,16 +285,16 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(NN<Text::String> cha
 	return retCnt;
 }
 
-void Net::WebSite::WebSiteTwitterControl::FreeItems(Data::ArrayList<Net::WebSite::WebSiteTwitterControl::ItemData*> *itemList)
+void Net::WebSite::WebSiteTwitterControl::FreeItems(NN<Data::ArrayListNN<Net::WebSite::WebSiteTwitterControl::ItemData>> itemList)
 {
-	ItemData *item;
+	NN<ItemData> item;
 	UOSInt i = itemList->GetCount();
 	while (i-- > 0)
 	{
-		item = itemList->GetItem(i);
+		item = itemList->GetItemNoCheck(i);
 		item->message->Release();
 		SDEL_STRING(item->imgURL);
-		MemFree(item);
+		MemFreeNN(item);
 	}
 	itemList->Clear();
 }

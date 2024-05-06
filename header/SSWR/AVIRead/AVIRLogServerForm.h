@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRLOGSERVERFORM
 #define _SM_SSWR_AVIREAD_AVIRLOGSERVERFORM
-#include "Data/FastMap.h"
+#include "Data/FastMapNN.h"
 #include "Net/LogServer.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/ListBoxLogger.h"
@@ -42,7 +42,7 @@ namespace SSWR
 			Bool msgListUpd;
 			Sync::Mutex ipMut;
 			IO::LogTool log;
-			Data::FastMap<UInt32, IPLog*> ipMap;
+			Data::FastMapNN<UInt32, IPLog> ipMap;
 
 		private:
 			static void __stdcall OnStartClick(AnyType userObj);

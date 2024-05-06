@@ -72,14 +72,14 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnTimerTick(AnyType userOb
 		me->tableUpdated = false;
 		me->lvAnswers->ClearItems();
 		Sync::MutexUsage mutUsage;
-		NN<const Data::ReadingList<Net::NetBIOSScanner::NameAnswer*>> ansList = me->netbios->GetAnswers(mutUsage);
-		Net::NetBIOSScanner::NameAnswer *ans;
+		NN<const Data::ReadingListNN<Net::NetBIOSScanner::NameAnswer>> ansList = me->netbios->GetAnswers(mutUsage);
+		NN<Net::NetBIOSScanner::NameAnswer> ans;
 		UOSInt i = 0;
 		UOSInt j = ansList->GetCount();
 		UOSInt k;
 		while (i < j)
 		{
-			ans = ansList->GetItem(i);
+			ans = ansList->GetItemNoCheck(i);
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32((UInt8*)&ans->sortableIP));
 			me->lvAnswers->AddItem(CSTRP(sbuff, sptr), ans);
 			sptr = Text::StrHexBytes(sbuff, ans->unitId, 6, ':');

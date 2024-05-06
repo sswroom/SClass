@@ -219,7 +219,7 @@ UOSInt Net::TCPBoardcastStream::Write(const UInt8 *buff, UOSInt size)
 {
 	Bool cliFound = false;
 	UOSInt i;
-	Net::TCPClient *cli;
+	NN<Net::TCPClient> cli;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
@@ -229,22 +229,23 @@ UOSInt Net::TCPBoardcastStream::Write(const UInt8 *buff, UOSInt size)
 	i = this->cliMgr->GetClientCount();
 	while (i-- > 0)
 	{
-		
-		cli = this->cliMgr->GetClient(i, cliData);
-		cli->Write(buff, size);
-
-		if (this->log->HasHandler())
+		if (this->cliMgr->GetClient(i, cliData).SetTo(cli))
 		{
-			sb.ClearStr();
-			sb.AppendC(UTF8STRC("Sending to "));
-			sptr = cli->GetRemoteName(sbuff);
-			sb.AppendP(sbuff, sptr);
-			sb.AppendC(UTF8STRC(" with "));
-			sb.AppendUOSInt(size);
-			this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
-		}
+			cli->Write(buff, size);
 
-		cliFound = true;
+			if (this->log->HasHandler())
+			{
+				sb.ClearStr();
+				sb.AppendC(UTF8STRC("Sending to "));
+				sptr = cli->GetRemoteName(sbuff);
+				sb.AppendP(sbuff, sptr);
+				sb.AppendC(UTF8STRC(" with "));
+				sb.AppendUOSInt(size);
+				this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
+			}
+
+			cliFound = true;
+		}
 	}
 	mutUsage.EndUse();
 	if (!cliFound)

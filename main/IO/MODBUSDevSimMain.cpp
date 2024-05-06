@@ -48,22 +48,22 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		DEL_CLASS(cfg);
 		return 1;
 	}
-	IO::MODBUSDevSim *dev = 0;
+	NN<IO::MODBUSDevSim> dev;
 	if (s->Equals(UTF8STRC("ED516")))
 	{
-		NEW_CLASS(dev, IO::ED516Sim());
+		NEW_CLASSNN(dev, IO::ED516Sim());
 	}
 	else if (s->Equals(UTF8STRC("ED527")))
 	{
-		NEW_CLASS(dev, IO::ED527Sim());
+		NEW_CLASSNN(dev, IO::ED527Sim());
 	}
 	else if (s->Equals(UTF8STRC("ED538")))
 	{
-		NEW_CLASS(dev, IO::ED538Sim());
+		NEW_CLASSNN(dev, IO::ED538Sim());
 	}
 	else if (s->Equals(UTF8STRC("ED588")))
 	{
-		NEW_CLASS(dev, IO::ED588Sim());
+		NEW_CLASSNN(dev, IO::ED588Sim());
 	}
 	else
 	{
@@ -80,7 +80,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	if (modbusListener.IsError())
 	{
 		console.WriteLine(CSTR("Error in listening to MODBUSPort"));
-		DEL_CLASS(dev);
+		dev.Delete();
 		return 1;
 	}
 	else

@@ -46,7 +46,7 @@ namespace SSWR
 			static void __stdcall OnFilterClicked(AnyType userObj);
 			Bool LogFileStore();
 			void LogUIUpdate();
-			void EntryUpdated(const Net::MACInfo::MACEntry *entry);
+			void EntryUpdated(NN<const Net::MACInfo::MACEntry> entry);
 
 			void UpdateStatus();
 		public:

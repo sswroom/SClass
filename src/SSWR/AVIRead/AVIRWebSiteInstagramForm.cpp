@@ -18,16 +18,16 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnRequestUserClicked(Any
 		UOSInt j;
 		Net::WebSite::WebSiteInstagramControl::ChannelInfo chInfo;
 		MemClear(&chInfo, sizeof(chInfo));
-		Data::ArrayList<Net::WebSite::WebSiteInstagramControl::ItemData*> itemList;
-		Net::WebSite::WebSiteInstagramControl::ItemData *item;
+		Data::ArrayListNN<Net::WebSite::WebSiteInstagramControl::ItemData> itemList;
+		NN<Net::WebSite::WebSiteInstagramControl::ItemData> item;
 		NN<Text::String> s = Text::String::New(sb.ToString(), sb.GetLength());
-		me->ctrl->GetChannelItems(s, 0, &itemList, &chInfo);
+		me->ctrl->GetChannelItems(s, 0, itemList, chInfo);
 		s->Release();
 		i = 0;
 		j = itemList.GetCount();
 		while (i < j)
 		{
-			item = itemList.GetItem(i);
+			item = itemList.GetItemNoCheck(i);
 			sptr = Text::StrInt64(sbuff, item->id);
 			me->lvItems->AddItem(CSTRP(sbuff, sptr), 0);
 			dt.SetTicks(item->recTime);
@@ -49,8 +49,8 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnRequestUserClicked(Any
 			me->lvItems->SetSubItem(i, 4, sb.ToCString());
 			i++;
 		}
-		me->ctrl->FreeItems(&itemList);
-		me->ctrl->FreeChannelInfo(&chInfo);
+		me->ctrl->FreeItems(itemList);
+		me->ctrl->FreeChannelInfo(chInfo);
 	}
 }
 

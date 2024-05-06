@@ -71,12 +71,12 @@ void Net::SSHForwarder::DoEvents()
 	UInt8 buff[8192];
 	UOSInt size;
 	Sync::MutexUsage mutUsage;
-	Net::TCPClient *cli;
+	NN<Net::TCPClient> cli;
 	this->cliMgr.UseGetClient(mutUsage);
 	UOSInt i = this->cliMgr.GetClientCount();
 	while (i-- > 0)
 	{
-		if ((cli = this->cliMgr.GetClient(i, cliData)) != 0)
+		if (this->cliMgr.GetClient(i, cliData).SetTo(cli))
 		{
 			if (cliData.GetNN<Net::SSHTCPChannel>()->TryRead(buff, sizeof(buff), size))
 			{

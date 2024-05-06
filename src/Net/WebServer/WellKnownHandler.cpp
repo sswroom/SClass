@@ -8,8 +8,8 @@ Bool Net::WebServer::WellKnownHandler::ProcessRequest(NN<Net::WebServer::IWebReq
 	if (subReq.StartsWith(UTF8STRC("/acme-challenge/")))
 	{
 		Sync::MutexUsage mutUsage(this->acmeMut);
-		Text::String *s = this->acmeMap.GetC(subReq.Substring(16));
-		if (s)
+		NN<Text::String> s;
+		if (this->acmeMap.GetC(subReq.Substring(16)).SetTo(s))
 		{
 			this->AddResponseHeaders(req, resp);
 			return resp->ResponseText(s->ToCString(), CSTR("text/plain"));
@@ -30,7 +30,7 @@ Bool __stdcall Net::WebServer::WellKnownHandler::AddFunc(NN<Net::WebServer::IWeb
 		if (t->Equals(UTF8STRC("acme")))
 		{
 			Sync::MutexUsage mutUsage(me->acmeMut);
-			if (val.Set(me->acmeMap.PutNN(name, val->Clone().Ptr())))
+			if (me->acmeMap.PutNN(name, val->Clone()).SetTo(val))
 			{
 				val->Release();
 			}
@@ -56,6 +56,6 @@ Net::WebServer::WellKnownHandler::~WellKnownHandler()
 	UOSInt i = this->acmeMap.GetCount();
 	while (i-- > 0)
 	{
-		this->acmeMap.GetItem(i)->Release();
+		this->acmeMap.GetItemNoCheck(i)->Release();
 	}
 }

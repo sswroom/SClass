@@ -79,7 +79,7 @@ void __stdcall Net::LogServer::ClientTimeout(NN<Net::TCPClient> cli, AnyType use
 {
 }
 
-Net::LogServer::IPStatus *Net::LogServer::GetIPStatus(NN<const Net::SocketUtil::AddressInfo> addr)
+Optional<Net::LogServer::IPStatus> Net::LogServer::GetIPStatus(NN<const Net::SocketUtil::AddressInfo> addr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -87,15 +87,13 @@ Net::LogServer::IPStatus *Net::LogServer::GetIPStatus(NN<const Net::SocketUtil::
 	if (addr->addrType == Net::AddrType::IPv4)
 	{
 		UInt32 ip = ReadMUInt32(addr->addr);
-		IPStatus *status;
+		NN<IPStatus> status;
 		Sync::MutexUsage mutUsage(this->ipMut);
-		status = this->ipMap.Get(ip);
-		if (status)
+		if (this->ipMap.Get(ip).SetTo(status))
 		{
-			mutUsage.EndUse();
 			return status;
 		}
-		status = MemAlloc(IPStatus, 1);
+		status = MemAllocNN(IPStatus);
 		status->ip = ReadNUInt32(addr->addr);
 		sptr = this->logPath->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
@@ -132,13 +130,13 @@ Net::LogServer::~LogServer()
 	DEL_CLASS(this->cliMgr);
 	this->logPath->Release();
 	UOSInt i;
-	IPStatus *status;
+	NN<IPStatus> status;
 	i = this->ipMap.GetCount();
 	while (i-- > 0)
 	{
-		status = this->ipMap.GetItem(i);
+		status = this->ipMap.GetItemNoCheck(i);
 		DEL_CLASS(status->log);
-		MemFree(status);
+		MemFreeNN(status);
 	}
 }
 
@@ -164,6 +162,7 @@ void Net::LogServer::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTyp
 	UOSInt replySize;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
+	NN<IPStatus> status;
 	NN<ClientStatus> cliStatus = stmObj.GetNN<ClientStatus>();
 	switch (cmdType)
 	{
@@ -186,44 +185,44 @@ void Net::LogServer::DataParsed(NN<IO::Stream> stm, AnyType stmObj, Int32 cmdTyp
 				this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 			}
 
-			if (cliStatus->status)
+			if (cliStatus->status.SetTo(status))
 			{
 				sb.ClearStr();
 				sb.AppendC(&cmd[8], cmdSize - 8);
-				cliStatus->status->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
+				status->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 
 				if (this->logHdlr)
 				{
-					this->logHdlr(this->logHdlrObj, cliStatus->status->ip, sb.ToCString());
+					this->logHdlr(this->logHdlrObj, status->ip, sb.ToCString());
 				}
 			}
 		}
 		else if (cmdSize - 8 < 256)
 		{
-			if (cliStatus->status)
+			if (cliStatus->status.SetTo(status))
 			{
 				MemCopyNO(sbuff, &cmd[8], cmdSize - 8);
 				sbuff[cmdSize - 8] = 0;
-				cliStatus->status->log->LogMessage({sbuff, cmdSize - 8}, IO::LogHandler::LogLevel::Command);
+				status->log->LogMessage({sbuff, cmdSize - 8}, IO::LogHandler::LogLevel::Command);
 
 				if (this->logHdlr)
 				{
-					this->logHdlr(this->logHdlrObj, cliStatus->status->ip, {sbuff, cmdSize - 8});
+					this->logHdlr(this->logHdlrObj, status->ip, {sbuff, cmdSize - 8});
 				}
 			}
 		}
 		else
 		{
-			if (cliStatus->status)
+			if (cliStatus->status.SetTo(status))
 			{
 				UInt8 *tmpPtr = MemAlloc(UInt8, cmdSize - 8 + 1);
 				MemCopyNO(tmpPtr, &cmd[8], cmdSize - 8);
 				tmpPtr[cmdSize - 8] = 0;
-				cliStatus->status->log->LogMessage({tmpPtr, cmdSize - 8}, IO::LogHandler::LogLevel::Command);
+				status->log->LogMessage({tmpPtr, cmdSize - 8}, IO::LogHandler::LogLevel::Command);
 
 				if (this->logHdlr)
 				{
-					this->logHdlr(this->logHdlrObj, cliStatus->status->ip, {tmpPtr, cmdSize - 8});
+					this->logHdlr(this->logHdlrObj, status->ip, {tmpPtr, cmdSize - 8});
 				}
 				MemFree(tmpPtr);
 			}

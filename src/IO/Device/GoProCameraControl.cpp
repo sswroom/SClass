@@ -82,9 +82,12 @@ void IO::Device::GoProCameraControl::GetMediaList()
 										if (jsObjFS->GetObjectString(CSTR("n")).SetTo(fileName) && jsObjFS->GetObjectString(CSTR("s")).SetTo(fileSize))
 										{
 											file = MemAllocNN(IO::CameraControl::FileInfo);
-											fileName->ConcatTo(file->fileName);
-											dirName->ConcatTo(file->filePath);
-											if (Text::StrEndsWithICase(file->fileName, (const UTF8Char*)".MP4"))
+											file->fileNameLen = fileName->leng;
+											fileName->ConcatTo(file->fileName2);
+											file->filePathLen = dirName->leng;
+											dirName->ConcatTo(file->filePath2);
+
+											if (Text::StrEndsWithICaseC(file->fileName2, file->fileNameLen, UTF8STRC(".MP4")))
 											{
 												file->fileType = IO::CameraControl::FT_MOVIE;
 											}
@@ -246,9 +249,9 @@ Bool IO::Device::GoProCameraControl::GetFile(NN<IO::CameraControl::FileInfo> fil
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
 	sptr = Net::SocketUtil::GetAddrName(sptr, this->addr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(":8080/videos/DCIM/"));
-	sptr = Text::StrConcat(sptr, file->filePath);
+	sptr = Text::StrConcatC(sptr, file->filePath2, file->filePathLen);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
-	sptr = Text::StrConcat(sptr, file->fileName);
+	sptr = Text::StrConcatC(sptr, file->fileName2, file->fileNameLen);
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	while ((readSize = cli->Read(BYTEARR(sbuff))) > 0)
 	{
@@ -265,17 +268,16 @@ Bool IO::Device::GoProCameraControl::GetThumbnailFile(NN<IO::CameraControl::File
 	UOSInt readSize;
 	UInt64 totalSize = 0;
 	UTF8Char *sptr;
-	UOSInt nameLen = Text::StrCharCnt(file->fileName);
-	if (!Text::StrStartsWithC(file->fileName, nameLen, UTF8STRC("GOPR")))
+	if (!Text::StrStartsWithC(file->fileName2, file->fileNameLen, UTF8STRC("GOPR")))
 	{
 		return false;
 	}
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
 	sptr = Net::SocketUtil::GetAddrName(sptr, this->addr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(":8080/gp/gpMediaMetadata?p="));
-	sptr = Text::StrConcat(sptr, file->filePath);
+	sptr = Text::StrConcatC(sptr, file->filePath2, file->filePathLen);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
-	sptr = Text::StrConcatC(sptr, file->fileName, nameLen);
+	sptr = Text::StrConcatC(sptr, file->fileName2, file->fileNameLen);
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	while ((readSize = cli->Read(BYTEARR(sbuff))) > 0)
 	{

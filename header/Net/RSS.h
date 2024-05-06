@@ -35,7 +35,7 @@ namespace Net
 		Text::String *GetId();
 	};
 
-	class RSS : public Data::ReadingList<RSSItem*>
+	class RSS : public Data::ReadingListNN<RSSItem>
 	{
 	private:
 		Bool isError;
@@ -54,16 +54,17 @@ namespace Net
 //		Text::String *cloud;
 		Int32 ttl;
 //		RSSImage *image;
-		Data::ArrayList<RSSItem*> items;
+		Data::ArrayListNN<RSSItem> items;
 
 	public:
 		RSS(Text::CStringNN url, Optional<Text::String> userAgent, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Data::Duration timeout, NN<IO::LogTool> log);
 		virtual ~RSS();
 
 		Bool IsError();
-		virtual UOSInt Add(RSSItem* val);
+		virtual UOSInt Add(NN<RSSItem> val);
 		virtual UOSInt GetCount() const;
-		virtual RSSItem *GetItem(UOSInt Index) const;
+		virtual NN<RSSItem> GetItemNoCheck(UOSInt Index) const;
+		virtual Optional<RSSItem> GetItem(UOSInt Index) const;
 
 		Text::String *GetTitle() const;
 		Text::String *GetLink() const;

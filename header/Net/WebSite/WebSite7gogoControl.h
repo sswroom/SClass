@@ -36,14 +36,14 @@ namespace Net
 			Optional<Text::EncodingFactory> encFact;
 			Optional<Text::String> userAgent;
 
-			ItemData *ParsePost(Text::JSONObject *postObj);
+			Optional<ItemData> ParsePost(Text::JSONObject *postObj);
 		public:
 			WebSite7gogoControl(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Optional<Text::String> userAgent);
 			~WebSite7gogoControl();
 
-			OSInt GetChannelItems(NN<Text::String> channelId, OSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);
-			void FreeItems(Data::ArrayList<ItemData*> *itemList);
-			void FreeChannelInfo(ChannelInfo *chInfo);
+			OSInt GetChannelItems(NN<Text::String> channelId, OSInt pageNo, NN<Data::ArrayListNN<ItemData>> itemList, Optional<ChannelInfo> chInfo);
+			void FreeItems(NN<Data::ArrayListNN<ItemData>> itemList);
+			void FreeChannelInfo(NN<ChannelInfo> chInfo);
 			Optional<Text::String> GetUserAgent();
 		};
 	}
