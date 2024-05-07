@@ -85,7 +85,6 @@ namespace Data
 	template <class T> ArrayListNN<T>::~ArrayListNN()
 	{
 		MemFreeArr(arr);
-		arr = 0;
 	}
 
 	template <class T> UOSInt ArrayListNN<T>::Add(NN<T> val)

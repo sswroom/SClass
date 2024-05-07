@@ -95,7 +95,8 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	{
 		return false;
 	}
-	Media::RasterImage *srcImg = 0;
+	Optional<Media::RasterImage> srcImg = 0;
+	NN<Media::RasterImage> nnsrcImg;
 	NN<Media::ImageList> imgList;
 	UInt8 *jpgBuff;
 	UOSInt jpgSize;
@@ -106,7 +107,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	}
 	jpgBuff = mstm.GetBuff(jpgSize);
 	NN<Media::EXIFData> exif;
-	if (srcImg != 0 && srcImg->exif.SetTo(exif) && jpgBuff[0] == 0xff && jpgBuff[1] == 0xd8)
+	if (srcImg.SetTo(nnsrcImg) && nnsrcImg->exif.SetTo(exif) && jpgBuff[0] == 0xff && jpgBuff[1] == 0xd8)
 	{
 		UOSInt i;
 		UOSInt j;
@@ -141,7 +142,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 			}
 			if (jpgBuff[i + 1] == 0xdb)
 			{
-				const UInt8 *iccBuff = srcImg->info.color.GetRAWICC();
+				const UInt8 *iccBuff = nnsrcImg->info.color.GetRAWICC();
 				if (iccBuff)
 				{
 					UOSInt iccLeng = ReadMUInt32(iccBuff);

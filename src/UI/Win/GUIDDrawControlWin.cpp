@@ -497,7 +497,7 @@ UI::GUIDDrawControl::GUIDDrawControl(NN<GUICore> ui, NN<UI::GUIClientControl> pa
 
 	this->currScnMode = SM_VFS;
 	this->surfaceMon = 0;
-	NEW_CLASSNN(this->surfaceMgr, Media::DDrawManager(ui->GetMonitorMgr(), colorSess.Ptr()));
+	NEW_CLASSNN(this->surfaceMgr, Media::DDrawManager(ui->GetMonitorMgr(), colorSess));
 	if (((Media::DDrawManager*)this->surfaceMgr.Ptr())->IsError())
 	{
 	}

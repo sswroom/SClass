@@ -27,7 +27,7 @@ private:
 
 public:
 	UnsafeArray() = default;
-
+	UnsafeArray(std::nullptr_t) = delete;
 	UnsafeArray(T *p)
 	{
 		this->SetPtr(p);

@@ -27,6 +27,7 @@ namespace Data
 		UInt8 GetClkSeqHiRes() const;
 		UInt8 GetClkSeqLow() const;
 		UInt64 GetNode() const;
+		const UInt8 *GetBytes() const;
 
 		void ToString(NN<Text::StringBuilderUTF8> sb) const;
 		UTF8Char *ToString(UTF8Char *sbuff) const;

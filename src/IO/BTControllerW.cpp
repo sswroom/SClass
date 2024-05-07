@@ -141,7 +141,7 @@ Bool IO::BTController::BTDevice::Unpair()
 	return ERROR_SUCCESS == RemoveDev(&dev->Address);
 }
 
-UOSInt IO::BTController::BTDevice::QueryServices(Data::ArrayList<void*> *guidList)
+UOSInt IO::BTController::BTDevice::QueryServices(NN<Data::ArrayListNN<Data::UUID>> guidList)
 {
 	InternalData *me = (InternalData*)internalData;
 	BluetoothEnumerateInstalledServicesFunc EnumServices = (BluetoothEnumerateInstalledServicesFunc)me->lib->GetFunc("BluetoothEnumerateInstalledServices");
@@ -150,7 +150,7 @@ UOSInt IO::BTController::BTDevice::QueryServices(Data::ArrayList<void*> *guidLis
 
 	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo;
 	GUID guids[16];
-	void *guid;
+	NN<Data::UUID> guid;
 	UInt32 i;
 	DWORD nServices = 16;
 	if (EnumServices((HANDLE)this->hRadio, dev, &nServices, guids) == ERROR_SUCCESS)
@@ -158,8 +158,7 @@ UOSInt IO::BTController::BTDevice::QueryServices(Data::ArrayList<void*> *guidLis
 		i = 0;
 		while (i < nServices)
 		{
-			guid = MemAlloc(GUID, 1);
-			MemCopyNO(guid, &guids[i], sizeof(GUID));
+			NEW_CLASSNN(guid, Data::UUID((const UInt8*)&guids[i]));
 			guidList->Add(guid);
 			i++;
 		}
@@ -171,17 +170,12 @@ UOSInt IO::BTController::BTDevice::QueryServices(Data::ArrayList<void*> *guidLis
 	return nServices;
 }
 
-void IO::BTController::BTDevice::FreeServices(Data::ArrayList<void*> *guidList)
+void IO::BTController::BTDevice::FreeServices(NN<Data::ArrayListNN<Data::UUID>> guidList)
 {
-	UOSInt i = guidList->GetCount();
-	while (i-- > 0)
-	{
-		MemFree(guidList->GetItem(i));
-	}
-	guidList->Clear();
+	guidList->DeleteAll();
 }
 
-Bool IO::BTController::BTDevice::EnableService(void *guid, Bool toEnable)
+Bool IO::BTController::BTDevice::EnableService(NN<Data::UUID> guid, Bool toEnable)
 {
 	InternalData *me = (InternalData*)internalData;
 	BluetoothSetServiceStateFunc SetState = (BluetoothSetServiceStateFunc)me->lib->GetFunc("BluetoothSetServiceState");
@@ -189,7 +183,7 @@ Bool IO::BTController::BTDevice::EnableService(void *guid, Bool toEnable)
 		return false;
 
 	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo;
-	return ERROR_SUCCESS == SetState((HANDLE)this->hRadio, dev, (GUID*)guid, toEnable?BLUETOOTH_SERVICE_ENABLE:BLUETOOTH_SERVICE_DISABLE);
+	return ERROR_SUCCESS == SetState((HANDLE)this->hRadio, dev, (GUID*)guid->GetBytes(), toEnable?BLUETOOTH_SERVICE_ENABLE:BLUETOOTH_SERVICE_DISABLE);
 }
 
 IO::BTController::BTController(void *internalData, void *hand)

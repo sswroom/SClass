@@ -73,7 +73,6 @@ namespace Data
 	template <class T> ArrayList<T>::~ArrayList()
 	{
 		MemFreeArr(arr);
-		arr = 0;
 	}
 
 	template <class T> UOSInt ArrayList<T>::Add(T val)

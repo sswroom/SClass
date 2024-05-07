@@ -252,20 +252,17 @@ Media::DDCReader::~DDCReader()
 	}
 }
 
-UInt8 *Media::DDCReader::GetEDID(UOSInt *size)
+UInt8 *Media::DDCReader::GetEDID(OutParam<UOSInt> size)
 {
-	if (size)
-	{
-		*size = this->edidSize;
-	}
+	size.Set(this->edidSize);
 	return this->edid;
 }
 
-UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerList)
+UOSInt Media::DDCReader::CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> readerList)
 {
 	const GUID GUID_CLASS_MONITOR = {0x4d36e96e, 0xe325, 0x11ce, 0xbf, 0xc1, 0x08, 0x00, 0x2b, 0xe1, 0x03, 0x18};
 	UOSInt ret = 0;
-	Media::DDCReader *reader;
+	NN<Media::DDCReader> reader;
 
 	WChar wbuff[16];
 	WChar monVID[4];
@@ -334,7 +331,7 @@ UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerLis
 											(monVID[1] == 0x40 + ((edidData[9] >> 5) | ((edidData[8] << 3) & 0x1f))) &&
 											(monVID[2] == 0x40 + (edidData[9] & 0x1f)))
 										{
-											NEW_CLASS(reader, Media::DDCReader(edidData, edidSize));
+											NEW_CLASSNN(reader, Media::DDCReader(edidData, edidSize));
 											readerList->Add(reader);
 											ret++;
 										}

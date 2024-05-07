@@ -79,15 +79,15 @@ IO::SimpleFileWriter::~SimpleFileWriter()
 	CloseHandle((HANDLE)handle);
 }
 
-Bool IO::SimpleFileWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
+Bool IO::SimpleFileWriter::Write(Text::CStringNN str)
 {
-	UOSInt writeCnt = WriteBuff(str, nChar);
+	UOSInt writeCnt = WriteBuff(str.v, str.leng);
 	return writeCnt > 0;
 }
 
-Bool IO::SimpleFileWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
+Bool IO::SimpleFileWriter::WriteLine(Text::CStringNN str)
 {
-	UOSInt writeCnt = WriteBuff(str, nChar);
+	UOSInt writeCnt = WriteBuff(str.v, str.leng);
 	UInt8 buff[2];
 	buff[0] = 13;
 	buff[1] = 10;

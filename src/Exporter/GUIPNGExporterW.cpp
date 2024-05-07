@@ -98,7 +98,8 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 		return false;
 	}
 
-	Media::RasterImage *srcImg = 0;
+	Optional<Media::RasterImage> srcImg = 0;
+	NN<Media::RasterImage> nnsrcImg;
 	NN<Media::ImageList> imgList;
 	UInt8 *pngBuff;
 	UOSInt pngSize;
@@ -108,9 +109,9 @@ Bool Exporter::GUIPNGExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 		srcImg = imgList->GetImage(0, 0);
 	}
 	pngBuff = mstm.GetBuff(pngSize);
-	if (srcImg != 0 && pngBuff[0] == 0x89 && pngBuff[1] == 0x50 && pngBuff[2] == 0x4e && pngBuff[3] == 0x47)
+	if (srcImg.SetTo(nnsrcImg) && pngBuff[0] == 0x89 && pngBuff[1] == 0x50 && pngBuff[2] == 0x4e && pngBuff[3] == 0x47)
 	{
-		const UInt8 *iccBuff = srcImg->info.color.GetRAWICC();
+		const UInt8 *iccBuff = nnsrcImg->info.color.GetRAWICC();
 		if (iccBuff)
 		{
 			UInt32 chunkSize;

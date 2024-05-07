@@ -1392,6 +1392,7 @@ Data/ArrayCollection.h:
 Data/ArrayIterator.h:
 Data/ArrayList.h:
 Data/ArrayListA.h:
+Data/ArrayListArr.h:
 Data/ArrayListCmp.h:
 @ArrayListCmp.o
 Data/ArrayListCStr.h:
@@ -1494,6 +1495,7 @@ Data/RandomMT19937.h:
 Data/RandomOS.h:
 @RandomOS.o
 Data/ReadingList.h:
+Data/ReadingListArr.h:
 Data/ReadingListNN.h:
 Data/ReadonlyArray.h:
 Data/SortableArrayList.h:

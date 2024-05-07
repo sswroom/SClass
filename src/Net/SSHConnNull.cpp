@@ -65,7 +65,7 @@ Optional<Net::SSHTCPChannel> Net::SSHConn::RemoteConnect(Socket *sourceSoc, Text
 	return 0;
 }
 
-Bool Net::SSHConn::ChannelTryRead(SSHChannelHandle *channel, UInt8 *buff, UOSInt maxSize, OutParam<UOSInt> size)
+Bool Net::SSHConn::ChannelTryRead(SSHChannelHandle *channel, UnsafeArray<UInt8> buff, UOSInt maxSize, OutParam<UOSInt> size)
 {
 	return false;
 }

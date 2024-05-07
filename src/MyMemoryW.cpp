@@ -430,12 +430,12 @@ Int32 MemCheckError()
 		if (console == 0)
 			console = MemOpenWriter();
 		console->Write(CSTR("Memory leaks occurs for "));
-		console->WriteStrC(buff, (UOSInt)(sptr - buff));
+		console->Write(CSTRP(buff, sptr));
 		console->Write(CSTR(" times at "));
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
 		sptr = dt.ToString(buff, "yyyy-MM-dd HH:mm:ss");
-		console->WriteLineC(buff, (UOSInt)(sptr - buff));
+		console->WriteLine(CSTRP(buff, sptr));
 		found = true;
 	}
 
@@ -522,7 +522,7 @@ Int32 MemCheckError()
 
 				if (console == 0)
 					console = MemOpenWriter();
-				console->WriteLineC(buff, (UOSInt)(sptr - buff));
+				console->WriteLine(CSTRP(buff, sptr));
 				lastData = ent.lpData;
 				found = true;
 			}

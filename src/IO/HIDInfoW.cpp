@@ -21,7 +21,7 @@ NN<Text::String> devPath;
 };
 
 
-IO::HIDInfo::HIDInfo(ClassData *clsData)
+IO::HIDInfo::HIDInfo(NN<ClassData> clsData)
 {
 	this->clsData = clsData;
 }
@@ -29,7 +29,7 @@ IO::HIDInfo::HIDInfo(ClassData *clsData)
 IO::HIDInfo::~HIDInfo()
 {
 	this->clsData->devPath->Release();
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 IO::HIDInfo::BusType IO::HIDInfo::GetBusType()
@@ -67,11 +67,11 @@ IO::Stream *IO::HIDInfo::OpenHID()
 	}
 }
 
-OSInt IO::HIDInfo::GetHIDList(NN<Data::ArrayList<HIDInfo*>> hidList)
+OSInt IO::HIDInfo::GetHIDList(NN<Data::ArrayListNN<HIDInfo>> hidList)
 {
 	OSInt ret = 0;
-	ClassData *clsData;
-	IO::HIDInfo *hid;
+	NN<ClassData> clsData;
+	NN<IO::HIDInfo> hid;
 	UInt8 hidGuid[] = {0xb2, 0x55, 0x1e, 0x4d, 0x6f, 0xf1, 0xcf, 0x11, 0x88, 0xcb, 0x00, 0x11, 0x11, 0x00, 0x00, 0x30};
 	HDEVINFO devInfo = SetupDiGetClassDevs((GUID*)hidGuid, 0, 0, DIGCF_DEVICEINTERFACE | DIGCF_PRESENT);
 	if (devInfo)
@@ -95,7 +95,7 @@ OSInt IO::HIDInfo::GetHIDList(NN<Data::ArrayList<HIDInfo*>> hidList)
 					if (SetupDiGetDeviceInterfaceDetailW(devInfo, &data, (SP_DEVICE_INTERFACE_DETAIL_DATA_W*)&data2, 254, (DWORD*)&reqSize, 0))
 					{
 						UOSInt j;
-						clsData = MemAlloc(ClassData, 1);
+						clsData = MemAllocNN(ClassData);
 						clsData->busType = IO::HIDInfo::BT_USB;
 						clsData->devPath = Text::String::NewNotNull(&data2[2]);
 						clsData->product = 0;
@@ -121,7 +121,7 @@ OSInt IO::HIDInfo::GetHIDList(NN<Data::ArrayList<HIDInfo*>> hidList)
 							data2[2 + 8 + j] = '#';
 						}
 						
-						NEW_CLASS(hid, IO::HIDInfo(clsData));
+						NEW_CLASSNN(hid, IO::HIDInfo(clsData));
 						hidList->Add(hid);
 						ret++;
 					}
@@ -154,7 +154,7 @@ OSInt IO::HIDInfo::GetHIDList(NN<Data::ArrayList<HIDInfo*>> hidList)
 			{
 				if ((sptr2 - sptr) == 19 && sptr[4] == ':' && sptr[9] == ':' && sptr[14] == '.' && sptr[19] == 0)
 				{
-					clsData = MemAlloc(ClassData, 1);
+					clsData = MemAllocNN(ClassData);
 					sptr[4] = 0;
 					busType = Text::StrHex2UInt16C(sptr);
 					sptr[4] = ':';
@@ -185,19 +185,19 @@ OSInt IO::HIDInfo::GetHIDList(NN<Data::ArrayList<HIDInfo*>> hidList)
 						{
 							sptr3 = Text::StrConcat(Text::StrConcatC(sbuff2, UTF8STRC("/dev/")), sptr2);
 							clsData->devPath = Text::String::New(sbuff2, (UOSInt)(sptr3 - sbuff2));
-							NEW_CLASS(hid, IO::HIDInfo(clsData));
+							NEW_CLASSNN(hid, IO::HIDInfo(clsData));
 							hidList->Add(hid);
 							ret++;
 						}
 						else
 						{
-							MemFree(clsData);
+							MemFreeNN(clsData);
 						}					
 						IO::Path::FindFileClose(sess2);
 					}
 					else
 					{
-						MemFree(clsData);
+						MemFreeNN(clsData);
 					}
 					
 				}

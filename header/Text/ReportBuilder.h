@@ -1,5 +1,6 @@
 #ifndef _SM_TEXT_REPORTBUILDER
 #define _SM_TEXT_REPORTBUILDER
+#include "Data/ArrayListArr.h"
 #include "Data/Chart.h"
 #include "Media/VectorDocument.h"
 #include "Text/String.h"
@@ -71,7 +72,7 @@ namespace Text
 		UOSInt colCount;
 		Data::ArrayListNN<HeaderInfo> preheaders;
 		Data::ArrayListNN<HeaderInfo> headers;
-		Data::ArrayList<UnsafeArray<TableCell>> tableContent;
+		Data::ArrayListArr<TableCell> tableContent;
 		Data::ArrayList<RowType> tableRowType;
 		Data::ArrayListNN<ColURLLatLon> urlList;
 		Data::ArrayList<Optional<Data::ArrayListNN<ColIcon>>> icons;

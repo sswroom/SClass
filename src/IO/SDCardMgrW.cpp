@@ -199,13 +199,13 @@ Bool SDCardMgr_ReadId(Text::CStringNN fileName, UInt8 *buff)
 	return ret;
 }
 
-UOSInt IO::SDCardMgr::GetCardList(NN<Data::ArrayList<IO::SDCardInfo*>> cardList)
+UOSInt IO::SDCardMgr::GetCardList(NN<Data::ArrayListNN<IO::SDCardInfo>> cardList)
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UOSInt ret = 0;
-	IO::SDCardInfo *sdcard;
+	NN<IO::SDCardInfo> sdcard;
 	Win32::WMIQuery qry(L"ROOT\\CIMV2");
 	NN<DB::DBReader> r;
 	if (qry.QueryTableData(CSTR_NULL, CSTR("CIM_MediaAccessDevice"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
@@ -233,13 +233,12 @@ UOSInt IO::SDCardMgr::GetCardList(NN<Data::ArrayList<IO::SDCardInfo*>> cardList)
 					sb.ClearStr();
 					r->GetStr(11, sb);
 					const WChar *wptr = Text::StrToWCharNew(sb.ToString());
-					sdcard = SDCardMgr_ReadInfo(wptr);
-					Text::StrDelNew(wptr);
-					if (sdcard)
+					if (sdcard.Set(SDCardMgr_ReadInfo(wptr)))
 					{
 						cardList->Add(sdcard);
 						ret++;
 					}
+					Text::StrDelNew(wptr);
 				}
 			}
 		}
@@ -286,7 +285,7 @@ UOSInt IO::SDCardMgr::GetCardList(NN<Data::ArrayList<IO::SDCardInfo*>> cardList)
 									valid = false;
 								if (valid)
 								{
-									NEW_CLASS(sdcard, IO::SDCardInfo(CSTRP(nameBuff, namePtr), cid, csd));
+									NEW_CLASSNN(sdcard, IO::SDCardInfo(CSTRP(nameBuff, namePtr), cid, csd));
 									cardList->Add(sdcard);
 									ret++;
 								}

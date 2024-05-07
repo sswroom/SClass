@@ -374,7 +374,7 @@ UOSInt IO::SerialPort::Read(const Data::ByteArray &buff)
 	ol.OffsetHigh = 0;
 	this->reading = true;
 	ADDMESSAGE("Reading\r\n");
-	ReadFile(h, buff.Ptr(), (DWORD)buff.GetSize(), (DWORD*)&readCnt, &ol);
+	ReadFile(h, buff.Ptr().Ptr(), (DWORD)buff.GetSize(), (DWORD*)&readCnt, &ol);
 
 	ADDMESSAGE("Waiting\r\n");
 	this->rdEvt.Wait();
@@ -464,7 +464,7 @@ void *IO::SerialPort::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 	}
 #else
 	ReadEvent *re = MemAlloc(ReadEvent, 1);
-	re->buff = buff.Ptr();
+	re->buff = buff.Ptr().Ptr();
 	re->evt = evt;
 	re->size = buff.GetSize();
 	re->ol.hEvent = evt->hand;
@@ -472,7 +472,7 @@ void *IO::SerialPort::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 	re->ol.InternalHigh = 0;
 	re->ol.Offset = 0;
 	re->ol.OffsetHigh = 0;
-	ReadFile(h, buff.Ptr(), (DWORD)buff.GetSize(), (DWORD*)&re->readSize, &re->ol);
+	ReadFile(h, buff.Ptr().Ptr(), (DWORD)buff.GetSize(), (DWORD*)&re->readSize, &re->ol);
 	return re;
 #endif
 }

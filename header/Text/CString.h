@@ -31,7 +31,7 @@ namespace Text
 			this->leng = 0;
 		}
 
-		CString(UnsafeArray<const UTF8Char> v, UOSInt leng)
+		CString(UnsafeArrayOpt<const UTF8Char> v, UOSInt leng)
 		{
 			this->v = v.Ptr();
 			this->leng = leng;

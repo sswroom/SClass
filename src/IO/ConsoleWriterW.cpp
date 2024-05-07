@@ -98,15 +98,15 @@ Bool IO::ConsoleWriter::WriteLine(const UTF8Char *str)
 	return ret;
 }*/
 
-Bool IO::ConsoleWriter::WriteStrC(const UTF8Char *s, UOSInt nUTF8Char)
+Bool IO::ConsoleWriter::Write(Text::CStringNN s)
 {
 	UInt32 outChars = 0;
 	UInt32 nChar;
 	if (this->clsData->enc == 0)
 	{
-		UOSInt strLen = Text::StrUTF8_WCharCntC(s, nUTF8Char);
+		UOSInt strLen = Text::StrUTF8_WCharCntC(s.v, s.leng);
 		WChar *str = MemAlloc(WChar, strLen + 1);
-		Text::StrUTF8_WCharC(str, s, nUTF8Char, 0);
+		Text::StrUTF8_WCharC(str, s.v, s.leng, 0);
 		WriteConsoleW(this->clsData->hand, str, nChar = (UInt32)strLen, (LPDWORD)&outChars, 0);
 		MemFree(str);
 		if (outChars == nChar)
@@ -123,10 +123,10 @@ Bool IO::ConsoleWriter::WriteStrC(const UTF8Char *s, UOSInt nUTF8Char)
 	{
 		UOSInt nBytes;
 		UInt8 *tmpBuff;
-		nChar = (UInt32)Text::StrCharCnt(s);
-		nBytes = this->clsData->enc->UTF8CountBytesC(s, nChar);
+		nChar = (UInt32)s.leng;
+		nBytes = this->clsData->enc->UTF8CountBytesC(s.v, nChar);
 		tmpBuff = MemAlloc(UInt8, nBytes + 1);
-		this->clsData->enc->UTF8ToBytesC(tmpBuff, s, nChar);
+		this->clsData->enc->UTF8ToBytesC(tmpBuff, s.v, nChar);
 		if (this->clsData->fileOutput)
 		{
 			WriteFile(this->clsData->hand, tmpBuff, (UInt32)nBytes, (LPDWORD)&outChars, 0);
@@ -148,15 +148,15 @@ Bool IO::ConsoleWriter::WriteStrC(const UTF8Char *s, UOSInt nUTF8Char)
 	}
 }
 
-Bool IO::ConsoleWriter::WriteLineC(const UTF8Char *s, UOSInt nUTF8Char)
+Bool IO::ConsoleWriter::WriteLine(Text::CStringNN s)
 {
 	UInt32 outChars = 0;
 	UInt32 nChar;
 	if (this->clsData->enc == 0)
 	{
-		UOSInt strLen = Text::StrUTF8_WCharCntC(s, nUTF8Char);
+		UOSInt strLen = Text::StrUTF8_WCharCntC(s.v, s.leng);
 		WChar *str = MemAlloc(WChar, strLen + 2);
-		Text::StrUTF8_WCharC(str, s, nUTF8Char, 0);
+		Text::StrUTF8_WCharC(str, s.v, s.leng, 0);
 #if defined(__CYGWIN__)
 		str[strLen] = '\r';
 		str[strLen + 1] = '\n';
@@ -180,10 +180,10 @@ Bool IO::ConsoleWriter::WriteLineC(const UTF8Char *s, UOSInt nUTF8Char)
 	{
 		UOSInt nBytes;
 		UInt8 *tmpBuff;
-		nChar = (UInt32)Text::StrCharCnt(s);
-		nBytes = this->clsData->enc->UTF8CountBytesC(s, nChar) + 1;
+		nChar = (UInt32)s.leng;
+		nBytes = this->clsData->enc->UTF8CountBytesC(s.v, nChar) + 1;
 		tmpBuff = MemAlloc(UInt8, nBytes + 2);
-		this->clsData->enc->UTF8ToBytesC(tmpBuff, s, nChar);
+		this->clsData->enc->UTF8ToBytesC(tmpBuff, s.v, nChar);
 		tmpBuff[nBytes - 1] = '\n';
 		if (this->clsData->fileOutput)
 		{

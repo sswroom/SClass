@@ -76,14 +76,14 @@ UInt64 IO::SystemInfo::GetTotalMemSize()
 	UInt64 totalSize = 0;
 
 	UOSInt i;
-	Data::ArrayList<RAMInfo*> ramList;
-	this->GetRAMInfo(&ramList);
+	Data::ArrayListNN<RAMInfo> ramList;
+	this->GetRAMInfo(ramList);
 	i = ramList.GetCount();
 	while (i-- > 0)
 	{
-		totalSize += ramList.GetItem(i)->memorySize;
+		totalSize += ramList.GetItemNoCheck(i)->memorySize;
 	}
-	this->FreeRAMInfo(&ramList);
+	this->FreeRAMInfo(ramList);
 
 	return totalSize;
 }
@@ -185,29 +185,29 @@ IO::SystemInfo::ChassisType IO::SystemInfo::GetChassisType()
 	return CT_UNKNOWN;
 }
 
-UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
+UOSInt IO::SystemInfo::GetRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 {
 	UOSInt retCnt = 0;
 	Win32::WMIQuery *db;
-	RAMInfo *ram;
+	NN<RAMInfo> ram;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	NN<DB::DBReader> r;
 	IO::SMBIOS *smbios = IO::SMBIOSUtil::GetSMBIOS();
 	if (smbios)
 	{
-		Data::ArrayList<IO::SMBIOS::MemoryDeviceInfo *> memList;
-		IO::SMBIOS::MemoryDeviceInfo *mem;
+		Data::ArrayListNN<IO::SMBIOS::MemoryDeviceInfo> memList;
+		NN<IO::SMBIOS::MemoryDeviceInfo> mem;
 		Text::StringBuilderUTF8 sb;
-		smbios->GetMemoryInfo(&memList);
+		smbios->GetMemoryInfo(memList);
 		if (memList.GetCount() > 0)
 		{
 			UOSInt i = 0;
 			UOSInt j = memList.GetCount();
 			while (i < j)
 			{
-				mem = memList.GetItem(i);
-				ram = MemAlloc(RAMInfo, 1);
+				mem = memList.GetItemNoCheck(i);
+				ram = MemAllocNN(RAMInfo);
 				if (mem->deviceLocator)
 				{
 					sb.ClearStr();
@@ -259,7 +259,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				i++;
 			}
 
-			smbios->FreeMemoryInfo(&memList);
+			smbios->FreeMemoryInfo(memList);
 			DEL_CLASS(smbios);
 			return retCnt;
 		}
@@ -320,7 +320,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 		{
 			while (r->ReadNext())
 			{
-				ram = MemAlloc(RAMInfo, 1);
+				ram = MemAllocNN(RAMInfo);
 				ram->deviceLocator = r->GetNewStr(devLocCol);
 				ram->manufacturer = r->GetNewStr(manuCol);
 				ram->partNo = r->GetNewStr(partNoCol);
@@ -341,18 +341,18 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 	return retCnt;
 }
 
-void IO::SystemInfo::FreeRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
+void IO::SystemInfo::FreeRAMInfo(NN<Data::ArrayListNN<RAMInfo>> ramList)
 {
 	UOSInt i;
-	RAMInfo *ram;
+	NN<RAMInfo> ram;
 	i = ramList->GetCount();
 	while (i-- > 0)
 	{
-		ram = ramList->GetItem(i);
+		ram = ramList->GetItemNoCheck(i);
 		OPTSTR_DEL(ram->deviceLocator);
 		OPTSTR_DEL(ram->manufacturer);
 		OPTSTR_DEL(ram->partNo);
 		OPTSTR_DEL(ram->sn);
-		MemFree(ram);
+		MemFreeNN(ram);
 	}
 }

@@ -148,6 +148,11 @@ UInt64 Data::UUID::GetNode() const
 	return ReadMUInt64(&this->data[8]) & 0xffffffffffffLL;
 }
 
+const UInt8 *Data::UUID::GetBytes() const
+{
+	return this->data;
+}
+
 void Data::UUID::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	sb->AppendHex32LC(ReadUInt32(&this->data[0]));

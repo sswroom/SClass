@@ -61,8 +61,8 @@ IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(NN<IO::Pa
 	imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
-	Media::RasterImage *img = imgList->GetImage(0, 0);
-	if (img->info.fourcc != 0)
+	NN<Media::RasterImage> img;
+	if (!imgList->GetImage(0, 0).SetTo(img) || img->info.fourcc != 0)
 		return IO::FileExporter::SupportType::NotSupported;
 	switch (img->info.pf)
 	{
@@ -116,8 +116,8 @@ void *Exporter::GUIExporter::ToImage(NN<IO::ParsedObject> pobj, UInt8 **relBuff)
 	imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 	if (imgList->GetCount() != 1)
 		return 0;
-	Media::RasterImage *img = imgList->GetImage(0, 0);
-	if (img->info.fourcc != 0)
+	NN<Media::RasterImage> img;
+	if (!imgList->GetImage(0, 0).SetTo(img) || img->info.fourcc != 0)
 		return 0;
 	Gdiplus::Bitmap *gimg;
 	Gdiplus::Rect rc(0, 0, (INT)img->info.dispSize.x, (INT)img->info.dispSize.y);

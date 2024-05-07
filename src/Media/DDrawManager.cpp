@@ -11,7 +11,7 @@ struct Media::DDrawManager::ClassData
 	LPDIRECTDRAW7 defDD;
 	Optional<Media::MonitorMgr> monMgr;
 	Optional<Media::ColorManager> colorMgr;
-	Media::ColorManagerSess *colorSess;
+	Optional<Media::ColorManagerSess> colorSess;
 };
 
 Int32 __stdcall Media::DDrawManager::DDEnumMonCall(void *guid, Char *driverDesc, Char *driverName, void *context, void *hMonitor)
@@ -61,7 +61,7 @@ void Media::DDrawManager::ReleaseAll()
 	this->clsData->monMap.Clear();
 }
 
-Media::DDrawManager::DDrawManager(Media::MonitorMgr *monMgr, Media::ColorManagerSess *colorSess)
+Media::DDrawManager::DDrawManager(Optional<Media::MonitorMgr> monMgr, NN<Media::ColorManagerSess> colorSess)
 {
 	NEW_CLASS(this->clsData, ClassData());
 	this->clsData->defDD = 0;
@@ -128,35 +128,40 @@ Double Media::DDrawManager::GetMonitorDPI(MonitorHandle *hMonitor)
 		return 96.0;
 	}
 
-	if (this->clsData->monMgr)
+	NN<Media::MonitorMgr> monMgr;
+	if (this->clsData->monMgr.SetTo(monMgr))
 	{
-		return this->clsData->monMgr->GetMonitorHDPI(hMonitor);
+		return monMgr->GetMonitorHDPI(hMonitor);
 	}
 	return 96.0;
 }
 
 Bool Media::DDrawManager::Is10BitColor(MonitorHandle *hMonitor)
 {
-	if (this->clsData->colorMgr)
+	NN<Media::ColorManager> colorMgr;
+	NN<Media::ColorManagerSess> colorSess;
+	if (this->clsData->colorMgr.SetTo(colorMgr))
 	{
-		return this->clsData->colorMgr->GetMonColorManager(hMonitor)->Get10BitColor();
+		return colorMgr->GetMonColorManager(hMonitor)->Get10BitColor();
 	}
-	else if (this->clsData->colorSess)
+	else if (this->clsData->colorSess.SetTo(colorSess))
 	{
-		return this->clsData->colorSess->Get10BitColor();
+		return colorSess->Get10BitColor();
 	}
 	return false;
 }
 
 const Media::ColorProfile *Media::DDrawManager::GetMonProfile(MonitorHandle *hMonitor)
 {
-	if (this->clsData->colorMgr)
+	NN<Media::ColorManager> colorMgr;
+	NN<Media::ColorManagerSess> colorSess;
+	if (this->clsData->colorMgr.SetTo(colorMgr))
 	{
-		return &this->clsData->colorMgr->GetMonColorManager(hMonitor)->GetRGBParam()->monProfile;
+		return &colorMgr->GetMonColorManager(hMonitor)->GetRGBParam()->monProfile;
 	}
-	else if (this->clsData->colorSess)
+	else if (this->clsData->colorSess.SetTo(colorSess))
 	{
-		return &this->clsData->colorSess->GetRGBParam()->monProfile;
+		return &colorSess->GetRGBParam()->monProfile;
 	}
 	return 0;
 }

@@ -13,10 +13,10 @@ struct IO::PCIInfo::ClassData
 	Text::CString dispName;
 };
 
-IO::PCIInfo::PCIInfo(ClassData *info)
+IO::PCIInfo::PCIInfo(NN<ClassData> info)
 {
-	ClassData *srcData = info;
-	ClassData *clsData = MemAlloc(ClassData, 1);
+	NN<ClassData> srcData = info;
+	NN<ClassData> clsData = MemAllocNN(ClassData);
 	clsData->vendorId = srcData->vendorId;
 	clsData->productId = srcData->productId;
 	clsData->dispName.v = Text::StrCopyNewC(srcData->dispName.v, srcData->dispName.leng).Ptr();
@@ -27,7 +27,7 @@ IO::PCIInfo::PCIInfo(ClassData *info)
 IO::PCIInfo::~PCIInfo()
 {
 	Text::StrDelNew(this->clsData->dispName.v);
-	MemFree(this->clsData);
+	MemFreeNN(this->clsData);
 }
 
 UInt16 IO::PCIInfo::GetVendorId()
@@ -67,11 +67,11 @@ UInt16 PCIInfo_ReadI16(Text::CStringNN fileName)
 	return (UInt16)(Text::StrToInt32((const UTF8Char*)buff) & 0xffff);
 }
 
-UOSInt IO::PCIInfo::GetPCIList(NN<Data::ArrayList<PCIInfo*>> pciList)
+UOSInt IO::PCIInfo::GetPCIList(NN<Data::ArrayListNN<PCIInfo>> pciList)
 {
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayListUInt32 existList;
-	IO::PCIInfo *pci;
+	NN<IO::PCIInfo> pci;
 	ClassData clsData;
 	UInt32 id;
 	UTF8Char sbuff[512];
@@ -118,7 +118,7 @@ UOSInt IO::PCIInfo::GetPCIList(NN<Data::ArrayList<PCIInfo*>> pciList)
 						sb.ClearStr();
 						r->GetStr(descCol, sb);
 						clsData.dispName = sb.ToCString();
-						NEW_CLASS(pci, IO::PCIInfo(&clsData));
+						NEW_CLASSNN(pci, IO::PCIInfo(clsData));
 						pciList->Add(pci);
 						ret++;
 					}
@@ -150,7 +150,7 @@ UOSInt IO::PCIInfo::GetPCIList(NN<Data::ArrayList<PCIInfo*>> pciList)
 					clsData.productId = PCIInfo_ReadI16(CSTRP(sbuff, sptr2End));
 					if (clsData.vendorId != 0)
 					{
-						NEW_CLASS(pci, IO::PCIInfo(&clsData));
+						NEW_CLASSNN(pci, IO::PCIInfo(clsData));
 						pciList->Add(pci);
 						ret++;
 					}
