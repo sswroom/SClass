@@ -493,3 +493,52 @@ Crypto::Cert::X509Key *Crypto::Cert::X509Key::FromECPublicKey(const UInt8 *buff,
 	pdu.EndLevel();
 	return NEW_CLASS_D(X509Key(CSTR("ECPublic.key"), pdu.GetArray(), KeyType::ECPublic));
 }
+
+Optional<Crypto::Cert::X509Key> Crypto::Cert::X509Key::FromRSAKey(NN<RSAKey> key)
+{
+	UOSInt modulusSize;
+	const UInt8 *modulus = key->GetRSAModulus(modulusSize);
+	UOSInt publicExponentSize;
+	const UInt8 *publicExponent = key->GetRSAPublicExponent(publicExponentSize);
+	if (modulus == 0 || publicExponent == 0)
+	{
+		return 0;
+	}
+	UOSInt privateExponentSize;
+	const UInt8 *privateExponent = key->GetRSAPrivateExponent(privateExponentSize);
+	UOSInt prime1Size;
+	const UInt8 *prime1 = key->GetRSAPrime1(prime1Size);
+	UOSInt prime2Size;
+	const UInt8 *prime2 = key->GetRSAPrime2(prime2Size);
+	UOSInt exponent1Size;
+	const UInt8 *exponent1 = key->GetRSAExponent1(exponent1Size);
+	UOSInt exponent2Size;
+	const UInt8 *exponent2 = key->GetRSAExponent2(exponent2Size);
+	UOSInt coefficientSize;
+	const UInt8 *coefficient = key->GetRSACoefficient(coefficientSize);
+
+	Net::ASN1PDUBuilder pdu;
+	if (privateExponent == 0 || prime1 == 0 || prime2 == 0 || exponent1 == 0 || exponent2 == 0 || coefficient == 0)
+	{
+		pdu.BeginSequence();
+		pdu.AppendInteger(modulus, modulusSize);
+		pdu.AppendInteger(publicExponent, publicExponentSize);
+		pdu.EndLevel();
+		return NEW_CLASS_D(X509Key(CSTR("RSAPublic.key"), pdu.GetArray(), KeyType::RSAPublic));
+	}
+	else
+	{
+		pdu.BeginSequence();
+		pdu.AppendInt32(0);
+		pdu.AppendInteger(modulus, modulusSize);
+		pdu.AppendInteger(publicExponent, publicExponentSize);
+		pdu.AppendInteger(privateExponent, privateExponentSize);
+		pdu.AppendInteger(prime1, prime1Size);
+		pdu.AppendInteger(prime2, prime2Size);
+		pdu.AppendInteger(exponent1, exponent1Size);
+		pdu.AppendInteger(exponent2, exponent2Size);
+		pdu.AppendInteger(coefficient, coefficientSize);
+		pdu.EndLevel();
+		return NEW_CLASS_D(X509Key(CSTR("RSAPrivate.key"), pdu.GetArray(), KeyType::RSA));
+	}
+}

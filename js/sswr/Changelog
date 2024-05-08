@@ -3,6 +3,7 @@
 -Support web.Dialog in frameset
 -Added data.objectParseTS
 -web.propertiesToHTML support nameMap and timeFormat
+-text.isHKID fixed wrong validation
 
 1.6.2
 -Fixed data.DateTimeUtil.totalDays2DateValue bigint problem

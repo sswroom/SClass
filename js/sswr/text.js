@@ -464,7 +464,8 @@ export function isHKID(s)
 		thisChk += (hkid.charCodeAt(5) - 0x30) * 4;
 		thisChk += (hkid.charCodeAt(6) - 0x30) * 3;
 		thisChk += (hkid.charCodeAt(7) - 0x30) * 2;
-		if (ichk != (thisChk % 11))
+		thisChk += ichk;
+		if ((thisChk % 11) != 0)
 			return false;
 		return true;
 	}
@@ -487,7 +488,8 @@ export function isHKID(s)
 		thisChk += (hkid.charCodeAt(4) - 0x30) * 4;
 		thisChk += (hkid.charCodeAt(5) - 0x30) * 3;
 		thisChk += (hkid.charCodeAt(6) - 0x30) * 2;
-		if (ichk != (thisChk % 11))
+		thisChk += ichk;
+		if ((thisChk % 11) != 0)
 			return false;
 		return true;
 	}

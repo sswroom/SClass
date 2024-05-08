@@ -1241,6 +1241,7 @@ Crypto/Cert/CertStore.h:
 @CertStore.o
 Crypto/Cert/CertUtil.h:
 @CertUtil.o
+Crypto/Cert/RSAKey.h:
 Crypto/Cert/X509Cert.h:
 @X509Cert.o
 Crypto/Cert/X509CertReq.h:
@@ -3942,6 +3943,8 @@ SSWR/AVIRead/AVIRHexViewerGoToForm.h:
 @AVIRHexViewerGoToForm.o
 SSWR/AVIRead/AVIRHIDDeviceForm.h:
 @AVIRHIDDeviceForm.o
+SSWR/AVIRead/AVIRHKIDForm.h:
+@AVIRHKIDForm.o
 SSWR/AVIRead/AVIRHKOForecastForm.h:
 @AVIRHKOForecastForm.o
 SSWR/AVIRead/AVIRHKOLocalForecastForm.h:

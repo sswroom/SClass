@@ -107,6 +107,7 @@
 #include "SSWR/AVIRead/AVIRHashTestForm.h"
 #include "SSWR/AVIRead/AVIRHexViewerForm.h"
 #include "SSWR/AVIRead/AVIRHIDDeviceForm.h"
+#include "SSWR/AVIRead/AVIRHKIDForm.h"
 #include "SSWR/AVIRead/AVIRHKOForecastForm.h"
 #include "SSWR/AVIRead/AVIRHKOLocalForecastForm.h"
 #include "SSWR/AVIRead/AVIRHKOWarningSummaryForm.h"
@@ -510,7 +511,8 @@ typedef enum
 	MNU_SET_DNS,
 	MNU_SSH_INFO,
 	MNU_DATA_MODEL,
-	MNU_MSGRAPH_EMAIL
+	MNU_MSGRAPH_EMAIL,
+	MNU_HKID
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::DataArray<NN<Text::String>> files)
@@ -646,6 +648,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(Optional<UI::GUIClientControl> parent,
 	mnu2->AddItem(CSTR("Javascript Text"), MNU_JSTEXT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("C++ Enum to Switch Case"), MNU_CPP_ENUM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Data Model"), MNU_DATA_MODEL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("HKID Validate"), MNU_HKID, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu(CSTR("Cryptography"));
 	mnu2->AddItem(CSTR("Text Hash"), MNU_TEXTHASH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Brute Force"), MNU_BRUTEFORCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2957,6 +2960,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			NN<SSWR::AVIRead::AVIRMSGraphEmailForm> frm;
 			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRMSGraphEmailForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_HKID:
+		{
+			NN<SSWR::AVIRead::AVIRHKIDForm> frm;
+			NEW_CLASSNN(frm, SSWR::AVIRead::AVIRHKIDForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

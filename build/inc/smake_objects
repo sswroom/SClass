@@ -1797,6 +1797,7 @@ AVIRHashTestForm.o: ../../src/SSWR/AVIRead/AVIRHashTestForm.cpp
 AVIRHexViewerForm.o: ../../src/SSWR/AVIRead/AVIRHexViewerForm.cpp
 AVIRHexViewerGoToForm.o: ../../src/SSWR/AVIRead/AVIRHexViewerGoToForm.cpp
 AVIRHIDDeviceForm.o: ../../src/SSWR/AVIRead/AVIRHIDDeviceForm.cpp
+AVIRHKIDForm.o: ../../src/SSWR/AVIRead/AVIRHKIDForm.cpp
 AVIRHKOForecastForm.o: ../../src/SSWR/AVIRead/AVIRHKOForecastForm.cpp
 AVIRHKOLocalForecastForm.o: ../../src/SSWR/AVIRead/AVIRHKOLocalForecastForm.cpp
 AVIRHKOWarningSummaryForm.o: ../../src/SSWR/AVIRead/AVIRHKOWarningSummaryForm.cpp

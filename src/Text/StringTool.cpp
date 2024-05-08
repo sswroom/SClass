@@ -4,6 +4,8 @@
 #include "Text/JSText.h"
 #include "Text/StringTool.h"
 
+//#define VERBOSE
+
 void Text::StringTool::BuildJSONString(NN<Text::StringBuilderUTF8> sb, Optional<Text::String> s)
 {
 	NN<Text::String> nns;
@@ -261,7 +263,8 @@ Bool Text::StringTool::IsHKID(Text::CStringNN hkid)
 		thisChk += (UOSInt)(sbuff[5] - '0') * 4;
 		thisChk += (UOSInt)(sbuff[6] - '0') * 3;
 		thisChk += (UOSInt)(sbuff[7] - '0') * 2;
-		if (ichk != (thisChk % 11))
+		thisChk += ichk;
+		if ((thisChk % 11) != 0)
 			return false;
 		return true;
 	}
@@ -284,7 +287,19 @@ Bool Text::StringTool::IsHKID(Text::CStringNN hkid)
 		thisChk += (UOSInt)(sbuff[4] - '0') * 4;
 		thisChk += (UOSInt)(sbuff[5] - '0') * 3;
 		thisChk += (UOSInt)(sbuff[6] - '0') * 2;
-		if (ichk != (thisChk % 11))
+#if defined(VERBOSE)
+		printf("%c: %d * 9 = %d\r\n", ' ', 36, 36 * 9);
+		printf("%c: %d * 8 = %d\r\n", sbuff[0], sbuff[0] - 'A' + 10, (sbuff[0] - 'A' + 10) * 8);
+		printf("%c: %d * 7 = %d\r\n", sbuff[1], sbuff[1] - '0', (sbuff[1] - '0') * 7);
+		printf("%c: %d * 6 = %d\r\n", sbuff[2], sbuff[2] - '0', (sbuff[2] - '0') * 6);
+		printf("%c: %d * 5 = %d\r\n", sbuff[3], sbuff[3] - '0', (sbuff[3] - '0') * 5);
+		printf("%c: %d * 4 = %d\r\n", sbuff[4], sbuff[4] - '0', (sbuff[4] - '0') * 4);
+		printf("%c: %d * 3 = %d\r\n", sbuff[5], sbuff[5] - '0', (sbuff[5] - '0') * 3);
+		printf("%c: %d * 2 = %d\r\n", sbuff[6], sbuff[6] - '0', (sbuff[6] - '0') * 2);
+		printf("Total = %d, Mod = %d, Check = %d\r\n", (UInt32)thisChk, (UInt32)(thisChk % 11), (UInt32)ichk);
+#endif
+		thisChk += ichk;
+		if ((thisChk % 11) != 0)
 			return false;
 		return true;
 	}
