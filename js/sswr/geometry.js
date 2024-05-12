@@ -450,6 +450,23 @@ export class MultiPolygon extends MultiGeometry
 	}
 }
 
+export class Polyline extends MultiGeometry
+{
+	constructor(srid, coordinates)
+	{
+		super(srid);
+		this.type = VectorType.Polyline;
+		let i;
+		if (coordinates)
+		{
+			for (i in coordinates)
+			{
+				this.geometries.push(new LineString(srid, coordinates[i]));
+			}
+		}
+	}
+}
+
 export class GeometryCollection extends MultiGeometry
 {
 	constructor(srid)

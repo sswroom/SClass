@@ -69,12 +69,27 @@ export function createFromKML(feature, options)
 	if (feature instanceof kml.Container)
 	{
 		let i;
-		let layers = L.featureGroup();
+		let layers = [];
+		let lyr;
+		let hasGroup = false;
+		let hasFeature = false;
 		for (i in feature.features)
 		{
-			createFromKML(feature.features[i], options).addTo(layers);
+			lyr = createFromKML(feature.features[i], options);
+			layers.push(lyr);
+			if ((lyr instanceof L.FeatureGroup) || (lyr instanceof L.LayerGroup))
+				hasGroup = true;
+			else
+				hasFeature = true;
 		}
-		return layers;
+		if (hasGroup)
+		{
+			return L.layerGroup(layers);
+		}
+		else
+		{
+			return L.featureGroup(layers);
+		}
 	}
 	else if (feature instanceof kml.Placemark)
 	{
@@ -162,7 +177,7 @@ export function createFromGeometry(geom, options)
 		{
 			if (options.name)
 				opt.title = options.name;
-			if (options.icon)
+			if (options.icon && options.icon.iconUrl)
 				opt.icon = options.icon;
 		}
 		return L.marker(L.latLng(geom.coordinates[1], geom.coordinates[0]), opt);
@@ -189,6 +204,35 @@ export function createFromGeometry(geom, options)
 			}
 		}
 		return L.polyline(pts, opt);
+	}
+	else if (geom instanceof geometry.Polyline)
+	{
+		let opt = {};
+		let i;
+		let j;
+		let ptsArr = [];
+		if (options.lineColor)
+			opt.color = options.lineColor;
+		if (options.lineWidth)
+			opt.weight = options.lineWidth;
+		for (i in geom.geometries)
+		{
+			let pts = [];
+			for (j in geom.geometries[i].coordinates)
+			{
+				let latLng = L.latLng(geom.geometries[i].coordinates[j][1], geom.geometries[i].coordinates[j][0]);
+				if (latLng)
+				{
+					pts.push(latLng);
+				}
+				else
+				{
+					console.log("Error in Polyline", geom.geometries[i].coordinates[j]);
+				}
+			}
+			ptsArr.push(pts);
+		}
+		return L.polyline(ptsArr, opt);
 	}
 	else if (geom instanceof geometry.LinearRing)
 	{

@@ -342,6 +342,8 @@ function parseKMLContainer(container, kmlNode, doc)
 			break;
 		case "#text":
 			break;
+		case "Schema":
+			break;
 		default:
 			console.log("Unknown node in kml container: "+node.nodeName, node);
 			break;
@@ -599,6 +601,15 @@ function parseKMLGeometry(kmlNode)
 			if (geomList[0] instanceof geometry.Polygon && (geomList.length == 1 || geomList[1] instanceof geometry.Polygon))
 			{
 				geom = new geometry.MultiPolygon(4326);
+				for (i in geomList)
+				{
+					geom.geometries.push(geomList[i]);
+				}
+				return geom; 
+			}
+			else if (geomList[0] instanceof geometry.LineString && (geomList.length == 1 || geomList[1] instanceof geometry.LineString))
+			{
+				geom = new geometry.Polyline(4326);
 				for (i in geomList)
 				{
 					geom.geometries.push(geomList[i]);

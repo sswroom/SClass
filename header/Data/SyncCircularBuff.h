@@ -9,7 +9,7 @@ namespace Data
 	{
 	private:
 		Sync::Mutex mut;
-		T *buff;
+		UnsafeArray<T> buff;
 		UOSInt capacity;
 		UOSInt getIndex;
 		UOSInt putIndex;
@@ -31,14 +31,14 @@ namespace Data
 template<typename T> Data::SyncCircularBuff<T>::SyncCircularBuff()
 {
 	this->capacity = 32;
-	this->buff = MemAlloc(T, 32);
+	this->buff = MemAllocArr(T, 32);
 	this->getIndex = 0;
 	this->putIndex = 0;
 }
 
 template<typename T> Data::SyncCircularBuff<T>::~SyncCircularBuff()
 {
-	MemFree(this->buff);
+	MemFreeArr(this->buff);
 }
 
 template<typename T> Bool Data::SyncCircularBuff<T>::HasItems()
@@ -54,19 +54,19 @@ template<typename T> void Data::SyncCircularBuff<T>::Put(T item)
 	{
 		UOSInt oldCapacity = this->capacity;
 		this->capacity = oldCapacity << 1;
-		T *newBuff = MemAlloc(T, this->capacity);
+		UnsafeArray<T> newBuff = MemAllocArr(T, this->capacity);
 		if (this->getIndex < this->putIndex)
 		{
-			MemCopyNO(newBuff, this->buff, oldCapacity * sizeof(T));
+			MemCopyNO(newBuff.Ptr(), this->buff.Ptr(), oldCapacity * sizeof(T));
 		}
 		else
 		{
-			MemCopyNO(newBuff, &this->buff[this->getIndex], (oldCapacity - this->getIndex) * sizeof(T));
+			MemCopyNO(newBuff.Ptr(), &this->buff[this->getIndex], (oldCapacity - this->getIndex) * sizeof(T));
 			MemCopyNO(&newBuff[oldCapacity - this->getIndex], this->buff, this->putIndex * sizeof(T));
 			this->getIndex = 0;
 			this->putIndex = oldCapacity - 1;
 		}
-		MemFree(this->buff);
+		MemFreeArr(this->buff);
 		this->buff = newBuff;
 	}
 	this->buff[this->putIndex] = item;

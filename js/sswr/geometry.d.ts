@@ -85,11 +85,17 @@ export class MultiGeometry<VecType> extends Vector2D
 export class Polygon extends MultiGeometry<LinearRing>
 {
 	constructor(srid: number, coordinates: number[][][]);
+	insideOrTouch(coord: math.Coord2D): boolean;
 }
 
 export class MultiPolygon extends MultiGeometry<Polygon>
 {
-	constructor(srid: number, coordinates: number[][][][]);
+	constructor(srid: number, coordinates?: number[][][][]);
+}
+
+export class Polyline extends MultiGeometry<LineString>
+{
+	constructor(srid: number, coordinates?: number[][][]);
 }
 
 export class GeometryCollection extends MultiGeometry<Vector2D>

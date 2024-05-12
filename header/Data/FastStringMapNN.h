@@ -18,10 +18,10 @@ namespace Data
 	template <class T> class FastStringNNKeyIterator
 	{
 	private:
-		const FastStringNNItem<T> *arr;
+		UnsafeArray<const FastStringNNItem<T>> arr;
 		UOSInt cnt;
 	public:
-		FastStringNNKeyIterator(const FastStringNNItem<T> *arr, UOSInt cnt)
+		FastStringNNKeyIterator(UnsafeArray<const FastStringNNItem<T>> arr, UOSInt cnt)
 		{
 			this->arr = arr;
 			this->cnt = cnt;
@@ -35,7 +35,7 @@ namespace Data
 		NN<Text::String> Next()
 		{
 			this->cnt--;
-			NN<Text::String> ret = arr->s;
+			NN<Text::String> ret = arr[0].s;
 			this->arr++;
 			return ret;
 		}
@@ -46,13 +46,13 @@ namespace Data
 	private:
 		UOSInt capacity;
 		UOSInt cnt;
-		FastStringNNItem<T> *items;
+		UnsafeArray<FastStringNNItem<T>> items;
 		Crypto::Hash::CRC32RC crc;
 
 		void Insert(UOSInt index, UInt32 hash, NN<Text::String> s, NN<T> val);
 	public:
 		FastStringMapNN();
-		FastStringMapNN(const FastStringMapNN<T> *map);
+		FastStringMapNN(NN<const FastStringMapNN<T>> map);
 		virtual ~FastStringMapNN();
 
 		virtual UOSInt GetCount() const;
@@ -89,10 +89,10 @@ namespace Data
 		if (this->cnt == this->capacity)
 		{
 			this->capacity = this->capacity << 1;
-			FastStringNNItem<T> *newItems = MemAlloc(FastStringNNItem<T>, this->capacity);
+			UnsafeArray<FastStringNNItem<T>> newItems = MemAllocArr(FastStringNNItem<T>, this->capacity);
 			if (index > 0)
 			{
-				MemCopyNO(newItems, this->items, sizeof(FastStringNNItem<T>) * index);
+				MemCopyNO(newItems.Ptr(), this->items.Ptr(), sizeof(FastStringNNItem<T>) * index);
 			}
 			newItems[index].hash = hash;
 			newItems[index].s = s;
@@ -101,7 +101,7 @@ namespace Data
 			{
 				MemCopyNO(&newItems[index + 1], &this->items[index], sizeof(FastStringNNItem<T>) * (this->cnt - index));
 			}
-			MemFree(this->items);
+			MemFreeArr(this->items);
 			this->items = newItems;
 			this->cnt++;
 		}
@@ -122,14 +122,14 @@ namespace Data
 	{
 		this->capacity = 64;
 		this->cnt = 0;
-		this->items = MemAlloc(FastStringNNItem<T>, this->capacity);
+		this->items = MemAllocArr(FastStringNNItem<T>, this->capacity);
 	}
 
-	template <class T> FastStringMapNN<T>::FastStringMapNN(const FastStringMapNN<T> *map)
+	template <class T> FastStringMapNN<T>::FastStringMapNN(NN<const FastStringMapNN<T>> map)
 	{
 		this->capacity = map->capacity;
 		this->cnt = map->cnt;
-		this->items = MemAlloc(FastStringNNItem<T>, this->capacity);
+		this->items = MemAllocArr(FastStringNNItem<T>, this->capacity);
 		UOSInt i = 0;
 		UOSInt j = this->cnt;
 		while (i < j)
@@ -148,7 +148,7 @@ namespace Data
 		{
 			this->items[i].s->Release();
 		}
-		MemFree(this->items);
+		MemFreeArr(this->items);
 	}
 
 	template <class T> UOSInt FastStringMapNN<T>::GetCount() const

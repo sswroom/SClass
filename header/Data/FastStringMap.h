@@ -19,10 +19,10 @@ namespace Data
 	template <class T> class FastStringKeyIterator
 	{
 	private:
-		const FastStringItem<T> *arr;
+		UnsafeArray<const FastStringItem<T>> arr;
 		UOSInt cnt;
 	public:
-		FastStringKeyIterator(const FastStringItem<T> *arr, UOSInt cnt)
+		FastStringKeyIterator(UnsafeArray<const FastStringItem<T>> arr, UOSInt cnt)
 		{
 			this->arr = arr;
 			this->cnt = cnt;
@@ -36,7 +36,7 @@ namespace Data
 		NN<Text::String> Next()
 		{
 			this->cnt--;
-			NN<Text::String> ret = arr->s;
+			NN<Text::String> ret = arr[0].s;
 			this->arr++;
 			return ret;
 		}
@@ -47,7 +47,7 @@ namespace Data
 	private:
 		UOSInt capacity;
 		UOSInt cnt;
-		FastStringItem<T> *items;
+		UnsafeArray<FastStringItem<T>> items;
 		Crypto::Hash::CRC32RC crc;
 
 		void Insert(UOSInt index, UInt32 hash, NN<Text::String> s, T val);
@@ -89,10 +89,10 @@ namespace Data
 		if (this->cnt == this->capacity)
 		{
 			this->capacity = this->capacity << 1;
-			FastStringItem<T> *newItems = MemAlloc(FastStringItem<T>, this->capacity);
+			UnsafeArray<FastStringItem<T>> newItems = MemAllocArr(FastStringItem<T>, this->capacity);
 			if (index > 0)
 			{
-				MemCopyNO(newItems, this->items, sizeof(FastStringItem<T>) * index);
+				MemCopyNO(newItems.Ptr(), this->items.Ptr(), sizeof(FastStringItem<T>) * index);
 			}
 			newItems[index].hash = hash;
 			newItems[index].s = s;
@@ -101,7 +101,7 @@ namespace Data
 			{
 				MemCopyNO(&newItems[index + 1], &this->items[index], sizeof(FastStringItem<T>) * (this->cnt - index));
 			}
-			MemFree(this->items);
+			MemFreeArr(this->items);
 			this->items = newItems;
 			this->cnt++;
 		}
@@ -122,14 +122,14 @@ namespace Data
 	{
 		this->capacity = 64;
 		this->cnt = 0;
-		this->items = MemAlloc(FastStringItem<T>, this->capacity);
+		this->items = MemAllocArr(FastStringItem<T>, this->capacity);
 	}
 
 	template <class T> FastStringMap<T>::FastStringMap(const FastStringMap<T> *map)
 	{
 		this->capacity = map->capacity;
 		this->cnt = map->cnt;
-		this->items = MemAlloc(FastStringItem<T>, this->capacity);
+		this->items = MemAllocArr(FastStringItem<T>, this->capacity);
 		UOSInt i = 0;
 		UOSInt j = this->cnt;
 		while (i < j)
@@ -148,7 +148,7 @@ namespace Data
 		{
 			this->items[i].s->Release();
 		}
-		MemFree(this->items);
+		MemFreeArr(this->items);
 	}
 
 	template <class T> UOSInt FastStringMap<T>::GetCount() const

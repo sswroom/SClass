@@ -1295,9 +1295,8 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 		}
 		else if (ParseKMLVector(reader, colNames, colValues, colInfos).SetTo(vec))
 		{
-
 			Math::Geometry::Vector2D::VectorType vecType = vec->GetVectorType();
-			if (vecType == Math::Geometry::Vector2D::VectorType::LineString)
+			if (vecType == Math::Geometry::Vector2D::VectorType::LineString || vecType == Math::Geometry::Vector2D::VectorType::Polyline)
 			{
 				NN<Map::VectorLayer> lyr;
 				if (colValues.GetItem(0).SetTo(s))

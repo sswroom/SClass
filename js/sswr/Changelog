@@ -1,3 +1,8 @@
+1.6.4
+-Support geometry.Polyline
+-leaflet.createFromKML support group in group
+-parser.parseKMLContainer hide Schema message
+
 1.6.3
 -Added hash.MD5
 -Support web.Dialog in frameset
