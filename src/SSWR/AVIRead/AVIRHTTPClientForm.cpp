@@ -589,7 +589,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 			{
 				cli->SetClientCert(cliCert, cliKey);
 			}
-			if (cli->Connect(currURL->ToCString(), currMeth, &me->respTimeDNS, &me->respTimeConn, false))
+			if (cli->Connect(currURL->ToCString(), currMeth, me->respTimeDNS, me->respTimeConn, false))
 			{
 				IO::MemoryStream *mstm;
 				Text::String *contType = 0;
@@ -646,7 +646,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 					cli->Write(currBody, currBodyLen);
 				}
 
-				cli->EndRequest(&me->respTimeReq, &me->respTimeResp);
+				cli->EndRequest(me->respTimeReq, me->respTimeResp);
 				UInt64 totalRead = 0;
 				UOSInt thisRead;
 				while ((thisRead = cli->Read(BYTEARR(buff))) > 0)
@@ -663,7 +663,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 				{
 					cli.Delete();
 					cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, me->userAgent->ToCString(), me->noShutdown, currURL->StartsWith(UTF8STRC("https://")));
-					if (cli->Connect(currURL->ToCString(), currMeth, &me->respTimeDNS, &me->respTimeConn, false))
+					if (cli->Connect(currURL->ToCString(), currMeth, me->respTimeDNS, me->respTimeConn, false))
 					{
 						contType = 0;
 						mstm->Clear();
@@ -711,7 +711,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 							}
 						}
 
-						cli->EndRequest(&me->respTimeReq, &me->respTimeResp);
+						cli->EndRequest(me->respTimeReq, me->respTimeResp);
 						totalRead = 0;
 						while ((thisRead = cli->Read(BYTEARR(buff))) > 0)
 						{
@@ -774,7 +774,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 						}
 					}
 				}
-				me->respSvrAddr = *cli->GetSvrAddr();
+				me->respSvrAddr = cli->GetSvrAddr().Ptr()[0];
 				Sync::MutexUsage respMutUsage(me->respMut);
 				SDEL_STRING(me->respReqURL)
 				SDEL_STRING(me->respContType);
@@ -1259,6 +1259,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(Optional<UI::GUIClientCont
 	this->cboMethod->AddItem(CSTR("PUT"), (void*)Net::WebUtil::RequestMethod::HTTP_PUT);
 	this->cboMethod->AddItem(CSTR("PATCH"), (void*)Net::WebUtil::RequestMethod::HTTP_PATCH);
 	this->cboMethod->AddItem(CSTR("DELETE"), (void*)Net::WebUtil::RequestMethod::HTTP_DELETE);
+	this->cboMethod->AddItem(CSTR("TRACE"), (void*)Net::WebUtil::RequestMethod::HTTP_TRACE);
 	this->cboMethod->SetSelectedIndex(0);
 	this->chkOSClient = ui->NewCheckBox(this->pnlRequest, CSTR("OS Client"), false);
 	this->chkOSClient->SetRect(204, 28, 100, 23, false);

@@ -62,7 +62,7 @@ template<typename T> void Data::SyncCircularBuff<T>::Put(T item)
 		else
 		{
 			MemCopyNO(newBuff.Ptr(), &this->buff[this->getIndex], (oldCapacity - this->getIndex) * sizeof(T));
-			MemCopyNO(&newBuff[oldCapacity - this->getIndex], this->buff, this->putIndex * sizeof(T));
+			MemCopyNO(&newBuff[oldCapacity - this->getIndex], this->buff.Ptr(), this->putIndex * sizeof(T));
 			this->getIndex = 0;
 			this->putIndex = oldCapacity - 1;
 		}

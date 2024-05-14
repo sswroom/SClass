@@ -385,6 +385,7 @@ $`$(PKG-CONFIG) --cflags glib-2.0`
 DBusClient.o: ../../src/IO/DBusClient.cpp
 $`$(PKG-CONFIG) --cflags dbus-1`
 !`$(PKG-CONFIG) --libs dbus-1`
+DebugTool.o: ../../src/IO/DebugTool.cpp
 DebugWriter_Null.o: ../../src/IO/DebugWriter_Null.cpp
 DebugWriterL.o: ../../src/IO/DebugWriterL.cpp
 DebugWriterW.o: ../../src/IO/DebugWriterW.cpp

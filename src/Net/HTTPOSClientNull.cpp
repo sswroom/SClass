@@ -55,16 +55,10 @@ Bool Net::HTTPOSClient::Recover()
 	return false;
 }
 
-Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders)
+Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod method, OptOut<Double> timeDNS, OptOut<Double> timeConn, Bool defHeaders)
 {
-	if (timeDNS)
-	{
-		*timeDNS = -1;
-	}
-	if (timeConn)
-	{
-		*timeConn = -1;
-	}
+	timeDNS.Set(-1);
+	timeConn.Set(-1);
 	return false;
 }
 
@@ -72,16 +66,10 @@ void Net::HTTPOSClient::AddHeaderC(Text::CStringNN name, Text::CString value)
 {
 }
 
-void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
+void Net::HTTPOSClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeResp)
 {
-	if (timeReq)
-	{
-		*timeReq = -1;
-	}
-	if (timeResp)
-	{
-		*timeResp = -1;
-	}
+	timeReq.Set(-1);
+	timeResp.Set(-1);
 	return;
 }
 
@@ -99,7 +87,7 @@ Bool Net::HTTPOSClient::SetClientCert(NN<Crypto::Cert::X509Cert> cert, NN<Crypto
 	return false;
 }
 
-const Data::ReadingList<Crypto::Cert::Certificate *> *Net::HTTPOSClient::GetServerCerts()
+Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> Net::HTTPOSClient::GetServerCerts()
 {
 	return 0;
 }

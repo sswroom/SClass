@@ -465,8 +465,8 @@ typedef struct
 #if !defined(__APPLE__)
 int Process_GetModulesCB(struct dl_phdr_info *info, size_t size, void *data)
 {
-	Data::ArrayList<Manage::ModuleInfo *> *modList = (Data::ArrayList<Manage::ModuleInfo *> *)data;
-	Manage::ModuleInfo *mod;
+	Data::ArrayListNN<Manage::ModuleInfo> *modList = (Data::ArrayListNN<Manage::ModuleInfo> *)data;
+	NN<Manage::ModuleInfo> mod;
 	ModuleInfoData midata;
 	UTF8Char sbuff[512];
 
@@ -490,7 +490,7 @@ int Process_GetModulesCB(struct dl_phdr_info *info, size_t size, void *data)
 	}
 	midata.size = totalSize;
 
-	NEW_CLASS(mod, Manage::ModuleInfo(0, &midata));
+	NEW_CLASSNN(mod, Manage::ModuleInfo(0, &midata));
 	modList->Add(mod);
 	return 0;
 }

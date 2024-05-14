@@ -41,9 +41,9 @@ namespace Net
 		virtual void Close();
 		virtual Bool Recover();
 
-		virtual Bool Connect(Text::CStringNN url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders);
+		virtual Bool Connect(Text::CStringNN url, Net::WebUtil::RequestMethod method, OptOut<Double> timeDNS, OptOut<Double> timeConn, Bool defHeaders);
 		virtual void AddHeaderC(Text::CStringNN name, Text::CString value);
-		virtual void EndRequest(Double *timeReq, Double *timeResp);
+		virtual void EndRequest(OptOut<Double> timeReq, OptOut<Double> timeResp);
 		virtual void SetTimeout(Data::Duration timeout);
 
 		virtual Bool IsSecureConn() const;

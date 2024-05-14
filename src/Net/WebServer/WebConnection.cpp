@@ -201,7 +201,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 								SDEL_CLASS(this->currReq);
 							}
 
-							Net::WebUtil::RequestMethod reqMeth = Net::WebUtil::Str2RequestMethod(sarr[0].v, sarr[0].leng);
+							Net::WebUtil::RequestMethod reqMeth = Net::WebUtil::Str2RequestMethod(sarr[0].ToCString());
 							if (reqMeth != Net::WebUtil::RequestMethod::Unknown)
 							{
 								NEW_CLASS(this->currReq, WebRequest(sarr[1].ToCString(), reqMeth, reqProto, this->cli, &cliAddr, cliPort, svrPort));
@@ -260,7 +260,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 								SDEL_CLASS(this->currReq);
 							}
 
-							Net::WebUtil::RequestMethod reqMeth = Net::WebUtil::Str2RequestMethod(sarr[0].v, sarr[0].leng);
+							Net::WebUtil::RequestMethod reqMeth = Net::WebUtil::Str2RequestMethod(sarr[0].ToCString());
 							if (reqMeth != Net::WebUtil::RequestMethod::Unknown)
 							{
 								NEW_CLASS(this->currReq, WebRequest(sarr[1].ToCString(), reqMeth, reqProto, this->cli, &cliAddr, cliPort, svrPort));

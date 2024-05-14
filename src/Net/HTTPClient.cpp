@@ -268,9 +268,12 @@ Text::CString Net::HTTPClient::GetContentType()
 	return this->GetRespHeader(CSTR("Content-Type"));
 }
 
-Text::String *Net::HTTPClient::GetURL()
+Optional<Text::String> Net::HTTPClient::GetURL()
 {
-	return (this->url->leng > 0)?this->url.Ptr():0;
+	if (this->url->leng > 0)
+		return this->url;
+	else
+		return 0;
 }
 
 Net::WebStatus::StatusCode Net::HTTPClient::GetRespStatus()
@@ -387,9 +390,9 @@ Bool Net::HTTPClient::ReadAllContent(NN<Text::StringBuilderUTF8> sb, UOSInt buff
 	return false;
 }
 
-const Net::SocketUtil::AddressInfo *Net::HTTPClient::GetSvrAddr()
+NN<const Net::SocketUtil::AddressInfo> Net::HTTPClient::GetSvrAddr()
 {
-	return &this->svrAddr;
+	return this->svrAddr;
 }
 
 void Net::HTTPClient::ParseDateStr(NN<Data::DateTime> dt, Text::CStringNN dateStr)

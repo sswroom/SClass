@@ -22,6 +22,7 @@ namespace Net
 			HTTP_CONNECT,
 			HTTP_HEAD,
 			HTTP_OPTIONS,
+			HTTP_TRACE,
 			RTSP_DESCRIBE,
 			RTSP_ANNOUNCE,
 			RTSP_GET_PARAMETER,
@@ -35,7 +36,7 @@ namespace Net
 		};
 
 	public:
-		static RequestMethod Str2RequestMethod(const UTF8Char *s, UOSInt len);
+		static RequestMethod Str2RequestMethod(Text::CStringNN s);
 		static Text::CString RequestMethodGetName(RequestMethod reqMeth);
 		static UTF8Char *Date2Str(UTF8Char *sbuff, NN<Data::DateTime> dt);
 		static UTF8Char *Date2Str(UTF8Char *sbuff, const Data::Timestamp &ts);

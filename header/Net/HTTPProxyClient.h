@@ -16,7 +16,7 @@ namespace Net
 		HTTPProxyClient(NN<Net::SocketFactory> sockf, Bool noShutdown, UInt32 proxyIP, UInt16 proxyPort);
 		virtual ~HTTPProxyClient();
 
-		virtual Bool Connect(Text::CStringNN url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders);
+		virtual Bool Connect(Text::CStringNN url, Net::WebUtil::RequestMethod method, OptOut<Double> timeDNS, OptOut<Double> timeConn, Bool defHeaders);
 		Bool SetAuthen(Net::HTTPProxyTCPClient::PasswordType pwdType, const UTF8Char *userName, const UTF8Char *password);
 	};
 }

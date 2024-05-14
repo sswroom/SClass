@@ -540,7 +540,7 @@ Bool Net::HTTPMyClient::Recover()
 	return false;
 }
 
-Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders)
+Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod method, OptOut<Double> timeDNS, OptOut<Double> timeConn, Bool defHeaders)
 {
 	UTF8Char urltmp[256];
 	UOSInt urltmpLen;
@@ -572,27 +572,15 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	}
 	else
 	{
-		if (timeDNS)
-		{
-			*timeDNS = -1;
-		}
-		if (timeConn)
-		{
-			*timeConn = -1;
-		}
+		timeDNS.Set(-1);
+		timeConn.Set(-1);
 		return false;
 	}
 
 	if (secure && this->ssl.IsNull())
 	{
-		if (timeDNS)
-		{
-			*timeDNS = -1;
-		}
-		if (timeConn)
-		{
-			*timeConn = -1;
-		}
+		timeDNS.Set(-1);
+		timeConn.Set(-1);
 		return false;
 	}
 
@@ -700,10 +688,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 			this->canWrite = false;
 			return false;
 		}
-		if (timeDNS)
-		{
-			*timeDNS = this->clk.GetTimeDiff();
-		}
+		timeDNS.Set(this->clk.GetTimeDiff());
 		this->svrAddr = addr;
 		if (addr.addrType != Net::AddrType::Unknown)
 		{
@@ -737,10 +722,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 			return false;
 		}
 		t1 = this->clk.GetTimeDiff();
-		if (timeConn)
-		{
-			*timeConn = t1;
-		}
+		timeConn.Set(t1);
 #ifdef DEBUGSPEED
 		if (t1 > 0.01)
 		{
@@ -790,14 +772,8 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 #endif
 			if (size == 0)
 			{
-				if (timeDNS)
-				{
-					*timeDNS = -1;
-				}
-				if (timeConn)
-				{
-					*timeConn = -1;
-				}
+				timeDNS.Set(-1);
+				timeConn.Set(-1);
 				return false;
 			}
 #ifdef LOGREPLY
@@ -805,14 +781,8 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 #endif
 			this->contRead += size;
 		}
-		if (timeDNS)
-		{
-			*timeDNS = 0;
-		}
-		if (timeConn)
-		{
-			*timeConn = 0;
-		}
+		timeDNS.Set(0);
+		timeConn.Set(0);
 		this->contRead = 0;
 		i = this->headers.GetCount();
 		while (i-- > 0)
@@ -825,14 +795,8 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	}
 	else
 	{
-		if (timeDNS)
-		{
-			*timeDNS = -1;
-		}
-		if (timeConn)
-		{
-			*timeConn = -1;
-		}
+		timeDNS.Set(-1);
+		timeConn.Set(-1);
 		return false;
 	}
 
@@ -889,6 +853,13 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		this->canWrite = false;
 		this->writing = false;
 		cptr = Text::StrConcatC(dataBuff, UTF8STRC("GET "));
+		cptr = ptr2.ConcatTo(cptr);
+		cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
+		break;
+	case Net::WebUtil::RequestMethod::HTTP_TRACE:
+		this->canWrite = false;
+		this->writing = false;
+		cptr = Text::StrConcatC(dataBuff, UTF8STRC("TRACE "));
 		cptr = ptr2.ConcatTo(cptr);
 		cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
 		break;
@@ -987,18 +958,12 @@ void Net::HTTPMyClient::AddHeaderC(Text::CStringNN name, Text::CString value)
 	}
 }
 
-void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
+void Net::HTTPMyClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeResp)
 {
 	if ((this->writing && !this->canWrite) || this->cli == 0)
 	{
-		if (timeReq)
-		{
-			*timeReq = -1;
-		}
-		if (timeResp)
-		{
-			*timeResp = -1;
-		}
+		timeReq.Set(-1);
+		timeResp.Set(-1);
 		return;
 	}
 	else
@@ -1042,10 +1007,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 			this->cli->ShutdownSend();
 		this->cli->SetTimeout(this->timeout);
 		t1 = this->clk.GetTimeDiff();
-		if (timeReq)
-		{
-			*timeReq = t1;
-		}
+		timeReq.Set(t1);
 
 		this->buffSize = 0;
 		while (this->buffSize < 32)
@@ -1066,10 +1028,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 				break;
 		}
 		t1 = this->clk.GetTimeDiff();
-		if (timeResp)
-		{
-			*timeResp = t1;
-		}
+		timeResp.Set(t1);
 #ifdef DEBUGSPEED
 		if (t1 > 0.01)
 		{
