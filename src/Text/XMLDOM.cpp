@@ -1103,8 +1103,11 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 					}
 					else if (xmlNameSt)
 					{
-						NEW_CLASSNN(attr, XMLAttrib(CSTRP(xmlNameSt, xmlNameEn), CSTR_NULL));
-						node->AddAttrib(attr);
+						if (optnode.SetTo(node))
+						{
+							NEW_CLASSNN(attr, XMLAttrib(CSTRP(xmlNameSt, xmlNameEn), CSTR_NULL));
+							node->AddAttrib(attr);
+						}
 
 						xmlNameSt = currPtr;
 						xmlNameEn = 0;
