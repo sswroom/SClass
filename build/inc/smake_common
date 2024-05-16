@@ -2167,6 +2167,8 @@ Manage/AddressResolver.h:
 @AddressResolver.o
 Manage/Benchmark.h:
 @Benchmark_CPP.o
+Manage/CodeSymbol.h:
+@CodeSymbol.o
 Manage/CPUDB.h:
 @CPUDB.o
 Manage/CPUInst.h:

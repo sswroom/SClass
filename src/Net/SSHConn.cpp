@@ -168,16 +168,19 @@ Optional<Net::SSHTCPChannel> Net::SSHConn::RemoteConnect(Socket *sourceSoc, Text
 	if (channel == 0)
 	{
 		this->lastError = libssh2_session_last_errno(this->clsData->session);
+#if defined(VERBOSE)
+	printf("SSHConn: Remote connect error: %d (%s)\r\n", this->lastError, Net::SSHManager::ErrorGetName(this->lastError).v);
+#endif
 		return 0;
 	}
-	if (this->clsData->blocking)
+	libssh2_channel_set_blocking(channel, 0);
+#if defined(VERBOSE)
+	printf("SSHConn: Channel set to non-blocking\r\n");
+#endif
+/*	if (this->clsData->blocking)
 	{
 		this->clsData->blocking = false;
-	    libssh2_session_set_blocking(this->clsData->session, 0);
-#if defined(VERBOSE)
-		printf("SSHConn: Session set to non-blocking\r\n");
-#endif
-	}
+	}*/
 	NN<Net::SSHTCPChannel> ch;
 	NEW_CLASSNN(ch, Net::SSHTCPChannel(*this, (SSHChannelHandle*)channel, remoteHost));
 	return ch;
@@ -223,6 +226,7 @@ UOSInt Net::SSHConn::ChannelWrite(SSHChannelHandle *channel, const UInt8 *buff, 
 
 void Net::SSHConn::ChannelClose(SSHChannelHandle *channel)
 {
+	libssh2_channel_set_blocking((LIBSSH2_CHANNEL*)channel, -1); 
 	int err = libssh2_channel_close((LIBSSH2_CHANNEL*)channel);
 #if defined(VERBOSE)
 	printf("SSHConn: Channel close response: %d (%s)\r\n", err, Net::SSHManager::ErrorGetName(err).v);

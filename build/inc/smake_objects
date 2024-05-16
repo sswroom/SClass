@@ -681,6 +681,7 @@ MDT701STVControl.o: ../../src/IO/TVCtrl/MDT701STVControl.cpp
 NECTVControl.o: ../../src/IO/TVCtrl/NECTVControl.cpp
 
 AddressResolver.o: ../../src/Manage/AddressResolver.cpp
+CodeSymbol.o: ../../src/Manage/CodeSymbol.cpp
 ComputerL.o: ../../src/Manage/ComputerL.cpp
 ComputerW.o: ../../src/Manage/ComputerW.cpp
 ComputerUserL.o: ../../src/Manage/ComputerUserL.cpp

@@ -783,6 +783,7 @@ DB::PostgreSQLConn::PostgreSQLConn(Text::CStringNN server, UInt16 port, Text::CS
 	this->geometryOid = 0;
 	this->stgeometryOid = 0;
 	this->citextOid = 0;
+	this->lastDataError = false;
 	if (this->Connect()) this->InitConnection();
 }
 
@@ -842,6 +843,7 @@ void DB::PostgreSQLConn::Dispose()
 
 OSInt DB::PostgreSQLConn::ExecuteNonQuery(Text::CStringNN sql)
 {
+	this->lastDataError = false;
 	if (this->clsData->conn == 0)
 	{
 		return -2;
@@ -854,6 +856,8 @@ OSInt DB::PostgreSQLConn::ExecuteNonQuery(Text::CStringNN sql)
 #endif
 	if (status != PGRES_TUPLES_OK && status != PGRES_COMMAND_OK)
 	{
+		if (status == PGRES_FATAL_ERROR)
+			this->lastDataError = true;
 		PQclear(res);
 		return -2;
 	}
@@ -872,6 +876,7 @@ OSInt DB::PostgreSQLConn::ExecuteNonQuery(Text::CStringNN sql)
 
 Optional<DB::DBReader> DB::PostgreSQLConn::ExecuteReader(Text::CStringNN sql)
 {
+	this->lastDataError = false;
 	if (this->clsData->conn == 0)
 	{
 		return 0;
@@ -884,6 +889,8 @@ Optional<DB::DBReader> DB::PostgreSQLConn::ExecuteReader(Text::CStringNN sql)
 #endif
 	if (status != PGRES_TUPLES_OK && status != PGRES_COMMAND_OK)
 	{
+		if (status == PGRES_FATAL_ERROR)
+			this->lastDataError = true;
 #if defined(VERBOSE)
 		printf("PostgreSQL: Error: %s\r\n", PQerrorMessage(this->clsData->conn));
 #endif
@@ -910,7 +917,7 @@ void DB::PostgreSQLConn::GetLastErrorMsg(NN<Text::StringBuilderUTF8> str)
 
 Bool DB::PostgreSQLConn::IsLastDataError()
 {
-	return false;
+	return this->lastDataError;
 }
 
 void DB::PostgreSQLConn::Reconnect()

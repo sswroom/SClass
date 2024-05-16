@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Text/MyString.h"
+#include "Manage/CodeSymbol.h"
 #include "Manage/SymbolResolver.h"
 #include <stdlib.h>
 #if defined(NO_STACKTRACE) || defined(__ANDROID__)
@@ -60,7 +61,16 @@ UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
 	char **name = backtrace_symbols(&addr, 1);
 	if (name)
 	{
-		buff = Text::StrConcat(buff, (UTF8Char*)name[0]);
+		NN<CodeSymbol> symbol;
+		if (CodeSymbol::ParseFromStr((const UTF8Char*)name[0], address).SetTo(symbol))
+		{
+			buff = symbol->ToString(buff);
+			symbol.Delete();
+		}
+		else
+		{
+			buff = Text::StrConcat(buff, (UTF8Char*)name[0]);
+		}
 		free(name);
 		return buff;
 	}
