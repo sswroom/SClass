@@ -11,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRWHOISClientForm::OnRequestClicked(AnyType user
 	NN<SSWR::AVIRead::AVIRWHOISClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWHOISClientForm>();
 	Text::StringBuilderUTF8 sb;
 	UInt32 ip;
-	Net::WhoisRecord *rec;
+	NN<Net::WhoisRecord> rec;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	me->txtIP->GetText(sb);
@@ -30,17 +30,14 @@ void __stdcall SSWR::AVIRead::AVIRWHOISClientForm::OnRequestClicked(AnyType user
 	sptr = Text::StrDoubleFmt(sbuff, t, "0.0000000000");
 	me->txtRespTime->SetText(CSTRP(sbuff, sptr));
 	me->lbResponse->ClearItems();
-	if (rec)
+	UOSInt i = 0;
+	UOSInt j = rec->GetCount();
+	while (i < j)
 	{
-		UOSInt i = 0;
-		UOSInt j = rec->GetCount();
-		while (i < j)
-		{
-			me->lbResponse->AddItem(Text::String::OrEmpty(rec->GetItem(i)), 0);
-			i++;
-		}
-		DEL_CLASS(rec);
+		me->lbResponse->AddItem(Text::String::OrEmpty(rec->GetItem(i)), 0);
+		i++;
 	}
+	rec.Delete();
 }
 
 SSWR::AVIRead::AVIRWHOISClientForm::AVIRWHOISClientForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)

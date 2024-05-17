@@ -61,11 +61,8 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnIPSelChg(AnyType userObj)
 	if (ip)
 	{
 		Text::StringBuilderUTF8 sb;
-		Net::WhoisRecord *rec = me->whois.RequestIP(ip);
-		if (rec)
-		{
-			sb.AppendJoin(rec->Iterator(), CSTR("\r\n"));
-		}
+		NN<Net::WhoisRecord> rec = me->whois.RequestIP(ip);
+		sb.AppendJoin(rec->Iterator(), CSTR("\r\n"));
 		me->txtIPWhois->SetText(sb.ToCString());
 	}
 	else

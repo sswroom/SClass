@@ -11,7 +11,7 @@ Net::WhoisClient::WhoisClient(NN<Net::SocketFactory> sockf, UInt32 whoisIP, Text
 	this->whoisIP = whoisIP;
 	if (prefix.leng > 0)
 	{
-		this->prefix = Text::String::New(prefix).Ptr();
+		this->prefix = Text::String::New(prefix);
 	}
 	else
 	{
@@ -21,17 +21,17 @@ Net::WhoisClient::WhoisClient(NN<Net::SocketFactory> sockf, UInt32 whoisIP, Text
 
 Net::WhoisClient::~WhoisClient()
 {
-	SDEL_STRING(this->prefix);
+	OPTSTR_DEL(this->prefix);
 }
 
-Net::WhoisRecord *Net::WhoisClient::RequestIP(UInt32 ip, Data::Duration timeout)
+NN<Net::WhoisRecord> Net::WhoisClient::RequestIP(UInt32 ip, Data::Duration timeout)
 {
-	return RequestIP(ip, this->whoisIP, STR_CSTR(this->prefix), timeout);
+	return RequestIP(ip, this->whoisIP, OPTSTR_CSTR(this->prefix), timeout);
 }
 
-Net::WhoisRecord *Net::WhoisClient::RequestIP(UInt32 ip, UInt32 whoisIP, Text::CString prefix, Data::Duration timeout)
+NN<Net::WhoisRecord> Net::WhoisClient::RequestIP(UInt32 ip, UInt32 whoisIP, Text::CString prefix, Data::Duration timeout)
 {
-	Net::WhoisRecord *rec;
+	NN<Net::WhoisRecord> rec;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 
@@ -50,7 +50,7 @@ Net::WhoisRecord *Net::WhoisClient::RequestIP(UInt32 ip, UInt32 whoisIP, Text::C
 	sptr = Text::StrConcatC(Text::StrUInt32(sptr, ipAddr[2]), UTF8STRC("."));
 	sptr = Text::StrConcatC(Text::StrUInt32(sptr, ipAddr[3]), UTF8STRC("\r\n"));
 
-	NEW_CLASS(rec, Net::WhoisRecord(ip));
+	NEW_CLASSNN(rec, Net::WhoisRecord(ip));
 	Net::TCPClient cli(sockf, whoisIP, 43, timeout);
 	cli.Write((UInt8*)sbuff, (UOSInt)(sptr - sbuff));
 	Text::UTF8Reader reader(cli);

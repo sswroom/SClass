@@ -36,8 +36,8 @@ namespace UI
 			DE_LINK
 		} DragEffect;
 	public:
-		virtual DragEffect DragEnter(GUIDropData *data) = 0;
-		virtual void DropData(GUIDropData *data, OSInt x, OSInt y) = 0;
+		virtual DragEffect DragEnter(NN<GUIDropData> data) = 0;
+		virtual void DropData(NN<GUIDropData> data, OSInt x, OSInt y) = 0;
 	};
 
 	class GUIControl

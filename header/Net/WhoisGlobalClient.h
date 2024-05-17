@@ -10,7 +10,7 @@ namespace Net
 		WhoisGlobalClient(NN<Net::SocketFactory> sockf);
 		virtual ~WhoisGlobalClient();
 
-		virtual WhoisRecord *RequestIP(UInt32 ip, Data::Duration timeout);
+		virtual NN<WhoisRecord> RequestIP(UInt32 ip, Data::Duration timeout);
 	};
 }
 #endif

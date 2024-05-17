@@ -371,39 +371,30 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTargetSelChg(AnyType userObj)
 	me->currTarget = target;
 	if (target)
 	{
-		Net::WhoisRecord *rec = me->whois.RequestIP(target->ip);
+		NN<Net::WhoisRecord> rec = me->whois.RequestIP(target->ip);
 		UTF8Char sbuff[256];
 		UTF8Char *sptr;
 		UOSInt i;
 		UOSInt j;
-		if (rec)
+		if ((sptr = rec->GetNetworkName(sbuff)) != 0)
 		{
-			if ((sptr = rec->GetNetworkName(sbuff)) != 0)
-			{
-				me->txtTargetName->SetText(CSTRP(sbuff, sptr));
-			}
-			else
-			{
-				me->txtTargetName->SetText(CSTR("Unknown"));
-			}
-			if ((sptr = rec->GetCountryCode(sbuff)) != 0)
-			{
-				me->txtTargetCountry->SetText(CSTRP(sbuff, sptr));
-			}
-			else
-			{
-				me->txtTargetCountry->SetText(CSTR("Unk"));
-			}
-			Text::StringBuilderUTF8 sb;
-			sb.AppendJoin(rec->Iterator(), CSTR("\r\n"));
-			me->txtTargetWhois->SetText(sb.ToCString());
+			me->txtTargetName->SetText(CSTRP(sbuff, sptr));
 		}
 		else
 		{
-			me->txtTargetWhois->SetText(CSTR(""));
-			me->txtTargetName->SetText(CSTR(""));
-			me->txtTargetCountry->SetText(CSTR(""));
+			me->txtTargetName->SetText(CSTR("Unknown"));
 		}
+		if ((sptr = rec->GetCountryCode(sbuff)) != 0)
+		{
+			me->txtTargetCountry->SetText(CSTRP(sbuff, sptr));
+		}
+		else
+		{
+			me->txtTargetCountry->SetText(CSTR("Unk"));
+		}
+		Text::StringBuilderUTF8 sb;
+		sb.AppendJoin(rec->Iterator(), CSTR("\r\n"));
+		me->txtTargetWhois->SetText(sb.ToCString());
 		Sync::MutexUsage mutUsage(target->mut);
 		me->lbTargetDomains->ClearItems();
 		i = 0;

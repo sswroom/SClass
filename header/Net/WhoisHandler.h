@@ -8,7 +8,7 @@ namespace Net
 	class WhoisHandler
 	{
 	private:
-		Data::ArrayList<WhoisRecord*> recordList;
+		Data::ArrayListNN<WhoisRecord> recordList;
 		Sync::Mutex recordMut;
 		Net::WhoisGlobalClient client;
 		Data::Duration timeout;
@@ -17,7 +17,7 @@ namespace Net
 		WhoisHandler(NN<Net::SocketFactory> sockf, Data::Duration timeout);
 		~WhoisHandler();
 
-		WhoisRecord *RequestIP(UInt32 ip);
+		NN<WhoisRecord> RequestIP(UInt32 ip);
 	};
 }
 #endif

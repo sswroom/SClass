@@ -236,8 +236,8 @@ namespace SSWR
 			virtual void EventMenuClicked(UInt16 cmdId);
 			virtual void OnMonitorChanged();
 
-			virtual DragEffect DragEnter(UI::GUIDropData *data);
-			virtual void DropData(UI::GUIDropData *data, OSInt x, OSInt y);
+			virtual DragEffect DragEnter(NN<UI::GUIDropData> data);
+			virtual void DropData(NN<UI::GUIDropData> data, OSInt x, OSInt y);
 
 /*			virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void **ppvObject);
 			virtual ULONG STDMETHODCALLTYPE AddRef();

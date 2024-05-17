@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingPacket(AnyType userData,
 	Sync::MutexUsage mutUsage(me->pingIPMut);
 	if (!me->pingIPMap.Get(sortableIP).SetTo(pingIPInfo))
 	{
-		Net::WhoisRecord *rec;
+		NN<Net::WhoisRecord> rec;
 		pingIPInfo = MemAllocNN(PingIPInfo);
 		pingIPInfo->ip = srcIP;
 		pingIPInfo->count = 0;
@@ -229,11 +229,8 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPTranSelChg(AnyType userObj
 	if (ipTran)
 	{
 		Text::StringBuilderUTF8 sb;
-		Net::WhoisRecord *rec = me->whois.RequestIP(ipTran->ip);
-		if (rec)
-		{
-			sb.AppendJoin(rec->Iterator(), CSTR("\r\n"));
-		}
+		NN<Net::WhoisRecord> rec = me->whois.RequestIP(ipTran->ip);
+		sb.AppendJoin(rec->Iterator(), CSTR("\r\n"));
 		me->txtIPTranWhois->SetText(sb.ToCString());
 		me->dataUpdated = true;
 	}
@@ -269,11 +266,8 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingIPSelChg(AnyType userObj
 		me->txtPingIPCountry->SetText(me->currPingIP->country->ToCString());
 
 		Text::StringBuilderUTF8 sb;
-		Net::WhoisRecord *rec = me->whois.RequestIP(me->currPingIP->ip);
-		if (rec)
-		{
-			sb.AppendJoin(rec->Iterator(), CSTR("\r\n"));
-		}
+		NN<Net::WhoisRecord> rec = me->whois.RequestIP(me->currPingIP->ip);
+		sb.AppendJoin(rec->Iterator(), CSTR("\r\n"));
 		me->txtPingIPWhois->SetText(sb.ToCString());
 	}
 	else
@@ -431,17 +425,10 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSTargetSelChg(AnyType user
 			i++;
 		}
 		mutUsage.EndUse();
-		Net::WhoisRecord *rec = me->whois.RequestIP(target->ip);
-		if (rec)
-		{
-			Text::StringBuilderUTF8 sb;
-			sb.AppendJoin(rec->Iterator(), CSTR("\r\n"));
-			me->txtDNSTargetWhois->SetText(sb.ToCString());
-		}
-		else
-		{
-			me->txtDNSTargetWhois->SetText(CSTR(""));
-		}		
+		NN<Net::WhoisRecord> rec = me->whois.RequestIP(target->ip);
+		Text::StringBuilderUTF8 sb;
+		sb.AppendJoin(rec->Iterator(), CSTR("\r\n"));
+		me->txtDNSTargetWhois->SetText(sb.ToCString());
 	}
 	else
 	{

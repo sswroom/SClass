@@ -259,14 +259,15 @@ void UI::GTK::GTKDragDrop::SetHandler(UI::GUIDropHandler *hdlr)
 
 Int32 UI::GTK::GTKDragDrop::EventDragMotion(void *context, OSInt x, OSInt y, UInt32 time)
 {
-	if (this->dragData)
+	NN<UI::GTK::GTKDropData> dragData;
+	if (dragData.Set(this->dragData))
 	{
 	}
 	else
 	{
-		
-		NEW_CLASS(this->dragData, UI::GTK::GTKDropData(this->hWnd, context, time, false));
-		this->currEff = this->hdlr->DragEnter(this->dragData);
+		NEW_CLASSNN(dragData, UI::GTK::GTKDropData(this->hWnd, context, time, false));
+		this->dragData = dragData.Ptr();
+		this->currEff = this->hdlr->DragEnter(dragData);
 	}
 	if (this->currEff == UI::GUIDropHandler::DE_COPY)
 		return GDK_ACTION_COPY;
@@ -285,18 +286,20 @@ void UI::GTK::GTKDragDrop::EventDragLeave()
 
 Bool UI::GTK::GTKDragDrop::EventDragDrop(void *context, OSInt x, OSInt y, UInt32 time)
 {
-	if (this->dragData)
+	NN<UI::GTK::GTKDropData> dragData;
+	if (dragData.Set(this->dragData))
 	{
 	}
 	else
 	{
-		NEW_CLASS(this->dragData, UI::GTK::GTKDropData(this->hWnd, context, time, false));
+		NEW_CLASSNN(dragData, UI::GTK::GTKDropData(this->hWnd, context, time, false));
+		this->dragData = dragData.Ptr();
 	}
 	while (gtk_events_pending())
 	{
 		gtk_main_iteration();
 	}
 //	printf("OnDragDrop\r\n");
-	this->hdlr->DropData(this->dragData, x, y);
+	this->hdlr->DropData(dragData, x, y);
 	return true;
 }

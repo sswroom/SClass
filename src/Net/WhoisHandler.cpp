@@ -5,34 +5,34 @@
 
 Net::WhoisHandler::WhoisHandler(NN<Net::SocketFactory> sockf, Data::Duration timeout) : client(sockf)
 {
-	WhoisRecord *rec;
+	NN<WhoisRecord> rec;
 	this->timeout = timeout;
 
-	NEW_CLASS(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(CSTR("10.0.0.1"))));
+	NEW_CLASSNN(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(CSTR("10.0.0.1"))));
 	rec->AddItem(UTF8STRC("inetnum: 10.0.0.0 - 10.255.255.225"));
 	rec->AddItem(UTF8STRC("netname: LAN A"));
 	rec->AddItem(UTF8STRC("country: UN"));
 	this->recordList.Add(rec);
 
-	NEW_CLASS(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(CSTR("127.0.0.1"))));
+	NEW_CLASSNN(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(CSTR("127.0.0.1"))));
 	rec->AddItem(UTF8STRC("inetnum: 127.0.0.0 - 127.255.255.225"));
 	rec->AddItem(UTF8STRC("netname: localhost"));
 	rec->AddItem(UTF8STRC("country: UN"));
 	this->recordList.Add(rec);
 
-	NEW_CLASS(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(CSTR("172.16.0.1"))));
+	NEW_CLASSNN(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(CSTR("172.16.0.1"))));
 	rec->AddItem(UTF8STRC("inetnum: 172.16.0.0 - 172.31.255.225"));
 	rec->AddItem(UTF8STRC("netname: LAN B"));
 	rec->AddItem(UTF8STRC("country: UN"));
 	this->recordList.Add(rec);
 
-	NEW_CLASS(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(CSTR("192.168.0.1"))));
+	NEW_CLASSNN(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(CSTR("192.168.0.1"))));
 	rec->AddItem(UTF8STRC("inetnum: 192.168.0.0 - 192.168.255.225"));
 	rec->AddItem(UTF8STRC("netname: LAN C"));
 	rec->AddItem(UTF8STRC("country: UN"));
 	this->recordList.Add(rec);
 
-	NEW_CLASS(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(CSTR("224.0.0.1"))));
+	NEW_CLASSNN(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(CSTR("224.0.0.1"))));
 	rec->AddItem(UTF8STRC("NetRange: 224.0.0.0 - 239.255.255.255"));
 	rec->AddItem(UTF8STRC("CIDR: 224.0.0.0/4"));
 	rec->AddItem(UTF8STRC("NetName: MCAST-NET"));
@@ -44,16 +44,10 @@ Net::WhoisHandler::WhoisHandler(NN<Net::SocketFactory> sockf, Data::Duration tim
 
 Net::WhoisHandler::~WhoisHandler()
 {
-	UOSInt i = this->recordList.GetCount();
-	WhoisRecord *rec;
-	while (i-- > 0)
-	{
-		rec = this->recordList.GetItem(i);
-		DEL_CLASS(rec);
-	}
+	this->recordList.DeleteAll();
 }
 
-Net::WhoisRecord *Net::WhoisHandler::RequestIP(UInt32 ip)
+NN<Net::WhoisRecord> Net::WhoisHandler::RequestIP(UInt32 ip)
 {
 	UInt32 sortableIP = Net::SocketUtil::IPv4ToSortable(ip);
 	UInt32 sortableIP1;
@@ -61,7 +55,7 @@ Net::WhoisRecord *Net::WhoisHandler::RequestIP(UInt32 ip)
 	OSInt i;
 	OSInt j;
 	OSInt k;
-	WhoisRecord *rec;
+	NN<WhoisRecord> rec;
 	
 	Sync::MutexUsage mutUsage(this->recordMut);
 	i = 0;
@@ -69,7 +63,7 @@ Net::WhoisRecord *Net::WhoisHandler::RequestIP(UInt32 ip)
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		rec = this->recordList.GetItem((UOSInt)k);
+		rec = this->recordList.GetItemNoCheck((UOSInt)k);
 		sortableIP1 = Net::SocketUtil::IPv4ToSortable(rec->GetStartIP());
 		sortableIP2 = Net::SocketUtil::IPv4ToSortable(rec->GetEndIP());
 		if (sortableIP >= sortableIP1 && sortableIP <= sortableIP2)

@@ -28,8 +28,8 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			virtual DragEffect DragEnter(UI::GUIDropData *data);
-			virtual void DropData(UI::GUIDropData *data, OSInt x, OSInt y);
+			virtual DragEffect DragEnter(NN<UI::GUIDropData> data);
+			virtual void DropData(NN<UI::GUIDropData> data, OSInt x, OSInt y);
 		};
 	}
 }

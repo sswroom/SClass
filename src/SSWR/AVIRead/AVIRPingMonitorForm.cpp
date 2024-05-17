@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(AnyType userData
 	Sync::MutexUsage mutUsage(me->ipMut);
 	if (!me->ipMap.Get(sortableIP).SetTo(ipInfo))
 	{
-		Net::WhoisRecord *rec;
+		NN<Net::WhoisRecord> rec;
 		ipInfo = MemAllocNN(IPInfo);
 		ipInfo->ip = srcIP;
 		ipInfo->count = 0;
@@ -156,11 +156,8 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnIPSelChg(AnyType userObj)
 		me->txtIPCountry->SetText(me->currIP->country->ToCString());
 
 		Text::StringBuilderUTF8 sb;
-		Net::WhoisRecord *rec = me->whois.RequestIP(me->currIP->ip);
-		if (rec)
-		{
-			sb.AppendJoin(rec->Iterator(), CSTR("\r\n"));
-		}
+		NN<Net::WhoisRecord> rec = me->whois.RequestIP(me->currIP->ip);
+		sb.AppendJoin(rec->Iterator(), CSTR("\r\n"));
 		me->txtIPWhois->SetText(sb.ToCString());
 	}
 	else

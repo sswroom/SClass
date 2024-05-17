@@ -3187,7 +3187,7 @@ void SSWR::OrganMgr::OrganMainForm::OnMonitorChanged()
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-UI::GUIDropHandler::DragEffect SSWR::OrganMgr::OrganMainForm::DragEnter(UI::GUIDropData *data)
+UI::GUIDropHandler::DragEffect SSWR::OrganMgr::OrganMainForm::DragEnter(NN<UI::GUIDropData> data)
 {
 	UI::GUIDropHandler::DragEffect retEff = UI::GUIDropHandler::DE_NONE;
 	if (this->inputMode == IM_SPECIES)
@@ -3265,7 +3265,7 @@ UI::GUIDropHandler::DragEffect SSWR::OrganMgr::OrganMainForm::DragEnter(UI::GUID
 	return retEff;
 }
 
-void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSInt y)
+void SSWR::OrganMgr::OrganMainForm::DropData(NN<UI::GUIDropData> data, OSInt x, OSInt y)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

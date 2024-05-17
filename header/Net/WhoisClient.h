@@ -11,16 +11,16 @@ namespace Net
 	protected:
 		UInt32 whoisIP;
 		NN<Net::SocketFactory> sockf;
-		Text::String *prefix;
+		Optional<Text::String> prefix;
 
 	public:
 		WhoisClient(NN<Net::SocketFactory> sockf, UInt32 whoisIP, Text::CString prefix);
 		virtual ~WhoisClient();
 
-		virtual WhoisRecord *RequestIP(UInt32 ip, Data::Duration timeout);
+		virtual NN<WhoisRecord> RequestIP(UInt32 ip, Data::Duration timeout);
 
 	protected:
-		WhoisRecord *RequestIP(UInt32 ip, UInt32 whoisIP, Text::CString prefix, Data::Duration timeout);
+		NN<WhoisRecord> RequestIP(UInt32 ip, UInt32 whoisIP, Text::CString prefix, Data::Duration timeout);
 	};
 };
 #endif

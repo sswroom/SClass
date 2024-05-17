@@ -86,12 +86,12 @@ void SSWR::AVIRead::AVIRDragDropViewerForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-UI::GUIDropHandler::DragEffect SSWR::AVIRead::AVIRDragDropViewerForm::DragEnter(UI::GUIDropData *data)
+UI::GUIDropHandler::DragEffect SSWR::AVIRead::AVIRDragDropViewerForm::DragEnter(NN<UI::GUIDropData> data)
 {
 	return UI::GUIDropHandler::DE_COPY;
 }
 
-void SSWR::AVIRead::AVIRDragDropViewerForm::DropData(UI::GUIDropData *data, OSInt x, OSInt y)
+void SSWR::AVIRead::AVIRDragDropViewerForm::DropData(NN<UI::GUIDropData> data, OSInt x, OSInt y)
 {
 	this->ClearDrops();
 	this->lbType->ClearItems();
