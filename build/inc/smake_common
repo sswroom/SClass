@@ -112,6 +112,7 @@ console:
 @ServiceTest
 @SHT20Test
 @SIM7000Test
+@StackTraceTest
 @SystemInfoTest
 @TH10SBTest
 @WatchdogDisable
@@ -387,6 +388,9 @@ SHT20Test:
 @ConsoleStartup.o
 SIM7000Test:
 @SIM7000Test.o
+@ConsoleStartup.o
+StackTraceTest:
+@StackTraceTest.o
 @ConsoleStartup.o
 SystemInfoTest:
 @SystemInfoTest.o
@@ -1020,6 +1024,7 @@ SerialTerminalMain.o: ../../main/IO/SerialTerminalMain.cpp
 ServiceTest.o: ../../main/IO/ServiceTest.cpp
 SHT20Test.o: ../../main/IO/SHT20Test.cpp
 SIM7000Test.o: ../../main/IO/SIM7000Test.cpp
+StackTraceTest.o: ../../main/IO/StackTraceTest.cpp
 SystemInfoTest.o: ../../main/IO/SystemInfoTest.cpp
 TH10SBTest.o: ../../main/IO/TH10SBTest.cpp
 WatchdogDisable.o: ../../main/IO/WatchdogDisable.cpp
@@ -1775,6 +1780,8 @@ IO/CyclicLogBuffer.h:
 @CyclicLogBuffer.o
 IO/DataCaptureStream.h:
 @DataCaptureStream.o
+IO/DebugTool.h:
+@DebugTool.o
 IO/DeviceDB.h:
 @DeviceDB.o
 IO/DirectoryPackage.h:
@@ -2160,6 +2167,8 @@ Manage/AddressResolver.h:
 @AddressResolver.o
 Manage/Benchmark.h:
 @Benchmark_CPP.o
+Manage/CodeSymbol.h:
+@CodeSymbol.o
 Manage/CPUDB.h:
 @CPUDB.o
 Manage/CPUInst.h:

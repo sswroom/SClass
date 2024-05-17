@@ -37,7 +37,7 @@ Net::HTTPProxyClient::~HTTPProxyClient()
 	}
 }
 
-Bool Net::HTTPProxyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders)
+Bool Net::HTTPProxyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod method, OptOut<Double> timeDNS, OptOut<Double> timeConn, Bool defHeaders)
 {
 	UTF8Char urltmp[256];
 	UTF8Char svrname[256];
@@ -79,19 +79,13 @@ Bool Net::HTTPProxyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMet
 		this->clk.Start();
 		Double t1;
 
-		if (timeDNS)
-		{
-			*timeDNS = 0;
-		}
+		timeDNS.Set(0);
 		this->svrAddr.addrType = Net::AddrType::IPv4;
 		WriteNUInt32(this->svrAddr.addr, this->proxyIP);
 
 		NEW_CLASS(cli, Net::TCPClient(sockf, this->proxyIP, this->proxyPort, 30000));
 		t1 = this->clk.GetTimeDiff();
-		if (timeConn)
-		{
-			*timeConn = t1;
-		}
+		timeConn.Set(t1);
 #ifdef DEBUGSPEED
 		if (t1 > 0.01)
 		{
@@ -135,14 +129,8 @@ Bool Net::HTTPProxyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMet
 	}
 	else
 	{
-		if (timeDNS)
-		{
-			*timeDNS = -1;
-		}
-		if (timeConn)
-		{
-			*timeConn = -1;
-		}
+		timeDNS.Set(-1);
+		timeConn.Set(-1);
 		return false;
 	}
 }

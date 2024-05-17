@@ -46,9 +46,9 @@ namespace Net
 		virtual Bool IsError() const = 0;
 
 		virtual Bool IsDown() const;
-		virtual Bool Connect(Text::CStringNN url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders) = 0;
+		virtual Bool Connect(Text::CStringNN url, Net::WebUtil::RequestMethod method, OptOut<Double> timeDNS, OptOut<Double> timeConn, Bool defHeaders) = 0;
 		virtual void AddHeaderC(Text::CStringNN name, Text::CString value) = 0;
-		virtual void EndRequest(Double *timeReq, Double *timeResp) = 0;
+		virtual void EndRequest(OptOut<Double> timeReq, OptOut<Double> timeResp) = 0;
 		virtual void SetTimeout(Data::Duration timeout) = 0;
 		virtual IO::StreamType GetStreamType() const;
 
@@ -80,9 +80,9 @@ namespace Net
 		Text::CString GetTransferEncoding();
 		Text::CString GetContentType();
 
-		Text::String *GetURL();
+		Optional<Text::String> GetURL();
 		Net::WebStatus::StatusCode GetRespStatus();
-		const Net::SocketUtil::AddressInfo *GetSvrAddr();
+		NN<const Net::SocketUtil::AddressInfo> GetSvrAddr();
 		Double GetTotalTime();
 		UOSInt GetHdrLen();
 		UInt64 GetTotalUpload();

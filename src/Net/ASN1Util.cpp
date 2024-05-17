@@ -883,13 +883,13 @@ const UInt8 *Net::ASN1Util::PDUGetItem(UnsafeArray<const UInt8> pdu, UnsafeArray
 {
 	itemType.Set(IT_UNKNOWN);
 	UOSInt itemOfst;
-	pdu = PDUGetItemRAW(pdu, pduEnd, path, len, itemOfst);
-	if (pdu == 0)
+	UnsafeArrayOpt<const UInt8> pduOut = PDUGetItemRAW(pdu, pduEnd, path, len, itemOfst);
+	if (pduOut.Ptr() == 0)
 	{
 		return 0;
 	}
-	itemType.Set((ItemType)pdu[0]);
-	return &pdu[itemOfst];
+	itemType.Set((ItemType)pduOut[0]);
+	return &pduOut[itemOfst];
 }
 
 Net::ASN1Util::ItemType Net::ASN1Util::PDUGetItemType(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path)

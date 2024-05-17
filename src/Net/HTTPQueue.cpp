@@ -64,7 +64,7 @@ void Net::HTTPQueue::EndRequest(Net::HTTPClient *cli)
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	NN<DomainStatus> status;
-	Text::String *url = cli->GetURL();
+	NN<Text::String> url = Text::String::OrEmpty(cli->GetURL());
 	sptr = Text::URLString::GetURLDomain(sbuff, url->ToCString(), 0);
 
 	Sync::MutexUsage mutUsage(this->statusMut);

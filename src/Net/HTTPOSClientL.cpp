@@ -208,7 +208,7 @@ Bool Net::HTTPOSClient::Recover()
 	return false;
 }
 
-Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders)
+Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod method, OptOut<Double> timeDNS, OptOut<Double> timeConn, Bool defHeaders)
 {
 	UTF8Char urltmp[256];
 	UTF8Char svrname[256];
@@ -222,14 +222,8 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	Double t1;
 	if (this->clsData->curl == 0)
 	{
-		if (timeDNS)
-		{
-			*timeDNS = -1;
-		}
-		if (timeConn)
-		{
-			*timeConn = -1;
-		}
+		timeDNS.Set(-1);
+		timeConn.Set(-1);
 		return false;
 	}
 
@@ -274,14 +268,8 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	}
 	else
 	{
-		if (timeDNS)
-		{
-			*timeDNS = -1;
-		}
-		if (timeConn)
-		{
-			*timeConn = -1;
-		}
+		timeDNS.Set(-1);
+		timeConn.Set(-1);
 		return false;
 	}
 
@@ -337,16 +325,9 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 			this->canWrite = false;
 			return false;
 		}
-		if (timeDNS)
-		{
-			*timeDNS = this->clk.GetTimeDiff();
-		}
-
+		timeDNS.Set(this->clk.GetTimeDiff());
 		t1 = this->clk.GetTimeDiff();
-		if (timeConn)
-		{
-			*timeConn = t1;
-		}
+		timeConn.Set(t1);
 //		this->sockf->SetLinger(cli->GetSocket(), 0);
 //		this->sockf->SetNoDelay(cli->GetSocket(), true);
 	}
@@ -357,14 +338,8 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 			this->contRead += this->buffSize;
 			this->buffSize = 0;
 		}
-		if (timeDNS)
-		{
-			*timeDNS = 0;
-		}
-		if (timeConn)
-		{
-			*timeConn = 0;
-		}
+		timeDNS.Set(0);
+		timeConn.Set(0);
 		this->contRead = 0;
 		i = this->headers.GetCount();
 		while (i-- > 0)
@@ -375,14 +350,8 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	}
 	else
 	{
-		if (timeDNS)
-		{
-			*timeDNS = -1;
-		}
-		if (timeConn)
-		{
-			*timeConn = -1;
-		}
+		timeDNS.Set(-1);
+		timeConn.Set(-1);
 		return false;
 	}
 
@@ -409,6 +378,11 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 			break;
 		case Net::WebUtil::RequestMethod::HTTP_HEAD:
 			curl_easy_setopt(this->clsData->curl, CURLOPT_CUSTOMREQUEST, UTF8STRC("HEAD"));
+			this->canWrite = false;
+			this->writing = false;
+			break;
+		case Net::WebUtil::RequestMethod::HTTP_TRACE:
+			curl_easy_setopt(this->clsData->curl, CURLOPT_CUSTOMREQUEST, UTF8STRC("TRACE"));
 			this->canWrite = false;
 			this->writing = false;
 			break;
@@ -475,18 +449,12 @@ void Net::HTTPOSClient::AddHeaderC(Text::CStringNN name, Text::CString value)
 	}
 }
 
-void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
+void Net::HTTPOSClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeResp)
 {
 	if (this->clsData->curl == 0 || (this->writing && !this->canWrite))
 	{
-		if (timeReq)
-		{
-			*timeReq = -1;
-		}
-		if (timeResp)
-		{
-			*timeResp = -1;
-		}
+		timeReq.Set(-1);
+		timeResp.Set(-1);
 		return;
 	}
 	else
@@ -525,10 +493,7 @@ void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 		this->clsData->respData->SeekFromBeginning(0);
 		this->contLeng = this->clsData->contLen;
 		t1 = this->clk.GetTimeDiff();
-		if (timeReq)
-		{
-			*timeReq = t1;
-		}
+		timeReq.Set(t1);
 
 		if (res == CURLE_OK)
 		{
@@ -544,10 +509,7 @@ void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 			printf("CURL error: %d\r\n", res);
 		}
 		t1 = this->clk.GetTimeDiff();
-		if (timeResp)
-		{
-			*timeResp = t1;
-		}
+		timeResp.Set(t1);
 	}
 }
 

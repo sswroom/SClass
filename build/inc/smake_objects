@@ -385,6 +385,7 @@ $`$(PKG-CONFIG) --cflags glib-2.0`
 DBusClient.o: ../../src/IO/DBusClient.cpp
 $`$(PKG-CONFIG) --cflags dbus-1`
 !`$(PKG-CONFIG) --libs dbus-1`
+DebugTool.o: ../../src/IO/DebugTool.cpp
 DebugWriter_Null.o: ../../src/IO/DebugWriter_Null.cpp
 DebugWriterL.o: ../../src/IO/DebugWriterL.cpp
 DebugWriterW.o: ../../src/IO/DebugWriterW.cpp
@@ -680,6 +681,7 @@ MDT701STVControl.o: ../../src/IO/TVCtrl/MDT701STVControl.cpp
 NECTVControl.o: ../../src/IO/TVCtrl/NECTVControl.cpp
 
 AddressResolver.o: ../../src/Manage/AddressResolver.cpp
+CodeSymbol.o: ../../src/Manage/CodeSymbol.cpp
 ComputerL.o: ../../src/Manage/ComputerL.cpp
 ComputerW.o: ../../src/Manage/ComputerW.cpp
 ComputerUserL.o: ../../src/Manage/ComputerUserL.cpp

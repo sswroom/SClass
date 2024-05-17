@@ -26,6 +26,7 @@ namespace DB
 		UInt32 geometryOid;
 		UInt32 citextOid;
 		UInt32 stgeometryOid;
+		Bool lastDataError;
 
 		Bool Connect();
 		void InitConnection();

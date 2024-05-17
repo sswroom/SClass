@@ -42,7 +42,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			Net::OSSocketFactory sockf(true);
 			ssl = Net::SSLEngineFactory::Create(sockf, true);
 			cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR("Test/1.0"), false, url.StartsWith(UTF8STRC("https://")));
-			if (!cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, &respTimeDNS, &respTimeConn, false))
+			if (!cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, respTimeDNS, respTimeConn, false))
 			{
 				console->WriteLine(CSTR("Error in requesting to server"));
 			}
@@ -51,7 +51,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				cli->AddHeaderC(CSTR("User-Agent"), CSTR("Test/1.0"));
 				cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
 				cli->AddHeaderC(CSTR("Accept-Charset"), CSTR("*"));
-				cli->EndRequest(&respTimeReq, &respTimeResp);
+				cli->EndRequest(respTimeReq, respTimeResp);
 
 				httpStatus = cli->GetRespStatus();
 				if (httpStatus == 0)

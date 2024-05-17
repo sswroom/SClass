@@ -3,6 +3,11 @@
 #include "UnsafeArrayOpt.h"
 #include <stdio.h>
 
+#define PRINT_STACK
+#if defined(PRINT_STACK)
+#include "IO/DebugTool.h"
+#endif
+
 template <typename T> struct UnsafeArray : public UnsafeArrayOpt<T>
 {
 private:
@@ -20,6 +25,9 @@ private:
 			printf("Null found in UnsafeArray: " __func__ "\r\n");
 #else
 			printf("Null found in UnsafeArray\r\n");
+#endif
+#if defined(PRINT_STACK)
+			IO::DebugTool::PrintStackTrace();
 #endif
 		}
 		this->p = p;

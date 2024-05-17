@@ -101,7 +101,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(AnyType us
 			}
 			IO::FileStream fs({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
 			NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, CSTR_NULL, false, currURL->StartsWith(UTF8STRC("https://")));
-			cli->Connect(currURL->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, &me->respTimeDNS, &me->respTimeConn, false);
+			cli->Connect(currURL->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, me->respTimeDNS, me->respTimeConn, false);
 			if (currHeader)
 			{
 				sptr = currHeader->ConcatTo(sbuff);
@@ -131,7 +131,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(AnyType us
 				}
 			}
 
-			cli->EndRequest(&me->respTimeReq, &me->respTimeResp);
+			cli->EndRequest(me->respTimeReq, me->respTimeResp);
 			me->ClearHeaders();
 			i = 0;
 			j = cli->GetRespHeaderCnt();
@@ -149,7 +149,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(AnyType us
 				me->currSize += i;
 			}
 			me->respTimeTotal = cli->GetTotalTime();
-			me->respSvrAddr = *cli->GetSvrAddr();
+			me->respSvrAddr = cli->GetSvrAddr().Ptr()[0];
 
 			cli.Delete();
 			me->respChanged = true;

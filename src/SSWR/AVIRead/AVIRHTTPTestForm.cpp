@@ -136,7 +136,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NN<Sync::Thread> t
 		{
 			if (!me->GetNextURL().SetTo(url))
 				break;
-			if (cli->Connect(url->ToCString(), me->method, &timeDNS, &timeConn, false))
+			if (cli->Connect(url->ToCString(), me->method, timeDNS, timeConn, false))
 			{
 				if (me->enableGZip)
 				{
@@ -162,7 +162,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NN<Sync::Thread> t
 						cli->Write(buff, i);
 					}
 				}
-				cli->EndRequest(&timeReq, &timeResp);
+				cli->EndRequest(timeReq, timeResp);
 				if (timeResp >= 0)
 				{
 					Sync::Interlocked::IncrementU32(me->connCnt);
@@ -205,14 +205,14 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NN<Sync::Thread> t
 			if (!me->GetNextURL().SetTo(url))
 				break;
 			NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(me->sockf, me->ssl, CSTR_NULL, true, url->StartsWith(UTF8STRC("https://")));
-			if (cli->Connect(url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, &timeDNS, &timeConn, false))
+			if (cli->Connect(url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, timeDNS, timeConn, false))
 			{
 				if (me->enableGZip)
 				{
 					cli->AddHeaderC(CSTR("Accept-Encoding"), CSTR("gzip, deflate"));
 				}
 				cli->AddHeaderC(CSTR("Connection"), CSTR("keep-alive"));
-				cli->EndRequest(&timeReq, &timeResp);
+				cli->EndRequest(timeReq, timeResp);
 				if (timeResp >= 0)
 				{
 					Sync::Interlocked::IncrementU32(me->connCnt);

@@ -1,92 +1,96 @@
 #include "Stdafx.h"
 #include "Net/WebUtil.h"
 
-Net::WebUtil::RequestMethod Net::WebUtil::Str2RequestMethod(const UTF8Char *s, UOSInt len)
+Net::WebUtil::RequestMethod Net::WebUtil::Str2RequestMethod(Text::CStringNN s)
 {
-	switch (len)
+	switch (s.leng)
 	{
 	case 3:
-		if (Text::StrEqualsC(s, len, UTF8STRC("GET")))
+		if (s.Equals(UTF8STRC("GET")))
 		{
 			return RequestMethod::HTTP_GET;
 		}
-		else if (Text::StrEqualsC(s, len, UTF8STRC("PUT")))
+		else if (s.Equals(UTF8STRC("PUT")))
 		{
 			return RequestMethod::HTTP_PUT;
 		}
 		break;
 	case 4:
-		if (Text::StrEqualsC(s, len, UTF8STRC("POST")))
+		if (s.Equals(UTF8STRC("POST")))
 		{
 			return RequestMethod::HTTP_POST;
 		}
-		else if (Text::StrEqualsC(s, len, UTF8STRC("HEAD")))
+		else if (s.Equals(UTF8STRC("HEAD")))
 		{
 			return RequestMethod::HTTP_HEAD;
 		}
-		else if (Text::StrEqualsC(s, len, UTF8STRC("PLAY")))
+		else if (s.Equals(UTF8STRC("PLAY")))
 		{
 			return RequestMethod::RTSP_PLAY;
 		}
 		break;
 	case 5:
-		if (Text::StrEqualsC(s, len, UTF8STRC("PATCH")))
+		if (s.Equals(UTF8STRC("PATCH")))
 		{
 			return RequestMethod::HTTP_PATCH;
 		}
-		else if (Text::StrEqualsC(s, len, UTF8STRC("SETUP")))
+		else if (s.Equals(UTF8STRC("TRACE")))
+		{
+			return RequestMethod::HTTP_PATCH;
+		}
+		else if (s.Equals(UTF8STRC("SETUP")))
 		{
 			return RequestMethod::RTSP_SETUP;
 		}
-		else if (Text::StrEqualsC(s, len, UTF8STRC("PAUSE")))
+		else if (s.Equals(UTF8STRC("PAUSE")))
 		{
 			return RequestMethod::RTSP_PAUSE;
 		}
 		break;
 	case 6:
-		if (Text::StrEqualsC(s, len, UTF8STRC("DELETE")))
+		if (s.Equals(UTF8STRC("DELETE")))
 		{
 			return RequestMethod::HTTP_DELETE;
 		}
-		else if (Text::StrEqualsC(s, len, UTF8STRC("RECORD")))
+		else if (s.Equals(UTF8STRC("RECORD")))
 		{
 			return RequestMethod::RTSP_RECORD;
 		}
 		break;
 	case 7:
-		if (Text::StrEqualsC(s, len, UTF8STRC("CONNECT")))
+		if (s.Equals(UTF8STRC("CONNECT")))
 		{
 			return RequestMethod::HTTP_CONNECT;
 		}
-		else if (Text::StrEqualsC(s, len, UTF8STRC("OPTIONS")))
+		else if (s.Equals(UTF8STRC("OPTIONS")))
 		{
 			return RequestMethod::HTTP_OPTIONS;
 		}
 		break;
 	case 8:
-		if (Text::StrEqualsC(s, len, UTF8STRC("DESCRIBE")))
+		if (s.Equals(UTF8STRC("DESCRIBE")))
 		{
 			return RequestMethod::RTSP_DESCRIBE;
 		}
-		else if (Text::StrEqualsC(s, len, UTF8STRC("ANNOUNCE")))
+		else if (s.Equals(UTF8STRC("ANNOUNCE")))
 		{
 			return RequestMethod::RTSP_ANNOUNCE;
 		}
-		else if (Text::StrEqualsC(s, len, UTF8STRC("REDIRECT")))
+		else if (s.Equals(UTF8STRC("REDIRECT")))
 		{
 			return RequestMethod::RTSP_REDIRECT;
 		}
-		else if (Text::StrEqualsC(s, len, UTF8STRC("TEARDOWN")))
+		else if (s.Equals(UTF8STRC("TEARDOWN")))
 		{
 			return RequestMethod::RTSP_TEARDOWN;
 		}
 		break;
 	case 13:
-		if (Text::StrEqualsC(s, len, UTF8STRC("GET_PARAMETER")))
+		if (s.Equals(UTF8STRC("GET_PARAMETER")))
 		{
 			return RequestMethod::RTSP_GET_PARAMETER;
 		}
-		else if (Text::StrEqualsC(s, len, UTF8STRC("SET_PARAMETER")))
+		else if (s.Equals(UTF8STRC("SET_PARAMETER")))
 		{
 			return RequestMethod::RTSP_SET_PARAMETER;
 		}
@@ -115,6 +119,8 @@ Text::CString Net::WebUtil::RequestMethodGetName(RequestMethod reqMeth)
 		return CSTR("HEAD");
 	case RequestMethod::HTTP_OPTIONS:
 		return CSTR("OPTIONS");
+	case RequestMethod::HTTP_TRACE:
+		return CSTR("TRACE");
 	case RequestMethod::RTSP_DESCRIBE:
 		return CSTR("DESCRIBE");
 	case RequestMethod::RTSP_ANNOUNCE:
