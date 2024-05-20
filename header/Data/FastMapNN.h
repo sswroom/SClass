@@ -81,6 +81,7 @@ namespace Data
 		virtual void Clear();
 		FastMapNNIterator<T,V> Iterator() const;
 		void DeleteAll();
+		void MemFreeAll();
 	};
 
 
@@ -248,6 +249,16 @@ namespace Data
 		while (i-- > 0)
 		{
 			this->values.GetItem(i).value.Delete();
+		}
+		this->values.Clear();
+	}
+
+	template <class T, class V> void FastMapNN<T, V>::MemFreeAll()
+	{
+		UOSInt i = this->values.GetCount();
+		while (i-- > 0)
+		{
+			MemFreeNN(this->values.GetItem(i).value);
 		}
 		this->values.Clear();
 	}
