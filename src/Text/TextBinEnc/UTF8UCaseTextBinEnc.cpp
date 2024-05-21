@@ -10,7 +10,7 @@ Text::TextBinEnc::UTF8UCaseTextBinEnc::~UTF8UCaseTextBinEnc()
 {
 }
 
-UOSInt Text::TextBinEnc::UTF8UCaseTextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
+UOSInt Text::TextBinEnc::UTF8UCaseTextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize) const
 {
 	UTF8Char c;
 	UOSInt i = buffSize;
@@ -29,12 +29,12 @@ UOSInt Text::TextBinEnc::UTF8UCaseTextBinEnc::EncodeBin(NN<Text::StringBuilderUT
 	return buffSize;
 }
 
-UOSInt Text::TextBinEnc::UTF8UCaseTextBinEnc::CalcBinSize(const UTF8Char *str, UOSInt strLen)
+UOSInt Text::TextBinEnc::UTF8UCaseTextBinEnc::CalcBinSize(const UTF8Char *str, UOSInt strLen) const
 {
 	return strLen;
 }
 
-UOSInt Text::TextBinEnc::UTF8UCaseTextBinEnc::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff)
+UOSInt Text::TextBinEnc::UTF8UCaseTextBinEnc::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff) const
 {
 	MemCopyNO(dataBuff, str, strLen);
 	return strLen;

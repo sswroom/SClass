@@ -5,7 +5,7 @@
 #include "Data/ByteTool.h"
 #include "Data/RandomBytesGenerator.h"
 
-void Crypto::Hash::Bcrypt::CalcHash(UInt32 cost, const UInt8 *salt, Text::CStringNN password, UInt8 *hashBuff)
+void Crypto::Hash::Bcrypt::CalcHash(UInt32 cost, const UInt8 *salt, Text::CStringNN password, UInt8 *hashBuff) const
 {
 	Crypto::Encrypt::Blowfish bf;
 	bf.EksBlowfishSetup(cost, salt, password.v, password.leng);
@@ -41,7 +41,7 @@ Crypto::Hash::Bcrypt::~Bcrypt()
 {
 }
 
-Bool Crypto::Hash::Bcrypt::Matches(Text::CStringNN hash, Text::CStringNN password)
+Bool Crypto::Hash::Bcrypt::Matches(Text::CStringNN hash, Text::CStringNN password) const
 {
 	if (hash.v[0] != '$' || hash.leng > 63)
 	{
@@ -84,7 +84,7 @@ Bool Crypto::Hash::Bcrypt::GenHash(NN<Text::StringBuilderUTF8> sb, UInt32 cost, 
 	return this->GenHash(sb, cost, salt, password);
 }
 
-Bool Crypto::Hash::Bcrypt::GenHash(NN<Text::StringBuilderUTF8> sb, UInt32 cost, const UInt8 *salt, Text::CStringNN password)
+Bool Crypto::Hash::Bcrypt::GenHash(NN<Text::StringBuilderUTF8> sb, UInt32 cost, const UInt8 *salt, Text::CStringNN password) const
 {
 	if (cost < 4 || cost > 31)
 	{

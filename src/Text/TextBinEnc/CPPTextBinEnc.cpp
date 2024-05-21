@@ -10,7 +10,7 @@ Text::TextBinEnc::CPPTextBinEnc::~CPPTextBinEnc()
 {
 }
 
-UOSInt Text::TextBinEnc::CPPTextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
+UOSInt Text::TextBinEnc::CPPTextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize) const
 {
 	Bool lineStart = true;
 	UInt32 code;
@@ -129,7 +129,7 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb
 	return ret;
 }
 
-UOSInt Text::TextBinEnc::CPPTextBinEnc::CalcBinSize(const UTF8Char *str, UOSInt strLen)
+UOSInt Text::TextBinEnc::CPPTextBinEnc::CalcBinSize(const UTF8Char *str, UOSInt strLen) const
 {
 	Bool isQuote = false;
 	UOSInt ret = 0;
@@ -201,7 +201,7 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::CalcBinSize(const UTF8Char *str, UOSInt 
 	return ret;
 }
 
-UOSInt Text::TextBinEnc::CPPTextBinEnc::DecodeBin(const UTF8Char *str, UOSInt strlen, UInt8 *dataBuff)
+UOSInt Text::TextBinEnc::CPPTextBinEnc::DecodeBin(const UTF8Char *str, UOSInt strlen, UInt8 *dataBuff) const
 {
 	Bool isQuote = false;
 	UOSInt ret = 0;

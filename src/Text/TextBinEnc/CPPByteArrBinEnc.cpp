@@ -10,7 +10,7 @@ Text::TextBinEnc::CPPByteArrBinEnc::~CPPByteArrBinEnc()
 {
 }
 
-UOSInt Text::TextBinEnc::CPPByteArrBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
+UOSInt Text::TextBinEnc::CPPByteArrBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize) const
 {
 	UOSInt size = sb->GetCharCnt();
 	UOSInt i = 0;
@@ -31,7 +31,7 @@ UOSInt Text::TextBinEnc::CPPByteArrBinEnc::EncodeBin(NN<Text::StringBuilderUTF8>
 	return sb->GetCharCnt() - size;
 }
 
-UOSInt Text::TextBinEnc::CPPByteArrBinEnc::CalcBinSize(const UTF8Char *str, UOSInt strLen)
+UOSInt Text::TextBinEnc::CPPByteArrBinEnc::CalcBinSize(const UTF8Char *str, UOSInt strLen) const
 {
 	UOSInt cnt = 0;
 	UTF8Char c;
@@ -43,7 +43,7 @@ UOSInt Text::TextBinEnc::CPPByteArrBinEnc::CalcBinSize(const UTF8Char *str, UOSI
 	return cnt + 1;
 }
 
-UOSInt Text::TextBinEnc::CPPByteArrBinEnc::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff)
+UOSInt Text::TextBinEnc::CPPByteArrBinEnc::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff) const
 {
 	UInt8 *startPtr = dataBuff;
 	UTF8Char c;

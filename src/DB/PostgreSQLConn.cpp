@@ -29,6 +29,7 @@ private:
 	UInt32 geometryOid;
 	UInt32 stgeometryOid;
 	UInt32 citextOid;
+	UnsafeArray<Oid> colTypes;
 public:
 	PostgreSQLReader(PGresult *res, Int8 tzQhr, NN<DB::PostgreSQLConn> conn) : DBReader()
 	{
@@ -41,11 +42,19 @@ public:
 		this->citextOid = conn->GetCitextOid();
 		this->ncol = PQnfields(this->res);
 		this->nrow = PQntuples(this->res);
+		this->colTypes = MemAllocArr(Oid, (UInt32)this->ncol);
+		int i = 0;
+		while (i < this->ncol)
+		{
+			this->colTypes[i] = PQftype(res, i);
+			i++;
+		}
 	}
 
 	virtual ~PostgreSQLReader()
 	{
 		PQclear(this->res);
+		MemFreeArr(this->colTypes);
 	}
 
 public:
@@ -243,7 +252,7 @@ public:
 			item->SetNull();
 			return true;
 		}
-		Oid colType = PQftype(this->res, (int)colIndex);
+		Oid colType = this->colTypes[colIndex];
 		if (colType == geometryOid)
 		{
 			Text::StringBuilderUTF8 sb;
@@ -614,7 +623,7 @@ public:
 
 	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize)
 	{
-		Oid oid = PQftype(this->res, (int)colIndex);
+		Oid oid = this->colTypes[colIndex];;
 		if (colSize.IsNotNull())
 		{
 			int len = PQfsize(this->res, (int)colIndex);
@@ -643,7 +652,7 @@ public:
 			return false;
 		}
 		colDef->SetColName(colName);
-		colDef->SetColType(this->conn->DBType2ColType(PQftype(this->res, (int)colIndex)));
+		colDef->SetColType(this->conn->DBType2ColType(this->colTypes[colIndex]));
 		int len = PQfsize(this->res, (int)colIndex);
 		if (len < 0)
 		{

@@ -9,7 +9,7 @@ Text::TextBinEnc::ASCII85Enc::~ASCII85Enc()
 {
 }
 
-UOSInt Text::TextBinEnc::ASCII85Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
+UOSInt Text::TextBinEnc::ASCII85Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize) const
 {
 	UOSInt initLen = sb->GetCharCnt();
 	UInt32 v;
@@ -61,7 +61,7 @@ UOSInt Text::TextBinEnc::ASCII85Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, c
 	return sb->GetCharCnt() - initLen;
 }
 
-UTF8Char *Text::TextBinEnc::ASCII85Enc::EncodeBin(UTF8Char *sbuff, const UInt8 *dataBuff, UOSInt buffSize)
+UTF8Char *Text::TextBinEnc::ASCII85Enc::EncodeBin(UTF8Char *sbuff, const UInt8 *dataBuff, UOSInt buffSize) const
 {
 	UInt32 v;
 	while (buffSize >= 4)
@@ -115,7 +115,7 @@ UTF8Char *Text::TextBinEnc::ASCII85Enc::EncodeBin(UTF8Char *sbuff, const UInt8 *
 	return sbuff;
 }
 
-UOSInt Text::TextBinEnc::ASCII85Enc::CalcBinSize(const UTF8Char *a85Str, UOSInt strLen)
+UOSInt Text::TextBinEnc::ASCII85Enc::CalcBinSize(const UTF8Char *a85Str, UOSInt strLen) const
 {
 	UOSInt zCnt = 0;
 	UOSInt validCnt = 0;
@@ -166,7 +166,7 @@ UOSInt Text::TextBinEnc::ASCII85Enc::CalcBinSize(const UTF8Char *a85Str, UOSInt 
 	}
 }
 
-UOSInt Text::TextBinEnc::ASCII85Enc::DecodeBin(const UTF8Char *a85Str, UOSInt strLen, UInt8 *dataBuff)
+UOSInt Text::TextBinEnc::ASCII85Enc::DecodeBin(const UTF8Char *a85Str, UOSInt strLen, UInt8 *dataBuff) const
 {
 	UInt8 *destBuff = dataBuff;
 	UTF8Char sbuff[5];

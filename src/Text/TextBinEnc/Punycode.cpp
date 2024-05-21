@@ -526,24 +526,24 @@ Text::TextBinEnc::Punycode::~Punycode()
 {
 }
 
-UTF8Char *Text::TextBinEnc::Punycode::EncodeString(UTF8Char *buff, const WChar *strToEnc)
+UTF8Char *Text::TextBinEnc::Punycode::EncodeString(UTF8Char *buff, const WChar *strToEnc) const
 {
 	return Encode(buff, strToEnc);
 }
 
-UOSInt Text::TextBinEnc::Punycode::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
+UOSInt Text::TextBinEnc::Punycode::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize) const
 {
 	sb->AppendC(dataBuff, buffSize);
 	return buffSize;
 }
 
-UOSInt Text::TextBinEnc::Punycode::CalcBinSize(const UTF8Char *str, UOSInt strLen)
+UOSInt Text::TextBinEnc::Punycode::CalcBinSize(const UTF8Char *str, UOSInt strLen) const
 {
 	UTF8Char buff[256];
 	return (UOSInt)(Decode(buff, str, strLen) - buff);
 }
 
-UOSInt Text::TextBinEnc::Punycode::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff)
+UOSInt Text::TextBinEnc::Punycode::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff) const
 {
 	return (UOSInt)(Decode(dataBuff, str, strLen) - dataBuff);
 }

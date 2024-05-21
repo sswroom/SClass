@@ -163,14 +163,14 @@ Text::TextBinEnc::FormEncoding::~FormEncoding()
 {
 }
 
-UOSInt Text::TextBinEnc::FormEncoding::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
+UOSInt Text::TextBinEnc::FormEncoding::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize) const
 {
 	UOSInt initLen = sb->GetCharCnt();
 	FormEncode(sb, Text::CStringNN(dataBuff, buffSize));
 	return sb->GetCharCnt() - initLen;
 }
 
-UOSInt Text::TextBinEnc::FormEncoding::CalcBinSize(const UTF8Char *str, UOSInt strLen)
+UOSInt Text::TextBinEnc::FormEncoding::CalcBinSize(const UTF8Char *str, UOSInt strLen) const
 {
 	UTF8Char c;
 	UOSInt retSize = 0;
@@ -199,7 +199,7 @@ UOSInt Text::TextBinEnc::FormEncoding::CalcBinSize(const UTF8Char *str, UOSInt s
 	return retSize;
 }
 
-UOSInt Text::TextBinEnc::FormEncoding::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff)
+UOSInt Text::TextBinEnc::FormEncoding::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff) const
 {
 	UInt8 v;
 	UTF8Char c;

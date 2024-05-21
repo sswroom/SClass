@@ -10,14 +10,14 @@ Text::TextBinEnc::HexTextBinEnc::~HexTextBinEnc()
 {
 }
 
-UOSInt Text::TextBinEnc::HexTextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
+UOSInt Text::TextBinEnc::HexTextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize) const
 {
 	UOSInt size = sb->GetCharCnt();
 	sb->AppendHexBuff(dataBuff, buffSize, ' ', Text::LineBreakType::CRLF);
 	return sb->GetCharCnt() - size;
 }
 
-UOSInt Text::TextBinEnc::HexTextBinEnc::CalcBinSize(const UTF8Char *str, UOSInt strLen)
+UOSInt Text::TextBinEnc::HexTextBinEnc::CalcBinSize(const UTF8Char *str, UOSInt strLen) const
 {
 	UOSInt cnt = 0;
 	UTF8Char c;
@@ -39,7 +39,7 @@ UOSInt Text::TextBinEnc::HexTextBinEnc::CalcBinSize(const UTF8Char *str, UOSInt 
 	return cnt >> 1;
 }
 
-UOSInt Text::TextBinEnc::HexTextBinEnc::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff)
+UOSInt Text::TextBinEnc::HexTextBinEnc::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff) const
 {
 	UOSInt cnt = 0;
 	UTF8Char c;

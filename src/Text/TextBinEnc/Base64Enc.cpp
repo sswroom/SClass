@@ -54,12 +54,12 @@ Text::TextBinEnc::Base64Enc::~Base64Enc()
 {
 }
 
-UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
+UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize) const
 {
 	return this->EncodeBin(sb, dataBuff, buffSize, Text::LineBreakType::None, 0);
 }
 
-UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize, Text::LineBreakType lbt, UOSInt charsPerLine)
+UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize, Text::LineBreakType lbt, UOSInt charsPerLine) const
 {
 	const UTF8Char *encArr = GetEncArr(this->cs);
 	UOSInt outSize;
@@ -297,7 +297,7 @@ UTF8Char *Text::TextBinEnc::Base64Enc::EncodeBin(UTF8Char *sbuff, const UInt8 *d
 
 }
 
-UOSInt Text::TextBinEnc::Base64Enc::CalcBinSize(const UTF8Char *sbuff, UOSInt strLen)
+UOSInt Text::TextBinEnc::Base64Enc::CalcBinSize(const UTF8Char *sbuff, UOSInt strLen) const
 {
 	UOSInt cnt = 0;
 	UTF8Char c;
@@ -311,7 +311,7 @@ UOSInt Text::TextBinEnc::Base64Enc::CalcBinSize(const UTF8Char *sbuff, UOSInt st
 	return cnt * 3 / 4;
 }
 
-UOSInt Text::TextBinEnc::Base64Enc::CalcBinSize(const WChar *sbuff)
+UOSInt Text::TextBinEnc::Base64Enc::CalcBinSize(const WChar *sbuff) const
 {
 	UOSInt cnt = 0;
 	WChar c;
@@ -325,7 +325,7 @@ UOSInt Text::TextBinEnc::Base64Enc::CalcBinSize(const WChar *sbuff)
 	return cnt * 3 / 4;
 }
 
-UOSInt Text::TextBinEnc::Base64Enc::DecodeBin(const UTF8Char *b64Str, UOSInt strLen, UInt8 *dataBuff)
+UOSInt Text::TextBinEnc::Base64Enc::DecodeBin(const UTF8Char *b64Str, UOSInt strLen, UInt8 *dataBuff) const
 {
 	UOSInt decSize = 0;
 	UInt8 b = 0;
@@ -386,7 +386,7 @@ UOSInt Text::TextBinEnc::Base64Enc::DecodeBin(const UTF8Char *b64Str, UOSInt str
 	return decSize;
 }
 
-UOSInt Text::TextBinEnc::Base64Enc::DecodeBin(const WChar *b64Str, UInt8 *dataBuff)
+UOSInt Text::TextBinEnc::Base64Enc::DecodeBin(const WChar *b64Str, UInt8 *dataBuff) const
 {
 	UOSInt decSize = 0;
 	UInt8 b = 0;

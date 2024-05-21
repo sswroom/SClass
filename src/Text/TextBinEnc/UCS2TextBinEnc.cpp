@@ -13,7 +13,7 @@ Text::TextBinEnc::UCS2TextBinEnc::~UCS2TextBinEnc()
 {
 }
 
-UOSInt Text::TextBinEnc::UCS2TextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize)
+UOSInt Text::TextBinEnc::UCS2TextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize) const
 {
 	if (buffSize & 1)
 		return 0;
@@ -23,12 +23,12 @@ UOSInt Text::TextBinEnc::UCS2TextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> s
 	return buffSize >> 1;
 }
 
-UOSInt Text::TextBinEnc::UCS2TextBinEnc::CalcBinSize(const UTF8Char *str, UOSInt strLen)
+UOSInt Text::TextBinEnc::UCS2TextBinEnc::CalcBinSize(const UTF8Char *str, UOSInt strLen) const
 {
 	return Text::StrUTF8_UTF16CntC(str, strLen) << 1;
 }
 
-UOSInt Text::TextBinEnc::UCS2TextBinEnc::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff)
+UOSInt Text::TextBinEnc::UCS2TextBinEnc::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff) const
 {
 	UOSInt byteCnt = Text::StrUTF8_UTF16CntC(str, strLen) << 1;
 	if (byteCnt > 0)

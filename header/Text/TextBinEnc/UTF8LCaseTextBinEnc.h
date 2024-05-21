@@ -12,9 +12,9 @@ namespace Text
 			UTF8LCaseTextBinEnc();
 			virtual ~UTF8LCaseTextBinEnc();
 
-			virtual UOSInt EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize);
-			virtual UOSInt CalcBinSize(const UTF8Char *str, UOSInt strLen);
-			virtual UOSInt DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff);
+			virtual UOSInt EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize) const;
+			virtual UOSInt CalcBinSize(const UTF8Char *str, UOSInt strLen) const;
+			virtual UOSInt DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff) const;
 			virtual Text::CStringNN GetName() const;
 		};
 	}
