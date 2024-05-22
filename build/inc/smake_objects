@@ -2127,6 +2127,7 @@ HTMLBuilder.o: ../../src/Text/Builder/HTMLBuilder.cpp
 HTMLDocumentBuilder.o: ../../src/Text/Builder/HTMLDocumentBuilder.cpp
 HTMLHeaderBuilder.o: ../../src/Text/Builder/HTMLHeaderBuilder.cpp
 CppCodeParser.o: ../../src/Text/Cpp/CppCodeParser.cpp
+CppDemangler.o: ../../src/Text/Cpp/CppDemangler.cpp
 CppEnv.o: ../../src/Text/Cpp/CppEnv.cpp
 CppParseStatus.o: ../../src/Text/Cpp/CppParseStatus.cpp
 CppReader.o: ../../src/Text/Cpp/CppReader.cpp

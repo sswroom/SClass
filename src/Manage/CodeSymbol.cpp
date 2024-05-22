@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Manage/CodeSymbol.h"
-#include "Parser/FileParser/ELFParser.h"
+#include "Text/Cpp/CppDemangler.h"
 
 Manage::CodeSymbol::CodeSymbol(Text::CStringNN moduleName, Text::CStringNN funcName, OSInt ofst, UInt64 funcAddr)
 {
@@ -20,7 +20,7 @@ UTF8Char *Manage::CodeSymbol::ToString(UTF8Char *buff) const
 {
 	buff = this->moduleName->ConcatTo(buff);
 	*buff++ = '(';
-	buff = Parser::FileParser::ELFParser::ToFuncName(buff, funcName->v);
+	buff = Text::Cpp::CppDemangler::ToFuncName(buff, funcName->v);
 	if (this->ofst > 0)
 	{
 		buff = Text::StrConcatC(buff, UTF8STRC("+0x"));

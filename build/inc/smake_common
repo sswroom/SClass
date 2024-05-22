@@ -4603,6 +4603,8 @@ Text/Builder/HTMLHeaderBuilder.h:
 @HTMLHeaderBuilder.o
 Text/Cpp/CppCodeParser.h:
 @CppCodeParser.o
+Text/Cpp/CppDemangler.h:
+@CppDemangler.o
 Text/Cpp/CppEnv.h:
 @CppEnv.o
 Text/Cpp/CppParseStatus.h:
