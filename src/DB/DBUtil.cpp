@@ -1604,7 +1604,8 @@ UOSInt DB::DBUtil::SDBBoolLeng(Bool val, DB::SQLType sqlType)
 UTF8Char *DB::DBUtil::SDBBin(UTF8Char *sqlstr, UnsafeArrayOpt<const UInt8> buff, UOSInt size, DB::SQLType sqlType)
 {
 	UTF8Char *sptr;
-	if (buff.Ptr() == 0)
+	UnsafeArray<const UInt8> nnbuff;
+	if (!nnbuff.Set(buff))
 	{
 		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
 	}
@@ -1612,14 +1613,14 @@ UTF8Char *DB::DBUtil::SDBBin(UTF8Char *sqlstr, UnsafeArrayOpt<const UInt8> buff,
 	{
 		sptr = sqlstr;
 		sptr = Text::StrConcatC(sptr, UTF8STRC("x'"));
-		sptr = Text::StrHexBytes(sptr, buff, size, 0);
+		sptr = Text::StrHexBytes(sptr, nnbuff, size, 0);
 		*sptr++ = '\'';
 		*sptr = 0;
 		return sptr;
 	}
 	else if (sqlType == DB::SQLType::MSSQL)
 	{
-		return Text::StrHexBytes(Text::StrConcatC(sqlstr, UTF8STRC("0x")), buff, size, 0);
+		return Text::StrHexBytes(Text::StrConcatC(sqlstr, UTF8STRC("0x")), nnbuff, size, 0);
 	}
 	else
 	{

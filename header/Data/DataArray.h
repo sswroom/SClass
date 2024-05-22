@@ -83,12 +83,12 @@ namespace Data
 
 		UnsafeArray<T> GetPtr() const
 		{
-			return this->buff;
+			return UnsafeArray<T>::FromOpt(this->buff);
 		}
 
 		UnsafeArray<T> Ptr() const
 		{
-			return this->buff;
+			return UnsafeArray<T>::FromOpt(this->buff);
 		}
 
 		UnsafeArray<T> PtrEnd() const

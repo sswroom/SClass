@@ -91,7 +91,7 @@ Text::ReportBuilder::~ReportBuilder()
 	j = this->tableContent.GetCount();
 	while (j-- > 0)
 	{
-		cols = this->tableContent.GetItem(j);
+		cols = this->tableContent.GetItemNoCheck(j);
 		i = this->colCount;
 		while (i-- > 0)
 		{
@@ -338,7 +338,7 @@ void Text::ReportBuilder::SetColHAlign(UOSInt index, HAlignment hAlign)
 {
 	if (index >= this->colCount)
 		return;
-	UnsafeArray<TableCell> cols = this->tableContent.GetItem(this->tableContent.GetCount() - 1);
+	UnsafeArray<TableCell> cols = this->tableContent.GetItemNoCheck(this->tableContent.GetCount() - 1);
 	cols[index].hAlign = hAlign;
 }
 
@@ -522,7 +522,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 		j = this->tableContent.GetCount();
 		while (i < j)
 		{
-			cols = this->tableContent.GetItem(i);
+			cols = this->tableContent.GetItemNoCheck(i);
 			currRowType = this->tableRowType.GetItem(i);
 			if (tableStyle)
 			{
@@ -1060,7 +1060,7 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 	i = this->tableContent.GetCount();
 	while (i-- > 0)
 	{
-		cols = this->tableContent.GetItem(i);
+		cols = this->tableContent.GetItemNoCheck(i);
 		j = this->colCount;
 		while (j-- > 0)
 		{
@@ -1236,7 +1236,7 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 				if (this->tableRowType.GetItem(m) != RT_HEADER)
 					break;
 				nextY = currY + fontHeightMM * 1.5;
-				cols = this->tableContent.GetItem(m);
+				cols = this->tableContent.GetItemNoCheck(m);
 				if (this->tableBorders)
 				{
 					g->DrawLine(border + drawWidth, currY, border + drawWidth, nextY, p);
@@ -1253,7 +1253,7 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 							n = m - 1;
 							while (true)
 							{
-								cols2 = this->tableContent.GetItem(n);
+								cols2 = this->tableContent.GetItemNoCheck(n);
 								if (cols2[i].val && cols2[i].val->Equals(this->ColumnMergeUp.v, this->ColumnMergeUp.leng))
 									n--;
 								else
@@ -1307,7 +1307,7 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 			}
 			while (k < l)
 			{
-				cols = this->tableContent.GetItem(k);
+				cols = this->tableContent.GetItemNoCheck(k);
 				nextY = currY + fontHeightMM * 1.5;
 				currRowType = this->tableRowType.GetItem(k);
 				if (this->tableBorders)
@@ -1333,7 +1333,7 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 								n = m - 1;
 								while (true)
 								{
-									cols2 = this->tableContent.GetItem(n);
+									cols2 = this->tableContent.GetItemNoCheck(n);
 									if (cols2[i].val && cols2[i].val->Equals(this->ColumnMergeUp.v, this->ColumnMergeUp.leng))
 										n--;
 									else

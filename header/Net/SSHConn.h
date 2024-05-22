@@ -31,6 +31,7 @@ namespace Net
 		NN<ClassData> clsData;
 		Optional<Net::TCPClient> cli;
 		NN<Net::SocketFactory> sockf;
+		Sync::Mutex mut;
 		Int32 lastError;
 	public:
 		SSHConn(NN<Net::SocketFactory> sockf, Text::CStringNN host, UInt16 port, Data::Duration timeout);

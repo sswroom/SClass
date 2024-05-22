@@ -41,20 +41,30 @@ public:
 		this->SetPtr(p);
 	}
 
-	template<typename V> UnsafeArray(UnsafeArrayOpt<V> p)
-	{
-		this->SetPtr(p.Ptr());
-	}
-
 	template<typename V> UnsafeArray(UnsafeArray<V> p)
 	{
 		this->p = p.Ptr();
+	}
+
+	Bool Set(UnsafeArrayOpt<T> p)
+	{
+		if (p.Ptr() == 0)
+			return false;
+		this->p = p.Ptr();
+		return true;
 	}
 
 	template <typename V> static UnsafeArray<T> ConvertFrom(UnsafeArray<V> ptr)
 	{
 		UnsafeArray<T> ret;
 		ret.p = (T*)ptr.Ptr();
+		return ret;
+	}
+
+	template <typename V> static UnsafeArray<T> FromOpt(UnsafeArrayOpt<V> p)
+	{
+		UnsafeArray<T> ret;
+		ret.SetPtr(p.Ptr());
 		return ret;
 	}
 };

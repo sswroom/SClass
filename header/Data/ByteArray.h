@@ -553,7 +553,7 @@ namespace Data
 #if defined(CHECK_RANGE)
 			return ByteArrayR(buff, size, this->prevSize);
 #else
-			return ByteArrayR(buff, size);
+			return ByteArrayR(UnsafeArray<const UInt8>::FromOpt(buff), size);
 #endif
 		}
 

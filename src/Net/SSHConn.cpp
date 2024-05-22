@@ -2,6 +2,7 @@
 #include "Net/SSHConn.h"
 #include "Net/SSHManager.h"
 #include "Net/SSHTCPChannel.h"
+#include "Sync/MutexUsage.h"
 #include "Text/StringTool.h"
 #include <libssh2.h>
 
@@ -81,6 +82,7 @@ Optional<Net::TCPClient> Net::SSHConn::GetTCPClient() const
 
 Bool Net::SSHConn::GetHostKeySHA1(UInt8 *buff)
 {
+	Sync::MutexUsage mutUsage(this->mut);
 	const Char *fingerprint = libssh2_hostkey_hash(this->clsData->session,  LIBSSH2_HOSTKEY_HASH_SHA1);
 	if (fingerprint)
 	{
@@ -101,16 +103,19 @@ Bool Net::SSHConn::GetHostKeySHA1(UInt8 *buff)
 
 const UTF8Char *Net::SSHConn::GetBanner()
 {
+	Sync::MutexUsage mutUsage(this->mut);
 	return (const UTF8Char*)libssh2_session_banner_get(this->clsData->session);
 }
 
 const UTF8Char *Net::SSHConn::GetActiveAlgorithm(SSHMethodType method)
 {
+	Sync::MutexUsage mutUsage(this->mut);
 	return (const UTF8Char*)libssh2_session_methods(this->clsData->session, (int)method);
 }
 
 Bool Net::SSHConn::GetAuthMethods(Text::CStringNN userName, NN<Data::ArrayListStringNN> authMeth)
 {
+	Sync::MutexUsage mutUsage(this->mut);
 	const Char *userauthlist = libssh2_userauth_list(this->clsData->session, (const Char*)userName.v, (unsigned int)userName.leng);
 	if (userauthlist)
 	{
@@ -129,6 +134,7 @@ Bool Net::SSHConn::GetAuthMethods(Text::CStringNN userName, NN<Data::ArrayListSt
 
 Bool Net::SSHConn::AuthPassword(Text::CStringNN userName, Text::CStringNN password)
 {
+	Sync::MutexUsage mutUsage(this->mut);
 	int err = libssh2_userauth_password_ex(this->clsData->session, (const Char*)userName.v, (unsigned int)userName.leng, (const Char*)password.v, (unsigned int)password.leng, 0);
 	this->lastError = err;
 #if defined(VERBOSE)
@@ -145,6 +151,7 @@ Bool Net::SSHConn::AuthPassword(Text::CStringNN userName, Text::CStringNN passwo
 Optional<Net::SSHTCPChannel> Net::SSHConn::RemoteConnect(Socket *sourceSoc, Text::CStringNN remoteHost, UInt16 remotePort)
 {
 	LIBSSH2_CHANNEL *channel;
+	Sync::MutexUsage mutUsage(this->mut);
 	if (sourceSoc != 0)
 	{
 		UTF8Char sbuff[64];
@@ -188,6 +195,7 @@ Optional<Net::SSHTCPChannel> Net::SSHConn::RemoteConnect(Socket *sourceSoc, Text
 
 Bool Net::SSHConn::ChannelTryRead(SSHChannelHandle *channel, UnsafeArray<UInt8> buff, UOSInt maxSize, OutParam<UOSInt> size)
 {
+	Sync::MutexUsage mutUsage(this->mut);
 	ssize_t sz = libssh2_channel_read_ex((LIBSSH2_CHANNEL*)channel, 0, (Char*)buff.Ptr(), (size_t)maxSize);
 	if (sz == LIBSSH2_ERROR_EAGAIN)
 		return false;
@@ -209,6 +217,7 @@ Bool Net::SSHConn::ChannelTryRead(SSHChannelHandle *channel, UnsafeArray<UInt8> 
 
 UOSInt Net::SSHConn::ChannelWrite(SSHChannelHandle *channel, const UInt8 *buff, UOSInt size)
 {
+	Sync::MutexUsage mutUsage(this->mut);
 	ssize_t sz = libssh2_channel_write_ex((LIBSSH2_CHANNEL*)channel, 0, (const Char*)buff, size);
 	if (sz >= 0)
 	{
@@ -226,6 +235,7 @@ UOSInt Net::SSHConn::ChannelWrite(SSHChannelHandle *channel, const UInt8 *buff, 
 
 void Net::SSHConn::ChannelClose(SSHChannelHandle *channel)
 {
+	Sync::MutexUsage mutUsage(this->mut);
 	libssh2_channel_set_blocking((LIBSSH2_CHANNEL*)channel, -1); 
 	int err = libssh2_channel_close((LIBSSH2_CHANNEL*)channel);
 #if defined(VERBOSE)
@@ -240,6 +250,7 @@ void Net::SSHConn::ChannelClose(SSHChannelHandle *channel)
 
 void Net::SSHConn::Close()
 {
+	Sync::MutexUsage mutUsage(this->mut);
 	if (this->clsData->session)
 	{
 		libssh2_session_disconnect(this->clsData->session, "Normal Shutdown");
