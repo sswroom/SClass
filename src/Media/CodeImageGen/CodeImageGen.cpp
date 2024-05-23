@@ -11,7 +11,7 @@ Media::CodeImageGen::CodeImageGen::~CodeImageGen()
 {
 }
 
-Media::CodeImageGen::CodeImageGen *Media::CodeImageGen::CodeImageGen::CreateGenerator(CodeType codeType)
+Optional<Media::CodeImageGen::CodeImageGen> Media::CodeImageGen::CodeImageGen::CreateGenerator(CodeType codeType)
 {
 	Media::CodeImageGen::CodeImageGen *codeImgGen = 0;
 	switch (codeType)

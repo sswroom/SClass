@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(AnyType userO
 		if (usz.x > 0 && usz.y > 0)
 		{
 			NN<Media::DrawImage> img;
-			if (!img.Set(me->dimg))
+			if (!me->dimg.SetTo(img))
 			{
 				me->dimg = me->eng->CreateImage32(usz, Media::AT_NO_ALPHA);
 			}
@@ -68,7 +68,7 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(AnyType userO
 				me->dimg = me->eng->CreateImage32(usz, Media::AT_NO_ALPHA);
 			}
 
-			if (img.Set(me->dimg))
+			if (me->dimg.SetTo(img))
 			{
 				NN<Media::DrawBrush> b;
 				NN<Media::DrawFont> f;
@@ -256,7 +256,7 @@ SSWR::AVIRead::AVIRElectronicScaleForm::~AVIRElectronicScaleForm()
 {
 	StopStream();
 	NN<Media::DrawImage> img;
-	if (img.Set(this->dimg))
+	if (this->dimg.SetTo(img))
 	{
 		this->eng->DeleteImage(img);
 		this->dimg = 0;

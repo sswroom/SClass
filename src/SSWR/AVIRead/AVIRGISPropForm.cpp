@@ -133,7 +133,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineModifyClicked(AnyType userO
 		}
 		sz = me->pbLineStyle->GetSizeP();
 		NN<Media::DrawImage> dimg;
-		if (dimg.Set(me->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
+		if (me->eng->CreateImage32(sz, Media::AT_NO_ALPHA).SetTo(dimg))
 		{
 			dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 			dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
@@ -161,7 +161,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnLineStyleClicked(AnyType userOb
 		}
 		sz = me->pbLineStyle->GetSizeP();
 		NN<Media::DrawImage> dimg;
-		if (dimg.Set(me->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
+		if (me->eng->CreateImage32(sz, Media::AT_NO_ALPHA).SetTo(dimg))
 		{
 			dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 			dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
@@ -217,7 +217,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyClicked(AnyType userO
 		}
 		sz = me->pbFontStyle->GetSizeP();
 		NN<Media::DrawImage> dimg;
-		if (dimg.Set(me->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
+		if (me->eng->CreateImage32(sz, Media::AT_NO_ALPHA).SetTo(dimg))
 		{
 			dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 			dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
@@ -245,7 +245,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontStyleClicked(AnyType userOb
 		}
 		sz = me->pbFontStyle->GetSizeP();
 		NN<Media::DrawImage> dimg;
-		if (dimg.Set(me->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
+		if (me->eng->CreateImage32(sz, Media::AT_NO_ALPHA).SetTo(dimg))
 		{
 			dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 			dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
@@ -390,7 +390,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> p
 		this->lineStyle = setting.lineStyle;
 		this->lineThick = setting.lineThick;
 		this->lineColor = setting.lineColor;
-		if (dimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
+		if (this->eng->CreateImage32(sz, Media::AT_NO_ALPHA).SetTo(dimg))
 		{
 			dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 			dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
@@ -408,7 +408,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> p
 		}
 
 		sz = this->pbFontStyle->GetSizeP();
-		if (dimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
+		if (this->eng->CreateImage32(sz, Media::AT_NO_ALPHA).SetTo(dimg))
 		{
 			dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 			dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
@@ -557,7 +557,7 @@ void SSWR::AVIRead::AVIRGISPropForm::RGBParamChanged(NN<const Media::IColorHandl
 	}
 	sz = this->pbLineStyle->GetSizeP();
 	NN<Media::DrawImage> dimg;
-	if (dimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
+	if (this->eng->CreateImage32(sz, Media::AT_NO_ALPHA).SetTo(dimg))
 	{
 		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
@@ -579,7 +579,7 @@ void SSWR::AVIRead::AVIRGISPropForm::RGBParamChanged(NN<const Media::IColorHandl
 		DEL_CLASS(this->imgFont);
 	}
 	sz = this->pbFontStyle->GetSizeP();
-	if (dimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
+	if (this->eng->CreateImage32(sz, Media::AT_NO_ALPHA).SetTo(dimg))
 	{
 		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);

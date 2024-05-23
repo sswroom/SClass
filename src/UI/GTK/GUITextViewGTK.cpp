@@ -203,7 +203,7 @@ void __stdcall UI::GUITextView::OnResize(AnyType userObj)
 	NN<UI::GUITextView> me = userObj.GetNN<UI::GUITextView>();
 	Math::Size2D<UOSInt> scnSize;
 	NN<Media::DrawImage> img;
-	if (img.Set(me->drawBuff))
+	if (me->drawBuff.SetTo(img))
 	{
 		me->deng->DeleteImage(img);
 	}
@@ -217,10 +217,10 @@ void __stdcall UI::GUITextView::OnResize(AnyType userObj)
 		scnSize.x -= me->clsData->scrSize;
 	}
 	me->drawBuff = me->deng->CreateImage32(scnSize, Media::AT_NO_ALPHA);
-	if (img.Set(me->drawBuff))
+	if (me->drawBuff.SetTo(img))
 	{
-		me->drawBuff->SetHDPI(me->GetHDPI());
-		me->drawBuff->SetVDPI(me->GetHDPI());
+		img->SetHDPI(me->GetHDPI());
+		img->SetVDPI(me->GetHDPI());
 		me->UpdateScrollBar();
 		me->Redraw();
 	}
@@ -235,7 +235,7 @@ void UI::GUITextView::UpdateScrollBar()
 
 	Math::Size2DDbl sz;
 	NN<Media::DrawImage> drawBuff;
-	if (!drawBuff.Set(this->drawBuff))
+	if (!this->drawBuff.SetTo(drawBuff))
 	{
 		sz.y = 12;
 	}
@@ -357,7 +357,7 @@ void UI::GUITextView::SetScrollVRange(UOSInt min, UOSInt max)
 UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWidth)
 {
 	NN<Media::DrawImage> drawBuff;
-	if (drawBuff.Set(this->drawBuff))
+	if (this->drawBuff.SetTo(drawBuff))
 	{
 		Double pxLeft = UOSInt2Double(pxWidth);
 		UTF8Char sbuff[7];
@@ -424,7 +424,7 @@ UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWi
 void UI::GUITextView::GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSInt *height)
 {
 	NN<Media::DrawImage> drawBuff;
-	if (drawBuff.Set(this->drawBuff))
+	if (this->drawBuff.SetTo(drawBuff))
 	{
 		WChar c;
 		Math::Size2DDbl sz;
@@ -530,7 +530,7 @@ UI::GUITextView::~GUITextView()
 {
 	g_source_remove(this->clsData->timerId);
 	NN<Media::DrawImage> img;
-	if (img.Set(this->drawBuff))
+	if (this->drawBuff.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
 	}

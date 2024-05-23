@@ -622,7 +622,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 					if (user.SetTo(nnuser) && nnuser->watermark->leng > 0)
 					{
 						NN<Media::DrawImage> gimg;
-						if (gimg.Set(this->env->GetDrawEngine()->ConvImage(simg)))
+						if (this->env->GetDrawEngine()->ConvImage(simg).SetTo(gimg))
 						{
 							if ((cacheDir->v && imgWidth == GetPreviewSize() && imgHeight == GetPreviewSize()) || user != reqUser)
 							{
@@ -650,7 +650,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 										yRand = Double2Int32(UOSInt2Double(simg->info.dispSize.y) - sz.y);
 										iWidth = (UInt32)Double2Int32(sz.x);
 										iHeight = (UInt32)Double2Int32(sz.y);
-										if (gimg2.Set(this->env->GetDrawEngine()->CreateImage32(Math::Size2D<UOSInt>(iWidth, iHeight), Media::AT_NO_ALPHA)))
+										if (this->env->GetDrawEngine()->CreateImage32(Math::Size2D<UOSInt>(iWidth, iHeight), Media::AT_NO_ALPHA).SetTo(gimg2))
 										{
 											gimg2->DrawString(Math::Coord2DDbl(0, 0), nnuser->watermark->ToCString(), f, b);
 											gimg2->SetAlphaType(Media::AT_ALPHA);

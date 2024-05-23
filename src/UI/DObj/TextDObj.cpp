@@ -36,7 +36,7 @@ UI::DObj::TextDObj::TextDObj(NN<Media::DrawEngine> deng, Text::CString txt, Text
 	if (this->txt)
 	{
 		NN<Media::DrawImage> dimg;
-		if (dimg.Set(this->deng->CreateImage32(this->size, Media::AT_NO_ALPHA)))
+		if (this->deng->CreateImage32(this->size, Media::AT_NO_ALPHA).SetTo(dimg))
 		{
 			NN<Media::DrawFont> f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, (Media::DrawEngine::DrawFontStyle)(fontStyle | Media::DrawEngine::DFS_ANTIALIAS), codePage);
 			Media::DrawImageTool::SplitString(dimg, this->txt->ToCString(), this->lines, f, OSInt2Double(this->size.x));

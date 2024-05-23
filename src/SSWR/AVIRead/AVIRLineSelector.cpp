@@ -29,21 +29,21 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(NN<Media::DrawImage> img)
 	NN<Media::DrawImage> tmpBmp;
 	if (w >= itemW)
 	{
-		if (!tmpBmp.Set(deng->CreateImage32(Math::Size2D<UOSInt>((UInt32)Double2Int32(110 * hdpi / ddpi), itemH), Media::AT_NO_ALPHA)))
+		if (!deng->CreateImage32(Math::Size2D<UOSInt>((UInt32)Double2Int32(110 * hdpi / ddpi), itemH), Media::AT_NO_ALPHA).SetTo(tmpBmp))
 		{
 			return;
 		}
 	}
 	else if (w >= 10)
 	{
-		if (!tmpBmp.Set(deng->CreateImage32(Math::Size2D<UOSInt>(w - 10, itemH), Media::AT_NO_ALPHA)))
+		if (!deng->CreateImage32(Math::Size2D<UOSInt>(w - 10, itemH), Media::AT_NO_ALPHA).SetTo(tmpBmp))
 		{
 			return;
 		}
 	}
 	else
 	{
-		if (!tmpBmp.Set(deng->CreateImage32(Math::Size2D<UOSInt>(w, itemH), Media::AT_NO_ALPHA)))
+		if (!deng->CreateImage32(Math::Size2D<UOSInt>(w, itemH), Media::AT_NO_ALPHA).SetTo(tmpBmp))
 		{
 			return;
 		}

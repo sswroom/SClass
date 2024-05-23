@@ -12,8 +12,8 @@ namespace UI
 		{
 		private:
 			NN<Media::DrawEngine> deng;
-			Media::DrawImage *bmpUnclick;
-			Media::DrawImage *bmpClicked;
+			Optional<Media::DrawImage> bmpUnclick;
+			Optional<Media::DrawImage> bmpClicked;
 			Bool isMouseDown;
 			Math::Coord2D<OSInt> dispTL;
 			UI::UIEvent clkHdlr;

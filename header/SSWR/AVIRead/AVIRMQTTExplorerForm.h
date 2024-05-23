@@ -47,7 +47,7 @@ namespace SSWR
 			Data::StringMapNN<TopicStatus> topicMap;
 			Bool topicListChanged;
 			Optional<TopicStatus> currTopic;
-			Media::DrawImage *dispImg;
+			Optional<Media::DrawImage> dispImg;
 			Crypto::Cert::X509Cert *cliCert;
 			Crypto::Cert::X509File *cliKey;
 

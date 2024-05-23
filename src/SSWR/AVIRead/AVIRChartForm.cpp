@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRChartForm::OnSizeChanged(AnyType userObj)
 	if (sz.x == 0 || sz.y == 0)
 		return;
 	NN<Media::DrawImage> gimg;
-	if (gimg.Set(me->core->GetDrawEngine()->CreateImage32(sz, Media::AT_NO_ALPHA)))
+	if (me->core->GetDrawEngine()->CreateImage32(sz, Media::AT_NO_ALPHA).SetTo(gimg))
 	{
 		Double dpi = me->core->GetMonitorHDPI(me->GetHMonitor());
 		gimg->SetHDPI(dpi);

@@ -11,8 +11,8 @@ namespace UI
 		{
 		private:
 			NN<Media::DrawEngine> deng;
-			Media::DrawImage *bmp1;
-			Media::DrawImage *bmp2;
+			Optional<Media::DrawImage> bmp1;
+			Optional<Media::DrawImage> bmp2;
 			Double alpha;
 			Double a;
 			Data::Random *rnd;

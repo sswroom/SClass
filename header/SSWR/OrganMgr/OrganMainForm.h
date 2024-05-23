@@ -157,7 +157,7 @@ namespace SSWR
 
 			Data::ArrayListNN<UserFileInfo> mapUFiles;
 			UserFileInfo *mapCurrFile;
-			Media::DrawImage *mapCurrImage;
+			Optional<Media::DrawImage> mapCurrImage;
 			Media::Resizer::LanczosResizer8_C8 *mapResizer;
 
 			UInt32 unkCnt;

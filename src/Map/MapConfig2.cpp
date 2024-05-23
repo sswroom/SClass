@@ -2281,6 +2281,9 @@ Optional<Map::MapDrawLayer> Map::MapConfig2::GetDrawLayer(Text::CStringNN name, 
 
 void Map::MapConfig2::DrawPoints(NN<Media::DrawImage> img, MapLayerStyle *lyrs, NN<Map::MapView> view, Bool *isLayerEmpty, Map::MapScheduler *sch, NN<Media::DrawEngine> eng, Media::IImgResizer *resizer, Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxObjCnt)
 {
+	NN<Media::DrawImage> lyrImg;
+	if (!lyrs->img.SetTo(lyrImg))
+		return;
 	NN<Math::Geometry::Vector2D> vec;
 	UOSInt imgW;
 	UOSInt imgH;
@@ -2294,7 +2297,7 @@ void Map::MapConfig2::DrawPoints(NN<Media::DrawImage> img, MapLayerStyle *lyrs, 
 	NN<Map::MapDrawLayer> lyr = lyrs->lyr;
 
 #ifndef NOSCH
-	sch->SetDrawType(lyr, 0, 0, lyrs->img, UOSInt2Double(lyrs->img->GetWidth()) * 0.5, UOSInt2Double(lyrs->img->GetHeight()) * 0.5, isLayerEmpty);
+	sch->SetDrawType(lyr, 0, 0, lyrs->img, UOSInt2Double(lyrImg->GetWidth()) * 0.5, UOSInt2Double(lyrImg->GetHeight()) * 0.5, isLayerEmpty);
 	sch->SetDrawObjs(objBounds, objCnt, maxObjCnt);
 #endif
 	Data::ArrayListInt64 arri;
@@ -2305,14 +2308,14 @@ void Map::MapConfig2::DrawPoints(NN<Media::DrawImage> img, MapLayerStyle *lyrs, 
 		return;
 	}
 	session = lyrs->lyr->BeginGetObject();
-	Media::DrawImage *dimg;
+	Optional<Media::DrawImage> dimg;
 	if (img->GetHDPI() != 96)
 	{
-		imgW = lyrs->img->GetWidth();
-		imgH = lyrs->img->GetHeight();
-		Media::DrawImage *gimg2 = lyrs->img;
+		imgW = lyrImg->GetWidth();
+		imgH = lyrImg->GetHeight();
+		NN<Media::DrawImage> gimg2 = lyrImg;
 		NN<Media::DrawImage> gimg;
-		if (gimg.Set(eng->CreateImage32(Math::Size2D<UOSInt>((UOSInt)Double2OSInt(UOSInt2Double(imgW) * img->GetHDPI() / 96.0), (UOSInt)Double2OSInt(UOSInt2Double(imgH) * img->GetHDPI() / 96.0)), gimg2->GetAlphaType())))
+		if (eng->CreateImage32(Math::Size2D<UOSInt>((UOSInt)Double2OSInt(UOSInt2Double(imgW) * img->GetHDPI() / 96.0), (UOSInt)Double2OSInt(UOSInt2Double(imgH) * img->GetHDPI() / 96.0)), gimg2->GetAlphaType()).SetTo(gimg))
 		{
 			Bool revOrder;
 			Bool revOrder2;
@@ -2321,11 +2324,11 @@ void Map::MapConfig2::DrawPoints(NN<Media::DrawImage> img, MapLayerStyle *lyrs, 
 			resizer->Resize(bmpBits2, (OSInt)imgW << 2, UOSInt2Double(imgW), UOSInt2Double(imgH), 0, 0, bmpBits, Double2Int32(UOSInt2Double(imgW) * img->GetHDPI() / 96.0) << 2, (UInt32)Double2Int32(UOSInt2Double(imgW) * img->GetHDPI() / 96.0), (UInt32)Double2Int32(UOSInt2Double(imgH) * img->GetHDPI() / 96.0));
 			gimg->GetImgBitsEnd(true);
 			gimg2->GetImgBitsEnd(false);
-			dimg = gimg.Ptr();
+			dimg = gimg;
 			imgW = (UInt32)Double2Int32(UOSInt2Double(imgW) * img->GetHDPI() / 96.0) >> 1;
 			imgH = (UInt32)Double2Int32(UOSInt2Double(imgH) * img->GetHDPI() / 96.0) >> 1;
 	#ifndef NOSCH
-			sch->SetDrawType(lyr, 0, 0, dimg, UOSInt2Double(dimg->GetWidth()) * 0.5, UOSInt2Double(dimg->GetHeight()) * 0.5, isLayerEmpty);
+			sch->SetDrawType(lyr, 0, 0, dimg, UOSInt2Double(gimg->GetWidth()) * 0.5, UOSInt2Double(gimg->GetHeight()) * 0.5, isLayerEmpty);
 	#endif
 		}
 		else
@@ -2335,9 +2338,9 @@ void Map::MapConfig2::DrawPoints(NN<Media::DrawImage> img, MapLayerStyle *lyrs, 
 	}
 	else
 	{
-		imgW = lyrs->img->GetWidth() >> 1;
-		imgH = lyrs->img->GetHeight() >> 1;
-		dimg = lyrs->img;
+		imgW = lyrImg->GetWidth() >> 1;
+		imgH = lyrImg->GetHeight() >> 1;
+		dimg = lyrImg;
 	}
 
 	i = arri.GetCount();
@@ -2367,7 +2370,7 @@ void Map::MapConfig2::DrawPoints(NN<Media::DrawImage> img, MapLayerStyle *lyrs, 
 	sch->WaitForFinish();
 #endif
 	NN<Media::DrawImage> tmpImg;
-	if (img->GetHDPI() != 96 && tmpImg.Set(dimg))
+	if (img->GetHDPI() != 96 && dimg.SetTo(tmpImg))
 	{
 		eng->DeleteImage(tmpImg);
 	}
@@ -2384,11 +2387,12 @@ void Map::MapConfig2::DrawString(NN<Media::DrawImage> img, MapLayerStyle *lyrs, 
 	Map::GetObjectSess *session;
 	UOSInt imgWidth;
 	UOSInt imgHeight;
+	NN<Media::DrawImage> lyrImg;
 
-	if (lyrs->img)
+	if (lyrs->img.SetTo(lyrImg))
 	{
-		imgWidth = lyrs->img->GetWidth();
-		imgHeight = lyrs->img->GetHeight();
+		imgWidth = lyrImg->GetWidth();
+		imgHeight = lyrImg->GetHeight();
 	}
 	else
 	{
@@ -4150,12 +4154,12 @@ Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng,
 						}
 					}
 				}
-				if (currLayer->img == 0)
+				if (currLayer->img.IsNull())
 				{
 					currLayer->img = this->drawEng->LoadImage(strs[4].ToCString());
 				}
 				NN<Media::DrawImage> img;
-				if (!img.Set(currLayer->img))
+				if (!currLayer->img.SetTo(img))
 				{
 					MemFree(currLayer);
 				}
@@ -4288,7 +4292,7 @@ Map::MapConfig2::~MapConfig2()
 		while (i-- > 0)
 		{
 			currLyr = this->drawList->GetItem(i);
-			if (img.Set(currLyr->img) && currLyr->drawType == 10)
+			if (currLyr->img.SetTo(img) && currLyr->drawType == 10)
 			{
 				this->drawEng->DeleteImage(img);
 			}

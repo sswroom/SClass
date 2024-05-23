@@ -15,7 +15,7 @@ namespace UI
 			{
 				UInt32 id;
 				NN<Text::String> message;
-				Media::DrawImage *img;
+				Optional<Media::DrawImage> img;
 				Bool deleted;
 			};
 		private:
@@ -33,7 +33,7 @@ namespace UI
 			OSInt lastMsgOfst;
 
 		protected:
-			virtual Media::DrawImage *GenerateImage(NN<Media::DrawEngine> deng, NN<Text::String> message, Math::Size2D<UOSInt> drawSize, NN<Media::DrawImage> scnImg) = 0;
+			virtual Optional<Media::DrawImage> GenerateImage(NN<Media::DrawEngine> deng, NN<Text::String> message, Math::Size2D<UOSInt> drawSize, NN<Media::DrawImage> scnImg) = 0;
 		private:
 			void FreeMessage(NN<MessageInfo> msg);
 		public:

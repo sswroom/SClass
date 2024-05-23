@@ -42,8 +42,8 @@ namespace SSWR
 				NN<Text::String> filePath;
 				NN<Text::String> cacheFile;
 				ImageSetting setting;
-				Media::DrawImage *previewImg;
-				Media::DrawImage *previewImg2;
+				Optional<Media::DrawImage> previewImg;
+				Optional<Media::DrawImage> previewImg2;
 			} ImageStatus;
 
 			typedef struct

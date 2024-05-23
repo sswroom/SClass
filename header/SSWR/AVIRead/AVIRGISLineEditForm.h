@@ -36,7 +36,7 @@ namespace SSWR
 			UOSInt lineStyle;
 			Optional<LineLayer> currLayer;
 			Data::ArrayListNN<LineLayer> lineLayers;
-			Media::DrawImage *prevImage;
+			Optional<Media::DrawImage> prevImage;
 			Media::StaticImage *prevsImage;
 			Bool thickChging;
 

@@ -1592,7 +1592,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(AnyType userObj, Ma
 		{
 			return;
 		}
-		if (img.Set(me->mapCurrImage))
+		if (me->mapCurrImage.SetTo(img))
 		{
 			me->env->GetDrawEngine()->DeleteImage(img);
 		}
@@ -1662,7 +1662,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapDraw(AnyType userObj, NN<Medi
 {
 	NN<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	NN<Media::DrawImage> img;
-	if (img.Set(me->mapCurrImage))
+	if (me->mapCurrImage.SetTo(img))
 	{
 		Math::Size2D<UOSInt> scnSize = me->mcMap->GetSizeP();
 		dimg->DrawImagePt(img, Math::Coord2DDbl(OSInt2Double(xOfst), OSInt2Double(yOfst + (OSInt)(scnSize.y - img->GetHeight()))));
@@ -2822,7 +2822,7 @@ SSWR::OrganMgr::OrganMainForm::~OrganMainForm()
 	this->ClearPicks();
 
 	DEL_CLASS(this->mapResizer);
-	if (dimg.Set(this->mapCurrImage))
+	if (this->mapCurrImage.SetTo(dimg))
 	{
 		this->env->GetDrawEngine()->DeleteImage(dimg);
 		this->mapCurrImage = 0;

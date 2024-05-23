@@ -10,7 +10,7 @@
 void UI::DObj::RollingMessageDObj::FreeMessage(NN<MessageInfo> msg)
 {
 	NN<Media::DrawImage> img;
-	if (img.Set(msg->img))
+	if (msg->img.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
 	}
@@ -49,9 +49,9 @@ UI::DObj::RollingMessageDObj::~RollingMessageDObj()
 Bool UI::DObj::RollingMessageDObj::IsChanged()
 {
 	NN<MessageInfo> msg;
-	if (this->lastMessage.SetTo(msg) && msg->img == 0)
+	if (this->lastMessage.SetTo(msg) && msg->img.IsNull())
 		return true;
-	if (this->thisMessage.SetTo(msg) && msg->img == 0)
+	if (this->thisMessage.SetTo(msg) && msg->img.IsNull())
 		return true;
 	Data::DateTime currTime;
 	currTime.SetCurrTimeUTC();
@@ -84,7 +84,7 @@ void UI::DObj::RollingMessageDObj::DrawObject(NN<Media::DrawImage> dimg)
 		if (this->lastMessage.SetTo(msg))
 		{
 			NN<Media::DrawImage> img;
-			if (msg->img == 0)
+			if (msg->img.IsNull())
 			{
 				msg->img = this->GenerateImage(this->deng, msg->message, this->size, dimg);
 			}
@@ -96,7 +96,7 @@ void UI::DObj::RollingMessageDObj::DrawObject(NN<Media::DrawImage> dimg)
 				}
 				this->lastMessage = 0;
 			}
-			else if (img.Set(msg->img))
+			else if (msg->img.SetTo(img))
 			{
 				OSInt ofst = 0;
 				if (img->GetWidth() > this->size.x)
@@ -128,11 +128,11 @@ void UI::DObj::RollingMessageDObj::DrawObject(NN<Media::DrawImage> dimg)
 		if (this->thisMessage.SetTo(msg))
 		{
 			NN<Media::DrawImage> img;
-			if (msg->img == 0)
+			if (msg->img.IsNull())
 			{
 				msg->img = this->GenerateImage(this->deng, msg->message, this->size, dimg);
 			}
-			if (img.Set(msg->img))
+			if (msg->img.SetTo(img))
 			{
 				UOSInt w = img->GetWidth();
 				if (w < this->size.x)
@@ -173,7 +173,7 @@ void UI::DObj::RollingMessageDObj::DrawObject(NN<Media::DrawImage> dimg)
 						this->nextMsgIndex -= this->msgMap.GetCount();
 					}
 					this->thisMessage = this->msgMap.GetItem(this->nextMsgIndex++);
-					if (msg->img == 0)
+					if (msg->img.IsNull())
 					{
 						msg->img = this->GenerateImage(this->deng, msg->message, this->size, dimg);
 					}
@@ -198,7 +198,7 @@ void UI::DObj::RollingMessageDObj::DrawObject(NN<Media::DrawImage> dimg)
 			}
 			this->thisMessage = msg = this->msgMap.GetItemNoCheck(this->nextMsgIndex++);
 			this->lastMsgOfst = currPos;
-			if (msg->img == 0)
+			if (msg->img.IsNull())
 			{
 				msg->img = this->GenerateImage(this->deng, msg->message, this->size, dimg);
 			}
@@ -217,7 +217,7 @@ void UI::DObj::RollingMessageDObj::DrawObject(NN<Media::DrawImage> dimg)
 			this->nextMsgIndex -= this->msgMap.GetCount();
 		}
 		this->thisMessage = msg = this->msgMap.GetItemNoCheck(this->nextMsgIndex++);
-		if (msg->img == 0)
+		if (msg->img.IsNull())
 		{
 			msg->img = this->GenerateImage(this->deng, msg->message, this->size, dimg);
 		}
@@ -291,12 +291,12 @@ void UI::DObj::RollingMessageDObj::SetSize(Math::Size2D<UOSInt> size)
 	Sync::MutexUsage mutUsage(this->msgMut);
 	NN<Media::DrawImage> img;
 	NN<MessageInfo> msg;
-	if (this->lastMessage.SetTo(msg) && img.Set(msg->img))
+	if (this->lastMessage.SetTo(msg) && msg->img.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
 		msg->img = 0;
 	}
-	if (this->thisMessage.SetTo(msg) && img.Set(msg->img))
+	if (this->thisMessage.SetTo(msg) && msg->img.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
 		msg->img = 0;
@@ -305,7 +305,7 @@ void UI::DObj::RollingMessageDObj::SetSize(Math::Size2D<UOSInt> size)
 	while (i-- > 0)
 	{
 		msg = this->msgMap.GetItemNoCheck(i);
-		if (img.Set(msg->img))
+		if (msg->img.SetTo(img))
 		{
 			this->deng->DeleteImage(img);
 			msg->img = 0;

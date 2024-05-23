@@ -47,7 +47,7 @@ namespace Text
 
 		typedef struct
 		{
-			Media::DrawImage *dimg;
+			Optional<Media::DrawImage> dimg;
 		} IconStatus;
 
 		struct HeaderInfo

@@ -8,7 +8,7 @@
 void UI::DObj::RollingTextDObj::UpdateBGImg()
 {
 	NN<Media::DrawImage> img;
-	if (img.Set(this->dimg))
+	if (this->dimg.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
 		this->dimg = 0;
@@ -22,7 +22,7 @@ void UI::DObj::RollingTextDObj::UpdateBGImg()
 		Data::ArrayListStringNN lines;
 		NN<Text::String> s;
 		Double currY;
-		if (dimg.Set(this->deng->CreateImage32(this->size, Media::AT_NO_ALPHA)))
+		if (this->deng->CreateImage32(this->size, Media::AT_NO_ALPHA).SetTo(dimg))
 		{
 			f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, Media::DrawEngine::DFS_ANTIALIAS, this->codePage);
 
@@ -32,27 +32,27 @@ void UI::DObj::RollingTextDObj::UpdateBGImg()
 		}
 
 		this->dimg = this->deng->CreateImage32(Math::Size2D<UOSInt>(this->size.x, (UInt32)Double2Int32(this->lineHeight * UOSInt2Double(lines.GetCount()))), Media::AT_NO_ALPHA);
-		if (dimg.Set(this->dimg))
+		if (this->dimg.SetTo(dimg))
 		{
-			f = this->dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, Media::DrawEngine::DFS_ANTIALIAS, this->codePage);
-			b = this->dimg->NewBrushARGB(0xffffffff);
+			f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, Media::DrawEngine::DFS_ANTIALIAS, this->codePage);
+			b = dimg->NewBrushARGB(0xffffffff);
 			currY = 0;
 			Data::ArrayIterator<NN<Text::String>> it = lines.Iterator();
 			while (it.HasNext())
 			{
 				s = it.Next();
-				this->dimg->DrawString(Math::Coord2DDbl(0, currY), s, f, b);
+				dimg->DrawString(Math::Coord2DDbl(0, currY), s, f, b);
 				s->Release();
 				currY += this->lineHeight;
 			}
-			this->dimg->DelBrush(b);
-			this->dimg->DelFont(f);
+			dimg->DelBrush(b);
+			dimg->DelFont(f);
 
 			Bool revOrder;
-			UInt8 *bmpPtr = this->dimg->GetImgBits(revOrder);
-			ImageUtil_ColorReplace32A2(bmpPtr, this->dimg->GetWidth(), this->dimg->GetHeight(), this->fontColor);
-			this->dimg->GetImgBitsEnd(true);
-			this->dimg->SetAlphaType(Media::AT_ALPHA);
+			UInt8 *bmpPtr = dimg->GetImgBits(revOrder);
+			ImageUtil_ColorReplace32A2(bmpPtr, dimg->GetWidth(), dimg->GetHeight(), this->fontColor);
+			dimg->GetImgBitsEnd(true);
+			dimg->SetAlphaType(Media::AT_ALPHA);
 	/*
 			UInt8 *imgPtr = (UInt8*)((Media::GDIImage*)this->dimg)->bmpBits;
 			Int32 c = this->fontColor;
@@ -235,7 +235,7 @@ UI::DObj::RollingTextDObj::~RollingTextDObj()
 	this->fontName->Release();
 
 	NN<Media::DrawImage> img;
-	if (img.Set(this->dimg))
+	if (this->dimg.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
 		this->dimg = 0;
@@ -244,14 +244,15 @@ UI::DObj::RollingTextDObj::~RollingTextDObj()
 
 Bool UI::DObj::RollingTextDObj::IsChanged()
 {
-	if (this->dimg == 0)
+	NN<Media::DrawImage> dimg;
+	if (!this->dimg.SetTo(dimg))
 		return false;
-	if (this->dimg->GetHeight() <= this->size.y)
+	if (dimg->GetHeight() <= this->size.y)
 		return false;
 	Data::DateTime currTime;
 	currTime.SetCurrTimeUTC();
 	Int64 t = currTime.DiffMS(this->startTime);
-	UOSInt h = this->dimg->GetHeight();
+	UOSInt h = dimg->GetHeight();
 	OSInt currPos = Double2Int32(Int64_Double(t) * this->rollSpeed * 0.001);
 	while (currPos >= (OSInt)h)
 	{
@@ -274,7 +275,7 @@ void UI::DObj::RollingTextDObj::DrawObject(NN<Media::DrawImage> dimg)
 {
 	Math::Coord2D<OSInt> tl = this->GetCurrPos();
 	NN<Media::DrawImage> img;
-	if (!img.Set(this->dimg))
+	if (!this->dimg.SetTo(img))
 	{
 		return;
 	}

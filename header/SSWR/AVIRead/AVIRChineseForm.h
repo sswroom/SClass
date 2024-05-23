@@ -23,7 +23,7 @@ namespace SSWR
 			Text::ChineseInfo *chinese;
 			NN<Media::DrawEngine> deng;
 			UInt32 currChar;
-			Media::DrawImage *charImg;
+			Optional<Media::DrawImage> charImg;
 			NN<Text::String> currFont;
 			UInt32 currRadical;
 

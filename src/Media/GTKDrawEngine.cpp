@@ -27,9 +27,9 @@ Media::GTKDrawEngine::~GTKDrawEngine()
 {
 }
 
-Media::DrawImage *Media::GTKDrawEngine::CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype)
+Optional<Media::DrawImage> Media::GTKDrawEngine::CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype)
 {
-	Media::GTKDrawImage *dimg;
+	NN<Media::GTKDrawImage> dimg;
 	cairo_surface_t *surface;
 	cairo_t *cr;
 	surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, (int)size.x, (int)size.y);
@@ -38,7 +38,7 @@ Media::DrawImage *Media::GTKDrawEngine::CreateImage32(Math::Size2D<UOSInt> size,
 	{
 		atype = Media::AT_PREMUL_ALPHA;
 	}
-	NEW_CLASS(dimg, Media::GTKDrawImage(*this, surface, cr, Math::Coord2D<OSInt>(0, 0), size, 32, atype));
+	NEW_CLASSNN(dimg, Media::GTKDrawImage(*this, surface, cr, Math::Coord2D<OSInt>(0, 0), size, 32, atype));
 	return dimg;
 }
 
@@ -49,7 +49,7 @@ NN<Media::DrawImage> Media::GTKDrawEngine::CreateImageScn(void *cr, Math::Coord2
 	return dimg;
 }
 
-Media::DrawImage *Media::GTKDrawEngine::LoadImage(Text::CStringNN fileName)
+Optional<Media::DrawImage> Media::GTKDrawEngine::LoadImage(Text::CStringNN fileName)
 {
 	Media::ImageList *imgList = 0;
 	{
@@ -71,7 +71,7 @@ Media::DrawImage *Media::GTKDrawEngine::LoadImage(Text::CStringNN fileName)
 		return 0;
 	}
 
-	Media::DrawImage *dimg = 0;
+	Optional<Media::DrawImage> dimg = 0;
 	NN<Media::RasterImage> img;
 	if (imgList->GetImage(0, 0).SetTo(img))
 	{
@@ -81,19 +81,19 @@ Media::DrawImage *Media::GTKDrawEngine::LoadImage(Text::CStringNN fileName)
 	return dimg;
 }
 
-Media::DrawImage *Media::GTKDrawEngine::LoadImageStream(NN<IO::SeekableStream> stm)
+Optional<Media::DrawImage> Media::GTKDrawEngine::LoadImageStream(NN<IO::SeekableStream> stm)
 {
 	return 0;
 }
 
-Media::DrawImage *Media::GTKDrawEngine::ConvImage(NN<Media::RasterImage> img)
+Optional<Media::DrawImage> Media::GTKDrawEngine::ConvImage(NN<Media::RasterImage> img)
 {
 	if (img->info.fourcc != 0)
 	{
 		return 0; 
 	}
-	Media::GTKDrawImage *gimg = (Media::GTKDrawImage*)this->CreateImage32(img->info.dispSize, img->info.atype);
-	if (gimg == 0)
+	NN<Media::GTKDrawImage> gimg;;
+	if (!Optional<Media::GTKDrawImage>::ConvertFrom(this->CreateImage32(img->info.dispSize, img->info.atype)).SetTo(gimg))
 		return 0;
 	gimg->SetHDPI(img->info.hdpi);
 	gimg->SetVDPI(img->info.vdpi);
@@ -144,23 +144,26 @@ Media::DrawImage *Media::GTKDrawEngine::ConvImage(NN<Media::RasterImage> img)
 	return gimg;
 }
 
-Media::DrawImage *Media::GTKDrawEngine::CloneImage(NN<DrawImage> img)
+Optional<Media::DrawImage> Media::GTKDrawEngine::CloneImage(NN<DrawImage> img)
 {
-	Media::GTKDrawImage *dimg = (Media::GTKDrawImage*)img.Ptr();
+	NN<Media::GTKDrawImage> dimg = NN<Media::GTKDrawImage>::ConvertFrom(img);
 	Math::Size2D<UOSInt> size = dimg->GetSize();
 	Media::AlphaType atype = dimg->GetAlphaType();
-	Media::GTKDrawImage *newImg = 0;
 	if (dimg->GetSurface())
 	{
+		NN<Media::GTKDrawImage> newImg;
 		Bool upsideDown;
 		UInt8 *dptr;
-		newImg = (GTKDrawImage*)this->CreateImage32(size, atype);
-		dptr = newImg->GetImgBits(upsideDown);
-		((Media::GTKDrawImage*)img.Ptr())->CopyBits(0, 0, dptr, newImg->GetDataBpl(), size.x, size.y, upsideDown);
-		newImg->SetHDPI(img->GetHDPI());
-		newImg->SetVDPI(img->GetVDPI());
+		if (Optional<GTKDrawImage>::ConvertFrom(this->CreateImage32(size, atype)).SetTo(newImg))
+		{
+			dptr = newImg->GetImgBits(upsideDown);
+			((Media::GTKDrawImage*)img.Ptr())->CopyBits(0, 0, dptr, newImg->GetDataBpl(), size.x, size.y, upsideDown);
+			newImg->SetHDPI(img->GetHDPI());
+			newImg->SetVDPI(img->GetVDPI());
+			return newImg;
+		}
 	}
-	return newImg;
+	return 0;
 }
 
 Bool Media::GTKDrawEngine::DeleteImage(NN<DrawImage> img)
@@ -709,7 +712,7 @@ Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, Text::CStringNN str, 
 	{
 		swidth = (OSInt)(sz[0] + (buffSize << 1));
 		sheight = (OSInt)(sz[1] + (buffSize << 1));
-		if (!gimg.Set((Media::GTKDrawImage*)eng->CreateImage32(Math::Size2D<UOSInt>((UOSInt)swidth, (UOSInt)sheight), Media::AT_ALPHA)))
+		if (!Optional<Media::GTKDrawImage>::ConvertFrom(eng->CreateImage32(Math::Size2D<UOSInt>((UOSInt)swidth, (UOSInt)sheight), Media::AT_ALPHA)).SetTo(gimg))
 		{
 			return false;
 		}
@@ -918,7 +921,7 @@ Bool Media::GTKDrawImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2D
 	if (this->surface == 0)
 	{
 		NN<Media::DrawImage> dimg;
-		if (!dimg.Set(this->eng->ConvImage(img)))
+		if (!this->eng->ConvImage(img).SetTo(dimg))
 		{
 			return false;
 		}

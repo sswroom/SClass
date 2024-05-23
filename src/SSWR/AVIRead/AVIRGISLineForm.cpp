@@ -53,7 +53,7 @@ void SSWR::AVIRead::AVIRGISLineForm::UpdatePreview()
 	Math::Size2D<UOSInt> sz;
 	NN<Media::DrawImage> dimg;
 	sz = this->pbPreview->GetSizeP();
-	if (dimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
+	if (this->eng->CreateImage32(sz, Media::AT_NO_ALPHA).SetTo(dimg))
 	{
 		dimg->SetHDPI(this->GetHDPI());
 		dimg->SetVDPI(this->GetHDPI());

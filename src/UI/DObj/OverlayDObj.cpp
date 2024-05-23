@@ -3,7 +3,7 @@
 #include "Math/Math.h"
 #include "UI/DObj/OverlayDObj.h"
 
-UI::DObj::OverlayDObj::OverlayDObj(NN<Media::DrawEngine> deng, Media::DrawImage *bmp, Math::Coord2D<OSInt> tl) : DirectObject(tl)
+UI::DObj::OverlayDObj::OverlayDObj(NN<Media::DrawEngine> deng, Optional<Media::DrawImage> bmp, Math::Coord2D<OSInt> tl) : DirectObject(tl)
 {
 	this->deng = deng;
 	this->noRelease = true;
@@ -40,7 +40,7 @@ UI::DObj::OverlayDObj::~OverlayDObj()
 	if (this->noRelease)
 	{
 	}
-	else if (img.Set(this->bmp))
+	else if (this->bmp.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
 		this->bmp = 0;
@@ -55,7 +55,7 @@ UI::DObj::OverlayDObj::~OverlayDObj()
 
 Bool UI::DObj::OverlayDObj::IsChanged()
 {
-	if (this->bmp)
+	if (this->bmp.NotNull())
 	{
 		return false;
 	}
@@ -83,7 +83,7 @@ Bool UI::DObj::OverlayDObj::DoEvents()
 void UI::DObj::OverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 {
 	NN<Media::DrawImage> bmp;
-	if (bmp.Set(this->bmp))
+	if (this->bmp.SetTo(bmp))
 	{
 		Math::Coord2DDbl tl = GetCurrPos().ToDouble();
 		dimg->DrawImagePt(bmp, tl);

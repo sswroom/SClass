@@ -27,7 +27,7 @@ UOSInt Media::CodeImageGen::EAN2CodeImageGen::GetMaxLength()
 	return 2;
 }
 
-Media::DrawImage *Media::CodeImageGen::EAN2CodeImageGen::GenCode(Text::CString code, UOSInt codeWidth, NN<Media::DrawEngine> eng)
+Optional<Media::DrawImage> Media::CodeImageGen::EAN2CodeImageGen::GenCode(Text::CString code, UOSInt codeWidth, NN<Media::DrawEngine> eng)
 {
 	UTF8Char sbuff[2];
 	if (code.v == 0)
@@ -285,7 +285,9 @@ Media::DrawImage *Media::CodeImageGen::EAN2CodeImageGen::GenCode(Text::CString c
 	UOSInt y = h - codeWidth;
 	Double fh = 12.0 * UOSInt2Double(codeWidth);
 
-	Media::DrawImage *dimg = eng->CreateImage32(Math::Size2D<UOSInt>((4 + 21) * codeWidth, h), Media::AT_NO_ALPHA);
+	NN<Media::DrawImage> dimg;
+	if (!eng->CreateImage32(Math::Size2D<UOSInt>((4 + 21) * codeWidth, h), Media::AT_NO_ALPHA).SetTo(dimg))
+		return 0;
 	NN<Media::DrawBrush> b;
 	NN<Media::DrawPen> p;
 	NN<Media::DrawFont> f;

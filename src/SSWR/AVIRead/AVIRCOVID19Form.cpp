@@ -64,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(AnyType use
 	NN<Media::DrawEngine> deng = me->core->GetDrawEngine();
 	Math::Size2D<UOSInt> sz = me->pbNewCases->GetSizeP();
 	NN<Media::DrawImage> dimg;
-	if (dimg.Set(deng->CreateImage32(sz, Media::AT_NO_ALPHA)))
+	if (deng->CreateImage32(sz, Media::AT_NO_ALPHA).SetTo(dimg))
 	{
 		NN<SSWR::AVIRead::AVIRCOVID19Form::DailyRecord> record;
 		UOSInt i;

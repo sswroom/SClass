@@ -319,37 +319,37 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateImg()
 {
 	Math::Size2D<UOSInt> newSize = this->pbChar->GetSizeP();
 	NN<Media::DrawImage> dimg;
-	if (!dimg.Set(this->charImg))
+	if (!this->charImg.SetTo(dimg))
 	{
 		this->charImg = this->deng->CreateImage32(newSize, Media::AT_NO_ALPHA);
 	}
-	else if (this->charImg->GetWidth() != newSize.x || this->charImg->GetHeight() != newSize.y)
+	else if (dimg->GetWidth() != newSize.x || dimg->GetHeight() != newSize.y)
 	{
 		this->pbChar->SetImageDImg(0);
 		this->deng->DeleteImage(dimg);
 		this->charImg = this->deng->CreateImage32(newSize, Media::AT_NO_ALPHA);
 	}
-	if (this->charImg)
+	if (this->charImg.SetTo(dimg))
 	{
 		UTF8Char sbuff[7];
 		NN<Media::DrawBrush> b;
 		NN<Media::DrawFont> f;
-		b = this->charImg->NewBrushARGB(0xffffffff);
-		this->charImg->DrawRect(Math::Coord2DDbl(0, 0), newSize.ToDouble(), 0, b);
-		this->charImg->DelBrush(b);
+		b = dimg->NewBrushARGB(0xffffffff);
+		dimg->DrawRect(Math::Coord2DDbl(0, 0), newSize.ToDouble(), 0, b);
+		dimg->DelBrush(b);
 		if (this->currChar != 0)
 		{
 			UOSInt len;
 			Math::Size2DDbl sz;
-			b = this->charImg->NewBrushARGB(0xff000000);
-			f = this->charImg->NewFontPx(this->currFont->ToCString(), UOSInt2Double(newSize.y), Media::DrawEngine::DFS_NORMAL, 950);
+			b = dimg->NewBrushARGB(0xff000000);
+			f = dimg->NewFontPx(this->currFont->ToCString(), UOSInt2Double(newSize.y), Media::DrawEngine::DFS_NORMAL, 950);
 			len = (UOSInt)(Text::StrWriteChar(sbuff, (UTF32Char)this->currChar) - sbuff);
 			sbuff[len] = 0;
 			
-			sz = this->charImg->GetTextSize(f, {sbuff, len});
-			this->charImg->DrawString((newSize.ToDouble() - sz) * 0.5, {sbuff, len}, f, b);
-			this->charImg->DelFont(f);
-			this->charImg->DelBrush(b);
+			sz = dimg->GetTextSize(f, {sbuff, len});
+			dimg->DrawString((newSize.ToDouble() - sz) * 0.5, {sbuff, len}, f, b);
+			dimg->DelFont(f);
+			dimg->DelBrush(b);
 		}
 		this->pbChar->SetImageDImg(this->charImg);
 	}
@@ -489,7 +489,7 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(Optional<UI::GUIClientControl> p
 SSWR::AVIRead::AVIRChineseForm::~AVIRChineseForm()
 {
 	NN<Media::DrawImage> img;
-	if (img.Set(this->charImg))
+	if (this->charImg.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
 		this->charImg = 0;

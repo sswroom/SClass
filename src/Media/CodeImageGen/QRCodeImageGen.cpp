@@ -28,7 +28,7 @@ UOSInt Media::CodeImageGen::QRCodeImageGen::GetMaxLength()
 	return 7089;
 }
 
-Media::DrawImage *Media::CodeImageGen::QRCodeImageGen::GenCode(Text::CString code, UOSInt codeWidth, NN<Media::DrawEngine> eng)
+Optional<Media::DrawImage> Media::CodeImageGen::QRCodeImageGen::GenCode(Text::CString code, UOSInt codeWidth, NN<Media::DrawEngine> eng)
 {
 	if (code.v == 0 || code.leng == 0)
 		return 0;
@@ -36,7 +36,7 @@ Media::DrawImage *Media::CodeImageGen::QRCodeImageGen::GenCode(Text::CString cod
 	NN<Media::StaticImage> simg;
 	if (!simg.Set(Media::ZXingWriter::GenQRCode(code, Math::Size2D<UOSInt>(256, 256))))
 		return 0;
-	Media::DrawImage *dimg = eng->ConvImage(simg);
+	Optional<Media::DrawImage> dimg = eng->ConvImage(simg);
 	simg.Delete();
 	return dimg;
 }

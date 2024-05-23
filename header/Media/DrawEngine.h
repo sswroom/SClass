@@ -67,14 +67,14 @@ namespace Media
 	public:
 		virtual ~DrawEngine(){};
 
-		virtual DrawImage *CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype) = 0;
-		virtual DrawImage *LoadImage(Text::CStringNN fileName) = 0;
-		virtual DrawImage *LoadImageStream(NN<IO::SeekableStream> stm) = 0;
-		virtual DrawImage *ConvImage(NN<Media::RasterImage> img) = 0;
-		virtual DrawImage *CloneImage(NN<DrawImage> img) = 0;
+		virtual Optional<DrawImage> CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype) = 0;
+		virtual Optional<DrawImage> LoadImage(Text::CStringNN fileName) = 0;
+		virtual Optional<DrawImage> LoadImageStream(NN<IO::SeekableStream> stm) = 0;
+		virtual Optional<DrawImage> ConvImage(NN<Media::RasterImage> img) = 0;
+		virtual Optional<DrawImage> CloneImage(NN<DrawImage> img) = 0;
 		virtual Bool DeleteImage(NN<DrawImage> img) = 0;
 
-		DrawImage *ConvImageOrNull(Media::RasterImage *img)
+		Optional<DrawImage> ConvImageOrNull(Media::RasterImage *img)
 		{
 			NN<Media::RasterImage> nnimg;
 			if (nnimg.Set(img)) return ConvImage(nnimg);

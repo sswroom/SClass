@@ -18,7 +18,7 @@ namespace UI
 			UInt32 codePage;
 			Math::Size2D<UOSInt> size;
 			Double lineHeight;
-			Media::DrawImage *dimg;
+			Optional<Media::DrawImage> dimg;
 			Double rollSpeed;
 			OSInt lastRollPos;
 			Data::DateTime startTime;

@@ -13,11 +13,11 @@ namespace UI
 	{
 	private:
 		NN<Media::DrawEngine> deng;
-		Media::DrawImage *currDrawImg;
+		Optional<Media::DrawImage> currDrawImg;
 		NN<Media::ColorManagerSess> colorSess;
 		Bool drawUpdated;
 		Sync::Mutex dobjMut;
-		UI::DObj::DObjHandler *dobjHdlr;
+		Optional<UI::DObj::DObjHandler> dobjHdlr;
 		Sync::Thread displayThread;
 		Sync::Thread processThread;
 		Sync::Event mainEvt;
@@ -29,7 +29,7 @@ namespace UI
 		GUIDObjArea(NN<GUICore> ui, NN<UI::GUIClientControl> parent, NN<Media::DrawEngine> deng, NN<Media::ColorManagerSess> colorSess);
 		virtual ~GUIDObjArea();
 
-		void SetHandler(UI::DObj::DObjHandler *dobjHdlr);
+		void SetHandler(Optional<UI::DObj::DObjHandler> dobjHdlr);
 
 		virtual Text::CStringNN GetObjectClass() const;
 		virtual OSInt OnNotify(UInt32 code, void *lParam);

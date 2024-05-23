@@ -383,11 +383,11 @@ void SSWR::AVIRead::AVIRImageControl::EndFolder()
 		status = imgList->GetItem(i);
 		status->filePath->Release();
 		status->cacheFile->Release();
-		if (img.Set(status->previewImg))
+		if (status->previewImg.SetTo(img))
 		{
 			this->deng->DeleteImage(img);
 		}
-		if (img.Set(status->previewImg2))
+		if (status->previewImg2.SetTo(img))
 		{
 			this->deng->DeleteImage(img);
 		}
@@ -575,7 +575,7 @@ void SSWR::AVIRead::AVIRImageControl::RGBParamChanged(NN<const Media::IColorHand
 	while (i-- > 0)
 	{
 		status = imgList->GetItem(i);
-		if (img.Set(status->previewImg2))
+		if (status->previewImg2.SetTo(img))
 		{
 			this->deng->DeleteImage(img);
 			status->previewImg2 = 0;
@@ -609,7 +609,7 @@ void SSWR::AVIRead::AVIRImageControl::SetDPI(Double hdpi, Double ddpi)
 	while (i-- > 0)
 	{
 		status = imgList->GetItem(i);
-		if (img.Set(status->previewImg2))
+		if (status->previewImg2.SetTo(img))
 		{
 			this->deng->DeleteImage(img);
 			status->previewImg2 = 0;
@@ -665,28 +665,29 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(NN<Media::DrawImage> dimg)
 		f = dimg->NewFontPt(CSTR("Arial"), 9, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		b = dimg->NewBrushARGB(0xff000000);
 		Math::Size2DDbl strSz;
+		NN<Media::DrawImage> previewImg;
 		while (i <= j)
 		{
 			status = imgList->GetItem(i);
 			status->setting.flags |= 8;
-			if (status->previewImg == 0)
+			if (!status->previewImg.SetTo(previewImg))
 			{
 				status->previewImg = this->deng->LoadImage(status->cacheFile->ToCString());
-				if (status->previewImg)
+				if (status->previewImg.SetTo(previewImg))
 				{
-					status->previewImg2 = this->deng->CreateImage32(Math::Size2D<UOSInt>((UInt32)Double2Int32(UOSInt2Double(status->previewImg->GetWidth()) * hdpi / ddpi), (UInt32)Double2Int32(UOSInt2Double(status->previewImg->GetHeight()) * hdpi / ddpi)), Media::AT_NO_ALPHA);
+					status->previewImg2 = this->deng->CreateImage32(Math::Size2D<UOSInt>((UInt32)Double2Int32(UOSInt2Double(previewImg->GetWidth()) * hdpi / ddpi), (UInt32)Double2Int32(UOSInt2Double(previewImg->GetHeight()) * hdpi / ddpi)), Media::AT_NO_ALPHA);
 					this->UpdateImgPreview(status);
 				}
 			}
-			else if (status->previewImg2 == 0)
+			else if (status->previewImg2.IsNull())
 			{
-				status->previewImg2 = this->deng->CreateImage32(Math::Size2D<UOSInt>((UInt32)Double2Int32(UOSInt2Double(status->previewImg->GetWidth()) * hdpi / ddpi), (UInt32)Double2Int32(UOSInt2Double(status->previewImg->GetHeight()) * hdpi / ddpi)), Media::AT_NO_ALPHA);
+				status->previewImg2 = this->deng->CreateImage32(Math::Size2D<UOSInt>((UInt32)Double2Int32(UOSInt2Double(previewImg->GetWidth()) * hdpi / ddpi), (UInt32)Double2Int32(UOSInt2Double(previewImg->GetHeight()) * hdpi / ddpi)), Media::AT_NO_ALPHA);
 				this->UpdateImgPreview(status);
 			}
 			dimg->DrawRect(Math::Coord2DDbl(0, OSInt2Double((OSInt)(i * itemTH - scrPos))), Math::Size2DDbl(UOSInt2Double(scnW), itemBH), 0, barr[status->setting.flags & 3]);
 			dimg->DrawRect(Math::Coord2DDbl(0, OSInt2Double((OSInt)(i * itemTH - scrPos + itemBH))), Math::Size2DDbl(UOSInt2Double(scnW), itemTH - itemBH), 0, barr[4]);
 			NN<Media::DrawImage> previewImg2;
-			if (previewImg2.Set(status->previewImg2))
+			if (status->previewImg2.SetTo(previewImg2))
 			{
 				previewImg2->SetHDPI(dimg->GetHDPI());
 				previewImg2->SetVDPI(dimg->GetVDPI());
@@ -717,12 +718,12 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(NN<Media::DrawImage> dimg)
 		status = imgList->GetItem(i);
 		if ((status->setting.flags & 8) == 0)
 		{
-			if (img.Set(status->previewImg))
+			if (status->previewImg.SetTo(img))
 			{
 				this->deng->DeleteImage(img);
 				status->previewImg = 0;
 			}
-			if (img.Set(status->previewImg2))
+			if (status->previewImg2.SetTo(img))
 			{
 				this->deng->DeleteImage(img);
 				status->previewImg2 = 0;
@@ -1036,8 +1037,10 @@ void SSWR::AVIRead::AVIRImageControl::ApplySetting(NN<Media::StaticImage> srcImg
 
 void SSWR::AVIRead::AVIRImageControl::UpdateImgPreview(SSWR::AVIRead::AVIRImageControl::ImageStatus *img)
 {
-	Media::DrawImage *srcImg = img->previewImg;
-	Media::DrawImage *destImg = img->previewImg2;
+	NN<Media::DrawImage> srcImg;
+	NN<Media::DrawImage> destImg;
+	if (!img->previewImg.SetTo(srcImg) || !img->previewImg2.SetTo(destImg))
+		return;
 	UOSInt sWidth = srcImg->GetWidth();
 	UOSInt sHeight = srcImg->GetHeight();
 	UOSInt sbpl = srcImg->GetImgBpl();
@@ -1096,7 +1099,7 @@ void SSWR::AVIRead::AVIRImageControl::UpdateImgSetting(SSWR::AVIRead::AVIRImageC
 				status->setting.gamma = setting->gamma;
 				status->setting.flags = (status->setting.flags & ~240) | setting->flags;
 				chg = true;
-				if (status->previewImg && status->previewImg2)
+				if (status->previewImg.NotNull() && status->previewImg2.NotNull())
 				{
 					UpdateImgPreview(status);
 				}

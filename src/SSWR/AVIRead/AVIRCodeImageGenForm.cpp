@@ -7,15 +7,16 @@
 void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeTypeChanged(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRCodeImageGenForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCodeImageGenForm>();
-	SDEL_CLASS(me->codeImgGen);
+	me->codeImgGen.Delete();
 	me->codeImgGen = Media::CodeImageGen::CodeImageGen::CreateGenerator((Media::CodeImageGen::CodeImageGen::CodeType)me->cboCodeType->GetSelectedItem().GetOSInt());
-	if (me->codeImgGen)
+	NN<Media::CodeImageGen::CodeImageGen> codeImgGen;
+	if (me->codeImgGen.SetTo(codeImgGen))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Length: "));
-		sb.AppendUOSInt(me->codeImgGen->GetMinLength());
+		sb.AppendUOSInt(codeImgGen->GetMinLength());
 		sb.AppendC(UTF8STRC(" - "));
-		sb.AppendUOSInt(me->codeImgGen->GetMaxLength());
+		sb.AppendUOSInt(codeImgGen->GetMaxLength());
 		me->lblCodeInfo->SetText(sb.ToCString());
 	}
 }
@@ -23,7 +24,8 @@ void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeTypeChanged(AnyType us
 void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeGenClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRCodeImageGenForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCodeImageGenForm>();
-	if (me->codeImgGen)
+	NN<Media::CodeImageGen::CodeImageGen> codeImgGen;
+	if (me->codeImgGen.SetTo(codeImgGen))
 	{
 		Text::StringBuilderUTF8 sb;
 		UInt32 codeWidth;
@@ -33,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeGenClicked(AnyType use
 			sb.ClearStr();
 			me->txtCode->GetText(sb);
 			NN<Media::DrawImage> dimg;
-			if (dimg.Set(me->codeImgGen->GenCode(sb.ToCString(), codeWidth, me->core->GetDrawEngine())))
+			if (codeImgGen->GenCode(sb.ToCString(), codeWidth, me->core->GetDrawEngine()).SetTo(dimg))
 			{
 				Media::StaticImage *simg = dimg->ToStaticImage();
 				me->pbMain->SetImage(simg, false);
@@ -103,7 +105,7 @@ SSWR::AVIRead::AVIRCodeImageGenForm::AVIRCodeImageGenForm(Optional<UI::GUIClient
 
 SSWR::AVIRead::AVIRCodeImageGenForm::~AVIRCodeImageGenForm()
 {
-	SDEL_CLASS(this->codeImgGen);
+	this->codeImgGen.Delete();
 	this->ClearChildren();
 	SDEL_CLASS(this->simg);
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);

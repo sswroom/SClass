@@ -20,7 +20,7 @@ namespace UI
 		typedef void (__stdcall *MouseMoveHandler)(AnyType userObj, Math::Coord2D<OSInt> scnPos);
 		typedef void (__stdcall *DrawHandler)(AnyType userObj, NN<Media::DrawImage> dimg, OSInt xOfst, OSInt yOfst);
 	private:
-		Media::DrawImage *bgImg;
+		Optional<Media::DrawImage> bgImg;
 		NN<Media::ColorManagerSess> colorSess;
 		NN<Map::MapView> view;
 		Map::MapEnv *mapEnv;

@@ -32,12 +32,12 @@ UI::DObj::DynamicOverlayDObj::DynamicOverlayDObj(NN<Media::DrawEngine> deng, Tex
 UI::DObj::DynamicOverlayDObj::~DynamicOverlayDObj()
 {
 	NN<Media::DrawImage> img;
-	if (img.Set(this->bmp1))
+	if (this->bmp1.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
 		this->bmp1 = 0;
 	}
-	if (img.Set(this->bmp2))
+	if (this->bmp2.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
 		this->bmp2 = 0;
@@ -66,7 +66,7 @@ void UI::DObj::DynamicOverlayDObj::DrawObject(Media::DrawImage *dimg)
 	Math::Coord2DDbl tl = this->GetCurrPos().ToDouble();
 	NN<Media::DrawImage> bmp1;
 	NN<Media::DrawImage> bmp2;
-	if (bmp1.Set(this->bmp1) && bmp2.Set(this->bmp2))
+	if (this->bmp1.SetTo(bmp1) && this->bmp2.SetTo(bmp2))
 	{
 		if (bmp1->GetWidth() == bmp2->GetWidth() && bmp1->GetHeight() == bmp2->GetHeight())
 		{
@@ -83,7 +83,7 @@ void UI::DObj::DynamicOverlayDObj::DrawObject(Media::DrawImage *dimg)
 				this->a = 0;
 			}
 			NN<Media::DrawImage> bmpTmp;
-			if (bmpTmp.Set(this->deng->CreateImage32(bmp1->GetSize(), Media::AT_NO_ALPHA)))
+			if (this->deng->CreateImage32(bmp1->GetSize(), Media::AT_NO_ALPHA).SetTo(bmpTmp))
 			{
 				bmpTmp->SetAlphaType(bmp1->GetAlphaType());
 				Bool revOrder;
@@ -113,11 +113,11 @@ void UI::DObj::DynamicOverlayDObj::DrawObject(Media::DrawImage *dimg)
 			dimg->DrawImagePt(bmp1, tl);
 		}
 	}
-	else if (bmp1.Set(this->bmp1))
+	else if (this->bmp1.SetTo(bmp1))
 	{
 		dimg->DrawImagePt(bmp1, tl);
 	}
-	else if (bmp2.Set(this->bmp2))
+	else if (this->bmp2.SetTo(bmp2))
 	{
 		dimg->DrawImagePt(bmp2, tl);
 	}

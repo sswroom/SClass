@@ -1713,7 +1713,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> den
 		{
 			return;
 		}
-		Media::DrawImage *dimg;
+		Optional<Media::DrawImage> dimg;
 		NN<Media::DrawImage> gimg;
 		NN<Media::StaticImage> simg;
 		if (this->drawType == Map::DrawMapRenderer::DT_PIXELDRAW)
@@ -1746,7 +1746,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> den
 		{
 			dimg = this->eng->ConvImage(nnimg);
 		}
-		if (gimg.Set(dimg))
+		if (dimg.SetTo(gimg))
 		{
 			this->mapSch.SetDrawType(layer, 0, 0, dimg, spotX, spotY, &denv->isLayerEmpty);
 			this->mapSch.SetDrawObjs(denv->objBounds, &denv->objCnt, maxLabel);
@@ -1775,7 +1775,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> den
 			return;
 		}
 
-		Media::DrawImage *dimg;
+		Optional<Media::DrawImage> dimg;
 		NN<Media::DrawImage> gimg;
 		NN<Media::StaticImage> simg;
 		if (this->drawType == Map::DrawMapRenderer::DT_PIXELDRAW)
@@ -1808,7 +1808,7 @@ void Map::DrawMapRenderer::DrawShapesPoint(NN<Map::DrawMapRenderer::DrawEnv> den
 		{
 			dimg = this->eng->ConvImage(nnimg);
 		}
-		if (gimg.Set(dimg))
+		if (dimg.SetTo(gimg))
 		{
 			this->mapSch.SetDrawType(layer, 0, 0, dimg, spotX, spotY, &denv->isLayerEmpty);
 			this->mapSch.SetDrawObjs(denv->objBounds, &denv->objCnt, maxLabel);
@@ -2292,7 +2292,7 @@ void Map::DrawMapRenderer::DrawImageObject(NN<DrawEnv> denv, NN<Media::StaticIma
 							newImg->MultiplyAlpha(srcAlpha);
 						}
 						NN<Media::DrawImage> dimg;
-						if (dimg.Set(this->eng->ConvImage(newImg)))
+						if (this->eng->ConvImage(newImg).SetTo(dimg))
 						{
 							dimg->SetHDPI(denv->img->GetHDPI());
 							dimg->SetVDPI(denv->img->GetVDPI());

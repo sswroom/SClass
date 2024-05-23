@@ -123,7 +123,7 @@ void Map::MapScheduler::DrawVector(NN<Math::Geometry::Vector2D> vec)
 void Map::MapScheduler::DrawPoint(NN<Math::Geometry::Point> pt)
 {
 	NN<Media::DrawImage> img;
-	if (img.Set(this->ico))
+	if (this->ico.SetTo(img))
 	{
 		Math::RectAreaDbl *objPtr = &this->objBounds[*this->objCnt];
 		Math::Coord2DDbl pts;
@@ -381,7 +381,7 @@ void Map::MapScheduler::SetMapView(NN<Map::MapView> map, NN<Media::DrawImage> im
 	this->img = img.Ptr();
 }
 
-void Map::MapScheduler::SetDrawType(NN<Map::MapDrawLayer> lyr, Optional<Media::DrawPen> p, Optional<Media::DrawBrush> b, Media::DrawImage *ico, Double icoSpotX, Double icoSpotY, Bool *isLayerEmpty)
+void Map::MapScheduler::SetDrawType(NN<Map::MapDrawLayer> lyr, Optional<Media::DrawPen> p, Optional<Media::DrawBrush> b, Optional<Media::DrawImage> ico, Double icoSpotX, Double icoSpotY, Bool *isLayerEmpty)
 {
 	while (this->dt == ThreadState::Clearing)
 	{

@@ -35,7 +35,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 	{
 		NN<Media::DrawBrush> b;
 		NN<Media::DrawFont> f;
-		if (gimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
+		if (this->eng->CreateImage32(sz, Media::AT_NO_ALPHA).SetTo(gimg))
 		{
 			b = gimg->NewBrushARGB(0xff000000);
 			gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
@@ -65,7 +65,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 		UOSInt lastY;
 		UOSInt thisY;
 		UOSInt align = this->format.align;
-		if (gimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
+		if (this->eng->CreateImage32(sz, Media::AT_NO_ALPHA).SetTo(gimg))
 		{
 			Data::ByteBuffer buff(this->format.align * sz.x);
 			i = this->audSrc->ReadSample(currSample, sz.x, buff);
@@ -136,7 +136,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 	{
 		NN<Media::DrawBrush> b;
 		NN<Media::DrawFont> f;
-		if (gimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
+		if (this->eng->CreateImage32(sz, Media::AT_NO_ALPHA).SetTo(gimg))
 		{
 			b = gimg->NewBrushARGB(0xff000000);
 			gimg->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
@@ -165,7 +165,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 		Double thisX;
 		Double thisY;
 //		OSInt align = this->format->align;
-		if (gimg.Set(this->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
+		if (this->eng->CreateImage32(sz, Media::AT_NO_ALPHA).SetTo(gimg))
 		{
 
 			Data::ByteBuffer buff(this->format.align * (FFTSAMPLE + FFTAVG - 1));

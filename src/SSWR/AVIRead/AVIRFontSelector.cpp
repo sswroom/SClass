@@ -30,17 +30,17 @@ void SSWR::AVIRead::AVIRFontSelector::OnDraw(NN<Media::DrawImage> img)
 	NN<Media::DrawImage> tmpBmp;
 	if (UOSInt2Double(w) >= (138 * hdpi / ddpi))
 	{
-		if (!tmpBmp.Set(deng->CreateImage32(Math::Size2D<UOSInt>((UInt32)Double2Int32(128 * hdpi / ddpi), itemH), Media::AT_NO_ALPHA)))
+		if (!deng->CreateImage32(Math::Size2D<UOSInt>((UInt32)Double2Int32(128 * hdpi / ddpi), itemH), Media::AT_NO_ALPHA).SetTo(tmpBmp))
 			return;
 	}
 	else if (w >= 10)
 	{
-		if (!tmpBmp.Set(deng->CreateImage32(Math::Size2D<UOSInt>(w - 10, itemH), Media::AT_NO_ALPHA)))
+		if (!deng->CreateImage32(Math::Size2D<UOSInt>(w - 10, itemH), Media::AT_NO_ALPHA).SetTo(tmpBmp))
 			return;
 	}
 	else
 	{
-		if (!tmpBmp.Set(deng->CreateImage32(Math::Size2D<UOSInt>(w, itemH), Media::AT_NO_ALPHA)))
+		if (!deng->CreateImage32(Math::Size2D<UOSInt>(w, itemH), Media::AT_NO_ALPHA).SetTo(tmpBmp))
 			return;
 	}
 	tmpBmp->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);

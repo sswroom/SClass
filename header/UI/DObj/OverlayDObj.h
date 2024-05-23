@@ -13,7 +13,7 @@ namespace UI
 		{
 		private:
 			NN<Media::DrawEngine> deng;
-			Media::DrawImage *bmp;
+			Optional<Media::DrawImage> bmp;
 			Media::ImageList *imgList;
 			Bool noRelease;
 			OSInt frameDelay;
@@ -22,7 +22,7 @@ namespace UI
 			OSInt lastFrameNum;
 
 		public:
-			OverlayDObj(NN<Media::DrawEngine> deng, Media::DrawImage *bmp, Math::Coord2D<OSInt> tl);
+			OverlayDObj(NN<Media::DrawEngine> deng, Optional<Media::DrawImage> bmp, Math::Coord2D<OSInt> tl);
 			OverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<OSInt> tl, Parser::ParserList *parsers);
 			virtual ~OverlayDObj();
 

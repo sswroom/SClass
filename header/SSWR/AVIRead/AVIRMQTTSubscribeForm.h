@@ -45,7 +45,7 @@ namespace SSWR
 			Data::StringMapNN<TopicStatus> topicMap;
 			Bool topicListChanged;
 			Optional<TopicStatus> currTopic;
-			Media::DrawImage *dispImg;
+			Optional<Media::DrawImage> dispImg;
 
 			NN<UI::GUITabControl> tcMain;
 

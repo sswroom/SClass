@@ -20,7 +20,7 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Media::ColorManagerSess> colorSess;
-			Media::CodeImageGen::CodeImageGen *codeImgGen;
+			Optional<Media::CodeImageGen::CodeImageGen> codeImgGen;
 			Media::StaticImage *simg;
 
 			NN<UI::GUIPictureBoxDD> pbMain;

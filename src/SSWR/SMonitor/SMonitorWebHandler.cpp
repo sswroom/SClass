@@ -1019,7 +1019,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 
 	NN<Media::DrawEngine> deng = me->core->GetDrawEngine();
 	NN<Media::DrawImage> dimg;
-	if (dimg.Set(deng->CreateImage32(Math::Size2D<UOSInt>(640, 120), Media::AT_NO_ALPHA)))
+	if (deng->CreateImage32(Math::Size2D<UOSInt>(640, 120), Media::AT_NO_ALPHA).SetTo(dimg))
 	{
 		NN<Media::DrawFont> f;
 		NN<Media::DrawBrush> b;
@@ -1647,7 +1647,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 
 	NN<Media::DrawEngine> deng = me->core->GetDrawEngine();
 	NN<Media::DrawImage> dimg;
-	if (dimg.Set(deng->CreateImage32(Math::Size2D<UOSInt>(640, 120), Media::AT_NO_ALPHA)))
+	if (deng->CreateImage32(Math::Size2D<UOSInt>(640, 120), Media::AT_NO_ALPHA).SetTo(dimg))
 	{
 		NN<Media::DrawFont> f;
 		NN<Media::DrawBrush> b;

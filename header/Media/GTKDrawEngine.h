@@ -16,12 +16,12 @@ namespace Media
 		GTKDrawEngine();
 		virtual ~GTKDrawEngine();
 
-		virtual DrawImage *CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype);
+		virtual Optional<DrawImage> CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype);
 		NN<DrawImage> CreateImageScn(void *cr, Math::Coord2D<OSInt> tl, Math::Coord2D<OSInt> br);
-		virtual DrawImage *LoadImage(Text::CStringNN fileName);
-		virtual DrawImage *LoadImageStream(NN<IO::SeekableStream> stm);
-		virtual DrawImage *ConvImage(NN<Media::RasterImage> img);
-		virtual DrawImage *CloneImage(NN<DrawImage> img);
+		virtual Optional<DrawImage> LoadImage(Text::CStringNN fileName);
+		virtual Optional<DrawImage> LoadImageStream(NN<IO::SeekableStream> stm);
+		virtual Optional<DrawImage> ConvImage(NN<Media::RasterImage> img);
+		virtual Optional<DrawImage> CloneImage(NN<DrawImage> img);
 		virtual Bool DeleteImage(NN<DrawImage> img);
 	};
 

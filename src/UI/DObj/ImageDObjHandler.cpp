@@ -6,11 +6,11 @@
 void UI::DObj::ImageDObjHandler::DrawBkg(NN<Media::DrawImage> dimg)
 {
 	NN<Media::DrawImage> bmpBkg;
-	if (bmpBkg.Set(this->bmpBkg))
+	if (this->bmpBkg.SetTo(bmpBkg))
 	{
 		NN<Media::DrawImage> bmpBuff;
 		Math::Size2D<UOSInt> scnSize = dimg->GetSize();
-		if (bmpBuff.Set(this->bmpBuff))
+		if (this->bmpBuff.SetTo(bmpBuff))
 		{
 			if (bmpBuff->GetWidth() != scnSize.x && bmpBuff->GetHeight() != scnSize.y)
 			{
@@ -18,10 +18,10 @@ void UI::DObj::ImageDObjHandler::DrawBkg(NN<Media::DrawImage> dimg)
 				this->bmpBuff = 0;
 			}
 		}
-		if (this->bmpBuff == 0)
+		if (this->bmpBuff.IsNull())
 		{
 			NN<Media::StaticImage> simg;
-			if (simg.Set(this->bmpBkg->ToStaticImage()))
+			if (simg.Set(bmpBkg->ToStaticImage()))
 			{
 				Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
 				Media::ColorProfile dispProfile(Media::ColorProfile::CPT_PDISPLAY);
@@ -45,7 +45,7 @@ void UI::DObj::ImageDObjHandler::DrawBkg(NN<Media::DrawImage> dimg)
 				this->bmpBuff = 0;
 			}
 		}
-		if (bmpBuff.Set(this->bmpBuff))
+		if (this->bmpBuff.SetTo(bmpBuff))
 		{
 			dimg->DrawImagePt(bmpBuff, Math::Coord2DDbl(0, 0));
 		}
@@ -68,12 +68,12 @@ UI::DObj::ImageDObjHandler::ImageDObjHandler(NN<Media::DrawEngine> deng, Text::C
 UI::DObj::ImageDObjHandler::~ImageDObjHandler()
 {
 	NN<Media::DrawImage> img;
-	if (img.Set(this->bmpBkg))
+	if (this->bmpBkg.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
 		this->bmpBkg = 0;
 	}
-	if (img.Set(this->bmpBuff))
+	if (this->bmpBuff.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
 		this->bmpBuff = 0;

@@ -34,7 +34,7 @@ namespace Map
 		Media::DrawImage *img;
 		Optional<Media::DrawPen> p;
 		Optional<Media::DrawBrush> b;
-		Media::DrawImage *ico;
+		Optional<Media::DrawImage> ico;
 		Double icoSpotX;
 		Double icoSpotY;
 		ThreadState dt;
@@ -70,7 +70,7 @@ namespace Map
 		virtual ~MapScheduler();
 
 		void SetMapView(NN<Map::MapView> map, NN<Media::DrawImage> img);
-		void SetDrawType(NN<Map::MapDrawLayer> lyr, Optional<Media::DrawPen> p, Optional<Media::DrawBrush> b, Media::DrawImage *ico, Double icoSpotX, Double icoSpotY, Bool *isLayerEmpty);
+		void SetDrawType(NN<Map::MapDrawLayer> lyr, Optional<Media::DrawPen> p, Optional<Media::DrawBrush> b, Optional<Media::DrawImage> ico, Double icoSpotX, Double icoSpotY, Bool *isLayerEmpty);
 		void SetDrawObjs(Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxCnt);
 		void Draw(NN<Math::Geometry::Vector2D> vec);
 		void DrawNextType(Optional<Media::DrawPen> p, Optional<Media::DrawBrush> b);

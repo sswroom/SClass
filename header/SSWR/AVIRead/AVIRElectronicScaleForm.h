@@ -22,7 +22,7 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			NN<Media::DrawEngine> eng;
-			Media::DrawImage *dimg;
+			Optional<Media::DrawImage> dimg;
 
 			NN<UI::GUIPanel> pnlCtrl;
 			NN<UI::GUIGroupBox> grpStream;

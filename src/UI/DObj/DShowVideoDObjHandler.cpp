@@ -11,7 +11,9 @@
 void __stdcall UI::DObj::DShowVideoDObjHandler::OnVideoFrame(AnyType userObj, UInt8 *frameBuff, Int32 frameTime, UInt32 frameW, UInt32 frameH)
 {
 	NN<UI::DObj::DShowVideoDObjHandler> me = userObj.GetNN<UI::DObj::DShowVideoDObjHandler>();
-	Media::DrawImage *dimg = me->frameImg;
+	NN<Media::DrawImage> dimg;
+	if (!me->frameImg.SetTo(dimg))
+		return;
 	Int32 dbpl = (Int32)me->videoSize.x << 2;
 	UOSInt outW;
 	UOSInt outH;
@@ -57,7 +59,7 @@ void __stdcall UI::DObj::DShowVideoDObjHandler::OnTimerTick(AnyType userObj)
 void UI::DObj::DShowVideoDObjHandler::DrawBkg(NN<Media::DrawImage> dimg)
 {
 	NN<Media::DrawImage> img;
-	if (img.Set(this->bmpBkg))
+	if (this->bmpBkg.SetTo(img))
 	{
 		dimg->DrawImagePt(img, Math::Coord2DDbl(0, 0));
 	}
@@ -67,7 +69,7 @@ void UI::DObj::DShowVideoDObjHandler::DrawBkg(NN<Media::DrawImage> dimg)
 void UI::DObj::DShowVideoDObjHandler::DrawVideo(NN<Media::DrawImage> dimg)
 {
 	NN<Media::DrawImage> img;
-	if (img.Set(this->frameImg))
+	if (this->frameImg.SetTo(img))
 	{
 		Sync::MutexUsage mutUsage(this->frameMut);
 		dimg->DrawImagePt(img, this->videoTL.ToDouble());
@@ -102,7 +104,7 @@ UI::DObj::DShowVideoDObjHandler::~DShowVideoDObjHandler()
 //	DEL_CLASS(this->dshowMgr);
 	DEL_CLASS(this->resizer);
 	NN<Media::DrawImage> img;
-	if (img.Set(this->frameImg))
+	if (this->frameImg.SetTo(img))
 		this->deng->DeleteImage(img);
 	this->videoFileName->Release();
 }

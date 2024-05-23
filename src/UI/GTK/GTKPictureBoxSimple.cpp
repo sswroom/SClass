@@ -20,6 +20,7 @@ void UI::GTK::GTKPictureBoxSimple::UpdatePreview()
 		this->tmpImage = 0;
 	}
 	NN<Media::StaticImage> simg;
+	NN<Media::DrawImage> dimg;
 	if (this->currImage.SetTo(simg))
 	{
 		GdkPixbuf *buf;
@@ -41,9 +42,9 @@ void UI::GTK::GTKPictureBoxSimple::UpdatePreview()
 		this->pixbuf = buf;
 		gtk_image_set_from_pixbuf((GtkImage*)this->hwnd, buf);
 	}
-	else if (this->prevImageD)
+	else if (this->prevImageD.SetTo(dimg))
 	{
-		gtk_image_set_from_surface((GtkImage*)this->hwnd, (cairo_surface_t*)((Media::GTKDrawImage*)this->prevImageD)->GetSurface());
+		gtk_image_set_from_surface((GtkImage*)this->hwnd, (cairo_surface_t*)NN<Media::GTKDrawImage>::ConvertFrom(dimg)->GetSurface());
 	}
 	this->Redraw();
 }
@@ -64,7 +65,7 @@ UI::GTK::GTKPictureBoxSimple::GTKPictureBoxSimple(NN<UI::GUICore> ui, NN<UI::GUI
 UI::GTK::GTKPictureBoxSimple::~GTKPictureBoxSimple()
 {
 	NN<Media::DrawImage> img;
-	if (img.Set(this->prevImageD))
+	if (this->prevImageD.SetTo(img))
 	{
 		this->eng->DeleteImage(img);
 		this->prevImageD = 0;
@@ -92,24 +93,24 @@ void UI::GTK::GTKPictureBoxSimple::SetImage(Optional<Media::StaticImage> currIma
 	this->UpdatePreview();
 }
 
-void UI::GTK::GTKPictureBoxSimple::SetImageDImg(Media::DrawImage *img)
+void UI::GTK::GTKPictureBoxSimple::SetImageDImg(Optional<Media::DrawImage> img)
 {
 	this->currImage = 0;
 	NN<Media::DrawImage> imgnn;
-	if (imgnn.Set(this->prevImageD))
+	if (this->prevImageD.SetTo(imgnn))
 	{
 		this->eng->DeleteImage(imgnn);
 		this->prevImageD = 0;
 	}
-	if (imgnn.Set(img))
+	if (img.SetTo(imgnn))
 	{
 		this->prevImageD = this->eng->CloneImage(imgnn);
-		if (this->prevImageD == 0)
+		if (!this->prevImageD.SetTo(imgnn))
 		{
 		}
 		else
 		{
-			gtk_image_set_from_surface((GtkImage*)this->hwnd, (cairo_surface_t*)((Media::GTKDrawImage*)this->prevImageD)->GetSurface());
+			gtk_image_set_from_surface((GtkImage*)this->hwnd, (cairo_surface_t*)NN<Media::GTKDrawImage>::ConvertFrom(imgnn)->GetSurface());
 		}
 	}
 	this->Redraw();

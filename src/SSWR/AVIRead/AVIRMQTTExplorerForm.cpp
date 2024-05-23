@@ -451,22 +451,22 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(AnyType use
 
 void SSWR::AVIRead::AVIRMQTTExplorerForm::UpdateTopicChart()
 {
-	Media::DrawImage *dimg;
+	Optional<Media::DrawImage> dimg;
 	NN<Media::DrawEngine> deng = this->core->GetDrawEngine();
 	Math::Size2D<UOSInt> sz = this->pbRecvTopic->GetSizeP();
 	NN<Media::DrawImage> gimg;
 	if (sz.x > 0 && sz.y > 0)
 	{
-		if (this->dispImg == 0 || this->dispImg->GetWidth() != sz.x || this->dispImg->GetHeight() != sz.y)
+		if (!this->dispImg.SetTo(gimg) || gimg->GetWidth() != sz.x || gimg->GetHeight() != sz.y)
 		{
-			if (gimg.Set(this->dispImg))
+			if (this->dispImg.SetTo(gimg))
 			{
 				deng->DeleteImage(gimg);
 			}
 			dimg = deng->CreateImage32(sz, Media::AT_NO_ALPHA);
 			this->dispImg = dimg;
 		}
-		if (gimg.Set(this->dispImg))
+		if (this->dispImg.SetTo(gimg))
 		{
 			NN<TopicStatus> currTopic;
 			if (!this->currTopic.SetTo(currTopic) || currTopic->recvCnt <= 1)
@@ -655,7 +655,7 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::~AVIRMQTTExplorerForm()
 	SDEL_CLASS(this->cliKey);
 	this->logger.Delete();
 	NN<Media::DrawImage> img;
-	if (img.Set(this->dispImg))
+	if (this->dispImg.SetTo(img))
 	{
 		this->core->GetDrawEngine()->DeleteImage(img);
 		this->dispImg = 0;

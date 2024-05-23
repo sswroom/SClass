@@ -607,7 +607,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(AnyType user
 			if (sz.x <= 0 || sz.y <= 0)
 			{
 			}
-			else if (img.Set(me->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
+			else if (me->eng->CreateImage32(sz, Media::AT_NO_ALPHA).SetTo(img))
 			{
 				b = img->NewBrushARGB(0xffffffff);
 				img->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);
@@ -711,7 +711,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(AnyType user
 			if (sz.x <= 0 || sz.y <= 0)
 			{
 			}
-			else if (img.Set(me->eng->CreateImage32(sz, Media::AT_NO_ALPHA)))
+			else if (me->eng->CreateImage32(sz, Media::AT_NO_ALPHA).SetTo(img))
 			{
 				b = img->NewBrushARGB(0xffffffff);
 				img->DrawRect(Math::Coord2DDbl(0, 0), sz.ToDouble(), 0, b);

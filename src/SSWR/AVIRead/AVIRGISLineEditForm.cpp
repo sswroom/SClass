@@ -24,17 +24,20 @@ void SSWR::AVIRead::AVIRGISLineEditForm::LineStyleUpdated()
 
 void SSWR::AVIRead::AVIRGISLineEditForm::UpdatePreview()
 {
+	NN<Media::DrawImage> prevImage;
+	if (!this->prevImage.SetTo(prevImage))
+		return;
 	Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_PDISPLAY);
-	UOSInt w = this->prevImage->GetWidth();
-	UOSInt h = this->prevImage->GetHeight();
-	Double dpi = this->prevImage->GetHDPI();
+	UOSInt w = prevImage->GetWidth();
+	UOSInt h = prevImage->GetHeight();
+	Double dpi = prevImage->GetHDPI();
 
 	NN<Media::DrawPen> p;
 	NN<Media::DrawBrush> b;
-	b = this->prevImage->NewBrushARGB(Media::ColorConv::ConvARGB(srcProfile, destProfile, this->colorSess.Ptr(), 0xffc0c0c0));
-	this->prevImage->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(w), UOSInt2Double(h)), 0, b);
-	this->prevImage->DelBrush(b);
+	b = prevImage->NewBrushARGB(Media::ColorConv::ConvARGB(srcProfile, destProfile, this->colorSess.Ptr(), 0xffc0c0c0));
+	prevImage->DrawRect(Math::Coord2DDbl(0, 0), Math::Size2DDbl(UOSInt2Double(w), UOSInt2Double(h)), 0, b);
+	prevImage->DelBrush(b);
 
 	UOSInt i;
 	UOSInt j;
@@ -50,9 +53,9 @@ void SSWR::AVIRead::AVIRGISLineEditForm::UpdatePreview()
 		{
 			t = 1;
 		}
-		p = this->prevImage->NewPenARGB(Media::ColorConv::ConvARGB(srcProfile, destProfile, this->colorSess.Ptr(), lyr->color), t, lyr->pattern, lyr->nPattern);
-		this->prevImage->DrawLine(0, UOSInt2Double(h >> 1), UOSInt2Double(w), UOSInt2Double(h >> 1), p);
-		this->prevImage->DelPen(p);
+		p = prevImage->NewPenARGB(Media::ColorConv::ConvARGB(srcProfile, destProfile, this->colorSess.Ptr(), lyr->color), t, lyr->pattern, lyr->nPattern);
+		prevImage->DrawLine(0, UOSInt2Double(h >> 1), UOSInt2Double(w), UOSInt2Double(h >> 1), p);
+		prevImage->DelPen(p);
 		i++;
 	}
 
@@ -61,7 +64,7 @@ void SSWR::AVIRead::AVIRGISLineEditForm::UpdatePreview()
 		this->pbPreview->SetImage(0);
 		DEL_CLASS(this->prevsImage);
 	}
-	this->prevsImage = this->prevImage->ToStaticImage();
+	this->prevsImage = prevImage->ToStaticImage();
 	this->pbPreview->SetImage(this->prevsImage);
 }
 
@@ -316,7 +319,11 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(Optional<UI::GUIClientCo
 	this->pbPreview->SetDockType(UI::GUIControl::DOCK_TOP);
 	sz = this->pbPreview->GetSizeP();
 	this->prevImage = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
-	this->prevImage->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
+	NN<Media::DrawImage> img;
+	if (this->prevImage.SetTo(img))
+	{
+		img->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
+	}
 	this->lblName = ui->NewLabel(this->pnlStyle, CSTR("Name:"));
 	this->lblName->SetRect(0, 32, 100, 23, false);
 	this->txtName = ui->NewTextBox(this->pnlStyle, CSTR(""));
@@ -416,7 +423,7 @@ SSWR::AVIRead::AVIRGISLineEditForm::~AVIRGISLineEditForm()
 {
 	this->lineLayers.FreeAll(FreeLayer);
 	NN<Media::DrawImage> img;
-	if (img.Set(this->prevImage))
+	if (this->prevImage.SetTo(img))
 	{
 		this->eng->DeleteImage(img);
 	}
@@ -437,13 +444,15 @@ void SSWR::AVIRead::AVIRGISLineEditForm::OnMonitorChanged()
 
 	Math::Size2D<UOSInt> sz = this->pbPreview->GetSizeP();
 	NN<Media::DrawImage> img;
-	if (img.Set(this->prevImage))
+	if (this->prevImage.SetTo(img))
 	{
 		this->eng->DeleteImage(img);
 	}
 	this->prevImage = this->eng->CreateImage32(sz, Media::AT_NO_ALPHA);
-
-	this->prevImage->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
+	if (this->prevImage.SetTo(img))
+	{
+		img->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
+	}
 	NN<LineLayer> currLayer;
 	if (this->currLayer.SetTo(currLayer))
 	{

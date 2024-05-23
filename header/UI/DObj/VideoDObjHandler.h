@@ -21,7 +21,7 @@ namespace UI
 			NN<UI::GUITimer> tmr;
 			NN<Text::String> videoFileName;
 			Sync::Mutex frameMut;
-			Media::DrawImage *frameImg;
+			Optional<Media::DrawImage> frameImg;
 			Parser::ParserList *parsers;
 			Media::MediaFile *mf;
 			Media::MediaPlayer *player;

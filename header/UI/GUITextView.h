@@ -14,7 +14,7 @@ namespace UI
 		NN<Media::DrawEngine> deng;
 		ClassData *clsData;
 		void *drawFont;
-		Media::DrawImage *drawBuff;
+		Optional<Media::DrawImage> drawBuff;
 
 	protected:	
 		UInt32 pageLineCnt;

@@ -9,8 +9,8 @@ namespace UI
 		class ImageDObjHandler : public DObjHandler
 		{
 		protected:
-			Media::DrawImage *bmpBkg;
-			Media::DrawImage *bmpBuff;
+			Optional<Media::DrawImage> bmpBkg;
+			Optional<Media::DrawImage> bmpBuff;
 			UInt32 bgColor;
 
 		protected:

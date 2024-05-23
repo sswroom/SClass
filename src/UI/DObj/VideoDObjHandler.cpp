@@ -38,7 +38,7 @@ void UI::DObj::VideoDObjHandler::DrawBkg(NN<Media::DrawImage> dimg)
 void UI::DObj::VideoDObjHandler::DrawVideo(NN<Media::DrawImage> dimg)
 {
 	NN<Media::DrawImage> frameImg;
-	if (frameImg.Set(this->frameImg))
+	if (this->frameImg.SetTo(frameImg))
 	{
 		Sync::MutexUsage mutUsage(this->frameMut);
 		dimg->DrawImagePt(frameImg, this->videoTL.ToDouble());
@@ -55,15 +55,16 @@ void UI::DObj::VideoDObjHandler::DrawFromSurface(NN<Media::MonitorSurface> surfa
 #if defined(VERBOSE)
 	printf("VideoDObjHandler DrawFromSurface\r\n");
 #endif
-	if (this->frameImg)
+	NN<Media::DrawImage> img;
+	if (this->frameImg.SetTo(img))
 	{
 		Sync::MutexUsage mutUsage(this->frameMut);
 		Bool revOrder;
-		UInt8 *bits = this->frameImg->GetImgBits(revOrder);
+		UInt8 *bits = img->GetImgBits(revOrder);
 		if (bits)
 		{
-			surface->GetRasterData(bits, 0, 0, buffSize.x, buffSize.y, this->frameImg->GetImgBpl(), revOrder, Media::RotateType::None);
-			this->frameImg->GetImgBitsEnd(true);
+			surface->GetRasterData(bits, 0, 0, buffSize.x, buffSize.y, img->GetImgBpl(), revOrder, Media::RotateType::None);
+			img->GetImgBitsEnd(true);
 			this->shown = false;
 		}
 	}
@@ -109,7 +110,7 @@ UI::DObj::VideoDObjHandler::~VideoDObjHandler()
 	}
 	this->ownerFrm->RemoveTimer(this->tmr);
 	NN<Media::DrawImage> img;
-	if (img.Set(this->frameImg))
+	if (this->frameImg.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
 	}
@@ -121,7 +122,7 @@ void UI::DObj::VideoDObjHandler::UpdateVideoArea(Math::Coord2D<OSInt> videoTL, M
 {
 	Sync::MutexUsage mutUsage(this->frameMut);
 	NN<Media::DrawImage> img;
-	if (img.Set(this->frameImg))
+	if (this->frameImg.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
 	}

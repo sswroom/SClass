@@ -13,8 +13,8 @@ namespace UI
 		{
 		private:
 			NN<Media::DrawEngine> deng;
-			Media::DrawImage *bmpUnclick;
-			Media::DrawImage *bmpClicked;
+			Optional<Media::DrawImage> bmpUnclick;
+			Optional<Media::DrawImage> bmpClicked;
 			Double alpha;
 			Double a;
 			Data::RandomOS *rnd;

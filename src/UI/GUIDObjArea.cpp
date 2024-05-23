@@ -11,17 +11,18 @@ void __stdcall UI::GUIDObjArea::DisplayThread(NN<Sync::Thread> thread)
 	{
 		if (me->drawUpdated)
 		{
+			NN<Media::DrawImage> currDrawImg;
 			Sync::MutexUsage dobjMutUsage(me->dobjMut);
-			if (me->currDrawImg)
+			if (me->currDrawImg.SetTo(currDrawImg))
 			{
 				if (me->colorSess->Get10BitColor() && me->currScnMode == UI::GUIDDrawControl::SM_VFS)
 				{
 					UOSInt dbpl;
-					UInt8 *destBuff = me->LockSurfaceBegin(me->currDrawImg->GetWidth(), me->currDrawImg->GetHeight(), &dbpl);
+					UInt8 *destBuff = me->LockSurfaceBegin(currDrawImg->GetWidth(), currDrawImg->GetHeight(), &dbpl);
 					if (destBuff)
 					{
 						UInt8 *tmpBuff = MemAlloc(UInt8, me->dispSize.CalcArea() << 2);
-						me->currDrawImg->CopyBits(0, 0, tmpBuff, me->dispSize.x << 2, me->dispSize.x, me->dispSize.y, false);
+						currDrawImg->CopyBits(0, 0, tmpBuff, me->dispSize.x << 2, me->dispSize.x, me->dispSize.y, false);
 	//					UOSInt w = me->surfaceW;
 	//					UOSInt h = me->surfaceH;
 	/*#if defined(HAS_ASM32)
@@ -118,10 +119,10 @@ void __stdcall UI::GUIDObjArea::DisplayThread(NN<Sync::Thread> thread)
 				else
 				{
 					UOSInt dbpl;
-					UInt8 *destBuff = me->LockSurfaceBegin(me->currDrawImg->GetWidth(), me->currDrawImg->GetHeight(), &dbpl);
+					UInt8 *destBuff = me->LockSurfaceBegin(currDrawImg->GetWidth(), currDrawImg->GetHeight(), &dbpl);
 					if (destBuff)
 					{
-						me->currDrawImg->CopyBits(0, 0, destBuff, dbpl, me->dispSize.x, me->dispSize.y, false);
+						currDrawImg->CopyBits(0, 0, destBuff, dbpl, me->dispSize.x, me->dispSize.y, false);
 						me->LockSurfaceEnd();
 					}
 				}
@@ -147,9 +148,10 @@ void __stdcall UI::GUIDObjArea::ProcessThread(NN<Sync::Thread> thread)
 	while (!thread->IsStopping())
 	{
 		Sync::MutexUsage mutUsage(me->dobjMut);
-		if (!me->drawUpdated && me->dobjHdlr && img.Set(me->currDrawImg))
+		NN<UI::DObj::DObjHandler> dobjHdlr;
+		if (!me->drawUpdated && me->dobjHdlr.SetTo(dobjHdlr) && me->currDrawImg.SetTo(img))
 		{
-			Bool changed = me->dobjHdlr->Check(img);
+			Bool changed = dobjHdlr->Check(img);
 			mutUsage.EndUse();
 			if (changed)
 			{
@@ -174,9 +176,10 @@ void __stdcall UI::GUIDObjArea::OnUpdateSize(AnyType userObj)
 {
 	NN<UI::GUIDObjArea> me = userObj.GetNN<UI::GUIDObjArea>();
 	Sync::MutexUsage mutUsage(me->dobjMut);
-	if (me->dobjHdlr)
+	NN<UI::DObj::DObjHandler> dobjHdlr;
+	if (me->dobjHdlr.SetTo(dobjHdlr))
 	{
-		me->dobjHdlr->SizeChanged(me->GetSizeP());
+		dobjHdlr->SizeChanged(me->GetSizeP());
 	}
 }
 
@@ -199,29 +202,24 @@ UI::GUIDObjArea::~GUIDObjArea()
 	this->displayThread.BeginStop();
 	this->processThread.WaitForEnd();
 	this->displayThread.WaitForEnd();
-	if (this->dobjHdlr)
-	{
-		DEL_CLASS(this->dobjHdlr);
-	}
+	this->dobjHdlr.Delete();
 	NN<Media::DrawImage> img;
-	if (img.Set(this->currDrawImg))
+	if (this->currDrawImg.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
 		this->currDrawImg = 0;
 	}
 }
 
-void UI::GUIDObjArea::SetHandler(UI::DObj::DObjHandler *dobjHdlr)
+void UI::GUIDObjArea::SetHandler(Optional<UI::DObj::DObjHandler> dobjHdlr)
 {
 	Sync::MutexUsage mutUsage(this->dobjMut);
-	if (this->dobjHdlr)
-	{
-		DEL_CLASS(this->dobjHdlr);
-	}
+	this->dobjHdlr.Delete();
 	this->dobjHdlr = dobjHdlr;
-	if (this->dobjHdlr)
+	NN<UI::DObj::DObjHandler> nndobjHdlr;
+	if (this->dobjHdlr.SetTo(nndobjHdlr))
 	{
-		this->dobjHdlr->SetColorSess(this->colorSess.Ptr());
+		nndobjHdlr->SetColorSess(this->colorSess.Ptr());
 	}
 }
 
@@ -239,7 +237,7 @@ void UI::GUIDObjArea::OnSurfaceCreated()
 {
 	Sync::MutexUsage mutUsage(this->dobjMut);
 	NN<Media::DrawImage> img;
-	if (img.Set(this->currDrawImg))
+	if (this->currDrawImg.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
 		this->currDrawImg = 0;
@@ -255,27 +253,30 @@ void UI::GUIDObjArea::OnMouseWheel(Math::Coord2D<OSInt> scnPos, Int32 amount)
 void UI::GUIDObjArea::OnMouseMove(Math::Coord2D<OSInt> scnPos)
 {
 	Sync::MutexUsage mutUsage(this->dobjMut);
-	if (this->dobjHdlr)
+	NN<UI::DObj::DObjHandler> dobjHdlr;
+	if (this->dobjHdlr.SetTo(dobjHdlr))
 	{
-		this->dobjHdlr->OnMouseMove(scnPos);
+		dobjHdlr->OnMouseMove(scnPos);
 	}
 }
 
 void UI::GUIDObjArea::OnMouseDown(Math::Coord2D<OSInt> scnPos, MouseButton button)
 {
 	Sync::MutexUsage mutUsage(this->dobjMut);
-	if (this->dobjHdlr)
+	NN<UI::DObj::DObjHandler> dobjHdlr;
+	if (this->dobjHdlr.SetTo(dobjHdlr))
 	{
-		this->dobjHdlr->OnMouseDown(scnPos, button);
+		dobjHdlr->OnMouseDown(scnPos, button);
 	}
 }
 
 void UI::GUIDObjArea::OnMouseUp(Math::Coord2D<OSInt> scnPos, MouseButton button)
 {
 	Sync::MutexUsage mutUsage(this->dobjMut);
-	if (this->dobjHdlr)
+	NN<UI::DObj::DObjHandler> dobjHdlr;
+	if (this->dobjHdlr.SetTo(dobjHdlr))
 	{
-		this->dobjHdlr->OnMouseUp(scnPos, button);
+		dobjHdlr->OnMouseUp(scnPos, button);
 	}
 }
 

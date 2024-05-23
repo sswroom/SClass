@@ -47,7 +47,7 @@ void Media::Batch::BatchWatermarker::ImageOutput(NN<Media::ImageList> imgList, T
 	UOSInt j;
 	NN<Media::StaticImage> simg;
 	NN<Media::DrawImage> tmpImg;
-	if (tmpImg.Set(this->deng->CreateImage32(Math::Size2D<UOSInt>(16, 16), Media::AT_NO_ALPHA)))
+	if (this->deng->CreateImage32(Math::Size2D<UOSInt>(16, 16), Media::AT_NO_ALPHA).SetTo(tmpImg))
 	{
 		i = 0;
 		j = imgList->GetCount();
@@ -82,7 +82,7 @@ void Media::Batch::BatchWatermarker::ImageOutput(NN<Media::ImageList> imgList, T
 						yRand = Double2Int32(UOSInt2Double(simg->info.dispSize.y) - sz.y);
 						iWidth = (UInt32)Double2Int32(sz.x);
 						iHeight = (UInt32)Double2Int32(sz.y);
-						if (gimg2.Set(this->deng->CreateImage32(Math::Size2D<UOSInt>(iWidth, iHeight), Media::AT_NO_ALPHA)))
+						if (this->deng->CreateImage32(Math::Size2D<UOSInt>(iWidth, iHeight), Media::AT_NO_ALPHA).SetTo(gimg2))
 						{
 							gimg2->DrawString(Math::Coord2DDbl(0, 0), watermark, f, b);
 							gimg2->SetAlphaType(Media::AT_ALPHA);

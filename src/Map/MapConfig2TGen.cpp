@@ -2420,6 +2420,9 @@ Optional<Map::MapDrawLayer> Map::MapConfig2TGen::GetDrawLayer(Text::CStringNN na
 
 void Map::MapConfig2TGen::DrawPoints(NN<Media::DrawImage> img, MapLayerStyle *lyrs, NN<Map::MapView> view, Bool *isLayerEmpty, Map::MapScheduler *sch, NN<Media::DrawEngine> eng, Media::IImgResizer *resizer, Math::RectAreaDbl *objBounds, UOSInt *objCnt, UOSInt maxObjCnt)
 {
+	NN<Media::DrawImage> lyrImg;
+	if (!lyrs->img.SetTo(lyrImg))
+		return;
 	NN<Math::Geometry::Vector2D> vec;
 	UOSInt imgW;
 	UOSInt imgH;
@@ -2433,7 +2436,7 @@ void Map::MapConfig2TGen::DrawPoints(NN<Media::DrawImage> img, MapLayerStyle *ly
 	NN<Map::MapDrawLayer> lyr = lyrs->lyr;
 
 #ifndef NOSCH
-	sch->SetDrawType(lyr, 0, 0, lyrs->img, UOSInt2Double(lyrs->img->GetWidth()) * 0.5, UOSInt2Double(lyrs->img->GetHeight()) * 0.5, isLayerEmpty);
+	sch->SetDrawType(lyr, 0, 0, lyrs->img, UOSInt2Double(lyrImg->GetWidth()) * 0.5, UOSInt2Double(lyrImg->GetHeight()) * 0.5, isLayerEmpty);
 	sch->SetDrawObjs(objBounds, objCnt, maxObjCnt);
 #endif
 	Data::ArrayListInt64 arri;
@@ -2444,33 +2447,42 @@ void Map::MapConfig2TGen::DrawPoints(NN<Media::DrawImage> img, MapLayerStyle *ly
 		return;
 	}
 	session = lyrs->lyr->BeginGetObject();
-	Media::DrawImage *dimg;
+	Optional<Media::DrawImage> dimg;
 	if (img->GetHDPI() != 96)
 	{
-		imgW = lyrs->img->GetWidth();
-		imgH = lyrs->img->GetHeight();
-		Media::DrawImage *gimg2 = lyrs->img;
-		Media::DrawImage *gimg = eng->CreateImage32(Math::Size2D<UOSInt>((UOSInt)Double2OSInt(UOSInt2Double(imgW) * img->GetHDPI() / 96.0), (UOSInt)Double2OSInt(UOSInt2Double(imgH) * img->GetHDPI() / 96.0)), gimg2->GetAlphaType());
-		gimg->SetAlphaType(gimg2->GetAlphaType());
-		Bool revOrder;
-		Bool revOrder2;
-		UInt8 *bmpBits = gimg->GetImgBits(revOrder);
-		UInt8 *bmpBits2 = gimg2->GetImgBits(revOrder2);
-		resizer->Resize(bmpBits2, (OSInt)imgW << 2, UOSInt2Double(imgW), UOSInt2Double(imgH), 0, 0, bmpBits, Double2Int32(UOSInt2Double(imgW) * img->GetHDPI() / 96.0) << 2, (UInt32)Double2Int32(UOSInt2Double(imgW) * img->GetHDPI() / 96.0), (UInt32)Double2Int32(UOSInt2Double(imgH) * img->GetHDPI() / 96.0));
-		gimg->GetImgBitsEnd(true);
-		gimg2->GetImgBitsEnd(false);
-		dimg = gimg;
-		imgW = (UInt32)Double2Int32(UOSInt2Double(imgW) * img->GetHDPI() / 96.0) >> 1;
-		imgH = (UInt32)Double2Int32(UOSInt2Double(imgH) * img->GetHDPI() / 96.0) >> 1;
+		imgW = lyrImg->GetWidth();
+		imgH = lyrImg->GetHeight();
+		NN<Media::DrawImage> gimg2 = lyrImg;
+		NN<Media::DrawImage> gimg;
+		if (eng->CreateImage32(Math::Size2D<UOSInt>((UOSInt)Double2OSInt(UOSInt2Double(imgW) * img->GetHDPI() / 96.0), (UOSInt)Double2OSInt(UOSInt2Double(imgH) * img->GetHDPI() / 96.0)), gimg2->GetAlphaType()).SetTo(gimg))
+		{
+			gimg->SetAlphaType(gimg2->GetAlphaType());
+			Bool revOrder;
+			Bool revOrder2;
+			UInt8 *bmpBits = gimg->GetImgBits(revOrder);
+			UInt8 *bmpBits2 = gimg2->GetImgBits(revOrder2);
+			resizer->Resize(bmpBits2, (OSInt)imgW << 2, UOSInt2Double(imgW), UOSInt2Double(imgH), 0, 0, bmpBits, Double2Int32(UOSInt2Double(imgW) * img->GetHDPI() / 96.0) << 2, (UInt32)Double2Int32(UOSInt2Double(imgW) * img->GetHDPI() / 96.0), (UInt32)Double2Int32(UOSInt2Double(imgH) * img->GetHDPI() / 96.0));
+			gimg->GetImgBitsEnd(true);
+			gimg2->GetImgBitsEnd(false);
+			dimg = gimg;
+			imgW = (UInt32)Double2Int32(UOSInt2Double(imgW) * img->GetHDPI() / 96.0) >> 1;
+			imgH = (UInt32)Double2Int32(UOSInt2Double(imgH) * img->GetHDPI() / 96.0) >> 1;
 #ifndef NOSCH
-		sch->SetDrawType(lyr, 0, 0, dimg, UOSInt2Double(dimg->GetWidth()) * 0.5, UOSInt2Double(dimg->GetHeight()) * 0.5, isLayerEmpty);
+			sch->SetDrawType(lyr, 0, 0, dimg, UOSInt2Double(gimg->GetWidth()) * 0.5, UOSInt2Double(gimg->GetHeight()) * 0.5, isLayerEmpty);
 #endif
+		}
+		else
+		{
+			imgW = lyrImg->GetWidth() >> 1;
+			imgH = lyrImg->GetHeight() >> 1;
+			dimg = lyrImg;
+		}
 	}
 	else
 	{
-		imgW = lyrs->img->GetWidth() >> 1;
-		imgH = lyrs->img->GetHeight() >> 1;
-		dimg = lyrs->img;
+		imgW = lyrImg->GetWidth() >> 1;
+		imgH = lyrImg->GetHeight() >> 1;
+		dimg = lyrImg;
 	}
 
 	i = arri.GetCount();
@@ -2500,7 +2512,7 @@ void Map::MapConfig2TGen::DrawPoints(NN<Media::DrawImage> img, MapLayerStyle *ly
 	sch->WaitForFinish();
 #endif
 	NN<Media::DrawImage> tmpImg;
-	if (img->GetHDPI() != 96 && tmpImg.Set(dimg))
+	if (img->GetHDPI() != 96 && dimg.SetTo(tmpImg))
 	{
 		eng->DeleteImage(tmpImg);
 	}
@@ -2517,16 +2529,17 @@ void Map::MapConfig2TGen::DrawString(NN<Media::DrawImage> img, MapLayerStyle *ly
 	Map::GetObjectSess *session;
 	UOSInt imgWidth;
 	UOSInt imgHeight;
+	NN<Media::DrawImage> lyrImg;
 
 	if ((lyrs->bkColor & SFLG_SMART) == 0 && labelCnt[2] == 0)
 	{
 		return;
 	}
 
-	if (lyrs->img)
+	if (lyrs->img.SetTo(lyrImg))
 	{
-		imgWidth = lyrs->img->GetWidth();
-		imgHeight = lyrs->img->GetHeight();
+		imgWidth = lyrImg->GetWidth();
+		imgHeight = lyrImg->GetHeight();
 	}
 	else
 	{
@@ -4617,12 +4630,12 @@ Map::MapConfig2TGen::MapConfig2TGen(Text::CStringNN fileName, NN<Media::DrawEngi
 							DEL_CLASS(obj);
 						}
 					}
-					if (currLayer->img == 0)
+					if (currLayer->img.IsNull())
 					{
 						currLayer->img = this->drawEng->LoadImage(strs[4].ToCString());
 					}
 					NN<Media::DrawImage> img;
-					if (!img.Set(currLayer->img))
+					if (!currLayer->img.SetTo(img))
 					{
 						MemFree(currLayer);
 					}
@@ -4739,7 +4752,7 @@ Map::MapConfig2TGen::~MapConfig2TGen()
 		while (i-- > 0)
 		{
 			currLyr = (Map::MapLayerStyle*)this->drawList->GetItem(i);
-			if (img.Set(currLyr->img) && currLyr->drawType == 10)
+			if (currLyr->img.SetTo(img) && currLyr->drawType == 10)
 			{
 				this->drawEng->DeleteImage(img);
 			}

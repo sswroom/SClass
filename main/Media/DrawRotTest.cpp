@@ -12,7 +12,7 @@ void GenerateAngle(NN<Media::DrawEngine> deng, UOSInt angleDegree)
 	sptr = Text::StrUOSInt(sbuff, angleDegree);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
 	NN<Media::DrawImage> dimg;
-	if (dimg.Set(deng->CreateImage32(Math::Size2D<UOSInt>(160, 160), Media::AlphaType::AT_NO_ALPHA)))
+	if (deng->CreateImage32(Math::Size2D<UOSInt>(160, 160), Media::AlphaType::AT_NO_ALPHA).SetTo(dimg))
 	{
 		NN<Media::DrawFont> f = dimg->NewFontPt(CSTR("Arial"), 9, Media::DrawEngine::DFS_NORMAL, 0);
 		NN<Media::DrawBrush> b = dimg->NewBrushARGB(0xffffffff);

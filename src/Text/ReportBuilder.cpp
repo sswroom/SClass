@@ -984,6 +984,7 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 	Data::FastStringMap<IconStatus *> iconStatus;
 	IconStatus *iconSt;
 	NN<Text::ReportBuilder::ColIcon> icon;
+	NN<Media::DrawImage> dimg;
 
 	lastRowType = RT_UNKNOWN;
 	sptr = Text::StrInt32(sbuff, id);
@@ -1088,9 +1089,9 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 						iconStatus.Put(icon->fileName, iconSt);
 					}
 
-					if (iconSt->dimg)
+					if (iconSt->dimg.SetTo(dimg))
 					{
-						colCurrX[icon->col] += fontHeightPt / UOSInt2Double(iconSt->dimg->GetHeight()) * UOSInt2Double(iconSt->dimg->GetWidth());
+						colCurrX[icon->col] += fontHeightPt / UOSInt2Double(dimg->GetHeight()) * UOSInt2Double(dimg->GetWidth());
 					}
 				}
 			}
@@ -1402,7 +1403,7 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 						{
 							iconSt = iconStatus.Get(icon->fileName);
 							NN<Media::DrawImage> dimg;
-							if (iconSt && dimg.Set(iconSt->dimg))
+							if (iconSt && iconSt->dimg.SetTo(dimg))
 							{
 								Double w = fontHeightMM * UOSInt2Double(dimg->GetWidth()) / UOSInt2Double(dimg->GetHeight());
 								Double dpi = UOSInt2Double(dimg->GetHeight()) / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, fontHeightMM);
@@ -1473,7 +1474,7 @@ NN<Media::VectorDocument> Text::ReportBuilder::CreateVDoc(Int32 id, NN<Media::Dr
 	while (i-- > 0)
 	{
 		iconSt = iconStatus.GetItem(i);
-		if (img.Set(iconSt->dimg))
+		if (iconSt->dimg.SetTo(img))
 		{
 			deng->DeleteImage(img);
 		}

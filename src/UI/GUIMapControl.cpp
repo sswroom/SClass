@@ -267,7 +267,7 @@ void UI::GUIMapControl::OnDraw(NN<Media::DrawImage> img)
 {
 	Math::Coord2DDbl tl;
 	NN<Media::DrawImage> bgImg;
-	if (!bgImg.Set(this->bgImg))
+	if (!this->bgImg.SetTo(bgImg))
 	{
 		return;
 	}
@@ -296,7 +296,7 @@ void UI::GUIMapControl::OnDraw(NN<Media::DrawImage> img)
 		if (this->drawHdlr.func)
 		{
 			NN<Media::DrawImage> tmpImg;
-			if (tmpImg.Set(this->eng->CloneImage(bgImg)))
+			if (this->eng->CloneImage(bgImg).SetTo(tmpImg))
 			{
 				this->drawHdlr.func(this->drawHdlr.userObj, tmpImg, 0, 0);
 				srcImg = tmpImg->ToStaticImage();
@@ -411,7 +411,7 @@ void UI::GUIMapControl::OnDraw(NN<Media::DrawImage> img)
 		if (this->drawHdlr.func)
 		{
 			NN<Media::DrawImage> drawImg;
-			if (drawImg.Set(this->eng->CloneImage(bgImg)))
+			if (this->eng->CloneImage(bgImg).SetTo(drawImg))
 			{
 				this->drawHdlr.func(this->drawHdlr.userObj, drawImg, 0, 0);
 				this->DrawScnObjects(drawImg, Math::Coord2DDbl(0, 0));
@@ -566,7 +566,7 @@ UI::GUIMapControl::~GUIMapControl()
 		this->mapEnv->RemoveUpdatedHandler(ImageUpdated, this);
 	}
 	NN<Media::DrawImage> img;
-	if (img.Set(this->bgImg))
+	if (this->bgImg.SetTo(img))
 	{
 		this->eng->DeleteImage(img);
 	}
@@ -590,7 +590,7 @@ void UI::GUIMapControl::OnSizeChanged(Bool updateScn)
 	this->currSize = this->GetSizeP();
 	this->view->UpdateSize(this->currSize.ToDouble());
 	NN<Media::DrawImage> img;
-	if (img.Set(this->bgImg))
+	if (this->bgImg.SetTo(img))
 	{
 		this->eng->DeleteImage(img);
 		this->bgImg = 0;
@@ -598,9 +598,12 @@ void UI::GUIMapControl::OnSizeChanged(Bool updateScn)
 	if (this->currSize.x > 0 && this->currSize.y > 0)
 	{
 		this->bgImg = this->eng->CreateImage32(this->currSize, Media::AT_NO_ALPHA);
-		this->bgImg->SetHDPI(this->view->GetHDPI() / this->view->GetDDPI() * 96.0);
-		this->bgImg->SetVDPI(this->view->GetHDPI() / this->view->GetDDPI() * 96.0);
-		this->bgImg->SetColorProfile(this->colorSess->GetRGBParam()->monProfile);
+		if (this->bgImg.SetTo(img))
+		{
+			img->SetHDPI(this->view->GetHDPI() / this->view->GetDDPI() * 96.0);
+			img->SetVDPI(this->view->GetHDPI() / this->view->GetDDPI() * 96.0);
+			img->SetColorProfile(this->colorSess->GetRGBParam()->monProfile);
+		}
 	}
 	mutUsage.EndUse();
 	this->UpdateMap();
@@ -621,9 +624,10 @@ void UI::GUIMapControl::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2
 {
 	this->renderer->ColorUpdated();
 	this->SetBGColor(this->bgColor);
-	if (this->bgImg)
+	NN<Media::DrawImage> img;
+	if (this->bgImg.SetTo(img))
 	{
-		this->bgImg->SetColorProfile(rgbParam->monProfile);
+		img->SetColorProfile(rgbParam->monProfile);
 	}
 }
 
@@ -632,10 +636,11 @@ void UI::GUIMapControl::SetDPI(Double hdpi, Double ddpi)
 	this->hdpi = hdpi;
 	this->ddpi = ddpi;
 	this->view->SetDPI(hdpi, ddpi);
-	if (this->bgImg)
+	NN<Media::DrawImage> img;
+	if (this->bgImg.SetTo(img))
 	{
-		this->bgImg->SetHDPI(hdpi / ddpi * 96.0);
-		this->bgImg->SetVDPI(hdpi / ddpi * 96.0);
+		img->SetHDPI(hdpi / ddpi * 96.0);
+		img->SetVDPI(hdpi / ddpi * 96.0);
 	}
 	if (!this->pauseUpdate)
 	{
@@ -690,7 +695,7 @@ void UI::GUIMapControl::UpdateMap()
 {
 	Sync::MutexUsage mutUsage(this->drawMut);
 	NN<Media::DrawImage> bgImg;
-	if (bgImg.Set(this->bgImg) && this->renderer)
+	if (this->bgImg.SetTo(bgImg) && this->renderer)
 	{
 		Double t;
 		UOSInt i;

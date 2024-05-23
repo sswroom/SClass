@@ -32,12 +32,12 @@ UI::DObj::DownButtonDObj::DownButtonDObj(NN<Media::DrawEngine> deng, Text::CStri
 UI::DObj::DownButtonDObj::~DownButtonDObj()
 {
 	NN<Media::DrawImage> img;
-	if (img.Set(this->bmpUnclick))
+	if (this->bmpUnclick.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
 		this->bmpUnclick = 0;
 	}
-	if (img.Set(this->bmpClicked))
+	if (this->bmpClicked.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
 		this->bmpClicked = 0;
@@ -67,7 +67,7 @@ void UI::DObj::DownButtonDObj::DrawObject(NN<Media::DrawImage> dimg)
 	this->dispTL = tl;
 	NN<Media::DrawImage> bmpUnclick;
 	NN<Media::DrawImage> bmpClicked;
-	if (bmpUnclick.Set(this->bmpUnclick) && bmpClicked.Set(this->bmpClicked))
+	if (this->bmpUnclick.SetTo(bmpUnclick) && this->bmpClicked.SetTo(bmpClicked))
 	{
 		if (this->isMouseDown)
 		{
@@ -78,11 +78,11 @@ void UI::DObj::DownButtonDObj::DrawObject(NN<Media::DrawImage> dimg)
 			dimg->DrawImagePt(bmpUnclick, tl.ToDouble());
 		}
 	}
-	else if (bmpUnclick.Set(this->bmpUnclick))
+	else if (this->bmpUnclick.SetTo(bmpUnclick))
 	{
 		dimg->DrawImagePt(bmpUnclick, tl.ToDouble());
 	}
-	else if (bmpClicked.Set(this->bmpClicked))
+	else if (this->bmpClicked.SetTo(bmpClicked))
 	{
 		dimg->DrawImagePt(bmpClicked, tl.ToDouble());
 	}
@@ -93,11 +93,10 @@ Bool UI::DObj::DownButtonDObj::IsObject(Math::Coord2D<OSInt> scnPos)
 {
 	if (scnPos.x < this->dispTL.x || scnPos.y < this->dispTL.y)
 		return false;
-	Media::DrawImage *bmpChk = this->bmpUnclick;
-	if (bmpChk == 0)
+	NN<Media::DrawImage> bmpChk;
+	if (!this->bmpUnclick.SetTo(bmpChk))
 	{
-		bmpChk = this->bmpClicked;
-		if (bmpChk == 0)
+		if (!this->bmpClicked.SetTo(bmpChk))
 			return false;
 	}
 	if (this->dispTL.x + (OSInt)bmpChk->GetWidth() <= scnPos.x || this->dispTL.y + (OSInt)bmpChk->GetHeight() <= scnPos.y)
