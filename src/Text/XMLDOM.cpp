@@ -1023,6 +1023,7 @@ UTF8Char *Text::XMLDocument::ParseNode(NN<XMLNode> parentNode, UTF8Char *xmlStar
 							NEW_CLASSNN(node, XMLNode(XMLNode::NodeType::Element));
 							node->name = Text::String::New((UOSInt)(xmlNameEn - xmlNameSt)).Ptr();
 							Text::XML::ParseStr(node->name, xmlNameSt, xmlNameEn);
+							optnode = node;
 							xmlNameSt = 0;
 							xmlValSt = 0;
 						}
