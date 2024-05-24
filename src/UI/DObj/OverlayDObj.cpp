@@ -13,7 +13,7 @@ UI::DObj::OverlayDObj::OverlayDObj(NN<Media::DrawEngine> deng, Optional<Media::D
 	this->clk = 0;
 }
 
-UI::DObj::OverlayDObj::OverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<OSInt> tl, Parser::ParserList *parsers) : DirectObject(tl)
+UI::DObj::OverlayDObj::OverlayDObj(NN<Media::DrawEngine> deng, Text::CString fileName, Math::Coord2D<OSInt> tl, NN<Parser::ParserList> parsers) : DirectObject(tl)
 {
 	this->deng = deng;
 	this->noRelease = false;
