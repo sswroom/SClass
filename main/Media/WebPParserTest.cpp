@@ -9,7 +9,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Text::CStringNN outName = CSTR("/home/sswroom/Progs/Temp/FileTest/1.enc.webp");
 	Parser::FileParser::WebPParser parser;
 	NN<IO::ParsedObject> pobj;
-	if (pobj.Set(parser.ParseFilePath(fileName)))
+	if (parser.ParseFilePath(fileName).SetTo(pobj))
 	{
 		Exporter::WebPExporter exporter;
 		exporter.ExportNewFile(outName, pobj, 0);

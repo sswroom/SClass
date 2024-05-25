@@ -38,7 +38,7 @@ IO::ParserType Parser::FileParser::ID3Parser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::ID3Parser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::ID3Parser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UInt32 headerSize;
 	if (hdr[0] != 'I' || hdr[1] != 'D' || hdr[2] != '3')

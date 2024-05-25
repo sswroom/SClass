@@ -48,7 +48,7 @@ IO::ParserType Parser::FileParser::MajiroArcParser::GetParserType()
 	UInt32 recSize;
 } ARCRecord;*/
 
-IO::ParsedObject *Parser::FileParser::MajiroArcParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::MajiroArcParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	Data::ByteArray fileNamePtr;
 	Data::ByteArray fileNamePtr2;
@@ -56,7 +56,7 @@ IO::ParsedObject *Parser::FileParser::MajiroArcParser::ParseFileHdr(NN<IO::Strea
 	UTF8Char *sptr;
 	UInt32 i;
 
-	if (!Text::StrEquals((const Char*)hdr, "MajiroArcV3.000"))
+	if (!Text::StrEquals(&hdr[0], U8STR("MajiroArcV3.000")))
 	{
 		return 0;
 	}

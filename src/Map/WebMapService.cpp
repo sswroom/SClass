@@ -614,7 +614,7 @@ Optional<Media::ImageList> Map::WebMapService::DrawMap(Math::RectAreaDbl bounds,
 #endif
 	UInt8 dataBuff[2048];
 	UOSInt readSize;
-	Media::ImageList *ret = 0;
+	Optional<Media::ImageList> ret = 0;
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	Bool succ = cli->GetRespStatus() == Net::WebStatus::SC_OK;
 	if (succ)
@@ -628,27 +628,27 @@ Optional<Media::ImageList> Map::WebMapService::DrawMap(Math::RectAreaDbl bounds,
 		if (imgFormat->StartsWith(UTF8STRC("image/png")))
 		{
 			Parser::FileParser::PNGParser parser;
-			ret = (Media::ImageList*)parser.ParseFile(mdr, 0, IO::ParserType::ImageList);
+			ret = Optional<Media::ImageList>::ConvertFrom(parser.ParseFile(mdr, 0, IO::ParserType::ImageList));
 		}
 		else if (imgFormat->StartsWith(UTF8STRC("image/geotiff")) || imgFormat->StartsWith(UTF8STRC("image/tiff")))
 		{
 			Parser::FileParser::TIFFParser parser;
-			ret = (Media::ImageList*)parser.ParseFile(mdr, 0, IO::ParserType::ImageList);
+			ret = Optional<Media::ImageList>::ConvertFrom(parser.ParseFile(mdr, 0, IO::ParserType::ImageList));
 		}
 		else if (imgFormat->Equals(UTF8STRC("image/gif")))
 		{
 			Parser::FileParser::GIFParser parser;
-			ret = (Media::ImageList*)parser.ParseFile(mdr, 0, IO::ParserType::ImageList);
+			ret = Optional<Media::ImageList>::ConvertFrom(parser.ParseFile(mdr, 0, IO::ParserType::ImageList));
 		}
 		else if (imgFormat->Equals(UTF8STRC("image/jpeg")))
 		{
 			Parser::FileParser::GUIImgParser parser;
-			ret = (Media::ImageList*)parser.ParseFile(mdr, 0, IO::ParserType::ImageList);
+			ret = Optional<Media::ImageList>::ConvertFrom(parser.ParseFile(mdr, 0, IO::ParserType::ImageList));
 		}
 		else if (imgFormat->Equals(UTF8STRC("image/bmp")))
 		{
 			Parser::FileParser::BMPParser parser;
-			ret = (Media::ImageList*)parser.ParseFile(mdr, 0, IO::ParserType::ImageList);
+			ret = Optional<Media::ImageList>::ConvertFrom(parser.ParseFile(mdr, 0, IO::ParserType::ImageList));
 		}
 		else
 		{

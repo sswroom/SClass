@@ -35,7 +35,7 @@ IO::ParserType Parser::FileParser::PLTParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::PLTParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::PLTParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;
@@ -48,7 +48,7 @@ IO::ParsedObject *Parser::FileParser::PLTParser::ParseFileHdr(NN<IO::StreamData>
 		return 0;
 	if (Text::StrCompareICase(&(fd->GetFullName())[i + 1], L"PLT") != 0)
 		return 0;*/
-	if (!Text::StrEqualsC(hdr, 37, UTF8STRC("OziExplorer Track Point File Version ")))
+	if (!Text::StrEqualsC(&hdr[0], 37, UTF8STRC("OziExplorer Track Point File Version ")))
 		return 0;
 
 	IO::StreamDataStream stm(fd);

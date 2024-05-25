@@ -40,10 +40,10 @@ IO::ParserType Parser::FileParser::CFBParser::GetParserType()
 	return IO::ParserType::Workbook;
 }
 
-IO::ParsedObject *Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UInt8 buff[4096];
-	if (ReadUInt32(hdr) != 0xe011cfd0 || ReadUInt32(&hdr[4]) != 0xe11ab1a1)
+	if (ReadUInt32(&hdr[0]) != 0xe011cfd0 || ReadUInt32(&hdr[4]) != 0xe11ab1a1)
 	{
 		return 0;
 	}
@@ -275,7 +275,7 @@ IO::ParsedObject *Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::StreamData>
 			{
 				if (targetType == IO::ParserType::Unknown)
 				{
-					return wb.Ptr();
+					return wb;
 				}
 				else
 				{
@@ -302,7 +302,7 @@ IO::ParsedObject *Parser::FileParser::CFBParser::ParseFileHdr(NN<IO::StreamData>
 		}
 	}
 	SDEL_STRING(workbookName);
-	return pkg.Ptr();
+	return pkg;
 }
 
 

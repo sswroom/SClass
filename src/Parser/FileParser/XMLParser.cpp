@@ -74,7 +74,7 @@ IO::ParserType Parser::FileParser::XMLParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::XMLParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -127,13 +127,11 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseFileHdr(NN<IO::StreamData>
 		return 0;
 	}
 
-	IO::ParsedObject *pobj;
 	IO::StreamDataStream stm(fd);
-	pobj = ParseStream(this->encFact, stm, fd->GetFullName()->ToCString(), this->parsers, this->browser, pkgFile);
-	return pobj;
+	return ParseStream(this->encFact, stm, fd->GetFullName()->ToCString(), this->parsers, this->browser, pkgFile);
 }
 
-IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, Text::CStringNN fileName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, IO::PackageFile *pkgFile)
+Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, Text::CStringNN fileName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, Optional<IO::PackageFile> pkgFile)
 {
 	NN<Text::String> nodeText;
 	Text::XMLReader reader(encFact, stm, Text::XMLReader::PM_XML);
@@ -142,7 +140,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Optional<Text::Enco
 		return 0;
 	if (nodeText->Equals(UTF8STRC("kml")))
 	{
-		return Map::KMLXML::ParseKMLRoot(reader, fileName, parsers, browser, pkgFile).OrNull();
+		return Map::KMLXML::ParseKMLRoot(reader, fileName, parsers, browser, pkgFile);
 	}
 	else if (nodeText->Equals(UTF8STRC("gpx")))
 	{

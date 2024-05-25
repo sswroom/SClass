@@ -145,45 +145,42 @@ Bool VerifyMD5(Text::CStringNN fileName, Bool flagCont, Bool flagVerbose)
 		Text::UTF8Writer diffLog(fs);
 		Parser::FileParser::MD5Parser parser;
 		Bool succ = true;
-		IO::FileCheck *fileChk;
+		NN<IO::FileCheck> fileChk;
 		{
 			IO::StmData::FileData fd(fileName, false);
-			fileChk = (IO::FileCheck *)parser.ParseFile(fd, 0, IO::ParserType::FileCheck);
-		}
-		if (fileChk == 0)
-		{
-			console->WriteLine(CSTR("Error in parsing the file"));
-		}
-		else
-		{
-			UInt8 hash[32];
-			UOSInt i;
-			UOSInt j;
-			NN<Text::String> entryName;
-			
-			i = 0;
-			j = fileChk->GetCount();
-			while (i < j)
+			if (!Optional<IO::FileCheck>::ConvertFrom(parser.ParseFile(fd, 0, IO::ParserType::FileCheck)).SetTo(fileChk))
 			{
-				if (!fileChk->CheckEntryHash(i, hash, flagVerbose?console:0))
-				{
-					Text::StringBuilderUTF8 sb;
-					sb.AppendC(UTF8STRC("File validation failed: "));
-					sb.AppendOpt(fileChk->GetEntryName(i));
-					succ = false;
-					console->WriteLine(sb.ToCString());
-					if (!flagCont)
-						break;
-					if (fileChk->GetEntryName(i).SetTo(entryName))
-					{
-						diffLog.WriteLine(entryName->ToCString());
-					}
-				}
-				i++;
+				console->WriteLine(CSTR("Error in parsing the file"));
+				return false;
 			}
-			showHelp = false;
-			DEL_CLASS(fileChk);
 		}
+		UInt8 hash[32];
+		UOSInt i;
+		UOSInt j;
+		NN<Text::String> entryName;
+		
+		i = 0;
+		j = fileChk->GetCount();
+		while (i < j)
+		{
+			if (!fileChk->CheckEntryHash(i, hash, flagVerbose?console:0))
+			{
+				Text::StringBuilderUTF8 sb;
+				sb.AppendC(UTF8STRC("File validation failed: "));
+				sb.AppendOpt(fileChk->GetEntryName(i));
+				succ = false;
+				console->WriteLine(sb.ToCString());
+				if (!flagCont)
+					break;
+				if (fileChk->GetEntryName(i).SetTo(entryName))
+				{
+					diffLog.WriteLine(entryName->ToCString());
+				}
+			}
+			i++;
+		}
+		showHelp = false;
+		fileChk.Delete();
 		return succ;
 	}
 	else

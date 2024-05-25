@@ -156,28 +156,27 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			if (Text::StrEndsWithICaseC(cmdLines[1], cmdLen, UTF8STRC(".SFV")))
 			{
 				Parser::FileParser::SFVParser parser;
-				IO::FileCheck *fileChk;
+				NN<IO::FileCheck> fileChk;
 				{
 					IO::StmData::FileData fd({cmdLines[1], cmdLen}, false);
-					fileChk = (IO::FileCheck *)parser.ParseFile(fd, 0, IO::ParserType::FileCheck);
-				}
-				if (fileChk == 0)
-				{
-					console->WriteLine(CSTR("Error in parsing the file"));
-				}
-				else
-				{
-					UInt8 hash[4];
-					UOSInt i;
-					UOSInt j;
-					i = 0;
-					j = fileChk->GetCount();
-					while (i < j)
+					if (!Optional<IO::FileCheck>::ConvertFrom(parser.ParseFile(fd, 0, IO::ParserType::FileCheck)).SetTo(fileChk))
 					{
-						fileChk->CheckEntryHash(i, hash, 0);
+						console->WriteLine(CSTR("Error in parsing the file"));
 					}
-					showHelp = false;
-					DEL_CLASS(fileChk);
+					else
+					{
+						UInt8 hash[4];
+						UOSInt i;
+						UOSInt j;
+						i = 0;
+						j = fileChk->GetCount();
+						while (i < j)
+						{
+							fileChk->CheckEntryHash(i, hash, 0);
+						}
+						showHelp = false;
+						fileChk.Delete();
+					}
 				}
 			}
 			else

@@ -88,7 +88,7 @@ IO::ParserType Parser::FileParser::BMPParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UInt32 imgWidth;
 	Int32 imgHeight;
@@ -120,7 +120,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::StreamData>
 	Media::StaticImage *outImg = 0;
 	NN<Media::StaticImage> nnimg;
 
-	if (*(Int16*)hdr != *(Int16*)"BM")
+	if (hdr.ReadNI16(0) != *(Int16*)"BM")
 	{
 		return 0;
 	}
@@ -386,7 +386,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::StreamData>
 			NN<IO::StreamData> innerFd = fd->GetPartialData(currOfst, fd->GetDataSize() - currOfst);
 			pobj = parsers->ParseFile(innerFd);
 			innerFd.Delete();
-			return pobj.OrNull();
+			return pobj;
 		}
 	}
 	if (imgWidth > 0 && imgHeight > 0 && bpp != 0 && imgWidth <= 32768 && imgHeight <= 32768 && headerValid)

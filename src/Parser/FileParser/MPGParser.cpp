@@ -35,9 +35,10 @@ IO::ParserType Parser::FileParser::MPGParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::MPGParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::MPGParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	IO::StreamData *concatFile = 0;
+	NN<IO::PackageFile> nnpkgFile;
 
 	if (ReadMInt32(&hdr[0]) != 0x000001ba)
 		return 0;
@@ -91,7 +92,7 @@ IO::ParsedObject *Parser::FileParser::MPGParser::ParseFileHdr(NN<IO::StreamData>
 				concatFile = data.Ptr();
 				fd = data;
 			}
-			else if (pkgFile)
+			else if (pkgFile.SetTo(nnpkgFile))
 			{
 				Int32 stmId;
 				UOSInt ind;
@@ -104,12 +105,12 @@ IO::ParsedObject *Parser::FileParser::MPGParser::ParseFileHdr(NN<IO::StreamData>
 				while (true)
 				{
 					sptr2 = Text::StrConcatC(Text::StrInt32(sptr, stmId), UTF8STRC(".vob"));
-					ind = pkgFile->GetItemIndex(CSTRP(sbuff, sptr2));
+					ind = nnpkgFile->GetItemIndex(CSTRP(sbuff, sptr2));
 					if (ind == INVALID_INDEX)
 					{
 						break;
 					}
-					if (!pkgFile->GetItemStmDataNew(ind).SetTo(fd))
+					if (!nnpkgFile->GetItemStmDataNew(ind).SetTo(fd))
 					{
 						break;
 					}

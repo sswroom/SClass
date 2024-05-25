@@ -30,7 +30,7 @@ IO::ParserType Parser::FileParser::SMakeParser::GetParserType()
 	return IO::ParserType::Smake;
 }
 
-IO::ParsedObject *Parser::FileParser::SMakeParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::SMakeParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	if (!fd->IsFullFile())
 	{

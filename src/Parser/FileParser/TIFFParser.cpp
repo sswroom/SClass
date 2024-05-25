@@ -62,7 +62,7 @@ IO::ParserType Parser::FileParser::TIFFParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	NN<Data::ByteOrder> bo;
 
@@ -393,7 +393,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::StreamData
 			if (imgList->GetCount() > 0)
 			{
 				bo.Delete();
-				return imgList.Ptr();
+				return imgList;
 			}
 			else
 			{
@@ -1617,7 +1617,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::StreamData
 		}
 	}
 	bo.Delete();
-	return imgList.Ptr();
+	return imgList;
 }
 
 UInt32 Parser::FileParser::TIFFParser::GetUInt(NN<Media::EXIFData> exif, UInt32 id)

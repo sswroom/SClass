@@ -525,7 +525,7 @@ Optional<Media::ImageList> Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl b
 	if (sbUrl.SetTo(sb))
 		sb->AppendC(url, (UOSInt)(sptr - url));
 
-	Media::ImageList *ret = 0;
+	Optional<Media::ImageList> ret = 0;
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	Bool succ = cli->GetRespStatus() == Net::WebStatus::SC_OK;
 	if (succ)
@@ -537,7 +537,7 @@ Optional<Media::ImageList> Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl b
 		}
 		Parser::FileParser::PNGParser parser;
 		IO::StmData::MemoryDataRef mdr(mstm.GetBuff(), (UOSInt)mstm.GetLength());
-		ret = (Media::ImageList*)parser.ParseFile(mdr, 0, IO::ParserType::ImageList);
+		ret = Optional<Media::ImageList>::ConvertFrom(parser.ParseFile(mdr, 0, IO::ParserType::ImageList));
 	}
 	cli.Delete();
 	return ret;

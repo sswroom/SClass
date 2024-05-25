@@ -2336,46 +2336,44 @@ Bool __stdcall SSWR::OrganWeb::OrganWebMainController::SvcPhotoDetail(NN<Net::We
 				{
 					sptr = me->env->UserfileGetPath(sbuff, userFile);
 					UInt64 fileSize = 0;
-					Media::MediaFile *mediaFile;
+					NN<Media::MediaFile> mediaFile;
 					{
 						IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
 						fileSize = fd.GetDataSize();
-						mediaFile = (Media::MediaFile*)me->env->ParseFileType(fd, IO::ParserType::MediaFile);
-					}
-
-					if (mediaFile)
-					{
-						sb.ClearStr();
-						sb.AppendU64(fileSize);
-						sb.AppendC(UTF8STRC(" bytes"));
-						NN<Media::IMediaSource> msrc;
-						Data::Duration stmTime;
-						if (mediaFile->GetStream(0, 0).SetTo(msrc))
+						if (Optional<Media::MediaFile>::ConvertFrom(me->env->ParseFileType(fd, IO::ParserType::MediaFile)).SetTo(mediaFile))
 						{
-							stmTime = msrc->GetStreamTime();
-							sb.AppendC(UTF8STRC(", Length: "));
-							sb.AppendDur(stmTime);
-
-							if (msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
+							sb.ClearStr();
+							sb.AppendU64(fileSize);
+							sb.AppendC(UTF8STRC(" bytes"));
+							NN<Media::IMediaSource> msrc;
+							Data::Duration stmTime;
+							if (mediaFile->GetStream(0, 0).SetTo(msrc))
 							{
-								NN<Media::IAudioSource> asrc = NN<Media::IAudioSource>::ConvertFrom(msrc);
-								Media::AudioFormat format;
-								asrc->GetFormat(format);
-								sb.AppendC(UTF8STRC(" "));
-								sb.AppendU32(format.frequency);
-								sb.AppendC(UTF8STRC("Hz, "));
-								sb.AppendU32(format.bitpersample);
-								sb.AppendC(UTF8STRC("bits, "));
-								sb.AppendU32(format.nChannels);
-								sb.AppendC(UTF8STRC(" ch"));
+								stmTime = msrc->GetStreamTime();
+								sb.AppendC(UTF8STRC(", Length: "));
+								sb.AppendDur(stmTime);
+
+								if (msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
+								{
+									NN<Media::IAudioSource> asrc = NN<Media::IAudioSource>::ConvertFrom(msrc);
+									Media::AudioFormat format;
+									asrc->GetFormat(format);
+									sb.AppendC(UTF8STRC(" "));
+									sb.AppendU32(format.frequency);
+									sb.AppendC(UTF8STRC("Hz, "));
+									sb.AppendU32(format.bitpersample);
+									sb.AppendC(UTF8STRC("bits, "));
+									sb.AppendU32(format.nChannels);
+									sb.AppendC(UTF8STRC(" ch"));
+								}
 							}
+							writer.Write(CSTR("<b>"));
+							writer.Write(LangGetValue(lang, CSTR("PhotoSpec")));
+							writer.Write(CSTR("</b> "));
+							writer.Write(sb.ToCString());
+							writer.Write(CSTR("<br/>"));
+							mediaFile.Delete();
 						}
-						writer.Write(CSTR("<b>"));
-						writer.Write(LangGetValue(lang, CSTR("PhotoSpec")));
-						writer.Write(CSTR("</b> "));
-						writer.Write(sb.ToCString());
-						writer.Write(CSTR("<br/>"));
-						DEL_CLASS(mediaFile);
 					}
 					if (userFile->captureTimeTicks != 0)
 					{

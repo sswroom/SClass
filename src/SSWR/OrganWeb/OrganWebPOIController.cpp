@@ -930,34 +930,32 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoDetail(NN<Net::Web
 				{
 					sptr = me->env->UserfileGetPath(sbuff, userFile);
 					UInt64 fileSize = 0;
-					Media::MediaFile *mediaFile;
+					NN<Media::MediaFile> mediaFile;
 					{
 						IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
 						fileSize = fd.GetDataSize();
-						mediaFile = (Media::MediaFile*)me->env->ParseFileType(fd, IO::ParserType::MediaFile);
-					}
-
-					if (mediaFile)
-					{
-						json.ObjectAddUInt64(CSTR("fileSize"), fileSize);
-						NN<Media::IMediaSource> msrc;
-						Data::Duration stmTime;
-						if (mediaFile->GetStream(0, 0).SetTo(msrc))
+						if (Optional<Media::MediaFile>::ConvertFrom(me->env->ParseFileType(fd, IO::ParserType::MediaFile)).SetTo(mediaFile))
 						{
-							stmTime = msrc->GetStreamTime();
-							json.ObjectAddInt64(CSTR("stmTime"), stmTime.GetTotalMS());
-
-							if (msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
+							json.ObjectAddUInt64(CSTR("fileSize"), fileSize);
+							NN<Media::IMediaSource> msrc;
+							Data::Duration stmTime;
+							if (mediaFile->GetStream(0, 0).SetTo(msrc))
 							{
-								NN<Media::IAudioSource> asrc = NN<Media::IAudioSource>::ConvertFrom(msrc);
-								Media::AudioFormat format;
-								asrc->GetFormat(format);
-								json.ObjectAddUInt64(CSTR("frequency"), format.frequency);
-								json.ObjectAddUInt64(CSTR("bitPerSample"), format.bitpersample);
-								json.ObjectAddUInt64(CSTR("nChannels"), format.nChannels);
+								stmTime = msrc->GetStreamTime();
+								json.ObjectAddInt64(CSTR("stmTime"), stmTime.GetTotalMS());
+
+								if (msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
+								{
+									NN<Media::IAudioSource> asrc = NN<Media::IAudioSource>::ConvertFrom(msrc);
+									Media::AudioFormat format;
+									asrc->GetFormat(format);
+									json.ObjectAddUInt64(CSTR("frequency"), format.frequency);
+									json.ObjectAddUInt64(CSTR("bitPerSample"), format.bitpersample);
+									json.ObjectAddUInt64(CSTR("nChannels"), format.nChannels);
+								}
 							}
+							mediaFile.Delete();
 						}
-						DEL_CLASS(mediaFile);
 					}
 				}
 				else
@@ -1053,7 +1051,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcPhotoUpload(NN<Net::Web
 		IO::StmData::MemoryDataRef md(fileCont, fileSize);
 		md.SetName(CSTRP(fileName, fileNameEnd));
 		NN<Map::MapDrawLayer> layer;
-		if (layer.Set((Map::MapDrawLayer*)me->env->ParseFileType(md, IO::ParserType::MapLayer)))
+		if (Optional<Map::MapDrawLayer>::ConvertFrom(me->env->ParseFileType(md, IO::ParserType::MapLayer)).SetTo(layer))
 		{
 			if (layer->GetObjectClass() == Map::MapDrawLayer::OC_GPS_TRACK)
 			{
@@ -1709,7 +1707,7 @@ void SSWR::OrganWeb::OrganWebPOIController::AppendDataFiles(NN<Text::JSONBuilder
 			if (includeCont)
 			{
 				NN<Map::GPSTrack> trk;
-				if (dataFile->fileType == DataFileType::GPSTrack && trk.Set((Map::GPSTrack*)this->env->DataFileParse(dataFile)))
+				if (dataFile->fileType == DataFileType::GPSTrack && Optional<Map::GPSTrack>::ConvertFrom(this->env->DataFileParse(dataFile)).SetTo(trk))
 				{
 					json->ObjectBeginArray(CSTR("track"));
 					Text::JSONUtil::ArrayGPSTrack(json, trk);

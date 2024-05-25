@@ -108,7 +108,7 @@ Media::GDIEngine::~GDIEngine()
 #endif
 }
 
-Media::DrawImage *Media::GDIEngine::CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype)
+Optional<Media::DrawImage> Media::GDIEngine::CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype)
 {
 	BITMAPINFO bInfo;
 	void *bmpBits;
@@ -200,7 +200,7 @@ Media::DrawImage *Media::GDIEngine::CreateImageScn(void *hdc, OSInt left, OSInt 
 	return img;
 }
 
-Media::DrawImage *Media::GDIEngine::LoadImage(Text::CStringNN fileName)
+Optional<Media::DrawImage> Media::GDIEngine::LoadImage(Text::CStringNN fileName)
 {
 	NN<IO::FileStream> fstm;
 
@@ -210,14 +210,14 @@ Media::DrawImage *Media::GDIEngine::LoadImage(Text::CStringNN fileName)
 		fstm.Delete();
 		return 0;
 	}
-	DrawImage *img = LoadImageStream(fstm);
+	Optional<DrawImage> img = LoadImageStream(fstm);
 
 	fstm.Delete();
 	return img;
 }
 
 
-Media::DrawImage *Media::GDIEngine::LoadImageStream(NN<IO::SeekableStream> fstm)
+Optional<Media::DrawImage> Media::GDIEngine::LoadImageStream(NN<IO::SeekableStream> fstm)
 {
 	UInt8 hdr[54];
 	UInt8 pal[1024];
@@ -465,14 +465,14 @@ Media::DrawImage *Media::GDIEngine::LoadImageStream(NN<IO::SeekableStream> fstm)
 	return img;
 }
 
-Media::DrawImage *Media::GDIEngine::ConvImage(NN<Media::RasterImage> img)
+Optional<Media::DrawImage> Media::GDIEngine::ConvImage(NN<Media::RasterImage> img)
 {
 	if (img->info.fourcc != 0)
 	{
 		return 0; 
 	}
-	Media::GDIImage *gimg = (Media::GDIImage*)CreateImage32(img->info.dispSize, img->info.atype);
-	if (gimg == 0)
+	NN<Media::GDIImage> gimg;
+	if (!Optional<Media::GDIImage>::ConvertFrom(CreateImage32(img->info.dispSize, img->info.atype)).SetTo(gimg))
 		return 0;
 	gimg->SetHDPI(img->info.hdpi);
 	gimg->SetVDPI(img->info.vdpi);
@@ -504,10 +504,10 @@ Media::DrawImage *Media::GDIEngine::ConvImage(NN<Media::RasterImage> img)
 	return gimg;
 }
 
-Media::DrawImage *Media::GDIEngine::CloneImage(NN<Media::DrawImage> img)
+Optional<Media::DrawImage> Media::GDIEngine::CloneImage(NN<Media::DrawImage> img)
 {
-	Media::GDIImage *newImg = (Media::GDIImage*)this->CreateImage32(img->GetSize(), img->GetAlphaType());
-	if (newImg)
+	NN<Media::GDIImage> newImg;
+	if (Optional<Media::GDIImage>::ConvertFrom(this->CreateImage32(img->GetSize(), img->GetAlphaType())).SetTo(newImg))
 	{
 		newImg->info.Set(((Media::GDIImage*)img.Ptr())->info);
 		if (img->GetBitCount() == 32)
@@ -518,8 +518,9 @@ Media::DrawImage *Media::GDIEngine::CloneImage(NN<Media::DrawImage> img)
 		{
 			newImg->DrawImagePt(img, Math::Coord2DDbl(0, 0));
 		}
+		return newImg;
 	}
-	return newImg;
+	return 0;
 }
 
 Bool Media::GDIEngine::DeleteImage(NN<DrawImage> img)
@@ -1294,7 +1295,7 @@ Bool Media::GDIImage::DrawEllipse(Math::Coord2DDbl tl, Math::Size2DDbl size, Opt
 	else
 	{
 		NN<Media::GDIImage> tmpImg;
-		if (!tmpImg.Set((Media::GDIImage*)eng->CreateImage32(this->size, Media::AT_NO_ALPHA)))
+		if (!Optional<Media::GDIImage>::ConvertFrom(eng->CreateImage32(this->size, Media::AT_NO_ALPHA)).SetTo(tmpImg))
 			return false;
 		UInt8 *imgPtr = (UInt8*)tmpImg->bmpBits;
 		UInt8 *imgPtr2 = (UInt8*)this->bmpBits;
@@ -1379,7 +1380,7 @@ Bool Media::GDIImage::DrawStringW(Math::Coord2DDbl tl, const WChar *str, NN<Draw
 	{
 		Math::Size2DDbl sz = GetTextSize(f, str, src - str - 1);
 		NN<Media::GDIImage> tmpImg;
-		if (tmpImg.Set((Media::GDIImage*)this->eng->CreateImage32(Math::Size2D<UOSInt>((UOSInt)sz.x + 1, (UOSInt)sz.y + 1), Media::AT_NO_ALPHA)))
+		if (Optional<Media::GDIImage>::ConvertFrom(this->eng->CreateImage32(Math::Size2D<UOSInt>((UOSInt)sz.x + 1, (UOSInt)sz.y + 1), Media::AT_NO_ALPHA)).SetTo(tmpImg))
 		{
 			NN<Media::DrawBrush> b2 = tmpImg->NewBrushARGB(0xffffffff);
 			tmpImg->DrawStringW(Math::Coord2DDbl(0, 0), str, f, b2);
@@ -1562,7 +1563,7 @@ Bool Media::GDIImage::DrawStringBW(Math::Coord2DDbl tl, const WChar *str1, NN<Dr
 	}
 	else
 	{
-		if (!gimg.Set((Media::GDIImage*)eng->CreateImage32(Math::Size2D<UOSInt>(swidth = sz[0] + (buffSize << 1), sheight = sz[1] + (buffSize << 1)), Media::AT_ALPHA)))
+		if (!Optional<Media::GDIImage>::ConvertFrom(eng->CreateImage32(Math::Size2D<UOSInt>(swidth = sz[0] + (buffSize << 1), sheight = sz[1] + (buffSize << 1)), Media::AT_ALPHA)).SetTo(gimg))
 		{
 			return false;
 		}
@@ -1754,7 +1755,7 @@ Bool Media::GDIImage::DrawStringRotBW(Math::Coord2DDbl center, const WChar *str1
 	}
 	else
 	{
-		if (!gimg.Set((Media::GDIImage*)eng->CreateImage32(Math::Size2D<UOSInt>(swidth = sz[0] + (buffSize << 1), sheight = sz[1] + (buffSize << 1)), Media::AT_NO_ALPHA)))
+		if (!Optional<Media::GDIImage>::ConvertFrom(eng->CreateImage32(Math::Size2D<UOSInt>(swidth = sz[0] + (buffSize << 1), sheight = sz[1] + (buffSize << 1)), Media::AT_NO_ALPHA)).SetTo(gimg))
 			return false;
 
 		if (px < (OSInt)buffSize)
@@ -2084,7 +2085,7 @@ Bool Media::GDIImage::DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl 
 	else
 	{
 		NN<Media::DrawImage> dimg;
-		if (dimg.Set(this->eng->ConvImage(img)))
+		if (this->eng->ConvImage(img).SetTo(dimg))
 		{
 			DrawImagePt(dimg, tl);
 			this->eng->DeleteImage(dimg);

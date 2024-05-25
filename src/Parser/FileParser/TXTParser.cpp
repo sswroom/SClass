@@ -61,7 +61,7 @@ IO::ParserType Parser::FileParser::TXTParser::GetParserType()
 	return IO::ParserType::MapEnv;
 }
 
-IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char baseDir[256];
@@ -344,7 +344,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::StreamData>
 		}
 
 		//////////////////////////////
-		return env.Ptr();
+		return env;
 	}
 	else if (fd->IsFullFile() && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OBJECTID,")) && Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(",")))
 	{

@@ -34,7 +34,7 @@ IO::ParserType Parser::FileParser::SZSParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::SZSParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::SZSParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UInt8 fileBuff[272];
 	UTF8Char sbuff[257];
@@ -48,7 +48,7 @@ IO::ParsedObject *Parser::FileParser::SZSParser::ParseFileHdr(NN<IO::StreamData>
 	IO::VirtualPackageFile *pf = 0;
 	UInt64 fileLen = fd->GetDataSize();
 
-	if (!Text::StrStartsWithC(hdr, 16, UTF8STRC("SZS100__")))
+	if (!Text::StrStartsWithC(&hdr[0], 16, UTF8STRC("SZS100__")))
 		return 0;
 	fileCnt = ReadInt32(&hdr[12]);
 	if (fileCnt <= 0)

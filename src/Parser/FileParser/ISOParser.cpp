@@ -37,7 +37,7 @@ IO::ParserType Parser::FileParser::ISOParser::GetParserType()
 	return IO::ParserType::SectorData;
 }
 
-IO::ParsedObject *Parser::FileParser::ISOParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::ISOParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UInt8 buff[32];
 	UInt64 fileSize = fd->GetDataSize();
@@ -71,7 +71,7 @@ IO::ParsedObject *Parser::FileParser::ISOParser::ParseFileHdr(NN<IO::StreamData>
 		if (parsers->ParseObject(sd).SetTo(pobj))
 		{
 			sd.Delete();
-			return pobj.Ptr();
+			return pobj;
 		}
 	}
 	return sectorData;

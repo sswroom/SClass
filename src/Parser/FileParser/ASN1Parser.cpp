@@ -31,7 +31,7 @@ IO::ParserType Parser::FileParser::ASN1Parser::GetParserType()
 	return IO::ParserType::ASN1Data;
 }
 
-IO::ParsedObject *Parser::FileParser::ASN1Parser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::ASN1Parser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	if (!fd->IsFullFile())
 		return 0;

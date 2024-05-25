@@ -51,21 +51,22 @@ NN<Media::DrawImage> Media::GTKDrawEngine::CreateImageScn(void *cr, Math::Coord2
 
 Optional<Media::DrawImage> Media::GTKDrawEngine::LoadImage(Text::CStringNN fileName)
 {
-	Media::ImageList *imgList = 0;
+	Optional<Media::ImageList> imgList = 0;
+	NN<Media::ImageList> nnimgList;
 	{
 		IO::StmData::FileData fd(fileName, false);
 		if (fd.IsError())
 		{
 			return 0;
 		}
-		if (imgList == 0)
+		if (imgList.IsNull())
 		{
 			Parser::FileParser::GUIImgParser parser;
-			imgList = (Media::ImageList*)parser.ParseFile(fd, 0, IO::ParserType::ImageList);
+			imgList = Optional<Media::ImageList>::ConvertFrom(parser.ParseFile(fd, 0, IO::ParserType::ImageList));
 		}
 	}
 
-	if (imgList == 0)
+	if (!imgList.SetTo(nnimgList))
 	{
 //		printf("GTKDrawEngine: Error in loading image %s\r\n", fileName.v);
 		return 0;
@@ -73,11 +74,11 @@ Optional<Media::DrawImage> Media::GTKDrawEngine::LoadImage(Text::CStringNN fileN
 
 	Optional<Media::DrawImage> dimg = 0;
 	NN<Media::RasterImage> img;
-	if (imgList->GetImage(0, 0).SetTo(img))
+	if (nnimgList->GetImage(0, 0).SetTo(img))
 	{
 		dimg = this->ConvImage(img);
 	}
-	DEL_CLASS(imgList);
+	nnimgList.Delete();
 	return dimg;
 }
 

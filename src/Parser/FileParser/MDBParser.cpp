@@ -55,7 +55,7 @@ IO::ParserType Parser::FileParser::MDBParser::GetParserType()
 	return IO::ParserType::ReadingDB;
 }
 
-IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	if (!fd->IsFullFile())
 		return 0;
@@ -193,7 +193,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::StreamData>
 		{
 			lyrColl->RemoveAt(0);
 			DEL_CLASS(lyrColl);
-			return lyr1.Ptr();
+			return lyr1;
 		}
 		else
 		{
@@ -203,7 +203,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::StreamData>
 	else
 	{
 		tableNames.FreeAll();
-		return mdb.Ptr();
+		return mdb;
 	}
 #else
 	return 0;

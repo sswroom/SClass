@@ -200,7 +200,7 @@ Net::WebServer::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEn
 		return;
 	}
 	NN<IO::ParsedObject> pobj;
-	if (!pobj.Set(parser.ParseFilePath(cfg->signCertPath)))
+	if (!parser.ParseFilePath(cfg->signCertPath).SetTo(pobj))
 	{
 		this->initErr = SAMLError::SignCert;
 		return;
@@ -218,7 +218,7 @@ Net::WebServer::SAMLHandler::SAMLHandler(NN<SAMLConfig> cfg, Optional<Net::SSLEn
 		this->initErr = SAMLError::SignCert;
 		return;
 	}
-	if (!pobj.Set(parser.ParseFilePath(cfg->signKeyPath)))
+	if (!parser.ParseFilePath(cfg->signKeyPath).SetTo(pobj))
 	{
 		this->initErr = SAMLError::SignKey;
 		return;

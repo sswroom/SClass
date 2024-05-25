@@ -31,7 +31,7 @@ IO::ParserType Parser::FileParser::MTKGPSParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::MTKGPSParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::MTKGPSParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	if (!fd->GetFullFileName()->EndsWith(UTF8STRC(".bin")))
 	{
@@ -66,7 +66,7 @@ IO::ParsedObject *Parser::FileParser::MTKGPSParser::ParseFileHdr(NN<IO::StreamDa
 	}
 	if (trk->GetTrackCnt() > 0)
 	{
-		return trk.Ptr();
+		return trk;
 	}
 	trk.Delete();
 	return 0;

@@ -40,9 +40,9 @@ IO::ParserType Parser::FileParser::SQLiteParser::GetParserType()
 	return IO::ParserType::ReadingDB;
 }
 
-IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::SQLiteParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
-	if (!Text::StrStartsWithC(hdr, 32, UTF8STRC("SQLite format 3")))
+	if (!Text::StrStartsWithC(&hdr[0], 32, UTF8STRC("SQLite format 3")))
 		return 0;
 	if (fd->IsFullFile())
 	{

@@ -31,11 +31,11 @@ IO::ParserType Parser::FileParser::NMEAParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::NMEAParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::NMEAParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	if (fd->GetFullName()->EndsWithICase(UTF8STRC(".LOG")))
 	{
-		if (!Text::StrStartsWithC(hdr, 32, UTF8STRC("@Olympus/")) || hdr[20] != 13 || hdr[21] != 10)
+		if (!Text::StrStartsWithC(&hdr[0], 32, UTF8STRC("@Olympus/")) || hdr[20] != 13 || hdr[21] != 10)
 			return 0;
 	}
 	else
@@ -44,5 +44,5 @@ IO::ParsedObject *Parser::FileParser::NMEAParser::ParseFileHdr(NN<IO::StreamData
 	}
 
 	IO::StreamDataStream stm(fd, 22, fd->GetDataSize() - 22);
-	return IO::GPSNMEA::NMEA2Track(stm, fd->GetFullName()->ToCString()).Ptr();
+	return IO::GPSNMEA::NMEA2Track(stm, fd->GetFullName()->ToCString());
 }

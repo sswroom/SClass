@@ -844,9 +844,9 @@ IO::ParserType Parser::FileParser::PDFParser::GetParserType()
 	return IO::ParserType::PDFDocument;
 }
 
-IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
-	if (ReadNInt32(hdr) != ReadNInt32((const UInt8*)"%PDF") || hdr[4] != '-' || hdr[6] != '.')
+	if (ReadNInt32(&hdr[0]) != ReadNInt32((const UInt8*)"%PDF") || hdr[4] != '-' || hdr[6] != '.')
 	{
 		return 0;
 	}
@@ -1104,7 +1104,7 @@ IO::ParsedObject *Parser::FileParser::PDFParser::ParseFileHdr(NN<IO::StreamData>
 	if (xref)
 		FreeXRef(xref);
 	if (env.succ)
-		return doc.Ptr();
+		return doc;
 	doc.Delete();
 	return 0;
 }

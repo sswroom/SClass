@@ -32,14 +32,12 @@ IO::ParserType Parser::FileParser::MIMEFileParser::GetParserType()
 	return IO::ParserType::MIMEObject;
 }
 
-IO::ParsedObject *Parser::FileParser::MIMEFileParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::MIMEFileParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	NN<Text::String> name = fd->GetFullName();
-	Optional<Text::IMIMEObj> obj;
 	if (name->EndsWithICase(UTF8STRC(".eml")))
 	{
-		obj = Text::MIMEObj::MailMessage::ParseFile(fd);
-		return obj.OrNull();
+		return Text::MIMEObj::MailMessage::ParseFile(fd);
 	}
 	return 0;
 }

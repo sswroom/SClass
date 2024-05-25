@@ -36,9 +36,9 @@ IO::ParserType Parser::FileParser::EVTXParser::GetParserType()
 	return IO::ParserType::LogFile;
 }
 
-IO::ParsedObject *Parser::FileParser::EVTXParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::EVTXParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
-	if (*(UInt64*)hdr != *(UInt64*)"ElfFile" || ReadUInt32(&hdr[32]) != 128 || ReadUInt16(&hdr[40]) != 4096)
+	if (hdr.ReadNU64(0) != *(UInt64*)"ElfFile" || ReadUInt32(&hdr[32]) != 128 || ReadUInt16(&hdr[40]) != 4096)
 	{
 		return 0;
 	}

@@ -22,7 +22,7 @@
 #include <stdio.h>
 #endif
 
-Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLRoot(NN<Text::XMLReader> reader, Text::CStringNN fileName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, IO::PackageFile *pkgFile)
+Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLRoot(NN<Text::XMLReader> reader, Text::CStringNN fileName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, Optional<IO::PackageFile> pkgFile)
 {
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element)
 		return 0;
@@ -45,7 +45,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLRoot(NN<Text::XMLReader> reader
 }
 
 
-Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> reader, Data::ICaseStringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, IO::PackageFile *basePF, Bool rootKml)
+Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> reader, Data::ICaseStringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, Optional<IO::PackageFile> basePF, Bool rootKml)
 {
 	KMLStyle *style;
 	UOSInt i;
@@ -1258,7 +1258,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 	}
 }
 
-Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader> reader, Data::StringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, IO::PackageFile *basePF)
+Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader> reader, Data::StringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, Optional<IO::PackageFile> basePF)
 {
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayListStringNN colNames;
@@ -1352,9 +1352,10 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 						if (style->img == 0)
 						{
 							Optional<IO::StreamData> fd = 0;
-							if (basePF)
+							NN<IO::PackageFile> nnbasePF;
+							if (basePF.SetTo(nnbasePF))
 							{
-								fd = basePF->OpenStreamData(style->iconURL->ToCString());
+								fd = nnbasePF->OpenStreamData(style->iconURL->ToCString());
 							}
 							if (fd.IsNull() && browser.SetTo(nnbrowser))
 							{

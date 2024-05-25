@@ -32,20 +32,20 @@ IO::ParserType Parser::FileParser::MKVParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::MKVParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::MKVParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UInt8 buff[BUFFSIZE];
 	MKVStatus status;
 	UInt64 dataSize;
 	UInt32 segmId;
-	if (ReadMInt32(hdr) != 0x1a45dfa3)
+	if (ReadMInt32(&hdr[0]) != 0x1a45dfa3)
 		return 0;
 	status.buffSize = 256;
 	status.nextReadOfst = 256;
 	status.fd = fd;
 	status.buff = BYTEARR(buff);
 	status.currOfst = 4;
-	MemCopyNO(buff, hdr, 256);
+	MemCopyNO(buff, &hdr[0], 256);
 	if (ReadDataSize(&status, &dataSize) == 0)
 		return 0;
 	if (ReadHeader(&status, dataSize) == 0)

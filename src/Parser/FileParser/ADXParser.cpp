@@ -31,12 +31,12 @@ void Parser::FileParser::ADXParser::PrepareSelector(NN<IO::FileSelector> selecto
 	}
 }
 
-IO::ParsedObject *Parser::FileParser::ADXParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::ADXParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UInt32 startOfst;
 	UInt8 buff[2048];
 	Media::AudioFormat af;
-	startOfst = ReadMUInt32(hdr);
+	startOfst = ReadMUInt32(&hdr[0]);
 	if ((startOfst & 0x80000000) == 0)
 		return 0;
 	startOfst ^= 0x80000000;

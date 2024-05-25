@@ -32,7 +32,7 @@ IO::ParserType Parser::FileParser::ANIParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::ANIParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::ANIParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UTF8Char sbuff[256];
 	UInt8 riffHdr[24];
@@ -43,7 +43,8 @@ IO::ParsedObject *Parser::FileParser::ANIParser::ParseFileHdr(NN<IO::StreamData>
 	UInt32 tmp;
 	UInt32 displayRate = 0;
 	UInt32 nFrames = 0;
-	Media::ImageList *currImage = 0;
+	Optional<Media::ImageList> currImage = 0;
+	NN<Media::ImageList> nncurrImage;
 
 	if (ReadNUInt32(&hdr[0]) != *(UInt32*)"RIFF" || ReadNUInt32(&hdr[8]) != *(UInt32*)"ACON")
 	{
@@ -102,16 +103,16 @@ IO::ParsedObject *Parser::FileParser::ANIParser::ParseFileHdr(NN<IO::StreamData>
 				if (tmp == *(UInt32*)"icon")
 				{
 					NN<Media::RasterImage> img;
-					if (currImage)
+					if (currImage.SetTo(nncurrImage))
 					{
-						if (currImage->GetImage(0, 0).SetTo(img))
+						if (nncurrImage->GetImage(0, 0).SetTo(img))
 						{
 							imgList->AddImage(img->Clone(), MulDivU32(displayRate, 1000, 60));
 						}
-						DEL_CLASS(currImage);
+						currImage.Delete();
 					}
 					NN<IO::StreamData> data = fd->GetPartialData(currOfst + 20 + buffOfst, *(UInt32*)&buff[4]);
-					currImage = (Media::ImageList *)this->icop.ParseFile(data, pkgFile, IO::ParserType::ImageList);
+					currImage = Optional<Media::ImageList>::ConvertFrom(this->icop.ParseFile(data, pkgFile, IO::ParserType::ImageList));
 					data.Delete();
 				}
 
@@ -122,15 +123,14 @@ IO::ParsedObject *Parser::FileParser::ANIParser::ParseFileHdr(NN<IO::StreamData>
 				}
 			}
 
-			if (currImage)
+			if (currImage.SetTo(nncurrImage))
 			{
 				NN<Media::RasterImage> img;
-				if (currImage->GetImage(0, 0).SetTo(img))
+				if (nncurrImage->GetImage(0, 0).SetTo(img))
 				{
 					imgList->AddImage(img->Clone(), MulDivU32(displayRate, 1000, 60));
 				}
-				DEL_CLASS(currImage);
-				currImage = 0;
+				currImage.Delete();
 			}
 		}
 		currOfst += ReadUInt32(&riffHdr[4]) + 8;

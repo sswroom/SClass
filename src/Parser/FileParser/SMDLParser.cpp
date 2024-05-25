@@ -217,7 +217,7 @@ IO::ParserType Parser::FileParser::SMDLParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::SMDLParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	Map::GPSTrack::GPSRecord3 rec;
 	UInt8 buff[384];
@@ -252,9 +252,9 @@ IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFileHdr(NN<IO::StreamData
 		return 0;
 	}
 
-	Map::GPSTrack *track;
+	NN<Map::GPSTrack> track;
 	s = Text::String::NewP(sbuff, sptr);
-	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, s.Ptr()));
+	NEW_CLASSNN(track, Map::GPSTrack(fd->GetFullName(), true, 0, s.Ptr()));
 	track->SetTrackName(s->ToCString());
 	s->Release();
 	SMDLExtraParser *parser;

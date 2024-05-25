@@ -121,7 +121,7 @@ Bool Net::SSLEngine::ServerSetCerts(Text::CStringNN certFile, Text::CStringNN ke
 	UOSInt j;
 	if (certFile.leng > 0)
 	{
-		if (!certASN1.Set((Crypto::Cert::X509File*)parser.ParseFilePath(certFile)))
+		if (!Optional<Crypto::Cert::X509File>::ConvertFrom(parser.ParseFilePath(certFile)).SetTo(certASN1))
 		{
 			return false;
 		}
@@ -167,7 +167,7 @@ Bool Net::SSLEngine::ServerSetCerts(Text::CStringNN certFile, Text::CStringNN ke
 	}
 	if (keyFile.leng > 0)
 	{
-		if (!keyASN1.Set((Crypto::Cert::X509File*)parser.ParseFilePath(keyFile)))
+		if (!Optional<Crypto::Cert::X509File>::ConvertFrom(parser.ParseFilePath(keyFile)).SetTo(keyASN1))
 		{
 			certASN1.Delete();
 			cacerts.DeleteAll();
@@ -183,7 +183,7 @@ Bool Net::SSLEngine::ServerSetCerts(Text::CStringNN certFile, Text::CStringNN ke
 	if (caFile.leng > 0)
 	{
 		NN<Crypto::Cert::X509File> cacertASN1;
-		if (!cacertASN1.Set((Crypto::Cert::X509File*)parser.ParseFilePath(caFile.OrEmpty())))
+		if (!Optional<Crypto::Cert::X509File>::ConvertFrom(parser.ParseFilePath(caFile.OrEmpty())).SetTo(cacertASN1))
 		{
 			return false;
 		}

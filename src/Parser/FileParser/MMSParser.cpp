@@ -31,7 +31,7 @@ IO::ParserType Parser::FileParser::MMSParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::MMSParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::MMSParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	IO::VirtualPackageFile *pf;
 	UInt32 fileCnt;
@@ -77,7 +77,7 @@ IO::ParsedObject *Parser::FileParser::MMSParser::ParseFileHdr(NN<IO::StreamData>
 	}
 
 	fileCnt = *ptr++;
-	currOfst = (UOSInt)(ptr - hdr);
+	currOfst = (UOSInt)(ptr - hdr.Ptr());
 
 	while (fileCnt-- > 0)
 	{

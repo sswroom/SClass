@@ -48,7 +48,7 @@ IO::ParserType Parser::FileParser::OziMapParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;
@@ -61,7 +61,7 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO::StreamDa
 	if (!this->parsers.SetTo(parsers))
 		return 0;
 
-	if (!Text::StrEqualsC(hdr, 34, UTF8STRC("OziExplorer Map Data File Version ")))
+	if (!Text::StrEqualsC(&hdr[0], 34, UTF8STRC("OziExplorer Map Data File Version ")))
 		return 0;
 
 	IO::StreamDataStream stm(fd);

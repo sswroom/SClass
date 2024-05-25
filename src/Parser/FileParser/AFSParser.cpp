@@ -33,7 +33,7 @@ IO::ParserType Parser::FileParser::AFSParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::AFSParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::AFSParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	IO::VirtualPackageFile *pf;
 	UTF8Char sbuff[9];
@@ -43,7 +43,7 @@ IO::ParsedObject *Parser::FileParser::AFSParser::ParseFileHdr(NN<IO::StreamData>
 	UInt32 ofst;
 	UInt32 leng;
 
-	if (*(Int32*)hdr != *(Int32*)"AFS")
+	if (hdr.ReadNI32(0) != *(Int32*)"AFS")
 		return 0;
 	sbuff[0] = 'A';
 	sbuff[1] = 'F';

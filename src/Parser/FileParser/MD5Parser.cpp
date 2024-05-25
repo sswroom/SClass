@@ -39,7 +39,7 @@ IO::ParserType Parser::FileParser::MD5Parser::GetParserType()
 	return IO::ParserType::FileCheck;
 }
 
-IO::ParsedObject *Parser::FileParser::MD5Parser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::MD5Parser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

@@ -353,23 +353,23 @@ Optional<Map::MapDrawLayer> Map::WebFeatureService::LoadAsLayer()
 		sb.ClearStr();
 		sb.Append(currFeature->title);
 		sb.AppendC(UTF8STRC(".gml"));
-		IO::ParsedObject *pobj = Parser::FileParser::XMLParser::ParseStream(this->encFact, mstm, sb.ToCString(), 0, 0, 0);
-		if (pobj)
+		NN<IO::ParsedObject> pobj;
+		if (Parser::FileParser::XMLParser::ParseStream(this->encFact, mstm, sb.ToCString(), 0, 0, 0).SetTo(pobj))
 		{
 			if (pobj->GetParserType() == IO::ParserType::MapLayer)
 			{
 				if (needSwapXY)
 				{
-					Map::VectorLayer *layer = (Map::VectorLayer*)pobj;
+					NN<Map::VectorLayer> layer = NN<Map::VectorLayer>::ConvertFrom(pobj);
 					layer->SwapXY();
 					return layer;
 				}
 				else
 				{
-					return (Map::MapDrawLayer*)pobj;
+					return NN<Map::MapDrawLayer>::ConvertFrom(pobj);
 				}
 			}
-			DEL_CLASS(pobj);
+			pobj.Delete();
 			return 0;
 		}
 	}

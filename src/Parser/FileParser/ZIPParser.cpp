@@ -77,7 +77,7 @@ typedef struct
 	UInt32 commentSize;
 } ZIPInfoEntry;
 
-IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -92,7 +92,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::StreamData>
 	UInt64 currOfst;
 	UInt64 fileSize = fd->GetDataSize();
 
-	if (ReadInt32(hdr) != 0x04034b50)
+	if (ReadInt32(&hdr[0]) != 0x04034b50)
 	{
 		return 0;
 	}
@@ -467,7 +467,8 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::StreamData>
 			if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".kml")) && pf->GetItemType(ui) == IO::PackageFile::PackObjectType::StreamData)
 			{
 				NN<IO::StreamData> stmData;
-				IO::ParsedObject *pobj = 0;
+				Optional<IO::ParsedObject> pobj = 0;
+				NN<IO::ParsedObject> nnpobj;
 				if (pf->GetItemStmDataNew(ui).SetTo(stmData))
 				{
 					Parser::FileParser::XMLParser xmlParser;
@@ -477,16 +478,16 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::StreamData>
 					pobj = xmlParser.ParseFile(stmData, pf.Ptr(), IO::ParserType::MapLayer);
 					stmData.Delete();
 				}
-				if (pobj)
+				if (pobj.SetTo(nnpobj))
 				{
-					if (pobj->GetParserType() == IO::ParserType::MapLayer)
+					if (nnpobj->GetParserType() == IO::ParserType::MapLayer)
 					{
 						pf.Delete();
-						return pobj;
+						return nnpobj;
 					}
 					else
 					{
-						DEL_CLASS(pobj);
+						nnpobj.Delete();
 					}
 				}
 			}
@@ -499,10 +500,10 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::StreamData>
 		if (parsers->ParseObjectType(pf, targetType).SetTo(newObj))
 		{
 			pf.Delete();
-			return newObj.Ptr();
+			return newObj;
 		}
 	}
-	return pf.Ptr();
+	return pf;
 }
 
 UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NN<IO::VirtualPackageFile> pf, Text::Encoding *enc, NN<IO::StreamData> fd, Data::ByteArrayR buff, UInt64 ofst)

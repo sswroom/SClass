@@ -35,7 +35,7 @@ IO::ParserType Parser::FileParser::PCAPNGParser::GetParserType()
 	return IO::ParserType::EthernetAnalyzer;
 }
 
-IO::ParsedObject *Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UInt32 maxSize = 65536;
 	UInt64 currOfst;
@@ -52,7 +52,7 @@ IO::ParsedObject *Parser::FileParser::PCAPNGParser::ParseFileHdr(NN<IO::StreamDa
 	Net::EthernetAnalyzer *analyzer;
 	Data::DateTime dt;
 
-	if (ReadNInt32(hdr) != 0x0a0d0d0a)
+	if (ReadNInt32(&hdr[0]) != 0x0a0d0d0a)
 	{
 		return 0;
 	}

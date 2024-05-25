@@ -63,15 +63,15 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		if (nnssl->ServerSetCerts(CSTRP(sbuff1, sptr1), CSTRP(sbuff2, sptr2)))
 		{
 			Parser::FileParser::X509Parser parser;
-			IO::ParsedObject *pobj = parser.ParseFilePath(CSTRP(sbuff1, sptr1));
-			if (pobj)
+			NN<IO::ParsedObject> pobj;
+			if (parser.ParseFilePath(CSTRP(sbuff1, sptr1)).SetTo(pobj))
 			{
 				if (pobj->GetParserType() == IO::ParserType::ASN1Data)
 				{
-					Net::ASN1Data *asn1 = (Net::ASN1Data*)pobj;
-					if (asn1->GetASN1Type() == Net::ASN1Data::ASN1Type::X509 && ((Crypto::Cert::X509File*)asn1)->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
+					NN<Net::ASN1Data> asn1 = NN<Net::ASN1Data>::ConvertFrom(pobj);
+					if (asn1->GetASN1Type() == Net::ASN1Data::ASN1Type::X509 && NN<Crypto::Cert::X509File>::ConvertFrom(asn1)->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
 					{
-						Crypto::Cert::X509Cert *cert = (Crypto::Cert::X509Cert*)asn1;
+						NN<Crypto::Cert::X509Cert> cert = NN<Crypto::Cert::X509Cert>::ConvertFrom(asn1);
 						sptr5 = cert->GetSubjectCN(sbuff5);
 						if (sptr5 == 0)
 						{
@@ -96,7 +96,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				{
 					console.WriteLine(CSTR("ADFSCert.crt is not a cert file"));
 				}
-				DEL_CLASS(pobj);
+				pobj.Delete();
 			}
 			else
 			{

@@ -23,8 +23,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		message.SetFrom(CSTR("Test"), CSTR("sswroom@simontest.local"));
 		message.AddTo(CSTR("Simon"), CSTR("sswroom@yahoo.com"));
 //		message.AddAttachment(CSTR("/home/sswroom/Progs/Temp/OCR2.jpg"));
-		message.AddSignature(ssl, (Crypto::Cert::X509Cert*)parser.ParseFilePath(CSTR("/home/sswroom/Progs/VCClass/keystore/Simon_SMIME.crt")),
-			(Crypto::Cert::X509Key*)parser.ParseFilePath(CSTR("/home/sswroom/Progs/VCClass/keystore/Simon_SMIME.key")));
+		message.AddSignature(ssl, Optional<Crypto::Cert::X509Cert>::ConvertFrom(parser.ParseFilePath(CSTR("/home/sswroom/Progs/VCClass/keystore/Simon_SMIME.crt"))).OrNull(),
+			Optional<Crypto::Cert::X509Key>::ConvertFrom(parser.ParseFilePath(CSTR("/home/sswroom/Progs/VCClass/keystore/Simon_SMIME.key"))).OrNull());
 		Net::Email::SMTPClient client(sockf, ssl, CSTR("127.0.0.1"), 25, Net::Email::SMTPConn::ConnType::Plain, &writer, 30000);
 		client.Send(message);
 	}

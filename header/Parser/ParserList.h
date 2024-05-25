@@ -33,8 +33,8 @@ namespace Parser
 		void SetArcGISPRJParser(Optional<Math::ArcGISPRJParser> prjParser);
 		void SetLogTool(Optional<IO::LogTool> log);
 		void PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t);
-		Optional<IO::ParsedObject> ParseFile(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType);
-		Optional<IO::ParsedObject> ParseFile(NN<IO::StreamData> fd, IO::PackageFile *pkgFile);
+		Optional<IO::ParsedObject> ParseFile(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType);
+		Optional<IO::ParsedObject> ParseFile(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile);
 		Optional<IO::ParsedObject> ParseFile(NN<IO::StreamData> fd);
 		Optional<IO::ParsedObject> ParseFileType(NN<IO::StreamData> fd, IO::ParserType t);
 		Optional<IO::ParsedObject> ParseObject(NN<IO::ParsedObject> pobj);

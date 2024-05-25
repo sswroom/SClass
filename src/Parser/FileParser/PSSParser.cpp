@@ -42,7 +42,7 @@ IO::ParserType Parser::FileParser::PSSParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr2;
@@ -82,6 +82,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::StreamData>
 	IO::StreamData *concatFile = 0;
 	UInt32 i;
 	UInt64 currOfst;
+	NN<IO::PackageFile> nnpkgFile;
 
 	stmData[0] = 0;
 	stmData[1] = 0;
@@ -125,7 +126,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::StreamData>
 			concatFile = data.Ptr();
 			fd = data;
 		}
-		else if (pkgFile)
+		else if (pkgFile.SetTo(nnpkgFile))
 		{
 			sptr = fd->GetShortName().ConcatTo(sbuff) - 5;
 /*			IO::StmData::ConcatStreamData *data;

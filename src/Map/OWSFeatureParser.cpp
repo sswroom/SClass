@@ -162,12 +162,12 @@ Bool Map::OWSFeatureParser::ParseGML(Text::CStringNN txt, UInt32 srid, Bool swap
 	UTF8Char *tmpPtr;
 
 	IO::MemoryReadingStream mstm(txt.v, txt.leng);
-	IO::ParsedObject *pobj = Parser::FileParser::XMLParser::ParseStream(encFact, mstm, CSTR("Temp.gml"), 0, 0, 0);
-	if (pobj)
+	NN<IO::ParsedObject> pobj;
+	if (Parser::FileParser::XMLParser::ParseStream(encFact, mstm, CSTR("Temp.gml"), 0, 0, 0).SetTo(pobj))
 	{
 		if (pobj->GetParserType() == IO::ParserType::MapLayer)
 		{
-			Map::MapDrawLayer *layer = (Map::MapDrawLayer*)pobj;
+			NN<Map::MapDrawLayer> layer = NN<Map::MapDrawLayer>::ConvertFrom(pobj);
 			Map::NameArray *nameArr = 0;
 			Data::ArrayListInt64 idArr;
 			layer->GetAllObjectIds(idArr, &nameArr);
@@ -204,12 +204,12 @@ Bool Map::OWSFeatureParser::ParseGML(Text::CStringNN txt, UInt32 srid, Bool swap
 				}
 				layer->EndGetObject(sess);
 				layer->ReleaseNameArr(nameArr);
-				DEL_CLASS(pobj);
+				pobj.Delete();
 				return vecList->GetCount() > 0;
 			}
 			layer->ReleaseNameArr(nameArr);
 		}
-		DEL_CLASS(pobj);
+		pobj.Delete();
 	}
 	return false;
 }

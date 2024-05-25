@@ -7,17 +7,16 @@
 
 void Media::ClockSpeechCh::AppendWAV(NN<Media::AudioConcatSource> source, NN<Parser::FileParser::WAVParser> parser, Text::CStringNN fileName)
 {
-	IO::ParsedObject *pobj;
+	NN<IO::ParsedObject> pobj;
 	{
 		IO::StmData::FileData fd(fileName, false);
-		pobj = parser->ParseFile(fd, 0, IO::ParserType::MediaFile);
+		if (!parser->ParseFile(fd, 0, IO::ParserType::MediaFile).SetTo(pobj))
+			return;
 	}
-	if (pobj == 0)
-		return;
 
 	if (pobj->GetParserType() == IO::ParserType::MediaFile)
 	{
-		Media::MediaFile *file = (Media::MediaFile *)pobj;
+		NN<Media::MediaFile> file = NN<Media::MediaFile>::ConvertFrom(pobj);
 		NN<Media::IMediaSource> msrc;
 		Int32 syncTime;
 		UOSInt i = 0;
@@ -33,11 +32,11 @@ void Media::ClockSpeechCh::AppendWAV(NN<Media::AudioConcatSource> source, NN<Par
 				}
 			}
 		}
-		DEL_CLASS(pobj);
+		pobj.Delete();
 	}
 	else
 	{
-		DEL_CLASS(pobj);
+		pobj.Delete();
 	}
 }
 

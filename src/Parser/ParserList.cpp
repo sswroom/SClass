@@ -198,12 +198,12 @@ void Parser::ParserList::PrepareSelector(NN<IO::FileSelector> selector, IO::Pars
 	}
 }
 
-Optional<IO::ParsedObject> Parser::ParserList::ParseFile(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+Optional<IO::ParsedObject> Parser::ParserList::ParseFile(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType)
 {
 	UOSInt i = 0;
 	UOSInt j = this->filePArr.GetCount();
 	NN<IO::FileParser> parser;
-	IO::ParsedObject *result;
+	NN<IO::ParsedObject> result;
 	if (fd->GetDataSize() <= 0)
 		return 0;
 	Data::ByteBuffer hdr(IO::FileParser::hdrSize);
@@ -236,7 +236,7 @@ Optional<IO::ParsedObject> Parser::ParserList::ParseFile(NN<IO::StreamData> fd, 
 	while (i < j)
 	{
 		parser = this->filePArr.GetItemNoCheck(i);
-		if ((result = parser->ParseFileHdr(fd, pkgFile, targetType, hdr.Ptr().Ptr())) != 0)
+		if (parser->ParseFileHdr(fd, pkgFile, targetType, hdr).SetTo(result))
 		{
 			return result;
 		}
@@ -245,7 +245,7 @@ Optional<IO::ParsedObject> Parser::ParserList::ParseFile(NN<IO::StreamData> fd, 
 	return 0;
 }
 
-Optional<IO::ParsedObject> Parser::ParserList::ParseFile(NN<IO::StreamData> fd, IO::PackageFile *pkgFile)
+Optional<IO::ParsedObject> Parser::ParserList::ParseFile(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile)
 {
 	return ParseFile(fd, pkgFile, IO::ParserType::Unknown);
 }

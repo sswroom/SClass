@@ -31,9 +31,9 @@ IO::ParserType Parser::FileParser::M2VStmParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::M2VStmParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::M2VStmParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
-	if (ReadMInt32(hdr) != 0x1b3)
+	if (hdr.ReadMI32(0) != 0x1b3)
 		return 0;
 	UInt8 tmpBuff[1024];
 	UOSInt readSize = fd->GetRealData(0, 1024, BYTEARR(tmpBuff));

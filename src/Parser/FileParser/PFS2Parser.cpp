@@ -41,7 +41,7 @@ typedef struct
 	UInt32 recCnt;
 } PF2Header;
 
-IO::ParsedObject *Parser::FileParser::PFS2Parser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::PFS2Parser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	NN<Text::String> fileName = fd->GetFullName();
 	if (!fileName->EndsWithICase(UTF8STRC(".pfs")))

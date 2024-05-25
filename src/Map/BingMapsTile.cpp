@@ -77,7 +77,7 @@ Map::BingMapsTile::BingMapsTile(ImagerySet is, Text::CString key, Text::CString 
 			Parser::FileParser::PNGParser parser;
 			IO::StmData::MemoryDataRef fd(mstm.GetBuff(), (UOSInt)mstm.GetLength());
 			NN<IO::ParsedObject> pobj;
-			if (pobj.Set(parser.ParseFile(fd, 0, IO::ParserType::ImageList)))
+			if (parser.ParseFile(fd, 0, IO::ParserType::ImageList).SetTo(pobj))
 			{
 				NEW_CLASS(this->brandLogoImg, Media::SharedImage(NN<Media::ImageList>::ConvertFrom(pobj), false));
 			}

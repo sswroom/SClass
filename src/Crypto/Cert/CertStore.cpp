@@ -67,7 +67,7 @@ Bool Crypto::Cert::CertStore::LoadDir(Text::CStringNN certsDir)
 			if (pt == IO::Path::PathType::File)
 			{
 				NN<IO::ParsedObject> pobj;
-				if (pobj.Set(parser.ParseFilePath(CSTRP(sbuff, sptr2))))
+				if (parser.ParseFilePath(CSTRP(sbuff, sptr2)).SetTo(pobj))
 				{
 					if (pobj->GetParserType() == IO::ParserType::ASN1Data)
 					{
@@ -108,11 +108,11 @@ Bool Crypto::Cert::CertStore::LoadDir(Text::CStringNN certsDir)
 Bool Crypto::Cert::CertStore::LoadJavaCACerts(Text::CStringNN jksPath)
 {
 	Parser::FileParser::JKSParser parser;
-	IO::PackageFile *pkg = (IO::PackageFile*)parser.ParseFilePath(jksPath);
-	if (pkg)
+	NN<IO::PackageFile> pkg;
+	if (Optional<IO::PackageFile>::ConvertFrom(parser.ParseFilePath(jksPath)).SetTo(pkg))
 	{
 		this->FromPackageFile(pkg);
-		DEL_CLASS(pkg);
+		pkg.Delete();
 		return true;
 	}
 	else
@@ -138,7 +138,7 @@ void Crypto::Cert::CertStore::AddCert(NN<Crypto::Cert::X509Cert> cert)
 	}
 }
 
-void Crypto::Cert::CertStore::FromPackageFile(IO::PackageFile *pkg)
+void Crypto::Cert::CertStore::FromPackageFile(NN<IO::PackageFile> pkg)
 {
 	UOSInt i = 0;
 	UOSInt j = pkg->GetCount();

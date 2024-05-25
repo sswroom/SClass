@@ -56,8 +56,8 @@ void __stdcall PlayThread(NN<Sync::Thread> thread)
 	Media::RefClock *clk;
 	Data::DateTime currDt;
 	Data::DateTime updateDt;
-	Data::ArrayList<Media::MediaFile*> stmList;
-	Media::MediaFile *file;
+	Data::ArrayListNN<Media::MediaFile> stmList;
+	NN<Media::MediaFile> file;
 	Data::RandomOS random;
 	UOSInt i;
 	UOSInt currStm;
@@ -76,11 +76,8 @@ void __stdcall PlayThread(NN<Sync::Thread> thread)
 		sptr = Text::StrUOSInt(sptr, i);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".wav"));
 
-		{
-			IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
-			file = (Media::MediaFile*)parser.ParseFile(fd, 0, IO::ParserType::MediaFile);
-		}
-		if (file)
+		IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
+		if (Optional<Media::MediaFile>::ConvertFrom(parser.ParseFile(fd, 0, IO::ParserType::MediaFile)).SetTo(file))
 		{
 			stmList.Add(file);
 			i++;
@@ -189,7 +186,7 @@ void __stdcall PlayThread(NN<Sync::Thread> thread)
 				}
 				currStm = i;
 			}
-			file = (Media::MediaFile*)stmList.GetItem(currStm);
+			file = stmList.GetItemNoCheck(currStm);
 
 			if (audOut->BindAudio((Media::IAudioSource*)file->GetStream(0, 0).OrNull()))
 			{
@@ -230,12 +227,7 @@ void __stdcall PlayThread(NN<Sync::Thread> thread)
 
 	DEL_CLASS(clk);
 
-	i = stmList.GetCount();
-	while (i-- > 0)
-	{
-		file = (Media::MediaFile *)stmList.RemoveAt(i);
-		DEL_CLASS(file);
-	}
+	stmList.DeleteAll();
 }
 
 Int32 MyMain(NN<Core::IProgControl> progCtrl)

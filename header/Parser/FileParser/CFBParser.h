@@ -47,7 +47,7 @@ namespace Parser
 			virtual Int32 GetName();
 			virtual void PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
-			virtual IO::ParsedObject *ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
+			virtual Optional<IO::ParsedObject> ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr);
 		private:
 			static Bool ParseWorkbook(NN<IO::StreamData> fd, UInt64 ofst, UInt64 ofstRef, NN<Text::SpreadSheet::Workbook> wb);
 			static Bool ParseWorksheet(NN<IO::StreamData> fd, UInt64 ofst, NN<Text::SpreadSheet::Workbook> wb, NN<Text::SpreadSheet::Worksheet> ws, WorkbookStatus *status);

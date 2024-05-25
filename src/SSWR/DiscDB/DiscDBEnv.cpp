@@ -569,14 +569,14 @@ Bool SSWR::DiscDB::DiscDBEnv::AddMD5(NN<IO::StreamData> fd)
 {
 	Parser::FileParser::MD5Parser parser;
 	parser.SetCodePage(65001);
-	IO::FileCheck *fileChk = (IO::FileCheck*)parser.ParseFile(fd, 0, IO::ParserType::FileCheck);
-	if (fileChk == 0)
+	NN<IO::FileCheck> fileChk;
+	if (!Optional<IO::FileCheck>::ConvertFrom(parser.ParseFile(fd, 0, IO::ParserType::FileCheck)).SetTo(fileChk))
 	{
 		return false;
 	}
 	if (fileChk->GetCheckType() != Crypto::Hash::HashType::MD5)
 	{
-		DEL_CLASS(fileChk);
+		fileChk.Delete();
 		return false;
 	}
 	Text::StringBuilderUTF8 sbDiscId;
@@ -645,6 +645,6 @@ Bool SSWR::DiscDB::DiscDBEnv::AddMD5(NN<IO::StreamData> fd)
 		db->ExecuteNonQuery(sql.ToCString());
 		i++;
 	}
-	DEL_CLASS(fileChk);
+	fileChk.Delete();
 	return true;
 }

@@ -17,7 +17,7 @@ namespace Parser
 			virtual Int32 GetName();
 			virtual void PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
-			virtual IO::ParsedObject *ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
+			virtual Optional<IO::ParsedObject> ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr);
 
 			static Crypto::Cert::X509File *ParseBuff(Data::ByteArrayR buff, NN<Text::String> fileName);
 			static Optional<Crypto::Cert::X509File> ToType(NN<IO::ParsedObject> pobj, Crypto::Cert::X509File::FileType ftype);

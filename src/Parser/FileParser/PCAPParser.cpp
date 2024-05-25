@@ -33,7 +33,7 @@ IO::ParserType Parser::FileParser::PCAPParser::GetParserType()
 	return IO::ParserType::EthernetAnalyzer;
 }
 
-IO::ParsedObject *Parser::FileParser::PCAPParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::PCAPParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UInt32 maxSize = 65536;
 	UInt64 currOfst;
@@ -44,7 +44,7 @@ IO::ParsedObject *Parser::FileParser::PCAPParser::ParseFileHdr(NN<IO::StreamData
 	Net::EthernetAnalyzer *analyzer;
 	UInt8 dataBuff[16];
 
-	if (ReadUInt32(hdr) == 0xa1b2c3d4)
+	if (ReadUInt32(&hdr[0]) == 0xa1b2c3d4)
 	{
 		linkType = ReadUInt32(&hdr[20]);
 		NEW_CLASS(analyzer, Net::EthernetAnalyzer(0, Net::EthernetAnalyzer::AT_ALL, fd->GetFullFileName()));
@@ -69,7 +69,7 @@ IO::ParsedObject *Parser::FileParser::PCAPParser::ParseFileHdr(NN<IO::StreamData
 		}
 		return analyzer;
 	}
-	else if (ReadMUInt32(hdr) == 0xa1b2c3d4)
+	else if (ReadMUInt32(&hdr[0]) == 0xa1b2c3d4)
 	{
 		linkType = ReadMUInt32(&hdr[20]);
 		NEW_CLASS(analyzer, Net::EthernetAnalyzer(0, Net::EthernetAnalyzer::AT_ALL, fd->GetFullFileName()));

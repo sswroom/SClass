@@ -29,7 +29,7 @@ IO::ParserType Parser::FileParser::IMGParser::GetParserType()
 	return IO::ParserType::SectorData;
 }
 
-IO::ParsedObject *Parser::FileParser::IMGParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::IMGParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	if (hdr[0] == 0xeb && hdr[510] == 0x55 && hdr[511] == 0xaa && (fd->GetDataSize() & 511) == 0)
 	{

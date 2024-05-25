@@ -23,7 +23,7 @@ namespace Crypto
 			Bool LoadDir(Text::CStringNN certsDir);
 			Bool LoadJavaCACerts(Text::CStringNN jksPath);
 			void AddCert(NN<Crypto::Cert::X509Cert> cert);
-			void FromPackageFile(IO::PackageFile *pkg);
+			void FromPackageFile(NN<IO::PackageFile> pkg);
 			NN<Text::String> GetStoreName() const;
 
 			Optional<Crypto::Cert::X509Cert> GetCertByCN(Text::CStringNN commonName);

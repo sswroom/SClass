@@ -41,18 +41,18 @@ IO::ParserType Parser::FileParser::SHPParser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::SHPParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::SHPParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	NN<Math::ArcGISPRJParser> prjParser;
 	if (!fd->IsFullFile() || !this->prjParser.SetTo(prjParser))
 		return 0;
-	if (ReadMInt32(hdr) != 9994 || ReadInt32(&hdr[28]) != 1000 || (ReadMUInt32(&hdr[24]) << 1) != fd->GetDataSize())
+	if (ReadMInt32(&hdr[0]) != 9994 || ReadInt32(&hdr[28]) != 1000 || (ReadMUInt32(&hdr[24]) << 1) != fd->GetDataSize())
 	{
 		return 0;
 	}
 
 	Map::SHPData *shp;
-	NEW_CLASS(shp, Map::SHPData(hdr, fd, this->codePage, prjParser));
+	NEW_CLASS(shp, Map::SHPData(&hdr[0], fd, this->codePage, prjParser));
 	if (shp->IsError())
 	{
 		DEL_CLASS(shp);

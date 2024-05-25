@@ -29,9 +29,9 @@ IO::ParserType Parser::FileParser::TSPParser::GetParserType()
 	return IO::ParserType::ReadingDB;
 }
 
-IO::ParsedObject *Parser::FileParser::TSPParser::ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr)
+Optional<IO::ParsedObject> Parser::FileParser::TSPParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
-	if (*(Int64*)hdr != *(Int64*)"SmTS____" && *(Int64*)hdr != *(Int64*)"SmTS___A" && *(Int64*)hdr != *(Int64*)"SmTS___B")
+	if (hdr.ReadNI64(0) != *(Int64*)"SmTS____" && hdr.ReadNI64(0) != *(Int64*)"SmTS___A" && hdr.ReadNI64(0) != *(Int64*)"SmTS___B")
 	{
 		return 0;
 	}

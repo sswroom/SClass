@@ -11,10 +11,10 @@ namespace IO
 	public:
 		virtual ~FileParser(){};
 
-		virtual IO::ParsedObject *ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr) = 0;
-		IO::ParsedObject *ParseFile(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType);
+		virtual Optional<IO::ParsedObject> ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr) = 0;
+		Optional<IO::ParsedObject> ParseFile(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType);
 
-		IO::ParsedObject *ParseFilePath(Text::CStringNN filePath);
+		Optional<IO::ParsedObject> ParseFilePath(Text::CStringNN filePath);
 
 		static const UOSInt hdrSize;
 	};
