@@ -1,5 +1,15 @@
 import * as text from "./text.js";
 
+export const Weekday = {
+	Sunday: 0,
+	Monday: 1,
+	Tuesday: 2,
+	Wednesday: 3,
+	Thursday: 4,
+	Friday: 5,
+	Saturday: 6
+}
+
 export function isArray(o)
 {
 	return o != null && o.constructor === Array;
@@ -822,6 +832,19 @@ export class DateTimeUtil
 		t.tzQhr = tzQhr;
 		DateTimeUtil.totalDays2DateValue(totalDays, t);
 		return t;
+	}
+
+	static ticks2Weekday(ticks, tzQhr)
+	{
+		let days = ((ticks + tzQhr * 900000) / 86400000 + 4);
+		if (days >= 0)
+		{
+			return (days % 7);
+		}
+		else
+		{
+			return ((days % 7) + 7);
+		}
 	}
 
 	static toString(tval, pattern)
@@ -1798,6 +1821,11 @@ export class LocalDate
 		return this.dateVal == LocalDate.DATE_NULL;
 	}
 
+	getWeekday()
+	{
+		return DateTimeUtil.ticks2Weekday(this.dateVal * 86400000, 0);
+	}
+
 	static today()
 	{
 		let d = new Date();
@@ -2218,6 +2246,11 @@ export class Timestamp
 	diff(ts)
 	{
 		return this.inst.diff(ts.inst);
+	}
+
+	toDate()
+	{
+		return new LocalDate(Math.floor(Number((this.inst.sec + BigInt(this.tzQhr * 900)) / 86400n)));
 	}
 
 	toTicks()

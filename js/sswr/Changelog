@@ -2,6 +2,10 @@
 -Support geometry.Polyline
 -leaflet.createFromKML support group in group
 -parser.parseKMLContainer hide Schema message
+-Added data.Timestamp.toDate()
+-Added data.Weekday enum
+-Added data.DateTimeUtil.ticks2Weekday()
+-Added data.LocalDate.getWeekday()
 
 1.6.3
 -Added hash.MD5

@@ -1,3 +1,14 @@
+export enum Weekday
+{
+	Sunday,
+	Monday,
+	Tuesday,
+	Wednesday,
+	Thursday,
+	Friday,
+	Saturday
+}
+
 export function isArray(o: any): boolean;
 export function isObject(o: any): boolean;
 export function toObjectString(o: any, lev: number): string;
@@ -53,6 +64,7 @@ export class DateTimeUtil
 	static secs2TimeValue(secs: bigint, tzQhr?: number): TimeValue;
 	static totalDays2DateValue(totalDays: number, d: DateValue): void;
 	static instant2TimeValue(secs: bigint, nanosec: number, tzQhr?: number): TimeValue;
+	static ticks2Weekday(ticks: number, tzQhr: number): Weekday;
 	static toString(tval: TimeValue, pattern: string): string;
 	static string2TimeValue(dateStr: string, tzQhr?: number): TimeValue;
 	static isYearLeap(year: number): boolean;
@@ -98,6 +110,7 @@ export class LocalDate
 	toString(pattern: string | null): string;
 	compareTo(obj: Date): number;
 	isNull(): boolean;
+	getWeekday(): Weekday;
 	static today(): LocalDate;
 	static fromStr(s: string): LocalDate | null;
 }
@@ -134,6 +147,9 @@ export class TimeInstant
 }
 
 export class Timestamp {
+	inst: TimeInstant;
+	tzQhr: number;
+
 	constructor(inst: TimeInstant, tzQhr?: number);
 	static fromTicks(ticks: number | number, tzQhr?: number): Timestamp;
 	static fromStr(str: string, defTzQhr?: number): Timestamp | null;
@@ -167,6 +183,7 @@ export class Timestamp {
 	diffMS(ts: Timestamp): number;
 	diffSecDbl(ts: Timestamp): number;
 	diff(ts: Timestamp): number;
+	toDate(): LocalDate;
 	toTicks(): number;
 	toDotNetTicks(): number;
 	toUnixTimestamp(): number;

@@ -157,6 +157,11 @@ namespace Data
 			return this->dateVal == DATE_NULL;
 		}
 
+		DateTimeUtil::Weekday GetWeekday() const
+		{
+			return DateTimeUtil::Ticks2Weekday(this->dateVal * 86400000, 0);
+		}
+
 		Int32 ToYMD() const
 		{
 			DateTimeUtil::DateValue d;

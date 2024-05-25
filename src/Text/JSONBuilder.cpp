@@ -120,6 +120,18 @@ void Text::JSONBuilder::AppendStrW(const WChar *val)
 	this->sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
+void Text::JSONBuilder::AppendDouble(Double val)
+{
+	if (Math::IsNAN(val))
+	{
+		this->sb.Append(CSTR("null"));
+	}
+	else
+	{
+		this->sb.AppendDouble(val);
+	}
+}
+
 void Text::JSONBuilder::AppendTSStr(Data::Timestamp ts)
 {
 	UTF8Char sbuff[64];
@@ -153,9 +165,9 @@ void Text::JSONBuilder::AppendDateStr(Data::Date dat)
 void Text::JSONBuilder::AppendCoord2D(Math::Coord2DDbl coord)
 {
 	this->sb.AppendUTF8Char('[');
-	this->sb.AppendDouble(coord.x);
+	this->AppendDouble(coord.x);
 	this->sb.AppendUTF8Char(',');
-	this->sb.AppendDouble(coord.y);
+	this->AppendDouble(coord.y);
 	this->sb.AppendUTF8Char(']');
 }
 
@@ -366,7 +378,7 @@ Bool Text::JSONBuilder::ArrayAddFloat64(Double val)
 	{
 		this->sb.AppendC(UTF8STRC(","));
 	}
-	this->sb.AppendDouble(val);
+	this->AppendDouble(val);
 	return true;
 }
 
@@ -486,9 +498,9 @@ Bool Text::JSONBuilder::ArrayAddCoord2D(Math::Coord2DDbl coord)
 		this->sb.AppendC(UTF8STRC(","));
 	}
 	this->sb.AppendUTF8Char('[');
-	this->sb.AppendDouble(coord.x);
+	this->AppendDouble(coord.x);
 	this->sb.AppendUTF8Char(',');
-	this->sb.AppendDouble(coord.y);
+	this->AppendDouble(coord.y);
 	this->sb.AppendUTF8Char(']');
 	return true;
 }
@@ -504,11 +516,11 @@ Bool Text::JSONBuilder::ArrayAddVector3(Math::Vector3 vec3)
 		this->sb.AppendC(UTF8STRC(","));
 	}
 	this->sb.AppendUTF8Char('[');
-	this->sb.AppendDouble(vec3.GetX());
+	this->AppendDouble(vec3.GetX());
 	this->sb.AppendUTF8Char(',');
-	this->sb.AppendDouble(vec3.GetY());
+	this->AppendDouble(vec3.GetY());
 	this->sb.AppendUTF8Char(',');
-	this->sb.AppendDouble(vec3.GetZ());
+	this->AppendDouble(vec3.GetZ());
 	this->sb.AppendUTF8Char(']');
 	return true;
 }
@@ -624,7 +636,7 @@ Bool Text::JSONBuilder::ObjectAddFloat64(Text::CStringNN name, Double val)
 	}
 	this->AppendStr(name);
 	this->sb.AppendC(UTF8STRC(":"));
-	this->sb.AppendDouble(val);
+	this->AppendDouble(val);
 	return true;
 }
 
@@ -984,11 +996,11 @@ Bool Text::JSONBuilder::ObjectAddVector3(Text::CStringNN name, Math::Vector3 vec
 	}
 	this->AppendStr(name);
 	this->sb.AppendC(UTF8STRC(":["));
-	this->sb.AppendDouble(vec3.GetX());
+	this->AppendDouble(vec3.GetX());
 	this->sb.AppendUTF8Char(',');
-	this->sb.AppendDouble(vec3.GetY());
+	this->AppendDouble(vec3.GetY());
 	this->sb.AppendUTF8Char(',');
-	this->sb.AppendDouble(vec3.GetZ());
+	this->AppendDouble(vec3.GetZ());
 	this->sb.AppendUTF8Char(']');
 	return true;
 }
