@@ -22,7 +22,7 @@ namespace Media
 		Data::ArrayListNN<PlaylistEntry> entries;
 		NN<Parser::ParserList> parsers;
 		Media::IMediaPlayer *player;
-		Media::MediaFile *currFile;
+		Optional<Media::MediaFile> currFile;
 		Bool playing;
 
 		static void __stdcall OnPBEnd(AnyType userObj);

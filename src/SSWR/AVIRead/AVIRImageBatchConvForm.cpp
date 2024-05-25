@@ -234,14 +234,14 @@ void SSWR::AVIRead::AVIRImageBatchConvForm::MTConvertFile(ConvertSess *sess, Tex
 
 void SSWR::AVIRead::AVIRImageBatchConvForm::ConvertFile(ConvertSess *sess, Text::CStringNN srcFile, Text::CStringNN destFile)
 {
-	Media::ImageList *imgList;
+	Optional<Media::ImageList> imgList;
 	NN<Media::ImageList> nnimgList;
 	Optional<IO::FileExporter::ParamData> param;
 	{
 		IO::StmData::FileData fd(srcFile, false);
-		imgList = (Media::ImageList*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
+		imgList = Optional<Media::ImageList>::ConvertFrom(this->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList));
 	}
-	if (nnimgList.Set(imgList))
+	if (imgList.SetTo(nnimgList))
 	{
 		nnimgList->ToStaticImage(0);
 		param = sess->exporter->CreateParam(nnimgList);

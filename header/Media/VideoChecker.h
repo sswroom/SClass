@@ -37,7 +37,7 @@ namespace Media
 		~VideoChecker();
 
 		void SetAllowTimeSkip(Bool allowTimeSkip);
-		Bool IsValid(Media::MediaFile *mediaFile);
+		Bool IsValid(NN<Media::MediaFile> mediaFile);
 	};
 }
 #endif

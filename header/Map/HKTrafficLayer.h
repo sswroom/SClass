@@ -69,7 +69,7 @@ namespace Map
 		virtual ~HKTrafficLayer();
 
 		void SetURL(Text::String *url);
-		Bool AddRoadLayer(Map::MapDrawLayer *roadLayer);
+		Bool AddRoadLayer(NN<Map::MapDrawLayer> roadLayer);
 		void EndInit();
 		void ReloadData();
 

@@ -179,18 +179,19 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 		{
 			if (pt == IO::Path::PathType::File)
 			{
-				Media::ImageList *imgList;
+				Optional<Media::ImageList> imgList;
+				NN<Media::ImageList> nnimgList;
 				Sync::MutexUsage mutUsage(this->ioMut);
 				{
 					IO::StmData::FileData fd(CSTRP(sbuff, sptr3), false);
-					imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
+					imgList = Optional<Media::ImageList>::ConvertFrom(parsers->ParseFileType(fd, IO::ParserType::ImageList));
 				}
 				mutUsage.EndUse();
-				if (imgList)
+				if (imgList.SetTo(nnimgList))
 				{
 					NN<Media::StaticImage> simg;
-					imgList->ToStaticImage(0);
-					if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(simg))
+					nnimgList->ToStaticImage(0);
+					if (Optional<Media::StaticImage>::ConvertFrom(nnimgList->GetImage(0, 0)).SetTo(simg))
 					{
 						NN<Media::StaticImage> simg2;
 						sptr2End = Text::StrConcatC(Text::StrConcatC(sptr2, sptr, (UOSInt)(sptr3 - sptr)), UTF8STRC(".png"));
@@ -206,7 +207,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 							}
 							mutUsage.EndUse();
 						}
-						DEL_CLASS(imgList);
+						nnimgList.Delete();
 
 						status = MemAlloc(SSWR::AVIRead::AVIRImageControl::ImageStatus, 1);
 						status->filePath = Text::String::NewP(sbuff, sptr3);
@@ -238,7 +239,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 					}
 					else
 					{
-						DEL_CLASS(imgList);
+						nnimgList.Delete();
 					}
 				}
 				currCnt++;
@@ -287,7 +288,7 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 		if (status == 0)
 			break;
 
-		if (img.Set(this->LoadImage(status->fileName.v)))
+		if (this->LoadImage(status->fileName.v).SetTo(img))
 		{
 			this->ApplySetting(img, img, status->setting);
 			sptr2 = status->fileName.ConcatTo(sptr);
@@ -950,11 +951,12 @@ void SSWR::AVIRead::AVIRImageControl::SetProgressHandler(ProgressUpdated hdlr, A
 	this->progHdlrObj = userObj;
 }
 
-Media::StaticImage *SSWR::AVIRead::AVIRImageControl::LoadImage(const UTF8Char *fileName)
+Optional<Media::StaticImage> SSWR::AVIRead::AVIRImageControl::LoadImage(const UTF8Char *fileName)
 {
 	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
-	Media::StaticImage *outImg = 0;
-	Media::ImageList *imgList = 0;
+	Optional<Media::StaticImage> outImg = 0;
+	Optional<Media::ImageList> imgList = 0;
+	NN<Media::ImageList> nnimgList;
 	NN<Media::RasterImage> img;
 
 	Sync::MutexUsage mutUsage(this->imgMut);
@@ -963,18 +965,18 @@ Media::StaticImage *SSWR::AVIRead::AVIRImageControl::LoadImage(const UTF8Char *f
 	{
 		Sync::MutexUsage ioMutUsage(this->ioMut);
 		IO::StmData::FileData fd(status->filePath, false);
-		imgList = (Media::ImageList*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
+		imgList = Optional<Media::ImageList>::ConvertFrom(this->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList));
 		ioMutUsage.EndUse();
 	}
 	mutUsage.EndUse();
 
-	if (imgList)
+	if (imgList.SetTo(nnimgList))
 	{
-		if (imgList->GetImage(0, 0).SetTo(img))
+		if (nnimgList->GetImage(0, 0).SetTo(img))
 		{
 			outImg = img->CreateStaticImage().Ptr();
 		}
-		DEL_CLASS(imgList);
+		nnimgList.Delete();
 	}
 
 	if (status->setting.cropEnabled)
@@ -984,11 +986,12 @@ Media::StaticImage *SSWR::AVIRead::AVIRImageControl::LoadImage(const UTF8Char *f
 	return outImg;
 }
 
-Media::StaticImage *SSWR::AVIRead::AVIRImageControl::LoadOriImage(const UTF8Char *fileName)
+Optional<Media::StaticImage> SSWR::AVIRead::AVIRImageControl::LoadOriImage(const UTF8Char *fileName)
 {
 	SSWR::AVIRead::AVIRImageControl::ImageStatus *status;
-	Media::StaticImage *outImg = 0;
-	Media::ImageList *imgList = 0;
+	Optional<Media::StaticImage> outImg = 0;
+	Optional<Media::ImageList> imgList = 0;
+	NN<Media::ImageList> nnimgList;
 	NN<Media::RasterImage> img;
 
 	Sync::MutexUsage mutUsage(this->imgMut);
@@ -997,18 +1000,18 @@ Media::StaticImage *SSWR::AVIRead::AVIRImageControl::LoadOriImage(const UTF8Char
 	{
 		Sync::MutexUsage ioMutUsage(this->ioMut);
 		IO::StmData::FileData fd(status->filePath, false);
-		imgList = (Media::ImageList*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
+		imgList = Optional<Media::ImageList>::ConvertFrom(this->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList));
 		ioMutUsage.EndUse();
 	}
 	mutUsage.EndUse();
 
-	if (imgList)
+	if (imgList.SetTo(nnimgList))
 	{
-		if (imgList->GetImage(0, 0).SetTo(img))
+		if (nnimgList->GetImage(0, 0).SetTo(img))
 		{
 			outImg = img->CreateStaticImage().Ptr();
 		}
-		DEL_CLASS(imgList);
+		nnimgList.Delete();
 	}
 	return outImg;
 }

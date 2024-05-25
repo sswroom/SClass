@@ -1,9 +1,10 @@
 #include "Stdafx.h"
 #include "Media/PDFDocument.h"
 
-IO::ParsedObject *Media::PDFDocument::SetPObjName(IO::ParsedObject *pobj, UInt32 objId, Text::CString ext)
+Optional<IO::ParsedObject> Media::PDFDocument::SetPObjName(Optional<IO::ParsedObject> pobj, UInt32 objId, Text::CString ext)
 {
-	if (pobj)
+	NN<IO::ParsedObject> nnpobj;
+	if (pobj.SetTo(nnpobj))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.Append(this->sourceName);
@@ -13,7 +14,7 @@ IO::ParsedObject *Media::PDFDocument::SetPObjName(IO::ParsedObject *pobj, UInt32
 		{
 			sb.Append(ext);
 		}
-		pobj->SetSourceName(sb.ToCString());
+		nnpobj->SetSourceName(sb.ToCString());
 	}
 	return pobj;
 }
@@ -65,7 +66,7 @@ NN<Media::PDFObject> Media::PDFDocument::AddObject(UInt32 id)
 	return obj;
 }
 
-Media::ImageList *Media::PDFDocument::CreateImage(UInt32 id, NN<Parser::ParserList> parsers)
+Optional<Media::ImageList> Media::PDFDocument::CreateImage(UInt32 id, NN<Parser::ParserList> parsers)
 {
 	NN<Media::PDFObject> obj;
 	if (!this->objMap.Get(id).SetTo(obj))
@@ -78,11 +79,11 @@ Media::ImageList *Media::PDFDocument::CreateImage(UInt32 id, NN<Parser::ParserLi
 	{
 		if (filter->Equals(UTF8STRC("DCTDecode")))
 		{
-			return (Media::ImageList*)SetPObjName(parsers->ParseFileType(fd, IO::ParserType::ImageList), id, CSTR(".jpg"));
+			return Optional<Media::ImageList>::ConvertFrom(SetPObjName(parsers->ParseFileType(fd, IO::ParserType::ImageList), id, CSTR(".jpg")));
 		}
 		if (filter->Equals(UTF8STRC("[/DCTDecode]")))
 		{
-			return (Media::ImageList*)SetPObjName(parsers->ParseFileType(fd, IO::ParserType::ImageList), id, CSTR(".jpg"));
+			return Optional<Media::ImageList>::ConvertFrom(SetPObjName(parsers->ParseFileType(fd, IO::ParserType::ImageList), id, CSTR(".jpg")));
 		}
 		if (filter->Equals(UTF8STRC("FlateDecode")))
 		{

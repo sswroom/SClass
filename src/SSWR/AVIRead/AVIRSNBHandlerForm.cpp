@@ -31,15 +31,12 @@ void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnTypeSelChg(AnyType userObj)
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
 
 	me->pbImage->SetImage(0);
-	SDEL_CLASS(me->simg);
+	me->simg.Delete();
 
 	NN<Parser::ParserList> parsers = me->core->GetParserList();
-	Media::ImageList *imgList;
-	{
-		IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
-		imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
-	}
-	if (imgList)
+	NN<Media::ImageList> imgList;
+	IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
+	if (Optional<Media::ImageList>::ConvertFrom(parsers->ParseFileType(fd, IO::ParserType::ImageList)).SetTo(imgList))
 	{
 		imgList->ToStaticImage(0);
 		me->simg = imgList;
@@ -93,7 +90,7 @@ SSWR::AVIRead::AVIRSNBHandlerForm::AVIRSNBHandlerForm(Optional<UI::GUIClientCont
 SSWR::AVIRead::AVIRSNBHandlerForm::~AVIRSNBHandlerForm()
 {
 	this->ClearChildren();
-	SDEL_CLASS(this->simg);
+	this->simg.Delete();
 }
 
 void SSWR::AVIRead::AVIRSNBHandlerForm::OnMonitorChanged()

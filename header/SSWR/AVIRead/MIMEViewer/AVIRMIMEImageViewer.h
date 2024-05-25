@@ -17,7 +17,7 @@ namespace SSWR
 				NN<UI::GUIPictureBoxDD> pbContent;
 
 				NN<Text::MIMEObj::UnknownMIMEObj> obj;
-				Media::ImageList *imgList;
+				Optional<Media::ImageList> imgList;
 
 			public:
 				AVIRMIMEImageViewer(NN<SSWR::AVIRead::AVIRCore> core, NN<UI::GUICore> ui, NN<UI::GUIClientControl> ctrl, NN<Media::ColorManagerSess> sess, NN<Text::MIMEObj::UnknownMIMEObj> obj);

@@ -443,18 +443,21 @@ Media::ImageList *Map::TileMapServiceSource::LoadTileImage(UOSInt level, Math::C
 {
 	ImageType it;
 	NN<IO::StreamData> fd;
-	IO::ParsedObject *pobj;
+	NN<IO::ParsedObject> pobj;
 	if (this->LoadTileImageData(level, tileId, bounds, localOnly, it).SetTo(fd))
 	{
-		pobj = parsers->ParseFile(fd);
-		fd.Delete();
-		if (pobj)
+		if (parsers->ParseFile(fd).SetTo(pobj))
 		{
+			fd.Delete();
 			if (pobj->GetParserType() == IO::ParserType::ImageList)
 			{
-				return (Media::ImageList*)pobj;
+				return NN<Media::ImageList>::ConvertFrom(pobj).Ptr();
 			}
-			DEL_CLASS(pobj);
+			pobj.Delete();
+		}
+		else
+		{
+			fd.Delete();
 		}
 	}
 	return 0;

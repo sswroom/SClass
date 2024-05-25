@@ -35,13 +35,11 @@ Media::MediaPlayerInterface::~MediaPlayerInterface()
 
 Bool Media::MediaPlayerInterface::OpenFile(Text::CStringNN fileName, IO::ParserType targetType)
 {
-	IO::ParsedObject *pobj;
-
+	NN<IO::ParsedObject> pobj;
 	IO::StmData::FileData fd(fileName, false);
-	pobj = this->parsers->ParseFileType(fd, targetType);
-	if (pobj)
+	if (this->parsers->ParseFileType(fd, targetType).SetTo(pobj))
 	{
-		return OpenVideo((Media::MediaFile*)pobj);
+		return OpenVideo(NN<Media::MediaFile>::ConvertFrom(pobj));
 	}
 	else
 	{
@@ -49,7 +47,7 @@ Bool Media::MediaPlayerInterface::OpenFile(Text::CStringNN fileName, IO::ParserT
 	}
 }
 
-Bool Media::MediaPlayerInterface::OpenVideo(Media::MediaFile *mf)
+Bool Media::MediaPlayerInterface::OpenVideo(NN<Media::MediaFile> mf)
 {
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;
@@ -58,11 +56,6 @@ Bool Media::MediaPlayerInterface::OpenVideo(Media::MediaFile *mf)
 	UOSInt k;
 
 	this->CloseFile();
-	if (mf == 0)
-	{
-		return true;
-	}
-
 	Bool hasAudio = false;
 	Bool hasVideo = false;
 	NN<Media::IMediaSource> msrc;
@@ -121,12 +114,9 @@ Bool Media::MediaPlayerInterface::OpenVideo(Media::MediaFile *mf)
 
 							if (audFile)
 							{
-								Media::MediaFile *audFile;
-								{
-									IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
-									audFile = (Media::MediaFile*)this->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
-								}
-								if (audFile)
+								NN<Media::MediaFile> audFile;
+								IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
+								if (Optional<Media::MediaFile>::ConvertFrom(this->parsers->ParseFileType(fd, IO::ParserType::MediaFile)).SetTo(audFile))
 								{
 									Int32 syncTime;
 									k = 0;
@@ -136,7 +126,7 @@ Bool Media::MediaPlayerInterface::OpenVideo(Media::MediaFile *mf)
 										mf->AddSource(msrc, syncTime);
 										k++;
 									}
-									DEL_CLASS(audFile);
+									audFile.Delete();
 								}
 							}
 						}
@@ -157,18 +147,18 @@ Bool Media::MediaPlayerInterface::OpenVideo(Media::MediaFile *mf)
 
 void Media::MediaPlayerInterface::CloseFile()
 {
-	if (this->player && this->currFile)
+	if (this->player && this->currFile.NotNull())
 	{
 		this->player->StopPlayback();
 		this->player->LoadMedia(0);
 	}
 	this->storeTime = (UInt32)-1;
-	SDEL_CLASS(this->currFile);
+	this->currFile.Delete();
 	this->currPBC = this->player;
 	this->OnMediaClosed();
 }
 
-Media::MediaFile *Media::MediaPlayerInterface::GetOpenedFile()
+Optional<Media::MediaFile> Media::MediaPlayerInterface::GetOpenedFile()
 {
 	return this->currFile;
 }

@@ -107,7 +107,7 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(Text::CStringNN fileName)
 	NN<Net::ASN1Data> asn1;
 	{
 		IO::StmData::FileData fd(fileName, false);
-		if (!asn1.Set((Net::ASN1Data*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data)))
+		if (!Optional<Net::ASN1Data>::ConvertFrom(this->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data)).SetTo(asn1))
 		{
 			this->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("SSL Cert/Key"), this);
 			return;

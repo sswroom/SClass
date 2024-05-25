@@ -175,7 +175,7 @@ SSWR::OrganMgr::OrganEnv::~OrganEnv()
 	this->userFileMap.FreeAll(ReleaseUserFile);
 	this->userMap.DeleteAll();
 	this->TripRelease();
-	SDEL_CLASS(this->gpsTrk);
+	this->gpsTrk.Delete();
 	SDEL_CLASS(this->langFile);
 	this->drawEng.Delete();
 	this->ssl.Delete();

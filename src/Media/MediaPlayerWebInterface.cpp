@@ -29,7 +29,8 @@ Media::MediaPlayerWebInterface::~MediaPlayerWebInterface()
 void Media::MediaPlayerWebInterface::BrowseRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	Optional<Text::String> fname = req->GetQueryValue(CSTR("fname"));
-	if (this->iface->GetOpenedFile() == 0)
+	NN<Media::MediaFile> openedFile;
+	if (!this->iface->GetOpenedFile().SetTo(openedFile))
 	{
 		resp->RedirectURL(req, CSTR("/"), 0);
 		return;
@@ -41,7 +42,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(NN<Net::WebServer::IWebReques
 	NN<Text::String> s;
 	UOSInt i;
 	UOSInt j;
-	sptr = this->iface->GetOpenedFile()->GetSourceNameObj()->ConcatTo(sbuff);
+	sptr = openedFile->GetSourceNameObj()->ConcatTo(sbuff);
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	sptr = &sbuff[i + 1];
 
@@ -71,7 +72,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(NN<Net::WebServer::IWebReques
 		writer.WriteLine(CSTR("<body>"));
 		writer.WriteLine(CSTR("<a href=\"/\">Back</a><br/><br/>"));
 		writer.Write(CSTR("<b>Current File: </b>"));
-		s = Text::XML::ToNewHTMLBodyText(this->iface->GetOpenedFile()->GetSourceNameObj()->v);
+		s = Text::XML::ToNewHTMLBodyText(openedFile->GetSourceNameObj()->v);
 		writer.Write(s->ToCString());
 		s->Release();
 		writer.WriteLine(CSTR("<hr/>"));
@@ -212,9 +213,10 @@ void Media::MediaPlayerWebInterface::WebRequest(NN<Net::WebServer::IWebRequest> 
 		writer.WriteLine(CSTR("<body>"));
 		writer.WriteLine(CSTR("<a href=\"/\">Refresh</a><br/><br/>"));
 		writer.Write(CSTR("<b>Current File: </b>"));
-		if (this->iface->GetOpenedFile())
+		NN<Media::MediaFile> openedFile;
+		if (this->iface->GetOpenedFile().SetTo(openedFile))
 		{
-			s = Text::XML::ToNewHTMLBodyText(this->iface->GetOpenedFile()->GetSourceNameObj()->v);
+			s = Text::XML::ToNewHTMLBodyText(openedFile->GetSourceNameObj()->v);
 			writer.Write(s->ToCString());
 			s->Release();
 

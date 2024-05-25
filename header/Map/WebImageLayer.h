@@ -44,8 +44,8 @@ namespace Map
 			virtual OSInt CompareTo(Data::IComparable *obj) const;
 		};
 	private:
-		Net::WebBrowser *browser;
-		Parser::ParserList *parsers;
+		NN<Net::WebBrowser> browser;
+		NN<Parser::ParserList> parsers;
 		Data::ArrayListNN<ImageStat> pendingList;
 		Data::ArrayListNN<ImageStat> loadingList;
 		Data::ArrayListNN<ImageStat> loadedList;
@@ -71,7 +71,7 @@ namespace Map
 		void LoadImage(NN<ImageStat> stat);
 		static UInt32 __stdcall LoadThread(AnyType userObj);
 	public:
-		WebImageLayer(Net::WebBrowser *browser, Parser::ParserList *parsers, Text::CStringNN sourceName, NN<Math::CoordinateSystem> csys, Text::CString layerName);
+		WebImageLayer(NN<Net::WebBrowser> browser, NN<Parser::ParserList> parsers, Text::CStringNN sourceName, NN<Math::CoordinateSystem> csys, Text::CString layerName);
 		virtual ~WebImageLayer();
 
 		virtual void SetCurrTimeTS(Int64 timeStamp);

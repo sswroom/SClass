@@ -81,7 +81,7 @@ namespace SSWR
 			virtual Bool AddDataFile(Text::CStringNN fileName);
 			virtual Bool DelDataFile(NN<DataFileInfo> dataFile);
 			virtual Bool GetGPSPos(Int32 userId, const Data::Timestamp &ts, OutParam<Math::Coord2DDbl> pos);
-			virtual Map::GPSTrack *OpenGPSTrack(NN<DataFileInfo> dataFile);
+			virtual Optional<Map::GPSTrack> OpenGPSTrack(NN<DataFileInfo> dataFile);
 
 			virtual void UpdateUserFileCrop(NN<UserFileInfo> userFile, Double cropLeft, Double cropTop, Double cropRight, Double cropBottom);
 			virtual void UpdateUserFileRot(NN<UserFileInfo> userFile, Int32 rotType);
@@ -102,10 +102,10 @@ namespace SSWR
 			virtual void BooksInit();
 
 		public:
-			virtual Media::ImageList *ParseImage(NN<OrganImageItem> img, OptOut<Optional<UserFileInfo>> userFile, OptOut<Optional<WebFileInfo>> wfile);
-			virtual Media::ImageList *ParseSpImage(NN<OrganSpecies> sp);
-			virtual Media::ImageList *ParseFileImage(NN<UserFileInfo> userFile);
-			virtual Media::ImageList *ParseWebImage(NN<WebFileInfo> webFile);
+			virtual Optional<Media::ImageList> ParseImage(NN<OrganImageItem> img, OptOut<Optional<UserFileInfo>> userFile, OptOut<Optional<WebFileInfo>> wfile);
+			virtual Optional<Media::ImageList> ParseSpImage(NN<OrganSpecies> sp);
+			virtual Optional<Media::ImageList> ParseFileImage(NN<UserFileInfo> userFile);
+			virtual Optional<Media::ImageList> ParseWebImage(NN<WebFileInfo> webFile);
 			virtual OrganGroup *SearchObject(const UTF8Char *searchStr, UTF8Char *resultStr, UOSInt resultStrBuffSize, Int32 *parentId);
 
 		private:

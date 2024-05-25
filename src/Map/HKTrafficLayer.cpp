@@ -891,7 +891,7 @@ void Map::HKTrafficLayer::SetURL(Text::String *url)
 	this->url = url->Clone();
 }
 
-Bool Map::HKTrafficLayer::AddRoadLayer(Map::MapDrawLayer *roadLayer)
+Bool Map::HKTrafficLayer::AddRoadLayer(NN<Map::MapDrawLayer> roadLayer)
 {
 	Data::ArrayListInt64 idArr;
 	UTF8Char sbuff[512];
@@ -997,7 +997,7 @@ Bool Map::HKTrafficLayer::AddRoadLayer(Map::MapDrawLayer *roadLayer)
 	}
 	roadLayer->ReleaseNameArr(nameArr);
 	roadLayer->EndGetObject(sess);
-	DEL_CLASS(roadLayer);
+	roadLayer.Delete();
 	return true;
 }
 

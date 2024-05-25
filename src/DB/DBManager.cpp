@@ -515,8 +515,8 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		if (parsers.SetTo(nnparsers))
 		{
 			IO::StmData::FileData fd(connStr.Substring(5), false);
-			DB::ReadingDB *rdb = (DB::ReadingDB*)nnparsers->ParseFileType(fd, IO::ParserType::ReadingDB);
-			if (rdb)
+			NN<DB::ReadingDB> rdb;
+			if (Optional<DB::ReadingDB>::ConvertFrom(nnparsers->ParseFileType(fd, IO::ParserType::ReadingDB)).SetTo(rdb))
 			{
 				return rdb;
 			}

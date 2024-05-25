@@ -12,20 +12,17 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnFormFiles(AnyType userObj, 
 
 	UOSInt i = 0;
 	UOSInt nFiles = files.GetCount();
-	IO::ParsedObject *pobj;
+	NN<IO::ParsedObject> pobj;
 	while (i < nFiles)
 	{
+		IO::StmData::FileData fd(files[i], false);
+		if (parsers->ParseFileType(fd, IO::ParserType::ASN1Data).SetTo(pobj))
 		{
-			IO::StmData::FileData fd(files[i], false);
-			pobj = parsers->ParseFileType(fd, IO::ParserType::ASN1Data);
-		}
-		if (pobj)
-		{
-			Net::ASN1Data *asn1 = (Net::ASN1Data*)pobj;
-			Crypto::Cert::X509Key *key;
+			NN<Net::ASN1Data> asn1 = NN<Net::ASN1Data>::ConvertFrom(pobj);
+			NN<Crypto::Cert::X509Key> key;
 			if (asn1->GetASN1Type() == Net::ASN1Data::ASN1Type::X509)
 			{
-				Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
+				NN<Crypto::Cert::X509File> x509 = NN<Crypto::Cert::X509File>::ConvertFrom(asn1);
 				switch (x509->GetFileType())
 				{
 				case Crypto::Cert::X509File::FileType::Cert:
@@ -33,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnFormFiles(AnyType userObj, 
 				case Crypto::Cert::X509File::FileType::CertRequest:
 					break;
 				case Crypto::Cert::X509File::FileType::Key:
-					key = (Crypto::Cert::X509Key*)x509;
+					key = NN<Crypto::Cert::X509Key>::ConvertFrom(x509);
 					if (key->IsPrivateKey())
 					{
 						me->txtKey->SetText(files[i]->ToCString());
@@ -50,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnFormFiles(AnyType userObj, 
 					break;
 				}
 			}
-			DEL_CLASS(pobj);
+			pobj.Delete();
 		}
 		i++;
 	}
@@ -62,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(AnyType user
 	Text::StringBuilderUTF8 sb;
 	NN<Net::SSLEngine> ssl;
 	Optional<Crypto::Cert::X509Key> key = 0;
-	IO::ParsedObject *pobj;
+	NN<IO::ParsedObject> pobj;
 	me->txtKey->GetText(sb);
 	if (sb.GetLength() == 0)
 	{
@@ -71,22 +68,21 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(AnyType user
 	}
 	{
 		IO::StmData::FileData fd(sb.ToCString(), false);
-		pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data);
+		if (!me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data).SetTo(pobj))
+		{
+			me->ui->ShowMsgOK(CSTR("Key file is not in ASN1 Format"), CSTR("SAML Response Decrypt"), me);
+			return;
+		}
 	}
-	if (pobj == 0)
-	{
-		me->ui->ShowMsgOK(CSTR("Key file is not in ASN1 Format"), CSTR("SAML Response Decrypt"), me);
-		return;
-	}
-	Net::ASN1Data *asn1 = (Net::ASN1Data*)pobj;
+	NN<Net::ASN1Data> asn1 = NN<Net::ASN1Data>::ConvertFrom(pobj);
 	if (asn1->GetASN1Type() == Net::ASN1Data::ASN1Type::X509)
 	{
-		Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
+		NN<Crypto::Cert::X509File> x509 = NN<Crypto::Cert::X509File>::ConvertFrom(asn1);
 		switch (x509->GetFileType())
 		{
 		case Crypto::Cert::X509File::FileType::Key:
-			key = (Crypto::Cert::X509Key*)x509;
-			if (!((Crypto::Cert::X509Key*)x509)->IsPrivateKey())
+			key = NN<Crypto::Cert::X509Key>::ConvertFrom(x509);
+			if (!NN<Crypto::Cert::X509Key>::ConvertFrom(x509)->IsPrivateKey())
 			{
 				key.Delete();
 				me->ui->ShowMsgOK(CSTR("Key file is not a private key"), CSTR("SAML Response Decrypt"), me);
@@ -94,8 +90,8 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(AnyType user
 			}
 			break;
 		case Crypto::Cert::X509File::FileType::PrivateKey:
-			key = ((Crypto::Cert::X509PrivKey*)x509)->CreateKey();
-			DEL_CLASS(x509);
+			key = NN<Crypto::Cert::X509PrivKey>::ConvertFrom(x509)->CreateKey();
+			x509.Delete();
 			if (key.IsNull())
 			{
 				me->ui->ShowMsgOK(CSTR("Error in converting key file to private key"), CSTR("SAML Response Decrypt"), me);
@@ -110,14 +106,14 @@ void __stdcall SSWR::AVIRead::AVIRSAMLDecryptForm::OnDecryptClicked(AnyType user
 		case Crypto::Cert::X509File::FileType::PKCS7:
 		case Crypto::Cert::X509File::FileType::CRL:
 		default:
-			DEL_CLASS(asn1);
+			asn1.Delete();
 			me->ui->ShowMsgOK(CSTR("Key file is not a key file"), CSTR("SAML Response Decrypt"), me);
 			return;
 		}
 	}
 	else
 	{
-		DEL_CLASS(asn1);
+		asn1.Delete();
 		me->ui->ShowMsgOK(CSTR("Key file is in X.509 format"), CSTR("SAML Response Decrypt"), me);
 		return;
 	}

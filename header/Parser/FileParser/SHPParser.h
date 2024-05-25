@@ -10,14 +10,14 @@ namespace Parser
 		{
 		private:
 			UInt32 codePage;
-			Math::ArcGISPRJParser *prjParser;
+			Optional<Math::ArcGISPRJParser> prjParser;
 		public:
 			SHPParser();
 			virtual ~SHPParser();
 
 			virtual Int32 GetName();
 			virtual void SetCodePage(UInt32 codePage);
-			virtual void SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser);
+			virtual void SetArcGISPRJParser(Optional<Math::ArcGISPRJParser> prjParser);
 			virtual void PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);

@@ -103,13 +103,13 @@ void TestFile2(Text::CString imgPath, Parser::ParserList *parsers, Media::ANPR *
 	UTF8Char *sptr;
 	sptr = IO::Path::GetRealPath(sbuff, imgPath.v, imgPath.leng);
 	IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
-	Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
-	if (imgList)
+	NN<Media::ImageList> imgList;
+	if (Optional<Media::ImageList>::ConvertFrom(parsers->ParseFileType(fd, IO::ParserType::ImageList)).SetTo(imgList))
 	{
 		NN<Media::StaticImage> img;
 		if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img))
 			apnr->ParseImage(img);
-		DEL_CLASS(imgList);
+		imgList.Delete();
 	}
 }
 

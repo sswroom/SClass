@@ -21,7 +21,7 @@ Int32 Parser::ObjParser::FileGDB2Parser::GetName()
 	return *(Int32*)"FGDB";
 }
 
-void Parser::ObjParser::FileGDB2Parser::SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser)
+void Parser::ObjParser::FileGDB2Parser::SetArcGISPRJParser(Optional<Math::ArcGISPRJParser> prjParser)
 {
 	this->prjParser = prjParser;
 }
@@ -42,7 +42,7 @@ IO::ParserType Parser::ObjParser::FileGDB2Parser::GetParserType()
 IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(NN<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	NN<Math::ArcGISPRJParser> prjParser;
-	if (!prjParser.Set(this->prjParser) || pobj->GetParserType() != IO::ParserType::PackageFile)
+	if (!this->prjParser.SetTo(prjParser) || pobj->GetParserType() != IO::ParserType::PackageFile)
 		return 0;
 	IO::PackageFile *relObj = 0;
 	NN<IO::PackageFile> pkg = NN<IO::PackageFile>::ConvertFrom(pobj);
@@ -101,7 +101,7 @@ IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(NN<IO::ParsedOb
 				{
 					if (layers.GetItem(i).SetTo(layerName))
 					{
-						NEW_CLASSNN(layer, Map::FileGDBLayer(db, layerName->ToCString(), layerName->ToCString(), this->prjParser));
+						NEW_CLASSNN(layer, Map::FileGDBLayer(db, layerName->ToCString(), layerName->ToCString(), prjParser));
 						layerColl->Add(layer);
 						layerName->Release();
 					}

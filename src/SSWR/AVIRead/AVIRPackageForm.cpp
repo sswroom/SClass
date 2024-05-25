@@ -1201,7 +1201,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 			{
 				IO::StmData::FileData fd(dlg->GetFileName(), false);
 				NN<IO::PackageFile> zipPkg;
-				if (zipPkg.Set((IO::PackageFile*)parsers->ParseFileType(fd, IO::ParserType::PackageFile)))
+				if (Optional<IO::PackageFile>::ConvertFrom(parsers->ParseFileType(fd, IO::ParserType::PackageFile)).SetTo(zipPkg))
 				{
 					if (!vpkg->MergePackage(zipPkg))
 					{

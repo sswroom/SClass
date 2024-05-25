@@ -15,32 +15,28 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(AnyType userObj, Data
 
 	UOSInt i = 0;
 	UOSInt nFiles = files.GetCount();
-	IO::ParsedObject *pobj;
+	NN<IO::ParsedObject> pobj;
 	while (i < nFiles)
 	{
-		{
-			IO::StmData::FileData fd(files[i], false);
-			pobj = parsers->ParseFile(fd);
-		}
-		if (pobj)
+		IO::StmData::FileData fd(files[i], false);
+		if (parsers->ParseFile(fd).SetTo(pobj))
 		{
 			if (pobj->GetParserType() == IO::ParserType::ASN1Data)
 			{
-				Net::ASN1Data *asn1 = (Net::ASN1Data*)pobj;
+				NN<Net::ASN1Data> asn1 = NN<Net::ASN1Data>::ConvertFrom(pobj);
 				if (asn1->GetASN1Type() == Net::ASN1Data::ASN1Type::X509)
 				{
-					Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
-					Crypto::Cert::X509Key *key;
-					NN<Crypto::Cert::X509Key> nnkey;
-					Crypto::Cert::X509PrivKey *privKey;
-					Crypto::Cert::X509CertReq *csr;
-					Crypto::Cert::X509Cert *cert;
+					NN<Crypto::Cert::X509File> x509 = NN<Crypto::Cert::X509File>::ConvertFrom(asn1);
+					NN<Crypto::Cert::X509Key> key;
+					NN<Crypto::Cert::X509PrivKey> privKey;
+					NN<Crypto::Cert::X509CertReq> csr;
+					NN<Crypto::Cert::X509Cert> cert;
 					Crypto::Cert::CertNames names;
 					Crypto::Cert::CertExtensions exts;
 					switch (x509->GetFileType())
 					{
 					case Crypto::Cert::X509File::FileType::Cert:
-						cert = (Crypto::Cert::X509Cert*)x509;
+						cert = NN<Crypto::Cert::X509Cert>::ConvertFrom(x509);
 						MemClear(&names, sizeof(names));
 						if (cert->GetSubjNames(names))
 						{
@@ -57,10 +53,10 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(AnyType userObj, Data
 						{
 							me->ClearExtensions();
 						}
-						DEL_CLASS(x509);
+						x509.Delete();
 						break;
 					case Crypto::Cert::X509File::FileType::CertRequest:
-						csr = (Crypto::Cert::X509CertReq*)x509;
+						csr = NN<Crypto::Cert::X509CertReq>::ConvertFrom(x509);
 						MemClear(&names, sizeof(names));
 						if (csr->GetNames(names))
 						{
@@ -77,10 +73,10 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(AnyType userObj, Data
 						{
 							me->ClearExtensions();
 						}
-						DEL_CLASS(x509);
+						x509.Delete();
 						break;
 					case Crypto::Cert::X509File::FileType::Key:
-						key = (Crypto::Cert::X509Key*)x509;
+						key = NN<Crypto::Cert::X509Key>::ConvertFrom(x509);
 						if (key->IsPrivateKey())
 						{
 							me->key.Delete();
@@ -89,61 +85,63 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(AnyType userObj, Data
 						}
 						else
 						{
-							DEL_CLASS(key);
+							key.Delete();
 						}
 						break;
 					case Crypto::Cert::X509File::FileType::PrivateKey:
-						privKey = (Crypto::Cert::X509PrivKey*)x509;
-						if (privKey->CreateKey().SetTo(nnkey))
+						privKey = NN<Crypto::Cert::X509PrivKey>::ConvertFrom(x509);
+						if (privKey->CreateKey().SetTo(key))
 						{
 							me->key.Delete();
-							me->key = nnkey;
+							me->key = key;
 							me->DisplayKeyDetail();
 						}
-						DEL_CLASS(x509);
+						x509.Delete();
 						break;
 					case Crypto::Cert::X509File::FileType::FileList:
-						cert = (Crypto::Cert::X509Cert*)((Crypto::Cert::X509FileList*)x509)->GetFile(0).OrNull();
-						MemClear(&names, sizeof(names));
-						if (cert->GetSubjNames(names))
+						if (Optional<Crypto::Cert::X509Cert>::ConvertFrom(NN<Crypto::Cert::X509FileList>::ConvertFrom(x509)->GetFile(0)).SetTo(cert))
 						{
-							me->DisplayNames(names);
-							Crypto::Cert::CertNames::FreeNames(names);
+							MemClear(&names, sizeof(names));
+							if (cert->GetSubjNames(names))
+							{
+								me->DisplayNames(names);
+								Crypto::Cert::CertNames::FreeNames(names);
+							}
+							MemClear(&exts, sizeof(exts));
+							if (cert->GetExtensions(exts))
+							{
+								me->DisplayExtensions(exts);
+								Crypto::Cert::CertExtensions::FreeExtensions(exts);
+							}
+							else
+							{
+								me->ClearExtensions();
+							}
 						}
-						MemClear(&exts, sizeof(exts));
-						if (cert->GetExtensions(exts))
-						{
-							me->DisplayExtensions(exts);
-							Crypto::Cert::CertExtensions::FreeExtensions(exts);
-						}
-						else
-						{
-							me->ClearExtensions();
-						}
-						DEL_CLASS(x509);
+						x509.Delete();
 						break;
 					case Crypto::Cert::X509File::FileType::PublicKey:
-						DEL_CLASS(x509);
+						x509.Delete();
 						break;
 					case Crypto::Cert::X509File::FileType::PKCS12:
-						DEL_CLASS(x509);
+						x509.Delete();
 						break;
 					case Crypto::Cert::X509File::FileType::PKCS7:
-						DEL_CLASS(x509);
+						x509.Delete();
 						break;
 					case Crypto::Cert::X509File::FileType::CRL:
-						DEL_CLASS(x509);
+						x509.Delete();
 						break;
 					}
 				}
 				else
 				{
-					DEL_CLASS(asn1);
+					asn1.Delete();
 				}
 			}
 			else
 			{
-				DEL_CLASS(pobj);
+				pobj.Delete();
 			}
 		}
 		i++;

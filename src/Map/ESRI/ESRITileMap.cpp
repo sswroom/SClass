@@ -191,7 +191,7 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Math::Coor
 	UTF8Char filePath[512];
 	UTF8Char *sptr;
 	UTF8Char *filePathEnd;
-	IO::ParsedObject *pobj;
+	NN<IO::ParsedObject> pobj;
 	Double resol = this->esriMap->TileGetLevelResolution(level);
 	if (resol == 0)
 		return 0;
@@ -223,14 +223,13 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Math::Coor
 		IO::StmData::FileData fd({filePath, (UOSInt)(filePathEnd - filePath)}, false);
 		if (fd.GetDataSize() > 0)
 		{
-			pobj = parsers->ParseFile(fd);
-			if (pobj)
+			if (parsers->ParseFile(fd).SetTo(pobj))
 			{
 				if (pobj->GetParserType() == IO::ParserType::ImageList)
 				{
-					return (Media::ImageList*)pobj;
+					return NN<Media::ImageList>::ConvertFrom(pobj).Ptr();
 				}
-				DEL_CLASS(pobj);
+				pobj.Delete();
 			}
 		}
 	}
@@ -242,14 +241,13 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Math::Coor
 	IO::StmData::FileData fd({filePath, (UOSInt)(filePathEnd - filePath)}, false);
 	if (fd.GetDataSize() > 0)
 	{
-		pobj = parsers->ParseFile(fd);
-		if (pobj)
+		if (parsers->ParseFile(fd).SetTo(pobj))
 		{
 			if (pobj->GetParserType() == IO::ParserType::ImageList)
 			{
-				return (Media::ImageList*)pobj;
+				return NN<Media::ImageList>::ConvertFrom(pobj).Ptr();
 			}
-			DEL_CLASS(pobj);
+			pobj.Delete();
 		}
 	}
 	return 0;

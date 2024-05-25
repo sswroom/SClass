@@ -14,7 +14,7 @@ namespace UI
 		private:
 			NN<Media::DrawEngine> deng;
 			Optional<Media::DrawImage> bmp;
-			Media::ImageList *imgList;
+			Optional<Media::ImageList> imgList;
 			Bool noRelease;
 			OSInt frameDelay;
 			Manage::HiResClock *clk;

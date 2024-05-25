@@ -48,7 +48,7 @@ namespace SSWR
 			
 			NN<Media::ColorManagerSess> colorSess;
 			Media::Resizer::LanczosResizer8_C8 *resizer;
-			Media::StaticImage *dispImage;
+			Optional<Media::StaticImage> dispImage;
 			Media::StaticImage *previewImage;
 			Media::StaticImage *filteredImage;
 			Bool initPos;

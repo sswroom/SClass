@@ -19,7 +19,7 @@ namespace Media
 
 		Media::IAudioRenderer *arenderer;
 		Media::IAudioSource *currADecoder;
-		Media::MediaFile *currFile;
+		Optional<Media::MediaFile> currFile;
 		Media::IAudioSource *currAStm;
 		Media::IVideoSource *currVDecoder;
 		Media::IVideoSource *currVStm;
@@ -46,7 +46,7 @@ namespace Media
 		virtual ~MediaPlayer();
 
 		virtual void SetEndHandler(PBEndHandler hdlr, AnyType userObj);
-		virtual Bool LoadMedia(Media::MediaFile *file);
+		virtual Bool LoadMedia(Optional<Media::MediaFile> file);
 		virtual Bool SeekTo(Data::Duration time);
 		virtual Bool SwitchAudio(UOSInt index);
 

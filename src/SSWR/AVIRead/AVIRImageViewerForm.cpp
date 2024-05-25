@@ -41,34 +41,38 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnFileDrop(AnyType userObj, D
 void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
-	if (me->pkgFile && me->fileIndex != (UOSInt)-1)
+	NN<IO::PackageFile> pkgFile;
+	if (me->pkgFile.SetTo(pkgFile) && me->fileIndex != (UOSInt)-1)
 	{
 		NN<IO::StreamData> fd;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		UOSInt i;
 		UOSInt j;
-		IO::ParsedObject *pobj;
+		NN<IO::ParsedObject> pobj;
 		Bool found = false;
 		i = me->fileIndex + 1;
-		j = me->pkgFile->GetCount();
+		j = pkgFile->GetCount();
 		while (i < j)
 		{
-			if (me->pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
+			if (pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{
-				sptr = me->pkgFile->GetItemName(sbuff, i);
+				sptr = pkgFile->GetItemName(sbuff, i);
 				if (IsImageFileName(CSTRP(sbuff, sptr)))
 				{
-					if (me->pkgFile->GetItemStmDataNew(i).SetTo(fd))
+					if (pkgFile->GetItemStmDataNew(i).SetTo(fd))
 					{
-						pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
-						fd.Delete();
-						if (pobj)
+						if (me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList).SetTo(pobj))
 						{
-							me->SetImage((Media::ImageList*)pobj, true);
+							fd.Delete();
+							me->SetImage(NN<Media::ImageList>::ConvertFrom(pobj), true);
 							me->fileIndex = i;
 							found = true;
 							break;
+						}
+						else
+						{
+							fd.Delete();
 						}
 					}
 				}
@@ -82,21 +86,24 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(AnyType userObj)
 		i = 0;
 		while (i < me->fileIndex)
 		{
-			if (me->pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
+			if (pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{
-				sptr = me->pkgFile->GetItemName(sbuff, i);
+				sptr = pkgFile->GetItemName(sbuff, i);
 				if (IsImageFileName(CSTRP(sbuff, sptr)))
 				{
-					if (me->pkgFile->GetItemStmDataNew(i).SetTo(fd))
+					if (pkgFile->GetItemStmDataNew(i).SetTo(fd))
 					{
-						pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
-						fd.Delete();
-						if (pobj)
+						if (me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList).SetTo(pobj))
 						{
-							me->SetImage((Media::ImageList*)pobj, true);
+							fd.Delete();
+							me->SetImage(NN<Media::ImageList>::ConvertFrom(pobj), true);
 							me->fileIndex = i;
 							found = true;
 							break;
+						}
+						else
+						{
+							fd.Delete();
 						}
 					}
 				}
@@ -109,32 +116,36 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
-	if (me->pkgFile && me->fileIndex != (UOSInt)-1)
+	NN<IO::PackageFile> pkgFile;
+	if (me->pkgFile.SetTo(pkgFile) && me->fileIndex != (UOSInt)-1)
 	{
 		NN<IO::StreamData> fd;
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		UOSInt i;
-		IO::ParsedObject *pobj;
+		NN<IO::ParsedObject> pobj;
 		Bool found = false;
 		i = me->fileIndex;
 		while (i-- > 0)
 		{
-			if (me->pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
+			if (pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{
-				sptr = me->pkgFile->GetItemName(sbuff, i);
+				sptr = pkgFile->GetItemName(sbuff, i);
 				if (IsImageFileName(CSTRP(sbuff, sptr)))
 				{
-					if (me->pkgFile->GetItemStmDataNew(i).SetTo(fd))
+					if (pkgFile->GetItemStmDataNew(i).SetTo(fd))
 					{
-						pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
-						fd.Delete();
-						if (pobj)
+						if (me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList).SetTo(pobj))
 						{
-							me->SetImage((Media::ImageList*)pobj, true);
+							fd.Delete();
+							me->SetImage(NN<Media::ImageList>::ConvertFrom(pobj), true);
 							me->fileIndex = i;
 							found = true;
 							break;
+						}
+						else
+						{
+							fd.Delete();
 						}
 					}
 				}
@@ -144,24 +155,27 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(AnyType userObj)
 		{
 			return;
 		}
-		i = me->pkgFile->GetCount();
+		i = pkgFile->GetCount();
 		while (i-- > me->fileIndex + 1)
 		{
-			if (me->pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
+			if (pkgFile->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{
-				sptr = me->pkgFile->GetItemName(sbuff, i);
+				sptr = pkgFile->GetItemName(sbuff, i);
 				if (IsImageFileName(CSTRP(sbuff, sptr)))
 				{
-					if (me->pkgFile->GetItemStmDataNew(i).SetTo(fd))
+					if (pkgFile->GetItemStmDataNew(i).SetTo(fd))
 					{
-						pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
-						fd.Delete();
-						if (pobj)
+						if (me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList).SetTo(pobj))
 						{
-							me->SetImage((Media::ImageList*)pobj, true);
+							fd.Delete();
+							me->SetImage(NN<Media::ImageList>::ConvertFrom(pobj), true);
 							me->fileIndex = i;
 							found = true;
 							break;
+						}
+						else
+						{
+							fd.Delete();
 						}
 					}
 				}
@@ -183,7 +197,8 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnTimerTick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnAniTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRImageViewerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageViewerForm>();
-	if (me->imgTimeoutTick != 0 && me->imgList != 0)
+	NN<Media::ImageList> imgList;
+	if (me->imgTimeoutTick != 0 && me->imgList.SetTo(imgList))
 	{
 		Data::DateTime dt;
 		Int64 currTimeTick;
@@ -193,11 +208,11 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnAniTimerTick(AnyType userOb
 		if (currTimeTick >= me->imgTimeoutTick)
 		{
 			me->imgIndex++;
-			if (me->imgIndex >= me->imgList->GetCount())
+			if (me->imgIndex >= imgList->GetCount())
 			{
 				me->imgIndex = 0;
 			}
-			Optional<Media::StaticImage> simg = Optional<Media::StaticImage>::ConvertFrom(me->imgList->GetImage(me->imgIndex, imgDurMS));
+			Optional<Media::StaticImage> simg = Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(me->imgIndex, imgDurMS));
 			me->imgTimeoutTick = currTimeTick + imgDurMS;
 			me->pbImage->SetImage(simg, true);
 		}
@@ -285,34 +300,33 @@ SSWR::AVIRead::AVIRImageViewerForm::~AVIRImageViewerForm()
 		this->ShowMouseCursor(true);
 		this->hideCursor = false;
 	}
-	SDEL_CLASS(this->imgList);
-	SDEL_CLASS(this->pkgFile);
+	this->imgList.Delete();
+	this->pkgFile.Delete();
 	this->ClearChildren();
 	this->core->GetColorMgr()->DeleteSess(this->colorSess);
 }
 
 void SSWR::AVIRead::AVIRImageViewerForm::EventMenuClicked(UInt16 cmdId)
 {
+	NN<Media::ImageList> imgList;
 	switch (cmdId)
 	{
 	case MNU_IMAGE_SAVE:
-	{
-		NN<Media::ImageList> imgList;
-		if (imgList.Set(this->imgList))
+		if (this->imgList.SetTo(imgList))
 		{
 			this->core->SaveData(this, imgList, L"SaveImage");
 		}
 		break;
-	}
 	case MNU_IMAGE_RENAME:
+		if (this->imgList.SetTo(imgList))
 		{
-			SSWR::AVIRead::AVIRFileRenameForm frm(0, this->ui, this->core, this->imgList->GetSourceNameObj());
+			SSWR::AVIRead::AVIRFileRenameForm frm(0, this->ui, this->core, imgList->GetSourceNameObj());
 			if (frm.ShowDialog(this))
 			{
-				this->imgList->SetSourceName(frm.GetFileName());
+				imgList->SetSourceName(frm.GetFileName());
 				UTF8Char sbuff[512];
 				UTF8Char *sptr;
-				sptr = this->imgList->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Image Viewer - ")));
+				sptr = imgList->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Image Viewer - ")));
 				this->SetText(CSTRP(sbuff, sptr));
 			}
 		}
@@ -346,13 +360,13 @@ void SSWR::AVIRead::AVIRImageViewerForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_IMAGE_INFO:
-		if (this->imgList) 
+		if (this->imgList.SetTo(imgList)) 
 		{
 			Text::StringBuilderUTF8 sbImg;
 			Text::StringBuilderUTF8 sbTitle;
-			this->imgList->ToString(sbImg);
+			imgList->ToString(sbImg);
 			sbTitle.AppendC(UTF8STRC("Image info for "));
-			sbTitle.Append(this->imgList->GetSourceNameObj());
+			sbTitle.Append(imgList->GetSourceNameObj());
 			SSWR::AVIRead::AVIRStringMsgForm frm(0, this->ui, this->core, sbTitle.ToCString(), sbImg.ToCString());
 			frm.ShowDialog(this);
 		}
@@ -372,7 +386,7 @@ void SSWR::AVIRead::AVIRImageViewerForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Media::ImageList *imgList, Bool sameDir)
+void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Optional<Media::ImageList> imgList, Bool sameDir)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -381,20 +395,21 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Media::ImageList *imgList, Boo
 	UOSInt i;
 	UOSInt j;
 	this->pbImage->SetImage(0, false);
-	SDEL_CLASS(this->imgList);
+	this->imgList.Delete();
 	if (!sameDir)
 	{
-		SDEL_CLASS(this->pkgFile);
+		this->pkgFile.Delete();
 	}
 	this->imgList = imgList;
-	if (this->imgList)
+	NN<Media::ImageList> nnimgList;
+	if (this->imgList.SetTo(nnimgList))
 	{
 		UInt32 imgDurMS;
 		this->imgIndex = 0;
-		sptr = this->imgList->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Image Viewer - ")));
+		sptr = nnimgList->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Image Viewer - ")));
 		this->SetText(CSTRP(sbuff, sptr));
-		this->pbImage->SetImage(this->imgList->GetImage(0, imgDurMS), false);
-		if (imgDurMS != 0 && this->imgList->GetCount() > 1)
+		this->pbImage->SetImage(nnimgList->GetImage(0, imgDurMS), false);
+		if (imgDurMS != 0 && nnimgList->GetCount() > 1)
 		{
 			Data::DateTime dt;
 			this->imgTimeoutTick = dt.ToTicks() + imgDurMS;
@@ -407,17 +422,19 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Media::ImageList *imgList, Boo
 		if (!sameDir)
 		{
 			this->fileIndex = INVALID_INDEX;
-			sptr = this->imgList->GetSourceName(sbuff);
+			sptr = nnimgList->GetSourceName(sbuff);
 			i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 			if (i != INVALID_INDEX)
 			{
 				sbuff[i] = 0;
-				NEW_CLASS(this->pkgFile, IO::DirectoryPackage({sbuff, i}));
-				((IO::DirectoryPackage*)this->pkgFile)->Sort();
-				j = this->pkgFile->GetCount();
+				NN<IO::DirectoryPackage> pkgFile;
+				NEW_CLASSNN(pkgFile, IO::DirectoryPackage({sbuff, i}));
+				this->pkgFile = pkgFile;
+				pkgFile->Sort();
+				j = pkgFile->GetCount();
 				while (j-- > 0)
 				{
-					sptr2 = this->pkgFile->GetItemName(sbuff2, j);
+					sptr2 = pkgFile->GetItemName(sbuff2, j);
 					if (Text::StrEqualsC(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]), sbuff2, (UOSInt)(sptr2 - sbuff2)))
 					{
 						this->fileIndex = j;
@@ -435,28 +452,26 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Media::ImageList *imgList, Boo
 
 Bool SSWR::AVIRead::AVIRImageViewerForm::ParseFile(NN<IO::StreamData> fd)
 {
-	IO::ParsedObject *pobj;
+	NN<IO::ParsedObject> pobj;
 	NN<IO::StreamData> fd2;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 
-	pobj = this->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
-	if (pobj)
+	if (this->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList).SetTo(pobj))
 	{
-		this->SetImage((Media::ImageList*)pobj, false);
+		this->SetImage(NN<Media::ImageList>::ConvertFrom(pobj), false);
 		return true;
 	}
 
-	pobj = this->core->GetParserList()->ParseFileType(fd, IO::ParserType::PackageFile);
-	if (pobj)
+	if (this->core->GetParserList()->ParseFileType(fd, IO::ParserType::PackageFile).SetTo(pobj))
 	{
-		IO::PackageFile *pf;
+		NN<IO::PackageFile> pf;
 		UOSInt i;
 		UOSInt j;
 		Bool found = false;
-		IO::ParsedObject *pobj2;
+		NN<IO::ParsedObject> pobj2;
 
-		pf = (IO::PackageFile *)pobj;
+		pf = NN<IO::PackageFile>::ConvertFrom(pobj);
 		i = 0;
 		j = pf->GetCount();
 		while (i < j)
@@ -468,23 +483,26 @@ Bool SSWR::AVIRead::AVIRImageViewerForm::ParseFile(NN<IO::StreamData> fd)
 				{
 					if (pf->GetItemStmDataNew(i).SetTo(fd2))
 					{
-						pobj2 = this->core->GetParserList()->ParseFile(fd2);
-						fd2.Delete();
-						if (pobj2)
+						if (this->core->GetParserList()->ParseFile(fd2).SetTo(pobj2))
 						{
+							fd2.Delete();
 							if (pobj2->GetParserType() == IO::ParserType::ImageList)
 							{
 								found = true;
-								SDEL_CLASS(this->pkgFile);
+								this->pkgFile.Delete();
 								this->pkgFile = pf;
 								this->fileIndex = i;
-								this->SetImage((Media::ImageList*)pobj2, true);
+								this->SetImage(NN<Media::ImageList>::ConvertFrom(pobj2), true);
 								break;
 							}
 							else
 							{
-								DEL_CLASS(pobj2);
+								pobj2.Delete();
 							}
+						}
+						else
+						{
+							fd2.Delete();
 						}
 					}
 				}
@@ -497,7 +515,7 @@ Bool SSWR::AVIRead::AVIRImageViewerForm::ParseFile(NN<IO::StreamData> fd)
 		}
 		else
 		{
-			DEL_CLASS(pobj);
+			pobj.Delete();
 			return false;
 		}
 	}

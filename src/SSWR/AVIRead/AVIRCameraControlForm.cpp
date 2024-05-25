@@ -115,7 +115,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(AnyType use
 				UOSInt size;
 				UInt8 *buff = mstm.GetBuff(size);
 				IO::StmData::MemoryDataRef fd(buff, size);
-				if (pobj.Set(me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList)))
+				if (me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList).SetTo(pobj))
 				{
 					me->core->OpenObject(pobj);
 				}
@@ -163,7 +163,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesSelChg(AnyType userO
 		UOSInt size;
 		UInt8 *buff = mstm.GetBuff(size);
 		IO::StmData::MemoryDataRef fd(buff, size);
-		if (previewImg.Set((Media::ImageList*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList)))
+		if (Optional<Media::ImageList>::ConvertFrom(me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList)).SetTo(previewImg))
 		{
 			previewImg->ToStaticImage(0);
 			me->previewMap.Put(Text::CStringNN(file->fileName2, file->fileNameLen), previewImg);

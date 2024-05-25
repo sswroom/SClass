@@ -35,7 +35,7 @@ namespace SSWR
 			NN<Media::ColorManagerSess> colorSess;
 			Data::ArrayListNN<UserFileInfo> userFileList;
 			Data::ArrayListNN<UserFileInfo> currFileList;
-			Media::ImageList *dispImg;
+			Optional<Media::ImageList> dispImg;
 			Data::StringMap<Int32> cameraMap;
 			Text::String *selImgCamera;
 			Data::Timestamp selImgTime;

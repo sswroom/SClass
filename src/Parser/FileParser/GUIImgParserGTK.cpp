@@ -34,7 +34,7 @@ Int32 Parser::FileParser::GUIImgParser::GetName()
 	return *(Int32*)"GUII";
 }
 
-void Parser::FileParser::GUIImgParser::SetParserList(Parser::ParserList *parsers)
+void Parser::FileParser::GUIImgParser::SetParserList(Optional<Parser::ParserList> parsers)
 {
 	this->parsers = parsers;
 }

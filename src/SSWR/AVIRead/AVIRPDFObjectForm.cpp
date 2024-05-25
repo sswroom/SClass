@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRPDFObjectForm::OnObjectDblClk(AnyType userObj)
 	if (me->lbObject->GetSelectedItem().GetOpt<Media::PDFObject>().SetTo(obj) && obj->IsImage())
 	{
 		NN<Media::ImageList> imgList;
-		if (imgList.Set(me->doc->CreateImage(obj->GetId(), me->core->GetParserList())))
+		if (me->doc->CreateImage(obj->GetId(), me->core->GetParserList()).SetTo(imgList))
 			me->core->OpenObject(imgList);
 	}
 }

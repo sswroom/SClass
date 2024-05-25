@@ -1540,7 +1540,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		}
 
 		Data::ByteArray readBuff = mstm->GetArray();
-		IO::ParsedObject *pobj;
+		NN<IO::ParsedObject> pobj;
 		Bool valid = false;
 		Data::Timestamp fileTime = Data::Timestamp(0, Data::DateTimeUtil::GetLocalTzQhr());
 		Math::Coord2DDbl pos = Math::Coord2DDbl(0, 0);
@@ -1551,71 +1551,70 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 
 		{
 			IO::StmData::MemoryDataRef md(readBuff);
-			pobj = this->parsers.ParseFile(md);
-		}
-		if (pobj)
-		{
-			if (pobj->GetParserType() == IO::ParserType::ImageList)
+			if (this->parsers.ParseFile(md).SetTo(pobj))
 			{
-				valid = true;
-
-				Media::ImageList *imgList = (Media::ImageList*)pobj;
-				NN<Media::RasterImage> img;
-				if (imgList->GetImage(0, 0).SetTo(img))
+				if (pobj->GetParserType() == IO::ParserType::ImageList)
 				{
-					NN<Media::EXIFData> exif;
-					if (img->exif.SetTo(exif))
+					valid = true;
+
+					NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
+					NN<Media::RasterImage> img;
+					if (imgList->GetImage(0, 0).SetTo(img))
 					{
-						exif->GetPhotoDate(fileTime);
-						fileTime = fileTime.SetTimeZoneQHR(Data::DateTimeUtil::GetLocalTzQhr());
-						if (fileTime.ToUnixTimestamp() >= 946684800) //Y2000
+						NN<Media::EXIFData> exif;
+						if (img->exif.SetTo(exif))
 						{
-							if (this->GetGPSPos(this->userId, fileTime, pos))
+							exif->GetPhotoDate(fileTime);
+							fileTime = fileTime.SetTimeZoneQHR(Data::DateTimeUtil::GetLocalTzQhr());
+							if (fileTime.ToUnixTimestamp() >= 946684800) //Y2000
 							{
-								locType = LocType::GPSTrack;
+								if (this->GetGPSPos(this->userId, fileTime, pos))
+								{
+									locType = LocType::GPSTrack;
+								}
 							}
-						}
-						Text::CString cstr;
-						Text::CString cstr2;
-						cstr = exif->GetPhotoMake();
-						cstr2 = exif->GetPhotoModel();
-						if (cstr.v && cstr2.v)
-						{
-							if (cstr2.StartsWithICase(cstr.v, cstr.leng))
+							Text::CString cstr;
+							Text::CString cstr2;
+							cstr = exif->GetPhotoMake();
+							cstr2 = exif->GetPhotoModel();
+							if (cstr.v && cstr2.v)
+							{
+								if (cstr2.StartsWithICase(cstr.v, cstr.leng))
+								{
+									camera = Text::String::New(cstr2).Ptr();
+								}
+								else
+								{
+									Text::StringBuilderUTF8 sb;
+									sb.Append(cstr);
+									sb.AppendC(UTF8STRC(" "));
+									sb.Append(cstr2);
+									camera = Text::String::New(sb.ToCString()).Ptr();
+								}
+							}
+							else if (cstr.v)
+							{
+								camera = Text::String::New(cstr).Ptr();
+							}
+							else if (cstr2.v)
 							{
 								camera = Text::String::New(cstr2).Ptr();
 							}
-							else
+							if (exif->GetPhotoLocation(pos.y, pos.x, 0, 0))
 							{
-								Text::StringBuilderUTF8 sb;
-								sb.Append(cstr);
-								sb.AppendC(UTF8STRC(" "));
-								sb.Append(cstr2);
-								camera = Text::String::New(sb.ToCString()).Ptr();
+								locType = LocType::PhotoExif;
 							}
 						}
-						else if (cstr.v)
-						{
-							camera = Text::String::New(cstr).Ptr();
-						}
-						else if (cstr2.v)
-						{
-							camera = Text::String::New(cstr2).Ptr();
-						}
-						if (exif->GetPhotoLocation(pos.y, pos.x, 0, 0))
-						{
-							locType = LocType::PhotoExif;
-						}
 					}
-				}
 
-				UInt8 crcBuff[4];
-				Crypto::Hash::CRC32R crc;
-				crc.Calc(readBuff.Ptr().Ptr(), readBuff.GetSize());
-				crc.GetValue(crcBuff);
-				crcVal = ReadMUInt32(crcBuff);
+					UInt8 crcBuff[4];
+					Crypto::Hash::CRC32R crc;
+					crc.Calc(readBuff.Ptr().Ptr(), readBuff.GetSize());
+					crc.GetValue(crcBuff);
+					crcVal = ReadMUInt32(crcBuff);
+				}
+				pobj.Delete();
 			}
-			DEL_CLASS(pobj);
 		}
 		DEL_CLASS(mstm);
 		if (valid)
@@ -1800,7 +1799,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 	{
 		Crypto::Hash::CRC32R crc;
 		UInt32 crcVal;
-		IO::ParsedObject *pobj;
+		NN<IO::ParsedObject> pobj;
 		Data::Timestamp fileTime = 0;
 		NN<UserFileInfo> userFile;
 		Bool valid = false;
@@ -1828,24 +1827,23 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 
 		{
 			IO::StmData::FileData fd(fileName, false);
-			pobj = this->parsers.ParseFile(fd);
-		}
-		if (pobj)
-		{
-			if (pobj->GetParserType() == IO::ParserType::MediaFile)
+			if (this->parsers.ParseFile(fd).SetTo(pobj))
 			{
-				Media::MediaFile *mediaFile = (Media::MediaFile*)pobj;
-				NN<Media::IMediaSource> msrc;
-				if (mediaFile->GetStream(0, 0).SetTo(msrc) && msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
+				if (pobj->GetParserType() == IO::ParserType::MediaFile)
 				{
-					graphImg = Media::FrequencyGraph::CreateGraph(this->drawEng, (Media::IAudioSource *)msrc.Ptr(), 2048, 2048, Math::FFTCalc::WT_BLACKMANN_HARRIS, 12);
-					if (graphImg)
+					NN<Media::MediaFile> mediaFile = NN<Media::MediaFile>::ConvertFrom(pobj);
+					NN<Media::IMediaSource> msrc;
+					if (mediaFile->GetStream(0, 0).SetTo(msrc) && msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 					{
-						valid = true;
+						graphImg = Media::FrequencyGraph::CreateGraph(this->drawEng, (Media::IAudioSource *)msrc.Ptr(), 2048, 2048, Math::FFTCalc::WT_BLACKMANN_HARRIS, 12);
+						if (graphImg)
+						{
+							valid = true;
+						}
 					}
 				}
+				pobj.Delete();
 			}
-			DEL_CLASS(pobj);
 		}
 		if (valid)
 		{
@@ -3201,7 +3199,8 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CStringNN fileName)
 	NN<DB::DBTool> db;
 	if (!db.Set(this->db))
 		return false;
-	IO::ParsedObject *pobj;
+	Optional<IO::ParsedObject> pobj;
+	NN<IO::ParsedObject> nnpobj;
 	{
 		IO::StmData::FileData fd(fileName, false);
 		pobj = this->parsers.ParseFile(fd);
@@ -3225,16 +3224,16 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CStringNN fileName)
 	oriFileName = &fileName.v[i + 1];
 	oriFileNameEnd = fileName.GetEndPtr();
 
-	if (pobj)
+	if (pobj.SetTo(nnpobj))
 	{
-		IO::ParserType t = pobj->GetParserType();
+		IO::ParserType t = nnpobj->GetParserType();
 		if (t == IO::ParserType::MapLayer)
 		{
-			Map::MapDrawLayer *lyr = (Map::MapDrawLayer*)pobj;
+			NN<Map::MapDrawLayer> lyr = NN<Map::MapDrawLayer>::ConvertFrom(nnpobj);
 			if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_GPS_TRACK)
 			{
 				Bool found = false;
-				Map::GPSTrack *gpsTrk = (Map::GPSTrack*)lyr;
+				NN<Map::GPSTrack> gpsTrk = NN<Map::GPSTrack>::ConvertFrom(lyr);
 				Map::GPSTrack::GPSRecord3 *recArr;
 				i = 0;
 				j = gpsTrk->GetTrackCnt();
@@ -3271,7 +3270,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CStringNN fileName)
 		}
 		else if (t == IO::ParserType::ReadingDB)
 		{
-			DB::ReadingDB *db = (DB::ReadingDB*)pobj;
+			NN<DB::ReadingDB> db = NN<DB::ReadingDB>::ConvertFrom(nnpobj);
 			Data::ArrayListStringNN tables;
 			db->QueryTableNames(CSTR_NULL, tables);
 			if (tables.GetCount() == 2)
@@ -3304,7 +3303,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CStringNN fileName)
 			}
 			tables.FreeAll();
 		}
-		DEL_CLASS(pobj);
+		pobj.Delete();
 	}
 
 	if (fileType != 0)
@@ -3363,35 +3362,33 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CStringNN fileName)
 					
 					{
 						IO::StmData::FileData fd(fileName, false);
-						pobj = this->parsers.ParseFileType(fd, IO::ParserType::MapLayer);
-					}
+						if (this->parsers.ParseFileType(fd, IO::ParserType::MapLayer).SetTo(nnpobj))
+						{
+							NN<Map::GPSTrack> gpsTrk = NN<Map::GPSTrack>::ConvertFrom(nnpobj);
 
-					if (pobj)
-					{
-						Map::GPSTrack *gpsTrk = (Map::GPSTrack*)pobj;
-
-						OSInt startIndex = webUser->userFileIndex.SortedIndexOf(dataFile->startTime);
-						OSInt endIndex = webUser->userFileIndex.SortedIndexOf(dataFile->endTime);
-						if (startIndex < 0)
-						{
-							startIndex = ~startIndex;
-						}
-						if (endIndex < 0)
-						{
-							endIndex = ~endIndex - 1;
-						}
-						while (startIndex <= endIndex)
-						{
-							NN<SSWR::OrganMgr::UserFileInfo> userFile = webUser->userFileObj.GetItemNoCheck((UOSInt)startIndex);
-							if (userFile->lat == 0 && userFile->lon == 0)
+							OSInt startIndex = webUser->userFileIndex.SortedIndexOf(dataFile->startTime);
+							OSInt endIndex = webUser->userFileIndex.SortedIndexOf(dataFile->endTime);
+							if (startIndex < 0)
 							{
-								Math::Coord2DDbl pos = Math::Coord2DDbl(0, 0);
-								pos = gpsTrk->GetPosByTime(userFile->captureTime);
-								this->UpdateUserFilePos(userFile, userFile->captureTime, pos.GetLat(), pos.GetLon());
+								startIndex = ~startIndex;
 							}
-							startIndex++;
+							if (endIndex < 0)
+							{
+								endIndex = ~endIndex - 1;
+							}
+							while (startIndex <= endIndex)
+							{
+								NN<SSWR::OrganMgr::UserFileInfo> userFile = webUser->userFileObj.GetItemNoCheck((UOSInt)startIndex);
+								if (userFile->lat == 0 && userFile->lon == 0)
+								{
+									Math::Coord2DDbl pos = Math::Coord2DDbl(0, 0);
+									pos = gpsTrk->GetPosByTime(userFile->captureTime);
+									this->UpdateUserFilePos(userFile, userFile->captureTime, pos.GetLat(), pos.GetLon());
+								}
+								startIndex++;
+							}
+							nnpobj.Delete();
 						}
-						DEL_CLASS(pobj);
 					}
 				}
 			}
@@ -3458,9 +3455,9 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, const Data::Timestamp &
 	NN<DataFileInfo> dataFile;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	if (this->gpsTrk == 0 || this->gpsUserId != userId || this->gpsStartTime > ts || this->gpsEndTime < ts)
+	if (this->gpsTrk.IsNull() || this->gpsUserId != userId || this->gpsStartTime > ts || this->gpsEndTime < ts)
 	{
-		SDEL_CLASS(this->gpsTrk);
+		this->gpsTrk.Delete();
 		this->gpsUserId = userId;
 		webUser = this->GetWebUser(userId);
 		i = webUser->gpsFileIndex.SortedIndexOf(ts);
@@ -3480,28 +3477,28 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, const Data::Timestamp &
 			sptr = Text::StrConcatC(sptr, UTF8STRC("DataFile"));
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			sptr = Text::StrConcatC(sptr, dataFile->fileName->v, dataFile->fileName->leng);
-			Map::MapDrawLayer *lyr;
+			NN<Map::MapDrawLayer> lyr;
 			{
 				IO::StmData::FileData fd({sbuff, (UOSInt)(sptr - sbuff)}, false);
-				lyr = (Map::MapDrawLayer*)this->parsers.ParseFileType(fd, IO::ParserType::MapLayer);
-			}
-			if (lyr)
-			{
-				if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_GPS_TRACK)
+				if (Optional<Map::MapDrawLayer>::ConvertFrom(this->parsers.ParseFileType(fd, IO::ParserType::MapLayer)).SetTo(lyr))
 				{
-					this->gpsTrk = (Map::GPSTrack*)lyr;
-				}
-				else
-				{
-					DEL_CLASS(lyr);
+					if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_GPS_TRACK)
+					{
+						this->gpsTrk = NN<Map::GPSTrack>::ConvertFrom(lyr);
+					}
+					else
+					{
+						lyr.Delete();
+					}
 				}
 			}
 		}
 	}
 
-	if (this->gpsTrk)
+	NN<Map::GPSTrack> gpsTrk;
+	if (this->gpsTrk.SetTo(gpsTrk))
 	{
-		pos.Set(this->gpsTrk->GetPosByTime(ts));
+		pos.Set(gpsTrk->GetPosByTime(ts));
 		return true;
 	}
 	else
@@ -3510,7 +3507,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, const Data::Timestamp &
 	}
 }
 
-Map::GPSTrack *SSWR::OrganMgr::OrganEnvDB::OpenGPSTrack(NN<DataFileInfo> dataFile)
+Optional<Map::GPSTrack> SSWR::OrganMgr::OrganEnvDB::OpenGPSTrack(NN<DataFileInfo> dataFile)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -3524,23 +3521,19 @@ Map::GPSTrack *SSWR::OrganMgr::OrganEnvDB::OpenGPSTrack(NN<DataFileInfo> dataFil
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = dataFile->fileName->ConcatTo(sptr);
 	IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
-	Map::GPSTrack *trk = 0;
-	Map::MapDrawLayer *lyr = (Map::MapDrawLayer*)this->parsers.ParseFileType(fd, IO::ParserType::MapLayer);
-	if (lyr)
+	Optional<Map::GPSTrack> trk = 0;
+	NN<Map::MapDrawLayer> lyr;
+	if (Optional<Map::MapDrawLayer>::ConvertFrom(this->parsers.ParseFileType(fd, IO::ParserType::MapLayer)).SetTo(lyr))
 	{
 		if (lyr->GetObjectClass() == Map::MapDrawLayer::OC_GPS_TRACK)
 		{
-			trk = (Map::GPSTrack*)lyr;
+			trk = NN<Map::GPSTrack>::ConvertFrom(lyr);
 		}
 		else
 		{
 			trk = 0;
-			DEL_CLASS(lyr);
+			lyr.Delete();
 		}
-	}
-	else
-	{
-		lyr = 0;
 	}
 	return trk;
 }
@@ -3941,7 +3934,7 @@ void SSWR::OrganMgr::OrganEnvDB::BooksInit()
 	}
 }
 
-Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(NN<OrganImageItem> img, OptOut<Optional<UserFileInfo>> outUserFile, OptOut<Optional<WebFileInfo>> outWebFile)
+Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseImage(NN<OrganImageItem> img, OptOut<Optional<UserFileInfo>> outUserFile, OptOut<Optional<WebFileInfo>> outWebFile)
 {
 	if (img->GetFileType() == OrganImageItem::FileType::UserFile)
 	{
@@ -3976,18 +3969,17 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(NN<OrganImageItem> img,
 			{
 				sptr = nnuserFile->dataFileName->ConcatTo(sptr);
 			}
-			IO::ParsedObject *pobj;
+			NN<IO::ParsedObject> pobj;
 			{
 				IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
-				pobj = this->parsers.ParseFile(fd);
-			}
-			if (pobj == 0)
-			{
-				return 0;
+				if (!this->parsers.ParseFile(fd).SetTo(pobj))
+				{
+					return 0;
+				}
 			}
 			if (pobj->GetParserType() == IO::ParserType::ImageList)
 			{
-				Media::ImageList *imgList = (Media::ImageList*)pobj;
+				NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 				if (nnuserFile->rotType != 0)
 				{
 					UOSInt i = imgList->GetCount();
@@ -4014,7 +4006,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(NN<OrganImageItem> img,
 				}
 				return imgList;
 			}
-			DEL_CLASS(pobj);
+			pobj.Delete();
 			return 0;
 		}
 		return 0;
@@ -4041,18 +4033,17 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(NN<OrganImageItem> img,
 			sptr = Text::StrInt32(sptr, nnwfile->id);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
 
-			IO::ParsedObject *pobj;
+			NN<IO::ParsedObject> pobj;
 			{
 				IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
-				pobj = this->parsers.ParseFile(fd);
-			}
-			if (pobj == 0)
-			{
-				return 0;
+				if (!this->parsers.ParseFile(fd).SetTo(pobj))
+				{
+					return 0;
+				}
 			}
 			if (pobj->GetParserType() == IO::ParserType::ImageList)
 			{
-				Media::ImageList *imgList = (Media::ImageList*)pobj;
+				NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 /*				if (userFile->rotType != 0)
 				{
 					OSInt i = imgList->GetCount();
@@ -4077,7 +4068,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(NN<OrganImageItem> img,
 				}*/
 				return imgList;
 			}
-			DEL_CLASS(pobj);
+			pobj.Delete();
 			return 0;
 		}
 		return 0;
@@ -4086,20 +4077,19 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(NN<OrganImageItem> img,
 	{
 		outUserFile.Set(0);
 		outWebFile.Set(0);
-		IO::ParsedObject *pobj;
+		NN<IO::ParsedObject> pobj;
 		{
 			IO::StmData::FileData fd(Text::String::OrEmpty(img->GetFullName()), false);
-			pobj = this->parsers.ParseFile(fd);
-		}
-		if (pobj == 0)
-		{
-			return 0;
+			if (!this->parsers.ParseFile(fd).SetTo(pobj))
+			{
+				return 0;
+			}
 		}
 		if (pobj->GetParserType() == IO::ParserType::ImageList)
 		{
-			return (Media::ImageList*)pobj;
+			return NN<Media::ImageList>::ConvertFrom(pobj);
 		}
-		DEL_CLASS(pobj);
+		pobj.Delete();
 		return 0;
 	}
 	else
@@ -4110,7 +4100,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(NN<OrganImageItem> img,
 	}
 }
 
-Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(NN<OrganSpecies> sp)
+Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseSpImage(NN<OrganSpecies> sp)
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
@@ -4121,7 +4111,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(NN<OrganSpecies> sp)
 	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
 	UOSInt i;
-	IO::ParsedObject *pobj = 0;
+	Optional<IO::ParsedObject> pobj = 0;
 	if (sp->GetPhotoId() != 0)
 	{
 		NN<UserFileInfo> userFile;
@@ -4196,7 +4186,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(NN<OrganSpecies> sp)
 		}
 		IO::Path::FindFileClose(sess);
 
-		if (pobj == 0)
+		if (pobj.IsNull())
 		{
 			sptr2 = Text::StrConcatC(sptr, UTF8STRC("web.txt"));
 			if (IO::Path::GetPathType(CSTRP(sbuff, sptr2)) == IO::Path::PathType::File)
@@ -4222,26 +4212,27 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(NN<OrganSpecies> sp)
 			}
 		}
 	}
-	Media::ImageList *imgList = 0;
-	if (pobj)
+	Optional<Media::ImageList> imgList = 0;
+	NN<IO::ParsedObject> nnpobj;
+	if (pobj.SetTo(nnpobj))
 	{
-		if (pobj->GetParserType() == IO::ParserType::ImageList)
+		if (nnpobj->GetParserType() == IO::ParserType::ImageList)
 		{
-			imgList = (Media::ImageList*)pobj;
+			imgList = NN<Media::ImageList>::ConvertFrom(nnpobj);
 		}
 		else
 		{
-			DEL_CLASS(pobj);
+			nnpobj.Delete();
 		}
 	}
 	return imgList;
 }
 
-Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseFileImage(NN<UserFileInfo> userFile)
+Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseFileImage(NN<UserFileInfo> userFile)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	IO::ParsedObject *pobj;
+	NN<IO::ParsedObject> pobj;
 	Data::Timestamp ts = userFile->fileTime.ToUTCTime();
 	sptr = this->cfgDataPath->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
@@ -4257,15 +4248,14 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseFileImage(NN<UserFileInfo> us
 	sptr = userFile->dataFileName->ConcatTo(sptr);
 	{
 		IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
-		pobj = this->parsers.ParseFile(fd);
-	}
-	if (pobj == 0)
-	{
-		return 0;
+		if (!this->parsers.ParseFile(fd).SetTo(pobj))
+		{
+			return 0;
+		}
 	}
 	if (pobj->GetParserType() == IO::ParserType::ImageList)
 	{
-		Media::ImageList *imgList = (Media::ImageList*)pobj;
+		NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 		if (userFile->rotType != 0)
 		{
 			UOSInt i = imgList->GetCount();
@@ -4292,15 +4282,15 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseFileImage(NN<UserFileInfo> us
 		}
 		return imgList;
 	}
-	DEL_CLASS(pobj);
+	pobj.Delete();
 	return 0;
 }
 
-Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseWebImage(NN<WebFileInfo> wfile)
+Optional<Media::ImageList> SSWR::OrganMgr::OrganEnvDB::ParseWebImage(NN<WebFileInfo> wfile)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	IO::ParsedObject *pobj;
+	NN<IO::ParsedObject> pobj;
 	sptr = this->cfgDataPath->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
@@ -4314,15 +4304,14 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseWebImage(NN<WebFileInfo> wfil
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
 	{
 		IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
-		pobj = this->parsers.ParseFile(fd);
-	}
-	if (pobj == 0)
-	{
-		return 0;
+		if (!this->parsers.ParseFile(fd).SetTo(pobj))
+		{
+			return 0;
+		}
 	}
 	if (pobj->GetParserType() == IO::ParserType::ImageList)
 	{
-		Media::ImageList *imgList = (Media::ImageList*)pobj;
+		NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 /*		if (userFile->rotType != 0)
 		{
 			OSInt i = imgList->GetCount();
@@ -4347,7 +4336,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseWebImage(NN<WebFileInfo> wfil
 		}*/
 		return imgList;
 	}
-	DEL_CLASS(pobj);
+	pobj.Delete();
 	return 0;
 }
 
@@ -5201,14 +5190,14 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 			{
 				if (fileType == 1 && Text::StrEndsWithICaseC(sptr2, (UOSInt)(sptr2End - sptr2), UTF8STRC(".jpg")))
 				{
-					Media::ImageList *imgList;
+					Optional<Media::ImageList> imgList;
 					NN<Media::ImageList> nnimgList;
 					{
 						IO::StmData::FileData fd({sbuff2, (UOSInt)(sptr3End - sbuff2)}, false);
-						imgList = (Media::ImageList*)this->parsers.ParseFileType(fd, IO::ParserType::ImageList);
+						imgList = Optional<Media::ImageList>::ConvertFrom(this->parsers.ParseFileType(fd, IO::ParserType::ImageList));
 					}
 
-					if (nnimgList.Set(imgList))
+					if (imgList.SetTo(nnimgList))
 					{
 						nnimgList->ToStaticImage(0);
 						NN<Media::StaticImage> newImg;

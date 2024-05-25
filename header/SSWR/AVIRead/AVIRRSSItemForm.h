@@ -33,7 +33,7 @@ namespace SSWR
 			NN<UI::GUITabPage> tpText;
 			NN<UI::GUITextBox> txtText;
 
-			Media::ImageList *currImg;
+			Optional<Media::ImageList> currImg;
 			NN<Net::RSSItem> rssItem;
 			NN<SSWR::AVIRead::AVIRCore> core;
 

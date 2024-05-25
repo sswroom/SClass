@@ -55,14 +55,15 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRVideoInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoInfoForm>();
 	UOSInt i = me->lbStream->GetSelectedIndex();
 	NN<SSWR::AVIRead::AVIRVideoInfoForm::DecodeStatus> decStatus;
-	if (me->currFile == 0)
+	NN<Media::MediaFile> currFile;
+	if (!me->currFile.SetTo(currFile))
 	{
 		me->txtStream->SetText(CSTR(""));
 		return;
 	}
 	Int32 syncTime;
 	NN<Media::IMediaSource> mediaSrc;
-	if (!me->currFile->GetStream((UOSInt)i, syncTime).SetTo(mediaSrc))
+	if (!currFile->GetStream((UOSInt)i, syncTime).SetTo(mediaSrc))
 	{
 		me->txtStream->SetText(CSTR(""));
 		return;
@@ -148,7 +149,8 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRVideoInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoInfoForm>();
-	if (me->decStatus.GetCount() > 0 || me->currFile == 0)
+	NN<Media::MediaFile> currFile;
+	if (me->decStatus.GetCount() > 0 || !me->currFile.SetTo(currFile))
 	{
 		return;
 	}
@@ -166,7 +168,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(AnyType userObj
 	Int32 syncTime;
 	while (true)
 	{
-		if (!me->currFile->GetStream(i, syncTime).SetTo(msrc))
+		if (!currFile->GetStream(i, syncTime).SetTo(msrc))
 		{
 			break;
 		}
@@ -260,16 +262,13 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(AnyType userObj
 
 Bool SSWR::AVIRead::AVIRVideoInfoForm::OpenFile(Text::CStringNN fileName)
 {
-	Media::MediaFile *mediaFile;
+	NN<Media::MediaFile> mediaFile;
 	{
 		IO::StmData::FileData fd(fileName, false);
-		mediaFile = (Media::MediaFile*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::MediaFile);
+		if (!Optional<Media::MediaFile>::ConvertFrom(this->core->GetParserList()->ParseFileType(fd, IO::ParserType::MediaFile)).SetTo(mediaFile))
+			return false;
 	}
-	if (mediaFile == 0)
-	{
-		return false;
-	}
-	SDEL_CLASS(this->currFile);
+	this->currFile.Delete();
 	this->currFile = mediaFile;
 	this->txtFile->SetText(fileName);
 
@@ -349,7 +348,7 @@ SSWR::AVIRead::AVIRVideoInfoForm::AVIRVideoInfoForm(Optional<UI::GUIClientContro
 SSWR::AVIRead::AVIRVideoInfoForm::~AVIRVideoInfoForm()
 {
 	this->ClearDecode();
-	SDEL_CLASS(this->currFile);
+	this->currFile.Delete();
 }
 
 void SSWR::AVIRead::AVIRVideoInfoForm::OnMonitorChanged()

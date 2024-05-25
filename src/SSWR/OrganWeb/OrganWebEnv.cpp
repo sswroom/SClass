@@ -929,7 +929,7 @@ void SSWR::OrganWeb::OrganWebEnv::Restart()
 	///////////////////////////
 }
 
-IO::ParsedObject *SSWR::OrganWeb::OrganWebEnv::ParseFileType(NN<IO::StreamData> fd, IO::ParserType targetType)
+Optional<IO::ParsedObject> SSWR::OrganWeb::OrganWebEnv::ParseFileType(NN<IO::StreamData> fd, IO::ParserType targetType)
 {
 	Sync::MutexUsage mutUsage(this->parserMut);
 	return this->parsers.ParseFileType(fd, targetType);
@@ -1975,10 +1975,10 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesAddWebfile(NN<Sync::RWMutexUsage> mutUs
 	UInt32 crcVal = crc.CalcDirect(imgURL.v, imgURL.leng);
 	
 	IO::StmData::MemoryDataRef fd(mstm.GetBuff(), mstm.GetLength());
-	Media::ImageList *imgList = (Media::ImageList*)this->parsers.ParseFileType(fd, IO::ParserType::ImageList);
-	if (imgList == 0)
+	NN<Media::ImageList> imgList;
+	if (!Optional<Media::ImageList>::ConvertFrom(this->parsers.ParseFileType(fd, IO::ParserType::ImageList)).SetTo(imgList))
 		return false;
-	DEL_CLASS(imgList);
+	imgList.Delete();
 
 	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("insert into webfile (species_id, crcVal, imgUrl, srcUrl, prevUpdated, cropLeft, cropTop, cropRight, cropBottom, location) values ("));
@@ -2190,7 +2190,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 	}
 	if (fileType == FileType::Image)
 	{
-		IO::ParsedObject *pobj;
+		NN<IO::ParsedObject> pobj;
 		Bool valid = false;
 		Data::Timestamp fileTime = Data::Timestamp(0, Data::DateTimeUtil::GetLocalTzQhr());
 		Double lat = 0;
@@ -2203,79 +2203,78 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 
 		{
 			IO::StmData::MemoryDataRef md(fileCont, fileSize);
-			pobj = this->parsers.ParseFile(md);
-		}
-		if (pobj)
-		{
-			if (pobj->GetParserType() == IO::ParserType::ImageList)
+			if (this->parsers.ParseFile(md).SetTo(pobj))
 			{
-				valid = !mustHaveCamera;
-
-				Media::ImageList *imgList = (Media::ImageList*)pobj;
-				NN<Media::RasterImage> img;
-				if (imgList->GetImage(0, 0).SetTo(img))
+				if (pobj->GetParserType() == IO::ParserType::ImageList)
 				{
-					NN<Media::EXIFData> exif;
-					if (img->exif.SetTo(exif))
+					valid = !mustHaveCamera;
+
+					NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
+					NN<Media::RasterImage> img;
+					if (imgList->GetImage(0, 0).SetTo(img))
 					{
-						valid = true;
-						exif->GetPhotoDate(fileTime);
-						fileTime = fileTime.SetTimeZoneQHR(Data::DateTimeUtil::GetLocalTzQhr());
-						if (fileTime.ToUnixTimestamp() >= 946684800) //Y2000
+						NN<Media::EXIFData> exif;
+						if (img->exif.SetTo(exif))
 						{
-							if (this->UserGPSGetPos(mutUsage, userId, fileTime, &lat, &lon))
+							valid = true;
+							exif->GetPhotoDate(fileTime);
+							fileTime = fileTime.SetTimeZoneQHR(Data::DateTimeUtil::GetLocalTzQhr());
+							if (fileTime.ToUnixTimestamp() >= 946684800) //Y2000
 							{
-								locType = LocType::GPSTrack;
+								if (this->UserGPSGetPos(mutUsage, userId, fileTime, &lat, &lon))
+								{
+									locType = LocType::GPSTrack;
+								}
 							}
-						}
-						Text::CString cstr;
-						Text::CString cstr2;
-						cstr = exif->GetPhotoMake();
-						cstr2 = exif->GetPhotoModel();
-						if (cstr.v && cstr2.v)
-						{
-							if (cstr2.StartsWithICase(cstr.v, cstr.leng))
+							Text::CString cstr;
+							Text::CString cstr2;
+							cstr = exif->GetPhotoMake();
+							cstr2 = exif->GetPhotoModel();
+							if (cstr.v && cstr2.v)
+							{
+								if (cstr2.StartsWithICase(cstr.v, cstr.leng))
+								{
+									camera = Text::String::New(cstr2).Ptr();
+								}
+								else
+								{
+									Text::StringBuilderUTF8 sb;
+									sb.Append(cstr);
+									sb.AppendC(UTF8STRC(" "));
+									sb.Append(cstr2);
+									camera = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+								}
+							}
+							else if (cstr.v)
+							{
+								camera = Text::String::New(cstr).Ptr();
+							}
+							else if (cstr2.v)
 							{
 								camera = Text::String::New(cstr2).Ptr();
 							}
-							else
+							else if (mustHaveCamera)
 							{
-								Text::StringBuilderUTF8 sb;
-								sb.Append(cstr);
-								sb.AppendC(UTF8STRC(" "));
-								sb.Append(cstr2);
-								camera = Text::String::New(sb.ToString(), sb.GetLength()).Ptr();
+								valid = false;
 							}
+							Double altitude;
+							Int64 gpsTimeTick;
+							if (exif->GetPhotoLocation(lat, lon, altitude, gpsTimeTick))
+							{
+								locType = LocType::PhotoExif;
+							}
+							rotType = (Int32)exif->GetRotateType();
 						}
-						else if (cstr.v)
-						{
-							camera = Text::String::New(cstr).Ptr();
-						}
-						else if (cstr2.v)
-						{
-							camera = Text::String::New(cstr2).Ptr();
-						}
-						else if (mustHaveCamera)
-						{
-							valid = false;
-						}
-						Double altitude;
-						Int64 gpsTimeTick;
-						if (exif->GetPhotoLocation(lat, lon, altitude, gpsTimeTick))
-						{
-							locType = LocType::PhotoExif;
-						}
-						rotType = (Int32)exif->GetRotateType();
 					}
-				}
 
-				UInt8 crcBuff[4];
-				Crypto::Hash::CRC32R crc;
-				crc.Calc(fileCont, fileSize);
-				crc.GetValue(crcBuff);
-				crcVal = ReadMUInt32(crcBuff);
+					UInt8 crcBuff[4];
+					Crypto::Hash::CRC32R crc;
+					crc.Calc(fileCont, fileSize);
+					crc.GetValue(crcBuff);
+					crcVal = ReadMUInt32(crcBuff);
+				}
+				pobj.Delete();
 			}
-			DEL_CLASS(pobj);
 		}
 		NN<WebUserInfo> webUser;
 		if (valid && this->userMap.Get(userId).SetTo(webUser))
@@ -2467,7 +2466,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 		Crypto::Hash::CRC32R crc;
 		NN<Media::DrawImage> img;
 		UInt32 crcVal;
-		IO::ParsedObject *pobj;
+		NN<IO::ParsedObject> pobj;
 		Data::Timestamp fileTime = 0;
 		NN<UserFileInfo> userFile;
 		Bool valid = false;
@@ -2479,24 +2478,23 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 
 		{
 			IO::StmData::FileData fd(fileName, false);
-			pobj = this->parsers.ParseFile(fd);
-		}
-		if (pobj)
-		{
-			if (pobj->GetParserType() == IO::ParserType::MediaFile)
+			if (this->parsers.ParseFile(fd).SetTo(pobj))
 			{
-				Media::MediaFile *mediaFile = (Media::MediaFile*)pobj;
-				NN<Media::IMediaSource> msrc;
-				if (mediaFile->GetStream(0, 0).SetTo(msrc) && msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
+				if (pobj->GetParserType() == IO::ParserType::MediaFile)
 				{
-					graphImg = Media::FrequencyGraph::CreateGraph(this->eng, (Media::IAudioSource *)msrc.Ptr(), 2048, 2048, Math::FFTCalc::WT_BLACKMANN_HARRIS, 12);
-					if (graphImg)
+					NN<Media::MediaFile> mediaFile = NN<Media::MediaFile>::ConvertFrom(pobj);
+					NN<Media::IMediaSource> msrc;
+					if (mediaFile->GetStream(0, 0).SetTo(msrc) && msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 					{
-						valid = true;
+						graphImg = Media::FrequencyGraph::CreateGraph(this->eng, (Media::IAudioSource *)msrc.Ptr(), 2048, 2048, Math::FFTCalc::WT_BLACKMANN_HARRIS, 12);
+						if (graphImg)
+						{
+							valid = true;
+						}
 					}
 				}
+				pobj.Delete();
 			}
-			DEL_CLASS(pobj);
 		}
 		NN<WebUserInfo> webUser;
 		if (valid && this->userMap.Get(userId).SetTo(webUser))
@@ -3131,7 +3129,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::DataFileAdd(NN<Sync::RWMutexUsage> mutUsage, I
 	}
 }
 
-IO::ParsedObject *SSWR::OrganWeb::OrganWebEnv::DataFileParse(NN<DataFileInfo> dataFile)
+Optional<IO::ParsedObject> SSWR::OrganWeb::OrganWebEnv::DataFileParse(NN<DataFileInfo> dataFile)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr = this->dataDir->ConcatTo(sbuff);

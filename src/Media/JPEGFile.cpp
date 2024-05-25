@@ -13,7 +13,7 @@
 //http://stackoverflow.com/questions/662565/how-to-create-huffman-tree-from-ffc4-dht-header-in-jpeg-file
 //http://u88.n24.queensu.ca/exiftool/forum/index.php?topic=4898.0 FLIR
 
-Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, NN<Media::RasterImage> img, NN<Media::ImageList> imgList, Parser::ParserList *parsers)
+Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, NN<Media::RasterImage> img, NN<Media::ImageList> imgList, Optional<Parser::ParserList> parsers)
 {
 	UInt64 ofst;
 	UInt64 nextOfst;
@@ -21,6 +21,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, NN<Media::RasterIma
 	UInt8 buff[18];
 	Bool ret = false;
 	IO::MemoryStream *flirMstm = 0;
+	NN<Parser::ParserList> nnparsers;
 	UInt8 flirMaxSegm;
 	UInt8 flirCurrSegm = 0;
 
@@ -155,27 +156,28 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, NN<Media::RasterIma
 					if (blkSize == 0)
 						break;
 
-					if (tagBuff[blkOfst] == 3) // JPG
+					if (tagBuff[blkOfst] == 3 && parsers.SetTo(nnparsers)) // JPG
 					{
-						Media::ImageList *innerImgList;
+						Optional<Media::ImageList> innerImgList;
+						NN<Media::ImageList> nnInnerImgList;
 						NN<Media::RasterImage> innerImg;
 						{
 							IO::StmData::MemoryDataRef mfd(tagBuff.SubArray(blkOfst + 13, blkSize - 32));
-							innerImgList = (Media::ImageList*)parsers->ParseFileType(mfd, IO::ParserType::ImageList);
+							innerImgList = Optional<Media::ImageList>::ConvertFrom(nnparsers->ParseFileType(mfd, IO::ParserType::ImageList));
 						}
-						if (innerImgList)
+						if (innerImgList.SetTo(nnInnerImgList))
 						{
-							k = innerImgList->GetCount();
+							k = nnInnerImgList->GetCount();
 							i = 0;
 							while (i < k)
 							{
-								if (innerImgList->GetImage(i, delay).SetTo(innerImg))
+								if (nnInnerImgList->GetImage(i, delay).SetTo(innerImg))
 								{
 									imgList->AddImage(innerImg->CreateStaticImage(), delay);
 								}
 								i++;
 							}
-							DEL_CLASS(innerImgList);
+							nnInnerImgList.Delete();
 						}
 					}
 					else if (tagBuff[blkOfst] == 2)
@@ -186,22 +188,23 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, NN<Media::RasterIma
 						{
 							imgList->SetThermoImage(Math::Size2D<UOSInt>(innerW, innerH), 16, &tagBuff[blkOfst + 32], 0.95, 0, 0, Media::ImageList::TT_FLIR);
 						}
-						else if (tagBuff[blkOfst + 32] == 0x89 && tagBuff[blkOfst + 33] == 0x50 && tagBuff[blkOfst + 34] == 0x4e && tagBuff[blkOfst + 35] == 0x47)
+						else if (tagBuff[blkOfst + 32] == 0x89 && tagBuff[blkOfst + 33] == 0x50 && tagBuff[blkOfst + 34] == 0x4e && tagBuff[blkOfst + 35] == 0x47 && parsers.SetTo(nnparsers))
 						{
-							Media::ImageList *innerImgList;
+							Optional<Media::ImageList> innerImgList;
+							NN<Media::ImageList> nnInnerImgList;
 							NN<Media::RasterImage> innerImg;
 							NN<Media::StaticImage> stImg;
 							{
 								IO::StmData::MemoryDataRef mfd(&tagBuff[blkOfst + 32], blkSize - 32);
-								innerImgList = (Media::ImageList*)parsers->ParseFileType(mfd, IO::ParserType::ImageList);
+								innerImgList = Optional<Media::ImageList>::ConvertFrom(nnparsers->ParseFileType(mfd, IO::ParserType::ImageList));
 							}
-							if (innerImgList)
+							if (innerImgList.SetTo(nnInnerImgList))
 							{
-								k = innerImgList->GetCount();
+								k = nnInnerImgList->GetCount();
 								i = 0;
 								while (i < k)
 								{
-									if (innerImgList->GetImage(i, delay).SetTo(innerImg))
+									if (nnInnerImgList->GetImage(i, delay).SetTo(innerImg))
 									{
 										stImg = innerImg->CreateStaticImage();
 										if (stImg->info.pf == Media::PF_LE_W16)
@@ -219,7 +222,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, NN<Media::RasterIma
 									}
 									i++;
 								}
-								DEL_CLASS(innerImgList);
+								nnInnerImgList.Delete();
 							}
 						}
 					}

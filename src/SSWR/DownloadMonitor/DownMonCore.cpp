@@ -90,13 +90,10 @@ Bool SSWR::DownloadMonitor::DownMonCore::ExtractZIP(Text::CStringNN zipFile, Tex
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	IO::PackageFile *pkgFile;
+	NN<IO::PackageFile> pkgFile;
 	Bool valid = false;
-	{
-		IO::StmData::FileData fd(zipFile, false);
-		pkgFile = (IO::PackageFile*)this->parsers->ParseFileType(fd, IO::ParserType::PackageFile);
-	}
-	if (pkgFile)
+	IO::StmData::FileData fd(zipFile, false);
+	if (Optional<IO::PackageFile>::ConvertFrom(this->parsers->ParseFileType(fd, IO::ParserType::PackageFile)).SetTo(pkgFile))
 	{
 		if (pkgFile->GetCount() == 1)
 		{
@@ -107,23 +104,20 @@ Bool SSWR::DownloadMonitor::DownMonCore::ExtractZIP(Text::CStringNN zipFile, Tex
 				valid = pkgFile->CopyTo(0, mp4File, true);
 			}
 		}
-		DEL_CLASS(pkgFile);
+		pkgFile.Delete();
 	}
 	return valid;
 }
 
 Bool SSWR::DownloadMonitor::DownMonCore::VideoValid(Text::CStringNN fileName)
 {
-	Media::MediaFile *mediaFile;
+	NN<Media::MediaFile> mediaFile;
 	Bool valid = false;
-	{
-		IO::StmData::FileData fd(fileName, false);
-		mediaFile = (Media::MediaFile*)this->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
-	}
-	if (mediaFile)
+	IO::StmData::FileData fd(fileName, false);
+	if (Optional<Media::MediaFile>::ConvertFrom(this->parsers->ParseFileType(fd, IO::ParserType::MediaFile)).SetTo(mediaFile))
 	{
 		valid = this->checker.IsValid(mediaFile);
-		DEL_CLASS(mediaFile);
+		mediaFile.Delete();
 	}
 	return valid;
 }

@@ -40,12 +40,12 @@ void Parser::FileParser::XMLParser::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-void Parser::FileParser::XMLParser::SetParserList(Parser::ParserList *parsers)
+void Parser::FileParser::XMLParser::SetParserList(Optional<Parser::ParserList> parsers)
 {
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::XMLParser::SetWebBrowser(Net::WebBrowser *browser)
+void Parser::FileParser::XMLParser::SetWebBrowser(Optional<Net::WebBrowser> browser)
 {
 	this->browser = browser;
 }
@@ -133,7 +133,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseFileHdr(NN<IO::StreamData>
 	return pobj;
 }
 
-IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
+IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Optional<Text::EncodingFactory> encFact, NN<IO::Stream> stm, Text::CStringNN fileName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, IO::PackageFile *pkgFile)
 {
 	NN<Text::String> nodeText;
 	Text::XMLReader reader(encFact, stm, Text::XMLReader::PM_XML);
@@ -410,7 +410,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Optional<Text::Enco
 					else if (nodeText->Equals(UTF8STRC("MapName")))
 					{
 						NN<Parser::ParserList> nnparsers;
-						if (lyr == 0 && nnparsers.Set(parsers))
+						if (lyr == 0 && parsers.SetTo(nnparsers))
 						{
 							Text::StringBuilderUTF8 sb;
 							reader.ReadNodeText(sb);

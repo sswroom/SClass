@@ -43,7 +43,7 @@ void Media::VideoChecker::SetAllowTimeSkip(Bool allowTimeSkip)
 	this->allowTimeSkip = allowTimeSkip;
 }
 
-Bool Media::VideoChecker::IsValid(Media::MediaFile *mediaFile)
+Bool Media::VideoChecker::IsValid(NN<Media::MediaFile> mediaFile)
 {
 	DecodeStatus *status;
 	NN<Media::IMediaSource> msrc;

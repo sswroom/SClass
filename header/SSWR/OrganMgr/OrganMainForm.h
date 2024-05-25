@@ -135,7 +135,7 @@ namespace SSWR
 			Bool newDirName;
 			Data::ArrayListNN<OrganGroupItem> pickObjs;
 
-			Media::ImageList *dispImage;
+			Optional<Media::ImageList> dispImage;
 			Optional<UserFileInfo> dispImageUF;
 			Optional<WebFileInfo> dispImageWF;
 			Bool dispImageToCrop;

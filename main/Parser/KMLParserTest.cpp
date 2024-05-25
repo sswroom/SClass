@@ -11,7 +11,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Text::CStringNN path = CSTR("/home/sswroom/Progs/Temp/Lantau Island.kml");
 //	Text::CStringNN path = CSTR("/mnt/raid2_3/GPS/KML/HKPath/Lantau Island.kml");
-	IO::ParsedObject *pobj;
+	Optional<IO::ParsedObject> pobj;
 	Manage::HiResClock clk;
 	Double t;
 	IO::ConsoleWriter console;
@@ -24,13 +24,13 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		pobj = parsers.ParseFile(fd);
 		t = clk.GetTimeDiff();
 	}
-	if (pobj)
+	if (pobj.NotNull())
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Parse success, t = "));
 		sb.AppendDouble(t);
 		console.WriteLine(sb.ToCString());
-		DEL_CLASS(pobj);
+		pobj.Delete();
 	}
 	else
 	{

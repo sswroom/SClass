@@ -38,7 +38,7 @@ Media::Playlist::~Playlist()
 		this->player->SetEndHandler(0, 0);
 		this->player = 0;
 	}
-	SDEL_CLASS(this->currFile);
+	this->currFile.Delete();
 	this->entries.FreeAll(FreeEntry);
 }
 
@@ -49,14 +49,13 @@ IO::ParserType Media::Playlist::GetParserType() const
 
 Bool Media::Playlist::AddFile(Text::CStringNN fileName)
 {
-	Media::MediaFile *file;
+	NN<Media::MediaFile> file;
 	{
 		IO::StmData::FileData fd(fileName, false);
-		file = (Media::MediaFile*)this->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
-	}
-	if (file == 0)
-	{
-		return false;
+		if (!Optional<Media::MediaFile>::ConvertFrom(this->parsers->ParseFileType(fd, IO::ParserType::MediaFile)).SetTo(file))
+		{
+			return false;
+		}
 	}
 
 
@@ -111,7 +110,7 @@ Bool Media::Playlist::AddFile(Text::CStringNN fileName)
 		ent->timeEnd = -1;
 		this->entries.Add(ent);
 	}
-	DEL_CLASS(file);
+	file.Delete();
 	return true;
 }
 
@@ -225,16 +224,17 @@ Bool Media::Playlist::OpenItem(UOSInt index)
 		return false;
 
 	this->player->LoadMedia(0);
-	SDEL_CLASS(this->currFile);
+	this->currFile.Delete();
 	{
 		IO::StmData::FileData fd(ent->fileName, false);
-		this->currFile = (Media::MediaFile*)this->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
+		this->currFile = Optional<Media::MediaFile>::ConvertFrom(this->parsers->ParseFileType(fd, IO::ParserType::MediaFile));
 	}
 
-	if (this->currFile == 0)
+	NN<Media::MediaFile> currFile;
+	if (!this->currFile.SetTo(currFile))
 		return false;
 	
-	this->currFile->TrimFile((UInt32)ent->timeStart.GetTotalMS(), (Int32)ent->timeEnd.GetTotalMS());
+	currFile->TrimFile((UInt32)ent->timeStart.GetTotalMS(), (Int32)ent->timeEnd.GetTotalMS());
 
 	if (!this->player->LoadMedia(this->currFile))
 		return false;
@@ -255,7 +255,7 @@ Bool Media::Playlist::IsPlaying()
 
 Bool Media::Playlist::StartPlayback()
 {
-	if (this->currFile == 0)
+	if (this->currFile.IsNull())
 	{
 		OnPBEnd(this);
 	}

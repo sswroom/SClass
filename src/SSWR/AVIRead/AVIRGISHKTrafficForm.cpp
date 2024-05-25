@@ -30,32 +30,29 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnOKClicked(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRGISHKTrafficForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISHKTrafficForm>();
 	Text::StringBuilderUTF8 sb;
 	me->txtRoadCenterline->GetText(sb);
-	Map::MapDrawLayer *lyr;
+	NN<Map::MapDrawLayer> lyr;
 	{
 		IO::StmData::FileData fd(sb.ToCString(), false);
-		lyr = (Map::MapDrawLayer*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::MapLayer);
+		if (!Optional<Map::MapDrawLayer>::ConvertFrom(me->core->GetParserList()->ParseFileType(fd, IO::ParserType::MapLayer)).SetTo(lyr))
+		{
+			me->ui->ShowMsgOK(CSTR("Error in parsing the file"), CSTR("HK Traffic"), me);
+			return;
+		}
 	}
-	if (lyr)
+	Map::DrawLayerType lyrType = lyr->GetLayerType();
+	if (lyrType == Map::DRAW_LAYER_POLYLINE || lyrType == Map::DRAW_LAYER_POLYLINE3D)
 	{
-		Map::DrawLayerType lyrType = lyr->GetLayerType();
-		if (lyrType == Map::DRAW_LAYER_POLYLINE || lyrType == Map::DRAW_LAYER_POLYLINE3D)
-		{
-			Map::HKTrafficLayer *traffic;
-			NEW_CLASS(traffic, Map::HKTrafficLayer(me->core->GetSocketFactory(), me->ssl, me->core->GetEncFactory()));
-			traffic->AddRoadLayer(lyr);
-			traffic->EndInit();
-			me->lyr = traffic;
-			me->SetDialogResult(UI::GUIForm::DR_OK);
-		}
-		else
-		{
-			DEL_CLASS(lyr);
-			me->ui->ShowMsgOK(CSTR("The file is not a polyline layer"), CSTR("HK Traffic"), me);
-		}
+		Map::HKTrafficLayer *traffic;
+		NEW_CLASS(traffic, Map::HKTrafficLayer(me->core->GetSocketFactory(), me->ssl, me->core->GetEncFactory()));
+		traffic->AddRoadLayer(lyr);
+		traffic->EndInit();
+		me->lyr = traffic;
+		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
 	else
 	{
-		me->ui->ShowMsgOK(CSTR("Error in parsing the file"), CSTR("HK Traffic"), me);
+		lyr.Delete();
+		me->ui->ShowMsgOK(CSTR("The file is not a polyline layer"), CSTR("HK Traffic"), me);
 	}
 }
 

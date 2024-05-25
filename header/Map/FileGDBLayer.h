@@ -27,7 +27,7 @@ namespace Map
 	private:
 		Data::FastMap<Int32, const UTF8Char **> *ReadNameArr();
 	public:
-		FileGDBLayer(DB::SharedReadingDB *conn, Text::CStringNN sourceName, Text::CStringNN tableName, Math::ArcGISPRJParser *prjParser);
+		FileGDBLayer(DB::SharedReadingDB *conn, Text::CStringNN sourceName, Text::CStringNN tableName, NN<Math::ArcGISPRJParser> prjParser);
 		virtual ~FileGDBLayer();
 
 		virtual DrawLayerType GetLayerType() const;

@@ -26,7 +26,7 @@ UI::DObj::OverlayDObj::OverlayDObj(NN<Media::DrawEngine> deng, Text::CString fil
 	else
 	{
 		IO::StmData::FileData fd(fileName.OrEmpty(), false);
-		this->imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
+		this->imgList = Optional<Media::ImageList>::ConvertFrom(parsers->ParseFileType(fd, IO::ParserType::ImageList));
 		this->frameDelay = 500;
 		this->startTime = 0;
 		this->lastFrameNum = -1;
@@ -45,30 +45,30 @@ UI::DObj::OverlayDObj::~OverlayDObj()
 		this->deng->DeleteImage(img);
 		this->bmp = 0;
 	}
-	else if (this->imgList)
+	else if (this->imgList.NotNull())
 	{
-		DEL_CLASS(this->imgList);
-		this->imgList = 0;
+		this->imgList.Delete();
 	}
 	SDEL_CLASS(this->clk);
 }
 
 Bool UI::DObj::OverlayDObj::IsChanged()
 {
+	NN<Media::ImageList> imgList;
 	if (this->bmp.NotNull())
 	{
 		return false;
 	}
-	else if (this->imgList)
+	else if (this->imgList.SetTo(imgList))
 	{
-		if (this->imgList->GetCount() <= 1)
+		if (imgList->GetCount() <= 1)
 			return false;
 		Double t = clk->GetTimeDiff();
 		OSInt i = Double2Int32((t - this->startTime) * 1000 / OSInt2Double(this->frameDelay));
-		while (i >= (OSInt)this->imgList->GetCount())
+		while (i >= (OSInt)imgList->GetCount())
 		{
-			i -= (OSInt)this->imgList->GetCount();
-			this->startTime += OSInt2Double(this->frameDelay * (OSInt)this->imgList->GetCount()) * 0.001;
+			i -= (OSInt)imgList->GetCount();
+			this->startTime += OSInt2Double(this->frameDelay * (OSInt)imgList->GetCount()) * 0.001;
 		}
 		return i != this->lastFrameNum;
 	}
@@ -83,15 +83,16 @@ Bool UI::DObj::OverlayDObj::DoEvents()
 void UI::DObj::OverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 {
 	NN<Media::DrawImage> bmp;
+	NN<Media::ImageList> imgList;
 	if (this->bmp.SetTo(bmp))
 	{
 		Math::Coord2DDbl tl = GetCurrPos().ToDouble();
 		dimg->DrawImagePt(bmp, tl);
 	}
-	else if (this->imgList)
+	else if (this->imgList.SetTo(imgList))
 	{
 		UOSInt frameNum;
-		if (this->imgList->GetCount() <= 1)
+		if (imgList->GetCount() <= 1)
 		{
 			frameNum = 0;
 		}
@@ -99,15 +100,15 @@ void UI::DObj::OverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 		{
 			Double t = clk->GetTimeDiff();
 			frameNum = (UInt32)Double2Int32((t - this->startTime) * 1000 / OSInt2Double(this->frameDelay));
-			while (frameNum >= this->imgList->GetCount())
+			while (frameNum >= imgList->GetCount())
 			{
-				frameNum -= this->imgList->GetCount();
-				this->startTime += OSInt2Double(this->frameDelay * (OSInt)this->imgList->GetCount()) * 0.001;
+				frameNum -= imgList->GetCount();
+				this->startTime += OSInt2Double(this->frameDelay * (OSInt)imgList->GetCount()) * 0.001;
 			}
 		}
-		this->imgList->ToStaticImage(frameNum);
+		imgList->ToStaticImage(frameNum);
 		NN<Media::StaticImage> img;
-		if (Optional<Media::StaticImage>::ConvertFrom(this->imgList->GetImage(frameNum, 0)).SetTo(img))
+		if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(frameNum, 0)).SetTo(img))
 		{
 			Math::Coord2DDbl tl = GetCurrPos().ToDouble();
 			dimg->DrawImagePt2(img, tl);

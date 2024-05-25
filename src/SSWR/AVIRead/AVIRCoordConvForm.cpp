@@ -166,78 +166,77 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 	UOSInt xCol = (UOSInt)-1;
 	UOSInt yCol = (UOSInt)-1;
 	UOSInt colCnt;
-	DB::ReadingDB *db = 0;
+	Optional<DB::ReadingDB> db = 0;
+	NN<DB::ReadingDB> nndb;
+	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"CoordConvFile", false);
+	parsers->PrepareSelector(dlg, IO::ParserType::ReadingDB);
+	if (!dlg->ShowDialog(me->GetHandle()))
 	{
-		NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"CoordConvFile", false);
-		parsers->PrepareSelector(dlg, IO::ParserType::ReadingDB);
-		if (!dlg->ShowDialog(me->GetHandle()))
-		{
-			return;
-		}
-		if (dlg->GetFileName()->EndsWithICase(UTF8STRC(".CSV")))
-		{
-			DB::CSVFile *csv;
-			NEW_CLASS(csv, DB::CSVFile(dlg->GetFileName(), 0));
-			db = csv;
-		}
-		if (db == 0)
-		{
-			IO::StmData::FileData fd(dlg->GetFileName(), false);
-			db = (DB::ReadingDB*)parsers->ParseFileType(fd, IO::ParserType::ReadingDB);
-			if (db == 0)
-			{
-				me->ui->ShowMsgOK(CSTR("File is not a database file"), CSTR("Error"), me);
-				dlg.Delete();
-				return;
-			}
-		}
-		NN<DB::DBReader> reader;
-		if (!db->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(reader))
-		{
-			me->ui->ShowMsgOK(CSTR("Unsupported database format"), CSTR("Error"), me);
-			DEL_CLASS(db);
-			dlg.Delete();
-			return;
-		}
-		i = reader->ColCount();
-		colCnt = i;
-		while (i-- > 0)
-		{
-			if ((sptr = reader->GetName(i, sbuff)) != 0)
-			{
-				if (Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("MAPX")))
-				{
-					xCol = i;
-				}
-				else if (Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("MAPY")))
-				{
-					yCol = i;
-				}
-			}
-		}
-		db->CloseReader(reader);
-		if (xCol == (UOSInt)-1 || yCol == (UOSInt)-1)
-		{
-			DEL_CLASS(db);
-			me->ui->ShowMsgOK(CSTR("XY Database column not found"), CSTR("Error"), me);
-			dlg.Delete();
-			return;
-		}
-		dlg.Delete();
+		return;
 	}
+	if (dlg->GetFileName()->EndsWithICase(UTF8STRC(".CSV")))
+	{
+		DB::CSVFile *csv;
+		NEW_CLASS(csv, DB::CSVFile(dlg->GetFileName(), 0));
+		db = csv;
+	}
+	if (!db.SetTo(nndb))
+	{
+		IO::StmData::FileData fd(dlg->GetFileName(), false);
+		db = Optional<DB::ReadingDB>::ConvertFrom(parsers->ParseFileType(fd, IO::ParserType::ReadingDB));
+		if (!db.SetTo(nndb))
+		{
+			me->ui->ShowMsgOK(CSTR("File is not a database file"), CSTR("Error"), me);
+			dlg.Delete();
+			return;
+		}
+	}
+	NN<DB::DBReader> reader;
+	if (!nndb->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(reader))
+	{
+		me->ui->ShowMsgOK(CSTR("Unsupported database format"), CSTR("Error"), me);
+		nndb.Delete();
+		dlg.Delete();
+		return;
+	}
+	i = reader->ColCount();
+	colCnt = i;
+	while (i-- > 0)
+	{
+		if ((sptr = reader->GetName(i, sbuff)) != 0)
+		{
+			if (Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("MAPX")))
+			{
+				xCol = i;
+			}
+			else if (Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("MAPY")))
+			{
+				yCol = i;
+			}
+		}
+	}
+	nndb->CloseReader(reader);
+	if (xCol == (UOSInt)-1 || yCol == (UOSInt)-1)
+	{
+		nndb.Delete();
+		me->ui->ShowMsgOK(CSTR("XY Database column not found"), CSTR("Error"), me);
+		dlg.Delete();
+		return;
+	}
+	dlg.Delete();
 
-	NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"CoordConvSave", true);
+	dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"CoordConvSave", true);
 	dlg->AddFilter(CSTR("*.csv"), CSTR("CSV File"));
 	if (!dlg->ShowDialog(me->GetHandle()))
 	{
-		DEL_CLASS(db);
+		nndb.Delete();
 		dlg.Delete();
 		return;
 	}
 	IO::FileStream fs(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
 	{
-		DEL_CLASS(db);
+		nndb.Delete();
 		me->ui->ShowMsgOK(CSTR("Error in creating output file"), CSTR("Error"), me);
 		dlg.Delete();
 		return;
@@ -247,11 +246,10 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 	const UTF8Char **sarr;
 	sarr = MemAlloc(const UTF8Char *, colCnt + 2);
 	i = 0;
-	NN<DB::DBReader> reader;
-	if (!db->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(reader))
+	if (!nndb->QueryTableData(CSTR_NULL, CSTR_NULL, 0, 0, 0, CSTR_NULL, 0).SetTo(reader))
 	{
 		MemFree(sarr);
-		DEL_CLASS(db);
+		nndb.Delete();
 		me->ui->ShowMsgOK(CSTR("Error in reading source file"), CSTR("Error"), me);
 		return;
 	}
@@ -341,13 +339,13 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 		sb.AppendCSV(sarr, colCnt + 2);
 		writer.WriteLine(sb.ToCString());
 	}
-	db->CloseReader(reader);
+	nndb->CloseReader(reader);
 
 	MemFree(strBuff);
 	MemFree(sarr);
 	DEL_CLASS(srcCoord);
 	DEL_CLASS(destCoord);
-	DEL_CLASS(db);
+	nndb.Delete();
 }
 
 void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnCoordDblClk(AnyType userObj, UOSInt itemIndex)
@@ -392,8 +390,8 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnFileDrop(AnyType userObj, Dat
 	while (i < nFiles)
 	{
 		IO::StmData::FileData fd(files[i], false);
-		Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
-		if (imgList)
+		NN<Media::ImageList> imgList;
+		if (Optional<Media::ImageList>::ConvertFrom(parsers->ParseFileType(fd, IO::ParserType::ImageList)).SetTo(imgList))
 		{
 			NN<Media::RasterImage> img;
 			NN<Media::EXIFData> exif;
@@ -415,7 +413,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnFileDrop(AnyType userObj, Dat
 				me->zList.Add(altitude);
 				listUpdated = true;
 			}
-			DEL_CLASS(imgList);
+			imgList.Delete();
 		}
 		i++;
 	}

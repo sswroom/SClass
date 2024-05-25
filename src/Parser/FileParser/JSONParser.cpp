@@ -33,7 +33,7 @@ Int32 Parser::FileParser::JSONParser::GetName()
 	return *(Int32*)"JSON";
 }
 
-void Parser::FileParser::JSONParser::SetParserList(Parser::ParserList *parsers)
+void Parser::FileParser::JSONParser::SetParserList(Optional<Parser::ParserList> parsers)
 {
 	this->parsers = parsers;
 }

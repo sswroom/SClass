@@ -16,7 +16,7 @@ namespace UI
 		private:
 			NN<Media::DrawEngine> deng;
 			Sync::Mutex imgMut;
-			Media::ImageList *imgList;
+			Optional<Media::ImageList> imgList;
 			Bool noRelease;
 			OSInt frameDelay;
 			Manage::HiResClock *clk;

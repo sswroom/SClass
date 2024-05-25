@@ -22,12 +22,13 @@ UI::DObj::SizedOverlayDObj::SizedOverlayDObj(NN<Media::DrawEngine> deng, Text::C
 	{
 		{
 			IO::StmData::FileData fd(fileName.OrEmpty(), false);
-			this->imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
+			this->imgList = Optional<Media::ImageList>::ConvertFrom(parsers->ParseFileType(fd, IO::ParserType::ImageList));
 		}
 		this->frameDelay = 500;
-		if (this->imgList)
+		NN<Media::ImageList> imgList;
+		if (this->imgList.SetTo(imgList))
 		{
-			UInt32 frameDelay = this->imgList->GetImageDelay(0);
+			UInt32 frameDelay = imgList->GetImageDelay(0);
 			if (frameDelay > 0)
 			{
 				this->frameDelay = (OSInt)frameDelay;
@@ -44,10 +45,9 @@ UI::DObj::SizedOverlayDObj::~SizedOverlayDObj()
 	if (this->noRelease)
 	{
 	}
-	else if (this->imgList)
+	else if (this->imgList.NotNull())
 	{
-		DEL_CLASS(this->imgList);
-		this->imgList = 0;
+		this->imgList.Delete();
 	}
 	SDEL_CLASS(this->dispImg);
 	SDEL_CLASS(this->clk);
@@ -56,18 +56,19 @@ UI::DObj::SizedOverlayDObj::~SizedOverlayDObj()
 Bool UI::DObj::SizedOverlayDObj::IsChanged()
 {
 	Sync::MutexUsage mutUsage(this->imgMut);
-	if (this->imgList)
+	NN<Media::ImageList> imgList;
+	if (this->imgList.SetTo(imgList))
 	{
-		if (this->imgList->GetCount() <= 1)
+		if (imgList->GetCount() <= 1)
 			return false;
 		if (this->dispImg == 0)
 			return true;
 		Double t = clk->GetTimeDiff();
 		OSInt i = Double2Int32((t - this->startTime) * 1000 / OSInt2Double(this->frameDelay));
-		while (i >= (OSInt)this->imgList->GetCount())
+		while (i >= (OSInt)imgList->GetCount())
 		{
-			i -= (OSInt)this->imgList->GetCount();
-			this->startTime += OSInt2Double(this->frameDelay * (OSInt)this->imgList->GetCount()) * 0.001;
+			i -= (OSInt)imgList->GetCount();
+			this->startTime += OSInt2Double(this->frameDelay * (OSInt)imgList->GetCount()) * 0.001;
 		}
 		return i != this->lastFrameNum;
 	}
@@ -82,10 +83,11 @@ Bool UI::DObj::SizedOverlayDObj::DoEvents()
 void UI::DObj::SizedOverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 {
 	Sync::MutexUsage imgMutUsage(this->imgMut);
-	if (this->imgList)
+	NN<Media::ImageList> imgList;
+	if (this->imgList.SetTo(imgList))
 	{
 		UOSInt frameNum;
-		if (this->imgList->GetCount() <= 1)
+		if (imgList->GetCount() <= 1)
 		{
 			frameNum = 0;
 		}
@@ -93,10 +95,10 @@ void UI::DObj::SizedOverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 		{
 			Double t = clk->GetTimeDiff();
 			frameNum = (UInt32)Double2Int32((t - this->startTime) * 1000 / OSInt2Double(this->frameDelay));
-			while (frameNum >= this->imgList->GetCount())
+			while (frameNum >= imgList->GetCount())
 			{
-				frameNum -= this->imgList->GetCount();
-				this->startTime += OSInt2Double(this->frameDelay * (OSInt)this->imgList->GetCount()) * 0.001;
+				frameNum -= imgList->GetCount();
+				this->startTime += OSInt2Double(this->frameDelay * (OSInt)imgList->GetCount()) * 0.001;
 			}
 		}
 		Sync::MutexUsage mutUsage(this->dispMut);
@@ -104,9 +106,9 @@ void UI::DObj::SizedOverlayDObj::DrawObject(NN<Media::DrawImage> dimg)
 		if (this->dispImg == 0 || this->dispFrameNum != frameNum)
 		{
 			SDEL_CLASS(this->dispImg);
-			this->imgList->ToStaticImage(frameNum);
+			imgList->ToStaticImage(frameNum);
 			this->dispFrameNum = frameNum;
-			if (Optional<Media::StaticImage>::ConvertFrom(this->imgList->GetImage(frameNum, 0)).SetTo(img))
+			if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(frameNum, 0)).SetTo(img))
 			{
 				img->To32bpp();
 				this->resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
@@ -164,14 +166,14 @@ void UI::DObj::SizedOverlayDObj::SetSize(Math::Size2D<UOSInt> size)
 
 void UI::DObj::SizedOverlayDObj::SetImage(Text::CStringNN fileName, Parser::ParserList *parsers)
 {
-	Media::ImageList *imgList;
+	Optional<Media::ImageList> imgList;
 	{
 		IO::StmData::FileData fd(fileName, false);
-		imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
+		imgList = Optional<Media::ImageList>::ConvertFrom(parsers->ParseFileType(fd, IO::ParserType::ImageList));
 	}
 	{
 		Sync::MutexUsage imgMutUsage(this->imgMut);
-		SDEL_CLASS(this->imgList);
+		this->imgList.Delete();
 		this->imgList = imgList;
 	}
 }

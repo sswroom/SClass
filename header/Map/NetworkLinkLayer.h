@@ -26,14 +26,14 @@ namespace Map
 			Optional<Text::String> viewFormat;
 			RefreshMode mode;
 			Int32 reloadInterval;
-			Map::MapDrawLayer *innerLayer;
+			Optional<Map::MapDrawLayer> innerLayer;
 			Map::DrawLayerType innerLayerType;
 			Data::Timestamp lastUpdated;
 			GetObjectSess *sess;
 		};
 	private:
-		Net::WebBrowser *browser;
-		Parser::ParserList *parsers;
+		NN<Net::WebBrowser> browser;
+		NN<Parser::ParserList> parsers;
 		Sync::RWMutex linkMut;
 		Data::ArrayListNN<LinkInfo> links;
 		Map::DrawLayerType innerLayerType;
@@ -60,7 +60,7 @@ namespace Map
 		void CheckLinks(Bool manualRequest);
 		void LoadLink(NN<LinkInfo> link);
 	public:
-		NetworkLinkLayer(Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, Text::CString layerName);
+		NetworkLinkLayer(Text::CStringNN fileName, NN<Parser::ParserList> parsers, NN<Net::WebBrowser> browser, Text::CString layerName);
 		virtual ~NetworkLinkLayer();
 
 		virtual void SetCurrScale(Double scale);

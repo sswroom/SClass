@@ -133,7 +133,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 {
 	NN<SSWR::AVIRead::AVIRGISForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISForm>();
 	NN<Parser::ParserList> parsers = me->core->GetParserList();
-	IO::ParsedObject *pobj;
+	Optional<IO::ParsedObject> pobj;
 	NN<IO::ParsedObject> nnpobj;
 	NN<Data::ArrayListNN<Map::MapDrawLayer>> layers;
 	Math::Size2D<UOSInt> sz;
@@ -168,7 +168,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 			IO::DirectoryPackage dpkg(files[i]);
 			pobj = parsers->ParseObject(dpkg);
 		}
-		if (nnpobj.Set(pobj))
+		if (pobj.SetTo(nnpobj))
 		{
 			IO::ParserType pt = nnpobj->GetParserType();
 			if (pt == IO::ParserType::MapLayer)
@@ -178,7 +178,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 			else if (pt == IO::ParserType::MapEnv)
 			{
 				////////////////////////////
-				DEL_CLASS(pobj);
+				pobj.Delete();
 			}
 			else if (pt == IO::ParserType::ImageList)
 			{
@@ -188,7 +188,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 				NN<Media::SharedImage> simg;
 				NN<Math::Geometry::VectorImage> vimg;
 				NN<Media::RasterImage> stimg;
-				if (((Media::ImageList*)pobj)->GetImage(0, 0).SetTo(stimg))
+				if (NN<Media::ImageList>::ConvertFrom(nnpobj)->GetImage(0, 0).SetTo(stimg))
 				{
 					NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, files[i]->ToCString(), 0, 0, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, 0, 0, 0, CSTR_NULL));
 					Double calcImgW;
@@ -237,14 +237,14 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 				}
 				else
 				{
-					DEL_CLASS(pobj);
+					pobj.Delete();
 				}
 			}
 			else
 			{
 				if (me->ParseObject(nnpobj))
 				{
-					DEL_CLASS(pobj);
+					pobj.Delete();
 				}
 				else
 				{
@@ -529,7 +529,7 @@ Bool SSWR::AVIRead::AVIRGISForm::ParseObject(NN<IO::ParsedObject> pobj)
 {
 	NN<Parser::ParserList> parsers = this->core->GetParserList();
 	NN<IO::ParsedObject> nnpobj;
-	if (nnpobj.Set(parsers->ParseObject(pobj)))
+	if (parsers->ParseObject(pobj).SetTo(nnpobj))
 	{
 		if (nnpobj->GetParserType() == IO::ParserType::MapLayer)
 		{
@@ -557,7 +557,7 @@ void SSWR::AVIRead::AVIRGISForm::OpenURL(Text::CStringNN url, Text::CString cust
 			fd->SetFullName(customName);
 		}
 		NN<IO::ParsedObject> pobj;
-		if (pobj.Set(this->core->GetParserList()->ParseFile(fd)))
+		if (this->core->GetParserList()->ParseFile(fd).SetTo(pobj))
 		{
 			if (pobj->GetParserType() == IO::ParserType::MapLayer)
 			{
@@ -1295,7 +1295,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 							{
 								IO::StmData::FileData fd(dlg->GetFileName(), false);
 								NN<IO::PackageFile> pkg;
-								if (pkg.Set((IO::PackageFile*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::PackageFile)))
+								if (Optional<IO::PackageFile>::ConvertFrom(this->core->GetParserList()->ParseFileType(fd, IO::ParserType::PackageFile)).SetTo(pkg))
 								{
 									osm->ImportTiles(pkg);
 									pkg.Delete();

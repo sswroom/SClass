@@ -20,7 +20,7 @@ Int32 Parser::ObjParser::OSMMapParser::GetName()
 	return *(Int32*)"OSMM";
 }
 
-void Parser::ObjParser::OSMMapParser::SetParserList(Parser::ParserList *parsers)
+void Parser::ObjParser::OSMMapParser::SetParserList(Optional<Parser::ParserList> parsers)
 {
 	this->parsers = parsers;
 }
@@ -44,7 +44,7 @@ IO::ParsedObject *Parser::ObjParser::OSMMapParser::ParseObject(NN<IO::ParsedObje
 	if (!pkg->OpenStreamData(CSTR("metadata.json")).SetTo(fd))
 		return 0;
 	NN<Parser::ParserList> parsers;
-	if (!parsers.Set(this->parsers))
+	if (!this->parsers.SetTo(parsers))
 		return 0;
 
 	UOSInt buffSize = (UOSInt)fd->GetDataSize();

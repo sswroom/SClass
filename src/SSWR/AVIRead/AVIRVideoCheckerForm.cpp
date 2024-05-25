@@ -86,7 +86,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::ProcessThread(AnyType user
 	NN<SSWR::AVIRead::AVIRVideoCheckerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRVideoCheckerForm>();
 	NN<FileQueue> file;
 	NN<UpdateQueue> update;
-	Media::MediaFile *mediaFile;
+	Optional<Media::MediaFile> mediaFile;
+	NN<Media::MediaFile> nnmediaFile;
 	me->threadRunning = true;
 	{
 		Manage::HiResClock clk;
@@ -98,17 +99,17 @@ UInt32 __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::ProcessThread(AnyType user
 				mutUsage.EndUse();
 				{
 					IO::StmData::FileData fd(file->fileName, false);
-					mediaFile = (Media::MediaFile*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::MediaFile);
+					mediaFile = Optional<Media::MediaFile>::ConvertFrom(me->core->GetParserList()->ParseFileType(fd, IO::ParserType::MediaFile));
 				}
 
 				update = MemAllocNN(UpdateQueue);
 				update->index = file->index;
 				update->t = 0;
 				update->status = -1;
-				if (mediaFile)
+				if (mediaFile.SetTo(nnmediaFile))
 				{
 					clk.Start();
-					if (me->checker.IsValid(mediaFile))
+					if (me->checker.IsValid(nnmediaFile))
 					{
 						update->status = 0;
 					}
@@ -117,7 +118,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::ProcessThread(AnyType user
 						update->status = 1;
 					}
 					update->t = clk.GetTimeDiff();
-					DEL_CLASS(mediaFile);
+					mediaFile.Delete();
 				}
 				else
 				{

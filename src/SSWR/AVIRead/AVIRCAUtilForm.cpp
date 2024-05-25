@@ -17,36 +17,33 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(AnyType userObj, Data::
 
 	UOSInt i = 0;
 	UOSInt nFiles = files.GetCount();
-	IO::ParsedObject *pobj;
+	NN<IO::ParsedObject> pobj;
 	while (i < nFiles)
 	{
-		{
-			IO::StmData::FileData fd(files[i]->ToCString(), false);
-			pobj = parsers->ParseFile(fd);
-		}
-		if (pobj)
+		IO::StmData::FileData fd(files[i]->ToCString(), false);
+		if (parsers->ParseFile(fd).SetTo(pobj))
 		{
 			if (pobj->GetParserType() == IO::ParserType::ASN1Data)
 			{
-				Net::ASN1Data *asn1 = (Net::ASN1Data*)pobj;
+				NN<Net::ASN1Data> asn1 = NN<Net::ASN1Data>::ConvertFrom(pobj);
 				if (asn1->GetASN1Type() == Net::ASN1Data::ASN1Type::X509)
 				{
-					Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
+					NN<Crypto::Cert::X509File> x509 = NN<Crypto::Cert::X509File>::ConvertFrom(asn1);
 					NN<Crypto::Cert::X509Key> key;
 					NN<Text::String> s;
-					Crypto::Cert::X509PrivKey *privKey;
-					Crypto::Cert::X509CertReq *csr;
-					Crypto::Cert::X509Cert *cert;
+					NN<Crypto::Cert::X509PrivKey> privKey;
+					NN<Crypto::Cert::X509CertReq> csr;
+					NN<Crypto::Cert::X509Cert> cert;
 					Crypto::Cert::CertNames names;
 					Crypto::Cert::CertExtensions exts;
 					switch (x509->GetFileType())
 					{
 					case Crypto::Cert::X509File::FileType::Cert:
-						cert = (Crypto::Cert::X509Cert*)x509;
+						cert = NN<Crypto::Cert::X509Cert>::ConvertFrom(x509);
 						MemClear(&names, sizeof(names));
 						if (cert->GetSubjNames(names))
 						{
-							SDEL_CLASS(me->caCert);
+							me->caCert.Delete();
 							me->caCert = cert;
 							if (names.commonName.SetTo(s))
 							{
@@ -58,27 +55,26 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(AnyType userObj, Data::
 							}
 							Crypto::Cert::CertNames::FreeNames(names);
 							NN<Net::SSLEngine> ssl;
-							if (key.Set(me->key) && me->ssl.SetTo(ssl))
+							if (me->key.SetTo(key) && me->ssl.SetTo(ssl))
 							{
-								if (!me->caCert->IsSignatureKey(ssl, key))
+								if (!cert->IsSignatureKey(ssl, key))
 								{
-									DEL_CLASS(me->key);
-									me->key = 0;
+									me->key.Delete();
 									me->txtKey->SetText(CSTR("-"));
 								}
 							}
 						}
 						else
 						{
-							DEL_CLASS(x509);
+							x509.Delete();
 						}
 						break;
 					case Crypto::Cert::X509File::FileType::CertRequest:
-						csr = (Crypto::Cert::X509CertReq*)x509;
+						csr = NN<Crypto::Cert::X509CertReq>::ConvertFrom(x509);
 						MemClear(&names, sizeof(names));
 						if (csr->GetNames(names))
 						{
-							SDEL_CLASS(me->csr);
+							me->csr.Delete();
 							me->csr = csr;
 							me->DisplayNames(names);
 							if (names.commonName.SetTo(s))
@@ -111,94 +107,93 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(AnyType userObj, Data::
 						}
 						else
 						{
-							DEL_CLASS(x509);
+							x509.Delete();
 						}
 						break;
 					case Crypto::Cert::X509File::FileType::Key:
-						if (key.Set((Crypto::Cert::X509Key*)x509))
+						key = NN<Crypto::Cert::X509Key>::ConvertFrom(x509);
+						if (key->IsPrivateKey())
 						{
-							if (key->IsPrivateKey())
+							NN<Net::SSLEngine> ssl;
+							if (me->caCert.SetTo(cert) && (!me->ssl.SetTo(ssl) || !cert->IsSignatureKey(ssl, key)))
 							{
-								NN<Net::SSLEngine> ssl;
-								if (me->caCert && (!me->ssl.SetTo(ssl) || !me->caCert->IsSignatureKey(ssl, key)))
-								{
-									me->ui->ShowMsgOK(CSTR("Key is not match with CA cert"), CSTR("CA Util"), me);
-									key.Delete();
-								}
-								else
-								{
-									SDEL_CLASS(me->key);
-									me->key = key.Ptr();
-									me->DisplayKeyDetail();
-								}
+								me->ui->ShowMsgOK(CSTR("Key is not match with CA cert"), CSTR("CA Util"), me);
+								key.Delete();
 							}
 							else
 							{
-								key.Delete();
+								me->key.Delete();
+								me->key = key;
+								me->DisplayKeyDetail();
 							}
+						}
+						else
+						{
+							key.Delete();
 						}
 						break;
 					case Crypto::Cert::X509File::FileType::PrivateKey:
-						privKey = (Crypto::Cert::X509PrivKey*)x509;
+						privKey = NN<Crypto::Cert::X509PrivKey>::ConvertFrom(x509);
 						if (privKey->CreateKey().SetTo(key))
 						{
-							SDEL_CLASS(me->key);
-							me->key = key.Ptr();
+							me->key.Delete();
+							me->key = key;
 							me->DisplayKeyDetail();
 						}
-						DEL_CLASS(x509);
+						x509.Delete();
 						break;
 					case Crypto::Cert::X509File::FileType::FileList:
-						cert = (Crypto::Cert::X509Cert*)((Crypto::Cert::X509FileList*)x509)->GetFile(0).OrNull();
-						MemClear(&names, sizeof(names));
-						if (cert->GetSubjNames(names))
+						if (Optional<Crypto::Cert::X509Cert>::ConvertFrom(NN<Crypto::Cert::X509FileList>::ConvertFrom(x509)->GetFile(0)).SetTo(cert))
 						{
-							SDEL_CLASS(me->caCert);
-							me->caCert = (Crypto::Cert::X509Cert*)cert->Clone().Ptr();
-							if (names.commonName.SetTo(s))
+							MemClear(&names, sizeof(names));
+							if (cert->GetSubjNames(names))
 							{
-								me->txtCACert->SetText(s->ToCString());
-							}
-							else
-							{
-								me->txtCACert->SetText(CSTR("Unnamed"));
-							}
-							Crypto::Cert::CertNames::FreeNames(names);
-							NN<Net::SSLEngine> ssl;
-							if (key.Set(me->key) && me->ssl.SetTo(ssl))
-							{
-								if (!me->caCert->IsSignatureKey(ssl, key))
+								me->caCert.Delete();
+								me->caCert = cert = NN<Crypto::Cert::X509Cert>::ConvertFrom(cert->Clone());
+								if (names.commonName.SetTo(s))
 								{
-									DEL_CLASS(me->key);
-									me->key = 0;
-									me->txtKey->SetText(CSTR("-"));
+									me->txtCACert->SetText(s->ToCString());
+								}
+								else
+								{
+									me->txtCACert->SetText(CSTR("Unnamed"));
+								}
+								Crypto::Cert::CertNames::FreeNames(names);
+								NN<Net::SSLEngine> ssl;
+								if (me->key.SetTo(key) && me->ssl.SetTo(ssl))
+								{
+									if (!cert->IsSignatureKey(ssl, key))
+									{
+										me->key.Delete();
+										me->txtKey->SetText(CSTR("-"));
+									}
 								}
 							}
 						}
-						DEL_CLASS(x509);
+						x509.Delete();
 						break;
 					case Crypto::Cert::X509File::FileType::PublicKey:
-						DEL_CLASS(x509);
+						x509.Delete();
 						break;
 					case Crypto::Cert::X509File::FileType::PKCS12:
-						DEL_CLASS(x509);
+						x509.Delete();
 						break;
 					case Crypto::Cert::X509File::FileType::PKCS7:
-						DEL_CLASS(x509);
+						x509.Delete();
 						break;
 					case Crypto::Cert::X509File::FileType::CRL:
-						DEL_CLASS(x509);
+						x509.Delete();
 						break;
 					}
 				}
 				else
 				{
-					DEL_CLASS(asn1);
+					asn1.Delete();
 				}
 			}
 			else
 			{
-				DEL_CLASS(pobj);
+				pobj.Delete();
 			}
 		}
 		i++;
@@ -208,27 +203,30 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(AnyType userObj, Data::
 void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnKeyViewClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRCAUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCAUtilForm>();
-	if (me->key)
+	NN<Crypto::Cert::X509Key> key;
+	if (me->key.SetTo(key))
 	{
-		me->core->OpenObject(me->key->Clone());
+		me->core->OpenObject(key->Clone());
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnCACertViewClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRCAUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCAUtilForm>();
-	if (me->caCert)
+	NN<Crypto::Cert::X509Cert> caCert;
+	if (me->caCert.SetTo(caCert))
 	{
-		me->core->OpenObject(me->caCert->Clone());
+		me->core->OpenObject(caCert->Clone());
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnCSRViewClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRCAUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCAUtilForm>();
-	if (me->csr)
+	NN<Crypto::Cert::X509CertReq> csr;
+	if (me->csr.SetTo(csr))
 	{
-		me->core->OpenObject(me->csr->Clone());
+		me->core->OpenObject(csr->Clone());
 	}
 }
 
@@ -236,17 +234,19 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnIssueClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRCAUtilForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCAUtilForm>();
 	NN<Crypto::Cert::X509Key> key;
-	if (!key.Set(me->key))
+	NN<Crypto::Cert::X509Cert> caCert;
+	NN<Crypto::Cert::X509CertReq> csr;
+	if (!me->key.SetTo(key))
 	{
 		me->ui->ShowMsgOK(CSTR("Key not exist"), CSTR("CA Util"), me);
 		return;
 	}
-	if (me->caCert == 0)
+	if (!me->caCert.SetTo(caCert))
 	{
 		me->ui->ShowMsgOK(CSTR("CA Cert not exist"), CSTR("CA Util"), me);
 		return;
 	}
-	if (me->csr == 0)
+	if (!me->csr.SetTo(csr))
 	{
 		me->ui->ShowMsgOK(CSTR("CSR not exist"), CSTR("CA Util"), me);
 		return;
@@ -266,7 +266,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnIssueClicked(AnyType userObj)
 		return;
 	}
 	NN<Crypto::Cert::X509Cert> cert;
-	if (cert.Set(Crypto::Cert::CertUtil::IssueCert(ssl, me->caCert, key, validDays, me->csr)))
+	if (Crypto::Cert::CertUtil::IssueCert(ssl, caCert, key, validDays, csr).SetTo(cert))
 	{
 		me->core->OpenObject(cert);
 	}
@@ -278,14 +278,15 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnIssueClicked(AnyType userObj)
 
 void SSWR::AVIRead::AVIRCAUtilForm::DisplayKeyDetail()
 {
-	if (this->key == 0)
+	NN<Crypto::Cert::X509Key> key;
+	if (!this->key.SetTo(key))
 	{
 		this->txtKey->SetText(CSTR("-"));
 	}
 	else
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.Append(Crypto::Cert::X509File::KeyTypeGetName(this->key->GetKeyType()));
+		sb.Append(Crypto::Cert::X509File::KeyTypeGetName(key->GetKeyType()));
 		sb.AppendC(UTF8STRC(", "));
 		sb.AppendUOSInt(key->GetKeySizeBits());
 		sb.AppendC(UTF8STRC(" bits"));
@@ -394,9 +395,9 @@ SSWR::AVIRead::AVIRCAUtilForm::~AVIRCAUtilForm()
 {
 	LIST_FREE_FUNC(this->sanList, Text::StrDelNew);
 	DEL_CLASS(this->sanList);
-	SDEL_CLASS(this->caCert);
-	SDEL_CLASS(this->key);
-	SDEL_CLASS(this->csr);
+	this->caCert.Delete();
+	this->key.Delete();
+	this->csr.Delete();
 	this->ssl.Delete();
 }
 

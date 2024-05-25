@@ -19,7 +19,7 @@ namespace SSWR
 		private:
 			IO::SNBDongle::HandleType handType;
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Media::ImageList *simg;
+			Optional<Media::ImageList> simg;
 
 			NN<UI::GUIPanel> pnlControl;
 			NN<UI::GUILabel> lblType;

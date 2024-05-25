@@ -86,7 +86,7 @@ namespace SSWR
 			Text::CString schema;
 			Text::CStringNN table;
 
-			DB::ReadingDB *dataFile;
+			Optional<DB::ReadingDB> dataFile;
 			Bool dataFileNoHeader;
 			Int8 dataFileTz;
 

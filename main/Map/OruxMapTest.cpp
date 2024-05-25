@@ -12,7 +12,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Text::CStringNN fileName = CSTR("/media/sswroom/Extreme SSD/Map/HKTIle.spk");
 	Text::CStringNN destFile = CSTR("/media/sswroom/Extreme SSD/Map/Temp/Temp.otrk2.xml");
 	NN<Parser::ParserList> parsers;
-	IO::PackageFile *pkg;
+	Optional<IO::PackageFile> pkg;
 	NN<IO::PackageFile> pkgFile;
 	NN<Map::OSM::OSMLocalTileMap> tileMap;
 	NN<Map::TileMapLayer> mapLyr;
@@ -20,9 +20,9 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 
 	{
 		IO::StmData::FileData fd(fileName, false);
-		pkg = (IO::PackageFile*)parsers->ParseFileType(fd, IO::ParserType::PackageFile);
+		pkg = Optional<IO::PackageFile>::ConvertFrom(parsers->ParseFileType(fd, IO::ParserType::PackageFile));
 	}
-	if (pkgFile.Set(pkg))
+	if (pkg.SetTo(pkgFile))
 	{
 		NEW_CLASSNN(tileMap, Map::OSM::OSMLocalTileMap(pkgFile));
 		NEW_CLASSNN(mapLyr, Map::TileMapLayer(tileMap, parsers));

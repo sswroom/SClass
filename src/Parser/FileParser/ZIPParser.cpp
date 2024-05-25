@@ -35,12 +35,12 @@ void Parser::FileParser::ZIPParser::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-void Parser::FileParser::ZIPParser::SetWebBrowser(Net::WebBrowser *browser)
+void Parser::FileParser::ZIPParser::SetWebBrowser(Optional<Net::WebBrowser> browser)
 {
 	this->browser = browser;
 }
 
-void Parser::FileParser::ZIPParser::SetParserList(Parser::ParserList *parsers)
+void Parser::FileParser::ZIPParser::SetParserList(Optional<Parser::ParserList> parsers)
 {
 	this->parsers = parsers;
 }
@@ -492,13 +492,14 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::StreamData>
 			}
 		}
 	}
-	if (targetType != IO::ParserType::PackageFile && this->parsers)
+	NN<Parser::ParserList> parsers;
+	if (targetType != IO::ParserType::PackageFile && this->parsers.SetTo(parsers))
 	{
-		IO::ParsedObject *newObj = this->parsers->ParseObjectType(pf, targetType);
-		if (newObj)
+		NN<IO::ParsedObject> newObj;
+		if (parsers->ParseObjectType(pf, targetType).SetTo(newObj))
 		{
 			pf.Delete();
-			return newObj;
+			return newObj.Ptr();
 		}
 	}
 	return pf.Ptr();

@@ -26,12 +26,12 @@ Int32 Parser::FileParser::MEVParser::GetName()
 	return *(Int32*)"MENV";
 }
 
-void Parser::FileParser::MEVParser::SetParserList(Parser::ParserList *parsers)
+void Parser::FileParser::MEVParser::SetParserList(Optional<Parser::ParserList> parsers)
 {
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::MEVParser::SetMapManager(Map::MapManager *mapMgr)
+void Parser::FileParser::MEVParser::SetMapManager(Optional<Map::MapManager> mapMgr)
 {
 	this->mapMgr = mapMgr;
 }
@@ -71,13 +71,14 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFileHdr(NN<IO::StreamData>
 	UTF8Char *u8ptr;
 	UTF8Char *u8ptr2;
 	NN<Parser::ParserList> parsers;
+	NN<Map::MapManager> mapMgr;
 
 	UOSInt i;
 	UOSInt j;
 	
-	if (!parsers.Set(this->parsers))
+	if (!this->parsers.SetTo(parsers))
 		return 0;
-	if (this->mapMgr == 0)
+	if (!this->mapMgr.SetTo(mapMgr))
 		return 0;
 	currPos = 12;
 	if (*(Int32*)&hdr[0] != *(Int32*)"SMEv" || ReadUInt32(&hdr[4]) != 0x81c0fe1a)
@@ -88,8 +89,8 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFileHdr(NN<IO::StreamData>
 	UInt32 initSize = ReadUInt32(&hdr[8]);
 	fd->GetRealData(currPos, initSize, BYTEARR(buff));
 	currPos += initSize;
-	Map::MapEnv *env;
-	NEW_CLASS(env, Map::MapEnv(fd->GetFullName()->ToCString(), ReadUInt32(&buff[0]), Math::CoordinateSystemManager::CreateDefaultCsys()));
+	NN<Map::MapEnv> env;
+	NEW_CLASSNN(env, Map::MapEnv(fd->GetFullName()->ToCString(), ReadUInt32(&buff[0]), Math::CoordinateSystemManager::CreateDefaultCsys()));
 	env->SetNString(ReadUInt32(&buff[4]));
 	dirCnt = ReadUInt32(&buff[16]);
 	imgFileCnt = ReadUInt32(&buff[20]);
@@ -217,7 +218,7 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFileHdr(NN<IO::StreamData>
 	env->SetDefLineStyle(defLineStyle);
 	env->SetDefFontStyle(defFontStyle);
 
-	ReadItems(fd, env, itemCnt, currPos, 0, dirArr, imgFileArr);
+	ReadItems(fd, env, itemCnt, currPos, 0, dirArr, imgFileArr, parsers, mapMgr);
 
 	i = dirCnt;
 	while (i-- > 0)
@@ -229,10 +230,10 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFileHdr(NN<IO::StreamData>
 	}
 	MemFree(dirArr);
 	MemFree(imgFileArr);
-	return env;
+	return env.Ptr();
 }
 
-void Parser::FileParser::MEVParser::ReadItems(NN<IO::StreamData> fd, Map::MapEnv *env, UInt32 itemCnt, InOutParam<UInt32> currPos, Optional<Map::MapEnv::GroupItem> group, const WChar **dirArr, MEVImageInfo *imgInfos)
+void Parser::FileParser::MEVParser::ReadItems(NN<IO::StreamData> fd, NN<Map::MapEnv> env, UInt32 itemCnt, InOutParam<UInt32> currPos, Optional<Map::MapEnv::GroupItem> group, const WChar **dirArr, MEVImageInfo *imgInfos, NN<Parser::ParserList> parsers, NN<Map::MapManager> mapMgr)
 {
 	UInt8 buff[512];
 	WChar wbuff[256];
@@ -253,7 +254,7 @@ void Parser::FileParser::MEVParser::ReadItems(NN<IO::StreamData> fd, Map::MapEnv
 			NN<Text::String> s = Text::String::NewNotNull(wbuff);
 			NN<Map::MapEnv::GroupItem> item = env->AddGroup(group, s->ToCString());
 			s->Release();
-			ReadItems(fd, env, ReadUInt32(&buff[8]), currPos, item, dirArr, imgInfos);
+			ReadItems(fd, env, ReadUInt32(&buff[8]), currPos, item, dirArr, imgInfos, parsers, mapMgr);
 		}
 		else if (*(Int32*)&buff[0] == Map::MapEnv::IT_LAYER)
 		{
@@ -265,11 +266,11 @@ void Parser::FileParser::MEVParser::ReadItems(NN<IO::StreamData> fd, Map::MapEnv
 			Text::StrUTF8_WCharC(wptr, &buff[20], ReadUInt32(&buff[4]), 0);
 			if (ReadUInt32(&buff[12]))
 			{
-				this->parsers->SetCodePage(ReadUInt32(&buff[12]));
+				parsers->SetCodePage(ReadUInt32(&buff[12]));
 			}
 			NN<Text::String> s = Text::String::NewNotNull(wbuff);
 			NN<Map::MapDrawLayer> layer;
-			if (layer.Set(this->mapMgr->LoadLayer(s->ToCString(), this->parsers, env)))
+			if (mapMgr->LoadLayer(s->ToCString(), parsers, env).SetTo(layer))
 			{
 				s->Release();
 				Map::MapEnv::LayerItem setting;

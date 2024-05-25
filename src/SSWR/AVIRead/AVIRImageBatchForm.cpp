@@ -37,21 +37,21 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(AnyType userObj
 	NN<SSWR::AVIRead::AVIRImageBatchForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageBatchForm>();
 	if (fileName.leng == 0)
 	{
-		SDEL_CLASS(me->dispImage);
+		me->dispImage.Delete();
 		SDEL_CLASS(me->previewImage);
 		SDEL_CLASS(me->filteredImage);
 		me->pbMain->SetImage(0, false);
 	}
 	else
 	{
-		Media::StaticImage *img = me->icMain->LoadImage(fileName.v);
+		Optional<Media::StaticImage> img = me->icMain->LoadImage(fileName.v);
 		me->pbMain->SetImage(0, false);
-		SDEL_CLASS(me->dispImage);
+		me->dispImage.Delete();
 		SDEL_CLASS(me->previewImage);
 		SDEL_CLASS(me->filteredImage);
 		me->dispImage = img;
 		NN<Media::StaticImage> simg;
-		if (simg.Set(img))
+		if (img.SetTo(simg))
 		{
 			simg->To32bpp();
 			Math::Size2D<UOSInt> sz = me->pbMain->GetSizeP();
@@ -215,7 +215,7 @@ void SSWR::AVIRead::AVIRImageBatchForm::OpenFolder(NN<Text::String> folder)
 	this->icMain->SetFolder(folder->ToCString());
 	this->lblFolder->SetText(folder->ToCString());
 	this->pbMain->SetImage(0, false);
-	SDEL_CLASS(this->dispImage);
+	this->dispImage.Delete();
 	SDEL_CLASS(this->previewImage);
 	SDEL_CLASS(this->filteredImage);
 }
@@ -345,7 +345,7 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(Optional<UI::GUIClientCont
 
 SSWR::AVIRead::AVIRImageBatchForm::~AVIRImageBatchForm()
 {
-	SDEL_CLASS(this->dispImage);
+	this->dispImage.Delete();
 	SDEL_CLASS(this->previewImage);
 	SDEL_CLASS(this->filteredImage);
 	DEL_CLASS(this->resizer);

@@ -20,9 +20,9 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnCaptureDevClicked(An
 	{
 		UTF8Char sbuff[256];
 		UTF8Char *sptr;
-		Media::MediaFile *mf;
+		NN<Media::MediaFile> mf;
 		sptr = capture->GetSourceName(sbuff);
-		NEW_CLASS(mf, Media::MediaFile(CSTRP(sbuff, sptr)));
+		NEW_CLASSNN(mf, Media::MediaFile(CSTRP(sbuff, sptr)));
 		mf->AddSource(capture, 0);
 		if (me->player->OpenVideo(mf))
 		{

@@ -81,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnStartClicked(AnyType us
 		{
 			NN<Crypto::Cert::X509Cert> cliCert;
 			NN<Crypto::Cert::X509File> cliKey;
-			if (cliCert.Set(me->cliCert) && cliKey.Set(me->cliKey))
+			if (me->cliCert.SetTo(cliCert) && me->cliKey.SetTo(cliKey))
 			{
 				nnssl->ClientSetCertASN1(cliCert, cliKey);
 			}
@@ -180,34 +180,33 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnCliCertClicked(AnyType 
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		Net::ASN1Data *asn1;
+		NN<Net::ASN1Data> asn1;
 		{
 			IO::StmData::FileData fd(dlg->GetFileName(), false);
-			asn1 = (Net::ASN1Data*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data);
-		}
-		if (asn1 == 0)
-		{
-			me->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("MQTT Publish Test"), me);
-			dlg.Delete();
-			return;
+			if (!Optional<Net::ASN1Data>::ConvertFrom(me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data)).SetTo(asn1))
+			{
+				me->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("MQTT Publish Test"), me);
+				dlg.Delete();
+				return;
+			}
 		}
 		if (asn1->GetASN1Type() != Net::ASN1Data::ASN1Type::X509)
 		{
-			DEL_CLASS(asn1);
+			asn1.Delete();
 			me->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("MQTT Publish Test"), me);
 			dlg.Delete();
 			return;
 		}
-		Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
+		NN<Crypto::Cert::X509File> x509 = NN<Crypto::Cert::X509File>::ConvertFrom(asn1);
 		if (x509->GetFileType() != Crypto::Cert::X509File::FileType::Cert)
 		{
-			DEL_CLASS(asn1);
+			asn1.Delete();
 			me->ui->ShowMsgOK(CSTR("It is not a cert file"), CSTR("MQTT Publish Test"), me);
 			dlg.Delete();
 			return;
 		}
-		SDEL_CLASS(me->cliCert);
-		me->cliCert = (Crypto::Cert::X509Cert*)x509;
+		me->cliCert.Delete();
+		me->cliCert = NN<Crypto::Cert::X509Cert>::ConvertFrom(x509);
 		NN<Text::String> s = dlg->GetFileName();
 		UOSInt i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		me->lblCliCert->SetText(s->ToCString().Substring(i + 1));
@@ -223,26 +222,25 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishTestForm::OnCliKeyClicked(AnyType u
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		Net::ASN1Data *asn1;
+		NN<Net::ASN1Data> asn1;
 		{
 			IO::StmData::FileData fd(dlg->GetFileName(), false);
-			asn1 = (Net::ASN1Data*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data);
-		}
-		if (asn1 == 0)
-		{
-			me->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("MQTT Publish Test"), me);
-			dlg.Delete();
-			return;
+			if (!Optional<Net::ASN1Data>::ConvertFrom(me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data)).SetTo(asn1))
+			{
+				me->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("MQTT Publish Test"), me);
+				dlg.Delete();
+				return;
+			}
 		}
 		if (asn1->GetASN1Type() != Net::ASN1Data::ASN1Type::X509)
 		{
-			DEL_CLASS(asn1);
+			asn1.Delete();
 			me->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("MQTT Publish Test"), me);
 			dlg.Delete();
 			return;
 		}
-		SDEL_CLASS(me->cliKey);
-		me->cliKey = (Crypto::Cert::X509File*)asn1;
+		me->cliKey.Delete();
+		me->cliKey = NN<Crypto::Cert::X509File>::ConvertFrom(asn1);
 		NN<Text::String> s = dlg->GetFileName();
 		UOSInt i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		me->lblCliKey->SetText(s->ToCString().Substring(i + 1));
@@ -448,8 +446,8 @@ SSWR::AVIRead::AVIRMQTTPublishTestForm::AVIRMQTTPublishTestForm(Optional<UI::GUI
 SSWR::AVIRead::AVIRMQTTPublishTestForm::~AVIRMQTTPublishTestForm()
 {
 	this->ServerStop();
-	SDEL_CLASS(this->cliCert);
-	SDEL_CLASS(this->cliKey);
+	this->cliCert.Delete();
+	this->cliKey.Delete();
 	this->ssl.Delete();
 }
 

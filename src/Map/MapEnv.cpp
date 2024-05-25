@@ -145,7 +145,7 @@ Map::MapEnv::~MapEnv()
 	{
 		NN<ImageInfo> imgInfo = imgs->GetItemNoCheck(i);
 		imgInfo->fileName->Release();
-		DEL_CLASS(imgInfo->imgs);
+		imgInfo->imgs.Delete();
 		MemFreeNN(imgInfo);
 	}
 
@@ -1117,18 +1117,15 @@ OSInt Map::MapEnv::AddImage(Text::CStringNN fileName, NN<Parser::ParserList> par
 	{
 		return (OSInt)imgInfo->index;
 	}
-	IO::ParsedObject *pobj;
-	{
-		IO::StmData::FileData fd(fileName, false);
-		pobj = parserList->ParseFile(fd);
-	}
-	if (pobj)
+	NN<IO::ParsedObject> pobj;
+	IO::StmData::FileData fd(fileName, false);
+	if (parserList->ParseFile(fd).SetTo(pobj))
 	{
 		if (pobj->GetParserType() == IO::ParserType::ImageList)
 		{
 			UOSInt i;
 			imgInfo = MemAllocNN(ImageInfo);
-			Media::ImageList *imgList = (Media::ImageList*)pobj;
+			NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(pobj);
 			imgInfo->fileName = Text::String::New(fileName.v, fileName.leng);
 			imgInfo->index = this->GetImageCnt();
 			imgInfo->cnt = imgList->GetCount();
@@ -1154,21 +1151,21 @@ OSInt Map::MapEnv::AddImage(Text::CStringNN fileName, NN<Parser::ParserList> par
 		}
 		else
 		{
-			DEL_CLASS(pobj);
+			pobj.Delete();
 			return -1;
 		}
 	}
 	return -1;
 }
 
-UOSInt Map::MapEnv::AddImage(Text::CStringNN fileName, Media::ImageList *imgList)
+UOSInt Map::MapEnv::AddImage(Text::CStringNN fileName, NN<Media::ImageList> imgList)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	NN<Media::StaticImage> simg;
 	NN<ImageInfo> imgInfo;
 	if (this->images.Get(fileName).SetTo(imgInfo))
 	{
-		DEL_CLASS(imgList);
+		imgList.Delete();
 		return imgInfo->index;
 	}
 	UOSInt i;
@@ -1210,7 +1207,7 @@ UOSInt Map::MapEnv::AddImageSquare(UInt32 color, UOSInt size)
 	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Image")), imgInfo->index), UTF8STRC(".png"));
 	imgInfo->fileName = Text::String::NewP(sbuff, sptr);
 	imgInfo->cnt = 1;
-	NEW_CLASS(imgInfo->imgs, Media::ImageList(imgInfo->fileName));
+	NEW_CLASSNN(imgInfo->imgs, Media::ImageList(imgInfo->fileName));
 	imgInfo->isAni = false;
 	imgInfo->aniIndex = (UOSInt)-1;
 	imgInfo->aniLastTimeTick = 0;

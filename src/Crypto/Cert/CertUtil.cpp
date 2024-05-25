@@ -405,18 +405,9 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::SelfSignedCertCreate(NN<Net::SSL
 	return cert;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::IssueCert(NN<Net::SSLEngine> ssl, Crypto::Cert::X509Cert *caCert, NN<Crypto::Cert::X509Key> caKey, UOSInt validDays, Crypto::Cert::X509CertReq *csr)
+Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::IssueCert(NN<Net::SSLEngine> ssl, NN<Crypto::Cert::X509Cert> caCert, NN<Crypto::Cert::X509Key> caKey, UOSInt validDays, NN<Crypto::Cert::X509CertReq> csr)
 {
 	UInt8 bSerial[20];
-	if (caCert == 0)
-	{
-		return 0;
-	}
-	if (csr == 0)
-	{
-		return 0;
-	}
-
 	Text::StringBuilderUTF8 sbFileName;
 	Crypto::Cert::CertNames names;
 	Net::ASN1PDUBuilder builder;

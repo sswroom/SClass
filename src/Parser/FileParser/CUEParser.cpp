@@ -22,7 +22,7 @@ Int32 Parser::FileParser::CUEParser::GetName()
 	return *(Int32*)"CUEP";
 }
 
-void Parser::FileParser::CUEParser::SetParserList(Parser::ParserList *parsers)
+void Parser::FileParser::CUEParser::SetParserList(Optional<Parser::ParserList> parsers)
 {
 	this->parsers = parsers;
 }
@@ -56,7 +56,8 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFileHdr(NN<IO::StreamData>
 	UInt32 lastTime;
 	UOSInt i;
 	Bool errorFound = false;
-	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".CUE")))
+	NN<Parser::ParserList> parsers;
+	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".CUE")) || !this->parsers.SetTo(parsers))
 		return 0;
 
 	i = 100;
@@ -138,19 +139,15 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFileHdr(NN<IO::StreamData>
 
 	if (!errorFound && fileName)
 	{
-		IO::ParsedObject *pobj;
-
+		NN<IO::ParsedObject> pobj;
 		sptr = fd->GetFullName()->ConcatTo(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, fileName->ToCString());
-		{
-			IO::StmData::FileData data(CSTRP(sbuff, sptr), false);
-			pobj = this->parsers->ParseFile(data);
-		}
-		if (pobj)
+		IO::StmData::FileData data(CSTRP(sbuff, sptr), false);
+		if (parsers->ParseFile(data).SetTo(pobj))
 		{
 			if (pobj->GetParserType() == IO::ParserType::MediaFile)
 			{
-				mf = (Media::MediaFile*)pobj;
+				mf = (Media::MediaFile*)pobj.Ptr();
 				Media::ChapterInfo *chapters;
 				NEW_CLASS(chapters, Media::ChapterInfo());
 				lastTime = 0;
@@ -181,7 +178,7 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFileHdr(NN<IO::StreamData>
 			}
 			else
 			{
-				DEL_CLASS(pobj);
+				pobj.Delete();
 			}
 		}
 	}

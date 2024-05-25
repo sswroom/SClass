@@ -16,7 +16,7 @@ Int32 Parser::FileParser::CDXAParser::GetName()
 	return *(Int32*)"CDXA";
 }
 
-void Parser::FileParser::CDXAParser::SetParserList(Parser::ParserList *parsers)
+void Parser::FileParser::CDXAParser::SetParserList(Optional<Parser::ParserList> parsers)
 {
 	this->parsers = parsers;
 }

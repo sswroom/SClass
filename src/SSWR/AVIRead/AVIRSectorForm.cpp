@@ -6,7 +6,7 @@ void __stdcall SSWR::AVIRead::AVIRSectorForm::OnParseClicked(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRSectorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSectorForm>();
 	NN<Parser::ParserList> parsers = me->core->GetParserList();
 	NN<IO::ParsedObject> pobj;
-	if (pobj.Set(parsers->ParseObject(me->data)))
+	if (parsers->ParseObject(me->data).SetTo(pobj))
 	{
 		me->core->OpenObject(pobj);
 	}

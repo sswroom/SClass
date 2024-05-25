@@ -14,7 +14,6 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(AnyType userObj)
 	DataInfo *info = 0;
 	Bool found;
 	UOSInt i;
-	IO::ParsedObject *pobj;
 	NN<IO::ParsedObject> nnpobj;
 
 	NN<ThreadState> state = userObj.GetNN<ThreadState>();
@@ -51,11 +50,8 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(AnyType userObj)
 			if (fileNameStr.Set(fileName))
 			{
 				Sync::MutexUsage mutUsage(state->me->ioMut);
-				{
-					IO::StmData::FileData fd(fileNameStr, false);
-					pobj = state->me->parsers->ParseFile(fd);
-				}
-				if (nnpobj.Set(pobj))
+				IO::StmData::FileData fd(fileNameStr, false);
+				if (state->me->parsers->ParseFile(fd).SetTo(nnpobj))
 				{
 					if (nnpobj->GetParserType() == IO::ParserType::ImageList)
 					{
@@ -80,7 +76,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(AnyType userObj)
 					{
 						mutUsage.EndUse();
 					}
-					DEL_CLASS(pobj);
+					nnpobj.Delete();
 				}
 				else
 				{
@@ -92,8 +88,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(AnyType userObj)
 			else
 			{
 				Sync::MutexUsage mutUsage(state->me->ioMut);
-				pobj = state->me->parsers->ParseFile(info->data);
-				if (nnpobj.Set(pobj))
+				if (state->me->parsers->ParseFile(info->data).SetTo(nnpobj))
 				{
 					if (nnpobj->GetParserType() == IO::ParserType::ImageList)
 					{
@@ -111,7 +106,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(AnyType userObj)
 					{
 						mutUsage.EndUse();
 					}
-					DEL_CLASS(pobj);
+					nnpobj.Delete();
 				}
 				else
 				{

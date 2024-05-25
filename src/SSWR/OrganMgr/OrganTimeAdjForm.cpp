@@ -78,11 +78,12 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnPictureChg(AnyType userObj)
 		me->selImgCamera = s.Ptr();
 		me->selImgTime = userFile->fileTime;
 		me->pbPreview->SetImage(0, false);
-		SDEL_CLASS(me->dispImg);
+		me->dispImg.Delete();
 		me->dispImg = me->env->ParseFileImage(userFile);
-		if (me->dispImg)
+		NN<Media::ImageList> dispImg;
+		if (me->dispImg.SetTo(dispImg))
 		{
-			me->pbPreview->SetImage(me->dispImg->GetImage(0, 0), false);
+			me->pbPreview->SetImage(dispImg->GetImage(0, 0), false);
 		}
 
 		Int32 timeAdj;
@@ -234,7 +235,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl
 
 	this->env = env;
 	this->dataFile = dataFile;
-	if (!this->gpsTrk.Set(this->env->OpenGPSTrack(dataFile)))
+	if (!this->env->OpenGPSTrack(dataFile).SetTo(this->gpsTrk))
 	{
 		NEW_CLASSNN(this->gpsTrk, Map::GPSTrack(CSTR("Untitled"), false, 65001, CSTR("Untitled")));
 	}
@@ -247,7 +248,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl
 
 	NN<Map::OSM::OSMTileMap> tileMap;
 	NN<Media::StaticImage> stimg;
-	Media::ImageList *imgList;
+	NN<Media::ImageList> imgList;
 	UOSInt i;
 	UOSInt j;
 	OSInt k;
@@ -264,7 +265,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(Optional<UI::GUIClientControl
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
 	NEW_CLASSNN(stimg, Media::StaticImage(Math::Size2D<UOSInt>(7, 7), 0, 32, Media::PF_B8G8R8A8, 0, srcColor, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	stimg->FillColor(0xff40ffff);
-	NEW_CLASS(imgList, Media::ImageList(CSTR("PointImage")));
+	NEW_CLASSNN(imgList, Media::ImageList(CSTR("PointImage")));
 	imgList->AddImage(stimg, 0);
 	this->mapEnv->AddImage(CSTR("PointImage"), imgList);
 	NEW_CLASSNN(this->adjLyr, OrganTimeAdjLayer(this->gpsTrk, this->currFileList));
@@ -408,7 +409,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::~OrganTimeAdjForm()
 	this->mapEnv.Delete();
 	DEL_CLASS(this->mapRenderer);
 	this->gpsTrk.Delete();
-	SDEL_CLASS(this->dispImg);
+	this->dispImg.Delete();
 	this->env->GetColorMgr()->DeleteSess(this->colorSess);
 }
 

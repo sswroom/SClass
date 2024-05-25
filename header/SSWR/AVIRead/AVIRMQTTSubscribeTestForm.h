@@ -20,8 +20,8 @@ namespace SSWR
 			Optional<Net::SSLEngine> ssl;
 			Net::MQTTConn *client;
 			IO::LogTool log;
-			Crypto::Cert::X509Cert *cliCert;
-			Crypto::Cert::X509File *cliKey;
+			Optional<Crypto::Cert::X509Cert> cliCert;
+			Optional<Crypto::Cert::X509File> cliKey;
 			UInt64 totalCount;
 			UInt64 dispCount;
 			Data::Timestamp lastDispTime;

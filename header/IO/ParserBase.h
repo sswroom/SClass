@@ -38,15 +38,15 @@ namespace IO
 
 		virtual Int32 GetName() = 0;
 		virtual void SetCodePage(UInt32 codePage) {};
-		virtual void SetParserList(Parser::ParserList *parsers) {};
-		virtual void SetWebBrowser(Net::WebBrowser *browser) {};
-		virtual void SetMapManager(Map::MapManager *mapMgr) {};
+		virtual void SetParserList(Optional<Parser::ParserList> parsers) {};
+		virtual void SetWebBrowser(Optional<Net::WebBrowser> browser) {};
+		virtual void SetMapManager(Optional<Map::MapManager> mapMgr) {};
 		virtual void SetEncFactory(Optional<Text::EncodingFactory> encFact) {};
-		virtual void SetProgressHandler(IO::ProgressHandler *progHdlr) {};
+		virtual void SetProgressHandler(Optional<IO::ProgressHandler> progHdlr) {};
 		virtual void SetSocketFactory(NN<Net::SocketFactory> sockf) {};
 		virtual void SetSSLEngine(Optional<Net::SSLEngine> ssl) {};
-		virtual void SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser) {};
-		virtual void SetLogTool(IO::LogTool *log) {};
+		virtual void SetArcGISPRJParser(Optional<Math::ArcGISPRJParser> prjParser) {};
+		virtual void SetLogTool(Optional<IO::LogTool> log) {};
 		virtual void PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t) = 0;
 		virtual IO::ParserType GetParserType() = 0;
 	};

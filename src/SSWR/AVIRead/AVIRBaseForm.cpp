@@ -561,7 +561,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(AnyType userObj, Data::D
 				NEW_CLASSNN(pkg, IO::DirectoryPackage(files[i]->ToCString()));
 				NN<Parser::ParserList> parsers = me->core->GetParserList();
 				NN<IO::ParsedObject> pobj;
-				if (pobj.Set(parsers->ParseObject(pkg)))
+				if (parsers->ParseObject(pkg).SetTo(pobj))
 				{
 					pkg.Delete();
 					me->core->OpenObject(pobj);
@@ -1173,7 +1173,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 						NN<IO::DirectoryPackage> dp;
 						NEW_CLASSNN(dp, IO::DirectoryPackage(fname));
 						NN<IO::ParsedObject> pobj;
-						if (dlg.GetParserType() != IO::ParserType::PackageFile && pobj.Set(this->core->GetParserList()->ParseObjectType(dp, dlg.GetParserType())))
+						if (dlg.GetParserType() != IO::ParserType::PackageFile && this->core->GetParserList()->ParseObjectType(dp, dlg.GetParserType()).SetTo(pobj))
 						{
 							dp.Delete();
 							this->core->OpenObject(pobj);	
@@ -1651,12 +1651,12 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (dlg->ShowDialog(this->GetHandle()))
 			{
 				NN<IO::PackageFile> pkgFile;
-				IO::PackageFile *pkg;
+				Optional<IO::PackageFile> pkg;
 				{
 					IO::StmData::FileData fd(dlg->GetFileName(), false);
-					pkg = (IO::PackageFile*)parsers->ParseFileType(fd, IO::ParserType::PackageFile);
+					pkg = Optional<IO::PackageFile>::ConvertFrom(parsers->ParseFileType(fd, IO::ParserType::PackageFile));
 				}
-				if (pkgFile.Set(pkg))
+				if (pkg.SetTo(pkgFile))
 				{
 					NEW_CLASSNN(tileMap, Map::OSM::OSMLocalTileMap(pkgFile));
 					NEW_CLASSNN(mapLyr, Map::TileMapLayer(tileMap, parsers));

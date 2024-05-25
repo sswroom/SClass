@@ -9,15 +9,15 @@ namespace Parser
 		class SPKParser : public IO::FileParser
 		{
 		private:
-			Parser::ParserList *parsers;
-			Net::SocketFactory *sockf;
+			Optional<Parser::ParserList> parsers;
+			Optional<Net::SocketFactory> sockf;
 			Optional<Net::SSLEngine> ssl;
 		public:
 			SPKParser();
 			virtual ~SPKParser();
 
 			virtual Int32 GetName();
-			virtual void SetParserList(Parser::ParserList *parsers);
+			virtual void SetParserList(Optional<Parser::ParserList> parsers);
 			virtual void SetSocketFactory(NN<Net::SocketFactory> sockf);
 			virtual void SetSSLEngine(Optional<Net::SSLEngine> ssl);
 			virtual void PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t);

@@ -14,7 +14,7 @@ namespace Media
 		virtual ~IMediaPlayer(){};
 
 		virtual void SetEndHandler(PBEndHandler hdlr, AnyType userObj) = 0;
-		virtual Bool LoadMedia(Media::MediaFile *file) = 0;
+		virtual Bool LoadMedia(Optional<Media::MediaFile> file) = 0;
 	};
 }
 #endif

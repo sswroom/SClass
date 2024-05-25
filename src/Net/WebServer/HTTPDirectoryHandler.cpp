@@ -1709,7 +1709,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(NN<Parser::ParserL
 	{
 		Data::Timestamp ts;
 		IO::Path::PathType pt;
-		IO::PackageFile *pf;
+		Optional<IO::PackageFile> pf;
 		NN<IO::PackageFile> nnpf;
 		UOSInt i;
 		PackageInfo *package;
@@ -1720,9 +1720,9 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(NN<Parser::ParserL
 			{
 				{
 					IO::StmData::FileData fd(CSTRP(sbuff, sptr2), false);
-					pf = (IO::PackageFile*)parsers->ParseFileType(fd, IO::ParserType::PackageFile);
+					pf = Optional<IO::PackageFile>::ConvertFrom(parsers->ParseFileType(fd, IO::ParserType::PackageFile));
 				}
-				if (nnpf.Set(pf))
+				if (pf.SetTo(nnpf))
 				{
 					package = MemAlloc(PackageInfo, 1);
 					package->packageFile = nnpf;

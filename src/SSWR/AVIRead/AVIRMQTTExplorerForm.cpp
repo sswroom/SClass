@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(AnyType userO
 		{
 			NN<Crypto::Cert::X509Cert> cliCert;
 			NN<Crypto::Cert::X509File> cliKey;
-			if (cliCert.Set(me->cliCert) && cliKey.Set(me->cliKey))
+			if (me->cliCert.SetTo(cliCert) && me->cliKey.SetTo(cliKey))
 			{
 				nnssl->ClientSetCertASN1(cliCert, cliKey);
 			}
@@ -177,31 +177,30 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliCertClicked(AnyType use
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		Net::ASN1Data *asn1;
+		NN<Net::ASN1Data> asn1;
 		{
 			IO::StmData::FileData fd(dlg->GetFileName(), false);
-			asn1 = (Net::ASN1Data*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data);
-		}
-		if (asn1 == 0)
-		{
-			me->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("MQTT Explorer"), me);
-			return;
+			if (!Optional<Net::ASN1Data>::ConvertFrom(me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data)).SetTo(asn1))
+			{
+				me->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("MQTT Explorer"), me);
+				return;
+			}
 		}
 		if (asn1->GetASN1Type() != Net::ASN1Data::ASN1Type::X509)
 		{
-			DEL_CLASS(asn1);
+			asn1.Delete();
 			me->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("MQTT Explorer"), me);
 			return;
 		}
-		Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
+		NN<Crypto::Cert::X509File> x509 = NN<Crypto::Cert::X509File>::ConvertFrom(asn1);
 		if (x509->GetFileType() != Crypto::Cert::X509File::FileType::Cert)
 		{
-			DEL_CLASS(asn1);
+			asn1.Delete();
 			me->ui->ShowMsgOK(CSTR("It is not a cert file"), CSTR("MQTT Explorer"), me);
 			return;
 		}
-		SDEL_CLASS(me->cliCert);
-		me->cliCert = (Crypto::Cert::X509Cert*)x509;
+		me->cliCert.Delete();
+		me->cliCert = NN<Crypto::Cert::X509Cert>::ConvertFrom(x509);
 		NN<Text::String> s = dlg->GetFileName();
 		UOSInt i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		me->lblCliCert->SetText(s->ToCString().Substring(i + 1));
@@ -217,24 +216,23 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliKeyClicked(AnyType user
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		Net::ASN1Data *asn1;
+		NN<Net::ASN1Data> asn1;
 		{
 			IO::StmData::FileData fd(dlg->GetFileName(), false);
-			asn1 = (Net::ASN1Data*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data);
-		}
-		if (asn1 == 0)
-		{
-			me->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("MQTT Explorer"), me);
-			return;
+			if (!Optional<Net::ASN1Data>::ConvertFrom(me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data)).SetTo(asn1))
+			{
+				me->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("MQTT Explorer"), me);
+				return;
+			}
 		}
 		if (asn1->GetASN1Type() != Net::ASN1Data::ASN1Type::X509)
 		{
-			DEL_CLASS(asn1);
+			asn1.Delete();
 			me->ui->ShowMsgOK(CSTR("Error in parsing file"), CSTR("MQTT Explorer"), me);
 			return;
 		}
-		SDEL_CLASS(me->cliKey);
-		me->cliKey = (Crypto::Cert::X509File*)asn1;
+		me->cliKey.Delete();
+		me->cliKey = NN<Crypto::Cert::X509File>::ConvertFrom(asn1);
 		NN<Text::String> s = dlg->GetFileName();
 		UOSInt i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		me->lblCliKey->SetText(s->ToCString().Substring(i + 1));
@@ -651,8 +649,8 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::~AVIRMQTTExplorerForm()
 	this->log.RemoveLogHandler(this->logger);
 	this->ServerStop();
 	this->ClearTopics();
-	SDEL_CLASS(this->cliCert);
-	SDEL_CLASS(this->cliKey);
+	this->cliCert.Delete();
+	this->cliKey.Delete();
 	this->logger.Delete();
 	NN<Media::DrawImage> img;
 	if (this->dispImg.SetTo(img))

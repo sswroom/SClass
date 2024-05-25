@@ -14,7 +14,7 @@ namespace Media
 		Data::UInt32FastMapNN<PDFObject> objMap;
 		NN<Text::String> version;
 
-		IO::ParsedObject *SetPObjName(IO::ParsedObject *pobj, UInt32 objId, Text::CString ext);
+		Optional<IO::ParsedObject> SetPObjName(Optional<IO::ParsedObject> pobj, UInt32 objId, Text::CString ext);
 	public:
 		PDFDocument(NN<Text::String> sourceName, Text::CString version);
 		virtual ~PDFDocument();
@@ -25,7 +25,7 @@ namespace Media
 		virtual Optional<PDFObject> GetItem(UOSInt index) const;
 		
 		NN<PDFObject> AddObject(UInt32 id);
-		Media::ImageList *CreateImage(UInt32 id, NN<Parser::ParserList> parsers);
+		Optional<Media::ImageList> CreateImage(UInt32 id, NN<Parser::ParserList> parsers);
 	};
 }
 #endif

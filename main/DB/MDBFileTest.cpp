@@ -25,18 +25,17 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	NEW_CLASS(log, IO::LogTool());
 
 	Parser::FullParserList *parsers;
-	IO::ParsedObject *pobj;
+	NN<IO::ParsedObject> pobj;
 	NEW_CLASS(parsers, Parser::FullParserList());
 	IO::StmData::FileData fd(fileName, false);
-	pobj = parsers->ParseFile(fd);
-	if (pobj)
+	if (parsers->ParseFile(fd).SetTo(pobj))
 	{
 		UOSInt i;
 		UOSInt j;
 		Exporter::SHPExporter shpExp;
 		shpExp.SetCodePage(65001);
 
-		Map::MapLayerCollection *lyrColl = (Map::MapLayerCollection*)pobj;
+		NN<Map::MapLayerCollection> lyrColl = NN<Map::MapLayerCollection>::ConvertFrom(pobj);
 		NN<Map::MapDrawLayer> lyr;
 		j = lyrColl->GetCount();
 		i = 0;
@@ -54,7 +53,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			i++;
 		}
 
-		DEL_CLASS(pobj);
+		pobj.Delete();
 	}
 	DEL_CLASS(parsers);
 

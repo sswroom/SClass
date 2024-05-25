@@ -38,12 +38,12 @@ void Parser::FileParser::TXTParser::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-void Parser::FileParser::TXTParser::SetParserList(Parser::ParserList *parsers)
+void Parser::FileParser::TXTParser::SetParserList(Optional<Parser::ParserList> parsers)
 {
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::TXTParser::SetMapManager(Map::MapManager *mapMgr)
+void Parser::FileParser::TXTParser::SetMapManager(Optional<Map::MapManager> mapMgr)
 {
 	this->mapMgr = mapMgr;
 }
@@ -82,15 +82,16 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::StreamData>
 		return 0;
 	}
 	NN<Parser::ParserList> parsers;
+	NN<Map::MapManager> mapMgr;
 	IO::StreamDataStream stm(fd);
 	IO::StreamReader reader(stm, this->codePage);
 	if ((sptr = reader.ReadLine(sbuff, 255)) == 0)
 	{
 		return 0;
 	}
-	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("1,")) && Text::StrCountChar(sbuff, ',') == 4 && parsers.Set(this->parsers) && this->mapMgr != 0)
+	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("1,")) && Text::StrCountChar(sbuff, ',') == 4 && this->parsers.SetTo(parsers) && this->mapMgr.SetTo(mapMgr))
 	{
-		Map::MapEnv *env;
+		NN<Map::MapEnv> env;
 		Optional<Map::MapEnv::GroupItem> currGroup = 0;
 		if (Text::StrSplitTrimP(sarr, 8, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 5)
 		{
@@ -98,7 +99,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::StreamData>
 		}
 
 		NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateDefaultCsys();
-		NEW_CLASS(env, Map::MapEnv(fd->GetFullName()->ToCString(), ToColor(Text::StrHex2UInt32C(sarr[1].v)), csys));
+		NEW_CLASSNN(env, Map::MapEnv(fd->GetFullName()->ToCString(), ToColor(Text::StrHex2UInt32C(sarr[1].v)), csys));
 		env->SetNString(Text::StrToUInt32(sarr[4].v));
 		fileName = baseDir;
 
@@ -108,8 +109,8 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::StreamData>
 			{
 				if (Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 2)
 				{
-					this->mapMgr->ClearMap(env);
-					DEL_CLASS(env);
+					mapMgr->ClearMap(env);
+					env.Delete();
 					return 0;
 				}
 				fileName = fd->GetFullFileName()->ConcatTo(baseDir);
@@ -120,8 +121,8 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::StreamData>
 				UInt8 *pattern;
 				if ((i = Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',')) < 5)
 				{
-					this->mapMgr->ClearMap(env);
-					DEL_CLASS(env);
+					mapMgr->ClearMap(env);
+					env.Delete();
 					return 0;
 				}
 				j = Text::StrToUInt32(sarr[1].v);
@@ -153,8 +154,8 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::StreamData>
 			{
 				if (Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 3)
 				{
-					this->mapMgr->ClearMap(env);
-					DEL_CLASS(env);
+					mapMgr->ClearMap(env);
+					env.Delete();
 					return 0;
 				}
 				env->SetLineStyleName(Text::StrToUInt32(sarr[1].v), sarr[2].ToCString());
@@ -172,8 +173,8 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::StreamData>
 
 				if (Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 7)
 				{
-					this->mapMgr->ClearMap(env);
-					DEL_CLASS(env);
+					mapMgr->ClearMap(env);
+					env.Delete();
 					return 0;
 				}
 				i = Text::StrToUInt32(sarr[1].v);
@@ -220,13 +221,13 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::StreamData>
 				Map::MapEnv::LayerItem setting;
 				if (Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 5)
 				{
-					this->mapMgr->ClearMap(env);
-					DEL_CLASS(env);
+					mapMgr->ClearMap(env);
+					env.Delete();
 					return 0;
 				}
 				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
 				NN<Map::MapDrawLayer> lyr;
-				if (lyr.Set(this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env)))
+				if (mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, parsers, env).SetTo(lyr))
 				{
 					i = env->AddLayer(currGroup, lyr, false);
 
@@ -244,14 +245,14 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::StreamData>
 				Map::MapEnv::LayerItem setting;
 				if (Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 6)
 				{
-					this->mapMgr->ClearMap(env);
-					DEL_CLASS(env);
+					mapMgr->ClearMap(env);
+					env.Delete();
 					return 0;
 				}
 
 				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
 				NN<Map::MapDrawLayer> lyr;
-				if (lyr.Set(this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env)))
+				if (mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, parsers, env).SetTo(lyr))
 				{
 					i = env->AddLayer(currGroup, lyr, false);
 
@@ -271,13 +272,13 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::StreamData>
 				Map::MapEnv::LayerItem setting;
 				if (Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 7)
 				{
-					this->mapMgr->ClearMap(env);
-					DEL_CLASS(env);
+					mapMgr->ClearMap(env);
+					env.Delete();
 					return 0;
 				}
 				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
 				NN<Map::MapDrawLayer> lyr;
-				if (lyr.Set(this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env)))
+				if (mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, parsers, env).SetTo(lyr))
 				{
 					i = env->AddLayer(currGroup, lyr, false);
 
@@ -310,14 +311,14 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::StreamData>
 				Map::MapEnv::LayerItem setting;
 				if (Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 5)
 				{
-					this->mapMgr->ClearMap(env);
-					DEL_CLASS(env);
+					mapMgr->ClearMap(env);
+					env.Delete();
 					return 0;
 				}
 				OSInt si;
 				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
 				NN<Map::MapDrawLayer> lyr;
-				if (lyr.Set(this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env)))
+				if (mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, parsers, env).SetTo(lyr))
 				{
 					baseDirEnd = Text::StrConcat(sbuff3, sbuff2);
 					baseDirEnd = IO::Path::AppendPath(sbuff3, baseDirEnd, sarr[4].ToCString());
@@ -343,7 +344,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::StreamData>
 		}
 
 		//////////////////////////////
-		return env;
+		return env.Ptr();
 	}
 	else if (fd->IsFullFile() && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OBJECTID,")) && Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(",")))
 	{

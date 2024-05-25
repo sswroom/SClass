@@ -19,9 +19,9 @@ namespace SSWR
 			NN<Media::ColorManagerSess> colorSess;
 			Bool allowEnlarge;
 			Int64 imgTimeoutTick;
-			Media::ImageList *imgList;
+			Optional<Media::ImageList> imgList;
 			UOSInt imgIndex;
-			IO::PackageFile *pkgFile;
+			Optional<IO::PackageFile> pkgFile;
 			UOSInt fileIndex;
 			Bool hideCursor;
 			UOSInt noMoveCount;
@@ -41,7 +41,7 @@ namespace SSWR
 			virtual void OnFocus();
 			virtual void OnMonitorChanged();
 
-			void SetImage(Media::ImageList *imgList, Bool sameDir);
+			void SetImage(Optional<Media::ImageList> imgList, Bool sameDir);
 			Bool ParseFile(NN<IO::StreamData> fd);
 		};
 	}

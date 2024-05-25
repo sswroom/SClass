@@ -189,7 +189,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 	Data::Timestamp ts;
 	Data::Timestamp currTS;
 	NN<Net::HTTPClient> cli;
-	IO::ParsedObject *pobj;
+	NN<IO::ParsedObject> pobj;
 	if (level < this->minLevel || level > this->maxLevel)
 		return 0;
 	Double x1 = TileX2Lon(tileId.x, level);
@@ -223,14 +223,13 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 			if (ts > currTS)
 			{
 				IO::StmData::BufferedStreamData bsd(fd);
-				pobj = parsers->ParseFile(bsd);
-				if (pobj)
+				if (parsers->ParseFile(bsd).SetTo(pobj))
 				{
 					if (pobj->GetParserType() == IO::ParserType::ImageList)
 					{
-						return (Media::ImageList*)pobj;
+						return NN<Media::ImageList>::ConvertFrom(pobj).Ptr();
 					}
-					DEL_CLASS(pobj);
+					pobj.Delete();
 				}
 			}
 			else
@@ -256,14 +255,13 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 		if (fd.Set(this->spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)})))
 		{
 			IO::StmData::BufferedStreamData bsd(fd);
-			pobj = parsers->ParseFile(bsd);
-			if (pobj)
+			if (parsers->ParseFile(bsd).SetTo(pobj))
 			{
 				if (pobj->GetParserType() == IO::ParserType::ImageList)
 				{
-					return (Media::ImageList*)pobj;
+					return NN<Media::ImageList>::ConvertFrom(pobj).Ptr();
 				}
-				DEL_CLASS(pobj);
+				pobj.Delete();
 			}
 //			printf("Get SPKG Img error parsing: %s\r\n", filePathU);
 		}
@@ -339,14 +337,13 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 		if (nnfd->GetDataSize() > 0)
 		{
 			IO::StmData::BufferedStreamData bsd(nnfd);
-			pobj = parsers->ParseFile(bsd);
-			if (pobj)
+			if (parsers->ParseFile(bsd).SetTo(pobj))
 			{
 				if (pobj->GetParserType() == IO::ParserType::ImageList)
 				{
-					return (Media::ImageList*)pobj;
+					return NN<Media::ImageList>::ConvertFrom(pobj).Ptr();
 				}
-				DEL_CLASS(pobj);
+				pobj.Delete();
 			}
 		}
 		else

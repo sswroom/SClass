@@ -43,7 +43,7 @@ Int32 Parser::FileParser::TIFFParser::GetName()
 	return *(Int32*)"TIFP";
 }
 
-void Parser::FileParser::TIFFParser::SetParserList(Parser::ParserList *parsers)
+void Parser::FileParser::TIFFParser::SetParserList(Optional<Parser::ParserList> parsers)
 {
 	this->parsers = parsers;
 }
@@ -255,23 +255,25 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::StreamData
 		{
 			if (nStrip == 1)
 			{
-				Media::ImageList *innerImgList = 0;
+				Optional<Media::ImageList> innerImgList = 0;
+				NN<Media::ImageList> nnInnerImgList;
 				NN<IO::StreamData> jpgFd = fd->GetPartialData(stripOfst, stripLeng);
-				if (this->parsers)
+				NN<Parser::ParserList> parsers;
+				if (this->parsers.SetTo(parsers))
 				{
-					innerImgList = (Media::ImageList*)this->parsers->ParseFileType(jpgFd, IO::ParserType::ImageList); 
+					innerImgList = Optional<Media::ImageList>::ConvertFrom(parsers->ParseFileType(jpgFd, IO::ParserType::ImageList));
 				}
 				jpgFd.Delete();
-				if (innerImgList)
+				if (innerImgList.SetTo(nnInnerImgList))
 				{
 					NN<Media::RasterImage> innerImg;
 					NN<Media::StaticImage> innerSImg;
 					UInt32 imgDelay;
 					i = 0;
-					j = innerImgList->GetCount();
+					j = nnInnerImgList->GetCount();
 					while (i < j)
 					{
-						if (innerImgList->GetImage(i, imgDelay).SetTo(innerImg))
+						if (nnInnerImgList->GetImage(i, imgDelay).SetTo(innerImg))
 						{
 							innerSImg = innerImg->CreateStaticImage();
 							if (exif.SetTo(nnexif))
@@ -283,7 +285,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::StreamData
 						}
 						i++;
 					}
-					DEL_CLASS(innerImgList);
+					nnInnerImgList.Delete();
 					exif.Delete();
 					if (stripOfsts)
 					{

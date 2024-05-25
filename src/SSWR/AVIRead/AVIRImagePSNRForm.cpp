@@ -60,24 +60,26 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnCompareClicked(AnyType userOb
 	{
 		return;
 	}
-	Media::ImageList *imgList1 = 0;
-	Media::ImageList *imgList2 = 0;
+	Optional<Media::ImageList> imgList1 = 0;
+	Optional<Media::ImageList> imgList2 = 0;
+	NN<Media::ImageList> nnimgList1;
+	NN<Media::ImageList> nnimgList2;
 	NN<Media::StaticImage> simg1;
 	NN<Media::StaticImage> simg2;
 	{
 		IO::StmData::FileData fd(sb.ToCString(), false);
-		imgList1 = (Media::ImageList*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
+		imgList1 = Optional<Media::ImageList>::ConvertFrom(me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList));
 	}
 	{
 		IO::StmData::FileData fd(sb2.ToCString(), false);
-		imgList2 = (Media::ImageList*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
+		imgList2 = Optional<Media::ImageList>::ConvertFrom(me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList));
 	}
-	if (imgList1 && imgList2)
+	if (imgList1.SetTo(nnimgList1) && imgList2.SetTo(nnimgList2))
 	{
-		imgList1->ToStaticImage(0);
-		imgList2->ToStaticImage(0);
-		if (Optional<Media::StaticImage>::ConvertFrom(imgList1->GetImage(0, 0)).SetTo(simg1) && 
-			Optional<Media::StaticImage>::ConvertFrom(imgList2->GetImage(0, 0)).SetTo(simg2) &&
+		nnimgList1->ToStaticImage(0);
+		nnimgList2->ToStaticImage(0);
+		if (Optional<Media::StaticImage>::ConvertFrom(nnimgList1->GetImage(0, 0)).SetTo(simg1) && 
+			Optional<Media::StaticImage>::ConvertFrom(nnimgList2->GetImage(0, 0)).SetTo(simg2) &&
 			simg1->info.storeSize.x == simg2->info.storeSize.x &&
 			simg1->info.dispSize.y == simg2->info.dispSize.y)
 		{
@@ -99,8 +101,8 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnCompareClicked(AnyType userOb
 			me->txtPSNR->SetText(sb.ToCString());
 		}
 	}
-	SDEL_CLASS(imgList1);
-	SDEL_CLASS(imgList2);
+	imgList1.Delete();
+	imgList2.Delete();
 }
 
 SSWR::AVIRead::AVIRImagePSNRForm::AVIRImagePSNRForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 640, 160, ui)

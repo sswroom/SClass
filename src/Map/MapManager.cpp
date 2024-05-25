@@ -11,70 +11,63 @@ Map::MapManager::MapManager()
 
 Map::MapManager::~MapManager()
 {
-	NN<const Data::ArrayList<Map::MapManager::MapLayerInfo*>> arr = this->layerArr.GetValues();
-	UOSInt i = arr->GetCount();
+	UOSInt i = this->layerArr.GetCount();
 	while (i-- > 0)
 	{
-		Map::MapManager::MapLayerInfo *info = arr->GetItem(i);
-		DEL_CLASS(info->layer);
-		DEL_CLASS(info->envList);
-		MemFree(info);
+		NN<Map::MapManager::MapLayerInfo> info = this->layerArr.GetItemNoCheck(i);
+		info->layer.Delete();
+		info.Delete();
 	}
 }
 
-Map::MapDrawLayer *Map::MapManager::LoadLayer(Text::CStringNN fileName, Parser::ParserList *parsers, Map::MapEnv *env)
+Optional<Map::MapDrawLayer> Map::MapManager::LoadLayer(Text::CStringNN fileName, NN<Parser::ParserList> parsers, NN<Map::MapEnv> env)
 {
-	Map::MapManager::MapLayerInfo *info = this->layerArr.Get(fileName.v);
-	if (info)
+	NN<Map::MapManager::MapLayerInfo> info;
+	if (this->layerArr.Get(fileName).SetTo(info))
 	{
-		if (info->envList->IndexOf(env) == INVALID_INDEX)
+		if (info->envList.IndexOf(env) == INVALID_INDEX)
 		{
-			info->envList->Add(env);
+			info->envList.Add(env);
 		}
 		return info->layer;
 	}
-	IO::ParsedObject *pobj;
+	NN<IO::ParsedObject> pobj;
 	{
 		IO::StmData::FileData fd(fileName, false);
-		pobj = parsers->ParseFile(fd);
-	}
-	if (pobj != 0 && pobj->GetParserType() != IO::ParserType::MapLayer)
-	{
-		if (pobj)
-		{
-			DEL_CLASS(pobj);
+		if (!parsers->ParseFile(fd).SetTo(pobj))
 			return 0;
-		}
 	}
-	Map::MapDrawLayer *lyr;
-	lyr = (Map::MapDrawLayer*)pobj;
-	info = MemAlloc(Map::MapManager::MapLayerInfo, 1);
-	NEW_CLASS(info->envList, Data::ArrayList<Map::MapEnv*>());
+	if (pobj->GetParserType() != IO::ParserType::MapLayer)
+	{
+		pobj.Delete();
+		return 0;
+	}
+	NN<Map::MapDrawLayer> lyr;
+	lyr = NN<Map::MapDrawLayer>::ConvertFrom(pobj);
+	NEW_CLASSNN(info, Map::MapManager::MapLayerInfo());
 	info->layer = lyr;
-	info->envList->Add(env);
-	this->layerArr.Put(fileName.v, info);
+	info->envList.Add(env);
+	this->layerArr.Put(fileName, info);
 	return lyr;
 }
 
-void Map::MapManager::ClearMap(Map::MapEnv *env)
+void Map::MapManager::ClearMap(NN<Map::MapEnv> env)
 {
-	NN<const Data::ArrayList<Map::MapManager::MapLayerInfo *>> infoArr = this->layerArr.GetValues();
-	UOSInt i = infoArr->GetCount();
+	UOSInt i = this->layerArr.GetCount();
 	UOSInt j;
-	Map::MapManager::MapLayerInfo *info;
+	NN<Map::MapManager::MapLayerInfo> info;
 	while (i-- > 0)
 	{
-		info = infoArr->GetItem(i);
-		j = info->envList->IndexOf(env);
+		info = this->layerArr.GetItemNoCheck(i);
+		j = info->envList.IndexOf(env);
 		if (j != INVALID_INDEX)
 		{
-			info->envList->RemoveAt(j);
-			if (info->envList->GetCount() == 0)
+			info->envList.RemoveAt(j);
+			if (info->envList.GetCount() == 0)
 			{
 				this->layerArr.Remove(this->layerArr.GetKey(i));
-				DEL_CLASS(info->envList);
-				DEL_CLASS(info->layer);
-				MemFree(info);
+				info->layer.Delete();
+				info.Delete();
 			}
 		}
 	}

@@ -47,7 +47,7 @@ void Parser::ParserList::SetCodePage(UInt32 codePage)
 	}
 }
 
-void Parser::ParserList::SetMapManager(Map::MapManager *mapMgr)
+void Parser::ParserList::SetMapManager(Optional<Map::MapManager> mapMgr)
 {
 	NN<IO::ParserBase> parser;
 	UOSInt i = this->filePArr.GetCount();
@@ -81,7 +81,7 @@ void Parser::ParserList::SetEncFactory(Optional<Text::EncodingFactory> encFact)
 	}
 }
 
-void Parser::ParserList::SetWebBrowser(Net::WebBrowser *browser)
+void Parser::ParserList::SetWebBrowser(Optional<Net::WebBrowser> browser)
 {
 	NN<IO::ParserBase> parser;
 	UOSInt i = this->filePArr.GetCount();
@@ -132,7 +132,7 @@ void Parser::ParserList::SetSSLEngine(Optional<Net::SSLEngine> ssl)
 	}
 }
 
-void Parser::ParserList::SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser)
+void Parser::ParserList::SetArcGISPRJParser(Optional<Math::ArcGISPRJParser> prjParser)
 {
 	NN<IO::ParserBase> parser;
 	UOSInt i;
@@ -154,7 +154,7 @@ void Parser::ParserList::SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser)
 	}
 }
 
-void Parser::ParserList::SetLogTool(IO::LogTool *log)
+void Parser::ParserList::SetLogTool(Optional<IO::LogTool> log)
 {
 	NN<IO::ParserBase> parser;
 	UOSInt i;
@@ -198,7 +198,7 @@ void Parser::ParserList::PrepareSelector(NN<IO::FileSelector> selector, IO::Pars
 	}
 }
 
-IO::ParsedObject *Parser::ParserList::ParseFile(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
+Optional<IO::ParsedObject> Parser::ParserList::ParseFile(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UOSInt i = 0;
 	UOSInt j = this->filePArr.GetCount();
@@ -245,21 +245,21 @@ IO::ParsedObject *Parser::ParserList::ParseFile(NN<IO::StreamData> fd, IO::Packa
 	return 0;
 }
 
-IO::ParsedObject *Parser::ParserList::ParseFile(NN<IO::StreamData> fd, IO::PackageFile *pkgFile)
+Optional<IO::ParsedObject> Parser::ParserList::ParseFile(NN<IO::StreamData> fd, IO::PackageFile *pkgFile)
 {
 	return ParseFile(fd, pkgFile, IO::ParserType::Unknown);
 }
 
-IO::ParsedObject *Parser::ParserList::ParseFile(NN<IO::StreamData> fd)
+Optional<IO::ParsedObject> Parser::ParserList::ParseFile(NN<IO::StreamData> fd)
 {
 	return ParseFile(fd, 0, IO::ParserType::Unknown);
 }
 
-IO::ParsedObject *Parser::ParserList::ParseFileType(NN<IO::StreamData> fd, IO::ParserType t)
+Optional<IO::ParsedObject> Parser::ParserList::ParseFileType(NN<IO::StreamData> fd, IO::ParserType t)
 {
 	NN<IO::ParsedObject> pobj;
-	IO::ParsedObject *pobj2 = this->ParseFile(fd, 0, t);
-	while (pobj.Set(pobj2))
+	Optional<IO::ParsedObject> pobj2 = this->ParseFile(fd, 0, t);
+	while (pobj2.SetTo(pobj))
 	{
 		if (pobj->GetParserType() == t)
 			return pobj.Ptr();
@@ -269,12 +269,12 @@ IO::ParsedObject *Parser::ParserList::ParseFileType(NN<IO::StreamData> fd, IO::P
 	return 0;
 }
 
-IO::ParsedObject *Parser::ParserList::ParseObject(NN<IO::ParsedObject> pobj)
+Optional<IO::ParsedObject> Parser::ParserList::ParseObject(NN<IO::ParsedObject> pobj)
 {
 	return ParseObjectType(pobj, IO::ParserType::Unknown);
 }
 
-IO::ParsedObject *Parser::ParserList::ParseObjectType(NN<IO::ParsedObject> pobj, IO::ParserType targetType)
+Optional<IO::ParsedObject> Parser::ParserList::ParseObjectType(NN<IO::ParsedObject> pobj, IO::ParserType targetType)
 {
 	UOSInt i = 0;
 	UOSInt j = this->objPArr.GetCount();

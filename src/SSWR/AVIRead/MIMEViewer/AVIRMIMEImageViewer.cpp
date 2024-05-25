@@ -10,12 +10,13 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEImageViewer::AVIRMIMEImageViewer(NN<SSWR::AVI
 	const UInt8 *buff = this->obj->GetRAWData(buffSize);
 	{
 		IO::StmData::MemoryDataRef data(buff, buffSize);
-		this->imgList = (Media::ImageList*)core->GetParserList()->ParseFileType(data, IO::ParserType::ImageList);
+		this->imgList = Optional<Media::ImageList>::ConvertFrom(core->GetParserList()->ParseFileType(data, IO::ParserType::ImageList));
 	}
 
 	this->pbContent = ui->NewPictureBoxDD(ctrl, sess, true, false);
 	this->pbContent->SetDockType(UI::GUIControl::DOCK_FILL);
-	if (this->imgList)
+	NN<Media::ImageList> imgList;
+	if (this->imgList.SetTo(imgList))
 	{
 		this->pbContent->SetImage(imgList->GetImage(0, 0), false);
 	}
@@ -23,8 +24,5 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEImageViewer::AVIRMIMEImageViewer(NN<SSWR::AVI
 
 SSWR::AVIRead::MIMEViewer::AVIRMIMEImageViewer::~AVIRMIMEImageViewer()
 {
-	if (this->imgList)
-	{
-		DEL_CLASS(this->imgList);
-	}
+	this->imgList.Delete();
 }

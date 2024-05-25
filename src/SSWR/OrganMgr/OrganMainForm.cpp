@@ -342,22 +342,14 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgSelChg(AnyType userObj)
 	if (me->lbImage->GetSelectedIndex() == INVALID_INDEX)
 	{
 		me->pbImg->SetImage(0, false);
-		if (me->dispImage)
-		{
-			DEL_CLASS(me->dispImage);
-			me->dispImage = 0;
-		}
+		me->dispImage.Delete();
 		me->dispImageUF = 0;
 		me->dispImageWF = 0;
 	}
 	else
 	{
 		me->pbImg->SetImage(0, false);
-		if (me->dispImage)
-		{
-			DEL_CLASS(me->dispImage);
-			me->dispImage = 0;
-		}
+		me->dispImage.Delete();
 		if (me->lastBmp)
 		{
 			DEL_CLASS(me->lastBmp);
@@ -370,9 +362,10 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgSelChg(AnyType userObj)
 		{
 			NN<OrganImageItem> img = me->lbImage->GetSelectedItem().GetNN<OrganImageItem>();
 			me->dispImage = me->env->ParseImage(img, me->dispImageUF, me->dispImageWF);
-			if (me->dispImage)
+			NN<Media::ImageList> dispImage;
+			if (me->dispImage.SetTo(dispImage))
 			{
-				me->pbImg->SetImage(me->dispImage->GetImage(0, 0), false);
+				me->pbImg->SetImage(dispImage->GetImage(0, 0), false);
 			}
 		}
 		else if (me->inputMode == IM_GROUP)
@@ -386,9 +379,10 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgSelChg(AnyType userObj)
 				me->dispImage = me->env->ParseSpImage(sp);
 				me->dispImageUF = 0;
 				me->dispImageWF = 0;
-				if (me->dispImage)
+				NN<Media::ImageList> dispImage;
+				if (me->dispImage.SetTo(dispImage))
 				{
-					me->pbImg->SetImage(me->dispImage->GetImage(0, 0), false);
+					me->pbImg->SetImage(dispImage->GetImage(0, 0), false);
 				}
 				sp.Delete();
 			}
@@ -508,7 +502,8 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseUp(AnyType userObj, Math
 			pt1 = me->pbImg->Scn2ImagePos(rect[0]);
 			pt2 = me->pbImg->Scn2ImagePos(rect[1]);
 			NN<Media::RasterImage> img;
-			if (me->dispImage->GetImage(0, 0).SetTo(img))
+			NN<Media::ImageList> dispImage;
+			if (me->dispImage.SetTo(dispImage) && dispImage->GetImage(0, 0).SetTo(img))
 			{
 				if (me->dispImageUF.SetTo(userFile))
 				{
@@ -545,7 +540,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(AnyType userObj, UInt8 *
 	NN<OrganMainForm> me = userObj.GetNN<OrganMainForm>();
 	Math::Coord2DDbl pos1;
 	Math::Coord2DDbl pos2;
-	if (me->dispImage)
+	NN<Media::ImageList> dispImage;
+	if (me->dispImage.SetTo(dispImage))
 	{
 		NN<UserFileInfo> userFile;
 		NN<WebFileInfo> wfile;
@@ -554,7 +550,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(AnyType userObj, UInt8 *
 			NN<Media::RasterImage> img;
 			if (userFile->cropLeft != 0 || userFile->cropTop != 0 || userFile->cropRight != 0 || userFile->cropBottom)
 			{
-				if (me->dispImage->GetImage(0, 0).SetTo(img))
+				if (dispImage->GetImage(0, 0).SetTo(img))
 				{
 					pos1 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(userFile->cropLeft, userFile->cropTop));
 					pos2 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(UOSInt2Double(img->info.dispSize.x) - userFile->cropRight, UOSInt2Double(img->info.dispSize.y) - userFile->cropBottom));
@@ -581,7 +577,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(AnyType userObj, UInt8 *
 			NN<Media::RasterImage> img;
 			if (wfile->cropLeft != 0 || wfile->cropTop != 0 || wfile->cropRight != 0 || wfile->cropBottom)
 			{
-				if (me->dispImage->GetImage(0, 0).SetTo(img))
+				if (dispImage->GetImage(0, 0).SetTo(img))
 				{
 					pos1 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(wfile->cropLeft, wfile->cropTop));
 					pos2 = me->pbImg->Image2ScnPos(Math::Coord2DDbl(UOSInt2Double(img->info.dispSize.x) - wfile->cropRight, UOSInt2Double(img->info.dispSize.y) - wfile->cropBottom));
@@ -1246,7 +1242,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnTabSelChg(AnyType userObj)
 	else
 	{
 		me->pbImg->SetImage(0, false);
-		SDEL_CLASS(me->dispImage);
+		me->dispImage.Delete();
 		SDEL_CLASS(me->lastBmp);
 	}
 }
@@ -1617,14 +1613,10 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(AnyType userObj, Ma
 				if (scnPos.x >= dispPos.x - 3 && scnPos.x <= dispPos.x + 3 && scnPos.y >= dispPos.y - 3 && scnPos.y <= dispPos.y + 3)
 				{
 					Text::StringBuilderUTF8 sb;
-					Media::ImageList *imgList;
+					NN<Media::ImageList> imgList;
 					me->env->GetUserFilePath(ufile, sb);
-					{
-						IO::StmData::FileData fd(sb.ToCString(), false);
-						imgList = (Media::ImageList*)me->env->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
-					}
-
-					if (imgList)
+					IO::StmData::FileData fd(sb.ToCString(), false);
+					if (Optional<Media::ImageList>::ConvertFrom(me->env->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList)).SetTo(imgList))
 					{
 						imgList->ToStaticImage(0);
 						NN<Media::StaticImage> img;
@@ -1635,7 +1627,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(AnyType userObj, Ma
 							me->mapResizer->SetTargetSize(Math::Size2D<UOSInt>(320, 320));
 							me->mapResizer->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
 							nimg = me->mapResizer->ProcessToNew(img);
-							DEL_CLASS(imgList);
+							imgList.Delete();
 							me->mapCurrFile = ufile.Ptr();
 							me->mapCurrImage = me->env->GetDrawEngine()->ConvImageOrNull(nimg);
 							SDEL_CLASS(nimg);
@@ -1720,7 +1712,8 @@ Bool SSWR::OrganMgr::OrganMainForm::CalcCropRect(Math::Coord2D<OSInt> *rect)
 	}
 
 	NN<Media::RasterImage> img;
-	if (!this->dispImage->GetImage(0, 0).SetTo(img))
+	NN<Media::ImageList> dispImage;
+	if (!this->dispImage.SetTo(dispImage) || !dispImage->GetImage(0, 0).SetTo(img))
 	{
 		return false;
 	}
@@ -1884,11 +1877,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 		DEL_CLASS(this->lastBmp);
 		this->lastBmp = 0;
 	}
-	if (this->dispImage)
-	{
-		DEL_CLASS(this->dispImage);
-		this->dispImage = 0;
-	}
+	this->dispImage.Delete();
 
 	NN<OrganImageItem> imgItem;
 	UOSInt i;
@@ -2455,7 +2444,7 @@ NN<SSWR::OrganMgr::OrganSpImgLayer> SSWR::OrganMgr::OrganMainForm::GetImgLayer(U
 		return lyr;
 	}
 	NN<Media::StaticImage> stimg;
-	Media::ImageList *imgList;
+	NN<Media::ImageList> imgList;
 	Map::MapEnv::LayerItem sett;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -2466,7 +2455,7 @@ NN<SSWR::OrganMgr::OrganSpImgLayer> SSWR::OrganMgr::OrganMainForm::GetImgLayer(U
 	NEW_CLASSNN(stimg, Media::StaticImage(Math::Size2D<UOSInt>(7, 7), 0, 32, Media::PF_B8G8R8A8, 0, srcColor, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	lyr->SetCoordinateSystem(this->mapEnv->GetCoordinateSystem()->Clone());
 	stimg->FillColor(mapColor);
-	NEW_CLASS(imgList, Media::ImageList(CSTR("PointImage")));
+	NEW_CLASSNN(imgList, Media::ImageList(CSTR("PointImage")));
 	imgList->AddImage(stimg, 0);
 	sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("Image")), mapColor);
 	imgInd = this->mapEnv->AddImage(CSTRP(sbuff, sptr), imgList);
@@ -2815,7 +2804,7 @@ SSWR::OrganMgr::OrganMainForm::~OrganMainForm()
 	this->ClearChildren();
 
 	SDEL_CLASS(this->lastBmp);
-	SDEL_CLASS(this->dispImage);
+	this->dispImage.Delete();
 	this->groupList.DeleteAll();
 	this->groupItems.DeleteAll();
 	this->imgItems.DeleteAll();

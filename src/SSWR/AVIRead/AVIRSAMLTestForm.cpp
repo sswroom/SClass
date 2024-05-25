@@ -20,20 +20,17 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnFormFiles(AnyType userObj, Dat
 
 	UOSInt i = 0;
 	UOSInt nFiles = files.GetCount();
-	IO::ParsedObject *pobj;
+	NN<IO::ParsedObject> pobj;
 	while (i < nFiles)
 	{
+		IO::StmData::FileData fd(files[i], false);
+		if (parsers->ParseFileType(fd, IO::ParserType::ASN1Data).SetTo(pobj))
 		{
-			IO::StmData::FileData fd(files[i], false);
-			pobj = parsers->ParseFileType(fd, IO::ParserType::ASN1Data);
-		}
-		if (pobj)
-		{
-			Net::ASN1Data *asn1 = (Net::ASN1Data*)pobj;
-			Crypto::Cert::X509Key *key;
+			NN<Net::ASN1Data> asn1 = NN<Net::ASN1Data>::ConvertFrom(pobj);
+			NN<Crypto::Cert::X509Key> key;
 			if (asn1->GetASN1Type() == Net::ASN1Data::ASN1Type::X509)
 			{
-				Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
+				NN<Crypto::Cert::X509File> x509 = NN<Crypto::Cert::X509File>::ConvertFrom(asn1);
 				switch (x509->GetFileType())
 				{
 				case Crypto::Cert::X509File::FileType::Cert:
@@ -42,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnFormFiles(AnyType userObj, Dat
 				case Crypto::Cert::X509File::FileType::CertRequest:
 					break;
 				case Crypto::Cert::X509File::FileType::Key:
-					key = (Crypto::Cert::X509Key*)x509;
+					key = NN<Crypto::Cert::X509Key>::ConvertFrom(x509);
 					if (key->IsPrivateKey())
 					{
 						me->txtSignKey->SetText(files[i]->ToCString());
@@ -61,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRSAMLTestForm::OnFormFiles(AnyType userObj, Dat
 					break;
 				}
 			}
-			DEL_CLASS(pobj);
+			pobj.Delete();
 		}
 		i++;
 	}

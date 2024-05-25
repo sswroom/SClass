@@ -23,7 +23,7 @@ namespace UI
 			Sync::Mutex frameMut;
 			Optional<Media::DrawImage> frameImg;
 			Parser::ParserList *parsers;
-			Media::MediaFile *mf;
+			Optional<Media::MediaFile> mf;
 			Media::MediaPlayer *player;
 
 			static void __stdcall OnTimerTick(AnyType userObj);

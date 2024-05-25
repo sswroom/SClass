@@ -477,19 +477,19 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnFileHandler(AnyType userObj, 
 		else
 		{
 			IO::Path::PathType pt = IO::Path::GetPathType(files[i]->ToCString());
-			DB::ReadingDB *db;
+			Optional<DB::ReadingDB> db;
 			NN<DB::ReadingDB> nndb;
 			if (pt == IO::Path::PathType::Directory)
 			{
 				IO::DirectoryPackage dpkg(files[i]);
-				db = (DB::ReadingDB*)me->core->GetParserList()->ParseObjectType(dpkg, IO::ParserType::ReadingDB);
+				db = Optional<DB::ReadingDB>::ConvertFrom(me->core->GetParserList()->ParseObjectType(dpkg, IO::ParserType::ReadingDB));
 			}
 			else
 			{
 				IO::StmData::FileData fd(files[i], false);
-				db = (DB::ReadingDB*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ReadingDB);
+				db = Optional<DB::ReadingDB>::ConvertFrom(me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ReadingDB));
 			}
-			if (nndb.Set(db))
+			if (db.SetTo(nndb))
 			{
 				NN<DB::DBManagerCtrl> ctrl = DB::DBManagerCtrl::CreateFromFile(nndb, files[i], me->log, me->core->GetSocketFactory(), me->core->GetParserList());
 				me->dbList.Add(ctrl);

@@ -62,17 +62,17 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(AnyType userObj
 	}
 	else
 	{
-		Map::MapDrawLayer *lyr;
+		Optional<Map::MapDrawLayer> lyr;
 		{
 			IO::StmData::FileData fd(sb.ToCString(), false);
-			lyr = (Map::MapDrawLayer*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::MapLayer);
+			lyr = Optional<Map::MapDrawLayer>::ConvertFrom(me->core->GetParserList()->ParseFileType(fd, IO::ParserType::MapLayer));
 		}
 		DB::DBTool *db = DB::MDBFileConn::CreateDBTool(sb2.ToCString(), me->core->GetLog(), CSTR_NULL);
 		NN<DB::DBTool> nndb;
 		NN<Map::MapDrawLayer> nnlyr;
-		if (nnlyr.Set(lyr) && nndb.Set(db))
+		if (lyr.SetTo(nnlyr) && nndb.Set(db))
 		{
-			Map::DrawLayerType lyrType = lyr->GetLayerType();
+			Map::DrawLayerType lyrType = nnlyr->GetLayerType();
 			if (lyrType == Map::DRAW_LAYER_POLYLINE || lyrType == Map::DRAW_LAYER_POLYLINE3D)
 			{
 				Map::HKTDVehRestrict *vehRestrict;
@@ -91,13 +91,13 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(AnyType userObj
 			else
 			{
 				DEL_CLASS(db);
-				DEL_CLASS(lyr);
+				lyr.Delete();
 				me->ui->ShowMsgOK(CSTR("The file is not a polyline layer"), CSTR("HK Tonnes Sign"), me);
 			}
 		}
-		else if (lyr)
+		else if (lyr.NotNull())
 		{
-			DEL_CLASS(lyr);
+			lyr.Delete();
 			me->ui->ShowMsgOK(CSTR("Error in opening file"), CSTR("HK Tonnes Sign"), me);
 		}
 		else

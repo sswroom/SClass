@@ -190,7 +190,7 @@ void SSWR::AVIRead::AVIRCore::EndLoad()
 Bool SSWR::AVIRead::AVIRCore::LoadData(NN<IO::StreamData> data, IO::PackageFile *pkgFile)
 {
 	NN<IO::ParsedObject> pobj;
-	if (pobj.Set(this->parsers->ParseFile(data, pkgFile)))
+	if (this->parsers->ParseFile(data, pkgFile).SetTo(pobj))
 	{
 		OpenObject(pobj);
 		return true;
@@ -204,7 +204,7 @@ Bool SSWR::AVIRead::AVIRCore::LoadData(NN<IO::StreamData> data, IO::PackageFile 
 Bool SSWR::AVIRead::AVIRCore::LoadDataType(NN<IO::StreamData> data, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	NN<IO::ParsedObject> pobj;
-	if (pobj.Set(this->parsers->ParseFile(data, pkgFile, targetType)))
+	if (this->parsers->ParseFile(data, pkgFile, targetType).SetTo(pobj))
 	{
 		OpenObject(pobj);
 		return true;

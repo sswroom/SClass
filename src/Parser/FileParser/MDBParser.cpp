@@ -32,12 +32,12 @@ void Parser::FileParser::MDBParser::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-void Parser::FileParser::MDBParser::SetArcGISPRJParser(Math::ArcGISPRJParser *prjParser)
+void Parser::FileParser::MDBParser::SetArcGISPRJParser(Optional<Math::ArcGISPRJParser> prjParser)
 {
 	this->prjParser = prjParser;
 }
 
-void Parser::FileParser::MDBParser::SetLogTool(IO::LogTool *log)
+void Parser::FileParser::MDBParser::SetLogTool(Optional<IO::LogTool> log)
 {
 	this->log = log;
 }
@@ -78,7 +78,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::StreamData>
 #ifndef _WIN32_WCE
 	NN<DB::MDBFileConn> mdb;
 	NN<IO::LogTool> log;
-	if (!log.Set(this->log))
+	if (!this->log.SetTo(log))
 	{
 		return 0;
 	}
@@ -142,9 +142,10 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::StreamData>
 		Math::CoordinateSystem *csys = 0;
 		DB::SharedDBConn *conn;
 		NN<Map::ESRI::ESRIMDBLayer> lyr;
+		NN<Math::ArcGISPRJParser> prjParser;
 		UInt32 srid = 0;
 
-		if (hasSpRef)
+		if (hasSpRef && this->prjParser.SetTo(prjParser))
 		{
 			NN<DB::DBReader> rdr;
 			if (mdb->QueryTableData(CSTR_NULL, CSTR("GDB_SpatialRefs"), 0, 0, 0, CSTR_NULL, 0).SetTo(rdr))
@@ -157,7 +158,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::StreamData>
 						{
 							Text::StringBuilderUTF8 sb;
 							rdr->GetStr(1, sb);
-							csys = this->prjParser->ParsePRJBuff(fd->GetFullFileName()->ToCString(), sb.v, sb.GetLength(), 0);
+							csys = prjParser->ParsePRJBuff(fd->GetFullFileName()->ToCString(), sb.v, sb.GetLength(), 0);
 							if (csys)
 							{
 								srid = csys->GetSRID();

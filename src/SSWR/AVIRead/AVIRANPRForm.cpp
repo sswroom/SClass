@@ -13,8 +13,8 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnFileHandler(AnyType userObj, Data:
 	while (i < nFiles)
 	{
 		IO::StmData::FileData fd(files[i], false);
-		Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
-		if (imgList)
+		NN<Media::ImageList> imgList;
+		if (Optional<Media::ImageList>::ConvertFrom(parsers->ParseFileType(fd, IO::ParserType::ImageList)).SetTo(imgList))
 		{
 			imgList->ToStaticImage(0);
 			NN<Media::StaticImage> img;
@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnFileHandler(AnyType userObj, Data:
 				SDEL_CLASS(me->currImg);
 				me->currImg = img.Ptr();
 				imgList->RemoveImage(0, false);
-				DEL_CLASS(imgList);
+				imgList.Delete();
 				me->pbImg->SetImage(img, false);
 
 				me->lvPlate->ClearItems();
@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRANPRForm::OnFileHandler(AnyType userObj, Data:
 			}
 			else
 			{
-				DEL_CLASS(imgList);
+				imgList.Delete();
 			}
 		}
 		i++;

@@ -17,21 +17,21 @@ namespace Parser
 				OSInt envIndex;
 			} MEVImageInfo;
 		private:
-			Parser::ParserList *parsers;
-			Map::MapManager *mapMgr;
+			Optional<Parser::ParserList> parsers;
+			Optional<Map::MapManager> mapMgr;
 		public:
 			MEVParser();
 			virtual ~MEVParser();
 
 			virtual Int32 GetName();
-			virtual void SetParserList(Parser::ParserList *parsers);
-			virtual void SetMapManager(Map::MapManager *mapMgr);
+			virtual void SetParserList(Optional<Parser::ParserList> parsers);
+			virtual void SetMapManager(Optional<Map::MapManager> mapMgr);
 			virtual void PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseFileHdr(NN<IO::StreamData> fd, IO::PackageFile *pkgFile, IO::ParserType targetType, const UInt8 *hdr);
 
 		private:
-			void ReadItems(NN<IO::StreamData> fd, Map::MapEnv *env, UInt32 itemCnt, InOutParam<UInt32> currPos, Optional<Map::MapEnv::GroupItem> group, const WChar **dirArr, MEVImageInfo *imgInfos);
+			static void ReadItems(NN<IO::StreamData> fd, NN<Map::MapEnv> env, UInt32 itemCnt, InOutParam<UInt32> currPos, Optional<Map::MapEnv::GroupItem> group, const WChar **dirArr, MEVImageInfo *imgInfos, NN<Parser::ParserList> parsers, NN<Map::MapManager> mapMgr);
 		};
 	}
 }

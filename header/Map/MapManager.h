@@ -1,8 +1,8 @@
 #ifndef _SM_MAP_MAPMANAGER
 #define _SM_MAP_MAPMANAGER
 
-#include "Data/ArrayList.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/ArrayListNN.h"
+#include "Data/StringMapNN.h"
 #include "Map/MapDrawLayer.h"
 #include "Map/MapEnv.h"
 #include "Parser/ParserList.h"
@@ -14,19 +14,19 @@ namespace Map
 	private:
 		typedef struct
 		{
-			Map::MapDrawLayer *layer;
-			Data::ArrayList<Map::MapEnv *> *envList;
+			NN<Map::MapDrawLayer> layer;
+			Data::ArrayListNN<Map::MapEnv> envList;
 		} MapLayerInfo;
 
 	private:
-		Data::StringUTF8Map<MapLayerInfo*> layerArr;
+		Data::StringMapNN<MapLayerInfo> layerArr;
 
 	public:
 		MapManager();
 		~MapManager();
 
-		Map::MapDrawLayer *LoadLayer(Text::CStringNN fileName, Parser::ParserList *parsers, Map::MapEnv *env);
-		void ClearMap(Map::MapEnv *env);
+		Optional<Map::MapDrawLayer> LoadLayer(Text::CStringNN fileName, NN<Parser::ParserList> parsers, NN<Map::MapEnv> env);
+		void ClearMap(NN<Map::MapEnv> env);
 	};
 }
 #endif

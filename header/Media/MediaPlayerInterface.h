@@ -11,7 +11,7 @@ namespace Media
 	private:
 		NN<Parser::ParserList> parsers;
 		Data::Duration storeTime;
-		Media::MediaFile *currFile;
+		Optional<Media::MediaFile> currFile;
 	protected:
 		Media::MediaPlayer *player;
 		Media::IPBControl *currPBC;
@@ -26,10 +26,10 @@ namespace Media
 		virtual ~MediaPlayerInterface();
 
 		Bool OpenFile(Text::CStringNN fileName, IO::ParserType targetType);
-		Bool OpenVideo(Media::MediaFile *mf);
+		Bool OpenVideo(NN<Media::MediaFile> mf);
 		void CloseFile();
 
-		Media::MediaFile *GetOpenedFile();
+		Optional<Media::MediaFile> GetOpenedFile();
 		Media::VideoRenderer *GetVideoRenderer();
 
 		void PBStart();

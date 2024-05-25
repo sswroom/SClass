@@ -304,15 +304,19 @@ Optional<Map::MapDrawLayer> Map::RegionalMapSource::OpenMap(NN<const MapInfo> ma
 		NN<IO::StreamData> fd;
 		if (fd.Set(browser->GetData(Text::CStringNN(map->url, map->urlLen), false, 0)))
 		{
-			IO::ParsedObject *pobj = parsers->ParseFile(fd);
-			fd.Delete();
-			if (pobj)
+			NN<IO::ParsedObject> pobj;
+			if (parsers->ParseFile(fd).SetTo(pobj))
 			{
+				fd.Delete();
 				if (pobj->GetParserType() == IO::ParserType::MapLayer)
 				{
-					return (Map::MapDrawLayer*)pobj;
+					return NN<Map::MapDrawLayer>::ConvertFrom(pobj);
 				}
-				DEL_CLASS(pobj);
+				pobj.Delete();
+			}
+			else
+			{
+				fd.Delete();
 			}
 		}
 		return 0;

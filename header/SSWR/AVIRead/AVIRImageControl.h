@@ -125,8 +125,8 @@ namespace SSWR
 			Bool SaveSetting();
 			void SetDispImageHandler(DispImageChanged hdlr, AnyType userObj);
 			void SetProgressHandler(ProgressUpdated hdlr, AnyType userObj);
-			Media::StaticImage *LoadImage(const UTF8Char *fileName);
-			Media::StaticImage *LoadOriImage(const UTF8Char *fileName);
+			Optional<Media::StaticImage> LoadImage(const UTF8Char *fileName);
+			Optional<Media::StaticImage> LoadOriImage(const UTF8Char *fileName);
 			void ApplySetting(NN<Media::StaticImage> srcImg, NN<Media::StaticImage> destImg, NN<ImageSetting> setting);
 			void UpdateImgPreview(ImageStatus *img);
 			void UpdateImgSetting(ImageSetting *setting);

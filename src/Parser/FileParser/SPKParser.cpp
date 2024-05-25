@@ -26,14 +26,14 @@ Int32 Parser::FileParser::SPKParser::GetName()
 	return *(Int32*)"SPKP";
 }
 
-void Parser::FileParser::SPKParser::SetParserList(Parser::ParserList *parsers)
+void Parser::FileParser::SPKParser::SetParserList(Optional<Parser::ParserList> parsers)
 {
 	this->parsers = parsers;
 }
 
 void Parser::FileParser::SPKParser::SetSocketFactory(NN<Net::SocketFactory> sockf)
 {
-	this->sockf = sockf.Ptr();
+	this->sockf = sockf;
 }
 
 void Parser::FileParser::SPKParser::SetSSLEngine(Optional<Net::SSLEngine> ssl)
@@ -91,7 +91,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::StreamData>
 		customSize = ReadUInt32(&hdr[i + 4]);
 		NN<Net::SocketFactory> sockf;
 		NN<Parser::ParserList> parsers;
-		if (customType == 1 && fd->IsFullFile() && sockf.Set(this->sockf) && parsers.Set(this->parsers))
+		if (customType == 1 && fd->IsFullFile() && this->sockf.SetTo(sockf) && this->parsers.SetTo(parsers))
 		{
 			Data::ByteBuffer customBuff(customSize);
 			IO::SPackageFile *spkg;

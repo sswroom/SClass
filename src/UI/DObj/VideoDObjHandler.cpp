@@ -86,9 +86,9 @@ UI::DObj::VideoDObjHandler::VideoDObjHandler(UI::GUIForm *ownerFrm, NN<Media::Dr
 	this->frameImg = this->deng->CreateImage32(videoSize, Media::AT_NO_ALPHA);
 	{
 		IO::StmData::FileData fd(videoFileName, false);
-		this->mf = (Media::MediaFile*)parsers->ParseFileType(fd, IO::ParserType::MediaFile);
+		this->mf = Optional<Media::MediaFile>::ConvertFrom(parsers->ParseFileType(fd, IO::ParserType::MediaFile));
 	}
-	if (this->mf)
+	if (this->mf.NotNull())
 	{
 #if defined(VERBOSE)
 		printf("VideoDObjHandler Media file parsed\r\n");
@@ -115,7 +115,7 @@ UI::DObj::VideoDObjHandler::~VideoDObjHandler()
 		this->deng->DeleteImage(img);
 	}
 	this->videoFileName->Release();
-	SDEL_CLASS(this->mf);
+	this->mf.Delete();
 }
 
 void UI::DObj::VideoDObjHandler::UpdateVideoArea(Math::Coord2D<OSInt> videoTL, Math::Size2D<UOSInt> videoSize)

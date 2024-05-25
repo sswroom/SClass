@@ -18,7 +18,7 @@ Int32 Parser::ObjParser::ITMParser::GetName()
 	return *(Int32*)"ITMP";
 }
 
-void Parser::ObjParser::ITMParser::SetParserList(Parser::ParserList *parsers)
+void Parser::ObjParser::ITMParser::SetParserList(Optional<Parser::ParserList> parsers)
 {
 	this->parsers = parsers;
 }
@@ -38,9 +38,10 @@ IO::ParserType Parser::ObjParser::ITMParser::GetParserType()
 
 IO::ParsedObject *Parser::ObjParser::ITMParser::ParseObject(NN<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
+	NN<Parser::ParserList> parsers;
 	if (pobj->GetParserType() != IO::ParserType::PackageFile)
 		return 0;
-	if (this->parsers == 0)
+	if (!this->parsers.SetTo(parsers))
 		return 0;
 	NN<IO::PackageFile> pkg = NN<IO::PackageFile>::ConvertFrom(pobj);
 	UTF8Char sbuff[512];
@@ -57,20 +58,23 @@ IO::ParsedObject *Parser::ObjParser::ITMParser::ParseObject(NN<IO::ParsedObject>
 			if (pkg->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{
 				NN<IO::StreamData> fd;
-				IO::ParsedObject *pobj2 = 0;
+				NN<IO::ParsedObject> pobj2;
 				if (pkg->GetItemStmDataNew(i).SetTo(fd))
 				{
-					pobj2 = parsers->ParseFile(fd);
-					fd.Delete();
-				}
-				if (pobj2)
-				{
-					if (pobj2->GetParserType() == IO::ParserType::ReadingDB)
+					if (parsers->ParseFile(fd).SetTo(pobj2))
 					{
-						pobj2->SetSourceName(pobj->GetSourceNameObj());
-						return pobj2;
+						fd.Delete();
+						if (pobj2->GetParserType() == IO::ParserType::ReadingDB)
+						{
+							pobj2->SetSourceName(pobj->GetSourceNameObj());
+							return pobj2.Ptr();
+						}
+						pobj2.Delete();
 					}
-					DEL_CLASS(pobj2);
+					else
+					{
+						fd.Delete();
+					}
 				}
 			}
 		}

@@ -25,16 +25,16 @@ Map::OruxDBLayer::OruxDBLayer(Text::CStringNN sourceName, Text::CString layerNam
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OruxMapsImages.db"));
 	{
 		IO::StmData::FileData fd(CSTRP(sbuff, sptr), false);
-		DB::ReadingDB *db = (DB::ReadingDB*)parsers->ParseFileType(fd, IO::ParserType::ReadingDB);
-		if (db)
+		NN<DB::ReadingDB> db;
+		if (Optional<DB::ReadingDB>::ConvertFrom(parsers->ParseFileType(fd, IO::ParserType::ReadingDB)).SetTo(db))
 		{
 			if (db->IsFullConn())
 			{
-				this->db = (DB::DBConn*)db;
+				this->db = (DB::DBConn*)db.Ptr();
 			}
 			else
 			{
-				DEL_CLASS(db);
+				db.Delete();
 			}
 		}
 	}
@@ -296,19 +296,19 @@ Math::Geometry::Vector2D *Map::OruxDBLayer::GetNewVectorById(GetObjectSess *sess
 	NN<DB::DBReader> r;
 	if (!this->db->ExecuteReader(sql.ToCString()).SetTo(r))
 		return 0;
-	Media::ImageList *imgList = 0;
+	Optional<Media::ImageList> imgList = 0;
 	if (r->ReadNext())
 	{
 		UOSInt size = r->GetBinarySize(0);
 		UInt8 *buff = MemAlloc(UInt8, size);
 		r->GetBinary(0, buff);
 		IO::StmData::MemoryDataRef fd(buff, size);
-		imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParserType::ImageList);
+		imgList = Optional<Media::ImageList>::ConvertFrom(this->parsers->ParseFileType(fd, IO::ParserType::ImageList));
 		MemFree(buff);
 	}
 	this->db->CloseReader(r);
 	NN<Media::ImageList> nnimgList;
-	if (nnimgList.Set(imgList))
+	if (imgList.SetTo(nnimgList))
 	{
 		NN<Media::SharedImage> shImg;
 		Math::Geometry::VectorImage *vimg;

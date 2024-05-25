@@ -22,7 +22,7 @@
 #include <stdio.h>
 #endif
 
-Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLRoot(NN<Text::XMLReader> reader, Text::CStringNN fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
+Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLRoot(NN<Text::XMLReader> reader, Text::CStringNN fileName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, IO::PackageFile *pkgFile)
 {
 	if (reader->GetNodeType() != Text::XMLNode::NodeType::Element)
 		return 0;
@@ -45,7 +45,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLRoot(NN<Text::XMLReader> reader
 }
 
 
-Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> reader, Data::ICaseStringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF, Bool rootKml)
+Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> reader, Data::ICaseStringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, IO::PackageFile *basePF, Bool rootKml)
 {
 	KMLStyle *style;
 	UOSInt i;
@@ -71,12 +71,14 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 		containerNameSb.SetSubstr(i + 1);
 	}
 
+	NN<Parser::ParserList> nnparsers;
+	NN<Net::WebBrowser> nnbrowser;
 	NN<Text::String> nodeName;
 	while (reader->NextElementName().SetTo(nodeName))
 	{
 		if (nodeName->EqualsICase(UTF8STRC("NetworkLink")))
 		{
-			if (parsers && browser)
+			if (parsers.SetTo(nnparsers) && browser.SetTo(nnbrowser))
 			{
 				NN<Map::NetworkLinkLayer> lyr;
 				NN<Text::String> layerName = Text::String::NewEmpty();
@@ -84,7 +86,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 				NN<Text::String> viewFormat = Text::String::NewEmpty();
 				Map::NetworkLinkLayer::RefreshMode mode = Map::NetworkLinkLayer::RefreshMode::OnInterval;
 				Int32 interval = 0;
-				NEW_CLASSNN(lyr, Map::NetworkLinkLayer(sourceName, parsers, browser, CSTR_NULL));
+				NEW_CLASSNN(lyr, Map::NetworkLinkLayer(sourceName, nnparsers, nnbrowser, CSTR_NULL));
 			
 				while (reader->NextElementName().SetTo(nodeName))
 				{
@@ -487,301 +489,315 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 		}
 		else if (nodeName->EqualsICase(UTF8STRC("SCREENOVERLAY")))
 		{
-			if (imgLyr == 0)
+			if (browser.SetTo(nnbrowser) && parsers.SetTo(nnparsers))
 			{
-				NEW_CLASS(imgLyr, Map::WebImageLayer(browser, parsers, sourceName, Math::CoordinateSystemManager::CreateDefaultCsys(), containerNameSb.ToCString()));
-			}
+				if (imgLyr == 0)
+				{
+					NEW_CLASS(imgLyr, Map::WebImageLayer(nnbrowser, nnparsers, sourceName, Math::CoordinateSystemManager::CreateDefaultCsys(), containerNameSb.ToCString()));
+				}
 
-			NN<Text::String> name = Text::String::NewEmpty();
-			Int32 zIndex = 0;
-			Double minX = 0;
-			Double minY = 0;
-			Double oX = 0;
-			Double oY = 0;
-			Double sizeX = 0;
-			Double sizeY = 0;
-			Bool hasAltitude = false;
-			Double altitude = 0;
-			UInt32 color = 0xffffffff;
-			Int64 timeStart = 0;
-			Int64 timeEnd = 0;
-			sbuff[0] = 0;
-			sbuffEnd = sbuff;
+				NN<Text::String> name = Text::String::NewEmpty();
+				Int32 zIndex = 0;
+				Double minX = 0;
+				Double minY = 0;
+				Double oX = 0;
+				Double oY = 0;
+				Double sizeX = 0;
+				Double sizeY = 0;
+				Bool hasAltitude = false;
+				Double altitude = 0;
+				UInt32 color = 0xffffffff;
+				Int64 timeStart = 0;
+				Int64 timeEnd = 0;
+				sbuff[0] = 0;
+				sbuffEnd = sbuff;
 
-			while (reader->NextElementName().SetTo(nodeName))
-			{
-				if (nodeName->EqualsICase(UTF8STRC("NAME")))
+				while (reader->NextElementName().SetTo(nodeName))
 				{
-					sb.ClearStr();
-					reader->ReadNodeText(sb);
-					name->Release();
-					name = Text::String::New(sb.ToCString());
-				}
-				else if (nodeName->EqualsICase(UTF8STRC("COLOR")))
-				{
-					sb.ClearStr();
-					reader->ReadNodeText(sb);
-					color = Text::StrHex2UInt32C(sb.ToString());
-				}
-				else if (nodeName->EqualsICase(UTF8STRC("DRAWORDER")))
-				{
-					sb.ClearStr();
-					reader->ReadNodeText(sb);
-					zIndex = Text::StrToInt32(sb.ToString());
-				}
-				else if (nodeName->EqualsICase(UTF8STRC("ICON")))
-				{
-					while (reader->NextElementName().SetTo(nodeName))
+					if (nodeName->EqualsICase(UTF8STRC("NAME")))
 					{
-						if (nodeName->EqualsICase(UTF8STRC("HREF")))
+						sb.ClearStr();
+						reader->ReadNodeText(sb);
+						name->Release();
+						name = Text::String::New(sb.ToCString());
+					}
+					else if (nodeName->EqualsICase(UTF8STRC("COLOR")))
+					{
+						sb.ClearStr();
+						reader->ReadNodeText(sb);
+						color = Text::StrHex2UInt32C(sb.ToString());
+					}
+					else if (nodeName->EqualsICase(UTF8STRC("DRAWORDER")))
+					{
+						sb.ClearStr();
+						reader->ReadNodeText(sb);
+						zIndex = Text::StrToInt32(sb.ToString());
+					}
+					else if (nodeName->EqualsICase(UTF8STRC("ICON")))
+					{
+						while (reader->NextElementName().SetTo(nodeName))
 						{
-							sb.ClearStr();
-							reader->ReadNodeText(sb);
-							sbuffEnd = imgLyr->GetSourceName(sbuff);
-							sbuffEnd = Text::URLString::AppendURLPath(sbuff, sbuffEnd, sb.ToCString());
-						}
-						else
-						{
-							reader->SkipElement();
+							if (nodeName->EqualsICase(UTF8STRC("HREF")))
+							{
+								sb.ClearStr();
+								reader->ReadNodeText(sb);
+								sbuffEnd = imgLyr->GetSourceName(sbuff);
+								sbuffEnd = Text::URLString::AppendURLPath(sbuff, sbuffEnd, sb.ToCString());
+							}
+							else
+							{
+								reader->SkipElement();
+							}
 						}
 					}
-				}
-				else if (nodeName->EqualsICase(UTF8STRC("TIMESPAN")))
-				{
-					while (reader->NextElementName().SetTo(nodeName))
+					else if (nodeName->EqualsICase(UTF8STRC("TIMESPAN")))
 					{
-						if (nodeName->EqualsICase(UTF8STRC("BEGIN")))
+						while (reader->NextElementName().SetTo(nodeName))
 						{
-							sb.ClearStr();
-							reader->ReadNodeText(sb);
-							dt.SetValue(sb.ToCString());
-							timeStart = dt.ToUnixTimestamp();
-						}
-						else if (nodeName->EqualsICase(UTF8STRC("END")))
-						{
-							sb.ClearStr();
-							reader->ReadNodeText(sb);
-							dt.SetValue(sb.ToCString());
-							timeEnd = dt.ToUnixTimestamp();
-						}
-						else
-						{
-							reader->SkipElement();
+							if (nodeName->EqualsICase(UTF8STRC("BEGIN")))
+							{
+								sb.ClearStr();
+								reader->ReadNodeText(sb);
+								dt.SetValue(sb.ToCString());
+								timeStart = dt.ToUnixTimestamp();
+							}
+							else if (nodeName->EqualsICase(UTF8STRC("END")))
+							{
+								sb.ClearStr();
+								reader->ReadNodeText(sb);
+								dt.SetValue(sb.ToCString());
+								timeEnd = dt.ToUnixTimestamp();
+							}
+							else
+							{
+								reader->SkipElement();
+							}
 						}
 					}
-				}
-				else if (nodeName->EqualsICase(UTF8STRC("SCREENXY")))
-				{
-					i = reader->GetAttribCount();
-					while (i-- > 0)
+					else if (nodeName->EqualsICase(UTF8STRC("SCREENXY")))
 					{
-						attr = reader->GetAttribNoCheck(i);
-						if (attr->name->EqualsICase(UTF8STRC("X")))
+						i = reader->GetAttribCount();
+						while (i-- > 0)
 						{
-							minX = attr->value->ToDouble();
+							attr = reader->GetAttribNoCheck(i);
+							if (attr->name->EqualsICase(UTF8STRC("X")))
+							{
+								minX = attr->value->ToDouble();
+							}
+							else if (attr->name->EqualsICase(UTF8STRC("Y")))
+							{
+								minY = attr->value->ToDouble();
+							}
 						}
-						else if (attr->name->EqualsICase(UTF8STRC("Y")))
-						{
-							minY = attr->value->ToDouble();
-						}
+						reader->SkipElement();
 					}
-					reader->SkipElement();
-				}
-				else if (nodeName->EqualsICase(UTF8STRC("OVERLAYXY")))
-				{
-					i = reader->GetAttribCount();
-					while (i-- > 0)
+					else if (nodeName->EqualsICase(UTF8STRC("OVERLAYXY")))
 					{
-						attr = reader->GetAttribNoCheck(i);
-						if (attr->name->EqualsICase(UTF8STRC("X")))
+						i = reader->GetAttribCount();
+						while (i-- > 0)
 						{
-							oX = attr->value->ToDouble();
+							attr = reader->GetAttribNoCheck(i);
+							if (attr->name->EqualsICase(UTF8STRC("X")))
+							{
+								oX = attr->value->ToDouble();
+							}
+							else if (attr->name->EqualsICase(UTF8STRC("Y")))
+							{
+								oY = attr->value->ToDouble();
+							}
 						}
-						else if (attr->name->EqualsICase(UTF8STRC("Y")))
-						{
-							oY = attr->value->ToDouble();
-						}
+						reader->SkipElement();
 					}
-					reader->SkipElement();
-				}
-				else if (nodeName->EqualsICase(UTF8STRC("SIZE")))
-				{
-					i = reader->GetAttribCount();
-					while (i--)
+					else if (nodeName->EqualsICase(UTF8STRC("SIZE")))
 					{
-						attr = reader->GetAttribNoCheck(i);
-						if (attr->name->EqualsICase(UTF8STRC("X")))
+						i = reader->GetAttribCount();
+						while (i--)
 						{
-							sizeX = attr->value->ToDouble();
+							attr = reader->GetAttribNoCheck(i);
+							if (attr->name->EqualsICase(UTF8STRC("X")))
+							{
+								sizeX = attr->value->ToDouble();
+							}
+							else if (attr->name->EqualsICase(UTF8STRC("Y")))
+							{
+								sizeY = attr->value->ToDouble();
+							}
 						}
-						else if (attr->name->EqualsICase(UTF8STRC("Y")))
-						{
-							sizeY = attr->value->ToDouble();
-						}
+						reader->SkipElement();
 					}
-					reader->SkipElement();
+					else if (nodeName->EqualsICase(UTF8STRC("ALTITUDE")))
+					{
+						sb.ClearStr();
+						reader->ReadNodeText(sb);
+						hasAltitude = true;
+						altitude = Text::StrToDouble(sb.ToString());
+					}
+					else
+					{
+						reader->SkipElement();
+					}
 				}
-				else if (nodeName->EqualsICase(UTF8STRC("ALTITUDE")))
+				if (sbuff[0] != 0)
 				{
-					sb.ClearStr();
-					reader->ReadNodeText(sb);
-					hasAltitude = true;
-					altitude = Text::StrToDouble(sb.ToString());
+					imgLyr->AddImage(name->ToCString(), CSTRP(sbuff, sbuffEnd), zIndex, minX, minY, oX, oY, sizeX, sizeY, true, timeStart, timeEnd, ((color >> 24) & 0xff) / 255.0, hasAltitude, altitude);
 				}
-				else
-				{
-					reader->SkipElement();
-				}
+				name->Release();
 			}
-			if (sbuff[0] != 0)
+			else
 			{
-				imgLyr->AddImage(name->ToCString(), CSTRP(sbuff, sbuffEnd), zIndex, minX, minY, oX, oY, sizeX, sizeY, true, timeStart, timeEnd, ((color >> 24) & 0xff) / 255.0, hasAltitude, altitude);
+				reader->SkipElement();
 			}
-			name->Release();
 		}
 		else if (nodeName->EqualsICase(UTF8STRC("GROUNDOVERLAY")))
 		{
-			if (imgLyr == 0)
+			if (browser.SetTo(nnbrowser) && parsers.SetTo(nnparsers))
 			{
-				NEW_CLASS(imgLyr, Map::WebImageLayer(browser, parsers, sourceName, Math::CoordinateSystemManager::CreateDefaultCsys(), containerNameSb.ToCString()));
-			}
+				if (imgLyr == 0)
+				{
+					NEW_CLASS(imgLyr, Map::WebImageLayer(nnbrowser, nnparsers, sourceName, Math::CoordinateSystemManager::CreateDefaultCsys(), containerNameSb.ToCString()));
+				}
 
-			NN<Text::String> name = Text::String::NewEmpty();
-			Int32 zIndex = 0;
-			Double minX = 0;
-			Double minY = 0;
-			Double maxX = 0;
-			Double maxY = 0;
-			Double alpha = -1;
-			Int64 timeStart = 0;
-			Int64 timeEnd = 0;
-			Bool hasAltitude = false;
-			Double altitude = 0;
-			sbuff[0] = 0;
-			sbuffEnd = sbuff;
-			while (reader->NextElementName().SetTo(nodeName))
-			{
-				if (nodeName->EqualsICase(UTF8STRC("NAME")))
+				NN<Text::String> name = Text::String::NewEmpty();
+				Int32 zIndex = 0;
+				Double minX = 0;
+				Double minY = 0;
+				Double maxX = 0;
+				Double maxY = 0;
+				Double alpha = -1;
+				Int64 timeStart = 0;
+				Int64 timeEnd = 0;
+				Bool hasAltitude = false;
+				Double altitude = 0;
+				sbuff[0] = 0;
+				sbuffEnd = sbuff;
+				while (reader->NextElementName().SetTo(nodeName))
 				{
-					sb.ClearStr();
-					reader->ReadNodeText(sb);
-					name->Release();
-					name = Text::String::New(sb.ToCString());
-				}
-				else if (nodeName->EqualsICase(UTF8STRC("COLOR")))
-				{
-					sb.ClearStr();
-					reader->ReadNodeText(sb);
-					alpha = ((Text::StrHex2Int32C(sb.ToString()) >> 24) & 0xff) / 255.0;
-				}
-				else if (nodeName->EqualsICase(UTF8STRC("DRAWORDER")))
-				{
-					sb.ClearStr();
-					reader->ReadNodeText(sb);
-					zIndex = Text::StrToInt32(sb.ToString());
-				}
-				else if (nodeName->EqualsICase(UTF8STRC("ICON")))
-				{
-					while (reader->NextElementName().SetTo(nodeName))
+					if (nodeName->EqualsICase(UTF8STRC("NAME")))
 					{
-						if (nodeName->EqualsICase(UTF8STRC("HREF")))
+						sb.ClearStr();
+						reader->ReadNodeText(sb);
+						name->Release();
+						name = Text::String::New(sb.ToCString());
+					}
+					else if (nodeName->EqualsICase(UTF8STRC("COLOR")))
+					{
+						sb.ClearStr();
+						reader->ReadNodeText(sb);
+						alpha = ((Text::StrHex2Int32C(sb.ToString()) >> 24) & 0xff) / 255.0;
+					}
+					else if (nodeName->EqualsICase(UTF8STRC("DRAWORDER")))
+					{
+						sb.ClearStr();
+						reader->ReadNodeText(sb);
+						zIndex = Text::StrToInt32(sb.ToString());
+					}
+					else if (nodeName->EqualsICase(UTF8STRC("ICON")))
+					{
+						while (reader->NextElementName().SetTo(nodeName))
 						{
-							sb.ClearStr();
-							reader->ReadNodeText(sb);
-							sbuffEnd = imgLyr->GetSourceName(sbuff);
-							sbuffEnd = Text::URLString::AppendURLPath(sbuff, sbuffEnd, sb.ToCString());
-						}
-						else
-						{
-							reader->SkipElement();
+							if (nodeName->EqualsICase(UTF8STRC("HREF")))
+							{
+								sb.ClearStr();
+								reader->ReadNodeText(sb);
+								sbuffEnd = imgLyr->GetSourceName(sbuff);
+								sbuffEnd = Text::URLString::AppendURLPath(sbuff, sbuffEnd, sb.ToCString());
+							}
+							else
+							{
+								reader->SkipElement();
+							}
 						}
 					}
-				}
-				else if (nodeName->EqualsICase(UTF8STRC("TIMESPAN")))
-				{
-					while (reader->NextElementName().SetTo(nodeName))
+					else if (nodeName->EqualsICase(UTF8STRC("TIMESPAN")))
 					{
-						if (nodeName->EqualsICase(UTF8STRC("BEGIN")))
+						while (reader->NextElementName().SetTo(nodeName))
 						{
-							sb.ClearStr();
-							reader->ReadNodeText(sb);
-							dt.SetValue(sb.ToCString());
-							timeStart = dt.ToUnixTimestamp();
-						}
-						else if (nodeName->EqualsICase(UTF8STRC("END")))
-						{
-							sb.ClearStr();
-							reader->ReadNodeText(sb);
-							dt.SetValue(sb.ToCString());
-							timeEnd = dt.ToUnixTimestamp();
-						}
-						else
-						{
-							reader->SkipElement();
+							if (nodeName->EqualsICase(UTF8STRC("BEGIN")))
+							{
+								sb.ClearStr();
+								reader->ReadNodeText(sb);
+								dt.SetValue(sb.ToCString());
+								timeStart = dt.ToUnixTimestamp();
+							}
+							else if (nodeName->EqualsICase(UTF8STRC("END")))
+							{
+								sb.ClearStr();
+								reader->ReadNodeText(sb);
+								dt.SetValue(sb.ToCString());
+								timeEnd = dt.ToUnixTimestamp();
+							}
+							else
+							{
+								reader->SkipElement();
+							}
 						}
 					}
-				}
-				else if (nodeName->EqualsICase(UTF8STRC("LATLONBOX")))
-				{
-					while (reader->NextElementName().SetTo(nodeName))
+					else if (nodeName->EqualsICase(UTF8STRC("LATLONBOX")))
 					{
-						if (nodeName->EqualsICase(UTF8STRC("NORTH")))
+						while (reader->NextElementName().SetTo(nodeName))
 						{
-							sb.ClearStr();
-							reader->ReadNodeText(sb);
-							maxY = Text::StrToDouble(sb.ToString());
+							if (nodeName->EqualsICase(UTF8STRC("NORTH")))
+							{
+								sb.ClearStr();
+								reader->ReadNodeText(sb);
+								maxY = Text::StrToDouble(sb.ToString());
+							}
+							else if (nodeName->EqualsICase(UTF8STRC("SOUTH")))
+							{
+								sb.ClearStr();
+								reader->ReadNodeText(sb);
+								minY = Text::StrToDouble(sb.ToString());
+							}
+							else if (nodeName->EqualsICase(UTF8STRC("EAST")))
+							{
+								sb.ClearStr();
+								reader->ReadNodeText(sb);
+								maxX = Text::StrToDouble(sb.ToString());
+							}
+							else if (nodeName->EqualsICase(UTF8STRC("WEST")))
+							{
+								sb.ClearStr();
+								reader->ReadNodeText(sb);
+								minX = Text::StrToDouble(sb.ToString());
+							}
+							else
+							{
+								reader->SkipElement();
+							}
 						}
-						else if (nodeName->EqualsICase(UTF8STRC("SOUTH")))
+						while (maxX < -180)
 						{
-							sb.ClearStr();
-							reader->ReadNodeText(sb);
-							minY = Text::StrToDouble(sb.ToString());
+							minX += 360;
+							maxX += 360;
 						}
-						else if (nodeName->EqualsICase(UTF8STRC("EAST")))
+						while (minX >= 180)
 						{
-							sb.ClearStr();
-							reader->ReadNodeText(sb);
-							maxX = Text::StrToDouble(sb.ToString());
-						}
-						else if (nodeName->EqualsICase(UTF8STRC("WEST")))
-						{
-							sb.ClearStr();
-							reader->ReadNodeText(sb);
-							minX = Text::StrToDouble(sb.ToString());
-						}
-						else
-						{
-							reader->SkipElement();
+							minX -= 360;
+							maxX -= 360;
 						}
 					}
-					while (maxX < -180)
+					else if (nodeName->EqualsICase(UTF8STRC("ALTITUDE")))
 					{
-						minX += 360;
-						maxX += 360;
+						sb.ClearStr();
+						reader->ReadNodeText(sb);
+						hasAltitude = true;
+						altitude = Text::StrToDouble(sb.ToString());
 					}
-					while (minX >= 180)
+					else
 					{
-						minX -= 360;
-						maxX -= 360;
+						reader->SkipElement();
 					}
 				}
-				else if (nodeName->EqualsICase(UTF8STRC("ALTITUDE")))
+				if (sbuff[0] != 0)
 				{
-					sb.ClearStr();
-					reader->ReadNodeText(sb);
-					hasAltitude = true;
-					altitude = Text::StrToDouble(sb.ToString());
+					imgLyr->AddImage(name->ToCString(), CSTRP(sbuff, sbuffEnd), zIndex, minX, minY, maxX, maxY, 0, 0, false, timeStart, timeEnd, alpha, hasAltitude, altitude);
 				}
-				else
-				{
-					reader->SkipElement();
-				}
+				name->Release();
 			}
-			if (sbuff[0] != 0)
+			else
 			{
-				imgLyr->AddImage(name->ToCString(), CSTRP(sbuff, sbuffEnd), zIndex, minX, minY, maxX, maxY, 0, 0, false, timeStart, timeEnd, alpha, hasAltitude, altitude);
+				reader->SkipElement();
 			}
-			name->Release();
 		}
 		else if (nodeName->EqualsICase(UTF8STRC("FOLDER")))
 		{
@@ -1242,7 +1258,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 	}
 }
 
-Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader> reader, Data::StringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF)
+Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader> reader, Data::StringMap<KMLStyle*> *styles, Text::CStringNN sourceName, Optional<Parser::ParserList> parsers, Optional<Net::WebBrowser> browser, IO::PackageFile *basePF)
 {
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayListStringNN colNames;
@@ -1323,13 +1339,15 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 			else if (Math::Geometry::Vector2D::VectorTypeIsPoint(vecType))
 			{
 				NN<Map::VectorLayer> lyr;
+				NN<Parser::ParserList> nnparsers;
+				NN<Net::WebBrowser> nnbrowser;
 				if (colValues.GetItem(0).SetTo(s))
 				{
 					NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, sourceName, colNames, Math::CoordinateSystemManager::CreateDefaultCsys(), colInfos, 0, s->ToCString()));
 					lyr->SetLabelVisible(true);
 					lyr->AddVector(vec, colValues);
 
-					if (style && style->iconURL && parsers)
+					if (style && style->iconURL && parsers.SetTo(nnparsers))
 					{
 						if (style->img == 0)
 						{
@@ -1338,15 +1356,15 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 							{
 								fd = basePF->OpenStreamData(style->iconURL->ToCString());
 							}
-							if (fd.IsNull() && browser)
+							if (fd.IsNull() && browser.SetTo(nnbrowser))
 							{
-								fd = browser->GetData(style->iconURL->ToCString(), false, 0);
+								fd = nnbrowser->GetData(style->iconURL->ToCString(), false, 0);
 							}
 							NN<IO::StreamData> nnfd;
 							if (fd.SetTo(nnfd))
 							{
 								NN<Media::ImageList> imgList;
-								if (imgList.Set((Media::ImageList*)parsers->ParseFileType(nnfd, IO::ParserType::ImageList)))
+								if (Optional<Media::ImageList>::ConvertFrom(nnparsers->ParseFileType(nnfd, IO::ParserType::ImageList)).SetTo(imgList))
 								{
 									if (style->iconColor != 0)
 									{

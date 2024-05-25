@@ -209,7 +209,7 @@ namespace SSWR
 
 			Data::Timestamp gpsStartTime;
 			Data::Timestamp gpsEndTime;
-			Map::GPSTrack *gpsTrk;
+			Optional<Map::GPSTrack> gpsTrk;
 			Int32 gpsUserId;
 
 		public:
@@ -281,7 +281,7 @@ namespace SSWR
 			virtual Bool DelDataFile(NN<DataFileInfo> dataFile) = 0;
 			static void ReleaseDataFile(NN<DataFileInfo> dataFile);
 			virtual Bool GetGPSPos(Int32 userId, const Data::Timestamp &ts, OutParam<Math::Coord2DDbl> pos) = 0;
-			virtual Map::GPSTrack *OpenGPSTrack(NN<DataFileInfo> dataFile) = 0;
+			virtual Optional<Map::GPSTrack> OpenGPSTrack(NN<DataFileInfo> dataFile) = 0;
 
 			static void ReleaseSpecies(NN<SpeciesInfo> species);
 			static void ReleaseUserFile(NN<UserFileInfo> userFile);
@@ -318,10 +318,10 @@ namespace SSWR
 			void BooksDeinit();
 
 		public:
-			virtual Media::ImageList *ParseImage(NN<OrganImageItem> img, OptOut<Optional<UserFileInfo>> userFile, OptOut<Optional<WebFileInfo>> wfile) = 0;
-			virtual Media::ImageList *ParseSpImage(NN<OrganSpecies> sp) = 0;
-			virtual Media::ImageList *ParseFileImage(NN<UserFileInfo> userFile) = 0;
-			virtual Media::ImageList *ParseWebImage(NN<WebFileInfo> webFile) = 0;
+			virtual Optional<Media::ImageList> ParseImage(NN<OrganImageItem> img, OptOut<Optional<UserFileInfo>> userFile, OptOut<Optional<WebFileInfo>> wfile) = 0;
+			virtual Optional<Media::ImageList> ParseSpImage(NN<OrganSpecies> sp) = 0;
+			virtual Optional<Media::ImageList> ParseFileImage(NN<UserFileInfo> userFile) = 0;
+			virtual Optional<Media::ImageList> ParseWebImage(NN<WebFileInfo> webFile) = 0;
 			Optional<Text::String> GetLocName(Int32 userId, const Data::Timestamp &ts, UI::GUIForm *ownerFrm, NN<UI::GUICore> ui);
 			virtual OrganGroup *SearchObject(const UTF8Char *searchStr, UTF8Char *resultStr, UOSInt resultStrBuffSize, Int32 *parentId) = 0;
 

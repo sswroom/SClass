@@ -84,7 +84,7 @@ namespace Map
 			Bool isAni;
 			UOSInt aniIndex;
 			Int64 aniLastTimeTick;
-			Media::ImageList *imgs;
+			NN<Media::ImageList> imgs;
 		} ImageInfo;
 	private:
 
@@ -193,7 +193,7 @@ namespace Map
 		UOSInt GetImageCnt() const;
 		Optional<Media::StaticImage> GetImage(UOSInt index, OptOut<UInt32> imgDurMS) const;
 		OSInt AddImage(Text::CStringNN fileName, NN<Parser::ParserList> parserList); // -1 = fail
-		UOSInt AddImage(Text::CStringNN fileName, Media::ImageList *imgList);
+		UOSInt AddImage(Text::CStringNN fileName, NN<Media::ImageList> imgList);
 		UOSInt AddImageSquare(UInt32 color, UOSInt size);
 		
 		UOSInt GetImageFileCnt() const;

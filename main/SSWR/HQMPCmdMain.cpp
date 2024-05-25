@@ -40,7 +40,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		//				progCtrl->WaitForExit(progCtrl);
 					}
 				}
-				player.OpenVideo(0);
+				player.CloseFile();
 			}
 		}
 	}

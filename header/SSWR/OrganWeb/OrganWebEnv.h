@@ -89,7 +89,7 @@ namespace SSWR
 			void Reload();
 			void Restart();
 
-			IO::ParsedObject *ParseFileType(NN<IO::StreamData> fd, IO::ParserType targetType);
+			Optional<IO::ParsedObject> ParseFileType(NN<IO::StreamData> fd, IO::ParserType targetType);
 			Bool HasReloadPwd() const;
 			Bool ReloadPwdMatches(NN<Text::String> pwd) const;
 			Optional<Text::String> GetCacheDir() const;
@@ -143,7 +143,7 @@ namespace SSWR
 			Bool GPSFileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, const UInt8 *fileCont, UOSInt fileSize, NN<Map::GPSTrack> gpsTrk, OutParam<Text::CString> errMsg);
 
 			Bool DataFileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 webuserId, Text::CStringNN fileName, Data::Timestamp startTime, Data::Timestamp endTime, DataFileType fileType, const UInt8 *fileCont, UOSInt fileSize, OutParam<Text::CString> errMsg);
-			IO::ParsedObject *DataFileParse(NN<DataFileInfo> dataFile);
+			Optional<IO::ParsedObject> DataFileParse(NN<DataFileInfo> dataFile);
 			Optional<DataFileInfo> DataFileGet(NN<Sync::RWMutexUsage> mutUsage, Int32 datafileId);
 
 			Optional<GroupInfo> GroupGet(NN<Sync::RWMutexUsage> mutUsage, Int32 id);

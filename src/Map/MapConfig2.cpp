@@ -4112,45 +4112,44 @@ Map::MapConfig2::MapConfig2(Text::CStringNN fileName, NN<Media::DrawEngine> eng,
 				currLayer->maxScale = Text::StrToInt32(strs[3].v);
 				currLayer->img = 0;
 				{
-					IO::ParsedObject *obj;
+					NN<IO::ParsedObject> obj;
 					{
 						IO::StmData::FileData fd(strs[4].ToCString(), false);
-						obj = parserList->ParseFile(fd);
-					}
-					if (obj)
-					{
-						if (obj->GetParserType() == IO::ParserType::ImageList)
+						if (parserList->ParseFile(fd).SetTo(obj))
 						{
-							Media::ImageList *imgList = (Media::ImageList*)obj;
-							if (imgList->GetCount() > 0)
+							if (obj->GetParserType() == IO::ParserType::ImageList)
 							{
-								imgList->ToStaticImage(0);
-								NN<Media::StaticImage> img;
-								if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img))
+								NN<Media::ImageList> imgList = NN<Media::ImageList>::ConvertFrom(obj);
+								if (imgList->GetCount() > 0)
 								{
-									if (img->To32bpp())
+									imgList->ToStaticImage(0);
+									NN<Media::StaticImage> img;
+									if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)).SetTo(img))
 									{
-										currLayer->img = this->drawEng->ConvImage(img);
-										DEL_CLASS(obj);
+										if (img->To32bpp())
+										{
+											currLayer->img = this->drawEng->ConvImage(img);
+											obj.Delete();
+										}
+										else
+										{
+											obj.Delete();
+										}
 									}
 									else
 									{
-										DEL_CLASS(obj);
+										obj.Delete();
 									}
 								}
 								else
 								{
-									DEL_CLASS(obj);
+									obj.Delete();
 								}
 							}
 							else
 							{
-								DEL_CLASS(obj);
+								obj.Delete();
 							}
-						}
-						else
-						{
-							DEL_CLASS(obj);
 						}
 					}
 				}

@@ -30,7 +30,7 @@ Int32 Parser::FileParser::OziMapParser::GetName()
 	return *(Int32*)"OMAP";
 }
 
-void Parser::FileParser::OziMapParser::SetParserList(Parser::ParserList *parsers)
+void Parser::FileParser::OziMapParser::SetParserList(Optional<Parser::ParserList> parsers)
 {
 	this->parsers = parsers;
 }
@@ -56,8 +56,9 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO::StreamDa
 	UTF8Char *tmpArr[6];
 	Map::VectorLayer *lyr = 0;
 	Bool valid;
+	NN<Parser::ParserList> parsers;
 
-	if (this->parsers == 0)
+	if (!this->parsers.SetTo(parsers))
 		return 0;
 
 	if (!Text::StrEqualsC(hdr, 34, UTF8STRC("OziExplorer Map Data File Version ")))
@@ -182,7 +183,7 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO::StreamDa
 			sptr = IO::Path::AppendPath(sbuff, sptr, fileName->ToCString());
 			{
 				IO::StmData::FileData imgFd(CSTRP(sbuff, sptr), false);
-				imgList = (Media::ImageList*)this->parsers->ParseFileType(imgFd, IO::ParserType::ImageList);
+				imgList = Optional<Media::ImageList>::ConvertFrom(parsers->ParseFileType(imgFd, IO::ParserType::ImageList));
 			}
 
 			if (imgList.SetTo(nnimgList))

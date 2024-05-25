@@ -335,7 +335,15 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(AnyType userObj)
 		UTF8Char *sptr;
 		UTF8Char *sptrEnd;
 		Int32 partNum;
-		sptrEnd = me->GetOpenedFile()->GetSourceName(sbuff);
+		NN<Media::MediaFile> openedFile;
+		if (me->GetOpenedFile().SetTo(openedFile))
+		{
+			sptrEnd = openedFile->GetSourceName(sbuff);
+		}
+		else
+		{
+			sptrEnd = Text::StrConcatC(sbuff, UTF8STRC("Untitled"));
+		}
 		i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptrEnd - sbuff), '.');
 		j = Text::StrIndexOfICase(sbuff, (const UTF8Char*)"part");
 		if (i > j && i != INVALID_INDEX && j != INVALID_INDEX)
@@ -400,6 +408,9 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnMouseAction(AnyType userObj, UI::G
 
 void SSWR::AVIRead::AVIRHQMPForm::OnMediaOpened()
 {
+	NN<Media::MediaFile> openedFile;
+	if (!this->GetOpenedFile().SetTo(openedFile))
+		return;
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;
 	UOSInt i;
@@ -407,28 +418,28 @@ void SSWR::AVIRead::AVIRHQMPForm::OnMediaOpened()
 #if defined(_WIN64)
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_HQ)
 	{
-		sptr = this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3HQ64 - ")));
+		sptr = openedFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3HQ64 - ")));
 	}
 	else if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_UQ)
 	{
-		sptr = this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3UQ64 - ")));
+		sptr = openedFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3UQ64 - ")));
 	}
 	else
 	{
-		sptr = this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3_64 - ")));
+		sptr = openedFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3_64 - ")));
 	}
 #else
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_HQ)
 	{
-		sptr = this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3HQ - ")));
+		sptr = openedFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3HQ - ")));
 	}
 	else if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_UQ)
 	{
-		sptr = this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3UQ - ")));
+		sptr = openedFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3UQ - ")));
 	}
 	else
 	{
-		sptr = this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3 - ")));
+		sptr = openedFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3 - ")));
 	}
 #endif
 	this->SetText(CSTRP(sbuff, sptr));
@@ -437,7 +448,7 @@ void SSWR::AVIRead::AVIRHQMPForm::OnMediaOpened()
 	this->vOfst = 0;
 	this->vbox->SetUVOfst(this->uOfst, this->vOfst);
 
-	this->currChapInfo = this->GetOpenedFile()->GetChapterInfo();
+	this->currChapInfo = openedFile->GetChapterInfo();
 	this->mnuChapters->ClearItems();
 	if (this->currChapInfo)
 	{
@@ -471,7 +482,7 @@ void SSWR::AVIRead::AVIRHQMPForm::OnMediaOpened()
 		this->mnuChapters->SetItemEnabled(MNU_PB_CHAPTERS, false);
 	}
 	this->UpdateMenu();
-	this->GetOpenedFile()->GetSourceName(sbuff);
+	openedFile->GetSourceName(sbuff);
 	if (Text::StrIndexOfICase(sbuff, (const UTF8Char*)"sRGB") != INVALID_INDEX)
 	{
 		this->vbox->SetSrcRGBType(Media::CS::TRANT_sRGB);
@@ -812,8 +823,8 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 				}
 				else
 				{
-					IO::ParsedObject *pobj = Net::URL::OpenObject(fname->ToCString(), CSTR_NULL, this->core->GetSocketFactory(), this->ssl, 30000, this->core->GetLog());
-					if (pobj == 0)
+					NN<IO::ParsedObject> pobj;
+					if (!pobj.Set(Net::URL::OpenObject(fname->ToCString(), CSTR_NULL, this->core->GetSocketFactory(), this->ssl, 30000, this->core->GetLog())))
 					{
 						this->ui->ShowMsgOK(CSTR("Error in loading file"), CSTR("HQMP"), this);
 					}
@@ -821,11 +832,11 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 					{
 						if (pobj->GetParserType() == IO::ParserType::MediaFile)
 						{
-							this->OpenVideo((Media::MediaFile*)pobj);
+							this->OpenVideo(NN<Media::MediaFile>::ConvertFrom(pobj));
 						}
 						else
 						{
-							DEL_CLASS(pobj);
+							pobj.Delete();
 						}
 					}
 				}
@@ -840,9 +851,9 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 			{
 				UTF8Char sbuff[256];
 				UTF8Char *sptr;
-				Media::MediaFile *mf;
+				NN<Media::MediaFile> mf;
 				sptr = capture->GetSourceName(sbuff);
-				NEW_CLASS(mf, Media::MediaFile(CSTRP(sbuff, sptr)));
+				NEW_CLASSNN(mf, Media::MediaFile(CSTRP(sbuff, sptr)));
 				mf->AddSource(capture, 0);
 				this->OpenVideo(mf);
 			}

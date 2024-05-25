@@ -18,7 +18,7 @@ Int32 Parser::FileParser::ISOParser::GetName()
 	return *(Int32*)"ISOP";
 }
 
-void Parser::FileParser::ISOParser::SetParserList(Parser::ParserList *parsers)
+void Parser::FileParser::ISOParser::SetParserList(Optional<Parser::ParserList> parsers)
 {
 	this->parsers = parsers;
 }
@@ -64,13 +64,14 @@ IO::ParsedObject *Parser::FileParser::ISOParser::ParseFileHdr(NN<IO::StreamData>
 		}
 	}
 
-	if (sd.Set(sectorData) && targetType != IO::ParserType::SectorData)
+	NN<Parser::ParserList> parsers;
+	if (sd.Set(sectorData) && this->parsers.SetTo(parsers) && targetType != IO::ParserType::SectorData)
 	{
-		IO::ParsedObject *pobj = this->parsers->ParseObject(sd);
-		if (pobj)
+		NN<IO::ParsedObject> pobj;
+		if (parsers->ParseObject(sd).SetTo(pobj))
 		{
 			sd.Delete();
-			return pobj;
+			return pobj.Ptr();
 		}
 	}
 	return sectorData;

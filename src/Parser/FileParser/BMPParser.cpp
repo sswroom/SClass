@@ -69,7 +69,7 @@ Int32 Parser::FileParser::BMPParser::GetName()
 	return *(Int32*)"BMPP";
 }
 
-void Parser::FileParser::BMPParser::SetParserList(Parser::ParserList *parsers)
+void Parser::FileParser::BMPParser::SetParserList(Optional<Parser::ParserList> parsers)
 {
 	this->parsers = parsers;
 }
@@ -378,14 +378,15 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFileHdr(NN<IO::StreamData>
 	}
 	if (biCompression == 4 || biCompression == 5) //BI_JPEG / BI_PNG)
 	{
-		IO::ParsedObject *pobj = 0;
-		if (this->parsers)
+		Optional<IO::ParsedObject> pobj = 0;
+		NN<Parser::ParserList> parsers;
+		if (this->parsers.SetTo(parsers))
 		{
 			UInt32 currOfst = ReadUInt32(&hdr[10]);
 			NN<IO::StreamData> innerFd = fd->GetPartialData(currOfst, fd->GetDataSize() - currOfst);
-			pobj = this->parsers->ParseFile(innerFd);
+			pobj = parsers->ParseFile(innerFd);
 			innerFd.Delete();
-			return pobj;
+			return pobj.OrNull();
 		}
 	}
 	if (imgWidth > 0 && imgHeight > 0 && bpp != 0 && imgWidth <= 32768 && imgHeight <= 32768 && headerValid)

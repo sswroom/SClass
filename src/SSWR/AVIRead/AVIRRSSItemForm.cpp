@@ -16,14 +16,18 @@ void __stdcall SSWR::AVIRead::AVIRRSSItemForm::OnImageSelChg(AnyType userObj)
 	NN<IO::StreamData> fd;
 	if (fd.Set(browser->GetData(CSTRP(sbuff, sptr), false, sbuff)))
 	{
-		Media::ImageList *imgList = (Media::ImageList*)me->core->GetParserList()->ParseFile(fd, 0, IO::ParserType::ImageList);
-		fd.Delete();
-		if (imgList)
+		NN<Media::ImageList> imgList;
+		if (Optional<Media::ImageList>::ConvertFrom(me->core->GetParserList()->ParseFile(fd, 0, IO::ParserType::ImageList)).SetTo(imgList))
 		{
+			fd.Delete();
 			imgList->ToStaticImage(0);
-			SDEL_CLASS(me->currImg);
+			me->currImg.Delete();
 			me->currImg = imgList;
 			me->pbImage->SetImage(Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(0, 0)));
+		}
+		else
+		{
+			fd.Delete();
 		}
 	}
 }
@@ -154,7 +158,7 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(Optional<UI::GUIClientControl> p
 SSWR::AVIRead::AVIRRSSItemForm::~AVIRRSSItemForm()
 {
 	this->ClearChildren();
-	SDEL_CLASS(this->currImg);
+	this->currImg.Delete();
 }
 
 void SSWR::AVIRead::AVIRRSSItemForm::OnMonitorChanged()

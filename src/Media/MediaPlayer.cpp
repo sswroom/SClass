@@ -192,7 +192,7 @@ Media::MediaPlayer::MediaPlayer(Media::VideoRenderer *vrenderer, Media::AudioDev
 
 Media::MediaPlayer::~MediaPlayer()
 {
-	if (this->currFile)
+	if (this->currFile.NotNull())
 	{
 		this->LoadMedia(0);
 	}
@@ -204,7 +204,7 @@ void Media::MediaPlayer::SetEndHandler(PBEndHandler hdlr, AnyType userObj)
 	this->endObj = userObj;
 }
 
-Bool Media::MediaPlayer::LoadMedia(Media::MediaFile *file)
+Bool Media::MediaPlayer::LoadMedia(Optional<Media::MediaFile> file)
 {
 	Bool videoFound;
 	this->currFile = file;
@@ -219,11 +219,12 @@ Bool Media::MediaPlayer::LoadMedia(Media::MediaFile *file)
 	this->currVStm = 0;
 	this->currChapInfo = 0;
 	SDEL_CLASS(this->currVDecoder);
-	if (this->currFile == 0)
+	NN<Media::MediaFile> currFile;
+	if (!this->currFile.SetTo(currFile))
 	{
 		return true;
 	}
-	this->currChapInfo = this->currFile->GetChapterInfo();
+	this->currChapInfo = currFile->GetChapterInfo();
 
 	UOSInt i = 0;
 	Int32 syncTime;
@@ -232,7 +233,7 @@ Bool Media::MediaPlayer::LoadMedia(Media::MediaFile *file)
 	{
 		Media::MediaType mt;
 		NN<Media::IMediaSource> msrc;
-		if (!this->currFile->GetStream(i, syncTime).SetTo(msrc))
+		if (!currFile->GetStream(i, syncTime).SetTo(msrc))
 			break;
 		mt = msrc->GetMediaType();
 		if (mt == Media::MEDIA_TYPE_VIDEO && !videoFound)
@@ -308,7 +309,8 @@ Bool Media::MediaPlayer::SeekTo(Data::Duration time)
 Bool Media::MediaPlayer::SwitchAudio(UOSInt index)
 {
 	this->ReleaseAudio();
-	if (this->currFile == 0)
+	NN<Media::MediaFile> currFile;
+	if (!this->currFile.SetTo(currFile))
 	{
 		return true;
 	}
@@ -319,7 +321,7 @@ Bool Media::MediaPlayer::SwitchAudio(UOSInt index)
 	{
 		Media::MediaType mt;
 		NN<Media::IMediaSource> msrc;
-		if (!this->currFile->GetStream(i, syncTime).SetTo(msrc))
+		if (!currFile->GetStream(i, syncTime).SetTo(msrc))
 			break;
 		mt = msrc->GetMediaType();
 		if (mt == Media::MEDIA_TYPE_AUDIO)
