@@ -11,7 +11,7 @@
 #define MTU 2048
 #define BUFFSIZE (MAXSIZE + MTU)
 
-void __stdcall Net::LogServer::ConnHdlr(Socket *s, AnyType userObj)
+void __stdcall Net::LogServer::ConnHdlr(NN<Socket> s, AnyType userObj)
 {
 	NN<Net::LogServer> me = userObj.GetNN<Net::LogServer>();
 	NN<Net::TCPClient> cli;

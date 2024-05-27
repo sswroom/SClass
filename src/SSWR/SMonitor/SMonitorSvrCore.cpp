@@ -100,7 +100,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientTimeout(NN<Net::TCPClien
 	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 }
 
-void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnServerConn(Socket *s, AnyType userObj)
+void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnServerConn(NN<Socket> s, AnyType userObj)
 {
 	NN<SSWR::SMonitor::SMonitorSvrCore> me = userObj.GetNN<SSWR::SMonitor::SMonitorSvrCore>();
 	NN<Net::TCPClient> cli;

@@ -23,7 +23,7 @@
 #include "Crypto/Hash/SHA512.h"
 //#include "Crypto/Hash/SuperFastHash.h"
 
-Crypto::Hash::IHash *Crypto::Hash::HashCreator::CreateHash(Crypto::Hash::HashType hashType)
+Optional<Crypto::Hash::IHash> Crypto::Hash::HashCreator::CreateHash(Crypto::Hash::HashType hashType)
 {
 	Crypto::Hash::IHash *hash = 0;
 	switch (hashType)

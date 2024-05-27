@@ -8,7 +8,7 @@ namespace Crypto
 		class HashCreator
 		{
 		public:
-			static IHash *CreateHash(Crypto::Hash::HashType hashType);
+			static Optional<IHash> CreateHash(Crypto::Hash::HashType hashType);
 		};
 	}
 }

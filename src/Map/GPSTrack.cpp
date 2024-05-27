@@ -13,7 +13,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 
-Map::GPSTrack::GPSTrack(NN<Text::String> sourceName, Bool hasAltitude, UInt32 codePage, Text::String *layerName) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CoordinateSystemManager::CreateDefaultCsys())
+Map::GPSTrack::GPSTrack(NN<Text::String> sourceName, Bool hasAltitude, UInt32 codePage, Text::String *layerName) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CoordinateSystemManager::CreateWGS84Csys())
 {
 	this->codePage = codePage;
 	this->currTrackName = 0;
@@ -23,7 +23,7 @@ Map::GPSTrack::GPSTrack(NN<Text::String> sourceName, Bool hasAltitude, UInt32 co
 	this->hasAltitude = hasAltitude;
 }
 
-Map::GPSTrack::GPSTrack(Text::CStringNN sourceName, Bool hasAltitude, UInt32 codePage, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CoordinateSystemManager::CreateDefaultCsys())
+Map::GPSTrack::GPSTrack(Text::CStringNN sourceName, Bool hasAltitude, UInt32 codePage, Text::CString layerName) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CoordinateSystemManager::CreateWGS84Csys())
 {
 	this->codePage = codePage;
 	this->currTrackName = 0;

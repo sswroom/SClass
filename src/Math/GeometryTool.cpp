@@ -970,11 +970,11 @@ Double Math::GeometryTool::CalcMaxDistanceFromPoint(Math::Coord2DDbl pt, Math::G
 			maxPt = coords.GetItem(i);
 		}
 	}
-	Math::CoordinateSystem *csys = Math::CoordinateSystemManager::SRCreateCSys(vec->GetSRID());
-	if (csys)
+	NN<Math::CoordinateSystem> csys;
+	if (Math::CoordinateSystemManager::SRCreateCSys(vec->GetSRID()).SetTo(csys))
 	{
 		thisDist = csys->CalSurfaceDistance(pt, maxPt, unit);
-		DEL_CLASS(csys);
+		csys.Delete();
 		return thisDist;
 	}
 	else
@@ -1027,9 +1027,9 @@ Math::Geometry::Polygon *Math::GeometryTool::CreateCircularPolygonWGS84(Math::Co
 	Math::Geometry::Polygon *pg = 0;
 	NN<Math::CoordinateSystem> csys4326;
 	NN<Math::CoordinateSystem> csys3857;
-	if (csys4326.Set(Math::CoordinateSystemManager::SRCreateCSys(4326)))
+	if (Math::CoordinateSystemManager::SRCreateCSys(4326).SetTo(csys4326))
 	{
-		if (csys3857.Set(Math::CoordinateSystemManager::SRCreateCSys(3857)))
+		if (Math::CoordinateSystemManager::SRCreateCSys(3857).SetTo(csys3857))
 		{
 			Math::CoordinateSystemConverter converter(csys3857, csys4326);
 			Math::Coord2DDbl outPos = CoordinateSystem::Convert(csys4326, csys3857, pt);

@@ -112,7 +112,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 		UInt32 ipv4 = ReadMUInt32(addr->addr);
 		if (this->ipv4Agents.ContainsKey(ipv4))
 		{
-			return Optional<AgentInfo>(nullptr);
+			return optagent;
 		}
 	}
 	NN<Net::SNMPManager::AgentInfo> agent;

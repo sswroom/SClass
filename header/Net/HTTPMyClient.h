@@ -20,7 +20,7 @@ namespace Net
 		ClassData *clsData;
 	protected:
 		Optional<Net::SSLEngine> ssl;
-		Net::TCPClient *cli;
+		Optional<Net::TCPClient> cli;
 		Text::String *cliHost;
 		IO::MemoryStream reqMstm;
 		NN<Text::String> userAgent;

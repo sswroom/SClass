@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnInfoClicked(AnyType userObj
 		return;
 	}
 	NN<Net::EthernetWebHandler> webHdlr;
-	NEW_CLASSNN(webHdlr, Net::EthernetWebHandler(&me->analyzer));
+	NEW_CLASSNN(webHdlr, Net::EthernetWebHandler(me->analyzer));
 	NEW_CLASS(me->listener, Net::WebServer::WebListener(me->sockf, 0, webHdlr, port, 60, 1, 3, CSTR("PingMonitor/1.0"), false, Net::WebServer::KeepAlive::Default, true));
 	if (me->listener->IsError())
 	{
@@ -116,8 +116,8 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnStartClicked(AnyType userOb
 	UInt32 ip = (UInt32)me->cboIP->GetSelectedItem().GetOSInt();
 	if (ip)
 	{
-		Socket *soc = me->sockf->CreateICMPIPv4Socket(ip);
-		if (soc)
+		NN<Socket> soc;
+		if (me->sockf->CreateICMPIPv4Socket(ip).SetTo(soc))
 		{
 			NEW_CLASS(me->socMon, Net::SocketMonitor(me->sockf, soc, OnRAWData, me, 3));
 			me->cboIP->SetEnabled(false);

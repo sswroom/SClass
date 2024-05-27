@@ -13,7 +13,7 @@
 #include "Math/Geometry/VectorImage.h"
 #include "Media/SharedImage.h"
 
-Map::OruxDBLayer::OruxDBLayer(Text::CStringNN sourceName, Text::CString layerName, NN<Parser::ParserList> parsers) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CoordinateSystemManager::CreateDefaultCsys())
+Map::OruxDBLayer::OruxDBLayer(Text::CStringNN sourceName, Text::CString layerName, NN<Parser::ParserList> parsers) : Map::MapDrawLayer(sourceName, 0, layerName, Math::CoordinateSystemManager::CreateWGS84Csys())
 {
 	this->parsers = parsers;
 	this->currLayer = (UInt32)-1;

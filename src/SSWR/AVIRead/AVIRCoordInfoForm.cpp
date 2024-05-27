@@ -68,7 +68,7 @@ void SSWR::AVIRead::AVIRCoordInfoForm::ShowInfo(const Math::CoordinateSystemMana
 	else if (srinfo->srType == Math::CoordinateSystemManager::SRT_GEOGCS || srinfo->srType == Math::CoordinateSystemManager::SRT_PROJCS)
 	{
 		NN<Math::CoordinateSystem> csys;
-		if (csys.Set(Math::CoordinateSystemManager::SRCreateCSys(srinfo->srid)))
+		if (Math::CoordinateSystemManager::SRCreateCSys(srinfo->srid).SetTo(csys))
 		{
 			Text::StringBuilderUTF8 sb;
 			Math::SROGCWKTWriter wkt;

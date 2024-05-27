@@ -891,7 +891,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::RunSQLFile(NN<DB::ReadingDBTool> db, NN<T
 	this->ui->ProcessMessages();
 }
 
-Data::Class *SSWR::AVIRead::AVIRDBManagerForm::CreateTableClass(Text::CString schemaName, Text::CStringNN tableName)
+Optional<Data::Class> SSWR::AVIRead::AVIRDBManagerForm::CreateTableClass(Text::CString schemaName, Text::CStringNN tableName)
 {
 	NN<DB::ReadingDB> db;
 	if (this->currDB.SetTo(db))
@@ -1237,7 +1237,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(Optional<UI::GUIClientContro
 	this->currDB = 0;
 	this->currCond = 0;
 	this->sqlFileMode = false;
-	NEW_CLASSNN(this->mapEnv, Map::MapEnv(CSTR("DB"), 0xffc0c0ff, Math::CoordinateSystemManager::CreateDefaultCsys()));
+	NEW_CLASSNN(this->mapEnv, Map::MapEnv(CSTR("DB"), 0xffc0c0ff, Math::CoordinateSystemManager::CreateWGS84Csys()));
 	NN<Map::MapDrawLayer> layer;
 	if (layer.Set(Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_OSM_TILE, this->core->GetSocketFactory(), this->ssl, this->core->GetParserList())))
 	{
@@ -1705,8 +1705,8 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		if ((sptr = this->lbTable->GetSelectedItemText(sbuff)) != 0)
 		{
 			Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
-			Data::Class *cls = this->CreateTableClass(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
-			if (cls)
+			NN<Data::Class> cls;
+			if (this->CreateTableClass(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr)).SetTo(cls))
 			{
 				Text::PString hdr = {sbuff2, 0};
 				UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
@@ -1715,7 +1715,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 				Text::StringBuilderUTF8 sb;
 				cls->ToCppClassHeader(&hdr, 0, sb);
 				UI::Clipboard::SetString(this->GetHandle(), sb.ToCString());
-				DEL_CLASS(cls);
+				cls.Delete();
 			}
 			OPTSTR_DEL(schemaName);
 		}
@@ -1724,8 +1724,8 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		if ((sptr = this->lbTable->GetSelectedItemText(sbuff)) != 0)
 		{
 			Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
-			Data::Class *cls = this->CreateTableClass(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
-			if (cls)
+			NN<Data::Class> cls;
+			if (this->CreateTableClass(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr)).SetTo(cls))
 			{
 				Text::PString hdr = {sbuff2, 0};
 				UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
@@ -1734,7 +1734,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 				Text::StringBuilderUTF8 sb;
 				cls->ToCppClassSource(0, &hdr, 0, sb);
 				UI::Clipboard::SetString(this->GetHandle(), sb.ToCString());
-				DEL_CLASS(cls);
+				cls.Delete();
 			}
 			OPTSTR_DEL(schemaName);
 		}

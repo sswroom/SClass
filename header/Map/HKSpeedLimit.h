@@ -19,7 +19,7 @@ namespace Map
 		};
 	private:
 		NN<Math::CoordinateSystem> dataCsys;
-		Math::CoordinateSystem *reqCsys;
+		Optional<Math::CoordinateSystem> reqCsys;
 		Data::FastMapNN<Int32, RouteInfo> routeMap;
 		Math::RectAreaDbl bounds;
 		Data::FastMapNN<Int64, Data::ArrayList<Int32>> indexMap;
@@ -34,7 +34,7 @@ namespace Map
 
 		Optional<const RouteInfo> GetNearestRoute(Math::Coord2DDbl pt);
 		Int32 GetSpeedLimit(Math::Coord2DDbl pt, Double maxDistM);
-		void SetReqCoordinateSystem(Math::CoordinateSystem *csys);
+		void SetReqCoordinateSystem(NN<Math::CoordinateSystem> csys);
 	};
 }
 #endif

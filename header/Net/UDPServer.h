@@ -27,8 +27,8 @@ namespace Net
 	private:
 		NN<Net::SocketFactory> sockf;
 		Net::AddrType addrType;
-		Socket *socV4;
-		Socket *socV6;
+		Optional<Socket> socV4;
+		Optional<Socket> socV6;
 		Data::CallbackStorage<UDPPacketHdlr> hdlr;
 		Optional<Text::String> logPrefix;
 		Int32 recvCnt;

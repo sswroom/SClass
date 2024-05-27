@@ -110,7 +110,7 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientTimeout(NN<Net::TCPC
 {
 }
 
-void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientConn(Socket *s, AnyType userObj)
+void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientConn(NN<Socket> s, AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRJTT808ServerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRJTT808ServerForm>();
 	NN<Net::TCPClient> cli;

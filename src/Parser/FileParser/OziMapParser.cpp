@@ -192,7 +192,7 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 				NN<Math::Geometry::VectorImage> vimg;
 				NN<Media::SharedImage> shimg;
 				NN<Math::GeographicCoordinateSystem> gcs;
-				if (gcs.Set(Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84)))
+				if (Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84).SetTo(gcs))
 				{
 					NEW_CLASSNN(csys, Math::PointMappingCoordinateSystem(fd->GetFullName(), 4326, CSTR("PointMapping"), gcs));
 					currPt = 0;

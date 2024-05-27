@@ -21,7 +21,7 @@
 IO::Writer *console;
 Int32 threadCnt;
 Bool threadToStop;
-Socket *rawSock;
+NN<Socket> rawSock;
 NN<Net::SocketFactory> sockf;
 IO::LogTool *logTool;
 
@@ -132,8 +132,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 #endif
 	NEW_CLASSNN(sockf, Net::OSSocketFactory(true));
 	console->WriteLine(CSTR("PingMonitor Started"));
-	rawSock = sockf->CreateRAWSocket();
-	if (rawSock)
+	if (sockf->CreateRAWSocket().SetTo(rawSock))
 	{
 		NEW_CLASS(logTool, IO::LogTool());
 		sptr = IO::Path::GetProcessFileName(sbuff);

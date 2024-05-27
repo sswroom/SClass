@@ -838,7 +838,7 @@ Bool Net::WinSSLEngine::InitServer(Method method, void *cred, void *hRootStore)
 	return status == 0;
 }
 
-Net::SSLClient* Net::WinSSLEngine::CreateClientConn(void* sslObj, Socket* s, Text::CString hostName, OptOut<ErrorType> err)
+Optional<Net::SSLClient> Net::WinSSLEngine::CreateClientConn(void* sslObj, Socket* s, Text::CString hostName, OptOut<ErrorType> err)
 {
 	CtxtHandle ctxt;
 	const WChar* wptr = Text::StrToWCharNew(hostName.v);
@@ -1010,7 +1010,7 @@ Net::SSLClient* Net::WinSSLEngine::CreateClientConn(void* sslObj, Socket* s, Tex
 	return cli;
 }
 
-Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
+Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(Socket *s)
 {
 	if (!this->clsData->svrInit)
 	{
@@ -1418,7 +1418,7 @@ Bool Net::WinSSLEngine::ClientSetCertASN1(NN<Crypto::Cert::X509Cert> certASN1, N
 	return true;
 }
 
-Net::SSLClient *Net::WinSSLEngine::ClientConnect(Text::CStringNN hostName, UInt16 port, OptOut<ErrorType> err, Data::Duration timeout)
+Optional<Net::SSLClient> Net::WinSSLEngine::ClientConnect(Text::CStringNN hostName, UInt16 port, OptOut<ErrorType> err, Data::Duration timeout)
 {
 	if (!this->clsData->cliInit)
 	{
@@ -1478,7 +1478,7 @@ Net::SSLClient *Net::WinSSLEngine::ClientConnect(Text::CStringNN hostName, UInt1
 	return 0;
 }
 
-Net::SSLClient *Net::WinSSLEngine::ClientInit(Socket *s, Text::CStringNN hostName, OptOut<ErrorType> err)
+Optional<Net::SSLClient> Net::WinSSLEngine::ClientInit(Socket *s, Text::CStringNN hostName, OptOut<ErrorType> err)
 {
 	if (!this->clsData->cliInit)
 	{

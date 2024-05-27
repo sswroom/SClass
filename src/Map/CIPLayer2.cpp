@@ -21,7 +21,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-Map::CIPLayer2::CIPLayer2(Text::CStringNN layerName) : Map::MapDrawLayer(layerName, 0, CSTR_NULL, Math::CoordinateSystemManager::CreateDefaultCsys())
+Map::CIPLayer2::CIPLayer2(Text::CStringNN layerName) : Map::MapDrawLayer(layerName, 0, CSTR_NULL, Math::CoordinateSystemManager::CreateWGS84Csys())
 {
 	UTF8Char fname[256];
 	UTF8Char *sptr;

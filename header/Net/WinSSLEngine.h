@@ -15,8 +15,8 @@ namespace Net
 		void DeinitClient();
 		Bool InitClient(Method method, void *cred);
 		Bool InitServer(Method method, void *cred, void *hRootStore);
-		Net::SSLClient *CreateClientConn(void *sslObj, Socket *s, Text::CString hostName, OptOut<ErrorType> err);
-		virtual Net::SSLClient *CreateServerConn(Socket *s);
+		Optional<Net::SSLClient> CreateClientConn(void *sslObj, Socket *s, Text::CString hostName, OptOut<ErrorType> err);
+		virtual Optional<Net::SSLClient> CreateServerConn(Socket *s);
 	public:
 		WinSSLEngine(NN<Net::SocketFactory> sockf, Method method);
 		virtual ~WinSSLEngine();
@@ -30,8 +30,8 @@ namespace Net
 
 		virtual void ClientSetSkipCertCheck(Bool skipCertCheck);
 		virtual Bool ClientSetCertASN1(NN<Crypto::Cert::X509Cert> certASN1, NN<Crypto::Cert::X509File> keyASN1);
-		virtual Net::SSLClient *ClientConnect(Text::CStringNN hostName, UInt16 port, OptOut<ErrorType> err, Data::Duration timeout);
-		virtual Net::SSLClient *ClientInit(Socket *s, Text::CStringNN hostName, OptOut<ErrorType> err);
+		virtual Optional<Net::SSLClient> ClientConnect(Text::CStringNN hostName, UInt16 port, OptOut<ErrorType> err, Data::Duration timeout);
+		virtual Optional<Net::SSLClient> ClientInit(Socket *s, Text::CStringNN hostName, OptOut<ErrorType> err);
 
 		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff);
 		virtual Bool GenerateCert(Text::CString country, Text::CString company, Text::CStringNN commonName, OutParam<Crypto::Cert::X509Cert*> certASN1, OutParam<Crypto::Cert::X509File*> keyASN1);

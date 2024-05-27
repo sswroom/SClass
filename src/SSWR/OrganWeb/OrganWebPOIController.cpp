@@ -1165,9 +1165,9 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcUnfinPeak(NN<Net::WebSe
 	me->env->PeakGetUnfin(mutUsage, peaks);
 	if (peaks.GetCount() > 0)
 	{
-		Math::CoordinateSystem *csysHK = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80);
-		Math::CoordinateSystem *csysMO = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_MACAU_GRID);
-		NN<Math::CoordinateSystem> csysWGS84 = Math::CoordinateSystemManager::CreateDefaultCsys();
+		Optional<Math::CoordinateSystem> csysHK = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80);
+		Optional<Math::CoordinateSystem> csysMO = Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_MACAU_GRID);
+		NN<Math::CoordinateSystem> csysWGS84 = Math::CoordinateSystemManager::CreateWGS84Csys();
 		NN<Math::CoordinateSystem> csys;
 		Data::ArrayIterator<NN<PeakInfo>> it = peaks.Iterator();
 		while (it.HasNext())
@@ -1177,11 +1177,11 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcUnfinPeak(NN<Net::WebSe
 			json.ObjectAddInt32(CSTR("id"), peak->id);
 			json.ObjectAddStr(CSTR("refId"), peak->refId);
 			json.ObjectAddStr(CSTR("district"), peak->district);
-			if (peak->csys == 1 && csys.Set(csysHK))
+			if (peak->csys == 1 && csysHK.SetTo(csys))
 			{
 				pt = Math::CoordinateSystem::Convert3D(csys, csysWGS84, Math::Vector3(peak->mapX, peak->mapY, peak->markedHeight));
 			}
-			else if (peak->csys == 2 && csys.Set(csysMO))
+			else if (peak->csys == 2 && csysMO.SetTo(csys))
 			{
 				pt = Math::CoordinateSystem::Convert3D(csys, csysWGS84, Math::Vector3(peak->mapX, peak->mapY, peak->markedHeight));
 			}
@@ -1197,8 +1197,8 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPOIController::SvcUnfinPeak(NN<Net::WebSe
 			json.ObjectAddStrOpt(CSTR("type"), peak->type);
 			json.ObjectEnd();
 		}
-		SDEL_CLASS(csysHK);
-		SDEL_CLASS(csysMO);
+		csysHK.Delete();
+		csysMO.Delete();
 		csysWGS84.Delete();
 	}
 	me->env->PeakFreeAll(peaks);

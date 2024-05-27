@@ -16,7 +16,7 @@ typedef struct
 	UInt8 buff[BUFFSIZE];
 } ClientData;
 
-void __stdcall SSWR::DataSync::SyncServer::OnClientConn(Socket *s, AnyType userObj)
+void __stdcall SSWR::DataSync::SyncServer::OnClientConn(NN<Socket> s, AnyType userObj)
 {
 	NN<SSWR::DataSync::SyncServer> me = userObj.GetNN<SSWR::DataSync::SyncServer>();
 	NN<Net::TCPClient> cli;

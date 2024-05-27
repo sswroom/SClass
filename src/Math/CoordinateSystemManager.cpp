@@ -409,12 +409,12 @@ Bool Math::CoordinateSystemManager::SRAxisReversed(UInt32 epsgId)
 	return false;
 }
 
-Math::CoordinateSystem *Math::CoordinateSystemManager::SRCreateCSys(UInt32 epsgId)
+Optional<Math::CoordinateSystem> Math::CoordinateSystemManager::SRCreateCSys(UInt32 epsgId)
 {
 	const Math::CoordinateSystemManager::SpatialRefInfo *info = SRGetSpatialRef(epsgId);
 	if (info)
 	{
-		Math::CoordinateSystem *csys = 0;
+		Optional<Math::CoordinateSystem> csys = 0;
 		if (info->srType == SRT_PROJCS)
 		{
 			csys = SRCreateProjCSys(epsgId);
@@ -434,13 +434,13 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::SRCreateCSys(UInt32 epsgI
 NN<Math::CoordinateSystem> Math::CoordinateSystemManager::SRCreateCSysOrDef(UInt32 epsgId)
 {
 	NN<Math::CoordinateSystem> csys;
-	if (csys.Set(SRCreateCSys(epsgId)))
+	if (SRCreateCSys(epsgId).SetTo(csys))
 		return csys;
 	else
-		return CreateDefaultCsys();
+		return CreateWGS84Csys();
 }
 
-Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::SRCreateProjCSys(UInt32 epsgId)
+Optional<Math::ProjectedCoordinateSystem> Math::CoordinateSystemManager::SRCreateProjCSys(UInt32 epsgId)
 {
 	const Math::CoordinateSystemManager::ProjcsSRInfo *projcs = SRGetProjcsInfo(epsgId);
 	if (projcs == 0)
@@ -448,7 +448,7 @@ Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::SRCreateProjCSys
 		return 0;
 	}
 	NN<Math::GeographicCoordinateSystem> gcsys;
-	if (!gcsys.Set(SRCreateGeogCSys(projcs->geogcsSRID)))
+	if (!SRCreateGeogCSys(projcs->geogcsSRID).SetTo(gcsys))
 	{
 		return 0;
 	}
@@ -470,7 +470,7 @@ Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::SRCreateProjCSys
 	return 0;
 }
 
-Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::SRCreateGeogCSys(UInt32 epsgId)
+Optional<Math::GeographicCoordinateSystem> Math::CoordinateSystemManager::SRCreateGeogCSys(UInt32 epsgId)
 {
 	const Math::CoordinateSystemManager::GeogcsSRInfo *geogcs = SRGetGeogcsInfo(epsgId);
 	if (geogcs == 0)
@@ -498,7 +498,7 @@ Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::SRCreateGeogCSy
 	return csys;
 }
 
-Math::CoordinateSystem *Math::CoordinateSystemManager::CreateFromName(Text::CStringNN name)
+Optional<Math::CoordinateSystem> Math::CoordinateSystemManager::CreateFromName(Text::CStringNN name)
 {
 	if (name.StartsWith(UTF8STRC("EPSG:")))
 	{
@@ -529,10 +529,10 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::CreateFromName(Text::CStr
 NN<Math::CoordinateSystem> Math::CoordinateSystemManager::CreateFromNameOrDef(Text::CStringNN name)
 {
 	NN<Math::CoordinateSystem> csys;
-	if (csys.Set(CreateFromName(name)))
+	if (CreateFromName(name).SetTo(csys))
 		return csys;
 	else
-		return CreateDefaultCsys();
+		return CreateWGS84Csys();
 }
 
 const Math::CoordinateSystemManager::DatumInfo *Math::CoordinateSystemManager::GetDatumInfoByName(const UTF8Char *name)
@@ -556,9 +556,6 @@ const Math::CoordinateSystemManager::DatumInfo *Math::CoordinateSystemManager::G
 		else if (l < 0)
 		{
 			i = k + 1;
-		}
-		else
-		{
 			return &datumList[k];
 		}
 	}
@@ -619,7 +616,7 @@ void Math::CoordinateSystemManager::FillDatumData(NN<Math::GeographicCoordinateS
 	}
 }
 
-Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::ProjCoordSysType pcst)
+Optional<Math::ProjectedCoordinateSystem> Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::ProjCoordSysType pcst)
 {
 	Text::CString name = Math::CoordinateSystemManager::ProjCoordSysTypeGetName(pcst);
 	if (name.v == 0)
@@ -630,12 +627,12 @@ Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::CreateProjCoordi
 NN<Math::CoordinateSystem> Math::CoordinateSystemManager::CreateProjCoordinateSystemDefNameOrDef(ProjCoordSysType pcst)
 {
 	NN<Math::CoordinateSystem> csys;
-	if (!csys.Set(CreateProjCoordinateSystemDefName(pcst)))
-		csys = CreateDefaultCsys();
+	if (!Optional<CoordinateSystem>(CreateProjCoordinateSystemDefName(pcst)).SetTo(csys))
+		csys = CreateWGS84Csys();
 	return csys;
 }
 
-Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::CreateProjCoordinateSystem(Text::CStringNN sourceName, const UTF8Char *projName)
+Optional<Math::ProjectedCoordinateSystem> Math::CoordinateSystemManager::CreateProjCoordinateSystem(Text::CStringNN sourceName, const UTF8Char *projName)
 {
 	const Math::CoordinateSystemManager::ProjectedCSysInfo *coord = GetProjCoordinateSystemInfo(projName);
 	NN<Math::GeographicCoordinateSystem> gcs;
@@ -644,7 +641,7 @@ Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::CreateProjCoordi
 	{
 		return 0;
 	}
-	if (!gcs.Set(Math::CoordinateSystemManager::CreateGeogCoordinateSystem(sourceName, (const UTF8Char*)coord->geoName)))
+	if (!Math::CoordinateSystemManager::CreateGeogCoordinateSystem(sourceName, (const UTF8Char*)coord->geoName).SetTo(gcs))
 	{
 		return 0;
 	}
@@ -710,7 +707,7 @@ const Math::CoordinateSystemManager::ProjectedCSysInfo *Math::CoordinateSystemMa
 }
 
 
-Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(GeoCoordSysType gcst)
+Optional<Math::GeographicCoordinateSystem> Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(GeoCoordSysType gcst)
 {
 	Text::CString name = Math::CoordinateSystemManager::GeoCoordSysTypeGetName(gcst);
 	if (name.v == 0)
@@ -718,7 +715,7 @@ Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::CreateGeogCoord
 	return CreateGeogCoordinateSystem(name.OrEmpty(), name.v);
 }
 
-Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::CreateGeogCoordinateSystem(Text::CStringNN sourceName, const UTF8Char *geoName)
+Optional<Math::GeographicCoordinateSystem> Math::CoordinateSystemManager::CreateGeogCoordinateSystem(Text::CStringNN sourceName, const UTF8Char *geoName)
 {
 	const Math::CoordinateSystemManager::GeographicCSysInfo *coord = GetGeogCoordinateSystemInfo(geoName);
 	Math::GeographicCoordinateSystem *csys;
@@ -771,7 +768,7 @@ const Math::CoordinateSystemManager::GeographicCSysInfo *Math::CoordinateSystemM
 	return 0;
 }
 
-NN<Math::GeographicCoordinateSystem> Math::CoordinateSystemManager::CreateDefaultCsys()
+NN<Math::GeographicCoordinateSystem> Math::CoordinateSystemManager::CreateWGS84Csys()
 {
 	NN<Math::GeographicCoordinateSystem> csys;
 	const Math::CoordinateSystemManager::DatumInfo *datum = GetDatumInfoByName((const UTF8Char*)"WGS_1984");

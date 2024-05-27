@@ -493,7 +493,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 			{
 				if (imgLyr == 0)
 				{
-					NEW_CLASS(imgLyr, Map::WebImageLayer(nnbrowser, nnparsers, sourceName, Math::CoordinateSystemManager::CreateDefaultCsys(), containerNameSb.ToCString()));
+					NEW_CLASS(imgLyr, Map::WebImageLayer(nnbrowser, nnparsers, sourceName, Math::CoordinateSystemManager::CreateWGS84Csys(), containerNameSb.ToCString()));
 				}
 
 				NN<Text::String> name = Text::String::NewEmpty();
@@ -654,7 +654,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 			{
 				if (imgLyr == 0)
 				{
-					NEW_CLASS(imgLyr, Map::WebImageLayer(nnbrowser, nnparsers, sourceName, Math::CoordinateSystemManager::CreateDefaultCsys(), containerNameSb.ToCString()));
+					NEW_CLASS(imgLyr, Map::WebImageLayer(nnbrowser, nnparsers, sourceName, Math::CoordinateSystemManager::CreateWGS84Csys(), containerNameSb.ToCString()));
 				}
 
 				NN<Text::String> name = Text::String::NewEmpty();
@@ -1317,7 +1317,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 				NN<Map::VectorLayer> lyr;
 				if (colValues.GetItem(0).SetTo(s))
 				{
-					NEW_CLASSNN(lyr, Map::VectorLayer(vec->HasZ()?Map::DRAW_LAYER_POLYLINE3D:Map::DRAW_LAYER_POLYLINE, sourceName, colNames, Math::CoordinateSystemManager::CreateDefaultCsys(), colInfos, 0, s->ToCString()));
+					NEW_CLASSNN(lyr, Map::VectorLayer(vec->HasZ()?Map::DRAW_LAYER_POLYLINE3D:Map::DRAW_LAYER_POLYLINE, sourceName, colNames, Math::CoordinateSystemManager::CreateWGS84Csys(), colInfos, 0, s->ToCString()));
 					lyr->AddVector(vec, colValues);
 					if (style)
 					{
@@ -1343,7 +1343,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 				NN<Net::WebBrowser> nnbrowser;
 				if (colValues.GetItem(0).SetTo(s))
 				{
-					NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, sourceName, colNames, Math::CoordinateSystemManager::CreateDefaultCsys(), colInfos, 0, s->ToCString()));
+					NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, sourceName, colNames, Math::CoordinateSystemManager::CreateWGS84Csys(), colInfos, 0, s->ToCString()));
 					lyr->SetLabelVisible(true);
 					lyr->AddVector(vec, colValues);
 
@@ -1405,7 +1405,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 				NN<Map::VectorLayer> lyr;
 				if (colValues.GetItem(0).SetTo(s))
 				{
-					NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYGON, sourceName, colNames, Math::CoordinateSystemManager::CreateDefaultCsys(), colInfos, 0, s->ToCString()));
+					NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYGON, sourceName, colNames, Math::CoordinateSystemManager::CreateWGS84Csys(), colInfos, 0, s->ToCString()));
 					lyr->AddVector(vec, colValues);
 
 					if (style)

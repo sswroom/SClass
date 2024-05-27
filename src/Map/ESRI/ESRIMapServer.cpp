@@ -35,7 +35,7 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, NN<Net::SocketFactory
 	this->supportQuery = false;
 	this->supportData = false;
 	this->noResource = noResource;
-	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+	this->csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 
 	sptr = url.ConcatTo(sbuff);
 	if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("/MapServer")))
@@ -134,7 +134,7 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, NN<Net::SocketFactory
 						Text::JSONObject *spRef = (Text::JSONObject*)o;
 						UInt32 wkid = (UInt32)spRef->GetObjectInt32(CSTR("wkid"));
 						NN<Math::CoordinateSystem> csys;
-						if (csys.Set(Math::CoordinateSystemManager::SRCreateCSys(wkid)))
+						if (Math::CoordinateSystemManager::SRCreateCSys(wkid).SetTo(csys))
 						{
 							this->csys.Delete();
 							this->csys = csys;
@@ -232,14 +232,14 @@ void Map::ESRI::ESRIMapServer::SetSRID(UInt32 srid)
 	if (this->noResource)
 	{
 		NN<Math::CoordinateSystem> csys;
-		if (csys.Set(Math::CoordinateSystemManager::SRCreateCSys(srid)))
+		if (Math::CoordinateSystemManager::SRCreateCSys(srid).SetTo(csys))
 		{
 			this->csys.Delete();
 			this->csys = csys;
 			const Math::CoordinateSystemManager::SpatialRefInfo *srinfo = Math::CoordinateSystemManager::SRGetSpatialRef(srid);
 			if (csys->IsProjected())
 			{
-				NN<Math::CoordinateSystem> wgs84Csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+				NN<Math::CoordinateSystem> wgs84Csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 				Math::Coord2DDbl tl = Math::CoordinateSystem::Convert(wgs84Csys, csys, Math::Coord2DDbl(srinfo->minXGeo, srinfo->minYGeo));
 				Math::Coord2DDbl br = Math::CoordinateSystem::Convert(wgs84Csys, csys, Math::Coord2DDbl(srinfo->maxXGeo, srinfo->maxYGeo));
 				this->bounds = Math::RectAreaDbl(tl, br);

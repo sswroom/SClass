@@ -40,12 +40,12 @@ Crypto::Hash::BcryptValidator::~BcryptValidator()
 {
 }
 
-Crypto::Hash::HashValidatorSess *Crypto::Hash::BcryptValidator::CreateSess()
+NN<Crypto::Hash::HashValidatorSess> Crypto::Hash::BcryptValidator::CreateSess()
 {
-	return (Crypto::Hash::HashValidatorSess*)-1;
+	return NN<Crypto::Hash::HashValidatorSess>::FromPtr((Crypto::Hash::HashValidatorSess*)-1);
 }
 
-void Crypto::Hash::BcryptValidator::DeleteSess(HashValidatorSess *sess)
+void Crypto::Hash::BcryptValidator::DeleteSess(NN<HashValidatorSess> sess)
 {
 }
 
@@ -77,7 +77,7 @@ Bool Crypto::Hash::BcryptValidator::SetHash(const UTF8Char *hash, UOSInt hashLen
 	}
 }
 
-Bool Crypto::Hash::BcryptValidator::IsMatch(HashValidatorSess *sess, const UTF8Char *password, UOSInt pwdLen)
+Bool Crypto::Hash::BcryptValidator::IsMatch(NN<HashValidatorSess> sess, const UTF8Char *password, UOSInt pwdLen)
 {
 	UInt8 myCTxt[24];
 	this->CalcHash(this->cost, this->salt, password, pwdLen, myCTxt);

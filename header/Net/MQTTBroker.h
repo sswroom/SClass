@@ -96,7 +96,7 @@ namespace Net
 		static void __stdcall OnClientData(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
 		static void __stdcall OnClientTimeout(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData);
 		static void __stdcall OnClientReady(NN<Net::TCPClient> cli, AnyType userObj);
-		static void __stdcall OnClientConn(Socket *s, AnyType userObj);
+		static void __stdcall OnClientConn(NN<Socket> s, AnyType userObj);
 		
 		static UInt32 __stdcall SysInfoThread(AnyType userObj);
 

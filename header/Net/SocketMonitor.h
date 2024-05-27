@@ -16,7 +16,7 @@ namespace Net
 
 	private:
 		NN<Net::SocketFactory> sockf;
-		Socket *soc;
+		NN<Socket> soc;
 		Data::CallbackStorage<RAWDataHdlr> hdlr;
 
 		Sync::Thread **threads;
@@ -26,7 +26,7 @@ namespace Net
 		static void __stdcall DataThread(NN<Sync::Thread> thread);
 
 	public:
-		SocketMonitor(NN<Net::SocketFactory> sockf, Socket *soc, RAWDataHdlr hdlr, AnyType userData, UOSInt workerCnt);
+		SocketMonitor(NN<Net::SocketFactory> sockf, NN<Socket> soc, RAWDataHdlr hdlr, AnyType userData, UOSInt workerCnt);
 		~SocketMonitor();
 	};
 }

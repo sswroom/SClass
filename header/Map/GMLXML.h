@@ -11,7 +11,7 @@ namespace Map
 	private:
 		struct ParseEnv
 		{
-			Math::CoordinateSystem *csys;
+			Optional<Math::CoordinateSystem> csys;
 			UInt32 srid;
 		};
 	public:

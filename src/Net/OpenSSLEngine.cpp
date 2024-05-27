@@ -36,7 +36,7 @@ struct Net::OpenSSLEngine::ClassData
 	Data::FastStringMap<Bool> *alpnSupports;
 };
 
-Net::SSLClient *Net::OpenSSLEngine::CreateServerConn(Socket *s)
+Optional<Net::SSLClient> Net::OpenSSLEngine::CreateServerConn(NN<Socket> s)
 {
 	SSL *ssl = SSL_new(this->clsData->ctx);
 	this->sockf->SetRecvTimeout(s, 2000);
@@ -62,7 +62,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateServerConn(Socket *s)
 	}
 }
 
-Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, Text::CStringNN hostName, OptOut<ErrorType> err)
+Optional<Net::SSLClient> Net::OpenSSLEngine::CreateClientConn(void *sslObj, NN<Socket> s, Text::CStringNN hostName, OptOut<ErrorType> err)
 {
 	SSL *ssl = (SSL*)sslObj;
 	this->sockf->SetNoDelay(s, true);
@@ -482,7 +482,7 @@ void Net::OpenSSLEngine::ClientSetSkipCertCheck(Bool skipCertCheck)
 }
 
 
-Net::SSLClient *Net::OpenSSLEngine::ClientConnect(Text::CStringNN hostName, UInt16 port, OptOut<ErrorType> err, Data::Duration timeout)
+Optional<Net::SSLClient> Net::OpenSSLEngine::ClientConnect(Text::CStringNN hostName, UInt16 port, OptOut<ErrorType> err, Data::Duration timeout)
 {
 	Net::SocketUtil::AddressInfo addr[1];
 	UOSInt addrCnt = this->sockf->DNSResolveIPs(hostName, Data::DataArray<SocketUtil::AddressInfo>(addr, 1));
@@ -505,14 +505,13 @@ Net::SSLClient *Net::OpenSSLEngine::ClientConnect(Text::CStringNN hostName, UInt
 	{
 		SSL_use_PrivateKey_ASN1(EVP_PKEY_RSA, ssl, this->clsData->cliKey->GetASN1Buff(), (int)(OSInt)this->clsData->cliKey->GetASN1BuffSize());
 	}
-	Socket *s;
+	NN<Socket> s;
 	UOSInt addrInd = 0;
 	while (addrInd < addrCnt)
 	{
 		if (addr[addrInd].addrType == Net::AddrType::IPv4)
 		{
-			s = this->sockf->CreateTCPSocketv4();
-			if (s == 0)
+			if (!this->sockf->CreateTCPSocketv4().SetTo(s))
 			{
 				SSL_free(ssl);
 				err.Set(ErrorType::OutOfMemory);
@@ -526,8 +525,7 @@ Net::SSLClient *Net::OpenSSLEngine::ClientConnect(Text::CStringNN hostName, UInt
 		}
 		else if (addr[addrInd].addrType == Net::AddrType::IPv6)
 		{
-			s = this->sockf->CreateTCPSocketv6();
-			if (s == 0)
+			if (!this->sockf->CreateTCPSocketv6().SetTo(s))
 			{
 				SSL_free(ssl);
 				err.Set(ErrorType::OutOfMemory);
@@ -547,7 +545,7 @@ Net::SSLClient *Net::OpenSSLEngine::ClientConnect(Text::CStringNN hostName, UInt
 	return 0;
 }
 
-Net::SSLClient *Net::OpenSSLEngine::ClientInit(Socket *s, Text::CStringNN hostName, OptOut<ErrorType> err)
+Optional<Net::SSLClient> Net::OpenSSLEngine::ClientInit(NN<Socket> s, Text::CStringNN hostName, OptOut<ErrorType> err)
 {
 	SSL *ssl = SSL_new(this->clsData->ctx);
 	if (ssl == 0)

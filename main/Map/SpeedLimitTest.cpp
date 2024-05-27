@@ -14,9 +14,9 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Map::HKSpeedLimit *spdLimit = roadNetwork.CreateSpeedLimit();
 	if (spdLimit)
 	{
-		Math::CoordinateSystem *csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
+		NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 		spdLimit->SetReqCoordinateSystem(csys);
-		DEL_CLASS(csys);
+		csys.Delete();
 		Int32 speedLimit = spdLimit->GetSpeedLimit(Math::Coord2DDbl(114.230057, 22.308962), 20);
 		printf("Speed Limit = %d\r\n", speedLimit);
 		DEL_CLASS(spdLimit);

@@ -39,7 +39,8 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 		}
 	}
 	Net::SSLVer ver = (Net::SSLVer)me->cboVersion->GetSelectedItem().GetOSInt();
-	Socket *s;
+	Optional<Socket> s;
+	NN<Socket> nns;
 	if (addr.addrType == Net::AddrType::IPv4)
 	{
 		s = me->sockf->CreateTCPSocketv4();
@@ -54,15 +55,15 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 		sslHost->Release();
 		return;
 	}
-	if (s == 0)
+	if (!s.SetTo(nns))
 	{
 		me->txtStatus->SetText(CSTR("Error in creating socket"));
 		sslHost->Release();
 		return;
 	}
-	if (!me->sockf->Connect(s, addr, port, 30000))
+	if (!me->sockf->Connect(nns, addr, port, 30000))
 	{
-		me->sockf->DestroySocket(s);
+		me->sockf->DestroySocket(nns);
 		sslHost->Release();
 		me->txtStatus->SetText(CSTR("Error in connecting to remote host"));
 		return;
@@ -105,21 +106,21 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 		Text::StrConcatC(&packetBuff[41], UTF8STRC("MSSQLServer")); //2 Data 
 		WriteUInt32(&packetBuff[53], Sync::ThreadUtil::GetThreadId());
 		packetBuff[57] = 0;
-		me->sockf->SetRecvTimeout(s, 5000);
-		if ((retSize = me->sockf->SendData(s, packetBuff, 58, nullptr)) != 58)
+		me->sockf->SetRecvTimeout(nns, 5000);
+		if ((retSize = me->sockf->SendData(nns, packetBuff, 58, nullptr)) != 58)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Error in sending PreLogin packet: size = "));
 			sb.AppendUOSInt(retSize);
 			me->txtStatus->SetText(sb.ToCString());
-			me->sockf->DestroySocket(s);
+			me->sockf->DestroySocket(nns);
 			sslHost->Release();
 			return;
 		}
-		retSize = me->sockf->ReceiveData(s, packetBuff, sizeof(packetBuff), nullptr);
+		retSize = me->sockf->ReceiveData(nns, packetBuff, sizeof(packetBuff), nullptr);
 		if (retSize == 0)
 		{
-			me->sockf->DestroySocket(s);
+			me->sockf->DestroySocket(nns);
 			me->txtStatus->SetText(CSTR("Server does not have valid reply after PreLogin"));
 			sslHost->Release();
 			return;
@@ -132,22 +133,22 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 		retSize = Net::SSLUtil::GenSSLClientHello(&packetBuff[8], sslHost->ToCString(), ver);
 		sslHost->Release();
 		WriteMUInt16(&packetBuff[2], retSize + 8); //Packet Length
-		if ((retSize = me->sockf->SendData(s, packetBuff, retSize + 8, nullptr)) == 0)
+		if ((retSize = me->sockf->SendData(nns, packetBuff, retSize + 8, nullptr)) == 0)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Error in sending SSL handshake packet: size = "));
 			sb.AppendUOSInt(retSize);
 			me->txtStatus->SetText(sb.ToCString());
-			me->sockf->DestroySocket(s);
+			me->sockf->DestroySocket(nns);
 			return;
 		}
 		retSize = 0;
 		while (true)
 		{
-			readSize = me->sockf->ReceiveData(s, &packetBuff[retSize], sizeof(packetBuff) - retSize, nullptr);
+			readSize = me->sockf->ReceiveData(nns, &packetBuff[retSize], sizeof(packetBuff) - retSize, nullptr);
 			if (readSize == 0)
 			{
-				me->sockf->DestroySocket(s);
+				me->sockf->DestroySocket(nns);
 				me->txtStatus->SetText(CSTR("Server does not have valid reply after SSL handshake"));
 				return;
 			}
@@ -160,7 +161,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 			}
 		}
 
-		me->sockf->DestroySocket(s);
+		me->sockf->DestroySocket(nns);
 		if (packetBuff[0] != 0x12 || packetBuff[1] != 1)
 		{
 			me->txtStatus->SetText(CSTR("Server does not response valid SSL handshake packet"));
@@ -192,22 +193,22 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 	{
 		retSize = Net::SSLUtil::GenSSLClientHello(packetBuff, sslHost->ToCString(), ver);
 		sslHost->Release();
-		if ((retSize = me->sockf->SendData(s, packetBuff, retSize, nullptr)) == 0)
+		if ((retSize = me->sockf->SendData(nns, packetBuff, retSize, nullptr)) == 0)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Error in sending SSL handshake packet: size = "));
 			sb.AppendUOSInt(retSize);
 			me->txtStatus->SetText(sb.ToCString());
-			me->sockf->DestroySocket(s);
+			me->sockf->DestroySocket(nns);
 			return;
 		}
 		retSize = 0;
 		while (true)
 		{
-			readSize = me->sockf->ReceiveData(s, &packetBuff[retSize], sizeof(packetBuff) - retSize, nullptr);
+			readSize = me->sockf->ReceiveData(nns, &packetBuff[retSize], sizeof(packetBuff) - retSize, nullptr);
 			if (readSize == 0)
 			{
-				me->sockf->DestroySocket(s);
+				me->sockf->DestroySocket(nns);
 				me->txtStatus->SetText(CSTR("Server does not have valid reply after SSL handshake"));
 				return;
 			}
@@ -216,7 +217,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLInfoForm::OnCheckClicked(AnyType userObj)
 				break;
 		}
 		
-		me->sockf->DestroySocket(s);
+		me->sockf->DestroySocket(nns);
 		me->currCerts.Delete();
 		Text::StringBuilderUTF8 sb;
 		Net::SSLUtil::ParseResponse(packetBuff, retSize, sb, me->currCerts);

@@ -16,7 +16,7 @@ CB8E9D52EB0C2DFB39B5D82A5315E433
 void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRBruteForceForm> me = userObj.GetNN<SSWR::AVIRead::AVIRBruteForceForm>();
-	Crypto::Hash::IHash *hash;
+	NN<Crypto::Hash::IHash> hash;
 	Text::StringBuilderUTF8 sb;
 	UInt32 minLeng;
 	UInt32 maxLeng;
@@ -45,8 +45,7 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(AnyType userObj
 	OSInt hashType = me->cboHashType->GetSelectedItem().GetOSInt();
 	if (hashType < 1000)
 	{
-		hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)hashType);
-		if (hash == 0)
+		if (!Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)hashType).SetTo(hash))
 		{
 			me->ui->ShowMsgOK(CSTR("Unsupported Hash Type"), CSTR("Brute Force"), me);
 			return;
@@ -132,14 +131,16 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(Optional<UI::GUIClientCont
 	this->cboHashType = ui->NewComboBox(*this, false);
 	this->cboHashType->SetRect(104, 4, 150, 23, false);
 
-	Crypto::Hash::IHash *hash;
+	NN<Crypto::Hash::IHash> hash;
 	currHash = Crypto::Hash::HashType::First;
 	while (currHash <= Crypto::Hash::HashType::Last)
 	{
-		hash = Crypto::Hash::HashCreator::CreateHash(currHash);
-		sptr = hash->GetName(sbuff);
-		this->cboHashType->AddItem(CSTRP(sbuff, sptr), (void*)currHash);
-		DEL_CLASS(hash);
+		if (Crypto::Hash::HashCreator::CreateHash(currHash).SetTo(hash))
+		{
+			sptr = hash->GetName(sbuff);
+			this->cboHashType->AddItem(CSTRP(sbuff, sptr), (void*)currHash);
+			hash.Delete();
+		}
 		currHash = (Crypto::Hash::HashType)((OSInt)currHash + 1);
 	}
 	this->cboHashType->AddItem(CSTR("Bcrypt"), (void*)1000);

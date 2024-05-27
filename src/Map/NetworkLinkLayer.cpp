@@ -188,7 +188,7 @@ void Map::NetworkLinkLayer::LoadLink(NN<LinkInfo> link)
 	}
 }
 
-Map::NetworkLinkLayer::NetworkLinkLayer(Text::CStringNN fileName, NN<Parser::ParserList> parsers, NN<Net::WebBrowser> browser, Text::CString layerName) : Map::MapDrawLayer(fileName, 0, layerName, Math::CoordinateSystemManager::CreateDefaultCsys())
+Map::NetworkLinkLayer::NetworkLinkLayer(Text::CStringNN fileName, NN<Parser::ParserList> parsers, NN<Net::WebBrowser> browser, Text::CString layerName) : Map::MapDrawLayer(fileName, 0, layerName, Math::CoordinateSystemManager::CreateWGS84Csys())
 {
 	this->parsers = parsers;
 	this->browser = browser;

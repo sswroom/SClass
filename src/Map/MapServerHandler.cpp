@@ -174,7 +174,7 @@ Bool __stdcall Map::MapServerHandler::GetLayerDataFunc(NN<Net::WebServer::IWebRe
 			if (objIds.GetCount() > 0)
 			{
 				NN<Math::CoordinateSystem> csys = layer->GetCoordinateSystem();
-				NN<Math::CoordinateSystem> wgs84 = Math::CoordinateSystemManager::CreateDefaultCsys();
+				NN<Math::CoordinateSystem> wgs84 = Math::CoordinateSystemManager::CreateWGS84Csys();
 				Bool needConv = !wgs84->Equals(csys);
 				Math::CoordinateSystemConverter converter(csys, wgs84);
 				Text::StringBuilderUTF8 sbTmp;
@@ -563,7 +563,7 @@ Map::MapServerHandler::MapServerHandler(NN<Parser::ParserList> parsers)
 	this->parsers = parsers;
 	this->cesiumScenePath = 0;
 	this->cesiumMinError = 0;
-	this->wgs84 = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
+	this->wgs84 = Math::CoordinateSystemManager::CreateWGS84Csys();
 	this->AddService(CSTR("/getlayers"), Net::WebUtil::RequestMethod::HTTP_GET, GetLayersFunc);
 	this->AddService(CSTR("/getlayerdata"), Net::WebUtil::RequestMethod::HTTP_GET, GetLayerDataFunc);
 	this->AddService(CSTR("/cesiumdata"), Net::WebUtil::RequestMethod::HTTP_GET, CesiumDataFunc);
@@ -574,7 +574,7 @@ Map::MapServerHandler::~MapServerHandler()
 {
 	this->assets.DeleteAll();
 	SDEL_STRING(this->cesiumScenePath);
-	DEL_CLASS(this->wgs84);
+	this->wgs84.Delete();
 }
 
 Bool Map::MapServerHandler::AddAsset(Text::CStringNN filePath)

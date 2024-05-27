@@ -30,7 +30,7 @@ void __stdcall Net::WebServer::WebListener::ClientReady(NN<Net::TCPClient> cli, 
 	}
 }
 
-void __stdcall Net::WebServer::WebListener::ConnHdlr(Socket *s, AnyType userObj)
+void __stdcall Net::WebServer::WebListener::ConnHdlr(NN<Socket> s, AnyType userObj)
 {
 	NN<Net::WebServer::WebListener> me = userObj.GetNN<Net::WebServer::WebListener>();
 	NN<Net::TCPClient> cli;

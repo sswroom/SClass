@@ -51,7 +51,7 @@ namespace Net
 			IO::FileStream *rawLog;
 
 			static void __stdcall ClientReady(NN<Net::TCPClient> cli, AnyType userObj);
-			static void __stdcall ConnHdlr(Socket *s, AnyType userObj);
+			static void __stdcall ConnHdlr(NN<Socket> s, AnyType userObj);
 			static void __stdcall ClientEvent(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
 			static void __stdcall ClientData(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
 			static void __stdcall ClientTimeout(NN<Net::TCPClient> cli, AnyType userObj, AnyType cliData);

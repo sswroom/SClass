@@ -1269,7 +1269,7 @@ Map::MapDrawLayer *Map::HKTrafficLayer::GetNodePoints()
 	const UTF8Char *col = (const UTF8Char*)"id";
 	NN<Math::Geometry::Point> pt;
 	NN<Math::CoordinateSystem> csys;
-	if (!csys.Set(Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80)))
+	if (!Optional<Math::CoordinateSystem>(Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80)).SetTo(csys))
 		return 0;
 	NEW_CLASS(layer, Map::VectorLayer(Map::DRAW_LAYER_POINT, CSTR("HKTrafficNode"), 1, &col, csys, 0, CSTR("HKTrafficNode")));
 	OSInt i = 0;

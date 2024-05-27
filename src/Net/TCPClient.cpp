@@ -19,12 +19,14 @@ Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, Text::CStringNN name, UI
 {
 	this->currCnt = 0;
 	this->flags = 0;
-	s = 0;
+	this->s = 0;
 	this->sockf = sockf;
 	this->readEvent = 0;
 	this->writeEvent = 0;
 	this->timeout = 0;
+	this->cliId = 0;
 
+	NN<Socket> s;
 	Net::SocketUtil::AddressInfo addr;
 	if (!sockf->DNSResolveIP(name, addr))
 	{
@@ -33,8 +35,8 @@ Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, Text::CStringNN name, UI
 	}
 	if (addr.addrType == Net::AddrType::IPv4)
 	{
-		s = sockf->CreateTCPSocketv4();
-		if (s == 0)
+		this->s = sockf->CreateTCPSocketv4();
+		if (!this->s.SetTo(s))
 		{
 			this->flags = 12;
 			return;
@@ -42,8 +44,8 @@ Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, Text::CStringNN name, UI
 	}
 	else if (addr.addrType == Net::AddrType::IPv6)
 	{
-		s = sockf->CreateTCPSocketv6();
-		if (s == 0)
+		this->s = sockf->CreateTCPSocketv6();
+		if (!this->s.SetTo(s))
 		{
 			this->flags = 12;
 			return;
@@ -57,7 +59,7 @@ Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, Text::CStringNN name, UI
 	if (!sockf->Connect(s, addr, port, timeout))
 	{
 		sockf->DestroySocket(s);
-		s = 0;
+		this->s = 0;
 		this->flags = 12;
 		return;
 	}
@@ -79,9 +81,9 @@ Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, UInt32 ip, UInt16 port, 
 	sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip, port);
 	this->SetSourceName(sbuff, (UOSInt)(sptr - sbuff));*/
 
-	s = sockf->CreateTCPSocketv4();
-
-	if (s == 0)
+	this->s = sockf->CreateTCPSocketv4();
+	NN<Socket> s;
+	if (!this->s.SetTo(s))
 	{
 		printf("Error in creating socket\r\n");
 		this->flags = 12;
@@ -92,7 +94,7 @@ Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, UInt32 ip, UInt16 port, 
 	{
 		printf("Error in connecting\r\n");
 		sockf->DestroySocket(s);
-		s = 0;
+		this->s = 0;
 		this->flags = 12;
 		return;
 	}
@@ -109,10 +111,11 @@ Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil
 	this->writeEvent = 0;
 	this->timeout = 0;
 
+	NN<Socket> s;
 	if (addr->addrType == Net::AddrType::IPv4)
 	{
-		s = sockf->CreateTCPSocketv4();
-		if (s == 0)
+		this->s = sockf->CreateTCPSocketv4();
+		if (!this->s.SetTo(s))
 		{
 #ifdef PRINTDEBUG
 			IO::Console::PrintStrO((const UTF8Char*)"Error in creating TCP Socket v4\r\n");
@@ -123,8 +126,8 @@ Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil
 	}
 	else if (addr->addrType == Net::AddrType::IPv6)
 	{
-		s = sockf->CreateTCPSocketv6();
-		if (s == 0)
+		this->s = sockf->CreateTCPSocketv6();
+		if (!this->s.SetTo(s))
 		{
 #ifdef PRINTDEBUG
 			IO::Console::PrintStrO((const UTF8Char*)"Error in creating TCP Socket v6\r\n");
@@ -147,7 +150,7 @@ Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil
 		IO::Console::PrintStrO((const UTF8Char*)"Cannot connect to destination\r\n");
 #endif
 		sockf->DestroySocket(s);
-		s = 0;
+		this->s = 0;
 		this->flags = 12;
 		return;
 	}
@@ -161,7 +164,7 @@ Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil
 	this->cliId = sockf->GenSocketId(s);
 }
 
-Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, Socket *s) : IO::Stream(CSTR(""))
+Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, Optional<Socket> s) : IO::Stream(CSTR(""))
 {
 	this->sockf = sockf;
 	this->s = s;
@@ -170,10 +173,11 @@ Net::TCPClient::TCPClient(NN<Net::SocketFactory> sockf, Socket *s) : IO::Stream(
 	this->readEvent = 0;
 	this->writeEvent = 0;
 	this->timeout = 0;
-	if (s)
+	NN<Socket> nns;
+	if (s.SetTo(nns))
 	{
-		this->cliId = sockf->GenSocketId(s);
-/*
+		this->cliId = sockf->GenSocketId(nns);
+	/*
 		UTF8Char sbuff[128];
 		UTF8Char *sptr;
 		sptr = sockf->GetRemoteName(sbuff, s);
@@ -194,7 +198,7 @@ Net::TCPClient::~TCPClient()
 
 Bool Net::TCPClient::IsDown() const
 {
-	if (this->s == 0 || (this->flags & 6) != 0)
+	if (this->s.IsNull() || (this->flags & 6) != 0)
 	{
 		return true;
 	}
@@ -203,7 +207,8 @@ Bool Net::TCPClient::IsDown() const
 
 UOSInt Net::TCPClient::Read(const Data::ByteArray &buff)
 {
-	if (s && (this->flags & 6) == 0)
+	NN<Socket> s;
+	if (this->s.SetTo(s) && (this->flags & 6) == 0)
 	{
 		Net::SocketFactory::ErrorType et;
 		UOSInt recvSize = sockf->ReceiveData(s, buff.Ptr().Ptr(), buff.GetSize(), et);
@@ -250,7 +255,8 @@ UOSInt Net::TCPClient::Read(const Data::ByteArray &buff)
 
 UOSInt Net::TCPClient::Write(const UInt8 *buff, UOSInt size)
 {
-	if (s && (this->flags & 5) == 0)
+	NN<Socket> s;
+	if (this->s.SetTo(s) && (this->flags & 5) == 0)
 	{
 		Net::SocketFactory::ErrorType et;
 		UOSInt sendSize;
@@ -294,7 +300,8 @@ UOSInt Net::TCPClient::Write(const UInt8 *buff, UOSInt size)
 
 void *Net::TCPClient::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 {
-	if (s == 0 || (this->flags & 6) != 0)
+	NN<Socket> s;
+	if (!this->s.SetTo(s) || (this->flags & 6) != 0)
 		return 0;
 	Net::SocketFactory::ErrorType et;
 	void *data = sockf->BeginReceiveData(s, buff.Ptr().Ptr(), buff.GetSize(), evt, et);
@@ -334,7 +341,8 @@ void Net::TCPClient::CancelRead(void *reqData)
 
 void *Net::TCPClient::BeginWrite(const UInt8 *buff, UOSInt size, Sync::Event *evt)
 {
-	if (s == 0 || (this->flags & 5) != 0)
+	NN<Socket> s;
+	if (!this->s.SetTo(s) || (this->flags & 5) != 0)
 		return 0;
 	void *data = (void*)Write(buff, size);
 	if (data != 0 && evt != 0)
@@ -364,7 +372,12 @@ void Net::TCPClient::Close()
 	if ((this->flags & 4) == 0)
 	{
 		this->flags |= 4;
-		this->sockf->DestroySocket(s);
+		NN<Socket> s;
+		if (this->s.SetTo(s))
+		{
+			this->sockf->DestroySocket(s);
+			this->s = 0;
+		}
 	}
 }
 
@@ -407,7 +420,8 @@ Bool Net::TCPClient::IsConnectError()
 UOSInt Net::TCPClient::GetRecvBuffSize()
 {
 	UInt32 argp;
-	if (this->sockf->SocketGetReadBuff(this->s, &argp))
+	NN<Socket> s;
+	if (this->s.SetTo(s) && this->sockf->SocketGetReadBuff(s, &argp))
 	{
 		return argp;
 	}
@@ -419,7 +433,8 @@ UOSInt Net::TCPClient::GetRecvBuffSize()
 
 Bool Net::TCPClient::Wait(Data::Duration dur)
 {
-	return this->sockf->SocketWait(this->s, dur);
+	NN<Socket> s;
+	return this->s.SetTo(s) && this->sockf->SocketWait(s, dur);
 }
 
 UInt64 Net::TCPClient::GetCliId()
@@ -430,7 +445,8 @@ UInt64 Net::TCPClient::GetCliId()
 UTF8Char *Net::TCPClient::GetRemoteName(UTF8Char *buff) const
 {
 	UTF8Char *sptr;
-	if ((this->flags & 4) || (sptr = this->sockf->GetRemoteName(buff, this->s)) == 0)
+	NN<Socket> s;
+	if ((this->flags & 4) || !this->s.SetTo(s) || (sptr = this->sockf->GetRemoteName(buff, s)) == 0)
 	{
 		UInt32 ip;
 		UInt16 port;
@@ -445,14 +461,20 @@ UTF8Char *Net::TCPClient::GetRemoteName(UTF8Char *buff) const
 
 UTF8Char *Net::TCPClient::GetLocalName(UTF8Char *buff) const
 {
-	return this->sockf->GetLocalName(buff, this->s);
+	NN<Socket> s;
+	if (this->s.SetTo(s))
+	{
+		return this->sockf->GetLocalName(buff, s);
+	}
+	return 0;
 }
 
 Bool Net::TCPClient::GetRemoteAddr(NN<Net::SocketUtil::AddressInfo> addr) const
 {
-	if (this->s)
+	NN<Socket> s;
+	if (this->s.SetTo(s))
 	{
-		return this->sockf->GetRemoteAddr(this->s, addr, 0);
+		return this->sockf->GetRemoteAddr(s, addr, 0);
 	}
 	else
 	{
@@ -472,26 +494,29 @@ UInt16 Net::TCPClient::GetLocalPort() const
 
 void Net::TCPClient::SetNoDelay(Bool val)
 {
-	if ((this->flags & 4) == 0)
+	NN<Socket> s;
+	if ((this->flags & 4) == 0 && this->s.SetTo(s))
 	{
-		this->sockf->SetNoDelay(this->s, val);
+		this->sockf->SetNoDelay(s, val);
 	}
 }
 
 void Net::TCPClient::ShutdownSend()
 {
-	if ((this->flags & 4) == 0)
+	NN<Socket> s;
+	if ((this->flags & 4) == 0 && this->s.SetTo(s))
 	{
 		this->flags |= 1;
-		this->sockf->ShutdownSend(this->s);
+		this->sockf->ShutdownSend(s);
 	}
 }
 
 void Net::TCPClient::SetTimeout(Data::Duration timeout)
 {
-	if ((this->flags & 4) == 0)
+	NN<Socket> s;
+	if ((this->flags & 4) == 0 && this->s.SetTo(s))
 	{
-		this->sockf->SetRecvTimeout(this->s, timeout);
+		this->sockf->SetRecvTimeout(s, timeout);
 		this->timeout = timeout;
 	}
 }
@@ -501,14 +526,14 @@ Data::Duration Net::TCPClient::GetTimeout()
 	return this->timeout;
 }
 
-Socket *Net::TCPClient::GetSocket()
+Optional<Socket> Net::TCPClient::GetSocket()
 {
 	return s;
 }
 
-Socket *Net::TCPClient::RemoveSocket()
+Optional<Socket> Net::TCPClient::RemoveSocket()
 {
-	Socket *s = this->s;
+	Optional<Socket> s = this->s;
 	this->s = 0;
 	this->flags |= 4;
 	return s;

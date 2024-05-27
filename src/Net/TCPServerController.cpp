@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Net/TCPServerController.h"
 
-void __stdcall Net::TCPServerController::ConnHdlr(Socket *s, AnyType userObj)
+void __stdcall Net::TCPServerController::ConnHdlr(NN<Socket> s, AnyType userObj)
 {
 	NN<Net::TCPClient> cli;
 	Net::TCPServerController::ClientData *data;

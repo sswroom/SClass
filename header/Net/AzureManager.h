@@ -17,7 +17,7 @@ namespace Net
 		AzureManager(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl);
 		~AzureManager();
 
-		Crypto::Cert::X509Key *CreateKey(Text::CStringNN kid);
+		Optional<Crypto::Cert::X509Key> CreateKey(Text::CStringNN kid);
 	};
 }
 #endif

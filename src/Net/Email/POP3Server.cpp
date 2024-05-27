@@ -32,7 +32,7 @@ void __stdcall Net::Email::POP3Server::ConnReady(NN<Net::TCPClient> cli, AnyType
 	me->WriteMessage(cli, true, me->greeting->ToCString());
 }
 
-void __stdcall Net::Email::POP3Server::ConnHdlr(Socket *s, AnyType userObj)
+void __stdcall Net::Email::POP3Server::ConnHdlr(NN<Socket> s, AnyType userObj)
 {
 	NN<Net::Email::POP3Server> me = userObj.GetNN<Net::Email::POP3Server>();
 	NN<Net::SSLEngine> ssl;
@@ -217,8 +217,11 @@ void Net::Email::POP3Server::ParseCmd(NN<Net::TCPClient> cli, NN<MailStatus> cli
 		else if (this->ssl.SetTo(ssl))
 		{
 			WriteMessage(cli, true, CSTR("Begin TLS negotiation now."));
-			Socket *s = cli->RemoveSocket();
-			ssl->ServerInit(s, ConnReady, this);
+			NN<Socket> s;
+			if (cli->RemoveSocket().SetTo(s))
+			{
+				ssl->ServerInit(s, ConnReady, this);
+			}
 		}
 		else
 		{

@@ -130,7 +130,7 @@ namespace SSWR
 			void UpdateSvrConnList();
 			void RunSQLFile(NN<DB::ReadingDBTool> db, NN<Text::String> fileName);
 
-			Data::Class *CreateTableClass(Text::CString schemaName, Text::CStringNN tableName);
+			Optional<Data::Class> CreateTableClass(Text::CString schemaName, Text::CStringNN tableName);
 			void CopyTableCreate(DB::SQLType sqlType, Bool axisAware);
 			void ExportTableData(DB::SQLType sqlType, Bool axisAware);
 			void ExportTableCSV();

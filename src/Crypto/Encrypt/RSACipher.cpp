@@ -13,11 +13,13 @@ UOSInt Crypto::Encrypt::RSACipher::PaddingAppend(UInt8 *destBuff, UOSInt destSiz
 			return 0;
 		}
 		Crypto::Hash::HashType hashType = Crypto::Hash::HashType::SHA1;
-		Crypto::Hash::IHash *hash = Crypto::Hash::HashCreator::CreateHash(hashType);
+		NN<Crypto::Hash::IHash> hash;
+		if (!Crypto::Hash::HashCreator::CreateHash(hashType).SetTo(hash))
+			return 0;
 		UOSInt hLen = hash->GetResultSize();
 		if (msgSize + 2 + hLen * 2 > destSize)
 		{
-			DEL_CLASS(hash);
+			hash.Delete();
 			return 0;
 		}
 		UInt8 tempBuff[256];
@@ -26,6 +28,7 @@ UOSInt Crypto::Encrypt::RSACipher::PaddingAppend(UInt8 *destBuff, UOSInt destSiz
 		hash->Clear();
 		hash->GetValue(&tempBuff[1 + hLen]);
 		MemCopyNO(&tempBuff[destSize - msgSize], message, msgSize);
+		hash.Delete();
 		UOSInt i = 1 + hLen * 2;
 		UOSInt j = destSize - msgSize - 1;
 		tempBuff[j] = 1;
@@ -74,11 +77,11 @@ UOSInt Crypto::Encrypt::RSACipher::PaddingRemove(UInt8* destBuff, const UInt8* b
 		{
 			return 0;
 		}
-		Crypto::Hash::IHash *hash = Crypto::Hash::HashCreator::CreateHash(hashType);
+		NN<Crypto::Hash::IHash> hash;
 		UOSInt i;
 		UOSInt hLen;
 		UInt8 decBuff[256];
-		if (hash == 0)
+		if (!Crypto::Hash::HashCreator::CreateHash(hashType).SetTo(hash))
 		{
 			return 0;
 		}
@@ -97,7 +100,7 @@ UOSInt Crypto::Encrypt::RSACipher::PaddingRemove(UInt8* destBuff, const UInt8* b
 			decBuff[i] = decBuff[i] ^ blockWithPadding[i];
 			i++;
 		}
-		DEL_CLASS(hash);
+		hash.Delete();
 		i = 1 + hLen + hLen;
 		while (i < blockSize)
 		{
@@ -128,8 +131,8 @@ UOSInt Crypto::Encrypt::RSACipher::PaddingRemove(UInt8* destBuff, const UInt8* b
 
 Bool Crypto::Encrypt::RSACipher::MGF1(UInt8 *destBuff, const UInt8 *seed, UOSInt seedLen, UOSInt len, Crypto::Hash::HashType hashType)
 {
-	Crypto::Hash::IHash *hash = Crypto::Hash::HashCreator::CreateHash(hashType);
-	if (hash == 0)
+	NN<Crypto::Hash::IHash> hash;
+	if (!Crypto::Hash::HashCreator::CreateHash(hashType).SetTo(hash))
 	{
 		return false;
 	}
@@ -156,7 +159,7 @@ Bool Crypto::Encrypt::RSACipher::MGF1(UInt8 *destBuff, const UInt8 *seed, UOSInt
 		hash->GetValue(tmpBuff);
 		MemCopyNO(destBuff, tmpBuff, len);
 	}
-	DEL_CLASS(hash);
+	hash.Delete();
 	return true;
 }
 

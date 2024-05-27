@@ -203,7 +203,7 @@ Bool Net::OSSocketFactory::SocketIsInvalid(Socket *socket)
 	return (SOCKET)socket == INVALID_SOCKET;
 }
 
-Bool Net::OSSocketFactory::SocketBindv4(Socket *socket, UInt32 ip, UInt16 port)
+Bool Net::OSSocketFactory::SocketBindv4(NN<Socket> socket, UInt32 ip, UInt16 port)
 {
 	sockaddr_in addr;
 	addr.sin_family = AF_INET;

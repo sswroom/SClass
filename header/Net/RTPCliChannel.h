@@ -76,10 +76,10 @@ namespace Net
 		Text::String *GetControlURL();
 		Media::MediaType GetMediaType();
 		void SetMediaType(Media::MediaType mediaType);
-		Media::IVideoSource *GetVideo(UOSInt index);
-		Media::IAudioSource *GetAudio(UOSInt index);
-		Media::IVideoSource *CreateShadowVideo(UOSInt index);
-		Media::IAudioSource *CreateShadowAudio(UOSInt index);
+		Optional<Media::IVideoSource> GetVideo(UOSInt index);
+		Optional<Media::IAudioSource> GetAudio(UOSInt index);
+		Optional<Media::IVideoSource> CreateShadowVideo(UOSInt index);
+		Optional<Media::IAudioSource> CreateShadowAudio(UOSInt index);
 
 		AnyType GetUserData();
 		void SetUserData(AnyType userData);
@@ -91,7 +91,7 @@ namespace Net
 		Bool MapPayloadType(Int32 payloadType, Text::CString typ, UInt32 freq, UInt32 nChannel);
 		Bool SetPayloadFormat(Int32 paylodType, const UTF8Char *format);
 
-		static RTPCliChannel *CreateChannel(NN<Net::SocketFactory> sockf, Data::ArrayList<const UTF8Char *> *sdpDesc, Text::CString ctrlURL, Net::IRTPController *playCtrl, NN<IO::LogTool> log);
+		static NN<RTPCliChannel> CreateChannel(NN<Net::SocketFactory> sockf, Data::ArrayList<const UTF8Char *> *sdpDesc, Text::CString ctrlURL, Net::IRTPController *playCtrl, NN<IO::LogTool> log);
 	};
 }
 #endif

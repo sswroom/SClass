@@ -22,7 +22,7 @@ namespace SSWR
 		class AVIRSelStreamForm : public UI::GUIForm
 		{
 		private:
-			IO::Stream *stm;
+			Optional<IO::Stream> stm;
 			IO::StreamType stmType;
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;

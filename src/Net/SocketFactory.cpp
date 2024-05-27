@@ -32,7 +32,7 @@ Net::SocketFactory::SocketFactory(Bool noV6DNS)
 
 Net::SocketFactory::~SocketFactory()
 {
-	SDEL_CLASS(this->dnsHdlr);
+	this->dnsHdlr.Delete();
 	OPTSTR_DEL(this->forceDNS);
 }
 
@@ -49,7 +49,7 @@ Bool Net::SocketFactory::AdapterEnable(Text::CString adapterName, Bool enable)
 Bool Net::SocketFactory::ReloadDNS()
 {
 	Sync::MutexUsage mutUsage(this->dnsMut);
-	SDEL_CLASS(this->dnsHdlr);
+	this->dnsHdlr.Delete();
 	return true;
 }
 
@@ -61,7 +61,7 @@ Bool Net::SocketFactory::ForceDNSServer(Text::CStringNN ip)
 		Sync::MutexUsage mutUsage(this->dnsMut);
 		OPTSTR_DEL(this->forceDNS);
 		this->forceDNS = Text::String::New(ip);
-		SDEL_CLASS(this->dnsHdlr);
+		this->dnsHdlr.Delete();
 		return true;
 	}
 	return false;
@@ -75,26 +75,28 @@ Bool Net::SocketFactory::DNSResolveIP(Text::CStringNN host, NN<Net::SocketUtil::
 		return true;
 
 	UTF8Char *sptr = Text::TextBinEnc::Punycode::Encode(sbuff, host);
+	NN<Net::DNSHandler> dnsHdlr;
 	Sync::MutexUsage mutUsage(this->dnsMut);
-	if (this->dnsHdlr == 0)
+	if (!this->dnsHdlr.SetTo(dnsHdlr))
 	{
 		Net::SocketUtil::AddressInfo dnsAddr;
 		this->GetEffectiveDNS(dnsAddr);
-		NEW_CLASS(this->dnsHdlr, Net::DNSHandler(*this, dnsAddr, this->log));
-		this->LoadHosts(this->dnsHdlr);
+		NEW_CLASSNN(dnsHdlr, Net::DNSHandler(*this, dnsAddr, this->log));
+		this->dnsHdlr = dnsHdlr;
+		this->LoadHosts(dnsHdlr);
 	}
 	mutUsage.EndUse();
 	if (!this->noV6DNS)
 	{
-		if (this->dnsHdlr->GetByDomainNamev6(addr, CSTRP(sbuff, sptr)))
+		if (dnsHdlr->GetByDomainNamev6(addr, CSTRP(sbuff, sptr)))
 			return true;
 	}
-	Bool succ = this->dnsHdlr->GetByDomainNamev4(addr, CSTRP(sbuff, sptr));
+	Bool succ = dnsHdlr->GetByDomainNamev4(addr, CSTRP(sbuff, sptr));
 	if (!succ)
 	{
 		Net::SocketUtil::AddressInfo dnsAddr;
 		this->GetEffectiveDNS(dnsAddr);
-		this->dnsHdlr->UpdateDNSAddr(dnsAddr);
+		dnsHdlr->UpdateDNSAddr(dnsAddr);
 	}
 	return succ;
 }
@@ -107,26 +109,28 @@ UOSInt Net::SocketFactory::DNSResolveIPs(Text::CStringNN host, Data::DataArray<N
 		return 1;
 
 	UTF8Char *sptr = Text::TextBinEnc::Punycode::Encode(sbuff, host);
+	NN<Net::DNSHandler> dnsHdlr;
 	Sync::MutexUsage mutUsage(this->dnsMut);
-	if (this->dnsHdlr == 0)
+	if (!this->dnsHdlr.SetTo(dnsHdlr))
 	{
 		Net::SocketUtil::AddressInfo dnsAddr;
 		this->GetEffectiveDNS(dnsAddr);
-		NEW_CLASS(this->dnsHdlr, Net::DNSHandler(*this, dnsAddr, this->log));
-		this->LoadHosts(this->dnsHdlr);
+		NEW_CLASSNN(dnsHdlr, Net::DNSHandler(*this, dnsAddr, this->log));
+		this->dnsHdlr = dnsHdlr;
+		this->LoadHosts(dnsHdlr);
 	}
 	mutUsage.EndUse();
 	UOSInt ret = 0;
 	if (!this->noV6DNS)
 	{
-		ret = this->dnsHdlr->GetByDomainNamesv6(addrs, CSTRP(sbuff, sptr));
+		ret = dnsHdlr->GetByDomainNamesv6(addrs, CSTRP(sbuff, sptr));
 	}
-	ret += this->dnsHdlr->GetByDomainNamesv4(addrs.SubArray(ret), CSTRP(sbuff, sptr));
+	ret += dnsHdlr->GetByDomainNamesv4(addrs.SubArray(ret), CSTRP(sbuff, sptr));
 	if (ret == 0)
 	{
 		Net::SocketUtil::AddressInfo dnsAddr;
 		this->GetEffectiveDNS(dnsAddr);
-		this->dnsHdlr->UpdateDNSAddr(dnsAddr);
+		dnsHdlr->UpdateDNSAddr(dnsAddr);
 	}
 	return ret;
 }
@@ -142,16 +146,18 @@ UInt32 Net::SocketFactory::DNSResolveIPv4(Text::CStringNN host)
 	}
 
 	UTF8Char *sptr = Text::TextBinEnc::Punycode::Encode(sbuff, host);
+	NN<Net::DNSHandler> dnsHdlr;
 	Sync::MutexUsage mutUsage(this->dnsMut);
-	if (this->dnsHdlr == 0)
+	if (!this->dnsHdlr.SetTo(dnsHdlr))
 	{
 		Net::SocketUtil::AddressInfo dnsAddr;
 		this->GetEffectiveDNS(dnsAddr);
-		NEW_CLASS(this->dnsHdlr, Net::DNSHandler(*this, dnsAddr, this->log));
-		this->LoadHosts(this->dnsHdlr);
+		NEW_CLASSNN(dnsHdlr, Net::DNSHandler(*this, dnsAddr, this->log));
+		this->dnsHdlr = dnsHdlr;
+		this->LoadHosts(dnsHdlr);
 	}
 	mutUsage.EndUse();
-	if (this->dnsHdlr->GetByDomainNamev4(addr, CSTRP(sbuff, sptr)))
+	if (dnsHdlr->GetByDomainNamev4(addr, CSTRP(sbuff, sptr)))
 	{
 		return *(UInt32*)addr.addr;
 	}
@@ -159,12 +165,12 @@ UInt32 Net::SocketFactory::DNSResolveIPv4(Text::CStringNN host)
 	{
 		Net::SocketUtil::AddressInfo dnsAddr;
 		this->GetEffectiveDNS(dnsAddr);
-		this->dnsHdlr->UpdateDNSAddr(dnsAddr);
+		dnsHdlr->UpdateDNSAddr(dnsAddr);
 		return 0;
 	}
 }
 
-UTF8Char *Net::SocketFactory::GetRemoteName(UTF8Char *buff, Socket *socket)
+UTF8Char *Net::SocketFactory::GetRemoteName(UTF8Char *buff, NN<Socket> socket)
 {
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
@@ -179,7 +185,7 @@ UTF8Char *Net::SocketFactory::GetRemoteName(UTF8Char *buff, Socket *socket)
 	}
 }
 
-UTF8Char *Net::SocketFactory::GetLocalName(UTF8Char *buff, Socket *socket)
+UTF8Char *Net::SocketFactory::GetLocalName(UTF8Char *buff, NN<Socket> socket)
 {
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
@@ -194,7 +200,7 @@ UTF8Char *Net::SocketFactory::GetLocalName(UTF8Char *buff, Socket *socket)
 	}
 }
 
-UInt64 Net::SocketFactory::GenSocketId(Socket *socket)
+UInt64 Net::SocketFactory::GenSocketId(NN<Socket> socket)
 {
 	Net::SocketUtil::AddressInfo rAddr;
 	UInt16 rPort;

@@ -25,6 +25,16 @@ public:
 		this->p = p.Ptr();
 	}
 
+	Bool IsNull() const
+	{
+		return this->p == 0;
+	}
+
+	Bool NotNull() const
+	{
+		return this->p != 0;
+	}
+
 	T *Ptr() const
 	{
 		return this->p;

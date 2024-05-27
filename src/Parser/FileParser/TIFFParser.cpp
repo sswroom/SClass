@@ -1529,7 +1529,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			NN<Math::CoordinateSystem> csys;
 			if (srid == 0)
 			{
-				csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+				csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 			}
 			else
 			{
@@ -1601,7 +1601,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					Map::VectorLayer *lyr;
 					NN<Math::Geometry::VectorImage> vimg;
 					NN<Media::SharedImage> simg;
-					NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+					NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 					
 					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, csys, 0, 0, 0, 0, 0));
 					img->To32bpp();

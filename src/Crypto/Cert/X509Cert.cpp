@@ -178,7 +178,7 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Cert::IsValid(NN<Net::SSLE
 			return Crypto::Cert::X509File::ValidStatus::UnknownIssuer;
 		}
 		NN<Crypto::Cert::X509Key> key;
-		if (!key.Set(this->GetNewPublicKey()))
+		if (!this->GetNewPublicKey().SetTo(key))
 		{
 			return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
 		}
@@ -195,7 +195,7 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Cert::IsValid(NN<Net::SSLE
 	}
 
 	NN<Crypto::Cert::X509Key> key;
-	if (!key.Set(issuer->GetNewPublicKey()))
+	if (!issuer->GetNewPublicKey().SetTo(key))
 	{
 		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
 	}
@@ -326,7 +326,7 @@ Bool Crypto::Cert::X509Cert::GetExtensions(NN<CertExtensions> ext) const
 	return false;
 }
 
-Crypto::Cert::X509Key *Crypto::Cert::X509Cert::GetNewPublicKey() const
+Optional<Crypto::Cert::X509Key> Crypto::Cert::X509Cert::GetNewPublicKey() const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt len;
@@ -356,17 +356,17 @@ Crypto::Cert::X509Key *Crypto::Cert::X509Cert::GetNewPublicKey() const
 
 Bool Crypto::Cert::X509Cert::GetKeyId(const Data::ByteArray &keyId) const
 {
-	Crypto::Cert::X509Key *key = GetNewPublicKey();
-	if (key == 0)
+	NN<Crypto::Cert::X509Key> key;
+	if (!GetNewPublicKey().SetTo(key))
 	{
 		return false;
 	}
 	if (key->GetKeyId(keyId))
 	{
-		DEL_CLASS(key);
+		key.Delete();
 		return true;
 	}
-	DEL_CLASS(key);
+	key.Delete();
 	return false;
 }
 

@@ -23,7 +23,7 @@ Media::StaticEngine::~StaticEngine()
 	DEL_CLASS(this->iab32);
 }
 
-Media::DrawImage *Media::StaticEngine::CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype)
+Optional<Media::DrawImage> Media::StaticEngine::CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype)
 {
 //	Media::StaticDrawImage *simg;
 //	Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
@@ -32,54 +32,64 @@ Media::DrawImage *Media::StaticEngine::CreateImage32(Math::Size2D<UOSInt> size, 
 	return 0;
 }
 
-Media::DrawImage *Media::StaticEngine::LoadImage(Text::CStringNN fileName)
+Optional<Media::DrawImage> Media::StaticEngine::LoadImage(Text::CStringNN fileName)
 {
-	Media::ImageList *imgList = 0;
+	Optional<Media::ImageList> imgList = 0;
+	NN<Media::ImageList> nnimgList;
 	{
 		IO::StmData::FileData fd(fileName, false);
 		if (this->parsers)
 		{
-			imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParserType::ImageList);
+			imgList = Optional<Media::ImageList>::ConvertFrom(this->parsers->ParseFileType(fd, IO::ParserType::ImageList));
 		}
 	}
 
-	Media::StaticDrawImage *simg = 0;
-	if (imgList)
+	Optional<Media::StaticDrawImage> simg = 0;
+	NN<Media::RasterImage> img;
+	if (imgList.SetTo(nnimgList))
 	{
-		simg = (Media::StaticDrawImage*)this->ConvImage(imgList->GetImage(0, 0));
-		DEL_CLASS(imgList);
+		if (nnimgList->GetImage(0, 0).SetTo(img))
+		{
+			simg = Optional<Media::StaticDrawImage>::ConvertFrom(this->ConvImage(img));
+		}
+		imgList.Delete();
 	}
 	return simg;
 }
 
-Media::DrawImage *Media::StaticEngine::LoadImageW(const WChar *fileName)
+Optional<Media::DrawImage> Media::StaticEngine::LoadImageW(const WChar *fileName)
 {
-	Media::ImageList *imgList = 0;
+	Optional<Media::ImageList> imgList = 0;
+	NN<Media::ImageList> nnimgList;
 	NN<Text::String> s = Text::String::NewNotNull(fileName);
 	{
 		IO::StmData::FileData fd(s, false);
 		s->Release();
 		if (this->parsers)
 		{
-			imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParserType::ImageList);
+			imgList = Optional<Media::ImageList>::ConvertFrom(this->parsers->ParseFileType(fd, IO::ParserType::ImageList));
 		}
 	}
 
-	Media::StaticDrawImage *simg = 0;
-	if (imgList)
+	Optional<Media::StaticDrawImage> simg = 0;
+	if (imgList.SetTo(nnimgList))
 	{
-		simg = (Media::StaticDrawImage*)this->ConvImage(imgList->GetImage(0, 0));
-		DEL_CLASS(imgList);
+		NN<Media::RasterImage> img;
+		if (nnimgList->GetImage(0, 0).SetTo(img))
+		{
+			simg = Optional<Media::StaticDrawImage>::ConvertFrom(this->ConvImage(img));
+		}
+		nnimgList.Delete();
 	}
 	return simg;
 }
 
-Media::DrawImage *Media::StaticEngine::LoadImageStream(NN<IO::SeekableStream> stm)
+Optional<Media::DrawImage> Media::StaticEngine::LoadImageStream(NN<IO::SeekableStream> stm)
 {
 	return 0;
 }
 
-Media::DrawImage *Media::StaticEngine::ConvImage(Media::Image *img)
+Optional<Media::DrawImage> Media::StaticEngine::ConvImage(NN<Media::RasterImage> img)
 {
 //	Media::StaticImage *simg = img->CreateStaticImage();
 //	simg->SetEngine(this);
@@ -87,15 +97,15 @@ Media::DrawImage *Media::StaticEngine::ConvImage(Media::Image *img)
 	return 0;
 }
 
-Media::DrawImage *Media::StaticEngine::CloneImage(NN<DrawImage> img)
+Optional<Media::DrawImage> Media::StaticEngine::CloneImage(NN<DrawImage> img)
 {
-	return this->ConvImage((Media::StaticDrawImage*)img.Ptr());
+	return this->ConvImage(NN<Media::StaticDrawImage>::ConvertFrom(img));
 }
 
 Bool Media::StaticEngine::DeleteImage(NN<DrawImage> img)
 {
-	Media::StaticDrawImage *simg = (Media::StaticDrawImage*)img.Ptr();
-	DEL_CLASS(simg);
+	NN<Media::StaticDrawImage> simg = NN<Media::StaticDrawImage>::ConvertFrom(img);
+	simg.Delete();
 	return true;
 }
 
@@ -386,10 +396,10 @@ Bool Media::StaticDrawImage::DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl de
 	return false;
 }
 
-Media::DrawPen *Media::StaticDrawImage::NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern)
+NN<Media::DrawPen> Media::StaticDrawImage::NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern)
 {
-	Media::StaticPen *p;
-	NEW_CLASS(p, Media::StaticPen(color, thick, pattern, nPattern));
+	NN<Media::StaticPen> p;
+	NEW_CLASSNN(p, Media::StaticPen(color, thick, pattern, nPattern));
 	return p;
 }
 
@@ -400,29 +410,29 @@ NN<Media::DrawBrush> Media::StaticDrawImage::NewBrushARGB(UInt32 color)
 	return b;
 }
 
-void Media::StaticDrawImage::DelPen(DrawPen *p)
+void Media::StaticDrawImage::DelPen(NN<DrawPen> p)
 {
-	Media::StaticPen *pen = (Media::StaticPen*)p;
-	DEL_CLASS(pen);
+	NN<Media::StaticPen> pen = NN<Media::StaticPen>::ConvertFrom(p);
+	pen.Delete();
 }
 
-void Media::StaticDrawImage::DelBrush(DrawBrush *b)
+void Media::StaticDrawImage::DelBrush(NN<DrawBrush> b)
 {
-	Media::StaticBrush *brush = (Media::StaticBrush*)b;
-	DEL_CLASS(brush);
+	NN<Media::StaticBrush> brush = NN<Media::StaticBrush>::ConvertFrom(b);
+	brush.Delete();
 }
 
 Media::StaticImage *Media::StaticDrawImage::ToStaticImage() const
 {
-	return (Media::StaticImage*)this->Clone();
+	return (Media::StaticImage*)this->Clone().Ptr();
 }
 
 UOSInt Media::StaticDrawImage::SaveGIF(NN<IO::SeekableStream> stm)
 {
-	Media::StaticImage *simg = (Media::StaticImage*)this->Clone();
+	NN<Media::StaticImage> simg = NN<Media::StaticImage>::ConvertFrom(this->Clone());
 	if (!simg->ToPal8())
 	{
-		DEL_CLASS(simg);
+		simg.Delete();
 		return -1;
 	}
 	Exporter::GIFExporter exporter;

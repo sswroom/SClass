@@ -21,10 +21,10 @@ namespace Crypto
 			BcryptValidator();
 			virtual ~BcryptValidator();
 
-			virtual HashValidatorSess *CreateSess();
-			virtual void DeleteSess(HashValidatorSess *sess);
+			virtual NN<HashValidatorSess> CreateSess();
+			virtual void DeleteSess(NN<HashValidatorSess> sess);
 			virtual Bool SetHash(const UTF8Char *hash, UOSInt hashLen);
-			virtual Bool IsMatch(HashValidatorSess *sess, const UTF8Char *password, UOSInt pwdLen);
+			virtual Bool IsMatch(NN<HashValidatorSess> sess, const UTF8Char *password, UOSInt pwdLen);
 		};
 	}
 }

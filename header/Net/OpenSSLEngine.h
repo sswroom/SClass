@@ -12,8 +12,8 @@ namespace Net
 		struct ClassData *clsData;
 		Bool skipCertCheck;
 
-		virtual Net::SSLClient *CreateServerConn(Socket *s);
-		Net::SSLClient *CreateClientConn(void *sslObj, Socket *s, Text::CStringNN hostName, OptOut<ErrorType> err);
+		virtual Optional<Net::SSLClient> CreateServerConn(NN<Socket> s);
+		Optional<Net::SSLClient> CreateClientConn(void *sslObj, NN<Socket> s, Text::CStringNN hostName, OptOut<ErrorType> err);
 
 		static Bool SetRSAPadding(void *ctx, Crypto::Encrypt::RSACipher::Padding rsaPadding);
 	public:
@@ -29,8 +29,8 @@ namespace Net
 
 		virtual Bool ClientSetCertASN1(NN<Crypto::Cert::X509Cert> certASN1, NN<Crypto::Cert::X509File> keyASN1);
 		virtual void ClientSetSkipCertCheck(Bool skipCertCheck);
-		virtual Net::SSLClient *ClientConnect(Text::CStringNN hostName, UInt16 port, OptOut<ErrorType> err, Data::Duration timeout);
-		virtual Net::SSLClient *ClientInit(Socket *s, Text::CStringNN hostName, OptOut<ErrorType> err);
+		virtual Optional<Net::SSLClient> ClientConnect(Text::CStringNN hostName, UInt16 port, OptOut<ErrorType> err, Data::Duration timeout);
+		virtual Optional<Net::SSLClient> ClientInit(NN<Socket> s, Text::CStringNN hostName, OptOut<ErrorType> err);
 
 		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff);
 		virtual Bool GenerateCert(Text::CString country, Text::CString company, Text::CStringNN commonName, OutParam<Crypto::Cert::X509Cert*> certASN1, OutParam<Crypto::Cert::X509File*> keyASN1);

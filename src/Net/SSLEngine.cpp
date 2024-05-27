@@ -18,19 +18,19 @@ UInt32 __stdcall Net::SSLEngine::ServerThread(AnyType userObj)
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	NN<ThreadState> state = userObj.GetNN<ThreadState>();
+	NN<Socket> s;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("SSLEngine")), state->index);
 	Sync::ThreadUtil::SetName(CSTRP(sbuff, sptr));
 	state->status = ThreadStatus::NewClient;
 	while (!state->me->threadToStop)
 	{
-		if (state->s)
+		if (state->s.SetTo(s))
 		{
 			state->status = ThreadStatus::Processing;
-			Socket *s = state->s;
 			state->s = 0;
 
-			NN<Net::TCPClient> cli;
-			if (cli.Set(state->me->CreateServerConn(s)))
+			NN<Net::SSLClient> cli;
+			if (state->me->CreateServerConn(s).SetTo(cli))
 			{
 				state->clientReady(cli, state->clientReadyObj);
 			}
@@ -235,7 +235,7 @@ Bool Net::SSLEngine::ServerSetCerts(Text::CStringNN certFile, Text::CStringNN ke
 	return ServerSetCerts(certFile, keyFile, CSTR_NULL);
 }
 
-void Net::SSLEngine::ServerInit(Socket *s, ClientReadyHandler readyHdlr, AnyType userObj)
+void Net::SSLEngine::ServerInit(NN<Socket> s, ClientReadyHandler readyHdlr, AnyType userObj)
 {
 	UOSInt i = 0;
 	UOSInt j = INVALID_INDEX;

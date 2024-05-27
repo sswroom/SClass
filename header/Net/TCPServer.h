@@ -12,7 +12,7 @@ namespace Net
 	class TCPServer
 	{
 	public:
-		typedef void (__stdcall *TCPServerConn)(Socket *s, AnyType userObj);
+		typedef void (__stdcall *TCPServerConn)(NN<Socket> s, AnyType userObj);
 		typedef struct
 		{
 			NN<TCPServer> me;
@@ -32,8 +32,8 @@ namespace Net
 		Bool errorv4;
 		Bool errorv6;
 		Optional<Text::String> logPrefix;
-		Socket *svrSocv4;
-		Socket *svrSocv6;
+		Optional<Socket> svrSocv4;
+		Optional<Socket> svrSocv6;
 		Int32 threadRunning;
 		Data::SyncLinkedList socs;
 		Sync::Event socsEvt;
@@ -45,7 +45,7 @@ namespace Net
 		static UInt32 __stdcall Svrv6Subthread(AnyType o);
 		static UInt32 __stdcall Svrv6Thread(AnyType o);
 		static UInt32 __stdcall WorkerThread(AnyType o);
-		void AcceptSocket(Socket *svrSoc);
+		void AcceptSocket(NN<Socket> svrSoc);
 	public:
 		TCPServer(NN<SocketFactory> socf, Optional<Net::SocketUtil::AddressInfo> bindAddr, UInt16 port, NN<IO::LogTool> log, TCPServerConn hdlr, AnyType userObj, Text::CString logPrefix, Bool autoStart);
 		~TCPServer();

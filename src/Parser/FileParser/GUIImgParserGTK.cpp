@@ -194,7 +194,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 			NN<Math::Geometry::VectorImage> vimg;
 			NN<Media::SharedImage> simg;
 			
-			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, 0, 0, 0, 0));
+			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, Math::CoordinateSystemManager::CreateWGS84Csys(), 0, 0, 0, 0, 0));
 			NEW_CLASSNN(simg, Media::SharedImage(nnimgList, true));
 			NEW_CLASSNN(vimg, Math::Geometry::VectorImage(srid, simg, Math::Coord2DDbl(minX, minY), Math::Coord2DDbl(maxX, maxY), false, fd->GetFullName().Ptr(), 0, 0));
 			lyr->AddVector(vimg, (const UTF8Char**)0);
@@ -263,7 +263,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO:
 					Map::VectorLayer *lyr;
 					NN<Math::Geometry::VectorImage> vimg;
 					NN<Media::SharedImage> simg;
-					NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+					NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 					
 					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, csys, 0, 0, 0, 0, 0));
 					NEW_CLASSNN(simg, Media::SharedImage(nnimgList, true));

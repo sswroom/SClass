@@ -35,8 +35,9 @@ Net::SSHConn::SSHConn(NN<Net::SocketFactory> sockf, Text::CStringNN host, UInt16
 	if (this->clsData->session)
 	{
 		NN<Net::TCPClient> cli;
+		NN<Socket> s;
 		NEW_CLASSNN(cli, Net::TCPClient(sockf, host, port, timeout));
-		if (cli->IsConnectError())
+		if (cli->IsConnectError() || !cli->GetSocket().SetTo(s))
 		{
 #if defined(VERBOSE)
 			printf("SSHConn: error in connecting to %s:%d\r\n", host.v, port);
@@ -49,7 +50,7 @@ Net::SSHConn::SSHConn(NN<Net::SocketFactory> sockf, Text::CStringNN host, UInt16
 			printf("SSHConn: Client %s:%d connected\r\n", host.v, port);
 #endif
 			this->cli = cli;
-			this->clsData->handshakeRet = libssh2_session_handshake(this->clsData->session, (libssh2_socket_t)this->sockf->SocketGetFD(cli->GetSocket()));
+			this->clsData->handshakeRet = libssh2_session_handshake(this->clsData->session, (libssh2_socket_t)this->sockf->SocketGetFD(s));
 #if defined(VERBOSE)
 			char *errMsg = "Unknown";
 			libssh2_session_last_error(this->clsData->session, &errMsg, 0, 0);
@@ -148,16 +149,17 @@ Bool Net::SSHConn::AuthPassword(Text::CStringNN userName, Text::CStringNN passwo
 	return false;
 }
 
-Optional<Net::SSHTCPChannel> Net::SSHConn::RemoteConnect(Socket *sourceSoc, Text::CStringNN remoteHost, UInt16 remotePort)
+Optional<Net::SSHTCPChannel> Net::SSHConn::RemoteConnect(Optional<Socket> sourceSoc, Text::CStringNN remoteHost, UInt16 remotePort)
 {
 	LIBSSH2_CHANNEL *channel;
 	Sync::MutexUsage mutUsage(this->mut);
-	if (sourceSoc != 0)
+	NN<Socket> nnsourceSoc;
+	if (sourceSoc.SetTo(nnsourceSoc))
 	{
 		UTF8Char sbuff[64];
 		Net::SocketUtil::AddressInfo addr;
 		UInt16 port;
-		if (!this->sockf->GetRemoteAddr(sourceSoc, addr, port))
+		if (!this->sockf->GetRemoteAddr(nnsourceSoc, addr, port))
 			return 0;
 		Net::SocketUtil::GetAddrName(sbuff, addr);
 		channel = libssh2_channel_direct_tcpip_ex(this->clsData->session, (const Char*)remoteHost.v, remotePort, (const Char*)sbuff, port);

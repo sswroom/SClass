@@ -4,7 +4,7 @@
 #include "SSWR/AVIRead/AVIRHashTestForm.h"
 #include "Text/MyStringFloat.h"
 
-Double __stdcall SSWR::AVIRead::AVIRHashTestForm::HashTestSpeed(Crypto::Hash::IHash *hash)
+Double __stdcall SSWR::AVIRead::AVIRHashTestForm::HashTestSpeed(NN<Crypto::Hash::IHash> hash)
 {
 	Manage::HiResClock clk;
 	UInt8 hashVal[64];
@@ -30,12 +30,11 @@ void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnCompareClicked(AnyType userObj
 	Crypto::Hash::HashType i = Crypto::Hash::HashType::First;
 	UOSInt j;
 	Double speed;
-	Crypto::Hash::IHash *hash;
+	NN<Crypto::Hash::IHash> hash;
 	me->lvCompare->ClearItems();
 	while (i <= Crypto::Hash::HashType::Last)
 	{
-		hash = Crypto::Hash::HashCreator::CreateHash(i);
-		if (hash)
+		if (Crypto::Hash::HashCreator::CreateHash(i).SetTo(hash))
 		{
 			sbuff[0] = 0;
 			speed = HashTestSpeed(hash);
@@ -43,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnCompareClicked(AnyType userObj
 			j = me->lvCompare->AddItem(CSTRP(sbuff, sptr), 0);
 			sptr = Text::StrDouble(sbuff, speed);
 			me->lvCompare->SetSubItem(j, 1, CSTRP(sbuff, sptr));
-			DEL_CLASS(hash);
+			hash.Delete();
 		}
 		i = (Crypto::Hash::HashType)((OSInt)i + 1);
 	}
@@ -57,12 +56,12 @@ void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnSpeedClicked(AnyType userObj)
 	UOSInt i = me->cboAlgorithm->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
-		Crypto::Hash::IHash *hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)me->cboAlgorithm->GetItem(i).GetOSInt());
-		if (hash)
+		NN<Crypto::Hash::IHash> hash;
+		if (Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)me->cboAlgorithm->GetItem(i).GetOSInt()).SetTo(hash))
 		{
 			sptr = Text::StrDouble(sbuff, HashTestSpeed(hash));
 			me->txtSpeed->SetText(CSTRP(sbuff, sptr));
-			DEL_CLASS(hash);
+			hash.Delete();
 		}
 		else
 		{
@@ -117,15 +116,14 @@ SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(Optional<UI::GUIClientControl>
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	Crypto::Hash::HashType i = Crypto::Hash::HashType::First;
-	Crypto::Hash::IHash *hash;
+	NN<Crypto::Hash::IHash> hash;
 	while (i <= Crypto::Hash::HashType::Last)
 	{
-		hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)i);
-		if (hash)
+		if (Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)i).SetTo(hash))
 		{
 			sptr = hash->GetName(sbuff);
 			this->cboAlgorithm->AddItem(CSTRP(sbuff, sptr), (void*)i);
-			DEL_CLASS(hash);
+			hash.Delete();
 		}
 		i = (Crypto::Hash::HashType)((OSInt)i + 1);
 	}

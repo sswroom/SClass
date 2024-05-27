@@ -25,7 +25,7 @@ namespace Crypto
 
 			Bool GetNames(NN<CertNames> names) const;
 			Bool GetExtensions(NN<CertExtensions> ext) const;
-			Crypto::Cert::X509Key *GetNewPublicKey() const;
+			Optional<Crypto::Cert::X509Key> GetNewPublicKey() const;
 			Bool GetKeyId(const Data::ByteArray &keyId) const; //20 bytes
 		};
 	}

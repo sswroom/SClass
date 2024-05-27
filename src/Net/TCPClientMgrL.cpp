@@ -91,8 +91,8 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 		{
 			if (me->cliMap.GetItem(i).SetTo(cliStat) && cliStat->reading)
 			{
-				Socket *s = cliStat->cli->GetSocket();
-				if (s == 0 || cliStat->cli->IsClosed())
+				NN<Socket> s;
+				if (!cliStat->cli->GetSocket().SetTo(s) || cliStat->cli->IsClosed())
 				{
 					TCPClientMgr_RemoveCliStat(me->cliMap, cliStat);
 					Sync::MutexUsage readMutUsage(cliStat->readMut);
@@ -107,7 +107,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(AnyType o)
 				{
 					pollCli[pollReqCnt] = cliStat.Ptr();
 					pollReqCnt++;
-					pollfds[pollReqCnt].fd = -1 + (int)(OSInt)s;
+					pollfds[pollReqCnt].fd = -1 + (int)(OSInt)s.Ptr();
 					pollfds[pollReqCnt].events = POLLIN;
 					pollfds[pollReqCnt].revents = 0;
 					if (cliStat->recvDataExist)

@@ -52,7 +52,7 @@ namespace SSWR
 			Net::WebServer::WebListener *listener;
 			Net::EthernetWebHandler *webHdlr;
 			Net::SocketMonitor *socMon;
-			Net::EthernetAnalyzer *analyzer;
+			NN<Net::EthernetAnalyzer> analyzer;
 			Net::WhoisHandler whois;
 			Sync::Mutex plogMut;
 			IO::PacketLogWriter *plogWriter;
@@ -211,7 +211,7 @@ namespace SSWR
 			static void __stdcall OnDeviceSelChg(AnyType userObj);
 
 		public:
-			AVIRRAWMonitorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Net::EthernetAnalyzer *analyzer);
+			AVIRRAWMonitorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::EthernetAnalyzer> analyzer);
 			virtual ~AVIRRAWMonitorForm();
 
 			virtual void OnMonitorChanged();

@@ -384,7 +384,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::St
 			}
 		}
 		NN<Math::CoordinateSystem> csys;
-		NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, fd->GetFullName(), currCol, tmpcArr2, csys = Math::CoordinateSystemManager::CreateDefaultCsys(), nameCol, 0));
+		NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, fd->GetFullName(), currCol, tmpcArr2, csys = Math::CoordinateSystemManager::CreateWGS84Csys(), nameCol, 0));
 		
 		UTF8Char **tmpUArr2 = (UTF8Char**)tmpcArr2;
 		while (reader.ReadLine(sbuff, 1024))

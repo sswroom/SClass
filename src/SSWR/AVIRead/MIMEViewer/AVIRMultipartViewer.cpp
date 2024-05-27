@@ -52,6 +52,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NN<SSWR::AVI
 						{
 							Crypto::Cert::X509PKCS7 *pkcs7 = (Crypto::Cert::X509PKCS7*)x509;
 							Crypto::Hash::HashType hashType = pkcs7->GetDigestType();
+							NN<Crypto::Hash::IHash> hash;
 							data = pkcs7->GetMessageDigest(dataSize);
 							if (data == 0)
 							{
@@ -61,9 +62,12 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NN<SSWR::AVI
 							{
 								this->txtSignState->SetText(CSTR("Unknown Digest Type"));
 							}
+							else if (!Crypto::Hash::HashCreator::CreateHash(hashType).SetTo(hash))
+							{
+								this->txtSignState->SetText(CSTR("Digest Type not supported"));
+							}
 							else
 							{
-								Crypto::Hash::IHash *hash = Crypto::Hash::HashCreator::CreateHash(hashType);
 								UOSInt buffSize;
 								const UInt8 *dataBuff = mstm.GetBuff(buffSize);
 								if (buffSize > 2 && dataBuff[buffSize - 2] == 13 && dataBuff[buffSize - 1] == 10)
@@ -73,6 +77,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NN<SSWR::AVI
 								hash->Calc(dataBuff, buffSize);
 								buffSize = hash->GetResultSize();
 								hash->GetValue(hashBuff);
+								hash.Delete();
 								if (!Text::StrEqualsC(data, dataSize, hashBuff, buffSize))
 								{
 									this->txtSignState->SetText(CSTR("Digest Mismatch"));
@@ -95,7 +100,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NN<SSWR::AVI
 										else
 										{
 											NN<Crypto::Cert::X509Key> key;
-											if (!key.Set(crt->GetNewPublicKey()))
+											if (!crt->GetNewPublicKey().SetTo(key))
 											{
 												this->txtSignState->SetText(CSTR("Public key not found"));
 											}

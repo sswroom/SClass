@@ -23,7 +23,7 @@ void __stdcall Net::SSHForwarder::OnClientTimeout(NN<TCPClient> cli, AnyType use
 
 }
 
-void __stdcall Net::SSHForwarder::OnClientConn(Socket *s, AnyType userObj)
+void __stdcall Net::SSHForwarder::OnClientConn(NN<Socket> s, AnyType userObj)
 {
 	NN<Net::SSHForwarder> me = userObj.GetNN<Net::SSHForwarder>();
 	NN<Net::SSHTCPChannel> channel;

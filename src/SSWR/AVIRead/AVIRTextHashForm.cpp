@@ -30,20 +30,23 @@ void __stdcall SSWR::AVIRead::AVIRTextHashForm::OnGenerateClicked(AnyType userOb
 	UOSInt buffSize = srcEnc->CalcBinSize(sb.ToString(), sb.GetLength());
 	if (buffSize > 0)
 	{
+		NN<Crypto::Hash::IHash> hash;
 		UInt8 *decBuff = MemAlloc(UInt8, buffSize);
 		if (srcEnc->DecodeBin(sb.ToString(), sb.GetLength(), decBuff) != buffSize)
 		{
 			me->ui->ShowMsgOK(CSTR("Error in decrypting the text"), CSTR("Text Hash"), me);
 		}
+		else if (!Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)me->cboHashType->GetItem(i).GetOSInt()).SetTo(hash))
+		{
+			me->ui->ShowMsgOK(CSTR("Hash Type not supported"), CSTR("Text Hash"), me);
+		}
 		else
 		{
-			Crypto::Hash::IHash *hash;
-			hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)me->cboHashType->GetItem(i).GetOSInt());
 			hash->Calc(decBuff, buffSize);
 			hash->GetValue(buff);
 			sb.ClearStr();
 			sb.AppendHexBuff(buff, hash->GetResultSize(), 0, Text::LineBreakType::None);
-			DEL_CLASS(hash);
+			hash.Delete();
 			me->txtHashValue->SetText(sb.ToCString());
 		}
 		MemFree(decBuff);
@@ -88,18 +91,17 @@ SSWR::AVIRead::AVIRTextHashForm::AVIRTextHashForm(Optional<UI::GUIClientControl>
 
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	Crypto::Hash::IHash *hash;
+	NN<Crypto::Hash::IHash> hash;
 	Crypto::Hash::HashType currHash = Crypto::Hash::HashType::First;
 	UOSInt i;
 	UOSInt j;
 	while (currHash <= Crypto::Hash::HashType::Last)
 	{
-		hash = Crypto::Hash::HashCreator::CreateHash(currHash);
-		if (hash)
+		if (Crypto::Hash::HashCreator::CreateHash(currHash).SetTo(hash))
 		{
 			sptr = hash->GetName(sbuff);
 			this->cboHashType->AddItem(CSTRP(sbuff, sptr), (void*)currHash);
-			DEL_CLASS(hash);
+			hash.Delete();
 		}
 		currHash = (Crypto::Hash::HashType)((OSInt)currHash + 1);
 	}

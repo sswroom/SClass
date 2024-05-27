@@ -98,7 +98,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 			return 0;
 		}
 
-		NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+		NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 		NEW_CLASSNN(env, Map::MapEnv(fd->GetFullName()->ToCString(), ToColor(Text::StrHex2UInt32C(sarr[1].v)), csys));
 		env->SetNString(Text::StrToUInt32(sarr[4].v));
 		fileName = baseDir;
@@ -510,7 +510,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 			lyrType = Map::DRAW_LAYER_MIXED;
 		}
 		j = Text::StrSplitP(sarr, 20, {sbuff, (UOSInt)(sptr - sbuff)}, ',');
-		NEW_CLASS(lyr, Map::VectorLayer(lyrType, fd->GetFullFileName(), j, (const UTF8Char **)sarr, Math::CoordinateSystemManager::CreateDefaultCsys(), 2, 0));
+		NEW_CLASS(lyr, Map::VectorLayer(lyrType, fd->GetFullFileName(), j, (const UTF8Char **)sarr, Math::CoordinateSystemManager::CreateWGS84Csys(), 2, 0));
 		while ((sptr = reader.ReadLine(sbuff, 512)) != 0)
 		{
 			i = Text::StrSplitP(sarr, 20, {sbuff, (UOSInt)(sptr - sbuff)}, ',');

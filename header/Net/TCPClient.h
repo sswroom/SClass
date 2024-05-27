@@ -12,7 +12,7 @@ namespace Net
 	{
 	protected:
 		NN<Net::SocketFactory> sockf;
-		Socket *s;
+		Optional<Socket> s;
 		UInt64 currCnt;
 		UInt64 cliId;
 		Int32 flags; //1 = shutdown send, 2 = shutdown recv, 4 = closed, 8 = connect error
@@ -25,7 +25,7 @@ namespace Net
 		TCPClient(NN<Net::SocketFactory> sockf, Text::CStringNN name, UInt16 port, Data::Duration timeout);
 		TCPClient(NN<Net::SocketFactory> sockf, UInt32 ip, UInt16 port, Data::Duration timeout);
 		TCPClient(NN<Net::SocketFactory> sockf, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, Data::Duration timeout);
-		TCPClient(NN<Net::SocketFactory> sockf, Socket *s);
+		TCPClient(NN<Net::SocketFactory> sockf, Optional<Socket> s);
 		virtual ~TCPClient();
 
 		virtual Bool IsDown() const;
@@ -64,8 +64,8 @@ namespace Net
 		void SetTimeout(Data::Duration timeout);
 		Data::Duration GetTimeout();
 
-		Socket *GetSocket();
-		Socket *RemoveSocket();
+		Optional<Socket> GetSocket();
+		Optional<Socket> RemoveSocket();
 	};
 }
 #endif

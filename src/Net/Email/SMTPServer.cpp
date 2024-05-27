@@ -31,7 +31,7 @@ void __stdcall Net::Email::SMTPServer::ClientReady(NN<Net::TCPClient> cli, AnyTy
 	}
 }
 
-void __stdcall Net::Email::SMTPServer::ConnHdlr(Socket *s, AnyType userObj)
+void __stdcall Net::Email::SMTPServer::ConnHdlr(NN<Socket> s, AnyType userObj)
 {
 	NN<Net::Email::SMTPServer> me = userObj.GetNN<Net::Email::SMTPServer>();
 	NN<Net::TCPClient> cli;
@@ -355,10 +355,14 @@ void Net::Email::SMTPServer::ParseCmd(NN<Net::TCPClient> cli, NN<Net::Email::SMT
 	else if (Text::StrEqualsC(cmd, cmdLen, UTF8STRC("STARTTLS")))
 	{
 		NN<Net::SSLEngine> ssl;
+		NN<Socket> soc;
 		if (!cli->IsSSL() && this->connType == Net::Email::SMTPConn::ConnType::STARTTLS && this->ssl.SetTo(ssl))
 		{
 			WriteMessage(cli, 220, CSTR("Go ahead"));
-			ssl->ServerInit(cli->RemoveSocket(), ClientReady, this);;
+			if (cli->RemoveSocket().SetTo(soc))
+			{
+				ssl->ServerInit(soc, ClientReady, this);;
+			}
 		}
 	}
 	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("HELO ")))

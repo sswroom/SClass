@@ -19,7 +19,7 @@ Map::MercatorTileMap::MercatorTileMap(Text::CString cacheDir, UOSInt minLevel, U
 	this->tileHeight = 256;
 	this->minLevel = minLevel;
 	this->maxLevel = maxLevel;
-	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+	this->csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 }
 
 Map::MercatorTileMap::~MercatorTileMap()

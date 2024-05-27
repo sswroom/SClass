@@ -143,8 +143,8 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	NN<Parser::ParserList> parsers = me->core->GetParserList();
-	Math::CoordinateSystem *srcCoord;
-	Math::CoordinateSystem *destCoord;
+	Optional<Math::CoordinateSystem> srcCoord;
+	Optional<Math::CoordinateSystem> destCoord;
 	NN<Math::CoordinateSystem> srcCsys;
 	NN<Math::CoordinateSystem> destCsys;
 	UOSInt i;
@@ -322,7 +322,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 			i++;
 		}
 
-		if (srcCsys.Set(srcCoord) && destCsys.Set(destCoord) && Text::StrToDouble(sarr[xCol], inX) && Text::StrToDouble(sarr[yCol], inY))
+		if (srcCoord.SetTo(srcCsys) && destCoord.SetTo(destCsys) && Text::StrToDouble(sarr[xCol], inX) && Text::StrToDouble(sarr[yCol], inY))
 		{
 			outPos = Math::CoordinateSystem::Convert(srcCsys, destCsys, Math::Coord2DDbl(inX, inY));
 			sarr[colCnt] = sptr;
@@ -343,8 +343,8 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(AnyType userO
 
 	MemFree(strBuff);
 	MemFree(sarr);
-	DEL_CLASS(srcCoord);
-	DEL_CLASS(destCoord);
+	srcCoord.Delete();
+	destCoord.Delete();
 	nndb.Delete();
 }
 
@@ -443,8 +443,8 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 	Double y;
 	Double z;
 	Math::Vector3 destPos;
-	Math::CoordinateSystem *srcCoord;
-	Math::CoordinateSystem *destCoord;
+	Optional<Math::CoordinateSystem> srcCoord;
+	Optional<Math::CoordinateSystem> destCoord;
 	NN<Math::CoordinateSystem> srcCsys;
 	NN<Math::CoordinateSystem> destCsys;
 
@@ -501,7 +501,7 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 		this->lvCoord->SetSubItem(k, 2, CSTRP(sbuff, sptr));
 		sptr = Text::StrDouble(sbuff, z);
 		this->lvCoord->SetSubItem(k, 3, CSTRP(sbuff, sptr));
-		if (srcCsys.Set(srcCoord) && destCsys.Set(destCoord))
+		if (srcCoord.SetTo(srcCsys) && destCoord.SetTo(destCsys))
 		{
 			destPos = Math::CoordinateSystem::Convert3D(srcCsys, destCsys, Math::Vector3(x, y, z));
 			sptr = Text::StrDouble(sbuff, destPos.GetX());
@@ -513,8 +513,8 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 		}
 		i++;
 	}
-	SDEL_CLASS(srcCoord);
-	SDEL_CLASS(destCoord);
+	srcCoord.Delete();
+	destCoord.Delete();
 }
 
 void SSWR::AVIRead::AVIRCoordConvForm::FillCoordGeo(NN<UI::GUIComboBox> cbo)

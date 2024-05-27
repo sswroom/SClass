@@ -277,11 +277,11 @@ Bool Crypto::Cert::X509Key::IsPrivateKey() const
 	}
 }
 
-Crypto::Cert::X509Key *Crypto::Cert::X509Key::CreatePublicKey() const
+Optional<Crypto::Cert::X509Key> Crypto::Cert::X509Key::CreatePublicKey() const
 {
 	if (this->keyType == KeyType::RSAPublic)
 	{
-		return (Crypto::Cert::X509Key*)this->Clone().Ptr();
+		return NN<Crypto::Cert::X509Key>::ConvertFrom(this->Clone());
 	}
 	else if (this->keyType == KeyType::RSA)
 	{
@@ -300,7 +300,7 @@ Crypto::Cert::X509Key *Crypto::Cert::X509Key::CreatePublicKey() const
 	}
 	else if (this->keyType == KeyType::ECPublic)
 	{
-		return (Crypto::Cert::X509Key*)this->Clone().Ptr();
+		return NN<Crypto::Cert::X509Key>::ConvertFrom(this->Clone());
 	}
 	else
 	{
@@ -314,13 +314,13 @@ Bool Crypto::Cert::X509Key::GetKeyId(const Data::ByteArray &keyId) const
 	{
 		return false;
 	}
-	Crypto::Cert::X509Key *pubKey = this->CreatePublicKey();
-	if (pubKey)
+	NN<Crypto::Cert::X509Key> pubKey;
+	if (this->CreatePublicKey().SetTo(pubKey))
 	{
 		Crypto::Hash::SHA1 sha1;
 		sha1.Calc(pubKey->GetASN1Buff(), pubKey->GetASN1BuffSize());
 		sha1.GetValue(keyId.Ptr());
-		DEL_CLASS(pubKey);
+		pubKey.Delete();
 		return true;
 	}
 	return false;

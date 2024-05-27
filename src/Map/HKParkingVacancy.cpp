@@ -241,7 +241,7 @@ void Map::HKParkingVacancy::ParkingInfoFree(NN<ParkingInfo> parking)
 	MemFreeNN(parking);
 }
 
-Map::HKParkingVacancy::HKParkingVacancy(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl) : Map::MapDrawLayer(CSTR("HKParkingVacancy"), 16, CSTR("HKParkingVacancy"), Math::CoordinateSystemManager::CreateDefaultCsys())
+Map::HKParkingVacancy::HKParkingVacancy(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl) : Map::MapDrawLayer(CSTR("HKParkingVacancy"), 16, CSTR("HKParkingVacancy"), Math::CoordinateSystemManager::CreateWGS84Csys())
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

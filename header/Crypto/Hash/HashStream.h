@@ -10,11 +10,11 @@ namespace Crypto
 		class HashStream : public IO::Stream
 		{
 		private:
-			Crypto::Hash::IHash *hash;
+			NN<Crypto::Hash::IHash> hash;
 			NN<IO::Stream> srcStm;
 
 		public:
-			HashStream(NN<IO::Stream> srcStm, Crypto::Hash::IHash *hash);
+			HashStream(NN<IO::Stream> srcStm, NN<Crypto::Hash::IHash> hash);
 			virtual ~HashStream();
 
 			virtual Bool IsDown() const;

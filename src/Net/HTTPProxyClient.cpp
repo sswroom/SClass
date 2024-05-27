@@ -48,6 +48,7 @@ Bool Net::HTTPProxyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMet
 	const UTF8Char *ptr1;
 	Text::PString ptrs[2];
 	UTF8Char *cptr;
+	NN<Net::TCPClient> cli;
 
 	if (url.StartsWith(UTF8STRC("http://")))
 	{
@@ -83,7 +84,7 @@ Bool Net::HTTPProxyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMet
 		this->svrAddr.addrType = Net::AddrType::IPv4;
 		WriteNUInt32(this->svrAddr.addr, this->proxyIP);
 
-		NEW_CLASS(cli, Net::TCPClient(sockf, this->proxyIP, this->proxyPort, 30000));
+		NEW_CLASSNN(cli, Net::TCPClient(sockf, this->proxyIP, this->proxyPort, 30000));
 		t1 = this->clk.GetTimeDiff();
 		timeConn.Set(t1);
 #ifdef DEBUGSPEED
@@ -92,18 +93,18 @@ Bool Net::HTTPProxyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMet
 			printf("Time in connect: %lf\n", t1);
 		}
 #endif
-		if (cli->IsConnectError())
+		NN<Socket> soc;
+		if (cli->IsConnectError() || !cli->GetSocket().SetTo(soc))
 		{
-			DEL_CLASS(cli);
-			cli = 0;
-
+			cli.Delete();
 			this->writing = true;
 			this->canWrite = false;
 			return false;
 		}
 		else
 		{
-			this->sockf->SetLinger(cli->GetSocket(), 0);
+			this->cli = cli;
+			this->sockf->SetLinger(soc, 0);
 			i = url.leng;
 			if ((i + 16) > BUFFSIZE)
 			{

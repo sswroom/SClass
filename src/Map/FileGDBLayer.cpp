@@ -55,7 +55,7 @@ Data::FastMap<Int32, const UTF8Char **> *Map::FileGDBLayer::ReadNameArr()
 	}
 }
 
-Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CStringNN sourceName, Text::CStringNN tableName, NN<Math::ArcGISPRJParser> prjParser) : Map::MapDrawLayer(sourceName, 0, tableName, Math::CoordinateSystemManager::CreateDefaultCsys())
+Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CStringNN sourceName, Text::CStringNN tableName, NN<Math::ArcGISPRJParser> prjParser) : Map::MapDrawLayer(sourceName, 0, tableName, Math::CoordinateSystemManager::CreateWGS84Csys())
 {
 	UInt8 *buff = 0; 
 	conn->UseObject();
@@ -89,7 +89,7 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CStringNN sourc
 				NN<Text::String> prj;
 				if (colDef.GetAttr().SetTo(prj) && prj->v[0])
 				{
-					Math::CoordinateSystem *csys2 = 0;
+					Optional<Math::CoordinateSystem> csys2 = 0;
 					NN<Math::CoordinateSystem> nncsys2;
 					if (prj->StartsWith(UTF8STRC("EPSG:")))
 					{
@@ -100,7 +100,7 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CStringNN sourc
 						UOSInt tmp;
 						csys2 = prjParser->ParsePRJBuff(tableName, prj->v, prj->leng, &tmp);
 					}
-					if (nncsys2.Set(csys2))
+					if (csys2.SetTo(nncsys2))
 					{
 						this->csys.Delete();
 						this->csys = nncsys2;

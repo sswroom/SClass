@@ -770,7 +770,7 @@ void __stdcall Net::MySQLServer::OnClientTimeout(NN<Net::TCPClient> cli, AnyType
 {
 }
 
-void __stdcall Net::MySQLServer::OnClientConn(Socket *s, AnyType userObj)
+void __stdcall Net::MySQLServer::OnClientConn(NN<Socket> s, AnyType userObj)
 {
 	NN<Net::MySQLServer> me = userObj.GetNN<Net::MySQLServer>();
 	UInt8 buff[128];

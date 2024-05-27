@@ -460,7 +460,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellStyle(UOSInt row, UOSInt col, Optional
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellStyleHAlign(UOSInt row, UOSInt col, IStyleCtrl *wb, HAlignment hAlign)
+Bool Text::SpreadSheet::Worksheet::SetCellStyleHAlign(UOSInt row, UOSInt col, NN<IStyleCtrl> wb, HAlignment hAlign)
 {
 	CellData *cell;
 	cell = GetCellData(row, col, false);
@@ -473,7 +473,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellStyleHAlign(UOSInt row, UOSInt col, IS
 			return true;
 		NEW_CLASSNN(tmpStyle, CellStyle(0));
 		tmpStyle->SetHAlign(hAlign);
-		cell->style = wb->FindOrCreateStyle(tmpStyle).Ptr();
+		cell->style = wb->FindOrCreateStyle(tmpStyle);
 		tmpStyle.Delete();
 	}
 	else
@@ -488,7 +488,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellStyleHAlign(UOSInt row, UOSInt col, IS
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellStyleBorderBottom(UOSInt row, UOSInt col, IStyleCtrl *wb, UInt32 color, BorderType borderType)
+Bool Text::SpreadSheet::Worksheet::SetCellStyleBorderBottom(UOSInt row, UOSInt col, NN<IStyleCtrl> wb, UInt32 color, BorderType borderType)
 {
 	CellData *cell;
 	cell = GetCellData(row, col, true);

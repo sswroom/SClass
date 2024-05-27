@@ -8,34 +8,38 @@
 UInt32 __stdcall Net::ARPHandler::DataThread(AnyType obj)
 {
 	NN<Net::ARPHandler::ThreadStat> stat = obj.GetNN<Net::ARPHandler::ThreadStat>();
+	NN<Socket> soc;
 	stat->threadRunning = true;
 	stat->me->ctrlEvt->Set();
 
-	UInt8 *buff = MemAlloc(UInt8, 2048);
-	while (!stat->toStop)
+	if (stat->me->soc.SetTo(soc))
 	{
-		UOSInt recvSize;
-		Net::SocketUtil::AddressInfo recvAddr;
-		UInt16 recvPort;
-
-		recvSize = stat->me->sockf->UDPReceive(stat->me->soc, buff, 2048, recvAddr, recvPort, 0);
-		if (recvSize >= 42)
+		UInt8 *buff = MemAlloc(UInt8, 2048);
+		while (!stat->toStop)
 		{
-			UInt16 opcode = ReadMUInt16(&buff[20]);
-			if (ReadNInt32(&buff[0]) == ReadNInt32(&stat->me->hwAddr[0]) && ReadNInt16(&buff[4]) == ReadNInt16(&stat->me->hwAddr[4]))
-			{
-				if (opcode == 1) //Request
-				{
+			UOSInt recvSize;
+			Net::SocketUtil::AddressInfo recvAddr;
+			UInt16 recvPort;
 
-				}
-				else if (opcode == 2) //Reply
+			recvSize = stat->me->sockf->UDPReceive(soc, buff, 2048, recvAddr, recvPort, 0);
+			if (recvSize >= 42)
+			{
+				UInt16 opcode = ReadMUInt16(&buff[20]);
+				if (ReadNInt32(&buff[0]) == ReadNInt32(&stat->me->hwAddr[0]) && ReadNInt16(&buff[4]) == ReadNInt16(&stat->me->hwAddr[4]))
 				{
-					stat->me->hdlr(&buff[22], ReadNUInt32(&buff[28]), stat->me->userData);
+					if (opcode == 1) //Request
+					{
+
+					}
+					else if (opcode == 2) //Reply
+					{
+						stat->me->hdlr(&buff[22], ReadNUInt32(&buff[28]), stat->me->userData);
+					}
 				}
 			}
 		}
+		MemFree(buff);
 	}
-	MemFree(buff);
 	stat->threadRunning = false;
 	stat->me->ctrlEvt->Set();
 	return 0;
@@ -55,7 +59,8 @@ Net::ARPHandler::ARPHandler(NN<Net::SocketFactory> sockf, const UTF8Char *ifName
 	this->soc = this->sockf->CreateARPSocket();
 	this->threadStats = 0;
 
-	if (this->soc)
+	NN<Socket> soc;
+	if (this->soc.SetTo(soc))
 	{
 		NEW_CLASS(this->ctrlEvt, Sync::Event(true));
 
@@ -93,6 +98,7 @@ Net::ARPHandler::ARPHandler(NN<Net::SocketFactory> sockf, const UTF8Char *ifName
 Net::ARPHandler::~ARPHandler()
 {
 	UOSInt i;
+	NN<Socket> soc;
 	if (this->threadStats)
 	{
 		i = this->threadCnt;
@@ -101,9 +107,9 @@ Net::ARPHandler::~ARPHandler()
 			this->threadStats[i].toStop = true;
 		}
 	}
-	if (this->soc)
+	if (this->soc.SetTo(soc))
 	{
-		this->sockf->DestroySocket(this->soc);
+		this->sockf->DestroySocket(soc);
 	}
 	if (this->threadStats)
 	{
@@ -138,11 +144,7 @@ Net::ARPHandler::~ARPHandler()
 		}
 		MemFree(this->threadStats);
 	}
-	if (this->soc)
-	{
-		this->sockf->DestroySocket(this->soc);
-		this->soc = 0;
-	}
+	this->soc = 0;
 
 	SDEL_CLASS(this->ctrlEvt);
 	Text::StrDelNew(this->ifName);
@@ -150,11 +152,14 @@ Net::ARPHandler::~ARPHandler()
 
 Bool Net::ARPHandler::IsError()
 {
-	return this->soc == 0;
+	return this->soc.IsNull();
 }
 
 Bool Net::ARPHandler::MakeRequest(UInt32 targetIP)
 {
+	NN<Socket> soc;
+	if (!this->soc.SetTo(soc))
+		return false;
 	UInt8 buff[256];
 	Bool succ = false;
 	WriteNUInt32(&buff[0], 0xffffffff);
@@ -172,6 +177,6 @@ Bool Net::ARPHandler::MakeRequest(UInt32 targetIP)
 	WriteNUInt32(&buff[38], targetIP); //Target IP
 	MemClear(&buff[42], 18);
 
-	succ = (this->sockf->SendToIF(this->soc, buff, 60, this->ifName) == 60);
+	succ = (this->sockf->SendToIF(soc, buff, 60, this->ifName) == 60);
 	return succ;
 }

@@ -19,7 +19,7 @@ namespace Net
 		static void __stdcall OnClientEvent(NN<TCPClient> cli, AnyType userObj, AnyType cliData, Net::TCPClientMgr::TCPEventType evtType);
 		static void __stdcall OnClientData(NN<TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff);
 		static void __stdcall OnClientTimeout(NN<TCPClient> cli, AnyType userObj, AnyType cliData);
-		static void __stdcall OnClientConn(Socket *s, AnyType userObj);
+		static void __stdcall OnClientConn(NN<Socket> s, AnyType userObj);
 	public:
 		SSHForwarder(NN<Net::SSHConn> conn, UInt16 localPort, Text::CStringNN remoteHost, UInt16 remotePort);
 		~SSHForwarder();

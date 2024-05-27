@@ -194,7 +194,7 @@ namespace Crypto
 			static Bool ExtensionsGet(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<CertExtensions> ext);
 			static UOSInt ExtensionsGetCRLDistributionPoints(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, Data::ArrayList<Text::CString> *crlDistributionPoints);
 			static UOSInt DistributionPointAdd(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, Data::ArrayList<Text::CString> *crlDistributionPoints);
-			static Crypto::Cert::X509Key *PublicKeyGetNew(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd);
+			static Optional<Crypto::Cert::X509Key> PublicKeyGetNew(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd);
 
 			static UOSInt KeyGetLeng(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, KeyType keyType);
 			static KeyType KeyTypeFromOID(const UInt8 *oid, UOSInt oidLen, Bool pubKey);

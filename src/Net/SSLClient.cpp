@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Net/SSLClient.h"
 
-Net::SSLClient::SSLClient(NN<Net::SocketFactory> sockf, Socket *s) : Net::TCPClient(sockf, s)
+Net::SSLClient::SSLClient(NN<Net::SocketFactory> sockf, NN<Socket> s) : Net::TCPClient(sockf, s)
 {
 
 }

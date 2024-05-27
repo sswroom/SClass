@@ -347,7 +347,7 @@ Bool Text::ReportBuilder::HasChart()
 	return this->chart != 0;
 }
 
-Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
+NN<Text::SpreadSheet::Workbook> Text::ReportBuilder::CreateWorkbook()
 {
 	UOSInt i;
 	UOSInt j;
@@ -355,7 +355,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 	UOSInt l;
 	UOSInt m;
 	UOSInt urlAdd;
-	Text::SpreadSheet::Workbook *wb;
+	NN<Text::SpreadSheet::Workbook> wb;
 	NN<Text::SpreadSheet::Worksheet> ws;
 	NN<Text::SpreadSheet::Worksheet> dataSheet;
 	UnsafeArray<TableCell> cols;
@@ -370,7 +370,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 	Text::SpreadSheet::CellStyle *tableStyle = 0;
 	if (this->chart == 0)
 	{
-		NEW_CLASS(wb, Text::SpreadSheet::Workbook());
+		NEW_CLASSNN(wb, Text::SpreadSheet::Workbook());
 		wb->AddDefaultStyles();
 		ws = wb->AddWorksheet(this->name);
 
@@ -665,7 +665,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 	}
 	else
 	{
-		NEW_CLASS(wb, Text::SpreadSheet::Workbook());
+		NEW_CLASSNN(wb, Text::SpreadSheet::Workbook());
 		Text::SpreadSheet::WorkbookFont *font10 = wb->NewFont(CSTR("Arial"), 10, false);
 		Text::SpreadSheet::CellStyle *strStyle = wb->NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("General")).Ptr();
 		ws = wb->AddWorksheet(this->name);

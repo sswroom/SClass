@@ -10,48 +10,52 @@ void __stdcall Net::TraceRoute::RecvThread(NN<Sync::Thread> thread)
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
 	Net::SocketFactory::ErrorType et;
+	NN<Socket> soc;
 	UOSInt readSize;
 	readBuff = MemAlloc(UInt8, 4096);
 	UInt8 *ipData;
 	UOSInt ipDataSize;
 	me->resEvt->Set();
-	while (!thread->IsStopping())
+	if (me->socV4.SetTo(soc))
 	{
-		readSize = me->sockf->UDPReceive(me->socV4, readBuff, 4096, addr, port, et);
-		if (readSize >= 36)
+		while (!thread->IsStopping())
 		{
-			if ((readBuff[0] & 0xf0) == 0x40 && readBuff[9] == 1)
+			readSize = me->sockf->UDPReceive(soc, readBuff, 4096, addr, port, et);
+			if (readSize >= 36)
 			{
-				if ((readBuff[0] & 0xf) <= 5)
+				if ((readBuff[0] & 0xf0) == 0x40 && readBuff[9] == 1)
 				{
-					ipData = &readBuff[20];
-					ipDataSize = readSize - 20;
-				}
-				else
-				{
-					ipData = &readBuff[(readBuff[0] & 0xf) << 2];
-					ipDataSize = readSize - ((readBuff[0] & 0xf) << 2);
-				}
+					if ((readBuff[0] & 0xf) <= 5)
+					{
+						ipData = &readBuff[20];
+						ipDataSize = readSize - 20;
+					}
+					else
+					{
+						ipData = &readBuff[(readBuff[0] & 0xf) << 2];
+						ipDataSize = readSize - ((readBuff[0] & 0xf) << 2);
+					}
 
-				if (ipData[0] == 0 && ipDataSize >= 8)
-				{
-					UInt16 id = ReadMUInt16(&ipData[4]);
-					UInt16 seq = ReadMUInt16(&ipData[6]);
-					if (me->resId == id && me->resSeq == seq)
+					if (ipData[0] == 0 && ipDataSize >= 8)
+					{
+						UInt16 id = ReadMUInt16(&ipData[4]);
+						UInt16 seq = ReadMUInt16(&ipData[6]);
+						if (me->resId == id && me->resSeq == seq)
+						{
+							me->resIP = ReadNUInt32(&readBuff[12]);
+							me->resFound = true;
+							me->resEvt->Set();
+						}
+					}
+					else if (ipData[0] == 8)
+					{
+					}
+					else if (ipData[0] == 11)
 					{
 						me->resIP = ReadNUInt32(&readBuff[12]);
 						me->resFound = true;
 						me->resEvt->Set();
 					}
-				}
-				else if (ipData[0] == 8)
-				{
-				}
-				else if (ipData[0] == 11)
-				{
-					me->resIP = ReadNUInt32(&readBuff[12]);
-					me->resFound = true;
-					me->resEvt->Set();
 				}
 			}
 		}
@@ -84,8 +88,8 @@ Net::TraceRoute::TraceRoute(NN<Net::SocketFactory> sockf, UInt32 ip) : thread(Re
 {
 	this->sockf = sockf;
 	this->socV4 = this->sockf->CreateICMPIPv4Socket(ip);
-	NEW_CLASS(this->resEvt, Sync::Event(true));
-	if (this->socV4)
+	NEW_CLASSNN(this->resEvt, Sync::Event(true));
+	if (this->socV4.NotNull())
 	{
 		this->thread.Start();
 	}
@@ -94,22 +98,26 @@ Net::TraceRoute::TraceRoute(NN<Net::SocketFactory> sockf, UInt32 ip) : thread(Re
 Net::TraceRoute::~TraceRoute()
 {
 	this->thread.BeginStop();
-	if (this->socV4)
+	NN<Socket> soc;
+	if (this->socV4.SetTo(soc))
 	{
-		this->sockf->DestroySocket(this->socV4);
+		this->sockf->DestroySocket(soc);
 	}
 	this->thread.WaitForEnd();
-	DEL_CLASS(this->resEvt);
+	this->resEvt.Delete();
 	this->socV4 = 0;
 }
 
 Bool Net::TraceRoute::IsError()
 {
-	return this->socV4 == 0;
+	return this->socV4.IsNull();
 }
 
 Bool Net::TraceRoute::Tracev4(UInt32 ip, Data::ArrayList<UInt32> *ipList)
 {
+	NN<Socket> soc;
+	if (!this->socV4.SetTo(soc))
+		return false;
 	UInt8 packetBuff[72];
 	Net::SocketUtil::AddressInfo addr;
 	packetBuff[0] = 8; //type = Echo request
@@ -125,8 +133,8 @@ Bool Net::TraceRoute::Tracev4(UInt32 ip, Data::ArrayList<UInt32> *ipList)
 	this->resFound = false;
 
 	Net::SocketUtil::SetAddrInfoV4(addr, ip);
-	this->sockf->SetIPv4TTL(this->socV4, 64);
-	this->sockf->SendTo(this->socV4, packetBuff, 72, addr, 0);
+	this->sockf->SetIPv4TTL(soc, 64);
+	this->sockf->SendTo(soc, packetBuff, 72, addr, 0);
 
 	this->resEvt->Wait(2000);
 	if (!this->resFound)
@@ -147,13 +155,13 @@ Bool Net::TraceRoute::Tracev4(UInt32 ip, Data::ArrayList<UInt32> *ipList)
 		MemClear(&packetBuff[8], 64);
 		ICMPChecksum(packetBuff, 72);
 
-		this->sockf->SetIPv4TTL(this->socV4, ttl);
+		this->sockf->SetIPv4TTL(soc, ttl);
 		this->resId = reqId;
 		this->resSeq = seq;
 		this->resFound = false;
 
 		this->resEvt->Clear();
-		this->sockf->SendTo(this->socV4, packetBuff, 72, addr, 0);
+		this->sockf->SendTo(soc, packetBuff, 72, addr, 0);
 		this->resEvt->Wait(2000);
 		if (!this->resFound)
 		{

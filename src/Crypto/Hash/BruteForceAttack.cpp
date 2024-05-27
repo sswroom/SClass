@@ -48,7 +48,7 @@ UInt32 __stdcall Crypto::Hash::BruteForceAttack::ProcessThread(AnyType userObj)
 	UInt8 keyBuff[256];
 	UTF8Char result[64];
 	UOSInt keySize;
-	Crypto::Hash::HashValidatorSess *sess;
+	NN<Crypto::Hash::HashValidatorSess> sess;
 	Sync::Interlocked::IncrementUOS(me->threadCnt);
 	sess = me->validator->CreateSess();;
 	while (!me->threadToStop)

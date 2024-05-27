@@ -17,12 +17,12 @@ namespace Media
 		StaticEngine(Parser::ParserList *parsers);
 		virtual ~StaticEngine();
 
-		virtual DrawImage *CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype);
-		virtual DrawImage *LoadImage(Text::CStringNN fileName);
-		virtual DrawImage *LoadImageW(const WChar *fileName);
-		virtual DrawImage *LoadImageStream(NN<IO::SeekableStream> stm); /////////////////////////
-		virtual DrawImage *ConvImage(Media::Image *img);
-		virtual DrawImage *CloneImage(NN<DrawImage> img);
+		virtual Optional<DrawImage> CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype);
+		virtual Optional<DrawImage> LoadImage(Text::CStringNN fileName);
+		virtual Optional<DrawImage> LoadImageW(const WChar *fileName);
+		virtual Optional<DrawImage> LoadImageStream(NN<IO::SeekableStream> stm); /////////////////////////
+		virtual Optional<DrawImage> ConvImage(NN<Media::RasterImage> img);
+		virtual Optional<DrawImage> CloneImage(NN<DrawImage> img);
 		virtual Bool DeleteImage(NN<DrawImage> img);
 	};
 
@@ -86,13 +86,13 @@ namespace Media
 		virtual Bool DrawImagePt2(NN<Media::StaticImage> img, Math::Coord2DDbl tl);
 		virtual Bool DrawImagePt3(NN<DrawImage> img, Math::Coord2DDbl destTL, Math::Coord2DDbl srcTL, Math::Size2DDbl srcSize);
 
-		virtual DrawPen *NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern);
+		virtual NN<DrawPen> NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern);
 		virtual NN<DrawBrush> NewBrushARGB(UInt32 color);
 /*		virtual DrawFont *NewFontA(const Char *name, Int16 pxSize, Media::DrawEngine::DrawFontStyle fontStyle) = 0;
 		virtual DrawFont *NewFontW(const WChar *name, Int16 pxSize, Media::DrawEngine::DrawFontStyle fontStyle) = 0;
 		virtual DrawFont *NewFontH(const WChar *name, Double height, Media::DrawEngine::DrawFontStyle fontStyle, Int32 codePage) = 0;*/
-		virtual void DelPen(DrawPen *p);
-		virtual void DelBrush(DrawBrush *b);
+		virtual void DelPen(NN<DrawPen> p);
+		virtual void DelBrush(NN<DrawBrush> b);
 //		virtual void DelFont(DrawFont *f) = 0;
 
 /*		virtual Bool GetTextSize(DrawFont *fnt, const WChar *txt, OSInt txtLen, Double *sz) = 0;

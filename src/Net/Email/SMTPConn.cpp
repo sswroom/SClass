@@ -126,7 +126,7 @@ Net::Email::SMTPConn::SMTPConn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEn
 	if (connType == ConnType::SSL)
 	{
 		NN<Net::SSLEngine> nnssl;
-		if (!ssl.SetTo(nnssl) || !this->cli.Set(nnssl->ClientConnect(host, port, 0, timeout)))
+		if (!ssl.SetTo(nnssl) || !Optional<Net::TCPClient>(nnssl->ClientConnect(host, port, 0, timeout)).SetTo(this->cli))
 		{
 			NEW_CLASSNN(this->cli, Net::TCPClient(sockf, addr, port, timeout));
 		}
@@ -148,10 +148,10 @@ Net::Email::SMTPConn::SMTPConn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEn
 			if (buffSize > 0 && Text::StrStartsWithC(buff, buffSize, UTF8STRC("220 ")) && buff[buffSize - 2] == '\r' && buff[buffSize - 1] == '\n')
 			{
 				if (this->logWriter.SetTo(lwriter)) lwriter->WriteLine(CSTR("SSL Handshake begin"));
-				Socket *s = this->cli->RemoveSocket();
-				NN<Net::TCPClient> cli;
+				NN<Socket> s;
+				NN<Net::SSLClient> cli;
 				NN<Net::SSLEngine> nnssl;
-				if (ssl.SetTo(nnssl) && cli.Set(nnssl->ClientInit(s, host, 0)))
+				if (this->cli->RemoveSocket().SetTo(s) && ssl.SetTo(nnssl) && nnssl->ClientInit(s, host, 0).SetTo(cli))
 				{
 					if (this->logWriter.SetTo(lwriter)) lwriter->WriteLine(CSTR("SSL Handshake success"));
 					this->cli.Delete();

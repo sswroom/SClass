@@ -50,7 +50,7 @@ Net::RAWCapture::RAWCapture(NN<Net::SocketFactory> sockf, UInt32 adapterIP, Capt
 	}
 	if (this->writer)
 	{
-		Socket *s = 0;
+		Optional<Socket> s = 0;
 		switch (type)
 		{
 		case CT_RAW:
@@ -66,9 +66,10 @@ Net::RAWCapture::RAWCapture(NN<Net::SocketFactory> sockf, UInt32 adapterIP, Capt
 			s = sockf->CreateICMPIPv4Socket(adapterIP);
 			break;
 		}
-		if (s)
+		NN<Socket> nns;
+		if (s.SetTo(nns))
 		{
-			NEW_CLASS(this->socMon, Net::SocketMonitor(sockf, s, DataHandler, this, 4));
+			NEW_CLASS(this->socMon, Net::SocketMonitor(sockf, nns, DataHandler, this, 4));
 		}
 	}
 }

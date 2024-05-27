@@ -114,7 +114,7 @@ Bool Exporter::KMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	Text::StringBuilderUTF8 sb;
 	NN<Text::String> s;
 	NN<Math::CoordinateSystem> srcCsys = layer->GetCoordinateSystem();
-	NN<Math::CoordinateSystem> destCsys = Math::CoordinateSystemManager::CreateDefaultCsys();
+	NN<Math::CoordinateSystem> destCsys = Math::CoordinateSystemManager::CreateWGS84Csys();
 	Bool needConv = false;
 	if (!destCsys->Equals(srcCsys))
 	{

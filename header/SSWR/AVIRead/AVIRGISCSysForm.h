@@ -18,8 +18,8 @@ namespace SSWR
 		{
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			Math::CoordinateSystem *oriCSys;
-			Math::CoordinateSystem *outCSys;
+			Optional<Math::CoordinateSystem> oriCSys;
+			Optional<Math::CoordinateSystem> outCSys;
 
 			NN<UI::GUITextBox> txtCurrCSys;
 			NN<UI::GUIPanel> pnlSel;
@@ -41,7 +41,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			Math::CoordinateSystem *GetCSys();
+			Optional<Math::CoordinateSystem> GetCSys();
 		};
 	}
 }

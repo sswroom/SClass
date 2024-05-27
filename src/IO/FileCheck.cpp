@@ -9,7 +9,7 @@
 
 typedef struct
 {
-	Crypto::Hash::IHash *hash;
+	NN<Crypto::Hash::IHash> hash;
 	UInt64 readSize;
 	UInt64 fileSize;
 	Optional<IO::ProgressHandler> progress;
@@ -19,7 +19,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto::Hash::Ha
 {
 	UTF8Char sbuff[1024];
 	UInt8 hashBuff[32];
-	Crypto::Hash::IHash *hash;
+	NN<Crypto::Hash::IHash> hash;
 	IO::FileCheck *fchk;
 	IO::Path::PathType pt;
 	UInt64 fileSize;
@@ -28,8 +28,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto::Hash::Ha
 	IO::ActiveStreamReader::BottleNeckType bnt;
 	NN<IO::ProgressHandler> nnprogress;
 
-	hash = Crypto::Hash::HashCreator::CreateHash(chkType);
-	if (hash == 0)
+	if (!Crypto::Hash::HashCreator::CreateHash(chkType).SetTo(hash))
 	{
 		return 0;
 	}
@@ -45,7 +44,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto::Hash::Ha
 		{
 			DEL_CLASS(fchk);
 			fs.Delete();
-			DEL_CLASS(hash);
+			hash.Delete();
 			return 0;
 		}
 		else
@@ -76,7 +75,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto::Hash::Ha
 					nnprogress->ProgressEnd();
 				}
 				DEL_CLASS(fchk);
-				DEL_CLASS(hash);
+				hash.Delete();
 				return 0;
 			}
 			fs.Delete();
@@ -124,7 +123,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto::Hash::Ha
 	{
 		fchk = 0;
 	}
-	DEL_CLASS(hash);
+	hash.Delete();
 	return fchk;
 }
 
@@ -140,7 +139,7 @@ void __stdcall IO::FileCheck::CheckData(const UInt8 *buff, UOSInt buffSize, AnyT
 	}
 }
 
-Bool IO::FileCheck::CheckDir(NN<IO::ActiveStreamReader> reader, UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Hash::IHash *hash, IO::FileCheck *fchk, Optional<IO::ProgressHandler> progress, Bool skipError)
+Bool IO::FileCheck::CheckDir(NN<IO::ActiveStreamReader> reader, UTF8Char *fullPath, UTF8Char *hashPath, NN<Crypto::Hash::IHash> hash, IO::FileCheck *fchk, Optional<IO::ProgressHandler> progress, Bool skipError)
 {
 	UTF8Char *sptr = &hashPath[Text::StrCharCnt(hashPath)];
 	UTF8Char *sptr2;
@@ -229,8 +228,8 @@ Bool IO::FileCheck::CheckDir(NN<IO::ActiveStreamReader> reader, UTF8Char *fullPa
 IO::FileCheck::FileCheck(NN<Text::String> name, Crypto::Hash::HashType chkType) : IO::ParsedObject(name)
 {
 	this->chkType = chkType;
-	Crypto::Hash::IHash *hash = Crypto::Hash::HashCreator::CreateHash(chkType);
-	if (hash == 0)
+	NN<Crypto::Hash::IHash> hash;
+	if (!Crypto::Hash::HashCreator::CreateHash(chkType).SetTo(hash))
 	{
 		this->hashSize = 4;
 		this->chkType = Crypto::Hash::HashType::CRC32;
@@ -239,7 +238,7 @@ IO::FileCheck::FileCheck(NN<Text::String> name, Crypto::Hash::HashType chkType) 
 	else
 	{
 		this->hashSize = hash->GetResultSize();
-		DEL_CLASS(hash);
+		hash.Delete();
 	}
 	this->chkCapacity = 40;
 	this->chkValues = MemAlloc(UInt8, this->hashSize * this->chkCapacity);
@@ -248,8 +247,8 @@ IO::FileCheck::FileCheck(NN<Text::String> name, Crypto::Hash::HashType chkType) 
 IO::FileCheck::FileCheck(Text::CStringNN name, Crypto::Hash::HashType chkType) : IO::ParsedObject(name)
 {
 	this->chkType = chkType;
-	Crypto::Hash::IHash *hash = Crypto::Hash::HashCreator::CreateHash(chkType);
-	if (hash == 0)
+	NN<Crypto::Hash::IHash> hash;
+	if (!Crypto::Hash::HashCreator::CreateHash(chkType).SetTo(hash))
 	{
 		this->hashSize = 4;
 		this->chkType = Crypto::Hash::HashType::CRC32;
@@ -258,7 +257,7 @@ IO::FileCheck::FileCheck(Text::CStringNN name, Crypto::Hash::HashType chkType) :
 	else
 	{
 		this->hashSize = hash->GetResultSize();
-		DEL_CLASS(hash);
+		hash.Delete();
 	}
 	this->chkCapacity = 40;
 	this->chkValues = MemAlloc(UInt8, this->hashSize * this->chkCapacity);
@@ -318,7 +317,7 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal, Optional<IO::Wr
 	UTF8Char *sptr;
 	UTF8Char *sptrEnd;
 	UOSInt i;
-	Crypto::Hash::IHash *hash;
+	NN<Crypto::Hash::IHash> hash;
 	NN<IO::Writer> writer;
 
 	NN<Text::String> fileName;
@@ -361,8 +360,7 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal, Optional<IO::Wr
 	{
 		Text::StrReplace(sptr, '/', '\\');
 	}
-	hash = Crypto::Hash::HashCreator::CreateHash(this->chkType);
-	if (hash == 0)
+	if (!Crypto::Hash::HashCreator::CreateHash(this->chkType).SetTo(hash))
 	{
 		if (verboseWriter.SetTo(writer))
 			writer->WriteLine(CSTR("Error in creating hash calculator"));
@@ -377,7 +375,7 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal, Optional<IO::Wr
 			writer->Write(CSTR("Error in opening file: "));
 			writer->WriteLine(CSTRP(sbuff, sptrEnd));
 		}
-		DEL_CLASS(hash);
+		hash.Delete();
 		return false;
 	}
 	else
@@ -407,7 +405,7 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal, Optional<IO::Wr
 				writer->WriteLine(CSTRP(sbuff, sptrEnd));
 			}
 		}
-		DEL_CLASS(hash);
+		hash.Delete();
 		return ret;
 	}
 }

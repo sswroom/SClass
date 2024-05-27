@@ -10,18 +10,18 @@ namespace Crypto
 		class BatchHashValidator : public HashValidator
 		{
 		private:
-			Crypto::Hash::IHash *hash;
+			NN<Crypto::Hash::IHash> hash;
 			Bool toRelease;
 			UInt8 hashBuff[64];
 			UOSInt hashSize;
 		public:
-			BatchHashValidator(Crypto::Hash::IHash *hash, Bool toRelease);
+			BatchHashValidator(NN<Crypto::Hash::IHash> hash, Bool toRelease);
 			virtual ~BatchHashValidator();
 
-			virtual HashValidatorSess *CreateSess();
-			virtual void DeleteSess(HashValidatorSess *sess);
+			virtual NN<HashValidatorSess> CreateSess();
+			virtual void DeleteSess(NN<HashValidatorSess> sess);
 			virtual Bool SetHash(const UTF8Char *hash, UOSInt hashLen);
-			virtual Bool IsMatch(HashValidatorSess *sess, const UTF8Char *password, UOSInt pwdLen);
+			virtual Bool IsMatch(NN<HashValidatorSess> sess, const UTF8Char *password, UOSInt pwdLen);
 		};
 	}
 }

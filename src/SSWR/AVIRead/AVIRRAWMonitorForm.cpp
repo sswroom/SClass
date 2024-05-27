@@ -143,15 +143,15 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnStartClicked(AnyType userObj
 	UInt32 ip = (UInt32)me->cboIP->GetSelectedItem().GetOSInt();
 	if (ip)
 	{
-		Socket *soc;
+		NN<Socket> soc;
 		
-		if ((soc = me->sockf->CreateRAWSocket()) != 0)
+		if (me->sockf->CreateRAWSocket().SetTo(soc))
 		{
 			me->linkType = 1;
 			NEW_CLASS(me->socMon, Net::SocketMonitor(me->sockf, soc, OnRAWData, me, 3));
 			me->cboIP->SetEnabled(false);
 		}
-		else if ((soc = me->sockf->CreateRAWIPv4Socket(ip)) != 0)
+		else if (me->sockf->CreateRAWIPv4Socket(ip).SetTo(soc))
 		{
 			me->linkType = 101;
 			NEW_CLASS(me->socMon, Net::SocketMonitor(me->sockf, soc, OnIPv4Data, me, 3));
@@ -1126,7 +1126,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceSelChg(AnyType userObj
 	me->txtDevice->SetText(sb.ToCString());
 }
 
-SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Net::EthernetAnalyzer *analyzer) : UI::GUIForm(parent, 1024, 768, ui), whois(core->GetSocketFactory(), 15000)
+SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::EthernetAnalyzer> analyzer) : UI::GUIForm(parent, 1024, 768, ui), whois(core->GetSocketFactory(), 15000)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("RAW Monitor"));
@@ -1141,13 +1141,9 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 	this->dataUpdated = true;
 	this->plogWriter = 0;
 	this->linkType = 1;
-	if (analyzer)
+	if (!analyzer.SetTo(this->analyzer))
 	{
-		this->analyzer = analyzer;
-	}
-	else
-	{
-		NEW_CLASS(this->analyzer, Net::EthernetAnalyzer(0, Net::EthernetAnalyzer::AT_ALL, CSTR("RAWMonitor")));
+		NEW_CLASSNN(this->analyzer, Net::EthernetAnalyzer(0, Net::EthernetAnalyzer::AT_ALL, CSTR("RAWMonitor")));
 	}
 	this->ipTranCnt = 0;
 	this->pingIPListUpdated = false;
@@ -1563,7 +1559,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::~AVIRRAWMonitorForm()
 		ipTran = this->ipTranMap.GetItemNoCheck(i);
 		MemFreeNN(ipTran);
 	}
-	DEL_CLASS(this->analyzer);
+	this->analyzer.Delete();
 }
 
 void SSWR::AVIRead::AVIRRAWMonitorForm::OnMonitorChanged()

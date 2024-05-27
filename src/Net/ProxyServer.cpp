@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Net/ProxyServer.h"
 
-void __stdcall Net::ProxyServer::OnClientConn(Socket *s, AnyType userObj)
+void __stdcall Net::ProxyServer::OnClientConn(NN<Socket> s, AnyType userObj)
 {
 	NN<Net::ProxyServer> me = userObj.GetNN<Net::ProxyServer>();
 	NN<Net::TCPClient> cli;

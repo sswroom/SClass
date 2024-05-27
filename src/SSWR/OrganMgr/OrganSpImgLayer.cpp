@@ -4,7 +4,7 @@
 #include "Math/Geometry/Point.h"
 #include "SSWR/OrganMgr/OrganSpImgLayer.h"
 
-SSWR::OrganMgr::OrganSpImgLayer::OrganSpImgLayer() : Map::MapDrawLayer(CSTR("ImageLayer"), 0, CSTR_NULL, Math::CoordinateSystemManager::CreateDefaultCsys())
+SSWR::OrganMgr::OrganSpImgLayer::OrganSpImgLayer() : Map::MapDrawLayer(CSTR("ImageLayer"), 0, CSTR_NULL, Math::CoordinateSystemManager::CreateWGS84Csys())
 {
 	this->ClearItems();
 }

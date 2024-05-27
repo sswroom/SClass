@@ -330,7 +330,7 @@ Map::WebMapService::WebMapService(NN<Net::SocketFactory> sockf, Optional<Net::SS
 	this->mapImageType = 0;
 	this->currCRS = 0;
 	this->layer = 0;
-	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+	this->csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 	this->LoadXML(version);
 }
 
@@ -699,7 +699,7 @@ void Map::WebMapService::SetLayer(UOSInt index)
 	if (index < this->layers.GetCount())
 	{
 		this->layer = index;
-		Math::CoordinateSystem *csys;
+		NN<Math::CoordinateSystem> csys;
 		NN<LayerInfo> layer = this->layers.GetItemNoCheck(index);
 		NN<LayerCRS> crs;
 		Bool found = false;
@@ -708,24 +708,23 @@ void Map::WebMapService::SetLayer(UOSInt index)
 		while (i < j)
 		{
 			crs = layer->crsList.GetItemNoCheck(i);
-			csys = Math::CoordinateSystemManager::CreateFromName(crs->name->ToCString());
-			if (csys)
+			if (Math::CoordinateSystemManager::CreateFromName(crs->name->ToCString()).SetTo(csys))
 			{
 				if (csys->Equals(this->envCsys))
 				{
-					DEL_CLASS(csys);
+					csys.Delete();
 					found = true;
 					this->currCRS = crs;
 					break;
 				}
 				else if (csys->GetCoordSysType() == this->envCsys->GetCoordSysType())
 				{
-					DEL_CLASS(csys);
+					csys.Delete();
 					found = true;
 					this->currCRS = crs;
 					break;
 				}
-				DEL_CLASS(csys);
+				csys.Delete();
 			}
 			i++;
 		}

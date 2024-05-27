@@ -39,12 +39,16 @@ void Net::TCPServer::AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::LogHandl
 UInt32 __stdcall Net::TCPServer::Svrv4Subthread(AnyType o)
 {
 	NN<SubthreadStatus> status = o.GetNN<SubthreadStatus>();
+	NN<Socket> soc;
 	Sync::ThreadUtil::SetName(CSTR("TCPSvrv4Sub"));
 	status->threadRunning = true;
 	status->threadEvt->Set();
-	while (!status->toStop)
+	if (status->me->svrSocv4.SetTo(soc))
 	{
-		status->me->AcceptSocket(status->me->svrSocv4);
+		while (!status->toStop)
+		{
+			status->me->AcceptSocket(soc);
+		}
 	}
 	status->threadRunning = false;
 	status->threadEvt->Set();
@@ -100,9 +104,13 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(AnyType o)
 			threadEvt->Wait(100);
 		}
 	}
-	while (!svr->toStop)
+	NN<Socket> soc;
+	if (svr->svrSocv4.SetTo(soc))
 	{
-		svr->AcceptSocket(svr->svrSocv4);
+		while (!svr->toStop)
+		{
+			svr->AcceptSocket(soc);
+		}
 	}
 	if (sthreadCnt > 0)
 	{
@@ -112,7 +120,11 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(AnyType o)
 			sthreads[i].toStop = true;
 		}
 	}
-	svr->socf->DestroySocket(svr->svrSocv4);
+	if (svr->svrSocv4.SetTo(soc))
+	{
+		svr->socf->DestroySocket(soc);
+		svr->svrSocv4 = 0;
+	}
 	if (sthreadCnt > 0)
 	{
 		found = true;
@@ -147,12 +159,16 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(AnyType o)
 UInt32 __stdcall Net::TCPServer::Svrv6Subthread(AnyType o)
 {
 	NN<SubthreadStatus> status = o.GetNN<SubthreadStatus>();
+	NN<Socket> soc;
 	Sync::ThreadUtil::SetName(CSTR("TCPSvrv6Sub"));
 	status->threadRunning = true;
 	status->threadEvt->Set();
-	while (!status->toStop)
+	if (status->me->svrSocv6.SetTo(soc))
 	{
-		status->me->AcceptSocket(status->me->svrSocv6);
+		while (!status->toStop)
+		{
+			status->me->AcceptSocket(soc);
+		}
 	}
 	status->threadRunning = false;
 	status->threadEvt->Set();
@@ -169,6 +185,7 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(AnyType o)
 	Bool found;
 	SubthreadStatus *sthreads = 0;
 	Sync::Event *threadEvt = 0;
+	NN<Socket> soc;
 
 	Sync::ThreadUtil::SetPriority(Sync::ThreadUtil::TP_HIGHEST);
 	Sync::ThreadUtil::SetName(CSTR("TCPSvrv6"));
@@ -208,9 +225,12 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(AnyType o)
 			threadEvt->Wait(100);
 		}
 	}
-	while (!svr->toStop)
+	if (svr->svrSocv6.SetTo(soc))
 	{
-		svr->AcceptSocket(svr->svrSocv6);
+		while (!svr->toStop)
+		{
+			svr->AcceptSocket(soc);
+		}
 	}
 	if (sthreadCnt > 0)
 	{
@@ -220,7 +240,11 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(AnyType o)
 			sthreads[i].toStop = true;
 		}
 	}
-	svr->socf->DestroySocket(svr->svrSocv6);
+	if (svr->svrSocv6.SetTo(soc))
+	{
+		svr->socf->DestroySocket(soc);
+		svr->svrSocv6 = 0;
+	}
 	if (sthreadCnt > 0)
 	{
 		found = true;
@@ -265,11 +289,14 @@ UInt32 __stdcall Net::TCPServer::WorkerThread(AnyType o)
 	{
 		while (svr->socs.HasItems())
 		{
-			Socket *s = (Socket*)svr->socs.Get();
-			str = Text::StrConcatC(buff, UTF8STRC("Client connected: "));
-			str = svr->socf->GetRemoteName(str, s);
-			svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::LogHandler::LogLevel::Action);
-			svr->hdlr.func(s, svr->hdlr.userObj);
+			NN<Socket> s;
+			if (s.Set((Socket*)svr->socs.Get()))
+			{
+				str = Text::StrConcatC(buff, UTF8STRC("Client connected: "));
+				str = svr->socf->GetRemoteName(str, s);
+				svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::LogHandler::LogLevel::Action);
+				svr->hdlr.func(s, svr->hdlr.userObj);
+			}
 		}
 		svr->socsEvt.Wait(100);
 	}
@@ -277,13 +304,12 @@ UInt32 __stdcall Net::TCPServer::WorkerThread(AnyType o)
 	return 0;
 }
 
-void Net::TCPServer::AcceptSocket(Socket *svrSoc)
+void Net::TCPServer::AcceptSocket(NN<Socket> svrSoc)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	Socket *s;
-	s = this->socf->SocketAccept(svrSoc);
-	if (this->socf->SocketIsInvalid(s))
+	NN<Socket> s;
+	if (!this->socf->SocketAccept(svrSoc).SetTo(s))
 	{
 		Int32 errCode = this->socf->SocketGetLastError();
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Client connect error: "));
@@ -296,12 +322,12 @@ void Net::TCPServer::AcceptSocket(Socket *svrSoc)
 	}
 	else
 	{
-		if (this->socs.GetLastNoRemove() == s)
+		if (this->socs.GetLastNoRemove() == s.Ptr())
 		{
 		}
 		else
 		{
-			this->socs.Put(s);
+			this->socs.Put(s.Ptr());
 			this->socsEvt.Set();
 		}
 /*		str = Text::StrConcatC(buff, UTF8STRC("Client connected: ");
@@ -333,28 +359,33 @@ Net::TCPServer::TCPServer(NN<SocketFactory> socf, Optional<Net::SocketUtil::Addr
 	{
 		bindIP = *(UInt32*)addr->addr;
 	}
+	NN<Socket> soc;
 	this->svrSocv4 = this->socf->CreateTCPSocketv4();
-	if (!this->socf->SocketBindv4(this->svrSocv4, bindIP, this->port))
+	if (!this->svrSocv4.SetTo(soc))
+	{
+		this->AddLogMsgC(UTF8STRC("Error in create TCPv4 socket"), IO::LogHandler::LogLevel::Error);
+	}
+	else if (!this->socf->SocketBindv4(soc, bindIP, this->port))
 	{
 		str = Text::StrConcatC(buff, UTF8STRC("Cannot bind to the v4 port: "));
 		str = Text::StrInt32(str, this->port);
 		this->AddLogMsgC(buff, (UOSInt)(str - buff), IO::LogHandler::LogLevel::Error);
-		this->socf->DestroySocket(this->svrSocv4);
+		this->socf->DestroySocket(soc);
 		this->svrSocv4 = 0;
 		this->errorv4 = true;
 	}
-	else if (!this->socf->SocketListen(this->svrSocv4))
+	else if (!this->socf->SocketListen(soc))
 	{
 		str = Text::StrConcatC(buff, UTF8STRC("Cannot start listening the v4 port: "));
 		str = Text::StrInt32(str, this->port);
 		this->AddLogMsgC(buff, (UOSInt)(str - buff), IO::LogHandler::LogLevel::Error);
-		this->socf->DestroySocket(this->svrSocv4);
+		this->socf->DestroySocket(soc);
 		this->svrSocv4 = 0;
 		this->errorv4 = true;
 	}
 	else if (this->port == 0)
 	{
-		this->socf->GetLocalAddr(this->svrSocv4, addrTmp, this->port);
+		this->socf->GetLocalAddr(soc, addrTmp, this->port);
 	}
 
 	Net::SocketUtil::SetAddrInfoAnyV6(addrTmp);
@@ -379,21 +410,25 @@ Net::TCPServer::TCPServer(NN<SocketFactory> socf, Optional<Net::SocketUtil::Addr
 	else
 	{
 		this->svrSocv6 = this->socf->CreateTCPSocketv6();
-		if (!this->socf->SocketBind(this->svrSocv6, &addrTmp, this->port))
+		if (!this->svrSocv6.SetTo(soc))
+		{
+			this->AddLogMsgC(UTF8STRC("Error in creating TCPv6 socket"), IO::LogHandler::LogLevel::Error);
+		}
+		else if (!this->socf->SocketBind(soc, &addrTmp, this->port))
 		{
 			str = Text::StrConcatC(buff, UTF8STRC("Cannot bind to the v6 port: "));
 			str = Text::StrInt32(str, this->port);
 			this->AddLogMsgC(buff, (UOSInt)(str - buff), IO::LogHandler::LogLevel::Error);
-			this->socf->DestroySocket(this->svrSocv6);
+			this->socf->DestroySocket(soc);
 			this->svrSocv6 = 0;
 			this->errorv6 = true;
 		}
-		else if (!this->socf->SocketListen(this->svrSocv6))
+		else if (!this->socf->SocketListen(soc))
 		{
 			str = Text::StrConcatC(buff, UTF8STRC("Cannot start listening the v6 port: "));
 			str = Text::StrInt32(str, this->port);
 			this->AddLogMsgC(buff, (UOSInt)(str - buff), IO::LogHandler::LogLevel::Error);
-			this->socf->DestroySocket(this->svrSocv6);
+			this->socf->DestroySocket(soc);
 			this->svrSocv6 = 0;
 			this->errorv6 = true;
 		}
@@ -448,18 +483,21 @@ void Net::TCPServer::Close()
 {
 	if (!toStop)
 	{
+		NN<Socket> soc;
 		toStop = true;
-		if (this->svrSocv4)
+		if (this->svrSocv4.SetTo(soc))
 		{
-			socf->DestroySocket(this->svrSocv4);
+			socf->DestroySocket(soc);
 		}
-		if (this->svrSocv6)
+		if (this->svrSocv6.SetTo(soc))
 		{
-			socf->DestroySocket(this->svrSocv6);
+			socf->DestroySocket(soc);
 		}
 		this->socsEvt.Set();
 		this->errorv4 = true;
 		this->errorv6 = true;
+		this->svrSocv4 = 0;
+		this->svrSocv6 = 0;
 	}
 }
 

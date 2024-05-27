@@ -26,7 +26,7 @@ UInt32 Net::OpenSSLClient::GetLastErrorCode()
 	return lastError;
 }
 
-Net::OpenSSLClient::OpenSSLClient(NN<Net::SocketFactory> sockf, void *ssl, Socket *s) : SSLClient(sockf, s)
+Net::OpenSSLClient::OpenSSLClient(NN<Net::SocketFactory> sockf, void *ssl, NN<Socket> s) : SSLClient(sockf, s)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->ssl = (SSL*)ssl;
@@ -88,7 +88,7 @@ Net::OpenSSLClient::~OpenSSLClient()
 
 UOSInt Net::OpenSSLClient::Read(const Data::ByteArray &buff)
 {
-	if (s && (this->flags & 6) == 0)
+	if (this->s.NotNull() && (this->flags & 6) == 0)
 	{
 		int ret = SSL_read(this->clsData->ssl, buff.Ptr().Ptr(), (int)(OSInt)buff.GetSize());
 		if (ret > 0)
@@ -118,7 +118,7 @@ UOSInt Net::OpenSSLClient::Read(const Data::ByteArray &buff)
 
 UOSInt Net::OpenSSLClient::Write(const UInt8 *buff, UOSInt size)
 {
-	if (s && (this->flags & 5) == 0)
+	if (this->s.NotNull() && (this->flags & 5) == 0)
 	{
 		UOSInt totalWrite = 0;
 		while (size > 0)

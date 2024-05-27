@@ -11,7 +11,8 @@
 
 Bool Net::WebSocketClient::SendPacket(UInt8 opcode, const UInt8 *buff, UOSInt buffSize)
 {
-	if (this->cli == 0)
+	NN<Net::TCPClient> cli;
+	if (!this->cli.SetTo(cli))
 		return false;
 	UInt8 packetBuff[130];
 	Sync::MutexUsage mutUsage(this->sendMut);
@@ -48,7 +49,7 @@ Bool Net::WebSocketClient::SendPacket(UInt8 opcode, const UInt8 *buff, UOSInt bu
 			i += 3;
 			break;
 		}
-		return this->cli->Write(packetBuff, i + 6) == (i + 6);
+		return cli->Write(packetBuff, i + 6) == (i + 6);
 	}
 	else if (buffSize < 65536)
 	{
@@ -83,7 +84,7 @@ Bool Net::WebSocketClient::SendPacket(UInt8 opcode, const UInt8 *buff, UOSInt bu
 			i += 3;
 			break;
 		}
-		Bool succ = this->cli->Write(packBuff, i + 8) == (i + 8);
+		Bool succ = cli->Write(packBuff, i + 8) == (i + 8);
 		MemFree(packBuff);
 		return succ;
 	}
@@ -120,7 +121,7 @@ Bool Net::WebSocketClient::SendPacket(UInt8 opcode, const UInt8 *buff, UOSInt bu
 			i += 3;
 			break;
 		}
-		Bool succ = this->cli->Write(packBuff, i + 14) == (i + 14);
+		Bool succ = cli->Write(packBuff, i + 14) == (i + 14);
 		MemFree(packBuff);
 		return succ;
 	}
@@ -128,6 +129,7 @@ Bool Net::WebSocketClient::SendPacket(UInt8 opcode, const UInt8 *buff, UOSInt bu
 
 const UInt8 *Net::WebSocketClient::NextPacket(UInt8 *opcode, UOSInt *packetSize)
 {
+	NN<Net::TCPClient> cli;
 	UInt8 pkSize;
 	UInt64 usedSize;
 	UOSInt ofst;
@@ -236,7 +238,9 @@ const UInt8 *Net::WebSocketClient::NextPacket(UInt8 *opcode, UOSInt *packetSize)
 				this->recvParseOfst = 0;
 			}
 		}
-		UOSInt readSize = this->cli->Read(Data::ByteArray(&this->recvBuff[this->recvSize], this->recvCapacity - this->recvSize));
+		if (!this->cli.SetTo(cli))
+			return 0;
+		UOSInt readSize = cli->Read(Data::ByteArray(&this->recvBuff[this->recvSize], this->recvCapacity - this->recvSize));
 		if (readSize == 0)
 			return 0;
 		this->recvSize += readSize;
@@ -245,8 +249,9 @@ const UInt8 *Net::WebSocketClient::NextPacket(UInt8 *opcode, UOSInt *packetSize)
 
 const UInt8 *Net::WebSocketClient::NextPacket(NN<Sync::MutexUsage> mutUsage, UOSInt *packetSize)
 {
+	NN<Net::TCPClient> cli;
 	mutUsage->ReplaceMutex(this->recvMut);
-	if (this->cli == 0)
+	if (!this->cli.SetTo(cli))
 		return 0;
 
 	UInt8 opcode;
@@ -263,9 +268,9 @@ const UInt8 *Net::WebSocketClient::NextPacket(NN<Sync::MutexUsage> mutUsage, UOS
 		case 2: //binary frame
 			return buff;
 		case 8: //connection close
-			if (this->cli)
+			if (this->cli.SetTo(cli))
 			{
-				this->cli->ShutdownSend();
+				cli->ShutdownSend();
 			}
 			break;
 		case 9: //Ping
@@ -290,6 +295,7 @@ Net::WebSocketClient::WebSocketClient(NN<Net::SocketFactory> sockf, Optional<Net
 	this->recvDataOfst = 0;
 	this->recvDataSize = 0;
 
+	NN<Net::TCPClient> cli;
 	NN<Net::SSLEngine> nnssl;
 	if (ssl.SetTo(nnssl))
 	{
@@ -297,25 +303,25 @@ Net::WebSocketClient::WebSocketClient(NN<Net::SocketFactory> sockf, Optional<Net
 	}
 	else
 	{
-		NEW_CLASS(this->cli, Net::TCPClient(sockf, host, port, timeout));
+		NEW_CLASSNN(cli, Net::TCPClient(sockf, host, port, timeout));
+		this->cli = cli;
 	}
-	if (this->cli == 0)
+	if (!this->cli.SetTo(cli))
 	{
 #if defined(VERBOSE)
 		printf("cli = null\r\n");
 #endif
 	}
-	else if (this->cli->IsConnectError())
+	else if (cli->IsConnectError())
 	{
-		DEL_CLASS(this->cli);
-		this->cli = 0;
+		this->cli.Delete();
 #if defined(VERBOSE)
 		printf("Connect error\r\n");
 #endif
 	}
 	else
 	{
-		this->cli->SetTimeout(8000);
+		cli->SetTimeout(8000);
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("GET "));
 		sb.Append(path);
@@ -362,25 +368,23 @@ Net::WebSocketClient::WebSocketClient(NN<Net::SocketFactory> sockf, Optional<Net
 #if defined(VERBOSE)
 		printf("Data to send: %s\r\n", sb.v);
 #endif
-		if (this->cli->Write(sb.v, sb.leng) != sb.leng)
+		if (cli->Write(sb.v, sb.leng) != sb.leng)
 		{
 #if defined(VERBOSE)
 			printf("Error in writing to conn\r\n");
 #endif
-			DEL_CLASS(this->cli);
-			this->cli = 0;
+			this->cli.Delete();
 			return;
 		}
 		sb.ClearStr();
 		sb.AllocLeng(4096);
-		UOSInt readSize = this->cli->Read(Data::ByteArray(sb.v, 4096));
+		UOSInt readSize = cli->Read(Data::ByteArray(sb.v, 4096));
 		if (readSize <= 0)
 		{
 #if defined(VERBOSE)
 			printf("Error in reading data\r\n");
 #endif
-			DEL_CLASS(this->cli);
-			this->cli = 0;
+			this->cli.Delete();
 			return;
 		}
 		sb.v[readSize] = 0;
@@ -390,15 +394,14 @@ Net::WebSocketClient::WebSocketClient(NN<Net::SocketFactory> sockf, Optional<Net
 #endif
 		if (sb.StartsWith(UTF8STRC("HTTP/1.1 101 ")) && sb.EndsWith(UTF8STRC("\r\n\r\n")))
 		{
-			this->cli->SetTimeout(0);
+			cli->SetTimeout(0);
 		}
 		else
 		{
 #if defined(VERBOSE)
 			printf("Not valid WebSocket init response\r\n");
 #endif
-			DEL_CLASS(this->cli);
-			this->cli = 0;
+			this->cli.Delete();
 			return;
 		}
 	}
@@ -406,7 +409,7 @@ Net::WebSocketClient::WebSocketClient(NN<Net::SocketFactory> sockf, Optional<Net
 
 Net::WebSocketClient::~WebSocketClient()
 {
-	SDEL_CLASS(this->cli);
+	this->cli.Delete();
 	MemFree(this->recvBuff);
 	if (this->recvData)
 	{
@@ -416,9 +419,10 @@ Net::WebSocketClient::~WebSocketClient()
 
 UTF8Char *Net::WebSocketClient::GetRemoteName(UTF8Char *buff) const
 {
-	if (this->cli)
+	NN<Net::TCPClient> cli;
+	if (this->cli.SetTo(cli))
 	{
-		return this->cli->GetRemoteName(buff);
+		return cli->GetRemoteName(buff);
 	}
 	*buff = 0;
 	return 0;
@@ -426,9 +430,10 @@ UTF8Char *Net::WebSocketClient::GetRemoteName(UTF8Char *buff) const
 
 UTF8Char *Net::WebSocketClient::GetLocalName(UTF8Char *buff) const
 {
-	if (this->cli)
+	NN<Net::TCPClient> cli;
+	if (this->cli.SetTo(cli))
 	{
-		return this->cli->GetLocalName(buff);
+		return cli->GetLocalName(buff);
 	}
 	*buff = 0;
 	return 0;
@@ -436,9 +441,10 @@ UTF8Char *Net::WebSocketClient::GetLocalName(UTF8Char *buff) const
 
 Bool Net::WebSocketClient::GetRemoteAddr(NN<Net::SocketUtil::AddressInfo> addr) const
 {
-	if (this->cli)
+	NN<Net::TCPClient> cli;
+	if (this->cli.SetTo(cli))
 	{
-		return this->cli->GetRemoteAddr(addr);
+		return cli->GetRemoteAddr(addr);
 	}
 	addr->addrType = Net::AddrType::Unknown;
 	return false;
@@ -446,26 +452,29 @@ Bool Net::WebSocketClient::GetRemoteAddr(NN<Net::SocketUtil::AddressInfo> addr) 
 
 UInt16 Net::WebSocketClient::GetRemotePort() const
 {
-	if (this->cli)
+	NN<Net::TCPClient> cli;
+	if (this->cli.SetTo(cli))
 	{
-		return this->cli->GetRemotePort();
+		return cli->GetRemotePort();
 	}
 	return 0;
 }
 
 UInt16 Net::WebSocketClient::GetLocalPort() const
 {
-	if (this->cli)
+	NN<Net::TCPClient> cli;
+	if (this->cli.SetTo(cli))
 	{
-		return this->cli->GetLocalPort();
+		return cli->GetLocalPort();
 	}
 	return 0;
 }
 
 Bool Net::WebSocketClient::IsDown() const
 {
-	if (this->cli)
-		return this->cli->IsDown();
+	NN<Net::TCPClient> cli;
+	if (this->cli.SetTo(cli))
+		return cli->IsDown();
 	return true;
 }
 
@@ -520,14 +529,15 @@ UOSInt Net::WebSocketClient::Write(const UInt8 *buff, UOSInt size)
 
 Int32 Net::WebSocketClient::Flush()
 {
-	if (this->cli)
-		return this->cli->Flush();
+	NN<Net::TCPClient> cli;
+	if (this->cli.SetTo(cli))
+		return cli->Flush();
 	return 0;
 }
 
 void Net::WebSocketClient::Close()
 {
-	if (this->cli)
+	if (this->cli.NotNull())
 	{
 		this->Shutdown();
 	}
@@ -545,12 +555,13 @@ IO::StreamType Net::WebSocketClient::GetStreamType() const
 
 Bool Net::WebSocketClient::Shutdown()
 {
-	if (this->cli == 0)
+	NN<Net::TCPClient> cli;
+	if (!this->cli.SetTo(cli))
 		return false;
 
 	if (this->SendClose(0, 0))
 	{
-		this->cli->ShutdownSend();
+		cli->ShutdownSend();
 		return true;
 	}
 	return false;

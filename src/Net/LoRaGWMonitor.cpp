@@ -32,9 +32,10 @@ Net::LoRaGWMonitor::LoRaGWMonitor(NN<Net::SocketFactory> sockf, UInt16 port, GWM
 	this->msgHdlr = msgHdlr;
 	this->msgHdlrObj = msgHdlrObj;
 	this->s = this->sockf->CreateRAWSocket();
-	if (this->s)
+	NN<Socket> s;
+	if (this->s.SetTo(s))
 	{
-		NEW_CLASS(this->socMon, Net::SocketMonitor(this->sockf, this->s, OnRAWPacket, this, 4));
+		NEW_CLASS(this->socMon, Net::SocketMonitor(this->sockf, s, OnRAWPacket, this, 4));
 	}
 	else
 	{

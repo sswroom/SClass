@@ -96,14 +96,14 @@ Bool Crypto::Cert::CertUtil::AppendPublicKey(NN<Net::ASN1PDUBuilder> builder, NN
 		builder->AppendOIDString(CSTR("1.2.840.113549.1.1.1"));
 		builder->AppendNull();
 		builder->EndLevel();
-		Crypto::Cert::X509Key *pubKey = key->CreatePublicKey();
-		if (pubKey == 0)
+		NN<Crypto::Cert::X509Key> pubKey;
+		if (!key->CreatePublicKey().SetTo(pubKey))
 		{
 			return false;
 		}
 		builder->AppendBitString(0, pubKey->GetASN1Buff(), pubKey->GetASN1BuffSize());
 		builder->EndLevel();
-		DEL_CLASS(pubKey);
+		pubKey.Delete();
 		return true;
 	}
 	else if (key->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSAPublic)
@@ -465,7 +465,7 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::IssueCert(NN<Net::SSLEn
 	sbFileName.AppendOpt(names.commonName);
 	Crypto::Cert::CertNames::FreeNames(names);
 	NN<Crypto::Cert::X509Key> pubKey;;
-	if (!pubKey.Set(csr->GetNewPublicKey()))
+	if (!csr->GetNewPublicKey().SetTo(pubKey))
 	{
 		return 0;
 	}

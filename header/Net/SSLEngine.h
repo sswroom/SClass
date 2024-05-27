@@ -65,7 +65,7 @@ namespace Net
 		struct ThreadState
 		{
 			ThreadStatus status;
-			Socket *s;
+			Optional<Socket> s;
 			UOSInt index;
 			ClientReadyHandler clientReady;
 			AnyType clientReadyObj;
@@ -85,7 +85,7 @@ namespace Net
 		Optional<Crypto::Cert::CertStore> usedTrustStore;
 
 		static UInt32 __stdcall ServerThread(AnyType userObj);
-		virtual Net::SSLClient *CreateServerConn(Socket *s) = 0;
+		virtual Optional<Net::SSLClient> CreateServerConn(NN<Socket> s) = 0;
 		SSLEngine(NN<Net::SocketFactory> sockf);
 	public:
 		virtual ~SSLEngine();
@@ -98,11 +98,11 @@ namespace Net
 		virtual Bool ServerAddALPNSupport(Text::CStringNN proto) = 0;
 		Bool ServerSetCerts(Text::CStringNN certFile, Text::CStringNN keyFile, Text::CString caFile);
 		Bool ServerSetCerts(Text::CStringNN certFile, Text::CStringNN keyFile);
-		void ServerInit(Socket *s, ClientReadyHandler readyHdlr, AnyType userObj);
+		void ServerInit(NN<Socket> s, ClientReadyHandler readyHdlr, AnyType userObj);
 
 		virtual Bool ClientSetCertASN1(NN<Crypto::Cert::X509Cert> certASN1, NN<Crypto::Cert::X509File> keyASN1) = 0;
-		virtual Net::SSLClient *ClientConnect(Text::CStringNN hostName, UInt16 port, OptOut<ErrorType> err, Data::Duration timeout) = 0;
-		virtual Net::SSLClient *ClientInit(Socket *s, Text::CStringNN hostName, OptOut<ErrorType> err) = 0;
+		virtual Optional<Net::SSLClient> ClientConnect(Text::CStringNN hostName, UInt16 port, OptOut<ErrorType> err, Data::Duration timeout) = 0;
+		virtual Optional<Net::SSLClient> ClientInit(NN<Socket> s, Text::CStringNN hostName, OptOut<ErrorType> err) = 0;
 		virtual void ClientSetSkipCertCheck(Bool skipCertCheck) = 0;
 
 		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff) = 0;

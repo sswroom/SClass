@@ -491,12 +491,11 @@ Optional<IO::StreamData> IO::VirtualPackageFile::GetPItemStmDataNew(NN<const Pac
 	else if (item->itemType == IO::PackFileItem::PackItemType::Compressed)
 	{
 		Data::Compress::Decompressor *decomp = Data::Compress::Decompressor::CreateDecompressor(item->compInfo->compMethod);
-		Crypto::Hash::IHash *hash;
+		NN<Crypto::Hash::IHash> hash;
 		NN<IO::StreamData> fd;
 		if (decomp == 0)
 			return 0;
-		hash = Crypto::Hash::HashCreator::CreateHash(item->compInfo->checkMethod);
-		if (hash == 0)
+		if (!Crypto::Hash::HashCreator::CreateHash(item->compInfo->checkMethod).SetTo(hash))
 		{
 			DEL_CLASS(decomp);
 			return 0;
@@ -536,7 +535,7 @@ Optional<IO::StreamData> IO::VirtualPackageFile::GetPItemStmDataNew(NN<const Pac
 			}
 		}
 		fd.Delete();
-		DEL_CLASS(hash);
+		hash.Delete();
 		DEL_CLASS(decomp);
 		if (diff)
 		{
@@ -860,13 +859,12 @@ Bool IO::VirtualPackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool f
 				return false;
 
 			Data::Compress::Decompressor *decomp = Data::Compress::Decompressor::CreateDecompressor(item->compInfo->compMethod);
-			Crypto::Hash::IHash *hash;
+			NN<Crypto::Hash::IHash> hash;
 			NN<IO::StreamData> fd;
 			if (decomp == 0)
 				return false;
 
-			hash = Crypto::Hash::HashCreator::CreateHash(item->compInfo->checkMethod);
-			if (hash == 0)
+			if (!Crypto::Hash::HashCreator::CreateHash(item->compInfo->checkMethod).SetTo(hash))
 			{
 				DEL_CLASS(decomp);
 				return false;
@@ -899,7 +897,7 @@ Bool IO::VirtualPackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool f
 			}
 
 			fd.Delete();
-			DEL_CLASS(hash);
+			hash.Delete();
 			DEL_CLASS(decomp);
 			if (diff)
 			{

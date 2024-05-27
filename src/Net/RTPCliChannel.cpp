@@ -427,21 +427,21 @@ void Net::RTPCliChannel::SetMediaType(Media::MediaType mediaType)
 	this->chData->mediaType = mediaType;
 }
 
-Media::IVideoSource *Net::RTPCliChannel::GetVideo(UOSInt index)
+Optional<Media::IVideoSource> Net::RTPCliChannel::GetVideo(UOSInt index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_VIDEO)
 		return 0;
 	return (Net::RTPVPLHandler*)this->chData->payloadMap.GetItem(index);
 }
 
-Media::IAudioSource *Net::RTPCliChannel::GetAudio(UOSInt index)
+Optional<Media::IAudioSource> Net::RTPCliChannel::GetAudio(UOSInt index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_AUDIO)
 		return 0;
 	return 0;//(Net::RTPVPLHandler*)this->payloadMap->GetValues()->GetItem(index);
 }
 
-Media::IVideoSource *Net::RTPCliChannel::CreateShadowVideo(UOSInt index)
+Optional<Media::IVideoSource> Net::RTPCliChannel::CreateShadowVideo(UOSInt index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_VIDEO)
 		return 0;
@@ -457,7 +457,7 @@ Media::IVideoSource *Net::RTPCliChannel::CreateShadowVideo(UOSInt index)
 	return vSrc;
 }
 
-Media::IAudioSource *Net::RTPCliChannel::CreateShadowAudio(UOSInt index)
+Optional<Media::IAudioSource> Net::RTPCliChannel::CreateShadowAudio(UOSInt index)
 {
 	if (this->chData->mediaType != Media::MEDIA_TYPE_AUDIO)
 		return 0;
@@ -564,15 +564,15 @@ Bool Net::RTPCliChannel::SetPayloadFormat(Int32 payloadType, const UTF8Char *for
 	return false;
 }
 
-Net::RTPCliChannel *Net::RTPCliChannel::CreateChannel(NN<Net::SocketFactory> sockf, Data::ArrayList<const UTF8Char *> *sdpDesc, Text::CString ctrlURL, Net::IRTPController *playCtrl, NN<IO::LogTool> log)
+NN<Net::RTPCliChannel> Net::RTPCliChannel::CreateChannel(NN<Net::SocketFactory> sockf, Data::ArrayList<const UTF8Char *> *sdpDesc, Text::CString ctrlURL, Net::IRTPController *playCtrl, NN<IO::LogTool> log)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Text::PString sarr[5];
-	Net::RTPCliChannel *ch;
+	NN<Net::RTPCliChannel> ch;
 	const UTF8Char *desc;
 	UOSInt descLen;
-	NEW_CLASS(ch, Net::RTPCliChannel(sockf, 0, log));
+	NEW_CLASSNN(ch, Net::RTPCliChannel(sockf, 0, log));
 	ch->SetPlayControl(playCtrl->Clone());
 	Bool ctrlFound = false;
 	Int32 payloadType;

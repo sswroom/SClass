@@ -786,7 +786,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Crypto::Hash::HashType currHash = Crypto::Hash::HashType::First;
 	while (currHash <= Crypto::Hash::HashType::Last)
 	{
-		if (hash.Set(Crypto::Hash::HashCreator::CreateHash(currHash)))
+		if (Crypto::Hash::HashCreator::CreateHash(currHash).SetTo(hash))
 		{
 			t = HashTestSpeed(hash);
 			sptr = hash->GetName(sbuff);

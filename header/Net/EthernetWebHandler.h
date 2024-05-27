@@ -12,8 +12,8 @@ namespace Net
 		typedef Bool (__stdcall *RequestHandler)(EthernetWebHandler *me, NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp);
 
 	private:
-		Net::EthernetAnalyzer *analyzer;
-		Data::FastStringMap<RequestHandler> *reqMap;
+		NN<Net::EthernetAnalyzer> analyzer;
+		Data::FastStringMap<RequestHandler> reqMap;
 
 		static void AppendHeader(NN<Text::StringBuilderUTF8> sbOut);
 		void AppendMenu(NN<Text::StringBuilderUTF8> sbOut);
@@ -33,7 +33,7 @@ namespace Net
 		virtual Bool ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq);
 
 	public:
-		EthernetWebHandler(Net::EthernetAnalyzer *analyzer);
+		EthernetWebHandler(NN<Net::EthernetAnalyzer> analyzer);
 		virtual ~EthernetWebHandler();
 	};
 }

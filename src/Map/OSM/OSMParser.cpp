@@ -652,7 +652,7 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> reade
 							{
 								colCnt = 2;
 							}
-							NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POINT, fileName, colCnt, colName, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, layerNames[elemType - 1]));
+							NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POINT, fileName, colCnt, colName, Math::CoordinateSystemManager::CreateWGS84Csys(), 0, layerNames[elemType - 1]));
 						}
 						NN<Math::Geometry::Point> pt;
 						NEW_CLASSNN(pt, Math::Geometry::Point(4326, lon, lat));
@@ -1306,7 +1306,7 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> reade
 						{
 							colCnt = 2;
 						}
-						NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POLYGON, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, layerNames[elemType - 1]));
+						NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POLYGON, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateWGS84Csys(), 0, layerNames[elemType - 1]));
 					}
 					NN<Math::Geometry::Polygon> pg;
 					NN<Math::Geometry::LinearRing> lr;
@@ -1330,7 +1330,7 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> reade
 						{
 							colCnt = 2;
 						}
-						NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, layerNames[elemType - 1]));
+						NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateWGS84Csys(), 0, layerNames[elemType - 1]));
 					}
 					NN<Math::Geometry::LineString> pl;
 					NEW_CLASSNN(pl, Math::Geometry::LineString(4326, latList.GetCount(), false, false));

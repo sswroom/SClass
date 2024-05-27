@@ -13,6 +13,8 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(AnyType obj)
 	UTF8Char *sptr;
 	NN<Text::String> s;
 	NN<Net::UDPServer::ThreadStat> stat = obj.GetNN<Net::UDPServer::ThreadStat>();
+	NN<Socket> soc;
+	if (stat->me->socV4.SetTo(soc))
 	{
 		Sync::Event evt;
 		stat->evt = &evt;
@@ -26,7 +28,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(AnyType obj)
 			Net::SocketUtil::AddressInfo recvAddr;
 			UInt16 recvPort;
 
-			recvSize = stat->me->sockf->UDPReceive(stat->me->socV4, buff, 2048, recvAddr, recvPort, 0);
+			recvSize = stat->me->sockf->UDPReceive(soc, buff, 2048, recvAddr, recvPort, 0);
 			Data::Timestamp logTime = Data::Timestamp::UtcNow();
 			if (recvSize > 0)
 			{
@@ -89,6 +91,8 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(AnyType obj)
 	UTF8Char *sptr;
 	NN<Text::String> s;
 	NN<Net::UDPServer::ThreadStat> stat = obj.GetNN<Net::UDPServer::ThreadStat>();
+	NN<Socket> soc;
+	if (stat->me->socV6.SetTo(soc))
 	{
 		Sync::Event evt;
 		stat->evt = &evt;
@@ -102,7 +106,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(AnyType obj)
 			Net::SocketUtil::AddressInfo recvAddr;
 			UInt16 recvPort;
 
-			recvSize = stat->me->sockf->UDPReceive(stat->me->socV6, buff, 2048, recvAddr, recvPort, 0);
+			recvSize = stat->me->sockf->UDPReceive(soc, buff, 2048, recvAddr, recvPort, 0);
 			Data::Timestamp logTime = Data::Timestamp::UtcNow();
 			if (recvSize > 0)
 			{
@@ -176,6 +180,7 @@ Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Net::SocketUtil::Address
 	this->msgPrefix = Text::String::NewOrNull(msgPrefix);
 	this->port = port;
 	Bool succ = false;
+	NN<Socket> soc;
 	if (bindAddr == 0)
 	{
 		this->addrType = Net::AddrType::Unknown;
@@ -183,24 +188,35 @@ Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Net::SocketUtil::Address
 		this->socV6 = this->sockf->CreateUDPSocketv6();
 		if (reuseAddr)
 		{
-			this->sockf->SetReuseAddr(this->socV4, true);
-			this->sockf->SetReuseAddr(this->socV6, true);
+			if (this->socV4.SetTo(soc)) this->sockf->SetReuseAddr(soc, true);
+			if (this->socV6.SetTo(soc)) this->sockf->SetReuseAddr(soc, true);
 		}
-		if (this->sockf->SocketBindv4(this->socV4, 0, port))
+		if (this->socV4.SetTo(soc) && this->sockf->SocketBindv4(soc, 0, port))
 		{
-			Net::SocketUtil::AddressInfo addrAny;
-			Net::SocketUtil::SetAddrInfoAnyV6(addrAny);
-			if (!this->sockf->SocketBind(this->socV6, &addrAny, port))
+			if (this->socV6.SetTo(soc))
 			{
-				this->sockf->DestroySocket(this->socV6);
-				this->socV6 = 0;
+				Net::SocketUtil::AddressInfo addrAny;
+				Net::SocketUtil::SetAddrInfoAnyV6(addrAny);
+				if (!this->sockf->SocketBind(soc, &addrAny, port))
+				{
+					this->sockf->DestroySocket(soc);
+					this->socV6 = 0;
+				}
 			}
 			succ = true;
 		}
 		else
 		{
-			this->sockf->DestroySocket(this->socV4);
-			this->socV4 = 0;
+			if (this->socV4.SetTo(soc))
+			{
+				this->sockf->DestroySocket(soc);
+				this->socV4 = 0;
+			}
+			if (this->socV6.SetTo(soc))
+			{
+				this->sockf->DestroySocket(soc);
+				this->socV6 = 0;
+			}
 		}
 	}
 	else
@@ -211,34 +227,34 @@ Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Net::SocketUtil::Address
 		if (this->addrType == Net::AddrType::IPv4)
 		{
 			this->socV4 = this->sockf->CreateUDPSocketv4();
-			if (reuseAddr)
+			if (reuseAddr && this->socV4.SetTo(soc))
 			{
-				this->sockf->SetReuseAddr(this->socV4, true);
+				this->sockf->SetReuseAddr(soc, true);
 			}
-			if (this->sockf->SocketBindv4(this->socV4, ReadNUInt32(bindAddr->addr), port))
+			if (this->socV4.SetTo(soc) && this->sockf->SocketBindv4(soc, ReadNUInt32(bindAddr->addr), port))
 			{
 				succ = true;
 			}
-			else
+			else if (this->socV4.SetTo(soc))
 			{
-				this->sockf->DestroySocket(this->socV4);
+				this->sockf->DestroySocket(soc);
 				this->socV4 = 0;
 			}
 		}
 		else if (this->addrType == Net::AddrType::IPv6)
 		{
 			this->socV6 = this->sockf->CreateUDPSocketv6();
-			if (reuseAddr)
+			if (reuseAddr && this->socV6.SetTo(soc))
 			{
-				this->sockf->SetReuseAddr(this->socV6, true);
+				this->sockf->SetReuseAddr(soc, true);
 			}
-			if (this->sockf->SocketBind(this->socV6, bindAddr, port))
+			if (this->socV6.SetTo(soc) && this->sockf->SocketBind(soc, bindAddr, port))
 			{
 				succ = true;
 			}
-			else
+			else if (this->socV6.SetTo(soc))
 			{
-				this->sockf->DestroySocket(this->socV6);
+				this->sockf->DestroySocket(soc);
 				this->socV6 = 0;
 			}
 
@@ -246,10 +262,10 @@ Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Net::SocketUtil::Address
 	}
 	if (succ)
 	{
-		if (port == 0)
+		if (port == 0 && this->socV4.SetTo(soc))
 		{
 			Net::SocketUtil::AddressInfo addr;
-			this->sockf->GetLocalAddr(this->socV4, addr, this->port);
+			this->sockf->GetLocalAddr(soc, addr, this->port);
 		}
 		if (!this->logPrefix.IsNull())
 		{
@@ -263,7 +279,7 @@ Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Net::SocketUtil::Address
 		}
 
 		this->v4threadStats = MemAlloc(ThreadStat, this->threadCnt);
-		if (this->socV6)
+		if (this->socV6.NotNull())
 		{
 			this->v6threadStats = MemAlloc(ThreadStat, this->threadCnt);
 		}
@@ -275,7 +291,7 @@ Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Net::SocketUtil::Address
 			this->v4threadStats[i].me = this;
 			Sync::ThreadUtil::Create(DataV4Thread, &this->v4threadStats[i]);
 
-			if (this->socV6)
+			if (this->socV6.NotNull())
 			{
 				this->v6threadStats[i].toStop = false;
 				this->v6threadStats[i].threadRunning = false;
@@ -295,7 +311,7 @@ Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Net::SocketUtil::Address
 					running = false;
 					break;
 				}
-				if (this->socV6)
+				if (this->socV6.NotNull())
 				{
 					if (!this->v6threadStats[i].threadRunning)
 					{
@@ -318,6 +334,7 @@ Net::UDPServer::UDPServer(NN<Net::SocketFactory> sockf, Net::SocketUtil::Address
 
 Net::UDPServer::~UDPServer()
 {
+	NN<Socket> soc;
 	UOSInt i;
 	if (this->v4threadStats)
 	{
@@ -337,13 +354,13 @@ Net::UDPServer::~UDPServer()
 			this->v6threadStats[i].evt->Set();
 		}
 	}
-	if (this->socV4)
+	if (this->socV4.SetTo(soc))
 	{
-		this->sockf->DestroySocket(this->socV4);
+		this->sockf->DestroySocket(soc);
 	}
-	if (this->socV6)
+	if (this->socV6.SetTo(soc))
 	{
-		this->sockf->DestroySocket(this->socV6);
+		this->sockf->DestroySocket(soc);
 	}
 	if (this->v4threadStats)
 	{
@@ -359,7 +376,7 @@ Net::UDPServer::~UDPServer()
 					threadRunning = true;
 					break;
 				}
-				if (this->socV6)
+				if (this->socV6.NotNull())
 				{
 					if (this->v6threadStats[i].threadRunning)
 					{
@@ -374,21 +391,13 @@ Net::UDPServer::~UDPServer()
 		}
 
 		MemFree(this->v4threadStats);
-		if (this->socV6)
+		if (this->socV6.NotNull())
 		{
 			MemFree(this->v6threadStats);
 		}
 	}
-	if (this->socV4)
-	{
-		this->sockf->DestroySocket(this->socV4);
-		this->socV4 = 0;
-	}
-	if (this->socV6)
-	{
-		this->sockf->DestroySocket(this->socV6);
-		this->socV6 = 0;
-	}
+	this->socV4 = 0;
+	this->socV6 = 0;
 
 	SDEL_CLASS(this->logFileS);
 	SDEL_CLASS(this->logFileR);
@@ -403,12 +412,12 @@ UInt16 Net::UDPServer::GetPort()
 
 Bool Net::UDPServer::IsError()
 {
-	return this->socV4 == 0;
+	return this->socV4.IsNull();
 }
 
 Bool Net::UDPServer::SupportV6()
 {
-	return this->socV6 != 0;
+	return this->socV6.NotNull();
 }
 
 Bool Net::UDPServer::SendTo(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize)
@@ -468,10 +477,11 @@ Bool Net::UDPServer::SendTo(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 
 	}
 
 	succ = false;
+	NN<Socket> soc;
 	if (addr->addrType == Net::AddrType::IPv4)
 	{
 //		printf("IPv4 port = %d\r\n", port);
-		if (this->sockf->SendTo(this->socV4, buff, dataSize, addr, port) != dataSize)
+		if (!this->socV4.SetTo(soc) || this->sockf->SendTo(soc, buff, dataSize, addr, port) != dataSize)
 		{
 //			printf("Send error: %d\r\n", errno);
 			if (this->msgLog->HasHandler())
@@ -491,7 +501,7 @@ Bool Net::UDPServer::SendTo(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 
 	}
 	else if (addr->addrType == Net::AddrType::IPv6)
 	{
-		if (this->sockf->SendTo(this->socV6, buff, dataSize, addr, port) != dataSize)
+		if (!this->socV6.SetTo(soc) || this->sockf->SendTo(soc, buff, dataSize, addr, port) != dataSize)
 		{
 			if (this->msgLog->HasHandler())
 			{
@@ -518,23 +528,35 @@ Int32 Net::UDPServer::GetRecvCnt()
 
 void Net::UDPServer::AddMulticastIP(UInt32 ip)
 {
-	this->sockf->AddIPMembership(this->socV4, ip);
+	NN<Socket> soc;
+	if (this->socV4.SetTo(soc))
+	{
+		this->sockf->AddIPMembership(soc, ip);
+	}
 }
 
 void Net::UDPServer::SetBuffSize(Int32 buffSize)
 {
-	this->sockf->SetRecvBuffSize(this->socV4, buffSize);
-	if (this->socV6)
+	NN<Socket> soc;
+	if (this->socV4.SetTo(soc))
 	{
-		this->sockf->SetRecvBuffSize(this->socV6, buffSize);
+		this->sockf->SetRecvBuffSize(soc, buffSize);
+	}
+	if (this->socV6.SetTo(soc))
+	{
+		this->sockf->SetRecvBuffSize(soc, buffSize);
 	}
 }
 
 void Net::UDPServer::SetBroadcast(Bool val)
 {
-	this->sockf->SetBroadcast(this->socV4, val);
-	if (this->socV6)
+	NN<Socket> soc;
+	if (this->socV4.SetTo(soc))
 	{
-		this->sockf->SetBroadcast(this->socV6, val);
+		this->sockf->SetBroadcast(soc, val);
+	}
+	if (this->socV6.SetTo(soc))
+	{
+		this->sockf->SetBroadcast(soc, val);
 	}
 }

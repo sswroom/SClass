@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 				return;
 			}
 			me->stm = me->siLabDriver->OpenPort((UInt32)me->lvSLPort->GetSelectedItem().GetUOSInt(), baudRate);
-			if (me->stm)
+			if (me->stm.NotNull())
 			{
 				me->stmType = st;
 				me->SetDialogResult(UI::GUIForm::DR_OK);
@@ -189,9 +189,8 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 				return;
 			}
 			Net::SSLEngine::ErrorType err;
-			Net::SSLClient *cli;
-			cli = ssl->ClientConnect(sb.ToCString(), port, err, NETTIMEOUT);
-			if (cli == 0)
+			NN<Net::SSLClient> cli;
+			if (!ssl->ClientConnect(sb.ToCString(), port, err, NETTIMEOUT).SetTo(cli))
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Error in connect to server: "));
@@ -235,7 +234,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(AnyType userObj)
 			if (dev)
 			{
 				me->stm = dev->CreateStream();
-				if (me->stm)
+				if (me->stm.NotNull())
 				{
 					me->stmType = st;
 					me->SetDialogResult(UI::GUIForm::DR_OK);
@@ -740,7 +739,7 @@ void SSWR::AVIRead::AVIRSelStreamForm::SetInitBaudRate(Int32 baudRate)
 
 NN<IO::Stream> SSWR::AVIRead::AVIRSelStreamForm::GetStream() const
 {
-	return NN<IO::Stream>::FromPtr(this->stm);
+	return NN<IO::Stream>::FromPtr(this->stm.OrNull());
 }
 
 IO::StreamType SSWR::AVIRead::AVIRSelStreamForm::GetStreamType() const

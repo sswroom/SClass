@@ -23,7 +23,7 @@ namespace Net
 		Sync::Mutex resultMut;
 		Data::FastMapNN<UInt32, ScanResult> results;
 		Manage::HiResClock *clk;
-		Socket *soc;
+		Optional<Socket> soc;
 		Bool threadRunning;
 		Bool threadToStop;
 

@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnOKClicked(AnyType userObj)
 		{
 			const UTF8Char *projName = me->cboProj->GetItem(i).GetOpt<const UTF8Char>().OrNull();
 			me->outCSys = Math::CoordinateSystemManager::CreateProjCoordinateSystem({projName, Text::StrCharCnt(projName)}, projName);
-			if (me->outCSys)
+			if (me->outCSys.NotNull())
 			{
 				me->SetDialogResult(UI::GUIForm::DR_OK);
 			}
@@ -121,13 +121,14 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(Optional<UI::GUIClientControl> p
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Current Coordinate System:\r\n"));
-	if (this->oriCSys == 0)
+	NN<Math::CoordinateSystem> oriCSys;
+	if (!this->oriCSys.SetTo(oriCSys))
 	{
 		sb.AppendC(UTF8STRC("Unknown"));
 	}
 	else
 	{
-		this->oriCSys->ToString(sb);
+		oriCSys->ToString(sb);
 	}
 	this->txtCurrCSys->SetText(sb.ToCString());
 }
@@ -141,7 +142,7 @@ void SSWR::AVIRead::AVIRGISCSysForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Math::CoordinateSystem *SSWR::AVIRead::AVIRGISCSysForm::GetCSys()
+Optional<Math::CoordinateSystem> SSWR::AVIRead::AVIRGISCSysForm::GetCSys()
 {
 	return this->outCSys;
 }

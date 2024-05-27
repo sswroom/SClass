@@ -25,7 +25,7 @@ Net::AzureManager::~AzureManager()
 	}
 }
 
-Crypto::Cert::X509Key *Net::AzureManager::CreateKey(Text::CStringNN kid)
+Optional<Crypto::Cert::X509Key> Net::AzureManager::CreateKey(Text::CStringNN kid)
 {
 	if (this->keyMap == 0)
 	{

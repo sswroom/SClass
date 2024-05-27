@@ -56,7 +56,7 @@ void Map::TileMapServiceSource::LoadXML()
 					if (reader.ReadNodeText(sb))
 					{
 						NN<Math::CoordinateSystem> csys;
-						if (csys.Set(Math::CoordinateSystemManager::CreateFromName(sb.ToCString())))
+						if (Math::CoordinateSystemManager::CreateFromName(sb.ToCString()).SetTo(csys))
 						{
 							this->csys.Delete();
 							this->csys = csys;
@@ -66,7 +66,7 @@ void Map::TileMapServiceSource::LoadXML()
 							const Math::CoordinateSystemManager::SpatialRefInfo *srInfo = Math::CoordinateSystemManager::SRGetSpatialRef(this->csys->GetSRID());
 							if (srInfo)
 							{
-								NN<Math::CoordinateSystem> wgs84 = Math::CoordinateSystemManager::CreateDefaultCsys();
+								NN<Math::CoordinateSystem> wgs84 = Math::CoordinateSystemManager::CreateWGS84Csys();
 								this->csysOrigin = Math::CoordinateSystem::Convert(wgs84, this->csys, Math::Coord2DDbl(srInfo->minXGeo, srInfo->minYGeo));
 								wgs84.Delete();
 #if defined(VERBOSE)
@@ -282,7 +282,7 @@ Map::TileMapServiceSource::TileMapServiceSource(NN<Net::SocketFactory> sockf, Op
 	this->csysOrigin = Math::Coord2DDbl(0, 0);
 	this->title = 0;
 	this->tileExt = 0;
-	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+	this->csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 	this->tileWidth = 256;
 	this->tileHeight = 256;
 	this->concurrCnt = 2;

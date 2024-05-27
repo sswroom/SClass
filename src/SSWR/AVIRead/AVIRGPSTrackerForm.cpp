@@ -286,7 +286,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(Optional<UI::GUIClientCont
 	this->nmeaUpdated = false;
 	this->nmeaBuff = MemAlloc(Text::String*, NMEAMAXSIZE);
 	MemClear(this->nmeaBuff, NMEAMAXSIZE * sizeof(Text::String*));
-	this->wgs84 = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
+	this->wgs84 = Math::CoordinateSystemManager::CreateWGS84Csys();
 	this->dispOffClk = false;
 	this->dispOffTime = 0;
 	this->dispIsOff = false;
@@ -490,7 +490,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::~AVIRGPSTrackerForm()
 		DEL_CLASS(this->locSvc);
 		this->relLocSvc = false;
 	}
-	DEL_CLASS(this->wgs84);
+	this->wgs84.Delete();
 	UOSInt i = NMEAMAXSIZE;
 	while (i-- > 0)
 	{

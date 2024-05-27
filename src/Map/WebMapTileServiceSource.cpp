@@ -258,7 +258,7 @@ Optional<Map::WebMapTileServiceSource::TileMatrixSet> Map::WebMapTileServiceSour
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASSNN(set, TileMatrixSet());
 	set->id = Text::String::NewEmpty();
-	set->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+	set->csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 	while (reader->NextElementName().SetTo(name))
 	{
 		if (name->Equals(UTF8STRC("TileMatrixSet")))
@@ -361,7 +361,7 @@ Optional<Map::WebMapTileServiceSource::TileMatrixSet> Map::WebMapTileServiceSour
 	if (set->id->leng > 0 && set->tiles.GetCount() > 0)
 	{
 		NN<Math::CoordinateSystem> csys;
-		if (csys.Set(Math::CoordinateSystemManager::CreateFromName(set->id->ToCString())))
+		if (Math::CoordinateSystemManager::CreateFromName(set->id->ToCString()).SetTo(csys))
 		{
 			set->csys.Delete();
 			set->csys = csys;
@@ -381,7 +381,7 @@ Optional<Map::WebMapTileServiceSource::TileMatrixDefSet> Map::WebMapTileServiceS
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASSNN(set, TileMatrixDefSet());
 	set->id = 0;
-	set->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+	set->csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 	NN<Text::String> name;
 	while (reader->NextElementName().SetTo(name))
 	{
@@ -617,7 +617,7 @@ Map::WebMapTileServiceSource::WebMapTileServiceSource(NN<Net::SocketFactory> soc
 	this->currResource = 0;
 	this->currResourceInfo = 0;
 	this->currSet = 0;
-	this->wgs84 = Math::CoordinateSystemManager::CreateDefaultCsys();
+	this->wgs84 = Math::CoordinateSystemManager::CreateWGS84Csys();
 	this->LoadXML();
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

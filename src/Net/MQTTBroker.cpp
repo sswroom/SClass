@@ -59,7 +59,7 @@ void __stdcall Net::MQTTBroker::OnClientReady(NN<Net::TCPClient> cli, AnyType us
 	}
 }
 
-void __stdcall Net::MQTTBroker::OnClientConn(Socket *s, AnyType userObj)
+void __stdcall Net::MQTTBroker::OnClientConn(NN<Socket> s, AnyType userObj)
 {
 	NN<Listener> listener = userObj.GetNN<Listener>();
 	NN<Net::SSLEngine> ssl;

@@ -18,7 +18,7 @@ namespace Map
 		Data::FastStringMap<Map::MapDrawLayer*> layerMap;
 		Text::String *cesiumScenePath;
 		Double cesiumMinError;
-		Math::GeographicCoordinateSystem *wgs84;
+		NN<Math::GeographicCoordinateSystem> wgs84;
 
 		static Bool __stdcall GetLayersFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);
 		static Bool __stdcall GetLayerDataFunc(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq, NN<WebServiceHandler> me);

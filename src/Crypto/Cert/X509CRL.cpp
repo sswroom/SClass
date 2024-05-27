@@ -88,7 +88,7 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CRL::IsValid(NN<Net::SSLEn
 		return Crypto::Cert::X509File::ValidStatus::UnknownIssuer;
 	}
 	NN<Crypto::Cert::X509Key> key;
-	if (!key.Set(issuer->GetNewPublicKey()))
+	if (!issuer->GetNewPublicKey().SetTo(key))
 	{
 		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
 	}

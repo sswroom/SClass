@@ -21,7 +21,7 @@ namespace Net
 			Chat
 		};
 	private:
-		Net::TCPClient *cli;
+		Optional<Net::TCPClient> cli;
 		UInt8 nonce[16];
 		Data::RandomBytesGenerator rand;
 		Sync::Mutex sendMut;

@@ -12,10 +12,10 @@ namespace Net
 	{
 	private:
 		NN<Net::SocketFactory> sockf;
-		Net::WebServer::WebListener *listener;
+		Optional<Net::WebServer::WebListener> listener;
 		NN<Net::WebServer::WebStandardHandler> webHdlr;
-		Socket *rawSock;
-		Net::EthernetAnalyzer *analyzer;
+		Optional<Socket> rawSock;
+		NN<Net::EthernetAnalyzer> analyzer;
 	
 		Int32 threadCnt;
 		Bool threadToStop;
@@ -28,7 +28,7 @@ namespace Net
 
 		Bool IsError();
 
-		Net::EthernetAnalyzer *GetAnalyzer();
+		NN<Net::EthernetAnalyzer> GetAnalyzer();
 	};
 }
 #endif

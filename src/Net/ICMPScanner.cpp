@@ -95,41 +95,45 @@ UInt32 __stdcall Net::ICMPScanner::Ping2Thread(AnyType userObj)
 	readBuff = MemAlloc(UInt8, 4096);
 	UInt8 *ipData;
 	UOSInt ipDataSize;
-	while (!me->threadToStop)
+	NN<Socket> soc;
+	if (me->soc.SetTo(soc))
 	{
-		readSize = me->sockf->UDPReceive(me->soc, readBuff, 4096, addr, port, et);
-		if (readSize >= 36)
+		while (!me->threadToStop)
 		{
-			if ((readBuff[0] & 0xf0) == 0x40 && readBuff[9] == 1)
+			readSize = me->sockf->UDPReceive(soc, readBuff, 4096, addr, port, et);
+			if (readSize >= 36)
 			{
-				if ((readBuff[0] & 0xf) <= 5)
+				if ((readBuff[0] & 0xf0) == 0x40 && readBuff[9] == 1)
 				{
-					ipData = &readBuff[20];
-					ipDataSize = readSize - 20;
-				}
-				else
-				{
-					ipData = &readBuff[(readBuff[0] & 0xf) << 2];
-					ipDataSize = readSize - ((readBuff[0] & 0xf) << 2);
-				}
-
-				if (ipData[0] == 0 && ipDataSize >= 8)
-				{
-					Sync::MutexUsage mutUsage(me->resultMut);
-					if (!me->results.Get(ReadMUInt32(&readBuff[12])).SetTo(result))
+					if ((readBuff[0] & 0xf) <= 5)
 					{
-						result = MemAllocNN(ScanResult);
-						result->ip = ReadNUInt32(&readBuff[12]);
-						result->respTime = me->clk->GetTimeDiff();;
-						result->mac[0] = 0;
-						result->mac[1] = 0;
-						result->mac[2] = 0;
-						result->mac[3] = 0;
-						result->mac[4] = 0;
-						result->mac[5] = 0;
-						me->results.Put(ReadMUInt32(&readBuff[12]), result);
+						ipData = &readBuff[20];
+						ipDataSize = readSize - 20;
 					}
-					mutUsage.EndUse();
+					else
+					{
+						ipData = &readBuff[(readBuff[0] & 0xf) << 2];
+						ipDataSize = readSize - ((readBuff[0] & 0xf) << 2);
+					}
+
+					if (ipData[0] == 0 && ipDataSize >= 8)
+					{
+						Sync::MutexUsage mutUsage(me->resultMut);
+						if (!me->results.Get(ReadMUInt32(&readBuff[12])).SetTo(result))
+						{
+							result = MemAllocNN(ScanResult);
+							result->ip = ReadNUInt32(&readBuff[12]);
+							result->respTime = me->clk->GetTimeDiff();;
+							result->mac[0] = 0;
+							result->mac[1] = 0;
+							result->mac[2] = 0;
+							result->mac[3] = 0;
+							result->mac[4] = 0;
+							result->mac[5] = 0;
+							me->results.Put(ReadMUInt32(&readBuff[12]), result);
+						}
+						mutUsage.EndUse();
+					}
 				}
 			}
 		}
@@ -212,7 +216,7 @@ Bool Net::ICMPScanner::Scan(UInt32 ip)
 {
 	UInt8 buff[8];
 	UInt8 packetBuff[64];
-	Socket *s;
+	NN<Socket> s;
 	WriteNUInt32(buff, ip);
 	if (buff[0] == 192 && buff[1] == 168)
 	{
@@ -232,7 +236,7 @@ Bool Net::ICMPScanner::Scan(UInt32 ip)
 	{
 		me->sockf->DestroySocket(s);
 	}*/
-	else if ((s = this->sockf->CreateICMPIPv4Socket(ip)) != 0)
+	else if (this->sockf->CreateICMPIPv4Socket(ip).SetTo(s))
 	{
 		this->threadRunning = true;
 		this->threadToStop = false;

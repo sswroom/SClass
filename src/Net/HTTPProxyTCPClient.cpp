@@ -6,7 +6,7 @@
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 
-Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::CStringNN proxyHost, UInt16 proxyPort, PasswordType pt, const UTF8Char *userName, const UTF8Char *pwd, Text::CStringNN destHost, UInt16 destPort) : Net::TCPClient(sockf, (Socket*)0)
+Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::CStringNN proxyHost, UInt16 proxyPort, PasswordType pt, const UTF8Char *userName, const UTF8Char *pwd, Text::CStringNN destHost, UInt16 destPort) : Net::TCPClient(sockf, 0)
 {
 	this->SetSourceName(destHost);
 
@@ -16,10 +16,11 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::
 		this->flags |= 12;
 		return;
 	}
+	NN<Socket> s;
 	if (addr.addrType == Net::AddrType::IPv4)
 	{
 		this->s = sockf->CreateTCPSocketv4();
-		if (this->s == 0)
+		if (!this->s.SetTo(s))
 		{
 			this->flags |= 12;
 			return;
@@ -28,7 +29,7 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::
 	else if (addr.addrType == Net::AddrType::IPv4)
 	{
 		this->s = sockf->CreateTCPSocketv6();
-		if (this->s == 0)
+		if (!this->s.SetTo(s))
 		{
 			this->flags |= 12;
 			return;

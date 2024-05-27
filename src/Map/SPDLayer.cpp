@@ -19,7 +19,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-Map::SPDLayer::SPDLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName, 0, CSTR_NULL, Math::CoordinateSystemManager::CreateDefaultCsys())
+Map::SPDLayer::SPDLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName, 0, CSTR_NULL, Math::CoordinateSystemManager::CreateWGS84Csys())
 {
 	UTF8Char fname[256];
 	UTF8Char *sptr;

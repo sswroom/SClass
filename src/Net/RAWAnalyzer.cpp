@@ -14,12 +14,16 @@ UInt32 __stdcall Net::RAWAnalyzer::RecvThread(AnyType userObj)
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
 	Sync::Interlocked::IncrementI32(me->threadCnt);
-	while (!me->threadToStop)
+	NN<Socket> soc;
+	if (me->rawSock.SetTo(soc))
 	{
-		packetSize = me->sockf->UDPReceive(me->rawSock, packetBuff, 10240, addr, port, 0);
-		if (packetSize >= 14)
+		while (!me->threadToStop)
 		{
-			me->analyzer->PacketEthernet(packetBuff, packetSize);
+			packetSize = me->sockf->UDPReceive(soc, packetBuff, 10240, addr, port, 0);
+			if (packetSize >= 14)
+			{
+				me->analyzer->PacketEthernet(packetBuff, packetSize);
+			}
 		}
 	}
 	Sync::Interlocked::DecrementI32(me->threadCnt);
@@ -29,23 +33,25 @@ UInt32 __stdcall Net::RAWAnalyzer::RecvThread(AnyType userObj)
 Net::RAWAnalyzer::RAWAnalyzer(NN<Net::SocketFactory> sockf, UInt16 infoPort, IO::Writer *errWriter, Net::EthernetAnalyzer::AnalyzeType atype)
 {
 	this->sockf = sockf;
-	NEW_CLASS(this->analyzer, Net::EthernetAnalyzer(errWriter, atype, CSTR("RAWAnalyzer"))); 
+	NEW_CLASSNN(this->analyzer, Net::EthernetAnalyzer(errWriter, atype, CSTR("RAWAnalyzer"))); 
 	this->listener = 0;
 	this->rawSock = 0;
 	this->threadCnt = 0;
 	this->threadToStop = false;
 
 	NEW_CLASSNN(this->webHdlr, Net::EthernetWebHandler(this->analyzer));
-	NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, this->webHdlr, infoPort, 120, 1, 8, CSTR("NetRAWCapture/1.0"), false, Net::WebServer::KeepAlive::Default, true));
-	if (this->listener->IsError())
+	NN<Net::WebServer::WebListener> listener;
+	NEW_CLASSNN(listener, Net::WebServer::WebListener(this->sockf, 0, this->webHdlr, infoPort, 120, 1, 8, CSTR("NetRAWCapture/1.0"), false, Net::WebServer::KeepAlive::Default, true));
+	if (listener->IsError())
 	{
-		DEL_CLASS(this->listener);
-		this->listener = 0;
+		listener.Delete();
 	}
 	else
 	{
+		this->listener = listener;
 		this->rawSock = this->sockf->CreateRAWSocket();
-		if (this->rawSock)
+		NN<Socket> soc;
+		if (this->rawSock.SetTo(soc))
 		{
 			OSInt i = 3;
 			while (i-- > 0)
@@ -58,10 +64,11 @@ Net::RAWAnalyzer::RAWAnalyzer(NN<Net::SocketFactory> sockf, UInt16 infoPort, IO:
 
 Net::RAWAnalyzer::~RAWAnalyzer()
 {
-	if (this->rawSock)
+	NN<Socket> soc;
+	if (this->rawSock.SetTo(soc))
 	{
 		this->threadToStop = true;
-		this->sockf->DestroySocket(this->rawSock);
+		this->sockf->DestroySocket(soc);
 		while (this->threadCnt > 0)
 		{
 			Sync::SimpleThread::Sleep(1);
@@ -69,21 +76,21 @@ Net::RAWAnalyzer::~RAWAnalyzer()
 		this->rawSock = 0;
 	}
 
-	SDEL_CLASS(this->listener);
+	this->listener.Delete();
 	this->webHdlr.Delete();
-	DEL_CLASS(this->analyzer);
+	this->analyzer.Delete();
 }
 
 Bool Net::RAWAnalyzer::IsError()
 {
-	if (this->listener && this->rawSock)
+	if (this->listener.NotNull() && this->rawSock.NotNull())
 	{
 		return false;
 	}
 	return true;
 }
 
-Net::EthernetAnalyzer *Net::RAWAnalyzer::GetAnalyzer()
+NN<Net::EthernetAnalyzer> Net::RAWAnalyzer::GetAnalyzer()
 {
 	return this->analyzer;
 }

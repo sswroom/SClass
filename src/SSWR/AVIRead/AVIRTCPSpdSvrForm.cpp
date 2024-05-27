@@ -54,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnStartClick(AnyType userObj)
 	me->btnStart->SetText(CSTR("Stop"));
 }
 
-void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientConn(Socket *s, AnyType userObj)
+void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnClientConn(NN<Socket> s, AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRTCPSpdSvrForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTCPSpdSvrForm>();
 	NN<Net::TCPClient> cli;

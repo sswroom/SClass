@@ -2,7 +2,7 @@
 #include "Crypto/Hash/BatchHashValidator.h"
 #include "Data/BinTool.h"
 
-Crypto::Hash::BatchHashValidator::BatchHashValidator(Crypto::Hash::IHash *hash, Bool toRelease)
+Crypto::Hash::BatchHashValidator::BatchHashValidator(NN<Crypto::Hash::IHash> hash, Bool toRelease)
 {
 	this->hash = hash;
 	this->toRelease = toRelease;
@@ -13,20 +13,19 @@ Crypto::Hash::BatchHashValidator::~BatchHashValidator()
 {
 	if (this->toRelease)
 	{
-		DEL_CLASS(this->hash);
-		this->hash = 0;
+		this->hash.Delete();
 	}
 }
 
-Crypto::Hash::HashValidatorSess *Crypto::Hash::BatchHashValidator::CreateSess()
+NN<Crypto::Hash::HashValidatorSess> Crypto::Hash::BatchHashValidator::CreateSess()
 {
-	return (Crypto::Hash::HashValidatorSess*)this->hash->Clone().Ptr();
+	return NN<Crypto::Hash::HashValidatorSess>::ConvertFrom(this->hash->Clone());
 }
 
-void Crypto::Hash::BatchHashValidator::DeleteSess(HashValidatorSess *sess)
+void Crypto::Hash::BatchHashValidator::DeleteSess(NN<HashValidatorSess> sess)
 {
-	Crypto::Hash::IHash *hash = (Crypto::Hash::IHash*)sess;
-	DEL_CLASS(hash);
+	NN<Crypto::Hash::IHash> hash = NN<Crypto::Hash::IHash>::ConvertFrom(sess);
+	hash.Delete();
 }
 
 Bool Crypto::Hash::BatchHashValidator::SetHash(const UTF8Char *hash, UOSInt hashLen)
@@ -39,10 +38,10 @@ Bool Crypto::Hash::BatchHashValidator::SetHash(const UTF8Char *hash, UOSInt hash
 	return this->hashSize == this->hash->GetResultSize();
 }
 
-Bool Crypto::Hash::BatchHashValidator::IsMatch(HashValidatorSess *sess, const UTF8Char *password, UOSInt pwdLen)
+Bool Crypto::Hash::BatchHashValidator::IsMatch(NN<HashValidatorSess> sess, const UTF8Char *password, UOSInt pwdLen)
 {
 	UInt8 hashBuff[64];
-	Crypto::Hash::IHash *hash = (Crypto::Hash::IHash*)sess;
+	NN<Crypto::Hash::IHash> hash = NN<Crypto::Hash::IHash>::ConvertFrom(sess);
 	hash->Clear();
 	hash->Calc(password, pwdLen);
 	hash->GetValue(hashBuff);

@@ -140,9 +140,9 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NN<Text::XMLReader> reade
 						colCnt = nameList.GetCount();
 						ccols = nameList.Ptr();
 						NN<Math::CoordinateSystem> csys;
-						if (!csys.Set(env.csys))
+						if (!env.csys.SetTo(csys))
 						{
-							csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+							csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 						}
 						NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, ccols.Ptr(), csys, 0, CSTR_NULL));
 					}
@@ -199,17 +199,18 @@ Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NN<Text::XMLReader> reader,
 	UOSInt i;
 	UOSInt j;
 	NN<Text::XMLAttrib> attr;
+	NN<Math::CoordinateSystem> csys;
 	UOSInt dimension = 0;
 	i = reader->GetAttribCount();
 	while (i-- > 0)
 	{
 		attr = reader->GetAttribNoCheck(i);
-		if (attr->name->Equals(UTF8STRC("srsName")) && env->csys == 0)
+		if (attr->name->Equals(UTF8STRC("srsName")) && env->csys.IsNull())
 		{
 			env->csys = Math::CoordinateSystemManager::CreateFromName(attr->value->ToCString());
-			if (env->csys)
+			if (env->csys.SetTo(csys))
 			{
-				env->srid = env->csys->GetSRID();
+				env->srid = csys->GetSRID();
 			}
 		}
 		else if (attr->name->Equals(UTF8STRC("srsDimension")))

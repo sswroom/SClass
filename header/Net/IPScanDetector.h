@@ -32,7 +32,7 @@ namespace Net
 
 	private:
 		NN<Net::SocketFactory> sockf;
-		Socket *soc;
+		Optional<Socket> soc;
 		IPScanHandler hdlr;
 		AnyType userData;
 		Data::FastMapNN<UInt64, AdapterStatus> adapterMap;

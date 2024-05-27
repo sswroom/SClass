@@ -433,7 +433,7 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(NN<Net::SocketFactory> sockf, Text::
 	{
 		Media::MediaFile *mediaFile;
 		NEW_CLASS(mediaFile, Media::MediaFile(url));
-		Data::ArrayList<Net::RTPCliChannel *> chList;
+		Data::ArrayListNN<Net::RTPCliChannel> chList;
 		NN<Media::IVideoSource> vid;
 		NN<Media::IAudioSource> aud;
 		i = 0;
@@ -443,11 +443,8 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(NN<Net::SocketFactory> sockf, Text::
 			Data::ArrayList<const UTF8Char *> *mediaDesc = sdp->GetMediaDesc(i);
 			if (mediaDesc)
 			{
-				Net::RTPCliChannel *rtp = Net::RTPCliChannel::CreateChannel(sockf, mediaDesc, url, cli, log);
-				if (rtp)
-				{
-					chList.Add(rtp);
-				}
+				NN<Net::RTPCliChannel> rtp = Net::RTPCliChannel::CreateChannel(sockf, mediaDesc, url, cli, log);
+				chList.Add(rtp);
 			}
 			i++;
 		}
@@ -456,11 +453,11 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(NN<Net::SocketFactory> sockf, Text::
 		j = chList.GetCount();
 		while (i < j)
 		{
-			Net::RTPCliChannel *rtp = chList.GetItem(i);
+			NN<Net::RTPCliChannel> rtp = chList.GetItemNoCheck(i);
 			if (rtp->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 			{
 				k = 0;
-				while (vid.Set(rtp->CreateShadowVideo(k++)))
+				while (rtp->CreateShadowVideo(k++).SetTo(vid))
 				{
 					mediaFile->AddSource(vid, 0);
 				}
@@ -468,7 +465,7 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(NN<Net::SocketFactory> sockf, Text::
 			else if (rtp->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 			{
 				k = 0;
-				while (aud.Set(rtp->CreateShadowAudio(k++)))
+				while (rtp->CreateShadowAudio(k++).SetTo(aud))
 				{
 					mediaFile->AddSource(aud, 0);
 				}
@@ -477,12 +474,7 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(NN<Net::SocketFactory> sockf, Text::
 			i++;
 		}
 
-		i = chList.GetCount();
-		while (i-- > 0)
-		{
-			Net::RTPCliChannel *rtp = chList.RemoveAt(i);
-			DEL_CLASS(rtp);
-		}
+		chList.DeleteAll();
 		SDEL_CLASS(sdp);
 		DEL_CLASS(cli);
 

@@ -21,7 +21,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NN<IO::PackageFile> pkgFile)
 	this->fmt = Text::String::New(CSTR("png"));
 	this->min = Math::Coord2DDbl(0, 0);
 	this->max = Math::Coord2DDbl(0, 0);
-	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+	this->csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 
 	UInt32 minXBlk;
 	UInt32 maxXBlk;
@@ -174,7 +174,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NN<IO::PackageFile> pkgFile, NN<Text:
 	this->fmt = format->Clone();
 	this->min = minCoord;
 	this->max = maxCoord;
-	this->csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+	this->csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 }
 
 Map::OSM::OSMLocalTileMap::~OSMLocalTileMap()

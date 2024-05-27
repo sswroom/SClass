@@ -106,7 +106,7 @@ namespace Text
 		void SetColURLLatLon(UOSInt index, Math::Coord2DDbl pos);
 		void SetColHAlign(UOSInt index, HAlignment hAlign);
 		Bool HasChart();
-		Text::SpreadSheet::Workbook *CreateWorkbook();
+		NN<Text::SpreadSheet::Workbook> CreateWorkbook();
 		NN<Media::VectorDocument> CreateVDoc(Int32 id, NN<Media::DrawEngine> deng);
 	};
 }

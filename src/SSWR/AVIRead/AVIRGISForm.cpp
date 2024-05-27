@@ -190,7 +190,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(AnyType userObj, Data::Da
 				NN<Media::RasterImage> stimg;
 				if (NN<Media::ImageList>::ConvertFrom(nnpobj)->GetImage(0, 0).SetTo(stimg))
 				{
-					NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, files[i]->ToCString(), 0, 0, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, 0, 0, 0, CSTR_NULL));
+					NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, files[i]->ToCString(), 0, 0, Math::CoordinateSystemManager::CreateWGS84Csys(), 0, 0, 0, 0, CSTR_NULL));
 					Double calcImgW;
 					Double calcImgH;
 					if (stimg->HasHotSpot())
@@ -629,7 +629,7 @@ void SSWR::AVIRead::AVIRGISForm::OpenCSV(Text::CStringNN url, UInt32 codePage, T
 	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 	{
 		NN<Map::MapDrawLayer> lyr;
-		if (lyr.Set(Map::CSVMapParser::ParseAsPoint(cli, codePage, name, nameCol, latCol, lonCol, Math::CoordinateSystemManager::CreateDefaultCsys())))
+		if (lyr.Set(Map::CSVMapParser::ParseAsPoint(cli, codePage, name, nameCol, latCol, lonCol, Math::CoordinateSystemManager::CreateWGS84Csys())))
 		{
 			this->AddLayer(lyr);
 		}
@@ -657,7 +657,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(Optional<UI::GUIClientControl> parent, N
 	this->pauseUpdate = false;
 	this->mapLyrUpdated = false;
 
-	this->wgs84CSys = Math::CoordinateSystemManager::CreateDefaultCsys();
+	this->wgs84CSys = Math::CoordinateSystemManager::CreateWGS84Csys();
 	this->UpdateTitle();
 	this->SetFont(0, 0, 8.25, false);
 
@@ -1213,7 +1213,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				NN<Map::MapDrawLayer> lyr = litem->layer;
 				AVIRGISCSysForm frm(0, this->ui, this->core, lyr->GetCoordinateSystem().Ptr());
 				frm.SetText(CSTR("Assign Coordinate System"));
-				if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && csys.Set(frm.GetCSys()))
+				if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && frm.GetCSys().SetTo(csys))
 				{
 					lyr->SetCoordinateSystem(csys);
 					this->mapCtrl->UpdateMap();
@@ -1234,7 +1234,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					NN<Map::VectorLayer> vec = NN<Map::VectorLayer>::ConvertFrom(lyr);
 					AVIRGISCSysForm frm(0, this->ui, this->core, lyr->GetCoordinateSystem().Ptr());
 					frm.SetText(CSTR("Convert Coordinate System"));
-					if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && csys.Set(frm.GetCSys()))
+					if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && frm.GetCSys().SetTo(csys))
 					{
 						vec->ConvCoordinateSystem(csys);
 						this->mapCtrl->UpdateMap();
@@ -1478,7 +1478,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK && pl.Set(frm.GetPolyline()))
 			{
 				NN<Map::VectorLayer> lyr;
-				NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, CSTR("Google Polyline"), 0, 0, Math::CoordinateSystemManager::CreateDefaultCsys(), 0, 0, 0, 0, CSTR_NULL));
+				NEW_CLASSNN(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, CSTR("Google Polyline"), 0, 0, Math::CoordinateSystemManager::CreateWGS84Csys(), 0, 0, 0, 0, CSTR_NULL));
 				lyr->AddVector(pl, (const UTF8Char**)0);
 				this->AddLayer(lyr);
 			}

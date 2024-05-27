@@ -10,14 +10,14 @@ namespace Net
 	{
 	private:
 		NN<Net::SocketFactory> sockf;
-		Socket *socV4;
+		Optional<Socket> socV4;
 		Sync::Thread thread;
 
 		UInt16 resId;
 		UInt16 resSeq;
 		Bool resFound;
 		UInt32 resIP;
-		Sync::Event *resEvt;
+		NN<Sync::Event> resEvt;
 
 		static void __stdcall RecvThread(NN<Sync::Thread> thread);
 		void ICMPChecksum(UInt8 *buff, UOSInt buffSize);

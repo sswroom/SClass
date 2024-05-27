@@ -35,6 +35,7 @@ struct Net::HTTPMyClient::ClassData
 
 UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 {
+	NN<Net::TCPClient> cli;
 	if (buff.GetSize() > BUFFSIZE)
 	{
 		buff = buff.SubArray(0, BUFFSIZE);
@@ -64,7 +65,7 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 		{
 			if (chunkSizeLeft > this->buffSize && BUFFSIZE - 1 - this->buffSize > 0)
 			{
-				if (this->cli == 0)
+				if (!this->cli.SetTo(cli))
 				{
 					return 0;
 				}
@@ -74,10 +75,9 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 #ifdef SHOWDEBUG
 					printf("Return Read size(1) = %d\r\n", 0);
 #endif
-					if (this->cli->IsClosed())
+					if (cli->IsClosed())
 					{
-						DEL_CLASS(this->cli);
-						this->cli = 0;
+						this->cli.Delete();
 					}
 					return 0;
 				}
@@ -93,7 +93,7 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 				this->totalDownload += i;
 				this->buffSize += i;
 			}
-			if (this->chunkSizeLeft <= 2)
+			if (this->chunkSizeLeft <= 2 && this->cli.SetTo(cli))
 			{
 				while (this->chunkSizeLeft > this->buffSize)
 				{
@@ -103,10 +103,9 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 #ifdef SHOWDEBUG
 						printf("Return Read size(1.2) = %d\r\n", 0);
 #endif
-						if (this->cli->IsClosed())
+						if (cli->IsClosed())
 						{
-							DEL_CLASS(this->cli);
-							this->cli = 0;
+							this->cli.Delete();
 						}
 						return 0;
 					}
@@ -182,7 +181,7 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 			MemCopyO(this->dataBuff, &this->dataBuff[2], this->buffSize - 2);
 			buffSize -= 2;
 		}
-		if (buffSize <= 0)
+		if (buffSize <= 0 && this->cli.SetTo(cli))
 		{
 			i = cli->Read(Data::ByteArray(&this->dataBuff[this->buffSize], BUFFSIZE - 1 - this->buffSize));
 			if (i == 0 && this->buffSize <= 0)
@@ -206,7 +205,7 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 		}
 		while (INVALID_INDEX == (i = Text::StrIndexOfC(this->dataBuff, this->buffSize, UTF8STRC("\r\n"))))
 		{
-			if (this->cli == 0)
+			if (!this->cli.SetTo(cli))
 			{
 				return 0;
 			}
@@ -223,10 +222,9 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 #ifdef SHOWDEBUG
 				printf("Return read size(6) = %d\r\n", 0);
 #endif
-				if (this->cli->IsClosed())
+				if (cli->IsClosed())
 				{
-					DEL_CLASS(this->cli);
-					this->cli = 0;
+					this->cli.Delete();
 				}
 				return 0;
 			}
@@ -283,7 +281,7 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 		printf("set chunkSizeLeft = %d\r\n", (UInt32)this->chunkSizeLeft);
 #endif
 		i += 2;
-		if (this->buffSize == i)
+		if (this->buffSize == i && this->cli.SetTo(cli))
 		{
 			this->buffSize = 0;
 			i = cli->Read(Data::ByteArray(this->dataBuff, BUFFSIZE - 1));
@@ -371,7 +369,7 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 	{
 		if (this->buffSize == 0)
 		{
-			if (this->cli == 0)
+			if (!this->cli.SetTo(cli))
 			{
 				return 0;
 			}
@@ -390,10 +388,9 @@ UOSInt Net::HTTPMyClient::ReadRAWInternal(Data::ByteArray buff)
 				this->clsData->fs->Write(this->dataBuff, this->buffSize);
 			}
 #endif
-			if (this->cli->IsClosed())
+			if (cli->IsClosed())
 			{
-				DEL_CLASS(this->cli);
-				this->cli = 0;
+				this->cli.Delete();
 			}
 		}
 		if (this->buffSize >= buff.GetSize())
@@ -457,12 +454,16 @@ Net::HTTPMyClient::HTTPMyClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLE
 
 Net::HTTPMyClient::~HTTPMyClient()
 {
-	if (this->cli)
+	NN<Net::TCPClient> cli;
+	if (this->cli.SetTo(cli))
 	{
-		this->sockf->SetLinger(this->cli->GetSocket(), 0);
-		this->cli->ShutdownSend();
-		DEL_CLASS(this->cli);
-		this->cli = 0;
+		NN<Socket> soc;
+		if (cli->GetSocket().SetTo(soc))
+		{
+			this->sockf->SetLinger(soc, 0);
+		}
+		cli->ShutdownSend();
+		this->cli.Delete();
 	}
 	SDEL_STRING(this->cliHost);
 	if (this->dataBuff)
@@ -484,7 +485,7 @@ Net::HTTPMyClient::~HTTPMyClient()
 
 Bool Net::HTTPMyClient::IsError() const
 {
-	return this->cli == 0;
+	return this->cli.IsNull();
 }
 
 UOSInt Net::HTTPMyClient::ReadRAW(const Data::ByteArray &buff)
@@ -527,10 +528,11 @@ Int32 Net::HTTPMyClient::Flush()
 
 void Net::HTTPMyClient::Close()
 {
-	if (this->cli)
+	NN<Net::TCPClient> cli;
+	if (this->cli.SetTo(cli))
 	{
-		this->cli->ShutdownSend();
-		this->cli->Close();
+		cli->ShutdownSend();
+		cli->Close();
 	}
 }
 
@@ -547,6 +549,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	UTF8Char svrname[256];
 	UTF8Char *svrnameEnd;
 	UTF8Char host[256];
+	NN<Net::TCPClient> cli;
 
 	UOSInt i;
 	UOSInt hostLen;
@@ -710,7 +713,8 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 			}
 			else
 			{
-				NEW_CLASS(this->cli, Net::TCPClient(sockf, this->svrAddr, port, this->timeout));
+				NEW_CLASSNN(cli, Net::TCPClient(sockf, this->svrAddr, port, this->timeout));
+				this->cli = cli;
 			}
 		}
 		else
@@ -730,28 +734,28 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		}
 #endif
 
-		if (this->cli == 0)
+		NN<Socket> soc;
+		if (!this->cli.SetTo(cli))
 		{
 			this->writing = true;
 			this->canWrite = false;
 			return false;
 		}
-		else if (this->cli->IsConnectError())
+		else if (cli->IsConnectError() || !cli->GetSocket().SetTo(soc))
 		{
 #if defined(SHOWDEBUG)
 			printf("Error in connect to server\r\n");
 #endif
-			DEL_CLASS(this->cli);
-			this->cli = 0;
+			this->cli.Delete();
 
 			this->writing = true;
 			this->canWrite = false;
 			return false;
 		}
-		this->sockf->SetLinger(this->cli->GetSocket(), 0);
-		this->sockf->SetNoDelay(this->cli->GetSocket(), true);
+		this->sockf->SetLinger(soc, 0);
+		this->sockf->SetNoDelay(soc, true);
 	}
-	else if (Text::StrEqualsC(this->cliHost->v, this->cliHost->leng, urltmp, urltmpLen))
+	else if (Text::StrEqualsC(this->cliHost->v, this->cliHost->leng, urltmp, urltmpLen) && this->cli.SetTo(cli))
 	{
 		if (this->buffSize > 0)
 		{
@@ -765,7 +769,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 			{
 				size = (UOSInt)(this->contLeng - this->contRead);
 			}
-			size = this->cli->Read(Data::ByteArray(this->dataBuff, size));
+			size = cli->Read(Data::ByteArray(this->dataBuff, size));
 			this->totalDownload += size;
 #ifdef SHOWDEBUG
 			printf("Read from remote(5), size = %d\r\n", (Int32)size);
@@ -910,6 +914,7 @@ Bool Net::HTTPMyClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 void Net::HTTPMyClient::AddHeaderC(Text::CStringNN name, Text::CString value)
 {
 	UInt8 buff[512];
+	NN<Net::TCPClient> cli;
 	UTF8Char *sptr;
 	if (this->reqHeaders.SortedIndexOfPtr(name.v, name.leng) >= 0)
 	{
@@ -919,7 +924,7 @@ void Net::HTTPMyClient::AddHeaderC(Text::CStringNN name, Text::CString value)
 		return;
 	}
 
-	if (this->cli && !this->writing)
+	if (this->cli.SetTo(cli) && !this->writing)
 	{
 		if (name.leng + value.leng + 5 > 512)
 		{
@@ -960,7 +965,9 @@ void Net::HTTPMyClient::AddHeaderC(Text::CStringNN name, Text::CString value)
 
 void Net::HTTPMyClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeResp)
 {
-	if ((this->writing && !this->canWrite) || this->cli == 0)
+	NN<Net::TCPClient> cli;
+	NN<Socket> soc;
+	if ((this->writing && !this->canWrite) || !this->cli.SetTo(cli) || !cli->GetSocket().SetTo(soc))
 	{
 		timeReq.Set(-1);
 		timeResp.Set(-1);
@@ -991,7 +998,7 @@ void Net::HTTPMyClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 		UInt8 *reqBuff = this->reqMstm.GetBuff(reqSize);
 		while (writeSize < reqSize)
 		{
-			currSize = this->cli->Write(&reqBuff[writeSize], reqSize - writeSize);
+			currSize = cli->Write(&reqBuff[writeSize], reqSize - writeSize);
 #ifdef SHOWDEBUG
 			printf("Writing %d bytes, sent %d bytes\r\n", (UInt32)(reqSize - writeSize), (UInt32)currSize);
 #endif
@@ -1002,10 +1009,10 @@ void Net::HTTPMyClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 		}
 		this->reqMstm.Clear();
 
-		this->sockf->SetLinger(cli->GetSocket(), 0);
-		if (!this->kaConn && !this->cli->IsSSL())
-			this->cli->ShutdownSend();
-		this->cli->SetTimeout(this->timeout);
+		this->sockf->SetLinger(soc, 0);
+		if (!this->kaConn && !cli->IsSSL())
+			cli->ShutdownSend();
+		cli->SetTimeout(this->timeout);
 		t1 = this->clk.GetTimeDiff();
 		timeReq.Set(t1);
 
@@ -1197,18 +1204,20 @@ void Net::HTTPMyClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 
 void Net::HTTPMyClient::SetTimeout(Data::Duration timeout)
 {
+	NN<Net::TCPClient> cli;
 	this->timeout = timeout;
-	if (this->cli)
-		this->cli->SetTimeout(timeout);
+	if (this->cli.SetTo(cli))
+		cli->SetTimeout(timeout);
 }
 
 Bool Net::HTTPMyClient::IsSecureConn() const
 {
-	if (this->cli == 0)
+	NN<Net::TCPClient> cli;
+	if (!this->cli.SetTo(cli))
 	{
 		return false;
 	}
-	return this->cli->IsSSL();
+	return cli->IsSSL();
 }
 
 Bool Net::HTTPMyClient::SetClientCert(NN<Crypto::Cert::X509Cert> cert, NN<Crypto::Cert::X509File> key)
@@ -1221,9 +1230,10 @@ Bool Net::HTTPMyClient::SetClientCert(NN<Crypto::Cert::X509Cert> cert, NN<Crypto
 
 Optional<const Data::ReadingListNN<Crypto::Cert::Certificate>> Net::HTTPMyClient::GetServerCerts()
 {
-	if (this->cli && this->cli->IsSSL())
+	NN<Net::TCPClient> cli;
+	if (this->cli.SetTo(cli) && cli->IsSSL())
 	{
-		return ((Net::SSLClient*)this->cli)->GetRemoteCerts();
+		return NN<Net::SSLClient>::ConvertFrom(cli)->GetRemoteCerts();
 	}
 	return 0;
 }

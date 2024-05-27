@@ -32,7 +32,7 @@ void __stdcall Net::SocketMonitor::DataThread(NN<Sync::Thread> thread)
 	}
 }
 
-Net::SocketMonitor::SocketMonitor(NN<Net::SocketFactory> sockf, Socket *soc, RAWDataHdlr hdlr, AnyType userData, UOSInt threadCnt)
+Net::SocketMonitor::SocketMonitor(NN<Net::SocketFactory> sockf, NN<Socket> soc, RAWDataHdlr hdlr, AnyType userData, UOSInt threadCnt)
 {
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -44,16 +44,13 @@ Net::SocketMonitor::SocketMonitor(NN<Net::SocketFactory> sockf, Socket *soc, RAW
 	this->hdlr = {hdlr, userData};
 
 	this->soc = soc;
-	if (this->soc)
+	this->threads = MemAlloc(Sync::Thread*, this->threadCnt);
+	i = this->threadCnt;
+	while (i-- > 0)
 	{
-		this->threads = MemAlloc(Sync::Thread*, this->threadCnt);
-		i = this->threadCnt;
-		while (i-- > 0)
-		{
-			sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("SocketMonitor")), i);
-			NEW_CLASS(this->threads[i], Sync::Thread(DataThread, this, CSTRP(sbuff, sptr)));
-			this->threads[i]->Start();
-		}
+		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("SocketMonitor")), i);
+		NEW_CLASS(this->threads[i], Sync::Thread(DataThread, this, CSTRP(sbuff, sptr)));
+		this->threads[i]->Start();
 	}
 }
 
@@ -68,11 +65,8 @@ Net::SocketMonitor::~SocketMonitor()
 			this->threads[i]->BeginStop();
 		}
 	}
-	if (this->soc)
-	{
-		this->sockf->ShutdownSocket(this->soc);
-		this->sockf->DestroySocket(this->soc);
-	}
+	this->sockf->ShutdownSocket(this->soc);
+	this->sockf->DestroySocket(this->soc);
 	if (this->threads)
 	{
 		i = this->threadCnt;
@@ -82,9 +76,5 @@ Net::SocketMonitor::~SocketMonitor()
 			DEL_CLASS(this->threads[i]);
 		}
 		MemFree(this->threads);
-	}
-	if (this->soc)
-	{
-		this->soc = 0;
 	}
 }

@@ -24,7 +24,7 @@ namespace Net
 		const UTF8Char *ifName;
 		UInt8 hwAddr[6];
 		UInt32 ipAddr;
-		Socket *soc;
+		Optional<Socket> soc;
 		ARPResponseHdlr hdlr;
 		AnyType userData;
 

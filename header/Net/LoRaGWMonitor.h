@@ -10,7 +10,7 @@ namespace Net
 		typedef void (__stdcall *GWMPMessage)(AnyType userObj, Bool toServer, UInt8 ver, UInt16 token, UInt8 msgType, const UInt8 *msg, UOSInt msgSize);
 	private:
 		NN<Net::SocketFactory> sockf;
-		Socket *s;
+		Optional<Socket> s;
 		UInt16 port;
 		Net::SocketMonitor *socMon;
 		GWMPMessage msgHdlr;

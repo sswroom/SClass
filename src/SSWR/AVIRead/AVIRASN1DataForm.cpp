@@ -819,7 +819,7 @@ void SSWR::AVIRead::AVIRASN1DataForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_CERT_EXT_KEY:
 		{
 			NN<Crypto::Cert::X509Key> key;
-			if (key.Set(NN<Crypto::Cert::X509Cert>::ConvertFrom(this->asn1)->GetNewPublicKey()))
+			if (NN<Crypto::Cert::X509Cert>::ConvertFrom(this->asn1)->GetNewPublicKey().SetTo(key))
 			{
 				this->core->OpenObject(key);
 			}

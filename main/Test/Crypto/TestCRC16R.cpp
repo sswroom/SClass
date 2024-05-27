@@ -7,9 +7,10 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UInt8 testBlock[32];
 	UInt8 hashVal[32];
-	Crypto::Hash::IHash *hash;
+	NN<Crypto::Hash::IHash> hash;
 
-	hash = Crypto::Hash::HashCreator::CreateHash(Crypto::Hash::HashType::CRC16R);
+	if (!Crypto::Hash::HashCreator::CreateHash(Crypto::Hash::HashType::CRC16R).SetTo(hash))
+		return 1;
 
 	UOSInt i = 32;
 	while (i-- > 0)
@@ -21,7 +22,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	hash->GetValue(hashVal);
 	if (ReadMUInt16(hashVal) != 0x6BFE)
 	{
-		DEL_CLASS(hash);
+		hash.Delete();
 		return 1;
 	}
 
@@ -35,7 +36,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	hash->GetValue(hashVal);
 	if (ReadMUInt16(hashVal) != 0xCFFF)
 	{
-		DEL_CLASS(hash);
+		hash.Delete();
 		return 1;
 	}
 
@@ -49,10 +50,10 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	hash->GetValue(hashVal);
 	if (ReadMUInt16(hashVal) != 0x5AC3)
 	{
-		DEL_CLASS(hash);
+		hash.Delete();
 		return 1;
 	}
 
-	DEL_CLASS(hash);
+	hash.Delete();
 	return 0;
 }

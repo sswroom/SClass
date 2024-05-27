@@ -10,7 +10,7 @@ UInt32 __stdcall Net::TCPPortScanner::ScanThread(AnyType userObj)
 	NN<Net::TCPPortScanner> me = userObj.GetNN<Net::TCPPortScanner>();
 	Net::SocketUtil::AddressInfo addr;
 	OSInt i;
-	Socket *s;
+	Optional<Socket> s;
 	Sync::Interlocked::IncrementUOS(me->threadCnt);
 	while (!me->threadToStop)
 	{
@@ -35,10 +35,11 @@ UInt32 __stdcall Net::TCPPortScanner::ScanThread(AnyType userObj)
 					{
 						s = me->sockf->CreateTCPSocketv6();
 					}
-					if (s)
+					NN<Socket> nns;
+					if (s.SetTo(nns))
 					{
-						Bool succ = me->sockf->Connect(s, addr, (UInt16)i, 10000);
-						me->sockf->DestroySocket(s);
+						Bool succ = me->sockf->Connect(nns, addr, (UInt16)i, 10000);
+						me->sockf->DestroySocket(nns);
 
 						mutUsage.BeginUse();
 						if (succ)

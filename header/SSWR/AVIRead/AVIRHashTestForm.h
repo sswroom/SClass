@@ -35,7 +35,7 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 
-			static Double __stdcall HashTestSpeed(Crypto::Hash::IHash *hash);
+			static Double __stdcall HashTestSpeed(NN<Crypto::Hash::IHash> hash);
 			static void __stdcall OnCompareClicked(AnyType userObj);
 			static void __stdcall OnSpeedClicked(AnyType userObj);
 		public:

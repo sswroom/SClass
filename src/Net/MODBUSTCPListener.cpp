@@ -6,7 +6,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include <stdio.h>
 
-void __stdcall Net::MODBUSTCPListener::OnClientConn(Socket *s, AnyType userObj)
+void __stdcall Net::MODBUSTCPListener::OnClientConn(NN<Socket> s, AnyType userObj)
 {
 	NN<Net::MODBUSTCPListener> me = userObj.GetNN<Net::MODBUSTCPListener>();
 	NN<Net::TCPClient> cli;

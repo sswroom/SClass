@@ -103,7 +103,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 		Text::JSONBase *jbase = jobj->GetObjectValue(CSTR("type"));
 		if (jbase && jbase->Equals(CSTR("FeatureCollection")))
 		{
-			Math::CoordinateSystem *csys = 0;
+			Optional<Math::CoordinateSystem> csys = 0;
 			NN<Math::CoordinateSystem> nncsys;
 			Text::JSONBase *crs = jobj->GetObjectValue(CSTR("crs"));
 			if (crs && crs->GetType() == Text::JSONType::Object)
@@ -115,16 +115,16 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 					if (((Text::JSONObject*)crsProp)->GetObjectString(CSTR("name")).SetTo(crsName))
 					{
 						csys = Math::CoordinateSystemManager::CreateFromName(crsName->ToCString());
-						if (csys)
+						if (csys.SetTo(nncsys))
 						{
-							srid = csys->GetSRID();
+							srid = nncsys->GetSRID();
 						}
 					}
 				}
 			}
-			if (!nncsys.Set(csys))
+			if (!csys.SetTo(nncsys))
 			{
-				nncsys = Math::CoordinateSystemManager::CreateDefaultCsys();
+				nncsys = Math::CoordinateSystemManager::CreateWGS84Csys();
 			}
 
 			jbase = jobj->GetObjectValue(CSTR("features"));

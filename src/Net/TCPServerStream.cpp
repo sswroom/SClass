@@ -5,7 +5,7 @@
 #include "Sync/ThreadUtil.h"
 #include "Text/StringBuilder.h"
 
-void __stdcall Net::TCPServerStream::ConnHandler(Socket *s, AnyType userObj)
+void __stdcall Net::TCPServerStream::ConnHandler(NN<Socket> s, AnyType userObj)
 {
 	NN<Net::TCPServerStream> me = userObj.GetNN<Net::TCPServerStream>();
 	Net::TCPClient *cli;

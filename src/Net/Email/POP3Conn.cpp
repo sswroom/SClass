@@ -150,7 +150,7 @@ Net::Email::POP3Conn::POP3Conn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEn
 	NN<Net::SSLEngine> nnssl;
 	if (connType == CT_SSL && ssl.SetTo(nnssl))
 	{
-		if (!this->cli.Set(nnssl->ClientConnect(host, port, 0, timeout)))
+		if (!Optional<Net::TCPClient>(nnssl->ClientConnect(host, port, 0, timeout)).SetTo(this->cli))
 		{
 			NEW_CLASSNN(this->cli, Net::TCPClient(sockf, addr, port, timeout));
 		}
@@ -184,9 +184,9 @@ Net::Email::POP3Conn::POP3Conn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEn
 				{
 					this->logWriter->WriteLine(CSTR("SSL Handshake begin"));
 				}
-				Socket *s = this->cli->RemoveSocket();
-				NN<Net::TCPClient> cli;
-				if (cli.Set(nnssl->ClientInit(s, host, 0)))
+				NN<Socket> s;
+				NN<Net::SSLClient> cli;
+				if (this->cli->RemoveSocket().SetTo(s) && nnssl->ClientInit(s, host, 0).SetTo(cli))
 				{
 					if (this->logWriter)
 					{

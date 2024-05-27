@@ -2705,7 +2705,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_WMS:
 		{
-			SSWR::AVIRead::AVIRWMSForm frm(0, this->ui, this->core, this->ssl, Math::CoordinateSystemManager::CreateDefaultCsys());
+			SSWR::AVIRead::AVIRWMSForm frm(0, this->ui, this->core, this->ssl, Math::CoordinateSystemManager::CreateWGS84Csys());
 			if (frm.ShowDialog(this))
 			{
 				Map::DrawMapService *mapService = frm.GetDrawMapService();
@@ -2742,7 +2742,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_REGIONAL_MAP:
 		{
-			NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+			NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 			SSWR::AVIRead::AVIRRegionalMapForm frm(0, this->ui, this->core, this->ssl, csys);
 			if (frm.ShowDialog(this))
 			{

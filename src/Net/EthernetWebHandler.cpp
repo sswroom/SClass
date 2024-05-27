@@ -955,40 +955,38 @@ Bool Net::EthernetWebHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req
 	{
 		return true;
 	}
-	RequestHandler reqHdlr = this->reqMap->GetC(subReq);
+	RequestHandler reqHdlr = this->reqMap.GetC(subReq);
 	if (reqHdlr)
 	{
 		return reqHdlr(this, req, resp);
 	}
-	return this->reqMap->GetItem(0)(this, req, resp);
+	return this->reqMap.GetItem(0)(this, req, resp);
 }
 
-Net::EthernetWebHandler::EthernetWebHandler(Net::EthernetAnalyzer *analyzer)
+Net::EthernetWebHandler::EthernetWebHandler(NN<Net::EthernetAnalyzer> analyzer)
 {
 	this->analyzer = analyzer;
 	Net::EthernetAnalyzer::AnalyzeType atype = this->analyzer->GetAnalyzeType();
-	NEW_CLASS(this->reqMap, Data::FastStringMap<RequestHandler>());
 	if (atype & Net::EthernetAnalyzer::AT_DEVICE)
-		this->reqMap->PutC(CSTR("/device"), DeviceReq);
+		this->reqMap.PutC(CSTR("/device"), DeviceReq);
 	if (atype & Net::EthernetAnalyzer::AT_IPTRANSFER)
-		this->reqMap->PutC(CSTR("/iptransfer"), IPTransferReq);
+		this->reqMap.PutC(CSTR("/iptransfer"), IPTransferReq);
 	if (atype & Net::EthernetAnalyzer::AT_DNSREQ)
-		this->reqMap->PutC(CSTR("/dnsreqv4"), DNSReqv4Req);
+		this->reqMap.PutC(CSTR("/dnsreqv4"), DNSReqv4Req);
 	if (atype & Net::EthernetAnalyzer::AT_DNSREQ)
-		this->reqMap->PutC(CSTR("/dnsreqv6"), DNSReqv6Req);
+		this->reqMap.PutC(CSTR("/dnsreqv6"), DNSReqv6Req);
 	if (atype & Net::EthernetAnalyzer::AT_DNSREQ)
-		this->reqMap->PutC(CSTR("/dnsreqoth"), DNSReqOthReq);
+		this->reqMap.PutC(CSTR("/dnsreqoth"), DNSReqOthReq);
 	if (atype & Net::EthernetAnalyzer::AT_DNSTARGET)
-		this->reqMap->PutC(CSTR("/dnstarget"), DNSTargetReq);
+		this->reqMap.PutC(CSTR("/dnstarget"), DNSTargetReq);
 	if (atype & Net::EthernetAnalyzer::AT_DNSCLI)
-		this->reqMap->PutC(CSTR("/dnsclient"), DNSClientReq);
+		this->reqMap.PutC(CSTR("/dnsclient"), DNSClientReq);
 	if (atype & Net::EthernetAnalyzer::AT_DHCP)
-		this->reqMap->PutC(CSTR("/dhcp"), DHCPReq);
+		this->reqMap.PutC(CSTR("/dhcp"), DHCPReq);
 	if (atype & Net::EthernetAnalyzer::AT_IPLOG)
-		this->reqMap->PutC(CSTR("/iplog"), IPLogReq);
+		this->reqMap.PutC(CSTR("/iplog"), IPLogReq);
 }
 
 Net::EthernetWebHandler::~EthernetWebHandler()
 {
-	DEL_CLASS(this->reqMap);
 }

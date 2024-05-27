@@ -36,9 +36,10 @@ typedef enum
 void AVIRPackageForm_TestHandler(const UInt8 *buff, UOSInt buffSize, AnyType userData)
 {
 	NN<SSWR::AVIRead::AVIRPackageForm::ReadSession> sess = userData.GetNN<SSWR::AVIRead::AVIRPackageForm::ReadSession>();
-	if (sess->hash)
+	NN<Crypto::Hash::IHash> hash;
+	if (sess->hash.SetTo(hash))
 	{
-		sess->hash->Calc(buff, buffSize);
+		hash->Calc(buff, buffSize);
 	}
 	sess->fileReadSize += buffSize;
 }
@@ -529,6 +530,7 @@ void SSWR::AVIRead::AVIRPackageForm::TestPackage(NN<IO::ActiveStreamReader> read
 			sess->fileCnt++;
 			if (pack->GetItemStmDataNew(i).SetTo(stmData))
 			{
+				NN<Crypto::Hash::IHash> hash;
 				storeSize = pack->GetItemStoreSize(i);
 				fileSize = stmData->GetDataSize();
 				sess->fileReadSize = 0;
@@ -537,7 +539,7 @@ void SSWR::AVIRead::AVIRPackageForm::TestPackage(NN<IO::ActiveStreamReader> read
 				if (pack->GetItemComp(i) == Data::Compress::Decompressor::CM_UNCOMPRESSED)
 				{
 					sess->totalSizeUncomp += fileSize;
-					if (sess->hash) sess->hash->Clear();
+					if (sess->hash.SetTo(hash)) hash->Clear();
 					startTime = Data::Timestamp::UtcNow();
 					reader->ReadStreamData(stmData, 0);
 					endTime = Data::Timestamp::UtcNow();
@@ -573,7 +575,7 @@ void SSWR::AVIRead::AVIRPackageForm::TestPackage(NN<IO::ActiveStreamReader> read
 				else
 				{
 					sess->totalCompSize += fileSize;
-					if (sess->hash) sess->hash->Clear();
+					if (sess->hash.SetTo(hash)) hash->Clear();
 					startTime = Data::Timestamp::UtcNow();
 					reader->ReadStreamData(stmData, 0);
 					endTime = Data::Timestamp::UtcNow();

@@ -215,7 +215,7 @@ Net::MQTTConn::MQTTConn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> s
 	{
 		Net::SSLEngine::ErrorType err;
 		sockf->ReloadDNS();
-		if (!cli.Set(nnssl->ClientConnect(host, port, err, timeout)))
+		if (!Optional<Net::TCPClient>(nnssl->ClientConnect(host, port, err, timeout)).SetTo(cli))
 		{
 			return;
 		}

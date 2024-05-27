@@ -2839,7 +2839,7 @@ UOSInt Crypto::Cert::X509File::DistributionPointAdd(UnsafeArray<const UInt8> pdu
 	return 0;
 }
 
-Crypto::Cert::X509Key *Crypto::Cert::X509File::PublicKeyGetNew(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd)
+Optional<Crypto::Cert::X509Key> Crypto::Cert::X509File::PublicKeyGetNew(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd)
 {
 	Net::ASN1Util::ItemType oidType;
 	UOSInt oidLen;

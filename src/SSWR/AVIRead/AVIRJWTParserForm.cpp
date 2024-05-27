@@ -90,8 +90,8 @@ void __stdcall SSWR::AVIRead::AVIRJWTParserForm::OnParseClicked(AnyType userObj)
 					}
 					else
 					{
-						Crypto::Cert::X509Key *key = me->azure->CreateKey(kid->ToCString());
-						if (key)
+						NN<Crypto::Cert::X509Key> key;
+						if (me->azure->CreateKey(kid->ToCString()).SetTo(key))
 						{
 							if (me->token->SignatureValid(me->ssl, key->GetASN1Buff(), key->GetASN1BuffSize(), key->GetKeyType()))
 							{
@@ -101,7 +101,7 @@ void __stdcall SSWR::AVIRead::AVIRJWTParserForm::OnParseClicked(AnyType userObj)
 							{
 								me->txtVerifyStatus->SetText(CSTR("Signature not valid"));
 							}
-							DEL_CLASS(key);
+							key.Delete();
 						}
 						else
 						{

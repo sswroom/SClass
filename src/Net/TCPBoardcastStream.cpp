@@ -5,7 +5,7 @@
 #include "Sync/SimpleThread.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall Net::TCPBoardcastStream::ConnHandler(Socket *s, AnyType userObj)
+void __stdcall Net::TCPBoardcastStream::ConnHandler(NN<Socket> s, AnyType userObj)
 {
 	NN<Net::TCPBoardcastStream> me = userObj.GetNN<Net::TCPBoardcastStream>();
 	NN<Net::TCPClient> cli;

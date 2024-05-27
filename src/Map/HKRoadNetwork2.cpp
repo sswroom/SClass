@@ -38,11 +38,11 @@ DB::ReadingDB *Map::HKRoadNetwork2::GetDB()
 
 NN<Math::CoordinateSystem> Map::HKRoadNetwork2::CreateCoordinateSystem()
 {
-	NN<Math::CoordinateSystem> csys;
-	if (csys.Set(Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80)))
+	NN<Math::ProjectedCoordinateSystem> csys;
+	if (Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80).SetTo(csys))
 		return csys;
 	else
-		return Math::CoordinateSystemManager::CreateDefaultCsys();
+		return Math::CoordinateSystemManager::CreateWGS84Csys();
 }
 
 Map::HKSpeedLimit *Map::HKRoadNetwork2::CreateSpeedLimit()
