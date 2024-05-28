@@ -33,8 +33,8 @@ namespace Media
 		virtual MonitorHandle *GetMonitorHandle(UOSInt monIndex);
 		virtual UOSInt GetMonitorCount();
 
-		virtual MonitorSurface *CreateSurface(Math::Size2D<UOSInt> size, UOSInt bitDepth);
-		virtual MonitorSurface *CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow);
+		virtual Optional<MonitorSurface> CreateSurface(Math::Size2D<UOSInt> size, UOSInt bitDepth);
+		virtual Optional<MonitorSurface> CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow);
 		virtual Bool CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, MonitorSurface **primarySurface, MonitorSurface **bufferSurface);
 	};
 }

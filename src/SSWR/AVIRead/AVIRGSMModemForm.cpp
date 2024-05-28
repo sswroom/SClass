@@ -332,11 +332,10 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(AnyType userObj)
 	NN<IO::GSMModemController::SMSMessage> sms;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	Text::SMSMessage *smsMsg;
-	if (me->lvSMS->GetSelectedItem().GetOpt<IO::GSMModemController::SMSMessage>().SetTo(sms))
+	NN<Text::SMSMessage> smsMsg;
+	if (me->lvSMS->GetSelectedItem().GetOpt<IO::GSMModemController::SMSMessage>().SetTo(sms) && Text::SMSMessage::CreateFromPDU(sms->pduMessage).SetTo(smsMsg))
 	{
 		Data::DateTime dt;
-		smsMsg = Text::SMSMessage::CreateFromPDU(sms->pduMessage);
 		smsMsg->GetMessageTime(dt);
 
 		NN<UI::GUIFileDialog> dlg = me->ui->NewFileDialog(L"SSWR", L"AVIRead", L"SMSSave", true);
@@ -370,7 +369,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(AnyType userObj)
 			writer.WriteLineW(smsMsg->GetContent());
 		}
 		dlg.Delete();
-		DEL_CLASS(smsMsg);
+		smsMsg.Delete();
 	}
 }
 
@@ -400,7 +399,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(AnyType userOb
 	NN<IO::GSMModemController::SMSMessage> sms;
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	Text::SMSMessage *smsMsg;
+	NN<Text::SMSMessage> smsMsg;
 	if (me->lvSMS->GetCount() > 0)
 	{
 		NN<UI::GUIFolderDialog> dlg = me->ui->NewFolderDialog();
@@ -413,36 +412,42 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(AnyType userOb
 			while (i < j)
 			{
 				sms = me->lvSMS->GetItem(i).GetNN<IO::GSMModemController::SMSMessage>();
-				smsMsg = Text::SMSMessage::CreateFromPDU(sms->pduMessage);
-				smsMsg->GetMessageTime(dt);
-				sb.ClearStr();
-				sb.Append(dlg->GetFolder());
-				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-				sb.AppendC(UTF8STRC("SMS"));
-				sb.AppendI64(dt.ToDotNetTicks());
-				sb.AppendC(UTF8STRC("_"));
-				sb.AppendI32(sms->index);
-				sb.AppendC(UTF8STRC("_"));
-				NN<Text::String> s = Text::String::NewNotNull(smsMsg->GetAddress());
-				sb.Append(s);
-				s->Release();
-				sb.AppendC(UTF8STRC(".sms"));
-
-				IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-				Text::UTF8Writer writer(fs);
-				writer.WriteSignature();
-				writer.Write(CSTR("From: "));
-				writer.WriteLineW(smsMsg->GetAddress());
-				if (smsMsg->GetSMSC())
+				if (Text::SMSMessage::CreateFromPDU(sms->pduMessage).SetTo(smsMsg))
 				{
-					writer.Write(CSTR("SMSC: "));
-					writer.WriteLineW(smsMsg->GetSMSC());
+					smsMsg->GetMessageTime(dt);
+					sb.ClearStr();
+					sb.Append(dlg->GetFolder());
+					sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
+					sb.AppendC(UTF8STRC("SMS"));
+					sb.AppendI64(dt.ToDotNetTicks());
+					sb.AppendC(UTF8STRC("_"));
+					sb.AppendI32(sms->index);
+					sb.AppendC(UTF8STRC("_"));
+					NN<Text::String> s = Text::String::NewNotNull(smsMsg->GetAddress());
+					sb.Append(s);
+					s->Release();
+					sb.AppendC(UTF8STRC(".sms"));
+
+					IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+					Text::UTF8Writer writer(fs);
+					writer.WriteSignature();
+					writer.Write(CSTR("From: "));
+					writer.WriteLineW(smsMsg->GetAddress());
+					if (smsMsg->GetSMSC())
+					{
+						writer.Write(CSTR("SMSC: "));
+						writer.WriteLineW(smsMsg->GetSMSC());
+					}
+					writer.Write(CSTR("Date: "));
+					sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
+					writer.WriteLine(CSTRP(sbuff, sptr));
+					writer.WriteLine(CSTR("Content: "));
+					writer.WriteLineW(smsMsg->GetContent());
 				}
-				writer.Write(CSTR("Date: "));
-				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
-				writer.WriteLine(CSTRP(sbuff, sptr));
-				writer.WriteLine(CSTR("Content: "));
-				writer.WriteLineW(smsMsg->GetContent());
+				else
+				{
+					me->ui->ShowMsgOK(CSTR("Error in parsing SMS PDU"), CSTR("GSM Modem"), me);
+				}
 				i++;
 			}
 		}
@@ -780,7 +785,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadPhoneBook()
 void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 {
 	NN<IO::GSMModemController::SMSMessage> sms;
-	Text::SMSMessage *smsMsg;
+	NN<Text::SMSMessage> smsMsg;
 	Data::DateTime dt;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -813,29 +818,38 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 	while (i < j)
 	{
 		sms = this->msgList.GetItemNoCheck(i);
-		smsMsg = Text::SMSMessage::CreateFromPDU(sms->pduMessage);
-#if _WCHAR_SIZE == 2
-		k = this->lvSMS->AddItem(smsMsg->GetAddress(), sms);
-#elif _WCHAR_SIZE == 4
-		Text::StrUTF16_UTF32(wbuff, smsMsg->GetAddress());
-		k = this->lvSMS->AddItem(wbuff, sms);
-#endif
-		smsMsg->GetMessageTime(dt);
-		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
-		this->lvSMS->SetSubItem(k, 1, CSTRP(sbuff, sptr));
-		sptr = Text::StrInt32(sbuff, sms->index);
-		this->lvSMS->SetSubItem(k, 2, CSTRP(sbuff, sptr));
-		const UTF16Char *cont = smsMsg->GetContent();
-		if (cont)
+		if (Text::SMSMessage::CreateFromPDU(sms->pduMessage).SetTo(smsMsg))
 		{
-#if _WCHAR_SIZE == 2
-			this->lvSMS->SetSubItem(k, 3, cont);
-#elif _WCHAR_SIZE == 4
-			Text::StrUTF16_UTF32(wbuff, cont);
-			this->lvSMS->SetSubItem(k, 3, wbuff);
-#endif
+	#if _WCHAR_SIZE == 2
+			k = this->lvSMS->AddItem(smsMsg->GetAddress(), sms);
+	#elif _WCHAR_SIZE == 4
+			Text::StrUTF16_UTF32(wbuff, smsMsg->GetAddress());
+			k = this->lvSMS->AddItem(wbuff, sms);
+	#endif
+			smsMsg->GetMessageTime(dt);
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
+			this->lvSMS->SetSubItem(k, 1, CSTRP(sbuff, sptr));
+			sptr = Text::StrInt32(sbuff, sms->index);
+			this->lvSMS->SetSubItem(k, 2, CSTRP(sbuff, sptr));
+			const UTF16Char *cont = smsMsg->GetContent();
+			if (cont)
+			{
+	#if _WCHAR_SIZE == 2
+				this->lvSMS->SetSubItem(k, 3, cont);
+	#elif _WCHAR_SIZE == 4
+				Text::StrUTF16_UTF32(wbuff, cont);
+				this->lvSMS->SetSubItem(k, 3, wbuff);
+	#endif
+			}
+			smsMsg.Delete();
 		}
-		DEL_CLASS(smsMsg);
+		else
+		{
+			k = this->lvSMS->AddItem(CSTR("?"), sms);
+			this->lvSMS->SetSubItem(k, 1, CSTR("?"));
+			sptr = Text::StrInt32(sbuff, sms->index);
+			this->lvSMS->SetSubItem(k, 2, CSTRP(sbuff, sptr));
+		}
 		i++;
 	}
 }

@@ -17,30 +17,30 @@ Media::DShow::DShowManager::~DShowManager()
 	CoUninitialize();
 }
 
-Media::DShow::DShowGraph *Media::DShow::DShowManager::CreateGraph(void *hwnd)
+NN<Media::DShow::DShowGraph> Media::DShow::DShowManager::CreateGraph(void *hwnd)
 {
-	Media::DShow::DShowGraph *graph;
-	NEW_CLASS(graph, Media::DShow::DShowGraph(this, hwnd));
+	NN<Media::DShow::DShowGraph> graph;
+	NEW_CLASSNN(graph, Media::DShow::DShowGraph(this, hwnd));
 	return graph;
 }
 
-Media::DShow::DShowEVRFilter *Media::DShow::DShowManager::CreateEVR(void *hwnd)
+NN<Media::DShow::DShowEVRFilter> Media::DShow::DShowManager::CreateEVR(void *hwnd)
 {
-	Media::DShow::DShowEVRFilter *filter;
-	NEW_CLASS(filter, Media::DShow::DShowEVRFilter(this, hwnd));
+	NN<Media::DShow::DShowEVRFilter> filter;
+	NEW_CLASSNN(filter, Media::DShow::DShowEVRFilter(this, hwnd));
 	return filter;
 }
 
-Media::DShow::DShowVMR9Filter *Media::DShow::DShowManager::CreateVMR9(void *hwnd)
+NN<Media::DShow::DShowVMR9Filter> Media::DShow::DShowManager::CreateVMR9(void *hwnd)
 {
-	Media::DShow::DShowVMR9Filter *filter;
-	NEW_CLASS(filter, Media::DShow::DShowVMR9Filter(this, hwnd));
+	NN<Media::DShow::DShowVMR9Filter> filter;
+	NEW_CLASSNN(filter, Media::DShow::DShowVMR9Filter(this, hwnd));
 	return filter;
 }
 
-Media::DShow::DShowVideoRecvFilter *Media::DShow::DShowManager::CreateVideoRecvFilter(Media::DShow::DShowVideoRecvFilter::VFrame32Hdlr hdlr, void *userObj)
+NN<Media::DShow::DShowVideoRecvFilter> Media::DShow::DShowManager::CreateVideoRecvFilter(Media::DShow::DShowVideoRecvFilter::VFrame32Hdlr hdlr, void *userObj)
 {
-	Media::DShow::DShowVideoRecvFilter *filter;
-	NEW_CLASS(filter, Media::DShow::DShowVideoRecvFilter(this, hdlr, userObj));
+	NN<Media::DShow::DShowVideoRecvFilter> filter;
+	NEW_CLASSNN(filter, Media::DShow::DShowVideoRecvFilter(this, hdlr, userObj));
 	return filter;
 }

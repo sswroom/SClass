@@ -163,7 +163,7 @@ Bool Media::MemorySurface::DrawFromSurface(NN<Media::MonitorSurface> surface, Ma
 				if (surface->info.rotateType == this->info.rotateType)
 				{
 					OSInt lineAdd;
-					UInt8 *srcPtr = surface->LockSurface(&lineAdd);
+					UInt8 *srcPtr = surface->LockSurface(lineAdd);
 					if (srcPtr)
 					{
 						ImageUtil_ConvR8G8B8N8_ARGB32(srcPtr + drawY * lineAdd + drawX * (OSInt)(this->info.storeBPP >> 3),
@@ -216,9 +216,9 @@ Bool Media::MemorySurface::DrawFromSurface(NN<Media::MonitorSurface> surface, Ma
 	return false;
 }
 
-UInt8 *Media::MemorySurface::LockSurface(OSInt *lineAdd)
+UInt8 *Media::MemorySurface::LockSurface(OutParam<OSInt> lineAdd)
 {
-	*lineAdd = (OSInt)this->GetDataBpl();
+	lineAdd.Set((OSInt)this->GetDataBpl());
 	return this->buffPtr;
 }
 

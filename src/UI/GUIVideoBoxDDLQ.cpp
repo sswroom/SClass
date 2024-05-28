@@ -9,6 +9,8 @@
 
 void UI::GUIVideoBoxDDLQ::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, VideoBuff *vbuff2)
 {
+	NN<Media::CS::CSConverter> csconv;
+	NN<Media::MonitorSurface> destSurface;
 	DrawRect rect;
 	UOSInt srcWidth = 0;
 	UOSInt srcHeight = 0;
@@ -30,9 +32,11 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, V
 	{
 		((UI::GUIVideoBoxDDLQ*)tstat->me)->CreateThreadResizer(tstat);
 	}
+	if (!tstat->csconv.SetTo(csconv))
+		return;
 
 	Manage::HiResClock clk;
-	tstat->csconv->ConvertV2(&vbuff->srcBuff, tstat->lrBuff, this->videoInfo.dispSize.x, this->videoInfo.dispSize.y, this->videoInfo.storeSize.x, this->videoInfo.storeSize.y, (OSInt)this->videoInfo.dispSize.x * 4, vbuff->frameType, vbuff->ycOfst);
+	csconv->ConvertV2(&vbuff->srcBuff, tstat->lrBuff, this->videoInfo.dispSize.x, this->videoInfo.dispSize.y, this->videoInfo.storeSize.x, this->videoInfo.storeSize.y, (OSInt)this->videoInfo.dispSize.x * 4, vbuff->frameType, vbuff->ycOfst);
 	tstat->csTime = clk.GetTimeDiff();
 
 	if (vbuff->frameType == Media::FT_NON_INTERLACE)
@@ -236,15 +240,18 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, V
 //	this->VideoEndProc();
 	vbuff->destSize = rect.size;
 	vbuff->destBitDepth = 32;
-	if (vbuff->destSurface == 0 || !vbuff->destSurface->IsDispSize(vbuff->destSize))
+	if (!vbuff->destSurface.SetTo(destSurface) || !destSurface->IsDispSize(vbuff->destSize))
 	{
-		SDEL_CLASS(vbuff->destSurface);
+		vbuff->destSurface.Delete();
 		vbuff->destSurface = tstat->me->GetSurfaceMgr()->CreateSurface(vbuff->destSize, vbuff->destBitDepth);
 	}
-	OSInt destBpl;
-	UInt8* destBuff = vbuff->destSurface->LockSurface(&destBpl);
-	tstat->resizer->Resize(srcBuff + (cropDY * srcWidth << 2) + (this->cropLeft << 2), (OSInt)srcWidth << 2, UOSInt2Double(cropWidth), UOSInt2Double(cropHeight), 0, 0,destBuff, destBpl, vbuff->destSize.x, vbuff->destSize.y);
-	vbuff->destSurface->UnlockSurface();
+	if (vbuff->destSurface.SetTo(destSurface))
+	{
+		OSInt destBpl;
+		UInt8* destBuff = destSurface->LockSurface(destBpl);
+		tstat->resizer->Resize(srcBuff + (cropDY * srcWidth << 2) + (this->cropLeft << 2), (OSInt)srcWidth << 2, UOSInt2Double(cropWidth), UOSInt2Double(cropHeight), 0, 0,destBuff, destBpl, vbuff->destSize.x, vbuff->destSize.y);
+		destSurface->UnlockSurface();
+	}
 	tstat->hTime = ((Media::Resizer::LanczosResizerH8_8*)tstat->resizer)->GetHAvgTime();
 	tstat->vTime = ((Media::Resizer::LanczosResizerH8_8*)tstat->resizer)->GetVAvgTime();
 
@@ -260,15 +267,18 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, V
 		}
 		vbuff2->destSize = vbuff->destSize;
 		vbuff2->destBitDepth = 32;
-		if (vbuff2->destSurface == 0 || !vbuff2->destSurface->IsDispSize(vbuff2->destSize))
+		if (!vbuff2->destSurface.SetTo(destSurface) || !destSurface->IsDispSize(vbuff2->destSize))
 		{
-			SDEL_CLASS(vbuff2->destSurface);
+			vbuff2->destSurface.Delete();
 			vbuff2->destSurface = tstat->me->GetSurfaceMgr()->CreateSurface(vbuff2->destSize, vbuff2->destBitDepth);
 		}
-		OSInt destBpl;
-		UInt8* destBuff = vbuff2->destSurface->LockSurface(&destBpl);
-		tstat->resizer->Resize(tstat->diBuff + (cropDY * srcWidth << 2) + (this->cropLeft << 2), (OSInt)srcWidth << 2, UOSInt2Double(cropWidth), UOSInt2Double(cropHeight), 0, 0, destBuff, destBpl, vbuff2->destSize.x, vbuff2->destSize.y);
-		vbuff2->destSurface->UnlockSurface();
+		if (vbuff2->destSurface.SetTo(destSurface))
+		{
+			OSInt destBpl;
+			UInt8* destBuff = destSurface->LockSurface(destBpl);
+			tstat->resizer->Resize(tstat->diBuff + (cropDY * srcWidth << 2) + (this->cropLeft << 2), (OSInt)srcWidth << 2, UOSInt2Double(cropWidth), UOSInt2Double(cropHeight), 0, 0, destBuff, destBpl, vbuff2->destSize.x, vbuff2->destSize.y);
+			destSurface->UnlockSurface();
+		}
 		vbuff2->frameNum = vbuff->frameNum;
 		vbuff2->frameTime = vbuff->frameTime + 17;
 		Sync::MutexUsage mutUsage(this->buffMut);
@@ -289,16 +299,16 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, V
 	}
 }
 
-Media::IImgResizer *UI::GUIVideoBoxDDLQ::CreateResizer(Media::ColorManagerSess *colorMgr, UInt32 bitDepth, Double srcRefLuminance)
+NN<Media::IImgResizer> UI::GUIVideoBoxDDLQ::CreateResizer(Media::ColorManagerSess *colorMgr, UInt32 bitDepth, Double srcRefLuminance)
 {
-	Media::IImgResizer *resizer;
-	NEW_CLASS(resizer, Media::Resizer::LanczosResizerH8_8(4, 3, Media::AT_NO_ALPHA));
+	NN<Media::IImgResizer> resizer;
+	NEW_CLASSNN(resizer, Media::Resizer::LanczosResizerH8_8(4, 3, Media::AT_NO_ALPHA));
 	return resizer;
 }
 
 void UI::GUIVideoBoxDDLQ::CreateCSConv(NN<ThreadStat> tstat, Media::FrameInfo *info)
 {
-	SDEL_CLASS(tstat->csconv);
+	tstat->csconv.Delete();
 	Media::ColorProfile::YUVType yuvType = info->yuvType;
 	if (yuvType == Media::ColorProfile::YUVT_UNKNOWN)
 	{

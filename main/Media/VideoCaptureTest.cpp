@@ -15,7 +15,7 @@
 #include "Text/StringBuilderUTF8.h"
 
 Media::FrameInfo info;
-static Media::CS::CSConverter *converter;
+static Optional<Media::CS::CSConverter> converter;
 Int32 frameCnt;
 IO::ConsoleWriter *console;
 
@@ -36,9 +36,10 @@ void __stdcall CaptureTest(Data::Duration frameTime, UInt32 frameNum, UInt8 **im
 		Media::ImageList imgList(fileName);
 		imgList.AddImage(simg, 0);
 
-		if (converter)
+		NN<Media::CS::CSConverter> nnconverter;
+		if (converter.SetTo(nnconverter))
 		{
-			converter->ConvertV2(imgData, simg->data, info.dispSize.x, info.dispSize.y, info.storeSize.x, info.storeSize.y, (OSInt)info.storeSize.x * 4, frameType, info.ycOfst);
+			nnconverter->ConvertV2(imgData, simg->data, info.dispSize.x, info.dispSize.y, info.storeSize.x, info.storeSize.y, (OSInt)info.storeSize.x * 4, frameType, info.ycOfst);
 		}
 		{
 			IO::FileStream fs(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -294,11 +295,11 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				sb.AppendI32(frameCnt);
 				console->WriteLine(sb.ToCString());
 				converter = Media::CS::CSConverter::NewConverter(info.fourcc, info.storeBPP, info.pf, info.color, 0, 32, Media::PF_B8G8R8A8, color, info.yuvType, colorSess.Ptr());
-				if (converter == 0)
+				if (converter.IsNull())
 				{
 					console->WriteLine(CSTR("Converter is null"));
 				}
-				else if (converter)
+				else if (converter.NotNull())
 				{
 					console->WriteLine(CSTR("Converter is found"));
 				}
@@ -337,7 +338,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 					console->WriteLine(CSTR("Error in starting capture"));
 				}
 
-				SDEL_CLASS(converter);
+				converter.Delete();
 				capture.Delete();
 			}
 

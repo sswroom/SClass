@@ -259,18 +259,19 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::I
 					NEW_CLASSNN(lrimgnn, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 					lrimg = lrimgnn;
 					Sync::MutexUsage mutUsage(this->csconvMut);
-					if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color.Equals(this->csconvColor))
+					if (this->csconv.IsNull() || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color.Equals(this->csconvColor))
 					{
-						SDEL_CLASS(this->csconv);
+						this->csconv.Delete();
 						this->csconvFCC = simg->info.fourcc;
 						this->csconvBpp = simg->info.storeBPP;
 						this->csconvPF = simg->info.pf;
 						this->csconvColor.Set(simg->info.color);
 						this->csconv = Media::CS::CSConverter::NewConverter(this->csconvFCC, this->csconvBpp, this->csconvPF, this->csconvColor, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, Media::ColorProfile::YUVT_UNKNOWN, this->env->GetColorSess().Ptr());
 					}
-					if (this->csconv)
+					NN<Media::CS::CSConverter> csconv;
+					if (this->csconv.SetTo(csconv))
 					{
-						this->csconv->ConvertV2(&simg->data, lrimgnn->data, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.storeSize.x, simg->info.storeSize.y, (OSInt)lrimgnn->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+						csconv->ConvertV2(&simg->data, lrimgnn->data, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.storeSize.x, simg->info.storeSize.y, (OSInt)lrimgnn->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 					}
 					else
 					{
@@ -533,18 +534,19 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 				lrimg = lrimgnn;
 				{
 					Sync::MutexUsage mutUsage(this->csconvMut);
-					if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color.Equals(this->csconvColor))
+					if (this->csconv.IsNull() || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color.Equals(this->csconvColor))
 					{
-						SDEL_CLASS(this->csconv);
+						this->csconv.Delete();
 						this->csconvFCC = simg->info.fourcc;
 						this->csconvBpp = simg->info.storeBPP;
 						this->csconvPF = simg->info.pf;
 						this->csconvColor.Set(simg->info.color);
 						this->csconv = Media::CS::CSConverter::NewConverter(this->csconvFCC, this->csconvBpp, this->csconvPF, this->csconvColor, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, Media::ColorProfile::YUVT_UNKNOWN, this->env->GetColorSess().Ptr());
 					}
-					if (this->csconv)
+					NN<Media::CS::CSConverter> csconv;
+					if (this->csconv.SetTo(csconv))
 					{
-						this->csconv->ConvertV2(&simg->data, lrimgnn->data, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.storeSize.x, simg->info.storeSize.y, (OSInt)lrimgnn->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+						csconv->ConvertV2(&simg->data, lrimgnn->data, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.storeSize.x, simg->info.storeSize.y, (OSInt)lrimgnn->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 					}
 					else
 					{
@@ -836,18 +838,19 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer
 					lrimg = lrimgnn;
 					{
 						Sync::MutexUsage mutUsage(this->csconvMut);
-						if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color.Equals(this->csconvColor))
+						if (this->csconv.IsNull() || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color.Equals(this->csconvColor))
 						{
-							SDEL_CLASS(this->csconv);
+							this->csconv.Delete();
 							this->csconvFCC = simg->info.fourcc;
 							this->csconvBpp = simg->info.storeBPP;
 							this->csconvPF = simg->info.pf;
 							this->csconvColor.Set(simg->info.color);
 							this->csconv = Media::CS::CSConverter::NewConverter(this->csconvFCC, this->csconvBpp, this->csconvPF, this->csconvColor, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, Media::ColorProfile::YUVT_UNKNOWN, this->env->GetColorSess().Ptr());
 						}
-						if (this->csconv)
+						NN<Media::CS::CSConverter> csconv;
+						if (this->csconv.SetTo(csconv))
 						{
-							this->csconv->ConvertV2(&simg->data, lrimgnn->data, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.storeSize.x, simg->info.storeSize.y, (OSInt)lrimgnn->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+							csconv->ConvertV2(&simg->data, lrimgnn->data, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.storeSize.x, simg->info.storeSize.y, (OSInt)lrimgnn->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 						}
 						else
 						{
@@ -999,5 +1002,5 @@ SSWR::OrganWeb::OrganWebPhotoController::OrganWebPhotoController(Net::WebServer:
 SSWR::OrganWeb::OrganWebPhotoController::~OrganWebPhotoController()
 {
 	DEL_CLASS(this->resizerLR);
-	SDEL_CLASS(this->csconv);
+	this->csconv.Delete();
 }

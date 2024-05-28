@@ -6,14 +6,13 @@
 void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRTVControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTVControlForm>();
-	if (me->port)
+	NN<IO::Stream> port;
+	if (me->port.SetTo(port))
 	{
-		me->port->Close();
-		DEL_CLASS(me->tvCtrl);
-		DEL_CLASS(me->port);
+		port->Close();
+		me->tvCtrl.Delete();
+		me->port.Delete();
 		MemFree(me->cmdInfos);
-		me->tvCtrl = 0;
-		me->port = 0;
 
 		me->cboPort->SetEnabled(true);
 		me->cboTVType->SetEnabled(true);
@@ -29,29 +28,33 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(AnyType userObj)
 		return;
 	}
 
-	IO::SerialPort *port;
 	IO::TVControl::TVInfo info;
 	if (!IO::TVControl::GetTVInfo(tvType, &info))
 	{
 		me->ui->ShowMsgOK(CSTR("Please select a valid TV Type"), CSTR("TV Control"), me);
 		return;
 	}
-	NEW_CLASS(port, IO::SerialPort(portNum, info.defBaudRate, IO::SerialPort::PARITY_NONE, false));
-	if (port->IsError())
+	NEW_CLASSNN(port, IO::SerialPort(portNum, info.defBaudRate, IO::SerialPort::PARITY_NONE, false));
+	if (NN<IO::SerialPort>::ConvertFrom(port)->IsError())
 	{
-		DEL_CLASS(port);
+		port.Delete();
 		me->ui->ShowMsgOK(CSTR("Error in opening the port"), CSTR("TV Control"), me);
 		return;
 	}
 	if (me->chkLogFile->IsChecked())
 	{
-		NEW_CLASS(me->port, IO::StreamLogger(port, true, CSTR("TVRecv.dat"), CSTR("TVSend.dat")));
+		NEW_CLASSNN(port, IO::StreamLogger(port, true, CSTR("TVRecv.dat"), CSTR("TVSend.dat")));
 	}
-	else
+	me->port = port;
+	me->tvCtrl = IO::TVControl::CreateTVControl(port, tvType, 1);
+	NN<IO::TVControl> tvCtrl;
+	if (!me->tvCtrl.SetTo(tvCtrl))
 	{
-		me->port = port;
+		port.Delete();
+		me->ui->ShowMsgOK(CSTR("Error in creating TV Control"), CSTR("TV Control"), me);
+		return;
 	}
-	me->tvCtrl = IO::TVControl::CreateTVControl(me->port, tvType, 1);
+
 	me->cboPort->SetEnabled(false);
 	me->cboTVType->SetEnabled(false);
 	me->cboCommand->ClearItems();
@@ -59,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(AnyType userObj)
 	Data::ArrayList<IO::TVControl::CommandType> cmdList;
 	Data::ArrayList<IO::TVControl::CommandFormat> cmdFormats;
 	UOSInt j;
-	me->tvCtrl->GetSupportedCmd(&cmdList, &cmdFormats);
+	tvCtrl->GetSupportedCmd(&cmdList, &cmdFormats);
 	i = 0;
 	j = cmdList.GetCount();
 	me->cmdInfos = MemAlloc(CommandInfo, j);
@@ -81,7 +84,8 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(AnyType userObj)
 void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRTVControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTVControlForm>();
-	if (me->tvCtrl)
+	NN<IO::TVControl> tvCtrl;
+	if (me->tvCtrl.SetTo(tvCtrl))
 	{
 		Text::StringBuilderUTF8 sb;
 		UTF8Char sbuff[32];
@@ -95,7 +99,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(AnyType us
 		me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Raw);
 		if (cmdInfo->cmdFmt == IO::TVControl::CF_INSTRUCTION)
 		{
-			if (me->tvCtrl->SendInstruction(cmdInfo->cmdType))
+			if (tvCtrl->SendInstruction(cmdInfo->cmdType))
 			{
 				sb.ClearStr();
 				sb.Append(IO::TVControl::GetCommandName(cmdInfo->cmdType));
@@ -114,7 +118,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(AnyType us
 		}
 		else if (cmdInfo->cmdFmt == IO::TVControl::CF_GETCOMMAND)
 		{
-			if (me->tvCtrl->SendGetCommand(cmdInfo->cmdType, &cmdValue, sbuff))
+			if (tvCtrl->SendGetCommand(cmdInfo->cmdType, &cmdValue, sbuff))
 			{
 				sptr = &sbuff[Text::StrCharCnt(sbuff)];
 				sb.ClearStr();
@@ -140,7 +144,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(AnyType us
 			me->txtCommand->GetText(sb);
 			if (sb.ToInt32(val))
 			{
-				if (me->tvCtrl->SendSetCommand(cmdInfo->cmdType, val))
+				if (tvCtrl->SendSetCommand(cmdInfo->cmdType, val))
 				{
 					sb.ClearStr();
 					sb.Append(IO::TVControl::GetCommandName(cmdInfo->cmdType));
@@ -166,7 +170,8 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(AnyType us
 void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnCmdChanged(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRTVControlForm> me = userObj.GetNN<SSWR::AVIRead::AVIRTVControlForm>();
-	if (me->tvCtrl)
+	NN<IO::TVControl> tvCtrl;
+	if (me->tvCtrl.SetTo(tvCtrl))
 	{
 		NN<CommandInfo> cmdInfo;
 		if (!me->cboCommand->GetSelectedItem().GetOpt<CommandInfo>().SetTo(cmdInfo))
@@ -284,14 +289,13 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(Optional<UI::GUIClientContro
 
 SSWR::AVIRead::AVIRTVControlForm::~AVIRTVControlForm()
 {
-	if (this->port)
+	NN<IO::Stream> port;
+	if (this->port.SetTo(port))
 	{
-		this->port->Close();
-		DEL_CLASS(this->tvCtrl);
-		DEL_CLASS(this->port);
+		port->Close();
+		this->tvCtrl.Delete();
+		this->port.Delete();
 		MemFree(this->cmdInfos);
-		this->tvCtrl = 0;
-		this->port = 0;
 	}
 	this->log.RemoveLogHandler(this->logger);
 	this->logger.Delete();

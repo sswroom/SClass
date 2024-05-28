@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "Stdafx.h"
 #include "MyMemory.h"
 #include "Math/ProjectedCoordinateSystemBF.h"
 
@@ -26,7 +26,7 @@ Math::ProjectedCoordinateSystemBF::~ProjectedCoordinateSystemBF()
 	DEL_CLASS(this->falseEasting);
 }
 
-void Math::ProjectedCoordinateSystemBF::CalSurfaceDistanceXY(Math::BigFloat *x1, Math::BigFloat *y1, Math::BigFloat *x2, Math::BigFloat *y2, Math::BigFloat *dist, Math::Unit::Distance::DistanceUnit unit)
+void Math::ProjectedCoordinateSystemBF::CalSurfaceDistanceXY(Math::BigFloat *x1, Math::BigFloat *y1, Math::BigFloat *x2, Math::BigFloat *y2, Math::BigFloat *dist, Math::Unit::Distance::DistanceUnit unit) const
 {
 	Math::BigFloat xDiff(x2);
 	Math::BigFloat yDiff(y2);
@@ -233,7 +233,7 @@ Double Math::ProjectedCoordinateSystem::CalcM(Double rLat)
 	return m;
 }*/
 
-Bool Math::ProjectedCoordinateSystemBF::SameProjection(Math::ProjectedCoordinateSystemBF *csys)
+Bool Math::ProjectedCoordinateSystemBF::SameProjection(NN<Math::ProjectedCoordinateSystemBF> csys) const
 {
 	if (*(this->falseEasting) != csys->falseEasting)
 		return false;
@@ -252,7 +252,7 @@ Bool Math::ProjectedCoordinateSystemBF::SameProjection(Math::ProjectedCoordinate
 	return this->gcs->Equals(csys->gcs);
 }
 
-Math::ProjectedCoordinateSystemBF *Math::ProjectedCoordinateSystemBF::CreateCoordinateSystem(Math::ProjectedCoordinateSystem::ProjCoordSysType pcst)
+Optional<Math::ProjectedCoordinateSystemBF> Math::ProjectedCoordinateSystemBF::CreateCoordinateSystem(Math::CoordinateSystemManager::ProjCoordSysType pcst)
 {
 //	Math::ProjectedCoordinateSystemBF *csys;
 //	Math::GeographicCoordinateSystemBF *gcs;

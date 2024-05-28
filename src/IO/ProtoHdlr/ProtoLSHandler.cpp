@@ -12,16 +12,16 @@ IO::ProtoHdlr::ProtoLSHandler::~ProtoLSHandler()
 {
 }
 
-void *IO::ProtoHdlr::ProtoLSHandler::CreateStreamData(NN<IO::Stream> stm)
+AnyType IO::ProtoHdlr::ProtoLSHandler::CreateStreamData(NN<IO::Stream> stm)
 {
 	return 0;
 }
 
-void IO::ProtoHdlr::ProtoLSHandler::DeleteStreamData(NN<IO::Stream> stm, void *stmData)
+void IO::ProtoHdlr::ProtoLSHandler::DeleteStreamData(NN<IO::Stream> stm, AnyType stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoLSHandler::ParseProtocol(NN<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &srcBuff)
+UOSInt IO::ProtoHdlr::ProtoLSHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
 {
 	Bool found;
 	Data::ByteArrayR buff = srcBuff;
@@ -36,7 +36,7 @@ UOSInt IO::ProtoHdlr::ProtoLSHandler::ParseProtocol(NN<IO::Stream> stm, void *st
 				if (packetSize > buff.GetSize())
 					return buff.GetSize();
 
-				UInt16 chk = CalCheck(buff.Ptr(), packetSize - 2);
+				UInt16 chk = CalCheck(buff.Ptr().Ptr(), packetSize - 2);
 				if (chk == *(UInt16*)&buff[packetSize - 2])
 				{
 					this->listener->DataParsed(stm, stmObj, *(UInt16*)&buff[4], *(UInt16*)&buff[6], &buff[8], packetSize - 10);
@@ -55,7 +55,7 @@ UOSInt IO::ProtoHdlr::ProtoLSHandler::ParseProtocol(NN<IO::Stream> stm, void *st
 	return buff.GetSize();
 }
 
-UOSInt IO::ProtoHdlr::ProtoLSHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)
+UOSInt IO::ProtoHdlr::ProtoLSHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, AnyType stmData)
 {
 	*(Int16*)buff = *(Int16*)"MW";
 	*(Int16*)&buff[2] = (Int16)(cmdSize + 10);

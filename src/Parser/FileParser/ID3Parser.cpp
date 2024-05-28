@@ -49,7 +49,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ID3Parser::ParseFileHdr(NN<IO::St
 	Media::MediaFile *vid;
 	Media::BlockParser::MP3BlockParser mp3Parser;
 	NN<IO::StreamData> data = fd->GetPartialData(headerSize + 10, fd->GetDataSize() - headerSize - 10);
-	if (src.Set(mp3Parser.ParseStreamData(data)))
+	if (mp3Parser.ParseStreamData(data).SetTo(src))
 	{
 		data.Delete();
 		NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));

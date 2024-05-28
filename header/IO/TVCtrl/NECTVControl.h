@@ -15,7 +15,7 @@ namespace IO
 		class NECTVControl : public IO::TVControl
 		{
 		private:
-			IO::Stream *stm;
+			NN<IO::Stream> stm;
 			Int32 monId;
 			Data::DateTime nextTime;
 
@@ -31,7 +31,7 @@ namespace IO
 			Bool GetParameter(UInt8 opCodePage, UInt8 opCode, UInt16 *maxVal, UInt16 *currVal, Int32 cmdTimeout);
 			Bool SetParameter(UInt8 opCodePage, UInt8 opCode, UInt16 val, Int32 cmdTimeout);
 		public:
-			NECTVControl(IO::Stream *stm, Int32 monId);
+			NECTVControl(NN<IO::Stream> stm, Int32 monId);
 			virtual ~NECTVControl();
 
 			virtual Bool SendInstruction(CommandType ct);

@@ -2575,7 +2575,7 @@ UInt16 Net::MySQLTCPClient::GetDefaultPort()
 	return 3306;
 }
 
-DB::DBTool *Net::MySQLTCPClient::CreateDBTool(NN<Net::SocketFactory> sockf, NN<Text::String> serverName, Optional<Text::String> dbName, NN<Text::String> uid, NN<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> Net::MySQLTCPClient::CreateDBTool(NN<Net::SocketFactory> sockf, NN<Text::String> serverName, Optional<Text::String> dbName, NN<Text::String> uid, NN<Text::String> pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<Net::MySQLTCPClient> conn;
 	DB::DBTool *db;
@@ -2600,7 +2600,7 @@ DB::DBTool *Net::MySQLTCPClient::CreateDBTool(NN<Net::SocketFactory> sockf, NN<T
 	}
 }
 
-DB::DBTool *Net::MySQLTCPClient::CreateDBTool(NN<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> Net::MySQLTCPClient::CreateDBTool(NN<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<Net::MySQLTCPClient> conn;
 	DB::DBTool *db;

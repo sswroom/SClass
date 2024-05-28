@@ -151,15 +151,15 @@ void Map::GeoPackage::Reconnect()
 	this->conn->Reconnect();
 }
 
-Map::MapLayerCollection *Map::GeoPackage::CreateLayerCollection()
+NN<Map::MapLayerCollection> Map::GeoPackage::CreateLayerCollection()
 {
-	Map::MapLayerCollection *layerColl;
+	NN<Map::MapLayerCollection> layerColl;
 	NN<Text::String> sourceName = this->conn->GetSourceNameObj();
 	UOSInt i = sourceName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 	UOSInt j;
 	NN<Map::GeoPackageLayer> layer;
 	NN<Map::GeoPackage::ContentInfo> contentInfo;
-	NEW_CLASS(layerColl, Map::MapLayerCollection(sourceName->ToCString(), sourceName->ToCString().Substring(i + 1)));
+	NEW_CLASSNN(layerColl, Map::MapLayerCollection(sourceName->ToCString(), sourceName->ToCString().Substring(i + 1)));
 	i = 0;
 	j = this->tableList.GetCount();
 	while (i < j)

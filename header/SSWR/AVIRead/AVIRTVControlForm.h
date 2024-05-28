@@ -28,8 +28,8 @@ namespace SSWR
 			} CommandInfo;
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
-			IO::Stream *port;
-			IO::TVControl *tvCtrl;
+			Optional<IO::Stream> port;
+			Optional<IO::TVControl> tvCtrl;
 			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;
 			CommandInfo *cmdInfos;

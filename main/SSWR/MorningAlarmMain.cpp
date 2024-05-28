@@ -37,7 +37,7 @@
 
 #define NTPHOST CSTR("stdtime.gov.hk")
 
-Media::IAudioRenderer *audOut;
+Optional<Media::IAudioRenderer> audOut;
 Data::DateTime *startDt;
 Text::String *audioDevice; //L"Realtek HD Audio output"
 IO::ConsoleWriter *console;
@@ -64,6 +64,9 @@ void __stdcall PlayThread(NN<Sync::Thread> thread)
 	Net::HKOWeather::WeatherSignal currSignal;
 	Net::HKOWeather::WeatherSignal nextSignal;
 	Bool typhoonStop = false;
+	NN<Media::IAudioRenderer> audRenderer;
+	if (!audOut.SetTo(audRenderer))
+		return;
 
 	updateDt.SetCurrTimeUTC();
 	updateDt.AddMinute(-15);
@@ -188,15 +191,15 @@ void __stdcall PlayThread(NN<Sync::Thread> thread)
 			}
 			file = stmList.GetItemNoCheck(currStm);
 
-			if (audOut->BindAudio((Media::IAudioSource*)file->GetStream(0, 0).OrNull()))
+			if (audRenderer->BindAudio((Media::IAudioSource*)file->GetStream(0, 0).OrNull()))
 			{
-				audOut->AudioInit(clk);
-				audOut->Start();
+				audRenderer->AudioInit(clk);
+				audRenderer->Start();
 			}
 
 			while (!thread->IsStopping())
 			{
-				if (!audOut->IsPlaying())
+				if (!audRenderer->IsPlaying())
 				{
 					break;
 				}
@@ -207,13 +210,13 @@ void __stdcall PlayThread(NN<Sync::Thread> thread)
 		{
 			currDt.SetCurrTime();
 			Media::IAudioSource *astm = Media::ClockSpeechCh::GetSpeech(currDt);
-			if (audOut->BindAudio(astm))
+			if (audRenderer->BindAudio(astm))
 			{
-				audOut->AudioInit(clk);
-				audOut->Start();
+				audRenderer->AudioInit(clk);
+				audRenderer->Start();
 				while (!thread->IsStopping())
 				{
-					if (!audOut->IsPlaying())
+					if (!audRenderer->IsPlaying())
 					{
 						break;
 					}
@@ -223,7 +226,7 @@ void __stdcall PlayThread(NN<Sync::Thread> thread)
 			DEL_CLASS(astm);
 		}
 	}
-	audOut->Stop();
+	audRenderer->Stop();
 
 	DEL_CLASS(clk);
 
@@ -270,15 +273,16 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		MemFree(sel);
 
 		audOut = Media::AudioDevice::CreateRenderer(audioDevice->ToCString());
-		if (audOut)
+		NN<Media::IAudioRenderer> audRenderer;
+		if (audOut.SetTo(audRenderer))
 		{
-			Int32 vol = audOut->GetDeviceVolume();
+			Int32 vol = audRenderer->GetDeviceVolume();
 			console->Write(CSTR("Current Volume: "));
 			irt = IO::ConsoleInput::InputInt32(console, &vol, true);
 
 			if (irt == IO::ConsoleInput::IRT_TAB || irt == IO::ConsoleInput::IRT_ENTER)
 			{
-				audOut->SetDeviceVolume((UInt16)vol);
+				audRenderer->SetDeviceVolume((UInt16)vol);
 
 				NEW_CLASS(startDt, Data::DateTime());
 				startDt->SetCurrTime();
@@ -310,7 +314,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				DEL_CLASS(startDt);
 			}
 
-			SDEL_CLASS(audOut);
+			audOut.Delete();
 		}
 		else
 		{

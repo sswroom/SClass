@@ -252,7 +252,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 		sptru = Text::StrInt32(sptru, tileId.y);
 		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
 		NN<IO::StreamData> fd;
-		if (fd.Set(this->spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)})))
+		if (this->spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)}).SetTo(fd))
 		{
 			IO::StmData::BufferedStreamData bsd(fd);
 			if (parsers->ParseFile(bsd).SetTo(pobj))
@@ -322,17 +322,18 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 	}
 	cli.Delete();
 
-	IO::StreamData *fd = 0;
+	NN<IO::StreamData> nnfd;
+	Optional<IO::StreamData> fd = 0;
 	if (!this->cacheDir.IsNull())
 	{
-		NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
+		NEW_CLASSNN(nnfd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
+		fd = nnfd;
 	}
 	else if (this->spkg)
 	{
 		fd = this->spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)});
 	}
-	NN<IO::StreamData> nnfd;
-	if (nnfd.Set(fd))
+	if (fd.SetTo(nnfd))
 	{
 		if (nnfd->GetDataSize() > 0)
 		{
@@ -368,7 +369,7 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 	Data::DateTime currTime;
 	NN<Net::HTTPClient> cli;
 	NN<Text::String> s;
-	IO::StreamData *fd;
+	NN<IO::StreamData> fd;
 	if (level > this->maxLevel)
 		return 0;
 	Double x1 = TileX2Lon(tileId.x, level);
@@ -405,12 +406,12 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 			sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
 			break;
 		}
-		NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
+		NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
 		if (fd->GetDataSize() > 0)
 		{
 			currTime.SetCurrTimeUTC();
 			currTime.AddDay(-7);
-			((IO::StmData::FileData*)fd)->GetFileStream()->GetFileTimes(&dt, 0, 0);
+			NN<IO::StmData::FileData>::ConvertFrom(fd)->GetFileStream()->GetFileTimes(&dt, 0, 0);
 			if (dt.CompareTo(currTime) > 0)
 			{
 				it.Set(imgt);
@@ -421,7 +422,7 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 				hasTime = true;
 			}
 		}
-		DEL_CLASS(fd);
+		fd.Delete();
 	}
 	else if (this->spkg)
 	{
@@ -444,13 +445,11 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 			sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
 			break;
 		}
-		fd = this->spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)});
-		if (fd)
+		if (this->spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)}).SetTo(fd))
 		{
 			it.Set(imgt);
 			return fd;
 		}
-		DEL_CLASS(fd);
 	}
 
 	if (localOnly)
@@ -516,23 +515,24 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 	}
 	cli.Delete();
 
-	fd = 0;
+	Optional<IO::StreamData> optfd = 0;
 	if (!this->cacheDir.IsNull())
 	{
-		NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
+		NEW_CLASSNN(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
+		optfd = fd;
 	}
 	else if (this->spkg)
 	{
-		fd = this->spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)});
+		optfd = this->spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)});
 	}
-	if (fd)
+	if (optfd.SetTo(fd))
 	{
 		if (fd->GetDataSize() > 0)
 		{
 			it.Set(this->GetImageType());
 			return fd;
 		}
-		DEL_CLASS(fd);
+		fd.Delete();
 	}
 	return 0;
 }

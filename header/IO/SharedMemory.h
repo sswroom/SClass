@@ -16,8 +16,8 @@ namespace IO
 		~SharedMemory();
 		UInt8 *GetPointer();
 
-		static IO::SharedMemory *Create(const UTF8Char *name, OSInt size);
-		static IO::SharedMemory *Open(const UTF8Char *name, OSInt size);
+		static Optional<IO::SharedMemory> Create(const UTF8Char *name, OSInt size);
+		static Optional<IO::SharedMemory> Open(const UTF8Char *name, OSInt size);
 	};
-};
+}
 #endif

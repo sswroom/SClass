@@ -594,7 +594,7 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 	return lyr;
 }
 
-Text::SearchIndexer *Map::MapDrawLayer::CreateSearchIndexer(Text::TextAnalyzer *ta, UOSInt strIndex)
+Optional<Text::SearchIndexer> Map::MapDrawLayer::CreateSearchIndexer(Text::TextAnalyzer *ta, UOSInt strIndex)
 {
 	if (strIndex >= this->GetColumnCnt())
 		return 0;
@@ -620,7 +620,7 @@ Text::SearchIndexer *Map::MapDrawLayer::CreateSearchIndexer(Text::TextAnalyzer *
 	return searching;
 }
 
-UOSInt Map::MapDrawLayer::SearchString(NN<Data::ArrayListString> outArr, Text::SearchIndexer *srchInd, NameArray *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex)
+UOSInt Map::MapDrawLayer::SearchString(NN<Data::ArrayListString> outArr, NN<Text::SearchIndexer> srchInd, NameArray *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex)
 {
 	Text::PString s;
 
@@ -664,7 +664,7 @@ void Map::MapDrawLayer::ReleaseSearchStr(NN<Data::ArrayListString> strArr)
 	LIST_FREE_STRING(strArr);
 }
 
-Math::Geometry::Vector2D *Map::MapDrawLayer::GetVectorByStr(Text::SearchIndexer *srchInd, Map::NameArray *nameArr, Map::GetObjectSess *session, Text::CStringNN srchStr, UOSInt strIndex)
+Math::Geometry::Vector2D *Map::MapDrawLayer::GetVectorByStr(NN<Text::SearchIndexer> srchInd, Map::NameArray *nameArr, Map::GetObjectSess *session, Text::CStringNN srchStr, UOSInt strIndex)
 {
 	Math::Geometry::Vector2D *vec = 0;
 

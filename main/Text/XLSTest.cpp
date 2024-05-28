@@ -41,7 +41,7 @@ void TestChart()
 	NN<CellStyle> numStyle = wb.NewCellStyle(font10, Text::HAlignment::Left, Text::VAlignment::Center, CSTR("0.###"));
 	NN<Worksheet> graphSheet = wb.AddWorksheet();
 	NN<Worksheet> dataSheet = wb.AddWorksheet();
-	OfficeChart *chart = graphSheet->CreateChart(Math::Unit::Distance::DU_INCH, 0.64, 1.61, 13.10, 5.53, CSTR("\nSETTLEMENT VS CHAINAGE"));
+	NN<OfficeChart> chart = graphSheet->CreateChart(Math::Unit::Distance::DU_INCH, 0.64, 1.61, 13.10, 5.53, CSTR("\nSETTLEMENT VS CHAINAGE"));
 	chart->InitLineChart(CSTR("ACCUMULATED SETTLEMENT"), CSTR("CHAINAGE"), AxisType::Category);
 	chart->SetDisplayBlankAs(BlankAs::Gap);
 	if (testRowCnt > 1)

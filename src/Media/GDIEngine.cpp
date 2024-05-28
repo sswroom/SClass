@@ -152,7 +152,7 @@ Optional<Media::DrawImage> Media::GDIEngine::CreateImage32(Math::Size2D<UOSInt> 
 	return 0;
 }
 
-Media::GDIImage *Media::GDIEngine::CreateImage24(Math::Size2D<UOSInt> size)
+Optional<Media::GDIImage> Media::GDIEngine::CreateImage24(Math::Size2D<UOSInt> size)
 {
 	BITMAPINFO bInfo;
 	void *bmpBits;
@@ -193,10 +193,10 @@ Media::GDIImage *Media::GDIEngine::CreateImage24(Math::Size2D<UOSInt> size)
 	return 0;
 }
 
-Media::DrawImage *Media::GDIEngine::CreateImageScn(void *hdc, OSInt left, OSInt top, OSInt right, OSInt bottom)
+NN<Media::DrawImage> Media::GDIEngine::CreateImageScn(void *hdc, OSInt left, OSInt top, OSInt right, OSInt bottom)
 {
-	GDIImage *img;
-	NEW_CLASS(img, GDIImage(this, Math::Coord2D<OSInt>(left, top), Math::Size2D<UOSInt>((UOSInt)(right - left), (UOSInt)(bottom - top)), 32, 0, 0, hdc, Media::AT_NO_ALPHA));
+	NN<GDIImage> img;
+	NEW_CLASSNN(img, GDIImage(this, Math::Coord2D<OSInt>(left, top), Math::Size2D<UOSInt>((UOSInt)(right - left), (UOSInt)(bottom - top)), 32, 0, 0, hdc, Media::AT_NO_ALPHA));
 	return img;
 }
 

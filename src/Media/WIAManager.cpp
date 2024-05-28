@@ -97,7 +97,7 @@ const UTF8Char *Media::WIAManager::GetDeviceName(UOSInt index)
 	return this->devNames->GetItem(index);
 }
 
-Media::WIADevice *Media::WIAManager::CreateDevice(UOSInt index)
+Optional<Media::WIADevice> Media::WIAManager::CreateDevice(UOSInt index)
 {
 	const UTF8Char *devId = this->devIds->GetItem(index);
 	if (devId == 0)

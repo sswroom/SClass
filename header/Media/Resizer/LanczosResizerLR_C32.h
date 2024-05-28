@@ -34,7 +34,7 @@ namespace Media
 			OSInt *hIndex;
 			Int64 *hWeight;
 			UOSInt hTap;
-			Media::Resizer::LanczosResizerLR_C32Action::HoriFilter *hFilter;
+			Optional<Media::Resizer::LanczosResizerLR_C32Action::HoriFilter> hFilter;
 
 			Double vsSize;
 			Double vsOfst;
@@ -43,7 +43,7 @@ namespace Media
 			OSInt *vIndex;
 			Int64 *vWeight;
 			UOSInt vTap;
-			Media::Resizer::LanczosResizerLR_C32Action::VertFilter *vFilter;
+			Optional<Media::Resizer::LanczosResizerLR_C32Action::VertFilter> vFilter;
 
 			Media::ColorProfile destColor;
 			Optional<Media::ColorManagerSess> colorSess;

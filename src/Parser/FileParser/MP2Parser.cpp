@@ -41,7 +41,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MP2Parser::ParseFileHdr(NN<IO::St
 	NN<Media::AudioBlockSource> src;
 	Media::MediaFile *vid;
 	Media::BlockParser::MP2BlockParser mp2Parser;
-	if (src.Set(mp2Parser.ParseStreamData(fd)))
+	if (mp2Parser.ParseStreamData(fd).SetTo(src))
 	{
 		NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
 		vid->AddSource(src, 0);

@@ -7,32 +7,33 @@
 
 using namespace Text::SpreadSheet;
 
-Text::SpreadSheet::Worksheet::RowData *Text::SpreadSheet::Worksheet::CreateRow(UOSInt row)
+Optional<Text::SpreadSheet::Worksheet::RowData> Text::SpreadSheet::Worksheet::CreateRow(UOSInt row)
 {
-	RowData *rowData;
+	Optional<RowData> rowData;
 	if (row >= 1048576)
 		return 0;
-	while (row >= this->rows->GetCount())
+	while (row >= this->rows.GetCount())
 	{
-		this->rows->Add(0);
+		this->rows.Add(0);
 	}
-	rowData = this->rows->GetItem(row);
-	if (rowData == 0)
+	rowData = this->rows.GetItem(row);
+	if (rowData.IsNull())
 	{
-		rowData = MemAlloc(RowData, 1);
-		rowData->style = 0;
-		NEW_CLASS(rowData->cells, Data::ArrayList<CellData*>());
-		rowData->height = -1;
-		this->rows->SetItem(row, rowData);
+		NN<RowData> nnrowData = MemAllocNN(RowData);
+		nnrowData->style = 0;
+		NEW_CLASS(nnrowData->cells, Data::ArrayList<CellData*>());
+		nnrowData->height = -1;
+		this->rows.SetItem(row, nnrowData);
+		rowData = nnrowData;
 	}
 	return rowData;
 }
 
 Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::GetCellData(UOSInt row, UOSInt col, Bool keepMerge)
 {
-	RowData *rowData;
+	NN<RowData> rowData;
 	CellData *cell;
-	if (row >= this->rows->GetCount() + 65536)
+	if (row >= this->rows.GetCount() + 65536)
 		return 0;
 	if (col >= 65536)
 		return 0;
@@ -42,8 +43,7 @@ Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::GetCellDat
 	}
 	while (true)
 	{
-		rowData = CreateRow(row);
-		if (rowData == 0)
+		if (!CreateRow(row).SetTo(rowData))
 			return 0;
 		while (col >= rowData->cells->GetCount())
 		{
@@ -81,7 +81,7 @@ Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::GetCellDat
 	return cell;
 }
 
-void Text::SpreadSheet::Worksheet::FreeRowData(Text::SpreadSheet::Worksheet::RowData *data)
+void Text::SpreadSheet::Worksheet::FreeRowData(NN<Text::SpreadSheet::Worksheet::RowData> data)
 {
 	CellData *cell;
 	if (data->cells)
@@ -97,7 +97,7 @@ void Text::SpreadSheet::Worksheet::FreeRowData(Text::SpreadSheet::Worksheet::Row
 		}
 		DEL_CLASS(data->cells);
 	}
-	MemFree(data);
+	MemFreeNN(data);
 }
 
 void Text::SpreadSheet::Worksheet::FreeCellData(Text::SpreadSheet::Worksheet::CellData *data)
@@ -107,14 +107,14 @@ void Text::SpreadSheet::Worksheet::FreeCellData(Text::SpreadSheet::Worksheet::Ce
 	MemFree(data);
 }
 
-Text::SpreadSheet::Worksheet::RowData *Text::SpreadSheet::Worksheet::CloneRow(RowData *row, const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl)
+NN<Text::SpreadSheet::Worksheet::RowData> Text::SpreadSheet::Worksheet::CloneRow(NN<RowData> row, const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl)
 {
-	RowData *newRow;
+	NN<RowData> newRow;
 	CellData *cell;
 	UOSInt i;
 	UOSInt j;
 	NN<CellStyle> tmpStyle;
-	newRow = MemAlloc(RowData, 1);
+	newRow = MemAllocNN(RowData);
 	if (row->style.SetTo(tmpStyle))
 		newRow->style = newCtrl->GetStyle((UOSInt)srcCtrl->GetStyleIndex(tmpStyle));
 	else
@@ -171,10 +171,10 @@ Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::CloneCell(
 	return newCell;
 }
 
-void Text::SpreadSheet::Worksheet::FreeDrawing(WorksheetDrawing *drawing)
+void Text::SpreadSheet::Worksheet::FreeDrawing(NN<WorksheetDrawing> drawing)
 {
-	SDEL_CLASS(drawing->chart);
-	MemFree(drawing);
+	drawing->chart.Delete();
+	MemFreeNN(drawing);
 }
 
 Text::SpreadSheet::Worksheet::Worksheet(NN<Text::String> name)
@@ -193,9 +193,6 @@ Text::SpreadSheet::Worksheet::Worksheet(NN<Text::String> name)
 	this->maxCol = 0;
 	this->defColWidthPt = 48.0;
 	this->defRowHeightPt = 13.5;
-	NEW_CLASS(rows, Data::ArrayList<RowData*>());
-	NEW_CLASS(this->colWidthsPt, Data::ArrayListDbl());
-	NEW_CLASS(drawings, Data::ArrayList<WorksheetDrawing*>());
 }
 
 Text::SpreadSheet::Worksheet::Worksheet(Text::CStringNN name)
@@ -214,30 +211,22 @@ Text::SpreadSheet::Worksheet::Worksheet(Text::CStringNN name)
 	this->maxCol = 0;
 	this->defColWidthPt = 48.0;
 	this->defRowHeightPt = 13.5;
-	NEW_CLASS(rows, Data::ArrayList<RowData*>());
-	NEW_CLASS(this->colWidthsPt, Data::ArrayListDbl());
-	NEW_CLASS(drawings, Data::ArrayList<WorksheetDrawing*>());
 }
 
 Text::SpreadSheet::Worksheet::~Worksheet()
 {
 	UOSInt i;
-	RowData *row;
+	NN<RowData> row;
 	this->name->Release();
-	i = this->rows->GetCount();
+	i = this->rows.GetCount();
 	while (i-- > 0)
 	{
-		row = this->rows->GetItem(i);
-		if (row)
+		if (this->rows.GetItem(i).SetTo(row))
 		{
 			FreeRowData(row);
 		}
 	}
-	DEL_CLASS(this->rows);
-	DEL_CLASS(this->colWidthsPt);
-
-	LIST_FREE_FUNC(this->drawings, FreeDrawing);
-	DEL_CLASS(this->drawings);	
+	this->drawings.FreeAll(FreeDrawing);
 }
 
 NN<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Worksheet::Clone(const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl)
@@ -245,7 +234,7 @@ NN<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Worksheet::Clone(const IStyl
 	UOSInt i;
 	UOSInt j;
 	NN<Text::SpreadSheet::Worksheet> newWS;
-	RowData *row;
+	NN<RowData> row;
 	NEW_CLASSNN(newWS, Text::SpreadSheet::Worksheet(this->name));
 	newWS->freezeHori = this->freezeHori;
 	newWS->freezeVert = this->freezeVert;
@@ -258,24 +247,23 @@ NN<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Worksheet::Clone(const IStyl
 	newWS->options = this->options;
 	newWS->zoom = this->zoom;
 	i = 0;
-	j = this->colWidthsPt->GetCount();
+	j = this->colWidthsPt.GetCount();
 	while (i < j)
 	{
-		newWS->colWidthsPt->Add(this->colWidthsPt->GetItem(i));
+		newWS->colWidthsPt.Add(this->colWidthsPt.GetItem(i));
 		i++;
 	}
 	i = 0;
-	j = this->rows->GetCount();
+	j = this->rows.GetCount();
 	while (i < j)
 	{
-		row = this->rows->GetItem(i);
-		if (row == 0)
+		if (!this->rows.GetItem(i).SetTo(row))
 		{
-			newWS->rows->Add(0);
+			newWS->rows.Add(0);
 		}
 		else
 		{
-			newWS->rows->Add(CloneRow(row, srcCtrl, newCtrl));
+			newWS->rows.Add(CloneRow(row, srcCtrl, newCtrl));
 		}
 		i++;
 	}
@@ -824,8 +812,8 @@ Bool Text::SpreadSheet::Worksheet::SetRowHidden(UOSInt row, Bool hidden)
 
 Bool Text::SpreadSheet::Worksheet::SetRowHeight(UOSInt row, Double height)
 {
-	RowData *rowData = CreateRow(row);
-	if (rowData)
+	NN<RowData> rowData;
+	if (CreateRow(row).SetTo(rowData))
 	{
 		rowData->height = height;
 		return true;
@@ -838,26 +826,25 @@ Bool Text::SpreadSheet::Worksheet::SetRowHeight(UOSInt row, Double height)
 
 UOSInt Text::SpreadSheet::Worksheet::GetCount()
 {
-	return this->rows->GetCount();
+	return this->rows.GetCount();
 }
 
-Text::SpreadSheet::Worksheet::RowData *Text::SpreadSheet::Worksheet::GetItem(UOSInt row)
+Optional<Text::SpreadSheet::Worksheet::RowData> Text::SpreadSheet::Worksheet::GetItem(UOSInt row)
 {
-	return this->rows->GetItem(row);
+	return this->rows.GetItem(row);
 }
 
 void Text::SpreadSheet::Worksheet::RemoveCol(UOSInt col)
 {
 	UOSInt i;
-	RowData *row;
+	NN<RowData> row;
 	CellData *cell;
 
-	this->colWidthsPt->RemoveAt(col);
-	i = this->rows->GetCount();
+	this->colWidthsPt.RemoveAt(col);
+	i = this->rows.GetCount();
 	while (i-- > 0)
 	{
-		row = this->rows->GetItem(i);
-		if (row)
+		if (this->rows.GetItem(i).SetTo(row))
 		{
 			cell = row->cells->RemoveAt(col);
 			if (cell)
@@ -871,17 +858,16 @@ void Text::SpreadSheet::Worksheet::RemoveCol(UOSInt col)
 void Text::SpreadSheet::Worksheet::InsertCol(UOSInt col)
 {
 	UOSInt i;
-	RowData *row;
+	NN<RowData> row;
 
-	if (colWidthsPt->GetCount() > col)
+	if (this->colWidthsPt.GetCount() > col)
 	{
-		this->colWidthsPt->Insert(col, 0);
+		this->colWidthsPt.Insert(col, 0);
 	}
-	i = this->rows->GetCount();
+	i = this->rows.GetCount();
 	while (i-- > 0)
 	{
-		row = this->rows->GetItem(i);
-		if (row)
+		if (this->rows.GetItem(i).SetTo(row))
 		{
 			if (row->cells->GetCount() > col)
 			{
@@ -898,46 +884,46 @@ UOSInt Text::SpreadSheet::Worksheet::GetMaxCol()
 
 void Text::SpreadSheet::Worksheet::SetColWidth(UOSInt col, Double width, Math::Unit::Distance::DistanceUnit unit)
 {
-	while (col >= this->colWidthsPt->GetCount())
+	while (col >= this->colWidthsPt.GetCount())
 	{
-		this->colWidthsPt->Add(-1);
+		this->colWidthsPt.Add(-1);
 	}
 	if (unit == Math::Unit::Distance::DU_POINT)
 	{
-		this->colWidthsPt->SetItem(col, width);
+		this->colWidthsPt.SetItem(col, width);
 	}
 	else
 	{
-		this->colWidthsPt->SetItem(col, Math::Unit::Distance::Convert(unit, Math::Unit::Distance::DU_POINT, width));
+		this->colWidthsPt.SetItem(col, Math::Unit::Distance::Convert(unit, Math::Unit::Distance::DU_POINT, width));
 	}
 }
 
 UOSInt Text::SpreadSheet::Worksheet::GetColWidthCount()
 {
-	return this->colWidthsPt->GetCount();
+	return this->colWidthsPt.GetCount();
 }
 
 Double Text::SpreadSheet::Worksheet::GetColWidthPt(UOSInt col)
 {
-	if (col >= this->colWidthsPt->GetCount())
+	if (col >= this->colWidthsPt.GetCount())
 		return -1;
-	return this->colWidthsPt->GetItem(col);
+	return this->colWidthsPt.GetItem(col);
 }
 
 Double Text::SpreadSheet::Worksheet::GetColWidth(UOSInt col, Math::Unit::Distance::DistanceUnit unit)
 {
-	if (col >= this->colWidthsPt->GetCount())
+	if (col >= this->colWidthsPt.GetCount())
 		return -1;
 	if (unit == Math::Unit::Distance::DU_POINT)
-		return this->colWidthsPt->GetItem(col);
-	return Math::Unit::Distance::Convert(Math::Unit::Distance::DU_POINT, unit, this->colWidthsPt->GetItem(col));
+		return this->colWidthsPt.GetItem(col);
+	return Math::Unit::Distance::Convert(Math::Unit::Distance::DU_POINT, unit, this->colWidthsPt.GetItem(col));
 }
 
 const Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::GetCellDataRead(UOSInt row, UOSInt col) const
 {
-	RowData *rowData;
+	NN<RowData> rowData;
 	CellData *cell;
-	if (row >= this->rows->GetCount() + 65536)
+	if (row >= this->rows.GetCount() + 65536)
 		return 0;
 	if (col >= 65536)
 		return 0;
@@ -947,8 +933,7 @@ const Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::GetC
 	}
 	while (true)
 	{
-		rowData = this->rows->GetItem(row);
-		if (rowData == 0)
+		if (!this->rows.GetItem(row).SetTo(rowData))
 			return 0;
 		cell = rowData->cells->GetItem(col);
 		if (cell == 0)
@@ -1016,18 +1001,23 @@ Bool Text::SpreadSheet::Worksheet::GetCellString(const CellData *cell, NN<Text::
 
 UOSInt Text::SpreadSheet::Worksheet::GetDrawingCount()
 {
-	return this->drawings->GetCount();
+	return this->drawings.GetCount();
 }
 
-Text::SpreadSheet::WorksheetDrawing *Text::SpreadSheet::Worksheet::GetDrawing(UOSInt index)
+Optional<Text::SpreadSheet::WorksheetDrawing> Text::SpreadSheet::Worksheet::GetDrawing(UOSInt index)
 {
-	return this->drawings->GetItem(index);
+	return this->drawings.GetItem(index);
 }
 
-Text::SpreadSheet::WorksheetDrawing *Text::SpreadSheet::Worksheet::CreateDrawing(Math::Unit::Distance::DistanceUnit unit, Double x, Double y, Double w, Double h)
+NN<Text::SpreadSheet::WorksheetDrawing> Text::SpreadSheet::Worksheet::GetDrawingNoCheck(UOSInt index)
+{
+	return this->drawings.GetItemNoCheck(index);
+}
+
+NN<Text::SpreadSheet::WorksheetDrawing> Text::SpreadSheet::Worksheet::CreateDrawing(Math::Unit::Distance::DistanceUnit unit, Double x, Double y, Double w, Double h)
 {
 	Math::Unit::Distance::DistanceUnit inch = Math::Unit::Distance::DU_INCH;
-	WorksheetDrawing *drawing = MemAlloc(WorksheetDrawing, 1);
+	NN<WorksheetDrawing> drawing = MemAllocNN(WorksheetDrawing);
 	drawing->anchorType = AnchorType::Absolute;
 	drawing->posXInch = Math::Unit::Distance::Convert(unit, inch, x);
 	drawing->posYInch = Math::Unit::Distance::Convert(unit, inch, y);
@@ -1038,22 +1028,24 @@ Text::SpreadSheet::WorksheetDrawing *Text::SpreadSheet::Worksheet::CreateDrawing
 	drawing->col2 = 0;
 	drawing->row2 = 0;
 	drawing->chart = 0;
-	this->drawings->Add(drawing);
+	this->drawings.Add(drawing);
 	return drawing;
 }
 
-Text::SpreadSheet::OfficeChart *Text::SpreadSheet::Worksheet::CreateChart(Math::Unit::Distance::DistanceUnit du, Double x, Double y, Double w, Double h, Text::CString title)
+NN<Text::SpreadSheet::OfficeChart> Text::SpreadSheet::Worksheet::CreateChart(Math::Unit::Distance::DistanceUnit du, Double x, Double y, Double w, Double h, Text::CString title)
 {
-	WorksheetDrawing *drawing = this->CreateDrawing(du, x, y, w, h);
-	drawing->chart = NEW_CLASS_D(OfficeChart(du, x, y, w, h));
+	NN<WorksheetDrawing> drawing = this->CreateDrawing(du, x, y, w, h);
+	NN<OfficeChart> chart;
+	NEW_CLASSNN(chart, OfficeChart(du, x, y, w, h));
+	drawing->chart = chart;
 	if (title.leng > 0)
 	{
-		drawing->chart->SetTitleText(title);
+		chart->SetTitleText(title);
 	}
-	drawing->chart->SetShapeProp(NEW_CLASS_D(OfficeShapeProp(
+	chart->SetShapeProp(NEW_CLASS_D(OfficeShapeProp(
 		OfficeFill::NewSolidFill(OfficeColor::NewPreset(PresetColor::White)),
 		NEW_CLASS_D(OfficeLineStyle(OfficeFill::NewSolidFill())))));
-	return drawing->chart;
+	return chart;
 }
 
 Text::CString Text::SpreadSheet::CellDataTypeGetName(Text::SpreadSheet::CellDataType val)

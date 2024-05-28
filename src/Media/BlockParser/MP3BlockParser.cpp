@@ -10,7 +10,7 @@ Media::BlockParser::MP3BlockParser::~MP3BlockParser()
 {
 }
 
-Media::AudioBlockSource *Media::BlockParser::MP3BlockParser::ParseStreamData(NN<IO::StreamData> stmData)
+Optional<Media::AudioBlockSource> Media::BlockParser::MP3BlockParser::ParseStreamData(NN<IO::StreamData> stmData)
 {
 	static UInt32 bitrateL3[] = {0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320};
 	UInt64 leng = stmData->GetDataSize();

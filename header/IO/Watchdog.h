@@ -17,8 +17,8 @@ namespace IO
 		virtual Bool GetTimeoutSec(Int32 *timeoutSec) = 0;
 		virtual Bool GetTemperature(Double *temp) = 0;
 
-		static Watchdog *Create();
-		static Watchdog *Create(Int32 devNum);
+		static Optional<Watchdog> Create();
+		static Optional<Watchdog> Create(Int32 devNum);
 	};
 }
 #endif

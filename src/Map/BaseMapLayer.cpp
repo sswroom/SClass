@@ -5,7 +5,7 @@
 #include "Map/GoogleMap/GoogleTileMap.h"
 #include "Map/OSM/OSMTileMap.h"
 
-UOSInt Map::BaseMapLayer::GetLayerTypes(Data::ArrayList<BaseLayerType> *layerTypes)
+UOSInt Map::BaseMapLayer::GetLayerTypes(NN<Data::ArrayList<BaseLayerType>> layerTypes)
 {
 	UOSInt initCnt = layerTypes->GetCount();
 	layerTypes->Add(BLT_OSM_TILE);
@@ -23,7 +23,7 @@ UOSInt Map::BaseMapLayer::GetLayerTypes(Data::ArrayList<BaseLayerType> *layerTyp
 	return layerTypes->GetCount() - initCnt;
 }
 
-Text::CString Map::BaseMapLayer::BaseLayerTypeGetName(BaseLayerType blt)
+Text::CStringNN Map::BaseMapLayer::BaseLayerTypeGetName(BaseLayerType blt)
 {
 	switch (blt)
 	{
@@ -56,7 +56,7 @@ Text::CString Map::BaseMapLayer::BaseLayerTypeGetName(BaseLayerType blt)
 	}
 }
 
-Map::MapDrawLayer *Map::BaseMapLayer::CreateLayer(BaseLayerType blt, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Parser::ParserList> parsers)
+Optional<Map::MapDrawLayer> Map::BaseMapLayer::CreateLayer(BaseLayerType blt, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Parser::ParserList> parsers)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

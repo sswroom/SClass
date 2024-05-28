@@ -3,7 +3,7 @@
 #include "MyMemory.h"
 #include "Media/FrameInfo.h"
 #include "Media/IImgResizer.h"
-#include "Media/Image.h"
+#include "Media/RasterImage.h"
 #include "Media/StaticImage.h"
 #include "Media/ImageWin.h"
 
@@ -16,7 +16,7 @@ Media::ImageWin::~ImageWin()
 	
 }
 
-Media::Image *Media::ImageWin::CreateImage(HBITMAP hbmp)
+Optional<Media::RasterImage> Media::ImageWin::CreateImage(HBITMAP hbmp)
 {
 	HDC hdc;
 	BITMAPINFO bmi;
@@ -86,7 +86,7 @@ Media::Image *Media::ImageWin::CreateImage(HBITMAP hbmp)
 	}
 }
 
-HBITMAP Media::ImageWin::CreateHBITMAP(Media::StaticImage *img)
+HBITMAP Media::ImageWin::CreateHBITMAP(NN<Media::StaticImage> img)
 {
 	Char *imgPtr;
 	Char *outPtr;

@@ -100,7 +100,7 @@ namespace IO
 
 		static OSInt GetTVList(Data::ArrayList<TVType> *tvList);
 		static Bool GetTVInfo(TVType tvType, TVInfo *info);
-		static TVControl *CreateTVControl(IO::Stream *stm, TVType tvType, Int32 monId);
+		static Optional<TVControl> CreateTVControl(NN<IO::Stream> stm, TVType tvType, Int32 monId);
 		static Text::CStringNN GetCommandName(CommandType cmdType);
 	};
 }

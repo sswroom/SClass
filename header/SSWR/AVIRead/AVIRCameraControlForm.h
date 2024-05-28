@@ -28,14 +28,14 @@ namespace SSWR
 			NN<UI::GUIButton> btnDownload;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			IO::CameraControl *camera;
+			NN<IO::CameraControl> camera;
 			Data::StringMapNN<Media::ImageList> previewMap;
 
 			static void __stdcall OnDownloadClicked(AnyType userObj);
 			static void __stdcall OnFilesDblClick(AnyType userObj, UOSInt index);
 			static void __stdcall OnFilesSelChg(AnyType userObj);
 		public:
-			AVIRCameraControlForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::CameraControl *camera);
+			AVIRCameraControlForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::CameraControl> camera);
 			virtual ~AVIRCameraControlForm();
 
 			virtual void OnMonitorChanged();

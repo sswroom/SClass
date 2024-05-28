@@ -89,10 +89,10 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 	}
 	else if (cfg->GetValue(CSTR("DBDSN")).SetTo(cfgDSN))
 	{
-		this->db = DB::ODBCConn::CreateDBTool(cfgDSN, cfgUID, cfgPassword, 0, this->log, CSTR_NULL).OrNull();
+		this->db = DB::ODBCConn::CreateDBTool(cfgDSN, cfgUID, cfgPassword, 0, this->log, CSTR_NULL);
 	}
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 	{
 		this->errType = ERR_DB;
 		return;
@@ -302,11 +302,7 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 
 SSWR::OrganMgr::OrganEnvDB::~OrganEnvDB()
 {
-	if (this->db)
-	{
-		DEL_CLASS(this->db);
-		this->db = 0;
-	}
+	this->db.Delete();
 	DEL_CLASS(this->cfg);
 }
 
@@ -340,7 +336,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupItems(NN<Data::ArrayListNN<OrganGroup
 	Int32 photoSp;
 	NN<OrganGroup> nngrp;
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return 0;
 	if (!grp.SetTo(nngrp))
 	{
@@ -471,7 +467,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupImages(NN<Data::ArrayListNN<OrganImag
 	UTF8Char *sptr2;
 	NN<DB::DBReader> r;
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return 0;
 	if (grp->GetGroupId() == -1)
 		return 0;
@@ -908,7 +904,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(NN<Data::ArrayListNN<OrganIm
 	if (sp->GetFlags() != newFlags)
 	{
 		NN<DB::DBTool> db;
-		if (db.Set(this->db))
+		if (this->db.SetTo(db))
 		{
 			DB::SQLBuilder sql(db);
 			sp->SetFlags(newFlags);
@@ -925,7 +921,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(NN<Data::ArrayListNN<OrganIm
 UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllSpecies(NN<Data::ArrayListNN<OrganSpecies>> items, Optional<OrganGroup> grp)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return 0;
 	UOSInt i;
 	UOSInt j;
@@ -1035,7 +1031,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllSpecies(NN<Data::ArrayListNN<Organ
 UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllUserFile(NN<Data::ArrayListNN<UserFileInfo>> items, NN<Data::ArrayList<UInt32>> colors, Optional<OrganGroup> grp)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return 0;
 	UOSInt i;
 	UOSInt j;
@@ -1129,7 +1125,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupAllUserFile(NN<Data::ArrayListNN<User
 UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesItems(NN<Data::ArrayListNN<OrganGroupItem>> items, NN<Data::ArrayList<Int32>> speciesIds)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return 0;
 	NN<DB::DBReader> r;
 	UOSInt i;
@@ -1199,7 +1195,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesItems(NN<Data::ArrayListNN<OrganGro
 Optional<SSWR::OrganMgr::OrganGroup> SSWR::OrganMgr::OrganEnvDB::GetGroup(Int32 groupId, OutParam<Int32> parentId)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return 0;
 	DB::SQLBuilder sql(db);
 	NN<DB::DBReader> r;
@@ -1254,7 +1250,7 @@ Optional<SSWR::OrganMgr::OrganGroup> SSWR::OrganMgr::OrganEnvDB::GetGroup(Int32 
 Optional<SSWR::OrganMgr::OrganSpecies> SSWR::OrganMgr::OrganEnvDB::GetSpecies(Int32 speciesId)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return 0;
 	DB::SQLBuilder sql(db);
 	NN<DB::DBReader> r;
@@ -1334,7 +1330,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::CreateSpeciesDir(NN<OrganSpecies> sp)
 Bool SSWR::OrganMgr::OrganEnvDB::IsSpeciesExist(const UTF8Char *sName)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	DB::SQLBuilder sql(db);
 	NN<DB::DBReader> r;
@@ -1352,7 +1348,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::IsSpeciesExist(const UTF8Char *sName)
 Bool SSWR::OrganMgr::OrganEnvDB::IsBookSpeciesExist(const UTF8Char *sName, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	Data::ArrayListInt32 spList;
 	DB::SQLBuilder sql(db);
@@ -1415,7 +1411,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::IsBookSpeciesExist(const UTF8Char *sName, NN<Te
 Bool SSWR::OrganMgr::OrganEnvDB::AddSpecies(NN<OrganSpecies> sp)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("insert into species (eng_name, chi_name, sci_name, group_id, description, dirName, idKey, cate_id, mapColor) values ("));
@@ -1443,7 +1439,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddSpecies(NN<OrganSpecies> sp)
 Bool SSWR::OrganMgr::OrganEnvDB::DelSpecies(NN<OrganSpecies> sp)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	DB::SQLBuilder sql(db);
 	Bool succ = true;
@@ -1689,7 +1685,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				if (succ)
 				{
 					NN<DB::DBTool> db;
-					if (db.Set(this->db))
+					if (this->db.SetTo(db))
 					{
 						DB::SQLBuilder sql(db);
 						sql.AppendCmdC(CSTR("insert into userfile (fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, camera, cropLeft, cropTop, cropRight, cropBottom, locType) values ("));
@@ -1803,8 +1799,8 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		Data::Timestamp fileTime = 0;
 		NN<UserFileInfo> userFile;
 		Bool valid = false;
-		Media::DrawImage *graphImg = 0;
-		NN<Media::DrawImage> img;
+		Optional<Media::DrawImage> graphImg = 0;
+		NN<Media::DrawImage> nngraphImg;
 		{
 			IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoBuffer);
 			if (fs.IsError())
@@ -1835,8 +1831,8 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 					NN<Media::IMediaSource> msrc;
 					if (mediaFile->GetStream(0, 0).SetTo(msrc) && msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 					{
-						graphImg = Media::FrequencyGraph::CreateGraph(this->drawEng, (Media::IAudioSource *)msrc.Ptr(), 2048, 2048, Math::FFTCalc::WT_BLACKMANN_HARRIS, 12);
-						if (graphImg)
+						graphImg = Media::FrequencyGraph::CreateGraph(this->drawEng, NN<Media::IAudioSource>::ConvertFrom(msrc), 2048, 2048, Math::FFTCalc::WT_BLACKMANN_HARRIS, 12);
+						if (graphImg.NotNull())
 						{
 							valid = true;
 						}
@@ -1845,7 +1841,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				pobj.Delete();
 			}
 		}
-		if (valid)
+		if (valid && graphImg.SetTo(nngraphImg))
 		{
 			NN<WebUserInfo> webUser = this->GetWebUser(this->userId);
 			Data::Timestamp ts = Data::Timestamp(0);
@@ -1917,7 +1913,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				if (succ)
 				{
 					NN<DB::DBTool> db;
-					if (db.Set(this->db))
+					if (this->db.SetTo(db))
 					{
 						DB::SQLBuilder sql(db);
 						sql.AppendCmdC(CSTR("insert into userfile (fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, camera) values ("));
@@ -1998,48 +1994,32 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 							sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 							sptr = Text::StrHexVal32(sptr, crcVal);
 							sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
-							if (img.Set(graphImg))
-							{
-								IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-								img->SavePng(fs);
-								this->drawEng->DeleteImage(img);
-							}
-
+							IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
+							nngraphImg->SavePng(fs);
+							this->drawEng->DeleteImage(nngraphImg);
 							return FS_SUCCESS;
 						}
 						else
 						{
-							if (img.Set(graphImg))
-							{
-								this->drawEng->DeleteImage(img);
-							}
+							this->drawEng->DeleteImage(nngraphImg);
 							return FS_ERROR;
 						}
 					}
 					else
 					{
-						if (img.Set(graphImg))
-						{
-							this->drawEng->DeleteImage(img);
-						}
+						this->drawEng->DeleteImage(nngraphImg);
 						return FS_ERROR;
 					}
 				}
 				else
 				{
-					if (img.Set(graphImg))
-					{
-						this->drawEng->DeleteImage(img);
-					}
+					this->drawEng->DeleteImage(nngraphImg);
 					return FS_ERROR;
 				}
 			}
 			else
 			{
-				if (img.Set(graphImg))
-				{
-					this->drawEng->DeleteImage(img);
-				}
+				this->drawEng->DeleteImage(nngraphImg);
 				return FS_ERROR;
 			}
 		}
@@ -2077,7 +2057,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWebFile(NN<OrganSpecies> sp, NN<Text::String> srcURL, NN<Text::String> imgURL, IO::Stream *stm, UTF8Char *webFileName)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return SSWR::OrganMgr::OrganEnvDB::FS_ERROR;
 	UTF8Char sbuff2[2048];
 	UTF8Char *sptr2;
@@ -2327,7 +2307,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFile(NN<OrganSpecies> sp, NN<WebFileInfo> wfile, Text::String *srcURL, Text::String *location)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("update webfile set srcUrl="));
@@ -2413,7 +2393,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFileOld(NN<OrganSpecies> sp, co
 Bool SSWR::OrganMgr::OrganEnvDB::SaveSpecies(NN<OrganSpecies> sp)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("update species set eng_name="));
@@ -2449,7 +2429,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::SaveGroup(NN<OrganGroup> grp)
 		flags |= 1;
 	}
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("update "));
@@ -2474,7 +2454,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::SaveGroup(NN<OrganGroup> grp)
 UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupCount(Int32 groupId)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return 0;
 	DB::SQLBuilder sql(db);
 	NN<DB::DBReader> r;
@@ -2503,7 +2483,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupCount(Int32 groupId)
 UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesCount(Int32 groupId)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return 0;
 	DB::SQLBuilder sql(db);
 	NN<DB::DBReader> r;
@@ -2530,7 +2510,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesCount(Int32 groupId)
 Bool SSWR::OrganMgr::OrganEnvDB::AddGroup(NN<OrganGroup> grp, Int32 parGroupId)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	Int32 flags = 0;
 	if (grp->GetAdminOnly())
@@ -2563,7 +2543,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddGroup(NN<OrganGroup> grp, Int32 parGroupId)
 Bool SSWR::OrganMgr::OrganEnvDB::DelGroup(Int32 groupId)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("delete from "));
@@ -2579,7 +2559,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::SetGroupDefSp(NN<OrganGroup> grp, NN<OrganImage
 {
 /*
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	DB::SQLBuilder sql(db);
 	Int32 oldId = grp->GetPhotoSpecies();
@@ -2612,7 +2592,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::SetGroupDefSp(NN<OrganGroup> grp, NN<OrganImage
 Bool SSWR::OrganMgr::OrganEnvDB::MoveGroups(NN<Data::ArrayListNN<OrganGroup>> grpList, NN<OrganGroup> destGroup)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	DB::SQLBuilder sql(db);
 	Bool found;
@@ -2646,7 +2626,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveGroups(NN<Data::ArrayListNN<OrganGroup>> gr
 Bool SSWR::OrganMgr::OrganEnvDB::MoveSpecies(NN<Data::ArrayListNN<OrganSpecies>> spList, NN<OrganGroup> destGroup)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	DB::SQLBuilder sql(db);
 	DB::SQLBuilder sql2(db);
@@ -2688,7 +2668,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveSpecies(NN<Data::ArrayListNN<OrganSpecies>>
 Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(NN<Data::ArrayListNN<OrganImages>> imgList, NN<OrganSpecies> destSp, NN<UI::GUIForm> frm)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -2903,7 +2883,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(NN<Data::ArrayListNN<OrganImages>> i
 Bool SSWR::OrganMgr::OrganEnvDB::CombineSpecies(NN<OrganSpecies> destSp, NN<OrganSpecies> srcSp)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("update species_book set species_id = "));
@@ -2943,7 +2923,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::CombineSpecies(NN<OrganSpecies> destSp, NN<Orga
 UOSInt SSWR::OrganMgr::OrganEnvDB::GetWebUsers(NN<Data::ArrayListNN<OrganWebUser>> userList)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return 0;
 	UOSInt initCnt = userList->GetCount();
 	NN<OrganWebUser> user;
@@ -2967,7 +2947,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetWebUsers(NN<Data::ArrayListNN<OrganWebUser
 Bool SSWR::OrganMgr::OrganEnvDB::AddWebUser(const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *watermark, UserType userType)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("select id from webuser where userName = "));
@@ -3006,7 +2986,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddWebUser(const UTF8Char *userName, const UTF8
 Bool SSWR::OrganMgr::OrganEnvDB::ModifyWebUser(Int32 id, const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *watermark)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("select id from webuser where userName = "));
@@ -3062,7 +3042,7 @@ void SSWR::OrganMgr::OrganEnvDB::ReleaseWebUsers(NN<Data::ArrayListNN<OrganWebUs
 Bool SSWR::OrganMgr::OrganEnvDB::IsSpeciesBookExist(Int32 speciesId, Int32 bookId)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	DB::SQLBuilder sql(db);
 	NN<DB::DBReader> r;
@@ -3086,7 +3066,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::IsSpeciesBookExist(Int32 speciesId, Int32 bookI
 Bool SSWR::OrganMgr::OrganEnvDB::NewSpeciesBook(Int32 speciesId, Int32 bookId, const UTF8Char *dispName)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("insert into species_book (species_id, book_id, dispName) values ("));
@@ -3109,7 +3089,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::NewSpeciesBook(Int32 speciesId, Int32 bookId, c
 UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesBooks(NN<Data::ArrayListNN<SpeciesBook>> items, Int32 speciesId)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	DB::SQLBuilder sql(db);
 	NN<DB::DBReader> r;
@@ -3157,7 +3137,7 @@ void SSWR::OrganMgr::OrganEnvDB::ReleaseSpeciesBooks(NN<Data::ArrayListNN<Specie
 Int32 SSWR::OrganMgr::OrganEnvDB::NewBook(Text::CString title, Text::CString author, Text::CString press, const Data::Timestamp &publishDate, Text::CString url)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return 0;
 	NN<OrganBook> book;
 	DB::SQLBuilder sql(db);
@@ -3197,7 +3177,7 @@ Int32 SSWR::OrganMgr::OrganEnvDB::NewBook(Text::CString title, Text::CString aut
 Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CStringNN fileName)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	Optional<IO::ParsedObject> pobj;
 	NN<IO::ParsedObject> nnpobj;
@@ -3400,7 +3380,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CStringNN fileName)
 Bool SSWR::OrganMgr::OrganEnvDB::DelDataFile(NN<DataFileInfo> dataFile)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	Bool found = false;
 	UTF8Char sbuff[512];
@@ -3541,7 +3521,7 @@ Optional<Map::GPSTrack> SSWR::OrganMgr::OrganEnvDB::OpenGPSTrack(NN<DataFileInfo
 void SSWR::OrganMgr::OrganEnvDB::UpdateUserFileCrop(NN<UserFileInfo> userFile, Double cropLeft, Double cropTop, Double cropRight, Double cropBottom)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return;
 	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("update userfile set cropLeft = "));
@@ -3569,7 +3549,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpdateUserFileRot(NN<UserFileInfo> userFile, In
 	if (userFile->rotType != rotType)
 	{
 		NN<DB::DBTool> db;
-		if (!db.Set(this->db))
+		if (!this->db.SetTo(db))
 			return;
 		DB::SQLBuilder sql(db);
 		sql.AppendCmdC(CSTR("update userfile set rotType = "));
@@ -3585,7 +3565,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpdateUserFileRot(NN<UserFileInfo> userFile, In
 Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFilePos(NN<UserFileInfo> userFile, const Data::Timestamp &captureTime, Double lat, Double lon)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	Bool succ = false;
 	DB::SQLBuilder sql(db);
@@ -3631,7 +3611,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetUserFilePath(NN<UserFileInfo> userFile, NN<T
 Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFileDesc(NN<UserFileInfo> userFile, const UTF8Char *descript)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	Bool succ = false;
 	DB::SQLBuilder sql(db);
@@ -3651,7 +3631,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFileDesc(NN<UserFileInfo> userFile, c
 Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFileLoc(NN<UserFileInfo> userFile, const UTF8Char *location)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	Bool succ = false;
 	DB::SQLBuilder sql(db);
@@ -3671,7 +3651,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFileLoc(NN<UserFileInfo> userFile, co
 void SSWR::OrganMgr::OrganEnvDB::UpdateWebFileCrop(NN<WebFileInfo> wfile, Double cropLeft, Double cropTop, Double cropRight, Double cropBottom)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return;
 	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("update webfile set cropLeft = "));
@@ -3697,7 +3677,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpdateWebFileCrop(NN<WebFileInfo> wfile, Double
 void SSWR::OrganMgr::OrganEnvDB::TripReload(Int32 cateId)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return;
 	NN<DB::DBReader> r;
 	DB::SQLBuilder sql(db);
@@ -3761,7 +3741,7 @@ void SSWR::OrganMgr::OrganEnvDB::TripReload(Int32 cateId)
 Bool SSWR::OrganMgr::OrganEnvDB::TripAdd(const Data::Timestamp &fromDate, const Data::Timestamp &toDate, Int32 locId)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	OSInt i = this->TripGetIndex(fromDate);
 	OSInt j = this->TripGetIndex(toDate);
@@ -3809,7 +3789,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::LocationUpdate(Int32 locId, Text::CString engNa
 	if (!this->LocationGet(locId).SetTo(loc))
 		return false;
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 
 	DB::SQLBuilder sql(db);
@@ -3851,7 +3831,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::LocationAdd(Int32 locId, Text::CString engName,
 	if ((UOSInt)lType + 1 >= this->locType.GetCount())
 		return false;
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	lType = this->locType.GetItemNoCheck((UInt32)lType + 1)->id;
 	DB::SQLBuilder sql(db);
@@ -3899,6 +3879,9 @@ Bool SSWR::OrganMgr::OrganEnvDB::LocationAdd(Int32 locId, Text::CString engName,
 
 void SSWR::OrganMgr::OrganEnvDB::BooksInit()
 {
+	NN<DB::DBTool> db;
+	if (!this->db.SetTo(db))
+		return;
 	NN<OrganBook> book;
 	Text::StringBuilderUTF8 sb;
 	NN<DB::DBReader> r;
@@ -3907,7 +3890,7 @@ void SSWR::OrganMgr::OrganEnvDB::BooksInit()
 
 	NEW_CLASS(this->bookIds, Data::ArrayListInt32());
 	NEW_CLASS(this->bookObjs, Data::ArrayListNN<OrganBook>());
-	if (this->db->ExecuteReader(CSTR("select id, title, dispAuthor, press, publishDate, groupId, url from book")).SetTo(r))
+	if (db->ExecuteReader(CSTR("select id, title, dispAuthor, press, publishDate, groupId, url from book")).SetTo(r))
 	{
 		while (r->ReadNext())
 		{
@@ -3930,7 +3913,7 @@ void SSWR::OrganMgr::OrganEnvDB::BooksInit()
 			i = this->bookIds->SortedInsert(book->GetBookId());
 			this->bookObjs->Insert(i, book);
 		}
-		this->db->CloseReader(r);
+		db->CloseReader(r);
 	}
 }
 
@@ -4352,7 +4335,7 @@ SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvDB::SearchObject(const UTF8C
 	Int32 photoGroup;
 	Int32 photoSpecies;
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return 0;
 	NN<DB::DBReader> r;
 	DB::SQLBuilder sql(db);
@@ -4496,7 +4479,7 @@ SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvDB::SearchObject(const UTF8C
 void SSWR::OrganMgr::OrganEnvDB::LoadGroupTypes()
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return;
 	NN<OrganGroupType> grpType;
 	NN<DB::DBReader> r;
@@ -4534,7 +4517,7 @@ NN<Data::FastMapNN<Int32, Data::ArrayListNN<SSWR::OrganMgr::OrganGroup>>> SSWR::
 
 	NEW_CLASSNN(grpTree, Data::Int32FastMapNN<Data::ArrayListNN<OrganGroup>>());
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return grpTree;
 
 	DB::SQLBuilder sql(db);
@@ -4601,7 +4584,7 @@ NN<Data::FastMapNN<Int32, Data::ArrayListNN<SSWR::OrganMgr::OrganSpecies>>> SSWR
 	NEW_CLASSNN(spTree, Data::Int32FastMapNN<Data::ArrayListNN<OrganSpecies>>());
 
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return spTree;
 	DB::SQLBuilder sql(db);
 	Text::StringBuilderUTF8 sb;
@@ -4823,7 +4806,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 	NN<Text::String> s;
 
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return;
 	DB::SQLBuilder sql(db);
 	if (db->ExecuteReader(CSTR("select id, dirName, photo, photoId, photoWId from species")).SetTo(r))
@@ -5111,7 +5094,8 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 			writer.WriteLine(CSTR("DataDir=Data"));
 		}
 	}
-	if (!valid)
+	NN<DB::DBTool> db;
+	if (!valid || !this->db.SetTo(db))
 		return;
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC("Cache"));
 	IO::Path::CreateDirectory(CSTRP(sbuff, sptr2));
@@ -5119,7 +5103,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC("OrganWeb.mdb"));
 	
 	IO::NullStream nstm;
-	exporter.ExportFile(nstm, CSTRP(sbuff, sptr2), this->db->GetDBConn(), 0);
+	exporter.ExportFile(nstm, CSTRP(sbuff, sptr2), db->GetDBConn(), 0);
 
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC("Image"));
 	IO::Path::CreateDirectory(CSTRP(sbuff, sptr2));
@@ -5127,7 +5111,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 	sptr3 = this->cfgImgDirBase->ConcatTo(sbuff2);
 	*sptr3++ = IO::Path::PATH_SEPERATOR;
 	NN<DB::DBReader> r;
-	if (this->db->ExecuteReader(CSTR("select srcDir from category")).SetTo(r))
+	if (db->ExecuteReader(CSTR("select srcDir from category")).SetTo(r))
 	{
 		while (r->ReadNext())
 		{
@@ -5140,7 +5124,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 				IO::FileUtil::CopyDir(CSTRP(sbuff2, sptr3End), CSTRP(sbuff, sptr2End), IO::FileUtil::FileExistAction::Fail, 0, 0);
 			}
 		}
-		this->db->CloseReader(r);
+		db->CloseReader(r);
 	}
 
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC("Data"));
@@ -5153,7 +5137,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 	sptr3End = Text::StrConcatC(sptr3, UTF8STRC("DataFile"));
 	IO::FileUtil::CopyDir(CSTRP(sbuff2, sptr3End), CSTRP(sbuff, sptr2End), IO::FileUtil::FileExistAction::Fail, 0, 0);
 
-	if (this->db->ExecuteReader(CSTR("select fileType, fileTime, webuser_id, dataFileName from userfile")).SetTo(r))
+	if (db->ExecuteReader(CSTR("select fileType, fileTime, webuser_id, dataFileName from userfile")).SetTo(r))
 	{
 		Data::DateTime dt;
 		Optional<IO::FileExporter::ParamData> param;
@@ -5234,6 +5218,6 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 				}
 			}
 		}
-		this->db->CloseReader(r);
+		db->CloseReader(r);
 	}
 }

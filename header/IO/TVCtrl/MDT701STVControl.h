@@ -14,7 +14,7 @@ namespace IO
 		class MDT701STVControl : public IO::TVControl
 		{
 		private:
-			IO::Stream *stm;
+			NN<IO::Stream> stm;
 			Int32 monId;
 			Data::DateTime nextTime;
 
@@ -28,7 +28,7 @@ namespace IO
 			static UInt32 __stdcall RecvThread(AnyType userObj);
 			Bool SendBasicCommand(const Char *buff, UOSInt buffSize, const Char *cmdReply, UOSInt replySize, UInt32 cmdTimeout, UInt32 cmdInterval);
 		public:
-			MDT701STVControl(IO::Stream *stm, Int32 monId);
+			MDT701STVControl(NN<IO::Stream> stm, Int32 monId);
 			virtual ~MDT701STVControl();
 
 			virtual Bool SendInstruction(CommandType ct);

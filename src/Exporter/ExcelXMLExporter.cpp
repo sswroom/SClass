@@ -427,7 +427,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 		{
 			Bool rowSkipped = false;
 			UOSInt lastDispCol;
-			Text::SpreadSheet::Worksheet::RowData *row;
+			NN<Text::SpreadSheet::Worksheet::RowData> row;
 			Text::SpreadSheet::Worksheet::CellData *cell;
 			writer.WriteLine(CSTR("  <Table>"));
 
@@ -504,8 +504,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CS
 			l = ws->GetCount();
 			while (k < l)
 			{
-				row = ws->GetItem(k);
-				if (row == 0)
+				if (!ws->GetItem(k).SetTo(row))
 				{
 					rowSkipped = true;
 				}

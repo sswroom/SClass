@@ -24,7 +24,7 @@ namespace Media
 
 			static UOSInt GetSupportedCS(Data::ArrayListUInt32 *csList);
 			static Bool IsSupported(UInt32 fourcc);
-			static CSConverter *NewConverter(UInt32 srcFormat, UOSInt srcNBits, Media::PixelFormat srcPF, NN<const Media::ColorProfile> srcProfile, UInt32 destFormat, UOSInt destNBits, Media::PixelFormat destPF, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess);
+			static Optional<CSConverter> NewConverter(UInt32 srcFormat, UOSInt srcNBits, Media::PixelFormat srcPF, NN<const Media::ColorProfile> srcProfile, UInt32 destFormat, UOSInt destNBits, Media::PixelFormat destPF, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> colorSess);
 			static Text::CString GetFormatName(UInt32 format);
 		};
 	}

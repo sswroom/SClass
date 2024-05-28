@@ -40,7 +40,7 @@ namespace Text
 
 		UOSInt ToSubmitPDU(UInt8 *buff);
 
-		static Text::SMSMessage *CreateFromPDU(const UInt8 *pduBytes);
+		static Optional<Text::SMSMessage> CreateFromPDU(const UInt8 *pduBytes);
 	};
 }
 #endif

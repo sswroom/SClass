@@ -10,7 +10,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-IO::Watchdog *wd;
+Optional<IO::Watchdog> wd;
 Bool running;
 Bool toStop;
 Sync::Event *evt;
@@ -18,10 +18,14 @@ Sync::Event *evt;
 UInt32 __stdcall WatchdogThread(AnyType userObj)
 {
 	running = true;
-	while (!toStop)
+	NN<IO::Watchdog> nnwd;
+	if (wd.SetTo(nnwd))
 	{
-		wd->Keepalive();
-		evt->Wait(1000);
+		while (!toStop)
+		{
+			nnwd->Keepalive();
+			evt->Wait(1000);
+		}
 	}
 	running = false;
 	return 0;
@@ -29,6 +33,7 @@ UInt32 __stdcall WatchdogThread(AnyType userObj)
 
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
+	NN<IO::Watchdog> nnwd;
 	IO::ConsoleWriter console;
 	Int32 wdId;
 	UTF8Char **argv;
@@ -41,10 +46,9 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	if (argc >= 2 && Text::StrToInt32(argv[1], wdId))
 	{
 		wd = IO::Watchdog::Create(wdId);
-		if (wd && wd->IsError())
+		if (wd.SetTo(nnwd) && nnwd->IsError())
 		{
-			DEL_CLASS(wd);
-			wd = 0;
+			wd.Delete();
 		}
 	}
 	else
@@ -52,7 +56,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		wd = IO::Watchdog::Create();
 	}
 
-	if (wd == 0)
+	if (!wd.SetTo(nnwd))
 	{
 		console.WriteLine(CSTR("Watchdog not found"));
 	}
@@ -61,7 +65,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		Text::StringBuilderUTF8 sb;
 		Int32 timeoutSec;
 		Double temp;
-		if (wd->GetTimeoutSec(&timeoutSec))
+		if (nnwd->GetTimeoutSec(&timeoutSec))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Timeout = "));
@@ -73,7 +77,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			console.WriteLine(CSTR("Error in getting timeout value"));
 		}
 
-		if (wd->GetTemperature(&temp))
+		if (nnwd->GetTemperature(&temp))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Temperature = "));
@@ -85,7 +89,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			console.WriteLine(CSTR("Error in getting temperature value"));
 		}
 
-		if (wd->Enable())
+		if (nnwd->Enable())
 		{
 			console.WriteLine(CSTR("Watchdog enabled"));
 			Sync::ThreadUtil::Create(WatchdogThread, 0);
@@ -107,7 +111,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		{
 			console.WriteLine(CSTR("Error in enabling watchdog"));
 		}
-		DEL_CLASS(wd);
+		nnwd.Delete();
 	}
 	DEL_CLASS(evt);
 	return 0;

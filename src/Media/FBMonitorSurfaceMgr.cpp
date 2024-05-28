@@ -92,14 +92,14 @@ UOSInt Media::FBMonitorSurfaceMgr::GetMonitorCount()
 	return 1;
 }
 
-Media::MonitorSurface *Media::FBMonitorSurfaceMgr::CreateSurface(Math::Size2D<UOSInt> size, UOSInt bitDepth)
+Optional<Media::MonitorSurface> Media::FBMonitorSurfaceMgr::CreateSurface(Math::Size2D<UOSInt> size, UOSInt bitDepth)
 {
 	Media::MemorySurface *surface;
 	NEW_CLASS(surface, Media::MemorySurface(size, bitDepth, this->GetMonitorColor(0), this->GetMonitorDPI(0)));
 	return surface;
 }
 
-Media::MonitorSurface *Media::FBMonitorSurfaceMgr::CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow, Media::RotateType rotateType)
+Optional<Media::MonitorSurface> Media::FBMonitorSurfaceMgr::CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow, Media::RotateType rotateType)
 {
 	Media::FBSurface *surface = 0;
 	NEW_CLASS(surface, Media::FBSurface(hMon, this->GetMonitorColor(hMon), this->GetMonitorDPI(hMon), rotateType));
@@ -115,20 +115,20 @@ Media::MonitorSurface *Media::FBMonitorSurfaceMgr::CreatePrimarySurface(MonitorH
 	return surface;
 }
 
-Bool Media::FBMonitorSurfaceMgr::CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, MonitorSurface **primarySurface, MonitorSurface **bufferSurface, Media::RotateType rotateType)
+Bool Media::FBMonitorSurfaceMgr::CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, OutParam<NN<MonitorSurface>> primarySurface, OutParam<NN<MonitorSurface>> bufferSurface, Media::RotateType rotateType)
 {
-	Media::MonitorSurface *pSurface = this->CreatePrimarySurface(hMon, 0, rotateType);
-	if (pSurface)
+	NN<Media::MonitorSurface> pSurface;
+	if (this->CreatePrimarySurface(hMon, 0, rotateType).SetTo(pSurface))
 	{
-		Media::MonitorSurface *bSurface = this->CreateSurface(pSurface->info.dispSize, pSurface->info.storeBPP);
-		if (bSurface)
+		NN<Media::MonitorSurface> bSurface;
+		if (this->CreateSurface(pSurface->info.dispSize, pSurface->info.storeBPP).SetTo(bSurface))
 		{
-			((Media::FBSurface*)pSurface)->SetBuffSurface(bSurface);
-			*primarySurface = pSurface;
-			*bufferSurface = bSurface;
+			NN<Media::FBSurface>::ConvertFrom(pSurface)->SetBuffSurface(bSurface);
+			primarySurface.Set(pSurface);
+			bufferSurface.Set(bSurface);
 			return true;
 		}
-		DEL_CLASS(pSurface);
+		pSurface.Delete();
 	}
 	return false;
 }

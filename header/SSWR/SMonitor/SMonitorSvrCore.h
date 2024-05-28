@@ -56,7 +56,7 @@ namespace SSWR
 			NN<Parser::ParserList> parsers;
 			Bool initErr;
 
-			DB::DBTool *db;
+			Optional<DB::DBTool> db;
 			Sync::Mutex *dbMut;
 			Sync::Thread thread;
 			Int64 currDate;
@@ -100,7 +100,7 @@ namespace SSWR
 			void SavePhoto(Int64 cliId, Int64 photoTime, Int32 photoFmt, UInt8 *photoBuff, UOSInt photoSize);
 
 			void LoadData();
-			DB::DBTool *UseDB(NN<Sync::MutexUsage> mut);
+			Optional<DB::DBTool> UseDB(NN<Sync::MutexUsage> mut);
 			void UserPwdCalc(const UTF8Char *userName, const UTF8Char *pwd, UInt8 *buff);
 		public:
 			SMonitorSvrCore(NN<IO::Writer> writer, NN<Media::DrawEngine> deng);

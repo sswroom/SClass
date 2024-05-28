@@ -96,15 +96,15 @@ Map::HKTDVehRestrict::~HKTDVehRestrict()
 	}
 }
 
-Map::MapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
+NN<Map::MapDrawLayer> Map::HKTDVehRestrict::CreateTonnesSignLayer()
 {
 	Map::DrawLayerType layerType = Map::DRAW_LAYER_POINT;
 	const UTF8Char *colNames[] = {(const UTF8Char*)"Id", (const UTF8Char*)"MaxWeight", (const UTF8Char*)"Remarks"};
 	DB::DBUtil::ColType colTypes[] = {DB::DBUtil::CT_Int32, DB::DBUtil::CT_Double, DB::DBUtil::CT_VarUTF8Char};
 	UOSInt colSize[] = {11, 32, 255};
 	UOSInt colDP[] = {0, 10, 0};
-	Map::VectorLayer *lyr = 0;
-	NEW_CLASS(lyr, Map::VectorLayer(layerType, CSTR("HKTDVehRestirct"), 3, colNames, this->csys->Clone(), colTypes, colSize, colDP, 0, CSTR("VehRestrict")));
+	NN<Map::VectorLayer> lyr;
+	NEW_CLASSNN(lyr, Map::VectorLayer(layerType, CSTR("HKTDVehRestirct"), 3, colNames, this->csys->Clone(), colTypes, colSize, colDP, 0, CSTR("VehRestrict")));
 	
 	NN<DB::DBReader> r;
 	if (this->db->QueryTableData(CSTR_NULL, CSTR("VEHICLE_RESTRICTION"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))

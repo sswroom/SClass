@@ -49,7 +49,7 @@ Bool Media::OpenCV::OCVObjectDetector::IsError()
 	return this->cascade == 0;
 }
 
-void Media::OpenCV::OCVObjectDetector::NextFrame(Media::OpenCV::OCVFrame *frame, Media::FrameInfo *info, UInt8 **imgData)
+void Media::OpenCV::OCVObjectDetector::NextFrame(NN<Media::OpenCV::OCVFrame> frame, Media::FrameInfo *info, UInt8 **imgData)
 {
 	cv::Mat *fr = (cv::Mat*)frame->GetFrame();
 	if (this->cascade)

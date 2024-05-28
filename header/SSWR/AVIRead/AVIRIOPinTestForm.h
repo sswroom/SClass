@@ -26,7 +26,7 @@ namespace SSWR
 			NN<UI::GUIButton> btnPinLow;
 
 			NN<SSWR::AVIRead::AVIRCore> core;
-			IO::IOPin *pin;
+			NN<IO::IOPin> pin;
 			Bool isOutput;
 
 			static void __stdcall OnPullUpClicked(AnyType userObj);
@@ -37,7 +37,7 @@ namespace SSWR
 			static void __stdcall OnPinLowClicked(AnyType userObj);
 			static void __stdcall OnTimerTick(AnyType userObj);
 		public:
-			AVIRIOPinTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::IOPin *pin);
+			AVIRIOPinTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::IOPin> pin);
 			virtual ~AVIRIOPinTestForm();
 
 			virtual void OnMonitorChanged();

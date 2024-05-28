@@ -14,7 +14,7 @@ Media::Batch::BatchToLRGB::BatchToLRGB(NN<const Media::ColorProfile> srcProfile,
 
 Media::Batch::BatchToLRGB::~BatchToLRGB()
 {
-	SDEL_CLASS(this->csconv);
+	this->csconv.Delete();
 }
 
 void Media::Batch::BatchToLRGB::SetHandler(Media::Batch::BatchHandler *hdlr)
@@ -35,21 +35,22 @@ void Media::Batch::BatchToLRGB::ImageOutput(NN<Media::ImageList> imgList, Text::
 		if (Optional<Media::StaticImage>::ConvertFrom(imgList->GetImage(i, 0)).SetTo(simg) && simg->info.fourcc != *(UInt32*)"LRGB")
 		{
 			Sync::MutexUsage mutUsage(this->mut);
-			if (this->csconv == 0 || this->srcFCC != simg->info.fourcc || this->srcBpp != simg->info.storeBPP || this->srcPF != simg->info.pf || !simg->info.color.Equals(this->srcProfile))
+			if (this->csconv.IsNull() || this->srcFCC != simg->info.fourcc || this->srcBpp != simg->info.storeBPP || this->srcPF != simg->info.pf || !simg->info.color.Equals(this->srcProfile))
 			{
-				SDEL_CLASS(this->csconv);
+				this->csconv.Delete();
 				this->srcFCC = simg->info.fourcc;
 				this->srcBpp = simg->info.storeBPP;
 				this->srcPF = simg->info.pf;
 				this->srcProfile.Set(simg->info.color);
 				this->csconv = Media::CS::CSConverter::NewConverter(this->srcFCC, this->srcBpp, this->srcPF, this->srcProfile, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, this->destProfile, simg->info.yuvType, 0);
 			}
-			if (this->csconv)
+			NN<Media::CS::CSConverter> csconv;
+			if (this->csconv.SetTo(csconv))
 			{
 				NEW_CLASSNN(dimg, Media::StaticImage(simg->info.dispSize, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, this->destProfile, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				dimg->info.hdpi = simg->info.hdpi;
 				dimg->info.vdpi = simg->info.vdpi;
-				this->csconv->ConvertV2(&simg->data, dimg->data, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.storeSize.x, simg->info.storeSize.y, (OSInt)dimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+				csconv->ConvertV2(&simg->data, dimg->data, simg->info.dispSize.x, simg->info.dispSize.y, simg->info.storeSize.x, simg->info.storeSize.y, (OSInt)dimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 				imgList->ReplaceImage(i, dimg);
 			}
 			mutUsage.EndUse();

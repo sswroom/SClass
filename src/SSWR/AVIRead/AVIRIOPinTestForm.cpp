@@ -63,7 +63,7 @@ void __stdcall SSWR::AVIRead::AVIRIOPinTestForm::OnTimerTick(AnyType userObj)
 	}
 }
 
-SSWR::AVIRead::AVIRIOPinTestForm::AVIRIOPinTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::IOPin *pin) : UI::GUIForm(parent, 480, 160, ui)
+SSWR::AVIRead::AVIRIOPinTestForm::AVIRIOPinTestForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::IOPin> pin) : UI::GUIForm(parent, 480, 160, ui)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -110,7 +110,7 @@ SSWR::AVIRead::AVIRIOPinTestForm::AVIRIOPinTestForm(Optional<UI::GUIClientContro
 
 SSWR::AVIRead::AVIRIOPinTestForm::~AVIRIOPinTestForm()
 {
-	DEL_CLASS(this->pin);
+	this->pin.Delete();
 }
 
 void SSWR::AVIRead::AVIRIOPinTestForm::OnMonitorChanged()

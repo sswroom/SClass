@@ -9,7 +9,7 @@ Media::BlockParser::AC3BlockParser::~AC3BlockParser()
 {
 }
 
-Media::AudioBlockSource *Media::BlockParser::AC3BlockParser::ParseStreamData(NN<IO::StreamData> stmData)
+Optional<Media::AudioBlockSource> Media::BlockParser::AC3BlockParser::ParseStreamData(NN<IO::StreamData> stmData)
 {
 	static UInt32 bitrate[] = {32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384, 448, 512, 576, 640};
 	static UInt32 frameSize32[] = {96, 96, 120, 120, 144, 144, 168, 168, 192, 192, 240, 240, 288, 288, 336, 336, 384, 384, 480, 480, 576, 576, 672, 672, 768, 768, 960, 960, 1152, 1152, 1344, 1344, 1536, 1536, 1728, 1728, 1920, 1920};

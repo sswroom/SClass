@@ -1219,7 +1219,7 @@ void UI::GUITextFileView::DrawImage(NN<Media::DrawImage> dimg)
 
 	maxScnWidth = dimg->GetWidth() + xPos;
 	NN<Media::DrawFont> fnt;
-	if (!fnt.Set(this->CreateDrawFont(dimg)))
+	if (!this->CreateDrawFont(dimg).SetTo(fnt))
 	{
 		return;
 	}

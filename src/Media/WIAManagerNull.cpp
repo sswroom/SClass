@@ -23,7 +23,7 @@ const UTF8Char *Media::WIAManager::GetDeviceName(UOSInt index)
 	return 0;
 }
 
-Media::WIADevice *Media::WIAManager::CreateDevice(UOSInt index)
+Optional<Media::WIADevice> Media::WIAManager::CreateDevice(UOSInt index)
 {
 	return 0;
 }

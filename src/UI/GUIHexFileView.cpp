@@ -180,7 +180,7 @@ void UI::GUIHexFileView::DrawImage(NN<Media::DrawImage> dimg)
 		UTF8Char sbuff2[2];
 		UTF8Char *sptr;
 		UInt64 currOfst = ((UInt64)(UOSInt)vPos) * 16;
-		Media::DrawFont *f = this->CreateDrawFont(dimg);
+		Optional<Media::DrawFont> f = this->CreateDrawFont(dimg);
 		NN<Media::DrawFont> fnt;
 		NN<Media::DrawBrush> lineNumBrush = dimg->NewBrushARGB(this->lineNumColor);
 		NN<Media::DrawBrush> textBrush = dimg->NewBrushARGB(this->txtColor);
@@ -233,7 +233,7 @@ void UI::GUIHexFileView::DrawImage(NN<Media::DrawImage> dimg)
 			{
 				Text::StrHexVal64(sbuff, currOfst);
 			}
-			if (fnt.Set(f))
+			if (f.SetTo(fnt))
 			{
 				while (true)
 				{
@@ -294,7 +294,7 @@ void UI::GUIHexFileView::DrawImage(NN<Media::DrawImage> dimg)
 					tBrush = selTextBrush;
 				}
 				Text::StrHexByte(sbuff, *currPtr++);
-				if (fnt.Set(f))
+				if (f.SetTo(fnt))
 				{
 					sbuff2[0] = sbuff[0];
 					sbuff2[1] = 0;
@@ -323,7 +323,7 @@ void UI::GUIHexFileView::DrawImage(NN<Media::DrawImage> dimg)
 				textPtr += textSkip;
 				textSkip = 0;
 			}
-			if (fnt.Set(f))
+			if (f.SetTo(fnt))
 			{
 				while (j < k)
 				{
@@ -367,7 +367,7 @@ void UI::GUIHexFileView::DrawImage(NN<Media::DrawImage> dimg)
 		dimg->DelBrush(selTextBrush);
 		dimg->DelBrush(textBrush);
 		dimg->DelBrush(lineNumBrush);
-		if (fnt.Set(f))
+		if (f.SetTo(fnt))
 			dimg->DelFont(fnt);
 	}
 }

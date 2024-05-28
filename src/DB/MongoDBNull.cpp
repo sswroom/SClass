@@ -22,7 +22,7 @@ Optional<DB::DBReader> DB::MongoDB::QueryTableData(Text::CString schemaName, Tex
 	return 0;
 }
 
-DB::TableDef *DB::MongoDB::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> DB::MongoDB::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	return 0;
 }

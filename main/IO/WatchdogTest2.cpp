@@ -19,7 +19,7 @@
 #define TESTURL "http://abc.com/kareq"
 #define USERAGENT "HTTPClient/1.0"
 
-IO::Watchdog *wd;
+Optional<IO::Watchdog> wd;
 Bool running;
 Bool httpRunning;
 Bool toStop;
@@ -35,6 +35,8 @@ UInt32 __stdcall WatchdogThread(AnyType userObj)
 	Int32 i = 15;
 	Single tempVal;
 	Single rhVal;
+	NN<IO::Watchdog> nnwd;
+	if (wd.SetTo(nnwd))
 	{
 		Text::StringBuilderUTF8 sb;
 		running = true;
@@ -43,7 +45,7 @@ UInt32 __stdcall WatchdogThread(AnyType userObj)
 			if (i-- > 0)
 			{
 				consoleWriter->WriteLine(CSTR("Keep Alive"));
-				wd->Keepalive();
+				nnwd->Keepalive();
 			}
 			if (am2315->ReadTemperature(tempVal))
 			{
@@ -117,6 +119,7 @@ UInt32 __stdcall HTTPThread(AnyType userObj)
 
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
+	NN<IO::Watchdog> nnwd;
 	IO::ConsoleWriter console;
 	IO::IOTool::EchoFile(CSTR("/sys/class/gpio/export"), CSTR("71"));
 	IO::IOTool::EchoFile(CSTR("/sys/class/gpio/gpio71/direction"), CSTR("out"));
@@ -148,13 +151,12 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
 
 	wd = IO::Watchdog::Create(1);
-	if (wd && wd->IsError())
+	if (wd.SetTo(nnwd) && nnwd->IsError())
 	{
-		DEL_CLASS(wd);
-		wd = 0;
+		wd.Delete();
 	}
 	
-	if (wd == 0)
+	if (!wd.SetTo(nnwd))
 	{
 		console.WriteLine(CSTR("Watchdog not found"));
 	}
@@ -162,8 +164,8 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	{
 		Text::StringBuilderUTF8 sb;
 		Int32 timeoutSec;
-		wd->SetTimeoutSec(15);
-		if (wd->GetTimeoutSec(&timeoutSec))
+		nnwd->SetTimeoutSec(15);
+		if (nnwd->GetTimeoutSec(&timeoutSec))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Timeout = "));
@@ -175,7 +177,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			console.WriteLine(CSTR("Error in getting timeout value"));
 		}
 
-		if (wd->Enable())
+		if (nnwd->Enable())
 		{
 			console.WriteLine(CSTR("Watchdog enabled"));
 			Sync::ThreadUtil::Create(WatchdogThread, 0);
@@ -199,7 +201,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		{
 			console.WriteLine(CSTR("Error in enabling watchdog"));
 		}
-		DEL_CLASS(wd);
+		nnwd.Delete();
 	}
 	DEL_CLASS(evt);
 	DEL_CLASS(httpEvt);

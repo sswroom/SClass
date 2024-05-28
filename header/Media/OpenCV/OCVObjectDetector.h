@@ -28,7 +28,7 @@ namespace Media
 			~OCVObjectDetector();
 
 			Bool IsError();
-			void NextFrame(Media::OpenCV::OCVFrame *frame, Media::FrameInfo *frInfo, UInt8 **imgData);
+			void NextFrame(NN<Media::OpenCV::OCVFrame> frame, Media::FrameInfo *frInfo, UInt8 **imgData);
 
 			void HandleDetectResult(DetectResultFunc func, void *userObj);
 		};

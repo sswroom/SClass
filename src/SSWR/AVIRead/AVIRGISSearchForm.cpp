@@ -77,7 +77,7 @@ void SSWR::AVIRead::AVIRGISSearchForm::UpdateResults()
 	}
 }
 
-SSWR::AVIRead::AVIRGISSearchForm::AVIRGISSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi, NN<Map::MapDrawLayer> layer, Text::SearchIndexer *searching, UOSInt strIndex, Int32 flags) : UI::GUIForm(parent, 320, 360, ui)
+SSWR::AVIRead::AVIRGISSearchForm::AVIRGISSearchForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IMapNavigator *navi, NN<Map::MapDrawLayer> layer, NN<Text::SearchIndexer> searching, UOSInt strIndex, Int32 flags) : UI::GUIForm(parent, 320, 360, ui)
 {
 	this->core = core;
 	this->navi = navi;
@@ -105,7 +105,7 @@ SSWR::AVIRead::AVIRGISSearchForm::AVIRGISSearchForm(Optional<UI::GUIClientContro
 
 SSWR::AVIRead::AVIRGISSearchForm::~AVIRGISSearchForm()
 {
-	DEL_CLASS(this->searching);
+	this->searching.Delete();
 	this->layer->ReleaseNameArr(this->nameArr);
 }
 

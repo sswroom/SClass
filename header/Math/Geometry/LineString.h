@@ -51,7 +51,7 @@ namespace Math
 			Math::Geometry::LineString *SplitByPoint(Math::Coord2DDbl pt);
 			OSInt GetPointNo(Math::Coord2DDbl pt, Bool *isPoint, Math::Coord2DDbl *calPt, Double *calZ, Double *calM);
 
-			Math::Geometry::Polygon *CreatePolygonByDist(Double dist) const;
+			Optional<Math::Geometry::Polygon> CreatePolygonByDist(Double dist) const;
 			NN<Math::Geometry::Polyline> CreatePolyline() const;
 		};
 	}

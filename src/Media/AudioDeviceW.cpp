@@ -44,7 +44,7 @@ UTF8Char *Media::AudioDevice::GetDeviceName(UTF8Char *buff, UOSInt devNo)
 	return 0;
 }
 
-Media::IAudioRenderer *Media::AudioDevice::CreateRenderer(Text::CString devName)
+Optional<Media::IAudioRenderer> Media::AudioDevice::CreateRenderer(Text::CString devName)
 {
 Media::IAudioRenderer *renderer = 0;
 #ifndef _WIN32_WCE

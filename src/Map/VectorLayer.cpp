@@ -890,7 +890,7 @@ Bool Map::VectorLayer::SplitPolyline(Math::Coord2DDbl pt)
 	if (Optional<Math::Geometry::Polyline>::ConvertFrom(this->vectorList.GetItem((UOSInt)objId)).SetTo(pl))
 	{
 		NN<Math::Geometry::Polyline> pl2;
-		if (pl2.Set(pl->SplitByPoint(pt)))
+		if (pl->SplitByPoint(pt).SetTo(pl2))
 		{
 			this->vectorList.Add(pl2);
 			this->strList.Add(CopyStrs(this->strList.GetItem((UOSInt)objId)));
@@ -946,7 +946,7 @@ void Map::VectorLayer::OptimizePolylinePath()
 					{
 						NN<Math::Geometry::Polyline> pl;
 						NN<Math::Geometry::Polyline> pl2;
-						if (Optional<Math::Geometry::Polyline>::ConvertFrom(this->vectorList.GetItem((UOSInt)objId)).SetTo(pl) && pl2.Set(pl->SplitByPoint(pt)))
+						if (Optional<Math::Geometry::Polyline>::ConvertFrom(this->vectorList.GetItem((UOSInt)objId)).SetTo(pl) && pl->SplitByPoint(pt).SetTo(pl2))
 						{
 							this->vectorList.Add(pl2);
 							this->strList.Add(CopyStrs(this->strList.GetItem((UOSInt)objId)));
@@ -967,7 +967,7 @@ void Map::VectorLayer::OptimizePolylinePath()
 					{
 						NN<Math::Geometry::Polyline> pl;
 						NN<Math::Geometry::Polyline> pl2;
-						if (Optional<Math::Geometry::Polyline>::ConvertFrom(this->vectorList.GetItem((UOSInt)objId)).SetTo(pl) && pl2.Set(pl->SplitByPoint(pt)))
+						if (Optional<Math::Geometry::Polyline>::ConvertFrom(this->vectorList.GetItem((UOSInt)objId)).SetTo(pl) && pl->SplitByPoint(pt).SetTo(pl2))
 						{
 							this->vectorList.Add(pl2);
 							this->strList.Add(CopyStrs(this->strList.GetItem((UOSInt)objId)));

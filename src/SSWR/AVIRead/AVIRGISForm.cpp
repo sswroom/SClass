@@ -1060,8 +1060,8 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			NN<Map::MapEnv::LayerItem> layer;
 			if (Optional<Map::MapEnv::LayerItem>::ConvertFrom(ind->item).SetTo(layer))
 			{
-				Text::SearchIndexer *searching = layer->layer->CreateSearchIndexer(&this->ta, setting.labelCol);
-				if (searching)
+				NN<Text::SearchIndexer> searching;
+				if (layer->layer->CreateSearchIndexer(&this->ta, setting.labelCol).SetTo(searching))
 				{
 					this->SetCtrlForm(NEW_CLASS_D(AVIRGISSearchForm(0, ui, this->core, this, layer->layer, searching, setting.labelCol, setting.flags)), item);
 				}
@@ -1617,7 +1617,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (frm.ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				NN<Map::MapDrawLayer> layer;
-				if (layer.Set(frm.GetMapLayer()))
+				if (frm.GetMapLayer().SetTo(layer))
 				{
 					this->AddLayer(layer);
 				}

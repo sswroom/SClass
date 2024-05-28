@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/StreamLogger.h"
 
-IO::StreamLogger::StreamLogger(IO::Stream *srcStream, Bool needRelease, Text::CString readLogPath, Text::CString writeLogPath) : IO::Stream(srcStream->GetSourceNameObj())
+IO::StreamLogger::StreamLogger(NN<IO::Stream> srcStream, Bool needRelease, Text::CString readLogPath, Text::CString writeLogPath) : IO::Stream(srcStream->GetSourceNameObj())
 {
 	this->stm = srcStream;
 	this->needRelease = needRelease;
@@ -28,7 +28,7 @@ IO::StreamLogger::~StreamLogger()
 {
 	if (this->needRelease)
 	{
-		DEL_CLASS(this->stm);
+		this->stm.Delete();
 	}
 	SDEL_CLASS(this->writeLog);
 	SDEL_CLASS(this->readLog);

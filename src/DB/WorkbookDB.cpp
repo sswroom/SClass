@@ -9,7 +9,7 @@ class WorkbookReader : public DB::DBReader
 private:
 	NN<Text::SpreadSheet::Worksheet> sheet;
 	NN<DB::TableDef> tabDef;
-	Text::SpreadSheet::Worksheet::RowData *row;
+	Optional<Text::SpreadSheet::Worksheet::RowData> row;
 	UOSInt currIndex;
 	UOSInt maxIndex;
 public:
@@ -286,18 +286,21 @@ Optional<DB::TableDef> DB::WorkbookDB::GetTableDef(Text::CString schemaName, Tex
 	DB::TableDef *tabDef;
 	NN<DB::ColDef> col;
 	NEW_CLASS(tabDef, DB::TableDef(schemaName, sheet->GetName()->ToCString()));
-	Text::SpreadSheet::Worksheet::RowData *row = sheet->GetItem(0);
+	NN<Text::SpreadSheet::Worksheet::RowData> row;
 	Text::SpreadSheet::Worksheet::CellData *cell;
-	UOSInt i = 0;
-	UOSInt j = row->cells->GetCount();
-	while (i < j)
+	if (sheet->GetItem(0).SetTo(row))
 	{
-		cell = row->cells->GetItem(i);
-		NEW_CLASSNN(col, DB::ColDef(Text::String::OrEmpty(cell->cellValue)));
-		col->SetColType(DB::DBUtil::ColType::CT_VarUTF8Char);
-		col->SetColSize(256);
-		tabDef->AddCol(col);
-		i++;
+		UOSInt i = 0;
+		UOSInt j = row->cells->GetCount();
+		while (i < j)
+		{
+			cell = row->cells->GetItem(i);
+			NEW_CLASSNN(col, DB::ColDef(Text::String::OrEmpty(cell->cellValue)));
+			col->SetColType(DB::DBUtil::ColType::CT_VarUTF8Char);
+			col->SetColSize(256);
+			tabDef->AddCol(col);
+			i++;
+		}
 	}
 	return tabDef;
 }

@@ -16,11 +16,11 @@ namespace Media
 			DShowManager();
 			~DShowManager();
 
-			DShowGraph *CreateGraph(void *hwnd);
-			DShowEVRFilter *CreateEVR(void *hwnd);
-			DShowVMR9Filter *CreateVMR9(void *hwnd);
-			DShowVideoRecvFilter *CreateVideoRecvFilter(Media::DShow::DShowVideoRecvFilter::VFrame32Hdlr hdlr, void *userObj);
+			NN<DShowGraph> CreateGraph(void *hwnd);
+			NN<DShowEVRFilter> CreateEVR(void *hwnd);
+			NN<DShowVMR9Filter> CreateVMR9(void *hwnd);
+			NN<DShowVideoRecvFilter> CreateVideoRecvFilter(Media::DShow::DShowVideoRecvFilter::VFrame32Hdlr hdlr, void *userObj);
 		};
-	};
-};
+	}
+}
 #endif

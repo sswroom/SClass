@@ -49,7 +49,7 @@ namespace IO
 		Bool OptimizeFile(Text::CStringNN newFile);
 		void PauseCommit(Bool pauseCommit);
 
-		IO::StreamData *CreateStreamData(Text::CStringNN fileName);
+		Optional<IO::StreamData> CreateStreamData(Text::CStringNN fileName);
 	};
 }
 #endif

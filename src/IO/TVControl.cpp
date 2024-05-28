@@ -33,7 +33,7 @@ Bool IO::TVControl::GetTVInfo(TVType tvType, TVInfo *info)
 	}
 }
 
-IO::TVControl *IO::TVControl::CreateTVControl(IO::Stream *stm, TVType tvType, Int32 monId)
+Optional<IO::TVControl> IO::TVControl::CreateTVControl(NN<IO::Stream> stm, TVType tvType, Int32 monId)
 {
 	IO::TVControl *tvCtrl;
 	switch (tvType)

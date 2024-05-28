@@ -25,8 +25,8 @@ namespace SSWR
 
 			NN<Media::StaticImage> srcImg;
 			NN<Media::StaticImage> destImg;
-			NN<Media::StaticImage> srcPrevImg;
-			NN<Media::StaticImage> destPrevImg;
+			Optional<Media::StaticImage> srcPrevImg;
+			Optional<Media::StaticImage> destPrevImg;
 			NN<UI::GUIPictureBoxDD> previewCtrl;
 			Media::GRFilter *grFilter;
 			UOSInt currLayer;

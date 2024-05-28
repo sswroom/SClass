@@ -28,8 +28,8 @@ namespace Media
 		virtual ~GDIEngine();
 
 		virtual Optional<DrawImage> CreateImage32(Math::Size2D<UOSInt> size, Media::AlphaType atype);
-		GDIImage *CreateImage24(Math::Size2D<UOSInt> size);
-		DrawImage *CreateImageScn(void *hdc, OSInt left, OSInt top, OSInt right, OSInt bottom);
+		Optional<GDIImage> CreateImage24(Math::Size2D<UOSInt> size);
+		NN<DrawImage> CreateImageScn(void *hdc, OSInt left, OSInt top, OSInt right, OSInt bottom);
 		virtual Optional<DrawImage> LoadImage(Text::CStringNN fileName);
 		virtual Optional<DrawImage> LoadImageStream(NN<IO::SeekableStream> stm);
 		virtual Optional<DrawImage> ConvImage(NN<Media::RasterImage> img);

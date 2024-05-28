@@ -36,7 +36,7 @@ namespace Math
 		void ToCartesianCoord(Math::BigFloat *lat, Math::BigFloat *lon, Math::BigFloat *h, Math::BigFloat *x, Math::BigFloat *y, Math::BigFloat *z) const;
 		void FromCartesianCoord(Math::BigFloat *x, Math::BigFloat *y, Math::BigFloat *z, Math::BigFloat *lat, Math::BigFloat *lon, Math::BigFloat *h) const;
 
-		static Math::GeographicCoordinateSystemBF *CreateCoordinateSystem(Math::GeographicCoordinateSystem::GeoCoordSysType gcst);
+		static Optional<Math::GeographicCoordinateSystemBF> CreateCoordinateSystem(Math::GeographicCoordinateSystem::GeoCoordSysType gcst);
 	};
 }
 #endif

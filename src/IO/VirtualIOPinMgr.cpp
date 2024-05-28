@@ -43,7 +43,7 @@ IO::VirtualIOPinMgr::~VirtualIOPinMgr()
 	MemFree(this->pins);
 }
 
-IO::IOPin *IO::VirtualIOPinMgr::CreatePin(UInt32 pinNum)
+Optional<IO::IOPin> IO::VirtualIOPinMgr::CreatePin(UInt32 pinNum)
 {
 	if (pinNum >= this->pinCnt)
 		return 0;

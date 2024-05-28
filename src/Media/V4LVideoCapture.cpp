@@ -571,10 +571,10 @@ UTF8Char *Media::V4LVideoCaptureMgr::GetDeviceName(UTF8Char *buff, UOSInt devId)
 	return buff;
 }
 
-Media::IVideoCapture *Media::V4LVideoCaptureMgr::CreateDevice(UOSInt devId)
+NN<Media::IVideoCapture> Media::V4LVideoCaptureMgr::CreateDevice(UOSInt devId)
 {
-	Media::V4LVideoCapture *capture;
-	NEW_CLASS(capture, Media::V4LVideoCapture(devId));
+	NN<Media::V4LVideoCapture> capture;
+	NEW_CLASSNN(capture, Media::V4LVideoCapture(devId));
 	return capture;
 }
 

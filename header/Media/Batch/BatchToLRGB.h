@@ -12,7 +12,7 @@ namespace Media
 		{
 		private:
 			Sync::Mutex mut;
-			Media::CS::CSConverter *csconv;
+			Optional<Media::CS::CSConverter> csconv;
 			Media::Batch::BatchHandler *hdlr;
 			Media::ColorProfile srcProfile;
 			Media::ColorProfile destProfile;

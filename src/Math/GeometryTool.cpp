@@ -1022,7 +1022,7 @@ void Math::GeometryTool::CalcHVAngleDeg(Math::Coord2DDbl ptCurr, Math::Coord2DDb
 	*vAngle = *vAngle * 180 / Math::PI;
 }
 
-Math::Geometry::Polygon *Math::GeometryTool::CreateCircularPolygonWGS84(Math::Coord2DDbl pt, Double radiusMeter, UOSInt nPoints)
+Optional<Math::Geometry::Polygon> Math::GeometryTool::CreateCircularPolygonWGS84(Math::Coord2DDbl pt, Double radiusMeter, UOSInt nPoints)
 {
 	Math::Geometry::Polygon *pg = 0;
 	NN<Math::CoordinateSystem> csys4326;

@@ -98,7 +98,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WAVParser::ParseFileHdr(NN<IO::St
 					NN<Media::AudioBlockSource> src;
 					Media::BlockParser::AC3BlockParser ac3Parser;
 					NN<IO::StreamData> data = fd->GetPartialData(currPos + 8, ReadUInt32(&chunkBuff[4]));
-					if (src.Set(ac3Parser.ParseStreamData(data)))
+					if (ac3Parser.ParseStreamData(data).SetTo(src))
 					{
 						data.Delete();
 						NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
@@ -116,7 +116,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WAVParser::ParseFileHdr(NN<IO::St
 					NN<Media::AudioBlockSource> src;
 					Media::BlockParser::MP3BlockParser mp3Parser;
 					NN<IO::StreamData> data = fd->GetPartialData(currPos + 8, ReadUInt32(&chunkBuff[4]));
-					if (src.Set(mp3Parser.ParseStreamData(data)))
+					if (mp3Parser.ParseStreamData(data).SetTo(src))
 					{
 						data.Delete();
 						NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));
@@ -134,7 +134,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WAVParser::ParseFileHdr(NN<IO::St
 					NN<Media::AudioBlockSource> src;
 					Media::BlockParser::MP2BlockParser mp2Parser;
 					NN<IO::StreamData> data = fd->GetPartialData(currPos + 8, ReadUInt32(&chunkBuff[4]));
-					if (src.Set(mp2Parser.ParseStreamData(data)))
+					if (mp2Parser.ParseStreamData(data).SetTo(src))
 					{
 						data.Delete();
 						NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));

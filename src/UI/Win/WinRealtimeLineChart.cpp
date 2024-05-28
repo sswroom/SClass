@@ -35,11 +35,9 @@ OSInt __stdcall UI::Win::WinRealtimeLineChart::RLCWndProc(void *hWnd, UInt32 msg
 			GetClientRect((HWND)hWnd, &rc);
 			BeginPaint((HWND)hWnd, &ps);
 			NN<Media::DrawImage> scn;
-			if (scn.Set(NN<Media::GDIEngine>::ConvertFrom(me->eng)->CreateImageScn(ps.hdc, rc.left, rc.top, rc.right, rc.bottom)))
-			{
-				me->OnPaint(scn);
-				me->eng->DeleteImage(scn);
-			}
+			scn = NN<Media::GDIEngine>::ConvertFrom(me->eng)->CreateImageScn(ps.hdc, rc.left, rc.top, rc.right, rc.bottom);
+			me->OnPaint(scn);
+			me->eng->DeleteImage(scn);
 			EndPaint((HWND)hWnd, &ps);
 		}
 		return 0;

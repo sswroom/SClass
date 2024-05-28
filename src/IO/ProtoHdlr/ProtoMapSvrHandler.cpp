@@ -49,16 +49,16 @@ IO::ProtoHdlr::ProtoMapSvrHandler::~ProtoMapSvrHandler()
 {
 }
 
-void *IO::ProtoHdlr::ProtoMapSvrHandler::CreateStreamData(NN<IO::Stream> stm)
+AnyType IO::ProtoHdlr::ProtoMapSvrHandler::CreateStreamData(NN<IO::Stream> stm)
 {
 	return 0;
 }
 
-void IO::ProtoHdlr::ProtoMapSvrHandler::DeleteStreamData(NN<IO::Stream> stm, void *stmData)
+void IO::ProtoHdlr::ProtoMapSvrHandler::DeleteStreamData(NN<IO::Stream> stm, AnyType stmData)
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::ParseProtocol(NN<IO::Stream> stm, void *stmObj, void *stmData, const Data::ByteArrayR &srcBuff)
+UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::ParseProtocol(NN<IO::Stream> stm, AnyType stmObj, AnyType stmData, const Data::ByteArrayR &srcBuff)
 {
 	Bool found;
 	UInt32 crcVal;
@@ -74,7 +74,7 @@ UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::ParseProtocol(NN<IO::Stream> stm, void
 				if (packetSize > buff.GetSize())
 					return buff.GetSize();
 
-				crcVal = CalCheck(buff.Ptr(), packetSize - 2);
+				crcVal = CalCheck(buff.Ptr().Ptr(), packetSize - 2);
 				if ((crcVal & 0xffff) == *(UInt16*)&buff[packetSize - 2])
 				{
 					this->listener->DataParsed(stm, stmObj, *(UInt16*)&buff[4], 0, &buff[6], packetSize - 8);
@@ -94,7 +94,7 @@ UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::ParseProtocol(NN<IO::Stream> stm, void
 
 				Sync::MutexUsage mutUsage(this->crcMut);
 				this->crc.Clear();
-				this->crc.Calc(buff.Ptr(), packetSize - 2);
+				this->crc.Calc(buff.Ptr().Ptr(), packetSize - 2);
 				this->crc.GetValue((UInt8*)&crcVal);
 				mutUsage.EndUse();
 				if ((crcVal & 0xffff) == *(UInt16*)&buff[packetSize - 2])
@@ -115,7 +115,7 @@ UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::ParseProtocol(NN<IO::Stream> stm, void
 	return buff.GetSize();
 }
 
-UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)
+UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, AnyType stmData)
 {
 	*(Int16*)&buff[2] = (Int16)(cmdSize + 8);
 	*(Int16*)&buff[4] = cmdType;

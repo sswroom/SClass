@@ -13,7 +13,7 @@ namespace Media
 	{
 	private:
 		NN<Media::MonitorSurfaceMgr> surfaceMgr;
-		Media::MonitorSurface *primarySurface;
+		Optional<Media::MonitorSurface> primarySurface;
 		Sync::Mutex mut;
 
 	public:

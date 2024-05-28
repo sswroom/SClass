@@ -187,7 +187,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(AnyType userO
 			me->saveCnt = 0;
 			Media::ColorProfile dProfile(Media::ColorProfile::CPT_SRGB);
 			me->csConv = Media::CS::CSConverter::NewConverter(cfmt->fourcc, cfmt->bpp, me->videoInfo.pf, me->videoInfo.color, 0, 32, Media::PF_B8G8R8A8, dProfile, Media::ColorProfile::YUVT_UNKNOWN, 0);
-			if (me->csConv == 0)
+			if (me->csConv.IsNull() == 0)
 			{
 				DEL_CLASS(me->timedImageList);
 				me->timedImageList = 0;
@@ -205,8 +205,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(AnyType userO
 			}
 			else
 			{
-				DEL_CLASS(me->csConv);
-				me->csConv = 0;
+				me->csConv.Delete();
 				DEL_CLASS(me->timedImageList);
 				me->timedImageList = 0;
 			}
@@ -229,7 +228,8 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(Data::Duration 
 {
 	NN<SSWR::AVIRead::AVIRTimedCaptureForm> me = userData.GetNN<SSWR::AVIRead::AVIRTimedCaptureForm>();
 	me->frameCnt++;
-	if (me->lastSaveTime + me->interval <= frameTime)
+	NN<Media::CS::CSConverter> csConv;
+	if (me->lastSaveTime + me->interval <= frameTime && me->csConv.SetTo(csConv))
 	{
 		NN<Media::ImageList> imgList;
 		NN<Media::StaticImage> simg;
@@ -241,7 +241,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(Data::Duration 
 		dt.SetCurrTimeUTC();
 
 		NEW_CLASSNN(simg, Media::StaticImage(me->videoInfo.dispSize, 0, 32, Media::PF_B8G8R8A8, me->videoInfo.dispSize.x * me->videoInfo.dispSize.y << 2, sRGB, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-		me->csConv->ConvertV2(imgData, simg->data, me->videoInfo.dispSize.x, me->videoInfo.dispSize.y, me->videoInfo.storeSize.x, me->videoInfo.storeSize.y, (OSInt)simg->GetDataBpl(), frameType, ycOfst);
+		csConv->ConvertV2(imgData, simg->data, me->videoInfo.dispSize.x, me->videoInfo.dispSize.y, me->videoInfo.storeSize.x, me->videoInfo.storeSize.y, (OSInt)simg->GetDataBpl(), frameType, ycOfst);
 		NEW_CLASSNN(imgList, Media::ImageList(CSTR("Temp")));
 		imgList->AddImage(simg, 0);
 		param = me->exporter->CreateParam(imgList);
@@ -271,7 +271,7 @@ void SSWR::AVIRead::AVIRTimedCaptureForm::StopCapture()
 		NN<Media::IVideoCapture> currCapture;
 		if (this->currCapture.SetTo(currCapture))
 			currCapture->Stop();
-		SDEL_CLASS(this->csConv);
+		this->csConv.Delete();
 		SDEL_CLASS(this->timedImageList);
 		this->isStarted = false;
 	}

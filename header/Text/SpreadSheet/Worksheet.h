@@ -41,7 +41,7 @@ namespace Text
 			UOSInt col1;
 			UOSInt row2;
 			UOSInt col2;
-			OfficeChart *chart;
+			Optional<OfficeChart> chart;
 		};
 
 		class Worksheet
@@ -67,9 +67,9 @@ namespace Text
 
 		private:
 			NN<Text::String> name;
-			Data::ArrayList<RowData*> *rows;
-			Data::ArrayListDbl *colWidthsPt;
-			Data::ArrayList<WorksheetDrawing*> *drawings;
+			Data::ArrayList<Optional<RowData>> rows;
+			Data::ArrayListDbl colWidthsPt;
+			Data::ArrayListNN<WorksheetDrawing> drawings;
 			Double defColWidthPt;
 			Double defRowHeightPt;
 			UInt32 freezeHori;
@@ -85,14 +85,14 @@ namespace Text
 			UOSInt maxCol;
 
 		public:
-			RowData *CreateRow(UOSInt row);
+			Optional<RowData> CreateRow(UOSInt row);
 		private:
 			CellData *GetCellData(UOSInt row, UOSInt col, Bool keepMerge);
-			void FreeRowData(RowData *data);
+			void FreeRowData(NN<RowData> data);
 			void FreeCellData(CellData *data);
-			RowData *CloneRow(RowData *row, const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl);
+			NN<RowData> CloneRow(NN<RowData> row, const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl);
 			CellData *CloneCell(CellData *cell, const IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl);
-			void FreeDrawing(WorksheetDrawing *drawing);
+			static void FreeDrawing(NN<WorksheetDrawing> drawing);
 		public:
 			Worksheet(NotNullPtr<Text::String> name);
 			Worksheet(Text::CStringNN name);
@@ -153,7 +153,7 @@ namespace Text
 			Bool SetRowHeight(UOSInt row, Double height);
 
 			UOSInt GetCount();
-			RowData *GetItem(UOSInt row);
+			Optional<RowData> GetItem(UOSInt row);
 			void RemoveCol(UOSInt col);
 			void InsertCol(UOSInt col);
 			UOSInt GetMaxCol();
@@ -167,9 +167,10 @@ namespace Text
 			Bool GetCellString(const CellData *cell, NotNullPtr<Text::StringBuilderUTF8> sb);
 
 			UOSInt GetDrawingCount();
-			WorksheetDrawing *GetDrawing(UOSInt index);
-			WorksheetDrawing *CreateDrawing(Math::Unit::Distance::DistanceUnit unit, Double x, Double y, Double w, Double h);
-			OfficeChart *CreateChart(Math::Unit::Distance::DistanceUnit unit, Double x, Double y, Double w, Double h, Text::CString title);
+			Optional<WorksheetDrawing> GetDrawing(UOSInt index);
+			NN<WorksheetDrawing> GetDrawingNoCheck(UOSInt index);
+			NN<WorksheetDrawing> CreateDrawing(Math::Unit::Distance::DistanceUnit unit, Double x, Double y, Double w, Double h);
+			NN<OfficeChart> CreateChart(Math::Unit::Distance::DistanceUnit unit, Double x, Double y, Double w, Double h, Text::CString title);
 		};
 
 		Text::CString CellDataTypeGetName(CellDataType cdt);

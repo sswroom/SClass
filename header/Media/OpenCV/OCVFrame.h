@@ -30,7 +30,7 @@ namespace Media
 			void Normalize();
 			NN<Media::OpenCV::OCVFrame> BilateralFilter(Int32 d, Double sigmaColor, Double sigmaSpace);
 
-			static OCVFrame *CreateYFrame(UInt8 **imgData, UOSInt dataSize, UInt32 fourcc, Math::Size2D<UOSInt> dispSize, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf);
+			static Optional<OCVFrame> CreateYFrame(UInt8 **imgData, UOSInt dataSize, UInt32 fourcc, Math::Size2D<UOSInt> dispSize, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf);
 			static Optional<OCVFrame> CreateYFrame(NN<Media::StaticImage> simg);
 		};
 	}

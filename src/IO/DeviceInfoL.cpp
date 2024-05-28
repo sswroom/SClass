@@ -32,7 +32,7 @@ Text::String *IO::DeviceInfo::GetName()
 	return this->name;
 }
 
-IO::Stream *IO::DeviceInfo::CreateStream()
+Optional<IO::Stream> IO::DeviceInfo::CreateStream()
 {
 /*	IO::DeviceStream *stm;
 	NEW_CLASS(stm, IO::DeviceStream(this->name));

@@ -19,7 +19,7 @@ namespace SSWR
 		class OrganEnvDB : public OrganEnv
 		{
 		private:
-			DB::DBTool *db;
+			Optional<DB::DBTool> db;
 			IO::LogTool log;
 			IO::ConfigFile *cfg;
 			Text::String *cfgImgDirBase;

@@ -28,7 +28,7 @@ namespace UI
 		UInt8 *bgBuff;
 		Math::Size2D<UOSInt> bgBuffSize;
 
-		Media::CS::CSConverter *csconv;
+		Optional<Media::CS::CSConverter> csconv;
 		NN<Media::ColorManagerSess> colorSess;
 		Optional<Media::RasterImage> currImage;
 		Math::Size2D<UOSInt> currImageSize;
@@ -93,7 +93,7 @@ namespace UI
 		void EventMoveToPrev();
 
 		Bool GetImageViewSize(Math::Size2D<UOSInt> *viewSize, Math::Size2D<UOSInt> imageSize);
-		NN<Media::StaticImage> CreatePreviewImage(NN<const Media::StaticImage> image);
+		Optional<Media::StaticImage> CreatePreviewImage(NN<const Media::StaticImage> image);
 
 		void HandleMouseDown(MouseEventHandler hdlr, AnyType userObj);
 		void HandleMouseMove(MouseEventHandler hdlr, AnyType userObj);

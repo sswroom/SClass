@@ -88,7 +88,7 @@ Bool IO::TVCtrl::MDT701STVControl::SendBasicCommand(const Char *buff, UOSInt buf
 	return false;
 }
 
-IO::TVCtrl::MDT701STVControl::MDT701STVControl(IO::Stream *stm, Int32 monId)
+IO::TVCtrl::MDT701STVControl::MDT701STVControl(NN<IO::Stream> stm, Int32 monId)
 {
 	this->stm = stm;
 	this->monId = monId;

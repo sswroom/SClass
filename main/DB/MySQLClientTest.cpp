@@ -379,7 +379,7 @@ NN<Data::NamedClass<Userfile>> Userfile::CreateClass()
 
 IO::ConsoleWriter *console;
 
-void TextReadAll(DB::DBTool *db)
+void TextReadAll(NN<DB::DBTool> db)
 {
 	Data::ArrayListNN<Userfile> dataList;
 	NN<DB::DBReader> r;
@@ -400,7 +400,7 @@ void TextReadAll(DB::DBTool *db)
 	}
 }
 
-void TestBinaryRead(DB::DBTool *db)
+void TestBinaryRead(NN<DB::DBTool> db)
 {
 	Data::ArrayListNN<Userfile> dataList;
 	NN<Net::MySQLTCPClient> conn = NN<Net::MySQLTCPClient>::ConvertFrom(db->GetDBConn());
@@ -439,14 +439,13 @@ void TempTest(NN<Net::SocketFactory> sockf, IO::Writer *console)
 	Text::CStringNN mysqlDB;
 	Text::CStringNN mysqlUID;
 	Text::CStringNN mysqlPWD;
-	DB::DBTool *db;
+	NN<DB::DBTool> db;
 	IO::LogTool log;
 	mysqlServer = CSTR("192.168.0.15");
 	mysqlDB = CSTR("organism");
 	mysqlUID = CSTR("organ");
 	mysqlPWD = CSTR("organ");
-	db = Net::MySQLTCPClient::CreateDBTool(sockf, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, log, CSTR("DB: "));
-	if (db)
+	if (Net::MySQLTCPClient::CreateDBTool(sockf, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, log, CSTR("DB: ")).SetTo(db))
 	{
 		NN<DB::DBReader> r;
 		if (db->ExecuteReader(CSTR("select id, time1, time2 from test")).SetTo(r))
@@ -462,7 +461,7 @@ void TempTest(NN<Net::SocketFactory> sockf, IO::Writer *console)
 			}
 			db->CloseReader(r);
 		}
-		DEL_CLASS(db);
+		db.Delete();
 	}
 }
 
@@ -478,17 +477,16 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	mysqlPWD = CSTR("organ");
 
 	IO::LogTool log;
-	DB::DBTool *db;
+	NN<DB::DBTool> db;
 	NEW_CLASS(console, IO::ConsoleWriter());
 	Net::OSSocketFactory sockf(false);
 	TempTest(sockf, console);
-	db = Net::MySQLTCPClient::CreateDBTool(sockf, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, log, CSTR("DB: "));
-	if (db)
+	if (Net::MySQLTCPClient::CreateDBTool(sockf, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, log, CSTR("DB: ")).SetTo(db))
 	{
 		TestBinaryRead(db);
 		TextReadAll(db);
 
-		DEL_CLASS(db);
+		db.Delete();
 	}
 	else
 	{

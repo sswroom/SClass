@@ -326,7 +326,7 @@ Bool IO::TVCtrl::NECTVControl::SetParameter(UInt8 opCodePage, UInt8 opCode, UInt
 	return false;
 }
 
-IO::TVCtrl::NECTVControl::NECTVControl(IO::Stream *stm, Int32 monId)
+IO::TVCtrl::NECTVControl::NECTVControl(NN<IO::Stream> stm, Int32 monId)
 {
 	this->stm = stm;
 	this->monId = monId;

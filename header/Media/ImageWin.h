@@ -6,7 +6,7 @@ namespace Media
 		ImageWin();
 		~ImageWin();
 
-		Image *CreateImage(HBITMAP hbmp);
-		HBITMAP CreateHBITMAP(StaticImage *img);
+		Optional<RasterImage> CreateImage(HBITMAP hbmp);
+		HBITMAP CreateHBITMAP(NN<StaticImage> img);
 	};
-};
+}

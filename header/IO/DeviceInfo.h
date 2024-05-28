@@ -16,7 +16,7 @@ namespace IO
 		~DeviceInfo();
 
 		Text::String *GetName();
-		IO::Stream *CreateStream();
+		Optional<IO::Stream> CreateStream();
 	};
 };
 #endif

@@ -945,7 +945,7 @@ OSInt Math::Geometry::LineString::GetPointNo(Math::Coord2DDbl pt, Bool *isPoint,
 	return minId;
 }
 
-Math::Geometry::Polygon *Math::Geometry::LineString::CreatePolygonByDist(Double dist) const
+Optional<Math::Geometry::Polygon> Math::Geometry::LineString::CreatePolygonByDist(Double dist) const
 {
 	if (this->nPoint < 2)
 		return 0;

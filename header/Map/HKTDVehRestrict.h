@@ -23,7 +23,7 @@ namespace Map
 		HKTDVehRestrict(NN<Map::MapDrawLayer> routeLyr, NN<DB::DBTool> db);
 		~HKTDVehRestrict();
 
-		Map::MapDrawLayer *CreateTonnesSignLayer();
+		NN<Map::MapDrawLayer> CreateTonnesSignLayer();
 	};
 }
 #endif

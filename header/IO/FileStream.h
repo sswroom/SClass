@@ -56,8 +56,8 @@ namespace IO
 		void SetFileTimes(Data::DateTime *creationTime, Data::DateTime *lastAccessTime, Data::DateTime *lastWriteTime);
 		void SetFileTimes(const Data::Timestamp &creationTime, const Data::Timestamp &lastAccessTime, const Data::Timestamp &lastWriteTime);
 
-		static IO::FileStream *CreateNamedPipe(const UTF8Char *pipeName, UInt32 buffSize);
-		static IO::FileStream *OpenNamedPipe(const UTF8Char *server, const UTF8Char *pipeName);
+		static Optional<IO::FileStream> CreateNamedPipe(const UTF8Char *pipeName, UInt32 buffSize);
+		static Optional<IO::FileStream> OpenNamedPipe(const UTF8Char *server, const UTF8Char *pipeName);
 		static UOSInt LoadFile(Text::CStringNN fileName, UInt8 *buff, UOSInt maxBuffSize);
 	};
 }

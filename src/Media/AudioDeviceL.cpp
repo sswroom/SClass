@@ -23,7 +23,7 @@ UTF8Char *Media::AudioDevice::GetDeviceName(UTF8Char *buff, UOSInt devNo)
 	}
 }
 
-Media::IAudioRenderer *Media::AudioDevice::CreateRenderer(Text::CString devName)
+Optional<Media::IAudioRenderer> Media::AudioDevice::CreateRenderer(Text::CString devName)
 {
 	Media::IAudioRenderer *renderer = 0;
 	if (devName.StartsWith(UTF8STRC("ALSA: ")))

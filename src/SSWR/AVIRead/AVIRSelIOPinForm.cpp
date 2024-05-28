@@ -43,9 +43,8 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(AnyType userObj)
 			me->ui->ShowMsgOK(CSTR("Please select a VirtualPin"), CSTR("Select VirtualPin"), me);
 			return;
 		}
-		IO::IOPin *pin;
-		pin = me->vioPinMgr->CreatePin(pinNum);
-		if (pin == 0)
+		NN<IO::IOPin> pin;
+		if (!me->vioPinMgr->CreatePin(pinNum).SetTo(pin))
 		{
 			me->ui->ShowMsgOK(CSTR("Error in opening the pin"), CSTR("Select VirtualPin"), me);
 			return;

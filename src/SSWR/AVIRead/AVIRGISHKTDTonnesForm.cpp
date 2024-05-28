@@ -78,7 +78,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(AnyType userObj
 				Map::HKTDVehRestrict *vehRestrict;
 				NEW_CLASS(vehRestrict, Map::HKTDVehRestrict(nnlyr, nndb));
 				me->lyr = vehRestrict->CreateTonnesSignLayer();
-				if (me->lyr)
+				if (me->lyr.NotNull())
 				{
 					me->SetDialogResult(UI::GUIForm::DR_OK);
 				}
@@ -155,7 +155,7 @@ void SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Map::MapDrawLayer *SSWR::AVIRead::AVIRGISHKTDTonnesForm::GetMapLayer()
+Optional<Map::MapDrawLayer> SSWR::AVIRead::AVIRGISHKTDTonnesForm::GetMapLayer()
 {
 	return this->lyr;
 }

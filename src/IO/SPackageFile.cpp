@@ -666,7 +666,7 @@ void IO::SPackageFile::PauseCommit(Bool pauseCommit)
 	this->pauseCommit = pauseCommit;
 }
 
-IO::StreamData *IO::SPackageFile::CreateStreamData(Text::CStringNN fileName)
+Optional<IO::StreamData> IO::SPackageFile::CreateStreamData(Text::CStringNN fileName)
 {
 	IO::StreamData *fd = 0;
 	Sync::MutexUsage mutUsage(this->mut);

@@ -15,7 +15,7 @@ void UI::GUIPictureBoxDD::UpdateSubSurface()
 {
 	if (this->imgBuff && !this->currImage.IsNull() && this->IsSurfaceReady())
 	{
-		UOSInt bpl;
+		OSInt bpl;
 		if (this->drawHdlrs.GetCount() > 0)
 		{
 			if (this->bgBuff == 0 || this->bkBuffSize != this->bgBuffSize)
@@ -104,12 +104,12 @@ void UI::GUIPictureBoxDD::UpdateSubSurface()
 		}
 		else
 		{
-			UInt8 *dptr = this->LockSurfaceBegin(this->bkBuffSize.x, this->bkBuffSize.y, &bpl);
+			UInt8 *dptr = this->LockSurfaceBegin(this->bkBuffSize.x, this->bkBuffSize.y, bpl);
 			if (dptr)
 			{
 				Math::RectAreaDbl srcRect;
 				Math::RectArea<OSInt> destRect;
-				ImageUtil_ImageColorFill32(dptr, this->bkBuffSize.x, this->bkBuffSize.y, bpl, 0);
+				ImageUtil_ImageColorFill32(dptr, this->bkBuffSize.x, this->bkBuffSize.y, (UOSInt)bpl, 0);
 
 				if (this->mouseDowned)
 				{
@@ -325,8 +325,8 @@ void __stdcall UI::GUIPictureBoxDD::OnSizeChg(AnyType userObj)
 
 void UI::GUIPictureBoxDD::DrawFromBG()
 {
-	UOSInt bpl;
-	UInt8 *dptr = this->LockSurfaceBegin(this->bgBuffSize.x, this->bgBuffSize.y, &bpl);
+	OSInt bpl;
+	UInt8 *dptr = this->LockSurfaceBegin(this->bgBuffSize.x, this->bgBuffSize.y, bpl);
 	if (dptr)
 	{
 		UOSInt i;
@@ -337,7 +337,7 @@ void UI::GUIPictureBoxDD::DrawFromBG()
 		while (i < j)
 		{
 			Data::CallbackStorage<DrawHandler32> cb = this->drawHdlrs.GetItem(i);
-			cb.func(cb.userObj, dptr, this->bgBuffSize.x, this->bgBuffSize.x, bpl);
+			cb.func(cb.userObj, dptr, this->bgBuffSize.x, this->bgBuffSize.x, (UOSInt)bpl);
 			i++;
 		}
 		this->LockSurfaceEnd();
@@ -396,11 +396,7 @@ UI::GUIPictureBoxDD::~GUIPictureBoxDD()
 		MemFreeA(this->imgBuff);
 		this->imgBuff = 0;
 	}
-	if (this->csconv)
-	{
-		DEL_CLASS(this->csconv);
-		this->csconv = 0;
-	}
+	this->csconv.Delete();
 	DEL_CLASS(this->resizer);
 	if (this->bgBuff)
 	{
@@ -479,11 +475,7 @@ void UI::GUIPictureBoxDD::SetImage(Optional<Media::RasterImage> currImage, Bool 
 		MemFreeA(this->imgBuff);
 		this->imgBuff = 0;
 	}
-	if (this->csconv)
-	{
-		DEL_CLASS(this->csconv);
-		this->csconv = 0;
-	}
+	this->csconv.Delete();
 	NN<Media::RasterImage> img;
 	if (this->currImage.SetTo(img))
 	{
@@ -514,22 +506,23 @@ void UI::GUIPictureBoxDD::SetImage(Optional<Media::RasterImage> currImage, Bool 
 		}
 		Media::ColorProfile color(Media::ColorProfile::CPT_PDISPLAY);
 		this->csconv = Media::CS::CSConverter::NewConverter(img->info.fourcc, img->info.storeBPP, img->info.pf, img->info.color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, img->info.yuvType, this->colorSess.Ptr());
-		if (this->csconv)
+		NN<Media::CS::CSConverter> csconv;
+		if (this->csconv.SetTo(csconv))
 		{
 			if (img->pal)
 			{
-				this->csconv->SetPalette(img->pal);
+				csconv->SetPalette(img->pal);
 			}
 			this->imgBuff = MemAllocA(UInt8, this->currImageSize.CalcArea() * 8);
 			if (img->GetImageType() == Media::RasterImage::ImageType::Static)
 			{
-				this->csconv->ConvertV2(&NN<Media::StaticImage>::ConvertFrom(img)->data, this->imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
+				csconv->ConvertV2(&NN<Media::StaticImage>::ConvertFrom(img)->data, this->imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
 			}
 			else
 			{
 				UInt8 *imgData = MemAllocA(UInt8, img->GetDataBpl() * img->info.storeSize.y);
 				img->GetRasterData(imgData, 0, 0, img->info.storeSize.x, img->info.dispSize.y, img->GetDataBpl(), img->IsUpsideDown(), img->info.rotateType);
-				this->csconv->ConvertV2(&imgData, this->imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
+				csconv->ConvertV2(&imgData, this->imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
 				MemFreeA(imgData);
 			}
 			if (this->enableLRGBLimit)
@@ -571,7 +564,8 @@ void UI::GUIPictureBoxDD::SetImage(Optional<Media::RasterImage> currImage, Bool 
 void UI::GUIPictureBoxDD::YUVParamChanged(NN<const Media::IColorHandler::YUVPARAM> yuvParam)
 {
 	NN<Media::RasterImage> img;
-	if (this->currImage.SetTo(img) && this->csconv)
+	NN<Media::CS::CSConverter> csconv;
+	if (this->currImage.SetTo(img) && this->csconv.SetTo(csconv))
 	{
 		Media::RotateType rotType = Media::RotateType::None;
 		NN<Media::EXIFData> exif;
@@ -590,13 +584,13 @@ void UI::GUIPictureBoxDD::YUVParamChanged(NN<const Media::IColorHandler::YUVPARA
 		}
 		if (img->GetImageType() == Media::RasterImage::ImageType::Static)
 		{
-			this->csconv->ConvertV2(&NN<Media::StaticImage>::ConvertFrom(img)->data, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
+			csconv->ConvertV2(&NN<Media::StaticImage>::ConvertFrom(img)->data, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
 		}
 		else
 		{
 			UInt8 *imgData = MemAllocA(UInt8, img->GetDataBpl() * img->info.storeSize.y);
 			img->GetRasterData(imgData, 0, 0, img->info.storeSize.x, img->info.dispSize.y, img->GetDataBpl(), img->IsUpsideDown(), img->info.rotateType);
-			this->csconv->ConvertV2(&imgData, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
+			csconv->ConvertV2(&imgData, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
 			MemFreeA(imgData);
 		}
 		if (this->enableLRGBLimit)
@@ -625,8 +619,9 @@ void UI::GUIPictureBoxDD::YUVParamChanged(NN<const Media::IColorHandler::YUVPARA
 
 void UI::GUIPictureBoxDD::RGBParamChanged(NN<const Media::IColorHandler::RGBPARAM2> rgbParam)
 {
+	NN<Media::CS::CSConverter> csconv;
 	NN<Media::RasterImage> img;
-	if (this->currImage.SetTo(img) && this->csconv)
+	if (this->currImage.SetTo(img) && this->csconv.SetTo(csconv))
 	{
 		Media::RotateType rotType = Media::RotateType::None;
 		UInt8 *imgBuff;
@@ -645,13 +640,13 @@ void UI::GUIPictureBoxDD::RGBParamChanged(NN<const Media::IColorHandler::RGBPARA
 		}
 		if (img->GetImageType() == Media::RasterImage::ImageType::Static)
 		{
-			this->csconv->ConvertV2(&NN<Media::StaticImage>::ConvertFrom(img)->data, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
+			csconv->ConvertV2(&NN<Media::StaticImage>::ConvertFrom(img)->data, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
 		}
 		else
 		{
 			UInt8 *imgData = MemAllocA(UInt8, img->GetDataBpl() * img->info.dispSize.y);
 			img->GetRasterData(imgData, 0, 0, img->info.storeSize.x, img->info.dispSize.y, img->GetDataBpl(), img->IsUpsideDown(), img->info.rotateType);
-			this->csconv->ConvertV2(&imgData, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
+			csconv->ConvertV2(&imgData, imgBuff, img->info.dispSize.x, img->info.dispSize.y, img->info.storeSize.x, img->info.storeSize.y, (OSInt)img->info.dispSize.x << 3, img->info.ftype, img->info.ycOfst);
 			MemFreeA(imgData);
 		}
 		if (this->enableLRGBLimit)
@@ -1058,7 +1053,7 @@ Bool UI::GUIPictureBoxDD::GetImageViewSize(Math::Size2D<UOSInt> *viewSize, Math:
 	return true;
 }
 
-NN<Media::StaticImage> UI::GUIPictureBoxDD::CreatePreviewImage(NN<const Media::StaticImage> image)
+Optional<Media::StaticImage> UI::GUIPictureBoxDD::CreatePreviewImage(NN<const Media::StaticImage> image)
 {
 	NN<Media::StaticImage> outImage;
 	Math::Size2D<UOSInt> prevSize;
@@ -1069,7 +1064,12 @@ NN<Media::StaticImage> UI::GUIPictureBoxDD::CreatePreviewImage(NN<const Media::S
 	color.GetRTranParam()->Set(Media::CS::TRANT_LINEAR, 1.0);
 	color.GetGTranParam()->Set(Media::CS::TRANT_LINEAR, 1.0);
 	color.GetBTranParam()->Set(Media::CS::TRANT_LINEAR, 1.0);
-	Media::CS::CSConverter *csConv = Media::CS::CSConverter::NewConverter(image->info.fourcc, image->info.storeBPP, image->info.pf, image->info.color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, Media::ColorProfile::YUVT_UNKNOWN, this->colorSess.Ptr());
+	NN<Media::CS::CSConverter> csConv;
+	if (!Media::CS::CSConverter::NewConverter(image->info.fourcc, image->info.storeBPP, image->info.pf, image->info.color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, color, Media::ColorProfile::YUVT_UNKNOWN, this->colorSess.Ptr()).SetTo(csConv))
+	{
+		MemFreeA(prevImgData);
+		return 0;
+	}
 	Media::Resizer::LanczosResizerLR_C32 *resizer;
 	Media::PixelFormat pf = Media::PF_B8G8R8A8;
 	NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 4, image->info.color, this->colorSess.Ptr(), Media::AT_NO_ALPHA, Media::CS::TransferFunc::GetRefLuminance(image->info.color.rtransfer), pf));
@@ -1079,7 +1079,7 @@ NN<Media::StaticImage> UI::GUIPictureBoxDD::CreatePreviewImage(NN<const Media::S
 	resizer->Resize(prevImgData, (OSInt)image->info.dispSize.x * 8, UOSInt2Double(image->info.dispSize.x), UOSInt2Double(image->info.dispSize.y), 0, 0, outImage->data, (OSInt)outImage->GetDataBpl(), outImage->info.dispSize.x, outImage->info.dispSize.y);
 
 	DEL_CLASS(resizer);
-	DEL_CLASS(csConv);
+	csConv.Delete();
 	MemFreeA(prevImgData);
 	return outImage;
 }

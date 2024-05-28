@@ -1041,9 +1041,10 @@ void Media::Resizer::LanczosResizerLR_C32::DestoryHori()
 		MemFreeA(hWeight);
 		hWeight = 0;
 	}
-	if (this->hFilter)
+	NN<Media::Resizer::LanczosResizerLR_C32Action::HoriFilter> hFilter;
+	if (this->hFilter.SetTo(hFilter))
 	{
-		this->action->DestroyHoriFilter(this->hFilter);
+		this->action->DestroyHoriFilter(hFilter);
 		this->hFilter = 0;
 	}
 	hsSize = 0;
@@ -1061,9 +1062,10 @@ void Media::Resizer::LanczosResizerLR_C32::DestoryVert()
 		MemFreeA(vWeight);
 		vWeight = 0;
 	}
-	if (this->vFilter)
+	NN<Media::Resizer::LanczosResizerLR_C32Action::VertFilter> vFilter;
+	if (this->vFilter.SetTo(vFilter))
 	{
-		this->action->DestroyVertFilter(this->vFilter);
+		this->action->DestroyVertFilter(vFilter);
 		this->vFilter = 0;
 	}
 	vsSize = 0;
@@ -1158,12 +1160,14 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(const UInt8 *src, OSInt sbpl, 
 		this->action->UpdateRGBTable(this->rgbTable);
 	}
 
+	NN<LanczosResizerLR_C32Action::HoriFilter> hFilter;
+	NN<LanczosResizerLR_C32Action::VertFilter> vFilter;
 	if (swidth != UOSInt2Double(dwidth) && sheight != UOSInt2Double(dheight))
 	{
 		if (dwidth < this->hnTap || dheight < this->vnTap)
 			return;
 		Sync::MutexUsage mutUsage(this->mut);
-		if (this->hsSize != swidth || this->hdSize != dwidth || this->hsOfst != xOfst)
+		if (this->hsSize != swidth || this->hdSize != dwidth || this->hsOfst != xOfst || !this->hFilter.SetTo(hFilter))
 		{
 			DestoryHori();
 
@@ -1182,9 +1186,10 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(const UInt8 *src, OSInt sbpl, 
 			hWeight = prm.weight;
 			hTap = prm.tap;
 			hFilter = action->CreateHoriFilter(prm.tap, prm.index, prm.weight, prm.length);
+			this->hFilter = hFilter;
 		}
 
-		if (this->vsSize != sheight || this->vdSize != dheight || this->vsStep != (OSInt)(dwidth << 3) || this->vsOfst != yOfst)
+		if (this->vsSize != sheight || this->vdSize != dheight || this->vsStep != (OSInt)(dwidth << 3) || this->vsOfst != yOfst || !this->vFilter.SetTo(vFilter))
 		{
 			DestoryVert();
 
@@ -1204,6 +1209,7 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(const UInt8 *src, OSInt sbpl, 
 			vWeight = prm.weight;
 			vTap = prm.tap;
 			vFilter = action->CreateVertFilter(prm.tap, prm.index, prm.weight, prm.length);
+			this->vFilter = vFilter;
 		}
 		
 		action->DoHorizontalVerticalFilter(src, dest, dwidth, (UOSInt)siHeight, dheight, hFilter, vFilter, sbpl, dbpl, this->srcAlphaType);
@@ -1214,7 +1220,7 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(const UInt8 *src, OSInt sbpl, 
 		if (dwidth < this->hnTap)
 			return;
 		Sync::MutexUsage mutUsage(this->mut);
-		if (hsSize != swidth || hdSize != dwidth || hsOfst != xOfst)
+		if (hsSize != swidth || hdSize != dwidth || hsOfst != xOfst || !this->hFilter.SetTo(hFilter))
 		{
 			DestoryHori();
 
@@ -1232,9 +1238,10 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(const UInt8 *src, OSInt sbpl, 
 			hIndex = prm.index;
 			hWeight = prm.weight;
 			hTap = prm.tap;
-			this->hFilter = action->CreateHoriFilter(prm.tap, prm.index, prm.weight, prm.length);
+			hFilter = action->CreateHoriFilter(prm.tap, prm.index, prm.weight, prm.length);
+			this->hFilter = hFilter;
 		}
-		action->DoHorizontalFilterCollapse(src, dest, dwidth, dheight, this->hFilter, sbpl, dbpl, this->srcAlphaType);
+		action->DoHorizontalFilterCollapse(src, dest, dwidth, dheight, hFilter, sbpl, dbpl, this->srcAlphaType);
 		mutUsage.EndUse();
 	}
 	else if (sheight != UOSInt2Double(dheight))
@@ -1242,7 +1249,7 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(const UInt8 *src, OSInt sbpl, 
 		if (dheight < this->vnTap)
 			return;
 		Sync::MutexUsage mutUsage(this->mut);
-		if (vsSize != sheight || vdSize != dheight || vsStep != sbpl || vsOfst != yOfst)
+		if (vsSize != sheight || vdSize != dheight || vsStep != sbpl || vsOfst != yOfst || !this->vFilter.SetTo(vFilter))
 		{
 			DestoryVert();
 
@@ -1261,7 +1268,8 @@ void Media::Resizer::LanczosResizerLR_C32::Resize(const UInt8 *src, OSInt sbpl, 
 			vIndex = prm.index;
 			vWeight = prm.weight;
 			vTap = prm.tap;
-			this->vFilter = action->CreateVertFilter(prm.tap, prm.index, prm.weight, prm.length);
+			vFilter = action->CreateVertFilter(prm.tap, prm.index, prm.weight, prm.length);
+			this->vFilter = vFilter;
 		}
 		action->DoVerticalFilter(src, dest, (UOSInt)siWidth, (UOSInt)siHeight, dheight, vFilter, sbpl, dbpl, this->srcAlphaType);
 		mutUsage.EndUse();

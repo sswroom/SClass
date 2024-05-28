@@ -191,14 +191,14 @@ UOSInt Media::DRMMonitorSurfaceMgr::GetMonitorCount()
 	return cnt;
 }
 
-Media::MonitorSurface *Media::DRMMonitorSurfaceMgr::CreateSurface(Math::Size2D<UOSInt> size, UOSInt bitDepth)
+Optional<Media::MonitorSurface> Media::DRMMonitorSurfaceMgr::CreateSurface(Math::Size2D<UOSInt> size, UOSInt bitDepth)
 {
 	Media::MemorySurface *surface;
 	NEW_CLASS(surface, Media::MemorySurface(size, bitDepth, this->GetMonitorColor(0), this->GetMonitorDPI(0)));
 	return surface;
 }
 
-Media::MonitorSurface *Media::DRMMonitorSurfaceMgr::CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow)
+Optional<Media::MonitorSurface> Media::DRMMonitorSurfaceMgr::CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow)
 {
 	Media::DRMSurface *surface = 0;
 	NEW_CLASS(surface, Media::DRMSurface(this->clsData->fd, hMon, this->GetMonitorColor(hMon), this->GetMonitorDPI(hMon)));

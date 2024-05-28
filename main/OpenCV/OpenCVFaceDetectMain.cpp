@@ -25,7 +25,7 @@ OSInt rangeBottom;
 UInt32 preferedFormat;
 UOSInt preferedWidth;
 UOSInt preferedHeight;
-Media::CS::CSConverter *csConv;
+Optional<Media::CS::CSConverter> csConv;
 Exporter::GUIJPGExporter *exporter;
 
 void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV::OCVObjectDetector::ObjectRect *objRects, Media::FrameInfo *frInfo, UInt8 **imgData)
@@ -53,7 +53,7 @@ void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV:
 		console->WriteLine(sb.ToCString());
 
 		Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
-		if (csConv == 0)
+		if (csConv.IsNull())
 		{
 			csConv = Media::CS::CSConverter::NewConverter(frInfo->fourcc, frInfo->storeBPP, frInfo->pf, frInfo->color, 0, 32, Media::PF_B8G8R8A8, srgb, frInfo->yuvType, 0);
 		}
@@ -61,14 +61,15 @@ void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV:
 		{
 			NEW_CLASS(exporter, Exporter::GUIJPGExporter());
 		}
-		if (csConv)
+		NN<Media::CS::CSConverter> nncsConv;
+		if (csConv.SetTo(nncsConv))
 		{
 			NN<Media::StaticImage> simg;
 			Data::DateTime dt;
 			UTF8Char sbuff[512];
 			UTF8Char *sptr;
 			NEW_CLASSNN(simg, Media::StaticImage(frInfo->dispSize, 0, 32, Media::PF_B8G8R8A8, 0, srgb, frInfo->yuvType, Media::AT_NO_ALPHA, frInfo->ycOfst));
-			csConv->ConvertV2(imgData, simg->data, frInfo->dispSize.x, frInfo->dispSize.y, frInfo->storeSize.x, frInfo->storeSize.y, (OSInt)frInfo->dispSize.x * 4, Media::FT_NON_INTERLACE, frInfo->ycOfst);
+			nncsConv->ConvertV2(imgData, simg->data, frInfo->dispSize.x, frInfo->dispSize.y, frInfo->storeSize.x, frInfo->storeSize.y, (OSInt)frInfo->dispSize.x * 4, Media::FT_NON_INTERLACE, frInfo->ycOfst);
 			UOSInt i = 0;
 			while (i < objCnt)
 			{
@@ -269,7 +270,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	{
 		console->WriteLine(CSTR("Error in opening video capture"));
 	}
-	SDEL_CLASS(csConv);
+	csConv.Delete();
 	SDEL_CLASS(exporter);
 	
 	DEL_CLASS(console);

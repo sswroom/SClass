@@ -28,9 +28,9 @@ namespace Map
 			BLT_GMAP_SATELITE
 		} BaseLayerType;
 	public:
-		static UOSInt GetLayerTypes(Data::ArrayList<BaseLayerType> *layerTypes);
-		static Text::CString BaseLayerTypeGetName(BaseLayerType blt);
-		static Map::MapDrawLayer *CreateLayer(BaseLayerType blt, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Parser::ParserList> parsers);
+		static UOSInt GetLayerTypes(NN<Data::ArrayList<BaseLayerType>> layerTypes);
+		static Text::CStringNN BaseLayerTypeGetName(BaseLayerType blt);
+		static Optional<Map::MapDrawLayer> CreateLayer(BaseLayerType blt, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Parser::ParserList> parsers);
 	};
 }
 #endif

@@ -108,7 +108,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SQLiteParser::ParseFileHdr(NN<IO:
 	}
 }
 
-IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseAsMap(DB::DBConn *conn)
+Optional<IO::ParsedObject> Parser::FileParser::SQLiteParser::ParseAsMap(DB::DBConn *conn)
 {
 	Data::ArrayListStringNN tableNames;
 	conn->QueryTableNames(CSTR_NULL, tableNames);
@@ -127,7 +127,7 @@ IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseAsMap(DB::DBConn *conn)
 
 	Map::GeoPackage *gpkg;
 	NEW_CLASS(gpkg, Map::GeoPackage(conn));
-	IO::ParsedObject *pobj = gpkg->CreateLayerCollection();
+	NN<IO::ParsedObject> pobj = gpkg->CreateLayerCollection();
 	gpkg->Release();
 	return pobj;
 }

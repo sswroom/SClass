@@ -2479,13 +2479,13 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 	else if (fileType == FileType::Audio)
 	{
 		Crypto::Hash::CRC32R crc;
-		NN<Media::DrawImage> img;
 		UInt32 crcVal;
 		NN<IO::ParsedObject> pobj;
 		Data::Timestamp fileTime = 0;
 		NN<UserFileInfo> userFile;
 		Bool valid = false;
-		Media::DrawImage *graphImg = 0;
+		Optional<Media::DrawImage> graphImg = 0;
+		NN<Media::DrawImage> nngraphImg;
 		UInt8 crcBuff[4];
 		crc.Calc(fileCont, fileSize);
 		crc.GetValue(crcBuff);
@@ -2501,8 +2501,8 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 					NN<Media::IMediaSource> msrc;
 					if (mediaFile->GetStream(0, 0).SetTo(msrc) && msrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 					{
-						graphImg = Media::FrequencyGraph::CreateGraph(this->eng, (Media::IAudioSource *)msrc.Ptr(), 2048, 2048, Math::FFTCalc::WT_BLACKMANN_HARRIS, 12);
-						if (graphImg)
+						graphImg = Media::FrequencyGraph::CreateGraph(this->eng, NN<Media::IAudioSource>::ConvertFrom(msrc), 2048, 2048, Math::FFTCalc::WT_BLACKMANN_HARRIS, 12);
+						if (graphImg.NotNull())
 						{
 							valid = true;
 						}
@@ -2512,7 +2512,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 			}
 		}
 		NN<WebUserInfo> webUser;
-		if (valid && this->userMap.Get(userId).SetTo(webUser))
+		if (valid && graphImg.SetTo(nngraphImg) && this->userMap.Get(userId).SetTo(webUser))
 		{
 			Int64 ticks = 0;
 			UOSInt k;
@@ -2673,37 +2673,26 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 						sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
 						{
 							IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-							graphImg->SavePng(fs);
+							nngraphImg->SavePng(fs);
 						}
-						if (img.Set(graphImg))
-							this->eng->DeleteImage(img);
-
+						this->eng->DeleteImage(nngraphImg);
 						return userFile->id;
 					}
 					else
 					{
-						if (img.Set(graphImg))
-						{
-							this->eng->DeleteImage(img);
-						}
+						this->eng->DeleteImage(nngraphImg);
 						return 0;
 					}
 				}
 				else
 				{
-					if (img.Set(graphImg))
-					{
-						this->eng->DeleteImage(img);
-					}
+					this->eng->DeleteImage(nngraphImg);
 					return 0;
 				}
 			}
 			else
 			{
-				if (img.Set(graphImg))
-				{
-					this->eng->DeleteImage(img);
-				}
+				this->eng->DeleteImage(nngraphImg);
 				return 0;
 			}
 		}

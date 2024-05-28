@@ -242,7 +242,7 @@ void UI::GUITextView::UpdateScrollBar()
 	else
 	{
 		NN<Media::DrawFont> fnt;
-		if (!fnt.Set(this->CreateDrawFont(drawBuff)))
+		if (!this->CreateDrawFont(drawBuff).SetTo(fnt))
 		{
 			sz.y = 12;
 		}
@@ -372,7 +372,7 @@ UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWi
 		WChar c;
 		UOSInt ret;
 		NN<Media::DrawFont> fnt;
-		if (fnt.Set(this->CreateDrawFont(drawBuff)))
+		if (this->CreateDrawFont(drawBuff).SetTo(fnt))
 		{
 			c = str[strLen];
 			str[strLen] = 0;
@@ -429,7 +429,7 @@ void UI::GUITextView::GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSI
 		WChar c;
 		Math::Size2DDbl sz;
 		NN<Media::DrawFont> fnt;
-		if (fnt.Set(this->CreateDrawFont(drawBuff)))
+		if (this->CreateDrawFont(drawBuff).SetTo(fnt))
 		{
 			c = str[strLen];
 			str[strLen] = 0;

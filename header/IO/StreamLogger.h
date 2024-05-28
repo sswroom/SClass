@@ -13,12 +13,12 @@ namespace IO
 			void *reqData;
 		} MyReqData;
 	private:
-		IO::Stream *stm;
+		NN<IO::Stream> stm;
 		Bool needRelease;
 		IO::FileStream *writeLog;
 		IO::FileStream *readLog;
 	public:
-		StreamLogger(IO::Stream *srcStream, Bool needRelease, Text::CString readLogPath, Text::CString writeLogPath);
+		StreamLogger(NN<IO::Stream> srcStream, Bool needRelease, Text::CString readLogPath, Text::CString writeLogPath);
 		virtual ~StreamLogger();
 
 		virtual Bool IsDown() const;

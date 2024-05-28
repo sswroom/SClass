@@ -23,7 +23,7 @@ struct Media::FBSurface::ClassData
 	struct fb_fix_screeninfo finfo;
 	struct fb_var_screeninfo vinfo;
 	UInt8 *dataPtr;
-	MonitorSurface *buffSurface;
+	Optional<MonitorSurface> buffSurface;
 	Bool bugHandleMode;
 };
 
@@ -183,17 +183,18 @@ void *Media::FBSurface::GetHandle()
 
 Bool Media::FBSurface::DrawFromBuff()
 {
-	if (this->clsData->buffSurface)
+	NN<Media::MonitorSurface> buffSurface;
+	if (this->clsData->buffSurface.SetTo(buffSurface))
 	{
-		RotateType rt = Media::RotateTypeCalc(this->clsData->buffSurface->info.rotateType, this->info.rotateType);
+		RotateType rt = Media::RotateTypeCalc(buffSurface->info.rotateType, this->info.rotateType);
 		if (rt == Media::RotateType::None)
 		{
-			this->clsData->buffSurface->GetRasterData(this->clsData->dataPtr, 0, 0, this->info.dispSize.x, this->info.dispSize.y, this->clsData->finfo.line_length, false, rt);
+			buffSurface->GetRasterData(this->clsData->dataPtr, 0, 0, this->info.dispSize.x, this->info.dispSize.y, this->clsData->finfo.line_length, false, rt);
 		}
 		else
 		{
 			OSInt lineAdd;
-			UInt8 *buff = this->clsData->buffSurface->LockSurface(&lineAdd);
+			UInt8 *buff = buffSurface->LockSurface(lineAdd);
 			if (buff == 0)
 			{
 				return false;
@@ -377,9 +378,9 @@ Bool Media::FBSurface::DrawFromSurface(NN<Media::MonitorSurface> surface, Math::
 	return false;
 }
 
-UInt8 *Media::FBSurface::LockSurface(OSInt *lineAdd)
+UInt8 *Media::FBSurface::LockSurface(OutParam<OSInt> lineAdd)
 {
-	*lineAdd = (OSInt)this->clsData->finfo.line_length;
+	lineAdd.Set((OSInt)this->clsData->finfo.line_length);
 	return this->clsData->dataPtr;
 }
 
@@ -392,7 +393,7 @@ void Media::FBSurface::SetSurfaceBugMode(Bool surfaceBugMode)
 	this->clsData->bugHandleMode = surfaceBugMode;
 }
 
-void Media::FBSurface::SetBuffSurface(Media::MonitorSurface *buffSurface)
+void Media::FBSurface::SetBuffSurface(NN<Media::MonitorSurface> buffSurface)
 {
 	this->clsData->buffSurface = buffSurface;
 }

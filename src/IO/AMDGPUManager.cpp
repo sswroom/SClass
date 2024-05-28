@@ -240,7 +240,7 @@ UOSInt IO::AMDGPUManager::GetGPUCount()
 	return this->adapterList->GetCount();
 }
 
-IO::IGPUControl *IO::AMDGPUManager::CreateGPUControl(UOSInt index)
+Optional<IO::IGPUControl> IO::AMDGPUManager::CreateGPUControl(UOSInt index)
 {
 	IO::AMDGPUControl *gpuCtrl;
 	if (this->adapterList == 0)

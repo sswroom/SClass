@@ -172,15 +172,20 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnCancelClicked(AnyType userObj)
 
 void SSWR::AVIRead::AVIRImageGRForm::UpdatePreview()
 {
-	if (this->srcPrevImg->info.pf == Media::PF_B8G8R8A8)
+	NN<Media::StaticImage> srcPrevImg;
+	NN<Media::StaticImage> destPrevImg;
+	if (this->srcPrevImg.SetTo(srcPrevImg) && this->destPrevImg.SetTo(destPrevImg))
 	{
-		this->grFilter->ProcessImage32(this->srcPrevImg->data, this->destPrevImg->data, this->srcPrevImg->info.dispSize.x, this->srcPrevImg->info.dispSize.y, (OSInt)(this->srcPrevImg->info.storeSize.x * (this->srcPrevImg->info.storeBPP >> 3)), (OSInt)(this->destPrevImg->info.storeSize.x * (this->srcPrevImg->info.storeBPP >> 3)));
+		if (srcPrevImg->info.pf == Media::PF_B8G8R8A8)
+		{
+			this->grFilter->ProcessImage32(srcPrevImg->data, destPrevImg->data, srcPrevImg->info.dispSize.x, srcPrevImg->info.dispSize.y, (OSInt)(srcPrevImg->info.storeSize.x * (srcPrevImg->info.storeBPP >> 3)), (OSInt)(destPrevImg->info.storeSize.x * (srcPrevImg->info.storeBPP >> 3)));
+		}
+		else if (srcPrevImg->info.pf == Media::PF_LE_B16G16R16A16)
+		{
+			this->grFilter->ProcessImage64(srcPrevImg->data, destPrevImg->data, srcPrevImg->info.dispSize.x, srcPrevImg->info.dispSize.y, (OSInt)(srcPrevImg->info.storeSize.x * (srcPrevImg->info.storeBPP >> 3)), (OSInt)(destPrevImg->info.storeSize.x * (srcPrevImg->info.storeBPP >> 3)));
+		}
+		this->previewCtrl->SetImage(this->destPrevImg, true);
 	}
-	else if (this->srcPrevImg->info.pf == Media::PF_LE_B16G16R16A16)
-	{
-		this->grFilter->ProcessImage64(this->srcPrevImg->data, this->destPrevImg->data, this->srcPrevImg->info.dispSize.x, this->srcPrevImg->info.dispSize.y, (OSInt)(this->srcPrevImg->info.storeSize.x * (this->srcPrevImg->info.storeBPP >> 3)), (OSInt)(this->destPrevImg->info.storeSize.x * (this->srcPrevImg->info.storeBPP >> 3)));
-	}
-	this->previewCtrl->SetImage(this->destPrevImg.Ptr(), true);
 }
 
 void SSWR::AVIRead::AVIRImageGRForm::UpdateLayers()
@@ -213,7 +218,15 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(Optional<UI::GUIClientControl> p
 	this->previewCtrl = previewCtrl;
 	NEW_CLASS(this->grFilter, Media::GRFilter());
 	this->srcPrevImg = this->previewCtrl->CreatePreviewImage(this->srcImg);
-	this->destPrevImg = this->srcPrevImg->CreateStaticImage();
+	NN<Media::StaticImage> img;
+	if (this->srcPrevImg.SetTo(img))
+	{
+		this->destPrevImg = img->CreateStaticImage();
+	}
+	else
+	{
+		this->destPrevImg = 0;
+	}
 	this->modifying = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

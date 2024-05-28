@@ -19,7 +19,7 @@ namespace SSWR
 			Sync::Mutex resizerMut;
 			Media::Resizer::LanczosResizerLR_C32 *resizerLR;
 			Sync::Mutex csconvMut;
-			Media::CS::CSConverter *csconv;
+			Optional<Media::CS::CSConverter> csconv;
 			UInt32 csconvFCC;
 			UInt32 csconvBpp;
 			Media::PixelFormat csconvPF;

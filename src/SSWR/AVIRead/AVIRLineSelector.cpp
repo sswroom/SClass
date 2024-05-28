@@ -89,7 +89,7 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(NN<Media::DrawImage> img)
 		if (sbuff[0])
 		{
 			NN<Media::DrawFont> fnt;
-			if (fnt.Set(this->CreateDrawFont(img)))
+			if (this->CreateDrawFont(img).SetTo(fnt))
 			{
 				img->DrawString(Math::Coord2DDbl(itemW, UOSInt2Double(i + 1)), CSTRP(sbuff, sptr), fnt, bBlack);
 				img->DelFont(fnt);

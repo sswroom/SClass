@@ -8,6 +8,13 @@
 void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnColorChg(AnyType userObj, UOSInt newPos)
 {
 	NN<SSWR::AVIRead::AVIRImageColorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRImageColorForm>();
+	NN<Media::StaticImage> srcPrevImg;
+	NN<Media::StaticImage> destPrevImg;
+	if (!me->srcPrevImg.SetTo(srcPrevImg) || !me->destPrevImg.SetTo(destPrevImg))
+	{
+		return;
+	}
+
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 
@@ -34,9 +41,9 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnColorChg(AnyType userObj, UO
 	me->currBVal = bvalue * 0.01 - 1.0;
 	me->currCVal = cvalue * 0.01;
 	me->currGVal = gvalue * 0.01;
-	me->rgbFilter->SetParameter(me->currBVal, me->currCVal, me->currGVal, color, me->srcPrevImg->info.storeBPP, me->srcPrevImg->info.pf, 0);
-	me->rgbFilter->ProcessImage(me->srcPrevImg->data, me->destPrevImg->data, me->srcPrevImg->info.dispSize.x, me->srcPrevImg->info.dispSize.y, (me->srcPrevImg->info.storeSize.x * (me->srcPrevImg->info.storeBPP >> 3)), (me->srcPrevImg->info.storeSize.x * (me->srcPrevImg->info.storeBPP >> 3)), false);
-	me->previewCtrl->SetImage(me->destPrevImg.Ptr(), true);
+	me->rgbFilter->SetParameter(me->currBVal, me->currCVal, me->currGVal, color, srcPrevImg->info.storeBPP, srcPrevImg->info.pf, 0);
+	me->rgbFilter->ProcessImage(srcPrevImg->data, destPrevImg->data, srcPrevImg->info.dispSize.x, srcPrevImg->info.dispSize.y, (srcPrevImg->info.storeSize.x * (srcPrevImg->info.storeBPP >> 3)), (srcPrevImg->info.storeSize.x * (srcPrevImg->info.storeBPP >> 3)), false);
+	me->previewCtrl->SetImage(destPrevImg, true);
 }
 
 void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnOKClick(AnyType userObj)
@@ -102,7 +109,15 @@ SSWR::AVIRead::AVIRImageColorForm::AVIRImageColorForm(Optional<UI::GUIClientCont
 	this->previewCtrl = previewCtrl;
 	NEW_CLASS(this->rgbFilter, Media::RGBColorFilter(this->core->GetColorMgr()));
 	this->srcPrevImg = this->previewCtrl->CreatePreviewImage(this->srcImg);
-	this->destPrevImg = this->srcPrevImg->CreateStaticImage();
+	NN<Media::StaticImage> img;
+	if (this->srcPrevImg.SetTo(img))
+	{
+		this->destPrevImg = img->CreateStaticImage();
+	}
+	else
+	{
+		this->destPrevImg = 0;
+	}
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
 	this->lblBright = ui->NewLabel(*this, CSTR("Brightness"));

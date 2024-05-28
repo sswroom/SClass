@@ -39,7 +39,7 @@ namespace SSWR
 			Data::ArrayListNN<Media::VideoCaptureMgr::DeviceInfo> devInfoList;
 			Data::ArrayListNN<CaptureFormat> currFormats;
 			Media::FrameInfo videoInfo;
-			Media::CS::CSConverter *csConv;
+			Optional<Media::CS::CSConverter> csConv;
 			Exporter::GUIJPGExporter *exporter;
 			Bool isStarted;
 			Int32 jpgQuality;

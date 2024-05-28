@@ -13,8 +13,8 @@
 void __stdcall Media::OpenCV::OCVFrameFeeder::OnFrame(Data::Duration frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, AnyType userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
 	NN<Media::OpenCV::OCVFrameFeeder> me = userData.GetNN<Media::OpenCV::OCVFrameFeeder>();
-	Media::OpenCV::OCVFrame *frame = Media::OpenCV::OCVFrame::CreateYFrame(imgData, dataSize, me->info.fourcc, me->info.dispSize, me->info.storeSize.x, me->info.storeBPP, me->info.pf);
-	if (frame)
+	NN<Media::OpenCV::OCVFrame> frame;
+	if (Media::OpenCV::OCVFrame::CreateYFrame(imgData, dataSize, me->info.fourcc, me->info.dispSize, me->info.storeSize.x, me->info.storeBPP, me->info.pf).SetTo(frame))
 	{
 		if (me->thisSkip > 0)
 		{
@@ -25,7 +25,7 @@ void __stdcall Media::OpenCV::OCVFrameFeeder::OnFrame(Data::Duration frameTime, 
 			me->frameInput->NextFrame(frame, &me->info, imgData);
 			me->thisSkip = me->frameSkip;
 		}
-		DEL_CLASS(frame);
+		frame.Delete();
 	}
 }
 

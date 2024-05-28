@@ -10,7 +10,8 @@
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	IO::ConsoleWriter console;
-	IO::Watchdog *wd;
+	Optional<IO::Watchdog> wd;
+	NN<IO::Watchdog> nnwd;
 	Int32 wdId;
 	UTF8Char **argv;
 	UOSInt argc;
@@ -18,10 +19,9 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	if (argc >= 2 && Text::StrToInt32(argv[1], wdId))
 	{
 		wd = IO::Watchdog::Create(wdId);
-		if (wd && wd->IsError())
+		if (wd.SetTo(nnwd) && nnwd->IsError())
 		{
-			DEL_CLASS(wd);
-			wd = 0;
+			wd.Delete();
 		}
 	}
 	else
@@ -29,7 +29,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		wd = IO::Watchdog::Create();
 	}
 
-	if (wd == 0)
+	if (!wd.SetTo(nnwd))
 	{
 		console.WriteLine(CSTR("Watchdog not found"));
 	}
@@ -38,7 +38,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		Text::StringBuilderUTF8 sb;
 		Int32 timeoutSec;
 		Double temp;
-		if (wd->GetTimeoutSec(&timeoutSec))
+		if (nnwd->GetTimeoutSec(&timeoutSec))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Timeout = "));
@@ -50,7 +50,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			console.WriteLine(CSTR("Error in getting timeout value"));
 		}
 
-		if (wd->GetTemperature(&temp))
+		if (nnwd->GetTemperature(&temp))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Temperature = "));
@@ -62,7 +62,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			console.WriteLine(CSTR("Error in getting temperature value"));
 		}
 
-		if (wd->Disable())
+		if (nnwd->Disable())
 		{
 			console.WriteLine(CSTR("Watchdog disabled"));
 		}
@@ -70,7 +70,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		{
 			console.WriteLine(CSTR("Error in disabling watchdog"));
 		}
-		DEL_CLASS(wd);
+		nnwd.Delete();
 	}
 	return 0;
 }

@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRGoogleTileMapForm::OnOKClicked(AnyType userObj
 		me->layer = Map::BaseMapLayer::CreateLayer(Map::BaseMapLayer::BLT_GMAP_HYBRID, me->core->GetSocketFactory(), me->ssl, me->core->GetParserList());
 		break;
 	}
-	if (me->layer)
+	if (me->layer.NotNull())
 	{
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}
@@ -63,7 +63,7 @@ void SSWR::AVIRead::AVIRGoogleTileMapForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Map::MapDrawLayer *SSWR::AVIRead::AVIRGoogleTileMapForm::GetMapLayer()
+Optional<Map::MapDrawLayer> SSWR::AVIRead::AVIRGoogleTileMapForm::GetMapLayer()
 {
 	return this->layer;
 }

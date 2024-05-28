@@ -42,7 +42,7 @@ Optional<IO::ParsedObject> Parser::FileParser::DTSParser::ParseFileHdr(NN<IO::St
 	Media::MediaFile *vid;
 	Media::BlockParser::DTSBlockParser dtsParser;
 	NN<IO::StreamData> data = fd->GetPartialData(0, fd->GetDataSize());
-	if (src.Set(dtsParser.ParseStreamData(data)))
+	if (dtsParser.ParseStreamData(data).SetTo(src))
 	{
 		data.Delete();
 		NEW_CLASS(vid, Media::MediaFile(fd->GetFullName()));

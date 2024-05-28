@@ -108,7 +108,7 @@ Bool Media::CS::CSConverter::IsSupported(UInt32 fourcc)
 	return csList.SortedIndexOf(fourcc) >= 0;
 }
 
-Media::CS::CSConverter *Media::CS::CSConverter::NewConverter(UInt32 srcFormat, UOSInt srcNBits, Media::PixelFormat srcPF, NN<const Media::ColorProfile> srcProfile, UInt32 destFormat, UOSInt destNBits, Media::PixelFormat destPF, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> optcolorSess)
+Optional<Media::CS::CSConverter> Media::CS::CSConverter::NewConverter(UInt32 srcFormat, UOSInt srcNBits, Media::PixelFormat srcPF, NN<const Media::ColorProfile> srcProfile, UInt32 destFormat, UOSInt destNBits, Media::PixelFormat destPF, NN<const Media::ColorProfile> destProfile, Media::ColorProfile::YUVType yuvType, Optional<Media::ColorManagerSess> optcolorSess)
 {
 	Media::ColorManagerSess *colorSess = optcolorSess.OrNull();
 	Media::CS::CSConverter *conv;

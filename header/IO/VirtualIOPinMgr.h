@@ -26,7 +26,7 @@ namespace IO
 		VirtualIOPinMgr(UOSInt pinCnt);
 		~VirtualIOPinMgr();
 
-		IO::IOPin *CreatePin(UInt32 pinNum);
+		Optional<IO::IOPin> CreatePin(UInt32 pinNum);
 		UOSInt GetAvailablePins(Data::ArrayList<Int32> *pinList);
 	};
 

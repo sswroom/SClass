@@ -419,7 +419,7 @@ Bool IO::Device::OlympusCameraControl::GetModel(NN<Text::StringBuilderUTF8> sb)
 	return found;
 }
 
-IO::Device::OlympusCameraControl *IO::Device::OlympusCameraControl::CreateControl(NN<Net::SocketFactory> sockf, Optional<Text::EncodingFactory> encFact)
+Optional<IO::Device::OlympusCameraControl> IO::Device::OlympusCameraControl::CreateControl(NN<Net::SocketFactory> sockf, Optional<Text::EncodingFactory> encFact)
 {
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
 	NN<Net::ConnectionInfo> connInfo;

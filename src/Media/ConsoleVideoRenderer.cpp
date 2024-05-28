@@ -5,33 +5,35 @@ Media::ConsoleVideoRenderer::ConsoleVideoRenderer(NN<Media::MonitorSurfaceMgr> s
 {
 	this->surfaceMgr = surfaceMgr;
 	this->primarySurface = this->surfaceMgr->CreatePrimarySurface(this->surfaceMgr->GetMonitorHandle(0), 0, Media::RotateType::None);
-	if (this->primarySurface)
+	NN<Media::MonitorSurface> primarySurface;
+	if (this->primarySurface.SetTo(primarySurface))
 	{
-		this->UpdateDispInfo(this->primarySurface->info.dispSize, this->primarySurface->info.storeBPP, this->primarySurface->info.pf);
+		this->UpdateDispInfo(primarySurface->info.dispSize, primarySurface->info.storeBPP, primarySurface->info.pf);
 	}
 }
 
 Media::ConsoleVideoRenderer::~ConsoleVideoRenderer()
 {
-	SDEL_CLASS(this->primarySurface);
+	this->primarySurface.Delete();
 }
 
 Bool Media::ConsoleVideoRenderer::IsError()
 {
-	return this->primarySurface == 0;
+	return this->primarySurface.IsNull();
 }
 
 void Media::ConsoleVideoRenderer::SetRotateType(Media::RotateType rotateType)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	if (this->primarySurface)
+	NN<Media::MonitorSurface> primarySurface;
+	if (this->primarySurface.SetTo(primarySurface))
 	{
-		Media::RotateType rtChange = Media::RotateTypeCalc(this->primarySurface->info.rotateType, rotateType);
-		this->primarySurface->info.rotateType = rotateType;
+		Media::RotateType rtChange = Media::RotateTypeCalc(primarySurface->info.rotateType, rotateType);
+		primarySurface->info.rotateType = rotateType;
 		if (rtChange == Media::RotateType::CW_90 || rtChange == Media::RotateType::CW_270 || rtChange == Media::RotateType::HFLIP_CW_90 || rtChange == Media::RotateType::HFLIP_CW_270)
 		{
-			this->primarySurface->info.dispSize = this->primarySurface->info.dispSize.SwapXY();
-			this->UpdateDispInfo(this->primarySurface->info.dispSize, this->primarySurface->info.storeBPP, this->primarySurface->info.pf);
+			primarySurface->info.dispSize = primarySurface->info.dispSize.SwapXY();
+			this->UpdateDispInfo(primarySurface->info.dispSize, primarySurface->info.storeBPP, primarySurface->info.pf);
 			mutUsage.EndUse();
 		}
 	}	
@@ -39,17 +41,19 @@ void Media::ConsoleVideoRenderer::SetRotateType(Media::RotateType rotateType)
 
 Media::RotateType Media::ConsoleVideoRenderer::GetRotateType() const
 {
-	if (this->primarySurface)
-		return this->primarySurface->info.rotateType;
+	NN<Media::MonitorSurface> primarySurface;
+	if (this->primarySurface.SetTo(primarySurface))
+		return primarySurface->info.rotateType;
 	return Media::RotateType::None;
 }
 
 void Media::ConsoleVideoRenderer::SetSurfaceBugMode(Bool surfaceBugMode)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	if (this->primarySurface)
+	NN<Media::MonitorSurface> primarySurface;
+	if (this->primarySurface.SetTo(primarySurface))
 	{
-		this->primarySurface->SetSurfaceBugMode(surfaceBugMode);
+		primarySurface->SetSurfaceBugMode(surfaceBugMode);
 	}	
 }
 
@@ -66,8 +70,9 @@ void Media::ConsoleVideoRenderer::LockUpdateSize(NN<Sync::MutexUsage> mutUsage)
 void Media::ConsoleVideoRenderer::DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> destTL, Math::Size2D<UOSInt> buffSize, Bool clearScn)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	if (this->primarySurface)
+	NN<Media::MonitorSurface> primarySurface;
+	if (this->primarySurface.SetTo(primarySurface))
 	{
-		this->primarySurface->DrawFromSurface(surface, destTL, buffSize, clearScn, true);
+		primarySurface->DrawFromSurface(surface, destTL, buffSize, clearScn, true);
 	}
 }

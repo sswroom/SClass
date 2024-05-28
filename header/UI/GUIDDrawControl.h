@@ -31,8 +31,8 @@ namespace UI
 
 		Sync::Event drawEvt;
 		MonitorHandle *surfaceMon;
-		Media::MonitorSurface *primarySurface;
-		Media::MonitorSurface *buffSurface;
+		Optional<Media::MonitorSurface> primarySurface;
+		Optional<Media::MonitorSurface> buffSurface;
 		IO::Stream *debugFS;
 		IO::Writer *debugWriter;
 		UInt32 joystickId;
@@ -74,7 +74,7 @@ namespace UI
 		void CreateSubSurface();
 		void ReleaseSubSurface();
 
-		UInt8 *LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, UOSInt *bpl);
+		UInt8 *LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, OutParam<OSInt> bpl);
 		void LockSurfaceEnd();
 		Media::PixelFormat GetPixelFormat();
 

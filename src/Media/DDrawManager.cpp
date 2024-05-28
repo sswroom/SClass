@@ -240,7 +240,7 @@ UOSInt Media::DDrawManager::GetMonitorCount()
 
 }
 
-Media::MonitorSurface *Media::DDrawManager::CreateSurface(Math::Size2D<UOSInt> size, UOSInt bitDepth)
+Optional<Media::MonitorSurface> Media::DDrawManager::CreateSurface(Math::Size2D<UOSInt> size, UOSInt bitDepth)
 {
 	if (this->IsError())
 	{
@@ -272,7 +272,7 @@ Media::MonitorSurface *Media::DDrawManager::CreateSurface(Math::Size2D<UOSInt> s
 	return retSurface;
 }
 
-Media::MonitorSurface *Media::DDrawManager::CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow, Media::RotateType rotateType)
+Optional<Media::MonitorSurface> Media::DDrawManager::CreatePrimarySurface(MonitorHandle *hMon, ControlHandle *clipWindow, Media::RotateType rotateType)
 {
 	if (this->IsError())
 	{

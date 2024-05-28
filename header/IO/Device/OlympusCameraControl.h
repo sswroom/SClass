@@ -41,7 +41,7 @@ namespace IO
 			Text::String *GetOITrackVersion();
 			Bool GetModel(NN<Text::StringBuilderUTF8> sb);
 			
-			static OlympusCameraControl *CreateControl(NN<Net::SocketFactory> sockf, Optional<Text::EncodingFactory> encFact);
+			static Optional<OlympusCameraControl> CreateControl(NN<Net::SocketFactory> sockf, Optional<Text::EncodingFactory> encFact);
 		};
 	}
 }

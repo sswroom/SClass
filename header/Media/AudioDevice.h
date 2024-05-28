@@ -23,7 +23,7 @@ namespace Media
 	public:
 		static UOSInt GetDeviceCount();
 		static UTF8Char *GetDeviceName(UTF8Char *buff, UOSInt devIndex);
-		static Media::IAudioRenderer *CreateRenderer(Text::CString devName);
+		static Optional<Media::IAudioRenderer> CreateRenderer(Text::CString devName);
 
 		AudioDevice();
 		~AudioDevice();

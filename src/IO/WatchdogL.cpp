@@ -32,7 +32,7 @@ namespace IO
 	};
 }
 
-IO::Watchdog *IO::Watchdog::Create()
+Optional<IO::Watchdog> IO::Watchdog::Create()
 {
 	IO::Watchdog *wd;
 	NEW_CLASS(wd, IO::WatchdogLinux());
@@ -43,7 +43,7 @@ IO::Watchdog *IO::Watchdog::Create()
 	return 0;
 }
 
-IO::Watchdog *IO::Watchdog::Create(Int32 devNum)
+Optional<IO::Watchdog> IO::Watchdog::Create(Int32 devNum)
 {
 	IO::Watchdog *wd;
 	NEW_CLASS(wd, IO::WatchdogLinux(devNum));

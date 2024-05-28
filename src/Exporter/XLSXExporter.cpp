@@ -204,8 +204,8 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			sb.AppendC(UTF8STRC("<sheetData>"));
 			while (k < l)
 			{
-				Text::SpreadSheet::Worksheet::RowData *row = sheet->GetItem(k);
-				if (row)
+				NN<Text::SpreadSheet::Worksheet::RowData> row;
+				if (sheet->GetItem(k).SetTo(row))
 				{
 					sb.AppendC(UTF8STRC("<row r=\""));
 					sb.AppendUOSInt(k + 1);
@@ -449,7 +449,8 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 			l = sheet->GetDrawingCount();
 			while (k < l)
 			{
-				Text::SpreadSheet::WorksheetDrawing *drawing = sheet->GetDrawing(k);
+				NN<Text::SpreadSheet::OfficeChart> chart;
+				NN<Text::SpreadSheet::WorksheetDrawing> drawing = sheet->GetDrawingNoCheck(k);
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"));
 				sb.AppendC(UTF8STRC("<xdr:wsDr xmlns:xdr=\"http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:c=\"http://schemas.openxmlformats.org/drawingml/2006/chart\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">"));
@@ -522,7 +523,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 					sb.AppendC(UTF8STRC("</xdr:to>"));
 					break;
 				}
-				if (drawing->chart)
+				if (drawing->chart.SetTo(chart))
 				{
 					sb.AppendC(UTF8STRC("<xdr:graphicFrame>"));
 					sb.AppendC(UTF8STRC("<xdr:nvGraphicFramePr>"));
@@ -535,14 +536,14 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 					sb.AppendC(UTF8STRC("</xdr:nvGraphicFramePr>"));
 					sb.AppendC(UTF8STRC("<xdr:xfrm>"));
 					sb.AppendC(UTF8STRC("<a:off x=\""));
-					sb.AppendOSInt(Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->chart->GetXInch())));
+					sb.AppendOSInt(Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, chart->GetXInch())));
 					sb.AppendC(UTF8STRC("\" y=\""));
-					sb.AppendOSInt(Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->chart->GetYInch())));
+					sb.AppendOSInt(Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, chart->GetYInch())));
 					sb.AppendC(UTF8STRC("\"/>"));
 					sb.AppendC(UTF8STRC("<a:ext cx=\""));
-					sb.AppendOSInt(Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->chart->GetWInch())));
+					sb.AppendOSInt(Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, chart->GetWInch())));
 					sb.AppendC(UTF8STRC("\" cy=\""));
-					sb.AppendOSInt(Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->chart->GetHInch())));
+					sb.AppendOSInt(Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, chart->GetHInch())));
 					sb.AppendC(UTF8STRC("\"/>"));
 					sb.AppendC(UTF8STRC("</xdr:xfrm>"));
 					sb.AppendC(UTF8STRC("<a:graphic>"));
@@ -584,7 +585,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 				sbContTypes.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				sbContTypes.AppendC(UTF8STRC("\" ContentType=\"application/vnd.openxmlformats-officedocument.drawing+xml\"/>"));
 
-				if (drawing->chart)
+				if (drawing->chart.SetTo(chart))
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"));
@@ -610,16 +611,16 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 					sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"));
 					sb.AppendC(UTF8STRC("<c:chartSpace xmlns:c=\"http://schemas.openxmlformats.org/drawingml/2006/chart\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">"));
 					sb.AppendC(UTF8STRC("<c:chart>"));
-					if (drawing->chart->GetTitleText())
+					if (chart->GetTitleText())
 					{
-						AppendTitle(sb, drawing->chart->GetTitleText()->v);
+						AppendTitle(sb, chart->GetTitleText()->v);
 					}
 					sb.AppendC(UTF8STRC("<c:plotArea>"));
 					sb.AppendC(UTF8STRC("<c:layout/>"));
-					if (drawing->chart->GetChartType() != ChartType::Unknown)
+					if (chart->GetChartType() != ChartType::Unknown)
 					{
 						NN<Text::SpreadSheet::OfficeChartAxis> nnaxis;
-						switch (drawing->chart->GetChartType())
+						switch (chart->GetChartType())
 						{
 						case ChartType::LineChart:
 							sb.AppendC(UTF8STRC("<c:lineChart>"));
@@ -628,25 +629,25 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 							break;
 						}
 						m = 0;
-						n = drawing->chart->GetSeriesCount();
+						n = chart->GetSeriesCount();
 						while (m < n)
 						{
-							AppendSeries(sb, drawing->chart->GetSeriesNoCheck(m), m);
+							AppendSeries(sb, chart->GetSeriesNoCheck(m), m);
 							m++;
 						}
-						if (drawing->chart->GetCategoryAxis().SetTo(nnaxis))
+						if (chart->GetCategoryAxis().SetTo(nnaxis))
 						{
 							sb.AppendC(UTF8STRC("<c:axId val=\""));
-							sb.AppendUOSInt(drawing->chart->GetAxisIndex(nnaxis));
+							sb.AppendUOSInt(chart->GetAxisIndex(nnaxis));
 							sb.AppendC(UTF8STRC("\"/>"));
 						}
-						if (drawing->chart->GetValueAxis().SetTo(nnaxis))
+						if (chart->GetValueAxis().SetTo(nnaxis))
 						{
 							sb.AppendC(UTF8STRC("<c:axId val=\""));
-							sb.AppendUOSInt(drawing->chart->GetAxisIndex(nnaxis));
+							sb.AppendUOSInt(chart->GetAxisIndex(nnaxis));
 							sb.AppendC(UTF8STRC("\"/>"));
 						}
-						switch (drawing->chart->GetChartType())
+						switch (chart->GetChartType())
 						{
 						case ChartType::LineChart:
 							sb.AppendC(UTF8STRC("</c:lineChart>"));
@@ -656,19 +657,19 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 						}
 					}
 					m = 0;
-					n = drawing->chart->GetAxisCount();
+					n = chart->GetAxisCount();
 					while (m < n)
 					{
-						AppendAxis(sb, drawing->chart->GetAxis(m), m);
+						AppendAxis(sb, chart->GetAxis(m), m);
 						m++;
 					}
-					AppendShapeProp(sb, drawing->chart->GetShapeProp());
+					AppendShapeProp(sb, chart->GetShapeProp());
 					sb.AppendC(UTF8STRC("</c:plotArea>"));
-					if (drawing->chart->HasLegend())
+					if (chart->HasLegend())
 					{
 						sb.AppendC(UTF8STRC("<c:legend>"));
 						sb.AppendC(UTF8STRC("<c:legendPos val=\""));
-						switch (drawing->chart->GetLegendPos())
+						switch (chart->GetLegendPos())
 						{
 						case LegendPos::Bottom:
 							sb.AppendC(UTF8STRC("b"));
@@ -676,7 +677,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 						}
 						sb.AppendC(UTF8STRC("\"/>"));
 						sb.AppendC(UTF8STRC("<c:overlay val=\""));
-						if (drawing->chart->IsLegendOverlay())
+						if (chart->IsLegendOverlay())
 						{
 							sb.AppendC(UTF8STRC("true"));
 						}
@@ -688,7 +689,7 @@ Bool Exporter::XLSXExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStrin
 						sb.AppendC(UTF8STRC("</c:legend>"));
 					}
 					sb.AppendC(UTF8STRC("<c:plotVisOnly val=\"true\"/>"));
-					switch (drawing->chart->GetDisplayBlankAs())
+					switch (chart->GetDisplayBlankAs())
 					{
 					case BlankAs::Default:
 						break;
@@ -1455,10 +1456,10 @@ void Exporter::XLSXExporter::AppendSeries(NN<Text::StringBuilderUTF8> sb, NN<Tex
 		sb->AppendC(UTF8STRC("<c:ptCount val=\""));
 		sb->AppendUOSInt(lastCol - firstCol + 1);
 		sb->AppendC(UTF8STRC("\"/>"));
-		Worksheet::RowData *row = sheet->GetItem(firstRow);
+		NN<Worksheet::RowData> row;
 		Worksheet::CellData *cell;
 		UOSInt i;
-		if (row)
+		if (sheet->GetItem(firstRow).SetTo(row))
 		{
 			i = firstCol;
 			while (i <= lastCol)
@@ -1484,14 +1485,13 @@ void Exporter::XLSXExporter::AppendSeries(NN<Text::StringBuilderUTF8> sb, NN<Tex
 		sb->AppendC(UTF8STRC("<c:ptCount val=\""));
 		sb->AppendUOSInt(lastRow - firstRow + 1);
 		sb->AppendC(UTF8STRC("\"/>"));
-		Worksheet::RowData *row;
+		NN<Worksheet::RowData> row;
 		Worksheet::CellData *cell;
 		UOSInt i;
 		i = firstRow;
 		while (i <= lastRow)
 		{
-			row = sheet->GetItem(i);
-			if (row)
+			if (sheet->GetItem(i).SetTo(row))
 			{
 				cell = row->cells->GetItem(firstCol);
 				if (cell && cell->cellValue && (cell->cdt == CellDataType::DateTime || cell->cdt == CellDataType::Number))

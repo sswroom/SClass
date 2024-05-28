@@ -48,13 +48,11 @@ OSInt __stdcall UI::GUICustomDraw::FormWndProc(void *hWnd, UInt32 msg, UOSInt wP
 			PAINTSTRUCT ps;
 			HDC hdc = BeginPaint((HWND)me->hwnd, &ps);
 			NN<Media::DrawImage> dimg;
-			if (dimg.Set(((Media::GDIEngine*)me->eng.Ptr())->CreateImageScn(hdc, 0, 0, ps.rcPaint.right - ps.rcPaint.left, ps.rcPaint.bottom - ps.rcPaint.top)))
-			{
-				dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
-				dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
-				me->OnDraw(dimg);
-				me->eng->DeleteImage(dimg);
-			}
+			dimg = NN<Media::GDIEngine>::ConvertFrom(me->eng)->CreateImageScn(hdc, 0, 0, ps.rcPaint.right - ps.rcPaint.left, ps.rcPaint.bottom - ps.rcPaint.top);
+			dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
+			dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
+			me->OnDraw(dimg);
+			me->eng->DeleteImage(dimg);
 			EndPaint((HWND)me->hwnd, &ps);
 		}
 		return 0;

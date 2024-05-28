@@ -16,7 +16,7 @@ namespace Media
 			OSInt *oIndex;
 			Int64 *oWeight;
 			UOSInt oTap;
-			Media::Resizer::LanczosResizerLR_C32Action::VertFilter *oFilter;
+			Optional<Media::Resizer::LanczosResizerLR_C32Action::VertFilter> oFilter;
 
 			Double esSize;
 			UOSInt edSize;
@@ -24,7 +24,7 @@ namespace Media
 			OSInt *eIndex;
 			Int64 *eWeight;
 			UOSInt eTap;
-			Media::Resizer::LanczosResizerLR_C32Action::VertFilter *eFilter;
+			Optional<Media::Resizer::LanczosResizerLR_C32Action::VertFilter> eFilter;
 
 			void DestoryVertO();
 			void DestoryVertE();

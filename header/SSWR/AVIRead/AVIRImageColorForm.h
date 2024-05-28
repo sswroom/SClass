@@ -19,8 +19,8 @@ namespace SSWR
 
 			NN<const Media::StaticImage> srcImg;
 			NN<Media::StaticImage> destImg;
-			NN<Media::StaticImage> srcPrevImg;
-			NN<Media::StaticImage> destPrevImg;
+			Optional<Media::StaticImage> srcPrevImg;
+			Optional<Media::StaticImage> destPrevImg;
 			NN<UI::GUIPictureBoxDD> previewCtrl;
 			Media::RGBColorFilter *rgbFilter;
 			Double currBVal;

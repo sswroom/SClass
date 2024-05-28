@@ -198,7 +198,7 @@ Math::Coord2DDbl Math::Geometry::Polyline::CalcPosAtDistance(Double dist) const
 	return lastPt;
 }
 
-Math::Geometry::Polyline *Math::Geometry::Polyline::SplitByPoint(Math::Coord2DDbl pt)
+Optional<Math::Geometry::Polyline> Math::Geometry::Polyline::SplitByPoint(Math::Coord2DDbl pt)
 {
 	Math::Coord2DDbl calPt;
 	Double calZ;

@@ -17,7 +17,7 @@ namespace SSWR
 		class AVIRSelIOPinForm : public UI::GUIForm
 		{
 		public:
-			IO::IOPin *ioPin;
+			Optional<IO::IOPin> ioPin;
 			SSWR::AVIRead::AVIRCore::IOPinType ioPinType;
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;

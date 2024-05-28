@@ -58,9 +58,9 @@ namespace Media
 		FogEngine();
 		virtual ~FogEngine();
 
-		virtual DrawImage *CreateImage32(Int32 width, Int32 height);
-		virtual DrawImage *LoadImageA(Char *fileName);
-		virtual DrawImage *LoadImageW(WChar *fileName);
-		virtual Bool DeleteImage(DrawImage *img);
+		virtual Optional<DrawImage> CreateImage32(Int32 width, Int32 height);
+		virtual Optional<DrawImage> LoadImageA(Char *fileName);
+		virtual Optional<DrawImage> LoadImageW(WChar *fileName);
+		virtual Bool DeleteImage(NN<DrawImage> img);
 	};
 };

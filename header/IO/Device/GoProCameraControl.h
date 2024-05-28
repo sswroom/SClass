@@ -28,7 +28,7 @@ namespace IO
 			virtual Bool GetFile(NN<FileInfo> file, NN<IO::Stream> outStm);
 			virtual Bool GetThumbnailFile(NN<FileInfo> file, NN<IO::Stream> outStm);
 
-			static GoProCameraControl *CreateControl(NN<Net::SocketFactory> sockf);
+			static Optional<GoProCameraControl> CreateControl(NN<Net::SocketFactory> sockf);
 		};
 	}
 }

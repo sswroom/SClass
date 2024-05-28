@@ -710,9 +710,9 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 			}
 			else if (formats[i]->formatId == 0x50)
 			{
-				NN<Media::IAudioSource> as;
+				NN<Media::AudioBlockSource> as;
 				Media::BlockParser::MP2BlockParser mp2Parser;
-				if (as.Set(mp2Parser.ParseStreamData(stmFD)))
+				if (mp2Parser.ParseStreamData(stmFD).SetTo(as))
 				{
 					file->AddSource(as, audDelay[i]);
 				}
@@ -720,9 +720,9 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 			}
 			else if (formats[i]->formatId == 0x55)
 			{
-				NN<Media::IAudioSource> as;
+				NN<Media::AudioBlockSource> as;
 				Media::BlockParser::MP3BlockParser mp3Parser;
-				if (as.Set(mp3Parser.ParseStreamData(stmFD)))
+				if (mp3Parser.ParseStreamData(stmFD).SetTo(as))
 				{
 					file->AddSource(as, audDelay[i]);
 				}
@@ -730,9 +730,9 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 			}
 			else if (formats[i]->formatId == 0x2000)
 			{
-				NN<Media::IAudioSource> as;
+				NN<Media::AudioBlockSource> as;
 				Media::BlockParser::AC3BlockParser ac3Parser;
-				if (as.Set(ac3Parser.ParseStreamData(stmFD)))
+				if (ac3Parser.ParseStreamData(stmFD).SetTo(as))
 				{
 					file->AddSource(as, audDelay[i]);
 				}

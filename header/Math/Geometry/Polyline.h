@@ -26,11 +26,11 @@ namespace Math
 			UOSInt FillPointOfstList(Math::Coord2DDbl *pointList, UInt32 *ptOfstList, Double *zList, Double *mList) const;
 			Math::Coord2DDbl CalcPosAtDistance(Double dist) const;
 
-			Math::Geometry::Polyline *SplitByPoint(Math::Coord2DDbl pt);
+			Optional<Math::Geometry::Polyline> SplitByPoint(Math::Coord2DDbl pt);
 //			virtual void OptimizePolyline();
 			OSInt GetPointNo(Math::Coord2DDbl pt, OptOut<Bool> isPoint, OptOut<Math::Coord2DDbl> calPt, OptOut<Double> calZ, OptOut<Double> calM);
 
-//			Math::Geometry::Polygon *CreatePolygonByDist(Double dist) const;
+//			Optional<Math::Geometry::Polygon> CreatePolygonByDist(Double dist) const;
 			Bool HasColor() const;
 			UInt32 GetColor() const;
 			void SetColor(UInt32 color);

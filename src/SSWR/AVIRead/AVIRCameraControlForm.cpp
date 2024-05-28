@@ -172,7 +172,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesSelChg(AnyType userO
 	}
 }
 
-SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::CameraControl *camera) : UI::GUIForm(parent, 640, 768, ui)
+SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, NN<IO::CameraControl> camera) : UI::GUIForm(parent, 640, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("Camera Control"));
@@ -256,7 +256,7 @@ SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(Optional<UI::GUIClie
 SSWR::AVIRead::AVIRCameraControlForm::~AVIRCameraControlForm()
 {
 	this->ClearChildren();
-	DEL_CLASS(this->camera);
+	this->camera.Delete();
 	NN<const Data::ArrayListNN<Media::ImageList>> previewList = this->previewMap.GetValues();
 	UOSInt i = previewList->GetCount();
 	NN<Media::ImageList> previewImg;

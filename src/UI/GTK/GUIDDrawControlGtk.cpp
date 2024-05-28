@@ -339,7 +339,7 @@ void UI::GUIDDrawControl::ReleaseSurface()
 
 void UI::GUIDDrawControl::CreateSubSurface()
 {
-	if (this->primarySurface)
+	if (this->primarySurface.NotNull())
 	{
 		return;
 	}
@@ -348,33 +348,39 @@ void UI::GUIDDrawControl::CreateSubSurface()
 		return;
 	}
 	this->primarySurface = this->surfaceMgr->CreateSurface(this->dispSize, 32);
-	if (this->primarySurface)
+	NN<Media::MonitorSurface> surface;
+	if (this->primarySurface.SetTo(surface))
 	{
-		this->primarySurface->info.rotateType = this->rotType;
+		surface->info.rotateType = this->rotType;
 	}
 	this->bkBuffSize = this->dispSize;
 	if (this->rotType == Media::RotateType::CW_90 || this->rotType == Media::RotateType::CW_270 || this->rotType == Media::RotateType::HFLIP_CW_90 || this->rotType == Media::RotateType::HFLIP_CW_270)
 	{
 		this->bkBuffSize = this->dispSize.SwapXY();
 	}
-//	this->primarySurface = this->surfaceMgr->CreatePrimarySurface(this->GetHMonitor(), 0);
 	this->buffSurface = this->surfaceMgr->CreateSurface(this->bkBuffSize, 32);
-	GdkPixbuf *buf = gdk_pixbuf_new_from_data((const guchar*)this->primarySurface->GetHandle(), GDK_COLORSPACE_RGB, true, 8, (int)(OSInt)this->dispSize.x, (int)(OSInt)this->dispSize.y, (int)(OSInt)this->dispSize.x * 4, 0, 0);
-//	GdkPixbuf *buf = gdk_pixbuf_new_from_data((const guchar*)this->buffSurface->GetHandle(), GDK_COLORSPACE_RGB, true, 8, (int)(OSInt)this->surfaceW, (int)(OSInt)this->surfaceH, (int)(OSInt)this->surfaceW * 4, 0, 0);
-	if (buf == 0)
+	GdkPixbuf *buf;
+	if (this->primarySurface.SetTo(surface))
 	{
-		DEL_CLASS(this->primarySurface);
-		DEL_CLASS(this->buffSurface);
-		this->primarySurface = 0;
-		this->buffSurface = 0;
+		buf = gdk_pixbuf_new_from_data((const guchar*)surface->GetHandle(), GDK_COLORSPACE_RGB, true, 8, (int)(OSInt)this->dispSize.x, (int)(OSInt)this->dispSize.y, (int)(OSInt)this->dispSize.x * 4, 0, 0);
+		if (buf == 0)
+		{
+			this->primarySurface.Delete();
+			this->buffSurface.Delete();
+		}
+		else
+		{
+			surface->info.atype = Media::AT_ALPHA;
+			OSInt lineAdd;
+			ImageUtil_ColorFill32((UInt8*)surface->LockSurface(lineAdd), this->dispSize.CalcArea(), 0xff000000);
+			this->clsData->pixBuf = buf;
+			this->clsData->pSurfaceUpdated = true;
+		}
 	}
 	else
 	{
-		this->primarySurface->info.atype = Media::AT_ALPHA;
-		OSInt lineAdd;
-		ImageUtil_ColorFill32((UInt8*)this->primarySurface->LockSurface(&lineAdd), this->dispSize.CalcArea(), 0xff000000);
-		this->clsData->pixBuf = buf;
-		this->clsData->pSurfaceUpdated = true;
+		this->primarySurface.Delete();
+		this->buffSurface.Delete();
 	}
 }
 
@@ -384,29 +390,29 @@ void UI::GUIDDrawControl::ReleaseSubSurface()
 	{
 		gtk_image_clear((GtkImage*)this->clsData->imgCtrl);
 	}
-	if (this->primarySurface)
+	NN<Media::MonitorSurface> surface;
+	if (this->primarySurface.SetTo(surface))
 	{
 		g_object_unref(this->clsData->pixBuf);
 		this->clsData->pixBuf = 0;
 		this->clsData->pSurfaceUpdated = true;
-		DEL_CLASS(this->buffSurface);
-		DEL_CLASS(this->primarySurface);
-		this->buffSurface = 0;
-		this->primarySurface = 0;
+		this->buffSurface.Delete();
+		this->primarySurface.Delete();
 	}
 }
 
-UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, UOSInt *bpl)
+UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, OutParam<OSInt> bpl)
 {
+	NN<Media::MonitorSurface> buffSurface;
 	this->surfaceMut.Lock();
-	if (this->buffSurface == 0)
+	if (!this->buffSurface.SetTo(buffSurface))
 	{
 		this->surfaceMut.Unlock();
 		return 0;
 	}
-	if (targetWidth == this->buffSurface->info.dispSize.x && targetHeight == this->buffSurface->info.dispSize.y)
+	if (targetWidth == buffSurface->info.dispSize.x && targetHeight == buffSurface->info.dispSize.y)
 	{
-		UInt8 *dptr = this->buffSurface->LockSurface((OSInt*)bpl);
+		UInt8 *dptr = buffSurface->LockSurface(bpl);
 		if (dptr)
 		{
 			return dptr;
@@ -418,7 +424,11 @@ UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHe
 
 void UI::GUIDDrawControl::LockSurfaceEnd()
 {
-	this->buffSurface->UnlockSurface();
+	NN<Media::MonitorSurface> buffSurface;
+	if (this->buffSurface.SetTo(buffSurface))
+	{
+		buffSurface->UnlockSurface();
+	}
 	this->surfaceMut.Unlock();
 }
 
@@ -506,8 +516,9 @@ void UI::GUIDDrawControl::SetUserFSMode(ScreenMode fullScnMode)
 
 void UI::GUIDDrawControl::DrawToScreen()
 {
+	NN<Media::MonitorSurface> primarySurface;
 	NN<Media::MonitorSurface> buffSurface;
-	if (this->primarySurface && buffSurface.Set(this->buffSurface))
+	if (this->primarySurface.SetTo(primarySurface) && this->buffSurface.SetTo(buffSurface))
 	{
 		if (this->clsData->drawPause)
 		{
@@ -515,7 +526,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 		}
 		else
 		{
-			this->primarySurface->DrawFromSurface(buffSurface, true);
+			primarySurface->DrawFromSurface(buffSurface, true);
 //			this->clsData->drawPause = 0;
 			this->clsData->drawPause = 10;
 			if (this->clsData->pSurfaceUpdated)
@@ -539,7 +550,8 @@ void UI::GUIDDrawControl::DrawToScreen()
 void UI::GUIDDrawControl::DisplayFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn)
 {
 	Sync::MutexUsage mutUsage(this->surfaceMut);
-	if (this->primarySurface)
+	NN<Media::MonitorSurface> primarySurface;
+	if (this->primarySurface.SetTo(primarySurface))
 	{
 		if (this->clsData->drawPause)
 		{
@@ -547,7 +559,7 @@ void UI::GUIDDrawControl::DisplayFromSurface(NN<Media::MonitorSurface> surface, 
 		}
 		else
 		{
-			this->primarySurface->DrawFromSurface(surface, tl, drawSize, clearScn, true);
+			primarySurface->DrawFromSurface(surface, tl, drawSize, clearScn, true);
 //			this->clsData->drawPause = 0;
 //			Data::DateTime dt;
 //			dt.SetCurrTimeUTC();

@@ -58,7 +58,7 @@ namespace Media
 		UOSInt GetDeviceList(Data::ArrayList<UInt32> *devList);
 		UTF8Char *GetDeviceName(UTF8Char *buff, UOSInt devId);
 
-		Media::IVideoCapture *CreateDevice(UOSInt devId);
+		Optional<Media::IVideoCapture> CreateDevice(UOSInt devId);
 	};
 }
 #endif

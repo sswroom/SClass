@@ -81,7 +81,7 @@ namespace Media
 			Data::Duration frameTime;
 			UInt32 frameNum;
 			Bool discontTime;
-			Media::MonitorSurface *destSurface;
+			Optional<Media::MonitorSurface> destSurface;
 			Math::Size2D<UOSInt> destSize;
 			UInt32 destBitDepth;
 			Media::FrameType frameType;
@@ -97,7 +97,7 @@ namespace Media
 			Media::IDeintResizer *dresizer;
 			UInt32 resizerBitDepth;
 			Bool resizer10Bit;
-			Media::CS::CSConverter *csconv;
+			Optional<Media::CS::CSConverter> csconv;
 			UInt8 *lrBuff;
 			UOSInt lrSize;
 			UInt8 *diBuff;
@@ -199,7 +199,7 @@ namespace Media
 		void CalDisplayRect(UOSInt srcWidth, UOSInt srcHeight, DrawRect *rect);
 
 		virtual void ProcessVideo(NN<ThreadStat> tstat, VideoBuff *vbuff, VideoBuff *vbuff2);
-		virtual Media::IImgResizer *CreateResizer(NN<Media::ColorManagerSess> colorSess, UInt32 bitDepth, Double srcRefLuminance);
+		virtual NN<Media::IImgResizer> CreateResizer(NN<Media::ColorManagerSess> colorSess, UInt32 bitDepth, Double srcRefLuminance);
 		virtual void CreateCSConv(NN<ThreadStat> tstat, Media::FrameInfo *info);
 		virtual void CreateThreadResizer(NN<ThreadStat> tstat);
 

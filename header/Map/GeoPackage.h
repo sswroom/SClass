@@ -40,7 +40,7 @@ namespace Map
 		void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		void Reconnect();
 
-		Map::MapLayerCollection *CreateLayerCollection();
+		NN<Map::MapLayerCollection> CreateLayerCollection();
 	};
 }
 #endif

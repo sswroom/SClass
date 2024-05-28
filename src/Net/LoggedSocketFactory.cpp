@@ -4,7 +4,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-Net::LoggedSocketFactory::LoggedSocketFactory(NN<Net::SocketFactory> sockf, IO::LogTool *log, Text::CString logPrefix) : Net::SocketFactory(false)
+Net::LoggedSocketFactory::LoggedSocketFactory(NN<Net::SocketFactory> sockf, NN<IO::LogTool> log, Text::CString logPrefix) : Net::SocketFactory(false)
 {
 	this->sockf = sockf;
 	this->log = log;
@@ -13,19 +13,16 @@ Net::LoggedSocketFactory::LoggedSocketFactory(NN<Net::SocketFactory> sockf, IO::
 
 Net::LoggedSocketFactory::~LoggedSocketFactory()
 {
-	SDEL_STRING(this->logPrefix);
+	OPTSTR_DEL(this->logPrefix);
 }
 
-Socket *Net::LoggedSocketFactory::CreateTCPSocketv4()
+Optional<Socket> Net::LoggedSocketFactory::CreateTCPSocketv4()
 {
-	Socket *ret = this->sockf->CreateTCPSocketv4();
+	Optional<Socket> ret = this->sockf->CreateTCPSocketv4();
 	Text::StringBuilderUTF8 sb;
-	if (this->logPrefix)
-	{
-		sb.Append(this->logPrefix);
-	}
+	sb.AppendOpt(this->logPrefix);
 	sb.AppendC(UTF8STRC("Create TCP Socket v4: "));
-	if (!this->sockf->SocketIsInvalid(ret))
+	if (ret.NotNull())
 	{
 		sb.AppendC(UTF8STRC("Success"));
 	}
@@ -37,16 +34,13 @@ Socket *Net::LoggedSocketFactory::CreateTCPSocketv4()
 	return ret;
 }
 
-Socket *Net::LoggedSocketFactory::CreateTCPSocketv6()
+Optional<Socket> Net::LoggedSocketFactory::CreateTCPSocketv6()
 {
-	Socket *ret = this->sockf->CreateTCPSocketv6();
+	Optional<Socket> ret = this->sockf->CreateTCPSocketv6();
 	Text::StringBuilderUTF8 sb;
-	if (this->logPrefix)
-	{
-		sb.Append(this->logPrefix);
-	}
+	sb.AppendOpt(this->logPrefix);
 	sb.AppendC(UTF8STRC("Create TCP Socket v6: "));
-	if (!this->sockf->SocketIsInvalid(ret))
+	if (ret.NotNull())
 	{
 		sb.AppendC(UTF8STRC("Success"));
 	}
@@ -58,16 +52,13 @@ Socket *Net::LoggedSocketFactory::CreateTCPSocketv6()
 	return ret;
 }
 
-Socket *Net::LoggedSocketFactory::CreateUDPSocketv4()
+Optional<Socket> Net::LoggedSocketFactory::CreateUDPSocketv4()
 {
-	Socket *ret = this->sockf->CreateUDPSocketv4();
+	Optional<Socket> ret = this->sockf->CreateUDPSocketv4();
 	Text::StringBuilderUTF8 sb;
-	if (this->logPrefix)
-	{
-		sb.Append(this->logPrefix);
-	}
+	sb.AppendOpt(this->logPrefix);
 	sb.AppendC(UTF8STRC("Create UDP Socket v4: "));
-	if (!this->sockf->SocketIsInvalid(ret))
+	if (ret.NotNull())
 	{
 		sb.AppendC(UTF8STRC("Success"));
 	}
@@ -79,34 +70,23 @@ Socket *Net::LoggedSocketFactory::CreateUDPSocketv4()
 	return ret;
 }
 
-void Net::LoggedSocketFactory::DestroySocket(Socket *socket)
+void Net::LoggedSocketFactory::DestroySocket(NN<Socket> socket)
 {
 	this->sockf->DestroySocket(socket);
 	Text::StringBuilderUTF8 sb;
-	if (this->logPrefix)
-	{
-		sb.Append(this->logPrefix);
-	}
+	sb.AppendOpt(this->logPrefix);
 	sb.AppendC(UTF8STRC("Destroy Socket: "));
 	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 }
 
-Bool Net::LoggedSocketFactory::SocketIsInvalid(Socket *socket)
-{
-	return this->sockf->SocketIsInvalid(socket);
-}
-
-Bool Net::LoggedSocketFactory::SocketBindv4(Socket *socket, UInt32 ip, UInt16 port)
+Bool Net::LoggedSocketFactory::SocketBindv4(NN<Socket> socket, UInt32 ip, UInt16 port)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	Bool ret = this->sockf->SocketBindv4(socket, ip, port);
 	sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip, port);
 	Text::StringBuilderUTF8 sb;
-	if (this->logPrefix)
-	{
-		sb.Append(this->logPrefix);
-	}
+	sb.AppendOpt(this->logPrefix);
 	sb.AppendC(UTF8STRC("Bind v4: "));
 	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb.AppendC(UTF8STRC(", "));
@@ -122,14 +102,11 @@ Bool Net::LoggedSocketFactory::SocketBindv4(Socket *socket, UInt32 ip, UInt16 po
 	return ret;
 }
 
-Bool Net::LoggedSocketFactory::SocketListen(Socket *socket)
+Bool Net::LoggedSocketFactory::SocketListen(NN<Socket> socket)
 {
 	Bool ret = this->sockf->SocketListen(socket);
 	Text::StringBuilderUTF8 sb;
-	if (this->logPrefix)
-	{
-		sb.Append(this->logPrefix);
-	}
+	sb.AppendOpt(this->logPrefix);
 	sb.AppendC(UTF8STRC("Listen to socket: "));
 	if (ret)
 	{
@@ -143,46 +120,38 @@ Bool Net::LoggedSocketFactory::SocketListen(Socket *socket)
 	return ret;
 }
 
-Socket *Net::LoggedSocketFactory::SocketAccept(Socket *socket)
+Optional<Socket> Net::LoggedSocketFactory::SocketAccept(NN<Socket> socket)
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	if (this->logPrefix)
-	{
-		sb.Append(this->logPrefix);
-	}
+	sb.AppendOpt(this->logPrefix);
 	sb.AppendC(UTF8STRC("Begin socket accept"));
 	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
-	Socket *ret = this->sockf->SocketAccept(socket);
+	Optional<Socket> ret = this->sockf->SocketAccept(socket);
 	sb.ClearStr();
-	if (this->logPrefix)
-	{
-		sb.Append(this->logPrefix);
-	}
+	sb.AppendOpt(this->logPrefix);
 	sb.AppendC(UTF8STRC("End socket accept: "));
-	if (ret == 0 || this->sockf->SocketIsInvalid(ret))
+	NN<Socket> soc;
+	if (!ret.SetTo(soc))
 	{
 		sb.AppendC(UTF8STRC("Failed"));
 	}
 	else
 	{
 		sb.AppendC(UTF8STRC("Success, remote: "));
-		sptr = this->sockf->GetRemoteName(sbuff, ret);
+		sptr = this->sockf->GetRemoteName(sbuff, soc);
 		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 	return ret;
 }
 
-UOSInt Net::LoggedSocketFactory::SendData(Socket *socket, const UInt8 *buff, UOSInt buffSize, OptOut<ErrorType> et)
+UOSInt Net::LoggedSocketFactory::SendData(NN<Socket> socket, const UInt8 *buff, UOSInt buffSize, OptOut<ErrorType> et)
 {
 	UOSInt ret = this->sockf->SendData(socket, buff, buffSize, et);
 	Text::StringBuilderUTF8 sb;
-	if (this->logPrefix)
-	{
-		sb.Append(this->logPrefix);
-	}
+	sb.AppendOpt(this->logPrefix);
 	sb.AppendC(UTF8STRC("Sent "));
 	sb.AppendOSInt(ret);
 	sb.AppendC(UTF8STRC(" bytes"));
@@ -190,14 +159,11 @@ UOSInt Net::LoggedSocketFactory::SendData(Socket *socket, const UInt8 *buff, UOS
 	return ret;
 }
 
-UOSInt Net::LoggedSocketFactory::ReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, OptOut<ErrorType> et)
+UOSInt Net::LoggedSocketFactory::ReceiveData(NN<Socket> socket, UInt8 *buff, UOSInt buffSize, OptOut<ErrorType> et)
 {
 	UOSInt ret = this->sockf->ReceiveData(socket, buff, buffSize, et);
 	Text::StringBuilderUTF8 sb;
-	if (this->logPrefix)
-	{
-		sb.Append(this->logPrefix);
-	}
+	sb.AppendOpt(this->logPrefix);
 	sb.AppendC(UTF8STRC("Received "));
 	sb.AppendOSInt(ret);
 	sb.AppendC(UTF8STRC(" bytes"));
@@ -205,7 +171,7 @@ UOSInt Net::LoggedSocketFactory::ReceiveData(Socket *socket, UInt8 *buff, UOSInt
 	return ret;
 }
 
-void *Net::LoggedSocketFactory::BeginReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, OptOut<ErrorType> et)
+void *Net::LoggedSocketFactory::BeginReceiveData(NN<Socket> socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, OptOut<ErrorType> et)
 {
 	return this->sockf->BeginReceiveData(socket, buff, buffSize, evt, et);
 }
@@ -216,10 +182,7 @@ UOSInt Net::LoggedSocketFactory::EndReceiveData(void *reqData, Bool toWait, OutP
 	if (toWait || ret > 0)
 	{
 		Text::StringBuilderUTF8 sb;
-		if (this->logPrefix)
-		{
-			sb.Append(this->logPrefix);
-		}
+		sb.AppendOpt(this->logPrefix);
 		sb.AppendC(UTF8STRC("End Received "));
 		sb.AppendOSInt(ret);
 		sb.AppendC(UTF8STRC(" bytes"));
@@ -233,47 +196,42 @@ void Net::LoggedSocketFactory::CancelReceiveData(void *reqData)
 	this->sockf->CancelReceiveData(reqData);
 }
 
-UOSInt Net::LoggedSocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt buffSize, Net::SocketUtil::AddressInfo *addr, UInt16 *port, OptOut<ErrorType> et)
+UOSInt Net::LoggedSocketFactory::UDPReceive(NN<Socket> socket, UInt8 *buff, UOSInt buffSize, NN<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et)
 {
-	UOSInt ret = this->sockf->UDPReceive(socket, buff, buffSize, addr, port, et);
+	ErrorType etTmp;
+	UInt16 portTmp;
+	UOSInt ret = this->sockf->UDPReceive(socket, buff, buffSize, addr, portTmp, etTmp);
+	et.Set(etTmp);
+	port.Set(portTmp);
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	if (this->logPrefix)
-	{
-		sb.Append(this->logPrefix);
-	}
+	sb.AppendOpt(this->logPrefix);
 	sb.AppendC(UTF8STRC("UDP Receive: "));
 	if (ret == 0)
 	{
 		sb.AppendC(UTF8STRC("Failed"));
-		if (et)
-		{
-			sb.AppendC(UTF8STRC(", ErrorType = "));
-			sb.AppendI32(*et);
-		}
+		sb.AppendC(UTF8STRC(", ErrorType = "));
+		sb.AppendI32(etTmp);
 	}
 	else
 	{
 		sb.AppendOSInt(ret);
 		sb.AppendC(UTF8STRC(" bytes from"));
-		sptr = Net::SocketUtil::GetAddrName(sbuff, addr, *port);
+		sptr = Net::SocketUtil::GetAddrName(sbuff, addr, portTmp);
 		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 	return ret;
 }
 
-UOSInt Net::LoggedSocketFactory::SendTo(Socket *socket, const UInt8 *buff, UOSInt buffSize, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
+UOSInt Net::LoggedSocketFactory::SendTo(NN<Socket> socket, const UInt8 *buff, UOSInt buffSize, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port)
 {
 	UOSInt ret = this->sockf->SendTo(socket, buff, buffSize, addr, port);
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	if (this->logPrefix)
-	{
-		sb.Append(this->logPrefix);
-	}
+	sb.AppendOpt(this->logPrefix);
 	sb.AppendC(UTF8STRC("Send To "));
 	sptr = Net::SocketUtil::GetAddrName(sbuff, addr, port);
 	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
@@ -291,15 +249,12 @@ UOSInt Net::LoggedSocketFactory::SendTo(Socket *socket, const UInt8 *buff, UOSIn
 	return ret;
 }
 
-Bool Net::LoggedSocketFactory::Connect(Socket *socket, UInt32 ip, UInt16 port)
+Bool Net::LoggedSocketFactory::Connect(NN<Socket> socket, UInt32 ip, UInt16 port, Data::Duration timeout)
 {
-	Bool ret = this->sockf->Connect(socket, ip, port);
+	Bool ret = this->sockf->Connect(socket, ip, port, timeout);
 	UTF8Char sbuff[64];
 	Text::StringBuilderUTF8 sb;
-	if (this->logPrefix)
-	{
-		sb.Append(this->logPrefix);
-	}
+	sb.AppendOpt(this->logPrefix);
 	sb.AppendC(UTF8STRC("Connect to "));
 	Net::SocketUtil::GetIPv4Name(sbuff, ip, port);
 	sb.AppendC(UTF8STRC(": "));
@@ -314,26 +269,20 @@ Bool Net::LoggedSocketFactory::Connect(Socket *socket, UInt32 ip, UInt16 port)
 	return ret;
 }
 
-void Net::LoggedSocketFactory::ShutdownSend(Socket *socket)
+void Net::LoggedSocketFactory::ShutdownSend(NN<Socket> socket)
 {
 	this->sockf->ShutdownSend(socket);
 	Text::StringBuilderUTF8 sb;
-	if (this->logPrefix)
-	{
-		sb.Append(this->logPrefix);
-	}
+	sb.AppendOpt(this->logPrefix);
 	sb.AppendC(UTF8STRC("Shutdown Send"));
 	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 }
 
-void Net::LoggedSocketFactory::ShutdownSocket(Socket *socket)
+void Net::LoggedSocketFactory::ShutdownSocket(NN<Socket> socket)
 {
 	this->sockf->ShutdownSocket(socket);
 	Text::StringBuilderUTF8 sb;
-	if (this->logPrefix)
-	{
-		sb.Append(this->logPrefix);
-	}
+	sb.AppendOpt(this->logPrefix);
 	sb.AppendC(UTF8STRC("Shutdown Socket"));
 	this->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 }

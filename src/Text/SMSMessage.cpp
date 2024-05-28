@@ -284,7 +284,7 @@ UOSInt Text::SMSMessage::ToSubmitPDU(UInt8 *buff)
 	return (UOSInt)(currPtr - buff);
 }
 
-Text::SMSMessage *Text::SMSMessage::CreateFromPDU(const UInt8 *pduBytes)
+Optional<Text::SMSMessage> Text::SMSMessage::CreateFromPDU(const UInt8 *pduBytes)
 {
 	UTF16Char sbuff[256];
 	UTF16Char *sptr = sbuff;

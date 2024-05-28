@@ -9,7 +9,7 @@ Media::BlockParser::DTSBlockParser::~DTSBlockParser()
 {
 }
 
-Media::AudioBlockSource *Media::BlockParser::DTSBlockParser::ParseStreamData(NN<IO::StreamData> stmData)
+Optional<Media::AudioBlockSource> Media::BlockParser::DTSBlockParser::ParseStreamData(NN<IO::StreamData> stmData)
 {
 	UInt64 leng = stmData->GetDataSize();
 	UInt8 buff[256];

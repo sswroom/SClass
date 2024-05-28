@@ -13,7 +13,7 @@ namespace Media
 		~CameraManager();
 
 		OSInt GetDeviceCount();
-		Media::IPhotoCapture *CreateDevice(OSInt devId);
+		Optional<Media::IPhotoCapture> CreateDevice(OSInt devId);
 	};
 }
 #endif

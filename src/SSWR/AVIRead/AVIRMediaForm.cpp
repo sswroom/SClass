@@ -609,12 +609,12 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_POPA_FREQ_GRAPH:
 		{
-			Media::IAudioSource *audio = (Media::IAudioSource*)this->popMedia;
+			NN<Media::IAudioSource> audio;
 			Manage::HiResClock clk;
 			Double t;
 			clk.Start();
 			NN<Media::DrawImage> img;
-			if (img.Set(Media::FrequencyGraph::CreateGraph(this->core->GetDrawEngine(), audio, 2048, 2048, Math::FFTCalc::WT_BLACKMANN_HARRIS, 12.0)))
+			if (audio.Set((Media::IAudioSource*)this->popMedia) && Media::FrequencyGraph::CreateGraph(this->core->GetDrawEngine(), audio, 2048, 2048, Math::FFTCalc::WT_BLACKMANN_HARRIS, 12.0).SetTo(img))
 			{
 				t = clk.GetTimeDiff();
 				Text::StringBuilderUTF8 sb;

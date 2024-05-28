@@ -151,10 +151,10 @@ namespace Map
 		void FreeObjects(NN<Data::ArrayListNN<ObjectInfo>> objList);
 		NN<Map::VectorLayer> CreateEditableLayer();
 
-		Text::SearchIndexer *CreateSearchIndexer(Text::TextAnalyzer *ta, UOSInt strIndex);
-		UOSInt SearchString(NN<Data::ArrayListString> outArr, Text::SearchIndexer *srchInd, NameArray *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex);
+		Optional<Text::SearchIndexer> CreateSearchIndexer(Text::TextAnalyzer *ta, UOSInt strIndex);
+		UOSInt SearchString(NN<Data::ArrayListString> outArr, NN<Text::SearchIndexer> srchInd, NameArray *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex);
 		void ReleaseSearchStr(NN<Data::ArrayListString> strArr);
-		Math::Geometry::Vector2D *GetVectorByStr(Text::SearchIndexer *srchInd, NameArray *nameArr, GetObjectSess *session, Text::CStringNN srchStr, UOSInt strIndex);
+		Math::Geometry::Vector2D *GetVectorByStr(NN<Text::SearchIndexer> srchInd, NameArray *nameArr, GetObjectSess *session, Text::CStringNN srchStr, UOSInt strIndex);
 
 		Bool HasLineStyle();
 		Bool HasPGStyle();

@@ -10,7 +10,7 @@
 #include "Media/CS/TransferFunc.h"
 #include "Text/MyString.h"
 
-Media::DrawImage *Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngine> eng, Media::IAudioSource *audio, UOSInt fftSize, UOSInt timeRes, Math::FFTCalc::WindowType wtype, Double fontSizePx)
+Optional<Media::DrawImage> Media::FrequencyGraph::CreateGraph(NN<Media::DrawEngine> eng, NN<Media::IAudioSource> audio, UOSInt fftSize, UOSInt timeRes, Math::FFTCalc::WindowType wtype, Double fontSizePx)
 {
 	if (!audio->SupportSampleRead())
 	{

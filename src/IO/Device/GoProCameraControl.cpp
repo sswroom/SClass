@@ -288,7 +288,7 @@ Bool IO::Device::GoProCameraControl::GetThumbnailFile(NN<IO::CameraControl::File
 	return totalSize > 512;
 }
 
-IO::Device::GoProCameraControl *IO::Device::GoProCameraControl::CreateControl(NN<Net::SocketFactory> sockf)
+Optional<IO::Device::GoProCameraControl> IO::Device::GoProCameraControl::CreateControl(NN<Net::SocketFactory> sockf)
 {
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
 	NN<Net::ConnectionInfo> connInfo;

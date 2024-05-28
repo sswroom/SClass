@@ -260,10 +260,10 @@ Media::Resizer::LanczosResizerLR_C32_CPU::~LanczosResizerLR_C32_CPU()
 	}
 }
 
-void Media::Resizer::LanczosResizerLR_C32_CPU::DoHorizontalVerticalFilter(const UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt sheight, UOSInt dheight, HoriFilter *hFilter, VertFilter *vFilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
+void Media::Resizer::LanczosResizerLR_C32_CPU::DoHorizontalVerticalFilter(const UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt sheight, UOSInt dheight, NN<HoriFilter> hFilter, NN<VertFilter> vFilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
 {
-	FilterParam *hparam = (FilterParam*)hFilter;
-	FilterParam *vparam = (FilterParam*)vFilter;
+	NN<FilterParam> hparam = NN<FilterParam>::ConvertFrom(hFilter);
+	NN<FilterParam> vparam = NN<FilterParam>::ConvertFrom(vFilter);
 
 	if (this->buffSize < (sheight * dwidth << 3))
 	{
@@ -279,9 +279,9 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::DoHorizontalVerticalFilter(const 
 	this->mt_vertical_filter(this->buffPtr, outPt, dwidth, dheight, vparam->tap, vparam->index, vparam->weight, (OSInt)dwidth << 3, dstep, srcAlphaType);
 }
 
-void Media::Resizer::LanczosResizerLR_C32_CPU::DoHorizontalFilterCollapse(const UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt sheight, HoriFilter *hFilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
+void Media::Resizer::LanczosResizerLR_C32_CPU::DoHorizontalFilterCollapse(const UInt8 *inPt, UInt8 *outPt, UOSInt dwidth, UOSInt sheight, NN<HoriFilter> hFilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
 {
-	FilterParam *hparam = (FilterParam*)hFilter;
+	NN<FilterParam> hparam = NN<FilterParam>::ConvertFrom(hFilter);
 	if (this->buffSize < (sheight * dwidth << 3))
 	{
 		if (this->buffPtr)
@@ -296,9 +296,9 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::DoHorizontalFilterCollapse(const 
 	this->mt_collapse(this->buffPtr, outPt, dwidth, sheight, (OSInt)dwidth << 3, dstep, srcAlphaType);
 }
 
-void Media::Resizer::LanczosResizerLR_C32_CPU::DoVerticalFilter(const UInt8 *inPt, UInt8 *outPt, UOSInt swidth, UOSInt sheight, UOSInt dheight, VertFilter *vFilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
+void Media::Resizer::LanczosResizerLR_C32_CPU::DoVerticalFilter(const UInt8 *inPt, UInt8 *outPt, UOSInt swidth, UOSInt sheight, UOSInt dheight, NN<VertFilter> vFilter, OSInt sstep, OSInt dstep, Media::AlphaType srcAlphaType)
 {
-	FilterParam *vparam = (FilterParam*)vFilter;
+	NN<FilterParam> vparam = NN<FilterParam>::ConvertFrom(vFilter);
 	this->mt_vertical_filter(inPt, outPt, swidth, dheight, vparam->tap, vparam->index, vparam->weight, sstep, dstep, srcAlphaType);
 }
 
@@ -312,34 +312,34 @@ void Media::Resizer::LanczosResizerLR_C32_CPU::UpdateRGBTable(UInt8 *rgbTable)
 	this->rgbTable = rgbTable;
 }
 
-Media::Resizer::LanczosResizerLR_C32Action::HoriFilter *Media::Resizer::LanczosResizerLR_C32_CPU::CreateHoriFilter(UOSInt htap, OSInt *hIndex, Int64 *hWeight, UOSInt length)
+NN<Media::Resizer::LanczosResizerLR_C32Action::HoriFilter> Media::Resizer::LanczosResizerLR_C32_CPU::CreateHoriFilter(UOSInt htap, OSInt *hIndex, Int64 *hWeight, UOSInt length)
 {
-	FilterParam *param = MemAlloc(FilterParam, 1);
+	NN<FilterParam> param = MemAllocNN(FilterParam);
 	param->tap = htap;
 	param->index = hIndex;
 	param->weight = hWeight;
-	return (HoriFilter*)param;
+	return NN<HoriFilter>::ConvertFrom(param);
 }
 
-void Media::Resizer::LanczosResizerLR_C32_CPU::DestroyHoriFilter(Media::Resizer::LanczosResizerLR_C32Action::HoriFilter *hfilter)
+void Media::Resizer::LanczosResizerLR_C32_CPU::DestroyHoriFilter(NN<Media::Resizer::LanczosResizerLR_C32Action::HoriFilter> hfilter)
 {
-	FilterParam *param = (FilterParam*)hfilter;
-	MemFree(param);
+	NN<FilterParam> param = NN<FilterParam>::ConvertFrom(hfilter);
+	MemFreeNN(param);
 }
 
-Media::Resizer::LanczosResizerLR_C32Action::VertFilter *Media::Resizer::LanczosResizerLR_C32_CPU::CreateVertFilter(UOSInt vtap, OSInt *vIndex, Int64 *vWeight, UOSInt length)
+NN<Media::Resizer::LanczosResizerLR_C32Action::VertFilter> Media::Resizer::LanczosResizerLR_C32_CPU::CreateVertFilter(UOSInt vtap, OSInt *vIndex, Int64 *vWeight, UOSInt length)
 {
-	FilterParam *param = MemAlloc(FilterParam, 1);
+	NN<FilterParam> param = MemAllocNN(FilterParam);
 	param->tap = vtap;
 	param->index = vIndex;
 	param->weight = vWeight;
-	return (VertFilter*)param;
+	return NN<VertFilter>::ConvertFrom(param);
 }
 
-void Media::Resizer::LanczosResizerLR_C32_CPU::DestroyVertFilter(Media::Resizer::LanczosResizerLR_C32Action::VertFilter *vfilter)
+void Media::Resizer::LanczosResizerLR_C32_CPU::DestroyVertFilter(NN<Media::Resizer::LanczosResizerLR_C32Action::VertFilter> vfilter)
 {
-	FilterParam *param = (FilterParam*)vfilter;
-	MemFree(param);
+	NN<FilterParam> param = NN<FilterParam>::ConvertFrom(vfilter);
+	MemFreeNN(param);
 }
 
 Double Media::Resizer::LanczosResizerLR_C32_CPU::GetHAvgTime()

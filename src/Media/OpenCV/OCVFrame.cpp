@@ -148,16 +148,16 @@ NN<Media::OpenCV::OCVFrame> Media::OpenCV::OCVFrame::BilateralFilter(Int32 d, Do
 	return ret;
 }
 
-Media::OpenCV::OCVFrame *Media::OpenCV::OCVFrame::CreateYFrame(UInt8 **imgData, UOSInt dataSize, UInt32 fourcc, Math::Size2D<UOSInt> dispSize, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf)
+Optional<Media::OpenCV::OCVFrame> Media::OpenCV::OCVFrame::CreateYFrame(UInt8 **imgData, UOSInt dataSize, UInt32 fourcc, Math::Size2D<UOSInt> dispSize, UOSInt storeWidth, UOSInt storeBPP, Media::PixelFormat pf)
 {
-	Media::CS::CSConverter *converter = Media::CS::CSConverter::NewConverter(fourcc, storeBPP, pf, Media::ColorProfile(), *(UInt32*)"Y800", 8, Media::PF_UNKNOWN, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, 0);
-	if (converter)
+	NN<Media::CS::CSConverter> converter;
+	if (Media::CS::CSConverter::NewConverter(fourcc, storeBPP, pf, Media::ColorProfile(), *(UInt32*)"Y800", 8, Media::PF_UNKNOWN, Media::ColorProfile(), Media::ColorProfile::YUVT_UNKNOWN, 0).SetTo(converter))
 	{
 		cv::Mat *fr;
 		fr = new cv::Mat((int)dispSize.y, (int)dispSize.x, CV_8UC1);
 		converter->ConvertV2(imgData, fr->ptr(0), dispSize.x, dispSize.y, storeWidth, dispSize.y, (OSInt)dispSize.x, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 
-		DEL_CLASS(converter);
+		converter.Delete();
 		Media::OpenCV::OCVFrame *frame;
 		NEW_CLASS(frame, Media::OpenCV::OCVFrame(fr));
 		return frame;

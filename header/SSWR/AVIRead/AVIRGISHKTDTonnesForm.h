@@ -24,7 +24,7 @@ namespace SSWR
 			NN<UI::GUIButton> btnOK;
 			NN<UI::GUIButton> btnCancel;
 
-			Map::MapDrawLayer *lyr;
+			Optional<Map::MapDrawLayer> lyr;
 
 			static void __stdcall OnRoadRouteClicked(AnyType userObj);
 			static void __stdcall OnVehicleResClicked(AnyType userObj);
@@ -36,7 +36,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			Map::MapDrawLayer *GetMapLayer();
+			Optional<Map::MapDrawLayer> GetMapLayer();
 		};
 	}
 }

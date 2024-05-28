@@ -19,7 +19,7 @@ namespace Media
 
 		UOSInt GetDeviceCount();
 		const UTF8Char *GetDeviceName(UOSInt index);
-		WIADevice *CreateDevice(UOSInt index);
+		Optional<WIADevice> CreateDevice(UOSInt index);
 	};
 
 	class WIADevice
