@@ -30,7 +30,7 @@ IO::ParserType Parser::FileParser::HEIFParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::HEIFParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
+Optional<IO::ParsedObject> Parser::FileParser::HEIFParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	return 0;
 }

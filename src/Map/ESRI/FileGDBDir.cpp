@@ -57,7 +57,7 @@ Optional<DB::DBReader> Map::ESRI::FileGDBDir::QueryTableData(Text::CString schem
 	}
 }
 
-DB::TableDef *Map::ESRI::FileGDBDir::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> Map::ESRI::FileGDBDir::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	FileGDBTable *table = this->GetTable(tableName);
 	if (table == 0)
@@ -75,6 +75,7 @@ DB::TableDef *Map::ESRI::FileGDBDir::GetTableDef(Text::CString schemaName, Text:
 	}
 	else
 	{
+		DEL_CLASS(tab);
 		return 0;
 	}
 }

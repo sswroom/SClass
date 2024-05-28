@@ -27,7 +27,7 @@ Bool DB::DBModel::LoadDatabase(NN<DB::DBTool> db, Text::CString dbName, Text::CS
 	Data::ArrayIterator<NN<Text::String>> it = tableNames.Iterator();
 	while (it.HasNext())
 	{
-		if (table.Set(db->GetTableDef(schemaName, it.Next()->ToCString())))
+		if (db->GetTableDef(schemaName, it.Next()->ToCString()).SetTo(table))
 		{
 			table->SetDatabaseName(dbName);
 			this->tables.Add(table);

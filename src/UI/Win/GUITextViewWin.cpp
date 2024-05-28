@@ -340,15 +340,15 @@ OSInt __stdcall UI::GUITextView::TFVWndProc(void *hWnd, UInt32 msg, UInt32 wPara
 			UOSInt scnW = (UInt16)LOWORD(lParam);
 			UOSInt scnH = (UInt16)HIWORD(lParam);
 			NN<Media::DrawImage> img;
-			if (img.Set(me->drawBuff))
+			if (me->drawBuff.SetTo(img))
 			{
 				me->deng->DeleteImage(img);
 			}
 			me->drawBuff = me->deng->CreateImage32(Math::Size2D<UOSInt>(scnW, scnH), Media::AT_NO_ALPHA);
-			if (me->drawBuff)
+			if (me->drawBuff.SetTo(img))
 			{
-				me->drawBuff->SetHDPI(me->GetHDPI());
-				me->drawBuff->SetVDPI(me->GetHDPI());
+				img->SetHDPI(me->GetHDPI());
+				img->SetVDPI(me->GetHDPI());
 			}
 			me->UpdateScrollBar();
 			me->Redraw();
@@ -387,7 +387,7 @@ void UI::GUITextView::OnPaint()
 	PAINTSTRUCT ps;
 	GetClientRect((HWND)this->hwnd, &rc);
 	NN<Media::GDIImage> img;
-	if (!img.Set((Media::GDIImage*)this->drawBuff))
+	if (!Optional<Media::GDIImage>::ConvertFrom(this->drawBuff).SetTo(img))
 	{	
 		BeginPaint((HWND)this->hwnd, &ps);
 		FillRect(ps.hdc, &rc, BGBRUSH);
@@ -412,7 +412,7 @@ void UI::GUITextView::UpdateScrollBar()
 	Math::Size2DDbl sz;
 	RECT rc;
 	NN<Media::DrawImage> img;
-	if (!img.Set(this->drawBuff))
+	if (!this->drawBuff.SetTo(img))
 	{
 		sz.y = 12;
 	}
@@ -471,7 +471,7 @@ void UI::GUITextView::SetScrollVRange(UOSInt min, UOSInt max)
 UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWidth)
 {
 	NN<Media::GDIImage> img;
-	if (img.Set((Media::GDIImage*)this->drawBuff))
+	if (Optional<Media::GDIImage>::ConvertFrom(this->drawBuff).SetTo(img))
 	{
 		SIZE sz;
 		NN<Media::GDIFont> fnt;
@@ -508,7 +508,7 @@ UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWi
 void UI::GUITextView::GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSInt *height)
 {
 	NN<Media::GDIImage> img;
-	if (img.Set((Media::GDIImage*)this->drawBuff))
+	if (Optional<Media::GDIImage>::ConvertFrom(this->drawBuff).SetTo(img))
 	{
 		Math::Size2DDbl sz;
 		NN<Media::DrawFont> fnt;
@@ -578,7 +578,7 @@ UI::GUITextView::~GUITextView()
 {
 	KillTimer((HWND)this->hwnd, 1);
 	NN<Media::DrawImage> img;
-	if (img.Set(this->drawBuff))
+	if (this->drawBuff.SetTo(img))
 	{
 		this->deng->DeleteImage(img);
 		this->drawBuff = 0;

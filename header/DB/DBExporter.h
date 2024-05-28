@@ -10,7 +10,7 @@ namespace DB
 	class DBExporter
 	{
 	public:
-		static Data::Class *CreateTableClass(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName);
+		static Optional<Data::Class> CreateTableClass(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName);
 		static Bool GenerateInsertSQLs(NN<DB::ReadingDB> db, DB::SQLType sqlType, Bool axisAware, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NN<IO::Stream> outStm);
 		static Bool GenerateCSV(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, Text::CStringNN nullText, NN<IO::Stream> outStm, UInt32 codePage);
 		static Bool GenerateSQLite(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName, Data::QueryConditions *cond, NN<DB::SQLiteFile> file, Text::StringBuilderUTF8 *sbError);

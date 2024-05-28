@@ -77,7 +77,7 @@ namespace SSWR
 		private:
 			ErrorType err;
 			NN<Net::SocketFactory> sockf;
-			DB::DBTool *db;
+			Optional<DB::DBTool> db;
 			IO::LogTool log;
 			Media::MonitorMgr *monMgr;
 			Data::FastStringMapNN<BurntDiscInfo> discMap;

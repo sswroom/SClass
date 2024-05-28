@@ -15,7 +15,7 @@ typedef struct
 	Optional<IO::ProgressHandler> progress;
 } ReadSess;
 
-IO::FileCheck *IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto::Hash::HashType chkType, Optional<IO::ProgressHandler> progress, Bool skipError)
+Optional<IO::FileCheck> IO::FileCheck::CreateCheck(Text::CStringNN path, Crypto::Hash::HashType chkType, Optional<IO::ProgressHandler> progress, Bool skipError)
 {
 	UTF8Char sbuff[1024];
 	UInt8 hashBuff[32];

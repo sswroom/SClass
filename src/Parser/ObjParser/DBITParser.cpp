@@ -31,7 +31,7 @@ IO::ParserType Parser::ObjParser::DBITParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(NN<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
+Optional<IO::ParsedObject> Parser::ObjParser::DBITParser::ParseObject(NN<IO::ParsedObject> pobj, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType)
 {
 	NN<DB::ReadingDB> db;
 	NN<DB::DBReader> r;

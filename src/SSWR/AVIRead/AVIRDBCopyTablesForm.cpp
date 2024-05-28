@@ -187,7 +187,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 	Bool createDB = me->chkDestCreateDDB->IsChecked();
 	DB::SQLBuilder sql(destDBTool);
 	Text::StringBuilderUTF8 sb;
-	DB::TableDef *tabDef;
+	Optional<DB::TableDef> tabDef;
 	NN<DB::TableDef> nntabDef;
 	NN<Text::String> tableName;
 	NN<DB::DBReader> r;
@@ -237,7 +237,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 		tabDef = me->dataConn->GetTableDef(STR_CSTR(me->dataSchema), tableName->ToCString());
 		if (succ && destTableType == 3)
 		{
-			if (!nntabDef.Set(tabDef))
+			if (!tabDef.SetTo(nntabDef))
 			{
 				me->lvData->SetSubItem(i, 1, CSTR("Error in getting table definition"));
 				succ = false;
@@ -262,7 +262,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 		}
 		if (succ && (destTableType == 0 || destTableType == 3))
 		{
-			if (!nntabDef.Set(tabDef))
+			if (!tabDef.SetTo(nntabDef))
 			{
 				me->lvData->SetSubItem(i, 1, CSTR("Error in getting table definition"));
 				succ = false;
@@ -307,7 +307,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 				while (r->ReadNext())
 				{
 					sql.Clear();
-					if (tabDef)
+					if (tabDef.NotNull())
 						DB::SQLGenerator::GenInsertCmd(sql, CSTRP(destSchema, destSchemaEnd), tableName->ToCString(), tabDef, r);
 					else
 						DB::SQLGenerator::GenInsertCmd(sql, CSTRP(destSchema, destSchemaEnd), tableName->ToCString(), r);
@@ -392,7 +392,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCopyTablesForm::OnCopyClicked(AnyType userOb
 				me->lvData->SetSubItem(i, 1, sb.ToCString());
 			}
 		}
-		SDEL_CLASS(tabDef);
+		tabDef.Delete();
 		i++;
 	}
 }

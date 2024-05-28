@@ -682,7 +682,7 @@ Optional<DB::DBReader> Media::HTRecFile::QueryTableData(Text::CString schemaName
 	return 0;
 }
 
-DB::TableDef *Media::HTRecFile::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> Media::HTRecFile::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	UOSInt i = 0;
 	UOSInt j;

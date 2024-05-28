@@ -182,29 +182,29 @@ namespace Manage
 
 		virtual RegBitDepth GetRegBitDepth() const = 0;
 		virtual Text::CStringNN GetHeader(Bool fullRegs) const = 0;
-		virtual Dasm_Regs *CreateRegs() const = 0;
-		virtual void FreeRegs(Dasm_Regs *regs) const = 0;
+		virtual NN<Dasm_Regs> CreateRegs() const = 0;
+		virtual void FreeRegs(NN<Dasm_Regs> regs) const = 0;
 	};
 
 	class Dasm16 : public Dasm
 	{
 	public:
 		virtual RegBitDepth GetRegBitDepth() const;
-		virtual Bool Disasm16(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt16 *currInst, UInt16 *currStack, UInt16 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt16 *blockStart, UInt16 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs) = 0; // true = succ
+		virtual Bool Disasm16(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt16 *currInst, UInt16 *currStack, UInt16 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt16 *blockStart, UInt16 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, Manage::IMemoryReader *memReader, Bool fullRegs) = 0; // true = succ
 	};
 
 	class Dasm32 : public Dasm
 	{
 	public:
 		virtual RegBitDepth GetRegBitDepth() const;
-		virtual Bool Disasm32(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs) = 0; // true = succ
+		virtual Bool Disasm32(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, Manage::IMemoryReader *memReader, Bool fullRegs) = 0; // true = succ
 	};
 
 	class Dasm64 : public Dasm
 	{
 	public:
 		virtual RegBitDepth GetRegBitDepth() const;
-		virtual Bool Disasm64(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt64 *currInst, UInt64 *currStack, UInt64 *currFrame, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs) = 0; // true = succ
+		virtual Bool Disasm64(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt64 *currInst, UInt64 *currStack, UInt64 *currFrame, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, Manage::IMemoryReader *memReader, Bool fullRegs) = 0; // true = succ
 	};
 }
 

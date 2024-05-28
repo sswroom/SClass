@@ -26,8 +26,6 @@ namespace Crypto
 			~JWTHandler();
 
 			Bool Generate(NN<Text::StringBuilderUTF8> sb, Data::StringMap<const UTF8Char*> *payload, JWTParam *param);
-
-			static JWTHandler *CreateHMAC(Optional<Net::SSLEngine> ssl, JWSignature::Algorithm alg, const UInt8 *key, UOSInt keyLeng);
 		};
 	}
 }

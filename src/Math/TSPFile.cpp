@@ -93,7 +93,7 @@ Optional<DB::DBReader> Math::TSPFile::QueryTableData(Text::CString schemaName, T
 	return reader;
 }
 
-DB::TableDef *Math::TSPFile::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> Math::TSPFile::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	UOSInt i;
 	UOSInt j;

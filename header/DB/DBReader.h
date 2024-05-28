@@ -114,8 +114,8 @@ namespace DB
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize) = 0;
 		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef) = 0;
 
-		TableDef *GenTableDef(Text::CString schemaName, Text::CString tableName);
-		Data::VariObject *CreateVariObject();
+		NN<TableDef> GenTableDef(Text::CString schemaName, Text::CString tableName);
+		NN<Data::VariObject> CreateVariObject();
 		NN<Data::Class> CreateClass();
 	};
 }

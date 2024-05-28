@@ -36,9 +36,9 @@ namespace Manage
 		virtual void SetStackAddr(UOSInt stackAddr) = 0;
 		virtual void SetFrameAddr(UOSInt frameAddr) = 0;
 		virtual NN<ThreadContext> Clone() const = 0;
-		virtual Bool GetRegs(Manage::Dasm::Dasm_Regs *regs) const = 0;
+		virtual Bool GetRegs(NN<Manage::Dasm::Dasm_Regs> regs) const = 0;
 
-		virtual Manage::Dasm *CreateDasm() const = 0;
+		virtual Optional<Manage::Dasm> CreateDasm() const = 0;
 
 		static Text::CStringNN ContextTypeGetName(ContextType contextType);
 	};

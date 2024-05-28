@@ -1193,9 +1193,9 @@ NN<Manage::ThreadContext> Manage::ThreadContextX86_64::Clone() const
 	return ret;
 }
 
-Bool Manage::ThreadContextX86_64::GetRegs(Manage::Dasm::Dasm_Regs *regs) const
+Bool Manage::ThreadContextX86_64::GetRegs(NN<Manage::Dasm::Dasm_Regs> regs) const
 {
-	Manage::DasmX86_64::DasmX86_64_Regs *r = (Manage::DasmX86_64::DasmX86_64_Regs *)regs;
+	NN<Manage::DasmX86_64::DasmX86_64_Regs> r = NN<Manage::DasmX86_64::DasmX86_64_Regs>::ConvertFrom(regs);
 	r->rax = (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RAX];
 	r->rdx = (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RDX];
 	r->rcx = (UInt64)((ucontext_t*)this->context)->uc_mcontext.gregs[REG_RCX];
@@ -1236,7 +1236,7 @@ Bool Manage::ThreadContextX86_64::GetRegs(Manage::Dasm::Dasm_Regs *regs) const
 	return true;
 }
 
-Manage::Dasm *Manage::ThreadContextX86_64::CreateDasm() const
+Optional<Manage::Dasm> Manage::ThreadContextX86_64::CreateDasm() const
 {
 	Manage::DasmX86_64 *dasm;
 	NEW_CLASS(dasm, Manage::DasmX86_64());

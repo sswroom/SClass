@@ -8,12 +8,12 @@ class WorkbookReader : public DB::DBReader
 {
 private:
 	NN<Text::SpreadSheet::Worksheet> sheet;
-	DB::TableDef *tabDef;
+	NN<DB::TableDef> tabDef;
 	Text::SpreadSheet::Worksheet::RowData *row;
 	UOSInt currIndex;
 	UOSInt maxIndex;
 public:
-	WorkbookReader(NN<Text::SpreadSheet::Worksheet> sheet, DB::TableDef *tabDef, UOSInt initOfst, UOSInt maxOfst)
+	WorkbookReader(NN<Text::SpreadSheet::Worksheet> sheet, NN<DB::TableDef> tabDef, UOSInt initOfst, UOSInt maxOfst)
 	{
 		this->sheet = sheet;
 		this->tabDef = tabDef;
@@ -24,7 +24,7 @@ public:
 
 	virtual ~WorkbookReader()
 	{
-		DEL_CLASS(this->tabDef);
+		this->tabDef.Delete();
 	}
 
 	virtual Bool ReadNext()
@@ -249,7 +249,12 @@ UOSInt DB::WorkbookDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayL
 Optional<DB::DBReader> DB::WorkbookDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	NN<Text::SpreadSheet::Worksheet> sheet;
+	NN<DB::TableDef> tabDef;
 	if (!this->wb->GetWorksheetByName(tableName).SetTo(sheet))
+	{
+		return 0;
+	}
+	if (!GetTableDef(schemaName, tableName).SetTo(tabDef))
 	{
 		return 0;
 	}
@@ -267,11 +272,11 @@ Optional<DB::DBReader> DB::WorkbookDB::QueryTableData(Text::CString schemaName, 
 			endOfst = sheet->GetCount();
 		}
 	}
-	NEW_CLASSNN(r, WorkbookReader(sheet, GetTableDef(schemaName, tableName), dataOfst, endOfst));
+	NEW_CLASSNN(r, WorkbookReader(sheet, tabDef, dataOfst, endOfst));
 	return r;
 }
 
-DB::TableDef *DB::WorkbookDB::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> DB::WorkbookDB::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	NN<Text::SpreadSheet::Worksheet> sheet;
 	if (!this->wb->GetWorksheetByName(tableName).SetTo(sheet))

@@ -321,7 +321,7 @@ Optional<DB::DBReader> DB::TextDB::QueryTableData(Text::CString schemaName, Text
 	return reader;
 }
 
-DB::TableDef *DB::TextDB::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> DB::TextDB::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	DBData *data;
 	if (tableName.v == 0)

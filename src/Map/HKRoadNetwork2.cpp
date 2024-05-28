@@ -7,31 +7,31 @@
 #include "Math/CoordinateSystemManager.h"
 #include "Parser/ObjParser/FileGDB2Parser.h"
 
-Map::HKRoadNetwork2::HKRoadNetwork2(Text::CStringNN fgdbPath, Math::ArcGISPRJParser *prjParser)
+Map::HKRoadNetwork2::HKRoadNetwork2(Text::CStringNN fgdbPath, Optional<Math::ArcGISPRJParser> prjParser)
 {
 	IO::DirectoryPackage pkg(fgdbPath);
 	Parser::ObjParser::FileGDB2Parser parser;
 	parser.SetArcGISPRJParser(prjParser);
-	this->fgdb = (DB::ReadingDB*)parser.ParseObject(pkg, 0, IO::ParserType::ReadingDB);
+	this->fgdb = Optional<DB::ReadingDB>::ConvertFrom(parser.ParseObject(pkg, 0, IO::ParserType::ReadingDB));
 	
 }
 
-Map::HKRoadNetwork2::HKRoadNetwork2(DB::ReadingDB *fgdb)
+Map::HKRoadNetwork2::HKRoadNetwork2(NN<DB::ReadingDB> fgdb)
 {
 	this->fgdb = fgdb;
 }
 
 Map::HKRoadNetwork2::~HKRoadNetwork2()
 {
-	SDEL_CLASS(this->fgdb);
+	this->fgdb.Delete();
 }
 
 Bool Map::HKRoadNetwork2::IsError()
 {
-	return this->fgdb == 0;
+	return this->fgdb.IsNull();
 }
 
-DB::ReadingDB *Map::HKRoadNetwork2::GetDB()
+Optional<DB::ReadingDB> Map::HKRoadNetwork2::GetDB()
 {
 	return this->fgdb;
 }
@@ -45,18 +45,19 @@ NN<Math::CoordinateSystem> Map::HKRoadNetwork2::CreateCoordinateSystem()
 		return Math::CoordinateSystemManager::CreateWGS84Csys();
 }
 
-Map::HKSpeedLimit *Map::HKRoadNetwork2::CreateSpeedLimit()
+Optional<Map::HKSpeedLimit> Map::HKRoadNetwork2::CreateSpeedLimit()
 {
-	if (this->fgdb)
+	if (this->fgdb.NotNull())
 	{
 		return NEW_CLASS_D(Map::HKSpeedLimit(*this));
 	}
 	return 0;
 }
 
-Map::MapDrawLayer *Map::HKRoadNetwork2::CreateTonnesSignLayer()
+Optional<Map::MapDrawLayer> Map::HKRoadNetwork2::CreateTonnesSignLayer()
 {
-	if (this->fgdb == 0)
+	NN<DB::ReadingDB> fgdb;
+	if (!this->fgdb.SetTo(fgdb))
 	{
 		return 0;
 	}
@@ -70,7 +71,7 @@ Map::MapDrawLayer *Map::HKRoadNetwork2::CreateTonnesSignLayer()
 	NEW_CLASS(lyr, Map::VectorLayer(layerType, CSTR("HKRoadNetwork2"), 3, colNames, this->CreateCoordinateSystem(), colTypes, colSize, colDP, 0, CSTR("VehRestrict")));
 	
 	NN<DB::DBReader> r;
-	if (this->fgdb->QueryTableData(CSTR_NULL, CSTR("VEHICLE_RESTRICTION"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
+	if (fgdb->QueryTableData(CSTR_NULL, CSTR("VEHICLE_RESTRICTION"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		UTF8Char sbuff[256];
 		UTF8Char *sptr;
@@ -143,14 +144,14 @@ Map::MapDrawLayer *Map::HKRoadNetwork2::CreateTonnesSignLayer()
 			}
 		}
 
-		this->fgdb->CloseReader(r);
+		fgdb->CloseReader(r);
 	}
 	return lyr;
 }
 
-Map::HKTrafficLayer2 *Map::HKRoadNetwork2::CreateTrafficLayer(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact)
+Optional<Map::HKTrafficLayer2> Map::HKRoadNetwork2::CreateTrafficLayer(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact)
 {
-	if (this->fgdb)
+	if (this->fgdb.NotNull())
 	{
 		return NEW_CLASS_D(Map::HKTrafficLayer2(sockf, ssl, encFact, this));
 	}

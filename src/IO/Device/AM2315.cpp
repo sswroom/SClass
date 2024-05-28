@@ -114,7 +114,7 @@ Bool IO::Device::AM2315::ReadRH(OutParam<Single> rh)
 	}
 }
 
-IO::I2CChannel *IO::Device::AM2315::CreateDefChannel(Int32 i2cBusNum)
+Optional<IO::I2CChannel> IO::Device::AM2315::CreateDefChannel(Int32 i2cBusNum)
 {
 	IO::I2CChannel *channel;
 	NEW_CLASS(channel, IO::I2CChannelOS(i2cBusNum, 0x5c));

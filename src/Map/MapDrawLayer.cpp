@@ -139,7 +139,7 @@ Optional<DB::DBReader> Map::MapDrawLayer::QueryTableData(Text::CString schemaNam
 	return r;
 }
 
-DB::TableDef *Map::MapDrawLayer::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> Map::MapDrawLayer::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	DB::TableDef *tab;
 	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));

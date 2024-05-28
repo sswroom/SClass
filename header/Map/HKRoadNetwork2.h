@@ -16,18 +16,18 @@ namespace Map
 	class HKRoadNetwork2
 	{
 	private:
-		DB::ReadingDB *fgdb;
+		Optional<DB::ReadingDB> fgdb;
 	public:
-		HKRoadNetwork2(Text::CStringNN fgdbPath, Math::ArcGISPRJParser *prjParser);
-		HKRoadNetwork2(DB::ReadingDB *fgdb);
+		HKRoadNetwork2(Text::CStringNN fgdbPath, Optional<Math::ArcGISPRJParser> prjParser);
+		HKRoadNetwork2(NN<DB::ReadingDB> fgdb);
 		~HKRoadNetwork2();
 
 		Bool IsError();
-		DB::ReadingDB *GetDB();
+		Optional<DB::ReadingDB> GetDB();
 		NN<Math::CoordinateSystem> CreateCoordinateSystem();
-		Map::HKSpeedLimit *CreateSpeedLimit();
-		Map::MapDrawLayer *CreateTonnesSignLayer();
-		Map::HKTrafficLayer2 *CreateTrafficLayer(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact);
+		Optional<Map::HKSpeedLimit> CreateSpeedLimit();
+		Optional<Map::MapDrawLayer> CreateTonnesSignLayer();
+		Optional<Map::HKTrafficLayer2> CreateTrafficLayer(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact);
 
 		static Text::CStringNN GetDownloadURL();
 		static Text::CStringNN GetDefFileName();

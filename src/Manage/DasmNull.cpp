@@ -12,7 +12,7 @@ Manage::DasmNull::~DasmNull()
 {
 }
 
-Text::CString Manage::DasmNull::GetHeader(Bool fullRegs)
+Text::CStringNN Manage::DasmNull::GetHeader(Bool fullRegs)
 {
 	return CSTR("Code");
 }
@@ -27,11 +27,12 @@ Bool Manage::DasmNull::Disasm32(IO::Writer *writer, Manage::AddressResolver *add
 	return false;
 }
 
-Manage::Dasm::Dasm_Regs *Manage::DasmNull::CreateRegs()
+NN<Manage::Dasm::Dasm_Regs> Manage::DasmNull::CreateRegs()
 {
-	return 0;
+	return MemAllocNN(Dasm_Regs);
 }
 
-void Manage::DasmNull::FreeRegs(Dasm_Regs *regs)
+void Manage::DasmNull::FreeRegs(NN<Dasm_Regs> regs)
 {
+	MemFreeNN(regs);
 }

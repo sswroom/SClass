@@ -39,7 +39,7 @@ IO::ParserType Parser::ObjParser::FileGDB2Parser::GetParserType()
 	return IO::ParserType::ReadingDB;
 }
 
-IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(NN<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
+Optional<IO::ParsedObject> Parser::ObjParser::FileGDB2Parser::ParseObject(NN<IO::ParsedObject> pobj, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType)
 {
 	NN<Math::ArcGISPRJParser> prjParser;
 	if (!this->prjParser.SetTo(prjParser) || pobj->GetParserType() != IO::ParserType::PackageFile)

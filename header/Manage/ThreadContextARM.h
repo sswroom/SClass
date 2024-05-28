@@ -27,8 +27,8 @@ namespace Manage
 		virtual void SetStackAddr(UOSInt stackAddr);
 		virtual void SetFrameAddr(UOSInt frameAddr);
 		virtual NN<ThreadContext> Clone() const;
-		virtual Bool GetRegs(Manage::Dasm::Dasm_Regs *regs) const;
-		virtual Manage::Dasm *CreateDasm() const;
+		virtual Bool GetRegs(NN<Manage::Dasm::Dasm_Regs> regs) const;
+		virtual Optional<Manage::Dasm> CreateDasm() const;
 		UInt32 GetR0() const;
 		UInt32 GetR1() const;
 		UInt32 GetR2() const;

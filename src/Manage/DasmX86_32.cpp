@@ -31,7 +31,7 @@ Bool DasmX86_32_IsEndFunc(const UTF8Char *funcName)
 	return false;
 }
 
-UTF8Char *DasmX86_32_ParseReg8(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char *regName, Int32 regNo, UInt8 **regPtr)
+UTF8Char *DasmX86_32_ParseReg8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess, UTF8Char *regName, Int32 regNo, UInt8 **regPtr)
 {
 	switch (regNo)
 	{
@@ -65,7 +65,7 @@ UTF8Char *DasmX86_32_ParseReg8(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Ch
 	}
 }
 
-UTF8Char *DasmX86_32_ParseReg16(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char *regName, Int32 regNo, UInt32 **regPtr)
+UTF8Char *DasmX86_32_ParseReg16(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess, UTF8Char *regName, Int32 regNo, UInt32 **regPtr)
 {
 	switch (regNo)
 	{
@@ -99,7 +99,7 @@ UTF8Char *DasmX86_32_ParseReg16(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8C
 	}
 }
 
-UTF8Char *DasmX86_32_ParseReg32(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char *regName, Int32 regNo, UInt32 **regPtr)
+UTF8Char *DasmX86_32_ParseReg32(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess, UTF8Char *regName, Int32 regNo, UInt32 **regPtr)
 {
 	switch (regNo)
 	{
@@ -133,7 +133,7 @@ UTF8Char *DasmX86_32_ParseReg32(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8C
 	}
 }
 
-UTF8Char *DasmX86_32_ParseSReg(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char *regName, Int32 regNo)
+UTF8Char *DasmX86_32_ParseSReg(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess, UTF8Char *regName, Int32 regNo)
 {
 	switch (regNo)
 	{
@@ -159,7 +159,7 @@ UTF8Char *DasmX86_32_ParseSReg(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Ch
 	}
 }
 
-UTF8Char *DasmX86_32_ParseReg(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char *regName, Int32 regNo, UInt32 **regPtr)
+UTF8Char *DasmX86_32_ParseReg(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess, UTF8Char *regName, Int32 regNo, UInt32 **regPtr)
 {
 	if (sess->thisStatus & 1)
 	{
@@ -301,7 +301,7 @@ UTF8Char *DasmX86_32_ParseRegDR(UTF8Char *regName, Int32 regNo)
 	}
 }
 
-void DasmX86_32_ParseSIB(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char *memName, Bool allowEbp, UInt32 *memAddr)
+void DasmX86_32_ParseSIB(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess, UTF8Char *memName, Bool allowEbp, UInt32 *memAddr)
 {
 	UInt8 sib = sess->memReader->ReadMemUInt8(sess->regs.EIP);
 	UInt8 sibi = (sib >> 3) & 7;
@@ -444,7 +444,7 @@ void DasmX86_32_ParseSIB(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char *me
 		*memAddr = srcAddr;
 }
 
-void DasmX86_32_ParseAddr32(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char *memName, Int32 *reg, UInt32 *memAddr)
+void DasmX86_32_ParseAddr32(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess, UTF8Char *memName, Int32 *reg, UInt32 *memAddr)
 {
 	UTF8Char mem[64];
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP);
@@ -576,7 +576,7 @@ void DasmX86_32_ParseAddr32(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char 
 	}
 }
 
-void DasmX86_32_ParseModR32M8(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char *memName, Int32 *reg, UInt32 *memVal)
+void DasmX86_32_ParseModR32M8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess, UTF8Char *memName, Int32 *reg, UInt32 *memVal)
 {
 	UInt32 *regPtr;
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP);
@@ -597,7 +597,7 @@ void DasmX86_32_ParseModR32M8(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Cha
 	}
 }
 
-void DasmX86_32_ParseModRM8(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char *memName, Int32 *reg, UInt8 *memVal)
+void DasmX86_32_ParseModRM8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess, UTF8Char *memName, Int32 *reg, UInt8 *memVal)
 {
 	UInt8 *regPtr;
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP);
@@ -622,7 +622,7 @@ void DasmX86_32_ParseModRM8(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char 
 	}
 }
 
-void DasmX86_32_ParseModR32M16(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char *memName, Int32 *reg, UInt32 *memVal)
+void DasmX86_32_ParseModR32M16(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess, UTF8Char *memName, Int32 *reg, UInt32 *memVal)
 {
 	UInt32 *regPtr;
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP);
@@ -647,7 +647,7 @@ void DasmX86_32_ParseModR32M16(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Ch
 	}
 }
 
-void DasmX86_32_ParseModRM16(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char *memName, Int32 *reg, UInt16 *memVal)
+void DasmX86_32_ParseModRM16(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess, UTF8Char *memName, Int32 *reg, UInt16 *memVal)
 {
 	UInt32 *regPtr;
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP);
@@ -672,7 +672,7 @@ void DasmX86_32_ParseModRM16(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char
 	}
 }
 
-void DasmX86_32_ParseModRM32(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char *memName, Int32 *reg, UInt32 *memVal, UInt32 *memAddr)
+void DasmX86_32_ParseModRM32(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess, UTF8Char *memName, Int32 *reg, UInt32 *memVal, UInt32 *memAddr)
 {
 	if (sess->thisStatus & 1)
 	{
@@ -711,7 +711,7 @@ void DasmX86_32_ParseModRM32(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char
 	}
 }
 
-void DasmX86_32_ParseModRM48(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char *memName, Int32 *reg)
+void DasmX86_32_ParseModRM48(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess, UTF8Char *memName, Int32 *reg)
 {
 	UInt32 *regPtr;
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP);
@@ -728,7 +728,7 @@ void DasmX86_32_ParseModRM48(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char
 	}
 }
 
-void DasmX86_32_ParseModRM64(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char *memName, Int32 *reg)
+void DasmX86_32_ParseModRM64(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess, UTF8Char *memName, Int32 *reg)
 {
 	UInt32 *regPtr;
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP);
@@ -745,7 +745,7 @@ void DasmX86_32_ParseModRM64(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char
 	}
 }
 
-void DasmX86_32_ParseModRMR80(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char *memName, Int32 *reg)
+void DasmX86_32_ParseModRMR80(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess, UTF8Char *memName, Int32 *reg)
 {
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP);
 	if ((b >> 6) == 3)
@@ -761,7 +761,7 @@ void DasmX86_32_ParseModRMR80(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Cha
 	}
 }
 
-void DasmX86_32_ParseModRM128(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char *memName, Int32 *reg)
+void DasmX86_32_ParseModRM128(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess, UTF8Char *memName, Int32 *reg)
 {
 	UInt32 *regPtr;
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP);
@@ -778,7 +778,7 @@ void DasmX86_32_ParseModRM128(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Cha
 	}
 }
 
-void DasmX86_32_ParseModRMMM64(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char *memName, Int32 *reg)
+void DasmX86_32_ParseModRMMM64(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess, UTF8Char *memName, Int32 *reg)
 {
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP);
 	if ((b >> 6) == 3)
@@ -794,7 +794,7 @@ void DasmX86_32_ParseModRMMM64(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Ch
 	}
 }
 
-void DasmX86_32_ParseModRMXMM128(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char *memName, Int32 *reg)
+void DasmX86_32_ParseModRMXMM128(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess, UTF8Char *memName, Int32 *reg)
 {
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP);
 	if ((b >> 6) == 3)
@@ -810,7 +810,7 @@ void DasmX86_32_ParseModRMXMM128(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8
 	}
 }
 
-Int32 __stdcall DasmX86_32_GetFuncStack(Manage::DasmX86_32::DasmX86_32_Sess* sess, UInt32 funcAddr, UInt32 *outEsp)
+Int32 __stdcall DasmX86_32_GetFuncStack(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess, UInt32 funcAddr, UInt32 *outEsp)
 {
 	Manage::DasmX86_32::DasmX86_32_Sess tmpSess;
 	Data::ArrayListUInt32 callAddrs;
@@ -862,7 +862,7 @@ Int32 __stdcall DasmX86_32_GetFuncStack(Manage::DasmX86_32::DasmX86_32_Sess* ses
 			return 0;
 		}
 		tmpSess.sbuff = sbuff;
-		Bool ret = ((Manage::DasmX86_32::DasmX86_32_Code*)tmpSess.codes)[tmpSess.memReader->ReadMemUInt8(tmpSess.regs.EIP)](&tmpSess);
+		Bool ret = ((Manage::DasmX86_32::DasmX86_32_Code*)tmpSess.codes)[tmpSess.memReader->ReadMemUInt8(tmpSess.regs.EIP)](tmpSess);
 		if (!ret)
 		{
 #ifdef _CONSOLE
@@ -927,7 +927,7 @@ Int32 __stdcall DasmX86_32_GetFuncStack(Manage::DasmX86_32::DasmX86_32_Sess* ses
 	return 0;
 }
 
-Bool __stdcall DasmX86_32_00(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_00(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 //	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UTF8Char mem[64];
@@ -947,7 +947,7 @@ Bool __stdcall DasmX86_32_00(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_01(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_01(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UTF8Char mem[64];
@@ -976,7 +976,7 @@ Bool __stdcall DasmX86_32_01(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_02(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_02(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 //	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UTF8Char mem[64];
@@ -997,7 +997,7 @@ Bool __stdcall DasmX86_32_02(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_03(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_03(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 //	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UTF8Char mem[64];
@@ -1033,7 +1033,7 @@ Bool __stdcall DasmX86_32_03(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_04(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_04(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("add AL,"));
 	sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
@@ -1042,7 +1042,7 @@ Bool __stdcall DasmX86_32_04(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_05(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_05(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if (sess->thisStatus & 1)
 	{
@@ -1060,21 +1060,21 @@ Bool __stdcall DasmX86_32_05(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_06(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_06(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("push ES\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_07(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_07(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pop ES\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_08(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_08(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[6];
@@ -1092,7 +1092,7 @@ Bool __stdcall DasmX86_32_08(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_09(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_09(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[6];
@@ -1110,7 +1110,7 @@ Bool __stdcall DasmX86_32_09(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0a(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[6];
@@ -1129,7 +1129,7 @@ Bool __stdcall DasmX86_32_0a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0b(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[6];
@@ -1155,7 +1155,7 @@ Bool __stdcall DasmX86_32_0b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0c(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt8 v = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("or AL, "));
@@ -1166,7 +1166,7 @@ Bool __stdcall DasmX86_32_0c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0d(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if (sess->thisStatus & 1)
 	{
@@ -1188,19 +1188,19 @@ Bool __stdcall DasmX86_32_0d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0e(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("push CS\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return ((Manage::DasmX86_32::DasmX86_32_Code*)sess->codes0f)[sess->memReader->ReadMemUInt8(sess->regs.EIP + 1)](sess);
 }
 
-Bool __stdcall DasmX86_32_10(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_10(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 //	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UTF8Char mem[64];
@@ -1219,7 +1219,7 @@ Bool __stdcall DasmX86_32_10(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_11(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_11(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UTF8Char mem[64];
@@ -1246,7 +1246,7 @@ Bool __stdcall DasmX86_32_11(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_12(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_12(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 //	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UTF8Char mem[64];
@@ -1267,7 +1267,7 @@ Bool __stdcall DasmX86_32_12(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_13(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_13(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UTF8Char mem[64];
@@ -1303,7 +1303,7 @@ Bool __stdcall DasmX86_32_13(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_14(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_14(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("adc al,"));
 	sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
@@ -1312,7 +1312,7 @@ Bool __stdcall DasmX86_32_14(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_15(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_15(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if (sess->thisStatus & 1)
 	{
@@ -1332,21 +1332,21 @@ Bool __stdcall DasmX86_32_15(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_16(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_16(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("push SS\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_17(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_17(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pop SS\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_18(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_18(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -1364,7 +1364,7 @@ Bool __stdcall DasmX86_32_18(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_19(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_19(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -1382,7 +1382,7 @@ Bool __stdcall DasmX86_32_19(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_1a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_1a(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -1401,7 +1401,7 @@ Bool __stdcall DasmX86_32_1a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_1b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_1b(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -1427,7 +1427,7 @@ Bool __stdcall DasmX86_32_1b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_1c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_1c(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt8 v = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sbb AL, "));
@@ -1438,7 +1438,7 @@ Bool __stdcall DasmX86_32_1c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_1d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_1d(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if (sess->thisStatus & 1)
 	{
@@ -1456,21 +1456,21 @@ Bool __stdcall DasmX86_32_1d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_1e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_1e(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("push DS\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_1f(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_1f(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pop DS\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_20(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_20(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 //	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UTF8Char mem[64];
@@ -1490,7 +1490,7 @@ Bool __stdcall DasmX86_32_20(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_21(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_21(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UTF8Char mem[64];
@@ -1518,7 +1518,7 @@ Bool __stdcall DasmX86_32_21(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_22(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_22(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 //	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UTF8Char mem[64];
@@ -1539,7 +1539,7 @@ Bool __stdcall DasmX86_32_22(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_23(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_23(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UTF8Char mem[64];
@@ -1575,7 +1575,7 @@ Bool __stdcall DasmX86_32_23(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_24(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_24(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt8 v = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("and AL, "));
@@ -1586,7 +1586,7 @@ Bool __stdcall DasmX86_32_24(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_25(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_25(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if (sess->thisStatus & 1)
 	{
@@ -1608,7 +1608,7 @@ Bool __stdcall DasmX86_32_25(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_26(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_26(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP++;
 	sess->thisStatus |= 0x10000;
@@ -1616,14 +1616,14 @@ Bool __stdcall DasmX86_32_26(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return ((Manage::DasmX86_32::DasmX86_32_Code*)sess->codes)[sess->memReader->ReadMemUInt8(sess->regs.EIP)](sess);
 }
 
-Bool __stdcall DasmX86_32_27(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_27(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("daa\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_28(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_28(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -1643,7 +1643,7 @@ Bool __stdcall DasmX86_32_28(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_29(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_29(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -1663,7 +1663,7 @@ Bool __stdcall DasmX86_32_29(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_2a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_2a(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -1684,7 +1684,7 @@ Bool __stdcall DasmX86_32_2a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_2b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_2b(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -1712,7 +1712,7 @@ Bool __stdcall DasmX86_32_2b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_2c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_2c(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt8 v = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sub AL, "));
@@ -1723,7 +1723,7 @@ Bool __stdcall DasmX86_32_2c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_2d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_2d(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if (sess->thisStatus & 1)
 	{
@@ -1745,7 +1745,7 @@ Bool __stdcall DasmX86_32_2d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_2e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_2e(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP++;
 	sess->thisStatus |= 0x10000;
@@ -1753,14 +1753,14 @@ Bool __stdcall DasmX86_32_2e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return ((Manage::DasmX86_32::DasmX86_32_Code*)sess->codes)[sess->memReader->ReadMemUInt8(sess->regs.EIP)](sess);
 }
 
-Bool __stdcall DasmX86_32_2f(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_2f(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("das\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_30(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_30(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -1778,7 +1778,7 @@ Bool __stdcall DasmX86_32_30(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_31(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_31(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -1796,7 +1796,7 @@ Bool __stdcall DasmX86_32_31(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_32(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_32(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -1815,7 +1815,7 @@ Bool __stdcall DasmX86_32_32(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_33(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_33(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -1841,7 +1841,7 @@ Bool __stdcall DasmX86_32_33(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_34(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_34(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt8 v = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xor AL, "));
@@ -1852,7 +1852,7 @@ Bool __stdcall DasmX86_32_34(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_35(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_35(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if (sess->thisStatus & 1)
 	{
@@ -1874,7 +1874,7 @@ Bool __stdcall DasmX86_32_35(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_36(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_36(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP++;
 	sess->thisStatus |= 0x10000;
@@ -1882,14 +1882,14 @@ Bool __stdcall DasmX86_32_36(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return ((Manage::DasmX86_32::DasmX86_32_Code*)sess->codes)[sess->memReader->ReadMemUInt8(sess->regs.EIP)](sess);
 }
 
-Bool __stdcall DasmX86_32_37(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_37(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("aaa\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_38(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_38(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -1907,7 +1907,7 @@ Bool __stdcall DasmX86_32_38(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_39(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_39(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -1925,7 +1925,7 @@ Bool __stdcall DasmX86_32_39(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_3a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_3a(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -1943,7 +1943,7 @@ Bool __stdcall DasmX86_32_3a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_3b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_3b(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -1961,7 +1961,7 @@ Bool __stdcall DasmX86_32_3b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_3c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_3c(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmp AL, "));
 	sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
@@ -1970,7 +1970,7 @@ Bool __stdcall DasmX86_32_3c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_3d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_3d(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if (sess->thisStatus & 1)
 	{
@@ -1989,7 +1989,7 @@ Bool __stdcall DasmX86_32_3d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_3e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_3e(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP++;
 	sess->thisStatus |= 0x10000;
@@ -1997,14 +1997,14 @@ Bool __stdcall DasmX86_32_3e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return ((Manage::DasmX86_32::DasmX86_32_Code*)sess->codes)[sess->memReader->ReadMemUInt8(sess->regs.EIP)](sess);
 }
 
-Bool __stdcall DasmX86_32_3f(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_3f(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP++;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("aas\r\n"));
 	return true;
 }
 
-Bool __stdcall DasmX86_32_40(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_40(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -2024,7 +2024,7 @@ Bool __stdcall DasmX86_32_40(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_41(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_41(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -2044,7 +2044,7 @@ Bool __stdcall DasmX86_32_41(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_42(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_42(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -2064,7 +2064,7 @@ Bool __stdcall DasmX86_32_42(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_43(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_43(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -2084,7 +2084,7 @@ Bool __stdcall DasmX86_32_43(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_44(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_44(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -2107,7 +2107,7 @@ Bool __stdcall DasmX86_32_44(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_45(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_45(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -2130,7 +2130,7 @@ Bool __stdcall DasmX86_32_45(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_46(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_46(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -2150,7 +2150,7 @@ Bool __stdcall DasmX86_32_46(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_47(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_47(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -2170,7 +2170,7 @@ Bool __stdcall DasmX86_32_47(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_48(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_48(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -2190,7 +2190,7 @@ Bool __stdcall DasmX86_32_48(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_49(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_49(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -2210,7 +2210,7 @@ Bool __stdcall DasmX86_32_49(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_4a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_4a(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -2230,7 +2230,7 @@ Bool __stdcall DasmX86_32_4a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_4b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_4b(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -2250,7 +2250,7 @@ Bool __stdcall DasmX86_32_4b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_4c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_4c(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -2273,7 +2273,7 @@ Bool __stdcall DasmX86_32_4c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_4d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_4d(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -2296,7 +2296,7 @@ Bool __stdcall DasmX86_32_4d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_4e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_4e(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -2316,7 +2316,7 @@ Bool __stdcall DasmX86_32_4e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_4f(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_4f(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -2336,7 +2336,7 @@ Bool __stdcall DasmX86_32_4f(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_50(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_50(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -2352,7 +2352,7 @@ Bool __stdcall DasmX86_32_50(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_51(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_51(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -2368,7 +2368,7 @@ Bool __stdcall DasmX86_32_51(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_52(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_52(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -2384,7 +2384,7 @@ Bool __stdcall DasmX86_32_52(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_53(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_53(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -2400,7 +2400,7 @@ Bool __stdcall DasmX86_32_53(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_54(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_54(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -2416,7 +2416,7 @@ Bool __stdcall DasmX86_32_54(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_55(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_55(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -2433,7 +2433,7 @@ Bool __stdcall DasmX86_32_55(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_56(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_56(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -2449,7 +2449,7 @@ Bool __stdcall DasmX86_32_56(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_57(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_57(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -2465,7 +2465,7 @@ Bool __stdcall DasmX86_32_57(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_58(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_58(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[5];
 	UInt32 *regPtr;
@@ -2482,7 +2482,7 @@ Bool __stdcall DasmX86_32_58(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_59(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_59(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[5];
 	UInt32 *regPtr;
@@ -2499,7 +2499,7 @@ Bool __stdcall DasmX86_32_59(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_5a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_5a(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[5];
 	UInt32 *regPtr;
@@ -2516,7 +2516,7 @@ Bool __stdcall DasmX86_32_5a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_5b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_5b(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[5];
 	UInt32 *regPtr;
@@ -2533,7 +2533,7 @@ Bool __stdcall DasmX86_32_5b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_5c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_5c(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[5];
 	UInt32 *regPtr;
@@ -2550,7 +2550,7 @@ Bool __stdcall DasmX86_32_5c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_5d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_5d(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[5];
 	UInt32 *regPtr;
@@ -2568,7 +2568,7 @@ Bool __stdcall DasmX86_32_5d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_5e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_5e(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[5];
 	UInt32 *regPtr;
@@ -2585,7 +2585,7 @@ Bool __stdcall DasmX86_32_5e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_5f(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_5f(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[5];
 	UInt32 *regPtr;
@@ -2602,7 +2602,7 @@ Bool __stdcall DasmX86_32_5f(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_60(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_60(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if (sess->thisStatus & 1)
 	{
@@ -2616,7 +2616,7 @@ Bool __stdcall DasmX86_32_60(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_61(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_61(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if (sess->thisStatus & 1)
 	{
@@ -2630,7 +2630,7 @@ Bool __stdcall DasmX86_32_61(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_62(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_62(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -2657,7 +2657,7 @@ Bool __stdcall DasmX86_32_62(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_63(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_63(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -2675,7 +2675,7 @@ Bool __stdcall DasmX86_32_63(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_64(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_64(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP++;
 	sess->thisStatus |= 0x10000;
@@ -2683,7 +2683,7 @@ Bool __stdcall DasmX86_32_64(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return ((Manage::DasmX86_32::DasmX86_32_Code*)sess->codes)[sess->memReader->ReadMemUInt8(sess->regs.EIP)](sess);
 }
 
-Bool __stdcall DasmX86_32_65(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_65(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP++;
 	sess->thisStatus |= 0x10000;
@@ -2691,19 +2691,19 @@ Bool __stdcall DasmX86_32_65(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return ((Manage::DasmX86_32::DasmX86_32_Code*)sess->codes)[sess->memReader->ReadMemUInt8(sess->regs.EIP)](sess);
 }
 
-Bool __stdcall DasmX86_32_66(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_66(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP++;
 	sess->thisStatus |= 0x1;
 	return ((Manage::DasmX86_32::DasmX86_32_Code*)sess->codes)[sess->memReader->ReadMemUInt8(sess->regs.EIP)](sess);
 }
 
-Bool __stdcall DasmX86_32_67(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_67(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_68(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_68(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	Int32 iVal = (Int32)sess->memReader->ReadMemUInt32(sess->regs.EIP + 1);
 	if (iVal > -128 && iVal < 128)
@@ -2722,7 +2722,7 @@ Bool __stdcall DasmX86_32_68(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_69(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_69(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -2751,7 +2751,7 @@ Bool __stdcall DasmX86_32_69(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_6a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_6a(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("push "));
 	sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
@@ -2761,7 +2761,7 @@ Bool __stdcall DasmX86_32_6a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_6b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_6b(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -2782,7 +2782,7 @@ Bool __stdcall DasmX86_32_6b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_6c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_6c(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
@@ -2793,7 +2793,7 @@ Bool __stdcall DasmX86_32_6c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_6d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_6d(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
@@ -2811,7 +2811,7 @@ Bool __stdcall DasmX86_32_6d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_6e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_6e(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
@@ -2822,7 +2822,7 @@ Bool __stdcall DasmX86_32_6e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_6f(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_6f(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
@@ -2840,7 +2840,7 @@ Bool __stdcall DasmX86_32_6f(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_70(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_70(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
@@ -2851,7 +2851,7 @@ Bool __stdcall DasmX86_32_70(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_71(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_71(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
@@ -2862,7 +2862,7 @@ Bool __stdcall DasmX86_32_71(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_72(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_72(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
@@ -2873,7 +2873,7 @@ Bool __stdcall DasmX86_32_72(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_73(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_73(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
@@ -2884,7 +2884,7 @@ Bool __stdcall DasmX86_32_73(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_74(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_74(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
@@ -2895,7 +2895,7 @@ Bool __stdcall DasmX86_32_74(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_75(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_75(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
@@ -2906,7 +2906,7 @@ Bool __stdcall DasmX86_32_75(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_76(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_76(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
@@ -2917,7 +2917,7 @@ Bool __stdcall DasmX86_32_76(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_77(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_77(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
@@ -2928,7 +2928,7 @@ Bool __stdcall DasmX86_32_77(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_78(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_78(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
@@ -2939,7 +2939,7 @@ Bool __stdcall DasmX86_32_78(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_79(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_79(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
@@ -2950,7 +2950,7 @@ Bool __stdcall DasmX86_32_79(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_7a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_7a(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
@@ -2961,7 +2961,7 @@ Bool __stdcall DasmX86_32_7a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_7b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_7b(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
@@ -2972,7 +2972,7 @@ Bool __stdcall DasmX86_32_7b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_7c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_7c(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
@@ -2983,7 +2983,7 @@ Bool __stdcall DasmX86_32_7c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_7d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_7d(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
@@ -2994,7 +2994,7 @@ Bool __stdcall DasmX86_32_7d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_7e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_7e(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
@@ -3005,7 +3005,7 @@ Bool __stdcall DasmX86_32_7e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_7f(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_7f(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
@@ -3016,7 +3016,7 @@ Bool __stdcall DasmX86_32_7f(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_80(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_80(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt8 b = ((sess->memReader->ReadMemUInt8(sess->regs.EIP + 1) >> 3) & 7);
 	UTF8Char mem[64];
@@ -3111,7 +3111,7 @@ Bool __stdcall DasmX86_32_80(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_81(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_81(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UTF8Char mem[64];
@@ -3301,12 +3301,12 @@ Bool __stdcall DasmX86_32_81(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_82(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_82(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_83(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_83(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UTF8Char mem[64];
@@ -3597,7 +3597,7 @@ Bool __stdcall DasmX86_32_83(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_84(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_84(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -3616,7 +3616,7 @@ Bool __stdcall DasmX86_32_84(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_85(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_85(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -3635,7 +3635,7 @@ Bool __stdcall DasmX86_32_85(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_86(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_86(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	Int32 destReg;
 	UTF8Char mem[64];
@@ -3653,7 +3653,7 @@ Bool __stdcall DasmX86_32_86(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_87(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_87(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	Int32 destReg;
 	UTF8Char mem[64];
@@ -3671,7 +3671,7 @@ Bool __stdcall DasmX86_32_87(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_88(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_88(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	Int32 destReg;
 	UTF8Char mem[64];
@@ -3689,7 +3689,7 @@ Bool __stdcall DasmX86_32_88(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_89(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_89(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	Int32 destReg;
 	UTF8Char mem[64];
@@ -3738,7 +3738,7 @@ Bool __stdcall DasmX86_32_89(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_8a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_8a(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	Int32 destReg;
 	UTF8Char mem[64];
@@ -3757,7 +3757,7 @@ Bool __stdcall DasmX86_32_8a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_8b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_8b(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	Int32 destReg;
 	UTF8Char mem[64];
@@ -3777,7 +3777,7 @@ Bool __stdcall DasmX86_32_8b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_8c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_8c(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	Int32 destReg;
 	UTF8Char mem[64];
@@ -3794,7 +3794,7 @@ Bool __stdcall DasmX86_32_8c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_8d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_8d(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	Int32 destReg;
 	UTF8Char mem[64];
@@ -3814,7 +3814,7 @@ Bool __stdcall DasmX86_32_8d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_8e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_8e(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	Int32 destReg;
 	UTF8Char mem[64];
@@ -3831,7 +3831,7 @@ Bool __stdcall DasmX86_32_8e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_8f(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_8f(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -3851,7 +3851,7 @@ Bool __stdcall DasmX86_32_8f(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_90(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_90(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
@@ -3865,7 +3865,7 @@ Bool __stdcall DasmX86_32_90(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_91(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_91(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	if (sess->thisStatus & 1)
@@ -3895,7 +3895,7 @@ Bool __stdcall DasmX86_32_91(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_92(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_92(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	if (sess->thisStatus & 1)
@@ -3925,7 +3925,7 @@ Bool __stdcall DasmX86_32_92(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_93(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_93(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	if (sess->thisStatus & 1)
@@ -3955,7 +3955,7 @@ Bool __stdcall DasmX86_32_93(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_94(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_94(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	if (sess->thisStatus & 1)
@@ -3985,7 +3985,7 @@ Bool __stdcall DasmX86_32_94(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_95(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_95(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	if (sess->thisStatus & 1)
@@ -4015,7 +4015,7 @@ Bool __stdcall DasmX86_32_95(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_96(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_96(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	if (sess->thisStatus & 1)
@@ -4045,7 +4045,7 @@ Bool __stdcall DasmX86_32_96(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_97(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_97(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	if (sess->thisStatus & 1)
@@ -4075,7 +4075,7 @@ Bool __stdcall DasmX86_32_97(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_98(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_98(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP++;
 	if (sess->thisStatus & 1)
@@ -4089,7 +4089,7 @@ Bool __stdcall DasmX86_32_98(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_99(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_99(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP++;
 	if (sess->thisStatus & 1)
@@ -4103,19 +4103,19 @@ Bool __stdcall DasmX86_32_99(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_9a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_9a(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_9b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_9b(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fwait\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_9c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_9c(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if (sess->thisStatus & 1)
 	{
@@ -4129,7 +4129,7 @@ Bool __stdcall DasmX86_32_9c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_9d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_9d(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if (sess->thisStatus & 1)
 	{
@@ -4143,21 +4143,21 @@ Bool __stdcall DasmX86_32_9d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_9e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_9e(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sahf\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_9f(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_9f(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("lahf\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_a0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_a0(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr = sess->memReader->ReadMemUInt32(sess->regs.EIP + 1);
 	*(UInt8*)&sess->regs.EAX = sess->memReader->ReadMemUInt8(addr);
@@ -4168,7 +4168,7 @@ Bool __stdcall DasmX86_32_a0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_a1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_a1(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr = sess->memReader->ReadMemUInt32(sess->regs.EIP + 1);
 	if (sess->thisStatus & 1)
@@ -4192,7 +4192,7 @@ Bool __stdcall DasmX86_32_a1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_a2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_a2(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr = sess->memReader->ReadMemUInt32(sess->regs.EIP + 1);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov BYTE PTR "));
@@ -4207,7 +4207,7 @@ Bool __stdcall DasmX86_32_a2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_a3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_a3(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if (sess->thisStatus & 1)
 	{
@@ -4235,7 +4235,7 @@ Bool __stdcall DasmX86_32_a3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_a4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_a4(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
@@ -4246,7 +4246,7 @@ Bool __stdcall DasmX86_32_a4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_a5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_a5(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
@@ -4264,7 +4264,7 @@ Bool __stdcall DasmX86_32_a5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_a6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_a6(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
@@ -4280,7 +4280,7 @@ Bool __stdcall DasmX86_32_a6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_a7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_a7(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
@@ -4304,7 +4304,7 @@ Bool __stdcall DasmX86_32_a7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_a8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_a8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("test AL, "));
 	sess->sbuff = Text::StrInt32(sess->sbuff, (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
@@ -4313,7 +4313,7 @@ Bool __stdcall DasmX86_32_a8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_a9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_a9(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if (sess->thisStatus & 1)
 	{
@@ -4331,7 +4331,7 @@ Bool __stdcall DasmX86_32_a9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_aa(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_aa(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
@@ -4342,7 +4342,7 @@ Bool __stdcall DasmX86_32_aa(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_ab(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_ab(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
@@ -4360,7 +4360,7 @@ Bool __stdcall DasmX86_32_ab(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_ac(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_ac(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
@@ -4371,7 +4371,7 @@ Bool __stdcall DasmX86_32_ac(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_ad(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_ad(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
@@ -4389,7 +4389,7 @@ Bool __stdcall DasmX86_32_ad(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_ae(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_ae(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
@@ -4400,7 +4400,7 @@ Bool __stdcall DasmX86_32_ae(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_af(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_af(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
@@ -4418,7 +4418,7 @@ Bool __stdcall DasmX86_32_af(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_b0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_b0(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt8 memVal = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
@@ -4434,7 +4434,7 @@ Bool __stdcall DasmX86_32_b0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_b1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_b1(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt8 memVal = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
@@ -4450,7 +4450,7 @@ Bool __stdcall DasmX86_32_b1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_b2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_b2(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt8 memVal = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
@@ -4466,7 +4466,7 @@ Bool __stdcall DasmX86_32_b2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_b3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_b3(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt8 memVal = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
@@ -4482,7 +4482,7 @@ Bool __stdcall DasmX86_32_b3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_b4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_b4(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt8 memVal = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
@@ -4498,7 +4498,7 @@ Bool __stdcall DasmX86_32_b4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_b5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_b5(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt8 memVal = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
@@ -4514,7 +4514,7 @@ Bool __stdcall DasmX86_32_b5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_b6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_b6(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt8 memVal = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
@@ -4530,7 +4530,7 @@ Bool __stdcall DasmX86_32_b6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_b7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_b7(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt8 memVal = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
@@ -4546,7 +4546,7 @@ Bool __stdcall DasmX86_32_b7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_b8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_b8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -4572,7 +4572,7 @@ Bool __stdcall DasmX86_32_b8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_b9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_b9(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -4598,7 +4598,7 @@ Bool __stdcall DasmX86_32_b9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_ba(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_ba(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -4624,7 +4624,7 @@ Bool __stdcall DasmX86_32_ba(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_bb(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_bb(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -4650,7 +4650,7 @@ Bool __stdcall DasmX86_32_bb(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_bc(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_bc(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -4676,7 +4676,7 @@ Bool __stdcall DasmX86_32_bc(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_bd(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_bd(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -4702,7 +4702,7 @@ Bool __stdcall DasmX86_32_bd(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_be(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_be(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -4728,7 +4728,7 @@ Bool __stdcall DasmX86_32_be(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_bf(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_bf(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -4754,7 +4754,7 @@ Bool __stdcall DasmX86_32_bf(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_c0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_c0(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -4837,7 +4837,7 @@ Bool __stdcall DasmX86_32_c0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_c1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_c1(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -4920,7 +4920,7 @@ Bool __stdcall DasmX86_32_c1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_c2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_c2(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 cnt = sess->memReader->ReadMemUInt16(sess->regs.EIP + 1);
 	sess->endType = Manage::DasmX86_32::ET_FUNC_RET;
@@ -4950,7 +4950,7 @@ Bool __stdcall DasmX86_32_c2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_c3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_c3(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->endType = Manage::DasmX86_32::ET_FUNC_RET;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ret\r\n"));
@@ -4967,7 +4967,7 @@ Bool __stdcall DasmX86_32_c3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_c4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_c4(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -4984,7 +4984,7 @@ Bool __stdcall DasmX86_32_c4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_c5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_c5(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -5001,7 +5001,7 @@ Bool __stdcall DasmX86_32_c5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_c6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_c6(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	Int32 destReg;
 	UTF8Char mem[64];
@@ -5024,7 +5024,7 @@ Bool __stdcall DasmX86_32_c6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_c7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_c7(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	Int32 destReg;
 	UTF8Char mem[64];
@@ -5056,7 +5056,7 @@ Bool __stdcall DasmX86_32_c7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_c8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_c8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("enter "));
 	sess->sbuff = Text::StrInt32(sess->sbuff, (Int16)sess->memReader->ReadMemUInt16(sess->regs.EIP + 1));
@@ -5067,7 +5067,7 @@ Bool __stdcall DasmX86_32_c8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_c9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_c9(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("leave\r\n"));
 	sess->regs.EIP += 1;
@@ -5077,7 +5077,7 @@ Bool __stdcall DasmX86_32_c9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_ca(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_ca(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 cnt = sess->memReader->ReadMemUInt16(sess->regs.EIP + 1);
 	sess->endType = Manage::DasmX86_32::ET_FUNC_RET;
@@ -5107,7 +5107,7 @@ Bool __stdcall DasmX86_32_ca(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_cb(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_cb(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->endType = Manage::DasmX86_32::ET_FUNC_RET;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("retf\r\n"));
@@ -5124,14 +5124,14 @@ Bool __stdcall DasmX86_32_cb(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_cc(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_cc(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("int 3\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_cd(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_cd(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("int 0x"));
 	sess->sbuff = Text::StrHexByte(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
@@ -5140,14 +5140,14 @@ Bool __stdcall DasmX86_32_cd(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_ce(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_ce(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("into\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_cf(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_cf(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if (sess->thisStatus & 1)
 	{
@@ -5170,7 +5170,7 @@ Bool __stdcall DasmX86_32_cf(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_d0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_d0(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -5232,7 +5232,7 @@ Bool __stdcall DasmX86_32_d0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_d1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_d1(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -5294,7 +5294,7 @@ Bool __stdcall DasmX86_32_d1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_d2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_d2(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -5356,7 +5356,7 @@ Bool __stdcall DasmX86_32_d2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_d3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_d3(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -5418,7 +5418,7 @@ Bool __stdcall DasmX86_32_d3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_d4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_d4(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if (sess->memReader->ReadMemUInt8(sess->regs.EIP + 1) == 0xa)
 	{
@@ -5432,7 +5432,7 @@ Bool __stdcall DasmX86_32_d4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_d5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_d5(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if (sess->memReader->ReadMemUInt8(sess->regs.EIP + 1) == 0xa)
 	{
@@ -5446,19 +5446,19 @@ Bool __stdcall DasmX86_32_d5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_d6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_d6(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_d7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_d7(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP += 1;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xlatb\r\n"));
 	return true;
 }
 
-Bool __stdcall DasmX86_32_d8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_d8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UTF8Char mem[64];
@@ -5633,7 +5633,7 @@ Bool __stdcall DasmX86_32_d8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_d9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_d9(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UTF8Char mem[64];
@@ -5808,7 +5808,7 @@ Bool __stdcall DasmX86_32_d9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_da(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_da(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UTF8Char mem[64];
@@ -5944,7 +5944,7 @@ Bool __stdcall DasmX86_32_da(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_db(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_db(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UTF8Char mem[64];
@@ -6090,7 +6090,7 @@ Bool __stdcall DasmX86_32_db(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_dc(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_dc(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UTF8Char mem[64];
@@ -6242,7 +6242,7 @@ Bool __stdcall DasmX86_32_dc(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_dd(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_dd(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UTF8Char mem[64];
@@ -6341,7 +6341,7 @@ Bool __stdcall DasmX86_32_dd(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_de(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_de(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UTF8Char mem[64];
@@ -6499,7 +6499,7 @@ Bool __stdcall DasmX86_32_de(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_df(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_df(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UTF8Char mem[64];
@@ -6620,7 +6620,7 @@ Bool __stdcall DasmX86_32_df(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_e0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_e0(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
@@ -6631,7 +6631,7 @@ Bool __stdcall DasmX86_32_e0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_e1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_e1(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
@@ -6642,7 +6642,7 @@ Bool __stdcall DasmX86_32_e1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_e2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_e2(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
@@ -6653,7 +6653,7 @@ Bool __stdcall DasmX86_32_e2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_e3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_e3(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
@@ -6671,7 +6671,7 @@ Bool __stdcall DasmX86_32_e3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_e4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_e4(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("in AL, 0x"));
 	sess->sbuff = Text::StrHexByte(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
@@ -6680,7 +6680,7 @@ Bool __stdcall DasmX86_32_e4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_e5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_e5(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if (sess->thisStatus & 1)
 	{
@@ -6696,7 +6696,7 @@ Bool __stdcall DasmX86_32_e5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_e6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_e6(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("out 0x"));
 	sess->sbuff = Text::StrHexByte(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
@@ -6705,7 +6705,7 @@ Bool __stdcall DasmX86_32_e6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_e7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_e7(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("out 0x"));
 	sess->sbuff = Text::StrHexByte(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
@@ -6721,7 +6721,7 @@ Bool __stdcall DasmX86_32_e7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_e8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_e8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char *sptr;
 	UInt32 addr;
@@ -6784,7 +6784,7 @@ Bool __stdcall DasmX86_32_e8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_e9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_e9(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr;
 	UInt32 addr2;
@@ -6820,7 +6820,7 @@ Bool __stdcall DasmX86_32_e9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_ea(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_ea(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr;
 	UInt32 addr2;
@@ -6860,7 +6860,7 @@ Bool __stdcall DasmX86_32_ea(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_eb(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_eb(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr = (sess->regs.EIP) + 2 + (UInt32)(Int32)(Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UInt32 addr2;
@@ -6887,14 +6887,14 @@ Bool __stdcall DasmX86_32_eb(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_ec(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_ec(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("in AL, DX\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_ed(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_ed(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if (sess->thisStatus & 1)
 	{
@@ -6908,14 +6908,14 @@ Bool __stdcall DasmX86_32_ed(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_ee(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_ee(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("out DX, AL\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_ef(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_ef(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if (sess->thisStatus & 1)
 	{
@@ -6929,7 +6929,7 @@ Bool __stdcall DasmX86_32_ef(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_f0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_f0(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP += 1;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("lock "));
@@ -6947,40 +6947,40 @@ Bool __stdcall DasmX86_32_f0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}*/
 }
 
-Bool __stdcall DasmX86_32_f1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_f1(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_f2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_f2(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP += 1;
 	sess->thisStatus |= 4;
 	return ((Manage::DasmX86_32::DasmX86_32_Code*)sess->codes)[sess->memReader->ReadMemUInt8(sess->regs.EIP)](sess);
 }
 
-Bool __stdcall DasmX86_32_f3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_f3(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP += 1;
 	sess->thisStatus |= 5;
 	return ((Manage::DasmX86_32::DasmX86_32_Code*)sess->codes)[sess->memReader->ReadMemUInt8(sess->regs.EIP)](sess);
 }
 
-Bool __stdcall DasmX86_32_f4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_f4(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("hlt\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_f5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_f5(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmc\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_f6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_f6(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	Int32 destReg;
 	UTF8Char mem[64];
@@ -7045,7 +7045,7 @@ Bool __stdcall DasmX86_32_f6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_f7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_f7(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	Int32 destReg;
 	UTF8Char mem[64];
@@ -7121,49 +7121,49 @@ Bool __stdcall DasmX86_32_f7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_f8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_f8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("clc\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_f9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_f9(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("stc\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_fa(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_fa(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cli\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_fb(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_fb(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sti\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_fc(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_fc(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cld\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_fd(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_fd(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("std\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_fe(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_fe(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -7190,7 +7190,7 @@ Bool __stdcall DasmX86_32_fe(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_ff(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_ff(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -7282,7 +7282,7 @@ Bool __stdcall DasmX86_32_ff(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_0f00(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f00(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -7334,7 +7334,7 @@ Bool __stdcall DasmX86_32_0f00(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f01(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f01(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if (sess->memReader->ReadMemUInt8(sess->regs.EIP + 2) == 0xc1)
 	{
@@ -7399,7 +7399,7 @@ Bool __stdcall DasmX86_32_0f01(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f02(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f02(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -7427,7 +7427,7 @@ Bool __stdcall DasmX86_32_0f02(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f03(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f03(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -7455,76 +7455,76 @@ Bool __stdcall DasmX86_32_0f03(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f04(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f04(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f05(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f05(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP += 2;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("syscall\r\n"));
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f06(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f06(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP += 2;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("clts\r\n"));
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f07(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f07(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP += 2;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sysret\r\n"));
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f08(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f08(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP += 2;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("invd\r\n"));
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f09(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f09(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP += 2;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("wbinvd\r\n"));
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f0A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f0A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f0B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f0B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP += 2;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ud2\r\n"));
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f0C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f0C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f0D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f0D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f0E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f0E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP += 2;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("femms\r\n"));
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f0F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f0F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -7708,7 +7708,7 @@ Bool __stdcall DasmX86_32_0f0F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f10(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f10(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -7764,7 +7764,7 @@ Bool __stdcall DasmX86_32_0f10(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f11(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f11(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -7820,7 +7820,7 @@ Bool __stdcall DasmX86_32_0f11(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f12(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f12(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -7888,7 +7888,7 @@ Bool __stdcall DasmX86_32_0f12(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f13(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f13(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -7920,7 +7920,7 @@ Bool __stdcall DasmX86_32_0f13(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f14(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f14(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -7952,7 +7952,7 @@ Bool __stdcall DasmX86_32_0f14(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f15(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f15(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -7984,7 +7984,7 @@ Bool __stdcall DasmX86_32_0f15(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f16(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f16(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8040,7 +8040,7 @@ Bool __stdcall DasmX86_32_0f16(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f17(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f17(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8072,42 +8072,42 @@ Bool __stdcall DasmX86_32_0f17(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f18(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f18(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f19(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f19(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f1A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f1A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f1B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f1B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f1C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f1C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f1D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f1D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f1E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f1E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f1F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f1F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -8125,7 +8125,7 @@ Bool __stdcall DasmX86_32_0f1F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f20(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f20(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8142,7 +8142,7 @@ Bool __stdcall DasmX86_32_0f20(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f21(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f21(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8159,7 +8159,7 @@ Bool __stdcall DasmX86_32_0f21(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f22(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f22(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8176,7 +8176,7 @@ Bool __stdcall DasmX86_32_0f22(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f23(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f23(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8193,27 +8193,27 @@ Bool __stdcall DasmX86_32_0f23(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f24(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f24(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f25(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f25(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f26(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f26(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f27(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f27(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f28(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f28(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8245,7 +8245,7 @@ Bool __stdcall DasmX86_32_0f28(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f29(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f29(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8277,7 +8277,7 @@ Bool __stdcall DasmX86_32_0f29(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f2A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f2A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8337,7 +8337,7 @@ Bool __stdcall DasmX86_32_0f2A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f2B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f2B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8395,7 +8395,7 @@ Bool __stdcall DasmX86_32_0f2B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f2C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f2C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8453,7 +8453,7 @@ Bool __stdcall DasmX86_32_0f2C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f2D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f2D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8511,7 +8511,7 @@ Bool __stdcall DasmX86_32_0f2D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f2E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f2E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8543,7 +8543,7 @@ Bool __stdcall DasmX86_32_0f2E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f2F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f2F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8575,101 +8575,101 @@ Bool __stdcall DasmX86_32_0f2F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f30(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f30(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP += 2;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("wrmsr\r\n"));
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f31(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f31(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP += 2;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rdtsc\r\n"));
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f32(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f32(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP += 2;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rdmsr\r\n"));
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f33(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f33(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP += 2;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rdpmc\r\n"));
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f34(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f34(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP += 2;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sysenter\r\n"));
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f35(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f35(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP += 2;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sysexit\r\n"));
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f36(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f36(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f37(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f37(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP += 2;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("getsec\r\n"));
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f38(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return ((Manage::DasmX86_32::DasmX86_32_Code*)sess->codes0f38)[sess->memReader->ReadMemUInt8(sess->regs.EIP + 2)](sess);
 }
 
-Bool __stdcall DasmX86_32_0f39(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f39(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return ((Manage::DasmX86_32::DasmX86_32_Code*)sess->codes0f3a)[sess->memReader->ReadMemUInt8(sess->regs.EIP + 2)](sess);
 }
 
-Bool __stdcall DasmX86_32_0f3B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f40(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f40(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8687,7 +8687,7 @@ Bool __stdcall DasmX86_32_0f40(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f41(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f41(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8705,7 +8705,7 @@ Bool __stdcall DasmX86_32_0f41(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f42(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f42(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8723,7 +8723,7 @@ Bool __stdcall DasmX86_32_0f42(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f43(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f43(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8741,7 +8741,7 @@ Bool __stdcall DasmX86_32_0f43(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f44(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f44(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8759,7 +8759,7 @@ Bool __stdcall DasmX86_32_0f44(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f45(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f45(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8777,7 +8777,7 @@ Bool __stdcall DasmX86_32_0f45(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f46(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f46(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8795,7 +8795,7 @@ Bool __stdcall DasmX86_32_0f46(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f47(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f47(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8813,7 +8813,7 @@ Bool __stdcall DasmX86_32_0f47(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f48(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f48(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8831,7 +8831,7 @@ Bool __stdcall DasmX86_32_0f48(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f49(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f49(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8849,7 +8849,7 @@ Bool __stdcall DasmX86_32_0f49(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f4A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f4A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8867,7 +8867,7 @@ Bool __stdcall DasmX86_32_0f4A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f4B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f4B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8885,7 +8885,7 @@ Bool __stdcall DasmX86_32_0f4B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f4C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f4C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8903,7 +8903,7 @@ Bool __stdcall DasmX86_32_0f4C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f4D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f4D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8921,7 +8921,7 @@ Bool __stdcall DasmX86_32_0f4D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f4E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f4E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8939,7 +8939,7 @@ Bool __stdcall DasmX86_32_0f4E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f4F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f4F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8957,7 +8957,7 @@ Bool __stdcall DasmX86_32_0f4F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f50(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f50(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -8990,7 +8990,7 @@ Bool __stdcall DasmX86_32_0f50(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f51(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f51(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -9034,7 +9034,7 @@ Bool __stdcall DasmX86_32_0f51(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f52(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f52(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -9066,7 +9066,7 @@ Bool __stdcall DasmX86_32_0f52(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f53(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f53(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -9098,7 +9098,7 @@ Bool __stdcall DasmX86_32_0f53(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f54(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f54(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -9130,7 +9130,7 @@ Bool __stdcall DasmX86_32_0f54(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f55(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f55(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -9162,7 +9162,7 @@ Bool __stdcall DasmX86_32_0f55(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f56(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f56(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -9194,7 +9194,7 @@ Bool __stdcall DasmX86_32_0f56(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f57(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f57(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -9226,7 +9226,7 @@ Bool __stdcall DasmX86_32_0f57(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f58(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f58(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -9282,7 +9282,7 @@ Bool __stdcall DasmX86_32_0f58(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f59(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f59(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -9338,7 +9338,7 @@ Bool __stdcall DasmX86_32_0f59(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f5A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f5A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -9382,7 +9382,7 @@ Bool __stdcall DasmX86_32_0f5A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f5B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f5B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -9426,7 +9426,7 @@ Bool __stdcall DasmX86_32_0f5B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f5C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f5C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -9482,7 +9482,7 @@ Bool __stdcall DasmX86_32_0f5C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f5D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f5D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -9538,7 +9538,7 @@ Bool __stdcall DasmX86_32_0f5D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f5E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f5E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -9594,7 +9594,7 @@ Bool __stdcall DasmX86_32_0f5E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f5F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f5F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -9650,7 +9650,7 @@ Bool __stdcall DasmX86_32_0f5F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f60(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f60(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -9682,7 +9682,7 @@ Bool __stdcall DasmX86_32_0f60(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f61(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f61(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -9714,7 +9714,7 @@ Bool __stdcall DasmX86_32_0f61(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f62(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f62(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -9746,7 +9746,7 @@ Bool __stdcall DasmX86_32_0f62(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f63(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f63(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -9778,7 +9778,7 @@ Bool __stdcall DasmX86_32_0f63(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f64(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f64(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -9810,7 +9810,7 @@ Bool __stdcall DasmX86_32_0f64(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f65(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f65(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -9842,7 +9842,7 @@ Bool __stdcall DasmX86_32_0f65(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f66(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f66(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -9874,7 +9874,7 @@ Bool __stdcall DasmX86_32_0f66(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f67(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f67(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -9906,7 +9906,7 @@ Bool __stdcall DasmX86_32_0f67(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f68(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f68(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -9938,7 +9938,7 @@ Bool __stdcall DasmX86_32_0f68(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f69(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f69(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -9970,7 +9970,7 @@ Bool __stdcall DasmX86_32_0f69(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f6A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f6A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -10002,7 +10002,7 @@ Bool __stdcall DasmX86_32_0f6A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f6B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f6B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -10034,7 +10034,7 @@ Bool __stdcall DasmX86_32_0f6B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f6C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f6C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -10054,7 +10054,7 @@ Bool __stdcall DasmX86_32_0f6C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f6D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f6D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -10074,7 +10074,7 @@ Bool __stdcall DasmX86_32_0f6D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f6E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f6E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -10109,7 +10109,7 @@ Bool __stdcall DasmX86_32_0f6E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f6F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f6F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -10153,7 +10153,7 @@ Bool __stdcall DasmX86_32_0f6F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f70(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f70(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -10221,7 +10221,7 @@ Bool __stdcall DasmX86_32_0f70(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f71(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f71(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	Int32 b2 = (sess->memReader->ReadMemUInt8(sess->regs.EIP + 2) >> 3) & 7;
@@ -10282,7 +10282,7 @@ Bool __stdcall DasmX86_32_0f71(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f72(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f72(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	Int32 b2 = (sess->memReader->ReadMemUInt8(sess->regs.EIP + 2) >> 3) & 7;
@@ -10343,7 +10343,7 @@ Bool __stdcall DasmX86_32_0f72(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f73(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f73(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	Int32 b2 = (sess->memReader->ReadMemUInt8(sess->regs.EIP + 2) >> 3) & 7;
@@ -10409,7 +10409,7 @@ Bool __stdcall DasmX86_32_0f73(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f74(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f74(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -10441,7 +10441,7 @@ Bool __stdcall DasmX86_32_0f74(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f75(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f75(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -10473,7 +10473,7 @@ Bool __stdcall DasmX86_32_0f75(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f76(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f76(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -10505,14 +10505,14 @@ Bool __stdcall DasmX86_32_0f76(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f77(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f77(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->regs.EIP += 2;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("emms\r\n"));
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f78(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f78(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -10569,7 +10569,7 @@ Bool __stdcall DasmX86_32_0f78(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f79(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f79(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -10615,17 +10615,17 @@ Bool __stdcall DasmX86_32_0f79(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f7A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f7A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f7B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f7B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f7C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f7C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -10657,7 +10657,7 @@ Bool __stdcall DasmX86_32_0f7C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f7D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f7D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -10689,7 +10689,7 @@ Bool __stdcall DasmX86_32_0f7D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f7E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f7E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -10737,7 +10737,7 @@ Bool __stdcall DasmX86_32_0f7E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f7F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f7F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -10781,7 +10781,7 @@ Bool __stdcall DasmX86_32_0f7F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f80(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f80(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr;
 	if (sess->thisStatus & 1)
@@ -10801,7 +10801,7 @@ Bool __stdcall DasmX86_32_0f80(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f81(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f81(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr;
 	if (sess->thisStatus & 1)
@@ -10821,7 +10821,7 @@ Bool __stdcall DasmX86_32_0f81(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f82(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f82(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr;
 	if (sess->thisStatus & 1)
@@ -10841,7 +10841,7 @@ Bool __stdcall DasmX86_32_0f82(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f83(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f83(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr;
 	if (sess->thisStatus & 1)
@@ -10861,7 +10861,7 @@ Bool __stdcall DasmX86_32_0f83(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f84(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f84(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr;
 	if (sess->thisStatus & 1)
@@ -10881,7 +10881,7 @@ Bool __stdcall DasmX86_32_0f84(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f85(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f85(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr;
 	if (sess->thisStatus & 1)
@@ -10901,7 +10901,7 @@ Bool __stdcall DasmX86_32_0f85(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f86(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f86(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr;
 	if (sess->thisStatus & 1)
@@ -10921,7 +10921,7 @@ Bool __stdcall DasmX86_32_0f86(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f87(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f87(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr;
 	if (sess->thisStatus & 1)
@@ -10941,7 +10941,7 @@ Bool __stdcall DasmX86_32_0f87(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f88(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f88(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr;
 	if (sess->thisStatus & 1)
@@ -10961,7 +10961,7 @@ Bool __stdcall DasmX86_32_0f88(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f89(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f89(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr;
 	if (sess->thisStatus & 1)
@@ -10981,7 +10981,7 @@ Bool __stdcall DasmX86_32_0f89(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f8A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f8A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr;
 	if (sess->thisStatus & 1)
@@ -11001,7 +11001,7 @@ Bool __stdcall DasmX86_32_0f8A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f8B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f8B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr;
 	if (sess->thisStatus & 1)
@@ -11021,7 +11021,7 @@ Bool __stdcall DasmX86_32_0f8B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f8C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f8C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr;
 	if (sess->thisStatus & 1)
@@ -11041,7 +11041,7 @@ Bool __stdcall DasmX86_32_0f8C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f8D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f8D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr;
 	if (sess->thisStatus & 1)
@@ -11061,7 +11061,7 @@ Bool __stdcall DasmX86_32_0f8D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f8E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f8E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr;
 	if (sess->thisStatus & 1)
@@ -11081,7 +11081,7 @@ Bool __stdcall DasmX86_32_0f8E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f8F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f8F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UInt32 addr;
 	if (sess->thisStatus & 1)
@@ -11101,7 +11101,7 @@ Bool __stdcall DasmX86_32_0f8F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0f90(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f90(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -11121,7 +11121,7 @@ Bool __stdcall DasmX86_32_0f90(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_0f91(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f91(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -11141,7 +11141,7 @@ Bool __stdcall DasmX86_32_0f91(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_0f92(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f92(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -11161,7 +11161,7 @@ Bool __stdcall DasmX86_32_0f92(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_0f93(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f93(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -11181,7 +11181,7 @@ Bool __stdcall DasmX86_32_0f93(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_0f94(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f94(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -11201,7 +11201,7 @@ Bool __stdcall DasmX86_32_0f94(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_0f95(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f95(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -11221,7 +11221,7 @@ Bool __stdcall DasmX86_32_0f95(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_0f96(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f96(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -11241,7 +11241,7 @@ Bool __stdcall DasmX86_32_0f96(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_0f97(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f97(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -11261,7 +11261,7 @@ Bool __stdcall DasmX86_32_0f97(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_0f98(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f98(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -11281,7 +11281,7 @@ Bool __stdcall DasmX86_32_0f98(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_0f99(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f99(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -11301,7 +11301,7 @@ Bool __stdcall DasmX86_32_0f99(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_0f9A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f9A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -11321,7 +11321,7 @@ Bool __stdcall DasmX86_32_0f9A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_0f9B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f9B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -11341,7 +11341,7 @@ Bool __stdcall DasmX86_32_0f9B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_0f9C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f9C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -11361,7 +11361,7 @@ Bool __stdcall DasmX86_32_0f9C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_0f9D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f9D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -11381,7 +11381,7 @@ Bool __stdcall DasmX86_32_0f9D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_0f9E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f9E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -11401,7 +11401,7 @@ Bool __stdcall DasmX86_32_0f9E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_0f9F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f9F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -11421,28 +11421,28 @@ Bool __stdcall DasmX86_32_0f9F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_0fA0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fA0(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("push FS\r\n"));
 	sess->regs.EIP += 2;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fA1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fA1(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pop FS\r\n"));
 	sess->regs.EIP += 2;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fA2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fA2(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cpuid\r\n"));
 	sess->regs.EIP += 2;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fA3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fA3(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -11460,7 +11460,7 @@ Bool __stdcall DasmX86_32_0fA3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fA4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fA4(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -11481,7 +11481,7 @@ Bool __stdcall DasmX86_32_0fA4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fA5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fA5(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -11499,38 +11499,38 @@ Bool __stdcall DasmX86_32_0fA5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fA6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fA6(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fA7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fA7(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fA8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fA8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("push GS\r\n"));
 	sess->regs.EIP += 2;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fA9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fA9(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pop GS\r\n"));
 	sess->regs.EIP += 2;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fAA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fAA(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rsm\r\n"));
 	sess->regs.EIP += 2;
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fAB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fAB(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -11548,7 +11548,7 @@ Bool __stdcall DasmX86_32_0fAB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fAC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fAC(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -11569,7 +11569,7 @@ Bool __stdcall DasmX86_32_0fAC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fAD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fAD(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -11587,7 +11587,7 @@ Bool __stdcall DasmX86_32_0fAD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fAE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fAE(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -11646,7 +11646,7 @@ Bool __stdcall DasmX86_32_0fAE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_0fAF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fAF(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -11664,7 +11664,7 @@ Bool __stdcall DasmX86_32_0fAF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fB0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fB0(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -11682,7 +11682,7 @@ Bool __stdcall DasmX86_32_0fB0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fB1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fB1(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -11700,12 +11700,12 @@ Bool __stdcall DasmX86_32_0fB1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fB2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fB2(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fB3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fB3(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -11723,17 +11723,17 @@ Bool __stdcall DasmX86_32_0fB3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fB4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fB4(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fB5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fB5(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fB6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fB6(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -11759,7 +11759,7 @@ Bool __stdcall DasmX86_32_0fB6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fB7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fB7(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -11778,7 +11778,7 @@ Bool __stdcall DasmX86_32_0fB7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fB8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fB8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -11805,12 +11805,12 @@ Bool __stdcall DasmX86_32_0fB8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fB9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fB9(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fBA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fBA(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -11863,7 +11863,7 @@ Bool __stdcall DasmX86_32_0fBA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 }
 
-Bool __stdcall DasmX86_32_0fBB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fBB(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -11881,7 +11881,7 @@ Bool __stdcall DasmX86_32_0fBB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fBC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fBC(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -11899,7 +11899,7 @@ Bool __stdcall DasmX86_32_0fBC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fBD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fBD(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -11917,7 +11917,7 @@ Bool __stdcall DasmX86_32_0fBD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fBE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fBE(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -11943,7 +11943,7 @@ Bool __stdcall DasmX86_32_0fBE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fBF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fBF(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -11962,7 +11962,7 @@ Bool __stdcall DasmX86_32_0fBF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fC0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fC0(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -11980,7 +11980,7 @@ Bool __stdcall DasmX86_32_0fC0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fC1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fC1(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -11998,7 +11998,7 @@ Bool __stdcall DasmX86_32_0fC1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fC2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fC2(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -12279,7 +12279,7 @@ Bool __stdcall DasmX86_32_0fC2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fC3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fC3(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -12301,7 +12301,7 @@ Bool __stdcall DasmX86_32_0fC3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fC4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fC4(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -12340,7 +12340,7 @@ Bool __stdcall DasmX86_32_0fC4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fC5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fC5(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -12378,7 +12378,7 @@ Bool __stdcall DasmX86_32_0fC5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 	return false;}
 
-Bool __stdcall DasmX86_32_0fC6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fC6(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -12416,7 +12416,7 @@ Bool __stdcall DasmX86_32_0fC6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fC7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fC7(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	Int32 regNo;
@@ -12467,7 +12467,7 @@ Bool __stdcall DasmX86_32_0fC7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fC8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fC8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -12479,7 +12479,7 @@ Bool __stdcall DasmX86_32_0fC8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fC9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fC9(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -12491,7 +12491,7 @@ Bool __stdcall DasmX86_32_0fC9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fCA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fCA(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -12503,7 +12503,7 @@ Bool __stdcall DasmX86_32_0fCA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fCB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fCB(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -12515,7 +12515,7 @@ Bool __stdcall DasmX86_32_0fCB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fCC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fCC(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -12527,7 +12527,7 @@ Bool __stdcall DasmX86_32_0fCC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fCD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fCD(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -12539,7 +12539,7 @@ Bool __stdcall DasmX86_32_0fCD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fCE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fCE(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -12551,7 +12551,7 @@ Bool __stdcall DasmX86_32_0fCE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fCF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fCF(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char reg[8];
 	UInt32 *regPtr;
@@ -12563,7 +12563,7 @@ Bool __stdcall DasmX86_32_0fCF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return true;
 }
 
-Bool __stdcall DasmX86_32_0fD0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fD0(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -12595,7 +12595,7 @@ Bool __stdcall DasmX86_32_0fD0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fD1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fD1(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -12627,7 +12627,7 @@ Bool __stdcall DasmX86_32_0fD1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fD2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fD2(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -12659,7 +12659,7 @@ Bool __stdcall DasmX86_32_0fD2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fD3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fD3(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -12691,7 +12691,7 @@ Bool __stdcall DasmX86_32_0fD3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fD4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fD4(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -12723,7 +12723,7 @@ Bool __stdcall DasmX86_32_0fD4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fD5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fD5(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -12755,7 +12755,7 @@ Bool __stdcall DasmX86_32_0fD5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fD6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fD6(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -12799,12 +12799,12 @@ Bool __stdcall DasmX86_32_0fD6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fD7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fD7(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fD8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fD8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -12836,7 +12836,7 @@ Bool __stdcall DasmX86_32_0fD8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fD9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fD9(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -12868,7 +12868,7 @@ Bool __stdcall DasmX86_32_0fD9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fDA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fDA(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -12900,7 +12900,7 @@ Bool __stdcall DasmX86_32_0fDA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fDB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fDB(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -12932,7 +12932,7 @@ Bool __stdcall DasmX86_32_0fDB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fDC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fDC(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -12964,7 +12964,7 @@ Bool __stdcall DasmX86_32_0fDC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fDD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fDD(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -12996,7 +12996,7 @@ Bool __stdcall DasmX86_32_0fDD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fDE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fDE(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13028,7 +13028,7 @@ Bool __stdcall DasmX86_32_0fDE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fDF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fDF(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13060,7 +13060,7 @@ Bool __stdcall DasmX86_32_0fDF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fE0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fE0(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13092,7 +13092,7 @@ Bool __stdcall DasmX86_32_0fE0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fE1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fE1(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13124,7 +13124,7 @@ Bool __stdcall DasmX86_32_0fE1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fE2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fE2(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13156,7 +13156,7 @@ Bool __stdcall DasmX86_32_0fE2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fE3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fE3(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13188,7 +13188,7 @@ Bool __stdcall DasmX86_32_0fE3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fE4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fE4(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13220,7 +13220,7 @@ Bool __stdcall DasmX86_32_0fE4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fE5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fE5(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13252,7 +13252,7 @@ Bool __stdcall DasmX86_32_0fE5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fE6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fE6(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13296,7 +13296,7 @@ Bool __stdcall DasmX86_32_0fE6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fE7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fE7(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13328,7 +13328,7 @@ Bool __stdcall DasmX86_32_0fE7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fE8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fE8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13360,7 +13360,7 @@ Bool __stdcall DasmX86_32_0fE8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fE9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fE9(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13392,7 +13392,7 @@ Bool __stdcall DasmX86_32_0fE9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fEA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fEA(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13424,7 +13424,7 @@ Bool __stdcall DasmX86_32_0fEA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fEB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fEB(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13456,7 +13456,7 @@ Bool __stdcall DasmX86_32_0fEB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fEC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fEC(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13488,7 +13488,7 @@ Bool __stdcall DasmX86_32_0fEC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fED(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fED(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13520,7 +13520,7 @@ Bool __stdcall DasmX86_32_0fED(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fEE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fEE(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13552,7 +13552,7 @@ Bool __stdcall DasmX86_32_0fEE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fEF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fEF(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13584,7 +13584,7 @@ Bool __stdcall DasmX86_32_0fEF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fF0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fF0(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13604,7 +13604,7 @@ Bool __stdcall DasmX86_32_0fF0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fF1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fF1(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13636,7 +13636,7 @@ Bool __stdcall DasmX86_32_0fF1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fF2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fF2(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13668,7 +13668,7 @@ Bool __stdcall DasmX86_32_0fF2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fF3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fF3(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13688,7 +13688,7 @@ Bool __stdcall DasmX86_32_0fF3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fF4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fF4(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13720,7 +13720,7 @@ Bool __stdcall DasmX86_32_0fF4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fF5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fF5(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13752,7 +13752,7 @@ Bool __stdcall DasmX86_32_0fF5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fF6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fF6(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13784,7 +13784,7 @@ Bool __stdcall DasmX86_32_0fF6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fF7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fF7(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13816,7 +13816,7 @@ Bool __stdcall DasmX86_32_0fF7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fF8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fF8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13848,7 +13848,7 @@ Bool __stdcall DasmX86_32_0fF8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fF9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fF9(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13880,7 +13880,7 @@ Bool __stdcall DasmX86_32_0fF9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fFA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fFA(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13912,7 +13912,7 @@ Bool __stdcall DasmX86_32_0fFA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fFB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fFB(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13932,7 +13932,7 @@ Bool __stdcall DasmX86_32_0fFB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fFC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fFC(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13964,7 +13964,7 @@ Bool __stdcall DasmX86_32_0fFC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fFD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fFD(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -13996,7 +13996,7 @@ Bool __stdcall DasmX86_32_0fFD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fFE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fFE(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14028,12 +14028,12 @@ Bool __stdcall DasmX86_32_0fFE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0fFF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0fFF(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3800(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3800(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14065,7 +14065,7 @@ Bool __stdcall DasmX86_32_0f3800(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3801(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3801(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14097,7 +14097,7 @@ Bool __stdcall DasmX86_32_0f3801(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3802(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3802(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14129,7 +14129,7 @@ Bool __stdcall DasmX86_32_0f3802(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3803(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3803(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14161,7 +14161,7 @@ Bool __stdcall DasmX86_32_0f3803(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3804(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3804(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14193,7 +14193,7 @@ Bool __stdcall DasmX86_32_0f3804(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3805(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3805(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14225,7 +14225,7 @@ Bool __stdcall DasmX86_32_0f3805(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3806(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3806(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14257,7 +14257,7 @@ Bool __stdcall DasmX86_32_0f3806(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3807(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3807(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14289,7 +14289,7 @@ Bool __stdcall DasmX86_32_0f3807(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3808(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3808(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14321,7 +14321,7 @@ Bool __stdcall DasmX86_32_0f3808(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3809(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3809(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14353,7 +14353,7 @@ Bool __stdcall DasmX86_32_0f3809(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f380A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f380A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14385,7 +14385,7 @@ Bool __stdcall DasmX86_32_0f380A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f380B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f380B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14417,27 +14417,27 @@ Bool __stdcall DasmX86_32_0f380B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f380C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f380C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f380D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f380D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f380E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f380E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f380F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f380F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3810(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3810(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14457,22 +14457,22 @@ Bool __stdcall DasmX86_32_0f3810(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3811(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3811(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3812(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3812(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3813(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3813(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3814(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3814(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14492,7 +14492,7 @@ Bool __stdcall DasmX86_32_0f3814(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3815(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3815(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14512,12 +14512,12 @@ Bool __stdcall DasmX86_32_0f3815(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3816(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3816(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3817(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3817(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14537,27 +14537,27 @@ Bool __stdcall DasmX86_32_0f3817(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3818(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3818(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3819(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3819(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f381A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f381A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f381B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f381B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f381C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f381C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14589,7 +14589,7 @@ Bool __stdcall DasmX86_32_0f381C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f381D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f381D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14621,7 +14621,7 @@ Bool __stdcall DasmX86_32_0f381D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f381E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f381E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14653,12 +14653,12 @@ Bool __stdcall DasmX86_32_0f381E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f381F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f381F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3820(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3820(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14678,7 +14678,7 @@ Bool __stdcall DasmX86_32_0f3820(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3821(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3821(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14698,7 +14698,7 @@ Bool __stdcall DasmX86_32_0f3821(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3822(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3822(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14718,7 +14718,7 @@ Bool __stdcall DasmX86_32_0f3822(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3823(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3823(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14738,7 +14738,7 @@ Bool __stdcall DasmX86_32_0f3823(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3824(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3824(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14758,7 +14758,7 @@ Bool __stdcall DasmX86_32_0f3824(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3825(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3825(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14778,17 +14778,17 @@ Bool __stdcall DasmX86_32_0f3825(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3826(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3826(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3827(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3827(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3828(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3828(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14808,7 +14808,7 @@ Bool __stdcall DasmX86_32_0f3828(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3829(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3829(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14828,7 +14828,7 @@ Bool __stdcall DasmX86_32_0f3829(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f382A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f382A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14848,7 +14848,7 @@ Bool __stdcall DasmX86_32_0f382A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f382B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f382B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14868,27 +14868,27 @@ Bool __stdcall DasmX86_32_0f382B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f382C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f382C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f382D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f382D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f382E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f382E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f382F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f382F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3830(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3830(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14908,7 +14908,7 @@ Bool __stdcall DasmX86_32_0f3830(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3831(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3831(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14928,7 +14928,7 @@ Bool __stdcall DasmX86_32_0f3831(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3832(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3832(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14948,7 +14948,7 @@ Bool __stdcall DasmX86_32_0f3832(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3833(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3833(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14968,7 +14968,7 @@ Bool __stdcall DasmX86_32_0f3833(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3834(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3834(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -14988,7 +14988,7 @@ Bool __stdcall DasmX86_32_0f3834(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3835(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3835(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -15008,12 +15008,12 @@ Bool __stdcall DasmX86_32_0f3835(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3836(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3836(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3837(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3837(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -15033,7 +15033,7 @@ Bool __stdcall DasmX86_32_0f3837(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3838(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3838(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -15053,7 +15053,7 @@ Bool __stdcall DasmX86_32_0f3838(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3839(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3839(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -15073,7 +15073,7 @@ Bool __stdcall DasmX86_32_0f3839(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f383A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f383A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -15093,7 +15093,7 @@ Bool __stdcall DasmX86_32_0f383A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f383B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f383B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -15113,7 +15113,7 @@ Bool __stdcall DasmX86_32_0f383B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f383C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f383C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -15133,7 +15133,7 @@ Bool __stdcall DasmX86_32_0f383C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f383D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f383D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -15153,7 +15153,7 @@ Bool __stdcall DasmX86_32_0f383D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f383E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f383E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -15173,7 +15173,7 @@ Bool __stdcall DasmX86_32_0f383E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f383F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f383F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -15193,7 +15193,7 @@ Bool __stdcall DasmX86_32_0f383F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3840(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3840(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -15213,7 +15213,7 @@ Bool __stdcall DasmX86_32_0f3840(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3841(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3841(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -15233,317 +15233,317 @@ Bool __stdcall DasmX86_32_0f3841(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3842(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3842(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3843(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3843(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3844(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3844(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3845(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3845(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3846(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3846(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3847(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3847(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3848(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3848(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3849(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3849(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f384A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f384A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f384B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f384B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f384C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f384C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f384D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f384D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f384E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f384E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f384F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f384F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3850(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3850(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3851(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3851(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3852(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3852(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3853(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3853(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3854(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3854(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3855(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3855(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3856(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3856(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3857(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3857(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3858(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3858(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3859(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3859(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f385A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f385A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f385B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f385B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f385C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f385C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f385D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f385D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f385E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f385E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f385F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f385F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3860(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3860(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3861(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3861(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3862(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3862(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3863(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3863(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3864(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3864(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3865(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3865(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3866(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3866(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3867(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3867(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3868(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3868(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3869(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3869(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f386A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f386A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f386B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f386B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f386C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f386C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f386D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f386D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f386E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f386E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f386F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f386F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3870(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3870(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3871(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3871(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3872(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3872(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3873(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3873(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3874(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3874(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3875(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3875(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3876(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3876(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3877(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3877(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3878(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3878(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3879(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3879(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f387A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f387A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f387B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f387B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f387C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f387C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f387D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f387D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f387E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f387E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f387F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f387F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3880(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3880(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -15564,7 +15564,7 @@ Bool __stdcall DasmX86_32_0f3880(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3881(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3881(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -15585,452 +15585,452 @@ Bool __stdcall DasmX86_32_0f3881(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3882(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3882(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3883(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3883(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3884(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3884(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3885(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3885(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3886(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3886(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3887(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3887(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3888(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3888(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3889(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3889(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f388A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f388A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f388B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f388B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f388C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f388C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f388D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f388D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f388E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f388E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f388F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f388F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3890(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3890(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3891(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3891(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3892(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3892(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3893(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3893(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3894(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3894(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3895(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3895(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3896(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3896(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3897(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3897(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3898(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3898(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3899(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3899(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f389A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f389A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f389B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f389B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f389C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f389C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f389D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f389D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f389E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f389E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f389F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f389F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38A0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38A0(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38A1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38A1(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38A2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38A2(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38A3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38A3(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38A4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38A4(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38A5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38A5(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38A6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38A6(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38A7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38A7(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38A8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38A8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38A9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38A9(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38AA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38AA(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38AB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38AB(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38AC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38AC(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38AD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38AD(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38AE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38AE(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38AF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38AF(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38B0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38B0(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38B1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38B1(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38B2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38B2(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38B3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38B3(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38B4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38B4(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38B5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38B5(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38B6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38B6(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38B7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38B7(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38B8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38B8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38B9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38B9(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38BA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38BA(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38BB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38BB(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38BC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38BC(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38BD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38BD(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38BE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38BE(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38BF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38BF(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38C0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38C0(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38C1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38C1(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38C2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38C2(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38C3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38C3(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38C4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38C4(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38C5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38C5(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38C6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38C6(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38C7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38C7(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38C8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38C8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38C9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38C9(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38CA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38CA(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38CB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38CB(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38CC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38CC(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38CD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38CD(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38CE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38CE(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38CF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38CF(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38D0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38D0(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38D1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38D1(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38D2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38D2(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38D3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38D3(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38D4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38D4(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38D5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38D5(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38D6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38D6(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38D7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38D7(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38D8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38D8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38D9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38D9(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38DA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38DA(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38DB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38DB(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -16050,7 +16050,7 @@ Bool __stdcall DasmX86_32_0f38DB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38DC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38DC(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -16070,7 +16070,7 @@ Bool __stdcall DasmX86_32_0f38DC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38DD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38DD(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -16090,7 +16090,7 @@ Bool __stdcall DasmX86_32_0f38DD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38DE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38DE(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -16110,7 +16110,7 @@ Bool __stdcall DasmX86_32_0f38DE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38DF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38DF(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -16130,42 +16130,42 @@ Bool __stdcall DasmX86_32_0f38DF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38E0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38E0(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38E1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38E1(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38E2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38E2(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38E3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38E3(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38E4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38E4(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38E5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38E5(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38E6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38E6(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38E7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38E7(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -16185,47 +16185,47 @@ Bool __stdcall DasmX86_32_0f38E7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38E8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38E8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38E9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38E9(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38EA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38EA(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38EB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38EB(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38EC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38EC(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38ED(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38ED(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38EE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38EE(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38EF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38EF(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38F0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38F0(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -16275,7 +16275,7 @@ Bool __stdcall DasmX86_32_0f38F0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38F1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38F1(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -16325,27 +16325,27 @@ Bool __stdcall DasmX86_32_0f38F1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38F2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38F2(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38F3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38F3(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38F4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38F4(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38F5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38F5(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38F6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38F6(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	if ((sess->thisStatus & 5) == 1)
 	{
@@ -16386,92 +16386,92 @@ Bool __stdcall DasmX86_32_0f38F6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38F7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38F7(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38F8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38F8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38F9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38F9(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38FA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38FA(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38FB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38FB(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38FC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38FC(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38FD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38FD(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38FE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38FE(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f38FF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f38FF(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a00(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a00(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a01(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a01(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a02(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a02(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a03(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a03(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a04(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a04(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a05(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a05(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a06(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a06(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a07(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a07(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a08(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a08(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -16494,7 +16494,7 @@ Bool __stdcall DasmX86_32_0f3a08(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a09(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a09(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -16517,7 +16517,7 @@ Bool __stdcall DasmX86_32_0f3a09(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a0A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a0A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -16540,12 +16540,12 @@ Bool __stdcall DasmX86_32_0f3a0A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a0B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a0B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a0C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a0C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -16568,7 +16568,7 @@ Bool __stdcall DasmX86_32_0f3a0C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a0D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a0D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -16591,7 +16591,7 @@ Bool __stdcall DasmX86_32_0f3a0D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a0E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a0E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -16614,7 +16614,7 @@ Bool __stdcall DasmX86_32_0f3a0E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a0F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a0F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -16652,27 +16652,27 @@ Bool __stdcall DasmX86_32_0f3a0F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a10(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a10(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a11(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a11(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a12(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a12(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a13(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a13(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a14(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a14(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -16696,12 +16696,12 @@ Bool __stdcall DasmX86_32_0f3a14(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a15(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a15(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a16(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a16(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -16725,7 +16725,7 @@ Bool __stdcall DasmX86_32_0f3a16(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a17(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a17(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -16749,47 +16749,47 @@ Bool __stdcall DasmX86_32_0f3a17(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a18(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a18(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a19(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a19(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a1A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a1A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a1B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a1B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a1C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a1C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a1D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a1D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a1E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a1E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a1F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a1F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a20(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a20(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -16813,7 +16813,7 @@ Bool __stdcall DasmX86_32_0f3a20(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a21(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a21(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -16836,7 +16836,7 @@ Bool __stdcall DasmX86_32_0f3a21(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a22(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a22(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -16860,152 +16860,152 @@ Bool __stdcall DasmX86_32_0f3a22(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a23(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a23(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a24(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a24(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a25(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a25(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a26(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a26(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a27(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a27(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a28(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a28(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a29(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a29(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a2A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a2A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a2B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a2B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a2C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a2C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a2D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a2D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a2E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a2E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a2F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a2F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a30(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a30(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a31(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a31(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a32(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a32(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a33(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a33(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a34(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a34(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a35(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a35(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a36(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a36(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a37(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a37(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a38(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a38(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a39(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a39(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a3A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a3A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a3B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a3B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a3C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a3C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a3D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a3D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a3E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a3E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a3F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a3F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a40(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a40(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -17028,7 +17028,7 @@ Bool __stdcall DasmX86_32_0f3a40(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a41(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a41(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -17051,7 +17051,7 @@ Bool __stdcall DasmX86_32_0f3a41(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a42(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a42(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -17074,12 +17074,12 @@ Bool __stdcall DasmX86_32_0f3a42(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a43(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a43(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a44(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a44(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -17102,142 +17102,142 @@ Bool __stdcall DasmX86_32_0f3a44(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a45(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a45(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a46(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a46(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a47(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a47(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a48(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a48(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a49(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a49(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a4A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a4A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a4B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a4B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a4C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a4C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a4D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a4D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a4E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a4E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a4F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a4F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a50(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a50(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a51(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a51(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a52(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a52(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a53(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a53(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a54(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a54(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a55(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a55(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a56(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a56(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a57(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a57(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a58(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a58(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a59(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a59(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a5A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a5A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a5B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a5B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a5C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a5C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a5D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a5D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a5E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a5E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a5F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a5F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a60(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a60(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -17260,7 +17260,7 @@ Bool __stdcall DasmX86_32_0f3a60(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a61(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a61(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -17283,7 +17283,7 @@ Bool __stdcall DasmX86_32_0f3a61(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a62(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a62(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -17306,7 +17306,7 @@ Bool __stdcall DasmX86_32_0f3a62(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a63(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a63(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -17329,622 +17329,622 @@ Bool __stdcall DasmX86_32_0f3a63(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a64(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a64(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a65(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a65(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a66(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a66(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a67(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a67(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a68(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a68(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a69(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a69(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a6A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a6A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a6B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a6B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a6C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a6C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a6D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a6D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a6E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a6E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a6F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a6F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a70(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a70(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a71(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a71(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a72(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a72(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a73(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a73(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a74(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a74(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a75(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a75(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a76(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a76(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a77(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a77(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a78(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a78(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a79(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a79(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a7A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a7A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a7B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a7B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a7C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a7C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a7D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a7D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a7E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a7E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a7F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a7F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a80(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a80(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a81(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a81(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a82(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a82(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a83(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a83(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a84(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a84(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a85(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a85(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a86(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a86(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a87(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a87(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a88(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a88(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a89(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a89(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a8A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a8A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a8B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a8B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a8C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a8C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a8D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a8D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a8E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a8E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a8F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a8F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a90(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a90(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a91(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a91(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a92(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a92(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a93(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a93(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a94(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a94(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a95(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a95(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a96(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a96(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a97(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a97(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a98(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a98(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a99(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a99(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a9A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a9A(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a9B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a9B(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a9C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a9C(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a9D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a9D(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a9E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a9E(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3a9F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3a9F(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aA0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aA0(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aA1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aA1(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aA2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aA2(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aA3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aA3(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aA4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aA4(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aA5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aA5(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aA6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aA6(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aA7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aA7(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aA8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aA8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aA9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aA9(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aAA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aAA(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aAB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aAB(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aAC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aAC(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aAD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aAD(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aAE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aAE(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aAF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aAF(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aB0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aB0(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aB1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aB1(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aB2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aB2(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aB3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aB3(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aB4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aB4(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aB5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aB5(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aB6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aB6(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aB7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aB7(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aB8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aB8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aB9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aB9(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aBA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aBA(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aBB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aBB(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aBC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aBC(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aBD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aBD(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aBE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aBE(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aBF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aBF(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aC0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aC0(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aC1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aC1(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aC2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aC2(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aC3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aC3(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aC4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aC4(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aC5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aC5(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aC6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aC6(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aC7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aC7(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aC8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aC8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aC9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aC9(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aCA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aCA(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aCB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aCB(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aCC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aCC(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aCD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aCD(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aCE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aCE(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aCF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aCF(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aD0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aD0(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aD1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aD1(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aD2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aD2(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aD3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aD3(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aD4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aD4(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aD5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aD5(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aD6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aD6(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aD7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aD7(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aD8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aD8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aD9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aD9(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aDA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aDA(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aDB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aDB(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aDC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aDC(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aDD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aDD(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aDE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aDE(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aDF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aDF(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	UTF8Char mem[64];
 	UTF8Char reg[8];
@@ -17967,162 +17967,162 @@ Bool __stdcall DasmX86_32_0f3aDF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aE0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aE0(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aE1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aE1(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aE2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aE2(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aE3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aE3(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aE4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aE4(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aE5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aE5(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aE6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aE6(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aE7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aE7(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aE8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aE8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aE9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aE9(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aEA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aEA(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aEB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aEB(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aEC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aEC(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aED(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aED(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aEE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aEE(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aEF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aEF(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aF0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aF0(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aF1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aF1(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aF2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aF2(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aF3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aF3(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aF4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aF4(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aF5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aF5(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aF6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aF6(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aF7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aF7(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aF8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aF8(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aF9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aF9(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aFA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aFA(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aFB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aFB(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aFC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aFC(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aFD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aFD(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aFE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aFE(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
 
-Bool __stdcall DasmX86_32_0f3aFF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
+Bool __stdcall DasmX86_32_0f3aFF(NN<Manage::DasmX86_32::DasmX86_32_Sess> sess)
 {
 	return false;
 }
@@ -19188,7 +19188,7 @@ Text::CStringNN Manage::DasmX86_32::GetHeader(Bool fullRegs) const
 	}
 }
 
-Bool Manage::DasmX86_32::Disasm32(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt32 *currEip, UInt32 *currEsp, UInt32 *currEbp, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs)
+Bool Manage::DasmX86_32::Disasm32(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt32 *currEip, UInt32 *currEsp, UInt32 *currEbp, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, Manage::IMemoryReader *memReader, Bool fullRegs)
 {
 	UTF8Char sbuff[512];
 	DasmX86_32_Sess sess;
@@ -19196,7 +19196,7 @@ Bool Manage::DasmX86_32::Disasm32(NN<IO::Writer> writer, Manage::AddressResolver
 	UOSInt initJmpCnt = jmpAddrs->GetCount();
 	sess.callAddrs = callAddrs;
 	sess.jmpAddrs = jmpAddrs;
-	MemCopyNO(&sess.regs, regs, sizeof(Manage::DasmX86_32::DasmX86_32_Regs));
+	MemCopyNO(&sess.regs, regs.Ptr(), sizeof(Manage::DasmX86_32::DasmX86_32_Regs));
 	sess.regs.EIP = *currEip;
 	sess.regs.ESP = *currEsp;
 	sess.regs.EBP = *currEbp;
@@ -19246,7 +19246,7 @@ Bool Manage::DasmX86_32::Disasm32(NN<IO::Writer> writer, Manage::AddressResolver
 		}
 		else
 		{
-			ret = this->codes[buff[0]](&sess);
+			ret = this->codes[buff[0]](sess);
 		}
 		if (!ret)
 		{
@@ -19283,7 +19283,7 @@ Bool Manage::DasmX86_32::Disasm32(NN<IO::Writer> writer, Manage::AddressResolver
 				*currEsp = sess.regs.ESP;
 				*currEbp = sess.regs.EBP;
 				*blockEnd = sess.regs.EIP;
-				MemCopyNO(regs, &sess.regs, sizeof(Manage::DasmX86_32::DasmX86_32_Regs));
+				MemCopyNO(regs.Ptr(), &sess.regs, sizeof(Manage::DasmX86_32::DasmX86_32_Regs));
 				return false;
 			}
 			sess.regs.EIP = minAddr;
@@ -19295,7 +19295,7 @@ Bool Manage::DasmX86_32::Disasm32(NN<IO::Writer> writer, Manage::AddressResolver
 			*currEsp = sess.regs.ESP;
 			*currEbp = sess.regs.EBP;
 			*blockEnd = sess.regs.EIP;
-			MemCopyNO(regs, &sess.regs, sizeof(Manage::DasmX86_32::DasmX86_32_Regs));
+			MemCopyNO(regs.Ptr(), &sess.regs, sizeof(Manage::DasmX86_32::DasmX86_32_Regs));
 			return sess.endType != Manage::DasmX86_32::ET_EXIT;
 		}
 		sess.lastStatus = sess.thisStatus;
@@ -19328,7 +19328,7 @@ Bool Manage::DasmX86_32::Disasm32In(NN<Text::StringBuilderUTF8> outStr, Manage::
 		outStr->AppendHex32(sess.regs.EIP);
 		outStr->AppendC(UTF8STRC(" "));
 		sess.sbuff = sbuff;
-		Bool ret = this->codes[sess.memReader->ReadMemUInt8(sess.regs.EIP)](&sess);
+		Bool ret = this->codes[sess.memReader->ReadMemUInt8(sess.regs.EIP)](sess);
 		if (!ret)
 			break;
 		outStr->AppendSlow(sbuff);
@@ -19349,7 +19349,7 @@ Bool Manage::DasmX86_32::Disasm32In(NN<Text::StringBuilderUTF8> outStr, Manage::
 		outStr->AppendHex32(sess.regs.EIP);
 		outStr->AppendC(UTF8STRC(" "));
 		sess.sbuff = sbuff;
-		Bool ret = this->codes[sess.memReader->ReadMemUInt8(sess.regs.EIP)](&sess);
+		Bool ret = this->codes[sess.memReader->ReadMemUInt8(sess.regs.EIP)](sess);
 		UOSInt sbuffLen = Text::StrCharCnt(sbuff);
 		console.Write(Text::CStringNN(sbuff, sbuffLen));
 		outStr->AppendC(sbuff, sbuffLen);
@@ -19384,21 +19384,20 @@ Bool Manage::DasmX86_32::Disasm32In(NN<Text::StringBuilderUTF8> outStr, Manage::
 	}
 }
 
-Manage::Dasm::Dasm_Regs *Manage::DasmX86_32::CreateRegs() const
+NN<Manage::Dasm::Dasm_Regs> Manage::DasmX86_32::CreateRegs() const
 {
-	DasmX86_32_Regs *regs = MemAlloc(DasmX86_32_Regs, 1);
-	return regs;
+	return MemAllocNN(DasmX86_32_Regs);
 }
 
-void Manage::DasmX86_32::FreeRegs(Dasm_Regs *regs) const
+void Manage::DasmX86_32::FreeRegs(NN<Dasm_Regs> regs) const
 {
-	MemFree(regs);
+	MemFreeNN(regs);
 }
 
-void *Manage::DasmX86_32::StartDasm(Manage::AddressResolver *addrResol, void *addr, Manage::IMemoryReader *memReader)
+NN<Manage::DasmX86_32::DasmX86_32_Sess> Manage::DasmX86_32::StartDasm(Manage::AddressResolver *addrResol, void *addr, Manage::IMemoryReader *memReader)
 {
-	DasmX86_32_Sess *sess;
-	sess = MemAlloc(DasmX86_32_Sess, 1);
+	NN<DasmX86_32_Sess> sess;
+	sess = MemAllocNN(DasmX86_32_Sess);
 	NEW_CLASS(sess->callAddrs, Data::ArrayListUInt32());
 	NEW_CLASS(sess->jmpAddrs, Data::ArrayListUInt32());
 	sess->regs.EIP = (UInt32)(OSInt)addr;
@@ -19423,36 +19422,34 @@ void *Manage::DasmX86_32::StartDasm(Manage::AddressResolver *addrResol, void *ad
 	return sess;
 }
 
-void Manage::DasmX86_32::EndDasm(void *sess)
+void Manage::DasmX86_32::EndDasm(NN<DasmX86_32_Sess> sess)
 {
-	DasmX86_32_Sess *ses = (DasmX86_32_Sess*)sess;
-	DEL_CLASS(ses->callAddrs);
-	DEL_CLASS(ses->jmpAddrs);
-	MemFree(ses);
+	DEL_CLASS(sess->callAddrs);
+	DEL_CLASS(sess->jmpAddrs);
+	MemFreeNN(sess);
 }
 
-UTF8Char *Manage::DasmX86_32::DasmNext(void *sess, UTF8Char *buff)
+UTF8Char *Manage::DasmX86_32::DasmNext(NN<DasmX86_32_Sess> sess, UTF8Char *buff)
 {
-	DasmX86_32_Sess *ses = (DasmX86_32_Sess*)sess;
-	if (ses->endType != Manage::DasmX86_32::ET_NOT_END)
+	if (sess->endType != Manage::DasmX86_32::ET_NOT_END)
 		return 0;
-	ses->sbuff = buff;
-	Bool ret = this->codes[ses->memReader->ReadMemUInt8(ses->regs.EIP)](ses);
-	UTF8Char *sptr = ses->sbuff;
+	sess->sbuff = buff;
+	Bool ret = this->codes[sess->memReader->ReadMemUInt8(sess->regs.EIP)](sess);
+	UTF8Char *sptr = sess->sbuff;
 	if (!ret)
 	{
 		UInt8 cbuff[16];
 		UOSInt buffSize;
 		sptr = Text::StrConcatC(buff, UTF8STRC("Unknown opcode "));
-		buffSize = ses->memReader->ReadMemory(ses->regs.EIP, cbuff, 16);
+		buffSize = sess->memReader->ReadMemory(sess->regs.EIP, cbuff, 16);
 		if (buffSize > 0)
 		{
 			sptr = Text::StrHexBytes(sptr, cbuff, buffSize, ' ');
 		}
-		ses->endType = Manage::DasmX86_32::ET_INV_OP;
+		sess->endType = Manage::DasmX86_32::ET_INV_OP;
 		return sptr;
 	}
-	if (ses->endType != Manage::DasmX86_32::ET_NOT_END)
+	if (sess->endType != Manage::DasmX86_32::ET_NOT_END)
 	{
 /*		*currEip = sess.retAddr;
 		*currEsp = (Int32)sess.cesp;
@@ -19460,30 +19457,27 @@ UTF8Char *Manage::DasmX86_32::DasmNext(void *sess, UTF8Char *buff)
 		*blockEnd = (Int32)sess.regs.EIP;*/
 		return sptr;
 	}
-	ses->lastStatus = ses->thisStatus;
-	ses->thisStatus = ses->thisStatus & 0x80000000;
+	sess->lastStatus = sess->thisStatus;
+	sess->thisStatus = sess->thisStatus & 0x80000000;
 	return sptr;
 }
 
-OSInt Manage::DasmX86_32::SessGetCodeOffset(void *sess)
+OSInt Manage::DasmX86_32::SessGetCodeOffset(NN<DasmX86_32_Sess> sess)
 {
-	DasmX86_32_Sess *ses = (DasmX86_32_Sess*)sess;
-	return (OSInt)ses->regs.EIP;
+	return (OSInt)sess->regs.EIP;
 }
 
-Manage::DasmX86_32::EndType Manage::DasmX86_32::SessGetEndType(void *sess)
+Manage::DasmX86_32::EndType Manage::DasmX86_32::SessGetEndType(NN<DasmX86_32_Sess> sess)
 {
-	DasmX86_32_Sess *ses = (DasmX86_32_Sess*)sess;
-	return ses->endType;
+	return sess->endType;
 }
 
-Bool Manage::DasmX86_32::SessContJmp(void *sess)
+Bool Manage::DasmX86_32::SessContJmp(NN<DasmX86_32_Sess> sess)
 {
-	DasmX86_32_Sess *ses = (DasmX86_32_Sess*)sess;
-	if (ses->endType == Manage::DasmX86_32::ET_JMP)
+	if (sess->endType == Manage::DasmX86_32::ET_JMP)
 	{
-		ses->endType = Manage::DasmX86_32::ET_NOT_END;
-		ses->regs.EIP = ses->retAddr;
+		sess->endType = Manage::DasmX86_32::ET_NOT_END;
+		sess->regs.EIP = sess->retAddr;
 		return true;
 	}
 	else

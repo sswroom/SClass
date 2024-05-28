@@ -8,12 +8,12 @@ class JSONDBReader : public DB::DBReader
 {
 private:
 	Text::JSONArray *data;
-	DB::TableDef *tab;
+	NN<DB::TableDef> tab;
 	Text::JSONObject *obj;
 	UOSInt nextIndex;
 	UOSInt endOfst;
 public:
-	JSONDBReader(DB::TableDef *tab, Text::JSONArray *data, UOSInt ofst, UOSInt endOfst)
+	JSONDBReader(NN<DB::TableDef> tab, Text::JSONArray *data, UOSInt ofst, UOSInt endOfst)
 	{
 		this->data = data;
 		this->tab = tab;
@@ -24,7 +24,7 @@ public:
 
 	virtual ~JSONDBReader()
 	{
-		DEL_CLASS(this->tab);
+		this->tab.Delete();
 	}
 
 	virtual Bool ReadNext()
@@ -259,7 +259,8 @@ UOSInt DB::JSONDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListS
 
 Optional<DB::DBReader> DB::JSONDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
-	if (tableName.Equals(this->layerName->ToCString()))
+	NN<DB::TableDef> tabDef;
+	if (tableName.Equals(this->layerName->ToCString()) && this->GetTableDef(schemaName, tableName).SetTo(tabDef))
 	{
 		NN<JSONDBReader> r;
 		UOSInt endOfst;
@@ -267,13 +268,13 @@ Optional<DB::DBReader> DB::JSONDB::QueryTableData(Text::CString schemaName, Text
 			endOfst = this->data->GetArrayLength();
 		else
 			endOfst = ofst + maxCnt;
-		NEW_CLASSNN(r, JSONDBReader(this->GetTableDef(schemaName, tableName), this->data, ofst, endOfst));
+		NEW_CLASSNN(r, JSONDBReader(tabDef, this->data, ofst, endOfst));
 		return r;
 	}
 	return 0;
 }
 
-DB::TableDef *DB::JSONDB::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> DB::JSONDB::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	DB::TableDef *tab;
 	if (!tableName.Equals(this->layerName->ToCString()))

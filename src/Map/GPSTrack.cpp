@@ -514,7 +514,7 @@ Optional<DB::DBReader> Map::GPSTrack::QueryTableData(Text::CString schemaName, T
 	return r;
 }
 
-DB::TableDef *Map::GPSTrack::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> Map::GPSTrack::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	UOSInt i = 0;
 	UOSInt j;

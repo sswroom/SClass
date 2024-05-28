@@ -799,7 +799,7 @@ UOSInt DB::ReadingDBTool::QuerySchemaNames(NN<Data::ArrayListStringNN> arr)
 	}
 }
 
-DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> DB::ReadingDBTool::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	return this->db->GetTableDef(schemaName, tableName);
 }

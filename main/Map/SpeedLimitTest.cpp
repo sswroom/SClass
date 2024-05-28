@@ -11,15 +11,15 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Text::CStringNN path = CSTR("/home/sswroom/Progs/Temp/kmlTest/RdNet_IRNP.gdb");
 	Math::ArcGISPRJParser prjParser;
 	Map::HKRoadNetwork2 roadNetwork(path, &prjParser);
-	Map::HKSpeedLimit *spdLimit = roadNetwork.CreateSpeedLimit();
-	if (spdLimit)
+	NN<Map::HKSpeedLimit> spdLimit;
+	if (roadNetwork.CreateSpeedLimit().SetTo(spdLimit))
 	{
 		NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 		spdLimit->SetReqCoordinateSystem(csys);
 		csys.Delete();
 		Int32 speedLimit = spdLimit->GetSpeedLimit(Math::Coord2DDbl(114.230057, 22.308962), 20);
 		printf("Speed Limit = %d\r\n", speedLimit);
-		DEL_CLASS(spdLimit);
+		spdLimit.Delete();
 	}
 	else
 	{

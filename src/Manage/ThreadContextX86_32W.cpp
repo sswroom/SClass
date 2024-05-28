@@ -551,9 +551,9 @@ NN<Manage::ThreadContext> Manage::ThreadContextX86_32::Clone() const
 	return ret;
 }
 
-Bool Manage::ThreadContextX86_32::GetRegs(Manage::Dasm::Dasm_Regs *regs) const
+Bool Manage::ThreadContextX86_32::GetRegs(NN<Manage::Dasm::Dasm_Regs> regs) const
 {
-	Manage::DasmX86_32::DasmX86_32_Regs *r = (Manage::DasmX86_32::DasmX86_32_Regs *)regs;
+	NN<Manage::DasmX86_32::DasmX86_32_Regs> r = NN<Manage::DasmX86_32::DasmX86_32_Regs>::ConvertFrom(regs);
 #ifdef CONTEXT_VX86
 	r->EAX = (UInt32)((CONTEXT_TYPE*)this->context)->Rax;
 	r->EDX = (UInt32)((CONTEXT_TYPE*)this->context)->Rdx;
@@ -617,7 +617,7 @@ Bool Manage::ThreadContextX86_32::GetRegs(Manage::Dasm::Dasm_Regs *regs) const
 	return true;
 }
 
-Manage::Dasm *Manage::ThreadContextX86_32::CreateDasm() const
+Optional<Manage::Dasm> Manage::ThreadContextX86_32::CreateDasm() const
 {
 	Manage::DasmX86_32 *dasm;
 	NEW_CLASS(dasm, Manage::DasmX86_32());

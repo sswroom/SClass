@@ -58,7 +58,7 @@ Bool Exporter::SQLiteExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	DB::ReadingDBTool *srcDB;
 	Optional<DB::DBReader> r;
 	NN<DB::DBReader> nnr;
-	DB::TableDef *tabDef;
+	Optional<DB::TableDef> tabDef;
 	NN<DB::TableDef> nntabDef;
 	Data::ArrayListStringNN tables;
 	OSInt k;
@@ -84,19 +84,21 @@ Bool Exporter::SQLiteExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 		tabName = it.Next();
 		if (srcDB)
 		{
-			tabDef = srcDB->GetTableDef(CSTR_NULL, tabName->ToCString());
-			if (tabDef)
+			if (srcDB->GetTableDef(CSTR_NULL, tabName->ToCString()).SetTo(nntabDef))
 			{
 				r = srcDB->QueryTableData(CSTR_NULL, tabName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
 				if (r.IsNull())
 				{
-					DEL_CLASS(tabDef);
+					nntabDef.Delete();
 					tabDef = 0;
+				}
+				else
+				{
+					tabDef = nntabDef;
 				}
 			}
 			else
 			{
-				DEL_CLASS(tabDef);
 				tabDef = 0;
 				r = 0;
 			}
@@ -115,7 +117,7 @@ Bool Exporter::SQLiteExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 		}
 		if (r.SetTo(nnr))
 		{
-			if (!nntabDef.Set(tabDef))
+			if (!tabDef.SetTo(nntabDef))
 			{
 				{
 					IO::FileStream debugFS(CSTR("Debug.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -137,13 +139,13 @@ Bool Exporter::SQLiteExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 					debugWriter.WriteLine(sql.ToCString());
 				}
 
-				DEL_CLASS(tabDef);
+				tabDef.Delete();
 				succ = false;
 				destDB->EndTrans(true);
 				sDB->CloseReader(nnr);
 				break;
 			}
-			DEL_CLASS(tabDef);
+			tabDef.Delete();
 			destDB->BeginTrans();
 			k = 10000;
 			while (nnr->ReadNext())

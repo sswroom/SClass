@@ -158,11 +158,11 @@ ULONG STDMETHODCALLTYPE UI::Win::WinDragDrop::Release()
 
 HRESULT STDMETHODCALLTYPE UI::Win::WinDragDrop::DragEnter(IDataObject *pDataObj, DWORD grfKeyState, POINTL pt, DWORD *pdwEffect)
 {
-	UI::Win::WinDropData *data;
 	UI::GUIDropHandler::DragEffect eff;
-	NEW_CLASS(data, WinDropData(pDataObj));
-	eff = this->hdlr->DragEnter(data);
-	DEL_CLASS(data);
+	{
+		UI::Win::WinDropData data(pDataObj);
+		eff = this->hdlr->DragEnter(data);
+	}
 	this->currEff = eff;
 	if (eff == UI::GUIDropHandler::DE_COPY)
 	{
@@ -211,10 +211,8 @@ HRESULT STDMETHODCALLTYPE UI::Win::WinDragDrop::DragLeave()
 
 HRESULT STDMETHODCALLTYPE UI::Win::WinDragDrop::Drop(IDataObject *pDataObj, DWORD grfKeyState, POINTL pt, DWORD *pdwEffect)
 {
-	WinDropData *data;
-	NEW_CLASS(data, WinDropData(pDataObj));
+	WinDropData data(pDataObj);
 	this->hdlr->DropData(data, pt.x, pt.y);
-	DEL_CLASS(data);
 	return S_OK;
 }
 

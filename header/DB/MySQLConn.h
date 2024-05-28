@@ -59,10 +59,10 @@ namespace DB
 		Optional<Text::String> GetConnUID();
 		Optional<Text::String> GetConnPWD();
 
-//		static DBTool *CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, NN<IO::LogTool> log);
-		static DBTool *CreateDBTool(NN<Net::SocketFactory> sockf, NN<Text::String> serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, NN<IO::LogTool> log, Text::CString logPrefix);
-		static DBTool *CreateDBTool(NN<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix);
-//		static DBTool *CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, NN<IO::LogTool> log, Text::CString logPrefix);
+//		static Optional<DBTool> CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, NN<IO::LogTool> log);
+		static Optional<DBTool> CreateDBTool(NN<Net::SocketFactory> sockf, NN<Text::String> serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, NN<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DBTool> CreateDBTool(NN<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix);
+//		static Optional<DBTool> CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, NN<IO::LogTool> log, Text::CString logPrefix);
 	};
 
 	class MySQLReader : public DB::DBReader

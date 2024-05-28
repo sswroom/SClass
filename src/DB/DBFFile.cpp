@@ -99,7 +99,7 @@ Optional<DB::DBReader> DB::DBFFile::QueryTableData(Text::CString schemaName, Tex
 	}
 }
 
-DB::TableDef *DB::DBFFile::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> DB::DBFFile::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	NN<DB::ColDef> col;
 	DB::TableDef *tab;

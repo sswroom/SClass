@@ -27,7 +27,7 @@ void Map::DBMapLayer::ClearDB()
 	this->xCol = INVALID_INDEX;
 	this->yCol = INVALID_INDEX;
 	this->zCol = INVALID_INDEX;
-	SDEL_CLASS(this->tabDef);
+	this->tabDef.Delete();
 
 	Math::Geometry::Vector2D *vec;
 	UOSInt i = this->vecMap.GetCount();
@@ -41,12 +41,13 @@ void Map::DBMapLayer::ClearDB()
 
 void *Map::DBMapLayer::InitNameArr()
 {
-	if (this->tabDef)
+	NN<DB::TableDef> tabDef;
+	if (this->tabDef.SetTo(tabDef))
 	{
 		UOSInt i;
 		DBMapLayer_NameArr *nameArr = MemAlloc(DBMapLayer_NameArr, 1);
 		nameArr->currId = 0;
-		i = this->tabDef->GetColCnt();
+		i = tabDef->GetColCnt();
 		nameArr->names = MemAlloc(Text::String*, i);
 		while (i-- > 0)
 		{
@@ -203,10 +204,11 @@ Int64 Map::DBMapLayer::GetObjectIdMax() const
 
 void Map::DBMapLayer::ReleaseNameArr(NameArray *nameArr)
 {
-	if (nameArr)
+	NN<DB::TableDef> tabDef;
+	if (nameArr && this->tabDef.SetTo(tabDef))
 	{
 		DBMapLayer_NameArr *narr = (DBMapLayer_NameArr*)nameArr;
-		UOSInt i = this->tabDef->GetColCnt();
+		UOSInt i = tabDef->GetColCnt();
 		while (i-- > 0)
 		{
 			SDEL_STRING(narr->names[i]);
@@ -218,10 +220,11 @@ void Map::DBMapLayer::ReleaseNameArr(NameArray *nameArr)
 
 Bool Map::DBMapLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
-	if (nameArr)
+	NN<DB::TableDef> tabDef;
+	if (nameArr && this->tabDef.SetTo(tabDef))
 	{
 		DBMapLayer_NameArr *narr = (DBMapLayer_NameArr*)nameArr;
-		UOSInt colCnt = this->tabDef->GetColCnt();
+		UOSInt colCnt = tabDef->GetColCnt();
 		if (strIndex >= colCnt)
 		{
 			return false;
@@ -234,7 +237,7 @@ Bool Map::DBMapLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameA
 			{
 				Data::QueryConditions cond;
 				NN<DB::ColDef> idCol;
-				if (this->tabDef->GetCol(this->idCol).SetTo(idCol))
+				if (tabDef->GetCol(this->idCol).SetTo(idCol))
 				{
 					cond.Int64Equals(idCol->GetColName()->ToCString(), id);
 					r = this->db->QueryTableData(OPTSTR_CSTR(this->schema), OPTSTR_CSTR(this->table), 0, 0, 0, 0, &cond);
@@ -278,19 +281,21 @@ Bool Map::DBMapLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameA
 
 UOSInt Map::DBMapLayer::GetColumnCnt() const
 {
-	if (this->tabDef)
+	NN<DB::TableDef> tabDef;
+	if (this->tabDef.SetTo(tabDef))
 	{
-		return this->tabDef->GetColCnt();
+		return tabDef->GetColCnt();
 	}
 	return 0;
 }
 
 UTF8Char *Map::DBMapLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 {
-	if (this->tabDef)
+	NN<DB::TableDef> tabDef;
+	if (this->tabDef.SetTo(tabDef))
 	{
 		NN<DB::ColDef> col;
-		if (this->tabDef->GetCol(colIndex).SetTo(col))
+		if (tabDef->GetCol(colIndex).SetTo(col))
 		{
 			return col->GetColName()->ConcatTo(buff);
 		}
@@ -300,10 +305,11 @@ UTF8Char *Map::DBMapLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 
 DB::DBUtil::ColType Map::DBMapLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
-	if (this->tabDef)
+	NN<DB::TableDef> tabDef;
+	if (this->tabDef.SetTo(tabDef))
 	{
 		NN<DB::ColDef> col;
-		if (this->tabDef->GetCol(colIndex).SetTo(col))
+		if (tabDef->GetCol(colIndex).SetTo(col))
 		{
 			colSize.Set(col->GetColSize());
 			return col->GetColType();
@@ -314,10 +320,11 @@ DB::DBUtil::ColType Map::DBMapLayer::GetColumnType(UOSInt colIndex, OptOut<UOSIn
 
 Bool Map::DBMapLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
-	if (this->tabDef)
+	NN<DB::TableDef> tabDef;
+	if (this->tabDef.SetTo(tabDef))
 	{
 		NN<DB::ColDef> col;
-		if (this->tabDef->GetCol(colIndex).SetTo(col))
+		if (tabDef->GetCol(colIndex).SetTo(col))
 		{
 			colDef->Set(col);
 			return true;
@@ -374,7 +381,7 @@ Optional<DB::DBReader> Map::DBMapLayer::QueryTableData(Text::CString schemaName,
 	return 0;
 }
 
-DB::TableDef *Map::DBMapLayer::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> Map::DBMapLayer::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	if (this->db)
 	{
@@ -423,55 +430,59 @@ Bool Map::DBMapLayer::SetDatabase(NN<DB::ReadingDB> db, Text::CString schemaName
 	UOSInt zCol = INVALID_INDEX;
 	UInt32 layerSrid = 0;
 	NN<DB::ColDef> col;
-	UOSInt i = 0;
-	UOSInt j = this->tabDef->GetColCnt();
-	while (i < j)
+	NN<DB::TableDef> tabDef;
+	if (this->tabDef.SetTo(tabDef))
 	{
-		if (this->tabDef->GetCol(i).SetTo(col))
+		UOSInt i = 0;
+		UOSInt j = tabDef->GetColCnt();
+		while (i < j)
 		{
-			DB::DBUtil::ColType colType = col->GetColType();
-			if (col->IsPK())
+			if (tabDef->GetCol(i).SetTo(col))
 			{
-				if (this->idCol != INVALID_INDEX)
+				DB::DBUtil::ColType colType = col->GetColType();
+				if (col->IsPK())
 				{
-					this->idCol = INVALID_INDEX;
-					return false;
+					if (this->idCol != INVALID_INDEX)
+					{
+						this->idCol = INVALID_INDEX;
+						return false;
+					}
+					if (colType != DB::DBUtil::CT_Int32 && colType != DB::DBUtil::CT_Int64)
+					{
+						return false;
+					}
+					this->idCol = i;
 				}
-				if (colType != DB::DBUtil::CT_Int32 && colType != DB::DBUtil::CT_Int64)
+				if (colType == DB::DBUtil::CT_Vector)
 				{
-					return false;
+					if (this->vecCol != INVALID_INDEX)
+					{
+						this->vecCol = INVALID_INDEX;
+						return false;
+					}
+					this->vecCol = i;
 				}
-				this->idCol = i;
+				else
+				{
+					NN<Text::String> colName = col->GetColName();
+					if (colName->EqualsICase(UTF8STRC("LATITUDE")))
+					{
+						yCol = i;
+						layerSrid = 4326;
+					}
+					else if (colName->EqualsICase(UTF8STRC("LONGITUDE")))
+					{
+						xCol = i;
+						layerSrid = 4326;
+					}
+					else if (colName->EqualsICase(UTF8STRC("HEIGHT")))
+					{
+						zCol = i;
+					}
+				}
 			}
-			if (colType == DB::DBUtil::CT_Vector)
-			{
-				if (this->vecCol != INVALID_INDEX)
-				{
-					this->vecCol = INVALID_INDEX;
-					return false;
-				}
-				this->vecCol = i;
-			}
-			else
-			{
-				NN<Text::String> colName = col->GetColName();
-				if (colName->EqualsICase(UTF8STRC("LATITUDE")))
-				{
-					yCol = i;
-					layerSrid = 4326;
-				}
-				else if (colName->EqualsICase(UTF8STRC("LONGITUDE")))
-				{
-					xCol = i;
-					layerSrid = 4326;
-				}
-				else if (colName->EqualsICase(UTF8STRC("HEIGHT")))
-				{
-					zCol = i;
-				}
-			}
+			i++;
 		}
-		i++;
 	}
 
 	if (this->vecCol != INVALID_INDEX)

@@ -10,7 +10,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/Clipboard.h"
 
-void SSWR::AVIRead::AVIRExeForm::ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess *sess, NN<Data::ArrayListStringNN> codes, Data::ArrayListNN<ExeB16Addr> *parts, Data::ArrayListInt32 *partInd, NN<ExeB16Addr> startAddr, Manage::DasmX86_16 *dasm, UOSInt codeSize)
+void SSWR::AVIRead::AVIRExeForm::ParseSess16(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, NN<Data::ArrayListStringNN> codes, Data::ArrayListNN<ExeB16Addr> *parts, Data::ArrayListInt32 *partInd, NN<ExeB16Addr> startAddr, Manage::DasmX86_16 *dasm, UOSInt codeSize)
 {
 	UTF8Char buff[512];
 	UTF8Char *sptr;
@@ -104,7 +104,7 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 {
 	Manage::DasmX86_16::DasmX86_16_Regs regs;
 	Manage::DasmX86_16 *dasm;
-	Manage::DasmX86_16::DasmX86_16_Sess *sess;
+	NN<Manage::DasmX86_16::DasmX86_16_Sess> sess;
 	NN<Data::ArrayListStringNN> codes;
 	Data::ArrayListNN<ExeB16Addr> *parts;
 	Data::ArrayListInt32 *partInd;
@@ -134,43 +134,40 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 	NEW_CLASS(dasm, Manage::DasmX86_16());
 	NEW_CLASS(funcCalls, ::Data::ArrayListUInt32());
 	NEW_CLASS(nfuncCalls, ::Data::ArrayListUInt32());
-	sess = dasm->CreateSess(&regs, this->exeFile->GetDOSCodePtr(codeSize), this->exeFile->GetDOSCodeSegm());
-	if (sess)
-	{
-		this->ParseSess16(sess, codes, parts, partInd, eaddr, dasm, codeSize);
-		nfuncCalls->AddAll(sess->callAddrs);
-		nfuncCalls->AddAll(sess->jmpAddrs);
-		UOSInt arrSize;
-		UInt32 *tmpArr = nfuncCalls->GetPtr(arrSize).Ptr();
-		ArtificialQuickSort_SortUInt32(tmpArr, 0, (OSInt)arrSize - 1);
-		dasm->DeleteSess(sess);
+	sess = dasm->CreateSess(regs, this->exeFile->GetDOSCodePtr(codeSize), this->exeFile->GetDOSCodeSegm());
+	this->ParseSess16(sess, codes, parts, partInd, eaddr, dasm, codeSize);
+	nfuncCalls->AddAll(sess->callAddrs);
+	nfuncCalls->AddAll(sess->jmpAddrs);
+	UOSInt arrSize;
+	UInt32 *tmpArr = nfuncCalls->GetPtr(arrSize).Ptr();
+	ArtificialQuickSort_SortUInt32(tmpArr, 0, (OSInt)arrSize - 1);
+	dasm->DeleteSess(sess);
 
-		while (nfuncCalls->GetCount() > 0)
+	while (nfuncCalls->GetCount() > 0)
+	{
+		UInt32 faddr = nfuncCalls->GetItem(0);
+		nfuncCalls->RemoveAt(0);
+		OSInt si = funcCalls->SortedIndexOf(faddr);
+		if (si < 0)
 		{
-			UInt32 faddr = nfuncCalls->GetItem(0);
-			nfuncCalls->RemoveAt(0);
-			OSInt si = funcCalls->SortedIndexOf(faddr);
-			if (si < 0)
-			{
-				funcCalls->Insert((UOSInt)-si - 1, faddr);
-				sess = dasm->CreateSess(&regs, this->exeFile->GetDOSCodePtr(codeSize), this->exeFile->GetDOSCodeSegm());
-				sess->regs.IP = (::UInt16)faddr;
-				NEW_CLASSNN(codes, Data::ArrayListStringNN());
-				this->codesList->Add(codes);
-				eaddr = MemAllocNN(ExeB16Addr);
-				eaddr->segm = sess->regs.CS;
-				eaddr->addr = eaddr->endAddr = sess->regs.IP;
-				eaddr->codeList = codes;
+			funcCalls->Insert((UOSInt)-si - 1, faddr);
+			sess = dasm->CreateSess(regs, this->exeFile->GetDOSCodePtr(codeSize), this->exeFile->GetDOSCodeSegm());
+			sess->regs.IP = (::UInt16)faddr;
+			NEW_CLASSNN(codes, Data::ArrayListStringNN());
+			this->codesList->Add(codes);
+			eaddr = MemAllocNN(ExeB16Addr);
+			eaddr->segm = sess->regs.CS;
+			eaddr->addr = eaddr->endAddr = sess->regs.IP;
+			eaddr->codeList = codes;
 //				this->lbParts->Items->Add(eaddr);
-				parts->Insert(partInd->SortedInsert((eaddr->segm << 16) | eaddr->addr), eaddr);
-                
-				this->ParseSess16(sess, codes, parts, partInd, eaddr, dasm, codeSize);
-				nfuncCalls->AddAll(sess->callAddrs);
-				nfuncCalls->AddAll(sess->jmpAddrs);
-				tmpArr = nfuncCalls->GetPtr(arrSize).Ptr();
-				ArtificialQuickSort_SortUInt32(tmpArr, 0, (OSInt)arrSize - 1);
-				dasm->DeleteSess(sess);
-			}
+			parts->Insert(partInd->SortedInsert((eaddr->segm << 16) | eaddr->addr), eaddr);
+			
+			this->ParseSess16(sess, codes, parts, partInd, eaddr, dasm, codeSize);
+			nfuncCalls->AddAll(sess->callAddrs);
+			nfuncCalls->AddAll(sess->jmpAddrs);
+			tmpArr = nfuncCalls->GetPtr(arrSize).Ptr();
+			ArtificialQuickSort_SortUInt32(tmpArr, 0, (OSInt)arrSize - 1);
+			dasm->DeleteSess(sess);
 		}
 	}
 	DEL_CLASS(funcCalls);

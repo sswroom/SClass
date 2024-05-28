@@ -71,7 +71,7 @@ Bool Exporter::MDBExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	UOSInt i;
 	UOSInt k;
 	UOSInt l;
-	if (!mdb.Set(DB::MDBFileConn::CreateDBTool(fileName, log, CSTR("DB: "))))
+	if (!DB::MDBFileConn::CreateDBTool(fileName, log, CSTR("DB: ")).SetTo(mdb))
 		return false;
 	Bool succ = true;
 	DB::SQLBuilder sql(mdb);

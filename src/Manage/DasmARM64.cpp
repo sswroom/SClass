@@ -2563,7 +2563,7 @@ Text::CStringNN Manage::DasmARM64::GetHeader(Bool fullRegs) const
 	}
 }
 
-Bool Manage::DasmARM64::Disasm64(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt64 *currInst, UInt64 *currStack, UInt64 *currFrame, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs)
+Bool Manage::DasmARM64::Disasm64(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt64 *currInst, UInt64 *currStack, UInt64 *currFrame, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, Manage::IMemoryReader *memReader, Bool fullRegs)
 {
 	UTF8Char sbuff[512];
 	UInt8 buff[16];
@@ -2573,7 +2573,7 @@ Bool Manage::DasmARM64::Disasm64(NN<IO::Writer> writer, Manage::AddressResolver 
 	UOSInt initJmpCnt = jmpAddrs->GetCount();
 	sess.callAddrs = callAddrs;
 	sess.jmpAddrs = jmpAddrs;
-	MemCopyNO(&sess.regs, regs, sizeof(Manage::DasmARM64::DasmARM64_Regs));
+	MemCopyNO(&sess.regs, regs.Ptr(), sizeof(Manage::DasmARM64::DasmARM64_Regs));
 	sess.regs.PC = *currInst;
 	sess.regs.SP = *currStack;
 	sess.regs.LR = *currFrame;
@@ -2706,7 +2706,7 @@ Bool Manage::DasmARM64::Disasm64(NN<IO::Writer> writer, Manage::AddressResolver 
 				*currStack = sess.regs.SP;
 				*currFrame = sess.regs.LR;
 				*blockEnd = sess.regs.PC;
-				MemCopyNO(regs, &sess.regs, sizeof(Manage::DasmARM64::DasmARM64_Regs));
+				MemCopyNO(regs.Ptr(), &sess.regs, sizeof(Manage::DasmARM64::DasmARM64_Regs));
 				return false;
 			}
 			sess.regs.PC = minAddr;
@@ -2718,7 +2718,7 @@ Bool Manage::DasmARM64::Disasm64(NN<IO::Writer> writer, Manage::AddressResolver 
 			*currStack = sess.regs.SP;
 			*currFrame = sess.regs.LR;
 			*blockEnd = sess.regs.PC;
-			MemCopyNO(regs, &sess.regs, sizeof(Manage::DasmARM64::DasmARM64_Regs));
+			MemCopyNO(regs.Ptr(), &sess.regs, sizeof(Manage::DasmARM64::DasmARM64_Regs));
 			return sess.endType != Manage::DasmARM64::ET_EXIT;
 		}
 //		sess.lastStatus = sess.thisStatus;
@@ -2726,41 +2726,37 @@ Bool Manage::DasmARM64::Disasm64(NN<IO::Writer> writer, Manage::AddressResolver 
 	}
 }
 
-Manage::Dasm::Dasm_Regs *Manage::DasmARM64::CreateRegs() const
+NN<Manage::Dasm::Dasm_Regs> Manage::DasmARM64::CreateRegs() const
 {
-	Manage::DasmARM64::DasmARM64_Regs *regs = MemAlloc(Manage::DasmARM64::DasmARM64_Regs, 1);
-	return regs;
+	return MemAllocNN(Manage::DasmARM64::DasmARM64_Regs);
 }
 
-void Manage::DasmARM64::FreeRegs(Dasm_Regs *regs) const
+void Manage::DasmARM64::FreeRegs(NN<Dasm_Regs> regs) const
 {
-	MemFree(regs);
+	MemFreeNN(regs);
 }
 
-Manage::DasmARM64::DasmARM64_Sess *Manage::DasmARM64::CreateSess(Manage::DasmARM64::DasmARM64_Regs *regs, UInt8 *code, UInt16 codeSegm)
+NN<Manage::DasmARM64::DasmARM64_Sess> Manage::DasmARM64::CreateSess(NN<Manage::DasmARM64::DasmARM64_Regs> regs, UInt8 *code, UInt16 codeSegm)
 {
-	Manage::DasmARM64::DasmARM64_Sess *sess = MemAlloc(Manage::DasmARM64::DasmARM64_Sess, 1);
+	NN<Manage::DasmARM64::DasmARM64_Sess> sess = MemAllocNN(Manage::DasmARM64::DasmARM64_Sess);
 	sess->code = code;
 	sess->codeSegm = codeSegm;
 	sess->codeHdlrs = (void**)this->codes;
 	//sess->code0fHdlrs = (void**)this->codes0f;
 	NEW_CLASS(sess->callAddrs, Data::ArrayListUInt64());
 	NEW_CLASS(sess->jmpAddrs, Data::ArrayListUInt64());
-	MemCopyNO(&sess->regs, regs, sizeof(Manage::DasmARM64::DasmARM64_Regs));
+	MemCopyNO(&sess->regs, regs.Ptr(), sizeof(Manage::DasmARM64::DasmARM64_Regs));
 	return sess;
 }
 
-void Manage::DasmARM64::DeleteSess(Manage::DasmARM64::DasmARM64_Sess *sess)
+void Manage::DasmARM64::DeleteSess(NN<Manage::DasmARM64::DasmARM64_Sess> sess)
 {
-	if (sess)
-	{
-		DEL_CLASS(sess->callAddrs);
-		DEL_CLASS(sess->jmpAddrs);
-		MemFree(sess);
-	}
+	DEL_CLASS(sess->callAddrs);
+	DEL_CLASS(sess->jmpAddrs);
+	MemFreeNN(sess);
 }
 
-Bool Manage::DasmARM64::DasmNext(Manage::DasmARM64::DasmARM64_Sess *sess, UTF8Char *buff, OSInt *outBuffSize)
+Bool Manage::DasmARM64::DasmNext(NN<Manage::DasmARM64::DasmARM64_Sess> sess, UTF8Char *buff, OSInt *outBuffSize)
 {
 /*	*buff = 0;
 	if (outBuffSize)

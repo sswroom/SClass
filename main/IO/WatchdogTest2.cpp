@@ -128,7 +128,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	httpRunning = false;
 	toStop = false;
 	NN<IO::I2CChannel> channel;
-	if (!channel.Set(IO::Device::AM2315::CreateDefChannel(1)))
+	if (!IO::Device::AM2315::CreateDefChannel(1).SetTo(channel))
 	{
 		console.WriteLine(CSTR("I2C Bus not found"));
 		return 0;

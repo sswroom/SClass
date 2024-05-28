@@ -35,7 +35,7 @@ namespace Map
 
 		UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
 		Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
-		DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
+		Optional<DB::TableDef> GetTableDef(Text::CString schemaName, Text::CString tableName);
 		void CloseReader(NN<DB::DBReader> r);
 		void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		void Reconnect();

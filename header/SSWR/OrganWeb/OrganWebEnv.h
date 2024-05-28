@@ -28,7 +28,7 @@ namespace SSWR
 		class OrganWebEnv
 		{
 		private:
-			DB::DBTool *db;
+			Optional<DB::DBTool> db;
 			NN<Text::String> imageDir;
 			Optional<Text::String> cacheDir;
 			NN<Text::String> dataDir;
@@ -81,7 +81,7 @@ namespace SSWR
 			void FreeUsers();
 			void ClearUsers();
 		public:
-			OrganWebEnv(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<IO::LogTool> log, DB::DBTool *db, NN<Text::String> imageDir, UInt16 port, UInt16 sslPort, Optional<Text::String> cacheDir, NN<Text::String> dataDir, UInt32 scnSize, Optional<Text::String> reloadPwd, Int32 unorganizedGroupId, NN<Media::DrawEngine> eng, Text::CString osmCachePath);
+			OrganWebEnv(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<IO::LogTool> log, Optional<DB::DBTool> db, NN<Text::String> imageDir, UInt16 port, UInt16 sslPort, Optional<Text::String> cacheDir, NN<Text::String> dataDir, UInt32 scnSize, Optional<Text::String> reloadPwd, Int32 unorganizedGroupId, NN<Media::DrawEngine> eng, Text::CString osmCachePath);
 			~OrganWebEnv();
 
 			Bool IsError();

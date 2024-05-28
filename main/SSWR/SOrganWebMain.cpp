@@ -18,7 +18,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	Manage::ExceptionRecorder exHdlr(CSTR("Error.txt"), Manage::ExceptionRecorder::EA_RESTART);
 	{
-		DB::DBTool *db;
+		Optional<DB::DBTool> db;
 		IO::ConsoleWriter console;
 		UInt32 scnSize = 0;
 		Int32 unorganizedGroupId = 0;

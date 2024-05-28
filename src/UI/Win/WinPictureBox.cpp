@@ -71,23 +71,24 @@ void UI::Win::WinPictureBox::OnPaint()
 		}
 	}
 
-	if (this->prevImageD)
+	NN<Media::DrawImage> prevImageD;
+	if (this->prevImageD.SetTo(prevImageD))
 	{
-		OSInt x = (rc.right - rc.left - (OSInt)this->prevImageD->GetWidth()) >> 1;
-		OSInt y = (rc.bottom - rc.top - (OSInt)this->prevImageD->GetHeight()) >> 1;
+		OSInt x = (rc.right - rc.left - (OSInt)prevImageD->GetWidth()) >> 1;
+		OSInt y = (rc.bottom - rc.top - (OSInt)prevImageD->GetHeight()) >> 1;
 
-		if (this->prevImageD->GetAlphaType() == Media::AT_ALPHA)
+		if (prevImageD->GetAlphaType() == Media::AT_ALPHA)
 		{
 			BLENDFUNCTION bf;
 			bf.SourceConstantAlpha = 255;
 			bf.AlphaFormat = AC_SRC_ALPHA;
 			bf.BlendOp = AC_SRC_OVER;
 			bf.BlendFlags = 0;
-			AlphaBlend(ps.hdc, (int)x, (int)y, (int)this->prevImageD->GetWidth(), (int)this->prevImageD->GetHeight(), (HDC)((Media::GDIImage*)this->prevImageD)->GetHDC(), 0, 0, (int)this->prevImageD->GetWidth(), (int)this->prevImageD->GetHeight(), bf);
+			AlphaBlend(ps.hdc, (int)x, (int)y, (int)prevImageD->GetWidth(), (int)prevImageD->GetHeight(), (HDC)NN<Media::GDIImage>::ConvertFrom(prevImageD)->GetHDC(), 0, 0, (int)prevImageD->GetWidth(), (int)prevImageD->GetHeight(), bf);
 		}
 		else
 		{
-			BitBlt(ps.hdc, (int)x, (int)y, (int)this->prevImageD->GetWidth(), (int)this->prevImageD->GetHeight(), (HDC)((Media::GDIImage*)this->prevImageD)->GetHDC(), 0, 0, SRCCOPY);
+			BitBlt(ps.hdc, (int)x, (int)y, (int)prevImageD->GetWidth(), (int)prevImageD->GetHeight(), (HDC)NN<Media::GDIImage>::ConvertFrom(prevImageD)->GetHDC(), 0, 0, SRCCOPY);
 		}
 	}
 
@@ -140,7 +141,7 @@ void UI::Win::WinPictureBox::UpdatePreview()
 {
 	NN<Media::DrawImage> img;
 	NN<Media::StaticImage> simg;
-	if (img.Set(this->prevImageD))
+	if (this->prevImageD.SetTo(img))
 	{
 		this->eng->DeleteImage(img);
 		this->prevImageD = 0;
@@ -189,7 +190,7 @@ UI::Win::WinPictureBox::WinPictureBox(NN<UI::GUICore> ui, NN<UI::GUIClientContro
 UI::Win::WinPictureBox::~WinPictureBox()
 {
 	NN<Media::DrawImage> img;
-	if (img.Set(this->prevImageD))
+	if (this->prevImageD.SetTo(img))
 	{
 		this->eng->DeleteImage(img);
 		this->prevImageD = 0;

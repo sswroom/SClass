@@ -15,7 +15,8 @@ namespace Net
 		Bool toRelease;
 		ClassData *clsData;
 
-		static Bool MyConnect(Socket *socket, const UInt8 *addrBuff, UOSInt addrLen, Data::Duration timeout);
+		static OSInt SSocketGetFD(NN<Socket> socket);
+		static Bool MyConnect(NN<Socket> socket, const UInt8 *addrBuff, UOSInt addrLen, Data::Duration timeout);
 	public:
 		OSSocketFactory(Bool noV6DNS);
 		virtual ~OSSocketFactory();

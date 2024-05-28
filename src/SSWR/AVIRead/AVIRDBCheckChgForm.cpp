@@ -212,7 +212,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnDataTableChg(AnyType userObj
 		return;
 	}
 	NN<DB::TableDef> table;
-	if (!table.Set(me->db->GetTableDef(me->schema, me->table)))
+	if (!me->db->GetTableDef(me->schema, me->table).SetTo(table))
 	{
 		return;
 	}
@@ -236,7 +236,7 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnAssignColClicked(AnyType use
 		return;
 	}
 	NN<DB::TableDef> table;
-	if (!table.Set(me->db->GetTableDef(me->schema, me->table)))
+	if (!me->db->GetTableDef(me->schema, me->table).SetTo(table))
 	{
 		return;
 	}
@@ -247,13 +247,13 @@ void __stdcall SSWR::AVIRead::AVIRDBCheckChgForm::OnAssignColClicked(AnyType use
 
 Bool SSWR::AVIRead::AVIRDBCheckChgForm::LoadDataFile(Text::CStringNN fileName)
 {
-	DB::TableDef *table = this->db->GetTableDef(this->schema, this->table);
-	if (table == 0)
+	NN<DB::TableDef> table;
+	if (!this->db->GetTableDef(this->schema, this->table).SetTo(table))
 	{
 		this->ui->ShowMsgOK(CSTR("Error in getting table structure"), CSTR("Check Table Changes"), this);
 		return false;
 	}
-	DEL_CLASS(table);
+	table.Delete();
 	Int8 csvTZ = this->db->GetTzQhr();
 	Bool noHeader = this->chkNoHeader->IsChecked();
 	NN<DB::ReadingDB> nndataFile;
@@ -479,7 +479,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::CheckDataFile()
 	Int8 csvTZ = this->db->GetTzQhr();
 	this->dataFileTz = csvTZ;
 	NN<DB::TableDef> table;;
-	if (!table.Set(this->db->GetTableDef(this->schema, this->table)))
+	if (!this->db->GetTableDef(this->schema, this->table).SetTo(table))
 	{
 		SDEL_CLASS(srcDBCond);
 		SDEL_CLASS(dataDBCond);
@@ -981,7 +981,7 @@ Bool SSWR::AVIRead::AVIRDBCheckChgForm::GenerateSQL(DB::SQLType sqlType, Bool ax
 		}
 	}
 	NN<DB::TableDef> table;
-	if (!table.Set(this->db->GetTableDef(this->schema, this->table)))
+	if (!this->db->GetTableDef(this->schema, this->table).SetTo(table))
 	{
 		this->ui->ShowMsgOK(CSTR("Error in getting table structure"), CSTR("Check Table Changes"), this);
 		SDEL_CLASS(srcDBCond);
@@ -2204,8 +2204,8 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientCont
 	this->HandleDropFiles(OnFiles, this);
 
 	this->cboKeyCol2->SetSelectedIndex(0);
-	DB::TableDef *tableDef = this->db->GetTableDef(this->schema, this->table);
-	if (tableDef)
+	NN<DB::TableDef> tableDef;
+	if (this->db->GetTableDef(this->schema, this->table).SetTo(tableDef))
 	{
 		Bool hasKey = false;
 		Data::ArrayIterator<NN<DB::ColDef>> it = tableDef->ColIterator();
@@ -2228,7 +2228,7 @@ SSWR::AVIRead::AVIRDBCheckChgForm::AVIRDBCheckChgForm(Optional<UI::GUIClientCont
 		{
 			this->cboKeyCol1->SetSelectedIndex(0);
 		}
-		DEL_CLASS(tableDef);
+		tableDef.Delete();
 	}
 }
 

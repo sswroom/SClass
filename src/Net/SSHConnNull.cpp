@@ -60,7 +60,7 @@ Bool Net::SSHConn::AuthPassword(Text::CStringNN userName, Text::CStringNN passwo
 	return false;
 }
 
-Optional<Net::SSHTCPChannel> Net::SSHConn::RemoteConnect(Socket *sourceSoc, Text::CStringNN remoteHost, UInt16 remotePort)
+Optional<Net::SSHTCPChannel> Net::SSHConn::RemoteConnect(Optional<Socket> sourceSoc, Text::CStringNN remoteHost, UInt16 remotePort)
 {
 	return 0;
 }

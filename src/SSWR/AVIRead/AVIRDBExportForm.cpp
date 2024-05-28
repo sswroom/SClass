@@ -125,8 +125,8 @@ SSWR::AVIRead::AVIRDBExportForm::AVIRDBExportForm(Optional<UI::GUIClientControl>
 	this->btnExport->SetRect(100, 72, 75, 23, false);
 	this->btnExport->HandleButtonClick(OnExportClicked, this);
 
-	DB::TableDef *tab = this->db->GetTableDef(schema, table);
-	if (tab)
+	NN<DB::TableDef> tab;
+	if (this->db->GetTableDef(schema, table).SetTo(tab))
 	{
 		UTF8Char sbuff[128];
 		UTF8Char *sptr;
@@ -141,7 +141,7 @@ SSWR::AVIRead::AVIRDBExportForm::AVIRDBExportForm(Optional<UI::GUIClientControl>
 			sptr = DB::DBUtil::ColTypeGetString(sbuff, col->GetColType(), col->GetColSize(), col->GetColDP());
 			this->lvTables->SetSubItem(i, 2, CSTRP(sbuff, sptr));
 		}
-		DEL_CLASS(tab);
+		tab.Delete();
 	}
 }
 

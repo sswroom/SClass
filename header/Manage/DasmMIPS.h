@@ -95,15 +95,15 @@ namespace Manage
 		DasmMIPS();
 		virtual ~DasmMIPS();
 
-		virtual Text::CString GetHeader(Bool fullRegs);
+		virtual Text::CStringNN GetHeader(Bool fullRegs);
 		virtual Bool Disasm32(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
-		virtual Dasm_Regs *CreateRegs();
-		virtual void FreeRegs(Dasm_Regs *regs);
+		virtual NN<Dasm_Regs> CreateRegs();
+		virtual void FreeRegs(NN<Dasm_Regs> regs);
 
-		DasmMIPS_Sess *CreateSess(DasmMIPS_Regs *regs, UInt8 *code, UInt16 codeSegm);
-		void DeleteSess(DasmMIPS_Sess *sess);
+		NN<DasmMIPS_Sess> CreateSess(NN<DasmMIPS_Regs> regs, UInt8 *code, UInt16 codeSegm);
+		void DeleteSess(NN<DasmMIPS_Sess> sess);
 
-		Bool DasmNext(DasmMIPS_Sess *sess, UTF8Char *buff, OSInt *outBuffSize); //True = succ
+		Bool DasmNext(NN<DasmMIPS_Sess> sess, UTF8Char *buff, OSInt *outBuffSize); //True = succ
 	};
 };
 

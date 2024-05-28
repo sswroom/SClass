@@ -112,8 +112,8 @@ Map::HKTrafficLayer2::HKTrafficLayer2(NN<Net::SocketFactory> sockf, Optional<Net
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	NN<Math::Geometry::Vector2D> vec;
-	DB::ReadingDB *db = rn2->GetDB();
-	if(db)
+	NN<DB::ReadingDB> db;
+	if(rn2->GetDB().SetTo(db))
 	{
 		NN<DB::DBReader> r;
 		if (db->QueryTableData(CSTR_NULL, CSTR("CENTERLINE"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))

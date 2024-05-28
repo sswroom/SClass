@@ -112,10 +112,10 @@ Optional<DB::DBReader> Map::GeoPackage::QueryTableData(Text::CString schemaName,
 	return this->conn->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
 }
 
-DB::TableDef *Map::GeoPackage::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> Map::GeoPackage::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
-	DB::TableDef *tabDef = this->conn->GetTableDef(schemaName, tableName);
-	if (tabDef)
+	NN<DB::TableDef> tabDef;
+	if (this->conn->GetTableDef(schemaName, tableName).SetTo(tabDef))
 	{
 		ContentInfo *cont = this->tableList.GetC(tableName.OrEmpty());
 		if (cont)
@@ -131,8 +131,9 @@ DB::TableDef *Map::GeoPackage::GetTableDef(Text::CString schemaName, Text::CStri
 				}
 			}
 		}
+		return tabDef;
 	}
-	return tabDef;
+	return 0;
 }
 
 void Map::GeoPackage::CloseReader(NN<DB::DBReader> r)

@@ -101,7 +101,7 @@ namespace DB
 		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> arr);
 		virtual UOSInt QuerySchemaNames(NN<Data::ArrayListStringNN> arr);
-		virtual DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
+		virtual Optional<DB::TableDef> GetTableDef(Text::CString schemaName, Text::CString tableName);
 
 		virtual UOSInt GetDatabaseNames(NN<Data::ArrayListStringNN> arr);
 		virtual void ReleaseDatabaseNames(NN<Data::ArrayListStringNN> arr);

@@ -31,7 +31,7 @@ IO::ParserType Parser::FileParser::AUIParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::AUIParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
+Optional<IO::ParsedObject> Parser::FileParser::AUIParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	if (!fd->IsFullFile())
 		return 0;

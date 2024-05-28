@@ -31,7 +31,7 @@ IO::ParserType Parser::ObjParser::MPGXAParser::GetParserType()
 	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::ObjParser::MPGXAParser::ParseObject(NN<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
+Optional<IO::ParsedObject> Parser::ObjParser::MPGXAParser::ParseObject(NN<IO::ParsedObject> pobj, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType)
 {
 	NN<IO::ISectorData> data;
 	if (pobj->GetParserType() != IO::ParserType::SectorData)

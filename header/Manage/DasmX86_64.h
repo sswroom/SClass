@@ -112,7 +112,7 @@ namespace Manage
 			void **codes0f3a;
 		} DasmX86_64_Sess;
 
-		typedef Bool (__stdcall *DasmX86_64_Code)(DasmX86_64_Sess *sess);
+		typedef Bool (__stdcall *DasmX86_64_Code)(NN<DasmX86_64_Sess> sess);
 	private:
 		DasmX86_64_Code *codes;
 		DasmX86_64_Code *codes0f;
@@ -126,17 +126,17 @@ namespace Manage
 		virtual ~DasmX86_64();
 
 		virtual Text::CStringNN GetHeader(Bool fullRegs) const;
-		virtual Bool Disasm64(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt64 *currRip, UInt64 *currRsp, UInt64 *currRbp, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
+		virtual Bool Disasm64(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt64 *currRip, UInt64 *currRsp, UInt64 *currRbp, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
 		Bool Disasm64In(NN<Text::StringBuilderUTF8> outStr, Manage::AddressResolver *addrResol, UInt64 *currRip, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::IMemoryReader *memReader); // true = succ
-		virtual Dasm_Regs *CreateRegs() const;
-		virtual void FreeRegs(Dasm_Regs *regs) const;
+		virtual NN<Dasm_Regs> CreateRegs() const;
+		virtual void FreeRegs(NN<Dasm_Regs> regs) const;
 
-		void *StartDasm(Manage::AddressResolver *addrResol, void *addr, Manage::IMemoryReader *memReader);
-		void EndDasm(void *sess);
-		UTF8Char *DasmNext(void *sess, UTF8Char *buff);
-		OSInt SessGetCodeOffset(void *sess);
-		EndType SessGetEndType(void *sess);
-		Bool SessContJmp(void *sess);
+		NN<DasmX86_64_Sess> StartDasm(Manage::AddressResolver *addrResol, void *addr, Manage::IMemoryReader *memReader);
+		void EndDasm(NN<DasmX86_64_Sess> sess);
+		UTF8Char *DasmNext(NN<DasmX86_64_Sess> sess, UTF8Char *buff);
+		OSInt SessGetCodeOffset(NN<DasmX86_64_Sess> sess);
+		EndType SessGetEndType(NN<DasmX86_64_Sess> sess);
+		Bool SessContJmp(NN<DasmX86_64_Sess> sess);
 	};
 };
 

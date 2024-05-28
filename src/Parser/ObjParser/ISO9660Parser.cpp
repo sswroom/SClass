@@ -36,7 +36,7 @@ IO::ParserType Parser::ObjParser::ISO9660Parser::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::ObjParser::ISO9660Parser::ParseObject(NN<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
+Optional<IO::ParsedObject> Parser::ObjParser::ISO9660Parser::ParseObject(NN<IO::ParsedObject> pobj, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType)
 {
 	NN<IO::ISectorData> data;
 	IO::ISectorData *cdData;

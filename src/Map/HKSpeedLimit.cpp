@@ -115,8 +115,8 @@ Map::HKSpeedLimit::HKSpeedLimit(NN<Map::HKRoadNetwork2> roadNetwork)
 	UOSInt i;
 	this->dataCsys = roadNetwork->CreateCoordinateSystem();
 	this->reqCsys = 0;
-	DB::ReadingDB *fgdb = roadNetwork->GetDB();
-	if (fgdb)
+	NN<DB::ReadingDB> fgdb;
+	if (roadNetwork->GetDB().SetTo(fgdb))
 	{
 		NN<DB::DBReader> r;
 		if (fgdb->QueryTableData(CSTR_NULL, CSTR("CENTERLINE"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))

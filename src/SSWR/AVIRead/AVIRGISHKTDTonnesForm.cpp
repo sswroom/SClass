@@ -67,10 +67,10 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(AnyType userObj
 			IO::StmData::FileData fd(sb.ToCString(), false);
 			lyr = Optional<Map::MapDrawLayer>::ConvertFrom(me->core->GetParserList()->ParseFileType(fd, IO::ParserType::MapLayer));
 		}
-		DB::DBTool *db = DB::MDBFileConn::CreateDBTool(sb2.ToCString(), me->core->GetLog(), CSTR_NULL);
+		Optional<DB::DBTool> db = DB::MDBFileConn::CreateDBTool(sb2.ToCString(), me->core->GetLog(), CSTR_NULL);
 		NN<DB::DBTool> nndb;
 		NN<Map::MapDrawLayer> nnlyr;
-		if (lyr.SetTo(nnlyr) && nndb.Set(db))
+		if (lyr.SetTo(nnlyr) && db.SetTo(nndb))
 		{
 			Map::DrawLayerType lyrType = nnlyr->GetLayerType();
 			if (lyrType == Map::DRAW_LAYER_POLYLINE || lyrType == Map::DRAW_LAYER_POLYLINE3D)
@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(AnyType userObj
 			}
 			else
 			{
-				DEL_CLASS(db);
+				db.Delete();
 				lyr.Delete();
 				me->ui->ShowMsgOK(CSTR("The file is not a polyline layer"), CSTR("HK Tonnes Sign"), me);
 			}
@@ -102,10 +102,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(AnyType userObj
 		}
 		else
 		{
-			if (db)
-			{
-				DEL_CLASS(db);
-			}
+			db.Delete();
 			me->ui->ShowMsgOK(CSTR("Error in parsing the file"), CSTR("HK Tonnes Sign"), me);
 		}
 	}

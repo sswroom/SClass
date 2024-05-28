@@ -11,8 +11,8 @@ namespace DB
 		MDBFileConn(Text::CStringNN fileName, NN<IO::LogTool> log, UInt32 codePage, const WChar *uid, const WChar *pwd);
 	public:
 		static Bool CreateMDBFile(Text::CStringNN fileName);
-		static DBTool *CreateDBTool(NN<Text::String> fileName, NN<IO::LogTool> log, Text::CString logPrefix);
-		static DBTool *CreateDBTool(Text::CStringNN fileName, NN<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DBTool> CreateDBTool(NN<Text::String> fileName, NN<IO::LogTool> log, Text::CString logPrefix);
+		static Optional<DBTool> CreateDBTool(Text::CStringNN fileName, NN<IO::LogTool> log, Text::CString logPrefix);
 	};
 }
 #endif

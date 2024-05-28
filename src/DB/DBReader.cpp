@@ -106,13 +106,13 @@ Bool DB::DBReader::GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
 	}
 }
 
-DB::TableDef *DB::DBReader::GenTableDef(Text::CString schemaName, Text::CString tableName)
+NN<DB::TableDef> DB::DBReader::GenTableDef(Text::CString schemaName, Text::CString tableName)
 {
-	DB::TableDef *table;
+	NN<DB::TableDef> table;
 	NN<DB::ColDef> colDef;
 	UOSInt i;
 	UOSInt j;
-	NEW_CLASS(table, DB::TableDef(schemaName, tableName));
+	NEW_CLASSNN(table, DB::TableDef(schemaName, tableName));
 	i = 0;
 	j = this->ColCount();
 	while (i < j)
@@ -125,7 +125,7 @@ DB::TableDef *DB::DBReader::GenTableDef(Text::CString schemaName, Text::CString 
 	return table;
 }
 
-Data::VariObject *DB::DBReader::CreateVariObject()
+NN<Data::VariObject> DB::DBReader::CreateVariObject()
 {
 	UTF8Char sbuff[256];
 	UOSInt i;
@@ -133,10 +133,10 @@ Data::VariObject *DB::DBReader::CreateVariObject()
 	UOSInt size;
 	Optional<Text::String> ops;
 	DB::DBUtil::ColType ctype;
-	Data::VariObject *obj;
+	NN<Data::VariObject> obj;
 	Data::DateTime dt;
 	UInt8 *binBuff;
-	NEW_CLASS(obj, Data::VariObject(Data::VariObject::NameType::Database));
+	NEW_CLASSNN(obj, Data::VariObject(Data::VariObject::NameType::Database));
 	i = 0;
 	j = this->ColCount();
 	while (i < j)

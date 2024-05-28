@@ -195,7 +195,8 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(NN<Text::String> connStr, NN<IO:
 
 Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::LogTool> log, NN<Net::SocketFactory> sockf, Optional<Parser::ParserList> parsers)
 {
-	DB::DBTool *db;
+	Optional<DB::DBTool> db;
+	NN<DB::DBTool> nndb;
 	if (connStr.StartsWith(UTF8STRC("odbc:")))
 	{
 		if (connStr.Substring(5).StartsWith(UTF8STRC("DSN=")))
@@ -247,7 +248,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 			SDEL_STRING(uid);
 			SDEL_STRING(pwd);
 			SDEL_STRING(schema);
-			if (db)
+			if (db.NotNull())
 			{
 				return db;
 			}
@@ -258,8 +259,8 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 			NEW_CLASSNN(conn, DB::ODBCConn(connStr.Substring(5), CSTR("ODBCConn"), log));
 			if (conn->GetConnError() == DB::ODBCConn::CE_NONE)
 			{
-				NEW_CLASS(db, DB::DBTool(conn, true, log, DBPREFIX));
-				return db;
+				NEW_CLASSNN(nndb, DB::DBTool(conn, true, log, DBPREFIX));
+				return nndb;
 			}
 			conn.Delete();
 		}
@@ -317,7 +318,7 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		SDEL_STRING(uid);
 		SDEL_STRING(pwd);
 		SDEL_STRING(schema);
-		if (db)
+		if (db.NotNull())
 		{
 			return db;
 		}
@@ -326,10 +327,9 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 	{
 		if (connStr.Substring(7).StartsWithICase(UTF8STRC("FILE=")))
 		{
-			NN<DB::DBTool> db;
-			if (DB::SQLiteFile::CreateDBTool(connStr.Substring(12), log, DBPREFIX).SetTo(db))
+			if (DB::SQLiteFile::CreateDBTool(connStr.Substring(12), log, DBPREFIX).SetTo(nndb))
 			{
-				return NN<DB::ReadingDB>(db);
+				return nndb;
 			}
 		}
 	}
@@ -346,8 +346,8 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 			}
 			else
 			{
-				NEW_CLASS(db, DB::DBTool(wmi, true, log, DBPREFIX));
-				return db;
+				NEW_CLASSNN(nndb, DB::DBTool(wmi, true, log, DBPREFIX));
+				return nndb;
 			}
 		}
 	}
@@ -362,8 +362,8 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		}
 		else
 		{
-			NEW_CLASS(db, DB::DBTool(oledb, true, log, DBPREFIX));
-			return db;
+			NEW_CLASSNN(nndb, DB::DBTool(oledb, true, log, DBPREFIX));
+			return nndb;
 		}
 	}
 	else if (connStr.StartsWith(UTF8STRC("mysqltcp:")))
@@ -431,8 +431,8 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		}
 		else
 		{
-			NEW_CLASS(db, DB::DBTool(nncli, true, log, DBPREFIX));
-			return db;
+			NEW_CLASSNN(nndb, DB::DBTool(nncli, true, log, DBPREFIX));
+			return nndb;
 		}
 	}
 	else if (connStr.StartsWith(UTF8STRC("postgresql:")))
@@ -505,8 +505,8 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		}
 		else
 		{
-			NEW_CLASS(db, DB::DBTool(nncli, true, log, DBPREFIX));
-			return db;
+			NEW_CLASSNN(nndb, DB::DBTool(nncli, true, log, DBPREFIX));
+			return nndb;
 		}
 	}
 	else if (connStr.StartsWith(UTF8STRC("file:")))
@@ -585,8 +585,8 @@ Optional<DB::ReadingDB> DB::DBManager::OpenConn(Text::CStringNN connStr, NN<IO::
 		SDEL_STRING(schema);
 		if (nncli.Set(cli))
 		{
-			NEW_CLASS(db, DB::DBTool(nncli, true, log, DBPREFIX));
-			return db;
+			NEW_CLASSNN(nndb, DB::DBTool(nncli, true, log, DBPREFIX));
+			return nndb;
 		}
 	}
 	return 0;

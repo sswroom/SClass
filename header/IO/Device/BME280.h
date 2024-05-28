@@ -47,7 +47,7 @@ namespace IO
 			Bool ReadPressure(OutParam<Double> pressure);
 			Bool ReadAll(OutParam<Double> temp, OutParam<Double> rh, OutParam<Double> pressure);
 
-			static IO::I2CChannel *CreateDefChannel(Int32 i2cBusNo);
+			static Optional<IO::I2CChannel> CreateDefChannel(Int32 i2cBusNo);
 		};
 	}
 }

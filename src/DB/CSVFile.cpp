@@ -114,7 +114,7 @@ Optional<DB::DBReader> DB::CSVFile::QueryTableData(Text::CString schemaName, Tex
 	}
 }
 
-DB::TableDef *DB::CSVFile::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> DB::CSVFile::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	NN<DB::DBReader> r;
 	if (this->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0).SetTo(r))

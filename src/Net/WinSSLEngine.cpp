@@ -838,7 +838,7 @@ Bool Net::WinSSLEngine::InitServer(Method method, void *cred, void *hRootStore)
 	return status == 0;
 }
 
-Optional<Net::SSLClient> Net::WinSSLEngine::CreateClientConn(void* sslObj, Socket* s, Text::CString hostName, OptOut<ErrorType> err)
+Optional<Net::SSLClient> Net::WinSSLEngine::CreateClientConn(void* sslObj, NN<Socket> s, Text::CString hostName, OptOut<ErrorType> err)
 {
 	CtxtHandle ctxt;
 	const WChar* wptr = Text::StrToWCharNew(hostName.v);
@@ -1010,7 +1010,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::CreateClientConn(void* sslObj, Socke
 	return cli;
 }
 
-Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(Socket *s)
+Optional<Net::SSLClient> Net::WinSSLEngine::CreateServerConn(NN<Socket> s)
 {
 	if (!this->clsData->svrInit)
 	{
@@ -1435,7 +1435,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::ClientConnect(Text::CStringNN hostNa
 
 	Net::SocketUtil::AddressInfo addr[1];
 	UOSInt addrCnt = this->sockf->DNSResolveIPs(hostName, Data::DataArray<Net::SocketUtil::AddressInfo>(addr, 1));
-	Socket *s;
+	NN<Socket> s;
 	if (addrCnt == 0)
 	{
 		err.Set(ErrorType::HostnameNotResolved);
@@ -1446,8 +1446,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::ClientConnect(Text::CStringNN hostNa
 	{
 		if (addr[addrInd].addrType == Net::AddrType::IPv4)
 		{
-			s = this->sockf->CreateTCPSocketv4();
-			if (s == 0)
+			if (!this->sockf->CreateTCPSocketv4().SetTo(s))
 			{
 				err.Set(ErrorType::OutOfMemory);
 				return 0;
@@ -1460,8 +1459,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::ClientConnect(Text::CStringNN hostNa
 		}
 		else if (addr[addrInd].addrType == Net::AddrType::IPv6)
 		{
-			s = this->sockf->CreateTCPSocketv6();
-			if (s == 0)
+			if (!this->sockf->CreateTCPSocketv6().SetTo(s))
 			{
 				err.Set(ErrorType::OutOfMemory);
 				return 0;
@@ -1478,7 +1476,7 @@ Optional<Net::SSLClient> Net::WinSSLEngine::ClientConnect(Text::CStringNN hostNa
 	return 0;
 }
 
-Optional<Net::SSLClient> Net::WinSSLEngine::ClientInit(Socket *s, Text::CStringNN hostName, OptOut<ErrorType> err)
+Optional<Net::SSLClient> Net::WinSSLEngine::ClientInit(NN<Socket> s, Text::CStringNN hostName, OptOut<ErrorType> err)
 {
 	if (!this->clsData->cliInit)
 	{

@@ -37,7 +37,7 @@ IO::ParserType Parser::ObjParser::KMZParser::GetParserType()
 	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(NN<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
+Optional<IO::ParsedObject> Parser::ObjParser::KMZParser::ParseObject(NN<IO::ParsedObject> pobj, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType)
 {
 	NN<Parser::ParserList> parsers;
 	if (pobj->GetParserType() != IO::ParserType::PackageFile)

@@ -188,7 +188,7 @@ Bool DB::MDBFileConn::CreateMDBFile(Text::CStringNN fileName)
 #endif
 }
 
-DB::DBTool *DB::MDBFileConn::CreateDBTool(NN<Text::String> fileName, NN<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::MDBFileConn::CreateDBTool(NN<Text::String> fileName, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<DB::MDBFileConn> conn;
 	DB::DBTool *db;
@@ -205,7 +205,7 @@ DB::DBTool *DB::MDBFileConn::CreateDBTool(NN<Text::String> fileName, NN<IO::LogT
 	}
 }
 
-DB::DBTool *DB::MDBFileConn::CreateDBTool(Text::CStringNN fileName, NN<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::MDBFileConn::CreateDBTool(Text::CStringNN fileName, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<DB::MDBFileConn> conn;
 	DB::DBTool *db;

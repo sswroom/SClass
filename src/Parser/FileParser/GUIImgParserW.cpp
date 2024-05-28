@@ -74,7 +74,7 @@ IO::ParserType Parser::FileParser::GUIImgParser::GetParserType()
 	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
+Optional<IO::ParsedObject> Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	NN<IO::StreamDataStream> stm;
 	Win32::COMStream *cstm;
@@ -350,7 +350,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFileHdr(NN<IO::StreamDa
 					NN<Math::Geometry::VectorImage> vimg;
 					
 					
-					NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateDefaultCsys();
+					NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, csys, 0, 0, 0, 0, 0));
 					img->To32bpp();
 					Media::SharedImage simg(nnimgList, true);

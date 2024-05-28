@@ -181,14 +181,14 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 			}
 			else
 			{
-				IO::FileCheck *fileChk;
+				Optional<IO::FileCheck> fileChk;
 				NN<IO::FileCheck> nnfileChk;
 				{
 					ProgressHandler progress;
 					fileChk = IO::FileCheck::CreateCheck({cmdLines[1], cmdLen}, Crypto::Hash::HashType::CRC32, &progress, false);
 				}
 				console->WriteLine();
-				if (nnfileChk.Set(fileChk))
+				if (fileChk.SetTo(nnfileChk))
 				{
 					Text::StringBuilderUTF8 sb;
 					Exporter::SFVExporter exporter;

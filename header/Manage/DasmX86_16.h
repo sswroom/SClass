@@ -25,7 +25,7 @@ namespace Manage
 			//prefix 2 1: 00 = no, 01 = 0x66, 02 = f2, 03 = f3
 		} DasmX86_16_Sess;
 
-		typedef Bool (__stdcall *DasmX86_16_Code)(DasmX86_16_Sess *sess);
+		typedef Bool (__stdcall *DasmX86_16_Code)(NN<DasmX86_16_Sess> sess);
 	private:
 		DasmX86_16_Code *codes;
 		DasmX86_16_Code *codes0f;
@@ -33,15 +33,15 @@ namespace Manage
 		DasmX86_16();
 		virtual ~DasmX86_16();
 
-		DasmX86_16_Sess *CreateSess(DasmX86_16_Regs *regs, UInt8 *code, UInt16 codeSegm);
-		void DeleteSess(DasmX86_16_Sess *sess);
+		NN<DasmX86_16_Sess> CreateSess(NN<DasmX86_16_Regs> regs, UInt8 *code, UInt16 codeSegm);
+		void DeleteSess(NN<DasmX86_16_Sess> sess);
 
 		virtual Text::CStringNN GetHeader(Bool fullRegs) const;
-		virtual Bool Disasm16(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt16 *currInst, UInt16 *currStack, UInt16 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt16 *blockStart, UInt16 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
-		virtual Dasm_Regs *CreateRegs() const;
-		virtual void FreeRegs(Dasm_Regs *regs) const;
+		virtual Bool Disasm16(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt16 *currInst, UInt16 *currStack, UInt16 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt16 *blockStart, UInt16 *blockEnd, NN<Manage::Dasm::Dasm_Regs> regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
+		virtual NN<Dasm_Regs> CreateRegs() const;
+		virtual void FreeRegs(NN<Dasm_Regs> regs) const;
 
-		Bool DasmNext(DasmX86_16_Sess *sess, UTF8Char *buff, UOSInt *outBuffSize); //True = succ
+		Bool DasmNext(NN<DasmX86_16_Sess> sess, UTF8Char *buff, UOSInt *outBuffSize); //True = succ
 	};
 }
 

@@ -254,7 +254,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 								sb.AppendC(UTF8STRC("Checking "));
 								sb.AppendP(&sbuff[i + 1], sptr);
 								console->WriteLine(sb.ToCString());
-								if (!thisChk.Set(IO::FileCheck::CreateCheck(CSTRP(sbuff, sptr), Crypto::Hash::HashType::MD5, &progress, false)))
+								if (!IO::FileCheck::CreateCheck(CSTRP(sbuff, sptr), Crypto::Hash::HashType::MD5, &progress, false).SetTo(thisChk))
 								{
 									SDEL_CLASS(fileChk);
 									showHelp = true;
@@ -283,7 +283,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 				}
 				else
 				{
-					if (!thisChk.Set(IO::FileCheck::CreateCheck(CSTRP(sbuff, sptr), Crypto::Hash::HashType::MD5, &progress, false)))
+					if (!IO::FileCheck::CreateCheck(CSTRP(sbuff, sptr), Crypto::Hash::HashType::MD5, &progress, false).SetTo(thisChk))
 					{
 						SDEL_CLASS(fileChk);
 						showHelp = true;

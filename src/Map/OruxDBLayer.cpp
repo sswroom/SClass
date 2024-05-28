@@ -346,7 +346,7 @@ Optional<DB::DBReader> Map::OruxDBLayer::QueryTableData(Text::CString schemaName
 	return this->db->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
 }
 
-DB::TableDef *Map::OruxDBLayer::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> Map::OruxDBLayer::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	return this->db->GetTableDef(schemaName, tableName);
 }

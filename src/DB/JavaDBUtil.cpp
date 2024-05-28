@@ -327,9 +327,9 @@ Bool DB::JavaDBUtil::ToJavaEntity(NN<Text::StringBuilderUTF8> sb, Optional<Text:
 	sbFieldOrder.AppendC(UTF8STRC("\t\treturn new String[] {\r\n"));
 
 	sbCode.AppendC(UTF8STRC("{\r\n"));
-	DB::TableDef *tableDef = db->GetTableDef(OPTSTR_CSTR(schemaName), tableName->ToCString());
+	NN<DB::TableDef> tableDef;
 	NN<Text::String> colName;
-	if (tableDef)
+	if (db->GetTableDef(OPTSTR_CSTR(schemaName), tableName->ToCString()).SetTo(tableDef))
 	{
 		NN<DB::ColDef> colDef;
 		Data::ArrayIterator<NN<DB::ColDef>> it = tableDef->ColIterator();
@@ -346,6 +346,7 @@ Bool DB::JavaDBUtil::ToJavaEntity(NN<Text::StringBuilderUTF8> sb, Optional<Text:
 			AppendFieldOrderItem(sbFieldOrder, colName, !it.HasNext());
 			colName->Release();
 		}
+		tableDef.Delete();
 	}
 	else
 	{
@@ -374,7 +375,6 @@ Bool DB::JavaDBUtil::ToJavaEntity(NN<Text::StringBuilderUTF8> sb, Optional<Text:
 			db->CloseReader(r);
 		}
 	}
-	DEL_CLASS(tableDef);
 
 	sbConstrHdr.AppendC(UTF8STRC(") {\r\n"));
 	sbConstrItem.AppendC(UTF8STRC("\t}\r\n"));

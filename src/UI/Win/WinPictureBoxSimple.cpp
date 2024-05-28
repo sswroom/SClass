@@ -70,14 +70,15 @@ void UI::Win::WinPictureBoxSimple::OnPaint()
 		}
 	}
 
-	if (this->prevImageD)
+	NN<Media::DrawImage> prevImageD;
+	if (this->prevImageD.SetTo(prevImageD))
 	{
-		OSInt x = (rc.right - rc.left - (OSInt)this->prevImageD->GetWidth()) >> 1;
-		OSInt y = (rc.bottom - rc.top - (OSInt)this->prevImageD->GetHeight()) >> 1;
+		OSInt x = (rc.right - rc.left - (OSInt)prevImageD->GetWidth()) >> 1;
+		OSInt y = (rc.bottom - rc.top - (OSInt)prevImageD->GetHeight()) >> 1;
 
-		if (this->noBGColor || this->prevImageD->GetAlphaType() == Media::AT_NO_ALPHA)
+		if (this->noBGColor || prevImageD->GetAlphaType() == Media::AT_NO_ALPHA)
 		{
-			BitBlt(ps.hdc, (int)x, (int)y, (int)this->prevImageD->GetWidth(), (int)this->prevImageD->GetHeight(), (HDC)((Media::GDIImage*)this->prevImageD)->GetHDC(), 0, 0, SRCCOPY);
+			BitBlt(ps.hdc, (int)x, (int)y, (int)prevImageD->GetWidth(), (int)prevImageD->GetHeight(), (HDC)NN<Media::GDIImage>::ConvertFrom(prevImageD)->GetHDC(), 0, 0, SRCCOPY);
 		}
 		else
 		{
@@ -86,7 +87,7 @@ void UI::Win::WinPictureBoxSimple::OnPaint()
 			bf.AlphaFormat = AC_SRC_ALPHA;
 			bf.BlendOp = AC_SRC_OVER;
 			bf.BlendFlags = 0;
-			AlphaBlend(ps.hdc, (int)x, (int)y, (int)this->prevImageD->GetWidth(), (int)this->prevImageD->GetHeight(), (HDC)((Media::GDIImage*)this->prevImageD)->GetHDC(), 0, 0, (int)this->prevImageD->GetWidth(), (int)this->prevImageD->GetHeight(), bf);
+			AlphaBlend(ps.hdc, (int)x, (int)y, (int)prevImageD->GetWidth(), (int)prevImageD->GetHeight(), (HDC)NN<Media::GDIImage>::ConvertFrom(prevImageD)->GetHDC(), 0, 0, (int)prevImageD->GetWidth(), (int)prevImageD->GetHeight(), bf);
 		}
 	}
 	else if (this->noBGColor)
@@ -142,7 +143,7 @@ void UI::Win::WinPictureBoxSimple::Deinit(InstanceHandle *hInst)
 void UI::Win::WinPictureBoxSimple::UpdatePreview()
 {
 	NN<Media::DrawImage> dimg;
-	if (dimg.Set(this->prevImageD))
+	if (this->prevImageD.SetTo(dimg))
 	{
 		this->eng->DeleteImage(dimg);
 		this->prevImageD = 0;
@@ -177,7 +178,7 @@ UI::Win::WinPictureBoxSimple::WinPictureBoxSimple(NN<UI::GUICore> ui, NN<UI::GUI
 UI::Win::WinPictureBoxSimple::~WinPictureBoxSimple()
 {
 	NN<Media::DrawImage> dimg;
-	if (dimg.Set(this->prevImageD))
+	if (this->prevImageD.SetTo(dimg))
 	{
 		this->eng->DeleteImage(dimg);
 		this->prevImageD = 0;
@@ -199,19 +200,19 @@ void UI::Win::WinPictureBoxSimple::SetImage(Optional<Media::StaticImage> currIma
 	this->UpdatePreview();
 }
 
-void UI::Win::WinPictureBoxSimple::SetImageDImg(Media::DrawImage *img)
+void UI::Win::WinPictureBoxSimple::SetImageDImg(Optional<Media::DrawImage> img)
 {
 	this->currImage = 0;
 	NN<Media::DrawImage> dimg;
 	NN<Media::GDIImage> gimg;
-	if (dimg.Set(this->prevImageD))
+	if (this->prevImageD.SetTo(dimg))
 	{
 		this->eng->DeleteImage(dimg);
 		this->prevImageD = 0;
 	}
-	if (gimg.Set((Media::GDIImage*)img))
+	if (Optional<Media::GDIImage>::ConvertFrom(img).SetTo(gimg))
 	{
-		this->prevImageD = ((Media::GDIEngine*)this->eng.Ptr())->CloneImage(gimg);
+		this->prevImageD = NN<Media::GDIEngine>::ConvertFrom(this->eng)->CloneImage(gimg);
 	}
 	this->Redraw();
 }

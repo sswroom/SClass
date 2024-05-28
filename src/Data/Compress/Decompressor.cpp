@@ -8,7 +8,7 @@ Data::Compress::Decompressor::~Decompressor()
 {
 }
 
-Data::Compress::Decompressor *Data::Compress::Decompressor::CreateDecompressor(Data::Compress::Decompressor::CompressMethod compMeth)
+Optional<Data::Compress::Decompressor> Data::Compress::Decompressor::CreateDecompressor(Data::Compress::Decompressor::CompressMethod compMeth)
 {
 	Data::Compress::Decompressor *decomp;
 	switch (compMeth)

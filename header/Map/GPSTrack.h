@@ -106,7 +106,7 @@ namespace Map
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names); // no need to release
 		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
-		virtual DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
+		virtual Optional<DB::TableDef> GetTableDef(Text::CString schemaName, Text::CString tableName);
 		virtual ObjectClass GetObjectClass() const;
 
 		void NewTrack();

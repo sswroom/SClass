@@ -210,7 +210,7 @@ Bool IO::Device::BME280::ReadAll(OutParam<Double> temp, OutParam<Double> rh, Out
 
 }
 
-IO::I2CChannel *IO::Device::BME280::CreateDefChannel(Int32 i2cBusNo)
+Optional<IO::I2CChannel> IO::Device::BME280::CreateDefChannel(Int32 i2cBusNo)
 {
 	IO::I2CChannel *channel;
 	NEW_CLASS(channel, IO::I2CChannelOS(i2cBusNo, 0x76));

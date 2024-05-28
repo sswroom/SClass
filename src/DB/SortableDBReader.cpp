@@ -44,16 +44,14 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 		}
 		while (r->ReadNext())
 		{
-			if (obj.Set(r->CreateVariObject()))
+			obj = r->CreateVariObject();
+			if (condition == 0 || condition->IsValid(obj))
 			{
-				if (condition == 0 || condition->IsValid(obj))
-				{
-					this->objList.Add(obj);
-				}
-				else
-				{
-					obj.Delete();
-				}
+				this->objList.Add(obj);
+			}
+			else
+			{
+				obj.Delete();
 			}
 		}
 		db->CloseReader(r);
@@ -107,16 +105,14 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString schemaNa
 		}
 		while (r->ReadNext())
 		{
-			if (obj.Set(r->CreateVariObject()))
+			obj = r->CreateVariObject();
+			if (condition == 0 || condition->IsValid(obj))
 			{
-				if (condition == 0 || condition->IsValid(obj))
-				{
-					this->objList.Add(obj);
-				}
-				else
-				{
-					obj.Delete();
-				}
+				this->objList.Add(obj);
+			}
+			else
+			{
+				obj.Delete();
 			}
 		}
 		db->CloseReader(r);

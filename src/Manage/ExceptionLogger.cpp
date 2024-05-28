@@ -82,14 +82,14 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 		writer->WriteLine(sb.ToCString());
 	}
 
-	Manage::Dasm *dasm = context->CreateDasm();
-	if (dasm)
+	NN<Manage::Dasm> dasm;
+	if (context->CreateDasm().SetTo(dasm))
 	{
 		if (dasm->GetRegBitDepth() == Manage::Dasm::RBD_32)
 		{
 			UTF8Char sbuff[256];
 			UTF8Char *sptr;
-			Manage::Dasm32 *dasm32 = (Manage::Dasm32*)dasm;
+			NN<Manage::Dasm32> dasm32 = NN<Manage::Dasm32>::ConvertFrom(dasm);
 			UInt32 currInst = (UInt32)context->GetInstAddr();
 			UInt32 currStack = (UInt32)context->GetStackAddr();
 			UInt32 currFrame = (UInt32)context->GetFrameAddr();
@@ -121,7 +121,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 			}
 
 			stm->Flush();
-			Manage::Dasm::Dasm_Regs *regs = dasm32->CreateRegs();
+			NN<Manage::Dasm::Dasm_Regs> regs = dasm32->CreateRegs();
 			context->GetRegs(regs);
 			while (true)
 			{
@@ -211,7 +211,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 		{
 			UTF8Char sbuff[256];
 			UTF8Char *sptr;
-			Dasm64 *dasm64 = (Dasm64*)dasm;
+			NN<Dasm64> dasm64 = NN<Dasm64>::ConvertFrom(dasm);
 			UInt64 currInst = context->GetInstAddr();
 			UInt64 currStack = context->GetStackAddr();
 			UInt64 currFrame = context->GetFrameAddr();;
@@ -243,7 +243,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 			}
 
 			stm->Flush();
-			Manage::Dasm::Dasm_Regs *regs = dasm64->CreateRegs();
+			NN<Manage::Dasm::Dasm_Regs> regs = dasm64->CreateRegs();
 			context->GetRegs(regs);
 			while (true)
 			{
@@ -329,7 +329,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 			DEL_CLASS(blkStarts);
 			DEL_CLASS(blkEnds);
 		}
-		DEL_CLASS(dasm);
+		dasm.Delete();
 	}
 }
 

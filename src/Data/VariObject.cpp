@@ -195,11 +195,11 @@ void Data::VariObject::ToString(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendUTF8Char('}');
 }
 
-Data::Class *Data::VariObject::CreateClass() const
+NN<Data::Class> Data::VariObject::CreateClass() const
 {
-	Data::Class *cls;
+	NN<Data::Class> cls;
 	OSInt currPos = 0;
-	NEW_CLASS(cls, Data::Class(0));
+	NEW_CLASSNN(cls, Data::Class(0));
 	NN<Data::ArrayList<const UTF8Char*>> keys = this->items.GetKeys();
 	NN<const Data::ArrayList<VariItem*>> values = this->items.GetValues();
 	UOSInt i = 0;

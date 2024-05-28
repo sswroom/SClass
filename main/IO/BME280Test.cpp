@@ -13,7 +13,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	IO::Device::BME280 *bme280;
 	IO::ConsoleWriter console;
 	NN<IO::I2CChannel> channel;
-	if (!channel.Set(IO::Device::BME280::CreateDefChannel(1)))
+	if (!IO::Device::BME280::CreateDefChannel(1).SetTo(channel))
 	{
 		console.WriteLine(CSTR("I2C bus not found"));
 	}

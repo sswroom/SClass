@@ -68,7 +68,8 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(AnyType userObj)
 	Optional<Text::String> schemaName = me->lbSchema->GetSelectedItemTextNew();
 	
 
-	DB::TableDef *tabDef = 0;
+	Optional<DB::TableDef> tabDef = 0;
+	NN<DB::TableDef> nntabDef;
 	Optional<DB::DBReader> tmpr;
 	NN<DB::DBReader> r;
 	if (me->dbt)
@@ -82,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(AnyType userObj)
 		tabDef = me->db->GetTableDef(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
 
 		tmpr = me->db->QueryTableData(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
-		if (tmpr.SetTo(r) && tabDef == 0)
+		if (tmpr.SetTo(r) && tabDef.IsNull())
 		{
 			tabDef = r->GenTableDef(OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
 		}
@@ -97,10 +98,10 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(AnyType userObj)
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
-		if (tabDef)
+		if (tabDef.SetTo(nntabDef))
 		{
 			NN<DB::ColDef> col;
-			Data::ArrayIterator<NN<DB::ColDef>> it = tabDef->ColIterator();
+			Data::ArrayIterator<NN<DB::ColDef>> it = nntabDef->ColIterator();
 			while (it.HasNext())
 			{
 				col = it.Next();
@@ -117,8 +118,7 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(AnyType userObj)
 				if (col->GetAttr().SetTo(s))
 					me->lvTable->SetSubItem(k, 7, s);
 			}
-			
-			DEL_CLASS(tabDef);
+			tabDef.Delete();
 		}
 		else
 		{
@@ -149,10 +149,7 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(AnyType userObj)
 	}
 	else
 	{
-		if (tabDef)
-		{
-			DEL_CLASS(tabDef);
-		}
+		tabDef.Delete();
 	}
 }
 
@@ -263,7 +260,7 @@ void SSWR::AVIRead::AVIRDBForm::CopyTableCreate(DB::SQLType sqlType, Bool axisAw
 	{
 		DB::SQLBuilder sql(sqlType, axisAware, 0);
 		NN<DB::TableDef> tabDef;
-		if (tabDef.Set(this->db->GetTableDef(OPTSTR_CSTR(schemaName), tableName->ToCString())))
+		if (this->db->GetTableDef(OPTSTR_CSTR(schemaName), tableName->ToCString()).SetTo(tabDef))
 		{
 			if (!DB::SQLGenerator::GenCreateTableCmd(sql, OPTSTR_CSTR(schemaName), tableName->ToCString(), tabDef, true))
 			{
@@ -783,9 +780,8 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 		if ((sptr = this->lbTable->GetSelectedItemText(sbuff)) != 0)
 		{
 			Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
-			Data::Class *cls = DB::DBExporter::CreateTableClass(this->db, OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
-			OPTSTR_DEL(schemaName);
-			if (cls)
+			NN<Data::Class> cls;
+			if (DB::DBExporter::CreateTableClass(this->db, OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr)).SetTo(cls))
 			{
 				Text::PString hdr = {sbuff2, 0};
 				UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
@@ -794,17 +790,17 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 				Text::StringBuilderUTF8 sb;
 				cls->ToCppClassHeader(&hdr, 0, sb);
 				UI::Clipboard::SetString(this->GetHandle(), sb.ToCString());
-				DEL_CLASS(cls);
+				cls.Delete();
 			}
+			OPTSTR_DEL(schemaName);
 		}
 		break;
 	case MNU_TABLE_CPP_SOURCE:
 		if ((sptr = this->lbTable->GetSelectedItemText(sbuff)) != 0)
 		{
 			Optional<Text::String> schemaName = this->lbSchema->GetSelectedItemTextNew();
-			Data::Class *cls = DB::DBExporter::CreateTableClass(this->db, OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr));
-			OPTSTR_DEL(schemaName);
-			if (cls)
+			NN<Data::Class> cls;
+			if (DB::DBExporter::CreateTableClass(this->db, OPTSTR_CSTR(schemaName), CSTRP(sbuff, sptr)).SetTo(cls))
 			{
 				Text::PString hdr = {sbuff2, 0};
 				UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
@@ -813,8 +809,9 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 				Text::StringBuilderUTF8 sb;
 				cls->ToCppClassSource(0, &hdr, 0, sb);
 				UI::Clipboard::SetString(this->GetHandle(), sb.ToCString());
-				DEL_CLASS(cls);
+				cls.Delete();
 			}
+			OPTSTR_DEL(schemaName);
 		}
 		break;
 	case MNU_TABLE_JAVA:

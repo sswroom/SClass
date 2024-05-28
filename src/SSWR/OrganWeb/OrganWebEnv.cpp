@@ -64,6 +64,9 @@ void SSWR::OrganWeb::OrganWebEnv::LoadLangs()
 
 void SSWR::OrganWeb::OrganWebEnv::LoadCategory()
 {
+	NN<DB::DBTool> db;
+	if (!this->db.SetTo(db))
+		return;
 	Text::StringBuilderUTF8 sb;
 	NN<CategoryInfo> cate;
 	NN<GroupTypeInfo> grpType;
@@ -72,7 +75,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadCategory()
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	NN<DB::DBReader> r;
-	if (this->db->ExecuteReader(CSTR("select cate_id, chi_name, dirName, srcDir, flags from category")).SetTo(r))
+	if (db->ExecuteReader(CSTR("select cate_id, chi_name, dirName, srcDir, flags from category")).SetTo(r))
 	{
 		Text::StringBuilderUTF8 sb;
 		while (r->ReadNext())
@@ -111,9 +114,9 @@ void SSWR::OrganWeb::OrganWebEnv::LoadCategory()
 				cate->groupTypes.Clear();
 			}
 		}
-		this->db->CloseReader(r);
+		db->CloseReader(r);
 	}
-	if (this->db->ExecuteReader(CSTR("select seq, eng_name, chi_name, cate_id from group_type")).SetTo(r))
+	if (db->ExecuteReader(CSTR("select seq, eng_name, chi_name, cate_id from group_type")).SetTo(r))
 	{
 		while (r->ReadNext())
 		{
@@ -130,7 +133,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadCategory()
 				cate->groupTypes.Put(grpType->id, grpType);
 			}
 		}
-		this->db->CloseReader(r);
+		db->CloseReader(r);
 	}
 
 }
@@ -138,12 +141,15 @@ void SSWR::OrganWeb::OrganWebEnv::LoadCategory()
 void SSWR::OrganWeb::OrganWebEnv::LoadSpecies()
 {
 	FreeSpecies();
+	NN<DB::DBTool> db;
+	if (!this->db.SetTo(db))
+		return;
 
 	NN<SpeciesInfo> sp;
 	NN<WebFileInfo> wfile;
 	Text::StringBuilderUTF8 sb;
 	NN<DB::DBReader> r;
-	if (this->db->ExecuteReader(CSTR("select id, eng_name, chi_name, sci_name, group_id, description, dirName, photo, idKey, cate_id, flags, photoId, photoWId, poiImg from species")).SetTo(r))
+	if (db->ExecuteReader(CSTR("select id, eng_name, chi_name, sci_name, group_id, description, dirName, photo, idKey, cate_id, flags, photoId, photoWId, poiImg from species")).SetTo(r))
 	{
 		while (r->ReadNext())
 		{
@@ -166,7 +172,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadSpecies()
 			this->spMap.Put(sp->speciesId, sp);
 			sp->sciNameHash = this->spNameMap.CalcHash(sp->sciName->v, sp->sciName->leng);
 		}
-		this->db->CloseReader(r);
+		db->CloseReader(r);
 
 		SpeciesSciNameComparator comparator;
 		Data::ArrayListNN<SpeciesInfo> speciesList(this->spMap.GetCount());
@@ -182,7 +188,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadSpecies()
 		}
 	}
 
-	if (this->db->ExecuteReader(CSTR("select id, species_id, crcVal, imgUrl, srcUrl, prevUpdated, cropLeft, cropTop, cropRight, cropBottom, location from webfile")).SetTo(r))
+	if (db->ExecuteReader(CSTR("select id, species_id, crcVal, imgUrl, srcUrl, prevUpdated, cropLeft, cropTop, cropRight, cropBottom, location from webfile")).SetTo(r))
 	{
 		while (r->ReadNext())
 		{
@@ -202,7 +208,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadSpecies()
 				sp->wfiles.Put(wfile->id, wfile);
 			}
 		}
-		this->db->CloseReader(r);
+		db->CloseReader(r);
 	}
 }
 
@@ -217,7 +223,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadGroups()
 	NN<CategoryInfo> cate;
 	UOSInt i;
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return;
 	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("select id, group_type, eng_name, chi_name, description, parent_id, photo_group, photo_species, idKey, cate_id, flags from "));
@@ -283,6 +289,9 @@ void SSWR::OrganWeb::OrganWebEnv::LoadGroups()
 void SSWR::OrganWeb::OrganWebEnv::LoadBooks()
 {
 	FreeBooks();
+	NN<DB::DBTool> db;
+	if (!this->db.SetTo(db))
+		return;
 
 	this->selectedBook = 0;
 	Text::StringBuilderUTF8 sb;
@@ -292,7 +301,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadBooks()
 	Data::DateTime dt;
 
 	NN<DB::DBReader> r;
-	if (this->db->ExecuteReader(CSTR("select id, title, dispAuthor, press, publishDate, url, userfile_id from book")).SetTo(r))
+	if (db->ExecuteReader(CSTR("select id, title, dispAuthor, press, publishDate, url, userfile_id from book")).SetTo(r))
 	{
 		while (r->ReadNext())
 		{
@@ -307,10 +316,10 @@ void SSWR::OrganWeb::OrganWebEnv::LoadBooks()
 
 			this->bookMap.Put(book->id, book);
 		}
-		this->db->CloseReader(r);
+		db->CloseReader(r);
 	}
 
-	if (this->db->ExecuteReader(CSTR("select species_id, book_id, dispName from species_book")).SetTo(r))
+	if (db->ExecuteReader(CSTR("select species_id, book_id, dispName from species_book")).SetTo(r))
 	{
 		while (r->ReadNext())
 		{
@@ -324,20 +333,23 @@ void SSWR::OrganWeb::OrganWebEnv::LoadBooks()
 				sp->books.Add(bookSp);
 			}
 		}
-		this->db->CloseReader(r);
+		db->CloseReader(r);
 	}
 }
 
 void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NN<Sync::RWMutexUsage> mutUsage)
 {
 	this->ClearUsers();
+	NN<DB::DBTool> db;
+	if (!this->db.SetTo(db))
+		return;
 
 	Int32 userId;
 	Text::StringBuilderUTF8 sb;
 	NN<WebUserInfo> user;
 	Optional<WebUserInfo> optuser;
 	NN<DB::DBReader> r;
-	if (this->db->ExecuteReader(CSTR("select id, userName, pwd, watermark, userType from webuser")).SetTo(r))
+	if (db->ExecuteReader(CSTR("select id, userName, pwd, watermark, userType from webuser")).SetTo(r))
 	{
 		while (r->ReadNext())
 		{
@@ -367,10 +379,10 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NN<Sync::RWMutexUsage> mutUsage)
 				this->userNameMap.PutNN(user->userName, user);
 			}
 		}
-		this->db->CloseReader(r);
+		db->CloseReader(r);
 	}
 
-	if (this->db->ExecuteReader(CSTR("select id, fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, rotType, prevUpdated, cropLeft, cropTop, cropRight, cropBottom, descript, location, camera, locType from userfile")).SetTo(r))
+	if (db->ExecuteReader(CSTR("select id, fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, rotType, prevUpdated, cropLeft, cropTop, cropRight, cropBottom, descript, location, camera, locType from userfile")).SetTo(r))
 	{
 		NN<UserFileInfo> userFile;
 		NN<SpeciesInfo> species;
@@ -416,7 +428,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NN<Sync::RWMutexUsage> mutUsage)
 				this->userFileMap.Put(userFile->id, userFile);
 			}
 		}
-		this->db->CloseReader(r);
+		db->CloseReader(r);
 
 		UserFileTimeComparator comparator;
 		Data::ArrayListNN<UserFileInfo> userFileList(this->userFileMap.GetCount());
@@ -440,7 +452,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NN<Sync::RWMutexUsage> mutUsage)
 		}
 	}
 
-	if (this->db->ExecuteReader(CSTR("select id, fileType, startTime, endTime, oriFileName, dataFileName, webuser_id from datafile order by webuser_id, startTime")).SetTo(r))
+	if (db->ExecuteReader(CSTR("select id, fileType, startTime, endTime, oriFileName, dataFileName, webuser_id from datafile order by webuser_id, startTime")).SetTo(r))
 	{
 		NN<DataFileInfo> dataFile;
 		optuser = 0;
@@ -472,10 +484,10 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NN<Sync::RWMutexUsage> mutUsage)
 				}
 			}
 		}
-		this->db->CloseReader(r);
+		db->CloseReader(r);
 	}
 
-	if (this->db->ExecuteReader(CSTR("select fromDate, toDate, locId, cate_id, webuser_id from trip")).SetTo(r))
+	if (db->ExecuteReader(CSTR("select fromDate, toDate, locId, cate_id, webuser_id from trip")).SetTo(r))
 	{
 		Int32 cateId;
 		Int64 fromDate;
@@ -509,7 +521,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadUsers(NN<Sync::RWMutexUsage> mutUsage)
 				}
 			}
 		}
-		this->db->CloseReader(r);
+		db->CloseReader(r);
 	}
 
 	if (this->unorganizedGroupId)
@@ -558,7 +570,10 @@ void SSWR::OrganWeb::OrganWebEnv::LoadLocations()
 	NN<LocationInfo> loc;
 	NN<DB::DBReader> r;
 	Int32 id;
-	if (this->db->ExecuteReader(CSTR("select id, parentId, cname, ename, lat, lon, cate_id, locType from location")).SetTo(r))
+	NN<DB::DBTool> db;
+	if (!this->db.SetTo(db))
+		return;
+	if (db->ExecuteReader(CSTR("select id, parentId, cname, ename, lat, lon, cate_id, locType from location")).SetTo(r))
 	{
 		Text::StringBuilderUTF8 sb;
 		while (r->ReadNext())
@@ -578,7 +593,7 @@ void SSWR::OrganWeb::OrganWebEnv::LoadLocations()
 				this->locMap.Put(id, loc);
 			}
 		}
-		this->db->CloseReader(r);
+		db->CloseReader(r);
 	}
 }
 
@@ -774,7 +789,7 @@ void SSWR::OrganWeb::OrganWebEnv::ClearUsers()
 	this->dataFileMap.Clear();
 }
 
-SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<IO::LogTool> log, DB::DBTool *db, NN<Text::String> imageDir, UInt16 port, UInt16 sslPort, Optional<Text::String> cacheDir, NN<Text::String> dataDir, UInt32 scnSize, Optional<Text::String> reloadPwd, Int32 unorganizedGroupId, NN<Media::DrawEngine> eng, Text::CString osmCachePath)
+SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<IO::LogTool> log, Optional<DB::DBTool> db, NN<Text::String> imageDir, UInt16 port, UInt16 sslPort, Optional<Text::String> cacheDir, NN<Text::String> dataDir, UInt32 scnSize, Optional<Text::String> reloadPwd, Int32 unorganizedGroupId, NN<Media::DrawEngine> eng, Text::CString osmCachePath)
 {
 	this->imageDir = imageDir->Clone();
 	this->sockf = sockf;
@@ -801,7 +816,7 @@ SSWR::OrganWeb::OrganWebEnv::OrganWebEnv(NN<Net::SocketFactory> sockf, Optional<
 	NEW_CLASSNN(this->nodeHdlr, Net::WebServer::NodeModuleHandler(CSTRP(sbuff, sptr), 0));
 
 	this->db = db;
-	if (this->db == 0)
+	if (this->db.IsNull())
 	{
 		this->listener = 0;
 		this->sslListener = 0;
@@ -849,7 +864,7 @@ SSWR::OrganWeb::OrganWebEnv::~OrganWebEnv()
 	SDEL_CLASS(this->listener);
 	SDEL_CLASS(this->sslListener);
 	SDEL_CLASS(this->webHdlr);
-	SDEL_CLASS(this->db);
+	this->db.Delete();
 	this->osmHdlr.Delete();
 	this->nodeHdlr.Delete();
 
@@ -1219,7 +1234,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::BookFileExist(NN<BookInfo> book)
 Bool SSWR::OrganWeb::OrganWebEnv::BookSetPhoto(NN<Sync::RWMutexUsage> mutUsage, Int32 bookId, Int32 userfileId)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	NN<BookInfo> book;
 	NN<UserFileInfo> userFile;
@@ -1254,7 +1269,7 @@ Optional<SSWR::OrganWeb::BookInfo> SSWR::OrganWeb::OrganWebEnv::BookAdd(NN<Sync:
 		return 0;
 	}
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return 0;
 	mutUsage->ReplaceMutex(this->dataMut, true);
 
@@ -1304,7 +1319,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::BookAddSpecies(NN<Sync::RWMutexUsage> mutUsage
 	if (!this->SpeciesGet(mutUsage, speciesId).SetTo(species))
 		return false;
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	UOSInt i;
 	if (!allowDuplicate)
@@ -1431,7 +1446,7 @@ Optional<SSWR::OrganWeb::SpeciesInfo> SSWR::OrganWeb::OrganWebEnv::SpeciesGetByN
 Int32 SSWR::OrganWeb::OrganWebEnv::SpeciesAdd(NN<Sync::RWMutexUsage> mutUsage, Text::CString engName, Text::CString chiName, Text::CString sciName, Int32 groupId, Text::CString description, Text::CString dirName, Text::CString idKey, Int32 cateId)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return 0;
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	DB::SQLBuilder sql(db);
@@ -1583,7 +1598,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesUpdateDefPhoto(NN<Sync::RWMutexUsage> m
 Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetPhotoId(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Int32 photoId)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	NN<SpeciesInfo> species;
@@ -1612,7 +1627,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetPhotoId(NN<Sync::RWMutexUsage> mutUs
 Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetPhotoWId(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, Int32 photoWId, Bool removePhotoId)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	NN<SpeciesInfo> species;
@@ -1649,7 +1664,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetPhotoWId(NN<Sync::RWMutexUsage> mutU
 Bool SSWR::OrganWeb::OrganWebEnv::SpeciesSetFlags(NN<Sync::RWMutexUsage> mutUsage, Int32 speciesId, SpeciesFlags flags)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	NN<SpeciesInfo> species;
@@ -1686,7 +1701,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesMove(NN<Sync::RWMutexUsage> mutUsage, I
 		return true;
 	}
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("update species set group_id = "));
@@ -1745,7 +1760,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesModify(NN<Sync::RWMutexUsage> mutUsage,
 	if (!this->spMap.Get(speciesId).SetTo(species))
 		return false;
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("update species set eng_name = "));
@@ -1792,7 +1807,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesDelete(NN<Sync::RWMutexUsage> mutUsage,
 	if (!this->spMap.Get(speciesId).SetTo(species) || species->books.GetCount() != 0 || species->files.GetCount() != 0 || species->wfiles.GetCount() != 0)
 		return false;
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("delete from species where id = "));
@@ -1835,7 +1850,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesMerge(NN<Sync::RWMutexUsage> mutUsage, 
 	if (!this->spMap.Get(srcSpeciesId).SetTo(srcSpecies) || !this->spMap.Get(destSpeciesId).SetTo(destSpecies))
 		return false;
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	UOSInt i;
 	DB::SQLBuilder sql(db);
@@ -1944,7 +1959,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::SpeciesAddWebfile(NN<Sync::RWMutexUsage> mutUs
 	if (!sourceURL.StartsWith(UTF8STRC("http://")) && !sourceURL.StartsWith(UTF8STRC("https://")))
 		return false;
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	NN<SpeciesInfo> species;
@@ -2132,7 +2147,7 @@ UTF8Char *SSWR::OrganWeb::OrganWebEnv::UserfileGetPath(UTF8Char *sbuff, NN<const
 Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, Int32 userId, Int32 spId, Text::CStringNN fileName, const UInt8 *fileCont, UOSInt fileSize, Bool mustHaveCamera, Text::String *location)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return 0;
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	UOSInt j;
@@ -2726,7 +2741,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::UserfileAdd(NN<Sync::RWMutexUsage> mutUsage, 
 Bool SSWR::OrganWeb::OrganWebEnv::UserfileMove(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 speciesId, Int32 cateId)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	NN<UserFileInfo> userFile;
@@ -2792,7 +2807,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::UserfileMove(NN<Sync::RWMutexUsage> mutUsage, 
 Bool SSWR::OrganWeb::OrganWebEnv::UserfileUpdateDesc(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Text::CString descr)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	NN<UserFileInfo> userFile;
@@ -2825,7 +2840,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::UserfileUpdateDesc(NN<Sync::RWMutexUsage> mutU
 Bool SSWR::OrganWeb::OrganWebEnv::UserfileUpdateRotType(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Int32 rotType)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	NN<UserFileInfo> userFile;
@@ -2860,7 +2875,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::UserfileUpdateRotType(NN<Sync::RWMutexUsage> m
 Bool SSWR::OrganWeb::OrganWebEnv::UserfileUpdatePos(NN<Sync::RWMutexUsage> mutUsage, Int32 userfileId, Data::Timestamp captureTime, Double lat, Double lon, LocType locType)
 {
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	NN<UserFileInfo> userFile;
@@ -2926,7 +2941,7 @@ void SSWR::OrganWeb::OrganWebEnv::UserFilePrevUpdated(NN<Sync::RWMutexUsage> mut
 	if (userFile->prevUpdated)
 	{
 		NN<DB::DBTool> db;
-		if (!db.Set(this->db))
+		if (!this->db.SetTo(db))
 			return;
 		DB::SQLBuilder sql(db);
 		sql.AppendCmdC(CSTR("update userfile set prevUpdated = 0 where id = "));
@@ -2945,7 +2960,7 @@ void SSWR::OrganWeb::OrganWebEnv::WebFilePrevUpdated(NN<Sync::RWMutexUsage> mutU
 	if (wfile->prevUpdated)
 	{
 		NN<DB::DBTool> db;
-		if (!db.Set(this->db))
+		if (!this->db.SetTo(db))
 			return;
 		DB::SQLBuilder sql(db);
 		sql.AppendCmdC(CSTR("update webfile set prevUpdated = 0 where id = "));
@@ -3030,7 +3045,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::DataFileAdd(NN<Sync::RWMutexUsage> mutUsage, I
 	}
 	NN<DB::DBTool> db;
 	mutUsage->ReplaceMutex(this->dataMut, true);
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 	{
 		errMsg.Set(CSTR("Database not found"));
 		return false;
@@ -3173,7 +3188,7 @@ Int32 SSWR::OrganWeb::OrganWebEnv::GroupAdd(NN<Sync::RWMutexUsage> mutUsage, Tex
 	if (!this->groupMap.Get(parentId).SetTo(group))
 		return 0;
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return 0;
 	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("insert into "));
@@ -3230,7 +3245,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::GroupModify(NN<Sync::RWMutexUsage> mutUsage, I
 	if (!this->groupMap.Get(id).SetTo(group))
 		return false;
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("update "));
@@ -3279,7 +3294,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::GroupDelete(NN<Sync::RWMutexUsage> mutUsage, I
 	if (!this->cateMap.Get(group->cateId).SetTo(cate))
 		return false;
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 
 	DB::SQLBuilder sql(db);
@@ -3319,7 +3334,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::GroupMove(NN<Sync::RWMutexUsage> mutUsage, Int
 		parentGroup = this->groupMap.Get(nnparentGroup->parentId);
 	}
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 	DB::SQLBuilder sql(db);
 	sql.AppendCmdC(CSTR("update "));
@@ -3396,7 +3411,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::GroupSetPhotoSpecies(NN<Sync::RWMutexUsage> mu
 	if (photoSpeciesId != 0 && photoSpecies.IsNull())
 		return false;
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 
 	DB::SQLBuilder sql(db);
@@ -3434,7 +3449,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::GroupSetPhotoGroup(NN<Sync::RWMutexUsage> mutU
 	if (photoGroupId != 0 && photoGroup.IsNull())
 		return false;
 	NN<DB::DBTool> db;
-	if (!db.Set(this->db))
+	if (!this->db.SetTo(db))
 		return false;
 
 	DB::SQLBuilder sql(db);
@@ -3500,11 +3515,14 @@ NN<Data::ReadingListNN<SSWR::OrganWeb::CategoryInfo>> SSWR::OrganWeb::OrganWebEn
 
 UOSInt SSWR::OrganWeb::OrganWebEnv::PeakGetUnfin(NN<Sync::RWMutexUsage> mutUsage, NN<Data::ArrayListNN<PeakInfo>> peaks)
 {
+	NN<DB::DBTool> db;
+	if (!this->db.SetTo(db))
+		return 0;
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	NN<DB::DBReader> r;
 	NN<PeakInfo> peak;
 	UOSInt ret = 0;
-	if (this->db->ExecuteReader(CSTR("select id, RefId, District, MapX, MapY, MarkedHeight, csys, status, name, type from peak where status = 0")).SetTo(r))
+	if (db->ExecuteReader(CSTR("select id, RefId, District, MapX, MapY, MarkedHeight, csys, status, name, type from peak where status = 0")).SetTo(r))
 	{
 		while (r->ReadNext())
 		{
@@ -3522,7 +3540,7 @@ UOSInt SSWR::OrganWeb::OrganWebEnv::PeakGetUnfin(NN<Sync::RWMutexUsage> mutUsage
 			peaks->Add(peak);
 			ret++;
 		}
-		this->db->CloseReader(r);
+		db->CloseReader(r);
 	}
 	return ret;
 }
@@ -3531,7 +3549,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::PeakUpdateStatus(NN<Sync::RWMutexUsage> mutUsa
 {
 	mutUsage->ReplaceMutex(this->dataMut, true);
 	NN<DB::DBTool> db;
-	if (db.Set(this->db))
+	if (this->db.SetTo(db))
 	{
 		DB::SQLBuilder sql(db);
 		sql.AppendCmdC(CSTR("update peak set status = "));
@@ -3539,7 +3557,7 @@ Bool SSWR::OrganWeb::OrganWebEnv::PeakUpdateStatus(NN<Sync::RWMutexUsage> mutUsa
 		sql.AppendCmdC(CSTR(" where id = "));
 		sql.AppendInt32(id);
 		sql.AppendCmdC(CSTR(" and status = 0"));
-		return this->db->ExecuteNonQuery(sql.ToCString()) > 0;
+		return db->ExecuteNonQuery(sql.ToCString()) > 0;
 	}
 	return false;
 }

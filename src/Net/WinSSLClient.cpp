@@ -41,7 +41,7 @@ struct Net::WinSSLClient::ClassData
 	Data::ArrayListNN<Crypto::Cert::Certificate> *remoteCerts;
 };
 
-Net::WinSSLClient::WinSSLClient(NN<Net::SocketFactory> sockf, Socket *s, void *ctxt) : SSLClient(sockf, s)
+Net::WinSSLClient::WinSSLClient(NN<Net::SocketFactory> sockf, NN<Socket> s, void *ctxt) : SSLClient(sockf, s)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->ctxt = *(CredHandle*)ctxt;
@@ -160,7 +160,8 @@ UOSInt Net::WinSSLClient::Read(const Data::ByteArray &buff)
 #endif
 		return ret;
 	}
-	if (s && (this->flags & 6) == 0)
+	NN<Socket> s;
+	if (this->s.SetTo(s) && (this->flags & 6) == 0)
 	{
 		Net::SocketFactory::ErrorType et;
 		SecBufferDesc buffDesc;
@@ -175,7 +176,7 @@ UOSInt Net::WinSSLClient::Read(const Data::ByteArray &buff)
 		status = DecryptMessage(&this->clsData->ctxt, &buffDesc, 0, 0);
 		while (status == SEC_E_INCOMPLETE_MESSAGE)
 		{
-			UOSInt recvSize = this->sockf->ReceiveData(this->s, &this->clsData->recvBuff[this->clsData->recvOfst], this->clsData->recvBuffSize - this->clsData->recvOfst, et);
+			UOSInt recvSize = this->sockf->ReceiveData(s, &this->clsData->recvBuff[this->clsData->recvOfst], this->clsData->recvBuffSize - this->clsData->recvOfst, et);
 			if (recvSize <= 0)
 			{
 				this->flags |= 2;
@@ -198,7 +199,7 @@ UOSInt Net::WinSSLClient::Read(const Data::ByteArray &buff)
 		if (status != SEC_E_OK && status != SEC_I_RENEGOTIATE)
 		{
 			this->flags |= 6;
-			this->sockf->DestroySocket(this->s);
+			this->sockf->DestroySocket(s);
 #if defined(DEBUG_PRINT)
 			debugDt.SetCurrTime();
 			debugDt.ToString(debugBuff, "HH:mm:ss.fff");
@@ -287,7 +288,8 @@ UOSInt Net::WinSSLClient::Write(const UInt8 *buff, UOSInt size)
 	{
 		return 0;
 	}
-	if (s && (this->flags & 5) == 0)
+	NN<Socket> s;
+	if (this->s.SetTo(s) && (this->flags & 5) == 0)
 	{
 #if defined(DEBUG_PRINT)
 		UTF8Char debugBuff[64];
@@ -326,7 +328,7 @@ UOSInt Net::WinSSLClient::Write(const UInt8 *buff, UOSInt size)
 			return 0;
 		}
 		Net::SocketFactory::ErrorType et;
-		UOSInt ret = this->sockf->SendData(this->s, encBuff, (UOSInt)outputBuff[0].cbBuffer + (UOSInt)outputBuff[1].cbBuffer + outputBuff[2].cbBuffer, et);// SSL_write(this->clsData->ssl, buff, (int)size);
+		UOSInt ret = this->sockf->SendData(s, encBuff, (UOSInt)outputBuff[0].cbBuffer + (UOSInt)outputBuff[1].cbBuffer + outputBuff[2].cbBuffer, et);// SSL_write(this->clsData->ssl, buff, (int)size);
 #if defined(DEBUG_PRINT)
 		debugDt.SetCurrTime();
 		debugDt.ToString(debugBuff, "HH:mm:ss.fff");
@@ -410,7 +412,8 @@ void *Net::WinSSLClient::BeginRead(const Data::ByteArray &buff, Sync::Event *evt
 		}
 	}
 
-	if (s == 0 || (this->flags & 6) != 0)
+	NN<Socket> s;
+	if (!this->s.SetTo(s) || (this->flags & 6) != 0)
 		return 0;
 	Net::SocketFactory::ErrorType et;
 	this->clsData->readEvt = evt;
@@ -439,7 +442,13 @@ void *Net::WinSSLClient::BeginRead(const Data::ByteArray &buff, Sync::Event *evt
 
 UOSInt Net::WinSSLClient::EndRead(void *reqData, Bool toWait, OutParam<Bool> incomplete)
 {
+	NN<Socket> s;
 	if (reqData == 0)
+	{
+		incomplete.Set(false);
+		return 0;
+	}
+	if (!this->s.SetTo(s))
 	{
 		incomplete.Set(false);
 		return 0;
@@ -549,7 +558,7 @@ UOSInt Net::WinSSLClient::EndRead(void *reqData, Bool toWait, OutParam<Bool> inc
 		}
 		while (status == SEC_E_INCOMPLETE_MESSAGE)
 		{
-			UOSInt recvSize = this->sockf->ReceiveData(this->s, &this->clsData->recvBuff[this->clsData->recvOfst], this->clsData->recvBuffSize - this->clsData->recvOfst, et);
+			UOSInt recvSize = this->sockf->ReceiveData(s, &this->clsData->recvBuff[this->clsData->recvOfst], this->clsData->recvBuffSize - this->clsData->recvOfst, et);
 #if defined(DEBUG_PRINT)
 			debugDt.SetCurrTime();
 			debugDt.ToString(debugBuff, "HH:mm:ss.fff");
@@ -574,7 +583,7 @@ UOSInt Net::WinSSLClient::EndRead(void *reqData, Bool toWait, OutParam<Bool> inc
 	if (status != SEC_E_OK && status != SEC_I_RENEGOTIATE)
 	{
 		this->flags |= 6;
-		this->sockf->DestroySocket(this->s);
+		this->sockf->DestroySocket(s);
 #if defined(DEBUG_PRINT)
 		debugDt.SetCurrTime();
 		debugDt.ToString(debugBuff, "HH:mm:ss.fff");
@@ -688,7 +697,7 @@ Int32 Net::WinSSLClient::Flush()
 
 void Net::WinSSLClient::Close()
 {
-	if (this->s)
+	if (this->s.NotNull())
 	{
 		//SSL_shutdown(this->clsData->ssl);
 	}

@@ -279,11 +279,11 @@ Optional<IO::ParsedObject> Parser::ParserList::ParseObjectType(NN<IO::ParsedObje
 	UOSInt i = 0;
 	UOSInt j = this->objPArr.GetCount();
 	NN<IO::ObjectParser> parser;
-	IO::ParsedObject *result;
+	NN<IO::ParsedObject> result;
 	while (i < j)
 	{
 		parser = this->objPArr.GetItemNoCheck(i);
-		if ((result = parser->ParseObject(pobj, 0, targetType)) != 0)
+		if (parser->ParseObject(pobj, 0, targetType).SetTo(result))
 		{
 			return result;
 		}

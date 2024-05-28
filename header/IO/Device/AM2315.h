@@ -22,7 +22,7 @@ namespace IO
 			Bool ReadTemperature(OutParam<Single> temp);
 			Bool ReadRH(OutParam<Single> rh);
 
-			static IO::I2CChannel *CreateDefChannel(Int32 i2CBusNum);
+			static Optional<IO::I2CChannel> CreateDefChannel(Int32 i2CBusNum);
 		};
 	}
 }

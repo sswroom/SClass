@@ -23,7 +23,7 @@ namespace DB
 		virtual UOSInt QuerySchemaNames(NN<Data::ArrayListStringNN> names);
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names) = 0; //Need Release
 		virtual Optional<DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition) = 0;
-		virtual TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName) = 0;
+		virtual Optional<TableDef> GetTableDef(Text::CString schemaName, Text::CString tableName) = 0;
 		virtual void CloseReader(NN<DBReader> r) = 0;
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str) = 0;
 		virtual void Reconnect() = 0;

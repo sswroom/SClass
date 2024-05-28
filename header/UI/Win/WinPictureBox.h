@@ -10,7 +10,7 @@ namespace UI
 		{
 		private:
 			static Int32 useCnt;
-			Media::DrawImage *prevImageD;
+			Optional<Media::DrawImage> prevImageD;
 
 			static OSInt __stdcall PBWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam);
 			void OnPaint();

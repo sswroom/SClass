@@ -76,15 +76,15 @@ namespace Manage
 		DasmARM();
 		virtual ~DasmARM();
 
-		virtual Text::CString GetHeader(Bool fullRegs) const;
+		virtual Text::CStringNN GetHeader(Bool fullRegs) const;
 		virtual Bool Disasm32(NN<IO::Writer> writer, Manage::AddressResolver *addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
-		virtual Dasm_Regs *CreateRegs() const;
-		virtual void FreeRegs(Dasm_Regs *regs) const;
+		virtual NN<Dasm_Regs> CreateRegs() const;
+		virtual void FreeRegs(NN<Dasm_Regs> regs) const;
 
-		DasmARM_Sess *CreateSess(DasmARM_Regs *regs, UInt8 *code, UInt16 codeSegm);
-		void DeleteSess(DasmARM_Sess *sess);
+		NN<DasmARM_Sess> CreateSess(NN<DasmARM_Regs> regs, UInt8 *code, UInt16 codeSegm);
+		void DeleteSess(NN<DasmARM_Sess> sess);
 
-		Bool DasmNext(DasmARM_Sess *sess, UTF8Char *buff, UOSInt *outBuffSize); //True = succ
+		Bool DasmNext(NN<DasmARM_Sess> sess, UTF8Char *buff, UOSInt *outBuffSize); //True = succ
 	};
 }
 

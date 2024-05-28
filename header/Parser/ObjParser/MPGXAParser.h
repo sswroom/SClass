@@ -15,7 +15,7 @@ namespace Parser
 			virtual Int32 GetName();
 			virtual void PrepareSelector(NN<IO::FileSelector> selector, IO::ParserType t);
 			virtual IO::ParserType GetParserType();
-			virtual IO::ParsedObject *ParseObject(NN<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType);
+			virtual Optional<IO::ParsedObject> ParseObject(NN<IO::ParsedObject> pobj, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType);
 		};
 	}
 }

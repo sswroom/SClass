@@ -4855,7 +4855,7 @@ Manage::DasmARM::~DasmARM()
 	MemFree(this->codesT);
 }
 
-Text::CString Manage::DasmARM::GetHeader(Bool fullRegs) const
+Text::CStringNN Manage::DasmARM::GetHeader(Bool fullRegs) const
 {
 	if (fullRegs)
 	{
@@ -4968,11 +4968,11 @@ Bool Manage::DasmARM::Disasm32(NN<IO::Writer> writer, Manage::AddressResolver *a
 				outStr.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 			}
 			outStr.AppendC(UTF8STRC("\r\n"));
-			writer->WriteStrC(outStr.ToString(), outStr.GetLength());
+			writer->Write(outStr.ToCString());
 			return false;
 		}
 		outStr.AppendSlow(sbuff);
-		writer->WriteStrC(outStr.ToString(), outStr.GetLength());
+		writer->Write(outStr.ToCString());
 		if (sess.endType == Manage::DasmARM::ET_JMP && (UInt32)sess.retAddr >= *blockStart && (UInt32)sess.retAddr <= sess.regs.PC)
 		{
 			UOSInt i;
@@ -5013,41 +5013,37 @@ Bool Manage::DasmARM::Disasm32(NN<IO::Writer> writer, Manage::AddressResolver *a
 	}
 }
 
-Manage::Dasm::Dasm_Regs *Manage::DasmARM::CreateRegs() const
+NN<Manage::Dasm::Dasm_Regs> Manage::DasmARM::CreateRegs() const
 {
-	Manage::DasmARM::DasmARM_Regs *regs = MemAlloc(Manage::DasmARM::DasmARM_Regs, 1);
-	return regs;
+	return MemAllocNN(Manage::DasmARM::DasmARM_Regs);
 }
 
-void Manage::DasmARM::FreeRegs(Dasm_Regs *regs) const
+void Manage::DasmARM::FreeRegs(NN<Dasm_Regs> regs) const
 {
-	MemFree(regs);
+	MemFreeNN(regs);
 }
 
-Manage::DasmARM::DasmARM_Sess *Manage::DasmARM::CreateSess(Manage::DasmARM::DasmARM_Regs *regs, UInt8 *code, UInt16 codeSegm)
+NN<Manage::DasmARM::DasmARM_Sess> Manage::DasmARM::CreateSess(NN<Manage::DasmARM::DasmARM_Regs> regs, UInt8 *code, UInt16 codeSegm)
 {
-	Manage::DasmARM::DasmARM_Sess *sess = MemAlloc(Manage::DasmARM::DasmARM_Sess, 1);
+	NN<Manage::DasmARM::DasmARM_Sess> sess = MemAllocNN(Manage::DasmARM::DasmARM_Sess);
 	sess->code = code;
 	sess->codeSegm = codeSegm;
 	sess->codeHdlrs = (void**)this->codes;
 	//sess->code0fHdlrs = (void**)this->codes0f;
 	NEW_CLASS(sess->callAddrs, Data::ArrayListUInt32());
 	NEW_CLASS(sess->jmpAddrs, Data::ArrayListUInt32());
-	MemCopyNO(&sess->regs, regs, sizeof(Manage::DasmARM::DasmARM_Regs));
+	MemCopyNO(&sess->regs, regs.Ptr(), sizeof(Manage::DasmARM::DasmARM_Regs));
 	return sess;
 }
 
-void Manage::DasmARM::DeleteSess(Manage::DasmARM::DasmARM_Sess *sess)
+void Manage::DasmARM::DeleteSess(NN<Manage::DasmARM::DasmARM_Sess> sess)
 {
-	if (sess)
-	{
-		DEL_CLASS(sess->callAddrs);
-		DEL_CLASS(sess->jmpAddrs);
-		MemFree(sess);
-	}
+	DEL_CLASS(sess->callAddrs);
+	DEL_CLASS(sess->jmpAddrs);
+	MemFreeNN(sess);
 }
 
-Bool Manage::DasmARM::DasmNext(Manage::DasmARM::DasmARM_Sess *sess, UTF8Char *buff, UOSInt *outBuffSize)
+Bool Manage::DasmARM::DasmNext(NN<Manage::DasmARM::DasmARM_Sess> sess, UTF8Char *buff, UOSInt *outBuffSize)
 {
 /*	*buff = 0;
 	if (outBuffSize)

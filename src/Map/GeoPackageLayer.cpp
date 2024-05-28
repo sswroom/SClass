@@ -64,10 +64,11 @@ Map::GeoPackageLayer::GeoPackageLayer(Map::GeoPackage *gpkg, NN<Map::GeoPackage:
 	this->tabDef = this->gpkg->GetTableDef(CSTR_NULL, layerContent->tableName->ToCString());
 	this->geomCol = INVALID_INDEX;
 	this->mixedData = MixedData::AllData;
-	if (this->tabDef)
+	NN<DB::TableDef> tabDef;
+	if (this->tabDef.SetTo(tabDef))
 	{
 		NN<DB::ColDef> col;
-		Data::ArrayIterator<NN<DB::ColDef>> it = this->tabDef->ColIterator();
+		Data::ArrayIterator<NN<DB::ColDef>> it = tabDef->ColIterator();
 		UOSInt i = 0;
 		while (it.HasNext())
 		{
@@ -98,7 +99,7 @@ Map::GeoPackageLayer::GeoPackageLayer(Map::GeoPackage *gpkg, NN<Map::GeoPackage:
 Map::GeoPackageLayer::~GeoPackageLayer()
 {
 	this->gpkg->Release();
-	SDEL_CLASS(this->tabDef);
+	this->tabDef.Delete();
 	Optional<Math::Geometry::Vector2D> vec;
 	UOSInt i = this->vecList.GetCount();
 	while (i-- > 0)
@@ -244,26 +245,29 @@ Bool Map::GeoPackageLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *
 
 UOSInt Map::GeoPackageLayer::GetColumnCnt() const
 {
-	if (this->tabDef == 0)	return 0;
-	return this->tabDef->GetColCnt();
+	NN<DB::TableDef> tabDef;
+	if (!this->tabDef.SetTo(tabDef))	return 0;
+	return tabDef->GetColCnt();
 }
 
 UTF8Char *Map::GeoPackageLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 {
-	if (this->tabDef == 0)
+	NN<DB::TableDef> tabDef;
+	if (!this->tabDef.SetTo(tabDef))
 		return 0;
 	NN<DB::ColDef> col;
-	if (!this->tabDef->GetCol(colIndex).SetTo(col))
+	if (!tabDef->GetCol(colIndex).SetTo(col))
 		return 0;
 	return col->GetColName()->ConcatTo(buff);
 }
 
 DB::DBUtil::ColType Map::GeoPackageLayer::GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize)
 {
-	if (this->tabDef == 0)
+	NN<DB::TableDef> tabDef;
+	if (!this->tabDef.SetTo(tabDef))
 		return DB::DBUtil::CT_Unknown;
 	NN<DB::ColDef> col;
-	if (!this->tabDef->GetCol(colIndex).SetTo(col))
+	if (!tabDef->GetCol(colIndex).SetTo(col))
 		return DB::DBUtil::CT_Unknown;
 	colSize.Set(col->GetColSize());
 	return col->GetColType();
@@ -271,10 +275,11 @@ DB::DBUtil::ColType Map::GeoPackageLayer::GetColumnType(UOSInt colIndex, OptOut<
 
 Bool Map::GeoPackageLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
-	if (this->tabDef == 0)
+	NN<DB::TableDef> tabDef;
+	if (!this->tabDef.SetTo(tabDef))
 		return false;
 	NN<DB::ColDef> col;
-	if (!this->tabDef->GetCol(colIndex).SetTo(col))
+	if (!tabDef->GetCol(colIndex).SetTo(col))
 		return false;
 	colDef->Set(col);
 	return true;
@@ -318,7 +323,7 @@ Optional<DB::DBReader> Map::GeoPackageLayer::QueryTableData(Text::CString schema
 	return this->gpkg->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
 }
 
-DB::TableDef *Map::GeoPackageLayer::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> Map::GeoPackageLayer::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	return this->gpkg->GetTableDef(schemaName, tableName);
 }

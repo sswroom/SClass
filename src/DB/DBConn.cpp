@@ -28,7 +28,7 @@ Bool DB::DBConn::IsAxisAware() const
 	return false;
 }
 
-DB::TableDef *DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	UTF8Char buff[256];
 	UTF8Char *ptr;

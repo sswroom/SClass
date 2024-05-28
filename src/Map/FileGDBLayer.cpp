@@ -363,12 +363,12 @@ Optional<DB::DBReader> Map::FileGDBLayer::QueryTableData(Text::CString schemaNam
 	return 0;
 }
 
-DB::TableDef *Map::FileGDBLayer::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> Map::FileGDBLayer::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseDB(mutUsage).Ptr();
 	this->lastDB = this->currDB;
-	DB::TableDef *tab = this->currDB->GetTableDef(schemaName, tableName);
+	Optional<DB::TableDef> tab = this->currDB->GetTableDef(schemaName, tableName);
 	this->currDB = 0;
 	return tab;
 }

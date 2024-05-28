@@ -10,20 +10,20 @@
 #include "Text/XML.h"
 #include "Text/SpreadSheet/Workbook.h"
 
-Data::Class *DB::DBExporter::CreateTableClass(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName)
+Optional<Data::Class> DB::DBExporter::CreateTableClass(NN<DB::ReadingDB> db, Text::CString schema, Text::CStringNN tableName)
 {
-	DB::TableDef *tab = db->GetTableDef(schema, tableName);
-	if (tab)
+	NN<DB::TableDef> tab;
+	if (db->GetTableDef(schema, tableName).SetTo(tab))
 	{
-		Data::Class *cls = tab->CreateTableClass().Ptr();
-		DEL_CLASS(tab);
+		NN<Data::Class> cls = tab->CreateTableClass();
+		tab.Delete();
 		return cls;
 	}
 
 	NN<DB::DBReader> r;
 	if (db->QueryTableData(schema, tableName, 0, 0, 1, CSTR_NULL, 0).SetTo(r))
 	{
-		Data::Class *cls = r->CreateClass().Ptr();
+		NN<Data::Class> cls = r->CreateClass();
 		db->CloseReader(r);
 		return cls;
 	}
@@ -156,7 +156,7 @@ Bool DB::DBExporter::GenerateSQLite(NN<DB::ReadingDB> db, Text::CString schema, 
 {
 	NN<Text::StringBuilderUTF8> sb;
 	NN<DB::TableDef> table;
-	if (!table.Set(db->GetTableDef(schema, tableName)))
+	if (!db->GetTableDef(schema, tableName).SetTo(table))
 	{
 		if (sbError)
 			sbError->Append(CSTR("Error in getting table definition"));
@@ -418,7 +418,7 @@ Bool DB::DBExporter::AppendWorksheet(NN<Text::SpreadSheet::Workbook> wb, NN<DB::
 	UTF8Char sbuff[4096];
 	UTF8Char *sptr;
 	NN<Text::StringBuilderUTF8> sb;
-	DB::TableDef *table = db->GetTableDef(schema, tableName);
+	Optional<DB::TableDef> table = db->GetTableDef(schema, tableName);
 	NN<DB::DBReader> r;
 	if (!db->QueryTableData(schema, tableName, 0, 0, 0, CSTR_NULL, cond).SetTo(r))
 	{
@@ -427,7 +427,7 @@ Bool DB::DBExporter::AppendWorksheet(NN<Text::SpreadSheet::Workbook> wb, NN<DB::
 			sb->Append(CSTR("Error in reading table data\r\n"));
 			db->GetLastErrorMsg(sb);
 		}
-		SDEL_CLASS(table);
+		table.Delete();
 		return false;
 	}
 	NN<Text::SpreadSheet::Worksheet> ws = wb->AddWorksheet(tableName);
@@ -512,7 +512,7 @@ Bool DB::DBExporter::AppendWorksheet(NN<Text::SpreadSheet::Workbook> wb, NN<DB::
 		row++;
 	}
 	db->CloseReader(r);
-	SDEL_CLASS(table);
+	table.Delete();
 	return true;
 }
 

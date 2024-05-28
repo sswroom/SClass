@@ -618,7 +618,8 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	NN<Text::String> s;
-	DB::TableDef *tabDef = 0;
+	Optional<DB::TableDef> tabDef = 0;
+	NN<DB::TableDef> nntabDef;
 	NN<DB::DBReader> r;
 	tabDef = currDB->GetTableDef(schemaName, nntableName->ToCString());
 
@@ -627,10 +628,10 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 		UpdateResult(r, this->lvTableResult);
 
 		UOSInt k;
-		if (tabDef)
+		if (tabDef.SetTo(nntabDef))
 		{
 			NN<DB::ColDef> col;
-			Data::ArrayIterator<NN<DB::ColDef>> it = tabDef->ColIterator();
+			Data::ArrayIterator<NN<DB::ColDef>> it = nntabDef->ColIterator();
 			while (it.HasNext())
 			{
 				col = it.Next();
@@ -658,8 +659,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 				if (col->GetAttr().SetTo(s))
 					this->lvTable->SetSubItem(k, 7, s);
 			}
-			
-			DEL_CLASS(tabDef);
+			nntabDef.Delete();
 		}
 		else
 		{
@@ -690,10 +690,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::CString schemaName,
 	}
 	else
 	{
-		if (tabDef)
-		{
-			DEL_CLASS(tabDef);
-		}
+		tabDef.Delete();
 	}
 }
 
@@ -909,7 +906,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::CopyTableCreate(DB::SQLType sqlType, Bool
 	NN<DB::TableDef> tabDef;
 	NN<Text::String> nntableName;
 	NN<DB::ReadingDB> currDB;
-	if (this->currDB.SetTo(currDB) && tableName.SetTo(nntableName) && tabDef.Set(currDB->GetTableDef(OPTSTR_CSTR(schemaName), nntableName->ToCString())))
+	if (this->currDB.SetTo(currDB) && tableName.SetTo(nntableName) && currDB->GetTableDef(OPTSTR_CSTR(schemaName), nntableName->ToCString()).SetTo(tabDef))
 	{
 		if (!DB::SQLGenerator::GenCreateTableCmd(sql, OPTSTR_CSTR(schemaName), nntableName->ToCString(), tabDef, true))
 		{

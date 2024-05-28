@@ -389,7 +389,7 @@ Optional<Text::String> DB::MySQLConn::GetConnPWD()
 	return this->pwd;
 }
 
-/*DB::DBTool *DB::MySQLConn::CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, IO::LogTool *log)
+/*Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, IO::LogTool *log)
 {
 	DB::MySQLConn *conn;
 	DB::DBTool *db;
@@ -406,7 +406,7 @@ Optional<Text::String> DB::MySQLConn::GetConnPWD()
 	}
 }*/
 
-DB::DBTool *DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, NN<Text::String> serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, NN<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, NN<Text::String> serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<DB::MySQLConn> conn;
 	DB::DBTool *db;
@@ -423,7 +423,7 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, NN<Text::S
 	}
 }
 
-DB::DBTool *DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix)
+Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, Text::CStringNN serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, NN<IO::LogTool> log, Text::CString logPrefix)
 {
 	NN<DB::MySQLConn> conn;
 	DB::DBTool *db;
@@ -440,7 +440,7 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(NN<Net::SocketFactory> sockf, Text::CStr
 	}
 }
 
-/*DB::DBTool *DB::MySQLConn::CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, IO::LogTool *log, Text::CString logPrefix)
+/*Optional<DB::DBTool> DB::MySQLConn::CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, IO::LogTool *log, Text::CString logPrefix)
 {
 	DB::MySQLConn *conn;
 	DB::DBTool *db;

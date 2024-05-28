@@ -490,14 +490,14 @@ Optional<IO::StreamData> IO::VirtualPackageFile::GetPItemStmDataNew(NN<const Pac
 	}
 	else if (item->itemType == IO::PackFileItem::PackItemType::Compressed)
 	{
-		Data::Compress::Decompressor *decomp = Data::Compress::Decompressor::CreateDecompressor(item->compInfo->compMethod);
+		NN<Data::Compress::Decompressor> decomp;
 		NN<Crypto::Hash::IHash> hash;
 		NN<IO::StreamData> fd;
-		if (decomp == 0)
+		if (!Data::Compress::Decompressor::CreateDecompressor(item->compInfo->compMethod).SetTo(decomp))
 			return 0;
 		if (!Crypto::Hash::HashCreator::CreateHash(item->compInfo->checkMethod).SetTo(hash))
 		{
-			DEL_CLASS(decomp);
+			decomp.Delete();
 			return 0;
 		}
 		fd = item->fullFd->GetPartialData(GetPItemDataOfst(item), item->dataLength);
@@ -536,7 +536,7 @@ Optional<IO::StreamData> IO::VirtualPackageFile::GetPItemStmDataNew(NN<const Pac
 		}
 		fd.Delete();
 		hash.Delete();
-		DEL_CLASS(decomp);
+		decomp.Delete();
 		if (diff)
 		{
 			IO::Path::DeleteFile(sbuff);
@@ -858,15 +858,15 @@ Bool IO::VirtualPackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool f
 			if (IO::Path::GetPathType(sb.ToCString()) != IO::Path::PathType::Unknown)
 				return false;
 
-			Data::Compress::Decompressor *decomp = Data::Compress::Decompressor::CreateDecompressor(item->compInfo->compMethod);
+			NN<Data::Compress::Decompressor> decomp;
 			NN<Crypto::Hash::IHash> hash;
 			NN<IO::StreamData> fd;
-			if (decomp == 0)
+			if (!Data::Compress::Decompressor::CreateDecompressor(item->compInfo->compMethod).SetTo(decomp))
 				return false;
 
 			if (!Crypto::Hash::HashCreator::CreateHash(item->compInfo->checkMethod).SetTo(hash))
 			{
-				DEL_CLASS(decomp);
+				decomp.Delete();
 				return false;
 			}
 			fd = item->fullFd->GetPartialData(GetPItemDataOfst(item), item->dataLength);
@@ -898,7 +898,7 @@ Bool IO::VirtualPackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool f
 
 			fd.Delete();
 			hash.Delete();
-			DEL_CLASS(decomp);
+			decomp.Delete();
 			if (diff)
 			{
 				IO::Path::DeleteFile(sb.ToString());

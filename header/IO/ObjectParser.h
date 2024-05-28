@@ -11,7 +11,7 @@ namespace IO
 	public:
 		virtual ~ObjectParser(){};
 
-		virtual IO::ParsedObject *ParseObject(NN<IO::ParsedObject> pobj, IO::PackageFile *pkgFile, IO::ParserType targetType) = 0;
+		virtual Optional<IO::ParsedObject> ParseObject(NN<IO::ParsedObject> pobj, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType) = 0;
 	};
 }
 #endif

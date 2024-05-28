@@ -50,7 +50,7 @@ namespace Data
 		void SetItemUUIDDirect(const UTF8Char *name, Data::UUID *uuid);
 
 		void ToString(NN<Text::StringBuilderUTF8> sb) const;
-		Class *CreateClass() const;
+		NN<Class> CreateClass() const;
 	};
 }
 #endif

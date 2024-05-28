@@ -20,7 +20,7 @@ namespace Map
 		UOSInt xCol;
 		UOSInt yCol;
 		UOSInt zCol;
-		DB::TableDef *tabDef;
+		Optional<DB::TableDef> tabDef;
 		Data::FastMap<Int64, Math::Geometry::Vector2D*> vecMap;
 		MixedData mixedData;
 
@@ -52,7 +52,7 @@ namespace Map
 		
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
 		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
-		virtual DB::TableDef *GetTableDef(Text::CString schemaName, Text::CString tableName);
+		virtual Optional<DB::TableDef> GetTableDef(Text::CString schemaName, Text::CString tableName);
 		virtual void CloseReader(NN<DB::DBReader> r);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();

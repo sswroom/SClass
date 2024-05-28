@@ -132,7 +132,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(AnyType userObj)
 			if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::Unknown)
 			{
 				NN<IO::FileCheck> fchk;
-				if (fchk.Set(IO::FileCheck::CreateCheck(nnstatus->fileName->ToCString(), chkType, me, false)))
+				if (IO::FileCheck::CreateCheck(nnstatus->fileName->ToCString(), chkType, me, false).SetTo(fchk))
 				{
 					if (chkType == Crypto::Hash::HashType::CRC32)
 					{

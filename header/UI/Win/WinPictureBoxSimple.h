@@ -13,7 +13,7 @@ namespace UI
 			static Int32 useCnt;
 			ClassData *clsData;
 			Optional<Media::StaticImage> currImage;
-			Media::DrawImage *prevImageD;
+			Optional<Media::DrawImage> prevImageD;
 
 			static OSInt __stdcall PBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
 			void OnPaint();
@@ -26,7 +26,7 @@ namespace UI
 
 			virtual OSInt OnNotify(UInt32 code, void *lParam);
 			virtual void SetImage(Optional<Media::StaticImage> currImage);
-			virtual void SetImageDImg(Media::DrawImage *img);
+			virtual void SetImageDImg(Optional<Media::DrawImage> img);
 		};
 	}
 }

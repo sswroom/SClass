@@ -394,12 +394,12 @@ Optional<DB::DBReader> Map::ESRI::ESRIMDBLayer::QueryTableData(Text::CString sch
 	return 0;
 }
 
-DB::TableDef *Map::ESRI::ESRIMDBLayer::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> Map::ESRI::ESRIMDBLayer::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseConn(mutUsage).Ptr();
 	this->lastDB = this->currDB;
-	DB::TableDef *tab = this->currDB->GetTableDef(schemaName, tableName);
+	Optional<DB::TableDef> tab = this->currDB->GetTableDef(schemaName, tableName);
 	this->currDB = 0;
 	return tab;
 }
