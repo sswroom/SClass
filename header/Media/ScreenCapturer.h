@@ -19,7 +19,7 @@ namespace Media
 		ScreenCapturer(NN<Media::MonitorMgr> monMgr, NN<Media::ColorManager> colorMgr);
 		~ScreenCapturer();
 
-		Media::StaticImage *CaptureScreen(MonitorHandle *hMon);
+		Optional<Media::StaticImage> CaptureScreen(MonitorHandle *hMon);
 	};
 }
 #endif

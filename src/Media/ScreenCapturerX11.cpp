@@ -52,7 +52,7 @@ Media::ScreenCapturer::~ScreenCapturer()
 {
 }
 
-Media::StaticImage *Media::ScreenCapturer::CaptureScreen(MonitorHandle *hMon)
+Optional<Media::StaticImage> Media::ScreenCapturer::CaptureScreen(MonitorHandle *hMon)
 {
     Display *dis = XOpenDisplay((char *)0);
 	printf("nScreen = %d\r\n", ScreenCount(dis));

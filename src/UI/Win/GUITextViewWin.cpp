@@ -419,7 +419,7 @@ void UI::GUITextView::UpdateScrollBar()
 	else
 	{
 		NN<Media::DrawFont> fnt;
-		if (!fnt.Set(this->CreateDrawFont(img)))
+		if (!this->CreateDrawFont(img).SetTo(fnt))
 		{
 			sz.y = 12;
 		}
@@ -475,7 +475,7 @@ UInt32 UI::GUITextView::GetCharCntAtWidth(WChar *str, UOSInt strLen, UOSInt pxWi
 	{
 		SIZE sz;
 		NN<Media::GDIFont> fnt;
-		if (fnt.Set((Media::GDIFont*)this->CreateDrawFont(img)))
+		if (Optional<Media::GDIFont>::ConvertFrom(this->CreateDrawFont(img)).SetTo(fnt))
 		{
 			HDC hdc = (HDC)img->hdcBmp;
 			SelectObject(hdc, (HFONT)fnt->hfont);
@@ -512,7 +512,7 @@ void UI::GUITextView::GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSI
 	{
 		Math::Size2DDbl sz;
 		NN<Media::DrawFont> fnt;
-		if (fnt.Set(this->CreateDrawFont(img)))
+		if (this->CreateDrawFont(img).SetTo(fnt))
 		{
 			sz = img->GetTextSize(fnt, str, (OSInt)strLen);
 			*width = (UOSInt)Double2OSInt(sz.x);

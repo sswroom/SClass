@@ -1794,13 +1794,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_SCREENCAPTURE:
 		{
-			Media::StaticImage *img;
+			Optional<Media::StaticImage> img;
 			NN<Media::StaticImage> nnimg;
 			{
 				Media::ScreenCapturer capturer(this->core->GetMonitorMgr(), this->core->GetColorMgr());
 				img = capturer.CaptureScreen(this->GetHMonitor());
 			}
-			if (nnimg.Set(img))
+			if (img.SetTo(nnimg))
 			{
 				NN<Media::ImageList> imgList;
 				NEW_CLASSNN(imgList, Media::ImageList(CSTR("ScreenCapture")));

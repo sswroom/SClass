@@ -289,6 +289,8 @@ void UI::GUIDDrawControl::OnPaint()
 
 Bool UI::GUIDDrawControl::CreateSurface()
 {
+	NN<Media::MonitorSurface> primarySurface;
+	NN<Media::MonitorSurface> buffSurface;
 	this->ReleaseSurface();
 	this->ReleaseSubSurface();
 
@@ -300,13 +302,15 @@ Bool UI::GUIDDrawControl::CreateSurface()
 	if (this->currScnMode == SM_FS)
 	{
 		this->surfaceMon = this->GetHMonitor();
-		Bool succ = this->surfaceMgr->CreatePrimarySurfaceWithBuffer(this->surfaceMon, &this->primarySurface, &this->buffSurface, Media::RotateType::None);
+		Bool succ = this->surfaceMgr->CreatePrimarySurfaceWithBuffer(this->surfaceMon, primarySurface, buffSurface, Media::RotateType::None);
 		if (succ)
 		{
-			this->bitDepth = this->primarySurface->info.storeBPP;
-			this->scnW = this->primarySurface->info.dispSize.x;
-			this->scnH = this->primarySurface->info.dispSize.y;
-			this->primarySurface->info.rotateType = this->rotType;
+			this->primarySurface = primarySurface;
+			this->buffSurface = buffSurface;
+			this->bitDepth = primarySurface->info.storeBPP;
+			this->scnW = primarySurface->info.dispSize.x;
+			this->scnH = primarySurface->info.dispSize.y;
+			primarySurface->info.rotateType = this->rotType;
 		}
 		return succ;
 	}
@@ -329,27 +333,27 @@ Bool UI::GUIDDrawControl::CreateSurface()
 			hWnd = this->GetHandle();
 		}
 		this->primarySurface = this->surfaceMgr->CreatePrimarySurface(this->surfaceMon, hWnd, Media::RotateType::None);
-		if (this->primarySurface)
+		if (this->primarySurface.SetTo(primarySurface))
 		{
-			this->primarySurface->info.rotateType = this->rotType;
+			primarySurface->info.rotateType = this->rotType;
 			if (this->debugWriter)
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Primary surface desc: Size = "));
-				sb.AppendUOSInt(this->primarySurface->info.dispSize.x);
+				sb.AppendUOSInt(primarySurface->info.dispSize.x);
 				sb.AppendC(UTF8STRC(" x "));
-				sb.AppendUOSInt(this->primarySurface->info.dispSize.y);
+				sb.AppendUOSInt(primarySurface->info.dispSize.y);
 				sb.AppendC(UTF8STRC(", bpl = "));
-				sb.AppendUOSInt(this->primarySurface->GetDataBpl());
+				sb.AppendUOSInt(primarySurface->GetDataBpl());
 				sb.AppendC(UTF8STRC(", hMon = "));
 				sb.AppendOSInt((OSInt)this->surfaceMon);
 				sb.AppendC(UTF8STRC(", hWnd = "));
 				sb.AppendOSInt((OSInt)hWnd);
 				this->debugWriter->WriteLine(sb.ToCString());
 			}
-			this->bitDepth = this->primarySurface->info.storeBPP;
-			this->scnW = this->primarySurface->info.dispSize.x;
-			this->scnH = this->primarySurface->info.dispSize.y;
+			this->bitDepth = primarySurface->info.storeBPP;
+			this->scnW = primarySurface->info.dispSize.x;
+			this->scnH = primarySurface->info.dispSize.y;
 
 			CreateSubSurface();
 			return true;
@@ -363,11 +367,12 @@ Bool UI::GUIDDrawControl::CreateSurface()
 
 void UI::GUIDDrawControl::ReleaseSurface()
 {
-	SDEL_CLASS(this->primarySurface);
+	this->primarySurface.Delete();
 }
 
 void UI::GUIDDrawControl::CreateSubSurface()
 {
+	NN<Media::MonitorSurface> primarySurface;
 	RECT rc;
 	GetDrawingRect(&rc);
 	if (this->debugWriter)
@@ -378,7 +383,7 @@ void UI::GUIDDrawControl::CreateSubSurface()
 	if (rc.right <= rc.left || rc.bottom <= rc.top)
 	{
 	}
-	else
+	else if (this->primarySurface.SetTo(primarySurface))
 	{
 		UInt32 w = (UInt32)(rc.right - rc.left);
 		UInt32 h = (UInt32)(rc.bottom - rc.top);
@@ -400,26 +405,27 @@ void UI::GUIDDrawControl::CreateSubSurface()
 		{
 			this->bkBuffSize = this->dispSize.SwapXY();
 		}
-		this->buffSurface = this->surfaceMgr->CreateSurface(this->bkBuffSize, this->primarySurface->info.storeBPP);
+		this->buffSurface = this->surfaceMgr->CreateSurface(this->bkBuffSize, primarySurface->info.storeBPP);
 	}
 }
 
 void UI::GUIDDrawControl::ReleaseSubSurface()
 {
-	SDEL_CLASS(this->buffSurface);
+	this->buffSurface.Delete();
 }
 
-UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, UOSInt *bpl)
+UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHeight, OutParam<OSInt> bpl)
 {
+	NN<Media::MonitorSurface> buffSurface;
 	this->surfaceMut.Lock();
-	if (this->buffSurface == 0)
+	if (!this->buffSurface.SetTo(buffSurface))
 	{
 		this->surfaceMut.Unlock();
 		return 0;
 	}
 	if (targetWidth == this->bkBuffSize.x && targetHeight == this->bkBuffSize.y)
 	{
-		UInt8 *dptr = this->buffSurface->LockSurface((OSInt*)bpl);
+		UInt8 *dptr = buffSurface->LockSurface(bpl);
 		if (dptr)
 		{
 			return dptr;
@@ -431,7 +437,8 @@ UInt8 *UI::GUIDDrawControl::LockSurfaceBegin(UOSInt targetWidth, UOSInt targetHe
 
 void UI::GUIDDrawControl::LockSurfaceEnd()
 {
-	this->buffSurface->UnlockSurface();
+	NN<Media::MonitorSurface> buffSurface;
+	if (this->buffSurface.SetTo(buffSurface)) buffSurface->UnlockSurface();
 	this->surfaceMut.Unlock();
 }
 
@@ -572,6 +579,7 @@ void UI::GUIDDrawControl::SetUserFSMode(ScreenMode fullScnMode)
 
 void UI::GUIDDrawControl::DrawToScreen()
 {
+	NN<Media::MonitorSurface> primarySurface;
 	NN<Media::MonitorSurface> buffSurface;
 	Sync::MutexUsage mutUsage(this->surfaceMut);
 	if (this->debugWriter)
@@ -583,16 +591,16 @@ void UI::GUIDDrawControl::DrawToScreen()
 	}
 	if (this->currScnMode == SM_FS)
 	{
-		if (this->primarySurface)
+		if (this->primarySurface.SetTo(primarySurface))
 		{
-			this->primarySurface->DrawFromBuff();
+			primarySurface->DrawFromBuff();
 		}
 	}
 	else if (this->currScnMode == SM_VFS)
 	{
-		if (this->primarySurface && buffSurface.Set(this->buffSurface))
+		if (this->primarySurface.SetTo(primarySurface) && this->buffSurface.SetTo(buffSurface))
 		{
-			if (!this->primarySurface->DrawFromSurface(buffSurface, true))
+			if (!primarySurface->DrawFromSurface(buffSurface, true))
 			{
 				if (this->debugWriter)
 				{
@@ -612,18 +620,18 @@ void UI::GUIDDrawControl::DrawToScreen()
 	}
 	else if (this->currScnMode == SM_WINDOWED_DIR)
 	{
-		if (GetVisible() && buffSurface.Set(this->buffSurface))
+		if (GetVisible() && this->primarySurface.SetTo(primarySurface) && this->buffSurface.SetTo(buffSurface))
 		{
-			this->primarySurface->DrawFromSurface(buffSurface, true);
+			primarySurface->DrawFromSurface(buffSurface, true);
 		}
 	}
 	else
 	{
 		if (GetVisible())
 		{
-			if (this->primarySurface && buffSurface.Set(this->buffSurface))
+			if (this->primarySurface.SetTo(primarySurface) && this->buffSurface.SetTo(buffSurface))
 			{
-				this->primarySurface->DrawFromSurface(buffSurface, true);
+				primarySurface->DrawFromSurface(buffSurface, true);
 			}
 			else
 			{
@@ -641,9 +649,10 @@ void UI::GUIDDrawControl::DrawToScreen()
 
 void UI::GUIDDrawControl::DisplayFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn)
 {
-	if (primarySurface)
+	NN<Media::MonitorSurface> primarySurface;
+	if (this->primarySurface.SetTo(primarySurface))
 	{
-		this->primarySurface->DrawFromSurface(surface, tl, drawSize, clearScn, true);
+		primarySurface->DrawFromSurface(surface, tl, drawSize, clearScn, true);
 	}
 }
 
@@ -701,7 +710,7 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 		this->dispSize.y = ddsd.dwHeight;
 
 		CreateSurface();
-		if (this->primarySurface == 0)
+		if (this->primarySurface.IsNull())
 		{
 			this->surfaceMgr->SetFSMode(this->GetHMonitor(), this->rootForm->GetHandle(), false);
 			mutUsage.EndUse();
@@ -837,12 +846,13 @@ Bool UI::GUIDDrawControl::IsSurfaceReady()
 
 void UI::GUIDDrawControl::SetRotateType(Media::RotateType rotType)
 {
+	NN<Media::MonitorSurface> primarySurface;
 	if (this->rotType != rotType)
 	{
 		this->rotType = rotType;
-		if (this->primarySurface)
+		if (this->primarySurface.SetTo(primarySurface))
 		{
-			this->primarySurface->info.rotateType = rotType;
+			primarySurface->info.rotateType = rotType;
 		}
 		OnResized(this);
 	}

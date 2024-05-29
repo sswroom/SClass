@@ -566,7 +566,7 @@ void IO::FileStream::SetFileTimes(const Data::Timestamp &creationTime, const Dat
 	SetFileTime(this->handle, cTime, laTime, lwTime);
 }
 
-IO::FileStream *IO::FileStream::CreateNamedPipe(const UTF8Char *pipeName, UInt32 buffSize)
+Optional<IO::FileStream> IO::FileStream::CreateNamedPipe(const UTF8Char *pipeName, UInt32 buffSize)
 {
 #ifdef _WIN32_WCE
 	return 0;
@@ -588,7 +588,7 @@ IO::FileStream *IO::FileStream::CreateNamedPipe(const UTF8Char *pipeName, UInt32
 #endif
 }
 
-IO::FileStream *IO::FileStream::OpenNamedPipe(const UTF8Char *server, const UTF8Char *pipeName)
+Optional<IO::FileStream> IO::FileStream::OpenNamedPipe(const UTF8Char *server, const UTF8Char *pipeName)
 {
 #ifdef _WIN32_WCE
 	return 0;

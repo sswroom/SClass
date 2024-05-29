@@ -1498,7 +1498,7 @@ UTF8Char *Net::WinSSLEngine::GetErrorDetail(UTF8Char *sbuff)
 	return sbuff;
 }
 
-Bool Net::WinSSLEngine::GenerateCert(Text::CString country, Text::CString company, Text::CStringNN commonName, OutParam<Crypto::Cert::X509Cert*> certASN1, OutParam<Crypto::Cert::X509File*> keyASN1)
+Bool Net::WinSSLEngine::GenerateCert(Text::CString country, Text::CString company, Text::CStringNN commonName, OutParam<NN<Crypto::Cert::X509Cert>> certASN1, OutParam<NN<Crypto::Cert::X509File>> keyASN1)
 {
 	HCRYPTKEY hKey;
 	HCRYPTPROV hProv;
@@ -1595,12 +1595,14 @@ Bool Net::WinSSLEngine::GenerateCert(Text::CString country, Text::CString compan
 	sb2.ClearStr();
 	sb2.Append(commonName);
 	sb2.AppendC(UTF8STRC(".crt"));
-	certASN1.Set(NEW_CLASS_D(Crypto::Cert::X509Cert(sb2.ToCString(), Data::ByteArray(pCertContext->pbCertEncoded, pCertContext->cbCertEncoded))));
+	NN<Crypto::Cert::X509Cert> nnCert;
+	NEW_CLASSNN(nnCert, Crypto::Cert::X509Cert(sb2.ToCString(), Data::ByteArray(pCertContext->pbCertEncoded, pCertContext->cbCertEncoded)));
+	certASN1.Set(nnCert);
 	sb2.ClearStr();
 	sb2.Append(commonName);
 	sb2.AppendC(UTF8STRC(".key"));
 	NN<Text::String> s = Text::String::New(sb2.ToString(), sb2.GetLength());
-	keyASN1.Set(Crypto::Cert::X509PrivKey::CreateFromKeyBuff(Crypto::Cert::X509File::KeyType::RSA, certBuff, certBuffSize, s.Ptr()).Ptr());
+	keyASN1.Set(Crypto::Cert::X509PrivKey::CreateFromKeyBuff(Crypto::Cert::X509File::KeyType::RSA, certBuff, certBuffSize, s.Ptr()));
 	s->Release();
 	CertFreeCertificateContext(pCertContext);
 	//CryptReleaseContext(hCryptProvOrNCryptKey, 0);
@@ -1648,7 +1650,7 @@ Optional<Crypto::Cert::X509Key> Net::WinSSLEngine::GenerateRSAKey()
 	return key;
 }
 
-Bool Net::WinSSLEngine::Signature(NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, OutParam<UOSInt> signLen)
+Bool Net::WinSSLEngine::Signature(NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, Data::ByteArrayR payload, UnsafeArray<UInt8> signData, OutParam<UOSInt> signLen)
 {
 	Crypto::Cert::X509File::KeyType keyType = key->GetKeyType();
 	if (keyType == Crypto::Cert::X509File::KeyType::RSA)
@@ -1680,7 +1682,7 @@ Bool Net::WinSSLEngine::Signature(NN<Crypto::Cert::X509Key> key, Crypto::Hash::H
 			CryptDestroyKey(hKey);
 			return false;
 		}
-		if (!CryptHashData(hHash, payload, (DWORD)payloadLen, 0))
+		if (!CryptHashData(hHash, payload.Arr().Ptr(), (DWORD)payload.GetSize(), 0))
 		{
 			CryptReleaseContext(hProv, 0);
 			CryptDestroyHash(hHash);
@@ -1691,7 +1693,7 @@ Bool Net::WinSSLEngine::Signature(NN<Crypto::Cert::X509Key> key, Crypto::Hash::H
 			return false;
 		}
 		DWORD len = 512;
-		if (!CryptSignHashW(hHash, AT_SIGNATURE, 0, 0, signData, &len))
+		if (!CryptSignHashW(hHash, AT_SIGNATURE, 0, 0, signData.Ptr(), &len))
 		{
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 			UInt32 errCode = GetLastError();
@@ -1766,7 +1768,7 @@ Bool Net::WinSSLEngine::Signature(NN<Crypto::Cert::X509Key> key, Crypto::Hash::H
 	return false;
 }
 
-Bool Net::WinSSLEngine::SignatureVerify(NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, const UInt8 *signData, UOSInt signLen)
+Bool Net::WinSSLEngine::SignatureVerify(NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, Data::ByteArrayR payload, Data::ByteArrayR signData)
 {
 	ALG_ID alg = WinSSLEngine_CryptGetHashAlg(hashType);
 	if (alg == 0)
@@ -1795,7 +1797,7 @@ Bool Net::WinSSLEngine::SignatureVerify(NN<Crypto::Cert::X509Key> key, Crypto::H
 		CryptDestroyKey(hKey);
 		return false;
 	}
-	if (!CryptHashData(hHash, payload, (DWORD)payloadLen, 0))
+	if (!CryptHashData(hHash, payload.Arr().Ptr(), (DWORD)payload.GetSize(), 0))
 	{
 		CryptReleaseContext(hProv, 0);
 		CryptDestroyHash(hHash);
@@ -1806,7 +1808,7 @@ Bool Net::WinSSLEngine::SignatureVerify(NN<Crypto::Cert::X509Key> key, Crypto::H
 		return false;
 	}
 	UInt8 mySignData[512];
-	if (signLen > 512)
+	if (signData.GetSize() > 512)
 	{
 		CryptReleaseContext(hProv, 0);
 		CryptDestroyHash(hHash);
@@ -1817,14 +1819,14 @@ Bool Net::WinSSLEngine::SignatureVerify(NN<Crypto::Cert::X509Key> key, Crypto::H
 		return false;
 	}
 	UOSInt i = 0;
-	UOSInt j = signLen - 1;
-	while (i < signLen)
+	UOSInt j = signData.GetSize() - 1;
+	while (i < signData.GetSize())
 	{
 		mySignData[i] = signData[j];
 		i++;
 		j--;
 	}
-	if (!CryptVerifySignatureW(hHash, mySignData, (DWORD)signLen, hKey, 0, 0))
+	if (!CryptVerifySignatureW(hHash, mySignData, (DWORD)signData.GetSize(), hKey, 0, 0))
 	{
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 		UInt32 errCode = GetLastError();
@@ -1844,7 +1846,7 @@ Bool Net::WinSSLEngine::SignatureVerify(NN<Crypto::Cert::X509Key> key, Crypto::H
 	return true;
 }
 
-UOSInt Net::WinSSLEngine::Encrypt(NN<Crypto::Cert::X509Key> key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
+UOSInt Net::WinSSLEngine::Encrypt(NN<Crypto::Cert::X509Key> key, UInt8 *encData, Data::ByteArrayR payload, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	HCRYPTPROV hProv = WinSSLEngine_CreateProv(key->GetKeyType(), 0, 0);
 	if (hProv == 0)
@@ -1857,14 +1859,14 @@ UOSInt Net::WinSSLEngine::Encrypt(NN<Crypto::Cert::X509Key> key, UInt8 *encData,
 		CryptReleaseContext(hProv, 0);
 		return false;
 	}
-	DWORD dataSize = (DWORD)payloadLen;
+	DWORD dataSize = (DWORD)payload.GetSize();
 	DWORD flags = 0;
 	if (rsaPadding == Crypto::Encrypt::RSACipher::Padding::PKCS1_OAEP)
 	{
 		flags = CRYPT_OAEP;
 	}
 	UInt8 myBuff[512];
-	MemCopyNO(myBuff, payload, payloadLen);
+	MemCopyNO(myBuff, payload.Arr().Ptr(), payload.GetSize());
 	if (!CryptEncrypt(hKey, 0, TRUE, flags, myBuff, &dataSize, 512))
 	{
 		CryptReleaseContext(hProv, 0);
@@ -1888,9 +1890,9 @@ UOSInt Net::WinSSLEngine::Encrypt(NN<Crypto::Cert::X509Key> key, UInt8 *encData,
 	return dataSize;
 }
 
-UOSInt Net::WinSSLEngine::Decrypt(NN<Crypto::Cert::X509Key> key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
+UOSInt Net::WinSSLEngine::Decrypt(NN<Crypto::Cert::X509Key> key, UInt8 *decData, Data::ByteArrayR payload, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
-	if (payloadLen > 512)
+	if (payload.GetSize() > 512)
 	{
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 		printf("SSL: Data too large to decrypt\r\n");
@@ -1924,7 +1926,7 @@ UOSInt Net::WinSSLEngine::Decrypt(NN<Crypto::Cert::X509Key> key, UInt8 *decData,
 		CryptDestroyKey(hKey);
 		return false;
 	}
-	DWORD dataSize = (DWORD)payloadLen;
+	DWORD dataSize = (DWORD)payload.GetSize();
 	DWORD flags;
 	if (rsaPadding == Crypto::Encrypt::RSACipher::Padding::PKCS1)
 	{
@@ -1936,8 +1938,8 @@ UOSInt Net::WinSSLEngine::Decrypt(NN<Crypto::Cert::X509Key> key, UInt8 *decData,
 	}
 	UInt8 myBuff[512];
 	UOSInt i = 0;
-	UOSInt j = payloadLen - 1;
-	while (i < payloadLen)
+	UOSInt j = payload.GetSize() - 1;
+	while (i < payload.GetSize())
 	{
 		myBuff[i] = payload[j];
 		i++;

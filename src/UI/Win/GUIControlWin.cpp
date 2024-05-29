@@ -763,7 +763,7 @@ Double UI::GUIControl::GetDDPI()
 	return this->ddpi;
 }
 
-Media::DrawFont *UI::GUIControl::CreateDrawFont(NN<Media::DrawImage> img)
+Optional<Media::DrawFont> UI::GUIControl::CreateDrawFont(NN<Media::DrawImage> img)
 {
 	void *f = this->GetFont();
 	if (f == 0)

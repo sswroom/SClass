@@ -308,7 +308,7 @@ Optional<Media::MonitorSurface> Media::DDrawManager::CreatePrimarySurface(Monito
 	return surface;
 }
 
-Bool Media::DDrawManager::CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, MonitorSurface **primarySurface, MonitorSurface **bufferSurface, RotateType rotateType)
+Bool Media::DDrawManager::CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, OutParam<NN<MonitorSurface>> primarySurface, OutParam<NN<MonitorSurface>> bufferSurface, RotateType rotateType)
 {
 	if (this->IsError())
 	{
@@ -327,7 +327,6 @@ Bool Media::DDrawManager::CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, Mo
 	ddsd.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
 	ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP | DDSCAPS_COMPLEX;
 	ddsd.dwBackBufferCount = 2;
-	*primarySurface = 0;
 	HRESULT res = lpDD->CreateSurface(&ddsd, &surface1, NULL);
 	if (res != DD_OK)
 	{
@@ -340,12 +339,12 @@ Bool Media::DDrawManager::CreatePrimarySurfaceWithBuffer(MonitorHandle *hMon, Mo
 
 	surface1->GetAttachedSurface(&ddscaps, &surface2);
 
-	Media::DDrawSurface *ddSurface1;
-	Media::DDrawSurface *ddSurface2;
-	NEW_CLASS(ddSurface1, Media::DDrawSurface(this, lpDD, surface1, hMon, true, rotateType));
-	NEW_CLASS(ddSurface2, Media::DDrawSurface(this, lpDD, surface2, hMon, false, rotateType));
+	NN<Media::DDrawSurface> ddSurface1;
+	NN<Media::DDrawSurface> ddSurface2;
+	NEW_CLASSNN(ddSurface1, Media::DDrawSurface(this, lpDD, surface1, hMon, true, rotateType));
+	NEW_CLASSNN(ddSurface2, Media::DDrawSurface(this, lpDD, surface2, hMon, false, rotateType));
 	ddSurface1->SetBuffSurface(ddSurface2);
-	*primarySurface = ddSurface1;
-	*bufferSurface = ddSurface2;
+	primarySurface.Set(ddSurface1);
+	bufferSurface.Set(ddSurface2);
 	return true;
 }

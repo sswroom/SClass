@@ -14,7 +14,7 @@ struct Media::DDrawSurface::ClassData
 	MonitorHandle *hMon;
 	LPDIRECTDRAWCLIPPER clipper;
 	Bool needRelease;
-	Media::DDrawSurface *buffSurface;
+	Optional<Media::DDrawSurface> buffSurface;
 };
 
 Media::DDrawSurface::DDrawSurface(DDrawManager *mgr, void *lpDD, void *surface, MonitorHandle *hMon, Bool needRelease, Media::RotateType rotateType)
@@ -129,7 +129,8 @@ void *Media::DDrawSurface::GetHandle()
 
 Bool Media::DDrawSurface::DrawFromBuff()
 {
-	if (this->clsData->buffSurface == 0)
+	NN<Media::DDrawSurface> buffSurface;
+	if (!this->clsData->buffSurface.SetTo(buffSurface))
 	{
 		return false;
 	}
@@ -137,7 +138,7 @@ Bool Media::DDrawSurface::DrawFromBuff()
 	if (hRes == DDERR_SURFACELOST)
 	{
 		this->clsData->surface->Restore();
-		((LPDIRECTDRAWSURFACE7)this->clsData->buffSurface->GetHandle())->Restore();
+		((LPDIRECTDRAWSURFACE7)buffSurface->GetHandle())->Restore();
 	}
 	return hRes == DD_OK;
 }
@@ -427,7 +428,7 @@ Bool Media::DDrawSurface::DrawFromSurface(NN<Media::MonitorSurface> surface, Mat
 	return false;
 }
 
-UInt8 *Media::DDrawSurface::LockSurface(OSInt *lineAdd)
+UInt8 *Media::DDrawSurface::LockSurface(OutParam<OSInt> lineAdd)
 {
 	RECT rcSrc;
 	HRESULT hRes;
@@ -447,7 +448,7 @@ UInt8 *Media::DDrawSurface::LockSurface(OSInt *lineAdd)
 	}
 	if (hRes == DD_OK)
 	{
-		*lineAdd = ddsd.lPitch;
+		lineAdd.Set(ddsd.lPitch);
 		return (UInt8*)ddsd.lpSurface;
 	}
 	return 0;
@@ -483,7 +484,7 @@ void Media::DDrawSurface::SetClipWindow(ControlHandle *clipWindow)
 	}
 }
 
-void Media::DDrawSurface::SetBuffSurface(Media::DDrawSurface *buffSurface)
+void Media::DDrawSurface::SetBuffSurface(NN<Media::DDrawSurface> buffSurface)
 {
 	this->clsData->buffSurface = buffSurface;
 }

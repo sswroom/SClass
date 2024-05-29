@@ -68,14 +68,16 @@ SSWR::AVIRead::AVIRGPUInfoForm::AVIRGPUInfoForm(Optional<UI::GUIClientControl> p
 
 	UOSInt i;
 	UOSInt j;
-	IO::IGPUControl *gpu;
+	NN<IO::IGPUControl> gpu;
 	i = 0;
 	j = this->gpuMgr->GetGPUCount();
 	while (i < j)
 	{
-		gpu = this->gpuMgr->GetGPUControl(i);
-		const UTF8Char *name = gpu->GetName();
-		this->lbGPU->AddItem({name, Text::StrCharCnt(name)}, gpu);
+		if (this->gpuMgr->GetGPUControl(i).SetTo(gpu))
+		{
+			const UTF8Char *name = gpu->GetName();
+			this->lbGPU->AddItem({name, Text::StrCharCnt(name)}, gpu);
+		}
 		i++;
 	}
 }

@@ -1,20 +1,21 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayList.h"
+#include "Data/ArrayListNN.h"
 #include "IO/AMDGPUManager.h"
 #include "IO/GPUManager.h"
 
 struct IO::GPUManager::ClassData
 {
 	IO::AMDGPUManager *amdGPUMgr;
-	Data::ArrayList<IO::IGPUControl *> *gpuList;
+	Data::ArrayListNN<IO::IGPUControl> *gpuList;
 };
 
 IO::GPUManager::GPUManager()
 {
 	ClassData *clsData = MemAlloc(ClassData, 1);
 	NEW_CLASS(clsData->amdGPUMgr, IO::AMDGPUManager());
-	NEW_CLASS(clsData->gpuList, Data::ArrayList<IO::IGPUControl*>());
+	NEW_CLASS(clsData->gpuList, Data::ArrayListNN<IO::IGPUControl>());
+	NN<IO::IGPUControl> ctrl;
 	this->clsData = clsData;
 	UOSInt i;
 	UOSInt j;
@@ -22,20 +23,21 @@ IO::GPUManager::GPUManager()
 	j = clsData->amdGPUMgr->GetGPUCount();
 	while (i < j)
 	{
-		clsData->gpuList->Add(clsData->amdGPUMgr->CreateGPUControl(i));
+		if (clsData->amdGPUMgr->CreateGPUControl(i).SetTo(ctrl))
+			clsData->gpuList->Add(ctrl);
 		i++;
 	}
 }
 
 IO::GPUManager::~GPUManager()
 {
-	IO::IGPUControl *gpu;
+	NN<IO::IGPUControl> gpu;
 	UOSInt i;
 	i = this->clsData->gpuList->GetCount();
 	while (i-- > 0)
 	{
-		gpu = this->clsData->gpuList->GetItem(i);
-		DEL_CLASS(gpu);
+		gpu = this->clsData->gpuList->GetItemNoCheck(i);
+		gpu.Delete();
 	}
 	DEL_CLASS(this->clsData->gpuList);
 	DEL_CLASS(this->clsData->amdGPUMgr);
@@ -47,7 +49,7 @@ UOSInt IO::GPUManager::GetGPUCount()
 	return this->clsData->gpuList->GetCount();
 }
 
-IO::IGPUControl *IO::GPUManager::GetGPUControl(UOSInt index)
+Optional<IO::IGPUControl> IO::GPUManager::GetGPUControl(UOSInt index)
 {
 	return this->clsData->gpuList->GetItem(index);
 }

@@ -28,12 +28,12 @@ namespace Media
 
 		virtual Bool DrawFromBuff();
 		virtual Bool DrawFromSurface(NN<Media::MonitorSurface> surface, Math::Coord2D<OSInt> tl, Math::Size2D<UOSInt> drawSize, Bool clearScn, Bool waitForVBlank);
-		virtual UInt8 *LockSurface(OSInt *lineAdd);
+		virtual UInt8 *LockSurface(OutParam<OSInt> lineAdd);
 		virtual void UnlockSurface();
 		virtual void SetSurfaceBugMode(Bool surfaceBugMode);
 
 		void SetClipWindow(ControlHandle *clipWindow);
-		void SetBuffSurface(Media::DDrawSurface *buffSurface);
+		void SetBuffSurface(NN<Media::DDrawSurface> buffSurface);
 	};
 }
 #endif
