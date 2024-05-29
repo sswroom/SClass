@@ -67,7 +67,7 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(Text::CStringNN fileName, NN<T
 			Data::ByteBuffer buff((UOSInt)fileLen);
 			if (fs.Read(buff) == fileLen)
 			{
-				succ = Text::JSText::JSONWellFormat(buff.Ptr(), (UOSInt)fileLen, 0, output);
+				succ = Text::JSText::JSONWellFormat(buff.Arr(), (UOSInt)fileLen, 0, output);
 			}
 		}
 	}

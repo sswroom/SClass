@@ -48,15 +48,16 @@ Optional<Text::String> Text::String::NewOrNull(Text::CString str)
 	return s;
 }
 
-NN<Text::String> Text::String::NewP(const UTF8Char *str, const UTF8Char *strEnd)
+NN<Text::String> Text::String::NewP(UnsafeArray<const UTF8Char> str, UnsafeArrayOpt<const UTF8Char> strEnd)
 {
-	if (strEnd == 0 || strEnd == str) return NewEmpty();
-	UOSInt len = (UOSInt)(strEnd - str);
+	UnsafeArray<const UTF8Char> strE;
+	if (!strEnd.SetTo(strE) || strE == str) return NewEmpty();
+	UOSInt len = (UOSInt)(strE - str);
 	NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MAlloc(len + sizeof(String)));
 	s->v = s->vbuff;
 	s->leng = len;
 	s->useCnt = 1;
-	MemCopyNO(s->v, str, len);
+	MemCopyNO(s->v, str.Ptr(), len);
 	s->v[len] = 0;
 	return s;
 }

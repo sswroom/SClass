@@ -89,7 +89,7 @@ Bool Parser::FileParser::PDFParser::NextLine(NN<PDFParseEnv> env, NN<Text::Strin
 		{
 			env->currOfst = env->dataSize;
 			env->lineBegin = env->dataOfst;
-			sb->AppendC(env->buff.Ptr(), env->dataSize);
+			sb->AppendC(env->buff.Arr(), env->dataSize);
 			sb->RTrim();
 			return true;
 		}

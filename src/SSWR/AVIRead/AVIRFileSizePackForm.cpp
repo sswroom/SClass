@@ -177,7 +177,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 		IO::Path::FindFileClose(sess);
 
 		UOSInt arrSize;
-		Data::IComparable **arr = (Data::IComparable**)this->fileList.GetPtr(arrSize).Ptr();
+		Data::IComparable **arr = (Data::IComparable**)this->fileList.GetArr(arrSize).Ptr();
 		ArtificialQuickSort_SortCmpO(arr, 0, (OSInt)arrSize - 1);
 		i = 0;
 		while (i < arrSize)

@@ -46,7 +46,7 @@ void __stdcall Net::TCPServerController::DataHdlr(NN<Net::TCPClient> cli, AnyTyp
 		{
 			copySize = me->maxBuffSize - data->buffSize;
 		}
-		MemCopyNO(&data->buff[data->buffSize], buff.Ptr().Ptr(), copySize);
+		MemCopyNO(&data->buff[data->buffSize], buff.Arr().Ptr(), copySize);
 		buff += copySize;
 		data->buffSize += copySize;
 

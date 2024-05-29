@@ -151,7 +151,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(AnyType userObj)
 	{
 		NN<Crypto::Cert::X509Cert> sslCert;
 		NN<Crypto::Cert::X509File> sslKey;
-		if (!sslCert.Set(me->sslCert) || !sslKey.Set(me->sslKey))
+		if (!me->sslCert.SetTo(sslCert) || !me->sslKey.SetTo(sslKey))
 		{
 			me->ui->ShowMsgOK(CSTR("Please select SSL Cert/Key First"), CSTR("HTTP Server"), me);
 			return;
@@ -430,16 +430,18 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnSSLCertClicked(AnyType userObj)
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
-		SDEL_CLASS(me->sslCert);
-		SDEL_CLASS(me->sslKey);
+		NN<Crypto::Cert::X509Cert> nnCert;
+		NN<Crypto::Cert::X509File> nnKey;
+		me->sslCert.Delete();
+		me->sslKey.Delete();
 		me->ClearCACerts();
 		me->sslCert = frm.GetCert();
 		me->sslKey = frm.GetKey();
 		frm.GetCACerts(me->caCerts);
 		Text::StringBuilderUTF8 sb;
-		me->sslCert->ToShortString(sb);
+		if (me->sslCert.SetTo(nnCert)) nnCert->ToShortString(sb);
 		sb.AppendC(UTF8STRC(", "));
-		me->sslKey->ToShortString(sb);
+		if (me->sslKey.SetTo(nnKey)) nnKey->ToShortString(sb);
 		me->lblSSLCert->SetText(sb.ToCString());
 	}
 }
@@ -633,8 +635,8 @@ SSWR::AVIRead::AVIRHTTPSvrForm::~AVIRHTTPSvrForm()
 	SDEL_CLASS(this->logger);
 	SDEL_CLASS(this->reqLog);
 	this->ssl.Delete();
-	SDEL_CLASS(this->sslCert);
-	SDEL_CLASS(this->sslKey);
+	this->sslCert.Delete();
+	this->sslKey.Delete();
 	this->ClearCACerts();
 }
 

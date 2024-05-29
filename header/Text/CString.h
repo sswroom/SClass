@@ -1,5 +1,6 @@
 #ifndef _SM_TEXT_CSTRING
 #define _SM_TEXT_CSTRING
+#include "UnsafeArrayOpt.h"
 #include "Text/StringBase.h"
 //#define DEBUGNULL
 #if defined(DEBUGNULL)
@@ -14,7 +15,7 @@ namespace
 #if defined(DEBUGNULL)
 #define CSTRP(str, strEnd) Text::CString::FromPtrD(str, strEnd, __FILE__, __LINE__)
 #else
-#define CSTRP(str, strEnd) Text::CStringNN(str, (UOSInt)(strEnd - str))
+#define CSTRP(str, strEnd) Text::CStringNN(UnsafeArray<const UTF8Char>::FromPtr(str), (UOSInt)(strEnd - str))
 #endif
 #define CSTRPZ(str, strEnd) ((strEnd == 0)?CSTR(""):Text::CStringNN(str, (UOSInt)(strEnd - str)))
 

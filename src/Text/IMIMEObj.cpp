@@ -36,7 +36,7 @@ Optional<Text::IMIMEObj> Text::IMIMEObj::ParseFromData(NN<IO::StreamData> data, 
 		buffSize = (UOSInt)data->GetDataSize();
 		Data::ByteBuffer buff(buffSize);
 		data->GetRealData(0, buffSize, buff);
-		NEW_CLASSNN(obj, Text::MIMEObj::TextMIMEObj(buff.Ptr(), buffSize, 0));
+		NEW_CLASSNN(obj, Text::MIMEObj::TextMIMEObj(buff.Arr(), buffSize, 0));
 		return obj;
 	}
 	else if (contentType.StartsWith(UTF8STRC("message/rfc822")))
@@ -65,7 +65,7 @@ Optional<Text::IMIMEObj> Text::IMIMEObj::ParseFromData(NN<IO::StreamData> data, 
 		buffSize = (UOSInt)data->GetDataSize();
 		Data::ByteBuffer buff(buffSize);
 		data->GetRealData(0, buffSize, buff);
-		NEW_CLASSNN(obj, Text::MIMEObj::TextMIMEObj(buff.Ptr(), buffSize, codePage));
+		NEW_CLASSNN(obj, Text::MIMEObj::TextMIMEObj(buff.Arr(), buffSize, codePage));
 		return obj;
 	}
 	else if (contentType.StartsWith(UTF8STRC("multipart/mixed;")) ||
@@ -79,7 +79,7 @@ Optional<Text::IMIMEObj> Text::IMIMEObj::ParseFromData(NN<IO::StreamData> data, 
 	buffSize = (UOSInt)data->GetDataSize();
 	Data::ByteBuffer buff(buffSize);
 	data->GetRealData(0, buffSize, buff);
-	NEW_CLASSNN(obj, Text::MIMEObj::UnknownMIMEObj(buff.Ptr(), buffSize, contentType));
+	NEW_CLASSNN(obj, Text::MIMEObj::UnknownMIMEObj(buff.Arr(), buffSize, contentType));
 	return obj;
 }
 

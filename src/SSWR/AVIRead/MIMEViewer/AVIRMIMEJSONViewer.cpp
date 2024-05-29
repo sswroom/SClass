@@ -12,7 +12,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEJSONViewer::AVIRMIMEJSONViewer(NN<SSWR::AVIRe
 	this->txtJSON->SetReadOnly(true);
 
 	UOSInt size;
-	const UInt8 *buff = obj->GetRAWData(size);
+	UnsafeArray<const UInt8> buff = obj->GetRAWData(size);
 	Text::StringBuilderUTF8 sb;
 	Text::JSText::JSONWellFormat(buff, size, 0, sb);
 	this->txtJSON->SetText(sb.ToCString());

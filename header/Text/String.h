@@ -41,7 +41,7 @@ namespace Text
 			return s;
 		}
 		
-		static NN<String> NewP(const UTF8Char *str, const UTF8Char *strEnd);
+		static NN<String> NewP(UnsafeArray<const UTF8Char> str, UnsafeArrayOpt<const UTF8Char> strEnd);
 
 		static NN<String> New(UOSInt len)
 		{

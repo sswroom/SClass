@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(AnyType user
 	{
 		NN<Crypto::Cert::X509Cert> sslCert;
 		NN<Crypto::Cert::X509File> sslKey;
-		if (!sslCert.Set(me->sslCert) || !sslKey.Set(me->sslKey))
+		if (!me->sslCert.SetTo(sslCert) || !me->sslKey.SetTo(sslKey))
 		{
 			me->ui->ShowMsgOK(CSTR("Please select SSL Cert/Key First"), CSTR("HTTP Load Balance"), me);
 			return;
@@ -258,16 +258,18 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnSSLCertClicked(AnyType 
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
-		SDEL_CLASS(me->sslCert);
-		SDEL_CLASS(me->sslKey);
+		me->sslCert.Delete();
+		me->sslKey.Delete();
 		me->ClearCACerts();
 		me->sslCert = frm.GetCert();
 		me->sslKey = frm.GetKey();
 		frm.GetCACerts(me->caCerts);
 		Text::StringBuilderUTF8 sb;
-		me->sslCert->ToShortString(sb);
+		NN<Crypto::Cert::X509Cert> nnCert;
+		NN<Crypto::Cert::X509File> nnKey;
+		if (me->sslCert.SetTo(nnCert)) nnCert->ToShortString(sb);
 		sb.AppendC(UTF8STRC(", "));
-		me->sslKey->ToShortString(sb);
+		if (me->sslKey.SetTo(nnKey)) nnKey->ToShortString(sb);
 		me->lblSSLCert->SetText(sb.ToCString());
 	}
 }
@@ -434,8 +436,8 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::~AVIRHTTPLoadBalanceForm()
 	SDEL_CLASS(this->logger);
 	SDEL_CLASS(this->reqLog);
 	this->ssl.Delete();
-	SDEL_CLASS(this->sslCert);
-	SDEL_CLASS(this->sslKey);
+	this->sslCert.Delete();
+	this->sslKey.Delete();
 	this->ClearCACerts();
 }
 

@@ -148,11 +148,12 @@ UOSInt Text::TextBinEnc::URIEncoding::EncodeBin(NN<Text::StringBuilderUTF8> sb, 
 
 }
 
-UOSInt Text::TextBinEnc::URIEncoding::CalcBinSize(const UTF8Char *str, UOSInt strLen) const
+UOSInt Text::TextBinEnc::URIEncoding::CalcBinSize(Text::CStringNN s) const
 {
 	UTF8Char c;
 	UOSInt retSize = 0;
-
+	UOSInt strLen = s.leng;
+	const UTF8Char *str = s.v;
 	while (strLen-- > 0)
 	{
 		c = *str++;
@@ -175,11 +176,13 @@ UOSInt Text::TextBinEnc::URIEncoding::CalcBinSize(const UTF8Char *str, UOSInt st
 
 }
 
-UOSInt Text::TextBinEnc::URIEncoding::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff) const
+UOSInt Text::TextBinEnc::URIEncoding::DecodeBin(Text::CStringNN s, UInt8 *dataBuff) const
 {
 	UInt8 v;
 	UTF8Char c;
 	UOSInt retSize = 0;
+	const UTF8Char *str = s.v;
+	UOSInt strLen = s.leng;
 
 	while (strLen-- > 0)
 	{

@@ -42,7 +42,7 @@ UOSInt IO::ProtoHdlr::ProtoMDataLSHandler::ParseProtocol(NN<IO::Stream> stm, Any
 				if (packetSize > buff.GetSize())
 					return buff.GetSize();
 
-				this->crc->Calc(buff.Ptr().Ptr(), packetSize - 2, crcVal);
+				this->crc->Calc(buff.Arr().Ptr(), packetSize - 2, crcVal);
 				if (ReadMUInt16(&crcVal[2]) == ReadUInt16(&buff[packetSize - 2]))
 				{
 					this->listener->DataParsed(stm, stmObj, ReadUInt16(&buff[4]), 0, &buff[6], packetSize - 8);

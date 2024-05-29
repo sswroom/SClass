@@ -19,9 +19,9 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEX509Viewer::AVIRMIMEX509Viewer(NN<SSWR::AVIRe
 	this->txtASN1->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	UOSInt dataSize;
-	const UInt8 *data = this->obj->GetRAWData(dataSize);
-	Net::ASN1Data *asn1 = Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR(data, dataSize), obj->GetSourceNameObj());
-	if (asn1)
+	UnsafeArray<const UInt8> data = this->obj->GetRAWData(dataSize);
+	NN<Crypto::Cert::X509File> asn1;
+	if (Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR(data, dataSize), obj->GetSourceNameObj()).SetTo(asn1))
 	{
 		Text::StringBuilderUTF8 sb;
 		asn1->ToString(sb);
@@ -29,7 +29,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEX509Viewer::AVIRMIMEX509Viewer(NN<SSWR::AVIRe
 		sb.ClearStr();
 		asn1->ToASN1String(sb);
 		this->txtASN1->SetText(sb.ToCString());
-		DEL_CLASS(asn1);
+		asn1.Delete();
 	}
 }
 

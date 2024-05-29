@@ -6,37 +6,44 @@ namespace Data
 {
 	class ByteBufferA : public ByteArray
 	{
+	private:
+		Bool deleted;
 	public:
-		ByteBufferA() : ByteArray(0, 0)
+		ByteBufferA() : ByteArray(MemAllocA(UInt8, 0), 0)
 		{
+			this->deleted = false;
 		}
 
 		ByteBufferA(UOSInt buffSize) : ByteArray(MemAllocA(UInt8, buffSize), buffSize)
 		{
+			this->deleted = false;
 		}
 
 		~ByteBufferA()
 		{
-			if (this->buff.Ptr())
+			if (!this->deleted)
 				MemFreeAArr(this->buff);
 		}
 
 		void ReplaceBy(ByteBufferA &buff)
 		{
-			if (this->buff.Ptr())
-				MemFreeAArr(this->buff);
-			this->buff = buff.buff;
-			this->buffSize = buff.buffSize;
+			if (!buff.deleted)
+			{
+				if (!this->deleted)
+					MemFreeAArr(this->buff);
+				this->buff = buff.buff;
+				this->buffSize = buff.buffSize;
 #if defined(CHECK_RANGE)
-			this->prevSize = buff.prevSize;
+				this->prevSize = buff.prevSize;
 #endif
-			buff.buff = 0;
-			buff.buffSize = 0;
+				buff.buffSize = 0;
+				buff.deleted = true;
+			}
 		}
 
 		void ChangeSize(UOSInt buffSize)
 		{
-			if (this->buff.Ptr())
+			if (!this->deleted)
 				MemFreeAArr(this->buff);
 			this->buff = MemAllocA(UInt8, buffSize);
 			this->buffSize = buffSize;
@@ -47,13 +54,15 @@ namespace Data
 
 		void Delete()
 		{
-			if (this->buff.Ptr())
+			if (!this->deleted)
+			{
 				MemFreeAArr(this->buff);
-			this->buff = 0;
-			this->buffSize = 0;
+				this->buffSize = 0;
+				this->deleted = true;
 #if defined(CHECK_RANGE)
-			this->prevSize = 0;
+				this->prevSize = 0;
 #endif
+			}
 		}
 
 		ByteBufferA &operator=(ByteBufferA &) = delete;

@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLogSelChg(AnyType userObj)
 		me->currFile->Read(buff);
 		sb.AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
 		sb.AppendC(UTF8STRC("\r\n\r\n"));
-		currDec->GetProtocolDetail(buff.Ptr().Ptr(), item->size, sb);
+		currDec->GetProtocolDetail(buff.Arr().Ptr(), item->size, sb);
 		me->txtLogs->SetText(sb.ToCString());
 	}
 	else
@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(AnyType userObj)
 			if (readSize == 0)
 				break;
 			buffSize += readSize;
-			readSize = protoDec->ParseProtocol(OnProtocolEntry, me, fileOfst, buff.Ptr().Ptr(), buffSize);
+			readSize = protoDec->ParseProtocol(OnProtocolEntry, me, fileOfst, buff.Arr().Ptr(), buffSize);
 			fileOfst += readSize;
 			if (readSize >= buffSize)
 			{

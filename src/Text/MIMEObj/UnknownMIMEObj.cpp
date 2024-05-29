@@ -7,9 +7,9 @@
 Text::MIMEObj::UnknownMIMEObj::UnknownMIMEObj(UnsafeArray<UInt8> dataBuff, UOSInt buffSize, Text::CStringNN contentType) : Text::IMIMEObj(contentType)
 {
 	this->buffSize = buffSize;
-	this->dataBuff = MemAlloc(UInt8, buffSize);
+	this->dataBuff = MemAllocArr(UInt8, buffSize);
 	this->contType = Text::String::New(contentType);
-	MemCopyNO(this->dataBuff, dataBuff.Ptr(), buffSize);
+	this->dataBuff.CopyFromNO(dataBuff, buffSize);
 	const UTF8Char *tmpPtr = Text::StrCopyNewC(contentType.v, this->contType->leng).Ptr();
 	UOSInt i;
 	UOSInt j;
@@ -41,7 +41,7 @@ Text::MIMEObj::UnknownMIMEObj::UnknownMIMEObj(UnsafeArray<UInt8> dataBuff, UOSIn
 
 Text::MIMEObj::UnknownMIMEObj::~UnknownMIMEObj()
 {
-	MemFree(this->dataBuff);
+	MemFreeArr(this->dataBuff);
 	this->contType->Release();
 }
 
@@ -67,7 +67,7 @@ NN<Text::IMIMEObj> Text::MIMEObj::UnknownMIMEObj::Clone() const
 	return newObj;
 }
 
-const UInt8 *Text::MIMEObj::UnknownMIMEObj::GetRAWData(OutParam<UOSInt> dataSize) const
+UnsafeArray<const UInt8> Text::MIMEObj::UnknownMIMEObj::GetRAWData(OutParam<UOSInt> dataSize) const
 {
 	dataSize.Set(this->buffSize);
 	return this->dataBuff;

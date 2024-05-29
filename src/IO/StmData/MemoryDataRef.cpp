@@ -63,7 +63,7 @@ UInt64 IO::StmData::MemoryDataRef::GetDataSize()
 
 const UInt8 *IO::StmData::MemoryDataRef::GetPointer()
 {
-	return this->data.Ptr().Ptr();
+	return this->data.Arr().Ptr();
 }
 
 NN<IO::StreamData> IO::StmData::MemoryDataRef::GetPartialData(UInt64 offset, UInt64 length)
@@ -72,7 +72,7 @@ NN<IO::StreamData> IO::StmData::MemoryDataRef::GetPartialData(UInt64 offset, UIn
 	NN<IO::StmData::MemoryDataRef> data;
 	if (offset >= this->data.GetSize())
 	{
-		NEW_CLASSNN(data, IO::StmData::MemoryDataRef(this->data.Ptr(), 0));
+		NEW_CLASSNN(data, IO::StmData::MemoryDataRef(this->data.Arr(), 0));
 		if (s.Set(this->name))
 			data->SetName(s);
 		return data;

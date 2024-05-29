@@ -26,24 +26,24 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	}
 	Parser::FileParser::X509Parser parser;
 	NN<Text::String> s = Text::String::NewP(sbuff, sptr);
-	Crypto::Cert::X509File *x509 = parser.ParseBuff(Data::ByteArray(buff, buffSize), s);
-	s->Release();
-	if (x509 == 0)
+	NN<Crypto::Cert::X509File> x509;
+	if (!parser.ParseBuff(Data::ByteArray(buff, buffSize), s).SetTo(x509))
 	{
+		s->Release();
 		console.WriteLine(CSTR("Error in parsing ACMEKey.pem"));
 		return 0;
 	}
+	s->Release();
 	if (x509->GetFileType() != Crypto::Cert::X509File::FileType::Key)
 	{
 		console.WriteLine(CSTR("ACMEKey.pem is not a key file"));
-		DEL_CLASS(x509);
+		x509.Delete();
 		return 0;
 	}
 	Optional<Net::SSLEngine> ssl;
 	Net::OSSocketFactory sockf(false);
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
-	NN<Crypto::Cert::X509Key> key;
-	key.Set((Crypto::Cert::X509Key*)x509);
+	NN<Crypto::Cert::X509Key> key = NN<Crypto::Cert::X509Key>::ConvertFrom(x509);
 	Crypto::Cert::CertNames names;
 	Crypto::Cert::CertExtensions ext;
 	MemClear(&names, sizeof(names));

@@ -152,10 +152,10 @@ UInt32 __stdcall Manage::MonConn::ConnRThread(AnyType conn)
 				buffSize = me->cli->Read(dataBuff);
 				if (buffSize)
 				{
-					UInt8 *packet = dataBuff.Ptr().Ptr();
-					while ((packet = Manage::MonConn::FindPacket(packet, buffSize - (UOSInt)(packet - dataBuff.Ptr()))) != 0)
+					UInt8 *packet = dataBuff.Arr().Ptr();
+					while ((packet = Manage::MonConn::FindPacket(packet, buffSize - (UOSInt)(packet - dataBuff.Arr()))) != 0)
 					{
-						if (Manage::MonConn::IsCompletePacket(packet, buffSize - (UOSInt)(packet - dataBuff.Ptr())))
+						if (Manage::MonConn::IsCompletePacket(packet, buffSize - (UOSInt)(packet - dataBuff.Arr())))
 						{
 							UInt16 cmdSize;
 							UInt16 cmdType;

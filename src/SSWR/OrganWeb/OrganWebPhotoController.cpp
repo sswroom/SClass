@@ -88,7 +88,7 @@ Bool __stdcall SSWR::OrganWeb::OrganWebPhotoController::SvcPhotoDown(NN<Net::Web
 				resp->AddContentType(Net::MIME::GetMIMEFromFileName(userFile->oriFileName->v, userFile->oriFileName->leng));
 			}
 			mutUsage.EndUse();
-			resp->Write(buff.Ptr(), buffSize);
+			resp->Write(buff.Arr(), buffSize);
 			return true;
 		}
 		else
@@ -169,7 +169,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhoto(NN<Net::WebServer::I
 						resp->AddDefHeaders(req);
 						resp->AddContentLength(buffSize);
 						resp->AddContentType(CSTR("image/jpeg"));
-						resp->Write(buff.Ptr(), buffSize);
+						resp->Write(buff.Arr(), buffSize);
 						mutUsage.EndUse();
 						return;
 					}
@@ -498,7 +498,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoId(NN<Net::WebServer:
 				resp->AddContentLength(buffSize);
 				resp->AddContentType(CSTR("image/jpeg"));
 				resp->AddLastModified(dt2);
-				resp->Write(buff.Ptr(), buffSize);
+				resp->Write(buff.Arr(), buffSize);
 				mutUsage.EndUse();
 				return;
 			}
@@ -797,7 +797,7 @@ void SSWR::OrganWeb::OrganWebPhotoController::ResponsePhotoWId(NN<Net::WebServer
 					resp->AddDefHeaders(req);
 					resp->AddContentLength(buffSize);
 					resp->AddContentType(CSTR("image/jpeg"));
-					resp->Write(buff.Ptr(), buffSize);
+					resp->Write(buff.Arr(), buffSize);
 					mutUsage.EndUse();
 					return;
 				}

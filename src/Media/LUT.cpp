@@ -98,12 +98,12 @@ UOSInt Media::LUT::GetOutputCh() const
 
 UInt8 *Media::LUT::GetTablePtr()
 {
-	return this->luTable.Ptr().Ptr();
+	return this->luTable.Arr().Ptr();
 }
 
 const UInt8 *Media::LUT::GetTablePtrRead() const
 {
-	return this->luTable.Ptr().Ptr();
+	return this->luTable.Arr().Ptr();
 }
 
 Data::ByteArray Media::LUT::GetTableArray() const
@@ -332,8 +332,8 @@ Bool Media::LUT::Equals(Media::LUT *lut) const
 	j = j * this->outputCh;
 	if (this->fmt == Media::LUT::DF_UINT8)
 	{
-		UInt8 *stab = (UInt8*)this->luTable.Ptr().Ptr();
-		UInt8 *dtab = (UInt8*)lut->luTable.Ptr().Ptr();
+		UInt8 *stab = (UInt8*)this->luTable.Arr().Ptr();
+		UInt8 *dtab = (UInt8*)lut->luTable.Arr().Ptr();
 		while (i < j)
 		{
 			if (stab[i] != dtab[i])
@@ -343,8 +343,8 @@ Bool Media::LUT::Equals(Media::LUT *lut) const
 	}
 	else if (this->fmt == Media::LUT::DF_UINT16)
 	{
-		UInt16 *stab = (UInt16*)this->luTable.Ptr().Ptr();
-		UInt16 *dtab = (UInt16*)lut->luTable.Ptr().Ptr();
+		UInt16 *stab = (UInt16*)this->luTable.Arr().Ptr();
+		UInt16 *dtab = (UInt16*)lut->luTable.Arr().Ptr();
 		while (i < j)
 		{
 			if (stab[i] != dtab[i])
@@ -354,8 +354,8 @@ Bool Media::LUT::Equals(Media::LUT *lut) const
 	}
 	else if (this->fmt == Media::LUT::DF_SINGLE)
 	{
-		Single *stab = (Single*)this->luTable.Ptr().Ptr();
-		Single *dtab = (Single*)lut->luTable.Ptr().Ptr();
+		Single *stab = (Single*)this->luTable.Arr().Ptr();
+		Single *dtab = (Single*)lut->luTable.Arr().Ptr();
 		while (i < j)
 		{
 			if (stab[i] != dtab[i])

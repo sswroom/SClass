@@ -2000,7 +2000,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			frame->AddText(frameOfst, CSTR("SNMP:"));
 			Net::SNMPInfo snmp;
 			Text::StringBuilderUTF8 sb;
-			UOSInt i = snmp.PDUGetDetail(CSTR("Message"), packet, packetSize, 0, sb);
+			UOSInt i = snmp.PDUGetDetail(CSTR("Message"), Data::ByteArrayR(packet, packetSize), 0, sb);
 			frame->AddField(frameOfst, (UInt32)i, sb.ToCString(), CSTR_NULL);
 			if (packetSize > i)
 			{
@@ -2186,9 +2186,9 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 											sb.AppendC(UTF8STRC("\r\n"));
 											sb.Append(dataStr);
 											sb.AppendC(UTF8STRC(":"));
-											dataLen = b64.CalcBinSize(dataStr->v, dataStr->leng);
+											dataLen = b64.CalcBinSize(dataStr->ToCString());
 											dataBuff = MemAlloc(UInt8, dataLen);
-											if (b64.DecodeBin(dataStr->v, dataStr->leng, dataBuff) == dataLen)
+											if (b64.DecodeBin(dataStr->ToCString(), dataBuff) == dataLen)
 											{
 												PacketLoRaMACGetDetail(dataBuff, dataLen, sb);
 											}

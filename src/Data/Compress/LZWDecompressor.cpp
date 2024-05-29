@@ -37,7 +37,7 @@ Bool Data::Compress::LZWDecompressor::Decompress(NN<IO::Stream> destStm, NN<IO::
 	NEW_CLASS(srcStm, IO::StreamDataStream(srcData));
 	while ((thisSize = srcStm->Read(tmpBuff)) != 0)
 	{
-		destStm->Write(tmpBuff.Ptr(), thisSize);
+		destStm->Write(tmpBuff.Arr(), thisSize);
 	}
 	DEL_CLASS(srcStm);
 	return true;

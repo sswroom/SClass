@@ -427,7 +427,7 @@ Bool IO::ZIPBuilder::AddDeflate(Text::CStringNN fileName, Data::ByteArrayR buff,
 	this->files.Add(file);
 	UOSInt writeSize;
 	writeSize = this->stm.WriteCont(hdrBuff, hdrLen);
-	writeSize += this->stm.WriteCont(buff.Ptr(), buff.GetSize());
+	writeSize += this->stm.WriteCont(buff.Arr(), buff.GetSize());
 	this->currOfst += writeSize;
 #if defined(VERBOSE)
 	if (writeSize != (hdrLen + buff.GetSize()))

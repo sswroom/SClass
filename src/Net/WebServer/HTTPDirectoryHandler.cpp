@@ -292,7 +292,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NN<Net::WebSe
 			{
 				Data::ByteBuffer buff((UOSInt)dataSize);
 				pitem->fullFd->GetRealData(packageFile->GetPItemDataOfst(pitem), (UOSInt)dataSize, buff);
-				resp->Write(buff.Ptr(), (UOSInt)dataSize);
+				resp->Write(buff.Arr(), (UOSInt)dataSize);
 			}
 			else
 			{
@@ -309,7 +309,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NN<Net::WebSe
 						readSize = (UOSInt)dataSize;
 					}
 					pitem->fullFd->GetRealData(ofst, readSize, buff);
-					resp->Write(buff.Ptr(), readSize);
+					resp->Write(buff.Arr(), readSize);
 					ofst += readSize;
 					dataSize -= readSize;
 				}
@@ -336,7 +336,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NN<Net::WebSe
 			{
 				Data::ByteBuffer buff((UOSInt)dataSize);
 				pitem->fullFd->GetRealData(packageFile->GetPItemDataOfst(pitem), (UOSInt)dataSize, buff);
-				resp->Write(buff.Ptr(), (UOSInt)dataSize);
+				resp->Write(buff.Arr(), (UOSInt)dataSize);
 			}
 			else
 			{
@@ -353,7 +353,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NN<Net::WebSe
 						readSize = (UOSInt)dataSize;
 					}
 					pitem->fullFd->GetRealData(ofst, readSize, buff);
-					resp->Write(buff.Ptr(), readSize);
+					resp->Write(buff.Arr(), readSize);
 					ofst += readSize;
 					dataSize -= readSize;
 				}
@@ -373,7 +373,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NN<Net::WebSe
 		this->AddResponseHeaders(req, resp);
 		resp->AddLastModified(pitem->modTime);
 		resp->AddContentType(mime);
-		Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, dataLen, dataBuff.Ptr());
+		Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, dataLen, dataBuff.Arr());
 		return true;
 	}
 	return false;
@@ -679,7 +679,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 										this->AddResponseHeaders(req, resp);
 										resp->AddLastModified(innerPF->GetItemModTime(index2));
 										resp->AddContentType(mime);
-										Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, dataLen, dataBuff.Ptr());
+										Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, dataLen, dataBuff.Arr());
 									}
 									else
 									{
@@ -1247,7 +1247,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 
 						UOSInt i;
 						UOSInt j;
-						UnsafeArray<DirectoryEntry*> entArr = entList.GetPtr(j);
+						UnsafeArray<DirectoryEntry*> entArr = entList.GetArr(j);
 						if (sort == 1)
 						{
 							Data::Sort::ArtificialQuickSortFunc<DirectoryEntry*>::Sort(entArr, HTTPDirectoryHandler_CompareFuncName, 0, (OSInt)j - 1);

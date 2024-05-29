@@ -268,7 +268,7 @@ Bool IO::BTScanLog::ParseBTRAWPacket(NN<IO::BTScanLog::ScanRecord3> rec, Int64 t
 		{
 			optEnd = buff.GetSize();
 		}
-		ParseAdvisement(rec, buff.Ptr(), i, optEnd);
+		ParseAdvisement(rec, buff.Arr(), i, optEnd);
 
 		if (addrType == 0)
 		{
@@ -318,7 +318,7 @@ Bool IO::BTScanLog::ParseBTRAWPacket(NN<IO::BTScanLog::ScanRecord3> rec, Int64 t
 		optEnd = buff.GetSize();
 		i = 22;
 
-		ParseAdvisement(rec, buff.Ptr(), i, optEnd);
+		ParseAdvisement(rec, buff.Arr(), i, optEnd);
 
 		rec->addrType = AT_PUBLIC;
 		rec->txPower = 0;

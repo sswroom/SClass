@@ -12,7 +12,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEHTMLViewer::AVIRMIMEHTMLViewer(NN<SSWR::AVIRe
 	this->txtHTML->SetReadOnly(true);
 
 	UOSInt size;
-	const UInt8 *buff = obj->GetRAWData(size);
+	UnsafeArray<const UInt8> buff = obj->GetRAWData(size);
 	IO::MemoryReadingStream mstm(buff, size);
 	Text::StringBuilderUTF8 sb;
 	Text::HTMLUtil::HTMLWellFormat(core->GetEncFactory(), mstm, 0, sb);

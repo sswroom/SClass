@@ -54,12 +54,12 @@ void __stdcall Net::LogServer::ClientData(NN<Net::TCPClient> cli, AnyType userOb
 	else if (cliStatus->buffSize + buff.GetSize() > BUFFSIZE)
 	{
 		MemCopyO(cliStatus->buff, &cliStatus->buff[cliStatus->buffSize - BUFFSIZE + buff.GetSize()], BUFFSIZE - buff.GetSize());
-		MemCopyNO(&cliStatus->buff[BUFFSIZE - buff.GetSize()], buff.Ptr().Ptr(), buff.GetSize());
+		MemCopyNO(&cliStatus->buff[BUFFSIZE - buff.GetSize()], buff.Arr().Ptr(), buff.GetSize());
 		cliStatus->buffSize = BUFFSIZE;
 	}
 	else
 	{
-		MemCopyNO(&cliStatus->buff[cliStatus->buffSize], buff.Ptr().Ptr(), buff.GetSize());
+		MemCopyNO(&cliStatus->buff[cliStatus->buffSize], buff.Arr().Ptr(), buff.GetSize());
 		cliStatus->buffSize += buff.GetSize();
 	}
 

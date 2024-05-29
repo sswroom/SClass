@@ -326,7 +326,7 @@ void __stdcall Net::MySQLServer::OnClientData(NN<Net::TCPClient> cli, AnyType us
 		sb.AppendC(UTF8STRC(" bytes"));
 		me->log->LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Action);
 	}
-	MemCopyNO(&data->buff[data->buffSize], buff.Ptr().Ptr(), buff.GetSize());
+	MemCopyNO(&data->buff[data->buffSize], buff.Arr().Ptr(), buff.GetSize());
 	data->buffSize += buff.GetSize();
 	if (data->mode == 0)
 	{

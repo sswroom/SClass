@@ -57,7 +57,7 @@ Bool SSWR::AVIRead::AVIRASN1DataForm::FileIsSign(NN<Text::String> fileName)
 		if (fs.Read(Data::ByteArray(fileCont, (UOSInt)fileLen)) == (UOSInt)fileLen)
 		{
 			Text::TextBinEnc::Base64Enc enc;
-			decSize = enc.DecodeBin(fileCont, (UOSInt)fileLen, decCont);
+			decSize = enc.DecodeBin(Text::CStringNN(fileCont, (UOSInt)fileLen), decCont);
 			if (decSize == 128)
 			{
 				return true;
@@ -105,7 +105,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifyClicked(AnyType userObj)
 	NN<Net::SSLEngine> ssl;
 	if (Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true).SetTo(ssl))
 	{
-		if (ssl->SignatureVerify(key, (Crypto::Hash::HashType)me->cboVerifyHash->GetSelectedItem().GetOSInt(), mstm.GetBuff(), (UOSInt)mstm.GetLength(), signBuff, signLen))
+		if (ssl->SignatureVerify(key, (Crypto::Hash::HashType)me->cboVerifyHash->GetSelectedItem().GetOSInt(), mstm.GetArray(), Data::ByteArrayR(signBuff, signLen)))
 		{
 			me->txtVerifyStatus->SetText(CSTR("Valid"));
 		}
@@ -145,7 +145,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnVerifySignInfoClicked(AnyType 
 	NN<Net::SSLEngine> ssl;
 	if (Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true).SetTo(ssl))
 	{
-		decLen = ssl->Decrypt(key, decBuff, signBuff, signLen, Crypto::Encrypt::RSACipher::Padding::PKCS1);
+		decLen = ssl->Decrypt(key, decBuff, Data::ByteArrayR(signBuff, signLen), Crypto::Encrypt::RSACipher::Padding::PKCS1);
 		if (decLen > 0)
 		{
 			Crypto::Cert::DigestInfo digestInfo;
@@ -195,16 +195,16 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptEncryptClicked(AnyType 
 	if (type == 0)
 	{
 		Text::TextBinEnc::Base64Enc enc;
-		buffSize = enc.CalcBinSize(sb.ToString(), sb.GetLength());
+		buffSize = enc.CalcBinSize(sb.ToCString());
 		buff = MemAlloc(UInt8, buffSize);
-		enc.DecodeBin(sb.ToString(), sb.GetLength(), buff);
+		enc.DecodeBin(sb.ToCString(), buff);
 	}
 	else if (type == 1)
 	{
 		Text::TextBinEnc::HexTextBinEnc enc;
-		buffSize = enc.CalcBinSize(sb.ToString(), sb.GetLength());
+		buffSize = enc.CalcBinSize(sb.ToCString());
 		buff = MemAlloc(UInt8, buffSize);
-		enc.DecodeBin(sb.ToString(), sb.GetLength(), buff);
+		enc.DecodeBin(sb.ToCString(), buff);
 	}
 	else
 	{
@@ -228,7 +228,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptEncryptClicked(AnyType 
 	if (Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true).SetTo(ssl))
 	{
 		UInt8 *outData = MemAlloc(UInt8, 512);
-		UOSInt outSize = ssl->Encrypt(key, outData, buff, buffSize, (Crypto::Encrypt::RSACipher::Padding)me->cboEncryptRSAPadding->GetSelectedItem().GetOSInt());
+		UOSInt outSize = ssl->Encrypt(key, outData, Data::ByteArrayR(buff, buffSize), (Crypto::Encrypt::RSACipher::Padding)me->cboEncryptRSAPadding->GetSelectedItem().GetOSInt());
 		MemFree(buff);
 		ssl.Delete();
 		key.Delete();
@@ -283,16 +283,16 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptDecryptClicked(AnyType 
 	if (type == 0)
 	{
 		Text::TextBinEnc::Base64Enc enc;
-		buffSize = enc.CalcBinSize(sb.ToString(), sb.GetLength());
+		buffSize = enc.CalcBinSize(sb.ToCString());
 		buff = MemAlloc(UInt8, buffSize);
-		enc.DecodeBin(sb.ToString(), sb.GetLength(), buff);
+		enc.DecodeBin(sb.ToCString(), buff);
 	}
 	else if (type == 1)
 	{
 		Text::TextBinEnc::HexTextBinEnc enc;
-		buffSize = enc.CalcBinSize(sb.ToString(), sb.GetLength());
+		buffSize = enc.CalcBinSize(sb.ToCString());
 		buff = MemAlloc(UInt8, buffSize);
-		enc.DecodeBin(sb.ToString(), sb.GetLength(), buff);
+		enc.DecodeBin(sb.ToCString(), buff);
 	}
 	else
 	{
@@ -316,7 +316,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1DataForm::OnEncryptDecryptClicked(AnyType 
 	if (Net::SSLEngineFactory::Create(me->core->GetSocketFactory(), true).SetTo(ssl))
 	{
 		UInt8 *outData = MemAlloc(UInt8, 512);
-		UOSInt outSize = ssl->Decrypt(key, outData, buff, buffSize, (Crypto::Encrypt::RSACipher::Padding)me->cboEncryptRSAPadding->GetSelectedItem().GetOSInt());
+		UOSInt outSize = ssl->Decrypt(key, outData, Data::ByteArrayR(buff, buffSize), (Crypto::Encrypt::RSACipher::Padding)me->cboEncryptRSAPadding->GetSelectedItem().GetOSInt());
 		MemFree(buff);
 		key.Delete();
 		ssl.Delete();
@@ -407,7 +407,7 @@ UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(Text::PString *s, UInt8 *
 			if (fs.Read(Data::ByteArray(fileCont, (UOSInt)fileLen)) == fileLen)
 			{
 				Text::TextBinEnc::Base64Enc enc;
-				signLen = enc.DecodeBin(fileCont, (UOSInt)fileLen, signBuff);
+				signLen = enc.DecodeBin(Text::CStringNN(fileCont, (UOSInt)fileLen), signBuff);
 				if (signLen == 128)
 				{
 					succ = true;
@@ -419,7 +419,7 @@ UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(Text::PString *s, UInt8 *
 			if (fs.Read(Data::ByteArray(fileCont, (UOSInt)fileLen)) == fileLen)
 			{
 				Text::TextBinEnc::Base64Enc enc;
-				signLen = enc.DecodeBin(fileCont, (UOSInt)fileLen, signBuff);
+				signLen = enc.DecodeBin(Text::CStringNN(fileCont, (UOSInt)fileLen), signBuff);
 				if (signLen == 256)
 				{
 					succ = true;
@@ -435,7 +435,7 @@ UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(Text::PString *s, UInt8 *
 	else if (s->leng == 172)
 	{
 		Text::TextBinEnc::Base64Enc enc;
-		signLen = enc.DecodeBin(s->v, 172, signBuff);
+		signLen = enc.DecodeBin(Text::CStringNN(s->v, 172), signBuff);
 		if (signLen != 128)
 		{
 			this->ui->ShowMsgOK(CSTR("Please enter valid Signature (Invalid base64 format)"), CSTR("Verify Signature"), this);
@@ -454,7 +454,7 @@ UOSInt SSWR::AVIRead::AVIRASN1DataForm::ParseSignature(Text::PString *s, UInt8 *
 	else if (s->leng == 344)
 	{
 		Text::TextBinEnc::Base64Enc enc;
-		signLen = enc.DecodeBin(s->v, 344, signBuff);
+		signLen = enc.DecodeBin(Text::CStringNN(s->v, 344), signBuff);
 		if (signLen != 256)
 		{
 			this->ui->ShowMsgOK(CSTR("Please enter valid Signature (Invalid base64 format2)"), CSTR("Verify Signature"), this);

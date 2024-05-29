@@ -254,7 +254,7 @@ Bool IO::FileUtil::CopyFile(Text::CStringNN file1, Text::CStringNN file2, FileEx
 			{
 				Data::ByteBuffer buff((UOSInt)1048576);
 				writeSize = fs1.Read(buff);
-				writeSize = fs2->Write(buff.Ptr().Ptr(), (UOSInt)writeSize);
+				writeSize = fs2->Write(buff.Arr().Ptr(), (UOSInt)writeSize);
 			}
 			fs1.GetFileTimes(ts1, ts2, ts3);
 			fs2->SetFileTimes(ts1, ts2, ts3);

@@ -20909,19 +20909,18 @@ Net::ASN1OIDDB::OIDInfo Net::ASN1OIDDB::oidList[] = {
 };
 #endif
 
-void Net::ASN1OIDDB::OIDToNameString(const UInt8 *pdu, UOSInt pduSize, NN<Text::StringBuilderUTF8> sb)
+void Net::ASN1OIDDB::OIDToNameString(Data::ByteArrayR pdu, NN<Text::StringBuilderUTF8> sb)
 {
-	const Net::ASN1OIDDB::OIDInfo *oid;
+	NN<const Net::ASN1OIDDB::OIDInfo> oid;
 	UInt32 v;
-	UOSInt checkSize = pduSize;
+	UOSInt checkSize = pdu.GetSize();
 	while (checkSize > 0)
 	{
-		oid = OIDGetEntry(pdu, checkSize);
-		if (oid)
+		if (OIDGetEntry(pdu.WithSize(checkSize)).SetTo(oid))
 		{
 			sb->AppendSlow((const UTF8Char*)oid->name);
 			v = 0;
-			while (checkSize < pduSize)
+			while (checkSize < pdu.GetSize())
 			{
 				v = (v << 7) | (pdu[checkSize] & 0x7f);
 				if ((pdu[checkSize] & 0x80) == 0)
@@ -20938,12 +20937,12 @@ void Net::ASN1OIDDB::OIDToNameString(const UInt8 *pdu, UOSInt pduSize, NN<Text::
 	}
 }
 
-const Net::ASN1OIDDB::OIDInfo *Net::ASN1OIDDB::OIDGetEntry(const UInt8 *pdu, UOSInt pduSize)
+Optional<const Net::ASN1OIDDB::OIDInfo> Net::ASN1OIDDB::OIDGetEntry(Data::ByteArrayR pdu)
 {
 #if defined(VERBOSE)
 	{
 		Text::StringBuilderUTF8 sb;
-		Net::ASN1Util::OIDToString(pdu, pduSize, &sb);
+		Net::ASN1Util::OIDToString(pdu, sb);
 		printf("Searching: %s\r\n", sb.ToString());
 	}
 #endif
@@ -20956,7 +20955,7 @@ const Net::ASN1OIDDB::OIDInfo *Net::ASN1OIDDB::OIDGetEntry(const UInt8 *pdu, UOS
 	{
 		k = (i + j) >> 1;
 		oid = &oidList[k];
-		l = Net::ASN1Util::OIDCompare(pdu, pduSize, oid->oid, oid->len);
+		l = Net::ASN1Util::OIDCompare(pdu, Data::ByteArrayR(oid->oid, oid->len));
 #if defined(VERBOSE)
 		printf("%d\t%s\t%d\r\n", (UInt32)k, oid->name, (Int32)l);
 #endif

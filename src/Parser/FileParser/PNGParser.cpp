@@ -2679,7 +2679,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 						palette = MemAlloc(UInt8, 1024);
 					}
 					UInt8 *palPtr = palette;
-					UnsafeArray<UInt8> dataBuff = chunkData.Ptr();
+					UnsafeArray<UInt8> dataBuff = chunkData.Arr();
 					UOSInt sizeLeft = size;
 					while (sizeLeft > 0)
 					{
@@ -2715,7 +2715,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 			Data::ByteBuffer chunkData(size);
 			if (fd->GetRealData(ofst + 8, size, chunkData) == size)
 			{
-				UOSInt i = Text::StrCharCnt((Char*)chunkData.Ptr().Ptr()) + 1;
+				UOSInt i = Text::StrCharCnt((Char*)chunkData.Arr().Ptr()) + 1;
 				if (chunkData[i] == 0)
 				{
 					IO::MemoryStream mstm;
@@ -2840,11 +2840,11 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 						NEW_CLASSNN(nncstm, Data::Compress::InflateStream(nnmstm, 2, false));
 						cstm = nncstm;
 						NEW_CLASS(wcstm, IO::WriteCacheStream(nncstm));
-						wcstm->Write(chunkData.Ptr().Ptr(), size);
+						wcstm->Write(chunkData.Arr().Ptr(), size);
 					}
 					else
 					{
-						wcstm->Write(chunkData.Ptr().Ptr(), size);
+						wcstm->Write(chunkData.Arr().Ptr(), size);
 					}
 				}
 			}

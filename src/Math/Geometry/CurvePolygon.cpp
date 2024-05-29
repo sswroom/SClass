@@ -60,7 +60,7 @@ NN<Math::Geometry::Vector2D> Math::Geometry::CurvePolygon::CurveToLine() const
 		{
 			ptList.Clear();
 			NN<Math::Geometry::CompoundCurve>::ConvertFrom(vec)->GetDrawPoints(ptList);
-			NEW_CLASSNN(lr, LinearRing(this->srid, ptList.Ptr(), ptList.GetCount(), 0, 0));
+			NEW_CLASSNN(lr, LinearRing(this->srid, ptList.Arr(), ptList.GetCount(), 0, 0));
 			pg->AddGeometry(lr);
 		}
 		else if (vec->GetVectorType() == Math::Geometry::Vector2D::VectorType::LineString)

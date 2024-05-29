@@ -1531,7 +1531,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				readSize = fs.Read(readBuff);
 				if (readSize == 0)
 					break;
-				mstm->Write(readBuff.Ptr().Ptr(), readSize);
+				mstm->Write(readBuff.Arr().Ptr(), readSize);
 			}
 		}
 
@@ -1605,7 +1605,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 
 					UInt8 crcBuff[4];
 					Crypto::Hash::CRC32R crc;
-					crc.Calc(readBuff.Ptr().Ptr(), readBuff.GetSize());
+					crc.Calc(readBuff.Arr().Ptr(), readBuff.GetSize());
 					crc.GetValue(crcBuff);
 					crcVal = ReadMUInt32(crcBuff);
 				}
@@ -1814,7 +1814,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				readSize = fs.Read(readBuff);
 				if (readSize == 0)
 					break;
-				crc.Calc(readBuff.Ptr().Ptr(), readSize);
+				crc.Calc(readBuff.Arr().Ptr(), readSize);
 			}
 		}
 		UInt8 crcBuff[4];

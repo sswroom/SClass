@@ -382,7 +382,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 		sb->AppendC(UTF8STRC("\r\nName length = "));
 		sb->AppendU64(iVal);
 		sb->AppendC(UTF8STRC("\r\nName = "));
-		sb->AppendC(packPtr.Ptr(), (UOSInt)iVal);
+		sb->AppendC(packPtr.Arr(), (UOSInt)iVal);
 		packPtr += (UOSInt)iVal;
 
 		extraEnd = packPtr + (UOSInt)extraSize;
@@ -425,7 +425,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 						}
 						else
 						{
-							ts = Data::Timestamp::FromFILETIME((void*)packPtr.Ptr().Ptr(), 0);
+							ts = Data::Timestamp::FromFILETIME((void*)packPtr.Arr().Ptr(), 0);
 							packPtr += 8;
 						}
 						sb->AppendC(UTF8STRC(", mtime = "));
@@ -440,7 +440,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 						}
 						else
 						{
-							ts = Data::Timestamp::FromFILETIME((void*)packPtr.Ptr().Ptr(), 0);
+							ts = Data::Timestamp::FromFILETIME((void*)packPtr.Arr().Ptr(), 0);
 							packPtr += 8;
 						}
 						sb->AppendC(UTF8STRC(", ctime = "));
@@ -455,7 +455,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 						}
 						else
 						{
-							ts = Data::Timestamp::FromFILETIME((void*)packPtr.Ptr().Ptr(), 0);
+							ts = Data::Timestamp::FromFILETIME((void*)packPtr.Arr().Ptr(), 0);
 							packPtr += 8;
 						}
 						sb->AppendC(UTF8STRC(", atime = "));
@@ -709,7 +709,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RAR5FileAnalyse::GetFram
 		packPtr = nextPtr;
 		packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), CSTR("Host OS"), packPtr);
 		packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), CSTR("Name length"), packPtr, iVal);
-		frame->AddStrC((UOSInt)(packPtr - packBuff), (UOSInt)iVal, CSTR("Name"), packPtr.Ptr());
+		frame->AddStrC((UOSInt)(packPtr - packBuff), (UOSInt)iVal, CSTR("Name"), packPtr.Arr());
 		packPtr += (UOSInt)iVal;
 
 		extraEnd = packPtr + (UOSInt)extraSize;
@@ -769,7 +769,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RAR5FileAnalyse::GetFram
 						}
 						else
 						{
-							dt.SetValueFILETIME((void*)packPtr.Ptr().Ptr());
+							dt.SetValueFILETIME((void*)packPtr.Arr().Ptr());
 							nextPtr2 = packPtr + 8;
 						}
 						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
@@ -785,7 +785,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RAR5FileAnalyse::GetFram
 						}
 						else
 						{
-							dt.SetValueFILETIME((void*)packPtr.Ptr().Ptr());
+							dt.SetValueFILETIME((void*)packPtr.Arr().Ptr());
 							nextPtr2 = packPtr + 8;
 						}
 						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
@@ -801,7 +801,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RAR5FileAnalyse::GetFram
 						}
 						else
 						{
-							dt.SetValueFILETIME((void*)packPtr.Ptr().Ptr());
+							dt.SetValueFILETIME((void*)packPtr.Arr().Ptr());
 							nextPtr2 = packPtr + 8;
 						}
 						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");

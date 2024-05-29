@@ -55,7 +55,7 @@ namespace Text
 		NN<StringBuilderUTF8> AppendW(const WChar *s, UOSInt len);
 		NN<StringBuilderUTF8> AppendUTF16(const UTF16Char *s);
 		NN<StringBuilderUTF8> AppendUTF16(const UTF16Char *s, UOSInt utf16Cnt);
-		NN<StringBuilderUTF8> AppendUTF16BE(const UInt8 *s, UOSInt utf16Cnt);
+		NN<StringBuilderUTF8> AppendUTF16BE(UnsafeArray<const UInt8> s, UOSInt utf16Cnt);
 		NN<StringBuilderUTF8> AppendUTF32(const UTF32Char *s);
 		NN<StringBuilderUTF8> AppendUTF32(const UTF32Char *s, UOSInt utf32Cnt);
 		NN<StringBuilderUTF8> AppendSlow(const UTF8Char *s);
@@ -492,7 +492,7 @@ namespace Text
 
 		NN<StringBuilderUTF8> AppendHexBuff(const Data::ByteArrayR &buff, UTF8Char seperator, Text::LineBreakType lineBreak)
 		{
-			return AppendHexBuff(buff.GetPtr(), buff.GetSize(), seperator, lineBreak);
+			return AppendHexBuff(buff.Arr(), buff.GetSize(), seperator, lineBreak);
 		}
 
 		NN<StringBuilderUTF8> AppendHex8LC(UInt8 iVal)

@@ -123,7 +123,7 @@ template <class T> void ArtificialQuickSort_SortAList(Data::ArrayList<T> *arr)
 
 template <class T> void ArtificialQuickSort_SortAList(Data::ArrayListNN<T> *arr)
 {
-	ArtificialQuickSort_Sort(arr->Ptr().Ptr(), 0, (OSInt)arr->GetCount() - 1);
+	ArtificialQuickSort_Sort(arr->Arr().Ptr(), 0, (OSInt)arr->GetCount() - 1);
 }
 
 #endif

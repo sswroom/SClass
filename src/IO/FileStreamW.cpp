@@ -313,7 +313,7 @@ UOSInt IO::FileStream::Read(const Data::ByteArray &buff)
 	if (handle == INVALID_HANDLE_VALUE)
 		return 0;
 	UInt32 readSize;
-	if (ReadFile(handle, buff.Ptr().Ptr(), (UInt32)buff.GetSize(), (DWORD*)&readSize, 0))
+	if (ReadFile(handle, buff.Arr().Ptr(), (UInt32)buff.GetSize(), (DWORD*)&readSize, 0))
 	{
 		this->currPos += readSize;
 		return readSize;

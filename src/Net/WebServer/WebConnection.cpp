@@ -105,12 +105,12 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 	UOSInt strIndex;
 	if (this->protoHdlr)
 	{
-		this->protoHdlr->ProtocolData(buff.Ptr().Ptr(), buff.GetSize());
+		this->protoHdlr->ProtocolData(buff.Arr().Ptr(), buff.GetSize());
 		return;
 	}
 	else if (this->proxyMode)
 	{
-		if (this->proxyCli->Write(buff.Ptr().Ptr(), buff.GetSize()) != buff.GetSize())
+		if (this->proxyCli->Write(buff.Arr().Ptr(), buff.GetSize()) != buff.GetSize())
 		{
 			this->proxyCli->Close();
 			this->cli->Close();
@@ -130,7 +130,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 			MemFree(this->dataBuff);
 			this->dataBuff = newBuff;
 		}
-		MemCopyNO(&this->dataBuff[this->buffSize], buff.Ptr().Ptr(), buff.GetSize());
+		MemCopyNO(&this->dataBuff[this->buffSize], buff.Arr().Ptr(), buff.GetSize());
 		this->buffSize += buff.GetSize();
 
 		j = this->buffSize - 1;
@@ -141,7 +141,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 			Sync::MutexUsage mutUsage(this->procMut);
 			if (this->currReq && this->currReq->DataStarted())
 			{
-				i += this->currReq->DataPut(buff.Ptr().Ptr(), buff.GetSize());
+				i += this->currReq->DataPut(buff.Arr().Ptr(), buff.GetSize());
 				if (!this->currReq->DataFull())
 				{
 					this->buffSize = 0;
@@ -334,7 +334,7 @@ void Net::WebServer::WebConnection::ReceivedData(const Data::ByteArrayR &buff)
 
 void Net::WebServer::WebConnection::ProxyData(const Data::ByteArrayR &buff)
 {
-	this->SendData(buff.Ptr().Ptr(), buff.GetSize());
+	this->SendData(buff.Arr().Ptr(), buff.GetSize());
 }
 
 void Net::WebServer::WebConnection::EndProxyConn()

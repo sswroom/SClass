@@ -71,7 +71,7 @@ UOSInt Net::ASN1Util::PDUParseLen(UnsafeArray<const UInt8> pdu, UOSInt ofst, UOS
 	}
 }
 
-const UInt8 *Net::ASN1Util::PDUParseSeq(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, OutParam<UInt8> type, OutParam<UnsafeArray<const UInt8>> seqEnd)
+UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUParseSeq(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, OutParam<UInt8> type, OutParam<UnsafeArray<const UInt8>> seqEnd)
 {
 	UOSInt len;
 	if (pduEnd - pdu < 2)
@@ -111,10 +111,10 @@ const UInt8 *Net::ASN1Util::PDUParseSeq(UnsafeArray<const UInt8> pdu, UnsafeArra
 		return 0;
 	}
 	seqEnd.Set(pdu + len);
-	return pdu.Ptr();
+	return pdu;
 }
 
-const UInt8 *Net::ASN1Util::PDUParseUInt32(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, OutParam<UInt32> val)
+UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUParseUInt32(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, OutParam<UInt32> val)
 {
 	if (pduEnd - pdu < 3)
 		return 0;
@@ -123,22 +123,22 @@ const UInt8 *Net::ASN1Util::PDUParseUInt32(UnsafeArray<const UInt8> pdu, UnsafeA
 	if (pdu[1] == 1)
 	{
 		val.Set(pdu[2]);
-		return pdu.Ptr() + 3;
+		return pdu + 3;
 	}
 	else if (pdu[1] == 2 && pduEnd - pdu >= 4)
 	{
 		val.Set(ReadMUInt16(&pdu[2]));
-		return pdu.Ptr() + 4;
+		return pdu + 4;
 	}
 	else if (pdu[1] == 3 && pduEnd - pdu >= 5)
 	{
 		val.Set(ReadMUInt24(&pdu[2]));
-		return pdu.Ptr() + 5;
+		return pdu + 5;
 	}
 	else if (pdu[1] == 4 && pduEnd - pdu >= 6)
 	{
 		val.Set(ReadMUInt32(&pdu[2]));
-		return pdu.Ptr() + 6;
+		return pdu + 6;
 	}
 	else
 	{
@@ -146,7 +146,7 @@ const UInt8 *Net::ASN1Util::PDUParseUInt32(UnsafeArray<const UInt8> pdu, UnsafeA
 	}
 }
 
-const UInt8 *Net::ASN1Util::PDUParseString(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb)
+UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUParseString(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb)
 {
 	UOSInt len;
 	if (pduEnd - pdu < 2)
@@ -187,10 +187,10 @@ const UInt8 *Net::ASN1Util::PDUParseString(UnsafeArray<const UInt8> pdu, UnsafeA
 		return 0;
 	}
 	sb->AppendC(pdu, len);
-	return pdu.Ptr() + len;
+	return pdu + len;
 }
 
-const UInt8 *Net::ASN1Util::PDUParseChoice(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, OutParam<UInt32> val)
+UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUParseChoice(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, OutParam<UInt32> val)
 {
 	if (pduEnd - pdu < 3)
 		return 0;
@@ -199,22 +199,22 @@ const UInt8 *Net::ASN1Util::PDUParseChoice(UnsafeArray<const UInt8> pdu, UnsafeA
 	if (pdu[1] == 1)
 	{
 		val.Set(pdu[2]);
-		return pdu.Ptr() + 3;
+		return pdu + 3;
 	}
 	else if (pdu[1] == 2 && pduEnd - pdu >= 4)
 	{
 		val.Set(ReadMUInt16(&pdu[2]));
-		return pdu.Ptr() + 4;
+		return pdu + 4;
 	}
 	else if (pdu[1] == 3 && pduEnd - pdu >= 5)
 	{
 		val.Set(ReadMUInt24(&pdu[2]));
-		return pdu.Ptr() + 5;
+		return pdu + 5;
 	}
 	else if (pdu[1] == 4 && pduEnd - pdu >= 6)
 	{
 		val.Set(ReadMUInt32(&pdu[2]));
-		return pdu.Ptr() + 6;
+		return pdu + 6;
 	}
 	else
 	{
@@ -222,11 +222,11 @@ const UInt8 *Net::ASN1Util::PDUParseChoice(UnsafeArray<const UInt8> pdu, UnsafeA
 	}
 }
 
-Bool Net::ASN1Util::PDUParseUTCTimeCont(UnsafeArray<const UInt8> pdu, UOSInt len, NN<Data::DateTime> dt)
+Bool Net::ASN1Util::PDUParseUTCTimeCont(Data::ByteArrayR pdu, NN<Data::DateTime> dt)
 {
-	if (len == 13 && pdu[12] == 'Z')
+	if (pdu.GetSize() == 13 && pdu[12] == 'Z')
 	{
-		UInt32 year = Str2Digit(pdu);
+		UInt32 year = Str2Digit(pdu.Arr());
 		if (year < 70)
 		{
 			year += 2000;
@@ -238,7 +238,7 @@ Bool Net::ASN1Util::PDUParseUTCTimeCont(UnsafeArray<const UInt8> pdu, UOSInt len
 		dt->SetValue((UInt16)year, (OSInt)Str2Digit(&pdu[2]), (OSInt)Str2Digit(&pdu[4]), (OSInt)Str2Digit(&pdu[6]), (OSInt)Str2Digit(&pdu[8]), (OSInt)Str2Digit(&pdu[10]), 0);
 		return true;
 	}
-	else if (len == 15 && pdu[14] == 'Z')
+	else if (pdu.GetSize() == 15 && pdu[14] == 'Z')
 	{
 		dt->SetValue((UInt16)(Str2Digit(&pdu[0]) * 100 + Str2Digit(&pdu[2])), (OSInt)Str2Digit(&pdu[4]), (OSInt)Str2Digit(&pdu[6]), (OSInt)Str2Digit(&pdu[8]), (OSInt)Str2Digit(&pdu[10]), (OSInt)Str2Digit(&pdu[12]), 0);
 		return true;
@@ -291,7 +291,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("BOOLEAN "));
 			sb->AppendUTF8Char('(');
-			BooleanToString(&pdu[ofst], len, sb);
+			BooleanToString(Data::ByteArrayR(pdu + ofst, len), sb);
 			sb->AppendUTF8Char(')');
 			sb->AppendC(UTF8STRC("\r\n"));
 			pdu += ofst + len;
@@ -299,8 +299,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 		case 0x2:
 			if (len <= 4)
 			{
-				pdu = PDUParseUInt32(pdu, pduEnd, iVal);
-				if (pdu == 0)
+				if (!PDUParseUInt32(pdu, pduEnd, iVal).SetTo(pdu))
 				{
 					return false;
 				}
@@ -386,9 +385,9 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 			sb->AppendChar('\t', level);
 			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("OID "));
-			Net::ASN1Util::OIDToString(&pdu[ofst], len, sb);
+			Net::ASN1Util::OIDToString(Data::ByteArrayR(pdu + ofst, len), sb);
 			sb->AppendC(UTF8STRC(" ("));
-			Net::ASN1OIDDB::OIDToNameString(&pdu[ofst], len, sb);
+			Net::ASN1OIDDB::OIDToNameString(Data::ByteArrayR(pdu + ofst, len), sb);
 			sb->AppendC(UTF8STRC(")\r\n"));
 			pdu += ofst + len;
 			break;
@@ -776,7 +775,7 @@ Bool Net::ASN1Util::PDUDSizeEnd(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 	return true;
 }
 
-const UInt8 *Net::ASN1Util::PDUGetItemRAW(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *cpath, OptOut<UOSInt> len, OutParam<UOSInt> itemOfst)
+UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUGetItemRAW(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *cpath, OptOut<UOSInt> len, OutParam<UOSInt> itemOfst)
 {
 	len.Set(0);
 	UTF8Char sbuff[11];
@@ -845,14 +844,14 @@ const UInt8 *Net::ASN1Util::PDUGetItemRAW(UnsafeArray<const UInt8> pdu, UnsafeAr
 						}
 						len.SetNoCheck((UOSInt)(pduNext - &pdu[ofst]));
 					}
-					return pdu.Ptr();
+					return pdu;
 
 				}
 				else
 				{
 					itemOfst.Set(ofst);
 					len.Set(itemLen);
-					return pdu.Ptr();
+					return pdu;
 				}
 			}
 			if (pdu[1] == 0x80)
@@ -879,17 +878,17 @@ const UInt8 *Net::ASN1Util::PDUGetItemRAW(UnsafeArray<const UInt8> pdu, UnsafeAr
 	return 0;
 }
 
-const UInt8 *Net::ASN1Util::PDUGetItem(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, OptOut<UOSInt> len, OptOut<ItemType> itemType)
+UnsafeArrayOpt<const UInt8> Net::ASN1Util::PDUGetItem(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, OptOut<UOSInt> len, OptOut<ItemType> itemType)
 {
 	itemType.Set(IT_UNKNOWN);
 	UOSInt itemOfst;
-	UnsafeArrayOpt<const UInt8> pduOut = PDUGetItemRAW(pdu, pduEnd, path, len, itemOfst);
-	if (pduOut.Ptr() == 0)
+	UnsafeArray<const UInt8> pduOut;
+	if (!PDUGetItemRAW(pdu, pduEnd, path, len, itemOfst).SetTo(pduOut))
 	{
 		return 0;
 	}
 	itemType.Set((ItemType)pduOut[0]);
-	return &pduOut[itemOfst];
+	return pduOut + itemOfst;
 }
 
 Net::ASN1Util::ItemType Net::ASN1Util::PDUGetItemType(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path)
@@ -1130,9 +1129,9 @@ void Net::ASN1Util::PDUAnalyse(NN<IO::FileAnalyse::FrameDetail> frame, Data::Byt
 			break;
 		case IT_OID:
 			sb.ClearStr();
-			Net::ASN1Util::OIDToString(&buff[pduOfst], len, sb);
+			Net::ASN1Util::OIDToString(buff.SubArray(pduOfst, len), sb);
 			sb.AppendC(UTF8STRC(" ("));
-			Net::ASN1OIDDB::OIDToNameString(&buff[pduOfst], len, sb);
+			Net::ASN1OIDDB::OIDToNameString(buff.SubArray(pduOfst, len), sb);
 			sb.AppendUTF8Char(')');
 			frame->AddField(pduOfst, len, itemName, sb.ToCString());
 			break;
@@ -1143,7 +1142,7 @@ void Net::ASN1Util::PDUAnalyse(NN<IO::FileAnalyse::FrameDetail> frame, Data::Byt
 			break;
 		case IT_UTCTIME:
 			sb.ClearStr();
-			Net::ASN1Util::UTCTimeToString(&buff[pduOfst], len, sb);
+			Net::ASN1Util::UTCTimeToString(buff.SubArray(pduOfst, len), sb);
 			frame->AddField(pduOfst, len, itemName, sb.ToCString());
 			break;
 		case IT_SEQUENCE:
@@ -1235,20 +1234,20 @@ void Net::ASN1Util::PDUAnalyse(NN<IO::FileAnalyse::FrameDetail> frame, Data::Byt
 	}
 }
 
-OSInt Net::ASN1Util::OIDCompare(const UInt8 *oid1, UOSInt oid1Len, const UInt8 *oid2, UOSInt oid2Len)
+OSInt Net::ASN1Util::OIDCompare(Data::ByteArrayR oid1, Data::ByteArrayR oid2)
 {
 	UOSInt i = 0;
 	while (true)
 	{
-		if (i == oid1Len && i == oid2Len)
+		if (i == oid1.GetSize() && i == oid2.GetSize())
 		{
 			return 0;
 		}
-		else if (i >= oid1Len)
+		else if (i >= oid1.GetSize())
 		{
 			return -1;
 		}
-		else if (i >= oid2Len)
+		else if (i >= oid2.GetSize())
 		{
 			return 1;
 		}
@@ -1278,21 +1277,21 @@ Bool Net::ASN1Util::OIDStartsWith(const UInt8 *oid1, UOSInt oid1Len, const UInt8
 	return true;
 }
 
-Bool Net::ASN1Util::OIDEqualsText(const UInt8 *oidPDU, UOSInt oidPDULen, const UTF8Char *oidText, UOSInt oidTextLen)
+Bool Net::ASN1Util::OIDEqualsText(Data::ByteArrayR oidPDU, Text::CStringNN oidText)
 {
 	UInt8 oid2[32];
-	UOSInt oidLen2 = OIDText2PDU(oidText, oidTextLen, oid2);
-	return OIDCompare(oidPDU, oidPDULen, oid2, oidLen2) == 0;
+	UOSInt oidLen2 = OIDText2PDU(oidText, oid2);
+	return OIDCompare(oidPDU, Data::ByteArrayR(oid2, oidLen2)) == 0;
 }
 
-void Net::ASN1Util::OIDToString(UnsafeArray<const UInt8> pdu, UOSInt pduSize, NN<Text::StringBuilderUTF8> sb)
+void Net::ASN1Util::OIDToString(Data::ByteArrayR pdu, NN<Text::StringBuilderUTF8> sb)
 {
 	UInt32 v = 0;
 	UOSInt i = 1;
 	sb->AppendU16(pdu[0] / 40);
 	sb->AppendUTF8Char('.');
 	sb->AppendU16(pdu[0] % 40);
-	while (i < pduSize)
+	while (i < pdu.GetSize())
 	{
 		v = (v << 7) | (pdu[i] & 0x7f);
 		if ((pdu[i] & 0x80) == 0)
@@ -1305,12 +1304,12 @@ void Net::ASN1Util::OIDToString(UnsafeArray<const UInt8> pdu, UOSInt pduSize, NN
 	}
 }
 
-UOSInt Net::ASN1Util::OIDCalcPDUSize(const UTF8Char *oidText, UOSInt oidTextLen)
+UOSInt Net::ASN1Util::OIDCalcPDUSize(Text::CStringNN oidText)
 {
 	UInt32 v;
 	UOSInt retSize = 1;
-	UTF8Char *buff = MemAlloc(UTF8Char, oidTextLen + 1);
-	Text::StrConcatC(buff, oidText, oidTextLen);
+	UTF8Char *buff = MemAlloc(UTF8Char, oidText.leng + 1);
+	oidText.ConcatTo(buff);
 	UTF8Char *sarr[3];
 	UOSInt i;
 	i = Text::StrSplit(sarr, 3, buff, '.');
@@ -1341,12 +1340,12 @@ UOSInt Net::ASN1Util::OIDCalcPDUSize(const UTF8Char *oidText, UOSInt oidTextLen)
 	return retSize;
 }
 
-UOSInt Net::ASN1Util::OIDText2PDU(const UTF8Char *oidText, UOSInt oidTextLen, UInt8 *pduBuff)
+UOSInt Net::ASN1Util::OIDText2PDU(Text::CStringNN oidText, UnsafeArray<UInt8> pduBuff)
 {
 	UInt32 v;
 	UOSInt retSize = 1;
-	UTF8Char *buff = MemAlloc(UTF8Char, oidTextLen + 1);
-	Text::StrConcatC(buff, oidText, oidTextLen);
+	UTF8Char *buff = MemAlloc(UTF8Char, oidText.leng + 1);
+	oidText.ConcatTo(buff);
 	UTF8Char *sarr[3];
 	UOSInt i;
 	i = Text::StrSplit(sarr, 3, buff, '.');
@@ -1424,30 +1423,30 @@ UOSInt Net::ASN1Util::OIDText2PDU(const UTF8Char *oidText, UOSInt oidTextLen, UI
 	return retSize;
 }
 
-void Net::ASN1Util::OIDToCPPCode(const UInt8 *oid, UOSInt oidLen, const UTF8Char *objectName, UOSInt nameLen, NN<Text::StringBuilderUTF8> sb)
+void Net::ASN1Util::OIDToCPPCode(Data::ByteArrayR oid, Text::CStringNN objectName, NN<Text::StringBuilderUTF8> sb)
 {
 	OSInt k;
 	sb->AppendUTF8Char('\t');
 	sb->AppendC(UTF8STRC("{\""));
-	sb->AppendC(objectName, nameLen);
+	sb->Append(objectName);
 	sb->AppendC(UTF8STRC("\","));
-	k = (OSInt)(60 - nameLen);
+	k = (OSInt)(60 - objectName.leng);
 	if (k > 0)
 	{
 		sb->AppendChar('\t', (UOSInt)(k + 3) >> 2);
 	}
-	if (oidLen < 10)
+	if (oid.GetSize() < 10)
 	{
-		sb->AppendUOSInt(oidLen);
+		sb->AppendUOSInt(oid.GetSize());
 		sb->AppendC(UTF8STRC(",  {"));
 	}
 	else
 	{
-		sb->AppendUOSInt(oidLen);
+		sb->AppendUOSInt(oid.GetSize());
 		sb->AppendC(UTF8STRC(", {"));
 	}
 	k = 0;
-	while (k < (OSInt)oidLen)
+	while (k < (OSInt)oid.GetSize())
 	{
 		if (k > 0)
 		{
@@ -1458,13 +1457,13 @@ void Net::ASN1Util::OIDToCPPCode(const UInt8 *oid, UOSInt oidLen, const UTF8Char
 		k++;
 	}
 	sb->AppendC(UTF8STRC("}}, // "));
-	OIDToString(oid, oidLen, sb);
+	OIDToString(oid, sb);
 	sb->AppendC(UTF8STRC("\r\n"));
 }
 
-void Net::ASN1Util::BooleanToString(const UInt8 *data, UOSInt dataLen, NN<Text::StringBuilderUTF8> sb)
+void Net::ASN1Util::BooleanToString(Data::ByteArrayR data, NN<Text::StringBuilderUTF8> sb)
 {
-	if (dataLen == 1)
+	if (data.GetSize() == 1)
 	{
 		if (data[0] == 0xFF)
 		{
@@ -1482,13 +1481,13 @@ void Net::ASN1Util::BooleanToString(const UInt8 *data, UOSInt dataLen, NN<Text::
 	}
 	else
 	{
-		sb->AppendHexBuff(data, dataLen, ' ', Text::LineBreakType::None);
+		sb->AppendHexBuff(data, ' ', Text::LineBreakType::None);
 	}
 }
 
-void Net::ASN1Util::IntegerToString(const UInt8 *data, UOSInt dataLen, NN<Text::StringBuilderUTF8> sb)
+void Net::ASN1Util::IntegerToString(Data::ByteArrayR data, NN<Text::StringBuilderUTF8> sb)
 {
-	switch (dataLen)
+	switch (data.GetSize())
 	{
 	case 1:
 		sb->AppendU32(data[0]);
@@ -1503,15 +1502,15 @@ void Net::ASN1Util::IntegerToString(const UInt8 *data, UOSInt dataLen, NN<Text::
 		sb->AppendU32(ReadMUInt32(&data[0]));
 		return;
 	default:
-		sb->AppendHexBuff(data, dataLen, ' ', Text::LineBreakType::None);
+		sb->AppendHexBuff(data, ' ', Text::LineBreakType::None);
 		return;
 	}
 }
 
-void Net::ASN1Util::UTCTimeToString(const UInt8 *data, UOSInt dataLen, NN<Text::StringBuilderUTF8> sb)
+void Net::ASN1Util::UTCTimeToString(Data::ByteArrayR data, NN<Text::StringBuilderUTF8> sb)
 {
 	Data::DateTime dt;
-	if (PDUParseUTCTimeCont(data, dataLen, dt))
+	if (PDUParseUTCTimeCont(data, dt))
 	{
 		UTF8Char sbuff[64];
 		UTF8Char *sptr;

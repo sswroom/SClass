@@ -15,7 +15,7 @@ void __stdcall Net::SSHForwarder::OnClientEvent(NN<TCPClient> cli, AnyType userO
 void __stdcall Net::SSHForwarder::OnClientData(NN<TCPClient> cli, AnyType userObj, AnyType cliData, const Data::ByteArrayR &buff)
 {
 	NN<Net::SSHTCPChannel> channel = cliData.GetNN<Net::SSHTCPChannel>();
-	channel->WriteCont(buff.Ptr(), buff.GetSize());
+	channel->WriteCont(buff.Arr(), buff.GetSize());
 }
 
 void __stdcall Net::SSHForwarder::OnClientTimeout(NN<TCPClient> cli, AnyType userObj, AnyType cliData)

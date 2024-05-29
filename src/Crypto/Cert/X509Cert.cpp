@@ -24,18 +24,19 @@ Bool Crypto::Cert::X509Cert::GetSubjectCN(NN<Text::StringBuilderUTF8> sb) const
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
-	const UInt8 *tmpBuff;
-	if (Net::ASN1Util::PDUGetItemType(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.1") == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
+	UnsafeArrayOpt<const UInt8> tmpBuff;
+	UnsafeArray<const UInt8> nntmpBuff;
+	if (Net::ASN1Util::PDUGetItemType(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1") == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 	{
-		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.6", len, itemType);
+		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.6", len, itemType);
 	}
 	else
 	{
-		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.5", len, itemType);
+		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.5", len, itemType);
 	}
-	if (tmpBuff != 0 && itemType == Net::ASN1Util::IT_SEQUENCE)
+	if (tmpBuff.SetTo(nntmpBuff) != 0 && itemType == Net::ASN1Util::IT_SEQUENCE)
 	{
-		return NameGetCN(tmpBuff, tmpBuff + len, sb);
+		return NameGetCN(nntmpBuff, nntmpBuff + len, sb);
 	}
 	else
 	{
@@ -47,18 +48,19 @@ UTF8Char *Crypto::Cert::X509Cert::GetSubjectCN(UTF8Char *sbuff) const
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
-	const UInt8 *tmpBuff;
-	if (Net::ASN1Util::PDUGetItemType(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.1") == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
+	UnsafeArrayOpt<const UInt8> tmpBuff;
+	UnsafeArray<const UInt8> nntmpBuff;
+	if (Net::ASN1Util::PDUGetItemType(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1") == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 	{
-		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.6", len, itemType);
+		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.6", len, itemType);
 	}
 	else
 	{
-		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.5", len, itemType);
+		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.5", len, itemType);
 	}
-	if (tmpBuff != 0 && itemType == Net::ASN1Util::IT_SEQUENCE)
+	if (tmpBuff.SetTo(nntmpBuff) && itemType == Net::ASN1Util::IT_SEQUENCE)
 	{
-		return NameGetCN(tmpBuff, tmpBuff + len, sbuff);
+		return NameGetCN(nntmpBuff, nntmpBuff + len, sbuff);
 	}
 	else
 	{
@@ -70,18 +72,19 @@ Bool Crypto::Cert::X509Cert::GetIssuerCN(NN<Text::StringBuilderUTF8> sb) const
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
-	const UInt8 *tmpBuff;
-	if (Net::ASN1Util::PDUGetItemType(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.1") == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
+	UnsafeArrayOpt<const UInt8> tmpBuff;
+	UnsafeArray<const UInt8> nntmpBuff;
+	if (Net::ASN1Util::PDUGetItemType(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1") == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 	{
-		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.4", len, itemType);
+		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.4", len, itemType);
 	}
 	else
 	{
-		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.3", len, itemType);
+		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.3", len, itemType);
 	}
-	if (tmpBuff != 0 && itemType == Net::ASN1Util::IT_SEQUENCE)
+	if (tmpBuff.SetTo(nntmpBuff) && itemType == Net::ASN1Util::IT_SEQUENCE)
 	{
-		return NameGetCN(tmpBuff, tmpBuff + len, sb);
+		return NameGetCN(nntmpBuff, nntmpBuff + len, sb);
 	}
 	else
 	{
@@ -182,7 +185,7 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Cert::IsValid(NN<Net::SSLE
 		{
 			return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
 		}
-		Bool signValid = ssl->SignatureVerify(key, hashType, signedInfo.payload, signedInfo.payloadSize, signedInfo.signature, signedInfo.signSize);
+		Bool signValid = ssl->SignatureVerify(key, hashType, Data::ByteArrayR(signedInfo.payload, signedInfo.payloadSize), Data::ByteArrayR(signedInfo.signature, signedInfo.signSize));
 		key.Delete();
 		if (signValid)
 		{
@@ -199,7 +202,7 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509Cert::IsValid(NN<Net::SSLE
 	{
 		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
 	}
-	Bool signValid = ssl->SignatureVerify(key, hashType, signedInfo.payload, signedInfo.payloadSize, signedInfo.signature, signedInfo.signSize);
+	Bool signValid = ssl->SignatureVerify(key, hashType, Data::ByteArrayR(signedInfo.payload, signedInfo.payloadSize), Data::ByteArrayR(signedInfo.signature, signedInfo.signSize));
 	key.Delete();
 	if (!signValid)
 	{
@@ -229,9 +232,9 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::X509Cert::CreateX509Cert() const
 
 void Crypto::Cert::X509Cert::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
-	if (IsCertificate(this->buff.Ptr(), this->buff.PtrEnd(), "1"))
+	if (IsCertificate(this->buff.Arr(), this->buff.ArrEnd(), "1"))
 	{
-		AppendCertificate(this->buff.Ptr(), this->buff.PtrEnd(), "1", sb, CSTR_NULL);
+		AppendCertificate(this->buff.Arr(), this->buff.ArrEnd(), "1", sb, CSTR_NULL);
 	}
 }
 
@@ -246,23 +249,21 @@ Bool Crypto::Cert::X509Cert::GetIssuerNames(NN<CertNames> names) const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt len;
-	const UInt8 *pdu = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.1", len, itemType);
-	if (pdu == 0)
+	UnsafeArray<const UInt8> pdu;
+	if (!Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1", len, itemType).SetTo(pdu))
 	{
 		return false;
 	}
 	if (itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 	{
-		pdu = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.4", len, itemType);
-		if (pdu)
+		if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.4", len, itemType).SetTo(pdu))
 		{
 			return NamesGet(pdu, pdu + len, names);
 		}
 	}
 	else
 	{
-		pdu = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.3", len, itemType);
-		if (pdu)
+		if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.3", len, itemType).SetTo(pdu))
 		{
 			return NamesGet(pdu, pdu + len, names);
 		}
@@ -274,23 +275,21 @@ Bool Crypto::Cert::X509Cert::GetSubjNames(NN<CertNames> names) const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt len;
-	const UInt8 *pdu = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.1", len, itemType);
-	if (pdu == 0)
+	UnsafeArray<const UInt8> pdu;
+	if (!Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1", len, itemType).SetTo(pdu))
 	{
 		return false;
 	}
 	if (itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 	{
-		pdu = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.6", len, itemType);
-		if (pdu)
+		if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.6", len, itemType).SetTo(pdu))
 		{
 			return NamesGet(pdu, pdu + len, names);
 		}
 	}
 	else
 	{
-		pdu = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.5", len, itemType);
-		if (pdu)
+		if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.5", len, itemType).SetTo(pdu))
 		{
 			return NamesGet(pdu, pdu + len, names);
 		}
@@ -302,23 +301,21 @@ Bool Crypto::Cert::X509Cert::GetExtensions(NN<CertExtensions> ext) const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt len;
-	const UInt8 *pdu = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.1", len, itemType);
-	if (pdu == 0)
+	UnsafeArray<const UInt8> pdu;
+	if (!Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1", len, itemType).SetTo(pdu))
 	{
 		return false;
 	}
 	if (itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 	{
-		pdu = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.8.1", len, itemType);
-		if (pdu)
+		if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.8.1", len, itemType).SetTo(pdu))
 		{
 			return ExtensionsGet(pdu, pdu + len, ext);
 		}
 	}
 	else
 	{
-		pdu = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.7.1", len, itemType);
-		if (pdu)
+		if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.7.1", len, itemType).SetTo(pdu))
 		{
 			return ExtensionsGet(pdu, pdu + len, ext);
 		}
@@ -330,23 +327,21 @@ Optional<Crypto::Cert::X509Key> Crypto::Cert::X509Cert::GetNewPublicKey() const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt len;
-	const UInt8 *pdu = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.1", len, itemType);
-	if (pdu == 0)
+	UnsafeArray<const UInt8> pdu;
+	if (!Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1", len, itemType).SetTo(pdu))
 	{
 		return 0;
 	}
 	if (itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 	{
-		pdu = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.7", len, itemType);
-		if (pdu)
+		if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.7", len, itemType).SetTo(pdu))
 		{
 			return PublicKeyGetNew(pdu, pdu + len);
 		}
 	}
 	else
 	{
-		pdu = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.6", len, itemType);
-		if (pdu)
+		if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.6", len, itemType).SetTo(pdu))
 		{
 			return PublicKeyGetNew(pdu, pdu + len);
 		}
@@ -374,18 +369,19 @@ Bool Crypto::Cert::X509Cert::GetNotBefore(NN<Data::DateTime> dt) const
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
-	const UInt8 *tmpBuff;
-	if (Net::ASN1Util::PDUGetItemType(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.1") == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
+	UnsafeArrayOpt<const UInt8> tmpBuff;
+	UnsafeArray<const UInt8> nntmpBuff;
+	if (Net::ASN1Util::PDUGetItemType(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1") == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 	{
-		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.5.1", len, itemType);
+		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.5.1", len, itemType);
 	}
 	else
 	{
-		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.4.1", len, itemType);
+		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.4.1", len, itemType);
 	}
-	if (itemType == Net::ASN1Util::IT_UTCTIME || itemType == Net::ASN1Util::IT_GENERALIZEDTIME)
+	if (tmpBuff.SetTo(nntmpBuff) && (itemType == Net::ASN1Util::IT_UTCTIME || itemType == Net::ASN1Util::IT_GENERALIZEDTIME))
 	{
-		return Net::ASN1Util::PDUParseUTCTimeCont(tmpBuff, len, dt);
+		return Net::ASN1Util::PDUParseUTCTimeCont(Data::ByteArrayR(nntmpBuff, len), dt);
 	}
 	return false;
 }
@@ -394,18 +390,19 @@ Bool Crypto::Cert::X509Cert::GetNotAfter(NN<Data::DateTime> dt) const
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
-	const UInt8 *tmpBuff;
-	if (Net::ASN1Util::PDUGetItemType(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.1") == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
+	UnsafeArrayOpt<const UInt8> tmpBuff;
+	UnsafeArray<const UInt8> nntmpBuff;
+	if (Net::ASN1Util::PDUGetItemType(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1") == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 	{
-		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.5.2", len, itemType);
+		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.5.2", len, itemType);
 	}
 	else
 	{
-		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.4.2", len, itemType);
+		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.4.2", len, itemType);
 	}
-	if (itemType == Net::ASN1Util::IT_UTCTIME || itemType == Net::ASN1Util::IT_GENERALIZEDTIME)
+	if (tmpBuff.SetTo(nntmpBuff) && (itemType == Net::ASN1Util::IT_UTCTIME || itemType == Net::ASN1Util::IT_GENERALIZEDTIME))
 	{
-		return Net::ASN1Util::PDUParseUTCTimeCont(tmpBuff, len, dt);
+		return Net::ASN1Util::PDUParseUTCTimeCont(Data::ByteArrayR(nntmpBuff, len), dt);
 	}
 	return false;
 }
@@ -489,23 +486,21 @@ UOSInt Crypto::Cert::X509Cert::GetCRLDistributionPoints(Data::ArrayList<Text::CS
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt len;
-	const UInt8 *pdu = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.1", len, itemType);
-	if (pdu == 0)
+	UnsafeArray<const UInt8> pdu;
+	if (!Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1", len, itemType).SetTo(pdu))
 	{
 		return 0;
 	}
 	if (itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 	{
-		pdu = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.8.1", len, itemType);
-		if (pdu)
+		if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.8.1", len, itemType).SetTo(pdu))
 		{
 			return ExtensionsGetCRLDistributionPoints(pdu, pdu + len, crlDistributionPoints);
 		}
 	}
 	else
 	{
-		pdu = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.7.1", len, itemType);
-		if (pdu)
+		if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.7.1", len, itemType).SetTo(pdu))
 		{
 			return ExtensionsGetCRLDistributionPoints(pdu, pdu + len, crlDistributionPoints);
 		}
@@ -514,19 +509,18 @@ UOSInt Crypto::Cert::X509Cert::GetCRLDistributionPoints(Data::ArrayList<Text::CS
 
 }
 
-const UInt8 *Crypto::Cert::X509Cert::GetIssuerNamesSeq(OutParam<UOSInt> dataLen) const
+UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Cert::GetIssuerNamesSeq(OutParam<UOSInt> dataLen) const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt len;
-	const UInt8 *pdu = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.1", len, itemType);
-	if (pdu == 0)
+	UnsafeArray<const UInt8> pdu;
+	if (!Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1", len, itemType).SetTo(pdu))
 	{
 		return 0;
 	}
 	if (itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 	{
-		pdu = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.4", len, itemType);
-		if (pdu && itemType == Net::ASN1Util::IT_SEQUENCE)
+		if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.4", len, itemType).SetTo(pdu) && itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
 			dataLen.Set(len);
 			return pdu;
@@ -534,8 +528,7 @@ const UInt8 *Crypto::Cert::X509Cert::GetIssuerNamesSeq(OutParam<UOSInt> dataLen)
 	}
 	else
 	{
-		pdu = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.3", len, itemType);
-		if (pdu && itemType == Net::ASN1Util::IT_SEQUENCE)
+		if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.3", len, itemType).SetTo(pdu) && itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
 			dataLen.Set(len);
 			return pdu;
@@ -544,19 +537,18 @@ const UInt8 *Crypto::Cert::X509Cert::GetIssuerNamesSeq(OutParam<UOSInt> dataLen)
 	return 0;
 }
 
-const UInt8 *Crypto::Cert::X509Cert::GetSerialNumber(OutParam<UOSInt> dataLen) const
+UnsafeArrayOpt<const UInt8> Crypto::Cert::X509Cert::GetSerialNumber(OutParam<UOSInt> dataLen) const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt len;
-	const UInt8 *pdu = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.1", len, itemType);
-	if (pdu == 0)
+	UnsafeArray<const UInt8> pdu;
+	if (!Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1", len, itemType).SetTo(pdu))
 	{
 		return 0;
 	}
 	if (itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 	{
-		pdu = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.2", len, itemType);
-		if (pdu && itemType == Net::ASN1Util::IT_INTEGER)
+		if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.2", len, itemType).SetTo(pdu) && itemType == Net::ASN1Util::IT_INTEGER)
 		{
 			dataLen.Set(len);
 			return pdu;
@@ -564,8 +556,7 @@ const UInt8 *Crypto::Cert::X509Cert::GetSerialNumber(OutParam<UOSInt> dataLen) c
 	}
 	else
 	{
-		pdu = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.1", len, itemType);
-		if (pdu && itemType == Net::ASN1Util::IT_INTEGER)
+		if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1", len, itemType).SetTo(pdu) && itemType == Net::ASN1Util::IT_INTEGER)
 		{
 			dataLen.Set(len);
 			return pdu;

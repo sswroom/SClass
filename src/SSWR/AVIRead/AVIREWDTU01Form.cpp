@@ -11,7 +11,7 @@
 void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(AnyType userObj, Text::CStringNN topic, const Data::ByteArrayR &buff)
 {
 	NN<SSWR::AVIRead::AVIREWDTU01Form> me = userObj.GetNN<SSWR::AVIRead::AVIREWDTU01Form>();
-	Text::JSONBase *jsonObj = Text::JSONBase::ParseJSONBytes(buff.Ptr(), buff.GetSize());
+	Text::JSONBase *jsonObj = Text::JSONBase::ParseJSONBytes(buff.Arr(), buff.GetSize());
 	Text::JSONObject *obj;
 	Text::JSONBase *baseObj;
 	Text::JSONArray *arr;

@@ -140,8 +140,8 @@ Bool Data::DataModelUtil::FillFromDBReader(NN<Data::Class> cls, AnyType value, N
 				else
 				{
 					Data::ByteBuffer bytes(r->GetBinarySize(i));
-					r->GetBinary(i, bytes.Ptr().Ptr());
-					item.SetByteArr(bytes.Ptr(), bytes.GetSize());
+					r->GetBinary(i, bytes.Arr().Ptr());
+					item.SetByteArr(bytes.Arr(), bytes.GetSize());
 					Data::VariItem::SetPtr(ptr, field->itemType, item);
 					break;
 				}

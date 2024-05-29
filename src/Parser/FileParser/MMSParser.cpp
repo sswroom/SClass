@@ -77,7 +77,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MMSParser::ParseFileHdr(NN<IO::St
 	}
 
 	fileCnt = *ptr++;
-	currOfst = (UOSInt)(ptr - hdr.Ptr());
+	currOfst = (UOSInt)(ptr - hdr.Arr());
 
 	while (fileCnt-- > 0)
 	{

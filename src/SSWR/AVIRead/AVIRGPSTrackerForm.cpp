@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(AnyType userObj, N
 	Sync::MutexUsage mutUsage(me->recMut);
 	MemCopyNO(&me->recCurr, record.Ptr(), sizeof(Map::GPSTrack::GPSRecord3));
 	me->recSateCnt = sates.GetCount();
-	MemCopyNO(me->recSates, sates.Ptr().Ptr(), sates.GetCount() * sizeof(Map::ILocationService::SateStatus));
+	MemCopyNO(me->recSates, sates.Arr().Ptr(), sates.GetCount() * sizeof(Map::ILocationService::SateStatus));
 	me->recUpdated = true;
 	if (me->gpsTrk && record->valid)
 	{

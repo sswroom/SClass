@@ -44,7 +44,7 @@ UOSInt IO::StreamLogger::Read(const Data::ByteArray &buff)
 	UOSInt readCnt = this->stm->Read(buff);
 	if (readCnt > 0 && this->readLog)
 	{
-		this->readLog->Write(buff.Ptr().Ptr(), readCnt);
+		this->readLog->Write(buff.Arr().Ptr(), readCnt);
 	}
 	return readCnt;
 }
@@ -66,7 +66,7 @@ void *IO::StreamLogger::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 	if (reqData)
 	{
 		myReqData = MemAlloc(MyReqData, 1);
-		myReqData->buff = buff.Ptr().Ptr();
+		myReqData->buff = buff.Arr().Ptr();
 		myReqData->reqData = reqData;
 		return myReqData;
 	}

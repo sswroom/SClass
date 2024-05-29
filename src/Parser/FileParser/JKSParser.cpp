@@ -48,7 +48,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JKSParser::ParseFileHdr(NN<IO::St
 		return 0;
 	}
 	UInt8 buff[256];
-	Data::ByteBuffer cerBuff;
+	Data::ByteBuffer cerBuff(0);
 	Text::StringBuilderUTF8 sb;
 	IO::VirtualPackageFile *pkg;
 	NEW_CLASS(pkg, IO::VirtualPackageFileFast(fd->GetFullFileName()));
@@ -89,9 +89,8 @@ Optional<IO::ParsedObject> Parser::FileParser::JKSParser::ParseFileHdr(NN<IO::St
 		}
 		NN<Text::String> s = Text::String::New(sb.ToCString());
 		fd->GetRealData(ofst + 20 + aliasLen + certTypeLen, certLen, cerBuff);
-		Crypto::Cert::X509Cert *cert = (Crypto::Cert::X509Cert*)Parser::FileParser::X509Parser::ParseBuff(cerBuff.WithSize(certLen), s);
-		s->Release();
-		if (cert)
+		NN<Crypto::Cert::X509Cert> cert;
+		if (Optional<Crypto::Cert::X509Cert>::ConvertFrom(Parser::FileParser::X509Parser::ParseBuff(cerBuff.WithSize(certLen), s)).SetTo(cert))
 		{
 			pkg->AddObject(cert, Text::CStringNN(&buff[6], aliasLen), Data::Timestamp(ts, 0), 0, 0, 0);
 		}
@@ -99,6 +98,7 @@ Optional<IO::ParsedObject> Parser::FileParser::JKSParser::ParseFileHdr(NN<IO::St
 		{
 			printf("JKS: Error in parsing cert file\r\n");
 		}
+		s->Release();
 		ofst += 20 + aliasLen + certTypeLen + certLen;
 		i++;
 	}

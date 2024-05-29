@@ -22,7 +22,7 @@ UOSInt Crypto::Hash::HashStream::Read(const Data::ByteArray &buff)
 	UOSInt retSize = this->srcStm->Read(buff);
 	if (retSize > 0)
 	{
-		this->hash->Calc(buff.Ptr().Ptr(), retSize);
+		this->hash->Calc(buff.Arr().Ptr(), retSize);
 	}
 	return retSize;
 }

@@ -297,10 +297,11 @@ UTF8Char *Text::TextBinEnc::Base64Enc::EncodeBin(UTF8Char *sbuff, const UInt8 *d
 
 }
 
-UOSInt Text::TextBinEnc::Base64Enc::CalcBinSize(const UTF8Char *sbuff, UOSInt strLen) const
+UOSInt Text::TextBinEnc::Base64Enc::CalcBinSize(Text::CStringNN b64Str) const
 {
 	UOSInt cnt = 0;
 	UTF8Char c;
+	const UTF8Char *sbuff = b64Str.v;
 	while ((c = *sbuff++) != 0)
 	{
 		if (c < 0x80 && decArr[c] != 0xff)
@@ -325,14 +326,15 @@ UOSInt Text::TextBinEnc::Base64Enc::CalcBinSize(const WChar *sbuff) const
 	return cnt * 3 / 4;
 }
 
-UOSInt Text::TextBinEnc::Base64Enc::DecodeBin(const UTF8Char *b64Str, UOSInt strLen, UInt8 *dataBuff) const
+UOSInt Text::TextBinEnc::Base64Enc::DecodeBin(Text::CStringNN str, UInt8 *dataBuff) const
 {
 	UOSInt decSize = 0;
 	UInt8 b = 0;
 	UInt8 b2 = 0;
 	UInt8 code;
 	UTF8Char c;
-	const UTF8Char *endPtr = b64Str + strLen;
+	const UTF8Char *b64Str = str.v;
+	const UTF8Char *endPtr = str.GetEndPtr();
 	while (b64Str < endPtr)
 	{
 		c = *b64Str++;

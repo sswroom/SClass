@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnNewClicked(AnyType userObj)
 	UInt8 buff[32];
 	UOSInt keySize;
 	Text::TextBinEnc::Base32Enc b32;
-	keySize = b32.DecodeBin(sbKey.ToString(), sbKey.GetLength(), buff);
+	keySize = b32.DecodeBin(sbKey.ToCString(), buff);
 	NN<EntryInfo> entry;
 	entry = MemAllocNN(EntryInfo);
 	entry->name = Text::String::New(sbName.ToCString());

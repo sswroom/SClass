@@ -289,8 +289,8 @@ Bool Crypto::Cert::CertUtil::AppendSign(NN<Net::ASN1PDUBuilder> builder, NN<Net:
 {
 	UOSInt itemLen;
 	UOSInt itemOfst;
-	const UInt8 *item = builder->GetItemRAW("1", itemLen, itemOfst);
-	if (item == 0)
+	UnsafeArray<const UInt8> item;
+	if (!builder->GetItemRAW("1", itemLen, itemOfst).SetTo(item))
 	{
 		return 0;
 	}
@@ -298,7 +298,7 @@ Bool Crypto::Cert::CertUtil::AppendSign(NN<Net::ASN1PDUBuilder> builder, NN<Net:
 	{
 		UInt8 signData[256];
 		UOSInt signLen;
-		if (!ssl->Signature(key, hashType, item, itemOfst + itemLen, signData, signLen))
+		if (!ssl->Signature(key, hashType, Data::ByteArrayR(item, itemOfst + itemLen), signData, signLen))
 		{
 			return false;
 		}
@@ -494,7 +494,7 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::IssueCert(NN<Net::SSLEn
 	return cert;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(NN<Crypto::Cert::X509Cert> cert)
+Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::FindIssuer(NN<Crypto::Cert::X509Cert> cert)
 {
 	UInt8 dataBuff[8192];
 	UTF8Char sbuff[512];
@@ -535,7 +535,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(NN<Crypto::Cert::X509
 	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	IO::Path::PathType pt;
 	UInt64 fileSize;
-	Crypto::Cert::X509File *x509;
+	NN<Crypto::Cert::X509File> x509;
 	if (sess)
 	{
 		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize)) != 0)
@@ -545,24 +545,23 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(NN<Crypto::Cert::X509
 				if (IO::FileStream::LoadFile(CSTRP(sbuff, sptr2), dataBuff, sizeof(dataBuff)) == fileSize)
 				{
 					NN<Text::String> s = Text::String::New(sbuff, (UOSInt)(sptr2 - sbuff));
-					x509 = Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR(dataBuff, (UOSInt)fileSize), s);
-					s->Release();
-					if (x509)
+					if (Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR(dataBuff, (UOSInt)fileSize), s).SetTo(x509))
 					{
+						s->Release();
 						if (x509->GetFileType() != Crypto::Cert::X509File::FileType::Cert)
 						{
-							DEL_CLASS(x509);
+							x509.Delete();
 						}
 						else
 						{
-							Crypto::Cert::X509Cert *srchCert = (Crypto::Cert::X509Cert*)x509;
+							NN<Crypto::Cert::X509Cert> srchCert = NN<Crypto::Cert::X509Cert>::ConvertFrom(x509);
 							if (!srchCert->GetKeyId(BYTEARR(keyId)))
 							{
-								DEL_CLASS(srchCert);
+								srchCert.Delete();
 							}
 							else if (!BytesEquals(keyId, ext.authKeyId, 20))
 							{
-								DEL_CLASS(srchCert);
+								srchCert.Delete();
 							}
 							else
 							{
@@ -571,6 +570,10 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(NN<Crypto::Cert::X509
 								return srchCert;
 							}
 						}
+					}
+					else
+					{
+						s->Release();
 					}
 				}
 			}

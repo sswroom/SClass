@@ -74,7 +74,7 @@ UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::ParseProtocol(NN<IO::Stream> stm, AnyT
 				if (packetSize > buff.GetSize())
 					return buff.GetSize();
 
-				crcVal = CalCheck(buff.Ptr().Ptr(), packetSize - 2);
+				crcVal = CalCheck(buff.Arr().Ptr(), packetSize - 2);
 				if ((crcVal & 0xffff) == *(UInt16*)&buff[packetSize - 2])
 				{
 					this->listener->DataParsed(stm, stmObj, *(UInt16*)&buff[4], 0, &buff[6], packetSize - 8);
@@ -94,7 +94,7 @@ UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::ParseProtocol(NN<IO::Stream> stm, AnyT
 
 				Sync::MutexUsage mutUsage(this->crcMut);
 				this->crc.Clear();
-				this->crc.Calc(buff.Ptr().Ptr(), packetSize - 2);
+				this->crc.Calc(buff.Arr().Ptr(), packetSize - 2);
 				this->crc.GetValue((UInt8*)&crcVal);
 				mutUsage.EndUse();
 				if ((crcVal & 0xffff) == *(UInt16*)&buff[packetSize - 2])

@@ -32,10 +32,10 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnResultSelChg(AnyType us
 	Data::DateTime dt;
 	Text::StringBuilderUTF8 sb;
 	me->txtCommunity->SetText({packet->trap.community, Text::StrCharCnt(packet->trap.community)});
-	Net::ASN1Util::OIDToString(packet->trap.entOID, packet->trap.entOIDLen, sb);
+	Net::ASN1Util::OIDToString(Data::ByteArrayR(packet->trap.entOID, packet->trap.entOIDLen), sb);
 	me->txtEnterpriseOID->SetText(sb.ToCString());
 	sb.ClearStr();
-	Net::ASN1OIDDB::OIDToNameString(packet->trap.entOID, packet->trap.entOIDLen, sb);
+	Net::ASN1OIDDB::OIDToNameString(Data::ByteArrayR(packet->trap.entOID, packet->trap.entOIDLen), sb);
 	me->txtEnterpriseName->SetText(sb.ToCString());
 	sptr = Net::SocketUtil::GetAddrName(sbuff, packet->addr);
 	me->txtRemoteIP->SetText(CSTRP(sbuff, sptr));
@@ -62,16 +62,16 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnResultSelChg(AnyType us
 	{
 		item = packet->itemList.GetItemNoCheck(i);
 		sb.ClearStr();
-		Net::ASN1Util::OIDToString(item->oid, item->oidLen, sb);
+		Net::ASN1Util::OIDToString(Data::ByteArrayR(item->oid, item->oidLen), sb);
 		me->lvResults->AddItem(sb.ToCString(), 0);
 		sb.ClearStr();
-		Net::ASN1OIDDB::OIDToNameString(item->oid, item->oidLen, sb);
+		Net::ASN1OIDDB::OIDToNameString(Data::ByteArrayR(item->oid, item->oidLen), sb);
 		me->lvResults->SetSubItem(i, 1, sb.ToCString());
 		me->lvResults->SetSubItem(i, 2, Net::SNMPUtil::TypeGetName(item->valType));
 		if (item->valBuff)
 		{
 			sb.ClearStr();
-			Net::SNMPInfo::ValueToString(item->valType, item->valBuff, item->valLen, sb);
+			Net::SNMPInfo::ValueToString(item->valType, Data::ByteArrayR(item->valBuff, item->valLen), sb);
 			me->lvResults->SetSubItem(i, 3, sb.ToCString());
 		}
 		i++;

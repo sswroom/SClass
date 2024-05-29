@@ -75,7 +75,7 @@ Optional<IO::ParsedObject> Parser::FileParser::EVTXParser::ParseFileHdr(NN<IO::S
 				sb.AppendC(UTF8STRC("RecordId = "));
 				sb.AppendU64(evtRecId);
 				sbDetail.ClearStr();
-				ParseBinXML(buff.Ptr(), dataOfst + 24, dataOfst + recSize - 28, sbDetail, 0, 0);
+				ParseBinXML(buff.Arr(), dataOfst + 24, dataOfst + recSize - 28, sbDetail, 0, 0);
 				logFile->AddLog(ts, sb.ToCString(), sbDetail.ToCString());
 
 				dataOfst += recSize;

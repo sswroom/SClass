@@ -6,37 +6,47 @@ namespace Data
 {
 	class ByteBuffer : public ByteArray
 	{
+	private:
+		Bool deleted;
 	public:
-		ByteBuffer() : ByteArray(0, 0)
+		ByteBuffer() : ByteArray(MemAllocArr(UInt8, 0), 0)
 		{
+			this->deleted = false;
 		}
 
 		ByteBuffer(UOSInt buffSize) : ByteArray(MemAllocArr(UInt8, buffSize), buffSize)
 		{
+			this->deleted = false;
 		}
 
 		ByteBuffer(Data::ByteArrayR buff) : ByteArray(MemAllocArr(UInt8, buff.GetSize()), buff.GetSize())
 		{
-			MemCopyNO(this->buff.Ptr(), buff.Ptr().Ptr(), buff.GetSize());
+			this->deleted = false;
+			MemCopyNO(this->buff.Ptr(), buff.Arr().Ptr(), buff.GetSize());
 		}
 
 		virtual ~ByteBuffer()
 		{
-			if (this->buff.Ptr())
+			if (this->deleted)
+			{
 				MemFreeArr(this->buff);
+			}
 		}
 
 		void ReplaceBy(ByteBuffer &buff)
 		{
-			if (this->buff.Ptr())
-				MemFreeArr(this->buff);
-			this->buff = buff.buff;
-			this->buffSize = buff.buffSize;
+			if (!buff.deleted)
+			{
+				if (this->buff.Ptr())
+					MemFreeArr(this->buff);
+				this->buff = buff.buff;
+				this->buffSize = buff.buffSize;
 #if defined(CHECK_RANGE)
-			this->prevSize = buff.prevSize;
+				this->prevSize = buff.prevSize;
 #endif
-			buff.buff = 0;
-			buff.buffSize = 0;
+				buff.deleted = true;
+				buff.buffSize = 0;
+			}
 		}
 
 		void ChangeSize(UOSInt buffSize)
@@ -52,10 +62,12 @@ namespace Data
 
 		void Delete()
 		{
-			if (this->buff.Ptr())
+			if (!this->deleted)
+			{
 				MemFreeArr(this->buff);
-			this->buff = 0;
-			this->buffSize = 0;
+				this->buffSize = 0;
+				this->deleted = true;
+			}
 #if defined(CHECK_RANGE)
 			this->prevSize = 0;
 #endif

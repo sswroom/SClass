@@ -41,8 +41,8 @@ namespace Data
 		void CopyItems(UOSInt destIndex, UOSInt srcIndex, UOSInt count);
 		UOSInt GetRange(UnsafeArray<T> outArr, UOSInt index, UOSInt cnt) const;
 		UOSInt RemoveRange(UOSInt index, UOSInt cnt);
-		virtual UnsafeArray<UnsafeArray<T>> GetPtr(OutParam<UOSInt> arraySize) const;
-		virtual UnsafeArray<UnsafeArray<T>> Ptr() const;
+		virtual UnsafeArray<UnsafeArray<T>> GetArr(OutParam<UOSInt> arraySize) const;
+		virtual UnsafeArray<UnsafeArray<T>> Arr() const;
 		UnsafeArrayOpt<T> Pop();
 		ArrayListArr<T> &operator =(const ArrayListArr<T> &v);
 	};
@@ -394,13 +394,13 @@ namespace Data
 		return endIndex - startIndex;
 	}
 
-	template <class T> UnsafeArray<UnsafeArray<T>> ArrayListArr<T>::GetPtr(OutParam<UOSInt> arraySize) const
+	template <class T> UnsafeArray<UnsafeArray<T>> ArrayListArr<T>::GetArr(OutParam<UOSInt> arraySize) const
 	{
 		arraySize.Set(this->objCnt);
 		return this->arr;
 	}
 
-	template <class T> UnsafeArray<UnsafeArray<T>> ArrayListArr<T>::Ptr() const
+	template <class T> UnsafeArray<UnsafeArray<T>> ArrayListArr<T>::Arr() const
 	{
 		return this->arr;
 	}

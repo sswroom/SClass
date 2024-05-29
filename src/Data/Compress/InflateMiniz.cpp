@@ -18,7 +18,7 @@ Data::Compress::Inflate::~Inflate()
 Bool Data::Compress::Inflate::Decompress(Data::ByteArray destBuff, OutParam<UOSInt> outDestBuffSize, Data::ByteArrayR srcBuff)
 {
 	mz_ulong buffSize = (mz_ulong)destBuff.GetSize();
-	Int32 ret = mz_uncompress(destBuff.Ptr().Ptr(), &buffSize, srcBuff.Ptr().Ptr(), (mz_ulong)srcBuff.GetSize());
+	Int32 ret = mz_uncompress(destBuff.Arr().Ptr(), &buffSize, srcBuff.Arr().Ptr(), (mz_ulong)srcBuff.GetSize());
 	if (ret == MZ_OK)
 	{
 		outDestBuffSize.Set(buffSize);
@@ -39,7 +39,7 @@ Bool Data::Compress::Inflate::Decompress(NN<IO::Stream> destStm, NN<IO::StreamDa
 	writeBuff = MemAlloc(UInt8, 1048576);
 
 	MemClear(&stm, sizeof(stm));
-	stm.next_in = readBuff.Ptr().Ptr();
+	stm.next_in = readBuff.Arr().Ptr();
 	stm.avail_in = 0;
 	stm.next_out = writeBuff;
 	stm.avail_out = 1048576;
@@ -51,7 +51,7 @@ Bool Data::Compress::Inflate::Decompress(NN<IO::Stream> destStm, NN<IO::StreamDa
 			break;
 		srcOfst += srcSize;
 
-		stm.next_in = readBuff.Ptr().Ptr();
+		stm.next_in = readBuff.Arr().Ptr();
 		stm.avail_in = (unsigned int)srcSize;
 		int ret = MZ_STREAM_END;
 		while (stm.avail_in > 0)

@@ -138,7 +138,7 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NN<Text::XMLReader> reade
 					if (lyr == 0)
 					{
 						colCnt = nameList.GetCount();
-						ccols = nameList.Ptr();
+						ccols = nameList.Arr();
 						NN<Math::CoordinateSystem> csys;
 						if (!env.csys.SetTo(csys))
 						{
@@ -150,7 +150,7 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NN<Text::XMLReader> reade
 					if (colCnt == valList.GetCount())
 					{
 						UnsafeArray<Text::String*> scols;
-						scols = valList.Ptr();
+						scols = valList.Arr();
 						lyr->AddVector(nnvec, scols.Ptr());
 					}
 					else

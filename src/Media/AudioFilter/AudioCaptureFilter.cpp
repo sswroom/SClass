@@ -82,13 +82,13 @@ UOSInt Media::AudioFilter::AudioCaptureFilter::ReadBlock(Data::ByteArray blk)
 		}
 		else if (this->readBuffSize + blk.GetSize() > BUFFSIZE)
 		{
-			MemCopyNO(&this->readBuff[this->readBuffSize], blk.Ptr().Ptr(), BUFFSIZE - this->readBuffSize);
+			MemCopyNO(&this->readBuff[this->readBuffSize], blk.Arr().Ptr(), BUFFSIZE - this->readBuffSize);
 			this->readBuffSize = BUFFSIZE;
 			this->evt.Set();
 		}
 		else
 		{
-			MemCopyNO(&this->readBuff[this->readBuffSize], blk.Ptr().Ptr(), blk.GetSize());
+			MemCopyNO(&this->readBuff[this->readBuffSize], blk.Arr().Ptr(), blk.GetSize());
 			this->readBuffSize += blk.GetSize();
 			this->evt.Set();
 		}

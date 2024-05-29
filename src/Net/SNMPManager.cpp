@@ -116,7 +116,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 		}
 	}
 	NN<Net::SNMPManager::AgentInfo> agent;
-	err = this->cli->V1GetRequest(addr, community, UTF8STRC("1.3.6.1.2.1.1.1.0"), itemList); //sysDescr
+	err = this->cli->V1GetRequest(addr, community, CSTR("1.3.6.1.2.1.1.1.0"), itemList); //sysDescr
 	i = itemList.GetCount();
 	if (err == Net::SNMPUtil::ES_NOERROR && i == 1)
 	{
@@ -148,7 +148,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 	FreeAllItems(itemList);
 	if (optagent.SetTo(agent))
 	{
-		err = this->cli->V1GetRequest(addr, community, UTF8STRC("1.3.6.1.2.1.1.2.0"), itemList); //sysObjectID
+		err = this->cli->V1GetRequest(addr, community, CSTR("1.3.6.1.2.1.1.2.0"), itemList); //sysObjectID
 		if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 		{
 			item = itemList.GetItemNoCheck(0);
@@ -160,7 +160,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 		}
 		FreeAllItems(itemList);
 
-		err = this->cli->V1GetRequest(addr, community, UTF8STRC("1.3.6.1.2.1.1.4.0"), itemList); //sysContact
+		err = this->cli->V1GetRequest(addr, community, CSTR("1.3.6.1.2.1.1.4.0"), itemList); //sysContact
 		if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 		{
 			item = itemList.GetItemNoCheck(0);
@@ -171,7 +171,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 		}
 		FreeAllItems(itemList);
 
-		err = this->cli->V1GetRequest(addr, community, UTF8STRC("1.3.6.1.2.1.1.5.0"), itemList); //sysName
+		err = this->cli->V1GetRequest(addr, community, CSTR("1.3.6.1.2.1.1.5.0"), itemList); //sysName
 		if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 		{
 			item = itemList.GetItemNoCheck(0);
@@ -182,7 +182,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 		}
 		FreeAllItems(itemList);
 
-		err = this->cli->V1GetRequest(addr, community, UTF8STRC("1.3.6.1.2.1.1.6.0"), itemList); //sysLocation
+		err = this->cli->V1GetRequest(addr, community, CSTR("1.3.6.1.2.1.1.6.0"), itemList); //sysLocation
 		if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 		{
 			item = itemList.GetItemNoCheck(0);
@@ -197,7 +197,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 		while (true)
 		{
 			sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.2.1.2.2.1.6.")), i);
-			err = this->cli->V1GetRequest(addr, community, sbuff, (UOSInt)(sptr - sbuff), itemList); //sysLocation
+			err = this->cli->V1GetRequest(addr, community, CSTRP(sbuff, sptr), itemList); //sysLocation
 			if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 			{
 				item = itemList.GetItemNoCheck(0);
@@ -227,8 +227,8 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 			UInt8 oidPDU[64];
 			if (!found)
 			{
-				pduSize = Net::ASN1Util::OIDText2PDU(UTF8STRC("1.3.6.1.4.1.24681"), oidPDU); //QNAP
-				if (Net::ASN1Util::OIDCompare(oidPDU, pduSize, agent->objId, agent->objIdLen) == 0)
+				pduSize = Net::ASN1Util::OIDText2PDU(CSTR("1.3.6.1.4.1.24681"), oidPDU); //QNAP
+				if (Net::ASN1Util::OIDCompare(Data::ByteArrayR(oidPDU, pduSize), Data::ByteArrayR(agent->objId, agent->objIdLen)) == 0)
 				{
 					NN<ReadingInfo> reading;
 					Int32 slotCnt = 0;
@@ -237,7 +237,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 					found = true;
 					agent->vendor = Text::String::New(UTF8STRC("QNAP")).Ptr();
 
-					err = this->cli->V1GetRequest(addr, community, UTF8STRC("1.3.6.1.4.1.24681.1.4.1.1.1.1.1.2.1.5.1"), itemList); //enclosureSlot.1
+					err = this->cli->V1GetRequest(addr, community, CSTR("1.3.6.1.4.1.24681.1.4.1.1.1.1.1.2.1.5.1"), itemList); //enclosureSlot.1
 					if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 					{
 						item = itemList.GetItemNoCheck(0);
@@ -245,7 +245,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 					}
 					FreeAllItems(itemList);
 
-					err = this->cli->V1GetRequest(addr, community, UTF8STRC("1.3.6.1.4.1.24681.1.4.1.1.1.1.1.2.1.3.1"), itemList); //enclosureModel.1
+					err = this->cli->V1GetRequest(addr, community, CSTR("1.3.6.1.4.1.24681.1.4.1.1.1.1.1.2.1.3.1"), itemList); //enclosureModel.1
 					if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 					{
 						item = itemList.GetItemNoCheck(0);
@@ -256,7 +256,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 					}
 					FreeAllItems(itemList);
 
-					err = this->cli->V1GetRequest(addr, community, UTF8STRC("1.3.6.1.4.1.24681.1.4.1.1.1.1.1.2.1.7.1"), itemList); //enclosureSystemTemp.1
+					err = this->cli->V1GetRequest(addr, community, CSTR("1.3.6.1.4.1.24681.1.4.1.1.1.1.1.2.1.7.1"), itemList); //enclosureSystemTemp.1
 					if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 					{
 						item = itemList.GetItemNoCheck(0);
@@ -265,7 +265,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 							reading = MemAllocNN(ReadingInfo);
 							reading->name = Text::String::New(UTF8STRC("System Temp"));
 							reading->index = 0;
-							reading->objIdLen = Net::ASN1Util::OIDText2PDU(UTF8STRC("1.3.6.1.4.1.24681.1.4.1.1.1.1.1.2.1.7.1"), reading->objId);
+							reading->objIdLen = Net::ASN1Util::OIDText2PDU(CSTR("1.3.6.1.4.1.24681.1.4.1.1.1.1.1.2.1.7.1"), reading->objId);
 							reading->mulVal = 1.0;
 							reading->invVal = -1;
 							reading->readingType = SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE;
@@ -276,7 +276,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 					}
 					FreeAllItems(itemList);
 
-					err = this->cli->V1GetRequest(addr, community, UTF8STRC("1.3.6.1.4.1.24681.1.4.1.1.1.1.2.2.1.5.1"), itemList); //systemFanSpeed.1
+					err = this->cli->V1GetRequest(addr, community, CSTR("1.3.6.1.4.1.24681.1.4.1.1.1.1.2.2.1.5.1"), itemList); //systemFanSpeed.1
 					if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 					{
 						item = itemList.GetItemNoCheck(0);
@@ -285,7 +285,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 							reading = MemAllocNN(ReadingInfo);
 							reading->name = Text::String::New(UTF8STRC("System Fan Speed"));
 							reading->index = 1;
-							reading->objIdLen = Net::ASN1Util::OIDText2PDU(UTF8STRC("1.3.6.1.4.1.24681.1.4.1.1.1.1.2.2.1.5.1"), reading->objId);
+							reading->objIdLen = Net::ASN1Util::OIDText2PDU(CSTR("1.3.6.1.4.1.24681.1.4.1.1.1.1.2.2.1.5.1"), reading->objId);
 							reading->mulVal = 1.0;
 							reading->invVal = -1;
 							reading->readingType = SSWR::SMonitor::SAnalogSensor::RT_ENGINERPM;
@@ -296,7 +296,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 					}
 					FreeAllItems(itemList);
 
-					err = this->cli->V1GetRequest(addr, community, UTF8STRC("1.3.6.1.4.1.24681.1.4.1.1.1.1.3.2.1.5.1"), itemList); //systemPowerFanSpeed.1
+					err = this->cli->V1GetRequest(addr, community, CSTR("1.3.6.1.4.1.24681.1.4.1.1.1.1.3.2.1.5.1"), itemList); //systemPowerFanSpeed.1
 					if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 					{
 						item = itemList.GetItemNoCheck(0);
@@ -305,7 +305,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 							reading = MemAllocNN(ReadingInfo);
 							reading->name = Text::String::New(UTF8STRC("Power Fan Speed"));
 							reading->index = 2;
-							reading->objIdLen = Net::ASN1Util::OIDText2PDU(UTF8STRC("1.3.6.1.4.1.24681.1.4.1.1.1.1.3.2.1.5.1"), reading->objId);
+							reading->objIdLen = Net::ASN1Util::OIDText2PDU(CSTR("1.3.6.1.4.1.24681.1.4.1.1.1.1.3.2.1.5.1"), reading->objId);
 							reading->mulVal = 1.0;
 							reading->invVal = -1;
 							reading->readingType = SSWR::SMonitor::SAnalogSensor::RT_ENGINERPM;
@@ -316,7 +316,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 					}
 					FreeAllItems(itemList);
 
-					err = this->cli->V1GetRequest(addr, community, UTF8STRC("1.3.6.1.4.1.24681.1.4.1.1.1.1.3.2.1.6.1"), itemList); //systemPowerTemp.1
+					err = this->cli->V1GetRequest(addr, community, CSTR("1.3.6.1.4.1.24681.1.4.1.1.1.1.3.2.1.6.1"), itemList); //systemPowerTemp.1
 					if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 					{
 						item = itemList.GetItemNoCheck(0);
@@ -325,7 +325,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 							reading = MemAllocNN(ReadingInfo);
 							reading->name = Text::String::New(UTF8STRC("Power Temp"));
 							reading->index = 3;
-							reading->objIdLen = Net::ASN1Util::OIDText2PDU(UTF8STRC("1.3.6.1.4.1.24681.1.4.1.1.1.1.3.2.1.6.1"), reading->objId);
+							reading->objIdLen = Net::ASN1Util::OIDText2PDU(CSTR("1.3.6.1.4.1.24681.1.4.1.1.1.1.3.2.1.6.1"), reading->objId);
 							reading->mulVal = 1.0;
 							reading->invVal = -1;
 							reading->readingType = SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE;
@@ -344,7 +344,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 					while (i < (UInt32)slotCnt)
 					{
 						sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.6.")), i);
-						err = this->cli->V1GetRequest(addr, community, sbuff, (UOSInt)(sptr - sbuff), itemList); //diskTemperature
+						err = this->cli->V1GetRequest(addr, community, CSTRP(sbuff, sptr), itemList); //diskTemperature
 						if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 						{
 							item = itemList.GetItemNoCheck(0);
@@ -353,7 +353,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 								reading = MemAllocNN(ReadingInfo);
 								reading->name = Text::String::NewEmpty();
 								reading->index = 4 + i;
-								reading->objIdLen = Net::ASN1Util::OIDText2PDU(sbuff, (UOSInt)(sptr - sbuff), reading->objId);
+								reading->objIdLen = Net::ASN1Util::OIDText2PDU(CSTRP(sbuff, sptr), reading->objId);
 								reading->mulVal = 1.0;
 								reading->invVal = -1;
 								reading->readingType = SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE;
@@ -366,7 +366,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 								sb.AppendC(UTF8STRC("Disk "));
 								sb.AppendUOSInt(i);
 								sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.8.")), i);
-								err = this->cli->V1GetRequest(addr, community, sbuff, (UOSInt)(sptr - sbuff), itemList); //diskModel
+								err = this->cli->V1GetRequest(addr, community, CSTRP(sbuff, sptr), itemList); //diskModel
 								if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 								{
 									item = itemList.GetItemNoCheck(0);
@@ -380,7 +380,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 								reading->name = Text::String::New(sb.ToString(), sb.GetLength());
 
 								sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.2.")), i);
-								err = this->cli->V1GetRequest(addr, community, sbuff, (UOSInt)(sptr - sbuff), itemList); //diskID
+								err = this->cli->V1GetRequest(addr, community, CSTRP(sbuff, sptr), itemList); //diskID
 								if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 								{
 									item = itemList.GetItemNoCheck(0);
@@ -399,8 +399,8 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 			}
 			if (!found)
 			{
-				pduSize = Net::ASN1Util::OIDText2PDU(UTF8STRC("1.3.6.1.4.1.8072.3.2.10"), oidPDU); //Linux
-				if (Net::ASN1Util::OIDCompare(oidPDU, pduSize, agent->objId, agent->objIdLen) == 0)
+				pduSize = Net::ASN1Util::OIDText2PDU(CSTR("1.3.6.1.4.1.8072.3.2.10"), oidPDU); //Linux
+				if (Net::ASN1Util::OIDCompare(Data::ByteArrayR(oidPDU, pduSize), Data::ByteArrayR(agent->objId, agent->objIdLen)) == 0)
 				{
 					if (agent->mac[0] == 0x00 && agent->mac[1] == 0x11 && agent->mac[2] == 0x32) //Synology
 					{
@@ -410,7 +410,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 						found = true;
 						agent->vendor = Text::String::New(UTF8STRC("Synology")).Ptr();
 
-						err = this->cli->V1GetRequest(addr, community, UTF8STRC("1.3.6.1.4.1.6574.1.5.1.0"), itemList); //modelName.1
+						err = this->cli->V1GetRequest(addr, community, CSTR("1.3.6.1.4.1.6574.1.5.1.0"), itemList); //modelName.1
 						if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 						{
 							item = itemList.GetItemNoCheck(0);
@@ -421,7 +421,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 						}
 						FreeAllItems(itemList);
 
-						err = this->cli->V1GetRequest(addr, community, UTF8STRC("1.3.6.1.4.1.6574.1.2.0"), itemList); //temperature.0
+						err = this->cli->V1GetRequest(addr, community, CSTR("1.3.6.1.4.1.6574.1.2.0"), itemList); //temperature.0
 						if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 						{
 							item = itemList.GetItemNoCheck(0);
@@ -430,7 +430,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 								reading = MemAllocNN(ReadingInfo);
 								reading->name = Text::String::New(UTF8STRC("System Temp"));
 								reading->index = 0;
-								reading->objIdLen = Net::ASN1Util::OIDText2PDU(UTF8STRC("1.3.6.1.4.1.6574.1.2.0"), reading->objId);
+								reading->objIdLen = Net::ASN1Util::OIDText2PDU(CSTR("1.3.6.1.4.1.6574.1.2.0"), reading->objId);
 								reading->mulVal = 1.0;
 								reading->invVal = 0;
 								reading->readingType = SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE;
@@ -445,7 +445,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 						while (true)
 						{
 							sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.6574.2.1.1.6.")), i);
-							err = this->cli->V1GetRequest(addr, community, sbuff, (UOSInt)(sptr - sbuff), itemList); //diskTemperature
+							err = this->cli->V1GetRequest(addr, community, CSTRP(sbuff, sptr), itemList); //diskTemperature
 							if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 							{
 								item = itemList.GetItemNoCheck(0);
@@ -454,7 +454,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 									reading = MemAllocNN(ReadingInfo);
 									reading->name = Text::String::NewEmpty();
 									reading->index = 4 + i;
-									reading->objIdLen = Net::ASN1Util::OIDText2PDU(sbuff, (UOSInt)(sptr - sbuff), reading->objId);
+									reading->objIdLen = Net::ASN1Util::OIDText2PDU(CSTRP(sbuff, sptr), reading->objId);
 									reading->mulVal = 1.0;
 									reading->invVal = 0;
 									reading->readingType = SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE;
@@ -465,7 +465,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 
 									sb.ClearStr();
 									sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.6574.2.1.1.2.")), i);
-									err = this->cli->V1GetRequest(addr, community, sbuff, (UOSInt)(sptr - sbuff), itemList); //diskID
+									err = this->cli->V1GetRequest(addr, community, CSTRP(sbuff, sptr), itemList); //diskID
 									if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 									{
 										item = itemList.GetItemNoCheck(0);
@@ -489,7 +489,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 									FreeAllItems(itemList);
 
 									sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.6574.2.1.1.3.")), i);
-									err = this->cli->V1GetRequest(addr, community, sbuff, (UOSInt)(sptr - sbuff), itemList); //diskModel
+									err = this->cli->V1GetRequest(addr, community, CSTRP(sbuff, sptr), itemList); //diskModel
 									if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 									{
 										item = itemList.GetItemNoCheck(0);
@@ -517,7 +517,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 			}
 			if (!found)
 			{
-				pduSize = Net::ASN1Util::OIDText2PDU(UTF8STRC("1.3.6.1.4.1.1602"), oidPDU); //Canon
+				pduSize = Net::ASN1Util::OIDText2PDU(CSTR("1.3.6.1.4.1.1602"), oidPDU); //Canon
 				if (Net::ASN1Util::OIDStartsWith(agent->objId, agent->objIdLen, oidPDU, pduSize))
 				{
 					Int32 iVal;
@@ -526,7 +526,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 					found = true;
 					agent->vendor = Text::String::New(UTF8STRC("Canon")).Ptr();
 
-					err = this->cli->V1GetRequest(addr, community, UTF8STRC("1.3.6.1.4.1.1602.1.1.1.2.0"), itemList); //enclosureSlot.1
+					err = this->cli->V1GetRequest(addr, community, CSTR("1.3.6.1.4.1.1602.1.1.1.2.0"), itemList); //enclosureSlot.1
 					if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 					{
 						item = itemList.GetItemNoCheck(0);
@@ -541,7 +541,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 					while (true)
 					{
 						sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.1602.1.11.2.1.1.3.")), i);
-						err = this->cli->V1GetRequest(addr, community, sbuff, (UOSInt)(sptr - sbuff), itemList); //
+						err = this->cli->V1GetRequest(addr, community, CSTRP(sbuff, sptr), itemList); //
 						if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 						{
 							item = itemList.GetItemNoCheck(0);
@@ -550,7 +550,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 								reading = MemAllocNN(ReadingInfo);
 								reading->name = Text::String::NewEmpty();
 								reading->index = i - 1;
-								reading->objIdLen = Net::ASN1Util::OIDText2PDU(sbuff, (UOSInt)(sptr - sbuff), reading->objId);
+								reading->objIdLen = Net::ASN1Util::OIDText2PDU(CSTRP(sbuff, sptr), reading->objId);
 								reading->mulVal = 1.0;
 								reading->invVal = -1;
 								reading->readingType = SSWR::SMonitor::SAnalogSensor::RT_COUNT;
@@ -560,7 +560,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 								FreeAllItems(itemList);
 
 								sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.1602.1.11.2.1.1.2.")), i);
-								err = this->cli->V1GetRequest(addr, community, sbuff, (UOSInt)(sptr - sbuff), itemList);
+								err = this->cli->V1GetRequest(addr, community, CSTRP(sbuff, sptr), itemList);
 								if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 								{
 									item = itemList.GetItemNoCheck(0);
@@ -590,13 +590,13 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 			}
 			if (!found)
 			{
-				pduSize = Net::ASN1Util::OIDText2PDU(UTF8STRC("1.3.6.1.4.1.26696"), oidPDU); //HP
+				pduSize = Net::ASN1Util::OIDText2PDU(CSTR("1.3.6.1.4.1.26696"), oidPDU); //HP
 				if (Net::ASN1Util::OIDStartsWith(agent->objId, agent->objIdLen, oidPDU, pduSize))
 				{
 					found = true;
 					agent->vendor = Text::String::New(UTF8STRC("HP")).Ptr();
 
-					err = this->cli->V1GetRequest(addr, community, UTF8STRC("1.3.6.1.4.1.11.2.4.3.1.10.0"), itemList); //npSysModelNumber.0
+					err = this->cli->V1GetRequest(addr, community, CSTR("1.3.6.1.4.1.11.2.4.3.1.10.0"), itemList); //npSysModelNumber.0
 					if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 					{
 						item = itemList.GetItemNoCheck(0);
@@ -610,7 +610,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 			}
 			if (!found)
 			{
-				pduSize = Net::ASN1Util::OIDText2PDU(UTF8STRC("1.3.6.1.4.1.3854.1"), oidPDU); //AKCP sensorProbe
+				pduSize = Net::ASN1Util::OIDText2PDU(CSTR("1.3.6.1.4.1.3854.1"), oidPDU); //AKCP sensorProbe
 				if (Net::ASN1Util::OIDStartsWith(agent->objId, agent->objIdLen, oidPDU, pduSize))
 				{
 					NN<ReadingInfo> reading;
@@ -618,7 +618,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 					found = true;
 					agent->vendor = Text::String::New(UTF8STRC("AKCP")).Ptr();
 
-					err = this->cli->V1GetRequest(addr, community, UTF8STRC("1.3.6.1.4.1.3854.1.1.8.0"), itemList); //npSysModelNumber.0
+					err = this->cli->V1GetRequest(addr, community, CSTR("1.3.6.1.4.1.3854.1.1.8.0"), itemList); //npSysModelNumber.0
 					if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 					{
 						item = itemList.GetItemNoCheck(0);
@@ -633,7 +633,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 					while (true)
 					{
 						sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.3854.1.2.2.1.16.1.5.")), i);
-						err = this->cli->V1GetRequest(addr, community, sbuff, (UOSInt)(sptr - sbuff), itemList); //
+						err = this->cli->V1GetRequest(addr, community, CSTRP(sbuff, sptr), itemList); //
 						if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 						{
 							item = itemList.GetItemNoCheck(0);
@@ -645,7 +645,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 									reading = MemAllocNN(ReadingInfo);
 									reading->name = Text::String::NewEmpty();
 									reading->index = i;
-									reading->objIdLen = Net::ASN1Util::OIDText2PDU(sbuff, (UOSInt)(sptr - sbuff), reading->objId);
+									reading->objIdLen = Net::ASN1Util::OIDText2PDU(CSTRP(sbuff, sptr), reading->objId);
 									reading->mulVal = 0.1;
 									reading->invVal = -512;
 									reading->readingType = SSWR::SMonitor::SAnalogSensor::RT_TEMPERATURE;
@@ -654,7 +654,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 									agent->readingList.Add(reading);
 									FreeAllItems(itemList);
 
-									err = this->cli->V1GetRequest(addr, community, sbuff, (UOSInt)(sptr - sbuff), itemList);
+									err = this->cli->V1GetRequest(addr, community, CSTRP(sbuff, sptr), itemList);
 									if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 									{
 										item = itemList.GetItemNoCheck(0);
@@ -667,7 +667,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 									FreeAllItems(itemList);
 
 									sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.3854.1.2.2.1.16.1.1.")), i);
-									err = this->cli->V1GetRequest(addr, community, sbuff, (UOSInt)(sptr - sbuff), itemList);
+									err = this->cli->V1GetRequest(addr, community, CSTRP(sbuff, sptr), itemList);
 									if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 									{
 										item = itemList.GetItemNoCheck(0);
@@ -699,7 +699,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 					while (true)
 					{
 						sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.3854.1.2.2.1.17.1.5.")), i);
-						err = this->cli->V1GetRequest(addr, community, sbuff, (UOSInt)(sptr - sbuff), itemList); //
+						err = this->cli->V1GetRequest(addr, community, CSTRP(sbuff, sptr), itemList); //
 						if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 						{
 							item = itemList.GetItemNoCheck(0);
@@ -711,7 +711,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 									reading = MemAllocNN(ReadingInfo);
 									reading->name = Text::String::NewEmpty();
 									reading->index = i;
-									reading->objIdLen = Net::ASN1Util::OIDText2PDU(sbuff, (UOSInt)(sptr - sbuff), reading->objId);
+									reading->objIdLen = Net::ASN1Util::OIDText2PDU(CSTRP(sbuff, sptr), reading->objId);
 									reading->mulVal = 1.0;
 									reading->invVal = -1;
 									reading->readingType = SSWR::SMonitor::SAnalogSensor::RT_RHUMIDITY;
@@ -720,7 +720,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 									agent->readingList.Add(reading);
 									FreeAllItems(itemList);
 
-									err = this->cli->V1GetRequest(addr, community, sbuff, (UOSInt)(sptr - sbuff), itemList);
+									err = this->cli->V1GetRequest(addr, community, CSTRP(sbuff, sptr), itemList);
 									if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 									{
 										item = itemList.GetItemNoCheck(0);
@@ -733,7 +733,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 									FreeAllItems(itemList);
 
 									sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.3854.1.2.2.1.17.1.1.")), i);
-									err = this->cli->V1GetRequest(addr, community, sbuff, (UOSInt)(sptr - sbuff), itemList);
+									err = this->cli->V1GetRequest(addr, community, CSTRP(sbuff, sptr), itemList);
 									if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 									{
 										item = itemList.GetItemNoCheck(0);
@@ -765,7 +765,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 					while (true)
 					{
 						sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.3854.1.2.2.1.18.1.4.")), i);
-						err = this->cli->V1GetRequest(addr, community, sbuff, (UOSInt)(sptr - sbuff), itemList); //
+						err = this->cli->V1GetRequest(addr, community, CSTRP(sbuff, sptr), itemList); //
 						if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 						{
 							item = itemList.GetItemNoCheck(0);
@@ -777,7 +777,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 									reading = MemAllocNN(ReadingInfo);
 									reading->name = Text::String::NewEmpty();
 									reading->index = i;
-									reading->objIdLen = Net::ASN1Util::OIDText2PDU(sbuff, (UOSInt)(sptr - sbuff), reading->objId);
+									reading->objIdLen = Net::ASN1Util::OIDText2PDU(CSTRP(sbuff, sptr), reading->objId);
 									reading->mulVal = 1.0;
 									reading->invVal = -1;
 									reading->readingType = SSWR::SMonitor::SAnalogSensor::RT_ONOFF;
@@ -786,7 +786,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 									agent->readingList.Add(reading);
 									FreeAllItems(itemList);
 
-									err = this->cli->V1GetRequest(addr, community, sbuff, (UOSInt)(sptr - sbuff), itemList);
+									err = this->cli->V1GetRequest(addr, community, CSTRP(sbuff, sptr), itemList);
 									if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 									{
 										item = itemList.GetItemNoCheck(0);
@@ -799,7 +799,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 									FreeAllItems(itemList);
 
 									sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.3854.1.2.2.1.18.1.1.")), i);
-									err = this->cli->V1GetRequest(addr, community, sbuff, (UOSInt)(sptr - sbuff), itemList);
+									err = this->cli->V1GetRequest(addr, community, CSTRP(sbuff, sptr), itemList);
 									if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 									{
 										item = itemList.GetItemNoCheck(0);
@@ -830,7 +830,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 			}
 			if (!found)
 			{
-				pduSize = Net::ASN1Util::OIDText2PDU(UTF8STRC("1.3.6.1.4.1.311.1.1.3.1.1"), oidPDU); //workstation (Windows NT)
+				pduSize = Net::ASN1Util::OIDText2PDU(CSTR("1.3.6.1.4.1.311.1.1.3.1.1"), oidPDU); //workstation (Windows NT)
 				if (Net::ASN1Util::OIDStartsWith(agent->objId, agent->objIdLen, oidPDU, pduSize))
 				{
 					found = true;
@@ -839,7 +839,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("WindowsNT"));
 
-					err = this->cli->V1GetRequest(addr, community, UTF8STRC("1.3.6.1.4.1.77.1.1.1.0"), itemList); //comVersionMaj.0
+					err = this->cli->V1GetRequest(addr, community, CSTR("1.3.6.1.4.1.77.1.1.1.0"), itemList); //comVersionMaj.0
 					if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 					{
 						item = itemList.GetItemNoCheck(0);
@@ -851,7 +851,7 @@ Optional<Net::SNMPManager::AgentInfo> Net::SNMPManager::AddAgent(NN<const Net::S
 					}
 					FreeAllItems(itemList);
 
-					err = this->cli->V1GetRequest(addr, community, UTF8STRC("1.3.6.1.4.1.77.1.1.2.0"), itemList); //comVersionMin.0
+					err = this->cli->V1GetRequest(addr, community, CSTR("1.3.6.1.4.1.77.1.1.2.0"), itemList); //comVersionMin.0
 					if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 					{
 						item = itemList.GetItemNoCheck(0);
@@ -883,7 +883,7 @@ UOSInt Net::SNMPManager::AddAgents(NN<const Net::SocketUtil::AddressInfo> addr, 
 			Data::ArrayListNN<Net::SocketUtil::AddressInfo> addrList;
 			UOSInt i;
 			UOSInt j;
-			this->cli->V1ScanGetRequest(addr, community, UTF8STRC("1.3.6.1.2.1.1.1.0"), addrList, 3000, scanIP);
+			this->cli->V1ScanGetRequest(addr, community, CSTR("1.3.6.1.2.1.1.1.0"), addrList, 3000, scanIP);
 			i = 0;
 			j = addrList.GetCount();
 			while (i < j)

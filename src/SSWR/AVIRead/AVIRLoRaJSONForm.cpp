@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRLoRaJSONForm::OnJSONParseClick(AnyType userObj
 		if (json->GetValueString(CSTR("rxpk[0].data")).SetTo(rxdata))
 		{
 			Text::TextBinEnc::Base64Enc b64;
-			buffSize = b64.DecodeBin(rxdata->v, rxdata->leng, buff);
+			buffSize = b64.DecodeBin(rxdata->ToCString(), buff);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Received Packet:\r\n"));
 			sb.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);
@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRLoRaJSONForm::OnJSONParseClick(AnyType userObj
 		else if (json->GetValueString(CSTR("txpk.data")).SetTo(txdata))
 		{
 			Text::TextBinEnc::Base64Enc b64;
-			buffSize = b64.DecodeBin(txdata->v, txdata->leng, buff);
+			buffSize = b64.DecodeBin(txdata->ToCString(), buff);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Transmitted Packet:\r\n"));
 			sb.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);

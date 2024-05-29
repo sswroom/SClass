@@ -221,7 +221,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TXTFileAnalyse::GetFrame
 				if (buff2[size - 1] == 13)
 				{
 					txtSize = size - 1;
-					frame->AddStrC(0, txtSize, CSTR("Text Line"), buff2.Ptr());
+					frame->AddStrC(0, txtSize, CSTR("Text Line"), buff2.Arr());
 					frame->AddField(txtSize, 1, CSTR("Line Break"), CSTR("CR"));
 				}
 				else if (buff2[size - 1] == 10)
@@ -229,20 +229,20 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TXTFileAnalyse::GetFrame
 					if (size > 1 && buff2[size - 2] == 13)
 					{
 						txtSize = size - 2;
-						frame->AddStrC(0, txtSize, CSTR("Text Line"), buff2.Ptr());
+						frame->AddStrC(0, txtSize, CSTR("Text Line"), buff2.Arr());
 						frame->AddField(txtSize, 2, CSTR("Line Break"), CSTR("CRLF"));
 					}
 					else
 					{
 						txtSize = size - 1;
-						frame->AddStrC(0, txtSize, CSTR("Text Line"), buff2.Ptr());
+						frame->AddStrC(0, txtSize, CSTR("Text Line"), buff2.Arr());
 						frame->AddField(txtSize, 1, CSTR("Line Break"), CSTR("LF"));
 					}
 				}
 				else
 				{
 					txtSize = size;
-					frame->AddField(0, size, CSTR("Text Line"), Text::CStringNN(buff2.Ptr(), txtSize));
+					frame->AddField(0, size, CSTR("Text Line"), Text::CStringNN(buff2.Arr(), txtSize));
 				}
 			}
 		}

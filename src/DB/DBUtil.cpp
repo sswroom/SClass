@@ -1605,7 +1605,7 @@ UTF8Char *DB::DBUtil::SDBBin(UTF8Char *sqlstr, UnsafeArrayOpt<const UInt8> buff,
 {
 	UTF8Char *sptr;
 	UnsafeArray<const UInt8> nnbuff;
-	if (!nnbuff.Set(buff))
+	if (!buff.SetTo(nnbuff))
 	{
 		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
 	}

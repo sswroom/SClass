@@ -37,15 +37,16 @@ UOSInt Text::TextBinEnc::UTF16BETextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8
 	return sb->leng - initSize;
 }
 
-UOSInt Text::TextBinEnc::UTF16BETextBinEnc::CalcBinSize(const UTF8Char *str, UOSInt strLen) const
+UOSInt Text::TextBinEnc::UTF16BETextBinEnc::CalcBinSize(Text::CStringNN str) const
 {
-	return Text::StrUTF8_UTF16CntC(str, strLen) << 1;
+	return Text::StrUTF8_UTF16CntC(str.v, str.leng) << 1;
 }
 
-UOSInt Text::TextBinEnc::UTF16BETextBinEnc::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff) const
+UOSInt Text::TextBinEnc::UTF16BETextBinEnc::DecodeBin(Text::CStringNN s, UInt8 *dataBuff) const
 {
 	UInt8 *currBuff = dataBuff;
-	const UTF8Char *strEnd = str + strLen;
+	const UTF8Char *str = s.v;
+	const UTF8Char *strEnd = s.GetEndPtr();
 	UTF32Char c;
 	while (str < strEnd)
 	{

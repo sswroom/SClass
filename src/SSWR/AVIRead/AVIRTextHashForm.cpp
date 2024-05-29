@@ -27,12 +27,12 @@ void __stdcall SSWR::AVIRead::AVIRTextHashForm::OnGenerateClicked(AnyType userOb
 		me->ui->ShowMsgOK(CSTR("Please select text encryption"), CSTR("Text Hash"), me);
 		return;
 	}
-	UOSInt buffSize = srcEnc->CalcBinSize(sb.ToString(), sb.GetLength());
+	UOSInt buffSize = srcEnc->CalcBinSize(sb.ToCString());
 	if (buffSize > 0)
 	{
 		NN<Crypto::Hash::IHash> hash;
 		UInt8 *decBuff = MemAlloc(UInt8, buffSize);
-		if (srcEnc->DecodeBin(sb.ToString(), sb.GetLength(), decBuff) != buffSize)
+		if (srcEnc->DecodeBin(sb.ToCString(), decBuff) != buffSize)
 		{
 			me->ui->ShowMsgOK(CSTR("Error in decrypting the text"), CSTR("Text Hash"), me);
 		}

@@ -4884,14 +4884,14 @@ UOSInt Text::StrUTF32_UTF8CntC(const UTF32Char *stri, UOSInt strLen)
 	return byteCnt;
 }
 
-UTF8Char *Text::StrUTF16BE_UTF8(UTF8Char *bytes, const UInt8 *u16Buff)
+UTF8Char *Text::StrUTF16BE_UTF8(UTF8Char *bytes, UnsafeArray<const UInt8> u16Buff)
 {
 	UTF16Char c;
 	UTF16Char c2;
 	UTF32Char code;
 	while (true)
 	{
-		c = ReadMUInt16(u16Buff);
+		c = ReadMUInt16(&u16Buff[0]);
 		u16Buff += 2;
 		if (c == 0)
 		{
@@ -4909,7 +4909,7 @@ UTF8Char *Text::StrUTF16BE_UTF8(UTF8Char *bytes, const UInt8 *u16Buff)
 		}
 		else
 		{
-			c2 = ReadMUInt16(u16Buff);
+			c2 = ReadMUInt16(&u16Buff[0]);
 			if (c >= 0xd800 && c < 0xdc00 && c2 >= 0xdc00 && c2 < 0xe000)
 			{
 				code = 0x10000 + ((UTF32Char)(c - 0xd800) << 10) + (UTF32Char)(c2 - 0xdc00);
@@ -4950,14 +4950,14 @@ UTF8Char *Text::StrUTF16BE_UTF8(UTF8Char *bytes, const UInt8 *u16Buff)
 	return bytes;
 }
 
-UTF8Char *Text::StrUTF16BE_UTF8C(UTF8Char *bytes, const UInt8 *u16Buff, UOSInt utf16Cnt)
+UTF8Char *Text::StrUTF16BE_UTF8C(UTF8Char *bytes, UnsafeArray<const UInt8> u16Buff, UOSInt utf16Cnt)
 {
 	UTF16Char c;
 	UTF16Char c2;
 	UTF32Char code;
 	while (utf16Cnt-- > 0)
 	{
-		c = ReadMUInt16(u16Buff);
+		c = ReadMUInt16(&u16Buff[0]);
 		u16Buff += 2;
 		if (c < 0x80)
 		{
@@ -4970,7 +4970,7 @@ UTF8Char *Text::StrUTF16BE_UTF8C(UTF8Char *bytes, const UInt8 *u16Buff, UOSInt u
 		}
 		else if (utf16Cnt > 0)
 		{
-			c2 = ReadMUInt16(u16Buff);
+			c2 = ReadMUInt16(&u16Buff[0]);
 			if (c >= 0xd800 && c < 0xdc00 && c2 >= 0xdc00 && c2 < 0xe000)
 			{
 				code = (UTF32Char)(0x10000 + ((c - 0xd800) << 10) + (c2 - 0xdc00));
@@ -5018,7 +5018,7 @@ UTF8Char *Text::StrUTF16BE_UTF8C(UTF8Char *bytes, const UInt8 *u16Buff, UOSInt u
 	return bytes;
 }
 
-UOSInt Text::StrUTF16BE_UTF8Cnt(const UInt8 *u16Buff)
+UOSInt Text::StrUTF16BE_UTF8Cnt(UnsafeArray<const UInt8> u16Buff)
 {
 	UTF16Char c;
 	UTF16Char c2;
@@ -5027,7 +5027,7 @@ UOSInt Text::StrUTF16BE_UTF8Cnt(const UInt8 *u16Buff)
 	byteCnt = 0;
 	while (true)
 	{
-		c = ReadMUInt16(u16Buff);
+		c = ReadMUInt16(&u16Buff[0]);
 		u16Buff += 2;
 		if (c == 0)
 			break;
@@ -5037,7 +5037,7 @@ UOSInt Text::StrUTF16BE_UTF8Cnt(const UInt8 *u16Buff)
 			byteCnt += 2;
 		else
 		{
-			c2 = ReadMUInt16(u16Buff);
+			c2 = ReadMUInt16(&u16Buff[0]);
 			if (c >= 0xd800 && c < 0xdc00 && c2 >= 0xdc00 && c2 < 0xe000)
 			{
 				code = (UTF32Char)(0x10000 + ((c - 0xd800) << 10) + (c2 - 0xdc00));
@@ -5064,7 +5064,7 @@ UOSInt Text::StrUTF16BE_UTF8Cnt(const UInt8 *u16Buff)
 	return byteCnt;	
 }
 
-UOSInt Text::StrUTF16BE_UTF8CntC(const UInt8 *u16Buff, UOSInt utf16Cnt)
+UOSInt Text::StrUTF16BE_UTF8CntC(UnsafeArray<const UInt8> u16Buff, UOSInt utf16Cnt)
 {
 	UTF16Char c;
 	UTF16Char c2;
@@ -5073,7 +5073,7 @@ UOSInt Text::StrUTF16BE_UTF8CntC(const UInt8 *u16Buff, UOSInt utf16Cnt)
 	byteCnt = 0;
 	while (utf16Cnt-- > 0)
 	{
-		c = ReadMUInt16(u16Buff);
+		c = ReadMUInt16(&u16Buff[0]);
 		u16Buff += 2;
 		if (c < 0x80)
 			byteCnt++;
@@ -5081,7 +5081,7 @@ UOSInt Text::StrUTF16BE_UTF8CntC(const UInt8 *u16Buff, UOSInt utf16Cnt)
 			byteCnt += 2;
 		else if (utf16Cnt > 0)
 		{
-			c2 = ReadMUInt16(u16Buff);
+			c2 = ReadMUInt16(&u16Buff[0]);
 			if (c >= 0xd800 && c < 0xdc00 && c2 >= 0xdc00 && c2 < 0xe000)
 			{
 				code = (UTF32Char)(0x10000 + ((c - 0xd800) << 10) + (c2 - 0xdc00));

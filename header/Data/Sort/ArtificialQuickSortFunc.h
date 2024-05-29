@@ -321,7 +321,7 @@ namespace Data
 			static void Sort(NN<Data::ArrayCollection<T>> arr, CompareFunc func)
 			{
 				UOSInt j;
-				UnsafeArray<T> a = arr->GetPtr(j);
+				UnsafeArray<T> a = arr->GetArr(j);
 				Sort(a, func, 0, (OSInt)j - 1);
 			}
 		};

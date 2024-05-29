@@ -285,7 +285,7 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		IO::FileAnalyse::SBFrameDetail frame(sb);
-		ParseScriptData(tagData.Ptr(), 11, tag->size, 0, frame);
+		ParseScriptData(tagData.Arr(), 11, tag->size, 0, frame);
 	}
 	return true;
 }
@@ -412,7 +412,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FLVFileAnalyse::GetFrame
 	{
 		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
-		ParseScriptData(tagData.Ptr(), 11, tag->size, 0, frame);
+		ParseScriptData(tagData.Arr(), 11, tag->size, 0, frame);
 	}
 	return frame;
 }

@@ -42,12 +42,12 @@ void MemDecCounter(void *ptr);
 #define SDEL_CLASS(variable) if (variable) {DEL_CLASS(variable); variable = 0;}
 
 #define MemAlloc(T, cnt) (T*)MAlloc(sizeof(T) * (cnt))
-#define MemAllocArr(T, cnt) UnsafeArray<T>((T*)MAlloc(sizeof(T) * (cnt)))
+#define MemAllocArr(T, cnt) UnsafeArray<T>::FromPtr((T*)MAlloc(sizeof(T) * (cnt)))
 #define MemAllocNN(T) NN<T>::FromPtr((T*)MAlloc(sizeof(T)))
 #define MemAllocA(T, cnt) (T*)MAllocA64(sizeof(T) * (cnt))
 #define MemAllocANN(T) NN<T>::FromPtr((T*)MAllocA64(sizeof(T)))
 #define MemAllocA64(T, cnt) (T*)MAllocA64(sizeof(T) * (cnt))
-#define MemAllocAArr(T, cnt) UnsafeArray<T>((T*)MAllocA64(sizeof(T) * (cnt)))
+#define MemAllocAArr(T, cnt) UnsafeArray<T>::FromPtr((T*)MAllocA64(sizeof(T) * (cnt)))
 #define MemFreeA64(ptr) MemFreeA(ptr)
 #define MemFreeNN(ptr) MemFree(ptr.Ptr())
 #define MemFreeANN(ptr) MemFreeA(ptr.Ptr())

@@ -21,5 +21,6 @@
 #include "OptOut.h"
 #include "Optional.h"
 #include "UnsafeArray.h"
+#include "UnsafeArrayOpt.h"
 #endif
 // TODO: reference additional headers your program requires here

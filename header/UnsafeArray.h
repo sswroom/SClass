@@ -1,6 +1,5 @@
 #ifndef _SM_UNSAFEARRAY
 #define _SM_UNSAFEARRAY
-#include "UnsafeArrayOpt.h"
 #include <stdio.h>
 
 #define PRINT_STACK
@@ -8,9 +7,11 @@
 #include "IO/DebugTool.h"
 #endif
 
-template <typename T> struct UnsafeArray : public UnsafeArrayOpt<T>
+template <typename T> struct UnsafeArray
 {
 private:
+	T *p;
+
 	virtual void SetPtr(T *p)
 	{
 		if (p == 0)
@@ -34,24 +35,171 @@ private:
 	}
 
 public:
-	UnsafeArray() = default;
-	UnsafeArray(std::nullptr_t) = delete;
 	UnsafeArray(T *p)
 	{
 		this->SetPtr(p);
 	}
+
+public:
+	UnsafeArray() = default;
+	UnsafeArray(std::nullptr_t) = delete;
 
 	template<typename V> UnsafeArray(UnsafeArray<V> p)
 	{
 		this->p = p.Ptr();
 	}
 
-	Bool Set(UnsafeArrayOpt<T> p)
+	Bool Set(T *p)
 	{
-		if (p.Ptr() == 0)
+		if (p == 0)
 			return false;
-		this->p = p.Ptr();
+		this->p = p;
 		return true;
+	}
+
+	Bool operator<(const UnsafeArray<T> p)
+	{
+		return this->p < p.p;
+	}
+
+	Bool operator>(const UnsafeArray<T> p)
+	{
+		return this->p > p.p;
+	}
+
+	Bool operator<=(const UnsafeArray<T> p)
+	{
+		return this->p <= p.p;
+	}
+
+	Bool operator>=(const UnsafeArray<T> p)
+	{
+		return this->p >= p.p;
+	}
+
+	Bool operator==(const UnsafeArray<T> ptr)
+	{
+		return this->p == ptr.p;
+	}
+
+	UnsafeArray<T> operator++(int)
+	{
+		UnsafeArray<T> tmp = *this;
+		this->p++;
+		return tmp;
+	}
+
+	UnsafeArray<T> operator++()
+	{
+		this->p++;
+		return *this;
+	}
+
+	UnsafeArray<T> operator--(int)
+	{
+		UnsafeArray<T> tmp = this->p;
+		this->p--;
+		return tmp;
+	}
+
+	UnsafeArray<T> operator--()
+	{
+		this->p--;
+		return *this;
+	}
+
+	T &operator[] (UOSInt index) const
+	{
+		return this->p[index];
+	}
+
+	T &operator[] (OSInt index) const
+	{
+		return this->p[index];
+	}
+
+	UnsafeArray<T> operator+(OSInt val) const
+	{
+		UnsafeArray<T> ret = *this;
+		ret += val;
+		return ret;
+	}
+
+	UnsafeArray<T> operator+(UOSInt val) const
+	{
+		UnsafeArray<T> ret = *this;
+		ret += val;
+		return ret;
+	}
+
+	UnsafeArray<T> &operator+=(OSInt val)
+	{
+		this->p += val;
+		return *this;
+	}
+
+	UnsafeArray<T> &operator+=(UOSInt val)
+	{
+		this->p += val;
+		return *this;
+	}
+
+#if _OSINT_SIZE == 64
+	T &operator[] (UInt32 index) const
+	{
+		return this->p[index];
+	}
+
+	T &operator[] (Int32 index) const
+	{
+		return this->p[index];
+	}
+
+	UnsafeArray<T> operator+(Int32 val) const
+	{
+		UnsafeArray<T> ret = *this;
+		ret += val;
+		return ret;
+	}
+
+	UnsafeArray<T> operator+(UInt32 val) const
+	{
+		UnsafeArray<T> ret = *this;
+		ret += val;
+		return ret;
+	}
+
+	UnsafeArray<T> &operator+=(Int32 val)
+	{
+		this->p += val;
+		return *this;
+	}
+
+	UnsafeArray<T> &operator+=(UInt32 val)
+	{
+		this->p += val;
+		return *this;
+	}
+#endif
+
+	OSInt operator-(UnsafeArray<T> p)
+	{
+		return this->p - p.p;
+	}
+
+	T &operator*() const
+	{
+		return this->p[0];
+	}
+
+	T *Ptr() const
+	{
+		return this->p;
+	}
+
+	void CopyFromNO(UnsafeArray<const T> srcArr, UOSInt arrSize)
+	{
+		MemCopyNO(this->p, srcArr.Ptr(), arrSize * sizeof(T));
 	}
 
 	template <typename V> static UnsafeArray<T> ConvertFrom(UnsafeArray<V> ptr)
@@ -61,11 +209,34 @@ public:
 		return ret;
 	}
 
-	template <typename V> static UnsafeArray<T> FromOpt(UnsafeArrayOpt<V> p)
+	static UnsafeArray<T> FromPtr(T *ptr)
 	{
-		UnsafeArray<T> ret;
-		ret.SetPtr(p.Ptr());
-		return ret;
+		return ptr;
 	}
 };
+
+template<typename V> OSInt operator-(V *p1, UnsafeArray<V> p2)
+{
+	return p1 - p2.Ptr();
+}
+
+template<typename V> Bool operator>(V *p1, UnsafeArray<V> p2)
+{
+	return p1 > p2.Ptr();
+}
+
+template<typename V> Bool operator<(V *p1, UnsafeArray<V> p2)
+{
+	return p1 < p2.Ptr();
+}
+
+template<typename V> Bool operator>=(V *p1, UnsafeArray<V> p2)
+{
+	return p1 >= p2.Ptr();
+}
+
+template<typename V> Bool operator<=(V *p1, UnsafeArray<V> p2)
+{
+	return p1 <= p2.Ptr();
+}
 #endif

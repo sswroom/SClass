@@ -166,7 +166,7 @@ Bool IO::SPackageFile::OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOf
 			}
 			if (this->stm->Read(fileBuff) == thisSize)
 			{
-				newFile->AddFile(fileBuff.Ptr(), (UOSInt)thisSize, {sbuff, j}, Data::Timestamp(ReadInt64(&dirBuff[i + 16]), 0));
+				newFile->AddFile(fileBuff.Arr(), (UOSInt)thisSize, {sbuff, j}, Data::Timestamp(ReadInt64(&dirBuff[i + 16]), 0));
 				lastOfst = thisOfst;
 				lastSize = thisSize;
 			}
@@ -227,7 +227,7 @@ IO::SPackageFile::SPackageFile(NN<IO::SeekableStream> stm, Bool toRelease, Int32
 	this->stm->Write(hdr, 32);
 	if (customSize > 0)
 	{
-		this->stm->Write(customBuff.Ptr(), customSize);
+		this->stm->Write(customBuff.Arr(), customSize);
 	}
 	this->flags = 3;
 	this->customType = customType;
@@ -313,7 +313,7 @@ IO::SPackageFile::SPackageFile(Text::CStringNN fileName)
 					this->stm->SeekFromBeginning(this->currOfst);
 					this->stm->Read(dirBuff);
 					this->stm->SeekFromBeginning(this->currOfst);
-					this->mstm.Write(dirBuff.Ptr().Ptr(), (UOSInt)dirSize);
+					this->mstm.Write(dirBuff.Arr().Ptr(), (UOSInt)dirSize);
 
 					UOSInt i;
 					UOSInt nameSize;
@@ -475,7 +475,7 @@ Bool IO::SPackageFile::AddFile(NN<IO::StreamData> fd, Text::CString fileName, co
 				readSize = (UOSInt)sizeLeft;
 			}
 			fd->GetRealData(fileOfst, readSize, fileBuff);
-			writeSize += this->stm->Write(fileBuff.Ptr(), readSize);
+			writeSize += this->stm->Write(fileBuff.Arr(), readSize);
 			fileOfst += readSize;
 			sizeLeft -= readSize;
 		}
@@ -484,7 +484,7 @@ Bool IO::SPackageFile::AddFile(NN<IO::StreamData> fd, Text::CString fileName, co
 	{
 		Data::ByteBuffer fileBuff((UOSInt)dataSize);
 		fd->GetRealData(0, (UOSInt)dataSize, fileBuff);
-		writeSize = this->stm->Write(fileBuff.Ptr(), (UOSInt)dataSize);
+		writeSize = this->stm->Write(fileBuff.Arr(), (UOSInt)dataSize);
 	}
 	Bool succ = false;
 	if (writeSize == dataSize)

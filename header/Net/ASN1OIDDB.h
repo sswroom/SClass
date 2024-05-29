@@ -18,8 +18,8 @@ namespace Net
 		static OIDInfo oidList[];
 
 	public:
-		static void OIDToNameString(const UInt8 *pdu, UOSInt pduSize, NN<Text::StringBuilderUTF8> sb);
-		static const OIDInfo *OIDGetEntry(const UInt8 *pdu, UOSInt pduSize);
+		static void OIDToNameString(Data::ByteArrayR pdu, NN<Text::StringBuilderUTF8> sb);
+		static Optional<const OIDInfo> OIDGetEntry(Data::ByteArrayR pdu);
 	};
 }
 #endif

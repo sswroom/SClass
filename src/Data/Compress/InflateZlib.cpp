@@ -37,9 +37,9 @@ Bool Data::Compress::Inflate::Decompress(Data::ByteArray destBuff, OutParam<UOSI
 	}
 
 	strm.avail_in = (uInt)srcBuff.GetSize();
-	strm.next_in = (Bytef*)srcBuff.Ptr().Ptr();
+	strm.next_in = (Bytef*)srcBuff.Arr().Ptr();
 	strm.avail_out = (uInt)destBuff.GetSize();
-	strm.next_out = (Bytef*)destBuff.Ptr().Ptr();
+	strm.next_out = (Bytef*)destBuff.Arr().Ptr();
 	ret = inflate(&strm, Z_SYNC_FLUSH);
 	inflateEnd(&strm);
 	if (ret == Z_STREAM_END)
@@ -89,7 +89,7 @@ Bool Data::Compress::Inflate::Decompress(NN<IO::Stream> destStm, NN<IO::StreamDa
 			break;
 		srcOfst += srcSize;
 
-		strm.next_in = readBuff.Ptr().Ptr();
+		strm.next_in = readBuff.Arr().Ptr();
 		strm.avail_in = (unsigned int)srcSize;
 		strm.next_out = writeBuff;
 		strm.avail_out = 1048576;

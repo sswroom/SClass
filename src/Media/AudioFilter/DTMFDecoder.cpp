@@ -484,7 +484,7 @@ UOSInt Media::AudioFilter::DTMFDecoder::ReadBlock(Data::ByteArray blk)
 		thisSize = this->calcLeft * this->align;
 		if (this->sampleOfst + thisSize >= this->sampleBuffSize)
 		{
-			MemCopyNO(&this->sampleBuff[this->sampleOfst], blk.Ptr().Ptr(), this->sampleBuffSize - this->sampleOfst);
+			MemCopyNO(&this->sampleBuff[this->sampleOfst], blk.Arr().Ptr(), this->sampleBuffSize - this->sampleOfst);
 			blk += this->sampleBuffSize - this->sampleOfst;
 			thisSize -= this->sampleBuffSize - this->sampleOfst;
 			sizeLeft -= this->sampleBuffSize - this->sampleOfst;
@@ -492,7 +492,7 @@ UOSInt Media::AudioFilter::DTMFDecoder::ReadBlock(Data::ByteArray blk)
 		}
 		else if (thisSize > 0)
 		{
-			MemCopyNO(&this->sampleBuff[this->sampleOfst], blk.Ptr().Ptr(), thisSize);
+			MemCopyNO(&this->sampleBuff[this->sampleOfst], blk.Arr().Ptr(), thisSize);
 			blk += thisSize;
 			sizeLeft -= thisSize;
 			this->sampleOfst += thisSize;
@@ -512,7 +512,7 @@ UOSInt Media::AudioFilter::DTMFDecoder::ReadBlock(Data::ByteArray blk)
 
 	if (this->sampleOfst + sizeLeft >= this->sampleBuffSize)
 	{
-		MemCopyNO(&this->sampleBuff[this->sampleOfst], blk.Ptr().Ptr(), this->sampleBuffSize - this->sampleOfst);
+		MemCopyNO(&this->sampleBuff[this->sampleOfst], blk.Arr().Ptr(), this->sampleBuffSize - this->sampleOfst);
 		blk += this->sampleBuffSize - this->sampleOfst;
 		sizeLeft -= this->sampleBuffSize - this->sampleOfst;
 		this->calcLeft -= (this->sampleBuffSize - this->sampleOfst) / this->align;
@@ -520,7 +520,7 @@ UOSInt Media::AudioFilter::DTMFDecoder::ReadBlock(Data::ByteArray blk)
 	}
 	if (sizeLeft > 0)
 	{
-		MemCopyNO(&this->sampleBuff[this->sampleOfst], blk.Ptr().Ptr(), sizeLeft);
+		MemCopyNO(&this->sampleBuff[this->sampleOfst], blk.Arr().Ptr(), sizeLeft);
 		blk += sizeLeft;
 		this->sampleOfst += sizeLeft;
 		this->calcLeft -= sizeLeft / this->align;

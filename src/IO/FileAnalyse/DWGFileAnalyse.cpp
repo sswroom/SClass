@@ -253,7 +253,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DWGFileAnalyse::GetFrame
 		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
 
-		uuid.SetValue(packBuff.Ptr());
+		uuid.SetValue(packBuff.Arr());
 		sptr = uuid.ToString(sbuff);
 		frame->AddField(0, 16, CSTR("Image Type"), CSTRP(sbuff, sptr));
 		frame->AddUInt(16, 4, CSTR("Overall Size"), ReadUInt32(&packBuff[16]));

@@ -218,7 +218,7 @@ Bool Net::SSLEngine::ServerSetCerts(Text::CStringNN certFile, Text::CStringNN ke
 	if (cacerts.GetCount() == 0)
 	{
 		NN<Crypto::Cert::X509Cert> issuerCert;
-		if (issuerCert.Set(Crypto::Cert::CertUtil::FindIssuer(NN<Crypto::Cert::X509Cert>::ConvertFrom(certASN1))))
+		if (Crypto::Cert::CertUtil::FindIssuer(NN<Crypto::Cert::X509Cert>::ConvertFrom(certASN1)).SetTo(issuerCert))
 		{
 			cacerts.Add(issuerCert);
 		}		

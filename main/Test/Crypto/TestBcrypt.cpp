@@ -21,7 +21,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	{
 		return 1;
 	}
-	decSize = radix64.DecodeBin(sb.ToString(), sb.GetCharCnt(), decTest);
+	decSize = radix64.DecodeBin(sb.ToCString(), decTest);
 	if (!Text::StrEqualsC(decTest, decSize, radixTest, sizeof(radixTest)))
 	{
 		return 1;

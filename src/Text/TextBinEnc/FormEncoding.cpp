@@ -49,9 +49,9 @@ void Text::TextBinEnc::FormEncoding::FormEncode(NN<Text::StringBuilderUTF8> sb, 
 	}
 }
 
-UTF8Char *Text::TextBinEnc::FormEncoding::FormEncode(UTF8Char *buff, const UTF8Char *uri)
+UTF8Char *Text::TextBinEnc::FormEncoding::FormEncode(UTF8Char *buff, UnsafeArray<const UTF8Char> uri)
 {
-	const UTF8Char *src;
+	UnsafeArray<const UTF8Char> src;
 	UInt8 b;
 	UTF8Char *dest;
 
@@ -82,7 +82,7 @@ UTF8Char *Text::TextBinEnc::FormEncoding::FormEncode(UTF8Char *buff, const UTF8C
 	return dest;
 }
 
-UTF8Char *Text::TextBinEnc::FormEncoding::FormDecode(UTF8Char *buff, const UTF8Char *uri)
+UTF8Char *Text::TextBinEnc::FormEncoding::FormDecode(UTF8Char *buff, UnsafeArray<const UTF8Char> uri)
 {
 	UInt8 *dest;
 	UInt8 v;
@@ -170,11 +170,12 @@ UOSInt Text::TextBinEnc::FormEncoding::EncodeBin(NN<Text::StringBuilderUTF8> sb,
 	return sb->GetCharCnt() - initLen;
 }
 
-UOSInt Text::TextBinEnc::FormEncoding::CalcBinSize(const UTF8Char *str, UOSInt strLen) const
+UOSInt Text::TextBinEnc::FormEncoding::CalcBinSize(Text::CStringNN s) const
 {
 	UTF8Char c;
 	UOSInt retSize = 0;
-
+	UOSInt strLen = s.leng;
+	const UTF8Char *str = s.v;
 	while (strLen-- > 0)
 	{
 		c = *str++;
@@ -199,11 +200,13 @@ UOSInt Text::TextBinEnc::FormEncoding::CalcBinSize(const UTF8Char *str, UOSInt s
 	return retSize;
 }
 
-UOSInt Text::TextBinEnc::FormEncoding::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff) const
+UOSInt Text::TextBinEnc::FormEncoding::DecodeBin(Text::CStringNN s, UInt8 *dataBuff) const
 {
 	UInt8 v;
 	UTF8Char c;
 	UOSInt retSize = 0;
+	UOSInt strLen = s.leng;
+	const UTF8Char *str = s.v;
 
 	while (strLen-- > 0)
 	{

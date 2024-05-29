@@ -84,7 +84,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Text::TextBinEnc::Base64Enc b64;
 	UInt8 keyBuff[4096];
 	UOSInt keySize;
-	keySize = b64.DecodeBin(keyB64.v, keyB64.leng, keyBuff);
+	keySize = b64.DecodeBin(keyB64, keyBuff);
 	if (keySize == 0)
 	{
 		ssl.Delete();

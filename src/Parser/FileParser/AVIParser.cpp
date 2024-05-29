@@ -138,10 +138,10 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 	MyAVIHeader *avih = 0;
 	AVIStream *strl = 0;
 //	Int64 frameCnt;
-	Data::ByteBuffer idx1;
-	Data::ByteBuffer info;
+	Data::ByteBuffer idx1(0);
+	Data::ByteBuffer info(0);
 	UInt8 *indx = 0;
-	Data::ByteBuffer chap;
+	Data::ByteBuffer chap(0);
 
 	if (*(Int32*)&hdr[0] != *(Int32*)"RIFF" || *(Int32*)&hdr[8] != *(Int32*)"AVI ")
 		return 0;
@@ -379,7 +379,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 				if (j & 1) j++;
 			}
 
-			if (!idx1.IsNull())
+			if (idx1.GetSize() > 0)
 			{
 				k = 4;
 				l = ReadUInt32(&idx1[0]);
@@ -611,7 +611,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 				DEL_CLASS(audsData);
 				audsData = 0;
 			}
-			else if (audsData == 0 && lpcmData == 0 && !idx1.IsNull())
+			else if (audsData == 0 && lpcmData == 0 && idx1.GetSize() > 0)
 			{
 				UInt64 totalSize = 0;
 				if (fmt.formatId == 1)
@@ -672,7 +672,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::St
 	}
 
 
-	if (!chap.IsNull())
+	if (chap.GetSize() > 0)
 	{
 		Media::ChapterInfo *chapters;
 		NEW_CLASS(chapters, Media::ChapterInfo());

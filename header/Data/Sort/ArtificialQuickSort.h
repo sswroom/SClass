@@ -169,7 +169,7 @@ template <class T> void Data::Sort::ArtificialQuickSort::Sort(UnsafeArray<T> arr
 template <class T> void Data::Sort::ArtificialQuickSort::Sort(Data::ArrayCollection<T> *list, NN<Data::Comparator<T>> comparator)
 {
 	UOSInt len;
-	UnsafeArray<T> arr = list->GetPtr(len);
+	UnsafeArray<T> arr = list->GetArr(len);
 	Sort(arr, comparator, 0, (OSInt)len - 1);
 }
 #endif

@@ -21,7 +21,7 @@ UOSInt Net::SSHTCPChannel::Read(const Data::ByteArray &buff)
 {
 	NN<Net::TCPClient> cli;
 	UOSInt readSize = 0;
-	while (!this->conn->ChannelTryRead(this->channel, buff.Ptr(), buff.GetSize(), readSize))
+	while (!this->conn->ChannelTryRead(this->channel, buff.Arr(), buff.GetSize(), readSize))
 	{
 		if (!this->conn->GetTCPClient().SetTo(cli))
 			return 0;

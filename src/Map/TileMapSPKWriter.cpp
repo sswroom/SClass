@@ -40,5 +40,5 @@ void Map::TileMapSPKWriter::AddImage(UOSInt level, Int32 x, Int32 y, Data::ByteA
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
 		break;
 	}
-	this->spkg.AddFile(imgData.Ptr(), imgData.GetSize(), CSTRP(sbuff, sptr), Data::Timestamp::UtcNow());
+	this->spkg.AddFile(imgData.Arr(), imgData.GetSize(), CSTRP(sbuff, sptr), Data::Timestamp::UtcNow());
 }

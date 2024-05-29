@@ -115,12 +115,14 @@ UTF8Char *Text::TextBinEnc::ASCII85Enc::EncodeBin(UTF8Char *sbuff, const UInt8 *
 	return sbuff;
 }
 
-UOSInt Text::TextBinEnc::ASCII85Enc::CalcBinSize(const UTF8Char *a85Str, UOSInt strLen) const
+UOSInt Text::TextBinEnc::ASCII85Enc::CalcBinSize(Text::CStringNN str) const
 {
 	UOSInt zCnt = 0;
 	UOSInt validCnt = 0;
 	UOSInt lastU = 0;
 	UTF8Char c;
+	UOSInt strLen = str.leng;
+	const UTF8Char *a85Str = str.v;
 	while (strLen-- > 0)
 	{
 		c = *a85Str++;
@@ -166,13 +168,15 @@ UOSInt Text::TextBinEnc::ASCII85Enc::CalcBinSize(const UTF8Char *a85Str, UOSInt 
 	}
 }
 
-UOSInt Text::TextBinEnc::ASCII85Enc::DecodeBin(const UTF8Char *a85Str, UOSInt strLen, UInt8 *dataBuff) const
+UOSInt Text::TextBinEnc::ASCII85Enc::DecodeBin(Text::CStringNN str, UInt8 *dataBuff) const
 {
 	UInt8 *destBuff = dataBuff;
 	UTF8Char sbuff[5];
 	UOSInt validCnt = 0;
 	UOSInt lastU = 0;
 	UTF8Char c;
+	UOSInt strLen = str.leng;
+	const UTF8Char *a85Str = str.v;
 	while (strLen-- > 0)
 	{
 		c = *a85Str++;

@@ -168,21 +168,21 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 					OSInt currColorSize;
 					if (isFirst)
 					{
-						if (!localColorTable.IsNull())
+						if (localColorTable.GetSize() > 0)
 						{
 							screenColorTable.ReplaceBy(localColorTable);
 						}
 						globalTransparentIndex = transparentIndex;
 					}
-					else if (scnImg32.IsNull())
+					else if (scnImg32.GetSize() == 0)
 					{
-						if (!localColorTable.IsNull())
+						if (localColorTable.GetSize() > 0)
 						{
 							scnImg32.ChangeSize(scnWidth * scnHeight * 4);
 							tmpPtr = scnImg;
 							tmpPtr2 = scnImg32;
 							i = scnWidth * scnHeight;
-							if (!screenColorTable.IsNull())
+							if (screenColorTable.GetSize() > 0)
 							{
 								while (i-- > 0)
 								{
@@ -202,7 +202,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 									tmpPtr2 += 4;
 								}
 							}
-							else if (!globalColorTable.IsNull())
+							else if (globalColorTable.GetSize() > 0)
 							{
 								while (i-- > 0)
 								{
@@ -246,28 +246,28 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 
 					Data::ByteBuffer imgData;
 					Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
-					if (!scnImg32.IsNull())
+					if (scnImg32.GetSize() > 0)
 					{
 						NEW_CLASSNN(simg, Media::StaticImage(Math::Size2D<UOSInt>(scnWidth, scnHeight), 0, 32, Media::PF_B8G8R8A8, scnWidth * scnHeight * 4, color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 						imgData.ChangeSize(imgW * imgH);
 						readSize = lzw->Read(imgData);
-						if (!localColorTable.IsNull())
+						if (localColorTable.GetSize() > 0)
 						{
 							currColorTable = localColorTable;
 							currColorSize = (Int32)(1 << ((imgDesc[8] & 7) + 1));
 						}
-						else if (!globalColorTable.IsNull())
+						else if (globalColorTable.GetSize() > 0)
 						{
 							currColorTable = globalColorTable;
 							currColorSize = (Int32)(1 << colorSize);
 						}
 						else
 						{
-							currColorTable = Data::ByteArray(0, 0);
+							currColorTable = Data::ByteArray((UInt8*)"", 0);
 							currColorSize = 0;
 						}
 
-						if (!currColorTable.IsNull())
+						if (currColorTable.GetSize() > 0)
 						{
 							if (imgDesc[8] & 0x40)
 							{
@@ -505,7 +505,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 								}
 							}
 						}
-						MemCopyANC(simg->data, scnImg32.Ptr().Ptr(), scnWidth * scnHeight * 4);
+						MemCopyANC(simg->data, scnImg32.Arr().Ptr(), scnWidth * scnHeight * 4);
 					}
 					else
 					{
@@ -637,27 +637,27 @@ Optional<IO::ParsedObject> Parser::FileParser::GIFParser::ParseFileHdr(NN<IO::St
 							}
 						}
 
-						MemCopyANC(simg->data, scnImg.Ptr().Ptr(), scnWidth * scnHeight);
-						if (!localColorTable.IsNull())
+						MemCopyANC(simg->data, scnImg.Arr().Ptr(), scnWidth * scnHeight);
+						if (localColorTable.GetSize() > 0)
 						{
 							readSize = (UInt32)(1 << ((imgDesc[8] & 7) + 1));
 							tmpPtr = localColorTable;
 						}
-						else if (!screenColorTable.IsNull())
+						else if (screenColorTable.GetSize() > 0)
 						{
 							readSize = (UInt32)(1 << colorSize);
 							tmpPtr = screenColorTable;
 						}
-						else if (!globalColorTable.IsNull())
+						else if (globalColorTable.GetSize() > 0)
 						{
 							readSize = (UInt32)(1 << colorSize);
 							tmpPtr = globalColorTable;
 						}
 						else
 						{
-							tmpPtr = Data::ByteArray(0, 0);
+							tmpPtr = Data::ByteArray((UInt8*)"", 0);
 						}
-						if (!tmpPtr.IsNull())
+						if (tmpPtr.GetSize() > 0)
 						{
 							tmpPtr2 = Data::ByteArray(simg->pal, 256 * 4);
 							i = 0;

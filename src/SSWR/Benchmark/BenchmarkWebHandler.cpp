@@ -207,7 +207,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(NN<SSWR::Benchma
 			resp->AddDefHeaders(req);
 			resp->AddContentType(CSTR("text/plain"));
 			resp->AddContentLength(fileSize);
-			resp->Write(fileBuff.Ptr(), fileSize);
+			resp->Write(fileBuff.Arr(), fileSize);
 			return true;
 		}
 	}

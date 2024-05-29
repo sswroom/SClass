@@ -585,7 +585,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMapServer::ParseGeometry(UInt3
 					}
 					if (ptArr.GetCount() > 0)
 					{
-						NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, ptArr.Ptr(), ptArr.GetCount(), 0, 0));
+						NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, ptArr.Arr(), ptArr.GetCount(), 0, 0));
 						pg->AddGeometry(lr);
 					}
 				}
@@ -634,7 +634,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::ESRIMapServer::ParseGeometry(UInt3
 			{
 				Math::Geometry::Polyline *pl;
 				NEW_CLASS(pl, Math::Geometry::Polyline(srid));
-				pl->AddFromPtOfst(ptOfstArr.Ptr().Ptr(), ptOfstArr.GetCount(), ptArr.Ptr().Ptr(), ptArr.GetCount(), 0, 0);
+				pl->AddFromPtOfst(ptOfstArr.Arr().Ptr(), ptOfstArr.GetCount(), ptArr.Arr().Ptr(), ptArr.GetCount(), 0, 0);
 				return pl;
 			}
 		}

@@ -44,7 +44,7 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(Optional<UI::GUIClientControl>
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
 		NN<Net::SNMPUtil::BindingItem> item;
-		err = cli->V1Walk(addr, community, UTF8STRC("1.3.6.1.2.1"), itemList);
+		err = cli->V1Walk(addr, community, CSTR("1.3.6.1.2.1"), itemList);
 		this->lvResults->ClearItems();
 		if (err != Net::SNMPUtil::ES_NOERROR)
 		{
@@ -57,16 +57,16 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(Optional<UI::GUIClientControl>
 			{
 				item = itemList.GetItemNoCheck(i);
 				sb.ClearStr();
-				Net::ASN1Util::OIDToString(item->oid, item->oidLen, sb);
+				Net::ASN1Util::OIDToString(Data::ByteArrayR(item->oid, item->oidLen), sb);
 				this->lvResults->AddItem(sb.ToCString(), 0);
 				sb.ClearStr();
-				Net::ASN1OIDDB::OIDToNameString(item->oid, item->oidLen, sb);
+				Net::ASN1OIDDB::OIDToNameString(Data::ByteArrayR(item->oid, item->oidLen), sb);
 				this->lvResults->SetSubItem(i, 1, sb.ToCString());
 				this->lvResults->SetSubItem(i, 2, Net::SNMPUtil::TypeGetName(item->valType));
 				if (item->valBuff)
 				{
 					sb.ClearStr();
-					Net::SNMPInfo::ValueToString(item->valType, item->valBuff, item->valLen, sb);
+					Net::SNMPInfo::ValueToString(item->valType, Data::ByteArrayR(item->valBuff, item->valLen), sb);
 					this->lvResults->SetSubItem(i, 3, sb.ToCString());
 				}
 				i++;

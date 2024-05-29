@@ -212,7 +212,7 @@ Optional<IO::ParsedObject> Parser::FileParser::IS2Parser::ParseFileHdr(NN<IO::St
 						}
 						j = imgList->AddImage(img, 0);
 						imgList->SetImageType(j, Media::ImageList::IT_IRIMAGE);
-						imgList->SetThermoImage(Math::Size2D<UOSInt>(imageWidth, imageHeight), 16, currBuff.Ptr() + 64, emissivity, transmission, bkgTemp, Media::ImageList::TT_UNKNOWN);
+						imgList->SetThermoImage(Math::Size2D<UOSInt>(imageWidth, imageHeight), 16, currBuff.Arr().Ptr() + 64, emissivity, transmission, bkgTemp, Media::ImageList::TT_UNKNOWN);
 					}
 					break;
 				case 0x22: //Output Image

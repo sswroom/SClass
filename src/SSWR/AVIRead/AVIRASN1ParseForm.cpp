@@ -16,9 +16,9 @@ void __stdcall SSWR::AVIRead::AVIRASN1ParseForm::OnParseClicked(AnyType userObj)
 		return;
 	}
 	Text::TextBinEnc::Base64Enc b64;
-	UOSInt len = b64.CalcBinSize(sb.ToString(), sb.GetLength());
+	UOSInt len = b64.CalcBinSize(sb.ToCString());
 	Data::ByteBuffer buff(len);
-	if (b64.DecodeBin(sb.ToString(), sb.GetLength(), buff.Ptr().Ptr()) != len)
+	if (b64.DecodeBin(sb.ToCString(), buff.Arr().Ptr()) != len)
 	{
 		me->ui->ShowMsgOK(CSTR("Error in decoding Base64 data"), CSTR("ASN.1 Parse"), me);
 		return;
@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1ParseForm::OnParseClicked(AnyType userObj)
 		return;
 	}
 	UInt32 baseLen;
-	UOSInt ofst = Net::ASN1Util::PDUParseLen(buff.Ptr(), 1, len, baseLen);
+	UOSInt ofst = Net::ASN1Util::PDUParseLen(buff.Arr(), 1, len, baseLen);
 	if (ofst + baseLen == len)
 	{
 		Crypto::Cert::X509File *x509 = 0;

@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPStartClicked(AnyType us
 		NN<Net::SSLEngine> ssl;
 		NN<Crypto::Cert::X509Cert> smtpSSLCert;
 		NN<Crypto::Cert::X509File> smtpSSLKey;
-		if (me->smtpSSL.SetTo(ssl) && smtpSSLCert.Set(me->smtpSSLCert) && smtpSSLKey.Set(me->smtpSSLKey))
+		if (me->smtpSSL.SetTo(ssl) && me->smtpSSLCert.SetTo(smtpSSLCert) && me->smtpSSLKey.SetTo(smtpSSLKey))
 		{
 			ssl->ServerSetCertsASN1(smtpSSLCert, smtpSSLKey, me->smtpCACerts);
 		}
@@ -84,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnPOP3StartClicked(AnyType us
 		Bool sslConn = me->chkPOP3SSL->IsChecked();
 		NN<Crypto::Cert::X509Cert> pop3SSLCert;
 		NN<Crypto::Cert::X509File> pop3SSLKey;
-		if (pop3SSLCert.Set(me->pop3SSLCert) && pop3SSLKey.Set(me->pop3SSLKey))
+		if (me->pop3SSLCert.SetTo(pop3SSLCert) && me->pop3SSLKey.SetTo(pop3SSLKey))
 		{
 			ssl = me->pop3SSL;
 			NN<Net::SSLEngine> nnssl;
@@ -157,20 +157,20 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISStartClicked(AnyType us
 		Optional<Net::SSLEngine> ssl = 0;
 		NN<Crypto::Cert::X509Cert> gcisSSLCert;
 		NN<Crypto::Cert::X509File> gcisSSLKey;
-		if (!gcisSSLCert.Set(me->gcisSSLCert) || !gcisSSLKey.Set(me->gcisSSLKey))
+		if (!me->gcisSSLCert.SetTo(gcisSSLCert) || !me->gcisSSLKey.SetTo(gcisSSLKey))
 		{
 			me->ui->ShowMsgOK(CSTR("Please select SSL Cert/Key"), CSTR("SMTP Server"), me);
 			return;
 		}
 		ssl = me->gcisSSL;
 		NN<Net::SSLEngine> nnssl;
-		Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(gcisSSLCert);
+		Optional<Crypto::Cert::X509Cert> issuerCert = Crypto::Cert::CertUtil::FindIssuer(gcisSSLCert);
 		if (ssl.SetTo(nnssl))
 		{
 			nnssl->ServerSetRequireClientCert(Net::SSLEngine::ClientCertType::Optional);
 			nnssl->ServerSetCertsASN1(gcisSSLCert, gcisSSLKey, me->gcisCACerts);
 		}
-		SDEL_CLASS(issuerCert);
+		issuerCert.Delete();
 		NN<Net::WebServer::GCISNotifyHandler> gcisHdlr;
 		NEW_CLASSNN(gcisHdlr, Net::WebServer::GCISNotifyHandler(sb.ToCString(), sb2.ToCString(), OnGCISMailReceived, me, me->log));
 		NEW_CLASS(me->gcisListener, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, gcisHdlr, port, 60, 1, 2, CSTR("SSWRGCIS/1.0"), false, Net::WebServer::KeepAlive::Default, true));
@@ -364,16 +364,18 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnSMTPCertKeyClicked(AnyType 
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->smtpSSL, me->smtpSSLCert, me->smtpSSLKey, me->smtpCACerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
-		SDEL_CLASS(me->smtpSSLCert);
-		SDEL_CLASS(me->smtpSSLKey);
+		NN<Crypto::Cert::X509Cert> nnCert;
+		NN<Crypto::Cert::X509File> nnKey;
+		me->smtpSSLCert.Delete();
+		me->smtpSSLKey.Delete();
 		me->ClearSMTPCACerts();
 		me->smtpSSLCert = frm.GetCert();
 		me->smtpSSLKey = frm.GetKey();
 		frm.GetCACerts(me->smtpCACerts);
 		Text::StringBuilderUTF8 sb;
-		me->smtpSSLCert->ToShortString(sb);
+		if (me->smtpSSLCert.SetTo(nnCert)) nnCert->ToShortString(sb);
 		sb.AppendC(UTF8STRC(", "));
-		me->smtpSSLKey->ToShortString(sb);
+		if (me->smtpSSLKey.SetTo(nnKey)) nnKey->ToShortString(sb);
 		me->lblSMTPCertKey->SetText(sb.ToCString());
 	}
 }
@@ -389,16 +391,18 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnPOP3CertKeyClicked(AnyType 
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->pop3SSL, me->pop3SSLCert, me->pop3SSLKey, me->pop3CACerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
-		SDEL_CLASS(me->pop3SSLCert);
-		SDEL_CLASS(me->pop3SSLKey);
+		NN<Crypto::Cert::X509Cert> nnCert;
+		NN<Crypto::Cert::X509File> nnKey;
+		me->pop3SSLCert.Delete();
+		me->pop3SSLKey.Delete();
 		me->ClearPOP3CACerts();
 		me->pop3SSLCert = frm.GetCert();
 		me->pop3SSLKey = frm.GetKey();
 		frm.GetCACerts(me->pop3CACerts);
 		Text::StringBuilderUTF8 sb;
-		me->pop3SSLCert->ToShortString(sb);
+		if (me->pop3SSLCert.SetTo(nnCert)) nnCert->ToShortString(sb);
 		sb.AppendC(UTF8STRC(", "));
-		me->pop3SSLKey->ToShortString(sb);
+		if (me->pop3SSLKey.SetTo(nnKey)) nnKey->ToShortString(sb);
 		me->lblPOP3CertKey->SetText(sb.ToCString());
 	}
 }
@@ -414,16 +418,18 @@ void __stdcall SSWR::AVIRead::AVIREmailServerForm::OnGCISCertKeyClicked(AnyType 
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->gcisSSL, me->gcisSSLCert, me->gcisSSLKey, me->gcisCACerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
-		SDEL_CLASS(me->gcisSSLCert);
-		SDEL_CLASS(me->gcisSSLKey);
+		NN<Crypto::Cert::X509Cert> nnCert;
+		NN<Crypto::Cert::X509File> nnKey;
+		me->gcisSSLCert.Delete();
+		me->gcisSSLKey.Delete();
 		me->ClearGCISCACerts();
 		me->gcisSSLCert = frm.GetCert();
 		me->gcisSSLKey = frm.GetKey();
 		frm.GetCACerts(me->gcisCACerts);
 		Text::StringBuilderUTF8 sb;
-		me->gcisSSLCert->ToShortString(sb);
+		if (me->gcisSSLCert.SetTo(nnCert)) nnCert->ToShortString(sb);
 		sb.AppendC(UTF8STRC(", "));
-		me->gcisSSLKey->ToShortString(sb);
+		if (me->gcisSSLKey.SetTo(nnKey)) nnKey->ToShortString(sb);
 		me->lblGCISCertKey->SetText(sb.ToCString());
 	}
 }
@@ -634,16 +640,16 @@ SSWR::AVIRead::AVIREmailServerForm::~AVIREmailServerForm()
 	
 	DEL_CLASS(this->store);
 	this->smtpSSL.Delete();
-	SDEL_CLASS(this->smtpSSLCert);
-	SDEL_CLASS(this->smtpSSLKey);
+	this->smtpSSLCert.Delete();
+	this->smtpSSLKey.Delete();
 	this->ClearSMTPCACerts();
 	this->pop3SSL.Delete();
-	SDEL_CLASS(this->pop3SSLCert);
-	SDEL_CLASS(this->pop3SSLKey);
+	this->pop3SSLCert.Delete();
+	this->pop3SSLKey.Delete();
 	this->ClearPOP3CACerts();
 	this->gcisSSL.Delete();
-	SDEL_CLASS(this->gcisSSLCert);
-	SDEL_CLASS(this->gcisSSLKey);
+	this->gcisSSLCert.Delete();
+	this->gcisSSLKey.Delete();
 	this->ClearGCISCACerts();
 	this->userList.FreeAll();
 }
@@ -719,7 +725,7 @@ Bool SSWR::AVIRead::AVIREmailServerForm::GetMessageContent(Int32 userId, UInt32 
 		Data::ByteBuffer buff((UOSInt)fileLength);
 		if (fd->GetRealData(0, (UOSInt)fileLength, buff) == fileLength)
 		{
-			stm->Write(buff.Ptr(), (UOSInt)fileLength);
+			stm->Write(buff.Arr(), (UOSInt)fileLength);
 			succ = true;
 		}
 	}
@@ -744,7 +750,7 @@ Bool SSWR::AVIRead::AVIREmailServerForm::GetMessageContent(Int32 userId, UInt32 
 				succ = false;
 				break;
 			}
-			else if (stm->Write(buff.Ptr(), readSize) != readSize)
+			else if (stm->Write(buff.Arr(), readSize) != readSize)
 			{
 				succ = false;
 				break;

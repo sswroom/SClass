@@ -165,7 +165,7 @@ void Map::TileMapOruxWriter::AddImage(UOSInt level, Int32 x, Int32 y, Data::Byte
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendInt32((Int32)(UInt32)level);
 	sql.AppendCmdC(CSTR(", "));
-	sql.AppendBinary(imgData.Ptr(), imgData.GetSize());
+	sql.AppendBinary(imgData.Arr(), imgData.GetSize());
 	sql.AppendCmdC(CSTR(")"));
 	Sync::MutexUsage mutUsage(this->mut);
 	this->db->ExecuteNonQuery(sql.ToCString());

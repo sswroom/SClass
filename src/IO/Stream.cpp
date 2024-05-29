@@ -72,7 +72,7 @@ UInt64 IO::Stream::ReadToEnd(NN<IO::Stream> stm, UOSInt buffSize)
 		{
 			break;
 		}
-		writeSize = stm->Write(buff.GetPtr(), readSize);
+		writeSize = stm->Write(buff.Arr(), readSize);
 		totalSize += writeSize;
 		if (readSize != writeSize)
 		{
@@ -97,7 +97,7 @@ Bool IO::Stream::WriteFromData(NN<IO::StreamData> data, UOSInt buffSize)
 			break;
 		}
 		currOfst += readSize;
-		writeSize = this->Write(buff.GetPtr(), readSize);
+		writeSize = this->Write(buff.Arr(), readSize);
 		totalSize += writeSize;
 		if (readSize != writeSize)
 		{

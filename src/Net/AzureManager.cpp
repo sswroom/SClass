@@ -64,7 +64,7 @@ Optional<Crypto::Cert::X509Key> Net::AzureManager::CreateKey(Text::CStringNN kid
 	}
 	Text::TextBinEnc::Base64Enc b64;
 	UInt8 keyBuff[4096];
-	UOSInt keySize = b64.DecodeBin(s->v, s->leng, keyBuff);
+	UOSInt keySize = b64.DecodeBin(s->ToCString(), keyBuff);
 	Crypto::Cert::X509Cert cert(kid, Data::ByteArrayR(keyBuff, keySize));
 	return cert.GetNewPublicKey();
 }

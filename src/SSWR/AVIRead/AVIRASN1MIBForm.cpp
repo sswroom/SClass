@@ -80,7 +80,7 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CStringNN fileName)
 		if (obj->oidLen > 0)
 		{
 			sb.ClearStr();
-			Net::ASN1Util::OIDToString(obj->oid, obj->oidLen, sb);
+			Net::ASN1Util::OIDToString(Data::ByteArrayR(obj->oid, obj->oidLen), sb);
 			this->lvObjects->SetSubItem(i, 1, sb.ToCString());
 		}
 		if (s.Set(obj->typeName))
@@ -100,16 +100,16 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CStringNN fileName)
 	{
 		obj = module->oidList.GetItemNoCheck(i);
 		sb.ClearStr();
-		Net::ASN1Util::OIDToString(obj->oid, obj->oidLen, sb);
+		Net::ASN1Util::OIDToString(Data::ByteArrayR(obj->oid, obj->oidLen), sb);
 		this->lvOID->AddItem(sb.ToCString(), obj);
-		const Net::ASN1OIDDB::OIDInfo *entry = Net::ASN1OIDDB::OIDGetEntry(obj->oid, obj->oidLen);
-		if (entry)
+		NN<const Net::ASN1OIDDB::OIDInfo> entry;
+		if (Net::ASN1OIDDB::OIDGetEntry(Data::ByteArrayR(obj->oid, obj->oidLen)).SetTo(entry))
 		{
 			this->lvOID->SetSubItem(i, 1, Text::CStringNN::FromPtr((const UTF8Char*)entry->name));
 		}
 		this->lvOID->SetSubItem(i, 2, Text::String::OrEmpty(obj->objectName));
 
-		Net::ASN1Util::OIDToCPPCode(obj->oid, obj->oidLen, obj->objectName->v, obj->objectName->leng, sbOIDText);
+		Net::ASN1Util::OIDToCPPCode(Data::ByteArrayR(obj->oid, obj->oidLen), obj->objectName->ToCString(), sbOIDText);
 		i++;
 	}
 	this->txtOIDText->SetText(sbOIDText.ToCString());

@@ -289,7 +289,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EDIDFileAnalyse::GetFram
 				return 0;
 			}
 			NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(index << 7, blockSize));
-			frame->AddHexBuff(0, blockSize, CSTR("Dummy data"), dummyBlock.GetPtr(), true);
+			frame->AddHexBuff(0, blockSize, CSTR("Dummy data"), dummyBlock.Arr(), true);
 			return frame;
 		}
 		return 0;

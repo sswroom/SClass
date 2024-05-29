@@ -11,16 +11,18 @@ void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnClientCertClicked(AnyType us
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->cliCert, me->cliKey, me->cliCACerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
-		SDEL_CLASS(me->cliCert);
-		SDEL_CLASS(me->cliKey);
+		NN<Crypto::Cert::X509Cert> nnCert;
+		NN<Crypto::Cert::X509File> nnKey;
+		me->cliCert.Delete();
+		me->cliKey.Delete();
 		me->ClearCliCACerts();
 		me->cliCert = frm.GetCert();
 		me->cliKey = frm.GetKey();
 		frm.GetCACerts(me->cliCACerts);
 		Text::StringBuilderUTF8 sb;
-		me->cliCert->ToShortString(sb);
+		if (me->cliCert.SetTo(nnCert)) nnCert->ToShortString(sb);
 		sb.AppendC(UTF8STRC(", "));
-		me->cliKey->ToShortString(sb);
+		if (me->cliKey.SetTo(nnKey)) nnKey->ToShortString(sb);
 		me->lblClientCertDisp->SetText(sb.ToCString());
 	}
 }
@@ -30,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRGCISClientForm::OnSendClicked(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRGCISClientForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGCISClientForm>();
 	NN<Crypto::Cert::X509Cert> cliCert;
 	NN<Crypto::Cert::X509File> cliKey;
-	if (!cliCert.Set(me->cliCert) || !cliKey.Set(me->cliKey))
+	if (!me->cliCert.SetTo(cliCert) || !me->cliKey.SetTo(cliKey))
 	{
 		me->ui->ShowMsgOK(CSTR("Please select client cert and key first"), CSTR("GCIS Client"), me);
 		return;
@@ -192,8 +194,8 @@ SSWR::AVIRead::AVIRGCISClientForm::~AVIRGCISClientForm()
 {
 	this->ssl.Delete();
 	this->ClearCliCACerts();
-	SDEL_CLASS(this->cliCert);
-	SDEL_CLASS(this->cliKey);
+	this->cliCert.Delete();
+	this->cliKey.Delete();
 	SDEL_CLASS(this->svrCert);
 }
 

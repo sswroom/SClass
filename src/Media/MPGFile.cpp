@@ -613,7 +613,7 @@ Media::MPGFile::MPGFile(NN<IO::StreamData> stmData) : Media::MediaFile(stmData->
 						{
 							Data::ByteBuffer frameBuff(i - 7 - stmHdrSize);
 							stmData->GetRealData(currOfst + 13 + j + stmHdrSize, i - 7 - stmHdrSize, frameBuff);
-							mstm->ParseHeader(frameBuff.Ptr(), i - 7 - stmHdrSize);
+							mstm->ParseHeader(frameBuff.Arr(), i - 7 - stmHdrSize);
 						}
 					}
 				}

@@ -537,15 +537,15 @@ UOSInt Text::TextBinEnc::Punycode::EncodeBin(NN<Text::StringBuilderUTF8> sb, con
 	return buffSize;
 }
 
-UOSInt Text::TextBinEnc::Punycode::CalcBinSize(const UTF8Char *str, UOSInt strLen) const
+UOSInt Text::TextBinEnc::Punycode::CalcBinSize(Text::CStringNN str) const
 {
 	UTF8Char buff[256];
-	return (UOSInt)(Decode(buff, str, strLen) - buff);
+	return (UOSInt)(Decode(buff, str.v, str.leng) - buff);
 }
 
-UOSInt Text::TextBinEnc::Punycode::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff) const
+UOSInt Text::TextBinEnc::Punycode::DecodeBin(Text::CStringNN str, UInt8 *dataBuff) const
 {
-	return (UOSInt)(Decode(dataBuff, str, strLen) - dataBuff);
+	return (UOSInt)(Decode(dataBuff, str.v, str.leng) - dataBuff);
 }
 
 Text::CStringNN Text::TextBinEnc::Punycode::GetName() const

@@ -66,9 +66,9 @@ Bool Crypto::Hash::BcryptValidator::SetHash(const UTF8Char *hash, UOSInt hashLen
 	}
 	if (sarr[0].v[0] == '2' && sarr[2].leng == 53)
 	{
-		UOSInt saltSize = this->radix64.DecodeBin(sarr[2].v, 22, this->salt);
+		UOSInt saltSize = this->radix64.DecodeBin(Text::CStringNN(sarr[2].v, 22), this->salt);
 		this->hashCTxt[23] = 0;
-		UOSInt hashSize = this->radix64.DecodeBin(sarr[2].v + 22, 31, this->hashCTxt);
+		UOSInt hashSize = this->radix64.DecodeBin(Text::CStringNN(sarr[2].v + 22, 31), this->hashCTxt);
 		return saltSize == 16 && (hashSize == 24 || hashSize == 23) && Text::StrToUInt32(sarr[1].v, this->cost);
 	}
 	else

@@ -27,15 +27,14 @@ void Crypto::Cert::X509CRL::ToShortName(NN<Text::StringBuilderUTF8> sb) const
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
-	const UInt8 *tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.3", len, itemType);
-	if (tmpBuff != 0 && itemType == Net::ASN1Util::IT_SEQUENCE)
+	UnsafeArray<const UInt8> tmpBuff;
+	if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.3", len, itemType).SetTo(tmpBuff) && itemType == Net::ASN1Util::IT_SEQUENCE)
 	{
 		NameGetCN(tmpBuff, tmpBuff + len, sb);
 	}
 	else
 	{
-		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.2", len, itemType);
-		if (tmpBuff != 0 && itemType == Net::ASN1Util::IT_SEQUENCE)
+		if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.2", len, itemType).SetTo(tmpBuff) && itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
 			NameGetCN(tmpBuff, tmpBuff + len, sb);
 		}
@@ -92,7 +91,7 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CRL::IsValid(NN<Net::SSLEn
 	{
 		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
 	}
-	Bool signValid = ssl->SignatureVerify(key, hashType, signedInfo.payload, signedInfo.payloadSize, signedInfo.signature, signedInfo.signSize);
+	Bool signValid = ssl->SignatureVerify(key, hashType, Data::ByteArrayR(signedInfo.payload, signedInfo.payloadSize), Data::ByteArrayR(signedInfo.signature, signedInfo.signSize));
 	key.Delete();
 	if (!signValid)
 	{
@@ -110,9 +109,9 @@ NN<Net::ASN1Data> Crypto::Cert::X509CRL::Clone() const
 
 void Crypto::Cert::X509CRL::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
-	if (IsCertificateList(this->buff.Ptr(), this->buff.PtrEnd(), "1"))
+	if (IsCertificateList(this->buff.Arr(), this->buff.ArrEnd(), "1"))
 	{
-		AppendCertificateList(this->buff.Ptr(), this->buff.PtrEnd(), "1", sb, CSTR_NULL);
+		AppendCertificateList(this->buff.Arr(), this->buff.ArrEnd(), "1", sb, CSTR_NULL);
 	}
 }
 
@@ -128,7 +127,7 @@ Bool Crypto::Cert::X509CRL::HasVersion() const
 {
 	UOSInt itemLen;
 	Net::ASN1Util::ItemType itemType;
-	if (Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.1", itemLen, itemType) != 0 && itemType == Net::ASN1Util::IT_INTEGER)
+	if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.1", itemLen, itemType).NotNull() && itemType == Net::ASN1Util::IT_INTEGER)
 	{
 		return true;
 	}
@@ -139,18 +138,19 @@ Bool Crypto::Cert::X509CRL::GetIssuerCN(NN<Text::StringBuilderUTF8> sb) const
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
-	const UInt8 *tmpBuff;
+	UnsafeArrayOpt<const UInt8> tmpBuff;
+	UnsafeArray<const UInt8> nntmpBuff;
 	if (this->HasVersion())
 	{
-		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.3", len, itemType);
+		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.3", len, itemType);
 	}
 	else
 	{
-		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.2", len, itemType);
+		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.2", len, itemType);
 	}
-	if (tmpBuff != 0 && itemType == Net::ASN1Util::IT_SEQUENCE)
+	if (tmpBuff.SetTo(nntmpBuff) && itemType == Net::ASN1Util::IT_SEQUENCE)
 	{
-		return NameGetCN(tmpBuff, tmpBuff + len, sb);
+		return NameGetCN(nntmpBuff, nntmpBuff + len, sb);
 	}
 	else
 	{
@@ -162,18 +162,19 @@ Bool Crypto::Cert::X509CRL::GetThisUpdate(NN<Data::DateTime> dt) const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt itemLen;
-	const UInt8 *itemPDU;
+	UnsafeArrayOpt<const UInt8> itemPDU;
+	UnsafeArray<const UInt8> nnitemPDU;
 	if (this->HasVersion())
 	{
-		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.4", itemLen, itemType);
+		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.4", itemLen, itemType);
 	}
 	else
 	{
-		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.3", itemLen, itemType);
+		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.3", itemLen, itemType);
 	}
-	if (itemPDU != 0 && (itemType == Net::ASN1Util::IT_UTCTIME || itemType == Net::ASN1Util::IT_GENERALIZEDTIME))
+	if (itemPDU.SetTo(nnitemPDU) && (itemType == Net::ASN1Util::IT_UTCTIME || itemType == Net::ASN1Util::IT_GENERALIZEDTIME))
 	{
-		return Net::ASN1Util::PDUParseUTCTimeCont(itemPDU, itemLen, dt);
+		return Net::ASN1Util::PDUParseUTCTimeCont(Data::ByteArrayR(nnitemPDU, itemLen), dt);
 	}
 	else
 	{
@@ -185,18 +186,19 @@ Bool Crypto::Cert::X509CRL::GetNextUpdate(NN<Data::DateTime> dt) const
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt itemLen;
-	const UInt8 *itemPDU;
+	UnsafeArrayOpt<const UInt8> itemPDU;
+	UnsafeArray<const UInt8> nnitemPDU;
 	if (this->HasVersion())
 	{
-		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.5", itemLen, itemType);
+		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.5", itemLen, itemType);
 	}
 	else
 	{
-		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.4", itemLen, itemType);
+		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.4", itemLen, itemType);
 	}
-	if (itemPDU != 0 && (itemType == Net::ASN1Util::IT_UTCTIME || itemType == Net::ASN1Util::IT_GENERALIZEDTIME))
+	if (itemPDU.SetTo(nnitemPDU) && (itemType == Net::ASN1Util::IT_UTCTIME || itemType == Net::ASN1Util::IT_GENERALIZEDTIME))
 	{
-		return Net::ASN1Util::PDUParseUTCTimeCont(itemPDU, itemLen, dt);
+		return Net::ASN1Util::PDUParseUTCTimeCont(Data::ByteArrayR(nnitemPDU, itemLen), dt);
 	}
 	else
 	{
@@ -207,25 +209,26 @@ Bool Crypto::Cert::X509CRL::GetNextUpdate(NN<Data::DateTime> dt) const
 Bool Crypto::Cert::X509CRL::IsRevoked(NN<Crypto::Cert::X509Cert> cert) const
 {
 	UOSInt snLen;
-	const UInt8 *sn = cert->GetSerialNumber(snLen);
-	if (sn == 0)
+	UnsafeArray<const UInt8> sn;
+	if (!cert->GetSerialNumber(snLen).SetTo(sn))
 		return true;
 	UTF8Char sbuff[32];
 	Net::ASN1Util::ItemType itemType;
 	UOSInt itemLen;
-	const UInt8 *itemPDU;
+	UnsafeArrayOpt<const UInt8> itemPDU;
+	UnsafeArray<const UInt8> nnitemPDU;
 	UOSInt i;
 	if (this->HasVersion())
 	{
-		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.5", itemLen, itemType);
+		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.5", itemLen, itemType);
 		i = 5;
 	}
 	else
 	{
-		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.4", itemLen, itemType);
+		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.4", itemLen, itemType);
 		i = 4;
 	}
-	if (itemPDU == 0)
+	if (!itemPDU.SetTo(nnitemPDU))
 	{
 		return false;
 	}
@@ -233,24 +236,26 @@ Bool Crypto::Cert::X509CRL::IsRevoked(NN<Crypto::Cert::X509Cert> cert) const
 	{
 		i++;
 		Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.1.")), i);
-		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), (const Char*)sbuff, itemLen, itemType);
-		if (itemPDU == 0 || itemType != Net::ASN1Util::IT_SEQUENCE)
+		itemPDU = Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), (const Char*)sbuff, itemLen, itemType);
+		if (!itemPDU.SetTo(nnitemPDU) || itemType != Net::ASN1Util::IT_SEQUENCE)
 		{
 			return false;
 		}
 	}
-	i = 0;
-	while (true)
+	if (itemPDU.SetTo(nnitemPDU))
 	{
-		const UInt8 *subitemPDU;
-		UOSInt subitemLen;
-		Text::StrConcatC(Text::StrUOSInt(sbuff, ++i), UTF8STRC(".1"));
-		subitemPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, (const Char*)sbuff, subitemLen, itemType);
-		if (subitemPDU == 0)
-			break;
-		if (itemType == Net::ASN1Util::IT_INTEGER && Text::StrEqualsC(subitemPDU, subitemLen, sn, snLen))
+		i = 0;
+		while (true)
 		{
-			return true;
+			UnsafeArray<const UInt8> subitemPDU;
+			UOSInt subitemLen;
+			Text::StrConcatC(Text::StrUOSInt(sbuff, ++i), UTF8STRC(".1"));
+			if (!Net::ASN1Util::PDUGetItem(nnitemPDU, nnitemPDU + itemLen, (const Char*)sbuff, subitemLen, itemType).SetTo(subitemPDU))
+				break;
+			if (itemType == Net::ASN1Util::IT_INTEGER && Text::StrEqualsC(subitemPDU, subitemLen, sn, snLen))
+			{
+				return true;
+			}
 		}
 	}
 	return false;

@@ -624,7 +624,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RIFFFileAnalyse::GetFram
 	{
 		Data::ByteBuffer packBuff(pack->packSize - 8);
 		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
-		Media::ICCProfile::ParseFrame(frame, 8, packBuff.Ptr(), pack->packSize - 8);
+		Media::ICCProfile::ParseFrame(frame, 8, packBuff.Arr(), pack->packSize - 8);
 	}
 	else if (pack->packType == *(Int32*)"EXIF")
 	{

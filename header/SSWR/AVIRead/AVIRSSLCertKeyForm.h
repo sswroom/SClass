@@ -20,10 +20,10 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			Crypto::Cert::X509Cert *initCert;
-			Crypto::Cert::X509File *initKey;
-			Crypto::Cert::X509Cert *cert;
-			Crypto::Cert::X509File *key;
+			Optional<Crypto::Cert::X509Cert> initCert;
+			Optional<Crypto::Cert::X509File> initKey;
+			Optional<Crypto::Cert::X509Cert> cert;
+			Optional<Crypto::Cert::X509File> key;
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 
 			NN<UI::GUIPanel> pnlCurr;
@@ -59,13 +59,13 @@ namespace SSWR
 			void LoadFile(Text::CStringNN fileName);
 			void ClearCACerts();
 		public:
-			AVIRSSLCertKeyForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509File *key, NN<Data::ArrayListNN<Crypto::Cert::X509Cert>> caCerts);
+			AVIRSSLCertKeyForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, Optional<Crypto::Cert::X509Cert> cert, Optional<Crypto::Cert::X509File> key, NN<Data::ArrayListNN<Crypto::Cert::X509Cert>> caCerts);
 			virtual ~AVIRSSLCertKeyForm();
 
 			virtual void OnMonitorChanged();
 
-			Crypto::Cert::X509Cert *GetCert();
-			Crypto::Cert::X509File *GetKey();
+			Optional<Crypto::Cert::X509Cert> GetCert();
+			Optional<Crypto::Cert::X509File> GetKey();
 			UOSInt GetCACerts(NN<Data::ArrayListNN<Crypto::Cert::X509Cert>> caCerts);
 		};
 	}

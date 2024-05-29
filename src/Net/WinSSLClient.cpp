@@ -356,7 +356,7 @@ void *Net::WinSSLClient::BeginRead(const Data::ByteArray &buff, Sync::Event *evt
 	{
 		return 0;
 	}
-	this->clsData->readBuff = buff.Ptr().Ptr();
+	this->clsData->readBuff = buff.Arr().Ptr();
 	this->clsData->readSize = buff.GetSize();
 	if (this->clsData->decSize > 0)
 	{

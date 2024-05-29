@@ -35,6 +35,6 @@ Bool IO::PcapWriter::WritePacket(Data::ByteArrayR packet)
 	Sync::MutexUsage mutUsage(this->mut);
 	Bool succ;
 	succ = (this->fs.Write(buff, 16) == 16);
-	succ = succ && (this->fs.Write(packet.Ptr().Ptr(), packet.GetSize()) == packet.GetSize());
+	succ = succ && (this->fs.Write(packet.Arr().Ptr(), packet.GetSize()) == packet.GetSize());
 	return succ;
 }

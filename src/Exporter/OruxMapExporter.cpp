@@ -266,7 +266,7 @@ Bool Exporter::OruxMapExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CSt
 							sql.AppendCmdC(CSTR(", "));
 							sql.AppendInt32((Int32)(UInt32)level);
 							sql.AppendCmdC(CSTR(", "));
-							sql.AppendBinary(imgBuff.Ptr(), imgSize);
+							sql.AppendBinary(UnsafeArray<const UTF8Char>(imgBuff.Arr()), imgSize);
 							sql.AppendCmdC(CSTR(")"));
 							db->ExecuteNonQuery(sql.ToCString());
 							fd.Delete();

@@ -115,7 +115,7 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(NN<Net::WebServer::IWebRequest>
 					Text::TextBinEnc::Base64Enc b64;
 					UInt8 *buff = MemAlloc(UInt8, s->leng + 1);
 					UOSInt buffSize;
-					buffSize = b64.DecodeBin(s->v, s->leng, buff);
+					buffSize = b64.DecodeBin(s->ToCString(), buff);
 					buff[buffSize] = 0;
 					if (this->rawRespHdlr)
 					{

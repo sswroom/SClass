@@ -13,8 +13,8 @@ namespace Text
 			virtual ~ASCII85Enc();
 			virtual UOSInt EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize) const;
 			UTF8Char *EncodeBin(UTF8Char *sbuff, const UInt8 *dataBuff, UOSInt buffSize) const;
-			virtual UOSInt CalcBinSize(const UTF8Char *a85Str, UOSInt strLen) const;
-			virtual UOSInt DecodeBin(const UTF8Char *a85Str, UOSInt strLen, UInt8 *dataBuff) const;
+			virtual UOSInt CalcBinSize(Text::CStringNN a85Str) const;
+			virtual UOSInt DecodeBin(Text::CStringNN a85Str, UInt8 *dataBuff) const;
 			virtual Text::CStringNN GetName() const;
 		};
 	}

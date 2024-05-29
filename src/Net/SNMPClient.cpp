@@ -70,11 +70,11 @@ Bool Net::SNMPClient::IsError()
 	return this->svr->IsError();
 }
 
-Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetRequest(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, const UTF8Char *oidText, UOSInt oidTextLen, NN<Data::ArrayListNN<Net::SNMPUtil::BindingItem>> itemList)
+Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetRequest(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, Text::CStringNN oidText, NN<Data::ArrayListNN<Net::SNMPUtil::BindingItem>> itemList)
 {
 	UInt8 pduBuff[64];
 	UOSInt oidLen;
-	oidLen = Net::ASN1Util::OIDText2PDU(oidText, oidTextLen, pduBuff);
+	oidLen = Net::ASN1Util::OIDText2PDU(oidText, pduBuff);
 	return V1GetRequestPDU(agentAddr, community, pduBuff, oidLen, itemList);
 }
 
@@ -113,11 +113,11 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetRequestPDU(NN<const Net::Socket
 	return ret;
 }
 
-Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetNextRequest(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, const UTF8Char *oidText, UOSInt oidTextLen, NN<Data::ArrayListNN<Net::SNMPUtil::BindingItem>> itemList)
+Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetNextRequest(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, Text::CStringNN oidText, NN<Data::ArrayListNN<Net::SNMPUtil::BindingItem>> itemList)
 {
 	UInt8 pduBuff[64];
 	UOSInt oidLen;
-	oidLen = Net::ASN1Util::OIDText2PDU(oidText, oidTextLen, pduBuff);
+	oidLen = Net::ASN1Util::OIDText2PDU(oidText, pduBuff);
 	return V1GetNextRequestPDU(agentAddr, community, pduBuff, oidLen, itemList);
 }
 
@@ -156,14 +156,14 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1GetNextRequestPDU(NN<const Net::So
 	return ret;
 }
 
-Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1Walk(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, const UTF8Char *oidText, UOSInt oidTextLen, NN<Data::ArrayListNN<Net::SNMPUtil::BindingItem>> itemList)
+Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1Walk(NN<const Net::SocketUtil::AddressInfo> agentAddr, NN<Text::String> community, Text::CStringNN oidText, NN<Data::ArrayListNN<Net::SNMPUtil::BindingItem>> itemList)
 {
 	Net::SNMPUtil::ErrorStatus ret;
 	Data::ArrayListNN<Net::SNMPUtil::BindingItem> thisList;
 	NN<Net::SNMPUtil::BindingItem> item;
 	Optional<Net::SNMPUtil::BindingItem> lastItem = 0;
 	NN<Net::SNMPUtil::BindingItem> nnlastItem;
-	ret = this->V1GetNextRequest(agentAddr, community, oidText, oidTextLen, thisList);
+	ret = this->V1GetNextRequest(agentAddr, community, oidText, thisList);
 	if (ret != Net::SNMPUtil::ES_NOERROR)
 	{
 		itemList->AddAll(thisList);
@@ -172,7 +172,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1Walk(NN<const Net::SocketUtil::Add
 	while (thisList.GetCount() == 1)
 	{
 		item = thisList.GetItemNoCheck(0);
-		if (lastItem.SetTo(nnlastItem) && nnlastItem->oidLen == item->oidLen && Net::ASN1Util::OIDCompare(nnlastItem->oid, nnlastItem->oidLen, item->oid, item->oidLen) == 0)
+		if (lastItem.SetTo(nnlastItem) && nnlastItem->oidLen == item->oidLen && Net::ASN1Util::OIDCompare(Data::ByteArrayR(nnlastItem->oid, nnlastItem->oidLen), Data::ByteArrayR(item->oid, item->oidLen)) == 0)
 		{
 			break;
 		}
@@ -199,7 +199,7 @@ Net::SNMPUtil::ErrorStatus Net::SNMPClient::V1Walk(NN<const Net::SocketUtil::Add
 	return Net::SNMPUtil::ES_NOERROR;
 }
 
-UOSInt Net::SNMPClient::V1ScanGetRequest(NN<const Net::SocketUtil::AddressInfo> broadcastAddr, NN<Text::String> community, const UTF8Char *oidText, UOSInt oidTextLen, NN<Data::ArrayListNN<Net::SocketUtil::AddressInfo>> addrList, Data::Duration timeout, Bool scanIP)
+UOSInt Net::SNMPClient::V1ScanGetRequest(NN<const Net::SocketUtil::AddressInfo> broadcastAddr, NN<Text::String> community, Text::CStringNN oidText, NN<Data::ArrayListNN<Net::SocketUtil::AddressInfo>> addrList, Data::Duration timeout, Bool scanIP)
 {
 	UInt8 pduBuff[64];
 	UOSInt oidLen;
@@ -217,7 +217,7 @@ UOSInt Net::SNMPClient::V1ScanGetRequest(NN<const Net::SocketUtil::AddressInfo> 
 	pdu.AppendInt32(0);
 	pdu.BeginSequence();
 	pdu.BeginSequence();
-	oidLen = Net::ASN1Util::OIDText2PDU(oidText, oidTextLen, pduBuff);
+	oidLen = Net::ASN1Util::OIDText2PDU(oidText, pduBuff);
 	pdu.AppendOID(pduBuff, oidLen);
 	pdu.AppendNull();
 	pdu.EndAll();

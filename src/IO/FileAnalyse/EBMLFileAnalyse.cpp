@@ -606,11 +606,11 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 			this->fd->GetRealData(pack->fileOfst + pack->hdrSize, pack->packSize - pack->hdrSize, buff);
 			if (buff[pack->packSize - pack->hdrSize - 1] == 0)
 			{
-				sb->AppendC(buff.GetPtr(), pack->packSize - pack->hdrSize - 1);
+				sb->AppendC(buff.Arr(), pack->packSize - pack->hdrSize - 1);
 			}
 			else
 			{
-				sb->AppendC(buff.GetPtr(), pack->packSize - pack->hdrSize);
+				sb->AppendC(buff.Arr(), pack->packSize - pack->hdrSize);
 			}
 		}
 		else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_UINT)
@@ -810,11 +810,11 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EBMLFileAnalyse::GetFram
 			this->fd->GetRealData(pack->fileOfst + pack->hdrSize, pack->packSize - pack->hdrSize, buff);
 			if (buff[pack->packSize - pack->hdrSize - 1] == 0)
 			{
-				frame->AddStrS(pack->hdrSize, pack->packSize - pack->hdrSize, element->elementName, buff.GetPtr());
+				frame->AddStrS(pack->hdrSize, pack->packSize - pack->hdrSize, element->elementName, buff.Arr());
 			}
 			else
 			{
-				frame->AddStrC(pack->hdrSize, pack->packSize - pack->hdrSize, element->elementName, buff.GetPtr());
+				frame->AddStrC(pack->hdrSize, pack->packSize - pack->hdrSize, element->elementName, buff.Arr());
 			}
 		}
 		else if (element->type == IO::FileAnalyse::EBMLFileAnalyse::ET_UINT)

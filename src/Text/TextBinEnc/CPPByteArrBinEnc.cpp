@@ -31,10 +31,11 @@ UOSInt Text::TextBinEnc::CPPByteArrBinEnc::EncodeBin(NN<Text::StringBuilderUTF8>
 	return sb->GetCharCnt() - size;
 }
 
-UOSInt Text::TextBinEnc::CPPByteArrBinEnc::CalcBinSize(const UTF8Char *str, UOSInt strLen) const
+UOSInt Text::TextBinEnc::CPPByteArrBinEnc::CalcBinSize(Text::CStringNN s) const
 {
 	UOSInt cnt = 0;
 	UTF8Char c;
+	const UTF8Char *str = s.v;
 	while ((c = *str++) != 0)
 	{
 		if (c == ',')
@@ -43,11 +44,12 @@ UOSInt Text::TextBinEnc::CPPByteArrBinEnc::CalcBinSize(const UTF8Char *str, UOSI
 	return cnt + 1;
 }
 
-UOSInt Text::TextBinEnc::CPPByteArrBinEnc::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff) const
+UOSInt Text::TextBinEnc::CPPByteArrBinEnc::DecodeBin(Text::CStringNN s, UInt8 *dataBuff) const
 {
 	UInt8 *startPtr = dataBuff;
 	UTF8Char c;
 	UInt8 b = 0;
+	const UTF8Char *str = s.v;
 	while ((c = *str++) != 0)
 	{
 		if (c == '0' && str[0] == 'x')

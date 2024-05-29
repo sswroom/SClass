@@ -53,7 +53,7 @@ void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleClientId(Text::String *gooCl
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);
 		this->gooCliId = gooCliId->Clone().Ptr();
 		this->gooPrivKey = MemAlloc(UInt8, gooPrivKey->leng + 1);
-		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey->v, gooPrivKey->leng, this->gooPrivKey);
+		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey->ToCString(), this->gooPrivKey);
 	}
 }
 
@@ -71,7 +71,7 @@ void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleClientId(Text::CString gooCl
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);
 		this->gooCliId = Text::String::New(gooCliId).Ptr();
 		this->gooPrivKey = MemAlloc(UInt8, gooPrivKey.leng + 1);
-		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey.v, gooPrivKey.leng, this->gooPrivKey);
+		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey.OrEmpty(), this->gooPrivKey);
 	}
 }
 

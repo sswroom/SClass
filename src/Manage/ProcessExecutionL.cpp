@@ -62,7 +62,7 @@ UOSInt Manage::ProcessExecution::NewProcess(Text::CStringNN cmdLine)
 	}
 	*pptr = 0;
 	args.Add(0);
-	UTF8Char **arr = args.Ptr().Ptr();
+	UTF8Char **arr = args.Arr().Ptr();
 
 	if (pipe(clsData->in) != 0)
 	{
@@ -107,7 +107,7 @@ UOSInt Manage::ProcessExecution::Read(const Data::ByteArray &buff)
 {
 	if (this->clsData->in[0] == 0)
 		return 0;
-	OSInt readSize = read(this->clsData->out[0], buff.Ptr().Ptr(), (size_t)buff.GetSize());
+	OSInt readSize = read(this->clsData->out[0], buff.Arr().Ptr(), (size_t)buff.GetSize());
 	if (readSize >= 0)
 	{
 		return (UOSInt)readSize;

@@ -17,7 +17,7 @@ Net::SNMPInfo::~SNMPInfo()
 
 }
 
-void Net::SNMPInfo::PDUSeqGetDetail(const UInt8 *pdu, UOSInt pduSize, UOSInt level, NN<Text::StringBuilderUTF8> sb)
+void Net::SNMPInfo::PDUSeqGetDetail(Data::ByteArrayR pdu, UOSInt level, NN<Text::StringBuilderUTF8> sb)
 {
 	if (level > 0)
 	{
@@ -25,10 +25,10 @@ void Net::SNMPInfo::PDUSeqGetDetail(const UInt8 *pdu, UOSInt pduSize, UOSInt lev
 	}
 	sb->AppendC(UTF8STRC("{\r\n"));
 	UOSInt i = 0;
-	while (i < pduSize)
+	while (i < pdu.GetSize())
 	{
-		i += this->PDUGetDetail(CSTR_NULL, &pdu[i], pduSize - i, level + 1, sb);
-		if (i < pduSize)
+		i += this->PDUGetDetail(CSTR_NULL, pdu.SubArray(i), level + 1, sb);
+		if (i < pdu.GetSize())
 		{
 			sb->AppendC(UTF8STRC(",\r\n"));
 		}
@@ -41,11 +41,11 @@ void Net::SNMPInfo::PDUSeqGetDetail(const UInt8 *pdu, UOSInt pduSize, UOSInt lev
 	sb->AppendC(UTF8STRC("}"));
 }
 
-UOSInt Net::SNMPInfo::PDUGetDetail(Text::CString name, const UInt8 *pdu, UOSInt pduSize, UOSInt level, NN<Text::StringBuilderUTF8> sb)
+UOSInt Net::SNMPInfo::PDUGetDetail(Text::CString name, Data::ByteArrayR pdu, UOSInt level, NN<Text::StringBuilderUTF8> sb)
 {
-	if (pduSize < 2)
+	if (pdu.GetSize() < 2)
 	{
-		return pduSize;
+		return pdu.GetSize();
 	}
 	if (level > 0)
 	{
@@ -82,10 +82,10 @@ UOSInt Net::SNMPInfo::PDUGetDetail(Text::CString name, const UInt8 *pdu, UOSInt 
 			hdrSize = 6;
 		}
 	}
-	if (hdrSize + len > pduSize)
+	if (hdrSize + len > pdu.GetSize())
 	{
-		sb->AppendHexBuff(pdu, pduSize, ' ', Text::LineBreakType::None);
-		return pduSize;
+		sb->AppendHexBuff(pdu, ' ', Text::LineBreakType::None);
+		return pdu.GetSize();
 	}
 	switch (t)
 	{
@@ -148,14 +148,14 @@ UOSInt Net::SNMPInfo::PDUGetDetail(Text::CString name, const UInt8 *pdu, UOSInt 
 		return len + hdrSize;
 	case 6:
 		sb->AppendC(UTF8STRC("OBJECT IDENTIFIER "));
-		Net::ASN1Util::OIDToString(&pdu[hdrSize], len, sb);
+		Net::ASN1Util::OIDToString(pdu.SubArray(hdrSize, len), sb);
 		sb->AppendC(UTF8STRC(" ("));
-		Net::ASN1OIDDB::OIDToNameString(&pdu[hdrSize], len, sb);
+		Net::ASN1OIDDB::OIDToNameString(pdu.SubArray(hdrSize, len), sb);
 		sb->AppendC(UTF8STRC(")"));
 		return len + hdrSize;
 	case 0x30:
 		sb->AppendC(UTF8STRC("SEQUENCE\r\n"));
-		this->PDUSeqGetDetail(&pdu[hdrSize], len, level, sb);
+		this->PDUSeqGetDetail(pdu.SubArray(hdrSize, len), level, sb);
 		return len + hdrSize;
 	case 0x40:
 		sb->AppendC(UTF8STRC("IpAddress "));
@@ -242,23 +242,23 @@ UOSInt Net::SNMPInfo::PDUGetDetail(Text::CString name, const UInt8 *pdu, UOSInt 
 		return len + hdrSize;
 	case 0xA0:
 		sb->AppendC(UTF8STRC("GetRequest-PDU\r\n"));
-		this->PDUSeqGetDetail(&pdu[hdrSize], len, level, sb);
+		this->PDUSeqGetDetail(pdu.SubArray(hdrSize, len), level, sb);
 		return len + hdrSize;
 	case 0xA1:
 		sb->AppendC(UTF8STRC("GetNextRequest-PDU\r\n"));
-		this->PDUSeqGetDetail(&pdu[hdrSize], len, level, sb);
+		this->PDUSeqGetDetail(pdu.SubArray(hdrSize, len), level, sb);
 		return len + hdrSize;
 	case 0xA2:
 		sb->AppendC(UTF8STRC("GetResponse-PDU\r\n"));
-		this->PDUSeqGetDetail(&pdu[hdrSize], len, level, sb);
+		this->PDUSeqGetDetail(pdu.SubArray(hdrSize, len), level, sb);
 		return len + hdrSize;
 	case 0xA3:
 		sb->AppendC(UTF8STRC("SetRequest-PDU\r\n"));
-		this->PDUSeqGetDetail(&pdu[hdrSize], len, level, sb);
+		this->PDUSeqGetDetail(pdu.SubArray(hdrSize, len), level, sb);
 		return len + hdrSize;
 	case 0xA4:
 		sb->AppendC(UTF8STRC("Trap-PDU\r\n"));
-		this->PDUSeqGetDetail(&pdu[hdrSize], len, level, sb);
+		this->PDUSeqGetDetail(pdu.SubArray(hdrSize, len), level, sb);
 		return len + hdrSize;
 	default:
 		sb->AppendC(UTF8STRC("UNKNOWN("));
@@ -269,37 +269,37 @@ UOSInt Net::SNMPInfo::PDUGetDetail(Text::CString name, const UInt8 *pdu, UOSInt 
 	}
 }
 
-void Net::SNMPInfo::ValueToString(UInt8 type, const UInt8 *pduBuff, UOSInt valLen, NN<Text::StringBuilderUTF8> sb)
+void Net::SNMPInfo::ValueToString(UInt8 type, Data::ByteArrayR pduBuff, NN<Text::StringBuilderUTF8> sb)
 {
 	switch (type)
 	{
 	case 2:
-		if (valLen == 1)
+		if (pduBuff.GetSize() == 1)
 		{
 			sb->AppendI16((Int8)pduBuff[0]);
 		}
-		else if (valLen == 2)
+		else if (pduBuff.GetSize() == 2)
 		{
-			sb->AppendI16(ReadMInt16(pduBuff));
+			sb->AppendI16(pduBuff.ReadMI16(0));
 		}
-		else if (valLen == 3)
+		else if (pduBuff.GetSize() == 3)
 		{
-			sb->AppendI32(ReadMInt24(pduBuff));
+			sb->AppendI32(pduBuff.ReadMI24(0));
 		}
-		else if (valLen == 4)
+		else if (pduBuff.GetSize() == 4)
 		{
-			sb->AppendI32(ReadMInt32(pduBuff));
+			sb->AppendI32(pduBuff.ReadMI32(0));
 		}
 		else
 		{
-			sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LineBreakType::None);
+			sb->AppendHexBuff(pduBuff, ' ', Text::LineBreakType::None);
 		}
 		break;
 	case 4:
 		{
 			Bool isBin = false;
 			UOSInt i = 0;
-			while (i < valLen)
+			while (i < pduBuff.GetSize())
 			{
 				if (pduBuff[i] < 0x20 || pduBuff[i] >= 0x7f)
 				{
@@ -310,172 +310,172 @@ void Net::SNMPInfo::ValueToString(UInt8 type, const UInt8 *pduBuff, UOSInt valLe
 			}
 			if (isBin)
 			{
-				sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LineBreakType::None);
+				sb->AppendHexBuff(pduBuff, ' ', Text::LineBreakType::None);
 			}
 			else
 			{
 				sb->AppendC(UTF8STRC("\""));
-				sb->AppendC(pduBuff, valLen);
+				sb->AppendC(pduBuff.Arr(), pduBuff.GetSize());
 				sb->AppendC(UTF8STRC("\""));
 			}
 		}
 		break;
 	case 5:
-		if (valLen > 0)
+		if (pduBuff.GetSize() > 0)
 		{
 			sb->AppendUTF8Char(' ');
-			sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LineBreakType::None);
+			sb->AppendHexBuff(pduBuff, ' ', Text::LineBreakType::None);
 		}
 		break;
 	case 6:
-		Net::ASN1Util::OIDToString(pduBuff, valLen, sb);
+		Net::ASN1Util::OIDToString(pduBuff, sb);
 		sb->AppendC(UTF8STRC(" ("));
-		Net::ASN1OIDDB::OIDToNameString(pduBuff, valLen, sb);
+		Net::ASN1OIDDB::OIDToNameString(pduBuff, sb);
 		sb->AppendC(UTF8STRC(")"));
 		break;
 	case 0x30:
 		{
 			Net::SNMPInfo snmp;
-			snmp.PDUSeqGetDetail(pduBuff, valLen, 0, sb);
+			snmp.PDUSeqGetDetail(pduBuff, 0, sb);
 		}
 		break;
 	case 0x40:
-		if (valLen == 4)
+		if (pduBuff.GetSize() == 4)
 		{
 			UTF8Char sbuff[16];
 			UTF8Char *sptr;
-			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(pduBuff));
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, pduBuff.ReadNU32(0));
 			sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		}
 		else
 		{
-			sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LineBreakType::None);
+			sb->AppendHexBuff(pduBuff, ' ', Text::LineBreakType::None);
 		}
 		break;
 	case 0x41:
-		if (valLen == 1)
+		if (pduBuff.GetSize() == 1)
 		{
 			sb->AppendU16(pduBuff[0]);
 		}
-		else if (valLen == 2)
+		else if (pduBuff.GetSize() == 2)
 		{
-			sb->AppendU16(ReadMUInt16(pduBuff));
+			sb->AppendU16(pduBuff.ReadMU16(0));
 		}
-		else if (valLen == 3)
+		else if (pduBuff.GetSize() == 3)
 		{
-			sb->AppendU32(ReadMUInt24(pduBuff));
+			sb->AppendU32(pduBuff.ReadMU24(0));
 		}
-		else if (valLen == 4)
+		else if (pduBuff.GetSize() == 4)
 		{
-			sb->AppendU32(ReadMUInt32(pduBuff));
+			sb->AppendU32(pduBuff.ReadMU32(0));
 		}
 		else
 		{
-			sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LineBreakType::None);
+			sb->AppendHexBuff(pduBuff, ' ', Text::LineBreakType::None);
 		}
 		break;
 	case 0x42:
-		if (valLen == 1)
+		if (pduBuff.GetSize() == 1)
 		{
 			sb->AppendU16(pduBuff[0]);
 		}
-		else if (valLen == 2)
+		else if (pduBuff.GetSize() == 2)
 		{
-			sb->AppendU16(ReadMUInt16(pduBuff));
+			sb->AppendU16(pduBuff.ReadMU16(0));
 		}
-		else if (valLen == 3)
+		else if (pduBuff.GetSize() == 3)
 		{
-			sb->AppendU32(ReadMUInt24(pduBuff));
+			sb->AppendU32(pduBuff.ReadMU24(0));
 		}
-		else if (valLen == 4)
+		else if (pduBuff.GetSize() == 4)
 		{
-			sb->AppendU32(ReadMUInt32(pduBuff));
+			sb->AppendU32(pduBuff.ReadMU32(0));
 		}
 		else
 		{
-			sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LineBreakType::None);
+			sb->AppendHexBuff(pduBuff, ' ', Text::LineBreakType::None);
 		}
 		break;
 	case 0x43:
-		if (valLen == 1)
+		if (pduBuff.GetSize() == 1)
 		{
 			sb->AppendU16(pduBuff[0]);
 		}
-		else if (valLen == 2)
+		else if (pduBuff.GetSize() == 2)
 		{
-			sb->AppendU16(ReadMUInt16(pduBuff));
+			sb->AppendU16(pduBuff.ReadMU16(0));
 		}
-		else if (valLen == 3)
+		else if (pduBuff.GetSize() == 3)
 		{
-			sb->AppendU32(ReadMUInt24(pduBuff));
+			sb->AppendU32(pduBuff.ReadMU24(0));
 		}
-		else if (valLen == 4)
+		else if (pduBuff.GetSize() == 4)
 		{
-			sb->AppendU32(ReadMUInt32(pduBuff));
+			sb->AppendU32(pduBuff.ReadMU32(0));
 		}
 		else
 		{
-			sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LineBreakType::None);
+			sb->AppendHexBuff(pduBuff, ' ', Text::LineBreakType::None);
 		}
 		break;
 	case 0x46:
-		if (valLen == 1)
+		if (pduBuff.GetSize() == 1)
 		{
 			sb->AppendU16(pduBuff[0]);
 		}
-		else if (valLen == 2)
+		else if (pduBuff.GetSize() == 2)
 		{
-			sb->AppendU16(ReadMUInt16(pduBuff));
+			sb->AppendU16(pduBuff.ReadMU16(0));
 		}
-		else if (valLen == 3)
+		else if (pduBuff.GetSize() == 3)
 		{
-			sb->AppendU32(ReadMUInt24(pduBuff));
+			sb->AppendU32(pduBuff.ReadMU24(0));
 		}
-		else if (valLen == 4)
+		else if (pduBuff.GetSize() == 4)
 		{
-			sb->AppendU32(ReadMUInt32(pduBuff));
+			sb->AppendU32(pduBuff.ReadMU32(0));
 		}
-		else if (valLen == 8)
+		else if (pduBuff.GetSize() == 8)
 		{
-			sb->AppendU64(ReadMUInt64(pduBuff));
+			sb->AppendU64(pduBuff.ReadMU64(0));
 		}
 		else
 		{
-			sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LineBreakType::None);
+			sb->AppendHexBuff(pduBuff, ' ', Text::LineBreakType::None);
 		}
 		break;
 	case 0xA0:
 		{
 			Net::SNMPInfo snmp;
-			snmp.PDUSeqGetDetail(pduBuff, valLen, 0, sb);
+			snmp.PDUSeqGetDetail(pduBuff, 0, sb);
 		}
 		break;
 	case 0xA1:
 		{
 			Net::SNMPInfo snmp;
-			snmp.PDUSeqGetDetail(pduBuff, valLen, 0, sb);
+			snmp.PDUSeqGetDetail(pduBuff, 0, sb);
 		}
 		break;
 	case 0xA2:
 		{
 			Net::SNMPInfo snmp;
-			snmp.PDUSeqGetDetail(pduBuff, valLen, 0, sb);
+			snmp.PDUSeqGetDetail(pduBuff, 0, sb);
 		}
 		break;
 	case 0xA3:
 		{
 			Net::SNMPInfo snmp;
-			snmp.PDUSeqGetDetail(pduBuff, valLen, 0, sb);
+			snmp.PDUSeqGetDetail(pduBuff, 0, sb);
 		}
 		break;
 	case 0xA4:
 		{
 			Net::SNMPInfo snmp;
-			snmp.PDUSeqGetDetail(pduBuff, valLen, 0, sb);
+			snmp.PDUSeqGetDetail(pduBuff, 0, sb);
 		}
 		break;
 	default:
-		sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LineBreakType::None);
+		sb->AppendHexBuff(pduBuff, ' ', Text::LineBreakType::None);
 		break;
 	}
 }

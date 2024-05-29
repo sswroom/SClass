@@ -25,8 +25,8 @@ namespace SSWR
 			Net::WebServer::WebListener *svr;
 			Net::WebServer::HTTPForwardHandler *fwdHdlr;
 			IO::LogTool *fwdLog;
-			Crypto::Cert::X509Cert *sslCert;
-			Crypto::Cert::X509File *sslKey;
+			Optional<Crypto::Cert::X509Cert> sslCert;
+			Optional<Crypto::Cert::X509File> sslKey;
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 
 			NN<UI::GUILabel> lblPort;

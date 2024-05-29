@@ -653,7 +653,7 @@ Media::HTRecFile::~HTRecFile()
 
 UOSInt Media::HTRecFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
-	if (this->recBuff.IsNull() || schemaName.leng != 0)
+	if (this->recBuff.GetSize() == 0 || schemaName.leng != 0)
 	{
 		return 0;
 	}
@@ -806,5 +806,5 @@ UInt32 Media::HTRecFile::GetAdjRecInterval()
 
 const UInt8 *Media::HTRecFile::GetRecBuff()
 {
-	return this->recBuff.Ptr().Ptr();
+	return this->recBuff.Arr().Ptr();
 }

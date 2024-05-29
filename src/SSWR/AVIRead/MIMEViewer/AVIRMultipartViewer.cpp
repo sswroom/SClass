@@ -41,127 +41,118 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(NN<SSWR::AVI
 			if (this->obj->GetPartContent(1).SetTo(subObj) && subObj->GetContentType().StartsWith(UTF8STRC("application/pkcs7-signature")))
 			{
 				UOSInt dataSize;
-				const UInt8 *data = NN<Text::MIMEObj::UnknownMIMEObj>::ConvertFrom(subObj)->GetRAWData(dataSize);
-				Net::ASN1Data *asn1 = Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR(data, dataSize), subObj->GetSourceNameObj());
-				if (asn1)
+				UnsafeArray<const UInt8> data = NN<Text::MIMEObj::UnknownMIMEObj>::ConvertFrom(subObj)->GetRAWData(dataSize);
+				NN<Crypto::Cert::X509File> x509;
+				if (Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR(data, dataSize), subObj->GetSourceNameObj()).SetTo(x509))
 				{
-					if (asn1->GetASN1Type() == Net::ASN1Data::ASN1Type::X509)
+					if (x509->GetFileType() == Crypto::Cert::X509File::FileType::PKCS7)
 					{
-						Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
-						if (x509->GetFileType() == Crypto::Cert::X509File::FileType::PKCS7)
+						NN<Crypto::Cert::X509PKCS7> pkcs7 = NN<Crypto::Cert::X509PKCS7>::ConvertFrom(x509);
+						Crypto::Hash::HashType hashType = pkcs7->GetDigestType();
+						NN<Crypto::Hash::IHash> hash;
+						if (!pkcs7->GetMessageDigest(dataSize).SetTo(data))
 						{
-							Crypto::Cert::X509PKCS7 *pkcs7 = (Crypto::Cert::X509PKCS7*)x509;
-							Crypto::Hash::HashType hashType = pkcs7->GetDigestType();
-							NN<Crypto::Hash::IHash> hash;
-							data = pkcs7->GetMessageDigest(dataSize);
-							if (data == 0)
-							{
-								this->txtSignState->SetText(CSTR("Message Digest not found"));
-							}
-							else if (hashType == Crypto::Hash::HashType::Unknown)
-							{
-								this->txtSignState->SetText(CSTR("Unknown Digest Type"));
-							}
-							else if (!Crypto::Hash::HashCreator::CreateHash(hashType).SetTo(hash))
-							{
-								this->txtSignState->SetText(CSTR("Digest Type not supported"));
-							}
-							else
-							{
-								UOSInt buffSize;
-								const UInt8 *dataBuff = mstm.GetBuff(buffSize);
-								if (buffSize > 2 && dataBuff[buffSize - 2] == 13 && dataBuff[buffSize - 1] == 10)
-								{
-									buffSize -= 2;
-								}
-								hash->Calc(dataBuff, buffSize);
-								buffSize = hash->GetResultSize();
-								hash->GetValue(hashBuff);
-								hash.Delete();
-								if (!Text::StrEqualsC(data, dataSize, hashBuff, buffSize))
-								{
-									this->txtSignState->SetText(CSTR("Digest Mismatch"));
-								}
-								else
-								{
-									UOSInt encLen;
-									const UInt8 *encDigestData = pkcs7->GetEncryptedDigest(encLen);
-									if (encDigestData == 0)
-									{
-										this->txtSignState->SetText(CSTR("Signature data not found"));
-									}
-									else
-									{
-										NN<Crypto::Cert::X509Cert> crt;
-										if (!pkcs7->GetNewCert(0).SetTo(crt))
-										{
-											this->txtSignState->SetText(CSTR("Cert not found"));
-										}
-										else
-										{
-											NN<Crypto::Cert::X509Key> key;
-											if (!crt->GetNewPublicKey().SetTo(key))
-											{
-												this->txtSignState->SetText(CSTR("Public key not found"));
-											}
-											else
-											{
-												NN<Net::SSLEngine> ssl;
-												if (!Net::SSLEngineFactory::Create(core->GetSocketFactory(), false).SetTo(ssl))
-												{
-													this->txtSignState->SetText(CSTR("Error in initializing SSL Engine"));
-												}
-												else
-												{
-													Text::StringBuilderUTF8 sb;
-													sb.AppendC(UTF8STRC("Hash:\r\n"));
-													sb.AppendHexBuff(hashBuff, buffSize, ' ', Text::LineBreakType::CRLF);
-
-													Crypto::Cert::DigestInfo digestInfo;
-													Bool match = false;
-													UInt8 decBuff[256];
-													UOSInt decLen = ssl->Decrypt(key, decBuff, encDigestData, encLen, Crypto::Encrypt::RSACipher::Padding::PKCS1);
-													if (decLen > 0)
-													{
-														if (Crypto::Cert::X509File::ParseDigestType(&digestInfo, decBuff, decBuff + decLen))
-														{
-															sb.AppendC(UTF8STRC("\r\nHash Type: "));
-															sb.Append(Crypto::Hash::HashTypeGetName(digestInfo.hashType));
-															sb.AppendC(UTF8STRC("\r\nHash Value:\r\n"));
-															sb.AppendHexBuff(digestInfo.hashVal, digestInfo.hashLen, ' ', Text::LineBreakType::CRLF);
-															match = Text::StrEqualsC(digestInfo.hashVal, digestInfo.hashLen, hashBuff, buffSize);
-														}
-													}
-													printf("%s\r\n", sb.ToString());
-													if (match)
-													{
-														this->txtSignState->SetText(CSTR("Signature valid"));
-													}
-													else
-													{
-														this->txtSignState->SetText(CSTR("Signature invalid"));
-													}
-													ssl.Delete();
-												}
-
-												key.Delete();
-											}
-											crt.Delete();
-										}
-									}
-								}
-							}
+							this->txtSignState->SetText(CSTR("Message Digest not found"));
+						}
+						else if (hashType == Crypto::Hash::HashType::Unknown)
+						{
+							this->txtSignState->SetText(CSTR("Unknown Digest Type"));
+						}
+						else if (!Crypto::Hash::HashCreator::CreateHash(hashType).SetTo(hash))
+						{
+							this->txtSignState->SetText(CSTR("Digest Type not supported"));
 						}
 						else
 						{
-							this->txtSignState->SetText(CSTR("Signature is not in PKCS7 format"));
+							UOSInt buffSize;
+							const UInt8 *dataBuff = mstm.GetBuff(buffSize);
+							if (buffSize > 2 && dataBuff[buffSize - 2] == 13 && dataBuff[buffSize - 1] == 10)
+							{
+								buffSize -= 2;
+							}
+							hash->Calc(dataBuff, buffSize);
+							buffSize = hash->GetResultSize();
+							hash->GetValue(hashBuff);
+							hash.Delete();
+							if (!Text::StrEqualsC(data, dataSize, hashBuff, buffSize))
+							{
+								this->txtSignState->SetText(CSTR("Digest Mismatch"));
+							}
+							else
+							{
+								UOSInt encLen;
+								UnsafeArray<const UInt8> encDigestData;
+								if (!pkcs7->GetEncryptedDigest(encLen).SetTo(encDigestData))
+								{
+									this->txtSignState->SetText(CSTR("Signature data not found"));
+								}
+								else
+								{
+									NN<Crypto::Cert::X509Cert> crt;
+									if (!pkcs7->GetNewCert(0).SetTo(crt))
+									{
+										this->txtSignState->SetText(CSTR("Cert not found"));
+									}
+									else
+									{
+										NN<Crypto::Cert::X509Key> key;
+										if (!crt->GetNewPublicKey().SetTo(key))
+										{
+											this->txtSignState->SetText(CSTR("Public key not found"));
+										}
+										else
+										{
+											NN<Net::SSLEngine> ssl;
+											if (!Net::SSLEngineFactory::Create(core->GetSocketFactory(), false).SetTo(ssl))
+											{
+												this->txtSignState->SetText(CSTR("Error in initializing SSL Engine"));
+											}
+											else
+											{
+												Text::StringBuilderUTF8 sb;
+												sb.AppendC(UTF8STRC("Hash:\r\n"));
+												sb.AppendHexBuff(hashBuff, buffSize, ' ', Text::LineBreakType::CRLF);
+
+												Crypto::Cert::DigestInfo digestInfo;
+												Bool match = false;
+												UInt8 decBuff[256];
+												UOSInt decLen = ssl->Decrypt(key, decBuff, Data::ByteArrayR(encDigestData, encLen), Crypto::Encrypt::RSACipher::Padding::PKCS1);
+												if (decLen > 0)
+												{
+													if (Crypto::Cert::X509File::ParseDigestType(&digestInfo, decBuff, decBuff + decLen))
+													{
+														sb.AppendC(UTF8STRC("\r\nHash Type: "));
+														sb.Append(Crypto::Hash::HashTypeGetName(digestInfo.hashType));
+														sb.AppendC(UTF8STRC("\r\nHash Value:\r\n"));
+														sb.AppendHexBuff(digestInfo.hashVal, digestInfo.hashLen, ' ', Text::LineBreakType::CRLF);
+														match = Text::StrEqualsC(digestInfo.hashVal, digestInfo.hashLen, hashBuff, buffSize);
+													}
+												}
+												printf("%s\r\n", sb.ToString());
+												if (match)
+												{
+													this->txtSignState->SetText(CSTR("Signature valid"));
+												}
+												else
+												{
+													this->txtSignState->SetText(CSTR("Signature invalid"));
+												}
+												ssl.Delete();
+											}
+
+											key.Delete();
+										}
+										crt.Delete();
+									}
+								}
+							}
 						}
 					}
 					else
 					{
-						this->txtSignState->SetText(CSTR("Signature is not a X.509 file"));
+						this->txtSignState->SetText(CSTR("Signature is not in PKCS7 format"));
 					}
-					DEL_CLASS(asn1);
+					x509.Delete();
 				}
 				else
 				{

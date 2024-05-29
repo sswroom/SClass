@@ -1190,7 +1190,7 @@ Int32 Manage::Process::ExecuteProcess(Text::CString cmd, NN<Text::StringBuilderU
 	*pptr = 0;
 	args.Add(0);
 	UOSInt argc;
-	UnsafeArray<UTF8Char*> arr = args.GetPtr(argc);
+	UnsafeArray<UTF8Char*> arr = args.GetArr(argc);
 
 	static Int32 Process_Id = 0;
 	UTF8Char tmpFile[512];

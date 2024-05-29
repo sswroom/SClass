@@ -72,8 +72,7 @@ Optional<IO::ParsedObject> Parser::FileParser::X509Parser::ParseFileHdr(NN<IO::S
 			{
 				return 0;
 			}
-			IO::ParsedObject *pobj = ParseBuff(tmpBuff, fileName);
-			return pobj;
+			return ParseBuff(tmpBuff, fileName);
 		}
 		else
 		{
@@ -85,7 +84,7 @@ Optional<IO::ParsedObject> Parser::FileParser::X509Parser::ParseFileHdr(NN<IO::S
 	return ParseBuff(BYTEARR(buff).WithSize(len), fd->GetFullFileName());
 }
 
-Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR buff, NN<Text::String> fileName)
+Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR buff, NN<Text::String> fileName)
 {
 	Crypto::Cert::X509File *ret = 0;
 	UInt8 dataBuff[10240];
@@ -95,7 +94,7 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(Data::ByteArra
 	{
 		buff = buff.SubArray(3);
 	}
-	if (Text::StrStartsWithC(buff.GetPtr(), 5, UTF8STRC("-----")))
+	if (Text::StrStartsWithC(buff.Arr(), 5, UTF8STRC("-----")))
 	{
 		IO::MemoryReadingStream mstm(buff);
 		Text::UTF8Reader reader(mstm);
@@ -126,7 +125,7 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(Data::ByteArra
 						sb.AppendP(dataBuff, sptr);
 					}
 				}
-				dataLen = b64.DecodeBin(sb.ToString(), sb.GetLength(), dataBuff);
+				dataLen = b64.DecodeBin(sb.ToCString(), dataBuff);
 				NN<Crypto::Cert::X509Cert> certFile;
 				if (certFile.Set((Crypto::Cert::X509Cert*)file))
 				{
@@ -171,7 +170,7 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(Data::ByteArra
 				}
 				if (!enc)
 				{
-					dataLen = b64.DecodeBin(sb.ToString(), sb.GetLength(), dataBuff);
+					dataLen = b64.DecodeBin(sb.ToCString(), dataBuff);
 					NN<Crypto::Cert::X509Cert> certFile;
 					if (certFile.Set((Crypto::Cert::X509Cert*)file))
 					{
@@ -211,7 +210,7 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(Data::ByteArra
 						sb.AppendP(dataBuff, sptr);
 					}
 				}
-				dataLen = b64.DecodeBin(sb.ToString(), sb.GetLength(), dataBuff);
+				dataLen = b64.DecodeBin(sb.ToCString(), dataBuff);
 				NN<Crypto::Cert::X509Cert> certFile;
 				if (certFile.Set((Crypto::Cert::X509Cert*)file))
 				{
@@ -250,7 +249,7 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(Data::ByteArra
 						sb.AppendP(dataBuff, sptr);
 					}
 				}
-				dataLen = b64.DecodeBin(sb.ToString(), sb.GetLength(), dataBuff);
+				dataLen = b64.DecodeBin(sb.ToCString(), dataBuff);
 				NN<Crypto::Cert::X509Cert> certFile;
 				if (certFile.Set((Crypto::Cert::X509Cert*)file))
 				{
@@ -289,7 +288,7 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(Data::ByteArra
 						sb.AppendP(dataBuff, sptr);
 					}
 				}
-				dataLen = b64.DecodeBin(sb.ToString(), sb.GetLength(), dataBuff);
+				dataLen = b64.DecodeBin(sb.ToCString(), dataBuff);
 				NN<Crypto::Cert::X509Cert> certFile;
 				if (certFile.Set((Crypto::Cert::X509Cert*)file))
 				{
@@ -328,7 +327,7 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(Data::ByteArra
 						sb.AppendP(dataBuff, sptr);
 					}
 				}
-				dataLen = b64.DecodeBin(sb.ToString(), sb.GetLength(), dataBuff);
+				dataLen = b64.DecodeBin(sb.ToCString(), dataBuff);
 				NN<Crypto::Cert::X509Cert> certFile;
 				if (certFile.Set((Crypto::Cert::X509Cert*)file))
 				{
@@ -367,7 +366,7 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(Data::ByteArra
 						sb.AppendP(dataBuff, sptr);
 					}
 				}
-				dataLen = b64.DecodeBin(sb.ToString(), sb.GetLength(), dataBuff);
+				dataLen = b64.DecodeBin(sb.ToCString(), dataBuff);
 				NN<Crypto::Cert::X509Cert> certFile;
 				if (certFile.Set((Crypto::Cert::X509Cert*)file))
 				{
@@ -406,7 +405,7 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(Data::ByteArra
 						sb.AppendP(dataBuff, sptr);
 					}
 				}
-				dataLen = b64.DecodeBin(sb.ToString(), sb.GetLength(), dataBuff);
+				dataLen = b64.DecodeBin(sb.ToCString(), dataBuff);
 				NN<Crypto::Cert::X509Cert> certFile;
 				if (certFile.Set((Crypto::Cert::X509Cert*)file))
 				{
@@ -445,7 +444,7 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(Data::ByteArra
 						sb.AppendP(dataBuff, sptr);
 					}
 				}
-				dataLen = b64.DecodeBin(sb.ToString(), sb.GetLength(), dataBuff);
+				dataLen = b64.DecodeBin(sb.ToCString(), dataBuff);
 				NN<Crypto::Cert::X509Cert> certFile;
 				if (certFile.Set((Crypto::Cert::X509Cert*)file))
 				{
@@ -469,7 +468,7 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(Data::ByteArra
 		else
 			return file;
 	}
-	else if (buff[0] == 0x30 && Net::ASN1Util::PDUIsValid(buff.Ptr(), buff.PtrEnd()))
+	else if (buff[0] == 0x30 && Net::ASN1Util::PDUIsValid(buff.Arr(), buff.ArrEnd()))
 	{
 		if (fileName->EndsWithICase(UTF8STRC(".P12")))
 		{
@@ -549,7 +548,7 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ToType(NN<IO::P
 
 Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBinary(Data::ByteArrayR buff)
 {
-	if (Crypto::Cert::X509File::IsCertificate(buff.GetPtr(), buff.PtrEnd(), "1"))
+	if (Crypto::Cert::X509File::IsCertificate(buff.Arr(), buff.ArrEnd(), "1"))
 	{
 		return NEW_CLASS_D(Crypto::Cert::X509Cert(CSTR("Certificate.crt"), buff));
 	}

@@ -140,7 +140,7 @@ Bool IO::PcapngWriter::WritePacket(Data::ByteArrayR packet)
 	WriteInt32(&buff[24], (Int32)packet.GetSize());
 	Sync::MutexUsage mutUsage(this->mut);
 	Bool succ = (this->fs.Write(buff, 28) == 28);
-	succ = succ && (this->fs.Write(packet.Ptr().Ptr(), packet.GetSize()) == packet.GetSize());
+	succ = succ && (this->fs.Write(packet.Arr().Ptr(), packet.GetSize()) == packet.GetSize());
 	if ((packet.GetSize() & 3) == 0)
 	{
 		succ = succ && (this->fs.Write(&buff[4], 4) == 4);

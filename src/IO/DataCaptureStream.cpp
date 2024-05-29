@@ -23,7 +23,7 @@ UOSInt IO::DataCaptureStream::Read(const Data::ByteArray &buff)
 	UOSInt ret = this->stm->Read(buff);
 	if (ret > 0)
 	{
-		this->recvHdlr(this->hdlrObj, buff.Ptr().Ptr(), ret);
+		this->recvHdlr(this->hdlrObj, buff.Arr().Ptr(), ret);
 	}
 	return ret;
 }

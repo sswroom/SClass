@@ -36,7 +36,7 @@ UOSInt IO::ProtoHdlr::ProtoLSHandler::ParseProtocol(NN<IO::Stream> stm, AnyType 
 				if (packetSize > buff.GetSize())
 					return buff.GetSize();
 
-				UInt16 chk = CalCheck(buff.Ptr().Ptr(), packetSize - 2);
+				UInt16 chk = CalCheck(buff.Arr().Ptr(), packetSize - 2);
 				if (chk == *(UInt16*)&buff[packetSize - 2])
 				{
 					this->listener->DataParsed(stm, stmObj, *(UInt16*)&buff[4], *(UInt16*)&buff[6], &buff[8], packetSize - 10);

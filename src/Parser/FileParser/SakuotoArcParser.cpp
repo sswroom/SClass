@@ -83,7 +83,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SakuotoArcParser::ParseFileHdr(NN
 		s->Release();
 
 		nextOfst = fileOfst + fileSize;
-		i = (UInt32)(((UInt8*)fileName) - recBuff.Ptr());
+		i = (UInt32)(((UInt8*)fileName) - recBuff.Arr());
 	}
 	return pf;
 }

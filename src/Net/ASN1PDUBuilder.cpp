@@ -236,7 +236,12 @@ void Net::ASN1PDUBuilder::AppendBitString(UInt8 bitLeft, const UInt8 *buff, UOSI
 	}
 }
 
-void Net::ASN1PDUBuilder::AppendOctetString(const UInt8 *buff, UOSInt len)
+void Net::ASN1PDUBuilder::AppendBitString(UInt8 bitLeft, Data::ByteArrayR buff)
+{
+	AppendBitString(bitLeft, &buff[0], buff.GetSize());
+}
+
+void Net::ASN1PDUBuilder::AppendOctetString(UnsafeArray<const UInt8> buff, UOSInt len)
 {
 	this->AppendOther(4, buff, len);
 }
@@ -289,10 +294,19 @@ void Net::ASN1PDUBuilder::AppendOID(const UInt8 *oid, UOSInt len)
 	this->currOffset += len + 2;
 }
 
+void Net::ASN1PDUBuilder::AppendOID(Data::ByteArrayR oid)
+{
+	this->AllocateSize(oid.GetSize() + 2);
+	this->buff[this->currOffset] = 6;
+	this->buff[this->currOffset + 1] = (UInt8)oid.GetSize();
+	MemCopyNO(&this->buff[this->currOffset + 2], &oid[0], oid.GetSize());
+	this->currOffset += oid.GetSize() + 2;
+}
+
 void Net::ASN1PDUBuilder::AppendOIDString(Text::CStringNN oidStr)
 {
 	UInt8 buff[32];
-	UOSInt buffSize = Net::ASN1Util::OIDText2PDU(oidStr.v, oidStr.leng, buff);
+	UOSInt buffSize = Net::ASN1Util::OIDText2PDU(oidStr, buff);
 	this->AppendOID(buff, buffSize);
 }
 
@@ -357,7 +371,7 @@ void Net::ASN1PDUBuilder::AppendUTCTime(NN<Data::DateTime> t)
 	this->AppendOther(0x17, sbuff, 13);
 }
 
-void Net::ASN1PDUBuilder::AppendOther(UInt8 type, const UInt8 *buff, UOSInt buffSize)
+void Net::ASN1PDUBuilder::AppendOther(UInt8 type, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	if (buffSize == 0)
 	{
@@ -371,7 +385,7 @@ void Net::ASN1PDUBuilder::AppendOther(UInt8 type, const UInt8 *buff, UOSInt buff
 		this->AllocateSize(buffSize + 2);
 		this->buff[this->currOffset] = type;
 		this->buff[this->currOffset + 1] = (UInt8)buffSize;
-		MemCopyNO(&this->buff[this->currOffset + 2], buff, buffSize);
+		MemCopyNO(&this->buff[this->currOffset + 2], buff.Ptr(), buffSize);
 		this->currOffset += buffSize + 2;
 	}
 	else if (buffSize < 256)
@@ -380,7 +394,7 @@ void Net::ASN1PDUBuilder::AppendOther(UInt8 type, const UInt8 *buff, UOSInt buff
 		this->buff[this->currOffset] = type;
 		this->buff[this->currOffset + 1] = 0x81;
 		this->buff[this->currOffset + 2] = (UInt8)buffSize;
-		MemCopyNO(&this->buff[this->currOffset + 3], buff, buffSize);
+		MemCopyNO(&this->buff[this->currOffset + 3], buff.Ptr(), buffSize);
 		this->currOffset += buffSize + 3;
 	}
 	else if (buffSize < 65536)
@@ -389,7 +403,7 @@ void Net::ASN1PDUBuilder::AppendOther(UInt8 type, const UInt8 *buff, UOSInt buff
 		this->buff[this->currOffset] = type;
 		this->buff[this->currOffset + 1] = 0x82;
 		WriteMInt16(&this->buff[this->currOffset + 2], buffSize);
-		MemCopyNO(&this->buff[this->currOffset + 4], buff, buffSize);
+		MemCopyNO(&this->buff[this->currOffset + 4], buff.Ptr(), buffSize);
 		this->currOffset += buffSize + 4;
 	}
 	else
@@ -398,7 +412,7 @@ void Net::ASN1PDUBuilder::AppendOther(UInt8 type, const UInt8 *buff, UOSInt buff
 		this->buff[this->currOffset] = type;
 		this->buff[this->currOffset + 1] = 0x83;
 		WriteMInt24(&this->buff[this->currOffset + 2], buffSize);
-		MemCopyNO(&this->buff[this->currOffset + 5], buff, buffSize);
+		MemCopyNO(&this->buff[this->currOffset + 5], buff.Ptr(), buffSize);
 		this->currOffset += buffSize + 5;
 	}
 }
@@ -413,12 +427,12 @@ void Net::ASN1PDUBuilder::AppendSequence(const UInt8 *buff, UOSInt buffSize)
 	this->AppendOther(0x30, buff, buffSize);
 }
 
-void Net::ASN1PDUBuilder::AppendInteger(const UInt8 *buff, UOSInt buffSize)
+void Net::ASN1PDUBuilder::AppendInteger(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	this->AppendOther(2, buff, buffSize);
 }
 
-const UInt8 *Net::ASN1PDUBuilder::GetItemRAW(const Char *path, OptOut<UOSInt> itemLen, OutParam<UOSInt> itemOfst)
+UnsafeArrayOpt<const UInt8> Net::ASN1PDUBuilder::GetItemRAW(const Char *path, OptOut<UOSInt> itemLen, OutParam<UOSInt> itemOfst)
 {
 	UOSInt startOfst;
 	if (this->currLev > 0)

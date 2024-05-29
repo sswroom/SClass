@@ -133,8 +133,8 @@ namespace SSWR
 			Bool reqAllowComp;
 			Bool noShutdown;
 			NN<Text::String> userAgent;
-			Crypto::Cert::X509Cert *cliCert;
-			Crypto::Cert::X509File *cliKey;
+			Optional<Crypto::Cert::X509Cert> cliCert;
+			Optional<Crypto::Cert::X509File> cliKey;
 
 			Bool respChanged;
 			Net::SocketUtil::AddressInfo respSvrAddr;

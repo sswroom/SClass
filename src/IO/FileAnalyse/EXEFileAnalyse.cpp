@@ -80,7 +80,7 @@ void __stdcall IO::FileAnalyse::EXEFileAnalyse::ParseThread(NN<Sync::Thread> thr
 				me->fd->GetRealData(ofst, 40, BYTEARR(buff));
 				virtualSize = ReadUInt32(&buff[8]);
 				sizeOfRawData = ReadUInt32(&buff[16]);
-				if (!me->imageBuff.IsNull())
+				if (me->imageBuff.GetSize() > 0)
 				{
 					virtualAddr = ReadUInt32(&buff[12]);
 					if (virtualSize > sizeOfRawData)
@@ -695,7 +695,7 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
 
 		sb->AppendC(UTF8STRC("Name = "));
-		sb->AppendS(packBuff.Ptr().Ptr(), 8);
+		sb->AppendS(packBuff.Arr().Ptr(), 8);
 		sb->AppendC(UTF8STRC("\r\nVirtualSize = "));
 		sb->AppendU32(ReadUInt32(&packBuff[8]));
 		sb->AppendC(UTF8STRC("\r\nVirtualAddress = 0x"));
@@ -851,7 +851,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EXEFileAnalyse::GetFrame
 	{
 		Data::ByteBuffer packBuff((UOSInt)pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
-		frame->AddTextHexBuff(0, (UOSInt)pack->packSize, packBuff.Ptr(), true);
+		frame->AddTextHexBuff(0, (UOSInt)pack->packSize, packBuff.Arr(), true);
 	}
 	else if (pack->packType == 2)
 	{

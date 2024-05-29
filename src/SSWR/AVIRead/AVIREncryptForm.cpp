@@ -29,11 +29,11 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(AnyType userObj)
 	}
 	else
 	{
-		buffSize = srcEnc->CalcBinSize(sb.ToString(), sb.GetLength());
+		buffSize = srcEnc->CalcBinSize(sb.ToCString());
 		if (buffSize > 0)
 		{
 			decBuff = MemAlloc(UInt8, buffSize);
-			if (srcEnc->DecodeBin(sb.ToString(), sb.GetLength(), decBuff) != buffSize)
+			if (srcEnc->DecodeBin(sb.ToCString(), decBuff) != buffSize)
 			{
 				me->ui->ShowMsgOK(CSTR("Error in decrypting the text"), CSTR("Encrypt"), me);
 			}

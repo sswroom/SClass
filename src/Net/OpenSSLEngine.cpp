@@ -576,7 +576,7 @@ UTF8Char *Net::OpenSSLEngine::GetErrorDetail(UTF8Char *sbuff)
 	return &sbuff[Text::StrCharCnt(sbuff)];
 }
 
-Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString company, Text::CStringNN commonName, OutParam<Crypto::Cert::X509Cert*> certASN1, OutParam<Crypto::Cert::X509File*> keyASN1)
+Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString company, Text::CStringNN commonName, OutParam<NN<Crypto::Cert::X509Cert>> certASN1, OutParam<NN<Crypto::Cert::X509File>> keyASN1)
 {
 	Bool succ = false;
 	EVP_PKEY *pkey;
@@ -612,8 +612,8 @@ Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString compa
 		BIO *bio1;
 		BIO *bio2;
 		UInt8 buff[4096];
-		Crypto::Cert::X509File *pobjKey = 0;
-		Crypto::Cert::X509Cert *pobjCert = 0;
+		Optional<Crypto::Cert::X509File> pobjKey = 0;
+		Optional<Crypto::Cert::X509Cert> pobjCert = 0;
 
 		BIO_new_bio_pair(&bio1, 4096, &bio2, 4096);
 		PEM_write_bio_PrivateKey(bio1, pkey, nullptr, nullptr, 0, nullptr, nullptr);
@@ -629,7 +629,7 @@ Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString compa
 		if (readSize > 0)
 		{
 			NN<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.crt"));
-			pobjCert = (Crypto::Cert::X509Cert*)Parser::FileParser::X509Parser::ParseBuff(BYTEARR(buff).SubArray(0, (UInt32)readSize), fileName);
+			pobjCert = Optional<Crypto::Cert::X509Cert>::ConvertFrom(Parser::FileParser::X509Parser::ParseBuff(BYTEARR(buff).SubArray(0, (UInt32)readSize), fileName));
 			fileName->Release();
 		}
 		BIO_free(bio1);
@@ -637,18 +637,20 @@ Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString compa
 		X509_free(cert);
 		EVP_PKEY_free(pkey);
 
-		if (pobjCert && pobjKey)
+		NN<Crypto::Cert::X509File> nnKey;
+		NN<Crypto::Cert::X509Cert> nnCert;
+		if (pobjCert.SetTo(nnCert) && pobjKey.SetTo(nnKey))
 		{
 			succ = true;
-			pobjCert->SetSourceName(CSTR("cert.crt"));
-			pobjKey->SetSourceName(CSTR("RSAKey.key"));
-			certASN1.Set(pobjCert);
-			keyASN1.Set(pobjKey);
+			nnCert->SetSourceName(CSTR("cert.crt"));
+			nnKey->SetSourceName(CSTR("RSAKey.key"));
+			certASN1.Set(nnCert);
+			keyASN1.Set(nnKey);
 		}
 		else
 		{
-			SDEL_CLASS(pobjCert);
-			SDEL_CLASS(pobjKey);
+			pobjCert.Delete();
+			pobjKey.Delete();
 		}
 	}
 #if !defined(OSSL_DEPRECATEDIN_3_0)
@@ -779,24 +781,24 @@ EVP_PKEY *OpenSSLEngine_LoadKey(NN<Crypto::Cert::X509Key> key, Bool privateKeyOn
 		printf("%s\r\n", sb.ToString());
 		Crypto::Cert::X509File::ECName ecName = key->GetECName();
 		UOSInt keyLen;
-		const UInt8 *keyPtr = key->GetECPublic(keyLen);
-		if (ecName == Crypto::Cert::X509File::ECName::Unknown)
-		{
-#ifdef SHOW_DEBUG
-			printf("Unknown curve name\r\n");
-#endif
-			return 0;
-		}
-		else if (keyPtr == 0)
+		UnsafeArray<const UInt8> keyPtr;
+		if (!key->GetECPublic(keyLen).SetTo(keyPtr))
 		{
 #ifdef SHOW_DEBUG
 			printf("EC public key not found\r\n");
 #endif
 			return 0;			
 		}
+		else if (ecName == Crypto::Cert::X509File::ECName::Unknown)
+		{
+#ifdef SHOW_DEBUG
+			printf("Unknown curve name\r\n");
+#endif
+			return 0;
+		}
 		EC_GROUP *group = EC_GROUP_new_by_curve_name(OpenSSLEngine_GetCurveName(ecName));
 		EC_POINT *point = EC_POINT_new(group);
-		if (EC_POINT_oct2point(group, point, keyPtr, (size_t)keyLen, 0) == 0)
+		if (EC_POINT_oct2point(group, point, keyPtr.Ptr(), (size_t)keyLen, 0) == 0)
 		{
 #ifdef SHOW_DEBUG
 			printf("EC_POINT_oct2point: error = %s\r\n", ERR_error_string(ERR_get_error(), 0));
@@ -880,7 +882,7 @@ const EVP_MD *OpenSSLEngine_GetHash(Crypto::Hash::HashType hashType)
 		return 0;
 	}
 }
-Bool Net::OpenSSLEngine::Signature(NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, OutParam<UOSInt> signLen)
+Bool Net::OpenSSLEngine::Signature(NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, Data::ByteArrayR payload, UnsafeArray<UInt8> signData, OutParam<UOSInt> signLen)
 {
 	const EVP_MD *htype = OpenSSLEngine_GetHash(hashType);
 	if (htype == 0)
@@ -905,13 +907,13 @@ Bool Net::OpenSSLEngine::Signature(NN<Crypto::Cert::X509Key> key, Crypto::Hash::
 		EVP_PKEY_free(pkey);
 		return false;
     }
-    if (!EVP_SignUpdate(emc, payload, payloadLen))
+    if (!EVP_SignUpdate(emc, payload.Arr().Ptr(), payload.GetSize()))
 	{
 		EVP_MD_CTX_destroy(emc);
 		EVP_PKEY_free(pkey);
 		return false;
     }
-    if (!EVP_SignFinal(emc, signData, &len, pkey)) {
+    if (!EVP_SignFinal(emc, signData.Ptr(), &len, pkey)) {
 		EVP_MD_CTX_destroy(emc);
 		EVP_PKEY_free(pkey);
 		return false;
@@ -922,7 +924,7 @@ Bool Net::OpenSSLEngine::Signature(NN<Crypto::Cert::X509Key> key, Crypto::Hash::
 	return true;
 }
 
-Bool Net::OpenSSLEngine::SignatureVerify(NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, const UInt8 *signData, UOSInt signLen)
+Bool Net::OpenSSLEngine::SignatureVerify(NN<Crypto::Cert::X509Key> key, Crypto::Hash::HashType hashType, Data::ByteArrayR payload, Data::ByteArrayR signData)
 {
 	const EVP_MD *htype = OpenSSLEngine_GetHash(hashType);
 	if (htype == 0)
@@ -946,14 +948,14 @@ Bool Net::OpenSSLEngine::SignatureVerify(NN<Crypto::Cert::X509Key> key, Crypto::
 		EVP_PKEY_free(pkey);
 		return false;
     }
-    if (!EVP_VerifyUpdate(emc, payload, payloadLen))
+    if (!EVP_VerifyUpdate(emc, payload.Arr().Ptr(), payload.GetSize()))
 	{
 		EVP_MD_CTX_destroy(emc);
 		EVP_PKEY_free(pkey);
 		return false;
     }
 	Bool succ = false;
-	int res = EVP_VerifyFinal(emc, signData, (UInt32)signLen, pkey);
+	int res = EVP_VerifyFinal(emc, signData.Arr().Ptr(), (UInt32)signData.GetSize(), pkey);
 //	printf("res = %d, %s\r\n", res, ERR_error_string(ERR_get_error(), 0));
     if (res < 0) {
 		EVP_MD_CTX_destroy(emc);
@@ -966,7 +968,7 @@ Bool Net::OpenSSLEngine::SignatureVerify(NN<Crypto::Cert::X509Key> key, Crypto::
 	return succ;
 }
 
-UOSInt Net::OpenSSLEngine::Encrypt(NN<Crypto::Cert::X509Key> key, UInt8 *encData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
+UOSInt Net::OpenSSLEngine::Encrypt(NN<Crypto::Cert::X509Key> key, UInt8 *encData, Data::ByteArrayR payload, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	EVP_PKEY *pkey = OpenSSLEngine_LoadKey(key, false);
 	if (pkey == 0)
@@ -996,7 +998,7 @@ UOSInt Net::OpenSSLEngine::Encrypt(NN<Crypto::Cert::X509Key> key, UInt8 *encData
 		}
 	}
 	size_t outlen = 512;
-	int ret = EVP_PKEY_encrypt(ctx, encData, &outlen, payload, payloadLen);
+	int ret = EVP_PKEY_encrypt(ctx, encData, &outlen, payload.Arr().Ptr(), payload.GetSize());
 	if (ret <= 0)
 	{
 //		printf("EVP_PKEY_encrypt returns %d\r\n", ret);
@@ -1010,11 +1012,11 @@ UOSInt Net::OpenSSLEngine::Encrypt(NN<Crypto::Cert::X509Key> key, UInt8 *encData
 	return (UOSInt)outlen;
 }
 
-UOSInt Net::OpenSSLEngine::Decrypt(NN<Crypto::Cert::X509Key> key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
+UOSInt Net::OpenSSLEngine::Decrypt(NN<Crypto::Cert::X509Key> key, UInt8 *decData, Data::ByteArrayR  payload, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	if (key->GetKeyType() == Crypto::Cert::X509File::KeyType::RSAPublic)
 	{
-		return RSAPublicDecrypt(key, decData, payload, payloadLen, rsaPadding);
+		return RSAPublicDecrypt(key, decData, payload, rsaPadding);
 	}
 	EVP_PKEY *pkey = OpenSSLEngine_LoadKey(key, false);
 	if (pkey == 0)
@@ -1044,7 +1046,7 @@ UOSInt Net::OpenSSLEngine::Decrypt(NN<Crypto::Cert::X509Key> key, UInt8 *decData
 		}
 	}
 	size_t outlen = 512;
-	int ret = EVP_PKEY_decrypt(ctx, decData, &outlen, payload, payloadLen);
+	int ret = EVP_PKEY_decrypt(ctx, decData, &outlen, payload.Arr().Ptr(), payload.GetSize());
 	if (ret <= 0)
 	{
 		printf("EVP_PKEY_decrypt returns %d\r\n", ret);
@@ -1059,7 +1061,7 @@ UOSInt Net::OpenSSLEngine::Decrypt(NN<Crypto::Cert::X509Key> key, UInt8 *decData
 	return (UOSInt)outlen;
 }
 
-UOSInt Net::OpenSSLEngine::RSAPublicDecrypt(NN<Crypto::Cert::X509Key> key, UInt8 *decData, const UInt8 *payload, UOSInt payloadLen, Crypto::Encrypt::RSACipher::Padding rsaPadding)
+UOSInt Net::OpenSSLEngine::RSAPublicDecrypt(NN<Crypto::Cert::X509Key> key, UInt8 *decData, Data::ByteArrayR payload, Crypto::Encrypt::RSACipher::Padding rsaPadding)
 {
 	EVP_PKEY *pkey = OpenSSLEngine_LoadKey(key, false);
 	if (pkey == 0)
@@ -1086,7 +1088,7 @@ UOSInt Net::OpenSSLEngine::RSAPublicDecrypt(NN<Crypto::Cert::X509Key> key, UInt8
 		return 0;
 	}
 	size_t outlen = 512;
-	int ret = EVP_PKEY_verify_recover(ctx, decData, &outlen, payload, payloadLen);
+	int ret = EVP_PKEY_verify_recover(ctx, decData, &outlen, payload.Arr().Ptr(), payload.GetSize());
 	if (ret <= 0)
 	{
 		printf("EVP_PKEY_verify_recover returns %d\r\n", ret);

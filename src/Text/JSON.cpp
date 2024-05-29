@@ -461,7 +461,7 @@ Text::JSONBase *Text::JSONBase::ParseJSONBytes(const Data::ByteArrayR &jsonBytes
 	UTF8Char *s = MemAlloc(UTF8Char, jsonBytes.GetSize() + 1);
 	const UTF8Char *endPtr;
 	Text::StringBuilderUTF8 sbEnv;
-	Text::JSONBase *ret = ParseJSONStr2(s, Text::StrConcatC(s, jsonBytes.Ptr(), jsonBytes.GetSize()), endPtr, sbEnv);
+	Text::JSONBase *ret = ParseJSONStr2(s, Text::StrConcatC(s, jsonBytes.Arr(), jsonBytes.GetSize()), endPtr, sbEnv);
 	MemFree(s);
 	return ret;
 }

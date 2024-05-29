@@ -1523,10 +1523,10 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NN<Text::XMLReade
 					altArr = pl->GetZList(nPoints);
 					ptArr = pl->GetPointList(nPoints);
 					i = coord.GetCount();
-					MemCopyAC(ptArr, coord.Ptr().Ptr(), sizeof(Math::Coord2DDbl) * i);
+					MemCopyAC(ptArr, coord.Arr().Ptr(), sizeof(Math::Coord2DDbl) * i);
 					if (altArr)
 					{
-						MemCopyAC(altArr, altList.Ptr().Ptr(), sizeof(Double) * i);
+						MemCopyAC(altArr, altList.Arr().Ptr(), sizeof(Double) * i);
 					}
 					vec.Delete();
 					vec = Optional<Math::Geometry::Vector2D>(pl);
@@ -1612,11 +1612,11 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NN<Text::XMLReade
 
 				NEW_CLASSNN(lr, Math::Geometry::LinearRing(4326, coord.GetCount(), altList.GetCount() == coord.GetCount(), false));
 				ptArr = lr->GetPointList(nPoints);
-				MemCopyNO(ptArr, coord.Ptr().Ptr(), sizeof(Math::Coord2DDbl) * coord.GetCount());
+				MemCopyNO(ptArr, coord.Arr().Ptr(), sizeof(Math::Coord2DDbl) * coord.GetCount());
 				if (altList.GetCount() == coord.GetCount())
 				{
 					Double *zList = lr->GetZList(nPoints);
-					MemCopyNO(zList, altList.Ptr().Ptr(), sizeof(Double) * nPoints);
+					MemCopyNO(zList, altList.Arr().Ptr(), sizeof(Double) * nPoints);
 				}
 				pg->AddGeometry(lr);
 			}

@@ -43,8 +43,8 @@ namespace Crypto
 			Bool IsSelfSigned() const;
 			UOSInt GetCRLDistributionPoints(Data::ArrayList<Text::CString> *crlDistributionPoints) const;
 
-			const UInt8 *GetIssuerNamesSeq(OutParam<UOSInt> dataLen) const;
-			const UInt8 *GetSerialNumber(OutParam<UOSInt> dataLen) const;
+			UnsafeArrayOpt<const UInt8> GetIssuerNamesSeq(OutParam<UOSInt> dataLen) const;
+			UnsafeArrayOpt<const UInt8> GetSerialNumber(OutParam<UOSInt> dataLen) const;
 		};
 	}
 }

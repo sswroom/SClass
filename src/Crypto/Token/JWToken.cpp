@@ -359,9 +359,9 @@ Crypto::Token::JWToken *Crypto::Token::JWToken::Parse(Text::CStringNN token, Tex
 	UOSInt payloadSize;
 	UInt8 *signBuff = MemAlloc(UInt8, (token.leng - i2));
 	UOSInt signSize;
-	headerSize = b64url.DecodeBin(token.v, i1, headerBuff);
-	payloadSize = b64url.DecodeBin(&token.v[i1 + 1], i2 - i1 - 1, payloadBuff);
-	signSize = b64url.DecodeBin(&token.v[i2 + 1], token.leng - i2 - 1, signBuff);
+	headerSize = b64url.DecodeBin(Text::CStringNN(token.v, i1), headerBuff);
+	payloadSize = b64url.DecodeBin(Text::CStringNN(token.v + i1 + 1, i2 - i1 - 1), payloadBuff);
+	signSize = b64url.DecodeBin(Text::CStringNN(token.v + i2 + 1, token.leng - i2 - 1), signBuff);
 	headerBuff[headerSize] = 0;
 	payloadBuff[payloadSize] = 0;
 	Crypto::Token::JWSignature::Algorithm alg;

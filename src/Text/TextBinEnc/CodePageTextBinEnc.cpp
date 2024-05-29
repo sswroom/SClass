@@ -24,14 +24,14 @@ UOSInt Text::TextBinEnc::CodePageTextBinEnc::EncodeBin(NN<Text::StringBuilderUTF
 	return size;
 }
 
-UOSInt Text::TextBinEnc::CodePageTextBinEnc::CalcBinSize(const UTF8Char *str, UOSInt strLen) const
+UOSInt Text::TextBinEnc::CodePageTextBinEnc::CalcBinSize(Text::CStringNN str) const
 {
-	return this->enc->UTF8CountBytesC(str, strLen);
+	return this->enc->UTF8CountBytesC(str.v, str.leng);
 }
 
-UOSInt Text::TextBinEnc::CodePageTextBinEnc::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff) const
+UOSInt Text::TextBinEnc::CodePageTextBinEnc::DecodeBin(Text::CStringNN str, UInt8 *dataBuff) const
 {
-	return this->enc->UTF8ToBytesC(dataBuff, str, strLen);
+	return this->enc->UTF8ToBytesC(dataBuff, str.v, str.leng);
 }
 
 Text::CStringNN Text::TextBinEnc::CodePageTextBinEnc::GetName() const

@@ -229,13 +229,13 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TIFFFileAnalyse::GetFram
 	{
 		Data::ByteBuffer packBuff(pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
-		frame->AddStrS(0, pack->packSize, CSTR("Reserved"), packBuff.Ptr());
+		frame->AddStrS(0, pack->packSize, CSTR("Reserved"), packBuff.Arr());
 	}
 	else if (pack->packType == PT_IFD8)
 	{
 		Data::ByteBuffer packBuff(pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
-		UInt64 tagCnt = this->bo->GetUInt64(packBuff.Ptr());
+		UInt64 tagCnt = this->bo->GetUInt64(packBuff.Arr());
 		frame->AddUInt64(0, CSTR("Number of tags in IFD"), tagCnt);
 		UOSInt i = 0;
 		UOSInt ofst = 8;

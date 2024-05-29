@@ -371,7 +371,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 						Media::BlockParser::AC3BlockParser ac3Parser;
 						Data::ByteBuffer frameBuff(i - 7 - stmHdrSize);
 						fd->GetRealData(currOfst + 13 + stmHdrSize, i - 7 - stmHdrSize, frameBuff);
-						ac3Parser.ParseStreamFormat(frameBuff.Ptr(), i - 7 - stmHdrSize, formats[stmId]);
+						ac3Parser.ParseStreamFormat(frameBuff.Arr(), i - 7 - stmHdrSize, formats[stmId]);
 					}
 				}
 				else

@@ -9,7 +9,7 @@ namespace Text
 		class UnknownMIMEObj : public Text::IMIMEObj
 		{
 		private:
-			UInt8 *dataBuff;
+			UnsafeArray<UInt8> dataBuff;
 			UOSInt buffSize;
 			NN<Text::String> contType;
 
@@ -22,7 +22,7 @@ namespace Text
 			virtual UOSInt WriteStream(NN<IO::Stream> stm) const;
 			virtual NN<IMIMEObj> Clone() const;
 
-			const UInt8 *GetRAWData(OutParam<UOSInt> dataSize) const;
+			UnsafeArray<const UInt8> GetRAWData(OutParam<UOSInt> dataSize) const;
 		};
 	}
 }

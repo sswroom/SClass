@@ -40,7 +40,7 @@ UOSInt IO::ProtoHdlr::ProtoLogCliHandler::ParseProtocol(NN<IO::Stream> stm, AnyT
 
 				Sync::MutexUsage mutUsage(this->crcMut);
 				this->crc.Clear();
-				this->crc.Calc(myBuff.Ptr().Ptr(), packetSize - 2);
+				this->crc.Calc(myBuff.Arr().Ptr(), packetSize - 2);
 				this->crc.GetValue(crcVal);
 				mutUsage.EndUse();
 				if (ReadMUInt16(&crcVal[2]) == ReadUInt16(&myBuff[packetSize - 2]))

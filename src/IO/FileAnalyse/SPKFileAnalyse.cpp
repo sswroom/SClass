@@ -298,7 +298,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SPKFileAnalyse::GetFrame
 	{
 		Data::ByteBuffer packBuff(pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
-		this->GetDetailDirs(packBuff.Ptr(), pack->packSize, 0, frame);
+		this->GetDetailDirs(packBuff.Arr(), pack->packSize, 0, frame);
 	}
 	else if (pack->packType == PT_V2DIRECTORY)
 	{
@@ -306,7 +306,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SPKFileAnalyse::GetFrame
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 		frame->AddUInt64(0, CSTR("Prev Directory Offset"), ReadUInt64(&packBuff[0]));
 		frame->AddUInt64(8, CSTR("Prev Directory Size"), ReadUInt64(&packBuff[8]));
-		this->GetDetailDirs(packBuff.Ptr() + 16, pack->packSize - 16, 16, frame);
+		this->GetDetailDirs(packBuff.Arr() + 16, pack->packSize - 16, 16, frame);
 	}
 	else if (pack->packType == PT_FILE)
 	{

@@ -153,20 +153,18 @@ UInt32 __stdcall Net::LDAPClient::RecvThread(AnyType userObj)
 	return 0;
 }
 
-void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
+void Net::LDAPClient::ParseLDAPMessage(UnsafeArray<const UInt8> msgBuff, UOSInt msgLen)
 {
 	UInt32 msgId;
-	const UInt8 *msgEnd = msgBuff + msgLen;
+	UnsafeArray<const UInt8> msgEnd = msgBuff + msgLen;
 	UInt8 seqType;
 	UnsafeArray<const UInt8> seqEnd;
 	NN<Net::LDAPClient::ReqStatus> req;
 	NN<Data::ArrayListNN<SearchResObject>> searchObjs;
 
-	msgBuff = Net::ASN1Util::PDUParseUInt32(msgBuff, msgEnd, msgId);
-	if (msgBuff == 0)
+	if (!Net::ASN1Util::PDUParseUInt32(msgBuff, msgEnd, msgId).SetTo(msgBuff))
 		return;
-	msgBuff = Net::ASN1Util::PDUParseSeq(msgBuff, msgEnd, seqType, seqEnd);
-	if (msgBuff == 0)
+	if (!Net::ASN1Util::PDUParseSeq(msgBuff, msgEnd, seqType, seqEnd).SetTo(msgBuff))
 		return;
 	#if defined(VERBOSE)
 	printf("LDAPMessage: Type = %d, Id = %d\r\n", seqType, msgId);
@@ -178,14 +176,11 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 			Text::StringBuilderUTF8 sb;
 			Text::StringBuilderUTF8 sb2;
 			UInt32 resultCode;
-			msgBuff = Net::ASN1Util::PDUParseChoice(msgBuff, seqEnd, resultCode);
-			if (msgBuff == 0)
+			if (!Net::ASN1Util::PDUParseChoice(msgBuff, seqEnd, resultCode).SetTo(msgBuff))
 				return;
-			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb);
-			if (msgBuff == 0)
+			if (!Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb).SetTo(msgBuff))
 				return;
-			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb2);
-			if (msgBuff == 0)
+			if (!Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb2).SetTo(msgBuff))
 				return;
 			#if defined(VERBOSE)
 			printf("LDAPMessage: BindResponse, resultCode = %d, matchedDN = %s, errorMessage = %s\r\n", resultCode, sb.ToString(), sb2.ToString());
@@ -209,8 +204,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 			UnsafeArray<const UInt8> itemEnd;
 			UnsafeArray<const UInt8> valEnd;
 			UInt8 type;
-			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb);
-			if (msgBuff == 0)
+			if (!Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb).SetTo(msgBuff))
 				return;
 			#if defined(VERBOSE)
 			Text::StringBuilderUTF8 sb3;
@@ -221,8 +215,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 			obj->isRef = false;
 			NEW_CLASSNN(items, Data::ArrayListNN<Net::LDAPClient::SearchResItem>());
 			obj->items = items;
-			msgBuff = Net::ASN1Util::PDUParseSeq(msgBuff, seqEnd, type, attrEnd);
-			if (msgBuff == 0 || type != 0x30)
+			if (!Net::ASN1Util::PDUParseSeq(msgBuff, seqEnd, type, attrEnd).SetTo(msgBuff) || type != 0x30)
 			{
 				printf("LDAPMessage: searchResEntry, end 1\r\n");
 				SearchResObjectFree(obj);
@@ -230,16 +223,14 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 			}
 			while (msgBuff < attrEnd && msgBuff[0] == 0x30)
 			{
-				msgBuff = Net::ASN1Util::PDUParseSeq(msgBuff, attrEnd, type, itemEnd);
-				if (msgBuff == 0)
+				if (!Net::ASN1Util::PDUParseSeq(msgBuff, attrEnd, type, itemEnd).SetTo(msgBuff))
 				{
 					printf("LDAPMessage: searchResEntry, end 2\r\n");
 					SearchResObjectFree(obj);
 					return;
 				}
 				sb.ClearStr();
-				msgBuff = Net::ASN1Util::PDUParseString(msgBuff, itemEnd, sb);
-				if (msgBuff == 0)
+				if (!Net::ASN1Util::PDUParseString(msgBuff, itemEnd, sb).SetTo(msgBuff))
 				{
 					printf("LDAPMessage: searchResEntry, end 3\r\n");
 					SearchResObjectFree(obj);
@@ -247,16 +238,14 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 				}
 				if (msgBuff[0] == 0x31)
 				{
-					msgBuff = Net::ASN1Util::PDUParseSeq(msgBuff, itemEnd, type, valEnd);
-					if (msgBuff == 0)
+					if (!Net::ASN1Util::PDUParseSeq(msgBuff, itemEnd, type, valEnd).SetTo(msgBuff))
 					{
 						break;
 					}
 					while (msgBuff < valEnd)
 					{
 						sb2.ClearStr();
-						msgBuff = Net::ASN1Util::PDUParseString(msgBuff, valEnd, sb2);
-						if (msgBuff == 0)
+						if (!Net::ASN1Util::PDUParseString(msgBuff, valEnd, sb2).SetTo(msgBuff))
 						{
 							SearchResObjectFree(obj);
 							return;
@@ -297,14 +286,11 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 			UInt32 resultCode;
 			Text::StringBuilderUTF8 sb;
 			Text::StringBuilderUTF8 sb2;
-			msgBuff = Net::ASN1Util::PDUParseChoice(msgBuff, seqEnd, resultCode);
-			if (msgBuff == 0)
+			if (!Net::ASN1Util::PDUParseChoice(msgBuff, seqEnd, resultCode).SetTo(msgBuff))
 				return;
-			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb);
-			if (msgBuff == 0)
+			if (!Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb).SetTo(msgBuff))
 				return;
-			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb2);
-			if (msgBuff == 0)
+			if (!Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb2).SetTo(msgBuff))
 				return;
 			#if defined(VERBOSE)
 			printf("LDAPMessage: searchResDone, resultCode = %d, matchedDN = %s, errorMessage = %s\r\n", resultCode, sb.ToString(), sb2.ToString());
@@ -321,8 +307,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 	case 0x73: //searchResRef
 		{
 			Text::StringBuilderUTF8 sb;
-			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb);
-			if (msgBuff)
+			if (Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb).SetTo(msgBuff))
 			{
 				#if defined(VERBOSE)
 				printf("LDAPMessage: searchResRef, LDAPURL = %s\r\n", sb.ToString());
@@ -345,14 +330,11 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 			UInt32 resultCode;
 			Text::StringBuilderUTF8 sb;
 			Text::StringBuilderUTF8 sb2;
-			msgBuff = Net::ASN1Util::PDUParseChoice(msgBuff, seqEnd, resultCode);
-			if (msgBuff == 0)
+			if (!Net::ASN1Util::PDUParseChoice(msgBuff, seqEnd, resultCode).SetTo(msgBuff))
 				return;
-			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb);
-			if (msgBuff == 0)
+			if (!Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb).SetTo(msgBuff))
 				return;
-			msgBuff = Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb2);
-			if (msgBuff == 0)
+			if (!Net::ASN1Util::PDUParseString(msgBuff, seqEnd, sb2).SetTo(msgBuff))
 				return;
 			#if defined(VERBOSE)
 			printf("LDAPMessage: extendedResp, resultCode = %d, matchedDN = %s, errorMessage = %s\r\n", resultCode, sb.ToString(), sb2.ToString());
@@ -601,8 +583,8 @@ Bool Net::LDAPClient::Bind(Text::CString userDN, Text::CString password)
 	pdu->AppendUInt32(3); //version
 	if (userDN.v == 0 || password.v == 0)
 	{
-		pdu->AppendOctetString(0, 0); //name
-		pdu->AppendOther(0x80, 0, 0); //authentication
+		pdu->AppendOctetString(U8STR(""), 0); //name
+		pdu->AppendOther(0x80, U8STR(""), 0); //authentication
 	}
 	else
 	{
@@ -653,7 +635,7 @@ Bool Net::LDAPClient::Unbind()
 	Sync::MutexUsage msgIdMutUsage(this->msgIdMut);
 	pdu->AppendUInt32(++(this->lastMsgId));
 	msgIdMutUsage.EndUse();
-	pdu->AppendOther(0x42, 0, 0); //UnbindRequest
+	pdu->AppendOther(0x42, U8STR(""), 0); //UnbindRequest
 
 	pdu->BeginOther(0xA0); //control
 	pdu->BeginSequence(); //Control

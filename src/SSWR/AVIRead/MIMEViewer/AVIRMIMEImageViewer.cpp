@@ -7,7 +7,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEImageViewer::AVIRMIMEImageViewer(NN<SSWR::AVI
 	this->obj = obj;
 	this->imgList = 0;
 	UOSInt buffSize;
-	const UInt8 *buff = this->obj->GetRAWData(buffSize);
+	UnsafeArray<const UInt8> buff = this->obj->GetRAWData(buffSize);
 	{
 		IO::StmData::MemoryDataRef data(buff, buffSize);
 		this->imgList = Optional<Media::ImageList>::ConvertFrom(core->GetParserList()->ParseFileType(data, IO::ParserType::ImageList));

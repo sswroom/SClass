@@ -127,7 +127,7 @@ Net::HKTrafficImage::HKTrafficImage(NN<Text::EncodingFactory> encFact, Text::CSt
 		Data::ByteBuffer buff(fileSize);
 		if (fs.Read(buff) == fileSize)
 		{
-			this->Init(encFact, buff.Ptr(), (UOSInt)fileSize);
+			this->Init(encFact, buff.Arr(), (UOSInt)fileSize);
 		}
 	}
 }

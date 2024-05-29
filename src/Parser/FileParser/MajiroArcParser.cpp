@@ -78,7 +78,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MajiroArcParser::ParseFileHdr(NN<
 	{
 		fileNamePtr2 = fileNamePtr;
 		while (*fileNamePtr2++);
-		sptr = enc.UTF8FromBytes(sbuff, fileNamePtr.Ptr(), (UOSInt)(fileNamePtr2 - fileNamePtr - 1), 0);
+		sptr = enc.UTF8FromBytes(sbuff, fileNamePtr.Arr(), (UOSInt)(fileNamePtr2 - fileNamePtr - 1), 0);
 		pf->AddData(fd, ReadUInt32(&recBuff[i * 16 + 8]), ReadUInt32(&recBuff[i * 16 + 12]), IO::PackFileItem::HeaderType::No, CSTRP(sbuff, sptr), 0, 0, 0, 0);
 
 		fileNamePtr = fileNamePtr2;

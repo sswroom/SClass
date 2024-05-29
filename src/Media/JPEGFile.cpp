@@ -117,7 +117,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(NN<IO::StreamData> fd, NN<Media::RasterIma
 		{
 			Data::ByteBuffer tagBuff(j);
 			fd->GetRealData(ofst + 4, j, tagBuff);
-			if (Text::StrStartsWithC(tagBuff.Ptr(), j, UTF8STRC("ICC_PROFILE")))
+			if (Text::StrStartsWithC(tagBuff.Arr(), j, UTF8STRC("ICC_PROFILE")))
 			{
 				NN<Media::ICCProfile> icc;
 				if (Media::ICCProfile::Parse(tagBuff.SubArray(14, j - 14)).SetTo(icc))
@@ -373,7 +373,7 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NN<IO::StreamData> fd, OutParam<Optional<
 				fd->GetRealData(ofst + 33, j - 29, tagBuff);
 				NN<Text::XMLDocument> doc;
 				NEW_CLASSNN(doc, Text::XMLDocument());
-				if (doc->ParseBuff(encFact, tagBuff.Ptr(), j - 29))
+				if (doc->ParseBuff(encFact, tagBuff.Arr(), j - 29))
 				{
 					xmf.Set(doc);
 				}
@@ -392,7 +392,7 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NN<IO::StreamData> fd, OutParam<Optional<
 		{
 			Data::ByteBuffer tagBuff(j);
 			fd->GetRealData(ofst + 4, j, tagBuff);
-			if (Text::StrStartsWithC(tagBuff.Ptr(), j, UTF8STRC("ICC_PROFILE")) == 0)
+			if (Text::StrStartsWithC(tagBuff.Arr(), j, UTF8STRC("ICC_PROFILE")) == 0)
 			{
 				NN<Media::ICCProfile> newIcc;
 				if (Media::ICCProfile::Parse(Data::ByteArrayR(&tagBuff[14], j - 14)).SetTo(newIcc))

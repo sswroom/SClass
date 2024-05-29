@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnProcessClicked(AnyType userOb
 				Text::TextBinEnc::Base64Enc enc;
 				UOSInt outLen = (UOSInt)(mstm.GetLength() >> 2) * 3;
 				UInt8 *destBuff = MemAlloc(UInt8, outLen);
-				UOSInt retSize = enc.DecodeBin(mstm.GetBuff(), (UOSInt)mstm.GetLength(), destBuff);
+				UOSInt retSize = enc.DecodeBin(Text::CStringNN(mstm.GetBuff(), (UOSInt)mstm.GetLength()), destBuff);
 				IO::FileStream destFS(sbSrcFile.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 				succ = destFS.WriteCont(destBuff, retSize);
 				MemFree(destBuff);
@@ -74,7 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRRNCryptorForm::OnProcessClicked(AnyType userOb
 				if (srcFS.Read(fileBuff) == fileLen)
 				{
 					Text::StringBuilderUTF8 sb;
-					enc.EncodeBin(sb, fileBuff.Ptr().Ptr(), fileBuff.GetSize());
+					enc.EncodeBin(sb, fileBuff.Arr().Ptr(), fileBuff.GetSize());
 					IO::MemoryReadingStream mstm(sb.v, sb.leng);
 					IO::FileStream destFS(sbSrcFile.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 					succ = Crypto::Encrypt::RNCryptor::Encrypt(mstm, destFS, sbPassword.ToCString());

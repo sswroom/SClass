@@ -17,10 +17,11 @@ UOSInt Text::TextBinEnc::HexTextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb
 	return sb->GetCharCnt() - size;
 }
 
-UOSInt Text::TextBinEnc::HexTextBinEnc::CalcBinSize(const UTF8Char *str, UOSInt strLen) const
+UOSInt Text::TextBinEnc::HexTextBinEnc::CalcBinSize(Text::CStringNN s) const
 {
 	UOSInt cnt = 0;
 	UTF8Char c;
+	const UTF8Char *str = s.v;
 	while ((c = *str++) != 0)
 	{
 		if (c >= '0' && c <= '9')
@@ -39,12 +40,13 @@ UOSInt Text::TextBinEnc::HexTextBinEnc::CalcBinSize(const UTF8Char *str, UOSInt 
 	return cnt >> 1;
 }
 
-UOSInt Text::TextBinEnc::HexTextBinEnc::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff) const
+UOSInt Text::TextBinEnc::HexTextBinEnc::DecodeBin(Text::CStringNN s, UInt8 *dataBuff) const
 {
 	UOSInt cnt = 0;
 	UTF8Char c;
 	UInt8 b = 0;
 	Bool exist = false;
+	const UTF8Char *str = s.v;
 	while ((c = *str++) != 0)
 	{
 		if (c >= '0' && c <= '9')

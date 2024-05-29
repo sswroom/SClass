@@ -20,26 +20,26 @@ void __stdcall SSWR::AVIRead::AVIRCertTextForm::OnLoadClicked(AnyType userObj)
 	if (encType == 0)
 	{
 		Text::TextBinEnc::Base64Enc b64;
-		buffSize = b64.CalcBinSize(sb.ToString(), sb.GetLength());
+		buffSize = b64.CalcBinSize(sb.ToCString());
 		if (buffSize < 20)
 		{
 			me->ui->ShowMsgOK(CSTR("Data too short"), CSTR("Certificate Load from Text"), me);
 			return;
 		}
 		buff = MemAlloc(UInt8, buffSize);
-		b64.DecodeBin(sb.ToString(), sb.GetLength(), buff);
+		b64.DecodeBin(sb.ToCString(), buff);
 	}
 	else if (encType == 1)
 	{
 		Text::TextBinEnc::HexTextBinEnc hexEnc;
-		buffSize = hexEnc.CalcBinSize(sb.ToString(), sb.GetLength());
+		buffSize = hexEnc.CalcBinSize(sb.ToCString());
 		if (buffSize < 20)
 		{
 			me->ui->ShowMsgOK(CSTR("Data too short"), CSTR("Certificate Load from Text"), me);
 			return;
 		}
 		buff = MemAlloc(UInt8, buffSize);
-		hexEnc.DecodeBin(sb.ToString(), sb.GetLength(), buff);
+		hexEnc.DecodeBin(sb.ToCString(), buff);
 	}
 	else
 	{

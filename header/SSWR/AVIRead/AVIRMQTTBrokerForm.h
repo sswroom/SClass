@@ -35,8 +35,8 @@ namespace SSWR
 		private:
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
-			Crypto::Cert::X509Cert *sslCert;
-			Crypto::Cert::X509File *sslKey;
+			Optional<Crypto::Cert::X509Cert> sslCert;
+			Optional<Crypto::Cert::X509File> sslKey;
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 			Net::MQTTBroker *broker;
 			IO::LogTool log;

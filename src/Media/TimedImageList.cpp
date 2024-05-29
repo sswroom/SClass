@@ -78,7 +78,7 @@ Media::TimedImageList::TimedImageList(Text::CStringNN fileName)
 				Data::ByteBuffer indexBuff((UOSInt)indexSize);
 				this->fs->SeekFromBeginning(this->currFileOfst);
 				this->fs->Read(indexBuff);
-				this->indexStm.Write(indexBuff.Ptr().Ptr(), (UOSInt)indexSize);
+				this->indexStm.Write(indexBuff.Arr().Ptr(), (UOSInt)indexSize);
 				this->fs->SeekFromBeginning(this->currFileOfst);
 			}
 			else if (this->flags & 1)

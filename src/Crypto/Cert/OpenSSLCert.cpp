@@ -75,7 +75,8 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::OpenSSLCert::CreateX509Cert() con
 	BIO *bio2;
 	UInt8 buff[4096];
 	Int32 readSize;
-	Crypto::Cert::X509File *pobjCert = 0;
+	Optional<Crypto::Cert::X509File> pobjCert = 0;
+	NN<Crypto::Cert::X509File> nncert;
 	BIO_new_bio_pair(&bio1, 4096, &bio2, 4096);
 	PEM_write_bio_X509(bio1, this->clsData->x509);
 	readSize = BIO_read(bio2, buff, 4096);
@@ -83,22 +84,22 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::OpenSSLCert::CreateX509Cert() con
 	{
 		NN<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.crt"));
 		pobjCert = Parser::FileParser::X509Parser::ParseBuff(BYTEARR(buff).WithSize((UOSInt)readSize), fileName);
-		if (pobjCert)
+		if (pobjCert.SetTo(nncert))
 		{
-			if (pobjCert->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
+			if (nncert->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
 			{
-				((Crypto::Cert::X509Cert*)pobjCert)->SetDefaultSourceName();
+				NN<Crypto::Cert::X509Cert>::ConvertFrom(nncert)->SetDefaultSourceName();
 			}
-			else if (pobjCert->GetFileType() == Crypto::Cert::X509File::FileType::FileList)
+			else if (nncert->GetFileType() == Crypto::Cert::X509File::FileType::FileList)
 			{
-				((Crypto::Cert::X509FileList*)pobjCert)->SetDefaultSourceName();
+				NN<Crypto::Cert::X509FileList>::ConvertFrom(nncert)->SetDefaultSourceName();
 			}
 		}
 		fileName->Release();
 	}
 	BIO_free(bio1);
 	BIO_free(bio2);
-	return (Crypto::Cert::X509Cert*)pobjCert;
+	return Optional<Crypto::Cert::X509Cert>::ConvertFrom(pobjCert);
 }
 
 void Crypto::Cert::OpenSSLCert::ToString(NN<Text::StringBuilderUTF8> sb) const

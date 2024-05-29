@@ -146,7 +146,7 @@ namespace Data
 	template <class T, class V> NN<V> *ArrayCmpMapNN<T, V>::ToArray(OutParam<UOSInt> objCnt)
 	{
 		UOSInt cnt;
-		UnsafeArray<NN<V>> arr = this->vals.GetPtr(cnt);
+		UnsafeArray<NN<V>> arr = this->vals.GetArr(cnt);
 		NN<V> *outArr = MemAlloc(NN<V>, cnt);
 		MemCopyNO(outArr, arr.Ptr(), sizeof(NN<V>) * cnt);
 		objCnt.Set(cnt);

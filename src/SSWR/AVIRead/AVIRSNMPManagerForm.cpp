@@ -124,10 +124,10 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(AnyType userObj
 		if (agent->objIdLen > 0)
 		{
 			Text::StringBuilderUTF8 sb;
-			Net::ASN1Util::OIDToString(agent->objId, agent->objIdLen, sb);
+			Net::ASN1Util::OIDToString(Data::ByteArrayR(agent->objId, agent->objIdLen), sb);
 			me->txtAgentOID->SetText(sb.ToCString());
 			sb.ClearStr();
-			Net::ASN1OIDDB::OIDToNameString(agent->objId, agent->objIdLen, sb);
+			Net::ASN1OIDDB::OIDToNameString(Data::ByteArrayR(agent->objId, agent->objIdLen), sb);
 			me->txtAgentOIDName->SetText(sb.ToCString());
 		}
 		else

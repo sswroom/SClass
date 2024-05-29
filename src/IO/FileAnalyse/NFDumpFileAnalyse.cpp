@@ -287,7 +287,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 			Data::DateTime dt;
 			UOSInt decBuffSize = 1048576 * 5;
 			UInt8 *decBuff = MemAlloc(UInt8, decBuffSize);
-			decBuffSize = this->LZODecompBlock(packBuff.Ptr(), size, decBuff, decBuffSize);
+			decBuffSize = this->LZODecompBlock(packBuff.Arr(), size, decBuff, decBuffSize);
 			if (decBuffSize > 0)
 			{
 				UInt32 recType;
@@ -849,7 +849,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::NFDumpFileAnalyse::GetFr
 			Data::DateTime dt;
 			UOSInt decBuffSize = 1048576 * 5;
 			UInt8 *decBuff = MemAlloc(UInt8, decBuffSize);
-			decBuffSize = this->LZODecompBlock(packBuff.Ptr(), size, decBuff, decBuffSize);
+			decBuffSize = this->LZODecompBlock(packBuff.Arr(), size, decBuff, decBuffSize);
 			if (decBuffSize > 0)
 			{
 /*				UInt8 *extBuff;

@@ -1331,7 +1331,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFr
 	while (carr[k].v)
 	{
 		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("String ")), k);
-		frame->AddField((UOSInt)(carr[k].v - packBuff.Ptr().Ptr()), carr[k].leng + 1, CSTRP(sbuff, sptr), carr[k]);
+		frame->AddField((UOSInt)(carr[k].v - packBuff.Arr().Ptr()), carr[k].leng + 1, CSTRP(sbuff, sptr), carr[k]);
 		k++;
 	}
 	if (k == 1)
@@ -1340,7 +1340,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMBIOSFileAnalyse::GetFr
 	}
 	else
 	{
-		frame->AddUInt((UOSInt)(carr[k - 1].v - packBuff.Ptr().Ptr()) + carr[k - 1].leng + 1, 1, CSTR("End of String Table"), 0);
+		frame->AddUInt((UOSInt)(carr[k - 1].v - packBuff.Arr().Ptr()) + carr[k - 1].leng + 1, 1, CSTR("End of String Table"), 0);
 	}
 	return frame;
 }

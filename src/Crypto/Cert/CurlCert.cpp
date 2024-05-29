@@ -72,7 +72,7 @@ Bool Crypto::Cert::CurlCert::IsSelfSigned() const
 
 Optional<Crypto::Cert::X509Cert> Crypto::Cert::CurlCert::CreateX509Cert() const
 {
-	Crypto::Cert::X509Cert *pobjCert;
+	NN<Crypto::Cert::X509Cert> pobjCert;
 	curl_slist *slist = (curl_slist*)this->certinfo;
 	while (slist)
 	{
@@ -80,8 +80,7 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CurlCert::CreateX509Cert() const
 		{
 			UOSInt len = Text::StrCharCnt(slist->data);
 			NN<Text::String> fileName = Text::String::New(UTF8STRC("Certificate.crt"));
-			pobjCert = (Crypto::Cert::X509Cert*)Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR((const UInt8*)slist->data + 5, (UOSInt)len - 5), fileName);
-			if (pobjCert)
+			if (Optional<Crypto::Cert::X509Cert>::ConvertFrom(Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR((const UInt8*)slist->data + 5, (UOSInt)len - 5), fileName)).SetTo(pobjCert))
 			{
 				fileName->Release();
 				return pobjCert;

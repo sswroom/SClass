@@ -180,7 +180,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 			i = 0;
 			while (i < this->format.nChannels)
 			{
-				Math::FFT::ForwardBits(buff.Ptr() + i * (UOSInt)(this->format.bitpersample >> 3), freqData, FFTSAMPLE, FFTAVG, this->format.bitpersample, this->format.nChannels, Math::FFT::WT_BLACKMANN_HARRIS, 1.0);
+				Math::FFT::ForwardBits(buff.Arr().Ptr() + i * (UOSInt)(this->format.bitpersample >> 3), freqData, FFTSAMPLE, FFTAVG, this->format.bitpersample, this->format.nChannels, Math::FFT::WT_BLACKMANN_HARRIS, 1.0);
 
 				if (i == 0)
 				{

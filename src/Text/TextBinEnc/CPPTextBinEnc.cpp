@@ -129,11 +129,12 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb
 	return ret;
 }
 
-UOSInt Text::TextBinEnc::CPPTextBinEnc::CalcBinSize(const UTF8Char *str, UOSInt strLen) const
+UOSInt Text::TextBinEnc::CPPTextBinEnc::CalcBinSize(Text::CStringNN s) const
 {
 	Bool isQuote = false;
 	UOSInt ret = 0;
 	UTF8Char c;
+	const UTF8Char *str = s.v;
 	while (true)
 	{
 		c = *str++;
@@ -201,11 +202,12 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::CalcBinSize(const UTF8Char *str, UOSInt 
 	return ret;
 }
 
-UOSInt Text::TextBinEnc::CPPTextBinEnc::DecodeBin(const UTF8Char *str, UOSInt strlen, UInt8 *dataBuff) const
+UOSInt Text::TextBinEnc::CPPTextBinEnc::DecodeBin(Text::CStringNN s, UInt8 *dataBuff) const
 {
 	Bool isQuote = false;
 	UOSInt ret = 0;
 	UTF8Char c;
+	const UTF8Char *str = s.v;
 	while (true)
 	{
 		c = *str++;

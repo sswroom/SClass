@@ -376,7 +376,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ELFParser::ParseFileHdr(NN<IO::St
 
 		if (shSize >= 40)
 		{
-			Data::ByteBuffer progHdr;
+			Data::ByteBuffer progHdr(0);
 			Data::ByteBuffer secHdr(shSize * shCnt);
 			fd->GetRealData(sht, shSize * shCnt, secHdr);
 
@@ -398,7 +398,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ELFParser::ParseFileHdr(NN<IO::St
 				sptr2 = Text::StrHexVal32(Text::StrConcatC(sbuff2, UTF8STRC("0x")), (UInt32)readInt32(&secHdr[j + 0]));
 				exef->AddProp(CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2));
 
-				if (!progHdr.IsNull())
+				if (progHdr.GetSize() > 0)
 				{
 					sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 					sptr = Text::StrUOSInt(sptr, i);
@@ -520,7 +520,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ELFParser::ParseFileHdr(NN<IO::St
 				sptr2 = Text::StrUInt32(sbuff2, (UInt32)readInt32(&secHdr[j + 36]));
 				exef->AddProp(CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2));
 
-				if (!progHdr.IsNull())
+				if (progHdr.GetSize() > 0)
 				{
 					const UTF8Char *name = (const UTF8Char*)&progHdr[readInt32(&secHdr[j + 0])];
 					UInt32 assSec = (UInt32)readInt32(&secHdr[j + 24]);
@@ -769,7 +769,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ELFParser::ParseFileHdr(NN<IO::St
 				sptr2 = Text::StrHexVal32(Text::StrConcatC(sbuff2, UTF8STRC("0x")), (UInt32)readInt32(&secHdr[j + 0]));
 				exef->AddProp(CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2));
 
-				if (!progHdr.IsNull())
+				if (progHdr.GetSize() > 0)
 				{
 					sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 					sptr = Text::StrUOSInt(sptr, i);
@@ -891,7 +891,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ELFParser::ParseFileHdr(NN<IO::St
 				sptr2 = Text::StrUInt64(sbuff2, (UInt64)readInt64(&secHdr[j + 56]));
 				exef->AddProp(CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2));
 
-				if (!progHdr.IsNull())
+				if (progHdr.GetSize() > 0)
 				{
 					const UTF8Char *name = (const UTF8Char*)&progHdr[readInt32(&secHdr[j + 0])];
 					UInt32 assSec = (UInt32)readInt32(&secHdr[j + 40]);

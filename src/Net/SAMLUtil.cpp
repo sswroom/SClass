@@ -48,15 +48,15 @@ UOSInt Net::SAMLUtil::DecryptEncryptedKey(NN<Net::SSLEngine> ssl, NN<Crypto::Cer
 			Text::StringBuilderUTF8 sb;
 			reader->ReadNodeText(sb);
 			Text::TextBinEnc::Base64Enc b64;
-			UOSInt dataSize = b64.CalcBinSize(sb.ToString(), sb.GetLength());
+			UOSInt dataSize = b64.CalcBinSize(sb.ToCString());
 			if (dataSize != 256)
 			{
 				sbResult->AppendC(UTF8STRC("Length of e:CipherData not valid in EncryptedKey"));
 				return 0;
 			}
 			UInt8 *data = MemAlloc(UInt8, dataSize);
-			b64.DecodeBin(sb.ToString(), sb.GetLength(), data);
-			keySize = ssl->Decrypt(key, keyBuff, data, dataSize, rsaPadding);
+			b64.DecodeBin(sb.ToCString(), data);
+			keySize = ssl->Decrypt(key, keyBuff, Data::ByteArrayR(data, dataSize), rsaPadding);
 			MemFree(data);
 			if (keySize == 0)
 			{
@@ -193,7 +193,7 @@ Bool Net::SAMLUtil::DecryptEncryptedData(NN<Net::SSLEngine> ssl, NN<Crypto::Cert
 					Text::StringBuilderUTF8 sb;
 					reader->ReadNodeText(sb);
 					Text::TextBinEnc::Base64Enc b64;
-					UOSInt dataSize = b64.CalcBinSize(sb.ToString(), sb.GetLength());
+					UOSInt dataSize = b64.CalcBinSize(sb.ToCString());
 					if (headingIV)
 					{
 						if (dataSize < cipher->GetDecBlockSize())
@@ -206,7 +206,7 @@ Bool Net::SAMLUtil::DecryptEncryptedData(NN<Net::SSLEngine> ssl, NN<Crypto::Cert
 					UInt8 *data = MemAlloc(UInt8, dataSize);
 					UInt8 *decData = MemAlloc(UInt8, dataSize + blkSize);
 					UOSInt decSize;
-					b64.DecodeBin(sb.ToString(), sb.GetLength(), data);
+					b64.DecodeBin(sb.ToCString(), data);
 					if (headingIV)
 					{
 						cipher->SetIV(data);
@@ -317,14 +317,14 @@ Bool Net::SAMLUtil::DecryptResponse(NN<Net::SSLEngine> ssl, Optional<Text::Encod
 	return false;
 }
 
-Bool Net::SAMLUtil::DecodeRequest(Text::CString requestB64, NN<Text::StringBuilderUTF8> sbResult)
+Bool Net::SAMLUtil::DecodeRequest(Text::CStringNN requestB64, NN<Text::StringBuilderUTF8> sbResult)
 {
 	Text::TextBinEnc::Base64Enc b64;
-	UOSInt decSize = b64.CalcBinSize(requestB64.v, requestB64.leng);
+	UOSInt decSize = b64.CalcBinSize(requestB64);
 	if (decSize == 0)
 		return false;
 	UInt8 *decBuff = MemAlloc(UInt8, decSize);
-	b64.DecodeBin(requestB64.v, requestB64.leng, decBuff);
+	b64.DecodeBin(requestB64, decBuff);
 	Data::Compress::Inflate inf(false);
 	IO::MemoryStream mstm;
 	IO::StmData::MemoryDataRef fd(decBuff, decSize);

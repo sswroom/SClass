@@ -16,7 +16,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(NN<SSWR::AVIRead
 	this->lvXML->AddColumn(CSTR("Value"), 300);
 
 	UOSInt size;
-	const UInt8 *buff = obj->GetRAWData(size);
+	UnsafeArray<const UInt8> buff = obj->GetRAWData(size);
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbPath;
 	Text::StringBuilderUTF8 sbCont;

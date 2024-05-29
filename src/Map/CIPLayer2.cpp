@@ -280,7 +280,7 @@ UOSInt Map::CIPLayer2::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArra
 		}
 		UOSInt arrSize;
 		Int64 lastId;
-		UnsafeArray<Int64> arr = outArr->GetPtr(arrSize);
+		UnsafeArray<Int64> arr = outArr->GetArr(arrSize);
 		ArtificialQuickSort_SortInt64(arr.Ptr(), 0, (OSInt)arrSize - 1);
 		if (outArr->GetCount() > 0)
 		{
@@ -445,7 +445,7 @@ UOSInt Map::CIPLayer2::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray *
 		UOSInt arrSize;
 		UOSInt k;
 		Int64 lastId;
-		UnsafeArray<Int32> arr = tmpArr->GetPtr(arrSize);
+		UnsafeArray<Int32> arr = tmpArr->GetArr(arrSize);
 		ArtificialQuickSort_SortInt32(arr.Ptr(), 0, (OSInt)arrSize - 1);
 		if (tmpArr->GetCount() > 0)
 		{

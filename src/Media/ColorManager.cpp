@@ -631,7 +631,7 @@ Bool Media::MonitorColorManager::SetFromProfileFile(NN<Text::String> fileName)
 				{
 					succ = true;
 					this->rgb.monProfile.Set(cp);
-					this->rgb.monProfile.SetRAWICC(fileBuff.GetPtr().Ptr());
+					this->rgb.monProfile.SetRAWICC(fileBuff.Arr().Ptr());
 				}
 				profile.Delete();
 			}

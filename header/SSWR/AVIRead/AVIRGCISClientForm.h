@@ -17,8 +17,8 @@ namespace SSWR
 			NN<SSWR::AVIRead::AVIRCore> core;
 			Optional<Net::SSLEngine> ssl;
 			Data::ArrayListNN<Crypto::Cert::X509Cert> cliCACerts;
-			Crypto::Cert::X509Cert *cliCert;
-			Crypto::Cert::X509File *cliKey;
+			Optional<Crypto::Cert::X509Cert> cliCert;
+			Optional<Crypto::Cert::X509File> cliKey;
 			Crypto::Cert::X509File *svrCert;
 
 			NN<UI::GUILabel> lblURL;

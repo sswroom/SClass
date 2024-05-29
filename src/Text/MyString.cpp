@@ -154,7 +154,7 @@ UTF8Char *Text::StrConcatASCII(UTF8Char *oriStr, const Char *strToJoin)
 	return oriStr - 1;
 }
 
-UTF8Char *Text::StrInt16(UTF8Char *oriStr, Int16 val)
+UTF8Char *Text::StrInt16(UnsafeArray<UTF8Char> oriStr, Int16 val)
 {
 	if (val < 0)
 	{
@@ -167,7 +167,7 @@ UTF8Char *Text::StrInt16(UTF8Char *oriStr, Int16 val)
 	}
 	else if (val < 100)
 	{
-		WriteNInt16((UInt8*)oriStr, ReadNInt16(&MyString_StrDigit100U8[val * 2]));
+		WriteNInt16((UInt8*)&oriStr[0], ReadNInt16(&MyString_StrDigit100U8[val * 2]));
 		oriStr += 2;
 	}
 	else if (val < 1000)
@@ -178,7 +178,7 @@ UTF8Char *Text::StrInt16(UTF8Char *oriStr, Int16 val)
 	}
 	else if (val < 10000)
 	{
-		WriteNInt16((UInt8*)oriStr, ReadNInt16(&MyString_StrDigit100U8[(val / 100) * 2]));
+		WriteNInt16((UInt8*)&oriStr[0], ReadNInt16(&MyString_StrDigit100U8[(val / 100) * 2]));
 		WriteNInt16((UInt8*)&oriStr[2], ReadNInt16(&MyString_StrDigit100U8[(val % 100) * 2]));
 		oriStr += 4;
 	}
@@ -191,10 +191,10 @@ UTF8Char *Text::StrInt16(UTF8Char *oriStr, Int16 val)
 		oriStr += 5;
 	}
 	*oriStr = 0;
-	return oriStr;
+	return oriStr.Ptr();
 }
 
-UTF8Char *Text::StrUInt16(UTF8Char *oriStr, UInt16 val)
+UTF8Char *Text::StrUInt16(UnsafeArray<UTF8Char> oriStr, UInt16 val)
 {
 	if (val < 10)
 	{
@@ -202,7 +202,7 @@ UTF8Char *Text::StrUInt16(UTF8Char *oriStr, UInt16 val)
 	}
 	else if (val < 100)
 	{
-		WriteNInt16((UInt8*)oriStr, ReadNInt16(&MyString_StrDigit100U8[val * 2]));
+		WriteNInt16((UInt8*)&oriStr[0], ReadNInt16(&MyString_StrDigit100U8[val * 2]));
 		oriStr += 2;
 	}
 	else if (val < 1000)
@@ -213,7 +213,7 @@ UTF8Char *Text::StrUInt16(UTF8Char *oriStr, UInt16 val)
 	}
 	else if (val < 10000)
 	{
-		WriteNInt16((UInt8*)oriStr, ReadNInt16(&MyString_StrDigit100U8[(val / 100) * 2]));
+		WriteNInt16((UInt8*)&oriStr[0], ReadNInt16(&MyString_StrDigit100U8[(val / 100) * 2]));
 		WriteNInt16((UInt8*)&oriStr[2], ReadNInt16(&MyString_StrDigit100U8[(val % 100) * 2]));
 		oriStr += 4;
 	}
@@ -226,10 +226,10 @@ UTF8Char *Text::StrUInt16(UTF8Char *oriStr, UInt16 val)
 		oriStr += 5;
 	}
 	*oriStr = 0;
-	return oriStr;
+	return oriStr.Ptr();
 }
 
-UTF8Char *Text::StrInt32(UTF8Char *oriStr, Int32 val)
+UTF8Char *Text::StrInt32(UnsafeArray<UTF8Char> oriStr, Int32 val)
 {
 	if (val < 0)
 	{
@@ -244,7 +244,7 @@ UTF8Char *Text::StrInt32(UTF8Char *oriStr, Int32 val)
 	}
 	else if (val < 100)
 	{
-		WriteNInt16((UInt8*)oriStr, ReadNInt16((const UInt8*)&MyString_StrDigit100U8[val * 2]));
+		WriteNInt16((UInt8*)&oriStr[0], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[val * 2]));
 		oriStr += 2;
 	}
 	else if (val < 1000)
@@ -328,7 +328,7 @@ UTF8Char *Text::StrInt32(UTF8Char *oriStr, Int32 val)
 		oriStr += 10;
 	}
 	*oriStr = 0;
-	return oriStr;
+	return oriStr.Ptr();
 #else
 	UTF8Char buff[10];
 	UTF8Char *str;
@@ -375,7 +375,7 @@ UTF8Char *Text::StrInt32(UTF8Char *oriStr, Int32 val)
 #endif
 }
 
-UTF8Char *Text::StrUInt32(UTF8Char *oriStr, UInt32 val)
+UTF8Char *Text::StrUInt32(UnsafeArray<UTF8Char> oriStr, UInt32 val)
 {
 #if 1
 	if (val < 10)
@@ -385,7 +385,7 @@ UTF8Char *Text::StrUInt32(UTF8Char *oriStr, UInt32 val)
 	}
 	else if (val < 100)
 	{
-		WriteNInt16((UInt8*)oriStr, ReadNInt16((const UInt8*)&MyString_StrDigit100U8[val * 2]));
+		WriteNInt16((UInt8*)&oriStr[0], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[val * 2]));
 		oriStr += 2;
 	}
 	else if (val < 1000)
@@ -469,7 +469,7 @@ UTF8Char *Text::StrUInt32(UTF8Char *oriStr, UInt32 val)
 		oriStr += 10;
 	}
 	*oriStr = 0;
-	return oriStr;
+	return oriStr.Ptr();
 #else
 	UTF8Char buff[10];
 	UTF8Char *str;
@@ -500,7 +500,7 @@ UTF8Char *Text::StrUInt32(UTF8Char *oriStr, UInt32 val)
 #endif
 }
 
-UTF8Char *Text::StrInt32S(UTF8Char *oriStr, Int32 val, UTF8Char seperator, UOSInt sepCnt)
+UTF8Char *Text::StrInt32S(UnsafeArray<UTF8Char> oriStr, Int32 val, UTF8Char seperator, UOSInt sepCnt)
 {
 	UTF8Char buff[20];
 	UTF8Char *str;
@@ -530,11 +530,11 @@ UTF8Char *Text::StrInt32S(UTF8Char *oriStr, Int32 val, UTF8Char seperator, UOSIn
 		*oriStr++ = *str++;
 	}
 	*oriStr = 0;
-	return oriStr;
+	return oriStr.Ptr();
 }
 
 
-UTF8Char *Text::StrUInt32S(UTF8Char *oriStr, UInt32 val, UTF8Char seperator, UOSInt sepCnt)
+UTF8Char *Text::StrUInt32S(UnsafeArray<UTF8Char> oriStr, UInt32 val, UTF8Char seperator, UOSInt sepCnt)
 {
 	UTF8Char buff[20];
 	UTF8Char *str;
@@ -559,12 +559,12 @@ UTF8Char *Text::StrUInt32S(UTF8Char *oriStr, UInt32 val, UTF8Char seperator, UOS
 		*oriStr++ = *str++;
 	}
 	*oriStr = 0;
-	return oriStr;
+	return oriStr.Ptr();
 }
 
 #ifdef HAS_INT64
 #if _OSINT_SIZE == 64
-UTF8Char *Text::StrInt64(UTF8Char *oriStr, Int64 val)
+UTF8Char *Text::StrInt64(UnsafeArray<UTF8Char> oriStr, Int64 val)
 {
 	if (val < 0)
 	{
@@ -757,7 +757,7 @@ UTF8Char *Text::StrInt64(UTF8Char *oriStr, Int64 val)
 		oriStr += 19;
 	}
 	*oriStr = 0;
-	return oriStr;
+	return oriStr.Ptr();
 #else
 	UTF8Char buff[20];
 	UTF8Char *str;
@@ -794,7 +794,7 @@ UTF8Char *Text::StrInt64(UTF8Char *oriStr, Int64 val)
 #endif
 }
 
-UTF8Char *Text::StrUInt64(UTF8Char *oriStr, UInt64 val)
+UTF8Char *Text::StrUInt64(UnsafeArray<UTF8Char> oriStr, UInt64 val)
 {
 #if 1
 	if (val < 0x100000000)
@@ -1005,7 +1005,7 @@ UTF8Char *Text::StrUInt64(UTF8Char *oriStr, UInt64 val)
 		oriStr += 18;
 	}
 	*oriStr = 0;
-	return oriStr;
+	return oriStr.Ptr();
 #else
 	UTF8Char buff[20];
 	UTF8Char *str;
@@ -1036,7 +1036,7 @@ UTF8Char *Text::StrUInt64(UTF8Char *oriStr, UInt64 val)
 #endif
 }
 
-UTF8Char *Text::StrInt64S(UTF8Char *oriStr, Int64 val, UTF8Char seperator, UOSInt sepCnt)
+UTF8Char *Text::StrInt64S(UnsafeArray<UTF8Char> oriStr, Int64 val, UTF8Char seperator, UOSInt sepCnt)
 {
 	UTF8Char buff[40];
 	UTF8Char *str;
@@ -1066,10 +1066,10 @@ UTF8Char *Text::StrInt64S(UTF8Char *oriStr, Int64 val, UTF8Char seperator, UOSIn
 		*oriStr++ = *str++;
 	}
 	*oriStr = 0;
-	return oriStr;
+	return oriStr.Ptr();
 }
 
-UTF8Char *Text::StrUInt64S(UTF8Char *oriStr, UInt64 val, UTF8Char seperator, UOSInt sepCnt)
+UTF8Char *Text::StrUInt64S(UnsafeArray<UTF8Char> oriStr, UInt64 val, UTF8Char seperator, UOSInt sepCnt)
 {
 	UTF8Char buff[40];
 	UTF8Char *str;
@@ -1094,10 +1094,10 @@ UTF8Char *Text::StrUInt64S(UTF8Char *oriStr, UInt64 val, UTF8Char seperator, UOS
 		*oriStr++ = *str++;
 	}
 	*oriStr = 0;
-	return oriStr;
+	return oriStr.Ptr();
 }
 #else
-UTF8Char *Text::StrInt64(UTF8Char *oriStr, Int64 val)
+UTF8Char *Text::StrInt64(UnsafeArray<UTF8Char> oriStr, Int64 val)
 {
 	UTF8Char buff[20];
 	UTF8Char *str;
@@ -1142,10 +1142,10 @@ UTF8Char *Text::StrInt64(UTF8Char *oriStr, Int64 val)
 		*oriStr++ = *str++;
 	}
 	*oriStr = 0;
-	return oriStr;
+	return oriStr.Ptr();
 }
 
-UTF8Char *Text::StrUInt64(UTF8Char *oriStr, UInt64 val)
+UTF8Char *Text::StrUInt64(UnsafeArray<UTF8Char> oriStr, UInt64 val)
 {
 	UTF8Char buff[20];
 	UTF8Char *str;
@@ -1185,10 +1185,10 @@ UTF8Char *Text::StrUInt64(UTF8Char *oriStr, UInt64 val)
 		*oriStr++ = *str++;
 	}
 	*oriStr = 0;
-	return oriStr;
+	return oriStr.Ptr();
 }
 
-UTF8Char *Text::StrInt64S(UTF8Char *oriStr, Int64 val, UTF8Char seperator, UOSInt sepCnt)
+UTF8Char *Text::StrInt64S(UnsafeArray<UTF8Char> oriStr, Int64 val, UTF8Char seperator, UOSInt sepCnt)
 {
 	UTF8Char buff[40];
 	UTF8Char *str;
@@ -1218,10 +1218,10 @@ UTF8Char *Text::StrInt64S(UTF8Char *oriStr, Int64 val, UTF8Char seperator, UOSIn
 		*oriStr++ = *str++;
 	}
 	*oriStr = 0;
-	return oriStr;
+	return oriStr.Ptr();
 }
 
-UTF8Char *Text::StrUInt64S(UTF8Char *oriStr, UInt64 val, UTF8Char seperator, UOSInt sepCnt)
+UTF8Char *Text::StrUInt64S(UnsafeArray<UTF8Char> oriStr, UInt64 val, UTF8Char seperator, UOSInt sepCnt)
 {
 	UTF8Char buff[40];
 	UTF8Char *str;
@@ -1246,7 +1246,7 @@ UTF8Char *Text::StrUInt64S(UTF8Char *oriStr, UInt64 val, UTF8Char seperator, UOS
 		*oriStr++ = *str++;
 	}
 	*oriStr = 0;
-	return oriStr;
+	return oriStr.Ptr();
 }
 #endif
 #endif
@@ -1454,13 +1454,15 @@ Bool Text::StrEquals(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Cha
 	return *str2 == 0;
 }
 
-Bool Text::StrEqualsN(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2)
+Bool Text::StrEqualsN(UnsafeArrayOpt<const UTF8Char> str1, UnsafeArrayOpt<const UTF8Char> str2)
 {
-	if (str1 == str2)
+	UnsafeArray<const UTF8Char> nnstr1;
+	UnsafeArray<const UTF8Char> nnstr2;
+	if (str1.Ptr() == str2.Ptr())
 		return true;
-	if (str1 == 0 || str2 == 0)
+	if (!str1.SetTo(nnstr1) || !str2.SetTo(nnstr2))
 		return false;
-	return StrEquals(str1, str2);
+	return StrEquals(nnstr1, nnstr2);
 }
 
 Bool Text::StrEqualsICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2)

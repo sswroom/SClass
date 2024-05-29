@@ -25,14 +25,14 @@ IO::ParserType Net::ASN1Data::GetParserType() const
 Bool Net::ASN1Data::ToASN1String(NN<Text::StringBuilderUTF8> sb) const
 {
 	NN<Net::ASN1Names> names = this->CreateNames();
-	Bool ret = Net::ASN1Util::PDUToString(this->buff.GetPtr(), this->buff.PtrEnd(), sb, 0, 0, names);
+	Bool ret = Net::ASN1Util::PDUToString(this->buff.Arr(), this->buff.ArrEnd(), sb, 0, 0, names);
 	names.Delete();
 	return ret;
 }
 
 const UInt8 *Net::ASN1Data::GetASN1Buff() const
 {
-	return this->buff.GetPtr().Ptr();
+	return this->buff.Arr().Ptr();
 }
 
 UOSInt Net::ASN1Data::GetASN1BuffSize() const

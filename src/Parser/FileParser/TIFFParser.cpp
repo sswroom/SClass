@@ -448,7 +448,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 				{
 					Data::ByteBuffer compImgData(stripLeng);
 					lengLeft = fd->GetRealData(stripOfst, stripLeng, compImgData);
-					Data::Compress::PackBits::Decompress(imgData.GetPtr(), destSize, compImgData.GetPtr(), lengLeft);
+					Data::Compress::PackBits::Decompress(imgData.Arr(), destSize, compImgData.Arr(), lengLeft);
 				}
 				else
 				{
@@ -469,7 +469,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						//imgData += stripLengs[i];
 
 						lengLeft = fd->GetRealData(stripOfsts[i], stripLengs[i], compImgData);
-						Data::Compress::PackBits::Decompress(imgData.GetPtr(), destSize, compImgData.GetPtr(), lengLeft);
+						Data::Compress::PackBits::Decompress(imgData.Arr(), destSize, compImgData.Arr(), lengLeft);
 						imgData = imgData.SubArray(destSize);
 
 						i++;
@@ -598,7 +598,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 							j = imgHeight;
 							while (j-- > 0)
 							{
-								tmpPtr = imgData.GetPtr();
+								tmpPtr = imgData.Arr();
 								k = bytePerChannels;
 								while (k-- > 0)
 								{
@@ -625,7 +625,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 							j = imgHeight;
 							while (j-- > 0)
 							{
-								tmpPtr = imgData.GetPtr();
+								tmpPtr = imgData.Arr();
 								k = bytePerChannels;
 								while (k-- > 0)
 								{

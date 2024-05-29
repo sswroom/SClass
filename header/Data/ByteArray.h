@@ -11,7 +11,7 @@ namespace Data
 	{
 	protected:
 		ByteArrayBase() = default;
-		ByteArrayBase(UnsafeArrayOpt<T> buff, UOSInt buffSize) : DataArray<T>(buff, buffSize)
+		ByteArrayBase(UnsafeArray<T> buff, UOSInt buffSize) : DataArray<T>(buff, buffSize)
 		{
 		}
 
@@ -202,7 +202,7 @@ namespace Data
 
 	public:
 		ByteArray() = default;
-		ByteArray(UnsafeArrayOpt<UInt8> buff, UOSInt buffSize) : ByteArrayBase(buff, buffSize)
+		ByteArray(UnsafeArray<UInt8> buff, UOSInt buffSize) : ByteArrayBase(buff, buffSize)
 		{
 #if defined(CHECK_RANGE)
 			this->prevSize = 0;
@@ -247,7 +247,7 @@ namespace Data
 		void CopyFrom(UOSInt destIndex, const ByteArray &srcArr) const
 		{
 			CheckError(destIndex + srcArr.GetSize());
-			MemCopyNO(&buff[destIndex], srcArr.GetPtr().Ptr(), srcArr.GetSize());
+			MemCopyNO(&buff[destIndex], srcArr.Arr().Ptr(), srcArr.GetSize());
 		}
 
 		void FORCEINLINE CopyFrom(UOSInt destIndex, const ByteArrayR &srcArr) const
@@ -516,7 +516,7 @@ namespace Data
 #endif
 
 	public:
-		ByteArrayR(const ByteArray &arr) : ByteArrayBase(arr.GetPtr(), arr.GetSize())
+		ByteArrayR(const ByteArray &arr) : ByteArrayBase(arr.Arr(), arr.GetSize())
 		{
 #if defined(CHECK_RANGE)
 			this->prevSize = arr.GetPrevSize();
@@ -553,7 +553,7 @@ namespace Data
 #if defined(CHECK_RANGE)
 			return ByteArrayR(buff, size, this->prevSize);
 #else
-			return ByteArrayR(UnsafeArray<const UInt8>::FromOpt(buff), size);
+			return ByteArrayR(buff, size);
 #endif
 		}
 
@@ -617,7 +617,7 @@ namespace Data
 	void FORCEINLINE ByteArray::CopyArray(Data::ByteArray destArr, const ByteArrayR &srcArr)
 	{
 		destArr.CheckError(srcArr.GetSize());
-		MemCopyNO(destArr.buff.Ptr(), srcArr.GetPtr().Ptr(), srcArr.GetSize());
+		MemCopyNO(destArr.buff.Ptr(), srcArr.Arr().Ptr(), srcArr.GetSize());
 	}
 }
 #define BYTEARR(var) Data::ByteArray(var, sizeof(var))

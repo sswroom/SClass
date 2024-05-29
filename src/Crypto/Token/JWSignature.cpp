@@ -60,11 +60,11 @@ Bool Crypto::Token::JWSignature::CalcHash(const UInt8 *buff, UOSInt buffSize)
 			Bool succ = false;
 			NEW_CLASSNN(key, Crypto::Cert::X509Key(CSTR("rsakey"), Data::ByteArray(this->privateKey, this->privateKeyLeng), Crypto::Cert::X509Key::KeyType::RSA));
 			if (alg == Algorithm::RS256)
-				succ = ssl->Signature(key, Crypto::Hash::HashType::SHA256, buff, buffSize, this->hashVal, this->hashValSize);
+				succ = ssl->Signature(key, Crypto::Hash::HashType::SHA256, Data::ByteArrayR(buff, buffSize), this->hashVal, this->hashValSize);
 			else if (alg == Algorithm::RS384)
-				succ = ssl->Signature(key, Crypto::Hash::HashType::SHA384, buff, buffSize, this->hashVal, this->hashValSize);
+				succ = ssl->Signature(key, Crypto::Hash::HashType::SHA384, Data::ByteArrayR(buff, buffSize), this->hashVal, this->hashValSize);
 			if (alg == Algorithm::RS512)
-				succ = ssl->Signature(key, Crypto::Hash::HashType::SHA512, buff, buffSize, this->hashVal, this->hashValSize);
+				succ = ssl->Signature(key, Crypto::Hash::HashType::SHA512, Data::ByteArrayR(buff, buffSize), this->hashVal, this->hashValSize);
 			key.Delete();
 			return succ;
 		}
@@ -125,11 +125,11 @@ Bool Crypto::Token::JWSignature::VerifyHash(const UInt8 *buff, UOSInt buffSize, 
 			Bool succ = false;
 			NEW_CLASSNN(key, Crypto::Cert::X509Key(CSTR("rsakey"), Data::ByteArray(this->privateKey, this->privateKeyLeng), this->keyType));
 			if (alg == Algorithm::RS256)
-				succ = ssl->SignatureVerify(key, Crypto::Hash::HashType::SHA256, buff, buffSize, signature, signatureSize);
+				succ = ssl->SignatureVerify(key, Crypto::Hash::HashType::SHA256, Data::ByteArrayR(buff, buffSize), Data::ByteArrayR(signature, signatureSize));
 			else if (alg == Algorithm::RS384)
-				succ = ssl->SignatureVerify(key, Crypto::Hash::HashType::SHA384, buff, buffSize, signature, signatureSize);
+				succ = ssl->SignatureVerify(key, Crypto::Hash::HashType::SHA384, Data::ByteArrayR(buff, buffSize), Data::ByteArrayR(signature, signatureSize));
 			else if (alg == Algorithm::RS512)
-				succ = ssl->SignatureVerify(key, Crypto::Hash::HashType::SHA512, buff, buffSize, signature, signatureSize);
+				succ = ssl->SignatureVerify(key, Crypto::Hash::HashType::SHA512, Data::ByteArrayR(buff, buffSize), Data::ByteArrayR(signature, signatureSize));
 			key.Delete();
 			return succ;
 		}

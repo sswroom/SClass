@@ -610,7 +610,7 @@ Bool Net::Email::EmailMessage::WriteToStream(NN<IO::Stream> stm)
 		stm->Write(UTF8STRC("Content-Disposition: attachment; filename=\"smime.p7s\"\r\n"));
 		stm->Write(UTF8STRC("Content-Description: S/MIME Cryptographic Signature\r\n\r\n"));
 
-		const UInt8 *data;
+		UnsafeArrayOpt<const UInt8> data;
 		UOSInt dataSize;
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
@@ -635,9 +635,9 @@ Bool Net::Email::EmailMessage::WriteToStream(NN<IO::Stream> stm)
 							builder.AppendInt32(1);
 							builder.BeginSequence();
 								data = this->signCert->GetIssuerNamesSeq(dataSize);
-								builder.AppendSequence(data, dataSize);
+								builder.AppendSequence(data.Ptr(), dataSize);
 								data = this->signCert->GetSerialNumber(dataSize);
-								builder.AppendInteger(data, dataSize);
+								builder.AppendInteger(data.Ptr(), dataSize);
 							builder.EndLevel();
 							builder.BeginSequence();
 								builder.AppendOIDString(CSTR("2.16.840.1.101.3.4.2.1")); //id-sha256
@@ -704,9 +704,9 @@ Bool Net::Email::EmailMessage::WriteToStream(NN<IO::Stream> stm)
 									builder.BeginSet();
 										builder.BeginSequence();
 											data = this->signCert->GetIssuerNamesSeq(dataSize);
-											builder.AppendSequence(data, dataSize);
+											builder.AppendSequence(data.Ptr(), dataSize);
 											data = this->signCert->GetSerialNumber(dataSize);
-											builder.AppendInteger(data, dataSize);
+											builder.AppendInteger(data.Ptr(), dataSize);
 										builder.EndLevel();
 									builder.EndLevel();
 								builder.EndLevel();
@@ -715,9 +715,9 @@ Bool Net::Email::EmailMessage::WriteToStream(NN<IO::Stream> stm)
 									builder.BeginSet();
 										builder.BeginContentSpecific(0);
 											data = this->signCert->GetIssuerNamesSeq(dataSize);
-											builder.AppendSequence(data, dataSize);
+											builder.AppendSequence(data.Ptr(), dataSize);
 											data = this->signCert->GetSerialNumber(dataSize);
-											builder.AppendInteger(data, dataSize);
+											builder.AppendInteger(data.Ptr(), dataSize);
 										builder.EndLevel();
 									builder.EndLevel();
 								builder.EndLevel();
@@ -727,7 +727,7 @@ Bool Net::Email::EmailMessage::WriteToStream(NN<IO::Stream> stm)
 								builder.AppendNull();
 							builder.EndLevel();
 							///////////////////////////////////////
-							nnssl->Signature(signKey, Crypto::Hash::HashType::SHA256, mstm.GetBuff(), (UOSInt)mstm.GetLength(), signData, signLen);
+							nnssl->Signature(signKey, Crypto::Hash::HashType::SHA256, mstm.GetArray(), signData, signLen);
 							builder.AppendOctetString(signData, signLen);
 						builder.EndLevel();
 					builder.EndLevel();

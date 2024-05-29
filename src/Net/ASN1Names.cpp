@@ -130,7 +130,7 @@ Text::CString Net::ASN1Names::ReadNameNoDef(Net::ASN1Util::ItemType itemType, UO
 			break;
 		case RuleCond::LastOIDAndTypeIs:
 			this->readIndex++;
-			if (itemType == nnrule->itemType && Net::ASN1Util::OIDEqualsText(this->readLastOID, this->readLastOIDLen, nnrule->condParam.v, nnrule->condParam.leng))
+			if (itemType == nnrule->itemType && Net::ASN1Util::OIDEqualsText(Data::ByteArrayR(this->readLastOID, this->readLastOIDLen), nnrule->condParam.OrEmpty()))
 				return nnrule->name;
 			break;
 		case RuleCond::RepeatIfTypeIs:

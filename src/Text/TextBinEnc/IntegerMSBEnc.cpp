@@ -20,15 +20,15 @@ UOSInt Text::TextBinEnc::IntegerMSBEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb
 	return sb->GetLength() - len;
 }
 
-UOSInt Text::TextBinEnc::IntegerMSBEnc::CalcBinSize(const UTF8Char *str, UOSInt strLen) const
+UOSInt Text::TextBinEnc::IntegerMSBEnc::CalcBinSize(Text::CStringNN str) const
 {
-	Math::BigIntLSB bint(strLen / 2 + 1, Text::CString(str, strLen));
+	Math::BigIntLSB bint(str.leng / 2 + 1, str);
 	return bint.GetOccupiedSize();
 }
 
-UOSInt Text::TextBinEnc::IntegerMSBEnc::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff) const
+UOSInt Text::TextBinEnc::IntegerMSBEnc::DecodeBin(Text::CStringNN str, UInt8 *dataBuff) const
 {
-	Math::BigIntLSB bint(strLen / 2 + 1, Text::CString(str, strLen));
+	Math::BigIntLSB bint(str.leng / 2 + 1, str);
 	return bint.GetBytesMSB(dataBuff, true);
 }
 

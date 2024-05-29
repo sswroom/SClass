@@ -122,7 +122,7 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16(const UTF16Char
 	return *this;
 }
 
-NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16BE(const UInt8 *s, UOSInt utf16Cnt)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF16BE(UnsafeArray<const UInt8> s, UOSInt utf16Cnt)
 {
 	UOSInt charCnt = Text::StrUTF16BE_UTF8CntC(s, utf16Cnt);
 	STRINGBUILDER_ALLOCLENG(charCnt);

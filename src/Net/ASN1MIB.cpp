@@ -46,7 +46,7 @@ void Net::ASN1MIB::ModuleAppendOID(NN<Net::ASN1MIB::ModuleInfo> module, NN<Objec
 	{
 		k = (i + j) >> 1;
 		obj2 = module->oidList.GetItemNoCheck((UOSInt)k);
-		l = Net::ASN1Util::OIDCompare(obj2->oid, obj2->oidLen, obj->oid, obj->oidLen);
+		l = Net::ASN1Util::OIDCompare(Data::ByteArrayR(obj2->oid, obj2->oidLen), Data::ByteArrayR(obj->oid, obj->oidLen));
 		if (l > 0)
 		{
 			j = k - 1;

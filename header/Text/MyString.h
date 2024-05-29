@@ -97,17 +97,17 @@ namespace Text
 	UTF8Char *StrConcatS(UTF8Char *oriStr, UnsafeArray<const UTF8Char> strToJoin, UOSInt buffSize);
 	UTF8Char *StrConcatASCII(UTF8Char *oriStr, const Char *strToJoin);
 
-	UTF8Char *StrInt16(UTF8Char *oriStr, Int16 val);
-	UTF8Char *StrUInt16(UTF8Char *oriStr, UInt16 val);
-	UTF8Char *StrInt32(UTF8Char *oriStr, Int32 val);
-	UTF8Char *StrUInt32(UTF8Char *oriStr, UInt32 val);
-	UTF8Char *StrInt32S(UTF8Char *oriStr, Int32 val, UTF8Char seperator, UOSInt sepCnt);
-	UTF8Char *StrUInt32S(UTF8Char *oriStr, UInt32 val, UTF8Char seperator, UOSInt sepCnt);
+	UTF8Char *StrInt16(UnsafeArray<UTF8Char> oriStr, Int16 val);
+	UTF8Char *StrUInt16(UnsafeArray<UTF8Char> oriStr, UInt16 val);
+	UTF8Char *StrInt32(UnsafeArray<UTF8Char> oriStr, Int32 val);
+	UTF8Char *StrUInt32(UnsafeArray<UTF8Char> oriStr, UInt32 val);
+	UTF8Char *StrInt32S(UnsafeArray<UTF8Char> oriStr, Int32 val, UTF8Char seperator, UOSInt sepCnt);
+	UTF8Char *StrUInt32S(UnsafeArray<UTF8Char> oriStr, UInt32 val, UTF8Char seperator, UOSInt sepCnt);
 #ifdef HAS_INT64
-	UTF8Char *StrInt64(UTF8Char *oriStr, Int64 val);
-	UTF8Char *StrUInt64(UTF8Char *oriStr, UInt64 val);
-	UTF8Char *StrInt64S(UTF8Char *oriStr, Int64 val, UTF8Char seperator, UOSInt sepCnt);
-	UTF8Char *StrUInt64S(UTF8Char *oriStr, UInt64 val, UTF8Char seperator, UOSInt sepCnt);
+	UTF8Char *StrInt64(UnsafeArray<UTF8Char> oriStr, Int64 val);
+	UTF8Char *StrUInt64(UnsafeArray<UTF8Char> oriStr, UInt64 val);
+	UTF8Char *StrInt64S(UnsafeArray<UTF8Char> oriStr, Int64 val, UTF8Char seperator, UOSInt sepCnt);
+	UTF8Char *StrUInt64S(UnsafeArray<UTF8Char> oriStr, UInt64 val, UTF8Char seperator, UOSInt sepCnt);
 #endif
 
 	UTF8Char *StrToUpper(UTF8Char *oriStr, const UTF8Char *strToProc);
@@ -117,7 +117,7 @@ namespace Text
 	UTF8Char *StrToCapital(UTF8Char *oriStr, const UTF8Char *strToProc);
 
 	Bool StrEquals(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2);
-	Bool StrEqualsN(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2);
+	Bool StrEqualsN(UnsafeArrayOpt<const UTF8Char> str1, UnsafeArrayOpt<const UTF8Char> str2);
 	FORCEINLINE Bool StrEqualsC(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2);
 	Bool StrEqualsICase(UnsafeArray<const UTF8Char> str1, UnsafeArray<const UTF8Char> str2);
 	Bool StrEqualsICaseC(UnsafeArray<const UTF8Char> str1, UOSInt str1Len, UnsafeArray<const UTF8Char> str2, UOSInt str2Len);

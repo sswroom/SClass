@@ -104,10 +104,11 @@ UOSInt Text::TextBinEnc::Base32Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, co
 	return outSize;
 }
 
-UOSInt Text::TextBinEnc::Base32Enc::CalcBinSize(const UTF8Char *sbuff, UOSInt strLen) const
+UOSInt Text::TextBinEnc::Base32Enc::CalcBinSize(Text::CStringNN str) const
 {
 	UOSInt cnt = 0;
 	UTF8Char c;
+	const UTF8Char *sbuff = str.v;
 	while ((c = *sbuff++) != 0)
 	{
 		if (c < 0x80 && decArr[c] != 0xff)
@@ -132,13 +133,14 @@ UOSInt Text::TextBinEnc::Base32Enc::CalcBinSize(const WChar *sbuff) const
 	return cnt * 5 / 8;
 }
 
-UOSInt Text::TextBinEnc::Base32Enc::DecodeBin(const UTF8Char *b64Str, UOSInt strLen, UInt8 *dataBuff) const
+UOSInt Text::TextBinEnc::Base32Enc::DecodeBin(Text::CStringNN str, UInt8 *dataBuff) const
 {
 	UOSInt decSize = 0;
 	UInt8 b = 0;
 	UInt8 b2 = 0;
 	UInt8 code;
 	UTF8Char c;
+	const UTF8Char *b64Str = str.v;
 	while ((c = *b64Str++) != 0)
 	{
 		if (c < 0x80)

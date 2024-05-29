@@ -373,7 +373,7 @@ UOSInt Map::WebImageLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, Name
 	imgList.AddAll(this->loadedList);
 	loadedMutUsage.EndUse();
 
-	imgArr = imgList.GetPtr(retCnt).Ptr();
+	imgArr = imgList.GetArr(retCnt).Ptr();
 	ArtificialQuickSort_SortCmpO((Data::IComparable**)imgArr, 0, (OSInt)retCnt - 1);
 
 	i = 0;
@@ -455,7 +455,7 @@ UOSInt Map::WebImageLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, Na
 	}
 	loadedMutUsage.EndUse();
 
-	imgArr = imgList.GetPtr(retCnt).Ptr();
+	imgArr = imgList.GetArr(retCnt).Ptr();
 	ArtificialQuickSort_SortCmpO((Data::IComparable**)imgArr, 0, (OSInt)retCnt - 1);
 
 	i = 0;

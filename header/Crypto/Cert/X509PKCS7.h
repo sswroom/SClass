@@ -28,8 +28,8 @@ namespace Crypto
 
 			Bool IsSignData() const;
 			Crypto::Hash::HashType GetDigestType() const;
-			const UInt8 *GetMessageDigest(OutParam<UOSInt> digestSize) const;
-			const UInt8 *GetEncryptedDigest(OutParam<UOSInt> encSize) const;
+			UnsafeArrayOpt<const UInt8> GetMessageDigest(OutParam<UOSInt> digestSize) const;
+			UnsafeArrayOpt<const UInt8> GetEncryptedDigest(OutParam<UOSInt> encSize) const;
 		};
 	}
 }

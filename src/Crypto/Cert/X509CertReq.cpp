@@ -28,8 +28,8 @@ void Crypto::Cert::X509CertReq::ToShortName(NN<Text::StringBuilderUTF8> sb) cons
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
-	const UInt8 *tmpBuff = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.2", len, itemType);
-	if (tmpBuff != 0 && itemType == Net::ASN1Util::IT_SEQUENCE)
+	UnsafeArray<const UInt8> tmpBuff;
+	if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.2", len, itemType).SetTo(tmpBuff) && itemType == Net::ASN1Util::IT_SEQUENCE)
 	{
 		NameGetCN(tmpBuff, tmpBuff + len, sb);
 	}
@@ -52,7 +52,7 @@ Crypto::Cert::X509File::ValidStatus Crypto::Cert::X509CertReq::IsValid(NN<Net::S
 	{
 		return Crypto::Cert::X509File::ValidStatus::FileFormatInvalid;
 	}
-	Bool valid = ssl->SignatureVerify(key, hashType, signedInfo.payload, signedInfo.payloadSize, signedInfo.signature, signedInfo.signSize);
+	Bool valid = ssl->SignatureVerify(key, hashType, Data::ByteArrayR(signedInfo.payload, signedInfo.payloadSize), Data::ByteArrayR(signedInfo.signature, signedInfo.signSize));
 	key.Delete();
 	if (valid)
 	{
@@ -73,9 +73,9 @@ NN<Net::ASN1Data> Crypto::Cert::X509CertReq::Clone() const
 
 void Crypto::Cert::X509CertReq::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
-	if (IsCertificateRequest(this->buff.Ptr(), this->buff.PtrEnd(), "1"))
+	if (IsCertificateRequest(this->buff.Arr(), this->buff.ArrEnd(), "1"))
 	{
-		AppendCertificateRequest(this->buff.Ptr(), this->buff.PtrEnd(), "1", sb);
+		AppendCertificateRequest(this->buff.Arr(), this->buff.ArrEnd(), "1", sb);
 	}
 }
 
@@ -90,8 +90,8 @@ Bool Crypto::Cert::X509CertReq::GetNames(NN<CertNames> names) const
 {
 	UOSInt itemLen;
 	Net::ASN1Util::ItemType itemType;
-	const UInt8 *namesPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.2", itemLen, itemType);
-	if (namesPDU)
+	UnsafeArray<const UInt8> namesPDU;
+	if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.2", itemLen, itemType).SetTo(namesPDU))
 	{
 		return NamesGet(namesPDU, namesPDU + itemLen, names);
 	}
@@ -102,16 +102,16 @@ Bool Crypto::Cert::X509CertReq::GetExtensions(NN<CertExtensions> ext) const
 {
 	UOSInt itemLen;
 	Net::ASN1Util::ItemType itemType;
-	const UInt8 *extPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.4.1", itemLen, itemType);
-	if (extPDU && itemType == Net::ASN1Util::IT_SEQUENCE)
+	UnsafeArray<const UInt8> extPDU;
+	if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.4.1", itemLen, itemType).SetTo(extPDU) && itemType == Net::ASN1Util::IT_SEQUENCE)
 	{
 		UOSInt oidLen;
-		const UInt8 *oid = Net::ASN1Util::PDUGetItem(extPDU, extPDU + itemLen, "1", oidLen, itemType);
-		if (oid && Net::ASN1Util::OIDEqualsText(oid, oidLen, UTF8STRC("1.2.840.113549.1.9.14"))) //extensionRequest
+		UnsafeArray<const UInt8> oid;
+		if (Net::ASN1Util::PDUGetItem(extPDU, extPDU + itemLen, "1", oidLen, itemType).SetTo(oid) && Net::ASN1Util::OIDEqualsText(Data::ByteArrayR(oid, oidLen), CSTR("1.2.840.113549.1.9.14"))) //extensionRequest
 		{
 			UOSInt extSeqSize;
-			const UInt8 *extSeq = Net::ASN1Util::PDUGetItem(extPDU, extPDU + itemLen, "2.1", extSeqSize, itemType);
-			if (extSeq && itemType == Net::ASN1Util::IT_SEQUENCE)
+			UnsafeArray<const UInt8> extSeq;
+			if (Net::ASN1Util::PDUGetItem(extPDU, extPDU + itemLen, "2.1", extSeqSize, itemType).SetTo(extSeq) && itemType == Net::ASN1Util::IT_SEQUENCE)
 			{
 				return ExtensionsGet(extSeq, extSeq + extSeqSize, ext);
 			}
@@ -124,8 +124,8 @@ Optional<Crypto::Cert::X509Key> Crypto::Cert::X509CertReq::GetNewPublicKey() con
 {
 	UOSInt itemLen;
 	Net::ASN1Util::ItemType itemType;
-	const UInt8 *keyPDU = Net::ASN1Util::PDUGetItem(this->buff.Ptr(), this->buff.PtrEnd(), "1.1.3", itemLen, itemType);
-	if (keyPDU)
+	UnsafeArray<const UInt8> keyPDU;
+	if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.1.3", itemLen, itemType).SetTo(keyPDU))
 	{
 		return PublicKeyGetNew(keyPDU, keyPDU + itemLen);
 	}

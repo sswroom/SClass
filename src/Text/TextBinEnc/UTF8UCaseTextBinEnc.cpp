@@ -29,15 +29,15 @@ UOSInt Text::TextBinEnc::UTF8UCaseTextBinEnc::EncodeBin(NN<Text::StringBuilderUT
 	return buffSize;
 }
 
-UOSInt Text::TextBinEnc::UTF8UCaseTextBinEnc::CalcBinSize(const UTF8Char *str, UOSInt strLen) const
+UOSInt Text::TextBinEnc::UTF8UCaseTextBinEnc::CalcBinSize(Text::CStringNN str) const
 {
-	return strLen;
+	return str.leng;
 }
 
-UOSInt Text::TextBinEnc::UTF8UCaseTextBinEnc::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff) const
+UOSInt Text::TextBinEnc::UTF8UCaseTextBinEnc::DecodeBin(Text::CStringNN str, UInt8 *dataBuff) const
 {
-	MemCopyNO(dataBuff, str, strLen);
-	return strLen;
+	MemCopyNO(dataBuff, str.v, str.leng);
+	return str.leng;
 }
 
 Text::CStringNN Text::TextBinEnc::UTF8UCaseTextBinEnc::GetName() const

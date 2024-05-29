@@ -61,8 +61,8 @@ Bool Crypto::Hash::Bcrypt::Matches(Text::CStringNN hash, Text::CStringNN passwor
 		UInt8 salt[16];
 		UInt8 hashCTxt[24];
 		UInt8 myCTxt[24];
-		this->radix64.DecodeBin(sarr[2].v, 22, salt);
-		this->radix64.DecodeBin(sarr[2].v + 22, 31, hashCTxt);
+		this->radix64.DecodeBin(Text::CStringNN(sarr[2].v, 22), salt);
+		this->radix64.DecodeBin(Text::CStringNN(sarr[2].v + 22, 31), hashCTxt);
 		this->CalcHash(Text::StrToUInt32(sarr[1].v), salt, password, myCTxt);
 		return Data::BinTool::Equals(hashCTxt, myCTxt, 23);
 	}

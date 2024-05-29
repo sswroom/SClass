@@ -32,17 +32,17 @@ Optional<Text::String> Net::ACMEConn::JWK(NN<Crypto::Cert::X509Key> key, OutPara
 		{
 			UOSInt mSize;
 			UOSInt eSize;
-			const UInt8 *m = key->GetRSAModulus(mSize);
-			const UInt8 *e = key->GetRSAPublicExponent(eSize);
-			if (m == 0 || e == 0)
+			UnsafeArray<const UInt8> m;
+			UnsafeArray<const UInt8> e;
+			if (!key->GetRSAModulus(mSize).SetTo(m) || !key->GetRSAPublicExponent(eSize).SetTo(e))
 			{
 				return 0;
 			}
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("{\"e\":\""));
-			b64.EncodeBin(sb, e, eSize);
+			b64.EncodeBin(sb, e.Ptr(), eSize);
 			sb.AppendC(UTF8STRC("\",\"kty\":\"RSA\",\"n\":\""));
-			b64.EncodeBin(sb, m, mSize);
+			b64.EncodeBin(sb, m.Ptr(), mSize);
 			sb.AppendC(UTF8STRC("\"}"));
 			alg.Set(Crypto::Token::JWSignature::Algorithm::RS256);
 			return Text::String::New(sb.ToCString());
@@ -736,19 +736,20 @@ Bool Net::ACMEConn::LoadKey(Text::CStringNN fileName)
 		return false;
 	}
 	NN<Text::String> s = Text::String::New(fileName.v, fileName.leng);
-	Crypto::Cert::X509File *x509 = Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR(keyPEM, keyPEMSize), s);
-	s->Release();
-	if (x509 == 0)
+	NN<Crypto::Cert::X509File> x509;
+	if (!Parser::FileParser::X509Parser::ParseBuff(Data::ByteArrayR(keyPEM, keyPEMSize), s).SetTo(x509))
 	{
+		s->Release();
 		return false;
 	}
-	if (x509->GetFileType() == Crypto::Cert::X509File::FileType::Key && ((Crypto::Cert::X509Key*)x509)->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSA)
+	s->Release();
+	if (x509->GetFileType() == Crypto::Cert::X509File::FileType::Key && NN<Crypto::Cert::X509Key>::ConvertFrom(x509)->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSA)
 	{
 		this->key.Delete();
-		this->key = (Crypto::Cert::X509Key*)x509;
+		this->key = NN<Crypto::Cert::X509Key>::ConvertFrom(x509);
 		return true;
 	}
-	DEL_CLASS(x509);
+	x509.Delete();
 	return false;
 }
 

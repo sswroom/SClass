@@ -26,8 +26,8 @@ namespace SSWR
 			Optional<Net::SSLEngine> ssl;
 			Net::WebServer::SAMLHandler *samlHdlr;
 			Net::WebServer::WebListener *svr;
-			Crypto::Cert::X509Cert *sslCert;
-			Crypto::Cert::X509File *sslKey;
+			Optional<Crypto::Cert::X509Cert> sslCert;
+			Optional<Crypto::Cert::X509File> sslKey;
 			Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
 			IO::LogTool log;
 			NN<UI::ListBoxLogger> logger;

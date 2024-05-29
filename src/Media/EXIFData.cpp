@@ -5277,7 +5277,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD(NN<IO::StreamData> fd, UInt6
 			{
 				Data::ByteBuffer tmpBuff(fcnt);
 				fd->GetRealData(bo->GetUInt32(&ifdEntries[ifdOfst + 8]) + readBase, fcnt, tmpBuff);
-				exif->AddBytes(tag, fcnt, tmpBuff.Ptr().Ptr());
+				exif->AddBytes(tag, fcnt, tmpBuff.Arr().Ptr());
 			}
 			break;
 		case 2:
@@ -5289,7 +5289,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD(NN<IO::StreamData> fd, UInt6
 			{
 				Data::ByteBuffer tmpBuff(fcnt);
 				fd->GetRealData(bo->GetUInt32(&ifdEntries[ifdOfst + 8]) + readBase, fcnt, tmpBuff);
-				exif->AddString(tag, fcnt, (Char*)tmpBuff.Ptr().Ptr());
+				exif->AddString(tag, fcnt, (Char*)tmpBuff.Arr().Ptr());
 			}
 			break;
 		case 3:
@@ -5316,7 +5316,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD(NN<IO::StreamData> fd, UInt6
 					j -= 2;
 					*(UInt16*)&tmpBuff[j] = bo->GetUInt16(&tmpBuff[j]);
 				}
-				exif->AddUInt16(tag, fcnt, (UInt16*)tmpBuff.Ptr().Ptr());
+				exif->AddUInt16(tag, fcnt, (UInt16*)tmpBuff.Arr().Ptr());
 			}
 			break;
 		}
@@ -5349,7 +5349,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD(NN<IO::StreamData> fd, UInt6
 					j -= 4;
 					*(UInt32*)&tmpBuff[j] = bo->GetUInt32(&tmpBuff[j]);
 				}
-				exif->AddUInt32(tag, fcnt, (UInt32*)tmpBuff.Ptr().Ptr());
+				exif->AddUInt32(tag, fcnt, (UInt32*)tmpBuff.Arr().Ptr());
 			}
 			break;
 		}
@@ -5364,7 +5364,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD(NN<IO::StreamData> fd, UInt6
 					*(UInt32*)&tmpBuff[j] = bo->GetUInt32(&tmpBuff[j]);
 					*(UInt32*)&tmpBuff[j + 4] = bo->GetUInt32(&tmpBuff[j + 4]);
 				}
-				exif->AddRational(tag, fcnt, (UInt32*)tmpBuff.Ptr().Ptr());
+				exif->AddRational(tag, fcnt, (UInt32*)tmpBuff.Arr().Ptr());
 			}
 			break;
 		case 7:
@@ -5376,7 +5376,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD(NN<IO::StreamData> fd, UInt6
 			{
 				Data::ByteBuffer tmpBuff(fcnt);
 				fd->GetRealData(bo->GetUInt32(&ifdEntries[ifdOfst + 8]) + readBase, fcnt, tmpBuff);
-				exif->AddOther(tag, fcnt, tmpBuff.Ptr().Ptr());
+				exif->AddOther(tag, fcnt, tmpBuff.Arr().Ptr());
 			}
 			break;
 		case 8:
@@ -5397,7 +5397,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD(NN<IO::StreamData> fd, UInt6
 					j -= 2;
 					*(Int16*)&tmpBuff[j] = bo->GetInt16(&tmpBuff[j]);
 				}
-				exif->AddInt16(tag, fcnt, (Int16*)tmpBuff.Ptr().Ptr());
+				exif->AddInt16(tag, fcnt, (Int16*)tmpBuff.Arr().Ptr());
 			}
 			break;
 		}
@@ -5419,7 +5419,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD(NN<IO::StreamData> fd, UInt6
 					j -= 4;
 					*(Int32*)&tmpBuff[j] = bo->GetInt32(&tmpBuff[j]);
 				}
-				exif->AddInt32(tag, fcnt, (Int32*)tmpBuff.Ptr().Ptr());
+				exif->AddInt32(tag, fcnt, (Int32*)tmpBuff.Arr().Ptr());
 			}
 			break;
 		}
@@ -5434,14 +5434,14 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD(NN<IO::StreamData> fd, UInt6
 				*(Int32*)&tmpBuff[j] = bo->GetInt32(&tmpBuff[j]);
 				*(Int32*)&tmpBuff[j + 4] = bo->GetInt32(&tmpBuff[j + 4]);
 			}
-			exif->AddSRational(tag, fcnt, (Int32*)tmpBuff.Ptr().Ptr());
+			exif->AddSRational(tag, fcnt, (Int32*)tmpBuff.Arr().Ptr());
 		}
 			break;
 		case 12:
 			{
 				Data::ByteBuffer tmpBuff(fcnt << 3);
 				fd->GetRealData(bo->GetUInt32(&ifdEntries[ifdOfst + 8]) + readBase, fcnt << 3, tmpBuff);
-				exif->AddDouble(tag, fcnt, (Double*)tmpBuff.Ptr().Ptr());
+				exif->AddDouble(tag, fcnt, (Double*)tmpBuff.Arr().Ptr());
 			}
 			break;
 		default:
@@ -5502,7 +5502,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD64(NN<IO::StreamData> fd, UIn
 			{
 				Data::ByteBuffer tmpBuff(fcnt);
 				fd->GetRealData(bo->GetUInt64(&ifdEntries[ifdOfst + 12]) + readBase, fcnt, tmpBuff);
-				exif->AddBytes(tag, fcnt, tmpBuff.Ptr().Ptr());
+				exif->AddBytes(tag, fcnt, tmpBuff.Arr().Ptr());
 			}
 			break;
 		case 2:
@@ -5514,7 +5514,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD64(NN<IO::StreamData> fd, UIn
 			{
 				Data::ByteBuffer tmpBuff(fcnt);
 				fd->GetRealData(bo->GetUInt64(&ifdEntries[ifdOfst + 12]) + readBase, fcnt, tmpBuff);
-				exif->AddString(tag, fcnt, (Char*)tmpBuff.Ptr().Ptr());
+				exif->AddString(tag, fcnt, (Char*)tmpBuff.Arr().Ptr());
 			}
 			break;
 		case 3:
@@ -5556,7 +5556,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD64(NN<IO::StreamData> fd, UIn
 					j -= 2;
 					*(UInt16*)&tmpBuff[j] = bo->GetUInt16(&tmpBuff[j]);
 				}
-				exif->AddUInt16(tag, fcnt, (UInt16*)tmpBuff.Ptr().Ptr());
+				exif->AddUInt16(tag, fcnt, (UInt16*)tmpBuff.Arr().Ptr());
 			}
 			break;
 		}
@@ -5595,7 +5595,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD64(NN<IO::StreamData> fd, UIn
 					j -= 4;
 					*(UInt32*)&tmpBuff[j] = bo->GetUInt32(&tmpBuff[j]);
 				}
-				exif->AddUInt32(tag, fcnt, (UInt32*)tmpBuff.Ptr().Ptr());
+				exif->AddUInt32(tag, fcnt, (UInt32*)tmpBuff.Arr().Ptr());
 			}
 			break;
 		}
@@ -5618,7 +5618,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD64(NN<IO::StreamData> fd, UIn
 					*(UInt32*)&tmpBuff[j] = bo->GetUInt32(&tmpBuff[j]);
 					*(UInt32*)&tmpBuff[j + 4] = bo->GetUInt32(&tmpBuff[j + 4]);
 				}
-				exif->AddRational(tag, fcnt, (UInt32*)tmpBuff.Ptr().Ptr());
+				exif->AddRational(tag, fcnt, (UInt32*)tmpBuff.Arr().Ptr());
 			}
 			break;
 		case 7:
@@ -5630,7 +5630,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD64(NN<IO::StreamData> fd, UIn
 			{
 				Data::ByteBuffer tmpBuff(fcnt);
 				fd->GetRealData(bo->GetUInt64(&ifdEntries[ifdOfst + 12]) + readBase, fcnt, tmpBuff);
-				exif->AddOther(tag, fcnt, tmpBuff.Ptr().Ptr());
+				exif->AddOther(tag, fcnt, tmpBuff.Arr().Ptr());
 			}
 			break;
 		case 8:
@@ -5672,7 +5672,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD64(NN<IO::StreamData> fd, UIn
 					j -= 2;
 					*(Int16*)&tmpBuff[j] = bo->GetInt16(&tmpBuff[j]);
 				}
-				exif->AddInt16(tag, fcnt, (Int16*)tmpBuff.Ptr().Ptr());
+				exif->AddInt16(tag, fcnt, (Int16*)tmpBuff.Arr().Ptr());
 			}
 			break;
 		}
@@ -5692,7 +5692,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD64(NN<IO::StreamData> fd, UIn
 					j -= 8;
 					*(Double*)&tmpBuff[j] = bo->GetFloat64(&tmpBuff[j]);
 				}
-				exif->AddDouble(tag, fcnt, (Double*)tmpBuff.Ptr().Ptr());
+				exif->AddDouble(tag, fcnt, (Double*)tmpBuff.Arr().Ptr());
 			}
 			break;
 		case 16: //TIFF_LONG8
@@ -5711,7 +5711,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD64(NN<IO::StreamData> fd, UIn
 					j -= 8;
 					*(UInt64*)&tmpBuff[j] = bo->GetUInt64(&tmpBuff[j]);
 				}
-				exif->AddUInt64(tag, fcnt, (UInt64*)tmpBuff.Ptr().Ptr());
+				exif->AddUInt64(tag, fcnt, (UInt64*)tmpBuff.Arr().Ptr());
 			}
 			break;
 		case 17: //TIFF_SLONG8
@@ -5730,7 +5730,7 @@ Optional<Media::EXIFData> Media::EXIFData::ParseIFD64(NN<IO::StreamData> fd, UIn
 					j -= 8;
 					*(Int64*)&tmpBuff[j] = bo->GetInt64(&tmpBuff[j]);
 				}
-				exif->AddInt64(tag, fcnt, (Int64*)tmpBuff.Ptr().Ptr());
+				exif->AddInt64(tag, fcnt, (Int64*)tmpBuff.Arr().Ptr());
 			}
 			break;
 		case 18: //TIFF_IFD8
@@ -5891,7 +5891,7 @@ Bool Media::EXIFData::ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, 
 				frame->AddUInt(frameOfst + 10 + ifdOfst, 4, CSTR("Field Offset"), fofst);
 				Data::ByteBuffer tmpBuff(fcnt);
 				fd->GetRealData(fofst + readBase, fcnt, tmpBuff);
-				frame->AddStrS((UOSInt)(fofst + readBase - ofst + frameOfst), fcnt, GetEXIFName(EM_STANDARD, ifdId, tag), tmpBuff.Ptr());
+				frame->AddStrS((UOSInt)(fofst + readBase - ofst + frameOfst), fcnt, GetEXIFName(EM_STANDARD, ifdId, tag), tmpBuff.Arr());
 			}
 			break;
 		case 3:

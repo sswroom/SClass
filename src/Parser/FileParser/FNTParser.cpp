@@ -65,7 +65,7 @@ IO::ParsedObject *Parser::FileParser::FNTParser::ParseFile(NN<IO::StreamData> fd
 		Data::ByteBuffer fontBuff(fsize);
 		if (fd->GetRealData(0, fsize, fontBuff) == fsize)
 		{
-			font = ParseFontBuff(fd->GetFullName(), fontBuff.Ptr(), fsize);
+			font = ParseFontBuff(fd->GetFullName(), fontBuff.Arr(), fsize);
 		}
 	}
 	return font;

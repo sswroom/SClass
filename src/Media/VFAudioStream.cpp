@@ -115,7 +115,7 @@ UOSInt Media::VFAudioStream::ReadBlock(Data::ByteArray blk)
 	rd.dwSampleCount = (DWORD)sampleCnt;
 	rd.dwReadedSampleCount = 0;
 	rd.dwBufSize = (DWORD)blk.GetSize();
-	rd.lpBuf = blk.Ptr().Ptr();
+	rd.lpBuf = blk.Arr().Ptr();
 	funcs->ReadData(mfile->file, VF_STREAM_AUDIO, &rd);
 	this->currSample += rd.dwReadedSampleCount;
 	readSize = rd.dwReadedSampleCount * this->fmt.nChannels * ((UOSInt)this->fmt.bitpersample >> 3);

@@ -4921,7 +4921,7 @@ void IO::JavaClass::Init(Data::ByteArrayR buff)
 	}
 	this->fileBuffSize = buff.GetSize();
 	this->fileBuff = MemAlloc(UInt8, buff.GetSize());
-	MemCopyNO(this->fileBuff, buff.Ptr().Ptr(), buff.GetSize());
+	MemCopyNO(this->fileBuff, buff.Arr().Ptr(), buff.GetSize());
 
 	UOSInt ofst;
 	UInt16 constant_pool_count = ReadMUInt16(&this->fileBuff[8]);

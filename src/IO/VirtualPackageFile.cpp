@@ -93,7 +93,7 @@ Bool IO::VirtualPackageFile::AddData(NN<IO::StreamData> fd, UInt64 ofst, UInt64 
 	return true;
 }
 
-Bool IO::VirtualPackageFile::AddObject(IO::ParsedObject *pobj, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
+Bool IO::VirtualPackageFile::AddObject(NN<IO::ParsedObject> pobj, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
 	NN<PackFileItem> item;
 	item = MemAllocNN(PackFileItem);
@@ -201,7 +201,7 @@ Bool IO::VirtualPackageFile::AddOrReplaceData(NN<StreamData> fd, UInt64 ofst, UI
 	return this->AddData(fd, ofst, dataLength, headerType, name, modTime, accTime, createTime, unixAttr);
 }
 
-Bool IO::VirtualPackageFile::AddOrReplaceObject(IO::ParsedObject *pobj, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
+Bool IO::VirtualPackageFile::AddOrReplaceObject(NN<IO::ParsedObject> pobj, Text::CStringNN name, const Data::Timestamp &modTime, const Data::Timestamp &accTime, const Data::Timestamp &createTime, UInt32 unixAttr)
 {
 	NN<PackFileItem> item;
 	UOSInt i = GetItemIndex(name);
@@ -223,7 +223,7 @@ Bool IO::VirtualPackageFile::AddOrReplaceObject(IO::ParsedObject *pobj, Text::CS
 			item->unixAttr = unixAttr;
 			return true;
 		}
-		DEL_CLASS(pobj);
+		pobj.Delete();
 		return false;
 	}
 	return this->AddObject(pobj, name, modTime, accTime, createTime, unixAttr);
@@ -922,7 +922,7 @@ Bool IO::VirtualPackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool f
 				if (succ)
 				{
 					IO::FileStream fs(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer);
-					succ = (fs.Write(tmpBuff.Ptr().Ptr(), (UOSInt)fileSize) == fileSize);
+					succ = (fs.Write(tmpBuff.Arr().Ptr(), (UOSInt)fileSize) == fileSize);
 				}
 			}
 			else
@@ -946,7 +946,7 @@ Bool IO::VirtualPackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool f
 							succ = false;
 							break;
 						}
-						if (fs.Write(tmpBuff.Ptr().Ptr(), readSize) != readSize)
+						if (fs.Write(tmpBuff.Arr().Ptr(), readSize) != readSize)
 						{
 							succ = false;
 							break;

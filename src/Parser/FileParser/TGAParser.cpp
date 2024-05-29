@@ -180,8 +180,8 @@ rle32exit:
 					UnsafeArray<UInt8> tmpDPtr;
 					UOSInt cnt = imgHeight * imgWidth;
 					UInt32 tmpVal;
-					tmpSPtr = tmpBuff.GetPtr();
-					tmpDPtr = pBits.GetPtr();
+					tmpSPtr = tmpBuff.Arr();
+					tmpDPtr = pBits.Arr();
 					while (cnt > 0)
 					{
 						tmpVal = *tmpSPtr;

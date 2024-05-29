@@ -204,7 +204,7 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(const UTF8Char *wkt
 		NEW_CLASS(pl, Math::Geometry::LineString(this->srid, ptList.GetCount() >> 1, hasZ, hasM));
 		UOSInt i;
 		Math::Coord2DDbl *ptArr = pl->GetPointList(i);
-		MemCopyNO(ptArr, ptList.Ptr().Ptr(), ptList.GetCount() * sizeof(Double));
+		MemCopyNO(ptArr, ptList.Arr().Ptr(), ptList.GetCount() * sizeof(Double));
 		if (hasM)
 		{
 			Double *zArr = pl->GetZList(i);
@@ -336,7 +336,7 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(const UTF8Char *wkt
 				l = ptOfstList.GetItem(i) << 1;
 			NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, (l - k) >> 1, hasZ, hasM));
 			Math::Coord2DDbl *ptArr = lr->GetPointList(m);
-			MemCopyNO(ptArr, ptList.Ptr() + k, (l - k) * sizeof(Double));
+			MemCopyNO(ptArr, ptList.Arr().Ptr() + k, (l - k) * sizeof(Double));
 			if (hasM)
 			{
 				Double *zArr = lr->GetZList(m);
@@ -448,7 +448,7 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(const UTF8Char *wkt
 			NEW_CLASSNN(lineString, Math::Geometry::LineString(srid, ptList.GetCount() >> 1, hasZ, hasM));
 			UOSInt i;
 			Math::Coord2DDbl *ptArr = lineString->GetPointList(i);
-			MemCopyNO(ptArr, ptList.Ptr().Ptr(), ptList.GetCount() * sizeof(Double));
+			MemCopyNO(ptArr, ptList.Arr().Ptr(), ptList.GetCount() * sizeof(Double));
 			if (hasM)
 			{
 				Double *zArr = lineString->GetZList(i);
@@ -616,7 +616,7 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(const UTF8Char *wkt
 					l = ptOfstList.GetItem(i) << 1;
 				NEW_CLASSNN(lr, Math::Geometry::LinearRing(srid, (l - k) >> 1, hasZ, hasM));
 				Math::Coord2DDbl *ptArr = lr->GetPointList(m);
-				MemCopyNO(ptArr, ptList.Ptr() + k, (l - k) * sizeof(Double));
+				MemCopyNO(ptArr, ptList.Arr().Ptr() + k, (l - k) * sizeof(Double));
 				if (hasM)
 				{
 					Double *zArr = lr->GetZList(m);

@@ -250,7 +250,7 @@ void Media::ImageTo8Bit::From32bpp(UInt8 *src, UInt8 *dest, UInt8 *palette, UOSI
 			}
 		}
 		UOSInt arrSize;
-		Data::IComparable **cmpArr = cArr->GetPtr(arrSize).Ptr();
+		Data::IComparable **cmpArr = cArr->GetArr(arrSize).Ptr();
 		ArtificialQuickSort_SortCmpO(cmpArr, 0, (OSInt)arrSize - 1);
 
 		Int32 *cols = (Int32*)palette;

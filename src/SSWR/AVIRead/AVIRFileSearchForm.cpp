@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRFileSearchForm::OnSearchClicked(AnyType userOb
 		me->ui->ShowMsgOK(CSTR("Directory is not valid"), CSTR("File Search"), me);
 		return;
 	}
-	dataSize = enc->DecodeBin(sbText.v, sbText.leng, dataBuff);
+	dataSize = enc->DecodeBin(sbText.ToCString(), dataBuff);
 	if (dataSize == 0)
 	{
 		me->ui->ShowMsgOK(CSTR("Error in decoding text"), CSTR("File Search"), me);

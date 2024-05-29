@@ -833,7 +833,7 @@ Bool Media::ICCProfile::SetToColorProfile(NN<Media::ColorProfile> colorProfile)
 		this->GetBlueTransferParam(colorProfile->GetBTranParam()) &&
 		this->GetColorPrimaries(colorProfile->GetPrimaries()))
 	{
-		colorProfile->SetRAWICC(this->iccBuff.Ptr().Ptr());
+		colorProfile->SetRAWICC(this->iccBuff.Arr().Ptr());
 		return true;	
 	}
 	return false;
@@ -931,7 +931,7 @@ Optional<Media::ICCProfile> Media::ICCProfile::Parse(Data::ByteArrayR buff)
 	if (buff.ReadMI32(36) != 0x61637370)
 		return 0;
 	
-	NEW_CLASSNN(profile, Media::ICCProfile(buff.GetPtr()));
+	NEW_CLASSNN(profile, Media::ICCProfile(buff.Arr()));
 
 	return profile;
 }

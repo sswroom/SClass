@@ -57,7 +57,7 @@ UOSInt Data::Compress::DeflateStream::Read(const Data::ByteArray &buff)
 {
 	UOSInt initSize = buff.GetSize();
 	int ret;
-	this->clsData->stm.next_out = buff.Ptr().Ptr();
+	this->clsData->stm.next_out = buff.Arr().Ptr();
 	this->clsData->stm.avail_out = (unsigned int)buff.GetSize();
 	while (this->clsData->stm.avail_out == initSize)
 	{

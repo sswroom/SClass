@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(AnyType u
 		ssl->ServerSetClientCA(sb.ToCString());
 	}
 
-	if (!sslCert.Set(me->sslCert) || !sslKey.Set(me->sslKey))
+	if (!me->sslCert.SetTo(sslCert) || !me->sslKey.SetTo(sslKey))
 	{
 		NN<Crypto::Cert::X509Key> key;
 		if (!ssl->GenerateRSAKey().SetTo(key))
@@ -66,16 +66,16 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnStartClick(AnyType u
 		me->sslCert = Crypto::Cert::CertUtil::SelfSignedCertCreate(ssl, names, key, 30, &ext);
 		Crypto::Cert::CertNames::FreeNames(names);
 		sanList.FreeAll();
-		if (!sslCert.Set(me->sslCert))
+		if (!me->sslCert.SetTo(sslCert) || !me->sslKey.SetTo(sslKey))
 		{
 			me->ui->ShowMsgOK(CSTR("Error in initializing Certificate"), CSTR("HTTP Client Cert Test"), me);
 			return;
 		}
 
 		Text::StringBuilderUTF8 sb;
-		me->sslCert->ToShortString(sb);
+		sslCert->ToShortString(sb);
 		sb.AppendC(UTF8STRC(", "));
-		me->sslKey->ToShortString(sb);
+		sslKey->ToShortString(sb);
 		me->lblSSLCert->SetText(sb.ToCString());
 
 		Data::ArrayListNN<Crypto::Cert::X509Cert> caCerts;
@@ -151,16 +151,18 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientCertTestForm::OnSSLCertClicked(AnyTy
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->sslCert, me->sslKey, me->caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
-		SDEL_CLASS(me->sslCert);
-		SDEL_CLASS(me->sslKey);
+		NN<Crypto::Cert::X509Cert> nnCert;
+		NN<Crypto::Cert::X509File> nnKey;
+		me->sslCert.Delete();
+		me->sslKey.Delete();
 		me->ClearCACerts();
 		me->sslCert = frm.GetCert();
 		me->sslKey = frm.GetKey();
 		frm.GetCACerts(me->caCerts);
 		Text::StringBuilderUTF8 sb;
-		me->sslCert->ToShortString(sb);
+		if (me->sslCert.SetTo(nnCert)) nnCert->ToShortString(sb);
 		sb.AppendC(UTF8STRC(", "));
-		me->sslKey->ToShortString(sb);
+		if (me->sslKey.SetTo(nnKey)) nnKey->ToShortString(sb);
 		me->lblSSLCert->SetText(sb.ToCString());
 	}
 }
@@ -218,8 +220,8 @@ SSWR::AVIRead::AVIRHTTPClientCertTestForm::~AVIRHTTPClientCertTestForm()
 	SDEL_CLASS(this->svr);
 	SDEL_CLASS(this->log);
 	this->ssl.Delete();
-	SDEL_CLASS(this->sslCert);
-	SDEL_CLASS(this->sslKey);
+	this->sslCert.Delete();
+	this->sslKey.Delete();
 	this->ClearCACerts();
 }
 

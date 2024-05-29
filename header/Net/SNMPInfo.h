@@ -10,10 +10,10 @@ namespace Net
 		SNMPInfo();
 		~SNMPInfo();
 
-		void PDUSeqGetDetail(const UInt8 *pdu, UOSInt pduSize, UOSInt level, NN<Text::StringBuilderUTF8> sb);
-		UOSInt PDUGetDetail(Text::CString name, const UInt8 *pdu, UOSInt pduSize, UOSInt level, NN<Text::StringBuilderUTF8> sb);
+		void PDUSeqGetDetail(Data::ByteArrayR pdu, UOSInt level, NN<Text::StringBuilderUTF8> sb);
+		UOSInt PDUGetDetail(Text::CString name, Data::ByteArrayR pdu, UOSInt level, NN<Text::StringBuilderUTF8> sb);
 
-		static void ValueToString(UInt8 type, const UInt8 *pduBuff, UOSInt valLen, NN<Text::StringBuilderUTF8> sb);
+		static void ValueToString(UInt8 type, Data::ByteArrayR pduBuff, NN<Text::StringBuilderUTF8> sb);
 	};
 }
 #endif

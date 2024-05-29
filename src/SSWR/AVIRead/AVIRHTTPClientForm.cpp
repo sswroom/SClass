@@ -527,14 +527,16 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnClientCertClicked(AnyType us
 	SSWR::AVIRead::AVIRSSLCertKeyForm frm(0, me->ui, me->core, me->ssl, me->cliCert, me->cliKey, caCerts);
 	if (frm.ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
-		SDEL_CLASS(me->cliCert);
-		SDEL_CLASS(me->cliKey);
+		NN<Crypto::Cert::X509Cert> nnCert;
+		NN<Crypto::Cert::X509File> nnKey;
+		me->cliCert.Delete();
+		me->cliKey.Delete();
 		me->cliCert = frm.GetCert();
 		me->cliKey = frm.GetKey();
 		Text::StringBuilderUTF8 sb;
-		me->cliCert->ToShortString(sb);
+		if (me->cliCert.SetTo(nnCert)) nnCert->ToShortString(sb);
 		sb.AppendC(UTF8STRC(", "));
-		me->cliKey->ToShortString(sb);
+		if (me->cliKey.SetTo(nnKey)) nnKey->ToShortString(sb);
 		me->lblClientCert->SetText(sb.ToCString());
 	}
 }
@@ -585,7 +587,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(NN<Sync::Thread>
 			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), currOSClient?0:me->ssl, me->userAgent->ToCString(), me->noShutdown, currURL->StartsWith(UTF8STRC("https://")));
 			NN<Crypto::Cert::X509Cert> cliCert;
 			NN<Crypto::Cert::X509File> cliKey;
-			if (cliCert.Set(me->cliCert) && cliKey.Set(me->cliKey))
+			if (me->cliCert.SetTo(cliCert) && me->cliKey.SetTo(cliKey))
 			{
 				cli->SetClientCert(cliCert, cliKey);
 			}
@@ -1447,8 +1449,8 @@ SSWR::AVIRead::AVIRHTTPClientForm::~AVIRHTTPClientForm()
 	SDEL_CLASS(this->respData);
 	SDEL_STRING(this->respCertText);
 	this->respCert.Delete();
-	SDEL_CLASS(this->cliCert);
-	SDEL_CLASS(this->cliKey);
+	this->cliCert.Delete();
+	this->cliKey.Delete();
 	this->userAgent->Release();
 	this->ssl.Delete();
 }

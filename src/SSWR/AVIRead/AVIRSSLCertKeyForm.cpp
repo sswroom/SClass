@@ -10,8 +10,8 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFormClosed(AnyType userObj, 
 	NN<SSWR::AVIRead::AVIRSSLCertKeyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSLCertKeyForm>();
 	if (me->dialogResult != DR_OK)
 	{
-		SDEL_CLASS(me->cert);
-		SDEL_CLASS(me->key);
+		me->cert.Delete();
+		me->key.Delete();
 	}
 }
 
@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileKeyClicked(AnyType userO
 void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileConfirmClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRSSLCertKeyForm> me = userObj.GetNN<SSWR::AVIRead::AVIRSSLCertKeyForm>();
-	if (me->cert && me->key)
+	if (me->cert.NotNull() && me->key.NotNull())
 	{
 		me->SetDialogResult(DR_OK);
 	}
@@ -74,13 +74,13 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnGenerateClicked(AnyType user
 		me->ui->ShowMsgOK(CSTR("Please enter common name"), CSTR("SSL Cert/Key"), me);
 		return;
 	}
-	Crypto::Cert::X509Cert *certASN1;
-	Crypto::Cert::X509File *keyASN1;
+	NN<Crypto::Cert::X509Cert> certASN1;
+	NN<Crypto::Cert::X509File> keyASN1;
 	NN<Net::SSLEngine> ssl;
 	if (me->ssl.SetTo(ssl) && ssl->GenerateCert(sbCountry.ToCString(), sbCompany.ToCString(), sbCommonName.ToCString(), certASN1, keyASN1))
 	{
-		SDEL_CLASS(me->cert);
-		SDEL_CLASS(me->key);
+		me->cert.Delete();
+		me->key.Delete();
 		me->cert = certASN1;
 		me->key = keyASN1;
 		me->SetDialogResult(DR_OK);
@@ -122,17 +122,17 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(Text::CStringNN fileName)
 	NN<Crypto::Cert::X509File> x509 = NN<Crypto::Cert::X509File>::ConvertFrom(asn1);
 	if (x509->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
 	{
-		SDEL_CLASS(this->cert);
-		this->cert = (Crypto::Cert::X509Cert*)x509.Ptr();
+		this->cert.Delete();
+		this->cert = NN<Crypto::Cert::X509Cert>::ConvertFrom(x509);
 
 		Text::StringBuilderUTF8 sb;
-		this->cert->ToShortString(sb);
+		NN<Crypto::Cert::X509Cert>::ConvertFrom(x509)->ToShortString(sb);
 		this->lblFileCert->SetText(sb.ToCString());
 		this->tcMain->SetSelectedPage(this->tpFile);
 
 		this->ClearCACerts();
 		NN<Crypto::Cert::X509Cert> issuerCert;
-		if (issuerCert.Set(Crypto::Cert::CertUtil::FindIssuer(NN<Crypto::Cert::X509Cert>::ConvertFrom(x509))))
+		if (Crypto::Cert::CertUtil::FindIssuer(NN<Crypto::Cert::X509Cert>::ConvertFrom(x509)).SetTo(issuerCert))
 		{
 			this->caCerts.Add(issuerCert);
 		}		
@@ -140,7 +140,7 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(Text::CStringNN fileName)
 	else if (x509->GetFileType() == Crypto::Cert::X509File::FileType::FileList)
 	{
 		Bool found = false;
-		Crypto::Cert::X509FileList *fileList = (Crypto::Cert::X509FileList*)x509.Ptr();
+		NN<Crypto::Cert::X509FileList> fileList = NN<Crypto::Cert::X509FileList>::ConvertFrom(x509);
 		NN<Crypto::Cert::X509File> file;
 		UOSInt i;
 		UOSInt j;
@@ -153,7 +153,7 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(Text::CStringNN fileName)
 				if (!found)
 				{
 					found = true;
-					this->cert = (Crypto::Cert::X509Cert*)file->Clone().Ptr();
+					this->cert = NN<Crypto::Cert::X509Cert>::ConvertFrom(file->Clone());
 					this->ClearCACerts();
 				}
 				else
@@ -163,22 +163,23 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(Text::CStringNN fileName)
 			}
 			i++;
 		}
-		DEL_CLASS(fileList);
-		if (found)
+		fileList.Delete();
+		NN<Crypto::Cert::X509Cert> nncert;
+		if (found && this->cert.SetTo(nncert))
 		{
 			Text::StringBuilderUTF8 sb;
-			this->cert->ToShortString(sb);
+			nncert->ToShortString(sb);
 			this->lblFileCert->SetText(sb.ToCString());
 			this->tcMain->SetSelectedPage(this->tpFile);
 		}
 	}
 	else if (x509->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey || x509->GetFileType() == Crypto::Cert::X509File::FileType::Key)
 	{
-		SDEL_CLASS(this->key);
-		this->key = x509.Ptr();
+		this->key.Delete();
+		this->key = x509;
 
 		Text::StringBuilderUTF8 sb;
-		this->key->ToShortString(sb);
+		x509->ToShortString(sb);
 		this->lblFileKey->SetText(sb.ToCString());
 		this->tcMain->SetSelectedPage(this->tpFile);
 	}
@@ -193,7 +194,7 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::ClearCACerts()
 	this->caCerts.DeleteAll();
 }
 
-SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509File *key, NN<Data::ArrayListNN<Crypto::Cert::X509Cert>> caCerts) : UI::GUIForm(parent, 456, 200, ui)
+SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, Optional<Net::SSLEngine> ssl, Optional<Crypto::Cert::X509Cert> cert, Optional<Crypto::Cert::X509File> key, NN<Data::ArrayListNN<Crypto::Cert::X509Cert>> caCerts) : UI::GUIForm(parent, 456, 200, ui)
 {
 	this->SetText(CSTR("SSL Cert/Key"));
 	this->SetFont(0, 0, 8.25, false);
@@ -262,15 +263,17 @@ SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(Optional<UI::GUIClientCont
 	this->btnGenerate->HandleButtonClick(OnGenerateClicked, this);
 
 	Text::StringBuilderUTF8 sb;
-	if (this->initCert)
+	NN<Crypto::Cert::X509Cert> nnCert;
+	if (this->initCert.SetTo(nnCert))
 	{
-		this->initCert->ToShortName(sb);
+		nnCert->ToShortName(sb);
 		this->txtCurrCert->SetText(sb.ToCString());
 	}
-	if (this->initKey)
+	NN<Crypto::Cert::X509File> nnKey;
+	if (this->initKey.SetTo(nnKey))
 	{
 		sb.ClearStr();
-		this->initKey->ToShortName(sb);
+		nnKey->ToShortName(sb);
 		this->txtCurrKey->SetText(sb.ToCString());
 	}
 	this->HandleDropFiles(OnFileDrop, this);
@@ -286,12 +289,12 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Crypto::Cert::X509Cert *SSWR::AVIRead::AVIRSSLCertKeyForm::GetCert()
+Optional<Crypto::Cert::X509Cert> SSWR::AVIRead::AVIRSSLCertKeyForm::GetCert()
 {
 	return this->cert;
 }
 
-Crypto::Cert::X509File *SSWR::AVIRead::AVIRSSLCertKeyForm::GetKey()
+Optional<Crypto::Cert::X509File> SSWR::AVIRead::AVIRSSLCertKeyForm::GetKey()
 {
 	return this->key;
 }

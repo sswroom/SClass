@@ -94,10 +94,11 @@ UOSInt Text::TextBinEnc::QuotedPrintableEnc::EncodeBin(NN<Text::StringBuilderUTF
 	return retCnt;
 }
 
-UOSInt Text::TextBinEnc::QuotedPrintableEnc::CalcBinSize(const UTF8Char *sbuff, UOSInt strLen) const
+UOSInt Text::TextBinEnc::QuotedPrintableEnc::CalcBinSize(Text::CStringNN str) const
 {
 	UOSInt cnt = 0;
 	UTF8Char c;
+	const UTF8Char *sbuff = str.v;
 	while ((c = *sbuff++) != 0)
 	{
 		if (c == '=')
@@ -124,10 +125,12 @@ UOSInt Text::TextBinEnc::QuotedPrintableEnc::CalcBinSize(const UTF8Char *sbuff, 
 	return cnt;
 }
 
-UOSInt Text::TextBinEnc::QuotedPrintableEnc::DecodeBin(const UTF8Char *b64Str, UOSInt len, UInt8 *dataBuff) const
+UOSInt Text::TextBinEnc::QuotedPrintableEnc::DecodeBin(Text::CStringNN s, UInt8 *dataBuff) const
 {
 	UOSInt cnt = 0;
 	UTF8Char c;
+	const UTF8Char *b64Str = s.v;
+	UOSInt len = s.leng;
 	while (len-- > 0)
 	{
 		c = *b64Str++;

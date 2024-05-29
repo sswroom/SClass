@@ -68,10 +68,11 @@ UOSInt Text::TextBinEnc::Radix64Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, c
 	return outSize;
 }
 
-UOSInt Text::TextBinEnc::Radix64Enc::CalcBinSize(const UTF8Char *sbuff, UOSInt strLen) const
+UOSInt Text::TextBinEnc::Radix64Enc::CalcBinSize(Text::CStringNN str) const
 {
 	UOSInt cnt = 0;
 	UTF8Char c;
+	const UTF8Char *sbuff = str.v;
 	while ((c = *sbuff++) != 0)
 	{
 		if (c < 0x80 && decArr[c] != 0xff)
@@ -96,13 +97,15 @@ UOSInt Text::TextBinEnc::Radix64Enc::CalcBinSize(const WChar *sbuff) const
 	return cnt * 3 / 4;
 }
 
-UOSInt Text::TextBinEnc::Radix64Enc::DecodeBin(const UTF8Char *b64Str, UOSInt len, UInt8 *dataBuff) const
+UOSInt Text::TextBinEnc::Radix64Enc::DecodeBin(Text::CStringNN str, UInt8 *dataBuff) const
 {
 	UOSInt decSize = 0;
 	UInt8 b = 0;
 	UInt8 b2 = 0;
 	UInt8 code;
 	UTF8Char c;
+	UOSInt len = str.leng;
+	const UTF8Char *b64Str = str.v;
 	while (len-- > 0)
 	{
 		c = *b64Str++;

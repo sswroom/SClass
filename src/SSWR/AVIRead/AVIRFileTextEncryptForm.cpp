@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnConvertClicked(AnyType 
 		if (me->chkDecrypt->IsChecked())
 		{
 			UInt8 *destBuff = MemAlloc(UInt8, buffSize << 1);
-			UOSInt destSize = destEnc->DecodeBin(srcBuff.Ptr().Ptr(), buffSize, destBuff);
+			UOSInt destSize = destEnc->DecodeBin(Text::CStringNN(srcBuff.Arr(), buffSize), destBuff);
 			if (destSize == 0)
 			{
 				me->ui->ShowMsgOK(CSTR("Error in decrypting file"), CSTR("File Text Encrypt"), me);
@@ -76,7 +76,7 @@ void __stdcall SSWR::AVIRead::AVIRFileTextEncryptForm::OnConvertClicked(AnyType 
 		else
 		{
 			sbSrc.ClearStr();
-			destEnc->EncodeBin(sbSrc, srcBuff.Ptr().Ptr(), buffSize);
+			destEnc->EncodeBin(sbSrc, srcBuff.Arr().Ptr(), buffSize);
 			IO::FileStream fs2(sbDest.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			fs2.Write(sbSrc.v, sbSrc.leng);
 		}

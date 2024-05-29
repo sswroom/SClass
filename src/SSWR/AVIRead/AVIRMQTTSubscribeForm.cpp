@@ -257,7 +257,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(AnyType us
 	sb.AppendC(UTF8STRC("Received message, topic = "));
 	sb.Append(topic);
 	sb.AppendC(UTF8STRC(", message = "));
-	sb.AppendC(message.Ptr(), message.GetSize());
+	sb.AppendC(message.Arr(), message.GetSize());
 	me->log.LogMessage(sb.ToCString(), IO::LogHandler::LogLevel::Command);
 
 	Data::DateTime dt;
@@ -269,7 +269,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(AnyType us
 		topicSt = MemAllocNN(TopicStatus);
 		topicSt->topic = Text::String::New(topic);
 		topicSt->currValue = MemAlloc(UTF8Char, message.GetSize() + 1);
-		Text::StrConcatC(topicSt->currValue, message.Ptr(), message.GetSize());
+		Text::StrConcatC(topicSt->currValue, message.Arr(), message.GetSize());
 		topicSt->currValueLen = message.GetSize();
 		topicSt->updated = true;
 		topicSt->recvCnt = 1;
@@ -281,7 +281,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(AnyType us
 	{
 		MemFree(topicSt->currValue);
 		topicSt->currValue = MemAlloc(UTF8Char, message.GetSize() + 1);
-		Text::StrConcatC(topicSt->currValue, message.Ptr(), message.GetSize());	
+		Text::StrConcatC(topicSt->currValue, message.Arr(), message.GetSize());	
 		topicSt->currValueLen = message.GetSize();
 		topicSt->updated = true;
 		topicSt->recvCnt++;

@@ -36,15 +36,15 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(AnyType userO
 	NN<Text::String> community = Text::String::New(sbComm.ToString(), sbComm.GetLength());
 	if (i == 0)
 	{
-		err = me->cli->V1GetRequest(addr, community, sbOID.ToString(), sbOID.GetLength(), itemList);
+		err = me->cli->V1GetRequest(addr, community, sbOID.ToCString(), itemList);
 	}
 	else if (i == 1)
 	{
-		err = me->cli->V1GetNextRequest(addr, community, sbOID.ToString(), sbOID.GetLength(), itemList);
+		err = me->cli->V1GetNextRequest(addr, community, sbOID.ToCString(), itemList);
 	}
 	else
 	{
-		err = me->cli->V1Walk(addr, community, sbOID.ToString(), sbOID.GetLength(), itemList);
+		err = me->cli->V1Walk(addr, community, sbOID.ToCString(), itemList);
 	}
 	community->Release();
 	UOSInt j;
@@ -66,16 +66,16 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(AnyType userO
 		{
 			item = itemList.GetItemNoCheck(i);
 			sb.ClearStr();
-			Net::ASN1Util::OIDToString(item->oid, item->oidLen, sb);
+			Net::ASN1Util::OIDToString(Data::ByteArrayR(item->oid, item->oidLen), sb);
 			me->lvResults->AddItem(sb.ToCString(), 0);
 			sb.ClearStr();
-			Net::ASN1OIDDB::OIDToNameString(item->oid, item->oidLen, sb);
+			Net::ASN1OIDDB::OIDToNameString(Data::ByteArrayR(item->oid, item->oidLen), sb);
 			me->lvResults->SetSubItem(i, 1, sb.ToCString());
 			me->lvResults->SetSubItem(i, 2, Net::SNMPUtil::TypeGetName(item->valType));
 			if (item->valBuff)
 			{
 				sb.ClearStr();
-				Net::SNMPInfo::ValueToString(item->valType, item->valBuff, item->valLen, sb);
+				Net::SNMPInfo::ValueToString(item->valType, Data::ByteArrayR(item->valBuff, item->valLen), sb);
 				me->lvResults->SetSubItem(i, 3, sb.ToCString());
 			}
 			i++;

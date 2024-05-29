@@ -95,7 +95,7 @@ Bool SSWR::AVIRead::AVIRGLBViewerForm::LoadData(NN<IO::StreamData> jsonFD, NN<IO
 		return false;
 	}
 	Text::StringBuilderUTF8 sb;
-	Text::JSText::JSONWellFormat(jsonBuff.Ptr(), jsonLen, 0, sb);
+	Text::JSText::JSONWellFormat(jsonBuff.Arr(), jsonLen, 0, sb);
 	this->txtJSON->SetText(sb.ToCString());
 	this->hfvBinBuff->LoadData(binBuffFD, 0);
 	jsonFD.Delete();

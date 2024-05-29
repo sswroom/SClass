@@ -335,7 +335,7 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 		{
 			UOSInt iccSize = (UInt32)heif_image_handle_get_raw_color_profile_size(imgHdlr);
 			Data::ByteBuffer buff(iccSize);
-			struct heif_error error = heif_image_handle_get_raw_color_profile(imgHdlr, buff.Ptr().Ptr());
+			struct heif_error error = heif_image_handle_get_raw_color_profile(imgHdlr, buff.Arr().Ptr());
 			if (error.code == heif_error_Ok)
 			{
 				NN<Media::ICCProfile> icc;
@@ -415,7 +415,7 @@ Optional<IO::ParsedObject> Parser::FileParser::HEIFParser::ParseFileHdr(NN<IO::S
 	Media::ImageList *imgList = 0;
 	heif_context *ctx = heif_context_alloc();
 #if LIBHEIF_HAVE_VERSION(1, 3, 0)
-	heif_error err = heif_context_read_from_memory_without_copy(ctx, fileBuff.Ptr().Ptr(), (size_t)fileLen, 0);
+	heif_error err = heif_context_read_from_memory_without_copy(ctx, fileBuff.Arr().Ptr(), (size_t)fileLen, 0);
 #else
 	heif_error err = heif_context_read_from_memory(ctx, fileBuff, (size_t)fileLen, 0);
 #endif
@@ -478,7 +478,7 @@ Bool Parser::FileParser::HEIFParser::ParseHeaders(NN<IO::StreamData> fd, OutPara
 	Bool succ = false;
 	heif_context *ctx = heif_context_alloc();
 #if LIBHEIF_HAVE_VERSION(1, 3, 0)
-	heif_error err = heif_context_read_from_memory_without_copy(ctx, fileBuff.Ptr().Ptr(), (size_t)fileLen, 0);
+	heif_error err = heif_context_read_from_memory_without_copy(ctx, fileBuff.Arr().Ptr(), (size_t)fileLen, 0);
 #else
 	heif_error err = heif_context_read_from_memory(ctx, fileBuff, (size_t)fileLen, 0);
 #endif
@@ -505,7 +505,7 @@ Bool Parser::FileParser::HEIFParser::ParseHeaders(NN<IO::StreamData> fd, OutPara
 			{
 				UOSInt iccSize = (UInt32)heif_image_handle_get_raw_color_profile_size(imgHdlr);
 				Data::ByteBuffer buff(iccSize);
-				struct heif_error error = heif_image_handle_get_raw_color_profile(imgHdlr, buff.Ptr().Ptr());
+				struct heif_error error = heif_image_handle_get_raw_color_profile(imgHdlr, buff.Arr().Ptr());
 				if (error.code == heif_error_Ok)
 				{
 					icc.Set(Media::ICCProfile::Parse(buff));

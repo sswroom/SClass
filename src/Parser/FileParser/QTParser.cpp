@@ -404,7 +404,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(NN<IO::StreamDa
 	UInt32 i;
 	UInt8 hdr[8];
 	UInt8 dataBuff[1024];
-	Data::ByteBuffer dataBuff2;
+	Data::ByteBuffer dataBuff2(0);
 	Data::ByteArray buff = BYTEARR(dataBuff);
 	UInt32 atomSize;
 	Media::IMediaSource *src = 0;
@@ -1572,7 +1572,7 @@ array_item:
 				{
 					stszBuff.ChangeSize(avccAtomSize - 8);
 					fd->GetRealData(avccOfst + 8, avccAtomSize - 8, stszBuff);
-					fsrc->SetProp(*(Int32*)"HEVC", stszBuff.Ptr(), avccAtomSize - 8);
+					fsrc->SetProp(*(Int32*)"HEVC", stszBuff.Arr(), avccAtomSize - 8);
 
 
 /*					OSInt i;

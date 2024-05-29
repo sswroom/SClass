@@ -31,7 +31,7 @@ namespace Crypto
 		struct DigestInfo
 		{
 			Crypto::Hash::HashType hashType;
-			const UInt8 *hashVal;
+			UnsafeArray<const UInt8> hashVal;
 			UOSInt hashLen;
 		};
 
@@ -123,9 +123,9 @@ namespace Crypto
 
 			struct SignedInfo
 			{
-				const UInt8 *signature;
+				UnsafeArray<const UInt8> signature;
 				UOSInt signSize;
-				const UInt8 *payload;
+				UnsafeArray<const UInt8> payload;
 				UOSInt payloadSize;
 				AlgType algType;
 			};
@@ -186,8 +186,8 @@ namespace Crypto
 			static void AppendAuthenticatedSafe(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName); //PKCS12
 			static void AppendEncryptedContentInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName, ContentDataType dataType);
 
-			static Bool NameGetByOID(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const UTF8Char *oidText, UOSInt oidTextLen, NN<Text::StringBuilderUTF8> sb);
-			static UTF8Char *NameGetByOID(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const UTF8Char *oidText, UOSInt oidTextLen, UTF8Char *sbuff);
+			static Bool NameGetByOID(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, Text::CStringNN oidText, NN<Text::StringBuilderUTF8> sb);
+			static UTF8Char *NameGetByOID(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, Text::CStringNN oidText, UTF8Char *sbuff);
 			static Bool NameGetCN(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb);
 			static UTF8Char *NameGetCN(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UTF8Char *sbuff);
 			static Bool NamesGet(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<CertNames> names);
@@ -197,9 +197,9 @@ namespace Crypto
 			static Optional<Crypto::Cert::X509Key> PublicKeyGetNew(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd);
 
 			static UOSInt KeyGetLeng(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, KeyType keyType);
-			static KeyType KeyTypeFromOID(const UInt8 *oid, UOSInt oidLen, Bool pubKey);
-			static ECName ECNameFromOID(const UInt8 *oid, UOSInt oidLen);
-			static Bool AlgorithmIdentifierGet(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, AlgType *algType);
+			static KeyType KeyTypeFromOID(Data::ByteArrayR oid, Bool pubKey);
+			static ECName ECNameFromOID(Data::ByteArrayR oid);
+			static Bool AlgorithmIdentifierGet(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, OutParam<AlgType> algType);
 
 			X509File(NN<Text::String> sourceName, Data::ByteArrayR buff);
 			X509File(Text::CStringNN sourceName, Data::ByteArrayR buff);
@@ -228,7 +228,7 @@ namespace Crypto
 			static Text::CStringNN ECNameGetOID(ECName ecName);
 			static Text::CStringNN ValidStatusGetName(ValidStatus validStatus);
 			static Text::CStringNN ValidStatusGetDesc(ValidStatus validStatus);
-			static Crypto::Hash::HashType HashTypeFromOID(const UInt8 *oid, UOSInt oidLen);
+			static Crypto::Hash::HashType HashTypeFromOID(Data::ByteArrayR oid);
 			static Optional<X509File> CreateFromCerts(NN<const Data::ReadingListNN<Crypto::Cert::Certificate>> certs);
 			static Optional<X509File> CreateFromCertsAndClear(NN<Data::ArrayListNN<Crypto::Cert::X509Cert>> certs);
 		};

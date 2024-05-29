@@ -26,9 +26,9 @@ namespace Text
 			virtual UOSInt EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize) const;
 			UOSInt EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize, Text::LineBreakType lbt, UOSInt charsPerLine) const;
 			UTF8Char *EncodeBin(UTF8Char *sbuff, const UInt8 *dataBuff, UOSInt buffSize);
-			virtual UOSInt CalcBinSize(const UTF8Char *b64Str, UOSInt strLen) const;
+			virtual UOSInt CalcBinSize(Text::CStringNN b64Str) const;
 			virtual UOSInt CalcBinSize(const WChar *sbuff) const;
-			virtual UOSInt DecodeBin(const UTF8Char *b64Str, UOSInt strLen, UInt8 *dataBuff) const;
+			virtual UOSInt DecodeBin(Text::CStringNN b64Str, UInt8 *dataBuff) const;
 			virtual UOSInt DecodeBin(const WChar *sbuff, UInt8 *dataBuff) const;
 			virtual Text::CStringNN GetName() const;
 		};

@@ -99,7 +99,7 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 			{
 				Text::TextBinEnc::Base64Enc b64;
 				UInt8 *tmpBuff = MemAlloc(UInt8, buffSize - lineStart);
-				j = b64.DecodeBin(&buff[lineStart], buffSize - lineStart, tmpBuff);
+				j = b64.DecodeBin(Text::CStringNN(&buff[lineStart], buffSize - lineStart), tmpBuff);
 
 				IO::StmData::MemoryDataRef mdata(tmpBuff, j);
 				obj = Text::IMIMEObj::ParseFromData(mdata, contType->ToCString());
@@ -109,7 +109,7 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 			{
 				Text::TextBinEnc::QuotedPrintableEnc qpenc;
 				UInt8 *tmpBuff = MemAlloc(UInt8, buffSize - lineStart);
-				j = qpenc.DecodeBin(&buff[lineStart], buffSize - lineStart, tmpBuff);
+				j = qpenc.DecodeBin(Text::CStringNN(&buff[lineStart], buffSize - lineStart), tmpBuff);
 
 				IO::StmData::MemoryDataRef mdata(tmpBuff, j);
 				obj = Text::IMIMEObj::ParseFromData(mdata, contType->ToCString());

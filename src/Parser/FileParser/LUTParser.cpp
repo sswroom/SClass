@@ -73,7 +73,7 @@ Optional<IO::ParsedObject> Parser::FileParser::LUTParser::ParseFileHdr(NN<IO::St
 	Data::ByteBuffer paramBuff(paramSize + 1);
 	paramBuff[paramSize] = 0;
 	fd->GetRealData(paramOfst, paramSize, paramBuff);
-	lut->SetRemark({paramBuff.Ptr(), paramSize});
+	lut->SetRemark(Text::CString(paramBuff.Arr().Ptr(), paramSize));
 
 	Data::ByteArray lutTable = lut->GetTableArray();
 	fd->GetRealData(lutOfst, lutSize, lutTable);

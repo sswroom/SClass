@@ -268,8 +268,8 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 						{
 							Data::ByteBuffer cdBuff((UOSInt)cdSize);
 							me->fd->GetRealData(cdOfst, (UOSInt)cdSize, cdBuff);
-							me->ParseCentDir(cdBuff.Ptr(), (UOSInt)cdSize, cdOfst);
-							me->AddCentDir(cdBuff.Ptr(), (UOSInt)cdSize, cdOfst);
+							me->ParseCentDir(cdBuff.Arr(), (UOSInt)cdSize, cdOfst);
+							me->AddCentDir(cdBuff.Arr(), (UOSInt)cdSize, cdOfst);
 						}
 						else
 						{
@@ -292,7 +292,7 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 								{
 									break;
 								}
-								i = me->ParseCentDir(cdBuff.Ptr(), buffSize, cdOfst + ofst);
+								i = me->ParseCentDir(cdBuff.Arr(), buffSize, cdOfst + ofst);
 								if (i == 0)
 								{
 									break;
@@ -328,7 +328,7 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 								{
 									break;
 								}
-								i = me->AddCentDir(cdBuff.Ptr(), buffSize, cdOfst + ofst);
+								i = me->AddCentDir(cdBuff.Arr(), buffSize, cdOfst + ofst);
 								if (i == 0)
 								{
 									break;
@@ -377,8 +377,8 @@ void __stdcall IO::FileAnalyse::ZIPFileAnalyse::ParseThread(NN<Sync::Thread> thr
 				Data::ByteBuffer centDir(sizeOfDir);
 				if (me->fd->GetRealData(ofstOfDir, sizeOfDir, centDir) == sizeOfDir)
 				{
-					me->ParseCentDir(centDir.Ptr(), sizeOfDir, 0);
-					me->AddCentDir(centDir.Ptr(), sizeOfDir, ofstOfDir);
+					me->ParseCentDir(centDir.Arr(), sizeOfDir, 0);
+					me->AddCentDir(centDir.Arr(), sizeOfDir, ofstOfDir);
 
 					commentLen = ReadUInt16(&recHdr[20]);
 					rec = MemAllocNN(ZIPRecord);

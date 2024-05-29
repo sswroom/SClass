@@ -26,7 +26,7 @@ Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NN<Net::SocketFactory> sockf, O
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);
 		this->gooCliId = gooCliId->Clone();
 		this->gooPrivKey = MemAlloc(UInt8, gooPrivKey->leng + 1);
-		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey->v, gooPrivKey->leng, this->gooPrivKey);
+		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey->ToCString(), this->gooPrivKey);
 		this->gooKey = 0;
 	}
 	else
@@ -47,7 +47,7 @@ Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(NN<Net::SocketFactory> sockf, O
 
 		this->gooCliId = Text::String::New(gooCliId);
 		this->gooPrivKey = MemAlloc(UInt8, gooPrivKey.leng + 1);
-		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey.v, gooPrivKey.leng, this->gooPrivKey);
+		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey.OrEmpty(), this->gooPrivKey);
 		this->gooKey = 0;
 	}
 	else

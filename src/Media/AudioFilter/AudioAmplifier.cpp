@@ -51,11 +51,11 @@ UOSInt Media::AudioFilter::AudioAmplifier::ReadBlock(Data::ByteArray blk)
 		Int32 iVol = Double2Int32(thisVol * 65536.0);
 		if (this->bitCount == 16)
 		{
-			AudioUtil_Amplify16(blk.Ptr().Ptr(), readSize, iVol);
+			AudioUtil_Amplify16(blk.Arr().Ptr(), readSize, iVol);
 		}
 		else if (this->bitCount == 8)
 		{
-			AudioUtil_Amplify8(blk.Ptr().Ptr(), readSize, iVol);
+			AudioUtil_Amplify8(blk.Arr().Ptr(), readSize, iVol);
 		}
 	}
 	return readSize;
