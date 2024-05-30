@@ -56,7 +56,7 @@ namespace Data
 		void SetValue(Int64 ticks, Int8 tzQhr);
 		void SetValue(const Data::TimeInstant &instant, Int8 tzQhr);
 		void SetValueNoFix(Int32 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt16 ms, Int8 tzQhr);
-		Bool SetValueSlow(const Char *dateStr);
+		Bool SetValueSlow(UnsafeArray<const Char> dateStr);
 		Bool SetValue(Text::CStringNN dateStr);
 		void SetValueSYSTEMTIME(const void *sysTime);
 		void SetValueFILETIME(const void *fileTime);
@@ -107,18 +107,18 @@ namespace Data
 		void SetNTPTime(Int32 hiDword, Int32 loDword);
 		Int64 ToNTPTime();
 
-		Char *ToString(Char *buff);
-		Char *ToString(Char *buff, const Char *pattern);
-		UTF8Char *ToString(UTF8Char *buff);
-		UTF8Char *ToStringNoZone(UTF8Char *buff);
-		UTF8Char *ToString(UTF8Char *buff, const Char *pattern);
+		UnsafeArray<Char> ToString(UnsafeArray<Char> buff);
+		UnsafeArray<Char> ToString(UnsafeArray<Char> buff, const Char *pattern);
+		UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> buff);
+		UnsafeArray<UTF8Char> ToStringNoZone(UnsafeArray<UTF8Char> buff);
+		UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> buff, const Char *pattern);
 		DateTime operator=(DateTime dt);
 		DateTime operator=(Int64 ticks);
 		Bool operator==(DateTime dt);
 		Bool operator>(DateTime dt);
 		Bool operator<(DateTime dt);
 		
-		UTF8Char *ToLocalStr(UTF8Char *buff);
+		UnsafeArray<UTF8Char> ToLocalStr(UnsafeArray<UTF8Char> buff);
 		OSInt CompareTo(NN<Data::DateTime> obj);
 		Int32 DateCompare(NN<Data::DateTime> dt);
 		Bool IsSameDay(NN<Data::DateTime> dt);

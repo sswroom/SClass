@@ -80,7 +80,7 @@ namespace DB
 		ConnError GetConnError();
 		void SetEnableDebug(Bool enableDebug);
 		void SetTraceFile(const WChar *fileName);
-		UTF8Char *ShowTablesCmd(UTF8Char *sbuff);
+		UnsafeArray<UTF8Char> ShowTablesCmd(UnsafeArray<UTF8Char> sbuff);
 
 		Optional<DBReader> GetTablesInfo(Text::CString schemaName);
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
@@ -136,7 +136,7 @@ namespace DB
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
 		virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb);
 		virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
-		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
+		virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize);
 		virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
 		virtual Double GetDbl(UOSInt colIndex);
 		virtual Bool GetBool(UOSInt colIndex);
@@ -146,7 +146,7 @@ namespace DB
 		virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid);
 		virtual Bool GetVariItem(UOSInt colIndex, NN<Data::VariItem> item);
 
-		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
+		virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff);
 		virtual Bool IsNull(UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
 		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);

@@ -1234,14 +1234,14 @@ Optional<Data::Class> Data::Class::ParseFromCpp(Text::CStringNN str)
 		{
 			if (!sarr[0].EndsWith(';'))
 			{
-				printf("Not end with ';': %s\r\n", sarr[0].v);
+				printf("Not end with ';': %s\r\n", sarr[0].v.Ptr());
 				cls.Delete();
 				return 0;
 			}
 			j = sarr[0].IndexOf(' ');
 			if (j == INVALID_INDEX)
 			{
-				printf("Space not found: %s\r\n", sarr[0].v);
+				printf("Space not found: %s\r\n", sarr[0].v.Ptr());
 				cls.Delete();
 				return 0;
 			}

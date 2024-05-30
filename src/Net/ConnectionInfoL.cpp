@@ -27,13 +27,13 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 {
 	ConnectionData *data = (ConnectionData*)info;
 	ifreq ifr;
-	UOSInt nameLen = Text::StrCharCnt(data->name);
+	UOSInt nameLen = Text::StrCharCntCh(data->name);
 	Text::StrConcatC(ifr.ifr_name, data->name, nameLen);
 	UInt8 buff[64];
 
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC((const UTF8Char*)data->name, nameLen);
-	this->ent.internalName = Text::StrCopyNewC(data->name, nameLen);
+	this->ent.internalName = Text::StrCopyNewChC(data->name, nameLen).Ptr();
 	this->ent.name = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
 	this->ent.description = Text::StrCopyNewC(sb.ToString(), sb.GetLength()).Ptr();
 
@@ -153,7 +153,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 		this->ent.physicalAddrLeng = 0;
 		if (readSize > 0)
 		{
-			UTF8Char *sarr[7];
+			UnsafeArray<UTF8Char> sarr[7];
 			readSize = Text::StrSplit(sarr, 7, (UTF8Char*)buff, ':');
 			if (readSize == 6)
 			{
@@ -179,7 +179,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 		ifa = ifap;
 		while (ifa)
 		{
-			if (ifa->ifa_addr && ifa->ifa_addr->sa_family == AF_INET && Text::StrEquals(ifa->ifa_name, data->name))
+			if (ifa->ifa_addr && ifa->ifa_addr->sa_family == AF_INET && Text::StrEqualsCh(ifa->ifa_name, data->name))
 			{
 				this->ent.ipaddr.Add((UInt32)((sockaddr_in*)ifa->ifa_addr)->sin_addr.s_addr);
 			}

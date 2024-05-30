@@ -19,14 +19,14 @@ namespace Text
 		StringBuilderUTF8()
 		{
 			this->buffSize = 1024;
-			this->v = MemAlloc(UTF8Char, this->buffSize + 1);
+			this->v = MemAllocArr(UTF8Char, this->buffSize + 1);
 			this->leng = 0;
 			this->v[0] = 0;
 		}
 
 		~StringBuilderUTF8()
 		{
-			MemFree(this->v);
+			MemFreeArr(this->v);
 		}
 
 		void AllocLeng(UOSInt leng)
@@ -38,9 +38,9 @@ namespace Text
 				{
 					this->buffSize <<= 1;
 				}
-				UTF8Char *newStr = MemAlloc(UTF8Char, this->buffSize + 1);
-				MemCopyNO(newStr, this->v, this->leng + 1);
-				MemFree(this->v);
+				UnsafeArray<UTF8Char> newStr = MemAllocArr(UTF8Char, this->buffSize + 1);
+				MemCopyNO(newStr.Ptr(), this->v.Ptr(), this->leng + 1);
+				MemFreeArr(this->v);
 				this->v = newStr;
 			}
 		}
@@ -51,6 +51,7 @@ namespace Text
 		NN<StringBuilderUTF8> Append(const Text::StringBase<UTF8Char> &s);
 		NN<StringBuilderUTF8> Append(const Text::StringBase<const UTF8Char> &s);
 		NN<StringBuilderUTF8> AppendOpt(Optional<Text::String> s);
+		NN<StringBuilderUTF8> AppendOpt(Text::CString s);
 		NN<StringBuilderUTF8> AppendW(const WChar *s);
 		NN<StringBuilderUTF8> AppendW(const WChar *s, UOSInt len);
 		NN<StringBuilderUTF8> AppendUTF16(const UTF16Char *s);
@@ -58,9 +59,9 @@ namespace Text
 		NN<StringBuilderUTF8> AppendUTF16BE(UnsafeArray<const UInt8> s, UOSInt utf16Cnt);
 		NN<StringBuilderUTF8> AppendUTF32(const UTF32Char *s);
 		NN<StringBuilderUTF8> AppendUTF32(const UTF32Char *s, UOSInt utf32Cnt);
-		NN<StringBuilderUTF8> AppendSlow(const UTF8Char *s);
+		NN<StringBuilderUTF8> AppendSlow(UnsafeArrayOpt<const UTF8Char> s);
 
-		NN<StringBuilderUTF8> AppendS(const UTF8Char *s, UOSInt maxLen);
+		NN<StringBuilderUTF8> AppendS(UnsafeArray<const UTF8Char> s, UOSInt maxLen);
 		NN<StringBuilderUTF8> AppendUTF8Char(UTF8Char c)
 		{
 			this->AllocLeng(1);
@@ -72,22 +73,22 @@ namespace Text
 
 		NN<StringBuilderUTF8> AppendChar(UTF32Char c, UOSInt repCnt);
 
-		NN<StringBuilderUTF8> AppendNE(const UTF8Char *s, UOSInt charCnt)
+		NN<StringBuilderUTF8> AppendNE(UnsafeArray<const UTF8Char> s, UOSInt charCnt)
 		{
 			this->AllocLeng(charCnt);
-			MemCopyNOShort(&this->v[this->leng], s, charCnt);
+			MemCopyNOShort(&this->v[this->leng], s.Ptr(), charCnt);
 			this->leng += charCnt;
 			return *this;
 		}
 
-		NN<StringBuilderUTF8> AppendNE2(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2)
+		NN<StringBuilderUTF8> AppendNE2(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2)
 		{
 			UOSInt tlen = len1 + len2;
 			this->AllocLeng(tlen);
 			UTF8Char *dptr = &this->v[this->leng];
-			MemCopyNOShort(dptr, str1, len1);
+			MemCopyNOShort(dptr, str1.Ptr(), len1);
 			dptr += len1;
-			MemCopyNOShort(dptr, str2, len2);
+			MemCopyNOShort(dptr, str2.Ptr(), len2);
 			dptr += len2;
 			this->leng += tlen;
 			return *this;
@@ -97,7 +98,7 @@ namespace Text
 		{
 			UOSInt charCnt = s->leng;
 			this->AllocLeng(charCnt);
-			MemCopyNOShort(&this->v[this->leng], s->v, charCnt);
+			MemCopyNOShort(&this->v[this->leng], s->v.Ptr(), charCnt);
 			this->leng += charCnt;
 			return *this;
 		}
@@ -111,21 +112,21 @@ namespace Text
 			return *this;
 		}
 
-		NN<StringBuilderUTF8> AppendC2(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2)
+		NN<StringBuilderUTF8> AppendC2(UnsafeArray<const UTF8Char> str1, UOSInt len1, UnsafeArray<const UTF8Char> str2, UOSInt len2)
 		{
 			UOSInt tlen = len1 + len2;
 			this->AllocLeng(tlen);
 			UTF8Char *dptr = &this->v[this->leng];
-			MemCopyNOShort(dptr, str1, len1);
+			MemCopyNOShort(dptr, str1.Ptr(), len1);
 			dptr += len1;
-			MemCopyNOShort(dptr, str2, len2);
+			MemCopyNOShort(dptr, str2.Ptr(), len2);
 			dptr += len2;
 			*dptr = 0;
 			this->leng += tlen;
 			return *this;
 		}
 
-		NN<StringBuilderUTF8> AppendP(const UTF8Char *str, const UTF8Char *strEnd)
+		NN<StringBuilderUTF8> AppendP(UnsafeArray<const UTF8Char> str, UnsafeArray<const UTF8Char> strEnd)
 		{
 			return AppendC(str, (UOSInt)(strEnd - str));
 		}
@@ -133,42 +134,42 @@ namespace Text
 		NN<StringBuilderUTF8> AppendI16(Int16 iVal)
 		{
 			this->AllocLeng(6);
-			this->leng = (UOSInt)(Text::StrInt16(&this->v[this->leng], iVal) - this->v);
+			this->leng = (UOSInt)(Text::StrInt16(this->v + this->leng, iVal) - this->v);
 			return *this;
 		}
 
 		NN<StringBuilderUTF8> AppendU16(UInt16 iVal)
 		{
 			this->AllocLeng(5);
-			this->leng = (UOSInt)(Text::StrUInt16(&this->v[this->leng], iVal) - this->v);
+			this->leng = (UOSInt)(Text::StrUInt16(this->v + this->leng, iVal) - this->v);
 			return *this;
 		}
 
 		NN<StringBuilderUTF8> AppendI32(Int32 iVal)
 		{
 			this->AllocLeng(11);
-			this->leng = (UOSInt)(Text::StrInt32(&this->v[this->leng], iVal) - this->v);
+			this->leng = (UOSInt)(Text::StrInt32(this->v + this->leng, iVal) - this->v);
 			return *this;
 		}
 
 		NN<StringBuilderUTF8> AppendU32(UInt32 iVal)
 		{
 			this->AllocLeng(10);
-			this->leng = (UOSInt)(Text::StrUInt32(&this->v[this->leng], iVal) - this->v);
+			this->leng = (UOSInt)(Text::StrUInt32(this->v + this->leng, iVal) - this->v);
 			return *this;
 		}
 
 		NN<StringBuilderUTF8> AppendI64(Int64 iVal)
 		{
 			this->AllocLeng(22);
-			this->leng = (UOSInt)(Text::StrInt64(&this->v[this->leng], iVal) - this->v);
+			this->leng = (UOSInt)(Text::StrInt64(this->v + this->leng, iVal) - this->v);
 			return *this;
 		}
 
 		NN<StringBuilderUTF8> AppendU64(UInt64 iVal)
 		{
 			this->AllocLeng(20);
-			this->leng = (UOSInt)(Text::StrUInt64(&this->v[this->leng], iVal) - this->v);
+			this->leng = (UOSInt)(Text::StrUInt64(this->v + this->leng, iVal) - this->v);
 			return *this;
 		}
 
@@ -274,7 +275,7 @@ namespace Text
 			if (ns != 0)
 			{
 				UInt8 sbuff[10];
-				UTF8Char *sptr;
+				UnsafeArray<UTF8Char> sptr;
 				this->AppendUTF8Char('.');
 				UOSInt nDigits = 9;
 				while ((ns % 10) == 0)
@@ -282,12 +283,12 @@ namespace Text
 					nDigits--;
 					ns = ns / 10;
 				}
-				sptr = Text::StrUInt32(sbuff, ns);
-				if ((UOSInt)(sptr - sbuff) != nDigits)
+				sptr = Text::StrUInt32(UARR(sbuff), ns);
+				if ((UOSInt)(sptr.Ptr() - sbuff) != nDigits)
 				{
-					this->AppendChar('0', nDigits - (UOSInt)(sptr - sbuff));
+					this->AppendChar('0', nDigits - (UOSInt)(sptr.Ptr() - sbuff));
 				}
-				this->AppendP(sbuff, sptr);
+				this->AppendP(UARR(sbuff), sptr);
 			}
 			return *this;
 		}
@@ -296,10 +297,10 @@ namespace Text
 		{
 	#if _OSINT_SIZE == 64
 			this->AllocLeng(22);
-			this->leng = (UOSInt)(Text::StrInt64(&this->v[this->leng], iVal) - this->v);
+			this->leng = (UOSInt)(Text::StrInt64(this->v + this->leng, iVal) - this->v);
 	#else
 			this->AllocLeng(11);
-			this->leng = (UOSInt)(Text::StrInt32(&this->v[this->leng], (Int32)iVal) - this->v);
+			this->leng = (UOSInt)(Text::StrInt32(this->v + this->leng, (Int32)iVal) - this->v);
 	#endif
 			return *this;
 		}
@@ -308,10 +309,10 @@ namespace Text
 		{
 	#if _OSINT_SIZE == 64
 			this->AllocLeng(22);
-			this->leng = (UOSInt)(Text::StrUInt64(&this->v[this->leng], iVal) - this->v);
+			this->leng = (UOSInt)(Text::StrUInt64(this->v + this->leng, iVal) - this->v);
 	#else
 			this->AllocLeng(11);
-			this->leng = (UOSInt)(Text::StrUInt32(&this->v[this->leng], (UInt32)iVal) - this->v);
+			this->leng = (UOSInt)(Text::StrUInt32(this->v + this->leng, (UInt32)iVal) - this->v);
 	#endif
 			return *this;
 		}
@@ -324,49 +325,49 @@ namespace Text
 		NN<StringBuilderUTF8> AppendHex8(UInt8 iVal)
 		{
 			this->AllocLeng(2);
-			this->leng = (UOSInt)(Text::StrHexByte(&this->v[this->leng], iVal) - this->v);
+			this->leng = (UOSInt)(Text::StrHexByte(this->v + this->leng, iVal) - this->v);
 			return *this;
 		}
 
 		NN<StringBuilderUTF8> AppendHex16(UInt16 iVal)
 		{
 			this->AllocLeng(4);
-			this->leng = (UOSInt)(Text::StrHexVal16(&this->v[this->leng], iVal) - this->v);
+			this->leng = (UOSInt)(Text::StrHexVal16(this->v + this->leng, iVal) - this->v);
 			return *this;
 		}
 
 		NN<StringBuilderUTF8> AppendHex24(UInt32 iVal)
 		{
 			this->AllocLeng(6);
-			this->leng = (UOSInt)(Text::StrHexVal24(&this->v[this->leng], iVal) - this->v);
+			this->leng = (UOSInt)(Text::StrHexVal24(this->v + this->leng, iVal) - this->v);
 			return *this;
 		}
 
 		NN<StringBuilderUTF8> AppendHex32(UInt32 iVal)
 		{
 			this->AllocLeng(8);
-			this->leng = (UOSInt)(Text::StrHexVal32(&this->v[this->leng], iVal) - this->v);
+			this->leng = (UOSInt)(Text::StrHexVal32(this->v + this->leng, iVal) - this->v);
 			return *this;
 		}
 
 		NN<StringBuilderUTF8> AppendHex32V(UInt32 iVal)
 		{
 			this->AllocLeng(8);
-			this->leng = (UOSInt)(Text::StrHexVal32V(&this->v[this->leng], iVal) - this->v);
+			this->leng = (UOSInt)(Text::StrHexVal32V(this->v + this->leng, iVal) - this->v);
 			return *this;
 		}
 
 		NN<StringBuilderUTF8> AppendHex64(UInt64 iVal)
 		{
 			this->AllocLeng(16);
-			this->leng = (UOSInt)(Text::StrHexVal64(&this->v[this->leng], iVal) - this->v);
+			this->leng = (UOSInt)(Text::StrHexVal64(this->v + this->leng, iVal) - this->v);
 			return *this;
 		}
 
 		NN<StringBuilderUTF8> AppendHex64V(UInt64 iVal)
 		{
 			this->AllocLeng(16);
-			this->leng = (UOSInt)(Text::StrHexVal64V(&this->v[this->leng], iVal) - this->v);
+			this->leng = (UOSInt)(Text::StrHexVal64V(this->v + this->leng, iVal) - this->v);
 			return *this;
 		}
 
@@ -498,49 +499,49 @@ namespace Text
 		NN<StringBuilderUTF8> AppendHex8LC(UInt8 iVal)
 		{
 			this->AllocLeng(2);
-			this->leng = (UOSInt)(Text::StrHexByteLC(&this->v[this->leng], iVal) - this->v);
+			this->leng = (UOSInt)(Text::StrHexByteLC(this->v + this->leng, iVal) - this->v);
 			return *this;
 		}
 
 		NN<StringBuilderUTF8> AppendHex16LC(UInt16 iVal)
 		{
 			this->AllocLeng(4);
-			this->leng = (UOSInt)(Text::StrHexVal16LC(&this->v[this->leng], iVal) - this->v);
+			this->leng = (UOSInt)(Text::StrHexVal16LC(this->v + this->leng, iVal) - this->v);
 			return *this;
 		}
 
 		NN<StringBuilderUTF8> AppendHex24LC(UInt32 iVal)
 		{
 			this->AllocLeng(6);
-			this->leng = (UOSInt)(Text::StrHexVal24LC(&this->v[this->leng], iVal) - this->v);
+			this->leng = (UOSInt)(Text::StrHexVal24LC(this->v + this->leng, iVal) - this->v);
 			return *this;
 		}
 
 		NN<StringBuilderUTF8> AppendHex32LC(UInt32 iVal)
 		{
 			this->AllocLeng(8);
-			this->leng = (UOSInt)(Text::StrHexVal32LC(&this->v[this->leng], iVal) - this->v);
+			this->leng = (UOSInt)(Text::StrHexVal32LC(this->v + this->leng, iVal) - this->v);
 			return *this;
 		}
 
 		NN<StringBuilderUTF8> AppendHex32VLC(UInt32 iVal)
 		{
 			this->AllocLeng(8);
-			this->leng = (UOSInt)(Text::StrHexVal32VLC(&this->v[this->leng], iVal) - this->v);
+			this->leng = (UOSInt)(Text::StrHexVal32VLC(this->v + this->leng, iVal) - this->v);
 			return *this;
 		}
 
 		NN<StringBuilderUTF8> AppendHex64LC(UInt64 iVal)
 		{
 			this->AllocLeng(16);
-			this->leng = (UOSInt)(Text::StrHexVal64LC(&this->v[this->leng], iVal) - this->v);
+			this->leng = (UOSInt)(Text::StrHexVal64LC(this->v + this->leng, iVal) - this->v);
 			return *this;
 		}
 
 		NN<StringBuilderUTF8> AppendHex64VLC(UInt64 iVal)
 		{
 			this->AllocLeng(16);
-			this->leng = (UOSInt)(Text::StrHexVal64VLC(&this->v[this->leng], iVal) - this->v);
+			this->leng = (UOSInt)(Text::StrHexVal64VLC(this->v + this->leng, iVal) - this->v);
 			return *this;
 		}
 
@@ -707,8 +708,8 @@ namespace Text
 		}
 
 		NN<StringBuilderUTF8> AppendCSV(const UTF8Char **sarr, UOSInt nStr);
-		NN<StringBuilderUTF8> AppendToUpper(const UTF8Char *s, UOSInt len);
-		NN<StringBuilderUTF8> AppendToLower(const UTF8Char *s, UOSInt len);
+		NN<StringBuilderUTF8> AppendToUpper(UnsafeArray<const UTF8Char> s, UOSInt len);
+		NN<StringBuilderUTF8> AppendToLower(UnsafeArray<const UTF8Char> s, UOSInt len);
 		NN<StringBuilderUTF8> RemoveANSIEscapes();
 
 		NN<StringBuilderUTF8> SetSubstr(UOSInt index)
@@ -720,13 +721,13 @@ namespace Text
 			}
 			else if (index > 0)
 			{
-				MemCopyO(this->v, &this->v[index], this->leng - index + 1);
+				MemCopyO(this->v.Ptr(), &this->v[index], this->leng - index + 1);
 				this->leng -= index;
 			}
 			return *this;
 		}
 
-		UOSInt ReplaceStr(const UTF8Char *fromStr, UOSInt fromLen, const UTF8Char *toStr, UOSInt toLen)
+		UOSInt ReplaceStr(UnsafeArray<const UTF8Char> fromStr, UOSInt fromLen, UnsafeArray<const UTF8Char> toStr, UOSInt toLen)
 		{
 			UOSInt changeCnt;
 			if (fromLen >= toLen)
@@ -742,7 +743,7 @@ namespace Text
 				i = 0;
 				while (true)
 				{
-					j = Text::StrIndexOfC(&this->v[i], this->leng - i, fromStr, fromLen);
+					j = Text::StrIndexOfC(this->v + i, this->leng - i, fromStr, fromLen);
 					if (j == INVALID_INDEX)
 						break;
 					i += j + fromLen;
@@ -764,9 +765,14 @@ namespace Text
 			this->v[0] = 0;
 		}
 
-		const UTF8Char *ToString() const
+		UnsafeArray<const UTF8Char> ToString() const
 		{
 			return this->v;
+		}
+
+		const UTF8Char *ToPtr() const
+		{
+			return this->v.Ptr();
 		}
 
 		UOSInt GetLength() const
@@ -779,7 +785,7 @@ namespace Text
 			return this->leng;
 		}
 
-		void SetEndPtr(UTF8Char *endPtr)
+		void SetEndPtr(UnsafeArray<UTF8Char> endPtr)
 		{
 			this->leng = (UOSInt)(endPtr - this->v);
 		}

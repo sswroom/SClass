@@ -60,7 +60,7 @@ namespace Net
 		typedef struct
 		{
 			Int32 code;
-			const UTF8Char *name;
+			UnsafeArray<const UTF8Char> name;
 			UOSInt nameLen;
 		} StatusInfo;
 	private:

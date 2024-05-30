@@ -55,7 +55,7 @@ void UI::GTK::GTKComboBox::SetText(Text::CStringNN text)
 	if (this->allowEdit)
 	{
 		GtkWidget *entry = gtk_bin_get_child((GtkBin*)this->hwnd);
-		gtk_entry_set_text((GtkEntry*)entry, (const gchar *)text.v);
+		gtk_entry_set_text((GtkEntry*)entry, (const gchar *)text.v.Ptr());
 	}
 	else
 	{
@@ -72,12 +72,17 @@ void UI::GTK::GTKComboBox::SetText(Text::CStringNN text)
 	}
 }
 
-UTF8Char *UI::GTK::GTKComboBox::GetText(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> UI::GTK::GTKComboBox::GetText(UnsafeArray<UTF8Char> buff)
 {
 	gchar *lbl = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT((GtkWidget*)this->hwnd));
-	buff = Text::StrConcat(buff, (const UTF8Char*)lbl);
-	g_free(lbl);
-	return buff;
+	UnsafeArray<const UTF8Char> nnlbl;
+	if (nnlbl.Set((const UTF8Char*)lbl))
+	{
+		buff = Text::StrConcat(buff, nnlbl);
+		g_free(lbl);
+		return buff;
+	}
+	return 0;
 }
 
 Bool UI::GTK::GTKComboBox::GetText(NN<Text::StringBuilderUTF8> sb)
@@ -114,7 +119,7 @@ UOSInt UI::GTK::GTKComboBox::AddItem(NN<Text::String> itemText, AnyType itemObj)
 	this->items.Add(itemObj);
 	if (!this->autoComplete)
 	{
-		gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, -1, 0, (const Char*)itemText->v);
+		gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, -1, 0, (const Char*)itemText->v.Ptr());
 	}
 	return cnt;
 }
@@ -134,7 +139,7 @@ UOSInt UI::GTK::GTKComboBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
 	{
 		if (!this->autoComplete)
 		{
-			gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, -1, 0, (const Char*)itemText.v);
+			gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, -1, 0, (const Char*)itemText.v.Ptr());
 		}
 	}
 
@@ -148,7 +153,7 @@ UOSInt UI::GTK::GTKComboBox::InsertItem(UOSInt index, NN<Text::String> itemText,
 		index = cnt;
 	this->itemTexts.Insert(index, itemText->Clone());
 	this->items.Insert(index, itemObj);
-	gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, (gint)index, 0, (const Char*)itemText->v);
+	gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, (gint)index, 0, (const Char*)itemText->v.Ptr());
 	return index;
 }
 
@@ -159,7 +164,7 @@ UOSInt UI::GTK::GTKComboBox::InsertItem(UOSInt index, Text::CStringNN itemText, 
 		index = cnt;
 	this->itemTexts.Insert(index, Text::String::New(itemText));
 	this->items.Insert(index, itemObj);
-	gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, (gint)index, 0, (const Char*)itemText.v);
+	gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, (gint)index, 0, (const Char*)itemText.v.Ptr());
 	return index;
 }
 

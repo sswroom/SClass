@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Net/NetBIOSUtil.h"
 
-UTF8Char *Net::NetBIOSUtil::GetName(UTF8Char *sbuff, const UTF8Char *nbName)
+UnsafeArrayOpt<UTF8Char> Net::NetBIOSUtil::GetName(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> nbName)
 {
 	UTF8Char c1;
 	UTF8Char c2;
@@ -21,7 +21,7 @@ UTF8Char *Net::NetBIOSUtil::GetName(UTF8Char *sbuff, const UTF8Char *nbName)
 	return sbuff;
 }
 
-UTF8Char *Net::NetBIOSUtil::SetName(UTF8Char *nbBuff, const UTF8Char *name)
+UnsafeArray<UTF8Char> Net::NetBIOSUtil::SetName(UnsafeArray<UTF8Char> nbBuff, UnsafeArray<const UTF8Char> name)
 {
 	UOSInt i = 16;
 	UTF8Char c;

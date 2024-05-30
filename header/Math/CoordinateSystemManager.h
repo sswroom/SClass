@@ -1,6 +1,7 @@
 #ifndef _SM_MATH_COORDINATESYSTEMMANAGER
 #define _SM_MATH_COORDINATESYSTEMMANAGER
 #include "Data/ArrayList.h"
+#include "Data/ArrayListArr.h"
 #include "Math/ProjectedCoordinateSystem.h"
 #include "Text/CString.h"
 
@@ -51,7 +52,7 @@ namespace Math
 		{
 			UInt32 srid;
 			Math::EarthEllipsoid::EarthEllipsoidType eet;
-			const UTF8Char *name;
+			UnsafeArray<const UTF8Char> name;
 			UOSInt nameLen;
 		} SpheroidInfo;
 
@@ -59,7 +60,7 @@ namespace Math
 		{
 			UInt32 srid;
 			UInt32 spheroid;
-			const UTF8Char *datumName;
+			UnsafeArray<const UTF8Char> datumName;
 			UOSInt datumNameLen;
 			Double x0;
 			Double y0;
@@ -78,7 +79,7 @@ namespace Math
 		{
 			UInt32 srid;
 			UInt32 datum;
-			const UTF8Char *name;
+			UnsafeArray<const UTF8Char> name;
 			UOSInt nameLen;
 			Math::CoordinateSystem::PrimemType primem;
 			Math::CoordinateSystem::UnitType unit;
@@ -91,7 +92,7 @@ namespace Math
 			UInt32 srid;
 			UInt32 geogcsSRID;
 			Math::CoordinateSystem::CoordinateSystemType csysType;
-			const UTF8Char *projName;
+			UnsafeArray<const UTF8Char> projName;
 			UOSInt projNameLen;
 			Double falseEasting;
 			Double falseNorthing;
@@ -132,7 +133,7 @@ namespace Math
 		{
 			UInt32 srid;
 			Math::CoordinateSystem::CoordinateSystemType csysType;
-			const UTF8Char *projName;
+			UnsafeArray<const UTF8Char> projName;
 			UOSInt projNameLen;
 			Double falseEasting;
 			Double falseNorthing;
@@ -145,7 +146,7 @@ namespace Math
 		typedef struct
 		{
 			UInt32 srid;
-			const UTF8Char *geoName;
+			UnsafeArray<const UTF8Char> geoName;
 			UOSInt geoNameLen;
 			const Char *datumName;
 			Math::EarthEllipsoid::EarthEllipsoidType eet;
@@ -178,20 +179,20 @@ namespace Math
 		static Optional<Math::CoordinateSystem> CreateFromName(Text::CStringNN name);
 		static NN<Math::CoordinateSystem> CreateFromNameOrDef(Text::CStringNN name);
 
-		static const Math::CoordinateSystemManager::DatumInfo *GetDatumInfoByName(const UTF8Char *name);
+		static const Math::CoordinateSystemManager::DatumInfo *GetDatumInfoByName(UnsafeArray<const UTF8Char> name);
 		static void FillDatumData(NN<Math::GeographicCoordinateSystem::DatumData1> data, const DatumInfo *datum, Text::CString name, NN<Math::EarthEllipsoid> ee, const SpheroidInfo *spheroid);
 
 		static Optional<Math::ProjectedCoordinateSystem> CreateProjCoordinateSystemDefName(ProjCoordSysType pcst);
 		static NN<Math::CoordinateSystem> CreateProjCoordinateSystemDefNameOrDef(ProjCoordSysType pcst);
-		static Optional<Math::ProjectedCoordinateSystem> CreateProjCoordinateSystem(Text::CStringNN sourceNmae, const UTF8Char *projName);
+		static Optional<Math::ProjectedCoordinateSystem> CreateProjCoordinateSystem(Text::CStringNN sourceNmae, UnsafeArray<const UTF8Char> projName);
 		static UOSInt GetProjCoordinateSystems(Data::ArrayList<ProjCoordSysType> *csysList);
-		static UOSInt GetProjCoordinateSystemNames(Data::ArrayList<const UTF8Char *> *nameList);
-		static const ProjectedCSysInfo *GetProjCoordinateSystemInfo(const UTF8Char *projName);
+		static UOSInt GetProjCoordinateSystemNames(NN<Data::ArrayListArr<const UTF8Char>> nameList);
+		static const ProjectedCSysInfo *GetProjCoordinateSystemInfo(UnsafeArray<const UTF8Char> projName);
 
 		static Optional<Math::GeographicCoordinateSystem> CreateGeogCoordinateSystemDefName(GeoCoordSysType gcst);
-		static Optional<Math::GeographicCoordinateSystem> CreateGeogCoordinateSystem(Text::CStringNN sourceName, const UTF8Char *geoName);
+		static Optional<Math::GeographicCoordinateSystem> CreateGeogCoordinateSystem(Text::CStringNN sourceName, UnsafeArray<const UTF8Char> geoName);
 		static UOSInt GetGeogCoordinateSystems(Data::ArrayList<GeoCoordSysType> *csysList);
-		static const GeographicCSysInfo *GetGeogCoordinateSystemInfo(const UTF8Char *geoName);
+		static const GeographicCSysInfo *GetGeogCoordinateSystemInfo(UnsafeArray<const UTF8Char> geoName);
 		static NN<Math::GeographicCoordinateSystem> CreateWGS84Csys();
 
 		static Text::CStringNN GeoCoordSysTypeGetName(GeoCoordSysType gcst);

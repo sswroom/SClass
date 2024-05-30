@@ -23,7 +23,7 @@ Crypto::Hash::MD5::~MD5()
 	MemFree(buff);
 }
 
-UTF8Char *Crypto::Hash::MD5::GetName(UTF8Char *sbuff) const
+UnsafeArray<UTF8Char> Crypto::Hash::MD5::GetName(UnsafeArray<UTF8Char> sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("MD5"));
 }

@@ -48,7 +48,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CABParser::ParseFileHdr(NN<IO::St
 	UInt32 fileOfst;
 	UInt32 nextOfst;
 	UTF8Char fileName[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (ReadInt32(&hdr[0]) != 0x4643534d || ReadInt32(&hdr[4]) != 0 || ReadInt32(&hdr[12]) != 0 || ReadInt32(&hdr[20]) != 0)
 		return 0;

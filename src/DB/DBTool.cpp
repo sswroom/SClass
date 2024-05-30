@@ -51,7 +51,7 @@ OSInt DB::DBTool::ExecuteNonQuery(Text::CStringNN sqlCmd)
 		Text::StringBuilderUTF8 logMsg;
 		logMsg.AppendC(UTF8STRC("ExecuteNonQuery: "));
 		logMsg.Append(sqlCmd);
-		AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::LogHandler::LogLevel::Raw);
+		AddLogMsgC(logMsg.ToCString(), IO::LogHandler::LogLevel::Raw);
 	}
 
 	Data::Timestamp t1 = Data::Timestamp::UtcNow();
@@ -69,12 +69,12 @@ OSInt DB::DBTool::ExecuteNonQuery(Text::CStringNN sqlCmd)
 		if (t3.DiffMS(t2) >= 1000)
 		{
 			UTF8Char buff[256];
-			UTF8Char *ptr;
+			UnsafeArray<UTF8Char> ptr;
 			ptr = Text::StrConcatC(buff, UTF8STRC("SQL R t1 = "));
 			ptr = Text::StrInt32(ptr, (Int32)t2.DiffMS(t1));
 			ptr = Text::StrConcatC(ptr, UTF8STRC(", t2 = "));
 			ptr = Text::StrInt32(ptr, (Int32)t3.DiffMS(t2));
-			AddLogMsgC(buff, (UOSInt)(ptr - buff), IO::LogHandler::LogLevel::Command);
+			AddLogMsgC(CSTRP(buff, ptr), IO::LogHandler::LogLevel::Command);
 		}
 		nqFail = 0;
 		openFail = 0;
@@ -86,7 +86,7 @@ OSInt DB::DBTool::ExecuteNonQuery(Text::CStringNN sqlCmd)
 			Text::StringBuilderUTF8 logMsg;
 			logMsg.AppendC(UTF8STRC("Cannot execute the sql command: "));
 			logMsg.Append(sqlCmd);
-			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::LogHandler::LogLevel::Error);
+			AddLogMsgC(logMsg.ToCString(), IO::LogHandler::LogLevel::Error);
 		}
 
 		{
@@ -95,7 +95,7 @@ OSInt DB::DBTool::ExecuteNonQuery(Text::CStringNN sqlCmd)
 			this->lastErrMsg.ClearStr();
 			this->db->GetLastErrorMsg(this->lastErrMsg);
 			logMsg.AppendSB(this->lastErrMsg);
-			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::LogHandler::LogLevel::ErrorDetail);
+			AddLogMsgC(logMsg.ToCString(), IO::LogHandler::LogLevel::ErrorDetail);
 		}
 		Bool isData = this->db->IsLastDataError();
 
@@ -199,7 +199,7 @@ Int64 DB::DBTool::GetLastIdentity64()
 	}
 }
 
-Bool DB::DBTool::CreateDatabase(Text::CString databaseName, const Collation *collation)
+Bool DB::DBTool::CreateDatabase(Text::CStringNN databaseName, const Collation *collation)
 {
 	switch (this->sqlType)
 	{
@@ -224,7 +224,7 @@ Bool DB::DBTool::CreateDatabase(Text::CString databaseName, const Collation *col
 	}
 }
 
-Bool DB::DBTool::DeleteDatabase(Text::CString databaseName)
+Bool DB::DBTool::DeleteDatabase(Text::CStringNN databaseName)
 {
 	switch (this->sqlType)
 	{
@@ -249,7 +249,7 @@ Bool DB::DBTool::DeleteDatabase(Text::CString databaseName)
 	}
 }
 
-Bool DB::DBTool::CreateSchema(Text::CString schemaName)
+Bool DB::DBTool::CreateSchema(Text::CStringNN schemaName)
 {
 	switch (this->sqlType)
 	{
@@ -274,7 +274,7 @@ Bool DB::DBTool::CreateSchema(Text::CString schemaName)
 	}
 }
 
-Bool DB::DBTool::DeleteSchema(Text::CString schemaName)
+Bool DB::DBTool::DeleteSchema(Text::CStringNN schemaName)
 {
 	switch (this->sqlType)
 	{

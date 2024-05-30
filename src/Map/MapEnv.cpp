@@ -250,7 +250,7 @@ Bool Map::MapEnv::SetLineStyleName(UOSInt index, Text::CString name)
 	return true;
 }
 
-UTF8Char *Map::MapEnv::GetLineStyleName(UOSInt index, UTF8Char *buff) const
+UnsafeArrayOpt<UTF8Char> Map::MapEnv::GetLineStyleName(UOSInt index, UnsafeArray<UTF8Char> buff) const
 {
 	UOSInt cnt = this->lineStyles.GetCount();
 	if (index >= cnt)
@@ -446,7 +446,7 @@ Bool Map::MapEnv::SetFontStyleName(UOSInt index, Text::CString name)
 	return true;
 }
 
-UTF8Char *Map::MapEnv::GetFontStyleName(UOSInt index, UTF8Char *buff) const
+UnsafeArrayOpt<UTF8Char> Map::MapEnv::GetFontStyleName(UOSInt index, UnsafeArray<UTF8Char> buff) const
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	NN<Map::MapEnv::FontStyle> style;
@@ -521,8 +521,8 @@ UOSInt Map::MapEnv::AddLayer(Optional<Map::MapEnv::GroupItem> group, NN<Map::Map
 	if (layer->GetObjectClass() == Map::MapDrawLayer::OC_MAP_LAYER_COLL)// && layer->GetLayerType() == Map::DRAW_LAYER_MIXED)
 	{
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
-		UTF8Char *sptr2;
+		UnsafeArray<UTF8Char> sptr;
+		UnsafeArray<UTF8Char> sptr2;
 		NN<Map::MapLayerCollection> layerColl = NN<Map::MapLayerCollection>::ConvertFrom(layer);
 		sptr = layerColl->GetName()->ConcatTo(sbuff);
 		sptr2 = &sbuff[Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\') + 1];
@@ -1199,13 +1199,13 @@ UOSInt Map::MapEnv::AddImage(Text::CStringNN fileName, NN<Media::ImageList> imgL
 UOSInt Map::MapEnv::AddImageSquare(UInt32 color, UOSInt size)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<ImageInfo> imgInfo;
 	Sync::MutexUsage mutUsage(this->mut);
 	imgInfo = MemAllocNN(ImageInfo);
 	imgInfo->index = this->GetImageCnt();
 	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Image")), imgInfo->index), UTF8STRC(".png"));
-	imgInfo->fileName = Text::String::NewP(sbuff, sptr);
+	imgInfo->fileName = Text::String::NewP(sbuff, UnsafeArray<const UTF8Char>(sptr));
 	imgInfo->cnt = 1;
 	NEW_CLASSNN(imgInfo->imgs, Media::ImageList(imgInfo->fileName));
 	imgInfo->isAni = false;

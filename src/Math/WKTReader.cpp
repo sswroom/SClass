@@ -11,10 +11,10 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-const UTF8Char *Math::WKTReader::NextDouble(const UTF8Char *wkt, OutParam<Double> val)
+UnsafeArrayOpt<const UTF8Char> Math::WKTReader::NextDouble(UnsafeArray<const UTF8Char> wkt, OutParam<Double> val)
 {
 	UTF8Char sbuff[256];
-	const UTF8Char *sptr = wkt;
+	UnsafeArray<const UTF8Char> sptr = wkt;
 	UTF8Char c;
 	if ((wkt[0] == 'i' || wkt[0] == 'I') &&
 		(wkt[1] == 'n' || wkt[1] == 'N') &&
@@ -81,7 +81,7 @@ Math::WKTReader::~WKTReader()
 	SDEL_TEXT(this->lastError);
 }
 
-Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(const UTF8Char *wkt)
+Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(UnsafeArray<const UTF8Char> wkt)
 {
 	if (Text::StrStartsWith(wkt, (const UTF8Char*)"POINT"))
 	{
@@ -98,14 +98,12 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(const UTF8Char *wkt
 			return 0;
 		}
 		wkt++;
-		wkt = NextDouble(wkt, x);
-		if (wkt == 0 || *wkt != ' ')
+		if (!NextDouble(wkt, x).SetTo(wkt) || *wkt != ' ')
 		{
 			return 0;
 		}
 		while (*++wkt == ' ');
-		wkt = NextDouble(wkt, y);
-		if (wkt == 0)
+		if (!NextDouble(wkt, y).SetTo(wkt))
 		{
 			return 0;
 		}
@@ -120,8 +118,7 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(const UTF8Char *wkt
 			return 0;
 		}
 		while (*++wkt == ' ');
-		wkt = NextDouble(wkt, z);
-		if (wkt == 0)
+		if (!NextDouble(wkt, z).SetTo(wkt))
 		{
 			return 0;
 		}
@@ -152,22 +149,19 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(const UTF8Char *wkt
 		while (true)
 		{
 			while (*++wkt == ' ');
-			wkt = NextDouble(wkt, x);
-			if (wkt == 0 || *wkt != ' ')
+			if (!NextDouble(wkt, x).SetTo(wkt) || *wkt != ' ')
 			{
 				return 0;
 			}
 			while (*++wkt == ' ');
-			wkt = NextDouble(wkt, y);
-			if (wkt == 0)
+			if (!NextDouble(wkt, y).SetTo(wkt))
 			{
 				return 0;
 			}
 			while (*wkt == ' ')
 			{
 				while (*++wkt == ' ');
-				wkt = NextDouble(wkt, z);
-				if (wkt == 0)
+				if (!NextDouble(wkt, z).SetTo(wkt))
 				{
 					return 0;
 				}
@@ -253,22 +247,19 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(const UTF8Char *wkt
 			while (true)
 			{
 				while (*++wkt == ' ');
-				wkt = NextDouble(wkt, x);
-				if (wkt == 0 || *wkt != ' ')
+				if (!NextDouble(wkt, x).SetTo(wkt) || *wkt != ' ')
 				{
 					return 0;
 				}
 				while (*++wkt == ' ');
-				wkt = NextDouble(wkt, y);
-				if (wkt == 0)
+				if (!NextDouble(wkt, y).SetTo(wkt))
 				{
 					return 0;
 				}
 				while (*wkt == ' ')
 				{
 					while (*++wkt == ' ');
-					wkt = NextDouble(wkt, z);
-					if (wkt == 0)
+					if (!NextDouble(wkt, z).SetTo(wkt))
 					{
 						return 0;
 					}
@@ -392,15 +383,13 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(const UTF8Char *wkt
 			while (true)
 			{
 				while (*++wkt == ' ');
-				wkt = NextDouble(wkt, x);
-				if (wkt == 0 || *wkt != ' ')
+				if (!NextDouble(wkt, x).SetTo(wkt) || *wkt != ' ')
 				{
 					DEL_CLASS(pl);
 					return 0;
 				}
 				while (*++wkt == ' ');
-				wkt = NextDouble(wkt, y);
-				if (wkt == 0)
+				if (!NextDouble(wkt, y).SetTo(wkt))
 				{
 					DEL_CLASS(pl);
 					return 0;
@@ -408,8 +397,7 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(const UTF8Char *wkt
 				while (*wkt == ' ')
 				{
 					while (*++wkt == ' ');
-					wkt = NextDouble(wkt, z);
-					if (wkt == 0)
+					if (!NextDouble(wkt, z).SetTo(wkt))
 					{
 						DEL_CLASS(pl);
 						return 0;
@@ -532,15 +520,13 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(const UTF8Char *wkt
 				while (true)
 				{
 					while (*++wkt == ' ');
-					wkt = NextDouble(wkt, x);
-					if (wkt == 0 || *wkt != ' ')
+					if (!NextDouble(wkt, x).SetTo(wkt) || *wkt != ' ')
 					{
 						SDEL_CLASS(mpg);
 						return 0;
 					}
 					while (*++wkt == ' ');
-					wkt = NextDouble(wkt, y);
-					if (wkt == 0)
+					if (!NextDouble(wkt, y).SetTo(wkt))
 					{
 						SDEL_CLASS(mpg);
 						return 0;
@@ -548,8 +534,7 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(const UTF8Char *wkt
 					while (*wkt == ' ')
 					{
 						while (*++wkt == ' ');
-						wkt = NextDouble(wkt, z);
-						if (wkt == 0)
+						if (!NextDouble(wkt, z).SetTo(wkt))
 						{
 							SDEL_CLASS(mpg);
 							return 0;
@@ -669,7 +654,7 @@ Optional<Math::Geometry::Vector2D> Math::WKTReader::ParseWKT(const UTF8Char *wkt
 	return 0;
 }
 
-const UTF8Char *Math::WKTReader::GetLastError()
+UnsafeArrayOpt<const UTF8Char> Math::WKTReader::GetLastError()
 {
 	return this->lastError;
 }

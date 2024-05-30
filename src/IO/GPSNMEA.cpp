@@ -10,13 +10,13 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
 
-void IO::GPSNMEA::ParseUnknownCmd(const UTF8Char *cmd, UOSInt cmdLen)
+void IO::GPSNMEA::ParseUnknownCmd(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen)
 {
 }
 
-IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineLen, NN<Map::GPSTrack::GPSRecord3> record, SateRecord *sateRec)
+IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UnsafeArray<UTF8Char> line, UOSInt lineLen, NN<Map::GPSTrack::GPSRecord3> record, SateRecord *sateRec)
 {
-	UTF8Char *sarr[32];
+	UnsafeArray<UTF8Char> sarr[32];
 	UOSInt scnt;
 	if (lineLen <= 3)
 	{
@@ -29,7 +29,7 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineL
 	else
 	{
 		UTF8Char c = 0;
-		UTF8Char *sptr2 = &line[1];
+		UnsafeArray<UTF8Char> sptr2 = &line[1];
 		while (sptr2 < &line[lineLen - 3])
 		{
 			c = c ^ *sptr2++;
@@ -257,7 +257,7 @@ UInt32 __stdcall IO::GPSNMEA::NMEAThread(AnyType userObj)
 {
 	NN<IO::GPSNMEA> me = userObj.GetNN<IO::GPSNMEA>();
 	UTF8Char sbuff[8200];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Map::GPSTrack::GPSRecord3 record;
 	SateRecord sateRec;
 
@@ -269,8 +269,7 @@ UInt32 __stdcall IO::GPSNMEA::NMEAThread(AnyType userObj)
 
 		while (!me->threadToStop)
 		{
-			sptr = reader.ReadLine(sbuff, 8192);
-			if (sptr && (sptr - sbuff) > 3)
+			if (reader.ReadLine(sbuff, 8192).SetTo(sptr) && (sptr - sbuff) > 3)
 			{
 				if (me->cmdHdlr)
 				{
@@ -386,7 +385,7 @@ void IO::GPSNMEA::HandleCommand(CommandHandler cmdHdlr, AnyType userObj)
 	this->cmdHdlr = cmdHdlr;
 }
 
-UOSInt IO::GPSNMEA::GenNMEACommand(const UTF8Char *cmd, UOSInt cmdLen, UInt8 *buff)
+UOSInt IO::GPSNMEA::GenNMEACommand(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, UInt8 *buff)
 {
 	UOSInt size;
 	UInt8 chk;

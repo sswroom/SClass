@@ -58,14 +58,14 @@ namespace Data
 		static void Instant2TimeValue(Int64 secs, UInt32 nanosec, NN<TimeValue> t, Int8 tzQhr);
 		static Weekday Ticks2Weekday(Int64 ticks, Int8 tzQhr);
 		static Weekday Instant2Weekday(Data::TimeInstant inst, Int8 tzQhr);
-		static UTF8Char *ToString(UTF8Char *sbuff, NN<const TimeValue> tval, Int8 tzQhr, UInt32 nanosec, const UTF8Char *pattern);
+		static UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> sbuff, NN<const TimeValue> tval, Int8 tzQhr, UInt32 nanosec, UnsafeArray<const UTF8Char> pattern);
 		static Bool String2TimeValue(Text::CStringNN dateStr, NN<TimeValue> tval, Int8 defTzQhr, OutParam<Int8> outTzQhr, OutParam<UInt32> nanosec);
 		static Bool TimeValueFromYMDHMS(Int64 ymdhms, NN<TimeValue> tval);
 
 		static Bool IsYearLeap(OSInt year);
 		static Int32 ParseYearStr(Text::CStringNN year);
 		static UInt8 ParseMonthStr(Text::CStringNN month);
-		static UTF8Char *DispYear(UTF8Char *buff, Int32 year);
+		static UnsafeArray<UTF8Char> DispYear(UnsafeArray<UTF8Char> buff, Int32 year);
 		static Int32 DispYearI32(Int32 year);
 		static Double MS2Days(Int64 ms);
 		static Double MS2Hours(Int64 ms);

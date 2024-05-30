@@ -8,9 +8,9 @@
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UTF8Char refbuff[256];
-	UTF8Char *refPtr;
+	UnsafeArray<UTF8Char> refPtr;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	WChar wbuff[256];
 	refPtr = Text::StrWChar_UTF8(refbuff, L"そのスピードで");
 

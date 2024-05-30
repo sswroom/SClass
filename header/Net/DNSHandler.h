@@ -34,7 +34,7 @@ namespace Net
 		UOSInt GetByDomainNamesv4(Data::DataArray<Net::SocketUtil::AddressInfo> addrs, Text::CStringNN domain);
 		UOSInt GetByDomainNamesv6(Data::DataArray<Net::SocketUtil::AddressInfo> addrs, Text::CStringNN domain);
 
-		Bool AddHost(NN<const Net::SocketUtil::AddressInfo> addr, const UTF8Char *domain, UOSInt domainLen);
+		Bool AddHost(NN<const Net::SocketUtil::AddressInfo> addr, Text::CStringNN domain);
 		void UpdateDNSAddr(NN<const Net::SocketUtil::AddressInfo> serverAddr);
 	};
 }

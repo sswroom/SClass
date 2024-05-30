@@ -16,7 +16,7 @@ Manage::CodeSymbol::~CodeSymbol()
 	this->funcName->Release();
 }
 
-UTF8Char *Manage::CodeSymbol::ToString(UTF8Char *buff) const
+UnsafeArray<UTF8Char> Manage::CodeSymbol::ToString(UnsafeArray<UTF8Char> buff) const
 {
 	buff = this->moduleName->ConcatTo(buff);
 	*buff++ = '(';
@@ -36,7 +36,7 @@ UTF8Char *Manage::CodeSymbol::ToString(UTF8Char *buff) const
 	return buff;
 }
 
-Optional<Manage::CodeSymbol> Manage::CodeSymbol::ParseFromStr(const UTF8Char *buff, UInt64 funcAddr)
+Optional<Manage::CodeSymbol> Manage::CodeSymbol::ParseFromStr(UnsafeArray<const UTF8Char> buff, UInt64 funcAddr)
 {
 	Text::CStringNN moduleName;
 	Text::CStringNN funcName;

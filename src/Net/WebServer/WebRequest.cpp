@@ -15,9 +15,9 @@
 
 void Net::WebServer::WebRequest::ParseQuery()
 {
-	UTF8Char *sbuff;
-	UTF8Char *sbuff2;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sbuff;
+	UnsafeArray<UTF8Char> sbuff2;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> url = this->GetRequestURI();
 	UOSInt urlLen = url->leng;
 	Text::PString strs1[2];
@@ -25,7 +25,7 @@ void Net::WebServer::WebRequest::ParseQuery()
 	NN<Text::String> s;
 	Optional<Text::String> opts;
 
-	sbuff = MemAlloc(UTF8Char, urlLen);
+	sbuff = MemAllocArr(UTF8Char, urlLen);
 	NEW_CLASS(this->queryMap, Data::FastStringMapNN<Text::String>());
 	if ((sptr = this->GetQueryString(sbuff, urlLen)) != 0)
 	{
@@ -77,7 +77,7 @@ void Net::WebServer::WebRequest::ParseFormStr(NN<Data::FastStringMapNN<Text::Str
 	UInt8 b;
 	UInt8 b2;
 	NN<Text::String> tmpStr;
-	UTF8Char *tmpName;
+	UnsafeArray<UTF8Char> tmpName;
 	UOSInt tmpNameLen;
 	UOSInt nameLen = 0;
 	NN<Text::String> s;
@@ -220,7 +220,7 @@ void Net::WebServer::WebRequest::ParseFormPart(UInt8 *data, UOSInt dataSize, UOS
 			
 			if (Text::StrStartsWithC(&data[lineStart], i - lineStart, UTF8STRC("Content-Disposition: form-data;")))
 			{
-				UTF8Char *line;
+				UnsafeArray<UTF8Char> line;
 				Text::PString lineStrs[10];
 				UOSInt strCnt;
 				contType = 1;
@@ -286,9 +286,9 @@ void Net::WebServer::WebRequest::ParseFormPart(UInt8 *data, UOSInt dataSize, UOS
 	SDEL_TEXT(fileName.v);
 }
 
-Text::CString Net::WebServer::WebRequest::ParseHeaderVal(UTF8Char *headerData, UOSInt dataLen)
+Text::CString Net::WebServer::WebRequest::ParseHeaderVal(UnsafeArray<UTF8Char> headerData, UOSInt dataLen)
 {
-	UTF8Char *outStr;
+	UnsafeArray<UTF8Char> outStr;
 	if (headerData[0] == '"' && headerData[dataLen-1] == '"')
 	{
 		outStr = MemAlloc(UTF8Char, dataLen - 1);
@@ -371,7 +371,7 @@ Optional<Text::String> Net::WebServer::WebRequest::GetSHeader(Text::CStringNN na
 	return this->headers.GetC(name);
 }
 
-UTF8Char *Net::WebServer::WebRequest::GetHeader(UTF8Char *sbuff, Text::CStringNN name, UOSInt buffLen) const
+UnsafeArray<UTF8Char> Net::WebServer::WebRequest::GetHeader(UnsafeArray<UTF8Char> sbuff, Text::CStringNN name, UOSInt buffLen) const
 {
 	NN<Text::String> s;
 	if (this->headers.GetC(name).SetTo(s))
@@ -479,7 +479,7 @@ void Net::WebServer::WebRequest::ParseHTTPForm()
 		}
 		else if (sb.StartsWith(UTF8STRC("multipart/form-data")))
 		{
-			UTF8Char *sptr = sb.v;
+			UnsafeArray<UTF8Char> sptr = sb.v;
 			UOSInt i = Text::StrIndexOfC(sptr, sb.GetLength(), UTF8STRC("boundary="));
 			if (i != INVALID_INDEX)
 			{
@@ -539,7 +539,7 @@ Optional<Text::String> Net::WebServer::WebRequest::GetHTTPFormStr(Text::CStringN
 	return this->formMap->GetC(name);
 }
 
-const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, OptOut<UTF8Char*> fileNameEnd, OptOut<UOSInt> fileSize)
+const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UnsafeArray<UTF8Char> fileName, UOSInt fileNameBuffSize, OptOut<UnsafeArray<UTF8Char>> fileNameEnd, OptOut<UOSInt> fileSize)
 {
 	if (this->formFileList == 0)
 		return 0;

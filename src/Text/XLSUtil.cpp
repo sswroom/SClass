@@ -50,7 +50,7 @@ Data::Timestamp Text::XLSUtil::Number2Timestamp(Double v)
 	return Data::Timestamp(Data::TimeInstant((days - 25569) * 86400LL + s, (UInt32)((ds * 86400 - (Double)s) * 1000000000)), tz);
 }
 
-UTF8Char *Text::XLSUtil::GetCellID(UTF8Char *sbuff, UOSInt col, UOSInt row)
+UnsafeArray<UTF8Char> Text::XLSUtil::GetCellID(UnsafeArray<UTF8Char> sbuff, UOSInt col, UOSInt row)
 {
 	if (col >= 26)
 	{

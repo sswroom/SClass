@@ -26,7 +26,7 @@
 
 #include <stdio.h>
 
-void DB::ReadingDBTool::AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::LogHandler::LogLevel logLev)
+void DB::ReadingDBTool::AddLogMsgC(Text::CStringNN msg, IO::LogHandler::LogLevel logLev)
 {
 	NN<Text::String> s;
 	if (log->HasHandler())
@@ -35,12 +35,12 @@ void DB::ReadingDBTool::AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::LogHa
 		{
 			Text::StringBuilderUTF8 str;
 			str.Append(s);
-			str.AppendC(msg, msgLen);
+			str.Append(msg);
 			log->LogMessage(str.ToCString(), logLev);
 		}
 		else
 		{
-			log->LogMessage({msg, msgLen}, logLev);
+			log->LogMessage(msg, logLev);
 		}
 	}
 }
@@ -65,45 +65,45 @@ DB::ReadingDBTool::ReadingDBTool(NN<DB::DBConn> db, Bool needRelease, NN<IO::Log
 	switch (this->sqlType)
 	{
 	case DB::SQLType::Access:
-		this->AddLogMsgC(UTF8STRC("Server type is Access"), IO::LogHandler::LogLevel::Command);
+		this->AddLogMsgC(CSTR("Server type is Access"), IO::LogHandler::LogLevel::Command);
 		break;
 	case DB::SQLType::MSSQL:
-		this->AddLogMsgC(UTF8STRC("Server type is MSSQL"), IO::LogHandler::LogLevel::Command);
+		this->AddLogMsgC(CSTR("Server type is MSSQL"), IO::LogHandler::LogLevel::Command);
 		break;
 	case DB::SQLType::MySQL:
-		this->AddLogMsgC(UTF8STRC("Server type is MySQL"), IO::LogHandler::LogLevel::Command);
+		this->AddLogMsgC(CSTR("Server type is MySQL"), IO::LogHandler::LogLevel::Command);
 		if (this->axisAware)
 		{
-			this->AddLogMsgC(UTF8STRC("DB is Axis-Aware"), IO::LogHandler::LogLevel::Command);
+			this->AddLogMsgC(CSTR("DB is Axis-Aware"), IO::LogHandler::LogLevel::Command);
 		}
 		else
 		{
-			this->AddLogMsgC(UTF8STRC("DB is not Axis-Aware"), IO::LogHandler::LogLevel::Command);
+			this->AddLogMsgC(CSTR("DB is not Axis-Aware"), IO::LogHandler::LogLevel::Command);
 		}
 		break;
 	case DB::SQLType::Oracle:
-		this->AddLogMsgC(UTF8STRC("Server type is Oracle"), IO::LogHandler::LogLevel::Command);
+		this->AddLogMsgC(CSTR("Server type is Oracle"), IO::LogHandler::LogLevel::Command);
 		break;
 	case DB::SQLType::SQLite:
-		this->AddLogMsgC(UTF8STRC("Server type is SQLite"), IO::LogHandler::LogLevel::Command);
+		this->AddLogMsgC(CSTR("Server type is SQLite"), IO::LogHandler::LogLevel::Command);
 		break;
 	case DB::SQLType::WBEM:
-		this->AddLogMsgC(UTF8STRC("Server type is WBEM"), IO::LogHandler::LogLevel::Command);
+		this->AddLogMsgC(CSTR("Server type is WBEM"), IO::LogHandler::LogLevel::Command);
 		break;
 	case DB::SQLType::MDBTools:
-		this->AddLogMsgC(UTF8STRC("Server type is MDBTools"), IO::LogHandler::LogLevel::Command);
+		this->AddLogMsgC(CSTR("Server type is MDBTools"), IO::LogHandler::LogLevel::Command);
 		break;
 	case DB::SQLType::PostgreSQL:
-		this->AddLogMsgC(UTF8STRC("Server type is PostgreSQL"), IO::LogHandler::LogLevel::Command);
+		this->AddLogMsgC(CSTR("Server type is PostgreSQL"), IO::LogHandler::LogLevel::Command);
 		break;
 	case DB::SQLType::Unknown:
 	default:
-		this->AddLogMsgC(UTF8STRC("Server type is Unknown"), IO::LogHandler::LogLevel::Error);
+		this->AddLogMsgC(CSTR("Server type is Unknown"), IO::LogHandler::LogLevel::Error);
 		break;
 	}
 }
 
-UOSInt DB::ReadingDBTool::SplitMySQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr)
+UOSInt DB::ReadingDBTool::SplitMySQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs, UOSInt maxCnt, UnsafeArray<UTF8Char> oriStr)
 {
 	UOSInt currCnt = 0;
 	OSInt quoteType = 0;
@@ -218,7 +218,7 @@ UOSInt DB::ReadingDBTool::SplitMySQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char
 	return currCnt;
 }
 
-UOSInt DB::ReadingDBTool::SplitMSSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr)
+UOSInt DB::ReadingDBTool::SplitMSSQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs, UOSInt maxCnt, UnsafeArray<UTF8Char> oriStr)
 {
 	UOSInt currCnt = 0;
 	OSInt quoteType = 0;
@@ -342,7 +342,7 @@ UOSInt DB::ReadingDBTool::SplitMSSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char
 	return currCnt;
 }
 
-UOSInt DB::ReadingDBTool::SplitUnkSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr)
+UOSInt DB::ReadingDBTool::SplitUnkSQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs, UOSInt maxCnt, UnsafeArray<UTF8Char> oriStr)
 {
 	return Text::StrSplit(outStrs, maxCnt, oriStr, ';');
 }
@@ -369,7 +369,7 @@ Optional<DB::DBReader> DB::ReadingDBTool::ExecuteReader(Text::CStringNN sqlCmd)
 		Text::StringBuilderUTF8 logMsg;
 		logMsg.AppendC(UTF8STRC("ExecuteReader: "));
 		logMsg.Append(sqlCmd);
-		AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::LogHandler::LogLevel::Raw);
+		AddLogMsgC(logMsg.ToCString(), IO::LogHandler::LogLevel::Raw);
 	}
 
 	Data::Timestamp t1 = Data::Timestamp::UtcNow();
@@ -382,12 +382,12 @@ Optional<DB::DBReader> DB::ReadingDBTool::ExecuteReader(Text::CStringNN sqlCmd)
 		if (t3.DiffMS(t2) >= 1000)
 		{
 			UTF8Char buff[256];
-			UTF8Char *ptr;
+			UnsafeArray<UTF8Char> ptr;
 			ptr = Text::StrConcatC(buff, UTF8STRC("SQL R t1 = "));
 			ptr = Text::StrInt32(ptr, (Int32)t2.DiffMS(t1));
 			ptr = Text::StrConcatC(ptr, UTF8STRC(", t2 = "));
 			ptr = Text::StrInt32(ptr, (Int32)t3.DiffMS(t2));
-			AddLogMsgC(buff, (UOSInt)(ptr - buff), IO::LogHandler::LogLevel::Command);
+			AddLogMsgC(CSTRP(buff, ptr), IO::LogHandler::LogLevel::Command);
 		}
 		readerCnt += 1;
 		readerFail = 0;
@@ -402,14 +402,14 @@ Optional<DB::DBReader> DB::ReadingDBTool::ExecuteReader(Text::CStringNN sqlCmd)
 			Text::StringBuilderUTF8 logMsg;
 			logMsg.AppendC(UTF8STRC("Cannot execute the sql command: "));
 			logMsg.Append(sqlCmd);
-			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::LogHandler::LogLevel::Error);
+			AddLogMsgC(logMsg.ToCString(), IO::LogHandler::LogLevel::Error);
 
 			logMsg.ClearStr();
 			logMsg.AppendC(UTF8STRC("Exception detail: "));
 			this->lastErrMsg.ClearStr();
 			this->db->GetLastErrorMsg(this->lastErrMsg);
 			logMsg.AppendSB(this->lastErrMsg);
-			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::LogHandler::LogLevel::ErrorDetail);
+			AddLogMsgC(logMsg.ToCString(), IO::LogHandler::LogLevel::ErrorDetail);
 		}
 
 		readerFail += 1;
@@ -418,7 +418,7 @@ Optional<DB::DBReader> DB::ReadingDBTool::ExecuteReader(Text::CStringNN sqlCmd)
 			NN<DB::DBReader> r;
 			if (lastReader.SetTo(r))
 			{
-				AddLogMsgC(UTF8STRC("Automatically closed last reader"), IO::LogHandler::LogLevel::Action);
+				AddLogMsgC(CSTR("Automatically closed last reader"), IO::LogHandler::LogLevel::Action);
 
 				this->CloseReader(r);
 			}
@@ -453,15 +453,16 @@ Bool DB::ReadingDBTool::IsAxisAware() const
 	return this->axisAware;
 }
 
-Bool DB::ReadingDBTool::IsDataError(const UTF8Char *errCode)
+Bool DB::ReadingDBTool::IsDataError(UnsafeArrayOpt<const UTF8Char> errCode)
 {
-	if (errCode == 0)
+	UnsafeArray<const UTF8Char> nnerrCode;
+	if (!errCode.SetTo(nnerrCode))
 		return false;
-	if (Text::StrEqualsC(errCode, 5, UTF8STRC("23000")))
+	if (Text::StrEqualsC(nnerrCode, 5, UTF8STRC("23000")))
 		return true;
-	if (Text::StrEqualsC(errCode, 5, UTF8STRC("42000")))
+	if (Text::StrEqualsC(nnerrCode, 5, UTF8STRC("42000")))
 		return true;
-	if (Text::StrEqualsC(errCode, 5, UTF8STRC("HY000")))
+	if (Text::StrEqualsC(nnerrCode, 5, UTF8STRC("HY000")))
 		return true;
 	return false;
 }
@@ -491,57 +492,57 @@ Bool DB::ReadingDBTool::IsDBTool() const
 	return true;
 }
 
-UTF8Char *DB::ReadingDBTool::DBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName)
+UnsafeArray<UTF8Char> DB::ReadingDBTool::DBColUTF8(UnsafeArray<UTF8Char> sqlstr, UnsafeArray<const UTF8Char> colName)
 {
 	return DB::DBUtil::SDBColUTF8(sqlstr, colName, this->sqlType);
 }
 
-UTF8Char *DB::ReadingDBTool::DBColW(UTF8Char *sqlstr, const WChar *colName)
+UnsafeArray<UTF8Char> DB::ReadingDBTool::DBColW(UnsafeArray<UTF8Char> sqlstr, const WChar *colName)
 {
 	return DB::DBUtil::SDBColW(sqlstr, colName, this->sqlType);
 }
 
-UTF8Char *DB::ReadingDBTool::DBTrim(UTF8Char *sqlstr, Text::CString val)
+UnsafeArray<UTF8Char> DB::ReadingDBTool::DBTrim(UnsafeArray<UTF8Char> sqlstr, Text::CStringNN val)
 {
 	return DB::DBUtil::SDBTrim(sqlstr, val, this->sqlType);
 }
 
-UTF8Char *DB::ReadingDBTool::DBStrUTF8(UTF8Char *sqlStr, const UTF8Char *val)
+UnsafeArray<UTF8Char> DB::ReadingDBTool::DBStrUTF8(UnsafeArray<UTF8Char> sqlStr, UnsafeArrayOpt<const UTF8Char> val)
 {
 	return DB::DBUtil::SDBStrUTF8(sqlStr, val, this->sqlType);
 }
 
-UTF8Char *DB::ReadingDBTool::DBStrW(UTF8Char *sqlStr, const WChar *val)
+UnsafeArray<UTF8Char> DB::ReadingDBTool::DBStrW(UnsafeArray<UTF8Char> sqlStr, const WChar *val)
 {
 	return DB::DBUtil::SDBStrW(sqlStr, val, this->sqlType);
 }
 
-UTF8Char *DB::ReadingDBTool::DBDbl(UTF8Char *sqlStr, Double val)
+UnsafeArray<UTF8Char> DB::ReadingDBTool::DBDbl(UnsafeArray<UTF8Char> sqlStr, Double val)
 {
 	return DB::DBUtil::SDBDbl(sqlStr, val, this->sqlType);
 }
 
-UTF8Char *DB::ReadingDBTool::DBSng(UTF8Char *sqlStr, Single val)
+UnsafeArray<UTF8Char> DB::ReadingDBTool::DBSng(UnsafeArray<UTF8Char> sqlStr, Single val)
 {
 	return DB::DBUtil::SDBSng(sqlStr, val, this->sqlType);
 }
 
-UTF8Char *DB::ReadingDBTool::DBInt32(UTF8Char *sqlStr, Int32 val)
+UnsafeArray<UTF8Char> DB::ReadingDBTool::DBInt32(UnsafeArray<UTF8Char> sqlStr, Int32 val)
 {
 	return DB::DBUtil::SDBInt32(sqlStr, val, this->sqlType);
 }
 
-UTF8Char *DB::ReadingDBTool::DBInt64(UTF8Char *sqlStr, Int64 val)
+UnsafeArray<UTF8Char> DB::ReadingDBTool::DBInt64(UnsafeArray<UTF8Char> sqlStr, Int64 val)
 {
 	return DB::DBUtil::SDBInt64(sqlStr, val, this->sqlType);
 }
 
-UTF8Char *DB::ReadingDBTool::DBBool(UTF8Char *sqlStr, Bool val)
+UnsafeArray<UTF8Char> DB::ReadingDBTool::DBBool(UnsafeArray<UTF8Char> sqlStr, Bool val)
 {
 	return DB::DBUtil::SDBBool(sqlStr, val, this->sqlType);
 }
 
-UTF8Char *DB::ReadingDBTool::DBDateTime(UTF8Char *sqlStr, Data::DateTime *val)
+UnsafeArray<UTF8Char> DB::ReadingDBTool::DBDateTime(UnsafeArray<UTF8Char> sqlStr, Data::DateTime *val)
 {
 	return DB::DBUtil::SDBDateTime(sqlStr, val, this->sqlType, (Int8)this->GetTzQhr());
 }
@@ -553,16 +554,17 @@ UInt32 DB::ReadingDBTool::GetDataCnt()
 
 Optional<DB::DBReader> DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
+	Text::CStringNN nnschemaName;
 	{
 		Text::StringBuilderUTF8 logMsg;
 		logMsg.AppendC(UTF8STRC("QueryTableData: "));
-		if (schemaName.leng > 0)
+		if (schemaName.SetTo(nnschemaName) && nnschemaName.leng > 0)
 		{
-			logMsg.Append(schemaName);
+			logMsg.Append(nnschemaName);
 			logMsg.AppendUTF8Char('.');
 		}
-		logMsg.Append(tableName);
-		AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::LogHandler::LogLevel::Raw);
+		logMsg.AppendOpt(tableName);
+		AddLogMsgC(logMsg.ToCString(), IO::LogHandler::LogLevel::Raw);
 	}
 
 	Data::Timestamp t1 = Data::Timestamp::UtcNow();
@@ -575,12 +577,12 @@ Optional<DB::DBReader> DB::ReadingDBTool::QueryTableData(Text::CString schemaNam
 		if (t3.DiffMS(t2) >= 1000)
 		{
 			UTF8Char buff[256];
-			UTF8Char *ptr;
+			UnsafeArray<UTF8Char> ptr;
 			ptr = Text::StrConcatC(buff, UTF8STRC("SQL R t1 = "));
 			ptr = Text::StrInt32(ptr, (Int32)t2.DiffMS(t1));
 			ptr = Text::StrConcatC(ptr, UTF8STRC(", t2 = "));
 			ptr = Text::StrInt32(ptr, (Int32)t3.DiffMS(t2));
-			AddLogMsgC(buff, (UOSInt)(ptr - buff), IO::LogHandler::LogLevel::Command);
+			AddLogMsgC(CSTRP(buff, ptr), IO::LogHandler::LogLevel::Command);
 		}
 		readerCnt += 1;
 		readerFail = 0;
@@ -593,8 +595,8 @@ Optional<DB::DBReader> DB::ReadingDBTool::QueryTableData(Text::CString schemaNam
 		{
 			Text::StringBuilderUTF8 logMsg;
 			logMsg.AppendC(UTF8STRC("Cannot get table data: "));
-			logMsg.Append(tableName);
-			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::LogHandler::LogLevel::Error);
+			logMsg.AppendOpt(tableName);
+			AddLogMsgC(logMsg.ToCString(), IO::LogHandler::LogLevel::Error);
 		}
 
 		{
@@ -603,7 +605,7 @@ Optional<DB::DBReader> DB::ReadingDBTool::QueryTableData(Text::CString schemaNam
 			this->lastErrMsg.ClearStr();
 			this->db->GetLastErrorMsg(this->lastErrMsg);
 			logMsg.AppendSB(this->lastErrMsg);
-			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::LogHandler::LogLevel::ErrorDetail);
+			AddLogMsgC(logMsg.ToCString(), IO::LogHandler::LogLevel::ErrorDetail);
 		}
 
 		readerFail += 1;
@@ -612,7 +614,7 @@ Optional<DB::DBReader> DB::ReadingDBTool::QueryTableData(Text::CString schemaNam
 			NN<DB::DBReader> r;
 			if (lastReader.SetTo(r))
 			{
-				AddLogMsgC(UTF8STRC("Automatically closed last reader"), IO::LogHandler::LogLevel::Action);
+				AddLogMsgC(CSTR("Automatically closed last reader"), IO::LogHandler::LogLevel::Action);
 
 				this->CloseReader(r);
 			}
@@ -901,12 +903,12 @@ void DB::ReadingDBTool::ReleaseDatabaseNames(NN<Data::ArrayListStringNN> arr)
 	arr->FreeAll();
 }
 
-Bool DB::ReadingDBTool::ChangeDatabase(Text::CString databaseName)
+Bool DB::ReadingDBTool::ChangeDatabase(Text::CStringNN databaseName)
 {
 	UTF8Char sbuff[256];
 	if (this->sqlType == DB::SQLType::MSSQL)
 	{
-		UTF8Char *sptr = this->DBColUTF8(Text::StrConcatC(sbuff, UTF8STRC("use ")), databaseName.v);
+		UnsafeArray<UTF8Char> sptr = this->DBColUTF8(Text::StrConcatC(sbuff, UTF8STRC("use ")), databaseName.v);
 		NN<DB::DBReader> r;
 		if (this->ExecuteReader(CSTRP(sbuff, sptr)).SetTo(r))
 		{
@@ -927,7 +929,7 @@ Bool DB::ReadingDBTool::ChangeDatabase(Text::CString databaseName)
 	}
 	else if (this->sqlType == DB::SQLType::MySQL)
 	{
-		UTF8Char *sptr = this->DBColUTF8(Text::StrConcatC(sbuff, UTF8STRC("use ")), databaseName.v);
+		UnsafeArray<UTF8Char> sptr = this->DBColUTF8(Text::StrConcatC(sbuff, UTF8STRC("use ")), databaseName.v);
 		NN<DB::DBReader> r;
 		if (this->ExecuteReader(CSTRP(sbuff, sptr)).SetTo(r))
 		{
@@ -962,7 +964,7 @@ Bool DB::ReadingDBTool::ChangeDatabase(Text::CString databaseName)
 		{
 			return false;
 		}
-		UTF8Char *sptr = this->DBStrUTF8(Text::StrConcatC(sbuff, UTF8STRC("SET search_path = ")), databaseName.v);
+		UnsafeArray<UTF8Char> sptr = this->DBStrUTF8(Text::StrConcatC(sbuff, UTF8STRC("SET search_path = ")), databaseName.v);
 		NN<DB::DBReader> r;
 		if (this->ExecuteReader(CSTRP(sbuff, sptr)).SetTo(r))
 		{
@@ -989,7 +991,7 @@ Text::String *DB::ReadingDBTool::GetCurrDBName()
 	return this->currDBName;
 }
 
-Bool DB::ReadingDBTool::GetDBCollation(Text::CString databaseName, Collation *collation)
+Bool DB::ReadingDBTool::GetDBCollation(Text::CStringNN databaseName, NN<Collation> collation)
 {
 	NN<DB::DBReader> r;
 	if (this->sqlType == DB::SQLType::MySQL)
@@ -1190,7 +1192,7 @@ void DB::ReadingDBTool::FreeConnectionInfo(NN<Data::ArrayListNN<ConnectionInfo>>
 	conns->Clear();
 }
 
-UOSInt DB::ReadingDBTool::SplitSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr)
+UOSInt DB::ReadingDBTool::SplitSQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs, UOSInt maxCnt, UnsafeArray<UTF8Char> oriStr)
 {
 	if (this->sqlType == DB::SQLType::MySQL)
 	{

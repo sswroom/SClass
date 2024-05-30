@@ -3,13 +3,13 @@
 #include "Crypto/Hash/HMAC.h"
 #include "Text/MyString.h"
 
-Crypto::Hash::HMAC::HMAC(NN<Crypto::Hash::IHash> hash, const UInt8 *key, UOSInt keySize)
+Crypto::Hash::HMAC::HMAC(NN<Crypto::Hash::IHash> hash, UnsafeArray<const UInt8> key, UOSInt keySize)
 {
 	this->hashInner = hash->Clone();
 	this->hashOuter = hash->Clone();
 	this->key = MemAlloc(UInt8, keySize);
 	this->keySize = keySize;
-	MemCopyNO(this->key, key, keySize);
+	MemCopyNO(this->key, key.Ptr(), keySize);
 
 	this->padSize = hash->GetBlockSize();
 	if (this->padSize < keySize)
@@ -43,7 +43,7 @@ Crypto::Hash::HMAC::~HMAC()
 	MemFree(this->oPad);
 }
 
-UTF8Char *Crypto::Hash::HMAC::GetName(UTF8Char *sbuff) const
+UnsafeArray<UTF8Char> Crypto::Hash::HMAC::GetName(UnsafeArray<UTF8Char> sbuff) const
 {
 	return this->hashInner->GetName(Text::StrConcatC(sbuff, UTF8STRC("HMAC-")));
 }

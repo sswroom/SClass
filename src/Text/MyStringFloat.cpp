@@ -7,7 +7,7 @@
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF.h"
 
-UTF8Char *Text::StrDouble(UTF8Char *oriStr, Double val, UOSInt sigFig, NN<const DoubleStyle> style)
+UnsafeArray<UTF8Char> Text::StrDouble(UnsafeArray<UTF8Char> oriStr, Double val, UOSInt sigFig, NN<const DoubleStyle> style)
 {
 	if (val == 0)
 	{
@@ -90,7 +90,7 @@ UTF8Char *Text::StrDouble(UTF8Char *oriStr, Double val, UOSInt sigFig, NN<const 
 		{
 			oriStr[1] = '+';
 		}
-		UTF8Char *tmpStr = oriStr + 13;
+		UnsafeArray<UTF8Char> tmpStr = oriStr + 13;
 		oriStr += 2;
 		*tmpStr = 0;
 		UInt32 uex = (UInt32)ex;
@@ -202,12 +202,12 @@ UTF8Char *Text::StrDouble(UTF8Char *oriStr, Double val, UOSInt sigFig, NN<const 
 	return oriStr;
 }
 
-UTF8Char *Text::StrDouble(UTF8Char *oriStr, Double val)
+UnsafeArray<UTF8Char> Text::StrDouble(UnsafeArray<UTF8Char> oriStr, Double val)
 {
 	return StrDouble(oriStr, val, 15, DoubleStyleExcel);
 }
 
-UTF16Char *Text::StrDouble(UTF16Char *oriStr, Double val)
+UTF16Char *Text::StrDoubleW(UTF16Char *oriStr, Double val)
 {
 	if (val == 0)
 	{
@@ -391,7 +391,7 @@ UTF16Char *Text::StrDouble(UTF16Char *oriStr, Double val)
 	return oriStr;
 }
 
-UTF32Char *Text::StrDouble(UTF32Char *oriStr, Double val)
+UTF32Char *Text::StrDoubleW(UTF32Char *oriStr, Double val)
 {
 	if (val == 0)
 	{
@@ -571,14 +571,14 @@ UTF32Char *Text::StrDouble(UTF32Char *oriStr, Double val)
 	return oriStr;
 }
 
-UTF8Char *Text::StrDoubleDP(UTF8Char *oriStr, Double val, UOSInt minDP, UOSInt maxDP)
+UnsafeArray<UTF8Char> Text::StrDoubleDP(UnsafeArray<UTF8Char> oriStr, Double val, UOSInt minDP, UOSInt maxDP)
 {
 	UTF8Char fmt[64];
 	if (maxDP <= 0)
 	{
 		return StrDoubleFmt(oriStr, val, "0");
 	}
-	UTF8Char *sptr = Text::StrConcatC(fmt, UTF8STRC("0."));
+	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(fmt, UTF8STRC("0."));
 	while (minDP > 0)
 	{
 		*sptr++ = '0';
@@ -594,14 +594,14 @@ UTF8Char *Text::StrDoubleDP(UTF8Char *oriStr, Double val, UOSInt minDP, UOSInt m
 	return StrDoubleFmt(oriStr, val, (const Char*)fmt);
 }
 
-UTF16Char *Text::StrDoubleDP(UTF16Char *oriStr, Double val, UOSInt minDP, UOSInt maxDP)
+UTF16Char *Text::StrDoubleDPW(UTF16Char *oriStr, Double val, UOSInt minDP, UOSInt maxDP)
 {
 	Char fmt[64];
 	if (maxDP <= 0)
 	{
-		return StrDoubleFmt(oriStr, val, "0");
+		return StrDoubleFmtW(oriStr, val, "0");
 	}
-	Char *sptr = Text::StrConcatC(fmt, "0.", 2);
+	UnsafeArray<Char> sptr = Text::StrConcatC(fmt, "0.", 2);
 	while (minDP > 0)
 	{
 		*sptr++ = '0';
@@ -614,17 +614,17 @@ UTF16Char *Text::StrDoubleDP(UTF16Char *oriStr, Double val, UOSInt minDP, UOSInt
 		maxDP--;
 	}
 	*sptr = 0;
-	return StrDoubleFmt(oriStr, val, fmt);
+	return StrDoubleFmtW(oriStr, val, fmt);
 }
 
-UTF32Char *Text::StrDoubleDP(UTF32Char *oriStr, Double val, UOSInt minDP, UOSInt maxDP)
+UTF32Char *Text::StrDoubleDPW(UTF32Char *oriStr, Double val, UOSInt minDP, UOSInt maxDP)
 {
 	Char fmt[64];
 	if (maxDP <= 0)
 	{
-		return StrDoubleFmt(oriStr, val, "0");
+		return StrDoubleFmtW(oriStr, val, "0");
 	}
-	Char *sptr = Text::StrConcatC(fmt, "0.", 2);
+	UnsafeArray<Char> sptr = Text::StrConcatC(fmt, "0.", 2);
 	while (minDP > 0)
 	{
 		*sptr++ = '0';
@@ -637,7 +637,7 @@ UTF32Char *Text::StrDoubleDP(UTF32Char *oriStr, Double val, UOSInt minDP, UOSInt
 		maxDP--;
 	}
 	*sptr = 0;
-	return StrDoubleFmt(oriStr, val, fmt);
+	return StrDoubleFmtW(oriStr, val, fmt);
 }
 
 Char *MyString_ecvt(Char *buff, Double val, Int32 numDigits, Int32 *digit, Int32 *sign)
@@ -697,7 +697,7 @@ Char *MyString_ecvt(Char *buff, Double val, Int32 numDigits, Int32 *digit, Int32
 	return buff;
 }
 
-UTF8Char *Text::StrDoubleFmt(UTF8Char *oriStr, Double val, const Char *format)
+UnsafeArray<UTF8Char> Text::StrDoubleFmt(UnsafeArray<UTF8Char> oriStr, Double val, const Char *format)
 {
 	Char fmtBuff[30];
 	Char *buff;
@@ -1125,7 +1125,7 @@ UTF8Char *Text::StrDoubleFmt(UTF8Char *oriStr, Double val, const Char *format)
 	}
 }
 
-UTF16Char *Text::StrDoubleFmt(UTF16Char *oriStr, Double val, const Char *format)
+UTF16Char *Text::StrDoubleFmtW(UTF16Char *oriStr, Double val, const Char *format)
 {
 	Char fmtBuff[30];
 	Char *buff;
@@ -1553,7 +1553,7 @@ UTF16Char *Text::StrDoubleFmt(UTF16Char *oriStr, Double val, const Char *format)
 	}
 }
 
-UTF32Char *Text::StrDoubleFmt(UTF32Char *oriStr, Double val, const Char *format)
+UTF32Char *Text::StrDoubleFmtW(UTF32Char *oriStr, Double val, const Char *format)
 {
 	Char fmtBuff[30];
 	Char *buff;
@@ -1982,7 +1982,7 @@ UTF32Char *Text::StrDoubleFmt(UTF32Char *oriStr, Double val, const Char *format)
 	}
 }
 
-Bool Text::StrToDouble(const UTF8Char *str1, OutParam<Double> outVal)
+Bool Text::StrToDouble(UnsafeArray<const UTF8Char> str1, OutParam<Double> outVal)
 {
 	Bool neg = false;
 	UTF8Char c;
@@ -2109,7 +2109,7 @@ Bool Text::StrToDouble(const UTF8Char *str1, OutParam<Double> outVal)
 	return true;
 }
 
-Bool Text::StrToDouble(const UTF16Char *str1, OutParam<Double> outVal)
+Bool Text::StrToDoubleW(const UTF16Char *str1, OutParam<Double> outVal)
 {
 	Double r = 0.0;
 	Bool neg = false;
@@ -2202,7 +2202,7 @@ Bool Text::StrToDouble(const UTF16Char *str1, OutParam<Double> outVal)
 	return true;
 }
 
-Bool Text::StrToDouble(const UTF32Char *str1, OutParam<Double> outVal)
+Bool Text::StrToDoubleW(const UTF32Char *str1, OutParam<Double> outVal)
 {
 	Double r = 0.0;
 	Bool neg = false;
@@ -2298,7 +2298,7 @@ Bool Text::StrToDouble(const UTF32Char *str1, OutParam<Double> outVal)
 	return true;
 }
 
-Double Text::StrToDouble(const UTF8Char *str1)
+Double Text::StrToDouble(UnsafeArray<const UTF8Char> str1)
 {
 	Double r;
 	if (Text::StrToDouble(str1, r))
@@ -2306,18 +2306,18 @@ Double Text::StrToDouble(const UTF8Char *str1)
 	return 0;
 }
 
-Double Text::StrToDouble(const UTF16Char *str1)
+Double Text::StrToDoubleW(const UTF16Char *str1)
 {
 	Double r;
-	if (Text::StrToDouble(str1, r))
+	if (Text::StrToDoubleW(str1, r))
 		return r;
 	return 0;
 }
 
-Double Text::StrToDouble(const UTF32Char *str1)
+Double Text::StrToDoubleW(const UTF32Char *str1)
 {
 	Double r;
-	if (Text::StrToDouble(str1, r))
+	if (Text::StrToDoubleW(str1, r))
 		return r;
 	return 0;
 }

@@ -34,7 +34,7 @@ namespace IO
 		Bool running;
 		Bool hasNewFile;
 
-		UTF8Char *GetNewName(UTF8Char *buff, NN<Data::DateTimeUtil::TimeValue> logTime, UInt32 nanosec, Int32 *lastVal);
+		UnsafeArray<UTF8Char> GetNewName(UnsafeArray<UTF8Char> buff, NN<Data::DateTimeUtil::TimeValue> logTime, UInt32 nanosec, Int32 *lastVal);
 		void WriteArr(NN<Text::String> *msgArr, Data::Timestamp *dateArr, UOSInt arrCnt);
 		static UInt32 __stdcall FileThread(AnyType userObj);
 		void Init(LogType style, LogGroup groupStyle, const Char *dateFormat);
@@ -46,7 +46,7 @@ namespace IO
 		virtual void LogAdded(const Data::Timestamp &logTime, Text::CStringNN logMsg, LogLevel logLev);
 
 		Bool HasNewFile();
-		UTF8Char *GetLastFileName(UTF8Char *sbuff);
+		UnsafeArray<UTF8Char> GetLastFileName(UnsafeArray<UTF8Char> sbuff);
 	};
 }
 #endif

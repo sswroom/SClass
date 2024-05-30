@@ -43,7 +43,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BurikoPackFileParser::ParseFileHd
 	UInt32 fileOfst;
 	UInt32 nextOfst;
 	UTF8Char fileName[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (ReadInt32(&hdr[0]) != 0x6b636150 || ReadInt32(&hdr[4]) != 0x656c6946 || ReadInt32(&hdr[8]) != 0x20202020)
 		return 0;

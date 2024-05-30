@@ -59,7 +59,7 @@ Data::QueryConditions::ConditionType Data::QueryConditions::TimeBetweenCondition
 Bool Data::QueryConditions::TimeBetweenCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, sqlType);
 	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb->AppendC(UTF8STRC(" between "));
@@ -127,7 +127,7 @@ Data::QueryConditions::ConditionType Data::QueryConditions::Int32Condition::GetT
 Bool Data::QueryConditions::Int32Condition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, sqlType);
 	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb->Append(Data::QueryConditions::CompareConditionGetStr(cond));
@@ -242,7 +242,7 @@ Bool Data::QueryConditions::Int32InCondition::ToWhereClause(NN<Text::StringBuild
 	else
 	{
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		sptr = DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, sqlType);
 		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb->AppendC(UTF8STRC(" in ("));
@@ -330,7 +330,7 @@ Data::QueryConditions::ConditionType Data::QueryConditions::Int64Condition::GetT
 Bool Data::QueryConditions::Int64Condition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, sqlType);
 	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb->Append(Data::QueryConditions::CompareConditionGetStr(cond));
@@ -440,7 +440,7 @@ Data::QueryConditions::ConditionType Data::QueryConditions::DoubleCondition::Get
 Bool Data::QueryConditions::DoubleCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, sqlType);
 	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb->Append(Data::QueryConditions::CompareConditionGetStr(cond));
@@ -517,20 +517,26 @@ Bool Data::QueryConditions::DoubleCondition::TestValid(NN<Data::VariItem> item)
 	return false;
 }
 
-Data::QueryConditions::StringInCondition::StringInCondition(Text::CStringNN fieldName, NN<Data::ArrayList<const UTF8Char*>> val) : FieldCondition(fieldName)
+Data::QueryConditions::StringInCondition::StringInCondition(Text::CStringNN fieldName, NN<Data::ArrayListArr<const UTF8Char>> val) : FieldCondition(fieldName)
 {
 	UOSInt i = 0;
 	UOSInt j = val->GetCount();
 	while (i < j)
 	{
-		this->vals.Add(Text::StrCopyNew(val->GetItem(i)).Ptr());
+		this->vals.Add(Text::StrCopyNew(val->GetItemNoCheck(i)));
 		i++;
 	}
 }
 
 Data::QueryConditions::StringInCondition::~StringInCondition()
 {
-	LIST_FREE_FUNC(&this->vals, Text::StrDelNew);
+	UOSInt i = 0;
+	UOSInt j = this->vals.GetCount();
+	while (i < j)
+	{
+		Text::StrDelNew(this->vals.GetItemNoCheck(i));
+		i++;
+	}
 }
 
 Data::QueryConditions::ConditionType Data::QueryConditions::StringInCondition::GetType()
@@ -547,8 +553,9 @@ Bool Data::QueryConditions::StringInCondition::ToWhereClause(NN<Text::StringBuil
 	else
 	{
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
-		UTF8Char *sptrTmp = 0;
+		UnsafeArray<UTF8Char> sptr;
+		UnsafeArrayOpt<UTF8Char> sptrTmp = 0;
+		UnsafeArray<UTF8Char> nnsptrTmp;
 		UOSInt sptrSize = 0;
 		UOSInt thisSize;
 		UOSInt i;
@@ -575,20 +582,24 @@ Bool Data::QueryConditions::StringInCondition::ToWhereClause(NN<Text::StringBuil
 				if (thisSize > sptrSize)
 				{
 					sptrSize = thisSize;
-					if (sptrTmp)
+					if (sptrTmp.SetTo(nnsptrTmp))
 					{
-						MemFree(sptrTmp);
+						MemFreeArr(nnsptrTmp);
 					}
-					sptrTmp = MemAlloc(UTF8Char, thisSize + 1);
+					nnsptrTmp = MemAllocArr(UTF8Char, thisSize + 1);
+					sptrTmp = nnsptrTmp;
 				}
-				sptr = DB::DBUtil::SDBStrUTF8(sptrTmp, this->vals.GetItem(i), sqlType);
-				sb->AppendC(sptrTmp, (UOSInt)(sptr - sptrTmp));
+				if (sptrTmp.SetTo(nnsptrTmp))
+				{
+					sptr = DB::DBUtil::SDBStrUTF8(nnsptrTmp, this->vals.GetItem(i), sqlType);
+					sb->AppendC(nnsptrTmp, (UOSInt)(sptr - nnsptrTmp));
+				}
 			}
 			i++;
 		}
-		if (sptrTmp)
+		if (sptrTmp.SetTo(nnsptrTmp))
 		{
-			MemFree(sptrTmp);
+			MemFreeArr(nnsptrTmp);
 		}
 		sb->AppendUTF8Char(')');
 		return true;
@@ -597,7 +608,7 @@ Bool Data::QueryConditions::StringInCondition::ToWhereClause(NN<Text::StringBuil
 
 Bool Data::QueryConditions::StringInCondition::TestValid(NN<Data::VariItem> item)
 {
-	const UTF8Char *csptr;
+	UnsafeArray<const UTF8Char> csptr;
 	UOSInt i;
 	switch (item->GetItemType())
 	{
@@ -606,7 +617,7 @@ Bool Data::QueryConditions::StringInCondition::TestValid(NN<Data::VariItem> item
 		i = this->vals.GetCount();
 		while (i-- > 0)
 		{
-			if (Text::StrEquals(csptr, this->vals.GetItem(i)))
+			if (Text::StrEquals(csptr, this->vals.GetItemNoCheck(i)))
 			{
 				return true;
 			}
@@ -617,7 +628,7 @@ Bool Data::QueryConditions::StringInCondition::TestValid(NN<Data::VariItem> item
 		i = this->vals.GetCount();
 		while (i-- > 0)
 		{
-			if (Text::StrEquals(csptr, this->vals.GetItem(i)))
+			if (Text::StrEquals(csptr, this->vals.GetItemNoCheck(i)))
 			{
 				return true;
 			}
@@ -647,20 +658,26 @@ Bool Data::QueryConditions::StringInCondition::TestValid(NN<Data::VariItem> item
 	}
 }
 
-Data::QueryConditions::StringNotInCondition::StringNotInCondition(Text::CStringNN fieldName, NN<Data::ArrayList<const UTF8Char*>> val) : FieldCondition(fieldName)
+Data::QueryConditions::StringNotInCondition::StringNotInCondition(Text::CStringNN fieldName, NN<Data::ArrayListArr<const UTF8Char>> val) : FieldCondition(fieldName)
 {
 	UOSInt i = 0;
 	UOSInt j = val->GetCount();
 	while (i < j)
 	{
-		this->vals.Add(Text::StrCopyNew(val->GetItem(i)).Ptr());
+		this->vals.Add(Text::StrCopyNew(val->GetItemNoCheck(i)));
 		i++;
 	}
 }
 
 Data::QueryConditions::StringNotInCondition::~StringNotInCondition()
 {
-	LIST_FREE_FUNC(&this->vals, Text::StrDelNew);
+	UOSInt i = 0;
+	UOSInt j = this->vals.GetCount();
+	while (i < j)
+	{
+		Text::StrDelNew(this->vals.GetItemNoCheck(i));
+		i++;
+	}
 }
 
 Data::QueryConditions::ConditionType Data::QueryConditions::StringNotInCondition::GetType()
@@ -677,8 +694,9 @@ Bool Data::QueryConditions::StringNotInCondition::ToWhereClause(NN<Text::StringB
 	else
 	{
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
-		UTF8Char *sptrTmp = 0;
+		UnsafeArray<UTF8Char> sptr;
+		UnsafeArrayOpt<UTF8Char> sptrTmp = 0;
+		UnsafeArray<UTF8Char> nnsptrTmp;
 		UOSInt sptrSize = 0;
 		UOSInt thisSize;
 		UOSInt i;
@@ -705,20 +723,24 @@ Bool Data::QueryConditions::StringNotInCondition::ToWhereClause(NN<Text::StringB
 				if (thisSize > sptrSize)
 				{
 					sptrSize = thisSize;
-					if (sptrTmp)
+					if (sptrTmp.SetTo(nnsptrTmp))
 					{
-						MemFree(sptrTmp);
+						MemFreeArr(nnsptrTmp);
 					}
-					sptrTmp = MemAlloc(UTF8Char, thisSize + 1);
+					nnsptrTmp = MemAllocArr(UTF8Char, thisSize + 1);
+					sptrTmp = nnsptrTmp;
 				}
-				sptr = DB::DBUtil::SDBStrUTF8(sptrTmp, this->vals.GetItem(i), sqlType);
-				sb->AppendC(sptrTmp, (UOSInt)(sptr - sptrTmp));
+				if (sptrTmp.SetTo(nnsptrTmp))
+				{
+					sptr = DB::DBUtil::SDBStrUTF8(nnsptrTmp, this->vals.GetItem(i), sqlType);
+					sb->AppendC(nnsptrTmp, (UOSInt)(sptr - nnsptrTmp));
+				}
 			}
 			i++;
 		}
-		if (sptrTmp)
+		if (sptrTmp.SetTo(nnsptrTmp))
 		{
-			MemFree(sptrTmp);
+			MemFreeArr(nnsptrTmp);
 		}
 		sb->AppendUTF8Char(')');
 		return true;
@@ -727,7 +749,7 @@ Bool Data::QueryConditions::StringNotInCondition::ToWhereClause(NN<Text::StringB
 
 Bool Data::QueryConditions::StringNotInCondition::TestValid(NN<Data::VariItem> item)
 {
-	const UTF8Char *csptr;
+	UnsafeArray<const UTF8Char> csptr;
 	UOSInt i;
 	switch (item->GetItemType())
 	{
@@ -736,7 +758,7 @@ Bool Data::QueryConditions::StringNotInCondition::TestValid(NN<Data::VariItem> i
 		i = this->vals.GetCount();
 		while (i-- > 0)
 		{
-			if (Text::StrEquals(csptr, this->vals.GetItem(i)))
+			if (Text::StrEquals(csptr, this->vals.GetItemNoCheck(i)))
 			{
 				return false;
 			}
@@ -747,7 +769,7 @@ Bool Data::QueryConditions::StringNotInCondition::TestValid(NN<Data::VariItem> i
 		i = this->vals.GetCount();
 		while (i-- > 0)
 		{
-			if (Text::StrEquals(csptr, this->vals.GetItem(i)))
+			if (Text::StrEquals(csptr, this->vals.GetItemNoCheck(i)))
 			{
 				return false;
 			}
@@ -777,7 +799,7 @@ Bool Data::QueryConditions::StringNotInCondition::TestValid(NN<Data::VariItem> i
 	}
 }
 
-Data::QueryConditions::StringContainsCondition::StringContainsCondition(Text::CStringNN fieldName, const UTF8Char *val) : FieldCondition(fieldName)
+Data::QueryConditions::StringContainsCondition::StringContainsCondition(Text::CStringNN fieldName, UnsafeArray<const UTF8Char> val) : FieldCondition(fieldName)
 {
 	this->val = Text::String::NewNotNullSlow(val);
 }
@@ -795,7 +817,7 @@ Data::QueryConditions::ConditionType Data::QueryConditions::StringContainsCondit
 Bool Data::QueryConditions::StringContainsCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr2;
 	sptr2 = DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, sqlType);
 	sb->AppendC(sbuff, (UOSInt)(sptr2 - sbuff));
 	sb->AppendC(UTF8STRC(" like "));
@@ -811,10 +833,10 @@ Bool Data::QueryConditions::StringContainsCondition::ToWhereClause(NN<Text::Stri
 	}
 	else
 	{
-		UTF8Char *sptr = MemAlloc(UTF8Char, size + 1);
+		UnsafeArray<UTF8Char> sptr = MemAllocArr(UTF8Char, size + 1);
 		sptr2 = DB::DBUtil::SDBStrUTF8(sptr, sb2.ToString(), sqlType);
 		sb->AppendC(sptr, (UOSInt)(sptr2 - sptr));
-		MemFree(sptr);
+		MemFreeArr(sptr);
 	}
 	return true;
 }
@@ -872,22 +894,22 @@ Data::QueryConditions::ConditionType Data::QueryConditions::StringEqualsConditio
 Bool Data::QueryConditions::StringEqualsCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr2;
 	sptr2 = DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, sqlType);
 	sb->AppendC(sbuff, (UOSInt)(sptr2 - sbuff));
 	sb->AppendC(UTF8STRC(" = "));
-	UOSInt size = DB::DBUtil::SDBStrUTF8Leng(this->val->v, sqlType);
+	UOSInt size = DB::DBUtil::SDBStrUTF8Leng(UnsafeArray<const UTF8Char>(this->val->v), sqlType);
 	if (size < 512)
 	{
-		sptr2 = DB::DBUtil::SDBStrUTF8(sbuff, this->val->v, sqlType);
+		sptr2 = DB::DBUtil::SDBStrUTF8(sbuff, UnsafeArray<const UTF8Char>(this->val->v), sqlType);
 		sb->AppendC(sbuff, (UOSInt)(sptr2 - sbuff));
 	}
 	else
 	{
-		UTF8Char *sptr = MemAlloc(UTF8Char, size + 1);
-		sptr2 = DB::DBUtil::SDBStrUTF8(sptr, this->val->v, sqlType);
+		UnsafeArray<UTF8Char> sptr = MemAllocArr(UTF8Char, size + 1);
+		sptr2 = DB::DBUtil::SDBStrUTF8(sptr, UnsafeArray<const UTF8Char>(this->val->v), sqlType);
 		sb->AppendC(sptr, (UOSInt)(sptr2 - sptr));
-		MemFree(sptr);
+		MemFreeArr(sptr);
 	}
 	return true;
 }
@@ -948,7 +970,7 @@ Bool Data::QueryConditions::BooleanCondition::ToWhereClause(NN<Text::StringBuild
 		sb->AppendC(UTF8STRC("NOT "));
 	}
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, sqlType);
 	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	return true;
@@ -1024,7 +1046,7 @@ Data::QueryConditions::ConditionType Data::QueryConditions::NotNullCondition::Ge
 Bool Data::QueryConditions::NotNullCondition::ToWhereClause(NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, sqlType);
 	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb->AppendC(UTF8STRC(" is not null"));
@@ -1348,7 +1370,7 @@ NN<Data::QueryConditions> Data::QueryConditions::DoubleLE(Text::CStringNN fieldN
 	return *this;
 }
 
-NN<Data::QueryConditions> Data::QueryConditions::StrIn(Text::CStringNN fieldName, NN<Data::ArrayList<const UTF8Char*>> vals)
+NN<Data::QueryConditions> Data::QueryConditions::StrIn(Text::CStringNN fieldName, NN<Data::ArrayListArr<const UTF8Char>> vals)
 {
 	NN<StringInCondition> cond;
 	NEW_CLASSNN(cond, StringInCondition(fieldName, vals));
@@ -1356,7 +1378,7 @@ NN<Data::QueryConditions> Data::QueryConditions::StrIn(Text::CStringNN fieldName
 	return *this;
 }
 
-NN<Data::QueryConditions> Data::QueryConditions::StrNotIn(Text::CStringNN fieldName, NN<Data::ArrayList<const UTF8Char*>> vals)
+NN<Data::QueryConditions> Data::QueryConditions::StrNotIn(Text::CStringNN fieldName, NN<Data::ArrayListArr<const UTF8Char>> vals)
 {
 	NN<StringNotInCondition> cond;
 	NEW_CLASSNN(cond, StringNotInCondition(fieldName, vals));
@@ -1364,7 +1386,7 @@ NN<Data::QueryConditions> Data::QueryConditions::StrNotIn(Text::CStringNN fieldN
 	return *this;
 }
 
-NN<Data::QueryConditions> Data::QueryConditions::StrContains(Text::CStringNN fieldName, const UTF8Char *val)
+NN<Data::QueryConditions> Data::QueryConditions::StrContains(Text::CStringNN fieldName, UnsafeArray<const UTF8Char> val)
 {
 	NN<StringContainsCondition> cond;
 	NEW_CLASSNN(cond, StringContainsCondition(fieldName, val));
@@ -1466,7 +1488,7 @@ Data::QueryConditions *Data::QueryConditions::ParseStr(Text::CStringNN s, DB::SQ
 {
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbField;
-	const UTF8Char *sql = s.v;
+	UnsafeArray<const UTF8Char> sql = s.v;
 	NN<Data::VariItem> item;
 	Data::QueryConditions *cond;
 	UOSInt i;
@@ -1505,7 +1527,7 @@ Data::QueryConditions *Data::QueryConditions::ParseStr(Text::CStringNN s, DB::SQ
 					Data::VariItem::ItemType itemType = item->GetItemType();
 					if (itemType == Data::VariItem::ItemType::Str)
 					{
-						Data::ArrayList<const UTF8Char*> vals;
+						Data::ArrayListArr<const UTF8Char> vals;
 						Data::ArrayIterator<NN<Data::VariItem>> it = items.Iterator();
 						NN<Data::VariItem> item;
 						while (it.HasNext())
@@ -1570,7 +1592,7 @@ Data::QueryConditions *Data::QueryConditions::ParseStr(Text::CStringNN s, DB::SQ
 						Data::VariItem::ItemType itemType = item->GetItemType();
 						if (itemType == Data::VariItem::ItemType::Str)
 						{
-							Data::ArrayList<const UTF8Char*> vals;
+							Data::ArrayListArr<const UTF8Char> vals;
 							Data::ArrayIterator<NN<Data::VariItem>> it = items.Iterator();
 							NN<Data::VariItem> item;
 							while (it.HasNext())

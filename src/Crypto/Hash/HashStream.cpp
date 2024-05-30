@@ -27,9 +27,9 @@ UOSInt Crypto::Hash::HashStream::Read(const Data::ByteArray &buff)
 	return retSize;
 }
 
-UOSInt Crypto::Hash::HashStream::Write(const UInt8 *buff, UOSInt size)
+UOSInt Crypto::Hash::HashStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
-	this->hash->Calc(buff, size);
+	this->hash->Calc(buff.Ptr(), size);
 	return this->srcStm->Write(buff, size);
 }
 

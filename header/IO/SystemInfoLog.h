@@ -10,8 +10,8 @@ namespace IO
 	public:
 		struct ServerRole
 		{
-			const UTF8Char *name;
-			const UTF8Char *data;
+			UnsafeArrayOpt<const UTF8Char> name;
+			UnsafeArrayOpt<const UTF8Char> data;
 		};
 
 		struct DeviceInfo

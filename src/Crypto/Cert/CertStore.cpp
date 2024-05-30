@@ -47,8 +47,8 @@ Bool Crypto::Cert::CertStore::LoadDir(Text::CStringNN certsDir)
 		return false;
 	}
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	Parser::FileParser::X509Parser parser;
 	sptr = certsDir.ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
@@ -62,7 +62,7 @@ Bool Crypto::Cert::CertStore::LoadDir(Text::CStringNN certsDir)
 	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)
 	{
-		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize)) != 0)
+		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize).SetTo(sptr2))
 		{
 			if (pt == IO::Path::PathType::File)
 			{

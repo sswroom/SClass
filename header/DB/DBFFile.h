@@ -48,13 +48,13 @@ namespace DB
 		Bool IsError();
 		UInt32 GetCodePage();
 		UOSInt GetColSize(UOSInt colIndex);
-		OSInt GetColIndex(const UTF8Char *name);
+		OSInt GetColIndex(UnsafeArray<const UTF8Char> name);
 		WChar *GetRecord(WChar *buff, UOSInt row, UOSInt col);
-		UTF8Char *GetRecord(UTF8Char *buff, UOSInt row, UOSInt col);
+		UnsafeArrayOpt<UTF8Char> GetRecord(UnsafeArray<UTF8Char> buff, UOSInt row, UOSInt col);
 		Bool GetRecord(NN<Text::StringBuilderUTF8> sb, UOSInt row, UOSInt col);
 		UOSInt GetColCount();
 		UOSInt GetRowCnt();
-		UTF8Char *GetColumnName(UOSInt colIndex, UTF8Char *buff);
+		UnsafeArrayOpt<UTF8Char> GetColumnName(UOSInt colIndex, UnsafeArray<UTF8Char> buff);
 		DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize);
 		Bool GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef);
 		Bool ReadRowData(UOSInt row, UInt8 *recordBuff);
@@ -88,7 +88,7 @@ namespace DB
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
 		virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb);
 		virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
-		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
+		virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize);
 		virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
 		virtual Double GetDbl(UOSInt colIndex);
 		virtual Bool GetBool(UOSInt colIndex);
@@ -99,7 +99,7 @@ namespace DB
 
 		virtual Bool IsNull(UOSInt colIndex);
 //		virtual WChar *GetName(UOSInt colIndex);
-		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
+		virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff);
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
 		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);
 	};

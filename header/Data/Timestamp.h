@@ -238,17 +238,17 @@ namespace Data
 /*		void SetNTPTime(Int32 hiDword, Int32 loDword);
 		Int64 ToNTPTime();*/
 
-		Char *ToString(Char *buff) const
+		UnsafeArray<Char> ToString(UnsafeArray<Char> buff) const
 		{
-			return (Char*)ToString((UTF8Char*)buff);
+			return UnsafeArray<Char>::ConvertFrom(ToString(UnsafeArray<UTF8Char>::ConvertFrom(buff)));
 		}
 
-		Char *ToString(Char *buff, const Char *pattern) const
+		UnsafeArray<Char> ToString(UnsafeArray<Char> buff, const Char *pattern) const
 		{
-			return (Char*)ToString((UTF8Char*)buff, pattern);
+			return UnsafeArray<Char>::ConvertFrom(ToString(UnsafeArray<UTF8Char>::ConvertFrom(buff), pattern));
 		}
 
-		UTF8Char *ToString(UTF8Char *buff) const
+		UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> buff) const
 		{
 			if (this->IsNull())
 			{
@@ -273,7 +273,7 @@ namespace Data
 			}
 		}
 
-		UTF8Char *ToStringISO8601(UTF8Char *buff) const
+		UnsafeArray<UTF8Char> ToStringISO8601(UnsafeArray<UTF8Char> buff) const
 		{
 			if (this->IsNull())
 			{
@@ -298,7 +298,7 @@ namespace Data
 			}
 		}
 
-		UTF8Char *ToStringNoZone(UTF8Char *buff) const
+		UnsafeArray<UTF8Char> ToStringNoZone(UnsafeArray<UTF8Char> buff) const
 		{
 			if (this->IsNull())
 			{
@@ -330,7 +330,7 @@ namespace Data
 			}
 		}
 
-		UTF8Char *ToString(UTF8Char *buff, const Char *pattern) const
+		UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> buff, const Char *pattern) const
 		{
 			Data::DateTimeUtil::TimeValue tval;
 			Data::DateTimeUtil::Instant2TimeValue(this->inst.sec, this->inst.nanosec, tval, this->tzQhr);
@@ -387,7 +387,7 @@ namespace Data
 			return this->inst.CompareTo(ts.inst);
 		}
 		
-		/*UTF8Char *ToLocalStr(UTF8Char *buff);
+		/*UnsafeArray<UTF8Char> ToLocalStr(UnsafeArray<UTF8Char> buff);
 		OSInt CompareTo(Data::DateTime *obj);
 		Int32 DateCompare(Data::DateTime *dt);
 		Bool IsSameDay(Data::DateTime *dt);*/

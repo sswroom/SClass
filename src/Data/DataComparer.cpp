@@ -187,7 +187,15 @@ OSInt Data::DataComparer::Compare(Data::UUID* val1, Data::UUID *val2)
 
 OSInt Data::DataComparer::Compare(Text::CString val1, Text::CString val2)
 {
-	return Text::StrCompare(val1.v, val2.v);
+	UnsafeArray<const UTF8Char> nnval1;
+	UnsafeArray<const UTF8Char> nnval2;
+	if (val1.v == val2.v)
+		return 0;
+	else if (!val1.v.SetTo(nnval1))
+		return -1;
+	else if (!val2.v.SetTo(nnval2))
+		return 1;
+	return Text::StrCompare(nnval1.Ptr(), nnval2.Ptr());
 }
 
 OSInt Data::DataComparer::Compare(Text::String *val1, Text::String *val2)

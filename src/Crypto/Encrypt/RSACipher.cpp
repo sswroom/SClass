@@ -129,7 +129,7 @@ UOSInt Crypto::Encrypt::RSACipher::PaddingRemove(UInt8* destBuff, const UInt8* b
 }
 
 
-Bool Crypto::Encrypt::RSACipher::MGF1(UInt8 *destBuff, const UInt8 *seed, UOSInt seedLen, UOSInt len, Crypto::Hash::HashType hashType)
+Bool Crypto::Encrypt::RSACipher::MGF1(UInt8 *destBuff, UnsafeArray<const UInt8> seed, UOSInt seedLen, UOSInt len, Crypto::Hash::HashType hashType)
 {
 	NN<Crypto::Hash::IHash> hash;
 	if (!Crypto::Hash::HashCreator::CreateHash(hashType).SetTo(hash))
@@ -142,7 +142,7 @@ Bool Crypto::Encrypt::RSACipher::MGF1(UInt8 *destBuff, const UInt8 *seed, UOSInt
 	while (len >= hashSize)
 	{
 		hash->Clear();
-		hash->Calc(seed, seedLen);
+		hash->Calc(seed.Ptr(), seedLen);
 		WriteMUInt32(tmpBuff, counter);
 		hash->Calc(tmpBuff, 4);
 		hash->GetValue(destBuff);
@@ -153,7 +153,7 @@ Bool Crypto::Encrypt::RSACipher::MGF1(UInt8 *destBuff, const UInt8 *seed, UOSInt
 	if (len > 0)
 	{
 		hash->Clear();
-		hash->Calc(seed, seedLen);
+		hash->Calc(seed.Ptr(), seedLen);
 		WriteMUInt32(tmpBuff, counter);
 		hash->Calc(tmpBuff, 4);
 		hash->GetValue(tmpBuff);

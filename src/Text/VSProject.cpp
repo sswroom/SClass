@@ -76,7 +76,7 @@ void Text::VSContainer::AddChild(NN<Text::CodeObject> obj)
 Text::VSProject::VSProject(Text::CStringNN name, VisualStudioVersion ver) : Text::CodeProject(name)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	i = name.LastIndexOf(IO::Path::PATH_SEPERATOR);
 	sptr = Text::StrConcatC(sbuff, &name.v[i + 1], name.leng - i - 1);

@@ -10,7 +10,7 @@ namespace IO
 	private:
 		void *handle;
 
-		UOSInt WriteBuff(const UInt8 *buff, UOSInt size);
+		UOSInt WriteBuff(UnsafeArray<const UInt8> buff, UOSInt size);
 	public:
 		SimpleFileWriter(const UTF8Char *fileName, IO::FileMode mode, IO::FileShare share);
 		virtual ~SimpleFileWriter();

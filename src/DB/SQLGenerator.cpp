@@ -896,9 +896,10 @@ Bool DB::SQLGenerator::GenCreateTableCmd(NN<DB::SQLBuilder> sql, Text::CString s
 //	Int64 autoIncStep = 1;
 	NN<DB::ColDef> col;
 	sql->AppendCmdC(CSTR("create table "));
-	if (schemaName.leng > 0 && sql->SupportSchema())
+	Text::CStringNN nns;
+	if (schemaName.SetTo(nns) && schemaName.leng > 0 && sql->SupportSchema())
 	{
-		sql->AppendCol(schemaName.v);
+		sql->AppendCol(nns.v);
 		sql->AppendCmdC(CSTR("."));
 	}
 	sql->AppendCol(tableName.v);
@@ -1044,9 +1045,10 @@ Bool DB::SQLGenerator::GenInsertCmd(NN<DB::SQLBuilder> sql, Text::CString schema
 	Data::DateTime dt;
 
 	sql->AppendCmdC(CSTR("insert into "));
-	if (schemaName.leng > 0 && sql->SupportSchema())
+	Text::CStringNN nns;
+	if (schemaName.SetTo(nns) && schemaName.leng > 0 && sql->SupportSchema())
 	{
-		sql->AppendCol(schemaName.v);
+		sql->AppendCol(nns.v);
 		sql->AppendCmdC(CSTR("."));
 	}
 	sql->AppendCol(tableName.v);
@@ -1181,10 +1183,10 @@ Bool DB::SQLGenerator::GenInsertCmd(NN<DB::SQLBuilder> sql, Text::CString schema
 	return true;
 }
 
-Bool DB::SQLGenerator::GenCreateDatabaseCmd(NN<DB::SQLBuilder> sql, Text::CString databaseName, const Collation *collation)
+Bool DB::SQLGenerator::GenCreateDatabaseCmd(NN<DB::SQLBuilder> sql, Text::CStringNN databaseName, const Collation *collation)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sql->AppendCmdC(CSTR("CREATE DATABASE "));
 	sql->AppendCol(databaseName.v);
 	if (collation != 0)
@@ -1202,21 +1204,21 @@ Bool DB::SQLGenerator::GenCreateDatabaseCmd(NN<DB::SQLBuilder> sql, Text::CStrin
 	return true;
 }
 
-Bool DB::SQLGenerator::GenDeleteDatabaseCmd(NN<DB::SQLBuilder> sql, Text::CString databaseName)
+Bool DB::SQLGenerator::GenDeleteDatabaseCmd(NN<DB::SQLBuilder> sql, Text::CStringNN databaseName)
 {
 	sql->AppendCmdC(CSTR("DROP DATABASE "));
 	sql->AppendCol(databaseName.v);
 	return true;
 }
 
-Bool DB::SQLGenerator::GenCreateSchemaCmd(NN<DB::SQLBuilder> sql, Text::CString schemaName)
+Bool DB::SQLGenerator::GenCreateSchemaCmd(NN<DB::SQLBuilder> sql, Text::CStringNN schemaName)
 {
 	sql->AppendCmdC(CSTR("CREATE SCHEMA "));
 	sql->AppendCol(schemaName.v);
 	return true;
 }
 
-Bool DB::SQLGenerator::GenDeleteSchemaCmd(NN<DB::SQLBuilder> sql, Text::CString schemaName)
+Bool DB::SQLGenerator::GenDeleteSchemaCmd(NN<DB::SQLBuilder> sql, Text::CStringNN schemaName)
 {
 	sql->AppendCmdC(CSTR("DROP SCHEMA "));
 	sql->AppendCol(schemaName.v);
@@ -1226,9 +1228,10 @@ Bool DB::SQLGenerator::GenDeleteSchemaCmd(NN<DB::SQLBuilder> sql, Text::CString 
 Bool DB::SQLGenerator::GenDropTableCmd(NN<DB::SQLBuilder> sql, Text::CString schemaName, Text::CStringNN tableName)
 {
 	sql->AppendCmdC(CSTR("drop table "));
-	if (schemaName.leng > 0 && sql->SupportSchema())
+	Text::CStringNN nns;
+	if (schemaName.SetTo(nns) && schemaName.leng > 0 && sql->SupportSchema())
 	{
-		sql->AppendCol(schemaName.v);
+		sql->AppendCol(nns.v);
 		sql->AppendCmdC(CSTR("."));
 	}
 	sql->AppendCol(tableName.v);
@@ -1238,9 +1241,10 @@ Bool DB::SQLGenerator::GenDropTableCmd(NN<DB::SQLBuilder> sql, Text::CString sch
 Bool DB::SQLGenerator::GenDeleteTableDataCmd(NN<DB::SQLBuilder> sql, Text::CString schemaName, Text::CStringNN tableName)
 {
 	sql->AppendCmdC(CSTR("delete from "));
-	if (schemaName.leng > 0 && sql->SupportSchema())
+	Text::CStringNN nns;
+	if (schemaName.SetTo(nns) && schemaName.leng > 0 && sql->SupportSchema())
 	{
-		sql->AppendCol(schemaName.v);
+		sql->AppendCol(nns.v);
 		sql->AppendCmdC(CSTR("."));
 	}
 	sql->AppendCol(tableName.v);
@@ -1250,9 +1254,10 @@ Bool DB::SQLGenerator::GenDeleteTableDataCmd(NN<DB::SQLBuilder> sql, Text::CStri
 Bool DB::SQLGenerator::GenTruncateTableCmd(NN<DB::SQLBuilder> sql, Text::CString schemaName, Text::CStringNN tableName)
 {
 	sql->AppendCmdC(CSTR("truncate table "));
-	if (schemaName.leng > 0 && sql->SupportSchema())
+	Text::CStringNN nns;
+	if (schemaName.SetTo(nns) && schemaName.leng > 0 && sql->SupportSchema())
 	{
-		sql->AppendCol(schemaName.v);
+		sql->AppendCol(nns.v);
 		sql->AppendCmdC(CSTR("."));
 	}
 	sql->AppendCol(tableName.v);
@@ -1368,17 +1373,18 @@ DB::SQLGenerator::PageStatus DB::SQLGenerator::GenSelectCmdPage(NN<DB::SQLBuilde
 	return status;
 }
 
-UTF8Char *DB::SQLGenerator::GenInsertCmd(UTF8Char *sqlstr, DB::SQLType sqlType, Text::CString schemaName, Text::CStringNN tableName, NN<DB::DBReader> r)
+UnsafeArray<UTF8Char> DB::SQLGenerator::GenInsertCmd(UnsafeArray<UTF8Char> sqlstr, DB::SQLType sqlType, Text::CString schemaName, Text::CStringNN tableName, NN<DB::DBReader> r)
 {
-	UTF8Char *currPtr;
+	UnsafeArray<UTF8Char> currPtr;
 	UTF8Char tmpBuff[256];
 	UOSInt i;
 	UOSInt j;
+	Text::CStringNN cstr;
 
 	currPtr = Text::StrConcatC(sqlstr, UTF8STRC("insert into "));
-	if (schemaName.leng > 0)
+	if (schemaName.SetTo(cstr) && schemaName.leng > 0)
 	{
-		currPtr = DB::DBUtil::SDBColUTF8(currPtr, schemaName.v, sqlType);
+		currPtr = DB::DBUtil::SDBColUTF8(currPtr, cstr.v, sqlType);
 		currPtr = Text::StrConcatC(currPtr, UTF8STRC("."));
 	}
 	currPtr = DB::DBUtil::SDBColUTF8(currPtr, tableName.v, sqlType);

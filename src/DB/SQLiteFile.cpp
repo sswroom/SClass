@@ -24,7 +24,7 @@ void DB::SQLiteFile::Init()
 	this->lastErrMsg = 0;
 	db = 0;
 	sqlite3_initialize();
-	ret = sqlite3_open_v2((const Char*)fileName->v, &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_SHAREDCACHE, 0);
+	ret = sqlite3_open_v2((const Char*)fileName->v.Ptr(), &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_SHAREDCACHE, 0);
 	
 	if (SQLITE_OK == ret)
 	{
@@ -111,7 +111,7 @@ OSInt DB::SQLiteFile::ExecuteNonQuery(Text::CStringNN sql)
 	{
 		sqlite3_stmt *stmt;
 		const char *tmp;
-		if (sqlite3_prepare_v2((sqlite3*)this->db, (const Char*)sql.v, (Int32)sql.leng + 1, &stmt, &tmp) == SQLITE_OK)
+		if (sqlite3_prepare_v2((sqlite3*)this->db, (const Char*)sql.v.Ptr(), (Int32)sql.leng + 1, &stmt, &tmp) == SQLITE_OK)
 		{
 			if (sqlite3_step(stmt) == SQLITE_DONE)
 			{
@@ -149,7 +149,7 @@ Optional<DB::DBReader> DB::SQLiteFile::ExecuteReader(Text::CStringNN sql)
 	{
 		sqlite3_stmt *stmt;
 		const char *tmp;
-		if (sqlite3_prepare_v2((sqlite3*)this->db, (const Char*)sql.v, (Int32)sql.leng + 1, &stmt, &tmp) == SQLITE_OK)
+		if (sqlite3_prepare_v2((sqlite3*)this->db, (const Char*)sql.v.Ptr(), (Int32)sql.leng + 1, &stmt, &tmp) == SQLITE_OK)
 		{
 			this->lastDataError = DE_NO_ERROR;
 			NN<DB::SQLiteReader> r;
@@ -200,7 +200,7 @@ void DB::SQLiteFile::Reconnect()
 	}
 
 	Int32 ret;
-	ret = sqlite3_open((const Char*)this->fileName->v, &db);
+	ret = sqlite3_open((const Char*)this->fileName->v.Ptr(), &db);
 	if (SQLITE_OK == ret)
 	{
 		this->db = db;
@@ -250,7 +250,7 @@ Optional<DB::DBReader> DB::SQLiteFile::QueryTableData(Text::CString schemaName, 
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sb.AppendC(UTF8STRC("select "));
 	if (columnNames == 0 || columnNames->GetCount() == 0)
 	{
@@ -269,7 +269,7 @@ Optional<DB::DBReader> DB::SQLiteFile::QueryTableData(Text::CString schemaName, 
 		}
 	}
 	sb.AppendC(UTF8STRC(" from "));
-	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v, DB::SQLType::SQLite);
+	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v.Ptr(), DB::SQLType::SQLite);
 	sb.Append(CSTRP(sbuff, sptr));
 	if (maxCnt > 0)
 	{
@@ -543,7 +543,7 @@ Bool DB::SQLiteReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 	}
 }
 
-UTF8Char *DB::SQLiteReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> DB::SQLiteReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
 	const UTF8Char *outp = (const UTF8Char*)sqlite3_column_text((sqlite3_stmt*)this->hStmt, (int)colIndex);
 	if (outp == 0)
@@ -631,7 +631,7 @@ Bool DB::SQLiteReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 	return false;
 }
 
-UTF8Char *DB::SQLiteReader::GetName(UOSInt colIndex, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> DB::SQLiteReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 {
 	const Char *name = sqlite3_column_name((sqlite3_stmt*)this->hStmt, (int)colIndex);
 	if (name == 0)
@@ -680,7 +680,7 @@ Bool DB::SQLiteReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 	const Char *name = sqlite3_column_name((sqlite3_stmt*)this->hStmt, (int)colIndex);
 	UOSInt colSize;
 	DB::DBUtil::ColType colType;
-	NN<const UTF8Char> colName;
+	UnsafeArray<const UTF8Char> colName;
 	if (!colName.Set((const UTF8Char*)name))
 		return false;
 	colDef->SetColName(colName);

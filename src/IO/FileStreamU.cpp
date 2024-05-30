@@ -64,9 +64,9 @@ void IO::FileStream::InitStream(const WChar *fileName, FileMode mode, FileShare 
 	}
 
 #if defined(__USE_LARGEFILE64)
-	this->handle = (void*)(OSInt)open64((const Char*)this->sourceName->v, flags, opmode);
+	this->handle = (void*)(OSInt)open64((const Char*)this->sourceName->v.Ptr(), flags, opmode);
 #else
-	this->handle = (void*)(OSInt)open((const Char*)this->sourceName->v, flags, opmode);
+	this->handle = (void*)(OSInt)open((const Char*)this->sourceName->v.Ptr(), flags, opmode);
 #endif
 	if ((OSInt)this->handle == -1)
 	{
@@ -131,11 +131,11 @@ UOSInt IO::FileStream::Read(const Data::ByteArray &buff)
 	}
 }
 
-UOSInt IO::FileStream::Write(const UInt8 *buff, UOSInt size)
+UOSInt IO::FileStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	if (this->handle == 0)
 		return 0;
-	OSInt readSize = write((int)(OSInt)this->handle, buff, size);
+	OSInt readSize = write((int)(OSInt)this->handle, buff.Ptr(), size);
 	if (readSize >= 0)
 	{
 		this->currPos += (UOSInt)readSize;
@@ -259,7 +259,7 @@ void IO::FileStream::GetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 	struct stat64 s;
 	if (this->handle == 0)
 	{
-		if (stat64((const Char*)this->sourceName->v, &s) != 0)
+		if (stat64((const Char*)this->sourceName->v.Ptr(), &s) != 0)
 			return;
 	}
 	else
@@ -271,7 +271,7 @@ void IO::FileStream::GetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 	struct stat s;
 	if (this->handle == 0)
 	{
-		if (stat((const Char*)this->sourceName->v, &s) != 0)
+		if (stat((const Char*)this->sourceName->v.Ptr(), &s) != 0)
 			return;
 	}
 	else
@@ -315,7 +315,7 @@ void IO::FileStream::GetFileTimes(OptOut<Data::Timestamp> creationTime, OptOut<D
 	struct stat64 s;
 	if (this->handle == 0)
 	{
-		if (stat64((const Char*)this->sourceName->v, &s) != 0)
+		if (stat64((const Char*)this->sourceName->v.Ptr(), &s) != 0)
 			return;
 	}
 	else
@@ -327,7 +327,7 @@ void IO::FileStream::GetFileTimes(OptOut<Data::Timestamp> creationTime, OptOut<D
 	struct stat s;
 	if (this->handle == 0)
 	{
-		if (stat((const Char*)this->sourceName->v, &s) != 0)
+		if (stat((const Char*)this->sourceName->v.Ptr(), &s) != 0)
 			return;
 	}
 	else
@@ -371,7 +371,7 @@ Data::Timestamp IO::FileStream::GetCreateTime()
 	struct stat64 s;
 	if (this->handle == 0)
 	{
-		if (stat64((const Char*)this->sourceName->v, &s) != 0)
+		if (stat64((const Char*)this->sourceName->v.Ptr(), &s) != 0)
 			return Data::Timestamp(0);
 	}
 	else
@@ -383,7 +383,7 @@ Data::Timestamp IO::FileStream::GetCreateTime()
 	struct stat s;
 	if (this->handle == 0)
 	{
-		if (stat((const Char*)this->sourceName->v, &s) != 0)
+		if (stat((const Char*)this->sourceName->v.Ptr(), &s) != 0)
 			return Data::Timestamp(0);
 	}
 	else
@@ -406,7 +406,7 @@ Data::Timestamp IO::FileStream::GetModifyTime()
 	struct stat64 s;
 	if (this->handle == 0)
 	{
-		if (stat64((const Char*)this->sourceName->v, &s) != 0)
+		if (stat64((const Char*)this->sourceName->v.Ptr(), &s) != 0)
 			return Data::Timestamp(0);
 	}
 	else
@@ -418,7 +418,7 @@ Data::Timestamp IO::FileStream::GetModifyTime()
 	struct stat s;
 	if (this->handle == 0)
 	{
-		if (stat((const Char*)this->sourceName->v, &s) != 0)
+		if (stat((const Char*)this->sourceName->v.Ptr(), &s) != 0)
 			return Data::Timestamp(0);
 	}
 	else
@@ -441,11 +441,11 @@ void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 	{
 #if defined(__USE_LARGEFILE64)
 		struct stat64 s;
-		if (stat64((const Char*)this->sourceName->v, &s) != 0)
+		if (stat64((const Char*)this->sourceName->v.Ptr(), &s) != 0)
 			return;
 #else
 		struct stat s;
-		if (stat((const Char*)this->sourceName->v, &s) != 0)
+		if (stat((const Char*)this->sourceName->v.Ptr(), &s) != 0)
 			return;
 #endif
 #if defined(__APPLE__)
@@ -464,7 +464,7 @@ void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 	{
 		t.modtime = (time_t)lastWriteTime->ToUnixTimestamp();
 	}
-	utime((const Char*)this->sourceName->v, &t);
+	utime((const Char*)this->sourceName->v.Ptr(), &t);
 }
 
 void IO::FileStream::SetFileTimes(const Data::Timestamp &creationTime, const Data::Timestamp &lastAccessTime, const Data::Timestamp &lastWriteTime)
@@ -474,11 +474,11 @@ void IO::FileStream::SetFileTimes(const Data::Timestamp &creationTime, const Dat
 	{
 #if defined(__USE_LARGEFILE64)
 		struct stat64 s;
-		if (stat64((const Char*)this->sourceName->v, &s) != 0)
+		if (stat64((const Char*)this->sourceName->v.Ptr(), &s) != 0)
 			return;
 #else
 		struct stat s;
-		if (stat((const Char*)this->sourceName->v, &s) != 0)
+		if (stat((const Char*)this->sourceName->v.Ptr(), &s) != 0)
 			return;
 #endif
 #if defined(__APPLE__)
@@ -497,7 +497,7 @@ void IO::FileStream::SetFileTimes(const Data::Timestamp &creationTime, const Dat
 	{
 		t.modtime = (time_t)lastWriteTime.ToUnixTimestamp();
 	}
-	utime((const Char*)this->sourceName->v, &t);
+	utime((const Char*)this->sourceName->v.Ptr(), &t);
 }
 
 UOSInt IO::FileStream::LoadFile(Text::CStringNN fileName, UInt8 *buff, UOSInt maxBuffSize)

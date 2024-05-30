@@ -24,13 +24,13 @@ IO::ConsoleWriter::~ConsoleWriter()
 
 Bool IO::ConsoleWriter::Write(Text::CStringNN str)
 {
-	printf("%s", str.v);
+	printf("%s", str.v.Ptr());
 	return true;
 }
 
 Bool IO::ConsoleWriter::WriteLine(Text::CStringNN str)
 {
-	printf("%s\n", str.v);
+	printf("%s\n", str.v.Ptr());
 	return true;
 }
 
@@ -181,8 +181,8 @@ Bool IO::ConsoleWriter::GetConsoleState(IO::ConsoleWriter::ConsoleState *state)
 		if (succ)
 		{
 			col[i] = 0;
-			state->currX = Text::StrToUInt32(col) - 1;
-			state->currY = Text::StrToInt32(row) - 1;
+			state->currX = Text::StrToUInt32Ch(col) - 1;
+			state->currY = Text::StrToInt32Ch(row) - 1;
 		}
 	}
 	tcsetattr(0, TCSANOW, &oldIOS);

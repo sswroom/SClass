@@ -58,14 +58,14 @@ Optional<IO::ParsedObject> Parser::FileParser::SQLiteParser::ParseFileHdr(NN<IO:
 	else
 	{
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		UnsafeArray<UTF8Char> sptr;
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("temp"));
 		IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrHexVal64(sptr, (UInt64)Data::DateTimeUtil::GetCurrTimeMillis());
 		*sptr++ = '_';
-		sptr = fd->GetShortName().ConcatTo(sptr);
+		sptr = fd->GetShortName().OrEmpty().ConcatTo(sptr);
 
 		Bool valid = false;
 		UInt64 currOfst = 0;

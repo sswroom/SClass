@@ -307,9 +307,9 @@ void Data::DateTime::SetValueNoFix(Int32 year, UInt8 month, UInt8 day, UInt8 hou
 	this->tzQhr = tzQhr;	
 }
 
-Bool Data::DateTime::SetValueSlow(const Char *dateStr)
+Bool Data::DateTime::SetValueSlow(UnsafeArray<const Char> dateStr)
 {
-	return this->SetValue(Text::CStringNN((const UTF8Char*)dateStr, Text::StrCharCnt(dateStr)));
+	return this->SetValue(Text::CStringNN(UnsafeArray<const UTF8Char>::ConvertFrom(dateStr), Text::StrCharCntCh(dateStr)));
 }
 
 Bool Data::DateTime::SetValue(Text::CStringNN dateStr)
@@ -967,17 +967,17 @@ Int64 Data::DateTime::ToNTPTime()
 	return *(Int64*)vals;
 }
 
-Char *Data::DateTime::ToString(Char *buff)
+UnsafeArray<Char> Data::DateTime::ToString(UnsafeArray<Char> buff)
 {
-	return (Char*)ToString((UTF8Char*)buff);
+	return UnsafeArray<Char>::ConvertFrom(ToString(UnsafeArray<UTF8Char>::ConvertFrom(buff)));
 }
 
-Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
+UnsafeArray<Char> Data::DateTime::ToString(UnsafeArray<Char> buff, const Char *pattern)
 {
-	return (Char*)ToString((UTF8Char*)buff, pattern);
+	return UnsafeArray<Char>::ConvertFrom(ToString(UnsafeArray<UTF8Char>::ConvertFrom(buff), pattern));
 }
 
-UTF8Char *Data::DateTime::ToString(UTF8Char *buff)
+UnsafeArray<UTF8Char> Data::DateTime::ToString(UnsafeArray<UTF8Char> buff)
 {
 	if (this->ns == 0)
 	{
@@ -997,7 +997,7 @@ UTF8Char *Data::DateTime::ToString(UTF8Char *buff)
 	}
 }
 
-UTF8Char *Data::DateTime::ToStringNoZone(UTF8Char *buff)
+UnsafeArray<UTF8Char> Data::DateTime::ToStringNoZone(UnsafeArray<UTF8Char> buff)
 {
 	if (this->ns == 0)
 	{
@@ -1017,7 +1017,7 @@ UTF8Char *Data::DateTime::ToStringNoZone(UTF8Char *buff)
 	}
 }
 
-UTF8Char *Data::DateTime::ToString(UTF8Char *buff, const Char *pattern)
+UnsafeArray<UTF8Char> Data::DateTime::ToString(UnsafeArray<UTF8Char> buff, const Char *pattern)
 {
 	NN<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
 	return Data::DateTimeUtil::ToString(buff, tval, this->tzQhr, this->ns, (const UTF8Char*)pattern);
@@ -1050,7 +1050,7 @@ Bool Data::DateTime::operator<(Data::DateTime dt)
 	return this->ToTicks() < dt.ToTicks();
 }
 
-UTF8Char *Data::DateTime::ToLocalStr(UTF8Char *buff)
+UnsafeArray<UTF8Char> Data::DateTime::ToLocalStr(UnsafeArray<UTF8Char> buff)
 {
 #if defined(WIN32) && !defined(_WIN32_WCE)
 	tm t;

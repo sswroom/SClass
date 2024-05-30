@@ -103,7 +103,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(AnyTy
 	Text::StringBuilderUTF8 sb;
 	UI::Clipboard::GetString(me->GetHandle(), sb);
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::PString sarr[2];
 	Text::PString sarr2[2];
 	Bool changed = false;
@@ -117,7 +117,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(AnyTy
 		{
 			Int32 id = 0;
 			Int32 webType = 0;
-			id = ParseURL(sarr[0].ToCString(), &webType);
+			id = ParseURL(sarr[0].ToCString(), webType);
 
 			if (id != 0)
 			{
@@ -155,8 +155,8 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(AnyTyp
 	UOSInt j;
 	UInt32 fmtId = (UInt32)-1;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	const UTF8Char *url;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<const UTF8Char> url;
 	UOSInt urlLen;
 	Text::PString sarr[2];
 	Data::ArrayList<const UTF8Char *> urlStrList;
@@ -243,7 +243,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(AnyTyp
 
 					id = 0;
 					webType = 0;
-					id = ParseURL(Text::CString(url, urlLen), &webType);
+					id = ParseURL(Text::CStringNN(url, urlLen), webType);
 
 					if (id != 0)
 					{
@@ -348,7 +348,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(AnyTyp
 	Int32 maxId = me->core->FileGetMaxId(webType);
 	OSInt currPage = 1;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	Data::ArrayListNN<Net::WebSite::WebSite48IdolControl::ItemData> pageList;
 	Data::ArrayListNN<Net::WebSite::WebSite48IdolControl::ItemData> totalList;
@@ -400,7 +400,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(AnyTyp
 				UOSInt j;
 				if (me->core->FileGet(item->id, webType, mutUsage).SetTo(file))
 				{
-					sptr = Text::StrInt32(sbuff, file->id);
+					sptr = Text::StrInt32(UARR(sbuff), file->id);
 					j = me->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)((file->webType << 24) | file->id));
 					me->lvFiles->SetSubItem(j, 1, file->fileName);
 					changed = true;
@@ -422,7 +422,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::On30MinutesClicked(AnyTyp
 {
 	NN<SSWR::DownloadMonitor::DownMonMainForm> me = userObj.GetNN<SSWR::DownloadMonitor::DownMonMainForm>();
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::DateTime dt;
 	dt.SetCurrTime();
 	dt.AddMinute(30);
@@ -440,33 +440,33 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFileEnd(AnyType userObj
 	mutUsage.EndUse();
 }
 
-Int32 SSWR::DownloadMonitor::DownMonMainForm::ParseURL(Text::CString url, Int32 *webType)
+Int32 SSWR::DownloadMonitor::DownMonMainForm::ParseURL(Text::CStringNN url, OutParam<Int32> webType)
 {
 	Int32 id;
 	if (url.StartsWith(UTF8STRC("https://48idol.com/video/")))
 	{
 		id = Text::StrToInt32(&url.v[25]);
-		*webType = 1;
+		webType.Set(1);
 	}
 	else if (url.StartsWith(UTF8STRC("https://48idol.net/video/")))
 	{
 		id = Text::StrToInt32(&url.v[25]);
-		*webType = 2;
+		webType.Set(2);
 	}
 	else if (url.StartsWith(UTF8STRC("https://48idol.tv/archive/video/")))
 	{
 		id = Text::StrToInt32(&url.v[32]);
-		*webType = 3;
+		webType.Set(3);
 	}
 	else if (url.StartsWith(UTF8STRC("https://48idol.tv/video/")))
 	{
 		id = Text::StrToInt32(&url.v[24]);
-		*webType = 4;
+		webType.Set(4);
 	}
 	else
 	{
 		id = 0;
-		*webType = 0;
+		webType.Set(0);
 	}
 	return id;
 }
@@ -483,7 +483,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 	Bool updated = false;
 
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::PString sarr[2];
 	UOSInt i;
 	NN<Text::String> listFile;
@@ -497,7 +497,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 			{
 				Int32 id = 0;
 				Int32 webType = 0;
-				id = ParseURL(sarr[0].ToCString(), &webType);
+				id = ParseURL(sarr[0].ToCString(), webType);
 
 				if (id != 0)
 				{
@@ -524,7 +524,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 						NN<SSWR::DownloadMonitor::DownMonCore::FileInfo> file;
 						if (this->core->FileGet(id, webType, mutUsage).SetTo(file))
 						{
-							sptr = Text::StrInt32(sbuff, file->id);
+							sptr = Text::StrInt32(UARR(sbuff), file->id);
 							i = this->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)((file->webType << 24) | file->id));
 							this->lvFiles->SetSubItem(i, 1, file->fileName);
 						}

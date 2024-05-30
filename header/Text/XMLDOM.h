@@ -52,18 +52,18 @@ namespace Text
 		NN<XMLNode> GetChildNoCheck(UOSInt index) const;
 		Optional<XMLNode> GetChild(UOSInt index) const;
 
-		NN<XMLNode> *SearchNode(Text::CString path, OutParam<UOSInt> cnt);
-		Optional<XMLNode> SearchFirstNode(Text::CString path);
-		void ReleaseSearch(NN<XMLNode>* searchResult);
+		UnsafeArray<NN<XMLNode>> SearchNode(Text::CStringNN path, OutParam<UOSInt> cnt);
+		Optional<XMLNode> SearchFirstNode(Text::CStringNN path);
+		void ReleaseSearch(UnsafeArray<NN<XMLNode>> searchResult);
 
 		void GetInnerXML(NN<Text::StringBuilderUTF8> sb);
 		void GetInnerText(NN<Text::StringBuilderUTF8> sb);
 	private:
-		void SearchNodeBegin(Text::CString path, NN<Data::ArrayListNN<XMLNode>> outArr, Bool singleResult);
+		void SearchNodeBegin(Text::CStringNN path, NN<Data::ArrayListNN<XMLNode>> outArr, Bool singleResult);
 		Bool SearchNodeSub(NN<XMLNode> node, NN<Data::ArrayList<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr, NN<Data::ArrayListNN<XMLNode>> outArr, Int32 searchType, Bool singleResult);
 		Bool SearchNodeSubElement(NN<XMLNode> node, NN<Data::ArrayList<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr, NN<Data::ArrayListNN<XMLNode>> outArr, Int32 searchType, Bool singleResult);
 		Bool SearchEqual(UOSInt level, NN<Data::ArrayList<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr);
-		Bool SearchEval(UOSInt level, NN<Data::ArrayList<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr, NN<XMLNode> n, const UTF8Char *nameStart, const UTF8Char *nameEnd, NN<Text::StringBuilderUTF8> outSB);
+		Bool SearchEval(UOSInt level, NN<Data::ArrayList<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr, NN<XMLNode> n, UnsafeArray<const UTF8Char> nameStart, UnsafeArray<const UTF8Char> nameEnd, NN<Text::StringBuilderUTF8> outSB);
 	public:
 		static Text::CStringNN NodeTypeGetName(NodeType ntype);
 	};

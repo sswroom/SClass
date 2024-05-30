@@ -16,7 +16,7 @@ namespace UI
 			virtual void SetPasswordChar(UTF32Char c);
 
 			virtual void SetText(Text::CStringNN text);
-			virtual UTF8Char *GetText(UTF8Char *buff);
+			virtual UnsafeArrayOpt<UTF8Char> GetText(UnsafeArray<UTF8Char> buff);
 			virtual Bool GetText(NN<Text::StringBuilderUTF8> sb);
 			virtual Text::CStringNN GetObjectClass() const;
 			virtual OSInt OnNotify(UInt32 code, void *lParam);

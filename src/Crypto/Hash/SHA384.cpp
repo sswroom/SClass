@@ -18,7 +18,7 @@ Crypto::Hash::SHA384::~SHA384()
 {
 }
 
-UTF8Char *Crypto::Hash::SHA384::GetName(UTF8Char *sbuff) const
+UnsafeArray<UTF8Char> Crypto::Hash::SHA384::GetName(UnsafeArray<UTF8Char> sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("SHA-384"));
 }

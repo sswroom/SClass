@@ -8,14 +8,14 @@
 #include "Text/EnumFinder.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Crypto::Token::JWSignature::JWSignature(Optional<Net::SSLEngine> ssl, Algorithm alg, const UInt8 *privateKey, UOSInt privateKeyLeng, Crypto::Cert::X509Key::KeyType keyType)
+Crypto::Token::JWSignature::JWSignature(Optional<Net::SSLEngine> ssl, Algorithm alg, UnsafeArray<const UInt8> privateKey, UOSInt privateKeyLeng, Crypto::Cert::X509Key::KeyType keyType)
 {
 	this->ssl = ssl;
 	this->alg = alg;
 	this->keyType = keyType;
 	this->hashValSize = 0;
 	this->privateKey = MemAlloc(UInt8, privateKeyLeng);
-	MemCopyNO(this->privateKey, privateKey, privateKeyLeng);
+	MemCopyNO(this->privateKey, privateKey.Ptr(), privateKeyLeng);
 	this->privateKeyLeng = privateKeyLeng;
 }
 
@@ -24,7 +24,7 @@ Crypto::Token::JWSignature::~JWSignature()
 	MemFree(this->privateKey);
 }
 
-Bool Crypto::Token::JWSignature::CalcHash(const UInt8 *buff, UOSInt buffSize)
+Bool Crypto::Token::JWSignature::CalcHash(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	Crypto::Hash::IHash *hash;
 	switch (alg)
@@ -82,14 +82,14 @@ Bool Crypto::Token::JWSignature::CalcHash(const UInt8 *buff, UOSInt buffSize)
 		return false;
 	}
 
-	hash->Calc(buff, buffSize);
+	hash->Calc(buff.Ptr(), buffSize);
 	hash->GetValue(this->hashVal);
 	this->hashValSize = hash->GetResultSize();
 	DEL_CLASS(hash);
 	return true;
 }
 
-Bool Crypto::Token::JWSignature::VerifyHash(const UInt8 *buff, UOSInt buffSize, const UInt8 *signature, UOSInt signatureSize)
+Bool Crypto::Token::JWSignature::VerifyHash(UnsafeArray<const UInt8> buff, UOSInt buffSize, UnsafeArray<const UInt8> signature, UOSInt signatureSize)
 {
 	Crypto::Hash::IHash *hash;
 	switch (alg)
@@ -153,7 +153,7 @@ Bool Crypto::Token::JWSignature::VerifyHash(const UInt8 *buff, UOSInt buffSize, 
 		return false;
 	}
 	UInt8 hashVal[256];
-	hash->Calc(buff, buffSize);
+	hash->Calc(buff.Ptr(), buffSize);
 	hash->GetValue(hashVal);
 	DEL_CLASS(hash);
 	return Text::StrEqualsC(hashVal, signatureSize, signature, signatureSize);
@@ -180,7 +180,7 @@ UOSInt Crypto::Token::JWSignature::GetSignatureLen() const
 	return this->hashValSize;
 }
 
-Text::CString Crypto::Token::JWSignature::AlgorithmGetName(Algorithm alg)
+Text::CStringNN Crypto::Token::JWSignature::AlgorithmGetName(Algorithm alg)
 {
 	switch (alg)
 	{
@@ -218,9 +218,9 @@ Text::CString Crypto::Token::JWSignature::AlgorithmGetName(Algorithm alg)
 	}
 }
 
-Crypto::Token::JWSignature::Algorithm Crypto::Token::JWSignature::AlgorithmGetByName(const UTF8Char *name)
+Crypto::Token::JWSignature::Algorithm Crypto::Token::JWSignature::AlgorithmGetByName(UnsafeArray<const UTF8Char> name)
 {
-	Text::EnumFinder<Algorithm> finder((const Char*)name, Algorithm::Unknown);
+	Text::EnumFinder<Algorithm> finder(UnsafeArray<const Char>::ConvertFrom(name), Algorithm::Unknown);
 	finder.Entry("HS256", Algorithm::HS256);
 	finder.Entry("HS384", Algorithm::HS384);
 	finder.Entry("HS512", Algorithm::HS512);

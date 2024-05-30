@@ -21,7 +21,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddBool(UOSInt frameOfst, Text::CStrin
 	else
 	{
 		UTF8Char sbuff[16];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		sptr = Text::StrHexByte(Text::StrConcatC(sbuff, UTF8STRC("0x")), v);
 		this->AddField(frameOfst, 1, name, CSTRP(sbuff, sptr));
 	}
@@ -30,7 +30,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddBool(UOSInt frameOfst, Text::CStrin
 void IO::FileAnalyse::FrameDetailHandler::AddInt64(UOSInt frameOfst, Text::CStringNN name, Int64 v)
 {
 	UTF8Char sbuff[24];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrInt64(sbuff, v);
 	this->AddField(frameOfst, 8, name, CSTRP(sbuff, sptr));
 }
@@ -38,7 +38,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddInt64(UOSInt frameOfst, Text::CStri
 void IO::FileAnalyse::FrameDetailHandler::AddInt64V(UOSInt frameOfst, UOSInt size, Text::CStringNN name, Int64 v)
 {
 	UTF8Char sbuff[24];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrInt64(sbuff, v);
 	this->AddField(frameOfst, size, name, CSTRP(sbuff, sptr));
 }
@@ -46,7 +46,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddInt64V(UOSInt frameOfst, UOSInt siz
 void IO::FileAnalyse::FrameDetailHandler::AddUInt64(UOSInt frameOfst, Text::CStringNN name, UInt64 v)
 {
 	UTF8Char sbuff[24];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrUInt64(sbuff, v);
 	this->AddField(frameOfst, 8, name, CSTRP(sbuff, sptr));
 }
@@ -54,7 +54,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddUInt64(UOSInt frameOfst, Text::CStr
 void IO::FileAnalyse::FrameDetailHandler::AddUInt64V(UOSInt frameOfst, UOSInt size, Text::CStringNN name, UInt64 v)
 {
 	UTF8Char sbuff[24];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrUInt64(sbuff, v);
 	this->AddField(frameOfst, size, name, CSTRP(sbuff, sptr));
 }
@@ -62,7 +62,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddUInt64V(UOSInt frameOfst, UOSInt si
 void IO::FileAnalyse::FrameDetailHandler::AddInt(UOSInt frameOfst, UOSInt size, Text::CStringNN name, OSInt v)
 {
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrOSInt(sbuff, v);
 	this->AddField(frameOfst, size, name, CSTRP(sbuff, sptr));
 }
@@ -70,7 +70,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddInt(UOSInt frameOfst, UOSInt size, 
 void IO::FileAnalyse::FrameDetailHandler::AddUInt(UOSInt frameOfst, UOSInt size, Text::CStringNN name, UOSInt v)
 {
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrUOSInt(sbuff, v);
 	this->AddField(frameOfst, size, name, CSTRP(sbuff, sptr));
 }
@@ -78,7 +78,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddUInt(UOSInt frameOfst, UOSInt size,
 void IO::FileAnalyse::FrameDetailHandler::AddBit(UOSInt frameOfst, Text::CStringNN name, UInt8 v, UOSInt bitNum)
 {
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrUOSInt(sbuff, ((UOSInt)v >> bitNum) & 1);
 	this->AddField(frameOfst, 1, name, CSTRP(sbuff, sptr));
 }
@@ -87,10 +87,11 @@ void IO::FileAnalyse::FrameDetailHandler::AddUIntName(UOSInt frameOfst, UOSInt s
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendUOSInt(v);
-	if (vName.v)
+	Text::CStringNN nns;
+	if (vName.SetTo(nns))
 	{
 		sb.AppendC(UTF8STRC(" ("));
-		sb.Append(vName);
+		sb.Append(nns);
 		sb.AppendUTF8Char(')');
 	}
 	else
@@ -104,10 +105,11 @@ void IO::FileAnalyse::FrameDetailHandler::AddUInt64Name(UOSInt frameOfst, UOSInt
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendU64(v);
-	if (vName.v)
+	Text::CStringNN nns;
+	if (vName.SetTo(nns))
 	{
 		sb.AppendC(UTF8STRC(" ("));
-		sb.Append(vName);
+		sb.Append(nns);
 		sb.AppendUTF8Char(')');
 	}
 	else
@@ -120,7 +122,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddUInt64Name(UOSInt frameOfst, UOSInt
 void IO::FileAnalyse::FrameDetailHandler::AddFloat(UOSInt frameOfst, UOSInt size, Text::CStringNN name, Double v)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrDouble(sbuff, v);
 	this->AddField(frameOfst, size, name, CSTRP(sbuff, sptr));
 }
@@ -128,7 +130,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddFloat(UOSInt frameOfst, UOSInt size
 void IO::FileAnalyse::FrameDetailHandler::AddHex8(UOSInt frameOfst, Text::CStringNN name, UInt8 v)
 {
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrHexByte(Text::StrConcatC(sbuff, UTF8STRC("0x")), v);
 	this->AddField(frameOfst, 1, name, CSTRP(sbuff, sptr));
 }
@@ -136,7 +138,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddHex8(UOSInt frameOfst, Text::CStrin
 void IO::FileAnalyse::FrameDetailHandler::AddHex16(UOSInt frameOfst, Text::CStringNN name, UInt16 v)
 {
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), v);
 	this->AddField(frameOfst, 2, name, CSTRP(sbuff, sptr));
 }
@@ -144,7 +146,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddHex16(UOSInt frameOfst, Text::CStri
 void IO::FileAnalyse::FrameDetailHandler::AddHex24(UOSInt frameOfst, Text::CStringNN name, UInt32 v)
 {
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrHexVal24(Text::StrConcatC(sbuff, UTF8STRC("0x")), v);
 	this->AddField(frameOfst, 3, name, CSTRP(sbuff, sptr));
 }
@@ -152,7 +154,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddHex24(UOSInt frameOfst, Text::CStri
 void IO::FileAnalyse::FrameDetailHandler::AddHex32(UOSInt frameOfst, Text::CStringNN name, UInt32 v)
 {
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), v);
 	this->AddField(frameOfst, 4, name, CSTRP(sbuff, sptr));
 }
@@ -160,7 +162,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddHex32(UOSInt frameOfst, Text::CStri
 void IO::FileAnalyse::FrameDetailHandler::AddHex64(UOSInt frameOfst, Text::CStringNN name, UInt64 v)
 {
 	UTF8Char sbuff[19];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrHexVal64(Text::StrConcatC(sbuff, UTF8STRC("0x")), v);
 	this->AddField(frameOfst, 8, name, CSTRP(sbuff, sptr));
 }
@@ -168,7 +170,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddHex64(UOSInt frameOfst, Text::CStri
 void IO::FileAnalyse::FrameDetailHandler::AddHex64V(UOSInt frameOfst, UOSInt size, Text::CStringNN name, UInt64 v)
 {
 	UTF8Char sbuff[19];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrHexVal64V(Text::StrConcatC(sbuff, UTF8STRC("0x")), v);
 	this->AddField(frameOfst, size, name, CSTRP(sbuff, sptr));
 }
@@ -178,10 +180,11 @@ void IO::FileAnalyse::FrameDetailHandler::AddHex8Name(UOSInt frameOfst, Text::CS
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("0x"));
 	sb.AppendHex8(v);
-	if (vName.v)
+	Text::CStringNN nns;
+	if (vName.SetTo(nns))
 	{
 		sb.AppendC(UTF8STRC(" ("));
-		sb.Append(vName);
+		sb.Append(nns);
 		sb.AppendUTF8Char(')');
 	}
 	else
@@ -196,10 +199,11 @@ void IO::FileAnalyse::FrameDetailHandler::AddHex16Name(UOSInt frameOfst, Text::C
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("0x"));
 	sb.AppendHex16(v);
-	if (vName.v)
+	Text::CStringNN nns;
+	if (vName.SetTo(nns))
 	{
 		sb.AppendC(UTF8STRC(" ("));
-		sb.Append(vName);
+		sb.Append(nns);
 		sb.AppendUTF8Char(')');
 	}
 	else
@@ -214,10 +218,11 @@ void IO::FileAnalyse::FrameDetailHandler::AddHex32Name(UOSInt frameOfst, Text::C
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("0x"));
 	sb.AppendHex32(v);
-	if (vName.v)
+	Text::CStringNN nns;
+	if (vName.SetTo(nns))
 	{
 		sb.AppendC(UTF8STRC(" ("));
-		sb.Append(vName);
+		sb.Append(nns);
 		sb.AppendUTF8Char(')');
 	}
 	else
@@ -236,11 +241,11 @@ void IO::FileAnalyse::FrameDetailHandler::AddStrC(UOSInt frameOfst, UOSInt size,
 
 void IO::FileAnalyse::FrameDetailHandler::AddStrS(UOSInt frameOfst, UOSInt size, Text::CStringNN name, UnsafeArray<const UTF8Char> vBuff)
 {
-	UTF8Char *sbuff = MemAlloc(UTF8Char, size + 1);
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sbuff = MemAllocArr(UTF8Char, size + 1);
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatS(sbuff, vBuff, size + 1);
 	this->AddField(frameOfst, size, name, CSTRP(sbuff, sptr));
-	MemFree(sbuff);
+	MemFreeArr(sbuff);
 }
 
 void IO::FileAnalyse::FrameDetailHandler::AddStrZ(UOSInt frameOfst, Text::CStringNN name, UnsafeArray<const UTF8Char> vBuff)
@@ -276,7 +281,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddHexBuff(UOSInt frameOfst, Text::CSt
 void IO::FileAnalyse::FrameDetailHandler::AddIPv4(UOSInt frameOfst, Text::CStringNN name, const UInt8 *vBuff)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(vBuff));
 	this->AddField(frameOfst, 4, name, CSTRP(sbuff, sptr));
 }
@@ -284,10 +289,10 @@ void IO::FileAnalyse::FrameDetailHandler::AddIPv4(UOSInt frameOfst, Text::CStrin
 void IO::FileAnalyse::FrameDetailHandler::AddIPv6(UOSInt frameOfst, Text::CStringNN name, const UInt8 *vBuff)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Net::SocketUtil::AddressInfo addr;
 	Net::SocketUtil::SetAddrInfoV6(addr, vBuff, 0);
-	sptr = Net::SocketUtil::GetAddrName(sbuff, addr);
+	sptr = Net::SocketUtil::GetAddrName(sbuff, addr).Or(sbuff);
 	this->AddField(frameOfst, 16, name, CSTRP(sbuff, sptr));
 }
 
@@ -316,10 +321,10 @@ void IO::FileAnalyse::FrameDetailHandler::AddMACAddr(UOSInt frameOfst, Text::CSt
 void IO::FileAnalyse::FrameDetailHandler::AddNetBIOSName(UOSInt frameOfst, UOSInt size, Text::CStringNN name, Text::CStringNN nbName)
 {
 	UTF8Char sbuff2[17];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	sb.Append(nbName);
-	if ((sptr = Net::NetBIOSUtil::GetName(sbuff2, nbName.v)) != 0)
+	if (Net::NetBIOSUtil::GetName(sbuff2, nbName.v).SetTo(sptr))
 	{
 		sptr[-1] = 0;
 		sb.AppendC(UTF8STRC(" ("));

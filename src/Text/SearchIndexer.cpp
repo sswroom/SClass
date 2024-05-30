@@ -20,15 +20,15 @@ Text::SearchIndexer::~SearchIndexer()
 	MemFree(vals);
 }
 
-void Text::SearchIndexer::IndexString(const UTF8Char *str, Int64 key)
+void Text::SearchIndexer::IndexString(UnsafeArray<const UTF8Char> str, Int64 key)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	OSInt i;
 	void *sess = this->ta->BeginAnalyze(str);
 	if (sess == 0)
 		return;
-	while ((sptr = this->ta->NextWord(sbuff, sess)) != 0)
+	while (this->ta->NextWord(sbuff, sess).SetTo(sptr))
 	{
 		Data::ArrayListInt64 *tmpVal = this->strIndex.Get(CSTRP(sbuff, sptr));
 		if (tmpVal == 0)
@@ -45,10 +45,10 @@ void Text::SearchIndexer::IndexString(const UTF8Char *str, Int64 key)
 	this->ta->EndAnalyze(sess);
 }
 
-UOSInt Text::SearchIndexer::SearchString(NN<Data::ArrayListInt64> outArr, const UTF8Char *searchStr, UOSInt maxResults)
+UOSInt Text::SearchIndexer::SearchString(NN<Data::ArrayListInt64> outArr, UnsafeArray<const UTF8Char> searchStr, UOSInt maxResults)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::ArrayListInt64 *tmpIndex;
 	Data::ArrayListInt64 *tmpIndex2;
 	void *sess = this->ta->BeginAnalyze(searchStr);
@@ -56,7 +56,7 @@ UOSInt Text::SearchIndexer::SearchString(NN<Data::ArrayListInt64> outArr, const 
 		return 0;
 	Data::ArrayList<Data::ArrayListInt64*> resultList;
 	Data::ArrayListInt32 resultListCnt;
-	while ((sptr = this->ta->NextWord(sbuff, sess)) != 0)
+	while (this->ta->NextWord(sbuff, sess).SetTo(sptr))
 	{
 		tmpIndex = this->strIndex.Get(CSTRP(sbuff, sptr));
 		if (tmpIndex == 0)

@@ -103,7 +103,7 @@ public:
 		return this->row[colIndex]->Clone();
 	}
 
-	virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
+	virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 	{
 		if (this->row == 0)
 			return 0;
@@ -172,7 +172,7 @@ public:
 		if (this->row[colIndex] == 0)
 			return 0;
 		UOSInt len = this->row[colIndex]->leng;
-		MemCopyNO(buff, this->row[colIndex]->v, len);
+		MemCopyNO(buff, this->row[colIndex]->v.Ptr(), len);
 		return len;
 	}
 
@@ -197,9 +197,9 @@ public:
 		return false;
 	}
 
-	virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff)
+	virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 	{
-		NN<const UTF8Char> name;
+		UnsafeArray<const UTF8Char> name;
 		if (this->data->colList.GetItem(colIndex).SetTo(name))
 		{
 			return Text::StrConcat(buff, name.Ptr());
@@ -222,7 +222,7 @@ public:
 			colDef->SetColType(DB::DBUtil::CT_Unknown);
 			return false;
 		}
-		NN<const UTF8Char> colName;
+		UnsafeArray<const UTF8Char> colName;
 		if (!this->data->colList.GetItem(colIndex).SetTo(colName))
 		{
 			colDef->SetColType(DB::DBUtil::CT_Unknown);
@@ -254,7 +254,7 @@ DB::TextDB::~TextDB()
 	NN<const Data::ArrayList<DBData*>> dbList = this->dbMap.GetValues();
 	DBData *data;
 	Text::String **vals;
-	NN<const UTF8Char> sptr;
+	UnsafeArray<const UTF8Char> sptr;
 	k = dbList->GetCount();
 	while (k-- > 0)
 	{
@@ -297,7 +297,8 @@ UOSInt DB::TextDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListS
 Optional<DB::DBReader> DB::TextDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	DBData *data;
-	if (tableName.v == 0)
+	Text::CStringNN nntableName;
+	if (!tableName.SetTo(nntableName))
 	{
 		if (this->dbMap.GetCount() == 1)
 		{
@@ -310,7 +311,7 @@ Optional<DB::DBReader> DB::TextDB::QueryTableData(Text::CString schemaName, Text
 	}
 	else
 	{
-		data = this->dbMap.Get(tableName);
+		data = this->dbMap.Get(nntableName);
 	}
 	if (data == 0)
 	{
@@ -324,7 +325,8 @@ Optional<DB::DBReader> DB::TextDB::QueryTableData(Text::CString schemaName, Text
 Optional<DB::TableDef> DB::TextDB::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	DBData *data;
-	if (tableName.v == 0)
+	Text::CStringNN nntableName;
+	if (!tableName.SetTo(nntableName))
 	{
 		if (this->dbMap.GetCount() == 1)
 		{
@@ -337,7 +339,7 @@ Optional<DB::TableDef> DB::TextDB::GetTableDef(Text::CString schemaName, Text::C
 	}
 	else
 	{
-		data = this->dbMap.Get(tableName);
+		data = this->dbMap.Get(nntableName);
 	}
 	if (data == 0)
 	{
@@ -346,7 +348,7 @@ Optional<DB::TableDef> DB::TextDB::GetTableDef(Text::CString schemaName, Text::C
 	DB::TableDef *tab;
 	NN<DB::ColDef> colDef;
 	NEW_CLASS(tab, DB::TableDef(schemaName, data->name->ToCString()));
-	Data::ArrayIterator<NN<const UTF8Char>> it = data->colList.Iterator();
+	Data::ArrayIterator<UnsafeArray<const UTF8Char>> it = data->colList.Iterator();
 	while (it.HasNext())
 	{
 		NEW_CLASSNN(colDef, DB::ColDef(Text::String::NewEmpty()));
@@ -380,7 +382,7 @@ void DB::TextDB::Reconnect()
 
 }
 
-Bool DB::TextDB::AddTable(Text::CString tableName, Data::ArrayList<const UTF8Char*> *colList)
+Bool DB::TextDB::AddTable(Text::CStringNN tableName, Data::ArrayList<const UTF8Char*> *colList)
 {
 	DBData *data = this->dbMap.Get(tableName);
 	if (data)

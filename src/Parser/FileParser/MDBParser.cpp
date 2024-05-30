@@ -93,7 +93,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 	Data::ArrayListStringNN shpTables;
 	DB::ColDef colDef(CSTR(""));
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	mdb->QueryTableNames(CSTR_NULL, tableNames);
 	
 	Bool hasSpRef = false;
@@ -139,7 +139,8 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 	if (shpTables.GetCount())
 	{
 		Map::MapLayerCollection *lyrColl;
-		Math::CoordinateSystem *csys = 0;
+		Optional<Math::CoordinateSystem> csys = 0;
+		NN<Math::CoordinateSystem> nncsys;
 		DB::SharedDBConn *conn;
 		NN<Map::ESRI::ESRIMDBLayer> lyr;
 		NN<Math::ArcGISPRJParser> prjParser;
@@ -152,16 +153,16 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 			{
 				if (rdr->ColCount() >= 2)
 				{
-					if ((sptr = rdr->GetName(1, sbuff)) != 0 && Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("SRTEXT")))
+					if (rdr->GetName(1, sbuff).SetTo(sptr) && Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("SRTEXT")))
 					{
 						if (rdr->ReadNext())
 						{
 							Text::StringBuilderUTF8 sb;
 							rdr->GetStr(1, sb);
-							csys = prjParser->ParsePRJBuff(fd->GetFullFileName()->ToCString(), sb.v, sb.GetLength(), 0);
-							if (csys)
+							if (prjParser->ParsePRJBuff(fd->GetFullFileName()->ToCString(), sb.v, sb.GetLength(), 0).SetTo(nncsys))
 							{
-								srid = csys->GetSRID();
+								srid = nncsys->GetSRID();
+								csys = nncsys;
 							}
 						}
 					}
@@ -178,14 +179,14 @@ Optional<IO::ParsedObject> Parser::FileParser::MDBParser::ParseFileHdr(NN<IO::St
 		{
 			NEW_CLASSNN(lyr, Map::ESRI::ESRIMDBLayer(conn, srid, fd->GetFullFileName(), Text::String::OrEmpty(shpTables.GetItem(i))->ToCString()));
 			
-			if (csys)
+			if (csys.SetTo(nncsys))
 			{
-				lyr->SetCoordinateSystem(csys->Clone());
+				lyr->SetCoordinateSystem(nncsys->Clone());
 			}
 
 			lyrColl->Add(lyr);
 		}
-		SDEL_CLASS(csys);
+		csys.Delete();
 		conn->UnuseObject();
 		tableNames.FreeAll();
 		NN<Map::MapDrawLayer> lyr1;

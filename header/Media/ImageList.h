@@ -46,8 +46,8 @@ namespace Media
 		Data::ArrayListNN<Media::RasterImage> imgList;
 		Data::ArrayList<ImageType> imgTypeList;
 		Data::ArrayListUInt32 imgTimes;
-		const UTF8Char *author;
-		const UTF8Char *imgName;
+		UnsafeArrayOpt<const UTF8Char> author;
+		UnsafeArrayOpt<const UTF8Char> imgName;
 		Data::ArrayList<ValueType> valTypeI32;
 		Data::ArrayList<Int32> valI32;
 		Data::ArrayList<ValueType> valTypeI64;
@@ -78,8 +78,8 @@ namespace Media
 		ImageType GetImageType(UOSInt index) const;
 		void SetImageType(UOSInt index, ImageType imgType);
 		void ToStaticImage(UOSInt index);
-		void SetAuthor(const UTF8Char *name);
-		void SetImageName(const UTF8Char *imgName);
+		void SetAuthor(UnsafeArray<const UTF8Char> name);
+		void SetImageName(UnsafeArrayOpt<const UTF8Char> imgName);
 
 		void SetThermoImage(Math::Size2D<UOSInt> thermoSize, UOSInt thermoBPP, UInt8 *thermoPtr, Double thermoEmissivity, Double thermoTransmission, Double thermoBKGTemp, ThermoType thermoType);
 		Bool HasThermoImage() const;
@@ -91,7 +91,7 @@ namespace Media
 		Bool ToValueString(NN<Text::StringBuilderUTF8> sb) const;
 
 		void ToString(NN<Text::StringBuilderUTF8> sb) const;
-		static Text::CString GetValueTypeName(ValueType valType);
+		static Text::CStringNN ValueTypeGetName(ValueType valType);
 	};
 }
 #endif

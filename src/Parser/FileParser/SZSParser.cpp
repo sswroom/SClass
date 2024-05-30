@@ -38,7 +38,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SZSParser::ParseFileHdr(NN<IO::St
 {
 	UInt8 fileBuff[272];
 	UTF8Char sbuff[257];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	OSInt i;
 	Int32 fileCnt;
 	UInt64 ofst;

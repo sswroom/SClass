@@ -28,12 +28,12 @@ UOSInt Text::TextBinEnc::Punycode::Adapt(UOSInt delta, UOSInt numPoints, Bool fi
 	return k + (BASE - TMIN + 1) * delta / (delta + SKEW);
 }
 
-UTF8Char *Text::TextBinEnc::Punycode::Encode(UTF8Char *buff, Text::CString strToEnc)
+UnsafeArray<UTF8Char> Text::TextBinEnc::Punycode::Encode(UnsafeArray<UTF8Char> buff, Text::CStringNN strToEnc)
 {
 	return strToEnc.ConcatTo(buff);
 }
 
-UTF8Char *Text::TextBinEnc::Punycode::Encode(UTF8Char *buff, const WChar *strToEnc)
+UnsafeArray<UTF8Char> Text::TextBinEnc::Punycode::Encode(UnsafeArray<UTF8Char> buff, const WChar *strToEnc)
 {
 /*	const WChar *srcPtr;
 	WChar c;
@@ -185,7 +185,7 @@ WChar *Text::TextBinEnc::Punycode::Encode(WChar *buff, const WChar *strToEnc)
 	return Text::StrConcat(buff, strToEnc);
 }
 
-UTF8Char *Text::TextBinEnc::Punycode::Decode(UTF8Char *buff, const UTF8Char *strToDec, UOSInt strLen)
+UnsafeArray<UTF8Char> Text::TextBinEnc::Punycode::Decode(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> strToDec, UOSInt strLen)
 {
 	UTF8Char c;
 	UTF32Char tmpBuff[128];
@@ -195,8 +195,8 @@ UTF8Char *Text::TextBinEnc::Punycode::Decode(UTF8Char *buff, const UTF8Char *str
 		{
 			strToDec += 4;
 			strLen -= 4;
-			const UTF8Char *sptr;
-			const UTF8Char *sptrEnd;
+			UnsafeArray<const UTF8Char> sptr;
+			UnsafeArray<const UTF8Char> sptrEnd;
 
 			UOSInt n = 128;//initial_n
 			UOSInt i = 0;
@@ -306,14 +306,14 @@ UTF8Char *Text::TextBinEnc::Punycode::Decode(UTF8Char *buff, const UTF8Char *str
 	return buff;
 }
 
-WChar *Text::TextBinEnc::Punycode::Decode(WChar *buff, const UTF8Char *strToDec)
+WChar *Text::TextBinEnc::Punycode::Decode(WChar *buff, UnsafeArray<const UTF8Char> strToDec)
 {
 	while (*strToDec)
 	{
 		if ((strToDec[0] == 'X' || strToDec[0] == 'x') && (strToDec[1] == 'n' || strToDec[1] == 'N') && strToDec[2] == '-' && strToDec[3] == '-')
 		{
 			strToDec += 4;
-			const UTF8Char *sptr;
+			UnsafeArray<const UTF8Char> sptr;
 			UTF8Char c;
 
 			UOSInt n = 128;//initial_n
@@ -526,7 +526,7 @@ Text::TextBinEnc::Punycode::~Punycode()
 {
 }
 
-UTF8Char *Text::TextBinEnc::Punycode::EncodeString(UTF8Char *buff, const WChar *strToEnc) const
+UnsafeArray<UTF8Char> Text::TextBinEnc::Punycode::EncodeString(UnsafeArray<UTF8Char> buff, const WChar *strToEnc) const
 {
 	return Encode(buff, strToEnc);
 }

@@ -48,11 +48,11 @@ UI::GTK::GTKRadioButton::GTKRadioButton(NN<UI::GUICore> ui, NN<UI::GUIClientCont
 	
 	if (radioBtn)
 	{
-		this->hwnd = (ControlHandle*)gtk_radio_button_new_with_label_from_widget((GtkRadioButton*)radioBtn->GetHandle(), (const Char*)initText.v);
+		this->hwnd = (ControlHandle*)gtk_radio_button_new_with_label_from_widget((GtkRadioButton*)radioBtn->GetHandle(), (const Char*)initText.v.Ptr());
 	}
 	else
 	{
-		this->hwnd = (ControlHandle*)gtk_radio_button_new_with_label(0, (const Char*)initText.v);
+		this->hwnd = (ControlHandle*)gtk_radio_button_new_with_label(0, (const Char*)initText.v.Ptr());
 	}
 	parent->AddChild(*this);
 	this->Show();

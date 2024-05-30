@@ -17,7 +17,7 @@ Bool Net::WebServer::HTTPServerUtil::MIMEToCompress(Text::CStringNN umime)
 {
 	if (umime.StartsWith(UTF8STRC("application/")))
 	{
-		Text::CString mine2 = umime.Substring(12);
+		Text::CStringNN mine2 = umime.Substring(12);
 		if (mine2.Equals(UTF8STRC("javascript")))
 		{
 			return true;
@@ -57,7 +57,7 @@ Bool Net::WebServer::HTTPServerUtil::MIMEToCompress(Text::CStringNN umime)
 	}
 	else if (umime.StartsWith(UTF8STRC("text/")))
 	{
-		Text::CString mine2 = umime.Substring(5);
+		Text::CStringNN mine2 = umime.Substring(5);
 		if (mine2.Equals(UTF8STRC("javascript")))
 		{
 			return true;
@@ -284,8 +284,8 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(NN<Net::WebServer::IWebRequest
 	Text::CStringNN mime;
 	UInt64 sizeLeft;
 	UInt8 sbuff[32];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
 	fs.GetFileTimes(0, 0, &t);
 
@@ -383,7 +383,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(NN<Net::WebServer::IWebRequest
 		fs.SeekFromBeginning(start);
 		resp->SetStatusCode(Net::WebStatus::SC_PARTIAL_CONTENT);
 		UTF8Char sbuff[128];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("bytes "));
 		sptr = Text::StrUInt64(sptr, start);
 		*sptr++ = '-';

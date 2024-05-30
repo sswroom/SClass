@@ -40,9 +40,9 @@ void __stdcall Net::NTPServer::PacketHdlr(NN<const Net::SocketUtil::AddressInfo>
 			{
 				Text::StringBuilderUTF8 sb;
 				UTF8Char sbuff[64];
-				UTF8Char *sptr;
+				UnsafeArray<UTF8Char> sptr;
 				sb.AppendC(UTF8STRC("NTP: Client "));
-				sptr = Net::SocketUtil::GetAddrName(sbuff, addr, port);
+				sptr = Net::SocketUtil::GetAddrName(sbuff, addr, port).Or(sbuff);
 				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				dt.AddMS((OSInt)me->timeDiff);
 				dt.ToLocalTime();
@@ -60,7 +60,7 @@ void __stdcall Net::NTPServer::CheckThread(NN<Sync::Thread> thread)
 	NN<Net::NTPServer> me = thread->GetUserObj().GetNN<Net::NTPServer>();
 	Net::SocketUtil::AddressInfo addr;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::DateTime dt;
 	Text::StringBuilderUTF8 sb;
 	while (!thread->IsStopping())

@@ -23,7 +23,7 @@ Crypto::Hash::Adler32::~Adler32()
 {
 }
 
-UTF8Char *Crypto::Hash::Adler32::GetName(UTF8Char *sbuff) const
+UnsafeArray<UTF8Char> Crypto::Hash::Adler32::GetName(UnsafeArray<UTF8Char> sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("Adler-32"));
 }

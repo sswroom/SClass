@@ -6,13 +6,13 @@
 #include "Text/TextBinEnc/URIEncoding.h"
 #include "Text/URLString.h"
 
-UTF8Char *Text::URLString::GetURLFilePath(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen)
+UnsafeArrayOpt<UTF8Char> Text::URLString::GetURLFilePath(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> url, UOSInt urlLen)
 {
 	if (!Text::StrStartsWithICaseC(url, urlLen, UTF8STRC("FILE:///")))
 		return 0;
 	if (IO::Path::PATH_SEPERATOR == '\\')
 	{
-		UTF8Char *sptr = Text::TextBinEnc::URIEncoding::URIDecode(sbuff, &url[8]);
+		UnsafeArray<UTF8Char> sptr = Text::TextBinEnc::URIEncoding::URIDecode(sbuff, &url[8]);
 		Text::StrReplace(sbuff, '/', '\\');
 		return sptr;
 	}
@@ -22,7 +22,7 @@ UTF8Char *Text::URLString::GetURLFilePath(UTF8Char *sbuff, const UTF8Char *url, 
 	}
 }
 
-UTF8Char *Text::URLString::GetURLDomain(UTF8Char *sbuff, Text::CStringNN url, OptOut<UInt16> port)
+UnsafeArray<UTF8Char> Text::URLString::GetURLDomain(UnsafeArray<UTF8Char> sbuff, Text::CStringNN url, OptOut<UInt16> port)
 {
 	UOSInt i;
 	UOSInt j;
@@ -58,19 +58,19 @@ UTF8Char *Text::URLString::GetURLDomain(UTF8Char *sbuff, Text::CStringNN url, Op
 	{
 		if (port.IsNotNull())
 		{
-			MemCopyNO(sbuff, &url.v[j + 1], (i - j - 1) * sizeof(UTF8Char));
+			MemCopyNO(sbuff.Ptr(), &url.v[j + 1], (i - j - 1) * sizeof(UTF8Char));
 			sbuff[i - j - 1] = 0;
 			Text::StrToUInt16S(sbuff, port.Or(defPort), 0);
 		}
 		if (i < j)
 		{
-			MemCopyNO(sbuff, url.v, sizeof(UTF8Char) * i);
+			MemCopyNO(sbuff.Ptr(), url.v.Ptr(), sizeof(UTF8Char) * i);
 			sbuff[i] = 0;
 			return &sbuff[i];
 		}
 		else
 		{
-			MemCopyNO(sbuff, url.v, sizeof(UTF8Char) * j);
+			MemCopyNO(sbuff.Ptr(), url.v.Ptr(), sizeof(UTF8Char) * j);
 			sbuff[j] = 0;
 			return &sbuff[j];
 		}
@@ -78,7 +78,7 @@ UTF8Char *Text::URLString::GetURLDomain(UTF8Char *sbuff, Text::CStringNN url, Op
 	else if (i != INVALID_INDEX)
 	{
 		port.Set(defPort);
-		MemCopyNO(sbuff, url.v, sizeof(UTF8Char) * i);
+		MemCopyNO(sbuff.Ptr(), url.v.Ptr(), sizeof(UTF8Char) * i);
 		sbuff[i] = 0;
 		return &sbuff[i];
 	}
@@ -88,7 +88,7 @@ UTF8Char *Text::URLString::GetURLDomain(UTF8Char *sbuff, Text::CStringNN url, Op
 		{
 			Text::StrToUInt16S(&url.v[j + 1], port.Or(defPort), 0);
 		}
-		MemCopyNO(sbuff, url.v, sizeof(UTF8Char) * j);
+		MemCopyNO(sbuff.Ptr(), url.v.Ptr(), sizeof(UTF8Char) * j);
 		sbuff[j] = 0;
 		return &sbuff[j];
 	}
@@ -99,7 +99,7 @@ UTF8Char *Text::URLString::GetURLDomain(UTF8Char *sbuff, Text::CStringNN url, Op
 	}
 }
 
-UTF8Char *Text::URLString::GetURIScheme(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen)
+UnsafeArrayOpt<UTF8Char> Text::URLString::GetURIScheme(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> url, UOSInt urlLen)
 {
 	UOSInt i = Text::StrIndexOfCharC(url, urlLen, ':');
 	if (i == INVALID_INDEX)
@@ -109,7 +109,7 @@ UTF8Char *Text::URLString::GetURIScheme(UTF8Char *sbuff, const UTF8Char *url, UO
 	return Text::StrToUpperC(sbuff, url, i);
 }
 
-UTF8Char *Text::URLString::GetURLHost(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen)
+UnsafeArray<UTF8Char> Text::URLString::GetURLHost(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> url, UOSInt urlLen)
 {
 	UOSInt i;
 	i = Text::StrIndexOfC(url, urlLen, UTF8STRC("://"));
@@ -121,7 +121,7 @@ UTF8Char *Text::URLString::GetURLHost(UTF8Char *sbuff, const UTF8Char *url, UOSI
 	i = Text::StrIndexOfCharC(url, urlLen, '/');
 	if (i != INVALID_INDEX)
 	{
-		MemCopyNO(sbuff, url, sizeof(UTF8Char) * i);
+		MemCopyNO(sbuff.Ptr(), url.Ptr(), sizeof(UTF8Char) * i);
 		sbuff[i] = 0;
 		return &sbuff[i];
 	}
@@ -131,10 +131,10 @@ UTF8Char *Text::URLString::GetURLHost(UTF8Char *sbuff, const UTF8Char *url, UOSI
 	}
 }
 
-UTF8Char *Text::URLString::GetURLPath(UTF8Char *sbuff, Text::CStringNN url)
+UnsafeArray<UTF8Char> Text::URLString::GetURLPath(UnsafeArray<UTF8Char> sbuff, Text::CStringNN url)
 {
 	UOSInt i;
-	UTF8Char *tmpBuff;
+	UnsafeArray<UTF8Char> tmpBuff;
 	i = url.IndexOf(UTF8STRC("://"));
 	if (i != INVALID_INDEX)
 	{
@@ -143,8 +143,8 @@ UTF8Char *Text::URLString::GetURLPath(UTF8Char *sbuff, Text::CStringNN url)
 	i = url.IndexOf('/');
 	if (i != INVALID_INDEX)
 	{
-		tmpBuff = MemAlloc(UTF8Char, url.leng + 1);
-		UTF8Char *sptr = Text::TextBinEnc::URIEncoding::URIDecode(tmpBuff, &url.v[i]);
+		tmpBuff = MemAllocArr(UTF8Char, url.leng + 1);
+		UnsafeArray<UTF8Char> sptr = Text::TextBinEnc::URIEncoding::URIDecode(tmpBuff, &url.v[i]);
 		i = Text::StrIndexOfCharC(tmpBuff, (UOSInt)(sptr - tmpBuff), '?');
 		if (i != INVALID_INDEX)
 		{
@@ -158,7 +158,7 @@ UTF8Char *Text::URLString::GetURLPath(UTF8Char *sbuff, Text::CStringNN url)
 			*sptr = 0;
 		}
 		sptr = Text::StrConcatC(sbuff, tmpBuff, (UOSInt)(sptr - tmpBuff));
-		MemFree(tmpBuff);
+		MemFreeArr(tmpBuff);
 		return sptr;
 	}
 	else
@@ -167,7 +167,7 @@ UTF8Char *Text::URLString::GetURLPath(UTF8Char *sbuff, Text::CStringNN url)
 	}
 }
 
-UTF8Char *Text::URLString::GetURLPathSvr(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen)
+UnsafeArray<UTF8Char> Text::URLString::GetURLPathSvr(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> url, UOSInt urlLen)
 {
 	UOSInt i;
 	i = Text::StrIndexOfC(url, urlLen, UTF8STRC("://"));
@@ -181,7 +181,7 @@ UTF8Char *Text::URLString::GetURLPathSvr(UTF8Char *sbuff, const UTF8Char *url, U
 	{
 		if (urlLen < 256)
 		{
-			UTF8Char *sptr = Text::TextBinEnc::URIEncoding::URIDecode(sbuff, &url[i]);
+			UnsafeArray<UTF8Char> sptr = Text::TextBinEnc::URIEncoding::URIDecode(sbuff, &url[i]);
 			i = Text::StrIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '?');
 			if (i != INVALID_INDEX)
 			{
@@ -192,8 +192,8 @@ UTF8Char *Text::URLString::GetURLPathSvr(UTF8Char *sbuff, const UTF8Char *url, U
 		}
 		else
 		{
-			UTF8Char *tmpbuff = MemAlloc(UTF8Char, urlLen - i + 1);
-			UTF8Char *sptr = Text::TextBinEnc::URIEncoding::URIDecode(tmpbuff, &url[i]);
+			UnsafeArray<UTF8Char> tmpbuff = MemAllocArr(UTF8Char, urlLen - i + 1);
+			UnsafeArray<UTF8Char> sptr = Text::TextBinEnc::URIEncoding::URIDecode(tmpbuff, &url[i]);
 			i = Text::StrIndexOfCharC(tmpbuff, (UOSInt)(sptr - tmpbuff), '?');
 			if (i != INVALID_INDEX)
 			{
@@ -201,7 +201,7 @@ UTF8Char *Text::URLString::GetURLPathSvr(UTF8Char *sbuff, const UTF8Char *url, U
 				*sptr = 0;
 			}
 			sptr = Text::StrConcatC(sbuff, tmpbuff, (UOSInt)(sptr - tmpbuff));
-			MemFree(tmpbuff);
+			MemFreeArr(tmpbuff);
 			return sptr;
 		}
 	}
@@ -223,7 +223,7 @@ Text::CStringNN Text::URLString::GetURLPathQuery(Text::CStringNN url)
 	return url.Substring(i);
 }
 
-UTF8Char *Text::URLString::AppendURLPath(UTF8Char *sbuff, UTF8Char *sbuffEnd, Text::CStringNN path)
+UnsafeArrayOpt<UTF8Char> Text::URLString::AppendURLPath(UnsafeArray<UTF8Char> sbuff, UnsafeArray<UTF8Char> sbuffEnd, Text::CStringNN path)
 {
 	UOSInt i = path.IndexOf(UTF8STRC("://"));
 	if (i != INVALID_INDEX)
@@ -234,7 +234,7 @@ UTF8Char *Text::URLString::AppendURLPath(UTF8Char *sbuff, UTF8Char *sbuffEnd, Te
 	{
 		if (sbuff[1] == ':' && sbuff[2] == '\\')
 		{
-			UTF8Char *sptr = IO::Path::AppendPath(sbuff, sbuffEnd, path);
+			UnsafeArray<UTF8Char> sptr = IO::Path::AppendPath(sbuff, sbuffEnd, path);
 			Text::StrReplace(sbuff, '/', '\\');
 			return sptr;
 		}

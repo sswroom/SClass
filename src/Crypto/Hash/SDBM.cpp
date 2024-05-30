@@ -17,7 +17,7 @@ Crypto::Hash::SDBM::~SDBM()
 {
 }
 
-UTF8Char *Crypto::Hash::SDBM::GetName(UTF8Char *sbuff) const
+UnsafeArray<UTF8Char> Crypto::Hash::SDBM::GetName(UnsafeArray<UTF8Char> sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("SDBM"));
 }

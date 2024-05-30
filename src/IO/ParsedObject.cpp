@@ -83,7 +83,7 @@ IO::ParsedObject::~ParsedObject()
 	this->sourceName->Release();
 }
 
-UTF8Char *IO::ParsedObject::GetSourceName(UTF8Char *oriStr) const
+UnsafeArray<UTF8Char> IO::ParsedObject::GetSourceName(UnsafeArray<UTF8Char> oriStr) const
 {
 	return this->sourceName->ConcatTo(oriStr);
 }

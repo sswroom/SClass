@@ -11,7 +11,7 @@
 void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(NN<FrameDetail> frame, const UInt8 *buff, UOSInt ofst)
 {
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (buff[ofst] == 0 && buff[ofst + 1] == 0 && buff[ofst + 2] == 0)
 	{
 		UInt8 type = buff[ofst + 3];
@@ -192,7 +192,7 @@ void IO::FileAnalyse::EDIDFileAnalyse::ParseDescriptor(NN<FrameDetail> frame, co
 	}
 }
 
-void IO::FileAnalyse::EDIDFileAnalyse::RemoveNonASCII(UTF8Char *sbuff, UTF8Char *sbuffEnd)
+void IO::FileAnalyse::EDIDFileAnalyse::RemoveNonASCII(UnsafeArray<UTF8Char> sbuff, UnsafeArray<UTF8Char> sbuffEnd)
 {
 	UTF8Char c;
 	while (sbuff < sbuffEnd)
@@ -300,7 +300,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EDIDFileAnalyse::GetFram
 	UOSInt k;
 	UInt8 buff[128];
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (this->fd->GetRealData(index << 7, 128, BYTEARR(buff)) != 128)
 		return 0;
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(index << 7, 128));

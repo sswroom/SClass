@@ -69,23 +69,27 @@ Bool Net::HTTPClient::FormAdd(Text::CStringNN name, Text::CString value)
 		return false;
 	}
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, name.v);
 	if (this->formSb->GetLength() > 0)
 	{
 		this->formSb->AppendUTF8Char('&');
 	}
 	this->formSb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
-	sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, value.v);
 	this->formSb->AppendUTF8Char('=');
-	this->formSb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	Text::CStringNN nnval;
+	if (value.SetTo(nnval))
+	{
+		sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, nnval.v);
+		this->formSb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	}
 	return true;
 }
 
 void Net::HTTPClient::AddTimeHeader(Text::CStringNN name, NN<Data::DateTime> dt)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Net::WebUtil::Date2Str(sbuff, dt);
 	this->AddHeaderC(name, CSTRP(sbuff, sptr));
 }
@@ -93,7 +97,7 @@ void Net::HTTPClient::AddTimeHeader(Text::CStringNN name, NN<Data::DateTime> dt)
 void Net::HTTPClient::AddTimeHeader(Text::CStringNN name, Data::Timestamp ts)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Net::WebUtil::Date2Str(sbuff, ts);
 	this->AddHeaderC(name, CSTRP(sbuff, sptr));
 }
@@ -106,7 +110,7 @@ void Net::HTTPClient::AddContentType(Text::CStringNN contType)
 void Net::HTTPClient::AddContentLength(UInt64 leng)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrUInt64(sbuff, leng);
 	this->AddHeaderC(CSTR("Content-Length"), CSTRP(sbuff, sptr));
 }
@@ -130,7 +134,7 @@ UOSInt Net::HTTPClient::GetRespHeaderCnt() const
 	return this->headers.GetCount();
 }
 
-UTF8Char *Net::HTTPClient::GetRespHeader(UOSInt index, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Net::HTTPClient::GetRespHeader(UOSInt index, UnsafeArray<UTF8Char> buff)
 {
 	NN<Text::String> s;
 	if (this->headers.GetItem(index).SetTo(s))
@@ -139,10 +143,10 @@ UTF8Char *Net::HTTPClient::GetRespHeader(UOSInt index, UTF8Char *buff)
 		return 0;
 }
 
-UTF8Char *Net::HTTPClient::GetRespHeader(Text::CStringNN name, UTF8Char *valueBuff)
+UnsafeArrayOpt<UTF8Char> Net::HTTPClient::GetRespHeader(Text::CStringNN name, UnsafeArray<UTF8Char> valueBuff)
 {
-	Text::CString v = GetRespHeader(name);
-	if (v.v)
+	Text::CStringNN v;
+	if (GetRespHeader(name).SetTo(v))
 	{
 		return v.ConcatTo(valueBuff);
 	}
@@ -151,8 +155,8 @@ UTF8Char *Net::HTTPClient::GetRespHeader(Text::CStringNN name, UTF8Char *valueBu
 
 Bool Net::HTTPClient::GetRespHeader(Text::CStringNN name, NN<Text::StringBuilderUTF8> sb)
 {
-	Text::CString v = GetRespHeader(name);
-	if (v.v)
+	Text::CStringNN v;
+	if (GetRespHeader(name).SetTo(v))
 	{
 		sb->Append(v);
 		return true;
@@ -163,7 +167,7 @@ Bool Net::HTTPClient::GetRespHeader(Text::CStringNN name, NN<Text::StringBuilder
 Text::CString Net::HTTPClient::GetRespHeader(Text::CStringNN name)
 {
 	UTF8Char buff[256];
-	UTF8Char *s2;
+	UnsafeArray<UTF8Char> s2;
 	NN<Text::String> s;
 	s2 = Text::StrConcatC(name.ConcatTo(buff), UTF8STRC(": "));
 	Data::ArrayIterator<NN<Text::String>> it = this->headers.Iterator();
@@ -197,11 +201,11 @@ UInt64 Net::HTTPClient::GetContentLength()
 UInt32 Net::HTTPClient::GetContentCodePage()
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::PString sarr[2];
 	UOSInt arrCnt;
 	this->EndRequest(0, 0);
-	if ((sptr = this->GetRespHeader(CSTR("Content-Type"), sbuff)) != 0)
+	if (this->GetRespHeader(CSTR("Content-Type"), sbuff).SetTo(sptr))
 	{
 		sarr[1].v = sbuff;
 		sarr[1].leng = (UOSInt)(sptr - sbuff);
@@ -222,9 +226,9 @@ UInt32 Net::HTTPClient::GetContentCodePage()
 Bool Net::HTTPClient::GetLastModified(NN<Data::DateTime> dt)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->EndRequest(0, 0);
-	if ((sptr = this->GetRespHeader(CSTR("Last-Modified"), sbuff)) != 0)
+	if (this->GetRespHeader(CSTR("Last-Modified"), sbuff).SetTo(sptr))
 	{
 		ParseDateStr(dt, CSTRP(sbuff, sptr));
 		return true;
@@ -235,9 +239,9 @@ Bool Net::HTTPClient::GetLastModified(NN<Data::DateTime> dt)
 Bool Net::HTTPClient::GetLastModified(OutParam<Data::Timestamp> ts)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->EndRequest(0, 0);
-	if ((sptr = this->GetRespHeader(CSTR("Last-Modified"), sbuff)) != 0)
+	if (this->GetRespHeader(CSTR("Last-Modified"), sbuff).SetTo(sptr))
 	{
 		ts.Set(ParseDateStr(CSTRP(sbuff, sptr)));
 		return true;
@@ -248,9 +252,9 @@ Bool Net::HTTPClient::GetLastModified(OutParam<Data::Timestamp> ts)
 Bool Net::HTTPClient::GetServerDate(NN<Data::DateTime> dt)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->EndRequest(0, 0);
-	if ((sptr = this->GetRespHeader(CSTR("Date"), sbuff)) != 0)
+	if (this->GetRespHeader(CSTR("Date"), sbuff).SetTo(sptr))
 	{
 		ParseDateStr(dt, CSTRP(sbuff, sptr));
 		return true;
@@ -324,8 +328,8 @@ Bool Net::HTTPClient::ReadAllContent(NN<IO::Stream> outStm, UOSInt buffSize, UIn
 	}
 	else
 	{
-		Text::CString tranEnc = this->GetTransferEncoding();
-		if (tranEnc.Equals(UTF8STRC("chunked")))
+		Text::CStringNN tranEnc;
+		if (this->GetTransferEncoding().SetTo(tranEnc) && tranEnc.Equals(UTF8STRC("chunked")))
 		{
 			UInt8 *readBuff = MemAlloc(UInt8, buffSize);
 			while ((readSize = this->Read(Data::ByteArray(readBuff, buffSize))) > 0)
@@ -368,8 +372,8 @@ Bool Net::HTTPClient::ReadAllContent(NN<Text::StringBuilderUTF8> sb, UOSInt buff
 	}
 	else
 	{
-		Text::CString tranEnc = this->GetTransferEncoding();
-		if (tranEnc.Equals(UTF8STRC("chunked")))
+		Text::CStringNN tranEnc;
+		if (this->GetTransferEncoding().SetTo(tranEnc) && tranEnc.Equals(UTF8STRC("chunked")))
 		{
 			UInt8 *readBuff = MemAlloc(UInt8, buffSize);
 			while ((readSize = this->Read(Data::ByteArray(readBuff, buffSize))) > 0)
@@ -397,12 +401,12 @@ NN<const Net::SocketUtil::AddressInfo> Net::HTTPClient::GetSvrAddr()
 
 void Net::HTTPClient::ParseDateStr(NN<Data::DateTime> dt, Text::CStringNN dateStr)
 {
-	UTF8Char *tmps;
+	UnsafeArray<UTF8Char> tmps;
 	Text::PString ptrs[6];
 	Text::PString ptrs2[3];
 	Text::PString ptrs3[3];
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	if ((i = dateStr.IndexOf(UTF8STRC(", "))) != INVALID_INDEX)
@@ -449,12 +453,12 @@ void Net::HTTPClient::ParseDateStr(NN<Data::DateTime> dt, Text::CStringNN dateSt
 
 Data::Timestamp Net::HTTPClient::ParseDateStr(Text::CStringNN dateStr)
 {
-	UTF8Char *tmps;
+	UnsafeArray<UTF8Char> tmps;
 	Text::PString ptrs[6];
 	Text::PString ptrs2[3];
 	Text::PString ptrs3[3];
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	if ((i = dateStr.IndexOf(UTF8STRC(", "))) != INVALID_INDEX)

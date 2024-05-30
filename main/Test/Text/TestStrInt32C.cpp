@@ -10,7 +10,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	while (i-- > -10000)
 	{
 		Text::StrInt32(sbuff, i);
-		j = Text::StrToInt32(sbuff);
+		j = Text::StrToInt32Ch(sbuff);
 		if (i != j)
 		{
 			return 1;

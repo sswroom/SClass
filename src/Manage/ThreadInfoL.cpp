@@ -72,19 +72,19 @@ UOSInt Manage::ThreadInfo::GetThreadId()
 	return this->threadId;
 }
 
-UTF8Char *Manage::ThreadInfo::GetName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Manage::ThreadInfo::GetName(UnsafeArray<UTF8Char> buff)
 {
 #if defined(__GNUC_PREREQ)
 #if __GNUC_PREREQ(2, 12) && !defined(__DEFINED_pid_t) && !defined(__UCLIBC_MAJOR__)
 	if (this->hand)
 	{
-		if (pthread_getname_np((pthread_t)this->hand, (char*)buff, 32) == 0)
-			return &buff[Text::StrCharCnt(buff)];
+		if (pthread_getname_np((pthread_t)this->hand, (char*)buff.Ptr(), 32) == 0)
+			return buff + Text::StrCharCnt(buff);
 	}
 #endif
 #endif
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::PString sarr[3];
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("/proc/"));
 	sptr = Text::StrUOSInt(sptr, this->procId);

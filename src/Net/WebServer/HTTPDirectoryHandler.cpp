@@ -131,7 +131,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NN<Net::WebServer
 	
 	Text::StringBuilderUTF8 sb2;
 	Text::StringBuilderUTF8 sbOut;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 
@@ -202,7 +202,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NN<Net::WebServer
 	sbOut.AppendNE(UTF8STRC("<table><tr><th>Name</th><th>MIME</th><th>Size</th><th>Modified Date</th></tr>\r\n"));
 
 	UTF8Char sbuff2[256];
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr2;
 	IO::PackageFile::PackObjectType pot;
 	i = 0;
 	j = packageFile->GetCount();
@@ -213,7 +213,8 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NN<Net::WebServer
 		{
 			sbOut.AppendNE(UTF8STRC("<tr><td>"));
 			sbOut.AppendNE(UTF8STRC("<a href=\""));
-			sptr = packageFile->GetItemName(sbuff, i);
+			if (!packageFile->GetItemName(sbuff, i).SetTo(sptr))
+				sbuff[0] = 0;
 			sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, sbuff);
 			sbOut.AppendNE(sbuff2, (UOSInt)(sptr2 - sbuff2));
 			if (pot == IO::PackageFile::PackObjectType::PackageFileType)
@@ -233,7 +234,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NN<Net::WebServer
 			else
 			{
 				sptr2 = IO::Path::GetFileExt(sbuff2, sbuff, (UOSInt)(sptr - sbuff));
-				Text::CString mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff2, sptr2));
+				Text::CStringNN mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff2, sptr2));
 				sbOut.AppendNE(mime.v, mime.leng);
 				sbOut.AppendNE(UTF8STRC("</td><td>"));
 				sbOut.AppendU64(packageFile->GetItemSize(i));
@@ -254,7 +255,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(NN<Net::WebServer
 Bool Net::WebServer::HTTPDirectoryHandler::ResponsePackageFileItem(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, NN<IO::VirtualPackageFile> packageFile, NN<const IO::PackFileItem> pitem)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 compBuff[10];
 	sptr = IO::Path::GetFileExt(sbuff, pitem->name->v, pitem->name->leng);
 	Text::CStringNN mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff, sptr));
@@ -521,10 +522,10 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[1024];
 	UTF8Char sbuff2[1024];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt sptrLen;
-	UTF8Char *sptr3;
-	UTF8Char *sptr4;
+	UnsafeArray<UTF8Char> sptr3;
+	UnsafeArray<UTF8Char> sptr4;
 	//Data::DateTime t;
 	Text::CStringNN mime;
 	NN<Sync::RWMutex> packageMut;
@@ -585,8 +586,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 			Bool needRelease = false;
 			if (packageFile->GetCount() == 1 && packageFile->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFileType)
 			{
-				sptr = packageFile->GetItemName(sbuff, 0);
-				if (dirName.Substring(1).Equals(sbuff, (UOSInt)(sptr - sbuff)))
+				if (packageFile->GetItemName(sbuff, 0).SetTo(sptr) && dirName.Substring(1).Equals(sbuff, (UOSInt)(sptr - sbuff)))
 				{
 					packageFile->GetItemPack(0, needRelease).SetTo(packageFile);
 				}
@@ -816,11 +816,11 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 	{
 		sb.RemoveChars(1);
 	}
-	const UTF8Char *reqTarget = subReq.v;
+	UnsafeArray<const UTF8Char> reqTarget = subReq.v;
 	sb.AppendC(reqTarget, subReq.leng);
 	sptr = sb.v;
 	sptrLen = sb.GetLength();
-	UTF8Char *sptr2 = 0;
+	UnsafeArray<UTF8Char> sptr2;
 	i = Text::StrIndexOfCharC(sptr, sptrLen, '?');
 	if (i != INVALID_INDEX)
 	{
@@ -1004,7 +1004,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 				sbOut.AppendNE(UTF8STRC("</title><script type=\"application/javascript\">\r\n"
 							    		"async function submitFile() {\r\n"
 										"\tvar url = "));
-				s2 = Text::JSText::ToNewJSTextDQuote(req->GetRequestURI()->v);
+				s2 = Text::JSText::ToNewJSTextDQuote(UnsafeArray<const UTF8Char>(req->GetRequestURI()->v));
 				sbOut.Append(s2);
 				s2->Release();
 				sbOut.AppendNE(UTF8STRC(";\r\n"
@@ -1150,7 +1150,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 					Data::Timestamp modTime;
 					if (sort == 0)
 					{
-						while ((sptr3 = IO::Path::FindNextFile(sptr2, sess, &modTime, &pt, &fileSize)) != 0)
+						while (IO::Path::FindNextFile(sptr2, sess, &modTime, &pt, &fileSize).SetTo(sptr3))
 						{
 							if (Text::StrEqualsC(sptr2, (UOSInt)(sptr3 - sptr2), UTF8STRC(".")) || Text::StrEqualsC(sptr2, (UOSInt)(sptr3 - sptr2), UTF8STRC("..")))
 							{
@@ -1216,7 +1216,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 					{
 						Data::ArrayList<DirectoryEntry *> entList;
 						DirectoryEntry *ent;
-						while ((sptr3 = IO::Path::FindNextFile(sptr2, sess, &modTime, &pt, &fileSize)) != 0)
+						while (IO::Path::FindNextFile(sptr2, sess, &modTime, &pt, &fileSize).SetTo(sptr3))
 						{
 							if (Text::StrEqualsC(sptr2, (UOSInt)(sptr3 - sptr2), UTF8STRC(".")) || Text::StrEqualsC(sptr2, (UOSInt)(sptr3 - sptr2), UTF8STRC("..")))
 							{
@@ -1473,7 +1473,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::DoFileRequest(NN<Net::WebServer::IWeb
 			fs.SeekFromBeginning((UInt64)start);
 			resp->SetStatusCode(Net::WebStatus::SC_PARTIAL_CONTENT);
 			UTF8Char sbuff[128];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			sptr = Text::StrConcatC(sbuff, UTF8STRC("bytes "));
 			sptr = Text::StrInt64(sptr, start);
 			*sptr++ = '-';
@@ -1575,7 +1575,7 @@ Optional<IO::PackageFile> Net::WebServer::HTTPDirectoryHandler::GetPackageFile(T
 			subPath = path.Substring(i + 1);
 		}
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Sync::RWMutexUsage packageMutUsage(packageMut, false);
 		pkgInfo = this->packageMap->GetC(pkgName);
 		packageMutUsage.EndUse();
@@ -1585,8 +1585,7 @@ Optional<IO::PackageFile> Net::WebServer::HTTPDirectoryHandler::GetPackageFile(T
 			NN<IO::PackageFile> packageFile = pkgInfo->packageFile;
 			if (packageFile->GetCount() == 1 && packageFile->GetItemType(0) == IO::PackageFile::PackObjectType::PackageFileType)
 			{
-				sptr = packageFile->GetItemName(sbuff, 0);
-				if (pkgName.Equals(sbuff, (UOSInt)(sptr - sbuff)))
+				if (packageFile->GetItemName(sbuff, 0).SetTo(sptr) && pkgName.Equals(sbuff, (UOSInt)(sptr - sbuff)))
 				{
 					if (!packageFile->GetItemPack(0, thisNeedRelease).SetTo(packageFile))
 						return 0;
@@ -1679,8 +1678,8 @@ void Net::WebServer::HTTPDirectoryHandler::ClearFileCache()
 void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(NN<Parser::ParserList> parsers, Text::CStringNN searchPattern)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	IO::Path::FindFileSession *sess;
 	NN<Sync::RWMutex> packageMut;
 	Sync::RWMutexUsage packageMutUsage;
@@ -1714,7 +1713,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(NN<Parser::ParserL
 		UOSInt i;
 		PackageInfo *package;
 
-		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, &ts, &pt, 0)) != 0)
+		while (IO::Path::FindNextFile(sptr, sess, &ts, &pt, 0).SetTo(sptr2))
 		{
 			if (pt == IO::Path::PathType::File)
 			{

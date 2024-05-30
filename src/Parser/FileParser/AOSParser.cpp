@@ -46,7 +46,7 @@ Optional<IO::ParsedObject> Parser::FileParser::AOSParser::ParseFileHdr(NN<IO::St
 	UInt32 fileOfst;
 	UInt32 nextOfst;
 	UTF8Char fileName[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (!fd->GetFullName()->EndsWith(UTF8STRC(".AOS")))
 	{

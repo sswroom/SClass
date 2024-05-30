@@ -16,7 +16,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 //	Data::BTreeMap<UInt32> map;
 //	Data::StringHashMap<UInt32> map;
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt32 val;
 	UInt32 val2;
 	NN<Text::String> s;

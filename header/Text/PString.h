@@ -17,7 +17,7 @@ namespace Text
 
 		PString() = default;
 
-		PString(UTF8Char *v, UOSInt leng)
+		PString(UnsafeArray<UTF8Char> v, UOSInt leng)
 		{
 			this->v = v;
 			this->leng = leng;
@@ -25,7 +25,7 @@ namespace Text
 
 		Text::CStringNN ToCString() const
 		{
-			if (this->v)
+			if (this->v.Ptr())
 				return Text::CStringNN(this->v, this->leng);
 			else
 				return CSTR("");
@@ -38,8 +38,8 @@ namespace Text
 
 		Text::PString TrimAsNew()
 		{
-			UTF8Char *sptr = this->v;
-			UTF8Char *endPtr = this->v + this->leng;
+			UnsafeArray<UTF8Char> sptr = this->v;
+			UnsafeArray<UTF8Char> endPtr = this->v + this->leng;
 			while (sptr < endPtr && (*sptr == ' ' || *sptr == '\t'))
 			{
 				sptr++;
@@ -58,8 +58,8 @@ namespace Text
 			{
 				return {this->v + this->leng, 0};
 			}
-			UTF8Char *sptr = this->v + index;
-			UTF8Char *endPtr = this->v + this->leng;
+			UnsafeArray<UTF8Char> sptr = this->v + index;
+			UnsafeArray<UTF8Char> endPtr = this->v + this->leng;
 			while (sptr < endPtr && (*sptr == ' ' || *sptr == '\t'))
 			{
 				sptr++;
@@ -78,8 +78,8 @@ namespace Text
 			{
 				return {this->v + this->leng, 0};
 			}
-			UTF8Char *sptr = this->v + index;
-			UTF8Char *endPtr;
+			UnsafeArray<UTF8Char> sptr = this->v + index;
+			UnsafeArray<UTF8Char> endPtr;
 			if (index + leng >= this->leng)
 			{
 				endPtr = this->v + this->leng;
@@ -132,15 +132,15 @@ namespace Text
 			}
 			else
 			{
-				this->leng = (UOSInt)(Text::StrConcatC(&this->v[index], &this->v[endOfst], this->leng - endOfst) - this->v);
+				this->leng = (UOSInt)(Text::StrConcatC(this->v + index, this->v + endOfst, this->leng - endOfst) - this->v);
 			}
 		}
 	};
 
-	UOSInt StrSplitP(PString *strs, UOSInt maxStrs, PString strToSplit, UTF8Char splitChar); //Optimized
-	UOSInt StrSplitTrimP(PString *strs, UOSInt maxStrs, PString strToSplit, UTF8Char splitChar); //Optimized
-	UOSInt StrSplitLineP(PString *strs, UOSInt maxStrs, PString strToSplit); //Optimized
-	UOSInt StrSplitWSP(PString *strs, UOSInt maxStrs, PString strToSplit); //Optimized
-	UOSInt StrCSVSplitP(Text::PString *strs, UOSInt maxStrs, UTF8Char *strToSplit);
+	UOSInt StrSplitP(UnsafeArray<PString> strs, UOSInt maxStrs, PString strToSplit, UTF8Char splitChar); //Optimized
+	UOSInt StrSplitTrimP(UnsafeArray<PString> strs, UOSInt maxStrs, PString strToSplit, UTF8Char splitChar); //Optimized
+	UOSInt StrSplitLineP(UnsafeArray<PString> strs, UOSInt maxStrs, PString strToSplit); //Optimized
+	UOSInt StrSplitWSP(UnsafeArray<PString> strs, UOSInt maxStrs, PString strToSplit); //Optimized
+	UOSInt StrCSVSplitP(UnsafeArray<Text::PString> strs, UOSInt maxStrs, UnsafeArray<UTF8Char> strToSplit);
 }
 #endif

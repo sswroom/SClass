@@ -10,7 +10,7 @@
 UInt32 __stdcall Net::UDPServer::DataV4Thread(AnyType obj)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> s;
 	NN<Net::UDPServer::ThreadStat> stat = obj.GetNN<Net::UDPServer::ThreadStat>();
 	NN<Socket> soc;
@@ -42,7 +42,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(AnyType obj)
 					sptr = Text::StrConcatC(sptr, UTF8STRC("Received "));
 					sptr = Text::StrUOSInt(sptr, recvSize);
 					sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes from "));
-					sptr = Net::SocketUtil::GetAddrName(sptr, recvAddr, recvPort);
+					sptr = Net::SocketUtil::GetAddrName(sptr, recvAddr, recvPort).Or(sptr);
 					stat->me->msgLog->LogMessage(CSTRP(sbuff, sptr), IO::LogHandler::LogLevel::Raw);
 				}
 
@@ -88,7 +88,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(AnyType obj)
 UInt32 __stdcall Net::UDPServer::DataV6Thread(AnyType obj)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> s;
 	NN<Net::UDPServer::ThreadStat> stat = obj.GetNN<Net::UDPServer::ThreadStat>();
 	NN<Socket> soc;
@@ -120,7 +120,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(AnyType obj)
 					sptr = Text::StrConcatC(sptr, UTF8STRC("Received "));
 					sptr = Text::StrUOSInt(sptr, recvSize);
 					sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes from "));
-					sptr = Net::SocketUtil::GetAddrName(sptr, recvAddr, recvPort);
+					sptr = Net::SocketUtil::GetAddrName(sptr, recvAddr, recvPort).Or(sptr);
 					stat->me->msgLog->LogMessage(CSTRP(sbuff, sptr), IO::LogHandler::LogLevel::Raw);
 				}
 
@@ -423,7 +423,7 @@ Bool Net::UDPServer::SupportV6()
 Bool Net::UDPServer::SendTo(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port, const UInt8 *buff, UOSInt dataSize)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Bool succ;
 	NN<Text::String> s;
 	if (this->logPrefix.SetTo(s))
@@ -472,7 +472,7 @@ Bool Net::UDPServer::SendTo(NN<const Net::SocketUtil::AddressInfo> addr, UInt16 
 		sptr = Text::StrConcatC(sptr, UTF8STRC("Sending UDP "));
 		sptr = Text::StrUOSInt(sptr, dataSize);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes to "));
-		sptr = Net::SocketUtil::GetAddrName(sptr, addr, port);
+		sptr = Net::SocketUtil::GetAddrName(sptr, addr, port).Or(sptr);
 		this->msgLog->LogMessage(CSTRP(sbuff, sptr), IO::LogHandler::LogLevel::Raw);
 	}
 

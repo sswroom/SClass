@@ -8,7 +8,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UInt8 hashVal[50];
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	Crypto::Encrypt::RSACipher::MGF1(hashVal, UTF8STRC("foo"), 3, Crypto::Hash::HashType::SHA1);
 	sptr = Text::StrHexBytes(sbuff, hashVal, 3, 0);

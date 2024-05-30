@@ -2279,7 +2279,7 @@ Bool Media::EXIFData::GetPhotoLocation(OutParam<Double> lat, OutParam<Double> lo
 			}
 			if (item1->type == Media::EXIFData::ET_STRING)
 			{
-				if (Text::StrEquals(item1->dataBuff.GetOpt<Char>().OrNull(), "S"))
+				if (Text::StrEqualsCh(item1->dataBuff.GetOpt<Char>().OrNull(), "S"))
 				{
 					val = -val;
 				}
@@ -2300,13 +2300,13 @@ Bool Media::EXIFData::GetPhotoLocation(OutParam<Double> lat, OutParam<Double> lo
 			{
 				if (item2->cnt == 3)
 				{
-					val = ReadInt32(&item2->dataBuff.GetOpt<UInt8>().OrNull()[0]) / (Double)ReadInt32(&item2->dataBuff.GetOpt<UInt8>().OrNull()[4]);
-					val += ReadInt32(&item2->dataBuff.GetOpt<UInt8>().OrNull()[8]) / (Double)ReadInt32(&item2->dataBuff.GetOpt<UInt8>().OrNull()[12]) / 60.0;
-					val += ReadInt32(&item2->dataBuff.GetOpt<UInt8>().OrNull()[16]) / (Double)ReadInt32(&item2->dataBuff.GetOpt<UInt8>().OrNull()[20]) / 3600.0;
+					val = ReadInt32(&item2->dataBuff.GetArray<UInt8>()[0]) / (Double)ReadInt32(&item2->dataBuff.GetArray<UInt8>()[4]);
+					val += ReadInt32(&item2->dataBuff.GetArray<UInt8>()[8]) / (Double)ReadInt32(&item2->dataBuff.GetArray<UInt8>()[12]) / 60.0;
+					val += ReadInt32(&item2->dataBuff.GetArray<UInt8>()[16]) / (Double)ReadInt32(&item2->dataBuff.GetArray<UInt8>()[20]) / 3600.0;
 				}
 				else if (item2->cnt == 1)
 				{
-					val = ReadInt32(&item2->dataBuff.GetOpt<UInt8>().OrNull()[0]) / (Double)ReadInt32(&item2->dataBuff.GetOpt<UInt8>().OrNull()[4]);
+					val = ReadInt32(&item2->dataBuff.GetArray<UInt8>()[0]) / (Double)ReadInt32(&item2->dataBuff.GetArray<UInt8>()[4]);
 				}
 				else
 				{
@@ -2319,7 +2319,7 @@ Bool Media::EXIFData::GetPhotoLocation(OutParam<Double> lat, OutParam<Double> lo
 			}
 			if (item1->type == Media::EXIFData::ET_STRING)
 			{
-				if (Text::StrEquals(item1->dataBuff.GetOpt<Char>().OrNull(), "W"))
+				if (Text::StrEqualsCh(item1->dataBuff.GetArray<Char>(), "W"))
 				{
 					val = -val;
 				}
@@ -2405,10 +2405,10 @@ Bool Media::EXIFData::GetPhotoLocation(OutParam<Double> lat, OutParam<Double> lo
 			{
 				Char dateStr[12];
 				UOSInt dateCnt;
-				Char *dateArr[3];
+				UnsafeArray<Char> dateArr[3];
 				MemCopyNO(dateStr, item2->dataBuff.GetOpt<UTF8Char>().OrNull(), 11);
 				dateStr[11] = 0;
-				dateCnt = Text::StrSplit(dateArr, 3, dateStr, ':');
+				dateCnt = Text::StrSplitCh(dateArr, 3, dateStr, ':');
 				if (dateCnt != 3)
 				{
 					succ = false;
@@ -2416,7 +2416,7 @@ Bool Media::EXIFData::GetPhotoLocation(OutParam<Double> lat, OutParam<Double> lo
 				else if (gpsTimeTick.IsNotNull())
 				{
 					Data::DateTime dt;
-					dt.SetValue((UInt16)Text::StrToUInt32(dateArr[0]), Text::StrToInt32(dateArr[1]), Text::StrToInt32(dateArr[2]), hh, mm, ss, ms);
+					dt.SetValue((UInt16)Text::StrToUInt32Ch(dateArr[0]), Text::StrToInt32Ch(dateArr[1]), Text::StrToInt32Ch(dateArr[2]), hh, mm, ss, ms);
 					gpsTimeTick.SetNoCheck(dt.ToTicks());
 				}
 			}
@@ -2642,8 +2642,7 @@ Bool Media::EXIFData::ToString(NN<Text::StringBuilderUTF8> sb, Text::CString lin
 	{
 		v = exifIds.GetItem(i);
 		sb->AppendC(UTF8STRC("\r\n"));
-		if (linePrefix.v)
-			sb->Append(linePrefix);
+		sb->AppendOpt(linePrefix);
 		sb->AppendC(UTF8STRC("Id = "));
 		sb->AppendU32(v);
 		sb->AppendC(UTF8STRC(", name = "));
@@ -2664,8 +2663,7 @@ Bool Media::EXIFData::ToString(NN<Text::StringBuilderUTF8> sb, Text::CString lin
 				{
 					v2 = subExIds.GetItem(i2);
 					sb->AppendC(UTF8STRC("\r\n"));
-					if (linePrefix.v)
-						sb->Append(linePrefix);
+					sb->AppendOpt(linePrefix);
 					sb->AppendC(UTF8STRC(" Subid = "));
 					sb->AppendU32(v2);
 					sb->AppendC(UTF8STRC(", name = "));
@@ -2898,16 +2896,17 @@ Bool Media::EXIFData::ToString(NN<Text::StringBuilderUTF8> sb, Text::CString lin
 								valBuff = subExItem->dataBuff.GetOpt<UInt8>().OrNull();
 							}
 							NN<Media::EXIFData> innerExif;
+							Text::CStringNN nnlinePrefix;
 							if (ParseMakerNote(valBuff, subExItem->cnt).SetTo(innerExif))
 							{
 								UTF8Char sbuff[32];
-								UTF8Char *sptr;
+								UnsafeArray<UTF8Char> sptr;
 								sb->AppendC(UTF8STRC(", Format = "));
-								sb->Append(GetEXIFMakerName(innerExif->GetEXIFMaker()));
+								sb->AppendOpt(GetEXIFMakerName(innerExif->GetEXIFMaker()));
 								sb->AppendC(UTF8STRC(", Inner "));
-								if (linePrefix.v)
+								if (linePrefix.SetTo(nnlinePrefix))
 								{
-									sptr = linePrefix.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("  ")));
+									sptr = nnlinePrefix.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("  ")));
 								}
 								else
 								{
@@ -3267,8 +3266,7 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(NN<Text::StringBuilderUTF8> sb
 	while (k < valCnt)
 	{
 		sb->AppendC(UTF8STRC("\r\n"));
-		if (linePrefix.v)
-			sb->Append(linePrefix);
+		sb->AppendOpt(linePrefix);
 		sb->AppendC(UTF8STRC(" "));
 		isInt16 = false;
 		isUInt16 = false;
@@ -4198,8 +4196,7 @@ Bool Media::EXIFData::ToStringCanonFocalLength(NN<Text::StringBuilderUTF8> sb, T
 	while (k < valCnt)
 	{
 		sb->AppendC(UTF8STRC("\r\n"));
-		if (linePrefix.v)
-			sb->Append(linePrefix);
+		sb->AppendOpt(linePrefix);
 		sb->AppendC(UTF8STRC(" "));
 		isInt16 = false;
 		isUInt16 = false;
@@ -4261,8 +4258,7 @@ Bool Media::EXIFData::ToStringCanonShotInfo(NN<Text::StringBuilderUTF8> sb, Text
 	while (k < valCnt)
 	{
 		sb->AppendC(UTF8STRC("\r\n"));
-		if (linePrefix.v)
-			sb->Append(linePrefix);
+		sb->AppendOpt(linePrefix);
 		sb->AppendC(UTF8STRC(" "));
 		isInt16 = false;
 		isUInt16 = false;
@@ -4618,8 +4614,8 @@ Optional<Media::EXIFData> Media::EXIFData::ParseMakerNote(UnsafeArray<const UInt
 	}
 	else
 	{
-		Text::CString maker = this->GetPhotoMake();
-		if (maker.v)
+		Text::CStringNN maker;
+		if (this->GetPhotoMake().SetTo(maker))
 		{
 			if (maker.Equals(UTF8STRC("Canon")))
 			{

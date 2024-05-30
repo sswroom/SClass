@@ -21,8 +21,8 @@ namespace Math
 			} AngleUnit;
 		public:
 			static Double GetUnitRatio(AngleUnit unit);
-			static Text::CString GetUnitShortName(AngleUnit unit);
-			static Text::CString GetUnitName(AngleUnit unit);
+			static Text::CStringNN GetUnitShortName(AngleUnit unit);
+			static Text::CStringNN GetUnitName(AngleUnit unit);
 			static Double GetConvertRatio(AngleUnit fromUnit, AngleUnit toUnit);
 			static Double Convert(AngleUnit fromUnit, AngleUnit toUnit, Double fromValue);
 		};

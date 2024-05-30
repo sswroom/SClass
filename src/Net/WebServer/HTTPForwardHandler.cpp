@@ -37,7 +37,7 @@ Net::WebServer::HTTPForwardHandler::~HTTPForwardHandler()
 Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	UInt8 buff[2048];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (subReq.v[0] == 0)
 	{
 		subReq = CSTR("/");
@@ -97,11 +97,11 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NN<Net::WebServer::IWebR
 	Text::String *svrHost = 0;
 	UInt16 svrPort = 0;
 	Text::String *fwdFor = 0;
-	const UTF8Char *fwdPrefix = 0;
-	const UTF8Char *fwdHost = 0;
-	const UTF8Char *fwdProto = 0;
-	const UTF8Char *fwdPort = 0;
-	const UTF8Char *fwdSsl = 0;
+	UnsafeArrayOpt<const UTF8Char> fwdPrefix = 0;
+	UnsafeArrayOpt<const UTF8Char> fwdHost = 0;
+	UnsafeArrayOpt<const UTF8Char> fwdProto = 0;
+	UnsafeArrayOpt<const UTF8Char> fwdPort = 0;
+	UnsafeArrayOpt<const UTF8Char> fwdSsl = 0;
 	it = hdrNames.Iterator();
 	while (it.HasNext())
 	{
@@ -171,7 +171,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(NN<Net::WebServer::IWebR
 			sbHeader.Append(fwdFor);
 			sbHeader.AppendUTF8Char(',');
 		}
-		sptr = Net::SocketUtil::GetAddrName(buff, req->GetClientAddr());
+		sptr = Net::SocketUtil::GetAddrName(buff, req->GetClientAddr()).Or(buff);
 		sbHeader.AppendC(buff, (UOSInt)(sptr - buff));
 		cli->AddHeaderC(CSTR("X-Forwarded-For"), sbHeader.ToCString());
 

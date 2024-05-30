@@ -46,7 +46,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::KMZParser::ParseObject(NN<IO::Pars
 		return 0;
 	NN<IO::PackageFile> pkg = NN<IO::PackageFile>::ConvertFrom(pobj);
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::ArrayListNN<IO::ParsedObject> pobjList;
 	NN<IO::ParsedObject> pobj2;
 	UOSInt i;
@@ -55,8 +55,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::KMZParser::ParseObject(NN<IO::Pars
 	j = pkg->GetCount();
 	while (i < j)
 	{
-		sptr = pkg->GetItemName(sbuff, i);
-		if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".kml")))
+		if (pkg->GetItemName(sbuff, i).SetTo(sptr) && Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".kml")))
 		{
 			NN<IO::StreamData> fd;
 			if (pkg->GetItemStmDataNew(i).SetTo(fd))

@@ -84,8 +84,8 @@ UOSInt Net::DNSClient::GetByType(NN<Data::ArrayListNN<RequestAnswer>> answers, T
 	UTF8Char sbuff[256];
 	Char *ptr1;
 	Char *ptr2;
-	const UTF8Char *cptr1;
-	const UTF8Char *cptr2;
+	UnsafeArray<const UTF8Char> cptr1;
+	UnsafeArray<const UTF8Char> cptr2;
 	UTF8Char c;
 	UInt32 currId = NextId();
 
@@ -103,7 +103,7 @@ UOSInt Net::DNSClient::GetByType(NN<Data::ArrayListNN<RequestAnswer>> answers, T
 		{
 			if (addr.addrType == Net::AddrType::IPv4)
 			{
-				UTF8Char *sptr = sbuff;
+				UnsafeArray<UTF8Char> sptr = sbuff;
 				sptr = Text::StrUInt16(sptr, addr.addr[3]);
 				*sptr++ = '.';
 				sptr = Text::StrUInt16(sptr, addr.addr[2]);
@@ -116,7 +116,7 @@ UOSInt Net::DNSClient::GetByType(NN<Data::ArrayListNN<RequestAnswer>> answers, T
 			}
 			else if (addr.addrType == Net::AddrType::IPv6)
 			{
-				UTF8Char *sptr = sbuff;
+				UnsafeArray<UTF8Char> sptr = sbuff;
 				OSInt i = 16;
 				while (i-- > 0)
 				{
@@ -187,8 +187,8 @@ UOSInt Net::DNSClient::GetByIPv4Name(NN<Data::ArrayListNN<RequestAnswer>> answer
 	UOSInt ret = 0;
 	UInt8 buff[512];
 	UInt8 localIP[4];
-	Char *ptr1;
-	Char *ptr2;
+	UnsafeArray<Char> ptr1;
+	UnsafeArray<Char> ptr2;
 	UInt32 currId = NextId();
 	*(UInt32*)localIP = ip;
 
@@ -235,8 +235,8 @@ UOSInt Net::DNSClient::GetByAddrName(NN<Data::ArrayListNN<RequestAnswer>> answer
 {
 	UOSInt ret = 0;
 	UInt8 buff[512];
-	Char *ptr1;
-	Char *ptr2;
+	UnsafeArray<Char> ptr1;
+	UnsafeArray<Char> ptr2;
 	UInt32 currId = NextId();
 
 	if (addr->addrType == Net::AddrType::IPv4)
@@ -382,7 +382,7 @@ void Net::DNSClient::UpdateDNSAddr(NN<const Net::SocketUtil::AddressInfo> server
 	this->serverAddr = serverAddr.Ptr()[0];
 }
 
-UOSInt Net::DNSClient::ParseString(UTF8Char *sbuff, const UInt8 *buff, UOSInt stringOfst, UOSInt endOfst, UTF8Char **sbuffEndOut)
+UOSInt Net::DNSClient::ParseString(UnsafeArray<UTF8Char> sbuff, const UInt8 *buff, UOSInt stringOfst, UOSInt endOfst, OptOut<UnsafeArray<UTF8Char>> sbuffEndOut)
 {
 	Bool found = false;
 	UOSInt i = stringOfst;
@@ -438,10 +438,7 @@ UOSInt Net::DNSClient::ParseString(UTF8Char *sbuff, const UInt8 *buff, UOSInt st
 		}
 	}
 	*sbuff = 0;
-	if (sbuffEndOut)
-	{
-		*sbuffEndOut = sbuff;
-	}
+	sbuffEndOut.Set(sbuff);
 	return i;
 }
 
@@ -472,11 +469,11 @@ UOSInt Net::DNSClient::ParseAnswers(const UInt8 *buff, UOSInt dataSize, NN<Data:
 NN<Net::DNSClient::RequestAnswer> Net::DNSClient::ParseAnswer(const UInt8 *buff, UOSInt dataSize, InOutParam<UOSInt> index)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<RequestAnswer> ans;
 	UOSInt i = index.Get();
 	UOSInt k;
-	i = ParseString(sbuff, buff, i, dataSize, &sptr);
+	i = ParseString(sbuff, buff, i, dataSize, sptr);
 	ans = MemAllocNN(RequestAnswer);
 	ans->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	ans->recType = ReadMUInt16(&buff[i]);
@@ -488,23 +485,23 @@ NN<Net::DNSClient::RequestAnswer> Net::DNSClient::ParseAnswer(const UInt8 *buff,
 	{
 	case 1: // A - a host address
 		Net::SocketUtil::SetAddrInfoV4(ans->addr, ReadNUInt32(&buff[i + 10]));
-		sptr = Net::SocketUtil::GetAddrName(sbuff, ans->addr);
+		sptr = Net::SocketUtil::GetAddrName(sbuff, ans->addr).Or(sbuff);
 		ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
 		break;
 	case 2: // NS - an authoritative name server
 	case 5: // CNAME - the canonical name for an alias
 	case 12: // PTR - a domain name pointer
-		ParseString(sbuff, buff, i + 10, i + 10 + k, &sptr);
+		ParseString(sbuff, buff, i + 10, i + 10 + k, sptr);
 		ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
 		break;
 	case 6: // SOA - Start of [a zone of] authority
 		{
 			UOSInt l;
 			Text::StringBuilderUTF8 sb;
-			l = ParseString(sbuff, buff, i + 10, i + 10 + k, &sptr);
+			l = ParseString(sbuff, buff, i + 10, i + 10 + k, sptr);
 			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			sb.AppendC(UTF8STRC(", MailAddr="));
-			l = ParseString(sbuff, buff, l, i + 10 + k, &sptr);
+			l = ParseString(sbuff, buff, l, i + 10 + k, sptr);
 			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			if (l + 20 <= i + 10 + k)
 			{
@@ -524,7 +521,7 @@ NN<Net::DNSClient::RequestAnswer> Net::DNSClient::ParseAnswer(const UInt8 *buff,
 		break;
 	case 15: // MX - mail exchange
 		ans->priority = ReadMUInt16(&buff[i + 10]);
-		ParseString(sbuff, buff, i + 12, i + 10 + k, &sptr);
+		ParseString(sbuff, buff, i + 12, i + 10 + k, sptr);
 		ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
 		break;
 	case 16: // TXT - Text strings
@@ -548,7 +545,7 @@ NN<Net::DNSClient::RequestAnswer> Net::DNSClient::ParseAnswer(const UInt8 *buff,
 	case 28: // AAAA
 		{
 			Net::SocketUtil::SetAddrInfoV6(ans->addr, &buff[i + 10], 0);
-			sptr = Net::SocketUtil::GetAddrName(sbuff, ans->addr);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, ans->addr).Or(sbuff);
 			ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
 		}
 		break;
@@ -560,7 +557,7 @@ NN<Net::DNSClient::RequestAnswer> Net::DNSClient::ParseAnswer(const UInt8 *buff,
 			sptr = Text::StrConcatC(sptr, UTF8STRC(", Port = "));
 			sptr = Text::StrUInt16(sptr, ReadMUInt16(&buff[i + 14]));
 			sptr = Text::StrConcatC(sptr, UTF8STRC(", Target = "));
-			ParseString(sptr, buff, i + 16, i + 10 + k, &sptr);
+			ParseString(sptr, buff, i + 16, i + 10 + k, sptr);
 			ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
 		}
 		break;

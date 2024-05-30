@@ -17,8 +17,8 @@ namespace DB
 		NN<Text::String> tableName;
 		Optional<Text::String> engine;
 		Optional<Text::String> charset;
-		const UTF8Char *attr;
-		const UTF8Char *comments;
+		UnsafeArrayOpt<const UTF8Char> attr;
+		UnsafeArrayOpt<const UTF8Char> comments;
 		SQLType sqlType;
 
 		Data::ArrayListNN<ColDef> cols;
@@ -32,8 +32,8 @@ namespace DB
 		NN<Text::String> GetTableName() const;
 		Optional<Text::String> GetEngine() const;
 		Optional<Text::String> GetCharset() const;
-		const UTF8Char *GetAttr() const;
-		const UTF8Char *GetComments() const;
+		UnsafeArrayOpt<const UTF8Char> GetAttr() const;
+		UnsafeArrayOpt<const UTF8Char> GetComments() const;
 		DB::SQLType GetSQLType() const;
 		UOSInt GetColCnt() const;
 		Optional<DB::ColDef> GetCol(UOSInt index) const;
@@ -47,8 +47,8 @@ namespace DB
 		TableDef *SetTableName(Text::CString tableName);
 		TableDef *SetEngine(Text::CString engine);
 		TableDef *SetCharset(Text::CString charset);
-		TableDef *SetAttr(const UTF8Char *attr);
-		TableDef *SetComments(const UTF8Char *comments);
+		TableDef *SetAttr(UnsafeArrayOpt<const UTF8Char> attr);
+		TableDef *SetComments(UnsafeArrayOpt<const UTF8Char> comments);
 		TableDef *SetSQLType(SQLType sqlType);
 		
 		void ColFromReader(NN<DB::DBReader> r);

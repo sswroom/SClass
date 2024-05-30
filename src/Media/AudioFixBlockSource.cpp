@@ -18,7 +18,7 @@ Media::AudioFixBlockSource::~AudioFixBlockSource()
 	this->name->Release();
 }
 
-UTF8Char *Media::AudioFixBlockSource::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::AudioFixBlockSource::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	return this->name->ConcatTo(buff);
 }

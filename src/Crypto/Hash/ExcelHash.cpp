@@ -14,7 +14,7 @@ Crypto::Hash::ExcelHash::~ExcelHash()
 {
 }
 
-UTF8Char *Crypto::Hash::ExcelHash::GetName(UTF8Char *sbuff) const
+UnsafeArray<UTF8Char> Crypto::Hash::ExcelHash::GetName(UnsafeArray<UTF8Char> sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("Excel Hash"));
 }

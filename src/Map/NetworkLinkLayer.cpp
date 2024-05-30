@@ -98,7 +98,7 @@ void Map::NetworkLinkLayer::LoadLink(NN<LinkInfo> link)
 	else
 	{
 		UTF8Char sbuff[256];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Text::StringBuilderUTF8 sb;
 		Double width = this->dispSize.GetWidth();
 		Double height = this->dispSize.GetHeight();
@@ -526,7 +526,7 @@ UOSInt Map::NetworkLinkLayer::GetColumnCnt() const
 	return 0;
 }
 
-UTF8Char *Map::NetworkLinkLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::NetworkLinkLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
 {
 	return 0;
 }

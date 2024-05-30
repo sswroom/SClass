@@ -211,9 +211,9 @@ namespace Text
 #if _WCHAR_SIZE == 4
 	const WChar *StrCopyNewUTF16_W(const UTF16Char *str1);
 #endif
-	const UTF8Char *StrToUTF8New(const UTF16Char *str1);
-	const UTF8Char *StrToUTF8New(const UTF32Char *str1);
-	const WChar *StrToWCharNew(const UTF8Char *str1);
+	UnsafeArray<const UTF8Char> StrToUTF8New(const UTF16Char *str1);
+	UnsafeArray<const UTF8Char> StrToUTF8New(const UTF32Char *str1);
+	const WChar *StrToWCharNew(UnsafeArray<const UTF8Char> str1);
 	void StrDelNew(const UTF16Char *newStr);
 	void StrDelNew(const UTF32Char *newStr);
 
@@ -229,12 +229,12 @@ namespace Text
 	Bool StrEndsWithICase(const UTF32Char *str1, const UTF32Char *str2);
 	Bool StrIsInt32(const UTF16Char *str1);
 	Bool StrIsInt32(const UTF32Char *str1);
-	UOSInt StrReplace(UTF16Char *str1, UTF16Char oriC, UTF16Char destC);
-	UOSInt StrReplace(UTF32Char *str1, UTF32Char oriC, UTF32Char destC);
-	UOSInt StrReplace(UTF16Char *str1, const UTF16Char *replaceFrom, const UTF16Char *replaceTo);
-	UOSInt StrReplace(UTF32Char *str1, const UTF32Char *replaceFrom, const UTF32Char *replaceTo);
-	UOSInt StrReplaceICase(UTF16Char *str1, const UTF16Char *replaceFrom, const UTF16Char *replaceTo);
-	UOSInt StrReplaceICase(UTF32Char *str1, const UTF32Char *replaceFrom, const UTF32Char *replaceTo);
+	UOSInt StrReplaceW(UTF16Char *str1, UTF16Char oriC, UTF16Char destC);
+	UOSInt StrReplaceW(UTF32Char *str1, UTF32Char oriC, UTF32Char destC);
+	UOSInt StrReplaceW(UTF16Char *str1, const UTF16Char *replaceFrom, const UTF16Char *replaceTo);
+	UOSInt StrReplaceW(UTF32Char *str1, const UTF32Char *replaceFrom, const UTF32Char *replaceTo);
+	UOSInt StrReplaceICaseW(UTF16Char *str1, const UTF16Char *replaceFrom, const UTF16Char *replaceTo);
+	UOSInt StrReplaceICaseW(UTF32Char *str1, const UTF32Char *replaceFrom, const UTF32Char *replaceTo);
 	UTF16Char *StrToCSVRec(UTF16Char *oriStr, const UTF16Char *str1);
 	UTF32Char *StrToCSVRec(UTF32Char *oriStr, const UTF32Char *str1);
 	const UTF16Char *StrToNewCSVRec(const UTF16Char *str1);
@@ -246,33 +246,33 @@ namespace Text
 	UOSInt StrCountChar(UTF16Char *str1, UTF16Char c);
 	UOSInt StrCountChar(UTF32Char *str1, UTF32Char c);
 
-	UTF16Char *StrUTF8_UTF16C(UTF16Char *buff, const UTF8Char *bytes, UOSInt byteSize, OptOut<UOSInt> byteConv);
-	UOSInt StrUTF8_UTF16CntC(const UTF8Char *bytes, UOSInt byteSize);
-	UTF32Char *StrUTF8_UTF32C(UTF32Char *buff, const UTF8Char *bytes, UOSInt byteSize, OptOut<UOSInt>  byteConv);
-	UOSInt StrUTF8_UTF32CntC(const UTF8Char *bytes, UOSInt byteSize);
+	UTF16Char *StrUTF8_UTF16C(UTF16Char *buff, UnsafeArray<const UTF8Char> bytes, UOSInt byteSize, OptOut<UOSInt> byteConv);
+	UOSInt StrUTF8_UTF16CntC(UnsafeArray<const UTF8Char> bytes, UOSInt byteSize);
+	UTF32Char *StrUTF8_UTF32C(UTF32Char *buff, UnsafeArray<const UTF8Char> bytes, UOSInt byteSize, OptOut<UOSInt>  byteConv);
+	UOSInt StrUTF8_UTF32CntC(UnsafeArray<const UTF8Char> bytes, UOSInt byteSize);
 
 	//byteConv includes NULL
-	UTF16Char *StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, OptOut<UOSInt> byteConv);
-	UOSInt StrUTF8_UTF16Cnt(const UTF8Char *bytes);
-	UTF32Char *StrUTF8_UTF32(UTF32Char *buff, const UTF8Char *bytes, OptOut<UOSInt> byteConv);
-	UOSInt StrUTF8_UTF32Cnt(const UTF8Char *bytes);
+	UTF16Char *StrUTF8_UTF16(UTF16Char *buff, UnsafeArray<const UTF8Char> bytes, OptOut<UOSInt> byteConv);
+	UOSInt StrUTF8_UTF16Cnt(UnsafeArray<const UTF8Char> bytes);
+	UTF32Char *StrUTF8_UTF32(UTF32Char *buff, UnsafeArray<const UTF8Char> bytes, OptOut<UOSInt> byteConv);
+	UOSInt StrUTF8_UTF32Cnt(UnsafeArray<const UTF8Char> bytes);
 
-	UTF8Char *StrUTF16_UTF8(UTF8Char *bytes, const UTF16Char *wstr);
-	UTF8Char *StrUTF16_UTF8C(UTF8Char *bytes, const UTF16Char *wstr, UOSInt strLen);
+	UnsafeArray<UTF8Char> StrUTF16_UTF8(UnsafeArray<UTF8Char> bytes, const UTF16Char *wstr);
+	UnsafeArray<UTF8Char> StrUTF16_UTF8C(UnsafeArray<UTF8Char> bytes, const UTF16Char *wstr, UOSInt strLen);
 	UOSInt StrUTF16_UTF8Cnt(const UTF16Char *stri);
 	UOSInt StrUTF16_UTF8CntC(const UTF16Char *stri, UOSInt strLen);
-	UTF8Char *StrUTF32_UTF8(UTF8Char *bytes, const UTF32Char *wstr);
-	UTF8Char *StrUTF32_UTF8C(UTF8Char *bytes, const UTF32Char *wstr, UOSInt strLen);
+	UnsafeArray<UTF8Char> StrUTF32_UTF8(UnsafeArray<UTF8Char> bytes, const UTF32Char *wstr);
+	UnsafeArray<UTF8Char> StrUTF32_UTF8C(UnsafeArray<UTF8Char> bytes, const UTF32Char *wstr, UOSInt strLen);
 	UOSInt StrUTF32_UTF8Cnt(const UTF32Char *stri);
 	UOSInt StrUTF32_UTF8CntC(const UTF32Char *stri, UOSInt strLen);
 
-	UTF8Char *StrUTF16BE_UTF8(UTF8Char *bytes, UnsafeArray<const UInt8> u16Buff);
-	UTF8Char *StrUTF16BE_UTF8C(UTF8Char *bytes, UnsafeArray<const UInt8> u16Buff, UOSInt utf16Cnt);
+	UnsafeArray<UTF8Char> StrUTF16BE_UTF8(UnsafeArray<UTF8Char> bytes, UnsafeArray<const UInt8> u16Buff);
+	UnsafeArray<UTF8Char> StrUTF16BE_UTF8C(UnsafeArray<UTF8Char> bytes, UnsafeArray<const UInt8> u16Buff, UOSInt utf16Cnt);
 	UOSInt StrUTF16BE_UTF8Cnt(UnsafeArray<const UInt8> u16Buff);
 	UOSInt StrUTF16BE_UTF8CntC(UnsafeArray<const UInt8> u16Buff, UOSInt utf16Cnt);
 
-	FORCEINLINE UTF16Char *StrUTF8_UTF16(UTF16Char *oriStr, const UTF8Char *strToJoin) { return StrUTF8_UTF16(oriStr, strToJoin, 0); }
-	FORCEINLINE UTF32Char *StrUTF8_UTF32(UTF32Char *oriStr, const UTF8Char *strToJoin) { return StrUTF8_UTF32(oriStr, strToJoin, 0); }
+	FORCEINLINE UTF16Char *StrUTF8_UTF16(UTF16Char *oriStr, UnsafeArray<const UTF8Char> strToJoin) { return StrUTF8_UTF16(oriStr, strToJoin, 0); }
+	FORCEINLINE UTF32Char *StrUTF8_UTF32(UTF32Char *oriStr, UnsafeArray<const UTF8Char> strToJoin) { return StrUTF8_UTF32(oriStr, strToJoin, 0); }
 	UTF32Char *StrUTF16_UTF32(UTF32Char *oriStr, const UTF16Char *strToJoin);
 	UTF32Char *StrUTF16_UTF32(UTF32Char *oriStr, const UTF16Char *strToJoin, UOSInt charCnt);
 	UOSInt StrUTF16_UTF32Cnt(const UTF16Char *strToJoin);
@@ -283,28 +283,28 @@ namespace Text
 	UOSInt StrUTF32_UTF16Cnt(const UTF32Char *strToJoin, UOSInt charCnt);
 
 #if _WCHAR_SIZE == 4
-	FORCEINLINE WChar *StrUTF8_WCharC(WChar *buff, const UTF8Char *bytes, UOSInt byteSize, OptOut<UOSInt> byteConv) { return (WChar*)StrUTF8_UTF32C((UTF32Char*)buff, bytes, byteSize, byteConv); }
-	FORCEINLINE UOSInt StrUTF8_WCharCntC(const UTF8Char *bytes, UOSInt byteSize) { return StrUTF8_UTF32CntC(bytes, byteSize); }
-	FORCEINLINE WChar *StrUTF8_WChar(WChar *buff, const UTF8Char *bytes, OptOut<UOSInt> byteConv) { return (WChar*)StrUTF8_UTF32((UTF32Char*)buff, bytes, byteConv); }
-	FORCEINLINE UOSInt StrUTF8_WCharCnt(const UTF8Char *bytes) { return StrUTF8_UTF32Cnt(bytes); }
-	FORCEINLINE UTF8Char *StrWChar_UTF8C(UTF8Char *bytes, const WChar *wstr, UOSInt strLen) { return StrUTF32_UTF8C(bytes, (const UTF32Char*)wstr, strLen); }
+	FORCEINLINE WChar *StrUTF8_WCharC(WChar *buff, UnsafeArray<const UTF8Char> bytes, UOSInt byteSize, OptOut<UOSInt> byteConv) { return (WChar*)StrUTF8_UTF32C((UTF32Char*)buff, bytes, byteSize, byteConv); }
+	FORCEINLINE UOSInt StrUTF8_WCharCntC(UnsafeArray<const UTF8Char> bytes, UOSInt byteSize) { return StrUTF8_UTF32CntC(bytes, byteSize); }
+	FORCEINLINE WChar *StrUTF8_WChar(WChar *buff, UnsafeArray<const UTF8Char> bytes, OptOut<UOSInt> byteConv) { return (WChar*)StrUTF8_UTF32((UTF32Char*)buff, bytes, byteConv); }
+	FORCEINLINE UOSInt StrUTF8_WCharCnt(UnsafeArray<const UTF8Char> bytes) { return StrUTF8_UTF32Cnt(bytes); }
+	FORCEINLINE UnsafeArray<UTF8Char> StrWChar_UTF8C(UnsafeArray<UTF8Char> bytes, const WChar *wstr, UOSInt strLen) { return StrUTF32_UTF8C(bytes, (const UTF32Char*)wstr, strLen); }
 	FORCEINLINE UOSInt StrWChar_UTF8CntC(const WChar *stri, UOSInt strLen) { return StrUTF32_UTF8CntC((const UTF32Char*)stri, strLen); }
-	FORCEINLINE UTF8Char *StrWChar_UTF8(UTF8Char *bytes, const WChar *wstr) { return StrUTF32_UTF8(bytes, (const UTF32Char*)wstr); }
+	FORCEINLINE UnsafeArray<UTF8Char> StrWChar_UTF8(UnsafeArray<UTF8Char> bytes, const WChar *wstr) { return StrUTF32_UTF8(bytes, (const UTF32Char*)wstr); }
 	FORCEINLINE UOSInt StrWChar_UTF8Cnt(const WChar *stri) { return StrUTF32_UTF8Cnt((const UTF32Char*)stri); }
 #elif _WCHAR_SIZE == 2
-	FORCEINLINE WChar *StrUTF8_WCharC(WChar *buff, const UTF8Char *bytes, UOSInt byteSize, OptOut<UOSInt> byteConv) { return StrUTF8_UTF16C(buff, bytes, byteSize, byteConv); }
-	FORCEINLINE UOSInt StrUTF8_WCharCntC(const UTF8Char *bytes, UOSInt byteSize) { return StrUTF8_UTF16CntC(bytes, byteSize); }
-	FORCEINLINE WChar *StrUTF8_WChar(WChar *buff, const UTF8Char *bytes, OptOut<UOSInt> byteConv) { return StrUTF8_UTF16(buff, bytes, byteConv); }
-	FORCEINLINE UOSInt StrUTF8_WCharCnt(const UTF8Char *bytes) { return StrUTF8_UTF16Cnt(bytes); }
-	FORCEINLINE UTF8Char *StrWChar_UTF8C(UTF8Char *bytes, const WChar *wstr, UOSInt strLen) { return StrUTF16_UTF8C(bytes, wstr, strLen); }
+	FORCEINLINE WChar *StrUTF8_WCharC(WChar *buff, UnsafeArray<const UTF8Char> bytes, UOSInt byteSize, OptOut<UOSInt> byteConv) { return StrUTF8_UTF16C(buff, bytes, byteSize, byteConv); }
+	FORCEINLINE UOSInt StrUTF8_WCharCntC(UnsafeArray<const UTF8Char> bytes, UOSInt byteSize) { return StrUTF8_UTF16CntC(bytes, byteSize); }
+	FORCEINLINE WChar *StrUTF8_WChar(WChar *buff, UnsafeArray<const UTF8Char> bytes, OptOut<UOSInt> byteConv) { return StrUTF8_UTF16(buff, bytes, byteConv); }
+	FORCEINLINE UOSInt StrUTF8_WCharCnt(UnsafeArray<const UTF8Char> bytes) { return StrUTF8_UTF16Cnt(bytes); }
+	FORCEINLINE UnsafeArray<UTF8Char> StrWChar_UTF8C(UnsafeArray<UTF8Char> bytes, const WChar *wstr, UOSInt strLen) { return StrUTF16_UTF8C(bytes, wstr, strLen); }
 	FORCEINLINE UOSInt StrWChar_UTF8CntC(const WChar *stri, UOSInt strLen) { return StrUTF16_UTF8CntC(stri, strLen); }
-	FORCEINLINE UTF8Char *StrWChar_UTF8(UTF8Char *bytes, const WChar *wstr) { return StrUTF16_UTF8(bytes, wstr); }
+	FORCEINLINE UnsafeArray<UTF8Char> StrWChar_UTF8(UnsafeArray<UTF8Char> bytes, const WChar *wstr) { return StrUTF16_UTF8(bytes, wstr); }
 	FORCEINLINE UOSInt StrWChar_UTF8Cnt(const WChar *stri) { return StrUTF16_UTF8Cnt(stri); }
 #endif
-	const UTF8Char *StrReadChar(const UTF8Char *sptr, OutParam<UTF32Char> outChar);
+	UnsafeArray<const UTF8Char> StrReadChar(UnsafeArray<const UTF8Char> sptr, OutParam<UTF32Char> outChar);
 	const UTF16Char *StrReadChar(const UTF16Char *sptr, OutParam<UTF32Char> outChar);
 	const UTF32Char *StrReadChar(const UTF32Char *sptr, OutParam<UTF32Char> outChar);
-	UTF8Char *StrWriteChar(UTF8Char *sptr, UTF32Char c);
+	UnsafeArray<UTF8Char> StrWriteChar(UnsafeArray<UTF8Char> sptr, UTF32Char c);
 	UTF16Char *StrWriteChar(UTF16Char *sptr, UTF32Char c);
 	UTF32Char *StrWriteChar(UTF32Char *sptr, UTF32Char c);
 }

@@ -10,7 +10,7 @@ namespace Media
 	class IAudioSource : public IMediaSource
 	{
 	public:
-		virtual UTF8Char *GetSourceName(UTF8Char *buff) = 0;
+		virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff) = 0;
 		virtual Bool CanSeek() = 0;
 		virtual Data::Duration GetStreamTime() = 0;
 		virtual Data::Duration SeekToTime(Data::Duration time) = 0;

@@ -51,7 +51,7 @@ namespace IO
 			Text::String *productMode;
 			Text::String *sdkVer;
 		private:
-			virtual void ParseUnknownCmd(const UTF8Char *cmd, UOSInt cmdLen);
+			virtual void ParseUnknownCmd(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen);
 		public:
 			MTKGPSNMEA(NN<IO::Stream> stm, Bool relStm);
 			virtual ~MTKGPSNMEA();
@@ -83,7 +83,7 @@ namespace IO
 			UInt32 GetLogSpeed();
 			LogMode GetLogMode();
 			UOSInt GetLogSize(); //Bytes
-			Text::String *SendMTKCommand(const UInt8 *cmdBuff, UOSInt cmdSize, const UTF8Char *resultStart, UOSInt resultStartLen, Data::Duration timeout);
+			Text::String *SendMTKCommand(const UInt8 *cmdBuff, UOSInt cmdSize, UnsafeArray<const UTF8Char> resultStart, UOSInt resultStartLen, Data::Duration timeout);
 
 			Text::String *GetFirmwareRel();
 			Text::String *GetFirmwareBuild();

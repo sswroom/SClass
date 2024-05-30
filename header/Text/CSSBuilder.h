@@ -49,17 +49,17 @@ namespace Text
 		Bool AddColorRGB(UInt32 rgb);
 		Bool AddBGColorRGBA(UInt32 argb);
 
-		Bool AddFontFamily(const UTF8Char *family);
+		Bool AddFontFamily(UnsafeArray<const UTF8Char> family);
 		Bool AddFontSize(Double size, Math::Unit::Distance::DistanceUnit du);
 		Bool AddFontWeight(FontWeight weight);
 
 		Bool AddMinHeight(Double h, Math::Unit::Distance::DistanceUnit du);
 
-		const UTF8Char *ToString();
+		UnsafeArray<UTF8Char> ToString();
 
 	private:
 		void AppendNewLine();
-		void AppendStyleName(Text::CString name);
+		void AppendStyleName(Text::CStringNN name);
 		void AppendDistance(Double size, Math::Unit::Distance::DistanceUnit du);
 		void AppendRGBAColor(UInt32 argb);
 		void NextEntry();

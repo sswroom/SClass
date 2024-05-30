@@ -6,38 +6,18 @@
 Net::ConnectionInfo::ConnectionInfo(const Net::ConnectionInfo::ConnectionEntry *ent)
 {
 	this->ent.index = ent->index;
-	if (ent->internalName)
+	UnsafeArray<const Char> nncs;
+	if (ent->internalName.SetTo(nncs))
 	{
-		this->ent.internalName = Text::StrCopyNew(ent->internalName);
+		this->ent.internalName = Text::StrCopyNewCh(nncs);
 	}
 	else
 	{
 		this->ent.internalName = 0;
 	}
-	if (ent->name)
-	{
-		this->ent.name = Text::StrCopyNew(ent->name).Ptr();
-	}
-	else
-	{
-		this->ent.name = 0;
-	}
-	if (ent->description)
-	{
-		this->ent.description = Text::StrCopyNew(ent->description).Ptr();
-	}
-	else
-	{
-		this->ent.description = 0;
-	}
-	if (ent->dnsSuffix)
-	{
-		this->ent.dnsSuffix = Text::StrCopyNew(ent->dnsSuffix).Ptr();
-	}
-	else
-	{
-		this->ent.dnsSuffix = 0;
-	}
+	this->ent.name = Text::StrSCopyNew(ent->name);
+	this->ent.description = Text::StrSCopyNew(ent->description);
+	this->ent.dnsSuffix = Text::StrSCopyNew(ent->dnsSuffix);
 	this->ent.ipaddr.AddAll(ent->ipaddr);
 	this->ent.dnsaddr.AddAll(ent->dnsaddr);
 	this->ent.defGW = ent->defGW;
@@ -63,7 +43,7 @@ Net::ConnectionInfo::ConnectionInfo(const Net::ConnectionInfo::ConnectionEntry *
 
 Net::ConnectionInfo::~ConnectionInfo()
 {
-	SDEL_TEXT(this->ent.internalName);
+	SDEL_TEXTC(this->ent.internalName);
 	SDEL_TEXT(this->ent.name);
 	SDEL_TEXT(this->ent.description);
 	SDEL_TEXT(this->ent.dnsSuffix);
@@ -73,24 +53,27 @@ Net::ConnectionInfo::~ConnectionInfo()
 	}
 }
 
-UTF8Char *Net::ConnectionInfo::GetName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Net::ConnectionInfo::GetName(UnsafeArray<UTF8Char> buff)
 {
-	if (this->ent.name)
-		return Text::StrConcat(buff, this->ent.name);
+	UnsafeArray<const UTF8Char> nns;
+	if (this->ent.name.SetTo(nns))
+		return Text::StrConcat(buff, nns);
 	return 0;
 }
 
-UTF8Char *Net::ConnectionInfo::GetDescription(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Net::ConnectionInfo::GetDescription(UnsafeArray<UTF8Char> buff)
 {
-	if (this->ent.description)
-		return Text::StrConcat(buff, this->ent.description);
+	UnsafeArray<const UTF8Char> nns;
+	if (this->ent.description.SetTo(nns))
+		return Text::StrConcat(buff, nns);
 	return 0;
 }
 
-UTF8Char *Net::ConnectionInfo::GetDNSSuffix(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Net::ConnectionInfo::GetDNSSuffix(UnsafeArray<UTF8Char> buff)
 {
-	if (this->ent.dnsSuffix)
-		return Text::StrConcat(buff, this->ent.dnsSuffix);
+	UnsafeArray<const UTF8Char> nns;
+	if (this->ent.dnsSuffix.SetTo(nns))
+		return Text::StrConcat(buff, nns);
 	return 0;
 }
 

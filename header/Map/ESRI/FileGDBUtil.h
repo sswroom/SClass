@@ -33,7 +33,7 @@ namespace Map
 			UInt8 geometryFlags;
 			Data::ArrayList<FileGDBFieldInfo*> *fields;
 
-			Math::CoordinateSystem *csys;
+			Optional<Math::CoordinateSystem> csys;
 			Double xOrigin;
 			Double yOrigin;
 			Double xyScale;

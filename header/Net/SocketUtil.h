@@ -32,13 +32,13 @@ namespace Net
 			UInt8 addr[20];
 		} AddressInfo;
 	public:
-		static UTF8Char *GetAddrName(UTF8Char *buff, NN<const AddressInfo> addr);
+		static UnsafeArrayOpt<UTF8Char> GetAddrName(UnsafeArray<UTF8Char> buff, NN<const AddressInfo> addr);
 		static WChar *GetAddrName(WChar *buff, NN<const AddressInfo> addr);
-		static UTF8Char *GetAddrName(UTF8Char *buff, NN<const AddressInfo> addr, UInt16 port);
+		static UnsafeArrayOpt<UTF8Char> GetAddrName(UnsafeArray<UTF8Char> buff, NN<const AddressInfo> addr, UInt16 port);
 		static WChar *GetAddrName(WChar *buff, NN<const AddressInfo> addr, UInt16 port);
-		static UTF8Char *GetIPv4Name(UTF8Char *buff, UInt32 ip);
+		static UnsafeArray<UTF8Char> GetIPv4Name(UnsafeArray<UTF8Char> buff, UInt32 ip);
 		static WChar *GetIPv4Name(WChar *buff, UInt32 ip);
-		static UTF8Char *GetIPv4Name(UTF8Char *buff, UInt32 ip, UInt16 port);
+		static UnsafeArray<UTF8Char> GetIPv4Name(UnsafeArray<UTF8Char> buff, UInt32 ip, UInt16 port);
 		static WChar *GetIPv4Name(WChar *buff, UInt32 ip, UInt16 port);
 		static UInt32 GetIPAddr(const WChar *ipName);
 		static UInt32 GetIPAddr(Text::CStringNN ipName);

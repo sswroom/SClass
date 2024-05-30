@@ -17,8 +17,8 @@ namespace Text
 		SearchIndexer(Text::TextAnalyzer* ta);
 		~SearchIndexer();
 
-		void IndexString(const UTF8Char *str, Int64 key);
-		UOSInt SearchString(NN<Data::ArrayListInt64> outArr, const UTF8Char *searchStr, UOSInt maxResults);
+		void IndexString(UnsafeArray<const UTF8Char> str, Int64 key);
+		UOSInt SearchString(NN<Data::ArrayListInt64> outArr, UnsafeArray<const UTF8Char> searchStr, UOSInt maxResults);
 	};
 }
 #endif

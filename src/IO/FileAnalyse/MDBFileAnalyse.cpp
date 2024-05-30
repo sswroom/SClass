@@ -133,8 +133,8 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MDBFileAnalyse::GetFrame
 	NN<IO::FileAnalyse::MDBFileAnalyse::PackInfo> pack;
 	UTF8Char sbuff[64];
 	UTF8Char sbuff2[256];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	UInt8 packBuff[4096];
 	UInt8 decBuff[128];
 	if (!this->packs.GetItem(index).SetTo(pack))

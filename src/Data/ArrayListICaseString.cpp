@@ -32,7 +32,7 @@ OSInt Data::ArrayListICaseString::Compare(Text::String* obj1, Text::String* obj2
 	return s1->CompareToICase(s2);
 }
 
-OSInt Data::ArrayListICaseString::SortedIndexOfPtr(const UTF8Char *val, UOSInt len) const
+OSInt Data::ArrayListICaseString::SortedIndexOfPtr(UnsafeArray<const UTF8Char> val, UOSInt len) const
 {
 	OSInt i;
 	OSInt j;

@@ -9,8 +9,8 @@ namespace Text
 	class JavaText
 	{
 	public:
-		static void ToJavaName(NN<Text::StringBuilderUTF8> sb, const UTF8Char *usName, Bool isClass);
-		static void ToDBName(NN<Text::StringBuilderUTF8> sb, const UTF8Char *name);
+		static void ToJavaName(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> usName, Bool isClass);
+		static void ToDBName(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> name);
 		static Text::CStringNN GetJavaTypeName(DB::DBUtil::ColType colType, Bool notNull);
 		static Text::CStringNN GetJavaTypeName(Data::VariItem::ItemType itemType, Bool notNull);
 	};

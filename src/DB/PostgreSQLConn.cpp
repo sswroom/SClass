@@ -81,7 +81,7 @@ public:
 #endif
 		if (rowChg && rowChg[0] != 0)
 		{
-			return Text::StrToOSInt(rowChg);
+			return Text::StrToOSIntCh(rowChg);
 		}
 		////////////////////////////
 		return 0;
@@ -145,7 +145,7 @@ public:
 		return item.GetAsNewString();
 	}
 
-	virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
+	virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 	{
 		Data::VariItem item;
 		this->GetVariItem(colIndex, item);
@@ -321,27 +321,27 @@ public:
 			item->SetStrSlow((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex));
 			return true;
 		case 20: //int8
-			item->SetI64(Text::StrToInt64(PQgetvalue(this->res, this->currrow, (int)colIndex)));
+			item->SetI64(Text::StrToInt64Ch(PQgetvalue(this->res, this->currrow, (int)colIndex)));
 			return true;
 		case 21: //int2
-			item->SetI16(Text::StrToInt16(PQgetvalue(this->res, this->currrow, (int)colIndex)));
+			item->SetI16(Text::StrToInt16Ch(PQgetvalue(this->res, this->currrow, (int)colIndex)));
 			return true;
 		case 23: //int4
-			item->SetI32(Text::StrToInt32(PQgetvalue(this->res, this->currrow, (int)colIndex)));
+			item->SetI32(Text::StrToInt32Ch(PQgetvalue(this->res, this->currrow, (int)colIndex)));
 			return true;
 		case 26: //oid
 		case 28: //xid
-			item->SetI32(Text::StrToInt32(PQgetvalue(this->res, this->currrow, (int)colIndex)));
+			item->SetI32(Text::StrToInt32Ch(PQgetvalue(this->res, this->currrow, (int)colIndex)));
 			return true;
 		case 18: //char
 			item->SetU8((UInt8)(PQgetvalue(this->res, this->currrow, (int)colIndex)[0]));
 			return true;
 		case 700: //float4
-			item->SetF32((Single)Text::StrToDouble(PQgetvalue(this->res, this->currrow, (int)colIndex)));
+			item->SetF32((Single)Text::StrToDoubleCh(PQgetvalue(this->res, this->currrow, (int)colIndex)));
 			return true;
 		case 701: //float8
 		case 1700: //numeric
-			item->SetF64(Text::StrToDouble(PQgetvalue(this->res, this->currrow, (int)colIndex)));
+			item->SetF64(Text::StrToDoubleCh(PQgetvalue(this->res, this->currrow, (int)colIndex)));
 			return true;
 		case 1082: //date
 			item->SetDate(Data::Date(Text::CStringNN::FromPtr((const UTF8Char*)PQgetvalue(this->res, this->currrow, (int)colIndex))));
@@ -611,7 +611,7 @@ public:
 		return item.GetItemType() == Data::VariItem::ItemType::Null;
 	}
 
-	virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff)
+	virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 	{
 		char *name = PQfname(this->res, (int)colIndex);
 		if (name)
@@ -646,7 +646,7 @@ public:
 			return false;
 		}
 		char *name = PQfname(this->res, (int)colIndex);
-		NN<const UTF8Char> colName;
+		UnsafeArray<const UTF8Char> colName;
 		if (!colName.Set((const UTF8Char*)name))
 		{
 			return false;
@@ -689,14 +689,14 @@ Bool DB::PostgreSQLConn::Connect()
 			sb.AppendC(UTF8STRC(" password="));
 			sb.Append(s);
 		}
-		this->clsData->conn = PQconnectdb((const char*)sb.ToString());
+		this->clsData->conn = PQconnectdb((const char*)sb.ToPtr());
 		this->isTran = false;
 		if (PQstatus(this->clsData->conn) != CONNECTION_OK)
 		{
 			if (this->log->HasHandler())
 			{
 				char *msg = PQerrorMessage(this->clsData->conn);
-				UOSInt msgLen = Text::StrCharCnt(msg);
+				UOSInt msgLen = Text::StrCharCntCh(msg);
 				while (msgLen > 0)
 				{
 					if (msg[msgLen - 1] != 13 && msg[msgLen - 1] != 10)
@@ -857,7 +857,7 @@ OSInt DB::PostgreSQLConn::ExecuteNonQuery(Text::CStringNN sql)
 	{
 		return -2;
 	}
-	PGresult *res = PQexec(this->clsData->conn, (const char*)sql.v);
+	PGresult *res = PQexec(this->clsData->conn, (const char*)sql.v.Ptr());
 	ExecStatusType status = PQresultStatus(res);
 #if defined(VERBOSE)
 	printf("PostgreSQL: ExecuteNonQuery: %s\r\n", sql.v);
@@ -877,7 +877,7 @@ OSInt DB::PostgreSQLConn::ExecuteNonQuery(Text::CStringNN sql)
 #endif
 	if (val)
 	{
-		Text::StrToOSInt(val, ret);
+		Text::StrToOSIntCh(val, ret);
 	}
 	PQclear(res);
 	return ret;
@@ -890,11 +890,11 @@ Optional<DB::DBReader> DB::PostgreSQLConn::ExecuteReader(Text::CStringNN sql)
 	{
 		return 0;
 	}
-	PGresult *res = PQexec(this->clsData->conn, (const char*)sql.v);
+	PGresult *res = PQexec(this->clsData->conn, (const char*)sql.v.Ptr());
 	ExecStatusType status = PQresultStatus(res);
 #if defined(VERBOSE)
-	printf("PostgreSQL: ExecuteReader: %s\r\n", sql.v);
-	printf("PostgreSQL: ExecuteReader result = %d (%s)\r\n", status, ExecStatusTypeGetName(status).v);
+	printf("PostgreSQL: ExecuteReader: %s\r\n", sql.v.Ptr());
+	printf("PostgreSQL: ExecuteReader result = %d (%s)\r\n", status, ExecStatusTypeGetName(status).v.Ptr());
 #endif
 	if (status != PGRES_TUPLES_OK && status != PGRES_COMMAND_OK)
 	{
@@ -1007,7 +1007,7 @@ UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, NN<Data::Ar
 Optional<DB::DBReader> DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("select "));
 	if (columnNames == 0 || columnNames->GetCount() == 0)
@@ -1028,24 +1028,26 @@ Optional<DB::DBReader> DB::PostgreSQLConn::QueryTableData(Text::CString schemaNa
 		}
 	}
 	sb.AppendC(UTF8STRC(" from "));
-	if (schemaName.leng > 0)
+	Text::CStringNN nnschemaName;
+	if (schemaName.SetTo(nnschemaName) && nnschemaName.leng > 0)
 	{
-		sptr = DB::DBUtil::SDBColUTF8(sbuff, schemaName.v, DB::SQLType::PostgreSQL);
+		sptr = DB::DBUtil::SDBColUTF8(sbuff, nnschemaName.v, DB::SQLType::PostgreSQL);
 		sb.AppendP(sbuff, sptr);
 		sb.AppendUTF8Char('.');
 	}
-		sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v, DB::SQLType::PostgreSQL);
-		sb.AppendP(sbuff, sptr);
+	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.OrEmpty().v, DB::SQLType::PostgreSQL);
+	sb.AppendP(sbuff, sptr);
 	if (condition)
 	{
 		Data::ArrayListNN<Data::QueryConditions::Condition> cliCond;
 		sb.AppendC(UTF8STRC(" where "));
 		condition->ToWhereClause(sb, DB::SQLType::PostgreSQL, 0, 100, cliCond);
 	}
-	if (ordering.leng > 0)
+	Text::CStringNN nnordering;
+	if (ordering.SetTo(nnordering) && nnordering.leng > 0)
 	{
 		sb.AppendC(UTF8STRC(" order by "));
-		sb.Append(ordering);
+		sb.Append(nnordering);
 	}
 	if (maxCnt > 0)
 	{

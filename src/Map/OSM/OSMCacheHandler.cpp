@@ -17,7 +17,7 @@
 IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTile, Int32 yTile, NN<Sync::MutexUsage> mutUsage)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = this->cacheDir->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
@@ -190,7 +190,7 @@ void Map::OSM::OSMCacheHandler::SetIOMut(Sync::Mutex *ioMut)
 Bool Map::OSM::OSMCacheHandler::ProcessRequest(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Text::CStringNN subReq)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sarr[5];
+	UnsafeArray<UTF8Char> sarr[5];
 	UOSInt i;
 	if (subReq.leng > 255)
 	{

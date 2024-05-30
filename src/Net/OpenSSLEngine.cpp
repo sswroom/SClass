@@ -68,7 +68,7 @@ Optional<Net::SSLClient> Net::OpenSSLEngine::CreateClientConn(void *sslObj, NN<S
 	this->sockf->SetNoDelay(s, true);
 	this->sockf->SetRecvTimeout(s, 2000);
 	SSL_set_fd(ssl, (int)this->sockf->SocketGetFD(s));
-	SSL_set_tlsext_host_name(ssl, hostName.v);
+	SSL_set_tlsext_host_name(ssl, hostName.v.Ptr());
 	int ret;
 	if ((ret = SSL_connect(ssl)) <= 0)
 	{
@@ -399,7 +399,7 @@ Bool Net::OpenSSLEngine::ServerSetClientCA(Text::CStringNN clientCA)
 	}
 	STACK_OF(X509_NAME) *names = sk_X509_NAME_new_null();
 	X509_NAME *name = X509_NAME_new();
-	if (!X509_NAME_add_entry_by_txt(name, "CN", MBSTRING_ASC, clientCA.v, (int)clientCA.leng, -1, 0))
+	if (!X509_NAME_add_entry_by_txt(name, "CN", MBSTRING_ASC, clientCA.v.Ptr(), (int)clientCA.leng, -1, 0))
 	{
 		X509_NAME_free(name);
 		sk_X509_NAME_free(names);
@@ -602,9 +602,9 @@ Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString compa
 		X509_set_pubkey(cert, pkey);
 
 		X509_name_st *name = X509_get_subject_name(cert);
-		X509_NAME_add_entry_by_txt(name, "C",  MBSTRING_ASC, country.v, (int)country.leng, -1, 0);
-		X509_NAME_add_entry_by_txt(name, "O",  MBSTRING_ASC, company.v, (int)company.leng, -1, 0);
-		X509_NAME_add_entry_by_txt(name, "CN", MBSTRING_ASC, commonName.v, (int)commonName.leng, -1, 0);
+		X509_NAME_add_entry_by_txt(name, "C",  MBSTRING_ASC, country.v.Ptr(), (int)country.leng, -1, 0);
+		X509_NAME_add_entry_by_txt(name, "O",  MBSTRING_ASC, company.v.Ptr(), (int)company.leng, -1, 0);
+		X509_NAME_add_entry_by_txt(name, "CN", MBSTRING_ASC, commonName.v.Ptr(), (int)commonName.leng, -1, 0);
 
 		X509_set_issuer_name(cert, name);
 		X509_sign(cert, pkey, EVP_sha256());
@@ -778,7 +778,7 @@ EVP_PKEY *OpenSSLEngine_LoadKey(NN<Crypto::Cert::X509Key> key, Bool privateKeyOn
 	{
 		Text::StringBuilderUTF8 sb;
 		key->ToASN1String(sb);
-		printf("%s\r\n", sb.ToString());
+		printf("%s\r\n", sb.ToPtr());
 		Crypto::Cert::X509File::ECName ecName = key->GetECName();
 		UOSInt keyLen;
 		UnsafeArray<const UInt8> keyPtr;

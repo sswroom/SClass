@@ -133,7 +133,7 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 		UInt32 sigfigs;
 		UInt32 snaplen;
 		UInt32 network;
-		Text::CString cstr;
+		Text::CStringNN cstr;
 		sb->AppendC(UTF8STRC("PCAP Header"));
 		fd->GetRealData(0, 24, this->packetBuff);
 		if (this->isBE)
@@ -166,8 +166,7 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 		sb->AppendU32(snaplen);
 		sb->AppendC(UTF8STRC("\r\nNetwork="));
 		sb->AppendU32(network);
-		cstr = IO::RAWMonitor::LinkTypeGetName(network);
-		if (cstr.v)
+		if (IO::RAWMonitor::LinkTypeGetName(network).SetTo(cstr))
 		{
 			sb->AppendC(UTF8STRC(" ("));
 			sb->Append(cstr);
@@ -205,7 +204,7 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Str
 		psize = ReadUInt32(&this->packetBuff[12]);
 	}
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	dt.ToLocalTime();
 	sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 	sb->AppendC(UTF8STRC("\r\nTime="));
@@ -251,7 +250,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapFileAnalyse::GetFram
 	Text::StringBuilderUTF8 sb;
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (index == 0)
 	{
 		UInt16 version_major;

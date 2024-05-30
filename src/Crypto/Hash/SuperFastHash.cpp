@@ -17,15 +17,15 @@ Crypto::Hash::SuperFastHash::~SuperFastHash()
 {
 }
 
-UTF8Char *Crypto::Hash::SuperFastHash::GetName(UTF8Char *sbuff)
+UnsafeArray<UTF8Char> Crypto::Hash::SuperFastHash::GetName(UnsafeArray<UTF8Char> sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("SuperFastHash"));
 }
 
-Crypto::Hash::IHash *Crypto::Hash::SuperFastHash::Clone()
+NN<Crypto::Hash::IHash> Crypto::Hash::SuperFastHash::Clone() const
 {
-	Crypto::Hash::SuperFastHash *sfh;
-	NEW_CLASS(sfh, Crypto::Hash::SuperFastHash(this->currVal));
+	NN<Crypto::Hash::SuperFastHash> sfh;
+	NEW_CLASSNN(sfh, Crypto::Hash::SuperFastHash(this->currVal));
 	return sfh;
 }
 
@@ -39,7 +39,7 @@ void Crypto::Hash::SuperFastHash::Calc(const UInt8 *buff, UOSInt buffSize)
 	this->currVal = SuperFastHash_Calc(buff, buffSize, this->currVal);
 }
 
-void Crypto::Hash::SuperFastHash::GetValue(UInt8 *buff)
+void Crypto::Hash::SuperFastHash::GetValue(UnsafeArray<UInt8> buff) const
 {
 	UInt32 hash = this->currVal;
     hash ^= hash << 3;
@@ -49,15 +49,15 @@ void Crypto::Hash::SuperFastHash::GetValue(UInt8 *buff)
     hash ^= hash << 25;
 	hash += hash >> 6;
 
-	*(UInt32*)buff = hash;
+	*(UInt32*)buff.Ptr() = hash;
 }
 
-UOSInt Crypto::Hash::SuperFastHash::GetBlockSize()
+UOSInt Crypto::Hash::SuperFastHash::GetBlockSize() const
 {
 	return 4;
 }
 
-UOSInt Crypto::Hash::SuperFastHash::GetResultSize()
+UOSInt Crypto::Hash::SuperFastHash::GetResultSize() const
 {
 	return 4;
 }

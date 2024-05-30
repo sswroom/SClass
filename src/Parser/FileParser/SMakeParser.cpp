@@ -36,7 +36,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SMakeParser::ParseFileHdr(NN<IO::
 	{
 		return 0;
 	}
-	if (!fd->GetShortName().Equals(UTF8STRC("SMake.cfg")))
+	if (!fd->GetShortName().OrEmpty().Equals(UTF8STRC("SMake.cfg")))
 	{
 		return 0;
 	}

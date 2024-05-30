@@ -8,9 +8,9 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 
-UTF8Char *IO::FileLog::GetNewName(UTF8Char *buff, NN<Data::DateTimeUtil::TimeValue> time, UInt32 nanosec)
+UnsafeArray<UTF8Char> IO::FileLog::GetNewName(UnsafeArray<UTF8Char> buff, NN<Data::DateTimeUtil::TimeValue> time, UInt32 nanosec)
 {
-	UTF8Char *currName;
+	UnsafeArray<UTF8Char> currName;
 
 	if (this->groupStyle == IO::LogHandler::LogGroup::NoGroup)
 	{
@@ -80,16 +80,16 @@ UTF8Char *IO::FileLog::GetNewName(UTF8Char *buff, NN<Data::DateTimeUtil::TimeVal
 void IO::FileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFormat)
 {
 	UTF8Char buff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Char cbuff[256];
 	if (dateFormat)
 	{
 		Text::StrConcatC(Text::StrConcat(cbuff, dateFormat), "\t", 1);
-		this->dateFormat = Text::StrCopyNew(cbuff);
+		this->dateFormat = Text::StrCopyNewCh(cbuff);
 	}
 	else
 	{
-		this->dateFormat = Text::StrCopyNew("yyyy-MM-dd HH:mm:ss\t");
+		this->dateFormat = Text::StrCopyNewCh("yyyy-MM-dd HH:mm:ss\t");
 	}
 	this->logStyle = style;
 	this->groupStyle = groupStyle;
@@ -141,7 +141,7 @@ IO::FileLog::FileLog(Text::CStringNN fileName, LogType style, LogGroup groupStyl
 
 IO::FileLog::~FileLog()
 {
-	SDEL_TEXT(this->dateFormat);
+	Text::StrDelNewCh(this->dateFormat);
 	this->fileName->Release();
 	if (this->extName)
 	{
@@ -168,7 +168,7 @@ void IO::FileLog::LogAdded(const Data::Timestamp &time, Text::CStringNN logMsg, 
 	Sync::MutexUsage mutUsage(this->mut);
 	Bool newFile = false;
 	UTF8Char buff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::DateTimeUtil::TimeValue tval;
 	Data::DateTimeUtil::Instant2TimeValue(time.inst.sec, time.inst.nanosec, tval, time.tzQhr);
 
@@ -215,14 +215,14 @@ void IO::FileLog::LogAdded(const Data::Timestamp &time, Text::CStringNN logMsg, 
 		NEW_CLASSNN(log, Text::UTF8Writer(fileStm));
 		log->WriteSignature();
 
-		sptr = Text::StrConcatC(time.ToString(buff, this->dateFormat), UTF8STRC("Program running"));
+		sptr = Text::StrConcatC(time.ToString(buff, this->dateFormat.Ptr()), UTF8STRC("Program running"));
 		log->WriteLine(CSTRP(buff, sptr));
 		fileStm->Flush();
 	}
 
 	if (!this->closed)
 	{
-		sptr = time.ToString(buff, this->dateFormat);
+		sptr = time.ToString(buff, this->dateFormat.Ptr());
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(buff, (UOSInt)(sptr - buff));
 		sb.Append(logMsg);

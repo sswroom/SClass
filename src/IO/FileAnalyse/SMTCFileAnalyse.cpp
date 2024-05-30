@@ -92,7 +92,7 @@ Bool IO::FileAnalyse::SMTCFileAnalyse::GetFrameName(UOSInt index, NN<Text::Strin
 		return false;
 	}
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 hdr[21];
 	Sync::MutexUsage mutUsage(this->dataMut);
 	data = this->dataList.GetItemNoCheck(index - 1);
@@ -164,7 +164,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SMTCFileAnalyse::GetFram
 	Text::StringBuilderUTF8 sb;
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (index == 0)
 	{
 		NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(0, 4));

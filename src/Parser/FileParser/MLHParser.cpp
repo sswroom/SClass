@@ -50,7 +50,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MLHParser::ParseFileHdr(NN<IO::St
 	UOSInt i;
 	MLHFileInfo *fileInfo;
 	UTF8Char sbuff[17];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (!Text::StrEquals(&hdr[0], U8STR("MLH ENCODE 1.04  (C) MAEHASHI")))
 		return 0;

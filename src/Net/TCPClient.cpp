@@ -253,7 +253,7 @@ UOSInt Net::TCPClient::Read(const Data::ByteArray &buff)
 	}
 }
 
-UOSInt Net::TCPClient::Write(const UInt8 *buff, UOSInt size)
+UOSInt Net::TCPClient::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	NN<Socket> s;
 	if (this->s.SetTo(s) && (this->flags & 5) == 0)
@@ -269,7 +269,7 @@ UOSInt Net::TCPClient::Write(const UInt8 *buff, UOSInt size)
 			IO::Console::PrintStrO(sb.ToString());
 		}
 #endif
-		sendSize = this->sockf->SendData(s, buff, size, et);
+		sendSize = this->sockf->SendData(s, buff.Ptr(), size, et);
 		if (sendSize > 0)
 		{
 			this->currCnt += sendSize;
@@ -339,7 +339,7 @@ void Net::TCPClient::CancelRead(void *reqData)
 	EndRead(reqData, true, incomplete);
 }
 
-void *Net::TCPClient::BeginWrite(const UInt8 *buff, UOSInt size, Sync::Event *evt)
+void *Net::TCPClient::BeginWrite(UnsafeArray<const UInt8> buff, UOSInt size, Sync::Event *evt)
 {
 	NN<Socket> s;
 	if (!this->s.SetTo(s) || (this->flags & 5) != 0)
@@ -442,11 +442,11 @@ UInt64 Net::TCPClient::GetCliId()
 	return this->cliId;
 }
 
-UTF8Char *Net::TCPClient::GetRemoteName(UTF8Char *buff) const
+UnsafeArrayOpt<UTF8Char> Net::TCPClient::GetRemoteName(UnsafeArray<UTF8Char> buff) const
 {
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Socket> s;
-	if ((this->flags & 4) || !this->s.SetTo(s) || (sptr = this->sockf->GetRemoteName(buff, s)) == 0)
+	if ((this->flags & 4) || !this->s.SetTo(s) || !this->sockf->GetRemoteName(buff, s).SetTo(sptr))
 	{
 		UInt32 ip;
 		UInt16 port;
@@ -459,7 +459,7 @@ UTF8Char *Net::TCPClient::GetRemoteName(UTF8Char *buff) const
 	}
 }
 
-UTF8Char *Net::TCPClient::GetLocalName(UTF8Char *buff) const
+UnsafeArrayOpt<UTF8Char> Net::TCPClient::GetLocalName(UnsafeArray<UTF8Char> buff) const
 {
 	NN<Socket> s;
 	if (this->s.SetTo(s))

@@ -56,7 +56,7 @@ namespace Net
 
 		void UpdateDNSAddr(NN<const Net::SocketUtil::AddressInfo> serverAddr);
 
-		static UOSInt ParseString(UTF8Char *sbuff, const UInt8 *buff, UOSInt stringOfst, UOSInt endOfst, UTF8Char **sbuffEndOut); //return actEndOfst
+		static UOSInt ParseString(UnsafeArray<UTF8Char> sbuff, const UInt8 *buff, UOSInt stringOfst, UOSInt endOfst, OptOut<UnsafeArray<UTF8Char>> sbuffEndOut); //return actEndOfst
 		static UOSInt ParseAnswers(const UInt8 *buff, UOSInt dataSize, NN<Data::ArrayListNN<RequestAnswer>> answers);
 		static NN<RequestAnswer> ParseAnswer(const UInt8 *buff, UOSInt dataSize, InOutParam<UOSInt> index);
 		static void FreeAnswers(NN<Data::ArrayListNN<RequestAnswer>> answers);

@@ -14,10 +14,10 @@ namespace Crypto
 			UInt8 j;
 
 		public:
-			RC4Cipher(const UInt8 *key, UOSInt keyLen);
+			RC4Cipher(UnsafeArray<const UInt8> key, UOSInt keyLen);
 			virtual ~RC4Cipher();
 
-			void SetKey(const UInt8 *key, UOSInt keyLen);
+			void SetKey(UnsafeArray<const UInt8> key, UOSInt keyLen);
 
 			virtual UOSInt Encrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff); //outBuff = null to get the size
 			virtual UOSInt Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff); //outBuff = null to get the size

@@ -176,13 +176,14 @@ Bool Media::GTKDrawEngine::DeleteImage(NN<DrawImage> img)
 
 Media::GTKDrawFont::GTKDrawFont(Text::CString fontName, Double fontHeight, Media::DrawEngine::DrawFontStyle drawFontStyle)
 {
-	if (fontName.leng == 0)
+	Text::CStringNN cstr;
+	if (!fontName.SetTo(cstr) || fontName.leng == 0)
 	{
 		this->fontName = Text::String::New(UTF8STRC("sans-serif"));
 	}
 	else
 	{
-		this->fontName = Text::String::New(fontName.v, fontName.leng);
+		this->fontName = Text::String::New(cstr.v, cstr.leng);
 	}
 	this->fontHeight = fontHeight;
 	if (drawFontStyle & Media::DrawEngine::DFS_BOLD)
@@ -233,7 +234,7 @@ Media::GTKDrawFont::~GTKDrawFont()
 
 void Media::GTKDrawFont::Init(void *cr)
 {
-	cairo_select_font_face((cairo_t*)cr, (const Char*)this->fontName->v, (cairo_font_slant_t)this->fontSlant, (cairo_font_weight_t)this->fontWeight);
+	cairo_select_font_face((cairo_t*)cr, (const Char*)this->fontName->v.Ptr(), (cairo_font_slant_t)this->fontSlant, (cairo_font_weight_t)this->fontWeight);
 	cairo_set_font_size((cairo_t*)cr, this->fontHeight);
 }
 
@@ -646,7 +647,7 @@ Bool Media::GTKDrawImage::DrawString(Math::Coord2DDbl tl, Text::CStringNN str, N
 	font->Init(this->cr);
 	brush->Init(this->cr);
 	cairo_move_to((cairo_t *)this->cr, tl.x + OSInt2Double(this->tl.x), tl.y + font->GetHeight() * 0.8 + 1 + OSInt2Double(this->tl.y));
-	cairo_show_text((cairo_t *)this->cr, (const Char*)str.v);
+	cairo_show_text((cairo_t *)this->cr, (const Char*)str.v.Ptr());
 	return true;
 }
 
@@ -666,10 +667,10 @@ Bool Media::GTKDrawImage::DrawStringRot(Math::Coord2DDbl center, Text::CStringNN
 	Double cVal = Math_Cos(angleR);
 	Double sVal = Math_Sin(angleR);
 	Double dist = font->GetHeight() * 0.8 + 1;
-	cairo_text_extents((cairo_t *)this->cr, (const Char*)str.v, &extents);
+	cairo_text_extents((cairo_t *)this->cr, (const Char*)str.v.Ptr(), &extents);
 	cairo_move_to((cairo_t *)this->cr, center.x - dist * sVal + OSInt2Double(this->tl.x), center.y + dist * cVal + OSInt2Double(this->tl.y));
 	cairo_rotate((cairo_t *)this->cr, angleR);
-	cairo_show_text((cairo_t *)this->cr, (const Char*)str.v);
+	cairo_show_text((cairo_t *)this->cr, (const Char*)str.v.Ptr());
 	cairo_rotate((cairo_t *)this->cr, -angleR);
 	return true;
 }
@@ -697,7 +698,7 @@ Bool Media::GTKDrawImage::DrawStringB(Math::Coord2DDbl tl, Text::CStringNN str, 
 
 	cairo_text_extents_t extents;
 	font->Init(this->cr);
-	cairo_text_extents((cairo_t *)this->cr, (const Char*)str.v, &extents);
+	cairo_text_extents((cairo_t *)this->cr, (const Char*)str.v.Ptr(), &extents);
 	sz[0] = (UInt32)Double2Int32(extents.width + 2);
 	sz[1] = (UInt32)Double2Int32(extents.height + 2);
 	dwidth = (OSInt)this->info.dispSize.x - px;
@@ -1143,7 +1144,7 @@ Math::Size2DDbl Media::GTKDrawImage::GetTextSize(NN<DrawFont> fnt, Text::CString
 	NN<GTKDrawFont> font = NN<GTKDrawFont>::ConvertFrom(fnt);
 	cairo_text_extents_t extents;
 	font->Init(this->cr);
-	cairo_text_extents((cairo_t *)this->cr, (const Char*)txt.v, &extents);
+	cairo_text_extents((cairo_t *)this->cr, (const Char*)txt.v.Ptr(), &extents);
 	return Math::Size2DDbl(extents.width + 2, font->GetHeight() + 2);
 }
 

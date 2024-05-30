@@ -24,15 +24,15 @@ namespace DB
 		static Bool GenInsertCmd(NN<DB::SQLBuilder> sql, Text::CString schemaName, Text::CStringNN tableName, NN<DB::DBReader> r);
 		static Bool GenInsertCmd(NN<DB::SQLBuilder> sql, NN<DB::TableDef> tabDef, NN<DB::DBReader> r);
 		static Bool GenInsertCmd(NN<DB::SQLBuilder> sql, Text::CString schemaName, Text::CStringNN tableName, Optional<DB::TableDef> tabDef, NN<DB::DBReader> r);
-		static Bool GenCreateDatabaseCmd(NN<DB::SQLBuilder> sql, Text::CString databaseName, const Collation *collation);
-		static Bool GenDeleteDatabaseCmd(NN<DB::SQLBuilder> sql, Text::CString databaseName);
-		static Bool GenCreateSchemaCmd(NN<DB::SQLBuilder> sql, Text::CString schemaName);
-		static Bool GenDeleteSchemaCmd(NN<DB::SQLBuilder> sql, Text::CString schemaName);
+		static Bool GenCreateDatabaseCmd(NN<DB::SQLBuilder> sql, Text::CStringNN databaseName, const Collation *collation);
+		static Bool GenDeleteDatabaseCmd(NN<DB::SQLBuilder> sql, Text::CStringNN databaseName);
+		static Bool GenCreateSchemaCmd(NN<DB::SQLBuilder> sql, Text::CStringNN schemaName);
+		static Bool GenDeleteSchemaCmd(NN<DB::SQLBuilder> sql, Text::CStringNN schemaName);
 		static Bool GenDropTableCmd(NN<DB::SQLBuilder> sql, Text::CString schemaName, Text::CStringNN tableName);
 		static Bool GenDeleteTableDataCmd(NN<DB::SQLBuilder> sql, Text::CString schemaName, Text::CStringNN tableName);
 		static Bool GenTruncateTableCmd(NN<DB::SQLBuilder> sql, Text::CString schemaName, Text::CStringNN tableName);
 		static PageStatus GenSelectCmdPage(NN<DB::SQLBuilder> sql, NN<DB::TableDef> tabDef, Optional<DB::PageRequest> page);
-		static UTF8Char *GenInsertCmd(UTF8Char *sqlstr, DB::SQLType sqlType, Text::CString schemaName, Text::CStringNN tableName, NN<DB::DBReader> r);
+		static UnsafeArray<UTF8Char> GenInsertCmd(UnsafeArray<UTF8Char> sqlstr, DB::SQLType sqlType, Text::CString schemaName, Text::CStringNN tableName, NN<DB::DBReader> r);
 	};
 }
 #endif

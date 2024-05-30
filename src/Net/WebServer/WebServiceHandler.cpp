@@ -42,7 +42,7 @@ Bool Net::WebServer::WebServiceHandler::ProcessRequest(NN<Net::WebServer::IWebRe
 				{
 					sb.AppendC(UTF8STRC(", "));
 				}
-				Text::CString name = Net::WebUtil::RequestMethodGetName((Net::WebUtil::RequestMethod)nnservice->funcs.GetKey(i));
+				Text::CStringNN name = Net::WebUtil::RequestMethodGetName((Net::WebUtil::RequestMethod)nnservice->funcs.GetKey(i));
 				sb.AppendC(name.v, name.leng);
 				i++;
 			}
@@ -64,7 +64,7 @@ Bool Net::WebServer::WebServiceHandler::ProcessRequest(NN<Net::WebServer::IWebRe
 				{
 					sb.AppendC(UTF8STRC(", "));
 				}
-				Text::CString name = Net::WebUtil::RequestMethodGetName((Net::WebUtil::RequestMethod)nnservice->funcs.GetKey(i));
+				Text::CStringNN name = Net::WebUtil::RequestMethodGetName((Net::WebUtil::RequestMethod)nnservice->funcs.GetKey(i));
 				sb.AppendC(name.v, name.leng);
 				i++;
 			}

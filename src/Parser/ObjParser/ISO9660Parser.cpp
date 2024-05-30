@@ -104,7 +104,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::ISO9660Parser::ParseObject(NN<IO::
 NN<IO::PackageFile> Parser::ObjParser::ISO9660Parser::ParseVol(NN<IO::ISectorData> sectorData, UInt32 sectorNum, UInt32 codePage)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 sector[2048];
 	NN<IO::VirtualPackageFile> pkgFile;
 	Text::Encoding enc(codePage);
@@ -181,7 +181,7 @@ NN<IO::PackageFile> Parser::ObjParser::ISO9660Parser::ParseVol(NN<IO::ISectorDat
 	return pkgFile;
 }
 
-void Parser::ObjParser::ISO9660Parser::ParseDir(NN<IO::VirtualPackageFile> pkgFile, NN<IO::ISectorData> sectorData, UInt32 sectorNum, UInt32 recSize, UTF8Char *fileName, UTF8Char *fileNameEnd, UInt32 codePage)
+void Parser::ObjParser::ISO9660Parser::ParseDir(NN<IO::VirtualPackageFile> pkgFile, NN<IO::ISectorData> sectorData, UInt32 sectorNum, UInt32 recSize, UnsafeArray<UTF8Char> fileName, UnsafeArray<UTF8Char> fileNameEnd, UInt32 codePage)
 {
 	Data::ByteBuffer dataBuff(recSize + 2048);
 	Data::ByteArray recBuff = dataBuff.SubArray(2048);
@@ -215,7 +215,7 @@ void Parser::ObjParser::ISO9660Parser::ParseDir(NN<IO::VirtualPackageFile> pkgFi
 		UInt32 sectorNum;
 		UInt32 fileSize;
 		NN<IO::StreamData> fd;
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Text::Encoding enc(codePage);
 
 		recBuff = dataBuff.SubArray(2048);

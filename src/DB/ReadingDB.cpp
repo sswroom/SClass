@@ -35,7 +35,7 @@ void DB::ReadingDB::ReleaseDatabaseNames(NN<Data::ArrayListStringNN> arr)
 
 }
 
-Bool DB::ReadingDB::ChangeDatabase(Text::CString databaseName)
+Bool DB::ReadingDB::ChangeDatabase(Text::CStringNN databaseName)
 {
 	return false;
 }

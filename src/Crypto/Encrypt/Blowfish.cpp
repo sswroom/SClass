@@ -336,7 +336,7 @@ void Crypto::Encrypt::Blowfish::DecryptInt(EncryptParam *param) const
 	param->xr = Xl;
 }
 
-void Crypto::Encrypt::Blowfish::InitPassword(const UInt8 *password, UOSInt pwdLen)
+void Crypto::Encrypt::Blowfish::InitPassword(UnsafeArray<const UInt8> password, UOSInt pwdLen)
 {
 	UOSInt i;
 	UOSInt j;
@@ -395,7 +395,7 @@ void Crypto::Encrypt::Blowfish::InitPassword(const UInt8 *password, UOSInt pwdLe
 	}
 	else if (pwdLen == 4)
 	{
-		data = ReadMUInt32(password);
+		data = ReadMUInt32(&password[0]);
 		i = 0;
 		while (i < N + 2)
 		{
@@ -450,7 +450,7 @@ void Crypto::Encrypt::Blowfish::Init()
 	}*/
 }
 
-void Crypto::Encrypt::Blowfish::Key(const UInt8 *password, UOSInt pwdLen)
+void Crypto::Encrypt::Blowfish::Key(UnsafeArray<const UInt8> password, UOSInt pwdLen)
 {
 	UOSInt i;
 	UOSInt j;
@@ -503,7 +503,7 @@ void Crypto::Encrypt::Blowfish::Key(const UInt8 *password, UOSInt pwdLen)
 	}
 }
 
-void Crypto::Encrypt::Blowfish::ExpandKey(const UInt8 *salt, const UInt8 *password, UOSInt pwdLen)
+void Crypto::Encrypt::Blowfish::ExpandKey(UnsafeArrayOpt<const UInt8> optsalt, UnsafeArray<const UInt8> password, UOSInt pwdLen)
 {
 	UOSInt i;
 	UOSInt j;
@@ -512,7 +512,8 @@ void Crypto::Encrypt::Blowfish::ExpandKey(const UInt8 *salt, const UInt8 *passwo
 	EncryptParam param;
 	param.xl = 0;
 	param.xr = 0;
-	if (salt == 0)
+	UnsafeArray<const UInt8> salt;
+	if (!optsalt.SetTo(salt))
 	{
 		this->EncryptInt(&param);
 		this->p[0] = param.xl;
@@ -670,23 +671,23 @@ UOSInt Crypto::Encrypt::Blowfish::DecryptBlock(const UInt8 *inBlock, UInt8 *outB
 	return 8;
 }
 
-void Crypto::Encrypt::Blowfish::SetKey(const UInt8 *key, UOSInt keySize)
+void Crypto::Encrypt::Blowfish::SetKey(UnsafeArray<const UInt8> key, UOSInt keySize)
 {
 	this->Init();
 	this->ExpandKey(0, key, keySize);
 }
 
-void Crypto::Encrypt::Blowfish::EksBlowfishSetup(UInt32 cost, const UInt8 *salt, const UTF8Char *password, UOSInt pwdLen)
+void Crypto::Encrypt::Blowfish::EksBlowfishSetup(UInt32 cost, UnsafeArray<const UInt8> salt, Text::CStringNN password)
 {
 	UOSInt i;
 
 	this->Init();
 
-	this->ExpandKey(salt, password, pwdLen + 1);
+	this->ExpandKey(salt, password.v, password.leng + 1);
 	i = ((UOSInt)1) << cost;
 	while (i-- > 0)
 	{
-		this->Key(password, pwdLen + 1);
+		this->Key(password.v, password.leng + 1);
 		this->Key(salt, 16);
 	}
 }

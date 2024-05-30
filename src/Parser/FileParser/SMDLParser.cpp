@@ -108,7 +108,7 @@ public:
 	virtual Bool GetExtraValueStr(const UInt8 *buff, UOSInt buffSize, UOSInt extIndex, NN<Text::StringBuilderUTF8> sb)
 	{
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		if (extIndex < 18)
 		{
 			switch (extIndex)
@@ -222,7 +222,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SMDLParser::ParseFileHdr(NN<IO::S
 	Map::GPSTrack::GPSRecord3 rec;
 	UInt8 buff[384];
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> s;
 	UOSInt i;
 	UOSInt ui;
@@ -253,7 +253,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SMDLParser::ParseFileHdr(NN<IO::S
 	}
 
 	NN<Map::GPSTrack> track;
-	s = Text::String::NewP(sbuff, sptr);
+	s = Text::String::NewP(sbuff, UnsafeArray<const UTF8Char>(sptr));
 	NEW_CLASSNN(track, Map::GPSTrack(fd->GetFullName(), true, 0, s.Ptr()));
 	track->SetTrackName(s->ToCString());
 	s->Release();

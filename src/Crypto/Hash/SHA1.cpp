@@ -20,7 +20,7 @@ Crypto::Hash::SHA1::~SHA1()
 {
 }
 
-UTF8Char *Crypto::Hash::SHA1::GetName(UTF8Char *sbuff) const
+UnsafeArray<UTF8Char> Crypto::Hash::SHA1::GetName(UnsafeArray<UTF8Char> sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("SHA-1"));
 }

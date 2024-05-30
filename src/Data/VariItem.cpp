@@ -81,7 +81,7 @@ Double Data::VariItem::GetAsF64() const
 	case ItemType::Str:
 		return Text::StrToDouble(this->val.str->v);
 	case ItemType::CStr:
-		return Text::CString(this->val.cstr.v, this->val.cstr.leng).ToDouble();
+		return Text::CStringNN(this->val.cstr.v, this->val.cstr.leng).ToDouble();
 	case ItemType::Timestamp:
 	case ItemType::Date:
 	case ItemType::ByteArr:
@@ -495,7 +495,7 @@ Bool Data::VariItem::GetAsBool() const
 void Data::VariItem::GetAsString(NN<Text::StringBuilderUTF8> sb) const
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	switch (this->itemType)
 	{
 	case ItemType::Unknown:
@@ -576,7 +576,7 @@ void Data::VariItem::GetAsString(NN<Text::StringBuilderUTF8> sb) const
 	}
 }
 
-UTF8Char *Data::VariItem::GetAsStringS(UTF8Char *sbuff, UOSInt buffSize) const
+UnsafeArray<UTF8Char> Data::VariItem::GetAsStringS(UnsafeArray<UTF8Char> sbuff, UOSInt buffSize) const
 {
 	switch (this->itemType)
 	{
@@ -930,13 +930,14 @@ void Data::VariItem::SetNull()
 	this->itemType = ItemType::Null;
 }
 
-void Data::VariItem::SetStrSlow(const UTF8Char *str)
+void Data::VariItem::SetStrSlow(UnsafeArrayOpt<const UTF8Char> str)
 {
 	this->FreeItem();
-	if (str)
+	UnsafeArray<const UTF8Char> nnstr;
+	if (str.SetTo(nnstr))
 	{
-		this->val.cstr.v = str;
-		this->val.cstr.leng = Text::StrCharCnt(str);
+		this->val.cstr.v = nnstr.Ptr();
+		this->val.cstr.leng = Text::StrCharCnt(nnstr);
 		this->itemType = ItemType::CStr;
 	}
 	else
@@ -946,12 +947,13 @@ void Data::VariItem::SetStrSlow(const UTF8Char *str)
 	}
 }
 
-void Data::VariItem::SetStr(const UTF8Char *str, UOSInt strLen)
+void Data::VariItem::SetStr(UnsafeArrayOpt<const UTF8Char> str, UOSInt strLen)
 {
 	this->FreeItem();
-	if (str)
+	UnsafeArray<const UTF8Char> nnstr;
+	if (str.SetTo(nnstr))
 	{
-		this->val.cstr.v = str;
+		this->val.cstr.v = nnstr.Ptr();
 		this->val.cstr.leng = strLen;
 		this->itemType = ItemType::CStr;
 	}
@@ -962,12 +964,21 @@ void Data::VariItem::SetStr(const UTF8Char *str, UOSInt strLen)
 	}
 }
 
-void Data::VariItem::SetStrCopy(const UTF8Char *str, UOSInt strLen)
+void Data::VariItem::SetStr(UnsafeArray<const UTF8Char> str, UOSInt strLen)
 {
 	this->FreeItem();
-	if (str)
+	this->val.cstr.v = str.Ptr();
+	this->val.cstr.leng = strLen;
+	this->itemType = ItemType::CStr;
+}
+
+void Data::VariItem::SetStrCopy(UnsafeArrayOpt<const UTF8Char> str, UOSInt strLen)
+{
+	this->FreeItem();
+	UnsafeArray<const UTF8Char> nnstr;
+	if (str.SetTo(nnstr))
 	{
-		this->val.str = Text::String::New(str, strLen).Ptr();
+		this->val.str = Text::String::New(nnstr, strLen).Ptr();
 		this->itemType = ItemType::Str;
 	}
 	else
@@ -1323,7 +1334,7 @@ void Data::VariItem::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	NN<Text::String> s;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	switch (this->itemType)
 	{
 	case ItemType::Unknown:
@@ -1373,7 +1384,7 @@ void Data::VariItem::ToString(NN<Text::StringBuilderUTF8> sb) const
 			sb->AppendC(UTF8STRC("false"));
 		break;
 	case ItemType::Str:
-		s = Text::JSText::ToNewJSTextDQuote(this->val.str->v);
+		s = Text::JSText::ToNewJSTextDQuote(UnsafeArray<const UTF8Char>(this->val.str->v));
 		sb->Append(s);
 		s->Release();
 		return;
@@ -1424,12 +1435,13 @@ NN<Data::VariItem> Data::VariItem::NewNull()
 	return item;
 }
 
-NN<Data::VariItem> Data::VariItem::NewStrSlow(const UTF8Char *str)
+NN<Data::VariItem> Data::VariItem::NewStrSlow(UnsafeArrayOpt<const UTF8Char> str)
 {
-	if (str == 0) return NewNull();
+	UnsafeArray<const UTF8Char> nnstr;
+	if (!str.SetTo(nnstr)) return NewNull();
 	ItemValue ival;
-	ival.cstr.v = str;
-	ival.cstr.leng = Text::StrCharCnt(str);
+	ival.cstr.v = nnstr.Ptr();
+	ival.cstr.leng = Text::StrCharCnt(nnstr);
 	NN<Data::VariItem> item;
 	NEW_CLASSNN(item, Data::VariItem(ItemType::CStr, ival));
 	return item;
@@ -1437,9 +1449,10 @@ NN<Data::VariItem> Data::VariItem::NewStrSlow(const UTF8Char *str)
 
 NN<Data::VariItem> Data::VariItem::NewStr(Text::CString str)
 {
-	if (str.v == 0) return NewNull();
+	Text::CStringNN nnstr;
+	if (!str.SetTo(nnstr)) return NewNull();
 	ItemValue ival;
-	ival.cstr.v = str.v;
+	ival.cstr.v = nnstr.v.Ptr();
 	ival.cstr.leng = str.leng;
 	NN<Data::VariItem> item;
 	NEW_CLASSNN(item, Data::VariItem(ItemType::CStr, ival));
@@ -2099,8 +2112,8 @@ Bool Data::VariItem::PtrEquals(void *ptr1, void *ptr2, ItemType itemType)
 		break;
 	case ItemType::CStr:
 		{
-			Text::CString val1 = *(Text::CString*)ptr1;
-			Text::CString val2 = *(Text::CString*)ptr2;
+			Text::CStringNN val1 = *(Text::CStringNN*)ptr1;
+			Text::CStringNN val2 = *(Text::CStringNN*)ptr2;
 			return val1.Equals(val2.v, val2.leng);
 		}
 		break;

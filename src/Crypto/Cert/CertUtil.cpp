@@ -498,8 +498,8 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::FindIssuer(NN<Crypto::C
 {
 	UInt8 dataBuff[8192];
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	UInt8 keyId[20];
 	
 	Crypto::Cert::CertExtensions ext;
@@ -538,7 +538,7 @@ Optional<Crypto::Cert::X509Cert> Crypto::Cert::CertUtil::FindIssuer(NN<Crypto::C
 	NN<Crypto::Cert::X509File> x509;
 	if (sess)
 	{
-		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize)) != 0)
+		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize).SetTo(sptr2))
 		{
 			if (fileSize > 0 && fileSize <= sizeof(dataBuff))
 			{

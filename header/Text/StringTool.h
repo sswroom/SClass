@@ -19,15 +19,15 @@ namespace Text
 		static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::StringMap<Text::String*> *map);
 		static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::ReadingList<Text::String*> *list);
 		template <class T> static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, T *obj, Data::NamedClass<T> *cls);
-		template <class T> static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::List<T*> *list, Data::NamedClass<T> *cls, const UTF8Char *clsName, UOSInt nameLen);
-		static void Int32Join(NN<Text::StringBuilderUTF8> sb, Data::List<Int32> *list, Text::CString seperator);
-		static Bool IsNonASCII(const UTF8Char *s);
+		template <class T> static void BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::List<T*> *list, Data::NamedClass<T> *cls, UnsafeArray<const UTF8Char> clsName, UOSInt nameLen);
+		static void Int32Join(NN<Text::StringBuilderUTF8> sb, Data::List<Int32> *list, Text::CStringNN seperator);
+		static Bool IsNonASCII(UnsafeArray<const UTF8Char> s);
 		static Bool IsASCIIText(const Data::ByteArrayR &buff);
-		static Bool IsEmailAddress(const UTF8Char *s);
-		static Bool IsUInteger(const UTF8Char *s);
-		static Bool IsInteger(const UTF8Char *s);
+		static Bool IsEmailAddress(UnsafeArray<const UTF8Char> s);
+		static Bool IsUInteger(UnsafeArray<const UTF8Char> s);
+		static Bool IsInteger(UnsafeArray<const UTF8Char> s);
 		static Bool IsHKID(Text::CStringNN hkid);
-		static const UTF8Char *Null2Empty(const UTF8Char *s);
+		static UnsafeArray<const UTF8Char> Null2Empty(UnsafeArrayOpt<const UTF8Char> s);
 		static Bool SplitAsDouble(Text::CStringNN str, UTF8Char splitChar, NN<Data::ArrayList<Double>> outArr);
 		static UOSInt SplitAsNewString(Text::CStringNN str, UTF8Char splitChar, NN<Data::ArrayListStringNN> outArr);
 		static Bool Equals(Optional<Text::String> s1, Optional<Text::String> s2);
@@ -69,7 +69,7 @@ template <class T> void Text::StringTool::BuildJSONString(NN<Text::StringBuilder
 	sb->AppendUTF8Char('}');
 }
 
-template <class T> void Text::StringTool::BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::List<T*> *list, Data::NamedClass<T> *cls, const UTF8Char *clsName, UOSInt nameLen)
+template <class T> void Text::StringTool::BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::List<T*> *list, Data::NamedClass<T> *cls, UnsafeArray<const UTF8Char> clsName, UOSInt nameLen)
 {
 	if (list == 0)
 	{

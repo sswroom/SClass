@@ -9,49 +9,49 @@ namespace Text
 {
 	template <typename T> struct StringBase
 	{
-		T *v;
+		UnsafeArray<T> v;
 		UOSInt leng;
 
 		T *GetEndPtr();
 		Data::ByteArray ToByteArray() const;
 
-		UTF8Char *ConcatTo(UTF8Char *sbuff) const;
-		UTF8Char *ConcatWith(UTF8Char *sbuff, const UTF8Char *s1, UOSInt len1) const;
-		UTF8Char *ConcatToS(UTF8Char *sbuff, UOSInt buffSize) const;
+		UnsafeArray<UTF8Char> ConcatTo(UnsafeArray<UTF8Char> sbuff) const;
+		UnsafeArray<UTF8Char> ConcatWith(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> s1, UOSInt len1) const;
+		UnsafeArray<UTF8Char> ConcatToS(UnsafeArray<UTF8Char> sbuff, UOSInt buffSize) const;
 		Bool Equals(NN<StringBase<UTF8Char>> s) const;
 		Bool Equals(StringBase<const UTF8Char> s) const;
-		Bool Equals(const UTF8Char *s, UOSInt len) const;
+		Bool Equals(UnsafeArray<const UTF8Char> s, UOSInt len) const;
 		Bool EqualsICase(NN<StringBase<UTF8Char>> s) const;
 		Bool EqualsICase(StringBase<const UTF8Char> s) const;
-		Bool EqualsICase(const UTF8Char *s, UOSInt len) const;
+		Bool EqualsICase(UnsafeArray<const UTF8Char> s, UOSInt len) const;
 		Bool StartsWith(UTF8Char c) const;
 		Bool StartsWith(NN<StringBase<UTF8Char>> s) const;
 		Bool StartsWith(StringBase<const UTF8Char> s) const;
-		Bool StartsWith(const UTF8Char *s, UOSInt len) const;
-		Bool StartsWith(UOSInt startIndex, const UTF8Char *s, UOSInt len) const;
-		Bool StartsWithICase(const UTF8Char *s, UOSInt len) const;
-		Bool StartsWithICase(UOSInt startIndex, const UTF8Char *s, UOSInt len) const;
+		Bool StartsWith(UnsafeArray<const UTF8Char> s, UOSInt len) const;
+		Bool StartsWith(UOSInt startIndex, UnsafeArray<const UTF8Char> s, UOSInt len) const;
+		Bool StartsWithICase(UnsafeArray<const UTF8Char> s, UOSInt len) const;
+		Bool StartsWithICase(UOSInt startIndex, UnsafeArray<const UTF8Char> s, UOSInt len) const;
 		Bool EndsWith(UTF8Char c) const;
-		Bool EndsWith(const UTF8Char *s, UOSInt len) const;
+		Bool EndsWith(UnsafeArray<const UTF8Char> s, UOSInt len) const;
 		Bool EndsWith(StringBase<const UTF8Char> s) const;
-		Bool EndsWithICase(const UTF8Char *s, UOSInt len) const;
+		Bool EndsWithICase(UnsafeArray<const UTF8Char> s, UOSInt len) const;
 		Bool HasUpperCase() const;
-		Bool ContainChars(const UTF8Char *chars) const;
-		UOSInt IndexOf(const UTF8Char *s, UOSInt len) const;
+		Bool ContainChars(UnsafeArray<const UTF8Char> chars) const;
+		UOSInt IndexOf(UnsafeArray<const UTF8Char> s, UOSInt len) const;
 		UOSInt IndexOf(NN<StringBase<UTF8Char>> s) const;
 		UOSInt IndexOf(StringBase<const UTF8Char> s) const;
-		UOSInt IndexOf(const UTF8Char *s, UOSInt len, UOSInt startIndex) const;
+		UOSInt IndexOf(UnsafeArray<const UTF8Char> s, UOSInt len, UOSInt startIndex) const;
 		UOSInt IndexOf(UTF8Char c) const;
 		UOSInt IndexOf(UTF8Char c, UOSInt startIndex) const;
-		UOSInt IndexOfICase(const UTF8Char *s, UOSInt len) const;
+		UOSInt IndexOfICase(UnsafeArray<const UTF8Char> s, UOSInt len) const;
 		UOSInt IndexOfICase(NN<StringBase<UTF8Char>> s) const;
 		UOSInt LastIndexOf(UTF8Char c) const;
 		UOSInt LastIndexOf(UTF8Char c, UOSInt startIndex) const;
 		OSInt CompareTo(NN<StringBase<UTF8Char>> s) const;
 		OSInt CompareTo(StringBase<const UTF8Char> s) const;
-		OSInt CompareTo(const UTF8Char *s) const;
+		OSInt CompareTo(UnsafeArray<const UTF8Char> s) const;
 		OSInt CompareToICase(NN<StringBase<UTF8Char>> s) const;
-		OSInt CompareToICase(const UTF8Char *s) const;
+		OSInt CompareToICase(UnsafeArray<const UTF8Char> s) const;
 		OSInt CompareToFast(StringBase<const UTF8Char> s) const;
 
 		Int32 ToInt32() const;
@@ -77,14 +77,14 @@ namespace Text
 		Bool ToBool() const;
 		UOSInt Hex2Bytes(UInt8 *buff) const;
 		UOSInt CountChar(UTF8Char c) const;
-		UOSInt CountStr(const UTF8Char *s, UOSInt len) const;
+		UOSInt CountStr(UnsafeArray<const UTF8Char> s, UOSInt len) const;
 		UOSInt CountStr(NN<StringBase<UTF8Char>> s) const;
 		UOSInt CountStr(const StringBase<const UTF8Char> &s) const;
 		Bool Hex2UInt16(OutParam<UInt16> outVal) const;
 		Bool Hex2UInt32(OutParam<UInt32> outVal) const;
 
 		Double MatchRating(NN<StringBase<UTF8Char>> s) const;
-		Double MatchRating(const UTF8Char *targetStr, UOSInt strLen) const;
+		Double MatchRating(UnsafeArray<const UTF8Char> targetStr, UOSInt strLen) const;
 		UOSInt BranketSearch(UOSInt startIndex, UTF8Char c) const;
 		Bool HasAlphaNumeric() const;
 
@@ -99,34 +99,34 @@ template <typename T> T *Text::StringBase<T>::GetEndPtr()
 
 template <typename T> Data::ByteArray Text::StringBase<T>::ToByteArray() const
 {
-	return Data::ByteArray((UInt8*)this->v, this->leng * sizeof(T));
+	return Data::ByteArray(UnsafeArray<UInt8>::ConvertFrom(this->v), this->leng * sizeof(T));
 }
 
-template <typename T> UTF8Char *Text::StringBase<T>::ConcatTo(UTF8Char *sbuff) const
+template <typename T> UnsafeArray<UTF8Char> Text::StringBase<T>::ConcatTo(UnsafeArray<UTF8Char> sbuff) const
 {
 	REGVAR UOSInt len = this->leng;
-	MemCopyNO(sbuff, this->v, len);
+	MemCopyNO(sbuff.Ptr(), this->v.Ptr(), len);
 	sbuff += len;
 	*sbuff = 0;
 	return sbuff;
 }
 
-template <typename T> UTF8Char *Text::StringBase<T>::ConcatWith(UTF8Char *sbuff, const UTF8Char *s1, UOSInt len1) const
+template <typename T> UnsafeArray<UTF8Char> Text::StringBase<T>::ConcatWith(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> s1, UOSInt len1) const
 {
 	REGVAR UOSInt len = this->leng;
-	MemCopyNO(sbuff, this->v, len);
+	MemCopyNO(sbuff.Ptr(), this->v.Ptr(), len);
 	sbuff += len;
-	MemCopyNO(sbuff, s1, len1);
+	MemCopyNO(sbuff.Ptr(), s1.Ptr(), len1);
 	sbuff += len1;
 	*sbuff = 0;
 	return sbuff;
 }
 
-template <typename T> UTF8Char *Text::StringBase<T>::ConcatToS(UTF8Char *sbuff, UOSInt buffSize) const
+template <typename T> UnsafeArray<UTF8Char> Text::StringBase<T>::ConcatToS(UnsafeArray<UTF8Char> sbuff, UOSInt buffSize) const
 {
 	if (buffSize > this->leng)
 	{
-		MemCopyNO(sbuff, this->v, this->leng);
+		MemCopyNO(sbuff.Ptr(), this->v.Ptr(), this->leng);
 		sbuff += this->leng;
 		*sbuff = 0;
 		return sbuff;
@@ -134,7 +134,7 @@ template <typename T> UTF8Char *Text::StringBase<T>::ConcatToS(UTF8Char *sbuff, 
 	else
 	{
 		buffSize--;
-		MemCopyNO(sbuff, this->v, buffSize);
+		MemCopyNO(sbuff.Ptr(), this->v.Ptr(), buffSize);
 		sbuff[buffSize] = 0;
 		return &sbuff[buffSize];
 	}
@@ -150,7 +150,7 @@ template <typename T> Bool Text::StringBase<T>::Equals(StringBase<const UTF8Char
 	return Equals(s.v, s.leng);
 }
 
-template <typename T> Bool Text::StringBase<T>::Equals(const UTF8Char *s, UOSInt len) const
+template <typename T> Bool Text::StringBase<T>::Equals(UnsafeArray<const UTF8Char> s, UOSInt len) const
 {
 	return Text::StrEqualsC(this->v, this->leng, s, len);
 }
@@ -165,7 +165,7 @@ template <typename T> Bool Text::StringBase<T>::EqualsICase(StringBase<const UTF
 	return EqualsICase(s.v, s.leng);
 }
 
-template <typename T> Bool Text::StringBase<T>::EqualsICase(const UTF8Char *s, UOSInt len) const
+template <typename T> Bool Text::StringBase<T>::EqualsICase(UnsafeArray<const UTF8Char> s, UOSInt len) const
 {
 	return Text::StrEqualsICaseC(this->v, this->leng, s, len);
 }
@@ -185,12 +185,12 @@ template <typename T> Bool Text::StringBase<T>::StartsWith(StringBase<const UTF8
 	return StartsWith(s.v, s.leng);
 }
 
-template <typename T> Bool Text::StringBase<T>::StartsWith(const UTF8Char *s, UOSInt len) const
+template <typename T> Bool Text::StringBase<T>::StartsWith(UnsafeArray<const UTF8Char> s, UOSInt len) const
 {
 	return Text::StrStartsWithC(this->v, this->leng, s, len);
 }
 
-template <typename T> Bool Text::StringBase<T>::StartsWith(UOSInt startIndex, const UTF8Char *s, UOSInt len) const
+template <typename T> Bool Text::StringBase<T>::StartsWith(UOSInt startIndex, UnsafeArray<const UTF8Char> s, UOSInt len) const
 {
 	if (startIndex > this->leng)
 	{
@@ -199,12 +199,12 @@ template <typename T> Bool Text::StringBase<T>::StartsWith(UOSInt startIndex, co
 	return Text::StrStartsWithC(&this->v[startIndex], this->leng - startIndex, s, len);
 }
 
-template <typename T> Bool Text::StringBase<T>::StartsWithICase(const UTF8Char *str2, UOSInt len) const
+template <typename T> Bool Text::StringBase<T>::StartsWithICase(UnsafeArray<const UTF8Char> str2, UOSInt len) const
 {
 	return Text::StrStartsWithICaseC(this->v, this->leng, str2, len);
 }
 
-template <typename T> Bool Text::StringBase<T>::StartsWithICase(UOSInt startIndex, const UTF8Char *s, UOSInt len) const
+template <typename T> Bool Text::StringBase<T>::StartsWithICase(UOSInt startIndex, UnsafeArray<const UTF8Char> s, UOSInt len) const
 {
 	if (startIndex > this->leng)
 	{
@@ -219,7 +219,7 @@ template <typename T> Bool Text::StringBase<T>::EndsWith(UTF8Char c) const
 	return len > 0 && this->v[len - 1] == c;
 }
 
-template <typename T> Bool Text::StringBase<T>::EndsWith(const UTF8Char *s, UOSInt len2) const
+template <typename T> Bool Text::StringBase<T>::EndsWith(UnsafeArray<const UTF8Char> s, UOSInt len2) const
 {
 	REGVAR UOSInt len1 = this->leng;
 	if (len2 > len1)
@@ -234,7 +234,7 @@ template <typename T> Bool Text::StringBase<T>::EndsWith(StringBase<const UTF8Ch
 	return EndsWith(s.v, s.leng);
 }
 
-template <typename T> Bool Text::StringBase<T>::EndsWithICase(const UTF8Char *s, UOSInt len2) const
+template <typename T> Bool Text::StringBase<T>::EndsWithICase(UnsafeArray<const UTF8Char> s, UOSInt len2) const
 {
 	UOSInt len1 = this->leng;
 	if (len2 > len1)
@@ -249,12 +249,12 @@ template <typename T> Bool Text::StringBase<T>::HasUpperCase() const
 	return Text::StrHasUpperCase(this->v);
 }
 
-template <typename T> Bool Text::StringBase<T>::ContainChars(const UTF8Char *chars) const
+template <typename T> Bool Text::StringBase<T>::ContainChars(UnsafeArray<const UTF8Char> chars) const
 {
 	return Text::StrContainChars(this->v, chars);
 }
 
-template <typename T> UOSInt Text::StringBase<T>::IndexOf(const UTF8Char *s, UOSInt len) const
+template <typename T> UOSInt Text::StringBase<T>::IndexOf(UnsafeArray<const UTF8Char> s, UOSInt len) const
 {
 	return Text::StrIndexOfC(this->v, this->leng, s, len);
 }
@@ -269,7 +269,7 @@ template <typename T> UOSInt Text::StringBase<T>::IndexOf(StringBase<const UTF8C
 	return IndexOf(s.v, s.leng);
 }
 
-template <typename T> UOSInt Text::StringBase<T>::IndexOf(const UTF8Char *s, UOSInt len, UOSInt startIndex) const
+template <typename T> UOSInt Text::StringBase<T>::IndexOf(UnsafeArray<const UTF8Char> s, UOSInt len, UOSInt startIndex) const
 {
 	if (startIndex >= this->leng)
 	{
@@ -296,7 +296,7 @@ template <typename T> UOSInt Text::StringBase<T>::IndexOf(UTF8Char c, UOSInt sta
 	return i + startIndex;
 }
 
-template <typename T> UOSInt Text::StringBase<T>::IndexOfICase(const UTF8Char *s, UOSInt len) const
+template <typename T> UOSInt Text::StringBase<T>::IndexOfICase(UnsafeArray<const UTF8Char> s, UOSInt len) const
 {
 	return Text::StrIndexOfICase(this->v, s);
 }
@@ -323,35 +323,35 @@ template <typename T> UOSInt Text::StringBase<T>::LastIndexOf(UTF8Char c, UOSInt
 
 template <typename T> OSInt Text::StringBase<T>::CompareTo(NN<StringBase<UTF8Char>> s) const
 {
-	return MyString_StrCompare(this->v, s->v);
+	return MyString_StrCompare(this->v.Ptr(), s->v.Ptr());
 }
 
 template <typename T> OSInt Text::StringBase<T>::CompareTo(StringBase<const UTF8Char> s) const
 {
-	return MyString_StrCompare(this->v, s.v);
+	return MyString_StrCompare(this->v.Ptr(), s.v.Ptr());
 }
 
-template <typename T> OSInt Text::StringBase<T>::CompareTo(const UTF8Char *s) const
+template <typename T> OSInt Text::StringBase<T>::CompareTo(UnsafeArray<const UTF8Char> s) const
 {
-	return MyString_StrCompare(this->v, s);
+	return MyString_StrCompare(this->v.Ptr(), s.Ptr());
 }
 
 template <typename T> OSInt Text::StringBase<T>::CompareToICase(NN<StringBase<UTF8Char>> s) const
 {
-	return MyString_StrCompareICase(this->v, s->v);
+	return MyString_StrCompareICase(this->v.Ptr(), s->v.Ptr());
 }
 
-template <typename T> OSInt Text::StringBase<T>::CompareToICase(const UTF8Char *s) const
+template <typename T> OSInt Text::StringBase<T>::CompareToICase(UnsafeArray<const UTF8Char> s) const
 {
-	return MyString_StrCompareICase(this->v, s);
+	return MyString_StrCompareICase(this->v.Ptr(), s.Ptr());
 }
 
 template <typename T> OSInt Text::StringBase<T>::CompareToFast(StringBase<const UTF8Char> s) const
 {
-	const UTF8Char *s0 = this->v;
+	UnsafeArray<const UTF8Char> s0 = this->v;
 	UOSInt len1 = this->leng;
 	UOSInt len2 = s.leng;
-	const UTF8Char *str2 = s.v;
+	UnsafeArray<const UTF8Char> str2 = s.v;
 	OSInt defRet;
 	if (len1 > len2)
 	{
@@ -368,8 +368,8 @@ template <typename T> OSInt Text::StringBase<T>::CompareToFast(StringBase<const 
 	}
 	while (len2 >= 4)
 	{
-		REGVAR UInt32 v1 = ReadMUInt32(s0);
-		REGVAR UInt32 v2 = ReadMUInt32(str2);
+		REGVAR UInt32 v1 = ReadMUInt32(&s0[0]);
+		REGVAR UInt32 v2 = ReadMUInt32(&str2[0]);
 		if (v1 > v2)
 		{
 			return 1;
@@ -520,7 +520,7 @@ template<typename T> UOSInt Text::StringBase<T>::CountChar(UTF8Char c) const
 	return Text::StrCountChar(this->v, c);
 }
 
-template<typename T> UOSInt Text::StringBase<T>::CountStr(const UTF8Char *s, UOSInt len) const
+template<typename T> UOSInt Text::StringBase<T>::CountStr(UnsafeArray<const UTF8Char> s, UOSInt len) const
 {
 	return Text::StrCountStr(this->v, this->leng, s, len);
 }
@@ -571,7 +571,7 @@ template <typename T> Double Text::StringBase<T>::MatchRating(NN<StringBase<UTF8
 	}
 }
 
-template <typename T> Double Text::StringBase<T>::MatchRating(const UTF8Char *targetStr, UOSInt strLen) const
+template <typename T> Double Text::StringBase<T>::MatchRating(UnsafeArray<const UTF8Char> targetStr, UOSInt strLen) const
 {
 	if (this->IndexOf(targetStr, strLen) != INVALID_INDEX)
 	{
@@ -638,7 +638,7 @@ template <typename T> UOSInt Text::StringBase<T>::BranketSearch(UOSInt startInde
 template <typename T> Bool Text::StringBase<T>::HasAlphaNumeric() const
 {
 	UOSInt i = this->leng;
-	UTF8Char *ptr = this->v;
+	UnsafeArray<UTF8Char> ptr = this->v;
 	UTF8Char c;
 	while (i-- > 0)
 	{

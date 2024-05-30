@@ -208,7 +208,7 @@ Text::EncodingFactory::EncodingFactory()
 		{
 			if (encInfo[i].internetNames[j])
 			{
-				len = Text::StrCharCnt(encInfo[i].internetNames[j]);
+				len = Text::StrCharCntCh(encInfo[i].internetNames[j]);
 				s = Text::String::New(len);
 				Text::StrToLowerC(s->v, (const UTF8Char*)encInfo[i].internetNames[j], len);
 				this->encMap.PutNN(s, encInfo[i]);
@@ -227,7 +227,7 @@ Text::EncodingFactory::~EncodingFactory()
 {
 }
 
-UInt32 Text::EncodingFactory::GetCodePage(Text::CString shortName)
+UInt32 Text::EncodingFactory::GetCodePage(Text::CStringNN shortName)
 {
 	if (shortName.leng > MAX_SHORT_LEN)
 	{
@@ -246,7 +246,7 @@ UInt32 Text::EncodingFactory::GetCodePage(Text::CString shortName)
 	}
 }
 
-UTF8Char *Text::EncodingFactory::GetName(UTF8Char *buff, UInt32 codePage)
+UnsafeArray<UTF8Char> Text::EncodingFactory::GetName(UnsafeArray<UTF8Char> buff, UInt32 codePage)
 {
 	OSInt i = 0;
 	OSInt j = (OSInt)(sizeof(encInfo) / sizeof(encInfo[0])) - 1;
@@ -272,7 +272,7 @@ UTF8Char *Text::EncodingFactory::GetName(UTF8Char *buff, UInt32 codePage)
 	return Text::StrConcatC(buff, UTF8STRC("Unknown"));
 }
 
-UTF8Char *Text::EncodingFactory::GetInternetName(UTF8Char *buff, UInt32 codePage)
+UnsafeArray<UTF8Char> Text::EncodingFactory::GetInternetName(UnsafeArray<UTF8Char> buff, UInt32 codePage)
 {
 	OSInt i = 0;
 	OSInt j = (OSInt)(sizeof(encInfo) / sizeof(encInfo[0])) - 1;
@@ -300,7 +300,7 @@ UTF8Char *Text::EncodingFactory::GetInternetName(UTF8Char *buff, UInt32 codePage
 	return Text::StrConcatC(buff, UTF8STRC("UTF-8"));
 }
 
-UTF8Char *Text::EncodingFactory::GetDotNetName(UTF8Char *buff, UInt32 codePage)
+UnsafeArray<UTF8Char> Text::EncodingFactory::GetDotNetName(UnsafeArray<UTF8Char> buff, UInt32 codePage)
 {
 	OSInt i = 0;
 	OSInt j = (OSInt)(sizeof(encInfo) / sizeof(encInfo[0])) - 1;

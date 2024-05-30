@@ -96,7 +96,7 @@ UOSInt Text::XMLReader::FillBuffer()
 		{
 			rawReadSize = this->rawBuffSize;
 		}
-		UTF8Char *sptr = this->enc->UTF8FromBytes(&this->readBuff[this->buffSize], this->rawBuff, rawReadSize, rawReadSize);
+		UnsafeArray<UTF8Char> sptr = this->enc->UTF8FromBytes(&this->readBuff[this->buffSize], this->rawBuff, rawReadSize, rawReadSize);
 		if (rawReadSize == this->rawBuffSize)
 		{
 			this->rawBuffSize = 0;
@@ -1773,7 +1773,7 @@ Bool Text::XMLReader::XMLWellFormat(Optional<Text::EncodingFactory> encFact, NN<
 		if (thisNT == Text::XMLNode::NodeType::Text)
 		{
 			toWrite = false;
-			const UTF8Char *csptr = Text::String::OrEmpty(reader.GetNodeText())->v;
+			UnsafeArray<const UTF8Char> csptr = Text::String::OrEmpty(reader.GetNodeText())->v;
 			UTF8Char c;
 			while (true)
 			{

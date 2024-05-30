@@ -67,7 +67,7 @@ Optional<Text::String> IO::ConfigFile::GetCateValue(NN<Text::String> category, N
 Optional<Text::String> IO::ConfigFile::GetCateValue(Text::CStringNN category, Text::CStringNN name)
 {
 	NN<Data::FastStringMapNN<Text::String>> cate;
-	if (!this->cfgVals.GetC(category.OrEmpty()).SetTo(cate))
+	if (!this->cfgVals.GetC(category).SetTo(cate))
 	{
 		return 0;
 	}
@@ -105,9 +105,10 @@ Bool IO::ConfigFile::SetValue(Text::CStringNN category, Text::CStringNN name, Te
 		NEW_CLASSNN(cate, Data::FastStringMapNN<Text::String>());
 		this->cfgVals.PutC(category, cate);
 	}
-	if (value.v)
+	Text::CStringNN nnvalue;
+	if (value.SetTo(nnvalue))
 	{
-		if (cate->PutC(name, Text::String::New(value)).SetTo(s))
+		if (cate->PutC(name, Text::String::New(nnvalue)).SetTo(s))
 			s->Release();
 	}
 	else

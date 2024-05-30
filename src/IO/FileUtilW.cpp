@@ -83,7 +83,7 @@ Bool IO::FileUtil::DeleteFile(Text::CStringNN file, Bool deleteRdonlyFile)
 	}
 }*/
 
-Bool IO::FileUtil::RenameFile(const UTF8Char *srcFile, const UTF8Char *destFile)
+Bool IO::FileUtil::RenameFile(UnsafeArray<const UTF8Char> srcFile, UnsafeArray<const UTF8Char> destFile)
 {
 	const WChar *srcFileW = Text::StrToWCharNew(srcFile);
 	const WChar *destFileW = Text::StrToWCharNew(destFile);
@@ -97,12 +97,12 @@ Bool IO::FileUtil::RenameFile(const UTF8Char *srcFile, const UTF8Char *destFile)
 }
 
 #ifdef _WIN32_WCE
-UTF8Char *IO::FileUtil::GetMountPoint(UTF8Char *buff, const UTF8Char *fileName)
+UTF8Char *IO::FileUtil::GetMountPoint(UTF8Char *buff, UnsafeArray<const UTF8Char> fileName)
 {
 	return 0;
 }
 
-Bool IO::FileUtil::IsSamePartition(const UTF8Char *file1, const UTF8Char *file2)
+Bool IO::FileUtil::IsSamePartition(UnsafeArray<const UTF8Char> file1, UnsafeArray<const UTF8Char> file2)
 {
 	ULARGE_INTEGER total1;
 	ULARGE_INTEGER total2;
@@ -128,7 +128,7 @@ Bool IO::FileUtil::IsSamePartition(const UTF8Char *file1, const UTF8Char *file2)
 }
 
 #elif (_WIN32_WINNT >= 0x0500)
-UTF8Char *IO::FileUtil::GetMountPoint(UTF8Char *buff, const UTF8Char *fileName)
+UTF8Char *IO::FileUtil::GetMountPoint(UTF8Char *buff, UnsafeArray<const UTF8Char> fileName)
 {
 	WChar wbuff[512];
 	const WChar *wptr = Text::StrToWCharNew(fileName);
@@ -144,7 +144,7 @@ UTF8Char *IO::FileUtil::GetMountPoint(UTF8Char *buff, const UTF8Char *fileName)
 	}
 }
 
-Bool IO::FileUtil::IsSamePartition(const UTF8Char *file1, const UTF8Char *file2)
+Bool IO::FileUtil::IsSamePartition(UnsafeArray<const UTF8Char> file1, UnsafeArray<const UTF8Char> file2)
 {
 	WChar buff1[256];
 	WChar buff2[256];
@@ -170,7 +170,7 @@ UTF8Char *IO::Path::GetMountPoint(UTF8Char *buff, UTF8Char *fileName)
 	return 0;
 }
 
-Bool IO::FileUtil::IsSamePartition(const UTF8Char *file1, const UTF8Char *file2)
+Bool IO::FileUtil::IsSamePartition(UnsafeArray<const UTF8Char> file1, UnsafeArray<const UTF8Char> file2)
 {
 	return true;
 }

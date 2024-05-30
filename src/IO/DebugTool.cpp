@@ -24,7 +24,7 @@ void IO::DebugTool::PrintStackTrace()
 				sb.AppendHex64(tracer.GetCurrentAddr());
 				sb.AppendC(UTF8STRC(" "));
 				addrResol.ResolveNameSB(sb, tracer.GetCurrentAddr());
-				printf("%s\r\n", sb.ToString());
+				printf("%s\r\n", sb.ToPtr());
 			}
 		}
 		tContext.Delete();

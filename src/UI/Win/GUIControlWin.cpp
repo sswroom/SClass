@@ -190,7 +190,7 @@ void UI::GUIControl::SetText(Text::CStringNN text)
 	Text::StrDelNew(wptr);
 }
 
-UTF8Char *UI::GUIControl::GetText(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> UI::GUIControl::GetText(UnsafeArray<UTF8Char> buff)
 {
 	WChar wbuff[256];
 	wbuff[0] = 0;

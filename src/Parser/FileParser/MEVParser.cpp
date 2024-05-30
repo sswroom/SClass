@@ -68,8 +68,8 @@ Optional<IO::ParsedObject> Parser::FileParser::MEVParser::ParseFileHdr(NN<IO::St
 	WChar wbuff2[256];
 	UTF8Char sbuff[256];
 	UTF8Char sbuff2[256];
-	UTF8Char *u8ptr;
-	UTF8Char *u8ptr2;
+	UnsafeArray<UTF8Char> u8ptr;
+	UnsafeArray<UTF8Char> u8ptr2;
 	NN<Parser::ParserList> parsers;
 	NN<Map::MapManager> mapMgr;
 
@@ -133,7 +133,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MEVParser::ParseFileHdr(NN<IO::St
 			Text::StrUTF8_WCharC(wbuff, &buff[8], ReadUInt32(&buff[4]), 0);
 			if (wptr2)
 			{
-				Text::StrReplace(wbuff, wptr2 + 1, wbuff2);
+				Text::StrReplaceW(wbuff, wptr2 + 1, wbuff2);
 			}
 			dirArr[i] = Text::StrCopyNew(wbuff);
 		}

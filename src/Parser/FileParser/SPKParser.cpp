@@ -64,8 +64,8 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 	UOSInt j;
 	UTF8Char fileName[256];
 	UTF8Char srcPath[512];
-	UTF8Char *srcPtr;
-	UTF8Char *srcPtr2;
+	UnsafeArray<UTF8Char> srcPtr;
+	UnsafeArray<UTF8Char> srcPtr2;
 
 	if (hdr[0] != 'S' || hdr[1] != 'm' || hdr[2] != 'p' || hdr[3] != 'f')
 		return 0;
@@ -123,8 +123,8 @@ Optional<IO::ParsedObject> Parser::FileParser::SPKParser::ParseFileHdr(NN<IO::St
 	srcPtr = fd->GetFullName()->ConcatTo(srcPath);
 	UOSInt k;
 	UOSInt l;
-	UTF8Char *sptr;
-	UTF8Char *sptrEnd;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptrEnd;
 	if (flags & 2)
 	{
 		UInt64 dirSize;

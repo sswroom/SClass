@@ -57,7 +57,7 @@ namespace IO
 
 		virtual UOSInt GetCount() const;
 		virtual PackObjectType GetItemType(UOSInt index) const;
-		virtual UTF8Char *GetItemName(UTF8Char *sbuff, UOSInt index) const;
+		virtual UnsafeArrayOpt<UTF8Char> GetItemName(UnsafeArray<UTF8Char> sbuff, UOSInt index) const;
 		virtual Optional<IO::StreamData> GetItemStmDataNew(UOSInt index) const;
 		virtual Optional<IO::PackageFile> GetItemPack(UOSInt index, OutParam<Bool> needRelease) const;
 		virtual Optional<IO::ParsedObject> GetItemPObj(UOSInt index, OutParam<Bool> needRelease) const;
@@ -76,8 +76,8 @@ namespace IO
 		virtual Bool MoveFrom(Text::CStringNN fileName, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
 		virtual Bool RetryCopyFrom(Text::CStringNN fileName, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
 		virtual Bool RetryMoveFrom(Text::CStringNN fileName, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
-		virtual Bool CopyTo(UOSInt index, Text::CString destPath, Bool fullFileName);
-		virtual Optional<IO::StreamData> OpenStreamData(Text::CString fileName) const;
+		virtual Bool CopyTo(UOSInt index, Text::CStringNN destPath, Bool fullFileName);
+		virtual Optional<IO::StreamData> OpenStreamData(Text::CStringNN fileName) const;
 		virtual Bool HasParent() const;
 		virtual Optional<IO::PackageFile> GetParent(OutParam<Bool> needRelease) const;
 		virtual Bool DeleteItem(UOSInt index);

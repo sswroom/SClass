@@ -10,7 +10,7 @@
 
 #include <stdio.h>
 
-void IO::Device::MTKGPSNMEA::ParseUnknownCmd(const UTF8Char *cmd, UOSInt cmdLen)
+void IO::Device::MTKGPSNMEA::ParseUnknownCmd(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen)
 {
 	if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("$PMTK")))
 	{
@@ -100,7 +100,7 @@ Bool IO::Device::MTKGPSNMEA::IsMTKDevice()
 Bool IO::Device::MTKGPSNMEA::QueryFirmware()
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::PString sarr2[2];
 	Text::PString sarr[5];
 	UOSInt i;
@@ -135,7 +135,7 @@ Bool IO::Device::MTKGPSNMEA::QueryFirmware()
 Bool IO::Device::MTKGPSNMEA::IsLogEnabled()
 {
 	UInt8 buff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt cmdSize = GenNMEACommand(UTF8STRC("$PMTK182,2,7"), buff);
 	UTF8Char sbuff[128];
 	Text::String *result = SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK182,3,7,"), 2000);
@@ -192,7 +192,7 @@ UOSInt IO::Device::MTKGPSNMEA::CalLogBlockCount(UOSInt logSize)
 Bool IO::Device::MTKGPSNMEA::ReadLogPart(UOSInt addr, UInt8 *buff)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	UInt8 cbuff[64];
@@ -336,7 +336,7 @@ Bool IO::Device::MTKGPSNMEA::DelLogData()
 Bool IO::Device::MTKGPSNMEA::SetLogFormat(LogFormat lf)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 buff[64];
 	sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("$PMTK182,1,2,")), (UInt32)lf);
 	UOSInt cmdSize = GenNMEACommand(sbuff, (UOSInt)(sptr - sbuff), buff);
@@ -350,7 +350,7 @@ Bool IO::Device::MTKGPSNMEA::SetLogFormat(LogFormat lf)
 Bool IO::Device::MTKGPSNMEA::SetLogInterval(UInt32 sec)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 buff[64];
 	sptr = Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("$PMTK182,1,3,")), sec * 10);
 	UOSInt cmdSize = GenNMEACommand(sbuff, (UOSInt)(sptr - sbuff), buff);
@@ -364,7 +364,7 @@ Bool IO::Device::MTKGPSNMEA::SetLogInterval(UInt32 sec)
 Bool IO::Device::MTKGPSNMEA::SetLogDistance(UInt32 meter)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 buff[64];
 	sptr = Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("$PMTK182,1,4,")), meter * 10);
 	UOSInt cmdSize = GenNMEACommand(sbuff, (UOSInt)(sptr - sbuff), buff);
@@ -377,7 +377,7 @@ Bool IO::Device::MTKGPSNMEA::SetLogDistance(UInt32 meter)
 
 Bool IO::Device::MTKGPSNMEA::SetLogMode(LogMode lm)
 {
-	Text::CString cmd;
+	Text::CStringNN cmd;
 	UInt8 buff[64];
 	if (lm == LM_OVERWRITE)
 	{
@@ -402,7 +402,7 @@ Bool IO::Device::MTKGPSNMEA::SetLogMode(LogMode lm)
 IO::Device::MTKGPSNMEA::LogFormat IO::Device::MTKGPSNMEA::GetLogFormat()
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 buff[64];
 	UOSInt cmdSize = GenNMEACommand(UTF8STRC("$PMTK182,2,2"), buff);
 	Text::String *result = SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK182,3,2"), 2000);
@@ -519,7 +519,7 @@ UOSInt IO::Device::MTKGPSNMEA::GetLogSize()
 	return i;
 }
 
-Text::String *IO::Device::MTKGPSNMEA::SendMTKCommand(const UInt8 *cmdBuff, UOSInt cmdSize, const UTF8Char *resultStart, UOSInt resultStartLen, Data::Duration timeout)
+Text::String *IO::Device::MTKGPSNMEA::SendMTKCommand(const UInt8 *cmdBuff, UOSInt cmdSize, UnsafeArray<const UTF8Char> resultStart, UOSInt resultStartLen, Data::Duration timeout)
 {
 	Data::DateTime dt;
 	Data::DateTime dt2;

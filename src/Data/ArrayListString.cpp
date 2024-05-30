@@ -32,7 +32,7 @@ OSInt Data::ArrayListString::Compare(Text::String* obj1, Text::String* obj2) con
 	return s1->CompareTo(s2);
 }
 
-OSInt Data::ArrayListString::SortedIndexOfPtr(const UTF8Char *val, UOSInt len) const
+OSInt Data::ArrayListString::SortedIndexOfPtr(UnsafeArray<const UTF8Char> val, UOSInt len) const
 {
 	OSInt i;
 	OSInt j;
@@ -74,13 +74,13 @@ NN<Text::String> Data::ArrayListString::JoinString() const
 		newStrLeng += this->arr[i]->leng;
 		i++;
 	}
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	newStr = Text::String::New(newStrLeng);
-	sptr = (UTF8Char*)newStr->v;
+	sptr = newStr->v;
 	i = 0;
 	while (i < j)
 	{
-		MemCopyNO(sptr, this->arr[i]->v, sizeof(UTF8Char) * this->arr[i]->leng);
+		MemCopyNO(sptr.Ptr(), this->arr[i]->v.Ptr(), sizeof(UTF8Char) * this->arr[i]->leng);
 		sptr += this->arr[i]->leng;
 		i++;
 	}

@@ -746,7 +746,7 @@ public:
 	{
 		if (colIndex >= this->nCols)
 			return DB::DBUtil::ColType::CT_Unknown;
-		NN<const UTF8Char> colName;
+		UnsafeArray<const UTF8Char> colName;
 		if (!colName.Set((const UTF8Char*)this->cols[colIndex].name)) colName.Set((const UTF8Char*)"");
 		colDef->SetColName(colName);
 		colDef->SetColType(this->GetColType(colIndex, 0));

@@ -31,7 +31,7 @@ namespace DB
 
 		virtual UOSInt GetDatabaseNames(NN<Data::ArrayListStringNN> arr);
 		virtual void ReleaseDatabaseNames(NN<Data::ArrayListStringNN> arr);
-		virtual Bool ChangeDatabase(Text::CString databaseName);
+		virtual Bool ChangeDatabase(Text::CStringNN databaseName);
 		virtual Text::String *GetCurrDBName();
 
 		virtual IO::ParserType GetParserType() const;

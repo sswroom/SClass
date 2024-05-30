@@ -9,7 +9,7 @@
 UI::Java::JavaComboBox::JavaComboBox(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Bool allowEdit) : UI::GUIComboBox(ui, parent)
 {
 	this->allowEdit = allowEdit;
-	parent->AddChild(this);
+	parent->AddChild(*this);
 	this->Show();
 }
 
@@ -21,7 +21,7 @@ void UI::Java::JavaComboBox::SetText(Text::CStringNN text)
 {
 }
 
-UTF8Char *UI::Java::JavaComboBox::GetText(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> UI::Java::JavaComboBox::GetText(UnsafeArray<UTF8Char> buff)
 {
 	return 0;
 }
@@ -70,7 +70,7 @@ UOSInt UI::Java::JavaComboBox::InsertItem(UOSInt index, Text::CStringNN itemText
 	return 0;
 }
 
-void *UI::Java::JavaComboBox::RemoveItem(UOSInt index)
+AnyType UI::Java::JavaComboBox::RemoveItem(UOSInt index)
 {
 	return 0;
 }
@@ -93,12 +93,12 @@ UOSInt UI::Java::JavaComboBox::GetSelectedIndex()
 	return 0;
 }
 
-void *UI::Java::JavaComboBox::GetSelectedItem()
+AnyType UI::Java::JavaComboBox::GetSelectedItem()
 {
 	return 0;
 }
 
-void *UI::Java::JavaComboBox::GetItem(UOSInt index)
+AnyType UI::Java::JavaComboBox::GetItem(UOSInt index)
 {
 }
 

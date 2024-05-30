@@ -10,7 +10,7 @@
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (!Math::NearlyEquals(Math_Ln(10.0), 2.302585092994, DIFFRATIO))
 	{

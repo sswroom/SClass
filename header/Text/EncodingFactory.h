@@ -23,11 +23,11 @@ namespace Text
 		EncodingFactory();
 		~EncodingFactory();
 		
-		UInt32 GetCodePage(Text::CString shortName);
+		UInt32 GetCodePage(Text::CStringNN shortName);
 
-		static UTF8Char *GetName(UTF8Char *buff, UInt32 codePage);
-		static UTF8Char *GetInternetName(UTF8Char *buff, UInt32 codePage);
-		static UTF8Char *GetDotNetName(UTF8Char *buff, UInt32 codePage);
+		static UnsafeArray<UTF8Char> GetName(UnsafeArray<UTF8Char> buff, UInt32 codePage);
+		static UnsafeArray<UTF8Char> GetInternetName(UnsafeArray<UTF8Char> buff, UInt32 codePage);
+		static UnsafeArray<UTF8Char> GetDotNetName(UnsafeArray<UTF8Char> buff, UInt32 codePage);
 		static UInt32 GetSystemCodePage();
 		static UInt32 GetSystemLCID();
 		static void GetCodePages(NN<Data::ArrayList<UInt32>> codePages);

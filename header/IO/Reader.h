@@ -10,9 +10,9 @@ namespace IO
 		virtual ~Reader() {}
 
 		virtual void Close() = 0;
-		virtual UTF8Char *ReadLine(UTF8Char *buff, UOSInt maxCharCnt) = 0;
+		virtual UnsafeArrayOpt<UTF8Char> ReadLine(UnsafeArray<UTF8Char> buff, UOSInt maxCharCnt) = 0;
 		virtual Bool ReadLine(NN<Text::StringBuilderUTF8> sb, UOSInt maxCharCnt) = 0;
-		virtual UTF8Char *GetLastLineBreak(UTF8Char *buff) = 0;
+		virtual UnsafeArray<UTF8Char> GetLastLineBreak(UnsafeArray<UTF8Char> buff) = 0;
 		virtual Bool GetLastLineBreak(NN<Text::StringBuilderUTF8> sb) = 0;
 		virtual Bool IsLineBreak() = 0;
 		virtual Bool ReadToEnd(NN<Text::StringBuilderUTF8> sb) = 0;

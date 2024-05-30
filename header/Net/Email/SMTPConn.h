@@ -30,7 +30,7 @@ namespace Net
 			Bool threadStarted;
 			Bool statusChg;
 			UInt32 lastStatus;
-			UTF8Char *msgRet;
+			UnsafeArrayOpt<UTF8Char> msgRet;
 			Sync::Event evt;
 			Optional<IO::Writer> logWriter;
 			UInt32 initCode;
@@ -39,7 +39,7 @@ namespace Net
 			Bool authLogin;
 
 			static UInt32 __stdcall SMTPThread(AnyType userObj);
-			UInt32 WaitForResult(UTF8Char **msgRetEnd);
+			UInt32 WaitForResult(OptOut<UnsafeArrayOpt<UTF8Char>> msgRetEnd);
 		public:
 			SMTPConn(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, ConnType connType, Optional<IO::Writer> logWriter, Data::Duration timeout);
 			~SMTPConn();
@@ -47,11 +47,11 @@ namespace Net
 			Bool IsError();
 			UOSInt GetMaxSize();
 
-			Bool SendHelo(Text::CString cliName);
-			Bool SendEHlo(Text::CString cliName);
-			Bool SendAuth(Text::CString userName, Text::CString password);
-			Bool SendMailFrom(Text::CString fromEmail);
-			Bool SendRcptTo(Text::CString toEmail);
+			Bool SendHelo(Text::CStringNN cliName);
+			Bool SendEHlo(Text::CStringNN cliName);
+			Bool SendAuth(Text::CStringNN userName, Text::CStringNN password);
+			Bool SendMailFrom(Text::CStringNN fromEmail);
+			Bool SendRcptTo(Text::CStringNN toEmail);
 			Bool SendData(const UTF8Char *buff, UOSInt buffSize);
 			Bool SendQuit();
 		};

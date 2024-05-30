@@ -49,7 +49,7 @@ Optional<IO::PackageFile> IO::PackageFile::GetItemPack(Text::CStringNN path, Out
 		return this->GetItemPack(i, needRelease);
 	}
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (i < 64)
 	{
 		sptr = Text::StrConcatC(sbuff, path.v, i);
@@ -58,11 +58,11 @@ Optional<IO::PackageFile> IO::PackageFile::GetItemPack(Text::CStringNN path, Out
 	}
 	else
 	{
-		UTF8Char *tmpBuff = MemAlloc(UTF8Char, i + 1);
+		UnsafeArray<UTF8Char> tmpBuff = MemAllocArr(UTF8Char, i + 1);
 		sptr = Text::StrConcatC(tmpBuff, path.v, i);
 		path = path.Substring(i + 1);
 		j = GetItemIndex(CSTRP(tmpBuff, sptr));
-		MemFree(tmpBuff);
+		MemFreeArr(tmpBuff);
 	}
 	if (j == INVALID_INDEX)
 		return 0;

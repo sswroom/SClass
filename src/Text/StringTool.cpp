@@ -69,7 +69,7 @@ void Text::StringTool::BuildJSONString(NN<Text::StringBuilderUTF8> sb, Data::Rea
 	sb->AppendUTF8Char(']');
 }
 
-void Text::StringTool::Int32Join(NN<Text::StringBuilderUTF8> sb, Data::List<Int32> *list, Text::CString seperator)
+void Text::StringTool::Int32Join(NN<Text::StringBuilderUTF8> sb, Data::List<Int32> *list, Text::CStringNN seperator)
 {
 	UOSInt i = 0;
 	UOSInt j = list->GetCount();
@@ -84,7 +84,7 @@ void Text::StringTool::Int32Join(NN<Text::StringBuilderUTF8> sb, Data::List<Int3
 	}
 }
 
-Bool Text::StringTool::IsNonASCII(const UTF8Char *s)
+Bool Text::StringTool::IsNonASCII(UnsafeArray<const UTF8Char> s)
 {
 	UTF8Char c;
 	while ((c = *s++) != 0)
@@ -116,11 +116,12 @@ Bool Text::StringTool::IsASCIIText(const Data::ByteArrayR &buff)
 	return true;
 }
 
-Bool Text::StringTool::IsEmailAddress(const UTF8Char *s)
+Bool Text::StringTool::IsEmailAddress(UnsafeArray<const UTF8Char> s)
 {
 	UOSInt atPos = INVALID_INDEX;
-	const UTF8Char *dotPtr = 0;
-	const UTF8Char *startPtr = s;
+	UnsafeArrayOpt<const UTF8Char> dotPtr = 0;
+	UnsafeArray<const UTF8Char> nndotPtr;
+	UnsafeArray<const UTF8Char> startPtr = s;
 	UTF8Char c;
 	while ((c = *s++) != 0)
 	{
@@ -150,14 +151,14 @@ Bool Text::StringTool::IsEmailAddress(const UTF8Char *s)
 			return false;
 		}
 	}
-	if (atPos == INVALID_INDEX || atPos == 0 || dotPtr == 0 || (s - dotPtr) < 3)
+	if (atPos == INVALID_INDEX || atPos == 0 || !dotPtr.SetTo(nndotPtr) || (s - nndotPtr) < 3)
 	{
 		return false;
 	}
 	return true;
 }
 
-Bool Text::StringTool::IsUInteger(const UTF8Char *s)
+Bool Text::StringTool::IsUInteger(UnsafeArray<const UTF8Char> s)
 {
 	UTF8Char c;
 	while ((c = *s++) != 0)
@@ -168,7 +169,7 @@ Bool Text::StringTool::IsUInteger(const UTF8Char *s)
 	return true;
 }
 
-Bool Text::StringTool::IsInteger(const UTF8Char *s)
+Bool Text::StringTool::IsInteger(UnsafeArray<const UTF8Char> s)
 {
 	if (*s == '-')
 		s++;
@@ -305,10 +306,11 @@ Bool Text::StringTool::IsHKID(Text::CStringNN hkid)
 	}
 }
 
-const UTF8Char *Text::StringTool::Null2Empty(const UTF8Char *s)
+UnsafeArray<const UTF8Char> Text::StringTool::Null2Empty(UnsafeArrayOpt<const UTF8Char> s)
 {
-	if (s) return s;
-	return (const UTF8Char*)"";
+	UnsafeArray<const UTF8Char> nns;
+	if (s.SetTo(nns)) return nns;
+	return U8STR("");
 }
 
 Bool Text::StringTool::SplitAsDouble(Text::CStringNN str, UTF8Char splitChar, NN<Data::ArrayList<Double>> outArr)

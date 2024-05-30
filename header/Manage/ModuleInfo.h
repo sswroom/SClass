@@ -14,7 +14,7 @@ namespace Manage
 		ModuleInfo(void *hProc, void *hMod);
 		~ModuleInfo();
 
-		UTF8Char *GetModuleFileName(UTF8Char *buff);
+		UnsafeArray<UTF8Char> GetModuleFileName(UnsafeArray<UTF8Char> buff);
 		Bool GetModuleAddress(OutParam<UOSInt> baseAddr, OutParam<UOSInt> size);
 	};
 }

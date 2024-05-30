@@ -13,7 +13,7 @@ namespace Data
 
 		virtual NN<Data::ArrayList<Text::String*>> Clone() const;
 		virtual OSInt Compare(Text::String* obj1, Text::String* obj2) const;
-		virtual OSInt SortedIndexOfPtr(const UTF8Char *val, UOSInt len) const;
+		virtual OSInt SortedIndexOfPtr(UnsafeArray<const UTF8Char> val, UOSInt len) const;
 
 		NN<Text::String> JoinString() const;
 	};

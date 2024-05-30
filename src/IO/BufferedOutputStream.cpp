@@ -32,12 +32,12 @@ UOSInt IO::BufferedOutputStream::Read(const Data::ByteArray &buff)
 	return this->outStm->Read(buff);
 }
 
-UOSInt IO::BufferedOutputStream::Write(const UInt8 *buff, UOSInt size)
+UOSInt IO::BufferedOutputStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	this->totalWrite += size;
 	if (this->cacheSize + size < this->cacheBuffSize)
 	{
-		MemCopyNO(&this->cacheBuff[this->cacheSize], buff, size);
+		MemCopyNO(&this->cacheBuff[this->cacheSize], buff.Ptr(), size);
 		this->cacheSize += size;
 		return size;
 	}
@@ -54,7 +54,7 @@ UOSInt IO::BufferedOutputStream::Write(const UInt8 *buff, UOSInt size)
 	UOSInt ret = this->cacheBuffSize - this->cacheSize;
 	if (ret > 0)
 	{
-		MemCopyNO(&this->cacheBuff[this->cacheSize], buff, ret);
+		MemCopyNO(&this->cacheBuff[this->cacheSize], buff.Ptr(), ret);
 		buff += ret;
 		size -= ret;
 	}
@@ -70,14 +70,14 @@ UOSInt IO::BufferedOutputStream::Write(const UInt8 *buff, UOSInt size)
 		this->cacheSize = this->cacheBuffSize - writeSize;
 		if (this->cacheBuffSize - this->cacheSize < size)
 		{
-			MemCopyNO(&this->cacheBuff[this->cacheSize], buff, this->cacheBuffSize - this->cacheSize);
+			MemCopyNO(&this->cacheBuff[this->cacheSize], buff.Ptr(), this->cacheBuffSize - this->cacheSize);
 			ret += this->cacheBuffSize - this->cacheSize;
 			this->cacheSize = this->cacheBuffSize;
 			return ret;
 		}
 		else
 		{
-			MemCopyNO(&this->cacheBuff[this->cacheSize], buff, size);
+			MemCopyNO(&this->cacheBuff[this->cacheSize], buff.Ptr(), size);
 			this->cacheSize += size;
 			ret += size;
 			return ret;
@@ -96,14 +96,14 @@ UOSInt IO::BufferedOutputStream::Write(const UInt8 *buff, UOSInt size)
 		size -= writeSize;
 		if (this->cacheBuffSize - this->cacheSize < size)
 		{
-			MemCopyNO(&this->cacheBuff[this->cacheSize], buff, this->cacheBuffSize - this->cacheSize);
+			MemCopyNO(&this->cacheBuff[this->cacheSize], buff.Ptr(), this->cacheBuffSize - this->cacheSize);
 			ret += this->cacheBuffSize - this->cacheSize;
 			this->cacheSize = this->cacheBuffSize;
 			return ret;
 		}
 		else
 		{
-			MemCopyNO(&this->cacheBuff[this->cacheSize], buff, size);
+			MemCopyNO(&this->cacheBuff[this->cacheSize], buff.Ptr(), size);
 			this->cacheSize += size;
 			ret += size;
 			return ret;
@@ -111,7 +111,7 @@ UOSInt IO::BufferedOutputStream::Write(const UInt8 *buff, UOSInt size)
 	}
 	else
 	{
-		MemCopyNO(this->cacheBuff, buff, size);
+		MemCopyNO(this->cacheBuff, buff.Ptr(), size);
 		this->cacheSize += size;
 		ret += size;
 		return ret;

@@ -10,7 +10,7 @@ namespace Manage
 		AddressResolver();
 		virtual ~AddressResolver();
 
-		virtual UTF8Char *ResolveName(UTF8Char *buff, UInt64 address) = 0;
+		virtual UnsafeArrayOpt<UTF8Char> ResolveName(UnsafeArray<UTF8Char> buff, UInt64 address) = 0;
 		Bool ResolveNameSB(NN<Text::StringBuilderUTF8> sb, UInt64 address);
 	};
 }

@@ -37,7 +37,7 @@ void UI::GTK::GTKTextBox::InitTextBox(Text::CStringNN lbl, Bool multiLine)
 		this->multiLine = true;
 		this->widget = gtk_text_view_new();
 		GtkTextBuffer *buff = gtk_text_view_get_buffer((GtkTextView*)this->widget);
-		gtk_text_buffer_set_text(buff, (const Char*)lbl.v, (gint)lbl.leng);
+		gtk_text_buffer_set_text(buff, (const Char*)lbl.v.Ptr(), (gint)lbl.leng);
 		g_signal_connect(buff, "changed", G_CALLBACK(SignalChanged), this);
 		g_signal_connect(this->widget, "key-press-event", G_CALLBACK(SignalKeyDown), this);
 	}
@@ -46,7 +46,7 @@ void UI::GTK::GTKTextBox::InitTextBox(Text::CStringNN lbl, Bool multiLine)
 		this->multiLine = false;
 		this->widget = gtk_entry_new();
 		GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)this->widget);
-		gtk_entry_buffer_set_text(buff, (const Char*)lbl.v, (gint)lbl.leng);
+		gtk_entry_buffer_set_text(buff, (const Char*)lbl.v.Ptr(), (gint)lbl.leng);
 		gtk_widget_set_vexpand(this->widget, false);
 		gtk_widget_set_hexpand(this->widget, false);
 		g_signal_connect(buff, "deleted-text", G_CALLBACK(SignalDelText), this);
@@ -147,16 +147,16 @@ void UI::GTK::GTKTextBox::SetText(Text::CStringNN lbl)
 	if (this->multiLine)
 	{
 		GtkTextBuffer *buff = gtk_text_view_get_buffer((GtkTextView*)this->widget);
-		gtk_text_buffer_set_text(buff, (const Char*)lbl.v, (gint)lblLeng);
+		gtk_text_buffer_set_text(buff, (const Char*)lbl.v.Ptr(), (gint)lblLeng);
 	}
 	else
 	{
 		GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)this->widget);
-		gtk_entry_buffer_set_text(buff, (const Char*)lbl.v, (gint)lblLeng);
+		gtk_entry_buffer_set_text(buff, (const Char*)lbl.v.Ptr(), (gint)lblLeng);
 	}
 }
 
-UTF8Char *UI::GTK::GTKTextBox::GetText(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> UI::GTK::GTKTextBox::GetText(UnsafeArray<UTF8Char> buff)
 {
 	const gchar *lbl;
 	if (this->multiLine)

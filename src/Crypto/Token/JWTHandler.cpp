@@ -12,14 +12,14 @@
 #include "Text/MyString.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Crypto::Token::JWTHandler::JWTHandler(Optional<Net::SSLEngine> ssl, JWSignature::Algorithm alg, const UInt8 *key, UOSInt keyLeng, Crypto::Cert::X509Key::KeyType keyType)
+Crypto::Token::JWTHandler::JWTHandler(Optional<Net::SSLEngine> ssl, JWSignature::Algorithm alg, UnsafeArray<const UInt8> key, UOSInt keyLeng, Crypto::Cert::X509Key::KeyType keyType)
 {
 	this->ssl = ssl;
 	this->alg = alg;
 	this->key = MemAlloc(UInt8, keyLeng);
 	this->keyLeng = keyLeng;
 	this->keyType = keyType;
-	MemCopyNO(this->key, key, this->keyLeng);
+	MemCopyNO(this->key, key.Ptr(), this->keyLeng);
 }
 
 Crypto::Token::JWTHandler::~JWTHandler()

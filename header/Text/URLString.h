@@ -7,17 +7,17 @@ namespace Text
 	class URLString
 	{
 	public:
-		static UTF8Char *GetURLFilePath(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen);
-		static UTF8Char *GetURLDomain(UTF8Char *sbuff, Text::CStringNN url, OptOut<UInt16> port);
+		static UnsafeArrayOpt<UTF8Char> GetURLFilePath(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> url, UOSInt urlLen);
+		static UnsafeArray<UTF8Char> GetURLDomain(UnsafeArray<UTF8Char> sbuff, Text::CStringNN url, OptOut<UInt16> port);
 
-		static UTF8Char *GetURIScheme(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen);
-		static UTF8Char *GetURLHost(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen);
-		static UTF8Char *GetURLPath(UTF8Char *sbuff, Text::CStringNN url);
-		static UTF8Char *GetURLPathSvr(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen);
-		static UTF8Char *GetURLQueryString(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen);
+		static UnsafeArrayOpt<UTF8Char> GetURIScheme(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> url, UOSInt urlLen);
+		static UnsafeArray<UTF8Char> GetURLHost(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> url, UOSInt urlLen);
+		static UnsafeArray<UTF8Char> GetURLPath(UnsafeArray<UTF8Char> sbuff, Text::CStringNN url);
+		static UnsafeArray<UTF8Char> GetURLPathSvr(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> url, UOSInt urlLen);
+		static UnsafeArray<UTF8Char> GetURLQueryString(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> url, UOSInt urlLen);
 		static Text::CStringNN GetURLPathQuery(Text::CStringNN url);
 
-		static UTF8Char *AppendURLPath(UTF8Char *sbuff, UTF8Char *sbuffEnd, Text::CStringNN path);
+		static UnsafeArrayOpt<UTF8Char> AppendURLPath(UnsafeArray<UTF8Char> sbuff, UnsafeArray<UTF8Char> sbuffEnd, Text::CStringNN path);
 	};
 }
 #endif

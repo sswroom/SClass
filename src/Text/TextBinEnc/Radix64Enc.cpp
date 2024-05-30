@@ -72,7 +72,7 @@ UOSInt Text::TextBinEnc::Radix64Enc::CalcBinSize(Text::CStringNN str) const
 {
 	UOSInt cnt = 0;
 	UTF8Char c;
-	const UTF8Char *sbuff = str.v;
+	UnsafeArray<const UTF8Char> sbuff = str.v;
 	while ((c = *sbuff++) != 0)
 	{
 		if (c < 0x80 && decArr[c] != 0xff)
@@ -105,7 +105,7 @@ UOSInt Text::TextBinEnc::Radix64Enc::DecodeBin(Text::CStringNN str, UInt8 *dataB
 	UInt8 code;
 	UTF8Char c;
 	UOSInt len = str.leng;
-	const UTF8Char *b64Str = str.v;
+	UnsafeArray<const UTF8Char> b64Str = str.v;
 	while (len-- > 0)
 	{
 		c = *b64Str++;

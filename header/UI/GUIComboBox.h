@@ -24,7 +24,7 @@ namespace UI
 		void EventTextChanged();
 
 		virtual void SetText(Text::CStringNN text) = 0;
-		virtual UTF8Char *GetText(UTF8Char *buff) = 0;
+		virtual UnsafeArrayOpt<UTF8Char> GetText(UnsafeArray<UTF8Char> buff) = 0;
 		virtual Bool GetText(NN<Text::StringBuilderUTF8> sb) = 0;
 
 		virtual void BeginUpdate() = 0;
@@ -41,8 +41,8 @@ namespace UI
 		virtual AnyType GetSelectedItem() = 0;
 		virtual AnyType GetItem(UOSInt index) = 0;
 
-		UTF8Char *GetSelectedItemText(UTF8Char *buff);
-		UTF8Char *GetItemText(UTF8Char *buff, UOSInt index);
+		UnsafeArrayOpt<UTF8Char> GetSelectedItemText(UnsafeArray<UTF8Char> buff);
+		UnsafeArrayOpt<UTF8Char> GetItemText(UnsafeArray<UTF8Char> buff, UOSInt index);
 		virtual Text::CStringNN GetObjectClass() const;
 
 		virtual Math::Size2DDbl GetSize() = 0;

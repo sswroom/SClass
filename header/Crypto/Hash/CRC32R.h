@@ -26,7 +26,7 @@ namespace Crypto
 			CRC32R(UInt32 polynomial);
 			virtual ~CRC32R();
 
-			virtual UTF8Char *GetName(UTF8Char *sbuff) const;
+			virtual UnsafeArray<UTF8Char> GetName(UnsafeArray<UTF8Char> sbuff) const;
 			virtual NN<IHash> Clone() const;
 			virtual void Clear();
 			virtual void Calc(const UInt8 *buff, UOSInt buffSize);

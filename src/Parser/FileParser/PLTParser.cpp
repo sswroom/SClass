@@ -38,8 +38,8 @@ IO::ParserType Parser::FileParser::PLTParser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::PLTParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UTF8Char sbuff[1024];
-	UTF8Char *sptr;
-	UTF8Char *tmpArr[6];
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> tmpArr[6];
 	Map::GPSTrack *track = 0;
 	Bool valid;
 
@@ -55,23 +55,19 @@ Optional<IO::ParsedObject> Parser::FileParser::PLTParser::ParseFileHdr(NN<IO::St
 	Text::UTF8Reader reader(stm);
 
 	valid = true;
-	sptr = reader.ReadLine(sbuff, 1024);
-	if (sptr == 0 || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OziExplorer Track Point File Version ")))
+	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OziExplorer Track Point File Version ")))
 	{
 		valid = false;
 	}
-	sptr = reader.ReadLine(sbuff, 1024);
-	if (sptr == 0 || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("WGS 84")))
+	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("WGS 84")))
 	{
 		valid = false;
 	}
-	sptr = reader.ReadLine(sbuff, 1024);
-	if (sptr == 0 || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Altitude is in Feet")))
+	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Altitude is in Feet")))
 	{
 		valid = false;
 	}
-	sptr = reader.ReadLine(sbuff, 1024);
-	if (sptr == 0 || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Reserved ")))
+	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Reserved ")))
 	{
 		valid = false;
 	}
@@ -82,7 +78,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PLTParser::ParseFileHdr(NN<IO::St
 		UOSInt cnt;
 
 		NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 65001, 0));
-		while (reader.ReadLine(sbuff, 1024))
+		while (reader.ReadLine(sbuff, 1024).NotNull())
 		{
 			cnt = Text::StrSplitTrim(tmpArr, 6, sbuff, ',');
 			if (cnt == 6 || cnt == 5)

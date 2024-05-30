@@ -639,7 +639,7 @@ UOSInt Net::OSSocketFactory::SendTo(NN<Socket> socket, const UInt8 *buff, UOSInt
 	return 0;
 }
 
-UOSInt Net::OSSocketFactory::SendToIF(NN<Socket> socket, const UInt8 *buff, UOSInt buffSize, const UTF8Char *ifName)
+UOSInt Net::OSSocketFactory::SendToIF(NN<Socket> socket, const UInt8 *buff, UOSInt buffSize, UnsafeArray<const UTF8Char> ifName)
 {
 	return 0;
 }

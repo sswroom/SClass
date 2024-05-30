@@ -32,7 +32,7 @@ Manage::ModuleInfo::~ModuleInfo()
 	MemFree(info);
 }
 
-UTF8Char *Manage::ModuleInfo::GetModuleFileName(UTF8Char *buff)
+UnsafeArray<UTF8Char> Manage::ModuleInfo::GetModuleFileName(UnsafeArray<UTF8Char> buff)
 {
 	ModuleInfoData *info = (ModuleInfoData*)this->hMod;
 	return Text::StrConcat(buff, info->fileName);

@@ -30,7 +30,7 @@ UOSInt Net::SSHTCPChannel::Read(const Data::ByteArray &buff)
 	return readSize;
 }
 
-UOSInt Net::SSHTCPChannel::Write(const UInt8 *buff, UOSInt size)
+UOSInt Net::SSHTCPChannel::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	if (this->channel)
 	{

@@ -20,9 +20,9 @@ namespace UI
 	{
 	public:
 		virtual UOSInt GetCount() = 0;
-		virtual const UTF8Char *GetName(UOSInt index) = 0;
-		virtual Bool GetDataText(const UTF8Char *name, NN<Text::StringBuilderUTF8> sb) = 0;
-		virtual IO::Stream *GetDataStream(const UTF8Char *name) = 0;
+		virtual UnsafeArrayOpt<const UTF8Char> GetName(UOSInt index) = 0;
+		virtual Bool GetDataText(UnsafeArray<const UTF8Char> name, NN<Text::StringBuilderUTF8> sb) = 0;
+		virtual IO::Stream *GetDataStream(UnsafeArray<const UTF8Char> name) = 0;
 	};
 
 	class GUIDropHandler
@@ -254,7 +254,7 @@ namespace UI
 		virtual void Show();
 		virtual void Close();
 		virtual void SetText(Text::CStringNN text);
-		virtual UTF8Char *GetText(UTF8Char *buff);
+		virtual UnsafeArrayOpt<UTF8Char> GetText(UnsafeArray<UTF8Char> buff);
 		virtual Bool GetText(NN<Text::StringBuilderUTF8> sb);
 		virtual void SetSize(Double width, Double height);
 		virtual void SetSizeP(Math::Size2D<UOSInt> size);

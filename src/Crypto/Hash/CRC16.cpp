@@ -28,7 +28,7 @@ Crypto::Hash::CRC16::~CRC16()
 	MemFree(crctab);
 }
 
-UTF8Char *Crypto::Hash::CRC16::GetName(UTF8Char *sbuff) const
+UnsafeArray<UTF8Char> Crypto::Hash::CRC16::GetName(UnsafeArray<UTF8Char> sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("CRC (16-bit)"));
 }

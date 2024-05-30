@@ -28,7 +28,7 @@ namespace Map
 			virtual TileType GetTileType() const;
 			virtual ImageType GetImageType() const;
 			virtual UOSInt GetConcurrentCount() const;
-			virtual UTF8Char *GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId);
+			virtual UnsafeArrayOpt<UTF8Char> GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> tileId);
 			virtual Bool GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId);
 		};
 	}

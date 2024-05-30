@@ -28,7 +28,7 @@ Crypto::Hash::CRC32RC::~CRC32RC()
 {
 }
 
-UTF8Char *Crypto::Hash::CRC32RC::GetName(UTF8Char *sbuff) const
+UnsafeArray<UTF8Char> Crypto::Hash::CRC32RC::GetName(UnsafeArray<UTF8Char> sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("CRC-32C"));
 }

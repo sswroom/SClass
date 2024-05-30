@@ -15,7 +15,7 @@ namespace Crypto
 			virtual ~X509Cert();
 
 			Bool GetSubjectCN(NN<Text::StringBuilderUTF8> sb) const;
-			UTF8Char *GetSubjectCN(UTF8Char *sbuff) const;
+			UnsafeArrayOpt<UTF8Char> GetSubjectCN(UnsafeArray<UTF8Char> sbuff) const;
 			Bool GetIssuerCN(NN<Text::StringBuilderUTF8> sb) const;
 			void SetDefaultSourceName();
 			
@@ -39,7 +39,7 @@ namespace Crypto
 			Bool GetKeyId(const Data::ByteArray &keyId) const; //20 bytes
 			Bool GetNotBefore(NN<Data::DateTime> dt) const;
 			Bool GetNotAfter(NN<Data::DateTime> dt) const;
-			Bool DomainValid(Text::CString domain) const;
+			Bool DomainValid(Text::CStringNN domain) const;
 			Bool IsSelfSigned() const;
 			UOSInt GetCRLDistributionPoints(Data::ArrayList<Text::CString> *crlDistributionPoints) const;
 

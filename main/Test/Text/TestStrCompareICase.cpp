@@ -6,7 +6,7 @@
 
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
-	if (Text::StrCompareICase("aBcDe1FgHiJk", "AbCdE1fGhIjK") != 0)
+	if (Text::StrCompareICaseCh("aBcDe1FgHiJk", "AbCdE1fGhIjK") != 0)
 	{
 		return 1;
 	}

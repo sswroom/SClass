@@ -18,7 +18,7 @@ namespace Text
 			Charset cs;
 			Bool noPadding;
 			static const UInt8 decArr[];
-			static const UTF8Char *GetEncArr(Charset cs);
+			static UnsafeArray<const UTF8Char> GetEncArr(Charset cs);
 		public:
 			Base64Enc();
 			Base64Enc(Charset cs, Bool noPadding);

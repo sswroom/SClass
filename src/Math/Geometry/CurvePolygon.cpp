@@ -71,7 +71,7 @@ NN<Math::Geometry::Vector2D> Math::Geometry::CurvePolygon::CurveToLine() const
 		}
 		else
 		{
-			printf("CurvePolygon: CurveToLine unexpected type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()).v);
+			printf("CurvePolygon: CurveToLine unexpected type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()).v.Ptr());
 		}
 	}
 	return pg;

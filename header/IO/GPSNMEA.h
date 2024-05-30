@@ -14,7 +14,7 @@ namespace IO
 	class GPSNMEA : public Map::ILocationService
 	{
 	public:
-		typedef void (__stdcall *CommandHandler)(AnyType userObj, const UTF8Char *cmd, UOSInt cmdLen);
+		typedef void (__stdcall *CommandHandler)(AnyType userObj, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen);
 
 	private:
 		enum class ParseStatus
@@ -42,8 +42,8 @@ namespace IO
 		Bool threadRunning;
 		Bool threadToStop;
 	private:
-		virtual void ParseUnknownCmd(const UTF8Char *cmd, UOSInt cmdLen);
-		static ParseStatus ParseNMEALine(UTF8Char *line, UOSInt lineLen, NN<Map::GPSTrack::GPSRecord3> record, SateRecord *sateRec);
+		virtual void ParseUnknownCmd(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen);
+		static ParseStatus ParseNMEALine(UnsafeArray<UTF8Char> line, UOSInt lineLen, NN<Map::GPSTrack::GPSRecord3> record, SateRecord *sateRec);
 		static UInt32 __stdcall NMEAThread(AnyType userObj);
 	public:
 		GPSNMEA(NN<IO::Stream> stm, Bool relStm);
@@ -57,7 +57,7 @@ namespace IO
 
 		void HandleCommand(CommandHandler cmdHdlr, AnyType userObj);
 
-		static UOSInt GenNMEACommand(const UTF8Char *cmd, UOSInt cmdLen, UInt8 *buff);
+		static UOSInt GenNMEACommand(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, UInt8 *buff);
 		static NN<Map::GPSTrack> NMEA2Track(NN<IO::Stream> stm, Text::CStringNN sourceName);
 	};
 }

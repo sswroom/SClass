@@ -15,7 +15,7 @@
 DB::DBFFile::DBFFile(NN<IO::StreamData> stmData, UInt32 codePage) : DB::ReadingDB(stmData->GetFullName()), enc(codePage)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 buff[32];
 	UOSInt currColOfst;
 	UOSInt i;
@@ -50,7 +50,7 @@ DB::DBFFile::DBFFile(NN<IO::StreamData> stmData, UInt32 codePage) : DB::ReadingD
 		i += 1;
 	}
 
-	sptr = this->stmData->GetShortName().ConcatTo(sbuff);
+	sptr = this->stmData->GetShortName().OrEmpty().ConcatTo(sbuff);
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
 	if (i != INVALID_INDEX)
 	{
@@ -149,7 +149,7 @@ UOSInt DB::DBFFile::GetColSize(UOSInt colIndex)
 	return this->cols[colIndex].colSize;
 }
 
-OSInt DB::DBFFile::GetColIndex(const UTF8Char *name)
+OSInt DB::DBFFile::GetColIndex(UnsafeArray<const UTF8Char> name)
 {
 	UOSInt i = this->colCnt;
 	while (i-- > 0)
@@ -172,7 +172,7 @@ WChar *DB::DBFFile::GetRecord(WChar *buff, UOSInt row, UOSInt col)
 	return ret;
 }
 
-UTF8Char *DB::DBFFile::GetRecord(UTF8Char *buff, UOSInt row, UOSInt col)
+UnsafeArrayOpt<UTF8Char> DB::DBFFile::GetRecord(UnsafeArray<UTF8Char> buff, UOSInt row, UOSInt col)
 {
 	if (col >= this->colCnt)
 		return 0;
@@ -187,7 +187,7 @@ UTF8Char *DB::DBFFile::GetRecord(UTF8Char *buff, UOSInt row, UOSInt col)
 	{
 		UInt8 *cbuff = MemAlloc(UInt8, this->cols[col].colSize);
 		this->stmData->GetRealData(this->refPos + this->rowSize * row + this->cols[col].colOfst, this->cols[col].colSize, Data::ByteArray(cbuff, this->cols[col].colSize));
-		UTF8Char *ret = this->enc.UTF8FromBytes(buff, cbuff, this->cols[col].colSize, 0);
+		UnsafeArray<UTF8Char> ret = this->enc.UTF8FromBytes(buff, cbuff, this->cols[col].colSize, 0);
 		MemFree(cbuff);
 		return ret;
 	}
@@ -212,7 +212,7 @@ Bool DB::DBFFile::GetRecord(NN<Text::StringBuilderUTF8> sb, UOSInt row, UOSInt c
 		this->stmData->GetRealData(this->refPos + this->rowSize * row + this->cols[col].colOfst, this->cols[col].colSize, Data::ByteArray(cbuff, this->cols[col].colSize));
 		UOSInt size = this->enc.CountUTF8Chars(cbuff, this->cols[col].colSize);
 		sb->AllocLeng(size);
-		UTF8Char *ret = this->enc.UTF8FromBytes(sb->GetEndPtr(), cbuff, this->cols[col].colSize, 0);
+		UnsafeArray<UTF8Char> ret = this->enc.UTF8FromBytes(sb->GetEndPtr(), cbuff, this->cols[col].colSize, 0);
 		MemFree(cbuff);
 		sb->SetEndPtr(ret);
 		return true;
@@ -229,7 +229,7 @@ UOSInt DB::DBFFile::GetRowCnt()
 	return this->rowCnt;
 }
 
-UTF8Char *DB::DBFFile::GetColumnName(UOSInt colIndex, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> DB::DBFFile::GetColumnName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 {
 	if (colIndex >= this->colCnt)
 		return 0;
@@ -586,7 +586,7 @@ Int32 DB::DBFReader::GetInt32(UOSInt colIndex)
 	MemCopyNO(buff, &this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize);
 	buff[this->cols[colIndex].colSize] = 0;
 	Text::StrRTrim(buff);
-	return Text::StrToInt32(buff);
+	return Text::StrToInt32Ch(buff);
 }
 
 Int64 DB::DBFReader::GetInt64(UOSInt colIndex)
@@ -599,7 +599,7 @@ Int64 DB::DBFReader::GetInt64(UOSInt colIndex)
 	MemCopyNO(buff, &this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize);
 	buff[this->cols[colIndex].colSize] = 0;
 	Text::StrRTrim(buff);
-	return Text::StrToInt64(buff);
+	return Text::StrToInt64Ch(buff);
 }
 
 WChar *DB::DBFReader::GetStr(UOSInt colIndex, WChar *buff)
@@ -626,11 +626,11 @@ Bool DB::DBFReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 	if (colIndex >= this->colCnt)
 		return false;
 	UOSInt strLen = this->enc->CountUTF8Chars(&this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize);
-	UTF8Char *sbuff = MemAlloc(UTF8Char, strLen + 1);
+	UnsafeArray<UTF8Char> sbuff = MemAllocArr(UTF8Char, strLen + 1);
 	this->enc->UTF8FromBytes(sbuff, &this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize, 0);
 	sbuff[strLen] = 0;
 	sb->AppendC(sbuff, strLen);
-	MemFree(sbuff);
+	MemFreeArr(sbuff);
 	return true;
 }
 
@@ -646,7 +646,7 @@ Optional<Text::String> DB::DBFReader::GetNewStr(UOSInt colIndex)
 	return s;
 }
 
-UTF8Char *DB::DBFReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> DB::DBFReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
 	if (!this->recordExist)
 		return 0;
@@ -688,11 +688,11 @@ Data::Timestamp DB::DBFReader::GetTimestamp(UOSInt colIndex)
 	buff[0] = currPtr[4];
 	buff[1] = currPtr[5];
 	buff[2] = 0;
-	tval.month = Text::StrToUInt8(buff);
+	tval.month = Text::StrToUInt8Ch(buff);
 	buff[0] = currPtr[6];
 	buff[1] = currPtr[7];
 	buff[2] = 0;
-	tval.day = Text::StrToUInt8(buff);
+	tval.day = Text::StrToUInt8Ch(buff);
 	return Data::Timestamp(Data::DateTimeUtil::TimeValue2Ticks(tval, 0, 0), 0);
 }
 
@@ -706,7 +706,7 @@ Double DB::DBFReader::GetDbl(UOSInt colIndex)
 	MemCopyNO(buff, &this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize);
 	buff[this->cols[colIndex].colSize] = 0;
 	Text::StrRTrim(buff);
-	return Text::StrToDouble(buff);
+	return Text::StrToDoubleCh(buff);
 }
 
 Bool DB::DBFReader::GetBool(UOSInt colIndex)
@@ -719,9 +719,9 @@ Bool DB::DBFReader::GetBool(UOSInt colIndex)
 	MemCopyNO(buff, &this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize);
 	buff[this->cols[colIndex].colSize] = 0;
 	Text::StrRTrim(buff);
-	if (Text::StrCompareICase(buff, "false") == 0)
+	if (Text::StrCompareICaseCh(buff, "false") == 0)
 		return false;
-	else if (Text::StrCompareICase(buff, "true") == 0)
+	else if (Text::StrCompareICaseCh(buff, "true") == 0)
 		return true;
 	else if (buff[0] == 'T' || buff[0] == 't' || buff[0] == 'Y' || buff[0] == 'y')
 	{
@@ -732,7 +732,7 @@ Bool DB::DBFReader::GetBool(UOSInt colIndex)
 		return false;
 	}
 	else
-		return Text::StrToInt32(buff) != 0;
+		return Text::StrToInt32Ch(buff) != 0;
 }
 
 UOSInt DB::DBFReader::GetBinarySize(UOSInt colIndex)
@@ -794,7 +794,7 @@ Bool DB::DBFReader::IsNull(UOSInt colIndex)
 	return this->cols[colIndex].name;
 }*/
 
-UTF8Char *DB::DBFReader::GetName(UOSInt colIndex, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> DB::DBFReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 {
 	if (colIndex >= this->colCnt)
 		return 0;

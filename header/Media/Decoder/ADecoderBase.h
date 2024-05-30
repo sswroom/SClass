@@ -14,7 +14,7 @@ namespace Media
 			ADecoderBase();
 			virtual ~ADecoderBase();
 
-			virtual UTF8Char *GetSourceName(UTF8Char *buff);
+			virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
 			virtual Bool CanSeek();
 			virtual Data::Duration GetStreamTime();
 			virtual Data::Duration GetCurrTime();

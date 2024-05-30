@@ -44,7 +44,7 @@ Bool Crypto::Cert::X509Cert::GetSubjectCN(NN<Text::StringBuilderUTF8> sb) const
 	}
 }
 
-UTF8Char *Crypto::Cert::X509Cert::GetSubjectCN(UTF8Char *sbuff) const
+UnsafeArrayOpt<UTF8Char> Crypto::Cert::X509Cert::GetSubjectCN(UnsafeArray<UTF8Char> sbuff) const
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
@@ -407,7 +407,7 @@ Bool Crypto::Cert::X509Cert::GetNotAfter(NN<Data::DateTime> dt) const
 	return false;
 }
 
-Bool Crypto::Cert::X509Cert::DomainValid(Text::CString domain) const
+Bool Crypto::Cert::X509Cert::DomainValid(Text::CStringNN domain) const
 {
 	Crypto::Cert::CertExtensions exts;
 	NN<Text::String> s;

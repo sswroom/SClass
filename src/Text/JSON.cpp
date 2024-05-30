@@ -43,8 +43,8 @@ Text::JSONBase *Text::JSONBase::GetValue(Text::CStringNN path)
 	}
 	Text::StringBuilderUTF8 sb;
 	sb.Append(path);
-	UTF8Char *sptr = sb.v;
-	UTF8Char *sptrEnd = sb.GetEndPtr();
+	UnsafeArray<UTF8Char> sptr = sb.v;
+	UnsafeArray<UTF8Char> sptrEnd = sb.GetEndPtr();
 	UOSInt dotIndex;
 	UOSInt brkIndex;
 	Text::JSONBase *json = this;
@@ -441,32 +441,32 @@ Bool Text::JSONBase::GetAsBool()
 
 Text::JSONBase *Text::JSONBase::ParseJSONStr(Text::CStringNN jsonStr)
 {
-	const UTF8Char *endPtr;
+	UnsafeArrayOpt<const UTF8Char> endPtr;
 	Text::StringBuilderUTF8 sbEnv;
 	return ParseJSONStr2(jsonStr.v, jsonStr.GetEndPtr(), endPtr, sbEnv);
 }
 
 Text::JSONBase *Text::JSONBase::ParseJSONBytes(UnsafeArray<const UInt8> jsonBytes, UOSInt len)
 {
-	UTF8Char *s = MemAlloc(UTF8Char, len + 1);
-	const UTF8Char *endPtr;
+	UnsafeArray<UTF8Char> s = MemAllocArr(UTF8Char, len + 1);
+	UnsafeArrayOpt<const UTF8Char> endPtr;
 	Text::StringBuilderUTF8 sbEnv;
 	Text::JSONBase *ret = ParseJSONStr2(s, Text::StrConcatC(s, jsonBytes, len), endPtr, sbEnv);
-	MemFree(s);
+	MemFreeArr(s);
 	return ret;
 }
 
 Text::JSONBase *Text::JSONBase::ParseJSONBytes(const Data::ByteArrayR &jsonBytes)
 {
-	UTF8Char *s = MemAlloc(UTF8Char, jsonBytes.GetSize() + 1);
-	const UTF8Char *endPtr;
+	UnsafeArray<UTF8Char> s = MemAllocArr(UTF8Char, jsonBytes.GetSize() + 1);
+	UnsafeArrayOpt<const UTF8Char> endPtr;
 	Text::StringBuilderUTF8 sbEnv;
 	Text::JSONBase *ret = ParseJSONStr2(s, Text::StrConcatC(s, jsonBytes.Arr(), jsonBytes.GetSize()), endPtr, sbEnv);
-	MemFree(s);
+	MemFreeArr(s);
 	return ret;
 }
 
-const UTF8Char *Text::JSONBase::ClearWS(const UTF8Char *jsonStr)
+UnsafeArray<const UTF8Char> Text::JSONBase::ClearWS(UnsafeArray<const UTF8Char> jsonStr)
 {
 	UTF8Char c;
 	while (true)
@@ -484,10 +484,10 @@ const UTF8Char *Text::JSONBase::ClearWS(const UTF8Char *jsonStr)
 	return jsonStr;
 }
 
-const UTF8Char *Text::JSONBase::ParseJSString(const UTF8Char *jsonStr, NN<Text::StringBuilderUTF8> sb)
+UnsafeArrayOpt<const UTF8Char> Text::JSONBase::ParseJSString(UnsafeArray<const UTF8Char> jsonStr, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UTF8Char c;
 	c = *jsonStr++;
 	if (c != '\"')
@@ -707,10 +707,10 @@ const UTF8Char *Text::JSONBase::ParseJSString(const UTF8Char *jsonStr, NN<Text::
 	return 0;
 }
 
-const UTF8Char *Text::JSONBase::ParseJSNumber(const UTF8Char *jsonStr, OutParam<Double> val)
+UnsafeArrayOpt<const UTF8Char> Text::JSONBase::ParseJSNumber(UnsafeArray<const UTF8Char> jsonStr, OutParam<Double> val)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *dptr = sbuff;
+	UnsafeArray<UTF8Char> dptr = sbuff;
 	UTF8Char c;
 	Bool hasDot = false;
 	Bool hasE = false;
@@ -763,9 +763,10 @@ const UTF8Char *Text::JSONBase::ParseJSNumber(const UTF8Char *jsonStr, OutParam<
 }
 
 
-Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF8Char *jsonStrEnd, OutParam<const UTF8Char *> jsonStrEndOut, NN<Text::StringBuilderUTF8> sbEnv)
+Text::JSONBase *Text::JSONBase::ParseJSONStr2(UnsafeArray<const UTF8Char> jsonStr, UnsafeArray<const UTF8Char> jsonStrEnd, OutParam<UnsafeArrayOpt<const UTF8Char>> jsonStrEndOut, NN<Text::StringBuilderUTF8> sbEnv)
 {
 	UTF8Char c;
+	UnsafeArrayOpt<const UTF8Char> optStr;
 	jsonStr = ClearWS(jsonStr);
 	c = *jsonStr;
 	if (c == 0)
@@ -797,8 +798,7 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 			{
 				Text::JSONBase *obj;
 				sb.ClearStr();
-				jsonStr = ParseJSString(jsonStr, sb);
-				if (jsonStr == 0)
+				if (!ParseJSString(jsonStr, sb).SetTo(jsonStr))
 				{
 					jsonStrEndOut.Set(0);
 					jobj->EndUse();
@@ -815,8 +815,8 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 				jsonStr++;
 				jsonStr = ClearWS(jsonStr);
 
-				obj = ParseJSONStr2(jsonStr, jsonStrEnd, jsonStr, sbEnv);
-				if (jsonStr == 0)
+				obj = ParseJSONStr2(jsonStr, jsonStrEnd, optStr, sbEnv);
+				if (!optStr.SetTo(jsonStr))
 				{
 					jobj->EndUse();
 					jsonStrEndOut.Set(0);
@@ -879,8 +879,8 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 			}
 			else
 			{
-				obj = ParseJSONStr2(jsonStr, jsonStrEnd, jsonStr, sbEnv);
-				if (jsonStr == 0)
+				obj = ParseJSONStr2(jsonStr, jsonStrEnd, optStr, sbEnv);
+				if (!optStr.SetTo(jsonStr))
 				{
 					arr->EndUse();
 					jsonStrEndOut.Set(0);
@@ -915,10 +915,9 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 	}
 	else if (c == '\"')
 	{
-		const UTF8Char *endPtr;
+		UnsafeArray<const UTF8Char> endPtr;
 		sbEnv->ClearStr();
-		endPtr = ParseJSString(jsonStr, sbEnv);
-		if (endPtr == 0)
+		if (!ParseJSString(jsonStr, sbEnv).SetTo(endPtr))
 		{
 			jsonStrEndOut.Set(0);
 			return 0;
@@ -931,8 +930,7 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 	else if (c == '-' || (c >= '0' && c <= '9'))
 	{
 		Double val;
-		jsonStr = ParseJSNumber(jsonStr, val);
-		if (jsonStr == 0)
+		if (!ParseJSNumber(jsonStr, val).SetTo(jsonStr))
 		{
 			jsonStrEndOut.Set(0);
 			return 0;
@@ -1028,7 +1026,7 @@ void Text::JSONNumber::ToJSONString(NN<Text::StringBuilderUTF8> sb)
 	Text::SBAppendF64(sb, this->val);
 }
 
-Bool Text::JSONNumber::Equals(Text::CString s)
+Bool Text::JSONNumber::Equals(Text::CStringNN s)
 {
 	return false;
 }
@@ -1069,7 +1067,7 @@ void Text::JSONInt32::ToJSONString(NN<Text::StringBuilderUTF8> sb)
 	sb->AppendI32(this->val);
 }
 
-Bool Text::JSONInt32::Equals(Text::CString s)
+Bool Text::JSONInt32::Equals(Text::CStringNN s)
 {
 	return false;
 }
@@ -1110,7 +1108,7 @@ void Text::JSONInt64::ToJSONString(NN<Text::StringBuilderUTF8> sb)
 	sb->AppendI64(this->val);
 }
 
-Bool Text::JSONInt64::Equals(Text::CString s)
+Bool Text::JSONInt64::Equals(Text::CStringNN s)
 {
 	return false;
 }
@@ -1155,8 +1153,8 @@ Text::JSONType Text::JSONString::GetType()
 void Text::JSONString::ToJSONString(NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[128];
-	const UTF8Char *sptr;
-	UTF8Char *dptr;
+	UnsafeArray<const UTF8Char> sptr;
+	UnsafeArray<UTF8Char> dptr;
 	UTF8Char c;
 	sb->AppendUTF8Char('\"');
 	sptr = this->val->v;
@@ -1195,7 +1193,7 @@ void Text::JSONString::ToJSONString(NN<Text::StringBuilderUTF8> sb)
 	sb->AppendUTF8Char('\"');
 }
 
-Bool Text::JSONString::Equals(Text::CString s)
+Bool Text::JSONString::Equals(Text::CStringNN s)
 {
 	return this->val->Equals(s.v, s.leng);
 }
@@ -1243,7 +1241,7 @@ void Text::JSONBool::ToJSONString(NN<Text::StringBuilderUTF8> sb)
 	}
 }
 
-Bool Text::JSONBool::Equals(Text::CString s)
+Bool Text::JSONBool::Equals(Text::CStringNN s)
 {
 	if  (this->val)
 		return s.EqualsICase(UTF8STRC("true"));
@@ -1318,7 +1316,7 @@ void Text::JSONObject::ToJSONString(NN<Text::StringBuilderUTF8> sb)
 	sb->AppendUTF8Char('}');
 }
 
-Bool Text::JSONObject::Equals(Text::CString s)
+Bool Text::JSONObject::Equals(Text::CStringNN s)
 {
 	///////////////////////////////
 	return false;
@@ -1585,7 +1583,7 @@ void Text::JSONArray::ToJSONString(NN<Text::StringBuilderUTF8> sb)
 	sb->AppendUTF8Char(']');
 }
 
-Bool Text::JSONArray::Equals(Text::CString s)
+Bool Text::JSONArray::Equals(Text::CStringNN s)
 {
 	///////////////////////////////
 	return false;
@@ -1691,7 +1689,7 @@ void Text::JSONNull::ToJSONString(NN<Text::StringBuilderUTF8> sb)
 	sb->AppendC(UTF8STRC("null"));
 }
 
-Bool Text::JSONNull::Equals(Text::CString s)
+Bool Text::JSONNull::Equals(Text::CStringNN s)
 {
 	return s.Equals(UTF8STRC("null"));
 }

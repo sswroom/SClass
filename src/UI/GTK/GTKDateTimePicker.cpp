@@ -17,7 +17,7 @@ UI::GTK::GTKDateTimePicker::GTKDateTimePicker(NN<UI::GUICore> ui, NN<UI::GUIClie
 
 UI::GTK::GTKDateTimePicker::~GTKDateTimePicker()
 {
-	SDEL_TEXT(this->format);
+	SDEL_TEXTC(this->format);
 }
 
 OSInt UI::GTK::GTKDateTimePicker::OnNotify(UInt32 code, void *lParam)
@@ -27,11 +27,12 @@ OSInt UI::GTK::GTKDateTimePicker::OnNotify(UInt32 code, void *lParam)
 
 void UI::GTK::GTKDateTimePicker::SetValue(NN<Data::DateTime> dt)
 {
-	if (this->format)
+	UnsafeArray<const Char> nnformat;
+	if (this->format.SetTo(nnformat))
 	{
 		UTF8Char sbuff[64];
 		OSInt leng;
-		leng = dt->ToString(sbuff, this->format) - sbuff;
+		leng = dt->ToString(sbuff, nnformat.Ptr()) - sbuff;
 		GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)this->widget);
 		gtk_entry_buffer_set_text(buff, (const Char*)sbuff, (gint)leng);
 	}
@@ -39,11 +40,12 @@ void UI::GTK::GTKDateTimePicker::SetValue(NN<Data::DateTime> dt)
 
 void UI::GTK::GTKDateTimePicker::SetValue(const Data::Timestamp &ts)
 {
-	if (this->format)
+	UnsafeArray<const Char> nnformat;
+	if (this->format.SetTo(nnformat))
 	{
 		UTF8Char sbuff[64];
 		OSInt leng;
-		leng = ts.ToString(sbuff, this->format) - sbuff;
+		leng = ts.ToString(sbuff, nnformat.Ptr()) - sbuff;
 		GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)this->widget);
 		gtk_entry_buffer_set_text(buff, (const Char*)sbuff, (gint)leng);
 	}
@@ -65,8 +67,8 @@ Data::Timestamp UI::GTK::GTKDateTimePicker::GetSelectedTime()
 
 void UI::GTK::GTKDateTimePicker::SetFormat(const Char *format)
 {
-	SDEL_TEXT(this->format);
-	this->format = Text::StrCopyNew(format);
+	SDEL_TEXTC(this->format);
+	this->format = Text::StrCopyNewCh(format);
 	Data::DateTime dt;
 	dt.SetCurrTime();
 	this->SetValue(dt);

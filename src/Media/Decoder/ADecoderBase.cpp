@@ -10,7 +10,7 @@ Media::Decoder::ADecoderBase::~ADecoderBase()
 {
 }
 
-UTF8Char *Media::Decoder::ADecoderBase::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::Decoder::ADecoderBase::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	if (this->sourceAudio)
         return this->sourceAudio->GetSourceName(buff);

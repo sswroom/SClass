@@ -35,14 +35,14 @@ namespace Data
 		void FillArr(T **arr, BTreeNode<T> *node);
 		void FillNameArr(NN<Text::String> **arr, BTreeNode<T> *node);
 		virtual UInt32 CalHash(NN<Text::String> key) const;
-		UInt32 CalHash(Text::CString key) const;
+		UInt32 CalHash(Text::CStringNN key) const;
 	public:
 		BTreeMap();
 		virtual ~BTreeMap();
 
 		virtual T Put(NN<Text::String> key, T val);
 		virtual T Get(NN<Text::String> key) const;
-		T Get(Text::CString key) const;
+		T Get(Text::CStringNN key) const;
 		virtual T Remove(NN<Text::String> key);
 		virtual Bool IsEmpty() const;
 		virtual T *ToArray(UOSInt *objCnt);
@@ -354,7 +354,7 @@ namespace Data
 		return this->crc.CalcDirect(key->v, key->leng);
 	}
 
-	template <class T> UInt32 BTreeMap<T>::CalHash(Text::CString key) const
+	template <class T> UInt32 BTreeMap<T>::CalHash(Text::CStringNN key) const
 	{
 		return this->crc.CalcDirect(key.v, key.leng);
 	}
@@ -444,7 +444,7 @@ namespace Data
 		return 0;
 	}
 
-	template <class T> T BTreeMap<T>::Get(Text::CString key) const
+	template <class T> T BTreeMap<T>::Get(Text::CStringNN key) const
 	{
 		UInt32 hash = CalHash(key);
 		BTreeNode<T> *node = this->rootNode;

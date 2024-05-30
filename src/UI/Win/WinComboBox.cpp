@@ -67,7 +67,7 @@ void UI::Win::WinComboBox::SetText(Text::CStringNN text)
 	}
 }
 
-UTF8Char *UI::Win::WinComboBox::GetText(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> UI::Win::WinComboBox::GetText(UnsafeArray<UTF8Char> buff)
 {
 	WChar wbuff[256];
 	wbuff[0] = 0;

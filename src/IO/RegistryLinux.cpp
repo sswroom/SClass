@@ -29,7 +29,7 @@ struct Registry_File
 struct Registry_Param
 {
 	Registry_File *reg;
-	Text::CString currCate;
+	Text::CStringNN currCate;
 };
 
 struct IO::Registry::ClassData
@@ -41,7 +41,7 @@ struct IO::Registry::ClassData
 void *IO::Registry::OpenUserType(RegistryUser usr)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Registry_File *reg;
 	switch (usr)
 	{
@@ -51,8 +51,7 @@ void *IO::Registry::OpenUserType(RegistryUser usr)
 			Sync::Interlocked::IncrementU32(((Registry_File*)allRegistryFile)->useCnt);
 			return allRegistryFile;
 		}
-		sptr = IO::Path::GetUserHome(sbuff);
-		if (sptr == 0)
+		if (!IO::Path::GetUserHome(sbuff).SetTo(sptr))
 		{
 			return 0;
 		}
@@ -73,8 +72,7 @@ void *IO::Registry::OpenUserType(RegistryUser usr)
 			Sync::Interlocked::IncrementU32(((Registry_File*)thisRegistryFile)->useCnt);
 			return thisRegistryFile;
 		}
-		sptr = IO::Path::GetUserHome(sbuff);
-		if (sptr == 0)
+		if (!IO::Path::GetUserHome(sbuff).SetTo(sptr))
 		{
 			return 0;
 		}
@@ -273,7 +271,7 @@ WChar *IO::Registry::GetSubReg(WChar *buff, UOSInt index)
 			}
 		}
 	}
-	LIST_FREE_FUNC(&names, Text::StrDelNew);
+	names.DeleteAll();
 	return ret;
 }
 

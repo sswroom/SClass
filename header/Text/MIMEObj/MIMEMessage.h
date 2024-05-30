@@ -34,14 +34,14 @@ namespace Text
 
 			void AddHeader(Text::CStringNN name, Text::CStringNN value);
 			void AddHeader(NN<Text::String> name, NN<Text::String> value);
-			Optional<Text::String> GetHeader(const UTF8Char *name, UOSInt nameLen) const;
+			Optional<Text::String> GetHeader(UnsafeArray<const UTF8Char> name, UOSInt nameLen) const;
 			UOSInt GetHeaderCount() const;
 			Optional<Text::String> GetHeaderName(UOSInt index) const;
 			Optional<Text::String> GetHeaderValue(UOSInt index) const;
 
 			Bool ParseFromData(NN<IO::StreamData> fd);
 
-			static UTF8Char *ParseHeaderStr(UTF8Char *sbuff, const UTF8Char *value);
+			static UnsafeArray<UTF8Char> ParseHeaderStr(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> value);
 		};
 	}
 }

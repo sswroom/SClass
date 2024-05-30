@@ -11,7 +11,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	while (i-- > 0)
 	{
 		Text::StrInt64(sbuff, i);
-		j = Text::StrToInt64(sbuff);
+		j = Text::StrToInt64Ch(sbuff);
 		if (i != j)
 		{
 			return 1;
@@ -21,7 +21,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	while (i-- > 10000000000LL)
 	{
 		Text::StrInt64(sbuff, i);
-		j = Text::StrToInt64(sbuff);
+		j = Text::StrToInt64Ch(sbuff);
 		if (i != j)
 		{
 			return 1;
@@ -31,7 +31,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	while (i-- > 0xffff0000LL)
 	{
 		Text::StrInt64(sbuff, i);
-		j = Text::StrToInt64(sbuff);
+		j = Text::StrToInt64Ch(sbuff);
 		if (i != j)
 		{
 			return 1;
@@ -41,7 +41,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	while (i++ < 0)
 	{
 		Text::StrInt64(sbuff, i);
-		j = Text::StrToInt64(sbuff);
+		j = Text::StrToInt64Ch(sbuff);
 		if (i != j)
 		{
 			return 1;
@@ -51,7 +51,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	while (i++ < -10000000000LL)
 	{
 		Text::StrInt64(sbuff, i);
-		j = Text::StrToInt64(sbuff);
+		j = Text::StrToInt64Ch(sbuff);
 		if (i != j)
 		{
 			return 1;

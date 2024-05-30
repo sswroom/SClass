@@ -1,10 +1,11 @@
 #include "Stdafx.h"
 #include "DB/SQL/SQLUtil.h"
 
-const UTF8Char *DB::SQL::SQLUtil::ParseNextWord(const UTF8Char *sql, NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType)
+UnsafeArray<const UTF8Char> DB::SQL::SQLUtil::ParseNextWord(UnsafeArray<const UTF8Char> sql, NN<Text::StringBuilderUTF8> sb, DB::SQLType sqlType)
 {
 	sb->ClearStr();
-	const UTF8Char *strStart = 0;
+	UnsafeArrayOpt<const UTF8Char> strStart = 0;
+	UnsafeArray<const UTF8Char> nns;
 	UTF8Char endChar = 0;
 	UTF8Char escChar = 0;
 	UTF8Char c;
@@ -14,9 +15,9 @@ const UTF8Char *DB::SQL::SQLUtil::ParseNextWord(const UTF8Char *sql, NN<Text::St
 		if (c == 0)
 		{
 			sql--;
-			if (strStart)
+			if (strStart.SetTo(nns))
 			{
-				sb->AppendP(strStart, sql);
+				sb->AppendP(nns, sql);
 			}
 			return sql;
 		}
@@ -28,9 +29,9 @@ const UTF8Char *DB::SQL::SQLUtil::ParseNextWord(const UTF8Char *sql, NN<Text::St
 				{
 					sql++;
 				}
-				else
+				else if (strStart.SetTo(nns))
 				{
-					sb->AppendP(strStart, sql);
+					sb->AppendP(nns, sql);
 					return sql;
 				}
 			}
@@ -44,17 +45,17 @@ const UTF8Char *DB::SQL::SQLUtil::ParseNextWord(const UTF8Char *sql, NN<Text::St
 		}
 		else if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
 		{
-			if (strStart)
+			if (strStart.SetTo(nns))
 			{
-				sb->AppendC(strStart, (UOSInt)(sql - strStart - 1));
+				sb->AppendC(nns, (UOSInt)(sql - nns - 1));
 				return sql;
 			}
 		}
 		else if (c == '(' || c == ')' || c == ',' || c == '=')
 		{
-			if (strStart)
+			if (strStart.SetTo(nns))
 			{
-				sb->AppendC(strStart, (UOSInt)(sql - strStart - 1));
+				sb->AppendC(nns, (UOSInt)(sql - nns - 1));
 				return sql - 1;
 			}
 			else
@@ -65,7 +66,7 @@ const UTF8Char *DB::SQL::SQLUtil::ParseNextWord(const UTF8Char *sql, NN<Text::St
 		}
 		else
 		{
-			if (strStart == 0)
+			if (strStart.IsNull())
 			{
 				strStart = sql - 1;
 				if (c == '\'')
@@ -104,7 +105,7 @@ Data::VariItem *DB::SQL::SQLUtil::ParseValue(Text::CStringNN val, DB::SQLType sq
 	if (val.leng > 1 && val.v[0] == '\'' && val.v[val.leng - 1] == '\'')
 	{
 		NN<Text::String> s = Text::String::New(val.v + 1, val.leng - 2);
-		item = Data::VariItem::NewStr(s.Ptr());
+		item = Data::VariItem::NewStr(s);
 		s->Release();
 		return item.Ptr();
 	}

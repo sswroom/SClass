@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRTHREADINFOFORM
 #define _SM_SSWR_AVIREAD_AVIRTHREADINFOFORM
-
+#include "Data/ArrayListArr.h"
 #include "Manage/SymbolResolver.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
@@ -51,8 +51,8 @@ namespace SSWR
 
 			NN<SSWR::AVIRead::AVIRCore> core;
 
-			Data::ArrayListNN<const UTF8Char> stacks;
-			Data::ArrayListNN<const UTF8Char> stacksMem;
+			Data::ArrayListArr<const UTF8Char> stacks;
+			Data::ArrayListArr<const UTF8Char> stacksMem;
 			Manage::Process *proc;
 			Manage::SymbolResolver *symbol;
 			Manage::ThreadContext::ContextType contextType;

@@ -95,7 +95,7 @@ public:
 		return cell->cellValue->Clone().Ptr();
 	}
 
-	virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
+	virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 	{
 		const Text::SpreadSheet::Worksheet::CellData *cell = this->sheet->GetCellDataRead(this->currIndex, colIndex);
 		if (cell == 0 || cell->cellValue == 0)
@@ -152,7 +152,7 @@ public:
 		{
 			return 0;
 		}
-		MemCopyNO(buff, cell->cellValue->v, cell->cellValue->leng);
+		MemCopyNO(buff, cell->cellValue->v.Ptr(), cell->cellValue->leng);
 		return cell->cellValue->leng;
 	}
 
@@ -188,7 +188,7 @@ public:
 		return false;
 	}
 
-	virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff)
+	virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 	{
 		NN<DB::ColDef> col;
 		if (this->tabDef->GetCol(colIndex).SetTo(col))
@@ -250,7 +250,7 @@ Optional<DB::DBReader> DB::WorkbookDB::QueryTableData(Text::CString schemaName, 
 {
 	NN<Text::SpreadSheet::Worksheet> sheet;
 	NN<DB::TableDef> tabDef;
-	if (!this->wb->GetWorksheetByName(tableName).SetTo(sheet))
+	if (!this->wb->GetWorksheetByName(tableName.OrEmpty()).SetTo(sheet))
 	{
 		return 0;
 	}
@@ -279,7 +279,7 @@ Optional<DB::DBReader> DB::WorkbookDB::QueryTableData(Text::CString schemaName, 
 Optional<DB::TableDef> DB::WorkbookDB::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	NN<Text::SpreadSheet::Worksheet> sheet;
-	if (!this->wb->GetWorksheetByName(tableName).SetTo(sheet))
+	if (!this->wb->GetWorksheetByName(tableName.OrEmpty()).SetTo(sheet))
 	{
 		return 0;
 	}

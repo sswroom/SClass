@@ -19,7 +19,7 @@ namespace Manage
 		SymbolResolver(NN<Manage::Process> proc);
 		virtual ~SymbolResolver();
 
-		virtual UTF8Char *ResolveName(UTF8Char *buff, UInt64 address);
+		virtual UnsafeArrayOpt<UTF8Char> ResolveName(UnsafeArray<UTF8Char> buff, UInt64 address);
 
 		UOSInt GetModuleCount();
 		Optional<Text::String> GetModuleName(UOSInt index);

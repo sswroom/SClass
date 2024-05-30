@@ -51,9 +51,10 @@ UOSInt Net::SNMPInfo::PDUGetDetail(Text::CString name, Data::ByteArrayR pdu, UOS
 	{
 		sb->AppendChar('\t', level);
 	}
-	if (name.leng > 0)
+	Text::CStringNN nnname;
+	if (name.SetTo(nnname) && nnname.leng > 0)
 	{
-		sb->Append(name);
+		sb->Append(nnname);
 		sb->AppendUTF8Char(' ');
 	}
 	UInt8 t = pdu[0];
@@ -162,7 +163,7 @@ UOSInt Net::SNMPInfo::PDUGetDetail(Text::CString name, Data::ByteArrayR pdu, UOS
 		if (len == 4)
 		{
 			UTF8Char sbuff[16];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&pdu[hdrSize]));
 			sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		}
@@ -343,7 +344,7 @@ void Net::SNMPInfo::ValueToString(UInt8 type, Data::ByteArrayR pduBuff, NN<Text:
 		if (pduBuff.GetSize() == 4)
 		{
 			UTF8Char sbuff[16];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, pduBuff.ReadNU32(0));
 			sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		}

@@ -15,7 +15,7 @@ namespace Text
 		
 		void SetCodePage(UInt32 codePage);
 		UInt32 GetEncCodePage() const;
-		UTF8Char *ToString(UTF8Char *buff);
+		UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> buff);
 		Bool IsUTF8() const { return this->codePage == 65001; }
 
 		// bug if _WCHAR_SIZE != 2
@@ -23,7 +23,7 @@ namespace Text
 		WChar *WFromBytes(WChar *buff, const UInt8 *bytes, UOSInt byteSize, OptOut<UOSInt> byteConv);
 
 		UOSInt CountUTF8Chars(UnsafeArray<const UInt8> bytes, UOSInt byteSize);
-		UTF8Char *UTF8FromBytes(UTF8Char *buff, UnsafeArray<const UInt8> bytes, UOSInt byteSize, OptOut<UOSInt> byteConv);
+		UnsafeArray<UTF8Char> UTF8FromBytes(UnsafeArray<UTF8Char> buff, UnsafeArray<const UInt8> bytes, UOSInt byteSize, OptOut<UOSInt> byteConv);
 
 		// bug if _WCHAR_SIZE != 2
 		UOSInt WCountBytes(const WChar *str); // Optimized, retSize include null byte
@@ -31,10 +31,10 @@ namespace Text
 		UOSInt WToBytes(UInt8 *bytes, const WChar *str); // Optimized, retSize include null byte
 		UOSInt WToBytesC(UInt8 *bytes, const WChar *str, UOSInt strLen); // Optimized, strLen = other to force size and retSize exclude null
 
-		UOSInt UTF8CountBytes(const UTF8Char *str); // Optimized, retSize include null byte
-		UOSInt UTF8CountBytesC(const UTF8Char *str, UOSInt strLen); // Optimized, strLen = other to force size and retSize exclude null
-		UOSInt UTF8ToBytes(UInt8 *bytes, const UTF8Char *str); // Optimized, retSize include null byte
-		UOSInt UTF8ToBytesC(UInt8 *bytes, const UTF8Char *str, UOSInt strLen); // Optimized, strLen = other to force size and retSize exclude null
+		UOSInt UTF8CountBytes(UnsafeArray<const UTF8Char> str); // Optimized, retSize include null byte
+		UOSInt UTF8CountBytesC(UnsafeArray<const UTF8Char> str, UOSInt strLen); // Optimized, strLen = other to force size and retSize exclude null
+		UOSInt UTF8ToBytes(UInt8 *bytes, UnsafeArray<const UTF8Char> str); // Optimized, retSize include null byte
+		UOSInt UTF8ToBytesC(UInt8 *bytes, UnsafeArray<const UTF8Char> str, UOSInt strLen); // Optimized, strLen = other to force size and retSize exclude null
 
 		const UInt8 *NextWChar(const UInt8 *buff, WChar *outputChar);
 	};

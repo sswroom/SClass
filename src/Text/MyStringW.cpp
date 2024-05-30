@@ -3253,23 +3253,23 @@ const WChar *Text::StrCopyNewUTF16_W(const UTF16Char *str1)
 	return s;
 }
 #endif
-const UTF8Char *Text::StrToUTF8New(const UTF16Char *str1)
+UnsafeArray<const UTF8Char> Text::StrToUTF8New(const UTF16Char *str1)
 {
 	UOSInt charCnt = Text::StrUTF16_UTF8Cnt(str1);
-	UTF8Char *s = MemAlloc(UTF8Char, charCnt + 1);
+	UnsafeArray<UTF8Char> s = MemAllocArr(UTF8Char, charCnt + 1);
 	Text::StrUTF16_UTF8(s, str1);
 	return s;
 }
 
-const UTF8Char *Text::StrToUTF8New(const UTF32Char *str1)
+UnsafeArray<const UTF8Char> Text::StrToUTF8New(const UTF32Char *str1)
 {
 	UOSInt charCnt = Text::StrUTF32_UTF8Cnt(str1);
-	UTF8Char *s = MemAlloc(UTF8Char, charCnt + 1);
+	UnsafeArray<UTF8Char> s = MemAllocArr(UTF8Char, charCnt + 1);
 	Text::StrUTF32_UTF8(s, str1);
 	return s;
 }
 
-const WChar *Text::StrToWCharNew(const UTF8Char *str1)
+const WChar *Text::StrToWCharNew(UnsafeArray<const UTF8Char> str1)
 {
 	UOSInt charCnt = Text::StrUTF8_WCharCnt(str1);
 	WChar *s = MemAlloc(WChar, charCnt + 1);
@@ -3561,7 +3561,7 @@ Bool Text::StrIsInt32(const UTF32Char *intStr)
 	return true;
 }
 
-UOSInt Text::StrReplace(UTF16Char *str1, UTF16Char oriC, UTF16Char destC)
+UOSInt Text::StrReplaceW(UTF16Char *str1, UTF16Char oriC, UTF16Char destC)
 {
 	UTF16Char c;
 	UOSInt chrCnt = 0;
@@ -3576,7 +3576,7 @@ UOSInt Text::StrReplace(UTF16Char *str1, UTF16Char oriC, UTF16Char destC)
 	return chrCnt;
 }
 
-UOSInt Text::StrReplace(UTF32Char *str1, UTF32Char oriC, UTF32Char destC)
+UOSInt Text::StrReplaceW(UTF32Char *str1, UTF32Char oriC, UTF32Char destC)
 {
 	UTF32Char c;
 	UOSInt chrCnt = 0;
@@ -3591,7 +3591,7 @@ UOSInt Text::StrReplace(UTF32Char *str1, UTF32Char oriC, UTF32Char destC)
 	return chrCnt;
 }
 
-UOSInt Text::StrReplace(UTF16Char *str1, const UTF16Char *replaceFrom, const UTF16Char *replaceTo)
+UOSInt Text::StrReplaceW(UTF16Char *str1, const UTF16Char *replaceFrom, const UTF16Char *replaceTo)
 {
 	UOSInt cnt;
 	UOSInt fromCharCnt;
@@ -3627,7 +3627,7 @@ UOSInt Text::StrReplace(UTF16Char *str1, const UTF16Char *replaceFrom, const UTF
 	return cnt;
 }
 
-UOSInt Text::StrReplace(UTF32Char *str1, const UTF32Char *replaceFrom, const UTF32Char *replaceTo)
+UOSInt Text::StrReplaceW(UTF32Char *str1, const UTF32Char *replaceFrom, const UTF32Char *replaceTo)
 {
 	UOSInt cnt;
 	UOSInt fromCharCnt;
@@ -3663,7 +3663,7 @@ UOSInt Text::StrReplace(UTF32Char *str1, const UTF32Char *replaceFrom, const UTF
 	return cnt;
 }
 
-UOSInt Text::StrReplaceICase(UTF16Char *str1, const UTF16Char *replaceFrom, const UTF16Char *replaceTo)
+UOSInt Text::StrReplaceICaseW(UTF16Char *str1, const UTF16Char *replaceFrom, const UTF16Char *replaceTo)
 {
 	UOSInt cnt;
 	UOSInt fromCharCnt;
@@ -3699,7 +3699,7 @@ UOSInt Text::StrReplaceICase(UTF16Char *str1, const UTF16Char *replaceFrom, cons
 	return cnt;
 }
 
-UOSInt Text::StrReplaceICase(UTF32Char *str1, const UTF32Char *replaceFrom, const UTF32Char *replaceTo)
+UOSInt Text::StrReplaceICaseW(UTF32Char *str1, const UTF32Char *replaceFrom, const UTF32Char *replaceTo)
 {
 	UOSInt cnt;
 	UOSInt fromCharCnt;
@@ -4039,9 +4039,9 @@ UOSInt Text::StrCountChar(UTF32Char *str1, UTF32Char c)
 	return cnt;
 }
 
-UTF16Char *Text::StrUTF8_UTF16C(UTF16Char *buff, const UTF8Char *bytes, UOSInt byteSize, OptOut<UOSInt> byteConv)
+UTF16Char *Text::StrUTF8_UTF16C(UTF16Char *buff, UnsafeArray<const UTF8Char> bytes, UOSInt byteSize, OptOut<UOSInt> byteConv)
 {
-	const UInt8 *oriBytes = bytes;
+	UnsafeArray<const UTF8Char> oriBytes = bytes;
 	UTF32Char code;
 	UInt8 b;
 	while (byteSize > 0)
@@ -4149,7 +4149,7 @@ UTF16Char *Text::StrUTF8_UTF16C(UTF16Char *buff, const UTF8Char *bytes, UOSInt b
 	return buff;
 }
 
-UOSInt Text::StrUTF8_UTF16CntC(const UTF8Char *bytes, UOSInt byteSize)
+UOSInt Text::StrUTF8_UTF16CntC(UnsafeArray<const UTF8Char> bytes, UOSInt byteSize)
 {
 	UOSInt charCnt = 0;
 	while (byteSize > 0)
@@ -4194,9 +4194,9 @@ UOSInt Text::StrUTF8_UTF16CntC(const UTF8Char *bytes, UOSInt byteSize)
 	return charCnt;
 }
 
-UTF32Char *Text::StrUTF8_UTF32C(UTF32Char *buff, const UTF8Char *bytes, UOSInt byteSize, OptOut<UOSInt> byteConv)
+UTF32Char *Text::StrUTF8_UTF32C(UTF32Char *buff, UnsafeArray<const UTF8Char> bytes, UOSInt byteSize, OptOut<UOSInt> byteConv)
 {
-	const UInt8 *oriBytes = bytes;
+	UnsafeArray<const UTF8Char> oriBytes = bytes;
 	UTF32Char code;
 	UInt8 b;
 	while (byteSize > 0)
@@ -4275,7 +4275,7 @@ UTF32Char *Text::StrUTF8_UTF32C(UTF32Char *buff, const UTF8Char *bytes, UOSInt b
 	return buff;
 }
 
-UOSInt Text::StrUTF8_UTF32CntC(const UTF8Char *bytes, UOSInt byteSize)
+UOSInt Text::StrUTF8_UTF32CntC(UnsafeArray<const UTF8Char> bytes, UOSInt byteSize)
 {
 	UOSInt charCnt = 0;
 	while (byteSize > 0)
@@ -4321,9 +4321,9 @@ UOSInt Text::StrUTF8_UTF32CntC(const UTF8Char *bytes, UOSInt byteSize)
 }
 
 
-UTF16Char *Text::StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, OptOut<UOSInt> byteConv)
+UTF16Char *Text::StrUTF8_UTF16(UTF16Char *buff, UnsafeArray<const UTF8Char> bytes, OptOut<UOSInt> byteConv)
 {
-	const UInt8 *oriBytes = bytes;
+	UnsafeArray<const UTF8Char> oriBytes = bytes;
 	UTF32Char code;
 	UInt8 b;
 	while ((b = *bytes) != 0)
@@ -4404,7 +4404,7 @@ UTF16Char *Text::StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, OptOut<UO
 	return buff;
 }
 
-UOSInt Text::StrUTF8_UTF16Cnt(const UTF8Char *bytes)
+UOSInt Text::StrUTF8_UTF16Cnt(UnsafeArray<const UTF8Char> bytes)
 {
 	UOSInt charCnt = 0;
 	while (bytes[0])
@@ -4448,9 +4448,9 @@ UOSInt Text::StrUTF8_UTF16Cnt(const UTF8Char *bytes)
 	return charCnt;
 }
 
-UTF32Char *Text::StrUTF8_UTF32(UTF32Char *buff, const UTF8Char *bytes, OptOut<UOSInt> byteConv)
+UTF32Char *Text::StrUTF8_UTF32(UTF32Char *buff, UnsafeArray<const UTF8Char> bytes, OptOut<UOSInt> byteConv)
 {
-	const UInt8 *oriBytes = bytes;
+	UnsafeArray<const UTF8Char> oriBytes = bytes;
 	UTF32Char code;
 	UInt8 b;
 	while ((b = *bytes++) != 0)
@@ -4497,7 +4497,7 @@ UTF32Char *Text::StrUTF8_UTF32(UTF32Char *buff, const UTF8Char *bytes, OptOut<UO
 	return buff;
 }
 
-UOSInt Text::StrUTF8_UTF32Cnt(const UTF8Char *bytes)
+UOSInt Text::StrUTF8_UTF32Cnt(UnsafeArray<const UTF8Char> bytes)
 {
 	UOSInt charCnt = 0;
 	while (bytes[0])
@@ -4540,7 +4540,7 @@ UOSInt Text::StrUTF8_UTF32Cnt(const UTF8Char *bytes)
 	return charCnt;
 }
 
-UTF8Char* Text::StrUTF16_UTF8(UTF8Char *bytes, const UTF16Char *wstr)
+UnsafeArray<UTF8Char> Text::StrUTF16_UTF8(UnsafeArray<UTF8Char> bytes, const UTF16Char *wstr)
 {
 	UTF16Char c;
 	UTF32Char code;
@@ -4599,7 +4599,7 @@ UTF8Char* Text::StrUTF16_UTF8(UTF8Char *bytes, const UTF16Char *wstr)
 	return bytes;
 }
 
-UTF8Char* Text::StrUTF16_UTF8C(UTF8Char *bytes, const UTF16Char *wstr, UOSInt strLen)
+UnsafeArray<UTF8Char> Text::StrUTF16_UTF8C(UnsafeArray<UTF8Char> bytes, const UTF16Char *wstr, UOSInt strLen)
 {
 	UTF16Char c;
 	UTF32Char code;
@@ -4733,7 +4733,7 @@ UOSInt Text::StrUTF16_UTF8CntC(const UTF16Char *stri, UOSInt strLen)
 	return byteCnt;
 }
 
-UTF8Char* Text::StrUTF32_UTF8(UTF8Char *bytes, const UTF32Char *wstr)
+UnsafeArray<UTF8Char> Text::StrUTF32_UTF8(UnsafeArray<UTF8Char> bytes, const UTF32Char *wstr)
 {
 	UTF32Char c;
 	while (true)
@@ -4786,7 +4786,7 @@ UTF8Char* Text::StrUTF32_UTF8(UTF8Char *bytes, const UTF32Char *wstr)
 	return bytes;
 }
 
-UTF8Char* Text::StrUTF32_UTF8C(UTF8Char *bytes, const UTF32Char *wstr, UOSInt strLen)
+UnsafeArray<UTF8Char> Text::StrUTF32_UTF8C(UnsafeArray<UTF8Char> bytes, const UTF32Char *wstr, UOSInt strLen)
 {
 	UTF32Char c;
 	while (strLen-- > 0)
@@ -4884,7 +4884,7 @@ UOSInt Text::StrUTF32_UTF8CntC(const UTF32Char *stri, UOSInt strLen)
 	return byteCnt;
 }
 
-UTF8Char *Text::StrUTF16BE_UTF8(UTF8Char *bytes, UnsafeArray<const UInt8> u16Buff)
+UnsafeArray<UTF8Char> Text::StrUTF16BE_UTF8(UnsafeArray<UTF8Char> bytes, UnsafeArray<const UInt8> u16Buff)
 {
 	UTF16Char c;
 	UTF16Char c2;
@@ -4950,7 +4950,7 @@ UTF8Char *Text::StrUTF16BE_UTF8(UTF8Char *bytes, UnsafeArray<const UInt8> u16Buf
 	return bytes;
 }
 
-UTF8Char *Text::StrUTF16BE_UTF8C(UTF8Char *bytes, UnsafeArray<const UInt8> u16Buff, UOSInt utf16Cnt)
+UnsafeArray<UTF8Char> Text::StrUTF16BE_UTF8C(UnsafeArray<UTF8Char> bytes, UnsafeArray<const UInt8> u16Buff, UOSInt utf16Cnt)
 {
 	UTF16Char c;
 	UTF16Char c2;
@@ -5267,7 +5267,7 @@ UOSInt Text::StrUTF32_UTF16Cnt(const UTF32Char *strToJoin, UOSInt charCnt)
 	return retCnt;
 }
 
-const UTF8Char *Text::StrReadChar(const UTF8Char *sptr, OutParam<UTF32Char> outChar)
+UnsafeArray<const UTF8Char> Text::StrReadChar(UnsafeArray<const UTF8Char> sptr, OutParam<UTF32Char> outChar)
 {
 	UTF8Char b = *sptr++;
 	if (b < 0x80)
@@ -5327,7 +5327,7 @@ const UTF32Char *Text::StrReadChar(const UTF32Char *sptr, OutParam<UTF32Char> ou
 	return sptr;
 }
 
-UTF8Char *Text::StrWriteChar(UTF8Char *sptr, UTF32Char c)
+UnsafeArray<UTF8Char> Text::StrWriteChar(UnsafeArray<UTF8Char> sptr, UTF32Char c)
 {
 	if (c < 0x80)
 	{

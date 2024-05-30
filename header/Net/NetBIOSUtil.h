@@ -7,8 +7,8 @@ namespace Net
 	class NetBIOSUtil
 	{
 	public:
-		static UTF8Char *GetName(UTF8Char *sbuff, const UTF8Char *nbName);
-		static UTF8Char *SetName(UTF8Char *nbBuff, const UTF8Char *name);
+		static UnsafeArrayOpt<UTF8Char> GetName(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> nbName);
+		static UnsafeArray<UTF8Char> SetName(UnsafeArray<UTF8Char> nbBuff, UnsafeArray<const UTF8Char> name);
 		static Text::CStringNN NameTypeGetName(UInt8 nameType);
 	};
 }

@@ -73,7 +73,7 @@ namespace Net
 				else
 				{
 					UTF8Char sbuff[256];
-					UTF8Char *sptr;
+					UnsafeArray<UTF8Char> sptr;
 					sptr = Text::StrOSInt(Text::StrConcatC(sbuff, UTF8STRC("private; max-age=")), cacheAge);
 					return this->AddHeader(CSTR("Cache-Control"), CSTRP(sbuff, sptr));
 				}
@@ -83,21 +83,21 @@ namespace Net
 			Bool AddTimeHeader(Text::CStringNN name, NN<Data::DateTime> dt)
 			{
 				UTF8Char sbuff[256];
-				UTF8Char *sptr = Net::WebUtil::Date2Str(sbuff, dt);
+				UnsafeArray<UTF8Char> sptr = Net::WebUtil::Date2Str(sbuff, dt);
 				return this->AddHeader(name, CSTRP(sbuff, sptr));
 			}
 
 			Bool AddTimeHeader(Text::CStringNN name, const Data::Timestamp &ts)
 			{
 				UTF8Char sbuff[256];
-				UTF8Char *sptr = Net::WebUtil::Date2Str(sbuff, ts);
+				UnsafeArray<UTF8Char> sptr = Net::WebUtil::Date2Str(sbuff, ts);
 				return this->AddHeader(name, CSTRP(sbuff, sptr));
 			}
 
-			Bool AddContentDisposition(Bool isAttachment, const UTF8Char *attFileName, Net::BrowserInfo::BrowserType browser)
+			Bool AddContentDisposition(Bool isAttachment, UnsafeArrayOpt<const UTF8Char> attFileName, Net::BrowserInfo::BrowserType browser)
 			{
 				UTF8Char sbuff[512];
-				UTF8Char *sptr;
+				UnsafeArray<UTF8Char> sptr;
 				if (isAttachment)
 				{
 					sptr = Text::StrConcatC(sbuff, UTF8STRC("attachment"));
@@ -106,16 +106,17 @@ namespace Net
 				{
 					sptr = Text::StrConcatC(sbuff, UTF8STRC("inline"));
 				}
-				if (attFileName)
+				UnsafeArray<const UTF8Char> nns;
+				if (attFileName.SetTo(nns))
 				{
 					sptr = Text::StrConcatC(sptr, UTF8STRC("; filename=\""));
 					if (browser == Net::BrowserInfo::BT_IE)
 					{
-						sptr = Text::TextBinEnc::URIEncoding::URIEncode(sptr, attFileName);
+						sptr = Text::TextBinEnc::URIEncoding::URIEncode(sptr, nns);
 					}
 					else
 					{
-						sptr = Text::TextBinEnc::URIEncoding::URIEncode(sptr, attFileName);
+						sptr = Text::TextBinEnc::URIEncoding::URIEncode(sptr, nns);
 					}
 					sptr = Text::StrConcatC(sptr, UTF8STRC("\""));
 				}
@@ -125,7 +126,7 @@ namespace Net
 			Bool AddContentLength(UInt64 contentLeng)
 			{
 				UTF8Char sbuff[22];
-				UTF8Char *sptr = Text::StrUInt64(sbuff, contentLeng);
+				UnsafeArray<UTF8Char> sptr = Text::StrUInt64(sbuff, contentLeng);
 				return this->AddHeader(CSTR("Content-Length"), CSTRP(sbuff, sptr));
 			}
 
@@ -175,13 +176,13 @@ namespace Net
 			Bool AddSetCookie(Text::CString name, Text::CString value, Text::CString path, Bool httpOnly, Bool secure, SameSiteType sameSite, Data::Timestamp expires)
 			{
 				Text::StringBuilderUTF8 sb;
-				sb.Append(name);
+				sb.AppendOpt(name);
 				sb.AppendUTF8Char('=');
-				sb.Append(value);
+				sb.AppendOpt(value);
 				if (path.leng > 0)
 				{
 					sb.AppendC(UTF8STRC("; Path="));
-					sb.Append(path);
+					sb.AppendOpt(path);
 				}
 				if (secure)
 				{

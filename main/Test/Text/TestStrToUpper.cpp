@@ -7,7 +7,7 @@
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrToUpper(sbuff, (const UTF8Char*)"aBcDe1FgHiJk");
 	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ABCDE1FGHIJK")))
 	{

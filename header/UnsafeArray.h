@@ -1,6 +1,7 @@
 #ifndef _SM_UNSAFEARRAY
 #define _SM_UNSAFEARRAY
 #include <stdio.h>
+#include <type_traits>
 
 #define PRINT_STACK
 #if defined(PRINT_STACK)
@@ -35,6 +36,7 @@ private:
 	}
 
 public:
+//private:
 	UnsafeArray(T *p)
 	{
 		this->SetPtr(p);
@@ -80,6 +82,11 @@ public:
 	Bool operator==(const UnsafeArray<T> ptr)
 	{
 		return this->p == ptr.p;
+	}
+
+	Bool operator!=(const UnsafeArray<T> ptr)
+	{
+		return this->p != ptr.p;
 	}
 
 	UnsafeArray<T> operator++(int)
@@ -132,6 +139,21 @@ public:
 		return ret;
 	}
 
+	UnsafeArray<T> operator-(OSInt val) const
+	{
+		UnsafeArray<T> ret = *this;
+		ret -= val;
+		return ret;
+	}
+
+	UnsafeArray<T> operator-(UOSInt val) const
+	{
+		UnsafeArray<T> ret = *this;
+		ret -= val;
+		return ret;
+	}
+
+
 	UnsafeArray<T> &operator+=(OSInt val)
 	{
 		this->p += val;
@@ -141,6 +163,18 @@ public:
 	UnsafeArray<T> &operator+=(UOSInt val)
 	{
 		this->p += val;
+		return *this;
+	}
+
+	UnsafeArray<T> &operator-=(OSInt val)
+	{
+		this->p -= val;
+		return *this;
+	}
+
+	UnsafeArray<T> &operator-=(UOSInt val)
+	{
+		this->p -= val;
 		return *this;
 	}
 
@@ -169,6 +203,20 @@ public:
 		return ret;
 	}
 
+	UnsafeArray<T> operator-(Int32 val) const
+	{
+		UnsafeArray<T> ret = *this;
+		ret -= val;
+		return ret;
+	}
+
+	UnsafeArray<T> operator-(UInt32 val) const
+	{
+		UnsafeArray<T> ret = *this;
+		ret -= val;
+		return ret;
+	}
+
 	UnsafeArray<T> &operator+=(Int32 val)
 	{
 		this->p += val;
@@ -178,6 +226,18 @@ public:
 	UnsafeArray<T> &operator+=(UInt32 val)
 	{
 		this->p += val;
+		return *this;
+	}
+
+	UnsafeArray<T> &operator-=(Int32 val)
+	{
+		this->p -= val;
+		return *this;
+	}
+
+	UnsafeArray<T> &operator-=(UInt32 val)
+	{
+		this->p -= val;
 		return *this;
 	}
 #endif
@@ -211,7 +271,14 @@ public:
 
 	static UnsafeArray<T> FromPtr(T *ptr)
 	{
-		return ptr;
+		return UnsafeArray<T>(ptr);
+	}
+
+	static UnsafeArray<T> FromPtrNoCheck(T *ptr)
+	{
+		UnsafeArray<T> ret;
+		ret.p = ptr;
+		return ret;
 	}
 };
 
@@ -239,4 +306,5 @@ template<typename V> Bool operator<=(V *p1, UnsafeArray<V> p2)
 {
 	return p1 <= p2.Ptr();
 }
+#define UARR(arr) UnsafeArray<std::remove_reference<decltype( arr[0] )>::type>::FromPtrNoCheck(arr)
 #endif

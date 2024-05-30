@@ -59,9 +59,9 @@ UOSInt Map::OSM::OSMTileMap::GetConcurrentCount() const
 	return 2 * this->urls.GetCount();
 }
 
-UTF8Char *Map::OSM::OSMTileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
+UnsafeArrayOpt<UTF8Char> Map::OSM::OSMTileMap::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
 {
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::String> thisUrl;
 	if (this->GetNextURL().SetTo(thisUrl))
 	{

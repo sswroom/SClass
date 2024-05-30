@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Text/JavaText.h"
 
-void Text::JavaText::ToJavaName(NN<Text::StringBuilderUTF8> sb, const UTF8Char *usName, Bool isClass)
+void Text::JavaText::ToJavaName(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> usName, Bool isClass)
 {
 	UTF8Char c;
 	while ((c = *usName++) != 0)
@@ -30,7 +30,7 @@ void Text::JavaText::ToJavaName(NN<Text::StringBuilderUTF8> sb, const UTF8Char *
 	}
 }
 
-void Text::JavaText::ToDBName(NN<Text::StringBuilderUTF8> sb, const UTF8Char *name)
+void Text::JavaText::ToDBName(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> name)
 {
 	UTF8Char c;
 	Bool notFirst = false;

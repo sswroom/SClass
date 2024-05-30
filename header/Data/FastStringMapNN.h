@@ -59,7 +59,7 @@ namespace Data
 		virtual Optional<T> GetItem(UOSInt index) const;
 		virtual NN<T> GetItemNoCheck(UOSInt index) const;
 		virtual Text::String *GetKey(UOSInt index) const;
-		virtual OSInt IndexOf(UInt32 hash, const UTF8Char *s, UOSInt len) const;
+		virtual OSInt IndexOf(UInt32 hash, UnsafeArray<const UTF8Char> s, UOSInt len) const;
 		OSInt IndexOf(NN<Text::String> s) const;
 		OSInt IndexOfC(Text::CStringNN s) const;
 
@@ -179,7 +179,7 @@ namespace Data
 		return this->items[index].s.Ptr();
 	}
 
-	template <class T> OSInt FastStringMapNN<T>::IndexOf(UInt32 hash, const UTF8Char *s, UOSInt len) const
+	template <class T> OSInt FastStringMapNN<T>::IndexOf(UInt32 hash, UnsafeArray<const UTF8Char> s, UOSInt len) const
 	{
 		OSInt i;
 		OSInt j;

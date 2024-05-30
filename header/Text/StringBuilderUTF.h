@@ -40,9 +40,9 @@ namespace Text
 		virtual NN<StringBuilderUTF> AppendHexBuff(const UInt8 *buff, UOSInt buffSize, UTF32Char seperator, Text::LineBreakType lineBreak) = 0;
 
 		virtual NN<StringBuilderUTF> Append(Text::PString *s) = 0;
-		virtual NN<StringBuilderUTF> Append(const UTF8Char *s) = 0;
-		virtual NN<StringBuilderUTF> AppendC(const UTF8Char *s, UOSInt charCnt) = 0;
-		virtual NN<StringBuilderUTF> AppendS(const UTF8Char *s, UOSInt maxLen) = 0;
+		virtual NN<StringBuilderUTF> Append(UnsafeArray<const UTF8Char> s) = 0;
+		virtual NN<StringBuilderUTF> AppendC(UnsafeArray<const UTF8Char> s, UOSInt charCnt) = 0;
+		virtual NN<StringBuilderUTF> AppendS(UnsafeArray<const UTF8Char> s, UOSInt maxLen) = 0;
 		virtual NN<StringBuilderUTF> AppendChar(UTF32Char c, UOSInt repCnt) = 0;
 	};
 

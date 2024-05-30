@@ -100,7 +100,7 @@ namespace IO
 		Optional<IO::PackageFile> GetPackFile(Text::CStringNN name) const;
 		Bool MergePackage(NN<IO::PackageFile> pkg);
 
-		Optional<const PackFileItem> GetPackFileItem(const UTF8Char *name) const;
+		Optional<const PackFileItem> GetPackFileItem(UnsafeArray<const UTF8Char> name) const;
 		Optional<const PackFileItem> GetPackFileItem(UOSInt index) const;
 		PackObjectType GetPItemType(NN<const PackFileItem> itemObj) const;
 		UInt64 GetPItemDataOfst(NN<const PackFileItem> itemObj) const;
@@ -110,7 +110,7 @@ namespace IO
 
 		virtual UOSInt GetCount() const;
 		virtual PackObjectType GetItemType(UOSInt index) const;
-		virtual UTF8Char *GetItemName(UTF8Char *sbuff, UOSInt index) const;
+		virtual UnsafeArrayOpt<UTF8Char> GetItemName(UnsafeArray<UTF8Char> sbuff, UOSInt index) const;
 		virtual Optional<IO::StreamData> GetItemStmDataNew(UOSInt index) const;
 		Optional<IO::StreamData> GetItemStmDataNew(Text::CStringNN name) const;
 		virtual Optional<IO::PackageFile> GetItemPack(UOSInt index, OutParam<Bool> needRelease) const;
@@ -129,8 +129,8 @@ namespace IO
 		virtual Bool MoveFrom(Text::CStringNN fileName, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
 		virtual Bool RetryCopyFrom(Text::CStringNN fileName, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
 		virtual Bool RetryMoveFrom(Text::CStringNN fileName, Optional<IO::ProgressHandler> progHdlr, OptOut<IO::ActiveStreamReader::BottleNeckType> bnt);
-		virtual Bool CopyTo(UOSInt index, Text::CString destPath, Bool fullFileName);
-		virtual Optional<IO::StreamData> OpenStreamData(Text::CString fileName) const;
+		virtual Bool CopyTo(UOSInt index, Text::CStringNN destPath, Bool fullFileName);
+		virtual Optional<IO::StreamData> OpenStreamData(Text::CStringNN fileName) const;
 		virtual Bool HasParent() const;
 		virtual Optional<IO::PackageFile> GetParent(OutParam<Bool> needRelease) const;
 		virtual Bool DeleteItem(UOSInt index);
@@ -138,7 +138,7 @@ namespace IO
 
 		void SetInfo(InfoType infoType, const UTF8Char *val);
 		void GetInfoText(NN<Text::StringBuilderUTF8> sb) const;
-		static Text::CString GetInfoTypeName(InfoType infoType);
+		static Text::CStringNN InfoTypeGetName(InfoType infoType);
 	};
 }
 #endif

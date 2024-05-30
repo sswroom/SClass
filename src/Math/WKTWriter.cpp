@@ -245,7 +245,7 @@ void Math::WKTWriter::AppendMultiSurface(NN<Text::StringBuilderUTF8> sb, NN<Math
 		}
 		else
 		{
-			printf("Unknown type in multisurface: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(t).v);
+			printf("Unknown type in multisurface: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(t).v.Ptr());
 		}
 		found = true;
 	}

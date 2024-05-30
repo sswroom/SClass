@@ -364,7 +364,7 @@ void Net::ASN1PDUBuilder::AppendIA5String(NN<Text::String> s)
 void Net::ASN1PDUBuilder::AppendUTCTime(NN<Data::DateTime> t)
 {
 	UTF8Char sbuff[13];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	t->ToUTCTime();
 	sptr = t->ToString(sbuff, "yyMMddHHmmss");
 	*sptr = 'Z';

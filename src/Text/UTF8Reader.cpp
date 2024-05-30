@@ -468,7 +468,7 @@ Bool Text::UTF8Reader::ReadLine(NN<Text::StringBuilderUTF8> sb, UOSInt maxCharCn
 	return true;
 }
 
-UTF8Char *Text::UTF8Reader::ReadLine(UTF8Char *sbuff, UOSInt maxCharCnt)
+UnsafeArrayOpt<UTF8Char> Text::UTF8Reader::ReadLine(UnsafeArray<UTF8Char> sbuff, UOSInt maxCharCnt)
 {
 #if defined(VERBOSE)
 	printf("UTF8Reader.RL: ofst = %d, size = %d\r\n", (UInt32)this->currOfst, (UInt32)this->buffSize);
@@ -619,7 +619,7 @@ UTF8Char *Text::UTF8Reader::ReadLine(UTF8Char *sbuff, UOSInt maxCharCnt)
 	return sbuff;
 }
 
-UTF8Char *Text::UTF8Reader::GetLastLineBreak(UTF8Char *buff)
+UnsafeArray<UTF8Char> Text::UTF8Reader::GetLastLineBreak(UnsafeArray<UTF8Char> buff)
 {
 	switch (this->lineBreak)
 	{

@@ -40,7 +40,7 @@ Optional<IO::ParsedObject> Parser::FileParser::IPACParser::ParseFileHdr(NN<IO::S
 	UInt32 hdrOfst;
 	UInt8 rec[44];
 	UTF8Char name[33];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (ReadUInt32(&hdr[0]) != 0x43415049)
 	{

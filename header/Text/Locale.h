@@ -10,9 +10,9 @@ namespace Text
 		typedef struct
 		{
 			UInt32 lcid;
-			const UTF8Char *shortName;
+			UnsafeArray<const UTF8Char> shortName;
 			UOSInt shortNameLen;
-			const UTF8Char *desc;
+			UnsafeArray<const UTF8Char> desc;
 			UOSInt descLen;
 			UInt32 defCodePage;
 		} LocaleEntry;
@@ -20,8 +20,8 @@ namespace Text
 	private:
 		static LocaleEntry locales[];
 	public:
-		static LocaleEntry *GetLocaleEntry(UInt32 lcid); //see Text::EncodingFactory::GetSystemLCID()
-		static LocaleEntry *GetLocaleEntryByCodePage(UInt32 codePage);
+		static Optional<LocaleEntry> GetLocaleEntry(UInt32 lcid); //see Text::EncodingFactory::GetSystemLCID()
+		static Optional<LocaleEntry> GetLocaleEntryByCodePage(UInt32 codePage);
 
 	private:
 		Data::FastStringMapNN<LocaleEntry> names;

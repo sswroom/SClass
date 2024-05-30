@@ -12,7 +12,7 @@
 void IO::StreamReader::FillBuffer()
 {
 	UOSInt i;
-	UTF8Char *dest;
+	UnsafeArray<UTF8Char> dest;
 
 	if (stm->CanSeek())
 	{
@@ -56,16 +56,9 @@ void IO::StreamReader::FillBuffer()
 	if (convSize)
 	{
 		dest = this->enc.UTF8FromBytes(&cbuff[cSize], buff, convSize, i);
-		if (dest)
-		{
-			cSize = (UOSInt)(dest - cbuff);
-			MemCopyO(buff, &buff[i], buffSize - i);
-			buffSize -= i;
-		}
-		else
-		{
-			//wcSize = 0;
-		}
+		cSize = (UOSInt)(dest - cbuff);
+		MemCopyO(buff, &buff[i], buffSize - i);
+		buffSize -= i;
 	}
 }
 
@@ -130,7 +123,7 @@ IO::StreamReader::StreamReader(NN<IO::Stream> stm, UInt32 codePage) : enc(codePa
 	this->stm = stm;
 	this->buff = MemAlloc(UInt8, BUFFSIZE);
 	this->buffSize = 0;
-	this->cbuff = MemAlloc(UTF8Char, BUFFSIZE + 1);
+	this->cbuff = MemAllocArr(UTF8Char, BUFFSIZE + 1);
 	this->cSize = 0;
 	this->cPos = 0;
 	if (stm->CanSeek())
@@ -149,7 +142,7 @@ IO::StreamReader::StreamReader(NN<IO::Stream> stm, UInt32 codePage) : enc(codePa
 IO::StreamReader::~StreamReader()
 {
 	MemFree(this->buff);
-	MemFree(this->cbuff);
+	MemFreeArr(this->cbuff);
 }
 
 void IO::StreamReader::Close()
@@ -157,9 +150,9 @@ void IO::StreamReader::Close()
 	this->stm->Close();
 }
 
-UTF8Char *IO::StreamReader::ReadLine(UTF8Char *buff, UOSInt maxCharCnt)
+UnsafeArrayOpt<UTF8Char> IO::StreamReader::ReadLine(UnsafeArray<UTF8Char> buff, UOSInt maxCharCnt)
 {
-	UTF8Char *dest = buff;
+	UnsafeArray<UTF8Char> dest = buff;
 	Bool tmp = false;
 	if (stm->CanSeek())
 	{
@@ -176,7 +169,7 @@ UTF8Char *IO::StreamReader::ReadLine(UTF8Char *buff, UOSInt maxCharCnt)
 	{
 		currPos = cPos;
 		currSize = cSize;
-		UTF8Char *src = &cbuff[currPos];
+		UnsafeArray<UTF8Char> src = &cbuff[currPos];
 		while (currPos < currSize)
 		{
 			c = *src;
@@ -244,8 +237,8 @@ UTF8Char *IO::StreamReader::ReadLine(UTF8Char *buff, UOSInt maxCharCnt)
 Bool IO::StreamReader::ReadLine(NN<Text::StringBuilderUTF8> sb, UOSInt maxCharCnt)
 {
 	sb->AllocLeng(maxCharCnt);
-	UTF8Char *endPtr = this->ReadLine(sb->GetEndPtr(), maxCharCnt);
-	if (endPtr)
+	UnsafeArray<UTF8Char> endPtr;
+	if (this->ReadLine(sb->GetEndPtr(), maxCharCnt).SetTo(endPtr))
 	{
 		sb->SetEndPtr(endPtr);
 		return true;
@@ -253,7 +246,7 @@ Bool IO::StreamReader::ReadLine(NN<Text::StringBuilderUTF8> sb, UOSInt maxCharCn
 	return false;
 }
 
-UTF8Char *IO::StreamReader::GetLastLineBreak(UTF8Char *buff)
+UnsafeArray<UTF8Char> IO::StreamReader::GetLastLineBreak(UnsafeArray<UTF8Char> buff)
 {
 	if (this->lineBreak == Text::LineBreakType::CR)
 	{

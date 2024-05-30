@@ -15,7 +15,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UInt8 cipherText[16];
 	UInt8 decText[16];
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	
 	aes.Encrypt(testVector1, 16, cipherText);
 	sptr = Text::StrHexBytes(sbuff, cipherText, 16, 0);

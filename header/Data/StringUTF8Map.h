@@ -7,37 +7,42 @@
 
 namespace Data
 {
-	template <class T> class StringUTF8Map : public ArrayCmpMap<const UTF8Char*, T>
+	template <class T> class StringUTF8Map : public ArrayCmpMap<UnsafeArrayOpt<const UTF8Char>, T>
 	{		
 	public:
 		StringUTF8Map();
 		virtual ~StringUTF8Map();
 
-		virtual T Put(const UTF8Char *key, T val);
-		virtual T Get(const UTF8Char *key) const;
-		virtual T Remove(const UTF8Char *key);
-		virtual const UTF8Char *GetKey(UOSInt index) const;
+		virtual T Put(UnsafeArrayOpt<const UTF8Char> key, T val);
+		virtual T Get(UnsafeArrayOpt<const UTF8Char> key) const;
+		virtual T Remove(UnsafeArrayOpt<const UTF8Char> key);
+		virtual UnsafeArrayOpt<const UTF8Char> GetKey(UOSInt index) const;
 		virtual void Clear();
 	};
 
 
-	template <class T> StringUTF8Map<T>::StringUTF8Map() : ArrayCmpMap<const UTF8Char*, T>()
+	template <class T> StringUTF8Map<T>::StringUTF8Map() : ArrayCmpMap<UnsafeArrayOpt<const UTF8Char>, T>()
 	{
 		NEW_CLASS(this->keys, Data::ArrayListStrUTF8());
 	}
 
 	template <class T> StringUTF8Map<T>::~StringUTF8Map()
 	{
+		UnsafeArray<const UTF8Char> nnkey;
 		UOSInt i = this->keys->GetCount();
 		while (i-- > 0)
 		{
-			Text::StrDelNew((UTF8Char*)this->keys->GetItem(i));
+			if (this->keys->GetItem(i).SetTo(nnkey))
+			{
+				Text::StrDelNew(nnkey);
+			}
 		}
 		DEL_CLASS(this->keys);
 	}
 
-	template <class T> T StringUTF8Map<T>::Put(const UTF8Char *key, T val)
+	template <class T> T StringUTF8Map<T>::Put(UnsafeArrayOpt<const UTF8Char> key, T val)
 	{
+		UnsafeArray<const UTF8Char> nnkey = key.Or(U8STR(""));
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
@@ -48,13 +53,13 @@ namespace Data
 		}
 		else
 		{
-			this->keys->Insert((UOSInt)~i, Text::StrCopyNew(key).Ptr());
+			this->keys->Insert((UOSInt)~i, Text::StrCopyNew(nnkey));
 			this->vals.Insert((UOSInt)~i, val);
 			return 0;
 		}
 	}
 
-	template <class T> T StringUTF8Map<T>::Get(const UTF8Char *key) const
+	template <class T> T StringUTF8Map<T>::Get(UnsafeArrayOpt<const UTF8Char> key) const
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
@@ -68,13 +73,17 @@ namespace Data
 		}
 	}
 
-	template <class T> T StringUTF8Map<T>::Remove(const UTF8Char *key)
+	template <class T> T StringUTF8Map<T>::Remove(UnsafeArrayOpt<const UTF8Char> key)
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
 		if (i >= 0)
 		{
-			Text::StrDelNew(this->keys->RemoveAt((UOSInt)i));
+			UnsafeArray<const UTF8Char> nnkey;
+			if (this->keys->RemoveAt((UOSInt)i).SetTo(nnkey))
+			{
+				Text::StrDelNew(nnkey);
+			}
 			return this->vals.RemoveAt((UOSInt)i);
 		}
 		else
@@ -83,18 +92,20 @@ namespace Data
 		}
 	}
 
-	template <class T> const UTF8Char *StringUTF8Map<T>::GetKey(UOSInt index) const
+	template <class T> UnsafeArrayOpt<const UTF8Char> StringUTF8Map<T>::GetKey(UOSInt index) const
 	{
 		return this->keys->GetItem(index);
 	}
 
 	template <class T> void StringUTF8Map<T>::Clear()
 	{
+		UnsafeArray<const UTF8Char> nnkey;
 		UOSInt i;
 		i = this->keys->GetCount();
 		while (i-- > 0)
 		{
-			Text::StrDelNew(this->keys->RemoveAt(i));
+			if (this->keys->RemoveAt(i).SetTo(nnkey))
+				Text::StrDelNew(nnkey);
 		}
 		this->vals.Clear();
 	}

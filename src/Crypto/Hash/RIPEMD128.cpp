@@ -21,7 +21,7 @@ Crypto::Hash::RIPEMD128::~RIPEMD128()
 	MemFree(buff);
 }
 
-UTF8Char *Crypto::Hash::RIPEMD128::GetName(UTF8Char *sbuff) const
+UnsafeArray<UTF8Char> Crypto::Hash::RIPEMD128::GetName(UnsafeArray<UTF8Char> sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("RIPEMD-128"));
 }

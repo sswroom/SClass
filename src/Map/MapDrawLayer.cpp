@@ -504,10 +504,10 @@ void Map::MapDrawLayer::FreeObjects(NN<Data::ArrayListNN<ObjectInfo>> objList)
 NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 {
 	Text::StringBuilderUTF8 sb;
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	UOSInt *ofsts;
-	const UTF8Char **sptrs;
+	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> sptrs;
 	NN<Map::VectorLayer> lyr;
 	Data::ArrayListInt64 objIds;
 	Math::Geometry::Vector2D *vec;
@@ -522,15 +522,14 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 	k = this->GetColumnCnt();
 	i = k;
 	ofsts = MemAlloc(UOSInt, k);
-	sptrs = MemAlloc(const UTF8Char*, k);
+	sptrs = MemAllocArr(UnsafeArrayOpt<const UTF8Char>, k);
 	sb.AllocLeng(65536);
 	sptr = sb.v;
 	while (i-- > 0)
 	{
-		sptr2 = this->GetColumnName(sptr, i);
-		if (sptr2)
+		if (this->GetColumnName(sptr, i).SetTo(sptr2))
 		{
-			sptrs[i] = sptr;
+			sptrs[i] = UnsafeArray<const UTF8Char>(sptr);
 			sptr = sptr2 + 1;
 		}
 		else
@@ -539,7 +538,7 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 		}
 	}
 	NN<Math::CoordinateSystem> csys = this->csys->Clone();
-	NEW_CLASSNN(lyr, Map::VectorLayer(this->GetLayerType(), this->sourceName, k, (const UTF8Char**)sptrs, csys, this->GetNameCol(), this->layerName));
+	NEW_CLASSNN(lyr, Map::VectorLayer(this->GetLayerType(), this->sourceName, k, sptrs, csys, this->GetNameCol(), this->layerName));
 
 	sess = this->BeginGetObject();
 	this->GetAllObjectIds(objIds, &nameArr);
@@ -589,7 +588,7 @@ NN<Map::VectorLayer> Map::MapDrawLayer::CreateEditableLayer()
 		i++;
 	}
 
-	MemFree(sptrs);
+	MemFreeArr(sptrs);
 	MemFree(ofsts);
 	return lyr;
 }
@@ -936,7 +935,7 @@ Optional<Text::String> Map::MapLayerReader::GetNewStr(UOSInt colIndex)
 	return 0;
 }
 
-UTF8Char *Map::MapLayerReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> Map::MapLayerReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
 	if (colIndex <= 0)
 	{
@@ -1023,7 +1022,7 @@ Bool Map::MapLayerReader::IsNull(UOSInt colIndex)
 	return !this->layer->GetString(sb, this->nameArr, this->GetCurrObjId(), colIndex - 1);
 }
 
-UTF8Char *Map::MapLayerReader::GetName(UOSInt colIndex, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Map::MapLayerReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 {
 	if (colIndex == 0)
 		return Text::StrConcatC(buff, UTF8STRC("Shape"));

@@ -32,10 +32,10 @@ struct IO::Path::FindFileSession
 };
 
 UTF8Char IO::Path::PATH_SEPERATOR = (UTF8Char)'\\';
-const UTF8Char *IO::Path::ALL_FILES = (const UTF8Char*)"*.*";
+UnsafeArray<const UTF8Char> IO::Path::ALL_FILES = U8STR("*.*");
 UOSInt IO::Path::ALL_FILES_LEN = 3;
 
-UTF8Char *IO::Path::GetTempFile(UTF8Char *buff, const UTF8Char *fileName, UOSInt fileNameLen)
+UnsafeArray<UTF8Char> IO::Path::GetTempFile(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> fileName, UOSInt fileNameLen)
 {
 	WChar tmpBuff[MAX_PATH];
 	::GetTempPathW(MAX_PATH, tmpBuff);
@@ -125,7 +125,7 @@ Bool IO::Path::CreateDirectoryW(const WChar *dirInput)
 	return ::CreateDirectoryW(dir, 0) != 0;
 }
 
-Bool IO::Path::RemoveDirectory(const UTF8Char *dir)
+Bool IO::Path::RemoveDirectory(UnsafeArray<const UTF8Char> dir)
 {
 	const WChar *wdir = Text::StrToWCharNew(dir);
 	Bool ret = ::RemoveDirectoryW(wdir) != 0;
@@ -138,7 +138,7 @@ Bool IO::Path::RemoveDirectoryW(const WChar *dir)
 	return ::RemoveDirectoryW(dir) != 0;
 }
 
-Bool IO::Path::DeleteFile(const UTF8Char *fileName)
+Bool IO::Path::DeleteFile(UnsafeArray<const UTF8Char> fileName)
 {
 	const WChar *wfileName = Text::StrToWCharNew(fileName);
 	Bool ret = ::DeleteFileW(wfileName) != 0;
@@ -151,7 +151,7 @@ Bool IO::Path::DeleteFileW(const WChar *fileName)
 	return ::DeleteFileW(fileName) != 0;
 }
 
-OSInt IO::Path::FileNameCompare(const UTF8Char *file1, const UTF8Char *file2)
+OSInt IO::Path::FileNameCompare(UnsafeArray<const UTF8Char> file1, UnsafeArray<const UTF8Char> file2)
 {
 	return Text::StrCompareICase(file1, file2);
 }
@@ -161,13 +161,13 @@ OSInt IO::Path::FileNameCompareW(const WChar *file1, const WChar *file2)
 	return Text::StrCompareICase(file1, file2);
 }
 
-UTF8Char *IO::Path::GetFileDirectory(UTF8Char *buff, const UTF8Char *fileName)
+UnsafeArray<UTF8Char> IO::Path::GetFileDirectory(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> fileName)
 {
 #ifdef _WIN32_WCE
 	return Text::StrConcat(buff, fileName);
 #else
 	WChar *ptr;
-	UTF8Char *ptr2;
+	UnsafeArray<UTF8Char> ptr2;
 	WChar *ptr3 = 0;
 	if (fileName[1] == ':')
 	{
@@ -230,7 +230,7 @@ WChar *IO::Path::GetFileDirectoryW(WChar *buff, const WChar *fileName)
 #endif
 }
 
-UTF8Char *IO::Path::GetProcessFileName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> IO::Path::GetProcessFileName(UnsafeArray<UTF8Char> buff)
 {
 	UInt32 retSize;
 	WChar tmpBuff[1024];
@@ -270,9 +270,9 @@ Bool IO::Path::GetProcessFileName(NN<Text::StringBuilderUTF8> sb)
 	return true;
 }
 
-UTF8Char *IO::Path::ReplaceExt(UTF8Char *fileName, const UTF8Char *ext, UOSInt extLen)
+UnsafeArray<UTF8Char> IO::Path::ReplaceExt(UnsafeArray<UTF8Char> fileName, UnsafeArray<const UTF8Char> ext, UOSInt extLen)
 {
-	UTF8Char *oldExt = 0;
+	UnsafeArray<UTF8Char> oldExt = 0;
 	UTF8Char c;
 	while ((c = *fileName++) != 0)
 	{
@@ -316,7 +316,7 @@ WChar *IO::Path::ReplaceExtW(WChar *fileName, const WChar *ext)
 	return Text::StrConcat(oldExt, ext);
 }
 
-UTF8Char *IO::Path::GetFileExt(UTF8Char *fileBuff, const UTF8Char *path, UOSInt pathLen)
+UnsafeArray<UTF8Char> IO::Path::GetFileExt(UnsafeArray<UTF8Char> fileBuff, UnsafeArray<const UTF8Char> path, UOSInt pathLen)
 {
 	if (pathLen >= 4 && path[pathLen - 4] == '.')
 	{
@@ -357,11 +357,11 @@ WChar *IO::Path::GetFileExtW(WChar *fileBuff, const WChar *path)
 	}
 }
 
-UTF8Char *IO::Path::AppendPath(UTF8Char *path, UTF8Char *pathEnd, Text::CStringNN toAppend)
+UnsafeArray<UTF8Char> IO::Path::AppendPath(UnsafeArray<UTF8Char> path, UnsafeArray<UTF8Char> pathEnd, Text::CStringNN toAppend)
 {
 	UTF8Char pathTmp[512];
-	UTF8Char *lastSep;
-	UTF8Char *firstSep;
+	UnsafeArray<UTF8Char> lastSep;
+	UnsafeArray<UTF8Char> firstSep;
 	Text::PString pathArr[5];
 	UOSInt pathCnt;
 	UOSInt j;
@@ -444,7 +444,7 @@ UTF8Char *IO::Path::AppendPath(UTF8Char *path, UTF8Char *pathEnd, Text::CStringN
 				{
 					if (lastSep > firstSep)
 					{
-						UTF8Char *sptr = lastSep;
+						UnsafeArray<UTF8Char> sptr = lastSep;
 						while (sptr-- > firstSep)
 						{
 							if (*sptr == '\\')
@@ -634,11 +634,11 @@ WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
 	}
 }
 
-Bool IO::Path::AppendPath(NN<Text::StringBuilderUTF8> sb, const UTF8Char *toAppend, UOSInt toAppendLen)
+Bool IO::Path::AppendPath(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> toAppend, UOSInt toAppendLen)
 {
 	UTF8Char pathTmp[512];
-	UTF8Char *lastSep;
-	UTF8Char *firstSep;
+	UnsafeArray<UTF8Char> lastSep;
+	UnsafeArray<UTF8Char> firstSep;
 	Text::PString pathArr[5];
 	UOSInt pathCnt;
 	UOSInt j;
@@ -656,8 +656,8 @@ Bool IO::Path::AppendPath(NN<Text::StringBuilderUTF8> sb, const UTF8Char *toAppe
 		sb->AppendC(toAppend, toAppendLen);
 		return true;
 	}
-	UTF8Char *path = sb->v;
-	UTF8Char *pathEnd = sb->GetEndPtr();
+	UnsafeArray<UTF8Char> path = sb->v;
+	UnsafeArray<UTF8Char> pathEnd = sb->GetEndPtr();
 	if (path[0] == '\\' && path[1] == '\\')
 	{
 		firstSep = &path[2 + Text::StrIndexOfChar(&path[2], '\\')];
@@ -730,7 +730,7 @@ Bool IO::Path::AppendPath(NN<Text::StringBuilderUTF8> sb, const UTF8Char *toAppe
 				{
 					if (lastSep > firstSep)
 					{
-						UTF8Char *sptr = lastSep;
+						UnsafeArray<UTF8Char> sptr = lastSep;
 						while (sptr-- > firstSep)
 						{
 							if (*sptr == '\\')
@@ -831,14 +831,14 @@ IO::Path::FindFileSession *IO::Path::FindFileW(const WChar *path)
 	}
 }
 
-UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, IO::Path::FindFileSession *sess, Data::Timestamp *modTime, IO::Path::PathType *pt, UInt64 *fileSize)
+UnsafeArray<UTF8Char> IO::Path::FindNextFile(UnsafeArray<UTF8Char> buff, IO::Path::FindFileSession *sess, Data::Timestamp *modTime, IO::Path::PathType *pt, UInt64 *fileSize)
 {
 	IO::Path::PathType tmp;
 	if (pt == 0)
 	{
 		pt = &tmp;
 	}
-	UTF8Char *outPtr;
+	UnsafeArray<UTF8Char> outPtr;
 	if (sess->lastFound)
 	{
 		outPtr = Text::StrWChar_UTF8(buff, sess->findData.cFileName);
@@ -974,13 +974,13 @@ IO::Path::PathType IO::Path::GetPathTypeW(const WChar *path)
 #endif
 }
 
-Bool IO::Path::FileNameMatch(const UTF8Char *fileName, UOSInt fileNameLen, const UTF8Char *searchPattern, UOSInt patternLen)
+Bool IO::Path::FileNameMatch(UnsafeArray<const UTF8Char> fileName, UOSInt fileNameLen, UnsafeArray<const UTF8Char> searchPattern, UOSInt patternLen)
 {
-	const UTF8Char *fileNameEnd = &fileName[fileNameLen];
+	UnsafeArray<const UTF8Char> fileNameEnd = &fileName[fileNameLen];
 	UOSInt i;
 	Bool isWC = false;
-	const UTF8Char *patternStart = 0;
-	const UTF8Char *currPattern = searchPattern;
+	UnsafeArray<const UTF8Char> patternStart = 0;
+	UnsafeArray<const UTF8Char> currPattern = searchPattern;
 	UTF8Char c;
 	while (true)
 	{
@@ -1047,7 +1047,7 @@ Bool IO::Path::FileNameMatch(const UTF8Char *fileName, UOSInt fileNameLen, const
 	}
 }
 
-Bool IO::Path::FilePathMatch(const UTF8Char *path, UOSInt pathLen, const UTF8Char *searchPattern, UOSInt patternLen)
+Bool IO::Path::FilePathMatch(UnsafeArray<const UTF8Char> path, UOSInt pathLen, UnsafeArray<const UTF8Char> searchPattern, UOSInt patternLen)
 {
 	UOSInt i = Text::StrLastIndexOfCharC(path, pathLen, '\\');
 	return FileNameMatch(&path[i + 1], pathLen - i - 1, searchPattern, patternLen);
@@ -1130,7 +1130,7 @@ Bool IO::Path::FilePathMatchW(const WChar *path, const WChar *searchPattern)
 	}
 }
 
-UInt64 IO::Path::GetFileSize(const UTF8Char *path)
+UInt64 IO::Path::GetFileSize(UnsafeArray<const UTF8Char> path)
 {
 	WIN32_FILE_ATTRIBUTE_DATA attr;
 	const WChar *wptr = Text::StrToWCharNew(path);
@@ -1170,7 +1170,7 @@ WChar *IO::Path::GetSystemProgramPathW(WChar *buff)
 #endif
 }
 
-UTF8Char *IO::Path::GetLocAppDataPath(UTF8Char *buff)
+UnsafeArray<UTF8Char> IO::Path::GetLocAppDataPath(UnsafeArray<UTF8Char> buff)
 {
 #ifdef _WIN32_WCE
 	return 0;
@@ -1197,7 +1197,7 @@ WChar *IO::Path::GetLocAppDataPathW(WChar *buff)
 #endif
 }
 
-UTF8Char *IO::Path::GetOSPath(UTF8Char *buff)
+UnsafeArray<UTF8Char> IO::Path::GetOSPath(UnsafeArray<UTF8Char> buff)
 {
 #ifdef _WIN32_WCE
 	return Text::StrConcatC(buff, UTF8STRC("\\Windows\\"));
@@ -1217,7 +1217,7 @@ WChar *IO::Path::GetOSPathW(WChar *buff)
 #endif
 }
 
-UTF8Char *IO::Path::GetUserHome(UTF8Char *buff)
+UnsafeArray<UTF8Char> IO::Path::GetUserHome(UnsafeArray<UTF8Char> buff)
 {
 	buff = Manage::EnvironmentVar::GetEnvValue(buff, CSTR("HOMEDRIVE"));
 	buff = Manage::EnvironmentVar::GetEnvValue(buff, CSTR("HOMEPATH"));
@@ -1263,7 +1263,7 @@ UInt32 IO::Path::GetFileUnixAttr(Text::CStringNN path)
 	return unixAttr;
 }
 
-Data::Timestamp IO::Path::GetModifyTime(const UTF8Char *path)
+Data::Timestamp IO::Path::GetModifyTime(UnsafeArray<const UTF8Char> path)
 {
 	WIN32_FIND_DATAW fd;
 	const WChar *wptr = Text::StrToWCharNew(path);
@@ -1275,7 +1275,7 @@ Data::Timestamp IO::Path::GetModifyTime(const UTF8Char *path)
 	return Data::Timestamp::FromFILETIME(&fd.ftLastWriteTime, Data::DateTimeUtil::GetLocalTzQhr());
 }
 
-UTF8Char *IO::Path::GetCurrDirectory(UTF8Char *buff)
+UnsafeArray<UTF8Char> IO::Path::GetCurrDirectory(UnsafeArray<UTF8Char> buff)
 {
 #ifdef _WIN32_WCE
 	return Text::StrConcat(buff, (const UTF8Char*)"\\");
@@ -1295,7 +1295,7 @@ WChar *IO::Path::GetCurrDirectoryW(WChar *buff)
 #endif
 }
 
-Bool IO::Path::SetCurrDirectory(const UTF8Char *path)
+Bool IO::Path::SetCurrDirectory(UnsafeArray<const UTF8Char> path)
 {
 	const WChar *wptr = Text::StrToWCharNew(path);
 	Bool ret = SetCurrDirectoryW(wptr);
@@ -1312,7 +1312,7 @@ Bool IO::Path::SetCurrDirectoryW(const WChar *path)
 #endif
 }
 
-Bool IO::Path::IsSearchPattern(const UTF8Char *path)
+Bool IO::Path::IsSearchPattern(UnsafeArray<const UTF8Char> path)
 {
 	Bool isSrch = false;
 	UTF8Char c;
@@ -1327,9 +1327,9 @@ Bool IO::Path::IsSearchPattern(const UTF8Char *path)
 	return isSrch;
 }
 
-UTF8Char *IO::Path::GetRealPath(UTF8Char *sbuff, const UTF8Char *path, UOSInt pathLen)
+UnsafeArray<UTF8Char> IO::Path::GetRealPath(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> path, UOSInt pathLen)
 {
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (Text::StrStartsWithC(path, pathLen, UTF8STRC("~/")))
 	{
 		sptr = Text::StrConcatC(IO::Path::GetUserHome(sbuff), path + 1, pathLen - 1);
@@ -1339,7 +1339,7 @@ UTF8Char *IO::Path::GetRealPath(UTF8Char *sbuff, const UTF8Char *path, UOSInt pa
 		sptr = Text::StrConcatC(sbuff, path, pathLen);
 	}
 	Text::StrReplace(sbuff, '/', '\\');
-	UTF8Char *sptr2 = sbuff;
+	UnsafeArray<UTF8Char> sptr2 = sbuff;
 	UOSInt i;
 	while (true)
 	{

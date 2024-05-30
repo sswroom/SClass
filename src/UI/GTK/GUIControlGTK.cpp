@@ -118,7 +118,7 @@ void UI::GUIControl::SetText(Text::CStringNN text)
 	/////////////////////////////////
 }
 
-UTF8Char *UI::GUIControl::GetText(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> UI::GUIControl::GetText(UnsafeArray<UTF8Char> buff)
 {
 	////////////////////////////////
 	return 0;
@@ -299,7 +299,7 @@ void UI::GUIControl::InitFont()
 	PangoFontDescription *font = pango_font_description_new();
 	if (this->fontName)
 	{
-		pango_font_description_set_family(font, (const Char*)this->fontName->v);
+		pango_font_description_set_family(font, (const Char*)this->fontName->v.Ptr());
 	}
 	pango_font_description_set_absolute_size(font, this->fontHeightPt * this->hdpi / this->ddpi * PANGO_SCALE / 0.75);
 	if (this->fontIsBold)
@@ -318,7 +318,7 @@ void UI::GUIControl::InitFont()
 	GtkWidget *widget = (GtkWidget*)this->hwnd;
 	GtkStyleContext *style = gtk_widget_get_style_context(widget);
 	GtkCssProvider *styleProvider = gtk_css_provider_new();
-	gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString(), -1, 0);
+	gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString().Ptr(), -1, 0);
 	gtk_style_context_add_provider(style, (GtkStyleProvider*)styleProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
 	gtk_widget_reset_style(widget);
 #else
@@ -373,7 +373,7 @@ void UI::GUIControl::SetBGColor(UInt32 bgColor)
 	GtkWidget *widget = (GtkWidget*)this->hwnd;
 	GtkStyleContext *style = gtk_widget_get_style_context(widget);
 	GtkCssProvider *styleProvider = gtk_css_provider_new();
-	gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString(), -1, 0);
+	gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString().Ptr(), -1, 0);
 	gtk_style_context_add_provider(style, (GtkStyleProvider*)styleProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
 #else
 	if (bgColor)
@@ -476,14 +476,15 @@ void UI::GUIControl::UpdateFont()
 		
 		Text::CSSBuilder builder(Text::CSSBuilder::PM_SPACE);
 		builder.NewStyle(CSTR_NULL, CSTR_NULL);
-		if (family) builder.AddFontFamily((const UTF8Char*)family);
+		UnsafeArray<const UTF8Char> nnfamily;
+		if (nnfamily.Set((const UTF8Char*)family)) builder.AddFontFamily(nnfamily);
 		if (height != 0) builder.AddFontSize(height, Math::Unit::Distance::DU_PIXEL);
 		if (weight != 0) builder.AddFontWeight((Text::CSSBuilder::FontWeight)weight);
 
 		GtkWidget *widget = (GtkWidget*)this->hwnd;
 		GtkStyleContext *style = gtk_widget_get_style_context(widget);
 		GtkCssProvider *styleProvider = gtk_css_provider_new();
-		gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString(), -1, 0);
+		gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString().Ptr(), -1, 0);
 		gtk_style_context_add_provider(style, (GtkStyleProvider*)styleProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
 		gtk_widget_reset_style(widget);
 #else		

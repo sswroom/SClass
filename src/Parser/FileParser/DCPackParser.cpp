@@ -41,7 +41,7 @@ Optional<IO::ParsedObject> Parser::FileParser::DCPackParser::ParseFileHdr(NN<IO:
 	UInt32 thisSize;
 
 	UTF8Char name[49];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (ReadInt32(&hdr[0]) != 0x41544144 || ReadInt32(&hdr[4]) != 0x504f5424)
 	{

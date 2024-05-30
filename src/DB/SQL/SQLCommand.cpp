@@ -9,12 +9,12 @@
 //#define VERBOSE
 #include <stdio.h>
 
-Bool DB::SQL::SQLCommand::IsPunctuation(const UTF8Char *s)
+Bool DB::SQL::SQLCommand::IsPunctuation(UnsafeArray<const UTF8Char> s)
 {
 	return Text::CharUtil::IsPunctuation(s[0]) && s[1] == 0;
 }
 
-DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType sqlType)
+DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(UnsafeArray<const UTF8Char> sql, DB::SQLType sqlType)
 {
 #if defined(VERBOSE)
 	printf("SQLCommand: Cmd: %s\r\n", sql);
@@ -40,7 +40,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 			}
 			else if (IsPunctuation(sb.ToString()))
 			{
-				printf("SQLCommand: Expect tableName, now is %s\r\n", sb.ToString());
+				printf("SQLCommand: Expect tableName, now is %s\r\n", sb.ToPtr());
 			}
 			else
 			{
@@ -67,7 +67,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 						}
 						else if (IsPunctuation(sb.ToString()))
 						{
-							printf("SQLCommand: Expected column name, now is %s\r\n", sb.ToString());
+							printf("SQLCommand: Expected column name, now is %s\r\n", sb.ToPtr());
 							break;
 						}
 						if (sb.EqualsICase(UTF8STRC("PRIMARY")) && sqlType == DB::SQLType::SQLite)
@@ -75,13 +75,13 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 							sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 							if (!sb.EqualsICase(UTF8STRC("KEY")))
 							{
-								printf("SQLCommand: Expected key after primary, now is %s\r\n", sb.ToString());
+								printf("SQLCommand: Expected key after primary, now is %s\r\n", sb.ToPtr());
 								break;
 							}
 							sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 							if (!sb.Equals(UTF8STRC("(")))
 							{
-								printf("SQLCommand: Expected '(' after primary key, now is %s\r\n", sb.ToString());
+								printf("SQLCommand: Expected '(' after primary key, now is %s\r\n", sb.ToPtr());
 								break;
 							}
 							sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
@@ -91,7 +91,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 							{
 								if (sb.GetLength() == 0 || IsPunctuation(sb.ToString()))
 								{
-									printf("SQLCommand: Expected column name in primary key list, now is %s\r\n", sb.ToString());
+									printf("SQLCommand: Expected column name in primary key list, now is %s\r\n", sb.ToPtr());
 									err = true;
 									break;
 								}
@@ -118,7 +118,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 								}
 								else
 								{
-									printf("SQLCommand: Unexpected word in primary key list: %s\r\n", sb.ToString());
+									printf("SQLCommand: Unexpected word in primary key list: %s\r\n", sb.ToPtr());
 									err = true;
 									break;
 								}
@@ -138,7 +138,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 							}
 							else
 							{
-								printf("SQLCommand: Unknown word found: %s (After primary key)\r\n", sb.ToString());
+								printf("SQLCommand: Unknown word found: %s (After primary key)\r\n", sb.ToPtr());
 								break;
 							}
 						}
@@ -148,7 +148,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 							while (true)
 							{
 								sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
-								if (sql == 0)
+								if (*sql == 0)
 								{
 									break;
 								}
@@ -197,7 +197,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 							}
 							else if (sb.GetLength() == 0 || IsPunctuation(sb.ToString()))
 							{
-								printf("SQLCommand: Expected column type, now is %s\r\n", sb.ToString());
+								printf("SQLCommand: Expected column type, now is %s\r\n", sb.ToPtr());
 								col.Delete();
 								break;
 							}
@@ -209,7 +209,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 								DB::DBUtil::ColType colType = DB::DBUtil::ParseColType(sqlType, sb.ToString(), &colSize, &colDP);
 								if (colType == DB::DBUtil::CT_Unknown)
 								{
-									printf("SQLCommand: Unsupported column type: %s\r\n", sb.ToString());
+									printf("SQLCommand: Unsupported column type: %s\r\n", sb.ToPtr());
 									col.Delete();
 									break;
 								}
@@ -223,7 +223,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 								sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 								if (!sb.ToUOSInt(colSize))
 								{
-									printf("SQLCommand: Unexpected column size: %s\r\n", sb.ToString());
+									printf("SQLCommand: Unexpected column size: %s\r\n", sb.ToPtr());
 									col.Delete();
 									break;
 								}
@@ -234,7 +234,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 									sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 									if (!sb.ToUOSInt(colSize))
 									{
-										printf("SQLCommand: Unexpected column dp: %s\r\n", sb.ToString());
+										printf("SQLCommand: Unexpected column dp: %s\r\n", sb.ToPtr());
 										col.Delete();
 										break;
 									}
@@ -243,7 +243,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 								}
 								if (!sb.Equals(UTF8STRC(")")))
 								{
-									printf("SQLCommand: Unexpected word %s, expected ')'\r\n", sb.ToString());
+									printf("SQLCommand: Unexpected word %s, expected ')'\r\n", sb.ToPtr());
 									col.Delete();
 									break;
 								}
@@ -258,7 +258,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 									sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 									if (sb.GetLength() == 0 || IsPunctuation(sb.ToString()))
 									{
-										printf("SQLCommand: Unexpected constraint name: %s\r\n", sb.ToString());
+										printf("SQLCommand: Unexpected constraint name: %s\r\n", sb.ToPtr());
 										err = true;
 										break;
 									}
@@ -282,7 +282,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 									}
 									else
 									{
-										printf("SQLCommand: Expected 'key' after primary, now is %s\r\n", sb.ToString());
+										printf("SQLCommand: Expected 'key' after primary, now is %s\r\n", sb.ToPtr());
 										err = true;
 										break;
 									}
@@ -306,7 +306,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 									}
 									else
 									{
-										printf("SQLCommand: Expected 'NULL' after NOT, now is %s\r\n", sb.ToString());
+										printf("SQLCommand: Expected 'NULL' after NOT, now is %s\r\n", sb.ToPtr());
 										err = true;
 										break;
 									}
@@ -323,7 +323,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 											sql = SQLUtil::ParseNextWord(sql, sb, sqlType);
 											if (sb.GetLength() == 0)
 											{
-												printf("SQLCommand: Unexpected default value: %s\r\n", sb.ToString());
+												printf("SQLCommand: Unexpected default value: %s\r\n", sb.ToPtr());
 												err = true;
 												break;
 											}
@@ -355,7 +355,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 									}
 									else if (sb.GetLength() == 0 || IsPunctuation(sb.ToString()))
 									{
-										printf("SQLCommand: Unexpected default value: %s\r\n", sb.ToString());
+										printf("SQLCommand: Unexpected default value: %s\r\n", sb.ToPtr());
 										err = true;
 										break;
 									}
@@ -379,7 +379,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 								}
 								else
 								{
-									printf("SQLCommand: Unknown word found: %s (Column %s)\r\n", sb.ToString(), col->GetColName()->v);
+									printf("SQLCommand: Unknown word found: %s (Column %s)\r\n", sb.ToPtr(), col->GetColName()->v.Ptr());
 									err = true;
 									break;
 								}
@@ -402,12 +402,12 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::SQLType
 		}
 		else
 		{
-			printf("SQLCommand: Unknown word after create: %s\r\n", sb.ToString());
+			printf("SQLCommand: Unknown word after create: %s\r\n", sb.ToPtr());
 		}
 	}
 	else
 	{
-		printf("SQLCommand: Unknown word: %s\r\n", sb.ToString());
+		printf("SQLCommand: Unknown word: %s\r\n", sb.ToPtr());
 	}
 	return cmd;
 }

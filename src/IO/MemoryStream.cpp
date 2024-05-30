@@ -69,7 +69,7 @@ UOSInt IO::MemoryStream::Read(const Data::ByteArray &buff)
 	return readSize;
 }
 
-UOSInt IO::MemoryStream::Write(const UInt8 *buff, UOSInt size)
+UOSInt IO::MemoryStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	UOSInt endPos = this->currPtr + size;
 

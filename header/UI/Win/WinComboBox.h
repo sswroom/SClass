@@ -17,7 +17,7 @@ namespace UI
 			virtual ~WinComboBox();
 
 			virtual void SetText(Text::CStringNN text);
-			virtual UTF8Char *GetText(UTF8Char *buff);
+			virtual UnsafeArrayOpt<UTF8Char> GetText(UnsafeArray<UTF8Char> buff);
 			virtual Bool GetText(NN<Text::StringBuilderUTF8> sb);
 
 			virtual void BeginUpdate();

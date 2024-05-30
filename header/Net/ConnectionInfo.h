@@ -37,10 +37,10 @@ namespace Net
 		{
 		public:
 			UOSInt index;
-			const Char *internalName;
-			const UTF8Char *name;
-			const UTF8Char *description;
-			const UTF8Char *dnsSuffix;
+			UnsafeArrayOpt<const Char> internalName;
+			UnsafeArrayOpt<const UTF8Char> name;
+			UnsafeArrayOpt<const UTF8Char> description;
+			UnsafeArrayOpt<const UTF8Char> dnsSuffix;
 			Data::ArrayListUInt32 ipaddr;
 			Data::ArrayListUInt32 dnsaddr;
 			UInt32 defGW;
@@ -66,9 +66,9 @@ namespace Net
 
 		Bool SetInfo(void *info);
 
-		UTF8Char *GetName(UTF8Char *buff);
-		UTF8Char *GetDescription(UTF8Char *buff);
-		UTF8Char *GetDNSSuffix(UTF8Char *buff);
+		UnsafeArrayOpt<UTF8Char> GetName(UnsafeArray<UTF8Char> buff);
+		UnsafeArrayOpt<UTF8Char> GetDescription(UnsafeArray<UTF8Char> buff);
+		UnsafeArrayOpt<UTF8Char> GetDNSSuffix(UnsafeArray<UTF8Char> buff);
 
 		UInt32 GetIPAddress(UOSInt index);
 		UInt32 GetDNSAddress(UOSInt index);

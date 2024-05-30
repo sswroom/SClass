@@ -12,7 +12,7 @@ UInt32 Media::CS::CSUYVY_LRGBC::WorkerThread(AnyType obj)
 {
 	NN<CSUYVY_LRGBC> converter = obj.GetNN<CSUYVY_LRGBC>();
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt threadId = converter->currId;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("CSUYVY_LRGBC")), threadId);
 	Sync::ThreadUtil::SetName(CSTRP(sbuff, sptr));

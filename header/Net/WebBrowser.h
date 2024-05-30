@@ -19,12 +19,12 @@ namespace Net
 		Crypto::Hash::CRC32RIEEE hash;
 		Net::HTTPQueue queue;
 
-		UTF8Char *GetLocalFileName(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen);
+		UnsafeArrayOpt<UTF8Char> GetLocalFileName(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> url, UOSInt urlLen);
 	public:
 		WebBrowser(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CString cacheDir);
 		~WebBrowser();
 
-		IO::StreamData *GetData(Text::CStringNN url, Bool forceReload, UTF8Char *contentType);
+		IO::StreamData *GetData(Text::CStringNN url, Bool forceReload, UnsafeArrayOpt<UTF8Char> contentType);
 	};
 }
 #endif

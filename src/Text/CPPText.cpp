@@ -5,7 +5,7 @@
 #include "Text/MyStringW.h"
 #include "Text/Cpp/CppReader.h"
 
-void Text::CPPText::ToCPPString(NN<Text::StringBuilderUTF8> sb, const UTF8Char *str)
+void Text::CPPText::ToCPPString(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> str)
 {
 	UTF32Char c;
 	sb->AppendUTF8Char('\"');
@@ -97,9 +97,9 @@ void Text::CPPText::ToCPPString(NN<Text::StringBuilderUTF8> sb, const UTF8Char *
 	sb->AppendUTF8Char('\"');
 }
 
-void Text::CPPText::ToCPPString(NN<Text::StringBuilderUTF8> sb, const UTF8Char *str, UOSInt leng)
+void Text::CPPText::ToCPPString(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> str, UOSInt leng)
 {
-	const UTF8Char *strEnd = str + leng;
+	UnsafeArray<const UTF8Char> strEnd = str + leng;
 	UTF32Char c;
 	sb->AppendUTF8Char('\"');
 	while (str < strEnd)
@@ -199,7 +199,7 @@ void Text::CPPText::ToCPPString(NN<Text::StringBuilderUTF8> sb, const UTF8Char *
 	sb->AppendUTF8Char('\"');
 }
 
-void Text::CPPText::FromCPPString(NN<Text::StringBuilderUTF8> sb, const UTF8Char *str)
+void Text::CPPText::FromCPPString(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> str)
 {
 	Bool quoted = false;
 	UTF32Char c;
@@ -295,7 +295,7 @@ void Text::CPPText::FromCPPString(NN<Text::StringBuilderUTF8> sb, const UTF8Char
 	}
 }
 
-Bool Text::CPPText::ParseEnum(Data::ArrayListStringNN *enumEntries, Text::CString cppEnumStr, NN<Text::StringBuilderUTF8> sbPrefix)
+Bool Text::CPPText::ParseEnum(Data::ArrayListStringNN *enumEntries, Text::CStringNN cppEnumStr, NN<Text::StringBuilderUTF8> sbPrefix)
 {
 	IO::MemoryReadingStream mstm(cppEnumStr.v, cppEnumStr.leng);
 	Text::Cpp::CppReader reader(mstm);

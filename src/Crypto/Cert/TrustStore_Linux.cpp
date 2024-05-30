@@ -5,11 +5,11 @@
 NN<Crypto::Cert::CertStore> Crypto::Cert::TrustStore::Load()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Crypto::Cert::CertStore> store;
 	NEW_CLASSNN(store, Crypto::Cert::CertStore(CSTR("Default Trust Store")));
 	
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("trustcerts"));
 	store->LoadDir(CSTRP(sbuff, sptr));
 
@@ -20,7 +20,7 @@ NN<Crypto::Cert::CertStore> Crypto::Cert::TrustStore::Load()
 NN<Crypto::Cert::CertStore> Crypto::Cert::TrustStore::LoadJavaCA()
 {
 //	UTF8Char sbuff[512];
-//	UTF8Char *sptr;
+//	UnsafeArray<UTF8Char> sptr;
 	NN<Crypto::Cert::CertStore> store;
 	NEW_CLASSNN(store, Crypto::Cert::CertStore(CSTR("Java CACerts")));
 	

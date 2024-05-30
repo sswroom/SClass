@@ -366,7 +366,7 @@ Bool Media::JPEGFile::ParseJPEGHeaders(NN<IO::StreamData> fd, OutParam<Optional<
 				bo.Delete();
 				ofst += j + 4;
 			}
-			else if (buff[28] == 0 && Text::StrEquals((Char*)buff, "http://ns.adobe.com/xap/1.0/"))
+			else if (buff[28] == 0 && Text::StrEqualsCh((Char*)buff, "http://ns.adobe.com/xap/1.0/"))
 			{
 				Text::EncodingFactory encFact;
 				Data::ByteBuffer tagBuff(j - 29);

@@ -117,7 +117,7 @@ const UTF8Char *Net::SSHConn::GetActiveAlgorithm(SSHMethodType method)
 Bool Net::SSHConn::GetAuthMethods(Text::CStringNN userName, NN<Data::ArrayListStringNN> authMeth)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	const Char *userauthlist = libssh2_userauth_list(this->clsData->session, (const Char*)userName.v, (unsigned int)userName.leng);
+	const Char *userauthlist = libssh2_userauth_list(this->clsData->session, (const Char*)userName.v.Ptr(), (unsigned int)userName.leng);
 	if (userauthlist)
 	{
 #if defined(VERBOSE)
@@ -136,7 +136,7 @@ Bool Net::SSHConn::GetAuthMethods(Text::CStringNN userName, NN<Data::ArrayListSt
 Bool Net::SSHConn::AuthPassword(Text::CStringNN userName, Text::CStringNN password)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	int err = libssh2_userauth_password_ex(this->clsData->session, (const Char*)userName.v, (unsigned int)userName.leng, (const Char*)password.v, (unsigned int)password.leng, 0);
+	int err = libssh2_userauth_password_ex(this->clsData->session, (const Char*)userName.v.Ptr(), (unsigned int)userName.leng, (const Char*)password.v.Ptr(), (unsigned int)password.leng, 0);
 	this->lastError = err;
 #if defined(VERBOSE)
 	printf("SSHConn: User auth with password: %d (%s)\r\n", err, Net::SSHManager::ErrorGetName(err).v);
@@ -162,11 +162,11 @@ Optional<Net::SSHTCPChannel> Net::SSHConn::RemoteConnect(Optional<Socket> source
 		if (!this->sockf->GetRemoteAddr(nnsourceSoc, addr, port))
 			return 0;
 		Net::SocketUtil::GetAddrName(sbuff, addr);
-		channel = libssh2_channel_direct_tcpip_ex(this->clsData->session, (const Char*)remoteHost.v, remotePort, (const Char*)sbuff, port);
+		channel = libssh2_channel_direct_tcpip_ex(this->clsData->session, (const Char*)remoteHost.v.Ptr(), remotePort, (const Char*)sbuff, port);
 	}
 	else
 	{
-		channel = libssh2_channel_direct_tcpip_ex(this->clsData->session, (const Char*)remoteHost.v, remotePort, "127.0.0.1", remotePort);
+		channel = libssh2_channel_direct_tcpip_ex(this->clsData->session, (const Char*)remoteHost.v.Ptr(), remotePort, "127.0.0.1", remotePort);
 	}
 #if defined(VERBOSE)
 	if (channel)
@@ -217,10 +217,10 @@ Bool Net::SSHConn::ChannelTryRead(SSHChannelHandle *channel, UnsafeArray<UInt8> 
 	return true;
 }
 
-UOSInt Net::SSHConn::ChannelWrite(SSHChannelHandle *channel, const UInt8 *buff, UOSInt size)
+UOSInt Net::SSHConn::ChannelWrite(SSHChannelHandle *channel, UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	ssize_t sz = libssh2_channel_write_ex((LIBSSH2_CHANNEL*)channel, 0, (const Char*)buff, size);
+	ssize_t sz = libssh2_channel_write_ex((LIBSSH2_CHANNEL*)channel, 0, (const Char*)buff.Ptr(), size);
 	if (sz >= 0)
 	{
 #if defined(VERBOSE)

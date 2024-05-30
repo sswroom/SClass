@@ -223,7 +223,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 		UOSInt i;
 		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
-		i = Text::StrCharCnt((Char*)&tagData[8]) + 9;
+		i = Text::StrCharCnt((UTF8Char*)&tagData[8]) + 9;
 		sb->AppendC(UTF8STRC("\r\nProfile name = "));
 		sb->AppendSlow((UTF8Char*)&tagData[8]);
 		sb->AppendC(UTF8STRC("\r\nCompression Method = "));
@@ -312,14 +312,14 @@ UOSInt IO::FileAnalyse::PNGFileAnalyse::GetFrameIndex(UInt64 ofst)
 Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr2;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr2;
+	UnsafeArray<UTF8Char> sptr;
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<IO::FileAnalyse::PNGFileAnalyse::PNGTag> tag;
 	if (!this->tags.GetItem(index).SetTo(tag))
 		return 0;
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(tag->ofst, tag->size));
-	sptr = Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Tag"), index);
+	sptr = Text::StrUOSInt(Text::StrConcat(sbuff, U8STR("Tag")), index);
 	frame->AddHeader(CSTRP(sbuff, sptr));
 	frame->AddUInt(0, 4, CSTR("Size"), tag->size - 12);
 	frame->AddStrC(4, 4, CSTR("TagType"), (const UTF8Char*)&tag->tagType);
@@ -401,7 +401,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PNGFileAnalyse::GetFrame
 		UOSInt i;
 		Data::ByteBuffer tagData(tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
-		i = Text::StrCharCnt((Char*)&tagData[8]);
+		i = Text::StrCharCnt((UTF8Char*)&tagData[8]);
 		frame->AddStrS(8, i + 1, CSTR("Profile name"), &tagData[8]);
 		i += 9;
 		frame->AddUInt(i, 1, CSTR("Compression Method"), tagData[i]);
@@ -452,7 +452,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PNGFileAnalyse::GetFrame
 				sptr = Text::StrUInt16(sptr, tagData[j + 1]);
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)"B");
 				sptr = Text::StrUInt16(sptr, tagData[j + 2]);
-				frame->AddField(8 + j, 3, CSTRP(sbuff, sptr), {sptr2, (UOSInt)(sptr - sptr2)});
+				frame->AddField(8 + j, 3, CSTRP(sbuff, sptr), CSTRP(sptr2, sptr));
 				
 				i++;
 				j += 3;

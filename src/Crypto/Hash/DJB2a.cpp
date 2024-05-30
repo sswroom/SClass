@@ -17,7 +17,7 @@ Crypto::Hash::DJB2a::~DJB2a()
 {
 }
 
-UTF8Char *Crypto::Hash::DJB2a::GetName(UTF8Char *sbuff) const
+UnsafeArray<UTF8Char> Crypto::Hash::DJB2a::GetName(UnsafeArray<UTF8Char> sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("DJB2a"));
 }

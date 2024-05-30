@@ -42,7 +42,7 @@ namespace Net
 			virtual ~IWebRequest();
 
 			virtual Optional<Text::String> GetSHeader(Text::CStringNN name) const = 0;
-			virtual UTF8Char *GetHeader(UTF8Char *sbuff, Text::CStringNN name, UOSInt buffLen) const = 0;
+			virtual UnsafeArrayOpt<UTF8Char> GetHeader(UnsafeArray<UTF8Char> sbuff, Text::CStringNN name, UOSInt buffLen) const = 0;
 			virtual Bool GetHeaderC(NN<Text::StringBuilderUTF8> sb, Text::CStringNN name) const = 0;
 			virtual UOSInt GetHeaderNames(NN<Data::ArrayListStringNN> names) const = 0;
 			Bool GetRefererDomain(NN<Text::StringBuilderUTF8> sb) const;
@@ -51,11 +51,11 @@ namespace Net
 			Optional<Text::String> GetCookieAsNew(Text::CStringNN name) const;
 
 			virtual NN<Text::String> GetRequestURI() const = 0;
-			UTF8Char *GetRequestPath(UTF8Char *sbuff, UOSInt maxLeng);
-			UTF8Char *GetQueryString(UTF8Char *sbuff, UOSInt maxLeng);
+			UnsafeArray<UTF8Char> GetRequestPath(UnsafeArray<UTF8Char> sbuff, UOSInt maxLeng);
+			UnsafeArrayOpt<UTF8Char> GetQueryString(UnsafeArray<UTF8Char> sbuff, UOSInt maxLeng);
 			virtual RequestProtocol GetProtocol() const = 0;
 			virtual Optional<Text::String> GetQueryValue(Text::CStringNN name) = 0;
-			UTF8Char *GetQueryValueStr(Text::CStringNN name, UTF8Char *buff, UOSInt buffSize);
+			UnsafeArrayOpt<UTF8Char> GetQueryValueStr(Text::CStringNN name, UnsafeArray<UTF8Char> buff, UOSInt buffSize);
 			Bool GetQueryValueI16(Text::CStringNN name, OutParam<Int16> val);
 			Bool GetQueryValueU16(Text::CStringNN name, OutParam<UInt16> val);
 			Bool GetQueryValueI32(Text::CStringNN name, OutParam<Int32> val);
@@ -66,7 +66,7 @@ namespace Net
 			virtual Net::WebUtil::RequestMethod GetReqMethod() const = 0;
 			virtual void ParseHTTPForm() = 0;
 			virtual Optional<Text::String> GetHTTPFormStr(Text::CStringNN name) = 0;
-			virtual const UInt8 *GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, OptOut<UTF8Char*> fileNameEnd, OptOut<UOSInt> fileSize) = 0;
+			virtual const UInt8 *GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UnsafeArray<UTF8Char> fileName, UOSInt fileNameBuffSize, OptOut<UnsafeArray<UTF8Char>> fileNameEnd, OptOut<UOSInt> fileSize) = 0;
 			Bool GetHTTPFormInt16(Text::CStringNN name, OutParam<Int16> valOut);
 			Bool GetHTTPFormUInt16(Text::CStringNN name, OutParam<UInt16> valOut);
 			Bool GetHTTPFormInt32(Text::CStringNN name, OutParam<Int32> valOut);
@@ -75,7 +75,7 @@ namespace Net
 			Bool GetHTTPFormUInt64(Text::CStringNN name, OutParam<UInt64> valOut);
 			Bool GetHTTPFormDouble(Text::CStringNN name, OutParam<Double> valOut);
 			virtual void GetRequestURLBase(NN<Text::StringBuilderUTF8> sb) = 0;
-			UTF8Char *BuildURLHost(UTF8Char *sbuff);
+			UnsafeArray<UTF8Char> BuildURLHost(UnsafeArray<UTF8Char> sbuff);
 
 			virtual NN<const Net::SocketUtil::AddressInfo> GetClientAddr() const = 0;
 			virtual NN<Net::NetConnection> GetNetConn() const = 0;
@@ -85,7 +85,7 @@ namespace Net
 			virtual const UInt8 *GetReqData(OutParam<UOSInt> dataSize) = 0;
 			void GetRequestAddr(NN<Net::SocketUtil::AddressInfo> addr) const;
 
-			Text::CString GetReqMethodStr() const { return Net::WebUtil::RequestMethodGetName(this->GetReqMethod()); }
+			Text::CStringNN GetReqMethodStr() const { return Net::WebUtil::RequestMethodGetName(this->GetReqMethod()); }
 			Net::BrowserInfo::BrowserType GetBrowser() { if (!this->uaParsed) this->ParseUserAgent(); return this->reqBrowser; }
 			Text::CString GetBrowserVer() { if (!this->uaParsed) this->ParseUserAgent(); return this->reqBrowserVer; }
 			Manage::OSInfo::OSType GetOS() { if (!this->uaParsed) this->ParseUserAgent(); return this->reqOS; }

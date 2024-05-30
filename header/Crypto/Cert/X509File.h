@@ -157,39 +157,39 @@ namespace Crypto
 		protected:
 			static void AppendVersion(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb); // AuthenticationFramework
 
-			static void AppendAlgorithmIdentifier(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName, Bool pubKey, OptOut<KeyType> keyTypeOut); // PKCS-5
-			static void AppendValidity(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName); // AuthenticationFramework
-			static void AppendSubjectPublicKeyInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName); // AuthenticationFramework
-			static void AppendName(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName); // InformationFramework
-			static void AppendRelativeDistinguishedName(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName); // InformationFramework
-			static void AppendAttributeTypeAndDistinguishedValue(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName); // InformationFramework
-			static void AppendCRLExtensions(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName);
-			static void AppendCRLExtension(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName);
-			static void AppendMSOSVersion(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName);
-			static void AppendMSRequestClientInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName);
-			static void AppendMSEnrollmentCSPProvider(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName);
-			static void AppendGeneralNames(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName);
-			static Bool AppendGeneralName(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CString varName);
-			static Bool AppendDistributionPoint(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CString varName);
-			static void AppendDistributionPointName(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName);
-			static Bool AppendPolicyInformation(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CString varName);
-			static void AppendPKCS7SignedData(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName); // RFC2315
-			static void AppendPKCS7DigestAlgorithmIdentifiers(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName); // RFC2315
-			static void AppendPKCS7SignerInfos(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName); // RFC2315
-			static void AppendPKCS7SignerInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName); // RFC2315
-			static void AppendIssuerAndSerialNumber(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName); // RFC2315
-			static void AppendPKCS7Attributes(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName); // RFC2315
-			static Bool AppendMacData(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CString varName); // PKCS12
-			static void AppendDigestInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName); // RFC2315 / PKCS7
-			static void AppendData(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName, ContentDataType dataType);
+			static void AppendAlgorithmIdentifier(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName, Bool pubKey, OptOut<KeyType> keyTypeOut); // PKCS-5
+			static void AppendValidity(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName); // AuthenticationFramework
+			static void AppendSubjectPublicKeyInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName); // AuthenticationFramework
+			static void AppendName(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName); // InformationFramework
+			static void AppendRelativeDistinguishedName(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName); // InformationFramework
+			static void AppendAttributeTypeAndDistinguishedValue(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName); // InformationFramework
+			static void AppendCRLExtensions(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName);
+			static void AppendCRLExtension(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName);
+			static void AppendMSOSVersion(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName);
+			static void AppendMSRequestClientInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName);
+			static void AppendMSEnrollmentCSPProvider(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName);
+			static void AppendGeneralNames(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName);
+			static Bool AppendGeneralName(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName);
+			static Bool AppendDistributionPoint(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName);
+			static void AppendDistributionPointName(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName);
+			static Bool AppendPolicyInformation(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName);
+			static void AppendPKCS7SignedData(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName); // RFC2315
+			static void AppendPKCS7DigestAlgorithmIdentifiers(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName); // RFC2315
+			static void AppendPKCS7SignerInfos(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName); // RFC2315
+			static void AppendPKCS7SignerInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName); // RFC2315
+			static void AppendIssuerAndSerialNumber(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName); // RFC2315
+			static void AppendPKCS7Attributes(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName); // RFC2315
+			static Bool AppendMacData(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName); // PKCS12
+			static void AppendDigestInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName); // RFC2315 / PKCS7
+			static void AppendData(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName, ContentDataType dataType);
 			static void AppendEncryptedData(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName, ContentDataType dataType);
-			static void AppendAuthenticatedSafe(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName); //PKCS12
-			static void AppendEncryptedContentInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName, ContentDataType dataType);
+			static void AppendAuthenticatedSafe(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName); //PKCS12
+			static void AppendEncryptedContentInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName, ContentDataType dataType);
 
 			static Bool NameGetByOID(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, Text::CStringNN oidText, NN<Text::StringBuilderUTF8> sb);
-			static UTF8Char *NameGetByOID(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, Text::CStringNN oidText, UTF8Char *sbuff);
+			static UnsafeArrayOpt<UTF8Char> NameGetByOID(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, Text::CStringNN oidText, UnsafeArray<UTF8Char> sbuff);
 			static Bool NameGetCN(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb);
-			static UTF8Char *NameGetCN(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UTF8Char *sbuff);
+			static UnsafeArrayOpt<UTF8Char> NameGetCN(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<UTF8Char> sbuff);
 			static Bool NamesGet(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<CertNames> names);
 			static Bool ExtensionsGet(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<CertExtensions> ext);
 			static UOSInt ExtensionsGetCRLDistributionPoints(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, Data::ArrayList<Text::CString> *crlDistributionPoints);

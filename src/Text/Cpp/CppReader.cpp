@@ -95,7 +95,7 @@ Bool Text::Cpp::CppReader::ReadWord(NN<Text::StringBuilderUTF8> sb, Bool move)
 		this->sbLine.Trim();
 		this->currOfst = 0;
 	}
-	UTF8Char *sptr = this->sbLine.v;
+	UnsafeArray<UTF8Char> sptr = this->sbLine.v;
 	while (Text::CharUtil::IsWS(&sptr[this->currOfst]))
 	{
 		this->currOfst++;

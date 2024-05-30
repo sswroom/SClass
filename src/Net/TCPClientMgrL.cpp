@@ -254,7 +254,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(AnyType o)
 	Data::Timestamp lastCheckTime = 0;
 	UOSInt i;
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("TCPCliMgr")), stat->index);
 	Sync::ThreadUtil::SetName(CSTRP(sbuff, sptr));
 	{

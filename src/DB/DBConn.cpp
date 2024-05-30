@@ -31,7 +31,8 @@ Bool DB::DBConn::IsAxisAware() const
 Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString tableName)
 {
 	UTF8Char buff[256];
-	UTF8Char *ptr;
+	UnsafeArray<UTF8Char> ptr;
+	Text::CStringNN nns;
 	switch (this->GetSQLType())
 	{
 	case DB::SQLType::MySQL:
@@ -53,14 +54,13 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 
 		if (r->ReadNext())
 		{
-			ptr = r->GetStr(0, buff, sizeof(buff));
+			ptr = r->GetStr(0, buff, sizeof(buff)).Or(buff);
 			NEW_CLASS(tab, DB::TableDef(CSTR_NULL, CSTRP(buff, ptr)));
-			ptr = r->GetStr(1, buff, sizeof(buff));
-			if (ptr)
+			if (r->GetStr(1, buff, sizeof(buff)).SetTo(ptr))
 			{
 				tab->SetEngine(CSTRP(buff, ptr));
 			}
-			if (r->GetStr(17, buff, sizeof(buff)))
+			if (r->GetStr(17, buff, sizeof(buff)).NotNull())
 			{
 				tab->SetComments(buff);
 			}
@@ -68,7 +68,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 			{
 				tab->SetComments(0);
 			}
-			if (r->GetStr(16, buff, sizeof(buff)))
+			if (r->GetStr(16, buff, sizeof(buff)).NotNull())
 			{
 				tab->SetAttr(buff);
 			}
@@ -87,18 +87,18 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 		}
 		NN<DB::ColDef> col;
 		ptr = Text::StrConcatC(buff, UTF8STRC("desc "));
-		ptr = DB::DBUtil::SDBColUTF8(ptr, tableName.v, DB::SQLType::MySQL);
+		ptr = DB::DBUtil::SDBColUTF8(ptr, tableName.OrEmpty().v, DB::SQLType::MySQL);
 		if (this->ExecuteReader(CSTRP(buff, ptr)).SetTo(r))
 		{
 			while (r->ReadNext())
 			{
-				ptr = r->GetStr(0, buff, sizeof(buff));
+				ptr = r->GetStr(0, buff, sizeof(buff)).Or(buff);
 				NEW_CLASSNN(col, DB::ColDef(CSTRP(buff, ptr)));
-				ptr = r->GetStr(2, buff, sizeof(buff));
+				ptr = r->GetStr(2, buff, sizeof(buff)).Or(buff);
 				col->SetNotNull(Text::StrEqualsICaseC(buff, (UOSInt)(ptr - buff), UTF8STRC("NO")));
-				ptr = r->GetStr(3, buff, sizeof(buff));
+				ptr = r->GetStr(3, buff, sizeof(buff)).Or(buff);
 				col->SetPK(Text::StrEqualsICaseC(buff, (UOSInt)(ptr - buff), UTF8STRC("PRI")));
-				if ((ptr = r->GetStr(4, buff, sizeof(buff))) != 0)
+				if (r->GetStr(4, buff, sizeof(buff)).SetTo(ptr))
 				{
 					col->SetDefVal(CSTRP(buff, ptr));
 				}
@@ -106,7 +106,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 				{
 					col->SetDefVal(CSTR_NULL);
 				}
-				if ((ptr = r->GetStr(5, buff, sizeof(buff))) != 0)
+				if (r->GetStr(5, buff, sizeof(buff)).SetTo(ptr))
 				{
 					if (Text::StrEqualsC(buff, (UOSInt)(ptr - buff), UTF8STRC("auto_increment")))
 					{
@@ -122,7 +122,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 				{
 					col->SetAttr(CSTR_NULL);
 				}
-				ptr = r->GetStr(1, buff, sizeof(buff));
+				ptr = r->GetStr(1, buff, sizeof(buff)).Or(buff);
 				UOSInt colSize = 0;
 				UOSInt colDP = 0;
 				col->SetNativeType(CSTRP(buff, ptr));
@@ -181,11 +181,11 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 		NN<DB::ColDef> col;
 		while (r->ReadNext())
 		{
-			ptr = r->GetStr(3, buff, sizeof(buff));
+			ptr = r->GetStr(3, buff, sizeof(buff)).Or(buff);
 			NEW_CLASSNN(col, DB::ColDef(CSTRP(buff, ptr)));
 			col->SetNotNull(!r->GetBool(10));
 			col->SetPK(false);
-			if ((ptr = r->GetStr(12, buff, sizeof(buff))) != 0)
+			if (r->GetStr(12, buff, sizeof(buff)).SetTo(ptr))
 			{
 				if (*buff == '{')
 				{
@@ -199,7 +199,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 			}
 			UOSInt colSize = (UOSInt)r->GetInt32(6);
 			UOSInt colDP = (UOSInt)r->GetInt32(8);
-			ptr = r->GetStr(5, buff, sizeof(buff));
+			ptr = r->GetStr(5, buff, sizeof(buff)).Or(buff);
 			if (Text::StrEndsWithC(buff, (UOSInt)(ptr - buff), UTF8STRC(" identity")))
 			{
 				col->SetAutoInc(DB::ColDef::AutoIncType::Default, 1, 1);
@@ -216,15 +216,15 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("SELECT c.name AS column_name, i.name AS index_name, c.is_identity, IDENT_CURRENT('"));
-		sb.Append(tableName);
+		sb.AppendOpt(tableName);
 		sb.AppendC(UTF8STRC("'), IDENT_INCR('"));
-		sb.Append(tableName);
+		sb.AppendOpt(tableName);
 		sb.AppendC(UTF8STRC("') FROM sys.indexes i"));
 		sb.AppendC(UTF8STRC(" inner join sys.index_columns ic  ON i.object_id = ic.object_id AND i.index_id = ic.index_id"));
 		sb.AppendC(UTF8STRC(" inner join sys.columns c ON ic.object_id = c.object_id AND c.column_id = ic.column_id"));
 		sb.AppendC(UTF8STRC(" WHERE i.is_primary_key = 1"));
 		sb.AppendC(UTF8STRC(" and i.object_ID = OBJECT_ID('"));
-		sb.Append(tableName);
+		sb.AppendOpt(tableName);
 		sb.AppendC(UTF8STRC("')"));
 		tmpr = 0;
 		i = 4;
@@ -238,7 +238,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 		Data::ArrayIterator<NN<DB::ColDef>> it;
 		while (r->ReadNext())
 		{
-			ptr = r->GetStr(0, buff, sizeof(buff));
+			ptr = r->GetStr(0, buff, sizeof(buff)).Or(buff);
 			it = tab->ColIterator();
 			while (it.HasNext())
 			{
@@ -608,7 +608,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 				}
 				else
 				{
-					printf("ReadingDBTool.GetTableDef: PSQL Unknown type: %s\r\n", s->v);
+					printf("ReadingDBTool.GetTableDef: PSQL Unknown type: %s\r\n", s->v.Ptr());
 					col->SetColType(DB::DBUtil::CT_Unknown);
 				}
 				s->Release();
@@ -624,12 +624,12 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 
 		sql.Clear();
 		sql.AppendCmdC(CSTR("SELECT a.attname FROM pg_index i JOIN pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey) WHERE i.indrelid = "));
-		if (schemaName.leng > 0)
+		if (schemaName.SetTo(nns) && nns.leng > 0)
 		{
 			Text::StringBuilderUTF8 sb;
-			sb.Append(schemaName);
+			sb.Append(nns);
 			sb.AppendUTF8Char('.');
-			sb.Append(tableName);
+			sb.AppendOpt(tableName);
 			sql.AppendStrC(sb.ToCString());
 		}
 		else
@@ -641,8 +641,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 		{
 			while (r->ReadNext())
 			{
-				ptr = r->GetStr(0, buff, 256);
-				if (ptr)
+				if (r->GetStr(0, buff, 256).SetTo(ptr))
 				{
 					DB::ColDef *col = colMap.GetC(CSTRP(buff, ptr));
 					if (col)
@@ -751,7 +750,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 						}
 						else
 						{
-							printf("DBConn Postgresql: Unsupported type %s\r\n", s->v);
+							printf("DBConn Postgresql: Unsupported type %s\r\n", s->v.Ptr());
 							if (dimension == 3)
 								col->SetColSize((UOSInt)DB::ColDef::GeometryType::AnyZ);
 							else if (dimension == 4)
@@ -769,7 +768,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 			{
 				Text::StringBuilderUTF8 sb;
 				this->GetLastErrorMsg(sb);
-				printf("DBConn Postgresql: %s\r\n", sb.ToString());
+				printf("DBConn Postgresql: %s\r\n", sb.ToPtr());
 			}
 		}
 		OPTSTR_DEL(geometrySchema);

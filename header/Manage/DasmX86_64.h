@@ -91,7 +91,7 @@ namespace Manage
 			Data::ArrayListUInt64 *callAddrs;
 			Data::ArrayListUInt64 *jmpAddrs;
 			//Text::StringBuilderW *outStr;
-			UTF8Char *sbuff;
+			UnsafeArray<UTF8Char> sbuff;
 //			Bool isEnded;
 			EndType endType;
 			Int64 rspOfst;
@@ -133,7 +133,7 @@ namespace Manage
 
 		NN<DasmX86_64_Sess> StartDasm(Manage::AddressResolver *addrResol, void *addr, Manage::IMemoryReader *memReader);
 		void EndDasm(NN<DasmX86_64_Sess> sess);
-		UTF8Char *DasmNext(NN<DasmX86_64_Sess> sess, UTF8Char *buff);
+		UnsafeArrayOpt<UTF8Char> DasmNext(NN<DasmX86_64_Sess> sess, UnsafeArray<UTF8Char> buff);
 		OSInt SessGetCodeOffset(NN<DasmX86_64_Sess> sess);
 		EndType SessGetEndType(NN<DasmX86_64_Sess> sess);
 		Bool SessContJmp(NN<DasmX86_64_Sess> sess);

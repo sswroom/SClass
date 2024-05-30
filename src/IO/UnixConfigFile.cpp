@@ -22,16 +22,16 @@ IO::ConfigFile *IO::UnixConfigFile::Parse(Text::CStringNN fileName)
 IO::ConfigFile *IO::UnixConfigFile::ParseReader(NN<Text::UTF8Reader> reader)
 {
 	UTF8Char buff[1024];
-	UTF8Char *name;
-	UTF8Char *nameEnd;
-	UTF8Char *value;
-	UTF8Char *valueEnd;
-	UTF8Char *src;
+	UnsafeArray<UTF8Char> name;
+	UnsafeArray<UTF8Char> nameEnd;
+	UnsafeArray<UTF8Char> value;
+	UnsafeArray<UTF8Char> valueEnd;
+	UnsafeArray<UTF8Char> src;
 	UTF8Char c;
 	IO::ConfigFile *cfg;
 	UOSInt i;
 	NEW_CLASS(cfg, IO::ConfigFile());
-	while ((valueEnd = reader->ReadLine(buff, 1023)) != 0)
+	while (reader->ReadLine(buff, 1023).SetTo(valueEnd))
 	{
 		while (valueEnd > buff)
 		{
@@ -53,7 +53,6 @@ IO::ConfigFile *IO::UnixConfigFile::ParseReader(NN<Text::UTF8Reader> reader)
 		if (buff[i] != 0 && buff[i] != '#')
 		{
 			name = &buff[i];
-			value = 0;
 			src = &buff[i];
 			while (*src != '=')
 			{

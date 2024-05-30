@@ -24,8 +24,8 @@
 Map::CIPLayer2::CIPLayer2(Text::CStringNN layerName) : Map::MapDrawLayer(layerName, 0, CSTR_NULL, Math::CoordinateSystemManager::CreateWGS84Csys())
 {
 	UTF8Char fname[256];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	IO::BufferedInputStream *bstm;
 	sptr = layerName.ConcatTo(fname);
 	if (layerName.EndsWithICase(UTF8STRC(".CIP")))
@@ -221,7 +221,7 @@ UOSInt Map::CIPLayer2::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArra
 		NEW_CLASS(tmpArr, Data::Int32FastMap<UTF16Char*>());
 		*nameArr = (NameArray*)tmpArr;
 		UTF8Char fileName[256];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		sptr = this->layerName->ConcatTo(fileName);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".ciu"));
 		IO::FileStream cis({fileName, (UOSInt)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -370,7 +370,7 @@ UOSInt Map::CIPLayer2::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray *
 		NEW_CLASS(tmpArr, Data::Int32FastMap<UTF16Char*>());
 		*nameArr = (NameArray*)tmpArr;
 		UTF8Char fileName[256];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		IO::FileStream *cis;
 		sptr = this->layerName->ConcatTo(fileName);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".ciu"));
@@ -518,7 +518,7 @@ UOSInt Map::CIPLayer2::GetColumnCnt() const
 	return 1;
 }
 
-UTF8Char *Map::CIPLayer2::GetColumnName(UTF8Char *buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::CIPLayer2::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
 {
 	if (colIndex == 0)
 	{
@@ -680,7 +680,7 @@ void Map::CIPLayer2::ReleaseFileObjs(NN<Data::FastMapNN<Int32, Map::CIPLayer2::C
 Map::GetObjectSess *Map::CIPLayer2::BeginGetObject()
 {
 	UTF8Char fileName[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::FileStream *cip;
 	sptr = this->layerName->ConcatTo(fileName);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".cip"));

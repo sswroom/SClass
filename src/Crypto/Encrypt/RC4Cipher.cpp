@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Crypto/Encrypt/RC4Cipher.h"
 
-Crypto::Encrypt::RC4Cipher::RC4Cipher(const UInt8 *key, UOSInt keyLen)
+Crypto::Encrypt::RC4Cipher::RC4Cipher(UnsafeArray<const UInt8> key, UOSInt keyLen)
 {
 	this->SetKey(key, keyLen);
 }
@@ -10,7 +10,7 @@ Crypto::Encrypt::RC4Cipher::~RC4Cipher()
 {
 }
 
-void Crypto::Encrypt::RC4Cipher::SetKey(const UInt8 *key, UOSInt keyLen)
+void Crypto::Encrypt::RC4Cipher::SetKey(UnsafeArray<const UInt8> key, UOSInt keyLen)
 {
 	UOSInt i = 0;
 	while (i < 256)

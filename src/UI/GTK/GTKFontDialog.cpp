@@ -24,7 +24,7 @@ Bool UI::GTK::GTKFontDialog::ShowDialog(ControlHandle *ownerHandle)
 	NN<Text::String> s;
 	if (this->fontName.SetTo(s))
 	{
-		gtk_font_chooser_set_font((GtkFontChooser*)dlg, (const Char*)s->v);
+		gtk_font_chooser_set_font((GtkFontChooser*)dlg, (const Char*)s->v.Ptr());
 	}
 
 	Bool ret = false;

@@ -18,7 +18,7 @@ Crypto::Hash::SHA512::~SHA512()
 {
 }
 
-UTF8Char *Crypto::Hash::SHA512::GetName(UTF8Char *sbuff) const
+UnsafeArray<UTF8Char> Crypto::Hash::SHA512::GetName(UnsafeArray<UTF8Char> sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("SHA-512"));
 }

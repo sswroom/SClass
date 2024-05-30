@@ -992,7 +992,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(NN<IO::StreamDa
 						{
 							if (afmt.formatId == 255)
 							{
-								if (subAtomSize >= 0x2e && Text::StrEquals((Char*)&buff[bofst + 0x2f], "vorbis"))
+								if (subAtomSize >= 0x2e && Text::StrEqualsCh((Char*)&buff[bofst + 0x2f], "vorbis"))
 								{
 									afmt.formatId = 0x566f;
 									afmt.extraSize = subAtomSize - 49;

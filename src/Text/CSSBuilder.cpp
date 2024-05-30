@@ -16,26 +16,28 @@ Text::CSSBuilder::~CSSBuilder()
 
 Bool Text::CSSBuilder::NewStyle(Text::CString name, Text::CString className)
 {
+	Text::CStringNN nnname;
+	Text::CStringNN nnclassName;
 	this->EndStyle();
-	if (name.v == 0)
+	if (!name.SetTo(nnname))
 	{
-		if (className.v == 0)
+		if (!className.SetTo(nnclassName))
 		{
 			this->sb.AppendC(UTF8STRC("*"));
 		}
 		else
 		{
 			this->sb.AppendUTF8Char('.');
-			this->sb.Append(className);
+			this->sb.Append(nnclassName);
 		}
 	}
 	else
 	{
-		this->sb.Append(name);
-		if (className.v)
+		this->sb.Append(nnname);
+		if (className.SetTo(nnclassName))
 		{
 			this->sb.AppendUTF8Char('.');
-			this->sb.Append(className);
+			this->sb.Append(nnclassName);
 		}
 	}
 	if (this->pm != PM_COMPACT)
@@ -94,7 +96,7 @@ Bool Text::CSSBuilder::AddBGColorRGBA(UInt32 argb)
 	return true;
 }
 
-Bool Text::CSSBuilder::AddFontFamily(const UTF8Char *family)
+Bool Text::CSSBuilder::AddFontFamily(UnsafeArray<const UTF8Char> family)
 {
 	if (this->bstate == BS_ROOT) return false;
 	this->AppendStyleName(CSTR("font-family"));
@@ -151,10 +153,10 @@ Bool Text::CSSBuilder::AddMinHeight(Double h, Math::Unit::Distance::DistanceUnit
 	return true;
 }
 
-const UTF8Char *Text::CSSBuilder::ToString()
+UnsafeArray<UTF8Char> Text::CSSBuilder::ToString()
 {
 	this->EndStyle();
-	return this->sb.ToString();
+	return this->sb.v;
 }
 
 void Text::CSSBuilder::AppendNewLine()
@@ -162,7 +164,7 @@ void Text::CSSBuilder::AppendNewLine()
 	this->sb.AppendC(UTF8STRC("\r\n"));
 }
 
-void Text::CSSBuilder::AppendStyleName(Text::CString name)
+void Text::CSSBuilder::AppendStyleName(Text::CStringNN name)
 {
 	this->NextEntry();
 	if (this->pm == PM_LINES)

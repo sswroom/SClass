@@ -170,13 +170,13 @@ Crypto::Token::JWToken::VerifyType Crypto::Token::JWToken::GetVerifyType(NN<JWTP
 
 }
 
-Bool Crypto::Token::JWToken::SignatureValid(Optional<Net::SSLEngine> ssl, const UInt8 *key, UOSInt keyLeng, Crypto::Cert::X509Key::KeyType keyType)
+Bool Crypto::Token::JWToken::SignatureValid(Optional<Net::SSLEngine> ssl, UnsafeArray<const UInt8> key, UOSInt keyLeng, Crypto::Cert::X509Key::KeyType keyType)
 {
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
 	Text::StringBuilderUTF8 sb;
-	b64.EncodeBin(sb, this->header->v, this->header->leng);
+	b64.EncodeBin(sb, this->header->v.Ptr(), this->header->leng);
 	sb.AppendUTF8Char('.');
-	b64.EncodeBin(sb, this->payload->v, this->payload->leng);
+	b64.EncodeBin(sb, this->payload->v.Ptr(), this->payload->leng);
 	Crypto::Token::JWSignature sign(ssl, this->alg, key, keyLeng, keyType);
 	return sign.VerifyHash(sb.v, sb.leng, this->sign, this->signSize);
 }
@@ -300,9 +300,9 @@ void Crypto::Token::JWToken::FreeResult(Data::StringMap<Text::String*> *result)
 void Crypto::Token::JWToken::ToString(NN<Text::StringBuilderUTF8> sb) const
 {
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
-	b64.EncodeBin(sb, this->header->v, this->header->leng);
+	b64.EncodeBin(sb, this->header->v.Ptr(), this->header->leng);
 	sb->AppendUTF8Char('.');
-	b64.EncodeBin(sb, this->payload->v, this->payload->leng);
+	b64.EncodeBin(sb, this->payload->v.Ptr(), this->payload->leng);
 	sb->AppendUTF8Char('.');
 	b64.EncodeBin(sb, this->sign, this->signSize);
 }
@@ -310,7 +310,7 @@ void Crypto::Token::JWToken::ToString(NN<Text::StringBuilderUTF8> sb) const
 Crypto::Token::JWToken *Crypto::Token::JWToken::Generate(JWSignature::Algorithm alg, Text::CStringNN payload, Optional<Net::SSLEngine> ssl, const UInt8 *key, UOSInt keyLeng, Crypto::Cert::X509Key::KeyType keyType)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("{\"alg\":\""));
 	sptr = JWSignature::AlgorithmGetName(alg).ConcatTo(sptr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\",\"typ\":\"JWT\"}"));
@@ -319,7 +319,7 @@ Crypto::Token::JWToken *Crypto::Token::JWToken::Generate(JWSignature::Algorithm 
 	b64.EncodeBin(sb, sbuff, (UOSInt)(sptr - sbuff));
 	sb.AppendUTF8Char('.');
 
-	b64.EncodeBin(sb, payload.v, payload.leng);
+	b64.EncodeBin(sb, payload.v.Ptr(), payload.leng);
 	Crypto::Token::JWSignature sign(ssl, alg, key, keyLeng, keyType);
 	if (!sign.CalcHash(sb.ToString(), sb.GetLength()))
 	{
@@ -444,7 +444,7 @@ Text::CStringNN Crypto::Token::JWToken::PayloadName(Text::CStringNN key)
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		l = key.CompareToFast(Text::CString(payloadNames[k].key, payloadNames[k].keyLen));
+		l = key.CompareToFast(Text::CStringNN(payloadNames[k].key, payloadNames[k].keyLen));
 		if (l > 0)
 		{
 			i = k + 1;

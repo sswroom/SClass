@@ -8,7 +8,7 @@
 void Crypto::Hash::Bcrypt::CalcHash(UInt32 cost, const UInt8 *salt, Text::CStringNN password, UInt8 *hashBuff) const
 {
 	Crypto::Encrypt::Blowfish bf;
-	bf.EksBlowfishSetup(cost, salt, password.v, password.leng);
+	bf.EksBlowfishSetup(cost, salt, password);
 	bf.SetChainMode(Crypto::Encrypt::ChainMode::ECB);
 	UInt32 tmpBuff[6];
 	const UInt8 *initVal = (const UInt8*)"OrpheanBeholderScryDoubt";

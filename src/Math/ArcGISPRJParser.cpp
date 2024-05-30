@@ -5,7 +5,7 @@
 #include "Math/Mercator1SPProjectedCoordinateSystem.h"
 #include "Math/MercatorProjectedCoordinateSystem.h"
 
-Bool Math::ArcGISPRJParser::ParsePRJString(UTF8Char *prjBuff, UOSInt *strSize)
+Bool Math::ArcGISPRJParser::ParsePRJString(UnsafeArray<UTF8Char> prjBuff, OutParam<UOSInt> strSize)
 {
 	UOSInt i;
 	UTF8Char c;
@@ -20,7 +20,7 @@ Bool Math::ArcGISPRJParser::ParsePRJString(UTF8Char *prjBuff, UOSInt *strSize)
 		if (c == '\"')
 		{
 			i++;
-			*strSize = i;
+			strSize.Set(i);
 			return true;
 		}
 		i++;
@@ -37,7 +37,7 @@ Math::ArcGISPRJParser::~ArcGISPRJParser()
 
 }
 
-Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJFile(Text::CStringNN fileName)
+Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJFile(Text::CStringNN fileName)
 {
 	UInt8 buff[512];
 	UOSInt buffSize;
@@ -53,10 +53,10 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJFile(Text::CStringNN file
 	if (buffSize == 511)
 		return 0;
 
-	return ParsePRJBuff(fileName, buff, buffSize, &buffSize);
+	return ParsePRJBuff(fileName, UARR(buff), buffSize, buffSize);
 }
 
-Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sourceName, UTF8Char *prjBuff, UOSInt buffSize, UOSInt *parsedSize)
+Optional<Math::CoordinateSystem> Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sourceName, UnsafeArray<UTF8Char> prjBuff, UOSInt buffSize, OptOut<UOSInt> parsedSize)
 {
 	UOSInt i;
 	UOSInt j;
@@ -69,7 +69,7 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sour
 	Double f_1 = 0;
 	Math::CoordinateSystem *csys = 0;
 	Math::EarthEllipsoid::EarthEllipsoidType eet;
-	Math::GeographicCoordinateSystem *gcs = 0;
+	Optional<Math::GeographicCoordinateSystem> gcs = 0;
 	Math::GeographicCoordinateSystem::PrimemType primem = Math::GeographicCoordinateSystem::PT_GREENWICH;
 	Math::GeographicCoordinateSystem::UnitType unit = Math::GeographicCoordinateSystem::UT_DEGREE;
 	UTF8Char c;
@@ -77,7 +77,7 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sour
 	if (Text::StrStartsWithC(prjBuff, buffSize, UTF8STRC("GEOGCS[")))
 	{
 		i = 7;
-		if (!ParsePRJString(&prjBuff[i], &nameLen))
+		if (!ParsePRJString(&prjBuff[i], nameLen))
 			return 0;
 		nameOfst = i + 1;
 		prjBuff[i + nameLen - 1] = 0;
@@ -96,7 +96,7 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sour
 				if (Text::StrStartsWithC(&prjBuff[i], buffSize - i, UTF8STRC("DATUM[")))
 				{
 					i += 6;
-					if (!ParsePRJString(&prjBuff[i], &datumLen))
+					if (!ParsePRJString(&prjBuff[i], datumLen))
 						return 0;
 					datumOfst = i + 1;
 					prjBuff[i + datumLen - 1] = 0;
@@ -118,7 +118,7 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sour
 							if (Text::StrStartsWithC(&prjBuff[i], buffSize - i, UTF8STRC("SPHEROID[")))
 							{
 								i += 9;
-								if (!ParsePRJString(&prjBuff[i], &j))
+								if (!ParsePRJString(&prjBuff[i], j))
 									return 0;
 								prjBuff[i + j - 1] = 0;
 								i += j;
@@ -172,7 +172,7 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sour
 				else if (Text::StrStartsWithC(&prjBuff[i], buffSize - i, UTF8STRC("PRIMEM[")))
 				{
 					i += 7;
-					if (!ParsePRJString(&prjBuff[i], &j))
+					if (!ParsePRJString(&prjBuff[i], j))
 						return 0;
 					i += j;
 					while (true)
@@ -191,7 +191,7 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sour
 				else if (Text::StrStartsWithC(&prjBuff[i], buffSize - i, UTF8STRC("UNIT[")))
 				{
 					i += 5;
-					if (!ParsePRJString(&prjBuff[i], &j))
+					if (!ParsePRJString(&prjBuff[i], j))
 						return 0;
 					i += j;
 					while (true)
@@ -221,10 +221,7 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sour
 		{
 			return 0;
 		}
-		if (parsedSize)
-		{
-			*parsedSize = i;
-		}
+		parsedSize.Set(i);
 		eet = Math::EarthEllipsoid::EET_OTHER;
 		if (a == 6378137.0 && f_1 == 298.257223563)
 		{
@@ -285,7 +282,7 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sour
 		Bool commaFound;
 
 		i = 7;
-		if (!ParsePRJString(&prjBuff[i], &nameLen))
+		if (!ParsePRJString(&prjBuff[i], nameLen))
 			return 0;
 		nameOfst = i + 1;
 		prjBuff[i + nameLen - 1] = 0;
@@ -303,8 +300,8 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sour
 				i++;
 				if (Text::StrStartsWithC(&prjBuff[i], buffSize - i, UTF8STRC("GEOGCS[")))
 				{
-					gcs = (Math::GeographicCoordinateSystem *)ParsePRJBuff(sourceName, &prjBuff[i], buffSize - i, &j);
-					if (gcs == 0)
+					gcs = Optional<Math::GeographicCoordinateSystem>::ConvertFrom(ParsePRJBuff(sourceName, &prjBuff[i], buffSize - i, j));
+					if (gcs.IsNull())
 						return 0;
 					i += j;
 				}
@@ -327,16 +324,16 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sour
 					}
 					else
 					{
-						SDEL_CLASS(gcs);
+						gcs.Delete();
 						return 0;
 					}
 				}
 				else if (Text::StrStartsWithC(&prjBuff[i], buffSize - i, UTF8STRC("PARAMETER[")))
 				{
 					i += 10;
-					if (!ParsePRJString(&prjBuff[i], &j))
+					if (!ParsePRJString(&prjBuff[i], j))
 					{
-						SDEL_CLASS(gcs);
+						gcs.Delete();
 						return 0;
 					}
 					nOfst = i + 1;
@@ -345,7 +342,7 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sour
 					i += j;
 					if (prjBuff[i] != ',')
 					{
-						SDEL_CLASS(gcs);
+						gcs.Delete();
 						return 0;
 					}
 					vOfst = i + 1;
@@ -355,7 +352,7 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sour
 						c = prjBuff[i];
 						if (c == 0 || c == ',')
 						{
-							SDEL_CLASS(gcs);
+							gcs.Delete();
 							return 0;
 						}
 						else if (c == ']')
@@ -384,7 +381,7 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sour
 							}
 							else
 							{
-								SDEL_CLASS(gcs);
+								gcs.Delete();
 								return 0;
 							}
 							break;
@@ -398,9 +395,9 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sour
 				else if (Text::StrStartsWithC(&prjBuff[i], buffSize - i, UTF8STRC("UNIT[")))
 				{
 					i += 5;
-					if (!ParsePRJString(&prjBuff[i], &j))
+					if (!ParsePRJString(&prjBuff[i], j))
 					{
-						SDEL_CLASS(gcs);
+						gcs.Delete();
 						return 0;
 					}
 					i += j;
@@ -413,7 +410,7 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sour
 							i++;
 							if (commaFound)
 							{
-								SDEL_CLASS(gcs);
+								gcs.Delete();
 								return 0;
 							}
 							commaFound = true;
@@ -423,14 +420,14 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sour
 							i++;
 							if (!commaFound)
 							{
-								SDEL_CLASS(gcs);
+								gcs.Delete();
 								return 0;
 							}
 							break;
 						}
 						else if (c == 0)
 						{
-							SDEL_CLASS(gcs);
+							gcs.Delete();
 							return 0;
 						}
 						else
@@ -441,26 +438,23 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sour
 				}
 				else
 				{
-					SDEL_CLASS(gcs);
+					gcs.Delete();
 					return 0;
 				}
 			}
 			else
 			{
-				SDEL_CLASS(gcs);
+				gcs.Delete();
 				return 0;
 			}
 		}
 		NN<Math::GeographicCoordinateSystem> nngcs;
-		if (cst == Math::CoordinateSystem::CoordinateSystemType::Geographic || falseEasting == -1 || falseNorthing == -1 || centralMeridian == -1 || scaleFactor == -1 || latitudeOfOrigin == -1 || !nngcs.Set(gcs))
+		if (cst == Math::CoordinateSystem::CoordinateSystemType::Geographic || falseEasting == -1 || falseNorthing == -1 || centralMeridian == -1 || scaleFactor == -1 || latitudeOfOrigin == -1 || !gcs.SetTo(nngcs))
 		{
-			SDEL_CLASS(gcs);
+			gcs.Delete();
 			return 0;
 		}
-		if (parsedSize)
-		{
-			*parsedSize = i;
-		}
+		parsedSize.Set(i);
 		srid = this->csys.GuessSRIDProj(Text::CStringNN(&prjBuff[nameOfst], nameLen - 2));
 		if (cst == Math::CoordinateSystem::CoordinateSystemType::MercatorProjected || cst == Math::CoordinateSystem::CoordinateSystemType::GausskrugerProjected)
 		{
@@ -474,7 +468,7 @@ Math::CoordinateSystem *Math::ArcGISPRJParser::ParsePRJBuff(Text::CStringNN sour
 		}
 		else
 		{
-			SDEL_CLASS(gcs);
+			gcs.Delete();
 			return 0;
 		}
 	}

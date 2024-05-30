@@ -45,7 +45,7 @@ Media::FBSurface::FBSurface(MonitorHandle *hMon, const Media::ColorProfile *colo
 	this->clsData->ttyfd = -1;
 	this->clsData->bugHandleMode = false;
 	Char sbuff[64];
-	Text::StrUOSInt(Text::StrConcat(sbuff, "/dev/fb"), ((UOSInt)hMon) - 1);
+	Text::StrUOSInt(Text::StrConcat(UARR(sbuff), "/dev/fb"), ((UOSInt)hMon) - 1);
 	this->clsData->fd = open(sbuff, O_RDWR);
 	if (this->clsData->fd < 0)
 	{

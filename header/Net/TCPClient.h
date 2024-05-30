@@ -30,12 +30,12 @@ namespace Net
 
 		virtual Bool IsDown() const;
 		virtual UOSInt Read(const Data::ByteArray &buff);
-		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
+		virtual UOSInt Write(UnsafeArray<const UInt8> buff, UOSInt size);
 
 		virtual void *BeginRead(const Data::ByteArray &buff, Sync::Event *evt);
 		virtual UOSInt EndRead(void *reqData, Bool toWait, OutParam<Bool> incomplete);
 		virtual void CancelRead(void *reqData);
-		virtual void *BeginWrite(const UInt8 *buff, UOSInt size, Sync::Event *evt);
+		virtual void *BeginWrite(UnsafeArray<const UInt8> buff, UOSInt size, Sync::Event *evt);
 		virtual UOSInt EndWrite(void *reqData, Bool toWait);
 		virtual void CancelWrite(void *reqData);
 
@@ -53,8 +53,8 @@ namespace Net
 		Bool Wait(Data::Duration dur);
 
 		UInt64 GetCliId();
-		virtual UTF8Char *GetRemoteName(UTF8Char *buff) const;
-		virtual UTF8Char *GetLocalName(UTF8Char *buff) const;
+		virtual UnsafeArrayOpt<UTF8Char> GetRemoteName(UnsafeArray<UTF8Char> buff) const;
+		virtual UnsafeArrayOpt<UTF8Char> GetLocalName(UnsafeArray<UTF8Char> buff) const;
 		virtual Bool GetRemoteAddr(NN<Net::SocketUtil::AddressInfo> addr) const;
 		virtual UInt16 GetRemotePort() const;
 		virtual UInt16 GetLocalPort() const;

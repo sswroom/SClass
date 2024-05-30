@@ -166,7 +166,7 @@ void Data::UUID::ToString(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendHexBuffLC(&this->data[10], 6, 0, Text::LineBreakType::None);
 }
 
-UTF8Char *Data::UUID::ToString(UTF8Char *sbuff) const
+UnsafeArray<UTF8Char> Data::UUID::ToString(UnsafeArray<UTF8Char> sbuff) const
 {
 	sbuff = Text::StrHexVal32LC(sbuff, ReadUInt32(&this->data[0]));
 	*sbuff++ = '-';

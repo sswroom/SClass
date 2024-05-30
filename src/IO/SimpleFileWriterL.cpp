@@ -4,11 +4,11 @@
 #include "Text/MyString.h"
 #include <stdio.h>
 
-UOSInt IO::SimpleFileWriter::WriteBuff(const UInt8 *buff, UOSInt size)
+UOSInt IO::SimpleFileWriter::WriteBuff(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	if (handle == 0)
 		return 0;
-	UOSInt writeSize = fwrite(buff, 1, size, (FILE*)handle);
+	UOSInt writeSize = fwrite(buff.Ptr(), 1, size, (FILE*)handle);
 	return writeSize;
 }
 

@@ -13,10 +13,10 @@ void Text::JSONBuilder::AppendStr(Text::CStringNN val)
 	this->AppendStrUTF8(val.v);
 }
 
-void Text::JSONBuilder::AppendStrUTF8(const UTF8Char *val)
+void Text::JSONBuilder::AppendStrUTF8(UnsafeArray<const UTF8Char> val)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UTF8Char c;
 	sptr = sbuff;
 	*sptr++ = '\"';
@@ -75,7 +75,7 @@ void Text::JSONBuilder::AppendStrUTF8(const UTF8Char *val)
 void Text::JSONBuilder::AppendStrW(const WChar *val)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UTF32Char c;
 	sptr = sbuff;
 	*sptr++ = '\"';
@@ -135,7 +135,7 @@ void Text::JSONBuilder::AppendDouble(Double val)
 void Text::JSONBuilder::AppendTSStr(Data::Timestamp ts)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (ts.IsNull())
 	{
 		this->sb.AppendC(UTF8STRC("null"));
@@ -150,7 +150,7 @@ void Text::JSONBuilder::AppendTSStr(Data::Timestamp ts)
 void Text::JSONBuilder::AppendDateStr(Data::Date dat)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (dat.IsNull())
 	{
 		this->sb.AppendC(UTF8STRC("null"));
@@ -300,7 +300,7 @@ void Text::JSONBuilder::AppendGeometry(NN<Math::Geometry::Vector2D> vec)
 	else
 	{
 		this->sb.AppendC(UTF8STRC("null"));
-		printf("JSONBuilder: Unsupport Geometry Type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vecType).v);
+		printf("JSONBuilder: Unsupport Geometry Type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vecType).v.Ptr());
 	}
 }
 
@@ -427,13 +427,14 @@ Bool Text::JSONBuilder::ArrayAddStr(Text::CString val)
 	{
 		this->sb.AppendC(UTF8STRC(","));
 	}
-	if (val.v == 0)
+	Text::CStringNN nnval;
+	if (!val.SetTo(nnval))
 	{
 		this->sb.AppendC(UTF8STRC("null"));
 	}
 	else
 	{
-		this->AppendStrUTF8(val.v);
+		this->AppendStrUTF8(nnval.v);
 	}
 	return true;
 }
@@ -452,7 +453,7 @@ Bool Text::JSONBuilder::ArrayAddStr(NN<Text::String> val)
 	return true;
 }
 
-Bool Text::JSONBuilder::ArrayAddStrUTF8(const UTF8Char *val)
+Bool Text::JSONBuilder::ArrayAddStrUTF8(UnsafeArrayOpt<const UTF8Char> val)
 {
 	if (this->currType != OT_ARRAY)
 		return false;
@@ -462,13 +463,14 @@ Bool Text::JSONBuilder::ArrayAddStrUTF8(const UTF8Char *val)
 	{
 		this->sb.AppendC(UTF8STRC(","));
 	}
-	if (val == 0)
+	UnsafeArray<const UTF8Char> nnval;
+	if (!val.SetTo(nnval))
 	{
 		this->sb.AppendC(UTF8STRC("null"));
 	}
 	else
 	{
-		this->AppendStrUTF8(val);
+		this->AppendStrUTF8(nnval);
 	}
 	return true;
 }
@@ -809,7 +811,7 @@ Bool Text::JSONBuilder::ObjectAddStrOpt(Text::CStringNN name, Optional<Text::Str
 	return true;
 }
 
-Bool Text::JSONBuilder::ObjectAddStrUTF8(Text::CStringNN name, const UTF8Char *val)
+Bool Text::JSONBuilder::ObjectAddStrUTF8(Text::CStringNN name, UnsafeArrayOpt<const UTF8Char> val)
 {
 	if (this->currType != OT_OBJECT)
 		return false;
@@ -821,13 +823,14 @@ Bool Text::JSONBuilder::ObjectAddStrUTF8(Text::CStringNN name, const UTF8Char *v
 	}
 	this->AppendStr(name);
 	this->sb.AppendC(UTF8STRC(":"));
-	if (val == 0)
+	UnsafeArray<const UTF8Char> nnval;
+	if (!val.SetTo(nnval))
 	{
 		this->sb.AppendC(UTF8STRC("null"));
 	}
 	else
 	{
-		this->AppendStrUTF8(val);
+		this->AppendStrUTF8(nnval);
 	}
 	return true;
 }

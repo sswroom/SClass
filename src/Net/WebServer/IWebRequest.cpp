@@ -19,13 +19,14 @@ void Net::WebServer::IWebRequest::ParseUserAgent()
 	{
 		return;
 	}
-	const Net::UserAgentDB::UAEntry *ent = Net::UserAgentDB::GetUserAgentInfo(uaHdr->v);
-	if (ent)
+	NN<const Net::UserAgentDB::UAEntry> ent;
+	UnsafeArray<const UTF8Char> nns;
+	if (Net::UserAgentDB::GetUserAgentInfo(uaHdr->v).SetTo(ent))
 	{
 		this->reqBrowser = ent->browser;
-		if (ent->browserVer)
+		if (ent->browserVer.SetTo(nns))
 		{
-			this->reqBrowserVer.v = Text::StrCopyNewC(ent->browserVer, ent->browserVerLen).Ptr();
+			this->reqBrowserVer.v = Text::StrCopyNewC(nns, ent->browserVerLen);
 			this->reqBrowserVer.leng = ent->browserVerLen;
 		}
 		else
@@ -33,24 +34,24 @@ void Net::WebServer::IWebRequest::ParseUserAgent()
 			this->reqBrowserVer = CSTR_NULL;
 		}
 		this->reqOS = ent->os;
-		if (ent->osVer)
+		if (ent->osVer.SetTo(nns))
 		{
-			this->reqOSVer.v = Text::StrCopyNewC(ent->osVer, ent->osVerLen).Ptr();
+			this->reqOSVer.v = Text::StrCopyNewC(nns, ent->osVerLen);
 			this->reqOSVer.leng = ent->osVerLen;
 		}
 		else
 		{
 			this->reqOSVer = CSTR_NULL;
 		}
-		if (ent->devName)
+		if (ent->devName.SetTo(nns))
 		{
-			this->reqDevModel.v = Text::StrCopyNewC(ent->devName, ent->devNameLen).Ptr();
+			this->reqDevModel.v = Text::StrCopyNewC(nns, ent->devNameLen);
 			this->reqDevModel.leng = ent->devNameLen;
 		}
 		return;
 	}
 	Net::UserAgentDB::UAEntry ua;
-	Net::UserAgentDB::ParseUserAgent(&ua, uaHdr->ToCString());
+	Net::UserAgentDB::ParseUserAgent(ua, uaHdr->ToCString());
 	this->reqBrowser = ua.browser;
 	this->reqBrowserVer = {ua.browserVer, ua.browserVerLen};
 	this->reqOS = ua.os;
@@ -79,21 +80,14 @@ Bool Net::WebServer::IWebRequest::GetRefererDomain(NN<Text::StringBuilderUTF8> s
 {
 	NN<Text::String> hdr;
 	UTF8Char domain[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (!this->GetSHeader(CSTR("Referer")).SetTo(hdr))
 	{
 		return false;
 	}
 	sptr = Text::URLString::GetURLDomain(domain, hdr->ToCString(), 0);
-	if (sptr == 0)
-	{
-		return false;
-	}
-	else
-	{
-		sb->AppendC(domain, (UOSInt)(sptr - domain));
-		return true;
-	}
+	sb->AppendC(domain, (UOSInt)(sptr - domain));
+	return true;
 }
 
 Bool Net::WebServer::IWebRequest::GetIfModifiedSince(NN<Data::DateTime> dt) const
@@ -117,12 +111,12 @@ Bool Net::WebServer::IWebRequest::GetCookie(Text::CStringNN name, NN<Text::Strin
 		return 0;
 	}
 
-	UTF8Char *sbuff;
+	UnsafeArray<UTF8Char> sbuff;
 	Text::PString strs[2];
 	UOSInt strCnt = 2;
 	Bool found = false;
 
-	sbuff = MemAlloc(UTF8Char, cookie->leng + 1);
+	sbuff = MemAllocArr(UTF8Char, cookie->leng + 1);
 	cookie->ConcatTo(sbuff);
 
 	strs[1].v = sbuff;
@@ -137,7 +131,7 @@ Bool Net::WebServer::IWebRequest::GetCookie(Text::CStringNN name, NN<Text::Strin
 			break;
 		}
 	}
-	MemFree(sbuff);
+	MemFreeArr(sbuff);
 	return found;
 }
 
@@ -149,12 +143,12 @@ Optional<Text::String> Net::WebServer::IWebRequest::GetCookieAsNew(Text::CString
 		return 0;
 	}
 
-	UTF8Char *sbuff;
+	UnsafeArray<UTF8Char> sbuff;
 	Text::PString strs[2];
 	UOSInt strCnt = 2;
 	Text::String *ret = 0;
 
-	sbuff = MemAlloc(UTF8Char, cookie->leng + 1);
+	sbuff = MemAllocArr(UTF8Char, cookie->leng + 1);
 	cookie->ConcatTo(sbuff);
 
 	strs[1].v = sbuff;
@@ -168,13 +162,13 @@ Optional<Text::String> Net::WebServer::IWebRequest::GetCookieAsNew(Text::CString
 			break;
 		}
 	}
-	MemFree(sbuff);
+	MemFreeArr(sbuff);
 	return ret;
 }
 
-UTF8Char *Net::WebServer::IWebRequest::GetRequestPath(UTF8Char *sbuff, UOSInt maxLeng)
+UnsafeArray<UTF8Char> Net::WebServer::IWebRequest::GetRequestPath(UnsafeArray<UTF8Char> sbuff, UOSInt maxLeng)
 {
-	const UTF8Char *uri = this->GetRequestURI()->v;
+	UnsafeArray<const UTF8Char> uri = this->GetRequestURI()->v;
 	UTF8Char c;
 	while ((c = *uri++) != 0)
 	{
@@ -190,13 +184,13 @@ UTF8Char *Net::WebServer::IWebRequest::GetRequestPath(UTF8Char *sbuff, UOSInt ma
 	return sbuff;
 }
 
-UTF8Char *Net::WebServer::IWebRequest::GetQueryString(UTF8Char *sbuff, UOSInt maxLeng)
+UnsafeArrayOpt<UTF8Char> Net::WebServer::IWebRequest::GetQueryString(UnsafeArray<UTF8Char> sbuff, UOSInt maxLeng)
 {
 	NN<Text::String> s = this->GetRequestURI();
 	UOSInt i = s->IndexOf('?');
 	if (i == INVALID_INDEX)
 		return 0;
-	const UTF8Char *uri = &s->v[i + 1];
+	UnsafeArray<const UTF8Char> uri = &s->v[i + 1];
 
 	UTF8Char c;
 	while ((c = *uri++) != 0)
@@ -214,7 +208,7 @@ UTF8Char *Net::WebServer::IWebRequest::GetQueryString(UTF8Char *sbuff, UOSInt ma
 	
 }
 
-UTF8Char *Net::WebServer::IWebRequest::GetQueryValueStr(Text::CStringNN name, UTF8Char *buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> Net::WebServer::IWebRequest::GetQueryValueStr(Text::CStringNN name, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
 	NN<Text::String> s;
 	if (!this->GetQueryValue(name).SetTo(s))
@@ -340,7 +334,7 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormDouble(Text::CStringNN name, OutPar
 	return s->ToDouble(valOut);
 }
 
-UTF8Char *Net::WebServer::IWebRequest::BuildURLHost(UTF8Char *sbuff)
+UnsafeArray<UTF8Char> Net::WebServer::IWebRequest::BuildURLHost(UnsafeArray<UTF8Char> sbuff)
 {
 	NN<Text::String> s;
 	if (this->GetSHeader(CSTR("X-Forwarded-Proto")).SetTo(s))
@@ -398,6 +392,7 @@ void Net::WebServer::IWebRequest::GetRequestAddr(NN<Net::SocketUtil::AddressInfo
 	Text::StringBuilderUTF8 sb;
 	Text::PString s;
 	Text::PString nextStr;
+	Bool ended = false;
 	UOSInt i;
 	if (this->GetHeaderC(sb, CSTR("Forwarded")))
 	{
@@ -413,7 +408,7 @@ void Net::WebServer::IWebRequest::GetRequestAddr(NN<Net::SocketUtil::AddressInfo
 		{
 			i = s.BranketSearch(0, ';');
 			if (i == INVALID_INDEX)
-				nextStr.v = 0;
+				ended = true;
 			else
 			{
 				nextStr = s.SubstrTrim(i + 1);
@@ -443,7 +438,7 @@ void Net::WebServer::IWebRequest::GetRequestAddr(NN<Net::SocketUtil::AddressInfo
 					return;
 			}
 
-			if (nextStr.v == 0)
+			if (ended)
 				break;
 			s = nextStr;
 		}

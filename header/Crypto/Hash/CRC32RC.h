@@ -23,7 +23,7 @@ namespace Crypto
 			CRC32RC();
 			virtual ~CRC32RC();
 
-			virtual UTF8Char *GetName(UTF8Char *sbuff) const;
+			virtual UnsafeArray<UTF8Char> GetName(UnsafeArray<UTF8Char> sbuff) const;
 			virtual NN<IHash> Clone() const;
 			virtual void Clear();
 			virtual void Calc(const UInt8 *buff, UOSInt buffSize);
@@ -32,9 +32,9 @@ namespace Crypto
 			virtual UOSInt GetResultSize() const;
 			UInt32 GetValueU32() const;
 
-			UInt32 CalcDirect(const UInt8 *buff, UOSInt buffSize) const
+			UInt32 CalcDirect(UnsafeArray<const UInt8> buff, UOSInt buffSize) const
 			{
-				return ~CRC32R_Calc(buff, buffSize, this->crctab, 0xffffffff);
+				return ~CRC32R_Calc(buff.Ptr(), buffSize, this->crctab, 0xffffffff);
 			}
 		};
 	}

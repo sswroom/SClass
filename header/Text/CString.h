@@ -15,23 +15,27 @@ namespace
 #if defined(DEBUGNULL)
 #define CSTRP(str, strEnd) Text::CString::FromPtrD(str, strEnd, __FILE__, __LINE__)
 #else
-#define CSTRP(str, strEnd) Text::CStringNN(UnsafeArray<const UTF8Char>::FromPtr(str), (UOSInt)(strEnd - str))
+#define CSTRP(str, strEnd) Text::CStringNN(str, (UOSInt)(strEnd - str))
 #endif
 #define CSTRPZ(str, strEnd) ((strEnd == 0)?CSTR(""):Text::CStringNN(str, (UOSInt)(strEnd - str)))
 
 namespace Text
 {
 	struct CStringNN;
-	struct CString : public StringBase<const UTF8Char>
+	struct CString
 	{
+		UnsafeArrayOpt<const UTF8Char> v;
+		UOSInt leng;
+
 		CString() = default;
 
-		CString(const Int32 *nul)
+		CString(std::nullptr_t)
 		{
-			this->v = 0;
+			this->v = UnsafeArray<const UTF8Char>::FromPtrNoCheck(0);
 			this->leng = 0;
 		}
 
+		CString(CStringNN);
 		CString(UnsafeArrayOpt<const UTF8Char> v, UOSInt leng)
 		{
 			this->v = v.Ptr();
@@ -40,11 +44,12 @@ namespace Text
 
 		static CString FromPtr(const UTF8Char *v)
 		{
-			if (v == 0)
+			UnsafeArray<const UTF8Char> nnv;
+			if (!nnv.Set(v))
 			{
 				return CString(0, 0);
 			}
-			return CString(v, Text::StrCharCnt(v));
+			return CString(nnv, Text::StrCharCnt(nnv));
 		}
 
 #if defined(DEBUGNULL)
@@ -59,8 +64,7 @@ namespace Text
 		}
 #endif
 
-
-		CString Substring(UOSInt index) const
+/*		CString Substring(UOSInt index) const
 		{
 			if (index >= this->leng)
 			{
@@ -82,29 +86,33 @@ namespace Text
 				i++;
 			}
 			return CString(this->v + i, this->leng - i);
-		}
+		}*/
 
 		Bool IsNull() const
 		{
-			return this->v == 0;
+			return this->v.Ptr() == 0;
 		}
 
+		Bool operator==(Text::CString cstr) const
+		{
+			return this->v == cstr.v && this->leng == cstr.leng;
+		}
+
+		FORCEINLINE Bool SetTo(CStringNN &cstr) const;
 		FORCEINLINE CStringNN OrEmpty() const;
 	};
 
-	struct CStringNN : public CString
+	struct CStringNN : public StringBase<const UTF8Char>
 	{
 		CStringNN() = default;
-		CStringNN(UnsafeArray<const UTF8Char> v, UOSInt leng) : CString(v, leng)
+		CStringNN(UnsafeArray<const UTF8Char> v, UOSInt leng)
 		{
+			this->v = v;
+			this->leng = leng;
 		}
 
-		static CStringNN FromPtr(const UTF8Char *v)
+		static CStringNN FromPtr(UnsafeArray<const UTF8Char> v)
 		{
-			if (v == 0)
-			{
-				return CSTR("");
-			}
 			return CStringNN(v, Text::StrCharCnt(v));
 		}
 
@@ -133,26 +141,47 @@ namespace Text
 		}
 	};
 
+	FORCEINLINE CString::CString(Text::CStringNN cstr)
+	{
+		this->v = cstr.v;
+		this->leng = cstr.leng;
+	}
+
+	FORCEINLINE Bool CString::SetTo(CStringNN &cstr) const
+	{
+		UnsafeArray<const UTF8Char> nnv;
+		if (this->v.SetTo(nnv))
+		{
+			cstr.v = nnv;
+			cstr.leng = this->leng;
+			return true;			
+		}
+		return false;
+	}
+
 	FORCEINLINE CStringNN CString::OrEmpty() const
 	{
-		if (this->v)
-			return CStringNN(this->v, this->leng);
+		UnsafeArray<const UTF8Char> nnv;
+		if (this->v.SetTo(nnv))
+			return CStringNN(nnv, this->leng);
 		else
 			return CSTR("");
 	}
 
-	FORCEINLINE UTF8Char *StrCSVJoinC(UTF8Char *oriStr, Text::CString *strs, UOSInt nStrs)
+	FORCEINLINE UnsafeArray<UTF8Char> StrCSVJoinC(UnsafeArray<UTF8Char> oriStr, Text::CString *strs, UOSInt nStrs)
 	{
 		UOSInt i = 0;
-		const UTF8Char *sptr;
+		Text::CStringNN cstr;
+		UnsafeArray<const UTF8Char> sptr;
 		UTF8Char c;
 		while (i < nStrs)
 		{
 			if (i)
 				*oriStr++ = ',';
 			*oriStr++ = '"';
-			if ((sptr = strs[i].v) != 0)
+			if (strs[i].SetTo(cstr))
 			{
+				sptr = cstr.v;
 				while ((c = *sptr++) != 0)
 				{
 					if (c == '"')

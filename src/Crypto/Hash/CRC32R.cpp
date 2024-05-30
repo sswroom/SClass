@@ -42,7 +42,7 @@ Crypto::Hash::CRC32R::~CRC32R()
 	MemFree(crctab);
 }
 
-UTF8Char *Crypto::Hash::CRC32R::GetName(UTF8Char *sbuff) const
+UnsafeArray<UTF8Char> Crypto::Hash::CRC32R::GetName(UnsafeArray<UTF8Char> sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("CRC (32-bit Reversed)"));
 }

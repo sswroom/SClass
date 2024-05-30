@@ -15,9 +15,9 @@ namespace Manage
 		CodeSymbol(Text::CStringNN moduleName, Text::CStringNN funcName, OSInt ofst, UInt64 funcAddr);
 		~CodeSymbol();
 
-		UTF8Char *ToString(UTF8Char *buff) const;
+		UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> buff) const;
 
-		static Optional<CodeSymbol> ParseFromStr(const UTF8Char *buff, UInt64 funcAddr);
+		static Optional<CodeSymbol> ParseFromStr(UnsafeArray<const UTF8Char> buff, UInt64 funcAddr);
 	};
 }
 

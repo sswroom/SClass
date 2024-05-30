@@ -29,7 +29,7 @@ IO::ConfigFile *IO::IniFile::Parse(Text::CStringNN fileName, UInt32 codePage)
 IO::ConfigFile *IO::IniFile::ParseProgConfig(UInt32 codePage)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("cfg"));
 	return Parse(CSTRP(sbuff, sptr), codePage);
@@ -38,19 +38,19 @@ IO::ConfigFile *IO::IniFile::ParseProgConfig(UInt32 codePage)
 IO::ConfigFile *IO::IniFile::ParseReader(IO::StreamReader *reader)
 {
 	UTF8Char cate[128];
-	UTF8Char *cateEnd;
+	UnsafeArray<UTF8Char> cateEnd;
 	UTF8Char buff[1024];
-	UTF8Char *name;
-	UTF8Char *nameEnd;
-	UTF8Char *value;
-	UTF8Char *valueEnd;
-	UTF8Char *src;
+	UnsafeArray<UTF8Char> name;
+	UnsafeArray<UTF8Char> nameEnd;
+	UnsafeArray<UTF8Char> value;
+	UnsafeArray<UTF8Char> valueEnd;
+	UnsafeArray<UTF8Char> src;
 	UTF8Char lbrk[3];
 	IO::ConfigFile *cfg;
 	NEW_CLASS(cfg, IO::ConfigFile());
 	cate[0] = 0;
 	cateEnd = cate;
-	while ((valueEnd = reader->ReadLine(buff, 1023)) != 0)
+	while (reader->ReadLine(buff, 1023).SetTo(valueEnd))
 	{
 		if (buff[0] == '[' && valueEnd[-1] == ']')
 		{
@@ -62,7 +62,6 @@ IO::ConfigFile *IO::IniFile::ParseReader(IO::StreamReader *reader)
 		else
 		{
 			name = buff;
-			value = 0;
 			src = buff;
 			while (*src != '=')
 			{
@@ -80,7 +79,7 @@ IO::ConfigFile *IO::IniFile::ParseReader(IO::StreamReader *reader)
 				{
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(value, (UOSInt)(valueEnd - value));
-					while ((valueEnd = reader->ReadLine(src, 1023 - (UOSInt)(src - buff))) != 0)
+					while (reader->ReadLine(src, 1023 - (UOSInt)(src - buff)).SetTo(valueEnd))
 					{
 						sb.AppendC(src, (UOSInt)(valueEnd - src));
 						if (reader->GetLastLineBreak(lbrk) != lbrk)

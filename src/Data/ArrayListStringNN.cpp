@@ -77,13 +77,13 @@ NN<Text::String> Data::ArrayListStringNN::JoinString() const
 		newStrLeng += this->arr[i]->leng;
 		i++;
 	}
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	newStr = Text::String::New(newStrLeng);
-	sptr = (UTF8Char*)newStr->v;
+	sptr = newStr->v;
 	i = 0;
 	while (i < j)
 	{
-		MemCopyNO(sptr, this->arr[i]->v, sizeof(UTF8Char) * this->arr[i]->leng);
+		MemCopyNO(sptr.Ptr(), this->arr[i]->v.Ptr(), sizeof(UTF8Char) * this->arr[i]->leng);
 		sptr += this->arr[i]->leng;
 		i++;
 	}

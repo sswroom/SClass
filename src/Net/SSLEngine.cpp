@@ -16,7 +16,7 @@ UInt32 Net::SSLEngine::trustStoreCnt = 0;
 UInt32 __stdcall Net::SSLEngine::ServerThread(AnyType userObj)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<ThreadState> state = userObj.GetNN<ThreadState>();
 	NN<Socket> s;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("SSLEngine")), state->index);

@@ -16,7 +16,7 @@ Crypto::Hash::XOR8::~XOR8()
 {
 }
 
-UTF8Char *Crypto::Hash::XOR8::GetName(UTF8Char *sbuff) const
+UnsafeArray<UTF8Char> Crypto::Hash::XOR8::GetName(UnsafeArray<UTF8Char> sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("XOR8"));
 }
@@ -44,7 +44,7 @@ void Crypto::Hash::XOR8::Calc(const UInt8 *buff, UOSInt buffSize)
 	this->val = val;
 }
 
-void Crypto::Hash::XOR8::GetValue(UInt8 *buff) const
+void Crypto::Hash::XOR8::GetValue(UnsafeArray<UInt8> buff) const
 {
 	*buff = this->val;
 }

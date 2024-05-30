@@ -19,7 +19,7 @@ Text::SpreadSheet::WorkbookDataSource::~WorkbookDataSource()
 
 }
 
-UTF8Char *Text::SpreadSheet::WorkbookDataSource::ToCodeRange(UTF8Char *sbuff) const
+UnsafeArray<UTF8Char> Text::SpreadSheet::WorkbookDataSource::ToCodeRange(UnsafeArray<UTF8Char> sbuff) const
 {
 	sbuff = this->sheet->GetName()->ConcatTo(sbuff);
 	*sbuff++ = '!';

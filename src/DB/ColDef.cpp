@@ -201,10 +201,10 @@ UInt32 DB::ColDef::GetGeometrySRID() const
 	return (UInt32)this->colDP;
 }
 
-void DB::ColDef::SetColName(NN<const UTF8Char> colName)
+void DB::ColDef::SetColName(UnsafeArray<const UTF8Char> colName)
 {
 	this->colName->Release();
-	this->colName = Text::String::NewNotNullSlow(colName.Ptr());
+	this->colName = Text::String::NewNotNullSlow(colName);
 }
 
 void DB::ColDef::SetColName(Text::CString colName)
@@ -312,7 +312,7 @@ void DB::ColDef::Set(NN<const ColDef> colDef)
 	this->SetAttr(colDef->attr);
 }
 
-UTF8Char *DB::ColDef::ToColTypeStr(UTF8Char *sbuff) const
+UnsafeArray<UTF8Char> DB::ColDef::ToColTypeStr(UnsafeArray<UTF8Char> sbuff) const
 {
 	return DB::DBUtil::ColTypeGetString(sbuff, this->colType, this->colSize, this->colDP);
 }

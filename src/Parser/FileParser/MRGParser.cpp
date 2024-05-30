@@ -39,7 +39,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MRGParser::ParseFileHdr(NN<IO::St
 	UInt32 hdrOfst;
 	UInt8 rec[76];
 	UTF8Char name[65];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (ReadUInt32(&hdr[0]) != 0x3067726D || ReadUInt32(&hdr[4]) != 0x31)
 	{

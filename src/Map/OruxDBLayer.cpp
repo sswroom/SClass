@@ -19,7 +19,7 @@ Map::OruxDBLayer::OruxDBLayer(Text::CStringNN sourceName, Text::CString layerNam
 	this->currLayer = (UInt32)-1;
 	this->tileSize = 1;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = sourceName.ConcatTo(sbuff);
 	this->db = 0;
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OruxMapsImages.db"));
@@ -231,7 +231,7 @@ UOSInt Map::OruxDBLayer::GetColumnCnt() const
 	return 0;
 }
 
-UTF8Char *Map::OruxDBLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::OruxDBLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
 {
 	return 0;
 }

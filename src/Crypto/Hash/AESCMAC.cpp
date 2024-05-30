@@ -53,7 +53,7 @@ Crypto::Hash::AESCMAC::~AESCMAC()
 
 }
 
-UTF8Char *Crypto::Hash::AESCMAC::GetName(UTF8Char *sbuff) const
+UnsafeArray<UTF8Char> Crypto::Hash::AESCMAC::GetName(UnsafeArray<UTF8Char> sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("AES-CMAC"));
 }

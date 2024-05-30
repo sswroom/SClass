@@ -195,7 +195,7 @@ namespace Net
 
 		virtual UOSInt UDPReceive(NN<Socket> socket, UInt8 *buff, UOSInt buffSize, NN<Net::SocketUtil::AddressInfo> addr, OutParam<UInt16> port, OptOut<ErrorType> et) = 0;
 		virtual UOSInt SendTo(NN<Socket> socket, const UInt8 *buff, UOSInt buffSize, NN<const Net::SocketUtil::AddressInfo> addr, UInt16 port) = 0;
-		virtual UOSInt SendToIF(NN<Socket> socket, const UInt8 *buff, UOSInt buffSize, const UTF8Char *ifName) = 0;
+		virtual UOSInt SendToIF(NN<Socket> socket, const UInt8 *buff, UOSInt buffSize, UnsafeArray<const UTF8Char> ifName) = 0;
 
 		virtual Bool IcmpSendEcho2(NN<const Net::SocketUtil::AddressInfo> addr, UInt32 *respTime_us, UInt32 *ttl) = 0;
 
@@ -231,13 +231,13 @@ namespace Net
 		UOSInt DNSResolveIPs(Text::CStringNN host, Data::DataArray<Net::SocketUtil::AddressInfo> addrs);
 		UInt32 DNSResolveIPv4(Text::CStringNN host);
 //		Bool GetIPByHost(const WChar *host, Net::SocketUtil::AddressInfo *addr);
-//		UInt32 GetIPv4ByHost(const WChar *host);		UInt32 DNSResolveIPv4(const UTF8Char *host);
+//		UInt32 GetIPv4ByHost(const WChar *host);		UInt32 DNSResolveIPv4(UnsafeArray<const UTF8Char> host);
 //		UInt32 GetIPv4ByHostOS(const WChar *host
 //		UInt32 GetLocalIPByDest(const WChar *host);////////////////////
 //		UInt32 GetLocalIPByDest(UInt32 ip);//////////////////////////
 
-		UTF8Char *GetRemoteName(UTF8Char *buff, NN<Socket> socket);
-		UTF8Char *GetLocalName(UTF8Char *buff, NN<Socket> socket);
+		UnsafeArrayOpt<UTF8Char> GetRemoteName(UnsafeArray<UTF8Char> buff, NN<Socket> socket);
+		UnsafeArrayOpt<UTF8Char> GetLocalName(UnsafeArray<UTF8Char> buff, NN<Socket> socket);
 #ifdef HAS_INT64
 		UInt64 GenSocketId(NN<Socket> socket);
 		static void FromSocketId(UInt64 socketId, OptOut<UInt32> ip, OptOut<UInt16> port);

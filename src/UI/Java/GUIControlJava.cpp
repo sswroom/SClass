@@ -66,7 +66,7 @@ void UI::GUIControl::SetText(Text::CStringNN text)
 	/////////////////////////////////
 }
 
-UTF8Char *UI::GUIControl::GetText(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> UI::GUIControl::GetText(UnsafeArray<UTF8Char> buff)
 {
 	////////////////////////////////
 	return 0;
@@ -407,7 +407,7 @@ Optional<UI::GUIClientControl> UI::GUIControl::GetParent()
 UI::GUIForm *UI::GUIControl::GetRootForm()
 {
 	NN<UI::GUIControl> ctrl = *this;
-	Text::CString objCls;
+	Text::CStringNN objCls;
 	while (true)
 	{
 		objCls = ctrl->GetObjectClass();
@@ -506,20 +506,20 @@ Double UI::GUIControl::GetDDPI()
 	return this->ddpi;
 }
 
-Media::DrawFont *UI::GUIControl::CreateDrawFont(NN<Media::DrawImage> img)
+Optional<Media::DrawFont> UI::GUIControl::CreateDrawFont(NN<Media::DrawImage> img)
 {
 	NN<Media::DrawFont> fnt;
 	if (!fnt.Set((Media::DrawFont*)this->GetFont()))
 		return 0;
 	if (this->fontName == 0)
 	{
-		return img->CloneFont(fnt).Ptr();
+		return img->CloneFont(fnt);
 	}
 	else
 	{
 		fnt = img->NewFontPt(this->fontName->ToCString(), this->fontHeightPt * this->hdpi / this->ddpi * 72.0 / img->GetHDPI(), this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0);
 	}
-	return fnt.Ptr();
+	return fnt;
 }
 
 UInt32 UI::GUIControl::GUIKey2OSKey(UI::GUIControl::GUIKey guiKey)

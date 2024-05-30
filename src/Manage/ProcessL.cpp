@@ -58,20 +58,20 @@ Manage::Process::Process()
 	this->needRelease = false;
 }
 
-Manage::Process::Process(const UTF8Char *ccmdLine)
+Manage::Process::Process(UnsafeArray<const UTF8Char> ccmdLine)
 {
 	UTF8Char progName[512];
-	const UTF8Char *cptr = ccmdLine;
+	UnsafeArray<const UTF8Char> cptr = ccmdLine;
 	UTF8Char *args[10];
 	Int32 argc = 0;
 	Bool argStart = false;
 
 
 	UOSInt progNameLen = 0;
-	UTF8Char *pptr = progName;
+	UnsafeArray<UTF8Char> pptr = progName;
 	Bool isQuote = false;
 	UTF8Char c;
-	args[0] = pptr;
+	args[0] = pptr.Ptr();
 	while ((c = *cptr++) != 0)
 	{
 		if (c == '"')
@@ -93,7 +93,7 @@ Manage::Process::Process(const UTF8Char *ccmdLine)
 			if (argStart)
 			{
 				argc++;
-				args[argc] = pptr;
+				args[argc] = pptr.Ptr();
 				argStart = false;
 			}
 			*pptr++ = c;
@@ -130,17 +130,17 @@ Manage::Process::Process(const UTF8Char *ccmdLine)
 Manage::Process::Process(const WChar *cmdLine)
 {
 	UTF8Char progName[512];
-	const UTF8Char *ccmdLine = Text::StrToUTF8New(cmdLine);
-	const UTF8Char *cptr = ccmdLine;
+	UnsafeArray<const UTF8Char> ccmdLine = Text::StrToUTF8New(cmdLine);
+	UnsafeArray<const UTF8Char> cptr = ccmdLine;
 	UTF8Char *args[10];
 	Int32 argc = 0;
 	Bool argStart = false;
 
 	UOSInt progNameLen = 0;
-	UTF8Char *pptr = progName;
+	UnsafeArray<UTF8Char> pptr = progName;
 	Bool isQuote = false;
 	UTF8Char c;
-	args[0] = pptr;
+	args[0] = pptr.Ptr();
 	while ((c = *cptr++) != 0)
 	{
 		if (c == '"')
@@ -162,7 +162,7 @@ Manage::Process::Process(const WChar *cmdLine)
 			if (argStart)
 			{
 				argc++;
-				args[argc] = pptr;
+				args[argc] = pptr.Ptr();
 				argStart = false;
 			}
 			*pptr++ = c;
@@ -220,7 +220,7 @@ UOSInt Manage::Process::GetProcId()
 Bool Manage::Process::IsRunning() const
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Int32 exitCode;
 	waitpid((__pid_t)this->procId, &exitCode, WNOHANG);
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId);
@@ -241,7 +241,7 @@ WChar *Manage::Process::GetFilename(WChar *buff)
 {
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/exe"));
 	OSInt sz = readlink((const Char*)sbuff, (Char*)sbuff2, 511);
 	if (sz < 0)
@@ -264,7 +264,7 @@ Bool Manage::Process::GetFilename(NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/exe"));
 	OSInt sz = readlink((const Char*)sbuff, (Char*)sbuff2, 511);
 	if (sz < 0)
@@ -293,7 +293,7 @@ Bool Manage::Process::GetFilename(NN<Text::StringBuilderUTF8> sb)
 Bool Manage::Process::GetCommandLine(NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[8192];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt sz;
 	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/cmdline"));
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -383,7 +383,7 @@ Bool Manage::Process::GetTrueProgramPath(NN<Text::StringBuilderUTF8> sb)
 	UTF8Char sbuff[8192];
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff3[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt sz;
@@ -540,9 +540,9 @@ UOSInt Manage::Process::GetModules(NN<Data::ArrayListNN<Manage::ModuleInfo>> mod
 #endif
 	{
 		UTF8Char sbuff[128];
-		UTF8Char *sptr;
-		UTF8Char *sarr[6];
-		UTF8Char *sarr2[2];
+		UnsafeArray<UTF8Char> sptr;
+		UnsafeArray<UTF8Char> sarr[6];
+		UnsafeArray<UTF8Char> sarr2[2];
 		Data::FastMap<Int32, ModuleInfoData*> dataMap;
 		ModuleInfoData *data;
 		NN<Manage::ModuleInfo> mod;
@@ -616,7 +616,7 @@ UOSInt Manage::Process::GetThreads(NN<Data::ArrayListNN<Manage::ThreadInfo>> thr
 		struct dirent *dirent;
 		while ((dirent = readdir(dir)) != 0)
 		{
-			threadId = Text::StrToUInt32(dirent->d_name);
+			threadId = Text::StrToUInt32Ch(dirent->d_name);
 			if (threadId != 0)
 			{
 				NEW_CLASSNN(thread, Manage::ThreadInfo(this->procId, threadId));
@@ -654,8 +654,8 @@ Data::Timestamp Manage::Process::GetStartTime()
 UOSInt Manage::Process::GetHandles(NN<Data::ArrayList<HandleInfo>> handleList)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	UOSInt ret = 0;
 	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/fd/"));
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
@@ -664,7 +664,7 @@ UOSInt Manage::Process::GetHandles(NN<Data::ArrayList<HandleInfo>> handleList)
 	{
 		Data::Timestamp ts;
 		IO::Path::PathType pt;
-		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, &ts, &pt, 0)) != 0)
+		while (IO::Path::FindNextFile(sptr, sess, &ts, &pt, 0).SetTo(sptr2))
 		{
 			if (sptr[0] != '.')
 			{
@@ -748,7 +748,7 @@ Bool Manage::Process::GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, U
 {
 	UOSInt pageSize = (UOSInt)sysconf(_SC_PAGESIZE);
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Bool succ = false;
 	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/statm"));
 	Text::StringBuilderUTF8 sb;
@@ -757,7 +757,7 @@ Bool Manage::Process::GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, U
 	sb.ClearStr();
 	if (reader.ReadLine(sb, 512))
 	{
-		UTF8Char *sarr[8];
+		UnsafeArray<UTF8Char> sarr[8];
 		if (Text::StrSplit(sarr, 8, sb.v, ' ') == 7)
 		{
 			UOSInt wsSize = (UOSInt)Text::StrToUInt64(sarr[1]);
@@ -791,7 +791,7 @@ Bool Manage::Process::GetTimeInfo(Data::Timestamp *createTime, Data::Timestamp *
 {
 	OSInt hertz = (OSInt)sysconf(_SC_CLK_TCK);
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Bool succ = false;
 	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/stat"));
 	Text::StringBuilderUTF8 sb;
@@ -800,7 +800,7 @@ Bool Manage::Process::GetTimeInfo(Data::Timestamp *createTime, Data::Timestamp *
 	sb.ClearStr();
 	if (reader.ReadLine(sb, 512))
 	{
-		UTF8Char *sarr[24];
+		UnsafeArray<UTF8Char> sarr[24];
 		if (Text::StrSplit(sarr, 24, sb.v, ' ') >= 23)
 		{
 			Int64 ticks;
@@ -955,7 +955,7 @@ UOSInt Manage::Process::ReadMemory(UInt64 addr, UInt8 *buff, UOSInt reqSize)
 struct Manage::Process::FindProcSess
 {
 	IO::Path::FindFileSession *findFileSess;
-	Text::String *procName;
+	Optional<Text::String> procName;
 };
 
 Manage::Process::FindProcSess *Manage::Process::FindProcess(Text::CString processName)
@@ -968,9 +968,10 @@ Manage::Process::FindProcSess *Manage::Process::FindProcess(Text::CString proces
 	}
 	sess = MemAlloc(FindProcSess, 1);
 	sess->findFileSess = ffsess;
-	if (processName.v)
+	Text::CStringNN nnprocessName;
+	if (processName.SetTo(nnprocessName))
 	{
-		sess->procName = Text::String::New(processName).Ptr();
+		sess->procName = Text::String::New(nnprocessName);
 	}
 	else
 	{
@@ -991,7 +992,7 @@ Manage::Process::FindProcSess *Manage::Process::FindProcessW(const WChar *proces
 	sess->findFileSess = ffsess;
 	if (processName)
 	{
-		sess->procName = Text::String::NewNotNull(processName).Ptr();
+		sess->procName = Text::String::NewNotNull(processName);
 	}
 	else
 	{
@@ -1000,18 +1001,18 @@ Manage::Process::FindProcSess *Manage::Process::FindProcessW(const WChar *proces
 	return sess;
 }
 
-UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Process::FindProcSess *fpsess, Manage::Process::ProcessInfo *info)
+UnsafeArrayOpt<UTF8Char> Manage::Process::FindProcessNext(UnsafeArray<UTF8Char> processNameBuff, Manage::Process::FindProcSess *fpsess, Manage::Process::ProcessInfo *info)
 {
 	UInt32 pid;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
-	UTF8Char *sptr3;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
+	UnsafeArray<UTF8Char> sptr3;
 	IO::Path::PathType pt;
 	Text::StringBuilderUTF8 sb;
 	Bool found = false;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("/proc/"));
-	while ((sptr2 = IO::Path::FindNextFile(sptr, fpsess->findFileSess, 0, &pt, 0)) != 0)
+	while (IO::Path::FindNextFile(sptr, fpsess->findFileSess, 0, &pt, 0).SetTo(sptr2))
 	{
 		if (pt == IO::Path::PathType::Directory && Text::StrToUInt32(sptr, pid))
 		{
@@ -1052,7 +1053,7 @@ UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Pr
 					{
 					}
 					NN<Text::String> procName;
-					if (!procName.Set(fpsess->procName) || sb.Equals(procName) || sb.StartsWith(UTF8STRC("memcheck-")) || sb.StartsWith(UTF8STRC("callgrind-")))
+					if (!fpsess->procName.SetTo(procName) || sb.Equals(procName) || sb.StartsWith(UTF8STRC("memcheck-")) || sb.StartsWith(UTF8STRC("callgrind-")))
 					{
 						found = true;
 					}
@@ -1072,14 +1073,14 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process
 {
 	UInt32 pid;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
-	UTF8Char *sptr3;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
+	UnsafeArray<UTF8Char> sptr3;
 	IO::Path::PathType pt;
 	Text::StringBuilderUTF8 sb;
 	Bool found = false;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("/proc/"));
-	while ((sptr2 = IO::Path::FindNextFile(sptr, fpsess->findFileSess, 0, &pt, 0)) != 0)
+	while (IO::Path::FindNextFile(sptr, fpsess->findFileSess, 0, &pt, 0).SetTo(sptr2))
 	{
 		if (pt == IO::Path::PathType::Directory && Text::StrToUInt32(sptr, pid))
 		{
@@ -1120,7 +1121,7 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process
 					{
 					}
 					NN<Text::String> procName;
-					if (!procName.Set(fpsess->procName) || sb.Equals(procName))
+					if (!fpsess->procName.SetTo(procName) || sb.Equals(procName))
 					{
 						found = true;
 					}
@@ -1139,20 +1140,20 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process
 void Manage::Process::FindProcessClose(Manage::Process::FindProcSess *fpsess)
 {
 	IO::Path::FindFileClose(fpsess->findFileSess);
-	SDEL_STRING(fpsess->procName);
+	OPTSTR_DEL(fpsess->procName);
 	MemFree(fpsess);
 }
 
-Int32 Manage::Process::ExecuteProcess(Text::CString cmd, NN<Text::StringBuilderUTF8> result)
+Int32 Manage::Process::ExecuteProcess(Text::CStringNN cmd, NN<Text::StringBuilderUTF8> result)
 {
 	UTF8Char progName[64];
 	UTF8Char *progBuff = 0;
-	const UTF8Char *cptr = cmd.v;
+	UnsafeArray<const UTF8Char> cptr = cmd.v;
 	Data::ArrayList<UTF8Char *> args;
 	Bool argStart = false;
 
 	UOSInt cmdLen = cmd.leng;
-	UTF8Char *pptr;
+	UnsafeArray<UTF8Char> pptr;
 	if (cmdLen >= 64)
 	{
 		progBuff = MemAlloc(UTF8Char, cmdLen + 1);
@@ -1164,7 +1165,7 @@ Int32 Manage::Process::ExecuteProcess(Text::CString cmd, NN<Text::StringBuilderU
 	}
 	Bool isQuote = false;
 	UTF8Char c;
-	args.Add(pptr);
+	args.Add(pptr.Ptr());
 	while ((c = *cptr++) != 0)
 	{
 		if (c == '"')
@@ -1181,7 +1182,7 @@ Int32 Manage::Process::ExecuteProcess(Text::CString cmd, NN<Text::StringBuilderU
 		{
 			if (argStart)
 			{
-				args.Add(pptr);
+				args.Add(pptr.Ptr());
 				argStart = false;
 			}
 			*pptr++ = c;
@@ -1194,7 +1195,7 @@ Int32 Manage::Process::ExecuteProcess(Text::CString cmd, NN<Text::StringBuilderU
 
 	static Int32 Process_Id = 0;
 	UTF8Char tmpFile[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (IO::Path::GetPathType(CSTR("/tmp")) == IO::Path::PathType::Directory)
 	{
 		sptr = Text::StrConcatC(tmpFile, UTF8STRC("/tmp/ExecuteProcess"));
@@ -1260,7 +1261,7 @@ Bool Manage::Process::IsAlreadyStarted()
 	return false;
 }
 
-Bool Manage::Process::OpenPath(Text::CString path)
+Bool Manage::Process::OpenPath(Text::CStringNN path)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("xdg-open "));

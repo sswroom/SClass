@@ -3,15 +3,15 @@
 #include "Text/MyString.h"
 #include "Data/ArrayListStrUTF8.h"
 
-Data::ArrayListStrUTF8::ArrayListStrUTF8() : Data::SortableArrayList<const UTF8Char*>()
+Data::ArrayListStrUTF8::ArrayListStrUTF8() : Data::SortableArrayList<UnsafeArrayOpt<const UTF8Char>>()
 {
 }
 
-Data::ArrayListStrUTF8::ArrayListStrUTF8(UOSInt capacity) : Data::SortableArrayList<const UTF8Char*>(capacity)
+Data::ArrayListStrUTF8::ArrayListStrUTF8(UOSInt capacity) : Data::SortableArrayList<UnsafeArrayOpt<const UTF8Char>>(capacity)
 {
 }
 
-NN<Data::ArrayList<const UTF8Char*>> Data::ArrayListStrUTF8::Clone() const
+NN<Data::ArrayList<UnsafeArrayOpt<const UTF8Char>>> Data::ArrayListStrUTF8::Clone() const
 {
 	NN<Data::ArrayListStrUTF8> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListStrUTF8(this->capacity));
@@ -19,28 +19,45 @@ NN<Data::ArrayList<const UTF8Char*>> Data::ArrayListStrUTF8::Clone() const
 	return newArr;
 }
 
-OSInt Data::ArrayListStrUTF8::Compare(const UTF8Char* obj1, const UTF8Char* obj2) const
+OSInt Data::ArrayListStrUTF8::Compare(UnsafeArrayOpt<const UTF8Char> obj1, UnsafeArrayOpt<const UTF8Char> obj2) const
 {
-	return Text::StrCompare(obj1, obj2);
+	return Text::StrCompare(obj1.Ptr(), obj2.Ptr());
 }
 
-const UTF8Char *Data::ArrayListStrUTF8::JoinNewStr() const
+UnsafeArray<const UTF8Char> Data::ArrayListStrUTF8::JoinNewStr() const
 {
 	UOSInt j;
 	UOSInt k;
 	k = j = this->objCnt;
 	UOSInt strSize = 0;
+	UnsafeArray<const UTF8Char> nns;
 	while (j-- > 0)
 	{
-		strSize += Text::StrCharCnt(arr[j]);
+		if (arr[j].SetTo(nns))
+			strSize += Text::StrCharCnt(nns);
 	}
-	UTF8Char *sbuff = MemAlloc(UTF8Char, strSize + 1);
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sbuff = MemAllocArr(UTF8Char, strSize + 1);
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	j = 0;
 	while (j < k)
 	{
-		sptr = Text::StrConcat(sptr, arr[j]);
+		if (arr[j].SetTo(nns))
+			sptr = Text::StrConcat(sptr, nns);
 		j++;
 	}
 	return sbuff;
+}
+
+void Data::ArrayListStrUTF8::DeleteAll()
+{
+	UOSInt i = 0;
+	UOSInt j = this->objCnt;
+	while (i < j)
+	{
+		UnsafeArray<const UTF8Char> nns;
+		if (this->arr[i].SetTo(nns))
+			Text::StrDelNew(nns);
+		i++;
+	}
+	this->Clear();
 }

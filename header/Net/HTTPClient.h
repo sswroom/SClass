@@ -66,8 +66,8 @@ namespace Net
 
 		void ForceHostName(Text::CStringNN hostName);
 		UOSInt GetRespHeaderCnt() const;
-		UTF8Char *GetRespHeader(UOSInt index, UTF8Char *buff);
-		UTF8Char *GetRespHeader(Text::CStringNN name, UTF8Char *valueBuff);
+		UnsafeArrayOpt<UTF8Char> GetRespHeader(UOSInt index, UnsafeArray<UTF8Char> buff);
+		UnsafeArrayOpt<UTF8Char> GetRespHeader(Text::CStringNN name, UnsafeArray<UTF8Char> valueBuff);
 		Bool GetRespHeader(Text::CStringNN name, NN<Text::StringBuilderUTF8> sb);
 		Text::CString GetRespHeader(Text::CStringNN name);
 		Optional<Text::String> GetRespHeader(UOSInt index) const;

@@ -38,7 +38,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PAC2Parser::ParseFileHdr(NN<IO::S
 	UInt32 recCnt;
 	UInt32 dataOfst;
 	UTF8Char fileName[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	Int64 ofst;
 	UInt32 i;

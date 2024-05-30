@@ -54,7 +54,7 @@ Media::AudioFrameSource::~AudioFrameSource()
 	MemFree(this->blocks);
 }
 
-UTF8Char *Media::AudioFrameSource::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::AudioFrameSource::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	return this->name->ConcatTo(buff);
 }

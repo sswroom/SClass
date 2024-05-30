@@ -454,16 +454,16 @@ Optional<Math::ProjectedCoordinateSystem> Math::CoordinateSystemManager::SRCreat
 	}
 	Math::ProjectedCoordinateSystem *csys;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("EPSG:")), epsgId);
 	if (projcs->csysType == Math::CoordinateSystem::CoordinateSystemType::MercatorProjected || projcs->csysType == Math::CoordinateSystem::CoordinateSystemType::GausskrugerProjected)
 	{
-		NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem(CSTRP(sbuff, sptr), projcs->srid, {projcs->projName, projcs->projNameLen}, projcs->falseEasting, projcs->falseNorthing, projcs->centralMeridian, projcs->latitudeOfOrigin, projcs->scaleFactor, gcsys, projcs->unit));
+		NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem(CSTRP(sbuff, sptr), projcs->srid, Text::CStringNN(projcs->projName, projcs->projNameLen), projcs->falseEasting, projcs->falseNorthing, projcs->centralMeridian, projcs->latitudeOfOrigin, projcs->scaleFactor, gcsys, projcs->unit));
 		return csys;
 	}
 	else if (projcs->csysType == Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected)
 	{
-		NEW_CLASS(csys, Math::Mercator1SPProjectedCoordinateSystem(CSTRP(sbuff, sptr), projcs->srid, {projcs->projName, projcs->projNameLen}, projcs->falseEasting, projcs->falseNorthing, projcs->centralMeridian, projcs->latitudeOfOrigin, projcs->scaleFactor, gcsys, projcs->unit));
+		NEW_CLASS(csys, Math::Mercator1SPProjectedCoordinateSystem(CSTRP(sbuff, sptr), projcs->srid, Text::CStringNN(projcs->projName, projcs->projNameLen), projcs->falseEasting, projcs->falseNorthing, projcs->centralMeridian, projcs->latitudeOfOrigin, projcs->scaleFactor, gcsys, projcs->unit));
 		return csys;
 	}
 	gcsys.Delete();
@@ -488,13 +488,13 @@ Optional<Math::GeographicCoordinateSystem> Math::CoordinateSystemManager::SRCrea
 		return 0;
 	}
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Math::GeographicCoordinateSystem *csys;
 	sptr = Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("EPSG:")), epsgId);
 	Math::EarthEllipsoid ellipsoid(spheroid->eet);
 	Math::GeographicCoordinateSystem::DatumData1 data;
-	FillDatumData(data, datum, {datum->datumName, datum->datumNameLen}, ellipsoid, spheroid);
-	NEW_CLASS(csys, Math::GeographicCoordinateSystem(CSTRP(sbuff, sptr), epsgId, {geogcs->name, geogcs->nameLen}, &data, geogcs->primem, geogcs->unit));
+	FillDatumData(data, datum, Text::CStringNN(datum->datumName, datum->datumNameLen), ellipsoid, spheroid);
+	NEW_CLASS(csys, Math::GeographicCoordinateSystem(CSTRP(sbuff, sptr), epsgId, Text::CStringNN(geogcs->name, geogcs->nameLen), &data, geogcs->primem, geogcs->unit));
 	return csys;
 }
 
@@ -535,7 +535,7 @@ NN<Math::CoordinateSystem> Math::CoordinateSystemManager::CreateFromNameOrDef(Te
 		return CreateWGS84Csys();
 }
 
-const Math::CoordinateSystemManager::DatumInfo *Math::CoordinateSystemManager::GetDatumInfoByName(const UTF8Char *name)
+const Math::CoordinateSystemManager::DatumInfo *Math::CoordinateSystemManager::GetDatumInfoByName(UnsafeArray<const UTF8Char> name)
 {
 	if (name[0] == 'D' && name[1] == '_')
 	{
@@ -564,6 +564,7 @@ const Math::CoordinateSystemManager::DatumInfo *Math::CoordinateSystemManager::G
 
 void Math::CoordinateSystemManager::FillDatumData(NN<Math::GeographicCoordinateSystem::DatumData1> data, const Math::CoordinateSystemManager::DatumInfo *datum, Text::CString name, NN<Math::EarthEllipsoid> ee, const SpheroidInfo *spheroid)
 {
+	Text::CStringNN nnname = name.OrEmpty();
 	if (datum)
 	{
 		data->srid = datum->srid;
@@ -598,10 +599,10 @@ void Math::CoordinateSystemManager::FillDatumData(NN<Math::GeographicCoordinateS
 		data->srid = 0;
 		data->spheroid.ellipsoid = ee;
 		data->spheroid.srid = 0;
-		data->spheroid.name = name.v;
-		data->spheroid.nameLen = name.leng;
-		data->name = name.v;
-		data->nameLen = name.leng;
+		data->spheroid.name = nnname.v;
+		data->spheroid.nameLen = nnname.leng;
+		data->name = nnname.v;
+		data->nameLen = nnname.leng;
 		data->x0 = 0;
 		data->y0 = 0;
 		data->z0 = 0;
@@ -618,10 +619,10 @@ void Math::CoordinateSystemManager::FillDatumData(NN<Math::GeographicCoordinateS
 
 Optional<Math::ProjectedCoordinateSystem> Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::ProjCoordSysType pcst)
 {
-	Text::CString name = Math::CoordinateSystemManager::ProjCoordSysTypeGetName(pcst);
-	if (name.v == 0)
+	Text::CStringNN name;
+	if (!Math::CoordinateSystemManager::ProjCoordSysTypeGetName(pcst).SetTo(name))
 		return 0;
-	return CreateProjCoordinateSystem(name.OrEmpty(), name.v);
+	return CreateProjCoordinateSystem(name, name.v);
 }
 
 NN<Math::CoordinateSystem> Math::CoordinateSystemManager::CreateProjCoordinateSystemDefNameOrDef(ProjCoordSysType pcst)
@@ -632,7 +633,7 @@ NN<Math::CoordinateSystem> Math::CoordinateSystemManager::CreateProjCoordinateSy
 	return csys;
 }
 
-Optional<Math::ProjectedCoordinateSystem> Math::CoordinateSystemManager::CreateProjCoordinateSystem(Text::CStringNN sourceName, const UTF8Char *projName)
+Optional<Math::ProjectedCoordinateSystem> Math::CoordinateSystemManager::CreateProjCoordinateSystem(Text::CStringNN sourceName, UnsafeArray<const UTF8Char> projName)
 {
 	const Math::CoordinateSystemManager::ProjectedCSysInfo *coord = GetProjCoordinateSystemInfo(projName);
 	NN<Math::GeographicCoordinateSystem> gcs;
@@ -647,11 +648,11 @@ Optional<Math::ProjectedCoordinateSystem> Math::CoordinateSystemManager::CreateP
 	}
 	if (coord->csysType == Math::CoordinateSystem::CoordinateSystemType::MercatorProjected)
 	{
-		NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem(sourceName, coord->srid, {coord->projName, coord->projNameLen}, coord->falseEasting, coord->falseNorthing, coord->centralMeridian, coord->latitudeOfOrigin, coord->scaleFactor, gcs, Math::CoordinateSystem::UT_METRE));
+		NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem(sourceName, coord->srid, Text::CStringNN(coord->projName, coord->projNameLen), coord->falseEasting, coord->falseNorthing, coord->centralMeridian, coord->latitudeOfOrigin, coord->scaleFactor, gcs, Math::CoordinateSystem::UT_METRE));
 	}
 	else if (coord->csysType == Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected)
 	{
-		NEW_CLASS(csys, Math::Mercator1SPProjectedCoordinateSystem(sourceName, coord->srid, {coord->projName, coord->projNameLen}, coord->falseEasting, coord->falseNorthing, coord->centralMeridian, coord->latitudeOfOrigin, coord->scaleFactor, gcs, Math::CoordinateSystem::UT_METRE));
+		NEW_CLASS(csys, Math::Mercator1SPProjectedCoordinateSystem(sourceName, coord->srid, Text::CStringNN(coord->projName, coord->projNameLen), coord->falseEasting, coord->falseNorthing, coord->centralMeridian, coord->latitudeOfOrigin, coord->scaleFactor, gcs, Math::CoordinateSystem::UT_METRE));
 	}
 	return csys;
 }
@@ -668,19 +669,19 @@ UOSInt Math::CoordinateSystemManager::GetProjCoordinateSystems(Data::ArrayList<P
 	return csysList->GetCount() - initCnt;
 }
 
-UOSInt Math::CoordinateSystemManager::GetProjCoordinateSystemNames(Data::ArrayList<const UTF8Char *> *nameList)
+UOSInt Math::CoordinateSystemManager::GetProjCoordinateSystemNames(NN<Data::ArrayListArr<const UTF8Char>> nameList)
 {
 	UOSInt i = 0;
 	UOSInt j = (sizeof(pcsysList) / sizeof(pcsysList[0]));
 	while (i < j)
 	{
-		nameList->Add((const UTF8Char*)pcsysList[i].projName);
+		nameList->Add(pcsysList[i].projName);
 		i++;
 	}
 	return j;
 }
 
-const Math::CoordinateSystemManager::ProjectedCSysInfo *Math::CoordinateSystemManager::GetProjCoordinateSystemInfo(const UTF8Char *name)
+const Math::CoordinateSystemManager::ProjectedCSysInfo *Math::CoordinateSystemManager::GetProjCoordinateSystemInfo(UnsafeArray<const UTF8Char> name)
 {
 	OSInt i = 0;
 	OSInt j = (OSInt)(sizeof(pcsysList) / sizeof(pcsysList[0])) - 1;
@@ -709,13 +710,11 @@ const Math::CoordinateSystemManager::ProjectedCSysInfo *Math::CoordinateSystemMa
 
 Optional<Math::GeographicCoordinateSystem> Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(GeoCoordSysType gcst)
 {
-	Text::CString name = Math::CoordinateSystemManager::GeoCoordSysTypeGetName(gcst);
-	if (name.v == 0)
-		return 0;
-	return CreateGeogCoordinateSystem(name.OrEmpty(), name.v);
+	Text::CStringNN name = Math::CoordinateSystemManager::GeoCoordSysTypeGetName(gcst);
+	return CreateGeogCoordinateSystem(name, name.v);
 }
 
-Optional<Math::GeographicCoordinateSystem> Math::CoordinateSystemManager::CreateGeogCoordinateSystem(Text::CStringNN sourceName, const UTF8Char *geoName)
+Optional<Math::GeographicCoordinateSystem> Math::CoordinateSystemManager::CreateGeogCoordinateSystem(Text::CStringNN sourceName, UnsafeArray<const UTF8Char> geoName)
 {
 	const Math::CoordinateSystemManager::GeographicCSysInfo *coord = GetGeogCoordinateSystemInfo(geoName);
 	Math::GeographicCoordinateSystem *csys;
@@ -731,7 +730,7 @@ Optional<Math::GeographicCoordinateSystem> Math::CoordinateSystemManager::Create
 	Math::EarthEllipsoid ellipsoid(coord->eet);
 	Math::GeographicCoordinateSystem::DatumData1 data;
 	FillDatumData(data, datum, CSTR_NULL, ellipsoid, SRGetSpheroid(datum->spheroid));
-	NEW_CLASS(csys, Math::GeographicCoordinateSystem(sourceName, coord->srid, {coord->geoName, coord->geoNameLen}, &data, Math::GeographicCoordinateSystem::PT_GREENWICH, Math::GeographicCoordinateSystem::UT_DEGREE));
+	NEW_CLASS(csys, Math::GeographicCoordinateSystem(sourceName, coord->srid, Text::CStringNN(coord->geoName, coord->geoNameLen), &data, Math::GeographicCoordinateSystem::PT_GREENWICH, Math::GeographicCoordinateSystem::UT_DEGREE));
 	return csys;
 }
 
@@ -742,7 +741,7 @@ UOSInt Math::CoordinateSystemManager::GetGeogCoordinateSystems(Data::ArrayList<G
 	return csysList->GetCount() - initCnt;
 }
 
-const Math::CoordinateSystemManager::GeographicCSysInfo *Math::CoordinateSystemManager::GetGeogCoordinateSystemInfo(const UTF8Char *name)
+const Math::CoordinateSystemManager::GeographicCSysInfo *Math::CoordinateSystemManager::GetGeogCoordinateSystemInfo(UnsafeArray<const UTF8Char> name)
 {
 	OSInt i = 0;
 	OSInt j = (OSInt)(sizeof(csysList) / sizeof(csysList[0])) - 1;

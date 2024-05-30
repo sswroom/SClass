@@ -151,7 +151,7 @@ Text::Locale::LocaleEntry Text::Locale::locales[] = {
 	{0x4C0A, UTF8STRC("es-ni"), UTF8STRC("Spanish - Nicaragua"), 0},
 	{0x500A, UTF8STRC("es-pr"), UTF8STRC("Spanish - Puerto Rico"), 0}};
 
-Text::Locale::LocaleEntry *Text::Locale::GetLocaleEntry(UInt32 lcid)
+Optional<Text::Locale::LocaleEntry> Text::Locale::GetLocaleEntry(UInt32 lcid)
 {
 	OSInt i = 0;
 	OSInt j = (sizeof(locales) / sizeof(locales[0])) - 1;
@@ -175,7 +175,7 @@ Text::Locale::LocaleEntry *Text::Locale::GetLocaleEntry(UInt32 lcid)
 	return 0;
 }
 
-Text::Locale::LocaleEntry *Text::Locale::GetLocaleEntryByCodePage(UInt32 codePage)
+Optional<Text::Locale::LocaleEntry> Text::Locale::GetLocaleEntryByCodePage(UInt32 codePage)
 {
 	UOSInt j = (sizeof(locales) / sizeof(locales[0]));
 	while (j-- > 0)

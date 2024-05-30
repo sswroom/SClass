@@ -14,17 +14,17 @@ namespace Text
 		UOSInt useCnt;
 		UTF8Char vbuff[1];
 
-		static Optional<String> NewOrNullSlow(const UTF8Char *str);
-		static NN<String> NewNotNullSlow(const UTF8Char *str);
+		static Optional<String> NewOrNullSlow(UnsafeArrayOpt<const UTF8Char> str);
+		static NN<String> NewNotNullSlow(UnsafeArray<const UTF8Char> str);
 		static Optional<String> NewOrNull(Text::CString str);
 		static NN<String> New(const Text::CString &str)
 		{
 			if (str.leng == 0) return NewEmpty();
 			NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MAlloc(str.leng + sizeof(String)));
-			s->v = s->vbuff;
+			s->v = UARR(s->vbuff);
 			s->leng = str.leng;
 			s->useCnt = 1;
-			MemCopyNO(s->v, str.v, str.leng);
+			MemCopyNO(s->v.Ptr(), str.v.Ptr(), str.leng);
 			s->v[str.leng] = 0;
 			return s;
 		}
@@ -33,20 +33,21 @@ namespace Text
 		{
 			if (len == 0) return NewEmpty();
 			NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MAlloc(len + sizeof(String)));
-			s->v = s->vbuff;
+			s->v = UARR(s->vbuff);
 			s->leng = len;
 			s->useCnt = 1;
-			MemCopyNO(s->v, str.Ptr(), len);
+			MemCopyNO(s->v.Ptr(), str.Ptr(), len);
 			s->v[len] = 0;
 			return s;
 		}
 		
 		static NN<String> NewP(UnsafeArray<const UTF8Char> str, UnsafeArrayOpt<const UTF8Char> strEnd);
+		static NN<String> NewP(UnsafeArray<const UTF8Char> str, UnsafeArray<const UTF8Char> strEnd);
 
 		static NN<String> New(UOSInt len)
 		{
 			NN<Text::String> s = NN<Text::String>::FromPtr((Text::String*)MAlloc(len + sizeof(String)));
-			s->v = s->vbuff;
+			s->v = UARR(s->vbuff);
 			s->leng = len;
 			s->useCnt = 1;
 			s->v[0] = 0;
@@ -59,7 +60,7 @@ namespace Text
 		static Optional<String> NewOrNull(const UTF32Char *str);
 		static NN<String> NewNotNull(const UTF32Char *str);
 		static NN<String> New(const UTF32Char *str, UOSInt len);
-		static NN<String> NewCSVRec(const UTF8Char *str);
+		static NN<String> NewCSVRec(UnsafeArray<const UTF8Char> str);
 		static NN<String> NewEmpty();
 		static NN<String> OrEmpty(Optional<Text::String> s);
 		static Optional<String> CopyOrNull(Optional<Text::String> s);
@@ -73,7 +74,7 @@ namespace Text
 	};
 }
 
-#define STR_PTR(s) ((s)?s->v:0)
+#define STR_PTR(s) ((s)?UnsafeArrayOpt<const UTF8Char>(s->v):UnsafeArrayOpt<const UTF8Char>(0))
 #define STR_PTRC(s) (s)?s->v:0, (s)?s->leng:0
 #define STR_CSTR(s) ((s)?(s)->ToCString():Text::CString(0, 0))
 #define STR_REL(s) (s->Release())

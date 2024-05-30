@@ -285,7 +285,7 @@ Int32 MemCheckError()
 	if (mcMemoryCnt)
 	{
 		UTF8Char buff[12];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		sptr = Text::StrInt32(buff, mcMemoryCnt);
 		console = MemOpenWriter();
 		console->Write(CSTR("Memory leaks occurs for "));

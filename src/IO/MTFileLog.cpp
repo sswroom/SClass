@@ -9,9 +9,9 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, NN<Data::DateTimeUtil::TimeValue> time, UInt32 nanosec, Int32 *lastVal)
+UnsafeArray<UTF8Char> IO::MTFileLog::GetNewName(UnsafeArray<UTF8Char> buff, NN<Data::DateTimeUtil::TimeValue> time, UInt32 nanosec, Int32 *lastVal)
 {
-	UTF8Char *currName;
+	UnsafeArray<UTF8Char> currName;
 	switch (this->groupStyle)
 	{
 	case IO::LogHandler::LogGroup::PerYear:
@@ -76,7 +76,7 @@ void IO::MTFileLog::WriteArr(NN<Text::String> *msgArr, Data::Timestamp *dateArr,
 {
 	Bool newFile = false;
 	UTF8Char buff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::Timestamp time;
 	Data::DateTimeUtil::TimeValue tval;
 	Text::StringBuilderUTF8 sb;
@@ -202,7 +202,7 @@ UInt32 __stdcall IO::MTFileLog::FileThread(AnyType userObj)
 void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFormat)
 {
 	UTF8Char buff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	if (dateFormat == 0)
 	{
@@ -318,7 +318,7 @@ Bool IO::MTFileLog::HasNewFile()
 {
 	return this->hasNewFile;
 }
-UTF8Char *IO::MTFileLog::GetLastFileName(UTF8Char *sbuff)
+UnsafeArray<UTF8Char> IO::MTFileLog::GetLastFileName(UnsafeArray<UTF8Char> sbuff)
 {
 	this->hasNewFile = false;
 	Data::Timestamp ts = Data::Timestamp::Now();

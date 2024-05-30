@@ -12,26 +12,19 @@ Text::TextAnalyzer::~TextAnalyzer()
 {
 }
 
-void *Text::TextAnalyzer::BeginAnalyze(const UTF8Char *s)
+void *Text::TextAnalyzer::BeginAnalyze(UnsafeArray<const UTF8Char> s)
 {
 	TextSession *tsess;
-	if (s)
-	{
-		tsess = MemAlloc(TextSession, 1);
-		tsess->currPos = s;
-		return tsess;
-	}
-	else
-	{
-		return 0;
-	}
+	tsess = MemAlloc(TextSession, 1);
+	tsess->currPos = s;
+	return tsess;
 }
 
-UTF8Char *Text::TextAnalyzer::NextWord(UTF8Char *sbuff, void *sess)
+UnsafeArrayOpt<UTF8Char> Text::TextAnalyzer::NextWord(UnsafeArray<UTF8Char> sbuff, void *sess)
 {
 	TextSession *tsess = (TextSession*)sess;
 	UTF32Char c;
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 	while (true)
 	{
 		tsess->currPos = Text::StrReadChar(tsess->currPos, c);

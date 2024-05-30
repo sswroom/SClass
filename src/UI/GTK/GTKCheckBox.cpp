@@ -12,7 +12,7 @@ void UI::GTK::GTKCheckBox::SignalToggled(GtkToggleButton *btn, gpointer data)
 
 UI::GTK::GTKCheckBox::GTKCheckBox(NN<GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN initText, Bool checked) : UI::GUICheckBox(ui, parent)
 {
-	this->hwnd = (ControlHandle*)gtk_check_button_new_with_label((const Char*)initText.v);
+	this->hwnd = (ControlHandle*)gtk_check_button_new_with_label((const Char*)initText.v.Ptr());
 	parent->AddChild(*this);
 	if (checked)
 	{
@@ -31,7 +31,7 @@ void UI::GTK::GTKCheckBox::SetText(Text::CStringNN text)
 	GList *children = gtk_container_get_children((GtkContainer*)this->hwnd);
 	if (children)
 	{
-		gtk_label_set_text((GtkLabel*)children->data, (const Char*)text.v);
+		gtk_label_set_text((GtkLabel*)children->data, (const Char*)text.v.Ptr());
 	}
 	g_list_free(children);
 }

@@ -794,7 +794,7 @@ Data::DateTimeUtil::Weekday Data::DateTimeUtil::Instant2Weekday(Data::TimeInstan
 	return (Data::DateTimeUtil::Weekday)(((inst.sec + tzQhr * 900) / 86400 + 4) % 7);
 }
 
-UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, NN<const TimeValue> tval, Int8 tzQhr, UInt32 nanosec, const UTF8Char *pattern)
+UnsafeArray<UTF8Char> Data::DateTimeUtil::ToString(UnsafeArray<UTF8Char> sbuff, NN<const TimeValue> tval, Int8 tzQhr, UInt32 nanosec, UnsafeArray<const UTF8Char> pattern)
 {
 	while (*pattern)
 	{
@@ -821,11 +821,11 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, NN<const TimeValue> tval
 				pattern++;
 			}
 			sbuff += digiCnt + neg;
-			UTF8Char *src = sbuff;
+			UnsafeArray<UTF8Char> src = sbuff;
 			while (digiCnt >= 2)
 			{
 				src -= 2;
-				WriteNUInt16(src, ReadNUInt16(&MyString_StrDigit100U8[(thisVal % 100) * 2]));
+				WriteNUInt16(&src[0], ReadNUInt16(&MyString_StrDigit100U8[(thisVal % 100) * 2]));
 				thisVal = thisVal / 100;
 				digiCnt = (UInt8)(digiCnt - 2);
 			}
@@ -850,13 +850,13 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, NN<const TimeValue> tval
 				}
 				else
 				{
-					WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[tval->minute * 2]));
+					WriteNUInt16(&sbuff[0], ReadNUInt16(&MyString_StrDigit100U8[tval->minute * 2]));
 					sbuff += 2;
 				}
 			}
 			else
 			{
-				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[tval->minute * 2]));
+				WriteNUInt16(&sbuff[0], ReadNUInt16(&MyString_StrDigit100U8[tval->minute * 2]));
 				sbuff += 2;
 
 				pattern++;
@@ -876,13 +876,13 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, NN<const TimeValue> tval
 				}
 				else
 				{
-					WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[tval->second * 2]));
+					WriteNUInt16(&sbuff[0], ReadNUInt16(&MyString_StrDigit100U8[tval->second * 2]));
 					sbuff += 2;
 				}
 			}
 			else
 			{
-				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[tval->second * 2]));
+				WriteNUInt16(&sbuff[0], ReadNUInt16(&MyString_StrDigit100U8[tval->second * 2]));
 				sbuff += 2;
 
 				pattern++;
@@ -902,13 +902,13 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, NN<const TimeValue> tval
 				}
 				else
 				{
-					WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[tval->day * 2]));
+					WriteNUInt16(&sbuff[0], ReadNUInt16(&MyString_StrDigit100U8[tval->day * 2]));
 					sbuff += 2;
 				}
 			}
 			else
 			{
-				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[tval->day * 2]));
+				WriteNUInt16(&sbuff[0], ReadNUInt16(&MyString_StrDigit100U8[tval->day * 2]));
 				sbuff += 2;
 
 				pattern++;
@@ -929,7 +929,7 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, NN<const TimeValue> tval
 			else if (pattern[2] != 'f')
 			{
 				sv = nanosec / 10000000;
-				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				WriteNUInt16(&sbuff[0], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
 				sbuff += 2;
 				pattern += 2;
 			}
@@ -937,7 +937,7 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, NN<const TimeValue> tval
 			{
 				sv = nanosec / 10000000;
 				nanosec = nanosec % 10000000;
-				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				WriteNUInt16(&sbuff[0], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
 				sbuff[2] = (UTF8Char)((nanosec / 1000000) + 0x30);
 				sbuff += 3;
 				pattern += 3;
@@ -946,7 +946,7 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, NN<const TimeValue> tval
 			{
 				sv = nanosec / 10000000;
 				nanosec = nanosec % 10000000;
-				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				WriteNUInt16(&sbuff[0], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
 				sv = nanosec / 100000;
 				WriteNUInt16(&sbuff[2], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
 				sbuff += 4;
@@ -956,7 +956,7 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, NN<const TimeValue> tval
 			{
 				sv = nanosec / 10000000;
 				nanosec = nanosec % 10000000;
-				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				WriteNUInt16(&sbuff[0], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
 				sv = nanosec / 100000;
 				nanosec = nanosec % 100000;
 				WriteNUInt16(&sbuff[2], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
@@ -968,7 +968,7 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, NN<const TimeValue> tval
 			{
 				sv = nanosec / 10000000;
 				nanosec = nanosec % 10000000;
-				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				WriteNUInt16(&sbuff[0], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
 				sv = nanosec / 100000;
 				nanosec = nanosec % 100000;
 				WriteNUInt16(&sbuff[2], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
@@ -981,7 +981,7 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, NN<const TimeValue> tval
 			{
 				sv = nanosec / 10000000;
 				nanosec = nanosec % 10000000;
-				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				WriteNUInt16(&sbuff[0], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
 				sv = nanosec / 100000;
 				nanosec = nanosec % 100000;
 				WriteNUInt16(&sbuff[2], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
@@ -996,7 +996,7 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, NN<const TimeValue> tval
 			{
 				sv = nanosec / 10000000;
 				nanosec = nanosec % 10000000;
-				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				WriteNUInt16(&sbuff[0], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
 				sv = nanosec / 100000;
 				nanosec = nanosec % 100000;
 				WriteNUInt16(&sbuff[2], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
@@ -1012,7 +1012,7 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, NN<const TimeValue> tval
 			{
 				sv = nanosec / 10000000;
 				nanosec = nanosec % 10000000;
-				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
+				WriteNUInt16(&sbuff[0], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
 				sv = nanosec / 100000;
 				nanosec = nanosec % 100000;
 				WriteNUInt16(&sbuff[2], ReadNUInt16(&MyString_StrDigit100U8[sv * 2]));
@@ -1063,7 +1063,7 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, NN<const TimeValue> tval
 					break;
 			}
 			sbuff += digiCnt;
-			UTF8Char *src = sbuff;
+			UnsafeArray<UTF8Char> src = sbuff;
 			while (digiCnt-- > 0)
 			{
 				*--src = (UTF8Char)((thisMS % 10) + 0x30);
@@ -1087,13 +1087,13 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, NN<const TimeValue> tval
 				}
 				else
 				{
-					WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[thisH * 2]));
+					WriteNUInt16(&sbuff[0], ReadNUInt16(&MyString_StrDigit100U8[thisH * 2]));
 					sbuff += 2;
 				}
 			}
 			else
 			{
-				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[thisH * 2]));
+				WriteNUInt16(&sbuff[0], ReadNUInt16(&MyString_StrDigit100U8[thisH * 2]));
 				sbuff += 2;
 				pattern++;
 
@@ -1113,13 +1113,13 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, NN<const TimeValue> tval
 				}
 				else
 				{
-					WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[tval->hour * 2]));
+					WriteNUInt16(&sbuff[0], ReadNUInt16(&MyString_StrDigit100U8[tval->hour * 2]));
 					sbuff += 2;
 				}
 			}
 			else
 			{
-				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[tval->hour * 2]));
+				WriteNUInt16(&sbuff[0], ReadNUInt16(&MyString_StrDigit100U8[tval->hour * 2]));
 				sbuff += 2;
 
 				pattern++;
@@ -1138,20 +1138,20 @@ UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, NN<const TimeValue> tval
 				}
 				else
 				{
-					WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[tval->month * 2]));
+					WriteNUInt16(&sbuff[0], ReadNUInt16(&MyString_StrDigit100U8[tval->month * 2]));
 					sbuff += 2;
 				}
 				pattern += 1;
 			}
 			else if (pattern[2] != 'M')
 			{
-				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[tval->month * 2]));
+				WriteNUInt16(&sbuff[0], ReadNUInt16(&MyString_StrDigit100U8[tval->month * 2]));
 				sbuff += 2;
 				pattern += 2;
 			}
 			else if (pattern[3] != 'M')
 			{
-				WriteNUInt32(sbuff, ReadNUInt32((const UInt8*)monString[tval->month - 1]));
+				WriteNUInt32(&sbuff[0], ReadNUInt32((const UInt8*)monString[tval->month - 1]));
 				sbuff += 3;
 				pattern += 3;
 			}
@@ -1557,7 +1557,7 @@ Bool Data::DateTimeUtil::String2TimeValue(Text::CStringNN dateStr, NN<TimeValue>
 		UOSInt len2 = strs2[1].leng;
 		UOSInt len3 = strs2[2].leng;
 		UOSInt len4 = strs2[3].leng;
-		UTF8Char *timeStr = strs2[3].v;
+		UnsafeArray<UTF8Char> timeStr = strs2[3].v;
 		UOSInt timeStrLen = strs2[3].leng;
 		if (len1 == 3 && len2 <= 2 && len3 == 4)
 		{
@@ -1834,7 +1834,7 @@ UInt8 Data::DateTimeUtil::ParseMonthStr(Text::CStringNN month)
 	return 0;
 }
 
-UTF8Char *Data::DateTimeUtil::DispYear(UTF8Char *buff, Int32 year)
+UnsafeArray<UTF8Char> Data::DateTimeUtil::DispYear(UnsafeArray<UTF8Char> buff, Int32 year)
 {
 	return Text::StrInt32(buff, DispYearI32(year));
 }

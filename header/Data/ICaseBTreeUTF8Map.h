@@ -7,17 +7,17 @@ namespace Data
 	template <class T> class ICaseBTreeUTF8Map : public Data::BTreeUTF8Map<T>
 	{
 	protected:
-		T PutNode(BTreeUTF8Node<T> *node, Text::CString key, UInt32 hash, T val);
-		virtual UInt32 CalHash(const UTF8Char *key, UOSInt keyLen) const;
+		T PutNode(BTreeUTF8Node<T> *node, Text::CStringNN key, UInt32 hash, T val);
+		virtual UInt32 CalHash(UnsafeArray<const UTF8Char> key, UOSInt keyLen) const;
 	public:
 		ICaseBTreeUTF8Map();
 		virtual ~ICaseBTreeUTF8Map();
 
-		virtual T Get(Text::CString key) const;
-		virtual T Remove(Text::CString key);
+		virtual T Get(Text::CStringNN key) const;
+		virtual T Remove(Text::CStringNN key);
 	};
 
-	template <class T> T ICaseBTreeUTF8Map<T>::PutNode(BTreeUTF8Node<T> *node, Text::CString key, UInt32 hash, T val)
+	template <class T> T ICaseBTreeUTF8Map<T>::PutNode(BTreeUTF8Node<T> *node, Text::CStringNN key, UInt32 hash, T val)
 	{
 		BTreeUTF8Node<T> *tmpNode;
 		T retVal;
@@ -137,7 +137,7 @@ namespace Data
 
 	}
 
-	template <class T> UInt32 ICaseBTreeUTF8Map<T>::CalHash(const UTF8Char *key, UOSInt keyLen) const
+	template <class T> UInt32 ICaseBTreeUTF8Map<T>::CalHash(UnsafeArray<const UTF8Char> key, UOSInt keyLen) const
 	{
 		UTF8Char sbuff[256];
 		UOSInt charCnt = (UOSInt)(Text::StrToUpperC(sbuff, key, keyLen) - sbuff);
@@ -152,7 +152,7 @@ namespace Data
 	{
 	}
 
-	template <class T> T ICaseBTreeUTF8Map<T>::Get(Text::CString key) const
+	template <class T> T ICaseBTreeUTF8Map<T>::Get(Text::CStringNN key) const
 	{
 		UInt32 hash = CalHash(key.v, key.leng);
 		BTreeUTF8Node<T> *node = this->rootNode;
@@ -187,7 +187,7 @@ namespace Data
 		return 0;
 	}
 
-	template <class T> T ICaseBTreeUTF8Map<T>::Remove(Text::CString key)
+	template <class T> T ICaseBTreeUTF8Map<T>::Remove(Text::CStringNN key)
 	{
 		if (this->rootNode == 0)
 			return 0;

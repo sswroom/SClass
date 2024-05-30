@@ -5,11 +5,11 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-UTF8Char *Net::SocketUtil::GetAddrName(UTF8Char *buff, NN<const Net::SocketUtil::AddressInfo> addr)
+UnsafeArrayOpt<UTF8Char> Net::SocketUtil::GetAddrName(UnsafeArray<UTF8Char> buff, NN<const Net::SocketUtil::AddressInfo> addr)
 {
 	if (addr->addrType == AddrType::IPv4)
 	{
-		UTF8Char *ptr;
+		UnsafeArray<UTF8Char> ptr;
 		ptr = Text::StrInt32(buff, addr->addr[0]);
 		*ptr++ = '.';
 		ptr = Text::StrInt32(ptr, addr->addr[1]);
@@ -21,7 +21,7 @@ UTF8Char *Net::SocketUtil::GetAddrName(UTF8Char *buff, NN<const Net::SocketUtil:
 	}
 	else if (addr->addrType == AddrType::IPv6)
 	{
-		UTF8Char *oriBuff = buff;
+		UnsafeArray<UTF8Char> oriBuff = buff;
 		Bool skipFound = false;
 		Bool lastIsSkip = false;
 		OSInt i = 0;
@@ -151,16 +151,18 @@ WChar *Net::SocketUtil::GetAddrName(WChar *buff, NN<const AddressInfo> addr)
 	return 0;
 }
 
-UTF8Char *Net::SocketUtil::GetAddrName(UTF8Char *buff, NN<const AddressInfo> addr, UInt16 port)
+UnsafeArrayOpt<UTF8Char> Net::SocketUtil::GetAddrName(UnsafeArray<UTF8Char> buff, NN<const AddressInfo> addr, UInt16 port)
 {
 	if (addr->addrType == AddrType::IPv4)
 	{
-		return Text::StrUInt32(Text::StrConcatC(GetAddrName(buff, addr), UTF8STRC(":")), port);
+		if (GetAddrName(buff, addr).SetTo(buff))
+			return Text::StrUInt32(Text::StrConcatC(buff, UTF8STRC(":")), port);
 	}
 	else if (addr->addrType == AddrType::IPv6)
 	{
 		*buff++ = '[';
-		buff = GetAddrName(buff, addr);
+		if (!GetAddrName(buff, addr).SetTo(buff))
+			return 0;
 		*buff++ = ']';
 		*buff++ = ':';
 		return Text::StrUInt32(buff, port);
@@ -192,9 +194,9 @@ WChar *Net::SocketUtil::GetAddrName(WChar *buff, NN<const AddressInfo> addr, UIn
 	}
 }
 
-UTF8Char *Net::SocketUtil::GetIPv4Name(UTF8Char *buff, UInt32 ip)
+UnsafeArray<UTF8Char> Net::SocketUtil::GetIPv4Name(UnsafeArray<UTF8Char> buff, UInt32 ip)
 {
-	UTF8Char *ptr;
+	UnsafeArray<UTF8Char> ptr;
 	ptr = Text::StrUInt16(buff, ((UInt8*)&ip)[0]);
 	*ptr++ = '.';
 	ptr = Text::StrUInt16(ptr, ((UInt8*)&ip)[1]);
@@ -218,9 +220,9 @@ WChar *Net::SocketUtil::GetIPv4Name(WChar *buff, UInt32 ip)
 	return ptr;
 }
 
-UTF8Char *Net::SocketUtil::GetIPv4Name(UTF8Char *buff, UInt32 ip, UInt16 port)
+UnsafeArray<UTF8Char> Net::SocketUtil::GetIPv4Name(UnsafeArray<UTF8Char> buff, UInt32 ip, UInt16 port)
 {
-	UTF8Char *ptr;
+	UnsafeArray<UTF8Char> ptr;
 	ptr = Text::StrUInt16(buff, ((UInt8*)&ip)[0]);
 	*ptr++ = '.';
 	ptr = Text::StrUInt16(ptr, ((UInt8*)&ip)[1]);
@@ -265,7 +267,7 @@ UInt32 Net::SocketUtil::GetIPAddr(const WChar *ipName)
 UInt32 Net::SocketUtil::GetIPAddr(Text::CStringNN ipName)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sarr[4];
+	UnsafeArray<UTF8Char> sarr[4];
 	UInt8 ip[4];
 	if (ipName.leng > 31)
 	{
@@ -336,7 +338,7 @@ void Net::SocketUtil::SetAddrInfoV6(NN<AddressInfo> addr, const UInt8 *ipv6, Int
 Bool Net::SocketUtil::SetAddrInfo(NN<AddressInfo> addr, Text::CStringNN ipName)
 {
 	UTF8Char sbuff[51];
-	UTF8Char *sarr[9];
+	UnsafeArray<UTF8Char> sarr[9];
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;

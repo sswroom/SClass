@@ -8,7 +8,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	UInt8 testBlock[] = "The quick brown fox jumps over the lazy dog";
 	UInt8 hashVal[32];
 	UTF8Char sbuff[65];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Crypto::Hash::MD5 hash;
 
 	hash.GetValue(hashVal);

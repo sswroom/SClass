@@ -18,12 +18,12 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NN<Text::XMLReader> reade
 	env.csys = 0;
 	env.srid = 0;
 	UOSInt colCnt = 0;
-	Data::ArrayList<const UTF8Char *> nameList;
+	Data::ArrayListArr<const UTF8Char> nameList;
 	Data::ArrayList<Text::String *> valList;
 	Text::StringBuilderUTF8 sb;
 	Map::VectorLayer *lyr = 0;
 	Map::DrawLayerType layerType = Map::DRAW_LAYER_UNKNOWN;
-	UnsafeArray<const UTF8Char*> ccols;
+	UnsafeArray<UnsafeArray<const UTF8Char>> ccols;
 	UOSInt i;
 	Math::Geometry::Vector2D *newVec;
 	while (reader->NextElementName().SetTo(nodeText))
@@ -162,7 +162,7 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NN<Text::XMLReader> reade
 				i = nameList.GetCount();
 				while (i-- > 0)
 				{
-					Text::StrDelNew(nameList.GetItem(i));
+					Text::StrDelNew(nameList.GetItemNoCheck(i));
 				}
 				nameList.Clear();
 				i = valList.GetCount();
@@ -192,8 +192,8 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NN<Text::XMLReader> reade
 
 Math::Geometry::Vector2D *Map::GMLXML::ParseGeometry(NN<Text::XMLReader> reader, NN<ParseEnv> env)
 {
-	UTF8Char *sarr[4];
-	UTF8Char *sarr2[4];
+	UnsafeArray<UTF8Char> sarr[4];
+	UnsafeArray<UTF8Char> sarr2[4];
 	UOSInt sarr2Cnt;
 	Math::Geometry::Vector2D *vec = 0;
 	UOSInt i;

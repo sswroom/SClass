@@ -14,9 +14,9 @@ namespace Text
 		virtual ~StringBuilderUTF16();
 
 		virtual NN<StringBuilderUTF> Append(Text::PString *s);
-		virtual NN<StringBuilderUTF> Append(const UTF8Char *s);
-		virtual NN<StringBuilderUTF> AppendC(const UTF8Char *s, UOSInt charCnt);
-		virtual NN<StringBuilderUTF> AppendS(const UTF8Char *s, UOSInt maxLen);
+		virtual NN<StringBuilderUTF> Append(UnsafeArray<const UTF8Char> s);
+		virtual NN<StringBuilderUTF> AppendC(UnsafeArray<const UTF8Char> s, UOSInt charCnt);
+		virtual NN<StringBuilderUTF> AppendS(UnsafeArray<const UTF8Char> s, UOSInt maxLen);
 		virtual NN<StringBuilderUTF> AppendChar(UTF32Char c, UOSInt repCnt);
 
 		NN<StringBuilderUTF16> AppendCSV(const UTF16Char **sarr, UOSInt nStr);

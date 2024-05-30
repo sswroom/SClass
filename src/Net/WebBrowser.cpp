@@ -19,21 +19,22 @@
 #include <stdio.h>
 #endif
 
-UTF8Char *Net::WebBrowser::GetLocalFileName(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen)
+UnsafeArrayOpt<UTF8Char> Net::WebBrowser::GetLocalFileName(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> url, UOSInt urlLen)
 {
 	UTF8Char buff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	UInt8 hashResult[4];
 	sptr = this->cacheDir->ConcatTo(buff);
 	if (sptr != buff && sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
-	sptr2 = Text::URLString::GetURIScheme(sptr, url, urlLen);
+	if (!Text::URLString::GetURIScheme(sptr, url, urlLen).SetTo(sptr2))
+		return 0;
 	if (Text::StrEqualsC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC("HTTP")) || Text::StrEqualsC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC("HTTPS")))
 	{
-		const UTF8Char *urlEnd = &url[urlLen];
+		UnsafeArray<const UTF8Char> urlEnd = &url[urlLen];
 		sptr = sptr2;
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr2 = Text::URLString::GetURLHost(sptr, url, urlLen);
@@ -44,7 +45,7 @@ UTF8Char *Net::WebBrowser::GetLocalFileName(UTF8Char *sbuff, const UTF8Char *url
 		url = &url[Text::StrIndexOfCharC(url, urlLen, ':') + 3];
 		url = &url[Text::StrIndexOfCharC(url, (UOSInt)(urlEnd - url), '/')];
 		this->hash.Clear();
-		this->hash.Calc(url, (UOSInt)(urlEnd - url));
+		this->hash.Calc(url.Ptr(), (UOSInt)(urlEnd - url));
 		this->hash.GetValue(hashResult);
 		Text::StrHexBytes(sptr, hashResult, 4, 0);
 		return Text::StrConcat(sbuff, buff);
@@ -68,48 +69,52 @@ Net::WebBrowser::~WebBrowser()
 	this->cacheDir->Release();
 }
 
-IO::StreamData *Net::WebBrowser::GetData(Text::CStringNN url, Bool forceReload, UTF8Char *contentType)
+IO::StreamData *Net::WebBrowser::GetData(Text::CStringNN url, Bool forceReload, UnsafeArrayOpt<UTF8Char> contentType)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> nncontentType;
 	IO::Path::PathType pt = IO::Path::GetPathType(url);
 	/////////////////////////////////////////////
 	if (pt == IO::Path::PathType::File)
 	{
 		IO::StmData::FileData *fd;
 		NEW_CLASS(fd, IO::StmData::FileData(url, false));
-		if (contentType)
+		if (contentType.SetTo(nncontentType))
 		{
-			Text::CString mime = Net::MIME::GetMIMEFromFileName(url.v, url.leng);
-			Text::StrConcatC(contentType, mime.v, mime.leng);
+			Text::CStringNN mime = Net::MIME::GetMIMEFromFileName(url.v, url.leng);
+			Text::StrConcatC(nncontentType, mime.v, mime.leng);
 		}
 		return fd;
 	}
-	if ((sptr = Text::URLString::GetURIScheme(sbuff, url.v, url.leng)) == 0)
+	if (!Text::URLString::GetURIScheme(sbuff, url.v, url.leng).SetTo(sptr))
 		return 0;
 	if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("FILE")))
 	{
-		sptr = Text::URLString::GetURLFilePath(sbuff, url.v, url.leng);
+		if (Text::URLString::GetURLFilePath(sbuff, url.v, url.leng).SetTo(sptr))
+			return 0;
 		IO::StmData::FileData *fd;
 		NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
-		if (contentType)
+		if (contentType.SetTo(nncontentType))
 		{
-			Text::CString mime = Net::MIME::GetMIMEFromFileName(url.v, url.leng);
-			Text::StrConcatC(contentType, mime.v, mime.leng);
+			Text::CStringNN mime = Net::MIME::GetMIMEFromFileName(url.v, url.leng);
+			Text::StrConcatC(nncontentType, mime.v, mime.leng);
 		}
 		return fd;
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("HTTP")))
 	{
+		if (!GetLocalFileName(sbuff, url.v, url.leng).SetTo(sptr))
+			return 0;
 		Net::HTTPData *data;
-		sptr = GetLocalFileName(sbuff, url.v, url.leng);
 		NEW_CLASS(data, Net::HTTPData(this->sockf, this->ssl, &this->queue, url, CSTRP(sbuff, sptr), forceReload));
 		return data;
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("HTTPS")))
 	{
+		if (!GetLocalFileName(sbuff, url.v, url.leng).SetTo(sptr))
+			return 0;
 		Net::HTTPData *data;
-		sptr = GetLocalFileName(sbuff, url.v, url.leng);
 #if defined(VERBOSE)
 		printf("WebBrowser: Loading HTTPS: %s\r\n", url.v);
 #endif
@@ -128,18 +133,18 @@ IO::StreamData *Net::WebBrowser::GetData(Text::CStringNN url, Bool forceReload, 
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("DATA")))
 	{
 		IO::StmData::MemoryDataCopy *fd;
-		const UTF8Char *urlPtr;
+		UnsafeArray<const UTF8Char> urlPtr;
 		WChar c;
-		const UTF8Char *urlEnd = url.v + url.leng;
+		UnsafeArray<const UTF8Char> urlEnd = url.v + url.leng;
 		urlPtr = &url.v[5];
-		if (contentType)
+		if (contentType.SetTo(nncontentType))
 		{
 			while (true)
 			{
 				c = *urlPtr++;
 				if (c == 0)
 				{
-					*contentType = 0;
+					*nncontentType = 0;
 					return 0;
 				}
 				else if (c == ';')
@@ -148,7 +153,7 @@ IO::StreamData *Net::WebBrowser::GetData(Text::CStringNN url, Bool forceReload, 
 				}
 				else
 				{
-					*contentType++ = (UTF8Char)c;
+					*nncontentType++ = (UTF8Char)c;
 				}
 			}
 		}
@@ -172,16 +177,16 @@ IO::StreamData *Net::WebBrowser::GetData(Text::CStringNN url, Bool forceReload, 
 			Text::TextBinEnc::Base64Enc b64;
 			UOSInt textSize;
 			UOSInt binSize;
-			UTF8Char *strTemp;
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> strTemp;
+			UnsafeArray<UTF8Char> sptr;
 			textSize = (UOSInt)(urlEnd - urlPtr + 7);
-			strTemp = MemAlloc(UTF8Char, textSize + 1);
+			strTemp = MemAllocArr(UTF8Char, textSize + 1);
 			sptr = Text::TextBinEnc::URIEncoding::URIDecode(strTemp, urlPtr + 7);
 			binSize = b64.CalcBinSize(CSTRP(strTemp, sptr));
 			Data::ByteBuffer binTemp(binSize);
 			b64.DecodeBin(CSTRP(strTemp, sptr), binTemp.Arr().Ptr());
 			NEW_CLASS(fd, IO::StmData::MemoryDataCopy(binTemp));
-			MemFree(strTemp);
+			MemFreeArr(strTemp);
 			return fd;
 		}
 		else

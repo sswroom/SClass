@@ -42,7 +42,7 @@ UInt32 Text::Encoding::GetEncCodePage() const
 	return this->codePage;
 }
 
-UTF8Char *Text::Encoding::ToString(UTF8Char *buff)
+UnsafeArray<UTF8Char> Text::Encoding::ToString(UnsafeArray<UTF8Char> buff)
 {
 	return Text::EncodingFactory::GetName(buff, this->codePage);
 }
@@ -373,7 +373,7 @@ UOSInt Text::Encoding::CountUTF8Chars(UnsafeArray<const UInt8> bytes, UOSInt byt
 	}
 }
 
-UTF8Char *Text::Encoding::UTF8FromBytes(UTF8Char *buff, UnsafeArray<const UInt8> bytes, UOSInt byteSize, OptOut<UOSInt> byteConv)
+UnsafeArray<UTF8Char> Text::Encoding::UTF8FromBytes(UnsafeArray<UTF8Char> buff, UnsafeArray<const UInt8> bytes, UOSInt byteSize, OptOut<UOSInt> byteConv)
 {
 	if (this->codePage == 65001)
 	{
@@ -382,7 +382,7 @@ UTF8Char *Text::Encoding::UTF8FromBytes(UTF8Char *buff, UnsafeArray<const UInt8>
 	}
 	else if (this->codePage == 1200)
 	{
-		UTF8Char *dest = buff;
+		UnsafeArray<UTF8Char> dest = buff;
 		UTF16Char c;
 		UTF16Char c2;
 		byteSize = byteSize >> 1;
@@ -453,7 +453,7 @@ UTF8Char *Text::Encoding::UTF8FromBytes(UTF8Char *buff, UnsafeArray<const UInt8>
 	}
 	else if (this->codePage == 1201)
 	{
-		UTF8Char *dest = buff;
+		UnsafeArray<UTF8Char> dest = buff;
 		UTF16Char c;
 		UTF16Char c2;
 		byteSize = byteSize >> 1;
@@ -529,7 +529,7 @@ UTF8Char *Text::Encoding::UTF8FromBytes(UTF8Char *buff, UnsafeArray<const UInt8>
 		WChar *wbuff = MemAlloc(WChar, charCnt + 1);
 		MultiByteToWideChar(this->codePage, 0, (LPCSTR)bytes.Ptr(), (Int32)byteSize, wbuff, (Int32)charCnt);
 		wbuff[charCnt] = 0;
-		UTF8Char *dest = Text::StrWChar_UTF8(buff, wbuff);
+		UnsafeArray<UTF8Char> dest = Text::StrWChar_UTF8(buff, wbuff);
 		MemFree(wbuff);
 		byteConv.Set((UOSInt)(dest - buff));
 		return dest;
@@ -680,7 +680,7 @@ UOSInt Text::Encoding::WToBytesC(UInt8 *bytes, const WChar *wstr, UOSInt strLen)
 	}
 }
 
-UOSInt Text::Encoding::UTF8CountBytes(const UTF8Char *str)
+UOSInt Text::Encoding::UTF8CountBytes(UnsafeArray<const UTF8Char> str)
 {
 	if (this->codePage == 65001)
 	{
@@ -738,7 +738,7 @@ UOSInt Text::Encoding::UTF8CountBytes(const UTF8Char *str)
 	}
 }
 
-UOSInt Text::Encoding::UTF8CountBytesC(const UTF8Char *str, UOSInt strLen)
+UOSInt Text::Encoding::UTF8CountBytesC(UnsafeArray<const UTF8Char> str, UOSInt strLen)
 {
 	if (this->codePage == 65001)
 	{
@@ -803,7 +803,7 @@ UOSInt Text::Encoding::UTF8CountBytesC(const UTF8Char *str, UOSInt strLen)
 	}
 }
 
-UOSInt Text::Encoding::UTF8ToBytes(UInt8 *bytes, const UTF8Char *str)
+UOSInt Text::Encoding::UTF8ToBytes(UInt8 *bytes, UnsafeArray<const UTF8Char> str)
 {
 	if (this->codePage == 65001)
 	{
@@ -937,11 +937,11 @@ UOSInt Text::Encoding::UTF8ToBytes(UInt8 *bytes, const UTF8Char *str)
 	}
 }
 
-UOSInt Text::Encoding::UTF8ToBytesC(UInt8 *bytes, const UTF8Char *str, UOSInt strLen)
+UOSInt Text::Encoding::UTF8ToBytesC(UInt8 *bytes, UnsafeArray<const UTF8Char> str, UOSInt strLen)
 {
 	if (this->codePage == 65001)
 	{
-		MemCopyNO(bytes, str, strLen);
+		MemCopyNO(bytes, str.Ptr(), strLen);
 		return strLen;
 	}
 	else if (this->codePage == 1200)

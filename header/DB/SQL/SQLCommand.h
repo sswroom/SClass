@@ -15,13 +15,13 @@ namespace DB
 				CT_CREATE_TABLE
 			} CommandType;
 		private:
-			static Bool IsPunctuation(const UTF8Char *s);
+			static Bool IsPunctuation(UnsafeArray<const UTF8Char> s);
 		public:
 			virtual ~SQLCommand() {};
 
 			virtual CommandType GetCommandType() = 0;
 
-			static SQLCommand *Parse(const UTF8Char *sql, DB::SQLType sqlType);
+			static SQLCommand *Parse(UnsafeArray<const UTF8Char> sql, DB::SQLType sqlType);
 		};
 	}
 }

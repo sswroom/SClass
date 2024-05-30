@@ -7,7 +7,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UInt8 hashVal[64];
 	UTF8Char sbuff[129];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Crypto::Hash::SHA512 hash;
 
 	hash.GetValue(hashVal);

@@ -8,14 +8,14 @@ namespace Text
 	private:
 		typedef struct
 		{
-			const UTF8Char *currPos;
+			UnsafeArray<const UTF8Char> currPos;
 		} TextSession;
 	public:
 		TextAnalyzer();
 		~TextAnalyzer();
 
-		void *BeginAnalyze(const UTF8Char *s);
-		UTF8Char *NextWord(UTF8Char *sbuff, void *sess);
+		void *BeginAnalyze(UnsafeArray<const UTF8Char> s);
+		UnsafeArrayOpt<UTF8Char> NextWord(UnsafeArray<UTF8Char> sbuff, void *sess);
 		void EndAnalyze(void *sess);
 	};
 }

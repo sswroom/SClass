@@ -45,7 +45,7 @@ IO::ParserType Parser::FileParser::PSSParser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr2;
 	Bool v1;
 
 	if (*(Int32*)&hdr[0] != (Int32)0xba010000)
@@ -62,7 +62,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 	{
 		return 0;
 	}
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Bool valid = true;
 	NN<Media::AudioFormat> formats[4];
 	Int32 audDelay[4];
@@ -128,7 +128,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PSSParser::ParseFileHdr(NN<IO::St
 		}
 		else if (pkgFile.SetTo(nnpkgFile))
 		{
-			sptr = fd->GetShortName().ConcatTo(sbuff) - 5;
+			sptr = fd->GetShortName().OrEmpty().ConcatTo(sbuff) - 5;
 /*			IO::StmData::ConcatStreamData *data;
 			stmId = 2;
 			NEW_CLASS(data, IO::StmData::ConcatStreamData(fd->GetFullName()));

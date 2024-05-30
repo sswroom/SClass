@@ -768,7 +768,7 @@ Optional<Math::Geometry::Vector2D> Math::MSGeography::ParseBinary(const UInt8 *b
 #if defined(VERBOSE)
 			Text::StringBuilderUTF8 sb;
 			sb.AppendHexBuff(buffPtr, buffSize, ' ', Text::LineBreakType::CRLF);
-			printf("MSGeography: %s\r\n", sb.ToString());
+			printf("MSGeography: %s\r\n", sb.ToPtr());
 #endif
 		}
 	}

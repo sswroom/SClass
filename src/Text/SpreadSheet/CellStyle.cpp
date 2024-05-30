@@ -55,7 +55,7 @@ NN<Text::SpreadSheet::CellStyle> Text::SpreadSheet::CellStyle::Clone() const
 {
 	NN<Text::SpreadSheet::CellStyle> style;
 	NEW_CLASSNN(style, Text::SpreadSheet::CellStyle(this->index));
-	style->id = SCOPY_TEXT(this->id);
+	style->id = Text::StrSCopyNew(this->id);
 	style->halign = this->halign;
 	style->valign = this->valign;
 	style->wordWrap = this->wordWrap;
@@ -75,7 +75,7 @@ void Text::SpreadSheet::CellStyle::CopyFrom(CellStyle *style)
 {
 	this->index = style->index;
 	SDEL_TEXT(this->id);
-	this->id = SCOPY_TEXT(style->id);
+	this->id = Text::StrSCopyNew(style->id);
 	this->halign = style->halign;
 	this->valign = style->valign;
 	this->wordWrap = style->wordWrap;
@@ -225,7 +225,7 @@ UOSInt Text::SpreadSheet::CellStyle::GetIndex() const
 	return this->index;
 }
 
-const UTF8Char *Text::SpreadSheet::CellStyle::GetID() const
+UnsafeArrayOpt<const UTF8Char> Text::SpreadSheet::CellStyle::GetID() const
 {
 	return this->id;
 }

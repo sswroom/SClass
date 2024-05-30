@@ -8,16 +8,16 @@ namespace Net
 	private:
 		typedef struct
 		{
-			const UTF8Char *ext;
+			UnsafeArray<const UTF8Char> ext;
 			UOSInt extLen;
-			const UTF8Char *mime;
+			UnsafeArray<const UTF8Char> mime;
 			UOSInt mimeLen;
 		} MIMEEntry;
 
 		static MIMEEntry mimeList[];
 	public:
-		static Text::CStringNN GetMIMEFromExt(Text::CString ext);
-		static Text::CStringNN GetMIMEFromFileName(const UTF8Char *fileName, UOSInt nameLen);
+		static Text::CStringNN GetMIMEFromExt(Text::CStringNN ext);
+		static Text::CStringNN GetMIMEFromFileName(UnsafeArray<const UTF8Char> fileName, UOSInt nameLen);
 	};
 }
 #endif

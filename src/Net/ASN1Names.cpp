@@ -63,8 +63,8 @@ void Net::ASN1Names::ReadBegin()
 
 Text::CStringNN Net::ASN1Names::ReadName(Net::ASN1Util::ItemType itemType, UOSInt len, const UInt8 *buff)
 {
-	Text::CString name = ReadNameNoDef(itemType, len, buff);
-	if (name.v)
+	Text::CStringNN name;
+	if (ReadNameNoDef(itemType, len, buff).SetTo(name))
 		return Text::CStringNN(name.v, name.leng);
 	return Net::ASN1Util::ItemTypeGetName(itemType);
 }

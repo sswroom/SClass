@@ -85,14 +85,14 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 	NN<Media::StaticImage> img;
 	Optional<Media::EXIFData> exif;
 	NN<Media::EXIFData> nnexif;
-	UInt16 fmt = bo->GetUInt16(&hdr[2]);
+	UInt16 fmt = bo->GetUInt16(hdr.Arr() + 2);
 	if (fmt == 42)
 	{
-		nextOfst = bo->GetUInt32(&hdr[4]);
+		nextOfst = bo->GetUInt32(hdr.Arr() + 4);
 	}
-	else if (fmt == 43 && bo->GetUInt16(&hdr[4]) == 8 && bo->GetUInt16(&hdr[6]) == 0) //BigTIFF
+	else if (fmt == 43 && bo->GetUInt16(hdr.Arr() + 4) == 8 && bo->GetUInt16(hdr.Arr() + 6) == 0) //BigTIFF
 	{
-		nextOfst = bo->GetUInt64(&hdr[8]);
+		nextOfst = bo->GetUInt64(hdr.Arr() + 8);
 	}
 	else
 	{
@@ -424,16 +424,19 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 
 			NEW_CLASSNN(img, Media::StaticImage(Math::Size2D<UOSInt>(imgWidth, imgHeight), 0, storeBPP, pf, 0, color, Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32 || bpp == 64)?Media::AT_ALPHA:Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			Data::ByteArray imgData;
-			UInt8 *planarBuff = 0;
+			UnsafeArrayOpt<UInt8> planarBuff = 0;
+			UnsafeArray<UInt8> nnplanarBuff;
 			if (sampleFormat == 3)
 			{
-				planarBuff = MemAlloc(UInt8, imgWidth * imgHeight * bpp >> 3);
-				imgData = Data::ByteArray(planarBuff, imgWidth * imgHeight * bpp >> 3);
+				nnplanarBuff = MemAllocArr(UInt8, imgWidth * imgHeight * bpp >> 3);
+				imgData = Data::ByteArray(nnplanarBuff, imgWidth * imgHeight * bpp >> 3);
+				planarBuff = nnplanarBuff;
 			}
 			else if (planarConfiguration == 2 && nChannels > 1)
 			{
-				planarBuff = MemAlloc(UInt8, imgWidth * imgHeight * bpp >> 3);
-				imgData = Data::ByteArray(planarBuff, imgWidth * imgHeight * bpp >> 3);
+				nnplanarBuff = MemAllocArr(UInt8, imgWidth * imgHeight * bpp >> 3);
+				imgData = Data::ByteArray(nnplanarBuff, imgWidth * imgHeight * bpp >> 3);
+				planarBuff = nnplanarBuff;
 			}
 			else
 			{
@@ -577,19 +580,19 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 				}
 			}
 
-			if (sampleFormat == 3 && predictor == 3)
+			if (sampleFormat == 3 && predictor == 3 && planarBuff.SetTo(nnplanarBuff))
 			{
-				UInt8 *tmpBuff;
+				UnsafeArray<UInt8> tmpBuff;
 				UnsafeArray<UInt8> tmpPtr;
-				UInt8 *tmpPtr2;
+				UnsafeArray<UInt8> tmpPtr2;
 				Data::ByteArray tmpArray;
 				UInt8 lastPx[4];
 				UOSInt bytePerChannels = (bpp >> 3) / nChannels;
 				UOSInt l;
 				if (planarConfiguration == 2)
 				{
-					tmpBuff = MemAlloc(UInt8, bytePerChannels * imgWidth);
-					imgData = Data::ByteArray(planarBuff, imgWidth * imgHeight * bpp >> 3);
+					tmpBuff = MemAllocArr(UInt8, bytePerChannels * imgWidth);
+					imgData = Data::ByteArray(nnplanarBuff, imgWidth * imgHeight * bpp >> 3);
 					if (bo->IsBigEndian())
 					{
 						i = nChannels;
@@ -644,15 +647,15 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 							}
 						}
 					}
-					MemFree(tmpBuff);
+					MemFreeArr(tmpBuff);
 				}
 				else
 				{
-					tmpBuff = MemAlloc(UInt8, bytePerChannels * imgWidth * nChannels);
+					tmpBuff = MemAllocArr(UInt8, bytePerChannels * imgWidth * nChannels);
 					/////////////////////////////////////////////////////
 					if (bo->IsBigEndian())
 					{
-						imgData = Data::ByteArray(planarBuff, imgWidth * imgHeight * bpp >> 3);
+						imgData = Data::ByteArray(nnplanarBuff, imgWidth * imgHeight * bpp >> 3);
 						i = imgHeight;
 						while (i-- > 0)
 						{
@@ -685,7 +688,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					}
 					else
 					{
-						imgData = Data::ByteArray(planarBuff, imgWidth * imgHeight * bpp >> 3);
+						imgData = Data::ByteArray(nnplanarBuff, imgWidth * imgHeight * bpp >> 3);
 						i = imgHeight;
 						while (i-- > 0)
 						{
@@ -716,46 +719,46 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 							imgData = tmpArray;
 						}
 					}
-					MemFree(tmpBuff);
+					MemFreeArr(tmpBuff);
 				}
 			}
 
-			if (sampleFormat == 3)
+			if (sampleFormat == 3 && planarBuff.SetTo(nnplanarBuff))
 			{
 				if (nChannels == 1)
 				{
 					if (bpp == 16)
 					{
-						UInt8 *srcPtr = planarBuff;
+						UnsafeArray<UInt8> srcPtr = nnplanarBuff;
 						imgData = img->GetDataArray();
 						i = imgWidth * imgHeight;
 						while (i-- > 0)
 						{
-							WriteFloat(&imgData[0], bo->GetFloat16(&srcPtr[0]));
+							WriteFloat(&imgData[0], bo->GetFloat16(srcPtr + 0));
 							srcPtr += 2;
 							imgData += 4;
 						}
 					}
 					else if (bpp == 24)
 					{
-						UInt8 *srcPtr = planarBuff;
+						UnsafeArray<UInt8> srcPtr = nnplanarBuff;
 						imgData = img->GetDataArray();
 						i = imgWidth * imgHeight;
 						while (i-- > 0)
 						{
-							WriteFloat(&imgData[0], bo->GetFloat24(&srcPtr[0]));
+							WriteFloat(&imgData[0], bo->GetFloat24(srcPtr + 0));
 							srcPtr += 3;
 							imgData += 4;
 						}
 					}
 					else if (bpp == 32)
 					{
-						UInt8 *srcPtr = planarBuff;
+						UnsafeArray<UInt8> srcPtr = nnplanarBuff;
 						imgData = img->GetDataArray();
 						i = imgWidth * imgHeight;
 						while (i-- > 0)
 						{
-							WriteFloat(&imgData[0], bo->GetFloat32(&srcPtr[0]));
+							WriteFloat(&imgData[0], bo->GetFloat32(srcPtr + 0));
 							srcPtr += 4;
 							imgData += 4;
 						}
@@ -767,8 +770,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					{
 						if (planarConfiguration == 2)
 						{
-							UInt8 *wPtr = planarBuff;
-							UInt8 *aPtr = wPtr + imgWidth * imgHeight * 2;
+							UnsafeArray<UInt8> wPtr = nnplanarBuff;
+							UnsafeArray<UInt8> aPtr = wPtr + imgWidth * imgHeight * 2;
 							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
@@ -782,13 +785,13 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						}
 						else
 						{
-							UInt8 *srcPtr = planarBuff;
+							UnsafeArray<UInt8> srcPtr = nnplanarBuff;
 							imgData = img->GetDataArray();;
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat16(&srcPtr[0]));
-								WriteFloat(&imgData[4], bo->GetFloat16(&srcPtr[2]));
+								WriteFloat(&imgData[0], bo->GetFloat16(srcPtr + 0));
+								WriteFloat(&imgData[4], bo->GetFloat16(srcPtr + 2));
 								srcPtr += 4;
 								imgData += 8;
 							}
@@ -798,8 +801,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					{
 						if (planarConfiguration == 2)
 						{
-							UInt8 *wPtr = planarBuff;
-							UInt8 *aPtr = wPtr + imgWidth * imgHeight * 3;
+							UnsafeArray<UInt8> wPtr = nnplanarBuff;
+							UnsafeArray<UInt8> aPtr = wPtr + imgWidth * imgHeight * 3;
 							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
@@ -813,13 +816,13 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						}
 						else
 						{
-							UInt8 *srcPtr = planarBuff;
+							UnsafeArray<UInt8> srcPtr = nnplanarBuff;
 							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat24(&srcPtr[0]));
-								WriteFloat(&imgData[4], bo->GetFloat24(&srcPtr[3]));
+								WriteFloat(&imgData[0], bo->GetFloat24(srcPtr + 0));
+								WriteFloat(&imgData[4], bo->GetFloat24(srcPtr + 3));
 								srcPtr += 6;
 								imgData += 8;
 							}
@@ -829,8 +832,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					{
 						if (planarConfiguration == 2)
 						{
-							UInt8 *wPtr = planarBuff;
-							UInt8 *aPtr = wPtr + imgWidth * imgHeight * 4;
+							UnsafeArray<UInt8> wPtr = nnplanarBuff;
+							UnsafeArray<UInt8> aPtr = wPtr + imgWidth * imgHeight * 4;
 							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
@@ -844,13 +847,13 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						}
 						else
 						{
-							UInt8 *srcPtr = planarBuff;
+							UnsafeArray<UInt8> srcPtr = nnplanarBuff;
 							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat32(&srcPtr[0]));
-								WriteFloat(&imgData[4], bo->GetFloat32(&srcPtr[4]));
+								WriteFloat(&imgData[0], bo->GetFloat32(srcPtr + 0));
+								WriteFloat(&imgData[4], bo->GetFloat32(srcPtr + 4));
 								srcPtr += 8;
 								imgData += 8;
 							}
@@ -863,9 +866,9 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					{
 						if (planarConfiguration == 2)
 						{
-							UInt8 *rPtr = planarBuff;
-							UInt8 *gPtr = rPtr + imgWidth * imgHeight * 2;
-							UInt8 *bPtr = gPtr + imgWidth * imgHeight * 2;
+							UnsafeArray<UInt8> rPtr = nnplanarBuff;
+							UnsafeArray<UInt8> gPtr = rPtr + imgWidth * imgHeight * 2;
+							UnsafeArray<UInt8> bPtr = gPtr + imgWidth * imgHeight * 2;
 							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
@@ -881,14 +884,14 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						}
 						else
 						{
-							UInt8 *srcPtr = planarBuff;
+							UnsafeArray<UInt8> srcPtr = nnplanarBuff;
 							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat16(&srcPtr[4]));
-								WriteFloat(&imgData[4], bo->GetFloat16(&srcPtr[2]));
-								WriteFloat(&imgData[8], bo->GetFloat16(&srcPtr[0]));
+								WriteFloat(&imgData[0], bo->GetFloat16(srcPtr + 4));
+								WriteFloat(&imgData[4], bo->GetFloat16(srcPtr + 2));
+								WriteFloat(&imgData[8], bo->GetFloat16(srcPtr + 0));
 								srcPtr += 6;
 								imgData += 12;
 							}
@@ -898,9 +901,9 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					{
 						if (planarConfiguration == 2)
 						{
-							UInt8 *rPtr = planarBuff;
-							UInt8 *gPtr = rPtr + imgWidth * imgHeight * 3;
-							UInt8 *bPtr = gPtr + imgWidth * imgHeight * 3;
+							UnsafeArray<UInt8> rPtr = nnplanarBuff;
+							UnsafeArray<UInt8> gPtr = rPtr + imgWidth * imgHeight * 3;
+							UnsafeArray<UInt8> bPtr = gPtr + imgWidth * imgHeight * 3;
 							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
@@ -916,14 +919,14 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						}
 						else
 						{
-							UInt8 *srcPtr = planarBuff;
+							UnsafeArray<UInt8> srcPtr = nnplanarBuff;
 							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat24(&srcPtr[6]));
-								WriteFloat(&imgData[4], bo->GetFloat24(&srcPtr[3]));
-								WriteFloat(&imgData[8], bo->GetFloat24(&srcPtr[0]));
+								WriteFloat(&imgData[0], bo->GetFloat24(srcPtr + 6));
+								WriteFloat(&imgData[4], bo->GetFloat24(srcPtr + 3));
+								WriteFloat(&imgData[8], bo->GetFloat24(srcPtr + 0));
 								srcPtr += 9;
 								imgData += 12;
 							}
@@ -933,9 +936,9 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					{
 						if (planarConfiguration == 2)
 						{
-							UInt8 *rPtr = planarBuff;
-							UInt8 *gPtr = rPtr + imgWidth * imgHeight * 4;
-							UInt8 *bPtr = gPtr + imgWidth * imgHeight * 4;
+							UnsafeArray<UInt8> rPtr = nnplanarBuff;
+							UnsafeArray<UInt8> gPtr = rPtr + imgWidth * imgHeight * 4;
+							UnsafeArray<UInt8> bPtr = gPtr + imgWidth * imgHeight * 4;
 							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
@@ -951,14 +954,14 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						}
 						else
 						{
-							UInt8 *srcPtr = planarBuff;
+							UnsafeArray<UInt8> srcPtr = nnplanarBuff;
 							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat32(&srcPtr[8]));
-								WriteFloat(&imgData[4], bo->GetFloat32(&srcPtr[4]));
-								WriteFloat(&imgData[8], bo->GetFloat32(&srcPtr[0]));
+								WriteFloat(&imgData[0], bo->GetFloat32(srcPtr + 8));
+								WriteFloat(&imgData[4], bo->GetFloat32(srcPtr + 4));
+								WriteFloat(&imgData[8], bo->GetFloat32(srcPtr + 0));
 								srcPtr += 12;
 								imgData += 12;
 							}
@@ -971,10 +974,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					{
 						if (planarConfiguration == 2)
 						{
-							UInt8 *rPtr = planarBuff;
-							UInt8 *gPtr = rPtr + imgWidth * imgHeight * 2;
-							UInt8 *bPtr = gPtr + imgWidth * imgHeight * 2;
-							UInt8 *aPtr = bPtr + imgWidth * imgHeight * 2;
+							UnsafeArray<UInt8> rPtr = nnplanarBuff;
+							UnsafeArray<UInt8> gPtr = rPtr + imgWidth * imgHeight * 2;
+							UnsafeArray<UInt8> bPtr = gPtr + imgWidth * imgHeight * 2;
+							UnsafeArray<UInt8> aPtr = bPtr + imgWidth * imgHeight * 2;
 							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
@@ -992,15 +995,15 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						}
 						else
 						{
-							UInt8 *srcPtr = planarBuff;
+							UnsafeArray<UInt8> srcPtr = nnplanarBuff;
 							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat16(&srcPtr[4]));
-								WriteFloat(&imgData[4], bo->GetFloat16(&srcPtr[2]));
-								WriteFloat(&imgData[8], bo->GetFloat16(&srcPtr[0]));
-								WriteFloat(&imgData[12], bo->GetFloat16(&srcPtr[6]));
+								WriteFloat(&imgData[0], bo->GetFloat16(srcPtr + 4));
+								WriteFloat(&imgData[4], bo->GetFloat16(srcPtr + 2));
+								WriteFloat(&imgData[8], bo->GetFloat16(srcPtr + 0));
+								WriteFloat(&imgData[12], bo->GetFloat16(srcPtr + 6));
 								srcPtr += 8;
 								imgData += 16;
 							}
@@ -1010,10 +1013,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					{
 						if (planarConfiguration == 2)
 						{
-							UInt8 *rPtr = planarBuff;
-							UInt8 *gPtr = rPtr + imgWidth * imgHeight * 3;
-							UInt8 *bPtr = gPtr + imgWidth * imgHeight * 3;
-							UInt8 *aPtr = bPtr + imgWidth * imgHeight * 3;
+							UnsafeArray<UInt8> rPtr = nnplanarBuff;
+							UnsafeArray<UInt8> gPtr = rPtr + imgWidth * imgHeight * 3;
+							UnsafeArray<UInt8> bPtr = gPtr + imgWidth * imgHeight * 3;
+							UnsafeArray<UInt8> aPtr = bPtr + imgWidth * imgHeight * 3;
 							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
@@ -1031,15 +1034,15 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						}
 						else
 						{
-							UInt8 *srcPtr = planarBuff;
+							UnsafeArray<UInt8> srcPtr = nnplanarBuff;
 							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat24(&srcPtr[6]));
-								WriteFloat(&imgData[4], bo->GetFloat24(&srcPtr[3]));
-								WriteFloat(&imgData[8], bo->GetFloat24(&srcPtr[0]));
-								WriteFloat(&imgData[12], bo->GetFloat24(&srcPtr[9]));
+								WriteFloat(&imgData[0], bo->GetFloat24(srcPtr + 6));
+								WriteFloat(&imgData[4], bo->GetFloat24(srcPtr + 3));
+								WriteFloat(&imgData[8], bo->GetFloat24(srcPtr + 0));
+								WriteFloat(&imgData[12], bo->GetFloat24(srcPtr + 9));
 								srcPtr += 12;
 								imgData += 16;
 							}
@@ -1049,10 +1052,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					{
 						if (planarConfiguration == 2)
 						{
-							UInt8 *rPtr = planarBuff;
-							UInt8 *gPtr = rPtr + imgWidth * imgHeight * 4;
-							UInt8 *bPtr = gPtr + imgWidth * imgHeight * 4;
-							UInt8 *aPtr = bPtr + imgWidth * imgHeight * 4;
+							UnsafeArray<UInt8> rPtr = nnplanarBuff;
+							UnsafeArray<UInt8> gPtr = rPtr + imgWidth * imgHeight * 4;
+							UnsafeArray<UInt8> bPtr = gPtr + imgWidth * imgHeight * 4;
+							UnsafeArray<UInt8> aPtr = bPtr + imgWidth * imgHeight * 4;
 							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
@@ -1070,15 +1073,15 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 						}
 						else
 						{
-							UInt8 *srcPtr = planarBuff;
+							UnsafeArray<UInt8> srcPtr = nnplanarBuff;
 							imgData = img->GetDataArray();
 							i = imgWidth * imgHeight;
 							while (i-- > 0)
 							{
-								WriteFloat(&imgData[0], bo->GetFloat32(&srcPtr[8]));
-								WriteFloat(&imgData[4], bo->GetFloat32(&srcPtr[4]));
-								WriteFloat(&imgData[8], bo->GetFloat32(&srcPtr[0]));
-								WriteFloat(&imgData[12], bo->GetFloat32(&srcPtr[12]));
+								WriteFloat(&imgData[0], bo->GetFloat32(srcPtr + 8));
+								WriteFloat(&imgData[4], bo->GetFloat32(srcPtr + 4));
+								WriteFloat(&imgData[8], bo->GetFloat32(srcPtr + 0));
+								WriteFloat(&imgData[12], bo->GetFloat32(srcPtr + 12));
 								srcPtr += 16;
 								imgData += 16;
 							}
@@ -1155,10 +1158,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			}
 			else if (nChannels == 2 && bpp == 16)
 			{
-				if (planarConfiguration == 2)
+				if (planarConfiguration == 2 && planarBuff.SetTo(nnplanarBuff))
 				{
-					UInt8 *wPtr = planarBuff;
-					UInt8 *aPtr = wPtr + imgWidth * imgHeight;
+					UnsafeArray<UInt8> wPtr = nnplanarBuff;
+					UnsafeArray<UInt8> aPtr = wPtr + imgWidth * imgHeight;
 					imgData = img->GetDataArray();
 					i = imgWidth * imgHeight;
 					while (i-- > 0)
@@ -1174,10 +1177,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			}
 			else if (nChannels == 2 && bpp == 32)
 			{
-				if (planarConfiguration == 2)
+				if (planarConfiguration == 2 && planarBuff.SetTo(nnplanarBuff))
 				{
-					UInt8 *wPtr = planarBuff;
-					UInt8 *aPtr = wPtr + imgWidth * imgHeight * 2;
+					UnsafeArray<UInt8> wPtr = nnplanarBuff;
+					UnsafeArray<UInt8> aPtr = wPtr + imgWidth * imgHeight * 2;
 					imgData = img->GetDataArray();
 					i = imgWidth * imgHeight;
 					if (bo->IsBigEndian())
@@ -1195,8 +1198,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					{
 					while (i-- > 0)
 					{
-						WriteInt16(&imgData[0], ReadInt16(wPtr));
-						WriteInt16(&imgData[2], ReadInt16(aPtr));
+						WriteInt16(&imgData[0], ReadInt16(wPtr.Ptr()));
+						WriteInt16(&imgData[2], ReadInt16(aPtr.Ptr()));
 						wPtr += 2;
 						aPtr += 2;
 						imgData += 4;
@@ -1220,11 +1223,11 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			}
 			else if (nChannels == 3 && bpp == 24)
 			{
-				if (planarConfiguration == 2)
+				if (planarConfiguration == 2 && planarBuff.SetTo(nnplanarBuff))
 				{
-					UInt8 *rPtr = planarBuff;
-					UInt8 *gPtr = rPtr + imgWidth * imgHeight;
-					UInt8 *bPtr = gPtr + imgWidth * imgHeight;
+					UnsafeArray<UInt8> rPtr = nnplanarBuff;
+					UnsafeArray<UInt8> gPtr = rPtr + imgWidth * imgHeight;
+					UnsafeArray<UInt8> bPtr = gPtr + imgWidth * imgHeight;
 					imgData = img->GetDataArray();
 					i = imgWidth * imgHeight;
 					while (i-- > 0)
@@ -1251,12 +1254,12 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			}
 			else if (nChannels == 4 && bpp == 32)
 			{
-				if (planarConfiguration == 2)
+				if (planarConfiguration == 2 && planarBuff.SetTo(nnplanarBuff))
 				{
-					UInt8 *rPtr = planarBuff;
-					UInt8 *gPtr = rPtr + imgWidth * imgHeight;
-					UInt8 *bPtr = gPtr + imgWidth * imgHeight;
-					UInt8 *aPtr = bPtr + imgWidth * imgHeight;
+					UnsafeArray<UInt8> rPtr = nnplanarBuff;
+					UnsafeArray<UInt8> gPtr = rPtr + imgWidth * imgHeight;
+					UnsafeArray<UInt8> bPtr = gPtr + imgWidth * imgHeight;
+					UnsafeArray<UInt8> aPtr = bPtr + imgWidth * imgHeight;
 					imgData = img->GetDataArray();
 					i = imgWidth * imgHeight;
 					while (i-- > 0)
@@ -1284,11 +1287,11 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			}
 			else if (nChannels == 3 && bpp == 48)
 			{
-				if (planarConfiguration == 2)
+				if (planarConfiguration == 2 && planarBuff.SetTo(nnplanarBuff))
 				{
-					UInt8 *rPtr = planarBuff;
-					UInt8 *gPtr = rPtr + imgWidth * imgHeight * 2;
-					UInt8 *bPtr = gPtr + imgWidth * imgHeight * 2;
+					UnsafeArray<UInt8> rPtr = nnplanarBuff;
+					UnsafeArray<UInt8> gPtr = rPtr + imgWidth * imgHeight * 2;
+					UnsafeArray<UInt8> bPtr = gPtr + imgWidth * imgHeight * 2;
 					imgData = img->GetDataArray();
 					i = imgWidth * imgHeight;
 					if (bo->IsBigEndian())
@@ -1308,9 +1311,9 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					{
 						while (i-- > 0)
 						{
-							WriteInt16(&imgData[0], ReadInt16(bPtr));
-							WriteInt16(&imgData[2], ReadInt16(gPtr));
-							WriteInt16(&imgData[4], ReadInt16(rPtr));
+							WriteInt16(&imgData[0], ReadInt16(bPtr.Ptr()));
+							WriteInt16(&imgData[2], ReadInt16(gPtr.Ptr()));
+							WriteInt16(&imgData[4], ReadInt16(rPtr.Ptr()));
 							bPtr += 2;
 							gPtr += 2;
 							rPtr += 2;
@@ -1348,12 +1351,12 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			}
 			else if (nChannels == 4 && bpp == 64)
 			{
-				if (planarConfiguration == 2)
+				if (planarConfiguration == 2 && planarBuff.SetTo(nnplanarBuff))
 				{
-					UInt8 *rPtr = planarBuff;
-					UInt8 *gPtr = rPtr + imgWidth * imgHeight * 2;
-					UInt8 *bPtr = gPtr + imgWidth * imgHeight * 2;
-					UInt8 *aPtr = bPtr + imgWidth * imgHeight * 2;
+					UnsafeArray<UInt8> rPtr = nnplanarBuff;
+					UnsafeArray<UInt8> gPtr = rPtr + imgWidth * imgHeight * 2;
+					UnsafeArray<UInt8> bPtr = gPtr + imgWidth * imgHeight * 2;
+					UnsafeArray<UInt8> aPtr = bPtr + imgWidth * imgHeight * 2;
 					imgData = img->GetDataArray();
 					i = imgWidth * imgHeight;
 					if (bo->IsBigEndian())
@@ -1375,10 +1378,10 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					{
 						while (i-- > 0)
 						{
-							WriteInt16(&imgData[0], ReadInt16(bPtr));
-							WriteInt16(&imgData[2], ReadInt16(gPtr));
-							WriteInt16(&imgData[4], ReadInt16(rPtr));
-							WriteInt16(&imgData[6], ReadInt16(aPtr));
+							WriteInt16(&imgData[0], ReadInt16(bPtr.Ptr()));
+							WriteInt16(&imgData[2], ReadInt16(gPtr.Ptr()));
+							WriteInt16(&imgData[4], ReadInt16(rPtr.Ptr()));
+							WriteInt16(&imgData[6], ReadInt16(aPtr.Ptr()));
 							bPtr += 2;
 							gPtr += 2;
 							rPtr += 2;
@@ -1506,9 +1509,9 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			{
 				MemFree(stripLengs);
 			}
-			if (planarBuff)
+			if (planarBuff.SetTo(nnplanarBuff))
 			{
-				MemFree(planarBuff);
+				MemFreeArr(nnplanarBuff);
 			}
 		}
 	}
@@ -1535,11 +1538,11 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 			{
 				csys = Math::CoordinateSystemManager::SRCreateCSysOrDef(srid);
 			}
-			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, csys, 0, 0, 0, 0, 0));
+			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, 0));
 			img->To32bpp();
 			NEW_CLASSNN(simg, Media::SharedImage(imgList, true));
 			NEW_CLASSNN(vimg, Math::Geometry::VectorImage(srid, simg, Math::Coord2DDbl(minX, minY), Math::Coord2DDbl(maxX, maxY), false, fd->GetFullName().Ptr(), 0, 0));
-			lyr->AddVector(vimg, (const UTF8Char**)0);
+			lyr->AddVector(vimg, (Text::String**)0);
 			simg.Delete();
 			bo.Delete();
 			return lyr;
@@ -1548,9 +1551,9 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 		if (fd->IsFullFile())
 		{
 			UTF8Char fileNameBuff[1024];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			fd->GetFullFileName()->ConcatTo(fileNameBuff);
-			sptr = IO::Path::ReplaceExt(fileNameBuff, UTF8STRC("tfw"));
+			sptr = IO::Path::ReplaceExt(UARR(fileNameBuff), UTF8STRC("tfw"));
 			if (IO::Path::GetPathType(CSTRP(fileNameBuff, sptr)) == IO::Path::PathType::File)
 			{
 				Text::StringBuilderUTF8 sb;
@@ -1603,11 +1606,11 @@ Optional<IO::ParsedObject> Parser::FileParser::TIFFParser::ParseFileHdr(NN<IO::S
 					NN<Media::SharedImage> simg;
 					NN<Math::CoordinateSystem> csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 					
-					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, csys, 0, 0, 0, 0, 0));
+					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, 0));
 					img->To32bpp();
 					NEW_CLASSNN(simg, Media::SharedImage(imgList, true));
 					NEW_CLASSNN(vimg, Math::Geometry::VectorImage(csys->GetSRID(), simg, Math::Coord2DDbl(xCoord - xPxSize * 0.5, yCoord + yPxSize * (UOSInt2Double(img->info.dispSize.y) - 0.5)), Math::Coord2DDbl(xCoord + xPxSize * (UOSInt2Double(img->info.dispSize.x) - 0.5), yCoord - yPxSize * 0.5), false, fd->GetFullName().Ptr(), 0, 0));
-					lyr->AddVector(vimg, (const UTF8Char**)0);
+					lyr->AddVector(vimg, (Text::String**)0);
 					simg.Delete();
 					
 					bo.Delete();

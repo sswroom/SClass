@@ -14,7 +14,7 @@ namespace DB
 		DBClassBuilder();
 		~DBClassBuilder();
 
-		void AddItem(const UTF8Char *colName, DB::DBUtil::ColType colType, Bool notNull);
+		void AddItem(UnsafeArray<const UTF8Char> colName, DB::DBUtil::ColType colType, Bool notNull);
 
 		NN<Data::Class> GetResultClass();
 	};

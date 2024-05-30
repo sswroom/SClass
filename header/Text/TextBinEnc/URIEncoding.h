@@ -9,8 +9,8 @@ namespace Text
 		class URIEncoding : public Text::TextBinEnc::ITextBinEnc
 		{
 		public:
-			static UTF8Char *URIEncode(UTF8Char *buff, const UTF8Char *uri);
-			static UTF8Char *URIDecode(UTF8Char *buff, const UTF8Char *uri);
+			static UnsafeArray<UTF8Char> URIEncode(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> uri);
+			static UnsafeArray<UTF8Char> URIDecode(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> uri);
 			
 			URIEncoding();
 			virtual ~URIEncoding();

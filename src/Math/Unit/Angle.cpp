@@ -27,7 +27,7 @@ Double Math::Unit::Angle::GetUnitRatio(AngleUnit unit)
 	return 1;
 }
 
-Text::CString Math::Unit::Angle::GetUnitShortName(AngleUnit unit)
+Text::CStringNN Math::Unit::Angle::GetUnitShortName(AngleUnit unit)
 {
 	switch (unit)
 	{
@@ -40,30 +40,30 @@ Text::CString Math::Unit::Angle::GetUnitShortName(AngleUnit unit)
 	case AU_DEGREE:
 	{
 		static const UTF8Char ret[] = {0xc2, 0xb0, 0};
-		return Text::CString(ret, 2);
+		return Text::CStringNN(ret, 2);
 	}
 	case AU_ARCMINUTE:
 	{
 		static const UTF8Char ret[] = {0xe2, 0x80, 0xb2, 0};
-		return Text::CString(ret, 3);
+		return Text::CStringNN(ret, 3);
 	}
 	case AU_ARCSECOND:
 	{
 		static const UTF8Char ret[] = {0xe2, 0x80, 0xb3, 0};
-		return Text::CString(ret, 3);
+		return Text::CStringNN(ret, 3);
 	}
 	case AU_MILLIARCSECOND:
 		return CSTR("mas");
 	case AU_MICROARCSECOND:
 	{
 		static const UTF8Char ret[] = {0xce, 0xbc, 0x61, 0x73, 0};
-		return Text::CString(ret, 4);
+		return Text::CStringNN(ret, 4);
 	}
 	}
 	return CSTR("");
 }
 
-Text::CString Math::Unit::Angle::GetUnitName(AngleUnit unit)
+Text::CStringNN Math::Unit::Angle::GetUnitName(AngleUnit unit)
 {
 	switch (unit)
 	{

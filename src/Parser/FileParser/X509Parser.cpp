@@ -88,7 +88,7 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBuff(Data:
 {
 	Crypto::Cert::X509File *ret = 0;
 	UInt8 dataBuff[10240];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt dataLen;
 	if (buff[0] == 0xEF && buff[1] == 0xBB && buff[2] == 0xBF)
 	{
@@ -102,15 +102,14 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBuff(Data:
 		Text::TextBinEnc::Base64Enc b64;
 		Crypto::Cert::X509FileList *fileList = 0;
 		Crypto::Cert::X509File *file = 0;
-		while ((sptr = reader.ReadLine(dataBuff, sizeof(dataBuff) - 1)) != 0)
+		while (reader.ReadLine(dataBuff, sizeof(dataBuff) - 1).SetTo(sptr))
 		{
 			if (Text::StrEqualsC(dataBuff, (UOSInt)(sptr - dataBuff), UTF8STRC("-----BEGIN CERTIFICATE-----")))
 			{
 				sb.ClearStr();
 				while (true)
 				{
-					sptr = reader.ReadLine(dataBuff, sizeof(dataBuff) - 1);
-					if (sptr == 0)
+					if (!reader.ReadLine(dataBuff, sizeof(dataBuff) - 1).SetTo(sptr))
 					{
 						SDEL_CLASS(fileList);
 						SDEL_CLASS(file);
@@ -148,8 +147,7 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBuff(Data:
 				sb.ClearStr();
 				while (true)
 				{
-					sptr = reader.ReadLine(dataBuff, sizeof(dataBuff) - 1);
-					if (sptr == 0)
+					if (!reader.ReadLine(dataBuff, sizeof(dataBuff) - 1).SetTo(sptr))
 					{
 						SDEL_CLASS(fileList);
 						SDEL_CLASS(file);
@@ -194,8 +192,7 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBuff(Data:
 				sb.ClearStr();
 				while (true)
 				{
-					sptr = reader.ReadLine(dataBuff, sizeof(dataBuff) - 1);
-					if (sptr == 0)
+					if (!reader.ReadLine(dataBuff, sizeof(dataBuff) - 1).SetTo(sptr))
 					{
 						SDEL_CLASS(fileList);
 						SDEL_CLASS(file);
@@ -233,8 +230,7 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBuff(Data:
 				sb.ClearStr();
 				while (true)
 				{
-					sptr = reader.ReadLine(dataBuff, sizeof(dataBuff) - 1);
-					if (sptr == 0)
+					if (!reader.ReadLine(dataBuff, sizeof(dataBuff) - 1).SetTo(sptr))
 					{
 						SDEL_CLASS(fileList);
 						SDEL_CLASS(file);
@@ -272,8 +268,7 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBuff(Data:
 				sb.ClearStr();
 				while (true)
 				{
-					sptr = reader.ReadLine(dataBuff, sizeof(dataBuff) - 1);
-					if (sptr == 0)
+					if (!reader.ReadLine(dataBuff, sizeof(dataBuff) - 1).SetTo(sptr))
 					{
 						SDEL_CLASS(fileList);
 						SDEL_CLASS(file);
@@ -311,8 +306,7 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBuff(Data:
 				sb.ClearStr();
 				while (true)
 				{
-					sptr = reader.ReadLine(dataBuff, sizeof(dataBuff) - 1);
-					if (sptr == 0)
+					if (!reader.ReadLine(dataBuff, sizeof(dataBuff) - 1).SetTo(sptr))
 					{
 						SDEL_CLASS(fileList);
 						SDEL_CLASS(file);
@@ -350,8 +344,7 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBuff(Data:
 				sb.ClearStr();
 				while (true)
 				{
-					sptr = reader.ReadLine(dataBuff, sizeof(dataBuff) - 1);
-					if (sptr == 0)
+					if (!reader.ReadLine(dataBuff, sizeof(dataBuff) - 1).SetTo(sptr))
 					{
 						SDEL_CLASS(fileList);
 						SDEL_CLASS(file);
@@ -389,8 +382,7 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBuff(Data:
 				sb.ClearStr();
 				while (true)
 				{
-					sptr = reader.ReadLine(dataBuff, sizeof(dataBuff) - 1);
-					if (sptr == 0)
+					if (!reader.ReadLine(dataBuff, sizeof(dataBuff) - 1).SetTo(sptr))
 					{
 						SDEL_CLASS(fileList);
 						SDEL_CLASS(file);
@@ -428,8 +420,7 @@ Optional<Crypto::Cert::X509File> Parser::FileParser::X509Parser::ParseBuff(Data:
 				sb.ClearStr();
 				while (true)
 				{
-					sptr = reader.ReadLine(dataBuff, sizeof(dataBuff) - 1);
-					if (sptr == 0)
+					if (!reader.ReadLine(dataBuff, sizeof(dataBuff) - 1).SetTo(sptr))
 					{
 						SDEL_CLASS(fileList);
 						SDEL_CLASS(file);

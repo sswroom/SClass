@@ -18,11 +18,12 @@ Text::XMLAttrib::XMLAttrib(Text::CStringNN name, Text::CString value) : XMLNode(
 		this->name = Text::String::New(name.leng).Ptr();
 		Text::XML::ParseStr(this->name, name.v, name.GetEndPtr());
 	}
-	if (value.leng > 0)
+	Text::CStringNN nnvalue;
+	if (value.SetTo(nnvalue) && nnvalue.leng > 0)
 	{
-		this->value = Text::String::New(value.leng).Ptr();
-		Text::XML::ParseStr(this->value, value.v, value.GetEndPtr());
-		this->valueOri = Text::String::New(value).Ptr();
+		this->value = Text::String::New(nnvalue.leng).Ptr();
+		Text::XML::ParseStr(this->value, nnvalue.v, nnvalue.GetEndPtr());
+		this->valueOri = Text::String::New(nnvalue).Ptr();
 	}
 }
 
@@ -45,7 +46,7 @@ Bool Text::XMLAttrib::ToString(NN<Text::StringBuilderUTF8> sb) const
 		}
 		else
 		{
-			NN<Text::String> s = Text::XML::ToNewAttrText(this->value->v);
+			NN<Text::String> s = Text::XML::ToNewAttrText(UnsafeArray<const UTF8Char>(this->value->v));
 			sb->Append(s);
 			s->Release();
 		}
@@ -276,14 +277,14 @@ void Text::XMLNode::GetInnerText(NN<Text::StringBuilderUTF8> sb)
 	}
 }
 
-NN<Text::XMLNode> *Text::XMLNode::SearchNode(Text::CString path, OutParam<UOSInt> cnt)
+UnsafeArray<NN<Text::XMLNode>> Text::XMLNode::SearchNode(Text::CStringNN path, OutParam<UOSInt> cnt)
 {
 	Data::ArrayListNN<XMLNode> outArr;
-	NN<Text::XMLNode> *outs;
+	UnsafeArray<NN<Text::XMLNode>> outs;
 	UOSInt i;
 	SearchNodeBegin(path, outArr, false);
 
-	outs = MemAlloc(NN<XMLNode>, outArr.GetCount());
+	outs = MemAllocArr(NN<XMLNode>, outArr.GetCount());
 	cnt.Set(i = outArr.GetCount());
 	while (i-- > 0)
 	{
@@ -292,19 +293,19 @@ NN<Text::XMLNode> *Text::XMLNode::SearchNode(Text::CString path, OutParam<UOSInt
 	return outs;
 }
 
-Optional<Text::XMLNode> Text::XMLNode::SearchFirstNode(Text::CString path)
+Optional<Text::XMLNode> Text::XMLNode::SearchFirstNode(Text::CStringNN path)
 {
 	Data::ArrayListNN<XMLNode> outArr;
 	SearchNodeBegin(path, outArr, true);
 	return outArr.GetItem(0);
 }
 
-void Text::XMLNode::ReleaseSearch(NN<XMLNode> *searchResult)
+void Text::XMLNode::ReleaseSearch(UnsafeArray<NN<XMLNode>> searchResult)
 {
-	MemFree(searchResult);
+	MemFreeArr(searchResult);
 }					
 
-void Text::XMLNode::SearchNodeBegin(Text::CString path, NN<Data::ArrayListNN<XMLNode>> outArr, Bool singleResult)
+void Text::XMLNode::SearchNodeBegin(Text::CStringNN path, NN<Data::ArrayListNN<XMLNode>> outArr, Bool singleResult)
 {
 	UTF8Char myPath[256];
 	UOSInt i;
@@ -499,9 +500,9 @@ Bool Text::XMLNode::SearchEqual(UOSInt level, NN<Data::ArrayList<UTF8Char*>> req
 	UTF8Char nameBuff[128];
 	UTF8Char condBuff[128];
 	Bool hasCond = false;
-	UTF8Char *req = reqArr->GetItem(level);
-	UTF8Char *src;
-	UTF8Char *dest;
+	UnsafeArray<UTF8Char> req = reqArr->GetItem(level);
+	UnsafeArray<UTF8Char> src;
+	UnsafeArray<UTF8Char> dest;
 	NN<XMLNode> n;
 	src = req;
 	dest = nameBuff;
@@ -596,10 +597,10 @@ Bool Text::XMLNode::SearchEqual(UOSInt level, NN<Data::ArrayList<UTF8Char*>> req
 	return true;
 }
 
-Bool Text::XMLNode::SearchEval(UOSInt level, NN<Data::ArrayList<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr, NN<Text::XMLNode> n, const UTF8Char *nameStart, const UTF8Char *nameEnd, NN<Text::StringBuilderUTF8> outSB)
+Bool Text::XMLNode::SearchEval(UOSInt level, NN<Data::ArrayList<UTF8Char*>> reqArr, NN<Data::ArrayListNN<XMLNode>> currPathArr, NN<Text::XMLNode> n, UnsafeArray<const UTF8Char> nameStart, UnsafeArray<const UTF8Char> nameEnd, NN<Text::StringBuilderUTF8> outSB)
 {
-	const UTF8Char *src;
-	const UTF8Char *dest;
+	UnsafeArray<const UTF8Char> src;
+	UnsafeArray<const UTF8Char> dest;
 	NN<XMLAttrib> attr;
 	NN<XMLNode> child;
 	UOSInt i;

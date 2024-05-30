@@ -23,9 +23,9 @@ namespace Crypto
 		private:
 			struct PayloadMapping
 			{
-				const UTF8Char *key;
+				UnsafeArray<const UTF8Char> key;
 				UOSInt keyLen;
-				const UTF8Char *name;
+				UnsafeArray<const UTF8Char> name;
 				UOSInt nameLen;
 			};
 		private:
@@ -48,7 +48,7 @@ namespace Crypto
 			Text::String *GetHeader() const;
 			Text::String *GetPayload() const;
 			VerifyType GetVerifyType(NN<JWTParam> param) const;
-			Bool SignatureValid(Optional<Net::SSLEngine> ssl, const UInt8 *key, UOSInt keyLeng, Crypto::Cert::X509Key::KeyType keyType);
+			Bool SignatureValid(Optional<Net::SSLEngine> ssl, UnsafeArray<const UInt8> key, UOSInt keyLeng, Crypto::Cert::X509Key::KeyType keyType);
 			void ToString(NN<Text::StringBuilderUTF8> sb) const;
 
 			Data::StringMap<Text::String*> *ParsePayload(NN<JWTParam> param, Bool keepDefault, Text::StringBuilderUTF8 *sbErr);

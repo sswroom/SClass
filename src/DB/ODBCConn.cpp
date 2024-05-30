@@ -186,15 +186,15 @@ Bool DB::ODBCConn::Connect(Optional<Text::String> dsn, Optional<Text::String> ui
 		return false;
 	}
 
-	SQLCHAR *uidPtr = (uid.SetTo(s) && s->leng > 0)?s->v:0;
-	SQLCHAR *pwdPtr = (pwd.SetTo(s) && s->leng > 0)?s->v:0;
+	SQLCHAR *uidPtr = (uid.SetTo(s) && s->leng > 0)?s->v.Ptr():0;
+	SQLCHAR *pwdPtr = (pwd.SetTo(s) && s->leng > 0)?s->v.Ptr():0;
 	if (uidPtr || pwdPtr)
 	{
-		ret = SQLConnectA(hConn, (SQLCHAR*)nndsn->v, SQL_NTS, (SQLCHAR*)uidPtr, SQL_NTS, (SQLCHAR*)pwdPtr, SQL_NTS);
+		ret = SQLConnectA(hConn, (SQLCHAR*)nndsn->v.Ptr(), SQL_NTS, (SQLCHAR*)uidPtr, SQL_NTS, (SQLCHAR*)pwdPtr, SQL_NTS);
 	}
 	else
 	{
-		ret = SQLConnectA(hConn, (SQLCHAR*)nndsn->v, SQL_NTS, NULL, 0, NULL, 0);
+		ret = SQLConnectA(hConn, (SQLCHAR*)nndsn->v.Ptr(), SQL_NTS, NULL, 0, NULL, 0);
 	}
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
 	{
@@ -549,7 +549,7 @@ OSInt DB::ODBCConn::ExecuteNonQuery(Text::CStringNN sql)
 	ret = SQLPrepareW(hStmt, (SQLWCHAR*)wptr, SQL_NTS);
 	Text::StrDelNew(wptr);
 	#else
-	ret = SQLPrepareA(hStmt, (SQLCHAR*)sql.v, SQL_NTS);
+	ret = SQLPrepareA(hStmt, (SQLCHAR*)sql.v.Ptr(), SQL_NTS);
 	#endif
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
 	{
@@ -659,7 +659,7 @@ Optional<DB::DBReader> DB::ODBCConn::ExecuteReader(Text::CStringNN sql)
 	ret = SQLPrepareW(hStmt, (SQLWCHAR*)wptr, SQL_NTS);
 	Text::StrDelNew(wptr);
 	#else
-	ret = SQLPrepare(hStmt, (SQLCHAR*)sql.v, SQL_NTS);
+	ret = SQLPrepare(hStmt, (SQLCHAR*)sql.v.Ptr(), SQL_NTS);
 	#endif
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
 	{
@@ -930,7 +930,7 @@ void DB::ODBCConn::SetTraceFile(const WChar *fileName)
 	SQLSetConnectAttr(this->connHand, SQL_ATTR_TRACEFILE, buff, (SQLINTEGER)(i - 1));
 }
 
-UTF8Char *DB::ODBCConn::ShowTablesCmd(UTF8Char *sqlstr)
+UnsafeArray<UTF8Char> DB::ODBCConn::ShowTablesCmd(UnsafeArray<UTF8Char> sqlstr)
 {
 	if (this->sqlType == DB::SQLType::MySQL)
 		return Text::StrConcatC(sqlstr, UTF8STRC("show Tables"));
@@ -985,7 +985,7 @@ Optional<DB::DBReader> DB::ODBCConn::GetTablesInfo(Text::CString schemaName)
 UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 //		ShowTablesCmd(sbuff);
 //		DB::ReadingDB::DBReader *rdr = this->ExecuteReader(sbuff);
 	UOSInt initCnt = names->GetCount();
@@ -995,18 +995,14 @@ UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLis
 		sbuff[0] = 0;
 		while (rdr->ReadNext())
 		{
-			sptr = rdr->GetStr(2, sbuff, sizeof(sbuff));
-			if (sptr == 0)
-			{
-				sptr = sbuff;
-			}
+			sptr = rdr->GetStr(2, sbuff, sizeof(sbuff)).Or(sbuff);
 			if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("~sq_")))
 			{
 
 			}
 			else
 			{
-				names->Add(Text::String::NewP(sbuff, sptr));
+				names->Add(Text::String::NewP(sbuff, UnsafeArray<const UTF8Char>(sptr)));
 			}
 		}
 		this->CloseReader(rdr);
@@ -1017,7 +1013,7 @@ UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLis
 Optional<DB::DBReader> DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("select "));
 	if (this->sqlType == DB::SQLType::MSSQL || this->sqlType == DB::SQLType::Access)
@@ -1049,13 +1045,14 @@ Optional<DB::DBReader> DB::ODBCConn::QueryTableData(Text::CString schemaName, Te
 		}
 	}
 	sb.AppendC(UTF8STRC(" from "));
-	if (schemaName.leng > 0 && DB::DBUtil::HasSchema(this->sqlType))
+	Text::CStringNN nnschemaName;
+	if (schemaName.SetTo(nnschemaName) && schemaName.leng > 0 && DB::DBUtil::HasSchema(this->sqlType))
 	{
-		sptr = DB::DBUtil::SDBColUTF8(sbuff, schemaName.v, this->sqlType);
+		sptr = DB::DBUtil::SDBColUTF8(sbuff, nnschemaName.v, this->sqlType);
 		sb.AppendP(sbuff, sptr);
 		sb.AppendUTF8Char('.');
 	}
-	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v, this->sqlType);
+	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v.Or(U8STR("")), this->sqlType);
 	sb.AppendP(sbuff, sptr);
 	if (this->sqlType == DB::SQLType::SQLite || this->sqlType == DB::SQLType::MySQL)
 	{
@@ -1420,8 +1417,8 @@ Bool DB::ODBCReader::ReadNext()
 									len = 2048;
 								}
 								sb->AllocLeng((UOSInt)len);
-								UTF8Char *endPtr = sb->GetEndPtr();
-								ret = SQLGetData((SQLHANDLE)this->hStmt, (SQLUSMALLINT)(i + 1), SQL_C_CHAR, endPtr, len + 1, &len);
+								UnsafeArray<UTF8Char> endPtr = sb->GetEndPtr();
+								ret = SQLGetData((SQLHANDLE)this->hStmt, (SQLUSMALLINT)(i + 1), SQL_C_CHAR, endPtr.Ptr(), len + 1, &len);
 								if (ret == SQL_SUCCESS_WITH_INFO || ret == SQL_ERROR)
 								{
 	//								wprintf(L"ODBCReader: Char Error, len = %d, v = %ls\r\n", len, sb->GetEndPtr());
@@ -1429,7 +1426,7 @@ Bool DB::ODBCReader::ReadNext()
 								}
 								if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 								{
-									endPtr = &endPtr[len];
+									endPtr = endPtr + (OSInt)len;
 									*endPtr = 0;
 									sb->SetEndPtr(endPtr);
 									this->colDatas[i].isNull = false;
@@ -1470,7 +1467,7 @@ Bool DB::ODBCReader::ReadNext()
 								}
 								UOSInt cnt = Text::StrUTF16_UTF8CntC(wbuff, (UOSInt)len >> 1);
 								sb->AllocLeng(cnt);
-								UTF8Char *endPtr = Text::StrUTF16_UTF8C(sb->GetEndPtr(), wbuff, (UOSInt)len >> 1);
+								UnsafeArray<UTF8Char> endPtr = Text::StrUTF16_UTF8C(sb->GetEndPtr(), wbuff, (UOSInt)len >> 1);
 								*endPtr = 0;
 								sb->SetEndPtr(endPtr);
 								this->colDatas[i].isNull = false;
@@ -1479,7 +1476,7 @@ Bool DB::ODBCReader::ReadNext()
 							{
 								UOSInt cnt = Text::StrUTF16_UTF8CntC(wbuff, 255);
 								sb->AllocLeng(cnt);
-								UTF8Char *endPtr = Text::StrUTF16_UTF8C(sb->GetEndPtr(), wbuff, 255);
+								UnsafeArray<UTF8Char> endPtr = Text::StrUTF16_UTF8C(sb->GetEndPtr(), wbuff, 255);
 								*endPtr = 0;
 								sb->SetEndPtr(endPtr);
 
@@ -1845,7 +1842,7 @@ WChar *DB::ODBCReader::GetStr(UOSInt colIndex, WChar *buff)
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
 	case DB::DBUtil::CT_Decimal:
-		return Text::StrDouble(buff, *(Double*)&this->colDatas[colIndex].dataVal);
+		return Text::StrDoubleW(buff, *(Double*)&this->colDatas[colIndex].dataVal);
 	case DB::DBUtil::CT_Int16:
 	case DB::DBUtil::CT_UInt16:
 	case DB::DBUtil::CT_Int32:
@@ -1946,7 +1943,7 @@ Bool DB::ODBCReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 Optional<Text::String> DB::ODBCReader::GetNewStr(UOSInt colIndex)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (colIndex >= this->colCnt)
 		return 0;
 	if (this->colDatas[colIndex].isNull)
@@ -2012,7 +2009,7 @@ Optional<Text::String> DB::ODBCReader::GetNewStr(UOSInt colIndex)
 	return 0;
 }
 
-UTF8Char *DB::ODBCReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> DB::ODBCReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
 	if (colIndex >= this->colCnt)
 		return 0;
@@ -2404,7 +2401,7 @@ Bool DB::ODBCReader::GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
 	return false;
 }
 
-UTF8Char *DB::ODBCReader::GetName(UOSInt colIndex, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> DB::ODBCReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 {
 	Int16 nameLen = 0;
 	Int16 dataType;

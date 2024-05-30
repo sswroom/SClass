@@ -30,7 +30,7 @@ namespace Data
 		const UInt8 *GetBytes() const;
 
 		void ToString(NN<Text::StringBuilderUTF8> sb) const;
-		UTF8Char *ToString(UTF8Char *sbuff) const;
+		UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> sbuff) const;
 		NN<UUID> Clone() const;
 		Bool Equals(NN<UUID> uuid) const;
 	};

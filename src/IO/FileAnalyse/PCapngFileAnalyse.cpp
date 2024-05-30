@@ -264,7 +264,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameName(UOSInt index, NN<Text::Str
 Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<IO::FileAnalyse::PCapngFileAnalyse::BlockInfo> block;
 	if (index >= this->blockList.GetCount())
 	{
@@ -381,8 +381,8 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 		}
 		sb->AppendC(UTF8STRC("\r\nLinkType="));
 		sb->AppendU16(linkType);
-		Text::CString cstr = IO::RAWMonitor::LinkTypeGetName(linkType);
-		if (cstr.v)
+		Text::CStringNN cstr;
+		if (IO::RAWMonitor::LinkTypeGetName(linkType).SetTo(cstr))
 		{
 			sb->AppendC(UTF8STRC(" ("));
 			sb->Append(cstr);
@@ -448,7 +448,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::S
 				Net::SocketUtil::AddressInfo addr;
 				Net::SocketUtil::SetAddrInfoV6(addr, &this->packetBuff[i + 4], 0);
 				sb->AppendC(UTF8STRC("\r\nIPv6 Address="));
-				sptr = Net::SocketUtil::GetAddrName(sbuff, addr);
+				sptr = Net::SocketUtil::GetAddrName(sbuff, addr).Or(sbuff);
 				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				sb->AppendC(UTF8STRC("/"));
 				sb->AppendU16(this->packetBuff[i + 20]);
@@ -842,7 +842,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapngFileAnalyse::GetFr
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<IO::FileAnalyse::PCapngFileAnalyse::BlockInfo> block;
 	if (index >= this->blockList.GetCount())
 	{
@@ -1017,7 +1017,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::PCapngFileAnalyse::GetFr
 			{
 				Net::SocketUtil::AddressInfo addr;
 				Net::SocketUtil::SetAddrInfoV6(addr, &this->packetBuff[i + 4], 0);
-				sptr = Text::StrUInt16(Text::StrConcatC(Net::SocketUtil::GetAddrName(sbuff, addr), UTF8STRC("/")), this->packetBuff[i + 20]);
+				sptr = Text::StrUInt16(Text::StrConcatC(Net::SocketUtil::GetAddrName(sbuff, addr).Or(sbuff), UTF8STRC("/")), this->packetBuff[i + 20]);
 				frame->AddField(i + 4, 17, CSTR("IPv6 Address"), CSTRP(sbuff, sptr));
 			}
 			else if (optCode == 6)

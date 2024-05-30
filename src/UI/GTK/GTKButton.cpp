@@ -91,13 +91,14 @@ void UI::GTK::GTKButton::SetFont(const UTF8Char *name, UOSInt nameLen, Double fo
 #if GDK_VERSION_AFTER(3, 16)
 	Text::CSSBuilder builder(Text::CSSBuilder::PM_SPACE);
 	builder.NewStyle(CSTR("label"), CSTR_NULL);
-	if (name) builder.AddFontFamily(name);
+	UnsafeArray<const UTF8Char> nnname;
+	if (nnname.Set(name)) builder.AddFontFamily(nnname);
 	if (fontHeightPt != 0) builder.AddFontSize(fontHeightPt * this->hdpi / this->ddpi, Math::Unit::Distance::DU_PIXEL);
 	if (isBold) builder.AddFontWeight(Text::CSSBuilder::FONT_WEIGHT_BOLD);
 
 	GtkStyleContext *style = gtk_widget_get_style_context(widget);
 	GtkCssProvider *styleProvider = gtk_css_provider_new();
-	gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString(), -1, 0);
+	gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString().Ptr(), -1, 0);
 	gtk_style_context_add_provider(style, (GtkStyleProvider*)styleProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
 	gtk_widget_reset_style(widget);
 #else

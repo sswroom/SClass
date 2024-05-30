@@ -11,8 +11,8 @@ namespace Text
 		private:
 			struct ParseEnv
 			{
-				UTF8Char *sbuff;
-				const UTF8Char *funcName;
+				UnsafeArray<UTF8Char> sbuff;
+				UnsafeArray<const UTF8Char> funcName;
 				Bool valid;
 				Bool constFunc;
 				UOSInt strId;
@@ -23,12 +23,12 @@ namespace Text
 				Text::PString tplstr[4];
 			};
 
-			static void AppendStr(NN<ParseEnv> env, UTF8Char *strStart);
-			static void AppendNStr(NN<ParseEnv> env, UTF8Char *strStart);
-			static void AppendTpl(NN<ParseEnv> env, UTF8Char *strStart);
+			static void AppendStr(NN<ParseEnv> env, UnsafeArray<UTF8Char> strStart);
+			static void AppendNStr(NN<ParseEnv> env, UnsafeArray<UTF8Char> strStart);
+			static void AppendTpl(NN<ParseEnv> env, UnsafeArray<UTF8Char> strStart);
 			static Bool ParseType(NN<ParseEnv> env, Bool firstPart);
 		public:
-			static UTF8Char *ToFuncName(UTF8Char *sbuff, const UTF8Char *funcName);
+			static UnsafeArray<UTF8Char> ToFuncName(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> funcName);
 		};
 	}
 }

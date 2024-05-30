@@ -180,11 +180,11 @@ UOSInt Map::MercatorTileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl rec
 Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
 {
 	UTF8Char url[1024];
-	UTF8Char *urlPtr;
+	UnsafeArray<UTF8Char> urlPtr;
 	UTF8Char filePathU[512];
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
-	UTF8Char *sptru = filePathU;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptru = filePathU;
 	Bool hasTime = false;
 	Data::Timestamp ts;
 	Data::Timestamp currTS;
@@ -274,7 +274,7 @@ Media::ImageList *Map::MercatorTileMap::LoadTileImage(UOSInt level, Math::Coord2
 	if (localOnly)
 		return 0;
 
-	urlPtr = this->GetTileImageURL(url, level, tileId);
+	urlPtr = this->GetTileImageURL(url, level, tileId).Or(url);
 
 //	printf("Request URL: %s\r\n", urlSb.ToString());
 	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("MercatorTileMap/1.0 SSWR/1.0"), true, Text::StrStartsWithC(url, (UOSInt)(urlPtr - url), UTF8STRC("https://")));
@@ -359,11 +359,11 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 {
 	UOSInt readSize;
 	UTF8Char url[1024];
-	UTF8Char *urlPtr;
+	UnsafeArray<UTF8Char> urlPtr;
 	UTF8Char filePathU[512];
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
-	UTF8Char *sptru = filePathU;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptru = filePathU;
 	Bool hasTime = false;
 	Data::DateTime dt;
 	Data::DateTime currTime;
@@ -455,7 +455,7 @@ Optional<IO::StreamData> Map::MercatorTileMap::LoadTileImageData(UOSInt level, M
 	if (localOnly)
 		return 0;
 
-	urlPtr = this->GetTileImageURL(url, level, tileId);
+	urlPtr = this->GetTileImageURL(url, level, tileId).Or(url);
 
 	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("MercatorTileMap/1.0 SSWR/1.0"), true, Text::StrStartsWithC(url, (UOSInt)(urlPtr - url), UTF8STRC("https://")));
 	cli->Connect(CSTRP(url, urlPtr), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);

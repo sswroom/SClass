@@ -26,15 +26,15 @@ const UInt8 Text::TextBinEnc::Base64Enc::decArr[] = {
 		0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 };
 
-const UTF8Char *Text::TextBinEnc::Base64Enc::GetEncArr(Charset cs)
+UnsafeArray<const UTF8Char> Text::TextBinEnc::Base64Enc::GetEncArr(Charset cs)
 {
 	if (cs == Charset::URL)
 	{
-		return (const UTF8Char*)"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+		return U8STR("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_");
 	}
 	else
 	{
-		return (const UTF8Char*)"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+		return U8STR("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/");
 	}
 }
 
@@ -61,7 +61,7 @@ UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, co
 
 UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize, Text::LineBreakType lbt, UOSInt charsPerLine) const
 {
-	const UTF8Char *encArr = GetEncArr(this->cs);
+	UnsafeArray<const UTF8Char> encArr = GetEncArr(this->cs);
 	UOSInt outSize;
 	UTF8Char sptr[4];
 	UOSInt tmp1 = buffSize % 3;
@@ -239,7 +239,7 @@ UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, co
 
 UTF8Char *Text::TextBinEnc::Base64Enc::EncodeBin(UTF8Char *sbuff, const UInt8 *dataBuff, UOSInt buffSize)
 {
-	const UTF8Char *encArr = GetEncArr(this->cs);
+	UnsafeArray<const UTF8Char> encArr = GetEncArr(this->cs);
 	UOSInt outSize;
 	UOSInt tmp1 = buffSize % 3;
 	UOSInt tmp2 = buffSize / 3;
@@ -301,7 +301,7 @@ UOSInt Text::TextBinEnc::Base64Enc::CalcBinSize(Text::CStringNN b64Str) const
 {
 	UOSInt cnt = 0;
 	UTF8Char c;
-	const UTF8Char *sbuff = b64Str.v;
+	UnsafeArray<const UTF8Char> sbuff = b64Str.v;
 	while ((c = *sbuff++) != 0)
 	{
 		if (c < 0x80 && decArr[c] != 0xff)
@@ -333,8 +333,8 @@ UOSInt Text::TextBinEnc::Base64Enc::DecodeBin(Text::CStringNN str, UInt8 *dataBu
 	UInt8 b2 = 0;
 	UInt8 code;
 	UTF8Char c;
-	const UTF8Char *b64Str = str.v;
-	const UTF8Char *endPtr = str.GetEndPtr();
+	UnsafeArray<const UTF8Char> b64Str = str.v;
+	UnsafeArray<const UTF8Char> endPtr = str.GetEndPtr();
 	while (b64Str < endPtr)
 	{
 		c = *b64Str++;

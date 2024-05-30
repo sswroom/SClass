@@ -17,7 +17,7 @@ namespace Media
 	public:
 		virtual ~IMediaSource(){};
 
-		virtual UTF8Char *GetSourceName(UTF8Char *buff) = 0;
+		virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff) = 0;
 
 		virtual void Stop() = 0;
 		virtual Data::Duration GetStreamTime() = 0;

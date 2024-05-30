@@ -58,7 +58,7 @@ namespace Map
 		virtual void ReleaseNameArr(void *nameArr);
 		virtual WChar *GetString(WChar *buff, void *nameArr, Int64 id, UOSInt strIndex);
 		virtual UOSInt GetColumnCnt();
-		virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex);
+		virtual UnsafeArrayOpt<UTF8Char> GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, OptOut<UOSInt> colSize);
 		virtual Bool GetColumnDef(UOSInt colIndex, DB::ColDef *colDef);
 		virtual Int32 GetBlockSize();

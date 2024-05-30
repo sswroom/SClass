@@ -279,6 +279,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 		}
 
 		Text::CString name;
+		Text::CStringNN nnname;
 		NN<ASN1Names> nnnames;
 		if (!names.SetTo(nnnames))
 			name = CSTR_NULL;
@@ -288,7 +289,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 		{
 		case 0x1:
 			sb->AppendChar('\t', level);
-			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+			if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("BOOLEAN "));
 			sb->AppendUTF8Char('(');
 			BooleanToString(Data::ByteArrayR(pdu + ofst, len), sb);
@@ -304,7 +305,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 					return false;
 				}
 				sb->AppendChar('\t', level);
-				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+				if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 				sb->AppendC(UTF8STRC("INTEGER "));
 				sb->AppendU32(iVal);
 				sb->AppendC(UTF8STRC("\r\n"));
@@ -312,7 +313,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 			else if (len <= 32)
 			{
 				sb->AppendChar('\t', level);
-				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+				if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 				sb->AppendC(UTF8STRC("INTEGER "));
 				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
 				sb->AppendC(UTF8STRC("\r\n"));
@@ -321,7 +322,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 			else
 			{
 				sb->AppendChar('\t', level);
-				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+				if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 				sb->AppendC(UTF8STRC("INTEGER\r\n"));
 				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::CRLF);
 				sb->AppendC(UTF8STRC("\r\n"));
@@ -330,7 +331,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 			break;
 		case 0x3:
 			sb->AppendChar('\t', level);
-			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+			if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("BIT STRING "));
 			sb->AppendHex8(pdu[ofst]);
 			if (PDUIsValid(&pdu[ofst + 1], &pdu[ofst + len]))
@@ -354,7 +355,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 			break;
 		case 0x4:
 			sb->AppendChar('\t', level);
-			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+			if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("OCTET STRING "));
 			if (PDUIsValid(&pdu[ofst], &pdu[ofst + len]))
 			{
@@ -377,13 +378,13 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 			break;
 		case 0x5:
 			sb->AppendChar('\t', level);
-			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+			if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("NULL\r\n"));
 			pdu += ofst + len;
 			break;
 		case 0x6:
 			sb->AppendChar('\t', level);
-			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+			if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("OID "));
 			Net::ASN1Util::OIDToString(Data::ByteArrayR(pdu + ofst, len), sb);
 			sb->AppendC(UTF8STRC(" ("));
@@ -395,7 +396,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 			if (len == 1)
 			{
 				sb->AppendChar('\t', level);
-				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+				if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 				sb->AppendC(UTF8STRC("ENUMERATED "));
 				sb->AppendU32(pdu[ofst]);
 				sb->AppendC(UTF8STRC("\r\n"));
@@ -408,7 +409,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 			break;
 		case 0x0C:
 			sb->AppendChar('\t', level);
-			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+			if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("UTF8String "));
 			sb->AppendC(&pdu[ofst], len);
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -416,7 +417,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 			break;
 		case 0x12:
 			sb->AppendChar('\t', level);
-			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+			if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("NumericString "));
 			sb->AppendC(&pdu[ofst], len);
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -424,7 +425,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 			break;
 		case 0x13:
 			sb->AppendChar('\t', level);
-			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+			if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("PrintableString "));
 			sb->AppendC(&pdu[ofst], len);
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -432,7 +433,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 			break;
 		case 0x14:
 			sb->AppendChar('\t', level);
-			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+			if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("T61String "));
 			sb->AppendC(&pdu[ofst], len);
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -440,7 +441,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 			break;
 		case 0x15:
 			sb->AppendChar('\t', level);
-			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+			if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("VideotexString "));
 			sb->AppendC(&pdu[ofst], len);
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -448,7 +449,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 			break;
 		case 0x16:
 			sb->AppendChar('\t', level);
-			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+			if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("IA5String "));
 			sb->AppendC(&pdu[ofst], len);
 			if (sb->GetEndPtr()[-1] == 0)
@@ -460,7 +461,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 			break;
 		case 0x17:
 			sb->AppendChar('\t', level);
-			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+			if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("UTCTIME "));
 			if (len == 13 && pdu[ofst + 12] == 'Z')
 			{
@@ -478,7 +479,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 			break;
 		case 0x18:
 			sb->AppendChar('\t', level);
-			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+			if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("GeneralizedTime "));
 			if (len == 15 && pdu[ofst + 14] == 'Z')
 			{
@@ -496,7 +497,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 			break;
 		case 0x1C:
 			sb->AppendChar('\t', level);
-			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+			if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("UniversalString "));
 			sb->AppendC(&pdu[ofst], len);
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -506,14 +507,14 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 			sb->AppendChar('\t', level);
 			if (len & 1)
 			{
-				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+				if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 				sb->AppendC(UTF8STRC("BMPString ("));
 				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
 				sb->AppendC(UTF8STRC(")\r\n"));
 			}
 			else
 			{
-				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+				if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 				sb->AppendC(UTF8STRC("BMPString "));
 				sb->AppendUTF16BE(&pdu[ofst], len >> 1);
 				sb->AppendC(UTF8STRC("\r\n"));
@@ -530,7 +531,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 			if (type < 0x30)
 			{
 				sb->AppendChar('\t', level);
-				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+				if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 				sb->AppendC(UTF8STRC("UNKNOWN 0x"));
 				sb->AppendHex8(type);
 				sb->AppendC(UTF8STRC(" ("));
@@ -542,7 +543,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 			else
 			{
 				sb->AppendChar('\t', level);
-				if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+				if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 				sb->AppendC(UTF8STRC("UNKNOWN 0x"));
 				sb->AppendHex8(type);
 				if (PDUIsValid(&pdu[ofst], &pdu[ofst + len]))
@@ -574,7 +575,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 			}
 		case 0x30:
 			sb->AppendChar('\t', level);
-			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+			if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("SEQUENCE {\r\n"));
 			if (pdu[1] == 0x80)
 			{
@@ -602,7 +603,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 			break;
 		case 0x31:
 			sb->AppendChar('\t', level);
-			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+			if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("SET {\r\n"));
 			if (pdu[1] == 0x80)
 			{
@@ -638,7 +639,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 		case 0x87:
 		case 0x88:
 			sb->AppendChar('\t', level);
-			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+			if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("CHOICE["));
 			sb->AppendU16((UInt16)(type - 0x80));
 			sb->AppendC(UTF8STRC("] "));
@@ -693,7 +694,7 @@ Bool Net::ASN1Util::PDUToString(UnsafeArray<const UInt8> pdu, UnsafeArray<const 
 		case 0xA7:
 		case 0xA8:
 			sb->AppendChar('\t', level);
-			if (name.v) sb->Append(name)->AppendUTF8Char(' ');
+			if (name.SetTo(nnname)) sb->Append(nnname)->AppendUTF8Char(' ');
 			sb->AppendC(UTF8STRC("CONTEXT SPECIFIC["));
 			sb->AppendU16((UInt16)(type - 0xA0));
 			sb->AppendC(UTF8STRC("] "));
@@ -1308,14 +1309,14 @@ UOSInt Net::ASN1Util::OIDCalcPDUSize(Text::CStringNN oidText)
 {
 	UInt32 v;
 	UOSInt retSize = 1;
-	UTF8Char *buff = MemAlloc(UTF8Char, oidText.leng + 1);
+	UnsafeArray<UTF8Char> buff = MemAllocArr(UTF8Char, oidText.leng + 1);
 	oidText.ConcatTo(buff);
-	UTF8Char *sarr[3];
+	UnsafeArray<UTF8Char> sarr[3];
 	UOSInt i;
 	i = Text::StrSplit(sarr, 3, buff, '.');
 	if (i == 1 || i == 2)
 	{
-		MemFree(buff);
+		MemFreeArr(buff);
 		return 1;
 	}
 	sarr[1] = sarr[2];
@@ -1324,7 +1325,7 @@ UOSInt Net::ASN1Util::OIDCalcPDUSize(Text::CStringNN oidText)
 		i = Text::StrSplit(sarr, 2, sarr[1], '.');
 		if (!Text::StrToUInt32(sarr[0], v))
 		{
-			MemFree(buff);
+			MemFreeArr(buff);
 			return retSize;
 		}
 		while (v >= 128)
@@ -1336,7 +1337,7 @@ UOSInt Net::ASN1Util::OIDCalcPDUSize(Text::CStringNN oidText)
 		if (i != 2)
 			break;
 	}
-	MemFree(buff);
+	MemFreeArr(buff);
 	return retSize;
 }
 
@@ -1344,31 +1345,31 @@ UOSInt Net::ASN1Util::OIDText2PDU(Text::CStringNN oidText, UnsafeArray<UInt8> pd
 {
 	UInt32 v;
 	UOSInt retSize = 1;
-	UTF8Char *buff = MemAlloc(UTF8Char, oidText.leng + 1);
+	UnsafeArray<UTF8Char> buff = MemAllocArr(UTF8Char, oidText.leng + 1);
 	oidText.ConcatTo(buff);
-	UTF8Char *sarr[3];
+	UnsafeArray<UTF8Char> sarr[3];
 	UOSInt i;
 	i = Text::StrSplit(sarr, 3, buff, '.');
 	if (i == 1)
 	{
 		if (!Text::StrToUInt8(sarr[0], pduBuff[0]))
 		{
-			MemFree(buff);
+			MemFreeArr(buff);
 			return 0;
 		}
 		pduBuff[0] = (UInt8)(pduBuff[0] * 40);
-		MemFree(buff);
+		MemFreeArr(buff);
 		return 1;
 	}
 	if (!Text::StrToUInt8(sarr[0], pduBuff[0]) || !Text::StrToUInt8(sarr[1], pduBuff[1]))
 	{
-		MemFree(buff);
+		MemFreeArr(buff);
 		return 0;
 	}
 	pduBuff[0] = (UInt8)(pduBuff[0] * 40 + pduBuff[1]);
 	if (i == 2)
 	{
-		MemFree(buff);
+		MemFreeArr(buff);
 		return 1;
 	}
 	sarr[1] = sarr[2];
@@ -1377,7 +1378,7 @@ UOSInt Net::ASN1Util::OIDText2PDU(Text::CStringNN oidText, UnsafeArray<UInt8> pd
 		i = Text::StrSplit(sarr, 2, sarr[1], '.');
 		if (!Text::StrToUInt32(sarr[0], v))
 		{
-			MemFree(buff);
+			MemFreeArr(buff);
 			return 0;
 		}
 		if (v < 128)
@@ -1419,7 +1420,7 @@ UOSInt Net::ASN1Util::OIDText2PDU(Text::CStringNN oidText, UnsafeArray<UInt8> pd
 		if (i != 2)
 			break;
 	}
-	MemFree(buff);
+	MemFreeArr(buff);
 	return retSize;
 }
 
@@ -1513,7 +1514,7 @@ void Net::ASN1Util::UTCTimeToString(Data::ByteArrayR data, NN<Text::StringBuilde
 	if (PDUParseUTCTimeCont(data, dt))
 	{
 		UTF8Char sbuff[64];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 		sb->AppendP(sbuff, sptr);
 	}

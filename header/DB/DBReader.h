@@ -65,7 +65,7 @@ namespace DB
 			else
 				return Text::String::NewEmpty();
 		}
-		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize) = 0;
+		virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize) = 0;
 		virtual Data::Timestamp GetTimestamp(UOSInt colIndex) = 0;
 		virtual Data::Date GetDate(UOSInt colIndex)
 		{
@@ -110,7 +110,7 @@ namespace DB
 		virtual Bool GetVariItem(UOSInt colIndex, NN<Data::VariItem> item);
 
 		virtual Bool IsNull(UOSInt colIndex) = 0;
-		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff) = 0;
+		virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff) = 0;
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize) = 0;
 		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef) = 0;
 

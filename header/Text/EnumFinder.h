@@ -7,11 +7,11 @@ namespace Text
 	template<class T> class EnumFinder
 	{
 	private:
-		const Char *searchStr;
+		UnsafeArray<const Char> searchStr;
 		T val;
 		Bool found;
 	public:
-		EnumFinder(const Char *searchStr, T defVal)
+		EnumFinder(UnsafeArray<const Char> searchStr, T defVal)
 		{
 			this->searchStr = searchStr;
 			this->val = defVal;
@@ -27,7 +27,7 @@ namespace Text
 		{
 			if (!this->found)
 			{
-				if (Text::StrEquals(this->searchStr, enumName))
+				if (Text::StrEqualsCh(this->searchStr, enumName))
 				{
 					this->val = e;
 					this->found = true;

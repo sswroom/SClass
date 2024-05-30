@@ -80,12 +80,12 @@ UOSInt UI::GTK::GTKDropData::GetCount()
 	return this->targetMap.GetCount();
 }
 
-const UTF8Char *UI::GTK::GTKDropData::GetName(UOSInt index)
+UnsafeArrayOpt<const UTF8Char> UI::GTK::GTKDropData::GetName(UOSInt index)
 {
 	return this->targetMap.GetKey(index);
 }
 
-Bool UI::GTK::GTKDropData::GetDataText(const UTF8Char *name, NN<Text::StringBuilderUTF8> sb)
+Bool UI::GTK::GTKDropData::GetDataText(UnsafeArray<const UTF8Char> name, NN<Text::StringBuilderUTF8> sb)
 {
 	OSInt fmt = this->targetMap.Get(name);
 	if (fmt == 0)
@@ -102,7 +102,7 @@ Bool UI::GTK::GTKDropData::GetDataText(const UTF8Char *name, NN<Text::StringBuil
 	}
 }
 
-IO::Stream *UI::GTK::GTKDropData::GetDataStream(const UTF8Char *name)
+IO::Stream *UI::GTK::GTKDropData::GetDataStream(UnsafeArray<const UTF8Char> name)
 {
 	return 0;
 }
@@ -135,7 +135,7 @@ void UI::GTK::GTKDropData::OnDataReceived(void *selData)
 	{
 		Text::StringBuilderUTF8 sb;
 		const UInt8 *data = gtk_selection_data_get_data((GtkSelectionData*)selData);
-		if (Text::StrEquals(csptr, "application/x-moz-nativeimage"))
+		if (Text::StrEqualsCh(csptr, "application/x-moz-nativeimage"))
 		{
 			GdkPixbuf *pixbuf = gtk_selection_data_get_pixbuf((GtkSelectionData*)selData);
 			if (pixbuf)
@@ -144,43 +144,43 @@ void UI::GTK::GTKDropData::OnDataReceived(void *selData)
 				g_object_unref(pixbuf);
 			}
 		}
-		else if (Text::StrEquals(csptr, "text/html"))
+		else if (Text::StrEqualsCh(csptr, "text/html"))
 		{
 			AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
-		else if (Text::StrEquals(csptr, "text/unicode"))
+		else if (Text::StrEqualsCh(csptr, "text/unicode"))
 		{
 			AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
-		else if (Text::StrEquals(csptr, "text/x-moz-url"))
+		else if (Text::StrEqualsCh(csptr, "text/x-moz-url"))
 		{
 			AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
-		else if (Text::StrEquals(csptr, "text/x-moz-url-data"))
+		else if (Text::StrEqualsCh(csptr, "text/x-moz-url-data"))
 		{
 			AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
-		else if (Text::StrEquals(csptr, "text/x-moz-url-desc"))
+		else if (Text::StrEqualsCh(csptr, "text/x-moz-url-desc"))
 		{
 			AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
-		else if (Text::StrEquals(csptr, "text/_moz_htmlcontext"))
+		else if (Text::StrEqualsCh(csptr, "text/_moz_htmlcontext"))
 		{
 			AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
-		else if (Text::StrEquals(csptr, "text/_moz_htmlinfo"))
+		else if (Text::StrEqualsCh(csptr, "text/_moz_htmlinfo"))
 		{
 			AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
-		else if (Text::StrEquals(csptr, "application/x-moz-file-promise-url"))
+		else if (Text::StrEqualsCh(csptr, "application/x-moz-file-promise-url"))
 		{
 			AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
-		else if (Text::StrEquals(csptr, "application/x-moz-file-promise-dest-filename"))
+		else if (Text::StrEqualsCh(csptr, "application/x-moz-file-promise-dest-filename"))
 		{
 			AppendWC(sb, (const UTF16Char*)data, dataSize / 2);
 		}
-		else if (Text::StrEquals(csptr, "application/x-moz-custom-clipdata"))
+		else if (Text::StrEqualsCh(csptr, "application/x-moz-custom-clipdata"))
 		{
 			sb.AppendHexBuff(data, dataSize, ' ', Text::LineBreakType::CRLF);
 		}

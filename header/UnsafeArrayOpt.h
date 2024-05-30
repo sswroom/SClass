@@ -8,22 +8,17 @@ template <typename T> struct UnsafeArrayOpt
 private:
 	T *p;
 
-	virtual void SetPtr(T *p)
-	{
-		this->p = p;
-	}
-
 public:
 	UnsafeArrayOpt() = default;
 
 	UnsafeArrayOpt(T *p)
 	{
-		this->SetPtr(p);
+		this->p = p;
 	}
 
 	UnsafeArrayOpt(UnsafeArray<T> p)
 	{
-		this->SetPtr(p.Ptr());
+		this->p = p.Ptr();
 	}
 
 	template<typename V> UnsafeArrayOpt(UnsafeArrayOpt<V> p)
@@ -46,9 +41,22 @@ public:
 		return this->p;
 	}
 
-	Bool SetTo(UnsafeArray<T> &val)
+	Bool SetTo(UnsafeArray<T> &val) const
 	{
 		return val.Set(this->p);
+	}
+
+	UnsafeArray<T> Or(UnsafeArray<T> val) const
+	{
+		UnsafeArray<T> ret;
+		if (ret.Set(this->p))
+			return ret;
+		return val;
+	}
+
+	Bool operator==(UnsafeArrayOpt<T> val) const
+	{
+		return this->p == val.p;
 	}
 
 	template <typename V> static UnsafeArrayOpt<T> ConvertFrom(UnsafeArrayOpt<V> ptr)

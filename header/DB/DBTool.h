@@ -35,10 +35,10 @@ namespace DB
 		void EndTrans(Bool toCommit);
 		Int32 GetLastIdentity32();
 		Int64 GetLastIdentity64();
-		Bool CreateDatabase(Text::CString databaseName, const Collation *collation);
-		Bool DeleteDatabase(Text::CString databaseName);
-		Bool CreateSchema(Text::CString schemaName);
-		Bool DeleteSchema(Text::CString schemaName);
+		Bool CreateDatabase(Text::CStringNN databaseName, const Collation *collation);
+		Bool DeleteDatabase(Text::CStringNN databaseName);
+		Bool CreateSchema(Text::CStringNN schemaName);
+		Bool DeleteSchema(Text::CStringNN schemaName);
 		Bool DeleteTableData(Text::CString schemaName, Text::CStringNN tableName);
 	
 		Bool KillConnection(Int32 id);

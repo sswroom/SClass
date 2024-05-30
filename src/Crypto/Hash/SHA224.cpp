@@ -18,7 +18,7 @@ Crypto::Hash::SHA224::~SHA224()
 {
 }
 
-UTF8Char *Crypto::Hash::SHA224::GetName(UTF8Char *sbuff) const
+UnsafeArray<UTF8Char> Crypto::Hash::SHA224::GetName(UnsafeArray<UTF8Char> sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("SHA-224"));
 }

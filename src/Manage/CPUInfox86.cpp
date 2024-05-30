@@ -25,7 +25,7 @@ typedef struct
 #else
 typedef struct
 {
-	const UTF8Char *cpuName;
+	UnsafeArrayOpt<const UTF8Char> cpuName;
 } InfoData;
 #if defined(__FreeBSD__) || defined(__APPLE__)
 #include <sys/types.h>
@@ -359,7 +359,7 @@ Bool Manage::CPUInfo::GetInfoValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 			UInt8 buff[16];
 			OSInt i;
 			Bool firstFound;
-			Text::CString cstr;
+			Text::CStringNN cstr;
 			Core::X86Util_cpuid(cpuInfo, 2);
 			*(Int32*)&buff[0] = cpuInfo[0];
 			*(Int32*)&buff[4] = cpuInfo[3];
@@ -370,18 +370,15 @@ Bool Manage::CPUInfo::GetInfoValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 			while (i < 16)
 			{
 				cstr = GetCacheInfo(this->brand, buff[i]);
-				if (cstr.v)
+				if (firstFound)
 				{
-					if (firstFound)
-					{
-						firstFound = false;
-					}
-					else
-					{
-						sb->AppendC(UTF8STRC(", "));
-					}
-					sb->Append(cstr);
+					firstFound = false;
 				}
+				else
+				{
+					sb->AppendC(UTF8STRC(", "));
+				}
+				sb->Append(cstr);
 				i++;
 			}
 		}
@@ -392,14 +389,14 @@ Bool Manage::CPUInfo::GetInfoValue(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 	return false;
 }
 
-UOSInt Manage::CPUInfo::GetCacheInfoList(Data::ArrayList<const UTF8Char*> *infoList)
+UOSInt Manage::CPUInfo::GetCacheInfoList(NN<Data::ArrayListArr<const UTF8Char>> infoList)
 {
 	if (this->infoCnt <= 13)
 		return 0;
 	UInt8 buff[16];
 	OSInt i;
 	UOSInt retCnt = 0;
-	Text::CString cstr;
+	Text::CStringNN cstr;
 	Int32 cpuInfo[4];
 	Core::X86Util_cpuid(cpuInfo, 2);
 	*(Int32*)&buff[0] = cpuInfo[0];
@@ -410,11 +407,8 @@ UOSInt Manage::CPUInfo::GetCacheInfoList(Data::ArrayList<const UTF8Char*> *infoL
 	while (i < 16)
 	{
 		cstr = GetCacheInfo(this->brand, buff[i]);
-		if (cstr.v)
-		{
-			infoList->Add(cstr.v);
-			retCnt++;
-		}
+		infoList->Add(cstr.v);
+		retCnt++;
 		i++;
 	}
 	return retCnt;
@@ -502,9 +496,9 @@ Bool Manage::CPUInfo::GetInfoName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 }
 
 #if defined(WIN32) || defined(_WIN64)
-UTF8Char *Manage::CPUInfo::GetCPUName(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> Manage::CPUInfo::GetCPUName(UnsafeArray<UTF8Char> sbuff)
 {
-	UTF8Char *ret = 0;
+	UnsafeArrayOpt<UTF8Char> ret = 0;
 	IO::Registry *reg = IO::Registry::OpenLocalHardware();
 	IO::Registry *reg2;
 	WChar wbuff[256];
@@ -584,12 +578,13 @@ Bool Manage::CPUInfo::GetCPUTCC(Double *temp)
 	return false;
 }
 #else
-UTF8Char *Manage::CPUInfo::GetCPUName(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> Manage::CPUInfo::GetCPUName(UnsafeArray<UTF8Char> sbuff)
 {
 	InfoData *info = (InfoData*)this->clsData;
-	if (info->cpuName)
+	UnsafeArray<const UTF8Char> cpuName;	
+	if (info->cpuName.SetTo(cpuName))
 	{
-		return Text::StrConcat(sbuff, info->cpuName);
+		return Text::StrConcat(sbuff, cpuName);
 	}
 	return 0;
 }

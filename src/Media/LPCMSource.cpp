@@ -61,7 +61,7 @@ Media::LPCMSource::~LPCMSource()
 	this->name->Release();
 }
 
-UTF8Char *Media::LPCMSource::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::LPCMSource::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	return this->name->ConcatTo(buff);
 }

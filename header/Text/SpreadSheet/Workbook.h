@@ -14,9 +14,9 @@ namespace Text
 		class Workbook : public IO::ParsedObject, public Text::SpreadSheet::IStyleCtrl
 		{
 		private:
-			const UTF8Char *author;
-			const UTF8Char *lastAuthor;
-			const UTF8Char *company;
+			UnsafeArrayOpt<const UTF8Char> author;
+			UnsafeArrayOpt<const UTF8Char> lastAuthor;
+			UnsafeArrayOpt<const UTF8Char> company;
 			Data::DateTime *createTime;
 			Data::DateTime *modifyTime;
 			Double version;
@@ -42,17 +42,17 @@ namespace Text
 
 			void AddDefaultStyles();
 
-			void SetAuthor(const UTF8Char *author);
-			void SetLastAuthor(const UTF8Char *lastAuthor);
-			void SetCompany(const UTF8Char *company);
+			void SetAuthor(UnsafeArrayOpt<const UTF8Char> author);
+			void SetLastAuthor(UnsafeArrayOpt<const UTF8Char> lastAuthor);
+			void SetCompany(UnsafeArrayOpt<const UTF8Char> company);
 			void SetCreateTime(Data::DateTime *createTime);
 			void SetCreateTime(Data::Timestamp createTime);
 			void SetModifyTime(Data::DateTime *modifyTime);
 			void SetModifyTime(Data::Timestamp modifyTime);
 			void SetVersion(Double version);
-			const UTF8Char *GetAuthor() const;
-			const UTF8Char *GetLastAuthor() const;
-			const UTF8Char *GetCompany() const;
+			UnsafeArrayOpt<const UTF8Char> GetAuthor() const;
+			UnsafeArrayOpt<const UTF8Char> GetLastAuthor() const;
+			UnsafeArrayOpt<const UTF8Char> GetCompany() const;
 			Data::DateTime *GetCreateTime() const;
 			Data::DateTime *GetModifyTime() const;
 			Double GetVersion() const;
@@ -90,7 +90,7 @@ namespace Text
 			Optional<Worksheet> GetItem(UOSInt index) const;
 			Data::ArrayIterator<NN<Worksheet>> Iterator() const;
 			void RemoveAt(UOSInt index);
-			Optional<Worksheet> GetWorksheetByName(Text::CString name);
+			Optional<Worksheet> GetWorksheetByName(Text::CStringNN name);
 
 			UOSInt GetFontCount() const;
 			NN<WorkbookFont> GetFontNoCheckc(UOSInt index) const;
@@ -99,7 +99,7 @@ namespace Text
 			WorkbookFont *NewFont(Text::CString name, Double size, Bool bold);
 
 			static void GetDefPalette(UInt32 *palette);
-			static UTF8Char *ColCode(UTF8Char *sbuff, UOSInt col);
+			static UnsafeArray<UTF8Char> ColCode(UnsafeArray<UTF8Char> sbuff, UOSInt col);
 		};
 	}
 }

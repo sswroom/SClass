@@ -12,10 +12,10 @@ DB::DBClassBuilder::~DBClassBuilder()
 
 }
 
-void DB::DBClassBuilder::AddItem(const UTF8Char *colName, DB::DBUtil::ColType colType, Bool notNull)
+void DB::DBClassBuilder::AddItem(UnsafeArray<const UTF8Char> colName, DB::DBUtil::ColType colType, Bool notNull)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = DB::DBUtil::DB2FieldName(sbuff, colName);
 	switch (colType)
 	{

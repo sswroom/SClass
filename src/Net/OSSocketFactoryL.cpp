@@ -62,7 +62,7 @@ typedef struct
 
 Net::OSSocketFactory::OSSocketFactory(Bool noV6DNS) : Net::SocketFactory(noV6DNS)
 {
-/*	const UTF8Char *fileName = (const UTF8Char*)"/proc/sys/net/ipv6/bindv6only";
+/*	UnsafeArray<const UTF8Char> fileName = (const UTF8Char*)"/proc/sys/net/ipv6/bindv6only";
 	if (IO::Path::GetPathType(fileName) == IO::Path::PathType::File)
 	{
 		IO::FileStream *fs;
@@ -647,14 +647,14 @@ UOSInt Net::OSSocketFactory::SendTo(NN<Socket> socket, const UInt8 *buff, UOSInt
 	}
 }
 
-UOSInt Net::OSSocketFactory::SendToIF(NN<Socket> socket, const UInt8 *buff, UOSInt buffSize, const UTF8Char *ifName)
+UOSInt Net::OSSocketFactory::SendToIF(NN<Socket> socket, const UInt8 *buff, UOSInt buffSize, UnsafeArray<const UTF8Char> ifName)
 {
 	sockaddr addrBase;
 	sockaddr *addrBuff = (sockaddr*)&addrBase;
 	socklen_t addrSize;
 	MemClear(addrBuff, sizeof(sockaddr));
 	addrBuff->sa_family = AF_INET;
-	Text::StrConcat(addrBuff->sa_data, (const Char*)ifName);
+	Text::StrConcat(addrBuff->sa_data, (const Char*)ifName.Ptr());
 	addrSize = sizeof(sockaddr);
 
 	OSInt ret = sendto((Int32)this->SocketGetFD(socket), (const char*)buff, (size_t)buffSize, 0, addrBuff, addrSize);
@@ -778,7 +778,7 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(NN<const Net::SocketUtil::AddressInfo> 
 	else
 	{
 		UTF8Char sbuff[64];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		if (addr->addrType == Net::AddrType::IPv6)
 		{
 			sptr = Text::StrConcatC(sbuff, UTF8STRC("ping6 -c 1 "));
@@ -787,7 +787,7 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(NN<const Net::SocketUtil::AddressInfo> 
 		{
 			sptr = Text::StrConcatC(sbuff, UTF8STRC("ping -c 1 "));
 		}
-		sptr = Net::SocketUtil::GetAddrName(sptr, addr);
+		sptr = Net::SocketUtil::GetAddrName(sptr, addr).Or(sptr);
 		Text::StringBuilderUTF8 sb;
 		Int32 ret;
 		ret = Manage::Process::ExecuteProcess(CSTRP(sbuff, sptr), sb);
@@ -798,7 +798,7 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(NN<const Net::SocketUtil::AddressInfo> 
 			if (i == 3)
 			{
 				i = Text::StrIndexOfC(sarr[1].v, sarr[1].leng, UTF8STRC(": "));
-				UTF8Char *linePtr = sarr[1].v;
+				UnsafeArray<UTF8Char> linePtr = sarr[1].v;
 				UOSInt lineLen = sarr[1].leng;
 				if (i != INVALID_INDEX)
 				{
@@ -1075,7 +1075,7 @@ Bool Net::OSSocketFactory::LoadHosts(NN<Net::DNSHandler> dnsHdlr)
 					while (true)
 					{
 						i = Text::StrSplitWSP(sarr, 2, sarr[1]);
-						dnsHdlr->AddHost(addr, sarr[0].v, sarr[0].leng);
+						dnsHdlr->AddHost(addr, sarr[0].ToCString());
 						if (i != 2)
 							break;
 					}
@@ -1133,7 +1133,7 @@ UOSInt Net::OSSocketFactory::GetConnInfoList(NN<Data::ArrayListNN<Net::Connectio
 	UInt32 ip;
 	UInt32 gw;
 	UOSInt i;
-	UTF8Char *sarr[4];
+	UnsafeArray<UTF8Char> sarr[4];
 	IO::FileStream fs(CSTR("/proc/net/route"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
 	{
@@ -1239,8 +1239,8 @@ UOSInt OSSocketFactory_LoadPortInfo(NN<Data::ArrayListNN<Net::SocketFactory::Por
 	}
 	else
 	{
-		UTF8Char *sarr[5];
-		UTF8Char *sarr2[3];
+		UnsafeArray<UTF8Char> sarr[5];
+		UnsafeArray<UTF8Char> sarr2[3];
 		Text::StringBuilderUTF8 sb;
 		Text::UTF8Reader reader(fs);
 		if (reader.ReadLine(sb, 1024))
@@ -1337,8 +1337,8 @@ UOSInt OSSocketFactory_LoadPortInfov4(NN<Data::ArrayListNN<Net::SocketFactory::P
 	}
 	else
 	{
-		UTF8Char *sarr[11];
-		UTF8Char *sarr2[3];
+		UnsafeArray<UTF8Char> sarr[11];
+		UnsafeArray<UTF8Char> sarr2[3];
 		Text::StringBuilderUTF8 sb;
 		Text::UTF8Reader reader(fs);
 		if (reader.ReadLine(sb, 1024))
@@ -1437,8 +1437,8 @@ UOSInt OSSocketFactory_LoadPortInfov6(NN<Data::ArrayListNN<Net::SocketFactory::P
 	else
 	{
 		UInt8 addr[32];
-		UTF8Char *sarr[11];
-		UTF8Char *sarr2[3];
+		UnsafeArray<UTF8Char> sarr[11];
+		UnsafeArray<UTF8Char> sarr2[3];
 		Text::StringBuilderUTF8 sb;
 		Text::UTF8Reader reader(fs);
 		if (reader.ReadLine(sb, 1024))
@@ -1604,7 +1604,7 @@ Bool Net::OSSocketFactory::AdapterSetHWAddr(Text::CString adapterName, const UIn
 		Bool succ = false;
 		struct ifreq ifr;
 		struct ifreq ifrAddr;
-		Text::StrConcatC(ifr.ifr_ifrn.ifrn_name, (const Char*)adapterName.v, adapterName.leng);
+		Text::StrConcatC(ifr.ifr_ifrn.ifrn_name, (const Char*)adapterName.v.Ptr(), adapterName.leng);
 		if (ioctl(sock, SIOCGIFFLAGS, &ifr) < 0)
 		{
 //			printf("Sockf: Error in getting flags\r\n");
@@ -1619,7 +1619,7 @@ Bool Net::OSSocketFactory::AdapterSetHWAddr(Text::CString adapterName, const UIn
 			return false;
 		}
 
-		Text::StrConcatC(ifrAddr.ifr_ifrn.ifrn_name, (const Char*)adapterName.v, adapterName.leng);
+		Text::StrConcatC(ifrAddr.ifr_ifrn.ifrn_name, (const Char*)adapterName.v.Ptr(), adapterName.leng);
 		MemClear(&ifrAddr.ifr_ifru.ifru_hwaddr, sizeof(sockaddr));
 		ifrAddr.ifr_ifru.ifru_hwaddr.sa_family = ARPHRD_ETHER;
 		MemCopyNO(ifrAddr.ifr_ifru.ifru_hwaddr.sa_data, hwAddr, 6);
@@ -1660,7 +1660,7 @@ Bool Net::OSSocketFactory::AdapterEnable(Text::CString adapterName, Bool enable)
 	{
 		Bool succ = false;
 		struct ifreq ifr;
-		Text::StrConcatC(ifr.ifr_ifrn.ifrn_name, (const Char*)adapterName.v, adapterName.leng);
+		Text::StrConcatC(ifr.ifr_ifrn.ifrn_name, (const Char*)adapterName.v.Ptr(), adapterName.leng);
 		if (ioctl(sock, SIOCGIFFLAGS, &ifr) < 0)
 		{
 //			printf("Sockf: Error in getting flags\r\n");

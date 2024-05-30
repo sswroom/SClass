@@ -169,76 +169,77 @@ DB::CSVReader::CSVReader(Optional<IO::Stream> stm, NN<IO::Reader> rdr, Bool noHe
 	this->nCol = 0;
 	this->rowBuffSize = 16384;
 	this->row = MemAlloc(UTF8Char, this->rowBuffSize);
-	this->cols = MemAlloc(UTF8Char*, 128);
+	this->cols = MemAllocArr(UnsafeArray<UTF8Char>, 128);
 	this->colSize = MemAlloc(UOSInt, 128);
 	this->hdrs = MemAlloc(Text::PString, 128);
 	this->condition = condition;
 
-	UTF8Char *sptr;
-	UTF8Char *currPtr;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> currPtr;
 	WChar c;
 	Bool colStart = true;
 	Bool quote = false;
-	sptr = this->rdr->ReadLine(this->row, this->rowBuffSize - 1);
 	currPtr = this->row;
-	while (true)
+	if (this->rdr->ReadLine(this->row, this->rowBuffSize - 1).SetTo(sptr))
 	{
-		c = *currPtr++;
-		if (c == 0)
+		while (true)
 		{
-			currPtr--;
-			if (quote)
+			c = *currPtr++;
+			if (c == 0)
 			{
-				sptr = this->rdr->GetLastLineBreak(currPtr);
-				currPtr = sptr;
-				sptr = this->rdr->ReadLine(sptr, this->rowBuffSize - (UOSInt)(sptr - this->row) - 1);
-				if (sptr == 0)
-					break;
-				if (!this->rdr->IsLineBreak() && (UOSInt)(sptr - this->row) > this->rowBuffSize - 6)
+				currPtr--;
+				if (quote)
 				{
-					UTF8Char *newRow = MemAlloc(UTF8Char, this->rowBuffSize << 1);
-					MemCopyNO(newRow, this->row, this->rowBuffSize);
-					this->rowBuffSize <<= 1;
-					sptr = &newRow[(sptr - this->row)];
-					currPtr = &newRow[(currPtr - this->row)];
-					MemFree(this->row);
-					this->row = newRow;
-				}
-			}
-			else
-			{
-				break;
-			}
-		}
-		else if (c == '"')
-		{
-			if (colStart && !quote)
-			{
-				quote = true;
-				colStart = false;
-			}
-			else if (quote)
-			{
-				if (*currPtr == '"')
-				{
-					currPtr++;
+					sptr = this->rdr->GetLastLineBreak(currPtr);
+					currPtr = sptr;
+					if (!this->rdr->ReadLine(sptr, this->rowBuffSize - (UOSInt)(sptr - this->row) - 1).SetTo(sptr))
+						break;
+					if (!this->rdr->IsLineBreak() && (UOSInt)(sptr - this->row) > this->rowBuffSize - 6)
+					{
+						UTF8Char *newRow = MemAlloc(UTF8Char, this->rowBuffSize << 1);
+						MemCopyNO(newRow, this->row, this->rowBuffSize);
+						this->rowBuffSize <<= 1;
+						sptr = &newRow[(sptr - this->row)];
+						currPtr = &newRow[(currPtr - this->row)];
+						MemFree(this->row);
+						this->row = newRow;
+					}
 				}
 				else
 				{
-					quote = false;
+					break;
 				}
+			}
+			else if (c == '"')
+			{
+				if (colStart && !quote)
+				{
+					quote = true;
+					colStart = false;
+				}
+				else if (quote)
+				{
+					if (*currPtr == '"')
+					{
+						currPtr++;
+					}
+					else
+					{
+						quote = false;
+					}
+				}
+				else
+				{
+				}
+			}
+			else if ((c == ',') && (quote == 0))
+			{
+				colStart = true;
 			}
 			else
 			{
+				colStart = false;
 			}
-		}
-		else if ((c == ',') && (quote == 0))
-		{
-			colStart = true;
-		}
-		else
-		{
-			colStart = false;
 		}
 	}
 
@@ -258,7 +259,7 @@ DB::CSVReader::~CSVReader()
 	this->rdr.Delete();
 	this->stm.Delete();
 	MemFree(this->row);
-	MemFree(this->cols);
+	MemFreeArr(this->cols);
 	MemFree(this->colSize);
 	MemFree(this->hdr);
 	MemFree(this->hdrs);
@@ -266,8 +267,8 @@ DB::CSVReader::~CSVReader()
 
 Bool DB::CSVReader::ReadNext()
 {
-	UTF8Char *sptr;
-	UTF8Char *currPtr;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> currPtr;
 	WChar c;
 	Bool colStart;
 	Int32 quote = 0;
@@ -288,8 +289,7 @@ Bool DB::CSVReader::ReadNext()
 	{
 		while (true)
 		{
-			sptr = this->rdr->ReadLine(this->row, this->rowBuffSize - 1);
-			if (sptr == 0)
+			if (!this->rdr->ReadLine(this->row, this->rowBuffSize - 1).SetTo(sptr))
 			{
 				this->nCol = 0;
 				return false;
@@ -313,8 +313,7 @@ Bool DB::CSVReader::ReadNext()
 				if (quote)
 				{
 					sptr = this->rdr->GetLastLineBreak(currPtr);
-					sptr = this->rdr->ReadLine(sptr, this->rowBuffSize - (UOSInt)(sptr - this->row) - 1);
-					if (sptr == 0)
+					if (!this->rdr->ReadLine(sptr, this->rowBuffSize - (UOSInt)(sptr - this->row) - 1).SetTo(sptr))
 						break;
 					if (!this->rdr->IsLineBreak() && (UOSInt)(sptr - this->row) > this->rowBuffSize - 6)
 					{
@@ -564,8 +563,8 @@ Optional<Text::String> DB::CSVReader::GetNewStr(UOSInt colIndex)
 	}
 	NN<Text::String> s;
 	UOSInt len = 0;
-	const UTF8Char *csptr = cols[colIndex];
-	const UTF8Char *ptr = csptr;
+	UnsafeArray<const UTF8Char> csptr = cols[colIndex];
+	UnsafeArray<const UTF8Char> ptr = csptr;
 	UTF8Char c;
 	Int32 quote = 0;
 	c = *ptr;
@@ -605,7 +604,7 @@ Optional<Text::String> DB::CSVReader::GetNewStr(UOSInt colIndex)
 			}
 		}
 		s = Text::String::New(len);
-		UTF8Char *buff = s->v;
+		UnsafeArray<UTF8Char> buff = s->v;
 		ptr = csptr;
 		quote = 0;
 		while (true)
@@ -655,7 +654,7 @@ Optional<Text::String> DB::CSVReader::GetNewStr(UOSInt colIndex)
 			len++;
 		}
 		s = Text::String::New(len);
-		UTF8Char *buff = s->v;
+		UnsafeArray<UTF8Char> buff = s->v;
 		ptr = csptr;
 		while (true)
 		{
@@ -670,7 +669,7 @@ Optional<Text::String> DB::CSVReader::GetNewStr(UOSInt colIndex)
 	}
 }
 
-UTF8Char *DB::CSVReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> DB::CSVReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
 	if (colIndex >= nCol)
 		return 0;
@@ -681,7 +680,7 @@ UTF8Char *DB::CSVReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize
 			return 0;
 		}
 	}
-	const UTF8Char *ptr = cols[colIndex];
+	UnsafeArray<const UTF8Char> ptr = cols[colIndex];
 	UTF8Char c;
 	Int32 quote = 0;
 	c = *ptr;
@@ -751,9 +750,10 @@ UTF8Char *DB::CSVReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize
 Data::Timestamp DB::CSVReader::GetTimestamp(UOSInt colIndex)
 {
 	UTF8Char buff[60];
-	UTF8Char *sptr;
-	sptr = this->GetStr(colIndex, buff, sizeof(buff));
-	return Data::Timestamp(CSTRP(buff, sptr), Data::DateTimeUtil::GetLocalTzQhr());
+	UnsafeArray<UTF8Char> sptr;
+	if (this->GetStr(colIndex, buff, sizeof(buff)).SetTo(sptr))
+		return Data::Timestamp(CSTRP(buff, sptr), Data::DateTimeUtil::GetLocalTzQhr());
+	return 0;
 }
 
 Double DB::CSVReader::GetDbl(UOSInt colIndex)
@@ -767,8 +767,9 @@ Double DB::CSVReader::GetDbl(UOSInt colIndex)
 Bool DB::CSVReader::GetBool(UOSInt colIndex)
 {
 	UTF8Char buff[20];
-	UTF8Char *sptr;
-	sptr = this->GetStr(colIndex, buff, sizeof(buff));
+	UnsafeArray<UTF8Char> sptr;
+	if (!this->GetStr(colIndex, buff, sizeof(buff)).SetTo(sptr))
+		return false;
 	if (Text::StrEqualsICaseC(buff, (UOSInt)(sptr - buff), UTF8STRC("TRUE")))
 		return true;
 	return Text::StrToInt32(buff) != 0;
@@ -795,7 +796,7 @@ Optional<Math::Geometry::Vector2D> DB::CSVReader::GetVector(UOSInt colIndex)
 			return 0;
 		}
 	}
-	const UTF8Char *ptr = cols[colIndex];
+	UnsafeArray<const UTF8Char> ptr = cols[colIndex];
 	if (Text::StrStartsWith(ptr, (const UTF8Char*)"0x"))
 	{
 		Text::StringBuilderUTF8 sb;
@@ -841,7 +842,7 @@ Optional<Math::Geometry::Vector2D> DB::CSVReader::GetVector(UOSInt colIndex)
 			sb.AppendUTF8Char(v);
 			ptr += 2;
 		}
-		return Math::MSGeography::ParseBinary(sb.ToString(), sb.GetLength(), 0);
+		return Math::MSGeography::ParseBinary(sb.ToPtr(), sb.GetLength(), 0);
 	}
 	return 0;
 }
@@ -860,19 +861,19 @@ Bool DB::CSVReader::GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
 	}
 	if (nullIfEmpty)
 	{
-		if (cols[colIndex][0] == 0 || (*(UInt16*)cols[colIndex] == 0x2222 && cols[colIndex][2] == 0))
+		if (cols[colIndex][0] == 0 || (*(UInt16*)cols[colIndex].Ptr() == 0x2222 && cols[colIndex][2] == 0))
 		{
 			item->SetNull();
 			return true;
 		}
 	}
-	const UTF8Char *ptr = cols[colIndex];
+	UnsafeArray<const UTF8Char> ptr = cols[colIndex];
 	UTF8Char c;
 	c = *ptr;
 	if (c == '"')
 	{
 		NN<Text::String> s = Text::String::New(this->colSize[colIndex]);
-		UTF8Char *buff = s->v;
+		UnsafeArray<UTF8Char> buff = s->v;
 		Int32 quote = 0;
 		while (true)
 		{
@@ -916,7 +917,7 @@ Bool DB::CSVReader::GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
 	}	
 }
 
-UTF8Char *DB::CSVReader::GetName(UOSInt colIndex, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> DB::CSVReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 {
 	if (colIndex >= this->nHdr)
 		return 0;
@@ -967,7 +968,7 @@ NN<Data::VariItem> DB::CSVReader::GetNewItem(Text::CStringNN name)
 			}
 			else
 			{
-				return Data::VariItem::NewStrSlow(this->cols[i]);
+				return Data::VariItem::NewStrSlow(UnsafeArray<const UTF8Char>(this->cols[i]));
 			}
 		}
 	}

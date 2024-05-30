@@ -29,8 +29,8 @@ namespace Text
 		UTF32Char Peek();
 		UTF32Char Read();
 		virtual Bool ReadLine(NN<Text::StringBuilderUTF8> sb, UOSInt maxCharCnt);
-		virtual UTF8Char *ReadLine(UTF8Char *sbuff, UOSInt maxCharCnt);
-		virtual UTF8Char *GetLastLineBreak(UTF8Char *buff);
+		virtual UnsafeArrayOpt<UTF8Char> ReadLine(UnsafeArray<UTF8Char> sbuff, UOSInt maxCharCnt);
+		virtual UnsafeArray<UTF8Char> GetLastLineBreak(UnsafeArray<UTF8Char> buff);
 		virtual Bool GetLastLineBreak(NN<Text::StringBuilderUTF8> sb);
 		virtual Bool IsLineBreak();
 		virtual Bool ReadToEnd(NN<Text::StringBuilderUTF8> sb);

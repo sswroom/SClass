@@ -17,7 +17,7 @@ Crypto::Hash::FNV1a::~FNV1a()
 {
 }
 
-UTF8Char *Crypto::Hash::FNV1a::GetName(UTF8Char *sbuff) const
+UnsafeArray<UTF8Char> Crypto::Hash::FNV1a::GetName(UnsafeArray<UTF8Char> sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("FNV1a"));
 }

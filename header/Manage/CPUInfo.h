@@ -1,6 +1,7 @@
 #ifndef _SM_MANAGE_CPUINFO
 #define _SM_MANAGE_CPUINFO
 #include "Data/ArrayList.h"
+#include "Data/ArrayListArr.h"
 #include "Manage/CPUVendor.h"
 #include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
@@ -31,10 +32,10 @@ namespace Manage
 		UOSInt GetInfoCnt();
 		Bool GetInfoName(UOSInt index, NN<Text::StringBuilderUTF8> sb);
 		Bool GetInfoValue(UOSInt index, NN<Text::StringBuilderUTF8> sb);
-		UOSInt GetCacheInfoList(Data::ArrayList<const UTF8Char*> *infoList);
+		UOSInt GetCacheInfoList(NN<Data::ArrayListArr<const UTF8Char>> infoList);
 		void GetFeatureFlags(Int32 *flag1, Int32 *flag2);
 
-		UTF8Char *GetCPUName(UTF8Char *sbuff);
+		UnsafeArrayOpt<UTF8Char> GetCPUName(UnsafeArray<UTF8Char> sbuff);
 		Bool GetCPURatio(Int32 *ratio);
 		Bool GetCPUTurboRatio(Int32 *ratio);
 		Bool GetCPUTCC(Double *temp);

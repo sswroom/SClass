@@ -16,11 +16,12 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/StringTool.h"
 
-UTF8Char *DB::DBUtil::SDBStrUTF8(UTF8Char *sqlstr, const UTF8Char *val, SQLType sqlType)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBStrUTF8(UnsafeArray<UTF8Char> sqlstr, UnsafeArrayOpt<const UTF8Char> optval, SQLType sqlType)
 {
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<const UTF8Char> val;
 	UTF8Char c;
-	if (val == 0)
+	if (!optval.SetTo(val))
 		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
 
 	if (sqlType == DB::SQLType::MySQL)
@@ -421,11 +422,12 @@ UTF8Char *DB::DBUtil::SDBStrUTF8(UTF8Char *sqlstr, const UTF8Char *val, SQLType 
 	}
 }
 
-UOSInt DB::DBUtil::SDBStrUTF8Leng(const UTF8Char *val, DB::SQLType sqlType)
+UOSInt DB::DBUtil::SDBStrUTF8Leng(UnsafeArrayOpt<const UTF8Char> optval, DB::SQLType sqlType)
 {
 	UOSInt leng = 0;
+	UnsafeArray<const UTF8Char> val;
 	UTF8Char c;
-	if (val == 0)
+	if (!optval.SetTo(val))
 		return 4;
 
 	if (sqlType == DB::SQLType::MySQL)
@@ -743,9 +745,9 @@ UOSInt DB::DBUtil::SDBStrUTF8Leng(const UTF8Char *val, DB::SQLType sqlType)
 	}
 }
 
-UTF8Char *DB::DBUtil::SDBStrW(UTF8Char *sqlstr, const WChar *val, DB::SQLType sqlType)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBStrW(UnsafeArray<UTF8Char> sqlstr, const WChar *val, DB::SQLType sqlType)
 {
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UTF32Char c;
 	if (val == 0)
 		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
@@ -1190,7 +1192,7 @@ UOSInt DB::DBUtil::SDBStrWLeng(const WChar *val, DB::SQLType sqlType)
 	}
 }
 
-UTF8Char *DB::DBUtil::SDBInt32(UTF8Char *sqlstr, Int32 val, DB::SQLType sqlType)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBInt32(UnsafeArray<UTF8Char> sqlstr, Int32 val, DB::SQLType sqlType)
 {
 	return Text::StrInt32(sqlstr, val);
 }
@@ -1201,7 +1203,7 @@ UOSInt DB::DBUtil::SDBInt32Leng(Int32 val, DB::SQLType sqlType)
 	return (UOSInt)(Text::StrInt32(buff, val) - buff);
 }
 
-UTF8Char *DB::DBUtil::SDBInt64(UTF8Char *sqlstr, Int64 val, DB::SQLType sqlType)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBInt64(UnsafeArray<UTF8Char> sqlstr, Int64 val, DB::SQLType sqlType)
 {
 	return Text::StrInt64(sqlstr, val);
 }
@@ -1212,7 +1214,7 @@ UOSInt DB::DBUtil::SDBInt64Leng(Int64 val, DB::SQLType sqlType)
 	return (UOSInt)(Text::StrInt64(buff, val) - buff);
 }
 
-UTF8Char *DB::DBUtil::SDBUInt32(UTF8Char *sqlstr, UInt32 val, DB::SQLType sqlType)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBUInt32(UnsafeArray<UTF8Char> sqlstr, UInt32 val, DB::SQLType sqlType)
 {
 	return Text::StrUInt32(sqlstr, val);
 }
@@ -1223,7 +1225,7 @@ UOSInt DB::DBUtil::SDBUInt32Leng(UInt32 val, DB::SQLType sqlType)
 	return (UOSInt)(Text::StrUInt32(buff, val) - buff);
 }
 
-UTF8Char *DB::DBUtil::SDBUInt64(UTF8Char *sqlstr, UInt64 val, DB::SQLType sqlType)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBUInt64(UnsafeArray<UTF8Char> sqlstr, UInt64 val, DB::SQLType sqlType)
 {
 	return Text::StrUInt64(sqlstr, val);
 }
@@ -1234,9 +1236,9 @@ UOSInt DB::DBUtil::SDBUInt64Leng(UInt64 val, DB::SQLType sqlType)
 	return (UOSInt)(Text::StrUInt64(buff, val) - buff);
 }
 
-UTF8Char *DB::DBUtil::SDBDateTime(UTF8Char *sqlstr, Data::DateTime *dat, DB::SQLType sqlType, Int8 tzQhr)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBDateTime(UnsafeArray<UTF8Char> sqlstr, Data::DateTime *dat, DB::SQLType sqlType, Int8 tzQhr)
 {
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Data::DateTime> nnDat;
 	if (!nnDat.Set(dat))
 		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
@@ -1331,9 +1333,9 @@ UOSInt DB::DBUtil::SDBDateTimeLeng(Data::DateTime *dat, DB::SQLType sqlType)
 	}
 }
 
-UTF8Char *DB::DBUtil::SDBTS(UTF8Char *sqlstr, const Data::Timestamp &ts, SQLType sqlType, Int8 tzQhr)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBTS(UnsafeArray<UTF8Char> sqlstr, const Data::Timestamp &ts, SQLType sqlType, Int8 tzQhr)
 {
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (ts.IsNull())
 		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
 	if (sqlType == DB::SQLType::Access)
@@ -1426,9 +1428,9 @@ UOSInt DB::DBUtil::SDBTSLeng(const Data::Timestamp &ts, SQLType sqlType)
 	}
 }
 
-UTF8Char *DB::DBUtil::SDBDate(UTF8Char *sqlstr, const Data::Date &d, SQLType sqlType)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBDate(UnsafeArray<UTF8Char> sqlstr, const Data::Date &d, SQLType sqlType)
 {
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (d.IsNull())
 		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
 	if (sqlType == DB::SQLType::Access)
@@ -1521,7 +1523,7 @@ UOSInt DB::DBUtil::SDBDateLeng(const Data::Date &d, SQLType sqlType)
 	}
 }
 
-UTF8Char *DB::DBUtil::SDBDbl(UTF8Char *sqlstr, Double val, DB::SQLType sqlType)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBDbl(UnsafeArray<UTF8Char> sqlstr, Double val, DB::SQLType sqlType)
 {
 	if (Math::IsInfinity(val) || Math::IsNAN(val))
 	{
@@ -1539,7 +1541,7 @@ UOSInt DB::DBUtil::SDBDblLeng(Double val, DB::SQLType sqlType)
 	return (UOSInt)(Text::StrDouble(buff, val) - buff);
 }
 
-UTF8Char *DB::DBUtil::SDBSng(UTF8Char *sqlstr, Single val, DB::SQLType sqlType)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBSng(UnsafeArray<UTF8Char> sqlstr, Single val, DB::SQLType sqlType)
 {
 	return Text::StrDouble(sqlstr, val);
 }
@@ -1550,7 +1552,7 @@ UOSInt DB::DBUtil::SDBSngLeng(Single val, DB::SQLType sqlType)
 	return (UOSInt)(Text::StrDouble(buff, val) - buff);
 }
 
-UTF8Char *DB::DBUtil::SDBBool(UTF8Char *sqlStr, Bool val, DB::SQLType sqlType)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBBool(UnsafeArray<UTF8Char> sqlStr, Bool val, DB::SQLType sqlType)
 {
 	if (sqlType == DB::SQLType::Oracle || sqlType == DB::SQLType::SQLite || sqlType == DB::SQLType::MSSQL)
 	{
@@ -1601,9 +1603,9 @@ UOSInt DB::DBUtil::SDBBoolLeng(Bool val, DB::SQLType sqlType)
 }
 
 
-UTF8Char *DB::DBUtil::SDBBin(UTF8Char *sqlstr, UnsafeArrayOpt<const UInt8> buff, UOSInt size, DB::SQLType sqlType)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBBin(UnsafeArray<UTF8Char> sqlstr, UnsafeArrayOpt<const UInt8> buff, UOSInt size, DB::SQLType sqlType)
 {
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<const UInt8> nnbuff;
 	if (!buff.SetTo(nnbuff))
 	{
@@ -1649,7 +1651,7 @@ UOSInt DB::DBUtil::SDBBinLeng(UnsafeArrayOpt<const UInt8> buff, UOSInt size, DB:
 	}
 }
 
-UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Optional<Math::Geometry::Vector2D> vec, DB::SQLType sqlType, Bool axisAware)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBVector(UnsafeArray<UTF8Char> sqlstr, Optional<Math::Geometry::Vector2D> vec, DB::SQLType sqlType, Bool axisAware)
 {
 	NN<Math::Geometry::Vector2D> nnvec;
 	if (!vec.SetTo(nnvec))
@@ -1855,9 +1857,9 @@ UOSInt DB::DBUtil::SDBVectorLeng(Optional<Math::Geometry::Vector2D> vec, DB::SQL
 	}
 }
 
-UTF8Char *DB::DBUtil::SDBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName, DB::SQLType sqlType)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBColUTF8(UnsafeArray<UTF8Char> sqlstr, UnsafeArray<const UTF8Char> colName, DB::SQLType sqlType)
 {
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UTF8Char c;
 	switch (sqlType)
 	{
@@ -1969,7 +1971,7 @@ UTF8Char *DB::DBUtil::SDBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName, DB::
 	}
 }
 
-UOSInt DB::DBUtil::SDBColUTF8Leng(const UTF8Char *colName, DB::SQLType sqlType)
+UOSInt DB::DBUtil::SDBColUTF8Leng(UnsafeArray<const UTF8Char> colName, DB::SQLType sqlType)
 {
 	UOSInt leng = 0;
 	UTF8Char c;
@@ -2052,23 +2054,23 @@ UOSInt DB::DBUtil::SDBColUTF8Leng(const UTF8Char *colName, DB::SQLType sqlType)
 	}
 }
 
-UTF8Char *DB::DBUtil::SDBColW(UTF8Char *sqlstr, const WChar *colName, DB::SQLType sqlType)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBColW(UnsafeArray<UTF8Char> sqlstr, const WChar *colName, DB::SQLType sqlType)
 {
-	const UTF8Char *sptr = Text::StrToUTF8New(colName);
-	UTF8Char *ret = SDBColUTF8(sqlstr, sptr, sqlType);
+	UnsafeArray<const UTF8Char> sptr = Text::StrToUTF8New(colName);
+	UnsafeArray<UTF8Char> ret = SDBColUTF8(sqlstr, sptr, sqlType);
 	Text::StrDelNew(sptr);
 	return ret;
 }
 
 UOSInt DB::DBUtil::SDBColWLeng(const WChar *colName, DB::SQLType sqlType)
 {
-	const UTF8Char *sptr = Text::StrToUTF8New(colName);
+	UnsafeArray<const UTF8Char> sptr = Text::StrToUTF8New(colName);
 	UOSInt ret = SDBColUTF8Leng(sptr, sqlType);
 	Text::StrDelNew(sptr);
 	return ret;
 }
 
-UTF8Char *DB::DBUtil::SDBTrim(UTF8Char *sqlstr, Text::CString val, DB::SQLType sqlType)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBTrim(UnsafeArray<UTF8Char> sqlstr, Text::CStringNN val, DB::SQLType sqlType)
 {
 	if (sqlType == DB::SQLType::MSSQL)
 	{
@@ -2080,7 +2082,7 @@ UTF8Char *DB::DBUtil::SDBTrim(UTF8Char *sqlstr, Text::CString val, DB::SQLType s
 	}
 }
 
-UOSInt DB::DBUtil::SDBTrimLeng(Text::CString val, DB::SQLType sqlType)
+UOSInt DB::DBUtil::SDBTrimLeng(Text::CStringNN val, DB::SQLType sqlType)
 {
 	if (sqlType == DB::SQLType::MSSQL)
 	{
@@ -2092,7 +2094,7 @@ UOSInt DB::DBUtil::SDBTrimLeng(Text::CString val, DB::SQLType sqlType)
 	}
 }
 
-DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, const UTF8Char *tName, UOSInt *colSize, UOSInt *colDP)
+DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, UnsafeArray<const UTF8Char> tName, UOSInt *colSize, UOSInt *colDP)
 {
 	UTF8Char typeName[64];
 	UOSInt typeNameLen;
@@ -2642,7 +2644,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::SQLType sqlType, const UTF8Char
 	}
 }
 
-UTF8Char *DB::DBUtil::ColTypeGetString(UTF8Char *sbuff, DB::DBUtil::ColType colType, UOSInt colSize, UOSInt colDP)
+UnsafeArray<UTF8Char> DB::DBUtil::ColTypeGetString(UnsafeArray<UTF8Char> sbuff, DB::DBUtil::ColType colType, UOSInt colSize, UOSInt colDP)
 {
 	switch (colType)
 	{
@@ -2707,7 +2709,7 @@ UTF8Char *DB::DBUtil::ColTypeGetString(UTF8Char *sbuff, DB::DBUtil::ColType colT
 	}
 }
 
-UTF8Char *DB::DBUtil::SDBCharset(UTF8Char *sqlstr, Charset charset, SQLType sqlType)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBCharset(UnsafeArray<UTF8Char> sqlstr, Charset charset, SQLType sqlType)
 {
 	switch (charset)
 	{
@@ -2724,7 +2726,7 @@ UTF8Char *DB::DBUtil::SDBCharset(UTF8Char *sqlstr, Charset charset, SQLType sqlT
 	}
 }
 
-UTF8Char *DB::DBUtil::SDBCollationName(UTF8Char *sqlstr, Charset charset, Language lang, SQLType sqlType, Bool *requireAS)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBCollationName(UnsafeArray<UTF8Char> sqlstr, Charset charset, Language lang, SQLType sqlType, Bool *requireAS)
 {
 	*requireAS = false;
 	sqlstr = SDBCharset(sqlstr, charset, sqlType);
@@ -2745,7 +2747,7 @@ UTF8Char *DB::DBUtil::SDBCollationName(UTF8Char *sqlstr, Charset charset, Langua
 	return sqlstr;
 }
 
-UTF8Char *DB::DBUtil::SDBCollation(UTF8Char *sqlstr, const Collation *collation, SQLType sqlType)
+UnsafeArray<UTF8Char> DB::DBUtil::SDBCollation(UnsafeArray<UTF8Char> sqlstr, const Collation *collation, SQLType sqlType)
 {
 	if (sqlType == SQLType::MySQL)
 	{
@@ -2788,11 +2790,11 @@ UTF8Char *DB::DBUtil::SDBCollation(UTF8Char *sqlstr, const Collation *collation,
 	}
 }
 
-Bool DB::DBUtil::CollationParseMySQL(Text::CString collName, Collation *collation)
+Bool DB::DBUtil::CollationParseMySQL(Text::CStringNN collName, NN<Collation> collation)
 {
 	UOSInt i;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (collName.leng > 127)
 		return false;
 	sptr = collName.ConcatTo(sbuff);
@@ -2890,7 +2892,7 @@ Bool DB::DBUtil::CollationParseMySQL(Text::CString collName, Collation *collatio
 	return true;
 }
 
-UTF8Char *DB::DBUtil::DB2FieldName(UTF8Char *fieldNameBuff, const UTF8Char *dbName)
+UnsafeArray<UTF8Char> DB::DBUtil::DB2FieldName(UnsafeArray<UTF8Char> fieldNameBuff, UnsafeArray<const UTF8Char> dbName)
 {
 	Bool nextUpper = false;
 	UTF8Char c;
@@ -2919,17 +2921,17 @@ UTF8Char *DB::DBUtil::DB2FieldName(UTF8Char *fieldNameBuff, const UTF8Char *dbNa
 	return fieldNameBuff;
 }
 
-UTF8Char *DB::DBUtil::Field2DBName(UTF8Char *dbNameBuff, Optional<Text::String> fieldName)
+UnsafeArray<UTF8Char> DB::DBUtil::Field2DBName(UnsafeArray<UTF8Char> dbNameBuff, Optional<Text::String> fieldName)
 {
 	NN<Text::String> s;
 	if (fieldName.SetTo(s))
 	{
 		return Field2DBName(dbNameBuff, s->v);
 	}
-	return 0;
+	return dbNameBuff;
 }
 
-UTF8Char *DB::DBUtil::Field2DBName(UTF8Char *dbNameBuff, const UTF8Char *fieldName)
+UnsafeArray<UTF8Char> DB::DBUtil::Field2DBName(UnsafeArray<UTF8Char> dbNameBuff, UnsafeArray<const UTF8Char> fieldName)
 {
 	Bool isFirst = true;
 	UTF8Char c;

@@ -18,7 +18,7 @@ void IO::DirectoryPackage::AddFile(Text::CStringNN fileName)
 		UInt64 fileSize;
 		IO::Path::PathType pt;
 		FileItem item;
-		if (IO::Path::FindNextFile(sbuff, sess, &ts, &pt, &fileSize))
+		if (IO::Path::FindNextFile(sbuff, sess, &ts, &pt, &fileSize).NotNull())
 		{
 			item.fileName = Text::String::New(fileName);
 			item.fileSize = fileSize;
@@ -37,8 +37,8 @@ void IO::DirectoryPackage::Init()
 {
 	Data::Timestamp ts;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	IO::Path::PathType pt;
 	UInt64 fileSize;
 	FileItem item;
@@ -55,7 +55,7 @@ void IO::DirectoryPackage::Init()
 		sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 		if (sess)
 		{
-			while ((sptr2 = IO::Path::FindNextFile(sptr, sess, &ts, &pt, &fileSize)) != 0)
+			while (IO::Path::FindNextFile(sptr, sess, &ts, &pt, &fileSize).SetTo(sptr2))
 			{
 				if (sptr[0] == '.' && sptr[1] == 0)
 				{
@@ -83,10 +83,10 @@ void IO::DirectoryPackage::Init()
 IO::DirectoryPackage::DirectoryPackage(NN<Text::String> dirName) : IO::PackageFile(dirName)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (dirName->StartsWith(UTF8STRC("~/")))
 	{
-		sptr = Text::StrConcatC(IO::Path::GetUserHome(sbuff), dirName->v + 1, dirName->leng - 1);
+		sptr = Text::StrConcatC(IO::Path::GetUserHome(sbuff).Or(sbuff), dirName->v + 1, dirName->leng - 1);
 		this->dirName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	else
@@ -99,10 +99,10 @@ IO::DirectoryPackage::DirectoryPackage(NN<Text::String> dirName) : IO::PackageFi
 IO::DirectoryPackage::DirectoryPackage(Text::CStringNN dirName) : IO::PackageFile(dirName)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (dirName.StartsWith(UTF8STRC("~/")))
 	{
-		sptr = Text::StrConcatC(IO::Path::GetUserHome(sbuff), dirName.v + 1, dirName.leng - 1);
+		sptr = Text::StrConcatC(IO::Path::GetUserHome(sbuff).Or(sbuff), dirName.v + 1, dirName.leng - 1);
 		this->dirName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	else
@@ -148,7 +148,7 @@ IO::PackageFile::PackObjectType IO::DirectoryPackage::GetItemType(UOSInt index) 
 	}
 }
 
-UTF8Char *IO::DirectoryPackage::GetItemName(UTF8Char *sbuff, UOSInt index) const
+UnsafeArrayOpt<UTF8Char> IO::DirectoryPackage::GetItemName(UnsafeArray<UTF8Char> sbuff, UOSInt index) const
 {
 	UOSInt i;
 	if (this->files.GetCount() <= index)
@@ -278,7 +278,7 @@ Bool IO::DirectoryPackage::CopyFrom(Text::CStringNN fileName, Optional<IO::Progr
 	{
 		UTF8Char sbuff[512];
 		UOSInt i;
-		UTF8Char *sptr = this->dirName->ConcatTo(sbuff);
+		UnsafeArray<UTF8Char> sptr = this->dirName->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -296,7 +296,7 @@ Bool IO::DirectoryPackage::CopyFrom(Text::CStringNN fileName, Optional<IO::Progr
 	{
 		UTF8Char sbuff[512];
 		UOSInt i;
-		UTF8Char *sptr = this->dirName->ConcatTo(sbuff);
+		UnsafeArray<UTF8Char> sptr = this->dirName->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -322,7 +322,7 @@ Bool IO::DirectoryPackage::MoveFrom(Text::CStringNN fileName, Optional<IO::Progr
 	{
 		UTF8Char sbuff[512];
 		UOSInt i;
-		UTF8Char *sptr = this->dirName->ConcatTo(sbuff);
+		UnsafeArray<UTF8Char> sptr = this->dirName->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -340,7 +340,7 @@ Bool IO::DirectoryPackage::MoveFrom(Text::CStringNN fileName, Optional<IO::Progr
 	{
 		UTF8Char sbuff[512];
 		UOSInt i;
-		UTF8Char *sptr = this->dirName->ConcatTo(sbuff);
+		UnsafeArray<UTF8Char> sptr = this->dirName->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -366,7 +366,7 @@ Bool IO::DirectoryPackage::RetryCopyFrom(Text::CStringNN fileName, Optional<IO::
 	{
 		UTF8Char sbuff[512];
 		UOSInt i;
-		UTF8Char *sptr = this->dirName->ConcatTo(sbuff);
+		UnsafeArray<UTF8Char> sptr = this->dirName->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -384,7 +384,7 @@ Bool IO::DirectoryPackage::RetryCopyFrom(Text::CStringNN fileName, Optional<IO::
 	{
 		UTF8Char sbuff[512];
 		UOSInt i;
-		UTF8Char *sptr = this->dirName->ConcatTo(sbuff);
+		UnsafeArray<UTF8Char> sptr = this->dirName->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -410,7 +410,7 @@ Bool IO::DirectoryPackage::RetryMoveFrom(Text::CStringNN fileName, Optional<IO::
 	{
 		UTF8Char sbuff[512];
 		UOSInt i;
-		UTF8Char *sptr = this->dirName->ConcatTo(sbuff);
+		UnsafeArray<UTF8Char> sptr = this->dirName->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -428,7 +428,7 @@ Bool IO::DirectoryPackage::RetryMoveFrom(Text::CStringNN fileName, Optional<IO::
 	{
 		UTF8Char sbuff[512];
 		UOSInt i;
-		UTF8Char *sptr = this->dirName->ConcatTo(sbuff);
+		UnsafeArray<UTF8Char> sptr = this->dirName->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -445,12 +445,12 @@ Bool IO::DirectoryPackage::RetryMoveFrom(Text::CStringNN fileName, Optional<IO::
 	return false;
 }
 
-Bool IO::DirectoryPackage::CopyTo(UOSInt index, Text::CString destPath, Bool fullFileName)
+Bool IO::DirectoryPackage::CopyTo(UOSInt index, Text::CStringNN destPath, Bool fullFileName)
 {
 	return false;
 }
 
-Optional<IO::StreamData> IO::DirectoryPackage::OpenStreamData(Text::CString fileName) const
+Optional<IO::StreamData> IO::DirectoryPackage::OpenStreamData(Text::CStringNN fileName) const
 {
 	return 0;
 }

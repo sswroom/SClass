@@ -13,7 +13,7 @@ namespace UI
 			static Int32 useCnt;
 			Bool showWeeknum;
 			GtkWidget *widget;
-			const Char *format;
+			UnsafeArrayOpt<const Char> format;
 
 		public:
 			GTKDateTimePicker(NN<GUICore> ui, NN<UI::GUIClientControl> parent);

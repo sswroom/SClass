@@ -24,7 +24,7 @@ namespace DB
 		SQLBuilder(NN<const DB::ReadingDBTool> db);
 		~SQLBuilder();
 
-		void AppendCmdSlow(const UTF8Char *val);
+		void AppendCmdSlow(UnsafeArrayOpt<const UTF8Char> val);
 		void AppendCmdC(Text::CStringNN val);
 		void AppendInt32(Int32 val);
 		void AppendNInt32(NInt32 val);
@@ -35,7 +35,7 @@ namespace DB
 		void AppendStr(Optional<Text::String> val);
 		void AppendStr(NN<Text::String> val);
 		void AppendStrC(Text::CString val);
-		void AppendStrUTF8(const UTF8Char *val);
+		void AppendStrUTF8(UnsafeArrayOpt<const UTF8Char> val);
 		void AppendStrW(const WChar *val);
 		void AppendDateTime(Data::DateTime *val);
 		void AppendTS(const Data::Timestamp &val);
@@ -47,12 +47,12 @@ namespace DB
 		void AppendBinary(UnsafeArrayOpt<const UInt8> buff, UOSInt buffSize);
 
 		void AppendTableName(NN<DB::TableDef> table);
-		void AppendCol(const UTF8Char *val);
+		void AppendCol(UnsafeArray<const UTF8Char> val);
 		void AppendCol(const WChar *val);
-		void AppendTrim(Text::CString val);
+		void AppendTrim(Text::CStringNN val);
 
 		void Clear();
-		const UTF8Char *ToString() const;
+		UnsafeArray<const UTF8Char> ToString() const;
 		UOSInt GetLength() const;
 		Text::CStringNN ToCString() const;
 		NN<Text::String> ToNewString() const;

@@ -58,9 +58,9 @@ Text::SpreadSheet::Workbook *Text::SpreadSheet::Workbook::Clone() const
 	UOSInt j;
 	Text::SpreadSheet::Workbook *newWB;
 	NEW_CLASS(newWB, Text::SpreadSheet::Workbook());
-	newWB->author = SCOPY_TEXT(this->author);
-	newWB->lastAuthor = SCOPY_TEXT(this->lastAuthor);
-	newWB->company = SCOPY_TEXT(this->company);
+	newWB->author = Text::StrSCopyNew(this->author);
+	newWB->lastAuthor = Text::StrSCopyNew(this->lastAuthor);
+	newWB->company = Text::StrSCopyNew(this->company);
 	NN<Data::DateTime> dt;
 	if (dt.Set(this->createTime))
 	{
@@ -110,15 +110,16 @@ void Text::SpreadSheet::Workbook::AddDefaultStyles()
 	}
 }
 
-void Text::SpreadSheet::Workbook::SetAuthor(const UTF8Char *author)
+void Text::SpreadSheet::Workbook::SetAuthor(UnsafeArrayOpt<const UTF8Char> author)
 {
-	if (this->author)
+	UnsafeArray<const UTF8Char> nns;
+	if (this->author.SetTo(nns))
 	{
-		Text::StrDelNew(this->author);
+		Text::StrDelNew(nns);
 	}
-	if (author)
+	if (author.SetTo(nns))
 	{
-		this->author = Text::StrCopyNew(author).Ptr();
+		this->author = Text::StrCopyNew(nns);
 	}
 	else
 	{
@@ -126,15 +127,16 @@ void Text::SpreadSheet::Workbook::SetAuthor(const UTF8Char *author)
 	}
 }
 
-void Text::SpreadSheet::Workbook::SetLastAuthor(const UTF8Char *lastAuthor)
+void Text::SpreadSheet::Workbook::SetLastAuthor(UnsafeArrayOpt<const UTF8Char> lastAuthor)
 {
-	if (this->lastAuthor)
+	UnsafeArray<const UTF8Char> nns;
+	if (this->lastAuthor.SetTo(nns))
 	{
-		Text::StrDelNew(this->lastAuthor);
+		Text::StrDelNew(nns);
 	}
-	if (lastAuthor)
+	if (lastAuthor.SetTo(nns))
 	{
-		this->lastAuthor = Text::StrCopyNew(lastAuthor).Ptr();
+		this->lastAuthor = Text::StrCopyNew(nns);
 	}
 	else
 	{
@@ -142,15 +144,16 @@ void Text::SpreadSheet::Workbook::SetLastAuthor(const UTF8Char *lastAuthor)
 	}
 }
 
-void Text::SpreadSheet::Workbook::SetCompany(const UTF8Char *company)
+void Text::SpreadSheet::Workbook::SetCompany(UnsafeArrayOpt<const UTF8Char> company)
 {
-	if (this->company)
+	UnsafeArray<const UTF8Char> nns;
+	if (this->company.SetTo(nns))
 	{
-		Text::StrDelNew(this->company);
+		Text::StrDelNew(nns);
 	}
-	if (company)
+	if (company.SetTo(nns))
 	{
-		this->company = Text::StrCopyNew(company).Ptr();
+		this->company = Text::StrCopyNew(nns);
 	}
 	else
 	{
@@ -222,17 +225,17 @@ void Text::SpreadSheet::Workbook::SetVersion(Double version)
 	this->version = version;
 }
 
-const UTF8Char *Text::SpreadSheet::Workbook::GetAuthor() const
+UnsafeArrayOpt<const UTF8Char> Text::SpreadSheet::Workbook::GetAuthor() const
 {
 	return this->author;
 }
 
-const UTF8Char *Text::SpreadSheet::Workbook::GetLastAuthor() const
+UnsafeArrayOpt<const UTF8Char> Text::SpreadSheet::Workbook::GetLastAuthor() const
 {
 	return this->lastAuthor;
 }
 
-const UTF8Char *Text::SpreadSheet::Workbook::GetCompany() const
+UnsafeArrayOpt<const UTF8Char> Text::SpreadSheet::Workbook::GetCompany() const
 {
 	return this->company;
 }
@@ -254,11 +257,11 @@ Double Text::SpreadSheet::Workbook::GetVersion() const
 
 Bool Text::SpreadSheet::Workbook::HasInfo() const
 {
-	if (this->author)
+	if (this->author.NotNull())
 		return true;
-	if (this->lastAuthor)
+	if (this->lastAuthor.NotNull())
 		return true;
-	if (this->company)
+	if (this->company.NotNull())
 		return true;
 	if (this->createTime)
 		return true;
@@ -415,7 +418,7 @@ void Text::SpreadSheet::Workbook::SetPalette(UInt32 *palette)
 NN<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::AddWorksheet()
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::SpreadSheet::Worksheet> ws;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Sheet")), this->sheets.GetCount());
 	NEW_CLASSNN(ws, Text::SpreadSheet::Worksheet(CSTRP(sbuff, sptr)));
@@ -467,7 +470,7 @@ void Text::SpreadSheet::Workbook::RemoveAt(UOSInt index)
 	this->sheets.RemoveAt(index).Delete();
 }
 
-Optional<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::GetWorksheetByName(Text::CString name)
+Optional<Text::SpreadSheet::Worksheet> Text::SpreadSheet::Workbook::GetWorksheetByName(Text::CStringNN name)
 {
 	Data::ArrayIterator<NN<Worksheet>> it = this->sheets.Iterator();
 	NN<Worksheet> sheet;
@@ -521,7 +524,7 @@ void Text::SpreadSheet::Workbook::GetDefPalette(UInt32 *palette)
 	MemCopyNO(palette, Text::SpreadSheet::Workbook::defPalette, sizeof(Text::SpreadSheet::Workbook::defPalette));
 }
 
-UTF8Char *Text::SpreadSheet::Workbook::ColCode(UTF8Char *sbuff, UOSInt col)
+UnsafeArray<UTF8Char> Text::SpreadSheet::Workbook::ColCode(UnsafeArray<UTF8Char> sbuff, UOSInt col)
 {
 	if (col < 26)
 	{

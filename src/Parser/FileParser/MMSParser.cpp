@@ -38,7 +38,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MMSParser::ParseFileHdr(NN<IO::St
 	UOSInt currOfst;
 	UInt8 buff[256];
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	const UInt8 *ptr;
 
 	if (hdr[0] != 0x8c || hdr[1] != 0x80)

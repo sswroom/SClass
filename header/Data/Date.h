@@ -102,12 +102,12 @@ namespace Data
 			return this->dateVal * 86400000LL;
 		}
 
-		UTF8Char *ToString(UTF8Char *buff) const
+		UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> buff) const
 		{
 			return ToString(buff, "yyyy-MM-dd");
 		}
 
-		UTF8Char *ToString(UTF8Char *buff, const Char *pattern) const
+		UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> buff, const Char *pattern) const
 		{
 			DateTimeUtil::TimeValue t;
 			DateTimeUtil::TotalDays2DateValue(this->dateVal, t);

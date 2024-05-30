@@ -20,7 +20,7 @@ namespace Parser
 			virtual Optional<IO::ParsedObject> ParseObject(NN<IO::ParsedObject> pobj, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType);
 
 			NN<IO::PackageFile> ParseVol(NN<IO::ISectorData> sectorData, UInt32 sectorNum, UInt32 codePage);
-			void ParseDir(NN<IO::VirtualPackageFile> pkgFile, NN<IO::ISectorData> sectorData, UInt32 sectorNum, UInt32 recSize, UTF8Char *fileNameBuff, UTF8Char *fileNameEnd, UInt32 codePage);
+			void ParseDir(NN<IO::VirtualPackageFile> pkgFile, NN<IO::ISectorData> sectorData, UInt32 sectorNum, UInt32 recSize, UnsafeArray<UTF8Char> fileNameBuff, UnsafeArray<UTF8Char> fileNameEnd, UInt32 codePage);
 		};
 	}
 }

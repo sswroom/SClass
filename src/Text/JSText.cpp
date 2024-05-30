@@ -4,7 +4,7 @@
 #include "Text/JSText.h"
 #include "Text/MyStringW.h"
 
-UTF8Char *Text::JSText::ToJSText(UTF8Char *buff, const UTF8Char *s)
+UnsafeArray<UTF8Char> Text::JSText::ToJSText(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> s)
 {
 	UTF8Char c;
 	*buff++ = '\'';
@@ -51,7 +51,7 @@ UTF8Char *Text::JSText::ToJSText(UTF8Char *buff, const UTF8Char *s)
 	return buff;
 }
 
-UTF8Char *Text::JSText::ToJSTextDQuote(UTF8Char *buff, const UTF8Char *s)
+UnsafeArray<UTF8Char> Text::JSText::ToJSTextDQuote(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> s)
 {
 	UTF8Char c;
 	*buff++ = '\"';
@@ -98,11 +98,11 @@ UTF8Char *Text::JSText::ToJSTextDQuote(UTF8Char *buff, const UTF8Char *s)
 	return buff;
 }
 
-void Text::JSText::ToJSTextDQuote(NN<Text::StringBuilderUTF8> sb, const UTF8Char *s)
+void Text::JSText::ToJSTextDQuote(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> s)
 {
 	UTF8Char c;
 	UTF8Char buff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sb->AppendUTF8Char('\"');
 	sptr = buff;
 	while ((c = *s++) != 0)
@@ -156,7 +156,7 @@ void Text::JSText::ToJSTextDQuote(NN<Text::StringBuilderUTF8> sb, const UTF8Char
 	sb->AppendUTF8Char('\"');
 }
 
-WChar *Text::JSText::ToJSText(WChar *buff, const WChar *s)
+WChar *Text::JSText::ToJSTextW(WChar *buff, const WChar *s)
 {
 	WChar c;
 	*buff++ = '\'';
@@ -186,7 +186,7 @@ WChar *Text::JSText::ToJSText(WChar *buff, const WChar *s)
 	return buff;
 }
 
-WChar *Text::JSText::ToJSTextDQuote(WChar *buff, const WChar *s)
+WChar *Text::JSText::ToJSTextDQuoteW(WChar *buff, const WChar *s)
 {
 	WChar c;
 	*buff++ = '\"';
@@ -228,20 +228,19 @@ NN<Text::String> Text::JSText::ToNewJSText(Optional<Text::String> s)
 
 NN<Text::String> Text::JSText::ToNewJSText(NN<Text::String> s)
 {
-	return ToNewJSText(s->v);
+	return ToNewJSText(UnsafeArray<const UTF8Char>(s->v));
 }
 
-NN<Text::String> Text::JSText::ToNewJSText(const UTF8Char *s)
+NN<Text::String> Text::JSText::ToNewJSText(UnsafeArrayOpt<const UTF8Char> s)
 {
-	if (s == 0)
+	UnsafeArray<const UTF8Char> srcPtr;
+	if (!s.SetTo(srcPtr))
 	{
 		return Text::String::New(UTF8STRC("null"));
 	}
-	const UTF8Char *srcPtr;
+	UnsafeArray<const UTF8Char> nns = srcPtr;
 	UTF8Char c;
 	UOSInt chCnt;
-
-	srcPtr = s;
 	chCnt = 2;
 	while ((c = *srcPtr++) != 0)
 	{
@@ -267,21 +266,22 @@ NN<Text::String> Text::JSText::ToNewJSText(const UTF8Char *s)
 		}
 	}
 	NN<Text::String> retS = Text::String::New(chCnt);
-	ToJSText(retS->v, s);
+	ToJSText(retS->v, nns);
 	return retS;
 }
 
-NN<Text::String> Text::JSText::ToNewJSTextDQuote(const UTF8Char *s)
+NN<Text::String> Text::JSText::ToNewJSTextDQuote(UnsafeArrayOpt<const UTF8Char> s)
 {
-	if (s == 0)
+	UnsafeArray<const UTF8Char> nns;
+	if (!s.SetTo(nns))
 	{
 		return Text::String::New(UTF8STRC("null"));
 	}
-	const UTF8Char *srcPtr;
+	UnsafeArray<const UTF8Char> srcPtr;
 	UTF8Char c;
 	UOSInt chCnt;
 
-	srcPtr = s;
+	srcPtr = nns;
 	chCnt = 2;
 	while ((c = *srcPtr++) != 0)
 	{
@@ -307,11 +307,11 @@ NN<Text::String> Text::JSText::ToNewJSTextDQuote(const UTF8Char *s)
 		}
 	}
 	NN<Text::String> retS = Text::String::New(chCnt);
-	ToJSTextDQuote(retS->v, s);
+	ToJSTextDQuote(retS->v, nns);
 	return retS;
 }
 
-const WChar *Text::JSText::ToNewJSText(const WChar *s)
+const WChar *Text::JSText::ToNewJSTextW(const WChar *s)
 {
 	WChar *destStr;
 	if (s == 0)
@@ -341,11 +341,11 @@ const WChar *Text::JSText::ToNewJSText(const WChar *s)
 		}
 	}
 	destStr = MemAlloc(WChar, chCnt);
-	ToJSText(destStr, s);
+	ToJSTextW(destStr, s);
 	return destStr;
 }
 
-const WChar *Text::JSText::ToNewJSTextDQuote(const WChar *s)
+const WChar *Text::JSText::ToNewJSTextDQuoteW(const WChar *s)
 {
 	WChar *destStr;
 	if (s == 0)
@@ -375,15 +375,15 @@ const WChar *Text::JSText::ToNewJSTextDQuote(const WChar *s)
 		}
 	}
 	destStr = MemAlloc(WChar, chCnt);
-	ToJSTextDQuote(destStr, s);
+	ToJSTextDQuoteW(destStr, s);
 	return destStr;
 }
 
 
-Text::String *Text::JSText::FromNewJSText(const UTF8Char *s)
+Text::String *Text::JSText::FromNewJSText(UnsafeArray<const UTF8Char> s)
 {
-	const UTF8Char *srcPtr;
-	UTF8Char *destPtr;
+	UnsafeArray<const UTF8Char> srcPtr;
+	UnsafeArray<UTF8Char> destPtr;
 	NN<Text::String> outS;
 	UOSInt chCnt;
 	UTF8Char c;
@@ -639,7 +639,7 @@ Text::String *Text::JSText::FromNewJSText(const UTF8Char *s)
 	return outS.Ptr();
 }
 
-const WChar *Text::JSText::FromNewJSText(const WChar *s)
+const WChar *Text::JSText::FromNewJSTextW(const WChar *s)
 {
 	const WChar *srcPtr;
 	WChar *destPtr;

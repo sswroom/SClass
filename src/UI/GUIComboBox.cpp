@@ -50,7 +50,7 @@ void UI::GUIComboBox::EventTextChanged()
 	}
 }
 
-UTF8Char *UI::GUIComboBox::GetSelectedItemText(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> UI::GUIComboBox::GetSelectedItemText(UnsafeArray<UTF8Char> sbuff)
 {
 	UOSInt i = this->GetSelectedIndex();
 	NN<Text::String> s;
@@ -59,7 +59,7 @@ UTF8Char *UI::GUIComboBox::GetSelectedItemText(UTF8Char *sbuff)
 	return Text::StrConcatC(sbuff, s->v, s->leng);
 }
 
-UTF8Char *UI::GUIComboBox::GetItemText(UTF8Char *buff, UOSInt index)
+UnsafeArrayOpt<UTF8Char> UI::GUIComboBox::GetItemText(UnsafeArray<UTF8Char> buff, UOSInt index)
 {
 	NN<Text::String> txt;
 	if (!this->itemTexts.GetItem(index).SetTo(txt))

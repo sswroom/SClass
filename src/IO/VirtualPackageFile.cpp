@@ -341,7 +341,7 @@ Bool IO::VirtualPackageFile::MergePackage(NN<IO::PackageFile> pkg)
 	else
 	{
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		NN<IO::PackageFile> ipkg;
 		Bool needRelease;
 		NN<IO::StreamData> fd;
@@ -349,8 +349,7 @@ Bool IO::VirtualPackageFile::MergePackage(NN<IO::PackageFile> pkg)
 		UOSInt j = pkg->GetCount();
 		while (i < j)
 		{
-			sptr = pkg->GetItemName(sbuff, i);
-			if (sptr == 0)
+			if (!pkg->GetItemName(sbuff, i).SetTo(sptr))
 				return false;
 			switch (pkg->GetItemType(i))
 			{
@@ -380,10 +379,10 @@ Bool IO::VirtualPackageFile::MergePackage(NN<IO::PackageFile> pkg)
 	}
 }
 
-Optional<const IO::PackFileItem> IO::VirtualPackageFile::GetPackFileItem(const UTF8Char *name) const
+Optional<const IO::PackFileItem> IO::VirtualPackageFile::GetPackFileItem(UnsafeArray<const UTF8Char> name) const
 {
 	UTF8Char sbuff[256];
-	const UTF8Char *sptr;
+	UnsafeArray<const UTF8Char> sptr;
 	UOSInt nameLen;
 	NN<IO::ParsedObject> pobj;
 	UTF8Char c;
@@ -502,12 +501,12 @@ Optional<IO::StreamData> IO::VirtualPackageFile::GetPItemStmDataNew(NN<const Pac
 		}
 		fd = item->fullFd->GetPartialData(GetPItemDataOfst(item), item->dataLength);
 		UTF8Char sbuff[512];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UInt8 chkResult[32];
 		UOSInt resSize;
 		UOSInt i;
 		Bool diff = false;
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("temp"));
 		IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -589,7 +588,7 @@ IO::PackageFile::PackObjectType IO::VirtualPackageFile::GetItemType(UOSInt index
 	return PackObjectType::Unknown;
 }
 
-UTF8Char *IO::VirtualPackageFile::GetItemName(UTF8Char *sbuff, UOSInt index) const
+UnsafeArrayOpt<UTF8Char> IO::VirtualPackageFile::GetItemName(UnsafeArray<UTF8Char> sbuff, UOSInt index) const
 {
 	NN<IO::PackFileItem> item;
 	if (!this->items.GetItem(index).SetTo(item))
@@ -732,7 +731,7 @@ UOSInt IO::VirtualPackageFile::GetItemIndex(Text::CStringNN name) const
 			return i;
 		if (item->itemType == IO::PackFileItem::PackItemType::Compressed || item->itemType == IO::PackFileItem::PackItemType::Uncompressed)
 		{
-			Text::CString shName = item->fullFd->GetShortName();
+			Text::CStringNN shName = item->fullFd->GetShortName().OrEmpty();
 			if (shName.EqualsICase(name))
 				return i;
 		}
@@ -832,7 +831,7 @@ Bool IO::VirtualPackageFile::RetryMoveFrom(Text::CStringNN fileName, Optional<IO
 	return this->MoveFrom(fileName, progHdlr, bnt);
 }
 
-Bool IO::VirtualPackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool fullFileName)
+Bool IO::VirtualPackageFile::CopyTo(UOSInt index, Text::CStringNN destPath, Bool fullFileName)
 {
 	NN<IO::PackFileItem> item;
 	NN<IO::ParsedObject> pobj;
@@ -986,7 +985,7 @@ Bool IO::VirtualPackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool f
 	return false;
 }
 
-Optional<IO::StreamData> IO::VirtualPackageFile::OpenStreamData(Text::CString fileName) const
+Optional<IO::StreamData> IO::VirtualPackageFile::OpenStreamData(Text::CStringNN fileName) const
 {
 	if (fileName.IndexOf(':') != INVALID_INDEX)
 	{
@@ -995,7 +994,7 @@ Optional<IO::StreamData> IO::VirtualPackageFile::OpenStreamData(Text::CString fi
 
 	Optional<IO::StreamData> retFD = 0;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	Text::StringBuilderUTF8 sb;
@@ -1019,8 +1018,7 @@ Optional<IO::StreamData> IO::VirtualPackageFile::OpenStreamData(Text::CString fi
 			if (pf->GetItemType(i) == IO::PackageFile::PackObjectType::PackageFileType)
 			{
 				sbuff[0] = 0;
-				sptr = pf->GetItemName(sbuff, i);
-				if (Text::StrEqualsC(sb.ToString(), j, sbuff, (UOSInt)(sptr - sbuff)))
+				if (pf->GetItemName(sbuff, i).SetTo(sptr) && Text::StrEqualsC(sb.ToString(), j, sbuff, (UOSInt)(sptr - sbuff)))
 				{
 					if (pf->GetItemPack(i, needRel2).SetTo(pf2))
 					{
@@ -1054,8 +1052,7 @@ Optional<IO::StreamData> IO::VirtualPackageFile::OpenStreamData(Text::CString fi
 		if (pf->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 		{
 			sbuff[0] = 0;
-			sptr = pf->GetItemName(sbuff, i);
-			if (sb.Equals(sbuff, (UOSInt)(sptr - sbuff)))
+			if (pf->GetItemName(sbuff, i).SetTo(sptr) && sb.Equals(sbuff, (UOSInt)(sptr - sbuff)))
 			{
 				retFD = pf->GetItemStmDataNew(i);
 				break;
@@ -1136,14 +1133,14 @@ void IO::VirtualPackageFile::GetInfoText(NN<Text::StringBuilderUTF8> sb) const
 		{
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
-		sb->Append(GetInfoTypeName((InfoType)this->infoMap.GetKey(i)));
+		sb->Append(InfoTypeGetName((InfoType)this->infoMap.GetKey(i)));
 		sb->AppendC(UTF8STRC(": "));
 		sb->AppendSlow(this->infoMap.GetItem(i));
 		i++;
 	}
 }
 
-Text::CString IO::VirtualPackageFile::GetInfoTypeName(InfoType infoType)
+Text::CStringNN IO::VirtualPackageFile::InfoTypeGetName(InfoType infoType)
 {
 	switch(infoType)
 	{

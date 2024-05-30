@@ -165,7 +165,7 @@ UnsafeArrayOpt<const UInt8> Crypto::Cert::X509PKCS7::GetMessageDigest(OutParam<U
 	UOSInt subitemLen;
 	UnsafeArray<const UInt8> subitemPDU;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (Net::ASN1Util::PDUGetItem(this->buff.Arr(), this->buff.ArrEnd(), "1.2.1.5.1.4", itemLen, itemType).SetTo(itemPDU) && itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 	{
 		UOSInt i = 0;

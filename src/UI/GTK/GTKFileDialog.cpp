@@ -58,7 +58,7 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(ControlHandle *ownerHandle)
 		while (i < filterCnt)
 		{
 			if (this->patterns.GetItem(i++).SetTo(pattern))
-				gtk_file_filter_add_pattern(filter, (const Char*)pattern->v);
+				gtk_file_filter_add_pattern(filter, (const Char*)pattern->v.Ptr());
 		}
 		gtk_file_chooser_add_filter(chooser, filter);
 	}
@@ -74,8 +74,8 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(ControlHandle *ownerHandle)
 			sb.AppendC(UTF8STRC(" ("));
 			sb.Append(pattern);
 			sb.AppendUTF8Char(')');
-			gtk_file_filter_set_name(filter, (const Char*)sb.ToString());
-			gtk_file_filter_add_pattern(filter, (const Char*)pattern->v);
+			gtk_file_filter_set_name(filter, (const Char*)sb.ToPtr());
+			gtk_file_filter_add_pattern(filter, (const Char*)pattern->v.Ptr());
 			gtk_file_chooser_add_filter(chooser, filter);
 		}
 		i++;
@@ -84,7 +84,7 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(ControlHandle *ownerHandle)
 	{
 		filter = gtk_file_filter_new();
 		gtk_file_filter_set_name(filter, "All Files (*.*)");
-		gtk_file_filter_add_pattern(filter, (const Char*)IO::Path::ALL_FILES);
+		gtk_file_filter_add_pattern(filter, (const Char*)IO::Path::ALL_FILES.Ptr());
 		gtk_file_chooser_add_filter(chooser, filter);
 	}
  	
@@ -101,9 +101,9 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(ControlHandle *ownerHandle)
 		Text::StrUTF8_WChar(fname2, s->v, 0);
 		if (IO::Path::PATH_SEPERATOR == '\\')
 		{
-			Text::StrReplace(fname2, '/', '_');
+			Text::StrReplaceW(fname2, '/', '_');
 		}
-		Text::StrReplace(&fname2[2], ':', '_');
+		Text::StrReplaceW(&fname2[2], ':', '_');
 		Text::StrConcat(fnameBuff, fname2);
 
 		UOSInt i = Text::StrLastIndexOfChar(fname2, IO::Path::PATH_SEPERATOR);
@@ -283,39 +283,39 @@ Bool UI::GTK::GTKFileDialog::ShowDialog(ControlHandle *ownerHandle)
 	else
 		ret = GetOpenFileNameW(&ofn) != 0;*/
 
-	const UTF8Char *csptr;
+	UnsafeArray<const UTF8Char> csptr;
 	if (fnameBuff)
 	{
 		si = Text::StrLastIndexOfChar(fnameBuff, IO::Path::PATH_SEPERATOR);
 		if (si == INVALID_INDEX)
 		{
 			csptr = Text::StrToUTF8New(initDir);
-			gtk_file_chooser_set_current_folder(chooser, (const Char*)csptr);
+			gtk_file_chooser_set_current_folder(chooser, (const Char*)csptr.Ptr());
 			Text::StrDelNew(csptr);
 		}
 		else
 		{
 			fnameBuff[si] = 0;
 			csptr = Text::StrToUTF8New(fnameBuff);
-			gtk_file_chooser_set_current_folder(chooser, (const Char*)csptr);
+			gtk_file_chooser_set_current_folder(chooser, (const Char*)csptr.Ptr());
 			Text::StrDelNew(csptr);
 			fnameBuff[si] = IO::Path::PATH_SEPERATOR;
 		}
 		csptr = Text::StrToUTF8New(&fnameBuff[si + 1]);
 		if (isSave)
 		{
-			gtk_file_chooser_set_current_name(chooser, (const Char*)csptr);
+			gtk_file_chooser_set_current_name(chooser, (const Char*)csptr.Ptr());
 		}
 		else
 		{
-			gtk_file_chooser_set_filename(chooser, (const Char*)csptr);
+			gtk_file_chooser_set_filename(chooser, (const Char*)csptr.Ptr());
 		}
 		Text::StrDelNew(csptr);
 	}
 	else
 	{
 		csptr = Text::StrToUTF8New(initDir);
-		gtk_file_chooser_set_current_folder(chooser, (const Char*)csptr);
+		gtk_file_chooser_set_current_folder(chooser, (const Char*)csptr.Ptr());
 		Text::StrDelNew(csptr);
 	}
 

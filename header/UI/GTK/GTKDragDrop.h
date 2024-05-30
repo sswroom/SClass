@@ -27,9 +27,9 @@ namespace UI
 			virtual ~GTKDropData();
 
 			virtual UOSInt GetCount();
-			virtual const UTF8Char *GetName(UOSInt index);
-			virtual Bool GetDataText(const UTF8Char *name, NN<Text::StringBuilderUTF8> sb);
-			virtual IO::Stream *GetDataStream(const UTF8Char *name);
+			virtual UnsafeArrayOpt<const UTF8Char> GetName(UOSInt index);
+			virtual Bool GetDataText(UnsafeArray<const UTF8Char> name, NN<Text::StringBuilderUTF8> sb);
+			virtual IO::Stream *GetDataStream(UnsafeArray<const UTF8Char> name);
 
 			void OnDataReceived(void *selData);
 

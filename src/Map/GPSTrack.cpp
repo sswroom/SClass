@@ -228,7 +228,7 @@ UOSInt Map::GPSTrack::GetColumnCnt() const
 	return 3;
 }
 
-UTF8Char *Map::GPSTrack::GetColumnName(UTF8Char *buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::GPSTrack::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
 {
 	if (colIndex == 0)
 	{
@@ -503,7 +503,8 @@ UOSInt Map::GPSTrack::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLi
 Optional<DB::DBReader> Map::GPSTrack::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	NN<DB::DBReader> r;
-	if (tableName.v != 0 && tableName.Equals(UTF8STRC("GPSData")))
+	Text::CStringNN nntableName;
+	if (tableName.SetTo(nntableName) && nntableName.Equals(UTF8STRC("GPSData")))
 	{
 		NEW_CLASSNN(r, Map::GPSDataReader(*this));
 	}
@@ -520,7 +521,8 @@ Optional<DB::TableDef> Map::GPSTrack::GetTableDef(Text::CString schemaName, Text
 	UOSInt j;
 	NN<DB::ColDef> col;
 	DB::TableDef *tab = 0;
-	if (tableName.v != 0 && tableName.Equals(UTF8STRC("GPSData")))
+	Text::CStringNN nntableName;
+	if (tableName.SetTo(nntableName) && nntableName.Equals(UTF8STRC("GPSData")))
 	{
 		if (this->hasAltitude)
 		{
@@ -1193,7 +1195,7 @@ WChar *Map::GPSDataReader::GetStr(UOSInt colIndex, WChar *buff)
 	}
 	else if (colIndex >= 2 && colIndex <= 16)
 	{
-		return Text::StrDouble(buff, this->GetDbl(colIndex));
+		return Text::StrDoubleW(buff, this->GetDbl(colIndex));
 	}
 	return 0;
 }
@@ -1201,8 +1203,8 @@ WChar *Map::GPSDataReader::GetStr(UOSInt colIndex, WChar *buff)
 Bool Map::GPSDataReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
-	if ((sptr = this->GetStr(colIndex, sbuff, sizeof(sbuff))) != 0)
+	UnsafeArray<UTF8Char> sptr;
+	if (this->GetStr(colIndex, sbuff, sizeof(sbuff)).SetTo(sptr))
 	{
 		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		return true;
@@ -1213,15 +1215,15 @@ Bool Map::GPSDataReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 Optional<Text::String> Map::GPSDataReader::GetNewStr(UOSInt colIndex)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
-	if ((sptr = this->GetStr(colIndex, sbuff, sizeof(sbuff))) != 0)
+	UnsafeArray<UTF8Char> sptr;
+	if (this->GetStr(colIndex, sbuff, sizeof(sbuff)).SetTo(sptr))
 	{
 		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	return 0;
 }
 
-UTF8Char *Map::GPSDataReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> Map::GPSDataReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
 	if (this->currRec == 0)
 		return 0;
@@ -1356,10 +1358,10 @@ Bool Map::GPSDataReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 	return false;
 }
 
-UTF8Char *Map::GPSDataReader::GetName(UOSInt colIndex, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Map::GPSDataReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 {
-	Text::CString cstr = GetName(colIndex, this->gps->GetHasAltitude());
-	if (cstr.v)
+	Text::CStringNN cstr;
+	if (GetName(colIndex, this->gps->GetHasAltitude()).SetTo(cstr))
 		return cstr.ConcatTo(buff);
 	return 0;
 }

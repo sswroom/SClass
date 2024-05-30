@@ -17,7 +17,7 @@ namespace UI
 			virtual ~JavaComboBox();
 
 			virtual void SetText(Text::CStringNN text);
-			virtual UTF8Char *GetText(UTF8Char *buff);
+			virtual UnsafeArrayOpt<UTF8Char> GetText(UnsafeArray<UTF8Char> buff);
 			virtual Bool GetText(NN<Text::StringBuilderUTF8> sb);
 
 			virtual void BeginUpdate();
@@ -26,13 +26,13 @@ namespace UI
 			virtual UOSInt AddItem(Text::CStringNN itemText, void *itemObj);
 			virtual UOSInt InsertItem(UOSInt index, NN<Text::String> itemText, void *itemObj);
 			virtual UOSInt InsertItem(UOSInt index, Text::CStringNN itemText, void *itemObj);
-			virtual void *RemoveItem(UOSInt index);
+			virtual AnyType RemoveItem(UOSInt index);
 			virtual void ClearItems();
 			virtual UOSInt GetCount();
 			virtual void SetSelectedIndex(UOSInt index);
 			virtual UOSInt GetSelectedIndex();
-			virtual void *GetSelectedItem();
-			virtual void *GetItem(UOSInt index);
+			virtual AnyType GetSelectedItem();
+			virtual AnyType GetItem(UOSInt index);
 
 			virtual Math::Size2DDbl GetSize();
 			virtual void SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn);

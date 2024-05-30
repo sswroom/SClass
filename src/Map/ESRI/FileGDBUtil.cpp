@@ -16,7 +16,7 @@
 Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Data::ByteArray fieldDesc, NN<Math::ArcGISPRJParser> prjParser)
 {
 	UTF8Char sbuff[1024];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	FileGDBFieldInfo *field;
 	NN<FileGDBTableInfo> table = MemAllocNN(FileGDBTableInfo);
 	MemClear(table.Ptr(), sizeof(FileGDBTableInfo));
@@ -93,7 +93,7 @@ Optional<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::ParseFieldDesc(Dat
 			field->srsValue = MemAlloc(UInt8, srsLen);
 			MemCopyNO(field->srsValue, &fieldDesc[ofst + 2], srsLen);
 			UOSInt csysLen = (UOSInt)(sptr - sbuff);
-			table->csys = prjParser->ParsePRJBuff(CSTR("FileGDB"), sbuff, csysLen, &csysLen);
+			table->csys = prjParser->ParsePRJBuff(CSTR("FileGDB"), sbuff, csysLen, csysLen);
 			ofst += 2 + srsLen;
 			UInt8 flags = fieldDesc[ofst];
 			ofst += 1;
@@ -209,7 +209,7 @@ void Map::ESRI::FileGDBUtil::FreeTableInfo(NN<FileGDBTableInfo> tableInfo)
 {
 	LIST_FREE_FUNC(tableInfo->fields, FreeFieldInfo);
 	DEL_CLASS(tableInfo->fields);
-	SDEL_CLASS(tableInfo->csys);
+	tableInfo->csys.Delete();
 	MemFreeNN(tableInfo);
 }
 
@@ -242,9 +242,10 @@ NN<Map::ESRI::FileGDBTableInfo> Map::ESRI::FileGDBUtil::TableInfoClone(NN<FileGD
 {
 	NN<FileGDBTableInfo> newTable = MemAllocNN(FileGDBTableInfo);
 	MemCopyNO(newTable.Ptr(), tableInfo.Ptr(), sizeof(FileGDBTableInfo));
-	if (tableInfo->csys)
+	NN<Math::CoordinateSystem> csys;
+	if (tableInfo->csys.SetTo(csys))
 	{
-		newTable->csys = tableInfo->csys->Clone().Ptr();
+		newTable->csys = csys->Clone();
 	}
 	NEW_CLASS(newTable->fields, Data::ArrayList<FileGDBFieldInfo*>());
 	UOSInt i = 0;
@@ -435,7 +436,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBUtil::ParseSDERecord(Data::
 		printf("FileGDBUtil.ParseSDERecord: Record type is not supported: %d, %d\r\n", type1, type2);
 		Text::StringBuilderUTF8 sb;
 		sb.AppendHexBuff(buff, ' ', Text::LineBreakType::CRLF);
-		printf("%s\r\n", sb.v);
+		printf("%s\r\n", sb.ToPtr());
 		return 0;
 	}
 }

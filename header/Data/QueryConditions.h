@@ -1,6 +1,7 @@
 #ifndef _SM_DATA_QUERYCONDITIONS
 #define _SM_DATA_QUERYCONDITIONS
 #include "Data/ArrayList.h"
+#include "Data/ArrayListArr.h"
 #include "Data/ArrayListStringNN.h"
 #include "Data/Condition.h"
 #include "Data/ObjectGetter.h"
@@ -143,10 +144,10 @@ namespace Data
 		class StringInCondition : public FieldCondition
 		{
 		private:
-			Data::ArrayList<const UTF8Char*> vals;
+			Data::ArrayListArr<const UTF8Char> vals;
 
 		public:
-			StringInCondition(Text::CStringNN fieldName, NN<Data::ArrayList<const UTF8Char*>> val);
+			StringInCondition(Text::CStringNN fieldName, NN<Data::ArrayListArr<const UTF8Char>> val);
 			virtual ~StringInCondition();
 
 			virtual ConditionType GetType();
@@ -157,10 +158,10 @@ namespace Data
 		class StringNotInCondition : public FieldCondition
 		{
 		private:
-			Data::ArrayList<const UTF8Char*> vals;
+			Data::ArrayListArr<const UTF8Char> vals;
 
 		public:
-			StringNotInCondition(Text::CStringNN fieldName, NN<Data::ArrayList<const UTF8Char*>> val);
+			StringNotInCondition(Text::CStringNN fieldName, NN<Data::ArrayListArr<const UTF8Char>> val);
 			virtual ~StringNotInCondition();
 
 			virtual ConditionType GetType();
@@ -174,7 +175,7 @@ namespace Data
 			NN<Text::String> val;
 
 		public:
-			StringContainsCondition(Text::CStringNN fieldName, const UTF8Char *val);
+			StringContainsCondition(Text::CStringNN fieldName, UnsafeArray<const UTF8Char> val);
 			virtual ~StringContainsCondition();
 
 			virtual ConditionType GetType();
@@ -274,9 +275,9 @@ namespace Data
 		NN<QueryConditions> Int32In(Text::CStringNN fieldName, NN<Data::ArrayList<Int32>> val);
 		NN<QueryConditions> DoubleGE(Text::CStringNN fieldName, Double val);
 		NN<QueryConditions> DoubleLE(Text::CStringNN fieldName, Double val);
-		NN<QueryConditions> StrIn(Text::CStringNN fieldName, NN<Data::ArrayList<const UTF8Char*>> vals);
-		NN<QueryConditions> StrNotIn(Text::CStringNN fieldName, NN<Data::ArrayList<const UTF8Char*>> vals);
-		NN<QueryConditions> StrContains(Text::CStringNN fieldName, const UTF8Char *val);
+		NN<QueryConditions> StrIn(Text::CStringNN fieldName, NN<Data::ArrayListArr<const UTF8Char>> vals);
+		NN<QueryConditions> StrNotIn(Text::CStringNN fieldName, NN<Data::ArrayListArr<const UTF8Char>> vals);
+		NN<QueryConditions> StrContains(Text::CStringNN fieldName, UnsafeArray<const UTF8Char> val);
 		NN<QueryConditions> StrEquals(Text::CStringNN fieldName, Text::CString val);
 		NN<QueryConditions> BoolEquals(Text::CStringNN fieldName, Bool val);
 		NN<QueryConditions> NotNull(Text::CStringNN fieldName);

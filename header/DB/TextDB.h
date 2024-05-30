@@ -1,6 +1,6 @@
 #ifndef _SM_DB_TEXTDB
 #define _SM_DB_TEXTDB
-#include "Data/ArrayListNN.h"
+#include "Data/ArrayListArr.h"
 #include "Data/StringMap.h"
 #include "DB/ReadingDB.h"
 #include "Text/String.h"
@@ -13,7 +13,7 @@ namespace DB
 		struct DBData
 		{
 			NN<Text::String> name;
-			Data::ArrayListNN<const UTF8Char> colList;
+			Data::ArrayListArr<const UTF8Char> colList;
 			Data::ArrayList<Text::String **> valList;
 		};
 
@@ -31,7 +31,7 @@ namespace DB
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
 
-		Bool AddTable(Text::CString tableName, Data::ArrayList<const UTF8Char*> *colList);
+		Bool AddTable(Text::CStringNN tableName, Data::ArrayList<const UTF8Char*> *colList);
 		Bool AddTableData(Data::ArrayList<const UTF8Char*> *valList);
 	};
 }

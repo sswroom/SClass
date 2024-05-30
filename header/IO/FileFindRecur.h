@@ -18,11 +18,11 @@ namespace IO
 		Text::PString *srcStrs;
 		FindRecurPart *srchParts;
 		UOSInt partCnt;
-		UTF8Char *srcBuff;
+		UnsafeArray<UTF8Char> srcBuff;
 		UTF8Char currBuff[2048];
 		Bool isFirst;
 	public:
-		FileFindRecur(Text::CString path);
+		FileFindRecur(Text::CStringNN path);
 		~FileFindRecur();
 
 		Text::CString NextFile(IO::Path::PathType *pt);

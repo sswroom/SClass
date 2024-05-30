@@ -56,7 +56,7 @@ void UI::Win::WinTextBox::SetText(Text::CStringNN txt)
 	Text::StrDelNew(wptr);
 }
 
-UTF8Char *UI::Win::WinTextBox::GetText(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> UI::Win::WinTextBox::GetText(UnsafeArray<UTF8Char> buff)
 {
 	UOSInt leng = (UOSInt)GetWindowTextLengthW((HWND)hwnd);
 	WChar *wptr = MemAlloc(WChar, leng + 1);

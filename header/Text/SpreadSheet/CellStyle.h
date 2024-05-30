@@ -64,7 +64,7 @@ namespace Text
 			};
 		private:
 			UOSInt index;
-			const UTF8Char *id;
+			UnsafeArrayOpt<const UTF8Char> id;
 
 			HAlignment halign;
 			VAlignment valign;
@@ -104,7 +104,7 @@ namespace Text
 			CellStyle *SetDataFormat(Text::CString dataFormat);
 
 			UOSInt GetIndex() const;
-			const UTF8Char *GetID() const;
+			UnsafeArrayOpt<const UTF8Char> GetID() const;
 			HAlignment GetHAlign() const;
 			VAlignment GetVAlign() const;
 			Bool GetWordWrap() const;

@@ -37,7 +37,7 @@ void GUIForm_OnFileDrop(GtkWidget *widget, GdkDragContext *context, gint x, gint
 	sb.AppendSlow((const UTF8Char*)gtk_selection_data_get_data(data));
 	Text::PString sarr[2];
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	sarr[1] = sb;
@@ -288,7 +288,7 @@ void UI::GUIForm::Close()
 
 void UI::GUIForm::SetText(Text::CStringNN text)
 {
-	gtk_window_set_title((GtkWindow*)this->hwnd, (const Char*)text.v);
+	gtk_window_set_title((GtkWindow*)this->hwnd, (const Char*)text.v.Ptr());
 }
 
 Math::Size2D<UOSInt> UI::GUIForm::GetSizeP()

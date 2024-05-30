@@ -55,7 +55,7 @@ void TestAllForBit(UOSInt bitCnt, IO::Writer *writer)
 	writer->WriteLine();
 }
 
-Bool TestEncode2(const UTF8Char *key, UOSInt keyLen, const UTF8Char *val, UOSInt valLen, const UTF8Char *expRes, UOSInt expResLen)
+Bool TestEncode2(UnsafeArray<const UTF8Char> key, UOSInt keyLen, UnsafeArray<const UTF8Char> val, UOSInt valLen, UnsafeArray<const UTF8Char> expRes, UOSInt expResLen)
 {
 	Crypto::Encrypt::RC4Cipher rc4(key, keyLen);
 	UInt8 outBuff[16];
@@ -63,8 +63,8 @@ Bool TestEncode2(const UTF8Char *key, UOSInt keyLen, const UTF8Char *val, UOSInt
 	UInt8 decBuff[16];
 	UOSInt decSize;
 	UTF8Char sbuff[33];
-	UTF8Char *sptr;
-	outSize = rc4.Encrypt(val, valLen, outBuff);
+	UnsafeArray<UTF8Char> sptr;
+	outSize = rc4.Encrypt(val.Ptr(), valLen, outBuff);
 	sptr = Text::StrHexBytes(sbuff, outBuff, outSize, 0);
 	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), expRes, expResLen))
 	{

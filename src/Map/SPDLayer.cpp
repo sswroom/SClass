@@ -22,8 +22,8 @@
 Map::SPDLayer::SPDLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layerName, 0, CSTR_NULL, Math::CoordinateSystemManager::CreateWGS84Csys())
 {
 	UTF8Char fname[256];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	IO::BufferedInputStream *bstm;
 	sptr = layerName.ConcatTo(fname);
 	if (Text::StrEqualsICaseC(&sptr[-4], 4, UTF8STRC(".SPD")))
@@ -182,7 +182,7 @@ UOSInt Map::SPDLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameArray
 		NEW_CLASS(tmpArr, Data::ArrayList<WChar *>());
 		*nameArr = (NameArray*)tmpArr;
 		UTF8Char fileName[256];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		IO::FileStream *cis;
 		sptr = Text::StrConcat(fileName, this->layerName);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".sps"));
@@ -302,7 +302,7 @@ UOSInt Map::SPDLayer::GetObjectIds(NN<Data::ArrayListInt64> outArr, NameArray **
 		NEW_CLASS(tmpArr, Data::ArrayList<WChar *>());
 		*nameArr = (NameArray*)tmpArr;
 		UTF8Char fileName[256];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		IO::FileStream *cis;
 		sptr = Text::StrConcat(fileName, this->layerName);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".sps"));
@@ -417,7 +417,7 @@ UOSInt Map::SPDLayer::GetColumnCnt() const
 	return 1;
 }
 
-UTF8Char *Map::SPDLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::SPDLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
 {
 	if (colIndex == 0)
 	{
@@ -509,7 +509,7 @@ Bool Map::SPDLayer::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 Map::GetObjectSess *Map::SPDLayer::BeginGetObject()
 {
 	UTF8Char fileName[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::FileStream *cip;
 //	this->mut->Lock();
 	sptr = Text::StrConcat(fileName, this->layerName);

@@ -13,7 +13,7 @@ namespace Data
 
 		virtual NN<Data::ArrayList<Text::String*>> Clone() const;
 		virtual OSInt Compare(Text::String *obj1, Text::String *obj2) const;
-		OSInt SortedIndexOf(Text::CString str) const;
+		OSInt SortedIndexOf(Text::CStringNN str) const;
 	};
 }
 #endif

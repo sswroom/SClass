@@ -18,7 +18,7 @@ Crypto::Hash::SHA1_SHA1::~SHA1_SHA1()
 	this->sha1.Delete();
 }
 
-UTF8Char *Crypto::Hash::SHA1_SHA1::GetName(UTF8Char *sbuff) const
+UnsafeArray<UTF8Char> Crypto::Hash::SHA1_SHA1::GetName(UnsafeArray<UTF8Char> sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("SHA1_SHA1 (MySQL)"));
 }

@@ -45,7 +45,7 @@ Bool Crypto::Cert::X509File::IsSigned(UnsafeArray<const UInt8> pdu, UnsafeArray<
 		return false;
 	}
 	Char sbuff[256];
-	Char *sptr = Text::StrConcat(sbuff, path);
+	UnsafeArray<Char> sptr = Text::StrConcat(sbuff, path);
 	Text::StrConcat(sptr, ".2");
 	if (Net::ASN1Util::PDUGetItemType(pdu, pduEnd, sbuff) != Net::ASN1Util::IT_SEQUENCE)
 	{
@@ -62,10 +62,11 @@ Bool Crypto::Cert::X509File::IsSigned(UnsafeArray<const UInt8> pdu, UnsafeArray<
 void Crypto::Cert::X509File::AppendSigned(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
-	Text::CString name;
+	UnsafeArray<UTF8Char> sptr;
+	Text::CStringNN name;
+	Text::CStringNN nnvarName;
 	Char cbuff[256];
-	Char *cptr = Text::StrConcat(cbuff, path);
+	UnsafeArray<Char> cptr = Text::StrConcat(cbuff, path);
 	UnsafeArray<const UInt8> itemPDU;
 	UOSInt itemLen;
 	Net::ASN1Util::ItemType itemType;
@@ -75,9 +76,9 @@ void Crypto::Cert::X509File::AppendSigned(UnsafeArray<const UInt8> pdu, UnsafeAr
 		if (itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
 			name = CSTR("algorithmIdentifier");
-			if (varName.v)
+			if (varName.SetTo(nnvarName))
 			{
-				sptr = varName.ConcatTo(sbuff);
+				sptr = nnvarName.ConcatTo(sbuff);
 				*sptr++ = '.';
 				sptr = name.ConcatTo(sptr);
 				name = CSTRP(sbuff, sptr);
@@ -90,9 +91,9 @@ void Crypto::Cert::X509File::AppendSigned(UnsafeArray<const UInt8> pdu, UnsafeAr
 	{
 		if (itemType == Net::ASN1Util::IT_BIT_STRING)
 		{
-			if (varName.v)
+			if (varName.SetTo(nnvarName))
 			{
-				sb->Append(varName);
+				sb->Append(nnvarName);
 				sb->AppendUTF8Char('.');
 			}
 			sb->AppendC(UTF8STRC("signature = "));
@@ -110,7 +111,7 @@ Bool Crypto::Cert::X509File::IsTBSCertificate(UnsafeArray<const UInt8> pdu, Unsa
 		return false;
 	}
 	Char sbuff[256];
-	Char *sptr = Text::StrConcat(sbuff, path);
+	UnsafeArray<Char> sptr = Text::StrConcat(sbuff, path);
 	*sptr++ = '.';
 	UOSInt i = 1;
 	Text::StrUOSInt(sptr, i++);
@@ -153,10 +154,11 @@ Bool Crypto::Cert::X509File::IsTBSCertificate(UnsafeArray<const UInt8> pdu, Unsa
 void Crypto::Cert::X509File::AppendTBSCertificate(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::CStringNN name;
+	Text::CStringNN nnvarName;
 	Char cbuff[256];
-	Char *cptr = Text::StrConcat(cbuff, path);
+	UnsafeArray<Char> cptr = Text::StrConcat(cbuff, path);
 	*cptr++ = '.';
 	UOSInt i = 1;
 	UnsafeArray<const UInt8> itemPDU;
@@ -167,9 +169,9 @@ void Crypto::Cert::X509File::AppendTBSCertificate(UnsafeArray<const UInt8> pdu, 
 	{
 		if (itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 		{
-			if (varName.v)
+			if (varName.SetTo(nnvarName))
 			{
-				sb->Append(varName);
+				sb->Append(nnvarName);
 				sb->AppendUTF8Char('.');
 			}
 			sb->AppendC(UTF8STRC("version = "));
@@ -182,9 +184,9 @@ void Crypto::Cert::X509File::AppendTBSCertificate(UnsafeArray<const UInt8> pdu, 
 	{
 		if (itemType == Net::ASN1Util::IT_INTEGER)
 		{
-			if (varName.v)
+			if (varName.SetTo(nnvarName))
 			{
-				sb->Append(varName);
+				sb->Append(nnvarName);
 				sb->AppendUTF8Char('.');
 			}
 			sb->AppendC(UTF8STRC("serialNumber = "));
@@ -198,9 +200,9 @@ void Crypto::Cert::X509File::AppendTBSCertificate(UnsafeArray<const UInt8> pdu, 
 		if (itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
 			name = CSTR("signature");
-			if (varName.v)
+			if (varName.SetTo(nnvarName))
 			{
-				sptr = varName.ConcatTo(sbuff);
+				sptr = nnvarName.ConcatTo(sbuff);
 				*sptr++ = '.';
 				sptr = name.ConcatTo(sptr);
 				name = CSTRP(sbuff, sptr);
@@ -214,9 +216,9 @@ void Crypto::Cert::X509File::AppendTBSCertificate(UnsafeArray<const UInt8> pdu, 
 		if (itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
 			name = CSTR("issuer");
-			if (varName.v)
+			if (varName.SetTo(nnvarName))
 			{
-				sptr = varName.ConcatTo(sbuff);
+				sptr = nnvarName.ConcatTo(sbuff);
 				*sptr++ = '.';
 				sptr = name.ConcatTo(sptr);
 				name = CSTRP(sbuff, sptr);
@@ -230,9 +232,9 @@ void Crypto::Cert::X509File::AppendTBSCertificate(UnsafeArray<const UInt8> pdu, 
 		if (itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
 			name = CSTR("validity");
-			if (varName.v)
+			if (varName.SetTo(nnvarName))
 			{
-				sptr = varName.ConcatTo(sbuff);
+				sptr = nnvarName.ConcatTo(sbuff);
 				*sptr++ = '.';
 				sptr = name.ConcatTo(sptr);
 				name = CSTRP(sbuff, sptr);
@@ -246,9 +248,9 @@ void Crypto::Cert::X509File::AppendTBSCertificate(UnsafeArray<const UInt8> pdu, 
 		if (itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
 			name = CSTR("subject");
-			if (varName.v)
+			if (varName.SetTo(nnvarName))
 			{
-				sptr = varName.ConcatTo(sbuff);
+				sptr = nnvarName.ConcatTo(sbuff);
 				*sptr++ = '.';
 				sptr = name.ConcatTo(sptr);
 				name = CSTRP(sbuff, sptr);
@@ -263,9 +265,9 @@ void Crypto::Cert::X509File::AppendTBSCertificate(UnsafeArray<const UInt8> pdu, 
 		if (itemPDU[0] == Net::ASN1Util::IT_SEQUENCE)
 		{
 			name = CSTR("subjectPublicKeyInfo");
-			if (varName.v)
+			if (varName.SetTo(nnvarName))
 			{
-				sptr = varName.ConcatTo(sbuff);
+				sptr = nnvarName.ConcatTo(sbuff);
 				*sptr++ = '.';
 				sptr = name.ConcatTo(sptr);
 				name = CSTRP(sbuff, sptr);
@@ -287,9 +289,9 @@ void Crypto::Cert::X509File::AppendTBSCertificate(UnsafeArray<const UInt8> pdu, 
 		if (itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_3)
 		{
 			name = CSTR("extensions");
-			if (varName.v)
+			if (varName.SetTo(nnvarName))
 			{
-				sptr = varName.ConcatTo(sbuff);
+				sptr = nnvarName.ConcatTo(sbuff);
 				*sptr++ = '.';
 				sptr = name.ConcatTo(sptr);
 				name = CSTRP(sbuff, sptr);
@@ -322,7 +324,7 @@ Bool Crypto::Cert::X509File::IsTBSCertList(UnsafeArray<const UInt8> pdu, UnsafeA
 		return false;
 	}
 	Char sbuff[256];
-	Char *sptr = Text::StrConcat(sbuff, path);
+	UnsafeArray<Char> sptr = Text::StrConcat(sbuff, path);
 	*sptr++ = '.';
 	UOSInt i = 1;
 	Text::StrUOSInt(sptr, i++);
@@ -366,11 +368,12 @@ void Crypto::Cert::X509File::AppendTBSCertList(UnsafeArray<const UInt8> pdu, Uns
 {
 	Data::DateTime dt;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
-	Text::CString name;
+	UnsafeArray<UTF8Char> sptr;
+	Text::CStringNN name;
+	Text::CStringNN nnvarName;
 	Char cbuff[256];
 	Char cbuff2[20];
-	Char *cptr = Text::StrConcat(cbuff, path);
+	UnsafeArray<Char> cptr = Text::StrConcat(cbuff, path);
 	*cptr++ = '.';
 	UOSInt i = 1;
 	UnsafeArray<const UInt8> itemPDU;
@@ -385,9 +388,9 @@ void Crypto::Cert::X509File::AppendTBSCertList(UnsafeArray<const UInt8> pdu, Uns
 	{
 		if (itemType == Net::ASN1Util::IT_INTEGER)
 		{
-			if (varName.v)
+			if (varName.SetTo(nnvarName))
 			{
-				sb->Append(varName);
+				sb->Append(nnvarName);
 				sb->AppendUTF8Char('.');
 			}
 			sb->AppendC(UTF8STRC("version = "));
@@ -401,9 +404,9 @@ void Crypto::Cert::X509File::AppendTBSCertList(UnsafeArray<const UInt8> pdu, Uns
 		if (itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
 			name = CSTR("signature");
-			if (varName.v)
+			if (varName.SetTo(nnvarName))
 			{
-				sptr = varName.ConcatTo(sbuff);
+				sptr = nnvarName.ConcatTo(sbuff);
 				*sptr++ = '.';
 				sptr = name.ConcatTo(sptr);
 				name = CSTRP(sbuff, sptr);
@@ -417,9 +420,9 @@ void Crypto::Cert::X509File::AppendTBSCertList(UnsafeArray<const UInt8> pdu, Uns
 		if (itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
 			name = CSTR("issuer");
-			if (varName.v)
+			if (varName.SetTo(nnvarName))
 			{
-				sptr = varName.ConcatTo(sbuff);
+				sptr = nnvarName.ConcatTo(sbuff);
 				*sptr++ = '.';
 				sptr = name.ConcatTo(sptr);
 				name = CSTRP(sbuff, sptr);
@@ -432,9 +435,9 @@ void Crypto::Cert::X509File::AppendTBSCertList(UnsafeArray<const UInt8> pdu, Uns
 	{
 		if (itemType == Net::ASN1Util::IT_UTCTIME && Net::ASN1Util::PDUParseUTCTimeCont(Data::ByteArrayR(itemPDU, itemLen), dt))
 		{
-			if (varName.v)
+			if (varName.SetTo(nnvarName))
 			{
-				sb->Append(varName);
+				sb->Append(nnvarName);
 				sb->AppendUTF8Char('.');
 			}
 			sb->AppendC(UTF8STRC("thisUpdate = "));
@@ -447,9 +450,9 @@ void Crypto::Cert::X509File::AppendTBSCertList(UnsafeArray<const UInt8> pdu, Uns
 	{
 		if (Net::ASN1Util::PDUParseUTCTimeCont(Data::ByteArrayR(itemPDU, itemLen), dt))
 		{
-			if (varName.v)
+			if (varName.SetTo(nnvarName))
 			{
-				sb->Append(varName);
+				sb->Append(nnvarName);
 				sb->AppendUTF8Char('.');
 			}
 			sb->AppendC(UTF8STRC("nextUpdate = "));
@@ -471,9 +474,9 @@ void Crypto::Cert::X509File::AppendTBSCertList(UnsafeArray<const UInt8> pdu, Uns
 
 			if (Net::ASN1Util::PDUGetItem(subitemPDU, subitemPDU + subitemLen, "1", subsubitemLen, itemType).SetTo(subsubitemPDU) && itemType == Net::ASN1Util::IT_INTEGER)
 			{
-				if (varName.v)
+				if (varName.SetTo(nnvarName))
 				{
-					sb->Append(varName);
+					sb->Append(nnvarName);
 					sb->AppendUTF8Char('.');
 				}
 				sb->AppendC(UTF8STRC("revokedCertificates["));
@@ -484,9 +487,9 @@ void Crypto::Cert::X509File::AppendTBSCertList(UnsafeArray<const UInt8> pdu, Uns
 			}
 			if (Net::ASN1Util::PDUGetItem(subitemPDU, subitemPDU + subitemLen, "2", subsubitemLen, itemType).SetTo(subsubitemPDU) && itemType == Net::ASN1Util::IT_UTCTIME && Net::ASN1Util::PDUParseUTCTimeCont(Data::ByteArrayR(subsubitemPDU, subsubitemLen), dt))
 			{
-				if (varName.v)
+				if (varName.SetTo(nnvarName))
 				{
-					sb->Append(varName);
+					sb->Append(nnvarName);
 					sb->AppendUTF8Char('.');
 				}
 				sb->AppendC(UTF8STRC("revokedCertificates["));
@@ -499,9 +502,9 @@ void Crypto::Cert::X509File::AppendTBSCertList(UnsafeArray<const UInt8> pdu, Uns
 			if (Net::ASN1Util::PDUGetItemRAW(subitemPDU, subitemPDU + subitemLen, "3", subsubitemLen, itemOfst).SetTo(subsubitemPDU) && subsubitemPDU[0] == Net::ASN1Util::IT_SEQUENCE)
 			{
 				sptr = sbuff;
-				if (varName.v)
+				if (varName.SetTo(nnvarName))
 				{
-					sptr = varName.ConcatTo(sptr);
+					sptr = nnvarName.ConcatTo(sptr);
 					*sptr++ = '.';
 				}
 				sptr = Text::StrConcatC(sptr, UTF8STRC("revokedCertificates["));
@@ -517,9 +520,9 @@ void Crypto::Cert::X509File::AppendTBSCertList(UnsafeArray<const UInt8> pdu, Uns
 		if (itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 		{
 			name = CSTR("crlExtensions");
-			if (varName.v)
+			if (varName.SetTo(nnvarName))
 			{
-				sptr = varName.ConcatTo(sbuff);
+				sptr = nnvarName.ConcatTo(sbuff);
 				*sptr++ = '.';
 				sptr = name.ConcatTo(sptr);
 				name = CSTRP(sbuff, sptr);
@@ -552,7 +555,7 @@ Bool Crypto::Cert::X509File::IsPrivateKeyInfo(UnsafeArray<const UInt8> pdu, Unsa
 		return false;
 	}
 	Char sbuff[256];
-	Char *sptr;
+	UnsafeArray<Char> sptr;
 	sptr = Text::StrConcat(sbuff, path);
 	Text::StrConcat(sptr, ".1");
 	if (Net::ASN1Util::PDUGetItemType(pdu, pduEnd, sbuff) != Net::ASN1Util::IT_INTEGER)
@@ -583,7 +586,7 @@ Bool Crypto::Cert::X509File::IsPrivateKeyInfo(UnsafeArray<const UInt8> pdu, Unsa
 void Crypto::Cert::X509File::AppendPrivateKeyInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb)
 {
 	Char sbuff[256];
-	Char *sptr;
+	UnsafeArray<Char> sptr;
 	UnsafeArray<const UInt8> itemPDU;
 	UOSInt len;
 	Net::ASN1Util::ItemType itemType;
@@ -631,7 +634,7 @@ Bool Crypto::Cert::X509File::IsCertificateRequestInfo(UnsafeArray<const UInt8> p
 		return false;
 	}
 	Char sbuff[256];
-	Char *sptr = Text::StrConcat(sbuff, path);
+	UnsafeArray<Char> sptr = Text::StrConcat(sbuff, path);
 	*sptr++ = '.';
 	UOSInt i = 1;
 	Text::StrUOSInt(sptr, i++);
@@ -660,7 +663,7 @@ Bool Crypto::Cert::X509File::IsCertificateRequestInfo(UnsafeArray<const UInt8> p
 void Crypto::Cert::X509File::AppendCertificateRequestInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb)
 {
 	Char sbuff[256];
-	Char *sptr = Text::StrConcat(sbuff, path);
+	UnsafeArray<Char> sptr = Text::StrConcat(sbuff, path);
 	*sptr++ = '.';
 	UOSInt i = 1;
 	UnsafeArray<const UInt8> itemPDU;
@@ -762,7 +765,7 @@ Bool Crypto::Cert::X509File::IsPublicKeyInfo(UnsafeArray<const UInt8> pdu, Unsaf
 		return false;
 	}
 	Char sbuff[256];
-	Char *sptr = Text::StrConcat(sbuff, path);
+	UnsafeArray<Char> sptr = Text::StrConcat(sbuff, path);
 	Text::StrConcat(sptr, ".1");
 	if (Net::ASN1Util::PDUGetItemType(pdu, pduEnd, sbuff) != Net::ASN1Util::IT_SEQUENCE)
 	{
@@ -805,7 +808,7 @@ Bool Crypto::Cert::X509File::IsContentInfo(UnsafeArray<const UInt8> pdu, UnsafeA
 		return false;
 	}
 	Char sbuff[256];
-	Char *sptr = Text::StrConcat(sbuff, path);
+	UnsafeArray<Char> sptr = Text::StrConcat(sbuff, path);
 	Text::StrConcat(sptr, ".1");
 	if (Net::ASN1Util::PDUGetItemType(pdu, pduEnd, sbuff) != Net::ASN1Util::IT_OID)
 	{
@@ -822,7 +825,8 @@ Bool Crypto::Cert::X509File::IsContentInfo(UnsafeArray<const UInt8> pdu, UnsafeA
 void Crypto::Cert::X509File::AppendContentInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CString varName, ContentDataType dataType)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	Text::CStringNN nnvarName;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt buffSize;
 	Net::ASN1Util::ItemType itemType;
 	UnsafeArray<const UInt8> buff;
@@ -838,9 +842,9 @@ void Crypto::Cert::X509File::AppendContentInfo(UnsafeArray<const UInt8> pdu, Uns
 
 		if (optcontentType.SetTo(contentType))
 		{
-			if (varName.v)
+			if (varName.SetTo(nnvarName))
 			{
-				sb->Append(varName);
+				sb->Append(nnvarName);
 				sb->AppendUTF8Char('.');
 			}
 			sb->AppendC(UTF8STRC("content-type = "));
@@ -862,15 +866,29 @@ void Crypto::Cert::X509File::AppendContentInfo(UnsafeArray<const UInt8> pdu, Uns
 				UnsafeArray<const UInt8> itemPDU;
 				if (Net::ASN1Util::PDUGetItem(content, content + contentLen, "1", itemLen, itemType).SetTo(itemPDU) && itemType == Net::ASN1Util::IT_OCTET_STRING)
 				{
-					sptr = varName.ConcatTo(sbuff);
-					sptr = Text::StrConcatC(sptr, UTF8STRC(".pkcs7-content"));
+					if (varName.SetTo(nnvarName))
+					{
+						sptr = nnvarName.ConcatTo(sbuff);
+						sptr = Text::StrConcatC(sptr, UTF8STRC(".pkcs7-content"));
+					}
+					else
+					{
+						sptr = Text::StrConcatC(sbuff, UTF8STRC("pkcs7-content"));
+					}
 					AppendData(itemPDU, itemPDU + itemLen, sb, CSTRP(sbuff, sptr), dataType);
 				}
 			}
 			else if (Net::ASN1Util::OIDEqualsText(Data::ByteArrayR(contentType, contentTypeLen), CSTR("1.2.840.113549.1.7.2"))) //signedData
 			{
-				sptr = varName.ConcatTo(sbuff);
-				sptr = Text::StrConcatC(sptr, UTF8STRC(".pkcs7-content"));
+				if (varName.SetTo(nnvarName))
+				{
+					sptr = nnvarName.ConcatTo(sbuff);
+					sptr = Text::StrConcatC(sptr, UTF8STRC(".pkcs7-content"));
+				}
+				else
+				{
+					sptr = Text::StrConcatC(sbuff, UTF8STRC("pkcs7-content"));
+				}
 				AppendPKCS7SignedData(content, content + contentLen, sb, CSTRP(sbuff, sptr));
 			}
 			else if (Net::ASN1Util::OIDEqualsText(Data::ByteArrayR(contentType, contentTypeLen), CSTR("1.2.840.113549.1.7.3"))) //envelopedData
@@ -887,8 +905,15 @@ void Crypto::Cert::X509File::AppendContentInfo(UnsafeArray<const UInt8> pdu, Uns
 			}
 			else if (Net::ASN1Util::OIDEqualsText(Data::ByteArrayR(contentType, contentTypeLen), CSTR("1.2.840.113549.1.7.6"))) //encryptedData
 			{
-				sptr = varName.ConcatTo(sbuff);
-				sptr = Text::StrConcatC(sptr, UTF8STRC(".pkcs7-content"));
+				if (varName.SetTo(nnvarName))
+				{
+					sptr = nnvarName.ConcatTo(sbuff);
+					sptr = Text::StrConcatC(sptr, UTF8STRC(".pkcs7-content"));
+				}
+				else
+				{
+					sptr = Text::StrConcatC(sbuff, UTF8STRC("pkcs7-content"));
+				}
 				AppendEncryptedData(content, content + contentLen, sb, CSTRP(sbuff, sptr), dataType);
 			}
 		}
@@ -905,7 +930,7 @@ Bool Crypto::Cert::X509File::IsPFX(UnsafeArray<const UInt8> pdu, UnsafeArray<con
 		return false;
 	}
 	Char sbuff[256];
-	Char *sptr = Text::StrConcat(sbuff, path);
+	UnsafeArray<Char> sptr = Text::StrConcat(sbuff, path);
 	Text::StrConcat(sptr, ".1");
 	if (Net::ASN1Util::PDUGetItemType(pdu, pduEnd, sbuff) != Net::ASN1Util::IT_INTEGER)
 	{
@@ -930,7 +955,8 @@ Bool Crypto::Cert::X509File::IsPFX(UnsafeArray<const UInt8> pdu, UnsafeArray<con
 void Crypto::Cert::X509File::AppendPFX(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
+	Text::CStringNN nnvarName;
 	UOSInt buffSize;
 	Net::ASN1Util::ItemType itemType;
 	UnsafeArray<const UInt8> buff;
@@ -943,9 +969,9 @@ void Crypto::Cert::X509File::AppendPFX(UnsafeArray<const UInt8> pdu, UnsafeArray
 		UnsafeArray<const UInt8> version;
 		if (Net::ASN1Util::PDUGetItem(buff, buff + buffSize, "1", versionLen, itemType).SetTo(version) && itemType == Net::ASN1Util::IT_INTEGER)
 		{
-			if (varName.v)
+			if (varName.SetTo(nnvarName))
 			{
-				sb->Append(varName);
+				sb->Append(nnvarName);
 				sb->AppendUTF8Char('.');
 			}
 			sb->AppendC(UTF8STRC("version = "));
@@ -953,9 +979,9 @@ void Crypto::Cert::X509File::AppendPFX(UnsafeArray<const UInt8> pdu, UnsafeArray
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		sptr = sbuff;
-		if (varName.v)
+		if (varName.SetTo(nnvarName))
 		{
-			sptr = varName.ConcatTo(sptr);
+			sptr = nnvarName.ConcatTo(sptr);
 			*sptr++ = '.';
 		}
 		sptr = Text::StrConcatC(sptr, UTF8STRC("authSafe"));
@@ -963,9 +989,9 @@ void Crypto::Cert::X509File::AppendPFX(UnsafeArray<const UInt8> pdu, UnsafeArray
 		if (cnt == 3)
 		{
 			sptr = sbuff;
-			if (varName.v)
+			if (varName.SetTo(nnvarName))
 			{
-				sptr = varName.ConcatTo(sptr);
+				sptr = nnvarName.ConcatTo(sptr);
 				*sptr++ = '.';
 			}
 			sptr = Text::StrConcatC(sptr, UTF8STRC("macData"));
@@ -999,10 +1025,10 @@ void Crypto::Cert::X509File::AppendVersion(UnsafeArray<const UInt8> pdu, UnsafeA
 	}
 }
 
-void Crypto::Cert::X509File::AppendAlgorithmIdentifier(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName, Bool pubKey, OptOut<KeyType> keyTypeOut)
+void Crypto::Cert::X509File::AppendAlgorithmIdentifier(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName, Bool pubKey, OptOut<KeyType> keyTypeOut)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<const UInt8> itemPDU;
 	UOSInt itemLen;
 	Net::ASN1Util::ItemType itemType;
@@ -1118,7 +1144,7 @@ void Crypto::Cert::X509File::AppendAlgorithmIdentifier(UnsafeArray<const UInt8> 
 	keyTypeOut.Set(keyType);
 }
 
-void Crypto::Cert::X509File::AppendValidity(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
+void Crypto::Cert::X509File::AppendValidity(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName)
 {
 	Data::DateTime dt;
 	UnsafeArray<const UInt8> itemPDU;
@@ -1148,10 +1174,10 @@ void Crypto::Cert::X509File::AppendValidity(UnsafeArray<const UInt8> pdu, Unsafe
 	}
 }
 
-void Crypto::Cert::X509File::AppendSubjectPublicKeyInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
+void Crypto::Cert::X509File::AppendSubjectPublicKeyInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<const UInt8> itemPDU;
 	UOSInt itemLen;
 	Net::ASN1Util::ItemType itemType;
@@ -1183,7 +1209,7 @@ void Crypto::Cert::X509File::AppendSubjectPublicKeyInfo(UnsafeArray<const UInt8>
 	}
 }
 
-void Crypto::Cert::X509File::AppendName(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
+void Crypto::Cert::X509File::AppendName(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName)
 {
 	Char sbuff[12];
 	UnsafeArray<const UInt8> itemPDU;
@@ -1206,7 +1232,7 @@ void Crypto::Cert::X509File::AppendName(UnsafeArray<const UInt8> pdu, UnsafeArra
 	}
 }
 
-void Crypto::Cert::X509File::AppendRelativeDistinguishedName(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
+void Crypto::Cert::X509File::AppendRelativeDistinguishedName(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName)
 {
 	Char sbuff[12];
 	UnsafeArray<const UInt8> itemPDU;
@@ -1229,7 +1255,7 @@ void Crypto::Cert::X509File::AppendRelativeDistinguishedName(UnsafeArray<const U
 	}
 }
 
-void Crypto::Cert::X509File::AppendAttributeTypeAndDistinguishedValue(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
+void Crypto::Cert::X509File::AppendAttributeTypeAndDistinguishedValue(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName)
 {
 	UnsafeArray<const UInt8> typePDU;
 	UOSInt typeLen;
@@ -1310,7 +1336,7 @@ void Crypto::Cert::X509File::AppendAttributeTypeAndDistinguishedValue(UnsafeArra
 	}
 }
 
-void Crypto::Cert::X509File::AppendCRLExtensions(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
+void Crypto::Cert::X509File::AppendCRLExtensions(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName)
 {
 	UTF8Char sbuff[12];
 	UnsafeArray<const UInt8> itemPDU;
@@ -1333,10 +1359,10 @@ void Crypto::Cert::X509File::AppendCRLExtensions(UnsafeArray<const UInt8> pdu, U
 	}
 }
 
-void Crypto::Cert::X509File::AppendCRLExtension(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
+void Crypto::Cert::X509File::AppendCRLExtension(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<const UInt8> extension;
 	UOSInt extensionLen;
 	UnsafeArray<const UInt8> itemPDU;
@@ -1647,7 +1673,7 @@ void Crypto::Cert::X509File::AppendCRLExtension(UnsafeArray<const UInt8> pdu, Un
 	}
 }
 
-void Crypto::Cert::X509File::AppendMSOSVersion(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
+void Crypto::Cert::X509File::AppendMSOSVersion(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName)
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt itemLen;
@@ -1661,7 +1687,7 @@ void Crypto::Cert::X509File::AppendMSOSVersion(UnsafeArray<const UInt8> pdu, Uns
 	}
 }
 
-void Crypto::Cert::X509File::AppendMSRequestClientInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
+void Crypto::Cert::X509File::AppendMSRequestClientInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName)
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt itemLen;
@@ -1701,7 +1727,7 @@ void Crypto::Cert::X509File::AppendMSRequestClientInfo(UnsafeArray<const UInt8> 
 	}
 }
 
-void Crypto::Cert::X509File::AppendMSEnrollmentCSPProvider(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
+void Crypto::Cert::X509File::AppendMSEnrollmentCSPProvider(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName)
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt itemLen;
@@ -1727,7 +1753,7 @@ void Crypto::Cert::X509File::AppendMSEnrollmentCSPProvider(UnsafeArray<const UIn
 	}
 }
 
-void Crypto::Cert::X509File::AppendGeneralNames(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
+void Crypto::Cert::X509File::AppendGeneralNames(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName)
 {
 	UTF8Char sbuff[11];
 	UnsafeArray<const UInt8> itemPDU;
@@ -1747,10 +1773,10 @@ void Crypto::Cert::X509File::AppendGeneralNames(UnsafeArray<const UInt8> pdu, Un
 	}
 }
 
-Bool Crypto::Cert::X509File::AppendGeneralName(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
+Bool Crypto::Cert::X509File::AppendGeneralName(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Net::ASN1Util::ItemType itemType;
 	UnsafeArray<const UInt8> subItemPDU;
 	UOSInt subItemLen;
@@ -1814,7 +1840,7 @@ Bool Crypto::Cert::X509File::AppendGeneralName(UnsafeArray<const UInt8> pdu, Uns
 			{
 				Net::SocketUtil::AddressInfo addr;
 				Net::SocketUtil::SetAddrInfoV6(addr, &subItemPDU[0], 0);
-				sptr = Net::SocketUtil::GetAddrName(sbuff, addr);
+				sptr = Net::SocketUtil::GetAddrName(sbuff, addr).Or(sbuff);
 				sb->AppendP(sbuff, sptr);
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -1839,10 +1865,10 @@ Bool Crypto::Cert::X509File::AppendGeneralName(UnsafeArray<const UInt8> pdu, Uns
 	return false;
 }
 
-Bool Crypto::Cert::X509File::AppendDistributionPoint(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
+Bool Crypto::Cert::X509File::AppendDistributionPoint(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<const UInt8> itemPDU;
 	UOSInt itemLen;
 	UnsafeArray<const UInt8> subItemPDU;
@@ -1902,10 +1928,10 @@ Bool Crypto::Cert::X509File::AppendDistributionPoint(UnsafeArray<const UInt8> pd
 	return false;
 }
 
-void Crypto::Cert::X509File::AppendDistributionPointName(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
+void Crypto::Cert::X509File::AppendDistributionPointName(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	Char pathBuff[16];
 	UnsafeArray<const UInt8> itemPDU;
@@ -1935,7 +1961,7 @@ void Crypto::Cert::X509File::AppendDistributionPointName(UnsafeArray<const UInt8
 	}
 }
 
-Bool Crypto::Cert::X509File::AppendPolicyInformation(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
+Bool Crypto::Cert::X509File::AppendPolicyInformation(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName)
 {
 	UTF8Char sbuff[64];
 	UnsafeArray<const UInt8> itemPDU;
@@ -2002,7 +2028,7 @@ Bool Crypto::Cert::X509File::AppendPolicyInformation(UnsafeArray<const UInt8> pd
 	return false;
 }
 
-void Crypto::Cert::X509File::AppendPKCS7SignedData(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
+void Crypto::Cert::X509File::AppendPKCS7SignedData(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName)
 {
 	UTF8Char sbuff[16];
 	Net::ASN1Util::ItemType itemType;
@@ -2050,7 +2076,7 @@ void Crypto::Cert::X509File::AppendPKCS7SignedData(UnsafeArray<const UInt8> pdu,
 	}
 }
 
-void Crypto::Cert::X509File::AppendPKCS7DigestAlgorithmIdentifiers(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
+void Crypto::Cert::X509File::AppendPKCS7DigestAlgorithmIdentifiers(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName)
 {
 	UTF8Char sbuff[16];
 	UOSInt i;
@@ -2072,7 +2098,7 @@ void Crypto::Cert::X509File::AppendPKCS7DigestAlgorithmIdentifiers(UnsafeArray<c
 	}
 }
 
-void Crypto::Cert::X509File::AppendPKCS7SignerInfos(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
+void Crypto::Cert::X509File::AppendPKCS7SignerInfos(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName)
 {
 	Char cbuff[32];
 	UOSInt i;
@@ -2094,10 +2120,10 @@ void Crypto::Cert::X509File::AppendPKCS7SignerInfos(UnsafeArray<const UInt8> pdu
 	}
 }
 
-void Crypto::Cert::X509File::AppendPKCS7SignerInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
+void Crypto::Cert::X509File::AppendPKCS7SignerInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Char cbuff[32];
 	UOSInt i;
 	Net::ASN1Util::ItemType itemType;
@@ -2169,10 +2195,10 @@ void Crypto::Cert::X509File::AppendPKCS7SignerInfo(UnsafeArray<const UInt8> pdu,
 	}
 }
 
-void Crypto::Cert::X509File::AppendIssuerAndSerialNumber(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
+void Crypto::Cert::X509File::AppendIssuerAndSerialNumber(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Net::ASN1Util::ItemType itemType;
 	UOSInt itemLen;
 	UnsafeArray<const UInt8> itemPDU;
@@ -2193,10 +2219,10 @@ void Crypto::Cert::X509File::AppendIssuerAndSerialNumber(UnsafeArray<const UInt8
 	}
 }
 
-void Crypto::Cert::X509File::AppendPKCS7Attributes(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
+void Crypto::Cert::X509File::AppendPKCS7Attributes(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Char cbuff[16];
 	Net::ASN1Util::ItemType itemType;
 	UOSInt itemLen;
@@ -2302,10 +2328,10 @@ void Crypto::Cert::X509File::AppendPKCS7Attributes(UnsafeArray<const UInt8> pdu,
 	}
 }
 
-Bool Crypto::Cert::X509File::AppendMacData(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
+Bool Crypto::Cert::X509File::AppendMacData(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, const Char *path, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<const UInt8> itemPDU;
 	UOSInt itemLen;
 	UnsafeArray<const UInt8> subItemPDU;
@@ -2340,10 +2366,10 @@ Bool Crypto::Cert::X509File::AppendMacData(UnsafeArray<const UInt8> pdu, UnsafeA
 	return false;
 }
 
-void Crypto::Cert::X509File::AppendDigestInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
+void Crypto::Cert::X509File::AppendDigestInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<const UInt8> itemPDU;
 	UOSInt itemLen;
 	Net::ASN1Util::ItemType itemType;
@@ -2362,7 +2388,7 @@ void Crypto::Cert::X509File::AppendDigestInfo(UnsafeArray<const UInt8> pdu, Unsa
 	}
 }
 
-void Crypto::Cert::X509File::AppendData(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName, ContentDataType dataType)
+void Crypto::Cert::X509File::AppendData(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName, ContentDataType dataType)
 {
 	switch (dataType)
 	{
@@ -2378,17 +2404,18 @@ void Crypto::Cert::X509File::AppendData(UnsafeArray<const UInt8> pdu, UnsafeArra
 void Crypto::Cert::X509File::AppendEncryptedData(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName, ContentDataType dataType)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<const UInt8> itemPDU;
+	Text::CStringNN nnvarName;
 	UOSInt itemLen;
 	UnsafeArray<const UInt8> subitemPDU;
 	UOSInt subitemLen;
 	Net::ASN1Util::ItemType itemType;
 	if (Net::ASN1Util::PDUGetItem(pdu, pduEnd, "1", itemLen, itemType).SetTo(itemPDU) && itemType == Net::ASN1Util::IT_SEQUENCE)
 	{
-		if (varName.v)
+		if (varName.SetTo(nnvarName))
 		{
-			sb->Append(varName);
+			sb->Append(nnvarName);
 			sb->AppendUTF8Char('.');
 		}
 		sb->AppendC(UTF8STRC("version = "));
@@ -2398,9 +2425,9 @@ void Crypto::Cert::X509File::AppendEncryptedData(UnsafeArray<const UInt8> pdu, U
 		if (Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "2", subitemLen, itemType).SetTo(subitemPDU) && itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
 			sptr = sbuff;
-			if (varName.v)
+			if (varName.SetTo(nnvarName))
 			{
-				sptr = varName.ConcatTo(sptr);
+				sptr = nnvarName.ConcatTo(sptr);
 				*sptr++ = '.';
 			}
 			sptr = Text::StrConcatC(sptr, UTF8STRC("encryptedContentInfo"));
@@ -2409,9 +2436,9 @@ void Crypto::Cert::X509File::AppendEncryptedData(UnsafeArray<const UInt8> pdu, U
 		if (Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "3", subitemLen, itemType).SetTo(subitemPDU) && itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 		{
 			sptr = sbuff;
-			if (varName.v)
+			if (varName.SetTo(nnvarName))
 			{
-				sptr = varName.ConcatTo(sptr);
+				sptr = nnvarName.ConcatTo(sptr);
 				*sptr++ = '.';
 			}
 			sptr = Text::StrConcatC(sptr, UTF8STRC("unprotectedAttributes"));
@@ -2420,10 +2447,10 @@ void Crypto::Cert::X509File::AppendEncryptedData(UnsafeArray<const UInt8> pdu, U
 	}
 }
 
-void Crypto::Cert::X509File::AppendAuthenticatedSafe(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName)
+void Crypto::Cert::X509File::AppendAuthenticatedSafe(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Char cbuff[16];
 	UnsafeArray<const UInt8> itemPDU;
 	UOSInt itemLen;
@@ -2447,10 +2474,10 @@ void Crypto::Cert::X509File::AppendAuthenticatedSafe(UnsafeArray<const UInt8> pd
 	}
 }
 
-void Crypto::Cert::X509File::AppendEncryptedContentInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CString varName, ContentDataType dataType)
+void Crypto::Cert::X509File::AppendEncryptedContentInfo(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<Text::StringBuilderUTF8> sb, Text::CStringNN varName, ContentDataType dataType)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Net::ASN1Util::ItemType itemType;
 	UOSInt itemLen;
 	UnsafeArray<const UInt8> itemPDU;
@@ -2471,11 +2498,8 @@ void Crypto::Cert::X509File::AppendEncryptedContentInfo(UnsafeArray<const UInt8>
 	if (Net::ASN1Util::PDUGetItem(pdu, pduEnd, "2", itemLen, itemType).SetTo(itemPDU) && itemType == Net::ASN1Util::IT_SEQUENCE)
 	{
 		sptr = sbuff;
-		if (varName.v)
-		{
-			sptr = varName.ConcatTo(sptr);
-			*sptr++ = '.';
-		}
+		sptr = varName.ConcatTo(sptr);
+		*sptr++ = '.';
 		sptr = Text::StrConcatC(sptr, UTF8STRC("contentEncryptionAlgorithm"));
 		AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, CSTRP(sbuff, sptr), false, 0);
 	}
@@ -2529,7 +2553,7 @@ Bool Crypto::Cert::X509File::NameGetByOID(UnsafeArray<const UInt8> pdu, UnsafeAr
 	return false;
 }
 
-UTF8Char *Crypto::Cert::X509File::NameGetByOID(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, Text::CStringNN oidText, UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> Crypto::Cert::X509File::NameGetByOID(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, Text::CStringNN oidText, UnsafeArray<UTF8Char> sbuff)
 {
 	Char cbuff[12];
 	UnsafeArray<const UInt8> itemPDU;
@@ -2574,7 +2598,7 @@ Bool Crypto::Cert::X509File::NameGetCN(UnsafeArray<const UInt8> pdu, UnsafeArray
 	return NameGetByOID(pdu, pduEnd, CSTR("2.5.4.3"), sb);
 }
 
-UTF8Char *Crypto::Cert::X509File::NameGetCN(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> Crypto::Cert::X509File::NameGetCN(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, UnsafeArray<UTF8Char> sbuff)
 {
 	return NameGetByOID(pdu, pduEnd, CSTR("2.5.4.3"), sbuff);
 }
@@ -2650,7 +2674,7 @@ Bool Crypto::Cert::X509File::NamesGet(UnsafeArray<const UInt8> pdu, UnsafeArray<
 Bool Crypto::Cert::X509File::ExtensionsGet(UnsafeArray<const UInt8> pdu, UnsafeArray<const UInt8> pduEnd, NN<CertExtensions> ext)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UnsafeArray<const UInt8> itemPDU;
 	UnsafeArray<const UInt8> oidPDU;
 	UnsafeArrayOpt<const UInt8> optstrPDU;

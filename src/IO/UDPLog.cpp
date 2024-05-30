@@ -9,7 +9,7 @@
 Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, NN<Text::StringBuilderUTF8> sb, Bool detail) const
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (buffSize == 1 && dataBuff[0] == 0x48)
 	{

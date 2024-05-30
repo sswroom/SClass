@@ -12,8 +12,8 @@ Manage::AddressResolver::~AddressResolver()
 Bool Manage::AddressResolver::ResolveNameSB(NN<Text::StringBuilderUTF8> sb, UInt64 address)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr = this->ResolveName(sbuff, address);
-	if (sptr)
+	UnsafeArray<UTF8Char> sptr;
+	if (this->ResolveName(sbuff, address).SetTo(sptr))
 	{
 		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		return true;

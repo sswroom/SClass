@@ -200,7 +200,7 @@ Bool Math::WKBWriter::Write(NN<IO::Stream> stm, NN<Math::Geometry::Vector2D> vec
 	case Math::Geometry::Vector2D::VectorType::PieArea:
 	case Math::Geometry::Vector2D::VectorType::Unknown:
 	default:	
-		printf("WKBWriter: Unsupported type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()).v);
+		printf("WKBWriter: Unsupported type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()).v.Ptr());
 		return false;
 	}
 }

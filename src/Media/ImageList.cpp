@@ -109,29 +109,24 @@ void Media::ImageList::ToStaticImage(UOSInt index)
 	img.Delete();
 }
 
-void Media::ImageList::SetAuthor(const UTF8Char *name)
+void Media::ImageList::SetAuthor(UnsafeArray<const UTF8Char> name)
 {
-	if (this->author)
+	UnsafeArray<const UTF8Char> nns;
+	if (this->author.SetTo(nns))
 	{
-		Text::StrDelNew(this->author);
+		Text::StrDelNew(nns);
 	}
-	this->author = Text::StrCopyNew(name).Ptr();
+	this->author = Text::StrCopyNew(name);
 }
 
-void Media::ImageList::SetImageName(const UTF8Char *imgName)
+void Media::ImageList::SetImageName(UnsafeArrayOpt<const UTF8Char> imgName)
 {
-	if (this->imgName)
+	UnsafeArray<const UTF8Char> nns;
+	if (this->imgName.SetTo(nns))
 	{
-		Text::StrDelNew(this->imgName);
+		Text::StrDelNew(nns);
 	}
-	if (imgName)
-	{
-		this->imgName = Text::StrCopyNew(imgName).Ptr();
-	}
-	else
-	{
-		this->imgName = 0;
-	}
+	this->imgName = Text::StrSCopyNew(imgName);
 }
 
 void Media::ImageList::SetThermoImage(Math::Size2D<UOSInt> thermoSize, UOSInt thermoBPP, UInt8 *thermoPtr, Double thermoEmissivity, Double thermoTransmission, Double thermoBKGTemp, ThermoType thermoType)
@@ -244,7 +239,7 @@ Bool Media::ImageList::ToValueString(NN<Text::StringBuilderUTF8> sb) const
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			vt = this->valTypeStr.GetItem(i);
-			sb->Append(GetValueTypeName(vt));
+			sb->Append(ValueTypeGetName(vt));
 			sb->AppendC(UTF8STRC(" = "));
 			if (this->valStr.GetItem(i).SetTo(s))
 				sb->Append(s);
@@ -263,7 +258,7 @@ Bool Media::ImageList::ToValueString(NN<Text::StringBuilderUTF8> sb) const
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			vt = this->valTypeI32.GetItem(i);
-			sb->Append(GetValueTypeName(vt));
+			sb->Append(ValueTypeGetName(vt));
 			sb->AppendC(UTF8STRC(" = "));
 			v = this->valI32.GetItem(i);
 			if (vt == VT_FIRMWARE_VERSION)
@@ -293,7 +288,7 @@ Bool Media::ImageList::ToValueString(NN<Text::StringBuilderUTF8> sb) const
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			vt = this->valTypeI64.GetItem(i);
-			sb->Append(GetValueTypeName(vt));
+			sb->Append(ValueTypeGetName(vt));
 			sb->AppendC(UTF8STRC(" = "));
 			v = this->valI64.GetItem(i);
 			if (vt == VT_CAPTURE_DATE)
@@ -342,7 +337,7 @@ void Media::ImageList::ToString(NN<Text::StringBuilderUTF8> sb) const
 	}
 }
 
-Text::CString Media::ImageList::GetValueTypeName(Media::ImageList::ValueType valType)
+Text::CStringNN Media::ImageList::ValueTypeGetName(Media::ImageList::ValueType valType)
 {
 	switch (valType)
 	{

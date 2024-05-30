@@ -10,7 +10,7 @@
 
 UI::GTK::GTKLabel::GTKLabel(NN<UI::GUICore> ui, NN<UI::GUIClientControl> parent, Text::CStringNN label) : UI::GUILabel(ui, parent)
 {
-	this->hwnd = (ControlHandle*)gtk_label_new((const Char*)label.v);
+	this->hwnd = (ControlHandle*)gtk_label_new((const Char*)label.v.Ptr());
 	parent->AddChild(*this);
 #if GDK_VERSION_AFTER(3, 16)
 	gtk_label_set_xalign(GTK_LABEL((GtkWidget*)this->hwnd), 0.0);
@@ -30,7 +30,7 @@ UI::GTK::GTKLabel::~GTKLabel()
 
 void UI::GTK::GTKLabel::SetText(Text::CStringNN text)
 {
-	gtk_label_set_text((GtkLabel*)this->hwnd, (const Char*)text.v);
+	gtk_label_set_text((GtkLabel*)this->hwnd, (const Char*)text.v.Ptr());
 }
 
 OSInt UI::GTK::GTKLabel::OnNotify(UInt32 code, void *lParam)
@@ -58,7 +58,7 @@ void UI::GTK::GTKLabel::SetTextColor(UInt32 textColor)
 	builder.AddColorRGBA(textColor);
 	GtkStyleContext *style = gtk_widget_get_style_context((GtkWidget*)this->hwnd);
 	GtkCssProvider *styleProvider = gtk_css_provider_new();
-	gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString(), -1, 0);
+	gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString().Ptr(), -1, 0);
 	gtk_style_context_add_provider(style, (GtkStyleProvider*)styleProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
 #else
 	GdkRGBA c;

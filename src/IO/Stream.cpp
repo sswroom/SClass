@@ -11,11 +11,6 @@ IO::Stream::Stream(const Text::CStringNN &sourceName) : IO::ParsedObject(sourceN
 {
 }
 
-UOSInt IO::Stream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
-{
-	return this->Write(buff.Ptr(), size);
-}
-
 void *IO::Stream::BeginRead(const Data::ByteArray &buff, Sync::Event *evt)
 {
 	UOSInt retVal = Read(buff);
@@ -33,7 +28,7 @@ void IO::Stream::CancelRead(void *reqData)
 {
 }
 
-void *IO::Stream::BeginWrite(const UInt8 *buff, UOSInt size, Sync::Event *evt)
+void *IO::Stream::BeginWrite(UnsafeArray<const UInt8> buff, UOSInt size, Sync::Event *evt)
 {
 	UOSInt retVal = Write(buff, size);
 	evt->Set();

@@ -105,11 +105,11 @@ void IO::LogTool::AddLogHandler(NN<LogHandler> hdlr, IO::LogHandler::LogLevel lo
 	}
 
 	UTF8Char buff[256];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	Data::Timestamp ts = Data::Timestamp::Now();
 
-	sptr2 = IO::Path::GetProcessFileName(buff);
+	sptr2 = IO::Path::GetProcessFileName(buff).Or(buff);
 	sptr = &buff[Text::StrLastIndexOfCharC(buff, (UOSInt)(sptr2 - buff), IO::Path::PATH_SEPERATOR) + 1];
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Program "));

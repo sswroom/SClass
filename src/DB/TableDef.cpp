@@ -59,12 +59,12 @@ Optional<Text::String> DB::TableDef::GetCharset() const
 	return this->charset;
 }
 
-const UTF8Char *DB::TableDef::GetAttr() const
+UnsafeArrayOpt<const UTF8Char> DB::TableDef::GetAttr() const
 {
 	return this->attr;
 }
 
-const UTF8Char *DB::TableDef::GetComments() const
+UnsafeArrayOpt<const UTF8Char> DB::TableDef::GetComments() const
 {
 	return this->comments;
 }
@@ -162,17 +162,17 @@ DB::TableDef *DB::TableDef::SetCharset(Text::CString charset)
 	return this;
 }
 
-DB::TableDef *DB::TableDef::SetAttr(const UTF8Char *attr)
+DB::TableDef *DB::TableDef::SetAttr(UnsafeArrayOpt<const UTF8Char> attr)
 {
 	SDEL_TEXT(this->attr);
-	this->attr = SCOPY_TEXT(attr);
+	this->attr = Text::StrSCopyNew(attr);
 	return this;
 }
 
-DB::TableDef *DB::TableDef::SetComments(const UTF8Char *comments)
+DB::TableDef *DB::TableDef::SetComments(UnsafeArrayOpt<const UTF8Char> comments)
 {
 	SDEL_TEXT(this->comments)
-	this->comments = SCOPY_TEXT(comments);
+	this->comments = Text::StrSCopyNew(comments);
 	return this;
 }
 

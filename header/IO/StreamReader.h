@@ -13,7 +13,7 @@ namespace IO
 		Text::Encoding enc;
 		NN<IO::Stream> stm;
 
-		UTF8Char *cbuff;
+		UnsafeArray<UTF8Char> cbuff;
 		UOSInt cSize;
 		UOSInt cPos;
 		UInt8 *buff;
@@ -29,9 +29,9 @@ namespace IO
 		StreamReader(NN<IO::Stream> stm, UInt32 codePage);
 		virtual ~StreamReader();
 		virtual void Close();
-		virtual UTF8Char *ReadLine(UTF8Char *buff, UOSInt maxCharCnt);
+		virtual UnsafeArrayOpt<UTF8Char> ReadLine(UnsafeArray<UTF8Char> buff, UOSInt maxCharCnt);
 		virtual Bool ReadLine(NN<Text::StringBuilderUTF8> sb, UOSInt maxCharCnt);
-		virtual UTF8Char *GetLastLineBreak(UTF8Char *buff);
+		virtual UnsafeArray<UTF8Char> GetLastLineBreak(UnsafeArray<UTF8Char> buff);
 		virtual Bool GetLastLineBreak(NN<Text::StringBuilderUTF8> sb);
 		virtual Bool IsLineBreak();
 		virtual Bool ReadToEnd(NN<Text::StringBuilderUTF8> sb);

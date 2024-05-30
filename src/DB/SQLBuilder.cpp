@@ -23,7 +23,7 @@ DB::SQLBuilder::~SQLBuilder()
 {
 }
 
-void DB::SQLBuilder::AppendCmdSlow(const UTF8Char *val)
+void DB::SQLBuilder::AppendCmdSlow(UnsafeArrayOpt<const UTF8Char> val)
 {
 	this->sb.AppendSlow(val);
 }
@@ -84,8 +84,8 @@ void DB::SQLBuilder::AppendStr(Optional<Text::String> val)
 
 void DB::SQLBuilder::AppendStr(NN<Text::String> val)
 {
-	this->sb.AllocLeng(DB::DBUtil::SDBStrUTF8Leng(val->v, this->sqlType));
-	this->sb.SetEndPtr(DB::DBUtil::SDBStrUTF8(this->sb.GetEndPtr(), val->v, this->sqlType));
+	this->sb.AllocLeng(DB::DBUtil::SDBStrUTF8Leng(UnsafeArray<const UTF8Char>(val->v), this->sqlType));
+	this->sb.SetEndPtr(DB::DBUtil::SDBStrUTF8(this->sb.GetEndPtr(), UnsafeArray<const UTF8Char>(val->v), this->sqlType));
 }
 
 void DB::SQLBuilder::AppendStrC(Text::CString val)
@@ -94,7 +94,7 @@ void DB::SQLBuilder::AppendStrC(Text::CString val)
 	this->sb.SetEndPtr(DB::DBUtil::SDBStrUTF8(this->sb.GetEndPtr(), val.v, this->sqlType));
 }
 
-void DB::SQLBuilder::AppendStrUTF8(const UTF8Char *val)
+void DB::SQLBuilder::AppendStrUTF8(UnsafeArrayOpt<const UTF8Char> val)
 {
 	this->sb.AllocLeng(DB::DBUtil::SDBStrUTF8Leng(val, this->sqlType));
 	this->sb.SetEndPtr(DB::DBUtil::SDBStrUTF8(this->sb.GetEndPtr(), val, this->sqlType));
@@ -102,7 +102,7 @@ void DB::SQLBuilder::AppendStrUTF8(const UTF8Char *val)
 
 void DB::SQLBuilder::AppendStrW(const WChar *val)
 {
-	const UTF8Char *v = Text::StrToUTF8New(val);
+	UnsafeArray<const UTF8Char> v = Text::StrToUTF8New(val);
 	this->sb.AllocLeng(DB::DBUtil::SDBStrUTF8Leng(v, this->sqlType));
 	this->sb.SetEndPtr(DB::DBUtil::SDBStrUTF8(this->sb.GetEndPtr(), v, this->sqlType));
 	Text::StrDelNew(v);
@@ -175,7 +175,7 @@ void DB::SQLBuilder::AppendTableName(NN<DB::TableDef> table)
 	UOSInt i = name->IndexOf('.');
 	if (i != INVALID_INDEX)
 	{
-		const UTF8Char *catalog = Text::StrCopyNewC(name->v, i).Ptr();
+		UnsafeArray<const UTF8Char> catalog = Text::StrCopyNewC(name->v, i);
 		this->AppendCol(catalog);
 		this->sb.AppendUTF8Char('.');
 		Text::StrDelNew(catalog);
@@ -187,7 +187,7 @@ void DB::SQLBuilder::AppendTableName(NN<DB::TableDef> table)
 	}
 }
 
-void DB::SQLBuilder::AppendCol(const UTF8Char *val)
+void DB::SQLBuilder::AppendCol(UnsafeArray<const UTF8Char> val)
 {
 	this->sb.AllocLeng(DB::DBUtil::SDBColUTF8Leng(val, this->sqlType));
 	this->sb.SetEndPtr(DB::DBUtil::SDBColUTF8(this->sb.GetEndPtr(), val, this->sqlType));
@@ -195,13 +195,13 @@ void DB::SQLBuilder::AppendCol(const UTF8Char *val)
 
 void DB::SQLBuilder::AppendCol(const WChar *val)
 {
-	const UTF8Char *v = Text::StrToUTF8New(val);
+	UnsafeArray<const UTF8Char> v = Text::StrToUTF8New(val);
 	this->sb.AllocLeng(DB::DBUtil::SDBColUTF8Leng(v, this->sqlType));
 	this->sb.SetEndPtr(DB::DBUtil::SDBColUTF8(this->sb.GetEndPtr(), v, this->sqlType));
 	Text::StrDelNew(v);
 }
 
-void DB::SQLBuilder::AppendTrim(Text::CString val)
+void DB::SQLBuilder::AppendTrim(Text::CStringNN val)
 {
 	this->sb.AllocLeng(DB::DBUtil::SDBTrimLeng(val, this->sqlType));
 	this->sb.SetEndPtr(DB::DBUtil::SDBTrim(this->sb.GetEndPtr(), val, this->sqlType));
@@ -212,7 +212,7 @@ void DB::SQLBuilder::Clear()
 	this->sb.ClearStr();
 }
 
-const UTF8Char *DB::SQLBuilder::ToString() const
+UnsafeArray<const UTF8Char> DB::SQLBuilder::ToString() const
 {
 	return this->sb.ToString();
 }

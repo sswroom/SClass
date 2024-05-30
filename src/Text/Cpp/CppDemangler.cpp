@@ -35,7 +35,7 @@ CnE = Constructor
 DnE = Destructor
 */
 
-void Text::Cpp::CppDemangler::AppendStr(NN<ParseEnv> env, UTF8Char *strStart)
+void Text::Cpp::CppDemangler::AppendStr(NN<ParseEnv> env, UnsafeArray<UTF8Char> strStart)
 {
 	env->substr[env->strId].v = strStart;
 	env->substr[env->strId].leng = (UOSInt)(env->sbuff - strStart);
@@ -47,7 +47,7 @@ void Text::Cpp::CppDemangler::AppendStr(NN<ParseEnv> env, UTF8Char *strStart)
 	env->strId++;
 }
 
-void Text::Cpp::CppDemangler::AppendNStr(NN<ParseEnv> env, UTF8Char *strStart)
+void Text::Cpp::CppDemangler::AppendNStr(NN<ParseEnv> env, UnsafeArray<UTF8Char> strStart)
 {
 	env->nstr[env->nstrId].v = strStart;
 	env->nstr[env->nstrId].leng = (UOSInt)(env->sbuff - strStart);
@@ -59,7 +59,7 @@ void Text::Cpp::CppDemangler::AppendNStr(NN<ParseEnv> env, UTF8Char *strStart)
 	env->nstrId++;
 }
 
-void Text::Cpp::CppDemangler::AppendTpl(NN<ParseEnv> env, UTF8Char *strStart)
+void Text::Cpp::CppDemangler::AppendTpl(NN<ParseEnv> env, UnsafeArray<UTF8Char> strStart)
 {
 	env->tplstr[env->tplId].v = strStart;
 	env->tplstr[env->tplId].leng = (UOSInt)(env->sbuff - strStart);
@@ -79,10 +79,10 @@ Bool Text::Cpp::CppDemangler::ParseType(NN<ParseEnv> env, Bool firstPart)
 	UOSInt i;
 	UTF8Char c;
 	Bool foundName;
-	UTF8Char *clsName = 0;
-	UTF8Char *nStart;
-	UTF8Char *nStart2;
-	UTF8Char *nStart3;
+	UnsafeArray<UTF8Char> clsName = env->sbuff;
+	UnsafeArray<UTF8Char> nStart;
+	UnsafeArray<UTF8Char> nStart2;
+	UnsafeArray<UTF8Char> nStart3;
 	while (true)
 	{
 		c = env->funcName[0];
@@ -1129,7 +1129,7 @@ Bool Text::Cpp::CppDemangler::ParseType(NN<ParseEnv> env, Bool firstPart)
 }
 
 
-UTF8Char *Text::Cpp::CppDemangler::ToFuncName(UTF8Char *sbuff, const UTF8Char *funcName)
+UnsafeArray<UTF8Char> Text::Cpp::CppDemangler::ToFuncName(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> funcName)
 {
 	if (funcName[0] == '_' && funcName[1] == 'Z')
 	{
@@ -1176,9 +1176,9 @@ UTF8Char *Text::Cpp::CppDemangler::ToFuncName(UTF8Char *sbuff, const UTF8Char *f
 			{
 				if (env.sbuff[-1] == '>' && env.funcName[0] == 'v')
 				{
-					MemCopyO(sbuff + 5, sbuff, (UOSInt)(env.sbuff - sbuff));
+					MemCopyO(sbuff.Ptr() + 5, sbuff.Ptr(), (UOSInt)(env.sbuff - sbuff));
 					env.sbuff += 5;
-					MemCopyNO(sbuff, "void ", 5);
+					MemCopyNO(sbuff.Ptr(), "void ", 5);
 					env.funcName++;
 					UOSInt i = env.tplId;
 					while (i-- > 0)

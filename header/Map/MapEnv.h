@@ -153,7 +153,7 @@ namespace Map
 
 		UOSInt AddLineStyle();
 		Bool SetLineStyleName(UOSInt index, Text::CString name);
-		UTF8Char *GetLineStyleName(UOSInt index, UTF8Char *buff) const;
+		UnsafeArrayOpt<UTF8Char> GetLineStyleName(UOSInt index, UnsafeArray<UTF8Char> buff) const;
 		Bool AddLineStyleLayer(UOSInt index, UInt32 color, Double thick, const UInt8 *pattern, UOSInt npattern);
 		Bool ChgLineStyleLayer(UOSInt index, UOSInt layerId, UInt32 color, Double thick, const UInt8 *pattern, UOSInt npattern);
 		Bool RemoveLineStyleLayer(UOSInt index, UOSInt layerId);
@@ -165,7 +165,7 @@ namespace Map
 		//-1 = error
 		UOSInt AddFontStyle(Text::CStringNN styleName, Text::CString fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor); //-1 = fail
 		Bool SetFontStyleName(UOSInt index, Text::CString name);
-		UTF8Char *GetFontStyleName(UOSInt index, UTF8Char *buff) const;
+		UnsafeArrayOpt<UTF8Char> GetFontStyleName(UOSInt index, UnsafeArray<UTF8Char> buff) const;
 		Bool RemoveFontStyle(UOSInt index);
 		UOSInt GetFontStyleCount() const;
 		Bool GetFontStyle(UOSInt index, OutParam<NN<Text::String>> fontName, OutParam<Double> fontSizePt, OutParam<Bool> bold, OutParam<UInt32> fontColor, OutParam<UOSInt> buffSize, OutParam<UInt32> buffColor) const;

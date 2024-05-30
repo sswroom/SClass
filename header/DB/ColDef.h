@@ -90,7 +90,7 @@ namespace DB
 		DB::ColDef::GeometryType GetGeometryType() const;
 		UInt32 GetGeometrySRID() const;
 
-		void SetColName(NN<const UTF8Char> colName);
+		void SetColName(UnsafeArray<const UTF8Char> colName);
 		void SetColName(Text::CString colName);
 		void SetColName(NN<Text::String> colName);
 		void SetColType(DB::DBUtil::ColType colType);
@@ -110,7 +110,7 @@ namespace DB
 
 		void Set(NN<const ColDef> colDef);
 
-		UTF8Char *ToColTypeStr(UTF8Char *sbuff) const;
+		UnsafeArray<UTF8Char> ToColTypeStr(UnsafeArray<UTF8Char> sbuff) const;
 		NN<ColDef> Clone() const;
 
 		static GeometryType GeometryTypeAdjust(GeometryType geomType, Bool hasZ, Bool hasM);

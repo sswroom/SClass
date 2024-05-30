@@ -758,7 +758,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::RAR5FileAnalyse::GetFram
 				{
 					Data::DateTime dt;
 					UTF8Char sbuff[64];
-					UTF8Char *sptr;
+					UnsafeArray<UTF8Char> sptr;
 					packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), CSTR("Flags"), packPtr, headerFlags);
 					if (headerFlags & 2)
 					{

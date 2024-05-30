@@ -835,7 +835,7 @@ Optional<Math::Geometry::Vector2D> Math::WKBReader::ParseWKB(const UInt8 *wkb, U
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendHexBuff(wkb, wkbLen, ' ', Text::LineBreakType::CRLF);
-			printf("WKBReader: Unsupported type: %d\r\n%s\r\n", geomType, sb.ToString());
+			printf("WKBReader: Unsupported type: %d\r\n%s\r\n", geomType, sb.ToPtr());
 		}
 		break;
 	}

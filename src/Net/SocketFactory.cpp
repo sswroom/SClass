@@ -74,7 +74,7 @@ Bool Net::SocketFactory::DNSResolveIP(Text::CStringNN host, NN<Net::SocketUtil::
 	if (Net::SocketUtil::SetAddrInfo(addr, host))
 		return true;
 
-	UTF8Char *sptr = Text::TextBinEnc::Punycode::Encode(sbuff, host);
+	UnsafeArray<UTF8Char> sptr = Text::TextBinEnc::Punycode::Encode(sbuff, host);
 	NN<Net::DNSHandler> dnsHdlr;
 	Sync::MutexUsage mutUsage(this->dnsMut);
 	if (!this->dnsHdlr.SetTo(dnsHdlr))
@@ -108,7 +108,7 @@ UOSInt Net::SocketFactory::DNSResolveIPs(Text::CStringNN host, Data::DataArray<N
 	if (Net::SocketUtil::SetAddrInfo(addrs[0], host))
 		return 1;
 
-	UTF8Char *sptr = Text::TextBinEnc::Punycode::Encode(sbuff, host);
+	UnsafeArray<UTF8Char> sptr = Text::TextBinEnc::Punycode::Encode(sbuff, host);
 	NN<Net::DNSHandler> dnsHdlr;
 	Sync::MutexUsage mutUsage(this->dnsMut);
 	if (!this->dnsHdlr.SetTo(dnsHdlr))
@@ -145,7 +145,7 @@ UInt32 Net::SocketFactory::DNSResolveIPv4(Text::CStringNN host)
 		return *(UInt32*)addr.addr;
 	}
 
-	UTF8Char *sptr = Text::TextBinEnc::Punycode::Encode(sbuff, host);
+	UnsafeArray<UTF8Char> sptr = Text::TextBinEnc::Punycode::Encode(sbuff, host);
 	NN<Net::DNSHandler> dnsHdlr;
 	Sync::MutexUsage mutUsage(this->dnsMut);
 	if (!this->dnsHdlr.SetTo(dnsHdlr))
@@ -170,7 +170,7 @@ UInt32 Net::SocketFactory::DNSResolveIPv4(Text::CStringNN host)
 	}
 }
 
-UTF8Char *Net::SocketFactory::GetRemoteName(UTF8Char *buff, NN<Socket> socket)
+UnsafeArrayOpt<UTF8Char> Net::SocketFactory::GetRemoteName(UnsafeArray<UTF8Char> buff, NN<Socket> socket)
 {
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
@@ -181,11 +181,11 @@ UTF8Char *Net::SocketFactory::GetRemoteName(UTF8Char *buff, NN<Socket> socket)
 	else
 	{
 		*buff = 0;
-		return buff;
+		return 0;
 	}
 }
 
-UTF8Char *Net::SocketFactory::GetLocalName(UTF8Char *buff, NN<Socket> socket)
+UnsafeArrayOpt<UTF8Char> Net::SocketFactory::GetLocalName(UnsafeArray<UTF8Char> buff, NN<Socket> socket)
 {
 	Net::SocketUtil::AddressInfo addr;
 	UInt16 port;
@@ -196,7 +196,7 @@ UTF8Char *Net::SocketFactory::GetLocalName(UTF8Char *buff, NN<Socket> socket)
 	else
 	{
 		*buff = 0;
-		return buff;
+		return 0;
 	}
 }
 

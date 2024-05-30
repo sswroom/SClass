@@ -11,15 +11,15 @@ Data::ArrayListICaseStrUTF8::ArrayListICaseStrUTF8(UOSInt capacity) : Data::Arra
 {
 }
 
-NN<Data::ArrayList<const UTF8Char*>> Data::ArrayListICaseStrUTF8::Clone() const
+NN<Data::ArrayList<UnsafeArrayOpt<const UTF8Char>>> Data::ArrayListICaseStrUTF8::Clone() const
 {
-	NN<Data::ArrayList<const UTF8Char*>> newArr;
+	NN<Data::ArrayList<UnsafeArrayOpt<const UTF8Char>>> newArr;
 	NEW_CLASSNN(newArr, Data::ArrayListICaseStrUTF8(this->capacity));
 	newArr->AddAll(*this);
 	return newArr;
 }
 
-OSInt Data::ArrayListICaseStrUTF8::CompareItem(const UTF8Char* obj1, const UTF8Char* obj2) const
+OSInt Data::ArrayListICaseStrUTF8::CompareItem(UnsafeArrayOpt<const UTF8Char> obj1, UnsafeArrayOpt<const UTF8Char> obj2) const
 {
-	return Text::StrCompareICase(obj1, obj2);
+	return Text::StrCompareICase(obj1.Ptr(), obj2.Ptr());
 }

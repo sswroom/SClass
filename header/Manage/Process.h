@@ -75,7 +75,7 @@ namespace Manage
 	public:
 		Process(UOSInt procId, Bool controlRight);
 		Process();
-		Process(const UTF8Char *cmdLine);
+		Process(UnsafeArray<const UTF8Char> cmdLine);
 		Process(const WChar *cmdLine);
 		virtual ~Process();
 
@@ -126,13 +126,13 @@ namespace Manage
 
 		static FindProcSess *FindProcess(Text::CString processName);
 		static FindProcSess *FindProcessW(const WChar *processName);
-		static UTF8Char *FindProcessNext(UTF8Char *processNameBuff, FindProcSess *sess, ProcessInfo *info);
+		static UnsafeArrayOpt<UTF8Char> FindProcessNext(UnsafeArray<UTF8Char> processNameBuff, FindProcSess *sess, ProcessInfo *info);
 		static WChar *FindProcessNextW(WChar *processNameBuff, FindProcSess *sess, ProcessInfo *info);
 		static void FindProcessClose(FindProcSess *sess);
-		static Int32 ExecuteProcess(Text::CString cmdLine, NN<Text::StringBuilderUTF8> result);
+		static Int32 ExecuteProcess(Text::CStringNN cmdLine, NN<Text::StringBuilderUTF8> result);
 		static Int32 ExecuteProcessW(const WChar *cmdLine, NN<Text::StringBuilderUTF8> result);
 		static Bool IsAlreadyStarted();
-		static Bool OpenPath(Text::CString path);
+		static Bool OpenPath(Text::CStringNN path);
 		static Bool OpenPathW(const WChar *path);
 		static Text::CStringNN GetPriorityName(ProcessPriority priority);
 	};

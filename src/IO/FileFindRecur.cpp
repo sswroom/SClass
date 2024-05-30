@@ -2,9 +2,9 @@
 #include "MyMemory.h"
 #include "IO/FileFindRecur.h"
 
-IO::FileFindRecur::FileFindRecur(Text::CString path)
+IO::FileFindRecur::FileFindRecur(Text::CStringNN path)
 {
-	this->srcBuff = MemAlloc(UTF8Char, path.leng + 1);
+	this->srcBuff = MemAllocArr(UTF8Char, path.leng + 1);
 	path.ConcatTo(this->srcBuff);
 	this->partCnt = Text::StrCountChar(this->srcBuff, IO::Path::PATH_SEPERATOR) + 1;
 	this->srcStrs = MemAlloc(Text::PString, this->partCnt);
@@ -32,7 +32,7 @@ IO::FileFindRecur::~FileFindRecur()
 			this->srchParts[i].sess = 0;
 		}
 	}
-	MemFree(this->srcBuff);
+	MemFreeArr(this->srcBuff);
 	MemFree(this->srchParts);
 	MemFree(this->srcStrs);
 }
@@ -41,7 +41,7 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 {
 	UOSInt i;
 	IO::Path::PathType thisPt;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	while (true)
 	{
@@ -64,8 +64,7 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 				i--;
 				if (IO::Path::IsSearchPattern(this->srcStrs[i].v))
 				{
-					sptr = IO::Path::FindNextFile(this->srchParts[i].buffPtr, this->srchParts[i].sess, 0, &thisPt, 0);
-					if (sptr)
+					if (IO::Path::FindNextFile(this->srchParts[i].buffPtr, this->srchParts[i].sess, 0, &thisPt, 0).SetTo(sptr))
 					{
 						i++;
 						break;
@@ -85,15 +84,14 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 			{
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 			}
-			this->srchParts[i].buffPtr = sptr;
+			this->srchParts[i].buffPtr = sptr.Ptr();
 			sptr = this->srcStrs[i].ConcatTo(sptr);
 			if (IO::Path::IsSearchPattern(this->srcStrs[i].v))
 			{
 				this->srchParts[i].sess = IO::Path::FindFile(CSTRP(this->currBuff, sptr));
 				if (this->srchParts[i].sess)
 				{
-					sptr = IO::Path::FindNextFile(this->srchParts[i].buffPtr, this->srchParts[i].sess, 0, &thisPt, 0);
-					if (sptr)
+					if (IO::Path::FindNextFile(this->srchParts[i].buffPtr, this->srchParts[i].sess, 0, &thisPt, 0).SetTo(sptr))
 					{
 					}
 					else
@@ -109,8 +107,7 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 							i--;
 							if (IO::Path::IsSearchPattern(this->srcStrs[i].v))
 							{
-								sptr = IO::Path::FindNextFile(this->srchParts[i].buffPtr, this->srchParts[i].sess, 0, &thisPt, 0);
-								if (sptr)
+								if (IO::Path::FindNextFile(this->srchParts[i].buffPtr, this->srchParts[i].sess, 0, &thisPt, 0).SetTo(sptr))
 								{
 									break;
 								}
@@ -134,8 +131,7 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 						i--;
 						if (IO::Path::IsSearchPattern(this->srcStrs[i].v))
 						{
-							sptr = IO::Path::FindNextFile(this->srchParts[i].buffPtr, this->srchParts[i].sess, 0, &thisPt, 0);
-							if (sptr)
+							if (IO::Path::FindNextFile(this->srchParts[i].buffPtr, this->srchParts[i].sess, 0, &thisPt, 0).SetTo(sptr))
 							{
 								break;
 							}

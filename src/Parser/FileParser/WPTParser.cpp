@@ -40,8 +40,8 @@ IO::ParserType Parser::FileParser::WPTParser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::WPTParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UTF8Char sbuff[1024];
-	UTF8Char *sptr;
-	UTF8Char *tmpArr[16];
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> tmpArr[16];
 	Map::VectorLayer *lyr = 0;
 	NN<Math::Geometry::PointZ> pt;
 	Bool valid;
@@ -53,39 +53,36 @@ Optional<IO::ParsedObject> Parser::FileParser::WPTParser::ParseFileHdr(NN<IO::St
 	Text::UTF8Reader reader(stm);
 
 	valid = true;
-	sptr = reader.ReadLine(sbuff, 1024);
-	if (sptr == 0 || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OziExplorer Waypoint File Version ")))
+	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OziExplorer Waypoint File Version ")))
 	{
 		valid = false;
 	}
-	sptr = reader.ReadLine(sbuff, 1024);
-	if (sptr == 0 || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("WGS 84")))
+	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("WGS 84")))
 	{
 		valid = false;
 	}
-	sptr = reader.ReadLine(sbuff, 1024);
-	if (sptr == 0 || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Reserved ")))
+	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Reserved ")))
 	{
 		valid = false;
 	}
 	if (valid)
 	{
-		const UTF8Char *colNames[] = {(const UTF8Char*)"Name", (const UTF8Char*)"Description"};
+		UnsafeArray<const UTF8Char> colNames[] = {U8STR("Name"), U8STR("Description")};
 		DB::DBUtil::ColType colTypes[] = {DB::DBUtil::CT_VarUTF8Char, DB::DBUtil::CT_VarUTF8Char};
 		UOSInt colSizes[] = {14, 40};
 		UOSInt colDPs[] = {0, 0};
 		reader.ReadLine(sbuff, 1024);
-		UTF8Char *cols[2];
+		UnsafeArray<UTF8Char> cols[2];
 
 		NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, fd->GetFullName(), 2, colNames, Math::CoordinateSystemManager::CreateWGS84Csys(), colTypes, colSizes, colDPs, 0, 0));
-		while (reader.ReadLine(sbuff, 1024))
+		while (reader.ReadLine(sbuff, 1024).NotNull())
 		{
 			if (Text::StrSplitTrim(tmpArr, 16, sbuff, ',') == 16)
 			{
 				NEW_CLASSNN(pt, Math::Geometry::PointZ(4326, Text::StrToDouble(tmpArr[3]), Text::StrToDouble(tmpArr[2]), Text::StrToDouble(tmpArr[14]) / 3.2808333333333333333333333333333));
 				cols[0] = tmpArr[1];
 				cols[1] = tmpArr[10];
-				lyr->AddVector(pt, (const UTF8Char**)cols);
+				lyr->AddVector(pt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(UARR(cols)));
 			}
 		}
 	}

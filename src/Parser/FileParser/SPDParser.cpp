@@ -34,7 +34,7 @@ IO::ParserType Parser::FileParser::SPDParser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::SPDParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UTF8Char sbuff[1024];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	if (!fd->IsFullFile())
 		return 0;

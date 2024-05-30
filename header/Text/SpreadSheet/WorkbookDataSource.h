@@ -19,7 +19,7 @@ namespace Text
 			WorkbookDataSource(NN<Worksheet> sheet, UOSInt firstRow, UOSInt lastRow, UOSInt firstCol, UOSInt lastCol);
 			~WorkbookDataSource();
 
-			UTF8Char *ToCodeRange(UTF8Char *sbuff) const;
+			UnsafeArray<UTF8Char> ToCodeRange(UnsafeArray<UTF8Char> sbuff) const;
 			NN<Worksheet> GetSheet() const;
 			UOSInt GetFirstRow() const;
 			UOSInt GetLastRow() const;

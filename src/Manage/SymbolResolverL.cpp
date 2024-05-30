@@ -26,7 +26,7 @@ Manage::SymbolResolver::SymbolResolver(NN<Manage::Process> proc)
 	UOSInt baseAddr;
 	UOSInt size;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->proc = proc;
 
 	Data::ArrayListNN<Manage::ModuleInfo> modList;
@@ -55,7 +55,7 @@ Manage::SymbolResolver::~SymbolResolver()
 	}
 }
 
-UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
+UnsafeArrayOpt<UTF8Char> Manage::SymbolResolver::ResolveName(UnsafeArray<UTF8Char> buff, UInt64 address)
 {
 	void *addr = (void*)(OSInt)address;
 	char **name = backtrace_symbols(&addr, 1);

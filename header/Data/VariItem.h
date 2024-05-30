@@ -137,7 +137,7 @@ namespace Data
 		UInt64 GetAsU64() const;
 		Bool GetAsBool() const;
 		void GetAsString(NN<Text::StringBuilderUTF8> sb) const;
-		UTF8Char *GetAsStringS(UTF8Char *buff, UOSInt buffSize) const;
+		UnsafeArray<UTF8Char> GetAsStringS(UnsafeArray<UTF8Char> buff, UOSInt buffSize) const;
 		Text::String *GetAsNewString() const;
 		Data::DateTime *GetAsNewDateTime() const;
 		Data::Timestamp GetAsTimestamp() const;
@@ -151,9 +151,10 @@ namespace Data
 		void *GetAsUnk() const;
 
 		void SetNull();
-		void SetStrSlow(const UTF8Char *str);
-		void SetStr(const UTF8Char *str, UOSInt strLen);
-		void SetStrCopy(const UTF8Char *str, UOSInt strLen);
+		void SetStrSlow(UnsafeArrayOpt<const UTF8Char> str);
+		void SetStr(UnsafeArrayOpt<const UTF8Char> str, UOSInt strLen);
+		void SetStr(UnsafeArray<const UTF8Char> str, UOSInt strLen);
+		void SetStrCopy(UnsafeArrayOpt<const UTF8Char> str, UOSInt strLen);
 		void SetStr(Optional<Text::String> str);
 		void SetStr(NN<Text::String> str);
 		void SetDate(Data::DateTime *dt);
@@ -183,7 +184,7 @@ namespace Data
 		void ToString(NN<Text::StringBuilderUTF8> sb) const;
 
 		static NN<VariItem> NewNull();
-		static NN<VariItem> NewStrSlow(const UTF8Char *str);
+		static NN<VariItem> NewStrSlow(UnsafeArrayOpt<const UTF8Char> str);
 		static NN<VariItem> NewStr(Text::CString str);
 		static NN<VariItem> NewStr(Optional<Text::String> str);
 		static NN<VariItem> NewDateTime(Data::DateTime *dt);

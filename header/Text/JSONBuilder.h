@@ -29,7 +29,7 @@ namespace Text
 		Bool isFirst;
 
 		void AppendStr(Text::CStringNN val);
-		void AppendStrUTF8(const UTF8Char *val);
+		void AppendStrUTF8(UnsafeArray<const UTF8Char> val);
 		void AppendStrW(const WChar *val);
 		void AppendDouble(Double val);
 		void AppendTSStr(Data::Timestamp ts);
@@ -51,7 +51,7 @@ namespace Text
 		Bool ArrayAddStr(Text::PString *val);
 		Bool ArrayAddStr(Text::CString val);
 		Bool ArrayAddStr(NN<Text::String> val);
-		Bool ArrayAddStrUTF8(const UTF8Char *val);
+		Bool ArrayAddStrUTF8(UnsafeArrayOpt<const UTF8Char> val);
 		Bool ArrayAddNull();
 		Bool ArrayAddCoord2D(Math::Coord2DDbl coord);
 		Bool ArrayAddVector3(Math::Vector3 vec3);
@@ -70,7 +70,7 @@ namespace Text
 		Bool ObjectAddStr(Text::CStringNN name, NN<const Text::String> val);
 		Bool ObjectAddStr(Text::CStringNN name, Text::CString val);
 		Bool ObjectAddStrOpt(Text::CStringNN name, Optional<Text::String> val);
-		Bool ObjectAddStrUTF8(Text::CStringNN name, const UTF8Char *val);
+		Bool ObjectAddStrUTF8(Text::CStringNN name, UnsafeArrayOpt<const UTF8Char> val);
 		Bool ObjectAddStrW(Text::CStringNN name, const WChar *val);
 		Bool ObjectAddTSStr(Text::CStringNN name, Data::Timestamp ts);
 		Bool ObjectAddDateStr(Text::CStringNN name, Data::Date dat);

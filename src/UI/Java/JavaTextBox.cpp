@@ -27,7 +27,7 @@ void UI::Java::JavaTextBox::SetText(Text::CStringNN lbl)
 {
 }
 
-UTF8Char *UI::Java::JavaTextBox::GetText(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> UI::Java::JavaTextBox::GetText(UnsafeArray<UTF8Char> buff)
 {
 	return 0;
 }

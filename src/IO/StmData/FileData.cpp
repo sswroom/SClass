@@ -73,7 +73,7 @@ IO::StmData::FileData::FileData(NN<Text::String> fname, Bool deleteOnClose)
 		dataOffset = 0;
 		fdh->fullName = fdh->filePath->Clone();
 		fdh->fileName.v = &fdh->fullName->v[fdh->fullName->LastIndexOf(IO::Path::PATH_SEPERATOR) + 1];
-		fdh->fileName.leng = (UOSInt)(fdh->fullName->GetEndPtr() - fdh->fileName.v);
+		fdh->fileName.leng = (UOSInt)(fdh->fullName->GetEndPtr() - fdh->fileName.v.Ptr());
 		fdh->deleteOnClose = deleteOnClose;
 	}
 }
@@ -102,7 +102,7 @@ IO::StmData::FileData::FileData(Text::CStringNN fname, Bool deleteOnClose)
 		dataOffset = 0;
 		fdh->fullName = fdh->filePath->Clone();
 		fdh->fileName.v = &fdh->fullName->v[fdh->fullName->LastIndexOf(IO::Path::PATH_SEPERATOR) + 1];
-		fdh->fileName.leng = (UOSInt)(fdh->fullName->GetEndPtr() - fdh->fileName.v);
+		fdh->fileName.leng = (UOSInt)(fdh->fullName->GetEndPtr() - fdh->fileName.v.Ptr());
 		fdh->deleteOnClose = deleteOnClose;
 	}
 }
@@ -190,7 +190,7 @@ void IO::StmData::FileData::SetFullName(Text::CString fullName)
 		this->fdn->fullName = Text::String::New(fullName);
 		i = this->fdn->fullName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		this->fdn->fileName.v = &this->fdn->fullName->v[i + 1];
-		this->fdn->fileName.leng = (UOSInt)(this->fdn->fullName->GetEndPtr() - this->fdn->fileName.v);
+		this->fdn->fileName.leng = (UOSInt)(this->fdn->fullName->GetEndPtr() - this->fdn->fileName.v.Ptr());
 	}
 }
 

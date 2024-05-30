@@ -73,7 +73,7 @@ UOSInt Text::MIMEObj::MIMEMessage::WriteStream(NN<IO::Stream> stm) const
 		i++;
 	}
 	sbc.AppendC(UTF8STRC("\r\n"));
-	stm->Write((UInt8*)sbc.ToString(), sbc.GetLength());
+	stm->Write(sbc.ToString(), sbc.GetLength());
 	i = sbc.GetLength();
 	if (this->transferData)
 	{
@@ -145,7 +145,7 @@ void Text::MIMEObj::MIMEMessage::AddHeader(NN<Text::String> name, NN<Text::Strin
 	this->headerValue.Add(value->Clone());
 }
 
-Optional<Text::String> Text::MIMEObj::MIMEMessage::GetHeader(const UTF8Char *name, UOSInt nameLen) const
+Optional<Text::String> Text::MIMEObj::MIMEMessage::GetHeader(UnsafeArray<const UTF8Char> name, UOSInt nameLen) const
 {
 	UOSInt i;
 	UOSInt j;
@@ -361,7 +361,7 @@ Bool Text::MIMEObj::MIMEMessage::ParseFromData(NN<IO::StreamData> fd)
 	return true;
 }
 
-UTF8Char *Text::MIMEObj::MIMEMessage::ParseHeaderStr(UTF8Char *sbuff, const UTF8Char *value)
+UnsafeArray<UTF8Char> Text::MIMEObj::MIMEMessage::ParseHeaderStr(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> value)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbc;
@@ -453,7 +453,7 @@ UTF8Char *Text::MIMEObj::MIMEMessage::ParseHeaderStr(UTF8Char *sbuff, const UTF8
 						UOSInt buffSize = (sbc.GetLength() >> 2) * 3;
 						UOSInt outSize;
 						UInt8 *tmpBuff = MemAlloc(UInt8, buffSize);
-						outSize = b64.Decrypt((const UInt8*)sbc.ToString(), sbc.GetLength(), tmpBuff);
+						outSize = b64.Decrypt((const UInt8*)sbc.ToPtr(), sbc.GetLength(), tmpBuff);
 						sbuff = enc.UTF8FromBytes(sbuff, tmpBuff, outSize, 0);
 						MemFree(tmpBuff);
 					}

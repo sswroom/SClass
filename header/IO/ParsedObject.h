@@ -54,7 +54,7 @@ namespace IO
 		virtual ~ParsedObject();
 
 		virtual IO::ParserType GetParserType() const = 0;
-		UTF8Char *GetSourceName(UTF8Char *oriStr) const;
+		UnsafeArray<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> oriStr) const;
 		NN<Text::String> GetSourceNameObj() const { return this->sourceName; }
 		void SetSourceName(NN<Text::String> sourceName);
 		void SetSourceName(Text::CStringNN sourceName);

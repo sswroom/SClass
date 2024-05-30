@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Text/UTF8Util.h"
 
-Bool Text::UTF8Util::ValidStr(const UTF8Char *s)
+Bool Text::UTF8Util::ValidStr(UnsafeArray<const UTF8Char> s)
 {
 	Bool valid = true;
 	UTF8Char c;

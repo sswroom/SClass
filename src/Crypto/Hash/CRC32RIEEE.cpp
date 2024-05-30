@@ -29,7 +29,7 @@ Crypto::Hash::CRC32RIEEE::~CRC32RIEEE()
 {
 }
 
-UTF8Char *Crypto::Hash::CRC32RIEEE::GetName(UTF8Char *sbuff) const
+UnsafeArray<UTF8Char> Crypto::Hash::CRC32RIEEE::GetName(UnsafeArray<UTF8Char> sbuff) const
 {
 	return Text::StrConcatC(sbuff, UTF8STRC("CRC32 IEEE"));
 }

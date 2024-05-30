@@ -6,7 +6,7 @@ namespace Text
 	class UTF8Util
 	{
 	public:
-		static Bool ValidStr(const UTF8Char *s);
+		static Bool ValidStr(UnsafeArray<const UTF8Char> s);
 	};
 }
 #endif

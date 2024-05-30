@@ -338,7 +338,7 @@ Optional<Text::String> DB::SortableDBReader::GetNewStr(UOSInt colIndex)
 	return 0;
 }
 
-UTF8Char *DB::SortableDBReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> DB::SortableDBReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
 	Text::StringBuilderUTF8 sb;
 	if (this->GetStr(colIndex, sb))
@@ -477,7 +477,7 @@ Bool DB::SortableDBReader::IsNull(UOSInt colIndex)
 	return item->GetItemType() == Data::VariItem::ItemType::Null;
 }
 
-UTF8Char *DB::SortableDBReader::GetName(UOSInt colIndex, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> DB::SortableDBReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 {
 	NN<DB::ColDef> col;
 	if (this->cols.GetItem(colIndex).SetTo(col))

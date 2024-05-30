@@ -7,7 +7,7 @@
 #include "IO/ConsoleWriter.h"
 #include "Text/StringBuilderUTF8.h"
 
-UTF8Char *Test(UTF8Char *sbuff, const UTF8Char *pwd, UOSInt pwdLen, const UTF8Char *salt, UOSInt saltLen, UOSInt cnt, UOSInt dkLen)
+UnsafeArray<UTF8Char> Test(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> pwd, UOSInt pwdLen, UnsafeArray<const UTF8Char> salt, UOSInt saltLen, UOSInt cnt, UOSInt dkLen)
 {
 	UInt8 *dk = MemAlloc(UInt8, dkLen);
 	Crypto::Hash::SHA1 sha1;
@@ -21,7 +21,7 @@ UTF8Char *Test(UTF8Char *sbuff, const UTF8Char *pwd, UOSInt pwdLen, const UTF8Ch
 Int32 MyMain(NN<Core::IProgControl> progCtrl)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	//rfc6070
 	sptr = Test(sbuff, UTF8STRC("password"), UTF8STRC("salt"), 1, 20);
 	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("0C60C80F961F0E71F3A9B524AF6012062FE037A6")))

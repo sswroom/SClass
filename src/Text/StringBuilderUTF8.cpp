@@ -16,7 +16,7 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(Text::StringBase<UTF
 	if (s->leng > 0)
 	{
 		STRINGBUILDER_ALLOCLENG(s->leng);
-		MemCopyNO(&this->v[this->leng], s->v, s->leng + 1);
+		MemCopyNO(&this->v[this->leng], s->v.Ptr(), s->leng + 1);
 		this->leng += s->leng;
 	}
 	return *this;
@@ -25,7 +25,7 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(Text::StringBase<UTF
 NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(NN<Text::String> s)
 {
 	STRINGBUILDER_ALLOCLENG(s->leng);
-	MemCopyNO(&this->v[this->leng], s->v, s->leng + 1);
+	MemCopyNO(&this->v[this->leng], s->v.Ptr(), s->leng + 1);
 	this->leng += s->leng;
 	return *this;
 }
@@ -39,7 +39,7 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(Text::StringBase<con
 	if (s->leng > 0)
 	{
 		STRINGBUILDER_ALLOCLENG(s->leng);
-		MemCopyNO(&this->v[this->leng], s->v, s->leng + 1);
+		MemCopyNO(&this->v[this->leng], s->v.Ptr(), s->leng + 1);
 		this->leng += s->leng;
 	}
 	return *this;
@@ -50,7 +50,7 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(const Text::StringBa
 	if (s.leng > 0)
 	{
 		STRINGBUILDER_ALLOCLENG(s.leng);
-		MemCopyNO(&this->v[this->leng], s.v, s.leng + 1);
+		MemCopyNO(&this->v[this->leng], s.v.Ptr(), s.leng + 1);
 		this->leng += s.leng;
 	}
 	return *this;
@@ -61,7 +61,7 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::Append(const Text::StringBa
 	if (s.leng > 0)
 	{
 		STRINGBUILDER_ALLOCLENG(s.leng);
-		MemCopyNO(&this->v[this->leng], s.v, s.leng + 1);
+		MemCopyNO(&this->v[this->leng], s.v.Ptr(), s.leng + 1);
 		this->leng += s.leng;
 	}
 	return *this;
@@ -77,11 +77,26 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendOpt(Optional<Text::St
 	if (ns->leng > 0)
 	{
 		STRINGBUILDER_ALLOCLENG(ns->leng);
-		MemCopyNO(&this->v[this->leng], ns->v, ns->leng + 1);
+		MemCopyNO(&this->v[this->leng], ns->v.Ptr(), ns->leng + 1);
 		this->leng += ns->leng;
 	}
 	return *this;
+}
 
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendOpt(Text::CString s)
+{
+	Text::CStringNN ns;
+	if (!s.SetTo(ns))
+	{
+		return *this;
+	}
+	if (ns.leng > 0)
+	{
+		STRINGBUILDER_ALLOCLENG(ns.leng);
+		MemCopyNO(&this->v[this->leng], ns.v.Ptr(), ns.leng + 1);
+		this->leng += ns.leng;
+	}
+	return *this;
 }
 
 NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendW(const WChar *s)
@@ -151,27 +166,28 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendUTF32(const UTF32Char
 	return *this;
 }
 
-NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendSlow(const UTF8Char *s)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendSlow(UnsafeArrayOpt<const UTF8Char> s)
 {
-	if (s == 0)
+	UnsafeArray<const UTF8Char> nns;
+	if (!s.SetTo(nns))
 	{
 		return *this;
 	}
-	UOSInt len = Text::StrCharCnt(s);
+	UOSInt len = Text::StrCharCnt(nns);
 	if (len > 0)
 	{
 		STRINGBUILDER_ALLOCLENG(len);
-		this->leng = (UOSInt)(Text::StrConcatC(&this->v[this->leng], s, len) - this->v);
+		this->leng = (UOSInt)(Text::StrConcatC(this->v + this->leng, nns, len) - this->v);
 	}
 	return *this;
 }
 
-NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendS(const UTF8Char *s, UOSInt maxLen)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendS(UnsafeArray<const UTF8Char> s, UOSInt maxLen)
 {
 	if (maxLen > 0)
 	{
 		STRINGBUILDER_ALLOCLENG(maxLen);
-		this->leng = (UOSInt)(Text::StrConcatS(&this->v[this->leng], s, maxLen) - this->v);
+		this->leng = (UOSInt)(Text::StrConcatS(this->v + this->leng, s, maxLen) - this->v);
 	}
 	return *this;
 }
@@ -292,17 +308,17 @@ NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendCSV(const UTF8Char **
 	return *this;
 }
 
-NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendToUpper(const UTF8Char *s, UOSInt len)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendToUpper(UnsafeArray<const UTF8Char> s, UOSInt len)
 {
 	STRINGBUILDER_ALLOCLENG(len);
-	this->leng = (UOSInt)(Text::StrToUpperC(&this->v[this->leng], s, len) - this->v);
+	this->leng = (UOSInt)(Text::StrToUpperC(this->v + this->leng, s, len) - this->v);
 	return *this;
 }
 
-NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendToLower(const UTF8Char *s, UOSInt len)
+NN<Text::StringBuilderUTF8> Text::StringBuilderUTF8::AppendToLower(UnsafeArray<const UTF8Char> s, UOSInt len)
 {
 	STRINGBUILDER_ALLOCLENG(len);
-	this->leng = (UOSInt)(Text::StrToLowerC(&this->v[this->leng], s, len) - this->v);
+	this->leng = (UOSInt)(Text::StrToLowerC(this->v + this->leng, s, len) - this->v);
 	return *this;
 }
 

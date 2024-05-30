@@ -22,15 +22,15 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackChg(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRThreadInfoForm> me = userObj.GetNN<SSWR::AVIRead::AVIRThreadInfoForm>();
 	UOSInt i = me->lbMyStack->GetSelectedIndex();
-	const UTF8Char *s = me->stacks.GetItem(i).OrNull();
-	const UTF8Char *sMem = me->stacksMem.GetItem(i).OrNull();
+	UnsafeArray<const UTF8Char> s;
+	UnsafeArray<const UTF8Char> sMem;
 	UOSInt slen;
-	UTF8Char *sbuff;
+	UnsafeArray<UTF8Char> sbuff;
 	Text::PString sline[2];
 	Text::PString sarr[34];
 	Bool hasNext;
 
-	if (sMem)
+	if (me->stacksMem.GetItem(i).SetTo(sMem))
 	{
 		me->txtMyStackMem->SetText({sMem, Text::StrCharCnt(sMem)});
 	}
@@ -39,10 +39,10 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackChg(AnyType userObj)
 		me->txtMyStackMem->SetText(CSTR(""));
 	}
 	me->lvMyStack->ClearItems();
-	if (s)
+	if (me->stacks.GetItem(i).SetTo(s))
 	{
 		slen = Text::StrCharCnt(s);
-		sbuff = MemAlloc(UTF8Char, slen + 1);
+		sbuff = MemAllocArr(UTF8Char, slen + 1);
 		Text::StrConcatC(sbuff, s, slen);
 		sline[1].v = sbuff;
 		sline[1].leng = slen;
@@ -145,7 +145,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackChg(AnyType userObj)
 					break;
 			}
 		}
-		MemFree(sbuff);
+		MemFreeArr(sbuff);
 	}
 }
 
@@ -637,8 +637,8 @@ SSWR::AVIRead::AVIRThreadInfoForm::~AVIRThreadInfoForm()
 	i = this->stacks.GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->stacks.GetItem(i).OrNull());
-		Text::StrDelNew(this->stacksMem.GetItem(i).OrNull());
+		Text::StrDelNew(this->stacks.GetItemNoCheck(i));
+		Text::StrDelNew(this->stacksMem.GetItemNoCheck(i));
 	}
 }
 

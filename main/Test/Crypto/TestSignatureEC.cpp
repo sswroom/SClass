@@ -43,7 +43,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendHexBuff(signData, signLen, ' ', Text::LineBreakType::CRLF);
-			printf("Signature:\r\n%s\r\n", sb.ToString());
+			printf("Signature:\r\n%s\r\n", sb.ToPtr());
 			
 			if (nnssl->SignatureVerify(key, Crypto::Hash::HashType::SHA256, CSTR("123456").ToByteArray(), Data::ByteArrayR(signData, signLen)))
 			{

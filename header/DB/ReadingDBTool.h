@@ -40,7 +40,7 @@ namespace DB
 		Optional<DB::DBReader> lastReader;
 		UInt32 readerCnt;
 		UInt32 readerFail;
-//		UTF8Char *connStr;
+//		UnsafeArray<UTF8Char> connStr;
 		UInt32 openFail;
 		Bool needRelease;
 		Text::String *currDBName;
@@ -58,14 +58,14 @@ namespace DB
 		Bool axisAware;
 
 	public:
-		static ReadingDBTool *MongoDBSource(const UTF8Char *url, NN<IO::LogTool> log, Text::CString logPrefix);
+		static ReadingDBTool *MongoDBSource(UnsafeArray<const UTF8Char> url, NN<IO::LogTool> log, Text::CString logPrefix);
 
 	protected:
-		void AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::LogHandler::LogLevel logLev);
+		void AddLogMsgC(Text::CStringNN msg, IO::LogHandler::LogLevel logLev);
 
-		UOSInt SplitMySQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr);
-		UOSInt SplitMSSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr);
-		UOSInt SplitUnkSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr);
+		UOSInt SplitMySQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs, UOSInt maxCnt, UnsafeArray<UTF8Char> oriStr);
+		UOSInt SplitMSSQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs, UOSInt maxCnt, UnsafeArray<UTF8Char> oriStr);
+		UOSInt SplitUnkSQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs, UOSInt maxCnt, UnsafeArray<UTF8Char> oriStr);
 	public:
 		ReadingDBTool(NN<DB::DBConn> db, Bool needRelease, NN<IO::LogTool> log, Text::CString logPrefix);
 		virtual ~ReadingDBTool();
@@ -75,7 +75,7 @@ namespace DB
 		virtual void CloseReader(NN<DB::DBReader> r);
 		DB::SQLType GetSQLType() const;
 		Bool IsAxisAware() const;
-		Bool IsDataError(const UTF8Char *errCode);
+		Bool IsDataError(UnsafeArrayOpt<const UTF8Char> errCode);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> sb);
 		NN<DB::DBConn> GetDBConn();
 		Int8 GetTzQhr() const;
@@ -83,18 +83,18 @@ namespace DB
 
 		virtual Bool IsDBTool() const;
 		
-		UTF8Char *DBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName);
-		UTF8Char *DBColW(UTF8Char *sqlstr, const WChar *colName);
-		UTF8Char *DBTrim(UTF8Char *sqlstr, Text::CString val);
-		UTF8Char *DBStrUTF8(UTF8Char *sqlstr, const UTF8Char *str);
-		UTF8Char *DBStrW(UTF8Char *sqlstr, const WChar *str);
-		UTF8Char *DBInt32(UTF8Char *sqlstr, Int32 val);
-		UTF8Char *DBInt64(UTF8Char *sqlstr, Int64 val);
-		UTF8Char *DBDateTime(UTF8Char *sqlstr, Data::DateTime *dat);
-		UTF8Char *DBSng(UTF8Char *sqlstr, Single val);
-		UTF8Char *DBDbl(UTF8Char *sqlstr, Double val);
-		UTF8Char *DBBool(UTF8Char *sqlstr, Bool val);
-		UTF8Char *DBIsNull(UTF8Char *sqlstr, const UTF8Char *colName);
+		UnsafeArray<UTF8Char> DBColUTF8(UnsafeArray<UTF8Char> sqlstr, UnsafeArray<const UTF8Char> colName);
+		UnsafeArray<UTF8Char> DBColW(UnsafeArray<UTF8Char> sqlstr, const WChar *colName);
+		UnsafeArray<UTF8Char> DBTrim(UnsafeArray<UTF8Char> sqlstr, Text::CStringNN val);
+		UnsafeArray<UTF8Char> DBStrUTF8(UnsafeArray<UTF8Char> sqlstr, UnsafeArrayOpt<const UTF8Char> str);
+		UnsafeArray<UTF8Char> DBStrW(UnsafeArray<UTF8Char> sqlstr, const WChar *str);
+		UnsafeArray<UTF8Char> DBInt32(UnsafeArray<UTF8Char> sqlstr, Int32 val);
+		UnsafeArray<UTF8Char> DBInt64(UnsafeArray<UTF8Char> sqlstr, Int64 val);
+		UnsafeArray<UTF8Char> DBDateTime(UnsafeArray<UTF8Char> sqlstr, Data::DateTime *dat);
+		UnsafeArray<UTF8Char> DBSng(UnsafeArray<UTF8Char> sqlstr, Single val);
+		UnsafeArray<UTF8Char> DBDbl(UnsafeArray<UTF8Char> sqlstr, Double val);
+		UnsafeArray<UTF8Char> DBBool(UnsafeArray<UTF8Char> sqlstr, Bool val);
+		UnsafeArray<UTF8Char> DBIsNull(UnsafeArray<UTF8Char> sqlstr, UnsafeArray<const UTF8Char> colName);
 
 		UInt32 GetDataCnt();
 
@@ -105,9 +105,9 @@ namespace DB
 
 		virtual UOSInt GetDatabaseNames(NN<Data::ArrayListStringNN> arr);
 		virtual void ReleaseDatabaseNames(NN<Data::ArrayListStringNN> arr);
-		virtual Bool ChangeDatabase(Text::CString databaseName);
+		virtual Bool ChangeDatabase(Text::CStringNN databaseName);
 		virtual Text::String *GetCurrDBName();
-		Bool GetDBCollation(Text::CString databaseName, Collation *collation);
+		Bool GetDBCollation(Text::CStringNN databaseName, NN<Collation> collation);
 
 		UOSInt GetVariables(NN<Data::ArrayList<Data::TwinItem<Optional<Text::String>, Optional<Text::String>>>> vars);
 		void FreeVariables(NN<Data::ArrayList<Data::TwinItem<Optional<Text::String>, Optional<Text::String>>>> vars);
@@ -115,7 +115,7 @@ namespace DB
 		UOSInt GetConnectionInfo(NN<Data::ArrayListNN<ConnectionInfo>> conns);
 		void FreeConnectionInfo(NN<Data::ArrayListNN<ConnectionInfo>> conns);
 
-		UOSInt SplitSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr);
+		UOSInt SplitSQL(UnsafeArray<UnsafeArray<UTF8Char>> outStrs, UOSInt maxCnt, UnsafeArray<UTF8Char> oriStr);
 
 		virtual Bool CanModify();
 	};

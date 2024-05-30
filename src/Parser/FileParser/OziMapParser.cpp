@@ -51,9 +51,9 @@ IO::ParserType Parser::FileParser::OziMapParser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UTF8Char sbuff[1024];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::String *fileName = 0;
-	UTF8Char *tmpArr[6];
+	UnsafeArray<UTF8Char> tmpArr[6];
 	Map::VectorLayer *lyr = 0;
 	Bool valid;
 	NN<Parser::ParserList> parsers;
@@ -68,13 +68,11 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 	Text::UTF8Reader reader(stm);
 
 	valid = true;
-	sptr = reader.ReadLine(sbuff, 1024);
-	if (!Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OziExplorer Map Data File Version ")))
+	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OziExplorer Map Data File Version ")))
 	{
 		valid = false;
 	}
-	sptr = reader.ReadLine(sbuff, 1024); //File Name
-	if (sptr)
+	if (reader.ReadLine(sbuff, 1024).SetTo(sptr))
 	{
 		fileName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff)).Ptr();
 	}
@@ -84,13 +82,11 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 	}
 	reader.ReadLine(sbuff, 1024); //Full Path
 	reader.ReadLine(sbuff, 1024); //?
-	sptr = reader.ReadLine(sbuff, 1024);
-	if (sptr == 0 || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("WGS 84")))
+	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("WGS 84")))
 	{
 		valid = false;
 	}
-	sptr = reader.ReadLine(sbuff, 1024);
-	if (sptr == 0 || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Reserved ")))
+	if (!reader.ReadLine(sbuff, 1024).SetTo(sptr) || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Reserved ")))
 	{
 		valid = false;
 	}
@@ -102,7 +98,7 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 		Int32 *ptStatus = 0;
 		Double imgW = 0;
 		Double imgH = 0;
-		while ((sptr = reader.ReadLine(sbuff, 1024)) != 0)
+		while (reader.ReadLine(sbuff, 1024).SetTo(sptr))
 		{
 			if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("MMPNUM,")))
 			{
@@ -205,9 +201,9 @@ Optional<IO::ParsedObject> Parser::FileParser::OziMapParser::ParseFileHdr(NN<IO:
 					NEW_CLASSNN(vimg, Math::Geometry::VectorImage(csys->GetSRID(), shimg, Math::Coord2DDbl(0, 0), Math::Coord2DDbl(imgW, imgH), false, CSTRP(sbuff, sptr), 0, 0));
 					UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 					NN<Text::String> s = Text::String::New(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]));
-					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, (const UTF8Char**)0, csys, 0, s.Ptr()));
+					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), csys, s.Ptr()));
 					s->Release();
-					lyr->AddVector(vimg, (const UTF8Char**)0);
+					lyr->AddVector(vimg, (Text::PString*)0);
 				}
 			}
 		}
