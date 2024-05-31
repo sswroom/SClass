@@ -2736,7 +2736,7 @@ Bool Text::StrToUOSInt(const UTF32Char *intStr, UOSInt *outVal)
 #endif
 }
 
-Bool Text::StrToBool(const UTF16Char *str)
+Bool Text::StrToBoolW(const UTF16Char *str)
 {
 	if (str == 0)
 	{
@@ -2756,7 +2756,7 @@ Bool Text::StrToBool(const UTF16Char *str)
 	}
 }
 
-Bool Text::StrToBool(const UTF32Char *str)
+Bool Text::StrToBoolW(const UTF32Char *str)
 {
 	if (str == 0)
 	{

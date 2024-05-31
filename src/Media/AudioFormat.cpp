@@ -102,7 +102,7 @@ void Media::AudioFormat::ToString(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendC(UTF8STRC("Foramt Id = 0x"));
 	sb->AppendHex32V(this->formatId);
 	sb->AppendC(UTF8STRC(" ("));
-	sb->Append(GetNameFormatId(this->formatId));
+	sb->Append(FormatIdGetName(this->formatId));
 	sb->AppendC(UTF8STRC(")"));
 	sb->AppendC(UTF8STRC("\r\nFrequency = "));
 	sb->AppendU32(this->frequency);
@@ -117,12 +117,12 @@ void Media::AudioFormat::ToString(NN<Text::StringBuilderUTF8> sb) const
 	sb->AppendC(UTF8STRC("\r\nOther = "));
 	sb->AppendU32(this->other);
 	sb->AppendC(UTF8STRC("\r\nInteger Type = "));
-	sb->Append(GetNameIntType(this->intType));
+	sb->Append(IntTypeGetName(this->intType));
 	sb->AppendC(UTF8STRC("\r\nExtra Size = "));
 	sb->AppendU32(this->extraSize);
 }
 
-Text::CString Media::AudioFormat::GetNameFormatId(UInt32 formatId)
+Text::CStringNN Media::AudioFormat::FormatIdGetName(UInt32 formatId)
 {
 	switch (formatId)
 	{
@@ -147,7 +147,7 @@ Text::CString Media::AudioFormat::GetNameFormatId(UInt32 formatId)
 	}
 }
 
-Text::CString Media::AudioFormat::GetNameIntType(IntType intType)
+Text::CStringNN Media::AudioFormat::IntTypeGetName(IntType intType)
 {
 	switch (intType)
 	{

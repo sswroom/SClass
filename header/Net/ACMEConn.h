@@ -70,9 +70,9 @@ namespace Net
 
 		static Optional<Text::String> JWK(NN<Crypto::Cert::X509Key> key, OutParam<Crypto::Token::JWSignature::Algorithm> alg);
 		static Text::String *ProtectedJWK(Text::String *nonce, NN<Text::String> url, NN<Crypto::Cert::X509Key> key, OutParam<Crypto::Token::JWSignature::Algorithm> alg, Text::String *accountId);
-		static NN<Text::String> EncodeJWS(Optional<Net::SSLEngine> ssl, Text::CString protStr, Text::CString data, NN<Crypto::Cert::X509Key> key, Crypto::Token::JWSignature::Algorithm alg);
+		static NN<Text::String> EncodeJWS(Optional<Net::SSLEngine> ssl, Text::CStringNN protStr, Text::CStringNN data, NN<Crypto::Cert::X509Key> key, Crypto::Token::JWSignature::Algorithm alg);
 		static Bool KeyHash(NN<Crypto::Cert::X509Key> key, NN<Text::StringBuilderUTF8> sb);
-		Net::HTTPClient *ACMEPost(NN<Text::String> url, Text::CString data);
+		Net::HTTPClient *ACMEPost(NN<Text::String> url, Text::CStringNN data);
 		Order *OrderParse(const UInt8 *buff, UOSInt buffSize);
 		Challenge *ChallengeJSON(Text::JSONBase *json);
 		Challenge *ChallengeParse(const UInt8 *buff, UOSInt buffSize);

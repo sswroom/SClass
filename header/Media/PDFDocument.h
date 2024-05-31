@@ -14,7 +14,7 @@ namespace Media
 		Data::UInt32FastMapNN<PDFObject> objMap;
 		NN<Text::String> version;
 
-		Optional<IO::ParsedObject> SetPObjName(Optional<IO::ParsedObject> pobj, UInt32 objId, Text::CString ext);
+		Optional<IO::ParsedObject> SetPObjName(Optional<IO::ParsedObject> pobj, UInt32 objId, Text::CStringNN ext);
 	public:
 		PDFDocument(NN<Text::String> sourceName, Text::CString version);
 		virtual ~PDFDocument();

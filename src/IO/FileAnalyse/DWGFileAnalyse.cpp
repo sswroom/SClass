@@ -198,7 +198,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::DWGFileAnalyse::GetFrame
 {
 	NN<IO::FileAnalyse::DWGFileAnalyse::PackInfo> pack;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (!this->packs.GetItem(index).SetTo(pack))
 		return 0;
 
@@ -309,7 +309,7 @@ Bool IO::FileAnalyse::DWGFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 	return false;
 }
 
-Text::CString IO::FileAnalyse::DWGFileAnalyse::PackTypeGetName(PackType packType)
+Text::CStringNN IO::FileAnalyse::DWGFileAnalyse::PackTypeGetName(PackType packType)
 {
 	switch (packType)
 	{

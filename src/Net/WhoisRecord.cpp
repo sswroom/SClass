@@ -18,7 +18,7 @@ Net::WhoisRecord::~WhoisRecord()
 	this->items.FreeAll();
 }
 
-void Net::WhoisRecord::AddItem(const UTF8Char *item, UOSInt itemLen)
+void Net::WhoisRecord::AddItem(UnsafeArray<const UTF8Char> item, UOSInt itemLen)
 {
 	if (item[0] == 0 && this->items.GetCount() == 0)
 	{
@@ -28,13 +28,13 @@ void Net::WhoisRecord::AddItem(const UTF8Char *item, UOSInt itemLen)
 	{
 		UOSInt i;
 		UOSInt j;
-		UTF8Char *sarr[4];
+		UnsafeArray<UTF8Char> sarr[4];
 		Int32 bitCnt;
 		UInt8 ip[4];
 		if (Text::StrStartsWithICaseC(item, itemLen, UTF8STRC("inetnum:")))
 		{
 			Text::StringBuilderUTF8 sb;
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			sb.AppendC(&item[8], itemLen - 8);
 			sb.Trim();
 			sptr = sb.v;
@@ -70,7 +70,7 @@ void Net::WhoisRecord::AddItem(const UTF8Char *item, UOSInt itemLen)
 		else if (Text::StrStartsWithICaseC(item, itemLen, UTF8STRC("NetRange:")))
 		{
 			Text::StringBuilderUTF8 sb;
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			sb.AppendC(&item[9], itemLen - 9);
 			sb.Trim();
 			sptr = sb.v;
@@ -121,10 +121,10 @@ Data::ArrayIterator<NN<Text::String>> Net::WhoisRecord::Iterator() const
 	return this->items.Iterator();
 }
 
-UTF8Char *Net::WhoisRecord::GetNetworkName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Net::WhoisRecord::GetNetworkName(UnsafeArray<UTF8Char> buff)
 {
 	NN<Text::String> s;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::ArrayIterator<NN<Text::String>> it = this->items.Iterator();
 	while (it.HasNext())
 	{
@@ -138,10 +138,10 @@ UTF8Char *Net::WhoisRecord::GetNetworkName(UTF8Char *buff)
 	return 0;
 }
 
-UTF8Char *Net::WhoisRecord::GetCountryCode(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Net::WhoisRecord::GetCountryCode(UnsafeArray<UTF8Char> buff)
 {
 	NN<Text::String> s;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::ArrayIterator<NN<Text::String>> it = this->items.Iterator();
 	while (it.HasNext())
 	{

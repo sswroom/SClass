@@ -11,7 +11,7 @@ Int32 MyMain(NN<Core::IProgControl> progCtrl)
 	Manage::ExceptionRecorder *exHdlr;
 	NN<UI::GUICore> ui;
 
-	MemSetLogFile(UTF8STRC("Memory.log"));
+	MemSetLogFile(UTF8STRCPTR("Memory.log"));
 
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("Error.log"), Manage::ExceptionRecorder::EA_RESTART));
 	if (progCtrl->CreateGUICore(progCtrl).SetTo(ui))

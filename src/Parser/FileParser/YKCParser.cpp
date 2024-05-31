@@ -46,7 +46,7 @@ Optional<IO::ParsedObject> Parser::FileParser::YKCParser::ParseFileHdr(NN<IO::St
 	UInt32 nextOfst;
 	UInt8 fnameBuff[256];
 	UTF8Char fileName[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".YKC")))
 	{

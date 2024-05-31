@@ -13,7 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(AnyType userOb
 {
 	NN<SSWR::AVIRead::AVIRRSSReaderForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRSSReaderForm>();
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	me->txtURL->GetText(sb);
 	me->lvInfo->ClearItems();
@@ -154,8 +154,8 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnItemsDblClick(AnyType userObj
 void SSWR::AVIRead::AVIRRSSReaderForm::RSSListLoad()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	UnsafeArray<UTF8Char> sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("RSSList.txt"));
 	UOSInt i;
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -175,8 +175,8 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListLoad()
 void SSWR::AVIRead::AVIRRSSReaderForm::RSSListStore()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	UnsafeArray<UTF8Char> sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("RSSList.txt"));
 	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())

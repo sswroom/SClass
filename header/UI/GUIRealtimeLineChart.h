@@ -10,7 +10,7 @@ namespace UI
 	{
 	protected:
 		NN<Media::DrawEngine> eng;
-		const UTF8Char *unit;
+		UnsafeArrayOpt<const UTF8Char> unit;
 		UOSInt lineCnt;
 		UOSInt sampleCnt;
 		UInt32 *lineColor;

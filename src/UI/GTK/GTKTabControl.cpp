@@ -59,7 +59,7 @@ NN<UI::GUITabPage> UI::GTK::GTKTabControl::AddTabPage(NN<Text::String> tabName)
 	PageInfo *page;
 	NEW_CLASSNN(tp, UI::GUITabPage(this->ui, 0, *this, this->tabPages.GetCount()));
 	page = MemAlloc(PageInfo, 1);
-	page->lbl = gtk_label_new((const Char*)tabName->v);
+	page->lbl = gtk_label_new((const Char*)tabName->v.Ptr());
 	page->txt = tabName->Clone();
 	tp->SetCustObj(page);
 	gtk_notebook_append_page((GtkNotebook*)this->hwnd, (GtkWidget*)tp->GetHandle(), page->lbl);
@@ -77,7 +77,7 @@ NN<UI::GUITabPage> UI::GTK::GTKTabControl::AddTabPage(Text::CStringNN tabName)
 	PageInfo *page;
 	NEW_CLASSNN(tp, UI::GUITabPage(this->ui, 0, *this, this->tabPages.GetCount()));
 	page = MemAlloc(PageInfo, 1);
-	page->lbl = gtk_label_new((const Char*)tabName.v);
+	page->lbl = gtk_label_new((const Char*)tabName.v.Ptr());
 	page->txt = Text::String::New(tabName);
 	tp->SetCustObj(page);
 	gtk_notebook_append_page((GtkNotebook*)this->hwnd, (GtkWidget*)tp->GetHandle(), page->lbl);
@@ -127,12 +127,12 @@ void UI::GTK::GTKTabControl::SetTabPageName(UOSInt index, Text::CStringNN name)
 	if (!this->tabPages.GetItem(index).SetTo(tp))
 		return;
 	PageInfo *page = (PageInfo*)tp->GetCustObj();
-	gtk_label_set_text((GtkLabel*)page->lbl, (const Char*)name.v);
+	gtk_label_set_text((GtkLabel*)page->lbl, (const Char*)name.v.Ptr());
 	page->txt->Release();
 	page->txt = Text::String::New(name);
 }
 
-UTF8Char *UI::GTK::GTKTabControl::GetTabPageName(UOSInt index, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> UI::GTK::GTKTabControl::GetTabPageName(UOSInt index, UnsafeArray<UTF8Char> buff)
 {
 	NN<UI::GUITabPage> tp;
 	if (!this->tabPages.GetItem(index).SetTo(tp))

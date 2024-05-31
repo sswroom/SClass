@@ -86,10 +86,10 @@ Bool SSWR::DownloadMonitor::DownMonCore::FFMPEGMuxAAC(const UTF8Char *videoFile,
 	}
 }
 
-Bool SSWR::DownloadMonitor::DownMonCore::ExtractZIP(Text::CStringNN zipFile, Text::CString mp4File)
+Bool SSWR::DownloadMonitor::DownMonCore::ExtractZIP(Text::CStringNN zipFile, Text::CStringNN mp4File)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<IO::PackageFile> pkgFile;
 	Bool valid = false;
 	IO::StmData::FileData fd(zipFile, false);
@@ -98,8 +98,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::ExtractZIP(Text::CStringNN zipFile, Tex
 		if (pkgFile->GetCount() == 1)
 		{
 			sbuff[0] = 0;
-			sptr = pkgFile->GetItemName(sbuff, 0);
-			if (Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".MP4")) && pkgFile->GetItemType(0) == IO::PackageFile::PackObjectType::StreamData)
+			if (pkgFile->GetItemName(sbuff, 0).SetTo(sptr) && Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".MP4")) && pkgFile->GetItemType(0) == IO::PackageFile::PackObjectType::StreamData)
 			{
 				valid = pkgFile->CopyTo(0, mp4File, true);
 			}
@@ -128,10 +127,10 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff3[512];
-	UTF8Char *sptr;
-	UTF8Char *sptrEnd;
-	UTF8Char *sptr2;
-	UTF8Char *sptr3;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptrEnd;
+	UnsafeArray<UTF8Char> sptr2;
+	UnsafeArray<UTF8Char> sptr3;
 //	printf("ProcessDir\r\n");
 	sptr = downPath->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
@@ -150,7 +149,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 		Data::Timestamp modTime;
 		IO::ActiveStreamReader::BottleNeckType bnt;
 
-		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, &modTime, &pt, &fileSize)) != 0)
+		while (IO::Path::FindNextFile(sptr, sess, &modTime, &pt, &fileSize).SetTo(sptr2))
 		{
 //			printf("File: %s\r\n", sptr);
 			if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(" - DASH.MP4")))

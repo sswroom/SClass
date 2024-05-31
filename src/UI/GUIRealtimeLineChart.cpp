@@ -18,7 +18,7 @@ void UI::GUIRealtimeLineChart::OnPaint(NN<Media::DrawImage> dimg)
 	UOSInt l;
 	Double strWidth;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Math::Size2DDbl sz;
 	Double lastX;
 	Double lastY;
@@ -51,6 +51,7 @@ void UI::GUIRealtimeLineChart::OnPaint(NN<Media::DrawImage> dimg)
 				this->chartMax = this->chartMin + 1.0;
 		}
 
+		UnsafeArray<const UTF8Char> nns;
 		Double pw = 1 * this->hdpi / this->ddpi;
 		if (pw < 1)
 			pw = 1;
@@ -58,14 +59,14 @@ void UI::GUIRealtimeLineChart::OnPaint(NN<Media::DrawImage> dimg)
 		p = img->NewPenARGB(this->fontColor, Double2Int32(pw), 0, 0);
 		b = img->NewBrushARGB(this->fontColor);
 		sptr = Text::StrDoubleFmt(sbuff, this->chartMax, "0.##");
-		if (this->unit)
-			sptr =Text::StrConcat(sptr, this->unit);
+		if (this->unit.SetTo(nns))
+			sptr =Text::StrConcat(sptr, nns);
 		sz = img->GetTextSize(f, CSTRP(sbuff, sptr));
 		strWidth = sz.x;
 		img->DrawString(Math::Coord2DDbl(0, 1), CSTRP(sbuff, sptr), f, b);
 		sptr = Text::StrDoubleFmt(sbuff, this->chartMin, "0.##");
-		if (this->unit)
-			sptr =Text::StrConcat(sptr, this->unit);
+		if (this->unit.SetTo(nns))
+			sptr =Text::StrConcat(sptr, nns);
 		sz = img->GetTextSize(f, CSTRP(sbuff, sptr));
 		if (sz.x > strWidth)
 			strWidth = sz.x;

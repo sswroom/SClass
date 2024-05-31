@@ -41,11 +41,11 @@ namespace Net
 		const UInt8 *NextPacket(UInt8 *opcode, UOSInt *packetSize);
 		const UInt8 *NextPacket(NN<Sync::MutexUsage> mutUsage, UOSInt *packetSize);
 	public:
-		WebSocketClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString path, Text::CString origin, Protocol protocol, Data::Duration timeout);
+		WebSocketClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CStringNN path, Text::CString origin, Protocol protocol, Data::Duration timeout);
 		virtual ~WebSocketClient();
 
-		virtual UTF8Char *GetRemoteName(UTF8Char *buff) const;
-		virtual UTF8Char *GetLocalName(UTF8Char *buff) const;
+		virtual UnsafeArrayOpt<UTF8Char> GetRemoteName(UnsafeArray<UTF8Char> buff) const;
+		virtual UnsafeArrayOpt<UTF8Char> GetLocalName(UnsafeArray<UTF8Char> buff) const;
 		virtual Bool GetRemoteAddr(NN<Net::SocketUtil::AddressInfo> addr) const;
 		virtual UInt16 GetRemotePort() const;
 		virtual UInt16 GetLocalPort() const;

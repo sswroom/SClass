@@ -8,15 +8,15 @@ namespace Manage
 	{
 	private:
 		void *envs;
-		Data::ICaseStringMap<const UTF8Char *> names;
+		Data::ICaseStringMap<UnsafeArrayOpt<const UTF8Char>> names;
 	public:
 		EnvironmentVar();
 		~EnvironmentVar();
 
-		const UTF8Char *GetValue(Text::CString name);
-		void SetValue(Text::CString name, Text::CString val);
+		UnsafeArrayOpt<const UTF8Char> GetValue(Text::CStringNN name);
+		void SetValue(Text::CStringNN name, Text::CStringNN val);
 
-		static UTF8Char *GetEnvValue(UTF8Char *buff, Text::CString name);
+		static UnsafeArrayOpt<UTF8Char> GetEnvValue(UnsafeArray<UTF8Char> buff, Text::CString name);
 	};
 }
 #endif

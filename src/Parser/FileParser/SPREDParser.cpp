@@ -42,7 +42,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SPREDParser::ParseFileHdr(NN<IO::
 	UInt8 buff[384];
 	Bool error = false;
 	UTF8Char sbuff[256];
-	const UTF8Char *sptr;
+	UnsafeArray<const UTF8Char> sptr;
 	UOSInt i;
 	UOSInt currPos;
 	UOSInt readSize;

@@ -23,10 +23,10 @@ namespace SSWR
 		private:
 			struct PredefData
 			{
-				const UTF8Char *name;
+				UnsafeArray<const UTF8Char> name;
 				UOSInt nameLen;
 				UInt8 fPort;
-				const UTF8Char *data;
+				UnsafeArrayOpt<const UTF8Char> data;
 				UOSInt dataLen;
 			};
 		private:

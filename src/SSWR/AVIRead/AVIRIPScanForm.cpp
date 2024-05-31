@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRIPScanForm::OnStartClicked(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRIPScanForm> me = userObj.GetNN<SSWR::AVIRead::AVIRIPScanForm>();
 	UInt8 buff[8];
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Net::ICMPScanner::ScanResult> result;
 	UOSInt i;
 	UOSInt j;
@@ -90,7 +90,7 @@ SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(Optional<UI::GUIClientControl> par
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
 	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;

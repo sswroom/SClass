@@ -35,7 +35,7 @@ UI::GUIFileDialog::~GUIFileDialog()
 {
 	IO::Registry::CloseRegistry(this->reg);
 	MemFree(this->dialogName);
-	SDEL_TEXT(this->lastName);
+	if (this->lastName) Text::StrDelNew(this->lastName);
 	OPTSTR_DEL(this->fileName);
 	this->patterns.FreeAll();
 	this->names.FreeAll();

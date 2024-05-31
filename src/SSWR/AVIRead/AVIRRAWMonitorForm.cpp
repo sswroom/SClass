@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingPacket(AnyType userData,
 	UInt32 sortableIP = Net::SocketUtil::IPv4ToSortable(srcIP);
 	NN<PingIPInfo> pingIPInfo;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Sync::MutexUsage mutUsage(me->pingIPMut);
 	if (!me->pingIPMap.Get(sortableIP).SetTo(pingIPInfo))
 	{
@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingPacket(AnyType userData,
 		pingIPInfo->ip = srcIP;
 		pingIPInfo->count = 0;
 		rec = me->whois.RequestIP(srcIP);
-		if ((sptr = rec->GetNetworkName(sbuff)) != 0)
+		if (rec->GetNetworkName(sbuff).SetTo(sptr))
 		{
 			pingIPInfo->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		}
@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingPacket(AnyType userData,
 		{
 			pingIPInfo->name = Text::String::New(UTF8STRC("Unknown"));
 		}
-		if ((sptr = rec->GetCountryCode(sbuff)) != 0)
+		if (rec->GetCountryCode(sbuff).SetTo(sptr))
 		{
 			pingIPInfo->country = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		}
@@ -169,8 +169,8 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPLogClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	if (me->plogWriter)
 	{
 		Sync::MutexUsage mutUsage(me->plogMut);
@@ -184,7 +184,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPLogClicked(AnyType userObj)
 	{
 		return;
 	}
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("RAW"));
 	sptr2 = sptr - 3;
 	sptr = Text::StrInt64(sptr, Data::DateTimeUtil::GetCurrTimeMillis());
@@ -259,7 +259,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingIPSelChg(AnyType userObj
 	if (me->currPingIP)
 	{
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		sptr = Text::StrInt64(sbuff, me->currPingIP->count);
 		me->txtPingIPCount->SetText(CSTRP(sbuff, sptr));
 		me->txtPingIPName->SetText(me->currPingIP->name->ToCString());
@@ -286,7 +286,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv4SelChg(AnyType userO
 	if (name)
 	{
 		UTF8Char sbuff[64];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Data::DateTime reqTime;
 		UInt32 ttl;
 		Data::ArrayListNN<Net::DNSClient::RequestAnswer> ansList;
@@ -328,7 +328,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv6SelChg(AnyType userO
 	if (name)
 	{
 		UTF8Char sbuff[64];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Data::DateTime reqTime;
 		UInt32 ttl;
 		Data::ArrayListNN<Net::DNSClient::RequestAnswer> ansList;
@@ -370,7 +370,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqOthSelChg(AnyType user
 	if (name)
 	{
 		UTF8Char sbuff[64];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		Data::DateTime reqTime;
 		UInt32 ttl;
 		Data::ArrayListNN<Net::DNSClient::RequestAnswer> ansList;
@@ -441,13 +441,13 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnMDNSSelChg(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
 	Net::DNSClient::RequestAnswer *ans = (Net::DNSClient::RequestAnswer*)me->lbMDNS->GetSelectedItem().p;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (ans)
 	{
 		me->txtMDNSName->SetText(ans->name->ToCString());
 		sptr = Text::StrUInt16(sbuff, ans->recType);
-		Text::CString typeId = Net::DNSClient::TypeGetID(ans->recType);
-		if (typeId.v)
+		Text::CStringNN typeId;
+		if (Net::DNSClient::TypeGetID(ans->recType).SetTo(typeId))
 		{
 			sptr = Text::StrConcatC(sptr, UTF8STRC(" ("));
 			sptr = typeId.ConcatTo(sptr);
@@ -489,7 +489,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSClientSelChg(AnyType user
 	UOSInt j;
 	NN<Net::EthernetAnalyzer::DNSCliHourInfo> hourInfo;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;	
+	UnsafeArray<UTF8Char> sptr;	
 	me->lvDNSClient->ClearItems();
 	if (cli)
 	{
@@ -541,7 +541,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRRAWMonitorForm> me = userObj.GetNN<SSWR::AVIRead::AVIRRAWMonitorForm>();
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (me->pingIPContUpdated)
 	{
 		me->pingIPContUpdated = false;
@@ -699,7 +699,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 		while (i < j)
 		{
 			cli = cliList.GetItemNoCheck(i);
-			sptr = Net::SocketUtil::GetAddrName(sbuff, cli->addr);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, cli->addr).Or(sbuff);
 			me->lbDNSClient->AddItem(CSTRP(sbuff, sptr), cli);
 			if (cli.Ptr() == currSel)
 			{
@@ -955,7 +955,8 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 			{
 				if (mac->ipv6Addr.addrType == Net::AddrType::IPv6)
 				{
-					sptr = Net::SocketUtil::GetAddrName(Text::StrConcatC(Net::SocketUtil::GetIPv4Name(sbuff, mac->ipv4Addr[0]), UTF8STRC(", ")), mac->ipv6Addr);
+					sptr = Text::StrConcatC(Net::SocketUtil::GetIPv4Name(sbuff, mac->ipv4Addr[0]), UTF8STRC(", "));
+					sptr = Net::SocketUtil::GetAddrName(sptr, mac->ipv6Addr).Or(sptr);
 					me->lvDevice->SetSubItem(i, 9, CSTRP(sbuff, sptr));
 				}
 				else
@@ -968,7 +969,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 			{
 				if (mac->ipv6Addr.addrType == Net::AddrType::IPv6)
 				{
-					sptr = Net::SocketUtil::GetAddrName(sbuff, mac->ipv6Addr);
+					sptr = Net::SocketUtil::GetAddrName(sbuff, mac->ipv6Addr).Or(sbuff);
 					me->lvDevice->SetSubItem(i, 9, CSTRP(sbuff, sptr));
 				}
 				else
@@ -986,7 +987,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(AnyType userObj)
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		NN<Net::EthernetAnalyzer::DHCPInfo> dhcp;
 		const Net::MACInfo::MACEntry *macInfo;
 		Sync::MutexUsage mutUsage;
@@ -1077,7 +1078,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceSelChg(AnyType userObj
 	Data::DateTime dt;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (me->lvDevice->GetSelectedItem().GetOpt<Net::EthernetAnalyzer::MACStatus>().SetTo(mac))
 	{
 		UOSInt cnt;
@@ -1493,7 +1494,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(Optional<UI::GUIClientCont
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
 	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;

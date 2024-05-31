@@ -41,7 +41,7 @@ void ExceptionRecorder_Signal(int signum, siginfo_t *info, void *ucontext)
 	ExceptionRecorder_Handler(&exInfo);
 }
 
-Text::CString Manage::ExceptionRecorder::GetExceptionCodeName(UInt32 exCode)
+Text::CStringNN Manage::ExceptionRecorder::GetExceptionCodeName(UInt32 exCode)
 {
 	switch (exCode)
 	{

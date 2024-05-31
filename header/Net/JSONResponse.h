@@ -188,9 +188,9 @@ namespace Net
 		NEW_CLASSNN(ofield, ObjectField(CSTR(name), Text::JSONType::Object, optional, allowNull, 0)); \
 		if (this->fieldMap.PutC(CSTR(name), ofield).SetTo(field)) { field.Delete(); } \
 		if (jobj.Set(this->json->GetValue(CSTR(name)))) { \
-			if (jobj->GetType() != Text::JSONType::Null) printf("JSONResponse: %s.%s is not object type, type is %s\r\n", this->clsName.v, name, Text::JSONTypeGetName(jobj->GetType()).v); \
-			else if (!allowNull) printf("JSONResponse: %s.%s is null which is not allowed\r\n", this->clsName.v, name); \
-		} else if (!optional) printf("JSONResponse: %s.%s is not found which is not optional\r\n", this->clsName.v, name); \
+			if (jobj->GetType() != Text::JSONType::Null) printf("JSONResponse: %s.%s is not object type, type is %s\r\n", this->clsName.v.Ptr(), name, Text::JSONTypeGetName(jobj->GetType()).v); \
+			else if (!allowNull) printf("JSONResponse: %s.%s is null which is not allowed\r\n", this->clsName.v.Ptr(), name); \
+		} else if (!optional) printf("JSONResponse: %s.%s is not found which is not optional\r\n", this->clsName.v.Ptr(), name); \
 	} }
 
 #define JSONRESP_GETSTR(name, funcName) NN<Text::String> funcName() const { return Text::String::OrEmpty(this->json->GetValueString(CSTR(name))); }

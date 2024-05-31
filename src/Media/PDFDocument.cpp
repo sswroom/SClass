@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Media/PDFDocument.h"
 
-Optional<IO::ParsedObject> Media::PDFDocument::SetPObjName(Optional<IO::ParsedObject> pobj, UInt32 objId, Text::CString ext)
+Optional<IO::ParsedObject> Media::PDFDocument::SetPObjName(Optional<IO::ParsedObject> pobj, UInt32 objId, Text::CStringNN ext)
 {
 	NN<IO::ParsedObject> nnpobj;
 	if (pobj.SetTo(nnpobj))

@@ -124,7 +124,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(NN<Sync::Thread> t
 	Double timeReq;
 	Double timeResp;
 	UInt8 buff[2048];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	UInt32 cnt;
@@ -240,7 +240,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnTimerTick(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRHTTPTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHTTPTestForm>();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrUInt32(sbuff, me->connLeftCnt);
 	me->txtConnLeftCnt->SetText(CSTRP(sbuff, sptr));
 	sptr = Text::StrUInt32(sbuff, me->threadCurrCnt);

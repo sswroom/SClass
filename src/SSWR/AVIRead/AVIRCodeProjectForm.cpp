@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(AnyType userOb
 			Text::Cpp::CppCodeParser *parser;
 			NN<Text::CodeFile> file = NN<Text::CodeFile>::ConvertFrom(obj);
 			UTF8Char sbuff[512];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			NN<Text::String> s;
 			sptr = me->proj->GetSourceName(sbuff);
 			s = file->GetFileName();

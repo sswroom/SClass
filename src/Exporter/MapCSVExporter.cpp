@@ -37,7 +37,7 @@ IO::FileExporter::SupportType Exporter::MapCSVExporter::IsObjectSupported(NN<IO:
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::MapCSVExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::MapCSVExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -66,7 +66,7 @@ Bool Exporter::MapCSVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CStr
 	}
 
 	UTF8Char sbuff[1024];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::Encoding enc(this->codePage);
 	IO::BufferedOutputStream cstm(stm, 65536);
 	IO::StreamWriter writer(cstm, &enc);

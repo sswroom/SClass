@@ -37,8 +37,8 @@ void Media::MediaPlayerWebInterface::BrowseRequest(NN<Net::WebServer::IWebReques
 	}
 	UTF8Char sbuff[1024];
 	UTF8Char sbuff2[1024];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	NN<Text::String> s;
 	UOSInt i;
 	UOSInt j;
@@ -87,7 +87,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(NN<Net::WebServer::IWebReques
 			Data::ArrayList<VideoFileInfo *> fileList;
 			VideoFileInfo *vfile;
 
-			while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize)) != 0)
+			while (IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize).SetTo(sptr2))
 			{
 				if (pt == IO::Path::PathType::File)
 				{
@@ -314,12 +314,13 @@ void Media::MediaPlayerWebInterface::WebRequest(NN<Net::WebServer::IWebRequest> 
 			sb.AppendDouble(status.par);
 			sb.AppendC(UTF8STRC("<br/>\r\n"));
 			sb.AppendC(UTF8STRC("Rotate Type: "));
-			sb.Append(Media::RotateTypeGetName(status.rotateType));
+			sb.AppendOpt(Media::RotateTypeGetName(status.rotateType));
 			sb.AppendC(UTF8STRC("<br/>\r\n"));
 			sb.AppendC(UTF8STRC("Decoder: "));
-			if (status.decoderName.v)
+			Text::CStringNN nns;
+			if (status.decoderName.SetTo(nns))
 			{
-				sb.Append(status.decoderName);
+				sb.Append(nns);
 			}
 			else
 			{

@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnOKClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRExportParamForm> me = userObj.GetNN<SSWR::AVIRead::AVIRExportParamForm>();
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt cnt = me->exporter->GetParamCnt();
@@ -64,7 +64,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(Optional<UI::GUIClientCo
 	this->SetFont(0, 0, 8.25, false);
 
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt cnt = this->exporter->GetParamCnt();
 	UOSInt i;
 	NN<UI::GUILabel> lbl;
@@ -99,7 +99,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(Optional<UI::GUIClientCo
 
 			UOSInt j;
 			j = 0;
-			while ((sptr = this->exporter->GetParamSelItems(this->param, i, j, sbuff)) != 0)
+			while (this->exporter->GetParamSelItems(this->param, i, j, sbuff).SetTo(sptr))
 			{
 				cbo->AddItem(CSTRP(sbuff, sptr), 0);
 				j++;

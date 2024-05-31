@@ -13,7 +13,7 @@ Bool Net::WebServer::WebStandardHandler::DoRequest(NN<Net::WebServer::IWebReques
 	if (subReq.v[0] != '/')
 		return false;
 	UTF8Char tmpBuff[256];
-	UTF8Char *sbuff;
+	UnsafeArray<UTF8Char> sbuff;
 	UTF8Char c;
 	UOSInt i = 1;
 	Optional<Net::WebServer::WebStandardHandler> subHdlr;
@@ -41,11 +41,11 @@ Bool Net::WebServer::WebStandardHandler::DoRequest(NN<Net::WebServer::IWebReques
 		{
 			if (i > 256)
 			{
-				sbuff = MemAlloc(UTF8Char, i);
-				MemCopyNO(sbuff, &subReq.v[1], (i - 1) * sizeof(UTF8Char));
+				sbuff = MemAllocArr(UTF8Char, i);
+				MemCopyNO(sbuff.Ptr(), &subReq.v[1], (i - 1) * sizeof(UTF8Char));
 				sbuff[i - 1] = 0;
 				subHdlr = this->hdlrs.GetC({sbuff, i - 1});
-				MemFree(sbuff);
+				MemFreeArr(sbuff);
 			}
 			else
 			{
@@ -102,7 +102,7 @@ Bool Net::WebServer::WebStandardHandler::ResponseAllowOptions(NN<Net::WebServer:
 		sb.ClearStr();
 		sb.AppendUOSInt(maxAge);
 		resp->AddHeader(CSTR("Access-Control-Max-Age"), sb.ToCString());
-		resp->Write(0, 0);
+		resp->Write(U8STR(""), 0);
 		return true;
 	}
 	else
@@ -110,7 +110,7 @@ Bool Net::WebServer::WebStandardHandler::ResponseAllowOptions(NN<Net::WebServer:
 		resp->SetStatusCode(Net::WebStatus::SC_NO_CONTENT);
 		this->AddResponseHeaders(req, resp);
 		resp->AddHeader(CSTR("Allow"), options);
-		resp->Write(0, 0);
+		resp->Write(U8STR(""), 0);
 		return true;
 	}
 
@@ -135,7 +135,7 @@ void Net::WebServer::WebStandardHandler::WebRequest(NN<Net::WebServer::IWebReque
 {
 	NN<Text::String> reqURL = req->GetRequestURI();
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::URLString::GetURLPathSvr(sbuff, reqURL->v, reqURL->leng);
 	if (!this->ProcessRequest(req, resp, CSTRP(sbuff, sptr)))
 	{
@@ -179,7 +179,7 @@ void Net::WebServer::WebStandardHandler::HandlePath(Text::CStringNN relativePath
 		return;
 	}
 	UOSInt i = relativePath.IndexOf('/', 1);
-	UTF8Char *sbuff;
+	UnsafeArray<UTF8Char> sbuff;
 	if (i == INVALID_INDEX)
 	{
 		this->hdlrs.PutC(relativePath.Substring(1), hdlr);
@@ -190,8 +190,8 @@ void Net::WebServer::WebStandardHandler::HandlePath(Text::CStringNN relativePath
 	}
 	else
 	{
-		sbuff = MemAlloc(UTF8Char, i);
-		MemCopyNO(sbuff, &relativePath.v[1], sizeof(UTF8Char) * (i - 1));
+		sbuff = MemAllocArr(UTF8Char, i);
+		MemCopyNO(sbuff.Ptr(), &relativePath.v[1], sizeof(UTF8Char) * (i - 1));
 		sbuff[i] = 0;
 
 		if (!this->hdlrs.GetC({sbuff, i - 1}).SetTo(subHdlr))
@@ -200,7 +200,7 @@ void Net::WebServer::WebStandardHandler::HandlePath(Text::CStringNN relativePath
 			this->hdlrs.PutC({sbuff, i - 1}, subHdlr);
 			this->relHdlrs.Add(subHdlr);
 		}
-		MemFree(sbuff);
+		MemFreeArr(sbuff);
 		subHdlr->HandlePath(relativePath.Substring(i), hdlr, needRelease);
 	}
 }

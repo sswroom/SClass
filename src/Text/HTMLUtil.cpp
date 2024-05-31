@@ -14,7 +14,7 @@ Bool Text::HTMLUtil::HTMLWellFormat(Optional<Text::EncodingFactory> encFact, NN<
 	Bool toWrite;
 	Text::XMLNode::NodeType thisNT;
 	OSInt elementType = 0;
-	const UTF8Char *csptr;
+	UnsafeArray<const UTF8Char> csptr;
 	NN<Text::String> s;
 	UOSInt strLen;
 	Text::XMLReader reader(encFact, stm, Text::XMLReader::PM_HTML);
@@ -88,7 +88,7 @@ Bool Text::HTMLUtil::HTMLWellFormat(Optional<Text::EncodingFactory> encFact, NN<
 						break;
 					}
 				}
-				strLen = (UOSInt)(s->v + s->leng - csptr);
+				strLen = (UOSInt)(UnsafeArray<const UTF8Char>(s->v) + s->leng - csptr);
 				if (strLen > 0)
 				{
 					while (true)
@@ -148,7 +148,7 @@ Bool Text::HTMLUtil::HTMLWellFormat(Optional<Text::EncodingFactory> encFact, NN<
 	return true;
 }
 
-Bool Text::HTMLUtil::CSSWellFormat(const UInt8 *buff, UOSInt buffSize, UOSInt lev, NN<Text::StringBuilderUTF8> sb)
+Bool Text::HTMLUtil::CSSWellFormat(UnsafeArray<const UInt8> buff, UOSInt buffSize, UOSInt lev, NN<Text::StringBuilderUTF8> sb)
 {
 	UInt8 c;
 	Bool lineStart = true;
@@ -231,8 +231,8 @@ Bool Text::HTMLUtil::HTMLGetText(Optional<Text::EncodingFactory> encFact, const 
 	Text::XMLNode::NodeType nt;
 	Int32 lastType = 0;
 	Bool lastIsSpace = true;
-	const UTF8Char *csptr;
-	const UTF8Char *csptrEnd;
+	UnsafeArray<const UTF8Char> csptr;
+	UnsafeArray<const UTF8Char> csptrEnd;
 	NN<Text::String> s;
 	UTF8Char c;
 	IO::MemoryStream wmstm;
@@ -358,7 +358,7 @@ Bool Text::HTMLUtil::HTMLGetText(Optional<Text::EncodingFactory> encFact, const 
 	return true;
 }
 
-Bool Text::HTMLUtil::XMLWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt lev, NN<Text::StringBuilderUTF8> sb)
+Bool Text::HTMLUtil::XMLWellFormat(UnsafeArray<const UInt8> buff, UOSInt buffSize, UOSInt lev, NN<Text::StringBuilderUTF8> sb)
 {
 	UOSInt startOfst = 0;
 	UOSInt currOfst = 0;

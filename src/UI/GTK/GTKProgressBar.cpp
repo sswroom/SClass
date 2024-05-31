@@ -37,7 +37,7 @@ UI::GTK::GTKProgressBar::GTKProgressBar(NN<UI::GUICore> ui, NN<UI::GUIClientCont
 	GtkWidget *widget = (GtkWidget*)this->hwnd;
 	GtkStyleContext *style = gtk_widget_get_style_context(widget);
 	GtkCssProvider *styleProvider = gtk_css_provider_new();
-	gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString(), -1, 0);
+	gtk_css_provider_load_from_data(styleProvider, (const gchar*)builder.ToString().Ptr(), -1, 0);
 	gtk_style_context_add_provider(style, (GtkStyleProvider*)styleProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
 	gtk_widget_reset_style(widget);
 #endif

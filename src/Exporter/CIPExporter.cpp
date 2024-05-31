@@ -45,7 +45,7 @@ IO::FileExporter::SupportType Exporter::CIPExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NotSupported;
 }
 
-Bool Exporter::CIPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::CIPExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -60,7 +60,7 @@ Bool Exporter::CIPExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 {
 	UInt8 buff[256];
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<ParamData> para;
 	if (!param.SetTo(para))
 		return false;
@@ -519,7 +519,7 @@ Bool Exporter::CIPExporter::GetParamInfo(UOSInt index, NN<IO::FileExporter::Para
 	return false;
 }
 
-Bool Exporter::CIPExporter::SetParamStr(Optional<ParamData> param, UOSInt index, const UTF8Char *val)
+Bool Exporter::CIPExporter::SetParamStr(Optional<ParamData> param, UOSInt index, UnsafeArrayOpt<const UTF8Char> val)
 {
 	return false;
 }
@@ -555,7 +555,7 @@ Bool Exporter::CIPExporter::SetParamSel(Optional<ParamData> param, UOSInt index,
 	return false;
 }
 
-UTF8Char *Exporter::CIPExporter::GetParamStr(Optional<ParamData> param, UOSInt index, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Exporter::CIPExporter::GetParamStr(Optional<ParamData> param, UOSInt index, UnsafeArray<UTF8Char> buff)
 {
 	return 0;
 }
@@ -582,7 +582,7 @@ Int32 Exporter::CIPExporter::GetParamSel(Optional<ParamData> param, UOSInt index
 	return 0;
 }
 
-UTF8Char *Exporter::CIPExporter::GetParamSelItems(Optional<ParamData> param, UOSInt index, UOSInt itemIndex, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Exporter::CIPExporter::GetParamSelItems(Optional<ParamData> param, UOSInt index, UOSInt itemIndex, UnsafeArray<UTF8Char> buff)
 {
 	NN<ParamData> para;
 	if (index == 1 && param.SetTo(para))

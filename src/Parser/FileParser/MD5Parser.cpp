@@ -42,7 +42,7 @@ IO::ParserType Parser::FileParser::MD5Parser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::MD5Parser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::FileCheck *fchk;
 	UInt8 chk[20];
 	Crypto::Hash::HashType ctype;
@@ -76,7 +76,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MD5Parser::ParseFileHdr(NN<IO::St
 	IO::StreamDataStream stm(fd);
 	IO::StreamReader reader(stm, this->codePage);
 	NEW_CLASS(fchk, IO::FileCheck(fullName, ctype));
-	while ((sptr = reader.ReadLine(sbuff, 512)) != 0)
+	while (reader.ReadLine(sbuff, 512).SetTo(sptr))
 	{
 		if (sptr - sbuff > (OSInt)(chkSize << 1) + 2)
 		{

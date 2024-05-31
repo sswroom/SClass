@@ -136,7 +136,7 @@ UInt32 __stdcall Media::ABlend::AlphaBlend8_C8::ProcessThread(AnyType userObj)
 {
 	NN<ThreadStat> stat = userObj.GetNN<ThreadStat>();
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("ABlend8_C8_")), stat->index);
 	Sync::ThreadUtil::SetName(CSTRP(sbuff, sptr));
 	{

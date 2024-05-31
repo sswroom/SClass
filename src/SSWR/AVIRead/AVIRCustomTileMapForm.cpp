@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRCustomTileMapForm::OnOKClicked(AnyType userObj
 {
 	NN<SSWR::AVIRead::AVIRCustomTileMapForm> me = userObj.GetNN<SSWR::AVIRead::AVIRCustomTileMapForm>();
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Int32 minLevel;
 	Int32 maxLevel;
 	Text::StringBuilderUTF8 sb;
@@ -53,7 +53,8 @@ void __stdcall SSWR::AVIRead::AVIRCustomTileMapForm::OnOKClicked(AnyType userObj
 		return;
 	}
 	Crypto::Hash::CRC32RC crc;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	sbuff[0] = 0;
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	sptr = Text::StrHexVal32(&sbuff[i + 1], crc.CalcDirect(sb.v, sb.leng));
 	NEW_CLASS(me->tileMap, Map::CustomTileMap(sb.ToCString(), CSTRP(sbuff, sptr), (UInt32)minLevel, (UInt32)maxLevel, me->core->GetSocketFactory(), me->ssl));

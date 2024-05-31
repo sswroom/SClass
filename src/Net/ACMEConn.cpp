@@ -90,7 +90,7 @@ Text::String *Net::ACMEConn::ProtectedJWK(Text::String *nonce, NN<Text::String> 
 	return Text::String::New(sb.ToCString()).Ptr();
 }
 
-NN<Text::String> Net::ACMEConn::EncodeJWS(Optional<Net::SSLEngine> ssl, Text::CString protStr, Text::CString data, NN<Crypto::Cert::X509Key> key, Crypto::Token::JWSignature::Algorithm alg)
+NN<Text::String> Net::ACMEConn::EncodeJWS(Optional<Net::SSLEngine> ssl, Text::CStringNN protStr, Text::CStringNN data, NN<Crypto::Cert::X509Key> key, Crypto::Token::JWSignature::Algorithm alg)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
@@ -110,9 +110,9 @@ NN<Text::String> Net::ACMEConn::EncodeJWS(Optional<Net::SSLEngine> ssl, Text::CS
 	sign->GetHashB64(sb);
 	sb.AppendC(UTF8STRC("\"}"));
 	DEL_CLASS(sign);
-	printf("Protected: %s\r\n", protStr.v);
-	printf("Payload: %s\r\n", data.v);
-	printf("JWS: %s\r\n", sb.ToString());
+	printf("Protected: %s\r\n", protStr.v.Ptr());
+	printf("Payload: %s\r\n", data.v.Ptr());
+	printf("JWS: %s\r\n", sb.ToPtr());
 	return Text::String::New(sb.ToString(), sb.GetLength());
 }
 
@@ -134,7 +134,7 @@ Bool Net::ACMEConn::KeyHash(NN<Crypto::Cert::X509Key> key, NN<Text::StringBuilde
 	return true;
 }
 
-Net::HTTPClient *Net::ACMEConn::ACMEPost(NN<Text::String> url, Text::CString data)
+Net::HTTPClient *Net::ACMEConn::ACMEPost(NN<Text::String> url, Text::CStringNN data)
 {
 	NN<Crypto::Cert::X509Key> key;
 	if (this->nonce == 0 || !this->key.SetTo(key))
@@ -577,8 +577,8 @@ Net::ACMEConn::Challenge *Net::ACMEConn::OrderAuthorize(NN<Text::String> authori
 		cli->ReadToEnd(mstm, 2048);
 		DEL_CLASS(cli);
 
-		Text::CString sAuthType = AuthorizeTypeGetName(authType);
-		if (sAuthType.v == 0 || Text::StrEqualsICaseC(sAuthType.v, sAuthType.leng, UTF8STRC("UNKNOWN")))
+		Text::CStringNN sAuthType;
+		if (!AuthorizeTypeGetName(authType).SetTo(sAuthType) || Text::StrEqualsICaseC(sAuthType.v, sAuthType.leng, UTF8STRC("UNKNOWN")))
 		{
 			return 0;
 		}

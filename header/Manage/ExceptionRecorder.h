@@ -26,7 +26,7 @@ namespace Manage
 		static NN<Text::String> fileName;
 		static ExceptionAction exAction;
 
-		static Text::CString GetExceptionCodeName(UInt32 exCode);
+		static Text::CStringNN GetExceptionCodeName(UInt32 exCode);
 		static Int32 __stdcall ExceptionHandler(void *exInfo);
 	public:
 		ExceptionRecorder(Text::CStringNN fileName, ExceptionAction exAction);

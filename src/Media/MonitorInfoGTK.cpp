@@ -11,7 +11,7 @@ Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 	OSInt monNum = ((OSInt)hMonitor) - 1;
 	GdkRectangle rect;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 //#define GDK_MAJOR_VERSION (3)
 //#define GDK_MINOR_VERSION (22)
 //#define GDK_MICRO_VERSION (11)		

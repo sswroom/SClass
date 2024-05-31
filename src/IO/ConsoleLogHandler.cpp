@@ -13,8 +13,8 @@ IO::ConsoleLogHandler::~ConsoleLogHandler()
 void IO::ConsoleLogHandler::LogAdded(const Data::Timestamp &logTime, Text::CStringNN logMsg, LogLevel logLev)
 {
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
-	sptr = logTime.ToString(sbuff, "HH:mm:ss.fff ");
+	UnsafeArray<UTF8Char> sptr;
+	sptr = logTime.ToString(sbuff, CHSTR("HH:mm:ss.fff "));
 	this->console->SetBGColor(Text::StandardColor::Black);
 	this->console->SetTextColor(Text::StandardColor::Gray);
 	this->console->Write(CSTRP(sbuff, sptr));

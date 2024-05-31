@@ -80,7 +80,7 @@ void IO::SMake::AppendCfgPath(NN<Text::StringBuilderUTF8> sb, Text::CStringNN pa
 	{
 		Manage::EnvironmentVar env;
 		UnsafeArray<const UTF8Char> csptr;
-		if (csptr.Set(env.GetValue(CSTR("HOME"))))
+		if (env.GetValue(CSTR("HOME")).SetTo(csptr))
 		{
 			sb->AppendSlow(csptr);
 			sb->Append(path.Substring(1));

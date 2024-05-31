@@ -96,8 +96,8 @@ namespace Net
 		virtual void Rollback(NN<DB::DBTransaction> tran);
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
-		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
-		Bool ChangeSchema(const UTF8Char *schemaName);
+		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		Bool ChangeSchema(UnsafeArray<const UTF8Char> schemaName);
 
 		Bool IsError();
 

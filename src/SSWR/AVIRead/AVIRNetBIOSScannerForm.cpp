@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnAnswerSelChg(AnyType use
 	if (me->lvAnswers->GetSelectedItem().GetOpt<Net::NetBIOSScanner::NameAnswer>().SetTo(ans))
 	{
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		UOSInt i = 0;
 		UOSInt j = ans->namesCnt;
 		while (i < j)
@@ -68,7 +68,7 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnTimerTick(AnyType userOb
 	if (me->tableUpdated)
 	{
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		me->tableUpdated = false;
 		me->lvAnswers->ClearItems();
 		Sync::MutexUsage mutUsage;
@@ -166,7 +166,7 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(Optional<UI::GUICl
 	Data::ArrayListNN<Net::ConnectionInfo> connInfoList;
 	NN<Net::ConnectionInfo> connInfo;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	UInt32 ip;

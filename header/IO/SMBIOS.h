@@ -96,16 +96,16 @@ namespace IO
 		UOSInt GetMemoryInfo(NN<Data::ArrayListNN<MemoryDeviceInfo>> memList) const;
 		void FreeMemoryInfo(NN<Data::ArrayListNN<MemoryDeviceInfo>> memList) const;
 
-		UTF8Char *GetPlatformName(UTF8Char *buff) const;
-		UTF8Char *GetPlatformSN(UTF8Char *buff) const;
+		UnsafeArrayOpt<UTF8Char> GetPlatformName(UnsafeArray<UTF8Char> buff) const;
+		UnsafeArrayOpt<UTF8Char> GetPlatformSN(UnsafeArray<UTF8Char> buff) const;
 		Int32 GetChassisType() const;
 		Bool ToString(NN<Text::StringBuilderUTF8> sb) const;
 		NN<IO::StreamData> CreateStreamData() const;
 
-		static Text::CString GetProcessorFamily(UInt32 family);
-		static Text::CString GetConnectorType(UInt8 type);
-		static Text::CString GetPortType(UInt8 type);
-		static Text::CString GetSystemBootStatus(UInt8 type);
+		static Text::CStringNN GetProcessorFamily(UInt32 family);
+		static Text::CStringNN GetConnectorType(UInt8 type);
+		static Text::CStringNN GetPortType(UInt8 type);
+		static Text::CStringNN GetSystemBootStatus(UInt8 type);
 	};
 }
 #endif

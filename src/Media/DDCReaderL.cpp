@@ -161,7 +161,7 @@ Media::DDCReader::DDCReader(void *hMon)
 	this->edid = DDCReader_GetMonitorEDID(hMon, &edidSize);	
 }
 
-Media::DDCReader::DDCReader(const UTF8Char *monitorId)
+Media::DDCReader::DDCReader(UnsafeArray<const UTF8Char> monitorId)
 {
 	this->edid = 0;
 	this->edidSize = 0;

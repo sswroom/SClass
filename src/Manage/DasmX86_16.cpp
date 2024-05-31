@@ -10,7 +10,7 @@
 
 #define BIT1 (-1)
 
-UTF8Char *DasmX86_16_AppInt32(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UTF8Char *buff, Int32 val)
+UnsafeArray<UTF8Char> DasmX86_16_AppInt32(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UnsafeArray<UTF8Char> buff, Int32 val)
 {
 	if (val >= 0 && (((val % 100) == 0) || val < 200))
 	{
@@ -29,7 +29,7 @@ UTF8Char *DasmX86_16_AppInt32(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UTF8
 }
 
 
-UTF8Char *DasmX86_16_AppInt16(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UTF8Char *buff, UInt16 val)
+UnsafeArray<UTF8Char> DasmX86_16_AppInt16(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UnsafeArray<UTF8Char> buff, UInt16 val)
 {
 	if (((val % 100) == 0) || val < 200)
 	{
@@ -47,7 +47,7 @@ UTF8Char *DasmX86_16_AppInt16(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UTF8
 	return buff;
 }
 
-UTF8Char *DasmX86_16_AppInt8(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UTF8Char *buff, UInt8 val)
+UnsafeArray<UTF8Char> DasmX86_16_AppInt8(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UnsafeArray<UTF8Char> buff, UInt8 val)
 {
 	if (val < 10)
 	{
@@ -65,7 +65,7 @@ UTF8Char *DasmX86_16_AppInt8(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UTF8C
 	return buff;
 }
 
-UTF8Char *DasmX86_16_AppAddrN(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UTF8Char *buff, UInt32 addr)
+UnsafeArray<UTF8Char> DasmX86_16_AppAddrN(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UnsafeArray<UTF8Char> buff, UInt32 addr)
 {
 	if ((addr & 0xffff) > 0x9fff)
 	{
@@ -76,7 +76,7 @@ UTF8Char *DasmX86_16_AppAddrN(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UTF8
 	return buff;
 }
 
-UTF8Char *DasmX86_16_AppAddrM(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UTF8Char *buff, UInt16 addr)
+UnsafeArray<UTF8Char> DasmX86_16_AppAddrM(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UnsafeArray<UTF8Char> buff, UInt16 addr)
 {
 	if ((sess->thisStatus & 7) == 1)
 	{
@@ -108,7 +108,7 @@ UTF8Char *DasmX86_16_AppAddrM(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UTF8
 	return buff;
 }
 
-UTF8Char *DasmX86_16_ParseSegReg16(UTF8Char *regName, Int32 regNo)
+UnsafeArray<UTF8Char> DasmX86_16_ParseSegReg16(UnsafeArray<UTF8Char> regName, Int32 regNo)
 {
 	switch (regNo)
 	{
@@ -134,7 +134,7 @@ UTF8Char *DasmX86_16_ParseSegReg16(UTF8Char *regName, Int32 regNo)
 	}
 }
 
-UTF8Char *DasmX86_16_ParseReg32(UTF8Char *regName, Int32 regNo)
+UnsafeArray<UTF8Char> DasmX86_16_ParseReg32(UnsafeArray<UTF8Char> regName, Int32 regNo)
 {
 	switch (regNo)
 	{
@@ -160,7 +160,7 @@ UTF8Char *DasmX86_16_ParseReg32(UTF8Char *regName, Int32 regNo)
 	}
 }
 
-UTF8Char *DasmX86_16_ParseReg16(UTF8Char *regName, Int32 regNo)
+UnsafeArray<UTF8Char> DasmX86_16_ParseReg16(UnsafeArray<UTF8Char> regName, Int32 regNo)
 {
 	switch (regNo)
 	{
@@ -186,7 +186,7 @@ UTF8Char *DasmX86_16_ParseReg16(UTF8Char *regName, Int32 regNo)
 	}
 }
 
-UTF8Char *DasmX86_16_ParseReg8(UTF8Char *regName, Int32 regNo)
+UnsafeArray<UTF8Char> DasmX86_16_ParseReg8(UnsafeArray<UTF8Char> regName, Int32 regNo)
 {
 	switch (regNo)
 	{
@@ -212,7 +212,7 @@ UTF8Char *DasmX86_16_ParseReg8(UTF8Char *regName, Int32 regNo)
 	}
 }
 
-UTF8Char *DasmX86_16_ParseAddr16(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UTF8Char *memName, Int32 *reg)
+UnsafeArray<UTF8Char> DasmX86_16_ParseAddr16(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UnsafeArray<UTF8Char> memName, Int32 *reg)
 {
 	UInt8 b = sess->code[sess->regs.IP];
 	*reg = (b >> 3) & 7;
@@ -312,7 +312,7 @@ UTF8Char *DasmX86_16_ParseAddr16(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, U
 	return memName;
 }
 
-UTF8Char *DasmX86_16_ParseModRM32(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UTF8Char *memName, Int32 *reg)
+UnsafeArray<UTF8Char> DasmX86_16_ParseModRM32(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UnsafeArray<UTF8Char> memName, Int32 *reg)
 {
 	UInt8 b = sess->code[sess->regs.IP];
 	if ((b >> 6) == 3)
@@ -328,7 +328,7 @@ UTF8Char *DasmX86_16_ParseModRM32(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, 
 	return memName;
 }
 
-UTF8Char *DasmX86_16_ParseModRM16(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UTF8Char *memName, Int32 *reg)
+UnsafeArray<UTF8Char> DasmX86_16_ParseModRM16(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UnsafeArray<UTF8Char> memName, Int32 *reg)
 {
 	UInt8 b = sess->code[sess->regs.IP];
 	if ((b >> 6) == 3)
@@ -344,7 +344,7 @@ UTF8Char *DasmX86_16_ParseModRM16(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, 
 	return memName;
 }
 
-UTF8Char *DasmX86_16_ParseModRM8(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UTF8Char *memName, Int32 *reg)
+UnsafeArray<UTF8Char> DasmX86_16_ParseModRM8(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UnsafeArray<UTF8Char> memName, Int32 *reg)
 {
 	UInt8 b = sess->code[sess->regs.IP];
 	if ((b >> 6) == 3)
@@ -360,7 +360,7 @@ UTF8Char *DasmX86_16_ParseModRM8(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, U
 	return memName;
 }
 
-UTF8Char *DasmX86_16_IntName(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UTF8Char *buff, UInt8 intNo)
+UnsafeArray<UTF8Char> DasmX86_16_IntName(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UnsafeArray<UTF8Char> buff, UInt8 intNo)
 {
 	buff = Text::StrConcatC(buff, UTF8STRC(" ;"));
 	switch (intNo)
@@ -7972,7 +7972,7 @@ void Manage::DasmX86_16::FreeRegs(NN<Dasm_Regs> regs) const
 	MemFreeNN(regs);
 }
 
-Bool Manage::DasmX86_16::DasmNext(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UTF8Char *buff, UOSInt *outBuffSize)
+Bool Manage::DasmX86_16::DasmNext(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, UnsafeArray<UTF8Char> buff, UOSInt *outBuffSize)
 {
 	*buff = 0;
 	if (outBuffSize)

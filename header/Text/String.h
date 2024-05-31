@@ -75,7 +75,7 @@ namespace Text
 }
 
 #define STR_PTR(s) ((s)?UnsafeArrayOpt<const UTF8Char>(s->v):UnsafeArrayOpt<const UTF8Char>(0))
-#define STR_PTRC(s) (s)?s->v:0, (s)?s->leng:0
+#define STR_PTRC(s) (s)?UnsafeArrayOpt<const UTF8Char>(s->v):UnsafeArrayOpt<const UTF8Char>(0), (s)?s->leng:0
 #define STR_CSTR(s) ((s)?(s)->ToCString():Text::CString(0, 0))
 #define STR_REL(s) (s->Release())
 #define SCOPY_STRING(s) ((s)?(s)->Clone().Ptr():0)

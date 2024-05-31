@@ -71,7 +71,7 @@ UI::GUIControl::~GUIControl()
 		UI::GTK::GTKDragDrop *dragDrop = (UI::GTK::GTKDragDrop*)this->dropHdlr;
 		DEL_CLASS(dragDrop);
 	}
-	SDEL_STRING(this->fontName);
+	OPTSTR_DEL(this->fontName);
 	if (this->hFont)
 	{
 		pango_font_description_free((PangoFontDescription *)this->hFont);
@@ -282,12 +282,13 @@ void UI::GUIControl::SetRect(Double left, Double top, Double width, Double heigh
 	this->SetArea(left, top, left + width, top + height, updateScn);
 }
 
-void UI::GUIControl::SetFont(const UTF8Char *name, UOSInt nameLen, Double ptSize, Bool isBold)
+void UI::GUIControl::SetFont(UnsafeArrayOpt<const UTF8Char> name, UOSInt nameLen, Double ptSize, Bool isBold)
 {
-	SDEL_STRING(this->fontName);
-	if (name)
+	OPTSTR_DEL(this->fontName);
+	UnsafeArray<const UTF8Char> nnname;
+	if (name.SetTo(nnname))
 	{
-		this->fontName = Text::String::New(name, nameLen).Ptr();
+		this->fontName = Text::String::New(nnname, nameLen);
 	}
 	this->fontHeightPt = ptSize;
 	this->fontIsBold = isBold;
@@ -297,9 +298,10 @@ void UI::GUIControl::SetFont(const UTF8Char *name, UOSInt nameLen, Double ptSize
 void UI::GUIControl::InitFont()
 {
 	PangoFontDescription *font = pango_font_description_new();
-	if (this->fontName)
+	NN<Text::String> nns;
+	if (this->fontName.SetTo(nns))
 	{
-		pango_font_description_set_family(font, (const Char*)this->fontName->v.Ptr());
+		pango_font_description_set_family(font, (const Char*)nns->v.Ptr());
 	}
 	pango_font_description_set_absolute_size(font, this->fontHeightPt * this->hdpi / this->ddpi * PANGO_SCALE / 0.75);
 	if (this->fontIsBold)
@@ -312,7 +314,7 @@ void UI::GUIControl::InitFont()
 #if GDK_VERSION_AFTER(3, 16)
 	Text::CSSBuilder builder(Text::CSSBuilder::PM_SPACE);
 	builder.NewStyle(CSTR("label"), CSTR_NULL);
-	if (this->fontName) builder.AddFontFamily(this->fontName->v);
+	if (this->fontName.SetTo(nns)) builder.AddFontFamily(nns->v);
 	if (this->fontHeightPt != 0) builder.AddFontSize(this->fontHeightPt * this->hdpi / this->ddpi, Math::Unit::Distance::DU_PIXEL);
 	if (this->fontIsBold) builder.AddFontWeight(Text::CSSBuilder::FONT_WEIGHT_BOLD);
 	GtkWidget *widget = (GtkWidget*)this->hwnd;
@@ -583,7 +585,7 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 	}
 	else
 	{
-		printf("%s is not WinForm without parent\r\n", this->GetObjectClass().v);
+		printf("%s is not WinForm without parent\r\n", this->GetObjectClass().v.Ptr());
 	}
 }
 
@@ -825,7 +827,8 @@ Optional<Media::DrawFont> UI::GUIControl::CreateDrawFont(NN<Media::DrawImage> im
 	PangoFontDescription *f = (PangoFontDescription *)this->GetFont();
 	if (f == 0)
 		return 0;
-	if (this->fontName == 0)
+	NN<Text::String> nnfontName;
+	if (!this->fontName.SetTo(nnfontName))
 	{
 		PangoFontDescription *fnt = pango_font_description_copy(f);
 		const Char *family = pango_font_description_get_family(fnt);
@@ -846,7 +849,7 @@ Optional<Media::DrawFont> UI::GUIControl::CreateDrawFont(NN<Media::DrawImage> im
 	}
 	else
 	{
-		return img->NewFontPt(this->fontName->ToCString(), this->fontHeightPt * this->hdpi / this->ddpi, this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0).Ptr();
+		return img->NewFontPt(nnfontName->ToCString(), this->fontHeightPt * this->hdpi / this->ddpi, this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0).Ptr();
 	}
 }
 

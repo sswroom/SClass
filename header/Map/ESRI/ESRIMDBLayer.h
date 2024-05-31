@@ -28,10 +28,10 @@ namespace Map
 		private:
 			Data::FastMap<Int32, const UTF8Char **> *ReadNameArr();
 
-			void Init(DB::SharedDBConn *conn, UInt32 srid, Text::CString tableName);
+			void Init(DB::SharedDBConn *conn, UInt32 srid, Text::CStringNN tableName);
 		public:
-			ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, NN<Text::String> sourceName, Text::CString tableName);
-			ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::CStringNN sourceName, Text::CString tableName);
+			ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, NN<Text::String> sourceName, Text::CStringNN tableName);
+			ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::CStringNN sourceName, Text::CStringNN tableName);
 			virtual ~ESRIMDBLayer();
 
 			virtual DrawLayerType GetLayerType() const;
@@ -55,8 +55,8 @@ namespace Map
 			virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, AnyType obj);
 
 			virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
-			virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
-			virtual Optional<DB::TableDef> GetTableDef(Text::CString schemaName, Text::CString tableName);
+			virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+			virtual Optional<DB::TableDef> GetTableDef(Text::CString schemaName, Text::CStringNN tableName);
 			virtual void CloseReader(DB::DBReader *r);
 			virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 			virtual void Reconnect();
@@ -83,7 +83,7 @@ namespace Map
 			virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
 			virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb);
 			virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
-			virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
+			virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize);
 			virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
 			virtual Double GetDbl(UOSInt colIndex);
 			virtual Bool GetBool(UOSInt colIndex);
@@ -93,7 +93,7 @@ namespace Map
 			virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid);
 
 			virtual Bool IsNull(UOSInt colIndex);
-			virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
+			virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff);
 			virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
 			virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);
 		};

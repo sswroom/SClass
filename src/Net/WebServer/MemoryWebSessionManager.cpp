@@ -68,7 +68,7 @@ UInt32 __stdcall Net::WebServer::MemoryWebSessionManager::CheckThread(AnyType us
 
 Int64 Net::WebServer::MemoryWebSessionManager::GetSessId(NN<Net::WebServer::IWebRequest> req)
 {
-	UTF8Char *sbuff;
+	UnsafeArray<UTF8Char> sbuff;
 	Text::PString strs[2];
 	UOSInt strCnt = 2;
 	Int64 sessId = 0;
@@ -78,7 +78,7 @@ Int64 Net::WebServer::MemoryWebSessionManager::GetSessId(NN<Net::WebServer::IWeb
 	{
 		return 0;
 	}
-	sbuff = MemAlloc(UTF8Char, cookie->leng + 1);
+	sbuff = MemAllocArr(UTF8Char, cookie->leng + 1);
 	cookie->ConcatTo(sbuff);
 
 	strs[1].v = sbuff;
@@ -93,7 +93,7 @@ Int64 Net::WebServer::MemoryWebSessionManager::GetSessId(NN<Net::WebServer::IWeb
 		}
 	}
 
-	MemFree(sbuff);
+	MemFreeArr(sbuff);
 	return sessId;
 }
 
@@ -159,7 +159,7 @@ Optional<Net::WebServer::IWebSession> Net::WebServer::MemoryWebSessionManager::G
 NN<Net::WebServer::IWebSession> Net::WebServer::MemoryWebSessionManager::CreateSession(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Net::WebServer::IWebSession> sess;
 	if (this->GetSession(req, resp).SetTo(sess))
 		return sess;

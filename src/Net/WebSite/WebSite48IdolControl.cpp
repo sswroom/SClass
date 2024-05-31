@@ -133,7 +133,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, NN<Data:
 						{
 							if (reader.GetAttribCount() == 1 && reader.GetAttrib((UOSInt)0).SetTo(attr) && attr->name->Equals(UTF8STRC("href")) && attr->value && attr->value->StartsWith(UTF8STRC(BASEURL)))
 							{
-								id = Text::StrToInt32(&attr->value->v[sizeof(BASEURL) + 5]);
+								id = Text::StrToInt32(&attr->value->v[(UOSInt)sizeof(BASEURL) + 5]);
 								sb.ClearStr();
 								reader.ReadNodeText(sb);
 								SDEL_STRING(title);

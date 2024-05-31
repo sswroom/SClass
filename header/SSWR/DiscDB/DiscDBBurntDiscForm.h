@@ -18,10 +18,10 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				const UTF8Char *mainTitle;
+				UnsafeArray<const UTF8Char> mainTitle;
 				NN<Text::String> type;
-				const UTF8Char *chapter;
-				const UTF8Char *chapterTitle;
+				UnsafeArrayOpt<const UTF8Char> chapter;
+				UnsafeArrayOpt<const UTF8Char> chapterTitle;
 				Text::CString videoFormat;
 				Int32 width;
 				Int32 height;
@@ -30,15 +30,15 @@ namespace SSWR
 				Text::CString audioFormat;
 				Int32 samplingRate;
 				Int32 bitRate;
-				const UTF8Char *aspectRatio;
-				const UTF8Char *remark;
+				UnsafeArrayOpt<const UTF8Char> aspectRatio;
+				UnsafeArrayOpt<const UTF8Char> remark;
 			} MovieCols;
 
 			typedef struct
 			{
 				NN<Text::String> fname;
 				UInt64 fSize;
-				Text::CString cate;
+				Text::CStringNN cate;
 				Int32 videoId;
 				Bool video;
 				MovieCols *anime;
@@ -91,13 +91,13 @@ namespace SSWR
 			Bool UpdateFileInfo(NN<BurntFile> selectedFile);
 			void UpdateType();
 			void SetVideoField(Int32 videoId);
-			UInt64 SearchSubDir(const UTF8Char *absPath, const UTF8Char *relPath, UInt64 maxSize);
+			UInt64 SearchSubDir(UnsafeArray<const UTF8Char> absPath, UnsafeArray<const UTF8Char> relPath, UInt64 maxSize);
 
 			void BurntFileUpdateVideo(NN<BurntFile> file);
-			NN<BurntFile> BurntFileNew(Text::CString fileName, Text::CString relPath, UInt64 fileSize);
+			NN<BurntFile> BurntFileNew(Text::CStringNN fileName, Text::CString relPath, UInt64 fileSize);
 			static void BurntFileFree(NN<BurntFile> file);
 
-			MovieCols *MovieColsNew(Text::CString fileName); //
+			MovieCols *MovieColsNew(Text::CStringNN fileName); //
 			static void MovieColsFree(MovieCols *anime);
 
 			static void __stdcall OnBrowseClicked(AnyType userObj);

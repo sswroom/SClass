@@ -67,13 +67,14 @@ void __stdcall SSWR::AVIRead::AVIRLoraGWSimForm::OnPredefClicked(AnyType userObj
 {
 	NN<SSWR::AVIRead::AVIRLoraGWSimForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLoraGWSimForm>();
 	NN<PredefData> data;
-	if (me->cboPredef->GetSelectedItem().GetOpt<PredefData>().SetTo(data) && data->data)
+	UnsafeArray<const UTF8Char> nndata;
+	if (me->cboPredef->GetSelectedItem().GetOpt<PredefData>().SetTo(data) && data->data.SetTo(nndata))
 	{
 		UTF8Char sbuff[16];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		sptr = Text::StrUInt16(sbuff, data->fPort);
 		me->txtFPort->SetText(CSTRP(sbuff, sptr));
-		me->txtData->SetText(Text::CStringNN(data->data, data->dataLen));
+		me->txtData->SetText(Text::CStringNN(nndata, data->dataLen));
 	}
 }
 

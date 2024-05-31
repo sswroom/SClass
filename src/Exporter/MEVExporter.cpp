@@ -30,7 +30,7 @@ IO::FileExporter::SupportType Exporter::MEVExporter::IsObjectSupported(NN<IO::Pa
 	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::MEVExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::MEVExporter::GetOutputName(UOSInt index, UnsafeArray<UTF8Char> nameBuff, UnsafeArray<UTF8Char> fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -58,7 +58,8 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	Map::MapEnv::ImageInfo imgInfo;
 	NN<Exporter::MEVExporter::MEVStrRecord> strRec;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArrayOpt<UTF8Char> optsptr;
 	Text::String *tmpStr;
 	NN<const Data::ArrayListNN<Exporter::MEVExporter::MEVStrRecord>> tmpArr;
 	Data::ArrayListICaseString dirArr;
@@ -151,14 +152,14 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 		UOSInt buffSize;
 		UInt32 buffColor;
 
-		sptr = env->GetFontStyleName(i, sbuff);
+		optsptr = env->GetFontStyleName(i, sbuff);
 		if (!env->GetFontStyle(i, fontName, fontSize, bold, fontColor, buffSize, buffColor))
 		{
 			fontName = Text::String::NewEmpty();
 		}
 
 		*(Int32*)&buff[0] = 0;
-		if (sptr)
+		if (optsptr.SetTo(sptr))
 		{
 			WriteUInt32(&buff[4], AddString(strArr, sbuff, (UOSInt)(sptr - sbuff), stmPos));
 		}
@@ -184,9 +185,9 @@ Bool Exporter::MEVExporter::ExportFile(NN<IO::SeekableStream> stm, Text::CString
 	j = env->GetLineStyleCount();
 	while (i < j)
 	{
-		sptr = env->GetLineStyleName(i, sbuff);
+		optsptr = env->GetLineStyleName(i, sbuff);
 		*(Int32*)&buff[0] = 0;
-		if (sptr)
+		if (optsptr.SetTo(sptr))
 		{
 			*(UInt32*)&buff[4] = AddString(strArr, sbuff, (UOSInt)(sptr - sbuff), stmPos);
 		}
@@ -268,7 +269,7 @@ void Exporter::MEVExporter::GetMapDirs(NN<Map::MapEnv> env, Data::ArrayListStrin
 	UOSInt k;
 	OSInt si;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Map::MapEnv::MapItem> item;
 
 	while (i < j)
@@ -283,17 +284,15 @@ void Exporter::MEVExporter::GetMapDirs(NN<Map::MapEnv> env, Data::ArrayListStrin
 			{
 				NN<Map::MapEnv::LayerItem> lyr = NN<Map::MapEnv::LayerItem>::ConvertFrom(item);
 				NN<Map::MapDrawLayer> layer = lyr->layer;
-				if ((sptr = layer->GetSourceName(sbuff)) != 0)
+				sptr = layer->GetSourceName(sbuff);
+				k = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
+				if (k != INVALID_INDEX)
 				{
-					k = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
-					if (k != INVALID_INDEX)
+					sbuff[k] = 0;
+					si = dirArr->SortedIndexOfPtr(sbuff, k);
+					if (si < 0)
 					{
-						sbuff[k] = 0;
-						si = dirArr->SortedIndexOfPtr(sbuff, k);
-						if (si < 0)
-						{
-							dirArr->Insert((UOSInt)~si, Text::String::New(sbuff, k).Ptr());
-						}
+						dirArr->Insert((UOSInt)~si, Text::String::New(sbuff, k).Ptr());
 					}
 				}
 			}
@@ -317,7 +316,7 @@ UInt32 Exporter::MEVExporter::AddString(NN<Data::StringMapNN<MEVStrRecord>> strA
 	return strRec->byteSize;
 }
 
-UInt32 Exporter::MEVExporter::AddString(NN<Data::StringMapNN<MEVStrRecord>> strArr, const UTF8Char *strVal, UOSInt strLen, UInt32 fileOfst)
+UInt32 Exporter::MEVExporter::AddString(NN<Data::StringMapNN<MEVStrRecord>> strArr, UnsafeArray<const UTF8Char> strVal, UOSInt strLen, UInt32 fileOfst)
 {
 	NN<MEVStrRecord> strRec;
 	if (!strArr->Get({strVal, strLen}).SetTo(strRec))
@@ -325,7 +324,7 @@ UInt32 Exporter::MEVExporter::AddString(NN<Data::StringMapNN<MEVStrRecord>> strA
 		NEW_CLASSNN(strRec, MEVStrRecord());
 		strRec->byteSize = (UInt32)strLen;
 		strRec->strBytes = MemAlloc(UInt8, strRec->byteSize + 1);
-		MemCopyNO(strRec->strBytes, strVal, strRec->byteSize);
+		MemCopyNO(strRec->strBytes, strVal.Ptr(), strRec->byteSize);
 		strArr->Put({strVal, strLen}, strRec);
 	}
 	strRec->ofstList.Add(fileOfst);
@@ -336,7 +335,7 @@ void Exporter::MEVExporter::WriteGroupItems(NN<Map::MapEnv> env, Optional<Map::M
 {
 	UInt8 buff[256];
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Map::MapEnv::LayerItem setting;
 	UOSInt i = 0;
 	UOSInt j = env->GetItemCount(group);

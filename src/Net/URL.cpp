@@ -11,7 +11,7 @@ IO::ParsedObject *Net::URL::OpenObject(Text::CStringNN url, Text::CString userAg
 {
 	IO::ParsedObject *pobj;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (url.StartsWithICase(UTF8STRC("http://")))
 	{
 		NN<Net::HTTPClient> cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, true, false);
@@ -48,7 +48,8 @@ IO::ParsedObject *Net::URL::OpenObject(Text::CStringNN url, Text::CString userAg
 	}
 	else if (url.StartsWithICase(UTF8STRC("file:///")))
 	{
-		sptr = Text::URLString::GetURLFilePath(sbuff, url.v, url.leng);
+		sbuff[0] = 0;
+		sptr = Text::URLString::GetURLFilePath(sbuff, url.v, url.leng).Or(sbuff);
 		NEW_CLASS(pobj, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		return pobj;
 	}

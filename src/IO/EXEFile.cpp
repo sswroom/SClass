@@ -314,7 +314,7 @@ Data::Timestamp IO::EXEFile::GetFileTime(Text::CStringNN fileName)
 	return Data::Timestamp(Data::TimeInstant(ReadUInt32(&buff[8]), 0), Data::DateTimeUtil::GetLocalTzQhr());
 }
 
-Text::CString IO::EXEFile::GetResourceTypeName(ResourceType rt)
+Text::CStringNN IO::EXEFile::GetResourceTypeName(ResourceType rt)
 {
 	switch (rt)
 	{

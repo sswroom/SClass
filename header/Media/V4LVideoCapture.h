@@ -26,7 +26,7 @@ namespace Media
 		V4LVideoCapture(UOSInt devId);
 		virtual ~V4LVideoCapture();
 		
-		virtual UTF8Char *GetSourceName(UTF8Char *buff);
+		virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
 		virtual Text::CStringNN GetFilterName();
 		virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);
 		virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, AnyType userData);
@@ -51,7 +51,7 @@ namespace Media
 		~V4LVideoCaptureMgr();
 
 		UOSInt GetDeviceList(Data::ArrayList<UInt32> *devList);
-		UTF8Char *GetDeviceName(UTF8Char *buff, UOSInt devId);
+		UnsafeArrayOpt<UTF8Char> GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devId);
 
 		NN<Media::IVideoCapture> CreateDevice(UOSInt devId);
 	};

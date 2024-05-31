@@ -189,7 +189,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 	Manage::ThreadInfo thread(proc->GetProcId(), threadId);
 	NN<Manage::ThreadContext> context;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt64 startAddr;
 	UOSInt i;
 	UOSInt j;
@@ -220,14 +220,12 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 	this->txtThreadId->SetText(CSTRP(sbuff, sptr));
 	sptr = Text::StrHexVal64(sbuff, startAddr);
 	this->txtStartAddr->SetText(CSTRP(sbuff, sptr));
-	sptr = symbol->ResolveName(sbuff, startAddr);
-	if (sptr)
+	if (symbol->ResolveName(sbuff, startAddr).SetTo(sptr))
 	{
 		i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
 		this->txtStartName->SetText(CSTRP(&sbuff[i + 1], sptr));
 	}
-	sptr = thread.GetName(sbuff);
-	if (sptr)
+	if (thread.GetName(sbuff).SetTo(sptr))
 	{
 		this->txtThreadName->SetText(CSTRP(sbuff, sptr));
 	}
@@ -284,8 +282,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 				currAddr = tracer.GetCurrentAddr();
 				sptr = Text::StrHexVal64(sbuff, currAddr);
 				i = this->lvStack->AddItem(CSTRP(sbuff, sptr), 0, 0);
-				sptr = symbol->ResolveName(sbuff, currAddr);
-				if (sptr)
+				if (symbol->ResolveName(sbuff, currAddr).SetTo(sptr))
 				{
 					j = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
 					this->lvStack->SetSubItem(i, 1, CSTRP(&sbuff[j + 1], sptr));
@@ -429,7 +426,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 					sb.ClearStr();
 					sb.AppendHex64(rip);
 					sb.AppendC(UTF8STRC(" "));
-					sptr = symbol->ResolveName(sbuff, rip);
+					sptr = symbol->ResolveName(sbuff, rip).Or(sbuff);
 					i  = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
 					sb.AppendP(&sbuff[i + 1], sptr);
 					i = this->lbMyStack->AddItem(sb.ToCString(), 0);
@@ -583,7 +580,8 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(Optional<UI::GUIClientCont
 			j = context->GetRegisterCnt();
 			while (i < j)
 			{
-				sptr = context->GetRegister(i, sbuff, buff, &bitCnt);
+				sbuff[0] = 0;
+				sptr = context->GetRegister(i, sbuff, buff, &bitCnt).Or(sbuff);
 				k = this->lvContext->AddItem(CSTRP(sbuff, sptr), 0);
 				if (bitCnt == 8)
 				{

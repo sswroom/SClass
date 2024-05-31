@@ -71,7 +71,7 @@ namespace SSWR
 
 			Bool FFMPEGMux(const UTF8Char *videoFile, const UTF8Char *audioFile, const UTF8Char *outFile);
 			Bool FFMPEGMuxAAC(const UTF8Char *videoFile, const UTF8Char *audioFile, const UTF8Char *outFile);
-			Bool ExtractZIP(Text::CStringNN zipFile, Text::CString mp4File);
+			Bool ExtractZIP(Text::CStringNN zipFile, Text::CStringNN mp4File);
 			Bool VideoValid(Text::CStringNN fileName);
 			void ProcessDir(Text::String *downPath, Text::String *succPath, Text::String *errPath);
 			static void __stdcall CheckThread(NN<Sync::Thread> thread);

@@ -31,8 +31,8 @@ void __stdcall SSWR::AVIRead::AVIRPushServerForm::OnStartClicked(AnyType userObj
 		return;
 	}
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	UnsafeArray<UTF8Char> sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("log"));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("PushSvr"));

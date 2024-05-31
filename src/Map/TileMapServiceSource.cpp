@@ -272,7 +272,7 @@ void Map::TileMapServiceSource::LoadXML()
 	cli.Delete();
 }
 
-Map::TileMapServiceSource::TileMapServiceSource(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CString tmsURL)
+Map::TileMapServiceSource::TileMapServiceSource(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Optional<Text::EncodingFactory> encFact, Text::CStringNN tmsURL)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -289,8 +289,8 @@ Map::TileMapServiceSource::TileMapServiceSource(NN<Net::SocketFactory> sockf, Op
 	this->imgType = IT_PNG;
 	this->LoadXML();
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	UnsafeArray<UTF8Char> sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("tms"));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	Crypto::Hash::CRC32RC crc;
@@ -463,7 +463,7 @@ Media::ImageList *Map::TileMapServiceSource::LoadTileImage(UOSInt level, Math::C
 	return 0;
 }
 
-UTF8Char *Map::TileMapServiceSource::GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
+UnsafeArrayOpt<UTF8Char> Map::TileMapServiceSource::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
 {
 	NN<TileLayer> layer;
 	if (this->layers.GetItem(level).SetTo(layer))
@@ -501,9 +501,9 @@ Optional<IO::StreamData> Map::TileMapServiceSource::LoadTileImageData(UOSInt lev
 {
 	UTF8Char filePathU[512];
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 urlSb;
-	UTF8Char *sptru = filePathU;
+	UnsafeArray<UTF8Char> sptru = filePathU;
 	Bool hasTime = false;
 	Data::DateTime dt;
 	Data::DateTime currTime;

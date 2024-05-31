@@ -14,7 +14,7 @@ Math::SRWKTWriter::~SRWKTWriter()
 
 }
 
-UTF8Char *Math::SRWKTWriter::WriteCSys(NN<Math::CoordinateSystem> csys, UTF8Char *buff, UOSInt lev, Text::LineBreakType lbt)
+UnsafeArray<UTF8Char> Math::SRWKTWriter::WriteCSys(NN<Math::CoordinateSystem> csys, UnsafeArray<UTF8Char> buff, UOSInt lev, Text::LineBreakType lbt)
 {
 	if (csys->IsProjected())
 	{
@@ -85,7 +85,7 @@ UTF8Char *Math::SRWKTWriter::WriteCSys(NN<Math::CoordinateSystem> csys, UTF8Char
 	return buff;
 }
 
-UTF8Char *Math::SRWKTWriter::WriteDatum(NN<const Math::CoordinateSystem::DatumData1> datum, UTF8Char *buff, UOSInt lev, Text::LineBreakType lbt)
+UnsafeArray<UTF8Char> Math::SRWKTWriter::WriteDatum(NN<const Math::CoordinateSystem::DatumData1> datum, UnsafeArray<UTF8Char> buff, UOSInt lev, Text::LineBreakType lbt)
 {
 	buff = Text::StrConcatC(buff, UTF8STRC("DATUM[\""));
 	buff = Text::StrConcatC(buff, datum->name, datum->nameLen);
@@ -115,7 +115,7 @@ UTF8Char *Math::SRWKTWriter::WriteDatum(NN<const Math::CoordinateSystem::DatumDa
 	return buff;
 }
 
-UTF8Char *Math::SRWKTWriter::WriteSpheroid(const Math::CoordinateSystem::SpheroidData *spheroid, UTF8Char *buff, UOSInt lev, Text::LineBreakType lbt)
+UnsafeArray<UTF8Char> Math::SRWKTWriter::WriteSpheroid(const Math::CoordinateSystem::SpheroidData *spheroid, UnsafeArray<UTF8Char> buff, UOSInt lev, Text::LineBreakType lbt)
 {
 	buff = Text::StrConcatC(buff, UTF8STRC("SPHEROID[\""));
 	buff = Text::StrConcatC(buff, spheroid->name, spheroid->nameLen);
@@ -128,7 +128,7 @@ UTF8Char *Math::SRWKTWriter::WriteSpheroid(const Math::CoordinateSystem::Spheroi
 	return buff;
 }
 
-UTF8Char *Math::SRWKTWriter::WriteNextLine(UTF8Char *buff, UOSInt lev, Text::LineBreakType lbt)
+UnsafeArray<UTF8Char> Math::SRWKTWriter::WriteNextLine(UnsafeArray<UTF8Char> buff, UOSInt lev, Text::LineBreakType lbt)
 {
 	if (lbt != Text::LineBreakType::None)
 	{

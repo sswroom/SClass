@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnOKClicked(AnyType userObj)
 	NN<SSWR::AVIRead::AVIRGISPropForm> me = userObj.GetNN<SSWR::AVIRead::AVIRGISPropForm>();
 	Map::MapEnv::LayerItem setting;
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (me->env->GetLayerProp(setting, me->group, me->index))
 	{
 		setting.labelCol = (UOSInt)me->cboColName->GetSelectedIndex();
@@ -52,8 +52,10 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnOKClicked(AnyType userObj)
 		setting.minScale = Text::StrToDouble(sbuff);
 		me->txtMaxScale->GetText(sbuff);
 		setting.maxScale = Text::StrToDouble(sbuff);
-		sptr = me->txtPriority->GetText(sbuff);
-		setting.priority = Text::StrToInt32(sbuff);
+		if (me->txtPriority->GetText(sbuff).SetTo(sptr))
+			setting.priority = Text::StrToInt32(sbuff);
+		else
+			setting.priority = 0;
 		if (setting.minScale == 0 || setting.maxScale == 0 || (setting.priority == 0 && !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("0"))))
 		{
 			me->ui->ShowMsgOK(CSTR("Input value invalid"), CSTR("Properties"), me);
@@ -359,14 +361,14 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(Optional<UI::GUIClientControl> p
 	Map::MapEnv::LayerItem setting;
 	NN<Map::MapEnv::LayerItem> lyr;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (this->env->GetLayerProp(setting, this->group, this->index) && Optional<Map::MapEnv::LayerItem>::ConvertFrom(this->env->GetItem(this->group, this->index)).SetTo(lyr))
 	{
 		UOSInt j = lyr->layer->GetColumnCnt();
 		UOSInt i = 0;
 		while (i < j)
 		{
-			if ((sptr = lyr->layer->GetColumnName(sbuff, i)) != 0)
+			if (lyr->layer->GetColumnName(sbuff, i).SetTo(sptr))
 			{
 				this->cboColName->AddItem(CSTRP(sbuff, sptr), 0);
 			}

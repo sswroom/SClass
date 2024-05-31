@@ -38,9 +38,9 @@ namespace Text
 			virtual NN<IMIMEObj> Clone() const;
 
 			Bool GetDate(Data::DateTime *dt) const;
-			UTF8Char *GetFromAddr(UTF8Char *sbuff) const;
-			UTF8Char *GetSubject(UTF8Char *sbuff) const;
-			UTF8Char *GetReplyTo(UTF8Char *sbuff) const;
+			UnsafeArrayOpt<UTF8Char> GetFromAddr(UnsafeArray<UTF8Char> sbuff) const;
+			UnsafeArrayOpt<UTF8Char> GetSubject(UnsafeArray<UTF8Char> sbuff) const;
+			UnsafeArrayOpt<UTF8Char> GetReplyTo(UnsafeArray<UTF8Char> sbuff) const;
 			UOSInt GetRecpList(NN<Data::ArrayListNN<MailAddress>> recpList) const;
 			void FreeRecpList(NN<Data::ArrayListNN<MailAddress>> recpList) const;
 
@@ -53,7 +53,7 @@ namespace Text
 			static Optional<MailMessage> ParseFile(NN<IO::StreamData> fd);
 
 		private:
-			UOSInt ParseAddrList(const UTF8Char *hdr, UOSInt hdrLen, NN<Data::ArrayListNN<MailAddress>> recpList, AddressType type) const;
+			UOSInt ParseAddrList(UnsafeArray<const UTF8Char> hdr, UOSInt hdrLen, NN<Data::ArrayListNN<MailAddress>> recpList, AddressType type) const;
 		};
 	}
 }

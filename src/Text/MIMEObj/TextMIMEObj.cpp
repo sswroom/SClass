@@ -10,7 +10,7 @@ void Text::MIMEObj::TextMIMEObj::BuildContentType()
 {
 	Text::StringBuilderUTF8 sbc;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sbuff[0] = 0;
 	sbc.AppendC(UTF8STRC("text/plain; charset="));
 	sptr = Text::EncodingFactory::GetInternetName(sbuff, this->codePage);
@@ -73,13 +73,13 @@ void Text::MIMEObj::TextMIMEObj::GetText(NN<Text::StringBuilderUTF8> sb) const
 {
 	Text::Encoding enc(this->codePage);
 	UOSInt strLen;
-	UTF8Char *sbuff;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sbuff;
+	UnsafeArray<UTF8Char> sptr;
 	strLen = enc.CountUTF8Chars(this->textBuff, this->buffSize);
-	sbuff = MemAlloc(UTF8Char, strLen + 1);
+	sbuff = MemAllocArr(UTF8Char, strLen + 1);
 	sptr = enc.UTF8FromBytes(sbuff, this->textBuff, this->buffSize, 0);
 	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
-	MemFree(sbuff);
+	MemFreeArr(sbuff);
 }
 
 UInt32 Text::MIMEObj::TextMIMEObj::GetCodePage() const

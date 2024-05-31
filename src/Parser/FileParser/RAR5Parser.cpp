@@ -54,7 +54,7 @@ IO::ParserType Parser::FileParser::RAR5Parser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::RAR5Parser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 buff[512];
 	const UInt8 *buffPtr;
 	const UInt8 *nextPtr;

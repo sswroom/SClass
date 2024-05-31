@@ -13,7 +13,7 @@
 void SSWR::AVIRead::AVIRExeForm::ParseSess16(NN<Manage::DasmX86_16::DasmX86_16_Sess> sess, NN<Data::ArrayListStringNN> codes, Data::ArrayListNN<ExeB16Addr> *parts, Data::ArrayListInt32 *partInd, NN<ExeB16Addr> startAddr, Manage::DasmX86_16 *dasm, UOSInt codeSize)
 {
 	UTF8Char buff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt buffSize;
 	NN<ExeB16Addr> eaddr;
 	UOSInt i;
@@ -109,7 +109,7 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 	Data::ArrayListNN<ExeB16Addr> *parts;
 	Data::ArrayListInt32 *partInd;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<ExeB16Addr> eaddr;
 	UOSInt codeSize;
 	UOSInt i;
@@ -308,7 +308,7 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceDblClk(AnyType userObj)
 SSWR::AVIRead::AVIRExeForm::AVIRExeForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core, IO::EXEFile *exeFile) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->SetFont(0, 0, 8.25, false);
 	this->exeFile = exeFile;
 	this->parts = 0;

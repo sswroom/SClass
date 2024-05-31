@@ -14,7 +14,7 @@ IO::ED527Sim::~ED527Sim()
 {
 }
 
-Text::CString IO::ED527Sim::GetName()
+Text::CStringNN IO::ED527Sim::GetName()
 {
 	return CSTR("ED527");
 }

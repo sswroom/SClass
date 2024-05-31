@@ -66,8 +66,8 @@ namespace IO
 		SystemInfo();
 		~SystemInfo();
 
-		UTF8Char *GetPlatformName(UTF8Char *sbuff);
-		UTF8Char *GetPlatformSN(UTF8Char *sbuff);
+		UnsafeArrayOpt<UTF8Char> GetPlatformName(UnsafeArray<UTF8Char> sbuff);
+		UnsafeArrayOpt<UTF8Char> GetPlatformSN(UnsafeArray<UTF8Char> sbuff);
 		UInt64 GetTotalMemSize();
 		UInt64 GetTotalUsableMemSize();
 		ChassisType GetChassisType();

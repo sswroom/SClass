@@ -21,7 +21,7 @@ namespace Manage
 			
 			void **codeHdlrs;
 			void **code0fHdlrs;
-			UTF8Char *outSPtr;
+			UnsafeArray<UTF8Char> outSPtr;
 			//prefix 2 1: 00 = no, 01 = 0x66, 02 = f2, 03 = f3
 		} DasmX86_16_Sess;
 
@@ -41,7 +41,7 @@ namespace Manage
 		virtual NN<Dasm_Regs> CreateRegs() const;
 		virtual void FreeRegs(NN<Dasm_Regs> regs) const;
 
-		Bool DasmNext(NN<DasmX86_16_Sess> sess, UTF8Char *buff, UOSInt *outBuffSize); //True = succ
+		Bool DasmNext(NN<DasmX86_16_Sess> sess, UnsafeArray<UTF8Char> buff, UOSInt *outBuffSize); //True = succ
 	};
 }
 

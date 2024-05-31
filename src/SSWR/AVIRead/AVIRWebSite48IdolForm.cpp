@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnRequestPageClicked(AnyTyp
 	NN<SSWR::AVIRead::AVIRWebSite48IdolForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWebSite48IdolForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Int32 pageNo = 0;
 	me->txtPageNo->GetText(sb);
 	sb.ToInt32(pageNo);

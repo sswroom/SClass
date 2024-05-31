@@ -45,15 +45,14 @@ Optional<IO::ParsedObject> Parser::ObjParser::ITMParser::ParseObject(NN<IO::Pars
 		return 0;
 	NN<IO::PackageFile> pkg = NN<IO::PackageFile>::ConvertFrom(pobj);
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	i = 0;
 	j = pkg->GetCount();
 	while (i < j)
 	{
-		sptr = pkg->GetItemName(sbuff, i);
-		if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ituser.poi")))
+		if (pkg->GetItemName(sbuff, i).SetTo(sptr) && Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ituser.poi")))
 		{
 			if (pkg->GetItemType(i) == IO::PackageFile::PackObjectType::StreamData)
 			{

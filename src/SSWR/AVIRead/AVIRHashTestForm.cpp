@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnCompareClicked(AnyType userObj
 {
 	NN<SSWR::AVIRead::AVIRHashTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHashTestForm>();
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Crypto::Hash::HashType i = Crypto::Hash::HashType::First;
 	UOSInt j;
 	Double speed;
@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnSpeedClicked(AnyType userObj)
 {
 	NN<SSWR::AVIRead::AVIRHashTestForm> me = userObj.GetNN<SSWR::AVIRead::AVIRHashTestForm>();
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i = me->cboAlgorithm->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
@@ -114,7 +114,7 @@ SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(Optional<UI::GUIClientControl>
 	this->lvCompare->SetFullRowSelect(true);
 
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Crypto::Hash::HashType i = Crypto::Hash::HashType::First;
 	NN<Crypto::Hash::IHash> hash;
 	while (i <= Crypto::Hash::HashType::Last)

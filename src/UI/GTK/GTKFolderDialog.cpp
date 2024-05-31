@@ -22,13 +22,13 @@ Bool UI::GTK::GTKFolderDialog::ShowDialog(ControlHandle *ownerHandle)
 	const Char *msg = "Select Folder";
 	if (this->message.SetTo(s))
 	{
-		msg = (const Char*)s->v;
+		msg = (const Char*)s->v.Ptr();
 	}
 	dialog = gtk_file_chooser_dialog_new(msg, 0, GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,  "Cancel", GTK_RESPONSE_CANCEL, "Select", GTK_RESPONSE_ACCEPT, (void*)0);
 	chooser = GTK_FILE_CHOOSER(dialog);
 	if (this->dirName.SetTo(s))
 	{
-		gtk_file_chooser_set_filename(chooser, (const Char*)s->v);
+		gtk_file_chooser_set_filename(chooser, (const Char*)s->v.Ptr());
 	}
 	Bool ret = false;
 	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)

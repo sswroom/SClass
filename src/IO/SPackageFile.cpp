@@ -61,16 +61,16 @@ void IO::SPackageFile::ReadV2DirEnt(UInt64 ofst, UInt64 size)
 	nextSize = ReadUInt64(&dirBuff[8]);
 	this->ReadV2DirEnt(nextOfst, nextSize);
 
-	UTF8Char *sbuff;
+	UnsafeArray<UTF8Char> sbuff;
 	UOSInt i;
 	UOSInt nameSize;
 	FileInfo *file;
-	sbuff = MemAlloc(UTF8Char, 512);
+	sbuff = MemAllocArr(UTF8Char, 512);
 	i = 16;
 	while (i < size)
 	{
 		nameSize = ReadUInt16(&dirBuff[i + 24]);
-		MemCopyNO(sbuff, &dirBuff[i + 26], nameSize);
+		MemCopyNO(sbuff.Ptr(), &dirBuff[i + 26], nameSize);
 		sbuff[nameSize] = 0;
 		
 		file = this->fileMap.Get({sbuff, nameSize});
@@ -83,42 +83,44 @@ void IO::SPackageFile::ReadV2DirEnt(UInt64 ofst, UInt64 size)
 		}
 		i += 26 + nameSize;
 	}
-	MemFree(sbuff);
+	MemFreeArr(sbuff);
 }
 
-void IO::SPackageFile::AddPackageInner(NN<IO::PackageFile> pkg, UTF8Char pathSeperator, UTF8Char *pathStart, UTF8Char *pathEnd)
+void IO::SPackageFile::AddPackageInner(NN<IO::PackageFile> pkg, UTF8Char pathSeperator, UnsafeArray<UTF8Char> pathStart, UnsafeArray<UTF8Char> pathEnd)
 {
 	UOSInt i = 0;
 	UOSInt j = pkg->GetCount();
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	while (i < j)
 	{
-		sptr = pkg->GetItemName(pathEnd, i);
-		IO::PackageFile::PackObjectType pt = pkg->GetItemType(i);
-		if (pathEnd[0] == '.')
+		if (pkg->GetItemName(pathEnd, i).SetTo(sptr))
 		{
-		}
-		else if (pt == IO::PackageFile::PackObjectType::PackageFileType)
-		{
-			Bool innerNeedDelete;
-			NN<IO::PackageFile> innerPack;
-			if (pkg->GetItemPack(i, innerNeedDelete).SetTo(innerPack))
+			IO::PackageFile::PackObjectType pt = pkg->GetItemType(i);
+			if (pathEnd[0] == '.')
 			{
-				*sptr++ = pathSeperator;
-				AddPackageInner(innerPack, pathSeperator, pathStart, sptr);
-				if (innerNeedDelete)
+			}
+			else if (pt == IO::PackageFile::PackObjectType::PackageFileType)
+			{
+				Bool innerNeedDelete;
+				NN<IO::PackageFile> innerPack;
+				if (pkg->GetItemPack(i, innerNeedDelete).SetTo(innerPack))
 				{
-					innerPack.Delete();
+					*sptr++ = pathSeperator;
+					AddPackageInner(innerPack, pathSeperator, pathStart, sptr);
+					if (innerNeedDelete)
+					{
+						innerPack.Delete();
+					}
 				}
 			}
-		}
-		else if (pt == IO::PackageFile::PackObjectType::StreamData)
-		{
-			NN<IO::StreamData> fd;
-			if (pkg->GetItemStmDataNew(i).SetTo(fd))
+			else if (pt == IO::PackageFile::PackObjectType::StreamData)
 			{
-				this->AddFile(fd, {pathStart, (UOSInt)(sptr - pathStart)}, pkg->GetItemModTime(i));
-				fd.Delete();
+				NN<IO::StreamData> fd;
+				if (pkg->GetItemStmDataNew(i).SetTo(fd))
+				{
+					this->AddFile(fd, {pathStart, (UOSInt)(sptr - pathStart)}, pkg->GetItemModTime(i));
+					fd.Delete();
+				}
 			}
 		}
 		i++;
@@ -148,7 +150,7 @@ Bool IO::SPackageFile::OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOf
 
 		UInt64 thisOfst;
 		UInt64 thisSize;
-		UTF8Char *sbuff = MemAlloc(UTF8Char, 512);
+		UnsafeArray<UTF8Char> sbuff = MemAllocArr(UTF8Char, 512);
 		lastOfst = 0;
 		lastSize = 0;
 		i = 16;
@@ -157,7 +159,7 @@ Bool IO::SPackageFile::OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOf
 			thisOfst = ReadUInt64(&dirBuff[i]);
 			thisSize = ReadUInt64(&dirBuff[i + 8]);
 			j = ReadUInt16(&dirBuff[i + 24]);
-			MemCopyNO(sbuff, &dirBuff[i + 26], j);
+			MemCopyNO(sbuff.Ptr(), &dirBuff[i + 26], j);
 			sbuff[j] = 0;
 			Data::ByteBuffer fileBuff((UOSInt)thisSize);
 			if (thisOfst != lastOfst + lastSize)
@@ -176,7 +178,7 @@ Bool IO::SPackageFile::OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOf
 			}
 			i += 26 + j;
 		}
-		MemFree(sbuff);
+		MemFreeArr(sbuff);
 	}
 	else
 	{
@@ -429,7 +431,7 @@ IO::SPackageFile::~SPackageFile()
 	}
 }
 
-Bool IO::SPackageFile::AddFile(NN<IO::StreamData> fd, Text::CString fileName, const Data::Timestamp &modTime)
+Bool IO::SPackageFile::AddFile(NN<IO::StreamData> fd, Text::CStringNN fileName, const Data::Timestamp &modTime)
 {
 	UInt8 dataBuff[512];
 	UInt64 dataSize = fd->GetDataSize();
@@ -448,7 +450,7 @@ Bool IO::SPackageFile::AddFile(NN<IO::StreamData> fd, Text::CString fileName, co
 	WriteUInt64(&dataBuff[0], this->currOfst);
 	WriteUInt64(&dataBuff[8], dataSize);
 	WriteInt64(&dataBuff[16], modTime.ToTicks());
-	MemCopyNO(&dataBuff[26], fileName.v, fileName.leng);
+	MemCopyNO(&dataBuff[26], fileName.v.Ptr(), fileName.leng);
 	WriteUInt16(&dataBuff[24], (UInt16)fileName.leng);
 
 	if (!this->writeMode)
@@ -514,7 +516,7 @@ Bool IO::SPackageFile::AddFile(NN<IO::StreamData> fd, Text::CString fileName, co
 	return succ;
 }
 
-Bool IO::SPackageFile::AddFile(UnsafeArray<const UInt8> fileBuff, UOSInt fileSize, Text::CString fileName, const Data::Timestamp &modTime)
+Bool IO::SPackageFile::AddFile(UnsafeArray<const UInt8> fileBuff, UOSInt fileSize, Text::CStringNN fileName, const Data::Timestamp &modTime)
 {
 	UInt8 dataBuff[512];
 	Bool needCommit = false;
@@ -531,7 +533,7 @@ Bool IO::SPackageFile::AddFile(UnsafeArray<const UInt8> fileBuff, UOSInt fileSiz
 	WriteUInt64(&dataBuff[8], fileSize);
 	WriteInt64(&dataBuff[16], modTime.ToTicks());
 	
-	MemCopyNO(&dataBuff[26], fileName.v, fileName.leng);
+	MemCopyNO(&dataBuff[26], fileName.v.Ptr(), fileName.leng);
 	WriteInt16(&dataBuff[24], (UInt16)fileName.leng);
 
 	if (!this->writeMode)

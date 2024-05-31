@@ -34,7 +34,7 @@ namespace IO
 		Data::ByteBuffer customBuff;
 
 		void ReadV2DirEnt(UInt64 ofst, UInt64 size);
-		void AddPackageInner(NN<IO::PackageFile> pkg, UTF8Char pathSeperator, UTF8Char *pathStart, UTF8Char *pathEnd);
+		void AddPackageInner(NN<IO::PackageFile> pkg, UTF8Char pathSeperator, UnsafeArray<UTF8Char> pathStart, UnsafeArray<UTF8Char> pathEnd);
 		Bool OptimizeFileInner(IO::SPackageFile *newFile, UInt64 dirOfst, UInt64 dirSize);
 	public:
 		SPackageFile(NN<IO::SeekableStream> stm, Bool toRelease);
@@ -42,8 +42,8 @@ namespace IO
 		SPackageFile(Text::CStringNN fileName);
 		~SPackageFile();
 
-		Bool AddFile(NN<IO::StreamData> fd, Text::CString fileName, const Data::Timestamp &modTime);
-		Bool AddFile(UnsafeArray<const UInt8> fileBuff, UOSInt fileSize, Text::CString fileName, const Data::Timestamp &modTime);
+		Bool AddFile(NN<IO::StreamData> fd, Text::CStringNN fileName, const Data::Timestamp &modTime);
+		Bool AddFile(UnsafeArray<const UInt8> fileBuff, UOSInt fileSize, Text::CStringNN fileName, const Data::Timestamp &modTime);
 		Bool AddPackage(NN<IO::PackageFile> pkg, UTF8Char pathSeperator);
 		Bool Commit();
 		Bool OptimizeFile(Text::CStringNN newFile);

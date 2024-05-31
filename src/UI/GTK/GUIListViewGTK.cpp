@@ -209,7 +209,7 @@ Bool UI::GUIListView::AddColumn(Text::CStringNN columnName, Double colWidth)
 	sb.Append(columnName);
 	sb.ReplaceStr(UTF8STRC("_"), UTF8STRC("__"));
 	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
-	GtkTreeViewColumn *col = gtk_tree_view_column_new_with_attributes((const Char*)sb.v, renderer, "text", this->colCnt, (void*)0);
+	GtkTreeViewColumn *col = gtk_tree_view_column_new_with_attributes((const Char*)sb.v.Ptr(), renderer, "text", this->colCnt, (void*)0);
 	gtk_tree_view_column_set_fixed_width(col, Double2Int32(colWidth * this->hdpi / this->ddpi));
 	gtk_tree_view_column_set_resizable(col, true);
 	gtk_tree_view_append_column((GtkTreeView*)data->treeView, col);
@@ -225,8 +225,8 @@ Bool UI::GUIListView::AddColumn(const WChar *columnName, Double colWidth)
 		return false;
 
 	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
-	const UTF8Char *lbl = Text::StrToUTF8New(columnName);
-	GtkTreeViewColumn *col = gtk_tree_view_column_new_with_attributes((const Char*)lbl, renderer, "text", this->colCnt, (void*)0);
+	UnsafeArray<const UTF8Char> lbl = Text::StrToUTF8New(columnName);
+	GtkTreeViewColumn *col = gtk_tree_view_column_new_with_attributes((const Char*)lbl.Ptr(), renderer, "text", this->colCnt, (void*)0);
 	Text::StrDelNew(lbl);
 	gtk_tree_view_column_set_fixed_width(col, Double2Int32(colWidth * this->hdpi / this->ddpi));
 	gtk_tree_view_column_set_resizable(col, true);
@@ -271,7 +271,7 @@ UOSInt UI::GUIListView::AddItem(NN<Text::String> text, AnyType itemObj)
 	row->txt = text->Clone();
 	gtk_list_store_append(data->listStore, &row->iter);
 	UOSInt ret = data->rows->Add(row);
-	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)text->v, -1);
+	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)text->v.Ptr(), -1);
 	return ret;
 }
 
@@ -283,7 +283,7 @@ UOSInt UI::GUIListView::AddItem(Text::CStringNN text, AnyType itemObj)
 	row->txt = Text::String::New(text);
 	gtk_list_store_append(data->listStore, &row->iter);
 	UOSInt ret = data->rows->Add(row);
-	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)text.v, -1);
+	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)text.v.Ptr(), -1);
 	return ret;
 }
 
@@ -295,7 +295,7 @@ UOSInt UI::GUIListView::AddItem(const WChar *text, AnyType itemObj)
 	row->txt = Text::String::NewNotNull(text);
 	gtk_list_store_append(data->listStore, &row->iter);
 	UOSInt ret = data->rows->Add(row);
-	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)row->txt->v, -1);
+	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)row->txt->v.Ptr(), -1);
 	return ret;
 }
 
@@ -307,7 +307,7 @@ UOSInt UI::GUIListView::AddItem(Text::CStringNN text, AnyType itemObj, UOSInt im
 	row->txt = Text::String::New(text);
 	gtk_list_store_append(data->listStore, &row->iter);
 	UOSInt ret = data->rows->Add(row);
-	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)text.v, -1);
+	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)text.v.Ptr(), -1);
 	return ret;
 }
 
@@ -317,7 +317,7 @@ Bool UI::GUIListView::SetSubItem(UOSInt row, UOSInt col, NN<Text::String> text)
 	NN<MyRow> r;
 	if (!data->rows->GetItem(row).SetTo(r) || col < 0 || col >= data->colCnt)
 		return false;
-	gtk_list_store_set(data->listStore, &r->iter, col, (const Char*)text->v, -1);
+	gtk_list_store_set(data->listStore, &r->iter, col, (const Char*)text->v.Ptr(), -1);
 	return true;
 }
 
@@ -327,7 +327,7 @@ Bool UI::GUIListView::SetSubItem(UOSInt row, UOSInt col, Text::CStringNN text)
 	NN<MyRow> r;
 	if (!data->rows->GetItem(row).SetTo(r) || col < 0 || col >= data->colCnt)
 		return false;
-	gtk_list_store_set(data->listStore, &r->iter, col, (const Char*)text.v, -1);
+	gtk_list_store_set(data->listStore, &r->iter, col, (const Char*)text.v.Ptr(), -1);
 	return true;
 }
 
@@ -337,8 +337,8 @@ Bool UI::GUIListView::SetSubItem(UOSInt row, UOSInt col, const WChar *text)
 	NN<MyRow> r;
 	if (!data->rows->GetItem(row).SetTo(r) || col >= data->colCnt)
 		return false;
-	const UTF8Char *txt = Text::StrToUTF8New(text);
-	gtk_list_store_set(data->listStore, &r->iter, col, (const Char*)txt, -1);
+	UnsafeArray<const UTF8Char> txt = Text::StrToUTF8New(text);
+	gtk_list_store_set(data->listStore, &r->iter, col, (const Char*)txt.Ptr(), -1);
 	Text::StrDelNew(txt);
 	return true;
 }
@@ -371,7 +371,7 @@ UOSInt UI::GUIListView::InsertItem(UOSInt index, NN<Text::String> itemText, AnyT
 	row->txt = itemText->Clone();
 	gtk_list_store_insert(data->listStore, &row->iter, (gint)index);
 	data->rows->Insert(index, row);
-	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)itemText->v, -1);
+	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)itemText->v.Ptr(), -1);
 	return index;
 }
 
@@ -383,7 +383,7 @@ UOSInt UI::GUIListView::InsertItem(UOSInt index, Text::CStringNN itemText, AnyTy
 	row->txt = Text::String::New(itemText);
 	gtk_list_store_insert(data->listStore, &row->iter, (gint)index);
 	data->rows->Insert(index, row);
-	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)itemText.v, -1);
+	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)itemText.v.Ptr(), -1);
 	return index;
 }
 
@@ -395,7 +395,7 @@ UOSInt UI::GUIListView::InsertItem(UOSInt index, const WChar *itemText, AnyType 
 	row->txt = Text::String::NewNotNull(itemText);
 	gtk_list_store_insert(data->listStore, &row->iter, (gint)index);
 	data->rows->Insert(index, row);
-	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)row->txt->v, -1);
+	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)row->txt->v.Ptr(), -1);
 	return index;
 }
 
@@ -512,7 +512,7 @@ AnyType UI::GUIListView::GetSelectedItem()
 	return 0;
 }
 
-UTF8Char *UI::GUIListView::GetSelectedItemText(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> UI::GUIListView::GetSelectedItemText(UnsafeArray<UTF8Char> buff)
 {
 	UOSInt i = GetSelectedIndex();
 	if (i != INVALID_INDEX)
@@ -528,7 +528,7 @@ Text::String *UI::GUIListView::GetSelectedItemTextNew()
 	return 0;
 }
 
-UTF8Char *UI::GUIListView::GetItemText(UTF8Char *buff, UOSInt index)
+UnsafeArrayOpt<UTF8Char> UI::GUIListView::GetItemText(UnsafeArray<UTF8Char> buff, UOSInt index)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	NN<MyRow> r;
@@ -557,13 +557,13 @@ void UI::GUIListView::SetShowGrid(Bool showGrid)
 	gtk_tree_view_set_grid_lines((GtkTreeView*)data->treeView, showGrid?GTK_TREE_VIEW_GRID_LINES_BOTH:GTK_TREE_VIEW_GRID_LINES_NONE);
 }
 
-UOSInt UI::GUIListView::GetStringWidth(const UTF8Char *s)
+UOSInt UI::GUIListView::GetStringWidth(UnsafeArray<const UTF8Char> s)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	UOSInt ret = 0;
 	int width;
 	int height;
-	PangoLayout *layout = gtk_widget_create_pango_layout(data->treeView, (const Char*)s);
+	PangoLayout *layout = gtk_widget_create_pango_layout(data->treeView, (const Char*)s.Ptr());
 	pango_layout_get_pixel_size(layout, &width, &height);
 	ret = (UOSInt)width;
 	g_object_unref(G_OBJECT(layout));
@@ -576,8 +576,8 @@ UOSInt UI::GUIListView::GetStringWidth(const WChar *s)
 	UOSInt ret = 0;
 	int width;
 	int height;
-	const UTF8Char *csptr = Text::StrToUTF8New(s);
-	PangoLayout *layout = gtk_widget_create_pango_layout(data->treeView, (const Char*)csptr);
+	UnsafeArray<const UTF8Char> csptr = Text::StrToUTF8New(s);
+	PangoLayout *layout = gtk_widget_create_pango_layout(data->treeView, (const Char*)csptr.Ptr());
 	pango_layout_get_pixel_size(layout, &width, &height);
 	ret = (UOSInt)width;
 	g_object_unref(G_OBJECT(layout));

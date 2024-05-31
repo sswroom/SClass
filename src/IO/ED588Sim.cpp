@@ -16,7 +16,7 @@ IO::ED588Sim::~ED588Sim()
 {
 }
 
-Text::CString IO::ED588Sim::GetName()
+Text::CStringNN IO::ED588Sim::GetName()
 {
 	return CSTR("ED588");
 }

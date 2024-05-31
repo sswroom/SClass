@@ -18,7 +18,7 @@ void __stdcall SSWR::DiscDB::DiscDBSearchDiscForm::OnSearchClicked(AnyType userO
 	if (me->env->GetBurntDisc(sb.ToCString()).SetTo(disc))
 	{
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		if (disc->burntDate == 0)
 		{
 			me->txtBurntDate->SetText(CSTR(""));

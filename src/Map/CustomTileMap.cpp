@@ -44,11 +44,11 @@ Bool Map::CustomTileMap::GetBounds(OutParam<Math::RectAreaDbl> bounds) const
 	return true;
 }
 
-UTF8Char *Map::CustomTileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
+UnsafeArrayOpt<UTF8Char> Map::CustomTileMap::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
 {
 	UTF8Char sbuff2[16];
-	UTF8Char *sptr2;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr2;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = this->url->ConcatTo(sbuff);
 	sptr2 = Text::StrInt32(sbuff2, tileId.x);
 	sptr = Text::StrReplaceC(sbuff, sptr, UTF8STRC("{x}"), sbuff2, (UOSInt)(sptr2 - sbuff2));
@@ -62,7 +62,7 @@ UTF8Char *Map::CustomTileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt level, Mat
 Bool Map::CustomTileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId)
 {
 	UTF8Char sbuff2[16];
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr2;
 	sb->Append(this->url);
 	sptr2 = Text::StrInt32(sbuff2, tileId.x);
 	sb->ReplaceStr(UTF8STRC("{x}"), sbuff2, (UOSInt)(sptr2 - sbuff2));
@@ -78,11 +78,8 @@ void Map::CustomTileMap::SetBounds(Math::RectAreaDbl bounds)
 	this->bounds = bounds;
 }
 
-void Map::CustomTileMap::SetName(Text::CString name)
+void Map::CustomTileMap::SetName(Text::CStringNN name)
 {
-	if (name.v)
-	{
-		this->name->Release();
-		this->name = Text::String::New(name);
-	}
+	this->name->Release();
+	this->name = Text::String::New(name);
 }

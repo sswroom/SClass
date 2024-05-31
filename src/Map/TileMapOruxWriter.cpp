@@ -8,7 +8,7 @@
 Map::TileMapOruxWriter::TileMapOruxWriter(Text::CStringNN fileName, UOSInt minLev, UOSInt maxLev, Math::RectAreaDbl bounds)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->minLev = minLev;
 	this->maxLev = maxLev;
 	this->bounds = bounds;

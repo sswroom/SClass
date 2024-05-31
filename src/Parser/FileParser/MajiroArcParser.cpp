@@ -53,7 +53,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MajiroArcParser::ParseFileHdr(NN<
 	Data::ByteArray fileNamePtr;
 	Data::ByteArray fileNamePtr2;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt32 i;
 
 	if (!Text::StrEquals(&hdr[0], U8STR("MajiroArcV3.000")))

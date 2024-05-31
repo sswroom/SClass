@@ -26,7 +26,7 @@ namespace Media
 
 			virtual void SetSourceVideo(Media::IVideoSource *srcVideo);
 
-			virtual UTF8Char *GetSourceName(UTF8Char *buff);
+			virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
 
 			virtual void SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, UOSInt cropRight, UOSInt cropBottom);
 			virtual void GetBorderCrop(OutParam<UOSInt> cropLeft, OutParam<UOSInt> cropTop, OutParam<UOSInt> cropRight, OutParam<UOSInt> cropBottom);

@@ -284,7 +284,7 @@ const UInt8 *Net::WebSocketClient::NextPacket(NN<Sync::MutexUsage> mutUsage, UOS
 	}
 }
 
-Net::WebSocketClient::WebSocketClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CString path, Text::CString origin, Protocol protocol, Data::Duration timeout) : Stream(CSTR("WebSocket"))
+Net::WebSocketClient::WebSocketClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CStringNN path, Text::CString origin, Protocol protocol, Data::Duration timeout) : Stream(CSTR("WebSocket"))
 {
 	this->recvCapacity = 4096;
 	this->recvBuff = MemAlloc(UInt8, this->recvCapacity);
@@ -342,10 +342,11 @@ Net::WebSocketClient::WebSocketClient(NN<Net::SocketFactory> sockf, Optional<Net
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::Normal, false);
 		b64.EncodeBin(sb, this->nonce, 16);
 		sb.AppendC(UTF8STRC("\r\n"));
-		if (origin.leng > 0)
+		Text::CStringNN nnorigin;
+		if (origin.SetTo(nnorigin) && nnorigin.leng > 0)
 		{
 			sb.AppendC(UTF8STRC("Origin: "));
-			sb.Append(origin);
+			sb.Append(nnorigin);
 			sb.AppendC(UTF8STRC("\r\n"));
 		}
 		else
@@ -417,7 +418,7 @@ Net::WebSocketClient::~WebSocketClient()
 	}
 }
 
-UTF8Char *Net::WebSocketClient::GetRemoteName(UTF8Char *buff) const
+UnsafeArrayOpt<UTF8Char> Net::WebSocketClient::GetRemoteName(UnsafeArray<UTF8Char> buff) const
 {
 	NN<Net::TCPClient> cli;
 	if (this->cli.SetTo(cli))
@@ -428,7 +429,7 @@ UTF8Char *Net::WebSocketClient::GetRemoteName(UTF8Char *buff) const
 	return 0;
 }
 
-UTF8Char *Net::WebSocketClient::GetLocalName(UTF8Char *buff) const
+UnsafeArrayOpt<UTF8Char> Net::WebSocketClient::GetLocalName(UnsafeArray<UTF8Char> buff) const
 {
 	NN<Net::TCPClient> cli;
 	if (this->cli.SetTo(cli))

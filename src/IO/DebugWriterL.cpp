@@ -25,17 +25,17 @@ IO::DebugWriter::~DebugWriter()
 void IO::DebugWriter::Flush()
 {
 	UOSInt i;
-	UTF8Char *sarr[2];
+	UnsafeArray<UTF8Char> sarr[2];
 	i = Text::StrSplitLine(sarr, 2, this->clsData->buff);
 	if (i == 2)
 	{
 		while (i == 2)
 		{
-			syslog(LOG_DEBUG, "%s", (const Char*)sarr[0]);
+			syslog(LOG_DEBUG, "%s", (const Char*)sarr[0].Ptr());
 			i = Text::StrSplitLine(sarr, 2, sarr[1]);
 		}
 		i = Text::StrCharCnt(sarr[0]);
-		MemCopyO(this->clsData->buff, sarr[0], i + 1);
+		MemCopyO(this->clsData->buff, sarr[0].Ptr(), i + 1);
 		this->clsData->buffSize = i;
 	}
 }

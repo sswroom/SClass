@@ -175,7 +175,7 @@ UOSInt Text::TextBinEnc::FormEncoding::CalcBinSize(Text::CStringNN s) const
 	UTF8Char c;
 	UOSInt retSize = 0;
 	UOSInt strLen = s.leng;
-	const UTF8Char *str = s.v;
+	UnsafeArray<const UTF8Char> str = s.v;
 	while (strLen-- > 0)
 	{
 		c = *str++;
@@ -206,7 +206,7 @@ UOSInt Text::TextBinEnc::FormEncoding::DecodeBin(Text::CStringNN s, UInt8 *dataB
 	UTF8Char c;
 	UOSInt retSize = 0;
 	UOSInt strLen = s.leng;
-	const UTF8Char *str = s.v;
+	UnsafeArray<const UTF8Char> str = s.v;
 
 	while (strLen-- > 0)
 	{

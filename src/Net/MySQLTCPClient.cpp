@@ -212,7 +212,7 @@ namespace Net
 			return this->currRow[colIndex]->Clone();
 		}
 
-		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
+		virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 		{
 			if (this->currRow == 0)
 			{
@@ -317,7 +317,7 @@ namespace Net
 			return this->currRow[colIndex] == 0;
 		}
 
-		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff)
+		virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 		{
 			ColumnDef *col = this->cols.GetItem(colIndex);
 			if (col)
@@ -696,7 +696,7 @@ namespace Net
 			}
 		}
 
-		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
+		virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 		{
 			Data::VariItem item;
 			if (!this->GetVariItem(colIndex, item))
@@ -868,7 +868,7 @@ namespace Net
 			case Net::MySQLUtil::MYSQL_TYPE_MEDIUM_BLOB:
 			case Net::MySQLUtil::MYSQL_TYPE_BLOB:
 			case Net::MySQLUtil::MYSQL_TYPE_TINY_BLOB:
-				item->SetStr(&this->currRow->rowBuff[col->ofst], col->len);
+				item->SetStr(UnsafeArray<const UTF8Char>(&this->currRow->rowBuff[col->ofst]), col->len);
 				return true;
 
 			case Net::MySQLUtil::MYSQL_TYPE_LONGLONG:
@@ -1038,7 +1038,7 @@ namespace Net
 				{
 					Text::StringBuilderUTF8 sb;
 					sb.AppendHexBuff(&this->currRow->rowBuff[col->ofst], col->len, ' ', Text::LineBreakType::None);
-					printf("Unknown binary other format %d: %s\r\n", this->colTypes[colIndex], sb.ToString());
+					printf("Unknown binary other format %d: %s\r\n", this->colTypes[colIndex], sb.ToPtr());
 				}
 				item->SetNull();
 				return true;
@@ -1058,7 +1058,7 @@ namespace Net
 			return this->currRow->cols[colIndex].isNull;
 		}
 
-		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff)
+		virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 		{
 			ColumnDef *col = this->cols.GetItem(colIndex);
 			if (col)
@@ -1375,11 +1375,11 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 	UOSInt buffSize;
 	UOSInt readSize;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UTF8Char sbuff2[128];
-	UTF8Char *sptr2;
-	UInt8 *ptrCurr;
-	UInt8 *ptrEnd;
+	UnsafeArray<UTF8Char> sptr2;
+	UnsafeArray<UInt8> ptrCurr;
+	UnsafeArray<UInt8> ptrEnd;
 	{
 		me->recvStarted = true;
 		me->recvRunning = true;
@@ -1491,7 +1491,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 										{
 											if (len == 21 && (ptrEnd - ptrCurr) >= 13)
 											{
-												MemCopyNO(&me->authPluginData[8], ptrCurr, 12);
+												MemCopyNO(&me->authPluginData[8], ptrCurr.Ptr(), 12);
 												me->authPluginDataSize = 20;
 												ptrCurr += 13;
 											}
@@ -1583,7 +1583,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 											sptr2 = IO::OS::GetVersion(sbuff2);
 											sptr = Net::MySQLUtil::AppendLenencStrC(sptr, sbuff2, (UOSInt)(sptr2 - sbuff2));
 											ptrCurr = Net::MySQLUtil::AppendLenencInt(ptrCurr, (UOSInt)(sptr - sbuff));
-											MemCopyNO(ptrCurr, sbuff, (UOSInt)(sptr - sbuff));
+											MemCopyNO(ptrCurr.Ptr(), sbuff, (UOSInt)(sptr - sbuff));
 											ptrCurr += sptr - sbuff;
 										}
 										WriteInt24(buff, (ptrCurr - buff - 4));
@@ -1658,7 +1658,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 							printf("MySQLTCP %d AuthSwitchRequest: plugin data = %s\r\n", me->cli->GetLocalPort(), sb.ToString());
 	#endif
 							me->cmdSeqNum += 2;
-							me->authenType = Net::MySQLUtil::AuthenTypeParse(Text::CString(&buff[5], nameLen));
+							me->authenType = Net::MySQLUtil::AuthenTypeParse(Text::CStringNN(&buff[5], nameLen));
 							UInt8 packetBuff[64];
 							UOSInt authSize = Net::MySQLUtil::BuildAuthen(&packetBuff[4], me->authenType, &buff[6 + nameLen], readSize - 3 - nameLen, me->password->ToCString());
 							WriteUInt32(packetBuff, (UInt32)authSize);
@@ -2144,9 +2144,9 @@ void Net::MySQLTCPClient::ForceTz(Int8 tzQhr)
 void Net::MySQLTCPClient::GetConnName(NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sb->AppendC(UTF8STRC("MySQLTCP:"));
-	sptr = Net::SocketUtil::GetAddrName(sbuff, this->addr, this->port);
+	sptr = Net::SocketUtil::GetAddrName(sbuff, this->addr, this->port).Or(sbuff);
 	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	NN<Text::String> s;
 	if (this->database.SetTo(s))
@@ -2223,7 +2223,7 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderText(Text::CStringNN sq
 	UInt8 *buff = MemAlloc(UInt8, sql.leng + 5);
 	WriteInt32(buff, (Int32)(sql.leng + 1));
 	buff[4] = 3;
-	MemCopyNO(&buff[5], sql.v, sql.leng);
+	MemCopyNO(&buff[5], sql.v.Ptr(), sql.leng);
 	if (this->cli->Write(buff, 5 + sql.leng) != 5 + sql.leng)
 	{
 		this->cmdTCPReader = 0;
@@ -2277,7 +2277,7 @@ Optional<DB::DBReader> Net::MySQLTCPClient::ExecuteReaderBinary(Text::CStringNN 
 	UInt8 *buff = MemAlloc(UInt8, sql.leng + 5);
 	WriteInt32(buff, (Int32)(sql.leng + 1));
 	buff[4] = 22;
-	MemCopyNO(&buff[5], sql.v, sql.leng);
+	MemCopyNO(&buff[5], sql.v.Ptr(), sql.leng);
 	if (this->cli->Write(buff, 5 + sql.leng) != 5 + sql.leng)
 	{
 		this->cmdBinReader = 0;
@@ -2412,7 +2412,7 @@ UOSInt Net::MySQLTCPClient::QueryTableNames(Text::CString schemaName, NN<Data::A
 	if (schemaName.leng != 0)
 		return 0;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt len;
 	UOSInt initCnt = names->GetCount();
 	NN<DB::DBReader> rdr;
@@ -2420,20 +2420,23 @@ UOSInt Net::MySQLTCPClient::QueryTableNames(Text::CString schemaName, NN<Data::A
 	{
 		while (rdr->ReadNext())
 		{
-			sptr = rdr->GetStr(0, sbuff, sizeof(sbuff));
-			len = (UOSInt)(sptr - sbuff);
-			names->Add(Text::String::New(sbuff, len));
+			if (rdr->GetStr(0, sbuff, sizeof(sbuff)).SetTo(sptr))
+			{
+				len = (UOSInt)(sptr - sbuff);
+				names->Add(Text::String::New(sbuff, len));
+			}
 		}
 		this->CloseReader(rdr);
 	}
 	return names->GetCount() - initCnt;
 }
 
-Optional<DB::DBReader> Net::MySQLTCPClient::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Net::MySQLTCPClient::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
+	Text::CStringNN nns;
 	sb.AppendC(UTF8STRC("select "));
 	if (columnNames == 0 || columnNames->GetCount() == 0)
 	{
@@ -2453,9 +2456,9 @@ Optional<DB::DBReader> Net::MySQLTCPClient::QueryTableData(Text::CString schemaN
 		}
 	}
 	sb.AppendC(UTF8STRC(" from "));
-	if (schemaName.leng > 0)
+	if (schemaName.SetTo(nns) && nns.leng > 0)
 	{
-		sptr = DB::DBUtil::SDBColUTF8(sbuff, schemaName.v, DB::SQLType::MySQL);
+		sptr = DB::DBUtil::SDBColUTF8(sbuff, nns.v, DB::SQLType::MySQL);
 		sb.AppendP(sbuff, sptr);
 		sb.AppendUTF8Char('.');
 	}
@@ -2467,10 +2470,10 @@ Optional<DB::DBReader> Net::MySQLTCPClient::QueryTableData(Text::CString schemaN
 		sb.AppendC(UTF8STRC(" where "));
 		condition->ToWhereClause(sb, DB::SQLType::MySQL, 0, 100, cliCond);
 	}
-	if (ordering.leng > 0)
+	if (ordering.SetTo(nns) && nns.leng > 0)
 	{
 		sb.AppendC(UTF8STRC(" order by "));
-		sb.Append(ordering);
+		sb.Append(nns);
 	}
 	if (maxCnt > 0)
 	{
@@ -2480,19 +2483,19 @@ Optional<DB::DBReader> Net::MySQLTCPClient::QueryTableData(Text::CString schemaN
 	return this->ExecuteReader(sb.ToCString());
 }
 
-Bool Net::MySQLTCPClient::ChangeSchema(const UTF8Char *schemaName)
+Bool Net::MySQLTCPClient::ChangeSchema(UnsafeArray<const UTF8Char> schemaName)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr2;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("use "));
 	UOSInt colLen = DB::DBUtil::SDBColUTF8Leng(schemaName, DB::SQLType::MySQL);
 	if (colLen > 127)
 	{
-		UTF8Char *sptr = MemAlloc(UTF8Char, colLen + 1);
+		UnsafeArray<UTF8Char> sptr = MemAllocArr(UTF8Char, colLen + 1);
 		sptr2 = DB::DBUtil::SDBColUTF8(sptr, schemaName, DB::SQLType::MySQL);
 		sb.AppendC(sptr, (UOSInt)(sptr2 - sptr));
-		MemFree(sptr);
+		MemFreeArr(sptr);
 	}
 	else
 	{

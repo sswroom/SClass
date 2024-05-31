@@ -40,14 +40,14 @@ namespace UI
 	protected:
 		void *hMenu;
 
-		static UTF8Char *ToKeyDisplay(UTF8Char *sbuff, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey);
+		static UnsafeArray<UTF8Char> ToKeyDisplay(UnsafeArray<UTF8Char> sbuff, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey);
 		GUIMenu(Bool isPopup);
 	public:
 		virtual ~GUIMenu();
 
-		UOSInt AddItem(Text::CString name, UInt16 cmdId, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey);
+		UOSInt AddItem(Text::CStringNN name, UInt16 cmdId, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey);
 		void AddSeperator();
-		NN<GUIMenu> AddSubMenu(Text::CString name);
+		NN<GUIMenu> AddSubMenu(Text::CStringNN name);
 		void *GetHMenu();
 		UOSInt GetAllKeys(NN<Data::ArrayListNN<ShortcutKey>> keys);
 		UOSInt GetShortcutKeyCnt();

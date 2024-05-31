@@ -2715,7 +2715,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PNGParser::ParseFileHdr(NN<IO::St
 			Data::ByteBuffer chunkData(size);
 			if (fd->GetRealData(ofst + 8, size, chunkData) == size)
 			{
-				UOSInt i = Text::StrCharCnt((Char*)chunkData.Arr().Ptr()) + 1;
+				UOSInt i = Text::StrCharCnt(chunkData.Arr()) + 1;
 				if (chunkData[i] == 0)
 				{
 					IO::MemoryStream mstm;

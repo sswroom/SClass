@@ -59,7 +59,7 @@ void Media::VideoFilter::VideoFilterBase::SetSourceVideo(Media::IVideoSource *sr
 	}
 }
 
-UTF8Char *Media::VideoFilter::VideoFilterBase::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::VideoFilter::VideoFilterBase::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	if (this->srcVideo)
 		return this->srcVideo->GetSourceName(buff);

@@ -119,7 +119,7 @@ Media::V4LVideoCapture::~V4LVideoCapture()
 	}
 }
 
-UTF8Char *Media::V4LVideoCapture::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::V4LVideoCapture::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	struct v4l2_capability video_cap;
 
@@ -512,8 +512,8 @@ Media::V4LVideoCaptureMgr::~V4LVideoCaptureMgr()
 UOSInt Media::V4LVideoCaptureMgr::GetDeviceList(Data::ArrayList<UInt32> *devList)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("/dev/"));
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(sbuff, UTF8STRC("/dev/"));
+	UnsafeArray<UTF8Char> sptr2;
 	UOSInt ret = 0;
 	UInt32 devId;
 	IO::Path::PathType pt;
@@ -521,7 +521,7 @@ UOSInt Media::V4LVideoCaptureMgr::GetDeviceList(Data::ArrayList<UInt32> *devList
 	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)
 	{
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
+		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).NotNull())
 		{
 			devId = Text::StrToUInt32(&sptr[5]);
 			devList->Add(devId);
@@ -532,7 +532,7 @@ UOSInt Media::V4LVideoCaptureMgr::GetDeviceList(Data::ArrayList<UInt32> *devList
 	else
 	{
 		Char cbuff[64];
-		Char *csptr = Text::StrConcat(cbuff, "/dev/video");
+		UnsafeArray<Char> csptr = Text::StrConcat(cbuff, "/dev/video");
 		int fd;
 		while (true)
 		{
@@ -550,7 +550,7 @@ UOSInt Media::V4LVideoCaptureMgr::GetDeviceList(Data::ArrayList<UInt32> *devList
 	return ret;
 }
 
-UTF8Char *Media::V4LVideoCaptureMgr::GetDeviceName(UTF8Char *buff, UOSInt devId)
+UnsafeArrayOpt<UTF8Char> Media::V4LVideoCaptureMgr::GetDeviceName(UnsafeArray<UTF8Char> buff, UOSInt devId)
 {
 	int fd;
 	struct v4l2_capability video_cap;

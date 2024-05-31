@@ -56,7 +56,7 @@ Bool Text::MIMEObj::MailMessage::GetDate(Data::DateTime *dt) const
 	return true;
 }
 
-UTF8Char *Text::MIMEObj::MailMessage::GetFromAddr(UTF8Char *sbuff) const
+UnsafeArrayOpt<UTF8Char> Text::MIMEObj::MailMessage::GetFromAddr(UnsafeArray<UTF8Char> sbuff) const
 {
 	NN<Text::String> hdr;
 	if (!GetHeader(UTF8STRC("From")).SetTo(hdr))
@@ -64,7 +64,7 @@ UTF8Char *Text::MIMEObj::MailMessage::GetFromAddr(UTF8Char *sbuff) const
 	return ParseHeaderStr(sbuff, hdr->v);
 }
 
-UTF8Char *Text::MIMEObj::MailMessage::GetSubject(UTF8Char *sbuff) const
+UnsafeArrayOpt<UTF8Char> Text::MIMEObj::MailMessage::GetSubject(UnsafeArray<UTF8Char> sbuff) const
 {
 	NN<Text::String> hdr;
 	if (!GetHeader(UTF8STRC("Subject")).SetTo(hdr))
@@ -72,7 +72,7 @@ UTF8Char *Text::MIMEObj::MailMessage::GetSubject(UTF8Char *sbuff) const
 	return ParseHeaderStr(sbuff, hdr->v);
 }
 
-UTF8Char *Text::MIMEObj::MailMessage::GetReplyTo(UTF8Char *sbuff) const
+UnsafeArrayOpt<UTF8Char> Text::MIMEObj::MailMessage::GetReplyTo(UnsafeArray<UTF8Char> sbuff) const
 {
 	NN<Text::String> hdr;
 	if (!GetHeader(UTF8STRC("Reply-To")).SetTo(hdr))
@@ -112,12 +112,12 @@ Optional<Text::MIMEObj::TextMIMEObj> Text::MIMEObj::MailMessage::GetContentText(
 	NN<IMIMEObj> content;
 	if (!this->content.SetTo(content))
 		return 0;
-	Text::CString clsName = content->GetClassName();
+	Text::CStringNN clsName = content->GetClassName();
 	if (clsName.Equals(UTF8STRC("TextMIMEObj")))
 		return NN<Text::MIMEObj::TextMIMEObj>::ConvertFrom(content);
 	if (clsName.Equals(UTF8STRC("MultipartMIMEObj")))
 	{
-		Text::CString contType = content->GetContentType();
+		Text::CStringNN contType = content->GetContentType();
 		if (contType.StartsWith(UTF8STRC("multipart/mixed")))
 		{
 			NN<Text::MIMEObj::MultipartMIMEObj> mpart = NN<Text::MIMEObj::MultipartMIMEObj>::ConvertFrom(content);
@@ -140,8 +140,8 @@ Optional<Text::IMIMEObj> Text::MIMEObj::MailMessage::GetContentMajor() const
 	if (!this->content.SetTo(content))
 		return 0;
 	Optional<Text::IMIMEObj> obj = content;
-	Text::CString contType = content->GetContentType();
-	Text::CString clsName = content->GetClassName();
+	Text::CStringNN contType = content->GetContentType();
+	Text::CStringNN clsName = content->GetClassName();
 	if (clsName.Equals(UTF8STRC("MultipartMIMEObj")) && contType.StartsWith(UTF8STRC("multipart/mixed")))
 	{
 		obj = NN<Text::MIMEObj::MultipartMIMEObj>::ConvertFrom(content)->GetPartContent(0);
@@ -176,14 +176,14 @@ Optional<Text::IMIMEObj> Text::MIMEObj::MailMessage::GetAttachment(OSInt index, 
 	UOSInt l;
 	NN<Text::String> s;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Text::MIMEObj::MIMEMessage> part;
 	NN<IMIMEObj> content;
 	if (!this->content.SetTo(content))
 		return 0;
 	if (content->GetClassName().Equals(UTF8STRC("MultipartMIMEObj")))
 	{
-		Text::CString contType = content->GetContentType();
+		Text::CStringNN contType = content->GetContentType();
 		if (Text::StrStartsWithC(contType.v, contType.leng, UTF8STRC("multipart/mixed")))
 		{
 			NN<Text::MIMEObj::MultipartMIMEObj> mpart = NN<Text::MIMEObj::MultipartMIMEObj>::ConvertFrom(content);
@@ -258,19 +258,19 @@ Optional<Text::MIMEObj::MailMessage> Text::MIMEObj::MailMessage::ParseFile(NN<IO
 	return mail;
 }
 
-UOSInt Text::MIMEObj::MailMessage::ParseAddrList(const UTF8Char *hdr, UOSInt hdrLen, NN<Data::ArrayListNN<MailAddress>> recpList, AddressType type) const
+UOSInt Text::MIMEObj::MailMessage::ParseAddrList(UnsafeArray<const UTF8Char> hdr, UOSInt hdrLen, NN<Data::ArrayListNN<MailAddress>> recpList, AddressType type) const
 {
-	UTF8Char *sbuff;
-	UTF8Char *sptr;
-	UTF8Char *ptr1;
-	UTF8Char *ptr1End;
-	UTF8Char *ptr2;
+	UnsafeArray<UTF8Char> sbuff;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> ptr1;
+	UnsafeArray<UTF8Char> ptr1End;
+	UnsafeArray<UTF8Char> ptr2;
 	UOSInt ret = 0;
 	UTF8Char c;
 	Bool isEnd;
 	Bool quoted;
 	NN<MailAddress> addr;
-	sbuff = MemAlloc(UTF8Char, hdrLen + 1);
+	sbuff = MemAllocArr(UTF8Char, hdrLen + 1);
 	this->ParseHeaderStr(sbuff, hdr);
 
 	sptr = sbuff;
@@ -348,6 +348,6 @@ UOSInt Text::MIMEObj::MailMessage::ParseAddrList(const UTF8Char *hdr, UOSInt hdr
 		sptr++;
 	}
 
-	MemFree(sbuff);
+	MemFreeArr(sbuff);
 	return ret;
 }

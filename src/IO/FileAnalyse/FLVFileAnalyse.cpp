@@ -325,7 +325,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FLVFileAnalyse::GetFrame
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	UInt8 buff[128];
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::CString vName;
 	if (index == 0)
 	{

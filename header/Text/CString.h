@@ -100,6 +100,7 @@ namespace Text
 
 		FORCEINLINE Bool SetTo(CStringNN &cstr) const;
 		FORCEINLINE CStringNN OrEmpty() const;
+		FORCEINLINE CStringNN Or(CStringNN cstr) const;
 	};
 
 	struct CStringNN : public StringBase<const UTF8Char>
@@ -166,6 +167,15 @@ namespace Text
 			return CStringNN(nnv, this->leng);
 		else
 			return CSTR("");
+	}
+
+	FORCEINLINE CStringNN CString::Or(CStringNN cstr) const
+	{
+		UnsafeArray<const UTF8Char> nnv;
+		if (this->v.SetTo(nnv))
+			return CStringNN(nnv, this->leng);
+		else
+			return cstr;
 	}
 
 	FORCEINLINE UnsafeArray<UTF8Char> StrCSVJoinC(UnsafeArray<UTF8Char> oriStr, Text::CString *strs, UOSInt nStrs)

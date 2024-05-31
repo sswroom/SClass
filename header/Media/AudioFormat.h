@@ -33,8 +33,8 @@ namespace Media
 		void FromAudioFormat(NN<const Media::AudioFormat> fmt);
 		void ToString(NN<Text::StringBuilderUTF8> sb) const;
 
-		static Text::CString GetNameFormatId(UInt32 formatId);
-		static Text::CString GetNameIntType(IntType intType);
+		static Text::CStringNN FormatIdGetName(UInt32 formatId);
+		static Text::CStringNN IntTypeGetName(IntType intType);
 	};
 }
 #endif

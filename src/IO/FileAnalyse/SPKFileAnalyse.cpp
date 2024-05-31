@@ -216,7 +216,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::SPKFileAnalyse::GetFrame
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<IO::FileAnalyse::SPKFileAnalyse::PackInfo> pack;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (!this->packs.GetItem(index).SetTo(pack))
 		return 0;
 

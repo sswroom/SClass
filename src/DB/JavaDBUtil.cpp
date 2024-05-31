@@ -24,7 +24,7 @@ NN<Text::String> DB::JavaDBUtil::AppendFieldAnno(NN<Text::StringBuilderUTF8> sb,
 	{
 		importMap->Put(CSTR("javax.persistence.Column"), true);
 		sb->AppendC(UTF8STRC("\t@Column(name="));
-		NN<Text::String> s = Text::JSText::ToNewJSTextDQuote(colDef->GetColName()->v);
+		NN<Text::String> s = Text::JSText::ToNewJSTextDQuote(UnsafeArray<const UTF8Char>(colDef->GetColName()->v));
 		sb->Append(s);
 		s->Release();
 		sb->AppendC(UTF8STRC(")\r\n"));

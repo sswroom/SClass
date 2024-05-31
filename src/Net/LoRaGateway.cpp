@@ -118,7 +118,7 @@ UInt16 Net::LoRaGateway::NextToken()
 	return this->tokenNext++;
 }
 
-Bool Net::LoRaGateway::SendPushData(const UInt8 *data, UOSInt dataLeng)
+Bool Net::LoRaGateway::SendPushData(UnsafeArray<const UInt8> data, UOSInt dataLeng)
 {
 	UInt8 *buff = MemAlloc(UInt8, 12 + dataLeng);
 	UInt16 token = this->NextToken();
@@ -126,7 +126,7 @@ Bool Net::LoRaGateway::SendPushData(const UInt8 *data, UOSInt dataLeng)
 	WriteMUInt16(&buff[1], token);
 	buff[3] = 0; //PUSH_DATA
 	MemCopyNO(&buff[4], this->gatewayEUI, 8);
-	MemCopyNO(&buff[12], data, dataLeng);
+	MemCopyNO(&buff[12], data.Ptr(), dataLeng);
 	Bool ret = this->udp.SendTo(this->svrAddr, this->svrPort, buff, 12 + dataLeng);
 	MemFree(buff);
 	return ret;

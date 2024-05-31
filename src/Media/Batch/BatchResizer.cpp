@@ -65,7 +65,7 @@ void Media::Batch::BatchResizer::ImageOutput(NN<Media::ImageList> imgList, Text:
 	Media::StaticImage *rImg;
 	Bool succ;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 
 	i = this->targetParam.GetCount();

@@ -167,7 +167,7 @@ public:
 		case 15:
 			{
 				UTF8Char sbuff[32];
-				UTF8Char *sptr;
+				UnsafeArray<UTF8Char> sptr;
 				sptr = Net::SocketUtil::GetIPv4Name(sbuff, extInfo->cliIP);
 				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			}
@@ -214,7 +214,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SLOCParser::ParseFileHdr(NN<IO::S
 	Map::GPSTrack::GPSRecord3 rec;
 	UInt8 buff[384];
 	UTF8Char sbuff[256];
-	const UTF8Char *sptr;
+	UnsafeArray<const UTF8Char> sptr;
 	UOSInt i;
 	UOSInt currPos;
 	UInt64 fileSize;

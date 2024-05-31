@@ -338,7 +338,7 @@ Bool IO::BTScanLog::ParseBTRAWPacket(NN<IO::BTScanLog::ScanRecord3> rec, Int64 t
 void IO::BTScanLog::ParseAdvisement(NN<ScanRecord3> rec, UnsafeArray<const UInt8> buff, UOSInt ofst, UOSInt endOfst)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i = ofst;
 	UOSInt j;
 

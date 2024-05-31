@@ -32,7 +32,7 @@ Bool Net::WebServer::IWebResponse::ResponseError(NN<Net::WebServer::IWebRequest>
 	sb.AppendNE(UTF8STRC("<title>"));
 	sb.AppendI32(code);
 	sb.AppendNE(UTF8STRC(" "));
-	Text::CString codeName = Net::WebStatus::GetCodeName(code);
+	Text::CStringNN codeName = Net::WebStatus::GetCodeName(code).Or(CSTR("Unknown"));
 	sb.AppendNE(codeName.v, codeName.leng);
 	sb.AppendNE(UTF8STRC("</title>\r\n"));
 	sb.AppendNE(UTF8STRC("</head><body>\r\n"));

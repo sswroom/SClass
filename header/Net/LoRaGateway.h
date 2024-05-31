@@ -42,7 +42,7 @@ namespace Net
 		void UpdatePos(Double lat, Double lon, Int32 altitude);
 		Bool IsError();
 		UInt16 NextToken();
-		Bool SendPushData(const UInt8 *data, UOSInt dataLeng);
+		Bool SendPushData(UnsafeArray<const UInt8> data, UOSInt dataLeng);
 	};
 }
 #endif

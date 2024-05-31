@@ -349,7 +349,7 @@ public:
 	virtual Optional<Text::String> GetNewStr(UOSInt colIndex)
 	{
 		UTF8Char sbuff[64];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		if (colIndex > this->nCols)
 			return 0;
 		if (this->cols[colIndex].status == -1)
@@ -419,7 +419,7 @@ public:
 		}
 	}
 
-	virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
+	virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 	{
 		if (colIndex > this->nCols)
 			return 0;
@@ -646,7 +646,7 @@ public:
 		case SYBCHAR:
 		{
 			UOSInt dataSize = (UInt32)dbdatlen(this->dbproc, (int)colIndex + 1);
-			UInt8 *buffPtr = dbdata(this->dbproc, (int)colIndex + 1);
+			UnsafeArrayOpt<const UInt8> buffPtr = dbdata(this->dbproc, (int)colIndex + 1);
 			item->SetStr(buffPtr, dataSize);
 			return true;
 		}
@@ -690,7 +690,7 @@ public:
 		return this->cols[colIndex].status == -1;
 	}
 
-	virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff)
+	virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 	{
 		if (colIndex >= this->nCols)
 			return 0;
@@ -920,7 +920,7 @@ Optional<DB::DBReader> DB::TDSConn::ExecuteReader(Text::CStringNN sql)
 #if defined(VERBOSE)
 	printf("TDS: Execute SQL: %s\r\n", sql.v);
 #endif
-	dbcmd(this->clsData->dbproc, (const Char*)sql.v);
+	dbcmd(this->clsData->dbproc, (const Char*)sql.v.Ptr());
 	RETCODE ret = dbsqlexec(this->clsData->dbproc);
 	if (ret == FAIL)
 	{
@@ -964,15 +964,15 @@ void DB::TDSConn::Reconnect()
 		this->clsData->log->LogMessage(CSTR("TDS: Error in allocating login structure"), IO::LogHandler::LogLevel::Error);
 		return;
 	}
-	DBSETLUSER(login, (const Char*)this->clsData->username->v);
-	DBSETLPWD(login, (const Char*)this->clsData->password->v);
+	DBSETLUSER(login, (const Char*)this->clsData->username->v.Ptr());
+	DBSETLPWD(login, (const Char*)this->clsData->password->v.Ptr());
 	DBSETLAPP(login, "SSWRTDS");
 	DBSETLCHARSET(login, "utf8");
 	NN<Text::String> s;
 	if (this->clsData->database.SetTo(s))
-		DBSETLDBNAME(login, (const Char*)s->v);
+		DBSETLDBNAME(login, (const Char*)s->v.Ptr());
 
-	this->clsData->dbproc = dbopen(login, (const Char*)this->clsData->host->v);
+	this->clsData->dbproc = dbopen(login, (const Char*)this->clsData->host->v.Ptr());
 	dbloginfree(login);
 	if (this->clsData->dbproc == 0)
 	{
@@ -1044,10 +1044,10 @@ UOSInt DB::TDSConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayList
 	return 0;
 }
 
-Optional<DB::DBReader> DB::TDSConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::TDSConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("select "));
 	if (this->sqlType == DB::SQLType::MSSQL || this->sqlType == DB::SQLType::Access)
@@ -1077,9 +1077,10 @@ Optional<DB::DBReader> DB::TDSConn::QueryTableData(Text::CString schemaName, Tex
 		}
 	}
 	sb.AppendC(UTF8STRC(" from "));
-	if (schemaName.leng > 0 && DB::DBUtil::HasSchema(this->sqlType))
+	Text::CStringNN nnschemaName;
+	if (schemaName.SetTo(nnschemaName) && schemaName.leng > 0 && DB::DBUtil::HasSchema(this->sqlType))
 	{
-		sptr = DB::DBUtil::SDBColUTF8(sbuff, schemaName.v, this->sqlType);
+		sptr = DB::DBUtil::SDBColUTF8(sbuff, nnschemaName.v, this->sqlType);
 		sb.AppendP(sbuff, sptr);
 		sb.AppendUTF8Char('.');
 	}

@@ -62,13 +62,13 @@ namespace UI
 		UOSInt GetSelectedIndex();
 		UOSInt GetSelectedIndices(Data::ArrayList<UOSInt> *selIndices);
 		AnyType GetSelectedItem();
-		UTF8Char *GetSelectedItemText(UTF8Char *buff);
+		UnsafeArrayOpt<UTF8Char> GetSelectedItemText(UnsafeArray<UTF8Char> buff);
 		Text::String *GetSelectedItemTextNew();
-		UTF8Char *GetItemText(UTF8Char *buff, UOSInt index);
+		UnsafeArrayOpt<UTF8Char> GetItemText(UnsafeArray<UTF8Char> buff, UOSInt index);
 		Text::String *GetItemTextNew(UOSInt index);
 		void SetFullRowSelect(Bool fullRowSelect);
 		void SetShowGrid(Bool showGrid);
-		UOSInt GetStringWidth(const UTF8Char *s);
+		UOSInt GetStringWidth(UnsafeArray<const UTF8Char> s);
 		UOSInt GetStringWidth(const WChar *s);
 		void GetItemRectP(UOSInt index, Int32 *rect);
 		void EnsureVisible(UOSInt index);

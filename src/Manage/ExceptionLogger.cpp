@@ -88,7 +88,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 		if (dasm->GetRegBitDepth() == Manage::Dasm::RBD_32)
 		{
 			UTF8Char sbuff[256];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			NN<Manage::Dasm32> dasm32 = NN<Manage::Dasm32>::ConvertFrom(dasm);
 			UInt32 currInst = (UInt32)context->GetInstAddr();
 			UInt32 currStack = (UInt32)context->GetStackAddr();
@@ -113,7 +113,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("("));
-			if ((sptr = addrResol->ResolveName(sbuff, currInst)) != 0)
+			if (addrResol->ResolveName(sbuff, currInst).SetTo(sptr))
 			{
 				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				sb.AppendC(UTF8STRC(")"));
@@ -186,7 +186,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 				writer->Write(sb.ToCString());
 
 				sb.ClearStr();
-				if ((sptr = addrResol->ResolveName(sbuff, currInst)) != 0)
+				if (addrResol->ResolveName(sbuff, currInst).SetTo(sptr))
 				{
 					sb.AppendC(UTF8STRC(" ("));
 					sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
@@ -210,7 +210,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 		else if (dasm->GetRegBitDepth() == Manage::Dasm::RBD_64)
 		{
 			UTF8Char sbuff[256];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			NN<Dasm64> dasm64 = NN<Dasm64>::ConvertFrom(dasm);
 			UInt64 currInst = context->GetInstAddr();
 			UInt64 currStack = context->GetStackAddr();
@@ -235,7 +235,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("("));
-			if ((sptr = addrResol->ResolveName(sbuff, currInst)) != 0)
+			if (addrResol->ResolveName(sbuff, currInst).SetTo(sptr))
 			{
 				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				sb.AppendC(UTF8STRC(")"));
@@ -308,7 +308,7 @@ void Manage::ExceptionLogger::WriteContext(NN<IO::Writer> writer, NN<IO::Stream>
 				writer->Write(sb.ToCString());
 
 				sb.ClearStr();
-				if ((sptr = addrResol->ResolveName(sbuff, currInst)) != 0)
+				if (addrResol->ResolveName(sbuff, currInst).SetTo(sptr))
 				{
 					sb.AppendC(UTF8STRC(" ("));
 					sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
@@ -353,7 +353,7 @@ void Manage::ExceptionLogger::WriteStackTrace(NN<IO::Writer> writer, NN<Manage::
 #endif
 }
 
-Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode, Text::CString exName, UOSInt exAddr, NN<Manage::ThreadContext> context)
+Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode, Text::CStringNN exName, UOSInt exAddr, NN<Manage::ThreadContext> context)
 {
 #ifndef _WIN32_WCE
 	Manage::Process proc;
@@ -362,7 +362,7 @@ Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode
 	Text::StringBuilderUTF8 sb;
 	Data::Timestamp d = Data::Timestamp::Now();
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	Manage::SymbolResolver symResol(proc);
@@ -412,8 +412,7 @@ Bool Manage::ExceptionLogger::LogToFile(NN<Text::String> fileName, UInt32 exCode
 			sb.AppendC(UTF8STRC("Running threads: (0x"));
 			sb.AppendHex32((UInt32)thread->GetThreadId());
 			sb.AppendC(UTF8STRC(")"));
-			sptr = thread->GetName(sbuff);
-			if (sptr)
+			if (thread->GetName(sbuff).SetTo(sptr))
 			{
 				sb.AppendUTF8Char(' ');
 				sb.AppendP(sbuff, sptr);

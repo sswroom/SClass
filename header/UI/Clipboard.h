@@ -35,7 +35,7 @@ namespace UI
 		static Bool GetDataTextH(void *hand, UInt32 fmtId, NN<Text::StringBuilderUTF8> sb, UInt32 tymed);
 		static Bool SetString(ControlHandle *hWndOwner, Text::CString s);
 		static Bool GetString(ControlHandle *hWndOwner, NN<Text::StringBuilderUTF8> sb);
-		static UTF8Char *GetFormatName(UInt32 fmtId, UTF8Char *sbuff, UOSInt buffSize);
+		static UnsafeArray<UTF8Char> GetFormatName(UInt32 fmtId, UnsafeArray<UTF8Char> sbuff, UOSInt buffSize);
 	};
 }
 #endif

@@ -22,11 +22,11 @@ namespace Map
 		virtual ImageType GetImageType() const;
 		virtual UOSInt GetConcurrentCount() const;
 		virtual Bool GetBounds(OutParam<Math::RectAreaDbl> bounds) const;
-		virtual UTF8Char *GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId);
+		virtual UnsafeArrayOpt<UTF8Char> GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> tileId);
 		virtual Bool GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Math::Coord2D<Int32> tileId);
 
 		void SetBounds(Math::RectAreaDbl bounds);
-		void SetName(Text::CString name);
+		void SetName(Text::CStringNN name);
 	};
 }
 #endif

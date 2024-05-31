@@ -15,13 +15,13 @@ namespace Net
 		WhoisRecord(UInt32 recordIP);
 		~WhoisRecord();
 
-		void AddItem(const UTF8Char *item, UOSInt itemLen);
+		void AddItem(UnsafeArray<const UTF8Char> item, UOSInt itemLen);
 		UOSInt GetCount() const;
 		Optional<Text::String> GetItem(UOSInt index) const;
 		Data::ArrayIterator<NN<Text::String>> Iterator() const;
 
-		UTF8Char *GetNetworkName(UTF8Char *buff);
-		UTF8Char *GetCountryCode(UTF8Char *buff);
+		UnsafeArrayOpt<UTF8Char> GetNetworkName(UnsafeArray<UTF8Char> buff);
+		UnsafeArrayOpt<UTF8Char> GetCountryCode(UnsafeArray<UTF8Char> buff);
 		UInt32 GetStartIP();
 		UInt32 GetEndIP();
 	};

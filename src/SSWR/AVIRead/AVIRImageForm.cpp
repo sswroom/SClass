@@ -598,7 +598,7 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(Optional<UI::GUIClientControl> paren
 {
 	this->SetFont(0, 0, 8.25, false);
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = imgList->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Image Form - ")));
 	this->SetText(CSTRP(sbuff, sptr));
 	this->SetFormState(UI::GUIForm::FS_MAXIMIZED);
@@ -694,7 +694,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 			{
 				this->imgList->SetSourceName(frm.GetFileName());
 				UTF8Char sbuff[512];
-				UTF8Char *sptr;
+				UnsafeArray<UTF8Char> sptr;
 				sptr = imgList->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Image Form - ")));
 				this->SetText(CSTRP(sbuff, sptr));
 			}

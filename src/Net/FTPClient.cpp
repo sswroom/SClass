@@ -7,11 +7,11 @@
 Net::FTPClient::FTPClient(Text::CStringNN url, NN<Net::SocketFactory> sockf, Bool passiveMode, UInt32 codePage, Data::Duration timeout) : IO::Stream(url)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *userName = 0;
-	UTF8Char *password = 0;
-	UTF8Char *host = 0;
-	UTF8Char *port = 0;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArrayOpt<UTF8Char> userName = 0;
+	UnsafeArrayOpt<UTF8Char> password = 0;
+	UnsafeArrayOpt<UTF8Char> host = 0;
+	UnsafeArrayOpt<UTF8Char> port = 0;
 	UTF8Char c;
 	sptr = url.ConcatTo(sbuff);
 	this->userName = 0;
@@ -159,7 +159,7 @@ UOSInt Net::FTPClient::Read(const Data::ByteArray &buff)
 	}
 }
 
-UOSInt Net::FTPClient::Write(const UInt8 *buff, UOSInt size)
+UOSInt Net::FTPClient::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	return 0;
 }

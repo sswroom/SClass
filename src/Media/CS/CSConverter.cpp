@@ -331,7 +331,7 @@ Optional<Media::CS::CSConverter> Media::CS::CSConverter::NewConverter(UInt32 src
 	return 0;
 }
 
-Text::CString Media::CS::CSConverter::GetFormatName(UInt32 format)
+Text::CStringNN Media::CS::CSConverter::GetFormatName(UInt32 format)
 {
 	if (format == 0)
 		return CSTR("ARGB");

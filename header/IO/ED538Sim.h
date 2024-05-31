@@ -14,7 +14,7 @@ namespace IO
 		ED538Sim();
 		virtual ~ED538Sim();
 
-		virtual Text::CString GetName();
+		virtual Text::CStringNN GetName();
 		virtual UOSInt GetValueCount();
 		virtual Text::CString GetValueName(UOSInt index);
 		virtual Bool GetValue(UOSInt index, NN<Text::StringBuilderUTF8> sb);

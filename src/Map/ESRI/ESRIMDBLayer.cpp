@@ -32,7 +32,7 @@ Data::FastMap<Int32, const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 				{
 					names[i] = 0;
 				}
-				else if (r->GetStr(i, sbuff, sizeof(sbuff)))
+				else if (r->GetStr(i, sbuff, sizeof(sbuff)).NotNull())
 				{
 					names[i] = Text::StrCopyNew(sbuff).Ptr();
 				}
@@ -57,10 +57,10 @@ Data::FastMap<Int32, const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 	}
 }
 
-void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CString tableName)
+void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CStringNN tableName)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 *buff = 0; 
 	UOSInt buffSize = 0;
 	UOSInt currSize;
@@ -89,7 +89,7 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 		while (i < j)
 		{
 			sbuff[0] = 0;
-			sptr = r->GetName(i, sbuff);
+			sptr = r->GetName(i, sbuff).Or(sbuff);
 			if (Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("SHAPE")))
 			{
 				this->shapeCol = i;
@@ -186,13 +186,13 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CS
 	this->currDB = 0;
 }
 
-Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, NN<Text::String> sourceName, Text::CString tableName) : Map::MapDrawLayer(sourceName->ToCString(), 0, tableName, Math::CoordinateSystemManager::SRCreateCSysOrDef(srid))
+Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, NN<Text::String> sourceName, Text::CStringNN tableName) : Map::MapDrawLayer(sourceName->ToCString(), 0, tableName, Math::CoordinateSystemManager::SRCreateCSysOrDef(srid))
 {
 	SDEL_STRING(this->layerName);
 	this->Init(conn, srid, tableName);
 }
 
-Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::CStringNN sourceName, Text::CString tableName) : Map::MapDrawLayer(sourceName, 0, tableName, Math::CoordinateSystemManager::SRCreateCSysOrDef(srid))
+Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::CStringNN sourceName, Text::CStringNN tableName) : Map::MapDrawLayer(sourceName, 0, tableName, Math::CoordinateSystemManager::SRCreateCSysOrDef(srid))
 {
 	this->Init(conn, srid, tableName);
 }
@@ -311,7 +311,7 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetColumnCnt() const
 	return this->colNames.GetCount();
 }
 
-UTF8Char *Map::ESRI::ESRIMDBLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::ESRI::ESRIMDBLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
 {
 	NN<Text::String> colName;
 	if (this->colNames.GetItem(colIndex).SetTo(colName))
@@ -375,7 +375,7 @@ UOSInt Map::ESRI::ESRIMDBLayer::QueryTableNames(Text::CString schemaName, NN<Dat
 	return 1;
 }
 
-Optional<DB::DBReader> Map::ESRI::ESRIMDBLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::ESRI::ESRIMDBLayer::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	NN<Sync::MutexUsage> mutUsage;
 	NEW_CLASSNN(mutUsage, Sync::MutexUsage());
@@ -394,7 +394,7 @@ Optional<DB::DBReader> Map::ESRI::ESRIMDBLayer::QueryTableData(Text::CString sch
 	return 0;
 }
 
-Optional<DB::TableDef> Map::ESRI::ESRIMDBLayer::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> Map::ESRI::ESRIMDBLayer::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseConn(mutUsage).Ptr();
@@ -482,7 +482,7 @@ Optional<Text::String> Map::ESRI::ESRIMDBReader::GetNewStr(UOSInt colIndex)
 	return this->r->GetNewStr((colIndex > 0)?(colIndex + 1):colIndex);
 }
 
-UTF8Char *Map::ESRI::ESRIMDBReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> Map::ESRI::ESRIMDBReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
 	return this->r->GetStr((colIndex > 0)?(colIndex + 1):colIndex, buff, buffSize);
 }
@@ -527,7 +527,7 @@ Bool Map::ESRI::ESRIMDBReader::IsNull(UOSInt colIndex)
 	return this->r->IsNull((colIndex > 0)?(colIndex + 1):colIndex);
 }
 
-UTF8Char *Map::ESRI::ESRIMDBReader::GetName(UOSInt colIndex, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Map::ESRI::ESRIMDBReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 {
 	return this->r->GetName((colIndex > 0)?(colIndex + 1):colIndex, buff);
 }

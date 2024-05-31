@@ -40,9 +40,9 @@ namespace UI
 		virtual UOSInt GetSelectedIndex() = 0;
 		virtual Bool GetSelectedIndices(Data::ArrayList<UInt32> *indices) = 0;
 		virtual AnyType GetSelectedItem() = 0;
-		virtual UTF8Char *GetSelectedItemText(UTF8Char *buff) = 0;
+		virtual UnsafeArrayOpt<UTF8Char> GetSelectedItemText(UnsafeArray<UTF8Char> buff) = 0;
 		virtual Optional<Text::String> GetSelectedItemTextNew() = 0;
-		virtual UTF8Char *GetItemText(UTF8Char *buff, UOSInt index) = 0;
+		virtual UnsafeArrayOpt<UTF8Char> GetItemText(UnsafeArray<UTF8Char> buff, UOSInt index) = 0;
 		virtual void SetItemText(UOSInt index, Text::CStringNN text) = 0;
 		virtual Optional<Text::String> GetItemTextNew(UOSInt index) = 0;
 		virtual OSInt GetItemHeight() = 0;

@@ -186,7 +186,7 @@ extern "C" void BubbleSort_SortStrC(Char **arr, OSInt firstIndex, OSInt lastInde
 		while (i--)
 		{
 			v2 = *b++;
-			if (Text::StrCompare(v1, v2) > 0)
+			if (Text::StrCompareCh(v1, v2) > 0)
 			{
 				b[-2] = v2;
 				b[-1] = v1;
@@ -390,7 +390,7 @@ extern "C" void BubbleSort_SortStrCInv(Char **arr, OSInt firstIndex, OSInt lastI
 		while (i--)
 		{
 			v2 = *b++;
-			if (Text::StrCompare(v1, v2) < 0)
+			if (Text::StrCompareCh(v1, v2) < 0)
 			{
 				b[-2] = v2;
 				b[-1] = v1;

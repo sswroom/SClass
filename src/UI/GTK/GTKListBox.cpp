@@ -100,7 +100,7 @@ UOSInt UI::GTK::GTKListBox::AddItem(NN<Text::String> itemText, AnyType itemObj)
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
 	item->userData = itemObj;
 	item->txt = itemText->Clone();
-	item->lbl = gtk_label_new((const Char*)itemText->v);
+	item->lbl = gtk_label_new((const Char*)itemText->v.Ptr());
 	gtk_label_set_ellipsize((GtkLabel*)item->lbl, PANGO_ELLIPSIZE_END);
 #if GTK_MAJOR_VERSION == 3
 #if GTK_MINOR_VERSION >= 16
@@ -125,7 +125,7 @@ UOSInt UI::GTK::GTKListBox::AddItem(Text::CStringNN itemText, AnyType itemObj)
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
 	item->userData = itemObj;
 	item->txt = Text::String::New(itemText.v, itemText.leng);
-	item->lbl = gtk_label_new((const Char*)itemText.v);
+	item->lbl = gtk_label_new((const Char*)itemText.v.Ptr());
 	gtk_label_set_ellipsize((GtkLabel*)item->lbl, PANGO_ELLIPSIZE_END);
 #if GTK_MAJOR_VERSION == 3
 #if GTK_MINOR_VERSION >= 16
@@ -150,7 +150,7 @@ UOSInt UI::GTK::GTKListBox::InsertItem(UOSInt index, Text::String *itemText, Any
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
 	item->userData = itemObj;
 	item->txt = itemText->Clone();
-	item->lbl = gtk_label_new((const Char*)itemText->v);
+	item->lbl = gtk_label_new((const Char*)itemText->v.Ptr());
 	gtk_label_set_ellipsize((GtkLabel*)item->lbl, PANGO_ELLIPSIZE_END);
 #if GTK_MAJOR_VERSION == 3
 #if GTK_MINOR_VERSION >= 16
@@ -183,7 +183,7 @@ UOSInt UI::GTK::GTKListBox::InsertItem(UOSInt index, Text::CStringNN itemText, A
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
 	item->userData = itemObj;
 	item->txt = Text::String::New(itemText.v, itemText.leng);
-	item->lbl = gtk_label_new((const Char*)itemText.v);
+	item->lbl = gtk_label_new((const Char*)itemText.v.Ptr());
 	gtk_label_set_ellipsize((GtkLabel*)item->lbl, PANGO_ELLIPSIZE_END);
 #if GTK_MAJOR_VERSION == 3
 #if GTK_MINOR_VERSION >= 16
@@ -317,7 +317,7 @@ AnyType UI::GTK::GTKListBox::GetSelectedItem()
 	return GetItem(currSel);
 }
 
-UTF8Char *UI::GTK::GTKListBox::GetSelectedItemText(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> UI::GTK::GTKListBox::GetSelectedItemText(UnsafeArray<UTF8Char> buff)
 {
 	UOSInt currSel = GetSelectedIndex();
 	if (currSel == INVALID_INDEX)
@@ -333,7 +333,7 @@ Optional<Text::String> UI::GTK::GTKListBox::GetSelectedItemTextNew()
 	return GetItemTextNew(currSel);
 }
 
-UTF8Char *UI::GTK::GTKListBox::GetItemText(UTF8Char *buff, UOSInt index)
+UnsafeArrayOpt<UTF8Char> UI::GTK::GTKListBox::GetItemText(UnsafeArray<UTF8Char> buff, UOSInt index)
 {
 	NN<ItemData> item;
 	if (!this->items.GetItem(index).SetTo(item))
@@ -346,7 +346,7 @@ void UI::GTK::GTKListBox::SetItemText(UOSInt index, Text::CStringNN text)
 	NN<ItemData> item;
 	if (!this->items.GetItem(index).SetTo(item))
 		return;
-	gtk_label_set_text((GtkLabel*)item->lbl, (const Char*)text.v);
+	gtk_label_set_text((GtkLabel*)item->lbl, (const Char*)text.v.Ptr());
 	item->txt->Release();
 	item->txt = Text::String::New(text.v, text.leng);
 }

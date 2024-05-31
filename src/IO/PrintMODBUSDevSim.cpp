@@ -11,7 +11,7 @@ IO::PrintMODBUSDevSim::~PrintMODBUSDevSim()
 {
 }
 
-Text::CString IO::PrintMODBUSDevSim::GetName()
+Text::CStringNN IO::PrintMODBUSDevSim::GetName()
 {
 	return CSTR("Debug Print");
 }

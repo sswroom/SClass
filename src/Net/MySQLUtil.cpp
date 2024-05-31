@@ -40,7 +40,7 @@ const UInt8 *Net::MySQLUtil::ReadLenencInt(const UInt8 *buff, UInt64 *val)
 	return buff;
 }
 
-UInt8 *Net::MySQLUtil::AppendLenencInt(UInt8 *buff, UInt64 val)
+UnsafeArray<UInt8> Net::MySQLUtil::AppendLenencInt(UnsafeArray<UInt8> buff, UInt64 val)
 {
 	if (val < 251)
 	{
@@ -67,7 +67,7 @@ UInt8 *Net::MySQLUtil::AppendLenencInt(UInt8 *buff, UInt64 val)
 	}
 }
 
-UInt8 *Net::MySQLUtil::AppendLenencStrC(UInt8 *buff, const UTF8Char *s, UOSInt len)
+UnsafeArray<UInt8> Net::MySQLUtil::AppendLenencStrC(UnsafeArray<UInt8> buff, UnsafeArrayOpt<const UTF8Char> s, UOSInt len)
 {
 	if (s == 0)
 	{
@@ -77,7 +77,7 @@ UInt8 *Net::MySQLUtil::AppendLenencStrC(UInt8 *buff, const UTF8Char *s, UOSInt l
 	else
 	{
 		buff = AppendLenencInt(buff, len);
-		MemCopyNO(buff, s, len);
+		MemCopyNO(buff.Ptr(), s.Ptr(), len);
 		buff += len;
 		return buff;
 	}
@@ -234,7 +234,7 @@ Text::CStringNN Net::MySQLUtil::AuthenTypeGetName(AuthenType authType)
 	}
 }
 
-UOSInt Net::MySQLUtil::BuildAuthen(UInt8 *buff, AuthenType authType, const UInt8 *nonce, UOSInt nonceSize, Text::CStringNN password)
+UOSInt Net::MySQLUtil::BuildAuthen(UnsafeArray<UInt8> buff, AuthenType authType, const UInt8 *nonce, UOSInt nonceSize, Text::CStringNN password)
 {
 	UInt8 tmpBuff[32];
 	UOSInt i;

@@ -10,7 +10,7 @@ namespace IO
 	public:
 		virtual ~MODBUSDevSim() {}
 
-		virtual Text::CString GetName() = 0;
+		virtual Text::CStringNN GetName() = 0;
 		virtual UOSInt GetValueCount() = 0;
 		virtual Text::CString GetValueName(UOSInt index) = 0;
 		virtual Bool GetValue(UOSInt index, NN<Text::StringBuilderUTF8> sb) = 0;

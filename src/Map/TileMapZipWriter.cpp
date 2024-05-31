@@ -27,7 +27,7 @@ Map::TileMapZipWriter::TileMapZipWriter(Text::CStringNN fileName, Map::TileMap::
 Map::TileMapZipWriter::~TileMapZipWriter()
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::JSONBuilder json(Text::JSONBuilder::OT_OBJECT);
 	json.ObjectAddStr(CSTR("name"), this->name);
 	json.ObjectAddStr(CSTR("version"), CSTR("1.0"));
@@ -68,7 +68,7 @@ Map::TileMapZipWriter::~TileMapZipWriter()
 void Map::TileMapZipWriter::BeginLevel(UOSInt level)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	this->currLev = level;
 	sptr = Text::StrUOSInt(sbuff, level);
 	*sptr++ = '/';
@@ -81,7 +81,7 @@ void Map::TileMapZipWriter::BeginLevel(UOSInt level)
 void Map::TileMapZipWriter::AddX(Int32 x)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	OSInt k = this->xList.SortedIndexOf(x);
 	if (k < 0)
 	{
@@ -99,7 +99,7 @@ void Map::TileMapZipWriter::AddX(Int32 x)
 void Map::TileMapZipWriter::AddImage(UOSInt level, Int32 x, Int32 y, Data::ByteArrayR imgData, Map::TileMap::ImageType imgType)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrUOSInt(sbuff, level);
 	*sptr++ = '/';
 	sptr = Text::StrInt32(sptr, x);

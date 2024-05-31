@@ -91,7 +91,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(AnyType userObj)
 			Data::ArrayList<Text::CString> tableNames;
 			Text::CStringNN tableName;
 			UTF8Char sbuff[32];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			UOSInt i;
 			UOSInt j;
 			UOSInt k;
@@ -191,7 +191,7 @@ void SSWR::AVIRead::AVIRRESTfulForm::InitDB()
 SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(Optional<UI::GUIClientControl> parent, NN<UI::GUICore> ui, NN<SSWR::AVIRead::AVIRCore> core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	this->core = core;
 	this->SetText(CSTR("RESTful Server"));
@@ -217,7 +217,7 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(Optional<UI::GUIClientControl> p
 	this->txtPort->SetRect(108, 8, 50, 23, false);
 	this->lblLogDir = ui->NewLabel(this->grpParam, CSTR("Log Path"));
 	this->lblLogDir->SetRect(8, 32, 100, 23, false);
-	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	sbuff[i] = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(&sbuff[i+1], UTF8STRC("log"));

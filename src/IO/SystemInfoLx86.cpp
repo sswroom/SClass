@@ -82,7 +82,7 @@ IO::SystemInfo::~SystemInfo()
 	MemFree(this->clsData);
 }
 
-UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformName(UnsafeArray<UTF8Char> sbuff)
 {
 	if (this->clsData->platformName)
 	{
@@ -91,7 +91,7 @@ UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
 	return 0;
 }
 
-UTF8Char *IO::SystemInfo::GetPlatformSN(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::SystemInfo::GetPlatformSN(UnsafeArray<UTF8Char> sbuff)
 {
 	if (this->clsData->platformSN)
 	{

@@ -68,7 +68,7 @@ Bool Net::PacketAnalyzerEthernet::PacketEthernetDataGetName(UInt16 etherType, co
 Bool Net::PacketAnalyzerEthernet::PacketIPv4GetName(const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if ((packet[0] & 0xf0) != 0x40)
 	{
 		return false;
@@ -102,7 +102,7 @@ Bool Net::PacketAnalyzerEthernet::PacketIPv4GetName(const UInt8 *packet, UOSInt 
 Bool Net::PacketAnalyzerEthernet::PacketIPv6GetName(const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if ((packet[0] & 0xf0) != 0x60 || packetSize < 40)
 	{
 		return false;
@@ -112,10 +112,10 @@ Bool Net::PacketAnalyzerEthernet::PacketIPv6GetName(const UInt8 *packet, UOSInt 
 	Net::SocketUtil::AddressInfo destAddr;
 	Net::SocketUtil::SetAddrInfoV6(srcAddr, &packet[8], 0);
 	Net::SocketUtil::SetAddrInfoV6(destAddr, &packet[24], 0);
-	sptr = Net::SocketUtil::GetAddrName(sbuff, srcAddr);
+	sptr = Net::SocketUtil::GetAddrName(sbuff, srcAddr).Or(sbuff);
 	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb->AppendC(UTF8STRC(" -> "));
-	sptr = Net::SocketUtil::GetAddrName(sbuff, destAddr);
+	sptr = Net::SocketUtil::GetAddrName(sbuff, destAddr).Or(sbuff);
 	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb->AppendUTF8Char(' ');
 	return PacketIPDataGetName(packet[6], &packet[40], packetSize - 40, sb);
@@ -152,11 +152,10 @@ Bool Net::PacketAnalyzerEthernet::PacketIPDataGetName(UInt8 protocol, const UInt
 		if (packetSize >= 4)
 		{
 			UInt16 destPort = 0;
-			Text::CString cstr;
+			Text::CStringNN cstr;
 			destPort = ReadMUInt16(&packet[2]);
-			cstr = UDPPortGetName(destPort);
 			sb->AppendUTF8Char(' ');
-			if (cstr.v)
+			if (UDPPortGetName(destPort).SetTo(cstr))
 			{
 				sb->Append(cstr);
 			}
@@ -376,7 +375,7 @@ void Net::PacketAnalyzerEthernet::PacketIEEE802_2LLCGetDetail(const UInt8 *packe
 {
 	Text::CString vName;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	frame->AddHex8Name(frameOfst + 0, CSTR("DSAP Address"), packet[0], LSAPGetName(packet[0]));
 	frame->AddHex8Name(frameOfst + 1, CSTR("SSAP Address"), packet[1], LSAPGetName(packet[1]));
 	switch (packet[1])
@@ -536,7 +535,7 @@ void Net::PacketAnalyzerEthernet::PacketIPv4GetDetail(const UInt8 *packet, UOSIn
 void Net::PacketAnalyzerEthernet::PacketIPv6GetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if ((packet[0] & 0xf0) != 0x60 || packetSize < 40)
 	{
 		frame->AddText(frameOfst, CSTR("Not IPv6 Packet"));
@@ -563,7 +562,7 @@ void Net::PacketAnalyzerEthernet::PacketIPv6GetDetail(const UInt8 *packet, UOSIn
 void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::CString vName;
 	switch (protocol)
 	{
@@ -1335,8 +1334,8 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 	Text::CString vName;
 	UTF8Char sbuff[64];
 	UTF8Char sbuff2[64];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	if (destPort == 53)
 	{
 		frame->AddText(frameOfst, CSTR("DNS Request:"));
@@ -1784,7 +1783,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		j = 0;
 		while (j < qdcount)
 		{
-			k = Net::DNSClient::ParseString(sbuff, packet, i, packetSize, &sptr);
+			k = Net::DNSClient::ParseString(sbuff, packet, i, packetSize, sptr);
 			frame->AddNetBIOSName(frameOfst + i, k - i, CSTR("QUESTION_NAME"), CSTRP(sbuff, sptr));
 			i = k;
 			qType = ReadMUInt16(&packet[i]);
@@ -1814,7 +1813,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		ancount = (UInt16)(ancount + nscount + arcount);
 		while (j < ancount)
 		{
-			k = Net::DNSClient::ParseString(sbuff, packet, i, packetSize, &sptr);
+			k = Net::DNSClient::ParseString(sbuff, packet, i, packetSize, sptr);
 			frame->AddNetBIOSName(frameOfst + i, k - i, CSTR("RR_NAME"), CSTRP(sbuff, sptr));
 			i = k;
 			rrType = ReadMUInt16(&packet[i]);
@@ -1952,10 +1951,10 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			frame->AddUInt(frameOfst + 10, 2, CSTR("DGM_LENGTH"), ReadMUInt16(&packet[10]));
 			frame->AddUInt(frameOfst + 12, 2, CSTR("PACKET_OFFSET"), ReadMUInt16(&packet[12]));
 			i = 14;
-			j = Net::DNSClient::ParseString(sbuff, packet, i, packetSize, &sptr);
+			j = Net::DNSClient::ParseString(sbuff, packet, i, packetSize, sptr);
 			frame->AddNetBIOSName(frameOfst + i, (UInt32)(j - i), CSTR("SOURCE_NAME"), CSTRP(sbuff, sptr));
 			i = j;
-			j = Net::DNSClient::ParseString(sbuff, packet, i, packetSize, &sptr);
+			j = Net::DNSClient::ParseString(sbuff, packet, i, packetSize, sptr);
 			frame->AddNetBIOSName(frameOfst + i, (UInt32)(j - i), CSTR("DESTINATION_NAME"), CSTRP(sbuff, sptr));
 			i = j;
 			break;
@@ -1982,7 +1981,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		case 0x14:
 		case 0x15:
 		case 0x16:
-			j = Net::DNSClient::ParseString(sbuff, packet, i, packetSize, &sptr);
+			j = Net::DNSClient::ParseString(sbuff, packet, i, packetSize, sptr);
 			frame->AddNetBIOSName(frameOfst + i, (UInt32)(j - i), CSTR("DESTINATION_NAME"), CSTRP(sbuff, sptr));
 			i = j;
 			break;
@@ -2319,7 +2318,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, NN<IO::FileAnalyse::FrameDetailHandler> frame)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::CString vName;
 	frame->AddUInt(frameOfst + 0, 2, CSTR("ID"), ReadMUInt16(&packet[0]));
 	if ((packet[2] & 0x80))
@@ -2390,7 +2389,7 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt
 	j = 0;
 	while (j < qdcount)
 	{
-		k = Net::DNSClient::ParseString(sbuff, packet, i, packetSize, &sptr);
+		k = Net::DNSClient::ParseString(sbuff, packet, i, packetSize, sptr);
 		frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), CSTR("QNAME"), CSTRP(sbuff, sptr));
 		i = k;
 		t = ReadMUInt16(&packet[i]);
@@ -2410,7 +2409,7 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt
 		UOSInt k;
 		UOSInt l;
 
-		k = Net::DNSClient::ParseString(sbuff, packet, i, packetSize, &sptr);
+		k = Net::DNSClient::ParseString(sbuff, packet, i, packetSize, sptr);
 		frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), CSTR("NAME"), CSTRP(sbuff, sptr));
 		i = k;
 		rrType = ReadMUInt16(&packet[i]);
@@ -2429,13 +2428,13 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt
 		case 2: // NS - an authoritative name server
 		case 5: // CNAME - the canonical name for an alias
 		case 12: // PTR - a domain name pointer
-			k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength, &sptr);
+			k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength, sptr);
 			frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), CSTR("RDATA"), CSTRP(sbuff, sptr));
 			break;
 		case 6:
-			k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength, &sptr);
+			k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength, sptr);
 			frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), CSTR("RDATA"), CSTRP(sbuff, sptr));
-			l = Net::DNSClient::ParseString(sbuff, packet, k, i + rdLength, &sptr);
+			l = Net::DNSClient::ParseString(sbuff, packet, k, i + rdLength, sptr);
 			frame->AddField(frameOfst + (UInt32)k, (UInt32)(l - k), CSTR("-MailAddr"), CSTRP(sbuff, sptr));
 			k = l;
 			if (k + 20 <= i + rdLength)
@@ -2458,7 +2457,7 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt
 			break;
 		case 15: // MX - mail exchange
 			frame->AddUInt(frameOfst + i, 2, CSTR("Priority"), ReadMUInt16(&packet[i]));
-			k = Net::DNSClient::ParseString(sbuff, packet, i + 2, i + rdLength, &sptr);
+			k = Net::DNSClient::ParseString(sbuff, packet, i + 2, i + rdLength, sptr);
 			frame->AddField(frameOfst + (UInt32)i + 2, (UInt32)(k - i - 2), CSTR("RDATA"), CSTRP(sbuff, sptr));
 			break;
 		case 16: // TXT - text strings
@@ -2487,7 +2486,7 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt
 				frame->AddUInt(frameOfst + i, 2, CSTR("Priority"), ReadMUInt16(&packet[i]));
 				frame->AddUInt(frameOfst + i + 2, 2, CSTR("Weight"), ReadMUInt16(&packet[i + 2]));
 				frame->AddUInt(frameOfst + i + 4, 2, CSTR("Port"), ReadMUInt16(&packet[i + 4]));
-				k = Net::DNSClient::ParseString(sbuff, packet, i + 6, i + rdLength, &sptr);
+				k = Net::DNSClient::ParseString(sbuff, packet, i + 6, i + rdLength, sptr);
 				frame->AddField(frameOfst + (UInt32)i + 6, (UInt32)(k - i - 6), CSTR("Target"), CSTRP(sbuff, sptr));
 			}
 			break;
@@ -2522,7 +2521,7 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt
 			break;
 		case 47: // NSEC - Next Secure record
 			{
-				UOSInt k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength, &sptr);
+				UOSInt k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength, sptr);
 				frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), CSTR("Next Domain Name"), CSTRP(sbuff, sptr));
 				if (k < i + rdLength)
 				{
@@ -2540,14 +2539,14 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt
 			break;
 		case 250: // TSIG
 			{
-				UOSInt k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength, &sptr);
+				UOSInt k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength, sptr);
 				frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), CSTR("Algorithm"), CSTRP(sbuff, sptr));
 				if (k + 10 < i + rdLength)
 				{
 					Data::DateTime dt;
 					dt.SetUnixTimestamp((Int64)(((UInt64)(ReadMUInt16(&packet[k])) << 32) | ReadMUInt32(&packet[k + 2])));
 					dt.ToLocalTime();
-					sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
+					sptr = dt.ToString(sbuff, CHSTR("yyyy-MM-dd HH:mm:ss zzzz"));
 					frame->AddField(frameOfst + (UInt32)k, 6, CSTR("Time Signed"), CSTRP(sbuff, sptr));
 					frame->AddUInt(frameOfst + k + 6, 2, CSTR("Fudge"), ReadMUInt16(&packet[k + 6]));
 					UOSInt macSize = ReadMUInt16(&packet[k + 8]);

@@ -41,8 +41,8 @@ IO::ParserType Parser::FileParser::TARParser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::TARParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
-	UTF8Char *sptrEnd;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptrEnd;
 	UInt8 buff[512];
 	UOSInt i;
 	UInt64 currOfst;
@@ -77,8 +77,8 @@ Optional<IO::ParsedObject> Parser::FileParser::TARParser::ParseFileHdr(NN<IO::St
 		fd->GetRealData(currOfst, 512, BYTEARR(buff));
 		currOfst += 512;
 
-		itemSize = (UInt64)Text::StrOct2Int64((Char*)&buff[124]);
-		t = Text::StrOct2Int64((Char*)&buff[136]);
+		itemSize = (UInt64)Text::StrOct2Int64(&buff[124]);
+		t = Text::StrOct2Int64(&buff[136]);
 		sptrEnd = enc.UTF8FromBytes(sbuff, buff, 100, 0);
 		if (itemSize == 0)
 		{

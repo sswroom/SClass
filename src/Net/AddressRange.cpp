@@ -3,7 +3,7 @@
 #include "Net/AddressRange.h"
 #include "Text/MyString.h"
 
-Net::AddressRange::AddressRange(const UTF8Char *addr, UOSInt addrLen, Bool scanBoardcast)
+Net::AddressRange::AddressRange(UnsafeArray<const UTF8Char> addr, UOSInt addrLen, Bool scanBoardcast)
 {
 	this->skipFirst = false;
 	this->skipLast = false;

@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRPaintCntForm::OnTimerTick(AnyType userObj)
 	if (me->dispCnt != me->paintCnt)
 	{
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		me->dispCnt = me->paintCnt;
 		sptr = Text::StrInt64(sbuff, me->dispCnt);
 		me->txtCnt->SetText(CSTRP(sbuff, sptr));

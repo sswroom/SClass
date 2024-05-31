@@ -10,13 +10,13 @@ Text::MIMEObj::UnknownMIMEObj::UnknownMIMEObj(UnsafeArray<UInt8> dataBuff, UOSIn
 	this->dataBuff = MemAllocArr(UInt8, buffSize);
 	this->contType = Text::String::New(contentType);
 	this->dataBuff.CopyFromNO(dataBuff, buffSize);
-	const UTF8Char *tmpPtr = Text::StrCopyNewC(contentType.v, this->contType->leng).Ptr();
+	UnsafeArray<const UTF8Char> tmpPtr = Text::StrCopyNewC(contentType.v, this->contType->leng);
 	UOSInt i;
 	UOSInt j;
 	Text::PString sarr[2];
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
-	i = Text::StrSplitTrimP(sarr, 2, {(UTF8Char*)tmpPtr, this->contType->leng}, ';');
+	UnsafeArray<UTF8Char> sptr;
+	i = Text::StrSplitTrimP(sarr, 2, Text::PString(UnsafeArray<UTF8Char>::ConvertFrom(tmpPtr), this->contType->leng), ';');
 	while (i == 2)
 	{
 		i = Text::StrSplitTrimP(sarr, 2, sarr[1], ';');

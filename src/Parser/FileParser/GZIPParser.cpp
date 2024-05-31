@@ -38,7 +38,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GZIPParser::ParseFileHdr(NN<IO::S
 	UTF8Char sbuff[512];
 	UOSInt byteConv = 0;
 	UInt64 fileLeng;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (hdr[0] != 0x1f || hdr[1] != 0x8b || hdr[2] != 8)
 	{
@@ -61,7 +61,7 @@ Optional<IO::ParsedObject> Parser::FileParser::GZIPParser::ParseFileHdr(NN<IO::S
 	}
 	else
 	{
-		sptr = fd->GetShortName().ConcatTo(sbuff);
+		sptr = fd->GetShortName().OrEmpty().ConcatTo(sbuff);
 		if ((sptr - sbuff) > 3 && Text::StrEqualsC(&sptr[-3], 3, UTF8STRC(".gz")))
 		{
 			sptr[-3] = 0;

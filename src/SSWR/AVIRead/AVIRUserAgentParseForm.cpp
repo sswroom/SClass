@@ -10,20 +10,21 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentParseForm::OnParseClicked(AnyType use
 	me->txtUserAgent->GetText(sb);
 	if (sb.GetLength() > 0)
 	{
+		UnsafeArray<const UTF8Char> nns;
 		Net::UserAgentDB::UAEntry ent;
-		Net::UserAgentDB::ParseUserAgent(&ent, sb.ToCString());
+		Net::UserAgentDB::ParseUserAgent(ent, sb.ToCString());
 		me->txtBrowser->SetText(Net::BrowserInfo::GetName(ent.browser));
-		if (ent.browserVer)
-			me->txtBrowserVer->SetText({(const UTF8Char*)ent.browserVer, ent.browserVerLen});
+		if (ent.browserVer.SetTo(nns))
+			me->txtBrowserVer->SetText({nns, ent.browserVerLen});
 		else
 			me->txtBrowserVer->SetText(CSTR("-"));
 		me->txtOS->SetText(Manage::OSInfo::GetName(ent.os));
-		if (ent.osVer)
-			me->txtOSVer->SetText({(const UTF8Char*)ent.osVer, ent.osVerLen});
+		if (ent.osVer.SetTo(nns))
+			me->txtOSVer->SetText({nns, ent.osVerLen});
 		else
 			me->txtOSVer->SetText(CSTR("-"));
-		if (ent.devName)
-			me->txtDeviceName->SetText({(const UTF8Char*)ent.devName, ent.devNameLen});
+		if (ent.devName.SetTo(nns))
+			me->txtDeviceName->SetText({nns, ent.devNameLen});
 		else
 			me->txtDeviceName->SetText(CSTR("-"));
 		SDEL_TEXT(ent.browserVer);

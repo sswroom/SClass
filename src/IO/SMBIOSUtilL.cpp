@@ -74,8 +74,8 @@ IO::SMBIOS *IO::SMBIOSUtil::GetSMBIOS()
 
 	if (dataBuff == 0)
 	{
-		UTF8Char *sptr;
-		UTF8Char *sptr2;
+		UnsafeArray<UTF8Char> sptr;
+		UnsafeArray<UTF8Char> sptr2;
 		UTF8Char sbuff[512];
 		IO::Path::FindFileSession *sess;
 		UOSInt readSize;
@@ -85,7 +85,7 @@ IO::SMBIOS *IO::SMBIOSUtil::GetSMBIOS()
 		sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 		if (sess)
 		{
-			while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, 0, 0)) != 0)
+			while (IO::Path::FindNextFile(sptr, sess, 0, 0, 0).SetTo(sptr2))
 			{
 				if (sptr[0] != '.')
 				{

@@ -18,7 +18,7 @@ Net::HTTPQueue::~HTTPQueue()
 NN<Net::HTTPClient> Net::HTTPQueue::MakeRequest(Text::CStringNN url, Net::WebUtil::RequestMethod method, Bool noShutdown)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::URLString::GetURLDomain(sbuff, url, 0);
 	Bool found = false;;
 	NN<DomainStatus> status;
@@ -62,7 +62,7 @@ NN<Net::HTTPClient> Net::HTTPQueue::MakeRequest(Text::CStringNN url, Net::WebUti
 void Net::HTTPQueue::EndRequest(Net::HTTPClient *cli)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<DomainStatus> status;
 	NN<Text::String> url = Text::String::OrEmpty(cli->GetURL());
 	sptr = Text::URLString::GetURLDomain(sbuff, url->ToCString(), 0);

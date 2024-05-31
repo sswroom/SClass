@@ -4,7 +4,7 @@
 void SSWR::DiscDB::DiscDBDVDTypeForm::ShowStatus()
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("You are viewing "));
 	sptr = Text::StrUOSInt(sptr, this->currIndex + 1);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(" of "));

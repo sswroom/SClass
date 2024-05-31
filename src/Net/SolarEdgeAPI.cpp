@@ -10,7 +10,7 @@
 
 #define API_LINK CSTR("https://monitoringapi.solaredge.com")
 
-void Net::SolarEdgeAPI::BuildURL(NN<Text::StringBuilderUTF8> sb, Text::CString path)
+void Net::SolarEdgeAPI::BuildURL(NN<Text::StringBuilderUTF8> sb, Text::CStringNN path)
 {
 	sb->Append(API_LINK);
 	sb->Append(path);
@@ -205,7 +205,7 @@ void Net::SolarEdgeAPI::FreeSiteList(NN<Data::ArrayListNN<Site>> siteList)
 Bool Net::SolarEdgeAPI::GetSiteOverview(Int32 siteId, NN<SiteOverview> overview)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("/site/"));
 	sptr = Text::StrInt32(sptr, siteId);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/overview"));
@@ -232,7 +232,7 @@ Bool Net::SolarEdgeAPI::GetSiteOverview(Int32 siteId, NN<SiteOverview> overview)
 Bool Net::SolarEdgeAPI::GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, TimeUnit timeUnit, NN<Data::ArrayList<TimedValue>> values)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("/site/"));
 	sptr = Text::StrInt32(sptr, siteId);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/energy"));
@@ -275,7 +275,7 @@ Bool Net::SolarEdgeAPI::GetSiteEnergy(Int32 siteId, Data::Timestamp startTime, D
 Bool Net::SolarEdgeAPI::GetSitePower(Int32 siteId, Data::Timestamp startTime, Data::Timestamp endTime, NN<Data::ArrayList<TimedValue>> values)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("/site/"));
 	sptr = Text::StrInt32(sptr, siteId);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/power"));
@@ -316,7 +316,7 @@ Bool Net::SolarEdgeAPI::GetSitePower(Int32 siteId, Data::Timestamp startTime, Da
 void Net::SolarEdgeAPI::AppendFormDate(NN<Text::StringBuilderUTF8> sb, Data::Timestamp ts, Bool hasTime)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = ts.ToString(sbuff, "yyyy-MM-dd");
 	if (hasTime)
 	{

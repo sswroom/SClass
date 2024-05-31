@@ -303,7 +303,7 @@ OSInt SSWR::DiscDB::DiscDBEnv::GetBurntDiscIndex(Text::CStringNN discId)
 	return this->discMap.IndexOfC(discId);
 }
 
-Bool SSWR::DiscDB::DiscDBEnv::NewBurntFile(const UTF8Char *discId, UOSInt fileId, const UTF8Char *name, UInt64 fileSize, Text::CString category, Int32 videoId)
+Bool SSWR::DiscDB::DiscDBEnv::NewBurntFile(UnsafeArray<const UTF8Char> discId, UOSInt fileId, UnsafeArray<const UTF8Char> name, UInt64 fileSize, Text::CString category, Int32 videoId)
 {
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
@@ -388,7 +388,7 @@ OSInt SSWR::DiscDB::DiscDBEnv::GetDVDTypeIndex(Text::CStringNN discTypeID)
 	return this->dvdTypeMap.IndexOfC(discTypeID);
 }
 
-Bool SSWR::DiscDB::DiscDBEnv::ModifyDVDType(Text::CStringNN discTypeID, Text::CString name, Text::CString desc)
+Bool SSWR::DiscDB::DiscDBEnv::ModifyDVDType(Text::CStringNN discTypeID, Text::CStringNN name, Text::CStringNN desc)
 {
 	NN<DVDTypeInfo> dvdType;
 	if (!this->dvdTypeMap.GetC(discTypeID).SetTo(dvdType))
@@ -463,7 +463,7 @@ UOSInt SSWR::DiscDB::DiscDBEnv::GetDiscTypes(NN<Data::ArrayListNN<DiscTypeInfo>>
 	return this->discTypeMap.GetCount();
 }
 
-UOSInt SSWR::DiscDB::DiscDBEnv::GetDiscTypesByBrand(NN<Data::ArrayListNN<const DiscTypeInfo>> discTypeList, const UTF8Char *brand, UOSInt brandLen)
+UOSInt SSWR::DiscDB::DiscDBEnv::GetDiscTypesByBrand(NN<Data::ArrayListNN<const DiscTypeInfo>> discTypeList, UnsafeArray<const UTF8Char> brand, UOSInt brandLen)
 {
 	UOSInt ret;
 	UOSInt i;
@@ -485,7 +485,7 @@ UOSInt SSWR::DiscDB::DiscDBEnv::GetDiscTypesByBrand(NN<Data::ArrayListNN<const D
 	return ret;
 }
 
-Int32 SSWR::DiscDB::DiscDBEnv::NewDVDVideo(const UTF8Char *anime, const UTF8Char *series, const UTF8Char *volume, const UTF8Char *dvdType)
+Int32 SSWR::DiscDB::DiscDBEnv::NewDVDVideo(UnsafeArray<const UTF8Char> anime, UnsafeArrayOpt<const UTF8Char> series, UnsafeArrayOpt<const UTF8Char> volume, UnsafeArray<const UTF8Char> dvdType)
 {
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))
@@ -528,7 +528,7 @@ Optional<const SSWR::DiscDB::DiscDBEnv::DVDVideoInfo> SSWR::DiscDB::DiscDBEnv::G
 	return this->dvdVideoMap.Get(videoId);
 }
 
-Bool SSWR::DiscDB::DiscDBEnv::NewMovies(const UTF8Char *discId, UOSInt fileId, const UTF8Char *mainTitle, NN<Text::String> type, const UTF8Char *chapter, const UTF8Char *chapterTitle, Text::CString videoFormat, Int32 width, Int32 height, Int32 fps, Int32 length, Text::CString audioFormat, Int32 samplingRate, Int32 bitRate, const UTF8Char *aspectRatio, const UTF8Char *remark)
+Bool SSWR::DiscDB::DiscDBEnv::NewMovies(UnsafeArray<const UTF8Char> discId, UOSInt fileId, UnsafeArray<const UTF8Char> mainTitle, NN<Text::String> type, UnsafeArrayOpt<const UTF8Char> chapter, UnsafeArrayOpt<const UTF8Char> chapterTitle, Text::CString videoFormat, Int32 width, Int32 height, Int32 fps, Int32 length, Text::CString audioFormat, Int32 samplingRate, Int32 bitRate, UnsafeArrayOpt<const UTF8Char> aspectRatio, UnsafeArrayOpt<const UTF8Char> remark)
 {
 	NN<DB::DBTool> db;
 	if (!this->db.SetTo(db))

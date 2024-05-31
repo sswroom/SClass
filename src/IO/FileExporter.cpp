@@ -60,7 +60,7 @@ Bool IO::FileExporter::SetParamBool(Optional<ParamData> param, UOSInt index, Boo
 	return false;
 }
 
-UTF8Char *IO::FileExporter::GetParamStr(Optional<ParamData> param, UOSInt index, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> IO::FileExporter::GetParamStr(Optional<ParamData> param, UOSInt index, UnsafeArray<UTF8Char> buff)
 {
 	return 0;
 }
@@ -75,7 +75,7 @@ Int32 IO::FileExporter::GetParamSel(Optional<ParamData> param, UOSInt index)
 	return 0;
 }
 
-UTF8Char *IO::FileExporter::GetParamSelItems(Optional<ParamData> param, UOSInt index, UOSInt itemIndex, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> IO::FileExporter::GetParamSelItems(Optional<ParamData> param, UOSInt index, UOSInt itemIndex, UnsafeArray<UTF8Char> buff)
 {
 	return 0;
 }
