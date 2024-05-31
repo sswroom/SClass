@@ -44,8 +44,8 @@ Optional<IO::ParsedObject> Parser::FileParser::CUEParser::ParseFileHdr(NN<IO::St
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	Media::MediaFile *mf = 0;
 	UOSInt currTrack;
 	UOSInt maxTrack = 0;
@@ -71,7 +71,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CUEParser::ParseFileHdr(NN<IO::St
 
 	IO::StreamDataStream stm(fd);
 	IO::StreamReader reader(stm, 0);
-	while ((sptr = reader.ReadLine(sbuff, 511)) != 0)
+	while (reader.ReadLine(sbuff, 511).SetTo(sptr))
 	{
 		sptr = Text::StrTrimC(sbuff, (UOSInt)(sptr - sbuff));
 		if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("PERFORMER ")))
@@ -193,10 +193,10 @@ Optional<IO::ParsedObject> Parser::FileParser::CUEParser::ParseFileHdr(NN<IO::St
 	return mf;
 }
 
-UTF8Char *Parser::FileParser::CUEParser::ReadString(UTF8Char *sbuff, const UTF8Char *cueStr)
+UnsafeArray<UTF8Char> Parser::FileParser::CUEParser::ReadString(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> cueStr)
 {
 	Bool isQuote = false;
-	const UTF8Char *sptr = cueStr;
+	UnsafeArray<const UTF8Char> sptr = cueStr;
 	UTF8Char c;
 	while (true)
 	{
@@ -234,10 +234,10 @@ UTF8Char *Parser::FileParser::CUEParser::ReadString(UTF8Char *sbuff, const UTF8C
 	return sbuff;
 }
 
-UInt32 Parser::FileParser::CUEParser::ReadTime(const UTF8Char *timeStr)
+UInt32 Parser::FileParser::CUEParser::ReadTime(UnsafeArray<const UTF8Char> timeStr)
 {
 	UTF8Char sbuff[10];
-	UTF8Char *sarr[4];
+	UnsafeArray<UTF8Char> sarr[4];
 	if (Text::StrConcatS(sbuff, timeStr, 10) - sbuff == 8)
 	{
 		if (Text::StrSplit(sarr, 4, sbuff, ':') == 3)

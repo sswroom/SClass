@@ -140,7 +140,7 @@ namespace IO
 		UOSInt GetImportFuncCount(UOSInt modIndex) const;
 		Optional<Text::String> GetImportFunc(UOSInt modIndex, UOSInt funcIndex) const;
 
-		void AddExportFunc(Text::CString funcName);
+		void AddExportFunc(Text::CStringNN funcName);
 		UOSInt GetExportCount() const;
 		Optional<Text::String> GetExportName(UOSInt index) const;
 

@@ -66,7 +66,7 @@ Optional<IO::ParsedObject> Parser::FileParser::EXEParser::ParseFileHdr(NN<IO::St
 	regs.SS = (UInt16)(0x80 + *(UInt16*)&hdr[14]);
 
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::EXEFile *exef;
 	NEW_CLASS(exef, IO::EXEFile(fd->GetFullName()));
 	UOSInt codeLen;
@@ -857,14 +857,14 @@ Optional<IO::ParsedObject> Parser::FileParser::EXEParser::ParseFileHdr(NN<IO::St
 	return exef;
 }
 
-void Parser::FileParser::EXEParser::ParseResource(IO::EXEFile *exef, UInt32 resType, UTF8Char *sbuff, UTF8Char *sbuffEnd, UInt8 *resBuff, UOSInt resOfst, UInt8 *exeImage)
+void Parser::FileParser::EXEParser::ParseResource(IO::EXEFile *exef, UInt32 resType, UnsafeArray<UTF8Char> sbuff, UnsafeArray<UTF8Char> sbuffEnd, UInt8 *resBuff, UOSInt resOfst, UInt8 *exeImage)
 {
 	OSInt i;
 	OSInt j;
 	OSInt k;
 	UInt32 v;
 	UInt32 thisRType = resType;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	i = ReadUInt16(&resBuff[resOfst + 12]);
 	j = ReadUInt16(&resBuff[resOfst + 14]);
 	resOfst += 16;
@@ -912,7 +912,7 @@ void Parser::FileParser::EXEParser::ParseResource(IO::EXEFile *exef, UInt32 resT
 	}
 }
 
-void Parser::FileParser::EXEParser::ParseResourceData(IO::EXEFile *exef, UInt32 resType, UTF8Char *sbuff, UTF8Char *sbuffEnd, UInt8 *resBuff, UOSInt resOfst, UInt8 *exeImage)
+void Parser::FileParser::EXEParser::ParseResourceData(IO::EXEFile *exef, UInt32 resType, UnsafeArray<UTF8Char> sbuff, UnsafeArray<UTF8Char> sbuffEnd, UInt8 *resBuff, UOSInt resOfst, UInt8 *exeImage)
 {
 	UInt32 dataRVA = ReadUInt32(&resBuff[resOfst]);
 	UInt32 size = ReadUInt32(&resBuff[resOfst + 4]);

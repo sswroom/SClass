@@ -24,7 +24,7 @@ namespace DB
 		Data::ArrayListNN<ColDef> cols;
 
 	public:
-		TableDef(Text::CString schemaName, Text::CString tableName);
+		TableDef(Text::CString schemaName, Text::CStringNN tableName);
 		~TableDef();
 
 		Optional<Text::String> GetDatabaseName() const;

@@ -36,7 +36,7 @@ void Media::Decoder::VDecoderBase::GetBorderCrop(OutParam<UOSInt> cropLeft, OutP
 	this->sourceVideo->GetBorderCrop(cropLeft, cropTop, cropRight, cropBottom);
 }
 
-UTF8Char *Media::Decoder::VDecoderBase::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::Decoder::VDecoderBase::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	if (this->sourceVideo)
 		return this->sourceVideo->GetSourceName(buff);

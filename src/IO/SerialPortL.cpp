@@ -181,12 +181,12 @@ Bool IO::SerialPort::InitStream()
 Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayList<UOSInt>> ports, Data::ArrayList<SerialPortType> *portTypes)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::Path::FindFileSession *sess;
 	sess = IO::Path::FindFile(CSTR("/dev/tty*"));
 	if (sess)
 	{
-		while ((sptr = IO::Path::FindNextFile(sbuff, sess, 0, 0, 0)) != 0)
+		while (IO::Path::FindNextFile(sbuff, sess, 0, 0, 0).SetTo(sptr))
 		{
 			if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ttyS")))
 			{
@@ -212,7 +212,7 @@ Bool IO::SerialPort::GetAvailablePorts(NN<Data::ArrayList<UOSInt>> ports, Data::
 	sess = IO::Path::FindFile(CSTR("/dev/rfcomm*"));
 	if (sess)
 	{
-		while ((sptr = IO::Path::FindNextFile(sbuff, sess, 0, 0, 0)) != 0)
+		while (IO::Path::FindNextFile(sbuff, sess, 0, 0, 0).SetTo(sptr))
 		{
 			ports->Add(97 + Text::StrToUOSInt(&sbuff[6]));
 			if (portTypes)
@@ -263,7 +263,7 @@ UOSInt IO::SerialPort::GetBTPort()
 	return 0;
 }
 
-UTF8Char *IO::SerialPort::GetPortName(UTF8Char *buff, UOSInt portNum)
+UnsafeArrayOpt<UTF8Char> IO::SerialPort::GetPortName(UnsafeArray<UTF8Char> buff, UOSInt portNum)
 {
 	if (portNum <= 0)
 		return 0;
@@ -293,7 +293,7 @@ Bool SerialPort_WriteInt32(Text::CStringNN path, Int32 num)
 {
 	UTF8Char sbuff[32];
 	Bool ret = false;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::FileStream fs(path, IO::FileMode::CreateWrite, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (!fs.IsError())
 	{
@@ -312,7 +312,7 @@ Bool IO::SerialPort::ResetPort(UOSInt portNum)
 	UTF8Char sbuff2[512];
 	UOSInt i;
 	OSInt si;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (portNum <= 32)
 	{
 		return false;

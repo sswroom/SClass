@@ -47,7 +47,7 @@ Optional<IO::ParsedObject> Parser::FileParser::NOAParser::ParseFileHdr(NN<IO::St
 	UInt32 fileOfst;
 	Data::DateTime dt;
 	UTF8Char fileName[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".NOA")))
 	{

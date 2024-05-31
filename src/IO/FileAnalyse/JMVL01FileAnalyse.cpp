@@ -123,14 +123,13 @@ UOSInt IO::FileAnalyse::JMVL01FileAnalyse::GetFrameCount()
 Bool IO::FileAnalyse::JMVL01FileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::JMVL01FileAnalyse::JMVL01Tag> tag;
-	Text::CString name;
+	Text::CStringNN name;
 	if (!this->tags.GetItem(index).SetTo(tag))
 		return false;
 	sb->AppendU64(tag->ofst);
 	sb->AppendC(UTF8STRC(": Type=0x"));
 	sb->AppendHex8(tag->tagType);
-	name = GetTagName(tag->tagType);
-	if (name.v)
+	if (GetTagName(tag->tagType).SetTo(name))
 	{
 		sb->AppendC(UTF8STRC(" ("));
 		sb->Append(name);
@@ -172,7 +171,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JMVL01FileAnalyse::GetFr
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<IO::FileAnalyse::JMVL01FileAnalyse::JMVL01Tag> tag;
 	if (!this->tags.GetItem(index).SetTo(tag))
 		return 0;

@@ -61,7 +61,7 @@ void Crypto::Hash::HMAC::Clear()
 	this->hashInner->Calc(iPad, padSize);
 }
 
-void Crypto::Hash::HMAC::Calc(const UInt8 *buff, UOSInt buffSize)
+void Crypto::Hash::HMAC::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	this->hashInner->Calc(buff, buffSize);
 }

@@ -18,7 +18,7 @@
 
 #define LINECHARCNT 77
 
-UOSInt Net::Email::EmailMessage::GetHeaderIndex(const UTF8Char *name, UOSInt nameLen)
+UOSInt Net::Email::EmailMessage::GetHeaderIndex(Text::CStringNN name)
 {
 	NN<Text::String> header;
 	Data::ArrayIterator<NN<Text::String>> it = this->headerList.Iterator();
@@ -26,7 +26,7 @@ UOSInt Net::Email::EmailMessage::GetHeaderIndex(const UTF8Char *name, UOSInt nam
 	while (it.HasNext())
 	{
 		header = it.Next();
-		if (header->StartsWith(name, nameLen) && header->v[nameLen] == ':' && header->v[nameLen + 1] == ' ')
+		if (header->StartsWith(name) && header->v[name.leng] == ':' && header->v[name.leng + 1] == ' ')
 		{
 			return i;
 		}
@@ -35,14 +35,14 @@ UOSInt Net::Email::EmailMessage::GetHeaderIndex(const UTF8Char *name, UOSInt nam
 	return INVALID_INDEX;
 }
 
-Bool Net::Email::EmailMessage::SetHeader(const UTF8Char *name, UOSInt nameLen, const UTF8Char *val, UOSInt valLen)
+Bool Net::Email::EmailMessage::SetHeader(Text::CStringNN name, Text::CStringNN val)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.AppendC(name, nameLen);
+	sb.Append(name);
 	sb.AppendUTF8Char(':');
 	sb.AppendUTF8Char(' ');
-	sb.AppendC(val, valLen);
-	UOSInt i = this->GetHeaderIndex(name, nameLen);
+	sb.Append(val);
+	UOSInt i = this->GetHeaderIndex(name);
 	if (i == INVALID_INDEX)
 	{
 		this->headerList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
@@ -55,16 +55,16 @@ Bool Net::Email::EmailMessage::SetHeader(const UTF8Char *name, UOSInt nameLen, c
 	return true;
 }
 
-Bool Net::Email::EmailMessage::AppendUTF8Header(NN<Text::StringBuilderUTF8> sb, const UTF8Char *val, UOSInt valLen)
+Bool Net::Email::EmailMessage::AppendUTF8Header(NN<Text::StringBuilderUTF8> sb, Text::CStringNN val)
 {
 	Text::TextBinEnc::Base64Enc b64;
 	sb->AppendC(UTF8STRC("=?UTF-8?B?"));
-	b64.EncodeBin(sb, val, valLen);
+	b64.EncodeBin(sb, val.v.Ptr(), val.leng);
 	sb->AppendC(UTF8STRC("?="));
 	return true;
 }
 
-void Net::Email::EmailMessage::GenMultipart(NN<IO::Stream> stm, Text::CString boundary)
+void Net::Email::EmailMessage::GenMultipart(NN<IO::Stream> stm, Text::CStringNN boundary)
 {
 	stm->Write(UTF8STRC("--"));
 	stm->Write(boundary.v, boundary.leng);
@@ -74,9 +74,9 @@ void Net::Email::EmailMessage::GenMultipart(NN<IO::Stream> stm, Text::CString bo
 	WriteB64Data(stm, this->content, this->contentLen);
 
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Attachment> att;
-	Text::CString mime;
+	Text::CStringNN mime;
 	UOSInt k;
 	Data::ArrayIterator<NN<Attachment>> it = this->attachments.Iterator();
 	while (it.HasNext())
@@ -187,7 +187,7 @@ void Net::Email::EmailMessage::WriteHeaders(NN<IO::Stream> stm)
 void Net::Email::EmailMessage::WriteContents(NN<IO::Stream> stm)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (this->attachments.GetCount() > 0)
 	{
 		sptr = GenBoundary(sbuff, this->content, this->contentLen);
@@ -217,7 +217,7 @@ void Net::Email::EmailMessage::WriteContents(NN<IO::Stream> stm)
 	}
 }
 
-UTF8Char *Net::Email::EmailMessage::GenBoundary(UTF8Char *sbuff, const UInt8 *data, UOSInt dataLen)
+UnsafeArray<UTF8Char> Net::Email::EmailMessage::GenBoundary(UnsafeArray<UTF8Char> sbuff, const UInt8 *data, UOSInt dataLen)
 {
 	Int64 ts = Data::DateTimeUtil::GetCurrTimeMillis();
 	Crypto::Hash::SHA1 sha1;
@@ -233,7 +233,7 @@ void Net::Email::EmailMessage::WriteB64Data(NN<IO::Stream> stm, const UInt8 *dat
 {
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::Normal, false);
 	UTF8Char sbuff[80];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	while (dataSize > 57)
 	{
 		sptr = b64.EncodeBin(sbuff, data, 57);
@@ -310,12 +310,12 @@ Bool Net::Email::EmailMessage::SetSubject(Text::CStringNN subject)
 	if (Text::StringTool::IsNonASCII(subject.v))
 	{
 		Text::StringBuilderUTF8 sb;
-		this->AppendUTF8Header(sb, subject.v, subject.leng);
-		this->SetHeader(UTF8STRC("Subject"), sb.ToString(), sb.GetLength());
+		this->AppendUTF8Header(sb, subject);
+		this->SetHeader(CSTR("Subject"), sb.ToCString());
 	}
 	else
 	{
-		this->SetHeader(UTF8STRC("Subject"), subject.v, subject.leng);
+		this->SetHeader(CSTR("Subject"), subject);
 	}
 	return true;
 }
@@ -327,7 +327,7 @@ Bool Net::Email::EmailMessage::SetContent(Text::CStringNN content, Text::CString
 	if (this->content)
 		MemFree(this->content);
 	this->content = MemAlloc(UInt8, content.leng);
-	MemCopyNO(this->content, content.v, content.leng);
+	MemCopyNO(this->content, content.v.Ptr(), content.leng);
 	this->contentLen = content.leng;
 	return true;
 }
@@ -335,26 +335,26 @@ Bool Net::Email::EmailMessage::SetContent(Text::CStringNN content, Text::CString
 Bool Net::Email::EmailMessage::SetSentDate(NN<Data::DateTime> dt)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Net::WebUtil::Date2Str(sbuff, dt);
-	return this->SetHeader(UTF8STRC("Date"), sbuff, (UOSInt)(sptr - sbuff));
+	return this->SetHeader(CSTR("Date"), CSTRP(sbuff, sptr));
 }
 
 Bool Net::Email::EmailMessage::SetSentDate(Data::Timestamp ts)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Net::WebUtil::Date2Str(sbuff, ts);
-	return this->SetHeader(UTF8STRC("Date"), sbuff, (UOSInt)(sptr - sbuff));
+	return this->SetHeader(CSTR("Date"), CSTRP(sbuff, sptr));
 }
 
-Bool Net::Email::EmailMessage::SetMessageId(Text::CString msgId)
+Bool Net::Email::EmailMessage::SetMessageId(Text::CStringNN msgId)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendUTF8Char('<');
 	sb.Append(msgId);
 	sb.AppendUTF8Char('>');
-	return this->SetHeader(UTF8STRC("Message-ID"), sb.ToString(), sb.GetLength());
+	return this->SetHeader(CSTR("Message-ID"), sb.ToCString());
 }
 
 void Net::Email::EmailMessage::AddCustomHeader(Text::CStringNN name, Text::CStringNN value)
@@ -362,28 +362,29 @@ void Net::Email::EmailMessage::AddCustomHeader(Text::CStringNN name, Text::CStri
 	if (Text::StringTool::IsNonASCII(value.v))
 	{
 		Text::StringBuilderUTF8 sb;
-		this->AppendUTF8Header(sb, value.v, value.leng);
-		this->SetHeader(name.v, name.leng, sb.ToString(), sb.GetLength());
+		this->AppendUTF8Header(sb, value);
+		this->SetHeader(name, sb.ToCString());
 	}
 	else
 	{
-		this->SetHeader(name.v, name.leng, value.v, value.leng);
+		this->SetHeader(name, value);
 	}
 }
 
 Bool Net::Email::EmailMessage::SetFrom(Text::CString name, Text::CStringNN addr)
 {
 	Text::StringBuilderUTF8 sb;
-	if (name.leng > 0)
+	Text::CStringNN nnname;
+	if (name.SetTo(nnname) && nnname.leng > 0)
 	{
-		if (Text::StringTool::IsNonASCII(name.v))
+		if (Text::StringTool::IsNonASCII(nnname.v))
 		{
-			this->AppendUTF8Header(sb, name.v, name.leng);			
+			this->AppendUTF8Header(sb, nnname);
 		}
 		else
 		{
 			sb.AppendUTF8Char('"');
-			sb.Append(name);
+			sb.Append(nnname);
 			sb.AppendUTF8Char('"');
 		}
 		sb.AppendUTF8Char(' ');
@@ -391,7 +392,7 @@ Bool Net::Email::EmailMessage::SetFrom(Text::CString name, Text::CStringNN addr)
 	sb.AppendUTF8Char('<');
 	sb.Append(addr);
 	sb.AppendUTF8Char('>');
-	this->SetHeader(UTF8STRC("From"), sb.ToString(), sb.GetLength());
+	this->SetHeader(CSTR("From"), sb.ToCString());
 	this->fromAddr.FreeBy(EmailAddressFree);
 	this->fromAddr = EmailAddressCreate(RecipientType::From, name, addr);
 	return true;
@@ -399,7 +400,7 @@ Bool Net::Email::EmailMessage::SetFrom(Text::CString name, Text::CStringNN addr)
 
 Bool Net::Email::EmailMessage::AddTo(Text::CString name, Text::CStringNN addr)
 {
-	UOSInt i = this->GetHeaderIndex(UTF8STRC("To"));
+	UOSInt i = this->GetHeaderIndex(CSTR("To"));
 	Text::StringBuilderUTF8 sb;
 	NN<Text::String> s;
 	if (i != INVALID_INDEX && this->headerList.GetItem(i).SetTo(s))
@@ -407,16 +408,17 @@ Bool Net::Email::EmailMessage::AddTo(Text::CString name, Text::CStringNN addr)
 		sb.Append(s->ToCString().Substring(4));
 		sb.AppendC(UTF8STRC(", "));
 	}
-	if (name.leng > 0)
+	Text::CStringNN nnname;
+	if (name.SetTo(nnname) && nnname.leng > 0)
 	{
-		if (Text::StringTool::IsNonASCII(name.v))
+		if (Text::StringTool::IsNonASCII(nnname.v))
 		{
-			this->AppendUTF8Header(sb, name.v, name.leng);			
+			this->AppendUTF8Header(sb, nnname);
 		}
 		else
 		{
 			sb.AppendUTF8Char('"');
-			sb.Append(name);
+			sb.Append(nnname);
 			sb.AppendUTF8Char('"');
 		}
 		sb.AppendUTF8Char(' ');
@@ -424,7 +426,7 @@ Bool Net::Email::EmailMessage::AddTo(Text::CString name, Text::CStringNN addr)
 	sb.AppendUTF8Char('<');
 	sb.Append(addr);
 	sb.AppendUTF8Char('>');
-	this->SetHeader(UTF8STRC("To"), sb.ToString(), sb.GetLength());
+	this->SetHeader(CSTR("To"), sb.ToCString());
 	this->recpList.Add(EmailAddressCreate(RecipientType::To, name, addr));
 	return true;
 }
@@ -457,7 +459,7 @@ Bool Net::Email::EmailMessage::AddToList(Text::CStringNN addrs)
 
 Bool Net::Email::EmailMessage::AddCc(Text::CString name, Text::CStringNN addr)
 {
-	UOSInt i = this->GetHeaderIndex(UTF8STRC("Cc"));
+	UOSInt i = this->GetHeaderIndex(CSTR("Cc"));
 	Text::StringBuilderUTF8 sb;
 	NN<Text::String> s;
 	if (i != INVALID_INDEX && this->headerList.GetItem(i).SetTo(s))
@@ -465,16 +467,17 @@ Bool Net::Email::EmailMessage::AddCc(Text::CString name, Text::CStringNN addr)
 		sb.AppendC(s->v + 4, s->leng - 4);
 		sb.AppendC(UTF8STRC(", "));
 	}
-	if (name.leng > 0)
+	Text::CStringNN nnname;
+	if (name.SetTo(nnname) && nnname.leng > 0)
 	{
-		if (Text::StringTool::IsNonASCII(name.v))
+		if (Text::StringTool::IsNonASCII(nnname.v))
 		{
-			this->AppendUTF8Header(sb, name.v, name.leng);
+			this->AppendUTF8Header(sb, nnname);
 		}
 		else
 		{
 			sb.AppendUTF8Char('"');
-			sb.Append(name);
+			sb.Append(nnname);
 			sb.AppendUTF8Char('"');
 		}
 		sb.AppendUTF8Char(' ');
@@ -482,7 +485,7 @@ Bool Net::Email::EmailMessage::AddCc(Text::CString name, Text::CStringNN addr)
 	sb.AppendUTF8Char('<');
 	sb.Append(addr);
 	sb.AppendUTF8Char('>');
-	this->SetHeader(UTF8STRC("Cc"), sb.ToString(), sb.GetLength());
+	this->SetHeader(CSTR("Cc"), sb.ToCString());
 	this->recpList.Add(EmailAddressCreate(RecipientType::Cc, name, addr));
 	return true;
 }
@@ -506,7 +509,7 @@ Optional<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAtta
 		return 0;
 	}
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Attachment> attachment = MemAllocNN(Attachment);
 	attachment->contentLen = (UOSInt)len;
 	attachment->content = MemAlloc(UInt8, attachment->contentLen);
@@ -527,10 +530,10 @@ Optional<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAtta
 	return attachment;
 }
 
-NN<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAttachment(const UInt8 *content, UOSInt contentLen, Text::CString fileName)
+NN<Net::Email::EmailMessage::Attachment> Net::Email::EmailMessage::AddAttachment(const UInt8 *content, UOSInt contentLen, Text::CStringNN fileName)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<Attachment> attachment = MemAllocNN(Attachment);
 	attachment->contentLen = contentLen;
 	attachment->content = MemAlloc(UInt8, attachment->contentLen);
@@ -592,7 +595,7 @@ Bool Net::Email::EmailMessage::WriteToStream(NN<IO::Stream> stm)
 		UInt8 signData[512];
 		UOSInt signLen;
 		UTF8Char sbuff[32];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		sptr = GenBoundary(sbuff, mstm.GetBuff(), (UOSInt)mstm.GetLength());
 		stm->Write(UTF8STRC("Content-Type: multipart/signed; protocol=\"application/pkcs7-signature\";\r\n micalg=sha-256; boundary=\""));
 		stm->Write(sbuff, (UOSInt)(sptr - sbuff));
@@ -747,7 +750,7 @@ Bool Net::Email::EmailMessage::WriteToStream(NN<IO::Stream> stm)
 	return true;
 }
 
-Bool Net::Email::EmailMessage::GenerateMessageID(NN<Text::StringBuilderUTF8> sb, Text::CString mailFrom)
+Bool Net::Email::EmailMessage::GenerateMessageID(NN<Text::StringBuilderUTF8> sb, Text::CStringNN mailFrom)
 {
 	sb->AppendHex64((UInt64)Data::DateTimeUtil::GetCurrTimeMillis());
 	sb->AppendUTF8Char('.');
@@ -755,7 +758,7 @@ Bool Net::Email::EmailMessage::GenerateMessageID(NN<Text::StringBuilderUTF8> sb,
 	Crypto::Hash::CRC32R crc;
 	UOSInt i;
 	i = Text::StrIndexOfCharC(mailFrom.v, mailFrom.leng, '@');
-	crc.Calc((UInt8*)mailFrom.v, i);
+	crc.Calc((UInt8*)mailFrom.v.Ptr(), i);
 	crc.GetValue((UInt8*)&crcVal);
 	sb->AppendHex32(ReadMUInt32(crcVal));
 	sb->AppendC(&mailFrom.v[i], mailFrom.leng - i);

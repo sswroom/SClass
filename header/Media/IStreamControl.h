@@ -9,7 +9,7 @@ namespace Media
 	public:
 		virtual ~IStreamControl(){};
 
-		virtual UTF8Char *GetMediaName(UTF8Char *buff) = 0;
+		virtual UnsafeArrayOpt<UTF8Char> GetMediaName(UnsafeArray<UTF8Char> buff) = 0;
 		virtual Data::Duration GetStreamTime() = 0;
 		virtual Bool StartAudio() = 0;
 		virtual Bool StopAudio() = 0;

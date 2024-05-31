@@ -5,7 +5,7 @@
 #include "Map/ESRI/FileGDBReader.h"
 #include "Text/StringBuilderUTF8.h"
 
-Map::ESRI::FileGDBTable *Map::ESRI::FileGDBDir::GetTable(Text::CString name)
+Map::ESRI::FileGDBTable *Map::ESRI::FileGDBDir::GetTable(Text::CStringNN name)
 {
 	UOSInt i = this->tables.GetCount();
 	while (i-- > 0)
@@ -40,7 +40,7 @@ UOSInt Map::ESRI::FileGDBDir::QueryTableNames(Text::CString schemaName, NN<Data:
 	return j;
 }
 
-Optional<DB::DBReader> Map::ESRI::FileGDBDir::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::ESRI::FileGDBDir::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	FileGDBTable *table = this->GetTable(tableName);
 	if (table == 0)
@@ -57,7 +57,7 @@ Optional<DB::DBReader> Map::ESRI::FileGDBDir::QueryTableData(Text::CString schem
 	}
 }
 
-Optional<DB::TableDef> Map::ESRI::FileGDBDir::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> Map::ESRI::FileGDBDir::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	FileGDBTable *table = this->GetTable(tableName);
 	if (table == 0)
@@ -127,7 +127,7 @@ Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(NN<IO::PackageFile> pkg, N
 	NEW_CLASS(dir, FileGDBDir(pkg->GetSourceNameObj()));
 	dir->AddTable(table);
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	while (reader->ReadNext())
 	{

@@ -171,7 +171,7 @@ Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(NN<Text::String> contentType, 
 	this->boundary = boundary->Clone();
 }
 
-Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(Text::CString contentType, Text::CString defMsg, Text::CString boundary) : Text::IMIMEObj(CSTR("multipart/mixed"))
+Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(Text::CStringNN contentType, Text::CString defMsg, Text::CStringNN boundary) : Text::IMIMEObj(CSTR("multipart/mixed"))
 {
 	this->contentType = Text::String::New(contentType);
 	if (defMsg.leng > 0)
@@ -185,7 +185,7 @@ Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(Text::CString contentType, Tex
 	this->boundary = Text::String::New(boundary);
 }
 
-Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(Text::CString contentType, Text::CString defMsg) : Text::IMIMEObj(CSTR("multipart/mixed"))
+Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(Text::CStringNN contentType, Text::CString defMsg) : Text::IMIMEObj(CSTR("multipart/mixed"))
 {
 	Text::StringBuilderUTF8 sbc;
 	Data::DateTime dt;
@@ -261,7 +261,7 @@ UOSInt Text::MIMEObj::MultipartMIMEObj::WriteStream(NN<IO::Stream> stm) const
 	sbc.AppendC(UTF8STRC("\r\n--"));
 	sbc.Append(this->boundary);
 	sbc.AppendC(UTF8STRC("--"));
-	stm->Write((const UInt8*)sbc.ToString(), sbc.GetLength());
+	stm->Write(sbc.ToString(), sbc.GetLength());
 	ret += sbc.GetLength();
 	return ret;
 }
@@ -331,7 +331,7 @@ UOSInt Text::MIMEObj::MultipartMIMEObj::GetPartCount() const
 	return this->parts.GetCount();
 }
 
-Optional<Text::MIMEObj::MultipartMIMEObj> Text::MIMEObj::MultipartMIMEObj::ParseFile(Text::CString contentType, NN<IO::StreamData> data)
+Optional<Text::MIMEObj::MultipartMIMEObj> Text::MIMEObj::MultipartMIMEObj::ParseFile(Text::CStringNN contentType, NN<IO::StreamData> data)
 {
 	UOSInt j;
 	if (contentType.StartsWith(UTF8STRC("multipart/mixed;")))
@@ -355,7 +355,7 @@ Optional<Text::MIMEObj::MultipartMIMEObj> Text::MIMEObj::MultipartMIMEObj::Parse
 		return 0;
 	}
 
-	Text::CString currPart = contentType;
+	Text::CStringNN currPart = contentType;
 	while (true)
 	{
 		UOSInt i;

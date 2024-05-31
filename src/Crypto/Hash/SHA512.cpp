@@ -47,19 +47,19 @@ void Crypto::Hash::SHA512::Clear()
 	this->intermediateHash[7]   = 0x5be0cd19137e2179;
 }
 
-void Crypto::Hash::SHA512::Calc(const UInt8 *buff, UOSInt buffSize)
+void Crypto::Hash::SHA512::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	this->messageLength += buffSize;
 	if ((buffSize + messageBlockIndex) < 128)
 	{
-		MemCopyNO(&this->messageBlock[messageBlockIndex], buff, buffSize);
+		MemCopyNO(&this->messageBlock[messageBlockIndex], buff.Ptr(), buffSize);
 		this->messageBlockIndex += buffSize;
 		return;
 	}
     
 	if (messageBlockIndex > 0)
 	{
-		MemCopyNO(&this->messageBlock[messageBlockIndex], buff, 128 - messageBlockIndex);
+		MemCopyNO(&this->messageBlock[messageBlockIndex], buff.Ptr(), 128 - messageBlockIndex);
 		SHA512_CalcBlock(this->intermediateHash, this->messageBlock);
 		buff += 128 - messageBlockIndex;
 		buffSize -= 128 - messageBlockIndex;
@@ -68,13 +68,13 @@ void Crypto::Hash::SHA512::Calc(const UInt8 *buff, UOSInt buffSize)
 
 	while (buffSize >= 128)
 	{
-		SHA512_CalcBlock(this->intermediateHash, buff);
+		SHA512_CalcBlock(this->intermediateHash, buff.Ptr());
 		buff += 128;
 		buffSize -= 128;
 	}
 	if (buffSize > 0)
 	{
-		MemCopyNO(this->messageBlock, buff, this->messageBlockIndex = buffSize);
+		MemCopyNO(this->messageBlock, buff.Ptr(), this->messageBlockIndex = buffSize);
 	}
 }
 

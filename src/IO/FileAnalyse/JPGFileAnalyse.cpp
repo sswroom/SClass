@@ -212,14 +212,13 @@ UOSInt IO::FileAnalyse::JPGFileAnalyse::GetFrameCount()
 Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::JPGFileAnalyse::JPGTag> tag;
-	Text::CString name;
+	Text::CStringNN name;
 	if (!this->tags.GetItem(index).SetTo(tag))
 		return false;
 	sb->AppendU64(tag->ofst);
 	sb->AppendC(UTF8STRC(": Type=0x"));
 	sb->AppendHex8(tag->tagType);
-	name = GetTagName(tag->tagType);
-	if (name.v)
+	if (GetTagName(tag->tagType).SetTo(name))
 	{
 		sb->AppendC(UTF8STRC(" ("));
 		sb->Append(name);
@@ -236,7 +235,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 	UOSInt j;
 	UOSInt k;
 	Int32 v;
-	Text::CString name;
+	Text::CStringNN name;
 	NN<IO::FileAnalyse::JPGFileAnalyse::JPGTag> tag;
 	if (!this->tags.GetItem(index).SetTo(tag))
 		return false;
@@ -244,8 +243,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::Stri
 	sb->AppendUOSInt(index);
 	sb->AppendC(UTF8STRC("\r\nTagType = 0x"));
 	sb->AppendHex8(tag->tagType);
-	name = GetTagName(tag->tagType);
-	if (name.v)
+	if (GetTagName(tag->tagType).SetTo(name))
 	{
 		sb->AppendC(UTF8STRC(" ("));
 		sb->Append(name);
@@ -542,7 +540,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::JPGFileAnalyse::GetFrame
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;

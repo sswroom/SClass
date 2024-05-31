@@ -40,9 +40,9 @@ void Crypto::Hash::Adler32::Clear()
 	this->abVal = 1;
 }
 
-void Crypto::Hash::Adler32::Calc(const UInt8 *buff, UOSInt buffSize)
+void Crypto::Hash::Adler32::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
-	this->abVal = Adler32_Calc(buff, buffSize, this->abVal);
+	this->abVal = Adler32_Calc(buff.Ptr(), buffSize, this->abVal);
 }
 
 void Crypto::Hash::Adler32::GetValue(UnsafeArray<UInt8> buff) const

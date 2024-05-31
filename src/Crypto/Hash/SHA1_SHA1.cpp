@@ -35,7 +35,7 @@ void Crypto::Hash::SHA1_SHA1::Clear()
 	this->sha1->Clear();
 }
 
-void Crypto::Hash::SHA1_SHA1::Calc(const UInt8 *buff, UOSInt buffSize)
+void Crypto::Hash::SHA1_SHA1::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	this->sha1->Calc(buff, buffSize);
 }

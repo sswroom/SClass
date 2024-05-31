@@ -51,9 +51,9 @@ namespace Crypto
 			void SetCharLimit(CharLimit charLimit);
 			Bool IsProcessing();
 			UOSInt GetKeyLeng();
-			UTF8Char *GetCurrKey(UTF8Char *key);
+			UnsafeArrayOpt<UTF8Char> GetCurrKey(UnsafeArray<UTF8Char> key);
 			UInt64 GetTestCnt();
-			UTF8Char *GetResult(UTF8Char *resultBuff);
+			UnsafeArrayOpt<UTF8Char> GetResult(UnsafeArray<UTF8Char> resultBuff);
 			Bool Start(const UTF8Char *hashStr, UOSInt hashLen, UOSInt minLeng, UOSInt maxLeng);
 
 			static Text::CStringNN CharLimitGetName(CharLimit charLimit);

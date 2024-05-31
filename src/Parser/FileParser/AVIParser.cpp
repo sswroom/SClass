@@ -118,7 +118,7 @@ IO::ParserType Parser::FileParser::AVIParser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::AVIParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 chunkBuffer[12];
 	UInt64 offset;
 //	Int32 hdrlSize;

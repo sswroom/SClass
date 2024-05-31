@@ -36,7 +36,7 @@ size_t HTTPOSClient_HeaderFunc(char *buffer, size_t size, size_t nitems, void *u
 		return len;
 	}
 	NN<Text::String> hdr = Text::String::New(len);
-	MemCopyNO(hdr->v, buffer, len);
+	MemCopyNO(hdr->v.Ptr(), buffer, len);
 	hdr->v[len] = 0;
 	UOSInt i = len;
 	while (i > 0)
@@ -177,7 +177,7 @@ UOSInt Net::HTTPOSClient::Read(const Data::ByteArray &buff)
 	return 0;
 }
 
-UOSInt Net::HTTPOSClient::Write(const UInt8 *buff, UOSInt size)
+UOSInt Net::HTTPOSClient::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	if (this->canWrite && !this->hasForm)
 	{
@@ -212,11 +212,11 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 {
 	UTF8Char urltmp[256];
 	UTF8Char svrname[256];
-	UTF8Char *svrnameEnd;
+	UnsafeArray<UTF8Char> svrnameEnd;
 
 	UOSInt i;
-	const UTF8Char *ptr1;
-	UTF8Char *ptrs[2];
+	UnsafeArray<const UTF8Char> ptr1;
+	UnsafeArray<UTF8Char> ptrs[2];
 	UInt16 port;
 	UInt16 defPort;
 	Double t1;
@@ -236,13 +236,13 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		i = Text::StrIndexOfChar(ptr1, '/');
 		if (i != INVALID_INDEX)
 		{
-			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
+			MemCopyNO(urltmp, ptr1.Ptr(), i * sizeof(UTF8Char));
 			urltmp[i] = 0;
 		}
 		else
 		{
 			i = url.leng - 7;
-			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
+			MemCopyNO(urltmp, ptr1.Ptr(), i * sizeof(UTF8Char));
 			urltmp[i] = 0;
 		}
 		Text::TextBinEnc::URIEncoding::URIDecode(urltmp, urltmp);
@@ -254,13 +254,13 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 		i = Text::StrIndexOfChar(ptr1, '/');
 		if (i != INVALID_INDEX)
 		{
-			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
+			MemCopyNO(urltmp, ptr1.Ptr(), i * sizeof(UTF8Char));
 			urltmp[i] = 0;
 		}
 		else
 		{
 			i = url.leng - 8;
-			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
+			MemCopyNO(urltmp, ptr1.Ptr(), i * sizeof(UTF8Char));
 			urltmp[i] = 0;
 		}
 		Text::TextBinEnc::URIEncoding::URIDecode(urltmp, urltmp);
@@ -311,9 +311,10 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 	}
 
 	this->clk.Start();
-	if (this->cliHost == 0)
+	UnsafeArray<const UTF8Char> nns;
+	if (!this->cliHost.SetTo(nns))
 	{
-		this->cliHost = Text::StrCopyNew(urltmp).Ptr();
+		this->cliHost = Text::StrCopyNew(urltmp);
 		if (Text::StrEqualsICaseC(svrname, (UOSInt)(svrnameEnd- svrname), UTF8STRC("localhost")))
 		{
 			this->svrAddr.addrType = Net::AddrType::IPv4;
@@ -331,7 +332,7 @@ Bool Net::HTTPOSClient::Connect(Text::CStringNN url, Net::WebUtil::RequestMethod
 //		this->sockf->SetLinger(cli->GetSocket(), 0);
 //		this->sockf->SetNoDelay(cli->GetSocket(), true);
 	}
-	else if (Text::StrEquals(this->cliHost, urltmp))
+	else if (Text::StrEquals(nns, urltmp))
 	{
 		if (this->buffSize > 0)
 		{
@@ -443,8 +444,8 @@ void Net::HTTPOSClient::AddHeaderC(Text::CStringNN name, Text::CString value)
 			Text::StringBuilderUTF8 sb;
 			sb.Append(name);
 			sb.AppendC(UTF8STRC(": "));
-			sb.Append(value);
-			data->headers = curl_slist_append(data->headers, (const Char*)sb.ToString());
+			sb.AppendOpt(value);
+			data->headers = curl_slist_append(data->headers, (const Char*)sb.ToPtr());
 //		}
 	}
 }
@@ -465,7 +466,7 @@ void Net::HTTPOSClient::EndRequest(OptOut<Double> timeReq, OptOut<Double> timeRe
 			UOSInt len = this->formSb->GetLength();
 			this->AddContentLength(len);
 			this->hasForm = false;
-			this->Write((UInt8*)this->formSb->ToString(), len);
+			this->Write(this->formSb->ToString(), len);
 			DEL_CLASS(this->formSb);
 			this->formSb = 0;
 		}

@@ -152,8 +152,8 @@ WChar *Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, WChar *buff)
 Bool Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[40];
-	UTF8Char *sptr;
-	if ((sptr = GetStr(colIndex, sbuff, sizeof(sbuff))) == 0)
+	UnsafeArray<UTF8Char> sptr;
+	if (!GetStr(colIndex, sbuff, sizeof(sbuff)).SetTo(sptr))
 		return false;
 	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	return true;
@@ -162,13 +162,13 @@ Bool Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, NN<Text::StringBuild
 Optional<Text::String> Media::HTRecFile::HTRecReader::GetNewStr(UOSInt colIndex)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
-	if ((sptr = GetStr(colIndex, sbuff, sizeof(sbuff))) == 0)
+	UnsafeArray<UTF8Char> sptr;
+	if (!GetStr(colIndex, sbuff, sizeof(sbuff)).SetTo(sptr))
 		return 0;
 	return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-UTF8Char *Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
 	if (this->setting)
 	{
@@ -432,10 +432,10 @@ Bool Media::HTRecFile::HTRecReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid
 	return false;
 }
 
-UTF8Char *Media::HTRecFile::HTRecReader::GetName(UOSInt colIndex, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::HTRecFile::HTRecReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 {
-	Text::CString s = GetName(colIndex, this->setting);
-	if (s.v == 0)
+	Text::CStringNN s;
+	if (!GetName(colIndex, this->setting).SetTo(s))
 		return 0;
 	return s.ConcatTo(buff);
 }
@@ -594,7 +594,7 @@ Media::HTRecFile::HTRecFile(NN<IO::StreamData> stmData) : DB::ReadingDB(stmData-
 		return;
 	UTF8Char sbuff[37];
 	const WChar *wptr;
-	UTF8Char *dptr;
+	UnsafeArray<UTF8Char> dptr;
 	this->time1TS = ReadUInt32(&buff[0x04]); //Server Recv Time
 	this->address = buff[8];
 	Text::StrConcatC(sbuff, &buff[9], 10);
@@ -665,7 +665,7 @@ UOSInt Media::HTRecFile::QueryTableNames(Text::CString schemaName, NN<Data::Arra
 	}
 }
 
-Optional<DB::DBReader> Media::HTRecFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Media::HTRecFile::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	if (tableName.Equals(UTF8STRC("Setting")))
 	{
@@ -682,7 +682,7 @@ Optional<DB::DBReader> Media::HTRecFile::QueryTableData(Text::CString schemaName
 	return 0;
 }
 
-Optional<DB::TableDef> Media::HTRecFile::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> Media::HTRecFile::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	UOSInt i = 0;
 	UOSInt j;
@@ -784,14 +784,20 @@ UOSInt Media::HTRecFile::GetRecCount()
 	return this->recCount;
 }
 
-UTF8Char *Media::HTRecFile::GetSerialNo(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> Media::HTRecFile::GetSerialNo(UnsafeArray<UTF8Char> sbuff)
 {
-	return Text::StrConcat(sbuff, this->serialNo);
+	UnsafeArray<const UTF8Char> nns;
+	if (this->serialNo.SetTo(nns))
+		return Text::StrConcat(sbuff, nns);
+	return 0;
 }
 
-UTF8Char *Media::HTRecFile::GetTestName(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> Media::HTRecFile::GetTestName(UnsafeArray<UTF8Char> sbuff)
 {
-	return Text::StrConcat(sbuff, this->testName);
+	UnsafeArray<const UTF8Char> nns;
+	if (this->testName.SetTo(nns))
+		return Text::StrConcat(sbuff, nns);
+	return 0;
 }
 
 Data::Timestamp Media::HTRecFile::GetAdjStartTime()

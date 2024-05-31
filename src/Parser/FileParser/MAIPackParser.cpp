@@ -42,7 +42,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MAIPackParser::ParseFileHdr(NN<IO
 	UInt32 thisSize;
 
 	UTF8Char name[17];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (ReadUInt32(&hdr[0]) != 0x0A49414D || ReadUInt32(&hdr[4]) != fd->GetDataSize() || ReadUInt32(&hdr[12]) != 0x100)
 	{

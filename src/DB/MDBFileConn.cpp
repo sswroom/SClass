@@ -24,12 +24,9 @@ DB::MDBFileConn::MDBFileConn(Text::CStringNN fileName, NN<IO::LogTool> log, UInt
 	if (codePage != 0)
 	{
 		UTF8Char sbuff[16];
-		UTF8Char *sptr;
-		if ((sptr = Text::EncodingFactory::GetInternetName(sbuff, codePage)) != 0)
-		{
-			sb.AppendC(UTF8STRC(";CharSet="));
-			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-		}
+		UnsafeArray<UTF8Char> sptr = Text::EncodingFactory::GetInternetName(sbuff, codePage);
+		sb.AppendC(UTF8STRC(";CharSet="));
+		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 
 /*		Text::Locale::LocaleEntry *loc = Text::Locale::GetLocaleEntryByCodePage(codePage);
 		if (loc)
@@ -63,12 +60,9 @@ DB::MDBFileConn::MDBFileConn(Text::CStringNN fileName, NN<IO::LogTool> log, UInt
 		if (codePage != 0)
 		{
 			UTF8Char sbuff[16];
-			UTF8Char *sptr;
-			if ((sptr = Text::EncodingFactory::GetInternetName(sbuff, codePage)) != 0)
-			{
-				sb.AppendC(UTF8STRC(";CharSet="));
-				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-			}
+			UnsafeArray<UTF8Char> sptr = Text::EncodingFactory::GetInternetName(sbuff, codePage);
+			sb.AppendC(UTF8STRC(";CharSet="));
+			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 
 	/*		Text::Locale::LocaleEntry *loc = Text::Locale::GetLocaleEntryByCodePage(codePage);
 			if (loc)
@@ -103,12 +97,9 @@ DB::MDBFileConn::MDBFileConn(Text::CStringNN fileName, NN<IO::LogTool> log, UInt
 			if (codePage != 0)
 			{
 				UTF8Char sbuff[16];
-				UTF8Char *sptr;
-				if ((sptr = Text::EncodingFactory::GetInternetName(sbuff, codePage)) != 0)
-				{
-					sb.AppendC(UTF8STRC(";CharSet="));
-					sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-				}
+				UnsafeArray<UTF8Char> sptr = Text::EncodingFactory::GetInternetName(sbuff, codePage);
+				sb.AppendC(UTF8STRC(";CharSet="));
+				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 
 		/*		Text::Locale::LocaleEntry *loc = Text::Locale::GetLocaleEntryByCodePage(codePage);
 				if (loc)
@@ -144,7 +135,7 @@ Bool DB::MDBFileConn::CreateMDBFile(Text::CStringNN fileName)
 #if _WCHAR_SIZE == 4
 	BOOL fCreated;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("CREATE_DB="));
 	sptr = fileName.ConcatTo(sptr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(" General"));

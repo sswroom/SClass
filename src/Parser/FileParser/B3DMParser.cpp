@@ -33,7 +33,7 @@ IO::ParserType Parser::FileParser::B3DMParser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::B3DMParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (ReadNInt32(&hdr[0]) != *(Int32*)"b3dm" || ReadUInt32(&hdr[8]) != fd->GetDataSize())
 		return 0;
 
@@ -67,7 +67,7 @@ Optional<IO::ParsedObject> Parser::FileParser::B3DMParser::ParseFileHdr(NN<IO::S
 
 	IO::VirtualPackageFile *pf;
 	NEW_CLASS(pf, IO::VirtualPackageFileFast(fd->GetFullName()));
-	sptr = fd->GetShortName().ConcatTo(sbuff);
+	sptr = fd->GetShortName().OrEmpty().ConcatTo(sbuff);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".glb"));
 	pf->AddData(fd, ofst, fd->GetDataSize() - ofst, IO::PackFileItem::HeaderType::No, CSTRP(sbuff, sptr), 0, 0, 0, 0);
 

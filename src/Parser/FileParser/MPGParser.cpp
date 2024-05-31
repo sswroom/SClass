@@ -65,8 +65,8 @@ Optional<IO::ParsedObject> Parser::FileParser::MPGParser::ParseFileHdr(NN<IO::St
 		if (fd->GetFullName()->EndsWithICase(UTF8STRC("_1.vob")))
 		{
 			UTF8Char sbuff[512];
-			UTF8Char *sptr;
-			UTF8Char *sptr2;
+			UnsafeArray<UTF8Char> sptr;
+			UnsafeArray<UTF8Char> sptr2;
 			if (fd->IsFullFile())
 			{
 				Int32 stmId;
@@ -101,7 +101,7 @@ Optional<IO::ParsedObject> Parser::FileParser::MPGParser::ParseFileHdr(NN<IO::St
 				NEW_CLASSNN(data, IO::StmData::ConcatStreamData(fd->GetFullName()));
 				data->AddData(fd->GetPartialData(0, fd->GetDataSize()));
 				
-				sptr = fd->GetShortName().ConcatTo(sbuff) - 5;
+				sptr = fd->GetShortName().OrEmpty().ConcatTo(sbuff) - 5;
 				while (true)
 				{
 					sptr2 = Text::StrConcatC(Text::StrInt32(sptr, stmId), UTF8STRC(".vob"));

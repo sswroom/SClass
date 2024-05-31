@@ -77,7 +77,7 @@ void Media::M2VFile::KeepStream(UOSInt index, Bool toKeep)
 {
 }
 
-UTF8Char *Media::M2VFile::GetMediaName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::M2VFile::GetMediaName(UnsafeArray<UTF8Char> buff)
 {
 	return this->GetSourceName(buff);
 }

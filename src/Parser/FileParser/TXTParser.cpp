@@ -68,12 +68,12 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff3[256];
 	UTF8Char sbuff4[512];
-	UTF8Char *fileName;
-	UTF8Char *baseDirEnd;
+	UnsafeArray<UTF8Char> fileName;
+	UnsafeArray<UTF8Char> baseDirEnd;
 	Text::PString sarr[20];
-	const UTF8Char *csarr[20];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArrayOpt<const UTF8Char> csarr[20];
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -85,7 +85,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 	NN<Map::MapManager> mapMgr;
 	IO::StreamDataStream stm(fd);
 	IO::StreamReader reader(stm, this->codePage);
-	if ((sptr = reader.ReadLine(sbuff, 255)) == 0)
+	if (!reader.ReadLine(sbuff, 255).SetTo(sptr))
 	{
 		return 0;
 	}
@@ -103,7 +103,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 		env->SetNString(Text::StrToUInt32(sarr[4].v));
 		fileName = baseDir;
 
-		while ((sptr = reader.ReadLine(sbuff, 255)) != 0)
+		while (reader.ReadLine(sbuff, 255).SetTo(sptr))
 		{
 			if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("2,")))
 			{
@@ -376,7 +376,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 		{
 			IO::FileStream fs2({sbuff4, (UOSInt)(fileName - sbuff4)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			IO::StreamReader reader2(fs2, 0);
-			while ((sptr2 = reader2.ReadLine(sbuff2, 512)) != 0)
+			while (reader2.ReadLine(sbuff2, 512).SetTo(sptr2))
 			{
 				i = Text::StrSplitP(sarr, 4, {sbuff2, (UOSInt)(sptr2 - sbuff2)}, ',');
 				if (i == 1)
@@ -510,8 +510,13 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 			lyrType = Map::DRAW_LAYER_MIXED;
 		}
 		j = Text::StrSplitP(sarr, 20, {sbuff, (UOSInt)(sptr - sbuff)}, ',');
-		NEW_CLASS(lyr, Map::VectorLayer(lyrType, fd->GetFullFileName(), j, (const UTF8Char **)sarr, Math::CoordinateSystemManager::CreateWGS84Csys(), 2, 0));
-		while ((sptr = reader.ReadLine(sbuff, 512)) != 0)
+		i = j;
+		while (i-- > 0)
+		{
+			csarr[i] = UnsafeArray<const UTF8Char>(sarr[i].v);
+		}
+		NEW_CLASS(lyr, Map::VectorLayer(lyrType, fd->GetFullFileName(), j, csarr, Math::CoordinateSystemManager::CreateWGS84Csys(), 2, 0));
+		while (reader.ReadLine(sbuff, 512).SetTo(sptr))
 		{
 			i = Text::StrSplitP(sarr, 20, {sbuff, (UOSInt)(sptr - sbuff)}, ',');
 			if (i == j)
@@ -521,7 +526,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TXTParser::ParseFileHdr(NN<IO::St
 				{
 					while (i-- > 0)
 					{
-						csarr[i] = sarr[i].v;
+						csarr[i] = UnsafeArray<const UTF8Char>(sarr[i].v);
 					}
 					vecUsed.Put(currId, true);
 					lyr->AddVector(nnvec, csarr);

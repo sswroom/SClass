@@ -19,8 +19,8 @@ namespace IO
 		Bool IsError() const;
 		void TCPConnect(NN<Net::TCPClient> cli);
 		void TCPDisconnect(NN<Net::TCPClient> cli);
-		void TCPSend(NN<Net::TCPClient> cli, const UInt8 *buff, UOSInt size);
-		void TCPRecv(NN<Net::TCPClient> cli, const UInt8 *buff, UOSInt size);
+		void TCPSend(NN<Net::TCPClient> cli, UnsafeArray<const UInt8> buff, UOSInt size);
+		void TCPRecv(NN<Net::TCPClient> cli, UnsafeArray<const UInt8> buff, UOSInt size);
 	};
 }
 

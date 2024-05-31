@@ -20,8 +20,8 @@ namespace Parser
 			virtual IO::ParserType GetParserType();
 			virtual Optional<IO::ParsedObject> ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr);
 		private:
-			UTF8Char *ReadString(UTF8Char *sbuff, const UTF8Char *cueStr);
-			UInt32 ReadTime(const UTF8Char *timeStr);
+			UnsafeArray<UTF8Char> ReadString(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UTF8Char> cueStr);
+			UInt32 ReadTime(UnsafeArray<const UTF8Char> timeStr);
 		};
 	}
 }

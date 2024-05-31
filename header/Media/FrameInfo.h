@@ -127,10 +127,10 @@ namespace Media
 		void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
 
-	Text::CString FrameTypeGetName(FrameType frameType);
-	Text::CString AlphaTypeGetName(AlphaType atype);
-	Text::CString YCOffsetGetName(YCOffset ycOfst);
-	Text::CString PixelFormatGetName(PixelFormat pf);
+	Text::CStringNN FrameTypeGetName(FrameType frameType);
+	Text::CStringNN AlphaTypeGetName(AlphaType atype);
+	Text::CStringNN YCOffsetGetName(YCOffset ycOfst);
+	Text::CStringNN PixelFormatGetName(PixelFormat pf);
 	Text::CString RotateTypeGetName(RotateType rotateType);
 	PixelFormat PixelFormatGetDef(UInt32 fourcc, UInt32 storeBPP);
 	RotateType RotateTypeCalc(RotateType srcType, RotateType destType);

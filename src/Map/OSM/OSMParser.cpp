@@ -25,8 +25,8 @@ Map::MapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(NN<Text::XMLReader> reade
 	Data::ArrayList<Double> latList;
 	Data::ArrayList<Double> lonList;
 	Map::VectorLayer *layers[OSMTYPECNT];
-	const UTF8Char *colName[2] = {(const UTF8Char*)"Name", (const UTF8Char*)"Elevation"};
-	const UTF8Char *pgName[2] = {(const UTF8Char*)"Name", (const UTF8Char*)"Type"};
+	UnsafeArrayOpt<const UTF8Char> colName[2] = {(const UTF8Char*)"Name", (const UTF8Char*)"Elevation"};
+	UnsafeArrayOpt<const UTF8Char> pgName[2] = {(const UTF8Char*)"Name", (const UTF8Char*)"Type"};
 	static Text::CString layerNames[OSMTYPECNT] = {
 		CSTR("Coastline"),
 		CSTR("ResidentialArea"),

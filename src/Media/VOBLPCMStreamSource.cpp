@@ -23,7 +23,7 @@ Media::VOBLPCMStreamSource::~VOBLPCMStreamSource()
 	MemFree(this->dataBuff);
 }
 
-UTF8Char *Media::VOBLPCMStreamSource::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::VOBLPCMStreamSource::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	return this->pbc->GetMediaName(buff);
 }

@@ -34,7 +34,7 @@ namespace Media
 		static Bool FindSPS(const UInt8 *frame, UOSInt frameSize, const UInt8 **sps, UOSInt *spsSize);
 		static Bool FindPPS(const UInt8 *frame, UOSInt frameSize, const UInt8 **pps, UOSInt *ppsSize);
 		static Bool FindNALs(const UInt8 *frame, UOSInt frameSize, Data::ArrayListUInt32 *nalList);
-		static UTF8Char *GetFrameType(UTF8Char *sbuff, const UInt8 *frame, UOSInt frameSize);
+		static UnsafeArrayOpt<UTF8Char> GetFrameType(UnsafeArray<UTF8Char> sbuff, const UInt8 *frame, UOSInt frameSize);
 	};
 }
 #endif

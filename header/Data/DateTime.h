@@ -108,10 +108,10 @@ namespace Data
 		Int64 ToNTPTime();
 
 		UnsafeArray<Char> ToString(UnsafeArray<Char> buff);
-		UnsafeArray<Char> ToString(UnsafeArray<Char> buff, const Char *pattern);
+		UnsafeArray<Char> ToString(UnsafeArray<Char> buff, UnsafeArray<const Char> pattern);
 		UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> buff);
 		UnsafeArray<UTF8Char> ToStringNoZone(UnsafeArray<UTF8Char> buff);
-		UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> buff, const Char *pattern);
+		UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> buff, UnsafeArray<const Char> pattern);
 		DateTime operator=(DateTime dt);
 		DateTime operator=(Int64 ticks);
 		Bool operator==(DateTime dt);

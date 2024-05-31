@@ -98,7 +98,7 @@ UOSInt Text::TextBinEnc::QuotedPrintableEnc::CalcBinSize(Text::CStringNN str) co
 {
 	UOSInt cnt = 0;
 	UTF8Char c;
-	const UTF8Char *sbuff = str.v;
+	UnsafeArray<const UTF8Char> sbuff = str.v;
 	while ((c = *sbuff++) != 0)
 	{
 		if (c == '=')
@@ -129,7 +129,7 @@ UOSInt Text::TextBinEnc::QuotedPrintableEnc::DecodeBin(Text::CStringNN s, UInt8 
 {
 	UOSInt cnt = 0;
 	UTF8Char c;
-	const UTF8Char *b64Str = s.v;
+	UnsafeArray<const UTF8Char> b64Str = s.v;
 	UOSInt len = s.leng;
 	while (len-- > 0)
 	{

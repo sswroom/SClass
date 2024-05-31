@@ -939,7 +939,7 @@ Optional<Media::ICCProfile> Media::ICCProfile::Parse(Data::ByteArrayR buff)
 Bool Media::ICCProfile::ParseFrame(NN<IO::FileAnalyse::FrameDetailHandler> frame, UOSInt ofst, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (ReadMUInt32(buff.Ptr()) != buffSize)
 		return false;
 	if (ReadMInt32(&buff[36]) != 0x61637370)
@@ -1397,7 +1397,7 @@ void Media::ICCProfile::GetDispTagType(NN<Text::StringBuilderUTF8> sb, UInt8 *bu
 	Int32 nCh;
 	Int32 val;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Media::CS::TransferType tt;
 	Double gamma;
 	switch(typ)
@@ -1696,9 +1696,9 @@ Media::CS::TransferType Media::ICCProfile::FindTransferType(UOSInt colorCount, U
 	return minType;
 }
 
-UTF8Char *Media::ICCProfile::GetProfilePath(UTF8Char *sbuff)
+UnsafeArray<UTF8Char> Media::ICCProfile::GetProfilePath(UnsafeArray<UTF8Char> sbuff)
 {
-	UTF8Char *sptr = sbuff;
+	UnsafeArray<UTF8Char> sptr = sbuff;
 #if defined(WIN32)
 	sptr = IO::Path::GetOSPath(sptr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\\System32\\spool\\drivers\\color"));
@@ -1730,7 +1730,7 @@ void Media::ICCProfile::FrameDispTagType(NN<IO::FileAnalyse::FrameDetailHandler>
 	Int32 nCh;
 	Int32 val;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Media::CS::TransferType tt;
 	Double gamma;
 	frame->AddStrC(ofst, 4, CSTR("Tag Type"), buff);

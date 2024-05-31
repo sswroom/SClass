@@ -206,7 +206,7 @@ UOSInt Data::Compress::LZWDecStream::Read(const Data::ByteArray &buff)
 	return writeSize;
 }
 
-UOSInt Data::Compress::LZWDecStream::Write(const UInt8 *buff, UOSInt size)
+UOSInt Data::Compress::LZWDecStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	return 0;
 }

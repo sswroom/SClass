@@ -18,7 +18,7 @@ namespace Net
 		struct ClassData;
 	private:
 		ClassData *clsData;
-		const UTF8Char *cliHost;
+		UnsafeArrayOpt<const UTF8Char> cliHost;
 		IO::MemoryStream *reqMstm;
 
 		Bool writing;

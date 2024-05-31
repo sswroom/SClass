@@ -53,7 +53,7 @@ IO::ParserType Parser::FileParser::JSONParser::GetParserType()
 
 Optional<IO::ParsedObject> Parser::FileParser::JSONParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
-	Text::CString fileName = fd->GetShortName();
+	Text::CStringNN fileName = fd->GetShortName().OrEmpty();
 	Bool valid = false;
 	if (fileName.EndsWithICase(UTF8STRC(".geojson")) || fileName.EndsWithICase(UTF8STRC(".json")))
 	{
@@ -131,7 +131,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 			if (jbase && jbase->GetType() == Text::JSONType::Array)
 			{
 				Map::VectorLayer *lyr = 0;
-				const UTF8Char *tabHdrs[32];
+				UnsafeArrayOpt<const UTF8Char> tabHdrs[32];
 				Text::String *tabCols[32];
 				Text::String *tabVals[32];
 				UOSInt colCnt;
@@ -158,7 +158,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseJSON(Text::JSONBase *file
 						while (k < colCnt)
 						{
 							tabCols[k] = colNames.GetItem(k).OrNull();
-							tabHdrs[k] = tabCols[k]->v;
+							tabHdrs[k] = UnsafeArray<const UTF8Char>(tabCols[k]->v);
 							k++;
 						}
 						if (vec.Set(ParseGeomJSON((Text::JSONObject*)featGeom, srid)))
@@ -635,7 +635,7 @@ Math::Geometry::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JS
 		}
 		else
 		{
-			printf("JSONParser: GeoJSON unknown type: %s\r\n", sType->v);
+			printf("JSONParser: GeoJSON unknown type: %s\r\n", sType->v.Ptr());
 		}
 	}
 	return 0;

@@ -23,7 +23,7 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NN<Text::XMLReader> reade
 	Text::StringBuilderUTF8 sb;
 	Map::VectorLayer *lyr = 0;
 	Map::DrawLayerType layerType = Map::DRAW_LAYER_UNKNOWN;
-	UnsafeArray<UnsafeArray<const UTF8Char>> ccols;
+	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> ccols;
 	UOSInt i;
 	Math::Geometry::Vector2D *newVec;
 	while (reader->NextElementName().SetTo(nodeText))
@@ -138,13 +138,13 @@ Map::MapDrawLayer *Map::GMLXML::ParseFeatureCollection(NN<Text::XMLReader> reade
 					if (lyr == 0)
 					{
 						colCnt = nameList.GetCount();
-						ccols = nameList.Arr();
+						ccols = UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(nameList.Arr());
 						NN<Math::CoordinateSystem> csys;
 						if (!env.csys.SetTo(csys))
 						{
 							csys = Math::CoordinateSystemManager::CreateWGS84Csys();
 						}
-						NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, ccols.Ptr(), csys, 0, CSTR_NULL));
+						NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, ccols, csys, 0, CSTR_NULL));
 					}
 
 					if (colCnt == valList.GetCount())

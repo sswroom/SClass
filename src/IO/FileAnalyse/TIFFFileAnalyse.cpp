@@ -190,7 +190,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TIFFFileAnalyse::GetFram
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<PackInfo> pack;
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (!this->packs.GetItem(index).SetTo(pack))
 		return 0;
 

@@ -1282,7 +1282,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvEvtType(NN<IO::FileAnalyse::FrameDetail
 void Net::PacketAnalyzerBluetooth::AddRSSI(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, Int8 rssi)
 {
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatC(Text::StrInt16(sbuff, rssi), UTF8STRC("dBm"));
 	frame->AddField(frameOfst, 1, CSTR("RSSI"), CSTRP(sbuff, sptr));
 }
@@ -1441,8 +1441,8 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(NN<IO::FileAnalyse::FrameDetailHan
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("0x"));
 			sb.AppendHex16(compId);
-			Text::CString cstr = CompanyGetName(compId);
-			if (cstr.v)
+			Text::CStringNN cstr;
+			if (CompanyGetName(compId).SetTo(cstr))
 			{
 				sb.AppendC(UTF8STRC(" ("));
 				sb.Append(cstr);
@@ -1959,7 +1959,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvSID(NN<IO::FileAnalyse::FrameDetailHand
 void Net::PacketAnalyzerBluetooth::AddTxPower(NN<IO::FileAnalyse::FrameDetailHandler> frame, UInt32 frameOfst, Int8 txPower)
 {
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatC(Text::StrInt16(sbuff, txPower), UTF8STRC("dBm"));
 	frame->AddField(frameOfst, 1, CSTR("TxPower"), CSTRP(sbuff, sptr));
 }
@@ -1984,12 +1984,11 @@ void Net::PacketAnalyzerBluetooth::AddUnknown(NN<IO::FileAnalyse::FrameDetailHan
 Bool Net::PacketAnalyzerBluetooth::PacketGetName(const UInt8 *packet, UOSInt packetSize, NN<Text::StringBuilderUTF8> sb)
 {
 	UInt8 mac[6];
-	Text::CString name;
+	Text::CStringNN name;
 	switch (packet[4])
 	{
 	case 1:
-		name = CmdGetName(ReadUInt16(&packet[5]));
-		if (name.v)
+		if (CmdGetName(ReadUInt16(&packet[5])).SetTo(name))
 		{
 			sb->Append(name);
 		}
@@ -2015,8 +2014,7 @@ Bool Net::PacketAnalyzerBluetooth::PacketGetName(const UInt8 *packet, UOSInt pac
 			}
 			return true;
 		case 0x0E:
-			name = CmdGetName(ReadUInt16(&packet[8]));
-			if (name.v)
+			if (CmdGetName(ReadUInt16(&packet[8])).SetTo(name))
 			{
 				sb->Append(name);
 				sb->AppendC(UTF8STRC(" Accept"));
@@ -2027,8 +2025,7 @@ Bool Net::PacketAnalyzerBluetooth::PacketGetName(const UInt8 *packet, UOSInt pac
 			}
 			return true;
 		case 0x0F:
-			name = CmdGetName(ReadUInt16(&packet[9]));
-			if (name.v)
+			if (CmdGetName(ReadUInt16(&packet[9])).SetTo(name))
 			{
 				if (packet[7] == 0)
 				{

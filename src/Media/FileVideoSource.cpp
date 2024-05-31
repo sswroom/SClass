@@ -251,7 +251,7 @@ void Media::FileVideoSource::SetFrameRate(UInt32 frameRateNorm, UInt32 frameRate
 	this->frameRateDenorm = frameRateDenorm;
 }
 
-UTF8Char *Media::FileVideoSource::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::FileVideoSource::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	return this->data->GetFullName()->ConcatTo(buff);
 }

@@ -237,7 +237,7 @@ UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, co
 	}
 }
 
-UTF8Char *Text::TextBinEnc::Base64Enc::EncodeBin(UTF8Char *sbuff, const UInt8 *dataBuff, UOSInt buffSize)
+UnsafeArray<UTF8Char> Text::TextBinEnc::Base64Enc::EncodeBin(UnsafeArray<UTF8Char> sbuff, const UInt8 *dataBuff, UOSInt buffSize)
 {
 	UnsafeArray<const UTF8Char> encArr = GetEncArr(this->cs);
 	UOSInt outSize;
@@ -252,7 +252,10 @@ UTF8Char *Text::TextBinEnc::Base64Enc::EncodeBin(UTF8Char *sbuff, const UInt8 *d
 		outSize = tmp2 * 4;
 	}
 	if (outSize == 0)
-		return 0;
+	{
+		*sbuff = 0;
+		return sbuff;
+	}
 	while (tmp2-- > 0)
 	{
 		sbuff[0] = encArr[dataBuff[0] >> 2];

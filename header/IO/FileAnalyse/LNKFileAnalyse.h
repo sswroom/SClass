@@ -56,10 +56,10 @@ namespace IO
 			virtual Bool IsParsing();
 			virtual Bool TrimPadding(Text::CStringNN outputFile);
 
-			static Text::CString TagTypeGetName(TagType tagType);
-			static Text::CString ShowWindowGetName(UInt32 showWindow);
-			static Text::CString DriveTypeGetName(UInt32 driveType);
-			static Text::CString FontFamilyGetName(UInt32 fontFamily);
+			static Text::CStringNN TagTypeGetName(TagType tagType);
+			static Text::CStringNN ShowWindowGetName(UInt32 showWindow);
+			static Text::CStringNN DriveTypeGetName(UInt32 driveType);
+			static Text::CStringNN FontFamilyGetName(UInt32 fontFamily);
 		};
 	}
 }

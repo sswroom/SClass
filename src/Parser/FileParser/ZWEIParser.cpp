@@ -44,7 +44,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ZWEIParser::ParseFileHdr(NN<IO::S
 	UInt32 j;
 	UInt32 i;
 	UTF8Char name[14];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (ReadUInt32(&hdr[0]) != 0xBC614E)
 	{

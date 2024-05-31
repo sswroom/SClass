@@ -42,7 +42,7 @@ IO::ParserType Parser::FileParser::LOGParser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::LOGParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 //	WChar baseDir[256];
 //	WChar wbuff2[256];
 //	WChar wbuff3[256];
@@ -60,7 +60,7 @@ Optional<IO::ParsedObject> Parser::FileParser::LOGParser::ParseFileHdr(NN<IO::St
 	}
 	IO::StreamDataStream stm(fd);
 	IO::StreamReader reader(stm, this->codePage);
-	if ((sptr = reader.ReadLine(sbuff, 255)) == 0)
+	if (!reader.ReadLine(sbuff, 255).SetTo(sptr))
 	{
 		return 0;
 	}

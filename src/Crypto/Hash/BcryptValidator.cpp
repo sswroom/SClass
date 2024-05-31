@@ -4,10 +4,10 @@
 #include "Data/BinTool.h"
 #include "Text/PString.h"
 
-void Crypto::Hash::BcryptValidator::CalcHash(UInt32 cost, const UInt8 *salt, const UTF8Char *password, UOSInt pwdLen, UInt8 *hashBuff)
+void Crypto::Hash::BcryptValidator::CalcHash(UInt32 cost, UnsafeArray<const UInt8> salt, Text::CStringNN password, UInt8 *hashBuff)
 {
 	Crypto::Encrypt::Blowfish bf;
-	bf.EksBlowfishSetup(cost, salt, password, pwdLen);
+	bf.EksBlowfishSetup(cost, salt, password);
 	bf.SetChainMode(Crypto::Encrypt::ChainMode::ECB);
 	UInt32 tmpBuff[6];
 	const UInt8 *initVal = (const UInt8*)"OrpheanBeholderScryDoubt";
@@ -49,7 +49,7 @@ void Crypto::Hash::BcryptValidator::DeleteSess(NN<HashValidatorSess> sess)
 {
 }
 
-Bool Crypto::Hash::BcryptValidator::SetHash(const UTF8Char *hash, UOSInt hashLen)
+Bool Crypto::Hash::BcryptValidator::SetHash(UnsafeArray<const UTF8Char> hash, UOSInt hashLen)
 {
 	if (hash[0] != '$' || hashLen > 63)
 	{
@@ -77,9 +77,9 @@ Bool Crypto::Hash::BcryptValidator::SetHash(const UTF8Char *hash, UOSInt hashLen
 	}
 }
 
-Bool Crypto::Hash::BcryptValidator::IsMatch(NN<HashValidatorSess> sess, const UTF8Char *password, UOSInt pwdLen)
+Bool Crypto::Hash::BcryptValidator::IsMatch(NN<HashValidatorSess> sess, UnsafeArray<const UTF8Char> password, UOSInt pwdLen)
 {
 	UInt8 myCTxt[24];
-	this->CalcHash(this->cost, this->salt, password, pwdLen, myCTxt);
+	this->CalcHash(this->cost, this->salt, Text::CStringNN(password, pwdLen), myCTxt);
 	return Data::BinTool::Equals(hashCTxt, myCTxt, 23);
 }

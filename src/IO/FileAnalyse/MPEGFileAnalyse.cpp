@@ -760,7 +760,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::MPEGFileAnalyse::GetFram
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<IO::FileAnalyse::MPEGFileAnalyse::PackInfo> pack;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (!this->packs.GetItem(index).SetTo(pack))
 		return 0;
 

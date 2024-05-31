@@ -46,7 +46,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TsuyoshiArcParser::ParseFileHdr(N
 	Int32 j;
 	UInt32 nextOfst;
 	UTF8Char fileName[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".ARC")))
 	{

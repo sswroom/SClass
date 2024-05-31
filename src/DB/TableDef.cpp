@@ -5,7 +5,7 @@
 #include "DB/TableDef.h"
 #include "Text/MyString.h"
 
-DB::TableDef::TableDef(Text::CString schemaName, Text::CString tableName)
+DB::TableDef::TableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	this->databaseName = 0;
 	this->schemaName = Text::String::NewOrNull(schemaName);

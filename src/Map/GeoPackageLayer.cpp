@@ -250,7 +250,7 @@ UOSInt Map::GeoPackageLayer::GetColumnCnt() const
 	return tabDef->GetColCnt();
 }
 
-UTF8Char *Map::GeoPackageLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::GeoPackageLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
 {
 	NN<DB::TableDef> tabDef;
 	if (!this->tabDef.SetTo(tabDef))
@@ -318,12 +318,12 @@ UOSInt Map::GeoPackageLayer::QueryTableNames(Text::CString schemaName, NN<Data::
 	return this->gpkg->QueryTableNames(schemaName, names);
 }
 
-Optional<DB::DBReader> Map::GeoPackageLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::GeoPackageLayer::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	return this->gpkg->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
 }
 
-Optional<DB::TableDef> Map::GeoPackageLayer::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> Map::GeoPackageLayer::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	return this->gpkg->GetTableDef(schemaName, tableName);
 }

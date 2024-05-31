@@ -77,7 +77,7 @@ IO::ParserType Parser::FileParser::XMLParser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	Bool valid = false;
@@ -146,7 +146,7 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 	{
 		UOSInt i;
 		UOSInt j;
-		const UTF8Char *shortName;
+		UnsafeArray<const UTF8Char> shortName;
 		i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 		if (IO::Path::PATH_SEPERATOR == '\\')
 		{
@@ -512,7 +512,7 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 	{
 		UOSInt i;
 		UOSInt j;
-		const UTF8Char *shortName;
+		UnsafeArray<const UTF8Char> shortName;
 		i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 		if (IO::Path::PATH_SEPERATOR == '\\')
 		{
@@ -710,8 +710,8 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 				{
 					if (nodeText->Equals(UTF8STRC("REG_VALUE")))
 					{
-						const UTF8Char *roleName = 0;
-						const UTF8Char *roleData = 0;
+						UnsafeArrayOpt<const UTF8Char> roleName = 0;
+						UnsafeArrayOpt<const UTF8Char> roleData = 0;
 						while (reader.NextElementName().SetTo(nodeText))
 						{
 							if (nodeText->Equals(UTF8STRC("NAME")))
@@ -737,9 +737,11 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 								reader.SkipElement();
 							}
 						}
-						if (roleName && roleData)
+						UnsafeArray<const UTF8Char> nnroleName;
+						UnsafeArray<const UTF8Char> nnroleData;
+						if (roleName.SetTo(nnroleName) && roleData.SetTo(nnroleData))
 						{
-							sysInfo->AddServerRole(roleName, roleData);
+							sysInfo->AddServerRole(nnroleName, nnroleData);
 						}
 						SDEL_TEXT(roleName);
 						SDEL_TEXT(roleData);
@@ -756,10 +758,10 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 				{
 					if (nodeText->Equals(UTF8STRC("DEVICE")))
 					{
-						const UTF8Char *desc = 0;
-						const UTF8Char *hwId = 0;
-						const UTF8Char *service = 0;
-						const UTF8Char *driver = 0;
+						UnsafeArrayOpt<const UTF8Char> desc = 0;
+						UnsafeArrayOpt<const UTF8Char> hwId = 0;
+						UnsafeArrayOpt<const UTF8Char> service = 0;
+						UnsafeArrayOpt<const UTF8Char> driver = 0;
 						while (reader.NextElementName().SetTo(nodeText))
 						{
 							if (nodeText->Equals(UTF8STRC("DESCRIPTION")))
@@ -803,9 +805,11 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 								reader.SkipElement();
 							}
 						}
-						if (desc && hwId)
+						UnsafeArray<const UTF8Char> nndesc;
+						UnsafeArray<const UTF8Char> nnhwId;
+						if (desc.SetTo(nndesc) && hwId.SetTo(nnhwId))
 						{
-							sysInfo->AddDeviceInfo(desc, hwId, service, driver);
+							sysInfo->AddDeviceInfo(nndesc, nnhwId, service, driver);
 						}
 						SDEL_TEXT(desc);
 						SDEL_TEXT(hwId);
@@ -824,13 +828,13 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 				{
 					if (nodeText->Equals(UTF8STRC("DRIVER")))
 					{
-						const UTF8Char *fileName = 0;
+						UnsafeArrayOpt<const UTF8Char> fileName = 0;
 						UInt64 fileSize = 0;
-						const UTF8Char *createDate = 0;
-						const UTF8Char *version = 0;
-						const UTF8Char *manufacturer = 0;
-						const UTF8Char *productName = 0;
-						const UTF8Char *group = 0;
+						UnsafeArrayOpt<const UTF8Char> createDate = 0;
+						UnsafeArrayOpt<const UTF8Char> version = 0;
+						UnsafeArrayOpt<const UTF8Char> manufacturer = 0;
+						UnsafeArrayOpt<const UTF8Char> productName = 0;
+						UnsafeArrayOpt<const UTF8Char> group = 0;
 						UInt32 altitude = 0;
 						while (reader.NextElementName().SetTo(nodeText))
 						{
@@ -909,9 +913,10 @@ Optional<IO::ParsedObject> Parser::FileParser::XMLParser::ParseStream(Optional<T
 								reader.SkipElement();
 							}
 						}
-						if (fileName)
+						UnsafeArray<const UTF8Char> nnfileName;
+						if (fileName.SetTo(nnfileName))
 						{
-							sysInfo->AddDriverInfo(fileName, fileSize, createDate, version, manufacturer, productName, group, altitude);
+							sysInfo->AddDriverInfo(nnfileName, fileSize, createDate, version, manufacturer, productName, group, altitude);
 						}
 						SDEL_TEXT(fileName);
 						SDEL_TEXT(createDate);

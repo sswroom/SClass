@@ -51,7 +51,7 @@ Bool Media::VOBAC3StreamSource::IsReady()
 	return this->fmt.bitRate != 0;
 }
 
-UTF8Char *Media::VOBAC3StreamSource::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::VOBAC3StreamSource::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	return this->pbc->GetMediaName(buff);
 }

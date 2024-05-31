@@ -135,7 +135,7 @@ Bool Media::MPAStreamSource::IsReady()
 	return this->fmt.formatId != 0 && this->fmt.bitRate != 0;
 }
 
-UTF8Char *Media::MPAStreamSource::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::MPAStreamSource::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	return this->pbc->GetMediaName(buff);
 }

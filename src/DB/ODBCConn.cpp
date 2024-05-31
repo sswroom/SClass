@@ -1010,7 +1010,7 @@ UOSInt DB::ODBCConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLis
 	return names->GetCount() - initCnt;
 }
 
-Optional<DB::DBReader> DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::ODBCConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -1052,7 +1052,7 @@ Optional<DB::DBReader> DB::ODBCConn::QueryTableData(Text::CString schemaName, Te
 		sb.AppendP(sbuff, sptr);
 		sb.AppendUTF8Char('.');
 	}
-	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v.Or(U8STR("")), this->sqlType);
+	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v, this->sqlType);
 	sb.AppendP(sbuff, sptr);
 	if (this->sqlType == DB::SQLType::SQLite || this->sqlType == DB::SQLType::MySQL)
 	{

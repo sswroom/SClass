@@ -1004,7 +1004,7 @@ UOSInt DB::PostgreSQLConn::QueryTableNames(Text::CString schemaName, NN<Data::Ar
 	return names->GetCount() - initCnt;
 }
 
-Optional<DB::DBReader> DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::PostgreSQLConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UnsafeArray<UTF8Char> sptr;
@@ -1035,7 +1035,7 @@ Optional<DB::DBReader> DB::PostgreSQLConn::QueryTableData(Text::CString schemaNa
 		sb.AppendP(sbuff, sptr);
 		sb.AppendUTF8Char('.');
 	}
-	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.OrEmpty().v, DB::SQLType::PostgreSQL);
+	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v, DB::SQLType::PostgreSQL);
 	sb.AppendP(sbuff, sptr);
 	if (condition)
 	{

@@ -462,7 +462,7 @@ Media::M2VStreamSource::~M2VStreamSource()
 #endif
 }
 
-UTF8Char *Media::M2VStreamSource::GetSourceName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::M2VStreamSource::GetSourceName(UnsafeArray<UTF8Char> buff)
 {
 	return this->pbc->GetMediaName(buff);
 }

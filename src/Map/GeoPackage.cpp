@@ -107,17 +107,17 @@ UOSInt Map::GeoPackage::QueryTableNames(Text::CString schemaName, NN<Data::Array
 	return this->allTables.GetCount();
 }
 
-Optional<DB::DBReader> Map::GeoPackage::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::GeoPackage::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	return this->conn->QueryTableData(schemaName, tableName, columnNames, ofst, maxCnt, ordering, condition);
 }
 
-Optional<DB::TableDef> Map::GeoPackage::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> Map::GeoPackage::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	NN<DB::TableDef> tabDef;
 	if (this->conn->GetTableDef(schemaName, tableName).SetTo(tabDef))
 	{
-		ContentInfo *cont = this->tableList.GetC(tableName.OrEmpty());
+		ContentInfo *cont = this->tableList.GetC(tableName);
 		if (cont)
 		{
 			Data::ArrayIterator<NN<DB::ColDef>> it = tabDef->ColIterator();

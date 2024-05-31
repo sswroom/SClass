@@ -400,7 +400,7 @@ UOSInt IO::GPSNMEA::GenNMEACommand(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLe
 		chk ^= buff[i];
 	}
 	buff[size] = '*';
-	Text::StrHexByte((Char*)&buff[size + 1], chk);
+	Text::StrHexByte(&buff[size + 1], chk);
 	buff[size + 3] = 13;
 	buff[size + 4] = 10;
 	return size + 5;

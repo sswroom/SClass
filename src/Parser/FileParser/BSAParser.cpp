@@ -46,7 +46,7 @@ Optional<IO::ParsedObject> Parser::FileParser::BSAParser::ParseFileHdr(NN<IO::St
 	UInt32 fileOfst;
 //	UInt32 nextOfst;
 	UTF8Char fileName[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".BSA")))
 	{

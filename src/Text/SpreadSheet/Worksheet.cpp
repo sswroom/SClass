@@ -565,7 +565,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, Optiona
 Bool Text::SpreadSheet::Worksheet::SetCellTS(UOSInt row, UOSInt col, CellStyle *style, Data::Timestamp val)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	CellData *cell;
 	cell = GetCellData(row, col, false);
 	if (cell == 0)
@@ -601,7 +601,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellTS(UOSInt row, UOSInt col, CellStyle *
 Bool Text::SpreadSheet::Worksheet::SetCellDateTime(UOSInt row, UOSInt col, CellStyle *style, NN<Data::DateTime> val)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	CellData *cell;
 	cell = GetCellData(row, col, false);
 	if (cell == 0)
@@ -617,7 +617,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellDateTime(UOSInt row, UOSInt col, CellS
 Bool Text::SpreadSheet::Worksheet::SetCellDouble(UOSInt row, UOSInt col, CellStyle *style, Double val)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	CellData *cell;
 	cell = GetCellData(row, col, false);
 	if (cell == 0)
@@ -633,7 +633,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellDouble(UOSInt row, UOSInt col, CellSty
 Bool Text::SpreadSheet::Worksheet::SetCellInt32(UOSInt row, UOSInt col, CellStyle *style, Int32 val)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	CellData *cell;
 	cell = GetCellData(row, col, false);
 	if (cell == 0)
@@ -649,7 +649,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellInt32(UOSInt row, UOSInt col, CellStyl
 Bool Text::SpreadSheet::Worksheet::SetCellInt64(UOSInt row, UOSInt col, CellStyle *style, Int64 val)
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	CellData *cell;
 	cell = GetCellData(row, col, false);
 	if (cell == 0)

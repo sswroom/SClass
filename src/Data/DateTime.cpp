@@ -972,7 +972,7 @@ UnsafeArray<Char> Data::DateTime::ToString(UnsafeArray<Char> buff)
 	return UnsafeArray<Char>::ConvertFrom(ToString(UnsafeArray<UTF8Char>::ConvertFrom(buff)));
 }
 
-UnsafeArray<Char> Data::DateTime::ToString(UnsafeArray<Char> buff, const Char *pattern)
+UnsafeArray<Char> Data::DateTime::ToString(UnsafeArray<Char> buff, UnsafeArray<const Char> pattern)
 {
 	return UnsafeArray<Char>::ConvertFrom(ToString(UnsafeArray<UTF8Char>::ConvertFrom(buff), pattern));
 }
@@ -981,19 +981,19 @@ UnsafeArray<UTF8Char> Data::DateTime::ToString(UnsafeArray<UTF8Char> buff)
 {
 	if (this->ns == 0)
 	{
-		return ToString(buff, "yyyy-MM-dd HH:mm:ss zzzz");
+		return ToString(buff, CHSTR("yyyy-MM-dd HH:mm:ss zzzz"));
 	}
 	else if (this->ns % 1000000 == 0)
 	{
-		return ToString(buff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
+		return ToString(buff, CHSTR("yyyy-MM-dd HH:mm:ss.fff zzzz"));
 	}
 	else if (this->ns % 1000 == 0)
 	{
-		return ToString(buff, "yyyy-MM-dd HH:mm:ss.ffffff zzzz");
+		return ToString(buff, CHSTR("yyyy-MM-dd HH:mm:ss.ffffff zzzz"));
 	}
 	else
 	{
-		return ToString(buff, "yyyy-MM-dd HH:mm:ss.fffffffff zzzz");
+		return ToString(buff, CHSTR("yyyy-MM-dd HH:mm:ss.fffffffff zzzz"));
 	}
 }
 
@@ -1001,26 +1001,26 @@ UnsafeArray<UTF8Char> Data::DateTime::ToStringNoZone(UnsafeArray<UTF8Char> buff)
 {
 	if (this->ns == 0)
 	{
-		return ToString(buff, "yyyy-MM-dd HH:mm:ss");
+		return ToString(buff, CHSTR("yyyy-MM-dd HH:mm:ss"));
 	}
 	else if (this->ns % 1000000 == 0)
 	{
-		return ToString(buff, "yyyy-MM-dd HH:mm:ss.fff");
+		return ToString(buff, CHSTR("yyyy-MM-dd HH:mm:ss.fff"));
 	}
 	else if (this->ns % 1000 == 0)
 	{
-		return ToString(buff, "yyyy-MM-dd HH:mm:ss.ffffff");
+		return ToString(buff, CHSTR("yyyy-MM-dd HH:mm:ss.ffffff"));
 	}
 	else
 	{
-		return ToString(buff, "yyyy-MM-dd HH:mm:ss.fffffffff");
+		return ToString(buff, CHSTR("yyyy-MM-dd HH:mm:ss.fffffffff"));
 	}
 }
 
-UnsafeArray<UTF8Char> Data::DateTime::ToString(UnsafeArray<UTF8Char> buff, const Char *pattern)
+UnsafeArray<UTF8Char> Data::DateTime::ToString(UnsafeArray<UTF8Char> buff, UnsafeArray<const Char> pattern)
 {
 	NN<Data::DateTimeUtil::TimeValue> tval = this->GetTimeValue();
-	return Data::DateTimeUtil::ToString(buff, tval, this->tzQhr, this->ns, (const UTF8Char*)pattern);
+	return Data::DateTimeUtil::ToString(buff, tval, this->tzQhr, this->ns, UnsafeArray<const UTF8Char>::ConvertFrom(pattern));
 }
 
 Data::DateTime Data::DateTime::operator=(Data::DateTime dt)
@@ -1064,7 +1064,7 @@ UnsafeArray<UTF8Char> Data::DateTime::ToLocalStr(UnsafeArray<UTF8Char> buff)
 	t.tm_sec = tval->second;
 	return &buff[strftime((char*)buff, 100, "%c", &t)];
 #else
-	return this->ToString(buff, "yyyy-MM-dd HH:mm:ss");
+	return this->ToString(buff, CHSTR("yyyy-MM-dd HH:mm:ss"));
 #endif
 }
 

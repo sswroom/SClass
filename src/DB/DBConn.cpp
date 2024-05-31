@@ -28,7 +28,7 @@ Bool DB::DBConn::IsAxisAware() const
 	return false;
 }
 
-Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	UTF8Char buff[256];
 	UnsafeArray<UTF8Char> ptr;
@@ -87,7 +87,7 @@ Optional<DB::TableDef> DB::DBConn::GetTableDef(Text::CString schemaName, Text::C
 		}
 		NN<DB::ColDef> col;
 		ptr = Text::StrConcatC(buff, UTF8STRC("desc "));
-		ptr = DB::DBUtil::SDBColUTF8(ptr, tableName.OrEmpty().v, DB::SQLType::MySQL);
+		ptr = DB::DBUtil::SDBColUTF8(ptr, tableName.v, DB::SQLType::MySQL);
 		if (this->ExecuteReader(CSTRP(buff, ptr)).SetTo(r))
 		{
 			while (r->ReadNext())

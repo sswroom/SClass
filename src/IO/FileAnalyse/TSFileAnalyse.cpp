@@ -281,7 +281,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::TSFileAnalyse::GetFrameD
 		return 0;
 
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NEW_CLASSNN(frame, IO::FileAnalyse::FrameDetail(fileOfst, this->packSize));
 	UInt8 buff[192];
 	fd->GetRealData(fileOfst, this->packSize, BYTEARR(buff));

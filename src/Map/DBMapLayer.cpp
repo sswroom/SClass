@@ -21,7 +21,7 @@ void Map::DBMapLayer::ClearDB()
 		this->db = 0;
 	}
 	OPTSTR_DEL(this->schema);
-	OPTSTR_DEL(this->table);
+	this->table->Release();
 	this->idCol = INVALID_INDEX;
 	this->vecCol = INVALID_INDEX;
 	this->xCol = INVALID_INDEX;
@@ -63,7 +63,7 @@ Map::DBMapLayer::DBMapLayer(NN<Text::String> layerName) : Map::MapDrawLayer(laye
 	this->releaseDB = false;
 	this->db = 0;
 	this->schema = 0;
-	this->table = 0;
+	this->table = Text::String::New(CSTR("Default"));
 	this->idCol = INVALID_INDEX;
 	this->vecCol = INVALID_INDEX;
 	this->xCol = INVALID_INDEX;
@@ -78,7 +78,7 @@ Map::DBMapLayer::DBMapLayer(Text::CStringNN layerName) : Map::MapDrawLayer(layer
 	this->releaseDB = false;
 	this->db = 0;
 	this->schema = 0;
-	this->table = 0;
+	this->table = Text::String::New(CSTR("Default"));
 	this->idCol = INVALID_INDEX;
 	this->vecCol = INVALID_INDEX;
 	this->xCol = INVALID_INDEX;
@@ -240,7 +240,7 @@ Bool Map::DBMapLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameA
 				if (tabDef->GetCol(this->idCol).SetTo(idCol))
 				{
 					cond.Int64Equals(idCol->GetColName()->ToCString(), id);
-					r = this->db->QueryTableData(OPTSTR_CSTR(this->schema), OPTSTR_CSTR(this->table), 0, 0, 0, 0, &cond);
+					r = this->db->QueryTableData(OPTSTR_CSTR(this->schema), this->table->ToCString(), 0, 0, 0, 0, &cond);
 				}
 				else
 				{
@@ -249,7 +249,7 @@ Bool Map::DBMapLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameA
 			}
 			else
 			{
-				r = this->db->QueryTableData(OPTSTR_CSTR(this->schema), OPTSTR_CSTR(this->table), 0, (UOSInt)(id - 1), 1, 0, 0);
+				r = this->db->QueryTableData(OPTSTR_CSTR(this->schema), this->table->ToCString(), 0, (UOSInt)(id - 1), 1, 0, 0);
 			}
 			if (r.SetTo(nnr))
 			{
@@ -289,7 +289,7 @@ UOSInt Map::DBMapLayer::GetColumnCnt() const
 	return 0;
 }
 
-UTF8Char *Map::DBMapLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::DBMapLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
 {
 	NN<DB::TableDef> tabDef;
 	if (this->tabDef.SetTo(tabDef))
@@ -372,7 +372,7 @@ UOSInt Map::DBMapLayer::QueryTableNames(Text::CString schemaName, NN<Data::Array
 	return this->db->QueryTableNames(schemaName, names);
 }
 
-Optional<DB::DBReader> Map::DBMapLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::DBMapLayer::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	if (this->db)
 	{
@@ -381,7 +381,7 @@ Optional<DB::DBReader> Map::DBMapLayer::QueryTableData(Text::CString schemaName,
 	return 0;
 }
 
-Optional<DB::TableDef> Map::DBMapLayer::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> Map::DBMapLayer::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	if (this->db)
 	{

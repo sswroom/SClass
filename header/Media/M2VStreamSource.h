@@ -76,7 +76,7 @@ namespace Media
 		M2VStreamSource(NN<Media::IStreamControl> pbc);
 		virtual ~M2VStreamSource();
 
-		virtual UTF8Char *GetSourceName(UTF8Char *buff);
+		virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
 		virtual Text::CStringNN GetFilterName();
 
 		virtual Bool GetVideoInfo(NN<Media::FrameInfo> info, OutParam<UInt32> frameRateNorm, OutParam<UInt32> frameRateDenorm, OutParam<UOSInt> maxFrameSize);

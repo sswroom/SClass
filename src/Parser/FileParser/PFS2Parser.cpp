@@ -49,7 +49,7 @@ Optional<IO::ParsedObject> Parser::FileParser::PFS2Parser::ParseFileHdr(NN<IO::S
 
 	UInt32 hdrSize;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	OSInt fileCnt = 0;
 	UOSInt i;
 	Text::Encoding enc(932);

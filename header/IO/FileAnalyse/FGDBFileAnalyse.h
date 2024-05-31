@@ -55,7 +55,7 @@ namespace IO
 			virtual Bool IsParsing();
 			virtual Bool TrimPadding(Text::CStringNN outputFile);
 
-			static Text::CString TagTypeGetName(TagType tagType);
+			static Text::CStringNN TagTypeGetName(TagType tagType);
 		};
 	}
 }

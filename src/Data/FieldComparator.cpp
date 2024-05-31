@@ -5,7 +5,8 @@
 
 Data::FieldComparator::FieldComparator(Text::CString compareConds)
 {
-	if (compareConds.leng == 0)
+	Text::CStringNN nncompareConds;
+	if (!compareConds.SetTo(nncompareConds) || nncompareConds.leng == 0)
 	{
 		return;
 	}
@@ -13,7 +14,7 @@ Data::FieldComparator::FieldComparator(Text::CString compareConds)
 	Text::PString sarr[2];
 	UOSInt i = 2;
 	Int8 dir;
-	sb.Append(compareConds);
+	sb.Append(nncompareConds);
 	sarr[1] = sb;
 	while (i == 2)
 	{
@@ -68,7 +69,7 @@ Bool Data::FieldComparator::ToOrderClause(NN<Text::StringBuilderUTF8> sb, DB::SQ
 		return false;
 	}
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Data::ArrayIterator<NN<Text::String>> it = this->fieldNames.Iterator();
 	Bool found = false;
 	UOSInt i = 0;

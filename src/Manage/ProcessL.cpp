@@ -68,7 +68,7 @@ Manage::Process::Process(UnsafeArray<const UTF8Char> ccmdLine)
 
 
 	UOSInt progNameLen = 0;
-	UnsafeArray<UTF8Char> pptr = progName;
+	UnsafeArray<UTF8Char> pptr = UARR(progName);
 	Bool isQuote = false;
 	UTF8Char c;
 	args[0] = pptr.Ptr();
@@ -109,7 +109,7 @@ Manage::Process::Process(UnsafeArray<const UTF8Char> ccmdLine)
 	pid_t pid = fork();
 	if (pid == 0)
 	{
-		UOSInt i = Text::StrLastIndexOfCharC(progName, progNameLen, IO::Path::PATH_SEPERATOR);
+		UOSInt i = Text::StrLastIndexOfCharC(UARR(progName), progNameLen, IO::Path::PATH_SEPERATOR);
 		if (i != INVALID_INDEX)
 		{
 			progName[i] = 0;
@@ -137,7 +137,7 @@ Manage::Process::Process(const WChar *cmdLine)
 	Bool argStart = false;
 
 	UOSInt progNameLen = 0;
-	UnsafeArray<UTF8Char> pptr = progName;
+	UnsafeArray<UTF8Char> pptr = UARR(progName);
 	Bool isQuote = false;
 	UTF8Char c;
 	args[0] = pptr.Ptr();
@@ -178,7 +178,7 @@ Manage::Process::Process(const WChar *cmdLine)
 	pid_t pid = fork();
 	if (pid == 0)
 	{
-		UOSInt i = Text::StrLastIndexOfCharC(progName, progNameLen, IO::Path::PATH_SEPERATOR);
+		UOSInt i = Text::StrLastIndexOfCharC(UARR(progName), progNameLen, IO::Path::PATH_SEPERATOR);
 		if (i != INVALID_INDEX)
 		{
 			progName[i] = 0;
@@ -223,8 +223,8 @@ Bool Manage::Process::IsRunning() const
 	UnsafeArray<UTF8Char> sptr;
 	Int32 exitCode;
 	waitpid((__pid_t)this->procId, &exitCode, WNOHANG);
-	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId);
-	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::Directory)
+	sptr = Text::StrUOSInt(Text::StrConcatC(UARR(sbuff), UTF8STRC("/proc/")), this->procId);
+	if (IO::Path::GetPathType(CSTRP(UARR(sbuff), sptr)) == IO::Path::PathType::Directory)
 	{
 		return true;
 	}
@@ -242,20 +242,20 @@ WChar *Manage::Process::GetFilename(WChar *buff)
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
-	Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/exe"));
+	Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(UARR(sbuff), UTF8STRC("/proc/")), this->procId), UTF8STRC("/exe"));
 	OSInt sz = readlink((const Char*)sbuff, (Char*)sbuff2, 511);
 	if (sz < 0)
 	{
-		sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/cmdline"));
-		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
-		sz = (OSInt)fs.Read(Data::ByteArray((UInt8*)sbuff2, 511));
+		sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(UARR(sbuff), UTF8STRC("/proc/")), this->procId), UTF8STRC("/cmdline"));
+		IO::FileStream fs(CSTRP(UARR(sbuff), sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		sz = (OSInt)fs.Read(Data::ByteArray(UARR(sbuff2), 511));
 		sbuff2[sz] = 0;
-		buff = Text::StrUTF8_WChar(buff, (const UTF8Char*)sbuff2, 0);
+		buff = Text::StrUTF8_WChar(buff, UARR(sbuff2), 0);
 	}
 	else
 	{
 		sbuff2[sz] = 0;
-		buff = Text::StrUTF8_WChar(buff, (const UTF8Char*)sbuff2, 0);
+		buff = Text::StrUTF8_WChar(buff, UARR(sbuff2), 0);
 	}
 	return buff;
 }
@@ -265,27 +265,27 @@ Bool Manage::Process::GetFilename(NN<Text::StringBuilderUTF8> sb)
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff[128];
 	UnsafeArray<UTF8Char> sptr;
-	Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/exe"));
+	Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(UARR(sbuff), UTF8STRC("/proc/")), this->procId), UTF8STRC("/exe"));
 	OSInt sz = readlink((const Char*)sbuff, (Char*)sbuff2, 511);
 	if (sz < 0)
 	{
-		sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/cmdline"));
-		IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(UARR(sbuff), UTF8STRC("/proc/")), this->procId), UTF8STRC("/cmdline"));
+		IO::FileStream fs(CSTRP(UARR(sbuff), sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (fs.IsError())
 		{
 			sz = 0;
 		}
 		else
 		{
-			sz = (OSInt)fs.Read(Data::ByteArray((UInt8*)sbuff2, 511));
+			sz = (OSInt)fs.Read(Data::ByteArray(UARR(sbuff2), 511));
 		}
 		sbuff2[sz] = 0;
-		sb->AppendC((const UTF8Char*)sbuff2, (UOSInt)sz);
+		sb->AppendC(UARR(sbuff2), (UOSInt)sz);
 	}
 	else
 	{
 		sbuff2[sz] = 0;
-		sb->AppendC((const UTF8Char*)sbuff2, (UOSInt)sz);
+		sb->AppendC(UARR(sbuff2), (UOSInt)sz);
 	}
 	return true;
 }
@@ -295,8 +295,8 @@ Bool Manage::Process::GetCommandLine(NN<Text::StringBuilderUTF8> sb)
 	UTF8Char sbuff[8192];
 	UnsafeArray<UTF8Char> sptr;
 	UOSInt sz;
-	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/cmdline"));
-	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(UARR(sbuff), UTF8STRC("/proc/")), this->procId), UTF8STRC("/cmdline"));
+	IO::FileStream fs(CSTRP(UARR(sbuff), sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
 	{
 		return false;
@@ -348,7 +348,7 @@ Bool Manage::Process::GetCommandLine(NN<Text::StringBuilderUTF8> sb)
 			}
 			else
 			{
-				sb->AppendC(&sbuff[strStart], strCurr - strStart);
+				sb->AppendC(UARR(sbuff) + strStart, strCurr - strStart);
 			}
 		}
 		strCurr++;
@@ -364,7 +364,7 @@ Bool Manage::Process::GetWorkingDir(NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff[128];
-	Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/cwd"));
+	Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(UARR(sbuff), UTF8STRC("/proc/")), this->procId), UTF8STRC("/cwd"));
 	OSInt sz = readlink((const Char*)sbuff, (Char*)sbuff2, 511);
 	if (sz < 0)
 	{
@@ -373,7 +373,7 @@ Bool Manage::Process::GetWorkingDir(NN<Text::StringBuilderUTF8> sb)
 	else
 	{
 		sbuff2[sz] = 0;
-		sb->AppendC((const UTF8Char*)sbuff2, (UOSInt)sz);
+		sb->AppendC(UARR(sbuff2), (UOSInt)sz);
 	}
 	return true;
 }
@@ -387,8 +387,8 @@ Bool Manage::Process::GetTrueProgramPath(NN<Text::StringBuilderUTF8> sb)
 	UOSInt i;
 	UOSInt j;
 	UOSInt sz;
-	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/cmdline"));
-	IO::FileStream fs(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(UARR(sbuff), UTF8STRC("/proc/")), this->procId), UTF8STRC("/cmdline"));
+	IO::FileStream fs(CSTRP(UARR(sbuff), sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 	if (fs.IsError())
 	{
 		return this->GetFilename(sb);
@@ -398,35 +398,35 @@ Bool Manage::Process::GetTrueProgramPath(NN<Text::StringBuilderUTF8> sb)
 		sz = fs.Read(BYTEARR(sbuff));
 	}
 	sbuff[sz] = 0;
-	i = Text::StrCharCnt(sbuff);
-	if (Text::StrEqualsC(sbuff, i, UTF8STRC("/usr/bin/valgrind.bin")))
+	i = Text::StrCharCnt(UARR(sbuff));
+	if (Text::StrEqualsC(UARR(sbuff), i, UTF8STRC("/usr/bin/valgrind.bin")))
 	{
 		i += 1;
 		while (i < sz)
 		{
-			j = Text::StrCharCnt(&sbuff[i]);
+			j = Text::StrCharCnt(UARR(sbuff) + i);
 			if (sbuff[i] == '-')
 			{
 				i += j + 1;
 			}
 			else if (sbuff[i] == '/')
 			{
-				sb->AppendC(&sbuff[i], j);
+				sb->AppendC(UARR(sbuff) + i, j);
 				return true;
 			}
 			else
 			{
-				sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff2, UTF8STRC("/proc/")), this->procId), UTF8STRC("/cwd"));
+				sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(UARR(sbuff2), UTF8STRC("/proc/")), this->procId), UTF8STRC("/cwd"));
 				OSInt dirSz = readlink((const Char*)sbuff2, (Char*)sbuff3, 511);
 				if (dirSz > 0)
 				{
-					sptr = IO::Path::AppendPath(sbuff3, &sbuff3[dirSz], Text::CStringNN(&sbuff[i], j));
-					sb->AppendP(sbuff3, sptr);
+					sptr = IO::Path::AppendPath(UARR(sbuff3), UARR(sbuff3) + dirSz, Text::CStringNN(UARR(sbuff) + i, j));
+					sb->AppendP(UARR(sbuff3), sptr);
 					return true;
 				}
 				else
 				{
-					sb->AppendC(&sbuff[i], j);
+					sb->AppendC(UARR(sbuff) + i, j);
 					return true;
 				}
 			}
@@ -1198,11 +1198,11 @@ Int32 Manage::Process::ExecuteProcess(Text::CStringNN cmd, NN<Text::StringBuilde
 	UnsafeArray<UTF8Char> sptr;
 	if (IO::Path::GetPathType(CSTR("/tmp")) == IO::Path::PathType::Directory)
 	{
-		sptr = Text::StrConcatC(tmpFile, UTF8STRC("/tmp/ExecuteProcess"));
+		sptr = Text::StrConcatC(UARR(tmpFile), UTF8STRC("/tmp/ExecuteProcess"));
 	}
 	else
 	{
-		sptr = Text::StrConcatC(tmpFile, UTF8STRC("ExecuteProcess"));
+		sptr = Text::StrConcatC(UARR(tmpFile), UTF8STRC("ExecuteProcess"));
 	}
 	sptr = Text::StrUInt32(sptr, (UInt32)GetCurrProcId());
 	sptr = Text::StrConcatC(sptr, UTF8STRC("_"));

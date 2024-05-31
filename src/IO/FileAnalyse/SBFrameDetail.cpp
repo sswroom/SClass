@@ -19,23 +19,25 @@ void IO::FileAnalyse::SBFrameDetail::AddHeader(Text::CStringNN header)
 
 void IO::FileAnalyse::SBFrameDetail::AddField(UOSInt ofst, UOSInt size, Text::CStringNN name, Text::CString value)
 {
+	Text::CStringNN nnvalue;
 	sb->AppendC(UTF8STRC("\r\n"));
 	sb->Append(name);
-	if (value.v)
+	if (value.SetTo(nnvalue))
 	{
 		sb->AppendUTF8Char('=');
-		sb->Append(value);
+		sb->Append(nnvalue);
 	}
 }
 
 void IO::FileAnalyse::SBFrameDetail::AddSubfield(UOSInt ofst, UOSInt size, Text::CStringNN name, Text::CString value)
 {
+	Text::CStringNN nnvalue;
 	sb->AppendC(UTF8STRC("\r\n-"));
 	sb->Append(name);
-	if (value.v)
+	if (value.SetTo(nnvalue))
 	{
 		sb->AppendUTF8Char('=');
-		sb->Append(value);
+		sb->Append(nnvalue);
 	}
 }
 

@@ -26,7 +26,7 @@ struct Parser::FileParser::PDFParser::PDFParseEnv
 	Bool succ;
 };
 
-Bool Parser::FileParser::PDFParser::IsComment(const UTF8Char *buff, UOSInt size)
+Bool Parser::FileParser::PDFParser::IsComment(UnsafeArray<const UTF8Char> buff, UOSInt size)
 {
 	if (buff[0] == '%')
 	{
@@ -298,7 +298,7 @@ Bool Parser::FileParser::PDFParser::ParseObject(NN<PDFParseEnv> env, NN<Text::St
 			{
 				if (sb->EndsWith(UTF8STRC(">>stream")))
 				{
-					param = Media::PDFParameter::Parse(Text::CString(&sb->v[2], sb->leng - 10));
+					param = Media::PDFParameter::Parse(Text::CStringNN(&sb->v[2], sb->leng - 10));
 					if (param == 0)
 					{
 #if defined(VERBOSE)
@@ -313,7 +313,7 @@ Bool Parser::FileParser::PDFParser::ParseObject(NN<PDFParseEnv> env, NN<Text::St
 				}
 				else if (sb->EndsWith(UTF8STRC(">>endobj")))
 				{
-					param = Media::PDFParameter::Parse(Text::CString(&sb->v[2], sb->leng - 8));
+					param = Media::PDFParameter::Parse(Text::CStringNN(&sb->v[2], sb->leng - 8));
 					if (param == 0)
 					{
 	#if defined(VERBOSE)
@@ -340,7 +340,7 @@ Bool Parser::FileParser::PDFParser::ParseObject(NN<PDFParseEnv> env, NN<Text::St
 					}
  					else if (sb->EndsWith(UTF8STRC(">>")))
 					{
-						param = Media::PDFParameter::Parse(Text::CString(&sb->v[2], sb->leng - 4));
+						param = Media::PDFParameter::Parse(Text::CStringNN(&sb->v[2], sb->leng - 4));
 						if (param == 0)
 						{
 #if defined(VERBOSE)

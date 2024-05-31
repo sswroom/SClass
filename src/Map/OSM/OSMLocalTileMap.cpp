@@ -28,7 +28,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(NN<IO::PackageFile> pkgFile)
 	UInt32 minYBlk;
 	UInt32 maxYBlk;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt32 currVal;
 	UOSInt i;
 	UOSInt j;
@@ -356,9 +356,9 @@ Media::ImageList *Map::OSM::OSMLocalTileMap::LoadTileImage(UOSInt level, Math::C
 	return 0;
 }
 
-UTF8Char *Map::OSM::OSMLocalTileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
+UnsafeArrayOpt<UTF8Char> Map::OSM::OSMLocalTileMap::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
 {
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("file:///"));
 	sptr = this->pkgFile->GetSourceName(sptr);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
@@ -400,7 +400,7 @@ Bool Map::OSM::OSMLocalTileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, 
 Optional<IO::StreamData> Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Optional<IO::StreamData> fd;
 	if (level < this->minLevel || level > this->maxLevel)
 		return 0;
@@ -457,9 +457,9 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, OutParam<Int32> minX
 	Int32 y;
 	Bool found = false;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UTF8Char sbuff2[32];
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr2;
 	sbuff2[0] = '.';
 	sptr2 = this->fmt->ConcatTo(&sbuff2[1]);
 	i = 0;
@@ -523,8 +523,7 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, OutParam<Int32> minX
 						j = xPkg->GetCount();
 						while (j-- > 0)
 						{
-							sptr = xPkg->GetItemName(sbuff, j);
-							if (xPkg->GetItemType(j) == IO::PackageFile::PackObjectType::StreamData)
+							if (xPkg->GetItemName(sbuff, j).SetTo(sptr) && xPkg->GetItemType(j) == IO::PackageFile::PackObjectType::StreamData)
 							{
 								k = Text::StrIndexOfC(sbuff, (UOSInt)(sptr - sbuff), sbuff2, (UOSInt)(sptr2 - sbuff2));
 								if (k != INVALID_INDEX)

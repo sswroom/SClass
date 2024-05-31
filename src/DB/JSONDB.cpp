@@ -124,7 +124,7 @@ public:
 		return this->obj->GetValueNewString(col->GetColName()->ToCString());
 	}
 
-	virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
+	virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 	{
 		if (this->obj == 0)
 			return 0;
@@ -211,7 +211,7 @@ public:
 		return o == 0 || o->GetType() == Text::JSONType::Null;
 	}
 
-	virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff)
+	virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 	{
 		NN<DB::ColDef> col;
 		if (!this->tab->GetCol(colIndex).SetTo(col))
@@ -257,7 +257,7 @@ UOSInt DB::JSONDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListS
 	return 1;
 }
 
-Optional<DB::DBReader> DB::JSONDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::JSONDB::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	NN<DB::TableDef> tabDef;
 	if (tableName.Equals(this->layerName->ToCString()) && this->GetTableDef(schemaName, tableName).SetTo(tabDef))
@@ -274,7 +274,7 @@ Optional<DB::DBReader> DB::JSONDB::QueryTableData(Text::CString schemaName, Text
 	return 0;
 }
 
-Optional<DB::TableDef> DB::JSONDB::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> DB::JSONDB::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	DB::TableDef *tab;
 	if (!tableName.Equals(this->layerName->ToCString()))

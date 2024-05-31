@@ -16,15 +16,15 @@ namespace Crypto
 			UInt8 hashCTxt[24];
 			UInt32 cost;
 
-			static void CalcHash(UInt32 cost, const UInt8 *salt, const UTF8Char *password, UOSInt pwdLen, UInt8 *hashBuff);
+			static void CalcHash(UInt32 cost, UnsafeArray<const UInt8> salt, Text::CStringNN password, UInt8 *hashBuff);
 		public:
 			BcryptValidator();
 			virtual ~BcryptValidator();
 
 			virtual NN<HashValidatorSess> CreateSess();
 			virtual void DeleteSess(NN<HashValidatorSess> sess);
-			virtual Bool SetHash(const UTF8Char *hash, UOSInt hashLen);
-			virtual Bool IsMatch(NN<HashValidatorSess> sess, const UTF8Char *password, UOSInt pwdLen);
+			virtual Bool SetHash(UnsafeArray<const UTF8Char> hash, UOSInt hashLen);
+			virtual Bool IsMatch(NN<HashValidatorSess> sess, UnsafeArray<const UTF8Char> password, UOSInt pwdLen);
 		};
 	}
 }

@@ -505,7 +505,7 @@ UOSInt Map::WebImageLayer::GetColumnCnt() const
 	return 1;
 }
 
-UTF8Char *Map::WebImageLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::WebImageLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
 {
 	if (colIndex > 0)
 		return 0;

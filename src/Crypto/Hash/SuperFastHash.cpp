@@ -34,9 +34,9 @@ void Crypto::Hash::SuperFastHash::Clear()
 	this->currVal = 0;
 }
 
-void Crypto::Hash::SuperFastHash::Calc(const UInt8 *buff, UOSInt buffSize)
+void Crypto::Hash::SuperFastHash::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
-	this->currVal = SuperFastHash_Calc(buff, buffSize, this->currVal);
+	this->currVal = SuperFastHash_Calc(buff.Ptr(), buffSize, this->currVal);
 }
 
 void Crypto::Hash::SuperFastHash::GetValue(UnsafeArray<UInt8> buff) const

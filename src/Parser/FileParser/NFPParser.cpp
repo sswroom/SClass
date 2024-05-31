@@ -48,7 +48,7 @@ Optional<IO::ParsedObject> Parser::FileParser::NFPParser::ParseFileHdr(NN<IO::St
 	UOSInt i;
 	NFPFileInfo *fileInfo;
 	UTF8Char sbuff[13];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (!Text::StrStartsWithC(&hdr[0], 64, UTF8STRC("NFP2.0 (c)NOBORI 1997-2002")))
 		return 0;

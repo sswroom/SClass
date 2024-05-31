@@ -14,10 +14,10 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 	UInt8 *ret = 0;
 
 	// Intel GPU
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
-	UTF8Char *sptr3;
-	UTF8Char *sptr4;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
+	UnsafeArray<UTF8Char> sptr3;
+	UnsafeArray<UTF8Char> sptr4;
 	IO::Path::FindFileSession *sess;
 	IO::Path::FindFileSession *sess2;
 	IO::Path::FindFileSession *sess3;
@@ -27,7 +27,7 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)
 	{
-		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
 		{
 			Text::StrConcatC(sptr2, UTF8STRC("/drm"));
 			if (sptr[0] != '0')
@@ -41,7 +41,7 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 				sess2 = IO::Path::FindFile(CSTRP(sbuff, sptr3));
 				if (sess2)
 				{
-					while ((sptr3 = IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0)) != 0)
+					while (IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0).SetTo(sptr3))
 					{
 						sptr3 = Text::StrConcatC(sptr3, UTF8STRC("/edid"));
 						IO::FileStream fs(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -70,7 +70,7 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 				sess2 = IO::Path::FindFile(CSTRP(sbuff, sptr3));
 				if (sess2)
 				{
-					while ((sptr3 = IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0)) != 0)
+					while (IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0).SetTo(sptr3))
 					{
 						if (sptr2[0] == '0')
 						{
@@ -79,7 +79,7 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 							sess3 = IO::Path::FindFile(CSTRP(sbuff, sptr4));
 							if (sess3)
 							{
-								while ((sptr4 = IO::Path::FindNextFile(sptr3, sess3, 0, &pt, 0)) != 0)
+								while (IO::Path::FindNextFile(sptr3, sess3, 0, &pt, 0).SetTo(sptr4))
 								{
 									sptr4 = Text::StrConcatC(sptr4, UTF8STRC("/edid"));
 									IO::FileStream fs(CSTRP(sbuff, sptr4), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -145,7 +145,7 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 			{
 				ret = MemAlloc(UInt8, edidSize >> 1);
 				edid[edidSize] = 0;
-				edidSize = Text::StrHex2Bytes((const Char*)edid, ret);
+				edidSize = Text::StrHex2Bytes(edid, ret);
 				*edidSizeRet = edidSize;
 			}
 		}
@@ -201,10 +201,10 @@ UOSInt Media::DDCReader::CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> reade
 	UOSInt ret = 0;
 
 	// Intel GPU
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
-	UTF8Char *sptr3;
-	UTF8Char *sptr4;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
+	UnsafeArray<UTF8Char> sptr3;
+	UnsafeArray<UTF8Char> sptr4;
 	IO::Path::FindFileSession *sess;
 	IO::Path::FindFileSession *sess2;
 	IO::Path::FindFileSession *sess3;
@@ -214,7 +214,7 @@ UOSInt Media::DDCReader::CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> reade
 	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)
 	{
-		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
 		{
 			Text::StrConcatC(sptr2, UTF8STRC("/drm"));
 			if (sptr[0] != '0')
@@ -228,7 +228,7 @@ UOSInt Media::DDCReader::CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> reade
 				sess2 = IO::Path::FindFile(CSTRP(sbuff, sptr3));
 				if (sess2)
 				{
-					while ((sptr3 = IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0)) != 0)
+					while (IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0).SetTo(sptr3))
 					{
 						sptr3 = Text::StrConcatC(sptr3, UTF8STRC("/edid"));
 						IO::FileStream fs(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -253,7 +253,7 @@ UOSInt Media::DDCReader::CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> reade
 				sess2 = IO::Path::FindFile(CSTRP(sbuff, sptr3));
 				if (sess2)
 				{
-					while ((sptr3 = IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0)) != 0)
+					while (IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0).SetTo(sptr3))
 					{
 						if (sptr2[0] == '0')
 						{
@@ -262,7 +262,7 @@ UOSInt Media::DDCReader::CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> reade
 							sess3 = IO::Path::FindFile(CSTRP(sbuff, sptr4));
 							if (sess3)
 							{
-								while ((sptr4 = IO::Path::FindNextFile(sptr3, sess3, 0, &pt, 0)) != 0)
+								while (IO::Path::FindNextFile(sptr3, sess3, 0, &pt, 0).SetTo(sptr4))
 								{
 									sptr4 = Text::StrConcatC(sptr4, UTF8STRC("/edid"));
 									IO::FileStream fs(CSTRP(sbuff, sptr4), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
@@ -318,7 +318,7 @@ UOSInt Media::DDCReader::CreateDDCReaders(NN<Data::ArrayListNN<DDCReader>> reade
 			{
 				UInt8 *edidData = MemAlloc(UInt8, edidSize >> 1);
 				edid[edidSize] = 0;
-				edidSize = Text::StrHex2Bytes((const Char*)edid, edidData);
+				edidSize = Text::StrHex2Bytes(edid, edidData);
 				NEW_CLASSNN(reader, Media::DDCReader(edidData, edidSize));
 				readerList->Add(reader);
 				MemFree(edidData);

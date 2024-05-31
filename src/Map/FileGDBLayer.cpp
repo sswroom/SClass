@@ -4,25 +4,26 @@
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
 
-Data::FastMap<Int32, const UTF8Char **> *Map::FileGDBLayer::ReadNameArr()
+Optional<Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>> Map::FileGDBLayer::ReadNameArr()
 {
 	UTF8Char sbuff[512];
+	UnsafeArray<UTF8Char> sptr;
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseDB(mutUsage).Ptr();
 	NN<DB::DBReader> r;
 	if (this->currDB->QueryTableData(CSTR_NULL, tableName->ToCString(), 0, 0, 0, 0, 0).SetTo(r))
 	{
-		Data::FastMap<Int32, const UTF8Char **> *nameArr;
-		const UTF8Char **names;
+		Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>> *nameArr;
+		UnsafeArray<UnsafeArrayOpt<const UTF8Char>> names;
 		UOSInt colCnt = this->colNames.GetCount();
 		UOSInt i;
 		Int32 objId;
 
-		NEW_CLASS(nameArr, Data::Int32FastMap<const UTF8Char **>());
+		NEW_CLASS(nameArr, Data::Int32FastMap<UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>>());
 		while (r->ReadNext())
 		{
 			objId = r->GetInt32(this->objIdCol);
-			names = MemAlloc(const UTF8Char *, colCnt);
+			names = MemAllocArr(UnsafeArrayOpt<const UTF8Char>, colCnt);
 			i = 0;
 			while (i < colCnt)
 			{
@@ -30,9 +31,9 @@ Data::FastMap<Int32, const UTF8Char **> *Map::FileGDBLayer::ReadNameArr()
 				{
 					names[i] = 0;
 				}
-				else if (r->GetStr(i, sbuff, sizeof(sbuff)))
+				else if (r->GetStr(i, sbuff, sizeof(sbuff)).SetTo(sptr))
 				{
-					names[i] = Text::StrCopyNew(sbuff).Ptr();
+					names[i] = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff));
 				}
 				else
 				{
@@ -98,7 +99,7 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CStringNN sourc
 					else
 					{
 						UOSInt tmp;
-						csys2 = prjParser->ParsePRJBuff(tableName, prj->v, prj->leng, &tmp);
+						csys2 = prjParser->ParsePRJBuff(tableName, prj->v, prj->leng, tmp);
 					}
 					if (csys2.SetTo(nncsys2))
 					{
@@ -191,7 +192,7 @@ UOSInt Map::FileGDBLayer::GetAllObjectIds(NN<Data::ArrayListInt64> outArr, NameA
 {
 	if (nameArr)
 	{
-		*nameArr = (NameArray*)ReadNameArr();
+		*nameArr = (NameArray*)ReadNameArr().OrNull();
 	}
 	UOSInt i = 0;
 	UOSInt j = this->objects.GetCount();
@@ -212,7 +213,7 @@ UOSInt Map::FileGDBLayer::GetObjectIdsMapXY(NN<Data::ArrayListInt64> outArr, Nam
 {
 	if (nameArr)
 	{
-		*nameArr = (NameArray*)ReadNameArr();
+		*nameArr = (NameArray*)ReadNameArr().OrNull();
 	}
 	UOSInt cnt = 0;
 	Math::Geometry::Vector2D *vec;
@@ -240,32 +241,35 @@ Int64 Map::FileGDBLayer::GetObjectIdMax() const
 
 void Map::FileGDBLayer::ReleaseNameArr(NameArray *nameArr)
 {
-	Data::FastMap<Int32, const UTF8Char **> *names = (Data::FastMap<Int32, const UTF8Char **> *)nameArr;
+	Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>> *names = (Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>> *)nameArr;
 	UOSInt i = names->GetCount();
 	UOSInt colCnt = this->colNames.GetCount();
 	UOSInt j;
-	const UTF8Char **nameStrs;
+	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> nameStrs;
+	UnsafeArray<const UTF8Char> nameStr;
 	while (i-- > 0)
 	{
-		nameStrs = names->GetItem(i);
-		j = colCnt;
-		while (j-- > 0)
+		if (names->GetItem(i).SetTo(nameStrs))
 		{
-			if (nameStrs[j])
-				Text::StrDelNew(nameStrs[j]);
+			j = colCnt;
+			while (j-- > 0)
+			{
+				if (nameStrs[j].SetTo(nameStr))
+					Text::StrDelNew(nameStr);
+			}
+			MemFreeArr(nameStrs);
 		}
-		MemFree(nameStrs);
 	}
 	DEL_CLASS(names);
 }
 
 Bool Map::FileGDBLayer::GetString(NN<Text::StringBuilderUTF8> sb, NameArray *nameArr, Int64 id, UOSInt strIndex)
 {
-	Data::FastMap<Int32, const UTF8Char **> *names = (Data::FastMap<Int32, const UTF8Char **> *)nameArr;
+	Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>> *names = (Data::FastMap<Int32, UnsafeArrayOpt<UnsafeArrayOpt<const UTF8Char>>> *)nameArr;
 	if (names == 0)
 		return false;
-	const UTF8Char **nameStrs = names->Get((Int32)id);
-	if (nameStrs == 0)
+	UnsafeArray<UnsafeArrayOpt<const UTF8Char>> nameStrs;
+	if (!names->Get((Int32)id).SetTo(nameStrs))
 		return false;
 	if (nameStrs[strIndex] == 0)
 		return false;
@@ -278,7 +282,7 @@ UOSInt Map::FileGDBLayer::GetColumnCnt() const
 	return this->colNames.GetCount();
 }
 
-UTF8Char *Map::FileGDBLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::FileGDBLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
 {
 	NN<Text::String> colName;
 	if (this->colNames.GetItem(colIndex).SetTo(colName))
@@ -344,7 +348,7 @@ UOSInt Map::FileGDBLayer::QueryTableNames(Text::CString schemaName, NN<Data::Arr
 	return 1;
 }
 
-Optional<DB::DBReader> Map::FileGDBLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::FileGDBLayer::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	NN<Sync::MutexUsage> mutUsage;
 	NEW_CLASSNN(mutUsage, Sync::MutexUsage());
@@ -363,7 +367,7 @@ Optional<DB::DBReader> Map::FileGDBLayer::QueryTableData(Text::CString schemaNam
 	return 0;
 }
 
-Optional<DB::TableDef> Map::FileGDBLayer::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> Map::FileGDBLayer::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseDB(mutUsage).Ptr();
@@ -451,7 +455,7 @@ Optional<Text::String> Map::FileGDBLReader::GetNewStr(UOSInt colIndex)
 	return this->r->GetNewStr((colIndex > 0)?(colIndex + 1):colIndex);
 }
 
-UTF8Char *Map::FileGDBLReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> Map::FileGDBLReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
 	return this->r->GetStr((colIndex > 0)?(colIndex + 1):colIndex, buff, buffSize);
 }
@@ -496,7 +500,7 @@ Bool Map::FileGDBLReader::IsNull(UOSInt colIndex)
 	return this->r->IsNull((colIndex > 0)?(colIndex + 1):colIndex);
 }
 
-UTF8Char *Map::FileGDBLReader::GetName(UOSInt colIndex, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Map::FileGDBLReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 {
 	return this->r->GetName((colIndex > 0)?(colIndex + 1):colIndex, buff);
 }

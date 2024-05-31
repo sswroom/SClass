@@ -35,9 +35,9 @@ $(<var>) means replace var as value
 void IO::SMake::AppendCfgItem(NN<Text::StringBuilderUTF8> sb, Text::CStringNN val)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<IO::SMake::ConfigItem> cfg;
-	const UTF8Char *valEnd = &val.v[val.leng];
+	UnsafeArray<const UTF8Char> valEnd = &val.v[val.leng];
 	UOSInt i = 0;
 	UOSInt j;
 	while ((j = Text::StrIndexOfC(&val.v[i], (UOSInt)(valEnd - &val.v[i]), UTF8STRC("$("))) != INVALID_INDEX)
@@ -74,13 +74,13 @@ void IO::SMake::AppendCfgItem(NN<Text::StringBuilderUTF8> sb, Text::CStringNN va
 	sb->AppendC(&val.v[i], (UOSInt)(valEnd - &val.v[i]));
 }
 
-void IO::SMake::AppendCfgPath(NN<Text::StringBuilderUTF8> sb, Text::CString path)
+void IO::SMake::AppendCfgPath(NN<Text::StringBuilderUTF8> sb, Text::CStringNN path)
 {
 	if (path.StartsWith(UTF8STRC("~/")))
 	{
 		Manage::EnvironmentVar env;
-		const UTF8Char *csptr = env.GetValue(CSTR("HOME"));
-		if (csptr)
+		UnsafeArray<const UTF8Char> csptr;
+		if (csptr.Set(env.GetValue(CSTR("HOME"))))
 		{
 			sb->AppendSlow(csptr);
 			sb->Append(path.Substring(1));
@@ -98,7 +98,7 @@ void IO::SMake::AppendCfgPath(NN<Text::StringBuilderUTF8> sb, Text::CString path
 
 void IO::SMake::AppendCfg(NN<Text::StringBuilderUTF8> sb, Text::CString compileCfgC)
 {
-	Text::CString compileCfg = compileCfgC;
+	Text::CStringNN compileCfg = compileCfgC.OrEmpty();
 	UOSInt i = compileCfg.IndexOf('`');
 	if (i != INVALID_INDEX)
 	{
@@ -243,7 +243,7 @@ Bool IO::SMake::LoadConfigFile(Text::CStringNN cfgFile)
 			}
 			if (prog.SetTo(nnprog) && valid)
 			{
-				Text::CString ccfg = str1.ToCString();
+				Text::CStringNN ccfg = str1.ToCString();
 				NN<IO::SMake::ConfigItem> cfg;
 				if (this->cfgMap.Get(str1.ToCString()).SetTo(cfg))
 				{
@@ -754,7 +754,7 @@ Bool IO::SMake::ParseHeader(NN<Data::FastStringMap<Int32>> objList,
 	Text::StringBuilderUTF8 sb2;
 	Text::PString sarr[2];
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	Int64 thisTime;
 	NN<Data::ArrayListStringNN> nnheaderList;
@@ -796,8 +796,8 @@ Bool IO::SMake::ParseHeader(NN<Data::FastStringMap<Int32>> objList,
 	tmpSb->Replace('\\', '/');
 	i = tmpSb->LastIndexOf('/');
 	tmpSb->TrimToLength(i);
-	const UTF8Char *currHeader = headerFile->v;
-	const UTF8Char *currHeaderEnd = &headerFile->v[headerFile->leng];
+	UnsafeArray<const UTF8Char> currHeader = headerFile->v;
+	UnsafeArray<const UTF8Char> currHeaderEnd = &headerFile->v[headerFile->leng];
 	while (Text::StrStartsWithC(currHeader, (UOSInt)(currHeaderEnd - currHeader), UTF8STRC("../")))
 	{
 		i = tmpSb->LastIndexOf('/');
@@ -1593,7 +1593,7 @@ IO::SMake::SMake(Text::CStringNN cfgFile, UOSInt threadCnt, IO::Writer *messageW
 	}
 	else
 	{
-		UTF8Char *sptr = IO::Path::GetCurrDirectory(sbuff);
+		UnsafeArray<UTF8Char> sptr = IO::Path::GetCurrDirectory(sbuff).Or(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -1712,9 +1712,10 @@ void IO::SMake::SetCommandWriter(IO::Writer *cmdWriter)
 void IO::SMake::SetDebugObj(Text::CString debugObj)
 {
 	SDEL_STRING(this->debugObj);
-	if (debugObj.v)
+	Text::CStringNN nns;
+	if (debugObj.SetTo(nns))
 	{
-		this->debugObj = Text::String::New(debugObj.v, debugObj.leng).Ptr();
+		this->debugObj = Text::String::New(nns).Ptr();
 	}
 }
 
@@ -1824,8 +1825,8 @@ Bool IO::SMake::ParseProg(NN<Data::FastStringMap<Int32>> objList,
 void IO::SMake::CleanFiles()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	IO::Path::PathType pt;
 	sptr = Text::StrConcatC(this->basePath->ConcatTo(sbuff), UTF8STRC(OBJECTPATH));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -1833,7 +1834,7 @@ void IO::SMake::CleanFiles()
 	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)
 	{
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
+		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).NotNull())
 		{
 			if (pt == IO::Path::PathType::File)
 			{

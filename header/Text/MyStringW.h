@@ -181,8 +181,8 @@ namespace Text
 	Bool StrToUOSInt(const UTF16Char *intStr, UOSInt *outVal);
 	Bool StrToUOSInt(const UTF32Char *intStr, UOSInt *outVal);
 
-	Bool StrToBool(const UTF16Char *str);
-	Bool StrToBool(const UTF32Char *str);
+	Bool StrToBoolW(const UTF16Char *str);
+	Bool StrToBoolW(const UTF32Char *str);
 	UOSInt StrIndexOf(const UTF16Char *str1, const UTF16Char *str2);
 	UOSInt StrIndexOfChar(const UTF16Char *str1, UTF16Char c);
 	UOSInt StrIndexOf(const UTF32Char *str1, const UTF32Char *str2);

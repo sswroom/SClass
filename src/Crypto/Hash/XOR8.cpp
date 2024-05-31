@@ -33,7 +33,7 @@ void Crypto::Hash::XOR8::Clear()
 	this->val = 0;
 }
 
-void Crypto::Hash::XOR8::Calc(const UInt8 *buff, UOSInt buffSize)
+void Crypto::Hash::XOR8::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	UInt8 val = this->val;
 

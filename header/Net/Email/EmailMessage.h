@@ -56,14 +56,14 @@ namespace Net
 			Crypto::Cert::X509Cert *signCert;
 			Crypto::Cert::X509Key *signKey;
 
-			UOSInt GetHeaderIndex(const UTF8Char *name, UOSInt nameLen);
-			Bool SetHeader(const UTF8Char *name, UOSInt nameLen, const UTF8Char *val, UOSInt valLen);
-			Bool AppendUTF8Header(NN<Text::StringBuilderUTF8> sb, const UTF8Char *val, UOSInt valLen);
-			void GenMultipart(NN<IO::Stream> stm, Text::CString boundary);
+			UOSInt GetHeaderIndex(Text::CStringNN name);
+			Bool SetHeader(Text::CStringNN name, Text::CStringNN val);
+			Bool AppendUTF8Header(NN<Text::StringBuilderUTF8> sb, Text::CStringNN val);
+			void GenMultipart(NN<IO::Stream> stm, Text::CStringNN boundary);
 
 			void WriteHeaders(NN<IO::Stream> stm);
 			void WriteContents(NN<IO::Stream> stm);
-			static UTF8Char *GenBoundary(UTF8Char *sbuff, const UInt8 *data, UOSInt dataLen);
+			static UnsafeArray<UTF8Char> GenBoundary(UnsafeArray<UTF8Char> sbuff, const UInt8 *data, UOSInt dataLen);
 			static void WriteB64Data(NN<IO::Stream> stm, const UInt8 *data, UOSInt dataSize);
 			static void AttachmentFree(NN<Attachment> attachment);
 			static void EmailAddressFree(NN<EmailAddress> recipient);
@@ -76,7 +76,7 @@ namespace Net
 			Bool SetContent(Text::CStringNN content, Text::CStringNN contentType);
 			Bool SetSentDate(NN<Data::DateTime> dt);
 			Bool SetSentDate(Data::Timestamp ts);
-			Bool SetMessageId(Text::CString msgId);
+			Bool SetMessageId(Text::CStringNN msgId);
 			Bool SetFrom(Text::CString name, Text::CStringNN addr);
 			Bool AddTo(Text::CString name, Text::CStringNN addr);
 			Bool AddToList(Text::CStringNN addrs);
@@ -84,7 +84,7 @@ namespace Net
 			Bool AddBcc(Text::CStringNN addr);
 			void AddCustomHeader(Text::CStringNN name, Text::CStringNN value);
 			Optional<Attachment> AddAttachment(Text::CStringNN fileName);
-			NN<Attachment> AddAttachment(const UInt8 *content, UOSInt contentLen, Text::CString fileName);
+			NN<Attachment> AddAttachment(const UInt8 *content, UOSInt contentLen, Text::CStringNN fileName);
 			Bool AddSignature(Optional<Net::SSLEngine> ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509Key *key);
 
 			Bool CompletedMessage();
@@ -92,7 +92,7 @@ namespace Net
 			NN<const Data::ArrayListNN<EmailAddress>> GetRecpList();
 			Bool WriteToStream(NN<IO::Stream> stm);
 
-			static Bool GenerateMessageID(NN<Text::StringBuilderUTF8> sb, Text::CString fromAddr);
+			static Bool GenerateMessageID(NN<Text::StringBuilderUTF8> sb, Text::CStringNN fromAddr);
 		};
 	}
 }

@@ -13,7 +13,7 @@ namespace Media
 
 	public:
 		DDCReader(void *hMon);
-		DDCReader(const UTF8Char *monitorId);
+		DDCReader(UnsafeArray<const UTF8Char> monitorId);
 		DDCReader(UInt8 *edid, UOSInt edidSize);
 		~DDCReader();
 

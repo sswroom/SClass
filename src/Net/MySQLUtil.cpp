@@ -210,7 +210,7 @@ DB::DBUtil::ColType Net::MySQLUtil::MySQLType2ColType(Net::MySQLUtil::MySQLType 
 	}
 }
 
-Net::MySQLUtil::AuthenType Net::MySQLUtil::AuthenTypeParse(Text::CString name)
+Net::MySQLUtil::AuthenType Net::MySQLUtil::AuthenTypeParse(Text::CStringNN name)
 {
 	if (name.Equals(UTF8STRC("caching_sha2_password")))
 		return AuthenType::CachingSHA2Password;
@@ -222,7 +222,7 @@ Net::MySQLUtil::AuthenType Net::MySQLUtil::AuthenTypeParse(Text::CString name)
 	}
 }
 
-Text::CString Net::MySQLUtil::AuthenTypeGetName(AuthenType authType)
+Text::CStringNN Net::MySQLUtil::AuthenTypeGetName(AuthenType authType)
 {
 	switch (authType)
 	{
@@ -234,7 +234,7 @@ Text::CString Net::MySQLUtil::AuthenTypeGetName(AuthenType authType)
 	}
 }
 
-UOSInt Net::MySQLUtil::BuildAuthen(UInt8 *buff, AuthenType authType, const UInt8 *nonce, UOSInt nonceSize, Text::CString password)
+UOSInt Net::MySQLUtil::BuildAuthen(UInt8 *buff, AuthenType authType, const UInt8 *nonce, UOSInt nonceSize, Text::CStringNN password)
 {
 	UInt8 tmpBuff[32];
 	UOSInt i;
@@ -284,7 +284,7 @@ UOSInt Net::MySQLUtil::BuildAuthen(UInt8 *buff, AuthenType authType, const UInt8
 	}
 }
 
-Bool Net::MySQLUtil::IsAxisAware(Text::CString svrVer)
+Bool Net::MySQLUtil::IsAxisAware(Text::CStringNN svrVer)
 {
 	UTF8Char sbuff[32];
 	if (svrVer.IndexOf(UTF8STRC("-MariaDB")) != INVALID_INDEX)

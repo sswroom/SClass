@@ -620,5 +620,5 @@ namespace Data
 		MemCopyNO(destArr.buff.Ptr(), srcArr.Arr().Ptr(), srcArr.GetSize());
 	}
 }
-#define BYTEARR(var) Data::ByteArray(var, sizeof(var))
+#define BYTEARR(var) Data::ByteArray(UARR(var), sizeof(var))
 #endif

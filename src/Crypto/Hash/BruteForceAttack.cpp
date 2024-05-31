@@ -184,7 +184,7 @@ Bool Crypto::Hash::BruteForceAttack::IsProcessing()
 	return this->threadCnt > 0;
 }
 
-UTF8Char *Crypto::Hash::BruteForceAttack::GetCurrKey(UTF8Char *key)
+UnsafeArrayOpt<UTF8Char> Crypto::Hash::BruteForceAttack::GetCurrKey(UnsafeArray<UTF8Char> key)
 {
 	if (this->threadCnt > 0)
 	{
@@ -214,7 +214,7 @@ UInt64 Crypto::Hash::BruteForceAttack::GetTestCnt()
 	return this->testCnt;
 }
 
-UTF8Char *Crypto::Hash::BruteForceAttack::GetResult(UTF8Char *resultBuff)
+UnsafeArrayOpt<UTF8Char> Crypto::Hash::BruteForceAttack::GetResult(UnsafeArray<UTF8Char> resultBuff)
 {
 	if (this->resultBuff[0])
 		return Text::StrConcat(resultBuff, this->resultBuff);

@@ -50,7 +50,7 @@ namespace DB
 		virtual OSInt ExecuteNonQuery(Text::CStringNN sql) = 0;
 		virtual Optional<DBReader> ExecuteReader(Text::CStringNN sql) = 0;
 		virtual Bool IsLastDataError() = 0;
-		virtual Optional<TableDef> GetTableDef(Text::CString schemaName, Text::CString tableName);
+		virtual Optional<TableDef> GetTableDef(Text::CString schemaName, Text::CStringNN tableName);
 		DataError GetLastDataError();
 
 		virtual Optional<DBTransaction> BeginTransaction() = 0;

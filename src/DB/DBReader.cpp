@@ -106,7 +106,7 @@ Bool DB::DBReader::GetVariItem(UOSInt colIndex, NN<Data::VariItem> item)
 	}
 }
 
-NN<DB::TableDef> DB::DBReader::GenTableDef(Text::CString schemaName, Text::CString tableName)
+NN<DB::TableDef> DB::DBReader::GenTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	NN<DB::TableDef> table;
 	NN<DB::ColDef> colDef;

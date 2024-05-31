@@ -600,7 +600,7 @@ __inline UOSInt MyDIV_UOS(UOSInt lo, UOSInt hi, UOSInt divider, UOSInt *reminder
 #define ROR64(x, n) ((x >> n) | (x << (64 - n)))
 #define INVALID_INDEX ((UOSInt)-1)
 #define UTF8STRC(s) U8STR(s), U8STRLEN(s)
-#define UTF8STRCRAW(s) U8STRRAW(s), U8STRLEN(s)
+#define UTF8STRCPTR(s) U8STRPTR(s), U8STRLEN(s)
 #define UTF8STR_NULL (const UTF8Char*)0, 0
 
 #if defined(__GNUC__) && (__cplusplus < 201703L) && (__STDC_VERSION__ < 201703L) && !defined(__clang__)
@@ -615,14 +615,16 @@ __inline UOSInt MyDIV_UOS(UOSInt lo, UOSInt hi, UOSInt divider, UOSInt *reminder
 #define ASTRUCT struct
 #endif
 
+#define CHSTR(s) UnsafeArray<const Char>::FromPtrNoCheck(s)
 #if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1900)
 #define U8STR(s) UnsafeArray<const UTF8Char>::FromPtrNoCheck((const UTF8Char*)(u8 ## s))
-#define U8STRRAW(s) ((const UTF8Char*)(u8 ## s))
+#define U8STRPTR(s) ((const UTF8Char*)(u8 ## s))
 #define U8STRLEN(s) (sizeof(u8 ## s) - 1)
 #define U16STR(s) ((const UTF16Char*)(u ## s))
 #define U32STR(s) ((const UTF32Char*)(U ## s))
 #else
-#define U8STR(s) ((const UTF8Char*)s)
+#define U8STR(s) UnsafeArray<const UTF8Char>::FromPtrNoCheck((const UTF8Char*)s)
+#define U8STRPTR(s) ((const UTF8Char*)s)
 #define U8STRLEN(s) (sizeof(s) - 1)
 #if _WCHAR_SIZE == 4
 #define U32STR(s) ((const UTF32Char*)(L ## s))

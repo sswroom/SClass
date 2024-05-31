@@ -814,7 +814,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::EXEFileAnalyse::GetFrame
 	NN<IO::FileAnalyse::EXEFileAnalyse::PackInfo> pack;
 	Text::CString vName;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (!this->packs.GetItem(index).SetTo(pack))
 		return 0;
 
@@ -1199,7 +1199,7 @@ Bool IO::FileAnalyse::EXEFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 	return false;
 }
 
-Text::CString IO::FileAnalyse::EXEFileAnalyse::PackTypeGetName(Int32 packType)
+Text::CStringNN IO::FileAnalyse::EXEFileAnalyse::PackTypeGetName(Int32 packType)
 {
 	switch (packType)
 	{

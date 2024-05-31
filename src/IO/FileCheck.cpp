@@ -139,10 +139,10 @@ void __stdcall IO::FileCheck::CheckData(const UInt8 *buff, UOSInt buffSize, AnyT
 	}
 }
 
-Bool IO::FileCheck::CheckDir(NN<IO::ActiveStreamReader> reader, UTF8Char *fullPath, UTF8Char *hashPath, NN<Crypto::Hash::IHash> hash, IO::FileCheck *fchk, Optional<IO::ProgressHandler> progress, Bool skipError)
+Bool IO::FileCheck::CheckDir(NN<IO::ActiveStreamReader> reader, UnsafeArray<UTF8Char> fullPath, UnsafeArray<UTF8Char> hashPath, NN<Crypto::Hash::IHash> hash, IO::FileCheck *fchk, Optional<IO::ProgressHandler> progress, Bool skipError)
 {
-	UTF8Char *sptr = &hashPath[Text::StrCharCnt(hashPath)];
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr = &hashPath[Text::StrCharCnt(hashPath)];
+	UnsafeArray<UTF8Char> sptr2;
 	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
 	NN<IO::FileStream> fs;
@@ -157,7 +157,7 @@ Bool IO::FileCheck::CheckDir(NN<IO::ActiveStreamReader> reader, UTF8Char *fullPa
 	sess = IO::Path::FindFile(CSTRP(fullPath, sptr2));
 	if (sess)
 	{
-		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
+		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0).SetTo(sptr2))
 		{
 			if (pt == IO::Path::PathType::Directory)
 			{
@@ -314,8 +314,8 @@ void IO::FileCheck::AddEntry(Text::CStringNN fileName, UInt8 *hashVal)
 Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal, Optional<IO::Writer> verboseWriter) const
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptrEnd;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptrEnd;
 	UOSInt i;
 	NN<Crypto::Hash::IHash> hash;
 	NN<IO::Writer> writer;

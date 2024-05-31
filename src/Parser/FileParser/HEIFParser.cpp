@@ -365,7 +365,7 @@ Media::StaticImage *HEIFParser_DecodeImage(heif_image_handle *imgHdlr)
 #if defined(VERBOSE)
 			printf("Metadata found: type = %s, size = %d\r\n", type, (Int32)exifSize);
 #endif
-			if (Text::StrEquals(type, "Exif"))
+			if (Text::StrEqualsCh(type, "Exif"))
 			{
 				UInt8* exifData = MemAlloc(UInt8, (UOSInt)exifSize);
 				struct heif_error error = heif_image_handle_get_metadata(imgHdlr, metaIds[i], exifData);
@@ -526,7 +526,7 @@ Bool Parser::FileParser::HEIFParser::ParseHeaders(NN<IO::StreamData> fd, OutPara
 				{
 					size_t exifSize = heif_image_handle_get_metadata_size(imgHdlr, metaIds[i]);
 					const char *type = heif_image_handle_get_metadata_type(imgHdlr, metaIds[i]);
-					if (Text::StrEquals(type, "Exif"))
+					if (Text::StrEqualsCh(type, "Exif"))
 					{
 						UInt8* exifData = MemAlloc(UInt8, (UOSInt)exifSize);
 						struct heif_error error = heif_image_handle_get_metadata(imgHdlr, metaIds[i], exifData);

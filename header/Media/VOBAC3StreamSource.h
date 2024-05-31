@@ -32,7 +32,7 @@ namespace Media
 		Bool ParseHeader(UnsafeArray<UInt8> buff, UOSInt buffSize);
 		Bool IsReady();
 
-		virtual UTF8Char *GetSourceName(UTF8Char *buff);
+		virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
 		virtual Bool CanSeek();
 		virtual Data::Duration GetStreamTime();
 		virtual Data::Duration SeekToTime(Data::Duration time);

@@ -62,7 +62,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::OSMMapParser::ParseObject(NN<IO::P
 	{
 		Text::JSONObject *jobj = (Text::JSONObject*)fileJSON;
 		Text::JSONBase *jbase = jobj->GetObjectValue(CSTR("type"));
-		if (jbase && jbase->Equals(CSTR("overlay")) && fd->GetShortName().EndsWith(UTF8STRC("metadata.json")))
+		if (jbase && jbase->Equals(CSTR("overlay")) && fd->GetShortName().OrEmpty().EndsWith(UTF8STRC("metadata.json")))
 		{
 			NN<Text::String> name;
 			NN<Text::String> format;

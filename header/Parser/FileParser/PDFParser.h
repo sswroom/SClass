@@ -29,7 +29,7 @@ namespace Parser
 		private:
 			struct PDFParseEnv;
 
-			Bool IsComment(const UTF8Char *buff, UOSInt size);
+			Bool IsComment(UnsafeArray<const UTF8Char> buff, UOSInt size);
 			Bool NextLine(NN<PDFParseEnv> env, NN<Text::StringBuilderUTF8> sb, Bool skipComment);
 			Bool NextLineFixed(NN<PDFParseEnv> env, UOSInt size);
 			void ParseStartxref(NN<PDFParseEnv> env, NN<Text::StringBuilderUTF8> sb);

@@ -142,7 +142,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameName(UOSInt index, NN<Text::Str
 Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 *extBuff;
 	NN<IO::FileAnalyse::NFDumpFileAnalyse::PackInfo> pack;
 	UOSInt i;

@@ -507,7 +507,7 @@ template <typename T> Bool Text::StringBase<T>::ToUInt32S(OutParam<UInt32> outVa
 
 template <typename T> Bool Text::StringBase<T>::ToBool() const
 {
-	return Text::StrToBool(this->v);
+	return Text::StrToBool(UnsafeArray<const UTF8Char>(this->v));
 }
 
 template<typename T> UOSInt Text::StringBase<T>::Hex2Bytes(UInt8 *buff) const
@@ -590,8 +590,8 @@ template <typename T> UOSInt Text::StringBase<T>::BranketSearch(UOSInt startInde
 	UTF8Char branketList[20];
 	UOSInt branketCnt = 0;
 	UTF8Char thisC;
-	const T *curr = this->v + startIndex;
-	const T *endPtr = this->v + this->leng;
+	UnsafeArray<const T> curr = this->v + startIndex;
+	UnsafeArray<const T> endPtr = this->v + this->leng;
 	while (curr < endPtr)
 	{
 		thisC = *curr++;

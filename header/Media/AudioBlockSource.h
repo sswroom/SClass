@@ -33,7 +33,7 @@ namespace Media
 		AudioBlockSource(NN<IO::StreamData> fd, NN<const Media::AudioFormat> format, NN<Text::String> name, UInt32 samplePerBlock);
 		virtual ~AudioBlockSource();
 
-		virtual UTF8Char *GetSourceName(UTF8Char *buff);
+		virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
 		virtual Bool CanSeek();
 		virtual Data::Duration GetStreamTime();
 		virtual Data::Duration SeekToTime(Data::Duration time);

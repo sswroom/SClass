@@ -49,12 +49,12 @@ void Crypto::Hash::RIPEMD128::Clear()
 	buffSize = 0;
 }
 
-void Crypto::Hash::RIPEMD128::Calc(const UInt8 *buff, UOSInt buffSize)
+void Crypto::Hash::RIPEMD128::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	this->msgLeng += (buffSize << 3);
 	if ((buffSize + this->buffSize) < 64)
 	{
-		MemCopyNO(&this->buff[this->buffSize], buff, buffSize);
+		MemCopyNO(&this->buff[this->buffSize], buff.Ptr(), buffSize);
 		this->buffSize += (UInt32)buffSize;
 		return;
 	}
@@ -62,7 +62,7 @@ void Crypto::Hash::RIPEMD128::Calc(const UInt8 *buff, UOSInt buffSize)
 	UInt32 keys[4] = {h0, h1, h2, h3};
 	if (this->buffSize > 0)
 	{
-		MemCopyNO(&this->buff[this->buffSize], buff, 64 - this->buffSize);
+		MemCopyNO(&this->buff[this->buffSize], buff.Ptr(), 64 - this->buffSize);
 		RMD128_CalcBlock(keys, this->buff);
 		buff += 64 - this->buffSize;
 		buffSize -= 64 - this->buffSize;
@@ -71,13 +71,13 @@ void Crypto::Hash::RIPEMD128::Calc(const UInt8 *buff, UOSInt buffSize)
 
 	while (buffSize >= 64)
 	{
-		RMD128_CalcBlock(keys, buff);
+		RMD128_CalcBlock(keys, buff.Ptr());
 		buff += 64;
 		buffSize -= 64;
 	}
 	if (buffSize > 0)
 	{
-		MemCopyNO(this->buff, buff, this->buffSize = (UInt32)buffSize);
+		MemCopyNO(this->buff, buff.Ptr(), this->buffSize = (UInt32)buffSize);
 	}
 
 	h0 = keys[0];

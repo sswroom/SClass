@@ -51,12 +51,12 @@ void Crypto::Hash::MD5::Clear()
 	buffSize = 0;
 }
 
-void Crypto::Hash::MD5::Calc(const UInt8 *buff, UOSInt buffSize)
+void Crypto::Hash::MD5::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	this->msgLeng += (buffSize << 3);
 	if ((buffSize + this->buffSize) < 64)
 	{
-		MemCopyNO(&this->buff[this->buffSize], buff, buffSize);
+		MemCopyNO(&this->buff[this->buffSize], buff.Ptr(), buffSize);
 		this->buffSize += buffSize;
 		return;
 	}
@@ -64,7 +64,7 @@ void Crypto::Hash::MD5::Calc(const UInt8 *buff, UOSInt buffSize)
 	UInt32 *v = this->h;
 	if (this->buffSize > 0)
 	{
-		MemCopyNO(&this->buff[this->buffSize], buff, 64 - this->buffSize);
+		MemCopyNO(&this->buff[this->buffSize], buff.Ptr(), 64 - this->buffSize);
 		MD5_CalcBlock(v, this->buff, 1);
 		buff += 64 - this->buffSize;
 		buffSize -= 64 - this->buffSize;
@@ -72,13 +72,13 @@ void Crypto::Hash::MD5::Calc(const UInt8 *buff, UOSInt buffSize)
 	}
 	if (buffSize >= 64)
 	{
-		MD5_CalcBlock(v, buff, buffSize >> 6);
+		MD5_CalcBlock(v, buff.Ptr(), buffSize >> 6);
 		buff += buffSize & (UOSInt)~63;
 		buffSize = buffSize & 63;
 	}
 	if (buffSize > 0)
 	{
-		MemCopyNO(this->buff, buff, this->buffSize = buffSize);
+		MemCopyNO(this->buff, buff.Ptr(), this->buffSize = buffSize);
 	}
 }
 

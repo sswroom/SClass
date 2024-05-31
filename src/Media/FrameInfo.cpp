@@ -112,7 +112,7 @@ void Media::FrameInfo::ToString(NN<Text::StringBuilderUTF8> sb) const
 	this->color.ToString(sb);
 }
 
-Text::CString Media::FrameTypeGetName(FrameType frameType)
+Text::CStringNN Media::FrameTypeGetName(FrameType frameType)
 {
 	switch (frameType)
 	{
@@ -139,7 +139,7 @@ Text::CString Media::FrameTypeGetName(FrameType frameType)
 	}
 }
 
-Text::CString Media::AlphaTypeGetName(AlphaType atype)
+Text::CStringNN Media::AlphaTypeGetName(AlphaType atype)
 {
 	switch (atype)
 	{
@@ -154,7 +154,7 @@ Text::CString Media::AlphaTypeGetName(AlphaType atype)
 	}
 }
 
-Text::CString Media::YCOffsetGetName(YCOffset ycOfst)
+Text::CStringNN Media::YCOffsetGetName(YCOffset ycOfst)
 {
 	switch (ycOfst)
 	{
@@ -171,7 +171,7 @@ Text::CString Media::YCOffsetGetName(YCOffset ycOfst)
 	}
 }
 
-Text::CString Media::PixelFormatGetName(PixelFormat pf)
+Text::CStringNN Media::PixelFormatGetName(PixelFormat pf)
 {
 	switch (pf)
 	{

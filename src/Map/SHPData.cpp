@@ -16,7 +16,7 @@
 Map::SHPData::SHPData(const UInt8 *shpHdr, NN<IO::StreamData> data, UInt32 codePage, NN<Math::ArcGISPRJParser> prjParser) : Map::MapDrawLayer(data->GetFullName(), 0, 0, Math::CoordinateSystemManager::CreateWGS84Csys())
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 shpBuff[100];
 	Int32 valid;
 	UInt32 fileLen;
@@ -53,7 +53,7 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, NN<IO::StreamData> data, UInt32 codeP
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".prj"));
 	}
 	NN<Math::CoordinateSystem> csys;
-	if (csys.Set(prjParser->ParsePRJFile({sbuff, (UOSInt)(sptr - sbuff)})))
+	if (prjParser->ParsePRJFile({sbuff, (UOSInt)(sptr - sbuff)}).SetTo(csys))
 	{
 		this->SetCoordinateSystem(csys);	
 	}
@@ -344,8 +344,7 @@ Map::SHPData::SHPData(const UInt8 *shpHdr, NN<IO::StreamData> data, UInt32 codeP
 			i = this->dbf->GetColCount();
 			while (i-- > 0)
 			{
-				sptr = this->dbf->GetColumnName(i, sbuff);
-				if (Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("NAME")))
+				if (this->dbf->GetColumnName(i, sbuff).SetTo(sptr) && Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("NAME")))
 				{
 					nameCol = i;
 				}
@@ -512,7 +511,7 @@ UOSInt Map::SHPData::GetColumnCnt() const
 	return this->dbf->GetColCount();
 }
 
-UTF8Char *Map::SHPData::GetColumnName(UTF8Char *buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::SHPData::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
 {
 	return this->dbf->GetColumnName(colIndex, buff);
 }
@@ -641,12 +640,12 @@ UOSInt Map::SHPData::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLis
 	return this->dbf->QueryTableNames(schemaName, names);
 }
 
-Optional<DB::DBReader> Map::SHPData::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::SHPData::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	return this->dbf->QueryTableData(schemaName, tableName, columNames, ofst, maxCnt, ordering, condition);
 }
 
-Optional<DB::TableDef> Map::SHPData::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> Map::SHPData::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	return this->dbf->GetTableDef(schemaName, tableName);
 }

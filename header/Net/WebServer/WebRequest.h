@@ -45,7 +45,7 @@ namespace Net
 			void ParseQuery();
 			void ParseFormStr(NN<Data::FastStringMapNN<Text::String>> formMap, const UInt8 *buff, UOSInt buffSize);
 			void ParseFormPart(UInt8 *data, UOSInt dataSize, UOSInt startOfst);
-			Text::CString ParseHeaderVal(UnsafeArray<UTF8Char> headerData, UOSInt dataLen);
+			Text::CStringNN ParseHeaderVal(UnsafeArray<UTF8Char> headerData, UOSInt dataLen);
 		public:
 			WebRequest(Text::CStringNN requestURI, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, NN<Net::TCPClient> cli, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort);
 			virtual ~WebRequest();
@@ -66,7 +66,7 @@ namespace Net
 			virtual Net::WebUtil::RequestMethod GetReqMethod() const;
 			virtual void ParseHTTPForm();
 			virtual Optional<Text::String> GetHTTPFormStr(Text::CStringNN name);
-			virtual const UInt8 *GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UnsafeArray<UTF8Char> fileName, UOSInt fileNameBuffSize, OptOut<UnsafeArray<UTF8Char>> fileNameEnd, OptOut<UOSInt> fileSize);
+			virtual const UInt8 *GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UnsafeArrayOpt<UTF8Char> fileName, UOSInt fileNameBuffSize, OptOut<UnsafeArray<UTF8Char>> fileNameEnd, OptOut<UOSInt> fileSize);
 			virtual void GetRequestURLBase(NN<Text::StringBuilderUTF8> sb);
 
 			virtual NN<const Net::SocketUtil::AddressInfo> GetClientAddr() const;

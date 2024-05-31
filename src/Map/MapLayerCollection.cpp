@@ -300,7 +300,7 @@ UOSInt Map::MapLayerCollection::GetColumnCnt() const
 	return 0;
 }
 
-UTF8Char *Map::MapLayerCollection::GetColumnName(UTF8Char *buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::MapLayerCollection::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
 {
 	return 0;
 }

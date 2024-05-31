@@ -35,9 +35,9 @@ void Crypto::Hash::FNV1a::Clear()
 	this->currVal = 0x811c9dc5;
 }
 
-void Crypto::Hash::FNV1a::Calc(const UInt8 *buff, UOSInt buffSize)
+void Crypto::Hash::FNV1a::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
-	this->currVal = FNV1a_Calc(buff, buffSize, this->currVal);
+	this->currVal = FNV1a_Calc(buff.Ptr(), buffSize, this->currVal);
 }
 
 void Crypto::Hash::FNV1a::GetValue(UnsafeArray<UInt8> buff) const

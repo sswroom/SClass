@@ -14,7 +14,7 @@ Crypto::Hash::HashCalc::~HashCalc()
 	this->hash.Delete();
 }
 
-void Crypto::Hash::HashCalc::Calc(const UInt8 *buff, UOSInt size, UInt8 *hashVal)
+void Crypto::Hash::HashCalc::Calc(UnsafeArray<const UInt8> buff, UOSInt size, UnsafeArray<UInt8> hashVal)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	this->hash->Clear();
@@ -22,7 +22,7 @@ void Crypto::Hash::HashCalc::Calc(const UInt8 *buff, UOSInt size, UInt8 *hashVal
 	this->hash->GetValue(hashVal);
 }
 
-void Crypto::Hash::HashCalc::CalcStr(Text::CStringNN s, UInt8 *hashVal)
+void Crypto::Hash::HashCalc::CalcStr(Text::CStringNN s, UnsafeArray<UInt8> hashVal)
 {
 	this->Calc(s.v, s.leng, hashVal);
 }

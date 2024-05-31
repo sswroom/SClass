@@ -21,8 +21,8 @@ namespace Math
 		virtual ~TSPFile();
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
-		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
-		virtual Optional<DB::TableDef> GetTableDef(Text::CString schemaName, Text::CString tableName);
+		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual Optional<DB::TableDef> GetTableDef(Text::CString schemaName, Text::CStringNN tableName);
 		virtual void CloseReader(NN<DB::DBReader> r);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
@@ -54,7 +54,7 @@ namespace Math
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
 		virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb);
 		virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
-		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
+		virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize);
 		virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
 		virtual Double GetDbl(UOSInt colIndex);
 		virtual Bool GetBool(UOSInt colIndex);
@@ -63,7 +63,7 @@ namespace Math
 		virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex);
 		virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid);
 
-		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
+		virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff);
 		virtual Bool IsNull(UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
 		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);
@@ -90,7 +90,7 @@ namespace Math
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
 		virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb);
 		virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
-		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
+		virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize);
 		virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
 		virtual Double GetDbl(UOSInt colIndex);
 		virtual Bool GetBool(UOSInt colIndex);
@@ -99,7 +99,7 @@ namespace Math
 		virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex);
 		virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid);
 
-		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
+		virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff);
 		virtual Bool IsNull(UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
 		virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);

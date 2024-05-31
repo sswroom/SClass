@@ -38,7 +38,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SM2MPXParser::ParseFileHdr(NN<IO:
 	UInt8 rec[20];
 
 	UTF8Char name[13];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	if (ReadUInt32(&hdr[0]) != 0x4D324D53 || ReadUInt32(&hdr[4]) != 0x30315850)
 	{

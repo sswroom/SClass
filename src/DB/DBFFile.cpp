@@ -85,7 +85,7 @@ UOSInt DB::DBFFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayList
 	return 1;
 }
 
-Optional<DB::DBReader> DB::DBFFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::DBFFile::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	if (cols)
 	{
@@ -99,7 +99,7 @@ Optional<DB::DBReader> DB::DBFFile::QueryTableData(Text::CString schemaName, Tex
 	}
 }
 
-Optional<DB::TableDef> DB::DBFFile::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> DB::DBFFile::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	NN<DB::ColDef> col;
 	DB::TableDef *tab;

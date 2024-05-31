@@ -38,7 +38,7 @@ namespace Media
 		virtual Optional<Media::IMediaSource> GetStream(UOSInt index, OptOut<Int32> syncTime);
 		virtual void KeepStream(UOSInt index, Bool toKeep);
 
-		virtual UTF8Char *GetMediaName(UTF8Char *buff);
+		virtual UnsafeArrayOpt<UTF8Char> GetMediaName(UnsafeArray<UTF8Char> buff);
 		virtual Data::Duration GetStreamTime();
 		virtual Bool StartAudio();
 		virtual Bool StopAudio();

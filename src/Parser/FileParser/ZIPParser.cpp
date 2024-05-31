@@ -80,8 +80,8 @@ typedef struct
 Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
-	UTF8Char *sptrEnd;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptrEnd;
 	UInt8 buff[512];
 	UInt8 recHdr[64];
 	UInt8 z64eocdl[20];
@@ -463,8 +463,7 @@ Optional<IO::ParsedObject> Parser::FileParser::ZIPParser::ParseFileHdr(NN<IO::St
 		ui = pf->GetCount();
 		while (ui-- > 0)
 		{
-			sptr = pf->GetItemName(sbuff, ui);
-			if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".kml")) && pf->GetItemType(ui) == IO::PackageFile::PackObjectType::StreamData)
+			if (pf->GetItemName(sbuff, ui).SetTo(sptr) && Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".kml")) && pf->GetItemType(ui) == IO::PackageFile::PackObjectType::StreamData)
 			{
 				NN<IO::StreamData> stmData;
 				Optional<IO::ParsedObject> pobj = 0;
@@ -511,8 +510,8 @@ UOSInt Parser::FileParser::ZIPParser::ParseCentDir(NN<IO::VirtualPackageFile> pf
 	IO::VirtualPackageFile *pf2;
 	NN<IO::PackageFile> pf3;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
-	UTF8Char *sptrEnd;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptrEnd;
 	UInt16 flags;
 	UInt16 compMeth;
 	UInt64 compSize;

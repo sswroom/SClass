@@ -67,7 +67,7 @@ Optional<IO::ParsedObject> Parser::FileParser::WPTParser::ParseFileHdr(NN<IO::St
 	}
 	if (valid)
 	{
-		UnsafeArray<const UTF8Char> colNames[] = {U8STR("Name"), U8STR("Description")};
+		UnsafeArrayOpt<const UTF8Char> colNames[] = {U8STR("Name"), U8STR("Description")};
 		DB::DBUtil::ColType colTypes[] = {DB::DBUtil::CT_VarUTF8Char, DB::DBUtil::CT_VarUTF8Char};
 		UOSInt colSizes[] = {14, 40};
 		UOSInt colDPs[] = {0, 0};

@@ -104,11 +104,11 @@ UInt32 IO::SystemInfoLog::GetProductType() const
 	return this->productType;
 }
 
-void IO::SystemInfoLog::AddServerRole(const UTF8Char *name, const UTF8Char *data)
+void IO::SystemInfoLog::AddServerRole(UnsafeArray<const UTF8Char> name, UnsafeArray<const UTF8Char> data)
 {
 	NN<ServerRole> role = MemAllocNN(ServerRole);
-	role->name = SCOPY_TEXT(name);
-	role->data = SCOPY_TEXT(data);
+	role->name = Text::StrCopyNew(name);
+	role->data = Text::StrCopyNew(data);
 	this->serverRoles.Add(role);
 }
 
@@ -117,7 +117,7 @@ NN<const Data::ArrayListNN<IO::SystemInfoLog::ServerRole>> IO::SystemInfoLog::Ge
 	return this->serverRoles;
 }
 
-void IO::SystemInfoLog::AddDeviceInfo(const UTF8Char *desc, const UTF8Char *hwId, const UTF8Char *service, const UTF8Char *driver)
+void IO::SystemInfoLog::AddDeviceInfo(UnsafeArray<const UTF8Char> desc, UnsafeArray<const UTF8Char> hwId, UnsafeArrayOpt<const UTF8Char> service, UnsafeArrayOpt<const UTF8Char> driver)
 {
 	NN<DeviceInfo> dev = MemAllocNN(DeviceInfo);
 	dev->desc = Text::String::NewNotNullSlow(desc);
@@ -132,7 +132,7 @@ NN<const Data::ArrayListNN<IO::SystemInfoLog::DeviceInfo>> IO::SystemInfoLog::Ge
 	return this->deviceInfos;
 }
 
-void IO::SystemInfoLog::AddDriverInfo(const UTF8Char *fileName, UInt64 fileSize, const UTF8Char *creationDate, const UTF8Char *version, const UTF8Char *manufacturer, const UTF8Char *productName, const UTF8Char *group, UInt32 altitude)
+void IO::SystemInfoLog::AddDriverInfo(UnsafeArray<const UTF8Char> fileName, UInt64 fileSize, UnsafeArrayOpt<const UTF8Char> creationDate, UnsafeArrayOpt<const UTF8Char> version, UnsafeArrayOpt<const UTF8Char> manufacturer, UnsafeArrayOpt<const UTF8Char> productName, UnsafeArrayOpt<const UTF8Char> group, UInt32 altitude)
 {
 	NN<DriverInfo> driver = MemAllocNN(DriverInfo);
 	driver->fileName = Text::String::NewNotNullSlow(fileName);

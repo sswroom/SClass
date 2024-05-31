@@ -187,7 +187,7 @@ namespace Net
 		Bool isFirst;
 		IO::Writer *errWriter;
 
-		static void NetBIOSDecName(UTF8Char *nameBuff, UOSInt nameSize);
+		static void NetBIOSDecName(UnsafeArray<UTF8Char> nameBuff, UOSInt nameSize);
 
 		NN<MACStatus> MACGet(UInt64 macAddr);
 		void MDNSAdd(NN<Net::DNSClient::RequestAnswer> ans);

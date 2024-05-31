@@ -219,8 +219,8 @@ void Net::WebServer::WebListener::SetRequestLog(Net::WebServer::IReqLogger *reqL
 void Net::WebServer::WebListener::LogAccess(NN<Net::WebServer::IWebRequest> req, NN<Net::WebServer::IWebResponse> resp, Double time)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
-	Text::CString cstr;
+	UnsafeArray<UTF8Char> sptr;
+	Text::CStringNN cstr;
 	Interlocked_IncrementU32(&this->status.reqCnt);
 	Sync::MutexUsage accLogMutUsage(this->accLogMut);
 	if (this->reqLog)
@@ -230,13 +230,12 @@ void Net::WebServer::WebListener::LogAccess(NN<Net::WebServer::IWebRequest> req,
 	if (this->accLog)
 	{
 		Text::StringBuilderUTF8 sb;
-		sptr = Net::SocketUtil::GetAddrName(sbuff, req->GetClientAddr(), req->GetClientPort());
-		if (sptr == 0)
+		if (!Net::SocketUtil::GetAddrName(sbuff, req->GetClientAddr(), req->GetClientPort()).SetTo(sptr))
 			sb.AppendC(UTF8STRC("?"));
 		else
 			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb.AppendC(UTF8STRC(" "));
-		Text::CString reqMeth = req->GetReqMethodStr();
+		Text::CStringNN reqMeth = req->GetReqMethodStr();
 		sb.AppendC(reqMeth.v, reqMeth.leng);
 		sb.AppendC(UTF8STRC(" "));
 		sb.Append(req->GetRequestURI());
@@ -252,8 +251,7 @@ void Net::WebServer::WebListener::LogAccess(NN<Net::WebServer::IWebRequest> req,
 		{
 			sb.Append(Net::BrowserInfo::GetName(req->GetBrowser()));
 		}
-		cstr = req->GetBrowserVer();
-		if (cstr.leng > 0)
+		if (req->GetBrowserVer().SetTo(cstr) && cstr.leng > 0)
 		{
 			sb.AppendC(UTF8STRC(" "));
 			sb.Append(cstr);
@@ -275,7 +273,7 @@ void Net::WebServer::WebListener::LogAccess(NN<Net::WebServer::IWebRequest> req,
 	}
 }
 
-void Net::WebServer::WebListener::LogMessageC(Net::WebServer::IWebRequest *req, const UTF8Char *msg, UOSInt msgLen)
+void Net::WebServer::WebListener::LogMessageC(Net::WebServer::IWebRequest *req, Text::CStringNN msg)
 {
 	UTF8Char sbuff[32];
 	Sync::MutexUsage mutUsage(this->accLogMut);
@@ -284,15 +282,15 @@ void Net::WebServer::WebListener::LogMessageC(Net::WebServer::IWebRequest *req, 
 		if (req)
 		{
 			Text::StringBuilderUTF8 sb;
-			UTF8Char *sptr = Net::SocketUtil::GetAddrName(sbuff, req->GetClientAddr(), req->GetClientPort());
+			UnsafeArray<UTF8Char> sptr = Net::SocketUtil::GetAddrName(sbuff, req->GetClientAddr(), req->GetClientPort()).Or(sbuff);
 			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			sb.AppendC(UTF8STRC(" "));
-			sb.AppendC(msg, msgLen);
+			sb.Append(msg);
 			this->accLog->LogMessage(sb.ToCString(), this->accLogLev);
 		}
 		else
 		{
-			this->accLog->LogMessage({msg, msgLen}, this->accLogLev);
+			this->accLog->LogMessage(msg, this->accLogLev);
 		}
 	}
 }

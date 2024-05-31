@@ -132,14 +132,14 @@ UOSInt Map::MapDrawLayer::QueryTableNames(Text::CString schemaName, NN<Data::Arr
 	return 1;
 }
 
-Optional<DB::DBReader> Map::MapDrawLayer::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::MapDrawLayer::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	NN<DB::DBReader> r;
 	NEW_CLASSNN(r, Map::MapLayerReader(*this));
 	return r;
 }
 
-Optional<DB::TableDef> Map::MapDrawLayer::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> Map::MapDrawLayer::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	DB::TableDef *tab;
 	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));

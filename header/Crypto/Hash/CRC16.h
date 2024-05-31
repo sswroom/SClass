@@ -28,16 +28,16 @@ namespace Crypto
 			virtual UnsafeArray<UTF8Char> GetName(UnsafeArray<UTF8Char> sbuff) const;
 			virtual NN<IHash> Clone() const;
 			virtual void Clear();
-			virtual void Calc(const UInt8 *buff, UOSInt buffSize);
+			virtual void Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 			virtual void GetValue(UnsafeArray<UInt8> buff) const;
 			virtual UOSInt GetBlockSize() const;
 			virtual UOSInt GetResultSize() const;
 
 			void SetValue(UInt16 val);
 
-			UInt16 CalcDirect(const UInt8 *buff, UOSInt buffSize)
+			UInt16 CalcDirect(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 			{
-				return CRC16_Calc(buff, buffSize, this->crctab, 0);
+				return CRC16_Calc(buff.Ptr(), buffSize, this->crctab, 0);
 			}
 
 			static UInt16 GetPolynomialANSI();

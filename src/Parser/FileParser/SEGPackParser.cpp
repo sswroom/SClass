@@ -36,7 +36,7 @@ IO::ParserType Parser::FileParser::SEGPackParser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::SEGPackParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UTF8Char name[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt32 buffOfst;
 	UInt32 fileOfst;
 
@@ -73,7 +73,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SEGPackParser::ParseFileHdr(NN<IO
 			DEL_CLASS(pf);
 			return 0;
 		}
-		if (Text::StrCharCnt((Char*)&buff[buffOfst + 16]) != packSize - 17)
+		if (Text::StrCharCnt(&buff[buffOfst + 16]) != packSize - 17)
 		{
 			DEL_CLASS(pf);
 			return 0;

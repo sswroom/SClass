@@ -27,9 +27,9 @@ void Net::WebServer::WebRequest::ParseQuery()
 
 	sbuff = MemAllocArr(UTF8Char, urlLen);
 	NEW_CLASS(this->queryMap, Data::FastStringMapNN<Text::String>());
-	if ((sptr = this->GetQueryString(sbuff, urlLen)) != 0)
+	if (this->GetQueryString(sbuff, urlLen).SetTo(sptr))
 	{
-		sbuff2 = MemAlloc(UTF8Char, urlLen);
+		sbuff2 = MemAllocArr(UTF8Char, urlLen);
 		UOSInt scnt;
 		Bool hasMore;
 		strs1[1].v = sbuff;
@@ -66,9 +66,9 @@ void Net::WebServer::WebRequest::ParseQuery()
 				s->Release();
 			}
 		}
-		MemFree(sbuff2);
+		MemFreeArr(sbuff2);
 	}
-	MemFree(sbuff);
+	MemFreeArr(sbuff);
 }
 
 void Net::WebServer::WebRequest::ParseFormStr(NN<Data::FastStringMapNN<Text::String>> formMap, const UInt8 *buff, UOSInt buffSize)
@@ -77,7 +77,8 @@ void Net::WebServer::WebRequest::ParseFormStr(NN<Data::FastStringMapNN<Text::Str
 	UInt8 b;
 	UInt8 b2;
 	NN<Text::String> tmpStr;
-	UnsafeArray<UTF8Char> tmpName;
+	UnsafeArrayOpt<UTF8Char> tmpName;
+	UnsafeArray<UTF8Char> nns;
 	UOSInt tmpNameLen;
 	UOSInt nameLen = 0;
 	NN<Text::String> s;
@@ -92,25 +93,25 @@ void Net::WebServer::WebRequest::ParseFormStr(NN<Data::FastStringMapNN<Text::Str
 		b = *buff++;
 		if (b == '&')
 		{
-			if (tmpName)
+			if (tmpName.SetTo(nns))
 			{
 				tmpBuff[buffPos] = 0;
 #if defined(VERBOSE)
-				printf("WebRequest: Form: %s = %s\r\n", tmpBuff, tmpName);
+				printf("WebRequest: Form: %s = %s\r\n", tmpBuff, nns.Ptr());
 #endif
 				if (formMap->GetC({tmpBuff, nameLen}).SetTo(s))
 				{
 					charCnt = s->leng + 1;
-					tmpNameLen = (UOSInt)(&tmpBuff[buffPos] - tmpName);
+					tmpNameLen = (UOSInt)(&tmpBuff[buffPos] - nns);
 					charCnt += tmpNameLen;
 					tmpStr = Text::String::New(charCnt);
-					Text::StrConcatC(Text::StrConcatC(s->ConcatTo(tmpStr->v), UTF8STRC(",")), tmpName, tmpNameLen);
+					Text::StrConcatC(Text::StrConcatC(s->ConcatTo(tmpStr->v), UTF8STRC(",")), nns, tmpNameLen);
 					formMap->PutC({tmpBuff, nameLen}, tmpStr);
 					s->Release();
 				}
 				else
 				{
-					formMap->PutC({tmpBuff, nameLen}, Text::String::New(tmpName, (UOSInt)(&tmpBuff[buffPos] - tmpName)));
+					formMap->PutC({tmpBuff, nameLen}, Text::String::New(nns, (UOSInt)(&tmpBuff[buffPos] - nns)));
 				}
 				tmpName = 0;
 				buffPos = 0;
@@ -159,25 +160,25 @@ void Net::WebServer::WebRequest::ParseFormStr(NN<Data::FastStringMapNN<Text::Str
 		}
 	}
 
-	if (tmpName)
+	if (tmpName.SetTo(nns))
 	{
 		tmpBuff[buffPos] = 0;
 #if defined(VERBOSE)
-		printf("WebRequest: Form: %s = %s\r\n", tmpBuff, tmpName);
+		printf("WebRequest: Form: %s = %s\r\n", tmpBuff, nns.Ptr());
 #endif
 		if (formMap->GetC({tmpBuff, nameLen}).SetTo(s))
 		{
 			charCnt = s->leng + 1;
-			tmpNameLen = (UOSInt)(&tmpBuff[buffPos] - tmpName);
+			tmpNameLen = (UOSInt)(&tmpBuff[buffPos] - nns);
 			charCnt += tmpNameLen;
 			tmpStr = Text::String::New(charCnt);
-			Text::StrConcatC(Text::StrConcatC(s->ConcatTo(tmpStr->v), UTF8STRC(",")), tmpName, tmpNameLen);
+			Text::StrConcatC(Text::StrConcatC(s->ConcatTo(tmpStr->v), UTF8STRC(",")), nns, tmpNameLen);
 			formMap->PutC({tmpBuff, nameLen}, tmpStr);
 			s->Release();
 		}
 		else
 		{
-			formMap->PutC({tmpBuff, nameLen}, Text::String::New(tmpName, (UOSInt)(&tmpBuff[buffPos] - tmpName)));
+			formMap->PutC({tmpBuff, nameLen}, Text::String::New(nns, (UOSInt)(&tmpBuff[buffPos] - nns)));
 		}
 		tmpName = 0;
 		buffPos = 0;
@@ -225,8 +226,8 @@ void Net::WebServer::WebRequest::ParseFormPart(UInt8 *data, UOSInt dataSize, UOS
 				UOSInt strCnt;
 				contType = 1;
 
-				line = MemAlloc(UTF8Char, i - lineStart - 30);
-				MemCopyNO(line, &data[lineStart + 31], i - lineStart - 31);
+				line = MemAllocArr(UTF8Char, i - lineStart - 30);
+				MemCopyNO(line.Ptr(), &data[lineStart + 31], i - lineStart - 31);
 				line[i - lineStart - 31] = 0;
 
 				strCnt = Text::StrSplitTrimP(lineStrs, 10, {line, i - lineStart - 31}, ';');
@@ -245,7 +246,7 @@ void Net::WebServer::WebRequest::ParseFormPart(UInt8 *data, UOSInt dataSize, UOS
 						fileName = ParseHeaderVal(&lineStrs[j].v[9], lineStrs[j].leng - 9);
 					}
 				}
-				MemFree(line);
+				MemFreeArr(line);
 			}
 			i++;
 			lineStart = i + 1;
@@ -253,12 +254,12 @@ void Net::WebServer::WebRequest::ParseFormPart(UInt8 *data, UOSInt dataSize, UOS
 		i++;
 	}
 
+	Text::CStringNN formNameNN;
 	if (contType == 1)
 	{
 		NN<Text::String> s;
-		if (formName.v && dataSize >= i)
+		if (formName.SetTo(formNameNN) && dataSize >= i)
 		{
-			Text::CStringNN formNameNN = formName.OrEmpty();
 			if (this->formMap->GetC(formNameNN).SetTo(s))
 			{
 				s->Release();
@@ -272,12 +273,12 @@ void Net::WebServer::WebRequest::ParseFormPart(UInt8 *data, UOSInt dataSize, UOS
 	}
 	else if (contType == 2)
 	{
-		if (formName.v)
+		if (formName.SetTo(formNameNN))
 		{
 			NN<FormFileInfo> info = MemAllocNN(FormFileInfo);
 			info->ofst = startOfst + i;
 			info->leng = dataSize - i;
-			info->formName = Text::String::New(formName);
+			info->formName = Text::String::New(formNameNN);
 			info->fileName = Text::String::New(fileName);
 			this->formFileList->Add(info);
 		}
@@ -286,20 +287,20 @@ void Net::WebServer::WebRequest::ParseFormPart(UInt8 *data, UOSInt dataSize, UOS
 	SDEL_TEXT(fileName.v);
 }
 
-Text::CString Net::WebServer::WebRequest::ParseHeaderVal(UnsafeArray<UTF8Char> headerData, UOSInt dataLen)
+Text::CStringNN Net::WebServer::WebRequest::ParseHeaderVal(UnsafeArray<UTF8Char> headerData, UOSInt dataLen)
 {
 	UnsafeArray<UTF8Char> outStr;
 	if (headerData[0] == '"' && headerData[dataLen-1] == '"')
 	{
-		outStr = MemAlloc(UTF8Char, dataLen - 1);
-		MemCopyNO(outStr, &headerData[1], dataLen - 2);
+		outStr = MemAllocArr(UTF8Char, dataLen - 1);
+		MemCopyNO(outStr.Ptr(), &headerData[1], dataLen - 2);
 		outStr[dataLen - 2] = 0;
 		dataLen -= 2;
 	}
 	else
 	{
-		outStr = MemAlloc(UTF8Char, dataLen + 1);
-		MemCopyNO(outStr, &headerData[1], dataLen);
+		outStr = MemAllocArr(UTF8Char, dataLen + 1);
+		MemCopyNO(outStr.Ptr(), &headerData[1], dataLen);
 		outStr[dataLen] = 0;
 	}
 	return {outStr, dataLen};
@@ -371,7 +372,7 @@ Optional<Text::String> Net::WebServer::WebRequest::GetSHeader(Text::CStringNN na
 	return this->headers.GetC(name);
 }
 
-UnsafeArray<UTF8Char> Net::WebServer::WebRequest::GetHeader(UnsafeArray<UTF8Char> sbuff, Text::CStringNN name, UOSInt buffLen) const
+UnsafeArrayOpt<UTF8Char> Net::WebServer::WebRequest::GetHeader(UnsafeArray<UTF8Char> sbuff, Text::CStringNN name, UOSInt buffLen) const
 {
 	NN<Text::String> s;
 	if (this->headers.GetC(name).SetTo(s))
@@ -539,7 +540,7 @@ Optional<Text::String> Net::WebServer::WebRequest::GetHTTPFormStr(Text::CStringN
 	return this->formMap->GetC(name);
 }
 
-const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UnsafeArray<UTF8Char> fileName, UOSInt fileNameBuffSize, OptOut<UnsafeArray<UTF8Char>> fileNameEnd, OptOut<UOSInt> fileSize)
+const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(Text::CStringNN formName, UOSInt index, UnsafeArrayOpt<UTF8Char> fileName, UOSInt fileNameBuffSize, OptOut<UnsafeArray<UTF8Char>> fileNameEnd, OptOut<UOSInt> fileSize)
 {
 	if (this->formFileList == 0)
 		return 0;
@@ -553,9 +554,10 @@ const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(Text::CStringNN formNam
 			if (index == 0)
 			{
 				fileSize.Set(info->leng);
-				if (fileName)
+				UnsafeArray<UTF8Char> nnfileName;
+				if (fileName.SetTo(nnfileName))
 				{
-					fileNameEnd.Set(Text::StrConcatCS(fileName, info->fileName->v, info->fileName->leng, fileNameBuffSize));
+					fileNameEnd.Set(Text::StrConcatCS(nnfileName, info->fileName->v, info->fileName->leng, fileNameBuffSize));
 				}
 				return &this->reqData[info->ofst];
 			}

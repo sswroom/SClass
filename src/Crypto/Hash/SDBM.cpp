@@ -35,9 +35,9 @@ void Crypto::Hash::SDBM::Clear()
 	this->currVal = 0;
 }
 
-void Crypto::Hash::SDBM::Calc(const UInt8 *buff, UOSInt buffSize)
+void Crypto::Hash::SDBM::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
-	this->currVal = SDBM_Calc(buff, buffSize, this->currVal);
+	this->currVal = SDBM_Calc(buff.Ptr(), buffSize, this->currVal);
 }
 
 void Crypto::Hash::SDBM::GetValue(UnsafeArray<UInt8> buff) const

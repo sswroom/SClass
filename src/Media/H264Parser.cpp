@@ -624,7 +624,7 @@ Bool Media::H264Parser::FindNALs(const UInt8 *frame, UOSInt frameSize, Data::Arr
 	return true;
 }
 
-UTF8Char *Media::H264Parser::GetFrameType(UTF8Char *sbuff, const UInt8 *frame, UOSInt frameSize)
+UnsafeArrayOpt<UTF8Char> Media::H264Parser::GetFrameType(UnsafeArray<UTF8Char> sbuff, const UInt8 *frame, UOSInt frameSize)
 {
 	if (frame[0] != 0 || frame[1] != 0 || frame[2] != 0 || frame[3] != 1)
 		return 0;

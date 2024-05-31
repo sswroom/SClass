@@ -85,7 +85,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::FileGDB2Parser::ParseObject(NN<IO:
 			if (layers.GetCount() > 0)
 			{
 				UTF8Char sbuff[512];
-				UTF8Char *sptr;
+				UnsafeArray<UTF8Char> sptr;
 				Map::MapLayerCollection *layerColl;
 				NN<Map::FileGDBLayer> layer;
 				DB::SharedReadingDB *db;

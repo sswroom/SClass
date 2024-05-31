@@ -176,35 +176,35 @@ namespace Text
 		NN<StringBuilderUTF8> AppendDouble(Double dVal)
 		{
 			this->AllocLeng(32);
-			this->leng = (UOSInt)(Text::StrDouble(&this->v[this->leng], dVal) - this->v);
+			this->leng = (UOSInt)(Text::StrDouble(this->v + this->leng, dVal) - this->v);
 			return *this;
 		}
 
 		NN<StringBuilderUTF8> AppendDouble(Double dVal, NN<const DoubleStyle> style)
 		{
 			this->AllocLeng(32);
-			this->leng = (UOSInt)(Text::StrDouble(&this->v[this->leng], dVal, 15, style) - this->v);
+			this->leng = (UOSInt)(Text::StrDouble(this->v + this->leng, dVal, 15, style) - this->v);
 			return *this;
 		}
 
 		NN<StringBuilderUTF8> AppendDouble(Double dVal, UOSInt sigFig, NN<const DoubleStyle> style)
 		{
 			this->AllocLeng(32);
-			this->leng = (UOSInt)(Text::StrDouble(&this->v[this->leng], dVal, sigFig, style) - this->v);
+			this->leng = (UOSInt)(Text::StrDouble(this->v + this->leng, dVal, sigFig, style) - this->v);
 			return *this;
 		}
 
 		NN<StringBuilderUTF8> AppendDate(const Data::Date &d)
 		{
 			this->AllocLeng(10);
-			this->leng = (UOSInt)(d.ToString(&this->v[this->leng], "yyyy-MM-dd") - this->v);
+			this->leng = (UOSInt)(d.ToString(this->v + this->leng, "yyyy-MM-dd") - this->v);
 			return *this;
 		}
 
 		NN<StringBuilderUTF8> AppendDateTime(NN<Data::DateTime> dt)
 		{
 			this->AllocLeng(19);
-			this->leng = (UOSInt)(dt->ToString(&this->v[this->leng], "yyyy-MM-dd HH:mm:ss") - this->v);
+			this->leng = (UOSInt)(dt->ToString(this->v + this->leng, "yyyy-MM-dd HH:mm:ss") - this->v);
 			return *this;
 		}
 
@@ -213,30 +213,30 @@ namespace Text
 			if (ts.inst.nanosec == 0)
 			{
 				this->AllocLeng(19);
-				this->leng = (UOSInt)(ts.ToString(&this->v[this->leng], "yyyy-MM-dd HH:mm:ss") - this->v);
+				this->leng = (UOSInt)(ts.ToString(this->v + this->leng, CHSTR("yyyy-MM-dd HH:mm:ss")) - this->v);
 			}
 			else if (ts.inst.nanosec % 1000000 == 0)
 			{
 				this->AllocLeng(23);
-				this->leng = (UOSInt)(ts.ToString(&this->v[this->leng], "yyyy-MM-dd HH:mm:ss.fff") - this->v);
+				this->leng = (UOSInt)(ts.ToString(this->v + this->leng, CHSTR("yyyy-MM-dd HH:mm:ss.fff")) - this->v);
 			}
 			else if (ts.inst.nanosec % 1000 == 0)
 			{
 				this->AllocLeng(26);
-				this->leng = (UOSInt)(ts.ToString(&this->v[this->leng], "yyyy-MM-dd HH:mm:ss.ffffff") - this->v);
+				this->leng = (UOSInt)(ts.ToString(this->v + this->leng, CHSTR("yyyy-MM-dd HH:mm:ss.ffffff")) - this->v);
 			}
 			else
 			{
 				this->AllocLeng(29);
-				this->leng = (UOSInt)(ts.ToString(&this->v[this->leng], "yyyy-MM-dd HH:mm:ss.fffffffff") - this->v);
+				this->leng = (UOSInt)(ts.ToString(this->v + this->leng, CHSTR("yyyy-MM-dd HH:mm:ss.fffffffff")) - this->v);
 			}
 			return *this;
 		}
 
-		NN<StringBuilderUTF8> AppendTS(const Data::Timestamp &ts, const Char *pattern)
+		NN<StringBuilderUTF8> AppendTS(const Data::Timestamp &ts, UnsafeArray<const Char> pattern)
 		{
 			this->AllocLeng(40);
-			this->leng = (UOSInt)(ts.ToString(&this->v[this->leng], pattern) - this->v);
+			this->leng = (UOSInt)(ts.ToString(this->v + this->leng, pattern) - this->v);
 			return *this;
 		}
 

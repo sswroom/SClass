@@ -194,7 +194,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::LNKFileAnalyse::GetFrame
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[1024];
-	UTF8Char* sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<IO::FileAnalyse::LNKFileAnalyse::TagInfo> tag;
 	if (!this->tags.GetItem(index).SetTo(tag))
 		return 0;
@@ -584,7 +584,7 @@ Bool IO::FileAnalyse::LNKFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 	return false;
 }
 
-Text::CString IO::FileAnalyse::LNKFileAnalyse::TagTypeGetName(TagType tagType)
+Text::CStringNN IO::FileAnalyse::LNKFileAnalyse::TagTypeGetName(TagType tagType)
 {
 	switch (tagType)
 	{
@@ -611,7 +611,7 @@ Text::CString IO::FileAnalyse::LNKFileAnalyse::TagTypeGetName(TagType tagType)
 	}
 }
 
-Text::CString IO::FileAnalyse::LNKFileAnalyse::ShowWindowGetName(UInt32 showWindow)
+Text::CStringNN IO::FileAnalyse::LNKFileAnalyse::ShowWindowGetName(UInt32 showWindow)
 {
 	switch (showWindow)
 	{
@@ -625,7 +625,7 @@ Text::CString IO::FileAnalyse::LNKFileAnalyse::ShowWindowGetName(UInt32 showWind
 	}
 }
 
-Text::CString IO::FileAnalyse::LNKFileAnalyse::DriveTypeGetName(UInt32 driveType)
+Text::CStringNN IO::FileAnalyse::LNKFileAnalyse::DriveTypeGetName(UInt32 driveType)
 {
 	switch (driveType)
 	{
@@ -647,7 +647,7 @@ Text::CString IO::FileAnalyse::LNKFileAnalyse::DriveTypeGetName(UInt32 driveType
 	}
 }
 
-Text::CString IO::FileAnalyse::LNKFileAnalyse::FontFamilyGetName(UInt32 fontFamily)
+Text::CStringNN IO::FileAnalyse::LNKFileAnalyse::FontFamilyGetName(UInt32 fontFamily)
 {
 	switch (fontFamily & 0xf0)
 	{

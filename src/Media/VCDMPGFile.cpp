@@ -446,7 +446,7 @@ void Media::VCDMPGFile::KeepStream(UOSInt index, Bool toKeep)
 {
 }
 
-UTF8Char *Media::VCDMPGFile::GetMediaName(UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Media::VCDMPGFile::GetMediaName(UnsafeArray<UTF8Char> buff)
 {
 	return this->GetSourceName(buff);
 }

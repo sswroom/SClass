@@ -47,7 +47,7 @@ namespace IO
 			virtual Bool IsParsing();
 			virtual Bool TrimPadding(Text::CStringNN outputFile);
 
-			static Text::CString PackTypeGetName(Int32 packType);
+			static Text::CStringNN PackTypeGetName(Int32 packType);
 		};
 	}
 }

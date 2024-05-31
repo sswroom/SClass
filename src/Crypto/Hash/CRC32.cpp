@@ -58,9 +58,9 @@ void Crypto::Hash::CRC32::Clear()
 	currVal = 0;
 }
 
-void Crypto::Hash::CRC32::Calc(const UInt8 *buff, UOSInt buffSize)
+void Crypto::Hash::CRC32::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
-	this->currVal = CRC32_Calc(buff, buffSize, this->crctab, this->currVal);
+	this->currVal = CRC32_Calc(buff.Ptr(), buffSize, this->crctab, this->currVal);
 }
 
 void Crypto::Hash::CRC32::GetValue(UnsafeArray<UInt8> buff) const

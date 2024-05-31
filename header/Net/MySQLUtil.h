@@ -82,10 +82,10 @@ namespace Net
 		static UInt8 *AppendLenencStrC(UInt8 *buff, const UTF8Char *s, UOSInt len);
 		static MySQLType ColType2MySQLType(DB::DBUtil::ColType colType);
 		static DB::DBUtil::ColType MySQLType2ColType(MySQLType mysqlType);
-		static AuthenType AuthenTypeParse(Text::CString name);
-		static Text::CString AuthenTypeGetName(AuthenType authType);
-		static UOSInt BuildAuthen(UInt8 *buff, AuthenType authType, const UInt8 *nonce, UOSInt nonceSize, Text::CString password);
-		static Bool IsAxisAware(Text::CString svrVer);
+		static AuthenType AuthenTypeParse(Text::CStringNN name);
+		static Text::CStringNN AuthenTypeGetName(AuthenType authType);
+		static UOSInt BuildAuthen(UInt8 *buff, AuthenType authType, const UInt8 *nonce, UOSInt nonceSize, Text::CStringNN password);
+		static Bool IsAxisAware(Text::CStringNN svrVer);
 	};
 }
 #endif

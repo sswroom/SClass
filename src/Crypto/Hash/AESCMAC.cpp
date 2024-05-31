@@ -71,13 +71,13 @@ void Crypto::Hash::AESCMAC::Clear()
 	this->buffSize = 0;
 }
 
-void Crypto::Hash::AESCMAC::Calc(const UInt8 *buff, UOSInt buffSize)
+void Crypto::Hash::AESCMAC::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	if (this->buffSize != 0)
 	{
 		if (this->buffSize + buffSize > 16)
 		{
-			MemCopyNO(&this->buff[this->buffSize], buff, 16 - this->buffSize);
+			MemCopyNO(&this->buff[this->buffSize], buff.Ptr(), 16 - this->buffSize);
 			WriteNUInt64(&this->x[0], ReadNUInt64(&this->x[0]) ^ ReadNUInt64(&this->buff[0]));
 			WriteNUInt64(&this->x[8], ReadNUInt64(&this->x[8]) ^ ReadNUInt64(&this->buff[8]));
 			this->aes.EncryptBlock(this->x, this->x);
@@ -87,7 +87,7 @@ void Crypto::Hash::AESCMAC::Calc(const UInt8 *buff, UOSInt buffSize)
 		}
 		else
 		{
-			MemCopyNO(&this->buff[this->buffSize], buff, buffSize);
+			MemCopyNO(&this->buff[this->buffSize], buff.Ptr(), buffSize);
 			this->buffSize += buffSize;
 			return;
 		}
@@ -101,7 +101,7 @@ void Crypto::Hash::AESCMAC::Calc(const UInt8 *buff, UOSInt buffSize)
 		buff += 16;
 		buffSize -= 16;
 	}
-	MemCopyNO(this->buff, buff, buffSize);
+	MemCopyNO(this->buff, buff.Ptr(), buffSize);
 	this->buffSize = buffSize;
 }
 

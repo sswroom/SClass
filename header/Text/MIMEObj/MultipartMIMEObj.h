@@ -19,9 +19,9 @@ namespace Text
 
 			void ParsePart(UInt8 *buff, UOSInt buffSize);
 			MultipartMIMEObj(NN<Text::String> contentType, Text::String *defMsg, NN<Text::String> boundary);
-			MultipartMIMEObj(Text::CString contentType, Text::CString defMsg, Text::CString boundary);
+			MultipartMIMEObj(Text::CStringNN contentType, Text::CString defMsg, Text::CStringNN boundary);
 		public:
-			MultipartMIMEObj(Text::CString contentType, Text::CString defMsg);
+			MultipartMIMEObj(Text::CStringNN contentType, Text::CString defMsg);
 			virtual ~MultipartMIMEObj();
 
 			virtual Text::CStringNN GetClassName() const;
@@ -37,7 +37,7 @@ namespace Text
 			Optional<MIMEMessage> GetPart(UOSInt partIndex) const;
 			UOSInt GetPartCount() const;
 
-			static Optional<MultipartMIMEObj> ParseFile(Text::CString contentType, NN<IO::StreamData> data);
+			static Optional<MultipartMIMEObj> ParseFile(Text::CStringNN contentType, NN<IO::StreamData> data);
 		};
 	}
 }

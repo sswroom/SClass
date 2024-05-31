@@ -27,7 +27,7 @@ namespace Media
 		VOBLPCMStreamSource(NN<Media::IStreamControl> pbc, NN<const Media::AudioFormat> fmt);
 		virtual ~VOBLPCMStreamSource();
 
-		virtual UTF8Char *GetSourceName(UTF8Char *buff);
+		virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff);
 		virtual Bool CanSeek();
 		virtual Data::Duration GetStreamTime();
 		virtual Data::Duration SeekToTime(Data::Duration time);

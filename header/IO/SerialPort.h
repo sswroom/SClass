@@ -44,7 +44,7 @@ namespace IO
 		static UOSInt GetPortWithType(Text::CString portName);
 		static UOSInt GetUSBPort();
 		static UOSInt GetBTPort();
-		static UTF8Char *GetPortName(UTF8Char *buff, UOSInt portNum);
+		static UnsafeArrayOpt<UTF8Char> GetPortName(UnsafeArray<UTF8Char> buff, UOSInt portNum);
 		static Bool ResetPort(UOSInt portNum);
 
 		SerialPort(UOSInt portNum, UInt32 baudRate, ParityType parity, Bool flowCtrl);

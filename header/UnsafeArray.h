@@ -247,6 +247,11 @@ public:
 		return this->p - p.p;
 	}
 
+	OSInt operator-(T *p)
+	{
+		return this->p - p;
+	}
+
 	T &operator*() const
 	{
 		return this->p[0];

@@ -154,10 +154,10 @@ Optional<Text::String> IO::EXEFile::GetImportFunc(UOSInt modIndex, UOSInt funcIn
 	return 0;
 }
 
-void IO::EXEFile::AddExportFunc(Text::CString funcName)
+void IO::EXEFile::AddExportFunc(Text::CStringNN funcName)
 {
 	NN<ExportInfo> exp = MemAllocNN(ExportInfo);
-	exp->funcName = Text::String::New(funcName.v, funcName.leng);
+	exp->funcName = Text::String::New(funcName);
 	this->exportList.Add(exp);
 }
 
@@ -365,7 +365,7 @@ Text::CString IO::EXEFile::GetResourceTypeName(ResourceType rt)
 void IO::EXEFile::GetResourceDesc(NN<const ResourceInfo> res, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (res->rt == RT_FONT)
 	{
 		Parser::FileParser::FNTParser::GetFileDesc(res->data, res->dataSize, sb);
@@ -376,7 +376,7 @@ void IO::EXEFile::GetResourceDesc(NN<const ResourceInfo> res, NN<Text::StringBui
 	}
 	else if (res->rt == RT_VERSIONINFO)
 	{
-		if (res->dataSize >= 92 && ReadUInt16(&res->data[2]) == 52 && Text::StrEquals((Char*)&res->data[4], "VS_VERSION_INFO") && Text::StrEquals((Char*)&res->data[76], "StringFileInfo"))
+		if (res->dataSize >= 92 && ReadUInt16(&res->data[2]) == 52 && Text::StrEqualsCh((Char*)&res->data[4], "VS_VERSION_INFO") && Text::StrEqualsCh((Char*)&res->data[76], "StringFileInfo"))
 		{
 			UInt32 verSize = ReadUInt16(&res->data[0]);
 			UInt32 v;
@@ -555,11 +555,11 @@ void IO::EXEFile::GetResourceDesc(NN<const ResourceInfo> res, NN<Text::StringBui
 				sb->AppendU16(ReadUInt16(&res->data[94]));
 				sb->AppendC(UTF8STRC("\r\nString Table Key = "));
 				sb->AppendSlow((UTF8Char*)&res->data[96]);
-				v = (UInt32)Text::StrHex2Int32C((Char*)&res->data[96]);
+				v = (UInt32)Text::StrHex2Int32C(&res->data[96]);
 				sb->AppendC(UTF8STRC("\r\nLanguage = "));
 				sb->AppendU32((v >> 16) & 0xffff);
-				Text::Locale::LocaleEntry *locale = Text::Locale::GetLocaleEntry((v >> 16) & 0xffff);
-				if (locale)
+				NN<Text::Locale::LocaleEntry> locale;
+				if (Text::Locale::GetLocaleEntry((v >> 16) & 0xffff).SetTo(locale))
 				{
 					sb->AppendC(UTF8STRC(" ("));
 					sb->AppendSlow(locale->desc);
@@ -567,7 +567,7 @@ void IO::EXEFile::GetResourceDesc(NN<const ResourceInfo> res, NN<Text::StringBui
 				}
 				sb->AppendC(UTF8STRC("\r\nCodePage = "));
 				sb->AppendU32(v & 0xffff);
-				if ((sptr = Text::EncodingFactory::GetName(sbuff, v & 0xffff)) != 0)
+				sptr = Text::EncodingFactory::GetName(sbuff, v & 0xffff);
 				{
 					sb->AppendC(UTF8STRC(" ("));
 					sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));

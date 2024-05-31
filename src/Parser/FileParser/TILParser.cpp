@@ -39,7 +39,7 @@ Optional<IO::ParsedObject> Parser::FileParser::TILParser::ParseFileHdr(NN<IO::St
 	UInt64 fileSize;
 	Int32 flags;
 	UTF8Char fileName[256];
-	UTF8Char *srcPtr;
+	UnsafeArray<UTF8Char> srcPtr;
 	IO::VirtualPackageFile *pf;
 
 	if (hdr[0] != 'S' || hdr[1] != 'T' || hdr[2] != 'i' || hdr[3] != 'l')

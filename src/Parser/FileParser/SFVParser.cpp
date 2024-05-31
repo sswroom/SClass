@@ -36,7 +36,7 @@ IO::ParserType Parser::FileParser::SFVParser::GetParserType()
 Optional<IO::ParsedObject> Parser::FileParser::SFVParser::ParseFileHdr(NN<IO::StreamData> fd, Optional<IO::PackageFile> pkgFile, IO::ParserType targetType, Data::ByteArrayR hdr)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::FileCheck *fchk;
 	Crypto::Hash::HashType ctype;
 	UInt8 chk[8];
@@ -54,7 +54,7 @@ Optional<IO::ParsedObject> Parser::FileParser::SFVParser::ParseFileHdr(NN<IO::St
 	IO::StreamDataStream stm(fd);
 	Text::UTF8Reader reader(stm);
 	NEW_CLASS(fchk, IO::FileCheck(fd->GetFullName(), ctype));
-	while ((sptr = reader.ReadLine(sbuff, 512)) != 0)
+	while (reader.ReadLine(sbuff, 512).SetTo(sptr))
 	{
 		if (sptr - sbuff > (OSInt)(chkSize << 1) + 2)
 		{

@@ -62,11 +62,11 @@ namespace IO
 		UInt32 GetArchitecture() const;
 		void SetProductType(UInt32 productType);
 		UInt32 GetProductType() const;
-		void AddServerRole(const UTF8Char *name, const UTF8Char *data);
+		void AddServerRole(UnsafeArray<const UTF8Char> name, UnsafeArray<const UTF8Char> data);
 		NN<const Data::ArrayListNN<ServerRole>> GetServerRoles() const;
-		void AddDeviceInfo(const UTF8Char *desc, const UTF8Char *hwId, const UTF8Char *service, const UTF8Char *driver);
+		void AddDeviceInfo(UnsafeArray<const UTF8Char> desc, UnsafeArray<const UTF8Char> hwId, UnsafeArrayOpt<const UTF8Char> service, UnsafeArrayOpt<const UTF8Char> driver);
 		NN<const Data::ArrayListNN<DeviceInfo>> GetDeviceInfos() const;
-		void AddDriverInfo(const UTF8Char *fileName, UInt64 fileSize, const UTF8Char *creationDate, const UTF8Char *version, const UTF8Char *manufacturer, const UTF8Char *productName, const UTF8Char *group, UInt32 altitude);
+		void AddDriverInfo(UnsafeArray<const UTF8Char> fileName, UInt64 fileSize, UnsafeArrayOpt<const UTF8Char> creationDate, UnsafeArrayOpt<const UTF8Char> version, UnsafeArrayOpt<const UTF8Char> manufacturer, UnsafeArrayOpt<const UTF8Char> productName, UnsafeArrayOpt<const UTF8Char> group, UInt32 altitude);
 		NN<const Data::ArrayListNN<DriverInfo>> GetDriverInfos() const;
 	};
 }

@@ -167,11 +167,8 @@ UnsafeArrayOpt<UTF8Char> Net::SocketUtil::GetAddrName(UnsafeArray<UTF8Char> buff
 		*buff++ = ':';
 		return Text::StrUInt32(buff, port);
 	}
-	else
-	{
-		*buff = 0;
-		return 0;
-	}
+	*buff = 0;
+	return 0;
 }
 
 WChar *Net::SocketUtil::GetAddrName(WChar *buff, NN<const AddressInfo> addr, UInt16 port)

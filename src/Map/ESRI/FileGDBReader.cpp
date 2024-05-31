@@ -464,7 +464,7 @@ Bool Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF
 Optional<Text::String> Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData.GetSize() == 0)
 	{
@@ -538,7 +538,7 @@ Optional<Text::String> Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
 	return 0;
 }
 
-UTF8Char *Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
 	Text::StringBuilderUTF8 sb;
 	if (this->GetStr(colIndex, sb))
@@ -751,6 +751,7 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 	Double m = 0;
 	UInt64 v;
 	UInt32 srid;
+	NN<Math::CoordinateSystem> csys;
 /*
 #define SHPT_MULTIPOINT    8
 #define SHPT_MULTIPOINTM  28
@@ -787,9 +788,9 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			m = UInt64_Double(v - 1) / this->tableInfo->mScale + this->tableInfo->mOrigin;
 		}
 		srid = 0;
-		if (this->tableInfo->csys)
+		if (this->tableInfo->csys.SetTo(csys))
 		{
-			srid = this->tableInfo->csys->GetSRID();
+			srid = csys->GetSRID();
 		}
 		switch (this->tableInfo->geometryType & 0xC0)
 		{
@@ -839,9 +840,9 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //ymax
 			Math::Geometry::Polyline *pl;
 			srid = 0;
-			if (this->tableInfo->csys)
+			if (this->tableInfo->csys.SetTo(csys))
 			{
-				srid = this->tableInfo->csys->GetSRID();
+				srid = csys->GetSRID();
 			}
 			UOSInt i;
 			UOSInt j;
@@ -950,9 +951,9 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //ymax
 			Math::Geometry::Polygon *pg;
 			srid = 0;
-			if (this->tableInfo->csys)
+			if (this->tableInfo->csys.SetTo(csys))
 			{
-				srid = this->tableInfo->csys->GetSRID();
+				srid = csys->GetSRID();
 			}
 			NEW_CLASS(pg, Math::Geometry::Polygon(srid));
 			UOSInt i;
@@ -1055,9 +1056,9 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, v); //ymax
 			Math::Geometry::Polyline *pl;
 			srid = 0;
-			if (this->tableInfo->csys)
+			if (this->tableInfo->csys.SetTo(csys))
 			{
-				srid = this->tableInfo->csys->GetSRID();
+				srid = csys->GetSRID();
 			}
 			UOSInt i;
 			UOSInt j;
@@ -1170,9 +1171,9 @@ Optional<Math::Geometry::Vector2D> Map::ESRI::FileGDBReader::GetVector(UOSInt co
 			Math::Geometry::Polygon *pg;
 			srid = 0;
 			UOSInt i;
-			if (this->tableInfo->csys)
+			if (this->tableInfo->csys.SetTo(csys))
 			{
-				srid = this->tableInfo->csys->GetSRID();
+				srid = csys->GetSRID();
 			}
 			UInt32 *parts;
 			Math::Coord2DDbl *points;
@@ -1479,7 +1480,7 @@ Bool Map::ESRI::FileGDBReader::IsNull(UOSInt colIndex)
 	return this->fieldNull[fieldIndex] != 0;
 }
 
-UTF8Char *Map::ESRI::FileGDBReader::GetName(UOSInt colIndex, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Map::ESRI::FileGDBReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
 	Map::ESRI::FileGDBFieldInfo *field = this->tableInfo->fields->GetItem(fieldIndex);
@@ -1542,7 +1543,8 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 		return false;
 	}
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
+	NN<Math::CoordinateSystem> csys;
 	UOSInt colSize;
 	colDef->SetColName(field->name);
 	colDef->SetColSize(field->fieldSize);
@@ -1569,9 +1571,9 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 	}
 	if (colDef->GetColType() == DB::DBUtil::CT_Vector)
 	{
-		if (this->tableInfo->csys)
+		if (this->tableInfo->csys.SetTo(csys))
 		{
-			colDef->SetColDP(this->tableInfo->csys->GetSRID());
+			colDef->SetColDP(csys->GetSRID());
 		}
 		switch (this->tableInfo->geometryType)
 		{

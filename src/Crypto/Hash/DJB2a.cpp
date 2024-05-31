@@ -35,9 +35,9 @@ void Crypto::Hash::DJB2a::Clear()
 	this->currVal = 5381;
 }
 
-void Crypto::Hash::DJB2a::Calc(const UInt8 *buff, UOSInt buffSize)
+void Crypto::Hash::DJB2a::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
-	this->currVal = DJB2a_Calc(buff, buffSize, this->currVal);
+	this->currVal = DJB2a_Calc(buff.Ptr(), buffSize, this->currVal);
 }
 
 void Crypto::Hash::DJB2a::GetValue(UnsafeArray<UInt8> buff) const

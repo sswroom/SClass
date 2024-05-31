@@ -21,7 +21,7 @@ UInt32 __stdcall Map::TileMapLayer::TaskThread(AnyType userObj)
 	CachedImage *cimg;
 	NN<ThreadStat> stat = userObj.GetNN<ThreadStat>();
 	UTF8Char sbuff[16];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("TileMapLayer")), stat->index);
 	Sync::ThreadUtil::SetName(CSTRP(sbuff, sptr));
 	{
@@ -427,7 +427,7 @@ UOSInt Map::TileMapLayer::GetColumnCnt() const
 	return 3;
 }
 
-UTF8Char *Map::TileMapLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
+UnsafeArrayOpt<UTF8Char> Map::TileMapLayer::GetColumnName(UnsafeArray<UTF8Char> buff, UOSInt colIndex)
 {
 	switch (colIndex)
 	{
@@ -461,7 +461,7 @@ DB::DBUtil::ColType Map::TileMapLayer::GetColumnType(UOSInt colIndex, OptOut<UOS
 Bool Map::TileMapLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt colSize;
 	switch (colIndex)
 	{
@@ -469,7 +469,7 @@ Bool Map::TileMapLayer::GetColumnDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 		colDef->SetPK(true);
 	case 1:
 	case 2:
-		sptr = this->GetColumnName(sbuff, colIndex);
+		sptr = this->GetColumnName(sbuff, colIndex).Or(sbuff);
 		colDef->SetColName(CSTRP(sbuff, sptr));
 		colDef->SetColType(this->GetColumnType(colIndex, colSize));
 		colDef->SetColSize(colSize);
@@ -511,7 +511,7 @@ Math::Geometry::Vector2D *Map::TileMapLayer::GetNewVectorById(GetObjectSess *ses
 	Math::RectAreaDbl bounds;
 	NN<Media::SharedImage> shimg;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
 	Math::Coord2D<Int32> tileId = IdToCoord(id);
 	if (tileId.x == (Int32)0x80000000)
@@ -524,7 +524,7 @@ Math::Geometry::Vector2D *Map::TileMapLayer::GetNewVectorById(GetObjectSess *ses
 		cimg = this->lastImgs.GetItemNoCheck((UOSInt)i);
 		if (!cimg->img.SetTo(shimg))
 			return 0;
-		sptr = this->tileMap->GetTileImageURL(sbuff, cimg->level, tileId);
+		sptr = this->tileMap->GetTileImageURL(sbuff, cimg->level, tileId).Or(sbuff);
 		NEW_CLASS(vimg, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, cimg->tl, cimg->br, false, {sbuff, (UOSInt)(sptr - sbuff)}, 0, 0));
 		return vimg;
 	}
@@ -551,7 +551,7 @@ Math::Geometry::Vector2D *Map::TileMapLayer::GetNewVectorById(GetObjectSess *ses
 		this->lastImgs.Insert(k, cimg);
 		mutUsage.EndUse();
 
-		sptr = this->tileMap->GetTileImageURL(sbuff, level, tileId);
+		sptr = this->tileMap->GetTileImageURL(sbuff, level, tileId).Or(sbuff);
 		NEW_CLASS(vimg, Math::Geometry::VectorImage(this->csys->GetSRID(), shimg, cimg->tl, cimg->br, false, {sbuff, (UOSInt)(sptr - sbuff)}, 0, 0));
 		return vimg;
 	}

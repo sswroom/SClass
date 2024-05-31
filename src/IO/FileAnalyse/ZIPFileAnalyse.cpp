@@ -592,14 +592,13 @@ UOSInt IO::FileAnalyse::ZIPFileAnalyse::GetFrameCount()
 Bool IO::FileAnalyse::ZIPFileAnalyse::GetFrameName(UOSInt index, NN<Text::StringBuilderUTF8> sb)
 {
 	NN<IO::FileAnalyse::ZIPFileAnalyse::ZIPRecord> tag;
-	Text::CString name;
+	Text::CStringNN name;
 	if (!this->tags.GetItem(index).SetTo(tag))
 		return false;
 	sb->AppendU64(tag->ofst);
 	sb->AppendC(UTF8STRC(": Type=0x"));
 	sb->AppendHex32(tag->tagType);
-	name = GetTagName(tag->tagType);
-	if (name.v)
+	if (GetTagName(tag->tagType).SetTo(name))
 	{
 		sb->AppendC(UTF8STRC(" ("));
 		sb->Append(name);
@@ -646,7 +645,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::ZIPFileAnalyse::GetFrame
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[128];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<IO::FileAnalyse::ZIPFileAnalyse::ZIPRecord> tag;
 	if (!this->tags.GetItem(index).SetTo(tag))
 		return 0;

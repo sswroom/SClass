@@ -770,7 +770,7 @@ UOSInt Map::NetworkLinkLayer::AddLink(Text::CString name, Text::CStringNN url, T
 	Text::StringBuilderUTF8 sb;
 	sb.Append(this->GetSourceNameObj());
 	sb.AllocLeng(url.leng);
-	sb.SetEndPtr(Text::URLString::AppendURLPath(sb.v, sb.GetEndPtr(), url));
+	sb.SetEndPtr(Text::URLString::AppendURLPath(sb.v, sb.GetEndPtr(), url).Or(sb.v));
 	NN<LinkInfo> link;
 	NEW_CLASSNN(link, LinkInfo());
 	link->innerLayer = 0;

@@ -51,7 +51,7 @@ namespace Net
 			SSEDisconnectHandler sseHdlr;
 			AnyType sseHdlrObj;
 
-			UOSInt SendData(const UInt8 *buff, UOSInt buffSize);
+			UOSInt SendData(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 		public:
 			WebConnection(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, NN<Net::TCPClient> cli, NN<WebListener> svr, NN<IWebHandler> hdlr, Bool allowProxy, KeepAlive KeepAlive);
 			virtual ~WebConnection();
@@ -82,7 +82,7 @@ namespace Net
 
 			virtual Bool IsDown() const;
 			virtual UOSInt Read(const Data::ByteArray &buff);
-			virtual UOSInt Write(const UInt8 *buff, UOSInt size);
+			virtual UOSInt Write(UnsafeArray<const UInt8> buff, UOSInt size);
 			virtual Int32 Flush();
 			virtual void Close();
 			virtual Bool Recover();

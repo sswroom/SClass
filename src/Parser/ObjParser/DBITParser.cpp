@@ -36,7 +36,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::DBITParser::ParseObject(NN<IO::Par
 	NN<DB::ReadingDB> db;
 	NN<DB::DBReader> r;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Bool valid = false;
 	if (pobj->GetParserType() != IO::ParserType::ReadingDB)
 		return 0;
@@ -44,20 +44,15 @@ Optional<IO::ParsedObject> Parser::ObjParser::DBITParser::ParseObject(NN<IO::Par
 	if (db->QueryTableData(CSTR_NULL, CSTR("IT_TGVLib"), 0, 0, 0, CSTR_NULL, 0).SetTo(r))
 	{
 		valid = true;
-		sptr = r->GetName(0, sbuff);
-		if (sptr == 0 || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("fUserType")))
+		if (!r->GetName(0, sbuff).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("fUserType")))
 			valid = false;
-		sptr = r->GetName(1, sbuff);
-		if (sptr == 0 || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("fDBType")))
+		if (!r->GetName(1, sbuff).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("fDBType")))
 			valid = false;
-		sptr = r->GetName(2, sbuff);
-		if (sptr == 0 || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("fObjNo")))
+		if (!r->GetName(2, sbuff).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("fObjNo")))
 			valid = false;
-		sptr = r->GetName(3, sbuff);
-		if (sptr == 0 || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("fObjFreeNo")))
+		if (!r->GetName(3, sbuff).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("fObjFreeNo")))
 			valid = false;
-		sptr = r->GetName(4, sbuff);
-		if (sptr == 0 || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("fTypeName")))
+		if (!r->GetName(4, sbuff).SetTo(sptr) || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("fTypeName")))
 			valid = false;
 		db->CloseReader(r);
 	}
@@ -157,7 +152,7 @@ Optional<IO::ParsedObject> Parser::ObjParser::DBITParser::ParseObject(NN<IO::Par
 			NEW_CLASS(trk, Map::GPSTrack(pobj->GetSourceNameObj(), true, 0, 0));
 			while (r->ReadNext())
 			{
-				sptr = r->GetStr(2, sbuff, sizeof(sbuff));
+				sptr = r->GetStr(2, sbuff, sizeof(sbuff)).Or(sbuff);
 				trk->SetTrackName(CSTRP(sbuff, sptr));
 				i = (UOSInt)r->GetInt32(9);
 				j = (UOSInt)r->GetInt32(10);

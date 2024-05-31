@@ -552,7 +552,7 @@ UInt32 DB::ReadingDBTool::GetDataCnt()
 	return this->dataCnt;
 }
 
-Optional<DB::DBReader> DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::ReadingDBTool::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	Text::CStringNN nnschemaName;
 	{
@@ -801,7 +801,7 @@ UOSInt DB::ReadingDBTool::QuerySchemaNames(NN<Data::ArrayListStringNN> arr)
 	}
 }
 
-Optional<DB::TableDef> DB::ReadingDBTool::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> DB::ReadingDBTool::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	return this->db->GetTableDef(schemaName, tableName);
 }

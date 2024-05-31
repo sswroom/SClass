@@ -53,7 +53,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
 	UTF8Char sbuff[512];
-	UTF8Char *sbuffEnd;
+	UnsafeArray<UTF8Char> sbuffEnd;
 	Data::ArrayListNN<Map::MapDrawLayer> layers;
 
 	Map::WebImageLayer *imgLyr = 0;
@@ -542,7 +542,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 								sb.ClearStr();
 								reader->ReadNodeText(sb);
 								sbuffEnd = imgLyr->GetSourceName(sbuff);
-								sbuffEnd = Text::URLString::AppendURLPath(sbuff, sbuffEnd, sb.ToCString());
+								sbuffEnd = Text::URLString::AppendURLPath(sbuff, sbuffEnd, sb.ToCString()).Or(sbuff);
 							}
 							else
 							{
@@ -700,7 +700,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLContainer(NN<Text::XMLReader> r
 								sb.ClearStr();
 								reader->ReadNodeText(sb);
 								sbuffEnd = imgLyr->GetSourceName(sbuff);
-								sbuffEnd = Text::URLString::AppendURLPath(sbuff, sbuffEnd, sb.ToCString());
+								sbuffEnd = Text::URLString::AppendURLPath(sbuff, sbuffEnd, sb.ToCString()).Or(sbuff);
 							}
 							else
 							{
@@ -880,7 +880,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 				{
 					Text::StringBuilderUTF8 sb;
 					UTF8Char sbuff[256];
-					UTF8Char *strs[4];
+					UnsafeArray<UTF8Char> strs[4];
 					if (lastTrack)
 					{
 						lyr->NewTrack();
@@ -1189,7 +1189,7 @@ void Map::KMLXML::ParseKMLPlacemarkTrack(NN<Text::XMLReader> reader, NN<Map::GPS
 				rec.valid = true;
 				Data::DateTime dt;
 				UTF8Char sbuff[256];
-				UTF8Char *strs[4];
+				UnsafeArray<UTF8Char> strs[4];
 				UOSInt i = 0;
 				UOSInt j = timeList.GetCount();
 				while (i < j)
@@ -1432,7 +1432,7 @@ Optional<Map::MapDrawLayer> Map::KMLXML::ParseKMLPlacemarkLyr(NN<Text::XMLReader
 			else
 			{
 #if defined(VERBOSE)
-				printf("KMLXML: ParseKMLPlacemarkLyr unsupport vector type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()).v);
+				printf("KMLXML: ParseKMLPlacemarkLyr unsupport vector type: %s\r\n", Math::Geometry::Vector2D::VectorTypeGetName(vec->GetVectorType()).v.Ptr());
 #endif
 				vec.Delete();
 			}
@@ -1465,10 +1465,10 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NN<Text::XMLReade
 				Data::ArrayListA<Math::Coord2DDbl> coord;
 				Data::ArrayListDbl altList;
 				UTF8Char c;
-				UTF8Char *sptr;
-				UTF8Char *sptr2;
+				UnsafeArray<UTF8Char> sptr;
+				UnsafeArray<UTF8Char> sptr2;
 				UTF8Char sbuff[256];
-				UTF8Char *sarr[4];
+				UnsafeArray<UTF8Char> sarr[4];
 				UOSInt i;
 
 				Text::StringBuilderUTF8 sb;
@@ -1552,7 +1552,7 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NN<Text::XMLReade
 				Double y;
 				Double z;
 				UOSInt i;
-				UTF8Char *sarr[4];
+				UnsafeArray<UTF8Char> sarr[4];
 				i = Text::StrSplitTrim(sarr, 4, sb.v, ',');
 				if (i == 3)
 				{
@@ -1727,11 +1727,11 @@ Optional<Math::Geometry::Vector2D> Map::KMLXML::ParseKMLVector(NN<Text::XMLReade
 void Map::KMLXML::ParseCoordinates(NN<Text::XMLReader> reader, NN<Data::ArrayListA<Math::Coord2DDbl>> coordList, NN<Data::ArrayList<Double>> altList)
 {
 	UOSInt i;
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	UTF8Char c;
 	UTF8Char sbuff[256];
-	UTF8Char *sarr[4];
+	UnsafeArray<UTF8Char> sarr[4];
 	NN<Text::String> nodeName;
 
 	while (reader->NextElementName().SetTo(nodeName))

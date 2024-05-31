@@ -60,7 +60,7 @@ namespace IO
 		Data::ArrayListNN<const ProgramItem> testProgs;
 
 		void AppendCfgItem(NN<Text::StringBuilderUTF8> sb, Text::CStringNN val);
-		void AppendCfgPath(NN<Text::StringBuilderUTF8> sb, Text::CString path);
+		void AppendCfgPath(NN<Text::StringBuilderUTF8> sb, Text::CStringNN path);
 		void AppendCfg(NN<Text::StringBuilderUTF8> sb, Text::CString compileCfg);
 
 		Bool ExecuteCmd(Text::CStringNN cmd);

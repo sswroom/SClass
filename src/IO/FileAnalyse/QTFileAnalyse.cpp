@@ -869,7 +869,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::QTFileAnalyse::GetFrameD
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	NN<IO::FileAnalyse::QTFileAnalyse::PackInfo> pack;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;

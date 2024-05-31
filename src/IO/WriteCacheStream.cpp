@@ -30,7 +30,7 @@ UOSInt IO::WriteCacheStream::Read(const Data::ByteArray &buff)
 	return this->outStm->Read(buff);
 }
 
-UOSInt IO::WriteCacheStream::Write(const UInt8 *buff, UOSInt size)
+UOSInt IO::WriteCacheStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	UOSInt ret;
 	UInt8 *newBuff;
@@ -78,7 +78,7 @@ UOSInt IO::WriteCacheStream::Write(const UInt8 *buff, UOSInt size)
 
 	if ((size + this->cacheSize) <= this->cacheBuffSize)
 	{
-		MemCopyNO(&this->cacheBuff[this->cacheSize], buff, size);
+		MemCopyNO(&this->cacheBuff[this->cacheSize], buff.Ptr(), size);
 		this->cacheSize += size;
 		ret = this->outStm->Write(this->cacheBuff, this->cacheSize);
 		if (ret == this->cacheSize)
@@ -104,7 +104,7 @@ UOSInt IO::WriteCacheStream::Write(const UInt8 *buff, UOSInt size)
 	}
 	newBuff = MemAlloc(UInt8, this->cacheBuffSize);
 	MemCopyNO(newBuff, this->cacheBuff, this->cacheSize);
-	MemCopyNO(&newBuff[this->cacheSize], buff, size);
+	MemCopyNO(&newBuff[this->cacheSize], buff.Ptr(), size);
 	this->cacheSize += size;
 	MemFree(this->cacheBuff);
 	this->cacheBuff = newBuff;

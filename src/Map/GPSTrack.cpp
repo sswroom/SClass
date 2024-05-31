@@ -500,11 +500,10 @@ UOSInt Map::GPSTrack::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLi
 	return 2;
 }
 
-Optional<DB::DBReader> Map::GPSTrack::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Map::GPSTrack::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	NN<DB::DBReader> r;
-	Text::CStringNN nntableName;
-	if (tableName.SetTo(nntableName) && nntableName.Equals(UTF8STRC("GPSData")))
+	if (tableName.Equals(UTF8STRC("GPSData")))
 	{
 		NEW_CLASSNN(r, Map::GPSDataReader(*this));
 	}
@@ -515,14 +514,13 @@ Optional<DB::DBReader> Map::GPSTrack::QueryTableData(Text::CString schemaName, T
 	return r;
 }
 
-Optional<DB::TableDef> Map::GPSTrack::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> Map::GPSTrack::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	UOSInt i = 0;
 	UOSInt j;
 	NN<DB::ColDef> col;
 	DB::TableDef *tab = 0;
-	Text::CStringNN nntableName;
-	if (tableName.SetTo(nntableName) && nntableName.Equals(UTF8STRC("GPSData")))
+	if (tableName.Equals(UTF8STRC("GPSData")))
 	{
 		if (this->hasAltitude)
 		{

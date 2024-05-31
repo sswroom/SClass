@@ -51,19 +51,19 @@ void Crypto::Hash::SHA1::Clear()
 	this->intermediateHash[4]   = 0xC3D2E1F0;
 }
 
-void Crypto::Hash::SHA1::Calc(const UInt8 *buff, UOSInt buffSize)
+void Crypto::Hash::SHA1::Calc(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	this->messageLength += (buffSize << 3);
 	if ((buffSize + this->messageBlockIndex) < 64)
 	{
-		MemCopyNO(&this->messageBlock[this->messageBlockIndex], buff, buffSize);
+		MemCopyNO(&this->messageBlock[this->messageBlockIndex], buff.Ptr(), buffSize);
 		this->messageBlockIndex += buffSize;
 		return;
 	}
     
 	if (this->messageBlockIndex > 0)
 	{
-		MemCopyNO(&this->messageBlock[this->messageBlockIndex], buff, 64 - this->messageBlockIndex);
+		MemCopyNO(&this->messageBlock[this->messageBlockIndex], buff.Ptr(), 64 - this->messageBlockIndex);
 		SHA1_CalcBlock(this->intermediateHash, this->messageBlock);
 		buff += 64 - this->messageBlockIndex;
 		buffSize -= 64 - this->messageBlockIndex;
@@ -72,13 +72,13 @@ void Crypto::Hash::SHA1::Calc(const UInt8 *buff, UOSInt buffSize)
 
 	while (buffSize >= 64)
 	{
-		SHA1_CalcBlock(this->intermediateHash, buff);
+		SHA1_CalcBlock(this->intermediateHash, buff.Ptr());
 		buff += 64;
 		buffSize -= 64;
 	}
 	if (buffSize > 0)
 	{
-		MemCopyNO(this->messageBlock, buff, this->messageBlockIndex = buffSize);
+		MemCopyNO(this->messageBlock, buff.Ptr(), this->messageBlockIndex = buffSize);
 	}
 }
 

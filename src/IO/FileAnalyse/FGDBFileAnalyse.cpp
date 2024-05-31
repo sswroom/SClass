@@ -173,7 +173,7 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBFileAnalyse::GetFram
 {
 	NN<IO::FileAnalyse::FrameDetail> frame;
 	UTF8Char sbuff[1024];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<IO::FileAnalyse::FGDBFileAnalyse::TagInfo> tag;
 	if (!this->tags.GetItem(index).SetTo(tag))
 		return 0;
@@ -272,13 +272,13 @@ Optional<IO::FileAnalyse::FrameDetail> IO::FileAnalyse::FGDBFileAnalyse::GetFram
 					*sptr = 0;
 					frame->AddField(ofst + 2, srsLen, CSTR("SRS"), CSTRP(sbuff, sptr));
 					UOSInt csysLen = (UOSInt)(sptr - sbuff);
-					Math::CoordinateSystem *csys = this->prjParser.ParsePRJBuff(this->fd->GetFullName()->ToCString(), sbuff, csysLen, &csysLen);
-					if (csys)
+					NN<Math::CoordinateSystem> csys;
+					if (this->prjParser.ParsePRJBuff(this->fd->GetFullName()->ToCString(), sbuff, csysLen, csysLen).SetTo(csys))
 					{
 						Text::StringBuilderUTF8 sb;
 						csys->ToString(sb);
 						frame->AddField(ofst + 2, srsLen, CSTR("Coordinate System"), sb.ToCString());
-						DEL_CLASS(csys);
+						csys.Delete();
 					}
 					ofst += 2 + srsLen;
 					UInt8 flags = tagData[ofst];
@@ -741,7 +741,7 @@ Bool IO::FileAnalyse::FGDBFileAnalyse::TrimPadding(Text::CStringNN outputFile)
 	return false;
 }
 
-Text::CString IO::FileAnalyse::FGDBFileAnalyse::TagTypeGetName(TagType tagType)
+Text::CStringNN IO::FileAnalyse::FGDBFileAnalyse::TagTypeGetName(TagType tagType)
 {
 	switch (tagType)
 	{
@@ -754,6 +754,6 @@ Text::CString IO::FileAnalyse::FGDBFileAnalyse::TagTypeGetName(TagType tagType)
 	case TagType::FreeSpace:
 		return CSTR("FreeSpace");
 	default:
-		return CSTR_NULL;
+		return CSTR("Unknown");
 	}
 }

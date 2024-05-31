@@ -71,7 +71,7 @@ UOSInt DB::CSVFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayList
 	return 1;
 }
 
-Optional<DB::DBReader> DB::CSVFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::CSVFile::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	NN<IO::Stream> stm;
 	if (stm.Set(this->stm))
@@ -114,7 +114,7 @@ Optional<DB::DBReader> DB::CSVFile::QueryTableData(Text::CString schemaName, Tex
 	}
 }
 
-Optional<DB::TableDef> DB::CSVFile::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> DB::CSVFile::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	NN<DB::DBReader> r;
 	if (this->QueryTableData(schemaName, tableName, 0, 0, 0, CSTR_NULL, 0).SetTo(r))

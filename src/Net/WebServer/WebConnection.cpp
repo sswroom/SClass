@@ -24,7 +24,7 @@
 #define WRITE_BUFFER_SIZE MAX_CHUNK_SIZE
 #endif
 
-UOSInt Net::WebServer::WebConnection::SendData(const UInt8 *buff, UOSInt buffSize)
+UOSInt Net::WebServer::WebConnection::SendData(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	if (this->logWriter) this->logWriter->TCPSend(this->cli, buff, buffSize);
 	if (this->cstm)
@@ -344,7 +344,7 @@ void Net::WebServer::WebConnection::EndProxyConn()
 		this->proxyMode = false;
 		DEL_CLASS(this->proxyCli);
 		this->proxyCli = 0;
-		this->svr->LogMessageC(this->currReq, UTF8STRC("End Proxy Conn"));
+		this->svr->LogMessageC(this->currReq, CSTR("End Proxy Conn"));
 	}
 	else
 	{
@@ -363,9 +363,9 @@ void Net::WebServer::WebConnection::ProxyShutdown()
 void Net::WebServer::WebConnection::ProcessTimeout()
 {
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
-	sptr = this->cli->GetRemoteName(sbuff);
+	sptr = this->cli->GetRemoteName(sbuff).Or(sbuff);
 	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb.AppendC(UTF8STRC(" "));
 	if (this->currReq)
@@ -375,7 +375,7 @@ void Net::WebServer::WebConnection::ProcessTimeout()
 		sb.AppendUTF8Char(' ');
 	}
 	sb.AppendC(UTF8STRC("Process Timeout"));
-	this->svr->LogMessageC(0, sb.ToString(), sb.GetLength());
+	this->svr->LogMessageC(0, sb.ToCString());
 }
 
 Text::String *Net::WebServer::WebConnection::GetRequestURL()
@@ -390,7 +390,7 @@ Text::String *Net::WebServer::WebConnection::GetRequestURL()
 void Net::WebServer::WebConnection::SendHeaders(Net::WebServer::IWebRequest::RequestProtocol protocol)
 {
 	UInt8 *buff;
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	buff = MemAlloc(UInt8, 256 + (this->respHeaders.GetLength() * 3));
 	sptr = (UTF8Char*)buff;
 	if (protocol == Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0)
@@ -407,8 +407,11 @@ void Net::WebServer::WebConnection::SendHeaders(Net::WebServer::IWebRequest::Req
 	}
 	sptr = Text::StrInt32(sptr, this->respStatus);
 	*sptr++ = ' ';
-	Text::CString codeName = Net::WebStatus::GetCodeName(this->respStatus);
-	sptr = Text::StrConcatNE(sptr, codeName.v, codeName.leng);
+	Text::CStringNN codeName;
+	if (Net::WebStatus::GetCodeName(this->respStatus).SetTo(codeName))
+	{
+		sptr = Text::StrConcatNE(sptr, codeName.v, codeName.leng);
+	}
 	sptr = Text::StrConcatNE(sptr, UTF8STRC("\r\n"));
 
 	sptr = Text::StrConcatNE(sptr, this->respHeaders.ToString(), this->respHeaders.GetLength());
@@ -439,7 +442,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 		{
 			NN<Net::TCPClient> proxyCli;
 			UTF8Char sbuff[512];
-			UTF8Char *sptr;
+			UnsafeArray<UTF8Char> sptr;
 			UOSInt i;
 			sptr = reqURI->ConcatTo(sbuff);
 			i = Text::StrIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), ':');
@@ -499,7 +502,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Conn Err: "));
 					sb.Append(reqURI);
-					this->svr->LogMessageC(this->currReq, sb.ToString(), sb.GetLength());
+					this->svr->LogMessageC(this->currReq, sb.ToCString());
 
 					this->respStatus = Net::WebStatus::SC_NOT_FOUND;
 					this->AddDefHeaders(currReq);
@@ -511,7 +514,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 				else
 				{
 					UInt8 buff[2048];
-					UTF8Char *sbuffHdr = MemAlloc(UTF8Char, 65536);
+					UnsafeArray<UTF8Char> sbuffHdr = MemAllocArr(UTF8Char, 65536);
 					UOSInt i;
 					UOSInt j;
 					UOSInt k;
@@ -555,31 +558,31 @@ void Net::WebServer::WebConnection::ProcessResponse()
 					j = httpCli->GetRespHeaderCnt();
 					while (i < j)
 					{
-						UTF8Char *hdrPtr = httpCli->GetRespHeader(i, sbuffHdr);
-						k = Text::StrIndexOfC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC(": "));
-						if (k != INVALID_INDEX)
+						UnsafeArray<UTF8Char> hdrPtr;
+						if (httpCli->GetRespHeader(i, sbuffHdr).SetTo(hdrPtr))
 						{
-							sbuffHdr[k] = 0;
-							if (Text::StrEqualsICaseC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC("Content-Length")))
+							k = Text::StrIndexOfC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC(": "));
+							if (k != INVALID_INDEX)
 							{
-								lengFound = true;
+								sbuffHdr[k] = 0;
+								if (Text::StrEqualsICaseC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC("Content-Length")))
+								{
+									lengFound = true;
+								}
+								if (Text::StrEqualsICaseC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC("Server")))
+								{
+								}
+								else if (Text::StrEqualsICaseC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC("Connection")))
+								{
+								}
+								else if (Text::StrEqualsICaseC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC("Transfer-Encoding")))
+								{
+								}
+								else
+								{
+									this->AddHeader(Text::CStringNN(sbuffHdr, k), CSTRP(&sbuffHdr[k + 2], hdrPtr));
+								}
 							}
-							if (Text::StrEqualsICaseC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC("Server")))
-							{
-							}
-							else if (Text::StrEqualsICaseC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC("Connection")))
-							{
-							}
-							else if (Text::StrEqualsICaseC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC("Transfer-Encoding")))
-							{
-							}
-							else
-							{
-								this->AddHeader(Text::CStringNN(sbuffHdr, k), CSTRP(&sbuffHdr[k + 2], hdrPtr));
-							}
-						}
-						else
-						{
 						}
 						i++;
 					}
@@ -630,7 +633,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 					{
 						this->SendHeaders(currReq->GetProtocol());
 					}
-					MemFree(sbuffHdr);
+					MemFreeArr(sbuffHdr);
 				}
 				httpCli.Delete();
 				this->cli->ShutdownSend();
@@ -878,7 +881,7 @@ UOSInt Net::WebServer::WebConnection::Read(const Data::ByteArray &buff)
 	return 0;
 }
 
-UOSInt Net::WebServer::WebConnection::Write(const UInt8 *buff, UOSInt size)
+UOSInt Net::WebServer::WebConnection::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	if (this->protoHdlr)
 	{
@@ -909,7 +912,7 @@ UOSInt Net::WebServer::WebConnection::Write(const UInt8 *buff, UOSInt size)
 		UOSInt ohSize;
 		UOSInt writeSize;
 		UInt8 sbuff[MAX_CHUNK_SIZE + 10];
-		UTF8Char *sptr;
+		UnsafeArray<UTF8Char> sptr;
 		while (size > 0)
 		{
 			writeSize = size;
@@ -922,7 +925,7 @@ UOSInt Net::WebServer::WebConnection::Write(const UInt8 *buff, UOSInt size)
 			printf("WebConn: chunked %s", sbuff);
 #endif
 			ohSize = (UOSInt)(sptr - sbuff) + 2;
-			MemCopyNO(sptr, buff, writeSize);
+			MemCopyNO(sptr.Ptr(), buff.Ptr(), writeSize);
 			buff += writeSize;
 			sptr += writeSize;
 			size -= writeSize;

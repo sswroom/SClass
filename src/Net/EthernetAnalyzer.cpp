@@ -19,9 +19,9 @@ mDNS:
 https://www.ietf.org/rfc/rfc6762.txt
 */
 
-void Net::EthernetAnalyzer::NetBIOSDecName(UTF8Char *nameBuff, UOSInt nameSize)
+void Net::EthernetAnalyzer::NetBIOSDecName(UnsafeArray<UTF8Char> nameBuff, UOSInt nameSize)
 {
-	UTF8Char *destPtr = nameBuff;
+	UnsafeArray<UTF8Char> destPtr = nameBuff;
 	while (nameSize >= 2)
 	{
 		*destPtr++ = (UTF8Char)(((nameBuff[0] - 'A') << 4) | (nameBuff[1] - 'A'));
@@ -708,7 +708,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 	UInt32 ipAddr;
 //	UInt8 tmpBuff[8];
 	UTF8Char sbuff[32];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	NN<MACStatus> mac;
 	UOSInt i;
 	Bool valid = true;
@@ -1318,7 +1318,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 									if (dhcp->hostName == 0)
 									{
 										dhcp->hostName = Text::String::New(len).Ptr();
-										MemCopyNO(dhcp->hostName->v, currPtr, len);
+										MemCopyNO(dhcp->hostName->v.Ptr(), currPtr, len);
 										dhcp->hostName->v[len] = 0;
 									}
 								}
@@ -1327,7 +1327,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 									if (dhcp->vendorClass == 0)
 									{
 										dhcp->vendorClass = Text::String::New(len).Ptr();
-										MemCopyNO(dhcp->vendorClass->v, currPtr, len);
+										MemCopyNO(dhcp->vendorClass->v.Ptr(), currPtr, len);
 										dhcp->vendorClass->v[len] = 0;
 									}
 								}

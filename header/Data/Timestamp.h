@@ -243,7 +243,7 @@ namespace Data
 			return UnsafeArray<Char>::ConvertFrom(ToString(UnsafeArray<UTF8Char>::ConvertFrom(buff)));
 		}
 
-		UnsafeArray<Char> ToString(UnsafeArray<Char> buff, const Char *pattern) const
+		UnsafeArray<Char> ToString(UnsafeArray<Char> buff, UnsafeArray<const Char> pattern) const
 		{
 			return UnsafeArray<Char>::ConvertFrom(ToString(UnsafeArray<UTF8Char>::ConvertFrom(buff), pattern));
 		}
@@ -257,19 +257,19 @@ namespace Data
 			}
 			else if (this->inst.nanosec == 0)
 			{
-				return ToString(buff, "yyyy-MM-dd HH:mm:ss zzzz");
+				return ToString(buff, CHSTR("yyyy-MM-dd HH:mm:ss zzzz"));
 			}
 			else if (this->inst.nanosec % 1000000 == 0)
 			{
-				return ToString(buff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
+				return ToString(buff, CHSTR("yyyy-MM-dd HH:mm:ss.fff zzzz"));
 			}
 			else if (this->inst.nanosec % 1000 == 0)
 			{
-				return ToString(buff, "yyyy-MM-dd HH:mm:ss.ffffff zzzz");
+				return ToString(buff, CHSTR("yyyy-MM-dd HH:mm:ss.ffffff zzzz"));
 			}
 			else
 			{
-				return ToString(buff, "yyyy-MM-dd HH:mm:ss.fffffffff zzzz");
+				return ToString(buff, CHSTR("yyyy-MM-dd HH:mm:ss.fffffffff zzzz"));
 			}
 		}
 
@@ -282,19 +282,19 @@ namespace Data
 			}
 			else if (this->inst.nanosec == 0)
 			{
-				return ToString(buff, "yyyy-MM-ddTHH:mm:sszzzz");
+				return ToString(buff, CHSTR("yyyy-MM-ddTHH:mm:sszzzz"));
 			}
 			else if (this->inst.nanosec % 1000000 == 0)
 			{
-				return ToString(buff, "yyyy-MM-ddTHH:mm:ss.fffzzzz");
+				return ToString(buff, CHSTR("yyyy-MM-ddTHH:mm:ss.fffzzzz"));
 			}
 			else if (this->inst.nanosec % 1000 == 0)
 			{
-				return ToString(buff, "yyyy-MM-ddTHH:mm:ss.ffffffzzzz");
+				return ToString(buff, CHSTR("yyyy-MM-ddTHH:mm:ss.ffffffzzzz"));
 			}
 			else
 			{
-				return ToString(buff, "yyyy-MM-ddTHH:mm:ss.fffffffffzzzz");
+				return ToString(buff, CHSTR("yyyy-MM-ddTHH:mm:ss.fffffffffzzzz"));
 			}
 		}
 
@@ -309,32 +309,32 @@ namespace Data
 			{
 				if (((this->inst.sec + (OSInt)this->tzQhr * 900) % 86400) == 0)
 				{
-					return ToString(buff, "yyyy-MM-dd");
+					return ToString(buff, CHSTR("yyyy-MM-dd"));
 				}
 				else
 				{
-					return ToString(buff, "yyyy-MM-dd HH:mm:ss");
+					return ToString(buff, CHSTR("yyyy-MM-dd HH:mm:ss"));
 				}
 			}
 			else if (this->inst.nanosec % 1000000 == 0)
 			{
-				return ToString(buff, "yyyy-MM-dd HH:mm:ss.fff");
+				return ToString(buff, CHSTR("yyyy-MM-dd HH:mm:ss.fff"));
 			}
 			else if (this->inst.nanosec % 1000 == 0)
 			{
-				return ToString(buff, "yyyy-MM-dd HH:mm:ss.ffffff");
+				return ToString(buff, CHSTR("yyyy-MM-dd HH:mm:ss.ffffff"));
 			}
 			else
 			{
-				return ToString(buff, "yyyy-MM-dd HH:mm:ss.fffffffff");
+				return ToString(buff, CHSTR("yyyy-MM-dd HH:mm:ss.fffffffff"));
 			}
 		}
 
-		UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> buff, const Char *pattern) const
+		UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> buff, UnsafeArray<const Char> pattern) const
 		{
 			Data::DateTimeUtil::TimeValue tval;
 			Data::DateTimeUtil::Instant2TimeValue(this->inst.sec, this->inst.nanosec, tval, this->tzQhr);
-			return Data::DateTimeUtil::ToString(buff, tval, this->tzQhr, this->inst.nanosec, (const UTF8Char*)pattern);
+			return Data::DateTimeUtil::ToString(buff, tval, this->tzQhr, this->inst.nanosec, UnsafeArray<const UTF8Char>::ConvertFrom(pattern));
 		}
 		
 		Bool operator==(Timestamp dt) const

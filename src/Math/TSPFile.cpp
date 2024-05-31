@@ -79,10 +79,10 @@ UOSInt Math::TSPFile::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLi
 	}
 }
 
-Optional<DB::DBReader> Math::TSPFile::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> Math::TSPFile::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	NN<DB::DBReader> reader;
-	if (tableName.v != 0 && tableName.Equals(UTF8STRC("StationSetup")))
+	if (tableName.Equals(UTF8STRC("StationSetup")))
 	{
 		NEW_CLASSNN(reader, Math::TSPHReader(this));
 	}
@@ -93,14 +93,14 @@ Optional<DB::DBReader> Math::TSPFile::QueryTableData(Text::CString schemaName, T
 	return reader;
 }
 
-Optional<DB::TableDef> Math::TSPFile::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> Math::TSPFile::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	UOSInt i;
 	UOSInt j;
 	DB::TableDef *tab;
 	NN<DB::ColDef> col;
 	NEW_CLASS(tab, DB::TableDef(schemaName, tableName));
-	if (tableName.v != 0 && tableName.Equals(UTF8STRC("StationSetup")))
+	if (tableName.Equals(UTF8STRC("StationSetup")))
 	{
 		i = 0;
 		j = 8;
@@ -259,41 +259,41 @@ WChar *Math::TSPReader::GetStr(UOSInt colIndex, WChar *buff)
 	}
 	else if (colIndex == 3)
 	{
-		return Text::StrDouble(buff, ReadDouble(&this->currRowPtr[0]));
+		return Text::StrDoubleW(buff, ReadDouble(&this->currRowPtr[0]));
 	}
 	else if (colIndex == 4)
 	{
-		return Text::StrDouble(buff, ReadDouble(&this->currRowPtr[8]));
+		return Text::StrDoubleW(buff, ReadDouble(&this->currRowPtr[8]));
 	}
 	else if (colIndex == 5)
 	{
-		return Text::StrDouble(buff, ReadDouble(&this->currRowPtr[16]));
+		return Text::StrDoubleW(buff, ReadDouble(&this->currRowPtr[16]));
 	}
 	else if (colIndex == 6)
 	{
-		return Text::StrDouble(buff, ReadDouble(&this->currRowPtr[24]));
+		return Text::StrDoubleW(buff, ReadDouble(&this->currRowPtr[24]));
 	}
 	else if (colIndex == 7)
 	{
-		return Text::StrDouble(buff, ReadDouble(&this->currRowPtr[32]));
+		return Text::StrDoubleW(buff, ReadDouble(&this->currRowPtr[32]));
 	}
 	else if (colIndex == 8)
 	{
-		return Text::StrDouble(buff, ReadDouble(&this->currRowPtr[40]));
+		return Text::StrDoubleW(buff, ReadDouble(&this->currRowPtr[40]));
 	}
 	else if (this->rowSize >= 128)
 	{
 		if (colIndex == 9)
 		{
-			return Text::StrDouble(buff, ReadDouble(&this->currRowPtr[64]));
+			return Text::StrDoubleW(buff, ReadDouble(&this->currRowPtr[64]));
 		}
 		else if (colIndex == 10)
 		{
-			return Text::StrDouble(buff, ReadDouble(&this->currRowPtr[72]));
+			return Text::StrDoubleW(buff, ReadDouble(&this->currRowPtr[72]));
 		}
 		else if (colIndex == 11)
 		{
-			return Text::StrDouble(buff, ReadDouble(&this->currRowPtr[80]));
+			return Text::StrDoubleW(buff, ReadDouble(&this->currRowPtr[80]));
 		}
 	}
 	return 0;
@@ -302,8 +302,8 @@ WChar *Math::TSPReader::GetStr(UOSInt colIndex, WChar *buff)
 Bool Math::TSPReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
-	if ((sptr = GetStr(colIndex, sbuff, sizeof(sbuff))) != 0)
+	UnsafeArray<UTF8Char> sptr;
+	if (GetStr(colIndex, sbuff, sizeof(sbuff)).SetTo(sptr))
 	{
 		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		return true;
@@ -314,14 +314,14 @@ Bool Math::TSPReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 Optional<Text::String> Math::TSPReader::GetNewStr(UOSInt colIndex)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
-	if ((sptr = GetStr(colIndex, sbuff, sizeof(sbuff))) != 0)
+	UnsafeArray<UTF8Char> sptr;
+	if (GetStr(colIndex, sbuff, sizeof(sbuff)).SetTo(sptr))
 	{
 		return Text::String::NewP(sbuff, sptr);
 	}
 	return 0;
 }
-UTF8Char *Math::TSPReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> Math::TSPReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
 	if (this->currRowPtr == 0)
 		return 0;
@@ -482,10 +482,10 @@ Bool Math::TSPReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 	return false;
 }
 
-UTF8Char *Math::TSPReader::GetName(UOSInt colIndex, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Math::TSPReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 {
-	Text::CString cstr = this->GetName(colIndex, this->rowSize);
-	if (cstr.v)
+	Text::CStringNN cstr;
+	if (this->GetName(colIndex, this->rowSize).SetTo(cstr))
 		return cstr.ConcatTo(buff);
 	return 0;
 }
@@ -658,7 +658,7 @@ WChar *Math::TSPHReader::GetStr(UOSInt colIndex, WChar *buff)
 {
 	if (this->currRow != 0)
 		return 0;
-	return Text::StrDouble(buff, GetDbl(colIndex));
+	return Text::StrDoubleW(buff, GetDbl(colIndex));
 }
 
 Bool Math::TSPHReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
@@ -672,14 +672,14 @@ Bool Math::TSPHReader::GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb)
 Optional<Text::String> Math::TSPHReader::GetNewStr(UOSInt colIndex)
 {
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
-	if ((sptr = GetStr(colIndex, sbuff, sizeof(sbuff))) != 0)
+	UnsafeArray<UTF8Char> sptr;
+	if (GetStr(colIndex, sbuff, sizeof(sbuff)).SetTo(sptr))
 	{
 		return Text::String::NewP(sbuff, sptr);
 	}
 	return 0;
 }
-UTF8Char *Math::TSPHReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> Math::TSPHReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
 	if (this->currRow != 0)
 		return 0;
@@ -730,10 +730,10 @@ Bool Math::TSPHReader::GetUUID(UOSInt colIndex, NN<Data::UUID> uuid)
 	return false;
 }
 
-UTF8Char *Math::TSPHReader::GetName(UOSInt colIndex, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> Math::TSPHReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 {
-	Text::CString cstr = GetName(colIndex);
-	if (cstr.v)
+	Text::CStringNN cstr;
+	if (GetName(colIndex).SetTo(cstr))
 		return cstr.ConcatTo(buff);
 	return 0;
 }

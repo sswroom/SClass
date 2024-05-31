@@ -269,7 +269,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sou
 	this->mixedData = MixedData::AllData;
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, UOSInt strCnt, UnsafeArray<UnsafeArray<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, UOSInt nameCol, Text::String *layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, UOSInt strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, UOSInt nameCol, Text::String *layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
 {
 	UOSInt i;
 	this->layerType = layerType;
@@ -287,11 +287,11 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sou
 	while (i-- > 0)
 	{
 		maxStrLen[i] = 0;
-		this->colNames[i] = Text::String::NewNotNullSlow(colNames[i]);
+		this->colNames[i] = Text::String::NewNotNullSlow(colNames[i].Or(U8STR("")));
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, UnsafeArray<UnsafeArray<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
 {
 	UOSInt i;
 	this->layerType = layerType;
@@ -309,11 +309,11 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sour
 	while (i-- > 0)
 	{
 		maxStrLen[i] = 0;
-		this->colNames[i] = Text::String::NewNotNullSlow(colNames[i]);
+		this->colNames[i] = Text::String::NewNotNullSlow(colNames[i].Or(U8STR("")));
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, UOSInt strCnt, UnsafeArray<UnsafeArray<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::String *layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sourceName, UOSInt strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::String *layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
 {
 	UOSInt i;
 	this->layerType = layerType;
@@ -331,14 +331,14 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, NN<Text::String> sou
 	while (i-- > 0)
 	{
 		maxStrLen[i] = 0;
-		this->colNames[i] = Text::String::NewNotNullSlow(colNames[i]);
+		this->colNames[i] = Text::String::NewNotNullSlow(colNames[i].Or(U8STR("")));
 		cols[i].colType = colTypes[i];
 		cols[i].colSize = colSize[i];
 		cols[i].colDP = colDP[i];
 	}
 }
 
-Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, UnsafeArray<UnsafeArray<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sourceName, UOSInt strCnt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>> colNames, NN<Math::CoordinateSystem> csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::CString layerName) : Map::MapDrawLayer(sourceName, nameCol, layerName, csys)
 {
 	UOSInt i;
 	this->layerType = layerType;
@@ -356,7 +356,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CStringNN sour
 	while (i-- > 0)
 	{
 		maxStrLen[i] = 0;
-		this->colNames[i] = Text::String::NewNotNullSlow(colNames[i]);
+		this->colNames[i] = Text::String::NewNotNullSlow(colNames[i].Or(U8STR("")));
 		cols[i].colType = colTypes[i];
 		cols[i].colSize = colSize[i];
 		cols[i].colDP = colDP[i];

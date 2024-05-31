@@ -54,7 +54,7 @@ namespace Media
 
 		virtual Bool CaptureImage(ImageCallback imgCb, AnyType userData);
 
-		virtual UTF8Char *GetSourceName(UTF8Char *buff) = 0;
+		virtual UnsafeArrayOpt<UTF8Char> GetSourceName(UnsafeArray<UTF8Char> buff) = 0;
 		virtual Text::CStringNN GetFilterName() = 0;
 
 		virtual void SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, UOSInt cropRight, UOSInt cropBottom) = 0;

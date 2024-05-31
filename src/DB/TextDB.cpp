@@ -294,25 +294,10 @@ UOSInt DB::TextDB::QueryTableNames(Text::CString schemaName, NN<Data::ArrayListS
 	return j;
 }
 
-Optional<DB::DBReader> DB::TextDB::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::TextDB::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	DBData *data;
-	Text::CStringNN nntableName;
-	if (!tableName.SetTo(nntableName))
-	{
-		if (this->dbMap.GetCount() == 1)
-		{
-			data = this->dbMap.GetValues()->GetItem(0);
-		}
-		else
-		{
-			data = 0;
-		}
-	}
-	else
-	{
-		data = this->dbMap.Get(nntableName);
-	}
+	data = this->dbMap.Get(tableName);
 	if (data == 0)
 	{
 		return 0;
@@ -322,25 +307,10 @@ Optional<DB::DBReader> DB::TextDB::QueryTableData(Text::CString schemaName, Text
 	return reader;
 }
 
-Optional<DB::TableDef> DB::TextDB::GetTableDef(Text::CString schemaName, Text::CString tableName)
+Optional<DB::TableDef> DB::TextDB::GetTableDef(Text::CString schemaName, Text::CStringNN tableName)
 {
 	DBData *data;
-	Text::CStringNN nntableName;
-	if (!tableName.SetTo(nntableName))
-	{
-		if (this->dbMap.GetCount() == 1)
-		{
-			data = this->dbMap.GetValues()->GetItem(0);
-		}
-		else
-		{
-			data = 0;
-		}
-	}
-	else
-	{
-		data = this->dbMap.Get(nntableName);
-	}
+	data = this->dbMap.Get(tableName);
 	if (data == 0)
 	{
 		return 0;

@@ -88,7 +88,7 @@ Optional<Text::IMIMEObj> Text::IMIMEObj::ParseFromFile(Text::CStringNN fileName)
 	Text::CStringNN contentType;
 	Optional<Text::IMIMEObj> obj;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = IO::Path::GetFileExt(sbuff, fileName.v, fileName.leng);
 	contentType = Net::MIME::GetMIMEFromExt(CSTRP(sbuff, sptr));
 	IO::StmData::FileData fd(fileName, false);

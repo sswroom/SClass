@@ -32,7 +32,7 @@ namespace Media
 			virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
 			virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb);
 			virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
-			virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
+			virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize);
 			virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
 			virtual Double GetDbl(UOSInt colIndex);
 			virtual Bool GetBool(UOSInt colIndex);
@@ -41,7 +41,7 @@ namespace Media
 			virtual Optional<Math::Geometry::Vector2D> GetVector(UOSInt colIndex);
 			virtual Bool GetUUID(UOSInt colIndex, NN<Data::UUID> uuid);
 
-			virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
+			virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff);
 			virtual Bool IsNull(UOSInt colIndex);
 			virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
 			virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);
@@ -51,8 +51,8 @@ namespace Media
 		};
 	private:
 		Int64 time1TS;
-		const UTF8Char *serialNo;
-		const UTF8Char *testName;
+		UnsafeArrayOpt<const UTF8Char> serialNo;
+		UnsafeArrayOpt<const UTF8Char> testName;
 		Int32 address;
 		UOSInt totalRecords;
 		UInt32 recInterval;
@@ -72,8 +72,8 @@ namespace Media
 		virtual ~HTRecFile();
 
 		virtual UOSInt QueryTableNames(Text::CString schemaName, NN<Data::ArrayListStringNN> names);
-		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
-		virtual Optional<DB::TableDef> GetTableDef(Text::CString schemaName, Text::CString tableName);
+		virtual Optional<DB::DBReader> QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual Optional<DB::TableDef> GetTableDef(Text::CString schemaName, Text::CStringNN tableName);
 		virtual void CloseReader(NN<DB::DBReader> r);
 		virtual void GetLastErrorMsg(NN<Text::StringBuilderUTF8> str);
 		virtual void Reconnect();
@@ -89,8 +89,8 @@ namespace Media
 		Double GetHumiAlarmH();
 		Data::Timestamp GetStartTime();
 		UOSInt GetRecCount();
-		UTF8Char *GetSerialNo(UTF8Char *sbuff);
-		UTF8Char *GetTestName(UTF8Char *sbuff);
+		UnsafeArrayOpt<UTF8Char> GetSerialNo(UnsafeArray<UTF8Char> sbuff);
+		UnsafeArrayOpt<UTF8Char> GetTestName(UnsafeArray<UTF8Char> sbuff);
 		Data::Timestamp GetAdjStartTime();
 		UInt32 GetAdjRecInterval();
 		const UInt8 *GetRecBuff();

@@ -48,9 +48,9 @@ Optional<IO::ParsedObject> Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::St
 {
 	UTF8Char sbuff[1024];
 	UTF8Char sbuff2[64];
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr2;
 	Text::PString tmpArr[2];
-	const UTF8Char **tmpcArr2;
+	UnsafeArray<UnsafeArray<const UTF8Char>> tmpcArr2;
 	Text::PString *tmpArr2;
 	UOSInt colCnt;
 	UOSInt currCol;
@@ -83,7 +83,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::St
 	currCol = 0;
 	while (true)
 	{
-		colNames.Add(tmpArr[0].v);
+		colNames.Add(UnsafeArray<const UTF8Char>(tmpArr[0].v));
 		
 		if (tmpArr[0].EqualsICase(UTF8STRC("UTC DATE")))
 		{
@@ -252,7 +252,7 @@ Optional<IO::ParsedObject> Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::St
 		track->SetTrackName(fd->GetShortName());
 		
 		tmpArr2 = MemAlloc(Text::PString, currCol + 1);
-		while (reader.ReadLine(sbuff, 1024))
+		while (reader.ReadLine(sbuff, 1024).NotNull())
 		{
 			if ((UOSInt)currCol == Text::StrCSVSplitP(tmpArr2, currCol + 1, sbuff))
 			{
@@ -373,30 +373,30 @@ Optional<IO::ParsedObject> Parser::FileParser::CSVParser::ParseFileHdr(NN<IO::St
 		UOSInt i;
 		UOSInt nameCol = 0;
 
-		tmpcArr2 = MemAlloc(const UTF8Char*, currCol + 1);
+		tmpcArr2 = MemAllocArr(UnsafeArray<const UTF8Char>, currCol + 1);
 		i = currCol;
 		while (i-- > 0)
 		{
-			tmpcArr2[i] = colNames.GetItem(i);
+			tmpcArr2[i] = colNames.GetItem(i).Or(U8STR(""));
 			if (Text::StrEndsWithICase(tmpcArr2[i], (const UTF8Char*)"NAME") == 0)
 			{
 				nameCol = i;
 			}
 		}
 		NN<Math::CoordinateSystem> csys;
-		NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, fd->GetFullName(), currCol, tmpcArr2, csys = Math::CoordinateSystemManager::CreateWGS84Csys(), nameCol, 0));
+		NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, fd->GetFullName(), currCol, UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(tmpcArr2), csys = Math::CoordinateSystemManager::CreateWGS84Csys(), nameCol, 0));
 		
-		UTF8Char **tmpUArr2 = (UTF8Char**)tmpcArr2;
-		while (reader.ReadLine(sbuff, 1024))
+		UnsafeArray<UnsafeArray<UTF8Char>> tmpUArr2 = UnsafeArray<UnsafeArray<UTF8Char>>::ConvertFrom(tmpcArr2);
+		while (reader.ReadLine(sbuff, 1024).NotNull())
 		{
 			if ((UOSInt)currCol == Text::StrCSVSplit(tmpUArr2, currCol + 1, sbuff))
 			{
 				NEW_CLASSNN(pt, Math::Geometry::Point(csys->GetSRID(), Text::StrToDouble(tmpUArr2[lonCol]), Text::StrToDouble(tmpUArr2[latCol])));
-				lyr->AddVector(pt, (const UTF8Char**)tmpUArr2);
+				lyr->AddVector(pt, UnsafeArray<UnsafeArrayOpt<const UTF8Char>>::ConvertFrom(tmpUArr2));
 			}
 		}
 
-		MemFree(tmpcArr2);
+		MemFreeArr(tmpcArr2);
 		return lyr;
 	}
 	else

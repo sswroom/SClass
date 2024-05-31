@@ -44,7 +44,7 @@ namespace Map
 			virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
 			virtual Bool GetStr(UOSInt colIndex, NN<Text::StringBuilderUTF8> sb);
 			virtual Optional<Text::String> GetNewStr(UOSInt colIndex);
-			virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
+			virtual UnsafeArrayOpt<UTF8Char> GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize);
 			virtual Data::Timestamp GetTimestamp(UOSInt colIndex);
 			virtual Double GetDbl(UOSInt colIndex);
 			virtual Bool GetBool(UOSInt colIndex);
@@ -57,7 +57,7 @@ namespace Map
 			virtual NN<Data::VariItem> GetNewItem(Text::CStringNN name);
 
 			virtual Bool IsNull(UOSInt colIndex);
-			virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
+			virtual UnsafeArrayOpt<UTF8Char> GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff);
 			virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, OptOut<UOSInt> colSize);
 			virtual Bool GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef);
 

@@ -82,7 +82,7 @@ namespace Media
 		static void GetDispTagType(NN<Text::StringBuilderUTF8> sb, UInt8 *buff, UInt32 leng);
 
 		static Media::CS::TransferType FindTransferType(UOSInt colorCount, UInt16 *curveColors, OutParam<Double> gamma);
-		static UTF8Char *GetProfilePath(UTF8Char *sbuff);
+		static UnsafeArray<UTF8Char> GetProfilePath(UnsafeArray<UTF8Char> sbuff);
 
 		static Optional<ICCProfile> NewSRGBProfile();
 		static const UInt8 *GetSRGBICCData();
