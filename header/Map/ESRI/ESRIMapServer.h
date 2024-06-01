@@ -36,7 +36,7 @@ namespace Map
 			Data::ArrayListDbl tileLevels;
 
 		public:
-			ESRIMapServer(Text::CString url, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Bool noResource);
+			ESRIMapServer(Text::CStringNN url, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Bool noResource);
 			virtual ~ESRIMapServer();
 
 			Bool IsError() const;
@@ -51,7 +51,7 @@ namespace Map
 			UOSInt TileGetWidth() const;
 			UOSInt TileGetHeight() const;
 			Math::Coord2DDbl TileGetOrigin() const;
-			UTF8Char *TileGetURL(UTF8Char *sbuff, UOSInt level, Int32 tileX, Int32 tileY) const;
+			UnsafeArray<UTF8Char> TileGetURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Int32 tileX, Int32 tileY) const;
 			Bool TileGetURL(NN<Text::StringBuilderUTF8> sb, UOSInt level, Int32 tileX, Int32 tileY) const;
 			Bool TileLoadToStream(IO::Stream *stm, UOSInt level, Int32 tileX, Int32 tileY) const;
 			Bool TileLoadToFile(Text::CStringNN fileName, UOSInt level, Int32 tileX, Int32 tileY) const;

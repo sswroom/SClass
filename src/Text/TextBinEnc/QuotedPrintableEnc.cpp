@@ -10,7 +10,7 @@ Text::TextBinEnc::QuotedPrintableEnc::~QuotedPrintableEnc()
 {
 }
 
-UOSInt Text::TextBinEnc::QuotedPrintableEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize) const
+UOSInt Text::TextBinEnc::QuotedPrintableEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const
 {
 	UTF8Char sbuff[78];
 	UOSInt lineCnt = 0;
@@ -125,7 +125,7 @@ UOSInt Text::TextBinEnc::QuotedPrintableEnc::CalcBinSize(Text::CStringNN str) co
 	return cnt;
 }
 
-UOSInt Text::TextBinEnc::QuotedPrintableEnc::DecodeBin(Text::CStringNN s, UInt8 *dataBuff) const
+UOSInt Text::TextBinEnc::QuotedPrintableEnc::DecodeBin(Text::CStringNN s, UnsafeArray<UInt8> dataBuff) const
 {
 	UOSInt cnt = 0;
 	UTF8Char c;

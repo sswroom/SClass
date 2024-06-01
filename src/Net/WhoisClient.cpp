@@ -33,13 +33,14 @@ NN<Net::WhoisRecord> Net::WhoisClient::RequestIP(UInt32 ip, UInt32 whoisIP, Text
 {
 	NN<Net::WhoisRecord> rec;
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 
 	UInt8 *ipAddr = (UInt8*)&ip;
 	UOSInt i;
-	if (prefix.v)
+	Text::CStringNN nnprefix;
+	if (prefix.SetTo(nnprefix))
 	{
-		sptr = prefix.ConcatTo(sbuff);
+		sptr = nnprefix.ConcatTo(sbuff);
 	}
 	else
 	{
@@ -54,7 +55,7 @@ NN<Net::WhoisRecord> Net::WhoisClient::RequestIP(UInt32 ip, UInt32 whoisIP, Text
 	Net::TCPClient cli(sockf, whoisIP, 43, timeout);
 	cli.Write((UInt8*)sbuff, (UOSInt)(sptr - sbuff));
 	Text::UTF8Reader reader(cli);
-	while ((sptr = reader.ReadLine(sbuff, 511)) != 0)
+	while (reader.ReadLine(sbuff, 511).SetTo(sptr))
 	{
 		if (sbuff[0] == '%')
 		{

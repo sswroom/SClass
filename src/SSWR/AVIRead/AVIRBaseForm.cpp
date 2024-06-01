@@ -943,8 +943,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[16];
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	NN<Map::TileMap> tileMap;
 	NN<Map::MapDrawLayer> mapLyr;
 
@@ -1007,7 +1007,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (dlg.ShowDialog(this) == UI::GUIForm::DR_OK && dlg.capture.SetTo(capture))
 			{
 				NN<Media::MediaFile> mf;
-				sptr = capture->GetSourceName(sbuff);
+				sptr = capture->GetSourceName(sbuff).Or(sptr);
 				NEW_CLASSNN(mf, Media::MediaFile(CSTRP(sbuff, sptr)));
 				mf->AddSource(capture, 0);
 				this->core->OpenObject(mf);
@@ -1121,9 +1121,9 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				{
 					NN<Map::ESRI::ESRITileMap> map;
 					NN<Text::String> url = esriMap->GetURL();
-					crc.Calc((UInt8*)url->v, url->leng);
+					crc.Calc(url->v, url->leng);
 					crc.GetValue(crcVal);
-					sptr = IO::Path::GetProcessFileName(sbuff);
+					sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 					sptr2 = Text::StrInt32(sbuff2, ReadMInt32(crcVal));
 					sptr = IO::Path::AppendPath(sbuff, sptr, CSTRP(sbuff2, sptr2));
 					*sptr++ = (UTF8Char)IO::Path::PATH_SEPERATOR;
@@ -1609,7 +1609,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_TEST:
-		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::GetProcessFileName(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMCacheTest"));
 		NEW_CLASSNN(tileMap, Map::OSM::OSMTileMap(CSTR("http://127.0.0.1/"), {sbuff, (UOSInt)(sptr - sbuff)}, 0, 18, this->core->GetSocketFactory(), this->ssl));
 		NEW_CLASSNN(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));

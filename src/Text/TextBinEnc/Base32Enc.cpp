@@ -21,9 +21,9 @@ const UInt8 Text::TextBinEnc::Base32Enc::decArr[] = {
 		0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 };
 
-const UTF8Char *Text::TextBinEnc::Base32Enc::GetEncArr()
+UnsafeArray<const UTF8Char> Text::TextBinEnc::Base32Enc::GetEncArr()
 {
-	return (const UTF8Char*)"ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+	return U8STR("ABCDEFGHIJKLMNOPQRSTUVWXYZ234567");
 }
 
 Text::TextBinEnc::Base32Enc::Base32Enc()
@@ -34,9 +34,9 @@ Text::TextBinEnc::Base32Enc::~Base32Enc()
 {
 }
 
-UOSInt Text::TextBinEnc::Base32Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize) const
+UOSInt Text::TextBinEnc::Base32Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const
 {
-	const UTF8Char *encArr = GetEncArr();
+	UnsafeArray<const UTF8Char> encArr = GetEncArr();
 	UOSInt outSize;
 	UTF8Char sptr[8];
 	UOSInt tmp1 = buffSize * 8 / 5;
@@ -108,7 +108,7 @@ UOSInt Text::TextBinEnc::Base32Enc::CalcBinSize(Text::CStringNN str) const
 {
 	UOSInt cnt = 0;
 	UTF8Char c;
-	const UTF8Char *sbuff = str.v;
+	UnsafeArray<const UTF8Char> sbuff = str.v;
 	while ((c = *sbuff++) != 0)
 	{
 		if (c < 0x80 && decArr[c] != 0xff)
@@ -133,14 +133,14 @@ UOSInt Text::TextBinEnc::Base32Enc::CalcBinSize(const WChar *sbuff) const
 	return cnt * 5 / 8;
 }
 
-UOSInt Text::TextBinEnc::Base32Enc::DecodeBin(Text::CStringNN str, UInt8 *dataBuff) const
+UOSInt Text::TextBinEnc::Base32Enc::DecodeBin(Text::CStringNN str, UnsafeArray<UInt8> dataBuff) const
 {
 	UOSInt decSize = 0;
 	UInt8 b = 0;
 	UInt8 b2 = 0;
 	UInt8 code;
 	UTF8Char c;
-	const UTF8Char *b64Str = str.v;
+	UnsafeArray<const UTF8Char> b64Str = str.v;
 	while ((c = *b64Str++) != 0)
 	{
 		if (c < 0x80)
@@ -209,7 +209,7 @@ Text::CStringNN Text::TextBinEnc::Base32Enc::GetName() const
 	return CSTR("Base32");
 }
 
-Bool Text::TextBinEnc::Base32Enc::IsValid(const UTF8Char *b32Str)
+Bool Text::TextBinEnc::Base32Enc::IsValid(UnsafeArray<const UTF8Char> b32Str)
 {
 	UTF8Char c;
 	while ((c = *b32Str++) != 0)

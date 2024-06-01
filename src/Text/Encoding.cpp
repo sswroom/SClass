@@ -588,7 +588,7 @@ UOSInt Text::Encoding::WCountBytesC(const WChar *stri, UOSInt strLen)
 	}
 }
 
-UOSInt Text::Encoding::WToBytes(UInt8 *bytes, const WChar *wstr)
+UOSInt Text::Encoding::WToBytes(UnsafeArray<UInt8> bytes, const WChar *wstr)
 {
 	UOSInt size;
 	if (this->codePage == 65001)
@@ -603,7 +603,7 @@ UOSInt Text::Encoding::WToBytes(UInt8 *bytes, const WChar *wstr)
 		{
 			c = *wstr++;
 			size += 2;
-			WriteInt16(bytes, c);
+			WriteInt16(&bytes[0], c);
 			if (c == 0)
 				break;
 			bytes += 2;
@@ -637,7 +637,7 @@ UOSInt Text::Encoding::WToBytes(UInt8 *bytes, const WChar *wstr)
 	}
 }
 
-UOSInt Text::Encoding::WToBytesC(UInt8 *bytes, const WChar *wstr, UOSInt strLen)
+UOSInt Text::Encoding::WToBytesC(UnsafeArray<UInt8> bytes, const WChar *wstr, UOSInt strLen)
 {
 	UOSInt size;
 	if (this->codePage == 65001)
@@ -651,7 +651,7 @@ UOSInt Text::Encoding::WToBytesC(UInt8 *bytes, const WChar *wstr, UOSInt strLen)
 		while (strLen-- > 0)
 		{
 			c = *wstr++;
-			WriteInt16(bytes, c);
+			WriteInt16(&bytes[0], c);
 			bytes += 2;
 		}
 		return size;
@@ -663,7 +663,7 @@ UOSInt Text::Encoding::WToBytesC(UInt8 *bytes, const WChar *wstr, UOSInt strLen)
 		while (strLen-- > 0)
 		{
 			c = *wstr++;
-			WriteMInt16(bytes, c);
+			WriteMInt16(&bytes[0], c);
 			bytes += 2;
 		}
 		return size;
@@ -803,7 +803,7 @@ UOSInt Text::Encoding::UTF8CountBytesC(UnsafeArray<const UTF8Char> str, UOSInt s
 	}
 }
 
-UOSInt Text::Encoding::UTF8ToBytes(UInt8 *bytes, UnsafeArray<const UTF8Char> str)
+UOSInt Text::Encoding::UTF8ToBytes(UnsafeArray<UInt8> bytes, UnsafeArray<const UTF8Char> str)
 {
 	if (this->codePage == 65001)
 	{
@@ -811,7 +811,7 @@ UOSInt Text::Encoding::UTF8ToBytes(UInt8 *bytes, UnsafeArray<const UTF8Char> str
 	}
 	else if (this->codePage == 1200)
 	{
-		UInt8 *oriBytes = bytes;
+		UnsafeArray<UInt8> oriBytes = bytes;
 		UInt16 c;
 		UInt32 code;
 		while (str[0])
@@ -819,28 +819,28 @@ UOSInt Text::Encoding::UTF8ToBytes(UInt8 *bytes, UnsafeArray<const UTF8Char> str
 			if ((str[0] & 0x80) == 0)
 			{
 				c = str[0];
-				WriteInt16(bytes, c);
+				WriteInt16(&bytes[0], c);
 				bytes += 2;
 				str++;
 			}
 			else if ((str[0] & 0xe0) == 0xc0)
 			{
 				c = (UInt16)(((str[0] & 0x1f) << 6) | (str[1] & 0x3f));
-				WriteInt16(bytes, c);
+				WriteInt16(&bytes[0], c);
 				bytes += 2;
 				str += 2;
 			}
 			else if ((str[0] & 0xf0) == 0xe0)
 			{
 				c = (UInt16)(((str[0] & 0x0f) << 12) | ((str[1] & 0x3f) << 6) | (str[2] & 0x3f));
-				WriteInt16(bytes, c);
+				WriteInt16(&bytes[0], c);
 				bytes += 2;
 				str += 3;
 			}
 			else if ((str[0] & 0xf8) == 0xf0)
 			{
 				code = (UInt32)((((UTF32Char)str[0] & 0x7) << 18) | (((UTF32Char)str[1] & 0x3f) << 12) | ((UTF32Char)(str[2] & 0x3f) << 6) | (UTF32Char)(str[3] & 0x3f));
-				WriteInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
+				WriteInt16(&bytes[0], ((code - 0x10000) >> 10) + 0xd800);
 				WriteInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
 				bytes += 4;
 				str += 4;
@@ -848,7 +848,7 @@ UOSInt Text::Encoding::UTF8ToBytes(UInt8 *bytes, UnsafeArray<const UTF8Char> str
 			else if ((str[0] & 0xfc) == 0xf8)
 			{
 				code = (UInt32)((((UTF32Char)str[0] & 0x3) << 24) | (((UTF32Char)str[1] & 0x3f) << 18) | (((UTF32Char)str[2] & 0x3f) << 12) | ((UTF32Char)(str[3] & 0x3f) << 6) | (UTF32Char)(str[4] & 0x3f));
-				WriteInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
+				WriteInt16(&bytes[0], ((code - 0x10000) >> 10) + 0xd800);
 				WriteInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
 				bytes += 4;
 				str += 5;
@@ -856,19 +856,19 @@ UOSInt Text::Encoding::UTF8ToBytes(UInt8 *bytes, UnsafeArray<const UTF8Char> str
 			else
 			{
 				code = (UInt32)((((UTF32Char)str[0] & 0x1) << 30) | (((UTF32Char)str[1] & 0x3f) << 24) | (((UTF32Char)str[2] & 0x3f) << 18) | (((UTF32Char)str[3] & 0x3f) << 12) | ((UTF32Char)(str[4] & 0x3f) << 6) | (UTF32Char)(str[5] & 0x3f));
-				WriteInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
+				WriteInt16(&bytes[0], ((code - 0x10000) >> 10) + 0xd800);
 				WriteInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
 				bytes += 4;
 				str += 6;
 			}
 		}
-		WriteInt16(bytes, 0);
+		WriteInt16(&bytes[0], 0);
 		bytes += 2;
 		return (UOSInt)(bytes - oriBytes);
 	}
 	else if (this->codePage == 1201)
 	{
-		UInt8 *oriBytes = bytes;
+		UnsafeArray<UInt8> oriBytes = bytes;
 		UInt16 c;
 		UInt32 code;
 		while (str[0])
@@ -937,16 +937,16 @@ UOSInt Text::Encoding::UTF8ToBytes(UInt8 *bytes, UnsafeArray<const UTF8Char> str
 	}
 }
 
-UOSInt Text::Encoding::UTF8ToBytesC(UInt8 *bytes, UnsafeArray<const UTF8Char> str, UOSInt strLen)
+UOSInt Text::Encoding::UTF8ToBytesC(UnsafeArray<UInt8> bytes, UnsafeArray<const UTF8Char> str, UOSInt strLen)
 {
 	if (this->codePage == 65001)
 	{
-		MemCopyNO(bytes, str.Ptr(), strLen);
+		MemCopyNO(bytes.Ptr(), str.Ptr(), strLen);
 		return strLen;
 	}
 	else if (this->codePage == 1200)
 	{
-		UInt8 *oriBytes = bytes;
+		UnsafeArray<UInt8> oriBytes = bytes;
 		UInt16 c;
 		UInt32 code;
 
@@ -955,28 +955,28 @@ UOSInt Text::Encoding::UTF8ToBytesC(UInt8 *bytes, UnsafeArray<const UTF8Char> st
 			if ((str[0] & 0x80) == 0)
 			{
 				c = str[0];
-				WriteInt16(bytes, c);
+				WriteInt16(&bytes[0], c);
 				bytes += 2;
 				str++;
 			}
 			else if ((str[0] & 0xe0) == 0xc0)
 			{
 				c = (UInt16)(((str[0] & 0x1f) << 6) | (str[1] & 0x3f));
-				WriteInt16(bytes, c);
+				WriteInt16(&bytes[0], c);
 				bytes += 2;
 				str += 2;
 			}
 			else if ((str[0] & 0xf0) == 0xe0)
 			{
 				c = (UInt16)(((str[0] & 0x0f) << 12) | ((str[1] & 0x3f) << 6) | (str[2] & 0x3f));
-				WriteInt16(bytes, c);
+				WriteInt16(&bytes[0], c);
 				bytes += 2;
 				str += 3;
 			}
 			else if ((str[0] & 0xf8) == 0xf0)
 			{
 				code = (UInt32)((((UTF32Char)str[0] & 0x7) << 18) | (((UTF32Char)str[1] & 0x3f) << 12) | ((UTF32Char)(str[2] & 0x3f) << 6) | (UTF32Char)(str[3] & 0x3f));
-				WriteInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
+				WriteInt16(&bytes[0], ((code - 0x10000) >> 10) + 0xd800);
 				WriteInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
 				bytes += 4;
 				str += 4;
@@ -984,7 +984,7 @@ UOSInt Text::Encoding::UTF8ToBytesC(UInt8 *bytes, UnsafeArray<const UTF8Char> st
 			else if ((str[0] & 0xfc) == 0xf8)
 			{
 				code = (UInt32)((((UTF32Char)str[0] & 0x3) << 24) | (((UTF32Char)str[1] & 0x3f) << 18) | (((UTF32Char)str[2] & 0x3f) << 12) | ((UTF32Char)(str[3] & 0x3f) << 6) | (UTF32Char)(str[4] & 0x3f));
-				WriteInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
+				WriteInt16(&bytes[0], ((code - 0x10000) >> 10) + 0xd800);
 				WriteInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
 				bytes += 4;
 				str += 5;
@@ -992,7 +992,7 @@ UOSInt Text::Encoding::UTF8ToBytesC(UInt8 *bytes, UnsafeArray<const UTF8Char> st
 			else
 			{
 				code = (UInt32)((((UTF32Char)str[0] & 0x1) << 30) | (((UTF32Char)str[1] & 0x3f) << 24) | (((UTF32Char)str[2] & 0x3f) << 18) | (((UTF32Char)str[3] & 0x3f) << 12) | ((UTF32Char)(str[4] & 0x3f) << 6) | (UTF32Char)(str[5] & 0x3f));
-				WriteInt16(bytes, ((code - 0x10000) >> 10) + 0xd800);
+				WriteInt16(&bytes[0], ((code - 0x10000) >> 10) + 0xd800);
 				WriteInt16(&bytes[2], (code & 0x3ff) + 0xdc00);
 				bytes += 4;
 				str += 6;
@@ -1002,7 +1002,7 @@ UOSInt Text::Encoding::UTF8ToBytesC(UInt8 *bytes, UnsafeArray<const UTF8Char> st
 	}
 	else if (this->codePage == 1201)
 	{
-		UInt8 *oriBytes = bytes;
+		UnsafeArray<UInt8> oriBytes = bytes;
 		UInt16 c;
 		UInt32 code;
 		while (strLen > 0)

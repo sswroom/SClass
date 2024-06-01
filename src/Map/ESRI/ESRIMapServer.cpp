@@ -14,10 +14,10 @@
 
 #include <stdio.h>
 
-Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Bool noResource)
+Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CStringNN url, NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Bool noResource)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 buff[2048];
 	UOSInt readSize;
 	UInt32 codePage;
@@ -78,9 +78,9 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, NN<Net::SocketFactory
 			Text::StringBuilderUTF8 sb;
 			Text::Encoding enc(codePage);
 			UOSInt charsCnt;
-			UTF8Char *jsonStr;
+			UnsafeArray<UTF8Char> jsonStr;
 			charsCnt = enc.CountUTF8Chars(jsonBuff, readSize);
-			jsonStr = MemAlloc(UTF8Char, charsCnt + 1);
+			jsonStr = MemAllocArr(UTF8Char, charsCnt + 1);
 			enc.UTF8FromBytes(jsonStr, jsonBuff, readSize, 0);
 			
 			Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CStringNN(jsonStr, charsCnt));
@@ -203,7 +203,7 @@ Map::ESRI::ESRIMapServer::ESRIMapServer(Text::CString url, NN<Net::SocketFactory
 				json->EndUse();
 			}
 			
-			MemFree(jsonStr);
+			MemFreeArr(jsonStr);
 		}
 	}
 }
@@ -289,7 +289,7 @@ Math::Coord2DDbl Map::ESRI::ESRIMapServer::TileGetOrigin() const
 	return this->tileOrigin;
 }
 
-UTF8Char *Map::ESRI::ESRIMapServer::TileGetURL(UTF8Char *sbuff, UOSInt level, Int32 tileX, Int32 tileY) const
+UnsafeArray<UTF8Char> Map::ESRI::ESRIMapServer::TileGetURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Int32 tileX, Int32 tileY) const
 {
 	sbuff = this->url->ConcatTo(sbuff);
 	sbuff = Text::StrConcatC(sbuff, UTF8STRC("/tile/"));
@@ -317,7 +317,7 @@ Bool Map::ESRI::ESRIMapServer::TileLoadToStream(IO::Stream *stm, UOSInt level, I
 {
 	UInt8 dataBuff[2048];
 	UTF8Char url[1024];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt readSize;
 	sptr = this->TileGetURL(url, level, tileX, tileY);
 
@@ -339,7 +339,7 @@ Bool Map::ESRI::ESRIMapServer::TileLoadToFile(Text::CStringNN fileName, UOSInt l
 	UInt8 dataBuff[2048];
 	UOSInt readSize;
 	UTF8Char url[1024];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	sptr = this->TileGetURL(url, level, tileX, tileY);
 
 	NN<Net::HTTPClient> cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
@@ -389,7 +389,7 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 {
 	// https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/identify?geometryType=esriGeometryPoint&geometry=114.2,22.4&sr=4326&tolerance=0&mapExtent=113,22,115,23&imageDisplay=400,300,96&f=json
 	UTF8Char url[1024];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 dataBuff[2048];
 	UOSInt readSize;
 	sptr = this->url->ConcatTo(url);
@@ -492,7 +492,7 @@ Bool Map::ESRI::ESRIMapServer::QueryInfos(Math::Coord2DDbl coord, Math::RectArea
 Optional<Media::ImageList> Map::ESRI::ESRIMapServer::DrawMap(Math::RectAreaDbl bounds, UInt32 width, UInt32 height, Double dpi, Optional<Text::StringBuilderUTF8> sbUrl)
 {
 	UTF8Char url[1024];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UInt8 dataBuff[2048];
 	UOSInt readSize;
 	UInt32 srid = 0;

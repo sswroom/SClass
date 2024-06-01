@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteTwitterForm::OnRequestPageClicked(AnyTy
 	NN<SSWR::AVIRead::AVIRWebSiteTwitterForm> me = userObj.GetNN<SSWR::AVIRead::AVIRWebSiteTwitterForm>();
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	me->txtChannelId->GetText(sb);
 	me->lvItems->ClearItems();
 	if (sb.GetLength() > 0)
@@ -57,7 +57,7 @@ SSWR::AVIRead::AVIRWebSiteTwitterForm::AVIRWebSiteTwitterForm(Optional<UI::GUICl
 
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
-	//const UTF8Char *userAgent = 0;//Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
+	//const UnsafeArray<UTF8Char> userAgent = 0;//Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
 	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteTwitterControl(core->GetSocketFactory(), this->ssl, core->GetEncFactory(), 0));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

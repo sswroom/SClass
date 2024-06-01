@@ -22,7 +22,7 @@ namespace IO
 		virtual void SetPinOutput(Bool isOutput);
 		virtual void SetPinState(Bool isHigh);
 		virtual Bool SetPullType(PullType pt);
-		virtual UTF8Char *GetName(UTF8Char *buff);
+		virtual UnsafeArray<UTF8Char> GetName(UnsafeArray<UTF8Char> buff);
 
 		virtual void SetEventOnHigh(Bool enable);
 		virtual void SetEventOnLow(Bool enable);

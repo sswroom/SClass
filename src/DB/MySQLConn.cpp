@@ -23,7 +23,7 @@ void DB::MySQLConn::Connect()
 	MYSQL *mysql = mysql_init(0);
 	this->mysql = mysql;
 
-	if (mysql_real_connect((MYSQL*)this->mysql, (const Char*)this->server->v, (const Char*)OPTSTR_CSTR(this->uid).v, (const Char*)OPTSTR_CSTR(this->pwd).v, (const Char*)OPTSTR_CSTR(this->database).v, 0, 0, 0) == 0)
+	if (mysql_real_connect((MYSQL*)this->mysql, (const Char*)this->server->v.Ptr(), (const Char*)OPTSTR_CSTR(this->uid).v.Ptr(), (const Char*)OPTSTR_CSTR(this->pwd).v.Ptr(), (const Char*)OPTSTR_CSTR(this->database).v.Ptr(), 0, 0, 0) == 0)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Error in connecting to database: "));
@@ -171,7 +171,7 @@ OSInt DB::MySQLConn::ExecuteNonQuery(Text::CStringNN sql)
 		return -2;
 	}
 
-	if (mysql_real_query((MYSQL*)this->mysql, (const Char*)sql.v, (UInt32)sql.leng) == 0)
+	if (mysql_real_query((MYSQL*)this->mysql, (const Char*)sql.v.Ptr(), (UInt32)sql.leng) == 0)
 	{
 		MYSQL_RES *result;
 		this->lastDataError = DE_NO_ERROR;
@@ -232,7 +232,7 @@ Optional<DB::DBReader> DB::MySQLConn::ExecuteReader(Text::CStringNN sql)
 		return 0;
 	}
 
-	if (mysql_real_query((MYSQL*)this->mysql, (const Char*)sql.v, (UInt32)sql.leng) == 0)
+	if (mysql_real_query((MYSQL*)this->mysql, (const Char*)sql.v.Ptr(), (UInt32)sql.leng) == 0)
 	{
 		MYSQL_RES *result;
 		result = mysql_use_result((MYSQL*)this->mysql);
@@ -297,7 +297,7 @@ UOSInt DB::MySQLConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLi
 	if (schemaName.leng != 0)
 		return 0;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt len;
 	UOSInt initCnt = names->GetCount();
 	NN<DB::DBReader> rdr;
@@ -305,7 +305,7 @@ UOSInt DB::MySQLConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLi
 	{
 		while (rdr->ReadNext())
 		{
-			sptr = rdr->GetStr(0, sbuff, sizeof(sbuff));
+			sptr = rdr->GetStr(0, sbuff, sizeof(sbuff)).Or(sbuff);
 			len = (UOSInt)(sptr - sbuff);
 			names->Add(Text::String::New(sbuff, len));
 		}
@@ -314,10 +314,10 @@ UOSInt DB::MySQLConn::QueryTableNames(Text::CString schemaName, NN<Data::ArrayLi
 	return names->GetCount() - initCnt;
 }
 
-Optional<DB::DBReader> DB::MySQLConn::QueryTableData(Text::CString schemaName, Text::CString tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+Optional<DB::DBReader> DB::MySQLConn::QueryTableData(Text::CString schemaName, Text::CStringNN tableName, Data::ArrayListStringNN *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayIterator<NN<Text::String>> it;
 	sb.AppendC(UTF8STRC("select "));
@@ -337,9 +337,10 @@ Optional<DB::DBReader> DB::MySQLConn::QueryTableData(Text::CString schemaName, T
 		sb.AppendUTF8Char('*');
 	}
 	sb.AppendC(UTF8STRC(" from "));
-	if (schemaName.leng > 0)
+	Text::CStringNN nns;
+	if (schemaName.SetTo(nns) && nns.leng > 0)
 	{
-		sptr = DB::DBUtil::SDBColUTF8(sbuff, schemaName.v, DB::SQLType::MySQL);
+		sptr = DB::DBUtil::SDBColUTF8(sbuff, nns.v, DB::SQLType::MySQL);
 		sb.AppendP(sbuff, sptr);
 		sb.AppendUTF8Char('.');
 	}
@@ -351,10 +352,10 @@ Optional<DB::DBReader> DB::MySQLConn::QueryTableData(Text::CString schemaName, T
 		Data::ArrayListNN<Data::QueryConditions::Condition> cliCond;
 		condition->ToWhereClause(sb, DB::SQLType::MySQL, 0, 100, cliCond);
 	}
-	if (ordering.leng > 0)
+	if (ordering.SetTo(nns) && nns.leng > 0)
 	{
 		sb.AppendC(UTF8STRC(" order by "));
-		sb.Append(ordering);
+		sb.Append(nns);
 	}
 	if (maxCnt > 0)
 	{
@@ -514,7 +515,7 @@ Int32 DB::MySQLReader::GetInt32(UOSInt colIndex)
 		return 0;
 	if (((MYSQL_ROW)this->row)[colIndex])
 	{
-		return Text::StrToInt32(((MYSQL_ROW)row)[colIndex]);
+		return Text::StrToInt32Ch(((MYSQL_ROW)row)[colIndex]);
 	}
 	else
 	{
@@ -530,7 +531,7 @@ Int64 DB::MySQLReader::GetInt64(UOSInt colIndex)
 		return 0;
 	if (((MYSQL_ROW)this->row)[colIndex])
 	{
-		return Text::StrToInt64(((MYSQL_ROW)this->row)[colIndex]);
+		return Text::StrToInt64Ch(((MYSQL_ROW)this->row)[colIndex]);
 	}
 	else
 	{
@@ -587,7 +588,7 @@ Optional<Text::String> DB::MySQLReader::GetNewStr(UOSInt colIndex)
 	}
 }
 
-UTF8Char *DB::MySQLReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
+UnsafeArrayOpt<UTF8Char> DB::MySQLReader::GetStr(UOSInt colIndex, UnsafeArray<UTF8Char> buff, UOSInt buffSize)
 {
 	if (this->row == 0)
 		return 0;
@@ -628,7 +629,7 @@ Double DB::MySQLReader::GetDbl(UOSInt colIndex)
 		return 0;
 	if (((MYSQL_ROW)this->row)[colIndex])
 	{
-		return Text::StrToDouble(((MYSQL_ROW)this->row)[colIndex]);
+		return Text::StrToDoubleCh(((MYSQL_ROW)this->row)[colIndex]);
 	}
 	else
 	{
@@ -644,7 +645,7 @@ Bool DB::MySQLReader::GetBool(UOSInt colIndex)
 		return 0;
 	if (((MYSQL_ROW)this->row)[colIndex])
 	{
-		return Text::StrToBool(((MYSQL_ROW)this->row)[colIndex]);
+		return Text::StrToBoolCh(((MYSQL_ROW)this->row)[colIndex]);
 	}
 	else
 	{
@@ -690,7 +691,7 @@ UOSInt DB::MySQLReader::ColCount()
 	return this->colCount;
 }
 
-UTF8Char *DB::MySQLReader::GetName(UOSInt colIndex, UTF8Char *buff)
+UnsafeArrayOpt<UTF8Char> DB::MySQLReader::GetName(UOSInt colIndex, UnsafeArray<UTF8Char> buff)
 {
 	if (this->row == 0)
 		return 0;
@@ -733,7 +734,7 @@ Bool DB::MySQLReader::GetColDef(UOSInt colIndex, NN<DB::ColDef> colDef)
 	if (colIndex >= this->colCount)
 		return false;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	MYSQL_FIELD *field = mysql_fetch_field_direct((MYSQL_RES*)this->result, (UInt32)colIndex);
 	sptr = Text::StrConcatC(sbuff, (UInt8*)field->name, field->name_length);
 	colDef->SetColName(CSTRP(sbuff, sptr));

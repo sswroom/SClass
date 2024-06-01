@@ -10,7 +10,7 @@ Text::TextBinEnc::CPPByteArrBinEnc::~CPPByteArrBinEnc()
 {
 }
 
-UOSInt Text::TextBinEnc::CPPByteArrBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize) const
+UOSInt Text::TextBinEnc::CPPByteArrBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const
 {
 	UOSInt size = sb->GetCharCnt();
 	UOSInt i = 0;
@@ -35,7 +35,7 @@ UOSInt Text::TextBinEnc::CPPByteArrBinEnc::CalcBinSize(Text::CStringNN s) const
 {
 	UOSInt cnt = 0;
 	UTF8Char c;
-	const UTF8Char *str = s.v;
+	UnsafeArray<const UTF8Char> str = s.v;
 	while ((c = *str++) != 0)
 	{
 		if (c == ',')
@@ -44,12 +44,12 @@ UOSInt Text::TextBinEnc::CPPByteArrBinEnc::CalcBinSize(Text::CStringNN s) const
 	return cnt + 1;
 }
 
-UOSInt Text::TextBinEnc::CPPByteArrBinEnc::DecodeBin(Text::CStringNN s, UInt8 *dataBuff) const
+UOSInt Text::TextBinEnc::CPPByteArrBinEnc::DecodeBin(Text::CStringNN s, UnsafeArray<UInt8> dataBuff) const
 {
-	UInt8 *startPtr = dataBuff;
+	UnsafeArray<UInt8> startPtr = dataBuff;
 	UTF8Char c;
 	UInt8 b = 0;
-	const UTF8Char *str = s.v;
+	UnsafeArray<const UTF8Char> str = s.v;
 	while ((c = *str++) != 0)
 	{
 		if (c == '0' && str[0] == 'x')

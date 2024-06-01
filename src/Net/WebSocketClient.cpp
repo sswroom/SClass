@@ -9,7 +9,7 @@
 #include <stdio.h>
 #endif
 
-Bool Net::WebSocketClient::SendPacket(UInt8 opcode, const UInt8 *buff, UOSInt buffSize)
+Bool Net::WebSocketClient::SendPacket(UInt8 opcode, UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	NN<Net::TCPClient> cli;
 	if (!this->cli.SetTo(cli))
@@ -127,7 +127,7 @@ Bool Net::WebSocketClient::SendPacket(UInt8 opcode, const UInt8 *buff, UOSInt bu
 	}
 }
 
-const UInt8 *Net::WebSocketClient::NextPacket(UInt8 *opcode, UOSInt *packetSize)
+UnsafeArrayOpt<const UInt8> Net::WebSocketClient::NextPacket(OutParam<UInt8> opcode, OutParam<UOSInt> packetSize)
 {
 	NN<Net::TCPClient> cli;
 	UInt8 pkSize;
@@ -173,7 +173,7 @@ const UInt8 *Net::WebSocketClient::NextPacket(UInt8 *opcode, UOSInt *packetSize)
 				if (usedSize <= this->recvSize - this->recvParseOfst)
 				{
 					UOSInt pSize = this->recvParseOfst + usedSize - ofst - 4;
-					*packetSize = pSize;
+					packetSize.Set(pSize);
 					UInt8 *buff = &this->recvBuff[ofst];
 					UInt32 mask = ReadNUInt32(buff);
 					buff += 4;
@@ -194,7 +194,7 @@ const UInt8 *Net::WebSocketClient::NextPacket(UInt8 *opcode, UOSInt *packetSize)
 						buff[0] = this->recvBuff[ofst] ^ buff[0];
 						break;
 					}
-					*opcode = this->recvBuff[this->recvParseOfst];
+					opcode.Set(this->recvBuff[this->recvParseOfst]);
 					this->recvParseOfst += usedSize;
 					return &this->recvBuff[ofst + 4];
 				}
@@ -203,8 +203,8 @@ const UInt8 *Net::WebSocketClient::NextPacket(UInt8 *opcode, UOSInt *packetSize)
 			{
 				if (usedSize <= this->recvSize - this->recvParseOfst)
 				{
-					*packetSize = this->recvParseOfst + usedSize - ofst;
-					*opcode = this->recvBuff[this->recvParseOfst];
+					packetSize.Set(this->recvParseOfst + usedSize - ofst);
+					opcode.Set(this->recvBuff[this->recvParseOfst]);
 					this->recvParseOfst += usedSize;
 					return &this->recvBuff[ofst];
 				}
@@ -247,7 +247,7 @@ const UInt8 *Net::WebSocketClient::NextPacket(UInt8 *opcode, UOSInt *packetSize)
 	}
 }
 
-const UInt8 *Net::WebSocketClient::NextPacket(NN<Sync::MutexUsage> mutUsage, UOSInt *packetSize)
+UnsafeArrayOpt<const UInt8> Net::WebSocketClient::NextPacket(NN<Sync::MutexUsage> mutUsage, OutParam<UOSInt> packetSize)
 {
 	NN<Net::TCPClient> cli;
 	mutUsage->ReplaceMutex(this->recvMut);
@@ -255,17 +255,18 @@ const UInt8 *Net::WebSocketClient::NextPacket(NN<Sync::MutexUsage> mutUsage, UOS
 		return 0;
 
 	UInt8 opcode;
-	const UInt8 *buff;
+	UOSInt pSize;
+	UnsafeArray<const UInt8> buff;
 	while (true)
 	{
-		buff = NextPacket(&opcode, packetSize);
-		if (buff == 0)
+		if (!NextPacket(opcode, pSize).SetTo(buff))
 			return 0;
 		switch (opcode & 15)
 		{
 		case 0: //continuation frame
 		case 1: //text frame
 		case 2: //binary frame
+			packetSize.Set(pSize);
 			return buff;
 		case 8: //connection close
 			if (this->cli.SetTo(cli))
@@ -274,7 +275,7 @@ const UInt8 *Net::WebSocketClient::NextPacket(NN<Sync::MutexUsage> mutUsage, UOS
 			}
 			break;
 		case 9: //Ping
-			this->SendPong(buff, *packetSize);
+			this->SendPong(buff, pSize);
 			break;
 		case 10: //Pong
 			break;
@@ -499,8 +500,8 @@ UOSInt Net::WebSocketClient::Read(const Data::ByteArray &buff)
 		}
 	}
 	UOSInt packetSize;
-	const UInt8 *packetBuff = this->NextPacket(mutUsage, &packetSize);
-	if (packetBuff == 0)
+	UnsafeArray<const UInt8> packetBuff;
+	if (!this->NextPacket(mutUsage, packetSize).SetTo(packetBuff))
 		return 0;
 	if (packetSize <= buff.GetSize())
 	{
@@ -521,7 +522,7 @@ UOSInt Net::WebSocketClient::Read(const Data::ByteArray &buff)
 	return buff.GetSize();
 }
 
-UOSInt Net::WebSocketClient::Write(const UInt8 *buff, UOSInt size)
+UOSInt Net::WebSocketClient::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	if (SendPacket(2, buff, size))
 		return size;
@@ -560,7 +561,7 @@ Bool Net::WebSocketClient::Shutdown()
 	if (!this->cli.SetTo(cli))
 		return false;
 
-	if (this->SendClose(0, 0))
+	if (this->SendClose(U8STR(""), 0))
 	{
 		cli->ShutdownSend();
 		return true;
@@ -568,17 +569,17 @@ Bool Net::WebSocketClient::Shutdown()
 	return false;
 }
 
-Bool Net::WebSocketClient::SendPing(const UInt8 *buff, UOSInt buffSize)
+Bool Net::WebSocketClient::SendPing(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	return this->SendPacket(9, buff, buffSize);
 }
 
-Bool Net::WebSocketClient::SendPong(const UInt8 *buff, UOSInt buffSize)
+Bool Net::WebSocketClient::SendPong(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	return this->SendPacket(10, buff, buffSize);
 }
 
-Bool Net::WebSocketClient::SendClose(const UInt8 *buff, UOSInt buffSize)
+Bool Net::WebSocketClient::SendClose(UnsafeArray<const UInt8> buff, UOSInt buffSize)
 {
 	return this->SendPacket(8, buff, buffSize);
 }

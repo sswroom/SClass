@@ -53,7 +53,7 @@ IO::ZIPBuilder::~ZIPBuilder()
 		WriteUInt16(&hdrBuff[36], 0); //Internal file attributes
 		WriteUInt32(&hdrBuff[38], file->fileAttr); //External file attributes
 		WriteUInt32(&hdrBuff[42], (UInt32)file->fileOfst);
-		MemCopyNO(&hdrBuff[46], file->fileName->v, file->fileName->leng);
+		MemCopyNO(&hdrBuff[46], file->fileName->v.Ptr(), file->fileName->leng);
 		hdrLen = 46 + file->fileName->leng;
 		#if _OSINT_SIZE > 32
 		if (file->compSize >= 0xFFFFFFFFLL || file->fileOfst >= 0xFFFFFFFFLL || file->uncompSize >= 0xFFFFFFFFLL)
@@ -187,7 +187,7 @@ Bool IO::ZIPBuilder::AddFile(Text::CStringNN fileName, UnsafeArray<const UInt8> 
 	WriteUInt32(&hdrBuff[22], (UInt32)fileSize);
 	WriteUInt16(&hdrBuff[26], (UInt32)fileName.leng);
 	WriteUInt16(&hdrBuff[28], 0);
-	MemCopyNO(&hdrBuff[30], fileName.v, fileName.leng);
+	MemCopyNO(&hdrBuff[30], fileName.v.Ptr(), fileName.leng);
 	hdrLen = 30 + fileName.leng;
 	if (compSize >= 0xFFFFFFFFLL || fileSize >= 0xFFFFFFFFLL)
 	{
@@ -306,7 +306,7 @@ Bool IO::ZIPBuilder::AddDir(Text::CStringNN dirName, Data::Timestamp lastModTime
 	WriteUInt32(&hdrBuff[22], 0);
 	WriteUInt16(&hdrBuff[26], (Int32)dirName.leng);
 	WriteUInt16(&hdrBuff[28], 0);
-	MemCopyNO(&hdrBuff[30], dirName.v, dirName.leng);
+	MemCopyNO(&hdrBuff[30], dirName.v.Ptr(), dirName.leng);
 	hdrLen = 30 + dirName.leng;
 
 	IO::ZIPBuilder::FileInfo *file;
@@ -370,7 +370,7 @@ Bool IO::ZIPBuilder::AddDeflate(Text::CStringNN fileName, Data::ByteArrayR buff,
 	WriteUInt32(&hdrBuff[22], (UInt32)decSize);
 	WriteUInt16(&hdrBuff[26], (UInt32)fileName.leng);
 	WriteUInt16(&hdrBuff[28], 0);
-	MemCopyNO(&hdrBuff[30], fileName.v, fileName.leng);
+	MemCopyNO(&hdrBuff[30], fileName.v.Ptr(), fileName.leng);
 	hdrLen = 30 + fileName.leng;
 	if (buff.GetSize() >= 0xFFFFFFFFLL || decSize >= 0xFFFFFFFFLL)
 	{

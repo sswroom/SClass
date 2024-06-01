@@ -154,15 +154,15 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnPathSelChg(AnyType userObj
 	}
 
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	Text::StringBuilderUTF8 sb;
-	sptr = me->lbPath->GetItemText(sbuff, i);
+	sptr = me->lbPath->GetItemText(sbuff, i).Or(sbuff);
 	sb.AppendP(sbuff, sptr);
 	while (i-- > 0)
 	{
-		sptr = me->lbPath->GetItemText(sbuff, i);
 		sb.AppendUTF8Char(',');
-		sb.AppendP(sbuff, sptr);
+		if (me->lbPath->GetItemText(sbuff, i).SetTo(sptr))
+			sb.AppendP(sbuff, sptr);
 	}
 
 	Data::ArrayListNN<Net::LDAPClient::SearchResObject> results;
@@ -265,11 +265,11 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnObjectsDblClk(AnyType user
 {
 	NN<SSWR::AVIRead::AVIRLDAPExplorerForm> me = userObj.GetNN<SSWR::AVIRead::AVIRLDAPExplorerForm>();
 	UTF8Char sbuff[256];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	UOSInt i = me->lbObjects->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 		return;
-	sptr = me->lbObjects->GetItemText(sbuff, i);
+	sptr = me->lbObjects->GetItemText(sbuff, i).Or(sbuff);
 	if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".")))
 	{
 		i = me->lbPath->GetSelectedIndex();

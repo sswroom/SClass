@@ -437,11 +437,11 @@ UOSInt IO::SerialPort::Read(const Data::ByteArray &buff)
 	return (UOSInt)readCnt;
 }
 
-UOSInt IO::SerialPort::Write(const UInt8 *buff, UOSInt size)
+UOSInt IO::SerialPort::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	OSInt writeCnt;
 	OSInt h = (OSInt)this->handle;
-	writeCnt = write((int)h, buff, size);
+	writeCnt = write((int)h, buff.Ptr(), size);
 	fsync((int)h);
 	return (UOSInt)writeCnt;
 }
@@ -461,7 +461,7 @@ void IO::SerialPort::CancelRead(void *reqData)
 {
 }
 
-void *IO::SerialPort::BeginWrite(const UInt8 *buff, UOSInt size, Sync::Event *evt)
+void *IO::SerialPort::BeginWrite(UnsafeArray<const UInt8> buff, UOSInt size, Sync::Event *evt)
 {
 	evt->Set();
 	if (this->handle == 0)

@@ -65,7 +65,7 @@ UOSInt Data::Compress::InflateStream::Read(const Data::ByteArray &buff)
 	return 0;
 }
 
-UOSInt Data::Compress::InflateStream::Write(const UInt8 *buff, UOSInt size)
+UOSInt Data::Compress::InflateStream::Write(UnsafeArray<const UInt8> buff, UOSInt size)
 {
 	mz_stream *mzstm = (mz_stream *)this->cmpInfo;
 //	UInt32 lastSize;
@@ -77,13 +77,13 @@ UOSInt Data::Compress::InflateStream::Write(const UInt8 *buff, UOSInt size)
 	}
 	else if (headerSize > 0)
 	{
-		mzstm->next_in = buff + headerSize;
+		mzstm->next_in = buff.Ptr() + headerSize;
 		mzstm->avail_in = (UInt32)(size - headerSize);
 		headerSize = 0;
 	}
 	else
 	{
-		mzstm->next_in = buff;
+		mzstm->next_in = buff.Ptr();
 		mzstm->avail_in = (UInt32)size;
 	}
 	while (true || mzstm->avail_in > 0)

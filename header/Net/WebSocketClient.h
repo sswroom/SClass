@@ -37,9 +37,9 @@ namespace Net
 		UOSInt recvDataSize;
 		UOSInt recvDataOfst;
 
-		Bool SendPacket(UInt8 opcode, const UInt8 *buff, UOSInt buffSize);
-		const UInt8 *NextPacket(UInt8 *opcode, UOSInt *packetSize);
-		const UInt8 *NextPacket(NN<Sync::MutexUsage> mutUsage, UOSInt *packetSize);
+		Bool SendPacket(UInt8 opcode, UnsafeArray<const UInt8> buff, UOSInt buffSize);
+		UnsafeArrayOpt<const UInt8> NextPacket(OutParam<UInt8> opcode, OutParam<UOSInt> packetSize);
+		UnsafeArrayOpt<const UInt8> NextPacket(NN<Sync::MutexUsage> mutUsage, OutParam<UOSInt> packetSize);
 	public:
 		WebSocketClient(NN<Net::SocketFactory> sockf, Optional<Net::SSLEngine> ssl, Text::CStringNN host, UInt16 port, Text::CStringNN path, Text::CString origin, Protocol protocol, Data::Duration timeout);
 		virtual ~WebSocketClient();
@@ -52,7 +52,7 @@ namespace Net
 
 		virtual Bool IsDown() const;
 		virtual UOSInt Read(const Data::ByteArray &buff);
-		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
+		virtual UOSInt Write(UnsafeArray<const UInt8> buff, UOSInt size);
 		virtual Int32 Flush();
 		virtual void Close();
 		virtual Bool Recover();
@@ -60,9 +60,9 @@ namespace Net
 
 		Bool Shutdown();
 
-		Bool SendPing(const UInt8 *buff, UOSInt buffSize);
-		Bool SendPong(const UInt8 *buff, UOSInt buffSize);
-		Bool SendClose(const UInt8 *buff, UOSInt buffSize);
+		Bool SendPing(UnsafeArray<const UInt8> buff, UOSInt buffSize);
+		Bool SendPong(UnsafeArray<const UInt8> buff, UOSInt buffSize);
+		Bool SendClose(UnsafeArray<const UInt8> buff, UOSInt buffSize);
 	};
 }
 #endif

@@ -531,7 +531,7 @@ UnsafeArray<UTF8Char> Text::TextBinEnc::Punycode::EncodeString(UnsafeArray<UTF8C
 	return Encode(buff, strToEnc);
 }
 
-UOSInt Text::TextBinEnc::Punycode::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize) const
+UOSInt Text::TextBinEnc::Punycode::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const
 {
 	sb->AppendC(dataBuff, buffSize);
 	return buffSize;
@@ -543,7 +543,7 @@ UOSInt Text::TextBinEnc::Punycode::CalcBinSize(Text::CStringNN str) const
 	return (UOSInt)(Decode(buff, str.v, str.leng) - buff);
 }
 
-UOSInt Text::TextBinEnc::Punycode::DecodeBin(Text::CStringNN str, UInt8 *dataBuff) const
+UOSInt Text::TextBinEnc::Punycode::DecodeBin(Text::CStringNN str, UnsafeArray<UInt8> dataBuff) const
 {
 	return (UOSInt)(Decode(dataBuff, str.v, str.leng) - dataBuff);
 }

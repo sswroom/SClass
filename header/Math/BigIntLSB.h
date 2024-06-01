@@ -14,8 +14,8 @@ namespace Math
 
 	public:
 		BigIntLSB(UOSInt valSize);
-		BigIntLSB(UOSInt valSize, Text::CString val);
-		BigIntLSB(UOSInt valSize, const UInt8 *val);
+		BigIntLSB(UOSInt valSize, Text::CStringNN val);
+		BigIntLSB(UOSInt valSize, UnsafeArray<const UInt8> val);
 		~BigIntLSB();
 
 		Bool IsNeg() const;
@@ -24,15 +24,15 @@ namespace Math
 
 		void ByteSwap();
 		void SetRandom(Data::Random *rnd);
-		void FromBytesMSB(const UInt8 *valBuff, UOSInt buffLen);
+		void FromBytesMSB(UnsafeArray<const UInt8> valBuff, UOSInt buffLen);
 		UOSInt GetOccupiedSize() const;
 		UOSInt GetStoreSize() const;
-		UOSInt GetBytesMSB(UInt8 *byteBuff, Bool occupiedOnly) const;
+		UOSInt GetBytesMSB(UnsafeArray<UInt8> byteBuff, Bool occupiedOnly) const;
 
 		Bool EqualsToUI32(UInt32 val);
 		Bool EqualsToI32(Int32 val);
 		void AssignI32(Int32 val);
-		void AssignStr(const UTF8Char *val);
+		void AssignStr(UnsafeArray<const UTF8Char> val);
 		void AssignBI(const BigIntLSB *val);
 		void Neg();
 		void AndBI(const BigIntLSB *val);
@@ -43,7 +43,7 @@ namespace Math
 		UInt32 DivideBy(UInt32 val); //return remainder
 
 		Int32 operator =(Int32 val);
-		BigIntLSB *operator =(Text::CString val);
+		BigIntLSB *operator =(Text::CStringNN val);
 		BigIntLSB *operator =(const BigIntLSB *val);
 		BigIntLSB *operator +=(BigIntLSB *val);
 		BigIntLSB *operator ^=(const BigIntLSB *val);
@@ -52,9 +52,9 @@ namespace Math
 		BigIntLSB *operator *=(UInt32 val);
 		BigIntLSB *operator /=(UInt32 val);
 
-		UTF8Char *ToString(UTF8Char *buff) const;
-		UTF8Char *ToHex(UTF8Char *buff);
-		UTF8Char *ToByteStr(UTF8Char *buff);
+		UnsafeArray<UTF8Char> ToString(UnsafeArray<UTF8Char> buff) const;
+		UnsafeArray<UTF8Char> ToHex(UnsafeArray<UTF8Char> buff);
+		UnsafeArray<UTF8Char> ToByteStr(UnsafeArray<UTF8Char> buff);
 		void ToString(NN<Text::StringBuilderUTF8> sb) const;
 	};
 }

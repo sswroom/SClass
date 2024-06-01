@@ -20,7 +20,7 @@ namespace IO
 		virtual void SetPinOutput(Bool isOutput) = 0;
 		virtual void SetPinState(Bool isHigh) = 0;
 		virtual Bool SetPullType(PullType pt) = 0;
-		virtual UTF8Char *GetName(UTF8Char *buff) = 0;
+		virtual UnsafeArray<UTF8Char> GetName(UnsafeArray<UTF8Char> buff) = 0;
 	};
 }
 #endif

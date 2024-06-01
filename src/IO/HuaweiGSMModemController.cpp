@@ -10,11 +10,11 @@ IO::HuaweiGSMModemController::~HuaweiGSMModemController()
 
 }
 
-UTF8Char *IO::HuaweiGSMModemController::HuaweiGetICCID(UTF8Char *iccid)
+UnsafeArrayOpt<UTF8Char> IO::HuaweiGSMModemController::HuaweiGetICCID(UnsafeArray<UTF8Char> iccid)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr = this->SendStringCommand(sbuff, UTF8STRC("AT^ICCID?"), 3000);
-	if (sptr == 0)
+	UnsafeArray<UTF8Char> sptr;
+	if (!this->SendStringCommand(sbuff, UTF8STRC("AT^ICCID?"), 3000).SetTo(sptr))
 	{
 		return 0;
 	}
@@ -28,8 +28,8 @@ UTF8Char *IO::HuaweiGSMModemController::HuaweiGetICCID(UTF8Char *iccid)
 Bool IO::HuaweiGSMModemController::HuaweiGetCardMode(SIMCardType *simType)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr = this->SendStringCommand(sbuff, UTF8STRC("AT^CARDMODE"), 3000);
-	if (sptr == 0)
+	UnsafeArray<UTF8Char> sptr;
+	if (!this->SendStringCommand(sbuff, UTF8STRC("AT^CARDMODE"), 3000).SetTo(sptr))
 	{
 		*simType = SIMCardType::NoCard;
 		return false;
@@ -50,14 +50,14 @@ Bool IO::HuaweiGSMModemController::HuaweiGetSysInfoEx(ServiceStatus *srvStatus, 
 {
 	Text::PString sarr[9];
 	UTF8Char sbuff[256];
-	UTF8Char *sptr = this->SendStringCommand(sbuff, UTF8STRC("AT^SYSINFOEX"), 3000);
-	if (sptr == 0)
+	UnsafeArray<UTF8Char> sptr;
+	if (!this->SendStringCommand(sbuff, UTF8STRC("AT^SYSINFOEX"), 3000).SetTo(sptr))
 	{
 		return false;
 	}
 	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("^SYSINFOEX:")))
 	{
-		UTF8Char *sptr2 = &sbuff[11];
+		UnsafeArray<UTF8Char> sptr2 = &sbuff[11];
 		while (*sptr2 == ' ')
 			sptr2++;
 		if (Text::StrSplitP(sarr, 9, Text::PString(sptr2, (UOSInt)(sptr - sptr2)), ',') == 9)
@@ -84,14 +84,14 @@ Bool IO::HuaweiGSMModemController::HuaweiGetSignalStrength(SignalStrengthInfo *c
 	Text::PString sarr[9];
 	UOSInt sarrCnt;
 	UTF8Char sbuff[256];
-	UTF8Char *sptr = this->SendStringCommand(sbuff, UTF8STRC("AT^HCSQ?"), 3000);
-	if (sptr == 0)
+	UnsafeArray<UTF8Char> sptr;
+	if (!this->SendStringCommand(sbuff, UTF8STRC("AT^HCSQ?"), 3000).SetTo(sptr))
 	{
 		return false;
 	}
 	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("^HCSQ:")))
 	{
-		UTF8Char *sptr2 = &sbuff[6];
+		UnsafeArray<UTF8Char> sptr2 = &sbuff[6];
 		while (*sptr2 == ' ')
 			sptr2++;
 		sarrCnt = Text::StrSplitP(sarr, 6, Text::PString(sptr2, (UOSInt)(sptr - sptr2)), ',');
@@ -164,8 +164,8 @@ Bool IO::HuaweiGSMModemController::HuaweiGetDHCP(OutParam<UInt32> clientIP, OutP
 {
 	Text::PString sarr[9];
 	UTF8Char sbuff[256];
-	UTF8Char *sptr = this->SendStringCommand(sbuff, UTF8STRC("AT^DHCP?"), 3000);
-	if (sptr == 0)
+	UnsafeArray<UTF8Char> sptr;
+	if (!this->SendStringCommand(sbuff, UTF8STRC("AT^DHCP?"), 3000).SetTo(sptr))
 	{
 		return false;
 	}
@@ -211,7 +211,7 @@ Bool IO::HuaweiGSMModemController::HuaweiGetDHCP(OutParam<UInt32> clientIP, OutP
 	return false;
 }
 
-UTF8Char *IO::HuaweiGSMModemController::RSSIGetName(UTF8Char *sbuff, UInt32 rssi)
+UnsafeArray<UTF8Char> IO::HuaweiGSMModemController::RSSIGetName(UnsafeArray<UTF8Char> sbuff, UInt32 rssi)
 {
 	if (rssi == 0)
 	{
@@ -233,7 +233,7 @@ Double IO::HuaweiGSMModemController::RSSIGetdBm(UInt32 rssi)
 	return 0;
 }
 
-UTF8Char *IO::HuaweiGSMModemController::RSCPGetName(UTF8Char *sbuff, UInt32 rscp)
+UnsafeArray<UTF8Char> IO::HuaweiGSMModemController::RSCPGetName(UnsafeArray<UTF8Char> sbuff, UInt32 rscp)
 {
 	if (rscp == 0)
 	{
@@ -255,7 +255,7 @@ Double IO::HuaweiGSMModemController::RSCPGetdBm(UInt32 rscp)
 	return 0;
 }
 
-UTF8Char *IO::HuaweiGSMModemController::ECIOGetName(UTF8Char *sbuff, UInt32 ecio)
+UnsafeArray<UTF8Char> IO::HuaweiGSMModemController::ECIOGetName(UnsafeArray<UTF8Char> sbuff, UInt32 ecio)
 {
 	if (ecio == 0)
 	{
@@ -284,7 +284,7 @@ Double IO::HuaweiGSMModemController::ECIOGetdBm(UInt32 ecio)
 	return 0;
 }
 
-UTF8Char *IO::HuaweiGSMModemController::RSRPGetName(UTF8Char *sbuff, UInt32 rsrp)
+UnsafeArray<UTF8Char> IO::HuaweiGSMModemController::RSRPGetName(UnsafeArray<UTF8Char> sbuff, UInt32 rsrp)
 {
 	if (rsrp == 0)
 	{
@@ -306,7 +306,7 @@ Double IO::HuaweiGSMModemController::RSRPGetdBm(UInt32 rsrp)
 	return 0;
 }
 
-UTF8Char *IO::HuaweiGSMModemController::SINRGetName(UTF8Char *sbuff, UInt32 sinr)
+UnsafeArray<UTF8Char> IO::HuaweiGSMModemController::SINRGetName(UnsafeArray<UTF8Char> sbuff, UInt32 sinr)
 {
 	if (sinr == 0)
 	{
@@ -328,7 +328,7 @@ Double IO::HuaweiGSMModemController::SINRGetdBm(UInt32 sinr)
 	return 0;
 }
 
-UTF8Char *IO::HuaweiGSMModemController::RSRQGetName(UTF8Char *sbuff, UInt32 rsrq)
+UnsafeArray<UTF8Char> IO::HuaweiGSMModemController::RSRQGetName(UnsafeArray<UTF8Char> sbuff, UInt32 rsrq)
 {
 	if (rsrq == 0)
 	{

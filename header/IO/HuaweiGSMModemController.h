@@ -130,23 +130,23 @@ namespace IO
 		virtual ~HuaweiGSMModemController();
 
 		//Huawei Proprietary: Mobile Termination Control and Status Interface
-		UTF8Char *HuaweiGetICCID(UTF8Char *iccid); //AT^ICCID
+		UnsafeArrayOpt<UTF8Char> HuaweiGetICCID(UnsafeArray<UTF8Char> iccid); //AT^ICCID
 		Bool HuaweiGetCardMode(SIMCardType *simType); //AT^CARDMODE
 		Bool HuaweiGetSysInfoEx(ServiceStatus *srvStatus, ServiceDomain *srvDomain, Bool *roamStatus, SIMState *simState, Bool *lockState, SysMode *sysMode, SubMode *subMode); //AT^SYSINFOEX
 		Bool HuaweiGetSignalStrength(SignalStrengthInfo *csq); //AT^HCSQ
 		Bool HuaweiGetDHCP(OutParam<UInt32> clientIP, OutParam<UInt32> netmask, OutParam<UInt32> gateway, OutParam<UInt32> dhcp, OutParam<UInt32> priDNS, OutParam<UInt32> secDNS, OutParam<UInt64> maxRXbps, OutParam<UInt64> maxTXbps); //AT^DHCP
 
-		static UTF8Char *RSSIGetName(UTF8Char *sbuff, UInt32 rssi);
+		static UnsafeArray<UTF8Char> RSSIGetName(UnsafeArray<UTF8Char> sbuff, UInt32 rssi);
 		static Double RSSIGetdBm(UInt32 rssi);
-		static UTF8Char *RSCPGetName(UTF8Char *sbuff, UInt32 rscp);
+		static UnsafeArray<UTF8Char> RSCPGetName(UnsafeArray<UTF8Char> sbuff, UInt32 rscp);
 		static Double RSCPGetdBm(UInt32 rscp);
-		static UTF8Char *ECIOGetName(UTF8Char *sbuff, UInt32 ecio);
+		static UnsafeArray<UTF8Char> ECIOGetName(UnsafeArray<UTF8Char> sbuff, UInt32 ecio);
 		static Double ECIOGetdBm(UInt32 ecio);
-		static UTF8Char *RSRPGetName(UTF8Char *sbuff, UInt32 rsrp);
+		static UnsafeArray<UTF8Char> RSRPGetName(UnsafeArray<UTF8Char> sbuff, UInt32 rsrp);
 		static Double RSRPGetdBm(UInt32 rsrp);
-		static UTF8Char *SINRGetName(UTF8Char *sbuff, UInt32 sinr);
+		static UnsafeArray<UTF8Char> SINRGetName(UnsafeArray<UTF8Char> sbuff, UInt32 sinr);
 		static Double SINRGetdBm(UInt32 sinr);
-		static UTF8Char *RSRQGetName(UTF8Char *sbuff, UInt32 rscq);
+		static UnsafeArray<UTF8Char> RSRQGetName(UnsafeArray<UTF8Char> sbuff, UInt32 rscq);
 		static Double RSRQGetdBm(UInt32 rscq);
 		static Text::CStringNN SIMCardTypeGetName(SIMCardType simType);
 		static Text::CStringNN ServiceStatusGetName(ServiceStatus srvStatus);

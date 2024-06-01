@@ -10,7 +10,7 @@ Text::TextBinEnc::HexTextBinEnc::~HexTextBinEnc()
 {
 }
 
-UOSInt Text::TextBinEnc::HexTextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize) const
+UOSInt Text::TextBinEnc::HexTextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const
 {
 	UOSInt size = sb->GetCharCnt();
 	sb->AppendHexBuff(dataBuff, buffSize, ' ', Text::LineBreakType::CRLF);
@@ -21,7 +21,7 @@ UOSInt Text::TextBinEnc::HexTextBinEnc::CalcBinSize(Text::CStringNN s) const
 {
 	UOSInt cnt = 0;
 	UTF8Char c;
-	const UTF8Char *str = s.v;
+	UnsafeArray<const UTF8Char> str = s.v;
 	while ((c = *str++) != 0)
 	{
 		if (c >= '0' && c <= '9')
@@ -40,13 +40,13 @@ UOSInt Text::TextBinEnc::HexTextBinEnc::CalcBinSize(Text::CStringNN s) const
 	return cnt >> 1;
 }
 
-UOSInt Text::TextBinEnc::HexTextBinEnc::DecodeBin(Text::CStringNN s, UInt8 *dataBuff) const
+UOSInt Text::TextBinEnc::HexTextBinEnc::DecodeBin(Text::CStringNN s, UnsafeArray<UInt8> dataBuff) const
 {
 	UOSInt cnt = 0;
 	UTF8Char c;
 	UInt8 b = 0;
 	Bool exist = false;
-	const UTF8Char *str = s.v;
+	UnsafeArray<const UTF8Char> str = s.v;
 	while ((c = *str++) != 0)
 	{
 		if (c >= '0' && c <= '9')

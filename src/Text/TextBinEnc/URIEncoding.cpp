@@ -126,7 +126,7 @@ Text::TextBinEnc::URIEncoding::~URIEncoding()
 {
 }
 
-UOSInt Text::TextBinEnc::URIEncoding::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize) const
+UOSInt Text::TextBinEnc::URIEncoding::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const
 {
 	UInt8 b;
 	UOSInt initLen = sb->GetCharCnt();
@@ -176,7 +176,7 @@ UOSInt Text::TextBinEnc::URIEncoding::CalcBinSize(Text::CStringNN s) const
 
 }
 
-UOSInt Text::TextBinEnc::URIEncoding::DecodeBin(Text::CStringNN s, UInt8 *dataBuff) const
+UOSInt Text::TextBinEnc::URIEncoding::DecodeBin(Text::CStringNN s, UnsafeArray<UInt8> dataBuff) const
 {
 	UInt8 v;
 	UTF8Char c;

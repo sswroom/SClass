@@ -13,7 +13,7 @@ Text::TextBinEnc::CodePageTextBinEnc::~CodePageTextBinEnc()
 	DEL_CLASS(this->enc);
 }
 
-UOSInt Text::TextBinEnc::CodePageTextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize) const
+UOSInt Text::TextBinEnc::CodePageTextBinEnc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const
 {
 	UOSInt size = this->enc->CountUTF8Chars(dataBuff, buffSize);
 	UTF8Char *sbuff = MemAlloc(UTF8Char, size + 1);
@@ -29,7 +29,7 @@ UOSInt Text::TextBinEnc::CodePageTextBinEnc::CalcBinSize(Text::CStringNN str) co
 	return this->enc->UTF8CountBytesC(str.v, str.leng);
 }
 
-UOSInt Text::TextBinEnc::CodePageTextBinEnc::DecodeBin(Text::CStringNN str, UInt8 *dataBuff) const
+UOSInt Text::TextBinEnc::CodePageTextBinEnc::DecodeBin(Text::CStringNN str, UnsafeArray<UInt8> dataBuff) const
 {
 	return this->enc->UTF8ToBytesC(dataBuff, str.v, str.leng);
 }

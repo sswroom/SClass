@@ -9,13 +9,13 @@ Text::TextBinEnc::ASCII85Enc::~ASCII85Enc()
 {
 }
 
-UOSInt Text::TextBinEnc::ASCII85Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize) const
+UOSInt Text::TextBinEnc::ASCII85Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const
 {
 	UOSInt initLen = sb->GetCharCnt();
 	UInt32 v;
 	while (buffSize >= 4)
 	{
-		v = ReadMUInt32(dataBuff);
+		v = ReadMUInt32(&dataBuff[0]);
 		dataBuff += 4;
 		buffSize -= 4;
 		sb->AppendUTF8Char((UTF8Char)(v / 52200625 + 33));
@@ -61,12 +61,12 @@ UOSInt Text::TextBinEnc::ASCII85Enc::EncodeBin(NN<Text::StringBuilderUTF8> sb, c
 	return sb->GetCharCnt() - initLen;
 }
 
-UTF8Char *Text::TextBinEnc::ASCII85Enc::EncodeBin(UTF8Char *sbuff, const UInt8 *dataBuff, UOSInt buffSize) const
+UnsafeArray<UTF8Char> Text::TextBinEnc::ASCII85Enc::EncodeBin(UnsafeArray<UTF8Char> sbuff, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const
 {
 	UInt32 v;
 	while (buffSize >= 4)
 	{
-		v = ReadMUInt32(dataBuff);
+		v = ReadMUInt32(&dataBuff[0]);
 		dataBuff += 4;
 		buffSize -= 4;
 		*sbuff++ = (UTF8Char)(v / 52200625 + 33);
@@ -122,7 +122,7 @@ UOSInt Text::TextBinEnc::ASCII85Enc::CalcBinSize(Text::CStringNN str) const
 	UOSInt lastU = 0;
 	UTF8Char c;
 	UOSInt strLen = str.leng;
-	const UTF8Char *a85Str = str.v;
+	UnsafeArray<const UTF8Char> a85Str = str.v;
 	while (strLen-- > 0)
 	{
 		c = *a85Str++;
@@ -168,21 +168,21 @@ UOSInt Text::TextBinEnc::ASCII85Enc::CalcBinSize(Text::CStringNN str) const
 	}
 }
 
-UOSInt Text::TextBinEnc::ASCII85Enc::DecodeBin(Text::CStringNN str, UInt8 *dataBuff) const
+UOSInt Text::TextBinEnc::ASCII85Enc::DecodeBin(Text::CStringNN str, UnsafeArray<UInt8> dataBuff) const
 {
-	UInt8 *destBuff = dataBuff;
+	UnsafeArray<UInt8> destBuff = dataBuff;
 	UTF8Char sbuff[5];
 	UOSInt validCnt = 0;
 	UOSInt lastU = 0;
 	UTF8Char c;
 	UOSInt strLen = str.leng;
-	const UTF8Char *a85Str = str.v;
+	UnsafeArray<const UTF8Char> a85Str = str.v;
 	while (strLen-- > 0)
 	{
 		c = *a85Str++;
 		if (c == 'z')
 		{
-			WriteNInt32(destBuff, 0);
+			WriteNInt32(&destBuff[0], 0);
 			destBuff += 4;
 			lastU = 0;
 		}
@@ -215,7 +215,7 @@ UOSInt Text::TextBinEnc::ASCII85Enc::DecodeBin(Text::CStringNN str, UInt8 *dataB
 			v += (UInt32)(sbuff[2] - 33) * 7225;
 			v += (UInt32)(sbuff[1] - 33) * 614125;
 			v += (UInt32)(sbuff[0] - 33) * 52200625;
-			WriteMUInt32(destBuff, v);
+			WriteMUInt32(&destBuff[0], v);
 			destBuff += 4;
 			validCnt = 0;
 		}

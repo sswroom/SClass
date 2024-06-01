@@ -15,7 +15,7 @@ private:
 
 	virtual void SetPtr(T *p)
 	{
-		if (p == 0)
+/*		if (p == 0)
 		{
 #if defined(__PRETTY_FUNCTION__)
 			printf("Null found in UnsafeArray: " __PRETTY_FUNCTION__ "\r\n");
@@ -31,7 +31,7 @@ private:
 #if defined(PRINT_STACK)
 			IO::DebugTool::PrintStackTrace();
 #endif
-		}
+		}*/
 		this->p = p;
 	}
 

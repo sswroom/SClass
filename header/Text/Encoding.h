@@ -28,13 +28,13 @@ namespace Text
 		// bug if _WCHAR_SIZE != 2
 		UOSInt WCountBytes(const WChar *str); // Optimized, retSize include null byte
 		UOSInt WCountBytesC(const WChar *str, UOSInt strLen); // Optimized, strLen = other to force size and retSize exclude null
-		UOSInt WToBytes(UInt8 *bytes, const WChar *str); // Optimized, retSize include null byte
-		UOSInt WToBytesC(UInt8 *bytes, const WChar *str, UOSInt strLen); // Optimized, strLen = other to force size and retSize exclude null
+		UOSInt WToBytes(UnsafeArray<UInt8> bytes, const WChar *str); // Optimized, retSize include null byte
+		UOSInt WToBytesC(UnsafeArray<UInt8> bytes, const WChar *str, UOSInt strLen); // Optimized, strLen = other to force size and retSize exclude null
 
 		UOSInt UTF8CountBytes(UnsafeArray<const UTF8Char> str); // Optimized, retSize include null byte
 		UOSInt UTF8CountBytesC(UnsafeArray<const UTF8Char> str, UOSInt strLen); // Optimized, strLen = other to force size and retSize exclude null
-		UOSInt UTF8ToBytes(UInt8 *bytes, UnsafeArray<const UTF8Char> str); // Optimized, retSize include null byte
-		UOSInt UTF8ToBytesC(UInt8 *bytes, UnsafeArray<const UTF8Char> str, UOSInt strLen); // Optimized, strLen = other to force size and retSize exclude null
+		UOSInt UTF8ToBytes(UnsafeArray<UInt8> bytes, UnsafeArray<const UTF8Char> str); // Optimized, retSize include null byte
+		UOSInt UTF8ToBytesC(UnsafeArray<UInt8> bytes, UnsafeArray<const UTF8Char> str, UOSInt strLen); // Optimized, strLen = other to force size and retSize exclude null
 
 		const UInt8 *NextWChar(const UInt8 *buff, WChar *outputChar);
 	};

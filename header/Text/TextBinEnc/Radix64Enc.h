@@ -14,11 +14,11 @@ namespace Text
 		public:
 			Radix64Enc(const Char *endArr);
 			virtual ~Radix64Enc();
-			virtual UOSInt EncodeBin(NN<Text::StringBuilderUTF8> sb, const UInt8 *dataBuff, UOSInt buffSize) const;
+			virtual UOSInt EncodeBin(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UInt8> dataBuff, UOSInt buffSize) const;
 			virtual UOSInt CalcBinSize(Text::CStringNN str) const;
 			virtual UOSInt CalcBinSize(const WChar *sbuff) const;
-			virtual UOSInt DecodeBin(Text::CStringNN str, UInt8 *dataBuff) const;
-			virtual UOSInt DecodeBin(const WChar *sbuff, UInt8 *dataBuff) const;
+			virtual UOSInt DecodeBin(Text::CStringNN str, UnsafeArray<UInt8> dataBuff) const;
+			virtual UOSInt DecodeBin(const WChar *sbuff, UnsafeArray<UInt8> dataBuff) const;
 			virtual Text::CStringNN GetName() const;
 		};
 	}

@@ -6,11 +6,11 @@
 
 #include <stdio.h>
 
-UOSInt IO::ProgramLinkManager::GetLinkNamesDir(Data::ArrayListStringNN *nameList, UTF8Char *linkPath, UTF8Char *linkPathEnd, UTF8Char *filePath, UTF8Char *filePathEnd)
+UOSInt IO::ProgramLinkManager::GetLinkNamesDir(Data::ArrayListStringNN *nameList, UnsafeArray<UTF8Char> linkPath, UnsafeArray<UTF8Char> linkPathEnd, UnsafeArray<UTF8Char> filePath, UnsafeArray<UTF8Char> filePathEnd)
 {
 	UOSInt ret = 0;
-	UTF8Char *sptr;
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> sptr2;
 	IO::Path::FindFileSession *sess;
 	*linkPathEnd++ = '/';
 	sptr = Text::StrConcatC(linkPathEnd, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
@@ -18,7 +18,7 @@ UOSInt IO::ProgramLinkManager::GetLinkNamesDir(Data::ArrayListStringNN *nameList
 	if (sess)
 	{
 		IO::Path::PathType pt;
-		while ((sptr = IO::Path::FindNextFile(linkPathEnd, sess, 0, &pt, 0)) != 0)
+		while (IO::Path::FindNextFile(linkPathEnd, sess, 0, &pt, 0).SetTo(sptr))
 		{
 			if (pt == IO::Path::PathType::File)
 			{
@@ -52,12 +52,12 @@ IO::ProgramLinkManager::~ProgramLinkManager()
 {
 }
 
-UTF8Char *IO::ProgramLinkManager::GetLinkPath(UTF8Char *buff, Bool thisUser)
+UnsafeArray<UTF8Char> IO::ProgramLinkManager::GetLinkPath(UnsafeArray<UTF8Char> buff, Bool thisUser)
 {
-	UTF8Char *sptr;	
+	UnsafeArray<UTF8Char> sptr;	
 	if (thisUser)
 	{
-		sptr = IO::Path::GetUserHome(buff);
+		sptr = IO::Path::GetUserHome(buff).Or(buff);
 		sptr = IO::Path::AppendPath(buff, sptr, CSTR(".local/share/applications"));
 	}
 	else
@@ -70,7 +70,7 @@ UTF8Char *IO::ProgramLinkManager::GetLinkPath(UTF8Char *buff, Bool thisUser)
 UOSInt IO::ProgramLinkManager::GetLinkNames(Data::ArrayListStringNN *nameList, Bool allUser, Bool thisUser)
 {
 	UTF8Char linkPath[512];
-	UTF8Char *linkPathEnd;
+	UnsafeArray<UTF8Char> linkPathEnd;
 	UTF8Char filePath[512];
 	UOSInt ret = 0;
 	if (allUser)
@@ -87,13 +87,13 @@ UOSInt IO::ProgramLinkManager::GetLinkNames(Data::ArrayListStringNN *nameList, B
 	return ret;
 }
 
-Bool IO::ProgramLinkManager::GetLinkDetail(Text::CString linkName, IO::ProgramLink *link)
+Bool IO::ProgramLinkManager::GetLinkDetail(Text::CStringNN linkName, IO::ProgramLink *link)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (linkName.v[0] == '*')
 	{
-		sptr = IO::Path::GetUserHome(sbuff);
+		sptr = IO::Path::GetUserHome(sbuff).Or(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR(".local/share/applications/"));
 		sptr = linkName.Substring(1).ConcatTo(sptr);
 	}
@@ -131,7 +131,7 @@ Bool IO::ProgramLinkManager::GetLinkDetail(Text::CString linkName, IO::ProgramLi
 				UOSInt i = sb.IndexOf('=');
 				if (i == INVALID_INDEX)
 				{
-					printf("ProgramLinkManager: Unknown line: %s\r\n", sb.ToString());
+					printf("ProgramLinkManager: Unknown line: %s\r\n", sb.ToPtr());
 				}
 				else
 				{
@@ -220,7 +220,7 @@ Bool IO::ProgramLinkManager::GetLinkDetail(Text::CString linkName, IO::ProgramLi
 					}
 					else
 					{
-						printf("ProgramLinkManager: Unknown Item: %s=%s\r\n", name.v, val.v);
+						printf("ProgramLinkManager: Unknown Item: %s=%s\r\n", name.v.Ptr(), val.v.Ptr());
 					}
 				}
 			}
@@ -230,10 +230,11 @@ Bool IO::ProgramLinkManager::GetLinkDetail(Text::CString linkName, IO::ProgramLi
 	}
 }
 
-Bool IO::ProgramLinkManager::CreateLink(Bool thisUser, Text::CString shortName, Text::CString linkName, Text::CString comment, Text::CString categories, Text::CString cmdLine)
+Bool IO::ProgramLinkManager::CreateLink(Bool thisUser, Text::CStringNN shortName, Text::CStringNN linkName, Text::CString comment, Text::CString categories, Text::CStringNN cmdLine)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
+	Text::CStringNN nns;
 	sptr = GetLinkPath(sbuff, thisUser);
 	*sptr++ = '/';
 	sptr = shortName.ConcatTo(sptr);
@@ -247,16 +248,16 @@ Bool IO::ProgramLinkManager::CreateLink(Bool thisUser, Text::CString shortName, 
 	sb.AppendC(UTF8STRC("[Desktop Entry]"));
 	sb.AppendC(UTF8STRC("\r\nName="));
 	sb.Append(linkName);
-	if (comment.leng > 0)
+	if (comment.SetTo(nns) && nns.leng > 0)
 	{
 		sb.AppendC(UTF8STRC("\r\nComment="));
-		sb.Append(comment);
+		sb.Append(nns);
 	}
 	sb.AppendC(UTF8STRC("\r\nType=Appplication"));
-	if (categories.leng > 0)
+	if (categories.SetTo(nns) && nns.leng > 0)
 	{
 		sb.AppendC(UTF8STRC("\r\nCategories="));
-		sb.Append(categories);
+		sb.Append(nns);
 	}
 	sb.AppendC(UTF8STRC("\r\nExec="));
 	sb.Append(cmdLine);
@@ -265,10 +266,10 @@ Bool IO::ProgramLinkManager::CreateLink(Bool thisUser, Text::CString shortName, 
 	return true;
 }
 
-Bool IO::ProgramLinkManager::DeleteLink(Text::CString linkName)
+Bool IO::ProgramLinkManager::DeleteLink(Text::CStringNN linkName)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	if (linkName.v[0] == '*')
 	{
 		sptr = GetLinkPath(sbuff, true);

@@ -189,8 +189,8 @@ UOSInt Map::ESRI::ESRITileMap::GetTileImageIDs(UOSInt level, Math::RectAreaDbl r
 Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Math::Coord2D<Int32> tileId, NN<Parser::ParserList> parsers, OutParam<Math::RectAreaDbl> bounds, Bool localOnly)
 {
 	UTF8Char filePath[512];
-	UTF8Char *sptr;
-	UTF8Char *filePathEnd;
+	UnsafeArray<UTF8Char> sptr;
+	UnsafeArray<UTF8Char> filePathEnd;
 	NN<IO::ParsedObject> pobj;
 	Double resol = this->esriMap->TileGetLevelResolution(level);
 	if (resol == 0)
@@ -253,7 +253,7 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Math::Coor
 	return 0;
 }
 
-UTF8Char *Map::ESRI::ESRITileMap::GetTileImageURL(UTF8Char *sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
+UnsafeArrayOpt<UTF8Char> Map::ESRI::ESRITileMap::GetTileImageURL(UnsafeArray<UTF8Char> sbuff, UOSInt level, Math::Coord2D<Int32> tileId)
 {
 	return this->esriMap->TileGetURL(sbuff, level, tileId.x, tileId.y);
 }
@@ -266,7 +266,7 @@ Bool Map::ESRI::ESRITileMap::GetTileImageURL(NN<Text::StringBuilderUTF8> sb, UOS
 Optional<IO::StreamData> Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Math::Coord2D<Int32> tileId, OutParam<Math::RectAreaDbl> bounds, Bool localOnly, OptOut<ImageType> it)
 {
 	UTF8Char filePath[512];
-	UTF8Char *sptr;
+	UnsafeArray<UTF8Char> sptr;
 	IO::StmData::FileData *fd;
 	Double resol = this->esriMap->TileGetLevelResolution(level);
 	if (resol == 0)
