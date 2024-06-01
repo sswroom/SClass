@@ -18,9 +18,9 @@ namespace Crypto
 			Bool SetPublicKey(Crypto::Cert::X509PubKey *key);
 			Bool LoadPublicKeyFile(Text::CString filePath);
 
-			const UInt8 *GetSessKey();
+			UnsafeArrayOpt<const UInt8> GetSessKey();
 			UOSInt GetSessKeyLen();
-			const UInt8 *GetIV();
+			UnsafeArrayOpt<const UInt8> GetIV();
 			UOSInt GetIVLen();
 
 

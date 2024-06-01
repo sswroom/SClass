@@ -30,13 +30,13 @@ namespace IO
 		void ClearCmdResult();
 		Bool IsCmdSucceed();
 
-		UTF8Char *SendStringCommand(UTF8Char *buff, const UTF8Char *cmd, UOSInt cmdLen, Data::Duration timeout);
-		Bool SendStringCommand(Data::ArrayListStringNN *resList, const UTF8Char *cmd, UOSInt cmdLen, Data::Duration timeout);
-		UTF8Char *SendStringCommandDirect(UTF8Char *buff, const UTF8Char *cmd, UOSInt cmdLen, Data::Duration timeout);
-		Bool SendStringListCommand(NN<Text::StringBuilderUTF8> sb, const UTF8Char *cmd, UOSInt cmdLen);
-		Bool SendBoolCommandC(const UTF8Char *cmd, UOSInt cmdLen);
-		Bool SendBoolCommandC(const UTF8Char *cmd, UOSInt cmdLen, Data::Duration timeout);
-		DialResult SendDialCommand(const UTF8Char *cmd, UOSInt cmdLen);
+		UnsafeArrayOpt<UTF8Char> SendStringCommand(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, Data::Duration timeout);
+		Bool SendStringCommand(Data::ArrayListStringNN *resList, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, Data::Duration timeout);
+		UnsafeArrayOpt<UTF8Char> SendStringCommandDirect(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, Data::Duration timeout);
+		Bool SendStringListCommand(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen);
+		Bool SendBoolCommandC(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen);
+		Bool SendBoolCommandC(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, Data::Duration timeout);
+		DialResult SendDialCommand(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen);
 
 	public:
 		ModemController(NN<IO::ATCommandChannel> channel, Bool needRelease);

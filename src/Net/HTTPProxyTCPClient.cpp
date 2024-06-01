@@ -6,7 +6,7 @@
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 
-Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::CStringNN proxyHost, UInt16 proxyPort, PasswordType pt, const UTF8Char *userName, const UTF8Char *pwd, Text::CStringNN destHost, UInt16 destPort) : Net::TCPClient(sockf, 0)
+Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::CStringNN proxyHost, UInt16 proxyPort, PasswordType pt, UnsafeArrayOpt<const UTF8Char> userName, UnsafeArrayOpt<const UTF8Char> pwd, Text::CStringNN destHost, UInt16 destPort) : Net::TCPClient(sockf, 0)
 {
 	this->SetSourceName(destHost);
 
@@ -50,22 +50,24 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(NN<Net::SocketFactory> sockf, Text::
 	
 	UTF8Char reqBuff[512];
 	UTF8Char userPwd[256];
-	UTF8Char *sptr = Text::StrConcatC(reqBuff, UTF8STRC("CONNECT "));
-	UTF8Char *sptr2;
+	UnsafeArray<UTF8Char> sptr = Text::StrConcatC(reqBuff, UTF8STRC("CONNECT "));
+	UnsafeArray<UTF8Char> sptr2;
 	UOSInt respSize;
 	sptr = destHost.ConcatTo(sptr);
 	*sptr++ = ':';
 	sptr = Text::StrUInt16(sptr, destPort);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(" HTTP/1.1\r\n"));
-	if (pt == PWDT_BASIC)
+	UnsafeArray<const UTF8Char> nnuserName;
+	UnsafeArray<const UTF8Char> nnpwd;
+	if (pt == PWDT_BASIC && userName.SetTo(nnuserName) && pwd.SetTo(nnpwd))
 	{
-		sptr2 = Text::StrConcat(userPwd, userName);
+		sptr2 = Text::StrConcat(userPwd, nnuserName);
 		*sptr2++ = ':';
-		sptr2 = Text::StrConcat(sptr2, pwd);
+		sptr2 = Text::StrConcat(sptr2, nnpwd);
 
 		sptr = Text::StrConcatC(sptr, UTF8STRC("Proxy-Authorization: Basic "));
 		Crypto::Encrypt::Base64 b64;
-		sptr = sptr + b64.Encrypt((UInt8*)userPwd, (UOSInt)(sptr2 - userPwd), (UInt8*)sptr);
+		sptr = sptr + b64.Encrypt((UInt8*)userPwd, (UOSInt)(sptr2 - userPwd), sptr);
 		sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
 	}
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));

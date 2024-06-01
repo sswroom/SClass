@@ -12,8 +12,8 @@ namespace Crypto
 			Base64();
 			virtual ~Base64();
 
-			virtual UOSInt Encrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff);
-			virtual UOSInt Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff);
+			virtual UOSInt Encrypt(UnsafeArray<const UInt8> inBuff, UOSInt inSize, UnsafeArray<UInt8> outBuff);
+			virtual UOSInt Decrypt(UnsafeArray<const UInt8> inBuff, UOSInt inSize, UnsafeArray<UInt8> outBuff);
 
 			virtual UOSInt GetEncBlockSize() const;
 			virtual UOSInt GetDecBlockSize() const;

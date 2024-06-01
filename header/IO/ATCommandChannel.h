@@ -15,7 +15,7 @@ namespace IO
 	{
 	public:
 		typedef void (__stdcall *EventHandler)(AnyType userObj, UInt8 eventType);
-		typedef Bool (__stdcall *CommandHandler)(AnyType userObj, const UTF8Char *cmd, UOSInt cmdLen);
+		typedef Bool (__stdcall *CommandHandler)(AnyType userObj, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen);
 
 	private:
 		NN<IO::Stream> stm;
@@ -42,12 +42,12 @@ namespace IO
 
 		NN<IO::Stream> GetStream() const;
 
-		UOSInt SendATCommand(NN<Data::ArrayListStringNN> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout);
-		UOSInt SendATCommands(NN<Data::ArrayListStringNN> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, const UTF8Char *atCmdSub, Data::Duration timeout);
-		UOSInt SendDialCommand(NN<Data::ArrayListStringNN> retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Data::Duration timeout);
+		UOSInt SendATCommand(NN<Data::ArrayListStringNN> retArr, UnsafeArray<const UTF8Char> atCmd, UOSInt atCmdLen, Data::Duration timeout);
+		UOSInt SendATCommands(NN<Data::ArrayListStringNN> retArr, UnsafeArray<const UTF8Char> atCmd, UOSInt atCmdLen, UnsafeArray<const UTF8Char> atCmdSub, Data::Duration timeout);
+		UOSInt SendDialCommand(NN<Data::ArrayListStringNN> retArr, UnsafeArray<const UTF8Char> atCmd, UOSInt atCmdLen, Data::Duration timeout);
 
 		Bool UseCmd(NN<Sync::MutexUsage> mutUsage);
-		UOSInt CmdSend(const UInt8 *data, UOSInt dataSize);
+		UOSInt CmdSend(UnsafeArray<const UInt8> data, UOSInt dataSize);
 		Optional<Text::String> CmdGetNextResult(Data::Duration timeout);
 
 		void Close();

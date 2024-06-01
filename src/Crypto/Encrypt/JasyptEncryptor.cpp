@@ -8,35 +8,35 @@
 #include "Data/ByteTool.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-const UInt8 *Crypto::Encrypt::JasyptEncryptor::DecGetSalt(const UInt8 *buff, UInt8 *salt)
+UnsafeArray<const UInt8> Crypto::Encrypt::JasyptEncryptor::DecGetSalt(UnsafeArray<const UInt8> buff, UnsafeArray<UInt8> salt)
 {
 	if (this->salt)
 	{
-		MemCopyNO(salt, this->salt, this->saltSize);
+		MemCopyNO(salt.Ptr(), this->salt, this->saltSize);
 		return buff;
 	}
 	else
 	{
-		MemCopyNO(salt, buff, this->saltSize);
+		MemCopyNO(salt.Ptr(), buff.Ptr(), this->saltSize);
 		return buff + this->saltSize;
 	}
 }
 
-const UInt8 *Crypto::Encrypt::JasyptEncryptor::DecGetIV(const UInt8 *buff, UInt8 *iv)
+UnsafeArray<const UInt8> Crypto::Encrypt::JasyptEncryptor::DecGetIV(UnsafeArray<const UInt8> buff, UnsafeArray<UInt8> iv)
 {
 	if (this->iv)
 	{
-		MemCopyNO(iv, this->iv, this->ivSize);
+		MemCopyNO(iv.Ptr(), this->iv, this->ivSize);
 		return buff;
 	}
 	else
 	{
-		MemCopyNO(iv, buff, this->ivSize);
+		MemCopyNO(iv.Ptr(), buff.Ptr(), this->ivSize);
 		return buff + this->ivSize;
 	}
 }
 
-UOSInt Crypto::Encrypt::JasyptEncryptor::GetEncKey(const UInt8 *salt, UInt8 *key)
+UOSInt Crypto::Encrypt::JasyptEncryptor::GetEncKey(UnsafeArray<const UInt8> salt, UnsafeArray<UInt8> key)
 {
 	switch (this->keyAlgorithmn)
 	{
@@ -51,7 +51,7 @@ UOSInt Crypto::Encrypt::JasyptEncryptor::GetEncKey(const UInt8 *salt, UInt8 *key
 	return 0;
 }
 
-NN<Crypto::Encrypt::ICrypto> Crypto::Encrypt::JasyptEncryptor::CreateCrypto(const UInt8 *iv, const UInt8 *keyBuff)
+NN<Crypto::Encrypt::ICrypto> Crypto::Encrypt::JasyptEncryptor::CreateCrypto(UnsafeArray<const UInt8> iv, UnsafeArray<const UInt8> keyBuff)
 {
 	NN<Crypto::Encrypt::BlockCipher> bCipher;
 	switch (this->cipherAlgorithm)
@@ -135,26 +135,26 @@ Bool Crypto::Encrypt::JasyptEncryptor::Decrypt(NN<IO::ConfigFile> cfg)
 	return true;
 }
 
-UOSInt Crypto::Encrypt::JasyptEncryptor::Decrypt(const UInt8 *srcBuff, UOSInt srcLen, UInt8 *outBuff)
+UOSInt Crypto::Encrypt::JasyptEncryptor::Decrypt(UnsafeArray<const UInt8> srcBuff, UOSInt srcLen, UnsafeArray<UInt8> outBuff)
 {
 	if (srcLen < this->ivSize + this->saltSize)
 	{
 		return 0;
 	}
 	UOSInt outSize;
-	const UInt8 *srcBuffEnd = srcBuff + srcLen;
-	UInt8 *salt = MemAlloc(UInt8, this->saltSize);
-	UInt8 *iv = MemAlloc(UInt8, this->ivSize);
-	UInt8 *key = MemAlloc(UInt8, this->dkLen);
+	UnsafeArray<const UInt8> srcBuffEnd = srcBuff + srcLen;
+	UnsafeArray<UInt8> salt = MemAllocArr(UInt8, this->saltSize);
+	UnsafeArray<UInt8> iv = MemAllocArr(UInt8, this->ivSize);
+	UnsafeArray<UInt8> key = MemAllocArr(UInt8, this->dkLen);
 	srcBuff = this->DecGetSalt(srcBuff, salt);
 	srcBuff = this->DecGetIV(srcBuff, iv);
 	this->GetEncKey(salt, key);
 	NN<Crypto::Encrypt::ICrypto> enc = this->CreateCrypto(iv, key);
 	outSize = enc->Decrypt(srcBuff, (UOSInt)(srcBuffEnd - srcBuff), outBuff);
 	enc.Delete();
-	MemFree(key);
-	MemFree(iv);
-	MemFree(salt);
+	MemFreeArr(key);
+	MemFreeArr(iv);
+	MemFreeArr(salt);
 	while (outSize > 0 && outBuff[outSize - 1] < 32)
 	{
 		outSize--;
@@ -162,29 +162,31 @@ UOSInt Crypto::Encrypt::JasyptEncryptor::Decrypt(const UInt8 *srcBuff, UOSInt sr
 	return outSize;
 }
 
-UOSInt Crypto::Encrypt::JasyptEncryptor::DecryptB64(Text::CStringNN b64Str, UInt8 *outBuff)
+UOSInt Crypto::Encrypt::JasyptEncryptor::DecryptB64(Text::CStringNN b64Str, UnsafeArray<UInt8> outBuff)
 {
 	Text::TextBinEnc::Base64Enc b64;
-	UInt8 *tmpBuff = MemAlloc(UInt8, b64Str.leng);
+	UnsafeArray<UInt8> tmpBuff = MemAllocArr(UInt8, b64Str.leng);
 	UOSInt retSize;
 	retSize = b64.DecodeBin(b64Str, tmpBuff);
 	retSize = this->Decrypt(tmpBuff, retSize, outBuff);
-	MemFree(tmpBuff);
+	MemFreeArr(tmpBuff);
 	return retSize;
 }
 
 UOSInt Crypto::Encrypt::JasyptEncryptor::EncryptAsB64(NN<Text::StringBuilderUTF8> sb, Data::ByteArrayR srcBuff)
 {
-	UInt8 *srcTmpBuff = 0;
+	UnsafeArrayOpt<UInt8> srcTmpBuff = 0;
+	UnsafeArray<UInt8> nnsrcTmpBuff;
 	UOSInt nBlock = srcBuff.GetSize() / this->ivSize;
 	UOSInt destLen;
 	if (nBlock * this->ivSize != srcBuff.GetSize())
 	{
 		destLen = (nBlock + 1) * this->ivSize;
-		srcTmpBuff = MemAlloc(UInt8, destLen);
-		MemCopyNO(srcTmpBuff, srcBuff.Arr().Ptr(), srcBuff.GetSize());
-		MemFillB(&srcTmpBuff[srcBuff.GetSize()], destLen - srcBuff.GetSize(), (UInt8)(destLen - srcBuff.GetSize()));
-		srcBuff = Data::ByteArrayR(srcTmpBuff, destLen);
+		nnsrcTmpBuff = MemAllocArr(UInt8, destLen);
+		MemCopyNO(nnsrcTmpBuff.Ptr(), srcBuff.Arr().Ptr(), srcBuff.GetSize());
+		MemFillB(&nnsrcTmpBuff[srcBuff.GetSize()], destLen - srcBuff.GetSize(), (UInt8)(destLen - srcBuff.GetSize()));
+		srcBuff = Data::ByteArrayR(nnsrcTmpBuff, destLen);
+		srcTmpBuff = nnsrcTmpBuff;
 	}
 	else
 	{
@@ -199,9 +201,9 @@ UOSInt Crypto::Encrypt::JasyptEncryptor::EncryptAsB64(NN<Text::StringBuilderUTF8
 		destLen += this->ivSize;
 	}
 	UOSInt destOfst = 0;
-	UInt8 *destBuff = MemAlloc(UInt8, destLen);
-	const UInt8 *salt;
-	const UInt8 *iv;
+	UnsafeArray<UInt8> destBuff = MemAllocArr(UInt8, destLen);
+	UnsafeArray<const UInt8> salt;
+	UnsafeArray<const UInt8> iv;
 	if (this->salt != 0)
 	{
 		salt = this->salt;
@@ -222,20 +224,20 @@ UOSInt Crypto::Encrypt::JasyptEncryptor::EncryptAsB64(NN<Text::StringBuilderUTF8
 		this->random.NextBytes(&destBuff[destOfst], this->ivSize);
 		destOfst += this->ivSize;
 	}
-	UInt8 *key = MemAlloc(UInt8, this->dkLen);
+	UnsafeArray<UInt8> key = MemAllocArr(UInt8, this->dkLen);
 	this->GetEncKey(salt, key);
 	NN<Crypto::Encrypt::ICrypto> enc = this->CreateCrypto(iv, key);
 	destOfst += enc->Encrypt(srcBuff.Arr().Ptr(), destLen - destOfst, &destBuff[destOfst]);
 	enc.Delete();
-	MemFree(key);
-	if (srcTmpBuff)
+	MemFreeArr(key);
+	if (srcTmpBuff.SetTo(nnsrcTmpBuff))
 	{
-		MemFree(srcTmpBuff);
+		MemFreeArr(nnsrcTmpBuff);
 	}
 
 	Text::TextBinEnc::Base64Enc b64;
 	b64.EncodeBin(sb, destBuff, destOfst);
-	MemFree(destBuff);
+	MemFreeArr(destBuff);
 	return sb->GetCharCnt();
 }
 

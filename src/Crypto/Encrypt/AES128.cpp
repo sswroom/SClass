@@ -3,7 +3,7 @@
 #include "Crypto/Encrypt/AESBase.h"
 #include "Data/ByteTool.h"
 
-Crypto::Encrypt::AES128::AES128(const UInt8 *key) : Crypto::Encrypt::BlockCipher(16)
+Crypto::Encrypt::AES128::AES128(UnsafeArray<const UInt8> key) : Crypto::Encrypt::BlockCipher(16)
 {
 	this->SetKey(key);
 }
@@ -13,7 +13,7 @@ Crypto::Encrypt::AES128::~AES128()
 
 }
 
-UOSInt Crypto::Encrypt::AES128::EncryptBlock(const UInt8 *inBlock, UInt8 *outBlock) const
+UOSInt Crypto::Encrypt::AES128::EncryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const
 {
 	UInt32 s0;
 	UInt32 s1;
@@ -23,10 +23,10 @@ UOSInt Crypto::Encrypt::AES128::EncryptBlock(const UInt8 *inBlock, UInt8 *outBlo
 	UInt32 t1;
 	UInt32 t2;
 	UInt32 t3;
-	s0 = ReadMUInt32(inBlock     ) ^ this->encRK[0];
-	s1 = ReadMUInt32(inBlock +  4) ^ this->encRK[1];
-	s2 = ReadMUInt32(inBlock +  8) ^ this->encRK[2];
-	s3 = ReadMUInt32(inBlock + 12) ^ this->encRK[3];
+	s0 = ReadMUInt32(&inBlock[ 0]) ^ this->encRK[0];
+	s1 = ReadMUInt32(&inBlock[ 4]) ^ this->encRK[1];
+	s2 = ReadMUInt32(&inBlock[ 8]) ^ this->encRK[2];
+	s3 = ReadMUInt32(&inBlock[12]) ^ this->encRK[3];
 	/* round 1: */
 	t0 = AESBase_Te0[s0 >> 24] ^ AESBase_Te1[(s1 >> 16) & 0xff] ^ AESBase_Te2[(s2 >>  8) & 0xff] ^ AESBase_Te3[s3 & 0xff] ^ this->encRK[ 4];
 	t1 = AESBase_Te0[s1 >> 24] ^ AESBase_Te1[(s2 >> 16) & 0xff] ^ AESBase_Te2[(s3 >>  8) & 0xff] ^ AESBase_Te3[s0 & 0xff] ^ this->encRK[ 5];
@@ -79,32 +79,32 @@ UOSInt Crypto::Encrypt::AES128::EncryptBlock(const UInt8 *inBlock, UInt8 *outBlo
 		(AESBase_Te4[(t2 >>  8) & 0xff] & 0x0000ff00) ^
 		(AESBase_Te4[(t3      ) & 0xff] & 0x000000ff) ^
 		this->encRK[40];
-	WriteMUInt32(outBlock     , s0);
+	WriteMUInt32(&outBlock[ 0], s0);
 	s1 =
 		(AESBase_Te4[(t1 >> 24)       ] & 0xff000000) ^
 		(AESBase_Te4[(t2 >> 16) & 0xff] & 0x00ff0000) ^
 		(AESBase_Te4[(t3 >>  8) & 0xff] & 0x0000ff00) ^
 		(AESBase_Te4[(t0      ) & 0xff] & 0x000000ff) ^
 		this->encRK[41];
-	WriteMUInt32(outBlock +  4, s1);
+	WriteMUInt32(&outBlock[ 4], s1);
 	s2 =
 		(AESBase_Te4[(t2 >> 24)       ] & 0xff000000) ^
 		(AESBase_Te4[(t3 >> 16) & 0xff] & 0x00ff0000) ^
 		(AESBase_Te4[(t0 >>  8) & 0xff] & 0x0000ff00) ^
 		(AESBase_Te4[(t1      ) & 0xff] & 0x000000ff) ^
 		this->encRK[42];
-	WriteMUInt32(outBlock +  8, s2);
+	WriteMUInt32(&outBlock[ 8], s2);
 	s3 =
 		(AESBase_Te4[(t3 >> 24)       ] & 0xff000000) ^
 		(AESBase_Te4[(t0 >> 16) & 0xff] & 0x00ff0000) ^
 		(AESBase_Te4[(t1 >>  8) & 0xff] & 0x0000ff00) ^
 		(AESBase_Te4[(t2      ) & 0xff] & 0x000000ff) ^
 		this->encRK[43];
-	WriteMUInt32(outBlock + 12, s3);
+	WriteMUInt32(&outBlock[ 12], s3);
 	return 16;
 }
 
-UOSInt Crypto::Encrypt::AES128::DecryptBlock(const UInt8 *inBlock, UInt8 *outBlock) const
+UOSInt Crypto::Encrypt::AES128::DecryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const
 {
 	UInt32 s0;
 	UInt32 s1;
@@ -115,10 +115,10 @@ UOSInt Crypto::Encrypt::AES128::DecryptBlock(const UInt8 *inBlock, UInt8 *outBlo
 	UInt32 t2;
 	UInt32 t3;
 
-	s0 = ReadMUInt32(inBlock     ) ^ this->decRK[0];
-	s1 = ReadMUInt32(inBlock +  4) ^ this->decRK[1];
-	s2 = ReadMUInt32(inBlock +  8) ^ this->decRK[2];
-	s3 = ReadMUInt32(inBlock + 12) ^ this->decRK[3];
+	s0 = ReadMUInt32(&inBlock[ 0]) ^ this->decRK[0];
+	s1 = ReadMUInt32(&inBlock[ 4]) ^ this->decRK[1];
+	s2 = ReadMUInt32(&inBlock[ 8]) ^ this->decRK[2];
+	s3 = ReadMUInt32(&inBlock[12]) ^ this->decRK[3];
 	/* round 1: */
 	t0 = AESBase_Td0[s0 >> 24] ^ AESBase_Td1[(s3 >> 16) & 0xff] ^ AESBase_Td2[(s2 >>  8) & 0xff] ^ AESBase_Td3[s1 & 0xff] ^ this->decRK[ 4];
 	t1 = AESBase_Td0[s1 >> 24] ^ AESBase_Td1[(s0 >> 16) & 0xff] ^ AESBase_Td2[(s3 >>  8) & 0xff] ^ AESBase_Td3[s2 & 0xff] ^ this->decRK[ 5];
@@ -171,41 +171,41 @@ UOSInt Crypto::Encrypt::AES128::DecryptBlock(const UInt8 *inBlock, UInt8 *outBlo
 		(AESBase_Td4[(t2 >>  8) & 0xff] & 0x0000ff00) ^
 		(AESBase_Td4[(t1      ) & 0xff] & 0x000000ff) ^
 		this->decRK[40];
-	WriteMUInt32(outBlock     , s0);
+	WriteMUInt32(&outBlock[ 0], s0);
 	s1 =
 		(AESBase_Td4[(t1 >> 24)       ] & 0xff000000) ^
 		(AESBase_Td4[(t0 >> 16) & 0xff] & 0x00ff0000) ^
 		(AESBase_Td4[(t3 >>  8) & 0xff] & 0x0000ff00) ^
 		(AESBase_Td4[(t2      ) & 0xff] & 0x000000ff) ^
 		this->decRK[41];
-	WriteMUInt32(outBlock +  4, s1);
+	WriteMUInt32(&outBlock[ 4], s1);
 	s2 =
 		(AESBase_Td4[(t2 >> 24)       ] & 0xff000000) ^
 		(AESBase_Td4[(t1 >> 16) & 0xff] & 0x00ff0000) ^
 		(AESBase_Td4[(t0 >>  8) & 0xff] & 0x0000ff00) ^
 		(AESBase_Td4[(t3      ) & 0xff] & 0x000000ff) ^
 		this->decRK[42];
-	WriteMUInt32(outBlock +  8, s2);
+	WriteMUInt32(&outBlock[ 8], s2);
 	s3 =
 		(AESBase_Td4[(t3 >> 24)       ] & 0xff000000) ^
 		(AESBase_Td4[(t2 >> 16) & 0xff] & 0x00ff0000) ^
 		(AESBase_Td4[(t1 >>  8) & 0xff] & 0x0000ff00) ^
 		(AESBase_Td4[(t0      ) & 0xff] & 0x000000ff) ^
 		this->decRK[43];
-	WriteMUInt32(outBlock + 12, s3);
+	WriteMUInt32(&outBlock[12], s3);
 	return 16;
 }
 
-void Crypto::Encrypt::AES128::SetKey(const UInt8 *key)
+void Crypto::Encrypt::AES128::SetKey(UnsafeArray<const UInt8> key)
 {
 	OSInt i;
 	OSInt j;
 	UInt32 temp;
 
-	this->encRK[0] = ReadMUInt32(key     );
-	this->encRK[1] = ReadMUInt32(key +  4);
-	this->encRK[2] = ReadMUInt32(key +  8);
-	this->encRK[3] = ReadMUInt32(key + 12);
+	this->encRK[0] = ReadMUInt32(&key[ 0]);
+	this->encRK[1] = ReadMUInt32(&key[ 4]);
+	this->encRK[2] = ReadMUInt32(&key[ 8]);
+	this->encRK[3] = ReadMUInt32(&key[12]);
 	i = 0;
 	while (i < 10)
 	{

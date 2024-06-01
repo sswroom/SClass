@@ -7,7 +7,7 @@
 #include "Text/MyString.h"
 #include "Text/UTF8Reader.h"
 
-UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::OS::GetDistro(UnsafeArray<UTF8Char> sbuff)
 {
 	if (IO::Path::GetPathType(CSTR("/bin/nvram")) == IO::Path::PathType::File)
 	{
@@ -89,7 +89,7 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 	if (IO::Path::GetPathType(CSTR("/usr/sbin/ENG/stringlist_ENG.txt")) == IO::Path::PathType::File)
 	{
 		Text::StringBuilderUTF8 sb;
-		UTF8Char *ret = 0;
+		UnsafeArrayOpt<UTF8Char> ret = 0;
 
 		IO::FileStream fs(CSTR("/usr/sbin/ENG/stringlist_ENG.txt"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (!fs.IsError())
@@ -113,14 +113,15 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 				sb.ClearStr();
 			}
 		}
-		if (ret)
-			return ret;
+		UnsafeArray<UTF8Char> nnret;
+		if (ret.SetTo(nnret))
+			return nnret;
 	}
 
 	return 0;
 }
 
-UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
+UnsafeArrayOpt<UTF8Char> IO::OS::GetVersion(UnsafeArray<UTF8Char> sbuff)
 {
 	if (IO::Path::GetPathType(CSTR("/bin/nvram")) == IO::Path::PathType::File)
 	{
@@ -147,7 +148,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 	}
 	if (IO::Path::GetPathType(CSTR("/etc/debian_version")) == IO::Path::PathType::File)
 	{
-		UTF8Char *ret = 0;
+		UnsafeArrayOpt<UTF8Char> ret = 0;
 		IO::FileStream fs(CSTR("/etc/debian_version"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (!fs.IsError())
 		{
@@ -177,7 +178,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 	}
 	if (IO::Path::GetPathType(CSTR("/etc/openwrt_version")) == IO::Path::PathType::File)
 	{
-		UTF8Char *ret = 0;
+		UnsafeArrayOpt<UTF8Char> ret = 0;
 		IO::FileStream fs(CSTR("/etc/openwrt_version"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		if (!fs.IsError())
 		{
@@ -251,26 +252,28 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 	}
 	if (IO::Path::GetPathType(CSTR("/etc/version.txt")) == IO::Path::PathType::File) //Bovine
 	{
-		UTF8Char *sptr;
+		UnsafeArrayOpt<UTF8Char> sptr;
+		UnsafeArray<UTF8Char> nnsptr;
 		IO::FileStream fs(CSTR("/etc/version.txt"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		Text::UTF8Reader reader(fs);
 		sptr = reader.ReadLine(sbuff, 512);
 
-		if (sptr && sptr != sbuff)
+		if (sptr.SetTo(nnsptr) && nnsptr != sbuff)
 		{
-			return sptr;
+			return nnsptr;
 		}
 	}
 	if (IO::Path::GetPathType(CSTR("/etc/mlinux-version")) == IO::Path::PathType::File) //mLinux
 	{
-		UTF8Char *sptr;
+		UnsafeArrayOpt<UTF8Char> sptr;
+		UnsafeArray<UTF8Char> nnsptr;
 		IO::FileStream fs(CSTR("/etc/mlinux-version"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 		Text::UTF8Reader reader(fs);
 		sptr = reader.ReadLine(sbuff, 512);
 
-		if (sptr && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("mLinux ")))
+		if (sptr.SetTo(nnsptr) && Text::StrStartsWithC(sbuff, (UOSInt)(nnsptr - sbuff), UTF8STRC("mLinux ")))
 		{
-			return Text::StrConcatC(sbuff, &sbuff[7], (UOSInt)(sptr - &sbuff[7]));
+			return Text::StrConcatC(sbuff, &sbuff[7], (UOSInt)(nnsptr - &sbuff[7]));
 		}
 	}
 	return 0;

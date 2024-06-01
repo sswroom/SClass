@@ -55,7 +55,10 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnOKClicked(AnyType userObj)
 		if (me->txtPriority->GetText(sbuff).SetTo(sptr))
 			setting.priority = Text::StrToInt32(sbuff);
 		else
+		{
+			sptr = sbuff;
 			setting.priority = 0;
+		}
 		if (setting.minScale == 0 || setting.maxScale == 0 || (setting.priority == 0 && !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("0"))))
 		{
 			me->ui->ShowMsgOK(CSTR("Input value invalid"), CSTR("Properties"), me);

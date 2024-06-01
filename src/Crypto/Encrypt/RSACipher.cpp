@@ -4,7 +4,7 @@
 #include "Data/RandomBytesGenerator.h"
 
 //RFC8017 OAEP
-UOSInt Crypto::Encrypt::RSACipher::PaddingAppend(UInt8 *destBuff, UOSInt destSize, const UInt8 *message, UOSInt msgSize, Padding padding)
+UOSInt Crypto::Encrypt::RSACipher::PaddingAppend(UnsafeArray<UInt8> destBuff, UOSInt destSize, UnsafeArray<const UInt8> message, UOSInt msgSize, Padding padding)
 {
 	if (padding == Padding::PKCS1_OAEP)
 	{
@@ -27,7 +27,7 @@ UOSInt Crypto::Encrypt::RSACipher::PaddingAppend(UInt8 *destBuff, UOSInt destSiz
 		rnd.NextBytes(&tempBuff[1], hLen);
 		hash->Clear();
 		hash->GetValue(&tempBuff[1 + hLen]);
-		MemCopyNO(&tempBuff[destSize - msgSize], message, msgSize);
+		MemCopyNO(&tempBuff[destSize - msgSize], message.Ptr(), msgSize);
 		hash.Delete();
 		UOSInt i = 1 + hLen * 2;
 		UOSInt j = destSize - msgSize - 1;
@@ -55,7 +55,7 @@ UOSInt Crypto::Encrypt::RSACipher::PaddingAppend(UInt8 *destBuff, UOSInt destSiz
 	}
 	else if (padding == Padding::NoPadding)
 	{
-		MemCopyNO(destBuff, message, msgSize);
+		MemCopyNO(destBuff.Ptr(), message.Ptr(), msgSize);
 		return msgSize;
 	}
 	else
@@ -64,7 +64,7 @@ UOSInt Crypto::Encrypt::RSACipher::PaddingAppend(UInt8 *destBuff, UOSInt destSiz
 	}
 }
 
-UOSInt Crypto::Encrypt::RSACipher::PaddingRemove(UInt8* destBuff, const UInt8* blockWithPadding, UOSInt blockSize, Padding padding)
+UOSInt Crypto::Encrypt::RSACipher::PaddingRemove(UnsafeArray<UInt8> destBuff, UnsafeArray<const UInt8> blockWithPadding, UOSInt blockSize, Padding padding)
 {
 	if (padding == Padding::PKCS1_OAEP)
 	{
@@ -111,7 +111,7 @@ UOSInt Crypto::Encrypt::RSACipher::PaddingRemove(UInt8* destBuff, const UInt8* b
 			else if (decBuff[i] == 1)
 			{
 				i++;
-				MemCopyNO(destBuff, &decBuff[i], blockSize - i);
+				MemCopyNO(destBuff.Ptr(), &decBuff[i], blockSize - i);
 				return blockSize - i;
 			}
 			else
@@ -123,13 +123,13 @@ UOSInt Crypto::Encrypt::RSACipher::PaddingRemove(UInt8* destBuff, const UInt8* b
 	}
 	else
 	{
-		MemCopyNO(destBuff, blockWithPadding, blockSize);
+		MemCopyNO(destBuff.Ptr(), blockWithPadding.Ptr(), blockSize);
 		return blockSize;
 	}
 }
 
 
-Bool Crypto::Encrypt::RSACipher::MGF1(UInt8 *destBuff, UnsafeArray<const UInt8> seed, UOSInt seedLen, UOSInt len, Crypto::Hash::HashType hashType)
+Bool Crypto::Encrypt::RSACipher::MGF1(UnsafeArray<UInt8> destBuff, UnsafeArray<const UInt8> seed, UOSInt seedLen, UOSInt len, Crypto::Hash::HashType hashType)
 {
 	NN<Crypto::Hash::IHash> hash;
 	if (!Crypto::Hash::HashCreator::CreateHash(hashType).SetTo(hash))
@@ -157,7 +157,7 @@ Bool Crypto::Encrypt::RSACipher::MGF1(UInt8 *destBuff, UnsafeArray<const UInt8> 
 		WriteMUInt32(tmpBuff, counter);
 		hash->Calc(tmpBuff, 4);
 		hash->GetValue(tmpBuff);
-		MemCopyNO(destBuff, tmpBuff, len);
+		MemCopyNO(destBuff.Ptr(), tmpBuff, len);
 	}
 	hash.Delete();
 	return true;

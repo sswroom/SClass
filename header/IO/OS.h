@@ -6,9 +6,9 @@ namespace IO
 	class OS
 	{
 	public:
-		static UTF8Char *GetDistro(UTF8Char *sbuff);
-		static UTF8Char *GetVersion(UTF8Char *sbuff);
+		static UnsafeArrayOpt<UTF8Char> GetDistro(UnsafeArray<UTF8Char> sbuff);
+		static UnsafeArrayOpt<UTF8Char> GetVersion(UnsafeArray<UTF8Char> sbuff);
 		static UOSInt GetBuildNumber();
 	};
-};
+}
 #endif

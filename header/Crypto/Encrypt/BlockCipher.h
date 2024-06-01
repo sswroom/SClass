@@ -27,16 +27,16 @@ namespace Crypto
 			BlockCipher(UOSInt blockSize);
 			virtual ~BlockCipher();
 
-			virtual UOSInt Encrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff);
-			virtual UOSInt Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff);
+			virtual UOSInt Encrypt(UnsafeArray<const UInt8> inBuff, UOSInt inSize, UnsafeArray<UInt8> outBuff);
+			virtual UOSInt Decrypt(UnsafeArray<const UInt8> inBuff, UOSInt inSize, UnsafeArray<UInt8> outBuff);
 			virtual UOSInt GetEncBlockSize() const;
 			virtual UOSInt GetDecBlockSize() const;
 
-			virtual UOSInt EncryptBlock(const UInt8 *inBlock, UInt8 *outBlock) const = 0; //return outSize
-			virtual UOSInt DecryptBlock(const UInt8 *inBlock, UInt8 *outBlock) const = 0; //return outSize
+			virtual UOSInt EncryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const = 0; //return outSize
+			virtual UOSInt DecryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const = 0; //return outSize
 
 			void SetChainMode(ChainMode cm);
-			void SetIV(const UInt8 *iv);
+			void SetIV(UnsafeArray<const UInt8> iv);
 		};
 
 		Text::CStringNN ChainModeGetName(ChainMode cm);

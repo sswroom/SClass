@@ -37,14 +37,14 @@ Crypto::Encrypt::Base64::~Base64()
 {
 }
 
-UOSInt Crypto::Encrypt::Base64::Encrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff)
+UOSInt Crypto::Encrypt::Base64::Encrypt(UnsafeArray<const UInt8> inBuff, UOSInt inSize, UnsafeArray<UInt8> outBuff)
 {
-	return Base64_Encrypt(inBuff, inSize, outBuff);
+	return Base64_Encrypt(inBuff.Ptr(), inSize, outBuff.Ptr());
 }
 
-UOSInt Crypto::Encrypt::Base64::Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff)
+UOSInt Crypto::Encrypt::Base64::Decrypt(UnsafeArray<const UInt8> inBuff, UOSInt inSize, UnsafeArray<UInt8> outBuff)
 {
-	return Base64_Decrypt(inBuff, inSize, outBuff);
+	return Base64_Decrypt(inBuff.Ptr(), inSize, outBuff.Ptr());
 }
 
 UOSInt Crypto::Encrypt::Base64::GetEncBlockSize() const

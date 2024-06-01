@@ -1577,10 +1577,10 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(AnyType userObj)
 											sptr = Net::MySQLUtil::AppendLenencStrC(sptr, UTF8STRC("_client_version"));
 											sptr = Net::MySQLUtil::AppendLenencStrC(sptr, UTF8STRC(CLIVERSION));
 											sptr = Net::MySQLUtil::AppendLenencStrC(sptr, UTF8STRC("_os"));
-											sptr2 = IO::OS::GetDistro(sbuff2);
+											sptr2 = IO::OS::GetDistro(sbuff2).Or(sbuff2);
 											sptr = Net::MySQLUtil::AppendLenencStrC(sptr, sbuff2, (UOSInt)(sptr2 - sbuff2));
 											sptr = Net::MySQLUtil::AppendLenencStrC(sptr, UTF8STRC("_os_version"));
-											sptr2 = IO::OS::GetVersion(sbuff2);
+											sptr2 = IO::OS::GetVersion(sbuff2).Or(sbuff2);
 											sptr = Net::MySQLUtil::AppendLenencStrC(sptr, sbuff2, (UOSInt)(sptr2 - sbuff2));
 											ptrCurr = Net::MySQLUtil::AppendLenencInt(ptrCurr, (UOSInt)(sptr - sbuff));
 											MemCopyNO(ptrCurr.Ptr(), sbuff, (UOSInt)(sptr - sbuff));

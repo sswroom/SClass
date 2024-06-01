@@ -12,8 +12,8 @@ namespace Crypto
 			QuotedPrintable();
 			virtual ~QuotedPrintable();
 
-			virtual Int32 Encrypt(const UInt8 *inBuff, Int32 inSize, UInt8 *outBuff, void *encParam);
-			virtual Int32 Decrypt(const UInt8 *inBuff, Int32 inSize, UInt8 *outBuff, void *decParam);
+			virtual Int32 Encrypt(UnsafeArray<const UInt8> inBuff, Int32 inSize, UnsafeArray<UInt8> outBuff);
+			virtual Int32 Decrypt(UnsafeArray<const UInt8> inBuff, Int32 inSize, UnsafeArray<UInt8> outBuff);
 		};
 	};
 };

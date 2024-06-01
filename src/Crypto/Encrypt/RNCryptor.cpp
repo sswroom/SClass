@@ -8,7 +8,7 @@
 #include "Data/ByteBuffer.h"
 #include "Data/RandomBytesGenerator.h"
 
-UOSInt Crypto::Encrypt::RNCryptor::RemovePadding(UInt8 *buff, UOSInt buffSize)
+UOSInt Crypto::Encrypt::RNCryptor::RemovePadding(UnsafeArray<UInt8> buff, UOSInt buffSize)
 {
 	UInt8 paddingSize = buff[buffSize - 1];
 	if (paddingSize > 0 && paddingSize <= 15)

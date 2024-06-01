@@ -23,7 +23,7 @@ Bool IO::ModemController::IsCmdSucceed()
 	return s->Equals(UTF8STRC("OK"));
 }
 
-UTF8Char *IO::ModemController::SendStringCommand(UTF8Char *buff, const UTF8Char *cmd, UOSInt cmdLen, Data::Duration timeout)
+UnsafeArrayOpt<UTF8Char> IO::ModemController::SendStringCommand(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, Data::Duration timeout)
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, cmd, cmdLen, timeout);
@@ -36,7 +36,7 @@ UTF8Char *IO::ModemController::SendStringCommand(UTF8Char *buff, const UTF8Char 
 		if (this->cmdResults.GetItem(i - 1).SetTo(val) && val->Equals(UTF8STRC("OK")))
 		{
 			j = i - 2;
-			UTF8Char *sptr = buff;
+			UnsafeArray<UTF8Char> sptr = buff;
 			buff[0] = 0;
 			while (j >= 0)
 			{
@@ -69,7 +69,7 @@ UTF8Char *IO::ModemController::SendStringCommand(UTF8Char *buff, const UTF8Char 
 	}
 }
 
-Bool IO::ModemController::SendStringCommand(Data::ArrayListStringNN *resList, const UTF8Char *cmd, UOSInt cmdLen, Data::Duration timeout)
+Bool IO::ModemController::SendStringCommand(Data::ArrayListStringNN *resList, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, Data::Duration timeout)
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, cmd, cmdLen, timeout);
@@ -106,7 +106,7 @@ Bool IO::ModemController::SendStringCommand(Data::ArrayListStringNN *resList, co
 	}
 }
 
-UTF8Char *IO::ModemController::SendStringCommandDirect(UTF8Char *buff, const UTF8Char *cmd, UOSInt cmdLen, Data::Duration timeout)
+UnsafeArrayOpt<UTF8Char> IO::ModemController::SendStringCommandDirect(UnsafeArray<UTF8Char> buff, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, Data::Duration timeout)
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, cmd, cmdLen, timeout);
@@ -127,7 +127,7 @@ UTF8Char *IO::ModemController::SendStringCommandDirect(UTF8Char *buff, const UTF
 				}
 				else if (val->v[0] != 0)
 				{
-					UTF8Char *sptr = val->ConcatTo(buff);
+					UnsafeArray<UTF8Char> sptr = val->ConcatTo(buff);
 					ClearCmdResult();
 					return sptr;
 				}
@@ -139,7 +139,7 @@ UTF8Char *IO::ModemController::SendStringCommandDirect(UTF8Char *buff, const UTF
 	return 0;
 }
 
-Bool IO::ModemController::SendStringListCommand(NN<Text::StringBuilderUTF8> sb, const UTF8Char *cmd, UOSInt cmdLen)
+Bool IO::ModemController::SendStringListCommand(NN<Text::StringBuilderUTF8> sb, UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen)
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendATCommand(this->cmdResults, cmd, cmdLen, 3000);
@@ -177,12 +177,12 @@ Bool IO::ModemController::SendStringListCommand(NN<Text::StringBuilderUTF8> sb, 
 	}
 }
 
-Bool IO::ModemController::SendBoolCommandC(const UTF8Char *cmd, UOSInt cmdLen)
+Bool IO::ModemController::SendBoolCommandC(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen)
 {
 	return SendBoolCommandC(cmd, cmdLen, 3000);
 }
 
-Bool IO::ModemController::SendBoolCommandC(const UTF8Char *cmd, UOSInt cmdLen, Data::Duration timeout)
+Bool IO::ModemController::SendBoolCommandC(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen, Data::Duration timeout)
 {
 	Bool isSucc;
 	Sync::MutexUsage mutUsage(this->cmdMut);
@@ -192,7 +192,7 @@ Bool IO::ModemController::SendBoolCommandC(const UTF8Char *cmd, UOSInt cmdLen, D
 	return isSucc;
 }
 
-IO::ModemController::DialResult IO::ModemController::SendDialCommand(const UTF8Char *cmd, UOSInt cmdLen)
+IO::ModemController::DialResult IO::ModemController::SendDialCommand(UnsafeArray<const UTF8Char> cmd, UOSInt cmdLen)
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
 	this->channel->SendDialCommand(this->cmdResults, cmd, cmdLen, 30000);

@@ -639,7 +639,7 @@ Crypto::Encrypt::Blowfish::Blowfish() : Crypto::Encrypt::BlockCipher(8)
 
 }
 
-Crypto::Encrypt::Blowfish::Blowfish(const UInt8 *key, UOSInt keySize) : Crypto::Encrypt::BlockCipher(8)
+Crypto::Encrypt::Blowfish::Blowfish(UnsafeArray<const UInt8> key, UOSInt keySize) : Crypto::Encrypt::BlockCipher(8)
 {
 	this->SetKey(key, keySize);
 }
@@ -649,7 +649,7 @@ Crypto::Encrypt::Blowfish::~Blowfish()
 
 }
 
-UOSInt Crypto::Encrypt::Blowfish::EncryptBlock(const UInt8 *inBlock, UInt8 *outBlock) const
+UOSInt Crypto::Encrypt::Blowfish::EncryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const
 {
 	EncryptParam param;
 	param.xl = ReadMUInt32(&inBlock[0]);
@@ -660,7 +660,7 @@ UOSInt Crypto::Encrypt::Blowfish::EncryptBlock(const UInt8 *inBlock, UInt8 *outB
 	return 8;
 }
 
-UOSInt Crypto::Encrypt::Blowfish::DecryptBlock(const UInt8 *inBlock, UInt8 *outBlock) const
+UOSInt Crypto::Encrypt::Blowfish::DecryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const
 {
 	EncryptParam param;
 	param.xl = ReadMUInt32(&inBlock[0]);

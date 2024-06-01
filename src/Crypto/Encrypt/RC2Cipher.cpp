@@ -21,7 +21,7 @@ UInt8 Crypto::Encrypt::RC2Cipher::permute[256] = {
 	197,243,219, 71,229,165,156,119, 10,166, 32,104,254,127,193,173
 };
 
-Crypto::Encrypt::RC2Cipher::RC2Cipher(const UInt8 *key, UOSInt keyLen) : BlockCipher(8)
+Crypto::Encrypt::RC2Cipher::RC2Cipher(UnsafeArray<const UInt8> key, UOSInt keyLen) : BlockCipher(8)
 {
 	this->SetKey(key, keyLen);
 }
@@ -32,12 +32,12 @@ Crypto::Encrypt::RC2Cipher::~RC2Cipher()
 }
 
 
-Bool Crypto::Encrypt::RC2Cipher::SetKey(const UInt8 *key, UOSInt keyLen)
+Bool Crypto::Encrypt::RC2Cipher::SetKey(UnsafeArray<const UInt8> key, UOSInt keyLen)
 {
 	return this->SetKey(key, keyLen, keyLen << 3);
 }
 
-Bool Crypto::Encrypt::RC2Cipher::SetKey(const UInt8 *key, UOSInt keyLen, UOSInt effectiveBits)
+Bool Crypto::Encrypt::RC2Cipher::SetKey(UnsafeArray<const UInt8> key, UOSInt keyLen, UOSInt effectiveBits)
 {
 	UInt8 tmp[128];
 	UOSInt T8;
@@ -89,7 +89,7 @@ Bool Crypto::Encrypt::RC2Cipher::SetKey(const UInt8 *key, UOSInt keyLen, UOSInt 
 	return true;
 }
 
-UOSInt Crypto::Encrypt::RC2Cipher::EncryptBlock(const UInt8 *inBlock, UInt8 *outBlock) const
+UOSInt Crypto::Encrypt::RC2Cipher::EncryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const
 {
 	const UInt16 *xkey = this->xkeys;
 	UInt16 x76;
@@ -136,7 +136,7 @@ UOSInt Crypto::Encrypt::RC2Cipher::EncryptBlock(const UInt8 *inBlock, UInt8 *out
     return 8;
 }
 
-UOSInt Crypto::Encrypt::RC2Cipher::DecryptBlock(const UInt8 *inBlock, UInt8 *outBlock) const
+UOSInt Crypto::Encrypt::RC2Cipher::DecryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const
 {
     UInt16 x76;
 	UInt16 x54;

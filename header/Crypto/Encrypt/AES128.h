@@ -12,13 +12,13 @@ namespace Crypto
 			UInt32 encRK[44];
 			UInt32 decRK[44];
 		public:
-			AES128(const UInt8 *key);
+			AES128(UnsafeArray<const UInt8> key);
 			virtual ~AES128();
 
-			virtual UOSInt EncryptBlock(const UInt8 *inBlock, UInt8 *outBlock) const;
-			virtual UOSInt DecryptBlock(const UInt8 *inBlock, UInt8 *outBlock) const;
+			virtual UOSInt EncryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const;
+			virtual UOSInt DecryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const;
 
-			void SetKey(const UInt8 *key);
+			void SetKey(UnsafeArray<const UInt8> key);
 		};
 	}
 }

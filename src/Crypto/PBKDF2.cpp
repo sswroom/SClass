@@ -3,7 +3,7 @@
 #include "Crypto/PBKDF2.h"
 #include "Data/ByteTool.h"
 
-UOSInt Crypto::PBKDF2::F(UnsafeArray<const UInt8> salt, UOSInt saltLen, UOSInt iterationCount, UInt32 i, NN<Crypto::Hash::IHash> hashFunc, UInt8 *outBuff)
+UOSInt Crypto::PBKDF2::F(UnsafeArray<const UInt8> salt, UOSInt saltLen, UOSInt iterationCount, UInt32 i, NN<Crypto::Hash::IHash> hashFunc, UnsafeArray<UInt8> outBuff)
 {
 	UInt8 tmpBuff[64];
 	UOSInt resSize = hashFunc->GetResultSize();
@@ -13,7 +13,7 @@ UOSInt Crypto::PBKDF2::F(UnsafeArray<const UInt8> salt, UOSInt saltLen, UOSInt i
 	hashFunc->Calc(salt.Ptr(), saltLen);
 	hashFunc->Calc(iBuff, 4);
 	hashFunc->GetValue(outBuff);
-	MemCopyNO(tmpBuff, outBuff, resSize);
+	MemCopyNO(tmpBuff, outBuff.Ptr(), resSize);
 	i = 1;
 	while (i < iterationCount)
 	{
@@ -21,12 +21,12 @@ UOSInt Crypto::PBKDF2::F(UnsafeArray<const UInt8> salt, UOSInt saltLen, UOSInt i
 		hashFunc->Clear();
 		hashFunc->Calc(tmpBuff, resSize);
 		hashFunc->GetValue(tmpBuff);
-		MemXOR(outBuff, tmpBuff, outBuff, resSize);
+		MemXOR(outBuff.Ptr(), tmpBuff, outBuff.Ptr(), resSize);
 	}
 	return resSize;
 }
 
-UOSInt Crypto::PBKDF2::Calc(UnsafeArray<const UInt8> salt, UOSInt saltLen, UOSInt iterationCount, UOSInt dkLen, NN<Crypto::Hash::IHash> hashFunc, UInt8 *outBuff)
+UOSInt Crypto::PBKDF2::Calc(UnsafeArray<const UInt8> salt, UOSInt saltLen, UOSInt iterationCount, UOSInt dkLen, NN<Crypto::Hash::IHash> hashFunc, UnsafeArray<UInt8> outBuff)
 {
 	UInt8 blockBuff[64];
 	UOSInt retLen = dkLen;
@@ -43,7 +43,7 @@ UOSInt Crypto::PBKDF2::Calc(UnsafeArray<const UInt8> salt, UOSInt saltLen, UOSIn
 		else
 		{
 			F(salt, saltLen, iterationCount, i, hashFunc, blockBuff);
-			MemCopyNO(outBuff, blockBuff, dkLen);
+			MemCopyNO(outBuff.Ptr(), blockBuff, dkLen);
 			dkLen = 0;
 			break;
 		}

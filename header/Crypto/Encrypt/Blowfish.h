@@ -30,11 +30,11 @@ namespace Crypto
 			void ExpandKey(UnsafeArrayOpt<const UInt8> salt, UnsafeArray<const UInt8> password, UOSInt pwdLen);
 		public:
 			Blowfish();
-			Blowfish(const UInt8 *key, UOSInt keySize);
+			Blowfish(UnsafeArray<const UInt8> key, UOSInt keySize);
 			virtual ~Blowfish();
 
-			virtual UOSInt EncryptBlock(const UInt8 *inBlock, UInt8 *outBlock) const;
-			virtual UOSInt DecryptBlock(const UInt8 *inBlock, UInt8 *outBlock) const;
+			virtual UOSInt EncryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const;
+			virtual UOSInt DecryptBlock(UnsafeArray<const UInt8> inBlock, UnsafeArray<UInt8> outBlock) const;
 
 			void SetKey(UnsafeArray<const UInt8> key, UOSInt keySize);
 			void EksBlowfishSetup(UInt32 cost, UnsafeArray<const UInt8> salt, Text::CStringNN password);

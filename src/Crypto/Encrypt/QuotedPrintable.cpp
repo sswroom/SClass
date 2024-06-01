@@ -12,7 +12,7 @@ Crypto::Encrypt::QuotedPrintable::~QuotedPrintable()
 {
 }
 
-Int32 Crypto::Encrypt::QuotedPrintable::Encrypt(const UInt8 *inBuff, Int32 inSize, UInt8 *outBuff, void *encParam)
+Int32 Crypto::Encrypt::QuotedPrintable::Encrypt(UnsafeArray<const UInt8> inBuff, Int32 inSize, UnsafeArray<UInt8> outBuff)
 {
 	Int32 retCnt = 0;
 	Int32 lineCnt = 0;
@@ -103,7 +103,7 @@ Int32 Crypto::Encrypt::QuotedPrintable::Encrypt(const UInt8 *inBuff, Int32 inSiz
 	return retCnt;
 }
 
-Int32 Crypto::Encrypt::QuotedPrintable::Decrypt(const UInt8 *inBuff, Int32 inSize, UInt8 *outBuff, void *decParam)
+Int32 Crypto::Encrypt::QuotedPrintable::Decrypt(UnsafeArray<const UInt8> inBuff, Int32 inSize, UnsafeArray<UInt8> outBuff)
 {
 	Int32 retCnt;
 	UInt8 b;
